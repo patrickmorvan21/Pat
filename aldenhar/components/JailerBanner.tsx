@@ -10,13 +10,13 @@ export default function JailerBanner({ line }: { line: string }) {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         alt=""
-        src="/assets/dithering-demon.jpg"
+        src="assets/dithering-demon.jpg"
         className="pointer-events-none absolute top-[-8px] left-[-5px] h-[103px] w-[87px] -scale-x-100 object-cover"
       />
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         alt=""
-        src="/assets/banner-edge.png"
+        src="assets/banner-edge.png"
         className="pointer-events-none absolute top-0 left-0 h-[9px] w-full"
         style={{ imageRendering: "pixelated" }}
       />

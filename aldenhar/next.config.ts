@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Export statique (GitHub Pages). En dev, basePath reste vide.
+  output: "export",
+  basePath: process.env.PAGES_BASE_PATH ?? "",
+  trailingSlash: true,
 };
 
 export default nextConfig;

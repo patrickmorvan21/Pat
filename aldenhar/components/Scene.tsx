@@ -50,7 +50,7 @@ export default function Scene() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           alt=""
-          src="/assets/dithering-portal.jpg"
+          src="assets/dithering-portal.jpg"
           className="pointer-events-none absolute top-[48px] left-1/2 h-[352px] w-[390px] -translate-x-1/2 object-cover"
         />
 
