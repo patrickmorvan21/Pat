@@ -1,0 +1,162 @@
+@import "tailwindcss";
+
+/*
+  Design tokens — deux thèmes :
+  - défaut : valeurs exactes de la frame Figma "Test App" (node 1903:358)
+  - .theme-brief : trichromie du brief (nuit / brique / sable + VT323)
+  Basculer en ajoutant la classe `theme-brief` sur <html>.
+*/
+:root {
+  --color-bg: #1c1a16;
+  --color-ink: #ffffff;
+  --color-accent: #e0632a;
+  --color-notch: #211e33; /* entailles de coins des boutons (valeur exacte Figma) */
+  --color-night: #211e33;
+  --color-night-deep: #11101c;
+  --color-sand: #d8a25f; /* faces du dé (référence validée) */
+  --color-sand-shade: #b3854c;
+  --color-muted: #6e5a78;
+
+  --font-body: "Roboto Mono", monospace;
+  --font-title: "Jacquard 12", serif;
+  --font-status: "Inter", sans-serif;
+  --font-die: "VT323", monospace;
+}
+
+.theme-brief {
+  --color-bg: #211e33;
+  --color-ink: #d8a25f;
+  --color-accent: #c43328;
+  --color-notch: #11101c;
+  --font-body: "VT323", monospace;
+  --font-status: "VT323", monospace;
+}
+
+body {
+  background: var(--color-night-deep);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
+
+/* ——— Animations du dé / verdict (reprises de REFERENCE_de_3d_tactile.html) ——— */
+
+.phone-frame.quake {
+  animation: quake 0.4s steps(4);
+}
+@keyframes quake {
+  0% { transform: translate(-4px, 2px); }
+  25% { transform: translate(4px, -3px); }
+  50% { transform: translate(-3px, -2px); }
+  75% { transform: translate(3px, 3px); }
+  100% { transform: translate(0, 0); }
+}
+
+.die-veil {
+  position: absolute;
+  inset: 0;
+  background: rgba(17, 16, 28, 0.72);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s steps(4);
+  z-index: 5;
+}
+.die-veil.on { opacity: 1; }
+
+.die-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  z-index: 7;
+  /* Adaptation : pointer-events none pour laisser les choix cliquables ;
+     la saisie du dé est gérée par hit-test sur le conteneur (même math que la référence). */
+  pointer-events: none;
+  touch-action: none;
+}
+
+.die-flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 8;
+}
+.die-flash.crit-success {
+  background: var(--color-sand);
+  animation: flashout 0.5s steps(4) forwards;
+}
+.die-flash.crit-fail {
+  background: var(--color-accent);
+  animation: flashout 0.6s steps(4) forwards;
+}
+@keyframes flashout {
+  0% { opacity: 0.85; }
+  100% { opacity: 0; }
+}
+
+.die-verdict {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 42%;
+  text-align: center;
+  z-index: 9;
+  pointer-events: none;
+  padding: 0 34px;
+}
+.die-verdict .word {
+  font-family: var(--font-title);
+  font-size: 38px;
+  letter-spacing: 2px;
+  color: var(--color-sand);
+  opacity: 0;
+}
+.die-verdict.show .word {
+  animation: stamp 0.3s steps(3) forwards;
+}
+@keyframes stamp {
+  0% { opacity: 0; transform: scale(1.6); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.die-verdict .word.fail { color: var(--color-accent); }
+.die-verdict .outcome {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--color-sand);
+  margin-top: 10px;
+  opacity: 0;
+}
+.die-verdict.show .outcome {
+  animation: fadeup 0.4s steps(4) 0.25s forwards;
+}
+@keyframes fadeup {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+.die-hint {
+  position: absolute;
+  bottom: 288px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  z-index: 6;
+  pointer-events: none;
+  animation: pulse 2.4s steps(2) infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.die-hint.hidden { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .die-hint { animation: none; }
+  .phone-frame.quake { animation: none; }
+}

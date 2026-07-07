@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Aldenhar — III</title>
+<link href="https://fonts.googleapis.com/css2?family=Jacquard+12&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --nuit: #211e33;
+    --nuit-sombre: #181627;
+    --nuit-noire: #11101c;
+    --brique: #ac2e26;
+    --brique-vif: #c43328;
+    --sable: #d8a25f;
+    --sable-eteint: #6e5a78;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { overscroll-behavior: none; }
+  body {
+    background: var(--nuit-noire);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'VT323', monospace;
+    padding: 24px;
+  }
+
+  .phone {
+    width: 390px;
+    height: 800px;
+    background: var(--nuit);
+    border: 8px solid #000;
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .phone.quake { animation: quake 0.4s steps(4); }
+  @keyframes quake {
+    0% { transform: translate(-4px,2px); } 25% { transform: translate(4px,-3px); }
+    50% { transform: translate(-3px,-2px); } 75% { transform: translate(3px,3px); }
+    100% { transform: translate(0,0); }
+  }
+
+  .status {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 24px 0;
+    font-size: 17px; color: var(--sable); font-weight: normal;
+    z-index: 3; position: relative;
+  }
+  .status .icons { display: flex; align-items: center; gap: 6px; font-size: 14px; }
+
+  .header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 24px 0;
+    z-index: 3; position: relative;
+  }
+  .header .chapter {
+    font-family: 'VT323', monospace;
+    font-size: 20px; letter-spacing: 1px; color: var(--sable);
+  }
+  .menu-btn {
+    width: 42px; height: 42px;
+    border: 1.5px solid var(--sable);
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 3px; place-items: center; padding: 10px;
+    cursor: pointer; background: transparent;
+  }
+  .menu-btn span { width: 3px; height: 3px; background: var(--sable); display: block; }
+
+  .illu {
+    position: relative; height: 300px; margin-top: 10px;
+    overflow: hidden;
+  }
+  .illu svg { width: 100%; height: 100%; display: block; image-rendering: pixelated; }
+
+  .context {
+    padding: 20px 24px 0;
+    font-size: 16px; line-height: 1.55; color: var(--sable);
+  }
+
+  .choices {
+    margin-top: auto;
+    padding: 20px 24px 18px;
+    display: flex; flex-direction: column; gap: 12px;
+    position: relative; z-index: 3;
+  }
+  .choice {
+    border: 1.5px solid var(--sable);
+    padding: 16px 18px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'VT323', monospace; font-size: 18px; color: var(--sable);
+    background: rgba(33,30,51,0.55);
+    cursor: pointer;
+  }
+  .choice .tag { font-size: 15px; letter-spacing: 1px; color: var(--brique-vif); }
+  .choice.locked {
+    border-color: var(--sable-eteint); color: var(--sable-eteint); cursor: not-allowed;
+  }
+  .choice.locked .tag { color: var(--sable-eteint); }
+
+  .banner-edge {
+    height: 14px;
+    background-image:
+      linear-gradient(45deg, var(--nuit-noire) 25%, transparent 25%),
+      linear-gradient(-45deg, var(--nuit-noire) 25%, transparent 25%);
+    background-size: 8px 8px;
+    background-color: var(--sable);
+  }
+  .banner {
+    background: var(--sable);
+    padding: 14px 22px 18px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .banner .demon { width: 44px; height: 38px; flex-shrink: 0; }
+  .banner p {
+    font-family: 'VT323', monospace; font-size: 16px; line-height: 1.3;
+    color: var(--nuit-noire); font-weight: normal;
+  }
+  .banner p b { color: var(--nuit-noire); }
+
+  .veil {
+    position: absolute; inset: 0;
+    background: rgba(17,16,28,0.72);
+    opacity: 0; pointer-events: none; transition: opacity 0.35s steps(4);
+    z-index: 5;
+  }
+  .veil.on { opacity: 1; }
+  #dieCanvas {
+    position: absolute; inset: 0; width: 100%; height: 100%;
+    image-rendering: pixelated; z-index: 7; touch-action: none;
+  }
+  .flash { position: absolute; inset: 0; pointer-events: none; opacity: 0; z-index: 8; }
+  .flash.crit-success { background: var(--sable); animation: flashout 0.5s steps(4) forwards; }
+  .flash.crit-fail { background: var(--brique); animation: flashout 0.6s steps(4) forwards; }
+  @keyframes flashout { 0% { opacity: 0.85; } 100% { opacity: 0; } }
+
+  .verdict {
+    position: absolute; left: 0; right: 0; top: 42%;
+    text-align: center; z-index: 9; pointer-events: none; padding: 0 34px;
+  }
+  .verdict .word {
+    font-family: 'Jacquard 12', serif; font-size: 38px; letter-spacing: 2px;
+    color: var(--sable); opacity: 0;
+  }
+  .verdict.show .word { animation: stamp 0.3s steps(3) forwards; }
+  @keyframes stamp { 0% { opacity: 0; transform: scale(1.6); } 100% { opacity: 1; transform: scale(1); } }
+  .verdict .word.fail { color: var(--brique-vif); }
+  .verdict .outcome {
+    font-family: 'VT323', monospace; font-size: 15px; line-height: 1.45; color: var(--sable);
+    margin-top: 10px; opacity: 0;
+  }
+  .verdict.show .outcome { animation: fadeup 0.4s steps(4) 0.25s forwards; }
+  @keyframes fadeup { 0% { opacity: 0; transform: translateY(6px); } 100% { opacity: 1; transform: translateY(0); } }
+
+  .hint {
+    position: absolute; bottom: 210px; left: 0; right: 0;
+    text-align: center; font-size: 13px; letter-spacing: 2px;
+    color: var(--sable-eteint); text-transform: uppercase;
+    z-index: 6; pointer-events: none; animation: pulse 2.4s steps(2) infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .hint.hidden { display: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hint { animation: none; } .phone.quake { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="phone" id="phone">
+
+  <div class="status">
+    <span>15:20</span>
+    <span class="icons">•••ıl 5G 🔋</span>
+  </div>
+
+  <div class="header">
+    <span class="chapter">ALDENHAR — III</span>
+    <button class="menu-btn" aria-label="Menu">
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="illu">
+    <svg viewBox="0 0 390 300" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <defs>
+        <pattern id="dSN" width="4" height="4" patternUnits="userSpaceOnUse">
+          <rect width="4" height="4" fill="#211e33"/>
+          <rect x="0" y="0" width="2" height="2" fill="#d8a25f"/>
+          <rect x="2" y="2" width="2" height="2" fill="#d8a25f"/>
+        </pattern>
+        <radialGradient id="void" cx="42%" cy="45%" r="55%">
+          <stop offset="0%" stop-color="#11101c"/>
+          <stop offset="100%" stop-color="#211e33"/>
+        </radialGradient>
+        <mask id="ringMask">
+          <rect x="0" y="0" width="390" height="300" fill="black"/>
+          <circle cx="165" cy="150" r="118" fill="white"/>
+          <circle cx="165" cy="150" r="70" fill="black"/>
+        </mask>
+      </defs>
+
+      <rect x="0" y="0" width="390" height="300" fill="#211e33"/>
+
+      <g opacity="0.9">
+        <path d="M20,0 L35,90 L28,140 L40,0 Z" fill="url(#dSN)"/>
+        <path d="M70,0 L95,110 L82,170 L105,0 Z" fill="url(#dSN)"/>
+        <path d="M140,0 L165,70 L150,60 L175,0 Z" fill="url(#dSN)"/>
+        <path d="M230,0 L215,95 L235,130 L255,0 Z" fill="url(#dSN)"/>
+        <path d="M300,0 L280,120 L300,160 L325,0 Z" fill="url(#dSN)"/>
+        <path d="M350,0 L335,80 L355,50 L375,0 Z" fill="url(#dSN)"/>
+      </g>
+
+      <circle cx="165" cy="150" r="118" fill="url(#dSN)" mask="url(#ringMask)"/>
+      <circle cx="165" cy="150" r="118" fill="none" stroke="#211e33" stroke-width="2" mask="url(#ringMask)"/>
+
+      <circle cx="165" cy="150" r="68" fill="url(#void)"/>
+      <circle cx="165" cy="150" r="68" fill="none" stroke="#0d0b16" stroke-width="1"/>
+
+      <g id="scatter"></g>
+    </svg>
+  </div>
+
+  <p class="context">
+    Le couloir s'arrête net. Deux portes te font face. Celle de gauche est balafrée de coups d'épée, son bois sombre fendu, sa serrure éventrée, quelqu'un, ou quelque chose, s'y est acharné. Celle de droite est neuve, taillée dans un bois blanc presque luisant, et porte une inscription gravée que tu ne reconnais pas.
+  </p>
+
+  <div class="choices">
+    <div class="choice" data-risky="true">
+      <span>Pousser la porte balafrée</span>
+      <span class="tag">COURAGE</span>
+    </div>
+    <div class="choice">
+      <span>Écouter, immobile</span>
+    </div>
+    <div class="choice locked">
+      <span>Rebrousser chemin</span>
+      <span class="tag">EMPATHIE</span>
+    </div>
+  </div>
+
+  <div class="banner-edge"></div>
+  <div class="banner">
+    <svg class="demon" viewBox="0 0 100 76" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">
+      <polygon points="18,30 12,20 6,8 8,2 12,6 18,16 22,26" fill="#11101c"/>
+      <polygon points="82,30 88,20 94,8 92,2 88,6 82,16 78,26" fill="#11101c"/>
+      <polygon points="16,32 14,24 20,18 32,15 50,14 68,15 80,18 86,24 84,32 86,42 82,54 74,64 58,70 42,70 26,64 18,54 14,42" fill="#11101c"/>
+      <polygon points="34,38 41,35 44,39 41,44 35,44 32,41" fill="#d8a25f"/>
+      <polygon points="66,38 59,35 56,39 59,44 65,44 68,41" fill="#d8a25f"/>
+      <rect x="38" y="52" width="6" height="7" fill="#d8a25f"/>
+      <rect x="47" y="52" width="6" height="8" fill="#d8a25f"/>
+      <rect x="56" y="52" width="6" height="7" fill="#d8a25f"/>
+    </svg>
+    <p><b>12 000</b> avant toi n'ont pas<br>passé leur 7e jour ici</p>
+  </div>
+
+  <div class="veil" id="veil"></div>
+  <canvas id="dieCanvas"></canvas>
+  <div class="hint" id="hint">Saisis le dé, lance-le</div>
+  <div class="flash" id="flash"></div>
+  <div class="verdict" id="verdict">
+    <div class="word" id="verdictWord"></div>
+    <p class="outcome" id="verdictOutcome"></p>
+  </div>
+
+</div>
+
+<script>
+(function scatterDots(){
+  const g = document.getElementById('scatter');
+  const cx = 165, cy = 150, rOuter = 118;
+  for (let i = 0; i < 260; i++) {
+    const a = Math.random() * Math.PI * 2;
+    const dist = rOuter + Math.random() * 55;
+    const falloff = Math.random();
+    if (falloff > (1 - (dist - rOuter) / 55) ** 1.4) continue;
+    const x = cx + Math.cos(a) * dist;
+    const y = cy + Math.sin(a) * dist * 0.9;
+    if (x < 0 || x > 390 || y < 0 || y > 300) continue;
+    const s = [1,1,1.5,2][Math.floor(Math.random()*4)];
+    const rect = document.createElementNS('http://www.w3.org/2000/svg','rect');
+    rect.setAttribute('x', x - s/2); rect.setAttribute('y', y - s/2);
+    rect.setAttribute('width', s); rect.setAttribute('height', s);
+    rect.setAttribute('fill', '#d8a25f');
+    g.appendChild(rect);
+  }
+})();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function() {
+  const SEUIL = 12;
+  const PIXEL_FACTOR = 2.4;
+  const phone = document.getElementById('phone');
+  const canvas = document.getElementById('dieCanvas');
+  const hint = document.getElementById('hint');
+  const flash = document.getElementById('flash');
+  const veil = document.getElementById('veil');
+  const verdict = document.getElementById('verdict');
+  const vWord = document.getElementById('verdictWord');
+  const vOut = document.getElementById('verdictOutcome');
+
+  const outcomes = {
+    critSuccess: { word: 'DESTIN', cls: '',
+      text: "20 naturel. La porte cède sans un bruit — la créature dort. Tu passes comme une ombre." },
+    success: { word: 'RÉUSSITE', cls: '',
+      text: "Ton épaule enfonce le battant. La chose derrière recule d'un pas — surprise. Tu as l'initiative." },
+    fail: { word: 'ÉCHEC', cls: 'fail',
+      text: "Le bois résiste. Le bruit te trahit. Dans l'obscurité, deux yeux s'ouvrent." },
+    critFail: { word: 'FUNESTE', cls: 'fail',
+      text: "1 naturel. La porte s'ouvre — de l'intérieur. ♦ −2" }
+  };
+
+  let W = phone.clientWidth - 16, H = phone.clientHeight - 16;
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
+  renderer.setPixelRatio(1);
+  renderer.setSize(Math.floor(W / PIXEL_FACTOR), Math.floor(H / PIXEL_FACTOR), false);
+
+  const camera = new THREE.OrthographicCamera(-W/2, W/2, H/2, -H/2, 1, 1000);
+  camera.position.z = 500;
+  const scene = new THREE.Scene();
+
+  const NUIT = '#211e33', SABLE = '#d8a25f', SABLE_OMBRE = '#b3854c';
+  function faceTexture(n, shade, inverted) {
+    const s = 96;
+    const c = document.createElement('canvas'); c.width = c.height = s;
+    const ctx = c.getContext('2d');
+    if (inverted) { ctx.fillStyle = NUIT; ctx.fillRect(0,0,s,s); }
+    else {
+      ctx.fillStyle = shade >= 1 ? SABLE_OMBRE : SABLE;
+      ctx.fillRect(0,0,s,s);
+      if (shade === 1) { ctx.fillStyle = NUIT; for (let y=0;y<s;y+=8) for (let x=(y/8)%2?4:0;x<s;x+=8) ctx.fillRect(x,y,3,3); }
+      else if (shade === 2) { ctx.fillStyle = NUIT; for (let y=0;y<s;y+=6) for (let x=(y/6)%2?3:0;x<s;x+=6) ctx.fillRect(x,y,3,3); }
+    }
+    ctx.fillStyle = inverted ? SABLE : NUIT;
+    ctx.font = 'bold 42px "VT323", monospace';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(n, s/2, s/2 + 12);
+    const tx = new THREE.CanvasTexture(c);
+    tx.magFilter = THREE.NearestFilter; tx.minFilter = THREE.NearestFilter;
+    return tx;
+  }
+
+  const R = 44;
+  const geo = new THREE.IcosahedronGeometry(R, 0);
+  geo.clearGroups();
+  const mats = []; const uvs = [];
+  for (let i = 0; i < 20; i++) {
+    geo.addGroup(i*3, 3, i);
+    mats.push(new THREE.MeshBasicMaterial({ map: faceTexture(i+1, i%3, false) }));
+    uvs.push(0.5,1, 0.06,0.1, 0.94,0.1);
+  }
+  geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
+  const die = new THREE.Mesh(geo, mats);
+  scene.add(die);
+  const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geo), new THREE.LineBasicMaterial({ color: 0x211e33 }));
+  die.add(edges);
+
+  const IDLE = { x: W/2 - 56, y: -(H/2) + 232, scale: 0.58 };
+  const CENTER = { x: 0, y: 20, scale: 1 };
+
+  let state = 'idle';
+  let pos = { x: IDLE.x, y: IDLE.y };
+  let vel = { x: 0, y: 0 };
+  let angVel = { x: 0.01, y: 0.017, z: 0 };
+  let dieScale = IDLE.scale;
+  const DAMP = 0.985, ROLL_FRICTION = 0.9, STOP_SPEED = 0.85;
+  const MARGIN = R * 0.6;
+  const bounds = { x: W/2 - MARGIN, y: H/2 - MARGIN };
+  let squash = { axis: 'x', amount: 0 };
+  let history = []; let grabOffset = { x: 0, y: 0 };
+
+  function toStage(e) {
+    const r = canvas.getBoundingClientRect();
+    const cx = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+    const cy = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
+    return { x: cx - W/2, y: -(cy - H/2), t: performance.now() };
+  }
+
+  function onDown(e) {
+    if (state !== 'idle') return;
+    const p = toStage(e);
+    const dx = p.x - pos.x, dy = p.y - pos.y;
+    if (Math.hypot(dx, dy) > R * dieScale * 1.7) return;
+    e.preventDefault();
+    state = 'held'; hint.classList.add('hidden'); verdict.classList.remove('show');
+    resetFaces(); grabOffset = { x: dx, y: dy }; history = [p];
+    if (navigator.vibrate) navigator.vibrate(10);
+  }
+  function onMove(e) {
+    if (state !== 'held') return; e.preventDefault();
+    const p = toStage(e); history.push(p); if (history.length > 6) history.shift();
+    pos.x = p.x - grabOffset.x; pos.y = p.y - grabOffset.y;
+    const prev = history[history.length-2] || p;
+    angVel.x = -(p.y - prev.y) * 0.005; angVel.y = (p.x - prev.x) * 0.005;
+  }
+  function onUp() {
+    if (state !== 'held') return;
+    const now = performance.now();
+    const recent = history.filter(h => now - h.t < 110);
+    if (recent.length < 2) { state = 'returning'; return; }
+    const first = recent[0], last = recent[recent.length-1];
+    const dt = Math.max(last.t-first.t,16)/16.7;
+    const vx=(last.x-first.x)/dt, vy=(last.y-first.y)/dt;
+    const speed = Math.hypot(vx,vy);
+    if (speed < 2.5) { state = 'returning'; return; }
+    state = 'flying'; veil.classList.add('on');
+    vel = { x: vx*1.25, y: vy*1.25 };
+    angVel = { x:-vel.y*0.007, y:vel.x*0.007, z:(Math.random()-0.5)*0.05 };
+    if (navigator.vibrate) navigator.vibrate(20);
+  }
+  canvas.addEventListener('mousedown', onDown);
+  canvas.addEventListener('touchstart', onDown, {passive:false});
+  window.addEventListener('mousemove', onMove, {passive:false});
+  window.addEventListener('touchmove', onMove, {passive:false});
+  window.addEventListener('mouseup', onUp);
+  window.addEventListener('touchend', onUp);
+
+  function onBounce(impactSpeed) {
+    if (navigator.vibrate) navigator.vibrate(Math.min(55, Math.max(8, Math.round(impactSpeed*3.2))));
+    angVel.x += (Math.random()-0.5)*0.06*(impactSpeed/10);
+    angVel.y += (Math.random()-0.5)*0.06*(impactSpeed/10);
+    angVel.z += (Math.random()-0.5)*0.04*(impactSpeed/10);
+  }
+
+  let result = 0, settleQuat = null, settleT = 0, revealT = 0;
+  function resetFaces() {
+    if (result > 0) { mats[result-1].map = faceTexture(result,(result-1)%3,false); mats[result-1].needsUpdate = true; }
+  }
+  function beginSettle() {
+    state = 'settling'; result = 1 + Math.floor(Math.random()*20);
+    const posAttr = geo.getAttribute('position'); const fi = (result-1)*3;
+    const a = new THREE.Vector3().fromBufferAttribute(posAttr, fi);
+    const b = new THREE.Vector3().fromBufferAttribute(posAttr, fi+1);
+    const c = new THREE.Vector3().fromBufferAttribute(posAttr, fi+2);
+    const normal = new THREE.Vector3().crossVectors(new THREE.Vector3().subVectors(b,a), new THREE.Vector3().subVectors(c,a)).normalize();
+    settleQuat = new THREE.Quaternion().setFromUnitVectors(normal, new THREE.Vector3(0,0,1));
+    settleT = 0;
+  }
+  function finishRoll() {
+    state = 'reveal'; revealT = 0;
+    mats[result-1].map = faceTexture(result,0,true); mats[result-1].needsUpdate = true;
+    let o;
+    if (result === 20) o = outcomes.critSuccess;
+    else if (result === 1) o = outcomes.critFail;
+    else if (result >= SEUIL) o = outcomes.success;
+    else o = outcomes.fail;
+    flash.className = 'flash';
+    if (result === 20) { void flash.offsetWidth; flash.classList.add('crit-success'); if (navigator.vibrate) navigator.vibrate([30,40,80]); }
+    if (result === 1) { void flash.offsetWidth; flash.classList.add('crit-fail'); phone.classList.add('quake'); setTimeout(()=>phone.classList.remove('quake'),450); if (navigator.vibrate) navigator.vibrate([80,40,120]); }
+    vWord.textContent = o.word; vWord.className = 'word ' + o.cls;
+    vOut.textContent = o.text; verdict.classList.add('show');
+  }
+
+  let t = 0;
+  function loop() {
+    requestAnimationFrame(loop); t += 0.016;
+    if (state === 'idle') {
+      pos.x += (IDLE.x - pos.x) * 0.08;
+      pos.y += (IDLE.y - pos.y) * 0.08 + Math.sin(t*2)*0.06;
+      dieScale += (IDLE.scale - dieScale) * 0.08;
+      die.rotation.x += 0.004; die.rotation.y += 0.007;
+    } else if (state === 'held') {
+      dieScale += (1 - dieScale) * 0.15;
+      die.rotation.x += angVel.x; die.rotation.y += angVel.y;
+    } else if (state === 'flying') {
+      pos.x += vel.x; pos.y += vel.y; vel.x *= DAMP; vel.y *= DAMP;
+      die.rotation.x += angVel.x; die.rotation.y += angVel.y; die.rotation.z += angVel.z;
+      angVel.x *= 0.994; angVel.y *= 0.994; angVel.z *= 0.99;
+      let impact = 0;
+      if (pos.x > bounds.x) { impact=Math.abs(vel.x); pos.x=bounds.x; vel.x*=-(0.62+Math.min(0.16,impact*0.008)); vel.y*=ROLL_FRICTION; onBounce(impact); }
+      if (pos.x < -bounds.x) { impact=Math.abs(vel.x); pos.x=-bounds.x; vel.x*=-(0.62+Math.min(0.16,impact*0.008)); vel.y*=ROLL_FRICTION; onBounce(impact); }
+      if (pos.y > bounds.y) { impact=Math.abs(vel.y); pos.y=bounds.y; vel.y*=-(0.62+Math.min(0.16,impact*0.008)); vel.x*=ROLL_FRICTION; onBounce(impact); }
+      if (pos.y < -bounds.y) { impact=Math.abs(vel.y); pos.y=-bounds.y; vel.y*=-(0.62+Math.min(0.16,impact*0.008)); vel.x*=ROLL_FRICTION; onBounce(impact); }
+      if (Math.hypot(vel.x,vel.y) < STOP_SPEED) beginSettle();
+    } else if (state === 'settling') {
+      settleT += 0.03;
+      pos.x += (CENTER.x - pos.x) * 0.11; pos.y += (CENTER.y - pos.y) * 0.11;
+      dieScale += (CENTER.scale - dieScale) * 0.1;
+      die.quaternion.slerp(settleQuat, 0.14);
+      if (settleT >= 1.7) { die.quaternion.copy(settleQuat); pos = {x:CENTER.x,y:CENTER.y}; finishRoll(); }
+    } else if (state === 'reveal') {
+      revealT += 0.016; pos.y = CENTER.y + Math.sin(t*2)*1.2;
+      if (revealT > 2.6) { state='returning'; veil.classList.remove('on'); verdict.classList.remove('show'); hint.textContent='Relance quand tu veux'; hint.classList.remove('hidden'); }
+    } else if (state === 'returning') {
+      pos.x += (IDLE.x - pos.x)*0.1; pos.y += (IDLE.y - pos.y)*0.1; dieScale += (IDLE.scale - dieScale)*0.1;
+      if (Math.hypot(IDLE.x-pos.x, IDLE.y-pos.y) < 2) state = 'idle';
+    }
+    squash.amount *= 0.85;
+    const sx = squash.axis==='x' ? 1-squash.amount : 1+squash.amount*0.5;
+    const sy = squash.axis==='y' ? 1-squash.amount : 1+squash.amount*0.5;
+    die.scale.set(sx*dieScale, sy*dieScale, dieScale);
+    die.position.set(pos.x, pos.y, 0);
+    renderer.render(scene, camera);
+  }
+  loop();
+})();
+</script>
+
+</body>
+</html>
