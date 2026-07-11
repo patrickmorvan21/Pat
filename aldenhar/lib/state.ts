@@ -13,7 +13,7 @@ export type RollRecord = {
 
 /** État narratif temporaire (spec §2) : modifie les jets, se dissipe. */
 export type NarrativeEffect = {
-  id: "aguerri" | "entaille";
+  id: "aguerri" | "entaille" | "ebranle";
   label: string;
   delta: number;
   scenesLeft: number;

@@ -99,6 +99,30 @@ export function noiseSpecks(
   }
 }
 
+/**
+ * Masque alpha tramé Bayer (data URL PNG) pour faire dissoudre le bord d'une
+ * image en pixels épars plutôt qu'un fondu CSS lisse (§11 Notion : "la trame
+ * se dissout en pixels épars près des bords... pas un fondu d'opacité lisse").
+ * `fade(nx, ny)` (coords normalisées 0..1) renvoie 0 = opaque, 1 = transparent.
+ * Doit être appelé côté client uniquement (canvas DOM).
+ */
+export function ditherFadeMaskDataUrl(w: number, h: number, fade: (nx: number, ny: number) => number): string {
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d")!;
+  ctx.fillStyle = "#fff";
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const density = 1 - fade(x / w, y / h);
+      const bx = x % 4,
+        by = y % 4;
+      if (density >= BAYER4[by][bx]) ctx.fillRect(x, y, 1, 1);
+    }
+  }
+  return canvas.toDataURL();
+}
+
 /** Contour rongé façon pixel-art : un rectangle dont les bords perdent des pixels de façon organique (réutilise l'esthétique de l'érosion santé). */
 export function erodedRectPath(
   ctx: CanvasRenderingContext2D,

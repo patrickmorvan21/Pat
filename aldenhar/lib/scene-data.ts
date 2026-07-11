@@ -40,6 +40,14 @@ export type Scene = {
   illustration?: string;
   choices: Choice[];
   jailerLine: string;
+  /**
+   * Rencontre de combat (spec §6) : pas de système séparé, pas de PV de
+   * monstre — la même mécanique choix + dé, seuils de jet plus exigeants
+   * pour exprimer la difficulté. Sert uniquement à déclencher l'état
+   * narratif temporaire de bonus/malus post-combat (Scene.tsx), jamais un
+   * calcul de dégâts séparé.
+   */
+  combat?: boolean;
 };
 
 function outcomes(
@@ -243,6 +251,123 @@ export const SCENES: Scene[] = [
     jailerLine: "Les os du pont ? D'anciens curieux. Comme toi.",
   },
   {
+    id: "tunnel-embuscade",
+    combat: true,
+    narration: [
+      "Le tablier d'os à peine passé, la galerie se resserre. Des griffes " +
+        "raclent la pierre dans le noir, plusieurs paires à la fois, " +
+        "rythmées comme une meute qui compte ses pas avant de charger.",
+      "Une forme bondit dans ta torche — museau fendu, yeux blancs, la peau " +
+        "tendue sur des côtes trop nombreuses. Elle recule d'un pas, jauge, " +
+        "puis siffle un appel vers l'obscurité derrière elle.",
+      "Deux autres répondent, plus loin, dans le noir. Tu n'as pas le temps " +
+        "de choisir ton terrain — seulement ta première réponse.",
+    ],
+    choices: [
+      {
+        id: "frapper-premier",
+        label: "Frapper la première bête",
+        risky: {
+          stat: "COURAGE",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Ton coup ouvre la bête d'un geste — elle s'effondre avant même de mordre. Les deux autres hésitent, reculent d'un pas.",
+            "La lame trouve son flanc. Elle recule en gémissant, assez pour te laisser l'initiative sur les deux suivantes.",
+            "Ton coup dévie sur l'os saillant. Elle esquive et referme les mâchoires sur ton avant-bras — tu perds un temps précieux.",
+            "1 naturel. Ta lame se coince entre deux côtes. La bête l'arrache avec toi encore accroché. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "reculer-etroit",
+        label: "Reculer vers l'étroit du tunnel",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu trouves le point exact où le tunnel ne laisse passer qu'une gueule à la fois. La meute se piétine elle-même.",
+            "Le passage se resserre juste à temps. Elles ne peuvent plus charger qu'une par une, désormais.",
+            "Le renfoncement que tu visais est trop loin. Elles te rattrapent groupées, toutes crocs dehors.",
+            "1 naturel. Le tunnel se resserre — sur toi, pas sur elles. Tu es coincé, elles non. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "jeter-torche",
+        label: "Jeter la torche dans la meute",
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. La torche roule pile entre leurs pattes. Le feu prend d'un coup — la meute se disperse en hurlant, aveuglée.",
+            "Le feu les tient à distance un instant. Assez pour reprendre ton souffle et choisir ton angle.",
+            "La torche s'éteint en tombant. Dans le noir qui suit, tu entends surtout qu'elles, elles voient très bien.",
+            "1 naturel. Le feu accroche ta manche avant la meute. Tu combats maintenant deux ennemis. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Trois contre un. Mes chiffres préférés.",
+  },
+  {
+    id: "tunnel-affrontement",
+    combat: true,
+    narration: [
+      "Ce qu'il reste de la meute se regroupe une dernière fois, plus " +
+        "prudente, à distance de ta lame. Elles ont compris que tu mords " +
+        "aussi.",
+      "L'une d'elles boite, l'œil rivé sur toi malgré tout — la douleur ne " +
+        "l'a pas rendue plus lente à décider, seulement plus méchante.",
+      "Le silence qui précède leur dernière charge dure une seconde de trop. " +
+        "C'est la tienne.",
+    ],
+    choices: [
+      {
+        id: "achever",
+        label: "Achever la bête blessée",
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Un seul geste, net. Les survivantes reculent d'un coup, comme si le message venait de passer entre elles sans un bruit.",
+            "Elle s'effondre. Les autres marquent un temps d'arrêt — assez long pour que tu gardes l'avantage.",
+            "Elle esquive, plus vive que sa blessure ne le laissait croire. Les autres profitent de ta seconde perdue.",
+            "1 naturel. Ce n'était pas la plus faible — c'était l'appât. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "feinte",
+        label: "Feinter pour les disperser",
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Ta feinte les envoie dans trois directions différentes — une meute ne combat pas divisée. Elles s'égaillent dans le noir.",
+            "La feinte fonctionne à moitié. Deux se dispersent, la dernière reste, seule face à toi — un combat que tu peux gagner.",
+            "Elles ne mordent pas à la feinte. Groupées, elles referment la distance sans se laisser diviser.",
+            "1 naturel. Ta feinte les prévient au lieu de les tromper. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "tenir",
+        label: "Tenir ta position, lame haute",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Tu lis leur charge avant qu'elle ne parte — chaque coup trouve sa gorge, dans l'ordre exact où elles bondissent.",
+            "Tu encaisses la charge sans reculer d'un pouce. Elles s'y cassent, une à une.",
+            "Ta garde tient, mais de justesse. Le combat traîne, et te coûte plus qu'il ne devrait.",
+            "1 naturel. Ta garde s'ouvre à la pire seconde. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Ce qui reste d'une meute compte encore, pour moi.",
+  },
+  {
     id: "campement",
     narration: [
       "Une anfractuosité sèche, à l'écart du courant d'air. Des cendres " +
@@ -305,6 +430,58 @@ export const SCENES: Scene[] = [
       { id: "interroger", label: "Interroger la chose cousue", locked: { stat: "COURAGE" } },
     ],
     jailerLine: "Elle m'a supplié aussi, jadis. J'ai un registre.",
+  },
+  {
+    id: "geryon",
+    combat: true,
+    narration: [
+      "Le couloir débouche sur une arche effondrée, et dessous, une masse " +
+        "qui respire par trois gueules distinctes, synchronisées. Geryon. " +
+        "Le nom te revient d'un vieux conte que tu croyais inventé pour " +
+        "effrayer les enfants.",
+      "Il ne bouge pas encore. Il te regarde arriver de ses six yeux, " +
+        "patient, comme s'il avait déjà vu cent héros faire exactement les " +
+        "mêmes trois pas que toi.",
+      "Une des trois têtes bâille — un bâillement qui dure, qui dure, et se " +
+        "termine en grondement long comme une porte qu'on ouvre au fond de " +
+        "la terre.",
+    ],
+    choices: [
+      {
+        id: "affronter",
+        label: "Charger entre les trois têtes",
+        risky: {
+          stat: "COURAGE",
+          threshold: 14,
+          outcomes: outcomes(
+            "20 naturel. Tu passes sous les trois mâchoires au même instant, comme si elles s'étaient elles-mêmes écartées pour te laisser filer.",
+            "Tu forces le passage. Une gueule se referme sur ton manteau — tu le laisses derrière, et toi devant.",
+            "Une tête te rattrape par l'épaule. Les deux autres se penchent, intéressées, pour la première fois.",
+            "1 naturel. Les trois gueules se referment ensemble, sur le même geste. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "viser-gorge",
+        label: "Viser la gorge du milieu",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Ton coup trouve le seul point où les trois nerfs se rejoignent. Geryon recule d'un coup, les trois têtes sonnées à la fois.",
+            "La gorge du milieu encaisse le coup. Les deux autres têtes, surprises, se tournent l'une vers l'autre — assez pour que tu passes.",
+            "Ton coup glisse sur des écailles plus dures que prévu. La tête du milieu, elle, t'a bien vu.",
+            "1 naturel. Tu frappes la mauvaise gorge — celle qui ne dormait pas. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "provoquer",
+        label: "Provoquer la tête endormie",
+        locked: { stat: "EMPATHIE" },
+      },
+    ],
+    jailerLine: "Geryon a trois têtes, et un seul intérêt : compter combien de héros avant toi. Tu fais beaucoup.",
   },
   {
     id: "echo",

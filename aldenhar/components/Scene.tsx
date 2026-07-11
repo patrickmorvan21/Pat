@@ -6,6 +6,25 @@ import ChoiceButton from "@/components/ChoiceButton";
 import TypedText from "@/components/TypedText";
 import { jailerTaunt, sceneAt, type Choice } from "@/lib/scene-data";
 import { loadRun, saveRun, type FeedEntry, type RunState } from "@/lib/state";
+import { ditherFadeMaskDataUrl } from "@/lib/dither";
+
+// Masque tramé du portrait du Geôlier — généré une fois, mis en cache (§11 :
+// dissolution en pixels épars sur les bords, jamais un fondu CSS lisse).
+// L'image est mirroir (-scale-x-100) pour faire face au texte : le fondu est
+// donc construit du côté "nx→0" pour finir visuellement à droite (près du
+// texte) une fois le mirroir appliqué.
+let demonMaskCache: string | null = null;
+function getDemonMask(): string | null {
+  if (typeof document === "undefined") return null;
+  if (!demonMaskCache) {
+    demonMaskCache = ditherFadeMaskDataUrl(116, 136, (nx, ny) => {
+      const fadeRight = Math.max(0, (0.45 - nx) / 0.45);
+      const fadeBottom = Math.max(0, (ny - 0.72) / 0.28);
+      return Math.min(1, Math.max(fadeRight, fadeBottom));
+    });
+  }
+  return demonMaskCache;
+}
 
 let uidCounter = 0;
 function nextId() {
@@ -329,6 +348,21 @@ export default function Scene() {
                   { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 3 },
                   ...run.effects.filter((e) => e.id !== "entaille"),
                 ];
+              // Rencontre de combat (spec §6) : bonus/malus post-combat, sur
+              // une issue non critique (les critiques ont déjà leur propre
+              // état ci-dessus — pas de cumul sur le même jet).
+              if (scene.combat && result !== 1 && result !== 20) {
+                if (!outcome.fail)
+                  run.effects = [
+                    { id: "aguerri", label: "AGUERRI", delta: 2, scenesLeft: 3 },
+                    ...run.effects.filter((e) => e.id !== "aguerri"),
+                  ];
+                else
+                  run.effects = [
+                    { id: "ebranle", label: "ÉBRANLÉ", delta: -1, scenesLeft: 2 },
+                    ...run.effects.filter((e) => e.id !== "ebranle"),
+                  ];
+              }
             });
             setHealth(runRef.current?.health ?? 1);
             advance({ result, fail: outcome.fail, consequence: outcome.text });
@@ -353,6 +387,18 @@ function FeedItem({
   skip: number;
   onDone: () => void;
 }) {
+  // Masque tramé du portrait du Geôlier : calculé une fois côté client (canvas),
+  // avant le retour anticipé ci-dessous — les hooks doivent s'exécuter dans le
+  // même ordre à chaque rendu, quel que soit le type d'entrée.
+  const [demonMask, setDemonMask] = useState<string | null>(() =>
+    typeof document !== "undefined" ? demonMaskCache : null
+  );
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- calcul canvas côté client une seule fois (impossible au premier rendu SSR), mis en cache au niveau module ensuite
+    if (!demonMask) setDemonMask(getDemonMask());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // Le fil respecte l'ordre des beats : un bloc de texte pas encore atteint
   // dans la file de révélation séquentielle ne doit rien laisser paraître.
   if ((entry.kind === "narration" || entry.kind === "jailer") && !revealed) return null;
@@ -379,16 +425,37 @@ function FeedItem({
       );
     case "jailer":
       // Bandeau agrandi et repositionné (Figma 1909:794, redesign 11/07) :
-      // démon plus grand et plus présent, texte à sa droite.
+      // démon plus grand et plus présent, texte à sa droite. Le portrait est
+      // en z-index sous le texte (le texte doit toujours rester lisible et
+      // au-dessus de l'image, jamais rogné par elle). Le bord droit/bas de
+      // l'image se dissout en pixels tramés (masque Bayer) plutôt qu'un
+      // fondu lisse ; ce tramage scintille tant que le Geôlier "parle"
+      // (texte en cours de frappe) et se fige dès la citation terminée.
       return (
         <div className="scene-enter jailer-banner mx-[-17px] mb-[18px] relative flex min-h-[128px] items-center overflow-clip bg-[var(--color-accent)] pl-[100px] pr-[22px] py-[16px]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            alt=""
-            src="assets/dithering-demon.jpg"
-            className="pointer-events-none absolute top-[10px] left-[-8px] h-[136px] w-[116px] -scale-x-100 object-cover"
-          />
-          <p className="text-[13px] font-bold leading-[1.35] text-[var(--color-bg)]">
+          <div
+            className={`jailer-portrait pointer-events-none absolute top-[10px] left-[-8px] z-0 h-[136px] w-[116px] ${
+              typed ? "jailer-speaking" : ""
+            }`}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              alt=""
+              src="assets/dithering-demon.jpg"
+              className="block h-full w-full -scale-x-100 object-cover"
+              style={
+                demonMask
+                  ? {
+                      WebkitMaskImage: `url(${demonMask})`,
+                      maskImage: `url(${demonMask})`,
+                      WebkitMaskRepeat: "no-repeat",
+                      maskRepeat: "no-repeat",
+                    }
+                  : undefined
+              }
+            />
+          </div>
+          <p className="relative z-[1] text-[13px] font-bold leading-[1.35] text-[var(--color-bg)]">
             <TypedText text={entry.text} typed={typed} skip={skip} msPerChar={22} onDone={onDone} />
           </p>
         </div>

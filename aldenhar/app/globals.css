@@ -155,16 +155,19 @@ body {
 }
 
 /* Choix masqués le temps que la conséquence + la scène suivante s'écrivent,
-   pour mettre en avant la description (décision Patrick 11/07). */
+   pour mettre en avant la description (décision Patrick 11/07). Réapparition
+   en fondu franc (retour Patrick 11/07 : la version par paliers "steps()"
+   lisait comme un pop-in, pas un fade) ; la disparition reste rapide. */
 .choices-bar {
   opacity: 1;
   transform: translateY(0);
-  transition: opacity 0.3s steps(4), transform 0.3s steps(4);
+  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 .choices-bar.choices-hidden {
   opacity: 0;
   transform: translateY(10px);
   pointer-events: none;
+  transition: opacity 0.15s ease-in, transform 0.15s ease-in;
 }
 
 /* Choc du dé contre un bord : filet blanc subtil (1-2px) sur tout le côté touché */
@@ -238,12 +241,28 @@ body {
   98%, 100% { transform: translate(0, 0); }
 }
 
+/* Portrait du Geôlier : le bord tramé (masque Bayer, cf lib/dither.ts)
+   scintille tant que sa citation est en cours de frappe, puis se fige net
+   (retrait de la classe = arrêt immédiat, jamais un fondu). */
+.jailer-portrait img {
+  mask-position: 0 0;
+  -webkit-mask-position: 0 0;
+}
+.jailer-speaking img {
+  animation: jailer-mask-flicker 0.42s steps(2) infinite;
+}
+@keyframes jailer-mask-flicker {
+  0%, 100% { mask-position: 0 0; -webkit-mask-position: 0 0; }
+  50% { mask-position: -2px 1px; -webkit-mask-position: -2px 1px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .die-hint { animation: none; }
   .phone-frame.quake { animation: none; }
   .scene-enter { animation: none; }
   .erosion-2.phone-frame, .erosion-3.phone-frame { animation: none; }
   .bite.flicker { animation: none; }
+  .jailer-speaking img { animation: none; }
 }
 
 /* ═══════════════ Galerie de revue — mini-jeux & surprises ═══════════════ */
