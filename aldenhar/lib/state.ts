@@ -19,6 +19,18 @@ export type NarrativeEffect = {
   scenesLeft: number;
 };
 
+/**
+ * Entrée du fil scrollable (spec §16) — le flux contient tout l'historique
+ * de la run, jamais rien ne se décharge. Persisté intégralement pour que la
+ * reprise de run restaure le scrollback exact, pas seulement la position.
+ */
+export type FeedEntry =
+  | { id: string; kind: "illustration"; src: string }
+  | { id: string; kind: "day"; day: number }
+  | { id: string; kind: "narration"; text: string }
+  | { id: string; kind: "chosen"; label: string }
+  | { id: string; kind: "jailer"; text: string };
+
 export type RunState = {
   /** Progression dans le parcours infini (0 = première scène). */
   step: number;
@@ -29,12 +41,13 @@ export type RunState = {
   effects: NarrativeEffect[];
   rolls: RollRecord[];
   lastChoiceId: string | null;
+  feed: FeedEntry[];
 };
 
 const KEY = "aldenhar-run";
 
 function fresh(): RunState {
-  return { step: 0, day: 1, health: 1, effects: [], rolls: [], lastChoiceId: null };
+  return { step: 0, day: 1, health: 1, effects: [], rolls: [], lastChoiceId: null, feed: [] };
 }
 
 export function loadRun(): RunState {
@@ -51,6 +64,7 @@ export function loadRun(): RunState {
             effects: Array.isArray(p.effects) ? p.effects : [],
             rolls: Array.isArray(p.rolls) ? p.rolls : [],
             lastChoiceId: p.lastChoiceId ?? null,
+            feed: Array.isArray(p.feed) ? p.feed : [],
           };
         }
       }

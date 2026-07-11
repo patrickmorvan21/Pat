@@ -30,6 +30,10 @@ body {
   font-family: var(--font-body);
 }
 
+/* Fil scrollable (spec §16) : scrollbar masquée, cohérent avec l'esthétique du proto */
+.phone-frame ::-webkit-scrollbar { display: none; }
+.phone-frame * { scrollbar-width: none; }
+
 /* ——— Animations du dé / verdict (reprises de REFERENCE_de_3d_tactile.html) ——— */
 
 .phone-frame.quake {
@@ -195,8 +199,9 @@ body {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
 }
+/* Palier « Entaillé » (3/4) : instabilité occasionnelle de l'écran */
 .erosion-2.phone-frame {
-  animation: instability 3.6s steps(2) infinite;
+  animation: instability 4.2s steps(2) infinite;
 }
 @keyframes instability {
   0%, 91% { transform: translate(0, 0); }
@@ -206,8 +211,24 @@ body {
   100% { transform: translate(0, 0); }
 }
 
+/* Palier « Au seuil » (4/4, critique) : toutes les 10s, tous les pixels de
+   l'écran vibrent (spec §5, validé 11/07). Court et net — jamais de fondu. */
+.erosion-3.phone-frame {
+  animation: critical-vibrate 10s linear infinite;
+}
+@keyframes critical-vibrate {
+  0%, 96% { transform: translate(0, 0); }
+  96.4% { transform: translate(1px, -1px); }
+  96.8% { transform: translate(-1px, 1px); }
+  97.2% { transform: translate(1px, 1px); }
+  97.6% { transform: translate(-1px, -1px); }
+  98%, 100% { transform: translate(0, 0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .die-hint { animation: none; }
   .phone-frame.quake { animation: none; }
   .scene-enter { animation: none; }
+  .erosion-2.phone-frame, .erosion-3.phone-frame { animation: none; }
+  .bite.flicker { animation: none; }
 }

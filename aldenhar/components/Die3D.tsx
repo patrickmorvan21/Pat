@@ -165,8 +165,7 @@ export default function Die3D({ request, onComplete }: Props) {
     let grabOffset = { x: 0, y: 0 };
     let result = 0,
       settleQuat: THREE.Quaternion | null = null,
-      settleT = 0,
-      revealT = 0;
+      settleT = 0;
 
     function resetFaces() {
       if (result > 0) {
@@ -345,7 +344,6 @@ export default function Die3D({ request, onComplete }: Props) {
 
     function finishRoll() {
       state = "reveal";
-      revealT = 0;
       mats[result - 1].map = faceTexture(result, 0, true);
       mats[result - 1].needsUpdate = true;
       const o = resolveOutcome();
@@ -443,8 +441,7 @@ export default function Die3D({ request, onComplete }: Props) {
         }
       } else if (state === "reveal") {
         // Écran de résultat (128:4122) : le dé flotte sur place jusqu'au toucher.
-        revealT += 0.016;
-        pos.y = CENTER.y + Math.sin(t * 2) * 1.2;
+          pos.y = CENTER.y + Math.sin(t * 2) * 1.2;
       }
       squash.amount *= 0.85;
       const sx = squash.axis === "x" ? 1 - squash.amount : 1 + squash.amount * 0.5;

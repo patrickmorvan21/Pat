@@ -9,9 +9,11 @@ import type { Choice } from "@/lib/scene-data";
  * tag de stat en accent à droite, verrouillé = opacité 40%.
  * État cliqué (Figma 95:1541) : liseré blanc intérieur inséré à 3px.
  *
- * Érosion santé (spec §5) : des pixels se perdent autour du contour,
- * positions pseudo-aléatoires (seedées par choix, stables au re-render),
- * dispersion non linéaire, certains scintillent.
+ * Érosion santé (spec §5, 4 paliers validés 11/07) : des pixels se perdent
+ * autour du contour, positions pseudo-aléatoires (seedées par choix, stables
+ * au re-render), dispersion non linéaire, certains scintillent. Au palier
+ * critique la densité de pixels intacts est divisée par ~4, mais les boutons
+ * restent toujours lisibles et tapables — l'accessibilité prime sur l'effet.
  */
 
 type Bite = {
@@ -36,17 +38,24 @@ function seededRandom(seedStr: string) {
 const BTN_W = 360;
 const BTN_H = 46;
 
+/** Palier 1 « Marqué » = rendu proto validé le 11/07, inchangé. */
+const TIER = {
+  1: { count: 12, maxSize: 2, maxJitter: 3, flickerRatio: 0.35 },
+  2: { count: 26, maxSize: 4, maxJitter: 5, flickerRatio: 0.45 },
+  3: { count: 55, maxSize: 4, maxJitter: 9, flickerRatio: 0.55 },
+} as const;
+
 function makeBites(seedStr: string, erosion: number): Bite[] {
   if (erosion <= 0) return [];
+  const cfg = TIER[erosion as 1 | 2 | 3];
   const rnd = seededRandom(seedStr);
-  const count = erosion === 1 ? 12 : 26;
   const bites: Bite[] = [];
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < cfg.count; i++) {
     // Répartition non linéaire : les pixels se regroupent par grappes (rnd²)
     const side = rnd();
     const along = Math.pow(rnd(), 1.6) * (rnd() < 0.5 ? 1 : -1) * 0.5 + 0.5;
-    const jitter = Math.floor(rnd() * (erosion === 2 ? 5 : 3)) - 1;
-    const size = 1 + Math.round(rnd() * (erosion === 2 ? 3 : 2));
+    const jitter = Math.floor(rnd() * cfg.maxJitter) - 1;
+    const size = 1 + Math.round(rnd() * cfg.maxSize);
     let left: number, top: number;
     if (side < 0.35) {
       left = along * BTN_W;
@@ -65,7 +74,7 @@ function makeBites(seedStr: string, erosion: number): Bite[] {
       left: Math.round(left),
       top: Math.round(top),
       size,
-      flicker: rnd() < 0.35,
+      flicker: rnd() < cfg.flickerRatio,
       duration: 0.7 + rnd() * 1.3,
       delay: rnd() * 1.5,
     });
@@ -84,7 +93,7 @@ export default function ChoiceButton({
   selected: boolean;
   /** Pendant le lancer de dé : le choix cliqué passe au-dessus du voile. */
   raised?: boolean;
-  /** Niveau d'érosion santé (0 = intact, 1, 2). */
+  /** Palier d'érosion santé : 0 intact, 1 marqué, 2 entaillé, 3 au seuil. */
   erosion?: number;
   onSelect: (choice: Choice) => void;
 }) {
