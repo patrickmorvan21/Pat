@@ -232,3 +232,224 @@ body {
   .erosion-2.phone-frame, .erosion-3.phone-frame { animation: none; }
   .bite.flicker { animation: none; }
 }
+
+/* ═══════════════ Galerie de revue — mini-jeux & surprises ═══════════════ */
+
+.minijeux-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 32px 20px 80px;
+}
+.minijeux-header h1 {
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+.minijeux-header p {
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0.75;
+  max-width: 640px;
+}
+.minijeux-section {
+  margin-top: 40px;
+}
+.minijeux-section h2 {
+  font-family: var(--font-body);
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--color-accent);
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding-bottom: 8px;
+}
+.minijeux-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 18px;
+}
+.minijeux-footer {
+  margin-top: 60px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+.minijeux-footer a {
+  color: var(--color-accent);
+  font-size: 13px;
+  text-decoration: underline;
+}
+
+.mg-card {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mg-head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.mg-head h3 {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  flex: 1;
+}
+.mg-num {
+  font-size: 11px;
+  opacity: 0.5;
+  letter-spacing: 0.5px;
+}
+.mg-stat {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  padding: 2px 6px;
+}
+.mg-stat.founding { color: var(--color-ink); border-color: rgba(255,255,255,0.4); }
+.mg-stat.once { color: var(--color-drama); border-color: var(--color-drama); }
+.mg-desc {
+  font-size: 12px;
+  line-height: 1.45;
+  opacity: 0.75;
+}
+.mg-tiers {
+  display: flex;
+  gap: 6px;
+}
+.mg-tier-btn {
+  flex: 1;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 6px 4px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: transparent;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+.mg-tier-btn.active {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.mg-stage {
+  position: relative;
+  width: 100%;
+}
+.minigame-canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  background: var(--color-bg);
+  cursor: pointer;
+}
+.mg-result {
+  position: absolute;
+  inset: 0;
+  background: rgba(28, 26, 22, 0.92);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  text-align: center;
+}
+.mg-verdict {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 16px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+.mg-result.fail .mg-verdict { color: var(--color-drama); }
+.mg-flavor {
+  font-size: 12px;
+  line-height: 1.4;
+  opacity: 0.85;
+}
+.mg-retry {
+  margin-top: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 7px 14px;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Prévisualisations des surprises */
+.surprise-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+}
+.surprise-choices {
+  gap: 6px;
+}
+.surprise-choice {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 10px;
+  font-size: 12px;
+  position: relative;
+  overflow: hidden;
+}
+.surprise-choice.expiring.gone {
+  opacity: 0;
+  transition: opacity 0.5s steps(4);
+}
+.expire-bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--color-drama);
+  animation: expire-shrink 2.6s linear forwards;
+}
+@keyframes expire-shrink {
+  from { width: 100%; }
+  to { width: 0%; }
+}
+.surprise-choice.ghost {
+  color: var(--color-drama);
+  border-color: var(--color-drama);
+  animation: fadeup 0.15s steps(2) both;
+}
+.inspiration-text {
+  text-align: center;
+  font-family: var(--font-title);
+  font-size: 20px;
+  color: var(--color-ink);
+  padding: 10px 0;
+}
+.day-chip {
+  font-size: 14px;
+  text-align: center;
+  letter-spacing: 1px;
+}
+.surprise-caption {
+  font-size: 11px;
+  opacity: 0.6;
+  text-align: center;
+}
+.surprise-textmock {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.surprise-textmock p + p {
+  margin-top: 8px;
+}
