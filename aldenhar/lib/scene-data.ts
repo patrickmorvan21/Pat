@@ -271,6 +271,28 @@ export const SCENES: Scene[] = [
   },
 ];
 
+/**
+ * Répliques du Geôlier quand le dé a mal tourné — il ne console pas,
+ * il tient les comptes. `{n}` est remplacé par le résultat du jet.
+ */
+export const JAILER_TAUNTS_FAIL: string[] = [
+  "Un {n} ? Même les os du pont ont ri.",
+  "J'ajoute ce {n} à ton registre. Il se remplit vite.",
+  "Le dé t'a jugé. J'ai cessé de le faire depuis longtemps.",
+  "{n}. Le précédent avait fait pareil. J'ai gardé sa besace.",
+];
+
+export const JAILER_TAUNTS_CRITFAIL: string[] = [
+  "Un 1 naturel. Je l'encadrerais, si mes murs étaient à moi.",
+  "1. Le dé lui-même a eu pitié — puis non.",
+];
+
+export function jailerTaunt(result: number): string {
+  const pool = result === 1 ? JAILER_TAUNTS_CRITFAIL : JAILER_TAUNTS_FAIL;
+  const line = pool[Math.floor(Math.random() * pool.length)];
+  return line.replace("{n}", String(result));
+}
+
 /** Chapitre de départ (la démo commence à Aldenhar — III). */
 export const CHAPTER_START = 3;
 

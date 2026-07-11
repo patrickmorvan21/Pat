@@ -134,7 +134,9 @@ export default function Die3D({ request, onComplete }: Props) {
 
     // Position d'attente : centre x, dé ~83px sous les choix (Figma 124:3299).
     const READY = { x: 0, y: -(H / 2) + 136, scale: 0.94 };
-    const CENTER = { x: 0, y: 20, scale: 1 };
+    // Position de résultat (Figma 128:4122) : le dé revient se poser juste
+    // au-dessus du verdict, même taille qu'au repos.
+    const CENTER = { x: 0, y: -(H / 2) + 146, scale: 0.94 };
 
     let state = "hidden";
     let pos = { x: READY.x, y: READY.y };
@@ -170,9 +172,27 @@ export default function Die3D({ request, onComplete }: Props) {
       die.visible = true;
       state = "ready";
       veil.classList.add("on");
+      hint.textContent = "Lancer le dé";
       hint.classList.remove("hidden");
       verdict.classList.remove("show");
     };
+
+    function dismissResult() {
+      state = "hidden";
+      die.visible = false;
+      veil!.classList.remove("on");
+      verdict!.classList.remove("show");
+      hint!.classList.add("hidden");
+      const req = requestRef.current;
+      const outcomes = req?.outcomes;
+      let o: Outcome;
+      if (!outcomes) o = { word: "", fail: false, text: "" };
+      else if (result === 20) o = outcomes.critSuccess;
+      else if (result === 1) o = outcomes.critFail;
+      else if (result >= (req?.threshold ?? 12)) o = outcomes.success;
+      else o = outcomes.fail;
+      onCompleteRef.current?.(result, o);
+    }
 
     function toStage(e: MouseEvent | TouchEvent) {
       const r = canvas!.getBoundingClientRect();
@@ -182,6 +202,12 @@ export default function Die3D({ request, onComplete }: Props) {
     }
 
     function onDown(e: MouseEvent | TouchEvent) {
+      // Écran de résultat : « Touche pour continuer » — un toucher n'importe où.
+      if (state === "reveal") {
+        e.preventDefault();
+        dismissResult();
+        return;
+      }
       if (state !== "ready") return;
       const p = toStage(e);
       const dx = p.x - pos.x,
@@ -240,9 +266,32 @@ export default function Die3D({ request, onComplete }: Props) {
     window.addEventListener("mouseup", onUp);
     window.addEventListener("touchend", onUp);
 
-    function onBounce(impactSpeed: number) {
+    // Effet de choc aux bords : écrasement du dé, éclat de pixels au point
+    // d'impact, et micro-secousse du cadre sur les gros impacts.
+    function spawnImpact(axis: "x" | "y", impactSpeed: number) {
+      squash.axis = axis;
+      squash.amount = Math.min(0.4, 0.12 + impactSpeed * 0.015);
+      const burst = document.createElement("div");
+      burst.className = "die-impact";
+      const size = Math.min(22, 8 + impactSpeed);
+      burst.style.width = burst.style.height = `${size}px`;
+      burst.style.setProperty("--shard", `${Math.round(size * 0.8)}px`);
+      burst.style.left = `${W / 2 + pos.x}px`;
+      burst.style.top = `${H / 2 - pos.y}px`;
+      root!.appendChild(burst);
+      setTimeout(() => burst.remove(), 320);
+      if (impactSpeed > 8) {
+        stage.classList.remove("bump");
+        void (stage as HTMLElement).offsetWidth;
+        stage.classList.add("bump");
+        setTimeout(() => stage.classList.remove("bump"), 160);
+      }
+    }
+
+    function onBounce(axis: "x" | "y", impactSpeed: number) {
       if (navigator.vibrate)
         navigator.vibrate(Math.min(55, Math.max(8, Math.round(impactSpeed * 3.2))));
+      spawnImpact(axis, impactSpeed);
       angVel.x += (Math.random() - 0.5) * 0.06 * (impactSpeed / 10);
       angVel.y += (Math.random() - 0.5) * 0.06 * (impactSpeed / 10);
       angVel.z += (Math.random() - 0.5) * 0.04 * (impactSpeed / 10);
@@ -299,8 +348,9 @@ export default function Die3D({ request, onComplete }: Props) {
       }
       vWord!.textContent = o.word;
       vWord!.className = "word " + (o.fail ? "fail" : "");
-      vOut!.textContent = o.text;
       verdict!.classList.add("show");
+      hint!.textContent = "Touche pour continuer";
+      hint!.classList.remove("hidden");
     }
 
     let t = 0;
@@ -341,28 +391,28 @@ export default function Die3D({ request, onComplete }: Props) {
           pos.x = bounds.x;
           vel.x *= -(0.62 + Math.min(0.16, impact * 0.008));
           vel.y *= ROLL_FRICTION;
-          onBounce(impact);
+          onBounce("x", impact);
         }
         if (pos.x < -bounds.x) {
           impact = Math.abs(vel.x);
           pos.x = -bounds.x;
           vel.x *= -(0.62 + Math.min(0.16, impact * 0.008));
           vel.y *= ROLL_FRICTION;
-          onBounce(impact);
+          onBounce("x", impact);
         }
         if (pos.y > bounds.y) {
           impact = Math.abs(vel.y);
           pos.y = bounds.y;
           vel.y *= -(0.62 + Math.min(0.16, impact * 0.008));
           vel.x *= ROLL_FRICTION;
-          onBounce(impact);
+          onBounce("y", impact);
         }
         if (pos.y < -bounds.y) {
           impact = Math.abs(vel.y);
           pos.y = -bounds.y;
           vel.y *= -(0.62 + Math.min(0.16, impact * 0.008));
           vel.x *= ROLL_FRICTION;
-          onBounce(impact);
+          onBounce("y", impact);
         }
         if (Math.hypot(vel.x, vel.y) < STOP_SPEED) beginSettle();
       } else if (state === "settling") {
@@ -377,23 +427,9 @@ export default function Die3D({ request, onComplete }: Props) {
           finishRoll();
         }
       } else if (state === "reveal") {
+        // Écran de résultat (128:4122) : le dé flotte sur place jusqu'au toucher.
         revealT += 0.016;
         pos.y = CENTER.y + Math.sin(t * 2) * 1.2;
-        if (revealT > 2.6) {
-          state = "hidden";
-          die.visible = false;
-          veil!.classList.remove("on");
-          verdict!.classList.remove("show");
-          const req = requestRef.current;
-          const outcomes = req?.outcomes;
-          let o: Outcome;
-          if (!outcomes) o = { word: "", fail: false, text: "" };
-          else if (result === 20) o = outcomes.critSuccess;
-          else if (result === 1) o = outcomes.critFail;
-          else if (result >= (req?.threshold ?? 12)) o = outcomes.success;
-          else o = outcomes.fail;
-          onCompleteRef.current?.(result, o);
-        }
       }
       squash.amount *= 0.85;
       const sx = squash.axis === "x" ? 1 - squash.amount : 1 + squash.amount * 0.5;
@@ -438,7 +474,7 @@ export default function Die3D({ request, onComplete }: Props) {
       <div ref={flashRef} className="die-flash" />
       <div ref={verdictRef} className="die-verdict">
         <div ref={vWordRef} className="word" />
-        <p ref={vOutRef} className="outcome" />
+        <p ref={vOutRef} className="outcome hidden" />
       </div>
     </div>
   );

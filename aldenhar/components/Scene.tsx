@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Die3D, { type RollRequest } from "@/components/Die3D";
 import ChoiceButton from "@/components/ChoiceButton";
 import JailerBanner from "@/components/JailerBanner";
-import { chapterLabel, sceneAt, type Choice } from "@/lib/scene-data";
+import { chapterLabel, jailerTaunt, sceneAt, type Choice } from "@/lib/scene-data";
 import { loadRun, saveRun, type RunState } from "@/lib/state";
 
 /**
@@ -18,6 +18,8 @@ export default function Scene() {
   const [step, setStep] = useState(0);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [roll, setRoll] = useState<RollRequest | null>(null);
+  // Le Geôlier ne parle que de temps en temps ; la 1re scène porte sa réplique d'accueil.
+  const [banner, setBanner] = useState<string | null>(sceneAt(0).jailerLine);
   const runRef = useRef<RunState | null>(null);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -42,13 +44,20 @@ export default function Scene() {
     saveRun(run);
   }
 
-  function advance() {
+  /**
+   * Scène suivante. Le Geôlier apparaît : toujours après un mauvais jet
+   * (pour se moquer), sinon une fois de temps en temps (~1 fois sur 3).
+   */
+  function advance(rollInfo?: { result: number; fail: boolean }) {
     setStep((s) => {
       const next = s + 1;
       persist((run) => {
         run.step = next;
         run.lastChoiceId = null;
       });
+      if (rollInfo?.fail) setBanner(jailerTaunt(rollInfo.result));
+      else if (Math.random() < 0.34) setBanner(sceneAt(next).jailerLine);
+      else setBanner(null);
       return next;
     });
     setSelectedId(null);
@@ -70,7 +79,7 @@ export default function Scene() {
       });
     } else {
       // Choix sûr : on laisse l'état cliqué se voir, puis scène suivante.
-      advanceTimer.current = setTimeout(advance, 450);
+      advanceTimer.current = setTimeout(() => advance(), 450);
     }
   }
 
@@ -128,13 +137,13 @@ export default function Scene() {
           ))}
         </div>
 
-        {/* Bannière du Geôlier — absente sur l'écran du dé (124:2178) */}
-        {!rolling && <JailerBanner line={scene.jailerLine} />}
+        {/* Bannière du Geôlier — intermittente, absente sur l'écran du dé (124:2178) */}
+        {!rolling && banner && <JailerBanner key={`${step}-${banner}`} line={banner} />}
 
         {/* Dé d20 tactile — apparaît au clic d'un choix risqué */}
         <Die3D
           request={roll}
-          onComplete={(result) => {
+          onComplete={(result, outcome) => {
             persist((run) => {
               run.rolls.push({
                 step,
@@ -143,7 +152,7 @@ export default function Scene() {
                 at: Date.now(),
               });
             });
-            advance();
+            advance({ result, fail: outcome.fail });
           }}
         />
       </div>

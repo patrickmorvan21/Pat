@@ -1,12 +1,32 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 /**
- * Bannière du Geôlier — bas de la frame Figma :
- * fond accent, bord supérieur tramé pixel par pixel (bande extraite du design),
- * démon à gauche, réplique statistique en ton transactionnel.
- * Le Geôlier parle toujours ici, jamais dans la narration.
+ * Bannière du Geôlier — il n'apparaît que de temps en temps, pour narguer
+ * l'aventurier (mauvais jet, jalon, ou envie soudaine). Sa réplique s'écrit
+ * lettre par lettre, vite, toujours dans sa bannière — jamais dans la narration.
  */
 export default function JailerBanner({ line }: { line: string }) {
+  // Le parent remonte le composant à chaque nouvelle réplique (prop key),
+  // donc le compteur repart naturellement de zéro.
+  const [shown, setShown] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setShown((s) => {
+        if (s >= line.length) {
+          clearInterval(id);
+          return s;
+        }
+        return s + 1;
+      });
+    }, 16);
+    return () => clearInterval(id);
+  }, [line]);
+
   return (
-    <div className="absolute bottom-0 left-0 h-[65px] w-full overflow-clip bg-[var(--color-accent)]">
+    <div className="scene-enter absolute bottom-0 left-0 h-[65px] w-full overflow-clip bg-[var(--color-accent)]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         alt=""
@@ -21,7 +41,7 @@ export default function JailerBanner({ line }: { line: string }) {
         style={{ imageRendering: "pixelated" }}
       />
       <p className="absolute top-0 left-[93px] flex h-full w-[230px] items-center font-bold leading-[1.2] text-[11px] text-[var(--color-bg)]">
-        {line}
+        {line.slice(0, shown)}
       </p>
     </div>
   );

@@ -102,21 +102,24 @@ body {
   100% { opacity: 0; }
 }
 
+/* Verdict — écran de résultat (Figma 128:4122) : mot en accent sous le dé */
 .die-verdict {
   position: absolute;
   left: 0;
   right: 0;
-  top: 42%;
+  top: 713px;
   text-align: center;
   z-index: 9;
   pointer-events: none;
-  padding: 0 34px;
 }
 .die-verdict .word {
-  font-family: var(--font-title);
-  font-size: 38px;
-  letter-spacing: 2px;
-  color: var(--color-sand);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  line-height: 1.2;
+  color: var(--color-accent);
   opacity: 0;
 }
 .die-verdict.show .word {
@@ -127,17 +130,6 @@ body {
   100% { opacity: 1; transform: scale(1); }
 }
 .die-verdict .word.fail { color: var(--color-accent); }
-.die-verdict .outcome {
-  font-family: var(--font-body);
-  font-size: 13px;
-  line-height: 1.45;
-  color: var(--color-sand);
-  margin-top: 10px;
-  opacity: 0;
-}
-.die-verdict.show .outcome {
-  animation: fadeup 0.4s steps(4) 0.25s forwards;
-}
 @keyframes fadeup {
   0% { opacity: 0; transform: translateY(6px); }
   100% { opacity: 1; transform: translateY(0); }
@@ -167,6 +159,38 @@ body {
 /* Entrée d'une nouvelle scène : fondu par paliers, cohérent avec la DA */
 .scene-enter {
   animation: fadeup 0.4s steps(4) both;
+}
+
+/* Choc du dé contre un bord : éclat de pixels au point d'impact */
+.die-impact {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 8;
+}
+.die-impact::before {
+  content: "";
+  position: absolute;
+  inset: 35%;
+  background: var(--color-accent);
+  box-shadow:
+    var(--shard, 10px) 0 var(--color-accent),
+    calc(-1 * var(--shard, 10px)) 0 var(--color-accent),
+    0 var(--shard, 10px) var(--color-accent),
+    0 calc(-1 * var(--shard, 10px)) var(--color-accent);
+  animation: impact-burst 0.28s steps(3) forwards;
+}
+@keyframes impact-burst {
+  0% { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* Micro-secousse du cadre sur les gros impacts */
+.phone-frame.bump {
+  animation: bump 0.14s steps(2);
+}
+@keyframes bump {
+  50% { transform: translate(2px, -2px); }
 }
 
 @media (prefers-reduced-motion: reduce) {
