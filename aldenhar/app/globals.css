@@ -1,23 +1,16 @@
 @import "tailwindcss";
 
 /*
-  Design tokens — deux thèmes :
-  - défaut : valeurs exactes de la frame Figma "Test App" (node 1903:358)
-  - .theme-brief : trichromie du brief (nuit / brique / sable + VT323)
-  Basculer en ajoutant la classe `theme-brief` sur <html>.
+  Design tokens — DA duotone actuelle (voir CLAUDE.md) :
+  Charbon #1c1a16 (fond) / Orange #e0632a (accent, danger, Geôlier, dé).
+  L'ancienne trichromie nuit/brique/sable est OBSOLÈTE — ne rien réintroduire.
 */
 :root {
   --color-bg: #1c1a16;
   --color-ink: #ffffff;
   --color-accent: #e0632a;
-  --color-notch: #211e33; /* entailles de coins des boutons (valeur exacte Figma) */
-  --color-night: #211e33;
-  --color-night-deep: #11101c;
-  --color-sand: #d8a25f;
-  --color-sand-shade: #b3854c;
-  --color-muted: #6e5a78;
 
-  /* Dé d20 (écran Figma 124:2178) : faces orange tramées, chiffres/arêtes nuit */
+  /* Dé d20 (écran Figma 124:2178) : faces orange tramées, chiffres/arêtes charbon */
   --die-face: #e0632a;
   --die-face-shade: #a94a20;
   --die-ink: #1c1a16;
@@ -29,17 +22,8 @@
   --font-die: "VT323", monospace;
 }
 
-.theme-brief {
-  --color-bg: #211e33;
-  --color-ink: #d8a25f;
-  --color-accent: #c43328;
-  --color-notch: #11101c;
-  --font-body: "VT323", monospace;
-  --font-status: "VT323", monospace;
-}
-
 body {
-  background: var(--color-night-deep);
+  background: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-body);
 }
@@ -90,7 +74,7 @@ body {
   z-index: 8;
 }
 .die-flash.crit-success {
-  background: var(--color-sand);
+  background: var(--color-ink);
   animation: flashout 0.5s steps(4) forwards;
 }
 .die-flash.crit-fail {
@@ -155,6 +139,8 @@ body {
   50% { opacity: 0.3; }
 }
 .die-hint.hidden { display: none; }
+/* Dé armé : le hint porte la stat, en accent */
+.die-hint.accent { color: var(--color-accent); }
 
 /* Entrée d'une nouvelle scène : fondu par paliers, cohérent avec la DA */
 .scene-enter {

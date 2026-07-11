@@ -19,6 +19,7 @@ import type { Outcome, Outcomes } from "@/lib/scene-data";
 
 export type RollRequest = {
   key: number;
+  stat: string;
   threshold: number;
   outcomes: Outcomes;
 };
@@ -172,7 +173,10 @@ export default function Die3D({ request, onComplete }: Props) {
       die.visible = true;
       state = "ready";
       veil.classList.add("on");
-      hint.textContent = "Lancer le dé";
+      // Dé armé : le hint porte la stat en jeu, en accent (voir CLAUDE.md)
+      const stat = requestRef.current?.stat;
+      hint.textContent = stat ? `Lance le dé — ${stat}` : "Lance le dé";
+      hint.classList.add("accent");
       hint.classList.remove("hidden");
       verdict.classList.remove("show");
     };
@@ -292,8 +296,11 @@ export default function Die3D({ request, onComplete }: Props) {
       if (navigator.vibrate)
         navigator.vibrate(Math.min(55, Math.max(8, Math.round(impactSpeed * 3.2))));
       spawnImpact(axis, impactSpeed);
-      angVel.x += (Math.random() - 0.5) * 0.06 * (impactSpeed / 10);
-      angVel.y += (Math.random() - 0.5) * 0.06 * (impactSpeed / 10);
+      // Le "choc" validé (CLAUDE.md) : la rotation change de sens en fonction
+      // du rebond — couplée à la vitesse linéaire — plus un petit bruit pour
+      // éviter un rebond mécanique. Pas un simple ajout de random.
+      angVel.x = -vel.y * 0.01 + (Math.random() - 0.5) * 0.02;
+      angVel.y = vel.x * 0.01 + (Math.random() - 0.5) * 0.02;
       angVel.z += (Math.random() - 0.5) * 0.04 * (impactSpeed / 10);
     }
 
@@ -350,6 +357,7 @@ export default function Die3D({ request, onComplete }: Props) {
       vWord!.className = "word " + (o.fail ? "fail" : "");
       verdict!.classList.add("show");
       hint!.textContent = "Touche pour continuer";
+      hint!.classList.remove("accent");
       hint!.classList.remove("hidden");
     }
 

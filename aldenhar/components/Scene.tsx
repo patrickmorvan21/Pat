@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Die3D, { type RollRequest } from "@/components/Die3D";
 import ChoiceButton from "@/components/ChoiceButton";
 import JailerBanner from "@/components/JailerBanner";
@@ -25,6 +25,24 @@ export default function Scene() {
 
   const scene = sceneAt(step);
   const rolling = roll !== null;
+
+  // La position à l'écran ne doit jamais prédire le type de choix (CLAUDE.md) :
+  // Fisher-Yates seedé par le pas de progression — stable au re-render et à la
+  // reprise de run. La scène 0 garde l'ordre exact de la frame Figma.
+  const shuffledChoices = useMemo(() => {
+    const arr = [...scene.choices];
+    if (step === 0) return arr;
+    let seed = (step * 9301 + 49297) >>> 0;
+    const rnd = () => {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      return seed / 4294967296;
+    };
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(rnd() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }, [scene, step]);
 
   // Reprise de run : fermer l'app ne compte jamais comme une mort.
   useEffect(() => {
@@ -74,6 +92,7 @@ export default function Scene() {
       // Écran du dé (124:2178) : voile + d20 à saisir et lancer.
       setRoll({
         key: Date.now(),
+        stat: choice.risky.stat,
         threshold: choice.risky.threshold,
         outcomes: choice.risky.outcomes,
       });
@@ -90,7 +109,7 @@ export default function Scene() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           alt=""
-          src="assets/dithering-portal.jpg"
+          src={scene.illustration ?? "assets/dithering-portal.jpg"}
           className="pointer-events-none absolute top-0 left-1/2 h-[352px] w-[390px] -translate-x-1/2 object-cover"
         />
 
@@ -126,7 +145,7 @@ export default function Scene() {
             rolling ? "pointer-events-none" : ""
           }`}
         >
-          {scene.choices.map((choice) => (
+          {shuffledChoices.map((choice) => (
             <ChoiceButton
               key={scene.id + choice.id + step}
               choice={choice}

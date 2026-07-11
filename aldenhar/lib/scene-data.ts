@@ -33,6 +33,8 @@ export type Choice = {
 export type Scene = {
   id: string;
   narration: string;
+  /** Asset tramé de la scène (public/assets/…). Défaut : portail. Temps 2 : varier par contexte. */
+  illustration?: string;
   choices: Choice[];
   jailerLine: string;
 };
@@ -103,7 +105,20 @@ export const SCENES: Scene[] = [
         },
       },
       { id: "longer", label: "Longer le mur, sans toucher" },
-      { id: "odeur", label: "Suivre l'odeur de fer", locked: { stat: "INSTINCT" } },
+      {
+        id: "odeur",
+        label: "Suivre l'odeur de fer",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. L'odeur te mène à une niche creuse : une fiole de sang noir, intacte. Ton instinct l'a sentie avant tes yeux.",
+            "Tu remontes le fil de fer jusqu'à une brèche discrète. Un passage que personne n'a marqué.",
+            "L'odeur tourne en rond. Quand tu t'arrêtes, le frottement au-dessus s'est arrêté aussi.",
+            "1 naturel. L'odeur venait de toi. Quelque chose l'a suivie. ♦ −2"
+          ),
+        },
+      },
     ],
     jailerLine: "Celui-là a tenu 6 jours. Tu vois où mène la prudence.",
   },
@@ -129,8 +144,21 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "marquer", label: "Marquer le mur, souffler" },
-      { id: "eteindre", label: "Éteindre la torche d'abord", locked: { stat: "COURAGE" } },
+      {
+        id: "eteindre",
+        label: "Éteindre la torche d'abord",
+        risky: {
+          stat: "COURAGE",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Le noir t'accepte. En bas, le souffle passe à côté de toi sans te trouver.",
+            "Tu descends à tâtons, invisible. Le souffle continue, indifférent.",
+            "Sans lumière, ta main manque la rampe. Le bruit de ta chute descend plus vite que toi.",
+            "1 naturel. Tu rallumes la torche — juste en face de ce qui soufflait. ♦ −2"
+          ),
+        },
+      },
+      { id: "sonder", label: "Sonder les marches usées", locked: { stat: "RUSE" } },
     ],
     jailerLine: "4 312 mains ont hésité sur cette rampe. Je les ai comptées.",
   },
@@ -156,8 +184,34 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "gue", label: "Chercher un gué en amont" },
-      { id: "cranes", label: "Compter les crânes du parapet", locked: { stat: "RUSE" } },
+      {
+        id: "gue",
+        label: "Chercher un gué en amont",
+        risky: {
+          stat: "RUSE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Le gué existe — trois pierres plates sous deux doigts d'eau noire. Tu traverses sans une éclaboussure.",
+            "Cent pas en amont, la rivière s'amincit. Tu passes, les bottes à peine mouillées.",
+            "L'amont se resserre en gorge. Tu reviens au pont — la lanterne verte a changé de place.",
+            "1 naturel. L'eau noire n'a pas de gué. Elle a des mains. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "cranes",
+        label: "Compter les crânes du parapet",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Quarante-neuf crânes. Le cinquantième manque : le pont te réserve sa place — et t'épargne, flatté d'avoir été compté.",
+            "Chaque crâne compté semble s'alléger. Le pont cesse de grincer, comme apaisé qu'on se souvienne.",
+            "Tu perds le compte au trente-troisième. Un crâne pivote, lentement, pour te regarder recommencer.",
+            "1 naturel. L'un des crânes compte avec toi. À voix haute. ♦ −2"
+          ),
+        },
+      },
     ],
     jailerLine: "Les os du pont ? D'anciens curieux. Comme toi.",
   },
@@ -210,8 +264,21 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "taire", label: "Se taire et avancer" },
-      { id: "repondre", label: "Répondre à la voix", locked: { stat: "EMPATHIE" } },
+      {
+        id: "repondre",
+        label: "Répondre à la voix",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu réponds ton vrai nom, sans peur. L'écho se tait — personne ne le lui avait jamais offert.",
+            "Ta voix ne tremble pas. L'écho répète, satisfait, et s'éloigne chercher quelqu'un d'autre.",
+            "Tu réponds trop tard. L'écho a déjà décidé de ta réponse — elle ne te ressemble pas.",
+            "1 naturel. Vous répondez exactement en même temps. Le hall n'a plus qu'une seule voix. ♦ −2"
+          ),
+        },
+      },
+      { id: "taire", label: "Avancer entre les échos", locked: { stat: "INSTINCT" } },
     ],
     jailerLine: "L'écho ment mieux que toi. 9 fois sur 10, très exactement.",
   },
@@ -237,8 +304,21 @@ export const SCENES: Scene[] = [
           ),
         },
       },
+      {
+        id: "echanger",
+        label: "Déposer ta dague en échange",
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. La dague pèse exactement le poids de l'anneau. Sous la table, on ronronne presque.",
+            "L'échange tient. La chandelle vacille une fois — marché conclu.",
+            "Ta dague roule et tombe. Sous la table, on la ramasse. On ne rend rien.",
+            "1 naturel. On accepte l'échange : ta dague, et la main qui la tenait. ♦ −2"
+          ),
+        },
+      },
       { id: "reculer", label: "Reculer sans tourner le dos" },
-      { id: "echanger", label: "Déposer ta dague en échange", locked: { stat: "RUSE" } },
     ],
     jailerLine: "Cet anneau a connu 3 propriétaires. Tous brefs.",
   },
@@ -264,8 +344,21 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "attendre", label: "Attendre la fin du décompte" },
-      { id: "battement", label: "Coller l'oreille à la dent", locked: { stat: "INSTINCT" } },
+      {
+        id: "battement",
+        label: "Coller l'oreille à la dent",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Le décompte s'interrompt. Tout bas, il te confie le chiffre exact où il s'arrêtera.",
+            "À travers l'ivoire, tu comprends : il compte les battements de ton cœur. Tu sais maintenant lesquels retenir.",
+            "L'ivoire est glacé. Le décompte s'accélère dès que ton oreille le touche.",
+            "1 naturel. De l'autre côté, on colle aussi son oreille. ♦ −2"
+          ),
+        },
+      },
+      { id: "attendre", label: "Attendre la fin du décompte", locked: { stat: "EMPATHIE" } },
     ],
     jailerLine: "Frappe. Le 7e jour aime les ponctuels.",
   },
