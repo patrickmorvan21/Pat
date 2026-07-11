@@ -29,7 +29,7 @@ export default function ChoiceButton({
       disabled={locked}
       onClick={() => onSelect(choice)}
       aria-disabled={locked}
-      className={`relative h-[46px] w-full text-left ${
+      className={`choice-btn relative h-[46px] w-full text-left ${
         locked ? "cursor-not-allowed opacity-40" : "cursor-pointer"
       } ${raised ? "z-[6]" : ""}`}
     >
@@ -56,6 +56,8 @@ export default function ChoiceButton({
           {tag}
         </span>
       )}
+      {/* Érosion santé : mordures qui rongent la bordure (spec §5) */}
+      <span className="erosion-bites" aria-hidden />
     </button>
   );
 }

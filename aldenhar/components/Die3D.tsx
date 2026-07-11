@@ -22,6 +22,10 @@ export type RollRequest = {
   stat: string;
   threshold: number;
   outcomes: Outcomes;
+  /** Somme des états narratifs temporaires (Aguerri +2, Entaillé −2…). */
+  modifier: number;
+  /** Nom de l'état actif, affiché dans le hint (jamais de chiffre). */
+  effectLabel?: string;
 };
 
 type Props = {
@@ -125,7 +129,9 @@ export default function Die3D({ request, onComplete }: Props) {
     }
     geo.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
     const die = new THREE.Mesh(geo, mats);
-    die.visible = false;
+    // Le dé flotte en permanence au-dessus de la scène (spec §4) —
+    // jamais d'écran dédié, jamais caché.
+    die.visible = true;
     scene.add(die);
     const edges = new THREE.LineSegments(
       new THREE.EdgesGeometry(geo),
@@ -139,7 +145,8 @@ export default function Die3D({ request, onComplete }: Props) {
     // au-dessus du verdict, même taille qu'au repos.
     const CENTER = { x: 0, y: -(H / 2) + 146, scale: 0.94 };
 
-    let state = "hidden";
+    // idle : flotte, non saisissable. armed : voile + hint, saisissable (armement §4).
+    let state = "idle";
     let pos = { x: READY.x, y: READY.y };
     let vel = { x: 0, y: 0 };
     let angVel = { x: 0.01, y: 0.017, z: 0 };
@@ -167,35 +174,37 @@ export default function Die3D({ request, onComplete }: Props) {
 
     activateRef.current = () => {
       resetFaces();
-      pos = { x: READY.x, y: READY.y };
-      dieScale = 0.2;
       angVel = { x: 0.01, y: 0.017, z: 0 };
-      die.visible = true;
-      state = "ready";
+      state = "armed";
       veil.classList.add("on");
-      // Dé armé : le hint porte la stat en jeu, en accent (voir CLAUDE.md)
-      const stat = requestRef.current?.stat;
-      hint.textContent = stat ? `Lance le dé — ${stat}` : "Lance le dé";
+      // Dé armé : le hint porte la stat en jeu (+ état narratif actif), en accent
+      const req = requestRef.current;
+      const stat = req?.stat;
+      const effect = req?.effectLabel ? ` · ${req.effectLabel}` : "";
+      hint.textContent = stat ? `Lance le dé — ${stat}${effect}` : "Lance le dé";
       hint.classList.add("accent");
       hint.classList.remove("hidden");
       verdict.classList.remove("show");
     };
 
+    /** Verdict retenu au moment du jet (naturel pour les critiques, modifié sinon). */
+    let chosen: Outcome = { word: "", fail: false, text: "" };
+    function resolveOutcome(): Outcome {
+      const req = requestRef.current;
+      if (!req) return { word: "", fail: false, text: "" };
+      const effective = Math.max(1, Math.min(20, result + (req.modifier || 0)));
+      if (result === 20) return req.outcomes.critSuccess;
+      if (result === 1) return req.outcomes.critFail;
+      if (effective >= req.threshold) return req.outcomes.success;
+      return req.outcomes.fail;
+    }
+
     function dismissResult() {
-      state = "hidden";
-      die.visible = false;
+      state = "idle";
       veil!.classList.remove("on");
       verdict!.classList.remove("show");
       hint!.classList.add("hidden");
-      const req = requestRef.current;
-      const outcomes = req?.outcomes;
-      let o: Outcome;
-      if (!outcomes) o = { word: "", fail: false, text: "" };
-      else if (result === 20) o = outcomes.critSuccess;
-      else if (result === 1) o = outcomes.critFail;
-      else if (result >= (req?.threshold ?? 12)) o = outcomes.success;
-      else o = outcomes.fail;
-      onCompleteRef.current?.(result, o);
+      onCompleteRef.current?.(result, chosen);
     }
 
     function toStage(e: MouseEvent | TouchEvent) {
@@ -212,7 +221,7 @@ export default function Die3D({ request, onComplete }: Props) {
         dismissResult();
         return;
       }
-      if (state !== "ready") return;
+      if (state !== "armed") return;
       const p = toStage(e);
       const dx = p.x - pos.x,
         dy = p.y - pos.y;
@@ -330,16 +339,8 @@ export default function Die3D({ request, onComplete }: Props) {
       revealT = 0;
       mats[result - 1].map = faceTexture(result, 0, true);
       mats[result - 1].needsUpdate = true;
-      const req = requestRef.current;
-      const outcomes = req?.outcomes;
-      const threshold = req?.threshold ?? 12;
-      let o: Outcome;
-      if (!outcomes) {
-        o = { word: "", fail: false, text: "" };
-      } else if (result === 20) o = outcomes.critSuccess;
-      else if (result === 1) o = outcomes.critFail;
-      else if (result >= threshold) o = outcomes.success;
-      else o = outcomes.fail;
+      const o = resolveOutcome();
+      chosen = o;
       flash!.className = "die-flash";
       if (result === 20) {
         void flash!.offsetWidth;
@@ -353,8 +354,9 @@ export default function Die3D({ request, onComplete }: Props) {
         setTimeout(() => phone?.classList.remove("quake"), 450);
         if (navigator.vibrate) navigator.vibrate([80, 40, 120]);
       }
+      // FUNESTE (1 naturel) porte le rouge dramatique ; les autres restent en accent.
       vWord!.textContent = o.word;
-      vWord!.className = "word " + (o.fail ? "fail" : "");
+      vWord!.className = "word " + (result === 1 ? "funeste" : o.fail ? "fail" : "");
       verdict!.classList.add("show");
       hint!.textContent = "Touche pour continuer";
       hint!.classList.remove("accent");
@@ -366,18 +368,14 @@ export default function Die3D({ request, onComplete }: Props) {
     function loop() {
       raf = requestAnimationFrame(loop);
       t += 0.016;
-      if (state === "hidden") {
-        renderer.render(scene, camera);
-        return;
-      }
-      if (state === "ready" || state === "returning") {
+      if (state === "idle" || state === "armed" || state === "returning") {
         pos.x += (READY.x - pos.x) * 0.1;
         pos.y += (READY.y - pos.y) * 0.1 + Math.sin(t * 2) * 0.06;
         dieScale += (READY.scale - dieScale) * 0.1;
         die.rotation.x += 0.004;
         die.rotation.y += 0.007;
         if (state === "returning" && Math.hypot(READY.x - pos.x, READY.y - pos.y) < 2)
-          state = "ready";
+          state = "armed";
       } else if (state === "held") {
         dieScale += (1 - dieScale) * 0.15;
         die.rotation.x += angVel.x;

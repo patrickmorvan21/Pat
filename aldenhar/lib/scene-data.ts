@@ -28,6 +28,8 @@ export type Choice = {
   risky?: { stat: Stat; threshold: number; outcomes: Outcomes };
   /** Choix verrouillé : seuil de stat non atteint → grisé mais visible. */
   locked?: { stat: Stat };
+  /** Repos au campement : avance le jour, atténue les blessures légères, sauvegarde (spec §7). */
+  rest?: boolean;
 };
 
 export type Scene = {
@@ -214,6 +216,33 @@ export const SCENES: Scene[] = [
       },
     ],
     jailerLine: "Les os du pont ? D'anciens curieux. Comme toi.",
+  },
+  {
+    id: "campement",
+    narration:
+      "Une anfractuosité sèche, à l'écart du courant d'air. Des cendres " +
+      "anciennes prouvent qu'on s'y est déjà arrêté — et qu'on en est reparti. " +
+      "Le silence ici est différent : il ne guette pas, il attend. Tes jambes " +
+      "pèsent leur vrai poids pour la première fois depuis des heures.",
+    choices: [
+      { id: "dormir", label: "Dormir jusqu'à l'aube", rest: true },
+      {
+        id: "garde",
+        label: "Monter la garde, somnoler",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu dors d'un œil, et cet œil voit tout. Au matin, tu sais exactement ce qui est passé — et ce qui t'a évité.",
+            "Ton demi-sommeil filtre les bruits. Rien n'approche. Le repos est mince, mais il est à toi.",
+            "Tu sombres sans le décider. Au réveil, les cendres ont été remuées. Pas par toi.",
+            "1 naturel. Tu rêves qu'on monte la garde au-dessus de toi. Au réveil, l'empreinte est encore chaude. ♦ −2"
+          ),
+        },
+      },
+      { id: "repartir", label: "Repartir sans attendre" },
+    ],
+    jailerLine: "Dors. J'aime regarder.",
   },
   {
     id: "cage",

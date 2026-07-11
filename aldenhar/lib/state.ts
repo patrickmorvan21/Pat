@@ -1,5 +1,5 @@
 /**
- * Sauvegarde locale de la run — principe de sécurité du brief :
+ * Sauvegarde locale de la run — principe de sécurité (spec §9) :
  * fermer l'app / perdre la connexion ne compte jamais comme une mort.
  * L'état est persisté à chaque évènement et repris exactement où on l'a laissé.
  */
@@ -11,26 +11,46 @@ export type RollRecord = {
   at: number;
 };
 
+/** État narratif temporaire (spec §2) : modifie les jets, se dissipe. */
+export type NarrativeEffect = {
+  id: "aguerri" | "entaille";
+  label: string;
+  delta: number;
+  scenesLeft: number;
+};
+
 export type RunState = {
   /** Progression dans le parcours infini (0 = première scène). */
   step: number;
+  /** Jour courant — n'avance qu'aux campements (spec §7). */
+  day: number;
+  /** Santé 0..1 — jamais affichée : elle se lit dans l'érosion de l'UI (spec §5). */
+  health: number;
+  effects: NarrativeEffect[];
   rolls: RollRecord[];
   lastChoiceId: string | null;
 };
 
 const KEY = "aldenhar-run";
 
+function fresh(): RunState {
+  return { step: 0, day: 1, health: 1, effects: [], rolls: [], lastChoiceId: null };
+}
+
 export function loadRun(): RunState {
   if (typeof window !== "undefined") {
     try {
       const raw = window.localStorage.getItem(KEY);
       if (raw) {
-        const parsed = JSON.parse(raw) as Partial<RunState>;
-        if (typeof parsed.step === "number") {
+        const p = JSON.parse(raw) as Partial<RunState>;
+        if (typeof p.step === "number") {
           return {
-            step: parsed.step,
-            rolls: Array.isArray(parsed.rolls) ? parsed.rolls : [],
-            lastChoiceId: parsed.lastChoiceId ?? null,
+            step: p.step,
+            day: typeof p.day === "number" ? p.day : 1,
+            health: typeof p.health === "number" ? p.health : 1,
+            effects: Array.isArray(p.effects) ? p.effects : [],
+            rolls: Array.isArray(p.rolls) ? p.rolls : [],
+            lastChoiceId: p.lastChoiceId ?? null,
           };
         }
       }
@@ -38,7 +58,7 @@ export function loadRun(): RunState {
       // stockage indisponible ou corrompu → on repart proprement, jamais de mort narrative
     }
   }
-  return { step: 0, rolls: [], lastChoiceId: null };
+  return fresh();
 }
 
 export function saveRun(state: RunState): void {

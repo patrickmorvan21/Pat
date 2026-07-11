@@ -9,6 +9,8 @@
   --color-bg: #1c1a16;
   --color-ink: #ffffff;
   --color-accent: #e0632a;
+  /* Rouge dramatique (spec §13) : réservé aux moments funestes, jamais décoratif */
+  --color-drama: #ac2e26;
 
   /* Dé d20 (écran Figma 124:2178) : faces orange tramées, chiffres/arêtes charbon */
   --die-face: #e0632a;
@@ -78,7 +80,7 @@ body {
   animation: flashout 0.5s steps(4) forwards;
 }
 .die-flash.crit-fail {
-  background: var(--color-accent);
+  background: var(--color-drama);
   animation: flashout 0.6s steps(4) forwards;
 }
 @keyframes flashout {
@@ -114,6 +116,7 @@ body {
   100% { opacity: 1; transform: scale(1); }
 }
 .die-verdict .word.fail { color: var(--color-accent); }
+.die-verdict .word.funeste { color: var(--color-drama); }
 @keyframes fadeup {
   0% { opacity: 0; transform: translateY(6px); }
   100% { opacity: 1; transform: translateY(0); }
@@ -177,6 +180,42 @@ body {
 }
 @keyframes bump {
   50% { transform: translate(2px, -2px); }
+}
+
+/*
+  Santé (spec §5) — jamais de barre ni de chiffre : l'interface s'érode.
+  Des mordures couleur fond rongent les bordures des boutons (motifs à paliers,
+  pas de dégradé), et l'écran devient instable quand la santé est basse.
+*/
+.choice-btn .erosion-bites {
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    repeating-linear-gradient(90deg, var(--color-bg) 0 3px, transparent 3px 11px) top left / 100% 2px no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 6px, var(--color-bg) 6px 9px) bottom left / 100% 2px no-repeat,
+    repeating-linear-gradient(0deg, var(--color-bg) 0 3px, transparent 3px 13px) top left / 2px 100% no-repeat,
+    repeating-linear-gradient(0deg, transparent 0 7px, var(--color-bg) 7px 10px) top right / 2px 100% no-repeat;
+}
+.erosion-1 .choice-btn .erosion-bites { opacity: 0.75; }
+.erosion-2 .choice-btn .erosion-bites {
+  opacity: 1;
+  background:
+    repeating-linear-gradient(90deg, var(--color-bg) 0 5px, transparent 5px 9px) top left / 100% 3px no-repeat,
+    repeating-linear-gradient(90deg, transparent 0 4px, var(--color-bg) 4px 9px) bottom left / 100% 3px no-repeat,
+    repeating-linear-gradient(0deg, var(--color-bg) 0 5px, transparent 5px 10px) top left / 3px 100% no-repeat,
+    repeating-linear-gradient(0deg, transparent 0 5px, var(--color-bg) 5px 10px) top right / 3px 100% no-repeat;
+}
+.erosion-2.phone-frame {
+  animation: instability 3.6s steps(2) infinite;
+}
+@keyframes instability {
+  0%, 91% { transform: translate(0, 0); }
+  93% { transform: translate(1px, -1px); }
+  95% { transform: translate(-1px, 1px); }
+  97% { transform: translate(1px, 0); }
+  100% { transform: translate(0, 0); }
 }
 
 @media (prefers-reduced-motion: reduce) {

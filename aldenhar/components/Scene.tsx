@@ -20,6 +20,9 @@ export default function Scene() {
   const [roll, setRoll] = useState<RollRequest | null>(null);
   // Le Geôlier ne parle que de temps en temps ; la 1re scène porte sa réplique d'accueil.
   const [banner, setBanner] = useState<string | null>(sceneAt(0).jailerLine);
+  // Jour X — n'avance qu'au campement (spec §7). Santé — jamais affichée (spec §5).
+  const [day, setDay] = useState(1);
+  const [health, setHealth] = useState(1);
   const runRef = useRef<RunState | null>(null);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -50,6 +53,8 @@ export default function Scene() {
     runRef.current = run;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- restauration unique post-hydratation
     if (run.step > 0) setStep(run.step);
+    setDay(run.day);
+    setHealth(run.health);
     return () => {
       if (advanceTimer.current) clearTimeout(advanceTimer.current);
     };
@@ -65,6 +70,7 @@ export default function Scene() {
   /**
    * Scène suivante. Le Geôlier apparaît : toujours après un mauvais jet
    * (pour se moquer), sinon une fois de temps en temps (~1 fois sur 3).
+   * Les états narratifs temporaires se dissipent scène après scène (spec §2).
    */
   function advance(rollInfo?: { result: number; fail: boolean }) {
     setStep((s) => {
@@ -72,6 +78,9 @@ export default function Scene() {
       persist((run) => {
         run.step = next;
         run.lastChoiceId = null;
+        run.effects = run.effects
+          .map((e) => ({ ...e, scenesLeft: e.scenesLeft - 1 }))
+          .filter((e) => e.scenesLeft > 0);
       });
       if (rollInfo?.fail) setBanner(jailerTaunt(rollInfo.result));
       else if (Math.random() < 0.34) setBanner(sceneAt(next).jailerLine);
@@ -89,22 +98,40 @@ export default function Scene() {
       run.lastChoiceId = choice.id;
     });
     if (choice.risky) {
-      // Écran du dé (124:2178) : voile + d20 à saisir et lancer.
+      // Armement du dé (spec §4) : voile + hint contextuel, le dé devient saisissable.
+      const effects = runRef.current?.effects ?? [];
+      const modifier = effects.reduce((sum, e) => sum + e.delta, 0);
       setRoll({
         key: Date.now(),
         stat: choice.risky.stat,
         threshold: choice.risky.threshold,
         outcomes: choice.risky.outcomes,
+        modifier,
+        effectLabel: effects[0]?.label,
       });
+    } else if (choice.rest) {
+      // Campement (spec §7) : le jour avance, les blessures légères s'atténuent.
+      persist((run) => {
+        run.day += 1;
+        run.health = Math.min(1, run.health + 0.35);
+        run.effects = run.effects.filter((e) => e.delta > 0);
+      });
+      setDay((d) => d + 1);
+      setHealth(runRef.current?.health ?? 1);
+      advanceTimer.current = setTimeout(() => advance(), 450);
     } else {
-      // Choix sûr : on laisse l'état cliqué se voir, puis scène suivante.
+      // Choix neutre : résolution instantanée, sans dé (spec §4).
       advanceTimer.current = setTimeout(() => advance(), 450);
     }
   }
 
   return (
     <main className="flex min-h-dvh items-center justify-center">
-      <div className="phone-frame relative h-[800px] w-[390px] shrink-0 overflow-clip bg-[var(--color-bg)]">
+      <div
+        className={`phone-frame relative h-[800px] w-[390px] shrink-0 overflow-clip bg-[var(--color-bg)] ${
+          health < 0.4 ? "erosion-2" : health < 0.7 ? "erosion-1" : ""
+        }`}
+      >
         {/* Illustration de scène — asset pré-fait (les visuels par scène : temps 2) */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -116,6 +143,10 @@ export default function Scene() {
         {/* En-tête : chapitre (progression infinie) + menu 3×3 */}
         <p className="absolute top-[24px] left-[15px] z-[3] font-medium uppercase leading-[1.2] text-[12px] tracking-[1.2px] text-[var(--color-ink)] whitespace-nowrap">
           {chapterLabel(step)}
+        </p>
+        {/* Seul repère temporel visible : Jour X, avance au campement (spec §7) */}
+        <p className="absolute top-[42px] left-[15px] z-[3] font-medium uppercase leading-[1.2] text-[11px] tracking-[1.2px] text-[var(--color-ink)] opacity-60 whitespace-nowrap">
+          Jour {day}
         </p>
         <button
           type="button"
@@ -170,7 +201,22 @@ export default function Scene() {
                 result,
                 at: Date.now(),
               });
+              // Santé : les échecs blessent — jamais de chiffre, l'UI s'érode (spec §5).
+              if (result === 1) run.health = Math.max(0.05, run.health - 0.25);
+              else if (outcome.fail) run.health = Math.max(0.05, run.health - 0.12);
+              // États narratifs temporaires sur critiques (spec §2).
+              if (result === 20)
+                run.effects = [
+                  { id: "aguerri", label: "AGUERRI", delta: 2, scenesLeft: 3 },
+                  ...run.effects.filter((e) => e.id !== "aguerri"),
+                ];
+              if (result === 1)
+                run.effects = [
+                  { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 3 },
+                  ...run.effects.filter((e) => e.id !== "entaille"),
+                ];
             });
+            setHealth(runRef.current?.health ?? 1);
             advance({ result, fail: outcome.fail });
           }}
         />
