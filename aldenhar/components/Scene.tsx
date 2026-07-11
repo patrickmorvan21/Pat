@@ -141,12 +141,10 @@ export default function Scene() {
         />
 
         {/* En-tête : chapitre (progression infinie) + menu 3×3 */}
+        {/* Chapitre + seul repère temporel visible « J X » (spec §7), sur une ligne */}
         <p className="absolute top-[24px] left-[15px] z-[3] font-medium uppercase leading-[1.2] text-[12px] tracking-[1.2px] text-[var(--color-ink)] whitespace-nowrap">
           {chapterLabel(step)}
-        </p>
-        {/* Seul repère temporel visible : Jour X, avance au campement (spec §7) */}
-        <p className="absolute top-[42px] left-[15px] z-[3] font-medium uppercase leading-[1.2] text-[11px] tracking-[1.2px] text-[var(--color-ink)] opacity-60 whitespace-nowrap">
-          Jour {day}
+          <span className="opacity-60"> · J{day}</span>
         </p>
         <button
           type="button"
@@ -182,6 +180,7 @@ export default function Scene() {
               choice={choice}
               selected={selectedId === choice.id}
               raised={rolling && selectedId === choice.id}
+              erosion={health < 0.4 ? 2 : health < 0.7 ? 1 : 0}
               onSelect={onSelect}
             />
           ))}

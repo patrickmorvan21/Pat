@@ -1,27 +1,99 @@
 "use client";
 
+import { useMemo } from "react";
 import type { Choice } from "@/lib/scene-data";
 
 /**
  * Bouton de choix — composant Figma "Group 36691" :
- * bordure simple, coins entaillés de 2px, texte à gauche, tag de stat en
- * accent à droite (choix risqués et verrouillés), verrouillé = opacité 40%.
+ * bordure simple, coins entaillés de 2px (pixel-art), texte à gauche,
+ * tag de stat en accent à droite, verrouillé = opacité 40%.
  * État cliqué (Figma 95:1541) : liseré blanc intérieur inséré à 3px.
+ *
+ * Érosion santé (spec §5) : des pixels se perdent autour du contour,
+ * positions pseudo-aléatoires (seedées par choix, stables au re-render),
+ * dispersion non linéaire, certains scintillent.
  */
+
+type Bite = {
+  left: number;
+  top: number;
+  size: number;
+  flicker: boolean;
+  duration: number;
+  delay: number;
+};
+
+function seededRandom(seedStr: string) {
+  let seed = 0;
+  for (let i = 0; i < seedStr.length; i++)
+    seed = (seed * 31 + seedStr.charCodeAt(i)) >>> 0;
+  return () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+}
+
+const BTN_W = 360;
+const BTN_H = 46;
+
+function makeBites(seedStr: string, erosion: number): Bite[] {
+  if (erosion <= 0) return [];
+  const rnd = seededRandom(seedStr);
+  const count = erosion === 1 ? 12 : 26;
+  const bites: Bite[] = [];
+  for (let i = 0; i < count; i++) {
+    // Répartition non linéaire : les pixels se regroupent par grappes (rnd²)
+    const side = rnd();
+    const along = Math.pow(rnd(), 1.6) * (rnd() < 0.5 ? 1 : -1) * 0.5 + 0.5;
+    const jitter = Math.floor(rnd() * (erosion === 2 ? 5 : 3)) - 1;
+    const size = 1 + Math.round(rnd() * (erosion === 2 ? 3 : 2));
+    let left: number, top: number;
+    if (side < 0.35) {
+      left = along * BTN_W;
+      top = -1 + jitter; // bord haut
+    } else if (side < 0.7) {
+      left = along * BTN_W;
+      top = BTN_H - 1 - jitter; // bord bas
+    } else if (side < 0.85) {
+      left = -1 + jitter; // bord gauche
+      top = along * BTN_H;
+    } else {
+      left = BTN_W - 1 - jitter; // bord droit
+      top = along * BTN_H;
+    }
+    bites.push({
+      left: Math.round(left),
+      top: Math.round(top),
+      size,
+      flicker: rnd() < 0.35,
+      duration: 0.7 + rnd() * 1.3,
+      delay: rnd() * 1.5,
+    });
+  }
+  return bites;
+}
+
 export default function ChoiceButton({
   choice,
   selected,
   raised,
+  erosion = 0,
   onSelect,
 }: {
   choice: Choice;
   selected: boolean;
   /** Pendant le lancer de dé : le choix cliqué passe au-dessus du voile. */
   raised?: boolean;
+  /** Niveau d'érosion santé (0 = intact, 1, 2). */
+  erosion?: number;
   onSelect: (choice: Choice) => void;
 }) {
   const locked = Boolean(choice.locked);
   const tag = choice.risky?.stat ?? choice.locked?.stat;
+  const bites = useMemo(
+    () => makeBites(choice.id + choice.label, erosion),
+    [choice.id, choice.label, erosion]
+  );
 
   return (
     <button
@@ -56,8 +128,22 @@ export default function ChoiceButton({
           {tag}
         </span>
       )}
-      {/* Érosion santé : mordures qui rongent la bordure (spec §5) */}
-      <span className="erosion-bites" aria-hidden />
+      {/* Pixels perdus par l'érosion santé */}
+      {bites.map((b, i) => (
+        <span
+          key={i}
+          aria-hidden
+          className={`bite ${b.flicker ? "flicker" : ""}`}
+          style={{
+            left: b.left,
+            top: b.top,
+            width: b.size,
+            height: b.size,
+            animationDuration: b.flicker ? `${b.duration.toFixed(2)}s` : undefined,
+            animationDelay: b.flicker ? `${b.delay.toFixed(2)}s` : undefined,
+          }}
+        />
+      ))}
     </button>
   );
 }

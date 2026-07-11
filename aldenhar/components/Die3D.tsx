@@ -112,6 +112,9 @@ export default function Die3D({ request, onComplete }: Props) {
       ctx.textBaseline = "middle";
       ctx.fillText(String(n), s / 2, s / 2 + 12);
       const tx = new THREE.CanvasTexture(c);
+      // Sans ça, Three.js interprète le canvas comme linéaire et délave
+      // l'orange #e0632a en saumon pâle au rendu.
+      tx.colorSpace = THREE.SRGBColorSpace;
       tx.magFilter = THREE.NearestFilter;
       tx.minFilter = THREE.NearestFilter;
       return tx;
@@ -279,20 +282,20 @@ export default function Die3D({ request, onComplete }: Props) {
     window.addEventListener("mouseup", onUp);
     window.addEventListener("touchend", onUp);
 
-    // Effet de choc aux bords : écrasement du dé, éclat de pixels au point
-    // d'impact, et micro-secousse du cadre sur les gros impacts.
-    function spawnImpact(axis: "x" | "y", impactSpeed: number) {
-      squash.axis = axis;
+    // Effet de choc aux bords : écrasement du dé, onde blanche qui parcourt
+    // tout le côté touché, et micro-secousse du cadre sur les gros impacts.
+    type Side = "left" | "right" | "top" | "bottom";
+    function spawnImpact(side: Side, impactSpeed: number) {
+      squash.axis = side === "left" || side === "right" ? "x" : "y";
       squash.amount = Math.min(0.4, 0.12 + impactSpeed * 0.015);
-      const burst = document.createElement("div");
-      burst.className = "die-impact";
-      const size = Math.min(22, 8 + impactSpeed);
-      burst.style.width = burst.style.height = `${size}px`;
-      burst.style.setProperty("--shard", `${Math.round(size * 0.8)}px`);
-      burst.style.left = `${W / 2 + pos.x}px`;
-      burst.style.top = `${H / 2 - pos.y}px`;
-      root!.appendChild(burst);
-      setTimeout(() => burst.remove(), 320);
+      const wave = document.createElement("div");
+      const horizontal = side === "top" || side === "bottom";
+      wave.className = `edge-wave ${horizontal ? "h" : "v"} ${side}`;
+      const thickness = Math.min(26, 8 + impactSpeed * 1.4);
+      if (horizontal) wave.style.height = `${thickness}px`;
+      else wave.style.width = `${thickness}px`;
+      root!.appendChild(wave);
+      setTimeout(() => wave.remove(), 360);
       if (impactSpeed > 8) {
         stage.classList.remove("bump");
         void (stage as HTMLElement).offsetWidth;
@@ -301,10 +304,10 @@ export default function Die3D({ request, onComplete }: Props) {
       }
     }
 
-    function onBounce(axis: "x" | "y", impactSpeed: number) {
+    function onBounce(side: Side, impactSpeed: number) {
       if (navigator.vibrate)
         navigator.vibrate(Math.min(55, Math.max(8, Math.round(impactSpeed * 3.2))));
-      spawnImpact(axis, impactSpeed);
+      spawnImpact(side, impactSpeed);
       // Le "choc" validé (CLAUDE.md) : la rotation change de sens en fonction
       // du rebond — couplée à la vitesse linéaire — plus un petit bruit pour
       // éviter un rebond mécanique. Pas un simple ajout de random.
@@ -397,28 +400,28 @@ export default function Die3D({ request, onComplete }: Props) {
           pos.x = bounds.x;
           vel.x *= -(0.62 + Math.min(0.16, impact * 0.008));
           vel.y *= ROLL_FRICTION;
-          onBounce("x", impact);
+          onBounce("right", impact);
         }
         if (pos.x < -bounds.x) {
           impact = Math.abs(vel.x);
           pos.x = -bounds.x;
           vel.x *= -(0.62 + Math.min(0.16, impact * 0.008));
           vel.y *= ROLL_FRICTION;
-          onBounce("x", impact);
+          onBounce("left", impact);
         }
         if (pos.y > bounds.y) {
           impact = Math.abs(vel.y);
           pos.y = bounds.y;
           vel.y *= -(0.62 + Math.min(0.16, impact * 0.008));
           vel.x *= ROLL_FRICTION;
-          onBounce("y", impact);
+          onBounce("top", impact);
         }
         if (pos.y < -bounds.y) {
           impact = Math.abs(vel.y);
           pos.y = -bounds.y;
           vel.y *= -(0.62 + Math.min(0.16, impact * 0.008));
           vel.x *= ROLL_FRICTION;
-          onBounce("y", impact);
+          onBounce("bottom", impact);
         }
         if (Math.hypot(vel.x, vel.y) < STOP_SPEED) beginSettle();
       } else if (state === "settling") {

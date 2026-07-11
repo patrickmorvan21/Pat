@@ -150,28 +150,33 @@ body {
   animation: fadeup 0.4s steps(4) both;
 }
 
-/* Choc du dé contre un bord : éclat de pixels au point d'impact */
-.die-impact {
+/* Choc du dé contre un bord : onde blanche sur tout le côté touché */
+.edge-wave {
   position: absolute;
-  transform: translate(-50%, -50%);
   pointer-events: none;
   z-index: 8;
+  background: var(--color-ink);
+  animation: edge-wave 0.32s steps(4) forwards;
 }
-.die-impact::before {
-  content: "";
-  position: absolute;
-  inset: 35%;
-  background: var(--color-accent);
-  box-shadow:
-    var(--shard, 10px) 0 var(--color-accent),
-    calc(-1 * var(--shard, 10px)) 0 var(--color-accent),
-    0 var(--shard, 10px) var(--color-accent),
-    0 calc(-1 * var(--shard, 10px)) var(--color-accent);
-  animation: impact-burst 0.28s steps(3) forwards;
+.edge-wave.h { left: 0; right: 0; }
+.edge-wave.v { top: 0; bottom: 0; }
+.edge-wave.top { top: 0; transform-origin: top; }
+.edge-wave.bottom { bottom: 0; transform-origin: bottom; }
+.edge-wave.left { left: 0; transform-origin: left; }
+.edge-wave.right { right: 0; transform-origin: right; }
+@keyframes edge-wave {
+  0% { opacity: 0.9; transform: scale(1); }
+  100% { opacity: 0; transform: scale(2.4); }
 }
-@keyframes impact-burst {
-  0% { transform: scale(0.5); opacity: 1; }
-  100% { transform: scale(2.2); opacity: 0; }
+.edge-wave.h { animation-name: edge-wave-h; }
+@keyframes edge-wave-h {
+  0% { opacity: 0.9; transform: scaleY(1); }
+  100% { opacity: 0; transform: scaleY(2.4); }
+}
+.edge-wave.v { animation-name: edge-wave-v; }
+@keyframes edge-wave-v {
+  0% { opacity: 0.9; transform: scaleX(1); }
+  100% { opacity: 0; transform: scaleX(2.4); }
 }
 
 /* Micro-secousse du cadre sur les gros impacts */
@@ -184,28 +189,21 @@ body {
 
 /*
   Santé (spec §5) — jamais de barre ni de chiffre : l'interface s'érode.
-  Des mordures couleur fond rongent les bordures des boutons (motifs à paliers,
-  pas de dégradé), et l'écran devient instable quand la santé est basse.
+  Des pixels se perdent autour du contour des boutons, dispersés de façon
+  organique (positions pseudo-aléatoires, non linéaires), certains scintillent.
+  L'écran devient instable quand la santé est basse.
 */
-.choice-btn .erosion-bites {
+.bite {
   position: absolute;
-  inset: -1px;
+  background: var(--color-bg);
   pointer-events: none;
-  opacity: 0;
-  background:
-    repeating-linear-gradient(90deg, var(--color-bg) 0 3px, transparent 3px 11px) top left / 100% 2px no-repeat,
-    repeating-linear-gradient(90deg, transparent 0 6px, var(--color-bg) 6px 9px) bottom left / 100% 2px no-repeat,
-    repeating-linear-gradient(0deg, var(--color-bg) 0 3px, transparent 3px 13px) top left / 2px 100% no-repeat,
-    repeating-linear-gradient(0deg, transparent 0 7px, var(--color-bg) 7px 10px) top right / 2px 100% no-repeat;
 }
-.erosion-1 .choice-btn .erosion-bites { opacity: 0.75; }
-.erosion-2 .choice-btn .erosion-bites {
-  opacity: 1;
-  background:
-    repeating-linear-gradient(90deg, var(--color-bg) 0 5px, transparent 5px 9px) top left / 100% 3px no-repeat,
-    repeating-linear-gradient(90deg, transparent 0 4px, var(--color-bg) 4px 9px) bottom left / 100% 3px no-repeat,
-    repeating-linear-gradient(0deg, var(--color-bg) 0 5px, transparent 5px 10px) top left / 3px 100% no-repeat,
-    repeating-linear-gradient(0deg, transparent 0 5px, var(--color-bg) 5px 10px) top right / 3px 100% no-repeat;
+.bite.flicker {
+  animation: bite-flicker steps(2) infinite;
+}
+@keyframes bite-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
 }
 .erosion-2.phone-frame {
   animation: instability 3.6s steps(2) infinite;
