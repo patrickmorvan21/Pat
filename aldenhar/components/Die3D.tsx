@@ -66,7 +66,8 @@ export default function Die3D({ request, onComplete }: Props) {
     const phone = root.closest(".phone-frame") as HTMLElement | null;
     const stage = phone ?? root;
 
-    const PIXEL_FACTOR = 2.4;
+    // 2.4 dans la référence ; abaissé pour un dé plus net (pixels plus fins)
+    const PIXEL_FACTOR = 1.6;
     const W = stage.clientWidth;
     const H = stage.clientHeight;
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
@@ -132,9 +133,9 @@ export default function Die3D({ request, onComplete }: Props) {
     }
     geo.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
     const die = new THREE.Mesh(geo, mats);
-    // Le dé flotte en permanence au-dessus de la scène (spec §4) —
-    // jamais d'écran dédié, jamais caché.
-    die.visible = true;
+    // Le dé n'apparaît qu'au clic d'un choix risqué (décision Patrick,
+    // remplace le « flotte en permanence » de la spec §4).
+    die.visible = false;
     scene.add(die);
     const edges = new THREE.LineSegments(
       new THREE.EdgesGeometry(geo),
@@ -148,8 +149,8 @@ export default function Die3D({ request, onComplete }: Props) {
     // au-dessus du verdict, même taille qu'au repos.
     const CENTER = { x: 0, y: -(H / 2) + 146, scale: 0.94 };
 
-    // idle : flotte, non saisissable. armed : voile + hint, saisissable (armement §4).
-    let state = "idle";
+    // hidden : invisible. armed : voile + hint, saisissable (armement §4).
+    let state = "hidden";
     let pos = { x: READY.x, y: READY.y };
     let vel = { x: 0, y: 0 };
     let angVel = { x: 0.01, y: 0.017, z: 0 };
@@ -177,7 +178,10 @@ export default function Die3D({ request, onComplete }: Props) {
 
     activateRef.current = () => {
       resetFaces();
+      pos = { x: READY.x, y: READY.y };
+      dieScale = 0.2;
       angVel = { x: 0.01, y: 0.017, z: 0 };
+      die.visible = true;
       state = "armed";
       veil.classList.add("on");
       // Dé armé : le hint porte la stat en jeu (+ état narratif actif), en accent
@@ -203,7 +207,8 @@ export default function Die3D({ request, onComplete }: Props) {
     }
 
     function dismissResult() {
-      state = "idle";
+      state = "hidden";
+      die.visible = false;
       veil!.classList.remove("on");
       verdict!.classList.remove("show");
       hint!.classList.add("hidden");
@@ -291,11 +296,12 @@ export default function Die3D({ request, onComplete }: Props) {
       const wave = document.createElement("div");
       const horizontal = side === "top" || side === "bottom";
       wave.className = `edge-wave ${horizontal ? "h" : "v"} ${side}`;
-      const thickness = Math.min(26, 8 + impactSpeed * 1.4);
+      // Subtil : un filet de 1px, 2px pour les gros chocs
+      const thickness = impactSpeed > 9 ? 2 : 1;
       if (horizontal) wave.style.height = `${thickness}px`;
       else wave.style.width = `${thickness}px`;
       root!.appendChild(wave);
-      setTimeout(() => wave.remove(), 360);
+      setTimeout(() => wave.remove(), 400);
       if (impactSpeed > 8) {
         stage.classList.remove("bump");
         void (stage as HTMLElement).offsetWidth;
@@ -371,7 +377,7 @@ export default function Die3D({ request, onComplete }: Props) {
     function loop() {
       raf = requestAnimationFrame(loop);
       t += 0.016;
-      if (state === "idle" || state === "armed" || state === "returning") {
+      if (state === "armed" || state === "returning") {
         pos.x += (READY.x - pos.x) * 0.1;
         pos.y += (READY.y - pos.y) * 0.1 + Math.sin(t * 2) * 0.06;
         dieScale += (READY.scale - dieScale) * 0.1;

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Die3D, { type RollRequest } from "@/components/Die3D";
 import ChoiceButton from "@/components/ChoiceButton";
 import JailerBanner from "@/components/JailerBanner";
-import { chapterLabel, jailerTaunt, sceneAt, type Choice } from "@/lib/scene-data";
+import { jailerTaunt, sceneAt, type Choice } from "@/lib/scene-data";
 import { loadRun, saveRun, type RunState } from "@/lib/state";
 
 /**
@@ -141,10 +141,9 @@ export default function Scene() {
         />
 
         {/* En-tête : chapitre (progression infinie) + menu 3×3 */}
-        {/* Chapitre + seul repère temporel visible « J X » (spec §7), sur une ligne */}
+        {/* En-tête : seul repère temporel visible « J X » (spec §7), pas de numéro de chapitre */}
         <p className="absolute top-[24px] left-[15px] z-[3] font-medium uppercase leading-[1.2] text-[12px] tracking-[1.2px] text-[var(--color-ink)] whitespace-nowrap">
-          {chapterLabel(step)}
-          <span className="opacity-60"> · J{day}</span>
+          Aldenhar — J {day}
         </p>
         <button
           type="button"

@@ -150,33 +150,23 @@ body {
   animation: fadeup 0.4s steps(4) both;
 }
 
-/* Choc du dé contre un bord : onde blanche sur tout le côté touché */
+/* Choc du dé contre un bord : filet blanc subtil (1-2px) sur tout le côté touché */
 .edge-wave {
   position: absolute;
   pointer-events: none;
   z-index: 8;
   background: var(--color-ink);
-  animation: edge-wave 0.32s steps(4) forwards;
+  animation: edge-wave 0.38s steps(4) forwards;
 }
 .edge-wave.h { left: 0; right: 0; }
 .edge-wave.v { top: 0; bottom: 0; }
-.edge-wave.top { top: 0; transform-origin: top; }
-.edge-wave.bottom { bottom: 0; transform-origin: bottom; }
-.edge-wave.left { left: 0; transform-origin: left; }
-.edge-wave.right { right: 0; transform-origin: right; }
+.edge-wave.top { top: 0; }
+.edge-wave.bottom { bottom: 0; }
+.edge-wave.left { left: 0; }
+.edge-wave.right { right: 0; }
 @keyframes edge-wave {
-  0% { opacity: 0.9; transform: scale(1); }
-  100% { opacity: 0; transform: scale(2.4); }
-}
-.edge-wave.h { animation-name: edge-wave-h; }
-@keyframes edge-wave-h {
-  0% { opacity: 0.9; transform: scaleY(1); }
-  100% { opacity: 0; transform: scaleY(2.4); }
-}
-.edge-wave.v { animation-name: edge-wave-v; }
-@keyframes edge-wave-v {
-  0% { opacity: 0.9; transform: scaleX(1); }
-  100% { opacity: 0; transform: scaleX(2.4); }
+  0% { opacity: 1; }
+  100% { opacity: 0; }
 }
 
 /* Micro-secousse du cadre sur les gros impacts */
