@@ -59,6 +59,46 @@ export function seededRandom(seedStr: string) {
   };
 }
 
+/** Remplissage Bayer confiné à un chemin quelconque (cercle, anneau, arc…) — même langage visuel que bayerFill, juste découpé par un clip. */
+export function bayerFillClipped(
+  ctx: CanvasRenderingContext2D,
+  clip: (ctx: CanvasRenderingContext2D) => void,
+  x0: number,
+  y0: number,
+  w: number,
+  h: number,
+  density: number,
+  colorOn: string,
+  cell = 2
+) {
+  ctx.save();
+  ctx.beginPath();
+  clip(ctx);
+  ctx.clip();
+  bayerFill(ctx, x0, y0, w, h, density, colorOn, null, cell);
+  ctx.restore();
+}
+
+/** Bruit de texture stable (pas re-tiré à chaque frame) : mouchetures fines pour donner du grain à un fond, sans jamais de flou. */
+export function noiseSpecks(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  rnd: () => number,
+  color: string,
+  count: number
+) {
+  ctx.fillStyle = color;
+  for (let i = 0; i < count; i++) {
+    const px = x + rnd() * w;
+    const py = y + rnd() * h;
+    const s = rnd() < 0.7 ? 1 : 2;
+    ctx.fillRect(Math.floor(px), Math.floor(py), s, s);
+  }
+}
+
 /** Contour rongé façon pixel-art : un rectangle dont les bords perdent des pixels de façon organique (réutilise l'esthétique de l'érosion santé). */
 export function erodedRectPath(
   ctx: CanvasRenderingContext2D,

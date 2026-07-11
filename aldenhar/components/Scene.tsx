@@ -37,6 +37,9 @@ export default function Scene() {
   // sinon son texte complet apparaîtrait d'un coup avant même son tour.
   const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
   const revealedIdsRef = useRef<Set<string>>(new Set());
+  // Les choix se cachent dès qu'on en tape un, pour mettre en avant la
+  // description, et reviennent une fois tout le texte de la file écrit.
+  const [choicesHidden, setChoicesHidden] = useState(false);
   // Incrémenté à chaque tap dans le fil : termine l'animation de frappe en cours.
   const [skip, setSkip] = useState(0);
   const runRef = useRef<RunState | null>(null);
@@ -58,6 +61,8 @@ export default function Scene() {
     const next = revealQueueRef.current.shift() ?? null;
     if (next) markRevealed([next]);
     setActiveTypingId(next);
+    // Tout le texte en attente est écrit : les choix peuvent réapparaître.
+    if (next === null) setChoicesHidden(false);
   }
   function enqueueReveal(ids: string[]) {
     if (ids.length === 0) return;
@@ -108,10 +113,10 @@ export default function Scene() {
       const seeded: FeedEntry[] = [
         { id: nextId(), kind: "illustration", src: opening.illustration ?? "assets/dithering-portal.jpg" },
         { id: nextId(), kind: "day", day: run.day },
-        { id: nextId(), kind: "narration", text: opening.narration },
+        ...opening.narration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })),
       ];
       setFeed(seeded);
-      enqueueReveal([seeded[2].id]);
+      enqueueReveal(seeded.filter((e) => e.kind === "narration").map((e) => e.id));
       run.feed = seeded;
       saveRun(run);
     }
@@ -146,9 +151,12 @@ export default function Scene() {
   }
 
   /**
-   * Scène suivante ajoutée au fil : illustration seulement sur vrai changement
-   * de contexte (spec §11), narration, puis le Geôlier — toujours après un
-   * mauvais jet, sinon une fois de temps en temps (~1 fois sur 3, spec §12).
+   * Scène suivante ajoutée au fil : illustration sur vrai changement de
+   * contexte (spec §11), ou de temps en temps même sans changement, pour
+   * rythmer le fil (placeholder en attendant les assets par contexte).
+   * Narration en plusieurs paragraphes courts, puis le Geôlier — rare,
+   * réservé aux jets critiques et à quelques scènes tirées au sort (spec §12,
+   * "un cran au-dessus du strict minimum", pas à chaque échec).
    * Les états narratifs temporaires se dissipent scène après scène (spec §2).
    */
   function advance(rollInfo?: { result: number; fail: boolean; consequence?: string }) {
@@ -156,18 +164,21 @@ export default function Scene() {
     const nextScene = sceneAt(nextStep);
     const nextIllustration = nextScene.illustration ?? "assets/dithering-portal.jpg";
     const lastIllustration = [...feed].reverse().find((e): e is Extract<FeedEntry, { kind: "illustration" }> => e.kind === "illustration");
+    const contextChanged = !lastIllustration || lastIllustration.src !== nextIllustration;
     const entries: FeedEntry[] = [];
     // La conséquence du jet (texte de l'issue) précède la mise en place de la scène suivante.
     if (rollInfo?.consequence) {
       entries.push({ id: nextId(), kind: "narration", text: rollInfo.consequence });
     }
-    if (!lastIllustration || lastIllustration.src !== nextIllustration) {
+    // Illustration : changement de contexte, ou ~1 fois sur 4 pour rythmer le fil.
+    if (contextChanged || Math.random() < 0.25) {
       entries.push({ id: nextId(), kind: "illustration", src: nextIllustration });
     }
-    entries.push({ id: nextId(), kind: "narration", text: nextScene.narration });
-    if (rollInfo?.fail) {
-      entries.push({ id: nextId(), kind: "jailer", text: jailerTaunt(rollInfo.result) });
-    } else if (Math.random() < 0.34) {
+    entries.push(...nextScene.narration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+    const isCritical = rollInfo?.result === 1 || rollInfo?.result === 20;
+    if (isCritical) {
+      entries.push({ id: nextId(), kind: "jailer", text: jailerTaunt(rollInfo!.result) });
+    } else if (Math.random() < 0.12) {
       entries.push({ id: nextId(), kind: "jailer", text: nextScene.jailerLine });
     }
     setStep(nextStep);
@@ -188,6 +199,7 @@ export default function Scene() {
   function onSelect(choice: Choice) {
     if (choice.locked || rolling || selectedId) return;
     setSelectedId(choice.id);
+    setChoicesHidden(true);
     persist((run) => {
       run.lastChoiceId = choice.id;
     });
@@ -269,13 +281,16 @@ export default function Scene() {
           <div ref={bottomRef} />
         </div>
 
-        {/* Choix ancrés en bas, toujours visibles (spec §16). Pendant le
+        {/* Choix ancrés en bas (spec §16), mais masqués le temps que la
+            conséquence + la scène suivante finissent de s'écrire — pour
+            mettre en avant la description — puis réaffichés (décision
+            Patrick 11/07, priorité sur "toujours visibles"). Pendant le
             lancer, ils ne captent plus les événements — sinon un bouton
             disabled avale la saisie du dé qui le chevauche. */}
         <div
-          className={`relative z-[3] flex w-full flex-col gap-[10px] border-t border-[var(--color-ink)]/15 px-[15px] py-[15px] ${
+          className={`choices-bar relative z-[3] flex w-full flex-col gap-[10px] border-t border-[var(--color-ink)]/15 px-[15px] py-[15px] ${
             rolling ? "pointer-events-none" : ""
-          }`}
+          } ${choicesHidden ? "choices-hidden" : ""}`}
         >
           {shuffledChoices.map((choice) => (
             <ChoiceButton
@@ -363,15 +378,17 @@ function FeedItem({
         </p>
       );
     case "jailer":
+      // Bandeau agrandi et repositionné (Figma 1909:794, redesign 11/07) :
+      // démon plus grand et plus présent, texte à sa droite.
       return (
-        <div className="scene-enter mx-[-17px] mb-[18px] flex items-center gap-[14px] overflow-clip bg-[var(--color-accent)] px-[22px] py-[14px]">
+        <div className="scene-enter jailer-banner mx-[-17px] mb-[18px] relative flex min-h-[128px] items-center overflow-clip bg-[var(--color-accent)] pl-[100px] pr-[22px] py-[16px]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt=""
             src="assets/dithering-demon.jpg"
-            className="pointer-events-none h-[56px] w-[48px] shrink-0 -scale-x-100 object-cover"
+            className="pointer-events-none absolute top-[10px] left-[-8px] h-[136px] w-[116px] -scale-x-100 object-cover"
           />
-          <p className="text-[12px] font-bold leading-[1.3] text-[var(--color-bg)]">
+          <p className="text-[13px] font-bold leading-[1.35] text-[var(--color-bg)]">
             <TypedText text={entry.text} typed={typed} skip={skip} msPerChar={22} onDone={onDone} />
           </p>
         </div>

@@ -34,7 +34,8 @@ export type Choice = {
 
 export type Scene = {
   id: string;
-  narration: string;
+  /** Plusieurs paragraphes courts (2-4 phrases chacun), pas des pavés — chacun type séparément dans le fil. */
+  narration: string[];
   /** Asset tramé de la scène (public/assets/…). Défaut : portail. Temps 2 : varier par contexte. */
   illustration?: string;
   choices: Choice[];
@@ -58,12 +59,17 @@ function outcomes(
 export const SCENES: Scene[] = [
   {
     id: "portes",
-    narration:
+    narration: [
       "Le couloir s'arrête net. Deux portes te font face. Celle de gauche est " +
-      "balafrée de coups d'épée, son bois sombre fendu, sa serrure éventrée, " +
-      "quelqu'un, ou quelque chose, s'y est acharné. Celle de droite est neuve, " +
-      "taillée dans un bois blanc presque luisant, et porte une inscription " +
-      "gravée que tu ne reconnais pas.",
+        "balafrée de coups d'épée, son bois sombre fendu, sa serrure éventrée, " +
+        "quelqu'un, ou quelque chose, s'y est acharné.",
+      "Celle de droite est neuve, taillée dans un bois blanc presque luisant, " +
+        "et porte une inscription gravée que tu ne reconnais pas. L'air qui " +
+        "en sort est plus froid que celui du couloir.",
+      "Tu poses la main sur la pierre entre les deux. Elle vibre, à peine — " +
+        "un battement lent, comme si le mur entier respirait quelque chose " +
+        "d'endormi juste derrière.",
+    ],
     choices: [
       {
         id: "pousser",
@@ -86,11 +92,17 @@ export const SCENES: Scene[] = [
   },
   {
     id: "salle-ronde",
-    narration:
+    narration: [
       "Derrière, une salle ronde aux murs suintants. Au centre, un corps en " +
-      "armure, effondré sur une dalle gravée. Sa main gantée serre encore " +
-      "quelque chose. Une odeur de fer et de cire froide flotte, et quelque " +
-      "part au-dessus, un frottement lent, régulier, comme une corde qu'on use.",
+        "armure, effondré sur une dalle gravée. Sa main gantée serre encore " +
+        "quelque chose.",
+      "Une odeur de fer et de cire froide flotte dans l'air immobile. Les " +
+        "torchères, éteintes depuis longtemps, portent encore des traces de " +
+        "suie fraîche à leur base — quelqu'un est passé ici récemment.",
+      "Quelque part au-dessus, un frottement lent, régulier, comme une corde " +
+        "qu'on use contre la pierre. Il s'arrête chaque fois que tu retiens " +
+        "ton souffle, et reprend dès que tu respires.",
+    ],
     choices: [
       {
         id: "fouiller",
@@ -126,11 +138,17 @@ export const SCENES: Scene[] = [
   },
   {
     id: "escalier",
-    narration:
+    narration: [
       "Un escalier en vis s'enfonce sous la dalle descellée. L'air qui en " +
-      "monte est froid, chargé d'eau et d'autre chose — un souffle ample, " +
-      "espacé, qui n'est pas un courant d'air. Ta torche se couche vers le " +
-      "bas, comme aspirée. Les marches sont usées au centre, profondément.",
+        "monte est froid, chargé d'eau et d'autre chose — un souffle ample, " +
+        "espacé, qui n'est pas un courant d'air.",
+      "Ta torche se couche vers le bas, comme aspirée. Les marches sont usées " +
+        "au centre, profondément, par des générations de pas pressés dans un " +
+        "seul sens : celui de la descente. Personne, semble-t-il, n'est " +
+        "jamais remonté par ici en comptant les marches.",
+      "Tu comptes malgré toi. Sept. Douze. À la vingtième, le souffle change " +
+        "de rythme, comme s'il t'avait remarqué.",
+    ],
     choices: [
       {
         id: "descendre",
@@ -166,11 +184,18 @@ export const SCENES: Scene[] = [
   },
   {
     id: "pont-os",
-    narration:
+    narration: [
       "Une rivière souterraine barre le passage, noire et sans reflet. On l'a " +
-      "enjambée d'un pont — pas de pierre : d'os, longs et jaunis, liés de " +
-      "tendons secs. Sur l'autre rive, une lanterne verte pend à un crochet, " +
-      "allumée. Personne pour la porter. Le pont grince avant même qu'on le touche.",
+        "enjambée d'un pont — pas de pierre : d'os, longs et jaunis, liés de " +
+        "tendons secs qui craquent à chaque courant d'air.",
+      "Sur l'autre rive, une lanterne verte pend à un crochet, allumée. " +
+        "Personne pour la porter, personne pour l'avoir rallumée depuis — " +
+        "combien de temps, au juste. Sa flamme ne vacille jamais, même " +
+        "quand le vent forcit.",
+      "Le pont grince avant même qu'on le touche, comme s'il connaissait " +
+        "déjà ton poids. Sous le tablier d'os, l'eau ne fait aucun bruit en " +
+        "coulant. Aucun.",
+    ],
     choices: [
       {
         id: "traverser",
@@ -219,11 +244,16 @@ export const SCENES: Scene[] = [
   },
   {
     id: "campement",
-    narration:
+    narration: [
       "Une anfractuosité sèche, à l'écart du courant d'air. Des cendres " +
-      "anciennes prouvent qu'on s'y est déjà arrêté — et qu'on en est reparti. " +
-      "Le silence ici est différent : il ne guette pas, il attend. Tes jambes " +
-      "pèsent leur vrai poids pour la première fois depuis des heures.",
+        "anciennes prouvent qu'on s'y est déjà arrêté — et qu'on en est " +
+        "reparti, ce qui n'est déjà pas rien, ici.",
+      "Le silence, dans ce renfoncement, est différent de celui du couloir : " +
+        "il ne guette pas, il attend, presque poliment. Tes jambes pèsent " +
+        "leur vrai poids pour la première fois depuis des heures.",
+      "Sur la paroi, quelqu'un a gravé une marque courte, sans doute pour " +
+        "compter les nuits passées ici. Il y en a sept.",
+    ],
     choices: [
       { id: "dormir", label: "Dormir jusqu'à l'aube", rest: true },
       {
@@ -246,11 +276,16 @@ export const SCENES: Scene[] = [
   },
   {
     id: "cage",
-    narration:
+    narration: [
       "Dans l'alcôve suivante, une cage pend à hauteur d'homme. Dedans, une " +
-      "silhouette maigre, genoux au menton, qui respire. Elle lève la tête à " +
-      "ta lumière : des yeux humains, une bouche cousue de fil noir. Elle pose " +
-      "deux doigts sur les barreaux, doucement, et attend.",
+        "silhouette maigre, genoux au menton, qui respire — un détail qui " +
+        "compte plus qu'il n'y paraît, ici.",
+      "Elle lève la tête à ta lumière : des yeux humains, une bouche cousue " +
+        "de fil noir, serré en petits points réguliers, presque soignés, " +
+        "comme un travail qu'on aurait pris son temps à faire.",
+      "Elle pose deux doigts sur les barreaux, doucement, et attend. Elle ne " +
+        "tire pas dessus. Elle ne semble même pas y avoir pensé.",
+    ],
     choices: [
       {
         id: "ouvrir",
@@ -273,11 +308,15 @@ export const SCENES: Scene[] = [
   },
   {
     id: "echo",
-    narration:
-      "La galerie s'élargit en un hall poli comme un miroir noir. Chaque pas y " +
-      "revient double. Puis ta propre voix te devance : « Qui va là ? » demande-" +
-      "t-elle avec ta bouche, trois pas devant. L'écho attend une réponse. Il " +
-      "n'a pas ton accent — pas tout à fait.",
+    narration: [
+      "La galerie s'élargit en un hall poli comme un miroir noir. Chaque pas " +
+        "y revient double, un instant trop tard pour être vraiment le tien.",
+      "Puis ta propre voix te devance : « Qui va là ? » demande-t-elle avec " +
+        "ta bouche, trois pas devant. L'écho attend une réponse, immobile, " +
+        "comme s'il avait un corps quelque part dans le noir poli du sol.",
+      "Il n'a pas ton accent — pas tout à fait. Une syllabe traîne un peu " +
+        "trop, comme s'il apprenait encore à porter ta voix.",
+    ],
     choices: [
       {
         id: "mentir",
@@ -313,11 +352,17 @@ export const SCENES: Scene[] = [
   },
   {
     id: "table",
-    narration:
-      "Une table de banquet dressée pour personne. Nappes grises de poussière, " +
-      "chandelles éteintes — sauf une. Dans son halo, un seul objet : un anneau " +
-      "de fer torsadé, encore tiède, posé sur un coussin de velours élimé. " +
-      "Quelque chose sous la table respire lentement contre tes chevilles.",
+    narration: [
+      "Une table de banquet dressée pour personne. Nappes grises de " +
+        "poussière, chandelles éteintes — sauf une, dont la flamme ne " +
+        "tremble jamais, même quand tu passes la main devant.",
+      "Dans son halo, un seul objet : un anneau de fer torsadé, encore " +
+        "tiède, posé sur un coussin de velours élimé, comme si quelqu'un " +
+        "venait tout juste de le poser là et de partir sans bruit.",
+      "Quelque chose sous la table respire lentement contre tes chevilles. " +
+        "Ce n'est pas hostile. Ce n'est pas amical non plus. C'est juste " +
+        "là, et ça attend que tu choisisses.",
+    ],
     choices: [
       {
         id: "prendre",
@@ -353,11 +398,17 @@ export const SCENES: Scene[] = [
   },
   {
     id: "porte-7e",
-    narration:
+    narration: [
       "Au bout, une porte sans gonds ni serrure, taillée dans une seule dent " +
-      "immense. Dessus, gravé à hauteur de tes yeux exactement : « FRAPPE TROIS " +
-      "FOIS SI TU CROIS ÊTRE ATTENDU ». De l'autre côté, quelque chose compte à " +
-      "voix basse. Il en est à sept mille et des poussières.",
+        "immense, encore ancrée dans une mâchoire qu'on devine plus qu'on ne " +
+        "la voit dans l'obscurité du plafond.",
+      "Dessus, gravé à hauteur de tes yeux exactement — pas plus haut, pas " +
+        "plus bas, comme mesuré pour toi précisément : « FRAPPE TROIS FOIS " +
+        "SI TU CROIS ÊTRE ATTENDU ».",
+      "De l'autre côté, quelque chose compte à voix basse. Il en est à sept " +
+        "mille et des poussières, et il ne semble pas près de s'arrêter de " +
+        "lui-même.",
+    ],
     choices: [
       {
         id: "frapper",
@@ -409,8 +460,14 @@ export const JAILER_TAUNTS_CRITFAIL: string[] = [
   "1. Le dé lui-même a eu pitié — puis non.",
 ];
 
+export const JAILER_TAUNTS_CRITSUCCESS: string[] = [
+  "Un 20. Rare. Je note, je n'applaudis pas.",
+  "20 naturel. Même moi, j'admets que c'était propre.",
+];
+
 export function jailerTaunt(result: number): string {
-  const pool = result === 1 ? JAILER_TAUNTS_CRITFAIL : JAILER_TAUNTS_FAIL;
+  const pool =
+    result === 1 ? JAILER_TAUNTS_CRITFAIL : result === 20 ? JAILER_TAUNTS_CRITSUCCESS : JAILER_TAUNTS_FAIL;
   const line = pool[Math.floor(Math.random() * pool.length)];
   return line.replace("{n}", String(result));
 }

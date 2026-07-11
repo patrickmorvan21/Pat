@@ -154,6 +154,19 @@ body {
   animation: fadeup 0.4s steps(4) both;
 }
 
+/* Choix masqués le temps que la conséquence + la scène suivante s'écrivent,
+   pour mettre en avant la description (décision Patrick 11/07). */
+.choices-bar {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s steps(4), transform 0.3s steps(4);
+}
+.choices-bar.choices-hidden {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
+}
+
 /* Choc du dé contre un bord : filet blanc subtil (1-2px) sur tout le côté touché */
 .edge-wave {
   position: absolute;

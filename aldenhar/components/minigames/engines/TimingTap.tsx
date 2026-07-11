@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { bayerFill, CHARBON, CREME, ORANGE, seededRandom } from "@/lib/dither";
+import { bayerFill, bayerFillClipped, CHARBON, CREME, erodedRectPath, ORANGE, seededRandom } from "@/lib/dither";
 
 /**
  * Crochetage (référence #4, « meilleur du lot ») : fenêtre de réussite qui
@@ -100,18 +100,86 @@ export default function TimingTap({
       ctx.fillRect(0, 0, W, H);
 
       if (config.mode === "track") {
-        const trackY = H / 2;
-        ctx.strokeStyle = "rgba(232,223,200,0.3)";
-        ctx.lineWidth = 6;
+        const pivot = { x: W / 2, y: H - 4 };
+        const armR = 108;
+        const angleStart = Math.PI * 1.12;
+        const angleEnd = Math.PI * 1.88;
+        const sweep = angleEnd - angleStart;
+
+        // Plaque de serrure gravée
+        erodedRectPath(ctx, 14, 8, W - 28, H - 20, rnd, "rgba(232,223,200,0.3)", 16);
+
+        // Silhouette du trou de serrure au pivot
+        ctx.fillStyle = "rgba(0,0,0,0.55)";
         ctx.beginPath();
-        ctx.moveTo(30, trackY);
-        ctx.lineTo(W - 30, trackY);
+        ctx.arc(pivot.x, pivot.y - 14, 7, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(pivot.x - 4, pivot.y - 8);
+        ctx.lineTo(pivot.x + 4, pivot.y - 8);
+        ctx.lineTo(pivot.x + 7, pivot.y + 4);
+        ctx.lineTo(pivot.x - 7, pivot.y + 4);
+        ctx.closePath();
+        ctx.fill();
+
+        // Fenêtre de réussite = lueur tramée sur l'arc
+        const winStartA = angleStart + (windowCenter - config.windowWidth / 2) * sweep;
+        const winEndA = angleStart + (windowCenter + config.windowWidth / 2) * sweep;
+        bayerFillClipped(
+          ctx,
+          (c) => {
+            c.moveTo(pivot.x, pivot.y);
+            c.arc(pivot.x, pivot.y, armR + 14, winStartA, winEndA);
+            c.closePath();
+          },
+          pivot.x - armR - 14,
+          pivot.y - armR - 14,
+          (armR + 14) * 2,
+          (armR + 14) * 2,
+          0.55,
+          ORANGE,
+          2
+        );
+
+        // Piste (arc de guidage)
+        ctx.strokeStyle = "rgba(232,223,200,0.2)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(pivot.x, pivot.y, armR, angleStart, angleEnd);
         ctx.stroke();
-        const winX = 30 + (windowCenter - config.windowWidth / 2) * (W - 60);
-        const winW = config.windowWidth * (W - 60);
-        bayerFill(ctx, winX, trackY - 9, winW, 18, 0.85, ORANGE, null, 2);
-        const px = 30 + trackPos() * (W - 60);
-        bayerFill(ctx, px - 5, trackY - 16, 10, 32, 1, CREME, null, 2);
+
+        // Goupilles (tumblers) en éventail — celle qui coïncide avec la fenêtre s'illumine
+        const pinCount = 7;
+        for (let i = 0; i < pinCount; i++) {
+          const frac = i / (pinCount - 1);
+          const a = angleStart + frac * sweep;
+          const isTarget = Math.abs(frac - windowCenter) < config.windowWidth / 2 + 0.05;
+          const x1 = pivot.x + Math.cos(a) * (armR - 10);
+          const y1 = pivot.y + Math.sin(a) * (armR - 10);
+          const x2 = pivot.x + Math.cos(a) * (armR + 8);
+          const y2 = pivot.y + Math.sin(a) * (armR + 8);
+          ctx.strokeStyle = isTarget ? ORANGE : "rgba(232,223,200,0.28)";
+          ctx.lineWidth = isTarget ? 3 : 2;
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
+          ctx.stroke();
+        }
+
+        // Le crochet : bras rigide depuis le pivot jusqu'à sa position actuelle
+        const pAngle = angleStart + trackPos() * sweep;
+        const tipX = pivot.x + Math.cos(pAngle) * armR;
+        const tipY = pivot.y + Math.sin(pAngle) * armR;
+        ctx.strokeStyle = CREME;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(pivot.x, pivot.y - 10);
+        ctx.lineTo(tipX, tipY);
+        ctx.stroke();
+        ctx.fillStyle = CREME;
+        ctx.beginPath();
+        ctx.arc(tipX, tipY, 4, 0, Math.PI * 2);
+        ctx.fill();
       } else if (config.mode === "release") {
         const progress = Math.min(1, t / 1.4);
         const barW = (W - 60) * progress;
