@@ -5,32 +5,40 @@
  */
 
 export type RollRecord = {
+  step: number;
   choiceId: string;
   result: number;
   at: number;
 };
 
 export type RunState = {
-  sceneId: string;
+  /** Progression dans le parcours infini (0 = première scène). */
+  step: number;
   rolls: RollRecord[];
   lastChoiceId: string | null;
 };
 
 const KEY = "aldenhar-run";
 
-export function loadRun(sceneId: string): RunState {
+export function loadRun(): RunState {
   if (typeof window !== "undefined") {
     try {
       const raw = window.localStorage.getItem(KEY);
       if (raw) {
-        const parsed = JSON.parse(raw) as RunState;
-        if (parsed.sceneId === sceneId) return parsed;
+        const parsed = JSON.parse(raw) as Partial<RunState>;
+        if (typeof parsed.step === "number") {
+          return {
+            step: parsed.step,
+            rolls: Array.isArray(parsed.rolls) ? parsed.rolls : [],
+            lastChoiceId: parsed.lastChoiceId ?? null,
+          };
+        }
       }
     } catch {
       // stockage indisponible ou corrompu → on repart proprement, jamais de mort narrative
     }
   }
-  return { sceneId, rolls: [], lastChoiceId: null };
+  return { step: 0, rolls: [], lastChoiceId: null };
 }
 
 export function saveRun(state: RunState): void {

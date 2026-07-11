@@ -13,9 +13,15 @@
   --color-notch: #211e33; /* entailles de coins des boutons (valeur exacte Figma) */
   --color-night: #211e33;
   --color-night-deep: #11101c;
-  --color-sand: #d8a25f; /* faces du dé (référence validée) */
+  --color-sand: #d8a25f;
   --color-sand-shade: #b3854c;
   --color-muted: #6e5a78;
+
+  /* Dé d20 (écran Figma 124:2178) : faces orange tramées, chiffres/arêtes nuit */
+  --die-face: #e0632a;
+  --die-face-shade: #a94a20;
+  --die-ink: #1c1a16;
+  --die-reveal: #e0632a;
 
   --font-body: "Roboto Mono", monospace;
   --font-title: "Jacquard 12", serif;
@@ -54,13 +60,14 @@ body {
 .die-veil {
   position: absolute;
   inset: 0;
-  background: rgba(17, 16, 28, 0.72);
+  /* Voile de l'écran du dé (Figma 124:2542) : fond nuit à 50 % */
+  background: var(--color-bg);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.35s steps(4);
   z-index: 5;
 }
-.die-veil.on { opacity: 1; }
+.die-veil.on { opacity: 0.5; }
 
 .die-canvas {
   position: absolute;
@@ -136,16 +143,17 @@ body {
   100% { opacity: 1; transform: translateY(0); }
 }
 
+/* « Lancer le dé » — sous le dé en attente (Figma 124:3299) */
 .die-hint {
   position: absolute;
-  bottom: 288px;
+  top: 744px;
   left: 0;
   right: 0;
   text-align: center;
-  font-size: 12px;
-  letter-spacing: 2px;
-  color: var(--color-muted);
-  text-transform: uppercase;
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--color-ink);
   z-index: 6;
   pointer-events: none;
   animation: pulse 2.4s steps(2) infinite;
@@ -156,7 +164,13 @@ body {
 }
 .die-hint.hidden { display: none; }
 
+/* Entrée d'une nouvelle scène : fondu par paliers, cohérent avec la DA */
+.scene-enter {
+  animation: fadeup 0.4s steps(4) both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .die-hint { animation: none; }
   .phone-frame.quake { animation: none; }
+  .scene-enter { animation: none; }
 }

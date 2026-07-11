@@ -2,29 +2,33 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import type { Outcome, Scene } from "@/lib/scene-data";
+import type { Outcome, Outcomes } from "@/lib/scene-data";
 
 /**
- * Dé d20 tactile — moteur repris tel quel de reference/REFERENCE_de_3d_tactile.html
- * (physique, seuils, calibrations et machine à états inchangés).
+ * Dé d20 tactile — moteur repris de reference/REFERENCE_de_3d_tactile.html
+ * (physique, seuils de geste, calibrations et rendu inchangés).
  *
- * Adaptations d'intégration (sans impact sur la physique) :
- *  - Three.js en dépendance npm au lieu du CDN r128 (mêmes APIs).
- *  - Les écouteurs pointer sont attachés au conteneur avec le même hit-test
- *    (distance au dé) au lieu d'un canvas plein écran qui bloquait les clics
- *    sur les choix — le canvas est en pointer-events: none.
- *  - Couleurs et textes de verdict injectés via props/tokens.
- *  - IDLE.y adapté à la hauteur de la frame Figma (848px vs 800px) pour que
- *    le dé flotte au repos juste au-dessus des choix, comme dans la référence.
+ * Intégration au parcours Figma (écran 124:2178) :
+ *  - le dé est caché au repos ; il apparaît, voilé, quand un choix risqué est
+ *    cliqué (prop `request`), centré sous les choix avec « Lancer le dé » ;
+ *  - saisie sur le dé uniquement (même hit-test que la référence), lancer à
+ *    l'élan réel, rebonds, verdict avec face inversée, puis le dé disparaît
+ *    et `onComplete` est appelé pour enchaîner la scène suivante ;
+ *  - couleurs prises dans les tokens (faces orange, chiffres/arêtes nuit).
  */
 
-type Props = {
+export type RollRequest = {
+  key: number;
   threshold: number;
-  outcomes: Scene["outcomes"];
-  onResult?: (result: number, outcome: Outcome) => void;
+  outcomes: Outcomes;
 };
 
-export default function Die3D({ threshold, outcomes, onResult }: Props) {
+type Props = {
+  request: RollRequest | null;
+  onComplete?: (result: number, outcome: Outcome) => void;
+};
+
+export default function Die3D({ request, onComplete }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const hintRef = useRef<HTMLDivElement>(null);
@@ -33,11 +37,16 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
   const verdictRef = useRef<HTMLDivElement>(null);
   const vWordRef = useRef<HTMLDivElement>(null);
   const vOutRef = useRef<HTMLParagraphElement>(null);
-  const onResultRef = useRef(onResult);
-  useEffect(() => {
-    onResultRef.current = onResult;
-  }, [onResult]);
 
+  const requestRef = useRef<RollRequest | null>(null);
+  const onCompleteRef = useRef(onComplete);
+  const activateRef = useRef<(() => void) | null>(null);
+
+  useEffect(() => {
+    onCompleteRef.current = onComplete;
+  }, [onComplete]);
+
+  // Moteur monté une seule fois ; l'activation passe par activateRef.
   useEffect(() => {
     const root = rootRef.current;
     const canvas = canvasRef.current;
@@ -52,9 +61,7 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
     const phone = root.closest(".phone-frame") as HTMLElement | null;
     const stage = phone ?? root;
 
-    const SEUIL = threshold;
     const PIXEL_FACTOR = 2.4;
-
     const W = stage.clientWidth;
     const H = stage.clientHeight;
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true });
@@ -66,9 +73,12 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
     const scene = new THREE.Scene();
 
     const styles = getComputedStyle(stage);
-    const NUIT = styles.getPropertyValue("--color-night").trim() || "#211e33";
-    const SABLE = styles.getPropertyValue("--color-sand").trim() || "#d8a25f";
-    const SABLE_OMBRE = styles.getPropertyValue("--color-sand-shade").trim() || "#b3854c";
+    const token = (name: string, fallback: string) =>
+      styles.getPropertyValue(name).trim() || fallback;
+    const INK = token("--die-ink", "#1c1a16");
+    const FACE = token("--die-face", "#e0632a");
+    const FACE_SHADE = token("--die-face-shade", "#a94a20");
+    const REVEAL_NUM = token("--die-reveal", "#e0632a");
 
     function faceTexture(n: number, shade: number, inverted: boolean) {
       const s = 96;
@@ -76,22 +86,22 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
       c.width = c.height = s;
       const ctx = c.getContext("2d")!;
       if (inverted) {
-        ctx.fillStyle = NUIT;
+        ctx.fillStyle = INK;
         ctx.fillRect(0, 0, s, s);
       } else {
-        ctx.fillStyle = shade >= 1 ? SABLE_OMBRE : SABLE;
+        ctx.fillStyle = shade >= 1 ? FACE_SHADE : FACE;
         ctx.fillRect(0, 0, s, s);
         if (shade === 1) {
-          ctx.fillStyle = NUIT;
+          ctx.fillStyle = INK;
           for (let y = 0; y < s; y += 8)
             for (let x = (y / 8) % 2 ? 4 : 0; x < s; x += 8) ctx.fillRect(x, y, 3, 3);
         } else if (shade === 2) {
-          ctx.fillStyle = NUIT;
+          ctx.fillStyle = INK;
           for (let y = 0; y < s; y += 6)
             for (let x = (y / 6) % 2 ? 3 : 0; x < s; x += 6) ctx.fillRect(x, y, 3, 3);
         }
       }
-      ctx.fillStyle = inverted ? SABLE : NUIT;
+      ctx.fillStyle = inverted ? REVEAL_NUM : INK;
       ctx.font = 'bold 42px "VT323", monospace';
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
@@ -114,23 +124,23 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
     }
     geo.setAttribute("uv", new THREE.Float32BufferAttribute(uvs, 2));
     const die = new THREE.Mesh(geo, mats);
+    die.visible = false;
     scene.add(die);
     const edges = new THREE.LineSegments(
       new THREE.EdgesGeometry(geo),
-      new THREE.LineBasicMaterial({ color: new THREE.Color(NUIT) })
+      new THREE.LineBasicMaterial({ color: new THREE.Color(INK) })
     );
     die.add(edges);
 
-    // Frame Figma 848px de haut (référence : 800) → offset ajusté pour flotter
-    // au repos juste au-dessus des choix, même intention que la référence.
-    const IDLE = { x: W / 2 - 56, y: -(H / 2) + 300, scale: 0.58 };
+    // Position d'attente : centre x, dé ~83px sous les choix (Figma 124:3299).
+    const READY = { x: 0, y: -(H / 2) + 136, scale: 0.94 };
     const CENTER = { x: 0, y: 20, scale: 1 };
 
-    let state = "idle";
-    let pos = { x: IDLE.x, y: IDLE.y };
+    let state = "hidden";
+    let pos = { x: READY.x, y: READY.y };
     let vel = { x: 0, y: 0 };
     let angVel = { x: 0.01, y: 0.017, z: 0 };
-    let dieScale = IDLE.scale;
+    let dieScale = READY.scale;
     const DAMP = 0.985,
       ROLL_FRICTION = 0.9,
       STOP_SPEED = 0.85;
@@ -139,6 +149,30 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
     const squash = { axis: "x", amount: 0 };
     let history: { x: number; y: number; t: number }[] = [];
     let grabOffset = { x: 0, y: 0 };
+    let result = 0,
+      settleQuat: THREE.Quaternion | null = null,
+      settleT = 0,
+      revealT = 0;
+
+    function resetFaces() {
+      if (result > 0) {
+        mats[result - 1].map = faceTexture(result, (result - 1) % 3, false);
+        mats[result - 1].needsUpdate = true;
+        result = 0;
+      }
+    }
+
+    activateRef.current = () => {
+      resetFaces();
+      pos = { x: READY.x, y: READY.y };
+      dieScale = 0.2;
+      angVel = { x: 0.01, y: 0.017, z: 0 };
+      die.visible = true;
+      state = "ready";
+      veil.classList.add("on");
+      hint.classList.remove("hidden");
+      verdict.classList.remove("show");
+    };
 
     function toStage(e: MouseEvent | TouchEvent) {
       const r = canvas!.getBoundingClientRect();
@@ -148,7 +182,7 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
     }
 
     function onDown(e: MouseEvent | TouchEvent) {
-      if (state !== "idle") return;
+      if (state !== "ready") return;
       const p = toStage(e);
       const dx = p.x - pos.x,
         dy = p.y - pos.y;
@@ -156,8 +190,6 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
       e.preventDefault();
       state = "held";
       hint!.classList.add("hidden");
-      verdict!.classList.remove("show");
-      resetFaces();
       grabOffset = { x: dx, y: dy };
       history = [p];
       if (navigator.vibrate) navigator.vibrate(10);
@@ -180,6 +212,7 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
       const recent = history.filter((h) => now - h.t < 110);
       if (recent.length < 2) {
         state = "returning";
+        hint!.classList.remove("hidden");
         return;
       }
       const first = recent[0],
@@ -190,16 +223,16 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
       const speed = Math.hypot(vx, vy);
       if (speed < 2.5) {
         state = "returning";
+        hint!.classList.remove("hidden");
         return;
       }
       state = "flying";
-      veil!.classList.add("on");
       vel = { x: vx * 1.25, y: vy * 1.25 };
       angVel = { x: -vel.y * 0.007, y: vel.x * 0.007, z: (Math.random() - 0.5) * 0.05 };
       if (navigator.vibrate) navigator.vibrate(20);
     }
-    // Écouteurs sur le conteneur (hit-test identique) : le dé reste saisissable
-    // uniquement en le touchant lui-même, et les choix restent cliquables.
+    // Écouteurs sur le conteneur (hit-test identique) : le dé n'est saisissable
+    // qu'en le touchant lui-même, et les choix restent cliquables.
     stage.addEventListener("mousedown", onDown);
     stage.addEventListener("touchstart", onDown, { passive: false });
     window.addEventListener("mousemove", onMove, { passive: false });
@@ -215,16 +248,6 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
       angVel.z += (Math.random() - 0.5) * 0.04 * (impactSpeed / 10);
     }
 
-    let result = 0,
-      settleQuat: THREE.Quaternion | null = null,
-      settleT = 0,
-      revealT = 0;
-    function resetFaces() {
-      if (result > 0) {
-        mats[result - 1].map = faceTexture(result, (result - 1) % 3, false);
-        mats[result - 1].needsUpdate = true;
-      }
-    }
     function beginSettle() {
       state = "settling";
       result = 1 + Math.floor(Math.random() * 20);
@@ -245,15 +268,21 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
       );
       settleT = 0;
     }
+
     function finishRoll() {
       state = "reveal";
       revealT = 0;
       mats[result - 1].map = faceTexture(result, 0, true);
       mats[result - 1].needsUpdate = true;
+      const req = requestRef.current;
+      const outcomes = req?.outcomes;
+      const threshold = req?.threshold ?? 12;
       let o: Outcome;
-      if (result === 20) o = outcomes.critSuccess;
+      if (!outcomes) {
+        o = { word: "", fail: false, text: "" };
+      } else if (result === 20) o = outcomes.critSuccess;
       else if (result === 1) o = outcomes.critFail;
-      else if (result >= SEUIL) o = outcomes.success;
+      else if (result >= threshold) o = outcomes.success;
       else o = outcomes.fail;
       flash!.className = "die-flash";
       if (result === 20) {
@@ -272,7 +301,6 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
       vWord!.className = "word " + (o.fail ? "fail" : "");
       vOut!.textContent = o.text;
       verdict!.classList.add("show");
-      onResultRef.current?.(result, o);
     }
 
     let t = 0;
@@ -280,12 +308,18 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
     function loop() {
       raf = requestAnimationFrame(loop);
       t += 0.016;
-      if (state === "idle") {
-        pos.x += (IDLE.x - pos.x) * 0.08;
-        pos.y += (IDLE.y - pos.y) * 0.08 + Math.sin(t * 2) * 0.06;
-        dieScale += (IDLE.scale - dieScale) * 0.08;
+      if (state === "hidden") {
+        renderer.render(scene, camera);
+        return;
+      }
+      if (state === "ready" || state === "returning") {
+        pos.x += (READY.x - pos.x) * 0.1;
+        pos.y += (READY.y - pos.y) * 0.1 + Math.sin(t * 2) * 0.06;
+        dieScale += (READY.scale - dieScale) * 0.1;
         die.rotation.x += 0.004;
         die.rotation.y += 0.007;
+        if (state === "returning" && Math.hypot(READY.x - pos.x, READY.y - pos.y) < 2)
+          state = "ready";
       } else if (state === "held") {
         dieScale += (1 - dieScale) * 0.15;
         die.rotation.x += angVel.x;
@@ -346,17 +380,20 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
         revealT += 0.016;
         pos.y = CENTER.y + Math.sin(t * 2) * 1.2;
         if (revealT > 2.6) {
-          state = "returning";
+          state = "hidden";
+          die.visible = false;
           veil!.classList.remove("on");
           verdict!.classList.remove("show");
-          hint!.textContent = "Relance quand tu veux";
-          hint!.classList.remove("hidden");
+          const req = requestRef.current;
+          const outcomes = req?.outcomes;
+          let o: Outcome;
+          if (!outcomes) o = { word: "", fail: false, text: "" };
+          else if (result === 20) o = outcomes.critSuccess;
+          else if (result === 1) o = outcomes.critFail;
+          else if (result >= (req?.threshold ?? 12)) o = outcomes.success;
+          else o = outcomes.fail;
+          onCompleteRef.current?.(result, o);
         }
-      } else if (state === "returning") {
-        pos.x += (IDLE.x - pos.x) * 0.1;
-        pos.y += (IDLE.y - pos.y) * 0.1;
-        dieScale += (IDLE.scale - dieScale) * 0.1;
-        if (Math.hypot(IDLE.x - pos.x, IDLE.y - pos.y) < 2) state = "idle";
       }
       squash.amount *= 0.85;
       const sx = squash.axis === "x" ? 1 - squash.amount : 1 + squash.amount * 0.5;
@@ -369,6 +406,7 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
 
     return () => {
       cancelAnimationFrame(raf);
+      activateRef.current = null;
       stage.removeEventListener("mousedown", onDown);
       stage.removeEventListener("touchstart", onDown);
       window.removeEventListener("mousemove", onMove);
@@ -382,14 +420,20 @@ export default function Die3D({ threshold, outcomes, onResult }: Props) {
       });
       renderer.dispose();
     };
-  }, [threshold, outcomes]);
+  }, []);
+
+  // Activation quand un choix risqué est cliqué.
+  useEffect(() => {
+    requestRef.current = request;
+    if (request) activateRef.current?.();
+  }, [request]);
 
   return (
     <div ref={rootRef} className="absolute inset-0 pointer-events-none">
       <div ref={veilRef} className="die-veil" />
       <canvas ref={canvasRef} className="die-canvas" />
-      <div ref={hintRef} className="die-hint">
-        Saisis le dé, lance-le
+      <div ref={hintRef} className="die-hint hidden">
+        Lancer le dé
       </div>
       <div ref={flashRef} className="die-flash" />
       <div ref={verdictRef} className="die-verdict">
