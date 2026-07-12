@@ -298,6 +298,45 @@ body {
   .timed-countdown-fill { animation-name: timed-deplete; animation-duration: var(--timed-ms, 2200ms); }
 }
 
+/* Bannière de rencontre (§6, lisibilité du combat) : annonce forte et
+   distincte d'un adversaire. DA Charbon/Orange, titre en Jacquard 12. Le
+   combat reste la même mécanique — la bannière ne fait que le signaler. */
+.combat-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 17px 16px;
+  background: var(--color-bg);
+  border-top: 2px solid var(--color-accent);
+  border-bottom: 2px solid var(--color-accent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 30%, transparent);
+}
+.combat-banner-tag {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  opacity: 0.85;
+}
+.combat-banner-foe {
+  font-family: var(--font-title, "Jacquard 12"), serif;
+  font-size: 24px;
+  line-height: 1.1;
+  letter-spacing: 0.5px;
+  text-align: center;
+  color: var(--color-accent);
+  animation: combat-foe-pulse 1.6s steps(3) 2;
+}
+@keyframes combat-foe-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .combat-banner-foe { animation: none; }
+}
+
 /* Le Grand Registre (§19) : classement traversable inline dans le fil.
    Tramé/sobre, jamais un tableau propre — la ligne du joueur en accent. */
 .registre {

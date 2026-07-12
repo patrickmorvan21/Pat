@@ -265,6 +265,11 @@ export default function Scene() {
     if (contextChanged || Math.random() < 0.25) {
       entries.push({ id: nextId(), kind: "illustration", src: nextIllustration });
     }
+    // Rencontre de combat (spec §6) : bannière d'annonce, pour que l'adversaire
+    // soit LISIBLE (le mécanisme reste identique — pas de PV, pas de jauge).
+    if (nextScene.combat && nextScene.foeName) {
+      entries.push({ id: nextId(), kind: "combat", foe: nextScene.foeName });
+    }
     // Dette de sang (§19) : si cet adversaire a déjà tué un héros du joueur,
     // il le reconnaît — une ligne discrète avant la scène, jamais un chiffre.
     if (nextScene.foe) {
@@ -625,6 +630,16 @@ function FeedItem({
         <p className="scene-enter mb-[18px] text-[13px] leading-[1.3] text-[var(--color-ink)]">
           <TypedText text={entry.text} typed={typed} skip={skip} msPerChar={15} onDone={onDone} />
         </p>
+      );
+    case "combat":
+      // Bannière de rencontre (spec §6, lisibilité) : annonce clairement
+      // l'adversaire. Le combat reste la même mécanique choix + dé — la
+      // bannière ne fait que le signaler, sans PV ni jauge.
+      return (
+        <div className="scene-enter combat-banner mx-[-17px] mb-[18px]" role="note">
+          <span className="combat-banner-tag">✦ RENCONTRE ✦</span>
+          <span className="combat-banner-foe">{entry.foe}</span>
+        </div>
       );
     case "registre":
       // Le Grand Registre (§19) : classement défilant inline, la ligne du

@@ -72,6 +72,12 @@ export type Scene = {
    */
   foe?: string;
   /**
+   * Nom affiché de l'adversaire, pour la bannière de rencontre qui annonce
+   * clairement un combat (le mécanisme reste identique au reste du jeu, spec
+   * §6 — la bannière ne fait que le rendre LISIBLE, sans PV ni jauge).
+   */
+  foeName?: string;
+  /**
    * La scène qui se résout sans toi (§18) : décision sous contrainte de temps
    * réel très courte. Un compte à rebours VISUEL (érosion/pulsation, jamais un
    * timer chiffré) ; si le joueur ne choisit pas à temps, la situation évolue
@@ -212,6 +218,69 @@ export const SCENES: Scene[] = [
       },
     ],
     jailerLine: "Celui-là a tenu 6 jours. Tu vois où mène la prudence.",
+  },
+  {
+    // Première rencontre volontairement précoce (3e scène) : le joueur doit
+    // croiser un adversaire vite. Autonome — ne dépend d'aucune scène amont.
+    id: "rodeur",
+    combat: true,
+    foe: "rodeur",
+    foeName: "Le Rôdeur",
+    narration: [
+      "Le couloir se rétrécit, puis quelque chose se détache de l'ombre — une " +
+        "silhouette voûtée, trop longue, qui se tenait plaquée au plafond " +
+        "depuis un moment déjà. Elle tombe sans un bruit entre toi et la " +
+        "sortie.",
+      "Pas d'yeux. Une bouche, immense, là où devrait être le ventre. Le " +
+        "Rôdeur penche la tête vers toi, curieux, et fait un premier pas — " +
+        "sans hâte, sûr qu'il n'y a pas d'issue derrière lui.",
+      "Il n'y en a pas. Il faut passer par lui.",
+    ],
+    choices: [
+      {
+        id: "charger-rodeur",
+        label: "Le charger avant qu'il ne s'élance",
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu le percutes avant qu'il n'ait fini son pas. Le Rôdeur bascule, sa bouche claque dans le vide — tu es déjà passé.",
+            "Ton élan le prend de court. Il encaisse, recule contre la paroi, et te laisse le temps d'un passage.",
+            "Il t'attendait, justement. Sa bouche se referme là où tu allais — tu te jettes de côté in extremis.",
+            "1 naturel. Tu charges droit dans la bouche. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "contourner-rodeur",
+        label: "Le contourner dans le noir",
+        risky: {
+          stat: "RUSE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu te fonds dans son angle mort — il n'a pas d'yeux, mais toi tu as compris comment il écoute. Tu passes comme une pensée.",
+            "Tu te glisses le long de la paroi. Il tourne sur lui-même, une seconde trop tard.",
+            "Une pierre roule sous ton pied. La bouche pivote vers le bruit — vers toi.",
+            "1 naturel. Ton angle mort était le sien. Vous vous trouvez en même temps. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "figer-rodeur",
+        label: "Ne plus bouger du tout",
+        // Le silence/immobilité comme option (§19) : le Rôdeur chasse au
+        // mouvement — ne rien faire est parfois la vraie réponse.
+        passive: {
+          consequence:
+            "Tu te changes en statue. Le Rôdeur avance, sa bouche frôle ta " +
+            "joue — assez près pour que tu sentes son haleine de terre " +
+            "mouillée — puis passe son chemin, faute de proie qui bouge. " +
+            "Quand le couloir se vide, tu respires enfin. Tu es passé sans " +
+            "livrer combat.",
+        },
+      },
+    ],
+    jailerLine: "Le Rôdeur chasse au mouvement. La plupart courent. La plupart finissent dedans.",
   },
   {
     id: "escalier",
@@ -404,6 +473,7 @@ export const SCENES: Scene[] = [
     id: "tunnel-embuscade",
     combat: true,
     foe: "meute-limiers",
+    foeName: "La meute de limiers",
     narration: [
       "Le tablier d'os à peine passé, la galerie se resserre. Des griffes " +
         "raclent la pierre dans le noir, plusieurs paires à la fois, " +
@@ -463,6 +533,8 @@ export const SCENES: Scene[] = [
   {
     id: "tunnel-affrontement",
     combat: true,
+    foe: "meute-limiers",
+    foeName: "La meute de limiers",
     narration: [
       "Ce qu'il reste de la meute se regroupe une dernière fois, plus " +
         "prudente, à distance de ta lame. Elles ont compris que tu mords " +
@@ -586,6 +658,7 @@ export const SCENES: Scene[] = [
     id: "geryon",
     combat: true,
     foe: "geryon",
+    foeName: "Geryon aux trois gueules",
     narration: [
       "Le couloir débouche sur une arche effondrée, et dessous, une masse " +
         "qui respire par trois gueules distinctes, synchronisées. Geryon. " +

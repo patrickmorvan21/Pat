@@ -40,7 +40,9 @@ export type FeedEntry =
   | { id: string; kind: "narration"; text: string }
   | { id: string; kind: "chosen"; label: string }
   | { id: string; kind: "jailer"; text: string }
-  | { id: string; kind: "registre"; rows: RegistreRow[] };
+  | { id: string; kind: "registre"; rows: RegistreRow[] }
+  /** Bannière de rencontre : annonce clairement un combat (spec §6, lisibilité). */
+  | { id: string; kind: "combat"; foe: string };
 
 /**
  * Prix différé (spec §17) : un choix « gratuit » contracte une dette
