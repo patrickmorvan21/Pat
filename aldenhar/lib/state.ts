@@ -24,14 +24,41 @@ export type NarrativeEffect = {
  * de la run, jamais rien ne se décharge. Persisté intégralement pour que la
  * reprise de run restaure le scrollback exact, pas seulement la position.
  */
+/** Une ligne du Grand Registre (§19) : un héros classé par jours de survie. */
+export type RegistreRow = {
+  rank: number;
+  name: string;
+  days: number;
+  cause: string;
+  /** La ligne du joueur (run en cours ou héros tombé), visuellement distincte. */
+  isPlayer?: boolean;
+};
+
 export type FeedEntry =
   | { id: string; kind: "illustration"; src: string }
   | { id: string; kind: "day"; day: number }
   | { id: string; kind: "narration"; text: string }
   | { id: string; kind: "chosen"; label: string }
-  | { id: string; kind: "jailer"; text: string };
+  | { id: string; kind: "jailer"; text: string }
+  | { id: string; kind: "registre"; rows: RegistreRow[] };
+
+/**
+ * Prix différé (spec §17) : un choix « gratuit » contracte une dette
+ * silencieuse qui se règle plus tard dans la MÊME run (pas au niveau compte).
+ * Le règlement doit rester rétrospectivement lisible (le joueur remonte le
+ * transcript et comprend d'où ça vient), jamais totalement arbitraire.
+ */
+export type PendingDebt = {
+  id: string;
+  /** Pas de progression auquel la dette se déclenche. */
+  settleAtStep: number;
+  /** Texte narratif du règlement, inséré dans le fil au déclenchement. */
+  text: string;
+};
 
 export type RunState = {
+  /** Nom du héros de cette run (dette de sang, Grand Registre — spec §19). */
+  heroName: string;
   /** Progression dans le parcours infini (0 = première scène). */
   step: number;
   /** Jour courant — n'avance qu'aux campements (spec §7). */
@@ -42,12 +69,34 @@ export type RunState = {
   rolls: RollRecord[];
   lastChoiceId: string | null;
   feed: FeedEntry[];
+  /** Dettes narratives en attente de règlement dans cette run (spec §17). */
+  debts: PendingDebt[];
 };
 
 const KEY = "aldenhar-run";
 
+const HERO_NAMES = [
+  "Corvin", "Vael", "Ysolde", "Brannoc", "Maerith", "Dorn", "Sélène",
+  "Karth", "Ombrelin", "Thessaly", "Rœric", "Nyx", "Aldric", "Vesper",
+];
+
+/** Nom de héros aléatoire (dette de sang / Registre — spec §19). */
+export function randomHeroName(): string {
+  return HERO_NAMES[Math.floor(Math.random() * HERO_NAMES.length)];
+}
+
 function fresh(): RunState {
-  return { step: 0, day: 1, health: 1, effects: [], rolls: [], lastChoiceId: null, feed: [] };
+  return {
+    heroName: randomHeroName(),
+    step: 0,
+    day: 1,
+    health: 1,
+    effects: [],
+    rolls: [],
+    lastChoiceId: null,
+    feed: [],
+    debts: [],
+  };
 }
 
 export function loadRun(): RunState {
@@ -58,6 +107,7 @@ export function loadRun(): RunState {
         const p = JSON.parse(raw) as Partial<RunState>;
         if (typeof p.step === "number") {
           return {
+            heroName: typeof p.heroName === "string" ? p.heroName : randomHeroName(),
             step: p.step,
             day: typeof p.day === "number" ? p.day : 1,
             health: typeof p.health === "number" ? p.health : 1,
@@ -65,6 +115,7 @@ export function loadRun(): RunState {
             rolls: Array.isArray(p.rolls) ? p.rolls : [],
             lastChoiceId: p.lastChoiceId ?? null,
             feed: Array.isArray(p.feed) ? p.feed : [],
+            debts: Array.isArray(p.debts) ? p.debts : [],
           };
         }
       }

@@ -265,6 +265,86 @@ body {
   .jailer-speaking img { animation: none; }
 }
 
+/* Scène chronométrée (§18) : jauge d'érosion rapide au-dessus des choix.
+   Pas de chiffre — la barre se vide par paliers (steps) et pulse, dans le
+   même langage visuel que l'érosion de santé. */
+.timed-countdown {
+  height: 4px;
+  margin: 0 15px 6px;
+  background: color-mix(in srgb, var(--color-ink) 12%, transparent);
+  overflow: hidden;
+}
+.timed-countdown-fill {
+  height: 100%;
+  width: 100%;
+  background: var(--color-accent);
+  transform-origin: left center;
+  animation-name: timed-deplete, timed-pulse;
+  animation-timing-function: steps(16), steps(2);
+  animation-iteration-count: 1, infinite;
+  animation-fill-mode: forwards, none;
+  /* durée de vidage fournie inline via --timed-ms ; pulse fixe et rapide */
+  animation-duration: var(--timed-ms, 2200ms), 0.3s;
+}
+@keyframes timed-deplete {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+@keyframes timed-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .timed-countdown-fill { animation-name: timed-deplete; animation-duration: var(--timed-ms, 2200ms); }
+}
+
+/* Le Grand Registre (§19) : classement traversable inline dans le fil.
+   Tramé/sobre, jamais un tableau propre — la ligne du joueur en accent. */
+.registre {
+  border-top: 1px solid color-mix(in srgb, var(--color-ink) 25%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 25%, transparent);
+  padding: 12px 17px;
+  background: color-mix(in srgb, var(--color-ink) 4%, transparent);
+}
+.registre-head {
+  font-family: var(--font-title, "Jacquard 12"), serif;
+  font-size: 15px;
+  letter-spacing: 1.5px;
+  text-align: center;
+  color: var(--color-accent);
+  margin-bottom: 10px;
+}
+.registre-list {
+  max-height: 240px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.registre-row {
+  display: grid;
+  grid-template-columns: 22px 1fr auto;
+  grid-template-areas: "rank name days" "rank cause cause";
+  column-gap: 8px;
+  padding: 4px 6px;
+  font-size: 12px;
+  line-height: 1.25;
+  color: var(--color-ink);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-ink) 8%, transparent);
+}
+.registre-rank { grid-area: rank; opacity: 0.4; font-variant-numeric: tabular-nums; }
+.registre-name { grid-area: name; font-weight: 600; }
+.registre-days { grid-area: days; opacity: 0.7; font-variant-numeric: tabular-nums; }
+.registre-cause { grid-area: cause; opacity: 0.45; font-size: 11px; font-style: italic; }
+.registre-row.is-player {
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  color: var(--color-accent);
+  outline: 1px solid color-mix(in srgb, var(--color-accent) 45%, transparent);
+}
+.registre-row.is-player .registre-rank,
+.registre-row.is-player .registre-days,
+.registre-row.is-player .registre-cause { opacity: 0.85; color: var(--color-accent); }
+
 /* ═══════════════ Galerie de revue — mini-jeux & surprises ═══════════════ */
 
 .minijeux-page {

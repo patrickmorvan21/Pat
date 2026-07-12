@@ -7,6 +7,7 @@ import TypedText from "@/components/TypedText";
 import { jailerTaunt, sceneAt, type Choice } from "@/lib/scene-data";
 import { loadRun, saveRun, type FeedEntry, type RunState } from "@/lib/state";
 import { ditherFadeMaskDataUrl } from "@/lib/dither";
+import { bloodDebtFor, buildRegistre, jailerPosture, loadMemory, mutateMemory } from "@/lib/player-memory";
 
 // Masque tramé du portrait du Geôlier — généré une fois, mis en cache (§11 :
 // dissolution en pixels épars sur les bords, jamais un fondu CSS lisse).
@@ -61,8 +62,14 @@ export default function Scene() {
   const [choicesHidden, setChoicesHidden] = useState(false);
   // Incrémenté à chaque tap dans le fil : termine l'animation de frappe en cours.
   const [skip, setSkip] = useState(0);
+  // Scène chronométrée (§18) : true une fois le délai écoulé sans choix — les
+  // choix d'origine cèdent la place aux options ouvertes par l'inaction.
+  const [timedExpired, setTimedExpired] = useState(false);
+  // Armé quand le compte à rebours d'une scène chronométrée court (pour l'UI).
+  const [countdownArmed, setCountdownArmed] = useState(false);
   const runRef = useRef<RunState | null>(null);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -96,11 +103,15 @@ export default function Scene() {
   const scene = sceneAt(step);
   const rolling = roll !== null;
 
+  // Sur une scène chronométrée expirée (§18), les choix d'origine cèdent la
+  // place aux options ouvertes par l'inaction.
+  const baseChoices = timedExpired && scene.timed ? scene.timed.timeoutChoices : scene.choices;
+
   // La position à l'écran ne doit jamais prédire le type de choix (CLAUDE.md) :
   // Fisher-Yates seedé par le pas de progression — stable au re-render et à la
   // reprise de run. La scène 0 garde l'ordre exact de la frame Figma.
   const shuffledChoices = useMemo(() => {
-    const arr = [...scene.choices];
+    const arr = [...baseChoices];
     if (step === 0) return arr;
     let seed = (step * 9301 + 49297) >>> 0;
     const rnd = () => {
@@ -112,7 +123,7 @@ export default function Scene() {
       [arr[i], arr[j]] = [arr[j], arr[i]];
     }
     return arr;
-  }, [scene, step]);
+  }, [baseChoices, step]);
 
   // Reprise de run : fermer l'app ne compte jamais comme une mort. Le fil
   // complet est persisté, donc la reprise restaure aussi le scrollback exact.
@@ -128,11 +139,27 @@ export default function Scene() {
       // Historique repris : tout est déjà « lu », rien à mettre en file d'attente.
       markRevealed(run.feed.map((e) => e.id));
     } else {
+      // Run neuve : on l'inscrit dans la mémoire du joueur (§17, saisons du
+      // Geôlier + décompte des tentatives).
+      const mem = mutateMemory((m) => {
+        m.runsStarted += 1;
+      });
       const opening = sceneAt(0);
+      const openingNarration = [...opening.narration];
+      // Persistance environnementale (§17) : si le joueur a déjà défoncé la
+      // porte balafrée dans une run précédente, elle porte encore la trace —
+      // le décor accumule les tentatives, pas seulement la dernière.
+      if (mem.envFlags["porte-balafree-defoncee"]) {
+        openingNarration.push(
+          "La porte balafrée, tu la reconnais : c'est déjà arrivé qu'on la " +
+            "défonce, un autre jour, un autre toi. Le bois éclaté n'a pas " +
+            "repoussé. Quelque chose s'en souvient aussi."
+        );
+      }
       const seeded: FeedEntry[] = [
         { id: nextId(), kind: "illustration", src: opening.illustration ?? "assets/dithering-portal.jpg" },
         { id: nextId(), kind: "day", day: run.day },
-        ...opening.narration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })),
+        ...openingNarration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })),
       ];
       setFeed(seeded);
       enqueueReveal(seeded.filter((e) => e.kind === "narration").map((e) => e.id));
@@ -151,6 +178,45 @@ export default function Scene() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [feed.length, revealedIds]);
+
+  /**
+   * La scène qui se résout sans toi (§18) : le délai s'écoule sans choix. Ce
+   * n'est PAS un échec automatique — la situation évolue et ouvre de nouvelles
+   * options (`timeoutChoices`). L'inaction devient elle-même un choix.
+   */
+  function onTimedExpire(timed: NonNullable<ReturnType<typeof sceneAt>["timed"]>) {
+    setCountdownArmed(false);
+    setTimedExpired(true);
+    setChoicesHidden(true);
+    const id = nextId();
+    pushEntries([{ id, kind: "narration", text: timed.timeoutNarration }]);
+    enqueueReveal([id]);
+  }
+
+  // Scène chronométrée (§18) : le compte à rebours ne démarre que lorsque les
+  // choix d'origine sont réellement visibles et jouables (texte fini de taper,
+  // pas de dé en cours, pas encore de choix fait). S'il s'écoule, l'inaction
+  // ouvre de nouvelles options via onTimedExpire.
+  useEffect(() => {
+    if (timedTimer.current) {
+      clearTimeout(timedTimer.current);
+      timedTimer.current = null;
+    }
+    const timed = scene.timed;
+    const canRun = !!timed && !timedExpired && !choicesHidden && !selectedId && !rolling;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reflète l'état d'armement du compte à rebours dans l'UI, synchronisé au cycle de la scène
+    setCountdownArmed(canRun);
+    if (canRun && timed) {
+      timedTimer.current = setTimeout(() => onTimedExpire(timed), timed.ms);
+    }
+    return () => {
+      if (timedTimer.current) {
+        clearTimeout(timedTimer.current);
+        timedTimer.current = null;
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scene, step, choicesHidden, selectedId, rolling, timedExpired]);
 
   function persist(mutate: (run: RunState) => void) {
     const run = runRef.current ?? loadRun();
@@ -178,7 +244,7 @@ export default function Scene() {
    * "un cran au-dessus du strict minimum", pas à chaque échec).
    * Les états narratifs temporaires se dissipent scène après scène (spec §2).
    */
-  function advance(rollInfo?: { result: number; fail: boolean; consequence?: string }) {
+  function advance(rollInfo?: { result?: number; fail?: boolean; consequence?: string }) {
     const nextStep = step + 1;
     const nextScene = sceneAt(nextStep);
     const nextIllustration = nextScene.illustration ?? "assets/dithering-portal.jpg";
@@ -189,14 +255,45 @@ export default function Scene() {
     if (rollInfo?.consequence) {
       entries.push({ id: nextId(), kind: "narration", text: rollInfo.consequence });
     }
+    // Prix différé (§17) : une dette arrivée à échéance se règle ici, avant la
+    // scène suivante — rétrospectivement lisible dans le transcript.
+    const dueDebts = (runRef.current?.debts ?? []).filter((d) => d.settleAtStep <= nextStep);
+    for (const d of dueDebts) {
+      entries.push({ id: nextId(), kind: "narration", text: d.text });
+    }
     // Illustration : changement de contexte, ou ~1 fois sur 4 pour rythmer le fil.
     if (contextChanged || Math.random() < 0.25) {
       entries.push({ id: nextId(), kind: "illustration", src: nextIllustration });
     }
+    // Dette de sang (§19) : si cet adversaire a déjà tué un héros du joueur,
+    // il le reconnaît — une ligne discrète avant la scène, jamais un chiffre.
+    if (nextScene.foe) {
+      const debt = bloodDebtFor(loadMemory(), nextScene.foe);
+      if (debt) {
+        entries.push({
+          id: nextId(),
+          kind: "narration",
+          text:
+            "Cette créature… quelque chose en elle te reconnaît. Elle a déjà " +
+            `goûté au sang d'un des tiens — ${debt.heroName}, tombé ici avant ` +
+            "toi. Elle n'a pas oublié. Toi non plus, maintenant.",
+        });
+      }
+    }
     entries.push(...nextScene.narration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
-    const isCritical = rollInfo?.result === 1 || rollInfo?.result === 20;
-    if (isCritical) {
-      entries.push({ id: nextId(), kind: "jailer", text: jailerTaunt(rollInfo!.result) });
+    // Le Grand Registre (§19) : en entrant dans la salle, le classement
+    // s'affiche inline dans le fil, avec la ligne du joueur insérée et marquée.
+    if (nextScene.registre) {
+      const run = runRef.current;
+      const rows = buildRegistre(loadMemory(), run?.heroName ?? "toi", run?.day ?? 1);
+      entries.push({ id: nextId(), kind: "registre", rows });
+    }
+    const result = rollInfo?.result;
+    if (result === 1 || result === 20) {
+      // Saisons du Geôlier (§17) : le ton du taunt critique dépend de la
+      // posture, elle-même dérivée de l'historique agrégé du joueur.
+      const posture = jailerPosture(loadMemory());
+      entries.push({ id: nextId(), kind: "jailer", text: jailerTaunt(result, posture) });
     } else if (Math.random() < 0.12) {
       entries.push({ id: nextId(), kind: "jailer", text: nextScene.jailerLine });
     }
@@ -207,12 +304,16 @@ export default function Scene() {
       run.effects = run.effects
         .map((e) => ({ ...e, scenesLeft: e.scenesLeft - 1 }))
         .filter((e) => e.scenesLeft > 0);
+      // Dettes réglées : retirées de la run (§17).
+      run.debts = (run.debts ?? []).filter((d) => d.settleAtStep > nextStep);
     });
     pushEntries(entries);
     // Révélation séquentielle : narration(s) puis Geôlier, jamais tous en même temps.
     enqueueReveal(entries.filter((e) => e.kind === "narration" || e.kind === "jailer").map((e) => e.id));
     setSelectedId(null);
     setRoll(null);
+    // Nouvelle scène : on réarme la mécanique chronométrée (§18).
+    setTimedExpired(false);
   }
 
   function onSelect(choice: Choice) {
@@ -225,6 +326,23 @@ export default function Scene() {
     // L'action choisie s'affiche dans le fil AVANT sa conséquence (spec §16).
     pushEntries([{ id: nextId(), kind: "chosen", label: choice.label }]);
 
+    // Persistance environnementale (§17) : défoncer la porte balafrée laisse
+    // une trace durable, relue à l'ouverture des runs suivantes.
+    if (choice.setsEnvFlag) {
+      const flag = choice.setsEnvFlag;
+      mutateMemory((m) => {
+        m.envFlags[flag] = true;
+      });
+    }
+    // Prix différé (§17) : un choix « gratuit » peut poser une dette silencieuse
+    // qui se règle plus tard dans la run (au bout de N pas de progression).
+    if (choice.debt) {
+      const debt = choice.debt;
+      persist((run) => {
+        run.debts = [...(run.debts ?? []), { id: debt.id, settleAtStep: step + debt.settleInSteps, text: debt.text }];
+      });
+    }
+
     if (choice.risky) {
       // Armement du dé (spec §4) : voile + hint contextuel, le dé devient saisissable.
       const effects = runRef.current?.effects ?? [];
@@ -236,6 +354,9 @@ export default function Scene() {
         outcomes: choice.risky.outcomes,
         modifier,
         effectLabel: effects[0]?.label,
+        // La main qui hésite (§18) : sur un jet à fort enjeu, le dé traîne/tremble
+        // avant de s'immobiliser — purement visuel, n'affecte jamais le résultat.
+        highStakes: choice.risky.highStakes,
       });
     } else if (choice.rest) {
       // Campement (spec §7) : le jour avance, les blessures légères s'atténuent.
@@ -247,8 +368,17 @@ export default function Scene() {
       const newDay = runRef.current?.day ?? day + 1;
       setDay(newDay);
       setHealth(runRef.current?.health ?? 1);
+      // Survie enregistrée au compte (§17) : le plus grand jour atteint nourrit
+      // la posture du Geôlier sans jamais être affiché comme un score.
+      mutateMemory((m) => {
+        m.bestDays = Math.max(m.bestDays, newDay);
+      });
       pushEntries([{ id: nextId(), kind: "day", day: newDay }]);
       advanceTimer.current = setTimeout(() => advance(), 450);
+    } else if (choice.passive) {
+      // Le silence comme vraie option de jeu (§19) : pas une case vide — une
+      // conséquence dédiée, écrite en réaction à l'inaction choisie.
+      advanceTimer.current = setTimeout(() => advance({ consequence: choice.passive!.consequence }), 450);
     } else {
       // Choix neutre : résolution instantanée, sans dé (spec §4).
       advanceTimer.current = setTimeout(() => advance(), 450);
@@ -299,6 +429,18 @@ export default function Scene() {
           ))}
           <div ref={bottomRef} />
         </div>
+
+        {/* Scène chronométrée (§18) : compte à rebours VISUEL — une jauge qui
+            s'érode vite, jamais un timer chiffré. Cohérent avec le langage de
+            la santé. Disparaît dès qu'un choix est fait ou le délai écoulé. */}
+        {countdownArmed && scene.timed && (
+          <div className="timed-countdown relative z-[3]" aria-hidden>
+            <div
+              className="timed-countdown-fill"
+              style={{ ["--timed-ms" as string]: `${scene.timed.ms}ms` }}
+            />
+          </div>
+        )}
 
         {/* Choix ancrés en bas (spec §16), mais masqués le temps que la
             conséquence + la scène suivante finissent de s'écrire — pour
@@ -364,6 +506,24 @@ export default function Scene() {
                   ];
               }
             });
+            // Dette de sang (§19) : un 1 naturel en combat = l'adversaire nommé
+            // « marque » le héros. Stand-in prototype du vrai flux de mort (pas
+            // encore construit) : la trace est attachée au compte et fera
+            // réapparaître l'adversaire, marqué, dans une run suivante.
+            if (scene.combat && scene.foe && result === 1) {
+              const foe = scene.foe;
+              const foeLabel = scene.id === "geryon" ? "Geryon" : "la meute des tunnels";
+              mutateMemory((m) => {
+                if (!m.bloodDebts.some((d) => d.entity === foe)) {
+                  m.bloodDebts.push({
+                    entity: foe,
+                    label: foeLabel,
+                    heroName: runRef.current?.heroName ?? "un héros",
+                    runIndex: m.runsStarted,
+                  });
+                }
+              });
+            }
             setHealth(runRef.current?.health ?? 1);
             advance({ result, fail: outcome.fail, consequence: outcome.text });
           }}
@@ -465,6 +625,24 @@ function FeedItem({
         <p className="scene-enter mb-[18px] text-[13px] leading-[1.3] text-[var(--color-ink)]">
           <TypedText text={entry.text} typed={typed} skip={skip} msPerChar={15} onDone={onDone} />
         </p>
+      );
+    case "registre":
+      // Le Grand Registre (§19) : classement défilant inline, la ligne du
+      // joueur marquée en accent — un lieu traversé, pas un menu de stats.
+      return (
+        <div className="scene-enter registre mx-[-17px] mb-[18px]">
+          <p className="registre-head">— LE GRAND REGISTRE —</p>
+          <div className="registre-list">
+            {entry.rows.map((r) => (
+              <div key={`${r.rank}-${r.name}`} className={`registre-row ${r.isPlayer ? "is-player" : ""}`}>
+                <span className="registre-rank">{r.rank}</span>
+                <span className="registre-name">{r.name}</span>
+                <span className="registre-days">J{r.days}</span>
+                <span className="registre-cause">{r.cause}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       );
   }
 }

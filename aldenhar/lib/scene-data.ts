@@ -24,12 +24,29 @@ export type Outcomes = {
 export type Choice = {
   id: string;
   label: string;
-  /** Choix risqué : toujours cliquable, jet de dé + stat en coulisse. */
-  risky?: { stat: Stat; threshold: number; outcomes: Outcomes };
+  /**
+   * Choix risqué : toujours cliquable, jet de dé + stat en coulisse.
+   * `highStakes` (§18, « la main qui hésite ») : le dé traîne/tremble avant
+   * de s'immobiliser sur les jets à très fort enjeu — purement visuel.
+   */
+  risky?: { stat: Stat; threshold: number; outcomes: Outcomes; highStakes?: boolean };
   /** Choix verrouillé : seuil de stat non atteint → grisé mais visible. */
   locked?: { stat: Stat };
   /** Repos au campement : avance le jour, atténue les blessures légères, sauvegarde (spec §7). */
   rest?: boolean;
+  /**
+   * Choix passif — « le silence comme vraie option de jeu » (§19) : ne rien
+   * faire est un vrai choix stratégique, résolu instantanément (pas de dé)
+   * avec une conséquence dédiée écrite en réaction à l'inaction.
+   */
+  passive?: { consequence: string };
+  /** Pose durablement un flag d'environnement au niveau compte (§17). */
+  setsEnvFlag?: string;
+  /**
+   * Prix différé (§17) : ce choix « gratuit » contracte une dette silencieuse
+   * qui se règle `settleInSteps` scènes plus loin dans la run.
+   */
+  debt?: { id: string; settleInSteps: number; text: string };
 };
 
 export type Scene = {
@@ -48,6 +65,31 @@ export type Scene = {
    * calcul de dégâts séparé.
    */
   combat?: boolean;
+  /**
+   * Identité stable de l'adversaire pour la dette de sang (§19) : si ce même
+   * `foe` a déjà tué un héros du joueur, une ligne de reconnaissance est
+   * insérée avant la scène. Purement narratif.
+   */
+  foe?: string;
+  /**
+   * La scène qui se résout sans toi (§18) : décision sous contrainte de temps
+   * réel très courte. Un compte à rebours VISUEL (érosion/pulsation, jamais un
+   * timer chiffré) ; si le joueur ne choisit pas à temps, la situation évolue
+   * et de NOUVELLES options s'ouvrent (l'inaction est elle-même un choix).
+   */
+  timed?: {
+    ms: number;
+    /** Texte inséré quand le temps s'écoule sans choix. */
+    timeoutNarration: string;
+    /** Options qui remplacent les choix d'origine après expiration. */
+    timeoutChoices: Choice[];
+  };
+  /**
+   * Le Grand Registre (§19) : cette scène n'est pas un choix mais un lieu
+   * traversable — un classement des héros par jours de survie, défilé une
+   * fois. La ligne du joueur s'y insère, visuellement distincte.
+   */
+  registre?: boolean;
 };
 
 function outcomes(
@@ -82,6 +124,7 @@ export const SCENES: Scene[] = [
       {
         id: "pousser",
         label: "Pousser la porte balafrée",
+        setsEnvFlag: "porte-balafree-defoncee",
         risky: {
           stat: "COURAGE",
           threshold: 12,
@@ -93,7 +136,19 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "ecouter", label: "Écouter, immobile" },
+      {
+        id: "ecouter",
+        label: "Écouter, immobile",
+        // Le silence comme vraie option (§19) : ne rien forcer est un choix,
+        // avec une conséquence propre — pas une case vide.
+        passive: {
+          consequence:
+            "Tu ne touches à rien. Tu écoutes. Derrière la porte blanche, le " +
+            "froid se retire lentement, comme une marée — et laisse derrière " +
+            "lui un couloir que tu n'avais pas vu, à main gauche. Le silence, " +
+            "ici, ouvre plus de portes que l'épaule.",
+        },
+      },
       { id: "rebrousser", label: "Rebrousser chemin", locked: { stat: "EMPATHIE" } },
     ],
     jailerLine: "12,000 avant toi n'ont pas passé leur 7e jour ici...",
@@ -126,7 +181,21 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "longer", label: "Longer le mur, sans toucher" },
+      {
+        id: "longer",
+        label: "Longer le mur, sans toucher",
+        // Prix différé (§17) : éviter le risque ici semble gratuit — mais le
+        // mur suintant marque qui le frôle, et la dette se règle plus loin.
+        debt: {
+          id: "marque-fresque",
+          settleInSteps: 3,
+          text:
+            "La marque humide prise en longeant le mur de la salle ronde, il y " +
+            "a quelques scènes, se met soudain à luire faiblement sous ta " +
+            "manche. Quelque chose, quelque part, vient de savoir exactement " +
+            "où tu es.",
+        },
+      },
       {
         id: "odeur",
         label: "Suivre l'odeur de fer",
@@ -191,6 +260,87 @@ export const SCENES: Scene[] = [
     jailerLine: "4 312 mains ont hésité sur cette rampe. Je les ai comptées.",
   },
   {
+    id: "eboulement",
+    narration: [
+      "À peine le pied posé sur le palier, la voûte gémit. Une fissure court " +
+        "au plafond, plus vite que le son ne te parvient. Des blocs commencent " +
+        "à tomber — le passage ne tiendra pas dix secondes.",
+      "Il faut choisir. Maintenant.",
+    ],
+    // La scène qui se résout sans toi (§18) : décision sous contrainte de temps.
+    timed: {
+      ms: 2200,
+      timeoutNarration:
+        "Tu hésites une seconde de trop. Le sol se dérobe sous toi avant que " +
+        "tu n'aies tranché — mais la chute est courte, et te dépose, meurtri, " +
+        "dans une galerie basse que personne n'aurait choisi d'emprunter. " +
+        "L'inaction, elle aussi, mène quelque part.",
+      timeoutChoices: [
+        {
+          id: "ramper-galerie",
+          label: "Ramper dans la galerie basse",
+          risky: {
+            stat: "INSTINCT",
+            threshold: 11,
+            outcomes: outcomes(
+              "20 naturel. La galerie t'était destinée : elle débouche là où personne ne t'attendait, à revers de tout.",
+              "Tu rampes dans le noir étroit. Ça débouche plus loin, intact, sur un passage oublié.",
+              "La galerie se resserre sur tes épaules. Tu forces le passage, et quelque chose cède — pas la pierre.",
+              "1 naturel. La galerie n'était pas vide. Elle t'attendait. ♦ −2"
+            ),
+          },
+        },
+        {
+          id: "creuser-remonter",
+          label: "Dégager les gravats vers le haut",
+          risky: {
+            stat: "COURAGE",
+            threshold: 13,
+            outcomes: outcomes(
+              "20 naturel. Tu remontes à la force des bras par la brèche exacte, avant qu'elle ne se referme. Le couloir d'origine t'accueille, plus loin.",
+              "Tu dégages assez de gravats pour te hisser. Tu retrouves le chemin, couvert de poussière mais entier.",
+              "Les gravats glissent sous toi à chaque prise. Tu remontes à moitié, épuisé, du mauvais côté.",
+              "1 naturel. Le plafond finit sa chute pendant que tu creuses. ♦ −2"
+            ),
+          },
+        },
+      ],
+    },
+    choices: [
+      {
+        id: "bondir-avant",
+        label: "Bondir en avant sous les blocs",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 12,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Tu passes entre deux blocs à l'instant précis où ils se croisent. Le couloir s'effondre derrière toi, pas devant.",
+            "Tu plonges en avant. Un bloc frôle ton talon — tu es passé, le passage est scellé dans ton dos.",
+            "Un bloc te fauche l'épaule en plein élan. Tu passes quand même, mais tu le sens.",
+            "1 naturel. Tu bondis pile sous le plus gros. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "reculer-vite",
+        label: "Se jeter en arrière",
+        risky: {
+          stat: "COURAGE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Ton recul est si net que l'éboulement se referme comme un rideau, sans t'avoir touché. Tu attendras une autre voie.",
+            "Tu te jettes en arrière à temps. Le passage se mure, mais tu es indemne, du bon côté.",
+            "Tu recules d'un pas trop court. La poussière et les éclats te cinglent le visage.",
+            "1 naturel. Tu recules — dans un second éboulement. ♦ −2"
+          ),
+        },
+      },
+      { id: "figer", label: "Se plaquer au mur, immobile", locked: { stat: "INSTINCT" } },
+    ],
+    jailerLine: "Le plafond ne t'attend pas. Moi, si — j'ai tout mon temps.",
+  },
+  {
     id: "pont-os",
     narration: [
       "Une rivière souterraine barre le passage, noire et sans reflet. On l'a " +
@@ -253,6 +403,7 @@ export const SCENES: Scene[] = [
   {
     id: "tunnel-embuscade",
     combat: true,
+    foe: "meute-limiers",
     narration: [
       "Le tablier d'os à peine passé, la galerie se resserre. Des griffes " +
         "raclent la pierre dans le noir, plusieurs paires à la fois, " +
@@ -434,6 +585,7 @@ export const SCENES: Scene[] = [
   {
     id: "geryon",
     combat: true,
+    foe: "geryon",
     narration: [
       "Le couloir débouche sur une arche effondrée, et dessous, une masse " +
         "qui respire par trois gueules distinctes, synchronisées. Geryon. " +
@@ -453,6 +605,7 @@ export const SCENES: Scene[] = [
         risky: {
           stat: "COURAGE",
           threshold: 14,
+          highStakes: true,
           outcomes: outcomes(
             "20 naturel. Tu passes sous les trois mâchoires au même instant, comme si elles s'étaient elles-mêmes écartées pour te laisser filer.",
             "Tu forces le passage. Une gueule se referme sur ton manteau — tu le laisses derrière, et toi devant.",
@@ -574,6 +727,36 @@ export const SCENES: Scene[] = [
     jailerLine: "Cet anneau a connu 3 propriétaires. Tous brefs.",
   },
   {
+    id: "grand-registre",
+    registre: true,
+    narration: [
+      "La galerie s'ouvre sur une salle haute dont chaque mur est une " +
+        "fresque de noms gravés, du sol au plafond noyé d'ombre. Il y en a " +
+        "des milliers. Il y en a trop.",
+      "Ce ne sont pas des décorations. Ce sont des comptes. Chaque nom porte " +
+        "un nombre de jours et une fin, gravés d'une main patiente qui n'a " +
+        "jamais manqué une seule mort.",
+      "En t'approchant, tu comprends que la liste se met à jour. Ton propre " +
+        "nom est là, quelque part au milieu, encore frais — le compte n'est " +
+        "pas clos tant que tu marches.",
+    ],
+    choices: [
+      { id: "lire-registre", label: "Parcourir les noms" },
+      { id: "quitter-registre", label: "Quitter la salle sans lire", passive: {
+        consequence:
+          "Tu détournes les yeux. Certains comptes, on préfère ne pas savoir " +
+          "où ils s'arrêtent — surtout le sien. La salle te laisse partir, " +
+          "sans insister. Elle sait qu'on revient toujours.",
+      } },
+    ],
+    jailerLine: "Ton nom est déjà gravé. J'ai juste laissé le nombre en blanc.",
+  },
+  {
+    // Le faux choix évident (§18) : l'inscription INVITE explicitement à
+    // frapper — c'est l'option « manifestement la bonne ». C'est justement
+    // celle dont l'échec est le plus retors (le silence à dents). Instance
+    // volontairement RARE et non signalée : le principe reste du contenu, pas
+    // une règle mécanique détectable (sinon l'effet s'inverse, cf. Notion).
     id: "porte-7e",
     narration: [
       "Au bout, une porte sans gonds ni serrure, taillée dans une seule dent " +
@@ -624,30 +807,77 @@ export const SCENES: Scene[] = [
 /**
  * Répliques du Geôlier quand le dé a mal tourné — il ne console pas,
  * il tient les comptes. `{n}` est remplacé par le résultat du jet.
+ *
+ * Les saisons du Geôlier (§17) : son ton dérive selon l'historique du joueur
+ * (posture Amusé / Intéressé / Respectueux, calculée dans player-memory.ts).
+ * Amusé = blasé/moqueur (défaut, joueur qui meurt vite) ; Respectueux = un
+ * héros qui dure force presque son estime. Jamais un score affiché — ça se
+ * ressent uniquement au choix des mots.
  */
-export const JAILER_TAUNTS_FAIL: string[] = [
-  "Un {n} ? Même les os du pont ont ri.",
-  "J'ajoute ce {n} à ton registre. Il se remplit vite.",
-  "Le dé t'a jugé. J'ai cessé de le faire depuis longtemps.",
-  "{n}. Le précédent avait fait pareil. J'ai gardé sa besace.",
-];
+export type JailerPosture = "amuse" | "interesse" | "respectueux";
 
-export const JAILER_TAUNTS_CRITFAIL: string[] = [
-  "Un 1 naturel. Je l'encadrerais, si mes murs étaient à moi.",
-  "1. Le dé lui-même a eu pitié — puis non.",
-];
+type JailerPools = { fail: string[]; critFail: string[]; critSuccess: string[] };
 
-export const JAILER_TAUNTS_CRITSUCCESS: string[] = [
-  "Un 20. Rare. Je note, je n'applaudis pas.",
-  "20 naturel. Même moi, j'admets que c'était propre.",
-];
+export const JAILER_BY_POSTURE: Record<JailerPosture, JailerPools> = {
+  amuse: {
+    fail: [
+      "Un {n} ? Même les os du pont ont ri.",
+      "J'ajoute ce {n} à ton registre. Il se remplit vite.",
+      "Le dé t'a jugé. J'ai cessé de le faire depuis longtemps.",
+      "{n}. Le précédent avait fait pareil. J'ai gardé sa besace.",
+    ],
+    critFail: [
+      "Un 1 naturel. Je l'encadrerais, si mes murs étaient à moi.",
+      "1. Le dé lui-même a eu pitié — puis non.",
+    ],
+    critSuccess: [
+      "Un 20. Rare. Je note, je n'applaudis pas.",
+      "20 naturel. Ne t'y habitue pas.",
+    ],
+  },
+  interesse: {
+    fail: [
+      "Un {n}. Tu vaux mieux que ça, d'habitude. C'est nouveau, ça, « d'habitude ».",
+      "{n}. J'ai fini par retenir ton nom. Ne me le fais pas regretter.",
+      "Le dé hésite sur toi, maintenant. Moi aussi.",
+    ],
+    critFail: [
+      "Un 1. De ta part, ça me surprend presque. Presque.",
+      "1 naturel. Tiens. Toi qui tenais si bien.",
+    ],
+    critSuccess: [
+      "Un 20. Je commence à comprendre pourquoi tu dures.",
+      "20 naturel. Bien. Continue, que je voie jusqu'où.",
+    ],
+  },
+  respectueux: {
+    fail: [
+      "Un {n}. Même les meilleurs trébuchent. Relève-toi — je regarde.",
+      "{n}. Ce n'est pas la fin. Pas pour toi, pas encore.",
+      "Le dé s'est trompé de héros. Ça arrive, même ici.",
+    ],
+    critFail: [
+      "Un 1. J'en ai vu mille avant toi. Aucun ne m'avait manqué. Toi, si.",
+      "1 naturel. Si tu tombes ici, je retiendrai le jour. Je te le dois.",
+    ],
+    critSuccess: [
+      "Un 20. Voilà pourquoi ton nom monte dans le Registre.",
+      "20 naturel. Propre. Tu n'es plus tout à fait un divertissement.",
+    ],
+  },
+};
 
-export function jailerTaunt(result: number): string {
-  const pool =
-    result === 1 ? JAILER_TAUNTS_CRITFAIL : result === 20 ? JAILER_TAUNTS_CRITSUCCESS : JAILER_TAUNTS_FAIL;
+export function jailerTaunt(result: number, posture: JailerPosture = "amuse"): string {
+  const pools = JAILER_BY_POSTURE[posture];
+  const pool = result === 1 ? pools.critFail : result === 20 ? pools.critSuccess : pools.fail;
   const line = pool[Math.floor(Math.random() * pool.length)];
   return line.replace("{n}", String(result));
 }
+
+/** Compat : anciens exports conservés (posture Amusé), au cas où référencés ailleurs. */
+export const JAILER_TAUNTS_FAIL = JAILER_BY_POSTURE.amuse.fail;
+export const JAILER_TAUNTS_CRITFAIL = JAILER_BY_POSTURE.amuse.critFail;
+export const JAILER_TAUNTS_CRITSUCCESS = JAILER_BY_POSTURE.amuse.critSuccess;
 
 /** Chapitre de départ (la démo commence à Aldenhar — III). */
 export const CHAPTER_START = 3;

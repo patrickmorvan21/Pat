@@ -26,6 +26,12 @@ export type RollRequest = {
   modifier: number;
   /** Nom de l'état actif, affiché dans le hint (jamais de chiffre). */
   effectLabel?: string;
+  /**
+   * La main qui hésite (§18) : sur un jet à très fort enjeu, le dé « traîne »
+   * et tremble brièvement avant de s'immobiliser sur sa face. Purement
+   * visuel — n'affecte JAMAIS le résultat, densifie seulement la tension.
+   */
+  highStakes?: boolean;
 };
 
 type Props = {
@@ -429,12 +435,28 @@ export default function Die3D({ request, onComplete }: Props) {
         }
         if (Math.hypot(vel.x, vel.y) < STOP_SPEED) beginSettle();
       } else if (state === "settling") {
-        settleT += 0.03;
+        // La main qui hésite (§18) : sur un jet à fort enjeu, le dé s'aligne
+        // plus lentement et tremble avant de se figer — visuel seulement, la
+        // face gagnante (result) est déjà tirée, rien ici ne la change.
+        const highStakes = requestRef.current?.highStakes;
+        settleT += highStakes ? 0.018 : 0.03;
         pos.x += (CENTER.x - pos.x) * 0.11;
         pos.y += (CENTER.y - pos.y) * 0.11;
         dieScale += (CENTER.scale - dieScale) * 0.1;
-        die.quaternion.slerp(settleQuat!, 0.14);
-        if (settleT >= 1.7) {
+        die.quaternion.slerp(settleQuat!, highStakes ? 0.08 : 0.14);
+        const finishAt = highStakes ? 2.6 : 1.7;
+        if (highStakes && settleT < finishAt) {
+          // Frémissement décroissant : une micro-oscillation sur la position
+          // et une secousse d'échelle qui s'éteint à l'approche de l'arrêt.
+          const tremor = Math.max(0, 1 - settleT / finishAt);
+          pos.x += Math.sin(t * 47) * 1.6 * tremor;
+          pos.y += Math.cos(t * 41) * 1.2 * tremor;
+          if (squash.amount < 0.05 * tremor) {
+            squash.axis = Math.random() < 0.5 ? "x" : "y";
+            squash.amount = 0.05 * tremor;
+          }
+        }
+        if (settleT >= finishAt) {
           die.quaternion.copy(settleQuat!);
           pos = { x: CENTER.x, y: CENTER.y };
           finishRoll();
