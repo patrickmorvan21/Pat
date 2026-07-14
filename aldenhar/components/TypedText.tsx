@@ -37,6 +37,13 @@ export default function TypedText({
     setShown(0);
     let i = 0;
     const id = setInterval(() => {
+      // Un tap (effet `skip` ci-dessous) peut avoir déjà terminé ce bloc :
+      // sans cette garde, le tick suivant de l'intervalle écrasait le texte
+      // complet par une tranche partielle, figeant le paragraphe à 2-3 mots.
+      if (doneRef.current) {
+        clearInterval(id);
+        return;
+      }
       i += 1;
       setShown(i);
       if (i >= text.length) {
@@ -60,5 +67,7 @@ export default function TypedText({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [skip]);
 
-  return <>{text.slice(0, shown)}</>;
+  // Hors frappe active, toujours le texte entier — ceinture et bretelles
+  // contre tout état `shown` partiel résiduel.
+  return <>{typed ? text.slice(0, shown) : text}</>;
 }

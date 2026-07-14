@@ -62,6 +62,30 @@ export type PendingDebt = {
   text: string;
 };
 
+/**
+ * Stats de personnalité de la run (Courage/Ruse/Instinct/Empathie, sur 10).
+ * Pour l'instant AFFICHAGE SEUL (radar de l'écran Essence, 14/07) : les jets
+ * continuent d'utiliser seuil + états narratifs. Elles seront fixées par le
+ * prologue narratif (pas encore construit) et branchées sur la résolution à
+ * ce moment-là — jamais un écran de répartition de points.
+ */
+export type RunStats = {
+  courage: number;
+  ruse: number;
+  instinct: number;
+  empathie: number;
+};
+
+function randomStats(): RunStats {
+  // Un profil marqué plutôt qu'une moyenne plate : une dominante, une faiblesse.
+  const values = [7 + Math.floor(Math.random() * 3), 5 + Math.floor(Math.random() * 2), 4 + Math.floor(Math.random() * 2), 2 + Math.floor(Math.random() * 3)];
+  for (let i = values.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [values[i], values[j]] = [values[j], values[i]];
+  }
+  return { courage: values[0], ruse: values[1], instinct: values[2], empathie: values[3] };
+}
+
 export type RunState = {
   /** Nom du héros de cette run (dette de sang, Grand Registre — spec §19). */
   heroName: string;
@@ -81,6 +105,8 @@ export type RunState = {
   besace: BesaceItem[];
   /** Rencontres (scènes de combat) traversées vivant — pour l'écran de mort. */
   encounters: number;
+  /** Stats de la run (affichage Essence seulement pour l'instant). */
+  stats: RunStats;
 };
 
 const KEY = "aldenhar-run";
@@ -108,6 +134,7 @@ function fresh(): RunState {
     debts: [],
     besace: startingBesace(),
     encounters: 0,
+    stats: randomStats(),
   };
 }
 
@@ -137,6 +164,7 @@ export function loadRun(): RunState {
             debts: Array.isArray(p.debts) ? p.debts : [],
             besace: Array.isArray(p.besace) ? p.besace : startingBesace(),
             encounters: typeof p.encounters === "number" ? p.encounters : 0,
+            stats: p.stats && typeof p.stats.courage === "number" ? p.stats : randomStats(),
           };
         }
       }
@@ -145,6 +173,24 @@ export function loadRun(): RunState {
     }
   }
   return fresh();
+}
+
+/**
+ * Une run est « en cours » si son fil a déjà du contenu — critère de l'écran
+ * d'accueil (14/07) pour choisir entre « Bienvenue en enfer » et « Bon
+ * retour... ». La simple existence de la clé ne suffit pas : une run tout
+ * juste réinitialisée (mort acceptée) n'a rien à reprendre.
+ */
+export function hasSavedRun(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const raw = window.localStorage.getItem(KEY);
+    if (!raw) return false;
+    const p = JSON.parse(raw) as Partial<RunState>;
+    return (Array.isArray(p.feed) && p.feed.length > 0) || (typeof p.step === "number" && p.step > 0);
+  } catch {
+    return false;
+  }
 }
 
 export function saveRun(state: RunState): void {

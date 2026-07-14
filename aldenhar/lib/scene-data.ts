@@ -267,6 +267,7 @@ export const SCENES: Scene[] = [
     // croiser un adversaire vite. Autonome — ne dépend d'aucune scène amont.
     id: "rodeur",
     combat: true,
+    illustration: "assets/monstre_rodeur.png",
     foe: "rodeur",
     foeName: "Le Rôdeur",
     narration: [
@@ -521,6 +522,7 @@ export const SCENES: Scene[] = [
   {
     id: "tunnel-embuscade",
     combat: true,
+    illustration: "assets/monstre_limiers.png",
     foe: "meute-limiers",
     foeName: "La meute de limiers",
     narration: [
@@ -584,6 +586,7 @@ export const SCENES: Scene[] = [
   {
     id: "tunnel-affrontement",
     combat: true,
+    illustration: "assets/monstre_limiers.png",
     foe: "meute-limiers",
     foeName: "La meute de limiers",
     narration: [
@@ -712,6 +715,7 @@ export const SCENES: Scene[] = [
   {
     id: "geryon",
     combat: true,
+    illustration: "assets/monstre_geryon.png",
     foe: "geryon",
     foeName: "Geryon aux trois gueules",
     narration: [
@@ -785,6 +789,7 @@ export const SCENES: Scene[] = [
     // (« chancelle » → « rugit, blessée » → « s'effondre »), jamais une jauge.
     id: "geryon-2",
     combat: true,
+    illustration: "assets/monstre_geryon.png",
     foe: "geryon",
     narration: [
       "Le premier échange est passé si vite que c'est la douleur qui te le " +
@@ -846,6 +851,7 @@ export const SCENES: Scene[] = [
   {
     id: "geryon-3",
     combat: true,
+    illustration: "assets/monstre_geryon.png",
     foe: "geryon",
     narration: [
       "Geryon rugit, blessé — les trois voix à la fois, désaccordées pour la " +

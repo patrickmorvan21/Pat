@@ -5,6 +5,7 @@ import Die3D, { type RollRequest } from "@/components/Die3D";
 import ChoiceButton from "@/components/ChoiceButton";
 import TypedText from "@/components/TypedText";
 import DeathScreen from "@/components/DeathScreen";
+import GameMenu from "@/components/GameMenu";
 import { chapterLabel, jailerTaunt, sceneAt, tierIsFail, type Choice } from "@/lib/scene-data";
 import { loadRun, resetRun, saveRun, type FeedEntry, type RunState } from "@/lib/state";
 import { BESACE_SLOTS, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
@@ -112,6 +113,8 @@ export default function Scene() {
   // Scène chronométrée (§18) : true une fois le délai écoulé sans choix — les
   // choix d'origine cèdent la place aux options ouvertes par l'inaction.
   const [timedExpired, setTimedExpired] = useState(false);
+  // Menu plein cadre (spec §8, écrans Figma 14/07) — recouvre tout le cadre.
+  const [menuOpen, setMenuOpen] = useState(false);
   // Armé quand le compte à rebours d'une scène chronométrée court (pour l'UI).
   const [countdownArmed, setCountdownArmed] = useState(false);
   const runRef = useRef<RunState | null>(null);
@@ -144,6 +147,10 @@ export default function Scene() {
   }
   function onTypedDone(id: string) {
     if (activeTypingIdRef.current !== id) return;
+    // Correctif 14/07 : le scroll de suivi n'intervient QU'ICI, quand le
+    // paragraphe entier a fini de se révéler — jamais pendant l'écriture
+    // (l'ancien intervalle déplaçait l'écran à chaque retour à la ligne).
+    bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     advanceRevealQueue();
   }
 
@@ -225,18 +232,6 @@ export default function Scene() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [feed.length, revealedIds]);
-
-  // Pendant la frappe lettre à lettre, le texte grandit sous la ligne de
-  // flottaison : suivre le bas du fil en continu (retour Patrick 14/07 —
-  // « je dois sans cesse scroller vers le bas »). Cadence courte, scroll
-  // instantané : un smooth ici se battrait avec lui-même à chaque tick.
-  useEffect(() => {
-    if (!activeTypingId) return;
-    const id = setInterval(() => {
-      bottomRef.current?.scrollIntoView({ behavior: "auto", block: "end" });
-    }, 160);
-    return () => clearInterval(id);
-  }, [activeTypingId]);
 
   /**
    * La scène qui se résout sans toi (§18) : le délai s'écoule sans choix. Ce
@@ -538,6 +533,7 @@ export default function Scene() {
           <button
             type="button"
             aria-label="Menu"
+            onClick={() => setMenuOpen(true)}
             className="grid size-[41px] cursor-pointer grid-cols-3 place-items-center border border-solid border-[var(--color-ink)] bg-[var(--color-bg)] p-[11px]"
           >
             {Array.from({ length: 9 }).map((_, i) => (
@@ -668,6 +664,10 @@ export default function Scene() {
             advance({ result, fail: outcome.fail, consequence: outcome.text, destinItem });
           }}
         />
+
+        {/* Menu plein cadre (spec §8) : Essence (stats/états/compétences) +
+            Inventaire (Besace/Reliques). Ouvert par l'icône d'en-tête. */}
+        {menuOpen && <GameMenu run={runRef.current ?? loadRun()} onClose={() => setMenuOpen(false)} />}
 
         {/* Écran de mort (13/07) : dé brisé → épitaphe → dissolution
             convergente → chiffres → Relique → recommencer. */}
