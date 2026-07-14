@@ -38,6 +38,39 @@ function getDemonMask(): string | null {
   return demonMaskCache;
 }
 
+// Pixels morts ambiants de l'état KO (palier « Au seuil », retour Patrick
+// 14/07) : une nappe de pixels charbon épars + quelques braises orange qui
+// scintillent sur tout l'écran — la mort se sent, sans jamais un chiffre.
+// Générée une fois côté client, cachée au niveau module.
+let decayCache: string | null = null;
+function getDecayOverlay(): string | null {
+  if (typeof document === "undefined") return null;
+  if (!decayCache) {
+    const W = 390,
+      H = 800;
+    const c = document.createElement("canvas");
+    c.width = W;
+    c.height = H;
+    const ctx = c.getContext("2d")!;
+    let seed = 0xdead;
+    const rnd = () => {
+      seed = (seed * 1664525 + 1013904223) >>> 0;
+      return seed / 4294967296;
+    };
+    ctx.fillStyle = "#1c1a16";
+    for (let i = 0; i < 780; i++) {
+      const s = rnd() < 0.7 ? 2 : 3;
+      ctx.fillRect(Math.floor(rnd() * W), Math.floor(rnd() * H), s, s);
+    }
+    ctx.fillStyle = "#e0632a";
+    for (let i = 0; i < 90; i++) {
+      ctx.fillRect(Math.floor(rnd() * W), Math.floor(rnd() * H), rnd() < 0.8 ? 1 : 2, rnd() < 0.8 ? 1 : 2);
+    }
+    decayCache = c.toDataURL();
+  }
+  return decayCache;
+}
+
 let uidCounter = 0;
 function nextId() {
   uidCounter += 1;
@@ -193,6 +226,18 @@ export default function Scene() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [feed.length, revealedIds]);
 
+  // Pendant la frappe lettre à lettre, le texte grandit sous la ligne de
+  // flottaison : suivre le bas du fil en continu (retour Patrick 14/07 —
+  // « je dois sans cesse scroller vers le bas »). Cadence courte, scroll
+  // instantané : un smooth ici se battrait avec lui-même à chaque tick.
+  useEffect(() => {
+    if (!activeTypingId) return;
+    const id = setInterval(() => {
+      bottomRef.current?.scrollIntoView({ behavior: "auto", block: "end" });
+    }, 160);
+    return () => clearInterval(id);
+  }, [activeTypingId]);
+
   /**
    * La scène qui se résout sans toi (§18) : le délai s'écoule sans choix. Ce
    * n'est PAS un échec automatique — la situation évolue et ouvre de nouvelles
@@ -292,8 +337,10 @@ export default function Scene() {
     if (nextScene.combat && nextScene.foeName) {
       entries.push({ id: nextId(), kind: "combat", foe: nextScene.foeName });
     }
-    // Illustration : changement de contexte, ou ~1 fois sur 4 pour rythmer le fil.
-    if (contextChanged || Math.random() < 0.25) {
+    // Illustration : TOUJOURS sur une rencontre (retour Patrick 14/07 — il
+    // manquait l'illustration de Geryon), sinon changement de contexte ou
+    // ~1 fois sur 4 pour rythmer le fil.
+    if (nextScene.combat || contextChanged || Math.random() < 0.25) {
       entries.push({ id: nextId(), kind: "illustration", src: nextIllustration });
     }
     // Dette de sang (§19) : si cet adversaire a déjà tué un héros du joueur,
@@ -464,10 +511,24 @@ export default function Scene() {
   return (
     <main className="flex min-h-dvh items-center justify-center">
       <div
-        className={`phone-frame relative flex h-[800px] w-[390px] shrink-0 flex-col overflow-clip bg-[var(--color-bg)] ${
+        className={`phone-frame relative flex h-[800px] max-h-[100dvh] w-[390px] shrink-0 flex-col overflow-clip bg-[var(--color-bg)] ${
           erosion ? `erosion-${erosion}` : ""
         }`}
       >
+        {/* État KO (14/07) : au palier critique, une nappe de pixels morts
+            scintille sur tout l'écran — la mort est proche et ça se sent. */}
+        {erosion === 3 && (
+          <div
+            className="decay-overlay"
+            style={
+              typeof document !== "undefined" && getDecayOverlay()
+                ? { backgroundImage: `url(${getDecayOverlay()})` }
+                : undefined
+            }
+            aria-hidden
+          />
+        )}
+
         {/* En-tête (Figma 221:197) : titre de chapitre à gauche, icône de menu
             unique à droite, même position sur tous les écrans (spec §8) */}
         <div className="relative z-[3] flex items-center justify-between px-[15px] py-[11px]">
@@ -545,8 +606,11 @@ export default function Scene() {
         <Die3D
           request={roll}
           onComplete={(result, outcome, tier) => {
-            // Récompense du Destin (13/07) : Besace rare à légendaire — JAMAIS une Relique.
-            const destinItem = tier === "destin" ? randomRecompenseDestin() : null;
+            // Récompense du Destin (13/07) : Besace rare à légendaire — JAMAIS
+            // une Relique. Une arme seulement sur un engagement réel (scène de
+            // combat + jet de COURAGE) — fuir ne forge pas de lame (14/07).
+            const engaged = Boolean(scene.combat) && roll?.stat === "COURAGE";
+            const destinItem = tier === "destin" ? randomRecompenseDestin(engaged) : null;
             persist((run) => {
               run.rolls.push({
                 step,
@@ -731,8 +795,10 @@ function FeedItem({
         </div>
       );
     case "narration":
+      // .feed-narration : ciblée par l'état KO (les descriptions tremblent
+      // au palier critique, retour Patrick 14/07).
       return (
-        <p className="scene-enter mb-[18px] text-[13px] leading-[1.3] text-[var(--color-ink)]">
+        <p className="scene-enter feed-narration mb-[18px] text-[13px] leading-[1.3] text-[var(--color-ink)]">
           <TypedText text={entry.text} typed={typed} skip={skip} msPerChar={15} onDone={onDone} />
         </p>
       );

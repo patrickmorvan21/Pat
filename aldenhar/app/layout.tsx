@@ -24,9 +24,10 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        {/* Roboto Mono + Inter : thème Figma. Jacquard 12 + VT323 : verdicts, dé et thème brief. */}
+        {/* Roboto Mono + Inter : thème Figma. Jacquard 12 + VT323 : verdicts, dé.
+            Instrument Serif : titres de rencontre (retour Patrick 14/07). */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Inter:wght@600&family=Jacquard+12&family=VT323&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Inter:wght@600&family=Jacquard+12&family=VT323&family=Instrument+Serif:ital@0;1&display=swap"
           rel="stylesheet"
         />
       </head>

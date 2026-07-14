@@ -8,7 +8,8 @@
 export const CHARBON = "#1c1a16";
 export const ORANGE = "#e0632a";
 export const CREME = "#e8dfc8"; // réservé : inscriptions anciennes, curseurs
-export const DRAMA = "#ac2e26";
+/** Moments funestes = blanc (Patrick 14/07 : plus aucun rouge dans le jeu). */
+export const DRAMA = "#ffffff";
 
 const BAYER4 = [
   [0, 8, 2, 10],

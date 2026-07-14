@@ -9,8 +9,10 @@
   --color-bg: #1c1a16;
   --color-ink: #ffffff;
   --color-accent: #e0632a;
-  /* Rouge dramatique (spec §13) : réservé aux moments funestes, jamais décoratif */
-  --color-drama: #ac2e26;
+  /* Moments funestes : BLANC (retour Patrick 14/07 — « enlever la couleur
+     rouge de manière générale sur tout le jeu », mot funeste et effets de
+     lumière compris). La brique #ac2e26 est bannie. */
+  --color-drama: #ffffff;
 
   /* Dé d20 (écran Figma 124:2178) : faces orange tramées, chiffres/arêtes charbon */
   --die-face: #e0632a;
@@ -116,7 +118,7 @@ body {
 .die-halo {
   position: absolute;
   left: calc(50% - 110px);
-  top: 544px;
+  bottom: 36px;
   width: 220px;
   height: 220px;
   background-size: 100% 100%;
@@ -145,12 +147,14 @@ body {
   50% { opacity: 0.25; transform: scale(0.94); }
 }
 
-/* Verdict — écran de résultat (Figma 128:4122) : mot en accent sous le dé */
+/* Verdict — écran de résultat (Figma 128:4122) : mot en accent sous le dé.
+   Ancré en BAS (pas en haut) : le cadre peut être plus court que 800px sur
+   un petit viewport web — le dé, lui, se positionne déjà depuis le bas. */
 .die-verdict {
   position: absolute;
   left: 0;
   right: 0;
-  top: 713px;
+  bottom: 65px;
   text-align: center;
   z-index: 9;
   pointer-events: none;
@@ -190,10 +194,10 @@ body {
   100% { opacity: var(--enter-opacity, 1); transform: translateY(0); }
 }
 
-/* « Lancer le dé » — sous le dé en attente (Figma 124:3299) */
+/* « Lancer le dé » — sous le dé en attente (Figma 124:3299), ancré en bas */
 .die-hint {
   position: absolute;
-  top: 744px;
+  bottom: 39px;
   left: 0;
   right: 0;
   text-align: center;
@@ -292,9 +296,33 @@ body {
 }
 
 /* Palier « Au seuil » (4/4, critique) : toutes les 10s, tous les pixels de
-   l'écran vibrent (spec §5, validé 11/07). Court et net — jamais de fondu. */
+   l'écran vibrent (spec §5, validé 11/07). Court et net — jamais de fondu.
+   Accentué le 14/07 (état KO) : nappe de pixels morts qui scintille sur tout
+   l'écran + les textes de description qui tremblent en continu. */
 .erosion-3.phone-frame {
   animation: critical-vibrate 10s linear infinite;
+}
+.decay-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background-size: 390px 800px;
+  opacity: 0.5;
+  animation: decay-flicker 0.9s steps(3) infinite;
+}
+@keyframes decay-flicker {
+  0%, 100% { opacity: 0.5; background-position: 0 0; }
+  33% { opacity: 0.28; background-position: 2px -1px; }
+  66% { opacity: 0.62; background-position: -1px 2px; }
+}
+.erosion-3 .feed-narration {
+  animation: ko-tremble 1.1s steps(3) infinite;
+}
+@keyframes ko-tremble {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(0.7px, -0.7px); }
+  66% { transform: translate(-0.7px, 0.5px); }
 }
 @keyframes critical-vibrate {
   0%, 96% { transform: translate(0, 0); }
@@ -314,7 +342,7 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  height: 9px;
+  height: 12px;
   /* background-image posé inline dans Scene.tsx (URL relative, compatible basePath) */
   background-repeat: repeat-x;
   pointer-events: none;
@@ -340,6 +368,8 @@ body {
   .erosion-2.phone-frame, .erosion-3.phone-frame { animation: none; }
   .bite.flicker { animation: none; }
   .jailer-speaking .jailer-fringe { animation: none; }
+  .decay-overlay { animation: none; opacity: 0.4; }
+  .erosion-3 .feed-narration { animation: none; }
 }
 
 /* Bord bas des illustrations (correctif Patrick 13/07) : la bande de
@@ -411,8 +441,9 @@ body {
   opacity: 0.85;
 }
 .combat-banner-foe {
-  font-family: var(--font-title, "Jacquard 12"), serif;
-  font-size: 27px;
+  /* Instrument Serif (retour Patrick 14/07) — pas Jacquard ici. */
+  font-family: "Instrument Serif", serif;
+  font-size: 28px;
   line-height: 1;
   letter-spacing: 0.5px;
   text-align: center;

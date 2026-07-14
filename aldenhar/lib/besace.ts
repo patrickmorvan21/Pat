@@ -59,11 +59,17 @@ export function randomSoinMineur(): BesaceItem {
   return withId(SOINS_MINEURS[Math.floor(Math.random() * SOINS_MINEURS.length)]);
 }
 
-/** Tirage Destin : 3 rares pour 2 légendaires dans le pool → ~75/25 vécu. */
-export function randomRecompenseDestin(): BesaceItem {
-  const rares = RECOMPENSES_DESTIN.filter((r) => r.rarity === "rare");
-  const legendaires = RECOMPENSES_DESTIN.filter((r) => r.rarity === "legendaire");
-  const pool = Math.random() < 0.75 ? rares : legendaires;
+/**
+ * Tirage Destin (~75% rare / 25% légendaire).
+ * `allowArme` (retour Patrick 14/07) : une ARME n'a de sens que si le héros a
+ * réellement croisé le fer — fuir un Rôdeur avec un 20 ne forge pas de lame.
+ * Hors engagement, le Destin offre babioles ou soins, jamais une arme.
+ */
+export function randomRecompenseDestin(allowArme: boolean): BesaceItem {
+  const eligible = RECOMPENSES_DESTIN.filter((r) => allowArme || r.kind !== "arme");
+  const rares = eligible.filter((r) => r.rarity === "rare");
+  const legendaires = eligible.filter((r) => r.rarity === "legendaire");
+  const pool = Math.random() < 0.75 && rares.length > 0 ? rares : legendaires;
   return withId(pool[Math.floor(Math.random() * pool.length)]);
 }
 

@@ -79,9 +79,10 @@ export type Scene = {
   foeName?: string;
   /**
    * La scène qui se résout sans toi (§18) : décision sous contrainte de temps
-   * réel très courte. Un compte à rebours VISUEL (érosion/pulsation, jamais un
-   * timer chiffré) ; si le joueur ne choisit pas à temps, la situation évolue
-   * et de NOUVELLES options s'ouvrent (l'inaction est elle-même un choix).
+   * réel. Un compte à rebours VISUEL (érosion/pulsation, jamais un timer
+   * chiffré) ; si le joueur ne choisit pas à temps, la situation évolue et de
+   * NOUVELLES options s'ouvrent (l'inaction est elle-même un choix).
+   * ⚠️ `ms` ne descend JAMAIS sous 6000 (règle Patrick 14/07).
    */
   timed?: {
     ms: number;
@@ -269,14 +270,16 @@ export const SCENES: Scene[] = [
     foe: "rodeur",
     foeName: "Le Rôdeur",
     narration: [
-      "Le couloir se rétrécit, puis quelque chose se détache de l'ombre — une " +
-        "silhouette voûtée, trop longue, qui se tenait plaquée au plafond " +
-        "depuis un moment déjà. Elle tombe sans un bruit entre toi et la " +
-        "sortie.",
-      "Pas d'yeux. Une bouche, immense, là où devrait être le ventre. Le " +
-        "Rôdeur penche la tête vers toi, curieux, et fait un premier pas — " +
-        "sans hâte, sûr qu'il n'y a pas d'issue derrière lui.",
-      "Il n'y en a pas. Il faut passer par lui.",
+      "Au sortir de la salle ronde, le couloir se rétrécit — puis quelque " +
+        "chose se détache de l'ombre : une silhouette voûtée, trop longue, " +
+        "qui se tenait plaquée au plafond depuis un moment déjà. Elle tombe " +
+        "sans un bruit entre toi et la sortie.",
+      "Pas d'yeux. Une bouche, immense, là où devrait être le ventre. On " +
+        "raconte que les couloirs le nourrissent — qu'il était un héros, " +
+        "avant, resté trop longtemps entre ces murs qui tournent sur " +
+        "eux-mêmes. Le Rôdeur penche la tête vers toi, curieux.",
+      "Il fait un premier pas, sans hâte, sûr qu'il n'y a pas d'issue " +
+        "derrière lui. Il n'y en a pas. Il faut passer par lui.",
     ],
     choices: [
       {
@@ -286,10 +289,10 @@ export const SCENES: Scene[] = [
           stat: "COURAGE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu le percutes avant qu'il n'ait fini son pas. Le Rôdeur bascule, sa bouche claque dans le vide — tu es déjà passé.",
-            "Ton élan le prend de court. Il encaisse, recule contre la paroi, et te laisse le temps d'un passage.",
-            "Il t'attendait, justement. Sa bouche se referme là où tu allais — tu te jettes de côté in extremis.",
-            "1 naturel. Tu charges droit dans la bouche. ♦ −2"
+            "20 naturel. Tu le percutes avant qu'il n'ait fini son pas. Le Rôdeur bascule, sa bouche claque dans le vide — tu es déjà passé, et il ne poursuit pas : les couloirs lui rapporteront quelqu'un d'autre.",
+            "Ton élan le prend de court. Il encaisse, recule contre la paroi, et te regarde passer sans insister — ce qui a du répondant ne l'intéresse plus.",
+            "Il t'attendait, justement. Sa bouche se referme là où tu allais — tu te jettes de côté, y laisses du sang, et forces le passage pendant qu'il savoure. Derrière toi, il ne suit pas.",
+            "1 naturel. Tu charges droit dans la bouche. Elle te recrache — par surprise ou par dégoût — et tu rampes hors de sa portée pendant qu'il déguste ce qu'il a gardé. ♦ −2"
           ),
         },
       },
@@ -300,10 +303,10 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu te fonds dans son angle mort — il n'a pas d'yeux, mais toi tu as compris comment il écoute. Tu passes comme une pensée.",
-            "Tu te glisses le long de la paroi. Il tourne sur lui-même, une seconde trop tard.",
-            "Une pierre roule sous ton pied. La bouche pivote vers le bruit — vers toi.",
-            "1 naturel. Ton angle mort était le sien. Vous vous trouvez en même temps. ♦ −2"
+            "20 naturel. Tu te fonds dans son angle mort — il n'a pas d'yeux, mais toi tu as compris comment il écoute. Tu passes comme une pensée, et le couloir se referme entre vous.",
+            "Tu te glisses le long de la paroi. Il tourne sur lui-même, une seconde trop tard — tu es déjà de l'autre côté, et il retourne à son plafond.",
+            "Une pierre roule sous ton pied. La bouche pivote et te happe au passage — tu t'arraches à elle dans la douleur, un tribut de chair contre le couloir libre.",
+            "1 naturel. Ton angle mort était le sien. Vous vous trouvez en même temps — tu laisses au Rôdeur de quoi se souvenir de toi, et lui à toi. Chacun repart avec sa part. ♦ −2"
           ),
         },
       },
@@ -327,9 +330,10 @@ export const SCENES: Scene[] = [
   {
     id: "escalier",
     narration: [
-      "Un escalier en vis s'enfonce sous la dalle descellée. L'air qui en " +
-        "monte est froid, chargé d'eau et d'autre chose — un souffle ample, " +
-        "espacé, qui n'est pas un courant d'air.",
+      "Le couloir du Rôdeur débouche enfin sur autre chose : un escalier en " +
+        "vis s'enfonce sous une dalle descellée. L'air qui en monte est " +
+        "froid, chargé d'eau et d'autre chose — un souffle ample, espacé, " +
+        "qui n'est pas un courant d'air.",
       "Ta torche se couche vers le bas, comme aspirée. Les marches sont usées " +
         "au centre, profondément, par des générations de pas pressés dans un " +
         "seul sens : celui de la descente. Personne, semble-t-il, n'est " +
@@ -378,9 +382,11 @@ export const SCENES: Scene[] = [
         "à tomber — le passage ne tiendra pas dix secondes.",
       "Il faut choisir. Maintenant.",
     ],
-    // La scène qui se résout sans toi (§18) : décision sous contrainte de temps.
+    // La scène qui se résout sans toi (§18) : décision sous contrainte de
+    // temps. Règle Patrick 14/07 : JAMAIS en dessous de 6 secondes — la
+    // surprise doit rester jouable, pas frustrante.
     timed: {
-      ms: 2200,
+      ms: 6000,
       timeoutNarration:
         "Tu hésites une seconde de trop. Le sol se dérobe sous toi avant que " +
         "tu n'aies tranché — mais la chute est courte, et te dépose, meurtri, " +
@@ -454,9 +460,10 @@ export const SCENES: Scene[] = [
   {
     id: "pont-os",
     narration: [
-      "Une rivière souterraine barre le passage, noire et sans reflet. On l'a " +
-        "enjambée d'un pont — pas de pierre : d'os, longs et jaunis, liés de " +
-        "tendons secs qui craquent à chaque courant d'air.",
+      "Plus bas — l'éboulement ne t'a pas laissé beaucoup d'autres directions " +
+        "— une rivière souterraine barre le passage, noire et sans reflet. " +
+        "On l'a enjambée d'un pont — pas de pierre : d'os, longs et jaunis, " +
+        "liés de tendons secs qui craquent à chaque courant d'air.",
       "Sur l'autre rive, une lanterne verte pend à un crochet, allumée. " +
         "Personne pour la porter, personne pour l'avoir rallumée depuis — " +
         "combien de temps, au juste. Sa flamme ne vacille jamais, même " +
@@ -517,12 +524,14 @@ export const SCENES: Scene[] = [
     foe: "meute-limiers",
     foeName: "La meute de limiers",
     narration: [
-      "Le tablier d'os à peine passé, la galerie se resserre. Des griffes " +
-        "raclent la pierre dans le noir, plusieurs paires à la fois, " +
+      "Le tablier d'os à peine passé, la galerie se resserre en tunnels. Des " +
+        "griffes raclent la pierre dans le noir, plusieurs paires à la fois, " +
         "rythmées comme une meute qui compte ses pas avant de charger.",
       "Une forme bondit dans ta torche — museau fendu, yeux blancs, la peau " +
-        "tendue sur des côtes trop nombreuses. Elle recule d'un pas, jauge, " +
-        "puis siffle un appel vers l'obscurité derrière elle.",
+        "tendue sur des côtes trop nombreuses. Les limiers hantent ces " +
+        "tunnels depuis les premières expéditions : chiens de héros morts, " +
+        "restés à attendre des maîtres que la rivière noire n'a jamais " +
+        "rendus. Elle recule d'un pas, jauge, puis siffle un appel.",
       "Deux autres répondent, plus loin, dans le noir. Tu n'as pas le temps " +
         "de choisir ton terrain — seulement ta première réponse.",
     ],
@@ -587,6 +596,9 @@ export const SCENES: Scene[] = [
         "C'est la tienne.",
     ],
     choices: [
+      // Dernier acte de la rencontre : CHAQUE issue doit CLORE le combat
+      // (retour Patrick 14/07 — jamais « le dernier loup prêt à attaquer »
+      // puis coupure vers une autre scène).
       {
         id: "achever",
         label: "Achever la bête blessée",
@@ -594,10 +606,10 @@ export const SCENES: Scene[] = [
           stat: "COURAGE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Un seul geste, net. Les survivantes reculent d'un coup, comme si le message venait de passer entre elles sans un bruit.",
-            "Elle s'effondre. Les autres marquent un temps d'arrêt — assez long pour que tu gardes l'avantage.",
-            "Elle esquive, plus vive que sa blessure ne le laissait croire. Les autres profitent de ta seconde perdue.",
-            "1 naturel. Ce n'était pas la plus faible — c'était l'appât. ♦ −2"
+            "20 naturel. Un seul geste, net. Le message passe entre les survivantes sans un bruit — elles détalent dans le noir d'où elles venaient, et n'en ressortent pas.",
+            "Elle s'effondre. Les autres marquent un temps d'arrêt, se consultent en silence — puis refluent dans les galeries. La meute a fini de compter ses pertes.",
+            "Elle esquive, plus vive que sa blessure ne le laissait croire, et te taille au passage. Puis, leur tribut pris, elles se fondent dans le noir — une meute ne s'attarde jamais.",
+            "1 naturel. Ce n'était pas la plus faible — c'était l'appât. Le piège se referme, te mord profond, puis la meute repue s'écoule dans les tunnels comme une seule ombre. ♦ −2"
           ),
         },
       },
@@ -608,10 +620,10 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Ta feinte les envoie dans trois directions différentes — une meute ne combat pas divisée. Elles s'égaillent dans le noir.",
-            "La feinte fonctionne à moitié. Deux se dispersent, la dernière reste, seule face à toi — un combat que tu peux gagner.",
-            "Elles ne mordent pas à la feinte. Groupées, elles referment la distance sans se laisser diviser.",
-            "1 naturel. Ta feinte les prévient au lieu de les tromper. ♦ −2"
+            "20 naturel. Ta feinte les envoie dans trois directions différentes — une meute ne combat pas divisée. Elles s'égaillent dans le noir, définitivement.",
+            "La feinte fonctionne à moitié. Deux se dispersent ; la dernière te jauge longuement, seule — puis renonce, et détale rejoindre les siennes. Les tunnels se taisent.",
+            "Elles ne mordent pas à la feinte. Groupées, elles te renversent, prennent leur dû de chair — puis disparaissent aussi vite qu'elles avaient surgi.",
+            "1 naturel. Ta feinte les prévient au lieu de les tromper. Elles te le font payer comptant, puis abandonnent ta carcasse aux tunnels, trop maigre à leur goût. ♦ −2"
           ),
         },
       },
@@ -622,10 +634,10 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu lis leur charge avant qu'elle ne parte — chaque coup trouve sa gorge, dans l'ordre exact où elles bondissent.",
-            "Tu encaisses la charge sans reculer d'un pouce. Elles s'y cassent, une à une.",
-            "Ta garde tient, mais de justesse. Le combat traîne, et te coûte plus qu'il ne devrait.",
-            "1 naturel. Ta garde s'ouvre à la pire seconde. ♦ −2"
+            "20 naturel. Tu lis leur charge avant qu'elle ne parte — chaque coup trouve sa gorge, dans l'ordre exact où elles bondissent. Plus rien ne bondit, ensuite.",
+            "Tu encaisses la charge sans reculer d'un pouce. Elles s'y cassent, une à une, et ce qui reste de la meute renonce et reflue.",
+            "Ta garde tient, mais de justesse. Le combat traîne, te coûte plus qu'il ne devrait — jusqu'à ce qu'elles se lassent et refluent dans le noir, leur tribut pris.",
+            "1 naturel. Ta garde s'ouvre à la pire seconde. Elles s'y engouffrent toutes — puis, te croyant fini, te laissent aux tunnels. ♦ −2"
           ),
         },
       },
@@ -635,7 +647,8 @@ export const SCENES: Scene[] = [
   {
     id: "campement",
     narration: [
-      "Une anfractuosité sèche, à l'écart du courant d'air. Des cendres " +
+      "Les tunnels de la meute finissent par te recracher dans une " +
+        "anfractuosité sèche, à l'écart du courant d'air. Des cendres " +
         "anciennes prouvent qu'on s'y est déjà arrêté — et qu'on en est " +
         "reparti, ce qui n'est déjà pas rien, ici.",
       "Le silence, dans ce renfoncement, est différent de celui du couloir : " +
@@ -706,12 +719,15 @@ export const SCENES: Scene[] = [
         "qui respire par trois gueules distinctes, synchronisées. Geryon. " +
         "Le nom te revient d'un vieux conte que tu croyais inventé pour " +
         "effrayer les enfants.",
+      "L'arche n'est pas tombée toute seule : c'est lui qui l'a couchée, il " +
+        "y a des siècles, pour se bâtir une tanière à la mesure de son " +
+        "ennui. Les profondeurs entières plient autour de son sommeil — " +
+        "même la rivière noire, dit-on, fait un détour.",
       "Il ne bouge pas encore. Il te regarde arriver de ses six yeux, " +
         "patient, comme s'il avait déjà vu cent héros faire exactement les " +
-        "mêmes trois pas que toi.",
-      "Une des trois têtes bâille — un bâillement qui dure, qui dure, et se " +
-        "termine en grondement long comme une porte qu'on ouvre au fond de " +
-        "la terre.",
+        "mêmes trois pas que toi. Une des trois têtes bâille — un " +
+        "bâillement qui se termine en grondement long comme une porte " +
+        "qu'on ouvre au fond de la terre.",
     ],
     choices: [
       {
@@ -850,8 +866,8 @@ export const SCENES: Scene[] = [
           outcomes: outcomes(
             "20 naturel. Ta lame entre là où les trois gorges n'en font qu'une. Geryon s'effondre d'un bloc — et le silence qui suit dure cent ans. Le conte, désormais, se racontera avec ton nom dedans.",
             "Tu plonges sous la charge et frappes au centre. La bête s'effondre, ses trois têtes tombant l'une après l'autre, comme des cloches qu'on décroche.",
-            "Ta lame touche — mais pas assez profond. La charge te passe dessus, et Geryon, épuisé, se traîne dans l'ombre de l'arche. Vivant. Toi aussi, de peu.",
-            "1 naturel. Ta lame se brise sur l'os du poitrail. La charge, elle, ne se brise pas. ♦ −2"
+            "Ta lame touche — mais pas assez profond. La charge te passe dessus, et Geryon, épuisé, se traîne dans l'ombre de l'arche. Vivant. Toi aussi, de peu. Le combat est fini — aucun de vous deux n'en voulait un autre.",
+            "1 naturel. Ta lame se brise sur l'os du poitrail. La charge, elle, ne se brise pas — elle te laisse dans les gravats, trop cassé pour l'intéresser encore, et Geryon regagne son arche en trois soupirs. ♦ −2"
           ),
         },
       },
@@ -864,8 +880,8 @@ export const SCENES: Scene[] = [
           outcomes: outcomes(
             "20 naturel. Tu t'effaces au dernier souffle — la charge emporte Geryon dans les piliers déjà fendus. L'arche entière s'effondre sur lui. Tu n'as plus qu'à écouter.",
             "Tu t'écartes à l'instant juste. La bête s'écrase dans la pierre fendue, et la pierre décide pour vous deux : elle s'effondre.",
-            "Ton esquive est courte. La charge te happe à demi et t'envoie rouler dans les gravats — la bête, blessée, se dresse encore.",
-            "1 naturel. Tu esquives dans la chute de pierres. ♦ −2"
+            "Ton esquive est courte. La charge te happe à demi et t'envoie rouler dans les gravats — la bête, blessée, se dresse une dernière fois, juge le prix trop haut, et se traîne hors du conte par où l'arche a cédé.",
+            "1 naturel. Tu esquives dans la chute de pierres. Quand la poussière retombe, Geryon a disparu sous l'arche — et toi à moitié sous elle. ♦ −2"
           ),
         },
       },
@@ -876,8 +892,9 @@ export const SCENES: Scene[] = [
   {
     id: "echo",
     narration: [
-      "La galerie s'élargit en un hall poli comme un miroir noir. Chaque pas " +
-        "y revient double, un instant trop tard pour être vraiment le tien.",
+      "Passé l'arche morte de Geryon, la galerie s'élargit en un hall poli " +
+        "comme un miroir noir. Chaque pas y revient double, un instant trop " +
+        "tard pour être vraiment le tien.",
       "Puis ta propre voix te devance : « Qui va là ? » demande-t-elle avec " +
         "ta bouche, trois pas devant. L'écho attend une réponse, immobile, " +
         "comme s'il avait un corps quelque part dans le noir poli du sol.",
@@ -920,9 +937,10 @@ export const SCENES: Scene[] = [
   {
     id: "table",
     narration: [
-      "Une table de banquet dressée pour personne. Nappes grises de " +
-        "poussière, chandelles éteintes — sauf une, dont la flamme ne " +
-        "tremble jamais, même quand tu passes la main devant.",
+      "Au-delà du hall des échos, une table de banquet dressée pour " +
+        "personne. Nappes grises de poussière, chandelles éteintes — sauf " +
+        "une, dont la flamme ne tremble jamais, même quand tu passes la " +
+        "main devant.",
       "Dans son halo, un seul objet : un anneau de fer torsadé, encore " +
         "tiède, posé sur un coussin de velours élimé, comme si quelqu'un " +
         "venait tout juste de le poser là et de partir sans bruit.",

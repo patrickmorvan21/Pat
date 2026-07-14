@@ -38,11 +38,14 @@ function seededRandom(seedStr: string) {
 const BTN_W = 360;
 const BTN_H = 46;
 
-/** Palier 1 « Marqué » = rendu proto validé le 11/07, inchangé. */
+/** Palier 1 « Marqué » = rendu proto validé le 11/07, inchangé.
+ *  Palier 3 accentué le 14/07 (retour Patrick : « la mort n'est pas très
+ *  loin » doit se SENTIR — état KO) : beaucoup plus de pixels morts, qui
+ *  scintillent presque tous. Les boutons restent lisibles et tapables. */
 const TIER = {
   1: { count: 12, maxSize: 2, maxJitter: 3, flickerRatio: 0.35 },
   2: { count: 26, maxSize: 4, maxJitter: 5, flickerRatio: 0.45 },
-  3: { count: 55, maxSize: 4, maxJitter: 9, flickerRatio: 0.55 },
+  3: { count: 95, maxSize: 5, maxJitter: 12, flickerRatio: 0.75 },
 } as const;
 
 function makeBites(seedStr: string, erosion: number): Bite[] {
@@ -129,7 +132,12 @@ export default function ChoiceButton({
           <span className="absolute top-[3px] bottom-[3px] right-[3px] w-px bg-[var(--color-ink)]" />
         </>
       )}
-      <span className="absolute top-1/2 left-[5%] -translate-y-1/2 font-medium leading-[1.2] text-[14px] whitespace-nowrap text-[var(--color-ink)]">
+      {/* max-width : un libellé long ne chevauche jamais le tag de stat */}
+      <span
+        className={`absolute top-1/2 left-[5%] -translate-y-1/2 overflow-hidden text-ellipsis font-medium leading-[1.2] text-[14px] whitespace-nowrap text-[var(--color-ink)] ${
+          tag ? "max-w-[68%]" : "max-w-[90%]"
+        }`}
+      >
         {choice.label}
       </span>
       {tag && (
