@@ -41,10 +41,13 @@ export default function Home() {
             {/* Liseré charbon en bas de cadre (Figma Rectangle 136) */}
             <span className="absolute bottom-0 left-0 h-[6px] w-full bg-[var(--color-bg)]" aria-hidden />
 
-            {/* Marque */}
-            <p className="relative z-[1] mt-[40px] text-center font-mono text-[19px] font-bold tracking-[7px] text-[var(--color-bg)]">
-              PACTUM
-            </p>
+            {/* Marque — logotype fourni par Patrick (14/07 soir) */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              alt="PACTUM"
+              src="assets/pactum_logo.png"
+              className="relative z-[1] mx-auto mt-[42px] h-[19px] w-auto select-none"
+            />
 
             {/* Titre + boutons */}
             <div className="relative z-[1] mx-auto mt-[86px] w-[298px]">

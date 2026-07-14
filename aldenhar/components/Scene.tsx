@@ -9,7 +9,6 @@ import GameMenu from "@/components/GameMenu";
 import { chapterLabel, jailerTaunt, sceneAt, tierIsFail, type Choice } from "@/lib/scene-data";
 import { loadRun, resetRun, saveRun, type FeedEntry, type RunState } from "@/lib/state";
 import { BESACE_SLOTS, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
-import { ditherFadeMaskDataUrl } from "@/lib/dither";
 import {
   bloodDebtFor,
   buildRegistre,
@@ -19,25 +18,6 @@ import {
   recordDeath,
   type Relic,
 } from "@/lib/player-memory";
-
-// Masque tramé du portrait du Geôlier — généré une fois, mis en cache (§11 :
-// dissolution en pixels épars sur les bords, jamais un fondu CSS lisse).
-// L'image est mirroir (-scale-x-100) pour faire face au texte : le fondu est
-// donc construit du côté "nx→0" pour finir visuellement à droite (près du
-// texte) une fois le mirroir appliqué.
-let demonMaskCache: string | null = null;
-function getDemonMask(): string | null {
-  if (typeof document === "undefined") return null;
-  if (!demonMaskCache) {
-    // Dimensions du portrait redessiné (Figma 239:49164) : 101×119.
-    demonMaskCache = ditherFadeMaskDataUrl(101, 119, (nx, ny) => {
-      const fadeRight = Math.max(0, (0.45 - nx) / 0.45);
-      const fadeBottom = Math.max(0, (ny - 0.72) / 0.28);
-      return Math.min(1, Math.max(fadeRight, fadeBottom));
-    });
-  }
-  return demonMaskCache;
-}
 
 // Pixels morts ambiants de l'état KO (palier « Au seuil », retour Patrick
 // 14/07) : une nappe de pixels charbon épars + quelques braises orange qui
@@ -699,18 +679,6 @@ function FeedItem({
   skip: number;
   onDone: () => void;
 }) {
-  // Masque tramé du portrait du Geôlier : calculé une fois côté client (canvas),
-  // avant le retour anticipé ci-dessous — les hooks doivent s'exécuter dans le
-  // même ordre à chaque rendu, quel que soit le type d'entrée.
-  const [demonMask, setDemonMask] = useState<string | null>(() =>
-    typeof document !== "undefined" ? demonMaskCache : null
-  );
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- calcul canvas côté client une seule fois (impossible au premier rendu SSR), mis en cache au niveau module ensuite
-    if (!demonMask) setDemonMask(getDemonMask());
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   // Le fil respecte l'ordre des beats : un bloc de texte pas encore atteint
   // dans la file de révélation séquentielle ne doit rien laisser paraître.
   if ((entry.kind === "narration" || entry.kind === "jailer") && !revealed) return null;
@@ -747,15 +715,15 @@ function FeedItem({
         </p>
       );
     case "jailer":
-      // Bloc redessiné (Figma 239:49164, 13/07) : bandeau orange de 87px,
-      // portrait 101×119 qui déborde en haut/gauche, et des FRANGES de pixels
-      // charbon qui rongent les bords haut et bas du bloc. Ces franges
-      // scintillent uniquement pendant que le Geôlier parle (texte en cours
-      // de frappe), puis se figent — jamais un effet permanent (correctif
-      // Patrick 13/07). Le texte reste toujours au-dessus du portrait.
+      // Bloc refait au propre (Figma 1925:614 + PJ Patrick, 14/07 soir) :
+      // bandeau orange de 87px, portrait HD du Geôlier ancré au bord GAUCHE
+      // (il fait déjà face au texte, sa dissolution en pixels est cuite dans
+      // l'image — plus de mirror ni de masque CSS), franges de pixels charbon
+      // en haut et en bas qui scintillent uniquement pendant que le Geôlier
+      // parle, puis se figent. Texte mono gras charbon, décalé à 122px.
       return (
         <div
-          className={`scene-enter jailer-banner mx-[-17px] mb-[18px] mt-[15px] relative flex min-h-[87px] items-center bg-[var(--color-accent)] pl-[123px] pr-[22px] py-[14px] ${
+          className={`scene-enter jailer-banner mx-[-17px] mb-[18px] mt-[15px] relative flex min-h-[87px] items-center bg-[var(--color-accent)] pl-[122px] pr-[20px] py-[16px] ${
             typed ? "jailer-speaking" : ""
           }`}
         >
@@ -769,27 +737,15 @@ function FeedItem({
             style={{ backgroundImage: 'url("assets/frange_geolier.svg")' }}
             aria-hidden
           />
-          <div className="jailer-portrait pointer-events-none absolute top-[-15px] left-[-3px] z-0 h-[119px] w-[101px]">
+          <div className="jailer-portrait pointer-events-none absolute top-[-15px] left-0 z-0 h-[118px] w-[100px] overflow-hidden">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt=""
-              src="assets/dithering-demon.jpg"
-              className="block h-full w-full -scale-x-100 object-cover"
-              style={
-                demonMask
-                  ? {
-                      WebkitMaskImage: `url(${demonMask})`,
-                      maskImage: `url(${demonMask})`,
-                      WebkitMaskRepeat: "no-repeat",
-                      maskRepeat: "no-repeat",
-                      WebkitMaskSize: "100% 100%",
-                      maskSize: "100% 100%",
-                    }
-                  : undefined
-              }
+              src="assets/geolier_portrait.png"
+              className="block h-full w-full object-cover object-left"
             />
           </div>
-          <p className="relative z-[1] text-[13px] font-bold leading-[1.45] text-[var(--color-bg)]">
+          <p className="relative z-[1] font-mono text-[13px] font-bold leading-[1.6] text-[var(--color-bg)]">
             <TypedText text={entry.text} typed={typed} skip={skip} msPerChar={22} onDone={onDone} />
           </p>
         </div>
