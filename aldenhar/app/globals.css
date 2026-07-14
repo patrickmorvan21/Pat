@@ -91,6 +91,59 @@ body {
   0% { opacity: 0.85; }
   100% { opacity: 0; }
 }
+/* Échec critique (13/07) : flash bref brique puis noir total, forte secousse. */
+.die-flash.critique {
+  animation: flash-critique 0.7s steps(4) forwards;
+}
+@keyframes flash-critique {
+  0% { opacity: 0.85; background: var(--color-drama); }
+  35% { opacity: 1; background: #000; }
+  100% { opacity: 0; background: #000; }
+}
+/* Malédiction (nat 1) : la variante la plus sombre — noir qui s'attarde. */
+.die-flash.malediction {
+  animation: flash-malediction 1.1s steps(5) forwards;
+}
+@keyframes flash-malediction {
+  0% { opacity: 0.9; background: var(--color-drama); }
+  25%, 65% { opacity: 1; background: #000; }
+  100% { opacity: 0; background: #000; }
+}
+
+/* Halo tramé du dé (résolution graduée 13/07) : disque de pixels orange,
+   centré sur la position de résultat du dé. Intensité par palier — Destin
+   intense et soutenu, éclatante pulse franc, réussite pulse sobre. */
+.die-halo {
+  position: absolute;
+  left: calc(50% - 110px);
+  top: 544px;
+  width: 220px;
+  height: 220px;
+  background-size: 100% 100%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 6;
+}
+.die-halo.destin {
+  animation: halo-destin 1.6s steps(4) forwards;
+}
+@keyframes halo-destin {
+  0% { opacity: 1; transform: scale(1.35); }
+  40% { opacity: 0.9; transform: scale(1.15); }
+  100% { opacity: 0.55; transform: scale(1.05); }
+}
+.die-halo.eclatante {
+  animation: halo-pulse 0.5s steps(2) 3 forwards;
+  opacity: 0.75;
+}
+.die-halo.reussite {
+  animation: halo-pulse 0.7s steps(2) 1 forwards;
+  opacity: 0.4;
+}
+@keyframes halo-pulse {
+  0%, 100% { opacity: 0.75; transform: scale(1); }
+  50% { opacity: 0.25; transform: scale(0.94); }
+}
 
 /* Verdict — écran de résultat (Figma 128:4122) : mot en accent sous le dé */
 .die-verdict {
@@ -121,9 +174,20 @@ body {
 }
 .die-verdict .word.fail { color: var(--color-accent); }
 .die-verdict .word.funeste { color: var(--color-drama); }
+/* « De justesse » (13/07) : le mot lui-même vacille avant de se stabiliser. */
+.die-verdict.show .word.justesse {
+  animation: stamp 0.3s steps(3) forwards, justesse-vacille 0.18s steps(2) 4 0.3s;
+}
+@keyframes justesse-vacille {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+/* --enter-opacity : opacité FINALE de l'entrée. Le fill-mode `both` fige la
+   dernière frame — un `opacity: 1` en dur ici écrasait la classe opacity-50
+   des actions choisies (bug signalé par Patrick le 13/07, deux fois). */
 @keyframes fadeup {
   0% { opacity: 0; transform: translateY(6px); }
-  100% { opacity: 1; transform: translateY(0); }
+  100% { opacity: var(--enter-opacity, 1); transform: translateY(0); }
 }
 
 /* « Lancer le dé » — sous le dé en attente (Figma 124:3299) */
@@ -241,19 +305,32 @@ body {
   98%, 100% { transform: translate(0, 0); }
 }
 
-/* Portrait du Geôlier : le bord tramé (masque Bayer, cf lib/dither.ts)
-   scintille tant que sa citation est en cours de frappe, puis se fige net
-   (retrait de la classe = arrêt immédiat, jamais un fondu). */
-.jailer-portrait img {
-  mask-position: 0 0;
-  -webkit-mask-position: 0 0;
+/* Franges du bloc Geôlier (Figma 239:49164) : pixels charbon qui rongent les
+   bords haut et bas du bandeau orange. Elles SCINTILLENT uniquement pendant
+   la prise de parole (classe .jailer-speaking sur le bloc), puis se figent
+   net — le scintillement porte sur les bordures, jamais le bloc entier
+   (correctif Patrick 13/07 ; mp4 de référence à réclamer pour affiner). */
+.jailer-fringe {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 9px;
+  /* background-image posé inline dans Scene.tsx (URL relative, compatible basePath) */
+  background-repeat: repeat-x;
+  pointer-events: none;
+  z-index: 2;
 }
-.jailer-speaking img {
-  animation: jailer-mask-flicker 0.42s steps(2) infinite;
+.jailer-fringe-top { top: 0; }
+.jailer-fringe-bottom { bottom: 0; transform: scaleY(-1); }
+.jailer-speaking .jailer-fringe {
+  animation: jailer-fringe-flicker 0.34s steps(2) infinite;
 }
-@keyframes jailer-mask-flicker {
-  0%, 100% { mask-position: 0 0; -webkit-mask-position: 0 0; }
-  50% { mask-position: -2px 1px; -webkit-mask-position: -2px 1px; }
+.jailer-speaking .jailer-fringe-bottom {
+  animation-delay: 0.17s;
+}
+@keyframes jailer-fringe-flicker {
+  0%, 100% { background-position-x: 0; }
+  50% { background-position-x: -7px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -262,7 +339,25 @@ body {
   .scene-enter { animation: none; }
   .erosion-2.phone-frame, .erosion-3.phone-frame { animation: none; }
   .bite.flicker { animation: none; }
-  .jailer-speaking img { animation: none; }
+  .jailer-speaking .jailer-fringe { animation: none; }
+}
+
+/* Bord bas des illustrations (correctif Patrick 13/07) : la bande de
+   dissolution en pixels (asset bande_dissolution_haut.svg) retournée
+   verticalement — la trame se dissout en pixels épars, pas un fondu lisse. */
+.illustration-frame {
+  position: relative;
+}
+.dissolve-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 42px;
+  /* background-image posé inline dans Scene.tsx (URL relative, compatible basePath) */
+  background-size: 100% 100%;
+  transform: scaleY(-1);
+  pointer-events: none;
 }
 
 /* Scène chronométrée (§18) : jauge d'érosion rapide au-dessus des choix.
@@ -298,19 +393,14 @@ body {
   .timed-countdown-fill { animation-name: timed-deplete; animation-duration: var(--timed-ms, 2200ms); }
 }
 
-/* Bannière de rencontre (§6, lisibilité du combat) : annonce forte et
-   distincte d'un adversaire. DA Charbon/Orange, titre en Jacquard 12. Le
-   combat reste la même mécanique — la bannière ne fait que le signaler. */
+/* Bannière de rencontre (Figma 221:197, redesign 13/07) : sans cadre ni
+   fond — tag centré + nom de l'adversaire en grand Jacquard orange, placés
+   avant l'illustration. Le combat reste la même mécanique choix + dé. */
 .combat-banner {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 14px 17px 16px;
-  background: var(--color-bg);
-  border-top: 2px solid var(--color-accent);
-  border-bottom: 2px solid var(--color-accent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 30%, transparent);
+  gap: 10px;
 }
 .combat-banner-tag {
   font-family: var(--font-body);
@@ -322,8 +412,8 @@ body {
 }
 .combat-banner-foe {
   font-family: var(--font-title, "Jacquard 12"), serif;
-  font-size: 24px;
-  line-height: 1.1;
+  font-size: 27px;
+  line-height: 1;
   letter-spacing: 0.5px;
   text-align: center;
   color: var(--color-accent);
@@ -383,6 +473,109 @@ body {
 .registre-row.is-player .registre-rank,
 .registre-row.is-player .registre-days,
 .registre-row.is-player .registre-cause { opacity: 0.85; color: var(--color-accent); }
+
+/* ═════════ Écran de mort (séquence 13/07 — précède la Relique §10) ═════════ */
+
+.death-title {
+  font-family: var(--font-title, "Jacquard 12"), serif;
+  font-size: 30px;
+  line-height: 1.1;
+  color: var(--color-accent);
+  margin-bottom: 16px;
+  animation: fadeup 0.5s steps(4) both;
+}
+.death-text {
+  font-family: var(--font-title, "Jacquard 12"), serif;
+  font-size: 21px;
+  line-height: 1.3;
+  color: var(--color-ink);
+  animation: fadeup 0.5s steps(4) 0.35s both;
+}
+.death-figure {
+  font-family: var(--font-title, "Jacquard 12"), serif;
+  font-size: 44px;
+  line-height: 1;
+  color: var(--color-accent);
+  margin-bottom: 8px;
+  animation: fadeup 0.4s steps(4) both;
+}
+.death-sub {
+  font-size: 13px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  opacity: 0.7;
+  animation: fadeup 0.4s steps(4) 0.25s both;
+  --enter-opacity: 0.7;
+}
+.death-cta {
+  display: inline-block;
+  margin-top: 34px;
+  padding: 13px 22px;
+  border: 1px solid var(--color-accent);
+  background: var(--color-bg);
+  color: var(--color-accent);
+  font-family: var(--font-body);
+  font-size: 14px;
+  letter-spacing: 0.6px;
+  cursor: pointer;
+  animation: fadeup 0.4s steps(4) 0.7s both;
+}
+.death-cta:active {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+.relic-frame {
+  margin: 26px auto 0;
+  max-width: 280px;
+  padding: 26px 20px 22px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  outline: 1px solid color-mix(in srgb, var(--color-accent) 20%, transparent);
+  outline-offset: 4px;
+  animation: relic-crystallize 0.9s steps(5) 0.3s both;
+}
+.relic-name {
+  font-family: var(--font-title, "Jacquard 12"), serif;
+  font-size: 26px;
+  line-height: 1.15;
+  color: var(--color-accent);
+}
+.relic-rarity {
+  margin-top: 10px;
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+}
+.relic-rarity.rarity-commune { color: var(--color-ink); opacity: 0.6; }
+.relic-rarity.rarity-rare { color: var(--color-accent); }
+.relic-rarity.rarity-legendaire { color: var(--color-ink); }
+@keyframes relic-crystallize {
+  0% { opacity: 0; transform: scale(0.82); }
+  60% { opacity: 1; transform: scale(1.05); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+/* Bandeau « Obtenu — … » (13/07) : objet mineur, jamais une popup. */
+.obtenu-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 10px 14px;
+  border-left: 2px solid var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+.obtenu-line {
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+.obtenu-flavor {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--color-ink);
+  opacity: 0.6;
+}
 
 /* ═══════════════ Galerie de revue — mini-jeux & surprises ═══════════════ */
 

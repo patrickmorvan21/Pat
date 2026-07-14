@@ -98,6 +98,48 @@ export type Scene = {
   registre?: boolean;
 };
 
+/**
+ * Résolution graduée à 5 paliers (journal Notion 13/07) — remplace le binaire
+ * réussite/échec partout. Calculée sur la MARGE (jet effectif − seuil), sauf
+ * les naturels qui transcendent tout :
+ *  - Destin (20 naturel) : événement épique + récompense Besace rare/légendaire
+ *  - Malédiction (1 naturel) : événement négatif marquant, indépendant du seuil
+ * Toujours raconté en prose + mot de verdict — jamais un chiffre affiché.
+ */
+export type ResolutionTier =
+  | "destin"
+  | "eclatante"
+  | "reussite"
+  | "justesse"
+  | "echec"
+  | "critique"
+  | "malediction";
+
+export const TIER_WORDS: Record<ResolutionTier, string> = {
+  destin: "DESTIN",
+  eclatante: "RÉUSSITE ÉCLATANTE",
+  reussite: "RÉUSSITE",
+  justesse: "DE JUSTESSE",
+  echec: "ÉCHEC",
+  critique: "FUNESTE",
+  malediction: "MALÉDICTION",
+};
+
+export function resolveTier(natural: number, effective: number, threshold: number): ResolutionTier {
+  if (natural === 20) return "destin";
+  if (natural === 1) return "malediction";
+  const margin = effective - threshold;
+  if (margin >= 5) return "eclatante";
+  if (margin >= 2) return "reussite";
+  if (margin >= 0) return "justesse";
+  if (margin > -5) return "echec";
+  return "critique";
+}
+
+export function tierIsFail(tier: ResolutionTier): boolean {
+  return tier === "echec" || tier === "critique" || tier === "malediction";
+}
+
 function outcomes(
   crit: string,
   success: string,
@@ -702,12 +744,134 @@ export const SCENES: Scene[] = [
         },
       },
       {
-        id: "provoquer",
-        label: "Provoquer la tête endormie",
-        locked: { stat: "EMPATHIE" },
+        // « Jauger » (amende §6, 13/07) : évaluer la menace AVANT de
+        // s'engager — jet d'Instinct, l'information est la récompense.
+        id: "jauger",
+        label: "Jauger la bête avant d'agir",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu lis Geryon comme un livre ouvert : la tête de gauche est aveugle, celle du milieu commande, celle de droite ment. Tu sais tout ce qu'il fallait savoir.",
+            "Tu prends le temps de regarder. Les trois têtes respirent ensemble — mais celle du milieu décide une demi-seconde avant les autres. C'est là qu'il faudra frapper.",
+            "Tu observes trop longtemps. Geryon aussi t'observe — et lui a fini le premier. Les trois têtes se lèvent ensemble.",
+            "1 naturel. Ce que tu lis dans ses six yeux, c'est ton propre reflet, déjà à terre. ♦ −2"
+          ),
+        },
       },
     ],
     jailerLine: "Geryon a trois têtes, et un seul intérêt : compter combien de héros avant toi. Tu fais beaucoup.",
+  },
+  {
+    // Rencontre ÉPIQUE (amende §6, 13/07) : 3 scènes structurées — montée de
+    // tension (ci-dessus) → échange (ici) → climax. Un seul dé, celui du
+    // joueur ; l'état du monstre s'exprime par paliers narratifs en prose
+    // (« chancelle » → « rugit, blessée » → « s'effondre »), jamais une jauge.
+    id: "geryon-2",
+    combat: true,
+    foe: "geryon",
+    narration: [
+      "Le premier échange est passé si vite que c'est la douleur qui te le " +
+        "raconte, après coup. Geryon pivote sa masse entière — plus agile " +
+        "qu'aucun conte ne l'avoue — et la bête chancelle un instant sur " +
+        "ses pattes arrière, surprise d'avoir été touchée.",
+      "Les trois têtes ne bâillent plus. Elles se déploient en éventail, " +
+        "chacune à une hauteur différente, pour ne te laisser aucun angle " +
+        "où l'une d'elles ne te voit pas.",
+      "L'arche effondrée gémit au-dessus de vous. Quelque chose, dans ce " +
+        "combat, va céder avant l'autre — la pierre, la bête, ou toi.",
+    ],
+    choices: [
+      {
+        id: "presser",
+        label: "Presser l'avantage, coup sur coup",
+        risky: {
+          stat: "COURAGE",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Tes coups tombent plus vite que ses trois gueules ne pensent. Geryon rugit, blessé — un son qui fait pleuvoir la poussière de l'arche.",
+            "Tu ne lui laisses pas le temps de se reprendre. Une deuxième entaille, profonde. La bête rugit, blessée, et recule d'un pas entier.",
+            "Tu presses trop. Une gueule t'attendait exactement là — elle referme sur ton flanc ce que ta hâte lui a offert.",
+            "1 naturel. Ton élan te porte pile entre les trois têtes. Elles n'espéraient pas mieux. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "user-arche",
+        label: "L'attirer sous l'arche qui cède",
+        risky: {
+          stat: "RUSE",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Tu recules pas à pas, exactement sous la clef de voûte. Geryon suit — et l'arche entière lui tombe sur l'échine. Le rugissement fait trembler le sol.",
+            "La bête suit ton repli. Un bloc de l'arche se détache et lui écrase une épaule — elle rugit, blessée, une tête à moitié sonnée.",
+            "Geryon ne suit pas. Il contourne — et c'est toi qui te retrouves sous la pierre qui s'égrène.",
+            "1 naturel. L'arche cède, oui. Du mauvais côté. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "souffler",
+        label: "Rompre, reprendre ton souffle",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu romps au moment exact où les trois gueules frappent ensemble — elles se mordent entre elles. Geryon chancelle, empêtré dans sa propre rage.",
+            "Tu recules hors de portée, le souffle retrouvé. La bête tourne en te cherchant — elle saigne plus qu'elle ne veut le montrer.",
+            "Ton repli est trop lent d'un pas. Une gueule te raccompagne — sans douceur.",
+            "1 naturel. Tu recules dans l'angle mort de personne : les six yeux te suivent. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Il saigne. Ils ne saignent presque jamais. Continue, tu m'intéresses.",
+  },
+  {
+    id: "geryon-3",
+    combat: true,
+    foe: "geryon",
+    narration: [
+      "Geryon rugit, blessé — les trois voix à la fois, désaccordées pour la " +
+        "première fois. Son sang, noir et lent, dessine sur le sol des " +
+        "lettres que tu préfères ne pas lire.",
+      "La bête ramasse ce qui lui reste de force pour une dernière charge. " +
+        "Tout son poids, toutes ses gueules, une seule direction : toi.",
+      "C'est l'instant. Il n'y en aura pas d'autre.",
+    ],
+    choices: [
+      {
+        id: "coup-final",
+        label: "Porter le coup, au centre",
+        risky: {
+          stat: "COURAGE",
+          threshold: 14,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Ta lame entre là où les trois gorges n'en font qu'une. Geryon s'effondre d'un bloc — et le silence qui suit dure cent ans. Le conte, désormais, se racontera avec ton nom dedans.",
+            "Tu plonges sous la charge et frappes au centre. La bête s'effondre, ses trois têtes tombant l'une après l'autre, comme des cloches qu'on décroche.",
+            "Ta lame touche — mais pas assez profond. La charge te passe dessus, et Geryon, épuisé, se traîne dans l'ombre de l'arche. Vivant. Toi aussi, de peu.",
+            "1 naturel. Ta lame se brise sur l'os du poitrail. La charge, elle, ne se brise pas. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "esquive-finale",
+        label: "Esquiver et laisser la pierre finir",
+        risky: {
+          stat: "RUSE",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Tu t'effaces au dernier souffle — la charge emporte Geryon dans les piliers déjà fendus. L'arche entière s'effondre sur lui. Tu n'as plus qu'à écouter.",
+            "Tu t'écartes à l'instant juste. La bête s'écrase dans la pierre fendue, et la pierre décide pour vous deux : elle s'effondre.",
+            "Ton esquive est courte. La charge te happe à demi et t'envoie rouler dans les gravats — la bête, blessée, se dresse encore.",
+            "1 naturel. Tu esquives dans la chute de pierres. ♦ −2"
+          ),
+        },
+      },
+      { id: "tenir-terrain", label: "Tenir, lame en avant, sans céder", locked: { stat: "COURAGE" } },
+    ],
+    jailerLine: "Quel que soit le vainqueur, je gagne : j'aurai quelque chose à raconter.",
   },
   {
     id: "echo",

@@ -4,10 +4,20 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Die3D, { type RollRequest } from "@/components/Die3D";
 import ChoiceButton from "@/components/ChoiceButton";
 import TypedText from "@/components/TypedText";
-import { jailerTaunt, sceneAt, type Choice } from "@/lib/scene-data";
-import { loadRun, saveRun, type FeedEntry, type RunState } from "@/lib/state";
+import DeathScreen from "@/components/DeathScreen";
+import { chapterLabel, jailerTaunt, sceneAt, tierIsFail, type Choice } from "@/lib/scene-data";
+import { loadRun, resetRun, saveRun, type FeedEntry, type RunState } from "@/lib/state";
+import { BESACE_SLOTS, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { ditherFadeMaskDataUrl } from "@/lib/dither";
-import { bloodDebtFor, buildRegistre, jailerPosture, loadMemory, mutateMemory } from "@/lib/player-memory";
+import {
+  bloodDebtFor,
+  buildRegistre,
+  jailerPosture,
+  loadMemory,
+  mutateMemory,
+  recordDeath,
+  type Relic,
+} from "@/lib/player-memory";
 
 // Masque tramé du portrait du Geôlier — généré une fois, mis en cache (§11 :
 // dissolution en pixels épars sur les bords, jamais un fondu CSS lisse).
@@ -18,7 +28,8 @@ let demonMaskCache: string | null = null;
 function getDemonMask(): string | null {
   if (typeof document === "undefined") return null;
   if (!demonMaskCache) {
-    demonMaskCache = ditherFadeMaskDataUrl(116, 136, (nx, ny) => {
+    // Dimensions du portrait redessiné (Figma 239:49164) : 101×119.
+    demonMaskCache = ditherFadeMaskDataUrl(101, 119, (nx, ny) => {
       const fadeRight = Math.max(0, (0.45 - nx) / 0.45);
       const fadeBottom = Math.max(0, (ny - 0.72) / 0.28);
       return Math.min(1, Math.max(fadeRight, fadeBottom));
@@ -62,6 +73,9 @@ export default function Scene() {
   const [choicesHidden, setChoicesHidden] = useState(false);
   // Incrémenté à chaque tap dans le fil : termine l'animation de frappe en cours.
   const [skip, setSkip] = useState(0);
+  // Écran de mort (13/07) : non-null dès que la santé tombe à zéro sur un
+  // jet raté. La run est déjà réinitialisée quand cet état est posé.
+  const [death, setDeath] = useState<{ epitaph: string; day: number; encounters: number; relic: Relic } | null>(null);
   // Scène chronométrée (§18) : true une fois le délai écoulé sans choix — les
   // choix d'origine cèdent la place aux options ouvertes par l'inaction.
   const [timedExpired, setTimedExpired] = useState(false);
@@ -244,7 +258,13 @@ export default function Scene() {
    * "un cran au-dessus du strict minimum", pas à chaque échec).
    * Les états narratifs temporaires se dissipent scène après scène (spec §2).
    */
-  function advance(rollInfo?: { result?: number; fail?: boolean; consequence?: string }) {
+  function advance(rollInfo?: {
+    result?: number;
+    fail?: boolean;
+    consequence?: string;
+    /** Récompense Besace d'un Destin (13/07) — annoncée dans le fil. */
+    destinItem?: BesaceItem | null;
+  }) {
     const nextStep = step + 1;
     const nextScene = sceneAt(nextStep);
     const nextIllustration = nextScene.illustration ?? "assets/dithering-portal.jpg";
@@ -255,20 +275,26 @@ export default function Scene() {
     if (rollInfo?.consequence) {
       entries.push({ id: nextId(), kind: "narration", text: rollInfo.consequence });
     }
+    // Récompense du Destin : bandeau « Obtenu » juste après la conséquence.
+    if (rollInfo?.destinItem) {
+      const it = rollInfo.destinItem;
+      entries.push({ id: nextId(), kind: "obtenu", name: it.name, rarity: RARITY_LABEL[it.rarity as BesaceRarity], flavor: it.flavor });
+    }
     // Prix différé (§17) : une dette arrivée à échéance se règle ici, avant la
     // scène suivante — rétrospectivement lisible dans le transcript.
     const dueDebts = (runRef.current?.debts ?? []).filter((d) => d.settleAtStep <= nextStep);
     for (const d of dueDebts) {
       entries.push({ id: nextId(), kind: "narration", text: d.text });
     }
+    // Rencontre de combat (spec §6) : annonce AVANT l'illustration (ordre
+    // Figma 221:197), pour que l'adversaire soit LISIBLE — le mécanisme
+    // reste identique (pas de PV, pas de jauge).
+    if (nextScene.combat && nextScene.foeName) {
+      entries.push({ id: nextId(), kind: "combat", foe: nextScene.foeName });
+    }
     // Illustration : changement de contexte, ou ~1 fois sur 4 pour rythmer le fil.
     if (contextChanged || Math.random() < 0.25) {
       entries.push({ id: nextId(), kind: "illustration", src: nextIllustration });
-    }
-    // Rencontre de combat (spec §6) : bannière d'annonce, pour que l'adversaire
-    // soit LISIBLE (le mécanisme reste identique — pas de PV, pas de jauge).
-    if (nextScene.combat && nextScene.foeName) {
-      entries.push({ id: nextId(), kind: "combat", foe: nextScene.foeName });
     }
     // Dette de sang (§19) : si cet adversaire a déjà tué un héros du joueur,
     // il le reconnaît — une ligne discrète avant la scène, jamais un chiffre.
@@ -286,6 +312,23 @@ export default function Scene() {
       }
     }
     entries.push(...nextScene.narration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+    // Soin aléatoire en exploration (13/07) : les scènes hors combat révèlent
+    // parfois (~1 sur 5) un soin mineur pour la Besace — jamais garanti,
+    // jamais un menu d'achat. Bandeau « Obtenu » tramé, pas de popup.
+    const besace = runRef.current?.besace ?? [];
+    if (
+      !nextScene.combat &&
+      !nextScene.registre &&
+      nextScene.id !== "campement" &&
+      besace.length < BESACE_SLOTS &&
+      Math.random() < 0.22
+    ) {
+      const found = randomSoinMineur();
+      persist((run) => {
+        run.besace = [...run.besace, found];
+      });
+      entries.push({ id: nextId(), kind: "obtenu", name: found.name, rarity: RARITY_LABEL[found.rarity as BesaceRarity], flavor: found.flavor });
+    }
     // Le Grand Registre (§19) : en entrant dans la salle, le classement
     // s'affiche inline dans le fil, avec la ligne du joueur insérée et marquée.
     if (nextScene.registre) {
@@ -311,6 +354,8 @@ export default function Scene() {
         .filter((e) => e.scenesLeft > 0);
       // Dettes réglées : retirées de la run (§17).
       run.debts = (run.debts ?? []).filter((d) => d.settleAtStep > nextStep);
+      // Rencontre traversée vivant — comptée pour l'écran de mort (13/07).
+      if (scene.combat) run.encounters = (run.encounters ?? 0) + 1;
     });
     pushEntries(entries);
     // Révélation séquentielle : narration(s) puis Geôlier, jamais tous en même temps.
@@ -364,11 +409,24 @@ export default function Scene() {
         highStakes: choice.risky.highStakes,
       });
     } else if (choice.rest) {
-      // Campement (spec §7) : le jour avance, les blessures légères s'atténuent.
+      // Campement (spec §7, précisé 13/07) : le jour avance, les blessures
+      // légères s'atténuent — mais un ENTAILLÉ persistant (blessure de
+      // combat) n'est qu'ATTÉNUÉ par le repos. Un soin de Besace, lui, le
+      // referme complètement (consommé ici, en attendant l'UI d'inventaire).
+      let soinUsed: string | null = null;
       persist((run) => {
         run.day += 1;
         run.health = Math.min(1, run.health + 0.35);
-        run.effects = run.effects.filter((e) => e.delta > 0);
+        run.effects = run.effects
+          .filter((e) => e.delta > 0 || e.scenesLeft >= 900)
+          .map((e) => (e.scenesLeft >= 900 && e.delta < -1 ? { ...e, delta: -1 } : e));
+        const soinIdx = run.besace.findIndex((i) => i.kind === "soin");
+        if (soinIdx >= 0 && run.effects.some((e) => e.delta < 0)) {
+          soinUsed = run.besace[soinIdx].name;
+          run.besace = run.besace.filter((_, i) => i !== soinIdx);
+          run.effects = run.effects.filter((e) => e.delta > 0);
+          run.health = Math.min(1, run.health + 0.2);
+        }
       });
       const newDay = runRef.current?.day ?? day + 1;
       setDay(newDay);
@@ -378,7 +436,16 @@ export default function Scene() {
       mutateMemory((m) => {
         m.bestDays = Math.max(m.bestDays, newDay);
       });
-      pushEntries([{ id: nextId(), kind: "day", day: newDay }]);
+      const restEntries: FeedEntry[] = [{ id: nextId(), kind: "day", day: newDay }];
+      if (soinUsed) {
+        restEntries.push({
+          id: nextId(),
+          kind: "narration",
+          text: `Avant de dormir, tu uses du ${soinUsed}. La plaie se referme enfin — la nuit n'aura pas ce prétexte.`,
+        });
+      }
+      pushEntries(restEntries);
+      if (soinUsed) enqueueReveal([restEntries[1].id]);
       advanceTimer.current = setTimeout(() => advance(), 450);
     } else if (choice.passive) {
       // Le silence comme vraie option de jeu (§19) : pas une case vide — une
@@ -401,8 +468,12 @@ export default function Scene() {
           erosion ? `erosion-${erosion}` : ""
         }`}
       >
-        {/* En-tête : icône de menu unique, même position sur tous les écrans (spec §8) */}
-        <div className="relative z-[3] flex items-center justify-end px-[15px] py-[11px]">
+        {/* En-tête (Figma 221:197) : titre de chapitre à gauche, icône de menu
+            unique à droite, même position sur tous les écrans (spec §8) */}
+        <div className="relative z-[3] flex items-center justify-between px-[15px] py-[11px]">
+          <span className="text-[12px] font-medium uppercase tracking-[2.4px] text-[var(--color-ink)]">
+            {chapterLabel(step)}
+          </span>
           <button
             type="button"
             aria-label="Menu"
@@ -473,7 +544,9 @@ export default function Scene() {
         {/* Dé d20 tactile — apparaît au clic d'un choix risqué */}
         <Die3D
           request={roll}
-          onComplete={(result, outcome) => {
+          onComplete={(result, outcome, tier) => {
+            // Récompense du Destin (13/07) : Besace rare à légendaire — JAMAIS une Relique.
+            const destinItem = tier === "destin" ? randomRecompenseDestin() : null;
             persist((run) => {
               run.rolls.push({
                 step,
@@ -481,58 +554,68 @@ export default function Scene() {
                 result,
                 at: Date.now(),
               });
-              // Santé : les échecs blessent — jamais de chiffre, l'UI s'érode (spec §5).
-              if (result === 1) run.health = Math.max(0.05, run.health - 0.25);
-              else if (outcome.fail) run.health = Math.max(0.05, run.health - 0.12);
-              // États narratifs temporaires sur critiques (spec §2).
-              if (result === 20)
+              // Santé par palier (résolution graduée 13/07) — jamais de chiffre,
+              // l'UI s'érode (spec §5). « De justesse » : ça passe, mais un coût.
+              const cost =
+                tier === "malediction" ? 0.25 : tier === "critique" ? 0.2 : tier === "echec" ? 0.12 : tier === "justesse" ? 0.06 : 0;
+              run.health = Math.max(0, run.health - cost);
+              // États narratifs temporaires (spec §2) + blessure persistante (13/07) :
+              // un jet raté EN COMBAT laisse un ENTAILLÉ qui ne se dissipe pas
+              // tout seul — le camp l'atténue, un soin de Besace le referme.
+              if (tier === "destin" || (scene.combat && !tierIsFail(tier)))
                 run.effects = [
                   { id: "aguerri", label: "AGUERRI", delta: 2, scenesLeft: 3 },
                   ...run.effects.filter((e) => e.id !== "aguerri"),
                 ];
-              if (result === 1)
+              if (scene.combat && tierIsFail(tier))
+                run.effects = [
+                  { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 999 },
+                  ...run.effects.filter((e) => e.id !== "entaille"),
+                ];
+              else if (tier === "malediction")
                 run.effects = [
                   { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 3 },
                   ...run.effects.filter((e) => e.id !== "entaille"),
                 ];
-              // Rencontre de combat (spec §6) : bonus/malus post-combat, sur
-              // une issue non critique (les critiques ont déjà leur propre
-              // état ci-dessus — pas de cumul sur le même jet).
-              if (scene.combat && result !== 1 && result !== 20) {
-                if (!outcome.fail)
-                  run.effects = [
-                    { id: "aguerri", label: "AGUERRI", delta: 2, scenesLeft: 3 },
-                    ...run.effects.filter((e) => e.id !== "aguerri"),
-                  ];
-                else
-                  run.effects = [
-                    { id: "ebranle", label: "ÉBRANLÉ", delta: -1, scenesLeft: 2 },
-                    ...run.effects.filter((e) => e.id !== "ebranle"),
-                  ];
-              }
+              if (destinItem) run.besace = [...run.besace, destinItem];
             });
-            // Dette de sang (§19) : un 1 naturel en combat = l'adversaire nommé
-            // « marque » le héros. Stand-in prototype du vrai flux de mort (pas
-            // encore construit) : la trace est attachée au compte et fera
-            // réapparaître l'adversaire, marqué, dans une run suivante.
-            if (scene.combat && scene.foe && result === 1) {
-              const foe = scene.foe;
-              const foeLabel = scene.id === "geryon" ? "Geryon" : "la meute des tunnels";
-              mutateMemory((m) => {
-                if (!m.bloodDebts.some((d) => d.entity === foe)) {
-                  m.bloodDebts.push({
-                    entity: foe,
-                    label: foeLabel,
-                    heroName: runRef.current?.heroName ?? "un héros",
-                    runIndex: m.runsStarted,
-                  });
-                }
+            const run = runRef.current!;
+            setHealth(run.health);
+
+            // Permadeath réel (spec §9 + séquence 13/07) : la santé à zéro sur
+            // un jet raté tue — dans la fiction, jamais par accident technique.
+            if (run.health <= 0 && tierIsFail(tier)) {
+              const epitaph = outcome.text.replace(/\s*♦.*$/, "");
+              const cause = scene.foeName ?? "les couloirs d'Aldenhar";
+              const relic = recordDeath({
+                heroName: run.heroName,
+                days: run.day,
+                cause,
+                place: scene.id,
+                killer: scene.foe ? { entity: scene.foe, label: scene.foeName ?? scene.foe } : undefined,
               });
+              // La run est réinitialisée IMMÉDIATEMENT : fermer l'app pendant
+              // l'écran de mort ne ressuscite jamais le héros.
+              const dead = { epitaph, day: run.day, encounters: run.encounters, relic };
+              resetRun();
+              setDeath(dead);
+              return;
             }
-            setHealth(runRef.current?.health ?? 1);
-            advance({ result, fail: outcome.fail, consequence: outcome.text });
+            advance({ result, fail: outcome.fail, consequence: outcome.text, destinItem });
           }}
         />
+
+        {/* Écran de mort (13/07) : dé brisé → épitaphe → dissolution
+            convergente → chiffres → Relique → recommencer. */}
+        {death && (
+          <DeathScreen
+            epitaph={death.epitaph}
+            day={death.day}
+            encounters={death.encounters}
+            relic={death.relic}
+            onRestart={() => window.location.reload()}
+          />
+        )}
       </div>
     </main>
   );
@@ -570,39 +653,59 @@ function FeedItem({
 
   switch (entry.kind) {
     case "illustration":
+      // Bord bas dissous en pixels (correctif Patrick 13/07) : la bande
+      // bande_dissolution_haut.svg retournée verticalement (scaleY(-1)),
+      // jamais un dégradé CSS lisse (§11).
       return (
-        <div className="scene-enter mx-[-17px] mb-[18px]">
+        <div className="scene-enter illustration-frame mx-[-17px] mb-[18px]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img alt="" src={entry.src} className="pointer-events-none block h-[352px] w-full object-cover" />
+          <div
+            className="dissolve-bottom"
+            style={{ backgroundImage: 'url("assets/bande_dissolution_haut.svg")' }}
+            aria-hidden
+          />
         </div>
       );
     case "day":
       return (
-        <p className="scene-enter mb-[18px] text-center text-[11px] uppercase tracking-[1.2px] text-[var(--color-ink)] opacity-50">
+        <p className="scene-enter mb-[18px] text-center text-[11px] uppercase tracking-[1.2px] text-[var(--color-ink)] opacity-50 [--enter-opacity:0.5]">
           — Jour {entry.day} —
         </p>
       );
     case "chosen":
+      // Action choisie à 50% d'opacité pour la distinguer du texte narratif
+      // (retour Patrick 13/07) : la variable --enter-opacity est nécessaire
+      // car l'animation d'entrée fige sa dernière frame par-dessus la classe.
       return (
-        <p className="scene-enter mb-[14px] text-[13px] text-[var(--color-ink)] opacity-50">
+        <p className="scene-enter mb-[14px] text-[13px] text-[var(--color-ink)] opacity-50 [--enter-opacity:0.5]">
           › {entry.label}
         </p>
       );
     case "jailer":
-      // Bandeau agrandi et repositionné (Figma 1909:794, redesign 11/07) :
-      // démon plus grand et plus présent, texte à sa droite. Le portrait est
-      // en z-index sous le texte (le texte doit toujours rester lisible et
-      // au-dessus de l'image, jamais rogné par elle). Le bord droit/bas de
-      // l'image se dissout en pixels tramés (masque Bayer) plutôt qu'un
-      // fondu lisse ; ce tramage scintille tant que le Geôlier "parle"
-      // (texte en cours de frappe) et se fige dès la citation terminée.
+      // Bloc redessiné (Figma 239:49164, 13/07) : bandeau orange de 87px,
+      // portrait 101×119 qui déborde en haut/gauche, et des FRANGES de pixels
+      // charbon qui rongent les bords haut et bas du bloc. Ces franges
+      // scintillent uniquement pendant que le Geôlier parle (texte en cours
+      // de frappe), puis se figent — jamais un effet permanent (correctif
+      // Patrick 13/07). Le texte reste toujours au-dessus du portrait.
       return (
-        <div className="scene-enter jailer-banner mx-[-17px] mb-[18px] relative flex min-h-[128px] items-center overflow-clip bg-[var(--color-accent)] pl-[100px] pr-[22px] py-[16px]">
-          <div
-            className={`jailer-portrait pointer-events-none absolute top-[10px] left-[-8px] z-0 h-[136px] w-[116px] ${
-              typed ? "jailer-speaking" : ""
-            }`}
-          >
+        <div
+          className={`scene-enter jailer-banner mx-[-17px] mb-[18px] mt-[15px] relative flex min-h-[87px] items-center bg-[var(--color-accent)] pl-[123px] pr-[22px] py-[14px] ${
+            typed ? "jailer-speaking" : ""
+          }`}
+        >
+          <span
+            className="jailer-fringe jailer-fringe-top"
+            style={{ backgroundImage: 'url("assets/frange_geolier.svg")' }}
+            aria-hidden
+          />
+          <span
+            className="jailer-fringe jailer-fringe-bottom"
+            style={{ backgroundImage: 'url("assets/frange_geolier.svg")' }}
+            aria-hidden
+          />
+          <div className="jailer-portrait pointer-events-none absolute top-[-15px] left-[-3px] z-0 h-[119px] w-[101px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt=""
@@ -615,12 +718,14 @@ function FeedItem({
                       maskImage: `url(${demonMask})`,
                       WebkitMaskRepeat: "no-repeat",
                       maskRepeat: "no-repeat",
+                      WebkitMaskSize: "100% 100%",
+                      maskSize: "100% 100%",
                     }
                   : undefined
               }
             />
           </div>
-          <p className="relative z-[1] text-[13px] font-bold leading-[1.35] text-[var(--color-bg)]">
+          <p className="relative z-[1] text-[13px] font-bold leading-[1.45] text-[var(--color-bg)]">
             <TypedText text={entry.text} typed={typed} skip={skip} msPerChar={22} onDone={onDone} />
           </p>
         </div>
@@ -632,13 +737,23 @@ function FeedItem({
         </p>
       );
     case "combat":
-      // Bannière de rencontre (spec §6, lisibilité) : annonce clairement
-      // l'adversaire. Le combat reste la même mécanique choix + dé — la
-      // bannière ne fait que le signaler, sans PV ni jauge.
+      // Bannière de rencontre (Figma 221:197, redesign 13/07) : sans cadre —
+      // tag centré + nom de l'adversaire en grand Jacquard orange, juste
+      // avant l'illustration. Le combat reste la même mécanique choix + dé.
       return (
-        <div className="scene-enter combat-banner mx-[-17px] mb-[18px]" role="note">
+        <div className="scene-enter combat-banner mb-[14px] mt-[6px]" role="note">
           <span className="combat-banner-tag">✦ RENCONTRE ✦</span>
           <span className="combat-banner-foe">{entry.foe}</span>
+        </div>
+      );
+    case "obtenu":
+      // Objet mineur (13/07) : bandeau tramé inline — jamais une popup.
+      return (
+        <div className="scene-enter obtenu-banner mb-[18px]">
+          <span className="obtenu-line">
+            Obtenu — {entry.name} · {entry.rarity}
+          </span>
+          <span className="obtenu-flavor">{entry.flavor}</span>
         </div>
       );
     case "registre":

@@ -40,6 +40,14 @@ export type FallenHero = {
   place: string;
 };
 
+/** Relique forgée à la mort (spec §10 + séquence d'écran de mort 13/07). */
+export type Relic = {
+  name: string;
+  rarity: "commune" | "rare" | "legendaire";
+  heroName: string;
+  days: number;
+};
+
 export type PlayerMemory = {
   /** Nombre de runs commencées (incrémenté au tout premier pas d'une run neuve). */
   runsStarted: number;
@@ -51,6 +59,8 @@ export type PlayerMemory = {
   totalDays: number;
   /** Reliques rares/légendaires obtenues (les communes ne comptent pas pour le ton). */
   relicsRare: number;
+  /** Toutes les reliques forgées, dans l'ordre des morts. */
+  relics: Relic[];
   /** Éléments d'environnement modifiés durablement : "porte-balafree-defoncee", etc. */
   envFlags: Record<string, boolean>;
   /** Rivalités personnelles qui traversent les runs (§19). */
@@ -68,6 +78,7 @@ function fresh(): PlayerMemory {
     bestDays: 0,
     totalDays: 0,
     relicsRare: 0,
+    relics: [],
     envFlags: {},
     bloodDebts: [],
     fallen: [],
@@ -86,6 +97,7 @@ export function loadMemory(): PlayerMemory {
           bestDays: typeof p.bestDays === "number" ? p.bestDays : 0,
           totalDays: typeof p.totalDays === "number" ? p.totalDays : 0,
           relicsRare: typeof p.relicsRare === "number" ? p.relicsRare : 0,
+          relics: Array.isArray(p.relics) ? p.relics : [],
           envFlags: p.envFlags && typeof p.envFlags === "object" ? p.envFlags : {},
           bloodDebts: Array.isArray(p.bloodDebts) ? p.bloodDebts : [],
           fallen: Array.isArray(p.fallen) ? p.fallen : [],
@@ -133,6 +145,57 @@ export function jailerPosture(mem: PlayerMemory): JailerPosture {
 /** Une dette de sang correspondant à cette entité existe-t-elle ? (§19) */
 export function bloodDebtFor(mem: PlayerMemory, entity: string): BloodDebt | undefined {
   return mem.bloodDebts.find((d) => d.entity === entity);
+}
+
+/**
+ * Forge d'une Relique à la mort (spec §10) : commune / rare / légendaire.
+ * Le nom vient d'un petit pool par rareté — contenu de proto, à enrichir.
+ */
+const RELIC_NAMES: Record<Relic["rarity"], string[]> = {
+  commune: ["Éclat de dé fêlé", "Anneau de suie", "Mèche de torche éteinte", "Clou du pont d'os"],
+  rare: ["Œil de lanterne verte", "Vertèbre gravée", "Sablier sans sable"],
+  legendaire: ["Dent du décompte", "Nom que l'écho a gardé"],
+};
+
+export function forgeRelic(heroName: string, days: number): Relic {
+  const roll = Math.random();
+  const rarity: Relic["rarity"] = roll < 0.7 ? "commune" : roll < 0.95 ? "rare" : "legendaire";
+  const pool = RELIC_NAMES[rarity];
+  return { name: pool[Math.floor(Math.random() * pool.length)], rarity, heroName, days };
+}
+
+/**
+ * Enregistrement complet d'une mort (séquence 13/07) : héros au Registre,
+ * relique forgée, dette de sang si un adversaire nommé a porté le coup.
+ * Appelé AU MOMENT de la mort (pas à l'acceptation) : fermer l'app pendant
+ * l'écran de mort ne doit jamais ressusciter la run (§9 inversé — la mort
+ * fictionnelle, elle, est définitive).
+ */
+export function recordDeath(args: {
+  heroName: string;
+  days: number;
+  cause: string;
+  place: string;
+  killer?: { entity: string; label: string };
+}): Relic {
+  const relic = forgeRelic(args.heroName, args.days);
+  mutateMemory((m) => {
+    m.deaths += 1;
+    m.totalDays += args.days;
+    m.bestDays = Math.max(m.bestDays, args.days);
+    m.fallen.unshift({ name: args.heroName, days: args.days, cause: args.cause, place: args.place });
+    m.relics.push(relic);
+    if (relic.rarity !== "commune") m.relicsRare += 1;
+    if (args.killer && !m.bloodDebts.some((d) => d.entity === args.killer!.entity)) {
+      m.bloodDebts.push({
+        entity: args.killer.entity,
+        label: args.killer.label,
+        heroName: args.heroName,
+        runIndex: m.runsStarted,
+      });
+    }
+  });
+  return relic;
 }
 
 /**

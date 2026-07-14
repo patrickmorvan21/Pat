@@ -4,6 +4,8 @@
  * L'état est persisté à chaque évènement et repris exactement où on l'a laissé.
  */
 
+import { startingBesace, type BesaceItem } from "@/lib/besace";
+
 export type RollRecord = {
   step: number;
   choiceId: string;
@@ -42,7 +44,9 @@ export type FeedEntry =
   | { id: string; kind: "jailer"; text: string }
   | { id: string; kind: "registre"; rows: RegistreRow[] }
   /** Bannière de rencontre : annonce clairement un combat (spec §6, lisibilité). */
-  | { id: string; kind: "combat"; foe: string };
+  | { id: string; kind: "combat"; foe: string }
+  /** Objet mineur obtenu (13/07) : bandeau tramé « Obtenu — … », pas de popup. */
+  | { id: string; kind: "obtenu"; name: string; rarity: string; flavor: string };
 
 /**
  * Prix différé (spec §17) : un choix « gratuit » contracte une dette
@@ -73,6 +77,10 @@ export type RunState = {
   feed: FeedEntry[];
   /** Dettes narratives en attente de règlement dans cette run (spec §17). */
   debts: PendingDebt[];
+  /** Besace (13/07) : objets mundane, vidée à la mort. */
+  besace: BesaceItem[];
+  /** Rencontres (scènes de combat) traversées vivant — pour l'écran de mort. */
+  encounters: number;
 };
 
 const KEY = "aldenhar-run";
@@ -98,7 +106,16 @@ function fresh(): RunState {
     lastChoiceId: null,
     feed: [],
     debts: [],
+    besace: startingBesace(),
+    encounters: 0,
   };
+}
+
+/** Réinitialisation explicite (mort acceptée) : nouvelle run, nouveau héros. */
+export function resetRun(): RunState {
+  const run = fresh();
+  saveRun(run);
+  return run;
 }
 
 export function loadRun(): RunState {
@@ -118,6 +135,8 @@ export function loadRun(): RunState {
             lastChoiceId: p.lastChoiceId ?? null,
             feed: Array.isArray(p.feed) ? p.feed : [],
             debts: Array.isArray(p.debts) ? p.debts : [],
+            besace: Array.isArray(p.besace) ? p.besace : startingBesace(),
+            encounters: typeof p.encounters === "number" ? p.encounters : 0,
           };
         }
       }
