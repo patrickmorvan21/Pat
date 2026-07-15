@@ -1,7 +1,7 @@
 import MiniGamesGallery from "@/components/minigames/MiniGamesGallery";
 
 export const metadata = {
-  title: "Aldenhar — Mini-jeux & Surprises",
+  title: "PACTUM — Mini-jeux & Surprises",
   description: "Galerie de revue : tous les mini-jeux tactiles et éléments de surprise validés, pour feedback.",
 };
 

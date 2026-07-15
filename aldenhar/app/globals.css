@@ -828,3 +828,18 @@ body {
 .surprise-textmock p + p {
   margin-top: 8px;
 }
+
+/* Curseur de frappe (SKILL pactum-style §5) : ▌ clignotant par paliers —
+   steps(1), jamais un fondu. Disparaît dès que le bloc est entièrement écrit. */
+.type-cursor {
+  display: inline-block;
+  margin-left: 1px;
+  animation: type-cursor-blink 0.7s steps(1) infinite;
+}
+@keyframes type-cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .type-cursor { animation: none; }
+}

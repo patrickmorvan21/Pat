@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Texte tapé lettre par lettre (spec §16, ~12–18ms/caractère), interruptible
- * par tap. `typed=false` (entrées déjà lues du fil, ou en attente dans la
- * file de révélation séquentielle) affiche le texte entier d'emblée.
+ * Texte tapé lettre par lettre (spec §16, ~12–18ms/caractère ; Geôlier 42ms),
+ * interruptible par tap. `typed=false` (entrées déjà lues du fil, ou en
+ * attente dans la file de révélation séquentielle) affiche le texte entier.
  * `onDone` prévient le parent pour enchaîner le bloc suivant de la file.
+ * SKILL pactum-style §5 : curseur ▌ clignotant en steps(1) pendant la frappe ;
+ * `prefers-reduced-motion` → texte instantané.
  */
 export default function TypedText({
   text,
@@ -33,6 +35,13 @@ export default function TypedText({
     doneRef.current = false;
     baseSkipRef.current = skip;
     if (!typed) return;
+    // Accessibilité (SKILL §5) : mouvement réduit = révélation instantanée.
+    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setShown(text.length);
+      doneRef.current = true;
+      onDone?.();
+      return;
+    }
     // eslint-disable-next-line react-hooks/set-state-in-effect -- démarre l'animation de frappe d'une entrée fraîchement activée dans la file
     setShown(0);
     let i = 0;
@@ -67,7 +76,17 @@ export default function TypedText({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [skip]);
 
+  const typing = typed && shown < text.length;
   // Hors frappe active, toujours le texte entier — ceinture et bretelles
   // contre tout état `shown` partiel résiduel.
-  return <>{typed ? text.slice(0, shown) : text}</>;
+  return (
+    <>
+      {typed ? text.slice(0, shown) : text}
+      {typing && (
+        <span className="type-cursor" aria-hidden>
+          ▌
+        </span>
+      )}
+    </>
+  );
 }

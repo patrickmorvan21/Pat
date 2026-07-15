@@ -16,7 +16,7 @@ export default function MiniGamesGallery() {
   return (
     <main className="minijeux-page">
       <header className="minijeux-header">
-        <h1>Aldenhar — Mini-jeux &amp; Surprises</h1>
+        <h1>PACTUM — Mini-jeux &amp; Surprises</h1>
         <p>
           Galerie de revue (11/07/2026). Chaque carte est indépendante et rejouable — bascule le palier de
           stat pour voir « la stat module la difficulté » en action. Réfère-toi au numéro de catalogue

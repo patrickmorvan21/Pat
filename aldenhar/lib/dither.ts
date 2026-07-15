@@ -7,7 +7,7 @@
 
 export const CHARBON = "#1c1a16";
 export const ORANGE = "#e0632a";
-export const CREME = "#e8dfc8"; // réservé : inscriptions anciennes, curseurs
+export const CREME = "#ffffff"; // blanc pur (crème #e8dfc8 obsolète — SKILL pactum-style §2)
 /** Moments funestes = blanc (Patrick 14/07 : plus aucun rouge dans le jeu). */
 export const DRAMA = "#ffffff";
 

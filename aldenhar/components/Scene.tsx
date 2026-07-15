@@ -622,7 +622,7 @@ export default function Scene() {
             // un jet raté tue — dans la fiction, jamais par accident technique.
             if (run.health <= 0 && tierIsFail(tier)) {
               const epitaph = outcome.text.replace(/\s*♦.*$/, "");
-              const cause = scene.foeName ?? "les couloirs d'Aldenhar";
+              const cause = scene.foeName ?? "les couloirs";
               const relic = recordDeath({
                 heroName: run.heroName,
                 days: run.day,
@@ -742,7 +742,7 @@ function FeedItem({
             />
           </div>
           <p className="relative z-[1] font-mono text-[13px] font-bold leading-[1.6] text-[var(--color-bg)]">
-            <TypedText text={entry.text} typed={typed} skip={skip} msPerChar={22} onDone={onDone} />
+            <TypedText text={entry.text} typed={typed} skip={skip} msPerChar={42} onDone={onDone} />
           </p>
         </div>
       );
