@@ -90,7 +90,7 @@ export default function SequenceExecute({
           bayerFill(ctx, p.x - 18, p.y - 18, 36, 36, done ? 0.15 : 0.5, ORANGE, null, 2);
         });
         ctx.fillStyle = "rgba(232,223,200,0.5)";
-        ctx.font = "12px 'VT323', monospace";
+        ctx.font = "12px 'Roboto Mono', monospace";
         ctx.textAlign = "center";
         ctx.fillText(`${config.reverse ? "ordre inverse" : "reproduis l'ordre"}`, W / 2, H - 14);
       }

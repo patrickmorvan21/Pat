@@ -68,7 +68,7 @@ export default function SteadyCaress({
       const breathe = (Math.sin(breathT * (goodRhythm ? 2.4 : 1)) + 1) / 2;
       bayerFill(ctx, W / 2 - 60, H / 2 - 40, 120, 80, 0.3 + breathe * 0.3, ORANGE, null, 3);
       ctx.fillStyle = "rgba(232,223,200,0.5)";
-      ctx.font = "12px 'VT323', monospace";
+      ctx.font = "12px 'Roboto Mono', monospace";
       ctx.textAlign = "center";
       ctx.fillText("glisse lentement, régulièrement", W / 2, H - 14);
       if (goodElapsed >= config.durationMs && !finished) {

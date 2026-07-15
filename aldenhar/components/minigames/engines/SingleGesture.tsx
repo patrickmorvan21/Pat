@@ -59,7 +59,7 @@ export default function SingleGesture({
       const lidY = progress * H;
       bayerFill(ctx, W / 2 - 50, 0, 100, lidY, 0.55, ORANGE, null, 2);
       ctx.fillStyle = "rgba(232,223,200,0.4)";
-      ctx.font = "12px 'VT323', monospace";
+      ctx.font = "12px 'Roboto Mono', monospace";
       ctx.textAlign = "center";
       ctx.fillText("un geste lent, de haut en bas", W / 2, H - 14);
     }

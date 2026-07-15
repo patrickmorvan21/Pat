@@ -135,7 +135,7 @@ export default function HoldSteady({
         ctx.stroke();
         if (config.clearCue && progress > 0.82) {
           ctx.fillStyle = "rgba(232,223,200,0.6)";
-          ctx.font = "12px 'VT323', monospace";
+          ctx.font = "12px 'Roboto Mono', monospace";
           ctx.textAlign = "center";
           ctx.fillText("elle s'éloigne…", cx, cy + 16);
         }
@@ -146,7 +146,7 @@ export default function HoldSteady({
       } else if (!finished) {
         drawBeast(ctx, W / 2, groundY - 6, 0.85, false);
         ctx.fillStyle = "rgba(232,223,200,0.5)";
-        ctx.font = "13px 'VT323', monospace";
+        ctx.font = "13px 'Roboto Mono', monospace";
         ctx.textAlign = "center";
         ctx.fillText("maintiens l'appui, ne bouge pas", W / 2, 30);
       }

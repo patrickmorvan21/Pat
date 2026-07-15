@@ -115,7 +115,7 @@ export default function RubReveal({
       });
       // Inscription révélée (gravure, police à empattement du titre)
       ctx.fillStyle = CREME;
-      ctx.font = "32px 'Jacquard 12', serif";
+      ctx.font = "30px 'Instrument Serif', serif";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(config.label, W / 2, H / 2);

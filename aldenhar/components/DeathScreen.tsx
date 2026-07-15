@@ -7,7 +7,7 @@ import type { Relic } from "@/lib/player-memory";
  * Séquence d'écran de mort (journal Notion 13/07, précède la Relique §10) :
  *  1. le dé se brise — plus de relance possible (rendu 2D tramé en proto,
  *     les deux moitiés dérivent ; la vraie fracture 3D est notée à affiner)
- *  2. épitaphe courte (Jacquard 12) décrivant exactement comment on est mort
+ *  2. épitaphe courte (Instrument Serif) décrivant exactement comment on est mort
  *  3. dissolution en pixels plein écran, CONVERGENTE : démarre sur les 4
  *     côtés simultanément et progresse vers le centre
  *  4. chiffres de run : Jour atteint, rencontres survécues

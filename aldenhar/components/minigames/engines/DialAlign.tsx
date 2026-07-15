@@ -185,7 +185,7 @@ export default function DialAlign({
       if (need > 0) {
         turnsDone = cumulative / (Math.PI * 2);
         ctx.fillStyle = "rgba(232,223,200,0.5)";
-        ctx.font = "12px 'VT323', monospace";
+        ctx.font = "12px 'Roboto Mono', monospace";
         ctx.textAlign = "center";
         ctx.fillText(`tours : ${Math.floor(turnsDone)} / ${config.turnsNeeded}`, cx, H - 14);
         if (turnsDone >= (config.turnsNeeded ?? 0) && !finished) {

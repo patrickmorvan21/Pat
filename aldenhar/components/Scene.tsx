@@ -6,7 +6,7 @@ import ChoiceButton from "@/components/ChoiceButton";
 import TypedText from "@/components/TypedText";
 import DeathScreen from "@/components/DeathScreen";
 import GameMenu from "@/components/GameMenu";
-import { chapterLabel, jailerTaunt, sceneAt, tierIsFail, type Choice } from "@/lib/scene-data";
+import { jailerTaunt, sceneAt, tierIsFail, type Choice } from "@/lib/scene-data";
 import { loadRun, resetRun, saveRun, type FeedEntry, type RunState } from "@/lib/state";
 import { BESACE_SLOTS, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import {
@@ -504,23 +504,19 @@ export default function Scene() {
           />
         )}
 
-        {/* En-tête (Figma 221:197) : titre de chapitre à gauche, icône de menu
-            unique à droite, même position sur tous les écrans (spec §8) */}
-        <div className="relative z-[3] flex items-center justify-between px-[15px] py-[11px]">
-          <span className="text-[12px] font-medium uppercase tracking-[2.4px] text-[var(--color-ink)]">
-            {chapterLabel(step)}
-          </span>
-          <button
-            type="button"
-            aria-label="Menu"
-            onClick={() => setMenuOpen(true)}
-            className="grid size-[41px] cursor-pointer grid-cols-3 place-items-center border border-solid border-[var(--color-ink)] bg-[var(--color-bg)] p-[11px]"
-          >
-            {Array.from({ length: 9 }).map((_, i) => (
-              <span key={i} className="block size-[1.6px] bg-[var(--color-ink)]" />
-            ))}
-          </button>
-        </div>
+        {/* En-tête (repasse Figma 15/07, frame 1925:614) : plus de titre —
+            seule l'icône de menu flotte en haut à droite (32×32, position
+            fixe sur tous les écrans, spec §8), le fil défile dessous. */}
+        <button
+          type="button"
+          aria-label="Menu"
+          onClick={() => setMenuOpen(true)}
+          className="absolute top-[11px] right-[10px] z-[4] grid size-[32px] cursor-pointer grid-cols-3 place-items-center border border-solid border-[var(--color-ink)] bg-[var(--color-bg)]/80 p-[8px]"
+        >
+          {Array.from({ length: 9 }).map((_, i) => (
+            <span key={i} className="block size-[1.6px] bg-[var(--color-ink)]" />
+          ))}
+        </button>
 
         {/* Flux scrollable — tout l'historique de la run, rien ne se décharge (spec §16).
             Pendant que le dé est actif, le fil ne capte plus les taps : sinon le

@@ -77,7 +77,7 @@ export default function StraightSwipe({
       if (!finished) {
         ctx.fillStyle = CREME;
         ctx.globalAlpha = 0.4;
-        ctx.font = "12px 'VT323', monospace";
+        ctx.font = "12px 'Roboto Mono', monospace";
         ctx.textAlign = "center";
         ctx.fillText("Un seul geste, net et rapide", W / 2, H - 14);
         ctx.globalAlpha = 1;

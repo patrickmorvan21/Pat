@@ -154,7 +154,7 @@ function AshRainPreview() {
       ctx.fillStyle = CHARBON;
       ctx.fillRect(0, 0, 300, 160);
       ctx.fillStyle = "rgba(232,223,200,0.5)";
-      ctx.font = "12px 'VT323', monospace";
+      ctx.font = "12px 'Roboto Mono', monospace";
       ctx.textAlign = "center";
       ctx.fillText("Le couloir continue, silencieux.", 150, 80);
       for (let y = 0; y < 18; y++)

@@ -65,7 +65,7 @@ export default function RhythmTap({
         const density = activeBeat >= 0 ? 0.9 : 0.15;
         bayerFill(ctx, cx - 40, cy - 40, 80, 80, density, ORANGE, null, 2);
         ctx.fillStyle = "rgba(232,223,200,0.5)";
-        ctx.font = "12px 'VT323', monospace";
+        ctx.font = "12px 'Roboto Mono', monospace";
         ctx.textAlign = "center";
         ctx.fillText("Regarde le rythme…", cx, H - 14);
         if (elapsed > totalWatch) {
@@ -82,7 +82,7 @@ export default function RhythmTap({
           bayerFill(ctx, cx - 40, cy - 40, 80, 80, 0.2, "rgba(232,223,200,0.7)", null, 3);
         }
         ctx.fillStyle = ORANGE;
-        ctx.font = "12px 'VT323', monospace";
+        ctx.font = "12px 'Roboto Mono', monospace";
         ctx.textAlign = "center";
         ctx.fillText(`tape le rythme (${tapIndex}/${config.beats})`, cx, H - 14);
         if (elapsed > beatTimes[beatTimes.length - 1] + (config.tolerance ?? 220) + 400 && !finished) {

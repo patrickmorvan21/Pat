@@ -158,7 +158,7 @@ export default function Die3D({ request, onComplete }: Props) {
         }
       }
       ctx.fillStyle = inverted ? REVEAL_NUM : INK;
-      ctx.font = 'bold 42px "VT323", monospace';
+      ctx.font = 'bold 36px "Roboto Mono", monospace';
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText(String(n), s / 2, s / 2 + 12);

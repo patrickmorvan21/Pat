@@ -78,11 +78,11 @@ export default function SlowSwipe({
       ctx.fillStyle = performance.now() < flashUntil ? ORANGE : "rgba(232,223,200,0.7)";
       ctx.fillRect(bx - 50, H / 2 - 60, 100, 120);
       ctx.fillStyle = CHARBON;
-      ctx.font = "11px 'VT323', monospace";
+      ctx.font = "11px 'Roboto Mono', monospace";
       ctx.textAlign = "center";
       for (let i = 0; i < 5; i++) ctx.fillText("— — —", bx, H / 2 - 40 + i * 18);
       ctx.fillStyle = CREME;
-      ctx.font = "12px 'VT323', monospace";
+      ctx.font = "12px 'Roboto Mono', monospace";
       ctx.fillText(`pages : ${pagesTurned}/${config.pagesNeeded}`, W / 2, H - 14);
     }
     draw();
