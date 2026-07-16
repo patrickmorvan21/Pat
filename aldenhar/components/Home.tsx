@@ -196,7 +196,7 @@ export default function Home() {
               >
                 PACTUM
               </h1>
-              <p className="mt-[14px] text-center font-mono text-[12px] leading-[1.7] tracking-[0.5px] text-white/50">
+              <p className="mt-[14px] text-center font-mono text-[12px] leading-[1.7] tracking-[0.5px] text-[var(--color-ink)]">
                 {saved ? (
                   <>
                     Aucune partie ne se ressemble.
