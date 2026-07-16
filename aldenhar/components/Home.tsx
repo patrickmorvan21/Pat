@@ -190,15 +190,12 @@ export default function Home() {
 
             {/* Panneau charbon : marque, tagline, CTA, liens */}
             <div className="flex flex-1 flex-col items-center px-[24px] pt-[34px]">
-              {/* Logo PACTUM — asset exact de la maquette (Figma 1963:425 / 1970:483,
-                  197.38×31), pas une recomposition en Instrument Serif. */}
+              {/* Logo PACTUM — asset HD (1720×270, transparent) fourni par Patrick,
+                  même tracé que la maquette (Figma 1963:425 / 1970:483). Downscale
+                  lissé standard (pas de pixelated) : la source est bien plus
+                  définie que l'affichage, contrairement aux textures tramées 1:1. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                alt="PACTUM"
-                src="assets/pactum_logo.png"
-                className="block w-[197px] select-none"
-                style={{ imageRendering: "pixelated" }}
-              />
+              <img alt="PACTUM" src="assets/pactum_logo.png" className="block w-[197px] select-none" />
               <p className="mt-[14px] text-center font-mono text-[12px] leading-[1.7] tracking-[0.5px] text-[var(--color-ink)]">
                 {saved ? (
                   <>
