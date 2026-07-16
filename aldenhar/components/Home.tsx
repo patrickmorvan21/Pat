@@ -190,12 +190,15 @@ export default function Home() {
 
             {/* Panneau charbon : marque, tagline, CTA, liens */}
             <div className="flex flex-1 flex-col items-center px-[24px] pt-[34px]">
-              <h1
-                className="text-[46px] leading-none tracking-[8px] text-[var(--color-ink)]"
-                style={{ fontFamily: '"Instrument Serif", serif', fontWeight: 400 }}
-              >
-                PACTUM
-              </h1>
+              {/* Logo PACTUM — asset exact de la maquette (Figma 1963:425 / 1970:483,
+                  197.38×31), pas une recomposition en Instrument Serif. */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                alt="PACTUM"
+                src="assets/pactum_logo.png"
+                className="block w-[197px] select-none"
+                style={{ imageRendering: "pixelated" }}
+              />
               <p className="mt-[14px] text-center font-mono text-[12px] leading-[1.7] tracking-[0.5px] text-[var(--color-ink)]">
                 {saved ? (
                   <>
