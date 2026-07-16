@@ -1,17 +1,173 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Scene from "@/components/Scene";
 import { buildRegistre, loadMemory } from "@/lib/player-memory";
 import { hasSavedRun, loadRun, resetRun } from "@/lib/state";
 
 /**
- * Écrans d'accueil (Figma 1933:525 « Bienvenue en enfer » / 1928:424
- * « Bon retour... », lot 14/07) : fond ORANGE plein, marque PACTUM en tête,
- * titre en Instrument Serif, démon en bas. Les tags de stat visibles sur les
- * boutons dans Figma sont un bug de composant — volontairement ignorés.
+ * Écrans d'accueil (Figma 1963:370 « Première partie » / 1970:458 « Reprendre
+ * partie », 15/07 soir) : héros = le Geôlier détouré sur fond ORANGE plein,
+ * animé (respiration + cendres) selon le prototype validé
+ * `accueil_geolier_v5.html` ; dessous, panneau CHARBON : PACTUM (Instrument
+ * Serif), tagline, CTA à segments décalés, liens en pied.
  * OPTIONS n'est pas encore designé : lien présent mais inerte.
  */
+
+/* ---- Réglages repris tels quels du prototype validé (ne pas lisser) ---- */
+const TICK = 90; /* ms par pas de simulation */
+const DENSITY = 2; /* cendres créées par pas */
+/* Respiration par PALIERS ENTIERS — aucune transition CSS, aucun easing. */
+const BREATH = [0, -1, -2, -3, -3, -3, -2, -1, 0, 0, 0];
+const BSTEP = 380; /* ms entre deux paliers de respiration */
+const CHARBON = "#1c1a16";
+
+type Wisp = { x: number; y: number; v: number; sway: number; f: number; seed: number; age: number };
+
+/**
+ * Héros animé : 3 couches — canvas de fumée (dessous), Geôlier détouré
+ * (devant, `position:relative`), bande « sol » charbon de 4px tout en bas
+ * (masque la ligne révélée quand l'image respire vers le haut).
+ */
+function HeroGeolier() {
+  const imgRef = useRef<HTMLImageElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const img = imgRef.current;
+    const cv = canvasRef.current;
+    if (!img || !cv) return;
+    const ctx = cv.getContext("2d")!;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; // image fixe, pas de fumée
+
+    /* canvas à 1/3 de la taille CSS : pixels ~3px affichés, échelle trame */
+    let W = 0;
+    let H = 0;
+    let seeded = false;
+    const wisps: Wisp[] = [];
+
+    const newWisp = (): Wisp => ({
+      x: Math.random() * W,
+      y: H + 2,
+      v: 0.55 + Math.random() * 0.45,
+      sway: 0.4 + Math.random() * 0.5,
+      f: 0.1 + Math.random() * 0.12,
+      seed: Math.random() * 6.283,
+      age: 0,
+    });
+
+    /* Peuple la colonne d'ascension à toutes les hauteurs dès le chargement —
+       sinon il faut plusieurs secondes pour que les premières cendres, nées
+       tout en bas, remontent jusqu'à devenir visibles (prototype validé). */
+    const seedWisps = () => {
+      const CEIL = H / 3;
+      const n = (DENSITY * H) / 2 | 0;
+      for (let i = 0; i < n; i++) {
+        const w = newWisp();
+        w.y = CEIL + Math.random() * (H - CEIL);
+        w.age = ((H - w.y) / w.v) | 0;
+        wisps.push(w);
+      }
+    };
+
+    const fit = () => {
+      const r = img.getBoundingClientRect();
+      if (!r.width) return;
+      W = Math.round(r.width / 3);
+      H = Math.round(r.height / 3);
+      cv.width = W;
+      cv.height = H;
+      if (!seeded && W > 0 && H > 0) {
+        seeded = true;
+        seedWisps();
+      }
+    };
+    const ro = new ResizeObserver(fit);
+    ro.observe(img);
+    if (img.decode) img.decode().then(fit).catch(fit);
+    else img.addEventListener("load", fit);
+
+    /* respiration : montée/descente par paliers entiers */
+    let bIdx = 0;
+    let bAcc = 0;
+
+    const step = () => {
+      bAcc += TICK;
+      if (bAcc >= BSTEP) {
+        bAcc -= BSTEP;
+        bIdx = (bIdx + 1) % BREATH.length;
+        img.style.transform = `translateY(${BREATH[bIdx]}px)`;
+      }
+      for (let i = 0; i < DENSITY; i++) wisps.push(newWisp());
+      const CEIL = H / 3; /* les cendres meurent aux 2/3 de la montée */
+      for (let i = wisps.length - 1; i >= 0; i--) {
+        const s = wisps[i];
+        s.age++;
+        s.y -= s.v;
+        if (s.y <= CEIL) wisps.splice(i, 1);
+      }
+    };
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+      ctx.fillStyle = CHARBON;
+      for (const s of wisps) {
+        /* raréfaction en approchant de la ligne des 2/3 : de plus en plus de
+           cendres « sautent » des frames, puis plus rien — jamais d'alpha */
+        const fade = Math.min(1, (s.y - H / 3) / (H * 0.28));
+        if (Math.random() > 0.15 + fade * 0.85) continue;
+        const x = (s.x + Math.sin(s.age * s.f + s.seed) * s.sway * 3) | 0;
+        ctx.fillRect(x, s.y | 0, 1, 1); /* carré de 1px, strictement */
+      }
+    };
+
+    let acc = 0;
+    let last = 0;
+    let raf = 0;
+    const loop = (t: number) => {
+      if (!last) last = t;
+      acc += t - last;
+      last = t;
+      while (acc >= TICK) {
+        acc -= TICK;
+        step();
+      }
+      draw();
+      raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      ro.disconnect();
+    };
+  }, []);
+
+  return (
+    <div className="relative h-[368px] shrink-0 overflow-hidden bg-[var(--color-accent)]">
+      <canvas
+        ref={canvasRef}
+        className="pointer-events-none absolute inset-0 h-full w-full"
+        style={{ imageRendering: "pixelated" }}
+        aria-hidden
+      />
+      {/* L'image (1560×1720) est plus haute que le héros : posée en haut,
+          le bas du buste est coupé par la frontière charbon (maquette).
+          position:relative + z-2 : elle passe DEVANT le canvas et le sol. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        ref={imgRef}
+        alt=""
+        src="assets/geolier_detoure.png"
+        className="relative z-[2] mt-[40px] block w-full select-none"
+        style={{ imageRendering: "pixelated", transform: "translateY(0)" }}
+      />
+      {/* sol charbon : couvre la bande révélée sous l'image quand elle monte */}
+      <div className="absolute inset-x-0 bottom-0 z-[1] h-[4px] bg-[var(--color-bg)]" aria-hidden />
+    </div>
+  );
+}
+
 export default function Home() {
   const [phase, setPhase] = useState<"boot" | "home" | "game">("boot");
   const [saved, setSaved] = useState(false);
@@ -27,47 +183,41 @@ export default function Home() {
 
   return (
     <main className="flex min-h-dvh items-center justify-center">
-      <div className="phone-frame relative flex h-[800px] max-h-[100dvh] w-[390px] shrink-0 flex-col overflow-clip bg-[var(--color-accent)]">
+      <div className="phone-frame relative flex h-[800px] max-h-[100dvh] w-[390px] shrink-0 flex-col overflow-clip bg-[var(--color-bg)]">
         {phase === "home" && (
           <>
-            {/* Démon ancré en bas (l'orange de l'image = l'orange du fond) */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              alt=""
-              src="assets/accueil_demon.png"
-              className="pointer-events-none absolute bottom-0 left-0 w-full select-none"
-              style={{ imageRendering: "pixelated" }}
-            />
-            {/* Liseré charbon en bas de cadre (Figma Rectangle 136) */}
-            <span className="absolute bottom-0 left-0 h-[6px] w-full bg-[var(--color-bg)]" aria-hidden />
+            <HeroGeolier />
 
-            {/* Marque — logotype fourni par Patrick (14/07 soir) */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              alt="PACTUM"
-              src="assets/pactum_logo.png"
-              className="relative z-[1] mx-auto mt-[42px] h-[19px] w-auto select-none"
-            />
-
-            {/* Titre + boutons */}
-            <div className="relative z-[1] mx-auto mt-[86px] w-[298px]">
+            {/* Panneau charbon : marque, tagline, CTA, liens */}
+            <div className="flex flex-1 flex-col items-center px-[24px] pt-[34px]">
               <h1
-                className="text-center text-[44px] leading-[1.05] text-[var(--color-bg)]"
-                style={{ fontFamily: '"Instrument Serif", serif' }}
+                className="text-[46px] leading-none tracking-[8px] text-[var(--color-ink)]"
+                style={{ fontFamily: '"Instrument Serif", serif', fontWeight: 400 }}
               >
-                {saved ? "Bon retour..." : (
-                  <>
-                    Bienvenue
-                    <br />
-                    en enfer
-                  </>
-                )}
+                PACTUM
               </h1>
-              <div className="mt-[30px] flex flex-col gap-[9px]">
+              <p className="mt-[14px] text-center font-mono text-[12px] leading-[1.7] tracking-[0.5px] text-white/50">
                 {saved ? (
                   <>
-                    <HomeButton filled label="REPRENDRE" onClick={() => setPhase("game")} />
-                    <HomeButton
+                    Aucune partie ne se ressemble.
+                    <br />
+                    Aucune mort n&apos;est gratuite.
+                  </>
+                ) : (
+                  <>
+                    Tu choisis. Le dé décide.
+                    <br />
+                    Lui, il regarde.
+                  </>
+                )}
+              </p>
+
+              <div className="mt-[28px] flex w-[325px] flex-col gap-[16px]">
+                {saved ? (
+                  <>
+                    <HomeCta label="REPRENDRE" onClick={() => setPhase("game")} />
+                    <HomeCta
+                      secondary
                       label="RECOMMENCER"
                       onClick={() => {
                         resetRun();
@@ -76,25 +226,23 @@ export default function Home() {
                     />
                   </>
                 ) : (
-                  <HomeButton filled label="COMMENCER" onClick={() => setPhase("game")} />
+                  <HomeCta label="COMMENCER" onClick={() => setPhase("game")} />
                 )}
+              </div>
+
+              {/* Liens de pied — OPTIONS inerte (écran pas encore designé) */}
+              <div className="mt-auto flex flex-col items-center gap-[14px] pb-[26px]">
+                {saved && (
+                  <>
+                    <FooterLink label="RELIQUES" onClick={() => setOverlay("reliques")} />
+                    <FooterLink label="GRAND REGISTRE" onClick={() => setOverlay("registre")} />
+                  </>
+                )}
+                <FooterLink label="OPTIONS" disabled />
               </div>
             </div>
 
-            {/* Liens de pied — OPTIONS inerte (écran pas encore designé) */}
-            <div className="absolute inset-x-0 bottom-[26px] z-[1] flex flex-col items-center gap-[14px]">
-              {saved && (
-                <>
-                  <FooterLink label="RELIQUES" onClick={() => setOverlay("reliques")} />
-                  <FooterLink label="GRAND REGISTRE" onClick={() => setOverlay("registre")} />
-                </>
-              )}
-              <FooterLink label="OPTIONS" disabled />
-            </div>
-
-            {overlay && (
-              <HomeOverlay kind={overlay} onClose={() => setOverlay(null)} />
-            )}
+            {overlay && <HomeOverlay kind={overlay} onClose={() => setOverlay(null)} />}
           </>
         )}
       </div>
@@ -102,21 +250,26 @@ export default function Home() {
   );
 }
 
-function HomeButton({ label, filled, onClick }: { label: string; filled?: boolean; onClick: () => void }) {
-  // Même langage que les boutons de choix (coins entaillés 2px), décliné sur
-  // fond orange : plein charbon (texte orange) ou simple filet charbon.
+/**
+ * CTA à segments décalés (SKILL §7 + prototype) : la bordure n'est jamais un
+ * rectangle aligné — segments détachés, décalés de quelques px, d'épaisseurs
+ * inégales (le bas plus épais). Primaire = bloc orange plein texte charbon ;
+ * secondaire = contour orange seul. Actif = flash blanc (prototype).
+ */
+function HomeCta({ label, secondary, onClick }: { label: string; secondary?: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`relative h-[46px] w-full cursor-pointer font-mono text-[12px] font-medium uppercase tracking-[3px] ${
-        filled ? "bg-[var(--color-bg)] text-[var(--color-accent)]" : "border border-solid border-[var(--color-bg)] bg-transparent text-[var(--color-bg)]"
+      className={`relative h-[44px] w-full cursor-pointer font-mono text-[13px] font-medium uppercase tracking-[2px] active:bg-white ${
+        secondary
+          ? "border border-solid border-[var(--color-accent)] bg-transparent text-[var(--color-accent)] active:text-[var(--color-bg)]"
+          : "bg-[var(--color-accent)] text-[var(--color-bg)]"
       }`}
     >
-      <span className="absolute top-0 left-0 size-[2px] bg-[var(--color-accent)]" aria-hidden />
-      <span className="absolute bottom-0 left-0 size-[2px] bg-[var(--color-accent)]" aria-hidden />
-      <span className="absolute top-0 right-0 size-[2px] bg-[var(--color-accent)]" aria-hidden />
-      <span className="absolute bottom-0 right-0 size-[2px] bg-[var(--color-accent)]" aria-hidden />
+      <span className="pointer-events-none absolute top-[-8px] left-[10px] right-[-9px] h-[3px] bg-[var(--color-accent)]" aria-hidden />
+      <span className="pointer-events-none absolute top-[6px] bottom-[-4px] left-[-9px] w-[3px] bg-[var(--color-accent)]" aria-hidden />
+      <span className="pointer-events-none absolute bottom-[-11px] left-[-16px] right-[14px] h-[5px] bg-[var(--color-accent)]" aria-hidden />
       {label}
     </button>
   );
@@ -128,8 +281,6 @@ function FooterLink({ label, onClick, disabled }: { label: string; onClick?: () 
       type="button"
       disabled={disabled}
       onClick={onClick}
-      // Crème, pas charbon : les liens se posent sur le poitrail sombre du
-      // démon — du charbon y serait illisible (écart assumé avec la maquette).
       className={`font-mono text-[11px] uppercase tracking-[3px] text-[var(--color-ink)] ${
         disabled ? "cursor-not-allowed opacity-45" : "cursor-pointer opacity-90"
       }`}

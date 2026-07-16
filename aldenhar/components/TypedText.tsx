@@ -37,12 +37,12 @@ export default function TypedText({
     if (!typed) return;
     // Accessibilité (SKILL §5) : mouvement réduit = révélation instantanée.
     if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- révélation instantanée demandée par la préférence système
       setShown(text.length);
       doneRef.current = true;
       onDone?.();
       return;
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- démarre l'animation de frappe d'une entrée fraîchement activée dans la file
     setShown(0);
     let i = 0;
     const id = setInterval(() => {
