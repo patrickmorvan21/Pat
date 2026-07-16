@@ -212,7 +212,7 @@ export default function Home() {
                 )}
               </p>
 
-              <div className="mt-[28px] flex w-[325px] flex-col gap-[16px]">
+              <div className="mt-[28px] flex w-[298px] flex-col gap-[12px]">
                 {saved ? (
                   <>
                     <HomeCta label="REPRENDRE" onClick={() => setPhase("game")} />
@@ -251,25 +251,26 @@ export default function Home() {
 }
 
 /**
- * CTA à segments décalés (SKILL §7 + prototype) : la bordure n'est jamais un
- * rectangle aligné — segments détachés, décalés de quelques px, d'épaisseurs
- * inégales (le bas plus épais). Primaire = bloc orange plein texte charbon ;
- * secondaire = contour orange seul. Actif = flash blanc (prototype).
+ * CTA de l'accueil = composant Figma « Group 36720 / 36692 » (maquettes
+ * 1963:370 / 1970:458), reproduit tel quel : 298×46, texte Roboto Mono
+ * Medium 14px espacé 2.8px, entailles de coins charbon (2px). Primaire =
+ * bloc orange plein texte charbon ; secondaire = contour orange, texte
+ * orange, fond transparent. Pas de segments décalés ici — la maquette prime.
  */
 function HomeCta({ label, secondary, onClick }: { label: string; secondary?: boolean; onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={`relative h-[44px] w-full cursor-pointer font-mono text-[13px] font-medium uppercase tracking-[2px] active:bg-white ${
-        secondary
-          ? "border border-solid border-[var(--color-accent)] bg-transparent text-[var(--color-accent)] active:text-[var(--color-bg)]"
-          : "bg-[var(--color-accent)] text-[var(--color-bg)]"
+      className={`relative h-[46px] w-full cursor-pointer border border-solid border-[var(--color-accent)] font-mono text-[14px] font-medium uppercase tracking-[2.8px] active:bg-white active:text-[var(--color-bg)] ${
+        secondary ? "bg-transparent text-[var(--color-accent)]" : "bg-[var(--color-accent)] text-[var(--color-bg)]"
       }`}
     >
-      <span className="pointer-events-none absolute top-[-8px] left-[10px] right-[-9px] h-[3px] bg-[var(--color-accent)]" aria-hidden />
-      <span className="pointer-events-none absolute top-[6px] bottom-[-4px] left-[-9px] w-[3px] bg-[var(--color-accent)]" aria-hidden />
-      <span className="pointer-events-none absolute bottom-[-11px] left-[-16px] right-[14px] h-[5px] bg-[var(--color-accent)]" aria-hidden />
+      {/* Entailles de coins (charbon du fond, par-dessus la bordure) */}
+      <span className="pointer-events-none absolute top-0 left-0 h-[2px] w-[2px] bg-[var(--color-bg)]" aria-hidden />
+      <span className="pointer-events-none absolute bottom-0 left-0 h-[2px] w-[2px] bg-[var(--color-bg)]" aria-hidden />
+      <span className="pointer-events-none absolute top-0 right-0 h-[2px] w-[2px] bg-[var(--color-bg)]" aria-hidden />
+      <span className="pointer-events-none absolute bottom-0 right-0 h-[2px] w-[2px] bg-[var(--color-bg)]" aria-hidden />
       {label}
     </button>
   );
