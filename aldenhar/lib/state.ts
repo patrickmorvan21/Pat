@@ -5,6 +5,7 @@
  */
 
 import { startingBesace, type BesaceItem } from "@/lib/besace";
+import { drawMemories } from "@/lib/prologue-data";
 
 export type RollRecord = {
   step: number;
@@ -63,11 +64,11 @@ export type PendingDebt = {
 };
 
 /**
- * Stats de personnalité de la run (Courage/Ruse/Instinct/Empathie, sur 10).
- * Pour l'instant AFFICHAGE SEUL (radar de l'écran Essence, 14/07) : les jets
- * continuent d'utiliser seuil + états narratifs. Elles seront fixées par le
- * prologue narratif (pas encore construit) et branchées sur la résolution à
- * ce moment-là — jamais un écran de répartition de points.
+ * Stats de personnalité de la run (Courage/Ruse/Instinct/Empathie, sur 1..5 —
+ * échelle du prologue « Le Seuil », 16/07). Fixées par le VERDICT du prologue
+ * (base 1 + choix A/B/C + jet silencieux ±1) — jamais un écran de répartition
+ * de points, jamais un chiffre affiché. Pour l'instant AFFICHAGE SEUL (radar
+ * de l'écran Essence) : les jets continuent d'utiliser seuil + états.
  */
 export type RunStats = {
   courage: number;
@@ -76,15 +77,40 @@ export type RunStats = {
   empathie: number;
 };
 
+/** Profil de repli (runs héritées d'avant le prologue) — échelle 1..5. */
 function randomStats(): RunStats {
-  // Un profil marqué plutôt qu'une moyenne plate : une dominante, une faiblesse.
-  const values = [7 + Math.floor(Math.random() * 3), 5 + Math.floor(Math.random() * 2), 4 + Math.floor(Math.random() * 2), 2 + Math.floor(Math.random() * 3)];
+  const values = [4, 3, 2, 2].map((v) => Math.max(1, Math.min(5, v + (Math.floor(Math.random() * 3) - 1))));
   for (let i = values.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [values[i], values[j]] = [values[j], values[i]];
   }
   return { courage: values[0], ruse: values[1], instinct: values[2], empathie: values[3] };
 }
+
+/**
+ * Prologue « Le Seuil » (spec 16/07) : le Geôlier feuillette la vie d'avant
+ * du héros — 2 beats d'amorce, 4 souvenirs (un par stat, ordre fixe), une
+ * clôture. Persisté dans la run : fermer l'app en plein prologue reprend
+ * exactement au même beat (§9, jamais une mort technique). Rejoué à chaque
+ * nouvelle run avec un tirage différent.
+ */
+export type PrologueMemory = {
+  stat: keyof RunStats;
+  title: string;
+  narration: string;
+  options: [string, string, string];
+};
+
+export type PrologueState = {
+  /** Les 4 souvenirs tirés pour cette run (ordre Courage→Ruse→Instinct→Empathie). */
+  memories: PrologueMemory[];
+  /** Beat courant : 0-1 = amorce, 2-5 = souvenirs, 6 = clôture. */
+  beat: number;
+  /** Index (0=A, 1=B, 2=C) du choix retenu pour chaque souvenir joué. */
+  choices: number[];
+  /** true une fois le verdict rendu (stats calculées) — on entre au Jour I. */
+  done: boolean;
+};
 
 export type RunState = {
   /** Nom du héros de cette run (dette de sang, Grand Registre — spec §19). */
@@ -107,6 +133,8 @@ export type RunState = {
   encounters: number;
   /** Stats de la run (affichage Essence seulement pour l'instant). */
   stats: RunStats;
+  /** Prologue « Le Seuil » — présent tant que la run existe (spec 16/07). */
+  prologue: PrologueState;
 };
 
 const KEY = "aldenhar-run";
@@ -119,6 +147,18 @@ const HERO_NAMES = [
 /** Nom de héros aléatoire (dette de sang / Registre — spec §19). */
 export function randomHeroName(): string {
   return HERO_NAMES[Math.floor(Math.random() * HERO_NAMES.length)];
+}
+
+/** Anciennes sauvegardes : stats sur 10 → ramenées à l'échelle 1..5 du prologue. */
+function migrateStats(p: Partial<RunStats> | undefined): RunStats {
+  if (!p || typeof p.courage !== "number") return randomStats();
+  const fix = (v: number) => Math.max(1, Math.min(5, v > 5 ? Math.round(v / 2) : v));
+  return {
+    courage: fix(p.courage),
+    ruse: fix(p.ruse ?? 3),
+    instinct: fix(p.instinct ?? 3),
+    empathie: fix(p.empathie ?? 3),
+  };
 }
 
 function fresh(): RunState {
@@ -135,6 +175,13 @@ function fresh(): RunState {
     besace: startingBesace(),
     encounters: 0,
     stats: randomStats(),
+    // Tirage du prologue : 1 souvenir par stat, fixé pour toute la run.
+    prologue: {
+      memories: drawMemories().map(({ stat, entry }) => ({ stat, ...entry })),
+      beat: 0,
+      choices: [],
+      done: false,
+    },
   };
 }
 
@@ -164,7 +211,13 @@ export function loadRun(): RunState {
             debts: Array.isArray(p.debts) ? p.debts : [],
             besace: Array.isArray(p.besace) ? p.besace : startingBesace(),
             encounters: typeof p.encounters === "number" ? p.encounters : 0,
-            stats: p.stats && typeof p.stats.courage === "number" ? p.stats : randomStats(),
+            stats: migrateStats(p.stats),
+            // Runs d'avant le prologue : considérées comme un prologue déjà
+            // rendu — elles reprennent directement au Jour courant.
+            prologue:
+              p.prologue && Array.isArray(p.prologue.memories)
+                ? p.prologue
+                : { memories: [], beat: 6, choices: [], done: true },
           };
         }
       }
@@ -187,7 +240,10 @@ export function hasSavedRun(): boolean {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return false;
     const p = JSON.parse(raw) as Partial<RunState>;
-    return (Array.isArray(p.feed) && p.feed.length > 0) || (typeof p.step === "number" && p.step > 0);
+    // Un prologue entamé compte comme une run en cours : fermer l'app en
+    // plein Seuil doit proposer REPRENDRE et reprendre au même beat (§9).
+    const prologueStarted = Boolean(p.prologue && !p.prologue.done && (p.prologue.beat ?? 0) > 0);
+    return (Array.isArray(p.feed) && p.feed.length > 0) || (typeof p.step === "number" && p.step > 0) || prologueStarted;
   } catch {
     return false;
   }

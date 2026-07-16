@@ -165,9 +165,9 @@ function RadarCanvas({ run }: { run: RunState }) {
     }
     ctx.setLineDash([]);
 
-    // Polygone des stats (sur 10) — sommets sur chaque axe
+    // Polygone des stats (échelle 1..5 du prologue) — sommets sur chaque axe
     const pts = AXES.map((a) => {
-      const v = Math.max(0.05, Math.min(1, run.stats[a.key] / 10));
+      const v = Math.max(0.05, Math.min(1, run.stats[a.key] / 5));
       return { x: cx + a.dx * v * R, y: cy + a.dy * v * R };
     });
 

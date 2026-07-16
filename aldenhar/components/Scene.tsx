@@ -195,8 +195,13 @@ export default function Scene() {
         { id: nextId(), kind: "day", day: run.day },
         ...openingNarration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })),
       ];
+      // Première apparition du dé = entrée du Jour I (spec prologue 16/07) :
+      // le Geôlier marque le moment, une fois le Seuil traversé.
+      if (run.prologue.done && run.prologue.memories.length > 0) {
+        seeded.push({ id: nextId(), kind: "jailer", text: "À partir de maintenant, il décide avec moi." });
+      }
       setFeed(seeded);
-      enqueueReveal(seeded.filter((e) => e.kind === "narration").map((e) => e.id));
+      enqueueReveal(seeded.filter((e) => e.kind === "narration" || e.kind === "jailer").map((e) => e.id));
       run.feed = seeded;
       saveRun(run);
     }
