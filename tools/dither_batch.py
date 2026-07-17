@@ -29,6 +29,8 @@ Usage :
             --dry-run (traite mais ne range pas)
 """
 
+from __future__ import annotations
+
 import argparse
 import shutil
 import sys
@@ -70,9 +72,15 @@ def leonardo_hd(url: str) -> str:
     return urllib.parse.urlunsplit(parts)
 
 
-def fetch(url: str, tmp: Path) -> Path:
+def fetch(url: str, tmp: Path, rename: str | None = None) -> Path:
+    """Télécharge `url` ; `rename` (sans extension) force le nom de sortie —
+    indispensable pour que le tri par préfixe fonctionne sur les URLs Leonardo
+    aux noms générés. Syntaxe CLI : `nom_cible=URL`."""
     url = leonardo_hd(url)
     name = Path(urllib.parse.urlsplit(url).path).name or "image.png"
+    if rename:
+        suffix = Path(name).suffix or ".jpg"
+        name = rename + suffix
     out = tmp / name
     # UA de navigateur : le CDN Leonardo (CloudFront) rejette les requêtes
     # sans User-Agent de navigateur (diagnostic 17/07).
@@ -158,11 +166,17 @@ def main() -> int:
     sources: list[Path] = []
     if args.inputs:
         for item in args.inputs:
+            # Paire `nom_cible=URL` : renomme AVANT le traitement (le tri par
+            # préfixe monstre_/scene_/objet_ en dépend).
+            rename = None
+            if "=" in item and item.split("=", 1)[1].startswith(("http://", "https://")):
+                rename, item = item.split("=", 1)
             if item.startswith("http://") or item.startswith("https://"):
                 try:
-                    sources.append(fetch(item, tmp))
+                    sources.append(fetch(item, tmp, rename))
+                    print(f"✓ téléchargé : {sources[-1].name}")
                 except Exception as e:  # noqa: BLE001 — on veut un récap, pas un crash
-                    print(f"✗ téléchargement échoué : {item} ({e})")
+                    print(f"✗ téléchargement échoué : {rename or item} ({e})")
             else:
                 p = Path(item).expanduser()
                 if p.is_file():

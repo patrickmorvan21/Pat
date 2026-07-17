@@ -11,6 +11,7 @@ Arguments reçus : `$ARGUMENTS`
 1. Exécute le script du pipeline depuis la racine du repo :
    - Sans argument : `python3 tools/dither_batch.py` (traite toutes les images de `~/Downloads`).
    - Avec arguments (chemins de fichiers, dossier, ou URLs `cdn.leonardo.ai`) : `python3 tools/dither_batch.py <arguments>`.
+     - **Renommage avant traitement** : pour les URLs Leonardo (noms générés sans préfixe), TOUJOURS utiliser la syntaxe `nom_cible=URL` (ex. `monstre_marais_noyeur=https://cdn.leonardo.ai/...jpg`) — le tri par préfixe en dépend. Si l'utilisateur fournit une table « nom ← URL », construire ces paires.
      - Si un argument est un DOSSIER, passe-le via `--src <dossier>` sans autre entrée.
      - Les URLs Leonardo sont acceptées telles quelles : le script force lui-même la version HD (`?w=1875`) — ne jamais télécharger une miniature `?w=512` à la main.
 2. Le script fait tout le travail déterministe (ne pas le réimplémenter à la main) :
