@@ -227,15 +227,21 @@ body {
    en fondu franc (retour Patrick 11/07 : la version par paliers "steps()"
    lisait comme un pop-in, pas un fade) ; la disparition reste rapide. */
 .choices-bar {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  animation: choices-fadein 0.4s ease-out;
 }
+/* Masqué = ABSENT (retour Patrick 16/07) : pas seulement invisible — le
+   bloc sticky (fond + filet du haut) disparaît aussi, il ne cache plus la
+   description pendant la frappe. Le fondu ne joue qu'à la réapparition
+   (l'animation se rejoue quand l'élément revient de display:none). */
 .choices-bar.choices-hidden {
-  opacity: 0;
-  transform: translateY(10px);
-  pointer-events: none;
-  transition: opacity 0.15s ease-in, transform 0.15s ease-in;
+  display: none;
+}
+@keyframes choices-fadein {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .choices-bar { animation: none; }
 }
 
 /* Choc du dé contre un bord : filet blanc subtil (1-2px) sur tout le côté touché */
@@ -348,10 +354,12 @@ body {
   pointer-events: none;
   z-index: 2;
 }
-/* Franges INVERSÉES horizontalement (retour Patrick 16/07) : le motif est
-   dans le bloc, mais miroité gauche-droite par rapport à l'export brut. */
-.jailer-fringe-top { top: 0; transform: scaleX(-1); }
-.jailer-fringe-bottom { bottom: 0; transform: scale(-1, -1); }
+/* Sens des franges (retour Patrick 16/07, 2e passe) : l'asset exporté est la
+   BORDURE BASSE du bloc (plateau dense au ras du bord bas, dents vers le
+   haut). En bas il se pose donc TEL QUEL ; en haut il se retourne
+   verticalement (plateau au ras du bord haut, dents vers le bas). */
+.jailer-fringe-top { top: 0; transform: scaleY(-1); }
+.jailer-fringe-bottom { bottom: 0; }
 .jailer-speaking .jailer-fringe {
   animation: jailer-fringe-flicker 0.34s steps(2) infinite;
 }

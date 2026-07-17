@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import FitLabel from "@/components/FitLabel";
 import type { Choice } from "@/lib/scene-data";
 
 /**
@@ -132,14 +133,15 @@ export default function ChoiceButton({
           <span className="absolute top-[3px] bottom-[3px] right-[3px] w-px bg-[var(--color-ink)]" />
         </>
       )}
-      {/* max-width : un libellé long ne chevauche jamais le tag de stat */}
-      <span
-        className={`absolute top-1/2 left-[5%] -translate-y-1/2 overflow-hidden text-ellipsis font-medium leading-[1.2] text-[14px] whitespace-nowrap text-[var(--color-ink)] ${
+      {/* max-width : un libellé long ne chevauche jamais le tag de stat.
+          FitLabel (16/07) : la police descend jusqu'à ce que TOUT le libellé
+          soit visible — jamais de « … », jamais un bouton plus grand. */}
+      <FitLabel
+        text={choice.label}
+        className={`absolute top-1/2 left-[5%] -translate-y-1/2 overflow-hidden text-ellipsis font-medium leading-[1.2] whitespace-nowrap text-[var(--color-ink)] ${
           tag ? "max-w-[68%]" : "max-w-[90%]"
         }`}
-      >
-        {choice.label}
-      </span>
+      />
       {tag && (
         <span className="absolute top-1/2 right-[4.17%] -translate-y-1/2 font-medium uppercase leading-[1.2] text-[12px] tracking-[0.6px] text-[var(--color-accent)]">
           {tag}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import FitLabel from "@/components/FitLabel";
 import { HeroGeolier } from "@/components/HeroGeolier";
 import TypedText from "@/components/TypedText";
 import { computeVerdict, PROLOGUE_AMORCE, PROLOGUE_CLOTURE } from "@/lib/prologue-data";
@@ -176,9 +177,10 @@ function PrologueChoice({ label, onSelect }: { label: string; onSelect: () => vo
       <span className="absolute bottom-0 left-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
       <span className="absolute top-0 right-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
       <span className="absolute bottom-0 right-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
-      <span className="absolute top-1/2 left-[5%] max-w-[90%] -translate-y-1/2 overflow-hidden font-medium leading-[1.2] text-[14px] whitespace-nowrap text-ellipsis text-[var(--color-ink)]">
-        {label}
-      </span>
+      <FitLabel
+        text={label}
+        className="absolute top-1/2 left-[5%] max-w-[90%] -translate-y-1/2 overflow-hidden font-medium leading-[1.2] whitespace-nowrap text-ellipsis text-[var(--color-ink)]"
+      />
     </button>
   );
 }
