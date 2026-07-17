@@ -348,7 +348,10 @@ body {
   position: absolute;
   left: 0;
   right: 0;
-  height: 12px;
+  /* Hauteur = EXACTEMENT celle de l'asset (390×9) : une bande plus haute
+     laissait 3px d'orange entre la frange et le bord du bloc (retour
+     Patrick 16/07 — les dégradés doivent être AU RAS du bord). */
+  height: 9px;
   /* background-image posé inline dans Scene.tsx (URL relative, compatible basePath) */
   background-repeat: repeat-x;
   pointer-events: none;

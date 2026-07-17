@@ -122,11 +122,13 @@ function HomeCta({ label, secondary, onClick }: { label: string; secondary?: boo
       type="button"
       onClick={onClick}
       className={`group relative h-[46px] w-full cursor-pointer border-none bg-transparent font-mono text-[14px] font-medium uppercase tracking-[2.8px] ${
-        secondary ? "text-[var(--color-accent)] active:text-[var(--color-bg)]" : "text-[var(--color-bg)]"
+        secondary ? "text-[var(--color-accent)]" : "text-[var(--color-bg)]"
       }`}
     >
+      {/* Pas d'état hover/active blanc (retour Patrick 16/07) : le bouton
+          reste identique au repos, au survol et au clic. */}
       <span
-        className={`absolute inset-0 border border-solid border-[var(--color-accent)] group-active:bg-white ${
+        className={`absolute inset-0 border border-solid border-[var(--color-accent)] ${
           secondary ? "bg-transparent" : "bg-[var(--color-accent)]"
         }`}
         aria-hidden
