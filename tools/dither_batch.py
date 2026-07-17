@@ -48,10 +48,12 @@ THRESHOLD = 182
 CONTRAST = 1.51
 TARGET = 1000  # côté du carré de sortie (jamais d'upscale au-delà du natif)
 
+# Chemin vérifié via l'API Drive le 17/07 (le dossier « APP » a été renommé
+# « PACTUM » ce jour-là — c'était la cause du premier échec de rangement).
 DEST_DEFAULT = (
     Path.home()
     / "Library/CloudStorage/GoogleDrive-patrick.morvan21@gmail.com"
-    / "Mon Drive/Professionnel/APP/Photos/01_En attente"
+    / "Mon Drive/Professionnel/PACTUM/Photos/01_En attente"
 )
 ROUTES = {"monstre": "1_Rencontres", "scene": "2_Environnement", "objet": "3_Objets"}
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".webp"}
@@ -72,7 +74,15 @@ def fetch(url: str, tmp: Path) -> Path:
     url = leonardo_hd(url)
     name = Path(urllib.parse.urlsplit(url).path).name or "image.png"
     out = tmp / name
-    req = urllib.request.Request(url, headers={"User-Agent": "pactum-leo-import"})
+    # UA de navigateur : le CDN Leonardo (CloudFront) rejette les requêtes
+    # sans User-Agent de navigateur (diagnostic 17/07).
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
+            "Accept": "image/*,*/*;q=0.8",
+        },
+    )
     with urllib.request.urlopen(req, timeout=60) as resp, open(out, "wb") as f:
         shutil.copyfileobj(resp, f)
     return out
@@ -185,6 +195,16 @@ def main() -> int:
     recap: list[tuple[str, str, str]] = []  # (nom, dossier, état)
     if not args.dry_run:
         dest_root = Path(args.dest).expanduser()
+        # Garde-fou (diagnostic 17/07) : si la RACINE de destination n'existe
+        # pas (dossier Drive renommé/déplacé), on refuse de la créer — sinon
+        # les fichiers partent dans une arborescence fantôme que Drive ne
+        # synchronise nulle part. Seuls les sous-dossiers de tri sont créés.
+        if not dest_root.is_dir():
+            print(f"\n✗ Destination introuvable : {dest_root}")
+            print("  Le dossier Drive a probablement été renommé ou déplacé.")
+            print("  Vérifier le chemin (ou passer --dest), puis relancer.")
+            print(f"  Les sorties traitées restent dans : {work}")
+            return 1
         for name, outpath in done:
             sub = route_for(name)
             target_dir = dest_root / sub

@@ -16,7 +16,7 @@ Arguments reçus : `$ARGUMENTS`
 2. Le script fait tout le travail déterministe (ne pas le réimplémenter à la main) :
    - recadrage carré centré puis 1000×1000 max (jamais d'upscale) ;
    - dithering canonique verrouillé (Floyd-Steinberg seuil strict 182, contraste 151 % pivot 128, Charbon `#1c1a16` / Orange `#e0632a`, PNG palette) — portage de `generateur_dithering_v4_dispatch_fidele_2.html`, specs dans `.claude/skills/pactum-style/references/dithering.md` ;
-   - rangement par préfixe dans `~/Library/CloudStorage/GoogleDrive-patrick.morvan21@gmail.com/Mon Drive/Professionnel/APP/Photos/01_En attente/` :
+   - rangement par préfixe dans `~/Library/CloudStorage/GoogleDrive-patrick.morvan21@gmail.com/Mon Drive/Professionnel/PACTUM/Photos/01_En attente/` :
      `monstre_*` → `1_Rencontres`, `scene_*` → `2_Environnement`, `objet_*` → `3_Objets`, préfixe inconnu → `_a_trier` ;
    - vérification de chaque copie (taille identique + PNG relisible).
 3. Si le script échoue avec « Pillow manquant », lance `python3 -m pip install pillow` puis relance-le.
