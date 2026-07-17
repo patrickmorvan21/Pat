@@ -210,17 +210,18 @@ function HomeOverlay({ kind, onClose }: { kind: "reliques" | "registre"; onClose
   );
 }
 
-/** Croix de fermeture pixel (Figma Group 15) — réutilisée par le menu. */
+/** Croix de fermeture pixel art (asset Figma « Group 15 », 32×32, fourni par
+    Patrick 16/07) — plus jamais deux traits CSS lisses. Réutilisée partout. */
 export function CloseX({ onClose }: { onClose: () => void }) {
   return (
     <button
       type="button"
       aria-label="Fermer"
       onClick={onClose}
-      className="relative size-[32px] cursor-pointer border border-solid border-[var(--color-ink)] bg-transparent"
+      className="block size-[32px] cursor-pointer border-none bg-transparent p-0"
     >
-      <span className="absolute top-1/2 left-1/2 h-px w-[16px] -translate-x-1/2 -translate-y-1/2 rotate-45 bg-[var(--color-ink)]" aria-hidden />
-      <span className="absolute top-1/2 left-1/2 h-px w-[16px] -translate-x-1/2 -translate-y-1/2 -rotate-45 bg-[var(--color-ink)]" aria-hidden />
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img alt="" src="assets/croix_menu.png" className="block size-full" style={{ imageRendering: "pixelated" }} />
     </button>
   );
 }

@@ -49,12 +49,15 @@ export default function GameMenu({ run, onClose }: { run: RunState; onClose: () 
 
   return (
     <div className="absolute inset-0 z-[8] flex flex-col bg-[var(--color-bg)]">
-      <div className="flex items-center justify-end px-[15px] py-[11px]">
+      {/* La croix occupe EXACTEMENT la position du burger de l'écran de jeu
+          (top 11px / right 10px, 32×32) — aucun décalage à l'ouverture
+          (retour Patrick 16/07). */}
+      <div className="absolute top-[11px] right-[10px] z-[1]">
         <CloseX onClose={onClose} />
       </div>
 
       {/* Onglets — actif crème, inactifs orange (Figma) ; OPTIONS inerte */}
-      <div className="flex items-center justify-center gap-[16px] pb-[16px]">
+      <div className="flex items-center justify-center gap-[16px] pt-[59px] pb-[16px]">
         <TabLink label="STATS" active={tab === "stats"} onClick={() => setTab("stats")} />
         <Diamond />
         <TabLink label="INVENTAIRE" active={tab === "inventaire"} onClick={() => setTab("inventaire")} />

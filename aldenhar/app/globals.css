@@ -348,8 +348,10 @@ body {
   pointer-events: none;
   z-index: 2;
 }
-.jailer-fringe-top { top: 0; }
-.jailer-fringe-bottom { bottom: 0; transform: scaleY(-1); }
+/* Franges INVERSÉES horizontalement (retour Patrick 16/07) : le motif est
+   dans le bloc, mais miroité gauche-droite par rapport à l'export brut. */
+.jailer-fringe-top { top: 0; transform: scaleX(-1); }
+.jailer-fringe-bottom { bottom: 0; transform: scale(-1, -1); }
 .jailer-speaking .jailer-fringe {
   animation: jailer-fringe-flicker 0.34s steps(2) infinite;
 }

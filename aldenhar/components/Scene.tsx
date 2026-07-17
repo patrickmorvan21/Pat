@@ -242,7 +242,10 @@ export default function Scene() {
       timedTimer.current = null;
     }
     const timed = scene.timed;
-    const canRun = !!timed && !timedExpired && !choicesHidden && !selectedId && !rolling;
+    // Les choix ne sont « réellement jouables » qu'une fois tout le texte
+    // écrit (retour Patrick 16/07 : le bloc de CTA n'apparaît qu'à la fin
+    // de la description) — le compte à rebours attend comme eux.
+    const canRun = !!timed && !timedExpired && !choicesHidden && !activeTypingId && !selectedId && !rolling;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reflète l'état d'armement du compte à rebours dans l'UI, synchronisé au cycle de la scène
     setCountdownArmed(canRun);
     if (canRun && timed) {
@@ -255,7 +258,7 @@ export default function Scene() {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scene, step, choicesHidden, selectedId, rolling, timedExpired]);
+  }, [scene, step, choicesHidden, activeTypingId, selectedId, rolling, timedExpired]);
 
   function persist(mutate: (run: RunState) => void) {
     const run = runRef.current ?? loadRun();
@@ -565,7 +568,7 @@ export default function Scene() {
         <div
           className={`choices-bar relative z-[3] flex w-full flex-col gap-[10px] border-t border-[var(--color-ink)]/15 px-[15px] py-[15px] ${
             rolling ? "pointer-events-none" : ""
-          } ${choicesHidden ? "choices-hidden" : ""}`}
+          } ${choicesHidden || activeTypingId ? "choices-hidden" : ""}`}
         >
           {shuffledChoices.map((choice) => (
             <ChoiceButton
@@ -716,15 +719,15 @@ function FeedItem({
         </p>
       );
     case "jailer":
-      // Bloc refait au propre (Figma 1925:614 + PJ Patrick, 14/07 soir) :
-      // bandeau orange de 87px, portrait HD du Geôlier ancré au bord GAUCHE
-      // (il fait déjà face au texte, sa dissolution en pixels est cuite dans
-      // l'image — plus de mirror ni de masque CSS), franges de pixels charbon
-      // en haut et en bas qui scintillent uniquement pendant que le Geôlier
-      // parle, puis se figent. Texte mono gras charbon, décalé à 122px.
+      // Bloc refait sur la maquette 1925:614 (retour Patrick 16/07) : bandeau
+      // orange de 87px, NOUVEAU portrait gros-pixels du Geôlier (PJ 16/07,
+      // fond orange cuit dans l'image) posé pleine hauteur au bord GAUCHE,
+      // sans débord ; franges de pixels charbon INVERSÉES horizontalement,
+      // qui scintillent uniquement pendant qu'il parle. Texte mono gras
+      // charbon, décalé à 122px.
       return (
         <div
-          className={`scene-enter jailer-banner mx-[-17px] mb-[18px] mt-[15px] relative flex min-h-[87px] items-center bg-[var(--color-accent)] pl-[122px] pr-[20px] py-[16px] ${
+          className={`scene-enter jailer-banner mx-[-17px] mb-[18px] mt-[15px] relative flex min-h-[87px] items-center overflow-hidden bg-[var(--color-accent)] pl-[122px] pr-[20px] py-[16px] ${
             typed ? "jailer-speaking" : ""
           }`}
         >
@@ -738,14 +741,13 @@ function FeedItem({
             style={{ backgroundImage: 'url("assets/frange_geolier.svg")' }}
             aria-hidden
           />
-          <div className="jailer-portrait pointer-events-none absolute top-[-15px] left-0 z-0 h-[118px] w-[100px] overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              alt=""
-              src="assets/geolier_portrait.png"
-              className="block h-full w-full object-cover object-left"
-            />
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            alt=""
+            src="assets/geolier_portrait.png"
+            className="pointer-events-none absolute top-0 left-0 z-0 h-full w-auto"
+            style={{ imageRendering: "pixelated" }}
+          />
           <p className="relative z-[1] font-mono text-[13px] font-bold leading-[1.6] text-[var(--color-bg)]">
             <TypedText text={entry.text} typed={typed} skip={skip} msPerChar={42} onDone={onDone} />
           </p>

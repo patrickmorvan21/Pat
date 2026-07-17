@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { HeroGeolier } from "@/components/HeroGeolier";
 import TypedText from "@/components/TypedText";
-import { computeVerdict, PROLOGUE_AMORCE, PROLOGUE_CLOTURE, PROLOGUE_STAT_LABEL } from "@/lib/prologue-data";
+import { computeVerdict, PROLOGUE_AMORCE, PROLOGUE_CLOTURE } from "@/lib/prologue-data";
 import { loadRun, saveRun, type PrologueMemory, type RunState } from "@/lib/state";
 
 /**
@@ -143,12 +143,7 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
           {isMemory && typedDone && memory && (
             <div className="mt-[28px] flex flex-col gap-[10px]">
               {memory.options.map((label, idx) => (
-                <PrologueChoice
-                  key={idx}
-                  label={label}
-                  tag={PROLOGUE_STAT_LABEL[memory.stat]}
-                  onSelect={() => onChoose(idx)}
-                />
+                <PrologueChoice key={idx} label={label} onSelect={() => onChoose(idx)} />
               ))}
             </div>
           )}
@@ -160,11 +155,12 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
 
 /**
  * Bouton de choix du prologue : même langage que les choix in-game (contour
- * blanc + entailles de coins 2px + tag de stat orange à droite) — jamais la
- * bordure orange de l'accueil. Pas d'érosion santé ici : le héros n'existe
- * pas encore.
+ * blanc + entailles de coins 2px) — jamais la bordure orange de l'accueil,
+ * et SANS tag de stat (retour Patrick 16/07, maquette 1997:578 : la stat
+ * engagée reste invisible pendant le Seuil). Pas d'érosion santé ici : le
+ * héros n'existe pas encore.
  */
-function PrologueChoice({ label, tag, onSelect }: { label: string; tag: string; onSelect: () => void }) {
+function PrologueChoice({ label, onSelect }: { label: string; onSelect: () => void }) {
   return (
     <button
       type="button"
@@ -180,11 +176,8 @@ function PrologueChoice({ label, tag, onSelect }: { label: string; tag: string; 
       <span className="absolute bottom-0 left-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
       <span className="absolute top-0 right-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
       <span className="absolute bottom-0 right-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
-      <span className="absolute top-1/2 left-[5%] max-w-[68%] -translate-y-1/2 overflow-hidden font-medium leading-[1.2] text-[14px] whitespace-nowrap text-ellipsis text-[var(--color-ink)]">
+      <span className="absolute top-1/2 left-[5%] max-w-[90%] -translate-y-1/2 overflow-hidden font-medium leading-[1.2] text-[14px] whitespace-nowrap text-ellipsis text-[var(--color-ink)]">
         {label}
-      </span>
-      <span className="absolute top-1/2 right-[4.17%] -translate-y-1/2 font-medium uppercase leading-[1.2] text-[12px] tracking-[0.6px] text-[var(--color-accent)]">
-        {tag}
       </span>
     </button>
   );
