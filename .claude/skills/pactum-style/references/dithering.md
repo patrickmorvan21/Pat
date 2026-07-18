@@ -10,7 +10,7 @@ côte à côte contre l'outil HTML sur la même image source.
 | Paramètre   | Valeur | Note |
 |-------------|--------|------|
 | Algorithme  | Floyd-Steinberg | dispatch d'erreur classique 7/16, 3/16, 5/16, 1/16 |
-| Pixel size  | 1 | |
+| Pixel size  | 3 (pipeline `/leo-import`) | voir note ci-dessous — 1 dans l'outil HTML canonique d'origine |
 | Threshold   | 182 | |
 | Contraste   | 151% | formule linéaire pivot 128, voir ci-dessous |
 | Inversion   | non | |
@@ -36,6 +36,18 @@ côte à côte contre l'outil HTML sur la même image source.
    droite 7/16, bas-gauche 3/16, bas 5/16, bas-droite 1/16.
 5. Sortie PNG bicolore, nommage `{categorie}_{sujet}.png`
    (`scene_`, `monstre_`, `objet_`).
+
+## Note — pixel size du pipeline `/leo-import` (18/07)
+
+Retour Patrick : le rendu 1:1 (grain FS sur toute la résolution de travail,
+1170px = 3× l'affichage 390px) était **trop net/lisse** une fois affiché —
+le grain n'était visible qu'en zoomant. `tools/dither_batch.py` dithère
+maintenant sur une grille réduite (`TARGET // pixel_size`, défaut
+`pixel_size=3`) puis ré-agrandit chaque cellule en bloc plein via NEAREST
+(pas de lissage) — même logique que le canvas basse-résolution du dé 3D
+upscalé en `pixelated`. Seuil/contraste/FS restent identiques à la
+référence HTML ; seule la résolution de travail change. Ajustable via
+`--pixel-size` si Patrick veut plus/moins de grain après un prochain lot.
 
 ## Validation obligatoire
 

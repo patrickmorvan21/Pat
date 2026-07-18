@@ -49,6 +49,14 @@ ORANGE = (0xE0, 0x63, 0x2A)
 THRESHOLD = 182
 CONTRAST = 1.51
 TARGET = 1000  # côté du carré de sortie (jamais d'upscale au-delà du natif)
+# Taille de bloc du dithering (retour Patrick 18/07 : le rendu 1:1 était trop
+# net/lisse une fois affiché — le FS tournait sur bien plus de pixels que ce
+# qui est réellement visible à l'écran). On dithère sur une grille réduite
+# (TARGET // PIXEL_SIZE) puis on ré-agrandit chaque cellule en bloc plein via
+# NEAREST (pas de lissage) — même logique que le canvas basse-résolution du
+# dé 3D upscalé en pixelated. Le seuil/contraste/FS restent inchangés, seule
+# la résolution de travail change.
+PIXEL_SIZE_DEFAULT = 3
 
 # Chemin vérifié via l'API Drive le 17/07 (le dossier « APP » a été renommé
 # « PACTUM » ce jour-là — c'était la cause du premier échec de rangement).
@@ -96,16 +104,25 @@ def fetch(url: str, tmp: Path, rename: str | None = None) -> Path:
     return out
 
 
-def square_1000(im: Image.Image) -> Image.Image:
-    """Recadrage carré centré puis 1000px — downsample lissé, jamais d'upscale."""
+def square_crop(im: Image.Image) -> Image.Image:
+    """Recadrage carré centré, résolution native conservée."""
     im = im.convert("RGB")
     w, h = im.size
     side = min(w, h)
-    im = im.crop(((w - side) // 2, (h - side) // 2, (w + side) // 2, (h + side) // 2))
-    if side > TARGET:
-        # équivalent canvas drawImage + imageSmoothingEnabled (spec canonique)
-        im = im.resize((TARGET, TARGET), Image.BILINEAR)
-    return im
+    return im.crop(((w - side) // 2, (h - side) // 2, (w + side) // 2, (h + side) // 2))
+
+
+def prepare_for_dither(im: Image.Image, pixel_size: int) -> tuple[Image.Image, int]:
+    """Carré centré, downsample lissé à la résolution de TRAVAIL du dithering
+    (TARGET // pixel_size, jamais d'upscale au-delà du natif). Renvoie
+    l'image de travail et son côté — le bloc-up (NEAREST) se fait après
+    dithering, dans main(), pour ne jamais lisser la trame déjà posée."""
+    im = square_crop(im)
+    side = min(im.size[0], TARGET)
+    work = max(1, side // pixel_size)
+    if im.size[0] != work:
+        im = im.resize((work, work), Image.BILINEAR)
+    return im, work
 
 
 def dither(im: Image.Image) -> Image.Image:
@@ -156,11 +173,17 @@ def main() -> int:
     ap.add_argument("--src", default=str(Path.home() / "Downloads"), help="dossier d'entrée par défaut")
     ap.add_argument("--dest", default=str(DEST_DEFAULT), help="racine de rangement (Drive 01_En attente)")
     ap.add_argument("--dry-run", action="store_true", help="traite sans ranger dans le Drive")
+    ap.add_argument(
+        "--pixel-size",
+        type=int,
+        default=PIXEL_SIZE_DEFAULT,
+        help=f"taille de bloc du dithering, en pixels de sortie (défaut {PIXEL_SIZE_DEFAULT} — plus grand = grain plus visible)",
+    )
     args = ap.parse_args()
 
     tmp = Path(tempfile.mkdtemp(prefix="leo-import-"))
-    work = tmp / "sorties"
-    work.mkdir()
+    outdir = tmp / "sorties"
+    outdir.mkdir()
 
     # --- collecte des entrées ---
     sources: list[Path] = []
@@ -196,10 +219,13 @@ def main() -> int:
     for srcfile in sources:
         name = srcfile.stem + ".png"
         try:
-            im = square_1000(Image.open(srcfile))
-            print(f"… {srcfile.name} → {im.size[0]}×{im.size[1]}, dithering")
-            result = dither(im)
-            outfile = work / name
+            small, side = prepare_for_dither(Image.open(srcfile), args.pixel_size)
+            print(f"… {srcfile.name} → grille {side}×{side} (bloc ×{args.pixel_size}), dithering")
+            result = dither(small)
+            if args.pixel_size > 1:
+                final_side = side * args.pixel_size
+                result = result.resize((final_side, final_side), Image.NEAREST)
+            outfile = outdir / name
             result.save(outfile, optimize=True)
             done.append((name, str(outfile)))
         except Exception as e:  # noqa: BLE001
@@ -217,7 +243,7 @@ def main() -> int:
             print(f"\n✗ Destination introuvable : {dest_root}")
             print("  Le dossier Drive a probablement été renommé ou déplacé.")
             print("  Vérifier le chemin (ou passer --dest), puis relancer.")
-            print(f"  Les sorties traitées restent dans : {work}")
+            print(f"  Les sorties traitées restent dans : {outdir}")
             return 1
         for name, outpath in done:
             sub = route_for(name)
