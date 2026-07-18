@@ -8,6 +8,7 @@ Arguments reçus : `$ARGUMENTS`
 
 ## Étapes
 
+0. **Mettre le pipeline à jour d'abord** : `git pull` sur la branche courante avant de lancer le script — les réglages (taille de grain, chemins Drive) évoluent côté sessions distantes et le Mac doit avoir la dernière version. **Vérifier aussi qu'on est sur le Mac de Patrick** (le dossier Drive `~/Library/CloudStorage/GoogleDrive-.../Mon Drive/Professionnel/PACTUM/Photos/01_En attente` existe) : dans une session distante/cloud, ce dossier n'existe pas — utiliser alors `--dest` vers `drive_outbox/01_En attente/` du repo et prévenir que l'envoi vers le vrai Drive devra passer par la page Artifact (cf. notes de session 18/07 du CLAUDE.md).
 1. Exécute le script du pipeline depuis la racine du repo :
    - Sans argument : `python3 tools/dither_batch.py` (traite toutes les images de `~/Downloads`).
    - Avec arguments (chemins de fichiers, dossier, ou URLs `cdn.leonardo.ai`) : `python3 tools/dither_batch.py <arguments>`.
