@@ -159,15 +159,11 @@ export const SCENES: Scene[] = [
   {
     id: "portes",
     narration: [
-      "Le couloir s'arrête net. Deux portes te font face. Celle de gauche est " +
-        "balafrée de coups d'épée, son bois sombre fendu, sa serrure éventrée, " +
-        "quelqu'un, ou quelque chose, s'y est acharné.",
-      "Celle de droite est neuve, taillée dans un bois blanc presque luisant, " +
-        "et porte une inscription gravée que tu ne reconnais pas. L'air qui " +
-        "en sort est plus froid que celui du couloir.",
-      "Tu poses la main sur la pierre entre les deux. Elle vibre, à peine — " +
-        "un battement lent, comme si le mur entier respirait quelque chose " +
-        "d'endormi juste derrière.",
+      "Le couloir s'arrête net. Deux portes. Celle de gauche, balafrée de " +
+        "coups d'épée, serrure éventrée — quelqu'un s'y est acharné.",
+      "Celle de droite est neuve, d'un bois blanc luisant, gravée d'une " +
+        "inscription inconnue. L'air qui en sort est glacé. Entre les deux, " +
+        "le mur vibre, à peine — comme s'il respirait.",
     ],
     choices: [
       {
@@ -205,15 +201,11 @@ export const SCENES: Scene[] = [
   {
     id: "salle-ronde",
     narration: [
-      "Derrière, une salle ronde aux murs suintants. Au centre, un corps en " +
-        "armure, effondré sur une dalle gravée. Sa main gantée serre encore " +
-        "quelque chose.",
-      "Une odeur de fer et de cire froide flotte dans l'air immobile. Les " +
-        "torchères, éteintes depuis longtemps, portent encore des traces de " +
-        "suie fraîche à leur base — quelqu'un est passé ici récemment.",
-      "Quelque part au-dessus, un frottement lent, régulier, comme une corde " +
-        "qu'on use contre la pierre. Il s'arrête chaque fois que tu retiens " +
-        "ton souffle, et reprend dès que tu respires.",
+      "Une salle ronde aux murs suintants. Au centre, un corps en armure " +
+        "effondré sur une dalle gravée, sa main gantée serrée sur quelque chose.",
+      "Odeur de fer froid. Au-dessus, un frottement lent, régulier — qui " +
+        "s'arrête chaque fois que tu retiens ton souffle, et reprend dès que " +
+        "tu respires.",
     ],
     choices: [
       {
@@ -271,16 +263,12 @@ export const SCENES: Scene[] = [
     foe: "rodeur",
     foeName: "Le Rôdeur",
     narration: [
-      "Au sortir de la salle ronde, le couloir se rétrécit — puis quelque " +
-        "chose se détache de l'ombre : une silhouette voûtée, trop longue, " +
-        "qui se tenait plaquée au plafond depuis un moment déjà. Elle tombe " +
-        "sans un bruit entre toi et la sortie.",
-      "Pas d'yeux. Une bouche, immense, là où devrait être le ventre. On " +
-        "raconte que les couloirs le nourrissent — qu'il était un héros, " +
-        "avant, resté trop longtemps entre ces murs qui tournent sur " +
-        "eux-mêmes. Le Rôdeur penche la tête vers toi, curieux.",
-      "Il fait un premier pas, sans hâte, sûr qu'il n'y a pas d'issue " +
-        "derrière lui. Il n'y en a pas. Il faut passer par lui.",
+      "Le couloir se rétrécit — et quelque chose se détache de l'ombre : une " +
+        "silhouette voûtée, trop longue, tapie au plafond. Elle tombe sans " +
+        "bruit entre toi et la sortie.",
+      "Pas d'yeux. Une bouche immense là où devrait être le ventre. On dit " +
+        "qu'il fut un héros, avant, resté trop longtemps entre ces murs. Le " +
+        "Rôdeur penche la tête, curieux. Il faut passer par lui.",
     ],
     choices: [
       {
@@ -331,16 +319,12 @@ export const SCENES: Scene[] = [
   {
     id: "escalier",
     narration: [
-      "Le couloir du Rôdeur débouche enfin sur autre chose : un escalier en " +
-        "vis s'enfonce sous une dalle descellée. L'air qui en monte est " +
-        "froid, chargé d'eau et d'autre chose — un souffle ample, espacé, " +
-        "qui n'est pas un courant d'air.",
-      "Ta torche se couche vers le bas, comme aspirée. Les marches sont usées " +
-        "au centre, profondément, par des générations de pas pressés dans un " +
-        "seul sens : celui de la descente. Personne, semble-t-il, n'est " +
-        "jamais remonté par ici en comptant les marches.",
-      "Tu comptes malgré toi. Sept. Douze. À la vingtième, le souffle change " +
-        "de rythme, comme s'il t'avait remarqué.",
+      "Un escalier en vis s'enfonce sous une dalle descellée. L'air qui en " +
+        "monte est froid, chargé d'eau — et d'un souffle ample, espacé, qui " +
+        "n'est pas un courant d'air.",
+      "Les marches sont creusées par des générations de pas, tous dans le " +
+        "même sens : la descente. Tu comptes malgré toi. À la vingtième, le " +
+        "souffle change de rythme — comme s'il t'avait remarqué.",
     ],
     choices: [
       {
@@ -378,9 +362,8 @@ export const SCENES: Scene[] = [
   {
     id: "eboulement",
     narration: [
-      "À peine le pied posé sur le palier, la voûte gémit. Une fissure court " +
-        "au plafond, plus vite que le son ne te parvient. Des blocs commencent " +
-        "à tomber — le passage ne tiendra pas dix secondes.",
+      "À peine le pied posé, la voûte gémit. Une fissure court au plafond, " +
+        "des blocs tombent — le passage ne tiendra pas dix secondes.",
       "Il faut choisir. Maintenant.",
     ],
     // La scène qui se résout sans toi (§18) : décision sous contrainte de
@@ -461,17 +444,12 @@ export const SCENES: Scene[] = [
   {
     id: "pont-os",
     narration: [
-      "Plus bas — l'éboulement ne t'a pas laissé beaucoup d'autres directions " +
-        "— une rivière souterraine barre le passage, noire et sans reflet. " +
-        "On l'a enjambée d'un pont — pas de pierre : d'os, longs et jaunis, " +
-        "liés de tendons secs qui craquent à chaque courant d'air.",
-      "Sur l'autre rive, une lanterne verte pend à un crochet, allumée. " +
-        "Personne pour la porter, personne pour l'avoir rallumée depuis — " +
-        "combien de temps, au juste. Sa flamme ne vacille jamais, même " +
-        "quand le vent forcit.",
-      "Le pont grince avant même qu'on le touche, comme s'il connaissait " +
-        "déjà ton poids. Sous le tablier d'os, l'eau ne fait aucun bruit en " +
-        "coulant. Aucun.",
+      "Une rivière souterraine barre le passage, noire et sans reflet. On " +
+        "l'a enjambée d'un pont — pas de pierre : d'os longs et jaunis, liés " +
+        "de tendons secs.",
+      "Sur l'autre rive, une lanterne verte pend, allumée, sans personne pour " +
+        "l'avoir rallumée. Le pont grince avant même qu'on le touche. Sous " +
+        "lui, l'eau coule sans aucun bruit. Aucun.",
     ],
     choices: [
       {
@@ -526,16 +504,13 @@ export const SCENES: Scene[] = [
     foe: "meute-limiers",
     foeName: "La meute de limiers",
     narration: [
-      "Le tablier d'os à peine passé, la galerie se resserre en tunnels. Des " +
-        "griffes raclent la pierre dans le noir, plusieurs paires à la fois, " +
-        "rythmées comme une meute qui compte ses pas avant de charger.",
-      "Une forme bondit dans ta torche — museau fendu, yeux blancs, la peau " +
-        "tendue sur des côtes trop nombreuses. Les limiers hantent ces " +
-        "tunnels depuis les premières expéditions : chiens de héros morts, " +
-        "restés à attendre des maîtres que la rivière noire n'a jamais " +
-        "rendus. Elle recule d'un pas, jauge, puis siffle un appel.",
-      "Deux autres répondent, plus loin, dans le noir. Tu n'as pas le temps " +
-        "de choisir ton terrain — seulement ta première réponse.",
+      "La galerie se resserre en tunnels. Des griffes raclent la pierre dans " +
+        "le noir, plusieurs paires à la fois, comme une meute qui compte ses " +
+        "pas avant de charger.",
+      "Une forme bondit dans ta torche — museau fendu, yeux blancs, côtes " +
+        "trop nombreuses. Des chiens de héros morts, restés à attendre des " +
+        "maîtres jamais revenus. Elle siffle. Deux autres répondent, plus " +
+        "loin dans le noir.",
     ],
     choices: [
       {
@@ -590,13 +565,11 @@ export const SCENES: Scene[] = [
     foe: "meute-limiers",
     foeName: "La meute de limiers",
     narration: [
-      "Ce qu'il reste de la meute se regroupe une dernière fois, plus " +
-        "prudente, à distance de ta lame. Elles ont compris que tu mords " +
-        "aussi.",
-      "L'une d'elles boite, l'œil rivé sur toi malgré tout — la douleur ne " +
-        "l'a pas rendue plus lente à décider, seulement plus méchante.",
-      "Le silence qui précède leur dernière charge dure une seconde de trop. " +
-        "C'est la tienne.",
+      "Ce qu'il reste de la meute se regroupe, plus prudente, à distance de " +
+        "ta lame. Elles ont compris que tu mords aussi.",
+      "L'une boite, l'œil rivé sur toi — la douleur l'a rendue plus méchante, " +
+        "pas plus lente. Le silence avant leur dernière charge dure une " +
+        "seconde de trop. C'est la tienne.",
     ],
     choices: [
       // Dernier acte de la rencontre : CHAQUE issue doit CLORE le combat
@@ -650,15 +623,11 @@ export const SCENES: Scene[] = [
   {
     id: "campement",
     narration: [
-      "Les tunnels de la meute finissent par te recracher dans une " +
-        "anfractuosité sèche, à l'écart du courant d'air. Des cendres " +
-        "anciennes prouvent qu'on s'y est déjà arrêté — et qu'on en est " +
-        "reparti, ce qui n'est déjà pas rien, ici.",
-      "Le silence, dans ce renfoncement, est différent de celui du couloir : " +
-        "il ne guette pas, il attend, presque poliment. Tes jambes pèsent " +
-        "leur vrai poids pour la première fois depuis des heures.",
-      "Sur la paroi, quelqu'un a gravé une marque courte, sans doute pour " +
-        "compter les nuits passées ici. Il y en a sept.",
+      "Les tunnels te recrachent dans une anfractuosité sèche. Des cendres " +
+        "anciennes prouvent qu'on s'y est arrêté — et qu'on en est reparti, " +
+        "ce qui n'est pas rien, ici.",
+      "Le silence, ici, ne guette pas : il attend, presque poliment. Sur la " +
+        "paroi, quelqu'un a gravé les nuits passées là. Il y en a sept.",
     ],
     choices: [
       { id: "dormir", label: "Dormir jusqu'à l'aube", rest: true },
@@ -683,14 +652,11 @@ export const SCENES: Scene[] = [
   {
     id: "cage",
     narration: [
-      "Dans l'alcôve suivante, une cage pend à hauteur d'homme. Dedans, une " +
-        "silhouette maigre, genoux au menton, qui respire — un détail qui " +
-        "compte plus qu'il n'y paraît, ici.",
-      "Elle lève la tête à ta lumière : des yeux humains, une bouche cousue " +
-        "de fil noir, serré en petits points réguliers, presque soignés, " +
-        "comme un travail qu'on aurait pris son temps à faire.",
-      "Elle pose deux doigts sur les barreaux, doucement, et attend. Elle ne " +
-        "tire pas dessus. Elle ne semble même pas y avoir pensé.",
+      "Une cage pend à hauteur d'homme. Dedans, une silhouette maigre, genoux " +
+        "au menton, qui respire — un détail qui compte, ici.",
+      "Elle lève la tête : des yeux humains, une bouche cousue de fil noir en " +
+        "petits points soignés. Elle pose deux doigts sur les barreaux, " +
+        "doucement, et attend. Sans tirer.",
     ],
     choices: [
       {
@@ -719,19 +685,13 @@ export const SCENES: Scene[] = [
     foe: "geryon",
     foeName: "Geryon aux trois gueules",
     narration: [
-      "Le couloir débouche sur une arche effondrée, et dessous, une masse " +
-        "qui respire par trois gueules distinctes, synchronisées. Geryon. " +
-        "Le nom te revient d'un vieux conte que tu croyais inventé pour " +
-        "effrayer les enfants.",
-      "L'arche n'est pas tombée toute seule : c'est lui qui l'a couchée, il " +
-        "y a des siècles, pour se bâtir une tanière à la mesure de son " +
-        "ennui. Les profondeurs entières plient autour de son sommeil — " +
-        "même la rivière noire, dit-on, fait un détour.",
-      "Il ne bouge pas encore. Il te regarde arriver de ses six yeux, " +
-        "patient, comme s'il avait déjà vu cent héros faire exactement les " +
-        "mêmes trois pas que toi. Une des trois têtes bâille — un " +
-        "bâillement qui se termine en grondement long comme une porte " +
-        "qu'on ouvre au fond de la terre.",
+      "Le couloir débouche sur une arche effondrée, et dessous, une masse qui " +
+        "respire par trois gueules synchronisées. Geryon — un nom de vieux " +
+        "conte pour effrayer les enfants.",
+      "C'est lui qui a couché l'arche, il y a des siècles, pour s'y bâtir une " +
+        "tanière. Il te regarde arriver de ses six yeux, patient. Une tête " +
+        "bâille — un bâillement qui se termine en grondement long comme une " +
+        "porte au fond de la terre.",
     ],
     choices: [
       {
@@ -793,14 +753,11 @@ export const SCENES: Scene[] = [
     foe: "geryon",
     narration: [
       "Le premier échange est passé si vite que c'est la douleur qui te le " +
-        "raconte, après coup. Geryon pivote sa masse entière — plus agile " +
-        "qu'aucun conte ne l'avoue — et la bête chancelle un instant sur " +
-        "ses pattes arrière, surprise d'avoir été touchée.",
-      "Les trois têtes ne bâillent plus. Elles se déploient en éventail, " +
-        "chacune à une hauteur différente, pour ne te laisser aucun angle " +
-        "où l'une d'elles ne te voit pas.",
-      "L'arche effondrée gémit au-dessus de vous. Quelque chose, dans ce " +
-        "combat, va céder avant l'autre — la pierre, la bête, ou toi.",
+        "raconte. Geryon pivote sa masse entière et chancelle un instant, " +
+        "surpris d'avoir été touché.",
+      "Les trois têtes se déploient en éventail, sans te laisser d'angle " +
+        "mort. Au-dessus, l'arche gémit. Quelque chose va céder avant " +
+        "l'autre — la pierre, la bête, ou toi.",
     ],
     choices: [
       {
@@ -854,12 +811,11 @@ export const SCENES: Scene[] = [
     illustration: "assets/monstre_geryon.png",
     foe: "geryon",
     narration: [
-      "Geryon rugit, blessé — les trois voix à la fois, désaccordées pour la " +
-        "première fois. Son sang, noir et lent, dessine sur le sol des " +
-        "lettres que tu préfères ne pas lire.",
-      "La bête ramasse ce qui lui reste de force pour une dernière charge. " +
-        "Tout son poids, toutes ses gueules, une seule direction : toi.",
-      "C'est l'instant. Il n'y en aura pas d'autre.",
+      "Geryon rugit, les trois voix désaccordées pour la première fois. Son " +
+        "sang noir dessine sur le sol des lettres que tu préfères ne pas lire.",
+      "Il ramasse ce qui lui reste pour une dernière charge — tout son poids, " +
+        "une seule direction : toi. C'est l'instant. Il n'y en aura pas " +
+        "d'autre.",
     ],
     choices: [
       {
@@ -898,14 +854,11 @@ export const SCENES: Scene[] = [
   {
     id: "echo",
     narration: [
-      "Passé l'arche morte de Geryon, la galerie s'élargit en un hall poli " +
-        "comme un miroir noir. Chaque pas y revient double, un instant trop " +
-        "tard pour être vraiment le tien.",
-      "Puis ta propre voix te devance : « Qui va là ? » demande-t-elle avec " +
-        "ta bouche, trois pas devant. L'écho attend une réponse, immobile, " +
-        "comme s'il avait un corps quelque part dans le noir poli du sol.",
-      "Il n'a pas ton accent — pas tout à fait. Une syllabe traîne un peu " +
-        "trop, comme s'il apprenait encore à porter ta voix.",
+      "La galerie s'élargit en un hall poli comme un miroir noir. Chaque pas " +
+        "y revient double, un instant trop tard pour être vraiment le tien.",
+      "Puis ta propre voix te devance : « Qui va là ? », trois pas devant. " +
+        "L'écho attend une réponse — mais une syllabe traîne, comme s'il " +
+        "apprenait encore à porter ta voix.",
     ],
     choices: [
       {
@@ -943,16 +896,11 @@ export const SCENES: Scene[] = [
   {
     id: "table",
     narration: [
-      "Au-delà du hall des échos, une table de banquet dressée pour " +
-        "personne. Nappes grises de poussière, chandelles éteintes — sauf " +
-        "une, dont la flamme ne tremble jamais, même quand tu passes la " +
-        "main devant.",
-      "Dans son halo, un seul objet : un anneau de fer torsadé, encore " +
-        "tiède, posé sur un coussin de velours élimé, comme si quelqu'un " +
-        "venait tout juste de le poser là et de partir sans bruit.",
-      "Quelque chose sous la table respire lentement contre tes chevilles. " +
-        "Ce n'est pas hostile. Ce n'est pas amical non plus. C'est juste " +
-        "là, et ça attend que tu choisisses.",
+      "Une table de banquet dressée pour personne. Chandelles éteintes — sauf " +
+        "une, dont la flamme ne tremble jamais.",
+      "Dans son halo, un anneau de fer torsadé, encore tiède, comme posé à " +
+        "l'instant. Sous la table, quelque chose respire contre tes " +
+        "chevilles. Ni hostile, ni amical. Ça attend que tu choisisses.",
     ],
     choices: [
       {
@@ -991,15 +939,11 @@ export const SCENES: Scene[] = [
     id: "grand-registre",
     registre: true,
     narration: [
-      "La galerie s'ouvre sur une salle haute dont chaque mur est une " +
-        "fresque de noms gravés, du sol au plafond noyé d'ombre. Il y en a " +
-        "des milliers. Il y en a trop.",
-      "Ce ne sont pas des décorations. Ce sont des comptes. Chaque nom porte " +
-        "un nombre de jours et une fin, gravés d'une main patiente qui n'a " +
-        "jamais manqué une seule mort.",
-      "En t'approchant, tu comprends que la liste se met à jour. Ton propre " +
-        "nom est là, quelque part au milieu, encore frais — le compte n'est " +
-        "pas clos tant que tu marches.",
+      "Une salle haute dont chaque mur est une fresque de noms gravés, du sol " +
+        "au plafond. Des milliers. Trop.",
+      "Ce ne sont pas des ornements : des comptes. Chaque nom porte ses jours " +
+        "et sa fin. Le tien est là, quelque part, encore frais — le compte " +
+        "n'est pas clos tant que tu marches.",
     ],
     choices: [
       { id: "lire-registre", label: "Parcourir les noms" },
@@ -1020,15 +964,12 @@ export const SCENES: Scene[] = [
     // une règle mécanique détectable (sinon l'effet s'inverse, cf. Notion).
     id: "porte-7e",
     narration: [
-      "Au bout, une porte sans gonds ni serrure, taillée dans une seule dent " +
-        "immense, encore ancrée dans une mâchoire qu'on devine plus qu'on ne " +
-        "la voit dans l'obscurité du plafond.",
-      "Dessus, gravé à hauteur de tes yeux exactement — pas plus haut, pas " +
-        "plus bas, comme mesuré pour toi précisément : « FRAPPE TROIS FOIS " +
-        "SI TU CROIS ÊTRE ATTENDU ».",
-      "De l'autre côté, quelque chose compte à voix basse. Il en est à sept " +
-        "mille et des poussières, et il ne semble pas près de s'arrêter de " +
-        "lui-même.",
+      "Une porte sans gonds ni serrure, taillée dans une seule dent immense, " +
+        "encore ancrée dans une mâchoire qu'on devine au plafond.",
+      "Gravé à hauteur de tes yeux exactement, comme mesuré pour toi : " +
+        "« FRAPPE TROIS FOIS SI TU CROIS ÊTRE ATTENDU ». De l'autre côté, " +
+        "quelque chose compte à voix basse. Il en est à sept mille et des " +
+        "poussières.",
     ],
     choices: [
       {
