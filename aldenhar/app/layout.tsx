@@ -20,7 +20,14 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
     title: "Pactum",
   },
+  // Déclaré explicitement (avec basePath) plutôt que via le fichier
+  // app/favicon.ico : en export statique, la convention fichier de Next
+  // injecte le favicon en JS SANS le basePath → lien absent/cassé sous
+  // /Pat/aldenhar/. En public/ + référence explicite, le <link rel="icon">
+  // sort en statique avec le bon chemin (comme apple-touch-icon).
   icons: {
+    icon: `${basePath}/favicon.ico`,
+    shortcut: `${basePath}/favicon.ico`,
     apple: `${basePath}/icons/apple-touch-icon.png`,
   },
 };
