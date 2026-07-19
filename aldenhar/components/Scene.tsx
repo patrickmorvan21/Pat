@@ -573,7 +573,7 @@ export default function Scene() {
         <div
           ref={textRef}
           onPointerDown={() => setSkip((s) => s + 1)}
-          className={`relative min-h-0 flex-1 overflow-y-auto px-[17px] pt-[16px] ${rolling ? "pointer-events-none" : ""}`}
+          className={`scene-text-zone relative min-h-0 flex-1 overflow-y-auto px-[17px] pt-[16px] ${rolling ? "pointer-events-none" : ""}`}
         >
           <div key={step + (timedExpired ? "-t" : "")}>
             {beats.map((entry) => (
@@ -755,7 +755,7 @@ function FeedItem({
     case "combat":
       return (
         <div className="scene-enter combat-banner mb-[14px] mt-[6px]" role="note">
-          <span className="combat-banner-tag">✦ RENCONTRE ✦</span>
+          <span className="combat-banner-tag">• RENCONTRE •</span>
           <span className="combat-banner-foe">{entry.foe}</span>
         </div>
       );

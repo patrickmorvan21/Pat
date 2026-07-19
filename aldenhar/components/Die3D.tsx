@@ -41,6 +41,30 @@ type Props = {
 };
 
 /**
+ * Aide de lecture de l'Anneau (spec 19/07) : préférence locale au compte.
+ * Disparaît définitivement au tap sur « Ne plus afficher », ou d'elle-même
+ * une fois la première réussite ET le premier échec vécus. (Réactivation
+ * prévue via Options « Réafficher les aides » — écran pas encore construit.)
+ */
+const HELP_KEY = "aldenhar-aide-de";
+type DieHelpPref = { off: boolean; ok: boolean; ko: boolean };
+function loadHelpPref(): DieHelpPref {
+  try {
+    const raw = window.localStorage.getItem(HELP_KEY);
+    if (raw) return { off: false, ok: false, ko: false, ...(JSON.parse(raw) as Partial<DieHelpPref>) };
+  } catch {}
+  return { off: false, ok: false, ko: false };
+}
+function saveHelpPref(p: DieHelpPref) {
+  try {
+    window.localStorage.setItem(HELP_KEY, JSON.stringify(p));
+  } catch {}
+}
+function helpAllowed(p: DieHelpPref) {
+  return !p.off && !(p.ok && p.ko);
+}
+
+/**
  * Halo tramé du dé (résolution graduée 13/07) : disque de pixels orange à
  * densité radiale décroissante — jamais un dégradé CSS lisse. Généré une
  * fois côté client, mis en cache au niveau module.
@@ -80,6 +104,9 @@ function getHaloDataUrl(): string | null {
 export default function Die3D({ request, onComplete }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const ringRef = useRef<HTMLCanvasElement>(null);
+  const helpRef = useRef<HTMLDivElement>(null);
+  const helpLinkRef = useRef<HTMLButtonElement>(null);
   const hintRef = useRef<HTMLDivElement>(null);
   const flashRef = useRef<HTMLDivElement>(null);
   const haloRef = useRef<HTMLDivElement>(null);
@@ -100,6 +127,9 @@ export default function Die3D({ request, onComplete }: Props) {
   useEffect(() => {
     const root = rootRef.current;
     const canvas = canvasRef.current;
+    const ring = ringRef.current;
+    const help = helpRef.current;
+    const helpLink = helpLinkRef.current;
     const hint = hintRef.current;
     const flash = flashRef.current;
     const halo = haloRef.current;
@@ -107,7 +137,7 @@ export default function Die3D({ request, onComplete }: Props) {
     const verdict = verdictRef.current;
     const vWord = vWordRef.current;
     const vOut = vOutRef.current;
-    if (!root || !canvas || !hint || !flash || !halo || !veil || !verdict || !vWord || !vOut) return;
+    if (!root || !canvas || !ring || !help || !helpLink || !hint || !flash || !halo || !veil || !verdict || !vWord || !vOut) return;
 
     // Halo tramé (jamais un dégradé CSS) : image générée une fois côté client.
     const haloUrl = getHaloDataUrl();
@@ -199,6 +229,106 @@ export default function Die3D({ request, onComplete }: Props) {
     // au-dessus du verdict, même taille qu'au repos.
     const CENTER = { x: 0, y: -(H / 2) + 146, scale: 0.94 };
 
+    /**
+     * L'Anneau du dé (spec 19/07, maquette 2085:22943 — VERROUILLÉ) : 20
+     * encoches carrées autour du dé armé, une par face. Pleines orange =
+     * faces qui réussissent (seuil + états narratifs modulent la
+     * proportion) ; rongées (ruines de pixels épars, JAMAIS un simple
+     * contour — la grammaire « case à remplir » évoque une jauge) = faces
+     * qui échouent ; sommet BLANC = la face 20, le Destin, toujours
+     * visible. Apparition une par une, très vite, par tics — la lecture
+     * des chances se fait AVANT le lancer ; au lancer, tout disparaît.
+     * (Marque de relique sur une encoche : prévu, en attente du système
+     * de reliques gravant les faces.)
+     */
+    const RING_S = 200,
+      RING_R = 89,
+      NOTCH = 6;
+    ring.width = ring.height = RING_S;
+    // Centré sur la position d'attente du dé (READY), ancré depuis le bas.
+    ring.style.bottom = `${136 - RING_S / 2}px`;
+    const ringCtx = ring.getContext("2d")!;
+    let ringTimer: ReturnType<typeof setInterval> | null = null;
+
+    /** Angle de la face n : 20 au sommet, puis 19..1 en tournant horaire —
+        les faces hautes (qui réussissent) forment l'arc droit, comme la
+        maquette. */
+    function notchAngle(n: number) {
+      return ((-90 + (20 - n) * 18) * Math.PI) / 180;
+    }
+    function drawNotch(n: number, kind: "full" | "erode" | "destin") {
+      const a = notchAngle(n);
+      const cx = RING_S / 2 + Math.cos(a) * RING_R;
+      const cy = RING_S / 2 + Math.sin(a) * RING_R;
+      ringCtx.save();
+      ringCtx.translate(cx, cy);
+      ringCtx.rotate(a + Math.PI / 2);
+      if (kind === "erode") {
+        // Ruine de pixels épars, seedée par la face (stable pendant l'armement).
+        let seed = (n * 7919 + 13) >>> 0;
+        const rnd = () => {
+          seed = (seed * 1664525 + 1013904223) >>> 0;
+          return seed / 4294967296;
+        };
+        ringCtx.fillStyle = "rgba(255,255,255,0.34)";
+        for (let py = -3; py < 3; py++)
+          for (let px = -3; px < 3; px++) if (rnd() < 0.38) ringCtx.fillRect(px, py, 1, 1);
+      } else {
+        ringCtx.fillStyle = kind === "destin" ? "#ffffff" : FACE;
+        ringCtx.fillRect(-NOTCH / 2, -NOTCH / 2, NOTCH, NOTCH);
+      }
+      ringCtx.restore();
+    }
+    function notchKind(n: number): "full" | "erode" | "destin" {
+      if (n === 20) return "destin";
+      const req = requestRef.current;
+      if (!req) return "erode";
+      // Même arithmétique que la résolution réelle : la vérité, pas un décor.
+      const effective = Math.max(1, Math.min(20, n + (req.modifier || 0)));
+      return tierIsFail(resolveTier(n, effective, req.threshold)) ? "erode" : "full";
+    }
+    function stopRingReveal() {
+      if (ringTimer) {
+        clearInterval(ringTimer);
+        ringTimer = null;
+      }
+    }
+    /** Apparition des 20 encoches une par une (~25ms), de la face 1 à la 20 :
+        l'arc rongé d'abord, l'orange ensuite, le Destin blanc en dernier. */
+    function revealRing(instant = false) {
+      stopRingReveal();
+      ringCtx.clearRect(0, 0, RING_S, RING_S);
+      ring!.classList.remove("hidden");
+      if (instant) {
+        for (let n = 1; n <= 20; n++) drawNotch(n, notchKind(n));
+        return;
+      }
+      let n = 0;
+      ringTimer = setInterval(() => {
+        n += 1;
+        drawNotch(n, notchKind(n));
+        if (n >= 20) stopRingReveal();
+      }, 25);
+    }
+    function hideRing() {
+      stopRingReveal();
+      ring!.classList.add("hidden");
+    }
+
+    // Phrase d'aide (spec 19/07) : préférence chargée une fois par montage.
+    let helpPref = loadHelpPref();
+    function syncHelp() {
+      help!.classList.toggle("hidden", !helpAllowed(helpPref));
+    }
+    function onHelpDismiss(e: Event) {
+      e.preventDefault();
+      e.stopPropagation();
+      helpPref = { ...helpPref, off: true };
+      saveHelpPref(helpPref);
+      help!.classList.add("hidden");
+    }
+    helpLink.addEventListener("click", onHelpDismiss);
+
     // hidden : invisible. armed : voile + hint, saisissable (armement §4).
     let state = "hidden";
     let pos = { x: READY.x, y: READY.y };
@@ -233,14 +363,16 @@ export default function Die3D({ request, onComplete }: Props) {
       die.visible = true;
       state = "armed";
       veil.classList.add("on");
-      // Dé armé : le hint porte la stat en jeu (+ état narratif actif), en accent
-      const req = requestRef.current;
-      const stat = req?.stat;
-      const effect = req?.effectLabel ? ` · ${req.effectLabel}` : "";
-      hint.textContent = stat ? `Lance le dé — ${stat}${effect}` : "Lance le dé";
-      hint.classList.add("accent");
+      stage.classList.remove("die-rolling");
+      // Armement (spec 19/07, maquette 2085:22943) : hint sobre « Lancer le
+      // dé » (plus de stat affichée — l'Anneau porte l'information), anneau
+      // des 20 encoches encoche par encoche, phrase d'aide si pas retirée.
+      hint.textContent = "Lancer le dé";
+      hint.classList.remove("accent");
       hint.classList.remove("hidden");
       verdict.classList.remove("show");
+      revealRing();
+      syncHelp();
     };
 
     /** Verdict retenu au moment du jet (naturel pour les critiques, modifié sinon). */
@@ -276,6 +408,9 @@ export default function Die3D({ request, onComplete }: Props) {
       verdict!.classList.remove("show");
       hint!.classList.add("hidden");
       halo!.className = "die-halo";
+      hideRing();
+      help!.classList.add("hidden");
+      stage.classList.remove("die-rolling");
       onCompleteRef.current?.(result, chosen, chosenTier);
     }
 
@@ -301,6 +436,11 @@ export default function Die3D({ request, onComplete }: Props) {
       e.preventDefault();
       state = "held";
       hint!.classList.add("hidden");
+      // Au lancer, TOUT disparaît sauf le dé (spec 19/07) : anneau, aide,
+      // et les textes estompés derrière (classe sur le cadre).
+      hideRing();
+      help!.classList.add("hidden");
+      stage.classList.add("die-rolling");
       grabOffset = { x: dx, y: dy };
       history = [p];
       if (navigator.vibrate) navigator.vibrate(10);
@@ -317,13 +457,20 @@ export default function Die3D({ request, onComplete }: Props) {
       angVel.x = -(p.y - prev.y) * 0.005;
       angVel.y = (p.x - prev.x) * 0.005;
     }
+    /** Relâché sans élan : le dé se repose, l'anneau et l'aide reviennent. */
+    function backToArmed() {
+      state = "returning";
+      hint!.classList.remove("hidden");
+      stage.classList.remove("die-rolling");
+      revealRing(true);
+      syncHelp();
+    }
     function onUp() {
       if (state !== "held") return;
       const now = performance.now();
       const recent = history.filter((h) => now - h.t < 110);
       if (recent.length < 2) {
-        state = "returning";
-        hint!.classList.remove("hidden");
+        backToArmed();
         return;
       }
       const first = recent[0],
@@ -333,8 +480,7 @@ export default function Die3D({ request, onComplete }: Props) {
         vy = (last.y - first.y) / dt;
       const speed = Math.hypot(vx, vy);
       if (speed < 2.5) {
-        state = "returning";
-        hint!.classList.remove("hidden");
+        backToArmed();
         return;
       }
       state = "flying";
@@ -418,6 +564,14 @@ export default function Die3D({ request, onComplete }: Props) {
       chosen = outcome;
       chosenTier = tier;
       justesseFlicker = tier === "justesse";
+
+      // Aide de l'Anneau (spec 19/07) : se retire d'elle-même une fois la
+      // première réussite ET le premier échec vécus.
+      const failed = tierIsFail(tier);
+      if ((failed && !helpPref.ko) || (!failed && !helpPref.ok)) {
+        helpPref = { ...helpPref, ok: helpPref.ok || !failed, ko: helpPref.ko || failed };
+        saveHelpPref(helpPref);
+      }
 
       // Face gagnante par palier (13/07) : illuminée sur les réussites,
       // TERNE (aucune surbrillance) sur les échecs, vacillante en justesse.
@@ -586,6 +740,9 @@ export default function Die3D({ request, onComplete }: Props) {
     return () => {
       cancelAnimationFrame(raf);
       activateRef.current = null;
+      stopRingReveal();
+      stage.classList.remove("die-rolling");
+      helpLink.removeEventListener("click", onHelpDismiss);
       stage.removeEventListener("mousedown", onDown);
       stage.removeEventListener("touchstart", onDown);
       window.removeEventListener("mousemove", onMove);
@@ -611,7 +768,20 @@ export default function Die3D({ request, onComplete }: Props) {
     <div ref={rootRef} className="absolute inset-0 pointer-events-none">
       <div ref={veilRef} className="die-veil" />
       <div ref={haloRef} className="die-halo" />
+      {/* Anneau des 20 encoches (spec 19/07) — sous le canvas du dé. */}
+      <canvas ref={ringRef} className="die-ring hidden" />
       <canvas ref={canvasRef} className="die-canvas" />
+      {/* Aide de lecture (spec 19/07) : seul élément souligné de l'UI. */}
+      <div ref={helpRef} className="die-help hidden">
+        <p>
+          Les encoches pleines sont
+          <br />
+          tes chances de réussite.
+        </p>
+        <button ref={helpLinkRef} type="button" className="die-help-link">
+          Ne plus afficher
+        </button>
+      </div>
       <div ref={hintRef} className="die-hint hidden">
         Lancer le dé
       </div>

@@ -59,7 +59,67 @@ body {
   transition: opacity 0.35s steps(4);
   z-index: 5;
 }
-.die-veil.on { opacity: 0.5; }
+/* 0.5 à l'origine ; renforcé à 0.72 pour l'Anneau (spec 19/07 : illustration
+   et narration nettement estompées — l'attention appartient au dé). */
+.die-veil.on { opacity: 0.72; }
+
+/* L'Anneau du dé (spec 19/07, maquette 2085:22943) : canvas 200×200 centré
+   sur la position d'attente du dé (bottom posé inline depuis Die3D). */
+.die-ring {
+  position: absolute;
+  left: 50%;
+  width: 200px;
+  height: 200px;
+  margin-left: -100px;
+  z-index: 6;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+.die-ring.hidden { display: none; }
+
+/* Phrase d'aide au-dessus du dé (spec 19/07) : Roboto Mono, et le lien
+   « Ne plus afficher » est le SEUL élément souligné de toute l'UI. */
+.die-help {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 246px;
+  z-index: 6;
+  text-align: center;
+  font-family: var(--font-body);
+  pointer-events: none;
+}
+.die-help p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--color-ink);
+}
+.die-help-link {
+  display: inline-block;
+  margin-top: 9px;
+  padding: 2px 4px;
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  color: var(--color-ink);
+  opacity: 0.72;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.die-help.hidden { display: none; }
+
+/* Au lancer, tout disparaît sauf le dé (spec 19/07) : l'illustration et la
+   zone de texte s'éteignent — par paliers, jamais d'easing fluide. */
+.phone-frame.die-rolling .illustration-frame,
+.phone-frame.die-rolling .scene-text-zone {
+  opacity: 0;
+  transition: opacity 0.18s steps(2);
+}
 
 .die-canvas {
   position: absolute;
@@ -400,6 +460,15 @@ body {
 @keyframes image-swap {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+/* Au lancer, l'illustration disparaît : il faut COUPER l'animation figée
+   (fill both fige opacity:1 par-dessus toute classe — même piège que
+   fadeup 13/07 ; et Chromium fige les var() des keyframes au démarrage,
+   donc la variante variable ne marche pas). L'animation reprend — et
+   rejoue son fondu par paliers — quand la classe tombe. */
+.phone-frame.die-rolling .illustration-frame {
+  animation: none;
+  opacity: 0;
 }
 @media (prefers-reduced-motion: reduce) {
   .image-swap { animation: none; }
