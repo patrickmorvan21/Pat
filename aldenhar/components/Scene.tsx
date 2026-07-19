@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Die3D, { type RollRequest } from "@/components/Die3D";
 import ChoiceButton from "@/components/ChoiceButton";
 import TypedText from "@/components/TypedText";
@@ -58,12 +58,51 @@ function nextId() {
   return `e${uidCounter}-${Date.now().toString(36)}`;
 }
 
+const PORTAL = "assets/dithering-portal.jpg";
+
+// Image d'objet obtenu : le haut d'écran bascule sur l'objet quand une action
+// en fait gagner un (demande Patrick 19/07). Jeu d'icônes génériques par type
+// en attendant des illustrations d'objet dédiées (même convention que le menu
+// Inventaire : arme=dague, soin=crâne, babiole=masque).
+function objectImage(kind: BesaceItem["kind"]): string {
+  if (kind === "arme") return "assets/objet_dague.png";
+  if (kind === "babiole") return "assets/objet_masque.png";
+  return "assets/objet_crane.png";
+}
+
+type ImageKind = "scene" | "object";
+
+// La position à l'écran ne doit jamais prédire le type de choix (CLAUDE.md) :
+// Fisher-Yates seedé par le pas de progression (stable au re-render et à la
+// reprise). La scène 0 garde l'ordre exact de la frame Figma.
+function shuffleChoices<T>(choices: T[], step: number): T[] {
+  const arr = [...choices];
+  if (step === 0) return arr;
+  let seed = (step * 9301 + 49297) >>> 0;
+  const rnd = () => {
+    seed = (seed * 1664525 + 1013904223) >>> 0;
+    return seed / 4294967296;
+  };
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(rnd() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 /**
- * Parcours infini — modèle de navigation général (spec §16, remplace
- * « une scène = un écran plein ») : un seul flux scrollable contient tout
- * l'historique de la run ; les choix restent ancrés en bas, toujours visibles.
- * Le dé (Figma 124:2178) reste un overlay par-dessus tout — n'apparaît qu'au
- * clic d'un choix risqué (décision Patrick, voir CLAUDE.md).
+ * Modèle ÉCRAN PAR ÉCRAN (retour Patrick 19/07, maquette Figma 2072:54 —
+ * remplace le flux scrollable §16). Un seul écran par scène :
+ *   • illustration calée en haut (fixe) ;
+ *   • texte de narration au milieu (se tape, défile SEULEMENT s'il dépasse) ;
+ *   • bloc Geôlier dans le flux quand il parle ;
+ *   • CTA ancrés en bas (fixes, adaptés à la hauteur du device), qui
+ *     n'apparaissent qu'une fois le texte tapé à 100 %.
+ * L'IMAGE ne change QUE si le contexte change (nouvelle scène) ou si un objet
+ * est obtenu ; sinon elle reste et seul le texte change. Pas d'historique
+ * accumulé : chaque écran remplace le précédent (fondu). Le dé, la santé, le
+ * menu, la mort, les scènes chronométrées, les bannières et le Registre sont
+ * conservés à l'identique.
  */
 export default function Scene() {
   const [step, setStep] = useState(0);
@@ -71,36 +110,37 @@ export default function Scene() {
   const [roll, setRoll] = useState<RollRequest | null>(null);
   const [day, setDay] = useState(1);
   const [health, setHealth] = useState(1);
-  const [feed, setFeed] = useState<FeedEntry[]>([]);
+  // Contenu du SEUL écran courant (remplacé à chaque scène) — jamais tout
+  // l'historique. Pas d'entrée `illustration`/`chosen` ici : l'image est un
+  // état séparé, et l'action choisie n'est plus ré-affichée (écran par écran).
+  const [beats, setBeats] = useState<FeedEntry[]>([]);
+  const [image, setImage] = useState<string>(PORTAL);
+  const [imageKind, setImageKind] = useState<ImageKind>("scene");
+  // Dernière illustration de SCÈNE (repos de l'image). L'image d'objet n'est
+  // qu'un remplacement momentané ; on revient toujours à cette scène-là.
+  const lastSceneIlloRef = useRef<string>(PORTAL);
   // File de révélation séquentielle : les blocs de texte (narration/Geôlier)
-  // tapent l'un après l'autre, jamais tous en même temps (§16 « beats enchaînés »).
+  // tapent l'un après l'autre, jamais tous en même temps.
   const [activeTypingId, setActiveTypingIdState] = useState<string | null>(null);
   const activeTypingIdRef = useRef<string | null>(null);
   const revealQueueRef = useRef<string[]>([]);
   // Un id entre ici dès qu'il a commencé à se révéler (actif ou déjà fini).
-  // Tant qu'une entrée narration/Geôlier n'y est pas, elle reste invisible :
-  // sinon son texte complet apparaîtrait d'un coup avant même son tour.
   const [revealedIds, setRevealedIds] = useState<Set<string>>(new Set());
   const revealedIdsRef = useRef<Set<string>>(new Set());
-  // Les choix se cachent dès qu'on en tape un, pour mettre en avant la
-  // description, et reviennent une fois tout le texte de la file écrit.
-  const [choicesHidden, setChoicesHidden] = useState(false);
-  // Incrémenté à chaque tap dans le fil : termine l'animation de frappe en cours.
+  // Les CTA n'apparaissent qu'une fois tout le texte de l'écran écrit.
+  const [choicesHidden, setChoicesHidden] = useState(true);
+  // Incrémenté à chaque tap dans la zone de texte : termine la frappe en cours.
   const [skip, setSkip] = useState(0);
-  // Écran de mort (13/07) : non-null dès que la santé tombe à zéro sur un
-  // jet raté. La run est déjà réinitialisée quand cet état est posé.
+  // Écran de mort : non-null dès que la santé tombe à zéro sur un jet raté.
   const [death, setDeath] = useState<{ epitaph: string; day: number; encounters: number; relic: Relic } | null>(null);
-  // Scène chronométrée (§18) : true une fois le délai écoulé sans choix — les
-  // choix d'origine cèdent la place aux options ouvertes par l'inaction.
+  // Scène chronométrée (§18) : true une fois le délai écoulé sans choix.
   const [timedExpired, setTimedExpired] = useState(false);
-  // Menu plein cadre (spec §8, écrans Figma 14/07) — recouvre tout le cadre.
   const [menuOpen, setMenuOpen] = useState(false);
-  // Armé quand le compte à rebours d'une scène chronométrée court (pour l'UI).
   const [countdownArmed, setCountdownArmed] = useState(false);
   const runRef = useRef<RunState | null>(null);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const timedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   function setActiveTypingId(id: string | null) {
@@ -117,19 +157,22 @@ export default function Scene() {
     const next = revealQueueRef.current.shift() ?? null;
     if (next) markRevealed([next]);
     setActiveTypingId(next);
-    // Tout le texte en attente est écrit : les choix peuvent réapparaître.
+    // Tout le texte de l'écran est écrit : les CTA peuvent apparaître.
     if (next === null) setChoicesHidden(false);
   }
   function enqueueReveal(ids: string[]) {
-    if (ids.length === 0) return;
+    if (ids.length === 0) {
+      setChoicesHidden(false);
+      return;
+    }
     revealQueueRef.current.push(...ids);
     if (!activeTypingIdRef.current) advanceRevealQueue();
   }
   function onTypedDone(id: string) {
     if (activeTypingIdRef.current !== id) return;
-    // Correctif 14/07 : le scroll de suivi n'intervient QU'ICI, quand le
-    // paragraphe entier a fini de se révéler — jamais pendant l'écriture
-    // (l'ancien intervalle déplaçait l'écran à chaque retour à la ligne).
+    // Suivi du bas UNIQUEMENT en fin de paragraphe (jamais pendant la frappe,
+    // correctif 14/07), et confiné à la zone de texte (l'image + les CTA
+    // restent fixes).
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
     advanceRevealQueue();
   }
@@ -137,30 +180,40 @@ export default function Scene() {
   const scene = sceneAt(step);
   const rolling = roll !== null;
 
-  // Sur une scène chronométrée expirée (§18), les choix d'origine cèdent la
-  // place aux options ouvertes par l'inaction.
   const baseChoices = timedExpired && scene.timed ? scene.timed.timeoutChoices : scene.choices;
+  const shuffledChoices = shuffleChoices(baseChoices, step);
 
-  // La position à l'écran ne doit jamais prédire le type de choix (CLAUDE.md) :
-  // Fisher-Yates seedé par le pas de progression — stable au re-render et à la
-  // reprise de run. La scène 0 garde l'ordre exact de la frame Figma.
-  const shuffledChoices = useMemo(() => {
-    const arr = [...baseChoices];
-    if (step === 0) return arr;
-    let seed = (step * 9301 + 49297) >>> 0;
-    const rnd = () => {
-      seed = (seed * 1664525 + 1013904223) >>> 0;
-      return seed / 4294967296;
-    };
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(rnd() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
+  function persist(mutate: (run: RunState) => void) {
+    const run = runRef.current ?? loadRun();
+    mutate(run);
+    runRef.current = run;
+    saveRun(run);
+  }
+
+  /** Pose un nouvel écran : remplace le texte, (ré)arme la révélation, masque
+      les CTA le temps de la frappe. L'image n'est touchée que si `img` est
+      fourni (sinon elle reste — « même scène, seul le texte change »). */
+  function showScreen(entries: FeedEntry[], img?: { src: string; kind: ImageKind }) {
+    if (img) {
+      setImage(img.src);
+      setImageKind(img.kind);
     }
-    return arr;
-  }, [baseChoices, step]);
+    revealedIdsRef.current = new Set();
+    setRevealedIds(new Set());
+    revealQueueRef.current = [];
+    setActiveTypingId(null);
+    setChoicesHidden(true);
+    setBeats(entries);
+    persist((run) => {
+      // Persisté pour la reprise : run.feed = écran courant (petit), ce qui
+      // garde aussi hasSavedRun() vrai dès la 1re scène (feed non vide).
+      run.feed = entries;
+    });
+    enqueueReveal(entries.filter((e) => e.kind === "narration" || e.kind === "jailer").map((e) => e.id));
+  }
 
-  // Reprise de run : fermer l'app ne compte jamais comme une mort. Le fil
-  // complet est persisté, donc la reprise restaure aussi le scrollback exact.
+  // Reprise de run : fermer l'app ne compte jamais comme une mort. On restaure
+  // l'écran COURANT (scène, jour, santé, états) — pas un scrollback complet.
   useEffect(() => {
     const run = loadRun();
     runRef.current = run;
@@ -168,21 +221,38 @@ export default function Scene() {
     if (run.step > 0) setStep(run.step);
     setDay(run.day);
     setHealth(run.health);
-    if (run.feed.length > 0) {
-      setFeed(run.feed);
-      // Historique repris : tout est déjà « lu », rien à mettre en file d'attente.
-      markRevealed(run.feed.map((e) => e.id));
+
+    const hasRun = run.step > 0 || (Array.isArray(run.feed) && run.feed.length > 0);
+    if (hasRun) {
+      // Écran courant reconstruit à neuf depuis la scène en cours (l'ancien
+      // format « fil complet » n'est jamais réaffiché). La conséquence
+      // transitoire du dernier choix est perdue — sans importance à la reprise.
+      const cur = sceneAt(run.step);
+      const illo = cur.illustration ?? PORTAL;
+      lastSceneIlloRef.current = illo;
+      setImage(illo);
+      setImageKind("scene");
+      const restored: FeedEntry[] = [];
+      if (run.step === 0) restored.push({ id: nextId(), kind: "day", day: run.day });
+      restored.push(...cur.narration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+      setBeats(restored);
+      // Déjà lu : tout est révélé d'emblée (affichage instantané), CTA visibles.
+      markRevealed(restored.map((e) => e.id));
+      setChoicesHidden(false);
+      run.feed = restored;
+      saveRun(run);
     } else {
-      // Run neuve : on l'inscrit dans la mémoire du joueur (§17, saisons du
-      // Geôlier + décompte des tentatives).
+      // Run neuve : inscrite dans la mémoire du joueur (§17).
       const mem = mutateMemory((m) => {
         m.runsStarted += 1;
       });
       const opening = sceneAt(0);
+      const illo = opening.illustration ?? PORTAL;
+      lastSceneIlloRef.current = illo;
+      setImage(illo);
+      setImageKind("scene");
       const openingNarration = [...opening.narration];
-      // Persistance environnementale (§17) : si le joueur a déjà défoncé la
-      // porte balafrée dans une run précédente, elle porte encore la trace —
-      // le décor accumule les tentatives, pas seulement la dernière.
+      // Persistance environnementale (§17) : trace des runs précédentes.
       if (mem.envFlags["porte-balafree-defoncee"]) {
         openingNarration.push(
           "La porte balafrée, tu la reconnais : c'est déjà arrivé qu'on la " +
@@ -191,17 +261,16 @@ export default function Scene() {
         );
       }
       const seeded: FeedEntry[] = [
-        { id: nextId(), kind: "illustration", src: opening.illustration ?? "assets/dithering-portal.jpg" },
         { id: nextId(), kind: "day", day: run.day },
         ...openingNarration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })),
       ];
-      // Première apparition du dé = entrée du Jour I (spec prologue 16/07) :
-      // le Geôlier marque le moment, une fois le Seuil traversé.
+      // Première apparition du dé = entrée du Jour I (spec prologue 16/07).
       if (run.prologue.done && run.prologue.memories.length > 0) {
         seeded.push({ id: nextId(), kind: "jailer", text: "À partir de maintenant, il décide avec moi." });
       }
-      setFeed(seeded);
-      enqueueReveal(seeded.filter((e) => e.kind === "narration" || e.kind === "jailer").map((e) => e.id));
+      setBeats(seeded);
+      revealQueueRef.current = seeded.filter((e) => e.kind === "narration" || e.kind === "jailer").map((e) => e.id);
+      advanceRevealQueue();
       run.feed = seeded;
       saveRun(run);
     }
@@ -211,42 +280,30 @@ export default function Scene() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Le nouveau contenu doit toujours être visible ; l'historique reste scrollable
-  // au-dessus. Se redéclenche aussi à chaque bloc révélé (pas seulement à l'ajout
-  // au fil, puisqu'une entrée en file d'attente n'occupe pas encore d'espace).
+  // À chaque bloc révélé, on garde le bas du texte visible (dans la zone de
+  // texte uniquement — l'image et les CTA ne bougent pas).
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [feed.length, revealedIds]);
+  }, [revealedIds]);
 
-  /**
-   * La scène qui se résout sans toi (§18) : le délai s'écoule sans choix. Ce
-   * n'est PAS un échec automatique — la situation évolue et ouvre de nouvelles
-   * options (`timeoutChoices`). L'inaction devient elle-même un choix.
-   */
   function onTimedExpire(timed: NonNullable<ReturnType<typeof sceneAt>["timed"]>) {
     setCountdownArmed(false);
     setTimedExpired(true);
-    setChoicesHidden(true);
-    const id = nextId();
-    pushEntries([{ id, kind: "narration", text: timed.timeoutNarration }]);
-    enqueueReveal([id]);
+    // L'inaction ouvre de nouvelles options : nouvel écran (même image).
+    showScreen([{ id: nextId(), kind: "narration", text: timed.timeoutNarration }]);
   }
 
   // Scène chronométrée (§18) : le compte à rebours ne démarre que lorsque les
-  // choix d'origine sont réellement visibles et jouables (texte fini de taper,
-  // pas de dé en cours, pas encore de choix fait). S'il s'écoule, l'inaction
-  // ouvre de nouvelles options via onTimedExpire.
+  // choix d'origine sont réellement jouables (texte fini, pas de dé, pas de
+  // choix fait).
   useEffect(() => {
     if (timedTimer.current) {
       clearTimeout(timedTimer.current);
       timedTimer.current = null;
     }
     const timed = scene.timed;
-    // Les choix ne sont « réellement jouables » qu'une fois tout le texte
-    // écrit (retour Patrick 16/07 : le bloc de CTA n'apparaît qu'à la fin
-    // de la description) — le compte à rebours attend comme eux.
     const canRun = !!timed && !timedExpired && !choicesHidden && !activeTypingId && !selectedId && !rolling;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- reflète l'état d'armement du compte à rebours dans l'UI, synchronisé au cycle de la scène
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reflète l'armement du compte à rebours dans l'UI, synchronisé au cycle de la scène
     setCountdownArmed(canRun);
     if (canRun && timed) {
       timedTimer.current = setTimeout(() => onTimedExpire(timed), timed.ms);
@@ -260,74 +317,49 @@ export default function Scene() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene, step, choicesHidden, activeTypingId, selectedId, rolling, timedExpired]);
 
-  function persist(mutate: (run: RunState) => void) {
-    const run = runRef.current ?? loadRun();
-    mutate(run);
-    runRef.current = run;
-    saveRun(run);
-  }
-
-  function pushEntries(entries: FeedEntry[]) {
-    setFeed((f) => {
-      const next = [...f, ...entries];
-      persist((run) => {
-        run.feed = next;
-      });
-      return next;
-    });
-  }
-
   /**
-   * Scène suivante ajoutée au fil : illustration sur vrai changement de
-   * contexte (spec §11), ou de temps en temps même sans changement, pour
-   * rythmer le fil (placeholder en attendant les assets par contexte).
-   * Narration en plusieurs paragraphes courts, puis le Geôlier — rare,
-   * réservé aux jets critiques et à quelques scènes tirées au sort (spec §12,
-   * "un cran au-dessus du strict minimum", pas à chaque échec).
-   * Les états narratifs temporaires se dissipent scène après scène (spec §2).
+   * Scène suivante = NOUVEL écran (remplace le précédent). L'image ne change
+   * que si le contexte change (illustration de scène différente) ou si un objet
+   * est obtenu ; sinon elle reste. Narration en paragraphes courts, puis le
+   * Geôlier (rare). Les états temporaires se dissipent scène après scène (§2).
    */
-  function advance(rollInfo?: {
+  function advance(opts?: {
     result?: number;
     fail?: boolean;
     consequence?: string;
-    /** Récompense Besace d'un Destin (13/07) — annoncée dans le fil. */
+    /** Récompense Besace d'un Destin (13/07) — annoncée dans l'écran. */
     destinItem?: BesaceItem | null;
+    /** Beats à placer en tête (ex. puce Jour + soin au réveil du campement). */
+    prepend?: FeedEntry[];
   }) {
     const nextStep = step + 1;
     const nextScene = sceneAt(nextStep);
-    const nextIllustration = nextScene.illustration ?? "assets/dithering-portal.jpg";
-    const lastIllustration = [...feed].reverse().find((e): e is Extract<FeedEntry, { kind: "illustration" }> => e.kind === "illustration");
-    const contextChanged = !lastIllustration || lastIllustration.src !== nextIllustration;
+    const nextIllustration = nextScene.illustration ?? PORTAL;
+    const contextChanged = nextIllustration !== lastSceneIlloRef.current;
     const entries: FeedEntry[] = [];
-    // La conséquence du jet (texte de l'issue) précède la mise en place de la scène suivante.
-    if (rollInfo?.consequence) {
-      entries.push({ id: nextId(), kind: "narration", text: rollInfo.consequence });
+    let obtainedItem: BesaceItem | null = null;
+
+    if (opts?.prepend) entries.push(...opts.prepend);
+    // La conséquence du jet précède la mise en place de la scène suivante.
+    if (opts?.consequence) {
+      entries.push({ id: nextId(), kind: "narration", text: opts.consequence });
     }
     // Récompense du Destin : bandeau « Obtenu » juste après la conséquence.
-    if (rollInfo?.destinItem) {
-      const it = rollInfo.destinItem;
+    if (opts?.destinItem) {
+      const it = opts.destinItem;
+      obtainedItem = it;
       entries.push({ id: nextId(), kind: "obtenu", name: it.name, rarity: RARITY_LABEL[it.rarity as BesaceRarity], flavor: it.flavor });
     }
-    // Prix différé (§17) : une dette arrivée à échéance se règle ici, avant la
-    // scène suivante — rétrospectivement lisible dans le transcript.
+    // Prix différé (§17) : une dette échue se règle ici, avant la scène suivante.
     const dueDebts = (runRef.current?.debts ?? []).filter((d) => d.settleAtStep <= nextStep);
     for (const d of dueDebts) {
       entries.push({ id: nextId(), kind: "narration", text: d.text });
     }
-    // Rencontre de combat (spec §6) : annonce AVANT l'illustration (ordre
-    // Figma 221:197), pour que l'adversaire soit LISIBLE — le mécanisme
-    // reste identique (pas de PV, pas de jauge).
+    // Rencontre de combat (spec §6) : annonce AVANT le texte (ordre Figma).
     if (nextScene.combat && nextScene.foeName) {
       entries.push({ id: nextId(), kind: "combat", foe: nextScene.foeName });
     }
-    // Illustration : TOUJOURS sur une rencontre (retour Patrick 14/07 — il
-    // manquait l'illustration de Geryon), sinon changement de contexte ou
-    // ~1 fois sur 4 pour rythmer le fil.
-    if (nextScene.combat || contextChanged || Math.random() < 0.25) {
-      entries.push({ id: nextId(), kind: "illustration", src: nextIllustration });
-    }
-    // Dette de sang (§19) : si cet adversaire a déjà tué un héros du joueur,
-    // il le reconnaît — une ligne discrète avant la scène, jamais un chiffre.
+    // Dette de sang (§19) : l'adversaire qui a déjà tué un des tiens te reconnaît.
     if (nextScene.foe) {
       const debt = bloodDebtFor(loadMemory(), nextScene.foe);
       if (debt) {
@@ -342,9 +374,7 @@ export default function Scene() {
       }
     }
     entries.push(...nextScene.narration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
-    // Soin aléatoire en exploration (13/07) : les scènes hors combat révèlent
-    // parfois (~1 sur 5) un soin mineur pour la Besace — jamais garanti,
-    // jamais un menu d'achat. Bandeau « Obtenu » tramé, pas de popup.
+    // Soin aléatoire en exploration (13/07) : ~1 scène sur 5 hors combat.
     const besace = runRef.current?.besace ?? [];
     if (
       !nextScene.combat &&
@@ -354,27 +384,40 @@ export default function Scene() {
       Math.random() < 0.22
     ) {
       const found = randomSoinMineur();
+      obtainedItem = found;
       persist((run) => {
         run.besace = [...run.besace, found];
       });
       entries.push({ id: nextId(), kind: "obtenu", name: found.name, rarity: RARITY_LABEL[found.rarity as BesaceRarity], flavor: found.flavor });
     }
-    // Le Grand Registre (§19) : en entrant dans la salle, le classement
-    // s'affiche inline dans le fil, avec la ligne du joueur insérée et marquée.
+    // Le Grand Registre (§19) : classement inline, ligne du joueur marquée.
     if (nextScene.registre) {
       const run = runRef.current;
       const rows = buildRegistre(loadMemory(), run?.heroName ?? "toi", run?.day ?? 1);
       entries.push({ id: nextId(), kind: "registre", rows });
     }
-    const result = rollInfo?.result;
+    const result = opts?.result;
     if (result === 1 || result === 20) {
-      // Saisons du Geôlier (§17) : le ton du taunt critique dépend de la
-      // posture, elle-même dérivée de l'historique agrégé du joueur.
       const posture = jailerPosture(loadMemory());
       entries.push({ id: nextId(), kind: "jailer", text: jailerTaunt(result, posture) });
     } else if (Math.random() < 0.12) {
       entries.push({ id: nextId(), kind: "jailer", text: nextScene.jailerLine });
     }
+
+    // Image du nouvel écran (demande Patrick 19/07) :
+    //  • contexte changé → illustration de la nouvelle scène (repos de l'image) ;
+    //  • sinon objet obtenu → image de l'objet (remplacement momentané) ;
+    //  • sinon → on revient/reste sur l'illustration de scène (l'image ne bouge pas).
+    let img: { src: string; kind: ImageKind };
+    if (contextChanged) {
+      lastSceneIlloRef.current = nextIllustration;
+      img = { src: nextIllustration, kind: "scene" };
+    } else if (obtainedItem) {
+      img = { src: objectImage(obtainedItem.kind), kind: "object" };
+    } else {
+      img = { src: lastSceneIlloRef.current, kind: "scene" };
+    }
+
     setStep(nextStep);
     persist((run) => {
       run.step = nextStep;
@@ -382,18 +425,13 @@ export default function Scene() {
       run.effects = run.effects
         .map((e) => ({ ...e, scenesLeft: e.scenesLeft - 1 }))
         .filter((e) => e.scenesLeft > 0);
-      // Dettes réglées : retirées de la run (§17).
       run.debts = (run.debts ?? []).filter((d) => d.settleAtStep > nextStep);
-      // Rencontre traversée vivant — comptée pour l'écran de mort (13/07).
       if (scene.combat) run.encounters = (run.encounters ?? 0) + 1;
     });
-    pushEntries(entries);
-    // Révélation séquentielle : narration(s) puis Geôlier, jamais tous en même temps.
-    enqueueReveal(entries.filter((e) => e.kind === "narration" || e.kind === "jailer").map((e) => e.id));
     setSelectedId(null);
     setRoll(null);
-    // Nouvelle scène : on réarme la mécanique chronométrée (§18).
     setTimedExpired(false);
+    showScreen(entries, img);
   }
 
   function onSelect(choice: Choice) {
@@ -403,19 +441,15 @@ export default function Scene() {
     persist((run) => {
       run.lastChoiceId = choice.id;
     });
-    // L'action choisie s'affiche dans le fil AVANT sa conséquence (spec §16).
-    pushEntries([{ id: nextId(), kind: "chosen", label: choice.label }]);
 
-    // Persistance environnementale (§17) : défoncer la porte balafrée laisse
-    // une trace durable, relue à l'ouverture des runs suivantes.
+    // Persistance environnementale (§17) : trace durable relue aux runs suivantes.
     if (choice.setsEnvFlag) {
       const flag = choice.setsEnvFlag;
       mutateMemory((m) => {
         m.envFlags[flag] = true;
       });
     }
-    // Prix différé (§17) : un choix « gratuit » peut poser une dette silencieuse
-    // qui se règle plus tard dans la run (au bout de N pas de progression).
+    // Prix différé (§17) : un choix « gratuit » peut poser une dette silencieuse.
     if (choice.debt) {
       const debt = choice.debt;
       persist((run) => {
@@ -424,7 +458,7 @@ export default function Scene() {
     }
 
     if (choice.risky) {
-      // Armement du dé (spec §4) : voile + hint contextuel, le dé devient saisissable.
+      // Armement du dé (spec §4) : le dé devient saisissable, hint contextuel.
       const effects = runRef.current?.effects ?? [];
       const modifier = effects.reduce((sum, e) => sum + e.delta, 0);
       setRoll({
@@ -434,15 +468,10 @@ export default function Scene() {
         outcomes: choice.risky.outcomes,
         modifier,
         effectLabel: effects[0]?.label,
-        // La main qui hésite (§18) : sur un jet à fort enjeu, le dé traîne/tremble
-        // avant de s'immobiliser — purement visuel, n'affecte jamais le résultat.
         highStakes: choice.risky.highStakes,
       });
     } else if (choice.rest) {
-      // Campement (spec §7, précisé 13/07) : le jour avance, les blessures
-      // légères s'atténuent — mais un ENTAILLÉ persistant (blessure de
-      // combat) n'est qu'ATTÉNUÉ par le repos. Un soin de Besace, lui, le
-      // referme complètement (consommé ici, en attendant l'UI d'inventaire).
+      // Campement (spec §7, précisé 13/07) : le jour avance, blessures atténuées.
       let soinUsed: string | null = null;
       persist((run) => {
         run.day += 1;
@@ -461,34 +490,28 @@ export default function Scene() {
       const newDay = runRef.current?.day ?? day + 1;
       setDay(newDay);
       setHealth(runRef.current?.health ?? 1);
-      // Survie enregistrée au compte (§17) : le plus grand jour atteint nourrit
-      // la posture du Geôlier sans jamais être affiché comme un score.
       mutateMemory((m) => {
         m.bestDays = Math.max(m.bestDays, newDay);
       });
-      const restEntries: FeedEntry[] = [{ id: nextId(), kind: "day", day: newDay }];
+      const prepend: FeedEntry[] = [{ id: nextId(), kind: "day", day: newDay }];
       if (soinUsed) {
-        restEntries.push({
+        prepend.push({
           id: nextId(),
           kind: "narration",
           text: `Avant de dormir, tu uses du ${soinUsed}. La plaie se referme enfin — la nuit n'aura pas ce prétexte.`,
         });
       }
-      pushEntries(restEntries);
-      if (soinUsed) enqueueReveal([restEntries[1].id]);
-      advanceTimer.current = setTimeout(() => advance(), 450);
+      advanceTimer.current = setTimeout(() => advance({ prepend }), 320);
     } else if (choice.passive) {
-      // Le silence comme vraie option de jeu (§19) : pas une case vide — une
-      // conséquence dédiée, écrite en réaction à l'inaction choisie.
-      advanceTimer.current = setTimeout(() => advance({ consequence: choice.passive!.consequence }), 450);
+      // Le silence comme vraie option (§19) : conséquence dédiée, sans dé.
+      advanceTimer.current = setTimeout(() => advance({ consequence: choice.passive!.consequence }), 320);
     } else {
       // Choix neutre : résolution instantanée, sans dé (spec §4).
-      advanceTimer.current = setTimeout(() => advance(), 450);
+      advanceTimer.current = setTimeout(() => advance(), 320);
     }
   }
 
-  // Paliers de santé discrets (spec §5, validé 11/07) : Intact · Marqué ·
-  // Entaillé · Au seuil — jamais un dégradé continu.
+  // Paliers de santé discrets (spec §5) : Intact · Marqué · Entaillé · Au seuil.
   const erosion = health < 0.25 ? 3 : health < 0.5 ? 2 : health < 0.75 ? 1 : 0;
 
   return (
@@ -498,8 +521,7 @@ export default function Scene() {
           erosion ? `erosion-${erosion}` : ""
         }`}
       >
-        {/* État KO (14/07) : au palier critique, une nappe de pixels morts
-            scintille sur tout l'écran — la mort est proche et ça se sent. */}
+        {/* État KO (14/07) : nappe de pixels morts scintillante au palier critique. */}
         {erosion === 3 && (
           <div
             className="decay-overlay"
@@ -512,44 +534,63 @@ export default function Scene() {
           />
         )}
 
-        {/* En-tête (repasse Figma 15/07, frame 1925:614) : plus de titre —
-            seule l'icône de menu flotte en haut à droite (32×32, position
-            fixe sur tous les écrans, spec §8), le fil défile dessous. */}
+        {/* En-tête : seule l'icône de menu flotte en haut à droite (spec §8). */}
         <button
           type="button"
           aria-label="Menu"
           onClick={() => setMenuOpen(true)}
-          className="absolute top-[11px] right-[10px] z-[4] grid size-[32px] cursor-pointer grid-cols-3 place-items-center border border-solid border-[var(--color-ink)] bg-[var(--color-bg)]/80 p-[8px]"
+          className="absolute top-[11px] right-[10px] z-[5] grid size-[32px] cursor-pointer grid-cols-3 place-items-center border border-solid border-[var(--color-ink)] bg-[var(--color-bg)]/80 p-[8px]"
         >
           {Array.from({ length: 9 }).map((_, i) => (
             <span key={i} className="block size-[1.6px] bg-[var(--color-ink)]" />
           ))}
         </button>
 
-        {/* Flux scrollable — tout l'historique de la run, rien ne se décharge (spec §16).
-            Pendant que le dé est actif, le fil ne capte plus les taps : sinon le
-            tap qui arme/dismiss le dé fait aussi défiler du texte pas encore écrit. */}
-        <div
-          ref={scrollRef}
-          onPointerDown={() => setSkip((s) => s + 1)}
-          className={`relative flex-1 overflow-y-auto px-[17px] ${rolling ? "pointer-events-none" : ""}`}
-        >
-          {feed.map((entry) => (
-            <FeedItem
-              key={entry.id}
-              entry={entry}
-              typed={entry.id === activeTypingId}
-              revealed={revealedIds.has(entry.id)}
-              skip={skip}
-              onDone={() => onTypedDone(entry.id)}
-            />
-          ))}
-          <div ref={bottomRef} />
+        {/* Illustration calée EN HAUT (fixe). Ne se ré-anime (fondu) que quand
+            sa source change — même scène = image immobile (demande Patrick).
+            Hauteur adaptée à la hauteur du device (dvh), plafonnée. */}
+        <div key={image} className="image-swap illustration-frame shrink-0 relative">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            alt=""
+            src={image}
+            className={
+              imageKind === "object"
+                ? "pointer-events-none block h-[38dvh] max-h-[300px] min-h-[180px] w-full bg-[var(--color-bg)] object-contain [image-rendering:pixelated]"
+                : "pointer-events-none block h-[44dvh] max-h-[352px] min-h-[200px] w-full object-cover"
+            }
+          />
+          <div
+            className="dissolve-bottom"
+            style={{ backgroundImage: 'url("assets/bande_dissolution_haut.svg")' }}
+            aria-hidden
+          />
         </div>
 
-        {/* Scène chronométrée (§18) : compte à rebours VISUEL — une jauge qui
-            s'érode vite, jamais un timer chiffré. Cohérent avec le langage de
-            la santé. Disparaît dès qu'un choix est fait ou le délai écoulé. */}
+        {/* Zone de texte — SEULE partie scrollable (si le texte dépasse). Ne
+            capte plus les taps pendant le lancer du dé. La clé = pas de scène :
+            le contenu se renouvelle proprement à chaque écran. */}
+        <div
+          ref={textRef}
+          onPointerDown={() => setSkip((s) => s + 1)}
+          className={`relative min-h-0 flex-1 overflow-y-auto px-[17px] pt-[16px] ${rolling ? "pointer-events-none" : ""}`}
+        >
+          <div key={step + (timedExpired ? "-t" : "")}>
+            {beats.map((entry) => (
+              <FeedItem
+                key={entry.id}
+                entry={entry}
+                typed={entry.id === activeTypingId}
+                revealed={revealedIds.has(entry.id)}
+                skip={skip}
+                onDone={() => onTypedDone(entry.id)}
+              />
+            ))}
+            <div ref={bottomRef} />
+          </div>
+        </div>
+
+        {/* Scène chronométrée (§18) : compte à rebours VISUEL (jauge), jamais un chiffre. */}
         {countdownArmed && scene.timed && (
           <div className="timed-countdown relative z-[3]" aria-hidden>
             <div
@@ -559,14 +600,11 @@ export default function Scene() {
           </div>
         )}
 
-        {/* Choix ancrés en bas (spec §16), mais masqués le temps que la
-            conséquence + la scène suivante finissent de s'écrire — pour
-            mettre en avant la description — puis réaffichés (décision
-            Patrick 11/07, priorité sur "toujours visibles"). Pendant le
-            lancer, ils ne captent plus les événements — sinon un bouton
-            disabled avale la saisie du dé qui le chevauche. */}
+        {/* CTA ancrés en bas (fixes), masqués tant que le texte n'est pas
+            entièrement écrit — puis fondu. Pendant le lancer, ils ne captent
+            plus les événements (sinon un bouton avale la saisie du dé). */}
         <div
-          className={`choices-bar relative z-[3] flex w-full flex-col gap-[10px] border-t border-[var(--color-ink)]/15 px-[15px] py-[15px] ${
+          className={`choices-bar relative z-[3] flex w-full shrink-0 flex-col gap-[10px] border-t border-[var(--color-ink)]/15 px-[15px] py-[15px] ${
             rolling ? "pointer-events-none" : ""
           } ${choicesHidden || activeTypingId ? "choices-hidden" : ""}`}
         >
@@ -582,30 +620,17 @@ export default function Scene() {
           ))}
         </div>
 
-        {/* Dé d20 tactile — apparaît au clic d'un choix risqué */}
+        {/* Dé d20 tactile — apparaît au clic d'un choix risqué. */}
         <Die3D
           request={roll}
           onComplete={(result, outcome, tier) => {
-            // Récompense du Destin (13/07) : Besace rare à légendaire — JAMAIS
-            // une Relique. Une arme seulement sur un engagement réel (scène de
-            // combat + jet de COURAGE) — fuir ne forge pas de lame (14/07).
             const engaged = Boolean(scene.combat) && roll?.stat === "COURAGE";
             const destinItem = tier === "destin" ? randomRecompenseDestin(engaged) : null;
             persist((run) => {
-              run.rolls.push({
-                step,
-                choiceId: selectedId ?? "roll",
-                result,
-                at: Date.now(),
-              });
-              // Santé par palier (résolution graduée 13/07) — jamais de chiffre,
-              // l'UI s'érode (spec §5). « De justesse » : ça passe, mais un coût.
+              run.rolls.push({ step, choiceId: selectedId ?? "roll", result, at: Date.now() });
               const cost =
                 tier === "malediction" ? 0.25 : tier === "critique" ? 0.2 : tier === "echec" ? 0.12 : tier === "justesse" ? 0.06 : 0;
               run.health = Math.max(0, run.health - cost);
-              // États narratifs temporaires (spec §2) + blessure persistante (13/07) :
-              // un jet raté EN COMBAT laisse un ENTAILLÉ qui ne se dissipe pas
-              // tout seul — le camp l'atténue, un soin de Besace le referme.
               if (tier === "destin" || (scene.combat && !tierIsFail(tier)))
                 run.effects = [
                   { id: "aguerri", label: "AGUERRI", delta: 2, scenesLeft: 3 },
@@ -626,8 +651,7 @@ export default function Scene() {
             const run = runRef.current!;
             setHealth(run.health);
 
-            // Permadeath réel (spec §9 + séquence 13/07) : la santé à zéro sur
-            // un jet raté tue — dans la fiction, jamais par accident technique.
+            // Permadeath réel (spec §9) : santé à zéro sur un jet raté = mort.
             if (run.health <= 0 && tierIsFail(tier)) {
               const epitaph = outcome.text.replace(/\s*♦.*$/, "");
               const cause = scene.foeName ?? "les couloirs";
@@ -638,8 +662,6 @@ export default function Scene() {
                 place: scene.id,
                 killer: scene.foe ? { entity: scene.foe, label: scene.foeName ?? scene.foe } : undefined,
               });
-              // La run est réinitialisée IMMÉDIATEMENT : fermer l'app pendant
-              // l'écran de mort ne ressuscite jamais le héros.
               const dead = { epitaph, day: run.day, encounters: run.encounters, relic };
               resetRun();
               setDeath(dead);
@@ -649,12 +671,10 @@ export default function Scene() {
           }}
         />
 
-        {/* Menu plein cadre (spec §8) : Essence (stats/états/compétences) +
-            Inventaire (Besace/Reliques). Ouvert par l'icône d'en-tête. */}
-        {menuOpen && <GameMenu run={runRef.current ?? loadRun()} onClose={() => setMenuOpen(false)} />}
+        {/* Menu plein cadre (spec §8) : Essence + Inventaire. */}
+        {menuOpen && <GameMenu run={loadRun()} onClose={() => setMenuOpen(false)} />}
 
-        {/* Écran de mort (13/07) : dé brisé → épitaphe → dissolution
-            convergente → chiffres → Relique → recommencer. */}
+        {/* Écran de mort (13/07). */}
         {death && (
           <DeathScreen
             epitaph={death.epitaph}
@@ -683,48 +703,21 @@ function FeedItem({
   skip: number;
   onDone: () => void;
 }) {
-  // Le fil respecte l'ordre des beats : un bloc de texte pas encore atteint
-  // dans la file de révélation séquentielle ne doit rien laisser paraître.
   if ((entry.kind === "narration" || entry.kind === "jailer") && !revealed) return null;
 
   switch (entry.kind) {
+    // L'illustration est désormais gérée en haut d'écran (état séparé) : plus
+    // jamais une entrée du flux. L'action choisie n'est plus ré-affichée.
     case "illustration":
-      // Bord bas dissous en pixels (correctif Patrick 13/07) : la bande
-      // bande_dissolution_haut.svg retournée verticalement (scaleY(-1)),
-      // jamais un dégradé CSS lisse (§11).
-      return (
-        <div className="scene-enter illustration-frame mx-[-17px] mb-[18px]">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img alt="" src={entry.src} className="pointer-events-none block h-[352px] w-full object-cover" />
-          <div
-            className="dissolve-bottom"
-            style={{ backgroundImage: 'url("assets/bande_dissolution_haut.svg")' }}
-            aria-hidden
-          />
-        </div>
-      );
+    case "chosen":
+      return null;
     case "day":
       return (
         <p className="scene-enter mb-[18px] text-center text-[11px] uppercase tracking-[1.2px] text-[var(--color-ink)] opacity-50 [--enter-opacity:0.5]">
           — Jour {entry.day} —
         </p>
       );
-    case "chosen":
-      // Action choisie à 50% d'opacité pour la distinguer du texte narratif
-      // (retour Patrick 13/07) : la variable --enter-opacity est nécessaire
-      // car l'animation d'entrée fige sa dernière frame par-dessus la classe.
-      return (
-        <p className="scene-enter mb-[14px] text-[13px] text-[var(--color-ink)] opacity-50 [--enter-opacity:0.5]">
-          › {entry.label}
-        </p>
-      );
     case "jailer":
-      // Bloc refait sur la maquette 1925:614 (retour Patrick 16/07) : bandeau
-      // orange de 87px, NOUVEAU portrait gros-pixels du Geôlier (PJ 16/07,
-      // fond orange cuit dans l'image) posé pleine hauteur au bord GAUCHE,
-      // sans débord ; franges de pixels charbon INVERSÉES horizontalement,
-      // qui scintillent uniquement pendant qu'il parle. Texte mono gras
-      // charbon, décalé à 122px.
       return (
         <div
           className={`scene-enter jailer-banner mx-[-17px] mb-[18px] mt-[15px] relative flex min-h-[87px] items-center overflow-hidden bg-[var(--color-accent)] pl-[122px] pr-[20px] py-[16px] ${
@@ -754,17 +747,12 @@ function FeedItem({
         </div>
       );
     case "narration":
-      // .feed-narration : ciblée par l'état KO (les descriptions tremblent
-      // au palier critique, retour Patrick 14/07).
       return (
         <p className="scene-enter feed-narration mb-[18px] text-[13px] leading-[1.3] text-[var(--color-ink)]">
           <TypedText text={entry.text} typed={typed} skip={skip} msPerChar={15} onDone={onDone} />
         </p>
       );
     case "combat":
-      // Bannière de rencontre (Figma 221:197, redesign 13/07) : sans cadre —
-      // tag centré + nom de l'adversaire en grand Jacquard orange, juste
-      // avant l'illustration. Le combat reste la même mécanique choix + dé.
       return (
         <div className="scene-enter combat-banner mb-[14px] mt-[6px]" role="note">
           <span className="combat-banner-tag">✦ RENCONTRE ✦</span>
@@ -772,7 +760,6 @@ function FeedItem({
         </div>
       );
     case "obtenu":
-      // Objet mineur (13/07) : bandeau tramé inline — jamais une popup.
       return (
         <div className="scene-enter obtenu-banner mb-[18px]">
           <span className="obtenu-line">
@@ -782,8 +769,6 @@ function FeedItem({
         </div>
       );
     case "registre":
-      // Le Grand Registre (§19) : classement défilant inline, la ligne du
-      // joueur marquée en accent — un lieu traversé, pas un menu de stats.
       return (
         <div className="scene-enter registre mx-[-17px] mb-[18px]">
           <p className="registre-head">— LE GRAND REGISTRE —</p>

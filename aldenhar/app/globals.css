@@ -391,6 +391,19 @@ body {
 .illustration-frame {
   position: relative;
 }
+/* Bascule d'image entre écrans (écran par écran, 19/07) : fondu par paliers
+   dans le langage de la DA. Ne se joue que quand la source change (clé React
+   = src) — même scène, même image : aucun re-render, l'image reste immobile. */
+.image-swap {
+  animation: image-swap 0.45s steps(4) both;
+}
+@keyframes image-swap {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .image-swap { animation: none; }
+}
 .dissolve-bottom {
   position: absolute;
   left: 0;
