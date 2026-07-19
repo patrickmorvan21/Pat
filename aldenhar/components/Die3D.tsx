@@ -241,8 +241,10 @@ export default function Die3D({ request, onComplete }: Props) {
      * (Marque de relique sur une encoche : prévu, en attente du système
      * de reliques gravant les faces.)
      */
+    // Rayon réduit (89 → 70, retour Patrick 19/07) : les encoches basses
+    // laissent ~9px d'air au-dessus du hint « Lancer le dé » (mesuré).
     const RING_S = 200,
-      RING_R = 89,
+      RING_R = 70,
       NOTCH = 6;
     ring.width = ring.height = RING_S;
     // Centré sur la position d'attente du dé (READY), ancré depuis le bas.
@@ -293,8 +295,9 @@ export default function Die3D({ request, onComplete }: Props) {
         ringTimer = null;
       }
     }
-    /** Apparition des 20 encoches une par une (~25ms), de la face 1 à la 20 :
-        l'arc rongé d'abord, l'orange ensuite, le Destin blanc en dernier. */
+    /** Apparition des 20 encoches une par une (~25ms), en SENS HORAIRE depuis
+        le sommet (retour Patrick 19/07) : le Destin blanc ouvre la ronde,
+        l'arc orange suit, les rongées ferment. */
     function revealRing(instant = false) {
       stopRingReveal();
       ringCtx.clearRect(0, 0, RING_S, RING_S);
@@ -303,11 +306,12 @@ export default function Die3D({ request, onComplete }: Props) {
         for (let n = 1; n <= 20; n++) drawNotch(n, notchKind(n));
         return;
       }
-      let n = 0;
+      let i = 0;
       ringTimer = setInterval(() => {
-        n += 1;
+        i += 1;
+        const n = 21 - i; // 20 (sommet) → 1, disposées en horaire
         drawNotch(n, notchKind(n));
-        if (n >= 20) stopRingReveal();
+        if (i >= 20) stopRingReveal();
       }, 25);
     }
     function hideRing() {
