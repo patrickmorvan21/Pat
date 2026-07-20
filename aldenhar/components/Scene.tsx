@@ -428,6 +428,17 @@ export default function Scene() {
       run.debts = (run.debts ?? []).filter((d) => d.settleAtStep > nextStep);
       if (scene.combat) run.encounters = (run.encounters ?? 0) + 1;
     });
+    // Rappel des états temporaires (retour Patrick 19/07) : après un jet de
+    // dé, l'écran suivant s'ouvre sur les états encore actifs — un petit
+    // libellé « état temporaire », le nom, jamais un chiffre.
+    const activeEffects = runRef.current?.effects ?? [];
+    if (opts?.result !== undefined && activeEffects.length > 0) {
+      entries.unshift({
+        id: nextId(),
+        kind: "etat",
+        effects: activeEffects.map((e) => ({ effectId: e.id, label: e.label, positive: e.delta > 0 })),
+      });
+    }
     setSelectedId(null);
     setRoll(null);
     setTimedExpired(false);
@@ -757,6 +768,28 @@ function FeedItem({
         <div className="scene-enter combat-banner mb-[14px] mt-[6px]" role="note">
           <span className="combat-banner-tag">• RENCONTRE •</span>
           <span className="combat-banner-foe">{entry.foe}</span>
+        </div>
+      );
+    case "etat":
+      // Rappel des états temporaires après un jet (retour Patrick 19/07) :
+      // vignette + nom — négatif = orange telle quelle, positif = désaturée
+      // vers le blanc (même convention que l'écran Essence). Jamais un chiffre.
+      return (
+        <div className="scene-enter etat-banner" role="note">
+          <span className="etat-banner-eyebrow">
+            {entry.effects.length > 1 ? "États temporaires" : "État temporaire"}
+          </span>
+          <div className="etat-banner-row">
+            {entry.effects.map((e) => (
+              <span key={e.effectId} className={`etat-chip ${e.positive ? "is-positive" : ""}`}>
+                {(e.effectId === "aguerri" || e.effectId === "entaille") && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img alt="" src={`assets/etat_${e.effectId}.png`} className="etat-chip-icon" />
+                )}
+                {e.label}
+              </span>
+            ))}
+          </div>
         </div>
       );
     case "obtenu":

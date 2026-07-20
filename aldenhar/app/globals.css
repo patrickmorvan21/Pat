@@ -113,13 +113,6 @@ body {
 }
 .die-help.hidden { display: none; }
 
-/* Au lancer, tout disparaît sauf le dé (spec 19/07) : l'illustration et la
-   zone de texte s'éteignent — par paliers, jamais d'easing fluide. */
-.phone-frame.die-rolling .illustration-frame,
-.phone-frame.die-rolling .scene-text-zone {
-  opacity: 0;
-  transition: opacity 0.18s steps(2);
-}
 
 .die-canvas {
   position: absolute;
@@ -461,15 +454,6 @@ body {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-/* Au lancer, l'illustration disparaît : il faut COUPER l'animation figée
-   (fill both fige opacity:1 par-dessus toute classe — même piège que
-   fadeup 13/07 ; et Chromium fige les var() des keyframes au démarrage,
-   donc la variante variable ne marche pas). L'animation reprend — et
-   rejoue son fondu par paliers — quand la classe tombe. */
-.phone-frame.die-rolling .illustration-frame {
-  animation: none;
-  opacity: 0;
-}
 @media (prefers-reduced-motion: reduce) {
   .image-swap { animation: none; }
 }
@@ -682,6 +666,52 @@ body {
 }
 
 /* Bandeau « Obtenu — … » (13/07) : objet mineur, jamais une popup. */
+/* Rappel des états temporaires après un jet (retour Patrick 19/07) :
+   libellé discret + vignette et nom de l'état. Négatif = orange telle
+   quelle, positif = désaturé vers le blanc (convention de l'écran Essence). */
+.etat-banner {
+  margin-bottom: 18px;
+  text-align: center;
+}
+.etat-banner-eyebrow {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  opacity: 0.5;
+  margin-bottom: 6px;
+}
+.etat-banner-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+}
+.etat-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+.etat-chip.is-positive {
+  color: var(--color-ink);
+}
+.etat-chip-icon {
+  width: 24px;
+  height: 24px;
+  image-rendering: pixelated;
+}
+.etat-chip.is-positive .etat-chip-icon {
+  filter: saturate(0) brightness(1.6);
+}
+
 .obtenu-banner {
   display: flex;
   flex-direction: column;

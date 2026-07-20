@@ -47,7 +47,10 @@ export type FeedEntry =
   /** Bannière de rencontre : annonce clairement un combat (spec §6, lisibilité). */
   | { id: string; kind: "combat"; foe: string }
   /** Objet mineur obtenu (13/07) : bandeau tramé « Obtenu — … », pas de popup. */
-  | { id: string; kind: "obtenu"; name: string; rarity: string; flavor: string };
+  | { id: string; kind: "obtenu"; name: string; rarity: string; flavor: string }
+  /** États narratifs temporaires actifs, rappelés en tête d'écran après un
+      jet (retour Patrick 19/07) — jamais un chiffre, seulement le nom. */
+  | { id: string; kind: "etat"; effects: { effectId: string; label: string; positive: boolean }[] };
 
 /**
  * Prix différé (spec §17) : un choix « gratuit » contracte une dette

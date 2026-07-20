@@ -276,13 +276,16 @@ export default function Die3D({ request, onComplete }: Props) {
         for (let py = -3; py < 3; py++)
           for (let px = -3; px < 3; px++) if (rnd() < 0.38) ringCtx.fillRect(px, py, 1, 1);
       } else {
-        ringCtx.fillStyle = kind === "destin" ? "#ffffff" : FACE;
+        ringCtx.fillStyle = FACE;
         ringCtx.fillRect(-NOTCH / 2, -NOTCH / 2, NOTCH, NOTCH);
       }
       ringCtx.restore();
     }
-    function notchKind(n: number): "full" | "erode" | "destin" {
-      if (n === 20) return "destin";
+    // Retour Patrick 19/07 soir : plus d'encoche blanche au sommet — la face
+    // 20 est une encoche pleine orange comme les autres (le « sommet blanc =
+    // Destin » de la spec du matin est annulé).
+    function notchKind(n: number): "full" | "erode" {
+      if (n === 20) return "full";
       const req = requestRef.current;
       if (!req) return "erode";
       // Même arithmétique que la résolution réelle : la vérité, pas un décor.
@@ -367,7 +370,6 @@ export default function Die3D({ request, onComplete }: Props) {
       die.visible = true;
       state = "armed";
       veil.classList.add("on");
-      stage.classList.remove("die-rolling");
       // Armement (spec 19/07, maquette 2085:22943) : hint sobre « Lancer le
       // dé » (plus de stat affichée — l'Anneau porte l'information), anneau
       // des 20 encoches encoche par encoche, phrase d'aide si pas retirée.
@@ -414,7 +416,6 @@ export default function Die3D({ request, onComplete }: Props) {
       halo!.className = "die-halo";
       hideRing();
       help!.classList.add("hidden");
-      stage.classList.remove("die-rolling");
       onCompleteRef.current?.(result, chosen, chosenTier);
     }
 
@@ -440,11 +441,11 @@ export default function Die3D({ request, onComplete }: Props) {
       e.preventDefault();
       state = "held";
       hint!.classList.add("hidden");
-      // Au lancer, TOUT disparaît sauf le dé (spec 19/07) : anneau, aide,
-      // et les textes estompés derrière (classe sur le cadre).
+      // Au lancer (retour Patrick 19/07 soir, amende la spec du matin) :
+      // l'anneau et l'aide disparaissent, mais l'image et le texte RESTENT
+      // visibles derrière, estompés par le voile sombre.
       hideRing();
       help!.classList.add("hidden");
-      stage.classList.add("die-rolling");
       grabOffset = { x: dx, y: dy };
       history = [p];
       if (navigator.vibrate) navigator.vibrate(10);
@@ -465,7 +466,6 @@ export default function Die3D({ request, onComplete }: Props) {
     function backToArmed() {
       state = "returning";
       hint!.classList.remove("hidden");
-      stage.classList.remove("die-rolling");
       revealRing(true);
       syncHelp();
     }
@@ -745,7 +745,6 @@ export default function Die3D({ request, onComplete }: Props) {
       cancelAnimationFrame(raf);
       activateRef.current = null;
       stopRingReveal();
-      stage.classList.remove("die-rolling");
       helpLink.removeEventListener("click", onHelpDismiss);
       stage.removeEventListener("mousedown", onDown);
       stage.removeEventListener("touchstart", onDown);
