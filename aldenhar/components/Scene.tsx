@@ -253,11 +253,12 @@ export default function Scene() {
       setImageKind("scene");
       const openingNarration = [...opening.narration];
       // Persistance environnementale (§17) : trace des runs précédentes.
-      if (mem.envFlags["porte-balafree-defoncee"]) {
+      if (mem.envFlags["echarde-gibet-prelevee"]) {
         openingNarration.push(
-          "La porte balafrée, tu la reconnais : c'est déjà arrivé qu'on la " +
-            "défonce, un autre jour, un autre toi. Le bois éclaté n'a pas " +
-            "repoussé. Quelque chose s'en souvient aussi."
+          "Au loin, sur sa colline, le Gibet Vide découpe le crépuscule — " +
+            "et son montant porte une entaille claire, là où quelqu'un a " +
+            "prélevé une écharde. Un autre jour. Un autre toi. Le bois n'a " +
+            "pas repoussé. Les Landes s'en souviennent aussi."
         );
       }
       const seeded: FeedEntry[] = [
@@ -665,7 +666,7 @@ export default function Scene() {
             // Permadeath réel (spec §9) : santé à zéro sur un jet raté = mort.
             if (run.health <= 0 && tierIsFail(tier)) {
               const epitaph = outcome.text.replace(/\s*♦.*$/, "");
-              const cause = scene.foeName ?? "les couloirs";
+              const cause = scene.foeName ?? "les Landes";
               const relic = recordDeath({
                 heroName: run.heroName,
                 days: run.day,

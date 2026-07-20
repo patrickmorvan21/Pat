@@ -1,8 +1,10 @@
 /**
- * Moteur de contenu — parcours infini.
- * Une réserve de scènes écrites à la main tourne en boucle ; le numéro de
- * chapitre, lui, croît sans fin (Aldenhar — III, IV, V…). La structure est
- * prête à être branchée sur une génération IA en temps 2.
+ * Moteur de contenu — LES LANDES (Acte I, zone gelée 20/07).
+ * La réserve de scènes couvre uniquement la zone des Landes (source :
+ * data/zones/landes.json + carte Figma 2112:325) et tourne en boucle pour le
+ * playtest — la vraie structure Domaine (13 zones, 3 actes, strates
+ * anti-répétition) viendra en temps 2. L'ancien contenu générique (Geryon,
+ * Rôdeur, meute de limiers…) a été retiré le 20/07 à la demande de Patrick.
  * Les stats restent cachées : jamais de chiffre affiché, seulement le tag.
  */
 
@@ -157,480 +159,511 @@ function outcomes(
 
 export const SCENES: Scene[] = [
   {
-    id: "portes",
+    // Scène 0 — l'entrée de zone. Le crépuscule éternel et le bruit écrit
+    // (« quelque part, une corde grince ») se posent ici, une fois pour toutes.
+    id: "borne-frontiere",
     narration: [
-      "Le couloir s'arrête net. Deux portes. Celle de gauche, balafrée de " +
-        "coups d'épée, serrure éventrée — quelqu'un s'y est acharné.",
-      "Celle de droite est neuve, d'un bois blanc luisant, gravée d'une " +
-        "inscription inconnue. L'air qui en sort est glacé. Entre les deux, " +
-        "le mur vibre, à peine — comme s'il respirait.",
+      "La lande s'ouvre sous un crépuscule qui ne tombe pas. La lumière " +
+        "reste prise entre chien et loup, comme un souffle retenu. Quelque " +
+        "part, une corde grince.",
+      "Au bord du chemin, une borne de pierre penche sous les offrandes : " +
+        "bouts de pain durci, rubans, clous tordus. On paie ici pour entrer. " +
+        "Ou pour qu'on vous laisse ressortir.",
     ],
     choices: [
       {
-        id: "pousser",
-        label: "Pousser la porte balafrée",
-        setsEnvFlag: "porte-balafree-defoncee",
+        id: "fouiller-offrandes",
+        label: "Fouiller les offrandes de la borne",
         risky: {
-          stat: "COURAGE",
-          threshold: 12,
+          stat: "RUSE",
+          threshold: 11,
           outcomes: outcomes(
-            "20 naturel. La porte cède sans un bruit — la créature dort. Tu passes comme une ombre.",
-            "Ton épaule enfonce le battant. La chose derrière recule d'un pas — surprise. Tu as l'initiative.",
-            "Le bois résiste. Le bruit te trahit. Dans l'obscurité, deux yeux s'ouvrent.",
-            "1 naturel. La porte s'ouvre — de l'intérieur. ♦ −2"
+            "20 naturel. Sous le pain moisi, une pierre plate gravée d'un pas — une Pierre de Retour. Ceux qui la déposent reviennent, dit-on. Celle-ci n'a jamais été réclamée.",
+            "Tes doigts trient sans déranger. Un clou tordu, une mèche de cheveux — et le sens de tout ça : on n'offre pas par foi, ici. On offre par peur. Bon à savoir.",
+            "Un ruban glisse et tout l'édifice s'éboule. Le vent se lève d'un coup, bref, comme une inspiration — la lande a noté que tu prends sans donner.",
+            "1 naturel. Sous les offrandes, une main à plat, paume ouverte. Elle attendait la tienne. ♦ −2"
           ),
         },
       },
       {
-        id: "ecouter",
+        id: "ecouter-voix",
         label: "Écouter, immobile",
-        // Le silence comme vraie option (§19) : ne rien forcer est un choix,
-        // avec une conséquence propre — pas une case vide.
+        // Le silence comme vraie option (§19) : les Voix Basses ne parlent
+        // qu'à ceux qui se taisent d'abord.
         passive: {
           consequence:
-            "Tu ne touches à rien. Tu écoutes. Derrière la porte blanche, le " +
-            "froid se retire lentement, comme une marée — et laisse derrière " +
-            "lui un couloir que tu n'avais pas vu, à main gauche. Le silence, " +
-            "ici, ouvre plus de portes que l'épaule.",
+            "Tu ne touches à rien. Tu écoutes. Sous le vent, il y a des voix " +
+            "— basses, à ras de bruyère, qui se passent le mot de ton " +
+            "arrivée. Elles ne te menacent pas. Elles préviennent quelqu'un. " +
+            "Au moins, maintenant, tu sais que la lande parle.",
         },
       },
-      { id: "rebrousser", label: "Rebrousser chemin", locked: { stat: "EMPATHIE" } },
+      { id: "repondre-voix", label: "Répondre aux voix", locked: { stat: "EMPATHIE" } },
     ],
-    jailerLine: "12,000 avant toi n'ont pas passé leur 7e jour ici...",
+    jailerLine: "Les Landes. 8 941 entrées, cette saison. Les sorties, je les compte sur une autre page.",
   },
   {
-    id: "salle-ronde",
+    id: "chemin-creux",
     narration: [
-      "Une salle ronde aux murs suintants. Au centre, un corps en armure " +
-        "effondré sur une dalle gravée, sa main gantée serrée sur quelque chose.",
-      "Odeur de fer froid. Au-dessus, un frottement lent, régulier — qui " +
-        "s'arrête chaque fois que tu retiens ton souffle, et reprend dès que " +
-        "tu respires.",
+      "Le chemin s'enfonce entre deux talus plus hauts que toi. On y marche " +
+        "vu sans voir : la lande entière te regarde passer, et toi tu ne vois " +
+        "que de la terre.",
+      "Un homme vient en sens inverse — à reculons. Il marche vite, sûr de " +
+        "ses pas, les yeux fixés sur ce qu'il fuit. Derrière lui, à terre, un " +
+        "grelot de charretier. Sans charrette nulle part.",
     ],
     choices: [
       {
-        id: "fouiller",
-        label: "Desserrer le poing du mort",
-        risky: {
-          stat: "RUSE",
-          threshold: 11,
-          outcomes: outcomes(
-            "20 naturel. Le gant s'ouvre comme s'il t'attendait. Une clé d'os, tiède. Le frottement s'arrête.",
-            "Les doigts cèdent un à un. Une clé d'os tombe dans ta paume. Là-haut, rien n'a bougé.",
-            "Le poignet craque trop fort. Le frottement cesse net — quelque chose t'a entendu.",
-            "1 naturel. La main morte se referme sur la tienne. ♦ −2"
-          ),
-        },
-      },
-      {
-        id: "longer",
-        label: "Longer le mur, sans toucher",
-        // Prix différé (§17) : éviter le risque ici semble gratuit — mais le
-        // mur suintant marque qui le frôle, et la dette se règle plus loin.
-        debt: {
-          id: "marque-fresque",
-          settleInSteps: 3,
-          text:
-            "La marque humide prise en longeant le mur de la salle ronde, il y " +
-            "a quelques scènes, se met soudain à luire faiblement sous ta " +
-            "manche. Quelque chose, quelque part, vient de savoir exactement " +
-            "où tu es.",
-        },
-      },
-      {
-        id: "odeur",
-        label: "Suivre l'odeur de fer",
-        risky: {
-          stat: "INSTINCT",
-          threshold: 11,
-          outcomes: outcomes(
-            "20 naturel. L'odeur te mène à une niche creuse : une fiole de sang noir, intacte. Ton instinct l'a sentie avant tes yeux.",
-            "Tu remontes le fil de fer jusqu'à une brèche discrète. Un passage que personne n'a marqué.",
-            "L'odeur tourne en rond. Quand tu t'arrêtes, le frottement au-dessus s'est arrêté aussi.",
-            "1 naturel. L'odeur venait de toi. Quelque chose l'a suivie. ♦ −2"
-          ),
-        },
-      },
-    ],
-    jailerLine: "Celui-là a tenu 6 jours. Tu vois où mène la prudence.",
-  },
-  {
-    // Première rencontre volontairement précoce (3e scène) : le joueur doit
-    // croiser un adversaire vite. Autonome — ne dépend d'aucune scène amont.
-    id: "rodeur",
-    combat: true,
-    illustration: "assets/monstre_rodeur.png",
-    foe: "rodeur",
-    foeName: "Le Rôdeur",
-    narration: [
-      "Le couloir se rétrécit — et quelque chose se détache de l'ombre : une " +
-        "silhouette voûtée, trop longue, tapie au plafond. Elle tombe sans " +
-        "bruit entre toi et la sortie.",
-      "Pas d'yeux. Une bouche immense là où devrait être le ventre. On dit " +
-        "qu'il fut un héros, avant, resté trop longtemps entre ces murs. Le " +
-        "Rôdeur penche la tête, curieux. Il faut passer par lui.",
-    ],
-    choices: [
-      {
-        id: "charger-rodeur",
-        label: "Le charger avant qu'il ne s'élance",
-        risky: {
-          stat: "COURAGE",
-          threshold: 12,
-          outcomes: outcomes(
-            "20 naturel. Tu le percutes avant qu'il n'ait fini son pas. Le Rôdeur bascule, sa bouche claque dans le vide — tu es déjà passé, et il ne poursuit pas : les couloirs lui rapporteront quelqu'un d'autre.",
-            "Ton élan le prend de court. Il encaisse, recule contre la paroi, et te regarde passer sans insister — ce qui a du répondant ne l'intéresse plus.",
-            "Il t'attendait, justement. Sa bouche se referme là où tu allais — tu te jettes de côté, y laisses du sang, et forces le passage pendant qu'il savoure. Derrière toi, il ne suit pas.",
-            "1 naturel. Tu charges droit dans la bouche. Elle te recrache — par surprise ou par dégoût — et tu rampes hors de sa portée pendant qu'il déguste ce qu'il a gardé. ♦ −2"
-          ),
-        },
-      },
-      {
-        id: "contourner-rodeur",
-        label: "Le contourner dans le noir",
-        risky: {
-          stat: "RUSE",
-          threshold: 11,
-          outcomes: outcomes(
-            "20 naturel. Tu te fonds dans son angle mort — il n'a pas d'yeux, mais toi tu as compris comment il écoute. Tu passes comme une pensée, et le couloir se referme entre vous.",
-            "Tu te glisses le long de la paroi. Il tourne sur lui-même, une seconde trop tard — tu es déjà de l'autre côté, et il retourne à son plafond.",
-            "Une pierre roule sous ton pied. La bouche pivote et te happe au passage — tu t'arraches à elle dans la douleur, un tribut de chair contre le couloir libre.",
-            "1 naturel. Ton angle mort était le sien. Vous vous trouvez en même temps — tu laisses au Rôdeur de quoi se souvenir de toi, et lui à toi. Chacun repart avec sa part. ♦ −2"
-          ),
-        },
-      },
-      {
-        id: "figer-rodeur",
-        label: "Ne plus bouger du tout",
-        // Le silence/immobilité comme option (§19) : le Rôdeur chasse au
-        // mouvement — ne rien faire est parfois la vraie réponse.
-        passive: {
-          consequence:
-            "Tu te changes en statue. Le Rôdeur avance, sa bouche frôle ta " +
-            "joue — assez près pour que tu sentes son haleine de terre " +
-            "mouillée — puis passe son chemin, faute de proie qui bouge. " +
-            "Quand le couloir se vide, tu respires enfin. Tu es passé sans " +
-            "livrer combat.",
-        },
-      },
-    ],
-    jailerLine: "Le Rôdeur chasse au mouvement. La plupart courent. La plupart finissent dedans.",
-  },
-  {
-    id: "escalier",
-    narration: [
-      "Un escalier en vis s'enfonce sous une dalle descellée. L'air qui en " +
-        "monte est froid, chargé d'eau — et d'un souffle ample, espacé, qui " +
-        "n'est pas un courant d'air.",
-      "Les marches sont creusées par des générations de pas, tous dans le " +
-        "même sens : la descente. Tu comptes malgré toi. À la vingtième, le " +
-        "souffle change de rythme — comme s'il t'avait remarqué.",
-    ],
-    choices: [
-      {
-        id: "descendre",
-        label: "Descendre dans le noir",
-        risky: {
-          stat: "INSTINCT",
-          threshold: 12,
-          outcomes: outcomes(
-            "20 naturel. Tes pieds trouvent chaque marche avant tes yeux. En bas, le souffle s'écarte pour te laisser passer.",
-            "Tu descends au rythme du souffle, invisible dans son bruit. La dernière marche t'accueille sans un son.",
-            "Une marche manque. Ton talon claque sur la pierre — en bas, le souffle se retient.",
-            "1 naturel. La torche s'éteint à la neuvième marche. ♦ −2"
-          ),
-        },
-      },
-      {
-        id: "eteindre",
-        label: "Éteindre la torche d'abord",
-        risky: {
-          stat: "COURAGE",
-          threshold: 13,
-          outcomes: outcomes(
-            "20 naturel. Le noir t'accepte. En bas, le souffle passe à côté de toi sans te trouver.",
-            "Tu descends à tâtons, invisible. Le souffle continue, indifférent.",
-            "Sans lumière, ta main manque la rampe. Le bruit de ta chute descend plus vite que toi.",
-            "1 naturel. Tu rallumes la torche — juste en face de ce qui soufflait. ♦ −2"
-          ),
-        },
-      },
-      { id: "sonder", label: "Sonder les marches usées", locked: { stat: "RUSE" } },
-    ],
-    jailerLine: "4 312 mains ont hésité sur cette rampe. Je les ai comptées.",
-  },
-  {
-    id: "eboulement",
-    narration: [
-      "À peine le pied posé, la voûte gémit. Une fissure court au plafond, " +
-        "des blocs tombent — le passage ne tiendra pas dix secondes.",
-      "Il faut choisir. Maintenant.",
-    ],
-    // La scène qui se résout sans toi (§18) : décision sous contrainte de
-    // temps. Règle Patrick 14/07 : JAMAIS en dessous de 6 secondes — la
-    // surprise doit rester jouable, pas frustrante.
-    timed: {
-      ms: 6000,
-      timeoutNarration:
-        "Tu hésites une seconde de trop. Le sol se dérobe sous toi avant que " +
-        "tu n'aies tranché — mais la chute est courte, et te dépose, meurtri, " +
-        "dans une galerie basse que personne n'aurait choisi d'emprunter. " +
-        "L'inaction, elle aussi, mène quelque part.",
-      timeoutChoices: [
-        {
-          id: "ramper-galerie",
-          label: "Ramper dans la galerie basse",
-          risky: {
-            stat: "INSTINCT",
-            threshold: 11,
-            outcomes: outcomes(
-              "20 naturel. La galerie t'était destinée : elle débouche là où personne ne t'attendait, à revers de tout.",
-              "Tu rampes dans le noir étroit. Ça débouche plus loin, intact, sur un passage oublié.",
-              "La galerie se resserre sur tes épaules. Tu forces le passage, et quelque chose cède — pas la pierre.",
-              "1 naturel. La galerie n'était pas vide. Elle t'attendait. ♦ −2"
-            ),
-          },
-        },
-        {
-          id: "creuser-remonter",
-          label: "Dégager les gravats vers le haut",
-          risky: {
-            stat: "COURAGE",
-            threshold: 13,
-            outcomes: outcomes(
-              "20 naturel. Tu remontes à la force des bras par la brèche exacte, avant qu'elle ne se referme. Le couloir d'origine t'accueille, plus loin.",
-              "Tu dégages assez de gravats pour te hisser. Tu retrouves le chemin, couvert de poussière mais entier.",
-              "Les gravats glissent sous toi à chaque prise. Tu remontes à moitié, épuisé, du mauvais côté.",
-              "1 naturel. Le plafond finit sa chute pendant que tu creuses. ♦ −2"
-            ),
-          },
-        },
-      ],
-    },
-    choices: [
-      {
-        id: "bondir-avant",
-        label: "Bondir en avant sous les blocs",
-        risky: {
-          stat: "INSTINCT",
-          threshold: 12,
-          highStakes: true,
-          outcomes: outcomes(
-            "20 naturel. Tu passes entre deux blocs à l'instant précis où ils se croisent. Le couloir s'effondre derrière toi, pas devant.",
-            "Tu plonges en avant. Un bloc frôle ton talon — tu es passé, le passage est scellé dans ton dos.",
-            "Un bloc te fauche l'épaule en plein élan. Tu passes quand même, mais tu le sens.",
-            "1 naturel. Tu bondis pile sous le plus gros. ♦ −2"
-          ),
-        },
-      },
-      {
-        id: "reculer-vite",
-        label: "Se jeter en arrière",
-        risky: {
-          stat: "COURAGE",
-          threshold: 11,
-          outcomes: outcomes(
-            "20 naturel. Ton recul est si net que l'éboulement se referme comme un rideau, sans t'avoir touché. Tu attendras une autre voie.",
-            "Tu te jettes en arrière à temps. Le passage se mure, mais tu es indemne, du bon côté.",
-            "Tu recules d'un pas trop court. La poussière et les éclats te cinglent le visage.",
-            "1 naturel. Tu recules — dans un second éboulement. ♦ −2"
-          ),
-        },
-      },
-      { id: "figer", label: "Se plaquer au mur, immobile", locked: { stat: "INSTINCT" } },
-    ],
-    jailerLine: "Le plafond ne t'attend pas. Moi, si — j'ai tout mon temps.",
-  },
-  {
-    id: "pont-os",
-    narration: [
-      "Une rivière souterraine barre le passage, noire et sans reflet. On " +
-        "l'a enjambée d'un pont — pas de pierre : d'os longs et jaunis, liés " +
-        "de tendons secs.",
-      "Sur l'autre rive, une lanterne verte pend, allumée, sans personne pour " +
-        "l'avoir rallumée. Le pont grince avant même qu'on le touche. Sous " +
-        "lui, l'eau coule sans aucun bruit. Aucun.",
-    ],
-    choices: [
-      {
-        id: "traverser",
-        label: "Traverser le pont d'os",
-        risky: {
-          stat: "COURAGE",
-          threshold: 13,
-          outcomes: outcomes(
-            "20 naturel. Le pont se tait sous tes pas, par respect ou par peur. La lanterne verte s'incline quand tu passes.",
-            "Tu traverses vite, léger, les yeux sur la rive. Derrière toi un fémur cède — trop tard pour t'atteindre.",
-            "À mi-chemin, le tablier s'affaisse. Tu rattrapes le bord — l'eau noire t'a goûté la cheville.",
-            "1 naturel. Le pont s'effondre en silence. L'eau ne fait aucun bruit non plus. ♦ −2"
-          ),
-        },
-      },
-      {
-        id: "gue",
-        label: "Chercher un gué en amont",
-        risky: {
-          stat: "RUSE",
-          threshold: 11,
-          outcomes: outcomes(
-            "20 naturel. Le gué existe — trois pierres plates sous deux doigts d'eau noire. Tu traverses sans une éclaboussure.",
-            "Cent pas en amont, la rivière s'amincit. Tu passes, les bottes à peine mouillées.",
-            "L'amont se resserre en gorge. Tu reviens au pont — la lanterne verte a changé de place.",
-            "1 naturel. L'eau noire n'a pas de gué. Elle a des mains. ♦ −2"
-          ),
-        },
-      },
-      {
-        id: "cranes",
-        label: "Compter les crânes du parapet",
+        id: "aborder-marcheur",
+        label: "Aborder le marcheur à rebours",
         risky: {
           stat: "EMPATHIE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Quarante-neuf crânes. Le cinquantième manque : le pont te réserve sa place — et t'épargne, flatté d'avoir été compté.",
-            "Chaque crâne compté semble s'alléger. Le pont cesse de grincer, comme apaisé qu'on se souvienne.",
-            "Tu perds le compte au trente-troisième. Un crâne pivote, lentement, pour te regarder recommencer.",
-            "1 naturel. L'un des crânes compte avec toi. À voix haute. ♦ −2"
-          ),
-        },
-      },
-    ],
-    jailerLine: "Les os du pont ? D'anciens curieux. Comme toi.",
-  },
-  {
-    id: "tunnel-embuscade",
-    combat: true,
-    illustration: "assets/monstre_limiers.png",
-    foe: "meute-limiers",
-    foeName: "La meute de limiers",
-    narration: [
-      "La galerie se resserre en tunnels. Des griffes raclent la pierre dans " +
-        "le noir, plusieurs paires à la fois, comme une meute qui compte ses " +
-        "pas avant de charger.",
-      "Une forme bondit dans ta torche — museau fendu, yeux blancs, côtes " +
-        "trop nombreuses. Des chiens de héros morts, restés à attendre des " +
-        "maîtres jamais revenus. Elle siffle. Deux autres répondent, plus " +
-        "loin dans le noir.",
-    ],
-    choices: [
-      {
-        id: "frapper-premier",
-        label: "Frapper la première bête",
-        risky: {
-          stat: "COURAGE",
-          threshold: 13,
-          outcomes: outcomes(
-            "20 naturel. Ton coup ouvre la bête d'un geste — elle s'effondre avant même de mordre. Les deux autres hésitent, reculent d'un pas.",
-            "La lame trouve son flanc. Elle recule en gémissant, assez pour te laisser l'initiative sur les deux suivantes.",
-            "Ton coup dévie sur l'os saillant. Elle esquive et referme les mâchoires sur ton avant-bras — tu perds un temps précieux.",
-            "1 naturel. Ta lame se coince entre deux côtes. La bête l'arrache avec toi encore accroché. ♦ −2"
+            "20 naturel. Il s'arrête — première fois depuis des jours, ça se voit à ses jambes. « Ne regarde jamais le fond du chemin », souffle-t-il. Puis il repart, à reculons, presque léger de l'avoir dit.",
+            "Il ne s'arrête pas, mais il parle en passant : « Ça suit ceux qui suivent le chemin. Coupe par la lande. » Son regard, lui, ne quitte jamais le fond du creux.",
+            "Tu poses la main sur son bras. Il hurle sans te voir — pour lui, tu es arrivé par-derrière. Le cri roule loin dans le creux, et quelque chose, au fond, change de rythme.",
+            "1 naturel. Il te dévisage enfin — et recule plus vite. Ce qu'il fuyait, c'est ce qui marche derrière toi. ♦ −2"
           ),
         },
       },
       {
-        id: "reculer-etroit",
-        label: "Reculer vers l'étroit du tunnel",
+        id: "prendre-grelot",
+        label: "Ramasser le grelot du charretier",
+        // Prix différé (§17) : l'objet est gratuit — mais un grelot, ça sonne.
+        debt: {
+          id: "grelot-charretier",
+          settleInSteps: 3,
+          text:
+            "Au fond de ta poche, le grelot du charretier se met à sonner. " +
+            "Tout seul. Trois coups clairs, comme un signal convenu — et " +
+            "quelque part dans la lande, quelque chose se met en marche pour " +
+            "honorer le rendez-vous.",
+        },
+      },
+      {
+        id: "couper-lande",
+        label: "Couper à travers la lande",
         risky: {
           stat: "INSTINCT",
-          threshold: 12,
+          threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu trouves le point exact où le tunnel ne laisse passer qu'une gueule à la fois. La meute se piétine elle-même.",
-            "Le passage se resserre juste à temps. Elles ne peuvent plus charger qu'une par une, désormais.",
-            "Le renfoncement que tu visais est trop loin. Elles te rattrapent groupées, toutes crocs dehors.",
-            "1 naturel. Le tunnel se resserre — sur toi, pas sur elles. Tu es coincé, elles non. ♦ −2"
-          ),
-        },
-      },
-      {
-        id: "jeter-torche",
-        label: "Jeter la torche dans la meute",
-        risky: {
-          stat: "RUSE",
-          threshold: 12,
-          outcomes: outcomes(
-            "20 naturel. La torche roule pile entre leurs pattes. Le feu prend d'un coup — la meute se disperse en hurlant, aveuglée.",
-            "Le feu les tient à distance un instant. Assez pour reprendre ton souffle et choisir ton angle.",
-            "La torche s'éteint en tombant. Dans le noir qui suit, tu entends surtout qu'elles, elles voient très bien.",
-            "1 naturel. Le feu accroche ta manche avant la meute. Tu combats maintenant deux ennemis. ♦ −2"
+            "20 naturel. Tes pieds trouvent une sente que la bruyère cachait — un chemin de braconnier, tracé par quelqu'un qui savait exactement ce qu'il évitait. Tu sais maintenant le reconnaître.",
+            "Tu grimpes le talus et marches à découvert. La lande te voit — mais rien ne te suit. Le chemin creux, en dessous, continue sans toi.",
+            "La bruyère s'accroche, le sol boit tes pas. Quand tu redescends dans le creux, essoufflé, tu n'as gagné que le sentiment d'avoir été observé tout du long.",
+            "1 naturel. La lande n'est pas plate. Elle respire. Et tu marches dessus. ♦ −2"
           ),
         },
       },
     ],
-    jailerLine: "Trois contre un. Mes chiffres préférés.",
+    jailerLine: "Le chemin creux. Ceux qui l'ont creusé n'avaient pas de pelles.",
   },
   {
-    id: "tunnel-affrontement",
+    // Première rencontre volontairement précoce (3e scène) — anecdotique,
+    // une seule scène (amende §6 : durée par poids narratif).
+    id: "bete-chemins-creux",
     combat: true,
-    illustration: "assets/monstre_limiers.png",
-    foe: "meute-limiers",
-    foeName: "La meute de limiers",
+    foe: "bete-chemins-creux",
+    foeName: "La Bête des Chemins Creux",
     narration: [
-      "Ce qu'il reste de la meute se regroupe, plus prudente, à distance de " +
-        "ta lame. Elles ont compris que tu mords aussi.",
-      "L'une boite, l'œil rivé sur toi — la douleur l'a rendue plus méchante, " +
-        "pas plus lente. Le silence avant leur dernière charge dure une " +
-        "seconde de trop. C'est la tienne.",
+      "Le creux tourne — et l'odeur arrive avant la chose : suint, terre " +
+        "retournée, vieux cuir. Une masse se décolle du talus, longue, basse, " +
+        "taillée pour courir exactement entre deux murs de terre.",
+      "Pas de gueule visible. Juste une avancée du corps qui s'ouvre. La " +
+        "Bête ne chasse que dans le creux — c'est son couloir, son terrier, " +
+        "sa table. Et tu es dessus.",
     ],
     choices: [
-      // Dernier acte de la rencontre : CHAQUE issue doit CLORE le combat
-      // (retour Patrick 14/07 — jamais « le dernier loup prêt à attaquer »
-      // puis coupure vers une autre scène).
       {
-        id: "achever",
-        label: "Achever la bête blessée",
+        id: "frapper-bete",
+        label: "Frapper avant qu'elle ne s'ouvre",
         risky: {
           stat: "COURAGE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Un seul geste, net. Le message passe entre les survivantes sans un bruit — elles détalent dans le noir d'où elles venaient, et n'en ressortent pas.",
-            "Elle s'effondre. Les autres marquent un temps d'arrêt, se consultent en silence — puis refluent dans les galeries. La meute a fini de compter ses pertes.",
-            "Elle esquive, plus vive que sa blessure ne le laissait croire, et te taille au passage. Puis, leur tribut pris, elles se fondent dans le noir — une meute ne s'attarde jamais.",
-            "1 naturel. Ce n'était pas la plus faible — c'était l'appât. Le piège se referme, te mord profond, puis la meute repue s'écoule dans les tunnels comme une seule ombre. ♦ −2"
+            "20 naturel. Ta lame entre là où le corps s'ouvrait — la Bête se referme sur son propre cri. Elle reflue dans le talus comme une eau sale, et le creux est à toi.",
+            "Le coup porte. La Bête se plie, surprise qu'on morde en premier, et s'enterre à mi-corps dans le talus. Tu passes. Elle ne suit pas — pas blessée à ce point, mais vexée, oui.",
+            "Ta lame racle du cuir sans entamer. L'avancée du corps te cueille à l'épaule et te plaque au talus — tu te dégages en y laissant du tien, et elle te laisse passer, servie.",
+            "1 naturel. Tu frappes dans l'ouverture. C'est exactement ce qu'elle voulait. ♦ −2"
           ),
         },
       },
       {
-        id: "feinte",
-        label: "Feinter pour les disperser",
+        id: "grimper-talus",
+        label: "Bondir hors du creux",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu es sur le talus avant qu'elle n'ait fini son élan. Hors du creux, elle n'existe plus : la masse freine pile à la limite de l'ombre, comme au bout d'une chaîne. Tu marches au-dessus d'elle, tranquillement.",
+            "Tes mains trouvent les racines, tes pieds la terre ferme. La Bête passe en dessous, longue à n'en plus finir — mais elle ne monte pas. Elle ne monte jamais.",
+            "Le talus s'éboule sous ta prise. Tu retombes dans le creux, à demi — et la Bête prend sa part de la jambe qui traînait encore.",
+            "1 naturel. Tu bondis. Le talus aussi était la Bête. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "ornière",
+        label: "Se plaquer dans l'ornière",
+        // La Bête chasse le mouvement dans l'axe du creux — l'immobilité
+        // est une vraie réponse (§19).
+        passive: {
+          consequence:
+            "Tu te coules dans l'ornière, face contre terre. La masse passe " +
+            "au-dessus de toi — un pont de cuir et de suint, interminable. " +
+            "Elle cherche ce qui court, pas ce qui gît : la lande est pleine " +
+            "de gisants, elle a l'habitude. Quand le silence revient, tu " +
+            "recraches de la terre et tu marches.",
+        },
+      },
+    ],
+    jailerLine: "La Bête ne quitte jamais son creux. C'est ce que je respecte chez elle : elle connaît sa cage.",
+  },
+  {
+    // Lieu-signature de la zone. L'écharde pose le flag d'environnement
+    // persistant (§17) relu à l'ouverture des runs suivantes.
+    id: "colline-aux-gibets",
+    narration: [
+      "La colline monte seule au milieu de la lande, couronnée de gibets. " +
+        "Tous occupés, tous immobiles — sauf un. Au centre, le plus grand " +
+        "est vide. Sa corde pend, usée en son milieu, et son ombre s'étale " +
+        "au sol sans que rien ne la porte.",
+      "Sur les potences, des corbeaux. Ils ne crient pas. Ils comptent — " +
+        "tu le sais à la façon dont, à ton arrivée, toutes les têtes se sont " +
+        "tournées d'un cran.",
+    ],
+    choices: [
+      {
+        id: "echarde",
+        label: "Arracher une écharde au Gibet Vide",
+        setsEnvFlag: "echarde-gibet-prelevee",
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Le bois vient sans résister — il se donne. L'écharde est tiède dans ta paume, et la corde, au-dessus, cesse de grincer. Le Gibet Vide t'a pris en compte.",
+            "Tu détaches une longue écharde du montant. Le bois est doux, poli par des mains — combien de mains ? L'ombre au sol frémit, mais ne bouge pas vers toi.",
+            "Le bois crie sous ta lame — un son de gorge, pas de fibre. Les corbeaux décomptent un cran, tous ensemble. Tu emportes l'écharde, mais la colline emporte quelque chose de toi.",
+            "1 naturel. L'écharde t'entre dans la paume. Profond. C'est le gibet qui prélève. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "compter-corbeaux",
+        label: "Compter les corbeaux",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Quarante-neuf. Le cinquantième perchoir est vide, juste au-dessus du Gibet Vide. Ils gardent la place de quelqu'un — et à la façon dont ils te fixent, tu sais que ce n'est pas la tienne. Pas encore.",
+            "Tu comptes. Ils te laissent faire, flattés — personne ne compte les compteurs. Le plus vieux incline la tête : un salut de confrère.",
+            "Tu perds le compte à trente-trois. Ils le savent. Toute la rangée se met à décompter à rebours, bec fermé, et tu préfères ne pas savoir vers quoi.",
+            "1 naturel. Tu comptes les corbeaux. Les corbeaux, eux, ont fini de te compter. ♦ −2"
+          ),
+        },
+      },
+      { id: "ombre", label: "Traverser l'ombre du Grand Gibet", locked: { stat: "INSTINCT" } },
+    ],
+    jailerLine: "Le Gibet Vide n'est pas vide. Il est réservé.",
+  },
+  {
+    // Le gardien-jalon de la zone (spec « mémoire des gardiens » : Intact →
+    // Balafré → Rompu — la mémoire inter-runs viendra avec le système ; la
+    // scène pose l'identité). Pas un combat : le Bailli pendu JUGE.
+    id: "pendu-qui-parle",
+    foe: "bailli-pendu",
+    narration: [
+      "Au revers de la colline, un gibet bas, à hauteur d'homme. Le pendu " +
+        "qui s'y balance ouvre les yeux à ton approche. Chaîne de fonction " +
+        "au cou, sous la corde. Un sceau au poing. Le Bailli des Landes — " +
+        "pendu le dernier, à la place d'honneur.",
+      "« Approche », dit-il, et la corde grince sur chaque syllabe. « Tout " +
+        "ce qui entre dans mes Landes passe en jugement. Toi aussi. » Il " +
+        "sourit. « Surtout toi. »",
+    ],
+    choices: [
+      {
+        id: "plaider",
+        label: "Répondre à son jugement",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu ne plaides pas — tu lui retournes la question : qui l'a jugé, lui ? Le sourire du Bailli se fige. Pour la première fois depuis sa corde, c'est lui l'accusé. Il te laisse passer, et il te doit une réponse.",
+            "Tu réponds droit, sans baisser les yeux. Le Bailli t'écoute en balançant doucement — le grincement fait office de greffier. « Passable », conclut-il. Dans sa bouche, c'est un acquittement.",
+            "Tu te défends trop. Le Bailli savoure chaque excuse : « Coupable, donc. Ils s'excusent tous. » Sa sentence te suit dans la lande, écrite quelque part où tu ne peux pas la lire.",
+            "1 naturel. Tu plaides. Il te coupe : « J'ai déjà jugé ce plaidoyer. Mot pour mot. Tu n'es même pas le premier toi. » ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "decrocher",
+        label: "Trancher sa corde",
+        risky: {
+          stat: "COURAGE",
+          threshold: 14,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Ta lame tranche net. Le Bailli tombe à genoux — et reste là, stupéfait de peser. « Personne n'avait osé », dit-il sans grincement, et sa voix nue est celle d'un homme. Il te regarde partir comme on regarde une loi nouvelle.",
+            "La corde cède. Le Bailli s'écrase dans la bruyère, se relève en titubant — et remonte s'asseoir sur la traverse, dignité de fonction. Mais vous savez tous les deux ce que tu as fait. La colline aussi.",
+            "Ta lame entame la corde — qui se resserre, vivante, et te fouette au visage. Le Bailli rit à s'étrangler, ce qui ne lui coûte rien : « On ne défait pas une Fixation, petit juge. On la subit. »",
+            "1 naturel. La corde tranche plus vite que toi. Pas la sienne : une autre, tombée de nulle part, qui t'a mesuré le cou au passage. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "passer-pendu",
+        label: "Passer sans un mot",
+        passive: {
+          consequence:
+            "Tu passes. Le Bailli ne te rappelle pas — il note. Tu l'entends " +
+            "murmurer ton signalement à la corde, qui grince en l'écrivant. " +
+            "Refuser le jugement, ici, c'est un verdict aussi. Il t'attendra " +
+            "au retour : les Landes tournent en rond.",
+        },
+      },
+    ],
+    jailerLine: "Le Bailli me plaît. Il a compris avant toi : un jugement, ça ne s'esquive pas. Ça s'ajourne.",
+  },
+  {
+    id: "champ-des-fixes",
+    narration: [
+      "Derrière la colline, des rangées de poteaux à perte de vue, chacun " +
+        "son pendu, chacun son écriteau. Un cimetière debout. On n'enterre " +
+        "pas, ici : on fixe. Les morts tiennent mieux le sol que les vivants.",
+      "Entre les rangs, un vieil homme redresse un poteau qui penche, avec " +
+        "des gestes de jardinier. Plus loin, au bout d'une corde trop " +
+        "courte, une petite fille pend sans se balancer. Elle te suit des " +
+        "yeux. Les autres regardent tous droit devant. Pas elle.",
+    ],
+    choices: [
+      {
+        id: "aider-fossoyeur",
+        label: "Aider le vieux à redresser le poteau",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. À deux, le poteau se dresse droit. Le Fossoyeur te toise, longuement : « T'es le premier qui aide sans qu'on le fixe. » Il te glisse une page arrachée de son carnet — un plan des rangs, et une croix là où il ne faut jamais passer.",
+            "Le poteau retrouve son aplomb. Le pendu là-haut soupire — de confort, dirait-on. « Ils dorment mal quand ça penche », dit le Fossoyeur. Il te fait signe de passer par son rang : le sien est sûr.",
+            "Le poteau t'échappe et le pendu chasse au bout de sa corde, dans un grand désordre de chanvre. Tout le rang se met à osciller de proche en proche. Le Fossoyeur te chasse à gestes secs : tu as réveillé le dortoir.",
+            "1 naturel. Le poteau tombe. Le pendu, lui, reste debout. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "regard-petite",
+        label: "Suivre le regard de la petite",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Elle ne te regarde pas, toi — elle regarde derrière toi, depuis le début. Tu te retournes à l'instant juste : une silhouette reflue entre les rangs, prise en faute. La petite cligne des yeux, une fois. De rien.",
+            "Son regard glisse vers un poteau du troisième rang, insistant. À son pied, à demi enterré : un petit cheval de bois, usé au poli. Elle ne peut pas le montrer autrement. Tu le redresses face à elle, et ses yeux se ferment.",
+            "Tu suis son regard — il t'emmène en cercle, de rang en rang, jusqu'à revenir sur toi. Le temps de comprendre qu'elle t'a promené, la lumière a bougé et tu ne sais plus par où tu es entré.",
+            "1 naturel. Elle regarde tes pieds. Là où tu es, exactement, le sol est plus meuble. Un trou de poteau. Fraîchement creusé. ♦ −2"
+          ),
+        },
+      },
+      { id: "carnet", label: "Déchiffrer le carnet du Fossoyeur", locked: { stat: "RUSE" } },
+    ],
+    jailerLine: "Un champ entier de fixés, et c'est toi qui bouges encore. Profites-en, ça fausse mes moyennes.",
+  },
+  {
+    id: "pendu-mal-fixe",
+    combat: true,
+    foe: "pendu-mal-fixe",
+    foeName: "Le Pendu Mal Fixé",
+    narration: [
+      "Un craquement sec dans les rangs — un poteau vient de casser. Le " +
+        "pendu qui le quittait touche terre sur ses pieds, comme s'il " +
+        "n'attendait que ça depuis des années. Sa corde traîne derrière lui, " +
+        "encore nouée au cou.",
+      "Il avance par à-coups, tiré par des ficelles que personne ne tient. " +
+        "Une Fixation ratée : ni mort ni tenu. Ce qui reste de son visage " +
+        "n'exprime qu'une chose — l'envie féroce d'échanger sa place. " +
+        "Contre la tienne.",
+    ],
+    choices: [
+      {
+        id: "refixer",
+        label: "Le repousser vers son poteau",
+        risky: {
+          stat: "COURAGE",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Tu l'empoignes par sa propre corde et le ramènes au poteau brisé — où il se rependt de lui-même, docile soudain, presque soulagé qu'on décide pour lui. Le champ entier expire. Le Fossoyeur, au loin, te salue du chapeau.",
+            "Tu le repousses, pas à pas, jusqu'aux rangs. Au contact du bois cassé, ses jambes cèdent : la Fixation le reprend à moitié. Assez pour qu'il ne te suive plus. Il te regarde partir avec une envie terrible.",
+            "Il est plus lourd qu'un mort n'a le droit de l'être. Vous roulez dans la bruyère — il te tient, tu le tiens, et c'est la corde qui vous départage : elle te cingle, et tu lâches le premier.",
+            "1 naturel. Tu le pousses au poteau. Il t'y pousse aussi. La corde, elle, ne fait pas de différence entre deux cous. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "esquiver-corde",
+        label: "Danser hors de portée de la corde",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu lis la corde comme un fouet : elle frappe où il regarde, une seconde après. Tu n'es jamais là. Épuisé d'avoir raté, le Pendu s'effondre en tas de ficelles — la Fixation ne paie pas les heures supplémentaires.",
+            "La corde siffle, tu plies, elle passe. Deux fois, trois fois. À la quatrième, il s'emmêle dedans tout seul — et tu t'éloignes pendant qu'il se défait, jurant dans une langue de gorge broyée.",
+            "La corde feinte — elle claque au sol et remonte en fouet. Elle te prend la cheville et te couche dans la bruyère ; tu te dégages en taillant, mais il t'a coûté du sang et du terrain.",
+            "1 naturel. Tu esquives la corde. Pas lui. Ses mains, on les oublie toujours. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "emmeler",
+        label: "L'emmêler dans sa propre corde",
         risky: {
           stat: "RUSE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Ta feinte les envoie dans trois directions différentes — une meute ne combat pas divisée. Elles s'égaillent dans le noir, définitivement.",
-            "La feinte fonctionne à moitié. Deux se dispersent ; la dernière te jauge longuement, seule — puis renonce, et détale rejoindre les siennes. Les tunnels se taisent.",
-            "Elles ne mordent pas à la feinte. Groupées, elles te renversent, prennent leur dû de chair — puis disparaissent aussi vite qu'elles avaient surgi.",
-            "1 naturel. Ta feinte les prévient au lieu de les tromper. Elles te le font payer comptant, puis abandonnent ta carcasse aux tunnels, trop maigre à leur goût. ♦ −2"
-          ),
-        },
-      },
-      {
-        id: "tenir",
-        label: "Tenir ta position, lame haute",
-        risky: {
-          stat: "INSTINCT",
-          threshold: 13,
-          outcomes: outcomes(
-            "20 naturel. Tu lis leur charge avant qu'elle ne parte — chaque coup trouve sa gorge, dans l'ordre exact où elles bondissent. Plus rien ne bondit, ensuite.",
-            "Tu encaisses la charge sans reculer d'un pouce. Elles s'y cassent, une à une, et ce qui reste de la meute renonce et reflue.",
-            "Ta garde tient, mais de justesse. Le combat traîne, te coûte plus qu'il ne devrait — jusqu'à ce qu'elles se lassent et refluent dans le noir, leur tribut pris.",
-            "1 naturel. Ta garde s'ouvre à la pire seconde. Elles s'y engouffrent toutes — puis, te croyant fini, te laissent aux tunnels. ♦ −2"
+            "20 naturel. Tu tournes autour de lui comme un fuseau — deux passes, un nœud, et le Pendu se retrouve fixé à lui-même, bras au corps. La plus propre Fixation du champ. Le Fossoyeur en parlera longtemps.",
+            "Tu attrapes le bout traînant et le fais passer sous ses jambes au bon moment. Il trébuche, s'entrave, tombe — et chaque geste pour se relever le ligote un peu plus. Tu pars sans te presser.",
+            "Le nœud que tu improvises tient une seconde de trop peu. Il s'en libère d'une secousse — et la corde, insultée qu'on la retourne contre lui, te choisit comme cible prioritaire.",
+            "1 naturel. Tu tires sur la corde. Elle était plus longue que tu croyais. Assez longue pour deux. ♦ −2"
           ),
         },
       },
     ],
-    jailerLine: "Ce qui reste d'une meute compte encore, pour moi.",
+    jailerLine: "Une Fixation ratée. Ça arrive. Mes contrats à moi ne ratent jamais — demande au Bailli.",
   },
   {
+    // Entrée du Hameau — la particularité de zone (le Serment) se joue ici.
+    // Les Renonçants EXIGENT, ils ne proposent pas. Tenu jusqu'à la sortie =
+    // récompense ; rompu = le Geôlier s'en souvient (jurer faux = dette §17).
+    id: "serment-hameau",
+    narration: [
+      "Des murets de pierre sèche, des toits bas, pas une flamme : le Hameau " +
+        "des Renonçants. Sur le seuil du premier muret, une vieille femme " +
+        "barre le passage, paumes ouvertes — pas en accueil. En douane.",
+      "« Ici, on renonce », dit la Doyenne. « Chacun laisse une chose au " +
+        "muret : son nom, sa hâte, sa lame ou sa langue. Jure d'en laisser " +
+        "une, et tiens parole jusqu'à la sortie des Landes. » Derrière elle, " +
+        "le hameau entier attend, aux fenêtres sans lumière. Ce n'est pas " +
+        "une proposition.",
+    ],
+    choices: [
+      {
+        id: "jurer-serment",
+        label: "Jurer, et laisser sa hâte au muret",
+        passive: {
+          consequence:
+            "Tu poses les mains sur la pierre sèche et tu jures : ta hâte " +
+            "reste au muret. Le mot pèse tout de suite — tes pas se font " +
+            "plus lents, plus sûrs, comme si la lande cessait de te courir " +
+            "après. La Doyenne s'écarte. « Tenu jusqu'à la sortie », " +
+            "rappelle-t-elle. Le hameau entier a entendu. Et plus haut que " +
+            "le hameau, quelqu'un d'autre.",
+        },
+      },
+      {
+        id: "jurer-faux",
+        label: "Jurer du bout des lèvres",
+        // Jurer sans intention de tenir : gratuit à l'entrée — mais un
+        // serment creux, dans les Landes, ça s'entend (prix différé §17).
+        debt: {
+          id: "serment-creux",
+          settleInSteps: 4,
+          text:
+            "Le serment que tu as prêté du bout des lèvres au muret des " +
+            "Renonçants se rappelle à toi : ta bouche, d'un coup, refuse un " +
+            "mot — un seul, celui dont tu avais justement besoin. Les " +
+            "serments creux se paient en paroles pleines. Quelque part, la " +
+            "Doyenne hoche la tête sans surprise.",
+        },
+      },
+      {
+        id: "refuser-serment",
+        label: "Refuser et longer les murets",
+        risky: {
+          stat: "COURAGE",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Tu refuses, à voix haute et claire. Un silence — puis la Doyenne incline la tête, presque un sourire : « Enfin un qui ne ment pas. » Le refus franc, ici, vaut tous les serments. On te laisse le tour du hameau, et le respect avec.",
+            "Tu contournes par l'extérieur des murets, sous tous les regards sans lumière. Personne ne t'arrête : on ne force pas, ici, on retient. Tu passes — mais aucune porte du hameau ne s'ouvrira pour toi.",
+            "À mi-tour, les murets se resserrent — tu jurerais qu'ils n'étaient pas si hauts. Tu finis par enjamber, sous les yeux de la Doyenne qui n'a pas bougé. « Il reviendra jurer », dit-elle à personne. Le pire, c'est qu'elle a l'air sûre.",
+            "1 naturel. Tu refuses de renoncer à quoi que ce soit. La lande, elle, ne t'a pas demandé ton avis : au premier faux pas, elle te prend ce que tu refusais de donner. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Les Renonçants me régalent : des gens qui se punissent tout seuls. Je n'ai presque rien à faire.",
+  },
+  {
+    id: "marche-muet",
+    narration: [
+      "Au cœur du hameau, un marché sans un cri. Des étals de trois fois " +
+        "rien — clous, laine, racines — et des marchands qui négocient par " +
+        "gestes, paumes et hochements. Renoncer à la parole est le " +
+        "renoncement le plus courant. Le moins cher.",
+      "Au bout de la rangée, un étal différent : bric-à-brac d'ailleurs, " +
+        "objets qui n'ont rien à faire dans une lande. Le Colporteur te " +
+        "regarde venir de loin — et te reconnaît. C'est impossible. Il te " +
+        "fait signe quand même, comme à un client de longue date.",
+    ],
+    choices: [
+      {
+        id: "troc-colporteur",
+        label: "Troquer avec le Colporteur",
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Vous marchandez par gestes, et tu gagnes l'échange — il en rit sans bruit, beau joueur. Dans ta paume : une boussole dont l'aiguille pointe non pas le nord, mais la sortie. « À la prochaine », articule-t-il en silence. La prochaine quoi ?",
+            "L'échange se fait : trois clous et un souvenir contre un petit paquet de toile cirée. Dedans, de quoi tenir — du sûr, du sec. Le Colporteur tape deux doigts sur sa tempe : marché honnête, mémoire honnête.",
+            "Tu offres trop tôt, il le voit trop bien. L'échange se conclut à ton désavantage — un objet brillant et creux contre du solide. Son sourire s'excuse presque : les règles sont les règles, même muettes.",
+            "1 naturel. Tu tends la main vers l'étal. Il la serre — et te rend ta propre bourse, que tu n'avais pas vue partir. Leçon offerte, dit son sourire. La leçon seulement. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "rebouteux",
+        label: "Montrer tes plaies au Rebouteux",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Le Rebouteux te palpe comme on lit une lettre, hoche la tête — et remet en place quelque chose que tu ne savais pas déplacé. La douleur s'éteint d'un coup, comme soufflée. Il refuse ton paiement : tu diras juste, dehors, qu'ici on répare encore.",
+            "Ses mains sont dures et savantes. Ça craque, ça brûle, puis ça va mieux — nettement. Il désigne ta poitrine, puis la lande, puis fait « non » du doigt : ce qu'il a resserré tiendra, à condition de ne pas courir.",
+            "Il t'examine, puis recule d'un pas et te montre sa paume : refus. Tu ne sauras pas si c'est ta blessure qui le dépasse ou quelque chose qu'il a lu dessous — mais il ne te touchera pas, et son regard t'accompagne longtemps.",
+            "1 naturel. Ses mains s'arrêtent net sur ta nuque. Il retire les siennes très lentement, comme d'un piège à loup. Ce qu'il a senti là, il ne l'a pas soigné. Il l'a salué. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "traverser-marche",
+        label: "Traverser sans rien offrir",
+        passive: {
+          consequence:
+            "Tu traverses les étals sans un geste, mains visibles, et le " +
+            "marché te laisse passer — on respecte, ici, ceux qui ne " +
+            "prennent rien. Seul le Colporteur te suit des yeux jusqu'au " +
+            "bout de la rangée, déçu comme devant une vieille habitude " +
+            "manquée. Il tapote son étal : à la prochaine fois. Il a l'air " +
+            "sûr qu'il y en aura une.",
+        },
+      },
+    ],
+    jailerLine: "Le Colporteur ? Un confrère, en plus petit. Lui aussi fait commerce de ce que vous laissez derrière.",
+  },
+  {
+    // Campement de zone : le Moulin sans Ailes. L'id reste « campement »
+    // (Scene.tsx exclut cet id du soin aléatoire d'exploration).
     id: "campement",
     narration: [
-      "Les tunnels te recrachent dans une anfractuosité sèche. Des cendres " +
-        "anciennes prouvent qu'on s'y est arrêté — et qu'on en est reparti, " +
-        "ce qui n'est pas rien, ici.",
-      "Le silence, ici, ne guette pas : il attend, presque poliment. Sur la " +
-        "paroi, quelqu'un a gravé les nuits passées là. Il y en a sept.",
+      "À l'écart du hameau, un moulin sans ailes tient debout par habitude. " +
+        "Dedans, la meule est froide, le sol sec, et quelqu'un a laissé un " +
+        "lit de bruyère tassée — plusieurs fois refait, jamais brûlé. Un " +
+        "refuge qui sert, donc un refuge qui marche.",
+      "Par la lucarne, le crépuscule ne bouge pas. On dit qu'une fille " +
+        "dort ici, parfois — la seule pendue qui se soit relevée. Le lit de " +
+        "bruyère garde une forme légère, comme un creux encore tiède.",
     ],
     choices: [
-      { id: "dormir", label: "Dormir jusqu'à l'aube", rest: true },
+      { id: "dormir", label: "Dormir malgré le crépuscule", rest: true },
       {
         id: "garde",
         label: "Monter la garde, somnoler",
@@ -638,371 +671,410 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu dors d'un œil, et cet œil voit tout. Au matin, tu sais exactement ce qui est passé — et ce qui t'a évité.",
-            "Ton demi-sommeil filtre les bruits. Rien n'approche. Le repos est mince, mais il est à toi.",
-            "Tu sombres sans le décider. Au réveil, les cendres ont été remuées. Pas par toi.",
-            "1 naturel. Tu rêves qu'on monte la garde au-dessus de toi. Au réveil, l'empreinte est encore chaude. ♦ −2"
+            "20 naturel. Tu dors d'un œil — et cet œil la voit : une silhouette entre sans bruit, une corde coupée au cou, s'assoit près de la meule et te veille, toi. À ton réveil, une marque de main dans la poussière : merci pour la place.",
+            "Ton demi-sommeil filtre les bruits de la lande. Rien n'entre. Le repos est mince, mais il est à toi — et le creux du lit de bruyère, au matin, n'a pas changé de forme.",
+            "Tu sombres sans le décider. Au réveil, la porte est ouverte — tu l'avais calée — et sur la meule, quelqu'un a posé une fleur de bruyère. Tu n'es pas sûr que ce soit un cadeau.",
+            "1 naturel. Tu rêves qu'on te veille. Tu te réveilles : c'est vrai. Elle est penchée sur toi, sa corde coupée pendant à ton front — puis plus rien, la porte battante, et ton cœur qui compte tout seul. ♦ −2"
           ),
         },
       },
-      { id: "repartir", label: "Repartir sans attendre" },
+      { id: "repartir", label: "Repartir sans s'attarder" },
     ],
-    jailerLine: "Dors. J'aime regarder.",
+    jailerLine: "Dors. Le crépuscule ne tombera pas, mais toi, un jour, oui. J'aime comparer.",
   },
   {
-    id: "cage",
+    id: "chapelle-des-cordes",
     narration: [
-      "Une cage pend à hauteur d'homme. Dedans, une silhouette maigre, genoux " +
-        "au menton, qui respire — un détail qui compte, ici.",
-      "Elle lève la tête : des yeux humains, une bouche cousue de fil noir en " +
-        "petits points soignés. Elle pose deux doigts sur les barreaux, " +
-        "doucement, et attend. Sans tirer.",
+      "La chapelle du hameau n'a ni croix ni autel. Aux murs, des cordes — " +
+        "des dizaines, clouées en boucles soigneuses, chacune sous un nom " +
+        "gravé. Les reliques des Fixations réussies. Certaines bougent " +
+        "doucement, sans courant d'air.",
+      "Une femme en noir refait sans fin le même nœud au pied du mur. Et " +
+        "dans une niche à part, sous verre : une corde coupée net, sans nom. " +
+        "La seule de toute la chapelle qui n'a pas tenu.",
     ],
     choices: [
       {
-        id: "ouvrir",
-        label: "Ouvrir la cage",
+        id: "corde-coupee",
+        label: "Prendre la corde coupée de la niche",
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Le verre pivote sans bruit — la niche n'était pas verrouillée. Elle attendait. La corde coupée s'enroule d'elle-même autour de ton poignet, légère, tiède : une relique qui a choisi son porteur. Au mur, toutes les autres cordes se figent.",
+            "Tu soulèves le verre, tu prends la corde. Elle ne pèse rien — tout ce qu'elle devait retenir s'est relevé et marche encore. La Veuve, au fond, ne se retourne pas. Mais son nœud, pour la première fois, change de forme.",
+            "Le verre t'échappe et sonne sur la dalle. La Veuve est sur toi en trois pas, sans courir — et les cordes du mur se tendent toutes vers toi, d'un même mouvement. Tu sors avec la corde, mais la chapelle entière connaît ton visage.",
+            "1 naturel. Tu saisis la corde coupée. Une autre corde, au mur, te saisit le poignet — la Fixation est un métier de patience, et il en pendait une au-dessus de la niche depuis toujours, pour les gens comme toi. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "prier-veuve",
+        label: "S'agenouiller près de la Veuve",
         risky: {
           stat: "EMPATHIE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Le fil noir tombe de lui-même. « Merci », dit une voix rouillée. Elle te donne son nom — il pèse comme une clé.",
-            "La serrure cède. La silhouette descend, s'incline, et disparaît dans ton ombre — tu la sens veiller.",
-            "La cage s'ouvre trop vite. La silhouette hurle sans bouche et fuit — quelque chose accourt.",
-            "1 naturel. Ce n'était pas elle, la prisonnière. C'était la cage. ♦ −2"
+            "20 naturel. Tu t'agenouilles et tu refais son nœud avec elle, geste pour geste. À la dernière boucle, ses mains s'arrêtent — finies, après tant d'années. Elle te regarde, et te donne le seul secret qui vaille ici : le nom que la corde coupée refusait de porter.",
+            "Tu prends le bout de corde qu'elle te tend et tu suis. Le nœud qu'elle t'apprend n'attache rien — il retient quelqu'un de partir dans sa tête. Elle te tapote la main : tu sauras le refaire, quand tu en auras besoin. Tu espères que non.",
+            "Tu t'agenouilles trop près. Ses mains ne s'arrêtent pas, mais son nœud change — et tu reconnais la forme, maintenant : c'est un nœud coulant à ta taille de cou. Tu te relèves sans brusquerie. Elle sourit au mur.",
+            "1 naturel. Tu pries avec elle. Elle prie pour toi. Au mur, un clou libre attend déjà, sous un espace sans nom — plus pour longtemps, dit son nœud. ♦ −2"
           ),
         },
       },
-      { id: "passer", label: "Passer sans un mot" },
-      { id: "interroger", label: "Interroger la chose cousue", locked: { stat: "COURAGE" } },
+      { id: "corde-vive", label: "Saisir la corde qui bouge seule", locked: { stat: "COURAGE" } },
     ],
-    jailerLine: "Elle m'a supplié aussi, jadis. J'ai un registre.",
+    jailerLine: "Une chapelle de cordes. Les hommes prient ce qui les tient. Je trouve ça d'une honnêteté rare.",
   },
   {
-    id: "geryon",
-    combat: true,
-    illustration: "assets/monstre_geryon.png",
-    foe: "geryon",
-    foeName: "Geryon aux trois gueules",
+    id: "puits-condamne",
     narration: [
-      "Le couloir débouche sur une arche effondrée, et dessous, une masse qui " +
-        "respire par trois gueules synchronisées. Geryon — un nom de vieux " +
-        "conte pour effrayer les enfants.",
-      "C'est lui qui a couché l'arche, il y a des siècles, pour s'y bâtir une " +
-        "tanière. Il te regarde arriver de ses six yeux, patient. Une tête " +
-        "bâille — un bâillement qui se termine en grondement long comme une " +
-        "porte au fond de la terre.",
+      "Sur la place arrière du hameau, un puits — condamné de frais : " +
+        "planches neuves, chaînes croisées, cadenas encore gras. Tout le " +
+        "reste du hameau tombe en ruine douce, mais ça, on l'entretient.",
+      "Et dessous, ça cogne. Trois coups, une pause. Trois coups. Poli, " +
+        "presque — comme on frappe à une porte dont on sait qu'on va vous " +
+        "ouvrir. Les planches, au dernier coup, ont bougé.",
     ],
+    // La scène qui se résout sans toi (§18) : les chaînes ne tiendront pas
+    // ta décision bien longtemps. ⚠️ jamais sous 6000 ms (règle 14/07).
+    timed: {
+      ms: 7000,
+      timeoutNarration:
+        "Tu hésites une seconde de trop. Le dernier coup fait sauter le " +
+        "cadenas — et des mains passent entre les planches. Des mains " +
+        "seulement : grises, patientes, par dizaines, qui palpent l'air et " +
+        "les chaînes. Jamais un corps. Elles ne sortent pas — elles " +
+        "cherchent quelque chose à faire entrer.",
+      timeoutChoices: [
+        {
+          id: "repousser-mains",
+          label: "Rabattre les planches sur les mains",
+          risky: {
+            stat: "COURAGE",
+            threshold: 13,
+            outcomes: outcomes(
+              "20 naturel. Tu abats les planches d'un bloc, de tout ton poids. Les mains refluent — et juste avant le noir, l'une d'elles te fait un signe. Pouce levé. Le puits apprécie les adversaires nets.",
+              "Tu rabats planche après planche, à coups de talon. Les mains se retirent sans hâte, comme des employés à la cloche — la journée reprendra demain. Tu renoues les chaînes de ton mieux.",
+              "Une main t'attrape la cheville pendant que tu cloues — froide, sans colère, terriblement forte. Tu te dégages en y laissant de la peau. Les planches retombent à moitié. Ça suffira. Il faudra que ça suffise.",
+              "1 naturel. Tu plaques les planches. Les mains plaquent les tiennes. Vous restez ainsi un long moment, paume contre paume à travers le bois, à négocier — et tu perds quelque chose dans l'accord. ♦ −2"
+            ),
+          },
+        },
+        {
+          id: "donner-mains",
+          label: "Leur tendre quelque chose",
+          risky: {
+            stat: "EMPATHIE",
+            threshold: 11,
+            outcomes: outcomes(
+              "20 naturel. Tu poses dans une paume grise le premier objet de ta poche. Les mains le font passer de l'une à l'autre jusqu'au fond — et le fond te répond : elles remontent une lanterne de mineur, sèche, intacte. L'échange est ancien. Tu viens d'en apprendre les termes.",
+              "Tu tends un quignon, une ficelle, ce que tu as. Une main le pèse, le trouve honnête, et toutes redescendent avec — le puits se tait pour la première fois. Le hameau entier semble respirer mieux.",
+              "Ton offrande est pesée — et rendue. Trop légère. Les mains se tournent vers toi, paumes ouvertes, et attendent mieux. Tu recules avant que « mieux », dans leur idée, ne devienne toi.",
+              "1 naturel. Tu tends l'objet. Une main le prend — et une autre te prend le poignet, pour vérifier si le reste vaut mieux. L'arrachement te coûte cher. Les mains, elles, ne lâchent que ce qui ne les intéresse plus. ♦ −2"
+            ),
+          },
+        },
+      ],
+    },
     choices: [
       {
-        id: "affronter",
-        label: "Charger entre les trois têtes",
+        id: "reclouer",
+        label: "Resserrer chaînes et planches",
         risky: {
           stat: "COURAGE",
-          threshold: 14,
-          highStakes: true,
+          threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu passes sous les trois mâchoires au même instant, comme si elles s'étaient elles-mêmes écartées pour te laisser filer.",
-            "Tu forces le passage. Une gueule se referme sur ton manteau — tu le laisses derrière, et toi devant.",
-            "Une tête te rattrape par l'épaule. Les deux autres se penchent, intéressées, pour la première fois.",
-            "1 naturel. Les trois gueules se referment ensemble, sur le même geste. ♦ −2"
+            "20 naturel. Tu retends les chaînes au quart de tour près, cales les planches en croix — du travail de charpentier. Dessous, les coups s'arrêtent… puis un seul, léger : compris. Le hameau t'observera autrement, désormais.",
+            "Tu resserres ce qui peut l'être. Les coups continuent, mais assourdis, repoussés d'un étage — le puits retourne à sa patience. Ce que tu as gagné s'appelle du temps, et ici ça vaut cher.",
+            "La chaîne te glisse des mains et sonne contre la margelle. Dessous, silence — le pire des silences, celui qui écoute. Tu finis le travail trop vite, mal, et tu t'éloignes sans tourner le dos au puits.",
+            "1 naturel. Tu tires la chaîne. Elle tire aussi. Le cadenas, entre vous deux, choisit son camp — pas le tien. ♦ −2"
           ),
         },
       },
       {
-        id: "viser-gorge",
-        label: "Viser la gorge du milieu",
-        risky: {
-          stat: "INSTINCT",
-          threshold: 13,
-          outcomes: outcomes(
-            "20 naturel. Ton coup trouve le seul point où les trois nerfs se rejoignent. Geryon recule d'un coup, les trois têtes sonnées à la fois.",
-            "La gorge du milieu encaisse le coup. Les deux autres têtes, surprises, se tournent l'une vers l'autre — assez pour que tu passes.",
-            "Ton coup glisse sur des écailles plus dures que prévu. La tête du milieu, elle, t'a bien vu.",
-            "1 naturel. Tu frappes la mauvaise gorge — celle qui ne dormait pas. ♦ −2"
-          ),
-        },
-      },
-      {
-        // « Jauger » (amende §6, 13/07) : évaluer la menace AVANT de
-        // s'engager — jet d'Instinct, l'information est la récompense.
-        id: "jauger",
-        label: "Jauger la bête avant d'agir",
-        risky: {
-          stat: "INSTINCT",
-          threshold: 10,
-          outcomes: outcomes(
-            "20 naturel. Tu lis Geryon comme un livre ouvert : la tête de gauche est aveugle, celle du milieu commande, celle de droite ment. Tu sais tout ce qu'il fallait savoir.",
-            "Tu prends le temps de regarder. Les trois têtes respirent ensemble — mais celle du milieu décide une demi-seconde avant les autres. C'est là qu'il faudra frapper.",
-            "Tu observes trop longtemps. Geryon aussi t'observe — et lui a fini le premier. Les trois têtes se lèvent ensemble.",
-            "1 naturel. Ce que tu lis dans ses six yeux, c'est ton propre reflet, déjà à terre. ♦ −2"
-          ),
-        },
-      },
-    ],
-    jailerLine: "Geryon a trois têtes, et un seul intérêt : compter combien de héros avant toi. Tu fais beaucoup.",
-  },
-  {
-    // Rencontre ÉPIQUE (amende §6, 13/07) : 3 scènes structurées — montée de
-    // tension (ci-dessus) → échange (ici) → climax. Un seul dé, celui du
-    // joueur ; l'état du monstre s'exprime par paliers narratifs en prose
-    // (« chancelle » → « rugit, blessée » → « s'effondre »), jamais une jauge.
-    id: "geryon-2",
-    combat: true,
-    illustration: "assets/monstre_geryon.png",
-    foe: "geryon",
-    narration: [
-      "Le premier échange est passé si vite que c'est la douleur qui te le " +
-        "raconte. Geryon pivote sa masse entière et chancelle un instant, " +
-        "surpris d'avoir été touché.",
-      "Les trois têtes se déploient en éventail, sans te laisser d'angle " +
-        "mort. Au-dessus, l'arche gémit. Quelque chose va céder avant " +
-        "l'autre — la pierre, la bête, ou toi.",
-    ],
-    choices: [
-      {
-        id: "presser",
-        label: "Presser l'avantage, coup sur coup",
-        risky: {
-          stat: "COURAGE",
-          threshold: 13,
-          outcomes: outcomes(
-            "20 naturel. Tes coups tombent plus vite que ses trois gueules ne pensent. Geryon rugit, blessé — un son qui fait pleuvoir la poussière de l'arche.",
-            "Tu ne lui laisses pas le temps de se reprendre. Une deuxième entaille, profonde. La bête rugit, blessée, et recule d'un pas entier.",
-            "Tu presses trop. Une gueule t'attendait exactement là — elle referme sur ton flanc ce que ta hâte lui a offert.",
-            "1 naturel. Ton élan te porte pile entre les trois têtes. Elles n'espéraient pas mieux. ♦ −2"
-          ),
-        },
-      },
-      {
-        id: "user-arche",
-        label: "L'attirer sous l'arche qui cède",
-        risky: {
-          stat: "RUSE",
-          threshold: 13,
-          outcomes: outcomes(
-            "20 naturel. Tu recules pas à pas, exactement sous la clef de voûte. Geryon suit — et l'arche entière lui tombe sur l'échine. Le rugissement fait trembler le sol.",
-            "La bête suit ton repli. Un bloc de l'arche se détache et lui écrase une épaule — elle rugit, blessée, une tête à moitié sonnée.",
-            "Geryon ne suit pas. Il contourne — et c'est toi qui te retrouves sous la pierre qui s'égrène.",
-            "1 naturel. L'arche cède, oui. Du mauvais côté. ♦ −2"
-          ),
-        },
-      },
-      {
-        id: "souffler",
-        label: "Rompre, reprendre ton souffle",
+        id: "ecouter-puits",
+        label: "Coller l'oreille aux planches",
         risky: {
           stat: "INSTINCT",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu romps au moment exact où les trois gueules frappent ensemble — elles se mordent entre elles. Geryon chancelle, empêtré dans sa propre rage.",
-            "Tu recules hors de portée, le souffle retrouvé. La bête tourne en te cherchant — elle saigne plus qu'elle ne veut le montrer.",
-            "Ton repli est trop lent d'un pas. Une gueule te raccompagne — sans douceur.",
-            "1 naturel. Tu recules dans l'angle mort de personne : les six yeux te suivent. ♦ −2"
+            "20 naturel. Entre deux coups, tu entends le fond : de l'eau, des voix — et le hameau à l'envers. Le puits ne contient pas des choses : il contient un ailleurs. Ce que tu as entendu du fond te servira, le jour où tu croiseras l'autre bout.",
+            "À travers le bois, tu comptes : les coups ne demandent pas à sortir. Ils tiennent un registre — trois coups par nom, une pause entre les noms. Le puits fait l'appel. Tu retires l'oreille avant d'entendre le tien.",
+            "L'oreille au bois, tu n'entends plus rien — les coups se sont tus dès le contact. Puis, contre ta joue, à travers la planche : trois coups très doux. On t'a entendu écouter.",
+            "1 naturel. Tu écoutes. Et de l'autre côté des planches, très distinctement, quelqu'un fait « chhht ». ♦ −2"
           ),
         },
       },
+      { id: "noeud-chaines", label: "Étudier le nœud des chaînes", locked: { stat: "RUSE" } },
     ],
-    jailerLine: "Il saigne. Ils ne saignent presque jamais. Continue, tu m'intéresses.",
+    jailerLine: "Ils ont condamné le puits. Charmant. On n'enferme pas un trou, mais l'espoir fait clouer.",
   },
   {
-    id: "geryon-3",
+    id: "chien-du-bailli",
     combat: true,
-    illustration: "assets/monstre_geryon.png",
-    foe: "geryon",
+    foe: "chien-du-bailli",
+    foeName: "Le Chien du Bailli",
     narration: [
-      "Geryon rugit, les trois voix désaccordées pour la première fois. Son " +
-        "sang noir dessine sur le sol des lettres que tu préfères ne pas lire.",
-      "Il ramasse ce qui lui reste pour une dernière charge — tout son poids, " +
-        "une seule direction : toi. C'est l'instant. Il n'y en aura pas " +
-        "d'autre.",
+      "La plus grande maison du hameau est murée — de l'intérieur. Chaque " +
+        "fenêtre bouchée de pierres posées depuis dedans, en rangs pressés, " +
+        "par quelqu'un qui s'enfermait plus qu'il ne se protégeait. La " +
+        "maison du Bailli. Vide depuis sa corde. Pas gardée par personne.",
+      "Le chien se lève du seuil sans aboyer. Gris, trop grand, le poil " +
+        "usé aux endroits d'un harnais qu'il ne porte plus. Son maître " +
+        "pend à la colline — mais l'ordre, lui, n'a jamais été levé. " +
+        "Personne n'entre. Il te le dit d'un seul regard.",
     ],
     choices: [
       {
-        id: "coup-final",
-        label: "Porter le coup, au centre",
+        id: "forcer-seuil",
+        label: "Passer en force vers la porte",
         risky: {
           stat: "COURAGE",
-          threshold: 14,
-          highStakes: true,
-          outcomes: outcomes(
-            "20 naturel. Ta lame entre là où les trois gorges n'en font qu'une. Geryon s'effondre d'un bloc — et le silence qui suit dure cent ans. Le conte, désormais, se racontera avec ton nom dedans.",
-            "Tu plonges sous la charge et frappes au centre. La bête s'effondre, ses trois têtes tombant l'une après l'autre, comme des cloches qu'on décroche.",
-            "Ta lame touche — mais pas assez profond. La charge te passe dessus, et Geryon, épuisé, se traîne dans l'ombre de l'arche. Vivant. Toi aussi, de peu. Le combat est fini — aucun de vous deux n'en voulait un autre.",
-            "1 naturel. Ta lame se brise sur l'os du poitrail. La charge, elle, ne se brise pas — elle te laisse dans les gravats, trop cassé pour l'intéresser encore, et Geryon regagne son arche en trois soupirs. ♦ −2"
-          ),
-        },
-      },
-      {
-        id: "esquive-finale",
-        label: "Esquiver et laisser la pierre finir",
-        risky: {
-          stat: "RUSE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu t'effaces au dernier souffle — la charge emporte Geryon dans les piliers déjà fendus. L'arche entière s'effondre sur lui. Tu n'as plus qu'à écouter.",
-            "Tu t'écartes à l'instant juste. La bête s'écrase dans la pierre fendue, et la pierre décide pour vous deux : elle s'effondre.",
-            "Ton esquive est courte. La charge te happe à demi et t'envoie rouler dans les gravats — la bête, blessée, se dresse une dernière fois, juge le prix trop haut, et se traîne hors du conte par où l'arche a cédé.",
-            "1 naturel. Tu esquives dans la chute de pierres. Quand la poussière retombe, Geryon a disparu sous l'arche — et toi à moitié sous elle. ♦ −2"
-          ),
-        },
-      },
-      { id: "tenir-terrain", label: "Tenir, lame en avant, sans céder", locked: { stat: "COURAGE" } },
-    ],
-    jailerLine: "Quel que soit le vainqueur, je gagne : j'aurai quelque chose à raconter.",
-  },
-  {
-    id: "echo",
-    narration: [
-      "La galerie s'élargit en un hall poli comme un miroir noir. Chaque pas " +
-        "y revient double, un instant trop tard pour être vraiment le tien.",
-      "Puis ta propre voix te devance : « Qui va là ? », trois pas devant. " +
-        "L'écho attend une réponse — mais une syllabe traîne, comme s'il " +
-        "apprenait encore à porter ta voix.",
-    ],
-    choices: [
-      {
-        id: "mentir",
-        label: "Mentir à l'écho",
-        risky: {
-          stat: "RUSE",
-          threshold: 11,
-          outcomes: outcomes(
-            "20 naturel. Tu donnes un faux nom si parfait que l'écho le garde. Quelque part, un autre que toi est désormais attendu.",
-            "« Personne », réponds-tu. L'écho répète « Personne » et te laisse passer, faute de proie.",
-            "Ta voix tremble sur la dernière syllabe. L'écho sourit — ça s'entend — et retient ton vrai nom.",
-            "1 naturel. L'écho répond avant toi, avec ta voix exacte. Lequel de vous deux a menti ? ♦ −2"
+            "20 naturel. Tu marches droit, sans lever la main. Le chien te jauge — et s'écarte au dernier pas, parce qu'un ordre ancien vient d'en croiser un plus vieux : on ne mord pas ce qui n'a pas peur. Il t'escorte jusqu'au seuil, tête basse, presque soulagé.",
+            "Il charge, tu tiens la ligne. L'impact vous couche tous les deux — mais c'est toi qui te relèves entre lui et la porte, et ça, pour un chien de garde, c'est la fin du débat. Il recule en grondant sa dignité.",
+            "Il est plus vif que sa taille ne l'annonce. Ses mâchoires te prennent l'avant-bras au vol et te traînent hors du seuil comme un sac — c'est exactement son travail, et il le fait bien. Tu ne passes pas par la porte.",
+            "1 naturel. Tu forces le seuil. Le chien te laisse faire — et tu comprends trop tard pourquoi il montait la garde tourné vers la porte : ce n'était pas pour empêcher d'entrer. ♦ −2"
           ),
         },
       },
       {
-        id: "repondre",
-        label: "Répondre à la voix",
+        id: "apaiser-chien",
+        label: "S'accroupir et lui parler",
         risky: {
           stat: "EMPATHIE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu réponds ton vrai nom, sans peur. L'écho se tait — personne ne le lui avait jamais offert.",
-            "Ta voix ne tremble pas. L'écho répète, satisfait, et s'éloigne chercher quelqu'un d'autre.",
-            "Tu réponds trop tard. L'écho a déjà décidé de ta réponse — elle ne te ressemble pas.",
-            "1 naturel. Vous répondez exactement en même temps. Le hall n'a plus qu'une seule voix. ♦ −2"
-          ),
-        },
-      },
-      { id: "taire", label: "Avancer entre les échos", locked: { stat: "INSTINCT" } },
-    ],
-    jailerLine: "L'écho ment mieux que toi. 9 fois sur 10, très exactement.",
-  },
-  {
-    id: "table",
-    narration: [
-      "Une table de banquet dressée pour personne. Chandelles éteintes — sauf " +
-        "une, dont la flamme ne tremble jamais.",
-      "Dans son halo, un anneau de fer torsadé, encore tiède, comme posé à " +
-        "l'instant. Sous la table, quelque chose respire contre tes " +
-        "chevilles. Ni hostile, ni amical. Ça attend que tu choisisses.",
-    ],
-    choices: [
-      {
-        id: "prendre",
-        label: "Prendre l'anneau tiède",
-        risky: {
-          stat: "INSTINCT",
-          threshold: 12,
-          outcomes: outcomes(
-            "20 naturel. Ta main saisit l'anneau à l'instant exact où la chose cligne. Il t'accepte — le fer épouse ton doigt.",
-            "Tu cueilles l'anneau sans frôler la nappe. Sous la table, la respiration continue, égale. Il est à toi.",
-            "Le velours glisse. La chandelle vacille. Sous la table, la respiration s'arrête — et se rapproche.",
-            "1 naturel. L'anneau était un appât. La table n'était pas une table. ♦ −2"
+            "20 naturel. Tu t'accroupis, tu lui parles de son maître — celui qui pend là-haut et qui juge encore. Le chien écoute, oreilles couchées, puis vient poser son front contre le tien. L'ordre est levé : tu es le premier à lui avoir dit que c'était fini.",
+            "Tu lui laisses le dos de ta main, sans bouger. Il la flaire longtemps — la lande, le gibet, peut-être une trace de son maître dessus. Il ne s'écarte pas, mais il s'assoit : ce n'est plus une garde, c'est une visite. Tu peux longer le mur.",
+            "Ta voix le calme — puis un mot le hérisse d'un coup, sans que tu saches lequel. Un mot que le Bailli employait, sans doute, et pas pour de bonnes choses. Il te chasse du seuil en trois attaques sèches, plus déçu que féroce.",
+            "1 naturel. Il pose sa tête sous ta main. Et referme ses mâchoires dessus au moment exact où tu le crois gagné — les ordres du Bailli prévoyaient les gens comme toi. ♦ −2"
           ),
         },
       },
       {
-        id: "echanger",
-        label: "Déposer ta dague en échange",
+        id: "contourner-cour",
+        label: "Contourner par la cour arrière",
         risky: {
           stat: "RUSE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. La dague pèse exactement le poids de l'anneau. Sous la table, on ronronne presque.",
-            "L'échange tient. La chandelle vacille une fois — marché conclu.",
-            "Ta dague roule et tombe. Sous la table, on la ramasse. On ne rend rien.",
-            "1 naturel. On accepte l'échange : ta dague, et la main qui la tenait. ♦ −2"
+            "20 naturel. Tu fais le tour par les appentis — et tu trouves mieux que la porte : le trou par lequel le chien entre et sort, taillé à sa mesure dans la pierre murée. Assez large pour toi. La seule ouverture que le Bailli n'a jamais murée : il faut bien nourrir la garde.",
+            "Tu passes par la cour aux orties, sous le vent, hors de vue. Le chien tourne autour de la maison à ta recherche — méthodique, aux aguets — mais la routine de sa ronde a trente ans, et tu marches entre ses horaires.",
+            "La cour est un piège à bruit : ardoises brisées, seaux morts, orties jusqu'au coude. Le chien t'y cueille à mi-chemin, sans surprise aucune — sa ronde passait par là, évidemment. Tu ressors piqué, mordu et bredouille.",
+            "1 naturel. Dans la cour arrière, tu découvres pourquoi la ronde du chien l'évite : quelque chose y est enterré, et ça n'aime pas les pas au-dessus. ♦ −2"
           ),
         },
       },
-      { id: "reculer", label: "Reculer sans tourner le dos" },
     ],
-    jailerLine: "Cet anneau a connu 3 propriétaires. Tous brefs.",
+    jailerLine: "Ce chien tient un poste que la mort de son maître n'a pas fermé. Prends-en de la graine : moi aussi.",
   },
   {
-    id: "grand-registre",
+    // Le Registre des Pendaisons — la mécanique du Grand Registre (§19)
+    // rejouée à l'échelle de la zone : la ligne du joueur s'insère dans le
+    // classement, au milieu des Fixés du Bailli.
+    id: "petit-tribunal",
     registre: true,
     narration: [
-      "Une salle haute dont chaque mur est une fresque de noms gravés, du sol " +
-        "au plafond. Des milliers. Trop.",
-      "Ce ne sont pas des ornements : des comptes. Chaque nom porte ses jours " +
-        "et sa fin. Le tien est là, quelque part, encore frais — le compte " +
-        "n'est pas clos tant que tu marches.",
+      "Le Petit Tribunal tient dans une seule pièce : trois bancs, une " +
+        "chaire, et le froid des endroits où l'on a beaucoup décidé. C'est " +
+        "ici que la Fixation se jugeait — le Bailli en chaire, la corde en " +
+        "sentence unique.",
+      "Sur la chaire, ouvert, le Registre des Pendaisons. Quelqu'un tourne " +
+        "encore les pages : un petit homme sec, plume en main, qui copie " +
+        "sans lever les yeux. L'Écrivain public. Il te désigne le Registre " +
+        "du bout de sa plume — ta page est prête.",
     ],
     choices: [
-      { id: "lire-registre", label: "Parcourir les noms" },
-      { id: "quitter-registre", label: "Quitter la salle sans lire", passive: {
-        consequence:
-          "Tu détournes les yeux. Certains comptes, on préfère ne pas savoir " +
-          "où ils s'arrêtent — surtout le sien. La salle te laisse partir, " +
-          "sans insister. Elle sait qu'on revient toujours.",
-      } },
+      { id: "lire-registre", label: "Lire le Registre des Pendaisons" },
+      {
+        id: "quitter-tribunal",
+        label: "Quitter le tribunal sans lire",
+        passive: {
+          consequence:
+            "Tu tournes le dos à la chaire. La plume de l'Écrivain continue " +
+            "de gratter — elle écrit ta sortie, en ce moment même, dans une " +
+            "colonne que tu ne verras pas. Certains comptes, on préfère ne " +
+            "pas savoir où ils s'arrêtent. La porte du tribunal se referme " +
+            "sans bruit : on sait que tu reviendras. Tout le monde revient.",
+        },
+      },
     ],
-    jailerLine: "Ton nom est déjà gravé. J'ai juste laissé le nombre en blanc.",
+    jailerLine: "Le Bailli tenait son registre, je tiens le mien. Le sien s'arrête aux Landes. Devine où s'arrête le mien.",
   },
   {
-    // Le faux choix évident (§18) : l'inscription INVITE explicitement à
-    // frapper — c'est l'option « manifestement la bonne ». C'est justement
-    // celle dont l'échec est le plus retors (le silence à dents). Instance
-    // volontairement RARE et non signalée : le principe reste du contenu, pas
-    // une règle mécanique détectable (sinon l'effet s'inverse, cf. Notion).
-    id: "porte-7e",
+    id: "meute-grise-1",
+    combat: true,
+    foe: "meute-grise",
+    foeName: "La Meute Grise",
     narration: [
-      "Une porte sans gonds ni serrure, taillée dans une seule dent immense, " +
-        "encore ancrée dans une mâchoire qu'on devine au plafond.",
-      "Gravé à hauteur de tes yeux exactement, comme mesuré pour toi : " +
-        "« FRAPPE TROIS FOIS SI TU CROIS ÊTRE ATTENDU ». De l'autre côté, " +
-        "quelque chose compte à voix basse. Il en est à sept mille et des " +
-        "poussières.",
+      "Passé les murets du hameau, la lande redevient à eux. Tu les vois " +
+        "de loin — et c'est mauvais signe : la Meute Grise ne se montre " +
+        "que quand l'encerclement est fini. Six silhouettes couleur de " +
+        "bruyère morte, immobiles aux six points d'un cercle dont tu es " +
+        "le centre.",
+      "Pas des chiens : trop patients. Pas des loups : trop organisés. La " +
+        "plus grande s'assoit — le signal. Le cercle se met à tourner, " +
+        "lentement, en se resserrant d'un pas par tour.",
     ],
     choices: [
       {
-        id: "frapper",
-        label: "Frapper les trois coups",
+        id: "briser-cercle",
+        label: "Charger la plus grande",
+        risky: {
+          stat: "COURAGE",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Tu charges la meneuse au milieu de son tour — l'impensable, au centre du cercle qui ne se défend jamais. Elle roule sous toi, se relève boiteuse, et le cercle entier perd le pas. Une meute sans cadence n'est qu'un tas de bêtes maigres.",
+            "Ta charge la surprend à contre-pied. Ta lame la marque au flanc et le cercle s'arrête net — six têtes tournées vers la meneuse, en attente d'un ordre qu'elle met trop longtemps à donner. Tu as gagné le désordre, et c'est déjà beaucoup.",
+            "Elle t'a laissé venir. Le cercle se referme dans ton dos au moment exact de ton élan — des crocs te prennent au mollet, d'autres au flanc, précis, économes. Puis tout recule d'un pas : la première entaille est faite. Ils ne sont pas pressés.",
+            "1 naturel. Tu charges la meneuse. C'était la seule qui n'était pas là — tu charges de la bruyère, et le cercle entier te tombe dessus, pédagogique. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "dos-muret",
+        label: "Gagner le muret le plus proche",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu perces le cercle à l'endroit exact où deux bêtes échangeaient leurs postes — le seul battement du mécanisme. Dos à la pierre sèche, tu n'offres plus de centre. Une meute sans cercle tourne à vide ; la meneuse te le reproche du regard, longuement.",
+            "Tu atteins le muret de justesse, une lanière de manteau en moins. Adossé à la pierre, tu ne peux plus être encerclé — juste attaqué de face, et ça, visiblement, ce n'est pas leur école. Le cercle se refait plus loin, faute de mieux.",
+            "Tu cours — et le cercle tourne plus vite que toi, sans effort. Une bête t'accueille au muret, déjà assise, presque polie. Le péage se paie en chair, et tu le paies. Puis on te laisse t'adosser : même eux respectent les règles du jeu.",
+            "1 naturel. Tu cours au muret. Le muret est leur tanière. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "hurler-meute",
+        label: "Hurler le premier",
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu renverses la tête et tu hurles — pas de peur : un vrai hurlement de meute, appris tu ne sais où, peut-être du fond de la lande elle-même. Le cercle se fige. La meneuse répond. Vous vous êtes dit quelque chose, et le cercle s'ouvre : on ne chasse pas ce qui chante.",
+            "Ton hurlement les déroute — c'est la proie qui crie, jamais le centre. Deux bêtes rompent le tour pour interroger la meneuse du regard, et le cercle flotte, désaccordé. Tu as gagné du temps et semé le doute, leurs deux seules faiblesses.",
+            "Ton hurlement sonne faux — un cri de gorge d'homme, rien d'autre. Le cercle ne ralentit même pas. Pire : au loin, quelque chose d'autre a répondu, et la meneuse presse le pas. Ils veulent finir avant l'arrivée de ce que tu as appelé.",
+            "1 naturel. Tu hurles. Toute la lande répond — tout ce qu'elle contient, d'un seul chœur. La meute, elle, s'assoit poliment : on ne coupe pas la parole à ce qui arrive. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Six bêtes qui tournent en rond autour d'un vivant. Où veux-tu que j'aille ? C'est mon théâtre exact.",
+  },
+  {
+    id: "meute-grise-2",
+    combat: true,
+    foe: "meute-grise",
+    foeName: "La Meute Grise",
+    narration: [
+      "Le cercle est rompu, mais la meute reste — regroupée à distance de " +
+        "lame, en croissant, plus prudente. Ils ont compris que tu mords " +
+        "aussi. Ça ne les décourage pas : ça les intéresse.",
+      "La meneuse s'avance seule d'un pas, tête basse, et te fixe. Chez " +
+        "eux, c'est une question. La dernière avant la charge — ou avant " +
+        "autre chose. À toi d'y répondre.",
+    ],
+    choices: [
+      // Dernier acte de la rencontre : CHAQUE issue clôt le combat (règle
+      // éditoriale 14/07 — jamais une meute laissée « prête à charger »).
+      {
+        id: "abattre-meneuse",
+        label: "Répondre par l'acier",
         risky: {
           stat: "COURAGE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Au troisième coup, le décompte s'arrête. « Enfin », dit la porte. Elle s'ouvre sur un couloir qui n'existait pas.",
-            "Trois coups fermes. Le décompte marque une pause, reprend un chiffre plus loin — la dent pivote pour toi.",
-            "Ton deuxième coup sonne creux, faux. Le décompte recommence à zéro. À voix haute, cette fois.",
-            "1 naturel. Tu frappes quatre fois. Le silence qui suit a des dents. ♦ −2"
+            "20 naturel. Tu réponds d'un seul coup, net, définitif. La meneuse tombe sans un bruit — et la meute ne venge pas : elle constate, se choisit une autre tête d'un simple flottement, et reflue dans la bruyère. Les questions, dans la lande, n'ont pas de rancune.",
+            "Ta lame répond pour toi. La meneuse esquive l'essentiel, encaisse le reste, et rompt — le croissant entier reflue avec elle, réglé sur sa retraite. Ils reviendront peut-être. Pas aujourd'hui, et pas pour toi.",
+            "Elle attendait l'acier — c'est la réponse qu'ils comprennent le mieux et esquivent le mieux. Le croissant fond sur toi, prend son tribut de chair en trois passes réglées, puis décroche d'un coup, comme à un signal. La lande se referme sur eux. Le compte est bon, pour eux.",
+            "1 naturel. Tu frappes. Ta lame se prend dans la bruyère — la lande a choisi son camp. La meute te passe dessus en une seule vague, sans s'attarder : ce qu'elle voulait savoir, elle le sait, et te laisse au sol, moins lourd de ce qu'elle emporte. ♦ −2"
           ),
         },
       },
       {
-        id: "battement",
-        label: "Coller l'oreille à la dent",
+        id: "reculer-face",
+        label: "Reculer sans baisser les yeux",
         risky: {
           stat: "INSTINCT",
-          threshold: 11,
+          threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Le décompte s'interrompt. Tout bas, il te confie le chiffre exact où il s'arrêtera.",
-            "À travers l'ivoire, tu comprends : il compte les battements de ton cœur. Tu sais maintenant lesquels retenir.",
-            "L'ivoire est glacé. Le décompte s'accélère dès que ton oreille le touche.",
-            "1 naturel. De l'autre côté, on colle aussi son oreille. ♦ −2"
+            "20 naturel. Tu recules pas à pas, les yeux dans les siens, sans un frisson. La meneuse te suit — puis s'arrête à la frontière exacte d'un territoire que toi seul ne vois pas. Elle s'assoit. Tu es sorti de leur carte : la meute te regarde partir comme on regarde la pluie quitter un champ.",
+            "Chaque pas en arrière est un mot de la négociation. Tu la tiens du regard jusqu'au chemin, et le croissant s'effiloche à mesure — une bête qui décroche, puis deux. À la fin, il ne reste que la meneuse, qui te concède la lande d'un battement de paupières.",
+            "Ton talon accroche une racine — un quart de seconde de regard perdu. Il ne leur en faut pas plus : la charge t'arrive dessus pendant que tu te rattrapes, te roule, te coûte — puis s'arrête net, croissant reformé, et la meute s'en va. L'épreuve est finie ; tu n'as pas brillé, mais tu es debout.",
+            "1 naturel. Tu recules sans baisser les yeux. Eux non plus. Tu recules encore. Eux avancent. Le mur de pierre sèche dans ton dos met fin à la négociation — à leurs conditions. Ils prélèvent, et te laissent contre le muret, vivant par désintérêt. ♦ −2"
           ),
         },
       },
-      { id: "attendre", label: "Attendre la fin du décompte", locked: { stat: "EMPATHIE" } },
+      {
+        id: "offrir-viande",
+        label: "Jeter tes vivres entre vous",
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu jettes tes vivres — mais un par un, en reculant, en semant ta sortie. La meute suit le fil de miettes, méthodique, et la meneuse te laisse filer avec un regard entendu : elle sait qu'elle est achetée, elle accepte le prix. Marché de vieux routiers.",
+            "Le paquet tombe entre vous. La meneuse le flaire, le juge honnête — et le croissant se referme dessus au lieu de toi. Tu pars le ventre plus léger et la peau entière. Dans la lande, c'est un excellent taux de change.",
+            "Tu jettes tout — trop vite, trop près de toi. La meute prend les vivres ET la leçon : ce qui donne tout tremble. La meneuse te bouscule au passage, sans mordre, juste pour l'inventaire — puis ils s'en vont, servis. Tu restes debout, les poches vides, jaugé au plus juste.",
+            "1 naturel. Tu jettes tes vivres. Ils n'y touchent pas. Ce n'était pas une chasse au gibier — c'était une pesée, et ton offrande vient de te faire passer dans la mauvaise colonne. Ils prélèvent la différence sur toi, exacts comme un percepteur, puis rendent la lande au silence. ♦ −2"
+          ),
+        },
+      },
     ],
-    jailerLine: "Frappe. Le 7e jour aime les ponctuels.",
+    jailerLine: "La Meute Grise ne tue presque jamais. Elle évalue. Les chiffres remontent jusqu'à moi.",
+  },
+  {
+    // Dernière scène de la rotation : la sortie de zone (La Descente) se
+    // montre mais reste verrouillée — l'Acte II n'existe pas encore.
+    id: "palissade-sud",
+    narration: [
+      "Au bout des Landes, une palissade de troncs noircis barre l'horizon " +
+        "d'est en ouest. Pas pour empêcher d'entrer : les étais sont de ce " +
+        "côté-ci. Au centre, une porte à double battant — et derrière, un " +
+        "chemin qui descend. On le sent plus qu'on ne le voit : l'air y " +
+        "coule comme une eau froide. La Descente.",
+      "Sur le chemin de ronde, un vieux soldat regarde vers le sud. Et en " +
+        "contrebas, déjà loin de l'autre côté, un homme descend le chemin " +
+        "d'un pas égal, sans bagage, sans se retourner. Le Veilleur ne le " +
+        "quitte pas des yeux. « Encore un Appelé », dit-il sans se " +
+        "retourner. « On ne les rattrape pas. On les compte. »",
+    ],
+    choices: [
+      {
+        id: "questionner-veilleur",
+        label: "Questionner le Veilleur",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Le vieux soldat te regarde enfin — et te tend sa lanterne, la seule allumée de toute la palissade. « Trente ans que je guette la relève. » Il te raconte tout : la voix qui appelle, les battants qu'on graisse, et pourquoi la porte s'ouvre toujours de l'intérieur. Quand tu descendras, tu sauras.",
+            "Il parle sans quitter le sud des yeux. La Descente mène au deuxième cercle des terres du Geôlier — « plus profond, plus vieux, moins poli ». Il te jauge du coin de l'œil : « Pas encore prêt, toi. Ça se voit aux épaules. » Ce n'est pas une insulte. C'est une mesure.",
+            "À ta troisième question, il se ferme comme une porte de garnison : « On ne parle pas de la Descente à ceux qui remontent. » Tu ne sauras pas ce que tes questions ont révélé de toi — mais il a resserré sa capote, et il s'est éloigné de deux pas. De toi, pas du froid.",
+            "1 naturel. Tu le questionnes. Il répond par une question : « Et toi, tu l'entends depuis quand, la voix ? » Tu ouvres la bouche pour dire jamais. Rien ne sort. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "regarder-appele",
+        label: "Regarder l'Appelé descendre",
+        passive: {
+          consequence:
+            "Tu t'accoudes à la palissade et tu le regardes descendre, " +
+            "longtemps. Il ne presse jamais le pas, ne le ralentit jamais — " +
+            "le pas de quelqu'un qui n'obéit pas à ses jambes. Juste avant " +
+            "le tournant, il s'arrête. Une seconde. Comme si, tout au fond, " +
+            "quelque chose en lui se débattait encore. Puis le chemin le " +
+            "prend. Tu sais maintenant à quoi ressemble quelqu'un qui a " +
+            "fini par répondre. Tu espères ne jamais le reconnaître dans " +
+            "un reflet.",
+        },
+      },
+      { id: "franchir-descente", label: "Franchir la porte de la Descente", locked: { stat: "COURAGE" } },
+    ],
+    jailerLine: "La Descente t'intrigue ? Patience. Les Landes d'abord — on finit son assiette avant le plat suivant.",
   },
 ];
 
@@ -1023,7 +1095,7 @@ type JailerPools = { fail: string[]; critFail: string[]; critSuccess: string[] }
 export const JAILER_BY_POSTURE: Record<JailerPosture, JailerPools> = {
   amuse: {
     fail: [
-      "Un {n} ? Même les os du pont ont ri.",
+      "Un {n} ? Même les corbeaux ont cessé de compter.",
       "J'ajoute ce {n} à ton registre. Il se remplit vite.",
       "Le dé t'a jugé. J'ai cessé de le faire depuis longtemps.",
       "{n}. Le précédent avait fait pareil. J'ai gardé sa besace.",

@@ -24,7 +24,11 @@
       "lieu_attache": null,
       "histoire_bailli": true,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "La colline monte seule au milieu de la lande, couronnée de gibets. Tous occupés, tous immobiles — sauf un. Au centre, le plus grand est vide ; sa corde pend, usée en son milieu.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -35,7 +39,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Des rangées de poteaux à perte de vue, chacun son pendu, chacun son écriteau. Un cimetière debout. On n'enterre pas, ici : on fixe. Les morts tiennent mieux le sol que les vivants.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -46,7 +54,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "À l'écart du hameau, un moulin sans ailes tient debout par habitude. Dedans, un lit de bruyère tassée — plusieurs fois refait, jamais brûlé. Un refuge qui sert, donc un refuge qui marche.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -57,7 +69,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -68,7 +84,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Des murets de pierre sèche, des toits bas, pas une flamme. Ici, on renonce : chacun laisse une chose au muret — son nom, sa hâte, sa lame ou sa langue — et jure de tenir jusqu'à la sortie des Landes. Ce n'est pas une proposition.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -79,7 +99,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Ni croix ni autel. Aux murs, des dizaines de cordes clouées en boucles soigneuses, chacune sous un nom gravé — les reliques des Fixations réussies. Certaines bougent doucement, sans courant d'air.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -90,7 +114,11 @@
       "lieu_attache": null,
       "histoire_bailli": true,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "La plus grande maison du hameau est murée — de l'intérieur. Chaque fenêtre bouchée de pierres posées depuis dedans, par quelqu'un qui s'enfermait plus qu'il ne se protégeait.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -101,7 +129,11 @@
       "lieu_attache": null,
       "histoire_bailli": true,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Une seule pièce : trois bancs, une chaire, et le froid des endroits où l'on a beaucoup décidé. C'est ici que la Fixation se jugeait — le Bailli en chaire, la corde en sentence unique.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -112,7 +144,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Un puits condamné de frais : planches neuves, chaînes croisées, cadenas encore gras. Tout le hameau tombe en ruine douce, mais ça, on l'entretient. Et dessous, ça cogne. Trois coups, une pause. Trois coups.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -123,7 +159,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Un marché sans un cri, au cœur du hameau. Des étals de trois fois rien, des marchands qui négocient par gestes, paumes et hochements. Renoncer à la parole est le renoncement le plus courant. Le moins cher.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -134,7 +174,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -145,7 +189,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -156,7 +204,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Le chemin s'enfonce entre deux talus plus hauts qu'un homme. On y marche vu sans voir : la lande entière vous regarde passer, et vous ne voyez que de la terre.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -167,7 +219,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Au bord du chemin, une borne de pierre penche sous les offrandes : bouts de pain durci, rubans, clous tordus. On paie ici pour entrer. Ou pour qu'on vous laisse ressortir.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -178,7 +234,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Une palissade de troncs noircis barre l'horizon d'est en ouest. Les étais sont de ce côté-ci : elle n'empêche pas d'entrer. Au centre, une porte à double battant — et derrière, un chemin qui descend, où l'air coule comme une eau froide.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     }
@@ -192,8 +252,16 @@
       "histoire_bailli": true,
       "rarete": "commune",
       "gardien": true,
-      "etats": ["intact", "balafre", "rompu"],
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "etats": [
+        "intact",
+        "balafre",
+        "rompu"
+      ],
+      "textes": {
+        "decouverte": "Un gibet bas, à hauteur d'homme. Le pendu qui s'y balance ouvre les yeux quand on approche : chaîne de fonction au cou, sceau au poing. Le Bailli des Landes — pendu le dernier, à la place d'honneur. Tout ce qui entre dans ses Landes passe en jugement.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -204,7 +272,11 @@
       "lieu_attache": "champ_des_fixes",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Entre les rangs du Champ, un vieil homme redresse les poteaux qui penchent, avec des gestes de jardinier. « Ils dorment mal quand ça penche. » Son carnet tient le plan des rangs — et une croix là où il ne faut jamais passer.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -215,7 +287,11 @@
       "lieu_attache": "champ_des_fixes",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Au bout d'une corde trop courte, une petite fille pend sans se balancer. Les autres fixés regardent tous droit devant. Pas elle : elle vous suit des yeux.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -226,7 +302,11 @@
       "lieu_attache": "moulin_sans_ailes",
       "histoire_bailli": true,
       "rarete": "rare",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -237,7 +317,11 @@
       "lieu_attache": "chapelle_des_cordes",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Une femme en noir, au pied du mur de la chapelle, qui refait sans fin le même nœud. Le nœud qu'elle apprend n'attache rien — il retient quelqu'un de partir dans sa tête.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -248,7 +332,11 @@
       "lieu_attache": "petit_tribunal",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -259,7 +347,11 @@
       "lieu_attache": "petit_tribunal",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Un petit homme sec, plume en main, qui copie le Registre des Pendaisons sans lever les yeux. Il désigne le Registre du bout de sa plume : votre page est prête.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -271,7 +363,11 @@
       "histoire_bailli": false,
       "rarete": "commune",
       "recurrent": true,
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Au bout du Marché Muet, un étal différent : bric-à-brac d'ailleurs, objets qui n'ont rien à faire dans une lande. Le Colporteur vous regarde venir de loin — et vous reconnaît. C'est impossible. Il vous fait signe quand même.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -282,7 +378,11 @@
       "lieu_attache": "marche_muet",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Des mains dures et savantes, qui palpent une blessure comme on lit une lettre. Il remet en place ce qui peut l'être, refuse ce qui le dépasse — et ce qu'il sent parfois sous la peau, il ne le soigne pas. Il le salue.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -293,7 +393,11 @@
       "lieu_attache": "hameau_des_renoncants",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Sur le seuil du premier muret, une vieille femme barre le passage, paumes ouvertes — pas en accueil. En douane. C'est elle qui exige le Serment, et le hameau entier attend derrière elle, aux fenêtres sans lumière.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -304,7 +408,11 @@
       "lieu_attache": "hameau_des_renoncants",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -315,7 +423,11 @@
       "lieu_attache": "hameau_des_renoncants",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -326,7 +438,11 @@
       "lieu_attache": "hameau_des_renoncants",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -337,7 +453,11 @@
       "lieu_attache": "verger_noir",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -348,7 +468,11 @@
       "lieu_attache": "chemin_creux",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Il vient en sens inverse — à reculons. Il marche vite, sûr de ses pas, les yeux fixés sur ce qu'il fuit. Il ne s'arrête pour personne, mais il parle en passant : « Ça suit ceux qui suivent le chemin. »",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -359,7 +483,11 @@
       "lieu_attache": "borne_frontiere",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -370,7 +498,11 @@
       "lieu_attache": "palissade_sud",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Sur le chemin de ronde, un vieux soldat regarde vers le sud. Trente ans qu'il guette une relève qui ne vient pas. « On ne rattrape pas les Appelés. On les compte. »",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     }
@@ -383,7 +515,11 @@
       "lieu_attache": "colline_aux_gibets",
       "histoire_bailli": false,
       "rarete": "evenement",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": true
     },
@@ -394,7 +530,11 @@
       "lieu_attache": "colline_aux_gibets",
       "histoire_bailli": false,
       "rarete": "evenement",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": true
     },
@@ -405,7 +545,11 @@
       "lieu_attache": "colline_aux_gibets",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "L'ombre du Gibet Vide s'étale au sol sans que rien ne la porte. Le gibet est vide ; son ombre, non.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -416,7 +560,11 @@
       "lieu_attache": "colline_aux_gibets",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Sur les potences de la colline, des corbeaux. Ils ne crient pas. Ils comptent — à l'arrivée d'un vivant, toutes les têtes se tournent d'un cran. Quarante-neuf perchoirs occupés. Le cinquantième est vide, juste au-dessus du Gibet Vide.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -427,7 +575,11 @@
       "lieu_attache": "champ_des_fixes",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Un poteau casse, et le pendu qui le quittait touche terre sur ses pieds, corde encore nouée au cou. Une Fixation ratée : ni mort ni tenu. Ce qui reste de son visage n'exprime qu'une envie — échanger sa place.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": true
     },
@@ -438,7 +590,11 @@
       "lieu_attache": "chapelle_des_cordes",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Dans la Chapelle des Cordes, certaines reliques bougent doucement, sans courant d'air. L'une d'elles ne fait pas que bouger : elle se tend vers ce qui passe. La Fixation est un métier de patience.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -449,7 +605,11 @@
       "lieu_attache": "maison_du_bailli",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Il se lève du seuil sans aboyer. Gris, trop grand, le poil usé aux endroits d'un harnais qu'il ne porte plus. Son maître pend à la colline — mais l'ordre, lui, n'a jamais été levé. Personne n'entre.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": true
     },
@@ -460,7 +620,11 @@
       "lieu_attache": "puits_condamne",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Des mains passent entre les planches du puits. Des mains seulement : grises, patientes, par dizaines, qui palpent l'air et les chaînes. Jamais un corps. Elles ne sortent pas — elles cherchent quelque chose à faire entrer.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -471,7 +635,11 @@
       "lieu_attache": "chemin_creux",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "L'odeur arrive avant la chose : suint, terre retournée, vieux cuir. Une masse longue et basse, taillée pour courir exactement entre deux murs de terre. Elle ne chasse que dans le creux — c'est son couloir, son terrier, sa table. Et elle ne monte jamais sur les talus.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": true
     },
@@ -482,7 +650,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "On ne les voit que quand l'encerclement est fini. Six silhouettes couleur de bruyère morte, immobiles aux six points d'un cercle qui se resserre d'un pas par tour. Pas des chiens : trop patients. Pas des loups : trop organisés. La Meute Grise ne tue presque jamais. Elle évalue.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": true
     },
@@ -493,7 +665,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": true
     },
@@ -504,7 +680,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -515,7 +695,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Sous le vent, des voix — basses, à ras de bruyère, qui se passent le mot des arrivées. Elles ne menacent pas. Elles préviennent quelqu'un.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -526,7 +710,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -537,7 +725,11 @@
       "lieu_attache": "palissade_sud",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Un homme descend le chemin de la Descente d'un pas égal, sans bagage, sans se retourner. Le pas de quelqu'un qui n'obéit pas à ses jambes. Juste avant le tournant, il s'arrête une seconde — comme si, tout au fond, quelque chose en lui se débattait encore. Toujours vu de dos.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     }
@@ -550,7 +742,11 @@
       "lieu_attache": "colline_aux_gibets",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Une écharde longue, prélevée au montant du Gibet Vide. Le bois est doux, poli par des mains — combien de mains ? Elle reste tiède dans la paume.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -561,7 +757,11 @@
       "lieu_attache": "champ_des_fixes",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Le plan des rangs du Champ des Fixés, tenu au crayon gras par le Fossoyeur. Des annotations sur le sommeil de chacun — et une croix, quelque part, là où il ne faut jamais passer.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -572,7 +772,11 @@
       "lieu_attache": "champ_des_fixes",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Un petit cheval de bois, usé au poli, à demi enterré au pied d'un poteau du troisième rang. Elle ne peut pas le montrer autrement qu'en le regardant.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -583,7 +787,11 @@
       "lieu_attache": "mare_aux_regards",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -594,7 +802,11 @@
       "lieu_attache": "chapelle_des_cordes",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -605,7 +817,11 @@
       "lieu_attache": "chapelle_des_cordes",
       "histoire_bailli": true,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Dans une niche à part de la chapelle, sous verre : une corde coupée net, sans nom. La seule de toutes les reliques qui n'a pas tenu. Elle ne pèse rien — tout ce qu'elle devait retenir s'est relevé et marche encore.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -616,7 +832,11 @@
       "lieu_attache": "maison_du_bailli",
       "histoire_bailli": true,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -627,7 +847,11 @@
       "lieu_attache": "maison_du_bailli",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -638,7 +862,11 @@
       "lieu_attache": "petit_tribunal",
       "histoire_bailli": true,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Ouvert sur la chaire du Petit Tribunal, tenu à jour d'une écriture de greffe. Chaque Fixé y a sa ligne : nom, motif, jours. Les pages récentes attendent — il y a toujours une page prête.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -649,7 +877,11 @@
       "lieu_attache": "petit_tribunal",
       "histoire_bailli": true,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -660,7 +892,11 @@
       "lieu_attache": "petit_tribunal",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -671,7 +907,11 @@
       "lieu_attache": "hameau_des_renoncants",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -682,7 +922,11 @@
       "lieu_attache": "verger_noir",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -693,7 +937,11 @@
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -704,7 +952,11 @@
       "lieu_attache": "chemin_creux",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Un grelot de charretier, à terre dans le Chemin Creux. Sans charrette nulle part. Il lui arrive de sonner tout seul — trois coups clairs, comme un signal convenu.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -715,7 +967,11 @@
       "lieu_attache": "borne_frontiere",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Bouts de pain durci, rubans, clous tordus, mèches de cheveux, empilés contre la pierre de la borne. On n'offre pas par foi, ici. On offre par peur.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -726,7 +982,11 @@
       "lieu_attache": "borne_frontiere",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": "Une pierre plate gravée d'un pas, enfouie sous les offrandes de la borne. Ceux qui la déposent reviennent, dit-on. Celle-ci n'a jamais été réclamée.",
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     },
@@ -737,7 +997,11 @@
       "lieu_attache": "palissade_sud",
       "histoire_bailli": false,
       "rarete": "commune",
-      "textes": { "decouverte": null, "familiarite": null, "recontextualisation": null },
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
       "illustration": null,
       "portrait_requis": false
     }
