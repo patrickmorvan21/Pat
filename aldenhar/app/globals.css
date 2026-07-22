@@ -36,6 +36,21 @@ body {
 .phone-frame ::-webkit-scrollbar { display: none; }
 .phone-frame * { scrollbar-width: none; }
 
+/* Numéro de version — accueil, bas à droite, blanc 50 % (demande Patrick 20/07) */
+.app-version {
+  position: absolute;
+  right: 10px;
+  bottom: 8px;
+  z-index: 20;
+  font-family: var(--font-mono, var(--font-body));
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: #ffffff;
+  opacity: 0.5;
+  pointer-events: none;
+  user-select: none;
+}
+
 /* ——— Animations du dé / verdict (reprises de REFERENCE_de_3d_tactile.html) ——— */
 
 .phone-frame.quake {

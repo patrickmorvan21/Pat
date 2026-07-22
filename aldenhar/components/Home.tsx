@@ -6,6 +6,7 @@ import { HeroGeolier } from "@/components/HeroGeolier";
 import Prologue from "@/components/Prologue";
 import { buildRegistre, loadMemory } from "@/lib/player-memory";
 import { hasSavedRun, loadRun, resetRun } from "@/lib/state";
+import { APP_VERSION } from "@/lib/version";
 
 /**
  * Écrans d'accueil (Figma 1963:370 « Première partie » / 1970:458 « Reprendre
@@ -100,6 +101,13 @@ export default function Home() {
             {overlay && <HomeOverlay kind={overlay} onClose={() => setOverlay(null)} />}
           </>
         )}
+
+        {/* Numéro de version — bas à droite du cadre, blanc opacité 50 %.
+            Repère de déploiement (demande Patrick 20/07) : source unique dans
+            lib/version.ts, bumpée selon la grandeur du changement. */}
+        <span className="app-version" aria-hidden>
+          v{APP_VERSION}
+        </span>
       </div>
     </main>
   );
