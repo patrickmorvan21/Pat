@@ -13,7 +13,7 @@
    dur. `cache.add("./")` → la racine servie, `cache.add("assets/x.png")`
    → <base>/assets/x.png, etc. */
 
-const CACHE_VERSION = "pactum-v8";
+const CACHE_VERSION = "pactum-v9";
 
 /* Coquille précachée à l'installation : les pages navigables + les
    assets à nom STABLE affichés tôt (logo, Geôlier, cadre). On NE code
@@ -71,13 +71,46 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-/* Stratégie : cache d'abord, réseau en secours, et on met à jour le
-   cache silencieusement quand le réseau répond (stale-while-revalidate).
-   C'est aussi ce qui met en cache les bundles `/_next/…` hashés et les
-   illustrations (biomes, monstres, objets) au fil de leur premier
-   téléchargement, sans les lister à la main. */
+/* Deux stratégies selon le type de requête :
+
+   1. NAVIGATIONS (chargement d'une page HTML) → RÉSEAU D'ABORD, cache en
+      secours. C'est LA correction du 20/07 : en cache-first, relancer le jeu
+      servait l'ancien HTML tant que le réseau n'avait pas révalidé en fond —
+      d'où l'impression que « les mises à jour ne prennent pas ». Réseau
+      d'abord = on voit tout de suite la dernière version en ligne, et on
+      retombe sur le cache uniquement hors-ligne (règle permadeath : une run
+      ne doit jamais échouer faute de réseau).
+
+   2. TOUT LE RESTE (bundles `/_next/…` hashés, illustrations, assets) →
+      cache d'abord, réseau en secours + mise à jour silencieuse
+      (stale-while-revalidate). Les noms hashés changent à chaque build, donc
+      pas de risque de servir un vieux bundle avec un HTML neuf : le HTML
+      frais pointe déjà vers les nouveaux noms. */
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+
+  const isNavigation =
+    event.request.mode === "navigate" ||
+    (event.request.destination === "document");
+
+  if (isNavigation) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response && response.status === 200) {
+            const clone = response.clone();
+            caches.open(CACHE_VERSION).then((cache) => cache.put(event.request, clone));
+          }
+          return response;
+        })
+        .catch(() =>
+          // Hors-ligne : on rend le HTML mis en cache (la page exacte, sinon
+          // la racine — l'app est une SPA, tout rend depuis la coquille).
+          caches.match(event.request).then((c) => c || caches.match("./"))
+        )
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request).then((cached) => {
