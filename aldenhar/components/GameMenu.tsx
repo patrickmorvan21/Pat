@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { CloseX } from "@/components/Home";
 import { loadMemory } from "@/lib/player-memory";
 import type { NarrativeEffect, RunState } from "@/lib/state";
-import { RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
+import { besaceBySlot, normalizeItem, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 
 /**
  * Menu plein cadre (spec §8 + écrans Figma 1925:559 « Essence » et 1925:524
@@ -43,7 +43,17 @@ const ETAT_DISPLAY: Record<
   ebranle: { name: "Ébranlé", desc: "Les mains tremblent encore.", img: null },
 };
 
-export default function GameMenu({ run, onClose }: { run: RunState; onClose: () => void }) {
+export default function GameMenu({
+  run,
+  onClose,
+  onUse,
+}: {
+  run: RunState;
+  onClose: () => void;
+  /** Utiliser un actif depuis la Besace (spec 21/07 point 4) — consommé côté
+      run par le parent (Scene) pour garder l'état synchronisé. */
+  onUse?: (item: BesaceItem) => void;
+}) {
   const [tab, setTab] = useState<Tab>("stats");
   const memory = useMemo(() => loadMemory(), []);
 
@@ -66,7 +76,7 @@ export default function GameMenu({ run, onClose }: { run: RunState; onClose: () 
       </div>
 
       <div className="flex-1 overflow-y-auto pb-[24px]">
-        {tab === "stats" ? <EssenceTab run={run} /> : <InventaireTab run={run} relics={memory.relics} />}
+        {tab === "stats" ? <EssenceTab run={run} /> : <InventaireTab run={run} relics={memory.relics} onUse={onUse} />}
       </div>
     </div>
   );
@@ -101,7 +111,14 @@ function Diamond() {
  * DROIT du device — jamais arrêté à la marge (retour Patrick 14/07 soir).
  * À poser dans un conteneur SANS padding horizontal.
  */
-function SectionHead({ label }: { label: string }) {
+function SectionHead({ label, inset }: { label: string; inset?: boolean }) {
+  // `inset` (groupes Passifs/Actifs côte à côte, maquette 1925:524) : label
+  // compact, sans le filet pleine largeur qui traverserait les deux colonnes.
+  if (inset) {
+    return (
+      <span className="font-mono text-[13px] tracking-[0.5px] text-[var(--color-ink)] opacity-90">{label}</span>
+    );
+  }
   return (
     <div className="mb-[16px] flex w-full items-center">
       <span className="block h-px w-[7px] bg-[var(--color-ink)] opacity-55" aria-hidden />
@@ -316,12 +333,27 @@ function EssenceTab({ run }: { run: RunState }) {
 
 /* ------------------------------------------------------------ INVENTAIRE */
 
-type Selected = { type: "besace"; index: number } | { type: "relic"; index: number };
+type Selected = { type: "besace"; id: string } | { type: "relic"; index: number };
 
-function InventaireTab({ run, relics }: { run: RunState; relics: { name: string; rarity: string; heroName: string; days: number }[] }) {
-  const [selected, setSelected] = useState<Selected>({ type: "besace", index: 0 });
+function InventaireTab({
+  run,
+  relics,
+  onUse,
+}: {
+  run: RunState;
+  relics: { name: string; rarity: string; heroName: string; days: number }[];
+  onUse?: (item: BesaceItem) => void;
+}) {
+  // Copie locale : « Utiliser » retire l'objet de l'affichage immédiatement, en
+  // plus de le consommer côté run (via onUse) — les deux restent synchronisés.
+  const [besace, setBesace] = useState<BesaceItem[]>(() => run.besace.map(normalizeItem));
+  const passifs = besaceBySlot(besace, "passif");
+  const actifs = besaceBySlot(besace, "actif");
+  const [selected, setSelected] = useState<Selected>(() =>
+    besace[0] ? { type: "besace", id: besace[0].id } : { type: "relic", index: 0 }
+  );
 
-  const item = selected.type === "besace" ? run.besace[selected.index] : undefined;
+  const item = selected.type === "besace" ? besace.find((i) => i.id === selected.id) : undefined;
   const relic = selected.type === "relic" ? relics[selected.index] : undefined;
   const detailImg = item ? BESACE_ICONS[item.kind] : relic ? "assets/objet_masque.png" : null;
   const detailName = item?.name ?? relic?.name ?? "—";
@@ -331,11 +363,43 @@ function InventaireTab({ run, relics }: { run: RunState; relics: { name: string;
       ? `Relique ${relic.rarity} — forgée de la mort de ${relic.heroName}, jour ${relic.days}.`
       : "";
   const detailTag = item ? RARITY_LABEL[item.rarity as BesaceRarity] : relic ? relic.rarity : null;
+  const canUse = Boolean(item && item.slot === "actif" && (item.heal || item.cure));
+
+  function useSelected() {
+    if (!item) return;
+    onUse?.(item);
+    const next = besace.filter((i) => i.id !== item.id);
+    setBesace(next);
+    setSelected(next[0] ? { type: "besace", id: next[0].id } : { type: "relic", index: 0 });
+  }
+
+  const slot = (it: BesaceItem | undefined, key: string) => {
+    const isSel = it ? selected.type === "besace" && selected.id === it.id : false;
+    return (
+      <button
+        key={key}
+        type="button"
+        disabled={!it}
+        onClick={() => it && setSelected({ type: "besace", id: it.id })}
+        className={`relative size-[74px] border border-solid ${
+          isSel ? "border-white" : "border-[var(--color-ink)]/45"
+        } ${it ? "cursor-pointer" : "cursor-default"}`}
+      >
+        {it ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img alt={it.name} src={BESACE_ICONS[it.kind]} className="block size-full" style={{ imageRendering: "pixelated" }} />
+        ) : (
+          <span className="absolute inset-0 grid place-items-center font-mono text-[10px] uppercase tracking-[2px] text-[var(--color-ink)] opacity-45">
+            VIDE
+          </span>
+        )}
+      </button>
+    );
+  };
 
   return (
     <div className="pt-[4px]">
-      {/* Détail de l'objet sélectionné — icône tramée agrandie au pixel
-          (le cadre du slot a été rogné des PNG sources). */}
+      {/* Détail de l'objet sélectionné — icône tramée agrandie au pixel. */}
       <div className="mx-auto size-[276px]">
         {detailImg && (
           // eslint-disable-next-line @next/next/no-img-element
@@ -350,40 +414,36 @@ function InventaireTab({ run, relics }: { run: RunState; relics: { name: string;
           {detailName}
           {detailTag && (
             <span className="ml-[10px] align-middle font-mono text-[10px] uppercase tracking-[1.5px] text-[var(--color-ink)] opacity-60">
-              {detailTag}
+              {item ? (item.slot === "actif" ? "Actif" : "Passif") + " · " + detailTag : detailTag}
             </span>
           )}
         </p>
         <p className="mt-[10px] min-h-[34px] font-mono text-[13px] leading-[1.5] text-[var(--color-ink)] opacity-85">{detailFlavor}</p>
+        {/* Utiliser — seulement sur un ACTIF (spec 21/07 point 4). */}
+        {canUse && (
+          <button
+            type="button"
+            onClick={useSelected}
+            className="mt-[10px] border border-solid border-[var(--color-accent)] bg-transparent px-[16px] py-[7px] font-mono text-[12px] uppercase tracking-[2px] text-[var(--color-accent)]"
+          >
+            Utiliser
+          </button>
+        )}
       </div>
 
-      <div className="mt-[26px]">
-        <SectionHead label="Équipements" />
-        <div className="flex gap-[9px] px-[15px]">
-          {Array.from({ length: 4 }).map((_, i) => {
-            const it = run.besace[i];
-            const isSel = selected.type === "besace" && selected.index === i && Boolean(it);
-            return (
-              <button
-                key={i}
-                type="button"
-                disabled={!it}
-                onClick={() => setSelected({ type: "besace", index: i })}
-                className={`relative size-[74px] border border-solid ${
-                  isSel ? "border-white" : "border-[var(--color-ink)]/45"
-                } ${it ? "cursor-pointer" : "cursor-default"}`}
-              >
-                {it ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img alt={it.name} src={BESACE_ICONS[it.kind]} className="block size-full" style={{ imageRendering: "pixelated" }} />
-                ) : (
-                  <span className="absolute inset-0 grid place-items-center font-mono text-[10px] uppercase tracking-[2px] text-[var(--color-ink)] opacity-45">
-                    VIDE
-                  </span>
-                )}
-              </button>
-            );
-          })}
+      {/* Deux groupes côte à côte (maquette 1925:524) : Passifs · Actifs. */}
+      <div className="mt-[26px] flex gap-[28px] px-[15px]">
+        <div>
+          <SectionHead label="Passifs" inset />
+          <div className="mt-[10px] flex gap-[9px]">
+            {[0, 1].map((i) => slot(passifs[i], `p${i}`))}
+          </div>
+        </div>
+        <div>
+          <SectionHead label="Actifs" inset />
+          <div className="mt-[10px] flex gap-[9px]">
+            {[0, 1].map((i) => slot(actifs[i], `a${i}`))}
+          </div>
         </div>
       </div>
 

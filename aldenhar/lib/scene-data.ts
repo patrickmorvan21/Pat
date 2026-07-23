@@ -50,6 +50,12 @@ export type Choice = {
    */
   orient?: { dest: string };
   /**
+   * 4e choix contextuel (spec 21/07, point 4) : utiliser un objet ACTIF de la
+   * Besace pertinent dans la scène (ex. un baume quand ENTAILLÉ). Consommé,
+   * puis la scène se résout. Ajouté dynamiquement, jamais écrit en dur.
+   */
+  useItem?: { itemId: string };
+  /**
    * Prix différé (§17) : ce choix « gratuit » contracte une dette silencieuse
    * qui se règle `settleInSteps` scènes plus loin dans la run.
    */

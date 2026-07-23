@@ -4,7 +4,7 @@
  * L'état est persisté à chaque évènement et repris exactement où on l'a laissé.
  */
 
-import { startingBesace, type BesaceItem } from "@/lib/besace";
+import { normalizeItem, startingBesace, type BesaceItem } from "@/lib/besace";
 import { drawMemories } from "@/lib/prologue-data";
 import { ENTRY_SCENE, sceneAt } from "@/lib/scene-data";
 
@@ -251,7 +251,8 @@ export function loadRun(): RunState {
             lastChoiceId: p.lastChoiceId ?? null,
             feed: Array.isArray(p.feed) ? p.feed : [],
             debts: Array.isArray(p.debts) ? p.debts : [],
-            besace: Array.isArray(p.besace) ? p.besace : startingBesace(),
+            // Normalise les items d'avant le point 4 (ajoute slot/effets).
+            besace: Array.isArray(p.besace) ? p.besace.map(normalizeItem) : startingBesace(),
             encounters: typeof p.encounters === "number" ? p.encounters : 0,
             stats: migrateStats(p.stats),
             // Runs d'avant le prologue : considérées comme un prologue déjà

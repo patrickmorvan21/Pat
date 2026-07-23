@@ -8,16 +8,40 @@
 
 export type BesaceRarity = "commun" | "rare" | "legendaire";
 
+/**
+ * Deux types d'objets SEULEMENT (spec 21/07, point 4) :
+ *  - `passif` : effet PERMANENT tant que l'objet est en Besace, zéro
+ *    interaction (jamais consommé, jamais automatique à déclencher).
+ *  - `actif`  : usage UNIQUE, consommé sur DÉCISION du joueur (menu → Utiliser,
+ *    ou 4e choix contextuel en scène). Rien d'automatique, jamais.
+ */
+export type BesaceSlot = "actif" | "passif";
+
 export type BesaceItem = {
   id: string;
   name: string;
   rarity: BesaceRarity;
-  /** soin = consommable qui referme les blessures ; arme/babiole = passifs narratifs. */
+  /** Conservé pour le choix d'icône (arme/soin/babiole). */
   kind: "arme" | "soin" | "babiole";
+  /** Type d'objet (spec 21/07) : détermine le slot et l'interaction. */
+  slot: BesaceSlot;
   flavor: string;
+  /** ACTIF — effet consommé à l'usage : soin de santé (0..1) et/ou referme
+      les blessures persistantes (ENTAILLÉ). */
+  heal?: number;
+  cure?: boolean;
+  /** PASSIF — modificateur permanent au jet effectif tant que porté, et sa
+      portée (jets de combat seulement, ou tous les jets). Jamais un chiffre
+      affiché : il fait juste glisser les paliers vécus. */
+  passiveMod?: number;
+  passiveScope?: "combat" | "all";
 };
 
-export const BESACE_SLOTS = 4;
+/** Besace = 2 slots actifs + 2 slots passifs (spec 21/07, remplace les 4 génériques). */
+export const BESACE_ACTIF_SLOTS = 2;
+export const BESACE_PASSIF_SLOTS = 2;
+/** Compat : capacité totale (certaines vérifs génériques la référencent encore). */
+export const BESACE_SLOTS = BESACE_ACTIF_SLOTS + BESACE_PASSIF_SLOTS;
 
 /** Objet de départ, identique pour tous les héros (13/07 : jamais aléatoire). */
 export function startingBesace(): BesaceItem[] {
@@ -27,26 +51,62 @@ export function startingBesace(): BesaceItem[] {
       name: "Dague simple",
       rarity: "commun",
       kind: "arme",
-      flavor: "Elle a déjà servi. Elle servira encore.",
+      slot: "passif",
+      passiveMod: 1,
+      passiveScope: "combat",
+      flavor: "Elle a déjà servi. Elle servira encore. Ta main s'en trouve plus sûre au combat.",
     },
   ];
 }
 
-/** Soins mineurs trouvables en exploration (~1 scène d'exploration sur 5). */
+/** Items de la Besace occupant un slot donné (actif ou passif). */
+export function besaceBySlot(besace: BesaceItem[], slot: BesaceSlot): BesaceItem[] {
+  return besace.filter((i) => normalizeItem(i).slot === slot);
+}
+
+/** Somme des modificateurs passifs qui s'appliquent à un jet (combat ou non). */
+export function passiveMod(besace: BesaceItem[], isCombat: boolean): number {
+  return besace.reduce((sum, raw) => {
+    const i = normalizeItem(raw);
+    if (i.slot !== "passif" || !i.passiveMod) return sum;
+    if (i.passiveScope === "all" || (i.passiveScope === "combat" && isCombat)) return sum + i.passiveMod;
+    return sum;
+  }, 0);
+}
+
+/** Y a-t-il de la place pour un item de ce type ? (2 actifs / 2 passifs) */
+export function hasBesaceRoom(besace: BesaceItem[], slot: BesaceSlot): boolean {
+  const cap = slot === "actif" ? BESACE_ACTIF_SLOTS : BESACE_PASSIF_SLOTS;
+  return besaceBySlot(besace, slot).length < cap;
+}
+
+/**
+ * Normalise un item (compat sauvegardes d'avant le point 4 : pas de `slot`).
+ * soin → actif (heal+cure) ; arme/babiole → passif (petit mod permanent).
+ */
+export function normalizeItem(i: BesaceItem): BesaceItem {
+  if (i.slot === "actif" || i.slot === "passif") return i;
+  if (i.kind === "soin") return { ...i, slot: "actif", heal: i.heal ?? 0.3, cure: i.cure ?? true };
+  const scope = i.kind === "arme" ? "combat" : "all";
+  return { ...i, slot: "passif", passiveMod: i.passiveMod ?? 1, passiveScope: i.passiveScope ?? scope };
+}
+
+/** Soins mineurs trouvables en exploration — ACTIFS à usage unique (~1 scène sur 5). */
 const SOINS_MINEURS: Omit<BesaceItem, "id">[] = [
-  { name: "Baume de mousse noire", rarity: "commun", kind: "soin", flavor: "Ça sent la cave. Ça referme les plaies." },
-  { name: "Fiole d'eau de gouttière", rarity: "commun", kind: "soin", flavor: "Trouble, tiède — mais elle apaise." },
-  { name: "Bandage d'un autre", rarity: "commun", kind: "soin", flavor: "Son premier propriétaire n'en aura plus besoin." },
-  { name: "Onguent gris", rarity: "commun", kind: "soin", flavor: "L'étiquette est illisible. L'odeur, convaincante." },
+  { name: "Baume de mousse noire", rarity: "commun", kind: "soin", slot: "actif", heal: 0.3, cure: true, flavor: "Ça sent la cave. Ça referme les plaies." },
+  { name: "Fiole d'eau de gouttière", rarity: "commun", kind: "soin", slot: "actif", heal: 0.25, cure: false, flavor: "Trouble, tiède — mais elle apaise." },
+  { name: "Bandage d'un autre", rarity: "commun", kind: "soin", slot: "actif", heal: 0.2, cure: true, flavor: "Son premier propriétaire n'en aura plus besoin." },
+  { name: "Onguent gris", rarity: "commun", kind: "soin", slot: "actif", heal: 0.3, cure: false, flavor: "L'étiquette est illisible. L'odeur, convaincante." },
 ];
 
-/** Récompenses du Destin (nat 20) : rare à légendaire, JAMAIS une Relique. */
+/** Récompenses du Destin (nat 20) : rare à légendaire, JAMAIS une Relique. Un
+    mélange d'actifs (soins puissants) et de passifs (babioles / armes). */
 const RECOMPENSES_DESTIN: Omit<BesaceItem, "id">[] = [
-  { name: "Amulette d'os verdi", rarity: "rare", kind: "babiole", flavor: "Elle vibre quand on la regarde trop longtemps." },
-  { name: "Lame de lanterne", rarity: "rare", kind: "arme", flavor: "Forgée dans le métal d'une lanterne verte. Elle ne vacille jamais." },
-  { name: "Élixir du campement perdu", rarity: "rare", kind: "soin", flavor: "Quelqu'un l'a brassé pour un repos qui n'est jamais venu." },
-  { name: "Larme du Geôlier", rarity: "legendaire", kind: "babiole", flavor: "Il jure qu'il ne pleure pas. Elle existe pourtant." },
-  { name: "Clef sans porte", rarity: "legendaire", kind: "babiole", flavor: "Toutes les serrures la craignent un peu." },
+  { name: "Amulette d'os verdi", rarity: "rare", kind: "babiole", slot: "passif", passiveMod: 1, passiveScope: "all", flavor: "Elle vibre quand on la regarde trop longtemps — et le hasard te sourit un peu plus." },
+  { name: "Lame de lanterne", rarity: "rare", kind: "arme", slot: "passif", passiveMod: 1, passiveScope: "combat", flavor: "Forgée dans le métal d'une lanterne verte. Elle ne vacille jamais." },
+  { name: "Élixir du campement perdu", rarity: "rare", kind: "soin", slot: "actif", heal: 0.5, cure: true, flavor: "Quelqu'un l'a brassé pour un repos qui n'est jamais venu." },
+  { name: "Larme du Geôlier", rarity: "legendaire", kind: "babiole", slot: "passif", passiveMod: 2, passiveScope: "all", flavor: "Il jure qu'il ne pleure pas. Elle existe pourtant — et te protège de justesse." },
+  { name: "Clef sans porte", rarity: "legendaire", kind: "babiole", slot: "passif", passiveMod: 1, passiveScope: "all", flavor: "Toutes les serrures la craignent un peu." },
 ];
 
 let uid = 0;

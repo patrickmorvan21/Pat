@@ -28,5 +28,10 @@
  *           lieux, une scène de liaison (marche + choix d'orientation) ; une
  *           traversée ne visite que 3-4 lieux puis débouche sur la Descente
  *           (fin sèche « Acte II à venir »).
+ *   1.5.0 — Retours playtest 21/07 (vague 3) : OBJETS 2 types — passifs (effet
+ *           permanent tant que porté) / actifs (usage unique, consommés au
+ *           choix). Besace = 2 slots actifs + 2 passifs. Actif utilisable via
+ *           le menu (Utiliser) ET en 4e choix contextuel quand pertinent. Plus
+ *           aucune consommation automatique.
  */
-export const APP_VERSION = "1.4.0";
+export const APP_VERSION = "1.5.0";

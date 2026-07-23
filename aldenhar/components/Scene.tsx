@@ -18,7 +18,7 @@ import {
   type Scene as SceneType,
 } from "@/lib/scene-data";
 import { loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
-import { BESACE_SLOTS, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
+import { hasBesaceRoom, normalizeItem, passiveMod, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import {
   bloodDebtFor,
   buildRegistre,
@@ -188,6 +188,9 @@ export default function Scene() {
   // Hauteur mesurée de l'illustration (px) — sortie en state pour placer la
   // bande de dissolution sans lire un ref pendant le rendu (React Compiler).
   const [illoH, setIlloH] = useState(0);
+  // 4e choix contextuel (spec 21/07 point 4) : objet ACTIF pertinent proposé
+  // en scène. Calculé dans un effet (lecture Besace/santé hors rendu).
+  const [activeChoice, setActiveChoice] = useState<Choice | null>(null);
 
   function setActiveTypingId(id: string | null) {
     activeTypingIdRef.current = id;
@@ -229,6 +232,9 @@ export default function Scene() {
   // Les choix d'orientation d'une liaison gardent leur ordre (gauche/droite
   // stable) ; ailleurs, Fisher-Yates seedé pour casser les patterns de slot.
   const shuffledChoices = scene.liaison ? baseChoices : shuffleChoices(baseChoices, step);
+  // 4e choix contextuel (spec 21/07 point 4) : un objet ACTIF pertinent ajouté
+  // en bas des choix (calculé hors rendu dans un effet — lit la Besace/santé).
+  const renderedChoices = activeChoice ? [...shuffledChoices, activeChoice] : shuffledChoices;
 
   function persist(mutate: (run: RunState) => void) {
     const run = runRef.current ?? loadRun();
@@ -338,6 +344,25 @@ export default function Scene() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [revealedIds]);
+
+  // 4e choix contextuel (spec 21/07 point 4) : à chaque écran, on cherche un
+  // objet ACTIF de la Besace utile ICI (un soin quand la santé baisse ou qu'une
+  // blessure persiste). Lecture du run hors rendu — jamais pendant le render.
+  useEffect(() => {
+    const run = runRef.current;
+    if (!run || scene.liaison || scene.terminal || scene.registre) {
+      setActiveChoice(null);
+      return;
+    }
+    const hasNeg = run.effects.some((e) => e.delta < 0);
+    const hurt = run.health < 0.75 || hasNeg;
+    const useful = run.besace
+      .map(normalizeItem)
+      .find((i) => i.slot === "actif" && ((i.heal && hurt) || (i.cure && hasNeg)));
+    setActiveChoice(
+      useful ? { id: `use-${useful.id}`, label: `Utiliser — ${useful.name}`, useItem: { itemId: useful.id } } : null
+    );
+  }, [scene, step, health, beats]);
 
   // Overlay de texte long (spec 21/07) : si le contenu déborde la zone, on fait
   // MONTER le panneau par-dessus l'illustration (fond charbon), juste ce qu'il
@@ -484,7 +509,7 @@ export default function Scene() {
       !nextScene.registre &&
       !nextScene.liaison &&
       nextScene.id !== "campement" &&
-      besace.length < BESACE_SLOTS &&
+      hasBesaceRoom(besace, "actif") &&
       Math.random() < 0.22
     ) {
       const found = randomSoinMineur();
@@ -596,7 +621,10 @@ export default function Scene() {
     if (choice.risky) {
       // Armement du dé (spec §4) : le dé devient saisissable, hint contextuel.
       const effects = runRef.current?.effects ?? [];
-      const modifier = effects.reduce((sum, e) => sum + e.delta, 0);
+      // Modificateur = états temporaires + objets PASSIFS portés (spec 21/07
+      // point 4 : effet permanent, jamais un chiffre affiché — l'Anneau reflète).
+      const passives = passiveMod(runRef.current?.besace ?? [], Boolean(scene.combat));
+      const modifier = effects.reduce((sum, e) => sum + e.delta, 0) + passives;
       // Courbe d'entrée invisible (spec 21/07) : seuil légèrement abaissé les
       // 2-3 premières morts, sans aucun affichage. L'Anneau, calculé sur ce
       // même seuil, montrera juste un peu plus d'encoches pleines — cohérent.
@@ -613,20 +641,15 @@ export default function Scene() {
       });
     } else if (choice.rest) {
       // Campement (spec §7, précisé 13/07) : le jour avance, blessures atténuées.
-      let soinUsed: string | null = null;
+      // Plus AUCUNE consommation automatique d'objet (spec 21/07 point 4 :
+      // « rien d'automatique, jamais ») — le soin d'un actif est une décision
+      // du joueur (menu → Utiliser, ou 4e choix contextuel).
       persist((run) => {
         run.day += 1;
         run.health = Math.min(1, run.health + 0.35);
         run.effects = run.effects
           .filter((e) => e.delta > 0 || e.scenesLeft >= 900)
           .map((e) => (e.scenesLeft >= 900 && e.delta < -1 ? { ...e, delta: -1 } : e));
-        const soinIdx = run.besace.findIndex((i) => i.kind === "soin");
-        if (soinIdx >= 0 && run.effects.some((e) => e.delta < 0)) {
-          soinUsed = run.besace[soinIdx].name;
-          run.besace = run.besace.filter((_, i) => i !== soinIdx);
-          run.effects = run.effects.filter((e) => e.delta > 0);
-          run.health = Math.min(1, run.health + 0.2);
-        }
       });
       const newDay = runRef.current?.day ?? day + 1;
       setDay(newDay);
@@ -635,14 +658,23 @@ export default function Scene() {
         m.bestDays = Math.max(m.bestDays, newDay);
       });
       const prepend: FeedEntry[] = [{ id: nextId(), kind: "day", day: newDay }];
-      if (soinUsed) {
-        prepend.push({
-          id: nextId(),
-          kind: "narration",
-          text: `Avant de dormir, tu uses du ${soinUsed}. La plaie se referme enfin — la nuit n'aura pas ce prétexte.`,
-        });
-      }
       advanceTimer.current = setTimeout(() => advance({ prepend }), 320);
+    } else if (choice.useItem) {
+      // 4e choix contextuel (spec 21/07 point 4) : utiliser un actif de la
+      // Besace. Consommé, effet appliqué, la scène se résout ensuite.
+      const itemId = choice.useItem.itemId;
+      const item = (runRef.current?.besace ?? []).map(normalizeItem).find((i) => i.id === itemId);
+      let consequence = "Tu utilises ce que tu portais. La lande ne te rendra rien en échange.";
+      if (item) {
+        persist((run) => {
+          run.besace = run.besace.filter((i) => i.id !== itemId);
+          if (item.heal) run.health = Math.min(1, run.health + item.heal);
+          if (item.cure) run.effects = run.effects.filter((e) => e.delta > 0);
+        });
+        setHealth(runRef.current?.health ?? health);
+        consequence = `Tu uses « ${item.name} ». ${item.cure ? "La plaie se referme, l'entaille cède enfin." : "Un peu de force te revient."}`;
+      }
+      advanceTimer.current = setTimeout(() => advance({ consequence }), 320);
     } else if (choice.passive) {
       // Le silence comme vraie option (§19) : conséquence dédiée, sans dé.
       advanceTimer.current = setTimeout(() => advance({ consequence: choice.passive!.consequence }), 320);
@@ -769,7 +801,7 @@ export default function Scene() {
             rolling ? "pointer-events-none" : ""
           } ${choicesHidden || activeTypingId ? "choices-hidden" : ""}`}
         >
-          {shuffledChoices.map((choice) => (
+          {renderedChoices.map((choice) => (
             <ChoiceButton
               key={scene.id + choice.id + step}
               choice={choice}
@@ -807,7 +839,11 @@ export default function Scene() {
                   { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 3 },
                   ...run.effects.filter((e) => e.id !== "entaille"),
                 ];
-              if (destinItem) run.besace = [...run.besace, destinItem];
+              // Destin : ajouté si le slot correspondant a de la place (2
+              // actifs / 2 passifs). Sinon le bandeau « Obtenu » reste, mais la
+              // Besace pleine impose un vrai arbitrage (l'objet est perdu).
+              if (destinItem && hasBesaceRoom(run.besace, normalizeItem(destinItem).slot))
+                run.besace = [...run.besace, destinItem];
             });
             const run = runRef.current!;
             setHealth(run.health);
@@ -836,7 +872,21 @@ export default function Scene() {
         />
 
         {/* Menu plein cadre (spec §8) : Essence + Inventaire. */}
-        {menuOpen && <GameMenu run={loadRun()} onClose={() => setMenuOpen(false)} />}
+        {menuOpen && (
+          <GameMenu
+            run={loadRun()}
+            onClose={() => setMenuOpen(false)}
+            onUse={(item) => {
+              // Consomme l'actif côté run (spec 21/07 point 4) : soin + cure.
+              persist((run) => {
+                run.besace = run.besace.filter((i) => i.id !== item.id);
+                if (item.heal) run.health = Math.min(1, run.health + item.heal);
+                if (item.cure) run.effects = run.effects.filter((e) => e.delta > 0);
+              });
+              setHealth(runRef.current?.health ?? health);
+            }}
+          />
+        )}
 
         {/* Écran de mort (13/07). */}
         {death && (
