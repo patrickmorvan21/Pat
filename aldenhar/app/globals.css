@@ -484,6 +484,30 @@ body {
   pointer-events: none;
 }
 
+/* Overlay de texte long (spec 21/07) : quand le texte déborde, le panneau
+   monte par-dessus l'illustration sur fond charbon (marginTop négatif posé
+   inline), au-dessus de l'image. Les CTA (flex-item suivant) ne bougent pas. */
+.scene-text-zone.raised {
+  background: var(--color-bg);
+  z-index: 4;
+}
+/* Bordure haute du panneau relevé : trame de pixels charbon (masque alpha,
+   dense en bas → clairsemée en haut) qui dissout le charbon dans
+   l'illustration — JAMAIS un dégradé CSS. Position `top` posée inline. */
+.text-raise-fade {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 40px;
+  z-index: 3;
+  background: var(--color-bg);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  pointer-events: none;
+}
+
 /* Scène chronométrée (§18) : jauge d'érosion rapide au-dessus des choix.
    Pas de chiffre — la barre se vide par paliers (steps) et pulse, dans le
    même langage visuel que l'érosion de santé. */
@@ -632,6 +656,16 @@ body {
   opacity: 0.7;
   animation: fadeup 0.4s steps(4) 0.25s both;
   --enter-opacity: 0.7;
+}
+/* Accueil du Geôlier à la première mort (jalon 21/07) : accent orange, ton
+   qui accueille — visuellement distinct de la narration, jamais railleur. */
+.death-jailer-welcome {
+  margin-bottom: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-accent);
+  animation: fadeup 0.4s steps(4) 0.1s both;
+  --enter-opacity: 1;
 }
 .death-cta {
   display: inline-block;

@@ -12,12 +12,27 @@ import { BESACE_SLOTS, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, t
 import {
   bloodDebtFor,
   buildRegistre,
+  entrySoftening,
   jailerPosture,
   loadMemory,
   mutateMemory,
   recordDeath,
   type Relic,
 } from "@/lib/player-memory";
+import { ditherFadeMaskDataUrl } from "@/lib/dither";
+
+// Overlay de texte long (spec 21/07) : quand le texte déborde malgré tout, le
+// panneau de texte monte sur l'illustration (fond charbon) et sa bordure haute
+// se dissout en trame de pixels — JAMAIS un dégradé CSS. Masque alpha tramé
+// (Bayer) généré une fois : opaque en bas (le charbon plein du panneau),
+// clairsemé en haut (l'illustration transparaît). Densité croissante vers le
+// bas — la même grammaire que la bande de dissolution des illustrations.
+let raiseFadeCache: string | null = null;
+function getRaiseFadeMask(): string | null {
+  if (typeof document === "undefined") return null;
+  if (!raiseFadeCache) raiseFadeCache = ditherFadeMaskDataUrl(48, 40, (_nx, ny) => 1 - ny);
+  return raiseFadeCache;
+}
 
 // Pixels morts ambiants de l'état KO (palier « Au seuil », retour Patrick
 // 14/07) : une nappe de pixels charbon épars + quelques braises orange qui
@@ -132,7 +147,7 @@ export default function Scene() {
   // Incrémenté à chaque tap dans la zone de texte : termine la frappe en cours.
   const [skip, setSkip] = useState(0);
   // Écran de mort : non-null dès que la santé tombe à zéro sur un jet raté.
-  const [death, setDeath] = useState<{ epitaph: string; day: number; encounters: number; relic: Relic } | null>(null);
+  const [death, setDeath] = useState<{ epitaph: string; day: number; encounters: number; relic: Relic; firstDeath: boolean } | null>(null);
   // Scène chronométrée (§18) : true une fois le délai écoulé sans choix.
   const [timedExpired, setTimedExpired] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -142,6 +157,13 @@ export default function Scene() {
   const timedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const illoRef = useRef<HTMLDivElement>(null);
+  // Overlay de texte long (spec 21/07) : de combien le panneau de texte monte
+  // par-dessus l'illustration (px). 0 = le texte tient, panneau au repos.
+  const [raise, setRaise] = useState(0);
+  // Hauteur mesurée de l'illustration (px) — sortie en state pour placer la
+  // bande de dissolution sans lire un ref pendant le rendu (React Compiler).
+  const [illoH, setIlloH] = useState(0);
 
   function setActiveTypingId(id: string | null) {
     activeTypingIdRef.current = id;
@@ -203,6 +225,9 @@ export default function Scene() {
     revealQueueRef.current = [];
     setActiveTypingId(null);
     setChoicesHidden(true);
+    // Nouvel écran : le panneau redescend au repos (il remontera si ce
+    // nouveau texte déborde — mesuré par l'effet dédié).
+    setRaise(0);
     setBeats(entries);
     persist((run) => {
       // Persisté pour la reprise : run.feed = écran courant (petit), ce qui
@@ -286,6 +311,24 @@ export default function Scene() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [revealedIds]);
+
+  // Overlay de texte long (spec 21/07) : si le contenu déborde la zone, on fait
+  // MONTER le panneau par-dessus l'illustration (fond charbon), juste ce qu'il
+  // faut. Convergence additive : tant qu'il reste du débordement, on monte
+  // encore (plafonné à ~62 % de la hauteur de l'illustration pour toujours en
+  // laisser voir). Réévalué à chaque bloc révélé et à la fin de la frappe.
+  useEffect(() => {
+    const zone = textRef.current;
+    const illo = illoRef.current;
+    if (!zone || !illo) return;
+    const h = illo.clientHeight;
+    if (h && h !== illoH) setIlloH(h);
+    const cap = Math.round(h * 0.62);
+    const overflow = zone.scrollHeight - zone.clientHeight;
+    if (overflow > 4 && raise < cap) {
+      setRaise((r) => Math.min(cap, r + overflow + 8));
+    }
+  }, [beats, revealedIds, activeTypingId, raise, illoH]);
 
   function onTimedExpire(timed: NonNullable<ReturnType<typeof sceneAt>["timed"]>) {
     setCountdownArmed(false);
@@ -473,10 +516,15 @@ export default function Scene() {
       // Armement du dé (spec §4) : le dé devient saisissable, hint contextuel.
       const effects = runRef.current?.effects ?? [];
       const modifier = effects.reduce((sum, e) => sum + e.delta, 0);
+      // Courbe d'entrée invisible (spec 21/07) : seuil légèrement abaissé les
+      // 2-3 premières morts, sans aucun affichage. L'Anneau, calculé sur ce
+      // même seuil, montrera juste un peu plus d'encoches pleines — cohérent.
+      const soft = entrySoftening(loadMemory());
+      const threshold = Math.max(2, choice.risky.threshold - soft);
       setRoll({
         key: Date.now(),
         stat: choice.risky.stat,
-        threshold: choice.risky.threshold,
+        threshold,
         outcomes: choice.risky.outcomes,
         modifier,
         effectLabel: effects[0]?.label,
@@ -561,7 +609,7 @@ export default function Scene() {
         {/* Illustration calée EN HAUT (fixe). Ne se ré-anime (fondu) que quand
             sa source change — même scène = image immobile (demande Patrick).
             Hauteur adaptée à la hauteur du device (dvh), plafonnée. */}
-        <div key={image} className="image-swap illustration-frame shrink-0 relative">
+        <div ref={illoRef} key={image} className="image-swap illustration-frame shrink-0 relative">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt=""
@@ -579,13 +627,33 @@ export default function Scene() {
           />
         </div>
 
+        {/* Bande de dissolution en HAUT du panneau quand il monte sur
+            l'illustration (spec 21/07) : trame de pixels charbon, dense en bas
+            (le panneau plein) → clairsemée en haut (l'illustration transparaît).
+            JAMAIS un dégradé CSS — masque alpha tramé. Positionnée juste
+            au-dessus du bord haut du panneau relevé. */}
+        {raise > 0 && (
+          <div
+            className="text-raise-fade"
+            aria-hidden
+            style={{
+              top: `${Math.max(0, illoH - raise - 40)}px`,
+              WebkitMaskImage: getRaiseFadeMask() ? `url(${getRaiseFadeMask()})` : undefined,
+              maskImage: getRaiseFadeMask() ? `url(${getRaiseFadeMask()})` : undefined,
+            }}
+          />
+        )}
+
         {/* Zone de texte — SEULE partie scrollable (si le texte dépasse). Ne
             capte plus les taps pendant le lancer du dé. La clé = pas de scène :
-            le contenu se renouvelle proprement à chaque écran. */}
+            le contenu se renouvelle proprement à chaque écran. Quand le texte
+            déborde, elle MONTE sur l'illustration (classe `raised`, fond
+            charbon), les CTA restant ancrés en bas (spec 21/07). */}
         <div
           ref={textRef}
           onPointerDown={() => setSkip((s) => s + 1)}
-          className={`scene-text-zone relative min-h-0 flex-1 overflow-y-auto px-[17px] pt-[16px] ${rolling ? "pointer-events-none" : ""}`}
+          style={raise > 0 ? { marginTop: `-${raise}px` } : undefined}
+          className={`scene-text-zone relative min-h-0 flex-1 overflow-y-auto px-[17px] pt-[16px] ${raise > 0 ? "raised" : ""} ${rolling ? "pointer-events-none" : ""}`}
         >
           <div key={step + (timedExpired ? "-t" : "")}>
             {beats.map((entry) => (
@@ -667,6 +735,9 @@ export default function Scene() {
             if (run.health <= 0 && tierIsFail(tier)) {
               const epitaph = outcome.text.replace(/\s*♦.*$/, "");
               const cause = scene.foeName ?? "les Landes";
+              // Jalon de première fois (spec 21/07) : lu AVANT recordDeath (qui
+              // incrémente `deaths`) — le Geôlier accueille, pas de moquerie.
+              const firstDeath = loadMemory().deaths === 0;
               const relic = recordDeath({
                 heroName: run.heroName,
                 days: run.day,
@@ -674,7 +745,7 @@ export default function Scene() {
                 place: scene.id,
                 killer: scene.foe ? { entity: scene.foe, label: scene.foeName ?? scene.foe } : undefined,
               });
-              const dead = { epitaph, day: run.day, encounters: run.encounters, relic };
+              const dead = { epitaph, day: run.day, encounters: run.encounters, relic, firstDeath };
               resetRun();
               setDeath(dead);
               return;
@@ -693,6 +764,7 @@ export default function Scene() {
             day={death.day}
             encounters={death.encounters}
             relic={death.relic}
+            firstDeath={death.firstDeath}
             onRestart={() => window.location.reload()}
           />
         )}

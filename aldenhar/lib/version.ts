@@ -19,5 +19,9 @@
  * Historique récent :
  *   1.2.0 — Les Landes : le jeu ne joue plus que cette zone (17 scènes
  *           réelles), + numéro de version visible + SW réseau-d'abord.
+ *   1.3.0 — Retours playtest 21/07 (vague 1) : physique du dé (la face lue à
+ *           l'arrêt = le résultat), overlay de texte long (panneau qui monte
+ *           sur l'illustration, trame de pixels), courbe d'entrée invisible,
+ *           jalon de première mort (Geôlier qui accueille + fragment fort).
  */
-export const APP_VERSION = "1.2.0";
+export const APP_VERSION = "1.3.0";

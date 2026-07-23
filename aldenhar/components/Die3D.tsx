@@ -538,22 +538,47 @@ export default function Die3D({ request, onComplete }: Props) {
 
     function beginSettle() {
       state = "settling";
-      result = 1 + Math.floor(Math.random() * 20);
+      // Physique du dé = le tirage (spec 21/07, VERROUILLÉ). On INVERSE
+      // l'ancienne architecture : plus aucun `result` pré-tiré. Le résultat EST
+      // la face réellement tournée vers la caméra (+Z) au moment où le dé
+      // s'immobilise — lue sur l'orientation accumulée par le roulé (geste du
+      // joueur + rebonds + bruit angulaire). La physique arbitre pour de vrai ;
+      // la face visible à l'arrêt correspond donc toujours au chiffre annoncé.
       const posAttr = geo.getAttribute("position");
-      const fi = (result - 1) * 3;
-      const a = new THREE.Vector3().fromBufferAttribute(posAttr, fi);
-      const b = new THREE.Vector3().fromBufferAttribute(posAttr, fi + 1);
-      const c = new THREE.Vector3().fromBufferAttribute(posAttr, fi + 2);
-      const normal = new THREE.Vector3()
-        .crossVectors(
-          new THREE.Vector3().subVectors(b, a),
-          new THREE.Vector3().subVectors(c, a)
-        )
-        .normalize();
-      settleQuat = new THREE.Quaternion().setFromUnitVectors(
-        normal,
-        new THREE.Vector3(0, 0, 1)
-      );
+      const q = die.quaternion;
+      const a = new THREE.Vector3();
+      const b = new THREE.Vector3();
+      const c = new THREE.Vector3();
+      const localN = new THREE.Vector3();
+      const bestLocalN = new THREE.Vector3();
+      let best = -Infinity;
+      let bestFace = 1;
+      for (let f = 0; f < 20; f++) {
+        const fi = f * 3;
+        a.fromBufferAttribute(posAttr, fi);
+        b.fromBufferAttribute(posAttr, fi + 1);
+        c.fromBufferAttribute(posAttr, fi + 2);
+        // Normale sortante de la face (même calcul que le rendu d'origine).
+        localN
+          .copy(new THREE.Vector3().subVectors(b, a).cross(new THREE.Vector3().subVectors(c, a)))
+          .normalize();
+        // Projection sur +Z une fois l'orientation courante du dé appliquée :
+        // la face la plus « sortie » vers la caméra est celle qui gagne.
+        const worldZ = localN.clone().applyQuaternion(q).z;
+        if (worldZ > best) {
+          best = worldZ;
+          bestFace = f + 1;
+          bestLocalN.copy(localN);
+        }
+      }
+      result = bestFace;
+      // Cible d'alignement = petit redressement qui amène CETTE face pile vers
+      // la caméra, en PRÉSERVANT la rotation courante dans le plan (delta·q, pas
+      // un grand snap) : le dé se pose à plat sur la face déjà sortie, sans
+      // torsion visible — la face lue ne peut plus diverger de la face montrée.
+      const worldN = bestLocalN.clone().applyQuaternion(q).normalize();
+      const delta = new THREE.Quaternion().setFromUnitVectors(worldN, new THREE.Vector3(0, 0, 1));
+      settleQuat = delta.multiply(q.clone());
       settleT = 0;
     }
 
@@ -687,10 +712,11 @@ export default function Die3D({ request, onComplete }: Props) {
       } else if (state === "settling") {
         // La main qui hésite (§18) : sur un jet à fort enjeu, le dé s'aligne
         // plus lentement et tremble avant de se figer — visuel seulement, la
-        // face gagnante (result) est déjà tirée, rien ici ne la change.
+        // face gagnante (result) a déjà été LUE sur le dé au beginSettle ;
+        // l'alignement ne fait que la poser à plat, il ne la change jamais.
         const highStakes = requestRef.current?.highStakes;
         // Destin (nat 20) : léger ralenti au settle (13/07) — la face est
-        // déjà tirée, seul le tempo change.
+        // déjà posée, seul le tempo change.
         const destinSlow = result === 20 ? 0.7 : 1;
         settleT += (highStakes ? 0.018 : 0.03) * destinSlow;
         pos.x += (CENTER.x - pos.x) * 0.11;

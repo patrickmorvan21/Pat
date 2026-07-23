@@ -78,12 +78,16 @@ export default function DeathScreen({
   day,
   encounters,
   relic,
+  firstDeath,
   onRestart,
 }: {
   epitaph: string;
   day: number;
   encounters: number;
   relic: Relic;
+  /** Jalon de première fois (spec 21/07) : à la toute première mort, le
+      Geôlier accueille au lieu de railler, et la relique est un fragment fort. */
+  firstDeath?: boolean;
   onRestart: () => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -178,7 +182,15 @@ export default function DeathScreen({
 
       {phase === "relique" && (
         <div className="death-relic absolute inset-x-[28px] top-[270px] text-center">
-          <p className="death-sub">De cette mort, il reste quelque chose.</p>
+          {firstDeath && (
+            <p className="death-jailer-welcome">
+              « Ta première. Ils la passent tous. Peu la comprennent. » Le Geôlier
+              ne rit pas, cette fois. « Garde ce fragment. Tu l&apos;as payé plein tarif. »
+            </p>
+          )}
+          <p className="death-sub">
+            {firstDeath ? "De cette première mort, il reste plus que d'ordinaire." : "De cette mort, il reste quelque chose."}
+          </p>
           <div className="relic-frame">
             <p className="relic-name">{relic.name}</p>
             <p className={`relic-rarity rarity-${relic.rarity}`}>{RARITY_WORDS[relic.rarity]}</p>

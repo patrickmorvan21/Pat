@@ -148,6 +148,19 @@ export function bloodDebtFor(mem: PlayerMemory, entity: string): BloodDebt | und
 }
 
 /**
+ * Courbe d'entrée invisible (spec 21/07, « à appliquer DÈS MAINTENANT ») :
+ * les seuils sont légèrement adoucis durant les 2-3 premières morts du joueur,
+ * puis l'aide s'estompe. Renvoie de combien ABAISSER le seuil d'un jet (0 =
+ * plus d'aide). AUCUN affichage : le joueur sent juste que le jeu lui a laissé
+ * le temps d'apprendre. Se lit sur `mem.deaths` (compteur central).
+ */
+export function entrySoftening(mem: PlayerMemory): number {
+  const d = mem.deaths;
+  if (d >= 3) return 0; // le joueur a appris — plus aucun coup de pouce
+  return [2, 1, 1][d] ?? 0; // 1re run : −2 · après 1re mort : −1 · après 2e : −1
+}
+
+/**
  * Forge d'une Relique à la mort (spec §10) : commune / rare / légendaire.
  * Le nom vient d'un petit pool par rareté — contenu de proto, à enrichir.
  */
@@ -157,9 +170,20 @@ const RELIC_NAMES: Record<Relic["rarity"], string[]> = {
   legendaire: ["Dent du décompte", "Nom que l'écho a gardé"],
 };
 
-export function forgeRelic(heroName: string, days: number): Relic {
+export function forgeRelic(heroName: string, days: number, floorRare = false): Relic {
   const roll = Math.random();
-  const rarity: Relic["rarity"] = roll < 0.7 ? "commune" : roll < 0.95 ? "rare" : "legendaire";
+  // Jalon de première fois (spec 21/07) : la toute première mort donne un
+  // « fragment fort » — jamais une relique commune, pour que la première perte
+  // marque et récompense au-delà de l'ordinaire.
+  const rarity: Relic["rarity"] = floorRare
+    ? roll < 0.75
+      ? "rare"
+      : "legendaire"
+    : roll < 0.7
+      ? "commune"
+      : roll < 0.95
+        ? "rare"
+        : "legendaire";
   const pool = RELIC_NAMES[rarity];
   return { name: pool[Math.floor(Math.random() * pool.length)], rarity, heroName, days };
 }
@@ -178,7 +202,10 @@ export function recordDeath(args: {
   place: string;
   killer?: { entity: string; label: string };
 }): Relic {
-  const relic = forgeRelic(args.heroName, args.days);
+  // Première mort du compte (jalon 21/07) : relique garantie rare+ (« fragment
+  // fort »). Lu AVANT l'incrément de `deaths` ci-dessous.
+  const firstDeath = loadMemory().deaths === 0;
+  const relic = forgeRelic(args.heroName, args.days, firstDeath);
   mutateMemory((m) => {
     m.deaths += 1;
     m.totalDays += args.days;
