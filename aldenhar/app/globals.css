@@ -508,6 +508,47 @@ body {
   pointer-events: none;
 }
 
+/* ——— Réglages (Options, Figma 2137:406) ——— */
+/* Taille du texte de narration (petit / normal / grand). Spécificité (0,2,0)
+   > la classe utilitaire text-[13px] (0,1,0), donc pas besoin de !important. */
+.textsize-petit .feed-narration { font-size: 11px; }
+.textsize-grand .feed-narration { font-size: 16px; line-height: 1.4; }
+
+/* Animations réduites : on calme les flashs, secousses, halos, franges et
+   nappes — le dé (jeu) et la frappe restent, seul le « bruit » visuel tombe. */
+.anim-reduced .die-flash,
+.anim-reduced .die-halo { display: none !important; }
+.anim-reduced .image-swap { animation: none !important; }
+.anim-reduced .decay-overlay { animation: none !important; opacity: 0.4 !important; }
+.anim-reduced .phone-frame.quake,
+.anim-reduced .phone-frame.bump { animation: none !important; }
+.anim-reduced .jailer-fringe-top,
+.anim-reduced .jailer-fringe-bottom { animation: none !important; }
+.anim-reduced .erosion-3 .feed-narration { animation: none !important; }
+.anim-reduced .edge-wave { display: none !important; }
+
+/* Bouton segmenté d'Options : bordure blanche + entailles charbon, sélection
+   par opacité (maquette). Structure = calques enfants comme les autres CTA. */
+.opt-seg {
+  position: relative;
+  height: 34px;
+  flex: 1 1 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 2.4px;
+  text-transform: uppercase;
+  color: #ffffff;
+  opacity: 0.5;
+}
+.opt-seg.on { opacity: 1; }
+.opt-seg.disabled { cursor: default; opacity: 0.5; }
+.opt-seg-border { position: absolute; inset: 0; border: 1px solid #ffffff; }
+.opt-seg-notch { position: absolute; width: 2px; height: 2px; background: var(--color-bg); }
+
 /* Scène chronométrée (§18) : jauge d'érosion rapide au-dessus des choix.
    Pas de chiffre — la barre se vide par paliers (steps) et pulse, dans le
    même langage visuel que l'érosion de santé. */

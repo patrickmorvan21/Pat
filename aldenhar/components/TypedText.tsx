@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { revealFactor } from "@/lib/settings";
 
 /**
  * Texte tapé lettre par lettre (spec §16, ~12–18ms/caractère ; Geôlier 42ms),
@@ -35,14 +36,20 @@ export default function TypedText({
     doneRef.current = false;
     baseSkipRef.current = skip;
     if (!typed) return;
-    // Accessibilité (SKILL §5) : mouvement réduit = révélation instantanée.
-    if (typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect -- révélation instantanée demandée par la préférence système
+    // Apparition (Options 21/07) : `instantanee` → texte immédiat ; sinon
+    // `factor` module la vitesse (lente ×2.2 / normale ×1). Le mouvement réduit
+    // système force aussi l'instantané (SKILL §5, accessibilité).
+    const factor = revealFactor();
+    const prefersReduced =
+      typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (factor === 0 || prefersReduced) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- révélation instantanée (réglage ou préférence système)
       setShown(text.length);
       doneRef.current = true;
       onDone?.();
       return;
     }
+    const stepMs = Math.max(4, Math.round(msPerChar * factor));
     setShown(0);
     let i = 0;
     const id = setInterval(() => {
@@ -62,7 +69,7 @@ export default function TypedText({
           onDone?.();
         }
       }
-    }, msPerChar);
+    }, stepMs);
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, typed, msPerChar]);

@@ -7,6 +7,7 @@ import Prologue from "@/components/Prologue";
 import { buildRegistre, loadMemory } from "@/lib/player-memory";
 import { hasSavedRun, loadRun, resetRun } from "@/lib/state";
 import { APP_VERSION } from "@/lib/version";
+import { applySettingsToDom } from "@/lib/settings";
 
 /**
  * Écrans d'accueil (Figma 1963:370 « Première partie » / 1970:458 « Reprendre
@@ -23,6 +24,9 @@ export default function Home() {
   const [overlay, setOverlay] = useState<"reliques" | "registre" | null>(null);
 
   useEffect(() => {
+    // Réglages (Options 21/07) : applique taille de texte + animations réduites
+    // au <html> dès le démarrage de l'app (persiste à travers accueil/jeu).
+    applySettingsToDom();
     // eslint-disable-next-line react-hooks/set-state-in-effect -- lecture du localStorage impossible au rendu SSR, une seule fois au montage
     setSaved(hasSavedRun());
     setPhase("home");

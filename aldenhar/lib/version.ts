@@ -33,5 +33,9 @@
  *           choix). Besace = 2 slots actifs + 2 passifs. Actif utilisable via
  *           le menu (Utiliser) ET en 4e choix contextuel quand pertinent. Plus
  *           aucune consommation automatique.
+ *   1.6.0 — Écran OPTIONS (Figma 2137:406) : Apparition (vitesse de frappe) /
+ *           Taille du texte / Animations (complètes·réduites) / Vibrations /
+ *           Réafficher les aides / Effacer la progression — tous fonctionnels.
+ *           Musique + Lecture à haute voix grisées (pas encore construites).
  */
-export const APP_VERSION = "1.5.0";
+export const APP_VERSION = "1.6.0";

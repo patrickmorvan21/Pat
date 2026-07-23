@@ -5,19 +5,23 @@ import { CloseX } from "@/components/Home";
 import { loadMemory } from "@/lib/player-memory";
 import type { NarrativeEffect, RunState } from "@/lib/state";
 import { besaceBySlot, normalizeItem, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
+import { loadSettings, mutateSettings, type Settings } from "@/lib/settings";
 
 /**
  * Menu plein cadre (spec §8 + écrans Figma 1925:559 « Essence » et 1925:524
  * « Inventaire », passe de fidélité 14/07 soir). Jamais une popup : il
  * recouvre tout le cadre. Onglets STATS · INVENTAIRE · OPTIONS — actif en
- * crème, inactifs en orange (maquette) ; Options pas encore designé, inerte.
+ * crème, inactifs en orange (maquette). Options (Figma 2137:406) désormais
+ * fonctionnel : Apparition/Taille du texte, Animations, Vibrations, Réafficher
+ * les aides, Effacer la progression (les features pas encore construites —
+ * Musique, Lecture vocale — sont grisées à 50 %).
  *
  * NB Figma : le texte de Geryon affiché sous « Dague simple » dans la maquette
  * Inventaire est un mauvais mapping (confirmé par Patrick) — ici c'est le
  * flavor réel de l'objet sélectionné qui s'affiche.
  */
 
-type Tab = "stats" | "inventaire";
+type Tab = "stats" | "inventaire" | "options";
 
 const BESACE_ICONS: Record<BesaceItem["kind"], string> = {
   arme: "assets/objet_dague.png",
@@ -66,17 +70,23 @@ export default function GameMenu({
         <CloseX onClose={onClose} />
       </div>
 
-      {/* Onglets — actif crème, inactifs orange (Figma) ; OPTIONS inerte */}
+      {/* Onglets — actif crème, inactifs orange (Figma) */}
       <div className="flex items-center justify-center gap-[16px] pt-[59px] pb-[16px]">
         <TabLink label="STATS" active={tab === "stats"} onClick={() => setTab("stats")} />
         <Diamond />
         <TabLink label="INVENTAIRE" active={tab === "inventaire"} onClick={() => setTab("inventaire")} />
         <Diamond />
-        <TabLink label="OPTIONS" disabled />
+        <TabLink label="OPTIONS" active={tab === "options"} onClick={() => setTab("options")} />
       </div>
 
       <div className="flex-1 overflow-y-auto pb-[24px]">
-        {tab === "stats" ? <EssenceTab run={run} /> : <InventaireTab run={run} relics={memory.relics} onUse={onUse} />}
+        {tab === "stats" ? (
+          <EssenceTab run={run} />
+        ) : tab === "inventaire" ? (
+          <InventaireTab run={run} relics={memory.relics} onUse={onUse} />
+        ) : (
+          <OptionsTab />
+        )}
       </div>
     </div>
   );
@@ -475,6 +485,182 @@ function InventaireTab({
             </div>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   Onglet OPTIONS (Figma 2137:406). Seules les fonctionnalités RÉELLES sont
+   interactives : Apparition, Taille, Animations, Vibrations, Réafficher les
+   aides, Effacer la progression. Les autres (Musique, Lecture à haute voix,
+   Vitesse de lecture, Restaurer mes achats, liens de pied) sont grisées à 50 %
+   et inertes — Patrick 21/07 (« mets opacité 50 % sur celles pas encore là »).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+function SegControl<T extends string>({
+  options,
+  value,
+  onChange,
+  disabled,
+}: {
+  options: { v: T; label: string }[];
+  value?: T;
+  onChange?: (v: T) => void;
+  disabled?: boolean;
+}) {
+  return (
+    <div className="mt-[16px] flex gap-[11px]">
+      {options.map((o) => (
+        <button
+          key={o.v}
+          type="button"
+          disabled={disabled}
+          onClick={() => !disabled && onChange?.(o.v)}
+          className={`opt-seg ${value === o.v ? "on" : ""} ${disabled ? "disabled" : ""}`}
+        >
+          <span className="opt-seg-border" aria-hidden />
+          <span className="opt-seg-notch" style={{ top: 0, left: 0 }} aria-hidden />
+          <span className="opt-seg-notch" style={{ top: 0, right: 0 }} aria-hidden />
+          <span className="opt-seg-notch" style={{ bottom: 0, left: 0 }} aria-hidden />
+          <span className="opt-seg-notch" style={{ bottom: 0, right: 0 }} aria-hidden />
+          <span className="relative">{o.label}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function OptLabel({ children }: { children: React.ReactNode }) {
+  return <p className="font-mono text-[13px] leading-[1.3] text-[var(--color-ink)]">{children}</p>;
+}
+function OptHelp({ children }: { children: React.ReactNode }) {
+  return <p className="mt-[14px] font-mono text-[11px] leading-[1.3] text-[var(--color-ink)] opacity-50">{children}</p>;
+}
+function OptDivider() {
+  return <div className="my-[24px] h-px w-full bg-[var(--color-ink)] opacity-20" aria-hidden />;
+}
+
+function OptionsTab() {
+  const [s, setS] = useState<Settings>(() => loadSettings());
+  const [eraseArmed, setEraseArmed] = useState(false);
+  const [aidesReset, setAidesReset] = useState(false);
+
+  function set<K extends keyof Settings>(k: K, v: Settings[K]) {
+    setS(mutateSettings((d) => { d[k] = v; }));
+  }
+
+  function reafficherAides() {
+    try {
+      window.localStorage.removeItem("aldenhar-aide-de");
+    } catch {}
+    setAidesReset(true);
+  }
+
+  function effacerProgression() {
+    if (!eraseArmed) {
+      setEraseArmed(true);
+      return;
+    }
+    try {
+      window.localStorage.removeItem("aldenhar-run");
+      window.localStorage.removeItem("aldenhar-player");
+      window.localStorage.removeItem("aldenhar-aide-de");
+    } catch {}
+    window.location.reload();
+  }
+
+  return (
+    <div className="px-[15px] pt-[8px]">
+      {/* Musique — INERTE (le jeu n'a pas d'audio) */}
+      <div className="opacity-50">
+        <OptLabel>Musique</OptLabel>
+        <SegControl options={[{ v: "off", label: "non" }, { v: "on", label: "oui" }]} value="off" disabled />
+        <OptHelp>Le jeu se joue entièrement sans le son : aucune information n&apos;est portée par l&apos;audio seul.</OptHelp>
+      </div>
+
+      <OptDivider />
+
+      {/* Lecture à haute voix + Vitesse — INERTES (synthèse vocale pas encore là) */}
+      <div className="opacity-50">
+        <OptLabel>Lecture à haute voix</OptLabel>
+        <SegControl options={[{ v: "non", label: "non" }, { v: "oui", label: "oui" }]} value="non" disabled />
+        <div className="mt-[24px]">
+          <OptLabel>Vitesse de lecture</OptLabel>
+          <SegControl
+            options={[{ v: "lente", label: "lente" }, { v: "normale", label: "normale" }, { v: "vive", label: "vive" }]}
+            value="normale"
+            disabled
+          />
+        </div>
+        <OptHelp>Utilise la voix du système. Fonctionne hors connexion.</OptHelp>
+      </div>
+
+      <OptDivider />
+
+      {/* Texte — ACTIF */}
+      <OptLabel>Apparition</OptLabel>
+      <SegControl
+        options={[{ v: "lente", label: "lente" }, { v: "normale", label: "normale" }, { v: "instantanee", label: "instantanée" }]}
+        value={s.textReveal}
+        onChange={(v) => set("textReveal", v)}
+      />
+      <div className="mt-[24px]">
+        <OptLabel>Taille</OptLabel>
+        <SegControl
+          options={[{ v: "petit", label: "petit" }, { v: "normal", label: "normal" }, { v: "grand", label: "grand" }]}
+          value={s.textSize}
+          onChange={(v) => set("textSize", v)}
+        />
+      </div>
+
+      <OptDivider />
+
+      {/* Animations + Vibrations + Réafficher les aides — ACTIFS */}
+      <OptLabel>Animations</OptLabel>
+      <SegControl
+        options={[{ v: "completes", label: "complètes" }, { v: "reduites", label: "réduites" }]}
+        value={s.animations}
+        onChange={(v) => set("animations", v)}
+      />
+      <div className="mt-[24px]">
+        <OptLabel>Vibrations</OptLabel>
+        <SegControl
+          options={[{ v: "non", label: "non" }, { v: "oui", label: "oui" }]}
+          value={s.vibrations ? "oui" : "non"}
+          onChange={(v) => set("vibrations", v === "oui")}
+        />
+      </div>
+      <div className="mt-[24px]">
+        <button type="button" onClick={reafficherAides} className="font-mono text-[13px] text-[var(--color-ink)] underline">
+          Réafficher les aides
+        </button>
+        <OptHelp>{aidesReset ? "C'est fait — les aides du dé réapparaîtront." : "Les conseils déjà masqués (comme l'aide du dé) reviendront."}</OptHelp>
+      </div>
+
+      <OptDivider />
+
+      {/* Données / progression */}
+      <p className="font-mono text-[11px] leading-[1.4] text-[var(--color-ink)] opacity-70">
+        Ta partie est enregistrée sur cet appareil, en continu. Fermer le jeu ne t&apos;a jamais tué. Seuls tes choix le peuvent.
+      </p>
+      <button type="button" disabled className="mt-[20px] block cursor-default font-mono text-[13px] text-[var(--color-ink)] opacity-50 underline">
+        Restaurer mes achats
+      </button>
+      <div className="mt-[20px]">
+        <button type="button" onClick={effacerProgression} className="font-mono text-[13px] text-[var(--color-ink)] underline">
+          {eraseArmed ? "Confirmer l'effacement ?" : "Effacer la progression"}
+        </button>
+        <OptHelp>Reliques, Grand Registre, fragments : tout disparaît. Le Geôlier ne t&apos;aura jamais connu.</OptHelp>
+      </div>
+
+      <OptDivider />
+
+      {/* Liens de pied — INERTES */}
+      <div className="flex flex-col gap-[14px] pb-[10px] opacity-50">
+        {["Crédits", "Confidentialité & conditions", "Envoyer un retour"].map((l) => (
+          <span key={l} className="font-mono text-[13px] text-[var(--color-ink)]">{l}</span>
+        ))}
       </div>
     </div>
   );

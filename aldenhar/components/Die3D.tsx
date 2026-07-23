@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { resolveTier, TIER_WORDS, tierIsFail, type Outcome, type Outcomes, type ResolutionTier } from "@/lib/scene-data";
+import { haptic } from "@/lib/settings";
 
 /**
  * Dé d20 tactile — moteur repris de reference/REFERENCE_de_3d_tactile.html
@@ -448,7 +449,7 @@ export default function Die3D({ request, onComplete }: Props) {
       help!.classList.add("hidden");
       grabOffset = { x: dx, y: dy };
       history = [p];
-      if (navigator.vibrate) navigator.vibrate(10);
+      haptic(10);
     }
     function onMove(e: MouseEvent | TouchEvent) {
       if (state !== "held") return;
@@ -490,7 +491,7 @@ export default function Die3D({ request, onComplete }: Props) {
       state = "flying";
       vel = { x: vx * 1.25, y: vy * 1.25 };
       angVel = { x: -vel.y * 0.007, y: vel.x * 0.007, z: (Math.random() - 0.5) * 0.05 };
-      if (navigator.vibrate) navigator.vibrate(20);
+      haptic(20);
     }
     // Écouteurs sur le conteneur (hit-test identique) : le dé n'est saisissable
     // qu'en le touchant lui-même, et les choix restent cliquables.
@@ -525,8 +526,7 @@ export default function Die3D({ request, onComplete }: Props) {
     }
 
     function onBounce(side: Side, impactSpeed: number) {
-      if (navigator.vibrate)
-        navigator.vibrate(Math.min(55, Math.max(8, Math.round(impactSpeed * 3.2))));
+      haptic(Math.min(55, Math.max(8, Math.round(impactSpeed * 3.2))));
       spawnImpact(side, impactSpeed);
       // Le "choc" validé (CLAUDE.md) : la rotation change de sens en fonction
       // du rebond — couplée à la vitesse linéaire — plus un petit bruit pour
@@ -613,17 +613,17 @@ export default function Die3D({ request, onComplete }: Props) {
       void flash!.offsetWidth;
       if (tier === "destin") {
         flash!.classList.add("crit-success");
-        if (navigator.vibrate) navigator.vibrate([30, 40, 80]);
+        haptic([30, 40, 80]);
       } else if (tier === "malediction") {
         flash!.classList.add("malediction");
         phone?.classList.add("quake");
         setTimeout(() => phone?.classList.remove("quake"), 450);
-        if (navigator.vibrate) navigator.vibrate([90, 50, 140, 60, 90]);
+        haptic([90, 50, 140, 60, 90]);
       } else if (tier === "critique") {
         flash!.classList.add("critique");
         phone?.classList.add("quake");
         setTimeout(() => phone?.classList.remove("quake"), 380);
-        if (navigator.vibrate) navigator.vibrate([70, 40, 100]);
+        haptic([70, 40, 100]);
       }
 
       // Halo tramé par palier : intense (Destin), franc (éclatante), sobre

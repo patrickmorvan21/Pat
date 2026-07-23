@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { animReduced } from "@/lib/settings";
 
 /* ---- Réglages repris tels quels du prototype validé (ne pas lisser) ---- */
 const TICK = 90; /* ms par pas de simulation */
@@ -27,7 +28,9 @@ export function HeroGeolier({ density = 2, bstep = 380 }: { density?: number; bs
     const cv = canvasRef.current;
     if (!img || !cv) return;
     const ctx = cv.getContext("2d")!;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; // image fixe, pas de fumée
+    // Image fixe (pas de fumée/respiration) si mouvement réduit système OU
+    // réglage « Animations : réduites » (Options 21/07).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || animReduced()) return;
     const DENSITY = density;
     const BSTEP = bstep;
 
