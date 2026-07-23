@@ -45,6 +45,11 @@ export type Choice = {
   /** Pose durablement un flag d'environnement au niveau compte (§17). */
   setsEnvFlag?: string;
   /**
+   * Choix d'orientation d'une scène de liaison (spec 21/07) : ne lance pas de
+   * dé — il ENGAGE le déplacement vers le lieu `dest`. Résolution instantanée.
+   */
+  orient?: { dest: string };
+  /**
    * Prix différé (§17) : ce choix « gratuit » contracte une dette silencieuse
    * qui se règle `settleInSteps` scènes plus loin dans la run.
    */
@@ -99,6 +104,23 @@ export type Scene = {
    * fois. La ligne du joueur s'y insère, visuellement distincte.
    */
   registre?: boolean;
+  /**
+   * Traversée (spec 21/07) : phrase sensorielle d'orientation affichée sur le
+   * bouton d'une scène de liaison qui mène à ce lieu (« vers la crête où
+   * grincent les cordes »). Ne révèle jamais un danger frontalement — c'est
+   * l'habitat du « Vent qui ment ».
+   */
+  approach?: string;
+  /**
+   * Chaîne de rencontre (spec 21/07) : id de la scène suivante à jouer SANS
+   * repasser par une liaison (ex. meute-grise-1 → meute-grise-2). Une chaîne
+   * compte pour UN seul lieu de la traversée.
+   */
+  chainNext?: string;
+  /** Scène de liaison (spec 21/07) : marche + choix d'orientation, générée. */
+  liaison?: boolean;
+  /** Nœud terminal (la Descente) : la traversée s'arrête (fin sèche Acte II). */
+  terminal?: boolean;
 };
 
 /**
@@ -907,6 +929,7 @@ export const SCENES: Scene[] = [
   {
     id: "meute-grise-1",
     combat: true,
+    chainNext: "meute-grise-2",
     foe: "meute-grise",
     foeName: "La Meute Grise",
     narration: [
@@ -1181,3 +1204,119 @@ export function sceneAt(step: number): Scene {
 export function chapterLabel(step: number): string {
   return `Aldenhar — ${romanNumeral(CHAPTER_START + step)}`;
 }
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TRAVERSÉE & SCÈNES DE LIAISON (chantier n°1, spec 21/07)
+   Grammaire cible : liaison → lieu → liaison → rencontre → liaison → lieu…
+   Le joueur ne « fait » jamais tous les lieux : une traversée en visite 3-4,
+   tirés au pool et CHOISIS aux liaisons (choix d'orientation). Sortie = la
+   Descente (fin sèche « Acte II à venir », décision Patrick 21/07).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+export function sceneById(id: string): Scene | undefined {
+  return SCENES.find((s) => s.id === id);
+}
+
+/** Lieu d'entrée fixe de la zone (toujours la 1re scène après le Seuil). */
+export const ENTRY_SCENE = "borne-frontiere";
+
+/**
+ * Phrases d'orientation par lieu (spec 21/07) : le bouton d'une liaison. Jamais
+ * un danger frontal — une impression sensorielle (le « Vent qui ment » vit ici).
+ * Un lieu sans entrée ici n'apparaît pas comme destination d'orientation.
+ */
+const APPROACH: Record<string, string> = {
+  "chemin-creux": "Vers le chemin creux, entre deux talus",
+  "bete-chemins-creux": "Vers une odeur de suint, plus bas dans le creux",
+  "colline-aux-gibets": "Vers la crête où grincent les cordes",
+  "pendu-qui-parle": "Vers le gibet bas, où une voix appelle",
+  "champ-des-fixes": "Vers les rangées de poteaux, à perte de vue",
+  "pendu-mal-fixe": "Vers un craquement de bois, dans les rangs",
+  "serment-hameau": "Vers la fumée basse d'un hameau",
+  "marche-muet": "Vers un marché où nul ne parle",
+  "campement": "Vers un moulin sans ailes, pour souffler",
+  "chapelle-des-cordes": "Vers une chapelle aux murs de cordes",
+  "puits-condamne": "Vers des coups sourds, sous des planches",
+  "chien-du-bailli": "Vers une maison murée et son gardien",
+  "petit-tribunal": "Vers une salle où l'on juge encore",
+  "meute-grise-1": "Vers des silhouettes grises, immobiles au loin",
+  "palissade-sud": "Vers une palissade, et un air qui descend",
+};
+
+/** Pool des destinations tirables (tout ce qui a une phrase d'orientation). */
+export const TRAVERSAL_POOL = Object.keys(APPROACH);
+
+/** Ambiances de marche (spec 21/07) : 1 beat court par liaison, tiré au hasard. */
+const LIAISON_AMBIANCES: string[] = [
+  "Tu marches. La lande ne finit pas — elle se répète, talus après talus, sous le même crépuscule qui ne tombe jamais.",
+  "Le vent pousse une odeur de corde mouillée et de terre retournée. Quelque part, toujours, une potence grince.",
+  "La bruyère efface derrière toi les traces de ceux qui ont choisi avant. Devant, elle ne promet rien.",
+  "Un long moment sans rien : juste tes pas, et la sensation d'être compté par quelque chose que tu ne vois pas.",
+  "Le chemin se creuse, remonte, se divise. Ici, on ne va pas quelque part — on s'éloigne de la Borne.",
+];
+
+const LIAISON_JAILER: string[] = [
+  "Marche, marche. Toutes les routes des Landes finissent au même endroit. Je t'y attends.",
+  "Tu choisis ton chemin. C'est mignon. Ça ne change que l'ordre des choses.",
+];
+
+/** Une graine → un flottant [0,1) déterministe (liaisons stables à la reprise). */
+function seeded(n: number): number {
+  let s = (n * 2654435761 + 40503) >>> 0;
+  s ^= s << 13;
+  s ^= s >>> 17;
+  s ^= s << 5;
+  return ((s >>> 0) % 100000) / 100000;
+}
+
+/**
+ * Construit une scène de liaison entre deux destinations (spec 21/07) : une
+ * ambiance de marche + un choix d'orientation vers l'un ou l'autre lieu.
+ * `seed` (pas de progression) garde l'ambiance stable si la run reprend.
+ */
+export function makeLiaison(optA: string, optB: string, seed: number): Scene {
+  const amb = LIAISON_AMBIANCES[Math.floor(seeded(seed) * LIAISON_AMBIANCES.length)];
+  const jl = LIAISON_JAILER[Math.floor(seeded(seed + 7) * LIAISON_JAILER.length)];
+  return {
+    id: `liaison:${optA}>${optB}`,
+    liaison: true,
+    narration: [amb, "Deux directions s'ouvrent. La lande attend que tu tranches."],
+    jailerLine: jl,
+    choices: [
+      { id: `orient-${optA}`, label: APPROACH[optA] ?? "Continuer", orient: { dest: optA } },
+      { id: `orient-${optB}`, label: APPROACH[optB] ?? "Continuer", orient: { dest: optB } },
+    ],
+  };
+}
+
+/**
+ * Tire les 2 destinations offertes à une liaison : 2 lieux NON encore visités,
+ * choisis dans le pool via la graine (stable à la reprise). Si le pool est
+ * presque épuisé, complète avec ce qui reste.
+ */
+export function pickLiaisonOptions(visited: string[], seed: number): [string, string] {
+  const remaining = TRAVERSAL_POOL.filter((id) => !visited.includes(id));
+  const src = remaining.length >= 2 ? remaining : TRAVERSAL_POOL.filter((id) => !visited.slice(-1).includes(id));
+  // Mélange déterministe (Fisher-Yates seedé) puis on prend les 2 premiers.
+  const arr = [...src];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(seeded(seed * 31 + i) * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return [arr[0], arr[1] ?? arr[0]];
+}
+
+/** La Descente — nœud terminal de la zone (fin sèche, Acte II à venir). */
+export const DESCENTE_SCENE: Scene = {
+  id: "la-descente",
+  terminal: true,
+  narration: [
+    "Le sol s'incline. L'air se fait plus froid, plus vieux — il monte d'en bas, par la porte de la Descente restée ouverte derrière toi.",
+    "Tu as traversé les Landes vivant. Peu le font. Devant, l'escalier plonge dans un noir qui n'a pas encore de nom.",
+    "Ici s'arrête, pour l'instant, ce que le Geôlier a bâti. L'Acte II se creuse encore.",
+  ],
+  jailerLine: "Tu es descendu jusqu'ici. Bien. Le reste n'est pas prêt — mais moi, je le serai avant toi.",
+  choices: [
+    { id: "recommencer-descente", label: "Repartir de la Borne" },
+  ],
+};

@@ -6,6 +6,7 @@
 
 import { startingBesace, type BesaceItem } from "@/lib/besace";
 import { drawMemories } from "@/lib/prologue-data";
+import { ENTRY_SCENE, sceneAt } from "@/lib/scene-data";
 
 export type RollRecord = {
   step: number;
@@ -115,6 +116,41 @@ export type PrologueState = {
   done: boolean;
 };
 
+/**
+ * Traversée (spec 21/07, chantier n°1) : la run ne parcourt plus les scènes en
+ * ligne — elle traverse la zone par LIAISONS (marche + choix d'orientation) et
+ * ne visite que 3-4 lieux avant la Descente (fin sèche). Persisté pour reprendre
+ * la traversée exactement où elle en était (§9).
+ */
+export type TraversalState = {
+  /** Écran courant : un lieu/rencontre ("scene") ou une liaison ("liaison"). */
+  phase: "scene" | "liaison";
+  /** Id de la scène courante (quand phase = "scene"). */
+  current: string;
+  /** Lieux/rencontres déjà visités cette traversée (dédup, chaîne = 1). */
+  visited: string[];
+  /** Nombre de lieux à visiter avant la Descente (3 ou 4, fixé au départ). */
+  target: number;
+  /** Les 2 destinations offertes à la liaison courante (quand phase = "liaison"). */
+  liaisonOpts: [string, string] | null;
+  /** Graine de la liaison courante — garde ambiance/options stables à la reprise. */
+  seed: number;
+  /** Descente atteinte : la traversée est finie (nœud terminal). */
+  done: boolean;
+};
+
+function freshTraversal(current = ENTRY_SCENE): TraversalState {
+  return {
+    phase: "scene",
+    current,
+    visited: [current],
+    target: 3 + Math.floor(Math.random() * 2), // 3 ou 4 lieux
+    liaisonOpts: null,
+    seed: 0,
+    done: false,
+  };
+}
+
 export type RunState = {
   /** Nom du héros de cette run (dette de sang, Grand Registre — spec §19). */
   heroName: string;
@@ -138,6 +174,8 @@ export type RunState = {
   stats: RunStats;
   /** Prologue « Le Seuil » — présent tant que la run existe (spec 16/07). */
   prologue: PrologueState;
+  /** Traversée de la zone (spec 21/07) : liaisons + choix d'orientation. */
+  trav: TraversalState;
 };
 
 const KEY = "aldenhar-run";
@@ -185,6 +223,7 @@ function fresh(): RunState {
       choices: [],
       done: false,
     },
+    trav: freshTraversal(),
   };
 }
 
@@ -221,6 +260,12 @@ export function loadRun(): RunState {
               p.prologue && Array.isArray(p.prologue.memories)
                 ? p.prologue
                 : { memories: [], beat: 6, choices: [], done: true },
+            // Traversée : reprise si présente ; sinon, run d'avant le 21/07 →
+            // on amorce une traversée à partir de sa scène linéaire courante.
+            trav:
+              p.trav && typeof p.trav.current === "string" && Array.isArray(p.trav.visited)
+                ? p.trav
+                : freshTraversal(sceneAt(typeof p.step === "number" ? p.step : 0).id),
           };
         }
       }

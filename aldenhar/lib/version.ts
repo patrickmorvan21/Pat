@@ -23,5 +23,10 @@
  *           l'arrêt = le résultat), overlay de texte long (panneau qui monte
  *           sur l'illustration, trame de pixels), courbe d'entrée invisible,
  *           jalon de première mort (Geôlier qui accueille + fragment fort).
+ *   1.4.0 — Retours playtest 21/07 (vague 2) : TRAVERSÉE & liaisons — on ne
+ *           passe plus d'une scène à l'autre sans déplacement joué. Entre les
+ *           lieux, une scène de liaison (marche + choix d'orientation) ; une
+ *           traversée ne visite que 3-4 lieux puis débouche sur la Descente
+ *           (fin sèche « Acte II à venir »).
  */
-export const APP_VERSION = "1.3.0";
+export const APP_VERSION = "1.4.0";

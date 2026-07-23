@@ -6,8 +6,18 @@ import ChoiceButton from "@/components/ChoiceButton";
 import TypedText from "@/components/TypedText";
 import DeathScreen from "@/components/DeathScreen";
 import GameMenu from "@/components/GameMenu";
-import { jailerTaunt, sceneAt, tierIsFail, type Choice } from "@/lib/scene-data";
-import { loadRun, resetRun, saveRun, type FeedEntry, type RunState } from "@/lib/state";
+import {
+  DESCENTE_SCENE,
+  ENTRY_SCENE,
+  jailerTaunt,
+  makeLiaison,
+  pickLiaisonOptions,
+  sceneById,
+  tierIsFail,
+  type Choice,
+  type Scene as SceneType,
+} from "@/lib/scene-data";
+import { loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
 import { BESACE_SLOTS, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import {
   bloodDebtFor,
@@ -106,6 +116,17 @@ function shuffleChoices<T>(choices: T[], step: number): T[] {
 }
 
 /**
+ * Écran courant déduit de l'état de traversée (spec 21/07) : la Descente
+ * (terminal), une scène de liaison (reconstruite depuis ses 2 options), ou un
+ * lieu/rencontre du pool. Pure : sert au rendu ET à la reprise de run.
+ */
+function sceneFromTrav(t: TraversalState): SceneType {
+  if (t.done) return DESCENTE_SCENE;
+  if (t.phase === "liaison" && t.liaisonOpts) return makeLiaison(t.liaisonOpts[0], t.liaisonOpts[1], t.seed);
+  return sceneById(t.current) ?? sceneById(ENTRY_SCENE)!;
+}
+
+/**
  * Modèle ÉCRAN PAR ÉCRAN (retour Patrick 19/07, maquette Figma 2072:54 —
  * remplace le flux scrollable §16). Un seul écran par scène :
  *   • illustration calée en haut (fixe) ;
@@ -121,6 +142,9 @@ function shuffleChoices<T>(choices: T[], step: number): T[] {
  */
 export default function Scene() {
   const [step, setStep] = useState(0);
+  // Écran courant : un lieu/rencontre OU une scène de liaison (traversée
+  // 21/07). Remplacé à chaque transition — plus dérivé de `step` linéairement.
+  const [scene, setScene] = useState<SceneType>(() => sceneById(ENTRY_SCENE)!);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [roll, setRoll] = useState<RollRequest | null>(null);
   const [day, setDay] = useState(1);
@@ -199,11 +223,12 @@ export default function Scene() {
     advanceRevealQueue();
   }
 
-  const scene = sceneAt(step);
   const rolling = roll !== null;
 
   const baseChoices = timedExpired && scene.timed ? scene.timed.timeoutChoices : scene.choices;
-  const shuffledChoices = shuffleChoices(baseChoices, step);
+  // Les choix d'orientation d'une liaison gardent leur ordre (gauche/droite
+  // stable) ; ailleurs, Fisher-Yates seedé pour casser les patterns de slot.
+  const shuffledChoices = scene.liaison ? baseChoices : shuffleChoices(baseChoices, step);
 
   function persist(mutate: (run: RunState) => void) {
     const run = runRef.current ?? loadRun();
@@ -249,10 +274,11 @@ export default function Scene() {
 
     const hasRun = run.step > 0 || (Array.isArray(run.feed) && run.feed.length > 0);
     if (hasRun) {
-      // Écran courant reconstruit à neuf depuis la scène en cours (l'ancien
-      // format « fil complet » n'est jamais réaffiché). La conséquence
-      // transitoire du dernier choix est perdue — sans importance à la reprise.
-      const cur = sceneAt(run.step);
+      // Écran courant reconstruit à neuf depuis l'état de TRAVERSÉE (liaison,
+      // lieu, ou Descente) — l'ancien fil complet n'est jamais réaffiché. La
+      // conséquence transitoire du dernier choix est perdue (sans importance).
+      const cur = sceneFromTrav(run.trav);
+      setScene(cur);
       const illo = cur.illustration ?? PORTAL;
       lastSceneIlloRef.current = illo;
       setImage(illo);
@@ -271,7 +297,8 @@ export default function Scene() {
       const mem = mutateMemory((m) => {
         m.runsStarted += 1;
       });
-      const opening = sceneAt(0);
+      const opening = sceneFromTrav(run.trav); // = la Borne (ENTRY_SCENE)
+      setScene(opening);
       const illo = opening.illustration ?? PORTAL;
       lastSceneIlloRef.current = illo;
       setImage(illo);
@@ -330,7 +357,7 @@ export default function Scene() {
     }
   }, [beats, revealedIds, activeTypingId, raise, illoH]);
 
-  function onTimedExpire(timed: NonNullable<ReturnType<typeof sceneAt>["timed"]>) {
+  function onTimedExpire(timed: NonNullable<SceneType["timed"]>) {
     setCountdownArmed(false);
     setTimedExpired(true);
     // L'inaction ouvre de nouvelles options : nouvel écran (même image).
@@ -375,9 +402,41 @@ export default function Scene() {
     destinItem?: BesaceItem | null;
     /** Beats à placer en tête (ex. puce Jour + soin au réveil du campement). */
     prepend?: FeedEntry[];
+    /** Choix d'orientation (traversée 21/07) : force la destination (liaison → lieu). */
+    toDest?: string;
   }) {
     const nextStep = step + 1;
-    const nextScene = sceneAt(nextStep);
+    // ——— Résolution de la traversée (spec 21/07) ———
+    // On quitte l'écran courant (`scene`). Le suivant est : le lieu choisi à une
+    // liaison (toDest), la suite d'une chaîne de rencontre, la Descente (fin de
+    // traversée), ou une nouvelle LIAISON (marche + orientation).
+    const trav: TraversalState = { ...(runRef.current?.trav ?? loadRun().trav) };
+    // Une transition qui QUITTE une liaison ne fait pas vieillir les états.
+    const leavingLiaison = Boolean(scene.liaison);
+    let nextScene: SceneType;
+    if (opts?.toDest) {
+      nextScene = sceneById(opts.toDest) ?? sceneById(ENTRY_SCENE)!;
+      trav.phase = "scene";
+      trav.current = opts.toDest;
+      trav.liaisonOpts = null;
+      if (!trav.visited.includes(opts.toDest)) trav.visited = [...trav.visited, opts.toDest];
+    } else if (scene.chainNext) {
+      nextScene = sceneById(scene.chainNext) ?? DESCENTE_SCENE;
+      trav.phase = "scene";
+      trav.current = nextScene.id;
+    } else if (trav.visited.length >= trav.target) {
+      nextScene = DESCENTE_SCENE;
+      trav.done = true;
+      trav.phase = "scene";
+      trav.current = DESCENTE_SCENE.id;
+    } else {
+      const seed = (nextStep * 101 + trav.visited.length * 7) >>> 0;
+      const pair = pickLiaisonOptions(trav.visited, seed);
+      nextScene = makeLiaison(pair[0], pair[1], seed);
+      trav.phase = "liaison";
+      trav.liaisonOpts = pair;
+      trav.seed = seed;
+    }
     const nextIllustration = nextScene.illustration ?? PORTAL;
     const contextChanged = nextIllustration !== lastSceneIlloRef.current;
     const entries: FeedEntry[] = [];
@@ -423,6 +482,7 @@ export default function Scene() {
     if (
       !nextScene.combat &&
       !nextScene.registre &&
+      !nextScene.liaison &&
       nextScene.id !== "campement" &&
       besace.length < BESACE_SLOTS &&
       Math.random() < 0.22
@@ -463,12 +523,18 @@ export default function Scene() {
     }
 
     setStep(nextStep);
+    setScene(nextScene);
     persist((run) => {
       run.step = nextStep;
       run.lastChoiceId = null;
-      run.effects = run.effects
-        .map((e) => ({ ...e, scenesLeft: e.scenesLeft - 1 }))
-        .filter((e) => e.scenesLeft > 0);
+      run.trav = trav;
+      // Les états ne vieillissent qu'en quittant un LIEU (pas une liaison) —
+      // sinon la marche à travers les liaisons les userait deux fois trop vite.
+      if (!leavingLiaison) {
+        run.effects = run.effects
+          .map((e) => ({ ...e, scenesLeft: e.scenesLeft - 1 }))
+          .filter((e) => e.scenesLeft > 0);
+      }
       run.debts = (run.debts ?? []).filter((d) => d.settleAtStep > nextStep);
       if (scene.combat) run.encounters = (run.encounters ?? 0) + 1;
     });
@@ -491,11 +557,26 @@ export default function Scene() {
 
   function onSelect(choice: Choice) {
     if (choice.locked || rolling || selectedId) return;
+    // Nœud terminal (la Descente, spec 21/07 « fin sèche ») : la traversée est
+    // finie — on repart d'une run neuve (nouveau héros, Borne).
+    if (scene.terminal) {
+      resetRun();
+      window.location.reload();
+      return;
+    }
     setSelectedId(choice.id);
     setChoicesHidden(true);
     persist((run) => {
       run.lastChoiceId = choice.id;
     });
+
+    // Choix d'orientation d'une liaison (traversée 21/07) : engage le
+    // déplacement vers le lieu choisi — pas de dé, pas de conséquence propre.
+    if (choice.orient) {
+      const dest = choice.orient.dest;
+      advanceTimer.current = setTimeout(() => advance({ toDest: dest }), 320);
+      return;
+    }
 
     // Persistance environnementale (§17) : trace durable relue aux runs suivantes.
     if (choice.setsEnvFlag) {
