@@ -347,13 +347,16 @@ type Selected = { type: "besace"; id: string } | { type: "relic"; index: number 
 
 function InventaireTab({
   run,
-  relics,
+  relics: allRelics,
   onUse,
 }: {
   run: RunState;
   relics: { name: string; rarity: string; heroName: string; days: number }[];
   onUse?: (item: BesaceItem) => void;
 }) {
+  // Inventaire limité à 3 reliques (retour Patrick 22/07) : on garde les 3 plus
+  // récentes (dernières forgées).
+  const relics = allRelics.slice(-3);
   // Copie locale : « Utiliser » retire l'objet de l'affichage immédiatement, en
   // plus de le consommer côté run (via onUse) — les deux restent synchronisés.
   const [besace, setBesace] = useState<BesaceItem[]>(() => run.besace.map(normalizeItem));
@@ -572,10 +575,14 @@ function OptionsTab() {
 
   return (
     <div className="px-[15px] pt-[8px]">
-      {/* Musique — INERTE (le jeu n'a pas d'audio) */}
+      {/* Musique — INERTE (le jeu n'a pas d'audio). Interrupteur à glissière
+          de la maquette (rail + pavé carré), état OFF, non cliquable. */}
       <div className="opacity-50">
         <OptLabel>Musique</OptLabel>
-        <SegControl options={[{ v: "off", label: "non" }, { v: "on", label: "oui" }]} value="off" disabled />
+        <div className="mt-[18px] relative h-[16px] w-full" aria-hidden>
+          <span className="absolute top-1/2 right-0 left-0 h-px -translate-y-1/2 bg-white" />
+          <span className="absolute top-0 left-0 size-[16px] border border-solid border-white bg-[var(--color-bg)]" />
+        </div>
         <OptHelp>Le jeu se joue entièrement sans le son : aucune information n&apos;est portée par l&apos;audio seul.</OptHelp>
       </div>
 

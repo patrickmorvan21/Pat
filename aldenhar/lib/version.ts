@@ -37,5 +37,9 @@
  *           Taille du texte / Animations (complètes·réduites) / Vibrations /
  *           Réafficher les aides / Effacer la progression — tous fonctionnels.
  *           Musique + Lecture à haute voix grisées (pas encore construites).
+ *   1.6.1 — Retouches 22/07 : libellés de CTA raccourcis (ne débordent plus),
+ *           fondu de pixels du texte long remplacé par un rétrécissement propre
+ *           de l'illustration, interrupteur Musique (glissière), bloc Geôlier
+ *           en 11px/interligne 120 %, inventaire limité à 3 reliques.
  */
-export const APP_VERSION = "1.6.0";
+export const APP_VERSION = "1.6.1";

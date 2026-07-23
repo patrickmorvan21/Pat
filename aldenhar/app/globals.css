@@ -484,30 +484,6 @@ body {
   pointer-events: none;
 }
 
-/* Overlay de texte long (spec 21/07) : quand le texte déborde, le panneau
-   monte par-dessus l'illustration sur fond charbon (marginTop négatif posé
-   inline), au-dessus de l'image. Les CTA (flex-item suivant) ne bougent pas. */
-.scene-text-zone.raised {
-  background: var(--color-bg);
-  z-index: 4;
-}
-/* Bordure haute du panneau relevé : trame de pixels charbon (masque alpha,
-   dense en bas → clairsemée en haut) qui dissout le charbon dans
-   l'illustration — JAMAIS un dégradé CSS. Position `top` posée inline. */
-.text-raise-fade {
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 40px;
-  z-index: 3;
-  background: var(--color-bg);
-  -webkit-mask-size: 100% 100%;
-  mask-size: 100% 100%;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  pointer-events: none;
-}
-
 /* ——— Réglages (Options, Figma 2137:406) ——— */
 /* Taille du texte de narration (petit / normal / grand). Spécificité (0,2,0)
    > la classe utilitaire text-[13px] (0,1,0), donc pas besoin de !important. */

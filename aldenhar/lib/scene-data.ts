@@ -201,7 +201,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "fouiller-offrandes",
-        label: "Fouiller les offrandes de la borne",
+        label: "Fouiller les offrandes",
         risky: {
           stat: "RUSE",
           threshold: 11,
@@ -243,7 +243,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "aborder-marcheur",
-        label: "Aborder le marcheur à rebours",
+        label: "Aborder le marcheur",
         risky: {
           stat: "EMPATHIE",
           threshold: 12,
@@ -257,7 +257,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "prendre-grelot",
-        label: "Ramasser le grelot du charretier",
+        label: "Ramasser le grelot",
         // Prix différé (§17) : l'objet est gratuit — mais un grelot, ça sonne.
         debt: {
           id: "grelot-charretier",
@@ -271,7 +271,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "couper-lande",
-        label: "Couper à travers la lande",
+        label: "Couper par la lande",
         risky: {
           stat: "INSTINCT",
           threshold: 11,
@@ -304,7 +304,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "frapper-bete",
-        label: "Frapper avant qu'elle ne s'ouvre",
+        label: "Frapper la bête",
         risky: {
           stat: "COURAGE",
           threshold: 12,
@@ -332,7 +332,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "ornière",
-        label: "Se plaquer dans l'ornière",
+        label: "Se plaquer, immobile",
         // La Bête chasse le mouvement dans l'axe du creux — l'immobilité
         // est une vraie réponse (§19).
         passive: {
@@ -363,7 +363,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "echarde",
-        label: "Arracher une écharde au Gibet Vide",
+        label: "Arracher une écharde",
         setsEnvFlag: "echarde-gibet-prelevee",
         risky: {
           stat: "COURAGE",
@@ -390,7 +390,7 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "ombre", label: "Traverser l'ombre du Grand Gibet", locked: { stat: "INSTINCT" } },
+      { id: "ombre", label: "Traverser l'ombre", locked: { stat: "INSTINCT" } },
     ],
     jailerLine: "Le Gibet Vide n'est pas vide. Il est réservé.",
   },
@@ -467,7 +467,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "aider-fossoyeur",
-        label: "Aider le vieux à redresser le poteau",
+        label: "Aider à redresser",
         risky: {
           stat: "EMPATHIE",
           threshold: 11,
@@ -481,7 +481,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "regard-petite",
-        label: "Suivre le regard de la petite",
+        label: "Suivre son regard",
         risky: {
           stat: "INSTINCT",
           threshold: 12,
@@ -493,7 +493,7 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "carnet", label: "Déchiffrer le carnet du Fossoyeur", locked: { stat: "RUSE" } },
+      { id: "carnet", label: "Déchiffrer le carnet", locked: { stat: "RUSE" } },
     ],
     jailerLine: "Un champ entier de fixés, et c'est toi qui bouges encore. Profites-en, ça fausse mes moyennes.",
   },
@@ -515,7 +515,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "refixer",
-        label: "Le repousser vers son poteau",
+        label: "Le repousser au poteau",
         risky: {
           stat: "COURAGE",
           threshold: 13,
@@ -529,7 +529,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "esquiver-corde",
-        label: "Danser hors de portée de la corde",
+        label: "Esquiver la corde",
         risky: {
           stat: "INSTINCT",
           threshold: 12,
@@ -543,7 +543,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "emmeler",
-        label: "L'emmêler dans sa propre corde",
+        label: "L'emmêler dans sa corde",
         risky: {
           stat: "RUSE",
           threshold: 12,
@@ -576,7 +576,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "jurer-serment",
-        label: "Jurer, et laisser sa hâte au muret",
+        label: "Jurer : laisser sa hâte",
         passive: {
           consequence:
             "Tu poses les mains sur la pierre sèche et tu jures : ta hâte " +
@@ -605,7 +605,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "refuser-serment",
-        label: "Refuser et longer les murets",
+        label: "Refuser et longer",
         risky: {
           stat: "COURAGE",
           threshold: 13,
@@ -635,7 +635,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "troc-colporteur",
-        label: "Troquer avec le Colporteur",
+        label: "Troquer au Marché",
         risky: {
           stat: "RUSE",
           threshold: 12,
@@ -649,7 +649,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "rebouteux",
-        label: "Montrer tes plaies au Rebouteux",
+        label: "Montrer tes plaies",
         risky: {
           stat: "EMPATHIE",
           threshold: 11,
@@ -663,7 +663,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "traverser-marche",
-        label: "Traverser sans rien offrir",
+        label: "Traverser sans offrir",
         passive: {
           consequence:
             "Tu traverses les étals sans un geste, mains visibles, et le " +
@@ -694,7 +694,7 @@ export const SCENES: Scene[] = [
       { id: "dormir", label: "Dormir malgré le crépuscule", rest: true },
       {
         id: "garde",
-        label: "Monter la garde, somnoler",
+        label: "Monter la garde",
         risky: {
           stat: "INSTINCT",
           threshold: 11,
@@ -724,7 +724,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "corde-coupee",
-        label: "Prendre la corde coupée de la niche",
+        label: "Prendre la corde coupée",
         risky: {
           stat: "RUSE",
           threshold: 12,
@@ -738,7 +738,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "prier-veuve",
-        label: "S'agenouiller près de la Veuve",
+        label: "Prier près de la Veuve",
         risky: {
           stat: "EMPATHIE",
           threshold: 12,
@@ -750,7 +750,7 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "corde-vive", label: "Saisir la corde qui bouge seule", locked: { stat: "COURAGE" } },
+      { id: "corde-vive", label: "Saisir la corde vive", locked: { stat: "COURAGE" } },
     ],
     jailerLine: "Une chapelle de cordes. Les hommes prient ce qui les tient. Je trouve ça d'une honnêteté rare.",
   },
@@ -777,7 +777,7 @@ export const SCENES: Scene[] = [
       timeoutChoices: [
         {
           id: "repousser-mains",
-          label: "Rabattre les planches sur les mains",
+          label: "Rabattre les planches",
           risky: {
             stat: "COURAGE",
             threshold: 13,
@@ -791,7 +791,7 @@ export const SCENES: Scene[] = [
         },
         {
           id: "donner-mains",
-          label: "Leur tendre quelque chose",
+          label: "Leur tendre un objet",
           risky: {
             stat: "EMPATHIE",
             threshold: 11,
@@ -808,7 +808,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "reclouer",
-        label: "Resserrer chaînes et planches",
+        label: "Resserrer les chaînes",
         risky: {
           stat: "COURAGE",
           threshold: 12,
@@ -822,7 +822,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "ecouter-puits",
-        label: "Coller l'oreille aux planches",
+        label: "Coller l'oreille au bois",
         risky: {
           stat: "INSTINCT",
           threshold: 11,
@@ -834,7 +834,7 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "noeud-chaines", label: "Étudier le nœud des chaînes", locked: { stat: "RUSE" } },
+      { id: "noeud-chaines", label: "Étudier le nœud", locked: { stat: "RUSE" } },
     ],
     jailerLine: "Ils ont condamné le puits. Charmant. On n'enferme pas un trou, mais l'espoir fait clouer.",
   },
@@ -856,7 +856,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "forcer-seuil",
-        label: "Passer en force vers la porte",
+        label: "Forcer le passage",
         risky: {
           stat: "COURAGE",
           threshold: 13,
@@ -870,7 +870,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "apaiser-chien",
-        label: "S'accroupir et lui parler",
+        label: "S'accroupir, lui parler",
         risky: {
           stat: "EMPATHIE",
           threshold: 12,
@@ -884,7 +884,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "contourner-cour",
-        label: "Contourner par la cour arrière",
+        label: "Contourner par la cour",
         risky: {
           stat: "RUSE",
           threshold: 12,
@@ -916,10 +916,10 @@ export const SCENES: Scene[] = [
         "du bout de sa plume — ta page est prête.",
     ],
     choices: [
-      { id: "lire-registre", label: "Lire le Registre des Pendaisons" },
+      { id: "lire-registre", label: "Lire le Registre" },
       {
         id: "quitter-tribunal",
-        label: "Quitter le tribunal sans lire",
+        label: "Quitter sans lire",
         passive: {
           consequence:
             "Tu tournes le dos à la chaire. La plume de l'Écrivain continue " +
@@ -965,7 +965,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "dos-muret",
-        label: "Gagner le muret le plus proche",
+        label: "Gagner le muret",
         risky: {
           stat: "INSTINCT",
           threshold: 12,
@@ -1026,7 +1026,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "reculer-face",
-        label: "Reculer sans baisser les yeux",
+        label: "Reculer, sans ciller",
         risky: {
           stat: "INSTINCT",
           threshold: 13,
@@ -1040,7 +1040,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "offrir-viande",
-        label: "Jeter tes vivres entre vous",
+        label: "Jeter tes vivres",
         risky: {
           stat: "RUSE",
           threshold: 12,
@@ -1088,7 +1088,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "regarder-appele",
-        label: "Regarder l'Appelé descendre",
+        label: "Regarder l'Appelé",
         passive: {
           consequence:
             "Tu t'accoudes à la palissade et tu le regardes descendre, " +
@@ -1101,7 +1101,7 @@ export const SCENES: Scene[] = [
             "un reflet.",
         },
       },
-      { id: "franchir-descente", label: "Franchir la porte de la Descente", locked: { stat: "COURAGE" } },
+      { id: "franchir-descente", label: "Franchir la Descente", locked: { stat: "COURAGE" } },
     ],
     jailerLine: "La Descente t'intrigue ? Patience. Les Landes d'abord — on finit son assiette avant le plat suivant.",
   },
@@ -1232,21 +1232,21 @@ export const ENTRY_SCENE = "borne-frontiere";
  * Un lieu sans entrée ici n'apparaît pas comme destination d'orientation.
  */
 const APPROACH: Record<string, string> = {
-  "chemin-creux": "Vers le chemin creux, entre deux talus",
-  "bete-chemins-creux": "Vers une odeur de suint, plus bas dans le creux",
-  "colline-aux-gibets": "Vers la crête où grincent les cordes",
-  "pendu-qui-parle": "Vers le gibet bas, où une voix appelle",
-  "champ-des-fixes": "Vers les rangées de poteaux, à perte de vue",
-  "pendu-mal-fixe": "Vers un craquement de bois, dans les rangs",
-  "serment-hameau": "Vers la fumée basse d'un hameau",
-  "marche-muet": "Vers un marché où nul ne parle",
-  "campement": "Vers un moulin sans ailes, pour souffler",
-  "chapelle-des-cordes": "Vers une chapelle aux murs de cordes",
-  "puits-condamne": "Vers des coups sourds, sous des planches",
-  "chien-du-bailli": "Vers une maison murée et son gardien",
-  "petit-tribunal": "Vers une salle où l'on juge encore",
-  "meute-grise-1": "Vers des silhouettes grises, immobiles au loin",
-  "palissade-sud": "Vers une palissade, et un air qui descend",
+  "chemin-creux": "Vers le chemin creux",
+  "bete-chemins-creux": "Vers une odeur de suint",
+  "colline-aux-gibets": "Vers la crête aux cordes",
+  "pendu-qui-parle": "Vers un gibet qui parle",
+  "champ-des-fixes": "Vers les rangées de poteaux",
+  "pendu-mal-fixe": "Vers un craquement de bois",
+  "serment-hameau": "Vers la fumée d'un hameau",
+  "marche-muet": "Vers un marché muet",
+  "campement": "Vers un moulin sans ailes",
+  "chapelle-des-cordes": "Vers une chapelle de cordes",
+  "puits-condamne": "Vers des coups sourds",
+  "chien-du-bailli": "Vers une maison murée",
+  "petit-tribunal": "Vers une salle de juges",
+  "meute-grise-1": "Vers des silhouettes grises",
+  "palissade-sud": "Vers une palissade au sud",
 };
 
 /** Pool des destinations tirables (tout ce qui a une phrase d'orientation). */

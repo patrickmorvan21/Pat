@@ -29,20 +29,6 @@ import {
   recordDeath,
   type Relic,
 } from "@/lib/player-memory";
-import { ditherFadeMaskDataUrl } from "@/lib/dither";
-
-// Overlay de texte long (spec 21/07) : quand le texte déborde malgré tout, le
-// panneau de texte monte sur l'illustration (fond charbon) et sa bordure haute
-// se dissout en trame de pixels — JAMAIS un dégradé CSS. Masque alpha tramé
-// (Bayer) généré une fois : opaque en bas (le charbon plein du panneau),
-// clairsemé en haut (l'illustration transparaît). Densité croissante vers le
-// bas — la même grammaire que la bande de dissolution des illustrations.
-let raiseFadeCache: string | null = null;
-function getRaiseFadeMask(): string | null {
-  if (typeof document === "undefined") return null;
-  if (!raiseFadeCache) raiseFadeCache = ditherFadeMaskDataUrl(48, 40, (_nx, ny) => 1 - ny);
-  return raiseFadeCache;
-}
 
 // Pixels morts ambiants de l'état KO (palier « Au seuil », retour Patrick
 // 14/07) : une nappe de pixels charbon épars + quelques braises orange qui
@@ -181,16 +167,12 @@ export default function Scene() {
   const timedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const textRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
-  const illoRef = useRef<HTMLDivElement>(null);
-  // Overlay de texte long (spec 21/07) : de combien le panneau de texte monte
-  // par-dessus l'illustration (px). 0 = le texte tient, panneau au repos.
-  const [raise, setRaise] = useState(0);
-  // Hauteur mesurée de l'illustration (px) — sortie en state pour placer la
-  // bande de dissolution sans lire un ref pendant le rendu (React Compiler).
-  const [illoH, setIlloH] = useState(0);
   // 4e choix contextuel (spec 21/07 point 4) : objet ACTIF pertinent proposé
   // en scène. Calculé dans un effet (lecture Besace/santé hors rendu).
   const [activeChoice, setActiveChoice] = useState<Choice | null>(null);
+  // Illustration rétrécie (retour 22/07) : passe à true UNIQUEMENT si le texte
+  // fini déborde vraiment la zone — mesuré, adapté au device, une seule fois.
+  const [compact, setCompact] = useState(false);
 
   function setActiveTypingId(id: string | null) {
     activeTypingIdRef.current = id;
@@ -256,9 +238,7 @@ export default function Scene() {
     revealQueueRef.current = [];
     setActiveTypingId(null);
     setChoicesHidden(true);
-    // Nouvel écran : le panneau redescend au repos (il remontera si ce
-    // nouveau texte déborde — mesuré par l'effet dédié).
-    setRaise(0);
+    setCompact(false); // nouvel écran : illustration pleine par défaut
     setBeats(entries);
     persist((run) => {
       // Persisté pour la reprise : run.feed = écran courant (petit), ce qui
@@ -345,6 +325,16 @@ export default function Scene() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
   }, [revealedIds]);
 
+  // Illustration rétrécie si le texte FINI déborde (retour 22/07). Évalué une
+  // fois la frappe terminée (jamais pendant — pas de saut), et une seule fois
+  // par écran (compact ne repasse jamais à false ici → aucune oscillation :
+  // rétrécir l'image agrandit la zone, ce qui résorbe le débordement).
+  useEffect(() => {
+    if (activeTypingId || compact) return;
+    const zone = textRef.current;
+    if (zone && zone.scrollHeight > zone.clientHeight + 4) setCompact(true);
+  }, [activeTypingId, revealedIds, beats, compact]);
+
   // 4e choix contextuel (spec 21/07 point 4) : à chaque écran, on cherche un
   // objet ACTIF de la Besace utile ICI (un soin quand la santé baisse ou qu'une
   // blessure persiste). Lecture du run hors rendu — jamais pendant le render.
@@ -363,24 +353,6 @@ export default function Scene() {
       useful ? { id: `use-${useful.id}`, label: `Utiliser — ${useful.name}`, useItem: { itemId: useful.id } } : null
     );
   }, [scene, step, health, beats]);
-
-  // Overlay de texte long (spec 21/07) : si le contenu déborde la zone, on fait
-  // MONTER le panneau par-dessus l'illustration (fond charbon), juste ce qu'il
-  // faut. Convergence additive : tant qu'il reste du débordement, on monte
-  // encore (plafonné à ~62 % de la hauteur de l'illustration pour toujours en
-  // laisser voir). Réévalué à chaque bloc révélé et à la fin de la frappe.
-  useEffect(() => {
-    const zone = textRef.current;
-    const illo = illoRef.current;
-    if (!zone || !illo) return;
-    const h = illo.clientHeight;
-    if (h && h !== illoH) setIlloH(h);
-    const cap = Math.round(h * 0.62);
-    const overflow = zone.scrollHeight - zone.clientHeight;
-    if (overflow > 4 && raise < cap) {
-      setRaise((r) => Math.min(cap, r + overflow + 8));
-    }
-  }, [beats, revealedIds, activeTypingId, raise, illoH]);
 
   function onTimedExpire(timed: NonNullable<SceneType["timed"]>) {
     setCountdownArmed(false);
@@ -721,8 +693,10 @@ export default function Scene() {
 
         {/* Illustration calée EN HAUT (fixe). Ne se ré-anime (fondu) que quand
             sa source change — même scène = image immobile (demande Patrick).
-            Hauteur adaptée à la hauteur du device (dvh), plafonnée. */}
-        <div ref={illoRef} key={image} className="image-swap illustration-frame shrink-0 relative">
+            Hauteur adaptée au device (dvh), plafonnée ; RÉTRÉCIE sur une scène à
+            texte dense (retour 22/07) pour laisser la place au texte, sans
+            overlay ni fondu de pixels. */}
+        <div key={image} className="image-swap illustration-frame shrink-0 relative">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt=""
@@ -730,7 +704,9 @@ export default function Scene() {
             className={
               imageKind === "object"
                 ? "pointer-events-none block h-[38dvh] max-h-[300px] min-h-[180px] w-full bg-[var(--color-bg)] object-contain [image-rendering:pixelated]"
-                : "pointer-events-none block h-[44dvh] max-h-[352px] min-h-[200px] w-full object-cover"
+                : compact
+                  ? "pointer-events-none block h-[30dvh] max-h-[236px] min-h-[150px] w-full object-cover"
+                  : "pointer-events-none block h-[44dvh] max-h-[352px] min-h-[200px] w-full object-cover"
             }
           />
           <div
@@ -740,33 +716,12 @@ export default function Scene() {
           />
         </div>
 
-        {/* Bande de dissolution en HAUT du panneau quand il monte sur
-            l'illustration (spec 21/07) : trame de pixels charbon, dense en bas
-            (le panneau plein) → clairsemée en haut (l'illustration transparaît).
-            JAMAIS un dégradé CSS — masque alpha tramé. Positionnée juste
-            au-dessus du bord haut du panneau relevé. */}
-        {raise > 0 && (
-          <div
-            className="text-raise-fade"
-            aria-hidden
-            style={{
-              top: `${Math.max(0, illoH - raise - 40)}px`,
-              WebkitMaskImage: getRaiseFadeMask() ? `url(${getRaiseFadeMask()})` : undefined,
-              maskImage: getRaiseFadeMask() ? `url(${getRaiseFadeMask()})` : undefined,
-            }}
-          />
-        )}
-
-        {/* Zone de texte — SEULE partie scrollable (si le texte dépasse). Ne
-            capte plus les taps pendant le lancer du dé. La clé = pas de scène :
-            le contenu se renouvelle proprement à chaque écran. Quand le texte
-            déborde, elle MONTE sur l'illustration (classe `raised`, fond
-            charbon), les CTA restant ancrés en bas (spec 21/07). */}
+        {/* Zone de texte — SEULE partie scrollable (si le texte dépasse malgré
+            l'illustration rétrécie). Ne capte plus les taps pendant le lancer. */}
         <div
           ref={textRef}
           onPointerDown={() => setSkip((s) => s + 1)}
-          style={raise > 0 ? { marginTop: `-${raise}px` } : undefined}
-          className={`scene-text-zone relative min-h-0 flex-1 overflow-y-auto px-[17px] pt-[16px] ${raise > 0 ? "raised" : ""} ${rolling ? "pointer-events-none" : ""}`}
+          className={`scene-text-zone relative min-h-0 flex-1 overflow-y-auto px-[17px] pt-[16px] ${rolling ? "pointer-events-none" : ""}`}
         >
           <div key={step + (timedExpired ? "-t" : "")}>
             {beats.map((entry) => (
@@ -956,7 +911,8 @@ function FeedItem({
             className="pointer-events-none absolute top-0 left-0 z-0 h-full w-auto"
             style={{ imageRendering: "pixelated" }}
           />
-          <p className="relative z-[1] font-mono text-[13px] font-bold leading-[1.6] text-[var(--color-bg)]">
+          {/* Bloc démon : texte 11px, interligne 120 % (retour Patrick 22/07). */}
+          <p className="relative z-[1] font-mono text-[11px] font-bold leading-[1.2] text-[var(--color-bg)]">
             <TypedText text={entry.text} typed={typed} skip={skip} msPerChar={42} onDone={onDone} />
           </p>
         </div>

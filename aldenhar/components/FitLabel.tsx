@@ -12,7 +12,7 @@ import { useLayoutEffect, useRef } from "react";
 export default function FitLabel({
   text,
   max = 14,
-  min = 9,
+  min = 8,
   className,
 }: {
   text: string;
