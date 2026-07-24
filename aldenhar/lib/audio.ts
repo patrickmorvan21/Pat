@@ -110,11 +110,15 @@ export function playMusic(kind: MusicKind): void {
   if (!audio) return;
   const already = audio.getAttribute("data-src") ?? "";
   if (!audio.paused && list.includes(already)) return; // déjà sur ce contexte
-  if (!unlocked) {
-    armAudio();
-    return; // démarrera au premier geste
+  // On TENTE de jouer immédiatement (retour Patrick 24/07 : la musique doit
+  // partir dès l'ouverture de l'appli, sans attendre un clic). Beaucoup de
+  // navigateurs — surtout une PWA installée lancée depuis l'icône — l'ont
+  // déjà autorisé. Si le navigateur bloque encore (`play()` rejette), on arme
+  // le repli sur le premier geste. `startTrack` gère lui-même le catch.
+  armAudio();
+  if (audio.paused || !list.includes(already)) {
+    fadeOutAndStop(() => startTrack(src));
   }
-  fadeOutAndStop(() => startTrack(src));
 }
 
 /** Coupe la musique (fondu court). Le contexte courant est conservé. */

@@ -6,7 +6,6 @@ import { HeroGeolier } from "@/components/HeroGeolier";
 import TypedText from "@/components/TypedText";
 import { computeVerdict, PROLOGUE_AMORCE, PROLOGUE_CLOTURE } from "@/lib/prologue-data";
 import { loadRun, saveRun, type PrologueMemory, type RunState } from "@/lib/state";
-import { loadMemory } from "@/lib/player-memory";
 import { playMusic } from "@/lib/audio";
 
 /**
@@ -41,36 +40,6 @@ const NAME_PROMPT =
 /** Noms tirés par « Qu'il choisisse pour moi » (liste validée 24/07). */
 const AUTO_NAMES = ["Cendre", "Le Muet", "Sans-Nom", "Corbeau", "Le Tardif", "Braise", "L'Onzième", "Suie"];
 
-/** Trait d'inscription tramé sous la signature : SEMIS de pixels (jamais un
-    filet net — règle §11). Généré une fois, caché au niveau module. */
-let strokeCache: string | null = null;
-function getSignatureStroke(): string | null {
-  if (typeof document === "undefined") return null;
-  if (!strokeCache) {
-    const W = 280,
-      H = 4;
-    const c = document.createElement("canvas");
-    c.width = W;
-    c.height = H;
-    const ctx = c.getContext("2d")!;
-    let seed = 0x51617;
-    const rnd = () => {
-      seed = (seed * 1664525 + 1013904223) >>> 0;
-      return seed / 4294967296;
-    };
-    ctx.fillStyle = "#ffffff";
-    for (let x = 0; x < W; x += 1) {
-      // dense sur la ligne de base, clairsemé au-dessus — une ligne « posée »
-      if (rnd() < 0.72) ctx.fillRect(x, 2, 1, 1);
-      if (rnd() < 0.2) ctx.fillRect(x, 1, 1, 1);
-      if (rnd() < 0.07) ctx.fillRect(x, 0, 1, 1);
-      if (rnd() < 0.3) ctx.fillRect(x, 3, 1, 1);
-    }
-    strokeCache = c.toDataURL();
-  }
-  return strokeCache;
-}
-
 export default function Prologue({ onDone }: { onDone: () => void }) {
   const runRef = useRef<RunState | null>(null);
   const [beat, setBeat] = useState<number | null>(null);
@@ -84,9 +53,6 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
   const [skip, setSkip] = useState(0);
   // Écran du Nom (24/07) : saisie de la signature.
   const [name, setName] = useState("");
-  // Aides estompables (24/07) : « Touche pour continuer » + note du Registre
-  // ne s'affichent que les 2-3 premières runs (le geste/le fait sont acquis).
-  const [isNewcomer, setIsNewcomer] = useState(false);
 
   useEffect(() => {
     const run = loadRun();
@@ -104,7 +70,6 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
     setBeat(run.prologue.beat);
     setMemories(run.prologue.memories);
     setChoicesMade(run.prologue.choices.length);
-    setIsNewcomer(loadMemory().runsStarted <= 3);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -202,15 +167,16 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
         className="phone-frame relative flex h-[800px] max-h-[100dvh] w-[390px] shrink-0 cursor-pointer flex-col overflow-clip bg-[var(--color-bg)]"
         onPointerDown={onTap}
       >
-        {/* Écran du Nom : le héros se réduit pour que la signature et le CTA
-            restent visibles quand le clavier mobile s'ouvre (24/07). */}
-        <HeroGeolier density={density} bstep={bstep} height={isName ? 232 : 368} />
+        <HeroGeolier density={density} bstep={bstep} />
 
-        <div className="flex flex-1 flex-col px-[15px] pt-[46px]">
-          {/* key=beat : chaque beat repart d'une frappe neuve */}
+        <div className="flex flex-1 flex-col px-[15px] pt-[40px]">
+          {/* key=beat : chaque beat repart d'une frappe neuve.
+              Maquettes 1997:523 / 2167:203 : amorce & clôture = texte CENTRÉ,
+              largeur ~300px pour qu'il revienne à la ligne ; l'écran du Nom et
+              les souvenirs = texte à gauche, pleine largeur. */}
           <p
             className={`font-mono text-[13px] leading-[1.7] text-[var(--color-ink)] ${
-              isMemory ? "text-left" : "text-center"
+              isAmorce || isCloture ? "mx-auto max-w-[300px] text-center" : "text-left"
             }`}
           >
             <TypedText
@@ -233,53 +199,38 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
             </div>
           )}
 
-          {/* ——— Écran du Nom (24/07) : le champ n'apparaît qu'une fois la
-              phrase du Geôlier terminée — jamais de formulaire pendant qu'il
-              parle. La signature est une signature, pas un formulaire. ——— */}
+          {/* ——— Écran du Nom (maquette Figma 2167:203, reproduite fidèlement) :
+              champ bordé simple « Ton Nom » (mono, aligné à gauche), bouton
+              plein SCELLER LE PACTE, lien centré souligné. Le champ n'apparaît
+              qu'une fois la phrase du Geôlier terminée. ——— */}
           {isName && typedDone && (
-            <div
-              className="mt-[26px] flex flex-col items-center"
-              onPointerDown={(e) => e.stopPropagation()}
-            >
-              <span className="font-mono text-[11px] tracking-[2.4px] text-[var(--color-ink)] uppercase opacity-70">
-                Signe le pacte
-              </span>
-              <div className="mt-[14px] w-[280px]">
+            <div className="mt-[24px] flex flex-col" onPointerDown={(e) => e.stopPropagation()}>
+              {/* champ bordé (cadre blanc 1px, entailles de coins charbon comme les CTA) */}
+              <div className="relative h-[52px] w-full">
+                <span className="absolute inset-0 border border-solid border-[var(--color-ink)]" aria-hidden />
+                <span className="absolute top-0 left-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
+                <span className="absolute top-0 right-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
+                <span className="absolute bottom-0 left-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
+                <span className="absolute bottom-0 right-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
                 <input
                   type="text"
                   value={name}
                   maxLength={16}
                   autoFocus
+                  placeholder="Ton Nom"
                   onChange={(e) => setName(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") sealName();
                   }}
-                  aria-label="Signe le pacte"
-                  className="block w-full bg-transparent text-center text-[32px] leading-[1.2] text-[var(--color-ink)] outline-none"
-                  style={{ fontFamily: "var(--font-title)", caretColor: "var(--color-accent)" }}
-                />
-                {/* trait d'inscription : semis de pixels tramés, jamais un filet */}
-                <div
-                  className="h-[4px] w-full"
-                  style={{
-                    backgroundImage: getSignatureStroke() ? `url(${getSignatureStroke()})` : undefined,
-                    backgroundRepeat: "repeat-x",
-                    imageRendering: "pixelated",
-                    opacity: 0.85,
-                  }}
-                  aria-hidden
+                  aria-label="Ton nom"
+                  className="absolute inset-0 w-full bg-transparent px-[18px] font-mono text-[14px] text-[var(--color-ink)] outline-none placeholder:text-[var(--color-ink)] placeholder:opacity-45"
+                  style={{ caretColor: "var(--color-accent)" }}
                 />
               </div>
-              {/* Note du Registre : 2-3 premières runs seulement, puis le héros sait. */}
-              {isNewcomer && (
-                <p className="mt-[10px] max-w-[280px] text-center font-mono text-[11px] leading-[1.5] text-[var(--color-ink)] opacity-50">
-                  Ce nom entrera au Grand Registre. Il y restera plus longtemps que toi.
-                </p>
-              )}
               <SealCta disabled={!canSeal} onSeal={sealName} />
               <button
                 type="button"
-                className="mt-[14px] cursor-pointer font-mono text-[12px] text-[var(--color-ink)] underline opacity-50"
+                className="mt-[16px] cursor-pointer self-center font-mono text-[13px] font-medium text-[var(--color-ink)] underline"
                 onClick={() => {
                   const pick = AUTO_NAMES[Math.floor(Math.random() * AUTO_NAMES.length)];
                   setName(pick);
@@ -291,10 +242,10 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
           )}
         </div>
 
-        {/* Affordance « Touche pour continuer » (24/07) : écrans de narration
-            sans bouton. Aide estompable — 2-3 premières runs seulement. */}
-        {isAmorce && typedDone && isNewcomer && (
-          <span className="absolute inset-x-0 bottom-[18px] text-center font-mono text-[12px] text-[var(--color-ink)] opacity-50">
+        {/* Affordance « Touche pour continuer » (maquette 1997:523) : en bas,
+            centré, opacité 50 %, sur les écrans d'amorce (narration sans bouton). */}
+        {isAmorce && typedDone && (
+          <span className="absolute inset-x-0 bottom-[22px] text-center font-mono text-[13px] text-[var(--color-ink)] opacity-50">
             Touche pour continuer
           </span>
         )}
@@ -304,10 +255,9 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
 }
 
 /**
- * CTA « SCELLER LE PACTE » (24/07) : primaire orange plein, cadre à segments
- * décalés (le composant du prototype accueil — les écrans SANS maquette Figma
- * gardent ce langage, cf. règle du 16/07). Inerte tant que la signature fait
- * moins de 2 caractères.
+ * CTA « SCELLER LE PACTE » (maquette Figma 2167:203) : rectangle plein orange,
+ * pleine largeur, texte charbon espacé — pas de segments décalés (la maquette
+ * fait foi). Inerte tant que la signature fait moins de 2 caractères.
  */
 function SealCta({ disabled, onSeal }: { disabled: boolean; onSeal: () => void }) {
   return (
@@ -315,16 +265,11 @@ function SealCta({ disabled, onSeal }: { disabled: boolean; onSeal: () => void }
       type="button"
       disabled={disabled}
       onClick={onSeal}
-      className={`relative mt-[18px] h-[46px] w-[280px] ${disabled ? "cursor-default opacity-50" : "cursor-pointer"}`}
+      className={`mt-[16px] h-[52px] w-full bg-[var(--color-accent)] font-mono text-[14px] font-bold uppercase tracking-[2.8px] text-[var(--color-bg)] ${
+        disabled ? "cursor-default opacity-50" : "cursor-pointer"
+      }`}
     >
-      <span className="absolute inset-0 bg-[var(--color-accent)]" aria-hidden />
-      {/* segments décalés (offsets du prototype validé 16/07) */}
-      <span className="absolute top-[-3px] right-[-3px] left-[6px] h-[3px] bg-[var(--color-accent)]" aria-hidden />
-      <span className="absolute top-[3px] bottom-[3px] left-[-3px] w-[3px] bg-[var(--color-accent)]" aria-hidden />
-      <span className="absolute right-[6px] bottom-[-5px] left-[-5px] h-[5px] bg-[var(--color-accent)]" aria-hidden />
-      <span className="relative z-[1] font-mono text-[14px] font-bold tracking-[2.8px] text-[var(--color-bg)] uppercase">
-        Sceller le pacte
-      </span>
+      Sceller le pacte
     </button>
   );
 }

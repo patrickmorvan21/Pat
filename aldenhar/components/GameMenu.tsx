@@ -550,7 +550,7 @@ function OptDivider() {
   return <div className="my-[24px] h-px w-full bg-[var(--color-ink)] opacity-20" aria-hidden />;
 }
 
-function OptionsTab() {
+export function OptionsTab() {
   const [s, setS] = useState<Settings>(() => loadSettings());
   const [eraseArmed, setEraseArmed] = useState(false);
   const [aidesReset, setAidesReset] = useState(false);

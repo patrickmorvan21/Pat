@@ -94,6 +94,13 @@
  *           les fichiers manquent. Options : interrupteur Musique réel +
  *           volume à 8 crans. ⚠️ Les mp3 restent à déposer dans
  *           public/audio/ (voir README) — trop lourds pour le connecteur.
+ *   1.15.1 — Retours playtest 24/07 (2e vague) : écran du Nom refait FIDÈLE à
+ *           la maquette Figma 2167:203 (champ bordé « Ton Nom » mono aligné à
+ *           gauche + bouton plein SCELLER LE PACTE + lien centré souligné, plus
+ *           de signature Instrument Serif ni de note Registre) ; amorce du
+ *           prologue centrée 300px + « Touche pour continuer » en bas (maquette
+ *           1997:523) ; musique d'intro tentée dès l'ouverture (sans attendre
+ *           un clic) ; OPTIONS cliquable sur l'accueil (overlay plein cadre).
  *   1.15.0 — Retours playtest 24/07 (immersion) : traversée ×3 (9-11 lieux
  *           avant la Descente) ; VRAIES transitions — la marche a son visuel
  *           (une des 4 vues génériques des Landes en liaison, plus le portail
@@ -104,4 +111,4 @@
  *   1.14.1 — Musique ACTIVE : les 4 mp3 de Patrick (PJ) intégrés dans
  *           public/audio/ — intro à l'accueil/prologue, boucles Landes en jeu.
  */
-export const APP_VERSION = "1.15.0";
+export const APP_VERSION = "1.15.1";

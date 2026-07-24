@@ -9,6 +9,7 @@ import { hasSavedRun, loadRun, resetRun } from "@/lib/state";
 import { APP_VERSION } from "@/lib/version";
 import { applySettingsToDom } from "@/lib/settings";
 import { armAudio, playMusic } from "@/lib/audio";
+import { OptionsTab } from "@/components/GameMenu";
 
 /**
  * Écrans d'accueil (Figma 1963:370 « Première partie » / 1970:458 « Reprendre
@@ -22,7 +23,7 @@ import { armAudio, playMusic } from "@/lib/audio";
 export default function Home() {
   const [phase, setPhase] = useState<"boot" | "home" | "prologue" | "game">("boot");
   const [saved, setSaved] = useState(false);
-  const [overlay, setOverlay] = useState<"reliques" | "registre" | null>(null);
+  const [overlay, setOverlay] = useState<"reliques" | "registre" | "options" | null>(null);
 
   useEffect(() => {
     // Réglages (Options 21/07) : applique taille de texte + animations réduites
@@ -103,7 +104,7 @@ export default function Home() {
                     <FooterLink label="GRAND REGISTRE" onClick={() => setOverlay("registre")} />
                   </>
                 )}
-                <FooterLink label="OPTIONS" disabled />
+                <FooterLink label="OPTIONS" onClick={() => setOverlay("options")} />
               </div>
             </div>
 
@@ -176,19 +177,23 @@ function FooterLink({ label, onClick, disabled }: { label: string; onClick?: () 
 }
 
 /** Plein cadre charbon (jamais une popup — spec §8) : Reliques ou Registre. */
-function HomeOverlay({ kind, onClose }: { kind: "reliques" | "registre"; onClose: () => void }) {
+function HomeOverlay({ kind, onClose }: { kind: "reliques" | "registre" | "options"; onClose: () => void }) {
   const mem = loadMemory();
   const run = loadRun();
   return (
     <div className="absolute inset-0 z-[9] flex flex-col bg-[var(--color-bg)]">
       <div className="flex items-center justify-between px-[15px] py-[11px]">
         <span className="text-[12px] font-medium uppercase tracking-[2.4px] text-[var(--color-ink)]">
-          {kind === "reliques" ? "Reliques" : "Grand Registre"}
+          {kind === "reliques" ? "Reliques" : kind === "registre" ? "Grand Registre" : "Options"}
         </span>
         <CloseX onClose={onClose} />
       </div>
       <div className="flex-1 overflow-y-auto px-[17px] pb-[24px]">
-        {kind === "reliques" ? (
+        {kind === "options" ? (
+          <div className="mx-[-17px]">
+            <OptionsTab />
+          </div>
+        ) : kind === "reliques" ? (
           mem.relics.length === 0 ? (
             <p className="mt-[18px] text-[13px] leading-[1.4] text-[var(--color-ink)] opacity-60">
               Aucune relique. Elles se forgent d&apos;une mort — la tienne.
