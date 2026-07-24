@@ -74,6 +74,18 @@ function nextId() {
   return `e${uidCounter}-${Date.now().toString(36)}`;
 }
 
+/* Tirages et horloge sortis AU NIVEAU MODULE : le React Compiler (Next 16)
+   refuse tout appel impur (`Math.random`, `Date.now`) atteignable depuis le
+   corps du composant, même à travers un gestionnaire d'événement. Les isoler
+   ici garde le composant analysable — et le hasard reste au même endroit
+   logique (un tirage par appel, jamais mémoïsé). */
+function chance(p: number): boolean {
+  return Math.random() < p;
+}
+function nowMs(): number {
+  return Date.now();
+}
+
 const PORTAL = "assets/dithering-portal.jpg";
 
 // Image d'objet obtenu : le haut d'écran bascule sur l'objet quand une action
@@ -168,6 +180,11 @@ export default function Scene() {
   const [beats, setBeats] = useState<FeedEntry[]>([]);
   const [image, setImage] = useState<string>(PORTAL);
   const [imageKind, setImageKind] = useState<ImageKind>("scene");
+  // Points d'intérêt déjà examinés dans le lieu courant (spec 24/07 suite).
+  const [poiSeen, setPoiSeen] = useState<string[]>([]);
+  // Plan RAPPROCHÉ d'un point d'intérêt : crop de l'image du lieu (production
+  // gratuite, spec §4 — on ne génère pas un asset par point). null = plan large.
+  const [poiZoom, setPoiZoom] = useState<{ zoom: number; focus: string } | null>(null);
   // Dernière illustration de SCÈNE (repos de l'image). L'image d'objet n'est
   // qu'un remplacement momentané ; on revient toujours à cette scène-là.
   const lastSceneIlloRef = useRef<string>(PORTAL);
@@ -241,15 +258,40 @@ export default function Scene() {
   // Les choix d'orientation d'une liaison gardent leur ordre (gauche/droite
   // stable) ; ailleurs, Fisher-Yates seedé pour casser les patterns de slot.
   const shuffledChoices = scene.liaison ? baseChoices : shuffleChoices(baseChoices, step);
+  // Points d'intérêt encore inexplorés (spec 24/07 suite §1) : proposés EN TÊTE
+  // des choix — ce sont les choses vues de loin à l'arrivée. Un point examiné
+  // disparaît de la liste ; quand il n'en reste plus, seuls les choix du lieu
+  // (l'événement / la sortie) subsistent.
+  const openPois = (scene.pointsInteret ?? []).filter((p) => !poiSeen.includes(p.id));
+  const poiChoices: Choice[] = openPois.map((p) => ({ id: `poi-${p.id}`, label: p.label, poi: p.id }));
   // 4e choix contextuel (spec 21/07 point 4) : un objet ACTIF pertinent ajouté
   // en bas des choix (calculé hors rendu dans un effet — lit la Besace/santé).
-  const renderedChoices = activeChoice ? [...shuffledChoices, activeChoice] : shuffledChoices;
+  const withPois = [...poiChoices, ...shuffledChoices];
+  const renderedChoices = activeChoice ? [...withPois, activeChoice] : withPois;
 
   function persist(mutate: (run: RunState) => void) {
     const run = runRef.current ?? loadRun();
     mutate(run);
     runRef.current = run;
     saveRun(run);
+  }
+
+  /**
+   * Accorde un objet réel des Landes s'il n'a pas déjà été ramassé cette run et
+   * que son slot (actif/passif) a de la place. Retourne l'objet donné, ou null
+   * (Besace pleine / déjà pris) — l'appelant décide quoi annoncer.
+   */
+  function grantLandesLoot(lootId: string): BesaceItem | null {
+    const run = runRef.current ?? loadRun();
+    const slot = landesLootSlot(lootId);
+    if (!slot || (run.looted ?? []).includes(lootId) || !hasBesaceRoom(run.besace, slot)) return null;
+    const item = landesLoot(lootId);
+    if (!item) return null;
+    persist((r) => {
+      r.besace = [...r.besace, item];
+      r.looted = [...(r.looted ?? []), lootId];
+    });
+    return item;
   }
 
   /** Pose un nouvel écran : remplace le texte, (ré)arme la révélation, masque
@@ -284,6 +326,9 @@ export default function Scene() {
     if (run.step > 0) setStep(run.step);
     setDay(run.day);
     setHealth(run.health);
+    // Points d'intérêt déjà examinés dans le lieu courant : on ne les
+    // re-propose pas à la reprise (spec 24/07 suite §1).
+    setPoiSeen(run.poiSeen ?? []);
 
     // Musique (24/07) : l'Acte I tourne sur les boucles des Landes (rotation
     // aléatoire des 3 pistes). Silencieux si les mp3 ne sont pas déployés.
@@ -646,7 +691,7 @@ export default function Scene() {
       !nextScene.liaison &&
       !nextScene.id.startsWith("campement") &&
       hasBesaceRoom(besace, "actif") &&
-      Math.random() < 0.12
+      chance(0.12)
     ) {
       const found = randomSoinMineur();
       obtainedItem = found;
@@ -665,7 +710,7 @@ export default function Scene() {
     if (result === 1 || result === 20) {
       const posture = jailerPosture(loadMemory());
       entries.push({ id: nextId(), kind: "jailer", text: jailerTaunt(result, posture) });
-    } else if (Math.random() < 0.12) {
+    } else if (chance(0.12)) {
       entries.push({ id: nextId(), kind: "jailer", text: nextScene.jailerLine });
     }
 
@@ -687,9 +732,14 @@ export default function Scene() {
 
     setStep(nextStep);
     setScene(nextScene);
+    // On quitte l'écran : les points d'intérêt du lieu précédent sont oubliés
+    // et l'image repasse en plan large (spec 24/07 suite §1).
+    setPoiSeen([]);
+    setPoiZoom(null);
     persist((run) => {
       run.step = nextStep;
       run.lastChoiceId = null;
+      run.poiSeen = [];
       run.trav = trav;
       // Les états ne vieillissent qu'en quittant un LIEU complet — ni une
       // liaison, ni un écran intermédiaire d'une séquence (chantier 5 : un
@@ -763,6 +813,48 @@ export default function Scene() {
         m.envFlags[flag] = true;
       });
     }
+    // ——— Point d'intérêt (spec 24/07 suite §1) : voir de loin → MARCHER →
+    // toucher. On joue l'approche puis l'examen sur le MÊME lieu (pas de
+    // transition de scène), l'image passe en plan rapproché, et les points
+    // restants demeurent explorables. On ne se téléporte jamais sur un point.
+    if (choice.poi) {
+      const poi = (scene.pointsInteret ?? []).find((p) => p.id === choice.poi);
+      if (poi) {
+        const gained = poi.grantsLoot ? grantLandesLoot(poi.grantsLoot) : null;
+        const entries: FeedEntry[] = [
+          { id: nextId(), kind: "narration", text: poi.approche },
+          { id: nextId(), kind: "narration", text: poi.examen },
+        ];
+        if (gained) {
+          entries.push({
+            id: nextId(),
+            kind: "obtenu",
+            name: gained.name,
+            rarity: RARITY_LABEL[gained.rarity],
+            flavor: gained.flavor,
+          });
+        }
+        const seen = [...poiSeen, poi.id];
+        setPoiSeen(seen);
+        setPoiZoom({ zoom: poi.zoom ?? 2.2, focus: poi.focus ?? "50% 50%" });
+        persist((run) => {
+          run.poiSeen = seen;
+          if (poi.soupcon) run.soupcon = Math.max(0, Math.min(6, (run.soupcon ?? 0) + poi.soupcon));
+        });
+        if (poi.setsEnvFlag) {
+          const flag = poi.setsEnvFlag;
+          mutateMemory((m) => {
+            m.envFlags = { ...m.envFlags, [flag]: true };
+          });
+        }
+        setSelectedId(null);
+        setChoicesHidden(true);
+        // Même scène, écran remplacé : l'image reste celle du lieu (zoomée).
+        showScreen(entries, { src: lastSceneIlloRef.current, kind: "scene" });
+        return;
+      }
+    }
+
     // Le Soupçon (chantier 3) : l'ACTE compte, pas son issue — le delta d'un
     // choix s'applique dès qu'il est pris. Silencieux, clampé 0..6.
     if (choice.soupcon) {
@@ -798,7 +890,7 @@ export default function Scene() {
       const tension = trav && trav.visited.length >= trav.target - 1 ? 1 : 0;
       const threshold = Math.max(2, choice.risky.threshold - soft + tension);
       setRoll({
-        key: Date.now(),
+        key: nowMs(),
         stat: choice.risky.stat,
         threshold,
         outcomes: choice.risky.outcomes,
@@ -891,11 +983,19 @@ export default function Scene() {
             Hauteur adaptée au device (dvh), plafonnée ; RÉTRÉCIE sur une scène à
             texte dense (retour 22/07) pour laisser la place au texte, sans
             overlay ni fondu de pixels. */}
-        <div key={image} className="image-swap illustration-frame shrink-0 relative">
+        <div key={image} className="image-swap illustration-frame shrink-0 relative overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt=""
             src={image}
+            // Plan RAPPROCHÉ d'un point d'intérêt : crop ×2-3 de l'image du
+            // lieu (spec 24/07 suite §4 — « production gratuite »). Le zoom
+            // s'applique en transform pour rester net au pixel près.
+            style={
+              poiZoom && imageKind === "scene"
+                ? { transform: `scale(${poiZoom.zoom})`, transformOrigin: poiZoom.focus, transition: "transform 320ms steps(4)" }
+                : { transform: "scale(1)", transition: "transform 320ms steps(4)" }
+            }
             className={
               imageKind === "object"
                 ? "pointer-events-none block h-[38dvh] max-h-[300px] min-h-[180px] w-full bg-[var(--color-bg)] object-contain [image-rendering:pixelated]"

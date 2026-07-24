@@ -196,6 +196,9 @@ export type RunState = {
   /** Dernier palier du Soupçon déjà MANIFESTÉ dans le monde (évite de rejouer
       la même manifestation ; redescend avec le Soupçon après un procès). */
   soupconSeen: number;
+  /** Points d'intérêt déjà examinés dans le LIEU COURANT (spec 24/07 suite) —
+      vidé en quittant le lieu. Un point exploré ne se re-propose pas. */
+  poiSeen: string[];
 };
 
 const KEY = "aldenhar-run";
@@ -248,6 +251,7 @@ function fresh(): RunState {
     chapter: null,
     soupcon: 0,
     soupconSeen: 0,
+    poiSeen: [],
   };
 }
 
@@ -297,6 +301,7 @@ export function loadRun(): RunState {
             chapter: p.chapter && typeof p.chapter.id === "string" ? p.chapter : null,
             soupcon: typeof p.soupcon === "number" ? p.soupcon : 0,
             soupconSeen: typeof p.soupconSeen === "number" ? p.soupconSeen : 0,
+            poiSeen: Array.isArray(p.poiSeen) ? p.poiSeen : [],
           };
         }
       }

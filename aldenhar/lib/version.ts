@@ -94,6 +94,13 @@
  *           les fichiers manquent. Options : interrupteur Musique réel +
  *           volume à 8 crans. ⚠️ Les mp3 restent à déposer dans
  *           public/audio/ (voir README) — trop lourds pour le connecteur.
+ *   1.16.0 — Lot 24/07 suite (3e playtest) vague 1 — POINTS D'INTÉRÊT : le
+ *           diagnostic n'est plus la longueur des beats mais la LINÉARITÉ. Un
+ *           lieu n'est plus un nœud : arrivée qui MONTRE les points à distance
+ *           → marche (approche) → examen en plan rapproché (crop de l'image du
+ *           lieu) → événement → sortie. On ne se téléporte jamais sur un point.
+ *           Les 4 lieux garantis (Colline, Tribunal, Chapelle, Champ) réécrits
+ *           d'après les scripts Notion, 3 points chacun.
  *   1.15.1 — Retours playtest 24/07 (2e vague) : écran du Nom refait FIDÈLE à
  *           la maquette Figma 2167:203 (champ bordé « Ton Nom » mono aligné à
  *           gauche + bouton plein SCELLER LE PACTE + lien centré souligné, plus
@@ -111,4 +118,4 @@
  *   1.14.1 — Musique ACTIVE : les 4 mp3 de Patrick (PJ) intégrés dans
  *           public/audio/ — intro à l'accueil/prologue, boucles Landes en jeu.
  */
-export const APP_VERSION = "1.15.1";
+export const APP_VERSION = "1.16.0";

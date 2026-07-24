@@ -75,6 +75,46 @@ export type Choice = {
    * Soupçon ne se lit que dans le monde, par paliers.
    */
   soupcon?: number;
+  /**
+   * Point d'intérêt du lieu (spec 24/07 suite, §1) : id d'une entrée de
+   * `Scene.pointsInteret`. Choisir ce point joue la MARCHE (approche) puis
+   * l'examen (plan rapproché) — on ne se téléporte jamais sur un point.
+   * Généré automatiquement à partir de `Scene.pointsInteret`, pas écrit à la main.
+   */
+  poi?: string;
+};
+
+/**
+ * Point d'intérêt d'un lieu (spec 24/07 suite, §1 — « la longueur des beats
+ * n'est pas le problème, la LINÉARITÉ l'est »).
+ *
+ * Grammaire verrouillée : **voir de loin → marcher → toucher.**
+ *   • le beat d'arrivée du lieu MONTRE les points à distance (paysage lu,
+ *     jamais un menu) ;
+ *   • choisir un point joue son `approche` (2-3 phrases de marche DANS le
+ *     lieu) PUIS son `examen` (plan rapproché = crop de l'image du lieu) ;
+ *   • on revient au lieu, les points restants toujours explorables, jusqu'à
+ *     choisir de continuer (→ l'événement du lieu).
+ */
+export type PointInteret = {
+  id: string;
+  /** Libellé du choix à l'arrivée — ce qu'on voit de loin. */
+  label: string;
+  /** Beat de MARCHE vers le point (2-3 phrases). Jamais sauté. */
+  approche: string;
+  /** Examen au plan rapproché (crop ×2-3 de l'image du lieu). */
+  examen: string;
+  /** Facteur de crop du plan rapproché (défaut 2.2). Production gratuite : on
+      zoome l'image du lieu, on ne produit pas un nouvel asset (spec §4). */
+  zoom?: number;
+  /** Cadrage du crop (object-position CSS), ex. "50% 30%". */
+  focus?: string;
+  /** Le Soupçon monte/descend en examinant (ex. réagir à voix haute). */
+  soupcon?: number;
+  /** Objet réel des Landes trouvé au point (id de LANDES_OBJETS). */
+  grantsLoot?: string;
+  /** Trace durable au compte (persistance environnementale §17). */
+  setsEnvFlag?: string;
 };
 
 export type Scene = {
@@ -101,6 +141,12 @@ export type Scene = {
    * (relique + fragment + épitaphe). Un jet réussi fait retomber le Soupçon.
    */
   fixationTrial?: boolean;
+  /**
+   * Points d'intérêt explorables du lieu (spec 24/07 suite, §1). Un lieu n'est
+   * PLUS jamais un nœud unique : arrivée (les points se voient à distance) →
+   * points d'intérêt (marche + examen) → événement → sortie.
+   */
+  pointsInteret?: PointInteret[];
   choices: Choice[];
   jailerLine: string;
   /**
@@ -393,57 +439,82 @@ export const SCENES: Scene[] = [
        examen optionnel → événement → sortie), jamais un beat unique. L'écran
        d'arrivée porte l'id du pool (orientation/visited/chapitre), l'événement
        vit dans « -2 » via chainNext. */
+    /* Lieu à POINTS D'INTÉRÊT (spec 24/07 suite §1, script Notion « Les Landes
+       — Scripts ») : arrivée qui montre les points à DISTANCE → marche +
+       examen → événement → sortie. Lieu-signature, quasi garanti. */
     id: "colline-aux-gibets",
     illustration: "assets/scene_colline_aux_gibets_c.png",
     soupconOnArrival: 1, // être vu près des potences (chantier 3)
     chainNext: "colline-aux-gibets-2",
     narration: [
-      "La colline monte seule au milieu de la lande, couronnée de gibets. " +
-        "Tous occupés, tous immobiles — sauf un. Au centre, le plus grand " +
-        "est vide. Sa corde pend, usée en son milieu, et son ombre s'étale " +
-        "au sol sans que rien ne la porte.",
-      "Sur les potences, des corbeaux. Ils ne crient pas. Ils comptent — " +
-        "tu le sais à la façon dont, à ton arrivée, toutes les têtes se sont " +
-        "tournées d'un cran.",
+      "La pente est douce et n'en finit pas — la Colline se mérite à pas " +
+        "comptés. Au sommet, le cercle : neuf potences ordinaires, plantées " +
+        "comme les heures d'un cadran. Et au centre, l'autre. La grande. Sa " +
+        "corde est la seule chose neuve à dix lieues.",
+      "À gauche du cercle, un poteau isolé porte encore son occupant. À " +
+        "droite, les potences vides alignent leurs noms gravés.",
     ],
-    choices: [
+    pointsInteret: [
       {
-        id: "compter-corbeaux",
-        label: "Compter les corbeaux",
-        risky: {
-          stat: "EMPATHIE",
-          threshold: 12,
-          outcomes: outcomes(
-            "20 naturel. Quarante-neuf. Le cinquantième perchoir est vide, juste au-dessus du Gibet Vide. Ils gardent la place de quelqu'un — et à la façon dont ils te fixent, tu sais que ce n'est pas la tienne. Pas encore.",
-            "Tu comptes. Ils te laissent faire, flattés — personne ne compte les compteurs. Le plus vieux incline la tête : un salut de confrère.",
-            "Tu perds le compte à trente-trois. Ils le savent. Toute la rangée se met à décompter à rebours, bec fermé, et tu préfères ne pas savoir vers quoi.",
-            "1 naturel. Tu comptes les corbeaux. Les corbeaux, eux, ont fini de te compter. ♦ −2"
-          ),
-        },
+        id: "potences-cercle",
+        label: "Les potences du cercle",
+        zoom: 2.1,
+        focus: "35% 45%",
+        approche:
+          "Tu entres dans le cercle. Le vent monte d'un cran dès le premier " +
+          "pas entre deux potences — pas plus fort ailleurs, plus fort ICI, " +
+          "comme si l'espace entre les mâts avait son climat.",
+        examen:
+          "Chaque potence porte un nom gravé au pied, et une date. Les " +
+          "entailles sont de la même main — appliquée, régulière, la main de " +
+          "quelqu'un qui grave comme on rend un jugement.",
       },
       {
-        id: "ecriteaux-pied",
-        label: "Lire les écriteaux d'en bas",
-        passive: {
-          consequence:
-            "D'ici, les écriteaux sont illisibles — sauf leur nombre. Tu " +
-            "remarques autre chose : ils sont tous orientés vers le sommet, " +
-            "comme des visages tournés vers une chaire. Même pendus, ils " +
-            "assistent encore à l'audience.",
-        },
+        id: "gibet-vide",
+        label: "Le Gibet Vide, au centre",
+        zoom: 2.6,
+        focus: "50% 25%",
+        approche:
+          "Tu marches vers le centre, et la chose grandit plus vite que tes " +
+          "pas. À dix mètres, tu comprends que tu avais mal jugé l'échelle. À " +
+          "trois, tu dois lever la tête pour voir le nœud.",
+        examen:
+          "Le bois est d'œuvre, assemblé pour durer mille ans. La corde " +
+          "neuve grince. Par grand soleil — rare, ici — l'ombre portée " +
+          "s'étend vers le sud, et elle a une forme que la potence n'explique pas.",
       },
-      { id: "monter-potences", label: "Monter parmi les potences" },
+      {
+        id: "poteau-pendu",
+        label: "Le poteau isolé, à gauche",
+        zoom: 2.4,
+        focus: "18% 50%",
+        soupcon: 1, // s'intéresser au Pendu se voit de loin
+        approche:
+          "Tu contournes le cercle par la gauche. Le poteau isolé est plus " +
+          "bas que les autres — à hauteur d'homme, exactement. Une hauteur " +
+          "qu'on choisit.",
+        examen:
+          "Chaîne de fonction au cou, sous la corde. Un sceau au poing. Et " +
+          "les yeux qui s'ouvrent quand tu arrives à portée de voix : le " +
+          "Bailli des Landes, pendu le dernier, à la place d'honneur.",
+      },
     ],
+    choices: [{ id: "monter-sommet", label: "Rester au sommet" }],
     jailerLine: "Les corbeaux tiennent mes comptes locaux. Bénévoles, en plus.",
   },
   {
+    /* Événement du lieu (script Notion) : le grincement rythmé — les cordes du
+       cercle se balancent ENSEMBLE, sans vent. Compter, c'est compter ses
+       propres morts (mémoire du joueur). */
     id: "colline-aux-gibets-2",
     illustration: "assets/scene_colline_aux_gibets_c.png",
     narration: [
-      "Au sommet, le vent tombe. Le Gibet Vide est plus grand que tout ce " +
-        "qu'on bâtit pour un homme — chevilles doubles, montant large, et " +
-        "cette corde usée en son milieu, pas au nœud. À son pied, l'ombre " +
-        "reste immobile même quand la corde bouge.",
+      "Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme " +
+        "plat, les neuf cordes du cercle se mettent à bouger. Pas au hasard : " +
+        "ensemble. Un balancement lent, réglé, qui va et vient sur le même temps.",
+      "Ça grince en mesure. Neuf cordes, un seul rythme. Tu comprends, avec " +
+        "un retard qui te coûte, que ce rythme ne t'est pas indifférent — " +
+        "tu pourrais le compter.",
     ],
     choices: [
       {
@@ -464,16 +535,29 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "ombre", label: "Traverser l'ombre", locked: { stat: "INSTINCT" } },
+      {
+        id: "compter-battements",
+        label: "Rester et compter",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu comptes jusqu'au bout, sans ciller. Le nombre tombe, et il ne te dit rien — pas encore. Tu le retiens quand même. Un jour, en te réveillant sur une autre borne, tu te souviendras de ce chiffre et tu sauras exactement ce qu'il comptait.",
+            "Tu comptes. Le nombre est petit, et c'est le pire : les cordes ne battent pas les morts de la lande. Elles battent les tiennes. Le compte est juste. Tu redescends sans le dire à voix haute.",
+            "Tu perds le fil au milieu — les cordes changent de mesure dès qu'on les suit, et tu comprends que compter, ici, c'est se faire compter. Le rythme reprend, plus lent, comme si on t'attendait.",
+            "1 naturel. Tu comptes, et la dernière corde attend ton chiffre pour bouger. Elle a bougé. Tu as donné le nombre le premier. ♦ −2"
+          ),
+        },
+      },
       {
         id: "redescendre",
-        label: "Redescendre sans toucher",
+        label: "Partir avant de comprendre",
         passive: {
           consequence:
-            "Tu redescends à reculons, sans quitter le grand gibet des yeux. " +
-            "En bas seulement, tu t'aperçois que tu retenais ton souffle — " +
-            "et que l'ombre, elle, s'est très légèrement tournée pour suivre " +
-            "ta descente.",
+            "Tu tournes le dos au cercle avant d'avoir fini de compter — et " +
+            "c'est peut-être la chose la plus sage que tu feras aujourd'hui. " +
+            "Le grincement continue derrière toi, patient, comme une phrase " +
+            "qu'on garde pour la prochaine fois.",
         },
       },
     ],
@@ -580,46 +664,65 @@ export const SCENES: Scene[] = [
     jailerLine: "Le Bailli me plaît. Il a compris avant toi : un jugement, ça ne s'esquive pas. Ça s'ajourne.",
   },
   {
+    /* Lieu à POINTS D'INTÉRÊT (script Notion). */
     id: "champ-des-fixes",
     illustration: "assets/scene_champ_des_fixes_c.png",
     chainNext: "champ-des-fixes-2",
     narration: [
-      "Derrière la colline, des rangées de poteaux à perte de vue, chacun " +
-        "son pendu, chacun son écriteau. Un cimetière debout. On n'enterre " +
-        "pas, ici : on fixe. Les morts tiennent mieux le sol que les vivants.",
-      "Au bout d'une corde trop courte, une petite fille pend sans se " +
-        "balancer. Elle te suit des yeux. Les autres regardent tous droit " +
-        "devant. Pas elle.",
+      "Pas de tombes — des poteaux. Des rangées de poteaux plantés droit, un " +
+        "nom sur chaque, alignés face au nord. Dos au sud. Même morts, surtout " +
+        "morts, on ne les laisse pas regarder par là.",
+      "Au fond, des poteaux vierges attendent, déjà plantés. Près de " +
+        "l'entrée, la cabane du Fossoyeur.",
     ],
-    choices: [
+    pointsInteret: [
       {
-        id: "regard-petite",
-        label: "Suivre son regard",
-        risky: {
-          stat: "INSTINCT",
-          threshold: 12,
-          outcomes: outcomes(
-            "20 naturel. Elle ne te regarde pas, toi — elle regarde derrière toi, depuis le début. Tu te retournes à l'instant juste : une silhouette reflue entre les rangs, prise en faute. La petite cligne des yeux, une fois. De rien.",
-            "Son regard glisse vers un poteau du troisième rang, insistant. À son pied, à demi enterré : un petit cheval de bois, usé au poli. Elle ne peut pas le montrer autrement. Tu le redresses face à elle, et ses yeux se ferment.",
-            "Tu suis son regard — il t'emmène en cercle, de rang en rang, jusqu'à revenir sur toi. Le temps de comprendre qu'elle t'a promené, la lumière a bougé et tu ne sais plus par où tu es entré.",
-            "1 naturel. Elle regarde tes pieds. Là où tu es, exactement, le sol est plus meuble. Un trou de poteau. Fraîchement creusé. ♦ −2"
-          ),
-        },
+        id: "les-rangees",
+        label: "Les rangées et leurs noms",
+        zoom: 2.2,
+        focus: "45% 50%",
+        approche:
+          "Tu marches entre deux rangs. Le sol est tassé par des allées et " +
+          "venues régulières — on entretient ce champ comme un jardin, et " +
+          "c'est ça qui serre le ventre.",
+        examen:
+          "Les noms des premières rangées sont presque effacés. Les dernières " +
+          "sont fraîches. Entre les deux, une rangée entière porte la même " +
+          "date — un seul jour, neuf fixations. Il y a une histoire là-dedans " +
+          "que personne ne raconte.",
       },
       {
-        id: "lire-ecriteaux",
-        label: "Lire les écriteaux",
-        passive: {
-          consequence:
-            "Nom, motif, jours — une écriture de greffe, la même sur des " +
-            "centaines de planches. Puis un écriteau détonne : le motif a " +
-            "été gratté au couteau, si fort que le bois est entaillé. Le " +
-            "nom reste. Les jours restent. Ce qu'elle avait fait, quelqu'un " +
-            "n'a pas voulu qu'on le lise.",
-        },
+        id: "poteaux-vierges",
+        label: "Les poteaux vierges, au fond",
+        zoom: 2.5,
+        focus: "70% 55%",
+        soupcon: 1, // réagir devant les poteaux d'avance se voit
+        approche:
+          "Il faut traverser tout le champ pour les atteindre. Tu comptes les " +
+          "poteaux vides en marchant — puis tu t'arrêtes de compter, parce que " +
+          "le compte monte plus vite que tes pas.",
+        examen:
+          "Trois poteaux portent déjà des noms, sans date. Le Fossoyeur grave " +
+          "d'avance « ceux dont c'est sûr ». Le troisième nom est récent — " +
+          "l'entaille est claire, le bois n'a pas encore grisé. Tu le lis deux " +
+          "fois. Tu préfères ne pas savoir pourquoi il te semble familier.",
       },
-      { id: "avancer-rangs", label: "S'avancer entre les rangs" },
+      {
+        id: "tombe-sans-poteau",
+        label: "Un vide dans une rangée pleine",
+        zoom: 2.7,
+        focus: "30% 62%",
+        approche:
+          "Tu l'as repéré de loin sans savoir quoi : un défaut d'alignement, " +
+          "un rythme cassé. En approchant, tu comprends — il manque un poteau " +
+          "au milieu d'une rangée pleine, comme une dent tombée.",
+        examen:
+          "La terre y est ancienne, tassée : il y a eu un poteau, ici. On l'a " +
+          "retiré. Pas arraché — descellé proprement, puis rebouché. Quelqu'un " +
+          "a voulu que ce nom-là cesse d'exister sans que le champ s'en aperçoive.",
+      },
     ],
+    choices: [{ id: "rester-champ", label: "Rester dans le champ" }],
     jailerLine: "Un champ entier de fixés, et c'est toi qui bouges encore. Profites-en, ça fausse mes moyennes.",
   },
   {
@@ -998,54 +1101,78 @@ export const SCENES: Scene[] = [
     jailerLine: "Dors. Le crépuscule ne tombera pas, mais toi, un jour, oui. J'aime comparer.",
   },
   {
+    /* Lieu à POINTS D'INTÉRÊT (script Notion). */
     id: "chapelle-des-cordes",
     illustration: "assets/scene_chapelle_des_cordes_d.png",
     loot: "brin-chanvre",
     chainNext: "chapelle-des-cordes-2",
     narration: [
-      "La chapelle du hameau n'a ni croix ni autel. Aux murs, des cordes — " +
-        "des dizaines, clouées en boucles soigneuses, chacune sous un nom " +
-        "gravé. Les reliques des Fixations réussies. Certaines bougent " +
-        "doucement, sans courant d'air.",
+      "La chapelle est petite et n'a plus de dieu — les niches sont vides, " +
+        "l'autel renversé. Mais elle est TENUE : balayée, entretenue, occupée " +
+        "par sa nouvelle religion.",
+      "Au fond, le mur des cordes. Sur le côté, l'autel couché. Près de " +
+        "l'entrée, une chaise et un ouvrage de tressage — quelqu'un vit ici.",
     ],
-    choices: [
+    pointsInteret: [
       {
-        id: "lire-noms",
-        label: "Lire les noms gravés",
-        passive: {
-          consequence:
-            "Les noms se suivent par familles — les mêmes syllabes reviennent, " +
-            "génération après génération. Le hameau se fixe lui-même, de père " +
-            "en fils. Sous une boucle plus vieille que les autres, un nom a " +
-            "été bouchardé au ciseau. On ne défait pas une corde, ici. Un " +
-            "nom, si.",
-        },
+        id: "mur-cordes",
+        label: "Le mur des cordes, au fond",
+        zoom: 2.3,
+        focus: "60% 45%",
+        approche:
+          "Tu remontes la nef courte. L'odeur de chanvre vieux prend à la " +
+          "gorge à mesure — une odeur grasse, presque animale, qui n'a rien " +
+          "d'une odeur d'église.",
+        examen:
+          "Des dizaines de cordes coupées, clouées en rangs, chacune " +
+          "étiquetée d'un nom à l'encre pâle. Ce ne sont pas des trophées. Ce " +
+          "sont des reliques — chaque corde « a tenu » quelqu'un. L'une " +
+          "d'elles bouge quand tu ne la regardes pas.",
       },
       {
-        id: "toucher-corde-mur",
-        label: "Toucher une corde qui bouge",
-        risky: {
-          stat: "COURAGE",
-          threshold: 11,
-          outcomes: outcomes(
-            "20 naturel. La corde s'immobilise sous tes doigts — puis toutes les autres, mur après mur. Le silence qui suit est un salut. Ce qui reste dans ces boucles reconnaît une main qui n'a pas peur, et s'en souviendra.",
-            "Sous la pulpe des doigts, la corde vibre — un pouls très lent, très vieux. Pas le tien. Tu retires ta main proprement : on ne réveille pas ce qui dort au mur d'une chapelle.",
-            "À l'instant du contact, la boucle se resserre d'un cran, sèche. Pas sur ta main — sur elle-même. Mais tout le mur a frémi, et la Veuve, au fond, a levé la tête pour la première fois.",
-            "1 naturel. La corde te rend ton geste : elle te touche. Une caresse de chanvre le long du poignet, exactement là où passerait un nœud. Prise de mesure. ♦ −2"
-          ),
-        },
+        id: "autel-renverse",
+        label: "L'autel couché, sur le côté",
+        zoom: 2.5,
+        focus: "25% 60%",
+        approche:
+          "Tu contournes les bancs absents — on les a brûlés, sans doute — " +
+          "jusqu'à la masse de pierre couchée sur le flanc. Personne ne l'a " +
+          "redressée. Personne ne l'a emportée non plus.",
+        examen:
+          "Sous l'autel renversé, un espace. Vide — mais le creux dans la " +
+          "poussière dit qu'une chose y était cachée, longue, enroulée. On " +
+          "l'a prise récemment : la poussière n'a pas eu le temps de revenir.",
       },
-      { id: "avancer-niche", label: "Avancer vers le fond" },
+      {
+        id: "ouvrage-tressage",
+        label: "La chaise et l'ouvrage",
+        zoom: 2.6,
+        focus: "40% 72%",
+        approche:
+          "Près de l'entrée, la chaise est tournée vers le mur des cordes — " +
+          "pas vers la porte. On s'assied ici pour regarder les reliques, pas " +
+          "pour surveiller qui entre.",
+        examen:
+          "Un ouvrage de tressage en cours, posé sur le siège : trois brins " +
+          "de chanvre neuf, serrés à mi-longueur. Le travail est régulier, " +
+          "sans hâte. Quelqu'un tresse ici tous les jours, et ce quelqu'un " +
+          "n'a pas fini.",
+      },
     ],
+    choices: [{ id: "rester-chapelle", label: "Rester dans la chapelle" }],
     jailerLine: "Une chapelle de cordes. Les hommes prient ce qui les tient. Je trouve ça d'une honnêteté rare.",
   },
   {
+    /* Événement du lieu (script Notion) : la Veuve tresse sans te regarder. */
     id: "chapelle-des-cordes-2",
     illustration: "assets/scene_chapelle_des_cordes_d.png",
     narration: [
-      "Une femme en noir refait sans fin le même nœud au pied du mur. Et " +
-        "dans une niche à part, sous verre : une corde coupée net, sans nom. " +
-        "La seule de toute la chapelle qui n'a pas tenu.",
+      "Elle était là depuis le début. Une femme en noir, assise à la chaise, " +
+        "qui refait sans fin le même nœud sans lever les yeux sur toi.",
+      "— « Choisis ton brin. » Sa voix est plate, professionnelle. « Tout le " +
+        "monde finit par en avoir besoin. » Derrière elle, dans une niche à " +
+        "part, sous verre : une corde coupée net, sans nom. La seule de toute " +
+        "la chapelle qui n'a pas tenu.",
     ],
     choices: [
       {
@@ -1293,54 +1420,81 @@ export const SCENES: Scene[] = [
     // Le Registre des Pendaisons — la mécanique du Grand Registre (§19)
     // rejouée à l'échelle de la zone : la ligne du joueur s'insère dans le
     // classement, au milieu des Fixés du Bailli.
+    /* Lieu à POINTS D'INTÉRÊT (script Notion) — garanti si les chapitres
+       Procès ou Registre sont actifs. */
     id: "petit-tribunal",
     illustration: "assets/scene_petit_tribunal_a.png",
     chainNext: "petit-tribunal-2",
     narration: [
-      "Le Petit Tribunal tient dans une seule pièce : trois bancs, une " +
-        "chaire, et le froid des endroits où l'on a beaucoup décidé. C'est " +
-        "ici que la Fixation se jugeait — le Bailli en chaire, la corde en " +
-        "sentence unique.",
+      "La grange aux trois bancs sent le suif froid. La chaire fait face à la " +
+        "porte — ici, même l'entrée est un interrogatoire.",
+      "Au mur, une feuille clouée. Sur la chaire, un livre ouvert. Les bancs, " +
+        "eux, gardent leurs traces.",
     ],
-    choices: [
+    pointsInteret: [
       {
-        id: "toucher-chaire",
-        label: "Passer la main sur la chaire",
-        passive: {
-          consequence:
-            "Le bois de la chaire porte des entailles fines, une par " +
-            "jugement, alignées comme des jours. Des dizaines. La dernière " +
-            "est plus profonde que les autres — et tremblée. Celle-là, la " +
-            "main qui comptait ne voulait pas la compter.",
-        },
+        id: "mur-ordonnance",
+        label: "La feuille clouée au mur",
+        zoom: 2.4,
+        focus: "22% 38%",
+        approche:
+          "Trois pas de dalle inégale, et la feuille se précise : du papier " +
+          "épais, jauni, cloué aux quatre coins par quelqu'un qui ne voulait " +
+          "pas qu'on la décroche.",
+        examen:
+          "La liste des signes, de la main du Bailli. « Parler seul face au " +
+          "sud. Fixer les Profondeurs plus qu'il ne faut. Cesser de dormir. " +
+          "Répondre à ce qui n'a pas parlé. » Tu la lis deux fois. La deuxième " +
+          "fois, tu comptes ceux qui te concernent déjà.",
       },
       {
-        id: "sasseoir-banc",
-        label: "S'asseoir sur un banc",
-        risky: {
-          stat: "EMPATHIE",
-          threshold: 11,
-          outcomes: outcomes(
-            "20 naturel. Le banc t'accepte — et la pièce se rejoue : tu SENS où chacun s'asseyait, qui baissait les yeux, qui votait des lèvres sans un mot. Et tu sens le banc du fond, toujours vide : celui de la fille du Bailli. Personne n'osait s'y mettre. Personne n'ose encore.",
-            "Le bois est poli par des générations d'assises raides. À cette place, on ne venait pas juger : on venait être d'accord. C'est plus confortable, et ça use moins le bois.",
-            "Le banc craque sous toi — fort, dans le silence de la pièce. Un craquement de tribunal, ça sonne comme un verdict. Tu te relèves avec la sensation d'avoir été enregistré.",
-            "1 naturel. À peine assis, tu comprends l'erreur : ce banc-là est celui des accusés. La pièce entière se tourne vers toi — les bancs, la chaire, le froid. L'habitude des murs. ♦ −2"
-          ),
-        },
+        id: "chaire-registre",
+        label: "La chaire et son livre",
+        zoom: 2.5,
+        focus: "50% 30%",
+        approche:
+          "La chaire est haute — il faut lever les yeux, et c'est le but. Tu " +
+          "montes la marche unique qui y mène, celle que le Bailli montait " +
+          "chaque fois qu'il allait dire la même phrase.",
+        examen:
+          "Le Registre des Pendaisons est posé là, ouvert — pas par " +
+          "négligence : ici, la loi se montre. Des colonnes de noms, de " +
+          "dates, de signes. Une écriture appliquée qui se dégrade au fil des " +
+          "pages. Et un nom sur deux est barré. Pas raturé — barré, d'un trait " +
+          "droit, à l'encre plus récente que le nom.",
       },
-      { id: "aller-chaire", label: "Aller à la chaire" },
+      {
+        id: "les-bancs",
+        label: "Les bancs et leurs traces",
+        zoom: 2.2,
+        focus: "50% 70%",
+        approche:
+          "Tu redescends vers les bancs. Trois rangs de bois brut, et cette " +
+          "disposition que tu reconnais sans l'avoir apprise : les accusés " +
+          "devant, les témoins de côté, le hameau derrière.",
+        examen:
+          "Le bois du banc des accusés est poli au milieu, rongé aux bords — " +
+          "des mains qui serrent. Sur le banc des témoins, des entailles de " +
+          "comptage : quelqu'un venait souvent. Témoigner était son habitude.",
+      },
     ],
+    choices: [{ id: "rester-tribunal", label: "Rester dans la salle" }],
     jailerLine: "Trois bancs, une chaire, zéro acquittement. L'efficacité, j'admire.",
   },
   {
+    /* Événement du lieu (script Notion) : l'Écrivain public entre, te voit, se
+       fige — puis fait comme si de rien. Hook de sa rencontre. */
     id: "petit-tribunal-2",
     illustration: "assets/monstre_ecrivain_public_d.png",
     registre: true,
     narration: [
-      "Sur la chaire, ouvert, le Registre des Pendaisons. Quelqu'un tourne " +
-        "encore les pages : un petit homme sec, plume en main, qui copie " +
-        "sans lever les yeux. L'Écrivain public. Il te désigne le Registre " +
-        "du bout de sa plume — ta page est prête.",
+      "La porte s'ouvre derrière toi. Un petit homme sec entre, plume et " +
+        "encrier serrés contre lui — et se fige net en te voyant à la chaire. " +
+        "Une seconde entière. Assez pour que vous sachiez tous les deux qu'il " +
+        "t'a vu.",
+      "Puis il fait comme si de rien : il s'installe au banc des témoins, " +
+        "ouvre son cahier, et se met à copier. L'Écrivain public. Il ne lève " +
+        "pas les yeux — mais sa plume, elle, a ralenti.",
     ],
     choices: [
       { id: "lire-registre", label: "Lire le Registre" },
