@@ -81,5 +81,12 @@
  *           sensorielle avec examens optionnels → événement via chainNext),
  *           ~double de beats par traversée sans un seul élément de pool
  *           ajouté. Les états ne s'usent qu'une fois par lieu complet.
+ *   1.13.0 — Lot 24/07 : ÉCRAN DU NOM du prologue — le Geôlier demande
+ *           « comment on t'appelait », signature Instrument Serif sur trait
+ *           tramé, SCELLER LE PACTE (segments décalés, inerte < 2 car.),
+ *           « Qu'il choisisse pour moi » (8 noms validés), note du Registre
+ *           (3 premières runs), max 16 caractères → heroName. Clôture
+ *           automatique 4 s après la frappe (plus de tap). Affordance
+ *           « Touche pour continuer » sur l'amorce (3 premières runs).
  */
-export const APP_VERSION = "1.12.0";
+export const APP_VERSION = "1.13.0";

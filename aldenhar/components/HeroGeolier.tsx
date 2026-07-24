@@ -19,7 +19,17 @@ type Wisp = { x: number; y: number; v: number; sway: number; f: number; seed: nu
  * (cendres 2→5 à chaque choix, respiration 380→520ms au dernier — 16/07) ;
  * l'accueil garde les valeurs du prototype (2 / 380).
  */
-export function HeroGeolier({ density = 2, bstep = 380 }: { density?: number; bstep?: number }) {
+export function HeroGeolier({
+  density = 2,
+  bstep = 380,
+  height = 368,
+}: {
+  density?: number;
+  bstep?: number;
+  /** Hauteur du bloc héros (px). L'écran du Nom (24/07) le réduit pour que
+      la signature et le CTA restent visibles quand le clavier s'ouvre. */
+  height?: number;
+}) {
   const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -140,7 +150,7 @@ export function HeroGeolier({ density = 2, bstep = 380 }: { density?: number; bs
   }, [density, bstep]);
 
   return (
-    <div className="relative h-[368px] shrink-0 overflow-hidden bg-[var(--color-accent)]">
+    <div className="relative shrink-0 overflow-hidden bg-[var(--color-accent)]" style={{ height }}>
       <canvas
         ref={canvasRef}
         className="pointer-events-none absolute inset-0 h-full w-full"
