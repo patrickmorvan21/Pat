@@ -76,5 +76,10 @@
  *           (santé, Soupçon, chapitre en cours, objets portés), la plus
  *           spécifique éligible gagne, génériques en secours. Déterministe à
  *           la reprise.
+ *   1.12.0 — Lot 23/07 vague 5 (chantier n°5) : PROFONDEUR PAR SCÈNE — les 9
+ *           lieux majeurs + 2 rencontres joués en SÉQUENCE (arrivée
+ *           sensorielle avec examens optionnels → événement via chainNext),
+ *           ~double de beats par traversée sans un seul élément de pool
+ *           ajouté. Les états ne s'usent qu'une fois par lieu complet.
  */
-export const APP_VERSION = "1.11.0";
+export const APP_VERSION = "1.12.0";

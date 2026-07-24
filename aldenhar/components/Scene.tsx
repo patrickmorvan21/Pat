@@ -110,7 +110,9 @@ function shuffleChoices<T>(choices: T[], step: number): T[] {
  */
 function liaisonCtx(run: RunState, from: string | undefined): LiaisonCtx {
   return {
-    from,
+    // Un lieu scindé (chantier 5) se quitte depuis son écran « -2 » : on
+    // normalise vers l'identité du lieu pour le matching des variantes.
+    from: from?.replace(/-2$/, ""),
     soupcon: run.soupcon ?? 0,
     health: run.health,
     chapterId: run.chapter?.id ?? null,
@@ -630,7 +632,7 @@ export default function Scene() {
       !nextScene.combat &&
       !nextScene.registre &&
       !nextScene.liaison &&
-      nextScene.id !== "campement" &&
+      !nextScene.id.startsWith("campement") &&
       hasBesaceRoom(besace, "actif") &&
       Math.random() < 0.12
     ) {
@@ -677,9 +679,11 @@ export default function Scene() {
       run.step = nextStep;
       run.lastChoiceId = null;
       run.trav = trav;
-      // Les états ne vieillissent qu'en quittant un LIEU (pas une liaison) —
-      // sinon la marche à travers les liaisons les userait deux fois trop vite.
-      if (!leavingLiaison) {
+      // Les états ne vieillissent qu'en quittant un LIEU complet — ni une
+      // liaison, ni un écran intermédiaire d'une séquence (chantier 5 : un
+      // lieu = plusieurs beats, mais il ne compte QU'UNE fois pour l'usure
+      // des états, sinon la profondeur les userait deux fois trop vite).
+      if (!leavingLiaison && !scene.chainNext) {
         run.effects = run.effects
           .map((e) => ({ ...e, scenesLeft: e.scenesLeft - 1 }))
           .filter((e) => e.scenesLeft > 0);

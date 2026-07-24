@@ -388,10 +388,14 @@ export const SCENES: Scene[] = [
   {
     // Lieu-signature de la zone. L'écharde pose le flag d'environnement
     // persistant (§17) relu à l'ouverture des runs suivantes.
+    /* Chantier 5 (23/07) : un lieu = une SÉQUENCE (arrivée sensorielle →
+       examen optionnel → événement → sortie), jamais un beat unique. L'écran
+       d'arrivée porte l'id du pool (orientation/visited/chapitre), l'événement
+       vit dans « -2 » via chainNext. */
     id: "colline-aux-gibets",
     illustration: "assets/scene_colline_aux_gibets_c.png",
-    loot: "echarde-gibet",
     soupconOnArrival: 1, // être vu près des potences (chantier 3)
+    chainNext: "colline-aux-gibets-2",
     narration: [
       "La colline monte seule au milieu de la lande, couronnée de gibets. " +
         "Tous occupés, tous immobiles — sauf un. Au centre, le plus grand " +
@@ -402,21 +406,6 @@ export const SCENES: Scene[] = [
         "tournées d'un cran.",
     ],
     choices: [
-      {
-        id: "echarde",
-        label: "Arracher une écharde",
-        setsEnvFlag: "echarde-gibet-prelevee",
-        risky: {
-          stat: "COURAGE",
-          threshold: 12,
-          outcomes: outcomes(
-            "20 naturel. Le bois vient sans résister — il se donne. L'écharde est tiède dans ta paume, et la corde, au-dessus, cesse de grincer. Le Gibet Vide t'a pris en compte.",
-            "Tu détaches une longue écharde du montant. Le bois est doux, poli par des mains — combien de mains ? L'ombre au sol frémit, mais ne bouge pas vers toi.",
-            "Le bois crie sous ta lame — un son de gorge, pas de fibre. Les corbeaux décomptent un cran, tous ensemble. Tu emportes l'écharde, mais la colline emporte quelque chose de toi.",
-            "1 naturel. L'écharde t'entre dans la paume. Profond. C'est le gibet qui prélève. ♦ −2"
-          ),
-        },
-      },
       {
         id: "compter-corbeaux",
         label: "Compter les corbeaux",
@@ -431,7 +420,61 @@ export const SCENES: Scene[] = [
           ),
         },
       },
+      {
+        id: "ecriteaux-pied",
+        label: "Lire les écriteaux d'en bas",
+        passive: {
+          consequence:
+            "D'ici, les écriteaux sont illisibles — sauf leur nombre. Tu " +
+            "remarques autre chose : ils sont tous orientés vers le sommet, " +
+            "comme des visages tournés vers une chaire. Même pendus, ils " +
+            "assistent encore à l'audience.",
+        },
+      },
+      { id: "monter-potences", label: "Monter parmi les potences" },
+    ],
+    jailerLine: "Les corbeaux tiennent mes comptes locaux. Bénévoles, en plus.",
+  },
+  {
+    id: "colline-aux-gibets-2",
+    illustration: "assets/scene_colline_aux_gibets_c.png",
+    narration: [
+      "Au sommet, le vent tombe. Le Gibet Vide est plus grand que tout ce " +
+        "qu'on bâtit pour un homme — chevilles doubles, montant large, et " +
+        "cette corde usée en son milieu, pas au nœud. À son pied, l'ombre " +
+        "reste immobile même quand la corde bouge.",
+    ],
+    choices: [
+      {
+        id: "echarde",
+        label: "Arracher une écharde",
+        setsEnvFlag: "echarde-gibet-prelevee",
+        // Chantier 1+5 : l'objet vit dans le choix d'examen — l'Écharde se
+        // GAGNE au sommet, elle n'est pas ramassée à l'arrivée.
+        grantsLoot: "echarde-gibet",
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Le bois vient sans résister — il se donne. L'écharde est tiède dans ta paume, et la corde, au-dessus, cesse de grincer. Le Gibet Vide t'a pris en compte.",
+            "Tu détaches une longue écharde du montant. Le bois est doux, poli par des mains — combien de mains ? L'ombre au sol frémit, mais ne bouge pas vers toi.",
+            "Le bois crie sous ta lame — un son de gorge, pas de fibre. Les corbeaux décomptent un cran, tous ensemble. Tu emportes l'écharde, mais la colline emporte quelque chose de toi.",
+            "1 naturel. L'écharde t'entre dans la paume. Profond. C'est le gibet qui prélève. ♦ −2"
+          ),
+        },
+      },
       { id: "ombre", label: "Traverser l'ombre", locked: { stat: "INSTINCT" } },
+      {
+        id: "redescendre",
+        label: "Redescendre sans toucher",
+        passive: {
+          consequence:
+            "Tu redescends à reculons, sans quitter le grand gibet des yeux. " +
+            "En bas seulement, tu t'aperçois que tu retenais ton souffle — " +
+            "et que l'ombre, elle, s'est très légèrement tournée pour suivre " +
+            "ta descente.",
+        },
+      },
     ],
     jailerLine: "Le Gibet Vide n'est pas vide. Il est réservé.",
   },
@@ -441,12 +484,48 @@ export const SCENES: Scene[] = [
     // scène pose l'identité). Pas un combat : le Bailli pendu JUGE.
     id: "pendu-qui-parle",
     illustration: "assets/monstre_pendu_qui_parle_a.png",
-    foe: "bailli-pendu",
+    chainNext: "pendu-qui-parle-2",
     narration: [
       "Au revers de la colline, un gibet bas, à hauteur d'homme. Le pendu " +
         "qui s'y balance ouvre les yeux à ton approche. Chaîne de fonction " +
         "au cou, sous la corde. Un sceau au poing. Le Bailli des Landes — " +
         "pendu le dernier, à la place d'honneur.",
+    ],
+    choices: [
+      {
+        id: "detailler-sceau",
+        label: "Détailler le sceau à son poing",
+        passive: {
+          consequence:
+            "Le sceau est serré dans sa main comme une charge qu'on n'a pas " +
+            "rendue. Le motif t'arrête : tu l'as déjà vu. Partout, en fait — " +
+            "gravé discret dans la pierre de la borne, le bois des poteaux, " +
+            "le fer du puits. Les Landes entières sont timbrées à sa marque.",
+        },
+      },
+      {
+        id: "jauger-pendu",
+        label: "Le jauger sans approcher",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu lis le gibet avant l'homme : bâti bas EXPRÈS, à hauteur de regard. Il ne pend pas — il siège. Et sa corde à lui n'est pas usée : il ne s'est jamais débattu. Ce savoir vaut une arme, ici.",
+            "Quelque chose cloche et tu finis par le voir : ses pieds touchent presque terre. Il pourrait se poser. Il ne le fait pas. Ce n'est pas une exécution, c'est une permanence.",
+            "Tu l'observes trop longtemps — c'est lui qui finit de t'observer le premier. « On se demande lequel est exposé », dit la corde en grinçant. Tu as perdu l'avantage du regard.",
+            "1 naturel. Tu le jauges. Il attend poliment que tu aies fini — puis rend son verdict d'un mot que tu n'entends pas, mais que la colline note. ♦ −2"
+          ),
+        },
+      },
+      { id: "approcher-gibet", label: "S'approcher du gibet bas" },
+    ],
+    jailerLine: "Regarde-le bien. C'est ce que devient un homme qui a voulu tenir MON registre.",
+  },
+  {
+    id: "pendu-qui-parle-2",
+    illustration: "assets/monstre_pendu_qui_parle_a.png",
+    foe: "bailli-pendu",
+    narration: [
       "« Approche », dit-il, et la corde grince sur chaque syllabe. « Tout " +
         "ce qui entre dans mes Landes passe en jugement. Toi aussi. » Il " +
         "sourit. « Surtout toi. »",
@@ -502,31 +581,16 @@ export const SCENES: Scene[] = [
   {
     id: "champ-des-fixes",
     illustration: "assets/scene_champ_des_fixes_c.png",
-    loot: "carnet-fossoyeur",
+    chainNext: "champ-des-fixes-2",
     narration: [
       "Derrière la colline, des rangées de poteaux à perte de vue, chacun " +
         "son pendu, chacun son écriteau. Un cimetière debout. On n'enterre " +
         "pas, ici : on fixe. Les morts tiennent mieux le sol que les vivants.",
-      "Entre les rangs, un vieil homme redresse un poteau qui penche, avec " +
-        "des gestes de jardinier. Plus loin, au bout d'une corde trop " +
-        "courte, une petite fille pend sans se balancer. Elle te suit des " +
-        "yeux. Les autres regardent tous droit devant. Pas elle.",
+      "Au bout d'une corde trop courte, une petite fille pend sans se " +
+        "balancer. Elle te suit des yeux. Les autres regardent tous droit " +
+        "devant. Pas elle.",
     ],
     choices: [
-      {
-        id: "aider-fossoyeur",
-        label: "Aider à redresser",
-        risky: {
-          stat: "EMPATHIE",
-          threshold: 11,
-          outcomes: outcomes(
-            "20 naturel. À deux, le poteau se dresse droit. Le Fossoyeur te toise, longuement : « T'es le premier qui aide sans qu'on le fixe. » Il te glisse une page arrachée de son carnet — un plan des rangs, et une croix là où il ne faut jamais passer.",
-            "Le poteau retrouve son aplomb. Le pendu là-haut soupire — de confort, dirait-on. « Ils dorment mal quand ça penche », dit le Fossoyeur. Il te fait signe de passer par son rang : le sien est sûr.",
-            "Le poteau t'échappe et le pendu chasse au bout de sa corde, dans un grand désordre de chanvre. Tout le rang se met à osciller de proche en proche. Le Fossoyeur te chasse à gestes secs : tu as réveillé le dortoir.",
-            "1 naturel. Le poteau tombe. Le pendu, lui, reste debout. ♦ −2"
-          ),
-        },
-      },
       {
         id: "regard-petite",
         label: "Suivre son regard",
@@ -541,9 +605,62 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "carnet", label: "Déchiffrer le carnet", locked: { stat: "RUSE" } },
+      {
+        id: "lire-ecriteaux",
+        label: "Lire les écriteaux",
+        passive: {
+          consequence:
+            "Nom, motif, jours — une écriture de greffe, la même sur des " +
+            "centaines de planches. Puis un écriteau détonne : le motif a " +
+            "été gratté au couteau, si fort que le bois est entaillé. Le " +
+            "nom reste. Les jours restent. Ce qu'elle avait fait, quelqu'un " +
+            "n'a pas voulu qu'on le lise.",
+        },
+      },
+      { id: "avancer-rangs", label: "S'avancer entre les rangs" },
     ],
     jailerLine: "Un champ entier de fixés, et c'est toi qui bouges encore. Profites-en, ça fausse mes moyennes.",
+  },
+  {
+    id: "champ-des-fixes-2",
+    illustration: "assets/scene_champ_des_fixes_c.png",
+    narration: [
+      "Entre les rangs, un vieil homme redresse un poteau qui penche, avec " +
+        "des gestes de jardinier. Il t'a vu venir de loin — les vivants " +
+        "font un bruit particulier, ici. Il ne s'interrompt pas : il " +
+        "t'attend au travail, comme on attend un outil.",
+    ],
+    choices: [
+      {
+        id: "aider-fossoyeur",
+        label: "Aider à redresser",
+        // Le Carnet se GAGNE auprès du Fossoyeur (chantiers 1+5) — plus de
+        // ramassage automatique à l'arrivée dans le champ.
+        grantsLoot: "carnet-fossoyeur",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. À deux, le poteau se dresse droit. Le Fossoyeur te toise, longuement : « T'es le premier qui aide sans qu'on le fixe. » Il te glisse une page arrachée de son carnet — un plan des rangs, et une croix là où il ne faut jamais passer.",
+            "Le poteau retrouve son aplomb. Le pendu là-haut soupire — de confort, dirait-on. « Ils dorment mal quand ça penche », dit le Fossoyeur. Il te fait signe de passer par son rang : le sien est sûr.",
+            "Le poteau t'échappe et le pendu chasse au bout de sa corde, dans un grand désordre de chanvre. Tout le rang se met à osciller de proche en proche. Le Fossoyeur te chasse à gestes secs : tu as réveillé le dortoir.",
+            "1 naturel. Le poteau tombe. Le pendu, lui, reste debout. ♦ −2"
+          ),
+        },
+      },
+      { id: "carnet", label: "Déchiffrer le carnet", locked: { stat: "RUSE" } },
+      {
+        id: "passer-fossoyeur",
+        label: "Passer sans un mot",
+        passive: {
+          consequence:
+            "Tu passes au large de son rang. Il ne lève pas la tête — mais " +
+            "sa main s'arrête sur le poteau, juste le temps que tu sois " +
+            "passé. Ici, même la politesse se mesure en immobilité.",
+        },
+      },
+    ],
+    jailerLine: "Le Fossoyeur est mon employé du mois. Tous les mois. Il ne se plaint jamais du salaire.",
   },
   {
     id: "pendu-mal-fixe",
@@ -613,10 +730,50 @@ export const SCENES: Scene[] = [
     // récompense ; rompu = le Geôlier s'en souvient (jurer faux = dette §17).
     id: "serment-hameau",
     illustration: "assets/monstre_juge_de_cendre_c.png",
+    chainNext: "serment-hameau-2",
     narration: [
       "Des murets de pierre sèche, des toits bas, pas une flamme : le Hameau " +
-        "des Renonçants. Sur le seuil du premier muret, une vieille femme " +
-        "barre le passage, paumes ouvertes — pas en accueil. En douane.",
+        "des Renonçants. Sur le premier muret, des objets sont posés en " +
+        "rang — un couteau, une mèche de cheveux, une chaussure d'enfant, " +
+        "une langue de cuir clouée. Des choses laissées. Pas oubliées : " +
+        "laissées.",
+    ],
+    choices: [
+      {
+        id: "detailler-muret",
+        label: "Détailler les objets du muret",
+        passive: {
+          consequence:
+            "Chaque objet porte une usure de main — on les touche encore, en " +
+            "passant, comme on salue. Le plus récent est un anneau de " +
+            "mariage, posé à part, verni de chagrin. Renoncer, ici, n'est " +
+            "pas un rite ancien : ça continue.",
+        },
+      },
+      {
+        id: "observer-fenetres",
+        label: "Observer les fenêtres",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Aucune lumière — mais des respirations. Tu comptes les fenêtres habitées à la buée qu'elles retiennent : onze. Et une, tout au bout, condamnée de l'intérieur. Tu sais déjà quelle maison éviter de nommer.",
+            "Pas un mouvement — c'est bien le problème. Des fenêtres vides bougent toujours un peu. Celles-ci tiennent la pose. Le hameau entier te regarde arriver en retenant son souffle.",
+            "Tu fixes une fenêtre trop longtemps. Un volet se ferme — puis tous les autres, de proche en proche, dans un claquement de dominos. Ton arrivée vient d'être annoncée mieux qu'avec une cloche.",
+            "1 naturel. Derrière la vitre la plus proche, un visage — au moment où tu le vois, il recule dans le noir. Pas par peur. Pour aller le dire. ♦ −2"
+          ),
+        },
+      },
+      { id: "franchir-seuil", label: "Marcher vers le seuil" },
+    ],
+    jailerLine: "Un village entier qui s'ampute à petit feu. Et c'est MOI qu'on appelle le monstre.",
+  },
+  {
+    id: "serment-hameau-2",
+    illustration: "assets/monstre_juge_de_cendre_c.png",
+    narration: [
+      "Sur le seuil du premier muret, une vieille femme barre le passage, " +
+        "paumes ouvertes — pas en accueil. En douane.",
       "« Ici, on renonce », dit la Doyenne. « Chacun laisse une chose au " +
         "muret : son nom, sa hâte, sa lame ou sa langue. Jure d'en laisser " +
         "une, et tiens parole jusqu'à la sortie des Landes. » Derrière elle, " +
@@ -676,11 +833,47 @@ export const SCENES: Scene[] = [
   {
     id: "marche-muet",
     illustration: "assets/scene_marche_muet_c.png",
+    chainNext: "marche-muet-2",
     narration: [
       "Au cœur du hameau, un marché sans un cri. Des étals de trois fois " +
         "rien — clous, laine, racines — et des marchands qui négocient par " +
         "gestes, paumes et hochements. Renoncer à la parole est le " +
         "renoncement le plus courant. Le moins cher.",
+    ],
+    choices: [
+      {
+        id: "observer-troc",
+        label: "Observer un troc",
+        passive: {
+          consequence:
+            "Deux paumes ouvertes, un hochement, trois doigts — refus. Deux " +
+            "doigts — accord. Le marchandage muet a sa grammaire, et tu en " +
+            "apprends l'essentiel en un échange : ici, montrer ses mains " +
+            "vaut passeport. Les cacher vaut aveu.",
+        },
+      },
+      {
+        id: "imiter-gestes",
+        label: "Saluer à leur manière",
+        risky: {
+          stat: "RUSE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Ton salut muet est si juste qu'une marchande te répond machinalement — puis se fige : elle vient de te parler comme à quelqu'un du hameau. Trop tard pour le reprendre. Aux yeux du marché, te voilà presque des leurs.",
+            "Paumes ouvertes, menton bas : tu passes pour un voyageur qui connaît les usages. Les épaules se détendent sur ton passage. C'est peu, et c'est énorme, ici.",
+            "Ton geste dérape — une paume trop haute, et te voilà en train de proposer quelque chose que tu ne comprends pas. Un vieux marchand éclate d'un rire SILENCIEUX, à s'en plier. C'est pire qu'un rire sonore.",
+            "1 naturel. Ton salut, dans leur grammaire, est une question qu'on ne pose pas. Le marché entier baisse les mains d'un coup. Conversation terminée. ♦ −2"
+          ),
+        },
+      },
+      { id: "longer-etals", label: "Longer les étals" },
+    ],
+    jailerLine: "Un marché muet. Le seul endroit des Landes où PERSONNE ne peut dire de mal de moi. J'y tiens un étal, dans un sens.",
+  },
+  {
+    id: "marche-muet-2",
+    illustration: "assets/scene_marche_muet_c.png",
+    narration: [
       "Au bout de la rangée, un étal différent : bric-à-brac d'ailleurs, " +
         "objets qui n'ont rien à faire dans une lande. Le Colporteur te " +
         "regarde venir de loin — et te reconnaît. C'est impossible. Il te " +
@@ -737,11 +930,48 @@ export const SCENES: Scene[] = [
     // (Scene.tsx exclut cet id du soin aléatoire d'exploration).
     id: "campement",
     illustration: "assets/scene_moulin_sans_ailes_c.png",
+    chainNext: "campement-2",
     narration: [
       "À l'écart du hameau, un moulin sans ailes tient debout par habitude. " +
         "Dedans, la meule est froide, le sol sec, et quelqu'un a laissé un " +
         "lit de bruyère tassée — plusieurs fois refait, jamais brûlé. Un " +
         "refuge qui sert, donc un refuge qui marche.",
+    ],
+    choices: [
+      {
+        id: "fouiller-lit",
+        label: "Fouiller le lit de bruyère",
+        passive: {
+          consequence:
+            "Sous la bruyère, la pierre du mur porte des marques à hauteur " +
+            "d'enfant : des jours comptés par paquets de cinq, sur des " +
+            "années. Et dans un creux, serré dans un chiffon, un bout de " +
+            "corde. Coupé net. On ne garde pas ça par hasard — on garde ça " +
+            "comme une preuve, ou comme un pardon.",
+        },
+      },
+      {
+        id: "ecouter-moulin",
+        label: "Écouter le moulin",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Le moulin craque comme tout vieux bois — mais en RYTHME. Tu finis par le reconnaître : c'est une berceuse, jouée par la charpente, notée par le vent. Quelqu'un a appris à cette ruine à chanter. Tu sauras dormir dessous.",
+            "Des craquements de bois qui travaille, le froissement de la lande — et, très loin, un pas léger qui tourne autour du moulin sans jamais s'approcher. Pas une menace : une ronde.",
+            "Tu écoutes si fort que tu n'entends plus rien — le silence se referme comme une main. Quand tu relâches, un craquement JUSTE au-dessus. Le temps de lever la tête : rien. Le moulin, dit ton pouls.",
+            "1 naturel. Le moulin s'arrête de craquer. Complètement. Un vieux bois qui se tait, c'est un bois qui retient son souffle. ♦ −2"
+          ),
+        },
+      },
+      { id: "installer-camp", label: "S'installer pour la halte" },
+    ],
+    jailerLine: "Ce moulin a moulu autre chose que du grain, dans le temps. Demande à la meule, si tu oses la toucher.",
+  },
+  {
+    id: "campement-2",
+    illustration: "assets/scene_moulin_sans_ailes_c.png",
+    narration: [
       "Par la lucarne, le crépuscule ne bouge pas. On dit qu'une fille " +
         "dort ici, parfois — la seule pendue qui se soit relevée. Le lit de " +
         "bruyère garde une forme légère, comme un creux encore tiède.",
@@ -770,11 +1000,48 @@ export const SCENES: Scene[] = [
     id: "chapelle-des-cordes",
     illustration: "assets/scene_chapelle_des_cordes_d.png",
     loot: "brin-chanvre",
+    chainNext: "chapelle-des-cordes-2",
     narration: [
       "La chapelle du hameau n'a ni croix ni autel. Aux murs, des cordes — " +
         "des dizaines, clouées en boucles soigneuses, chacune sous un nom " +
         "gravé. Les reliques des Fixations réussies. Certaines bougent " +
         "doucement, sans courant d'air.",
+    ],
+    choices: [
+      {
+        id: "lire-noms",
+        label: "Lire les noms gravés",
+        passive: {
+          consequence:
+            "Les noms se suivent par familles — les mêmes syllabes reviennent, " +
+            "génération après génération. Le hameau se fixe lui-même, de père " +
+            "en fils. Sous une boucle plus vieille que les autres, un nom a " +
+            "été bouchardé au ciseau. On ne défait pas une corde, ici. Un " +
+            "nom, si.",
+        },
+      },
+      {
+        id: "toucher-corde-mur",
+        label: "Toucher une corde qui bouge",
+        risky: {
+          stat: "COURAGE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. La corde s'immobilise sous tes doigts — puis toutes les autres, mur après mur. Le silence qui suit est un salut. Ce qui reste dans ces boucles reconnaît une main qui n'a pas peur, et s'en souviendra.",
+            "Sous la pulpe des doigts, la corde vibre — un pouls très lent, très vieux. Pas le tien. Tu retires ta main proprement : on ne réveille pas ce qui dort au mur d'une chapelle.",
+            "À l'instant du contact, la boucle se resserre d'un cran, sèche. Pas sur ta main — sur elle-même. Mais tout le mur a frémi, et la Veuve, au fond, a levé la tête pour la première fois.",
+            "1 naturel. La corde te rend ton geste : elle te touche. Une caresse de chanvre le long du poignet, exactement là où passerait un nœud. Prise de mesure. ♦ −2"
+          ),
+        },
+      },
+      { id: "avancer-niche", label: "Avancer vers le fond" },
+    ],
+    jailerLine: "Une chapelle de cordes. Les hommes prient ce qui les tient. Je trouve ça d'une honnêteté rare.",
+  },
+  {
+    id: "chapelle-des-cordes-2",
+    illustration: "assets/scene_chapelle_des_cordes_d.png",
+    narration: [
       "Une femme en noir refait sans fin le même nœud au pied du mur. Et " +
         "dans une niche à part, sous verre : une corde coupée net, sans nom. " +
         "La seule de toute la chapelle qui n'a pas tenu.",
@@ -810,18 +1077,47 @@ export const SCENES: Scene[] = [
       },
       { id: "corde-vive", label: "Saisir la corde vive", locked: { stat: "COURAGE" } },
     ],
-    jailerLine: "Une chapelle de cordes. Les hommes prient ce qui les tient. Je trouve ça d'une honnêteté rare.",
+    jailerLine: "La corde coupée, sous verre. Ils exposent leur seul échec — c'est leur façon de le surveiller.",
   },
   {
     id: "puits-condamne",
     illustration: "assets/scene_puits_condamne_c.png",
+    chainNext: "puits-condamne-2",
     narration: [
       "Sur la place arrière du hameau, un puits — condamné de frais : " +
         "planches neuves, chaînes croisées, cadenas encore gras. Tout le " +
         "reste du hameau tombe en ruine douce, mais ça, on l'entretient.",
       "Et dessous, ça cogne. Trois coups, une pause. Trois coups. Poli, " +
         "presque — comme on frappe à une porte dont on sait qu'on va vous " +
-        "ouvrir. Les planches, au dernier coup, ont bougé.",
+        "ouvrir.",
+    ],
+    choices: [
+      {
+        id: "ecouter-puits",
+        label: "Coller l'oreille au bois",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Entre deux coups, tu entends le fond : de l'eau, des voix — et le hameau à l'envers. Le puits ne contient pas des choses : il contient un ailleurs. Ce que tu as entendu du fond te servira, le jour où tu croiseras l'autre bout.",
+            "À travers le bois, tu comptes : les coups ne demandent pas à sortir. Ils tiennent un registre — trois coups par nom, une pause entre les noms. Le puits fait l'appel. Tu retires l'oreille avant d'entendre le tien.",
+            "L'oreille au bois, tu n'entends plus rien — les coups se sont tus dès le contact. Puis, contre ta joue, à travers la planche : trois coups très doux. On t'a entendu écouter.",
+            "1 naturel. Tu écoutes. Et de l'autre côté des planches, très distinctement, quelqu'un fait « chhht ». ♦ −2"
+          ),
+        },
+      },
+      { id: "noeud-chaines", label: "Étudier le nœud", locked: { stat: "RUSE" } },
+      { id: "approcher-puits", label: "S'approcher de la margelle" },
+    ],
+    jailerLine: "Ils ont condamné le puits. Charmant. On n'enferme pas un trou, mais l'espoir fait clouer.",
+  },
+  {
+    id: "puits-condamne-2",
+    illustration: "assets/scene_puits_condamne_c.png",
+    narration: [
+      "À ton approche, le rythme change. Plus vite, plus fort — plus " +
+        "personne de poli. Le cadenas saute sur son anneau à chaque série, " +
+        "et les planches, au dernier coup, ont bougé. Franchement bougé.",
     ],
     // La scène qui se résout sans toi (§18) : les chaînes ne tiendront pas
     // ta décision bien longtemps. ⚠️ jamais sous 6000 ms (règle 14/07).
@@ -880,34 +1176,67 @@ export const SCENES: Scene[] = [
         },
       },
       {
-        id: "ecouter-puits",
-        label: "Coller l'oreille au bois",
-        risky: {
-          stat: "INSTINCT",
-          threshold: 11,
-          outcomes: outcomes(
-            "20 naturel. Entre deux coups, tu entends le fond : de l'eau, des voix — et le hameau à l'envers. Le puits ne contient pas des choses : il contient un ailleurs. Ce que tu as entendu du fond te servira, le jour où tu croiseras l'autre bout.",
-            "À travers le bois, tu comptes : les coups ne demandent pas à sortir. Ils tiennent un registre — trois coups par nom, une pause entre les noms. Le puits fait l'appel. Tu retires l'oreille avant d'entendre le tien.",
-            "L'oreille au bois, tu n'entends plus rien — les coups se sont tus dès le contact. Puis, contre ta joue, à travers la planche : trois coups très doux. On t'a entendu écouter.",
-            "1 naturel. Tu écoutes. Et de l'autre côté des planches, très distinctement, quelqu'un fait « chhht ». ♦ −2"
-          ),
+        id: "reculer-puits",
+        label: "Reculer sans bruit",
+        passive: {
+          consequence:
+            "Tu recules pas à pas, les yeux sur les planches. Les coups " +
+            "ralentissent à mesure que tu t'éloignes — jusqu'au rythme " +
+            "poli du début. Ce n'était pas après les chaînes qu'ils en " +
+            "avaient. C'était après une audience.",
         },
       },
-      { id: "noeud-chaines", label: "Étudier le nœud", locked: { stat: "RUSE" } },
     ],
-    jailerLine: "Ils ont condamné le puits. Charmant. On n'enferme pas un trou, mais l'espoir fait clouer.",
+    jailerLine: "Trois coups, une pause. Moi aussi je frappe avant d'entrer. La différence, c'est qu'on finit toujours par m'ouvrir.",
   },
   {
     id: "chien-du-bailli",
     illustration: "assets/monstre_chien_du_bailli_b.png",
-    combat: true,
-    foe: "chien-du-bailli",
-    foeName: "Le Chien du Bailli",
+    chainNext: "chien-du-bailli-2",
     narration: [
       "La plus grande maison du hameau est murée — de l'intérieur. Chaque " +
         "fenêtre bouchée de pierres posées depuis dedans, en rangs pressés, " +
         "par quelqu'un qui s'enfermait plus qu'il ne se protégeait. La " +
         "maison du Bailli. Vide depuis sa corde. Pas gardée par personne.",
+    ],
+    choices: [
+      {
+        id: "longer-fenetres",
+        label: "Longer les fenêtres murées",
+        passive: {
+          consequence:
+            "Les pierres sont posées de l'intérieur, oui — mais pas " +
+            "n'importe comment : en quinconce serré, du travail soigné, " +
+            "fait sans hâte. Il ne s'est pas barricadé dans la panique. Il " +
+            "a pris le temps de bien s'enfermer. Contre quoi, une maison ne " +
+            "le dit pas. Contre qui, parfois.",
+        },
+      },
+      {
+        id: "jauger-garde",
+        label: "Repérer ce qui garde",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu le vois avant qu'il te voie : couché contre le seuil, gris sur gris. Et tu vois surtout sa ronde, tracée dans l'usure de l'herbe — trente ans du même circuit. Tu connais ses horaires avant qu'il connaisse ton odeur.",
+            "Une masse grise contre le seuil, immobile comme un sac — sauf les oreilles, qui te suivent depuis ton premier pas. Il sait que tu es là. Il attend de savoir si ça vaut de se lever.",
+            "Tu scrutes les appentis, la cour, les toits — et pendant ce temps, la masse grise du seuil s'est levée sans bruit et a raccourci la distance de moitié. Il jaugeait plus vite que toi.",
+            "1 naturel. Tu cherches le danger partout — sauf derrière. Le souffle sur tes mollets t'informe de ton erreur. ♦ −2"
+          ),
+        },
+      },
+      { id: "avancer-seuil", label: "Avancer vers le seuil" },
+    ],
+    jailerLine: "Le Bailli a muré sa propre maison de l'intérieur. Les gens font des choses étranges quand ils m'entendent arriver.",
+  },
+  {
+    id: "chien-du-bailli-2",
+    illustration: "assets/monstre_chien_du_bailli_b.png",
+    combat: true,
+    foe: "chien-du-bailli",
+    foeName: "Le Chien du Bailli",
+    narration: [
       "Le chien se lève du seuil sans aboyer. Gris, trop grand, le poil " +
         "usé aux endroits d'un harnais qu'il ne porte plus. Son maître " +
         "pend à la colline — mais l'ordre, lui, n'a jamais été levé. " +
@@ -965,12 +1294,48 @@ export const SCENES: Scene[] = [
     // classement, au milieu des Fixés du Bailli.
     id: "petit-tribunal",
     illustration: "assets/scene_petit_tribunal_a.png",
-    registre: true,
+    chainNext: "petit-tribunal-2",
     narration: [
       "Le Petit Tribunal tient dans une seule pièce : trois bancs, une " +
         "chaire, et le froid des endroits où l'on a beaucoup décidé. C'est " +
         "ici que la Fixation se jugeait — le Bailli en chaire, la corde en " +
         "sentence unique.",
+    ],
+    choices: [
+      {
+        id: "toucher-chaire",
+        label: "Passer la main sur la chaire",
+        passive: {
+          consequence:
+            "Le bois de la chaire porte des entailles fines, une par " +
+            "jugement, alignées comme des jours. Des dizaines. La dernière " +
+            "est plus profonde que les autres — et tremblée. Celle-là, la " +
+            "main qui comptait ne voulait pas la compter.",
+        },
+      },
+      {
+        id: "sasseoir-banc",
+        label: "S'asseoir sur un banc",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Le banc t'accepte — et la pièce se rejoue : tu SENS où chacun s'asseyait, qui baissait les yeux, qui votait des lèvres sans un mot. Et tu sens le banc du fond, toujours vide : celui de la fille du Bailli. Personne n'osait s'y mettre. Personne n'ose encore.",
+            "Le bois est poli par des générations d'assises raides. À cette place, on ne venait pas juger : on venait être d'accord. C'est plus confortable, et ça use moins le bois.",
+            "Le banc craque sous toi — fort, dans le silence de la pièce. Un craquement de tribunal, ça sonne comme un verdict. Tu te relèves avec la sensation d'avoir été enregistré.",
+            "1 naturel. À peine assis, tu comprends l'erreur : ce banc-là est celui des accusés. La pièce entière se tourne vers toi — les bancs, la chaire, le froid. L'habitude des murs. ♦ −2"
+          ),
+        },
+      },
+      { id: "aller-chaire", label: "Aller à la chaire" },
+    ],
+    jailerLine: "Trois bancs, une chaire, zéro acquittement. L'efficacité, j'admire.",
+  },
+  {
+    id: "petit-tribunal-2",
+    illustration: "assets/scene_petit_tribunal_a.png",
+    registre: true,
+    narration: [
       "Sur la chaire, ouvert, le Registre des Pendaisons. Quelqu'un tourne " +
         "encore les pages : un petit homme sec, plume en main, qui copie " +
         "sans lever les yeux. L'Écrivain public. Il te désigne le Registre " +
@@ -1141,12 +1506,48 @@ export const SCENES: Scene[] = [
     // montre mais reste verrouillée — l'Acte II n'existe pas encore.
     id: "palissade-sud",
     loot: "lanterne-veilleur",
+    chainNext: "palissade-sud-2",
     narration: [
       "Au bout des Landes, une palissade de troncs noircis barre l'horizon " +
         "d'est en ouest. Pas pour empêcher d'entrer : les étais sont de ce " +
         "côté-ci. Au centre, une porte à double battant — et derrière, un " +
         "chemin qui descend. On le sent plus qu'on ne le voit : l'air y " +
         "coule comme une eau froide. La Descente.",
+    ],
+    choices: [
+      {
+        id: "examiner-etais",
+        label: "Examiner les étais",
+        passive: {
+          consequence:
+            "Les étais sont plantés côté Landes, arc-boutés CONTRE la " +
+            "palissade — on ne retient pas un mur comme ça pour empêcher " +
+            "d'entrer. On le retient pour qu'il ne parte pas. Aux pieds des " +
+            "troncs, des entailles de comptage : quelqu'un note depuis des " +
+            "années tout ce qui franchit la porte. Dans un seul sens.",
+        },
+      },
+      {
+        id: "longer-palissade",
+        label: "Longer la palissade",
+        risky: {
+          stat: "RUSE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. À cent pas de la porte, tu trouves ce que la palissade cache : une brèche ancienne, recousue de chaînes — et de l'autre côté des maillons, du tissu pris, arraché dans le sens de la SORTIE. Des gens ont voulu remonter de la Descente. La palissade a voté contre.",
+            "Tronc après tronc, tu longes. Le bois est noirci au feu — volontairement, un tronc sur deux : du bois traité contre quelque chose qui grimpe. Tu ranges l'information avec les inquiétantes.",
+            "Tu longes trop près. Une sentinelle de bois que tu prenais pour un étai pivote en grinçant — un épouvantail de garnison, monté sur gonds, qui fait face à quiconque marche le long du mur. Tu es exactement le genre de passage qu'il annonce.",
+            "1 naturel. Au pied d'un tronc, un paquet de toile. Dedans, un bagage complet — gourde, couverture, lettres. Quelqu'un a marché jusqu'ici, a posé son sac, et a continué SANS. Tu sais maintenant à quoi ressemble l'appel, vu de l'extérieur. ♦ −2"
+          ),
+        },
+      },
+      { id: "approcher-porte", label: "Approcher de la porte" },
+    ],
+    jailerLine: "La palissade ? Une politesse. Les vrais murs de mes terres sont ailleurs — tu marches dessus.",
+  },
+  {
+    id: "palissade-sud-2",
+    narration: [
       "Sur le chemin de ronde, un vieux soldat regarde vers le sud. Et en " +
         "contrebas, déjà loin de l'autre côté, un homme descend le chemin " +
         "d'un pas égal, sans bagage, sans se retourner. Le Veilleur ne le " +
@@ -1470,7 +1871,9 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
     text: "Trois coups, une pause. Le rythme du puits te suit bien après qu'il est devenu inaudible. Tu marches dessus, maintenant : trois pas, une pause. Tu t'arrêtes net. Tu reprends autrement.",
   },
   {
-    from: ["bete-chemins-creux", "meute-grise-2", "pendu-mal-fixe", "chien-du-bailli"],
+    // NB : les ids « from » sont normalisés côté runtime (suffixe -2 retiré) —
+    // meute-grise-2 devient « meute-grise », chien-du-bailli-2 « chien-du-bailli ».
+    from: ["bete-chemins-creux", "meute-grise", "pendu-mal-fixe", "chien-du-bailli"],
     text: "Tu laisses le combat derrière toi, mais pas tout : la lande a bu ce qui a coulé, et elle sait maintenant quel goût tu as. Tu marches plus léger, et moins tranquille.",
   },
   // ——— Soupçon (10) ———
