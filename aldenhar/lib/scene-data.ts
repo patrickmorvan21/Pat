@@ -67,6 +67,14 @@ export type Choice = {
    * d'office à l'arrivée. Une seule fois par run, si le slot a de la place.
    */
   grantsLoot?: string;
+  /**
+   * Le Soupçon (chantier 3 du 23/07) : delta appliqué quand ce choix est PRIS
+   * (l'acte compte, pas son issue). Positif = le hameau te remarque (parler au
+   * Pendu, refuser le Serment, se faire soigner par le Rebouteux…), négatif =
+   * tu rentres dans le rang (jurer, dénoncer un autre…). JAMAIS affiché : le
+   * Soupçon ne se lit que dans le monde, par paliers.
+   */
+  soupcon?: number;
 };
 
 export type Scene = {
@@ -82,6 +90,17 @@ export type Scene = {
    * simples soins génériques.
    */
   loot?: string;
+  /**
+   * Le Soupçon (chantier 3 du 23/07) : delta appliqué à l'ARRIVÉE dans ce lieu
+   * (ex. être vu près des potences). Silencieux, comme tout le Soupçon.
+   */
+  soupconOnArrival?: number;
+  /**
+   * Procès du héros (Soupçon au dernier palier) : sur cette scène, un jet RATÉ
+   * tue — mort par fixation, purement sociale, traitée comme toutes les morts
+   * (relique + fragment + épitaphe). Un jet réussi fait retomber le Soupçon.
+   */
+  fixationTrial?: boolean;
   choices: Choice[];
   jailerLine: string;
   /**
@@ -372,6 +391,7 @@ export const SCENES: Scene[] = [
     id: "colline-aux-gibets",
     illustration: "assets/scene_colline_aux_gibets_c.png",
     loot: "echarde-gibet",
+    soupconOnArrival: 1, // être vu près des potences (chantier 3)
     narration: [
       "La colline monte seule au milieu de la lande, couronnée de gibets. " +
         "Tous occupés, tous immobiles — sauf un. Au centre, le plus grand " +
@@ -435,6 +455,9 @@ export const SCENES: Scene[] = [
       {
         id: "plaider",
         label: "Répondre à son jugement",
+        // Parler au Pendu = parler seul face au sud, pour qui t'observe —
+        // premier signe de l'Ordonnance (chantier 3).
+        soupcon: 1,
         risky: {
           stat: "EMPATHIE",
           threshold: 12,
@@ -449,6 +472,7 @@ export const SCENES: Scene[] = [
       {
         id: "decrocher",
         label: "Trancher sa corde",
+        soupcon: 1, // toucher à une Fixation, sous les yeux de la colline
         risky: {
           stat: "COURAGE",
           threshold: 14,
@@ -603,6 +627,7 @@ export const SCENES: Scene[] = [
       {
         id: "jurer-serment",
         label: "Jurer : laisser sa hâte",
+        soupcon: -1, // tenir le rang des Renonçants apaise le hameau
         passive: {
           consequence:
             "Tu poses les mains sur la pierre sèche et tu jures : ta hâte " +
@@ -616,6 +641,7 @@ export const SCENES: Scene[] = [
       {
         id: "jurer-faux",
         label: "Jurer du bout des lèvres",
+        soupcon: 1, // un serment creux, dans les Landes, ça s'entend
         // Jurer sans intention de tenir : gratuit à l'entrée — mais un
         // serment creux, dans les Landes, ça s'entend (prix différé §17).
         debt: {
@@ -632,6 +658,7 @@ export const SCENES: Scene[] = [
       {
         id: "refuser-serment",
         label: "Refuser et longer",
+        soupcon: 1, // refuser le Serment, c'est se faire remarquer
         risky: {
           stat: "COURAGE",
           threshold: 13,
@@ -677,6 +704,7 @@ export const SCENES: Scene[] = [
       {
         id: "rebouteux",
         label: "Montrer tes plaies",
+        soupcon: 1, // se faire soigner par le Rebouteux, ça se remarque
         risky: {
           stat: "EMPATHIE",
           threshold: 11,
@@ -951,6 +979,24 @@ export const SCENES: Scene[] = [
     choices: [
       { id: "lire-registre", label: "Lire le Registre" },
       {
+        // Dénoncer un autre (validation 23/07) : fait baisser son propre
+        // Soupçon. Disponible, JAMAIS suggéré par l'interface (bouton sobre,
+        // aucun indice de bénéfice) — et le village s'en souvient (flag compte).
+        id: "denoncer-un-autre",
+        label: "Donner un nom à la plume",
+        soupcon: -2,
+        setsEnvFlag: "a-denonce",
+        passive: {
+          consequence:
+            "Tu te penches vers l'Écrivain et tu donnes un nom — quelqu'un " +
+            "d'entrevu, quelqu'un qui parlait seul, peu importe. La plume " +
+            "note sans juger. Personne ne te regarde plus : on regarde déjà " +
+            "ailleurs, vers le nom que tu as donné. C'est fou ce qu'on " +
+            "respire mieux dans l'ombre d'un autre. Le hameau, lui, " +
+            "n'oubliera pas la voix qui a donné le nom.",
+        },
+      },
+      {
         id: "quitter-tribunal",
         label: "Quitter sans lire",
         passive: {
@@ -1140,6 +1186,60 @@ export const SCENES: Scene[] = [
       { id: "franchir-descente", label: "Franchir la Descente", locked: { stat: "COURAGE" } },
     ],
     jailerLine: "La Descente t'intrigue ? Patience. Les Landes d'abord — on finit son assiette avant le plat suivant.",
+  },
+  {
+    /* Le procès du héros (chantier 3 du 23/07) — dernier palier du Soupçon.
+       HORS pool d'orientation (pas d'entrée APPROACH) : la traversée y est
+       DÉROUTÉE quand le Soupçon atteint son comble. Un jet raté = mort par
+       fixation — la première mort du jeu sans aucun combat, purement sociale,
+       traitée comme toutes les autres (relique + fragment + épitaphe). Un jet
+       réussi fait retomber le Soupçon : le hameau a jugé, il se lasse. */
+    id: "proces-du-heros",
+    illustration: "assets/scene_petit_tribunal_a.png",
+    fixationTrial: true,
+    narration: [
+      "Ils ne te courent pas après — ils t'attendent au tournant du muret, " +
+        "le hameau entier, dans ce silence de gens qui ont déjà décidé. On " +
+        "ne te touche pas. On marche autour de toi, jusqu'au Petit Tribunal.",
+      "Trois bancs pleins, la chaire vide — c'est face à elle qu'on " +
+        "t'assoit. La Doyenne déplie une feuille : la Dénonciation, signée " +
+        "d'une croix. L'accusation tient en peu de mots, et personne n'ose " +
+        "les dire fort : tu entends une voix. L'Ordonnance de la Fixation " +
+        "s'applique. À moins que tu ne parles mieux qu'elle.",
+    ],
+    choices: [
+      {
+        id: "plaider-serre",
+        label: "Plaider serré",
+        risky: {
+          stat: "RUSE",
+          threshold: 13,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Tu retournes leur procédure contre eux : pas de témoin direct, pas de voix entendue par un tiers, pas de motif inscrit au Registre. L'Écrivain vérifie — le greffe est formel. Le hameau plie devant sa propre règle, et te relâche à reculons.",
+            "Tu plaides court : qui l'a entendue, cette voix, à part la peur ? Un silence. Personne ne se lève pour jurer. La relaxe tombe du bout des lèvres de la Doyenne. On t'escorte dehors — l'œil du hameau ne te lâche plus, mais la corde, si.",
+            "Tu plaides — trop bien. « Seul un coupable connaît si bien la procédure », dit la Doyenne, et les bancs hochent la tête. À l'aube qui ne vient jamais tout à fait, le Champ des Fixés gagne une ligne : la tienne.",
+            "1 naturel. Au milieu de ta défense, la voix te souffle exactement le mot qu'il fallait — et tu le répètes. Tout le tribunal l'a vu passer dans tes yeux. La sentence est unanime, et l'aube, pour une fois, ponctuelle. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "prendre-a-temoin",
+        label: "Prendre le hameau à témoin",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 13,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Tu ne te défends pas : tu les regardes un par un, et tu nommes ce que chacun a laissé au muret — la hâte, la lame, la langue. Le tribunal se souvient qu'il est un hameau. On te raccompagne au seuil, et c'est presque des excuses.",
+            "Tu parles de leurs morts fixés, de la peur qui juge à leur place depuis que le Bailli pend. Des nuques plient sur les bancs. La Doyenne tranche, lasse : « Qu'il marche. La lande jugera mieux que nous. »",
+            "Tu cherches leurs yeux — ils regardent tous la corde. Ce n'est pas de la haine, c'est du soulagement : quelqu'un d'autre qu'eux. À l'aube, on te fixe, proprement, avec les égards dus à ce qu'on craint.",
+            "1 naturel. Ton appel réveille exactement le souvenir qu'il ne fallait pas : la dernière qui a supplié ainsi s'est relevée de sa corde. Cette fois, ils feront mieux. Double nœud. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Un procès ! J'adore les procès. Le Bailli aussi les adorait — regarde où ça pend, l'amour du droit.",
   },
 ];
 
@@ -1347,6 +1447,20 @@ export function pickLiaisonOptions(visited: string[], seed: number): [string, st
   }
   return [arr[0], arr[1] ?? arr[0]];
 }
+
+/**
+ * Le Soupçon — manifestations par palier (chantier 3 du 23/07). JAMAIS une
+ * jauge ni un chiffre : le Soupçon ne se lit QUE dans le monde. Chaque palier
+ * n'est manifesté qu'une fois (RunState.soupconSeen) ; le palier 6 n'a pas de
+ * texte ici — c'est le procès du héros (scène `proces-du-heros`).
+ */
+export const SOUPCON_PALIERS: Record<number, string> = {
+  1: "Les rares mots qu'on t'adresse ont raccourci. On te répond sec, sans te regarder — pas de l'hostilité. De l'économie.",
+  2: "Une conversation s'éteint à ton approche. Pas interrompue : pliée, rangée, comme du linge qu'on rentre avant la pluie.",
+  3: "Une mère tire son enfant à l'intérieur sans un mot. Plus loin, la Doyenne croise ton chemin et parle sans s'arrêter : « Quoi que tu entendes, ne réponds pas. Ici, on regarde les bouches. »",
+  4: "Là où tu as dormi, quelqu'un est passé : une croix à la craie, tracée bas, près du sol. Elle ne t'est pas adressée. Elle est adressée aux autres.",
+  5: "Trois hommes te suivent depuis le dernier muret. Ils ne pressent pas le pas. Ils n'en ont pas besoin — ils attendent quelque chose, et ce quelque chose a une aube.",
+};
 
 /** La Descente — nœud terminal de la zone (fin sèche, Acte II à venir). */
 export const DESCENTE_SCENE: Scene = {

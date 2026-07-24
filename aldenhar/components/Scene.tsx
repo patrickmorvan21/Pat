@@ -13,6 +13,7 @@ import {
   makeLiaison,
   pickLiaisonOptions,
   sceneById,
+  SOUPCON_PALIERS,
   tierIsFail,
   type Choice,
   type Scene as SceneType,
@@ -299,6 +300,16 @@ export default function Scene() {
       setImage(illo);
       setImageKind("scene");
       const openingNarration = [...opening.narration];
+      // Le hameau se souvient de la main qui lance le dé (chantier 3) : après
+      // plusieurs fixations subies, l'accueil change dès l'entrée de zone.
+      if (mem.fixations >= 2) {
+        openingNarration.push(
+          "Au loin, avant même le premier muret, une silhouette s'écarte du " +
+            "chemin et part en courant vers le hameau. Les Landes ne " +
+            "connaissent pas ton visage — mais elles connaissent ta manière " +
+            "d'arriver. On t'attendra les bouches closes."
+        );
+      }
       // Persistance environnementale (§17) : trace des runs précédentes.
       if (mem.envFlags["echarde-gibet-prelevee"]) {
         openingNarration.push(
@@ -426,7 +437,15 @@ export default function Scene() {
     // Une transition qui QUITTE une liaison ne fait pas vieillir les états.
     const leavingLiaison = Boolean(scene.liaison);
     let nextScene: SceneType;
-    if (opts?.toDest) {
+    // Le Soupçon au comble (chantier 3 du 23/07) : la traversée est DÉROUTÉE
+    // vers le procès du héros — on vient te chercher, où que tu ailles. Jamais
+    // au milieu d'une chaîne de rencontre (on finit d'abord ce qui te tient).
+    const soupNow = runRef.current?.soupcon ?? 0;
+    if (soupNow >= 6 && !scene.fixationTrial && !scene.chainNext && !trav.done) {
+      nextScene = sceneById("proces-du-heros")!;
+      trav.phase = "scene";
+      trav.current = nextScene.id; // hors `visited` : ce n'est pas un lieu du pool
+    } else if (opts?.toDest) {
       nextScene = sceneById(opts.toDest) ?? sceneById(ENTRY_SCENE)!;
       trav.phase = "scene";
       trav.current = opts.toDest;
@@ -465,6 +484,17 @@ export default function Scene() {
       trav.liaisonOpts = pair;
       trav.seed = seed;
     }
+    // ——— Soupçon (chantier 3) : montée à l'arrivée + manifestation ———
+    // Le palier ne se MONTRE qu'une fois (soupconSeen), toujours en monde
+    // lisible, jamais en chiffre. Le palier 6 n'a pas de texte : le procès
+    // du héros EST sa manifestation.
+    const soupAfter = Math.max(0, Math.min(6, soupNow + (nextScene.soupconOnArrival ?? 0)));
+    const soupSeen = runRef.current?.soupconSeen ?? 0;
+    const soupManifest =
+      !nextScene.fixationTrial && soupAfter > soupSeen && soupAfter <= 5 && SOUPCON_PALIERS[soupAfter]
+        ? SOUPCON_PALIERS[soupAfter]
+        : null;
+
     const nextIllustration = nextScene.illustration ?? PORTAL;
     const contextChanged = nextIllustration !== lastSceneIlloRef.current;
     const entries: FeedEntry[] = [];
@@ -544,6 +574,8 @@ export default function Scene() {
     entries.push(...chapterBefore.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
     entries.push(...nextScene.narration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
     entries.push(...chapterAfter.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+    // Manifestation du Soupçon : le monde se ferme, palier par palier.
+    if (soupManifest) entries.push({ id: nextId(), kind: "narration", text: soupManifest });
     // Objets RÉELS des Landes (chantier 1 du 23/07) : un lieu donne son objet
     // une seule fois, à l'arrivée, si le slot correspondant a de la place. Les
     // objets placés remplacent le soin générique — la Besace devient réelle,
@@ -634,6 +666,10 @@ export default function Scene() {
       if (scene.combat) run.encounters = (run.encounters ?? 0) + 1;
       // Chapitre : le beat joué fait avancer le stade (0→1→2→3).
       if (newChapterStage && run.chapter) run.chapter = { ...run.chapter, stage: newChapterStage };
+      // Soupçon : montée d'arrivée + palier manifesté mémorisé.
+      run.soupcon = soupAfter;
+      if (soupManifest) run.soupconSeen = soupAfter;
+      if (nextScene.fixationTrial) run.soupconSeen = 6;
     });
     // Résolution jouée → le chapitre entre dans la rotation du compte (le
     // prochain tirage évitera ceux déjà vécus tant qu'il en reste des neufs).
@@ -687,6 +723,14 @@ export default function Scene() {
       const flag = choice.setsEnvFlag;
       mutateMemory((m) => {
         m.envFlags[flag] = true;
+      });
+    }
+    // Le Soupçon (chantier 3) : l'ACTE compte, pas son issue — le delta d'un
+    // choix s'applique dès qu'il est pris. Silencieux, clampé 0..6.
+    if (choice.soupcon) {
+      const delta = choice.soupcon;
+      persist((run) => {
+        run.soupcon = Math.max(0, Math.min(6, (run.soupcon ?? 0) + delta));
       });
     }
     // Prix différé (§17) : un choix « gratuit » peut poser une dette silencieuse.
@@ -937,10 +981,45 @@ export default function Scene() {
                 run.besace = [...run.besace, grantedItem];
                 run.looted = [...(run.looted ?? []), chosen.grantsLoot];
               }
+              // Soupçon : échouer un jet SOCIAL (Empathie, hors combat) se
+              // remarque — on a vu quelqu'un parler mal, ou parler seul.
+              if (tierIsFail(tier) && !scene.combat && !scene.fixationTrial && roll?.stat === "EMPATHIE") {
+                run.soupcon = Math.min(6, (run.soupcon ?? 0) + 1);
+              }
+              // Procès du héros gagné : le hameau a jugé, il se lasse — le
+              // Soupçon retombe (et pourra remonter, avec ses manifestations).
+              if (scene.fixationTrial && !tierIsFail(tier)) {
+                run.soupcon = 3;
+                run.soupconSeen = 3;
+              }
             });
             const run = runRef.current!;
             setHealth(run.health);
             if (usureDay) setDay(run.day);
+
+            // Mort par fixation (chantier 3 du 23/07, validée) : un jet raté
+            // au procès tue, quelle que soit la santé — première mort du jeu
+            // sans aucun combat, purement sociale, traitée comme toutes les
+            // autres (relique + fragment + épitaphe). Le hameau s'en souvient
+            // par-delà les runs (fixations).
+            if (scene.fixationTrial && tierIsFail(tier)) {
+              const epitaph = outcome.text.replace(/\s*♦.*$/, "");
+              const firstDeath = loadMemory().deaths === 0;
+              mutateMemory((m) => {
+                m.fixations += 1;
+              });
+              const relic = recordDeath({
+                heroName: run.heroName,
+                days: run.day,
+                cause: "le Hameau des Renonçants",
+                place: scene.id,
+                killer: { entity: "hameau-renoncants", label: "le Hameau des Renonçants" },
+              });
+              const dead = { epitaph, day: run.day, encounters: run.encounters, relic, firstDeath };
+              resetRun();
+              setDeath(dead);
+              return;
+            }
 
             // Permadeath réel (spec §9) : santé à zéro sur un jet raté = mort.
             if (run.health <= 0 && tierIsFail(tier)) {

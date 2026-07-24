@@ -70,6 +70,9 @@ export type PlayerMemory = {
   /** Chapitres garantis déjà vécus (chantier 2 du 23/07) — la rotation évite de
       retomber sur un chapitre vu tant qu'il en reste des neufs. */
   chaptersSeen: string[];
+  /** Morts par fixation subies (chantier 3) : au-delà de 2, l'accueil du hameau
+      change dès l'entrée — le village se souvient de la main qui lance le dé. */
+  fixations: number;
 };
 
 const KEY = "aldenhar-player";
@@ -86,6 +89,7 @@ function fresh(): PlayerMemory {
     bloodDebts: [],
     fallen: [],
     chaptersSeen: [],
+    fixations: 0,
   };
 }
 
@@ -106,6 +110,7 @@ export function loadMemory(): PlayerMemory {
           bloodDebts: Array.isArray(p.bloodDebts) ? p.bloodDebts : [],
           fallen: Array.isArray(p.fallen) ? p.fallen : [],
           chaptersSeen: Array.isArray(p.chaptersSeen) ? p.chaptersSeen : [],
+          fixations: typeof p.fixations === "number" ? p.fixations : 0,
         };
       }
     } catch {

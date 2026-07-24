@@ -186,6 +186,14 @@ export type RunState = {
    * compte pour la rotation) ; null tant que rien n'est tiré.
    */
   chapter: { id: string; stage: 0 | 1 | 2 | 3 } | null;
+  /**
+   * Le Soupçon (chantier 3 du 23/07) : 0..6, JAMAIS affiché — il ne se lit que
+   * dans le monde (paliers). 6 = procès du héros. Remis à 0 à chaque run.
+   */
+  soupcon: number;
+  /** Dernier palier du Soupçon déjà MANIFESTÉ dans le monde (évite de rejouer
+      la même manifestation ; redescend avec le Soupçon après un procès). */
+  soupconSeen: number;
 };
 
 const KEY = "aldenhar-run";
@@ -236,6 +244,8 @@ function fresh(): RunState {
     },
     trav: freshTraversal(),
     chapter: null,
+    soupcon: 0,
+    soupconSeen: 0,
   };
 }
 
@@ -283,6 +293,8 @@ export function loadRun(): RunState {
             // Chapitre : null pour les runs d'avant le 24/07 — Scene en tire un
             // à la volée (l'amorce jouera à la prochaine liaison).
             chapter: p.chapter && typeof p.chapter.id === "string" ? p.chapter : null,
+            soupcon: typeof p.soupcon === "number" ? p.soupcon : 0,
+            soupconSeen: typeof p.soupconSeen === "number" ? p.soupconSeen : 0,
           };
         }
       }

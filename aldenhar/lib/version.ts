@@ -62,5 +62,14 @@
  *           résolution partielle avant la Descente), rotation par compte ; +
  *           SIGNATURE GARANTIE — la Colline aux Gibets offerte à chaque
  *           liaison tant que non visitée.
+ *   1.10.0 — Lot 23/07 vague 3 (chantier n°3) : LE SOUPÇON — l'histoire devient
+ *           la menace de la zone. 0..6, jamais affiché, lu dans le monde par
+ *           paliers (mots comptés → conversation pliée → Doyenne → croix à la
+ *           craie → trois hommes → procès). Monte : refuser/tricher le
+ *           Serment, parler au Pendu, potences, Rebouteux, échec social.
+ *           Baisse : jurer, dénoncer un autre (jamais suggéré, le village
+ *           s'en souvient). Palier 6 = procès du héros — mort par fixation
+ *           (première mort purement sociale) ou relaxe qui fait retomber le
+ *           Soupçon. Le hameau se souvient des fixations par-delà les runs.
  */
-export const APP_VERSION = "1.9.0";
+export const APP_VERSION = "1.10.0";
