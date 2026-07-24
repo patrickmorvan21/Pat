@@ -156,6 +156,32 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     passiveMod: 1, passiveScope: "all", illustration: "assets/objet_lanterne_rouillee.png",
     flavor: "Sa flamme tient contre le vent des Landes. Tu vois venir ce que les autres subissent.",
   },
+  // ——— Lot 24/07 suite : objets des lieux extérieurs et des rencontres ———
+  "grelot-charretier": {
+    name: "Grelot du Charretier", rarity: "commun", kind: "babiole", slot: "passif",
+    passiveMod: 1, passiveScope: "combat", illustration: "assets/objet_grelot_charretier_a.png",
+    flavor: "Il tinte quand quelque chose approche dans le creux. Rien ne te tombera plus dessus sans s'annoncer.",
+  },
+  "pierre-retour": {
+    name: "Pierre de Retour", rarity: "rare", kind: "babiole", slot: "passif",
+    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_miroir_ame_a.png",
+    flavor: "Un éclat descellé de la Borne. Les Renonçants disent qu'on revient, si on la porte. Personne n'est revenu.",
+  },
+  "miroir-poche": {
+    name: "Miroir de Poche Fêlé", rarity: "commun", kind: "babiole", slot: "actif",
+    heal: 0.15, cure: false, illustration: "assets/objet_miroir_poche_fele_c.png",
+    flavor: "Fêlé en travers, jeté dans les roseaux. Se regarder dedans remet en place ce que la lande a déplacé.",
+  },
+  "fruit-cendre": {
+    name: "Fruit de Cendre", rarity: "commun", kind: "soin", slot: "actif",
+    heal: 0.3, cure: false, illustration: "assets/objet_fruit_cendre_a.png",
+    flavor: "La peau est parfaite et le poids ment. Le manger est un pari : une vision, ou pire.",
+  },
+  "meche-nouee": {
+    name: "Mèche Nouée", rarity: "commun", kind: "babiole", slot: "passif",
+    passiveMod: 0, passiveScope: "all", illustration: "assets/objet_corde_coupee_fille_a.png",
+    flavor: "Les cheveux d'un fils parti par le sud, noués d'un fil. Elle ne pèse rien. C'est la promesse qui pèse.",
+  },
 };
 
 /** Fabrique un objet réel des Landes par id (avec un id d'instance unique). */

@@ -121,6 +121,15 @@ export type PointInteret = {
   grantsLoot?: string;
   /** Trace durable au compte (persistance environnementale §17). */
   setsEnvFlag?: string;
+  /**
+   * Point d'intérêt qui OUVRE sur une rencontre (notation « PI 3 — les Époux →
+   * rencontre » des scripts). L'approche et l'examen se jouent normalement,
+   * puis l'écran bascule sur le premier beat de la rencontre nommée au lieu de
+   * revenir au lieu. La rencontre rejoint ensuite le lieu par son `chainNext`
+   * (typiquement l'écran-événement `-2`), pour que la grammaire du lieu
+   * (arrivée → points → événement → sortie) reste tenue.
+   */
+  leadsTo?: string;
 };
 
 export type Scene = {
@@ -286,9 +295,56 @@ export const SCENES: Scene[] = [
       "La lande s'ouvre sous un crépuscule qui ne tombe pas. La lumière " +
         "reste prise entre chien et loup, comme un souffle retenu. Quelque " +
         "part, une corde grince.",
-      "Au bord du chemin, une borne de pierre penche sous les offrandes : " +
-        "bouts de pain durci, rubans, clous tordus. On paie ici pour entrer. " +
-        "Ou pour qu'on vous laisse ressortir.",
+      "La pierre est seule au milieu du plateau, dressée là où tous les murets " +
+        "renoncent. Haute comme un homme, grise comme le reste — et pourtant " +
+        "l'œil ne voit qu'elle. À son pied, un tas d'offrandes. Au-delà, le " +
+        "sud, nu. Et à trois pas de la borne, un homme immobile, face au sud.",
+    ],
+    pointsInteret: [
+      {
+        id: "gravures-borne",
+        label: "Les gravures de la pierre",
+        zoom: 2.6,
+        focus: "50% 45%",
+        approche:
+          "Tu fais le tour de la pierre lentement, la main à plat sur le " +
+          "granit. Il est froid d'une froideur qui ne vient pas du vent.",
+        examen:
+          "Des marques sur toutes les faces, de toutes les mains, de toutes " +
+          "les époques : des noms, des dates, des traits de comptage. Le côté " +
+          "nord est saturé — les adieux de ceux qui partaient. Le côté sud " +
+          "est presque vierge. Trois marques seulement. On ne grave pas au " +
+          "retour quand personne ne revient. Alors qui a gravé côté sud ?",
+      },
+      {
+        id: "eclat-descelle",
+        label: "Un angle cassé, au ras du sol",
+        zoom: 2.8,
+        focus: "40% 70%",
+        grantsLoot: "pierre-retour",
+        approche:
+          "Un angle de la borne manque. Tu t'accroupis : la cassure est " +
+          "nette, faite au burin, patiemment. Quelqu'un a voulu emporter un " +
+          "morceau de la limite avec lui.",
+        examen:
+          "L'éclat est encore là, à demi enterré sous la bruyère. Il ne l'a " +
+          "pas pris. Ou il n'a pas pu. La pierre tient dans le creux de ta " +
+          "main, exactement comme si elle avait été taillée pour.",
+      },
+      {
+        id: "homme-immobile",
+        label: "L'homme qui regarde le sud",
+        leadsTo: "hesitant-1",
+        zoom: 2.4,
+        focus: "60% 40%",
+        approche:
+          "Tu quittes la borne et tu marches vers lui, sans te presser, en " +
+          "faisant sonner tes pas — on n'arrive pas dans le dos de quelqu'un, " +
+          "ici.",
+        examen:
+          "L'herbe autour de ses pieds est couchée, morte. Il est là depuis " +
+          "des jours. Immobile — mais pas comme on se repose : comme on lutte.",
+      },
     ],
     choices: [
       {
@@ -325,46 +381,178 @@ export const SCENES: Scene[] = [
     ],
     jailerLine: "Les Landes. 8 941 entrées, cette saison. Les sorties, je les compte sur une autre page.",
   },
+  /* ═══ RENCONTRES EN BEATS (spec 24/07 suite, format obligatoire) ═══
+     approche → échange → enjeu → résolution. Le beat d'APPROCHE est porté par
+     le point d'intérêt qui ouvre la rencontre (voir de loin → marcher → être à
+     hauteur) : c'est pour ça qu'on n'arrive jamais sur quelqu'un d'un coup, et
+     que la rencontre reste refusable — il suffit de ne pas choisir le point.
+     Les beats suivants sont des scènes chaînées ; le dernier rejoint le lieu
+     (son écran-événement) ou débouche sur une liaison. */
   {
-    id: "chemin-creux",
-    illustration: "assets/monstre_marcheur_a_rebours_d.png",
+    /* L'HÉSITANT — Borne Frontière · rare. Le chaînon entre Renonçant et
+       Appelé : il n'a pas encore choisi, et il te demande de choisir pour lui. */
+    id: "hesitant-1",
+    illustration: "assets/monstre_hesitant_b.png",
+    chainNext: "hesitant-2",
     narration: [
-      "Le chemin s'enfonce entre deux talus plus hauts que toi. On y marche " +
-        "vu sans voir : la lande entière te regarde passer, et toi tu ne vois " +
-        "que de la terre.",
-      "Un homme vient en sens inverse — à reculons. Il marche vite, sûr de " +
-        "ses pas, les yeux fixés sur ce qu'il fuit. Derrière lui, à terre, un " +
-        "grelot de charretier. Sans charrette nulle part.",
+      "Il ne se retourne pas. Il t'a entendu, pourtant — ses épaules l'ont dit.",
+      "— « Tu l'entends fort, toi ? » Sa voix est calme, épuisée d'être calme. " +
+        "« Moi, c'est encore bas. Comme des gens qui parlent dans la maison " +
+        "d'à côté. On comprend pas les mots. On comprend juste... qu'on parle " +
+        "de nous. »",
     ],
     choices: [
       {
-        id: "aborder-marcheur",
-        label: "Aborder le marcheur",
+        id: "hesitant-depuis-quand",
+        label: "« Depuis combien de temps ? »",
+        passive: {
+          consequence:
+            "— « Ma femme dit trois semaines. » Un temps. « Ma femme dit " +
+            "beaucoup de choses en pleurant, maintenant. » Il ne quitte pas " +
+            "le sud des yeux en le disant, et c'est ça, le plus dur à voir : " +
+            "il parle d'elle au présent et il regarde ailleurs.",
+        },
+      },
+      {
+        id: "hesitant-mentir",
+        label: "Mentir : « Je n'entends rien. »",
+        soupcon: 1,
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu le dis avec l'ennui exact de quelqu'un qui ne comprend pas la question. Il te croit — et quelque chose se relâche dans ses épaules, une espérance idiote : si un autre n'entend rien, alors ça se peut. Tu viens de lui donner trois semaines de plus. En mentant.",
+            "Tu hausses les épaules. Il te regarde de biais, longtemps, puis renonce à trancher. « Tant mieux pour toi », dit-il, et ça sonne presque sincère.",
+            "Tu le dis trop vite, ou trop fort. Il rit — doucement, terriblement. « Tous ceux qui descendent disent ça. C'est même à ça qu'on vous reconnaît. »",
+            "1 naturel. « Je n'entends rien », dis-tu. Et au même instant, dans le creux de ton crâne, quelque chose répond quelque chose. Ton visage le raconte à ta place. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Celui-là m'écoute depuis trois semaines et il croit encore que c'est le vent.",
+  },
+  {
+    id: "hesitant-2",
+    illustration: "assets/monstre_hesitant_b.png",
+    chainNext: "hesitant-3",
+    narration: [
+      "— « Je calcule. » Il montre la borne du menton, sans la regarder. « Si " +
+        "je rentre, ils me liront sur la figure et je finirai au bout d'une " +
+        "corde qui ne retient rien. Si je passe la pierre, je finis comme ceux " +
+        "qui passent la pierre. »",
+      "Un temps. « Tu descends. Tu vas voir ce qu'on devient. Alors dis-moi ce " +
+        "que tu choisirais. »",
+    ],
+    choices: [
+      {
+        id: "hesitant-raccompagner",
+        label: "Le raccompagner au hameau",
+        soupcon: -1, // on t'a vu ramener un homme : ça compte, ici
         risky: {
           stat: "EMPATHIE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Il s'arrête — première fois depuis des jours, ça se voit à ses jambes. « Ne regarde jamais le fond du chemin », souffle-t-il. Puis il repart, à reculons, presque léger de l'avoir dit.",
-            "Il ne s'arrête pas, mais il parle en passant : « Ça suit ceux qui suivent le chemin. Coupe par la lande. » Son regard, lui, ne quitte jamais le fond du creux.",
-            "Tu poses la main sur son bras. Il hurle sans te voir — pour lui, tu es arrivé par-derrière. Le cri roule loin dans le creux, et quelque chose, au fond, change de rythme.",
-            "1 naturel. Il te dévisage enfin — et recule plus vite. Ce qu'il fuyait, c'est ce qui marche derrière toi. ♦ −2"
+            "20 naturel. Tu ne lui prends pas le bras — tu te mets simplement à marcher vers le nord, à son rythme, comme si c'était déjà décidé. Il suit. Les cent premiers pas, il marche à reculons, le sud toujours en face. Puis il pivote, et c'est fini : il rentre. Ce que tu viens de sauver tiendra trois semaines ou trente ans. Ici, ça s'appelle une victoire.",
+            "Il te suit, à contrecœur, en s'arrêtant deux fois. Au deuxième arrêt il ne dit rien et repart quand même. C'est peut-être le maximum qu'on puisse obtenir d'un homme dans cet état.",
+            "Il ne bouge pas. Il s'assied au pied de la borne, dos à la pierre, face au sud — et c'est pire que tout, parce que maintenant il est confortable.",
+            "1 naturel. Tu lui parles de sa femme. Il tourne enfin la tête vers toi, et son visage est celui de quelqu'un qui vient de comprendre qu'il ne se souvient plus de son nom à elle. ♦ −2"
           ),
         },
       },
       {
-        id: "prendre-grelot",
-        label: "Ramasser le grelot",
-        // Prix différé (§17) : l'objet est gratuit — mais un grelot, ça sonne.
-        debt: {
-          id: "grelot-charretier",
-          settleInSteps: 3,
-          text:
-            "Au fond de ta poche, le grelot du charretier se met à sonner. " +
-            "Tout seul. Trois coups clairs, comme un signal convenu — et " +
-            "quelque part dans la lande, quelque chose se met en marche pour " +
-            "honorer le rendez-vous.",
+        id: "hesitant-passe",
+        label: "« Passe. »",
+        passive: {
+          consequence:
+            "Tu le dis sans y mettre de poids. Il hoche la tête, plusieurs " +
+            "fois, presque soulagé qu'on l'ait dit à sa place. « Voilà. » " +
+            "C'est tout ce qu'il trouve. « Voilà. »",
         },
       },
+      {
+        id: "hesitant-partir",
+        label: "Ne pas répondre et partir",
+        passive: {
+          consequence:
+            "Tu ne réponds pas. Tu reprends ta route, et derrière toi sa voix " +
+            "arrive, sans reproche : « Merci quand même. » Elle te suit " +
+            "longtemps, cette politesse-là. Plus longtemps qu'une insulte.",
+        },
+      },
+    ],
+    jailerLine: "Il te demande de choisir à sa place. Comme si tu savais choisir. Comme si quelqu'un savait.",
+  },
+  {
+    id: "hesitant-3",
+    illustration: "assets/monstre_hesitant_b.png",
+    narration: [
+      "Il te laisse partir le premier. C'est important pour lui : que tu ne le " +
+        "voies pas décider.",
+      "Au bout de vingt pas tu te retournes quand même. La borne est seule au " +
+        "milieu du plateau. Il n'y a plus personne à côté — et rien, sur la " +
+        "bruyère couchée, ne dit dans quel sens il est parti.",
+    ],
+    choices: [{ id: "hesitant-reprendre-route", label: "Reprendre la route" }],
+    jailerLine: "Deux directions, un homme, et pas une trace. Je note ça comme une sortie. Les deux le sont.",
+  },
+  {
+    id: "chemin-creux",
+    illustration: "assets/scene_lande_generique_2.png",
+    chainNext: "chemin-creux-2",
+    narration: [
+      "Le chemin s'enfonce entre deux talus plus hauts que toi ; le ciel " +
+        "devient un ruban. C'est le plus court chemin des Landes, et le seul " +
+        "où l'on ne voit pas venir.",
+      "Une charrette penche au premier coude. Les talus, au-dessus, sont " +
+        "meubles. Plus loin, le chemin tourne et la terre mange la vue. Et " +
+        "dans le creux, quelqu'un vient vers toi — de dos.",
+    ],
+    pointsInteret: [
+      {
+        id: "charrette-embourbee",
+        label: "La charrette embourbée",
+        zoom: 2.5,
+        focus: "45% 60%",
+        grantsLoot: "grelot-charretier",
+        approche:
+          "Elle penche dans l'ornière depuis si longtemps que le bois a pris " +
+          "racine — des pousses sortent du moyeu. Tu contournes, la main sur " +
+          "le ridelle.",
+        examen:
+          "Le chargement a disparu depuis longtemps. Le cheval aussi : le " +
+          "harnais pend, coupé net, pas dénoué. Sous le siège, accroché à un " +
+          "clou, un grelot de cuivre vert-de-grisé. Il ne sonne pas quand tu " +
+          "le décroches. Il sonnera quand il faudra.",
+      },
+      {
+        id: "talus-empreintes",
+        label: "Le haut des talus",
+        zoom: 2.4,
+        focus: "50% 25%",
+        approche:
+          "Tu montes de trois pas dans la pente, juste assez pour voir la " +
+          "crête sans t'exposer entièrement. La terre y est meuble, retournée.",
+        examen:
+          "Des empreintes. Parallèles au chemin. Sur toute sa longueur. " +
+          "Quelque chose marche là-haut quand quelqu'un marche en bas — à la " +
+          "même vitesse, du même pas. Tu redescends sans te presser, parce " +
+          "que se presser serait une information.",
+      },
+      {
+        id: "marcheur-rebours",
+        label: "L'homme qui marche à reculons",
+        leadsTo: "marcheur-1",
+        zoom: 2.3,
+        focus: "55% 45%",
+        approche:
+          "Tu ralentis pour le laisser venir. Il marche à reculons d'un pas " +
+          "sûr, les talons trouvant le sol comme des yeux.",
+        examen:
+          "Son visage est tourné vers ce qu'il laisse derrière lui. " +
+          "C'est-à-dire, dans un instant : vers toi.",
+      },
+    ],
+    choices: [
       {
         id: "couper-lande",
         label: "Couper par la lande",
@@ -381,6 +569,137 @@ export const SCENES: Scene[] = [
       },
     ],
     jailerLine: "Le chemin creux. Ceux qui l'ont creusé n'avaient pas de pelles.",
+  },
+  {
+    /* Événement du Chemin Creux : le coude aveugle. Le lieu se referme sur son
+       propre danger — l'endroit exact où il devrait y avoir quelque chose. */
+    id: "chemin-creux-2",
+    illustration: "assets/scene_lande_generique_2.png",
+    narration: [
+      "Le chemin tourne, et le talus mange la vue d'un coup. Passé le coude : " +
+        "rien. C'est-à-dire l'endroit exact où il devrait y avoir quelque " +
+        "chose, et il n'y a rien.",
+      "Le silence y est plus épais d'un cran, comme après un bruit que tu " +
+        "aurais raté d'une seconde.",
+    ],
+    choices: [
+      {
+        id: "franchir-coude",
+        label: "Franchir le coude",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu presses le pas aux bons moments et tu t'arrêtes aux autres — sans savoir pourquoi, exactement quand il faut. Derrière toi, au-dessus, quelque chose s'arrête aussi, et repart trop tard. Le creux est traversé. Tu as pris un pas d'avance sur ce qui compte les pas.",
+            "Tu passes le coude d'une traite, l'épaule au talus nord. Rien ne tombe, rien ne sort. Le chemin se rouvre sur la lande et tu ressors du couloir de terre entier.",
+            "Tu passes trop lentement. Rien n'attaque — mais quelque chose t'accompagne sur la crête jusqu'au bout du creux, à ta hauteur, réglant son pas sur le tien, et ne s'arrête que là où le talus s'abaisse.",
+            "1 naturel. Au milieu du coude, tu comprends que le silence n'était pas vide : il était retenu. Quelque chose, tout près, avait cessé de respirer pour t'écouter passer. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "sortir-par-le-talus",
+        label: "Sortir par le talus",
+        passive: {
+          consequence:
+            "Tu renonces au coude. Tu grimpes, à quatre pattes sur les trois " +
+            "derniers pas, et tu ressors à découvert dans la bruyère. La " +
+            "lande te voit — tant mieux. Derrière toi, en bas, le creux " +
+            "continue tout seul, et tu n'entends jamais ce qui le traverse.",
+        },
+      },
+    ],
+    jailerLine: "Le coude. Toujours le coude. Trois cents ans que je regarde des gens accélérer juste avant.",
+  },
+  {
+    /* LE MARCHEUR À REBOURS — Chemin Creux · rare. Trente ans qu'il ne montre
+       son dos à rien. Sa récompense est un SAVOIR, pas un objet. */
+    id: "marcheur-1",
+    illustration: "assets/monstre_marcheur_a_rebours_d.png",
+    chainNext: "marcheur-2",
+    narration: [
+      "Il ne s'arrête pas à ta hauteur. Il ralentit, c'est tout — et te parle " +
+        "en te dépassant, le regard toujours fixé sur le chemin derrière toi.",
+      "— « Marche pas côté nord du creux. » Pas de bonjour. Ici, les conseils " +
+        "sont les politesses. « Elle longe la crête nord. Toujours. Les " +
+        "empreintes du sud, c'est les vieilles. »",
+    ],
+    choices: [
+      {
+        id: "marcheur-vue",
+        label: "« Vous l'avez vue ? »",
+        passive: {
+          consequence:
+            "— « Vue, non. » Il continue de reculer, toujours au même rythme. " +
+            "« Mais je sais où elle est pas. C'est déjà la moitié d'une " +
+            "carte. » Il tapote sa tempe sans regarder. « L'autre moitié, " +
+            "personne l'a jamais eue longtemps. »",
+        },
+      },
+      {
+        id: "marcheur-pourquoi",
+        label: "« Pourquoi à reculons ? »",
+        passive: {
+          consequence:
+            "— « Parce qu'elle attaque ce qui lui tourne le dos. » Il le dit " +
+            "comme on donne l'heure. « Trente ans que je lui en montre pas " +
+            "un. » Tu regardes ses talons trouver l'ornière, la pierre, la " +
+            "racine, sans une hésitation. Trente ans, oui.",
+        },
+      },
+    ],
+    jailerLine: "Trente ans à reculer pour ne pas mourir. Il appelle ça vivre. Je l'ai noté comme tel.",
+  },
+  {
+    id: "marcheur-2",
+    illustration: "assets/monstre_marcheur_a_rebours_d.png",
+    chainNext: "marcheur-3",
+    narration: [
+      "— « Tu veux traverser entier ? » Il est déjà trois pas plus loin. " +
+        "« Alors fais comme moi jusqu'au coude. Après le coude, elle suit " +
+        "plus. Personne sait pourquoi. On va pas lui demander. »",
+    ],
+    choices: [
+      {
+        id: "marcheur-imiter",
+        label: "Marcher à reculons avec lui",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu pivotes et tu marches. Deux paires de talons dans le silence du creux, réglées l'une sur l'autre. Il commente à voix basse chaque chose que tu ne peux pas voir — l'ornière, la racine, l'endroit où le talus s'abaisse. Tu ressortiras d'ici en sachant lire un chemin creux. Ça ne s'oublie pas.",
+            "Tu recules avec lui. C'est atroce les vingt premiers pas, puis le corps comprend. Ses indications s'impriment : la crête nord, les vieilles empreintes, le coude. Tu sauras.",
+            "Tu trébuches dans l'ornière au cinquième pas et tu t'étales. Son rire sec est le premier rire des Landes — et il ne s'arrête pas pour t'aider. Il ne s'arrête pas, c'est tout.",
+            "1 naturel. Tu recules, les yeux au nord — et pendant une seconde entière, tu vois exactement ce qu'il regarde depuis trente ans. Tu comprends pourquoi il ne se retourne pas. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "marcheur-continuer",
+        label: "Continuer normalement",
+        passive: {
+          consequence:
+            "Tu restes face au sud, comme tout le monde. « Comme tu veux », " +
+            "dit-il en s'éloignant. « C'est ton dos. » Il n'y a pas de " +
+            "reproche dedans. Juste un constat de comptable.",
+        },
+      },
+    ],
+    jailerLine: "Il t'offre trente ans d'expérience gratuitement. Prends. Les cadeaux gratuits, ici, c'est moi qui les facture.",
+  },
+  {
+    id: "marcheur-3",
+    illustration: "assets/monstre_marcheur_a_rebours_d.png",
+    chainNext: "chemin-creux-2",
+    narration: [
+      "Au coude, il pivote enfin — face au nord, dos au sud — et s'éloigne à " +
+        "reculons vers là d'où tu viens.",
+      "Juste avant que le talus ne le mange, il lève deux doigts vers toi. Pas " +
+        "un adieu. Un décompte : deux yeux. Il te rappelle d'en garder autant " +
+        "derrière la tête.",
+    ],
+    choices: [{ id: "marcheur-saluer", label: "Reprendre le creux" }],
+    jailerLine: "Deux doigts. Deux yeux. Il en manque toujours un troisième — le mien.",
   },
   {
     // Première rencontre volontairement précoce (3e scène) — anecdotique,
@@ -904,6 +1223,21 @@ export const SCENES: Scene[] = [
           "croix, il y en a eu d'autres, ici. Effacées, retracées. Celle-ci " +
           "n'est que la dernière.",
       },
+      {
+        id: "femme-sur-le-seuil",
+        label: "La femme sur le pas de porte",
+        leadsTo: "femme-seuil-1",
+        zoom: 2.4,
+        focus: "60% 45%",
+        approche:
+          "Plus bas dans la rue, une femme se tient sur un pas de porte, " +
+          "immobile. Pas comme on prend l'air : comme on monte la garde. Tu " +
+          "traverses la rue vers elle.",
+        examen:
+          "Son regard est posé sur le bout de la rue, vers le sud, et il ne " +
+          "bouge pas quand tu approches. Elle t'a vu. Elle a décidé que tu " +
+          "n'étais pas la bonne silhouette.",
+      },
     ],
     choices: [
       {
@@ -921,6 +1255,135 @@ export const SCENES: Scene[] = [
       { id: "continuer-rue", label: "Continuer dans la rue" },
     ],
     jailerLine: "Une croix à la craie. Ils marquent leurs condamnés à l'avance — c'est mon métier, ça. Amateurs.",
+  },
+  {
+    /* LA FEMME AU SEUIL — rencontre ÉTALON des scripts (Hameau · commune).
+       Ouverte depuis le seuil du hameau, elle rejoint ensuite le barrage :
+       une rencontre ne fait jamais dérailler la séquence garantie. */
+    id: "femme-seuil-1",
+    illustration: "assets/monstre_femme_au_seuil_b.png",
+    chainNext: "femme-seuil-2",
+    narration: [
+      "Quand tu arrives à sa hauteur, elle tressaille. Une seconde — moins — " +
+        "son visage s'ouvre, et tu vois ce qu'elle était avant : quelqu'un " +
+        "qui attendait quelqu'un.",
+      "Puis ça se referme. « Non. Tu marches pas comme lui. »",
+      "Elle resserre son châle. « Mon fils est parti par là. » Elle ne montre " +
+        "pas la direction — personne ici ne montre le sud avec la main. « Il " +
+        "entendait plus ce que je disais, à la fin. Il entendait autre chose. »",
+    ],
+    choices: [
+      {
+        id: "femme-depuis-quand",
+        label: "« Depuis combien de temps ? »",
+        passive: {
+          consequence:
+            "Elle réfléchit, et c'est le pire : elle doit vraiment compter. " +
+            "« Trois hivers. » Puis, plus bas, comme une correction " +
+            "administrative : « Deux. Deux hivers. » Elle ne se trompe pas " +
+            "de chiffre par oubli. Elle se trompe pour que ce soit moins.",
+        },
+      },
+      {
+        id: "femme-verite",
+        label: "Lui dire qu'il ne reviendra pas",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Tu ne lui prends rien. Tu lui dis, simplement, et de telle façon qu'elle puisse le poser au lieu de le porter. Elle ne pleure pas — elle s'assied sur son seuil, pour la première fois depuis deux hivers, et te remercie d'une phrase qui n'a rien à voir : « Vous avez faim ? »",
+            "Tu le dis. Elle ne répond pas tout de suite. Puis : « Je sais. » Et après un silence : « Mais si j'arrête de regarder, alors c'est moi qui l'aurai laissé partir. » Elle reprend sa faction. Vous avez été honnêtes tous les deux.",
+            "Les mots sortent trop droits. Son visage se ferme comme une porte de grange, et derrière ce bois-là il n'y a plus personne à qui parler. Dans la rue, deux volets bougent : on t'a vu faire pleurer une mère.",
+            "1 naturel. Tu lui dis qu'il ne reviendra pas. Elle te regarde enfin — vraiment — et demande, très calme : « Et toi ? Tu reviendras ? » ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "femme-regarder-sud",
+        label: "Regarder le sud avec elle",
+        soupcon: 1, // deux personnes qui fixent le sud, ça se voit de loin
+        passive: {
+          consequence:
+            "Tu ne dis rien. Tu te places à côté d'elle, dans le même axe, et " +
+            "tu regardes le bout de la rue. Le silence dure longtemps et ne " +
+            "pèse rien. Au bout d'un moment elle dit : « Vous l'entendez " +
+            "aussi. » Ce n'est pas une question, et tu n'as pas répondu — " +
+            "mais quelqu'un, derrière une fenêtre, a compté deux dos tournés " +
+            "vers le sud.",
+        },
+      },
+    ],
+    jailerLine: "Elle attend un fils qui est arrivé chez moi il y a deux hivers. Il n'a pas demandé de ses nouvelles.",
+  },
+  {
+    id: "femme-seuil-2",
+    illustration: "assets/monstre_femme_au_seuil_b.png",
+    chainNext: "femme-seuil-3",
+    narration: [
+      "« Tu descends, toi aussi. Ça se voit. Vous avez tous le même pas. » " +
+        "Elle fouille sous son châle et en tire quelque chose qu'elle tient " +
+        "serré.",
+      "« Si tu le croises. S'il reste quelque chose à croiser. »",
+      "Une mèche de cheveux, nouée d'un fil. « Tu lui donnes. Il saura. »",
+    ],
+    choices: [
+      {
+        id: "femme-accepter",
+        label: "Accepter la mèche",
+        grantsLoot: "meche-nouee",
+        passive: {
+          consequence:
+            "Tu tends la main. Elle y dépose la mèche avec une précaution " +
+            "ridicule, comme si le fil pouvait casser, et referme tes doigts " +
+            "dessus avec les siens. « Voilà. » Elle recule d'un pas. " +
+            "« Voilà. » Elle n'a plus rien à dire et elle le sait.",
+        },
+      },
+      {
+        id: "femme-refuser",
+        label: "Refuser doucement",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu refuses de telle manière que ça devienne une promesse plus grande : tu ne prends pas la mèche, mais tu prends le nom. Elle te le donne comme on confie une clé. Le nom, tu le porteras plus loin qu'un fil de cheveux.",
+            "Tu refuses sans mentir : tu ne sais pas si tu ressortiras. Elle hoche la tête, range la mèche sous le châle. « C'est honnête. » Ça lui coûte de le dire, et elle le dit quand même.",
+            "Tu refuses mal — trop vite, en reculant d'un demi-pas. Sa main reste tendue trois secondes de trop, seule, dans la rue vide, et deux volets s'entrouvrent sur ce tableau-là.",
+            "1 naturel. Tu refuses. Elle range la mèche, et dit, sans aucune méchanceté : « C'est ce qu'il a dit aussi, en partant. Qu'il ne prendrait rien. » ♦ −2"
+          ),
+        },
+        soupcon: 1,
+      },
+      {
+        id: "femme-echange",
+        label: "« Et en échange ? »",
+        risky: {
+          stat: "RUSE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu poses la question de façon qu'elle sonne comme un service qu'on lui rend — accepter de recevoir. Elle disparaît un instant et revient avec du pain, du vrai, et une information qui vaut plus : qui, dans ce hameau, ouvre encore sa porte la nuit.",
+            "Elle te regarde autrement, sans reproche : ici, on marchande tout, même les morts. Elle donne du pain et une phrase utile sur la Palissade. Le marché est équitable et vous le savez tous les deux.",
+            "La question tombe mal. Elle ne se fâche pas — elle range la mèche, c'est tout, et ça vaut toutes les insultes. Dans son dos, la porte se ferme d'elle-même, comme si la maison avait tranché.",
+            "1 naturel. « En échange ? » Elle répète les mots lentement, puis les rend au silence. Quelque part dans la rue, quelqu'un les répète aussi. ♦ −2"
+          ),
+        },
+        soupcon: 1,
+      },
+    ],
+    jailerLine: "Une mèche de cheveux comme monnaie. Tu vois, même ici, tout le monde comprend le principe du pacte.",
+  },
+  {
+    id: "femme-seuil-3",
+    illustration: "assets/monstre_femme_au_seuil_b.png",
+    chainNext: "hameau-entree-3",
+    narration: [
+      "Elle a déjà repris sa place sur le seuil quand tu repars. De la rue, " +
+        "on ne voit pas qu'elle a parlé à quelqu'un. On ne voit qu'une femme " +
+        "qui regarde le sud.",
+      "Ce que tu emportes ne pèse rien. C'est la promesse qui pèse.",
+    ],
+    choices: [{ id: "femme-repartir", label: "Redescendre la rue" }],
+    jailerLine: "Elle reprendra sa faction demain, et après-demain. La constance, chez vous, c'est presque une maladie.",
   },
   {
     /* Beat 3 — Le barrage. Trois Renonçants : leur PEUR, jamais leur menace. */
@@ -1387,10 +1850,59 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_moulin_sans_ailes_c.png",
     chainNext: "campement-2",
     narration: [
-      "À l'écart du hameau, un moulin sans ailes tient debout par habitude. " +
-        "Dedans, la meule est froide, le sol sec, et quelqu'un a laissé un " +
-        "lit de bruyère tassée — plusieurs fois refait, jamais brûlé. Un " +
-        "refuge qui sert, donc un refuge qui marche.",
+      "Le moulin n'a plus d'ailes mais il a gardé leur trace : quatre ombres " +
+        "pâles en croix sur le corps de pierre, comme un moulin fantôme peint " +
+        "sur le vrai.",
+      "La porte est entrouverte. Pas défoncée : entretenue. La croix d'ombres, " +
+        "en haut. La lucarne, qui te regarde. Et la porte, qui n'attend que toi.",
+    ],
+    pointsInteret: [
+      {
+        id: "croix-ombres",
+        label: "La croix d'ombres, en haut",
+        // Il faut RECULER pour la voir entière : le plan s'élargit au lieu de
+        // se resserrer — seul point d'intérêt de la zone à zoom < 1.
+        zoom: 0.9,
+        focus: "50% 25%",
+        approche:
+          "Tu recules jusqu'au muret d'en face. Il faut de la distance pour " +
+          "la voir entière — c'est une trace, pas un détail.",
+        examen:
+          "De loin, les quatre bandes pâles se lisent d'un coup : ce sont des " +
+          "zones où la pierre n'a pas vieilli, protégée des années par les " +
+          "ailes, puis abandonnée au vent d'un seul coup. On peut dater une " +
+          "catastrophe à la couleur d'un mur. Celle-ci est vieille comme le " +
+          "Domaine.",
+      },
+      {
+        id: "lucarne-moulin",
+        label: "La lucarne, au-dessus de la porte",
+        zoom: 2.7,
+        focus: "50% 30%",
+        approche:
+          "Quelque chose a bougé là-haut — tu en jurerais. Tu approches sans " +
+          "quitter l'ouverture des yeux, ce qui est exactement la mauvaise " +
+          "façon d'approcher d'une porte.",
+        examen:
+          "La lucarne est vide. Et propre : pas un grain de poussière sur le " +
+          "rebord intérieur. Quelqu'un s'y accoude. Souvent. Pour regarder ce " +
+          "chemin — celui par lequel tu viens d'arriver.",
+      },
+      {
+        id: "interieur-moulin",
+        label: "Pousser la porte entrouverte",
+        zoom: 2.2,
+        focus: "50% 55%",
+        approche:
+          "Tu pousses du plat de la main, lentement, en laissant à ce qu'il y " +
+          "a dedans le temps de décider s'il veut être vu.",
+        examen:
+          "Personne. Mais le contraire de l'abandon : une paillasse faite au " +
+          "carré, un pot ébréché où trempent des brins de bruyère — de la " +
+          "bruyère fraîche. Quelqu'un habite ici avec un soin de vivant. Tu " +
+          "ressors sans toucher à rien, et c'est la première politesse que tu " +
+          "offres aux Landes.",
+      },
     ],
     choices: [
       {
@@ -2008,6 +2520,369 @@ export const SCENES: Scene[] = [
     jailerLine: "La Meute Grise ne tue presque jamais. Elle évalue. Les chiffres remontent jusqu'à moi.",
   },
   {
+    /* LA MARE AUX REGARDS — le seul endroit des Landes que le vent évite. On
+       n'y vient pas puiser : on y vient vérifier. */
+    id: "mare-aux-regards",
+    illustration: "assets/scene_mare_aux_regards_a.png",
+    chainNext: "mare-aux-regards-2",
+    narration: [
+      "L'eau est noire et parfaitement plate — le seul endroit des Landes que " +
+        "le vent évite.",
+      "La berge est piétinée en un seul point, tassée par des années de " +
+        "genoux. On ne vient pas ici puiser. On vient s'agenouiller. Le point " +
+        "de berge usé. L'eau. Et dans les roseaux, un reflet de métal.",
+    ],
+    pointsInteret: [
+      {
+        id: "berge-usee",
+        label: "Le point de berge usé",
+        zoom: 2.6,
+        focus: "50% 65%",
+        approche:
+          "Tu contournes la mare par la droite pour atteindre le seul endroit " +
+          "où la boue est tassée. Le sol y est dur comme un seuil de maison.",
+        examen:
+          "Deux creux dans la terre, à largeur de genoux, refaits par des " +
+          "centaines de personnes au même endroit exact. À côté, des marques " +
+          "de doigts crispés dans la boue séchée. On ne s'agenouille pas ici " +
+          "pour prier. On s'agenouille pour vérifier.",
+      },
+      {
+        id: "eau-reflet",
+        label: "L'eau",
+        zoom: 2.4,
+        focus: "50% 70%",
+        approche:
+          "Tu t'agenouilles dans les creux. Ils sont à ta taille, évidemment. " +
+          "La croyance dit : le reflet de qui entend la voix est en retard.",
+        examen:
+          "Tu te penches. Ton reflet se penche. Et il lève les yeux vers toi " +
+          "une demi-seconde après toi. Tu le savais déjà — tu entends la voix " +
+          "depuis le premier jour, c'est même comme ça que le monde te parle. " +
+          "Mais le savoir et le voir sont deux choses différentes.",
+      },
+      {
+        id: "reflet-metal",
+        label: "Le reflet de métal, dans les roseaux",
+        zoom: 2.8,
+        focus: "70% 60%",
+        grantsLoot: "miroir-poche",
+        approche:
+          "Tu écartes les roseaux à deux mains. Ils sont noirs jusqu'à la " +
+          "racine et ne cassent pas — ils plient et reviennent.",
+        examen:
+          "Un petit miroir de poche, fêlé en travers. Perdu — ou jeté par " +
+          "quelqu'un qui n'a pas aimé ce qu'il y a vu. La fêlure passe " +
+          "exactement où serait un visage.",
+      },
+    ],
+    choices: [
+      {
+        id: "boire-mare",
+        label: "Boire à la mare",
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. L'eau est glacée et propre, sans un goût. Tu bois longuement, et quand tu relèves la tête tu te sens plus léger d'une chose que tu ne saurais pas nommer — comme si la mare avait pris quelque chose à ta place. Elle avait le choix. Elle a bien choisi.",
+            "Tu bois dans le creux de ta main. C'est de l'eau, rien d'autre. Ça n'a l'air de rien mais dans les Landes, ça compte.",
+            "Tu bois — et l'eau reste au bord des lèvres, sans descendre, une seconde de trop. Quand elle passe enfin, tu as l'impression très nette d'avoir avalé quelque chose qui a accepté de se laisser avaler.",
+            "1 naturel. Tu bois. Sous la surface, à trois doigts de ton visage, ton reflet continue de boire quand tu t'arrêtes. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "sen-aller-mare",
+        label: "Te relever sans regarder",
+        passive: {
+          consequence:
+            "Tu te relèves sans te pencher. La mare garde sa réponse, et " +
+            "c'est une politesse qu'elle te rend : rien ne te suit du regard " +
+            "quand tu t'éloignes de la berge. Rien, en tout cas, qui soit " +
+            "dans l'eau.",
+        },
+      },
+    ],
+    jailerLine: "Une mare qui dit la vérité. Ils viennent quand même. Vous adorez les réponses que vous connaissez.",
+  },
+  {
+    id: "mare-aux-regards-2",
+    illustration: "assets/scene_mare_aux_regards_a.png",
+    narration: [
+      "Quelqu'un arrive — un Renonçant, qui ne te voit pas. Il s'agenouille " +
+        "dans les creux, se penche, et reste penché beaucoup trop longtemps.",
+      "Quand il se relève, il a le visage de quelqu'un qui va rentrer chez lui " +
+        "et fermer ses volets pour toujours.",
+    ],
+    choices: [
+      {
+        id: "aborder-renoncant-mare",
+        label: "Lui parler",
+        soupcon: 1,
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu ne lui demandes rien — tu lui dis simplement que tu as vu la même chose. Il te regarde comme on regarde une rive. Puis il parle, longtemps, et tu apprends comment on vit avec : en ne se regardant plus jamais dans rien, et en occupant ses yeux à autre chose. Ça s'appelle bêcher, ici. Ou compter.",
+            "Il sursaute, puis se laisse aborder. « C'était pas en retard, avant », dit-il seulement. « Y a deux ans, c'était pas en retard. » Il repart vers le hameau sans attendre de réponse.",
+            "Il te voit — et le fait que tu l'aies vu, lui, est la pire chose qui pouvait lui arriver aujourd'hui. Il part très vite, sans un mot, et tu sais qu'il racontera cette rencontre autrement que toi.",
+            "1 naturel. Tu l'abordes. Il te regarde, regarde l'eau, te regarde encore. Puis il demande, d'une voix blanche : « Le vôtre aussi ? » ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "laisser-renoncant",
+        label: "Le laisser à sa réponse",
+        passive: {
+          consequence:
+            "Tu restes immobile derrière les roseaux jusqu'à ce qu'il soit " +
+            "loin. Il ne saura jamais qu'on l'a vu vérifier. C'est le seul " +
+            "cadeau que tu pouvais lui faire, et il ne le saura pas non plus.",
+        },
+      },
+    ],
+    jailerLine: "Il rentrera, il fermera ses volets, et il tiendra deux hivers. J'ai déjà sa page.",
+  },
+  {
+    /* LE VERGER NOIR — le seul ordre volontaire des Landes hors du hameau.
+       Les arbres poussent. C'est pire que s'ils étaient morts. */
+    id: "verger-noir",
+    illustration: "assets/scene_verger_noir_d.png",
+    chainNext: "verger-noir-2",
+    narration: [
+      "Des arbres fruitiers plantés en rangs — le seul ordre volontaire des " +
+        "Landes hors du hameau. Ils ont poussé, ils ont des branches, des " +
+        "feuilles noires, et des fruits. C'est pire que s'ils étaient morts.",
+      "Les rangs et leurs fruits. La souche du premier arbre, au bout. Et deux " +
+        "silhouettes qui bêchent, tout au fond.",
+    ],
+    pointsInteret: [
+      {
+        id: "fruits-cendre",
+        label: "Les fruits, dans les rangs",
+        zoom: 2.7,
+        focus: "45% 40%",
+        grantsLoot: "fruit-cendre",
+        approche:
+          "Tu entres dans un rang. L'odeur devrait arriver là — pas de " +
+          "pourriture : pas d'odeur du tout. Un verger qui ne sent rien.",
+        examen:
+          "Ronds, lourds, gris mat. La peau est parfaite et le poids ment : " +
+          "tu en décroches un, il pèse comme une pierre et cède comme du " +
+          "papier. Des fruits de cendre. Tu en gardes un. On ne sait jamais " +
+          "ce qu'on est prêt à parier.",
+      },
+      {
+        id: "souche-premier-arbre",
+        label: "La souche, au bout du rang",
+        zoom: 2.8,
+        focus: "50% 65%",
+        approche:
+          "Au bout du rang, un arbre manque. Sa souche est nette, sciée à " +
+          "hauteur de genou, et le bois de coupe est gris.",
+        examen:
+          "Le premier arbre du verger, abattu net. Les cernes sont réguliers " +
+          "jusqu'aux dernières années — puis serrés, noirs, illisibles. " +
+          "L'arbre a compris avant les hommes où il poussait. Quelqu'un l'a " +
+          "abattu pour ne pas avoir à le lire.",
+      },
+      {
+        id: "epoux-verger",
+        label: "Les deux qui bêchent, au fond",
+        leadsTo: "epoux-1",
+        zoom: 2.3,
+        focus: "60% 50%",
+        approche:
+          "Tu remontes les rangs vers eux. Ils se relaient sur la même bêche " +
+          "sans se parler, du geste réglé des gens qui font la même chose " +
+          "ensemble depuis toujours.",
+        examen:
+          "Ils plantent. Dans cette terre. Un trou, un plant, la terre " +
+          "refermée du talon — et le trou suivant, deux pas plus loin.",
+      },
+    ],
+    choices: [
+      {
+        id: "compter-rangs",
+        label: "Compter les rangs",
+        passive: {
+          consequence:
+            "Onze rangs. Tu recomptes : onze. Chaque rang est planté d'une " +
+            "essence différente, et chaque essence a donné les mêmes fruits " +
+            "gris. Onze tentatives, onze réponses identiques, et un douzième " +
+            "rang en cours de creusement au fond. Il n'y a pas de mot pour ça " +
+            "dans ta langue. Ici, ça s'appelle mardi.",
+        },
+      },
+      {
+        id: "gouter-fruit",
+        label: "Goûter un fruit",
+        risky: {
+          stat: "COURAGE",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Tu mords. C'est de la cendre — puis ce n'est plus de la cendre : c'est un verger, le vrai, au soleil, avec des enfants dedans et une femme qui appelle. Tu vois ce que ce lieu était. Tu comprends d'un coup POURQUOI ils continuent, et ça vaut mieux qu'un objet.",
+            "Tu mords. La chair est sèche, sans goût, et se défait en poudre. Rien ne t'arrive — sauf la certitude, désormais physique, que rien ne pousse ici.",
+            "La cendre te reste dans la gorge et n'en sort plus. Tu tousses longtemps, plié en deux entre deux rangs, et l'homme au fond du verger cesse une seconde de bêcher pour te regarder faire.",
+            "1 naturel. Tu mords. Et quelque chose, dans le fruit, mord en retour. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Onze vergers. Ils appellent ça de l'obstination. Moi j'appelle ça de la matière première.",
+  },
+  {
+    id: "verger-noir-2",
+    illustration: "assets/scene_verger_noir_d.png",
+    narration: [
+      "Un fruit tombe, derrière toi. Sans vent, sans oiseau.",
+      "Quand tu le ramasses, il est encore chaud — comme une chose qui vient " +
+        "de cesser d'essayer.",
+    ],
+    choices: [
+      {
+        id: "reposer-fruit",
+        label: "Le reposer au pied de l'arbre",
+        passive: {
+          consequence:
+            "Tu le reposes exactement sous la branche d'où il vient, bien " +
+            "calé dans la terre, comme on remet quelque chose à sa place. Le " +
+            "geste ne sert à rien. Tu le fais quand même, et le verger entier " +
+            "te paraît une seconde moins hostile.",
+        },
+      },
+      {
+        id: "quitter-verger",
+        label: "Sortir des rangs",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu sors des rangs par le bon côté — celui d'où l'on voit encore le hameau. Derrière toi, dans l'ordre parfait des arbres, tu remarques ce que tu n'avais pas vu en entrant : les rangs ne sont pas droits. Ils s'incurvent, très légèrement, tous, vers le sud.",
+            "Tu retrouves la sortie du premier coup. Les rangs se referment derrière toi et le verger redevient une tache noire sur la lande.",
+            "Tu tournes deux fois dans les mêmes rangs avant de retrouver la lisière. Onze rangs, ce n'est pas un labyrinthe. Ça n'aurait pas dû prendre si longtemps.",
+            "1 naturel. Tu sors des rangs. Le compte à voix basse, derrière toi, s'est arrêté au moment exact où tu es sorti. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Encore chaud. Comme tout ce qui vient de renoncer. Tu t'y feras.",
+  },
+  {
+    /* LES ÉPOUX DU VERGER — ils plantent le douzième. Ce qu'ils demandent
+       n'est pas de l'aide : c'est une preuve que le dehors existe. */
+    id: "epoux-1",
+    illustration: "assets/scene_verger_noir_d.png",
+    chainNext: "epoux-2",
+    narration: [
+      "La femme se redresse la première. Elle ne sursaute pas — plus rien ne " +
+        "les surprend, ici.",
+      "— « C'est le onzième verger. » Elle le dit avant toute autre chose, " +
+        "comme on donne son nom. « Les dix premiers ont donné des fruits de " +
+        "cendre. Celui-là aussi. Le douzième, on verra. »",
+      "L'homme continue de bêcher. Il n'a pas levé la tête. Il compte les " +
+        "coups de bêche à voix basse.",
+    ],
+    choices: [
+      {
+        id: "epoux-pourquoi",
+        label: "« Pourquoi continuer ? »",
+        passive: {
+          consequence:
+            "— « Parce qu'arrêter, c'est commencer à regarder le sud. » Elle " +
+            "essuie la bêche contre sa jambe, un geste d'habitude. « Bêcher, " +
+            "ça occupe les yeux. » Derrière elle, le compte à voix basse " +
+            "n'a pas manqué un coup.",
+        },
+      },
+      {
+        id: "epoux-aider",
+        label: "Prendre la bêche un moment",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu bêches. Personne ne dit merci, personne ne dit rien — mais au bout d'un moment l'homme reprend son compte à voix haute pour que tu puisses le suivre, et vous finissez le rang à trois, au même rythme. C'est la seule chose qui ressemble à de la paix dans toutes les Landes.",
+            "Tu creuses deux trous. La terre est lourde, morte, et cède mal. La femme corrige ton geste d'un mot. C'est peu. C'est déjà énorme.",
+            "Tu prends la bêche et l'homme la reprend aussitôt, sans brutalité, comme on retire un outil des mains d'un enfant. Le compte a repris exactement où il s'était arrêté.",
+            "1 naturel. Tu enfonces la bêche. Elle bute sur quelque chose à trois doigts sous la surface — quelque chose de long, et qui a été mis là avec soin. Vous vous regardez tous les trois, et personne ne creuse. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Le douzième verger. Je leur laisse le quinzième. Après, la terre commence à me lasser aussi.",
+  },
+  {
+    id: "epoux-2",
+    illustration: "assets/scene_verger_noir_d.png",
+    chainNext: "epoux-3",
+    narration: [
+      "— « Tu viens du dehors. » Ce n'est pas une question : c'est une prière " +
+        "déguisée en constat. « Il te reste forcément quelque chose du " +
+        "dehors. N'importe quoi. Une graine, un bout de vrai bois, une chose " +
+        "qui a poussé sous le vrai soleil. On le planterait. »",
+      "Tu sais ce que tu as : rien. Tu es arrivé ici comme tout le monde y " +
+        "arrive — les mains vides et mort.",
+    ],
+    choices: [
+      {
+        id: "epoux-rien",
+        label: "« Je n'ai rien. »",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu le dis de façon à ce que ça ne tue pas l'espoir : tu n'as rien, mais tu leur décris quelque chose — un arbre précis, chez toi, avec son écorce et son odeur. Ils écoutent à deux. À la fin, la femme dit : « Bon. Alors on plante celui-là. » Et l'homme se remet à creuser.",
+            "Tu le dis simplement. Elle hoche la tête, sans surprise. « C'est ce que disent tous ceux qui viennent. » Elle retourne à son rang. Ça n'a rien cassé.",
+            "Tu le dis mal — trop court, trop net. L'homme cesse de compter ses coups de bêche. Le silence qui suit est le pire son des Landes, et il dure jusqu'à ce que tu sois sorti du rang.",
+            "1 naturel. « Je n'ai rien. » La femme te regarde les mains, longtemps, puis le visage. « Non », dit-elle enfin, très doucement. « Toi non plus, tu ne viens pas du dehors. » ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "epoux-promettre",
+        label: "Promettre pour la prochaine fois",
+        risky: {
+          stat: "RUSE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu promets si bien que tu y crois toi-même une seconde. Ils te croient tout à fait — et la femme te donne, en avance, ce qu'elle donnera en échange : où trouver de l'eau propre entre ici et la Palissade, et laquelle des deux routes se referme la nuit.",
+            "Le mensonge passe sans effort : ils veulent y croire. « Au prochain passage », répète-t-elle, et elle range ça quelque part où ça ne s'abîmera pas.",
+            "Tu promets, et elle t'écoute promettre avec un demi-sourire qui ne juge rien. « Bien sûr. » Elle retourne à son rang deux mots trop tôt.",
+            "1 naturel. Tu promets pour la prochaine fois. L'homme, sans lever la tête, dit son premier mot : « Laquelle ? » ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "epoux-donner",
+        label: "Chercher dans ta besace",
+        passive: {
+          consequence:
+            "Tu fouilles longuement, pour de vrai. Tout ce que tu portes " +
+            "vient d'ici : une écharde de gibet, du chanvre béni, de la " +
+            "cendre. Rien du dehors. Tu leur montres tes mains ouvertes, et " +
+            "ils regardent dedans quand même, tous les deux, comme on " +
+            "regarde un puits.",
+        },
+      },
+    ],
+    jailerLine: "Ils veulent une graine du dehors. Personne n'arrive chez moi avec des poches pleines. C'est le principe.",
+  },
+  {
+    id: "epoux-3",
+    illustration: "assets/scene_verger_noir_d.png",
+    chainNext: "verger-noir-2",
+    narration: [
+      "Ils se remettent au travail avant que tu sois sorti des rangs — le " +
+        "onzième verger n'attend pas.",
+      "Longtemps après, tu entends encore le compte à voix basse, régulier " +
+        "comme une corde qui grince : c'est le bruit que fait l'espoir quand " +
+        "il refuse de savoir.",
+    ],
+    choices: [{ id: "epoux-quitter", label: "Remonter les rangs" }],
+    jailerLine: "Écoute-le compter. Il en est à quarante mille. Je le sais : je compte avec lui.",
+  },
+  {
     // Dernière scène de la rotation : la sortie de zone (La Descente) se
     // montre mais reste verrouillée — l'Acte II n'existe pas encore.
     id: "palissade-sud",
@@ -2015,11 +2890,56 @@ export const SCENES: Scene[] = [
     loot: "lanterne-veilleur",
     chainNext: "palissade-sud-2",
     narration: [
-      "Au bout des Landes, une palissade de troncs noircis barre l'horizon " +
-        "d'est en ouest. Pas pour empêcher d'entrer : les étais sont de ce " +
-        "côté-ci. Au centre, une porte à double battant — et derrière, un " +
-        "chemin qui descend. On le sent plus qu'on ne le voit : l'air y " +
-        "coule comme une eau froide. La Descente.",
+      "La Palissade barre le plateau d'un trait noir : des rondins plantés " +
+        "serrés, hauts de deux hommes. Un portillon, une guérite, une " +
+        "lanterne allumée en plein jour.",
+      "Derrière, un chemin qui descend. On le sent plus qu'on ne le voit : " +
+        "l'air y coule comme une eau froide. La Descente. Et dans la guérite, " +
+        "un homme qui t'a vu depuis longtemps.",
+    ],
+    pointsInteret: [
+      {
+        id: "rondins-pointes",
+        label: "Les rondins et leurs pointes",
+        zoom: 2.6,
+        focus: "50% 35%",
+        approche:
+          "Tu longes le mur sur quelques pas, la tête levée, à suivre la " +
+          "ligne des sommets taillés.",
+        examen:
+          "Chaque rondin est appointé — taillé en pique. Tu suis les pointes " +
+          "du regard, et ton estomac comprend avant toi : elles sont tournées " +
+          "vers l'intérieur. Vers les Landes. Ce mur n'a jamais protégé le " +
+          "village de ce qui monte. Il retient ce qui veut descendre.",
+      },
+      {
+        id: "portillon-verrou",
+        label: "Le portillon et son verrou",
+        zoom: 2.8,
+        focus: "50% 55%",
+        approche:
+          "Tu poses la main sur le bois du portillon. Il est tiède, ce qui " +
+          "n'a aucun sens sous ce crépuscule.",
+        examen:
+          "Un verrou, côté nord. Un seul. Le bois autour est griffé — pas par " +
+          "des bêtes : à hauteur de mains. Des mains qui voulaient passer, " +
+          "une nuit, et qu'on n'a pas laissées. Ou qu'on a laissées trop tard.",
+      },
+      {
+        id: "homme-guerite",
+        label: "L'homme de la guérite",
+        leadsTo: "veilleur-1",
+        zoom: 2.4,
+        focus: "35% 45%",
+        approche:
+          "Il est sorti de sa niche avant que tu aies décidé d'y aller. Tu " +
+          "marches vers lui parce qu'il n'y a plus vraiment le choix.",
+        examen:
+          "La guérite est une niche de planches contre les rondins, juste " +
+          "assez grande pour un homme et sa lanterne. Il te regarde venir " +
+          "depuis si longtemps qu'il a eu le temps de préparer sa première " +
+          "phrase.",
+      },
     ],
     choices: [
       {
@@ -2051,6 +2971,121 @@ export const SCENES: Scene[] = [
       { id: "approcher-porte", label: "Approcher de la porte" },
     ],
     jailerLine: "La palissade ? Une politesse. Les vrais murs de mes terres sont ailleurs — tu marches dessus.",
+  },
+  {
+    /* LE VEILLEUR DE LA PALISSADE — il ouvre à ceux qui partent proprement et
+       note les autres. Sa lanterne s'échange contre la seule histoire du
+       dehors qu'il te reste : ta mort. Le jeu ne l'écrit jamais. */
+    id: "veilleur-1",
+    illustration: "assets/objet_lanterne_rouillee.png",
+    chainNext: "veilleur-2",
+    narration: [
+      "— « Trois jours ! » Il le crie presque — la voix de quelqu'un qui parle " +
+        "peu et qui stocke. « Trois jours que j'ai vu personne. Le hameau " +
+        "m'envoie ma soupe par le gamin, et le gamin pose la soupe à vingt " +
+        "pas. Vingt pas ! Comme si veiller la porte, ça s'attrapait. »",
+      "Il sort de sa niche, s'étire, et te détaille sans gêne — l'inventaire " +
+        "franc de l'homme qui n'a plus de manières à user.",
+      "— « Tu descends. Évidemment que tu descends. On vient pas admirer ma " +
+        "palissade. »",
+    ],
+    choices: [
+      {
+        id: "veilleur-pointes",
+        label: "« Pourquoi les pointes vers l'intérieur ? »",
+        passive: {
+          consequence:
+            "Il se rembrunit. « T'as vu ça. » Un temps — il regarde le mur " +
+            "comme on regarde un collègue. « Le mur date d'avant moi. Ceux " +
+            "qui l'ont planté savaient déjà dans quel sens on perd les gens. »",
+        },
+      },
+      {
+        id: "veilleur-a-quoi-bon",
+        label: "« À quoi bon veiller, alors ? »",
+        passive: {
+          consequence:
+            "— « Le portillon. Le verrou. » Il compte sur ses doigts, sans " +
+            "ironie. « Quelqu'un doit ouvrir à ceux qui partent proprement. " +
+            "Et noter les autres. » Il ne dit pas ce qui distingue les deux, " +
+            "et tu n'as pas envie de demander.",
+        },
+      },
+    ],
+    jailerLine: "Trente ans de guérite. Il connaît mes terres mieux que certains de mes morts.",
+  },
+  {
+    id: "veilleur-2",
+    illustration: "assets/objet_lanterne_rouillee.png",
+    chainNext: "veilleur-3",
+    narration: [
+      "Il décroche sa lanterne et la soupèse, comme une décision.",
+      "— « En bas, y a des endroits où le noir mange tout. Ça, ça tient une " +
+        "nuit de plus que les autres — je les fais moi-même, la mèche, " +
+        "l'huile, tout. » Il te la tend à moitié. « Elle est à toi. Contre une " +
+        "histoire. Une vraie. Du dehors. »",
+      "Ses yeux brillent d'une faim que la soupe du gamin ne nourrit pas. " +
+        "« Raconte-moi comment c'était, la dernière chose que t'as vue. " +
+        "Avant. » Il te demande ta mort. C'est la seule histoire du dehors que " +
+        "tu possèdes encore.",
+    ],
+    choices: [
+      {
+        id: "veilleur-raconter",
+        label: "Raconter ta mort",
+        grantsLoot: "lanterne-veilleur",
+        passive: {
+          consequence:
+            "Tu racontes. Le récit ne s'écrit nulle part — il reste entre lui " +
+            "et toi, et c'est très bien ainsi. Il écoute comme on boit, sans " +
+            "un mot, sans un hochement. À la fin, il regarde le nord — le " +
+            "dehors — pendant une longue minute. Puis il te met la lanterne " +
+            "dans les mains sans rien ajouter.",
+        },
+      },
+      {
+        id: "veilleur-inventer",
+        label: "Inventer une belle histoire",
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu lui donnes un dehors : une odeur de pluie sur des pierres chaudes, le bruit précis d'une rue à midi. Il rit, il redemande un détail, il rit encore. La lanterne est à toi avant la fin — et tu comprends que le mensonge était peut-être la vraie marchandise.",
+            "Ton histoire tient debout et il la prend. Elle est belle, elle est fausse, elle fait le même effet. La lanterne change de main.",
+            "« J'écoute des menteurs depuis trente ans à ce portillon. » Il remet la lanterne au clou, sans colère. Pas de rancune non plus — juste la déception patiente des solitaires.",
+            "1 naturel. Tu inventes. Et au milieu de ton histoire inventée, tu tombes par accident sur un détail vrai — le tien. Ta voix s'arrête toute seule. Il l'a entendu, ce trou-là. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "veilleur-refuser",
+        label: "Refuser",
+        passive: {
+          consequence:
+            "Tu ne racontes rien. Il hausse les épaules — un homme qui a " +
+            "l'habitude — et remet la lanterne au clou. Elle balancera dans " +
+            "ton dos tout le temps que tu franchiras le portillon.",
+        },
+      },
+    ],
+    jailerLine: "Il veut ta mort en échange d'une lampe. Moi je te l'ai prise gratuitement. Apprends à négocier.",
+  },
+  {
+    id: "veilleur-3",
+    illustration: "assets/objet_lanterne_rouillee.png",
+    chainNext: "palissade-sud-2",
+    narration: [
+      "Il t'ouvre le portillon lui-même, avec la cérémonie de l'homme dont " +
+        "c'est la seule prérogative. Au moment où tu passes, il note quelque " +
+        "chose sur une planche de sa guérite — ton passage, ta direction, " +
+        "l'heure. Le dernier acte administratif des Landes.",
+      "— « Je note tout le monde », dit-il sans lever les yeux. « Comme ça, si " +
+        "un jour quelqu'un remonte... je saurai qui c'était. » Il sourit à sa " +
+        "planche. « Trente ans de descentes. La colonne des retours est toute " +
+        "neuve. »",
+    ],
+    choices: [{ id: "veilleur-passer", label: "Passer le portillon" }],
+    jailerLine: "Une colonne des retours. Vide depuis trente ans. J'adore les optimistes — ils tiennent la comptabilité pour moi.",
   },
   {
     id: "palissade-sud-2",
@@ -2289,6 +3324,8 @@ const APPROACH: Record<string, string> = {
   "puits-condamne": "Vers des coups sourds",
   "chien-du-bailli": "Vers une maison murée",
   "petit-tribunal": "Vers une salle de juges",
+  "mare-aux-regards": "Vers une eau qui ne bouge pas",
+  "verger-noir": "Vers des rangs d'arbres noirs",
   "meute-grise-1": "Vers des silhouettes grises",
   "palissade-sud": "Vers une palissade au sud",
 };
@@ -2577,6 +3614,8 @@ export const APPROACH_NARRATION: Record<string, string> = {
   "puits-condamne": "Un bruit sourd te guide entre les maisons : trois coups, une pause, trois coups. Tu débouches sur une margelle condamnée de planches neuves — la seule chose entretenue du hameau.",
   "chien-du-bailli": "La plus haute maison du hameau grandit devant toi, aveugle : ses fenêtres sont murées de l'intérieur. Sur le seuil, une masse grise se lève sans un aboiement.",
   "petit-tribunal": "Une bâtisse basse, une seule porte, et par elle un froid qui ne vient pas du dehors : le froid des endroits où l'on a beaucoup décidé. Tu entres au Petit Tribunal.",
+  "mare-aux-regards": "Le vent tombe d'un coup, comme coupé au couteau, et devant toi une plaque d'eau noire ne bouge pas du tout. Tu approches de la seule surface plate des Landes.",
+  "verger-noir": "Des rangs réguliers montent de la bruyère — des arbres, plantés à la main, alignés. De loin c'est presque rassurant. De près, les feuilles sont noires et les fruits sont gris.",
   "meute-grise-1": "La bruyère bouge sans vent, par plaques, autour de toi. Ce ne sont pas des ombres : ce sont des dos gris, bas sur pattes, qui resserrent un cercle patient.",
   "palissade-sud": "Au bout des Landes, une ligne de troncs noircis barre tout l'horizon. Derrière, l'air se fait froid et vieux — il monte d'en bas. La Descente n'est plus loin.",
 };

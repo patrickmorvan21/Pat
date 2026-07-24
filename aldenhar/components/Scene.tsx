@@ -497,6 +497,12 @@ export default function Scene() {
     prepend?: FeedEntry[];
     /** Choix d'orientation (traversée 21/07) : force la destination (liaison → lieu). */
     toDest?: string;
+    /**
+     * Bascule vers une scène nommée qui n'est PAS un lieu du pool (rencontre
+     * ouverte par un point d'intérêt, spec 24/07 suite). N'entre pas dans
+     * `visited` : une rencontre ne compte pas comme un lieu traversé.
+     */
+    toScene?: string;
     /** Usure (chantier 1 du 23/07) : un échec dur hors combat COÛTE un jour — la
         puce Jour (déjà bumpée) s'affiche mid-scène, coût visible et non un simple
         texte. La valeur passée est le nouveau numéro de jour. */
@@ -519,6 +525,13 @@ export default function Scene() {
       nextScene = sceneById("proces-du-heros")!;
       trav.phase = "scene";
       trav.current = nextScene.id; // hors `visited` : ce n'est pas un lieu du pool
+    } else if (opts?.toScene) {
+      // Rencontre ouverte par un point d'intérêt : on reste « dans » le lieu du
+      // point de vue de la traversée (rien n'entre dans `visited`), mais l'écran
+      // courant devient le premier beat de la rencontre.
+      nextScene = sceneById(opts.toScene) ?? sceneById(ENTRY_SCENE)!;
+      trav.phase = "scene";
+      trav.current = nextScene.id;
     } else if (opts?.toDest) {
       nextScene = sceneById(opts.toDest) ?? sceneById(ENTRY_SCENE)!;
       trav.phase = "scene";
@@ -871,6 +884,13 @@ export default function Scene() {
         }
         setSelectedId(null);
         setChoicesHidden(true);
+        // Point qui OUVRE sur une rencontre : l'approche et l'examen restent
+        // les beats de marche, puis l'écran bascule sur son premier beat — on
+        // n'arrive jamais sur quelqu'un sans l'avoir vu de loin puis approché.
+        if (poi.leadsTo) {
+          advance({ toScene: poi.leadsTo, prepend: entries });
+          return;
+        }
         // Même scène, écran remplacé : l'image reste celle du lieu (zoomée).
         showScreen(entries, { src: lastSceneIlloRef.current, kind: "scene" });
         return;
@@ -967,7 +987,14 @@ export default function Scene() {
       advanceTimer.current = setTimeout(() => advance({ consequence }), 320);
     } else if (choice.passive) {
       // Le silence comme vraie option (§19) : conséquence dédiée, sans dé.
-      advanceTimer.current = setTimeout(() => advance({ consequence: choice.passive!.consequence }), 320);
+      // Un choix passif peut aussi DONNER (rencontres en beats du 24/07 suite :
+      // accepter la mèche, raconter sa mort au Veilleur) — l'objet se mérite
+      // par la décision, pas par un jet, puisqu'il n'y a pas de jet ici.
+      const granted = choice.grantsLoot ? grantLandesLoot(choice.grantsLoot) : null;
+      advanceTimer.current = setTimeout(
+        () => advance({ consequence: choice.passive!.consequence, grantedItem: granted }),
+        320
+      );
     } else {
       // Choix neutre : résolution instantanée, sans dé (spec §4).
       advanceTimer.current = setTimeout(() => advance(), 320);

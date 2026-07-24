@@ -111,6 +111,18 @@
  *           ou beat unique « nuit dehors » si le Serment a été refusé : aucune
  *           porte ne s'ouvre à qui n'a pas juré. Le Serment est mémorisé
  *           (juré / du bout des lèvres / refusé) et pèse sur la sortie de zone.
+ *   1.18.0 — Lot 24/07 suite vague 3 — LIEUX EXTÉRIEURS & RENCONTRES EN BEATS :
+ *           la Borne, le Chemin Creux, le Moulin et la Palissade passent au
+ *           format à points d'intérêt (voir de loin → marcher → examiner en
+ *           plan rapproché) ; deux lieux s'ajoutent au pool, la Mare aux
+ *           Regards (le reflet en retard) et le Verger Noir (onze vergers, des
+ *           fruits de cendre). Quatre rencontres écrites au format obligatoire
+ *           approche → échange → enjeu → résolution — la Femme au Seuil,
+ *           l'Hésitant, le Marcheur à rebours, les Époux du Verger, le
+ *           Veilleur de la Palissade — ouvertes par un point d'intérêt et
+ *           refusables : elles ne surgissent jamais, on va vers elles.
+ *           Cinq objets de plus (grelot, pierre de retour, miroir fêlé, fruit
+ *           de cendre, mèche nouée).
  *   1.15.1 — Retours playtest 24/07 (2e vague) : écran du Nom refait FIDÈLE à
  *           la maquette Figma 2167:203 (champ bordé « Ton Nom » mono aligné à
  *           gauche + bouton plein SCELLER LE PACTE + lien centré souligné, plus
@@ -128,4 +140,4 @@
  *   1.14.1 — Musique ACTIVE : les 4 mp3 de Patrick (PJ) intégrés dans
  *           public/audio/ — intro à l'accueil/prologue, boucles Landes en jeu.
  */
-export const APP_VERSION = "1.17.0";
+export const APP_VERSION = "1.18.0";
