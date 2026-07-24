@@ -29,7 +29,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_colline_aux_gibets_c.png",
       "portrait_requis": false
     },
     {
@@ -44,7 +44,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_champ_des_fixes_c.png",
       "portrait_requis": false
     },
     {
@@ -59,7 +59,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_moulin_sans_ailes_c.png",
       "portrait_requis": false
     },
     {
@@ -74,7 +74,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_mare_aux_regards_a.png",
       "portrait_requis": false
     },
     {
@@ -104,7 +104,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_chapelle_des_cordes_d.png",
       "portrait_requis": false
     },
     {
@@ -134,7 +134,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_petit_tribunal_a.png",
       "portrait_requis": false
     },
     {
@@ -149,7 +149,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_puits_condamne_c.png",
       "portrait_requis": false
     },
     {
@@ -164,7 +164,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_marche_muet_c.png",
       "portrait_requis": false
     },
     {
@@ -194,7 +194,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_verger_noir_d.png",
       "portrait_requis": false
     },
     {
@@ -262,7 +262,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_pendu_qui_parle_a.png",
       "portrait_requis": false
     },
     {
@@ -292,7 +292,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_petite_fixee_c.png",
       "portrait_requis": false
     },
     {
@@ -352,7 +352,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_ecrivain_public_d.png",
       "portrait_requis": false
     },
     {
@@ -368,7 +368,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_colporteur_b.png",
       "portrait_requis": false
     },
     {
@@ -383,7 +383,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_rebouteux_a.png",
       "portrait_requis": false
     },
     {
@@ -398,7 +398,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_doyenne_b.png",
       "portrait_requis": false
     },
     {
@@ -413,7 +413,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_femme_au_seuil_b.png",
       "portrait_requis": false
     },
     {
@@ -443,7 +443,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_sonneur_sans_cloche_d.png",
       "portrait_requis": false
     },
     {
@@ -473,7 +473,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_marcheur_a_rebours_d.png",
       "portrait_requis": false
     },
     {
@@ -488,7 +488,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_hesitant_b.png",
       "portrait_requis": false
     },
     {
@@ -520,7 +520,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_juge_de_cendre_c.png",
       "portrait_requis": true
     },
     {
@@ -535,7 +535,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_fiancee_du_gibet_b.png",
       "portrait_requis": true
     },
     {
@@ -565,7 +565,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_corbeaux_du_compte_b.png",
       "portrait_requis": false
     },
     {
@@ -580,7 +580,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_pendu_mal_fixe_a.png",
       "portrait_requis": true
     },
     {
@@ -595,7 +595,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_corde_vive_c.png",
       "portrait_requis": false
     },
     {
@@ -610,7 +610,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_chien_du_bailli_b.png",
       "portrait_requis": true
     },
     {
@@ -625,7 +625,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_mains_du_puits_a.png",
       "portrait_requis": false
     },
     {
@@ -655,7 +655,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_meute_grise_c.png",
       "portrait_requis": true
     },
     {
@@ -670,7 +670,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_recousu_c.png",
       "portrait_requis": true
     },
     {
@@ -715,7 +715,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_troupeau_sans_berger_a.png",
       "portrait_requis": false
     },
     {
@@ -897,7 +897,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_denonciation_vierge_c.png",
       "portrait_requis": false
     },
     {

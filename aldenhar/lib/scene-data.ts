@@ -351,6 +351,7 @@ export const SCENES: Scene[] = [
     // Lieu-signature de la zone. L'écharde pose le flag d'environnement
     // persistant (§17) relu à l'ouverture des runs suivantes.
     id: "colline-aux-gibets",
+    illustration: "assets/scene_colline_aux_gibets_c.png",
     narration: [
       "La colline monte seule au milieu de la lande, couronnée de gibets. " +
         "Tous occupés, tous immobiles — sauf un. Au centre, le plus grand " +
@@ -399,6 +400,7 @@ export const SCENES: Scene[] = [
     // Balafré → Rompu — la mémoire inter-runs viendra avec le système ; la
     // scène pose l'identité). Pas un combat : le Bailli pendu JUGE.
     id: "pendu-qui-parle",
+    illustration: "assets/monstre_pendu_qui_parle_a.png",
     foe: "bailli-pendu",
     narration: [
       "Au revers de la colline, un gibet bas, à hauteur d'homme. Le pendu " +
@@ -455,6 +457,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "champ-des-fixes",
+    illustration: "assets/scene_champ_des_fixes_c.png",
     narration: [
       "Derrière la colline, des rangées de poteaux à perte de vue, chacun " +
         "son pendu, chacun son écriteau. Un cimetière debout. On n'enterre " +
@@ -499,6 +502,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "pendu-mal-fixe",
+    illustration: "assets/monstre_pendu_mal_fixe_a.png",
     combat: true,
     foe: "pendu-mal-fixe",
     foeName: "Le Pendu Mal Fixé",
@@ -622,6 +626,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "marche-muet",
+    illustration: "assets/scene_marche_muet_c.png",
     narration: [
       "Au cœur du hameau, un marché sans un cri. Des étals de trois fois " +
         "rien — clous, laine, racines — et des marchands qui négocient par " +
@@ -681,6 +686,7 @@ export const SCENES: Scene[] = [
     // Campement de zone : le Moulin sans Ailes. L'id reste « campement »
     // (Scene.tsx exclut cet id du soin aléatoire d'exploration).
     id: "campement",
+    illustration: "assets/scene_moulin_sans_ailes_c.png",
     narration: [
       "À l'écart du hameau, un moulin sans ailes tient debout par habitude. " +
         "Dedans, la meule est froide, le sol sec, et quelqu'un a laissé un " +
@@ -712,6 +718,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "chapelle-des-cordes",
+    illustration: "assets/scene_chapelle_des_cordes_d.png",
     narration: [
       "La chapelle du hameau n'a ni croix ni autel. Aux murs, des cordes — " +
         "des dizaines, clouées en boucles soigneuses, chacune sous un nom " +
@@ -756,6 +763,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "puits-condamne",
+    illustration: "assets/scene_puits_condamne_c.png",
     narration: [
       "Sur la place arrière du hameau, un puits — condamné de frais : " +
         "planches neuves, chaînes croisées, cadenas encore gras. Tout le " +
@@ -840,6 +848,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "chien-du-bailli",
+    illustration: "assets/monstre_chien_du_bailli_b.png",
     combat: true,
     foe: "chien-du-bailli",
     foeName: "Le Chien du Bailli",
@@ -904,6 +913,7 @@ export const SCENES: Scene[] = [
     // rejouée à l'échelle de la zone : la ligne du joueur s'insère dans le
     // classement, au milieu des Fixés du Bailli.
     id: "petit-tribunal",
+    illustration: "assets/scene_petit_tribunal_a.png",
     registre: true,
     narration: [
       "Le Petit Tribunal tient dans une seule pièce : trois bancs, une " +
@@ -934,6 +944,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "meute-grise-1",
+    illustration: "assets/monstre_meute_grise_c.png",
     combat: true,
     chainNext: "meute-grise-2",
     foe: "meute-grise",
@@ -996,6 +1007,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "meute-grise-2",
+    illustration: "assets/monstre_meute_grise_c.png",
     combat: true,
     foe: "meute-grise",
     foeName: "La Meute Grise",

@@ -41,5 +41,10 @@
  *           fondu de pixels du texte long remplacé par un rétrécissement propre
  *           de l'illustration, interrupteur Musique (glissière), bloc Geôlier
  *           en 11px/interligne 120 %, inventaire limité à 3 reliques.
+ *   1.7.0 — Illustrations Les Landes : les 30 images validées du pipeline
+ *           (Drive « 03_Validé ») intégrées dans public/assets/ ; 12 scènes
+ *           câblées sur leur vraie illustration (colline, champ, chapelle,
+ *           puits, tribunal, marché, moulin/camp + rencontres pendus/chien/
+ *           meute) — fini le placeholder portail sur ces scènes.
  */
-export const APP_VERSION = "1.6.1";
+export const APP_VERSION = "1.7.0";
