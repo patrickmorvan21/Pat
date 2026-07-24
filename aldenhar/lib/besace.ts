@@ -35,6 +35,9 @@ export type BesaceItem = {
       affiché : il fait juste glisser les paliers vécus. */
   passiveMod?: number;
   passiveScope?: "combat" | "all";
+  /** Icône réelle de l'objet (chantier 1 du 23/07) : les objets des Landes ont
+      leur propre PNG tramé. À défaut, l'icône générique par `kind` est utilisée. */
+  illustration?: string;
 };
 
 /** Besace = 2 slots actifs + 2 slots passifs (spec 21/07, remplace les 4 génériques). */
@@ -117,6 +120,53 @@ function withId(base: Omit<BesaceItem, "id">): BesaceItem {
 
 export function randomSoinMineur(): BesaceItem {
   return withId(SOINS_MINEURS[Math.floor(Math.random() * SOINS_MINEURS.length)]);
+}
+
+/**
+ * Objets RÉELS des Landes (chantier n°1 du 23/07 — « cause principale du trop
+ * facile » : jusqu'ici le jeu ne distribuait que des soins génériques). Chaque
+ * objet est ancré à un lieu (`Scene.loot`), ramassé une fois à l'arrivée, avec
+ * son icône tramée. Deux types seulement (spec 21/07) : actif (usage unique) /
+ * passif (effet permanent tant que porté). Les objets-outils du Soupçon (Craie
+ * du Condamné, Dénonciation Vierge…) sont réservés au chantier n°3.
+ */
+export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
+  "offrandes-borne": {
+    name: "Offrandes de la Borne", rarity: "commun", kind: "soin", slot: "actif",
+    heal: 0.25, cure: false, illustration: "assets/objet_offrandes_borne_c.png",
+    flavor: "Pain durci, rubans, clous tordus. On les a laissés pour entrer. Tu les prends pour tenir.",
+  },
+  "echarde-gibet": {
+    name: "Écharde du Grand Gibet", rarity: "commun", kind: "arme", slot: "passif",
+    passiveMod: 1, passiveScope: "combat", illustration: "assets/objet_echarde_grand_gibet_b.png",
+    flavor: "Un éclat du bois qui a tenu tant de cordes. Ta main s'en trouve plus dure quand il faut frapper.",
+  },
+  "brin-chanvre": {
+    name: "Brin de Chanvre Béni", rarity: "commun", kind: "soin", slot: "actif",
+    heal: 0.2, cure: true, illustration: "assets/objet_brin_chanvre_beni_b.png",
+    flavor: "Béni pour les pendus, dit-on. Noué sur une plaie, il la referme.",
+  },
+  "carnet-fossoyeur": {
+    name: "Carnet du Fossoyeur", rarity: "commun", kind: "babiole", slot: "passif",
+    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_carnet_fossoyeur_d.png",
+    flavor: "Qui repose où, et pourquoi. Savoir où sont les morts, c'est savoir où poser le pied.",
+  },
+  "lanterne-veilleur": {
+    name: "Lanterne du Veilleur", rarity: "commun", kind: "babiole", slot: "passif",
+    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_lanterne_rouillee.png",
+    flavor: "Sa flamme tient contre le vent des Landes. Tu vois venir ce que les autres subissent.",
+  },
+};
+
+/** Fabrique un objet réel des Landes par id (avec un id d'instance unique). */
+export function landesLoot(id: string): BesaceItem | null {
+  const base = LANDES_OBJETS[id];
+  return base ? withId(base) : null;
+}
+
+/** Slot occupé par un objet réel des Landes (pour tester la place avant de le donner). */
+export function landesLootSlot(id: string): BesaceSlot | null {
+  return LANDES_OBJETS[id]?.slot ?? null;
 }
 
 /**

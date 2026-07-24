@@ -18,7 +18,7 @@ import {
   type Scene as SceneType,
 } from "@/lib/scene-data";
 import { loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
-import { hasBesaceRoom, normalizeItem, passiveMod, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
+import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import {
   bloodDebtFor,
   buildRegistre,
@@ -397,10 +397,16 @@ export default function Scene() {
     consequence?: string;
     /** Récompense Besace d'un Destin (13/07) — annoncée dans l'écran. */
     destinItem?: BesaceItem | null;
+    /** Objet réel gagné par la réussite d'un choix `grantsLoot` (23/07). */
+    grantedItem?: BesaceItem | null;
     /** Beats à placer en tête (ex. puce Jour + soin au réveil du campement). */
     prepend?: FeedEntry[];
     /** Choix d'orientation (traversée 21/07) : force la destination (liaison → lieu). */
     toDest?: string;
+    /** Usure (chantier 1 du 23/07) : un échec dur hors combat COÛTE un jour — la
+        puce Jour (déjà bumpée) s'affiche mid-scène, coût visible et non un simple
+        texte. La valeur passée est le nouveau numéro de jour. */
+    usureDay?: number;
   }) {
     const nextStep = step + 1;
     // ——— Résolution de la traversée (spec 21/07) ———
@@ -444,9 +450,26 @@ export default function Scene() {
     if (opts?.consequence) {
       entries.push({ id: nextId(), kind: "narration", text: opts.consequence });
     }
+    // Usure (chantier 1 du 23/07) : un échec dur a coûté un jour — la puce Jour
+    // s'affiche ici, coût VISIBLE, juste après la conséquence de l'échec.
+    if (opts?.usureDay !== undefined) {
+      entries.push({ id: nextId(), kind: "day", day: opts.usureDay });
+      entries.push({
+        id: nextId(),
+        kind: "narration",
+        text: "La lande t'a pris un jour. La lumière a tourné sans que tu avances.",
+      });
+    }
     // Récompense du Destin : bandeau « Obtenu » juste après la conséquence.
     if (opts?.destinItem) {
       const it = opts.destinItem;
+      obtainedItem = it;
+      entries.push({ id: nextId(), kind: "obtenu", name: it.name, rarity: RARITY_LABEL[it.rarity as BesaceRarity], flavor: it.flavor });
+    }
+    // Objet gagné par un choix d'examen réussi (grantsLoot, 23/07) : même
+    // bandeau « Obtenu » — déjà persisté côté Besace dans onComplete.
+    if (opts?.grantedItem) {
+      const it = opts.grantedItem;
       obtainedItem = it;
       entries.push({ id: nextId(), kind: "obtenu", name: it.name, rarity: RARITY_LABEL[it.rarity as BesaceRarity], flavor: it.flavor });
     }
@@ -474,15 +497,41 @@ export default function Scene() {
       }
     }
     entries.push(...nextScene.narration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
-    // Soin aléatoire en exploration (13/07) : ~1 scène sur 5 hors combat.
+    // Objets RÉELS des Landes (chantier 1 du 23/07) : un lieu donne son objet
+    // une seule fois, à l'arrivée, si le slot correspondant a de la place. Les
+    // objets placés remplacent le soin générique — la Besace devient réelle,
+    // portable, ancrée au lieu (icône tramée propre).
     const besace = runRef.current?.besace ?? [];
+    const looted = runRef.current?.looted ?? [];
+    // Un seul « Obtenu » par écran : si un Destin ou un gain de choix d'examen
+    // est déjà annoncé, ni le loot d'arrivée ni le soin générique ne s'empilent
+    // par-dessus (l'écran suivant garde une seule annonce, lisible).
+    let dropped = Boolean(obtainedItem);
+    const lootSlot = nextScene.loot ? landesLootSlot(nextScene.loot) : null;
+    if (!dropped && nextScene.loot && lootSlot && !looted.includes(nextScene.loot) && hasBesaceRoom(besace, lootSlot)) {
+      const item = landesLoot(nextScene.loot);
+      if (item) {
+        obtainedItem = item;
+        dropped = true;
+        const lootId = nextScene.loot;
+        persist((run) => {
+          run.besace = [...run.besace, item];
+          run.looted = [...(run.looted ?? []), lootId];
+        });
+        entries.push({ id: nextId(), kind: "obtenu", name: item.name, rarity: RARITY_LABEL[item.rarity], flavor: item.flavor });
+      }
+    }
+    // Soin générique de secours — désormais RARE (spec 23/07 : « peu de soins
+    // disponibles », l'usure vient de la rareté du soin). Hors combat, et
+    // seulement si aucun objet placé n'a été ramassé sur cette scène.
     if (
+      !dropped &&
       !nextScene.combat &&
       !nextScene.registre &&
       !nextScene.liaison &&
       nextScene.id !== "campement" &&
       hasBesaceRoom(besace, "actif") &&
-      Math.random() < 0.22
+      Math.random() < 0.12
     ) {
       const found = randomSoinMineur();
       obtainedItem = found;
@@ -514,7 +563,9 @@ export default function Scene() {
       lastSceneIlloRef.current = nextIllustration;
       img = { src: nextIllustration, kind: "scene" };
     } else if (obtainedItem) {
-      img = { src: objectImage(obtainedItem.kind), kind: "object" };
+      // Icône réelle de l'objet si elle existe (objets des Landes), sinon
+      // l'icône générique par type (arme/soin/babiole).
+      img = { src: obtainedItem.illustration ?? objectImage(obtainedItem.kind), kind: "object" };
     } else {
       img = { src: lastSceneIlloRef.current, kind: "scene" };
     }
@@ -601,7 +652,13 @@ export default function Scene() {
       // 2-3 premières morts, sans aucun affichage. L'Anneau, calculé sur ce
       // même seuil, montrera juste un peu plus d'encoches pleines — cohérent.
       const soft = entrySoftening(loadMemory());
-      const threshold = Math.max(2, choice.risky.threshold - soft);
+      // Tension dans le dernier tiers de la zone (chantier 1 du 23/07) : les
+      // derniers lieux avant la Descente durcissent d'un cran — invisible, mais
+      // l'Anneau montre un peu moins d'encoches pleines. Contre partiellement la
+      // courbe d'entrée : la fin d'une traversée ne doit jamais rester molle.
+      const trav = runRef.current?.trav;
+      const tension = trav && trav.visited.length >= trav.target - 1 ? 1 : 0;
+      const threshold = Math.max(2, choice.risky.threshold - soft + tension);
       setRoll({
         key: Date.now(),
         stat: choice.risky.stat,
@@ -774,11 +831,29 @@ export default function Scene() {
           onComplete={(result, outcome, tier) => {
             const engaged = Boolean(scene.combat) && roll?.stat === "COURAGE";
             const destinItem = tier === "destin" ? randomRecompenseDestin(engaged) : null;
+            // Usure (chantier 1 du 23/07) : un échec DUR (critique/malédiction)
+            // hors combat coûte un JOUR — coût visible. En combat, le coût
+            // visible est l'aggravation ENTAILLÉ (persistante) déjà posée.
+            const hardFail = tier === "critique" || tier === "malediction";
+            const usureDay = hardFail && !scene.combat;
+            // Objet gagné par un choix d'examen réussi (grantsLoot, 23/07) :
+            // l'objet se mérite — jamais accordé sur un palier d'échec.
+            const chosen = scene.choices.find((c) => c.id === selectedId);
+            let grantedItem: BesaceItem | null = null;
+            if (chosen?.grantsLoot && !tierIsFail(tier)) {
+              const lootId = chosen.grantsLoot;
+              const lootSlot = landesLootSlot(lootId);
+              const cur = runRef.current!;
+              if (lootSlot && !(cur.looted ?? []).includes(lootId) && hasBesaceRoom(cur.besace, lootSlot)) {
+                grantedItem = landesLoot(lootId);
+              }
+            }
             persist((run) => {
               run.rolls.push({ step, choiceId: selectedId ?? "roll", result, at: Date.now() });
               const cost =
                 tier === "malediction" ? 0.25 : tier === "critique" ? 0.2 : tier === "echec" ? 0.12 : tier === "justesse" ? 0.06 : 0;
               run.health = Math.max(0, run.health - cost);
+              if (usureDay) run.day += 1;
               if (tier === "destin" || (scene.combat && !tierIsFail(tier)))
                 run.effects = [
                   { id: "aguerri", label: "AGUERRI", delta: 2, scenesLeft: 3 },
@@ -799,9 +874,17 @@ export default function Scene() {
               // Besace pleine impose un vrai arbitrage (l'objet est perdu).
               if (destinItem && hasBesaceRoom(run.besace, normalizeItem(destinItem).slot))
                 run.besace = [...run.besace, destinItem];
+              // Gain d'un choix d'examen (grantsLoot) : déjà validé (place +
+              // pas encore ramassé) — on l'inscrit à la Besace et au registre
+              // des ramassages de la run.
+              if (grantedItem && chosen?.grantsLoot) {
+                run.besace = [...run.besace, grantedItem];
+                run.looted = [...(run.looted ?? []), chosen.grantsLoot];
+              }
             });
             const run = runRef.current!;
             setHealth(run.health);
+            if (usureDay) setDay(run.day);
 
             // Permadeath réel (spec §9) : santé à zéro sur un jet raté = mort.
             if (run.health <= 0 && tierIsFail(tier)) {
@@ -822,7 +905,14 @@ export default function Scene() {
               setDeath(dead);
               return;
             }
-            advance({ result, fail: outcome.fail, consequence: outcome.text, destinItem });
+            advance({
+              result,
+              fail: outcome.fail,
+              consequence: outcome.text,
+              destinItem,
+              grantedItem,
+              usureDay: usureDay ? run.day : undefined,
+            });
           }}
         />
 

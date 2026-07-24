@@ -747,7 +747,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_echarde_grand_gibet_b.png",
       "portrait_requis": false
     },
     {
@@ -762,7 +762,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_carnet_fossoyeur_d.png",
       "portrait_requis": false
     },
     {
@@ -777,7 +777,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_jouet_petite_fixee_a.png",
       "portrait_requis": false
     },
     {
@@ -792,7 +792,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_miroir_poche_fele_c.png",
       "portrait_requis": false
     },
     {
@@ -807,7 +807,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_brin_chanvre_beni_b.png",
       "portrait_requis": false
     },
     {
@@ -822,7 +822,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_corde_coupee_fille_a.png",
       "portrait_requis": false
     },
     {
@@ -837,7 +837,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_sceau_bailli_c.png",
       "portrait_requis": false
     },
     {
@@ -852,7 +852,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_cle_maison_muree_a.png",
       "portrait_requis": false
     },
     {
@@ -867,7 +867,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_registre_pendaisons_c.png",
       "portrait_requis": false
     },
     {
@@ -882,7 +882,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_ordonnance_fixation_c.png",
       "portrait_requis": false
     },
     {
@@ -912,7 +912,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_battant_cloche_c.png",
       "portrait_requis": false
     },
     {
@@ -927,7 +927,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_fruit_cendre_a.png",
       "portrait_requis": false
     },
     {
@@ -942,7 +942,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_dent_meute_d.png",
       "portrait_requis": false
     },
     {
@@ -957,7 +957,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_grelot_charretier_a.png",
       "portrait_requis": false
     },
     {
@@ -972,7 +972,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_offrandes_borne_c.png",
       "portrait_requis": false
     },
     {
@@ -1002,7 +1002,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_lanterne_rouillee.png",
       "portrait_requis": false
     }
   ]

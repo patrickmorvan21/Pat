@@ -168,6 +168,9 @@ export type RunState = {
   debts: PendingDebt[];
   /** Besace (13/07) : objets mundane, vidée à la mort. */
   besace: BesaceItem[];
+  /** Objets réels des Landes déjà ramassés dans cette run (chantier 1 du 23/07) —
+      un lieu ne redonne jamais deux fois son objet. */
+  looted: string[];
   /** Rencontres (scènes de combat) traversées vivant — pour l'écran de mort. */
   encounters: number;
   /** Stats de la run (affichage Essence seulement pour l'instant). */
@@ -214,6 +217,7 @@ function fresh(): RunState {
     feed: [],
     debts: [],
     besace: startingBesace(),
+    looted: [],
     encounters: 0,
     stats: randomStats(),
     // Tirage du prologue : 1 souvenir par stat, fixé pour toute la run.
@@ -253,6 +257,7 @@ export function loadRun(): RunState {
             debts: Array.isArray(p.debts) ? p.debts : [],
             // Normalise les items d'avant le point 4 (ajoute slot/effets).
             besace: Array.isArray(p.besace) ? p.besace.map(normalizeItem) : startingBesace(),
+            looted: Array.isArray(p.looted) ? p.looted : [],
             encounters: typeof p.encounters === "number" ? p.encounters : 0,
             stats: migrateStats(p.stats),
             // Runs d'avant le prologue : considérées comme un prologue déjà

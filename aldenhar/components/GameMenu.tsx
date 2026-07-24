@@ -29,6 +29,11 @@ const BESACE_ICONS: Record<BesaceItem["kind"], string> = {
   babiole: "assets/objet_crane.png",
 };
 
+/** Icône d'un objet : son PNG réel (objets des Landes) sinon l'icône générique par type. */
+function itemIcon(it: BesaceItem): string {
+  return it.illustration ?? BESACE_ICONS[it.kind];
+}
+
 /** Fiche d'affichage des états narratifs (images HD du Drive 4_Etats). */
 const ETAT_DISPLAY: Record<
   NarrativeEffect["id"],
@@ -368,7 +373,7 @@ function InventaireTab({
 
   const item = selected.type === "besace" ? besace.find((i) => i.id === selected.id) : undefined;
   const relic = selected.type === "relic" ? relics[selected.index] : undefined;
-  const detailImg = item ? BESACE_ICONS[item.kind] : relic ? "assets/objet_masque.png" : null;
+  const detailImg = item ? itemIcon(item) : relic ? "assets/objet_masque.png" : null;
   const detailName = item?.name ?? relic?.name ?? "—";
   const detailFlavor = item
     ? item.flavor
@@ -400,7 +405,7 @@ function InventaireTab({
       >
         {it ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img alt={it.name} src={BESACE_ICONS[it.kind]} className="block size-full" style={{ imageRendering: "pixelated" }} />
+          <img alt={it.name} src={itemIcon(it)} className="block size-full" style={{ imageRendering: "pixelated" }} />
         ) : (
           <span className="absolute inset-0 grid place-items-center font-mono text-[10px] uppercase tracking-[2px] text-[var(--color-ink)] opacity-45">
             VIDE

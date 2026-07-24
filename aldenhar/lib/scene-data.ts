@@ -60,6 +60,13 @@ export type Choice = {
    * qui se règle `settleInSteps` scènes plus loin dans la run.
    */
   debt?: { id: string; settleInSteps: number; text: string };
+  /**
+   * Objet réel des Landes accordé si ce choix RÉUSSIT (chantier 1 du 23/07) :
+   * id d'une entrée de `LANDES_OBJETS`. C'est la variante « choix d'examen » du
+   * loot de lieu (`Scene.loot`) — l'objet se gagne, il n'est pas ramassé
+   * d'office à l'arrivée. Une seule fois par run, si le slot a de la place.
+   */
+  grantsLoot?: string;
 };
 
 export type Scene = {
@@ -68,6 +75,13 @@ export type Scene = {
   narration: string[];
   /** Asset tramé de la scène (public/assets/…). Défaut : portail. Temps 2 : varier par contexte. */
   illustration?: string;
+  /**
+   * Objet RÉEL des Landes ancré à ce lieu (chantier 1 du 23/07) : id d'une entrée
+   * de `LANDES_OBJETS`. Ramassé une seule fois à l'arrivée, si le slot (actif ou
+   * passif) a de la place. Rend les objets réels, portables, placés — plus de
+   * simples soins génériques.
+   */
+  loot?: string;
   choices: Choice[];
   jailerLine: string;
   /**
@@ -203,6 +217,9 @@ export const SCENES: Scene[] = [
       {
         id: "fouiller-offrandes",
         label: "Fouiller les offrandes",
+        // L'objet vit dans le choix d'examen (23/07) : fouiller ET réussir
+        // rapporte les Offrandes — les prendre est un acte, pas un ramassage.
+        grantsLoot: "offrandes-borne",
         risky: {
           stat: "RUSE",
           threshold: 11,
@@ -354,6 +371,7 @@ export const SCENES: Scene[] = [
     // persistant (§17) relu à l'ouverture des runs suivantes.
     id: "colline-aux-gibets",
     illustration: "assets/scene_colline_aux_gibets_c.png",
+    loot: "echarde-gibet",
     narration: [
       "La colline monte seule au milieu de la lande, couronnée de gibets. " +
         "Tous occupés, tous immobiles — sauf un. Au centre, le plus grand " +
@@ -460,6 +478,7 @@ export const SCENES: Scene[] = [
   {
     id: "champ-des-fixes",
     illustration: "assets/scene_champ_des_fixes_c.png",
+    loot: "carnet-fossoyeur",
     narration: [
       "Derrière la colline, des rangées de poteaux à perte de vue, chacun " +
         "son pendu, chacun son écriteau. Un cimetière debout. On n'enterre " +
@@ -722,6 +741,7 @@ export const SCENES: Scene[] = [
   {
     id: "chapelle-des-cordes",
     illustration: "assets/scene_chapelle_des_cordes_d.png",
+    loot: "brin-chanvre",
     narration: [
       "La chapelle du hameau n'a ni croix ni autel. Aux murs, des cordes — " +
         "des dizaines, clouées en boucles soigneuses, chacune sous un nom " +
@@ -1074,6 +1094,7 @@ export const SCENES: Scene[] = [
     // Dernière scène de la rotation : la sortie de zone (La Descente) se
     // montre mais reste verrouillée — l'Acte II n'existe pas encore.
     id: "palissade-sud",
+    loot: "lanterne-veilleur",
     narration: [
       "Au bout des Landes, une palissade de troncs noircis barre l'horizon " +
         "d'est en ouest. Pas pour empêcher d'entrer : les étais sont de ce " +

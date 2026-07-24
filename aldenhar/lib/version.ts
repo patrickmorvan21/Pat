@@ -50,5 +50,10 @@
  *           image (borne-frontière, Bête des Chemins Creux, serment/Juge de
  *           Cendre) + 23 icônes d'objet des Landes déposées dans assets/
  *           (prêtes à câbler sur les objets de Besace).
+ *   1.8.0 — Lot 23/07 vague 1 (chantier n°1 : objets réels & usure) : objets
+ *           RÉELS des Landes obtenables (loot de lieu à l'arrivée + gain sur
+ *           choix d'examen réussi), icônes tramées propres partout ; soin
+ *           générique raréfié (22 % → 12 %) ; un échec dur hors combat coûte
+ *           un JOUR (visible) ; dernier tiers de la traversée durci d'un cran.
  */
-export const APP_VERSION = "1.7.1";
+export const APP_VERSION = "1.8.0";
