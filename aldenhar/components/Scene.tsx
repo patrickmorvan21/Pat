@@ -16,6 +16,7 @@ import {
   SOUPCON_PALIERS,
   tierIsFail,
   type Choice,
+  type LiaisonCtx,
   type Scene as SceneType,
 } from "@/lib/scene-data";
 import { loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
@@ -104,13 +105,33 @@ function shuffleChoices<T>(choices: T[], step: number): T[] {
 }
 
 /**
+ * Contexte d'une liaison (chantier 4 du 23/07) : provenance + état de la run.
+ * Reconstruit du même RunState à la reprise → même ambiance (déterminisme).
+ */
+function liaisonCtx(run: RunState, from: string | undefined): LiaisonCtx {
+  return {
+    from,
+    soupcon: run.soupcon ?? 0,
+    health: run.health,
+    chapterId: run.chapter?.id ?? null,
+    itemNames: (run.besace ?? []).map((i) => i.name),
+  };
+}
+
+/**
  * Écran courant déduit de l'état de traversée (spec 21/07) : la Descente
  * (terminal), une scène de liaison (reconstruite depuis ses 2 options), ou un
  * lieu/rencontre du pool. Pure : sert au rendu ET à la reprise de run.
  */
-function sceneFromTrav(t: TraversalState): SceneType {
+function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
   if (t.done) return DESCENTE_SCENE;
-  if (t.phase === "liaison" && t.liaisonOpts) return makeLiaison(t.liaisonOpts[0], t.liaisonOpts[1], t.seed);
+  if (t.phase === "liaison" && t.liaisonOpts)
+    return makeLiaison(
+      t.liaisonOpts[0],
+      t.liaisonOpts[1],
+      t.seed,
+      run ? liaisonCtx(run, t.visited[t.visited.length - 1]) : undefined
+    );
   return sceneById(t.current) ?? sceneById(ENTRY_SCENE)!;
 }
 
@@ -273,7 +294,7 @@ export default function Scene() {
       // Écran courant reconstruit à neuf depuis l'état de TRAVERSÉE (liaison,
       // lieu, ou Descente) — l'ancien fil complet n'est jamais réaffiché. La
       // conséquence transitoire du dernier choix est perdue (sans importance).
-      const cur = sceneFromTrav(run.trav);
+      const cur = sceneFromTrav(run.trav, run);
       setScene(cur);
       const illo = cur.illustration ?? PORTAL;
       lastSceneIlloRef.current = illo;
@@ -479,7 +500,8 @@ export default function Scene() {
       if (!trav.visited.includes("colline-aux-gibets") && !pair.includes("colline-aux-gibets")) {
         pair[(seed + 1) % 2] = "colline-aux-gibets";
       }
-      nextScene = makeLiaison(pair[0], pair[1], seed);
+      // Ambiance contextuelle (chantier 4) : provenance = le lieu qu'on quitte.
+      nextScene = makeLiaison(pair[0], pair[1], seed, liaisonCtx(runRef.current ?? loadRun(), scene.liaison ? undefined : scene.id));
       trav.phase = "liaison";
       trav.liaisonOpts = pair;
       trav.seed = seed;

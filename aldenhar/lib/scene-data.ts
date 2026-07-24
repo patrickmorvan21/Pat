@@ -1388,7 +1388,8 @@ const APPROACH: Record<string, string> = {
 /** Pool des destinations tirables (tout ce qui a une phrase d'orientation). */
 export const TRAVERSAL_POOL = Object.keys(APPROACH);
 
-/** Ambiances de marche (spec 21/07) : 1 beat court par liaison, tiré au hasard. */
+/** Ambiances de marche génériques (spec 21/07) — FALLBACK quand aucune liaison
+    contextuelle ne s'applique. Comptent dans le pool des ~30 (chantier 4). */
 const LIAISON_AMBIANCES: string[] = [
   "Tu marches. La lande ne finit pas — elle se répète, talus après talus, sous le même crépuscule qui ne tombe jamais.",
   "Le vent pousse une odeur de corde mouillée et de terre retournée. Quelque part, toujours, une potence grince.",
@@ -1396,6 +1397,204 @@ const LIAISON_AMBIANCES: string[] = [
   "Un long moment sans rien : juste tes pas, et la sensation d'être compté par quelque chose que tu ne vois pas.",
   "Le chemin se creuse, remonte, se divise. Ici, on ne va pas quelque part — on s'éloigne de la Borne.",
 ];
+
+/**
+ * Liaisons CONTEXTUELLES (chantier 4 du 23/07 — « le meilleur rapport
+ * écriture/effet du jeu ») : indexées par provenance × destination × état
+ * (santé, Soupçon, chapitre en cours, objets portés). Le texte le plus vu du
+ * jeu ne doit plus être le plus pauvre. Sélection : la variante la plus
+ * SPÉCIFIQUE éligible gagne (départage seedé) ; sans variante éligible, les
+ * ambiances génériques reprennent. Chaque texte reste court (2-4 phrases).
+ */
+export type LiaisonCtx = {
+  /** Lieu qu'on vient de quitter (id de scène). */
+  from?: string;
+  /** Les 2 destinations offertes par la liaison. */
+  toOptions?: [string, string];
+  soupcon?: number;
+  health?: number;
+  chapterId?: string | null;
+  /** Noms des objets portés (Besace) — le matching se fait par inclusion. */
+  itemNames?: string[];
+};
+
+type LiaisonVariant = {
+  text: string;
+  from?: string[];
+  /** S'applique si l'UNE des destinations offertes est dans la liste. */
+  to?: string[];
+  minSoupcon?: number;
+  maxSoupcon?: number;
+  maxHealth?: number;
+  chapter?: string;
+  /** Sous-chaîne d'un nom d'objet porté (ex. "Écharde"). */
+  carrying?: string;
+};
+
+const LIAISON_VARIANTS: LiaisonVariant[] = [
+  // ——— Provenance (10) ———
+  {
+    from: ["colline-aux-gibets"],
+    text: "Tu redescends de la colline avec les cordes dans le dos. Longtemps, leur grincement te suit — pas parce qu'il porte loin. Parce qu'il a trouvé ton rythme de marche.",
+  },
+  {
+    from: ["champ-des-fixes"],
+    text: "Les rangées de poteaux s'espacent, puis renoncent. Tu comptes tes pas pour ne pas compter les écriteaux. La lande reprend, vide — enfin, vide comme avant : surveillée.",
+  },
+  {
+    from: ["pendu-qui-parle"],
+    text: "Le grincement du Bailli s'éteint derrière le revers de la colline. Son jugement, lui, marche avec toi — tu l'entends peser chaque choix qui vient.",
+  },
+  {
+    from: ["campement"],
+    text: "Le moulin rapetisse derrière toi. Le sommeil t'a rendu des forces et pris autre chose — au réveil, la bruyère autour de ton lit était foulée en cercle.",
+  },
+  {
+    from: ["petit-tribunal"],
+    text: "Le froid du tribunal met du temps à sortir des os. Dehors, chaque visage croisé a l'air d'un banc : assis, patient, en train de juger.",
+  },
+  {
+    from: ["chapelle-des-cordes"],
+    text: "Les cordes clouées continuent de bouger dans ton dos, tu le sais sans te retourner. Une relique, ça garde le geste. La lande, elle, garde le tien.",
+  },
+  {
+    from: ["serment-hameau"],
+    text: "Les murets du hameau te lâchent un à un. Ce que tu as laissé — ou refusé de laisser — pèse exactement le poids annoncé. La Doyenne avait raison sur ce point.",
+  },
+  {
+    from: ["marche-muet"],
+    text: "Le silence du marché te colle aux semelles. Tu mets du temps à t'autoriser un bruit — et quand tu tousses enfin, la lande entière semble le noter.",
+  },
+  {
+    from: ["puits-condamne"],
+    text: "Trois coups, une pause. Le rythme du puits te suit bien après qu'il est devenu inaudible. Tu marches dessus, maintenant : trois pas, une pause. Tu t'arrêtes net. Tu reprends autrement.",
+  },
+  {
+    from: ["bete-chemins-creux", "meute-grise-2", "pendu-mal-fixe", "chien-du-bailli"],
+    text: "Tu laisses le combat derrière toi, mais pas tout : la lande a bu ce qui a coulé, et elle sait maintenant quel goût tu as. Tu marches plus léger, et moins tranquille.",
+  },
+  // ——— Soupçon (10) ———
+  {
+    minSoupcon: 1, maxSoupcon: 2,
+    text: "Un berger sans troupeau te croise au détour d'un talus. Il te salue — du menton, pas de la voix — et presse le pas une fois passé. Tu l'entends s'arrêter, plus loin, pour te regarder partir.",
+  },
+  {
+    minSoupcon: 1, maxSoupcon: 2,
+    text: "Deux silhouettes réparent un muret à distance. Leurs mains ne s'arrêtent pas quand tu passes. Leurs têtes, si.",
+  },
+  {
+    minSoupcon: 1, maxSoupcon: 3,
+    text: "Sur une pierre du chemin, une croix à la craie — vieille, à moitié lavée. Pas la tienne. Quelqu'un d'autre, avant toi, a entendu quelque chose. Tu ne sauras pas où il pend.",
+  },
+  {
+    minSoupcon: 2, maxSoupcon: 3,
+    text: "Le chemin longe une maison basse. Un volet se ferme — pas vite, pas peureusement. Posément. On ne se cache pas de toi : on te retire la maison, c'est différent.",
+  },
+  {
+    minSoupcon: 2, maxSoupcon: 4,
+    text: "Un mot t'arrive porté par le vent, un seul, distinct : ton nom. Personne à l'horizon. Le vent des Landes ment, tu le sais. Mais il ment avec ce qu'on lui donne.",
+  },
+  {
+    minSoupcon: 3, maxSoupcon: 4,
+    text: "Il y a des traces fraîches sur ton chemin — devant toi. Quelqu'un fait ta route avant toi, dans le même sens, à petite distance. Tu ne le rattrapes jamais.",
+  },
+  {
+    minSoupcon: 3, maxSoupcon: 4,
+    text: "Un enfant t'observe depuis un talus, immobile. Quand tu lèves la main, il ne fuit pas : il trace quelque chose dans la terre du bout d'un bâton, sans te quitter des yeux, puis s'en va sans courir.",
+  },
+  {
+    minSoupcon: 4, maxSoupcon: 5,
+    text: "On ne croise plus personne. C'est pire que d'être suivi : la lande s'est vidée sur ton passage, comme une rue avant une arrestation.",
+  },
+  {
+    minSoupcon: 4, maxSoupcon: 5,
+    text: "Au loin, une cloche muette sonne quand même — trois coups mats, du bois sur du bois. Tu comprends que ça compte tes passages. Quelqu'un, quelque part, tient le total.",
+  },
+  {
+    minSoupcon: 5, maxSoupcon: 5,
+    text: "Les trois hommes sont toujours là, à la limite du regard. Quand tu t'arrêtes, ils s'arrêtent. Quand tu repars, ils attendent un peu — par politesse, dirait-on. L'aube n'est pas pressée.",
+  },
+  // ——— Santé (3) ———
+  {
+    maxHealth: 0.5,
+    text: "Chaque montée coûte. Tu comptes tes forces comme une bourse trop plate — et la lande le voit, qui te tend ses talus comme on tend un bras à un vieillard. Tu refuses. Pour l'instant.",
+  },
+  {
+    maxHealth: 0.3,
+    text: "Tu t'arrêtes deux fois pour souffler. La deuxième, la bruyère où tu poses la main reste marquée de rouge. La lande te goûte déjà.",
+  },
+  {
+    maxHealth: 0.5,
+    text: "La blessure donne le rythme, plus toi. Tu marches au pas de ce qui fait mal — c'est une laisse comme une autre.",
+  },
+  // ——— Chapitre en cours (2) ———
+  {
+    chapter: "la-fille",
+    text: "Au détour d'un talus, tu crois voir une silhouette mince, tête nue, disparaître derrière un pli du terrain. Le temps d'y être : personne. Un lit d'herbe couchée, encore tiède.",
+  },
+  {
+    chapter: "le-gibet-vide",
+    text: "Où que le chemin tourne, la couronne de la colline reste en vue — et le grand gibet dépasse, patient. Tu commences à comprendre : ce n'est pas toi qui le regardes.",
+  },
+  // ——— Objets portés (2) ———
+  {
+    carrying: "Écharde",
+    text: "Dans ta besace, l'écharde du gibet est tiède — pas de ta chaleur. Elle tire doucement vers la colline, comme une aiguille vers son nord à elle.",
+  },
+  {
+    carrying: "Lanterne",
+    text: "La lanterne du Veilleur bat contre ta hanche. Sa flamme penche toujours du même côté, quel que soit le vent — tu as fini par vérifier : elle penche vers le sud. Vers la Descente.",
+  },
+  // ——— Destination offerte (3) ———
+  {
+    to: ["colline-aux-gibets"],
+    text: "D'un côté, la crête et ses mâts noirs qui grandissent au-dessus de la bruyère. Tu sens le chemin pencher vers eux — la colline aspire ses visiteurs, elle ne les invite pas.",
+  },
+  {
+    to: ["campement"],
+    text: "Quelque part devant, l'ombre d'un moulin sans ailes coupe le crépuscule. L'idée du sommeil pèse d'un coup — trop fort, trop vite, comme une offre qu'on te souffle.",
+  },
+  {
+    to: ["puits-condamne"],
+    text: "Un son porte jusqu'ici — des coups sourds, réguliers, patients. Trois, une pause. Le genre de son qu'on suit malgré soi, juste pour le faire taire.",
+  },
+];
+
+/** Spécificité d'une variante = nombre de conditions posées (départage). */
+function liaisonSpecificity(v: LiaisonVariant): number {
+  let n = 0;
+  if (v.from) n += 1;
+  if (v.to) n += 1;
+  if (v.minSoupcon !== undefined || v.maxSoupcon !== undefined) n += 1;
+  if (v.maxHealth !== undefined) n += 1;
+  if (v.chapter) n += 1;
+  if (v.carrying) n += 1;
+  return n;
+}
+
+/** Choisit l'ambiance d'une liaison : la plus spécifique éligible, seedée. */
+function pickLiaisonAmbiance(ctx: LiaisonCtx | undefined, seed: number): string {
+  if (ctx) {
+    const soup = ctx.soupcon ?? 0;
+    const health = ctx.health ?? 1;
+    const eligible = LIAISON_VARIANTS.filter(
+      (v) =>
+        (!v.from || (ctx.from !== undefined && v.from.includes(ctx.from))) &&
+        (!v.to || (ctx.toOptions !== undefined && v.to.some((t) => ctx.toOptions!.includes(t)))) &&
+        (v.minSoupcon === undefined || soup >= v.minSoupcon) &&
+        (v.maxSoupcon === undefined || soup <= v.maxSoupcon) &&
+        (v.maxHealth === undefined || health <= v.maxHealth) &&
+        (!v.chapter || ctx.chapterId === v.chapter) &&
+        (!v.carrying || (ctx.itemNames ?? []).some((n) => n.includes(v.carrying!)))
+    );
+    if (eligible.length > 0) {
+      const maxSpec = Math.max(...eligible.map(liaisonSpecificity));
+      const top = eligible.filter((v) => liaisonSpecificity(v) === maxSpec);
+      return top[Math.floor(seeded(seed + 3) * top.length)].text;
+    }
+  }
+  return LIAISON_AMBIANCES[Math.floor(seeded(seed) * LIAISON_AMBIANCES.length)];
+}
 
 const LIAISON_JAILER: string[] = [
   "Marche, marche. Toutes les routes des Landes finissent au même endroit. Je t'y attends.",
@@ -1415,9 +1614,11 @@ function seeded(n: number): number {
  * Construit une scène de liaison entre deux destinations (spec 21/07) : une
  * ambiance de marche + un choix d'orientation vers l'un ou l'autre lieu.
  * `seed` (pas de progression) garde l'ambiance stable si la run reprend.
+ * `ctx` (chantier 4 du 23/07) : provenance/état pour une ambiance CONTEXTUELLE
+ * — même ctx à la reprise (reconstruit du même RunState) = même texte.
  */
-export function makeLiaison(optA: string, optB: string, seed: number): Scene {
-  const amb = LIAISON_AMBIANCES[Math.floor(seeded(seed) * LIAISON_AMBIANCES.length)];
+export function makeLiaison(optA: string, optB: string, seed: number, ctx?: LiaisonCtx): Scene {
+  const amb = pickLiaisonAmbiance(ctx ? { ...ctx, toOptions: [optA, optB] } : undefined, seed);
   const jl = LIAISON_JAILER[Math.floor(seeded(seed + 7) * LIAISON_JAILER.length)];
   return {
     id: `liaison:${optA}>${optB}`,

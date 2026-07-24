@@ -71,5 +71,10 @@
  *           s'en souvient). Palier 6 = procès du héros — mort par fixation
  *           (première mort purement sociale) ou relaxe qui fait retomber le
  *           Soupçon. Le hameau se souvient des fixations par-delà les runs.
+ *   1.11.0 — Lot 23/07 vague 4 (chantier n°4) : LIAISONS CONTEXTUELLES — 30
+ *           ambiances de marche indexées provenance × destination × état
+ *           (santé, Soupçon, chapitre en cours, objets portés), la plus
+ *           spécifique éligible gagne, génériques en secours. Déterministe à
+ *           la reprise.
  */
-export const APP_VERSION = "1.10.0";
+export const APP_VERSION = "1.11.0";
