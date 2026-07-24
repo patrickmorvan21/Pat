@@ -94,7 +94,14 @@
  *           les fichiers manquent. Options : interrupteur Musique réel +
  *           volume à 8 crans. ⚠️ Les mp3 restent à déposer dans
  *           public/audio/ (voir README) — trop lourds pour le connecteur.
+ *   1.15.0 — Retours playtest 24/07 (immersion) : traversée ×3 (9-11 lieux
+ *           avant la Descente) ; VRAIES transitions — la marche a son visuel
+ *           (une des 4 vues génériques des Landes en liaison, plus le portail
+ *           figé) + phrase d'APPROCHE à l'arrivée (on voit le lieu se dresser
+ *           et on y marche) ; image qui S'ADAPTE au beat (le personnage qui
+ *           apparaît a son visuel sur l'écran-événement : Marcheur, Doyenne,
+ *           Colporteur, Écrivain, Mains du Puits).
  *   1.14.1 — Musique ACTIVE : les 4 mp3 de Patrick (PJ) intégrés dans
  *           public/audio/ — intro à l'accueil/prologue, boucles Landes en jeu.
  */
-export const APP_VERSION = "1.14.1";
+export const APP_VERSION = "1.15.0";

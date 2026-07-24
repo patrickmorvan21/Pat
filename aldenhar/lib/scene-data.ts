@@ -269,6 +269,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "chemin-creux",
+    illustration: "assets/monstre_marcheur_a_rebours_d.png",
     narration: [
       "Le chemin s'enfonce entre deux talus plus hauts que toi. On y marche " +
         "vu sans voir : la lande entière te regarde passer, et toi tu ne vois " +
@@ -770,7 +771,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "serment-hameau-2",
-    illustration: "assets/monstre_juge_de_cendre_c.png",
+    illustration: "assets/monstre_doyenne_b.png",
     narration: [
       "Sur le seuil du premier muret, une vieille femme barre le passage, " +
         "paumes ouvertes — pas en accueil. En douane.",
@@ -872,7 +873,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "marche-muet-2",
-    illustration: "assets/scene_marche_muet_c.png",
+    illustration: "assets/monstre_colporteur_b.png",
     narration: [
       "Au bout de la rangée, un étal différent : bric-à-brac d'ailleurs, " +
         "objets qui n'ont rien à faire dans une lande. Le Colporteur te " +
@@ -1113,7 +1114,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "puits-condamne-2",
-    illustration: "assets/scene_puits_condamne_c.png",
+    illustration: "assets/monstre_mains_du_puits_a.png",
     narration: [
       "À ton approche, le rythme change. Plus vite, plus fort — plus " +
         "personne de poli. Le cadenas saute sur son anneau à chaque série, " +
@@ -1333,7 +1334,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "petit-tribunal-2",
-    illustration: "assets/scene_petit_tribunal_a.png",
+    illustration: "assets/monstre_ecrivain_public_d.png",
     registre: true,
     narration: [
       "Sur la chaire, ouvert, le Registre des Pendaisons. Quelqu'un tourne " +
@@ -1505,6 +1506,7 @@ export const SCENES: Scene[] = [
     // Dernière scène de la rotation : la sortie de zone (La Descente) se
     // montre mais reste verrouillée — l'Acte II n'existe pas encore.
     id: "palissade-sud",
+    illustration: "assets/scene_lande_generique_4.png",
     loot: "lanterne-veilleur",
     chainNext: "palissade-sud-2",
     narration: [
@@ -2023,9 +2025,14 @@ function seeded(n: number): number {
 export function makeLiaison(optA: string, optB: string, seed: number, ctx?: LiaisonCtx): Scene {
   const amb = pickLiaisonAmbiance(ctx ? { ...ctx, toOptions: [optA, optB] } : undefined, seed);
   const jl = LIAISON_JAILER[Math.floor(seeded(seed + 7) * LIAISON_JAILER.length)];
+  // La marche a SON visuel (retour playtest 24/07 : « on passe d'une scène à
+  // l'autre sans marcher ») : une des 4 vues génériques des Landes, tirée par
+  // la graine (stable à la reprise). Fini le portail figé entre deux lieux.
+  const walkImg = LANDES_GENERIC[Math.floor(seeded(seed + 11) * LANDES_GENERIC.length)];
   return {
     id: `liaison:${optA}>${optB}`,
     liaison: true,
+    illustration: walkImg,
     narration: [amb, "Deux directions s'ouvrent. La lande attend que tu tranches."],
     jailerLine: jl,
     choices: [
@@ -2034,6 +2041,40 @@ export function makeLiaison(optA: string, optB: string, seed: number, ctx?: Liai
     ],
   };
 }
+
+/** Les 4 vues génériques des Landes (fournies par Patrick, 24/07) : utilisées
+    pour la MARCHE (liaisons) et comme secours quand un lieu n'a pas d'asset
+    propre. Donnent au visuel de quoi bouger scène après scène. */
+export const LANDES_GENERIC = [
+  "assets/scene_lande_generique_1.png",
+  "assets/scene_lande_generique_2.png",
+  "assets/scene_lande_generique_3.png",
+  "assets/scene_lande_generique_4.png",
+];
+
+/**
+ * Phrase d'APPROCHE d'un lieu (retour playtest 24/07 : « sans marcher et voir
+ * le hameau au loin ») : jouée à l'arrivée, AVANT la description du lieu. On
+ * voit la destination se dresser, on y marche — la transition est vécue, pas
+ * sautée. Jamais un danger frontal : juste l'approche sensorielle.
+ */
+export const APPROACH_NARRATION: Record<string, string> = {
+  "chemin-creux": "Le sol se creuse devant toi. Deux talus montent, se resserrent, et avalent le chemin entre eux. Tu descends dans le couloir de terre — vu de partout, ne voyant rien.",
+  "bete-chemins-creux": "L'air se charge d'une odeur qui n'appartient pas au chemin : suint, cuir, terre remuée. Quelque part devant, dans le creux, quelque chose t'a senti avant que tu le sentes.",
+  "colline-aux-gibets": "Loin sur la lande, une bosse noire monte seule au-dessus de la bruyère — hérissée de mâts. À mesure que tu approches, les mâts deviennent des potences, et les potences se peuplent.",
+  "pendu-qui-parle": "Au revers de la colline, un seul gibet, bas, à hauteur d'homme. Tu le prends d'abord pour un épouvantail. Puis l'épouvantail tourne lentement la tête vers toi.",
+  "champ-des-fixes": "L'horizon se hérisse de piquets réguliers, rangée après rangée, jusqu'à se perdre. Tu approches d'un champ qu'on n'a pas semé — on l'a planté d'hommes.",
+  "pendu-mal-fixe": "Un craquement rythme ta marche, régulier, mécanique — du bois qui travaille sous un poids. Devant, une corde trop lâche laisse glisser ce qu'elle devait tenir.",
+  "serment-hameau": "De la fumée basse, pas une flamme : des toits gris tassés derrière leurs murets. Le Hameau des Renonçants se découvre lentement, et déjà tu sens qu'on t'a vu venir de loin.",
+  "marche-muet": "Un bourdonnement de foule sans une seule voix te parvient — des dizaines de gens qui s'affairent en silence. Tu entres dans le marché muet du hameau.",
+  "campement": "À l'écart des toits, une masse trapue coupe le crépuscule : un moulin privé de ses ailes, debout par habitude. De la lumière n'en sort pas, mais quelque chose y veille.",
+  "chapelle-des-cordes": "Une bâtisse sans croix se dresse au bout d'une ruelle. En approchant, tu vois par la porte ouverte que les murs, à l'intérieur, remuent doucement — des cordes, des dizaines, sans un souffle d'air.",
+  "puits-condamne": "Un bruit sourd te guide entre les maisons : trois coups, une pause, trois coups. Tu débouches sur une margelle condamnée de planches neuves — la seule chose entretenue du hameau.",
+  "chien-du-bailli": "La plus haute maison du hameau grandit devant toi, aveugle : ses fenêtres sont murées de l'intérieur. Sur le seuil, une masse grise se lève sans un aboiement.",
+  "petit-tribunal": "Une bâtisse basse, une seule porte, et par elle un froid qui ne vient pas du dehors : le froid des endroits où l'on a beaucoup décidé. Tu entres au Petit Tribunal.",
+  "meute-grise-1": "La bruyère bouge sans vent, par plaques, autour de toi. Ce ne sont pas des ombres : ce sont des dos gris, bas sur pattes, qui resserrent un cercle patient.",
+  "palissade-sud": "Au bout des Landes, une ligne de troncs noircis barre tout l'horizon. Derrière, l'air se fait froid et vieux — il monte d'en bas. La Descente n'est plus loin.",
+};
 
 /**
  * Tire les 2 destinations offertes à une liaison : 2 lieux NON encore visités,

@@ -13,6 +13,7 @@ import {
   makeLiaison,
   pickLiaisonOptions,
   sceneById,
+  APPROACH_NARRATION,
   SOUPCON_PALIERS,
   tierIsFail,
   type Choice,
@@ -601,6 +602,12 @@ export default function Scene() {
       }
     }
     entries.push(...chapterBefore.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+    // Approche d'un lieu (retour playtest 24/07) : en arrivant par une
+    // orientation, on VOIT d'abord la destination se dresser et on y marche —
+    // la transition entre deux lieux est jouée, plus jamais sautée.
+    if (opts?.toDest && APPROACH_NARRATION[opts.toDest]) {
+      entries.push({ id: nextId(), kind: "narration", text: APPROACH_NARRATION[opts.toDest] });
+    }
     entries.push(...nextScene.narration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
     entries.push(...chapterAfter.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
     // Manifestation du Soupçon : le monde se ferme, palier par palier.

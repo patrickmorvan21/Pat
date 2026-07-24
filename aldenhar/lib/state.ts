@@ -144,7 +144,9 @@ function freshTraversal(current = ENTRY_SCENE): TraversalState {
     phase: "scene",
     current,
     visited: [current],
-    target: 3 + Math.floor(Math.random() * 2), // 3 ou 4 lieux
+    // Longueur de traversée ×3 (retour playtest 24/07 : « trop court avant
+    // l'Acte 2 »). 9 à 11 lieux avant la Descente (le pool en compte 15).
+    target: 9 + Math.floor(Math.random() * 3), // 9, 10 ou 11 lieux
     liaisonOpts: null,
     seed: 0,
     done: false,
