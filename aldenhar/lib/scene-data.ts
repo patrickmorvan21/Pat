@@ -190,6 +190,7 @@ export const SCENES: Scene[] = [
     // Scène 0 — l'entrée de zone. Le crépuscule éternel et le bruit écrit
     // (« quelque part, une corde grince ») se posent ici, une fois pour toutes.
     id: "borne-frontiere",
+    illustration: "assets/scene_transition_borne_sud_a.png",
     narration: [
       "La lande s'ouvre sous un crépuscule qui ne tombe pas. La lumière " +
         "reste prise entre chien et loup, comme un souffle retenu. Quelque " +
@@ -290,6 +291,7 @@ export const SCENES: Scene[] = [
     // Première rencontre volontairement précoce (3e scène) — anecdotique,
     // une seule scène (amende §6 : durée par poids narratif).
     id: "bete-chemins-creux",
+    illustration: "assets/monstre_bete_chemins_creux_a.png",
     combat: true,
     foe: "bete-chemins-creux",
     foeName: "La Bête des Chemins Creux",
@@ -567,6 +569,7 @@ export const SCENES: Scene[] = [
     // Les Renonçants EXIGENT, ils ne proposent pas. Tenu jusqu'à la sortie =
     // récompense ; rompu = le Geôlier s'en souvient (jurer faux = dette §17).
     id: "serment-hameau",
+    illustration: "assets/monstre_juge_de_cendre_c.png",
     narration: [
       "Des murets de pierre sèche, des toits bas, pas une flamme : le Hameau " +
         "des Renonçants. Sur le seuil du premier muret, une vieille femme " +

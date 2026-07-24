@@ -224,7 +224,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_transition_borne_sud_a.png",
       "portrait_requis": false
     },
     {
@@ -640,7 +640,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_bete_chemins_creux_a.png",
       "portrait_requis": true
     },
     {

@@ -46,5 +46,9 @@
  *           câblées sur leur vraie illustration (colline, champ, chapelle,
  *           puits, tribunal, marché, moulin/camp + rencontres pendus/chien/
  *           meute) — fini le placeholder portail sur ces scènes.
+ *   1.7.1 — Suite illustrations : 3 scènes de plus câblées sur leur vraie
+ *           image (borne-frontière, Bête des Chemins Creux, serment/Juge de
+ *           Cendre) + 23 icônes d'objet des Landes déposées dans assets/
+ *           (prêtes à câbler sur les objets de Besace).
  */
-export const APP_VERSION = "1.7.0";
+export const APP_VERSION = "1.7.1";
