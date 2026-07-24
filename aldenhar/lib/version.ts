@@ -55,5 +55,12 @@
  *           choix d'examen réussi), icônes tramées propres partout ; soin
  *           générique raréfié (22 % → 12 %) ; un échec dur hors combat coûte
  *           un JOUR (visible) ; dernier tiers de la traversée durci d'un cran.
+ *   1.9.0 — Lot 23/07 vague 2 (chantiers n°2 + n°6) : CHAPITRES GARANTIS — une
+ *           traversée = un chapitre du Bailli (Le Procès / Le Registre / La
+ *           Fille / Le Gibet Vide) en 3 beats à moments fixes (amorce à la 1re
+ *           liaison, développement dans un lieu garanti aux orientations,
+ *           résolution partielle avant la Descente), rotation par compte ; +
+ *           SIGNATURE GARANTIE — la Colline aux Gibets offerte à chaque
+ *           liaison tant que non visitée.
  */
-export const APP_VERSION = "1.8.0";
+export const APP_VERSION = "1.9.0";

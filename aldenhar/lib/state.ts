@@ -179,6 +179,13 @@ export type RunState = {
   prologue: PrologueState;
   /** Traversée de la zone (spec 21/07) : liaisons + choix d'orientation. */
   trav: TraversalState;
+  /**
+   * Chapitre garanti de la traversée (chantier 2 du 23/07) : id d'un chapitre
+   * de `LANDES_CHAPTERS` + stade (0 = pas amorcé, 1 = amorcé, 2 = développé,
+   * 3 = résolu). Tiré au début d'une run neuve (Scene, avec la mémoire du
+   * compte pour la rotation) ; null tant que rien n'est tiré.
+   */
+  chapter: { id: string; stage: 0 | 1 | 2 | 3 } | null;
 };
 
 const KEY = "aldenhar-run";
@@ -228,6 +235,7 @@ function fresh(): RunState {
       done: false,
     },
     trav: freshTraversal(),
+    chapter: null,
   };
 }
 
@@ -272,6 +280,9 @@ export function loadRun(): RunState {
               p.trav && typeof p.trav.current === "string" && Array.isArray(p.trav.visited)
                 ? p.trav
                 : freshTraversal(sceneAt(typeof p.step === "number" ? p.step : 0).id),
+            // Chapitre : null pour les runs d'avant le 24/07 — Scene en tire un
+            // à la volée (l'amorce jouera à la prochaine liaison).
+            chapter: p.chapter && typeof p.chapter.id === "string" ? p.chapter : null,
           };
         }
       }

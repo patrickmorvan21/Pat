@@ -18,6 +18,7 @@ import {
   type Scene as SceneType,
 } from "@/lib/scene-data";
 import { loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
+import { chapterById, drawChapter } from "@/lib/chapters-data";
 import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import {
   bloodDebtFor,
@@ -258,6 +259,14 @@ export default function Scene() {
     setDay(run.day);
     setHealth(run.health);
 
+    // Chapitre garanti (chantier 2 du 23/07) : chaque traversée en reçoit UN,
+    // tiré avec la rotation du compte (jamais deux fois le même tant qu'il en
+    // reste des neufs). Les runs d'avant en tirent un à la volée ici.
+    if (!run.chapter && !run.trav.done) {
+      const ch = drawChapter(loadMemory().chaptersSeen);
+      run.chapter = { id: ch.id, stage: 0 };
+    }
+
     const hasRun = run.step > 0 || (Array.isArray(run.feed) && run.feed.length > 0);
     if (hasRun) {
       // Écran courant reconstruit à neuf depuis l'état de TRAVERSÉE (liaison,
@@ -435,6 +444,22 @@ export default function Scene() {
     } else {
       const seed = (nextStep * 101 + trav.visited.length * 7) >>> 0;
       const pair = pickLiaisonOptions(trav.visited, seed);
+      // Chapitre garanti (chantier 2 du 23/07) : tant que le développement n'a
+      // pas été joué, son lieu figure TOUJOURS parmi les orientations offertes
+      // (slot choisi par la graine pour ne pas être toujours le même bouton).
+      const chapGuard = runRef.current?.chapter;
+      const chapDef = chapGuard && chapGuard.stage < 2 ? chapterById(chapGuard.id) : null;
+      if (chapDef && !trav.visited.includes(chapDef.lieuId) && !pair.includes(chapDef.lieuId)) {
+        pair[seed % 2] = chapDef.lieuId;
+      }
+      // Signature garantie (chantier 6 du 23/07) : la Colline aux Gibets est
+      // OFFERTE à chaque liaison tant qu'elle n'a pas été visitée — l'identité
+      // de la zone ne doit pas pouvoir être manquée par malchance de tirage.
+      // (Le joueur peut encore choisir l'autre direction : quasi-totalité, pas
+      // obligation.) Compatible avec la garantie de chapitre : slots opposés.
+      if (!trav.visited.includes("colline-aux-gibets") && !pair.includes("colline-aux-gibets")) {
+        pair[(seed + 1) % 2] = "colline-aux-gibets";
+      }
       nextScene = makeLiaison(pair[0], pair[1], seed);
       trav.phase = "liaison";
       trav.liaisonOpts = pair;
@@ -496,7 +521,29 @@ export default function Scene() {
         });
       }
     }
+    // ——— Chapitre garanti (chantier 2 du 23/07) : beats à moments FIXES ———
+    // amorce → première liaison ; développement → arrivée dans le lieu dédié ;
+    // résolution partielle → AVANT la narration de la Descente (sortie de zone).
+    const chapSt = runRef.current?.chapter;
+    const chap = chapSt && chapSt.stage < 3 ? chapterById(chapSt.id) : null;
+    let chapterAfter: string[] = [];
+    let chapterBefore: string[] = [];
+    let newChapterStage: 1 | 2 | 3 | null = null;
+    if (chap && chapSt) {
+      if (nextScene.terminal) {
+        chapterBefore = chap.resolution;
+        newChapterStage = 3;
+      } else if (nextScene.id === chap.lieuId && chapSt.stage < 2) {
+        chapterAfter = chap.developpement;
+        newChapterStage = 2;
+      } else if (nextScene.liaison && chapSt.stage === 0) {
+        chapterAfter = chap.amorce;
+        newChapterStage = 1;
+      }
+    }
+    entries.push(...chapterBefore.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
     entries.push(...nextScene.narration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+    entries.push(...chapterAfter.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
     // Objets RÉELS des Landes (chantier 1 du 23/07) : un lieu donne son objet
     // une seule fois, à l'arrivée, si le slot correspondant a de la place. Les
     // objets placés remplacent le soin générique — la Besace devient réelle,
@@ -585,7 +632,16 @@ export default function Scene() {
       }
       run.debts = (run.debts ?? []).filter((d) => d.settleAtStep > nextStep);
       if (scene.combat) run.encounters = (run.encounters ?? 0) + 1;
+      // Chapitre : le beat joué fait avancer le stade (0→1→2→3).
+      if (newChapterStage && run.chapter) run.chapter = { ...run.chapter, stage: newChapterStage };
     });
+    // Résolution jouée → le chapitre entre dans la rotation du compte (le
+    // prochain tirage évitera ceux déjà vécus tant qu'il en reste des neufs).
+    if (newChapterStage === 3 && chapSt) {
+      mutateMemory((m) => {
+        if (!m.chaptersSeen.includes(chapSt.id)) m.chaptersSeen = [...m.chaptersSeen, chapSt.id];
+      });
+    }
     // Rappel des états temporaires (retour Patrick 19/07) : après un jet de
     // dé, l'écran suivant s'ouvre sur les états encore actifs — un petit
     // libellé « état temporaire », le nom, jamais un chiffre.

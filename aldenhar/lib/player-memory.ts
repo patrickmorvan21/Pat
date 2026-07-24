@@ -67,6 +67,9 @@ export type PlayerMemory = {
   bloodDebts: BloodDebt[];
   /** Héros tombés du joueur, les plus récents en tête. */
   fallen: FallenHero[];
+  /** Chapitres garantis déjà vécus (chantier 2 du 23/07) — la rotation évite de
+      retomber sur un chapitre vu tant qu'il en reste des neufs. */
+  chaptersSeen: string[];
 };
 
 const KEY = "aldenhar-player";
@@ -82,6 +85,7 @@ function fresh(): PlayerMemory {
     envFlags: {},
     bloodDebts: [],
     fallen: [],
+    chaptersSeen: [],
   };
 }
 
@@ -101,6 +105,7 @@ export function loadMemory(): PlayerMemory {
           envFlags: p.envFlags && typeof p.envFlags === "object" ? p.envFlags : {},
           bloodDebts: Array.isArray(p.bloodDebts) ? p.bloodDebts : [],
           fallen: Array.isArray(p.fallen) ? p.fallen : [],
+          chaptersSeen: Array.isArray(p.chaptersSeen) ? p.chaptersSeen : [],
         };
       }
     } catch {
