@@ -199,6 +199,17 @@ export type RunState = {
   /** Points d'intérêt déjà examinés dans le LIEU COURANT (spec 24/07 suite) —
       vidé en quittant le lieu. Un point exploré ne se re-propose pas. */
   poiSeen: string[];
+  /**
+   * Le Hameau (spec 24/07 suite §3) : on ne le « visite » pas, on y fait
+   * HALTE. Deux séquences garanties hors tirage encadrent la traversée —
+   * l'Entrée (première arrivée) et la Halte (nuit, avant la sortie de zone).
+   * `serment` conditionne la Halte : juré → la grange ; refusé → nuit dehors.
+   */
+  hameau: {
+    entree: boolean;
+    serment: "jure" | "faux" | "refuse" | null;
+    halte: boolean;
+  };
 };
 
 const KEY = "aldenhar-run";
@@ -252,6 +263,7 @@ function fresh(): RunState {
     soupcon: 0,
     soupconSeen: 0,
     poiSeen: [],
+    hameau: { entree: false, serment: null, halte: false },
   };
 }
 
@@ -302,6 +314,9 @@ export function loadRun(): RunState {
             soupcon: typeof p.soupcon === "number" ? p.soupcon : 0,
             soupconSeen: typeof p.soupconSeen === "number" ? p.soupconSeen : 0,
             poiSeen: Array.isArray(p.poiSeen) ? p.poiSeen : [],
+            hameau: p.hameau && typeof p.hameau.entree === "boolean"
+              ? p.hameau
+              : { entree: false, serment: null, halte: false },
           };
         }
       }

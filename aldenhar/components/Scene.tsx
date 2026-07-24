@@ -525,15 +525,33 @@ export default function Scene() {
       trav.current = opts.toDest;
       trav.liaisonOpts = null;
       if (!trav.visited.includes(opts.toDest)) trav.visited = [...trav.visited, opts.toDest];
+    } else if (scene.hameauHalte) {
+      // La nuit est passée : la traversée reprend vers la sortie de zone.
+      nextScene = DESCENTE_SCENE;
+      trav.done = true;
+      trav.phase = "scene";
+      trav.current = DESCENTE_SCENE.id;
     } else if (scene.chainNext) {
       nextScene = sceneById(scene.chainNext) ?? DESCENTE_SCENE;
       trav.phase = "scene";
       trav.current = nextScene.id;
     } else if (trav.visited.length >= trav.target) {
-      nextScene = DESCENTE_SCENE;
-      trav.done = true;
-      trav.phase = "scene";
-      trav.current = DESCENTE_SCENE.id;
+      // ——— LA HALTE (spec 24/07 suite §3) : on ne quitte pas les Landes sans
+      // avoir passé la nuit au Hameau. Séquence garantie hors tirage, jouée
+      // juste avant la sortie de zone — à condition d'être entré au Hameau.
+      // Serment juré (ou prêté du bout des lèvres) → la grange ; refusé →
+      // « nuit dehors » : aucune porte ne s'ouvre à qui n'a pas juré.
+      const ham = runRef.current?.hameau;
+      if (ham?.entree && !ham.halte) {
+        nextScene = sceneById(ham.serment === "refuse" ? "hameau-halte-dehors" : "hameau-halte-1")!;
+        trav.phase = "scene";
+        trav.current = nextScene.id; // hors `visited` : ce n'est pas un lieu du pool
+      } else {
+        nextScene = DESCENTE_SCENE;
+        trav.done = true;
+        trav.phase = "scene";
+        trav.current = DESCENTE_SCENE.id;
+      }
     } else {
       const seed = (nextStep * 101 + trav.visited.length * 7) >>> 0;
       const pair = pickLiaisonOptions(trav.visited, seed);
@@ -741,6 +759,10 @@ export default function Scene() {
       run.lastChoiceId = null;
       run.poiSeen = [];
       run.trav = trav;
+      // Séquences garanties du Hameau (spec 24/07 suite §3) : une fois jouées,
+      // elles ne se rejouent pas dans la traversée.
+      if (scene.hameauEntree) run.hameau = { ...run.hameau, entree: true };
+      if (scene.hameauHalte) run.hameau = { ...run.hameau, halte: true };
       // Les états ne vieillissent qu'en quittant un LIEU complet — ni une
       // liaison, ni un écran intermédiaire d'une séquence (chantier 5 : un
       // lieu = plusieurs beats, mais il ne compte QU'UNE fois pour l'usure
@@ -853,6 +875,15 @@ export default function Scene() {
         showScreen(entries, { src: lastSceneIlloRef.current, kind: "scene" });
         return;
       }
+    }
+
+    // Le Serment des Renonçants (spec 24/07 suite §3) : engage la traversée —
+    // il conditionne la Halte (grange vs nuit dehors) et la sortie de zone.
+    if (choice.serment) {
+      const s = choice.serment;
+      persist((run) => {
+        run.hameau = { ...run.hameau, serment: s };
+      });
     }
 
     // Le Soupçon (chantier 3) : l'ACTE compte, pas son issue — le delta d'un

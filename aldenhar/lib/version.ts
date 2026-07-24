@@ -101,6 +101,16 @@
  *           lieu) → événement → sortie. On ne se téléporte jamais sur un point.
  *           Les 4 lieux garantis (Colline, Tribunal, Chapelle, Champ) réécrits
  *           d'après les scripts Notion, 3 points chacun.
+ *   1.17.0 — Lot 24/07 suite vague 2 — LE HAMEAU, halte scriptée HORS TIRAGE :
+ *           on ne « visite » pas le Hameau des Renonçants, on y fait halte.
+ *           Deux séquences garanties encadrent la traversée. ENTRÉE en 5 beats
+ *           (approche au loin → seuil et croix à la craie → barrage des trois
+ *           hommes → le Serment imposé, jamais proposé → entrée). HALTE en
+ *           5 beats à la fin de la traversée (le vieux te trouve → la grange et
+ *           sa barre posée DEHORS → la nuit → l'aube → l'escorte au portillon),
+ *           ou beat unique « nuit dehors » si le Serment a été refusé : aucune
+ *           porte ne s'ouvre à qui n'a pas juré. Le Serment est mémorisé
+ *           (juré / du bout des lèvres / refusé) et pèse sur la sortie de zone.
  *   1.15.1 — Retours playtest 24/07 (2e vague) : écran du Nom refait FIDÈLE à
  *           la maquette Figma 2167:203 (champ bordé « Ton Nom » mono aligné à
  *           gauche + bouton plein SCELLER LE PACTE + lien centré souligné, plus
@@ -118,4 +128,4 @@
  *   1.14.1 — Musique ACTIVE : les 4 mp3 de Patrick (PJ) intégrés dans
  *           public/audio/ — intro à l'accueil/prologue, boucles Landes en jeu.
  */
-export const APP_VERSION = "1.16.0";
+export const APP_VERSION = "1.17.0";

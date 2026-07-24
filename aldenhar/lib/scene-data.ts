@@ -82,6 +82,12 @@ export type Choice = {
    * Généré automatiquement à partir de `Scene.pointsInteret`, pas écrit à la main.
    */
   poi?: string;
+  /**
+   * Le Serment des Renonçants (spec 24/07 suite §3) : ce choix engage — ou
+   * non — le héros pour toute la traversée. Conditionne la Halte (grange vs
+   * nuit dehors) et la récompense de sortie.
+   */
+  serment?: "jure" | "faux" | "refuse";
 };
 
 /**
@@ -147,6 +153,12 @@ export type Scene = {
    * points d'intérêt (marche + examen) → événement → sortie.
    */
   pointsInteret?: PointInteret[];
+  /** Dernier beat de l'Entrée du Hameau : marque la séquence comme jouée
+      (spec 24/07 suite §3) — la Halte deviendra due avant la sortie de zone. */
+  hameauEntree?: boolean;
+  /** Dernier beat de la Halte : marque la nuit comme passée — la traversée
+      repart vers la Palissade / la Descente. */
+  hameauHalte?: boolean;
   choices: Choice[];
   jailerLine: string;
   /**
@@ -829,82 +841,200 @@ export const SCENES: Scene[] = [
     jailerLine: "Une Fixation ratée. Ça arrive. Mes contrats à moi ne ratent jamais — demande au Bailli.",
   },
   {
-    // Entrée du Hameau — la particularité de zone (le Serment) se joue ici.
-    // Les Renonçants EXIGENT, ils ne proposent pas. Tenu jusqu'à la sortie =
-    // récompense ; rompu = le Geôlier s'en souvient (jurer faux = dette §17).
+    /* ═══ L'ENTRÉE DU HAMEAU — séquence garantie HORS TIRAGE (spec 24/07
+       suite §3 + script Notion « étalon d'émotion »). On ne « visite » pas le
+       Hameau : on y fait halte. 5 beats scriptés, joués à la première arrivée
+       de chaque traversée. Émotion cible : ce ne sont pas eux qui te font
+       peur — c'est TOI qui leur fais peur.
+       ⚠️ Images : `hameau_approche` / `hameau_ruelle` sont au lot Leonardo à
+       venir — on retombe en attendant sur l'ambiance générique de zone et les
+       portraits existants (fallback prévu par la spec §4). */
     id: "serment-hameau",
-    illustration: "assets/monstre_juge_de_cendre_c.png",
-    chainNext: "serment-hameau-2",
+    illustration: "assets/scene_lande_generique_2.png",
+    chainNext: "hameau-entree-2",
     narration: [
-      "Des murets de pierre sèche, des toits bas, pas une flamme : le Hameau " +
-        "des Renonçants. Sur le premier muret, des objets sont posés en " +
-        "rang — un couteau, une mèche de cheveux, une chaussure d'enfant, " +
-        "une langue de cuir clouée. Des choses laissées. Pas oubliées : " +
-        "laissées.",
+      "Les toits apparaissent au creux du plateau — de l'ardoise affaissée, " +
+        "des murs qui tiennent par habitude. Une seule cheminée fume, sur une " +
+        "vingtaine.",
+      "Tu es encore loin quand tu comprends ce qui cloche : aucun chien " +
+        "n'aboie.",
     ],
     choices: [
       {
-        id: "detailler-muret",
-        label: "Détailler les objets du muret",
-        passive: {
-          consequence:
-            "Chaque objet porte une usure de main — on les touche encore, en " +
-            "passant, comme on salue. Le plus récent est un anneau de " +
-            "mariage, posé à part, verni de chagrin. Renoncer, ici, n'est " +
-            "pas un rite ancien : ça continue.",
-        },
-      },
-      {
-        id: "observer-fenetres",
-        label: "Observer les fenêtres",
+        id: "observer-couvert",
+        label: "Observer d'abord, à couvert",
         risky: {
           stat: "INSTINCT",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Aucune lumière — mais des respirations. Tu comptes les fenêtres habitées à la buée qu'elles retiennent : onze. Et une, tout au bout, condamnée de l'intérieur. Tu sais déjà quelle maison éviter de nommer.",
-            "Pas un mouvement — c'est bien le problème. Des fenêtres vides bougent toujours un peu. Celles-ci tiennent la pose. Le hameau entier te regarde arriver en retenant son souffle.",
-            "Tu fixes une fenêtre trop longtemps. Un volet se ferme — puis tous les autres, de proche en proche, dans un claquement de dominos. Ton arrivée vient d'être annoncée mieux qu'avec une cloche.",
-            "1 naturel. Derrière la vitre la plus proche, un visage — au moment où tu le vois, il recule dans le noir. Pas par peur. Pour aller le dire. ♦ −2"
+            "20 naturel. Tu te couches dans la bruyère et tu attends. Un quart d'heure, et le hameau se trahit : des silhouettes postées aux fenêtres, une par maison habitée, immobiles. Ils guettent la crête. Tu les as vus avant qu'ils te voient — et ça, ça vaut plus qu'une arme ici.",
+            "À couvert derrière un muret, tu prends la mesure du village : onze maisons vivantes sur vingt, et pas un mouvement dehors. Ce n'est pas un hameau qui dort. C'est un hameau qui attend.",
+            "Tu restes trop longtemps immobile face au village. Quand tu te redresses enfin, une silhouette se détache d'une porte, en bas, et rentre vite. Quelqu'un t'a vu observer — et observer, ici, n'est pas une chose innocente.",
+            "1 naturel. Tu observes, à plat ventre, concentré. Derrière toi, une voix polie : « On peut vous aider ? » Ils sont deux. Ils sont montés pendant que tu regardais en bas. ♦ −2"
           ),
         },
+        soupcon: 1,
       },
-      { id: "franchir-seuil", label: "Marcher vers le seuil" },
+      { id: "descendre-hameau", label: "Descendre vers le hameau" },
     ],
     jailerLine: "Un village entier qui s'ampute à petit feu. Et c'est MOI qu'on appelle le monstre.",
   },
   {
-    id: "serment-hameau-2",
-    illustration: "assets/monstre_doyenne_b.png",
+    /* Beat 2 — Le seuil. La croix à la craie est un POINT D'INTÉRÊT : voir de
+       loin → marcher → toucher (spec §1). */
+    id: "hameau-entree-2",
+    illustration: "assets/scene_lande_generique_1.png",
+    chainNext: "hameau-entree-3",
     narration: [
-      "Sur le seuil du premier muret, une vieille femme barre le passage, " +
-        "paumes ouvertes — pas en accueil. En douane.",
-      "« Ici, on renonce », dit la Doyenne. « Chacun laisse une chose au " +
-        "muret : son nom, sa hâte, sa lame ou sa langue. Jure d'en laisser " +
-        "une, et tiens parole jusqu'à la sortie des Landes. » Derrière elle, " +
-        "le hameau entier attend, aux fenêtres sans lumière. Ce n'est pas " +
-        "une proposition.",
+      "La première maison est à dix pas. Sur sa porte, un signe à la craie — " +
+        "une croix, simple, tracée à hauteur d'œil.",
+      "La poudre blanche est encore sur le seuil. Ça date de ce matin.",
+    ],
+    pointsInteret: [
+      {
+        id: "croix-craie",
+        label: "S'approcher de la croix",
+        zoom: 2.6,
+        focus: "45% 45%",
+        approche:
+          "Dix pas dans une rue qui ne fait aucun bruit. Tu marches au milieu, " +
+          "d'instinct — le plus loin possible des deux rangées de portes.",
+        examen:
+          "De près, on voit que le bois est usé à cet endroit précis. Des " +
+          "croix, il y en a eu d'autres, ici. Effacées, retracées. Celle-ci " +
+          "n'est que la dernière.",
+      },
+    ],
+    choices: [
+      {
+        id: "frapper-porte-marquee",
+        label: "Frapper à la porte marquée",
+        soupcon: 1, // on a vu l'étranger s'intéresser aux marqués
+        passive: {
+          consequence:
+            "Tu frappes trois coups. Personne n'ouvre. Mais derrière le bois, " +
+            "à quelques centimètres de ta main, quelqu'un retient son souffle " +
+            "— et tu l'entends le retenir. Tu recules. Dans ton dos, une " +
+            "autre porte se ferme, qui était entrouverte.",
+        },
+      },
+      { id: "continuer-rue", label: "Continuer dans la rue" },
+    ],
+    jailerLine: "Une croix à la craie. Ils marquent leurs condamnés à l'avance — c'est mon métier, ça. Amateurs.",
+  },
+  {
+    /* Beat 3 — Le barrage. Trois Renonçants : leur PEUR, jamais leur menace. */
+    id: "hameau-entree-3",
+    illustration: "assets/monstre_juge_de_cendre_c.png",
+    chainNext: "hameau-entree-4",
+    narration: [
+      "Ils sont trois à t'attendre au milieu de la rue. Pas armés — un bâton " +
+        "de marche, une fourche posée contre un mur, à portée sans être brandie.",
+      "Celui du centre est vieux, sec comme un piquet. C'est lui qui parle, et " +
+        "sa voix ne tremble pas. Ses mains, si.",
+      "— « On ne te chasse pas. » Il le dit d'abord, comme une formule " +
+        "apprise. « Personne n'est chassé, ici. Mais tu descends. Ça se voit à " +
+        "ton pas. Et ceux qui descendent... » Il ne finit pas. Derrière lui, " +
+        "une femme tire un enfant à l'intérieur, sans un mot.",
+    ],
+    choices: [
+      {
+        id: "demander-crainte",
+        label: "Demander ce qu'ils craignent",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu poses la question sans défi, comme on demande le chemin. Le vieux baisse la voix, et tout le barrage se penche avec lui : « Il y a ceux qui écoutent le vent. Et il y a ceux que le vent écoute. » Il te regarde droit. « On sait pas encore lequel tu es. Nous non plus, on veut pas le savoir. »",
+            "Le vieux mâche sa réponse longtemps. « Ce qu'on craint ? » Il montre le sud du menton — pas de la main, jamais de la main. « Ce qui appelle. Et ceux qui répondent. » C'est tout ce qu'il donnera aujourd'hui.",
+            "« Ça ne se demande pas. » Le vieux se ferme d'un coup, et les deux autres avancent d'un demi-pas. Ta question, dans leur grammaire, est déjà un aveu : seuls ceux qui entendent s'intéressent à ce qu'on entend.",
+            "1 naturel. Tu demandes ce qu'ils craignent. Le silence qui suit dure trop. Puis, très bas, le vieux : « Toi. » Il n'a pas l'air content de sa propre réponse. ♦ −2"
+          ),
+        },
+        soupcon: 1,
+      },
+      {
+        id: "passer-sans-arret",
+        label: "Passer sans t'arrêter",
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu marches droit sur eux sans changer d'allure. À trois pas, ils s'écartent — pas par peur : par une politesse ancienne qu'ils n'ont pas eu le temps de décider. Le vieux te suit des yeux, et tu sais que le Serment t'attend quand même. Mais tu es passé debout.",
+            "Tu ne ralentis pas. Ils s'écartent, à contrecœur, en se serrant. « On te reverra au muret », dit le vieux dans ton dos. Le Serment n'est pas évité. Il est ajourné.",
+            "Tu avances — et la fourche change de main. Pas levée : tenue. Le message est clair, et tu t'arrêtes de toi-même. Passer en force ne marche pas chez des gens qui ont déjà décidé d'avoir peur.",
+            "1 naturel. Tu passes sans t'arrêter. Le vieux te laisse faire, et lance à la cantonade, calmement : « Notez l'heure. » Quelqu'un, quelque part, note l'heure. ♦ −2"
+          ),
+        },
+        soupcon: 1,
+      },
+      {
+        id: "ne-fais-que-passer",
+        label: "« Je ne fais que passer. »",
+        passive: {
+          consequence:
+            "« C'est ce qu'ils disent tous », répond le vieux, sans " +
+            "agressivité aucune. « Et certains restent. » Il te regarde " +
+            "enfin dans les yeux, et ce que tu y vois n'est pas de la " +
+            "méfiance : c'est de la fatigue. « C'est ça qui nous inquiète. »",
+        },
+      },
+    ],
+    jailerLine: "Regarde-les. Trois hommes qui tremblent devant un mort. Ils ont raison, remarque.",
+  },
+  {
+    /* Beat 4 — Le Serment. Mécanique de zone : IMPOSÉ, jamais proposé.
+       « Pourquoi trois aubes » est un point d'intérêt : on peut le demander,
+       puis revenir au choix (spec §1 : le POI ne consomme pas le tour). */
+    id: "hameau-entree-4",
+    illustration: "assets/monstre_doyenne_b.png",
+    chainNext: "hameau-entree-5",
+    narration: [
+      "Le vieux tend la main, paume ouverte. Pas pour serrer la tienne — pour " +
+        "que tu la regardes. Elle est vide. C'est le geste d'ici : on jure sur " +
+        "rien, parce qu'il ne reste rien.",
+      "— « Trois choses, et tu dors sous un toit. Tu ne parles pas aux " +
+        "pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et tu pars " +
+        "avant la troisième aube. »",
+    ],
+    pointsInteret: [
+      {
+        id: "pourquoi-trois-aubes",
+        label: "Demander pourquoi trois aubes",
+        zoom: 2.3,
+        focus: "50% 40%",
+        approche:
+          "Tu ne réponds pas tout de suite. Tu poses la question, et le " +
+          "barrage entier attend sa réponse avec toi — comme si personne " +
+          "n'avait jamais osé la poser.",
+        examen:
+          "— « Parce qu'à la quatrième, on commence à s'habituer à toi. » Le " +
+          "vieux hausse une épaule, presque désolé. « Et on ne peut pas se " +
+          "permettre de s'habituer. »",
+      },
     ],
     choices: [
       {
         id: "jurer-serment",
-        label: "Jurer : laisser sa hâte",
-        soupcon: -1, // tenir le rang des Renonçants apaise le hameau
+        serment: "jure",
+        label: "Jurer",
+        soupcon: -1,
         passive: {
           consequence:
-            "Tu poses les mains sur la pierre sèche et tu jures : ta hâte " +
-            "reste au muret. Le mot pèse tout de suite — tes pas se font " +
-            "plus lents, plus sûrs, comme si la lande cessait de te courir " +
-            "après. La Doyenne s'écarte. « Tenu jusqu'à la sortie », " +
-            "rappelle-t-elle. Le hameau entier a entendu. Et plus haut que " +
-            "le hameau, quelqu'un d'autre.",
+            "Tu poses ta main au-dessus de la sienne, sans la toucher — c'est " +
+            "ainsi qu'on fait, tu l'as compris à leurs regards. Tu jures les " +
+            "trois choses. Le vieux hoche la tête une fois, et tout le " +
+            "barrage se dénoue d'un coup, comme une corde qu'on lâche. " +
+            "« Tenu jusqu'à la sortie », rappelle-t-il. Le hameau entier a " +
+            "entendu. Et plus haut que le hameau, quelqu'un d'autre.",
         },
       },
       {
         id: "jurer-faux",
+        serment: "faux",
         label: "Jurer du bout des lèvres",
-        soupcon: 1, // un serment creux, dans les Landes, ça s'entend
-        // Jurer sans intention de tenir : gratuit à l'entrée — mais un
-        // serment creux, dans les Landes, ça s'entend (prix différé §17).
+        soupcon: 1,
+        // Prix différé (§17) : un serment creux, dans les Landes, ça s'entend.
         debt: {
           id: "serment-creux",
           settleInSteps: 4,
@@ -912,27 +1042,248 @@ export const SCENES: Scene[] = [
             "Le serment que tu as prêté du bout des lèvres au muret des " +
             "Renonçants se rappelle à toi : ta bouche, d'un coup, refuse un " +
             "mot — un seul, celui dont tu avais justement besoin. Les " +
-            "serments creux se paient en paroles pleines. Quelque part, la " +
-            "Doyenne hoche la tête sans surprise.",
+            "serments creux se paient en paroles pleines. Quelque part, le " +
+            "vieux hoche la tête sans surprise.",
+        },
+        passive: {
+          consequence:
+            "Tu jures. Les mots sortent dans le bon ordre, à la bonne " +
+            "vitesse, et ne pèsent rien. Le vieux les accepte — il n'a pas " +
+            "le choix, c'est la règle. Mais il te regarde une seconde de " +
+            "trop, et tu comprends qu'il a entendu le vide dedans.",
         },
       },
       {
         id: "refuser-serment",
-        label: "Refuser et longer",
-        soupcon: 1, // refuser le Serment, c'est se faire remarquer
-        risky: {
-          stat: "COURAGE",
-          threshold: 13,
-          outcomes: outcomes(
-            "20 naturel. Tu refuses, à voix haute et claire. Un silence — puis la Doyenne incline la tête, presque un sourire : « Enfin un qui ne ment pas. » Le refus franc, ici, vaut tous les serments. On te laisse le tour du hameau, et le respect avec.",
-            "Tu contournes par l'extérieur des murets, sous tous les regards sans lumière. Personne ne t'arrête : on ne force pas, ici, on retient. Tu passes — mais aucune porte du hameau ne s'ouvrira pour toi.",
-            "À mi-tour, les murets se resserrent — tu jurerais qu'ils n'étaient pas si hauts. Tu finis par enjamber, sous les yeux de la Doyenne qui n'a pas bougé. « Il reviendra jurer », dit-elle à personne. Le pire, c'est qu'elle a l'air sûre.",
-            "1 naturel. Tu refuses de renoncer à quoi que ce soit. La lande, elle, ne t'a pas demandé ton avis : au premier faux pas, elle te prend ce que tu refusais de donner. ♦ −2"
-          ),
+        serment: "refuse",
+        label: "Refuser de jurer",
+        soupcon: 2,
+        passive: {
+          consequence:
+            "Tu refuses. Personne ne crie. Le vieux referme lentement sa " +
+            "paume vide, et c'est tout. « Personne n'est chassé », répète-t-il " +
+            "— et cette fois tu entends ce que ça veut dire vraiment : on ne " +
+            "te chassera pas, on te laissera dehors. Aucune porte ne " +
+            "s'ouvrira. Aucun toit. Et le hameau te regardera vivre.",
         },
       },
     ],
-    jailerLine: "Les Renonçants me régalent : des gens qui se punissent tout seuls. Je n'ai presque rien à faire.",
+    jailerLine: "« Tu ne parles pas aux pendus. » Ils te disent ça à TOI. Je ris encore.",
+  },
+  {
+    /* Beat 5 — L'entrée. Résolution, pas de choix : on passe. */
+    id: "hameau-entree-5",
+    hameauEntree: true,
+    illustration: "assets/scene_lande_generique_1.png",
+    narration: [
+      "Ils s'écartent. Pas beaucoup — juste assez pour que tu passes sans " +
+        "toucher personne, et tu comprends que c'est calculé.",
+      "La rue s'ouvre devant toi. Des volets se ferment à mesure, un par un, " +
+        "un peu en avance sur ton pas. Quelque part, une corde grince.",
+      "Tu es entré. Personne ne t'a souhaité la bienvenue, et pourtant tous " +
+        "savaient déjà que tu venais.",
+    ],
+    choices: [{ id: "entrer-hameau", label: "Entrer dans le hameau" }],
+    jailerLine: "Bienvenue. C'est moi qui te le dis, puisque personne d'autre ne le fera.",
+  },
+  {
+    /* ═══ LA HALTE — séquence garantie HORS TIRAGE (spec 24/07 suite §3 +
+       script Notion). Jouée quand le joueur se dirige vers la sortie de zone
+       après l'Entrée. Serment juré → la grange ; Serment refusé → beat 6
+       « nuit dehors ». Émotion de sortie : soulagé ET coupable à la fois. */
+    id: "hameau-halte-1",
+    illustration: "assets/scene_lande_generique_1.png",
+    chainNext: "hameau-halte-2",
+    narration: [
+      "Le vieux te trouve avant que tu ne le cherches. C'est comme ça, ici : " +
+        "on sait toujours où tu es.",
+      "— « Tu pars demain. » Ce n'est pas une question. « Personne ne marche " +
+        "vers le sud de nuit. Même toi. »",
+      "Il ne t'invite pas chez lui. Personne n'invite personne. Il te mène à " +
+        "la grange, au bout de la rue — la seule porte du hameau qui n'a pas " +
+        "de marque à la craie. Pas encore.",
+    ],
+    choices: [
+      {
+        id: "demander-ailleurs",
+        label: "Demander à dormir ailleurs",
+        passive: {
+          consequence:
+            "— « La grange, ou les Landes. » Le vieux ne discute même pas. " +
+            "« Les Landes, la nuit, c'est non. » Il attend, la main tendue " +
+            "vers le bout de la rue, jusqu'à ce que tu avances.",
+        },
+      },
+      { id: "suivre-vieux", label: "Le suivre" },
+    ],
+    jailerLine: "Ils t'offrent un toit. Regarde bien de quel côté est la porte, ensuite.",
+  },
+  {
+    /* Beat 2 — La grange. La barre qu'on pose DEHORS. */
+    id: "hameau-halte-2",
+    illustration: "assets/scene_moulin_sans_ailes_c.png",
+    chainNext: "hameau-halte-3",
+    narration: [
+      "De la paille propre, une couverture qui a servi, une lampe qu'on te " +
+        "laisse — la mèche est courte, calculée pour s'éteindre seule.",
+      "— « On te rouvre à l'aube. » Le vieux pose la main sur la porte. " +
+        "« C'est pas contre toi. »",
+      "La porte se ferme. Puis le bruit que tu attendais sans le savoir : une " +
+        "barre qu'on pose. Dehors.",
+    ],
+    pointsInteret: [
+      {
+        id: "examiner-grange",
+        label: "Examiner la grange",
+        zoom: 2.5,
+        focus: "50% 55%",
+        approche:
+          "Tu prends la lampe et tu fais le tour, lentement, en te tenant " +
+          "loin des murs — le vieux réflexe de qui ne veut pas être une " +
+          "silhouette derrière des planches.",
+        examen:
+          "Des marques sur les poutres, à hauteur d'homme. Des bâtons de " +
+          "comptage — des séries de nuits. Quelqu'un a dormi ici souvent. Ou " +
+          "plusieurs quelqu'uns, une nuit chacun. La dernière série s'arrête " +
+          "à deux.",
+      },
+    ],
+    choices: [
+      {
+        id: "veiller",
+        label: "Veiller",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu veilles sans bouger, la lampe soufflée, adossé au bois. Et la nuit se donne tout entière : chaque pas dehors, chaque mot chuchoté, chaque hésitation devant ta porte. Au matin tu sauras du hameau ce que le hameau croyait savoir de toi.",
+            "Tu tiens jusqu'au cœur de la nuit, l'oreille contre la planche. Assez pour entendre ce qui se dit. Pas assez pour être reposé — mais reposé n'était pas le but.",
+            "Tu veilles, tu veilles, et le sommeil te prend quand même — d'un coup, sans transition, comme une main sur la nuque. Tu te réveilles au gris de l'aube avec une nuit blanche dans les jambes.",
+            "1 naturel. Tu veilles. Et à un moment de la nuit que tu ne sauras jamais situer, quelque chose a veillé avec toi, de l'autre côté du bois, exactement à ta hauteur. ♦ −2"
+          ),
+        },
+      },
+      { id: "dormir-grange", label: "Dormir", rest: true },
+    ],
+    jailerLine: "Une barre. Dehors. Ils appellent ça l'hospitalité, ici. Moi aussi, remarque.",
+  },
+  {
+    /* Beat 3 — La nuit. Le script prévoit des variantes par palier de Soupçon ;
+       le moteur choisit la bonne au moment de l'insertion (Scene.tsx). */
+    id: "hameau-halte-3",
+    illustration: "assets/scene_moulin_sans_ailes_c.png",
+    chainNext: "hameau-halte-4",
+    narration: [
+      "Le hameau ne dort pas comme un village. Pas de rires, pas de disputes, " +
+        "pas d'enfant qui pleure. Juste des pas, parfois, qui font une ronde " +
+        "que personne n'a annoncée.",
+    ],
+    choices: [
+      {
+        id: "ecouter-nuit",
+        label: "Écouter sans bouger",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu ne bouges pas d'un cil, et la nuit se laisse lire. Une dénonciation se prépare — pas forcément la tienne, pas encore. Mais le Petit Tribunal siégera avant la prochaine aube, et tu sais maintenant à quoi ressemble le bruit que ça fait.",
+            "Les voix se rapprochent, s'attardent, repartent. Tu ne saisis que des morceaux — un nom qui n'est pas le tien, un chiffre, le mot « demain ». Assez pour dormir mal.",
+            "La paille craque sous toi. Les voix s'arrêtent net — ce silence-là est une porte qui claque. Puis des pas qui s'éloignent vite, et tu passes le reste de la nuit à te demander ce qu'ils ont compris.",
+            "1 naturel. Tu écoutes. Et une voix, tout près, dit ton nom — celui que tu as signé au pacte, celui que personne ici n'a entendu. ♦ −2"
+          ),
+        },
+        soupcon: 1,
+      },
+      {
+        id: "dormir-vraiment",
+        label: "Dormir vraiment",
+        passive: {
+          consequence:
+            "Tu décides de ne rien écouter. C'est un travail, de ne pas " +
+            "écouter — tu comptes tes propres respirations pour couvrir le " +
+            "reste. Ça marche à peu près. Au matin, tu ne sauras pas ce qui " +
+            "s'est dit devant ta porte, et c'est exactement ce que tu voulais.",
+        },
+      },
+    ],
+    jailerLine: "Ils parlent de toi à travers une planche. Moi je te parle à travers le crâne. Chacun ses moyens.",
+  },
+  {
+    /* Beat 4 — L'aube. Le Serment tenu jusqu'ici se paie ici (−1 Soupçon). */
+    id: "hameau-halte-4",
+    illustration: "assets/monstre_doyenne_b.png",
+    chainNext: "hameau-halte-5",
+    narration: [
+      "La barre se soulève au premier gris. Le vieux, seul. Il te tend un " +
+        "quignon dur et ne dit rien pendant que tu manges.",
+      "— « Aujourd'hui, on fixe personne. » Il regarde ailleurs. « Alors pars " +
+        "pendant que c'est vrai. »",
+    ],
+    choices: [
+      {
+        id: "partir-aube",
+        label: "Partir pendant que c'est vrai",
+        soupcon: -1,
+        passive: {
+          consequence:
+            "Tu manges debout, tu rends le linge, tu sors. Sur le seuil, le " +
+            "vieux ajoute, à voix basse et sans te regarder : « Tu as juré, " +
+            "tu as tenu. Ça se saura. » C'est la seule chose aimable qu'on " +
+            "t'aura dite dans ces Landes, et elle sonne comme un service " +
+            "rendu.",
+        },
+      },
+    ],
+    jailerLine: "« On fixe personne aujourd'hui. » Aujourd'hui. Retiens bien le mot.",
+  },
+  {
+    /* Beat 5 — Le départ escorté. Sortie de la séquence → la traversée reprend
+       vers la Palissade / la Descente. */
+    id: "hameau-halte-5",
+    illustration: "assets/scene_lande_generique_4.png",
+    hameauHalte: true,
+    narration: [
+      "Ils sont deux à marcher avec toi jusqu'à la Palissade. Pas devant, pas " +
+        "derrière : à côté, à un pas de distance — l'escorte de quelqu'un " +
+        "qu'on ne touche pas.",
+      "Au portillon sud, le plus jeune ouvre. Le vieux reste en arrière. " +
+        "C'est lui qui parle, pourtant, au moment où tu passes :",
+      "— « Si tu l'entends... » Il cherche ses mots. Il les trouve : " +
+        "« Réponds pas. C'est tout ce qu'on sait. C'est tout ce qu'on a " +
+        "jamais su. »",
+    ],
+    choices: [{ id: "franchir-portillon", label: "Franchir le portillon" }],
+    jailerLine: "« Réponds pas. » Trente ans de sagesse villageoise, résumés. Ça ne marche pas, mais c'est mignon.",
+  },
+  {
+    /* Beat 6 — variante « nuit dehors » (Serment refusé). Remplace les beats
+       1-5 : aucune porte ne s'ouvre à qui n'a pas juré. */
+    id: "hameau-halte-dehors",
+    illustration: "assets/scene_lande_generique_3.png",
+    hameauHalte: true,
+    narration: [
+      "Aucune porte, aucune grange. Tu dors contre un muret, côté nord — " +
+        "d'instinct.",
+      "La nuit des Landes n'attaque pas. Elle compte. Chaque heure a son " +
+        "bruit : la corde, les pas, le chant du sud. Au matin, tu n'es pas " +
+        "reposé — tu es inventorié.",
+    ],
+    choices: [
+      {
+        id: "repartir-inventorie",
+        label: "Repartir vers le sud",
+        soupcon: 1,
+        passive: {
+          consequence:
+            "Tu te lèves raide, les os pleins de froid. En quittant le " +
+            "muret, tu vois ce que la nuit a laissé : des traces de pas " +
+            "autour de l'endroit où tu dormais, un cercle complet, à trois " +
+            "mètres. Personne ne s'est approché plus près. Personne n'est " +
+            "reparti sans avoir regardé.",
+        },
+      },
+    ],
+    jailerLine: "Dormir dehors, comme les Appelés avant leur départ. Le village a noté. Le village note tout.",
   },
   {
     id: "marche-muet",
