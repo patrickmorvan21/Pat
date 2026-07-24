@@ -8,6 +8,7 @@ import { buildRegistre, loadMemory } from "@/lib/player-memory";
 import { hasSavedRun, loadRun, resetRun } from "@/lib/state";
 import { APP_VERSION } from "@/lib/version";
 import { applySettingsToDom } from "@/lib/settings";
+import { armAudio, playMusic } from "@/lib/audio";
 
 /**
  * Écrans d'accueil (Figma 1963:370 « Première partie » / 1970:458 « Reprendre
@@ -27,6 +28,10 @@ export default function Home() {
     // Réglages (Options 21/07) : applique taille de texte + animations réduites
     // au <html> dès le démarrage de l'app (persiste à travers accueil/jeu).
     applySettingsToDom();
+    // Musique (24/07) : thème d'intro sur l'accueil — armé sur le premier
+    // geste (politique d'autoplay), silencieux si les mp3 manquent.
+    armAudio();
+    playMusic("intro");
     // eslint-disable-next-line react-hooks/set-state-in-effect -- lecture du localStorage impossible au rendu SSR, une seule fois au montage
     setSaved(hasSavedRun());
     setPhase("home");

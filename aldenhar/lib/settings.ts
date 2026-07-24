@@ -21,6 +21,9 @@ export type Settings = {
   animations: AnimMode;
   /** Retour haptique (le dé, les impacts). */
   vibrations: boolean;
+  /** Musique (lot 24/07) : marche/arrêt + volume 0..1. */
+  music: boolean;
+  musicVolume: number;
 };
 
 const KEY = "aldenhar-settings";
@@ -30,6 +33,8 @@ const DEFAULTS: Settings = {
   textSize: "normal",
   animations: "completes",
   vibrations: true,
+  music: true,
+  musicVolume: 0.7,
 };
 
 // Cache module : lu par `haptic()` (appelé souvent par le dé) sans toucher le
@@ -48,6 +53,8 @@ export function loadSettings(): Settings {
         textSize: p.textSize ?? DEFAULTS.textSize,
         animations: p.animations ?? DEFAULTS.animations,
         vibrations: typeof p.vibrations === "boolean" ? p.vibrations : DEFAULTS.vibrations,
+        music: typeof p.music === "boolean" ? p.music : DEFAULTS.music,
+        musicVolume: typeof p.musicVolume === "number" ? p.musicVolume : DEFAULTS.musicVolume,
       };
       return cached;
     }

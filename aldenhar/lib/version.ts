@@ -88,5 +88,11 @@
  *           (3 premières runs), max 16 caractères → heroName. Clôture
  *           automatique 4 s après la frappe (plus de tap). Affordance
  *           « Touche pour continuer » sur l'amorce (3 premières runs).
+ *   1.14.0 — MUSIQUE (moteur) : lib/audio.ts — intro.mp3 en boucle sur
+ *           accueil + prologue, rotation landes_1/2/3 en jeu, fondu au
+ *           changement, autoplay débloqué au premier geste, silencieux si
+ *           les fichiers manquent. Options : interrupteur Musique réel +
+ *           volume à 8 crans. ⚠️ Les mp3 restent à déposer dans
+ *           public/audio/ (voir README) — trop lourds pour le connecteur.
  */
-export const APP_VERSION = "1.13.0";
+export const APP_VERSION = "1.14.0";

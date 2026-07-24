@@ -7,6 +7,7 @@ import TypedText from "@/components/TypedText";
 import { computeVerdict, PROLOGUE_AMORCE, PROLOGUE_CLOTURE } from "@/lib/prologue-data";
 import { loadRun, saveRun, type PrologueMemory, type RunState } from "@/lib/state";
 import { loadMemory } from "@/lib/player-memory";
+import { playMusic } from "@/lib/audio";
 
 /**
  * Prologue « Le Seuil » (Notion 16/07 + écrans Figma, complété 24/07) : le
@@ -97,6 +98,8 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
     // Persiste le tirage dès l'entrée : la reprise retombera sur les MÊMES
     // souvenirs, au même beat.
     saveRun(run);
+    // Musique (24/07) : le Seuil garde le thème d'intro (continuité accueil).
+    playMusic("intro");
     // eslint-disable-next-line react-hooks/set-state-in-effect -- restauration unique du beat sauvegardé, post-hydratation
     setBeat(run.prologue.beat);
     setMemories(run.prologue.memories);

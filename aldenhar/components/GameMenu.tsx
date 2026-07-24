@@ -6,6 +6,7 @@ import { loadMemory } from "@/lib/player-memory";
 import type { NarrativeEffect, RunState } from "@/lib/state";
 import { besaceBySlot, normalizeItem, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { loadSettings, mutateSettings, type Settings } from "@/lib/settings";
+import { syncMusicSettings } from "@/lib/audio";
 
 /**
  * Menu plein cadre (spec §8 + écrans Figma 1925:559 « Essence » et 1925:524
@@ -580,13 +581,51 @@ function OptionsTab() {
 
   return (
     <div className="px-[15px] pt-[8px]">
-      {/* Musique — INERTE (le jeu n'a pas d'audio). Interrupteur à glissière
-          de la maquette (rail + pavé carré), état OFF, non cliquable. */}
-      <div className="opacity-50">
+      {/* Musique — ACTIVE (lot 24/07) : interrupteur à glissière de la maquette
+          (rail + pavé carré, position = état) + curseur de volume. Chaque
+          changement est appliqué immédiatement à la piste en cours. */}
+      <div>
         <OptLabel>Musique</OptLabel>
-        <div className="mt-[18px] relative h-[16px] w-full" aria-hidden>
-          <span className="absolute top-1/2 right-0 left-0 h-px -translate-y-1/2 bg-white" />
-          <span className="absolute top-0 left-0 size-[16px] border border-solid border-white bg-[var(--color-bg)]" />
+        <button
+          type="button"
+          aria-label={s.music ? "Couper la musique" : "Activer la musique"}
+          onClick={() => {
+            set("music", !s.music);
+            syncMusicSettings();
+          }}
+          className="mt-[18px] relative block h-[16px] w-full cursor-pointer"
+        >
+          <span className="absolute top-1/2 right-0 left-0 h-px -translate-y-1/2 bg-white" aria-hidden />
+          <span
+            className={`absolute top-0 size-[16px] border border-solid border-white ${
+              s.music ? "right-0 bg-[var(--color-accent)]" : "left-0 bg-[var(--color-bg)]"
+            }`}
+            aria-hidden
+          />
+        </button>
+        {/* Volume : rail à crans (8 pas), jamais un dégradé lisse. */}
+        <div className={`mt-[18px] ${s.music ? "" : "pointer-events-none opacity-50"}`}>
+          <p className="font-mono text-[11px] tracking-[2px] text-[var(--color-ink)] uppercase opacity-70">Volume</p>
+          <div className="mt-[10px] flex gap-[6px]">
+            {Array.from({ length: 8 }, (_, i) => {
+              const v = (i + 1) / 8;
+              const on = s.musicVolume >= v - 0.01;
+              return (
+                <button
+                  key={i}
+                  type="button"
+                  aria-label={`Volume ${i + 1} sur 8`}
+                  onClick={() => {
+                    set("musicVolume", v);
+                    syncMusicSettings();
+                  }}
+                  className={`h-[14px] flex-1 cursor-pointer border border-solid border-white ${
+                    on ? "bg-[var(--color-accent)]" : "bg-[var(--color-bg)]"
+                  }`}
+                />
+              );
+            })}
+          </div>
         </div>
         <OptHelp>Le jeu se joue entièrement sans le son : aucune information n&apos;est portée par l&apos;audio seul.</OptHelp>
       </div>

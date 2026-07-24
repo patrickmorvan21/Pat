@@ -21,6 +21,7 @@ import {
 } from "@/lib/scene-data";
 import { loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
 import { chapterById, drawChapter } from "@/lib/chapters-data";
+import { playMusic } from "@/lib/audio";
 import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import {
   bloodDebtFor,
@@ -282,6 +283,10 @@ export default function Scene() {
     if (run.step > 0) setStep(run.step);
     setDay(run.day);
     setHealth(run.health);
+
+    // Musique (24/07) : l'Acte I tourne sur les boucles des Landes (rotation
+    // aléatoire des 3 pistes). Silencieux si les mp3 ne sont pas déployés.
+    playMusic("landes");
 
     // Chapitre garanti (chantier 2 du 23/07) : chaque traversée en reçoit UN,
     // tiré avec la rotation du compte (jamais deux fois le même tant qu'il en
