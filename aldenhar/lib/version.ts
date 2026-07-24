@@ -94,5 +94,7 @@
  *           les fichiers manquent. Options : interrupteur Musique réel +
  *           volume à 8 crans. ⚠️ Les mp3 restent à déposer dans
  *           public/audio/ (voir README) — trop lourds pour le connecteur.
+ *   1.14.1 — Musique ACTIVE : les 4 mp3 de Patrick (PJ) intégrés dans
+ *           public/audio/ — intro à l'accueil/prologue, boucles Landes en jeu.
  */
-export const APP_VERSION = "1.14.0";
+export const APP_VERSION = "1.14.1";
