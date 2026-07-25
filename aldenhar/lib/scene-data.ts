@@ -345,6 +345,9 @@ export const SCENES: Scene[] = [
         id: "homme-immobile",
         label: "L'homme qui regarde le sud",
         leadsTo: "hesitant-1",
+        // Le plan rapproché EST le personnage : son portrait validé existe déjà,
+        // et c'est la même image que la rencontre qui suit (continuité).
+        illustration: "assets/monstre_hesitant_b.png",
         zoom: 2.4,
         focus: "60% 40%",
         approche:
@@ -552,6 +555,7 @@ export const SCENES: Scene[] = [
         id: "marcheur-rebours",
         label: "L'homme qui marche à reculons",
         leadsTo: "marcheur-1",
+        illustration: "assets/monstre_marcheur_a_rebours_d.png",
         zoom: 2.3,
         focus: "55% 45%",
         approche:
@@ -1237,6 +1241,7 @@ export const SCENES: Scene[] = [
         id: "femme-sur-le-seuil",
         label: "La femme sur le pas de porte",
         leadsTo: "femme-seuil-1",
+        illustration: "assets/monstre_femme_au_seuil_b.png",
         zoom: 2.4,
         focus: "60% 45%",
         approche:
@@ -2700,6 +2705,7 @@ export const SCENES: Scene[] = [
         id: "epoux-verger",
         label: "Les deux qui bêchent, au fond",
         leadsTo: "epoux-1",
+        illustration: "assets/monstre_epoux_verger_a.png",
         zoom: 2.3,
         focus: "60% 50%",
         approche:

@@ -162,5 +162,9 @@
  *           les descriptions passent derrière un CTA « Observer les alentours »
  *           pour revenir à 3 choix par écran ; la musique tourne réellement sur
  *           les 3 boucles des Landes et démarre au premier geste, où qu'il soit.
+ *   1.19.1 — Plans rapprochés : 4 points d'intérêt (l'Hésitant, la Femme au
+ *           Seuil, le Marcheur à rebours, les Époux du Verger) utilisent enfin
+ *           le portrait déjà validé du personnage au lieu d'un crop de l'image
+ *           du lieu — et c'est la même image que la rencontre qui suit.
  */
-export const APP_VERSION = "1.19.0";
+export const APP_VERSION = "1.19.1";

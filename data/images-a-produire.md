@@ -1,173 +1,532 @@
 # Images à produire — LES LANDES (Acte I)
 
-Liste demandée par Patrick le 25/07 : des **plans rapprochés détaillés** pour les
-points d'intérêt, en remplacement des crops CSS actuels.
+Prompts prêts à coller dans Leonardo, **un par plan rapproché**. Chaque prompt est
+autonome : le bloc de style est déjà dedans, rien à assembler.
 
-**Contrainte n°1, valable pour toute la liste** : chaque plan rapproché doit
-être dérivé de **l'image principale de son lieu** — même décor, même matière,
-même source de lumière, même heure. Un plan rapproché qui ne raccorde pas avec
-le plan large casse l'illusion qu'on s'est déplacé dans le MÊME endroit. En
-pratique : ouvrir l'image du lieu à côté du prompt, et reprendre dans le prompt
-ce qu'elle montre (pierre mouillée ou sèche, ciel bas ou dégagé, bruyère haute
-ou rase…).
+Chaque entrée donne aussi le **raccord** : ce que le plan rapproché doit partager
+avec l'image large du lieu (matière, source de lumière, cadrage). C'est la
+contrainte que tu as posée — un plan rapproché qui ne raccorde pas casse
+l'illusion qu'on s'est déplacé dans le même endroit. Les raccords ci-dessous sont
+écrits **après avoir regardé les 12 images de lieu existantes**, pas devinés.
+
+## Ce que la lecture des images a révélé (à trancher avant de produire)
+
+1. **⚠️ `scene_moulin_sans_ailes_c.png` montre un moulin AVEC ses ailes** — une
+   grande croix de lattes complète, en silhouette devant le soleil. Or le lieu
+   s'appelle *le Moulin sans Ailes* et son point d'intérêt (« la croix d'ombres »)
+   repose entièrement sur le fait que les ailes ont **disparu** : les quatre
+   bandes pâles sont la trace de la pierre protégée par les ailes, puis exposée
+   d'un coup. L'image contredit le texte. **Il faut une nouvelle image de lieu**
+   (prompt fourni plus bas) — sinon c'est le texte qu'il faut changer.
+2. **`palissade-sud` n'a aucune image de lieu** : elle tourne sur une vue
+   générique des Landes. C'est le dernier lieu de la zone, le seuil de l'Acte II.
+   Prompt fourni.
+3. **`borne-frontiere` utilise une image de transition** (`scene_transition_borne_sud_a.png`).
+   Elle est belle et juste — un menhir en contre-jour devant un soleil bas — mais
+   elle est aussi dans le pool des vues de marche, donc on la revoit ailleurs.
+   Une version dédiée éviterait la répétition sur le tout premier écran du jeu.
+4. Petite tension à savoir : l'image de la Colline montre une **ligne** de
+   potences le long d'une crête, alors que le texte parle du « cercle ». Les
+   prompts ci-dessous montrent une courbe de poteaux — compatible avec les deux.
 
 ## Comment ça se branche
 
-Le champ est déjà en place : `PointInteret.illustration`. Il suffit de
-déposer le PNG dithéré dans `aldenhar/public/assets/` et de remplir ce champ
-dans `lib/scene-data.ts` — **aucun autre code à toucher**. Tant que le champ est
-vide, le crop CSS de l'image du lieu continue de servir : rien ne casse si la
-liste n'est produite qu'en partie, et on peut avancer lieu par lieu.
+Champ déjà en place : `PointInteret.illustration`. Tu déposes le PNG dithéré dans
+`aldenhar/public/assets/`, on remplit le champ dans `lib/scene-data.ts`, et c'est
+tout. Tant que le champ est vide, le crop de l'image du lieu tient la place :
+rien ne casse si la liste n'est produite qu'en partie.
 
-## Bloc de style à coller à la fin de CHAQUE prompt
+## Rappels de pipeline
 
-Le pipeline (`/leo-import`) réduit ensuite en Charbon `#1c1a16` / Orange
-`#e0632a`, Floyd-Steinberg seuil 182, contraste 151 %, pixel size 3. Ce qui veut
-dire qu'à la génération il faut viser **des masses lisibles, pas du détail fin** :
-tout ce qui est texture délicate disparaît au tramage, et tout ce qui est
-contre-jour franc gagne.
+Passage par `/leo-import` (Floyd-Steinberg, seuil 182, contraste 151 %, pixel
+size 3, Charbon `#1c1a16` / Orange `#e0632a`). Donc à la génération : **des masses,
+pas du détail fin**. Le tramage mange les textures délicates et adore le
+contre-jour franc. À éviter : brume uniforme (devient un aplat), foules, et tout
+texte gravé lisible — suggérer les marques, ne jamais les écrire.
 
+---
+
+# PRIORITÉ 0 — les 3 vues de lieu manquantes ou fausses
+
+### `scene_moulin_sans_ailes_d.png` — remplace la vue actuelle (ailes en trop)
+**Raccord** : garder le cadrage et l'échelle de l'actuelle (tour trapue sur un
+tertre, énorme disque de soleil derrière, lande sombre en premier plan), mais
+**sans aucune aile**.
 ```
-dark fantasy illustration, single strong light source, high contrast, deep black
-shadows, monochrome-friendly, strong readable silhouettes, no text, no lettering,
-matte painting, grim medieval rural, cold damp atmosphere, square composition,
-centered subject, shallow depth of field
+Ruined stone windmill tower standing on a low mound, its sail assembly completely
+gone, only the bare stump of the axle left at the cap, four pale unweathered bands
+radiating across the stonework where the vanes once shielded it, huge low orange
+sun disc directly behind the tower, dark moorland in the foreground. Dark fantasy
+illustration, extreme backlight, one single light source, near-black silhouette
+against a glowing orange sky, deep crushed blacks, no fill light, high contrast,
+two-tone monochrome-friendly, strong readable shapes, matte painting, grim
+medieval rural, square composition, no text, no lettering, no watermark
 ```
 
-À ÉVITER dans les prompts : couleurs saturées (elles tombent toutes sur le même
-orange), brume dense uniforme (devient un aplat), foules et détails minuscules,
-tout texte gravé lisible (illisible après tramage — suggérer les marques, pas les
-écrire).
+### `scene_palissade_sud_a.png` — le lieu n'a aucune image
+**Raccord** : même langage que les autres extérieurs (contre-jour, soleil bas,
+premier plan noir). Le mur doit barrer tout l'horizon.
+```
+Long palisade of blackened sharpened logs cutting across the entire horizon of an
+open moor, seen from the moor side, a narrow gate set in it, a tiny plank sentry
+box against the logs, low orange sun sinking behind the wall, cold air rising from
+beyond it, dark heather in the foreground. Dark fantasy illustration, extreme
+backlight, one single light source, near-black silhouettes against a glowing
+orange sky, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, strong readable shapes, matte painting, grim medieval rural,
+square composition, no text, no lettering, no watermark
+```
 
-## Nommage
-
-`scene_{lieu}_{point}_{variante}.png` pour un décor, `monstre_{sujet}_{variante}.png`
-pour un personnage. Exemple : `scene_colline_gibet_vide_a.png`.
-
----
-
-# PRIORITÉ 1 — les 4 lieux garantis (12 images)
-
-Ce sont les lieux que la traversée offre presque toujours : la Colline aux
-Gibets (lieu-signature, poussée à chaque liaison), et les trois lieux qui
-portent les chapitres du Bailli. C'est là que le gain est le plus visible.
-
-## La Colline aux Gibets — base : `scene_colline_aux_gibets_c.png`
-
-| Fichier | Point | Prompt (+ bloc de style) |
-|---|---|---|
-| `scene_colline_potences_cercle_a.png` | Les potences du cercle | `close view of a ring of weathered wooden gallows posts on a bare hilltop, each post with shallow carved notches near its base, wet dark wood, heather at the foot, low overcast sky behind, no bodies` |
-| `scene_colline_gibet_vide_a.png` | Le Gibet Vide, au centre | `single tall well-built gallows standing alone on a hill crest, brand new pale rope hanging empty and slightly swaying, massive squared beams jointed to last centuries, its cast shadow stretching long across the ground and subtly wrong in shape, rare shaft of low sun` |
-| `scene_colline_poteau_pendu_a.png` | Le poteau isolé, à gauche | `hanged old man in a magistrate's chain of office, still wearing a heavy seal ring, head lifted and eyes open, alive and watching, isolated gibbet post at the edge of a hilltop, rope taut, half-turned toward the viewer` |
-
-## Le Petit Tribunal — base : `scene_petit_tribunal_a.png`
-
-| Fichier | Point | Prompt (+ bloc de style) |
-|---|---|---|
-| `scene_tribunal_ordonnance_a.png` | La feuille clouée au mur | `single sheet of parchment nailed to a bare stone wall in a dim low room, four nails, curling edges, dense handwriting suggested but unreadable, cold light from one small window raking across the wall` |
-| `scene_tribunal_chaire_a.png` | La chaire et son livre | `low wooden pulpit of a village court with a large open ledger resting on it, ruled columns of entries suggested, many lines struck through, worn lectern, single window light falling on the open pages` |
-| `scene_tribunal_bancs_a.png` | Les bancs et leurs traces | `two rows of rough wooden benches in an empty village courtroom, the front bench polished smooth in its middle by generations of gripping hands and gnawed at the edges, tally notches cut into the side of the second bench, dust, raking light` |
-
-## La Chapelle des Cordes — base : `scene_chapelle_des_cordes_d.png`
-
-| Fichier | Point | Prompt (+ bloc de style) |
-|---|---|---|
-| `scene_chapelle_mur_cordes_a.png` | Le mur des cordes, au fond | `interior chapel wall covered with dozens of short cut ropes nailed in neat rows, each with a small pale paper tag, arranged like relics rather than trophies, one rope hanging slightly askew as if just moved, dim light from a high window` |
-| `scene_chapelle_autel_a.png` | L'autel couché, sur le côté | `toppled stone altar lying on its side in a small stripped chapel, empty hollow underneath, a long coiled shape clearly missing from the dust, fresh clean patch in the grey dust, cold sidelight` |
-| `scene_chapelle_ouvrage_a.png` | La chaise et l'ouvrage | `simple wooden chair in a chapel with an unfinished braiding work resting on the seat, three strands of new pale hemp half-plaited, tidy and patient craftsmanship, coil of raw hemp on the floor, warm single light` |
-
-## Le Champ des Fixés — base : `scene_champ_des_fixes_b.png`
-
-| Fichier | Point | Prompt (+ bloc de style) |
-|---|---|---|
-| `scene_champ_rangees_a.png` | Les rangées et leurs noms | `endless regular rows of low wooden grave posts in a bleak field, nearest posts freshly cut and pale, distant ones grey and eroded, shallow carved names suggested, flat overcast horizon` |
-| `scene_champ_poteaux_vierges_a.png` | Les poteaux vierges, au fond | `three blank new grave posts standing apart at the far end of a burial field, already carved with names but no dates, the third carving noticeably fresher and paler than the others, turned earth at their feet` |
-| `scene_champ_tombe_manquante_a.png` | Un vide dans une rangée pleine | `single conspicuous gap in an otherwise unbroken row of grave posts, old packed earth in the gap, the socket carefully filled in rather than torn out, neighbouring posts leaning slightly inward` |
+### `scene_borne_frontiere_a.png` — vue dédiée du premier écran du jeu
+**Raccord** : reprendre exactement l'esprit de l'actuelle (menhir anguleux à
+gauche, disque de soleil bas à droite, lande plate), mais en plan plus serré sur
+la pierre pour qu'elle domine.
+```
+Tall angular granite boundary stone standing alone on a flat open moor, close
+enough to fill the left half of the frame, its faces densely covered in shallow
+overlapping carved marks, small offerings piled at its base, low orange sun disc
+on the horizon to the right, hazy stippled sky. Dark fantasy illustration, extreme
+backlight, one single light source, near-black silhouette with a thin orange rim
+of light, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, matte painting, grim medieval rural, square composition, no
+text, no lettering, no watermark
+```
 
 ---
 
-# PRIORITÉ 2 — le Hameau, le Moulin, la Borne (9 images)
+# PRIORITÉ 1 — les 4 lieux garantis (12 plans)
 
-## Le Hameau (entrée) — bases : `scene_landes_hameau_ruelle_b.png`, `scene_landes_hameau_grange_a.png`
+## La Colline aux Gibets — base `scene_colline_aux_gibets_c.png`
+*Raccord commun : contre-jour total, ciel orange lumineux, potences en silhouette
+noire, sol de bruyère sombre et piqueté. Tout se lit en découpe, aucun détail
+éclairé de face.*
 
-| Fichier | Point | Prompt (+ bloc de style) |
-|---|---|---|
-| `scene_hameau_croix_craie_a.png` | S'approcher de la croix | `rough chalk cross drawn on the weathered plank door of a village house, the wood visibly worn pale at that exact spot from crosses drawn and rubbed out many times before, close framing, damp grey daylight` |
-| `monstre_femme_au_seuil_a.png` | La femme sur le pas de porte | `gaunt village woman standing motionless in a doorway, arms at her sides, gaze fixed far down the street to the south, not looking at the viewer, worn shawl, dark interior behind her` |
-| `scene_hameau_grange_poutres_a.png` | Examiner la grange | `interior of a barn loft, tally marks cut into a roof beam at head height, several separate series of scratched strokes, the last series stopping at only two marks, straw dust in a single shaft of light` |
+### `scene_colline_potences_cercle_a.png` — « Les potences du cercle »
+```
+Three or four weathered wooden gallows posts curving away along a bare hill crest,
+seen close from below, shallow carved notches and a date cut at the foot of each
+post, all struck by the same careful hand, glowing orange sky filling the gaps
+between them, dark heather at their base. Dark fantasy illustration, extreme
+backlight, one single light source, near-black silhouettes against a glowing
+orange sky, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, strong readable shapes, matte painting, grim medieval rural,
+square composition, no text, no lettering, no watermark
+```
 
-*(le point « Demander pourquoi trois aubes » de l'écran du Serment est un
-dialogue — pas besoin d'image, l'écran garde le portrait de la Doyenne.)*
+### `scene_colline_gibet_vide_a.png` — « Le Gibet Vide, au centre »
+```
+Single tall well-built gallows alone on a hill crest, massive squared beams
+jointed to last for centuries, a brand new pale rope hanging empty and barely
+swaying, its long cast shadow stretching toward the viewer across the heather and
+subtly the wrong shape for the structure, low orange sun behind it. Dark fantasy
+illustration, extreme backlight, one single light source, near-black silhouette
+against a glowing orange sky, deep crushed blacks, no fill light, high contrast,
+two-tone monochrome-friendly, matte painting, grim medieval rural, square
+composition, no text, no lettering, no watermark
+```
 
-## Le Moulin sans Ailes (campement) — base : `scene_moulin_sans_ailes_c.png`
+### `scene_colline_poteau_pendu_a.png` — « Le poteau isolé, à gauche »
+```
+Hanged old man on an isolated low gibbet at the edge of a hill crest, wearing a
+heavy magistrate chain of office at his neck and a seal ring on his fist, head
+lifted and eyes open, unmistakably alive and watching the viewer, rope taut above
+him, glowing orange sky behind. Dark fantasy illustration, extreme backlight, one
+single light source, near-black silhouette with a thin orange rim of light, deep
+crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, matte
+painting, grim medieval rural, square composition, no text, no lettering, no
+watermark
+```
 
-| Fichier | Point | Prompt (+ bloc de style) |
-|---|---|---|
-| `scene_moulin_croix_ombres_a.png` | La croix d'ombres, en haut | `stone windmill tower with no sails, four pale unweathered bands radiating from the top like a cross where the vanes once shielded the stone, seen from below at a distance, bleak sky` — ⚠️ le seul point où l'on RECULE (zoom 0.9) : cadrer plus LARGE que l'image du lieu, pas plus serré. |
-| `scene_moulin_lucarne_a.png` | La lucarne, au-dessus de la porte | `small empty dormer opening above a mill door, inner sill conspicuously clean and dust-free unlike everything around it, dark opening, worn stone, low light` |
-| `scene_moulin_interieur_a.png` | Pousser la porte entrouverte | `inside a derelict windmill, a straw pallet made up with squared-off care, a chipped clay pot holding fresh sprigs of heather, everything else decaying, nobody present, single beam of light from above` |
+## Le Petit Tribunal — base `scene_petit_tribunal_a.png`
+*Raccord commun : intérieur de PIERRE (pas de bois clair), composition
+symétrique, une arche rétroéclairée orange au fond, mobilier de pierre massif en
+silhouette noire, dallage chaud au sol, murs noyés dans le noir piqueté.*
 
-## La Borne Frontière — base actuelle : `scene_transition_borne_sud_a.png`
-⚠️ Cette base est une image de **transition** (vue de marche), pas une vue de
-lieu. Une `scene_borne_frontiere_a.png` dédiée serait utile — c'est le premier
-écran de chaque run.
+### `scene_tribunal_ordonnance_a.png` — « La feuille clouée au mur »
+```
+Single sheet of parchment nailed by four nails to a bare stone wall inside a dim
+low chamber, edges curling, dense handwriting suggested as texture and completely
+unreadable, raking light from a bright arched opening out of frame grazing the
+stonework. Dark fantasy illustration, one single light source, deep crushed
+blacks, no fill light, high contrast, two-tone monochrome-friendly, strong
+readable shapes, matte painting, grim medieval interior, cold damp stone, square
+composition, no text, no lettering, no watermark
+```
 
-| Fichier | Point | Prompt (+ bloc de style) |
-|---|---|---|
-| `scene_borne_gravures_a.png` | Les gravures de la pierre | `close view of a tall rough granite boundary stone densely covered in carved marks on its north face — names, dates, tally strokes overlapping over centuries — while the south face beside it stays almost bare with only three marks, heather at its base` |
-| `scene_borne_eclat_a.png` | Un angle cassé, au ras du sol | `broken-off corner of a granite boundary marker lying half buried in heather at ground level, freshly exposed pale fracture against the weathered surface, palm-sized, damp earth` |
-| `monstre_hesitant_a.png` | L'homme qui regarde le sud | `man standing rigid facing south on open moorland, seen from behind and slightly to the side, the grass around his feet flattened and dead from days of standing, tension in his shoulders as if resisting rather than resting` |
+### `scene_tribunal_chaire_a.png` — « La chaire et son livre »
+```
+Heavy stone lectern in a village court chamber with a large ledger lying open on
+it, ruled columns of entries suggested as texture, many lines struck through, the
+bright arched opening of the room glowing directly behind the lectern so the book
+is lit from behind, stone floor. Dark fantasy illustration, extreme backlight, one
+single light source, near-black silhouette against a glowing orange arch, deep
+crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, matte
+painting, grim medieval interior, square composition, no text, no lettering, no
+watermark
+```
+
+### `scene_tribunal_bancs_a.png` — « Les bancs et leurs traces »
+```
+Two low stone and timber benches facing each other in an empty court chamber, the
+nearer one worn smooth and pale in the middle by generations of gripping hands and
+gnawed at its edges, rows of tally notches cut into the side of the other, dust in
+the air, light grazing across from a bright opening out of frame. Dark fantasy
+illustration, one single light source, deep crushed blacks, no fill light, high
+contrast, two-tone monochrome-friendly, strong readable shapes, matte painting,
+grim medieval interior, square composition, no text, no lettering, no watermark
+```
+
+## La Chapelle des Cordes — base `scene_chapelle_des_cordes_d.png`
+*Raccord commun : nef étroite en tunnel, des dizaines de cordes qui pendent
+verticalement du plafond au sol le long des murs, fenêtre en arc orange vif au
+fond, autel sombre en découpe devant, dallage chaud au premier plan.*
+
+### `scene_chapelle_mur_cordes_a.png` — « Le mur des cordes, au fond »
+```
+Chapel wall hung with dozens of short cut ropes fixed in neat vertical rows, each
+carrying a small pale paper tag, arranged like relics rather than trophies, one
+rope hanging noticeably askew as though just disturbed, lit from behind by a bright
+arched window so the ropes read as dark verticals with orange rims. Dark fantasy
+illustration, extreme backlight, one single light source, deep crushed blacks, no
+fill light, high contrast, two-tone monochrome-friendly, strong readable shapes,
+matte painting, grim medieval interior, square composition, no text, no lettering,
+no watermark
+```
+
+### `scene_chapelle_autel_a.png` — « L'autel couché, sur le côté »
+```
+Toppled stone altar lying on its side on a chapel floor, the hollow space beneath
+it now empty, a long coiled shape clearly missing from the grey dust and its clean
+outline still fresh, hanging ropes framing the shot on both sides, warm light
+across the flagstones from a bright arch behind. Dark fantasy illustration, one
+single light source, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, strong readable shapes, matte painting, grim medieval
+interior, square composition, no text, no lettering, no watermark
+```
+
+### `scene_chapelle_ouvrage_a.png` — « La chaise et l'ouvrage »
+```
+Plain wooden chair standing in a chapel among hanging ropes, an unfinished
+braiding work resting on its seat, three strands of new pale hemp half-plaited and
+clamped at mid-length, a coil of raw hemp on the flagstones beside it, patient
+regular craftsmanship, warm light from a bright arch behind. Dark fantasy
+illustration, one single light source, deep crushed blacks, no fill light, high
+contrast, two-tone monochrome-friendly, strong readable shapes, matte painting,
+grim medieval interior, square composition, no text, no lettering, no watermark
+```
+
+## Le Champ des Fixés — base `scene_champ_des_fixes_b.png`
+*Raccord commun : soleil bas derrière une crête, poteaux noirs de hauteurs
+irrégulières en découpe, sol sombre et piqueté, horizon plat.*
+
+### `scene_champ_rangees_a.png` — « Les rangées et leurs noms »
+```
+Long regular rows of low wooden grave posts receding across a bleak field, the
+nearest posts freshly cut and pale with crisp shallow carvings, the distant ones
+grey and eroded almost smooth, one whole row bearing the same repeated date, low
+orange sun behind the ridge. Dark fantasy illustration, extreme backlight, one
+single light source, near-black silhouettes against a glowing orange sky, deep
+crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, matte
+painting, grim medieval rural, square composition, no text, no lettering, no
+watermark
+```
+
+### `scene_champ_poteaux_vierges_a.png` — « Les poteaux vierges, au fond »
+```
+Three blank new grave posts standing apart at the far end of a burial field,
+already carved with names but no dates, the third carving noticeably fresher and
+paler than the other two, turned earth at their feet, low orange sun behind them.
+Dark fantasy illustration, extreme backlight, one single light source, near-black
+silhouettes against a glowing orange sky, deep crushed blacks, no fill light, high
+contrast, two-tone monochrome-friendly, strong readable shapes, matte painting,
+grim medieval rural, square composition, no text, no lettering, no watermark
+```
+
+### `scene_champ_tombe_manquante_a.png` — « Un vide dans une rangée pleine »
+```
+One conspicuous gap in an otherwise unbroken row of grave posts, the earth in the
+gap old and packed and the socket carefully filled in rather than torn out, the
+neighbouring posts leaning slightly inward toward the empty space, low orange sun
+raking along the row. Dark fantasy illustration, extreme backlight, one single
+light source, near-black silhouettes against a glowing orange sky, deep crushed
+blacks, no fill light, high contrast, two-tone monochrome-friendly, strong
+readable shapes, matte painting, grim medieval rural, square composition, no text,
+no lettering, no watermark
+```
 
 ---
 
-# PRIORITÉ 3 — les lieux secondaires (12 images)
+# PRIORITÉ 2 — le Hameau, le Moulin, la Borne (9 plans)
 
-## Le Chemin Creux — base : `scene_chemin_creux_c.png`
+## Le Hameau, entrée — base `scene_landes_hameau_ruelle_b.png`
+*Raccord commun : ruelle pavée étroite, maisons de pierre serrées des deux côtés,
+fente de ciel orange au-dessus, pavés mouillés qui accrochent la lumière, coins
+de l'image assombris. La croix à la craie est déjà visible sur le mur de gauche
+de l'image large — le plan rapproché doit être CETTE croix.*
 
-| Fichier | Point | Prompt (+ bloc de style) |
-|---|---|---|
-| `scene_chemin_charrette_a.png` | La charrette embourbée | `abandoned cart sunk to its axles in mud in a sunken lane, empty bed, harness hanging cleanly cut rather than unbuckled, a small verdigrised bronze bell hanging from a nail under the seat, high earth banks on both sides` |
-| `scene_chemin_talus_a.png` | Le haut des talus | `top edge of a sunken lane's earth bank seen from below, a line of paired footprints running parallel to the road along its whole length, tall grass, nothing visible making them` |
-| `monstre_marcheur_rebours_b.png` | L'homme qui marche à reculons | `man walking backwards along a sunken lane, face turned toward what he is leaving behind, heels leading, arms loose, high banks channelling him, dusk` |
+### `scene_hameau_croix_craie_a.png` — « S'approcher de la croix »
+```
+Rough chalk cross drawn on the weathered plank door of a village house, the wood
+worn noticeably pale at that exact spot from crosses drawn and rubbed out many
+times before, close framing on the door, damp stone wall around it, warm light
+from the lit lane behind the viewer. Dark fantasy illustration, one single light
+source, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, strong readable shapes, matte painting, grim medieval
+village, square composition, no text, no lettering, no watermark
+```
 
-## La Mare aux Regards — base : `scene_mare_aux_regards_a.png`
+### ~~`monstre_femme_au_seuil_a.png`~~ — RIEN À FAIRE, déjà disponible
+« La femme sur le pas de porte » (hameau-entree-2) utilise désormais **`monstre_femme_au_seuil_b.png`**, ton portrait déjà
+validé — c'est aussi l'image de la rencontre qui suit, donc le plan rapproché
+et la rencontre raccordent d'eux-mêmes. Câblé, rien à produire.
 
-| Fichier | Point | Prompt (+ bloc de style) |
-|---|---|---|
-| `scene_mare_berge_a.png` | Le point de berge usé | `two knee-shaped hollows worn into the mud at the edge of a still black pool, remade by hundreds of people at the same exact spot, clawed finger marks in the dried mud beside them, reeds` |
-| `scene_mare_eau_a.png` | L'eau | `perfectly still black water surface seen from directly above at close range, a human reflection looking back up, the reflection's gaze lifted a fraction later than it should be, no ripples at all` |
-| `scene_mare_miroir_a.png` | Le reflet de métal, dans les roseaux | `small tarnished pocket mirror lying among reeds at a pond's edge, cracked straight across the middle exactly where a face would be, dull metal catching the only light` |
+## Le Hameau, la grange — base `scene_landes_hameau_grange_a.png`
+*Raccord : intérieur presque entièrement noir, éclairé par une SEULE lanterne
+posée au sol, poutres et cloison de planches à peine suggérées, paille autour de
+la flaque de lumière.*
 
-## Le Verger Noir — base : `scene_verger_noir_d.png`
+### `scene_hameau_grange_poutres_a.png` — « Examiner la grange »
+```
+Tally marks cut into a heavy roof beam at head height inside a barn, several
+separate series of scratched strokes, the last series stopping at only two marks,
+lit from below by a single lantern standing on the floor out of frame, straw dust
+drifting in the light, everything beyond the small pool of light crushed to black.
+Dark fantasy illustration, one single warm light source from below, deep crushed
+blacks, no fill light, high contrast, two-tone monochrome-friendly, strong
+readable shapes, matte painting, grim medieval interior, square composition, no
+text, no lettering, no watermark
+```
 
-| Fichier | Point | Prompt (+ bloc de style) |
-|---|---|---|
-| `scene_verger_fruits_a.png` | Les fruits, dans les rangs | `close view of round heavy ash-grey fruit hanging from black-leaved branches, skin flawless and matte, unnaturally dense-looking, planted orchard rows receding behind` |
-| `scene_verger_souche_a.png` | La souche, au bout du rang | `cleanly felled tree stump at the end of an orchard row, growth rings regular for decades then abruptly tight, black and illegible at the outer edge, axe cut smooth, dead leaves` |
-| `monstre_epoux_verger_b.png` | Les deux qui bêchent, au fond | `elderly couple planting saplings in dead grey soil at the far end of a black orchard, one digging, one holding the sapling, methodical and unhurried, seen from a distance, backs to the viewer` |
+## Le Moulin sans Ailes — base : la nouvelle vue de PRIORITÉ 0
+*Raccord commun : tour de pierre trapue, disque de soleil énorme derrière, lande
+sombre. ⚠️ Aucune aile.*
 
-## La Palissade Sud — base actuelle : `scene_lande_generique_4.png`
-⚠️ **Ce lieu n'a PAS d'image propre** : il tourne sur une vue générique des
-Landes. C'est le dernier lieu de la zone (le seuil de l'Acte II) — une
-`scene_palissade_sud_a.png` dédiée est la plus utile de toute cette liste.
+### `scene_moulin_croix_ombres_a.png` — « La croix d'ombres, en haut »
+**Le seul point où l'on RECULE** (zoom 0.9 en jeu) : cadrer plus LARGE que la vue
+du lieu, pas plus serré.
+```
+Stone windmill tower with no sails seen from a distance and from below, four pale
+unweathered bands radiating from the cap across the stonework in the shape of a
+cross where the vanes once shielded the stone, the rest of the wall darkened by
+years of wind, bleak stippled sky, wide framing with the tower small in the frame.
+Dark fantasy illustration, extreme backlight, one single light source, near-black
+silhouette against a glowing orange sky, deep crushed blacks, no fill light, high
+contrast, two-tone monochrome-friendly, matte painting, grim medieval rural,
+square composition, no text, no lettering, no watermark
+```
 
-| Fichier | Point | Prompt (+ bloc de style) |
-|---|---|---|
-| `scene_palissade_rondins_a.png` | Les rondins et leurs pointes | `close view of a palisade of blackened sharpened logs, the points unmistakably angled inward toward the viewer's side rather than outward, lashings, damp wood, bleak sky above` |
-| `scene_palissade_portillon_a.png` | Le portillon et son verrou | `small wooden gate set in a log palisade, a single heavy bolt on the north side, the surrounding planks deeply scratched at hand height by human fingers wanting through, worn threshold` |
-| `monstre_veilleur_palissade_a.png` | L'homme de la guérite | `night watchman sitting in a narrow plank sentry box built against a palisade, barely wide enough for him and his lantern, lantern at his feet, watching the viewer approach with the patience of someone who saw them long ago` |
+### `scene_moulin_lucarne_a.png` — « La lucarne, au-dessus de la porte »
+```
+Small empty dormer opening above the door of a stone mill, its inner sill
+conspicuously clean and free of dust unlike every surface around it, the opening
+itself pitch black, worn stonework, low orange light raking across the wall from
+the side. Dark fantasy illustration, one single light source, deep crushed blacks,
+no fill light, high contrast, two-tone monochrome-friendly, strong readable
+shapes, matte painting, grim medieval rural, square composition, no text, no
+lettering, no watermark
+```
+
+### `scene_moulin_interieur_a.png` — « Pousser la porte entrouverte »
+```
+Inside a derelict windmill, a straw pallet made up with squared-off care, a
+chipped clay pot holding fresh sprigs of heather beside it, everything else rotting
+and abandoned, nobody present, a single shaft of orange light falling from an
+opening above onto the pallet. Dark fantasy illustration, one single light source,
+deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly,
+strong readable shapes, matte painting, grim medieval interior, square composition,
+no text, no lettering, no watermark
+```
+
+## La Borne Frontière — base `scene_transition_borne_sud_a.png` (ou la nouvelle)
+*Raccord commun : granit anguleux sombre, liseré de lumière orange sur une seule
+arête, soleil bas, bruyère rase.*
+
+### `scene_borne_gravures_a.png` — « Les gravures de la pierre »
+```
+Close view of the face of a granite boundary stone densely covered in carved marks
+layered over centuries, names and dates and tally strokes overlapping, the surface
+saturated on this side while the adjacent face stays almost bare with only three
+marks on it, low orange sun grazing the stone from the side. Dark fantasy
+illustration, one single raking light source, deep crushed blacks, no fill light,
+high contrast, two-tone monochrome-friendly, strong readable shapes, matte
+painting, grim medieval rural, square composition, no text, no lettering, no
+watermark
+```
+
+### `scene_borne_eclat_a.png` — « Un angle cassé, au ras du sol »
+```
+Broken-off corner of a granite boundary marker lying half buried in heather at
+ground level, its fresh fracture pale against the weathered outer surface, palm
+sized, damp dark earth around it, low orange light grazing the ground. Dark
+fantasy illustration, one single raking light source, deep crushed blacks, no fill
+light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte
+painting, grim medieval rural, square composition, no text, no lettering, no
+watermark
+```
+
+### ~~`monstre_hesitant_a.png`~~ — RIEN À FAIRE, déjà disponible
+« L'homme qui regarde le sud » (borne-frontiere) utilise désormais **`monstre_hesitant_b.png`**, ton portrait déjà
+validé — c'est aussi l'image de la rencontre qui suit, donc le plan rapproché
+et la rencontre raccordent d'eux-mêmes. Câblé, rien à produire.
+
+---
+
+# PRIORITÉ 3 — les lieux secondaires (12 plans)
+
+## Le Chemin Creux — base `scene_chemin_creux_c.png`
+*Raccord commun : on est DANS le creux — cadre noir très dense de racines et de
+branches en surplomb, seule lumière au bout du couloir, sol du chemin éclairé qui
+fuit vers l'ouverture.*
+
+### `scene_chemin_charrette_a.png` — « La charrette embourbée »
+```
+Abandoned cart sunk to its axles in mud at the bottom of a sunken lane, bed empty,
+harness hanging cleanly cut through rather than unbuckled, a small verdigrised
+bronze bell hanging from a nail beneath the seat, high earth banks and overhanging
+roots crowding both sides, the only light coming from the far end of the lane. Dark
+fantasy illustration, one single distant light source, deep crushed blacks, no fill
+light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte
+painting, grim medieval rural, square composition, no text, no lettering, no
+watermark
+```
+
+### `scene_chemin_talus_a.png` — « Le haut des talus »
+```
+Top edge of a sunken lane's earth bank seen looking up from inside the lane, a
+line of paired footprints running along the crest parallel to the road for its
+whole length, tall grass and exposed roots against a thin strip of glowing orange
+sky, nothing visible that could have made the prints. Dark fantasy illustration,
+extreme backlight, one single light source, near-black silhouettes against a
+glowing orange sky, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, matte painting, grim medieval rural, square composition, no
+text, no lettering, no watermark
+```
+
+### ~~`monstre_marcheur_rebours_b.png`~~ — RIEN À FAIRE, déjà disponible
+« L'homme qui marche à reculons » (chemin-creux) utilise désormais **`monstre_marcheur_a_rebours_d.png`**, ton portrait déjà
+validé — c'est aussi l'image de la rencontre qui suit, donc le plan rapproché
+et la rencontre raccordent d'eux-mêmes. Câblé, rien à produire.
+
+## La Mare aux Regards — base `scene_mare_aux_regards_a.png`
+*Raccord commun : bandes horizontales — ciel orange, disque de soleil, son reflet
+dans une eau parfaitement immobile, roseaux en découpe, tout le reste noir.*
+
+### `scene_mare_berge_a.png` — « Le point de berge usé »
+```
+Two knee shaped hollows worn deep into the mud at the very edge of a still black
+pool, remade by hundreds of people in the same exact spot, clawed finger marks
+pressed into the dried mud beside them, reeds silhouetted at the side, low orange
+sun reflected on the flat water behind. Dark fantasy illustration, extreme
+backlight, one single light source, deep crushed blacks, no fill light, high
+contrast, two-tone monochrome-friendly, strong readable shapes, matte painting,
+grim medieval rural, square composition, no text, no lettering, no watermark
+```
+
+### `scene_mare_eau_a.png` — « L'eau »
+```
+Perfectly still black water seen from directly above at close range, no ripples at
+all, a human reflection looking back up out of it with the reflected gaze lifted a
+fraction later than it should be, the orange disc of the low sun also reflected at
+the edge of the frame. Dark fantasy illustration, one single reflected light
+source, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, strong readable shapes, matte painting, eerie, square
+composition, no text, no lettering, no watermark
+```
+
+### `scene_mare_miroir_a.png` — « Le reflet de métal, dans les roseaux »
+```
+Small tarnished pocket mirror lying among reeds at the edge of a pond, cracked
+straight across the middle exactly where a face would be, dull metal catching the
+only light in the frame from the low orange sun, dark mud and reed stems around
+it. Dark fantasy illustration, one single light source, deep crushed blacks, no
+fill light, high contrast, two-tone monochrome-friendly, strong readable shapes,
+matte painting, grim medieval rural, square composition, no text, no lettering, no
+watermark
+```
+
+## Le Verger Noir — base `scene_verger_noir_d.png`
+*Raccord commun : arbres noirs noueux et nus, fruits lourds qui pendent en
+découpe, disque de soleil derrière les branches, sol sombre.*
+
+### `scene_verger_fruits_a.png` — « Les fruits, dans les rangs »
+```
+Close view of round heavy ash grey fruit hanging from the bare black branches of a
+gnarled orchard tree, skin flawless and matte, unnaturally dense looking, planted
+orchard rows receding behind them, low orange sun burning through the branches.
+Dark fantasy illustration, extreme backlight, one single light source, near-black
+silhouettes against a glowing orange sky, deep crushed blacks, no fill light, high
+contrast, two-tone monochrome-friendly, strong readable shapes, matte painting,
+grim medieval rural, square composition, no text, no lettering, no watermark
+```
+
+### `scene_verger_souche_a.png` — « La souche, au bout du rang »
+```
+Cleanly felled tree stump at the end of an orchard row, its growth rings regular
+for decades then abruptly tight and black and illegible at the outer edge, the axe
+cut smooth and deliberate, dead grey leaves scattered around it, low orange light
+raking across the cut face. Dark fantasy illustration, one single raking light
+source, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, strong readable shapes, matte painting, grim medieval rural,
+square composition, no text, no lettering, no watermark
+```
+
+### ~~`monstre_epoux_verger_b.png`~~ — RIEN À FAIRE, déjà disponible
+« Les deux qui bêchent, au fond » (verger-noir) utilise désormais **`monstre_epoux_verger_a.png`**, ton portrait déjà
+validé — c'est aussi l'image de la rencontre qui suit, donc le plan rapproché
+et la rencontre raccordent d'eux-mêmes. Câblé, rien à produire.
+
+## La Palissade Sud — base : la nouvelle vue de PRIORITÉ 0
+*Raccord commun : troncs noircis appointés, soleil bas derrière le mur, air froid
+qui monte de l'autre côté.*
+
+### `scene_palissade_rondins_a.png` — « Les rondins et leurs pointes »
+```
+Close view of a palisade of blackened sharpened logs, the points unmistakably
+angled inward toward the viewer's side of the wall rather than outward, rope
+lashings binding them, damp scarred wood, low orange sky burning in the narrow
+gaps between the logs. Dark fantasy illustration, extreme backlight, one single
+light source, near-black silhouettes against a glowing orange sky, deep crushed
+blacks, no fill light, high contrast, two-tone monochrome-friendly, strong
+readable shapes, matte painting, grim medieval rural, square composition, no text,
+no lettering, no watermark
+```
+
+### `scene_palissade_portillon_a.png` — « Le portillon et son verrou »
+```
+Small wooden gate set into a palisade of blackened logs, one single heavy iron
+bolt fitted on the north side, the planks around the bolt deeply scratched at hand
+height by human fingers that wanted through, worn threshold, low orange light
+leaking through the seams of the gate. Dark fantasy illustration, one single light
+source, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, strong readable shapes, matte painting, grim medieval rural,
+square composition, no text, no lettering, no watermark
+```
+
+### `monstre_veilleur_palissade_a.png` — « L'homme de la guérite »
+```
+Night watchman sitting in a narrow plank sentry box built against a log palisade,
+barely wide enough for him and his lantern, the lantern on the ground at his feet
+as the only light source, watching the viewer approach with the patience of a man
+who saw them coming long ago. Dark fantasy illustration, one single warm light
+source from below, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, strong readable shapes, matte painting, grim medieval rural,
+square composition, no text, no lettering, no watermark
+```
 
 ---
 
 # Récapitulatif
 
-| Priorité | Images | Ce que ça débloque |
+| Priorité | À produire | Ce que ça débloque |
 |---|---|---|
+| **P0** | **3** | Corrige le Moulin (ses ailes contredisent son nom et son point d'intérêt), donne enfin une image à la Palissade Sud, et une vue dédiée à la Borne |
 | P1 | 12 | Colline, Tribunal, Chapelle, Champ — les lieux vus à presque chaque run |
-| P2 | 9 | Hameau, Moulin, Borne — la halte garantie + le tout premier écran |
-| P3 | 12 | Chemin Creux, Mare, Verger, Palissade |
-| **Total plans rapprochés** | **33** | pour 34 points d'intérêt : celui de l'écran du Serment est un dialogue, il garde le portrait de la Doyenne |
-| **À produire en plus — priorité haute** | **2** | `scene_palissade_sud_a.png` (le lieu n'a AUCUNE image propre) et `scene_borne_frontiere_a.png` (sa base est une image de transition) — ces deux-là valent mieux que n'importe quel plan rapproché |
+| P2 | 7 | Hameau, Moulin, Borne — la halte garantie + le tout premier écran |
+| P3 | 10 | Chemin Creux, Mare, Verger, Palissade |
+| **Total à produire** | **32** | |
+| Déjà disponible, câblé | 4 | l'Hésitant, la Femme au Seuil, le Marcheur à rebours et les Époux du Verger avaient déjà leur portrait validé : leurs points d'intérêt l'utilisent maintenant (et c'est la même image que la rencontre qui suit) |
+| Sans image, volontairement | 1 | le point de l'écran du Serment est un dialogue : il garde le portrait de la Doyenne |
 
-Rien n'est bloquant : tant qu'un plan rapproché n'existe pas, le crop de
-l'image du lieu tient la place.
+Si tu ne dois en faire qu'une poignée : **les 3 de P0 d'abord** (elles corrigent
+une incohérence et un trou), puis les 3 de la Colline aux Gibets (le lieu-signature
+que la traversée pousse à chaque liaison).
