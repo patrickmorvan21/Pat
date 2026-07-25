@@ -497,7 +497,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "chemin-creux",
-    illustration: "assets/scene_lande_generique_2.png",
+    illustration: "assets/scene_chemin_creux_c.png",
     chainNext: "chemin-creux-2",
     narration: [
       "Le chemin s'enfonce entre deux talus plus hauts que toi ; le ciel " +
@@ -574,7 +574,7 @@ export const SCENES: Scene[] = [
     /* Événement du Chemin Creux : le coude aveugle. Le lieu se referme sur son
        propre danger — l'endroit exact où il devrait y avoir quelque chose. */
     id: "chemin-creux-2",
-    illustration: "assets/scene_lande_generique_2.png",
+    illustration: "assets/scene_chemin_creux_c.png",
     narration: [
       "Le chemin tourne, et le talus mange la vue d'un coup. Passé le coude : " +
         "rien. C'est-à-dire l'endroit exact où il devrait y avoir quelque " +
@@ -997,7 +997,7 @@ export const SCENES: Scene[] = [
   {
     /* Lieu à POINTS D'INTÉRÊT (script Notion). */
     id: "champ-des-fixes",
-    illustration: "assets/scene_champ_des_fixes_c.png",
+    illustration: "assets/scene_champ_des_fixes_b.png",
     chainNext: "champ-des-fixes-2",
     narration: [
       "Pas de tombes — des poteaux. Des rangées de poteaux plantés droit, un " +
@@ -1058,7 +1058,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "champ-des-fixes-2",
-    illustration: "assets/scene_champ_des_fixes_c.png",
+    illustration: "assets/monstre_fossoyeur_poteaux_a.png",
     narration: [
       "Entre les rangs, un vieil homme redresse un poteau qui penche, avec " +
         "des gestes de jardinier. Il t'a vu venir de loin — les vivants " +
@@ -1169,7 +1169,7 @@ export const SCENES: Scene[] = [
        venir — on retombe en attendant sur l'ambiance générique de zone et les
        portraits existants (fallback prévu par la spec §4). */
     id: "serment-hameau",
-    illustration: "assets/scene_lande_generique_2.png",
+    illustration: "assets/scene_hameau_dense2_b.png",
     chainNext: "hameau-entree-2",
     narration: [
       "Les toits apparaissent au creux du plateau — de l'ardoise affaissée, " +
@@ -1202,7 +1202,7 @@ export const SCENES: Scene[] = [
     /* Beat 2 — Le seuil. La croix à la craie est un POINT D'INTÉRÊT : voir de
        loin → marcher → toucher (spec §1). */
     id: "hameau-entree-2",
-    illustration: "assets/scene_lande_generique_1.png",
+    illustration: "assets/scene_landes_hameau_ruelle_b.png",
     chainNext: "hameau-entree-3",
     narration: [
       "La première maison est à dix pas. Sur sa porte, un signe à la craie — " +
@@ -1537,7 +1537,7 @@ export const SCENES: Scene[] = [
     /* Beat 5 — L'entrée. Résolution, pas de choix : on passe. */
     id: "hameau-entree-5",
     hameauEntree: true,
-    illustration: "assets/scene_lande_generique_1.png",
+    illustration: "assets/scene_landes_hameau_ruelle_b.png",
     narration: [
       "Ils s'écartent. Pas beaucoup — juste assez pour que tu passes sans " +
         "toucher personne, et tu comprends que c'est calculé.",
@@ -1555,7 +1555,7 @@ export const SCENES: Scene[] = [
        après l'Entrée. Serment juré → la grange ; Serment refusé → beat 6
        « nuit dehors ». Émotion de sortie : soulagé ET coupable à la fois. */
     id: "hameau-halte-1",
-    illustration: "assets/scene_lande_generique_1.png",
+    illustration: "assets/scene_landes_hameau_ruelle_b.png",
     chainNext: "hameau-halte-2",
     narration: [
       "Le vieux te trouve avant que tu ne le cherches. C'est comme ça, ici : " +
@@ -1584,7 +1584,7 @@ export const SCENES: Scene[] = [
   {
     /* Beat 2 — La grange. La barre qu'on pose DEHORS. */
     id: "hameau-halte-2",
-    illustration: "assets/scene_moulin_sans_ailes_c.png",
+    illustration: "assets/scene_landes_hameau_grange_a.png",
     chainNext: "hameau-halte-3",
     narration: [
       "De la paille propre, une couverture qui a servi, une lampe qu'on te " +
@@ -1634,7 +1634,7 @@ export const SCENES: Scene[] = [
     /* Beat 3 — La nuit. Le script prévoit des variantes par palier de Soupçon ;
        le moteur choisit la bonne au moment de l'insertion (Scene.tsx). */
     id: "hameau-halte-3",
-    illustration: "assets/scene_moulin_sans_ailes_c.png",
+    illustration: "assets/scene_landes_hameau_grange_a.png",
     chainNext: "hameau-halte-4",
     narration: [
       "Le hameau ne dort pas comme un village. Pas de rires, pas de disputes, " +
@@ -1703,7 +1703,7 @@ export const SCENES: Scene[] = [
     /* Beat 5 — Le départ escorté. Sortie de la séquence → la traversée reprend
        vers la Palissade / la Descente. */
     id: "hameau-halte-5",
-    illustration: "assets/scene_lande_generique_4.png",
+    illustration: "assets/scene_hameau_dense_b.png",
     hameauHalte: true,
     narration: [
       "Ils sont deux à marcher avec toi jusqu'à la Palissade. Pas devant, pas " +
@@ -1722,7 +1722,7 @@ export const SCENES: Scene[] = [
     /* Beat 6 — variante « nuit dehors » (Serment refusé). Remplace les beats
        1-5 : aucune porte ne s'ouvre à qui n'a pas juré. */
     id: "hameau-halte-dehors",
-    illustration: "assets/scene_lande_generique_3.png",
+    illustration: "assets/scene_hameau_dense_c.png",
     hameauHalte: true,
     narration: [
       "Aucune porte, aucune grange. Tu dors contre un muret, côté nord — " +
@@ -2028,7 +2028,7 @@ export const SCENES: Scene[] = [
   {
     /* Événement du lieu (script Notion) : la Veuve tresse sans te regarder. */
     id: "chapelle-des-cordes-2",
-    illustration: "assets/scene_chapelle_des_cordes_d.png",
+    illustration: "assets/monstre_veuve_cordes_a.png",
     narration: [
       "Elle était là depuis le début. Une femme en noir, assise à la chaise, " +
         "qui refait sans fin le même nœud sans lever les yeux sur toi.",
@@ -2182,7 +2182,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "chien-du-bailli",
-    illustration: "assets/monstre_chien_du_bailli_b.png",
+    illustration: "assets/scene_maison_du_bailli_c.png",
     chainNext: "chien-du-bailli-2",
     narration: [
       "La plus grande maison du hameau est murée — de l'intérieur. Chaque " +
@@ -2772,7 +2772,7 @@ export const SCENES: Scene[] = [
     /* LES ÉPOUX DU VERGER — ils plantent le douzième. Ce qu'ils demandent
        n'est pas de l'aide : c'est une preuve que le dehors existe. */
     id: "epoux-1",
-    illustration: "assets/scene_verger_noir_d.png",
+    illustration: "assets/monstre_epoux_verger_a.png",
     chainNext: "epoux-2",
     narration: [
       "La femme se redresse la première. Elle ne sursaute pas — plus rien ne " +
@@ -2814,7 +2814,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "epoux-2",
-    illustration: "assets/scene_verger_noir_d.png",
+    illustration: "assets/monstre_epoux_verger_a.png",
     chainNext: "epoux-3",
     narration: [
       "— « Tu viens du dehors. » Ce n'est pas une question : c'est une prière " +
@@ -2870,7 +2870,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "epoux-3",
-    illustration: "assets/scene_verger_noir_d.png",
+    illustration: "assets/monstre_epoux_verger_a.png",
     chainNext: "verger-noir-2",
     narration: [
       "Ils se remettent au travail avant que tu sois sorti des rangs — le " +
@@ -3568,9 +3568,9 @@ export function makeLiaison(optA: string, optB: string, seed: number, ctx?: Liai
   const amb = pickLiaisonAmbiance(ctx ? { ...ctx, toOptions: [optA, optB] } : undefined, seed);
   const jl = LIAISON_JAILER[Math.floor(seeded(seed + 7) * LIAISON_JAILER.length)];
   // La marche a SON visuel (retour playtest 24/07 : « on passe d'une scène à
-  // l'autre sans marcher ») : une des 4 vues génériques des Landes, tirée par
-  // la graine (stable à la reprise). Fini le portail figé entre deux lieux.
-  const walkImg = LANDES_GENERIC[Math.floor(seeded(seed + 11) * LANDES_GENERIC.length)];
+  // l'autre sans marcher »), tiré par la graine (stable à la reprise). Fini le
+  // portail figé entre deux lieux.
+  const walkImg = pickWalkImage(optA, optB, seed);
   return {
     id: `liaison:${optA}>${optB}`,
     liaison: true,
@@ -3593,6 +3593,41 @@ export const LANDES_GENERIC = [
   "assets/scene_lande_generique_3.png",
   "assets/scene_lande_generique_4.png",
 ];
+
+/** Vues de MARCHE des Landes (lot Drive 25/07) : chemins, plateaux, fourches —
+    des images faites pour la liaison, pas pour un lieu. Elles s'ajoutent aux
+    4 génériques dans le tirage par défaut. */
+const LANDES_WALK = [
+  "assets/scene_landes_liaison_plateau_d.png",
+  "assets/scene_landes_liaison_fourche_a.png",
+  "assets/scene_lande_arbres_morts_c.png",
+  ...LANDES_GENERIC,
+];
+
+/** Les 3 vues d'ensemble du hameau que Patrick veut « varier entre des
+    scènes » (25/07) — la 4e, `scene_hameau_dense2_b`, est réservée au lieu
+    lui-même (« celle qui représente vraiment le hameau »). */
+const HAMEAU_WALK = [
+  "assets/scene_hameau_dense_b.png",
+  "assets/scene_hameau_dense_c.png",
+  "assets/scene_hameau_dense_d.png",
+];
+
+/**
+ * Visuel de la marche. Contextuel plutôt qu'au hasard : quand une des deux
+ * directions offertes a son image de chemin, on marche VERS elle (on voit le
+ * hameau grossir, le couloir de terre s'ouvrir, le sud se refroidir) ; sinon
+ * on tire dans le pool de marche. Seedé = stable à la reprise.
+ */
+function pickWalkImage(optA: string, optB: string, seed: number): string {
+  const offered = [optA, optB];
+  if (offered.includes("serment-hameau")) {
+    return HAMEAU_WALK[Math.floor(seeded(seed + 11) * HAMEAU_WALK.length)];
+  }
+  if (offered.includes("chemin-creux")) return "assets/scene_landes_liaison_chemin_creux_a.png";
+  if (offered.includes("palissade-sud")) return "assets/scene_landes_liaison_sud_c.png";
+  return LANDES_WALK[Math.floor(seeded(seed + 11) * LANDES_WALK.length)];
+}
 
 /**
  * Phrase d'APPROCHE d'un lieu (retour playtest 24/07 : « sans marcher et voir

@@ -139,5 +139,15 @@
  *           Colporteur, Écrivain, Mains du Puits).
  *   1.14.1 — Musique ACTIVE : les 4 mp3 de Patrick (PJ) intégrés dans
  *           public/audio/ — intro à l'accueil/prologue, boucles Landes en jeu.
+ *   1.18.1 — Lot d'illustrations Drive du 25/07 : re-vérification complète des
+ *           trois dossiers « 03_Validé » contre public/assets (les images déjà
+ *           en jeu correspondent octet pour octet, sauf le Champ des Fixés,
+ *           remplacé par sa version à jour). Le Hameau des Renonçants a enfin
+ *           sa vraie vue d'ensemble (et trois variantes qui servent de vue de
+ *           marche quand on va vers lui), la maison murée du Bailli, la ruelle
+ *           et la grange de la halte, le Chemin Creux, les Époux du Verger, le
+ *           fossoyeur du Champ et la Veuve de la chapelle. La marche entre deux
+ *           lieux prend l'image du chemin qu'on emprunte (creux, sud, hameau)
+ *           au lieu d'une vue tirée au hasard.
  */
-export const APP_VERSION = "1.18.0";
+export const APP_VERSION = "1.18.1";

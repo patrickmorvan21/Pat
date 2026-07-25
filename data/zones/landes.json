@@ -44,7 +44,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/scene_champ_des_fixes_c.png",
+      "illustration": "assets/scene_champ_des_fixes_b.png",
       "portrait_requis": false
     },
     {
@@ -89,7 +89,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_hameau_dense2_b.png",
       "portrait_requis": false
     },
     {
@@ -119,7 +119,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_maison_du_bailli_c.png",
       "portrait_requis": false
     },
     {
@@ -209,7 +209,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_chemin_creux_c.png",
       "portrait_requis": false
     },
     {
@@ -277,7 +277,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_fossoyeur_poteaux_a.png",
       "portrait_requis": false
     },
     {
@@ -322,7 +322,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_veuve_cordes_a.png",
       "portrait_requis": false
     },
     {
@@ -458,7 +458,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_epoux_verger_a.png",
       "portrait_requis": false
     },
     {
