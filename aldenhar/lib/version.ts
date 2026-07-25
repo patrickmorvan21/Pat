@@ -149,5 +149,10 @@
  *           fossoyeur du Champ et la Veuve de la chapelle. La marche entre deux
  *           lieux prend l'image du chemin qu'on emprunte (creux, sud, hameau)
  *           au lieu d'une vue tirée au hasard.
+ *   1.18.2 — Re-synchro Drive du 25/07 (2e passe) : deux images déjà en jeu
+ *           mises à jour (meute grise = 6 chiens à contre-jour, petite fixée
+ *           dédupliquée) ; 13 nouveaux fichiers récupérés et vérifiés mais
+ *           volontairement pas câblés (rencontres/chapitres/liaisons pas
+ *           encore écrits côté code) — voir CLAUDE.md pour le détail.
  */
-export const APP_VERSION = "1.18.1";
+export const APP_VERSION = "1.18.2";
