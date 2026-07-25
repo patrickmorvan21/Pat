@@ -110,8 +110,18 @@ export type PointInteret = {
   approche: string;
   /** Examen au plan rapproché (crop ×2-3 de l'image du lieu). */
   examen: string;
-  /** Facteur de crop du plan rapproché (défaut 2.2). Production gratuite : on
-      zoome l'image du lieu, on ne produit pas un nouvel asset (spec §4). */
+  /**
+   * Plan rapproché DÉDIÉ (retour Patrick 25/07 : « il faudrait des images plus
+   * détaillées »). Chemin `assets/…` d'une illustration produite pour ce point
+   * précis. Quand elle existe, elle REMPLACE le crop CSS ; sinon on retombe sur
+   * le zoom de l'image du lieu — donc déposer le fichier et remplir ce champ
+   * suffit, aucun autre code à toucher.
+   * ⚠️ L'image doit être dérivée de l'illustration du LIEU (même décor, même
+   * lumière, même matière) : sinon le plan rapproché ne raccorde pas.
+   */
+  illustration?: string;
+  /** Facteur de crop du plan rapproché (défaut 2.2). Utilisé seulement quand il
+      n'y a pas d'`illustration` dédiée (spec §4 : production gratuite). */
   zoom?: number;
   /** Cadrage du crop (object-position CSS), ex. "50% 30%". */
   focus?: string;
@@ -3333,6 +3343,39 @@ const APPROACH: Record<string, string> = {
 /** Pool des destinations tirables (tout ce qui a une phrase d'orientation). */
 export const TRAVERSAL_POOL = Object.keys(APPROACH);
 
+/**
+ * Les lieux qui sont DANS le Hameau des Renonçants (carte Figma 2112:325 : le
+ * cadre pointillé « Le Hameau des Renonçants » va de (810,620) à (1790,1280),
+ * et ces chips y tombent à l'intérieur).
+ *
+ * ⚠️ Retour Patrick 25/07 : sans cette notion, la traversée pouvait t'envoyer à
+ * la Chapelle des Cordes — donc à l'intérieur du village — puis t'offrir plus
+ * loin « Vers la fumée d'un hameau », c'est-à-dire la séquence d'ARRIVÉE au
+ * hameau alors que tu en sortais. D'où la règle : on n'entre dans le Hameau que
+ * par sa séquence garantie, et une fois entré cette séquence ne peut plus être
+ * proposée (cf. `pickLiaisonOptions`).
+ *
+ * La Tour de Guet effondrée est aussi dans le cadre sur la carte, mais elle n'a
+ * pas encore de scène écrite — à ajouter ici en même temps que son contenu.
+ */
+export const HAMEAU_INTERIOR = [
+  "chapelle-des-cordes",
+  "chien-du-bailli", // La Maison du Bailli (murée) — la scène porte le nom du chien
+  "petit-tribunal",
+  "puits-condamne",
+  "marche-muet",
+];
+
+/** La séquence d'arrivée au Hameau (5 beats garantis, hors tirage). */
+const HAMEAU_GATE = "serment-hameau";
+
+/** Un lieu est-il à l'intérieur du village ? (tolère les écrans « -2 »). */
+export function isHameauInterior(id: string | undefined): boolean {
+  if (!id) return false;
+  const base = id.replace(/-2$/, "");
+  return HAMEAU_INTERIOR.includes(base) || base.startsWith("hameau-");
+}
+
 /** Ambiances de marche génériques (spec 21/07) — FALLBACK quand aucune liaison
     contextuelle ne s'applique. Comptent dans le pool des ~30 (chantier 4). */
 const LIAISON_AMBIANCES: string[] = [
@@ -3505,6 +3548,23 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
     to: ["puits-condamne"],
     text: "Un son porte jusqu'ici — des coups sourds, réguliers, patients. Trois, une pause. Le genre de son qu'on suit malgré soi, juste pour le faire taire.",
   },
+
+  // ——— DANS le hameau (3) — retour Patrick 25/07 ———
+  // Une fois passé le barrage, on ne « marche plus dans la lande » : on longe
+  // des murs. Ces variantes ont la provenance la plus large possible pour
+  // couvrir tout déplacement intérieur du village.
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Tu longes les murets d'une ruelle à l'autre. Pas de lande ici : des murs à hauteur d'épaule, des portes closes, et le bruit de tes pas qui revient de trop près.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Le village se traverse en quelques dizaines de pas, et pourtant chaque rue semble tourner pour te faire repasser devant les mêmes fenêtres. Derrière les volets, on compte tes passages.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Une ruelle, une cour, une autre ruelle. Le hameau ne t'empêche pas de circuler — il te laisse faire, et note l'itinéraire.",
+  },
 ];
 
 /** Spécificité d'une variante = nombre de conditions posées (départage). */
@@ -3570,7 +3630,7 @@ export function makeLiaison(optA: string, optB: string, seed: number, ctx?: Liai
   // La marche a SON visuel (retour playtest 24/07 : « on passe d'une scène à
   // l'autre sans marcher »), tiré par la graine (stable à la reprise). Fini le
   // portail figé entre deux lieux.
-  const walkImg = pickWalkImage(optA, optB, seed);
+  const walkImg = pickWalkImage(optA, optB, seed, ctx?.from);
   return {
     id: `liaison:${optA}>${optB}`,
     liaison: true,
@@ -3619,9 +3679,17 @@ const HAMEAU_WALK = [
  * hameau grossir, le couloir de terre s'ouvrir, le sud se refroidir) ; sinon
  * on tire dans le pool de marche. Seedé = stable à la reprise.
  */
-function pickWalkImage(optA: string, optB: string, seed: number): string {
+function pickWalkImage(optA: string, optB: string, seed: number, from?: string): string {
   const offered = [optA, optB];
-  if (offered.includes("serment-hameau")) {
+  // On MARCHE DANS le hameau (retour Patrick 25/07 : « c'est une image
+  // générique des landes et non du hameau alors que j'en ai pleins ») : dès
+  // qu'on vient d'une ruelle du village ou qu'on y va, la vue de marche est le
+  // village, pas la bruyère. `scene_hameau_dense2_b` reste réservée au lieu.
+  if (
+    offered.includes(HAMEAU_GATE) ||
+    isHameauInterior(from) ||
+    offered.some((o) => isHameauInterior(o))
+  ) {
     return HAMEAU_WALK[Math.floor(seeded(seed + 11) * HAMEAU_WALK.length)];
   }
   if (offered.includes("chemin-creux")) return "assets/scene_landes_liaison_chemin_creux_a.png";
@@ -3660,9 +3728,21 @@ export const APPROACH_NARRATION: Record<string, string> = {
  * choisis dans le pool via la graine (stable à la reprise). Si le pool est
  * presque épuisé, complète avec ce qui reste.
  */
-export function pickLiaisonOptions(visited: string[], seed: number): [string, string] {
-  const remaining = TRAVERSAL_POOL.filter((id) => !visited.includes(id));
-  const src = remaining.length >= 2 ? remaining : TRAVERSAL_POOL.filter((id) => !visited.slice(-1).includes(id));
+export function pickLiaisonOptions(
+  visited: string[],
+  seed: number,
+  hameauEntree = true
+): [string, string] {
+  // Porte du Hameau (retour Patrick 25/07) : tant qu'on n'est pas entré par la
+  // séquence garantie, l'INTÉRIEUR du village n'est pas offert — on ne se
+  // retrouve pas dans la chapelle sans avoir passé le barrage. Une fois entré,
+  // c'est la séquence d'arrivée qui disparaît du pool : on n'« arrive » pas
+  // deux fois dans un village où l'on est déjà.
+  const gated = TRAVERSAL_POOL.filter((id) =>
+    hameauEntree ? id !== HAMEAU_GATE : !isHameauInterior(id)
+  );
+  const remaining = gated.filter((id) => !visited.includes(id));
+  const src = remaining.length >= 2 ? remaining : gated.filter((id) => !visited.slice(-1).includes(id));
   // Mélange déterministe (Fisher-Yates seedé) puis on prend les 2 premiers.
   const arr = [...src];
   for (let i = arr.length - 1; i > 0; i--) {

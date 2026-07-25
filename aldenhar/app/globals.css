@@ -472,14 +472,25 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .image-swap { animation: none; }
 }
+/* Bande de dissolution du bord bas de l'illustration.
+   Asset = export FIDÈLE du composant Figma « bande_dissolution_haut 3 »
+   (node 2225:544) : 390×41 à l'échelle 1:1 de l'écran, plein sur ~4 px puis
+   dissolution jusqu'à ~1 %.
+   ⚠️ NE JAMAIS remettre `background-size: 100% 100%` (retour Patrick 25/07) :
+   étirer un asset au pixel déforme les pavés de 2 px et écrase la courbe de
+   densité — le plein devient une barre noire qui ne lit plus comme une trame.
+   On garde donc la taille NATIVE et on répète en X : la bande couvre toute la
+   largeur quel que soit l'écran, sans une seule cellule déformée. */
 .dissolve-bottom {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: 42px;
+  height: 41px;
   /* background-image posé inline dans Scene.tsx (URL relative, compatible basePath) */
-  background-size: 100% 100%;
+  background-size: 390px 41px;
+  background-repeat: repeat-x;
+  background-position: left bottom;
   transform: scaleY(-1);
   pointer-events: none;
 }

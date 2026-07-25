@@ -154,5 +154,13 @@
  *           dédupliquée) ; 13 nouveaux fichiers récupérés et vérifiés mais
  *           volontairement pas câblés (rencontres/chapitres/liaisons pas
  *           encore écrits côté code) — voir CLAUDE.md pour le détail.
+ *   1.19.0 — Retours playtest 25/07 : la bande de dissolution est l'export
+ *           fidèle du composant Figma et n'est plus étirée (pleine largeur sur
+ *           tout écran) ; le Hameau devient un vrai intérieur — on n'y entre
+ *           que par sa séquence, ses lieux ne sont plus tirables avant, et on
+ *           y marche dans des ruelles (vues du village, ambiances dédiées) ;
+ *           les descriptions passent derrière un CTA « Observer les alentours »
+ *           pour revenir à 3 choix par écran ; la musique tourne réellement sur
+ *           les 3 boucles des Landes et démarre au premier geste, où qu'il soit.
  */
-export const APP_VERSION = "1.18.2";
+export const APP_VERSION = "1.19.0";

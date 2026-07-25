@@ -12,6 +12,7 @@ import {
   jailerTaunt,
   makeLiaison,
   pickLiaisonOptions,
+  isHameauInterior,
   sceneById,
   APPROACH_NARRATION,
   SOUPCON_PALIERS,
@@ -100,6 +101,11 @@ function objectImage(kind: BesaceItem["kind"]): string {
 
 type ImageKind = "scene" | "object";
 
+/* Ouverture/fermeture du sous-menu des descriptions (points d'intérêt). Ce ne
+   sont PAS des choix de fiction : ils ne consomment ni tour ni dé. */
+const OBSERVE_OPEN = "observe-open";
+const OBSERVE_CLOSE = "observe-close";
+
 // La position à l'écran ne doit jamais prédire le type de choix (CLAUDE.md) :
 // Fisher-Yates seedé par le pas de progression (stable au re-render et à la
 // reprise). La scène 0 garde l'ordre exact de la frame Figma.
@@ -185,6 +191,9 @@ export default function Scene() {
   // Plan RAPPROCHÉ d'un point d'intérêt : crop de l'image du lieu (production
   // gratuite, spec §4 — on ne génère pas un asset par point). null = plan large.
   const [poiZoom, setPoiZoom] = useState<{ zoom: number; focus: string } | null>(null);
+  // Sous-menu « Observer les alentours » ouvert ? (retour Patrick 25/07 : 3 CTA
+  // max par écran — les descriptions passent derrière un seul bouton.)
+  const [poiOpen, setPoiOpen] = useState(false);
   // Dernière illustration de SCÈNE (repos de l'image). L'image d'objet n'est
   // qu'un remplacement momentané ; on revient toujours à cette scène-là.
   const lastSceneIlloRef = useRef<string>(PORTAL);
@@ -263,11 +272,40 @@ export default function Scene() {
   // disparaît de la liste ; quand il n'en reste plus, seuls les choix du lieu
   // (l'événement / la sortie) subsistent.
   const openPois = (scene.pointsInteret ?? []).filter((p) => !poiSeen.includes(p.id));
-  const poiChoices: Choice[] = openPois.map((p) => ({ id: `poi-${p.id}`, label: p.label, poi: p.id }));
+  // ⚠️ Retour Patrick 25/07 : lister chaque point d'intérêt à côté des actions
+  // du lieu donnait 4 à 5 CTA et cassait la règle des 3 choix par écran. Les
+  // points passent donc derrière UN seul CTA « Observer les alentours » qui
+  // ouvre la liste des descriptions. Ouvrir/fermer ce sous-menu ne consomme
+  // ni tour, ni dé, ni changement d'image : c'est de l'affichage.
+  // Quand le lieu offre encore des descriptions, les choix PASSIFS de la scène
+  // (regarder, écouter, ne rien faire — pas de dé, pas de stat) rejoignent le
+  // sous-menu : ils appartiennent au même registre contemplatif que les points
+  // d'intérêt. Le niveau supérieur ne garde que les ACTES, ce qui ramène l'écran
+  // aux 3 choix de la règle du jeu.
+  // ⚠️ Garde-fou : on ne descend un passif que s'il RESTE un acte au niveau
+  // supérieur. Sinon l'écran du Serment (dont les trois serments sont tous
+  // passifs — jurer n'est pas un jet) se retrouvait vidé, avec le choix le plus
+  // lourd de la zone caché derrière « Observer ». Un serment ne descend jamais.
+  const hasPois = openPois.length > 0;
+  const demotable = (c: Choice) => Boolean(c.passive) && !c.serment;
+  const canDemote = hasPois && shuffledChoices.some((c) => !demotable(c));
+  const acts = canDemote ? shuffledChoices.filter((c) => !demotable(c)) : shuffledChoices;
+  const looks = canDemote ? shuffledChoices.filter(demotable) : [];
+  const poiGroup: Choice[] = poiOpen
+    ? [
+        ...openPois.map((p) => ({ id: `poi-${p.id}`, label: p.label, poi: p.id })),
+        ...looks,
+        { id: OBSERVE_CLOSE, label: "Ne rien regarder de plus" },
+      ]
+    : hasPois
+      ? [{ id: OBSERVE_OPEN, label: "Observer les alentours" }]
+      : [];
+  // Sous-menu ouvert : on n'affiche QUE les descriptions (sinon on cumule les
+  // deux listes et on retombe à 5 boutons).
   // 4e choix contextuel (spec 21/07 point 4) : un objet ACTIF pertinent ajouté
   // en bas des choix (calculé hors rendu dans un effet — lit la Besace/santé).
-  const withPois = [...poiChoices, ...shuffledChoices];
-  const renderedChoices = activeChoice ? [...withPois, activeChoice] : withPois;
+  const withPois = poiOpen ? poiGroup : [...poiGroup, ...acts];
+  const renderedChoices = activeChoice && !poiOpen ? [...withPois, activeChoice] : withPois;
 
   function persist(mutate: (run: RunState) => void) {
     const run = runRef.current ?? loadRun();
@@ -308,6 +346,7 @@ export default function Scene() {
     setActiveTypingId(null);
     setChoicesHidden(true);
     setCompact(false); // nouvel écran : illustration pleine par défaut
+    setPoiOpen(false); // et le sous-menu des descriptions se referme
     setBeats(entries);
     persist((run) => {
       // Persisté pour la reprise : run.feed = écran courant (petit), ce qui
@@ -567,13 +606,22 @@ export default function Scene() {
       }
     } else {
       const seed = (nextStep * 101 + trav.visited.length * 7) >>> 0;
-      const pair = pickLiaisonOptions(trav.visited, seed);
+      const entered = Boolean(runRef.current?.hameau?.entree);
+      const pair = pickLiaisonOptions(trav.visited, seed, entered);
       // Chapitre garanti (chantier 2 du 23/07) : tant que le développement n'a
       // pas été joué, son lieu figure TOUJOURS parmi les orientations offertes
       // (slot choisi par la graine pour ne pas être toujours le même bouton).
+      // ⚠️ La garantie respecte la porte du Hameau (25/07) : deux des quatre
+      // chapitres se jouent à l'intérieur du village (Petit Tribunal, Maison du
+      // Bailli) — les forcer avant le barrage rouvrirait l'incohérence.
       const chapGuard = runRef.current?.chapter;
       const chapDef = chapGuard && chapGuard.stage < 2 ? chapterById(chapGuard.id) : null;
-      if (chapDef && !trav.visited.includes(chapDef.lieuId) && !pair.includes(chapDef.lieuId)) {
+      if (
+        chapDef &&
+        !trav.visited.includes(chapDef.lieuId) &&
+        !pair.includes(chapDef.lieuId) &&
+        (entered || !isHameauInterior(chapDef.lieuId))
+      ) {
         pair[seed % 2] = chapDef.lieuId;
       }
       // Signature garantie (chantier 6 du 23/07) : la Colline aux Gibets est
@@ -820,6 +868,17 @@ export default function Scene() {
 
   function onSelect(choice: Choice) {
     if (choice.locked || rolling || selectedId) return;
+    // Sous-menu des descriptions : pur affichage. On ne passe pas par
+    // `setSelectedId` (qui masque les CTA et enclenche une transition) — le
+    // texte à l'écran, l'image et la scène ne bougent pas d'un pixel.
+    if (choice.id === OBSERVE_OPEN) {
+      setPoiOpen(true);
+      return;
+    }
+    if (choice.id === OBSERVE_CLOSE) {
+      setPoiOpen(false);
+      return;
+    }
     // Nœud terminal (la Descente, spec 21/07 « fin sèche ») : la traversée est
     // finie — on repart d'une run neuve (nouveau héros, Borne).
     if (scene.terminal) {
@@ -871,7 +930,10 @@ export default function Scene() {
         }
         const seen = [...poiSeen, poi.id];
         setPoiSeen(seen);
-        setPoiZoom({ zoom: poi.zoom ?? 2.2, focus: poi.focus ?? "50% 50%" });
+        // Plan rapproché : image DÉDIÉE si elle existe (25/07), sinon crop CSS
+        // de l'illustration du lieu. Les deux cas s'excluent — un asset déjà
+        // cadré ne doit pas être re-zoomé par-dessus.
+        setPoiZoom(poi.illustration ? null : { zoom: poi.zoom ?? 2.2, focus: poi.focus ?? "50% 50%" });
         persist((run) => {
           run.poiSeen = seen;
           if (poi.soupcon) run.soupcon = Math.max(0, Math.min(6, (run.soupcon ?? 0) + poi.soupcon));
@@ -891,8 +953,9 @@ export default function Scene() {
           advance({ toScene: poi.leadsTo, prepend: entries });
           return;
         }
-        // Même scène, écran remplacé : l'image reste celle du lieu (zoomée).
-        showScreen(entries, { src: lastSceneIlloRef.current, kind: "scene" });
+        // Même scène, écran remplacé : plan rapproché dédié s'il existe, sinon
+        // l'image du lieu (zoomée par `poiZoom`).
+        showScreen(entries, { src: poi.illustration ?? lastSceneIlloRef.current, kind: "scene" });
         return;
       }
     }
