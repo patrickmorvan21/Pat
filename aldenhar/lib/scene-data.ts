@@ -300,7 +300,9 @@ export const SCENES: Scene[] = [
     // Scène 0 — l'entrée de zone. Le crépuscule éternel et le bruit écrit
     // (« quelque part, une corde grince ») se posent ici, une fois pour toutes.
     id: "borne-frontiere",
-    illustration: "assets/scene_transition_borne_sud_a.png",
+    // Vue DÉDIÉE du tout premier écran du jeu (lot 25/07) : l'ancienne image
+    // était une vue de transition, aussi tirée dans le pool des marches.
+    illustration: "assets/scene_borne_frontiere_a_c.png",
     narration: [
       "La lande s'ouvre sous un crépuscule qui ne tombe pas. La lumière " +
         "reste prise entre chien et loup, comme un souffle retenu. Quelque " +
@@ -2902,7 +2904,9 @@ export const SCENES: Scene[] = [
     // Dernière scène de la rotation : la sortie de zone (La Descente) se
     // montre mais reste verrouillée — l'Acte II n'existe pas encore.
     id: "palissade-sud",
-    illustration: "assets/scene_lande_generique_4.png",
+    // Le lieu a enfin sa propre image (lot 25/07) — il tournait sur une vue
+    // générique de la lande alors que c'est le seuil de l'Acte II.
+    illustration: "assets/scene_palissade_sud_a_a.png",
     loot: "lanterne-veilleur",
     chainNext: "palissade-sud-2",
     narration: [

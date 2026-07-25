@@ -48,22 +48,30 @@ texte gravé lisible — suggérer les marques, ne jamais les écrire.
 
 # PRIORITÉ 0 — les 3 vues de lieu manquantes ou fausses
 
-### `scene_moulin_sans_ailes_d.png` — remplace la vue actuelle (ailes en trop)
-**Raccord** : garder le cadrage et l'échelle de l'actuelle (tour trapue sur un
-tertre, énorme disque de soleil derrière, lande sombre en premier plan), mais
-**sans aucune aile**.
+### `scene_moulin_sans_ailes_d.png` — ⚠️ 1re tentative RATÉE, à refaire
+La génération du 25/07 a **gardé les quatre ailes** malgré « sail assembly
+completely gone ». C'est un piège classique : le mot *windmill* appelle les ailes,
+et un modèle de diffusion ne sait pas retirer un élément sur commande. Il faut
+décrire **ce qui est là**, sans jamais nommer un moulin :
 ```
-Ruined stone windmill tower standing on a low mound, its sail assembly completely
-gone, only the bare stump of the axle left at the cap, four pale unweathered bands
-radiating across the stonework where the vanes once shielded it, huge low orange
-sun disc directly behind the tower, dark moorland in the foreground. Dark fantasy
+Squat round stone tower alone on a low mound on open moorland, no blades, no
+vanes, no timber structure of any kind at its top, just a bare truncated cap of
+masonry with a single short broken iron stub at its centre, four pale
+unweathered vertical bands on the stonework below the cap, huge low orange sun
+disc directly behind the tower, dark moor in the foreground. Dark fantasy
 illustration, extreme backlight, one single light source, near-black silhouette
 against a glowing orange sky, deep crushed blacks, no fill light, high contrast,
-two-tone monochrome-friendly, strong readable shapes, matte painting, grim
-medieval rural, square composition, no text, no lettering, no watermark
+two-tone monochrome-friendly, matte painting, grim medieval rural, square
+composition, no text, no lettering, no watermark
 ```
+Si le modèle insiste, l'autre solution est de générer une **tour ronde en
+ruine** sans mentionner de moulin du tout, et de laisser le texte du jeu faire
+le travail (« un moulin privé de ses ailes »).
 
-### `scene_palissade_sud_a.png` — le lieu n'a aucune image
+### `scene_palissade_sud_a.png` — ✅ FAIT (`scene_palissade_sud_a_a.png`, câblé)
+Réserve : tout le contenu est dans le tiers HAUT de l'image, la moitié basse est
+noire. Ça passe en jeu, mais une version avec le mur plus centré serait mieux.
+Prompt d'origine :
 **Raccord** : même langage que les autres extérieurs (contre-jour, soleil bas,
 premier plan noir). Le mur doit barrer tout l'horizon.
 ```
@@ -77,7 +85,8 @@ monochrome-friendly, strong readable shapes, matte painting, grim medieval rural
 square composition, no text, no lettering, no watermark
 ```
 
-### `scene_borne_frontiere_a.png` — vue dédiée du premier écran du jeu
+### `scene_borne_frontiere_a.png` — ✅ FAIT (`scene_borne_frontiere_a_c.png`, câblé)
+Prompt d'origine :
 **Raccord** : reprendre exactement l'esprit de l'actuelle (menhir anguleux à
 gauche, disque de soleil bas à droite, lande plate), mais en plan plus serré sur
 la pierre pour qu'elle domine.
