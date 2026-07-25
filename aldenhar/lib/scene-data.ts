@@ -316,6 +316,7 @@ export const SCENES: Scene[] = [
       {
         id: "gravures-borne",
         label: "Les gravures de la pierre",
+        illustration: "assets/scene_borne_gravures_a_d.png",
         zoom: 2.6,
         focus: "50% 45%",
         approche:
@@ -331,6 +332,7 @@ export const SCENES: Scene[] = [
       {
         id: "eclat-descelle",
         label: "Un angle cassé, au ras du sol",
+        illustration: "assets/scene_borne_eclat_a_b.png",
         zoom: 2.8,
         focus: "40% 70%",
         grantsLoot: "pierre-retour",
@@ -526,6 +528,7 @@ export const SCENES: Scene[] = [
       {
         id: "charrette-embourbee",
         label: "La charrette embourbée",
+        illustration: "assets/scene_chemin_charrette_a_c.png",
         zoom: 2.5,
         focus: "45% 60%",
         grantsLoot: "grelot-charretier",
@@ -542,6 +545,7 @@ export const SCENES: Scene[] = [
       {
         id: "talus-empreintes",
         label: "Le haut des talus",
+        illustration: "assets/scene_chemin_talus_a_c.png",
         zoom: 2.4,
         focus: "50% 25%",
         approche:
@@ -805,6 +809,7 @@ export const SCENES: Scene[] = [
       {
         id: "potences-cercle",
         label: "Les potences du cercle",
+        illustration: "assets/scene_colline_potences_cercle_a_c.png",
         zoom: 2.1,
         focus: "35% 45%",
         approche:
@@ -819,6 +824,7 @@ export const SCENES: Scene[] = [
       {
         id: "gibet-vide",
         label: "Le Gibet Vide, au centre",
+        illustration: "assets/scene_colline_gibet_vide_a_b.png",
         zoom: 2.6,
         focus: "50% 25%",
         approche:
@@ -1026,6 +1032,7 @@ export const SCENES: Scene[] = [
       {
         id: "les-rangees",
         label: "Les rangées et leurs noms",
+        illustration: "assets/scene_champ_rangees_a_d.png",
         zoom: 2.2,
         focus: "45% 50%",
         approche:
@@ -1041,6 +1048,7 @@ export const SCENES: Scene[] = [
       {
         id: "poteaux-vierges",
         label: "Les poteaux vierges, au fond",
+        illustration: "assets/scene_champ_poteaux_vierges_a_a.png",
         zoom: 2.5,
         focus: "70% 55%",
         soupcon: 1, // réagir devant les poteaux d'avance se voit
@@ -1057,6 +1065,7 @@ export const SCENES: Scene[] = [
       {
         id: "tombe-sans-poteau",
         label: "Un vide dans une rangée pleine",
+        illustration: "assets/scene_champ_tombe_manquante_a_c.png",
         zoom: 2.7,
         focus: "30% 62%",
         approche:
@@ -1229,6 +1238,7 @@ export const SCENES: Scene[] = [
       {
         id: "croix-craie",
         label: "S'approcher de la croix",
+        illustration: "assets/scene_hameau_croix_craie_a_a.png",
         zoom: 2.6,
         focus: "45% 45%",
         approche:
@@ -1615,6 +1625,7 @@ export const SCENES: Scene[] = [
       {
         id: "examiner-grange",
         label: "Examiner la grange",
+        illustration: "assets/scene_hameau_grange_poutres_a_d.png",
         zoom: 2.5,
         focus: "50% 55%",
         approche:
@@ -1864,7 +1875,7 @@ export const SCENES: Scene[] = [
     // Campement de zone : le Moulin sans Ailes. L'id reste « campement »
     // (Scene.tsx exclut cet id du soin aléatoire d'exploration).
     id: "campement",
-    illustration: "assets/scene_moulin_sans_ailes_c.png",
+    illustration: "assets/scene_moulin_sans_ailes_d_d.png",
     chainNext: "campement-2",
     narration: [
       "Le moulin n'a plus d'ailes mais il a gardé leur trace : quatre ombres " +
@@ -1877,6 +1888,7 @@ export const SCENES: Scene[] = [
       {
         id: "croix-ombres",
         label: "La croix d'ombres, en haut",
+        illustration: "assets/scene_moulin_croix_ombres_a_d.png",
         // Il faut RECULER pour la voir entière : le plan s'élargit au lieu de
         // se resserrer — seul point d'intérêt de la zone à zoom < 1.
         zoom: 0.9,
@@ -1894,6 +1906,7 @@ export const SCENES: Scene[] = [
       {
         id: "lucarne-moulin",
         label: "La lucarne, au-dessus de la porte",
+        illustration: "assets/scene_moulin_lucarne_a_b.png",
         zoom: 2.7,
         focus: "50% 30%",
         approche:
@@ -1908,6 +1921,7 @@ export const SCENES: Scene[] = [
       {
         id: "interieur-moulin",
         label: "Pousser la porte entrouverte",
+        illustration: "assets/scene_moulin_interieur_a_d.png",
         zoom: 2.2,
         focus: "50% 55%",
         approche:
@@ -1954,7 +1968,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "campement-2",
-    illustration: "assets/scene_moulin_sans_ailes_c.png",
+    illustration: "assets/scene_moulin_sans_ailes_d_d.png",
     narration: [
       "Par la lucarne, le crépuscule ne bouge pas. On dit qu'une fille " +
         "dort ici, parfois — la seule pendue qui se soit relevée. Le lit de " +
@@ -1997,6 +2011,7 @@ export const SCENES: Scene[] = [
       {
         id: "mur-cordes",
         label: "Le mur des cordes, au fond",
+        illustration: "assets/scene_chapelle_mur_cordes_a_d.png",
         zoom: 2.3,
         focus: "60% 45%",
         approche:
@@ -2012,6 +2027,7 @@ export const SCENES: Scene[] = [
       {
         id: "autel-renverse",
         label: "L'autel couché, sur le côté",
+        illustration: "assets/scene_chapelle_autel_a_c.png",
         zoom: 2.5,
         focus: "25% 60%",
         approche:
@@ -2026,6 +2042,7 @@ export const SCENES: Scene[] = [
       {
         id: "ouvrage-tressage",
         label: "La chaise et l'ouvrage",
+        illustration: "assets/scene_chapelle_ouvrage_a_d.png",
         zoom: 2.6,
         focus: "40% 72%",
         approche:
@@ -2315,6 +2332,7 @@ export const SCENES: Scene[] = [
       {
         id: "mur-ordonnance",
         label: "La feuille clouée au mur",
+        illustration: "assets/scene_tribunal_ordonnance_a_c.png",
         zoom: 2.4,
         focus: "22% 38%",
         approche:
@@ -2330,6 +2348,7 @@ export const SCENES: Scene[] = [
       {
         id: "chaire-registre",
         label: "La chaire et son livre",
+        illustration: "assets/scene_tribunal_chaire_a_c.png",
         zoom: 2.5,
         focus: "50% 30%",
         approche:
@@ -2346,6 +2365,7 @@ export const SCENES: Scene[] = [
       {
         id: "les-bancs",
         label: "Les bancs et leurs traces",
+        illustration: "assets/scene_tribunal_bancs_a_c.png",
         zoom: 2.2,
         focus: "50% 70%",
         approche:
@@ -2553,6 +2573,7 @@ export const SCENES: Scene[] = [
       {
         id: "berge-usee",
         label: "Le point de berge usé",
+        illustration: "assets/scene_mare_berge_a_c.png",
         zoom: 2.6,
         focus: "50% 65%",
         approche:
@@ -2581,6 +2602,7 @@ export const SCENES: Scene[] = [
       {
         id: "reflet-metal",
         label: "Le reflet de métal, dans les roseaux",
+        illustration: "assets/scene_mare_miroir_a_b.png",
         zoom: 2.8,
         focus: "70% 60%",
         grantsLoot: "miroir-poche",
@@ -2677,6 +2699,7 @@ export const SCENES: Scene[] = [
       {
         id: "fruits-cendre",
         label: "Les fruits, dans les rangs",
+        illustration: "assets/scene_verger_fruits_a_c.png",
         zoom: 2.7,
         focus: "45% 40%",
         grantsLoot: "fruit-cendre",
@@ -2692,6 +2715,7 @@ export const SCENES: Scene[] = [
       {
         id: "souche-premier-arbre",
         label: "La souche, au bout du rang",
+        illustration: "assets/scene_verger_souche_a_c.png",
         zoom: 2.8,
         focus: "50% 65%",
         approche:
@@ -2921,6 +2945,7 @@ export const SCENES: Scene[] = [
       {
         id: "rondins-pointes",
         label: "Les rondins et leurs pointes",
+        illustration: "assets/scene_palissade_rondins_a_c.png",
         zoom: 2.6,
         focus: "50% 35%",
         approche:
@@ -2935,6 +2960,7 @@ export const SCENES: Scene[] = [
       {
         id: "portillon-verrou",
         label: "Le portillon et son verrou",
+        illustration: "assets/scene_palissade_portillon_a_b.png",
         zoom: 2.8,
         focus: "50% 55%",
         approche:

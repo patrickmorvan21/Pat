@@ -167,4 +167,4 @@
  *           le portrait déjà validé du personnage au lieu d'un crop de l'image
  *           du lieu — et c'est la même image que la rencontre qui suit.
  */
-export const APP_VERSION = "1.19.2";
+export const APP_VERSION = "1.20.0";
