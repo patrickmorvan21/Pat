@@ -59,6 +59,25 @@ STATUT_LABEL = {
     MANQUANTE: "aucune image",
 }
 
+# ── Icônes de rôle : la grammaire du panneau de calques de FIGMA ────────────
+# Retour Patrick 26/07 : « la navigation est confuse, mets une icône comme
+# Figma pour le composant principal et sa variante pour les variantes ».
+# On reprend donc littéralement les deux pictogrammes qu'il a déjà sous les
+# yeux tous les jours :
+#   • 4 losanges  = le COMPOSANT — l'image principale de la scène ;
+#   • 1 losange creux = une VARIANTE (élément observé, autre moment du lieu).
+# Posées à GAUCHE du nom, comme dans l'arbre de calques.
+ICON_PRINCIPALE = (
+    '<svg class="ico principale" viewBox="0 0 14 14" fill="currentColor" aria-hidden="true">'
+    '<path d="M7 .6 9 2.6 7 4.6 5 2.6Z"/><path d="M11.4 5 13.4 7 11.4 9 9.4 7Z"/>'
+    '<path d="M7 9.4 9 11.4 7 13.4 5 11.4Z"/><path d="M2.6 5 4.6 7 2.6 9 .6 7Z"/>'
+    "</svg>"
+)
+ICON_VARIANTE = (
+    '<svg class="ico variante" viewBox="0 0 14 14" fill="none" stroke="currentColor" '
+    'stroke-width="1.2" aria-hidden="true"><path d="M7 1.4 12.6 7 7 12.6 1.4 7Z"/></svg>'
+)
+
 # Explication affichée dans la page, sous les compteurs.
 STATUT_AIDE = {
     DEDIEE: "cette scène a une image qui n'appartient qu'à elle",
@@ -550,8 +569,16 @@ box-shadow:inset 0 0 0 1px var(--b20);font-size:11px;padding:9px}
 .copybar-2:hover{color:var(--blanc);filter:none}
 
 .cat{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--b50);margin-top:9px}
-.id{font-size:12px;margin-top:2px;word-break:break-all}
+.id{font-size:12px;margin-top:2px;word-break:break-all;display:flex;align-items:flex-start;gap:6px}
 .id .poi{color:var(--b50)}
+/* ---------- icônes de rôle (grammaire du panneau de calques Figma) ----------
+   4 losanges = le COMPOSANT, c'est-à-dire l'image principale de la scène ;
+   1 losange creux = une VARIANTE. Même code visuel que Figma, donc lisible
+   sans avoir à lire l'étiquette (demande Patrick 26/07). */
+.ico{flex:0 0 14px;width:14px;height:14px;margin-top:1px}
+.ico.principale{color:var(--orange)}
+.ico.variante{color:var(--b50)}
+.ligne-head .ico{margin-top:0;transform:translateY(2px)}
 .meta{font-size:10px;color:var(--b50);margin-top:3px;min-height:2.4em}
 .desc{font-size:10.5px;color:var(--b50);line-height:1.45;margin-top:2px}
 .warn{font-size:10px;color:var(--blanc);letter-spacing:.5px;margin-top:4px}
@@ -1070,10 +1097,13 @@ def render(
             # l'élément lui-même.
             else ("élément observé" if i.kind == "poi" else "autre moment du lieu")
         )
+        # Icône de rôle à gauche du nom : composant (4 losanges) pour l'image
+        # principale, variante (losange creux) pour les autres — grammaire Figma.
+        ico = ICON_PRINCIPALE if i.principale else ICON_VARIANTE
         return f"""<article class="{card_cls}" data-statut="{i.statut}" data-cat="{i.categorie}" data-kind="{i.kind}" data-verdict="{i.verdict}"{prompt_data}>
   {thumb_open}{thumb_inner}{tag}</div>
   <div class="cat">{i.categorie} · {role}</div>
-  <div class="id">{esc(i.id)}{parent_html}</div>
+  <div class="id">{ico}<span>{esc(i.id)}{parent_html}</span></div>
   <div class="meta">{meta}</div>
   {desc}
   {warn}
@@ -1131,7 +1161,9 @@ def render(
                 n_var = len(cartes) - 1
                 lignes.append(
                     f'<section class="ligne" data-ligne="{esc(gid)}">'
-                    f'<h4 class="ligne-head">{esc(titre)}'
+                    # La LIGNE elle-même est le composant : elle porte donc
+                    # l'icône du composant, ses cartes portent la leur.
+                    f'<h4 class="ligne-head">{ICON_PRINCIPALE}{esc(titre)}'
                     f'<span class="ligne-id">{esc(gid)}</span>'
                     + (
                         f'<span class="ligne-n">+ {n_var} variante{"s" if n_var > 1 else ""}</span>'
@@ -1160,7 +1192,14 @@ def render(
 
     # Légende : les quatre mots expliqués en clair, dans la page — sans ça les
     # compteurs ne veulent rien dire pour qui n'a pas écrit le code.
-    legende = "".join(
+    legende = (
+        # Le code des icônes, dit une fois : c'est celui de Figma, mais autant
+        # l'écrire noir sur blanc plutôt que de compter sur la reconnaissance.
+        f'<div class="leg">{ICON_PRINCIPALE}'
+        f'<span class="leg-txt">l\'image principale de la scène — le décor de référence</span></div>'
+        f'<div class="leg">{ICON_VARIANTE}'
+        f'<span class="leg-txt">une variante : un élément observé, ou un autre moment du même lieu</span></div>'
+    ) + "".join(
         f'<div class="leg"><span class="tag {k}">{STATUT_LABEL[k]}</span>'
         f'<span class="leg-txt">{STATUT_AIDE[k]}</span></div>'
         for k in (DEDIEE, HERITEE, FALLBACK, MANQUANTE)
