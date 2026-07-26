@@ -1,0 +1,1439 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PACTUM — Couverture visuelle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--charbon:#1c1a16;--orange:#e0632a;--blanc:#fff;--b50:rgba(255,255,255,.5);
+--b20:rgba(255,255,255,.2)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--charbon);color:var(--blanc);
+font:13px/1.5 "Roboto Mono",ui-monospace,monospace;padding:26px 24px 36vh}
+/* Le panneau #log est fixe en bas à droite (fidèle à la maquette) ; la
+   maquette n'a qu'une quinzaine de cartes (jamais de recouvrement), mais ce
+   rapport en a des dizaines — sans cette marge basse, les dernières cartes
+   passeraient sous le panneau et deviendraient impossibles à cliquer. */
+h1{font:400 32px/1 "Instrument Serif",Georgia,serif;letter-spacing:3px}
+.sub{font-size:11px;color:var(--b50);margin-top:6px;letter-spacing:1px}
+canvas.rule{display:block;width:100%;height:2px;image-rendering:pixelated;margin:14px 0}
+
+/* ---------- compteurs (chiffre Instrument Serif + libellé capitales) ---------- */
+.stats{display:flex;flex-wrap:wrap;gap:26px;margin:16px 0 4px}
+.stat .n{font:400 30px/1 "Instrument Serif",Georgia,serif}
+.stat .l{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--b50);margin-top:4px}
+.stat.ok .n{color:var(--orange)}
+.stat.ko .n{color:var(--blanc)}
+.stat.mid .n{color:var(--b50)}
+
+/* ---------- filtres — une seule rangée, statut + catégorie mélangés ---------- */
+.filters{display:flex;gap:7px;flex-wrap:wrap;margin:18px 0 4px}
+.filters button{background:none;border:1px solid var(--b20);color:var(--b50);
+font-family:inherit;font-size:10px;letter-spacing:1px;text-transform:uppercase;
+padding:7px 12px;cursor:pointer}
+.filters button.on{background:var(--orange);border-color:var(--orange);color:var(--charbon)}
+
+/* ---------- grille ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:20px}
+.card{border:1px solid var(--b20);padding:10px}
+.card.drag{border-color:var(--orange)}
+.card.hidden{display:none!important}
+.thumb{position:relative;width:100%;aspect-ratio:1/1;background:#000 center/cover no-repeat;
+overflow:hidden;image-rendering:pixelated}
+.thumb.none{display:flex;align-items:center;justify-content:center;
+font-size:10px;letter-spacing:2px;color:var(--b20);text-transform:uppercase}
+.tag{position:absolute;top:6px;left:6px;font-size:9px;letter-spacing:1.5px;
+text-transform:uppercase;padding:3px 6px}
+.tag.dediee{background:var(--orange);color:var(--charbon)}
+.tag.heritee{background:none;color:var(--orange);box-shadow:inset 0 0 0 1px var(--orange)}
+.tag.fallback{background:none;color:var(--b50);box-shadow:inset 0 0 0 1px var(--b20)}
+.tag.manquante{background:var(--blanc);color:var(--charbon)}
+
+/* ---------- verdict (jugement de QUALITÉ, distinct du statut) ----------
+   Position et forme DIFFÉRENTES du badge de statut pour qu'on ne les confonde
+   jamais : le statut est une puce en haut à gauche, le verdict une bande pleine
+   largeur en bas de la vignette. */
+.vbar{position:absolute;left:0;right:0;bottom:0;font-size:9px;letter-spacing:1.5px;
+text-transform:uppercase;padding:4px 6px;text-align:center}
+.vbar.a_remplacer{background:var(--blanc);color:var(--charbon)}
+.vbar.ok{background:var(--orange);color:var(--charbon)}
+.card.a_remplacer{border-color:var(--blanc)}
+.vnote{font-size:10px;color:var(--blanc);margin-top:5px;line-height:1.4}
+.verdict{display:flex;gap:5px;margin-top:8px}
+.verdict button{flex:1;background:none;border:1px solid var(--b20);color:var(--b50);
+font:inherit;font-size:10px;letter-spacing:.5px;padding:6px 4px;cursor:pointer}
+.verdict button:hover{border-color:var(--b50);color:var(--blanc)}
+.verdict button.on-ko{background:var(--blanc);border-color:var(--blanc);color:var(--charbon)}
+.verdict button.on-ok{background:var(--orange);border-color:var(--orange);color:var(--charbon)}
+/* Le pont marquage → moi : c'est l'action principale de la version web, donc
+   c'est le seul bloc plein orange de la page. */
+.copybar{display:block;width:100%;margin-top:16px;background:var(--orange);
+border:none;color:var(--charbon);font:inherit;font-size:12px;letter-spacing:1px;
+padding:12px;cursor:pointer;text-align:center}
+.copybar:hover{filter:brightness(1.08)}
+
+.cat{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--b50);margin-top:9px}
+.id{font-size:12px;margin-top:2px;word-break:break-all}
+.id .poi{color:var(--b50)}
+.meta{font-size:10px;color:var(--b50);margin-top:3px;min-height:2.4em}
+.desc{font-size:10.5px;color:var(--b50);line-height:1.45;margin-top:2px}
+.warn{font-size:10px;color:var(--blanc);letter-spacing:.5px;margin-top:4px}
+.act{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.act button{background:none;border:1px solid var(--b20);color:var(--b50);
+font:inherit;font-size:10.5px;padding:4px 8px;cursor:pointer}
+.act button:hover{border-color:var(--orange);color:var(--orange)}
+.act .todo{border-style:dashed;cursor:default;color:var(--b20)}
+
+select{width:100%;margin-top:8px;background:var(--charbon);color:var(--blanc);
+border:1px solid var(--b20);font-family:inherit;font-size:11px;padding:6px}
+.drop{margin-top:6px;border:1px dashed var(--b20);color:var(--b50);
+font-size:10px;letter-spacing:1px;text-align:center;padding:8px;cursor:pointer}
+.drop.on{border-color:var(--orange);color:var(--orange)}
+.detach{background:none;border:none;color:var(--b50);font-family:inherit;font-size:10px;
+text-decoration:underline;text-underline-offset:3px;cursor:pointer;margin-top:7px;padding:0}
+.detach:hover{color:var(--orange)}
+
+/* ---------- orphelins ---------- */
+h2{font:400 20px/1.2 "Instrument Serif",Georgia,serif;letter-spacing:2px;margin-top:34px}
+.orph{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.orph div{border:1px solid var(--b20);padding:6px 10px;font-size:11px;color:var(--b50)}
+
+/* ---------- instructions de pipeline ---------- */
+.log-static{margin-top:12px;font-size:11.5px;color:var(--b50)}
+.log-static ol{padding-left:20px}
+.log-static code{color:var(--orange)}
+
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+background:var(--orange);color:var(--charbon);padding:9px 16px;font-size:12px;
+letter-spacing:.5px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:11}
+#toast.on{opacity:1}
+
+/* ---------- agrandi : l'image ORIGINALE, pleine résolution ----------
+   C'est le cœur de l'usage (juger si une image marche), donc on sert le PNG
+   1000×1000 tel quel, jamais une vignette rééchantillonnée. */
+.thumb{cursor:zoom-in}
+#zoom{position:fixed;inset:0;background:rgba(10,9,7,.95);display:none;
+align-items:center;justify-content:center;flex-direction:column;gap:12px;
+padding:24px;cursor:zoom-out;z-index:9}
+#zoom.on{display:flex}
+#zoom img{max-width:min(92vw,900px);max-height:80vh;image-rendering:pixelated;
+border:1px solid var(--b20)}
+#zoom .cap{font-size:11px;color:var(--b50);letter-spacing:1px;text-align:center}
+#zoom .cap b{color:var(--orange);font-weight:400}
+
+/* ---------- journal d'écriture — panneau fixe, jamais une popup ---------- */
+#log{position:fixed;right:0;bottom:0;width:340px;max-height:34vh;overflow-y:auto;
+background:var(--charbon);border-top:1px solid var(--b20);border-left:1px solid var(--b20);
+padding:10px 12px;font-size:10px;color:var(--b50)}
+#log b{color:var(--orange);font-weight:400}
+#log .hd{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--b50);margin-bottom:6px}
+</style></head><body>
+<h1>COUVERTURE VISUELLE</h1>
+<div class="sub">58 scènes · 34 points d'intérêt · Les Landes · marque ce qui ne va pas, puis « copier ma liste » — je fais les remplacements</div>
+<canvas class="rule"></canvas>
+
+<div class="stats">
+<div class="stat ok"><div class="n">79</div><div class="l">dédiées</div></div>
+<div class="stat"><div class="n" style="color:var(--orange)">6</div><div class="l">héritées</div></div>
+<div class="stat mid"><div class="n">6</div><div class="l">fallback</div></div>
+<div class="stat ko"><div class="n">1</div><div class="l">manquantes</div></div>
+<div class="stat ko"><div class="n" id="n-remplacer">0</div><div class="l">à remplacer</div></div>
+<div class="stat ok"><div class="n" id="n-valides">0</div><div class="l">validées</div></div>
+<div class="stat mid"><div class="n">28</div><div class="l">orphelins</div></div>
+<div class="stat mid"><div class="n">17</div><div class="l">prompts à écrire</div></div>
+</div>
+<button class="copybar" id="copy-verdicts">Copier ma liste → à me coller pour que je fasse les remplacements</button>
+
+<div class="filters" id="filters"><button class="on" data-f="tous">Tous</button><button class="" data-f="dediee">Dédiées</button><button class="" data-f="heritee">Héritées</button><button class="" data-f="fallback">Fallback</button><button class="" data-f="manquante">Manquantes</button><button class="" data-f="a_remplacer">À remplacer</button><button class="" data-f="ok">Validées</button><button class="" data-f="monstre">Monstres</button><button class="" data-f="objet">Objets</button><button class="" data-f="scene">Scènes</button></div>
+
+<div class="grid"><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_borne_frontiere_a_c.png')" data-zoom="assets/scene_borne_frontiere_a_c.png" data-zoom-id="borne-frontiere" title="Agrandir — scene_borne_frontiere_a_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">borne-frontiere</div>
+  <div class="meta">scene_borne_frontiere_a_c.png</div>
+  <div class="desc">Entrée de zone, tout premier écran du jeu. La borne-frontière dressée seule sur le plateau, ses faces gravées, les offrandes à son pied, et le chemin qui s'enfonce au sud dans le noir.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="borne-frontiere" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="borne-frontiere" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_borne_gravures_a_d.png')" data-zoom="assets/scene_borne_gravures_a_d.png" data-zoom-id="gravures-borne" title="Agrandir — scene_borne_gravures_a_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">gravures-borne <span class="poi">← borne-frontiere</span></div>
+  <div class="meta">scene_borne_gravures_a_d.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="gravures-borne" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="gravures-borne" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_borne_eclat_a_b.png')" data-zoom="assets/scene_borne_eclat_a_b.png" data-zoom-id="eclat-descelle" title="Agrandir — scene_borne_eclat_a_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">eclat-descelle <span class="poi">← borne-frontiere</span></div>
+  <div class="meta">scene_borne_eclat_a_b.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="eclat-descelle" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="eclat-descelle" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_hesitant_b.png')" data-zoom="assets/monstre_hesitant_b.png" data-zoom-id="homme-immobile" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">homme-immobile <span class="poi">← borne-frontiere</span></div>
+  <div class="meta">monstre_hesitant_b.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="homme-immobile" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="homme-immobile" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_hesitant_b.png')" data-zoom="assets/monstre_hesitant_b.png" data-zoom-id="hesitant-1" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">hesitant-1</div>
+  <div class="meta">monstre_hesitant_b.png</div>
+  <div class="desc">Rencontre à la Borne, beat 1. Un homme immobile face au sud, dos au hameau, qui ne bouge pas depuis assez longtemps pour que l'herbe se soit couchée sous lui.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hesitant-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hesitant-1" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_hesitant_b.png')" data-zoom="assets/monstre_hesitant_b.png" data-zoom-id="hesitant-2" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">hesitant-2</div>
+  <div class="meta">monstre_hesitant_b.png</div>
+  <div class="desc">Rencontre à la Borne, beat 2 — l'échange. Il calcule à voix haute entre rentrer et descendre. Son visage de trois-quarts, la borne floue derrière lui.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hesitant-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hesitant-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_hesitant_b.png')" data-zoom="assets/monstre_hesitant_b.png" data-zoom-id="hesitant-3" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">hesitant-3</div>
+  <div class="meta">monstre_hesitant_b.png</div>
+  <div class="desc">Rencontre à la Borne, beat 3 — la résolution. Selon l'issue, il rentre ou s'assied au pied de la pierre, face au sud.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hesitant-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hesitant-3" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_chemin_creux_c.png')" data-zoom="assets/scene_chemin_creux_c.png" data-zoom-id="chemin-creux" title="Agrandir — scene_chemin_creux_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">chemin-creux</div>
+  <div class="meta">scene_chemin_creux_c.png</div>
+  <div class="desc">Arrivée au Chemin Creux. Une route encaissée entre deux hauts talus de terre, un ruban de ciel étroit au-dessus, des racines tordues qui sortent des parois.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="chemin-creux" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chemin-creux" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_chemin_charrette_a_c.png')" data-zoom="assets/scene_chemin_charrette_a_c.png" data-zoom-id="charrette-embourbee" title="Agrandir — scene_chemin_charrette_a_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">charrette-embourbee <span class="poi">← chemin-creux</span></div>
+  <div class="meta">scene_chemin_charrette_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="charrette-embourbee" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="charrette-embourbee" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_chemin_talus_a_c.png')" data-zoom="assets/scene_chemin_talus_a_c.png" data-zoom-id="talus-empreintes" title="Agrandir — scene_chemin_talus_a_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">talus-empreintes <span class="poi">← chemin-creux</span></div>
+  <div class="meta">scene_chemin_talus_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="talus-empreintes" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="talus-empreintes" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_marcheur_a_rebours_d.png')" data-zoom="assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-rebours" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">marcheur-rebours <span class="poi">← chemin-creux</span></div>
+  <div class="meta">monstre_marcheur_a_rebours_d.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="marcheur-rebours" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marcheur-rebours" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_chemin_creux_c.png')" data-zoom="assets/scene_chemin_creux_c.png" data-zoom-id="chemin-creux-2" title="Agrandir — scene_chemin_creux_c.png"><span class="tag heritee">héritée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">chemin-creux-2</div>
+  <div class="meta">hérite de <b>chemin-creux</b></div>
+  <div class="desc">Événement du Chemin Creux : le coude aveugle. Le talus mange la vue d'un coup — l'endroit exact où il devrait y avoir quelque chose, et où il n'y a rien.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="chemin-creux-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chemin-creux-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_marcheur_a_rebours_d.png')" data-zoom="assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-1" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">marcheur-1</div>
+  <div class="meta">monstre_marcheur_a_rebours_d.png</div>
+  <div class="desc">Rencontre du Chemin Creux, beat 1. Le Marcheur à rebours avance en marche arrière, le regard fixé derrière lui — trente ans qu'il ne montre son dos à rien.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="marcheur-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marcheur-1" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_marcheur_a_rebours_d.png')" data-zoom="assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-2" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">marcheur-2</div>
+  <div class="meta">monstre_marcheur_a_rebours_d.png</div>
+  <div class="desc">Rencontre du Chemin Creux, beat 2 — l'échange sur la crête nord.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="marcheur-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marcheur-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_marcheur_a_rebours_d.png')" data-zoom="assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-3" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">marcheur-3</div>
+  <div class="meta">monstre_marcheur_a_rebours_d.png</div>
+  <div class="desc">Rencontre du Chemin Creux, beat 3 — la résolution.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="marcheur-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marcheur-3" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_bete_chemins_creux_a.png')" data-zoom="assets/monstre_bete_chemins_creux_a.png" data-zoom-id="bete-chemins-creux" title="Agrandir — monstre_bete_chemins_creux_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">bete-chemins-creux</div>
+  <div class="meta">monstre_bete_chemins_creux_a.png</div>
+  <div class="desc">Combat, une scène. La Bête des Chemins Creux, qui longe la crête nord au même pas que ce qui marche en bas. On ne la voit qu'en silhouette, au-dessus.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="bete-chemins-creux" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="bete-chemins-creux" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_colline_aux_gibets_c.png')" data-zoom="assets/scene_colline_aux_gibets_c.png" data-zoom-id="colline-aux-gibets" title="Agrandir — scene_colline_aux_gibets_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">colline-aux-gibets</div>
+  <div class="meta">scene_colline_aux_gibets_c.png</div>
+  <div class="desc">Arrivée à la Colline aux Gibets, lieu-signature de la zone. Le cercle de potences sur la crête nue, vu d'en bas en contre-plongée, les cordes qui balancent.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="colline-aux-gibets" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="colline-aux-gibets" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_colline_potences_cercle_a_c.png')" data-zoom="assets/scene_colline_potences_cercle_a_c.png" data-zoom-id="potences-cercle" title="Agrandir — scene_colline_potences_cercle_a_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">potences-cercle <span class="poi">← colline-aux-gibets</span></div>
+  <div class="meta">scene_colline_potences_cercle_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="potences-cercle" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="potences-cercle" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_colline_gibet_vide_a_b.png')" data-zoom="assets/scene_colline_gibet_vide_a_b.png" data-zoom-id="gibet-vide" title="Agrandir — scene_colline_gibet_vide_a_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">gibet-vide <span class="poi">← colline-aux-gibets</span></div>
+  <div class="meta">scene_colline_gibet_vide_a_b.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="gibet-vide" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="gibet-vide" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">fallback de zone</span></div>
+  <div class="cat">scene</div>
+  <div class="id">poteau-pendu <span class="poi">← colline-aux-gibets</span></div>
+  <div class="meta">ambiance générique de zone</div>
+  <div class="desc">Plan rapproché — crop CSS de l'image du lieu</div>
+  
+  
+  
+  
+  
+</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_colline_aux_gibets_c.png')" data-zoom="assets/scene_colline_aux_gibets_c.png" data-zoom-id="colline-aux-gibets-2" title="Agrandir — scene_colline_aux_gibets_c.png"><span class="tag heritee">héritée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">colline-aux-gibets-2</div>
+  <div class="meta">hérite de <b>colline-aux-gibets</b></div>
+  <div class="desc">Événement de la Colline : au sommet, entre les potences. L'écharde du grand gibet se prélève ici.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="colline-aux-gibets-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="colline-aux-gibets-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_pendu_qui_parle_a.png')" data-zoom="assets/monstre_pendu_qui_parle_a.png" data-zoom-id="pendu-qui-parle" title="Agrandir — monstre_pendu_qui_parle_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">pendu-qui-parle</div>
+  <div class="meta">monstre_pendu_qui_parle_a.png</div>
+  <div class="desc">Arrivée au gardien de zone : le Bailli pendu, qui parle encore. Vu de loin, une silhouette au bout d'une corde, sur un gibet isolé.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="pendu-qui-parle" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="pendu-qui-parle" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="heritee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_pendu_qui_parle_a.png')" data-zoom="assets/monstre_pendu_qui_parle_a.png" data-zoom-id="pendu-qui-parle-2" title="Agrandir — monstre_pendu_qui_parle_a.png"><span class="tag heritee">héritée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">pendu-qui-parle-2</div>
+  <div class="meta">hérite de <b>pendu-qui-parle</b></div>
+  <div class="desc">Le gardien, à hauteur d'homme. Non-combat : il juge. Son visage de pendu qui parle, le sceau à sa ceinture.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="pendu-qui-parle-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="pendu-qui-parle-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_champ_des_fixes_b.png')" data-zoom="assets/scene_champ_des_fixes_b.png" data-zoom-id="champ-des-fixes" title="Agrandir — scene_champ_des_fixes_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">champ-des-fixes</div>
+  <div class="meta">scene_champ_des_fixes_b.png</div>
+  <div class="desc">Arrivée au Champ des Fixés. Des rangées de poteaux plantés dans la lande morte, un écriteau clouté sur chacun, certains encore occupés.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="champ-des-fixes" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="champ-des-fixes" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_champ_rangees_a_d.png')" data-zoom="assets/scene_champ_rangees_a_d.png" data-zoom-id="les-rangees" title="Agrandir — scene_champ_rangees_a_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">les-rangees <span class="poi">← champ-des-fixes</span></div>
+  <div class="meta">scene_champ_rangees_a_d.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="les-rangees" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="les-rangees" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_champ_poteaux_vierges_a_a.png')" data-zoom="assets/scene_champ_poteaux_vierges_a_a.png" data-zoom-id="poteaux-vierges" title="Agrandir — scene_champ_poteaux_vierges_a_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">poteaux-vierges <span class="poi">← champ-des-fixes</span></div>
+  <div class="meta">scene_champ_poteaux_vierges_a_a.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="poteaux-vierges" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="poteaux-vierges" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_champ_tombe_manquante_a_c.png')" data-zoom="assets/scene_champ_tombe_manquante_a_c.png" data-zoom-id="tombe-sans-poteau" title="Agrandir — scene_champ_tombe_manquante_a_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">tombe-sans-poteau <span class="poi">← champ-des-fixes</span></div>
+  <div class="meta">scene_champ_tombe_manquante_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="tombe-sans-poteau" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="tombe-sans-poteau" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_fossoyeur_poteaux_a.png')" data-zoom="assets/monstre_fossoyeur_poteaux_a.png" data-zoom-id="champ-des-fixes-2" title="Agrandir — monstre_fossoyeur_poteaux_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">champ-des-fixes-2</div>
+  <div class="meta">monstre_fossoyeur_poteaux_a.png</div>
+  <div class="desc">Événement du Champ : le Fossoyeur aux poteaux, qui grave d'avance les noms « dont c'est sûr ».</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="champ-des-fixes-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="champ-des-fixes-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_pendu_mal_fixe_a.png')" data-zoom="assets/monstre_pendu_mal_fixe_a.png" data-zoom-id="pendu-mal-fixe" title="Agrandir — monstre_pendu_mal_fixe_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">pendu-mal-fixe</div>
+  <div class="meta">monstre_pendu_mal_fixe_a.png</div>
+  <div class="desc">Combat, une scène. Le Pendu Mal Fixé : un bras tendu figé en plein geste d'agrippement, la corde trop longue qui laisse les pieds toucher le sol.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="pendu-mal-fixe" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="pendu-mal-fixe" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_hameau_dense2_b.png')" data-zoom="assets/scene_hameau_dense2_b.png" data-zoom-id="serment-hameau" title="Agrandir — scene_hameau_dense2_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">serment-hameau</div>
+  <div class="meta">scene_hameau_dense2_b.png</div>
+  <div class="desc">Approche du Hameau des Renonçants, vu de loin. Les toits d'ardoise affaissés au creux du plateau, une seule cheminée qui fume sur vingt, aucun chien qui aboie.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="serment-hameau" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="serment-hameau" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_landes_hameau_ruelle_b.png')" data-zoom="assets/scene_landes_hameau_ruelle_b.png" data-zoom-id="hameau-entree-2" title="Agrandir — scene_landes_hameau_ruelle_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">hameau-entree-2</div>
+  <div class="meta">scene_landes_hameau_ruelle_b.png</div>
+  <div class="desc">Entrée du Hameau, beat 2 : le seuil. La ruelle étroite, les portes marquées à la craie, les volets fermés.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-entree-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-entree-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_hameau_croix_craie_a_a.png')" data-zoom="assets/scene_hameau_croix_craie_a_a.png" data-zoom-id="croix-craie" title="Agrandir — scene_hameau_croix_craie_a_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">croix-craie <span class="poi">← hameau-entree-2</span></div>
+  <div class="meta">scene_hameau_croix_craie_a_a.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="croix-craie" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="croix-craie" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_femme_au_seuil_b.png')" data-zoom="assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-sur-le-seuil" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">femme-sur-le-seuil <span class="poi">← hameau-entree-2</span></div>
+  <div class="meta">monstre_femme_au_seuil_b.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="femme-sur-le-seuil" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="femme-sur-le-seuil" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_femme_au_seuil_b.png')" data-zoom="assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-seuil-1" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">femme-seuil-1</div>
+  <div class="meta">monstre_femme_au_seuil_b.png</div>
+  <div class="desc">Rencontre du Hameau, beat 1 — étalon du format. Une femme sur le seuil d'une maison basse, une croix à la craie sur sa porte, un châle serré.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="femme-seuil-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="femme-seuil-1" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_femme_au_seuil_b.png')" data-zoom="assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-seuil-2" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">femme-seuil-2</div>
+  <div class="meta">monstre_femme_au_seuil_b.png</div>
+  <div class="desc">Rencontre du Hameau, beat 2 — la mèche nouée qu'elle tend.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="femme-seuil-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="femme-seuil-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_femme_au_seuil_b.png')" data-zoom="assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-seuil-3" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">femme-seuil-3</div>
+  <div class="meta">monstre_femme_au_seuil_b.png</div>
+  <div class="desc">Rencontre du Hameau, beat 3 — la résolution, puis retour à la séquence d'entrée.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="femme-seuil-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="femme-seuil-3" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_juge_de_cendre_c.png')" data-zoom="assets/monstre_juge_de_cendre_c.png" data-zoom-id="hameau-entree-3" title="Agrandir — monstre_juge_de_cendre_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">hameau-entree-3</div>
+  <div class="meta">monstre_juge_de_cendre_c.png</div>
+  <div class="desc">Entrée du Hameau, beat 3 : le barrage. Trois hommes au milieu de la rue, pas armés — un bâton de marche, une fourche posée contre un mur, à portée sans être brandie.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-entree-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-entree-3" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_doyenne_b.png')" data-zoom="assets/monstre_doyenne_b.png" data-zoom-id="hameau-entree-4" title="Agrandir — monstre_doyenne_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">hameau-entree-4</div>
+  <div class="meta">monstre_doyenne_b.png</div>
+  <div class="desc">Entrée du Hameau, beat 4 : le Serment, imposé et jamais proposé. La paume ouverte et vide du vieux, tendue pour qu'on la regarde — on jure sur rien.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-entree-4" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-entree-4" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">fallback de zone</span></div>
+  <div class="cat">scene</div>
+  <div class="id">pourquoi-trois-aubes <span class="poi">← hameau-entree-4</span></div>
+  <div class="meta">ambiance générique de zone</div>
+  <div class="desc">Plan rapproché — crop CSS de l'image du lieu</div>
+  
+  
+  
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_landes_hameau_ruelle_b.png')" data-zoom="assets/scene_landes_hameau_ruelle_b.png" data-zoom-id="hameau-entree-5" title="Agrandir — scene_landes_hameau_ruelle_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">hameau-entree-5</div>
+  <div class="meta">scene_landes_hameau_ruelle_b.png</div>
+  <div class="desc">Entrée du Hameau, beat 5 : on passe. La rue qui s'ouvre, les volets qui se ferment un par un, un peu en avance sur le pas.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-entree-5" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-entree-5" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_landes_hameau_ruelle_b.png')" data-zoom="assets/scene_landes_hameau_ruelle_b.png" data-zoom-id="hameau-halte-1" title="Agrandir — scene_landes_hameau_ruelle_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">hameau-halte-1</div>
+  <div class="meta">scene_landes_hameau_ruelle_b.png</div>
+  <div class="desc">Halte au Hameau, beat 1 : le vieux te trouve. « On sait toujours où tu es. »</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-halte-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-1" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_landes_hameau_grange_a.png')" data-zoom="assets/scene_landes_hameau_grange_a.png" data-zoom-id="hameau-halte-2" title="Agrandir — scene_landes_hameau_grange_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">hameau-halte-2</div>
+  <div class="meta">scene_landes_hameau_grange_a.png</div>
+  <div class="desc">Halte, beat 2 : la grange. Intérieur de nuit, une lanterne posée au sol, la paille, la barre de porte posée DEHORS, les bâtons de comptage sur les poutres.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-halte-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_hameau_grange_poutres_a_d.png')" data-zoom="assets/scene_hameau_grange_poutres_a_d.png" data-zoom-id="examiner-grange" title="Agrandir — scene_hameau_grange_poutres_a_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">examiner-grange <span class="poi">← hameau-halte-2</span></div>
+  <div class="meta">scene_hameau_grange_poutres_a_d.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="examiner-grange" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="examiner-grange" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_landes_hameau_grange_a.png')" data-zoom="assets/scene_landes_hameau_grange_a.png" data-zoom-id="hameau-halte-3" title="Agrandir — scene_landes_hameau_grange_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">hameau-halte-3</div>
+  <div class="meta">scene_landes_hameau_grange_a.png</div>
+  <div class="desc">Halte, beat 3 : la nuit, la ronde que personne n'a annoncée.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-halte-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-3" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_doyenne_b.png')" data-zoom="assets/monstre_doyenne_b.png" data-zoom-id="hameau-halte-4" title="Agrandir — monstre_doyenne_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">hameau-halte-4</div>
+  <div class="meta">monstre_doyenne_b.png</div>
+  <div class="desc">Halte, beat 4 : l'aube. Le Serment tenu se paie ici.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-halte-4" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-4" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_hameau_dense_b.png')" data-zoom="assets/scene_hameau_dense_b.png" data-zoom-id="hameau-halte-5" title="Agrandir — scene_hameau_dense_b.png"><span class="tag fallback">fallback de zone</span></div>
+  <div class="cat">scene</div>
+  <div class="id">hameau-halte-5</div>
+  <div class="meta">ambiance générique de zone</div>
+  <div class="desc">Halte, beat 5 : l'escorte jusqu'au portillon.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-halte-5" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-5" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_hameau_dense_c.png')" data-zoom="assets/scene_hameau_dense_c.png" data-zoom-id="hameau-halte-dehors" title="Agrandir — scene_hameau_dense_c.png"><span class="tag fallback">fallback de zone</span></div>
+  <div class="cat">scene</div>
+  <div class="id">hameau-halte-dehors</div>
+  <div class="meta">ambiance générique de zone</div>
+  <div class="desc">Variante de Halte pour qui a refusé le Serment : la nuit dehors, contre un muret, aucune porte ouverte.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-halte-dehors" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-dehors" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_marche_muet_c.png')" data-zoom="assets/scene_marche_muet_c.png" data-zoom-id="marche-muet" title="Agrandir — scene_marche_muet_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">marche-muet</div>
+  <div class="meta">scene_marche_muet_c.png</div>
+  <div class="desc">Arrivée au Marché Muet, à l'intérieur du hameau. Des étals sans marchands, des marchandises posées et personne pour les vendre.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="marche-muet" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marche-muet" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_colporteur_b.png')" data-zoom="assets/monstre_colporteur_b.png" data-zoom-id="marche-muet-2" title="Agrandir — monstre_colporteur_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">marche-muet-2</div>
+  <div class="meta">monstre_colporteur_b.png</div>
+  <div class="desc">Événement du Marché : le Colporteur, le seul qui parle encore, et le Rebouteux derrière lui.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="marche-muet-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marche-muet-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_moulin_sans_ailes_d_d.png')" data-zoom="assets/scene_moulin_sans_ailes_d_d.png" data-zoom-id="campement" title="Agrandir — scene_moulin_sans_ailes_d_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">campement</div>
+  <div class="meta">scene_moulin_sans_ailes_d_d.png</div>
+  <div class="desc">Arrivée au Moulin sans Ailes — c'est le lieu de repos de la zone. Une tour de pierre trapue SANS ailes, quatre traces pâles sur le corps du moulin, la porte entrebâillée.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="campement" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="campement" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_moulin_croix_ombres_a_d.png')" data-zoom="assets/scene_moulin_croix_ombres_a_d.png" data-zoom-id="croix-ombres" title="Agrandir — scene_moulin_croix_ombres_a_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">croix-ombres <span class="poi">← campement</span></div>
+  <div class="meta">scene_moulin_croix_ombres_a_d.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="croix-ombres" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="croix-ombres" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_moulin_lucarne_a_b.png')" data-zoom="assets/scene_moulin_lucarne_a_b.png" data-zoom-id="lucarne-moulin" title="Agrandir — scene_moulin_lucarne_a_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">lucarne-moulin <span class="poi">← campement</span></div>
+  <div class="meta">scene_moulin_lucarne_a_b.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="lucarne-moulin" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="lucarne-moulin" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_moulin_interieur_a_d.png')" data-zoom="assets/scene_moulin_interieur_a_d.png" data-zoom-id="interieur-moulin" title="Agrandir — scene_moulin_interieur_a_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">interieur-moulin <span class="poi">← campement</span></div>
+  <div class="meta">scene_moulin_interieur_a_d.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="interieur-moulin" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="interieur-moulin" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_moulin_sans_ailes_d_d.png')" data-zoom="assets/scene_moulin_sans_ailes_d_d.png" data-zoom-id="campement-2" title="Agrandir — scene_moulin_sans_ailes_d_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">campement-2</div>
+  <div class="meta">scene_moulin_sans_ailes_d_d.png</div>
+  <div class="desc">Événement du Moulin : la garde, ou le sommeil. Le lit de bruyère tassé, refait de frais, les marques de comptage à hauteur d'enfant sur la pierre.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="campement-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="campement-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_chapelle_des_cordes_d.png')" data-zoom="assets/scene_chapelle_des_cordes_d.png" data-zoom-id="chapelle-des-cordes" title="Agrandir — scene_chapelle_des_cordes_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">chapelle-des-cordes</div>
+  <div class="meta">scene_chapelle_des_cordes_d.png</div>
+  <div class="desc">Arrivée à la Chapelle des Cordes, intérieur du hameau. Une nef courte, des dizaines de cordes coupées clouées en rangs le long des murs, du sol au plafond.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="chapelle-des-cordes" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chapelle-des-cordes" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_chapelle_mur_cordes_a_d.png')" data-zoom="assets/scene_chapelle_mur_cordes_a_d.png" data-zoom-id="mur-cordes" title="Agrandir — scene_chapelle_mur_cordes_a_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">mur-cordes <span class="poi">← chapelle-des-cordes</span></div>
+  <div class="meta">scene_chapelle_mur_cordes_a_d.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="mur-cordes" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="mur-cordes" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_chapelle_autel_a_c.png')" data-zoom="assets/scene_chapelle_autel_a_c.png" data-zoom-id="autel-renverse" title="Agrandir — scene_chapelle_autel_a_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">autel-renverse <span class="poi">← chapelle-des-cordes</span></div>
+  <div class="meta">scene_chapelle_autel_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="autel-renverse" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="autel-renverse" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_chapelle_ouvrage_a_d.png')" data-zoom="assets/scene_chapelle_ouvrage_a_d.png" data-zoom-id="ouvrage-tressage" title="Agrandir — scene_chapelle_ouvrage_a_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">ouvrage-tressage <span class="poi">← chapelle-des-cordes</span></div>
+  <div class="meta">scene_chapelle_ouvrage_a_d.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="ouvrage-tressage" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="ouvrage-tressage" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_veuve_cordes_a.png')" data-zoom="assets/monstre_veuve_cordes_a.png" data-zoom-id="chapelle-des-cordes-2" title="Agrandir — monstre_veuve_cordes_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">chapelle-des-cordes-2</div>
+  <div class="meta">monstre_veuve_cordes_a.png</div>
+  <div class="desc">Événement de la Chapelle : la Veuve aux Cordes, assise, qui refait sans fin le même nœud. Derrière elle, sous verre, la corde coupée sans nom.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="chapelle-des-cordes-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chapelle-des-cordes-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_puits_condamne_c.png')" data-zoom="assets/scene_puits_condamne_c.png" data-zoom-id="puits-condamne" title="Agrandir — scene_puits_condamne_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">puits-condamne</div>
+  <div class="meta">scene_puits_condamne_c.png</div>
+  <div class="desc">Arrivée au Puits Condamné. Un puits fermé par des planches clouées en croix, par-dessus, des pierres empilées.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="puits-condamne" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="puits-condamne" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_mains_du_puits_a.png')" data-zoom="assets/monstre_mains_du_puits_a.png" data-zoom-id="puits-condamne-2" title="Agrandir — monstre_mains_du_puits_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">puits-condamne-2</div>
+  <div class="meta">monstre_mains_du_puits_a.png</div>
+  <div class="desc">Événement du Puits (scène chronométrée) : les Mains du Puits, qui sortent entre les planches.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="puits-condamne-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="puits-condamne-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_maison_du_bailli_c.png')" data-zoom="assets/scene_maison_du_bailli_c.png" data-zoom-id="chien-du-bailli" title="Agrandir — scene_maison_du_bailli_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">chien-du-bailli</div>
+  <div class="meta">scene_maison_du_bailli_c.png</div>
+  <div class="desc">Arrivée à la Maison du Bailli, murée. Portes et fenêtres bouchées à la pierre, de l'extérieur — on a fermé cette maison depuis la rue.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="chien-du-bailli" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chien-du-bailli" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_chien_du_bailli_b.png')" data-zoom="assets/monstre_chien_du_bailli_b.png" data-zoom-id="chien-du-bailli-2" title="Agrandir — monstre_chien_du_bailli_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">chien-du-bailli-2</div>
+  <div class="meta">monstre_chien_du_bailli_b.png</div>
+  <div class="desc">Combat : le Chien du Bailli, qui garde encore une maison où il n'y a plus personne.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="chien-du-bailli-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chien-du-bailli-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_petit_tribunal_a.png')" data-zoom="assets/scene_petit_tribunal_a.png" data-zoom-id="petit-tribunal" title="Agrandir — scene_petit_tribunal_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">petit-tribunal</div>
+  <div class="meta">scene_petit_tribunal_a.png</div>
+  <div class="desc">Arrivée au Petit Tribunal. Une grange convertie en salle d'audience : trois bancs de bois face à une haute chaire, une feuille de règles clouée au mur.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="petit-tribunal" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="petit-tribunal" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_tribunal_ordonnance_a_c.png')" data-zoom="assets/scene_tribunal_ordonnance_a_c.png" data-zoom-id="mur-ordonnance" title="Agrandir — scene_tribunal_ordonnance_a_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">mur-ordonnance <span class="poi">← petit-tribunal</span></div>
+  <div class="meta">scene_tribunal_ordonnance_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="mur-ordonnance" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="mur-ordonnance" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_tribunal_chaire_a_c.png')" data-zoom="assets/scene_tribunal_chaire_a_c.png" data-zoom-id="chaire-registre" title="Agrandir — scene_tribunal_chaire_a_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">chaire-registre <span class="poi">← petit-tribunal</span></div>
+  <div class="meta">scene_tribunal_chaire_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="chaire-registre" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chaire-registre" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_tribunal_bancs_a_c.png')" data-zoom="assets/scene_tribunal_bancs_a_c.png" data-zoom-id="les-bancs" title="Agrandir — scene_tribunal_bancs_a_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">les-bancs <span class="poi">← petit-tribunal</span></div>
+  <div class="meta">scene_tribunal_bancs_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="les-bancs" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="les-bancs" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_ecrivain_public_d.png')" data-zoom="assets/monstre_ecrivain_public_d.png" data-zoom-id="petit-tribunal-2" title="Agrandir — monstre_ecrivain_public_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">petit-tribunal-2</div>
+  <div class="meta">monstre_ecrivain_public_d.png</div>
+  <div class="desc">Événement du Tribunal : l'Écrivain public, qui entre, te voit à la chaire, et se met à copier sans lever les yeux.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="petit-tribunal-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="petit-tribunal-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_meute_grise_c.png')" data-zoom="assets/monstre_meute_grise_c.png" data-zoom-id="meute-grise-1" title="Agrandir — monstre_meute_grise_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">meute-grise-1</div>
+  <div class="meta">monstre_meute_grise_c.png</div>
+  <div class="desc">Combat en deux scènes, beat 1. La Meute Grise : six silhouettes couleur de bruyère morte, immobiles aux six points d'un cercle dont tu es le centre.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="meute-grise-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="meute-grise-1" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_meute_grise_c.png')" data-zoom="assets/monstre_meute_grise_c.png" data-zoom-id="meute-grise-2" title="Agrandir — monstre_meute_grise_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">meute-grise-2</div>
+  <div class="meta">monstre_meute_grise_c.png</div>
+  <div class="desc">Combat, beat 2 : la résolution de l'encerclement.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="meute-grise-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="meute-grise-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_mare_aux_regards_a.png')" data-zoom="assets/scene_mare_aux_regards_a.png" data-zoom-id="mare-aux-regards" title="Agrandir — scene_mare_aux_regards_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">mare-aux-regards</div>
+  <div class="meta">scene_mare_aux_regards_a.png</div>
+  <div class="desc">Arrivée à la Mare aux Regards. Une eau noire parfaitement immobile, la berge piétinée avec deux creux de genoux, des roseaux, aucun vent.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="mare-aux-regards" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="mare-aux-regards" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_mare_berge_a_c.png')" data-zoom="assets/scene_mare_berge_a_c.png" data-zoom-id="berge-usee" title="Agrandir — scene_mare_berge_a_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">berge-usee <span class="poi">← mare-aux-regards</span></div>
+  <div class="meta">scene_mare_berge_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="berge-usee" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="berge-usee" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">fallback de zone</span></div>
+  <div class="cat">scene</div>
+  <div class="id">eau-reflet <span class="poi">← mare-aux-regards</span></div>
+  <div class="meta">ambiance générique de zone</div>
+  <div class="desc">Plan rapproché — crop CSS de l'image du lieu</div>
+  
+  
+  
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_mare_miroir_a_b.png')" data-zoom="assets/scene_mare_miroir_a_b.png" data-zoom-id="reflet-metal" title="Agrandir — scene_mare_miroir_a_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">reflet-metal <span class="poi">← mare-aux-regards</span></div>
+  <div class="meta">scene_mare_miroir_a_b.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="reflet-metal" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="reflet-metal" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_mare_aux_regards_a.png')" data-zoom="assets/scene_mare_aux_regards_a.png" data-zoom-id="mare-aux-regards-2" title="Agrandir — scene_mare_aux_regards_a.png"><span class="tag heritee">héritée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">mare-aux-regards-2</div>
+  <div class="meta">hérite de <b>mare-aux-regards</b></div>
+  <div class="desc">Événement de la Mare : un Renonçant qui vient vérifier son propre reflet, et te trouve là.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="mare-aux-regards-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="mare-aux-regards-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_verger_noir_d.png')" data-zoom="assets/scene_verger_noir_d.png" data-zoom-id="verger-noir" title="Agrandir — scene_verger_noir_d.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">verger-noir</div>
+  <div class="meta">scene_verger_noir_d.png</div>
+  <div class="desc">Arrivée au Verger Noir. Des arbres noirs tordus plantés en rangs, des fruits gris et lourds sur les branches, une vieille souche au premier plan.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="verger-noir" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="verger-noir" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_verger_fruits_a_c.png')" data-zoom="assets/scene_verger_fruits_a_c.png" data-zoom-id="fruits-cendre" title="Agrandir — scene_verger_fruits_a_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">fruits-cendre <span class="poi">← verger-noir</span></div>
+  <div class="meta">scene_verger_fruits_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="fruits-cendre" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="fruits-cendre" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_verger_souche_a_c.png')" data-zoom="assets/scene_verger_souche_a_c.png" data-zoom-id="souche-premier-arbre" title="Agrandir — scene_verger_souche_a_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">souche-premier-arbre <span class="poi">← verger-noir</span></div>
+  <div class="meta">scene_verger_souche_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="souche-premier-arbre" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="souche-premier-arbre" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_epoux_verger_a.png')" data-zoom="assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-verger" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">epoux-verger <span class="poi">← verger-noir</span></div>
+  <div class="meta">monstre_epoux_verger_a.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="epoux-verger" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="epoux-verger" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_verger_noir_d.png')" data-zoom="assets/scene_verger_noir_d.png" data-zoom-id="verger-noir-2" title="Agrandir — scene_verger_noir_d.png"><span class="tag heritee">héritée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">verger-noir-2</div>
+  <div class="meta">hérite de <b>verger-noir</b></div>
+  <div class="desc">Événement du Verger : le fruit qui tombe encore chaud.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="verger-noir-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="verger-noir-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_epoux_verger_a.png')" data-zoom="assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-1" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">epoux-1</div>
+  <div class="meta">monstre_epoux_verger_a.png</div>
+  <div class="desc">Rencontre du Verger, beat 1. Les Époux, deux silhouettes courbées qui creusent entre les rangs sans se parler.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="epoux-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="epoux-1" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_epoux_verger_a.png')" data-zoom="assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-2" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">epoux-2</div>
+  <div class="meta">monstre_epoux_verger_a.png</div>
+  <div class="desc">Rencontre du Verger, beat 2 — l'échange.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="epoux-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="epoux-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_epoux_verger_a.png')" data-zoom="assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-3" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">monstre</div>
+  <div class="id">epoux-3</div>
+  <div class="meta">monstre_epoux_verger_a.png</div>
+  <div class="desc">Rencontre du Verger, beat 3 — la résolution.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="epoux-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="epoux-3" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_palissade_sud_a_a.png')" data-zoom="assets/scene_palissade_sud_a_a.png" data-zoom-id="palissade-sud" title="Agrandir — scene_palissade_sud_a_a.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">palissade-sud</div>
+  <div class="meta">scene_palissade_sud_a_a.png</div>
+  <div class="desc">Arrivée à la Palissade Sud, seuil de l'Acte II. Une haute palissade de rondins appointés qui ferme l'horizon, un petit portillon, une borne au premier plan.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="palissade-sud" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="palissade-sud" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_palissade_rondins_a_c.png')" data-zoom="assets/scene_palissade_rondins_a_c.png" data-zoom-id="rondins-pointes" title="Agrandir — scene_palissade_rondins_a_c.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">rondins-pointes <span class="poi">← palissade-sud</span></div>
+  <div class="meta">scene_palissade_rondins_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="rondins-pointes" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="rondins-pointes" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_palissade_portillon_a_b.png')" data-zoom="assets/scene_palissade_portillon_a_b.png" data-zoom-id="portillon-verrou" title="Agrandir — scene_palissade_portillon_a_b.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">portillon-verrou <span class="poi">← palissade-sud</span></div>
+  <div class="meta">scene_palissade_portillon_a_b.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="portillon-verrou" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="portillon-verrou" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">fallback de zone</span></div>
+  <div class="cat">scene</div>
+  <div class="id">homme-guerite <span class="poi">← palissade-sud</span></div>
+  <div class="meta">ambiance générique de zone</div>
+  <div class="desc">Plan rapproché — crop CSS de l'image du lieu</div>
+  
+  
+  
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="objet" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/objet_lanterne_rouillee.png')" data-zoom="assets/objet_lanterne_rouillee.png" data-zoom-id="veilleur-1" title="Agrandir — objet_lanterne_rouillee.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">objet</div>
+  <div class="id">veilleur-1</div>
+  <div class="meta">objet_lanterne_rouillee.png</div>
+  <div class="desc">Rencontre de la Palissade, beat 1. Le Veilleur dans sa guérite de planches, une lanterne au clou, trente ans de portillon.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="veilleur-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="veilleur-1" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="objet" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/objet_lanterne_rouillee.png')" data-zoom="assets/objet_lanterne_rouillee.png" data-zoom-id="veilleur-2" title="Agrandir — objet_lanterne_rouillee.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">objet</div>
+  <div class="id">veilleur-2</div>
+  <div class="meta">objet_lanterne_rouillee.png</div>
+  <div class="desc">Rencontre de la Palissade, beat 2 : la lanterne contre une histoire.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="veilleur-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="veilleur-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="objet" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/objet_lanterne_rouillee.png')" data-zoom="assets/objet_lanterne_rouillee.png" data-zoom-id="veilleur-3" title="Agrandir — objet_lanterne_rouillee.png"><span class="tag dediee">dédiée</span></div>
+  <div class="cat">objet</div>
+  <div class="id">veilleur-3</div>
+  <div class="meta">objet_lanterne_rouillee.png</div>
+  <div class="desc">Rencontre de la Palissade, beat 3 — la résolution.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="veilleur-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="veilleur-3" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="manquante" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb none">AUCUNE IMAGE<span class="tag manquante">manquante</span></div>
+  <div class="cat">scene</div>
+  <div class="id">palissade-sud-2</div>
+  <div class="meta">aucune image ni héritage</div>
+  <div class="desc">Événement de la Palissade : l'Appelé, toujours vu de dos, qui marche vers la Descente sans se retourner.</div>
+  
+  
+  
+  
+  
+</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_petit_tribunal_a.png')" data-zoom="assets/scene_petit_tribunal_a.png" data-zoom-id="proces-du-heros" title="Agrandir — scene_petit_tribunal_a.png"><span class="tag heritee">héritée</span></div>
+  <div class="cat">scene</div>
+  <div class="id">proces-du-heros</div>
+  <div class="meta">hérite de <b>petit-tribunal</b></div>
+  <div class="desc">Scène de déroutage au dernier palier de Soupçon : le hameau te juge. Les trois bancs pleins, tous les visages tournés vers toi, la chaire vide.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="proces-du-heros" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="proces-du-heros" data-v="ok">ça marche</button></div>
+  
+  
+</article></div>
+
+<h2>Assets orphelins</h2>
+<div class="sub">Présents dans assets/, référencés par aucune scène — en réserve, ou à supprimer.</div>
+<div class="orph"><div>assets/monstre_deserteur_tribunal_a.png</div><div>assets/monstre_gamin_murets_a.png</div><div>assets/monstre_geryon.png</div><div>assets/monstre_la_fille_c.png</div><div>assets/monstre_limiers.png</div><div>assets/monstre_ombre_grand_gibet_a.png</div><div>assets/monstre_pendu_mal_fixe_v1_b.png</div><div>assets/monstre_rodeur.png</div><div>assets/monstre_vent_qui_ment_b.png</div><div>assets/monstre_vent_qui_ment_d.png</div><div>assets/objet_couronne_brisee.png</div><div>assets/objet_dague_os.png</div><div>assets/objet_fiole_baume.png</div><div>assets/objet_grimoire.png</div><div>assets/scene_champ_des_fixes_c.png</div><div>assets/scene_gibet_vide_c.png</div><div>assets/scene_landes_hameau_croix_craie_a.png</div><div>assets/scene_landes_hameau_puits_b.png</div><div>assets/scene_landes_tribunal_b.png</div><div>assets/scene_moulin_sans_ailes_c.png</div><div>assets/scene_tour_de_guet_a.png</div><div>assets/scene_transition_arrivee_hameau_b.png</div><div>assets/scene_transition_chemin_murets_b.png</div><div>assets/scene_transition_crete_cordes_b.png</div><div>assets/scene_transition_croisee_sud_b.png</div><div>assets/scene_transition_croix_craie_c.png</div><div>assets/scene_transition_hommes_suivent_b.png</div><div>assets/scene_transition_vols_basses_b.png</div></div>
+
+<h2>Comment ça revient jusqu'à moi</h2>
+<div class="log-static"><ol>
+  <li>Tu marques les images qui ne vont pas, avec la raison si tu l'as en tête.
+      Les marquages restent dans ce navigateur, même après fermeture.</li>
+  <li>Tu cliques <b>Copier ma liste</b> en haut, et tu me la colles en message.</li>
+  <li>Je regénère ou je recâble, je pousse, et cette page se met à jour.</li>
+</ol>
+<p style="margin-top:10px">Un lien ne peut pas écrire dans le dépôt : c'est le
+navigateur qui l'interdit, pas un manque de l'outil. Comme c'est moi qui câble
+les illustrations à chaque séance, ton marquage suffit — inutile que tu touches
+au code.</p></div>
+
+<div id="zoom" role="dialog" aria-modal="true" aria-label="Image en pleine résolution">
+  <img alt=""><p class="cap"></p>
+</div>
+<div id="log"><div class="hd">Journal d'écriture</div><div id="logbody">En attente d'une action…</div></div>
+<div id="toast"></div>
+<script>window.__COVERAGE_EDITABLE__=false;
+window.__COVERAGE_WEB__=true;</script>
+<script>
+"use strict";
+
+/* ---------- séparateur tramé (jamais un filet net — règle DA) ---------- */
+function rule(cv){
+  const w=cv.clientWidth; cv.width=w; cv.height=2;
+  const x=cv.getContext("2d");
+  for(let i=0;i<w;i++){
+    if(Math.random()<.7){x.fillStyle="rgba(255,255,255,.26)";x.fillRect(i,0,1,1);}
+    if(Math.random()<.13){x.fillStyle="rgba(255,255,255,.14)";x.fillRect(i,1,1,1);}
+  }
+}
+addEventListener("load",()=>document.querySelectorAll("canvas.rule").forEach(rule));
+
+/* ---------- filtres — une rangée unique, statut + catégorie ---------- */
+let filter="tous";
+function applyFilter(){
+  document.querySelectorAll(".card").forEach(c=>{
+    const ok=filter==="tous"||c.dataset.statut===filter||c.dataset.cat===filter
+      ||c.dataset.verdict===filter;
+    c.classList.toggle("hidden",!ok);
+  });
+}
+document.getElementById("filters").onclick=e=>{
+  const b=e.target.closest("button"); if(!b)return;
+  document.querySelectorAll("#filters button").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); filter=b.dataset.f; applyFilter();
+};
+
+function toast(m){const t=document.getElementById('toast');t.textContent=m;
+  t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1800);}
+
+/* ---------- agrandi sur l'image d'origine (pleine résolution) ---------- */
+const zoom=document.getElementById("zoom");
+const zoomImg=zoom.querySelector("img"), zoomCap=zoom.querySelector(".cap");
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-zoom]"); if(!t)return;
+  zoomImg.src=t.dataset.zoom;            // le serveur renvoie le PNG 1000×1000
+  zoomCap.innerHTML=t.dataset.zoom.replace("assets/","")+
+    ' — <b>'+(t.dataset.zoomId||"")+"</b> · Échap ou clic pour fermer";
+  zoom.classList.add("on");
+});
+function closeZoom(){zoom.classList.remove("on");zoomImg.src="";}
+zoom.addEventListener("click",closeZoom);
+addEventListener("keydown",e=>{if(e.key==="Escape")closeZoom();});
+
+/* ---------- verdict de qualité ————————————————————————————————
+   Contrairement au câblage, un verdict ne change le statut d'AUCUNE autre
+   carte : pas besoin de recharger la page, on met à jour sur place.
+
+   Deux façons de le ranger selon le mode :
+   • outil local  → POST /api/verdict, écrit dans un JSON suivi par git
+   • version web  → localStorage, donc PROPRE AU NAVIGATEUR. Un lien ne peut pas
+     écrire dans le dépôt ; le bouton « copier la liste » sert de pont (coller
+     dans un message ou dans Notion). C'est une limite du web, pas un oubli. */
+const VKEY="pactum-verdicts";
+function webVerdicts(){
+  try{return JSON.parse(localStorage.getItem(VKEY)||"{}");}catch{return {};}
+}
+async function persistVerdict(id,verdict,note){
+  if(window.__COVERAGE_WEB__){
+    const all=webVerdicts();
+    if(verdict){all[id]={v:verdict};if(note)all[id].note=note;}else{delete all[id];}
+    localStorage.setItem(VKEY,JSON.stringify(all));
+    return;
+  }
+  const r=await fetch("/api/verdict",{method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({id,verdict,note})});
+  const j=await r.json();
+  if(!j.ok)throw new Error(j.error||"échec");
+}
+/* ⚠️ Sélecteur volontairement précis : la CARTE porte aussi `data-verdict`
+   (le filtre en a besoin). Un `[data-verdict]` nu attacherait le gestionnaire
+   à la carte ET au bouton — le clic remonterait à la carte, qui se relancerait
+   avec un verdict vide et effacerait aussitôt le marquage. */
+document.querySelectorAll(".verdict button[data-verdict]").forEach(btn=>{
+  btn.addEventListener("click",async()=>{
+    const id=btn.dataset.verdict, want=btn.dataset.v;
+    const card=btn.closest(".card");
+    const already=btn.classList.contains("on-ko")||btn.classList.contains("on-ok");
+    const verdict=already?"":want;      // recliquer le même bouton retire l'avis
+    let note="";
+    if(verdict==="a_remplacer"){
+      note=prompt("Pourquoi elle ne marche pas ? (facultatif)","")||"";
+    }
+    try{
+      await persistVerdict(id,verdict,note);
+      applyVerdict(card,verdict,note);
+      log(`<b>verdict</b> · ${id} → `+(verdict||"avis retiré")+
+        (note?` (« ${note} »)`:""));
+      toast(verdict==="a_remplacer"?"Marquée à remplacer":
+            verdict==="ok"?"Marquée bonne":"Avis retiré");
+    }catch(e){log(`<span style="color:#fff">ÉCHEC verdict</span> · ${id} · ${e.message}`);}
+  });
+});
+
+/* En mode web, les marquages du navigateur sont réappliqués au chargement, et
+   « copier la liste » les sort en texte lisible pour les rapatrier. */
+if(window.__COVERAGE_WEB__){
+  const stored=webVerdicts();
+  for(const [id,v] of Object.entries(stored)){
+    const btn=document.querySelector(
+      `.verdict button[data-verdict="${CSS.escape(id)}"]`);
+    const card=btn&&btn.closest(".card");
+    if(card)applyVerdict(card,v.v,v.note||"");
+  }
+  const cp=document.getElementById("copy-verdicts");
+  if(cp)cp.addEventListener("click",async()=>{
+    const all=webVerdicts();
+    const ko=Object.entries(all).filter(([,v])=>v.v==="a_remplacer");
+    const ok=Object.entries(all).filter(([,v])=>v.v==="ok");
+    if(!ko.length&&!ok.length){toast("Rien de marqué");return;}
+    let txt="Couverture visuelle — mes marquages\n";
+    if(ko.length){txt+="\nÀ REMPLACER\n"+ko.map(([id,v])=>
+      "- "+id+(v.note?" : "+v.note:"")).join("\n")+"\n";}
+    if(ok.length){txt+="\nÇA MARCHE\n"+ok.map(([id])=>"- "+id).join("\n")+"\n";}
+    try{await navigator.clipboard.writeText(txt);toast("Liste copiée");}
+    catch{
+      const ta=document.createElement("textarea");ta.value=txt;
+      document.body.append(ta);ta.select();document.execCommand("copy");
+      ta.remove();toast("Liste copiée");
+    }
+    log("<b>liste copiée</b> · "+ko.length+" à remplacer, "+ok.length+" validées");
+  });
+}
+function applyVerdict(card,verdict,note){
+  card.dataset.verdict=verdict;
+  card.classList.toggle("a_remplacer",verdict==="a_remplacer");
+  const thumb=card.querySelector(".thumb");
+  let bar=thumb&&thumb.querySelector(".vbar");
+  if(verdict&&thumb){
+    if(!bar){bar=document.createElement("span");thumb.appendChild(bar);}
+    bar.className="vbar "+verdict;
+    bar.textContent=verdict==="a_remplacer"?"à remplacer":"validée";
+  }else if(bar){bar.remove();}
+  let nEl=card.querySelector(".vnote");
+  if(verdict==="a_remplacer"&&note){
+    if(!nEl){nEl=document.createElement("p");nEl.className="vnote";
+      card.querySelector(".verdict").before(nEl);}
+    nEl.textContent="⚠ "+note;
+  }else if(nEl){nEl.remove();}
+  card.querySelectorAll("[data-verdict]").forEach(b=>{
+    b.classList.remove("on-ko","on-ok");
+    if(b.dataset.v===verdict)b.classList.add(verdict==="a_remplacer"?"on-ko":"on-ok");
+  });
+  refreshVerdictCounts();
+}
+function refreshVerdictCounts(){
+  const all=[...document.querySelectorAll(".card")];
+  const n=v=>all.filter(c=>c.dataset.verdict===v).length;
+  const a=document.getElementById("n-remplacer"), b=document.getElementById("n-valides");
+  if(a)a.textContent=n("a_remplacer");
+  if(b)b.textContent=n("ok");
+}
+document.querySelectorAll('[data-prompt]').forEach(b=>b.onclick=async()=>{
+  try{await navigator.clipboard.writeText(b.dataset.prompt);toast('Prompt copié');}
+  catch{const t=document.createElement('textarea');t.value=b.dataset.prompt;
+    document.body.append(t);t.select();document.execCommand('copy');t.remove();
+    toast('Prompt copié');}});
+
+/* ---------- journal d'écriture — persistant (localStorage), jamais une popup.
+   Une action écrit sur le disque puis recharge la page (les statuts d'AUTRES
+   cartes peuvent changer — une image détachée peut redonner une carte à
+   "manquante" ailleurs — donc seul un recalcul serveur complet est fiable).
+   Le journal survit au reload en passant par localStorage. */
+const LOG_KEY="pactum-coverage-log";
+function loadLog(){try{return JSON.parse(localStorage.getItem(LOG_KEY)||"[]");}catch{return [];}}
+function renderLog(){
+  const body=document.getElementById("logbody");
+  const entries=loadLog();
+  body.innerHTML=entries.length
+    ? entries.map(e=>`<div>${e.t} — ${e.msg}</div>`).join("")
+    : "En attente d'une action…";
+}
+function log(msg){
+  const entries=loadLog();
+  entries.unshift({t:new Date().toLocaleTimeString("fr-FR"),msg});
+  localStorage.setItem(LOG_KEY,JSON.stringify(entries.slice(0,60)));
+  renderLog();
+}
+renderLog();
+
+/* ——— Édition inline (mode --serve seulement) ————————————————————————
+   Trois voies directement sur la carte, comme la maquette : un <select> pour
+   rattacher un asset déjà tramé, une zone de glisser-déposer pour importer un
+   fichier brut (passe par le dithering canonique avant assets/), et un lien
+   « détacher » (dédiées uniquement) qui retire l'image dédiée. */
+if(window.__COVERAGE_EDITABLE__){
+  async function post(url,body){
+    const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(body)});
+    const j=await r.json();
+    if(!j.ok)throw new Error(j.error||"échec");
+    return j;
+  }
+  async function afterWrite(msg){
+    log(msg);
+    await new Promise(res=>setTimeout(res,400));
+    location.reload();
+  }
+
+  fetch("/api/assets").then(r=>r.json()).then(assets=>{
+    document.querySelectorAll("[data-select]").forEach(sel=>{
+      const cur=sel.dataset.current||"";
+      let opts='<option value="">— aucune (hérite / fallback) —</option>';
+      for(const a of assets) opts+=`<option${a===cur?" selected":""}>${a}</option>`;
+      sel.innerHTML=opts;
+    });
+  });
+
+  document.querySelectorAll("[data-select]").forEach(sel=>{
+    sel.addEventListener("change",async()=>{
+      const id=sel.dataset.select, poi=sel.dataset.poi==="1", asset=sel.value;
+      try{
+        const j=await post("/api/wire",{id,asset,poi});
+        await afterWrite(`<b>${poi?"point d'intérêt":"scène"}</b> · ${id} → `+
+          (asset?asset:"détaché")+` (écrit : ${j.touched.join(", ")})`);
+      }catch(e){log(`<span style="color:#fff">ÉCHEC</span> · ${id} · ${e.message}`);}
+    });
+  });
+
+  document.querySelectorAll("[data-drop]").forEach(dz=>{
+    const card=dz.closest(".card");
+    dz.ondragover=e=>{e.preventDefault();dz.classList.add("on");card.classList.add("drag");};
+    dz.ondragleave=()=>{dz.classList.remove("on");card.classList.remove("drag");};
+    dz.ondrop=async e=>{
+      e.preventDefault();dz.classList.remove("on");card.classList.remove("drag");
+      const f=e.dataTransfer.files[0]; if(!f)return;
+      const id=dz.dataset.drop, poi=dz.dataset.poi==="1";
+      const name=prompt("Nom du fichier dans assets/ :",dz.dataset.defaultName);
+      if(!name)return;
+      const data=await new Promise(res=>{const fr=new FileReader();
+        fr.onload=()=>res(fr.result);fr.readAsDataURL(f);});
+      try{
+        const j=await post("/api/import",{id,poi,name,data});
+        await afterWrite(`<b>dithering</b> → <b>${j.asset}</b> · ${id} `+
+          `(Floyd-Steinberg 182 / 151%, écrit : ${j.touched.join(", ")})`);
+      }catch(e){log(`<span style="color:#fff">ÉCHEC import</span> · ${id} · ${e.message}`);}
+    };
+  });
+
+  document.querySelectorAll("[data-detach]").forEach(btn=>{
+    btn.addEventListener("click",async()=>{
+      const id=btn.dataset.detach, poi=btn.dataset.poi==="1";
+      try{
+        const j=await post("/api/wire",{id,asset:"",poi});
+        await afterWrite(`<b>détaché</b> · ${id} (écrit : ${j.touched.join(", ")})`);
+      }catch(e){log(`<span style="color:#fff">ÉCHEC</span> · ${id} · ${e.message}`);}
+    });
+  });
+}
+</script>
+</body></html>
