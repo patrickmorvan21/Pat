@@ -227,10 +227,11 @@ export default function Intro({ onDone }: { onDone: () => void }) {
  * Landes en est une zone, soit c'est un renommage à propager partout.
  *
  * L'acte II aura son propre visuel (annoncé par Patrick, pas encore fourni) :
- * la table ci-dessous est là pour l'accueillir sans toucher au composant.
+ * la table ci-dessous est là pour l'accueillir sans toucher au composant —
+ * les visuels d'acte vivent dans le Drive sous `Assets/IMG/3 actes`.
  */
 const ACTES = [
-  { eyebrow: "• LE DOMAINE •", title: "Les Lisières", image: "assets/scene_landes_frise_montagnes_pleine_c.png" },
+  { eyebrow: "• LE DOMAINE •", title: "Les Lisières", image: "assets/scene_landes_frise_montagnes_pleine_b.png" },
 ];
 
 export function ActeScreen({ acte = 0, onDone }: { acte?: number; onDone: () => void }) {
