@@ -166,5 +166,10 @@
  *           Seuil, le Marcheur à rebours, les Époux du Verger) utilisent enfin
  *           le portrait déjà validé du personnage au lieu d'un crop de l'image
  *           du lieu — et c'est la même image que la rencontre qui suit.
+ *   1.23.1 — Plus de plan rapproché par crop (retour Patrick 26/07 : « ça ne
+ *           rend pas bien »). Observer un élément n'est plus un zoom dans
+ *           l'image du lieu : le héros se déplace, et l'écran montre l'élément
+ *           lui-même via son image dédiée. Sans image dédiée, l'écran garde la
+ *           vue du lieu — c'est un asset à produire, pas un effet à simuler.
  */
-export const APP_VERSION = "1.23.0";
+export const APP_VERSION = "1.23.1";

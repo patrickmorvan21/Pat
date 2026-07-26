@@ -117,9 +117,16 @@ export type Choice = {
  *   • le beat d'arrivée du lieu MONTRE les points à distance (paysage lu,
  *     jamais un menu) ;
  *   • choisir un point joue son `approche` (2-3 phrases de marche DANS le
- *     lieu) PUIS son `examen` (plan rapproché = crop de l'image du lieu) ;
+ *     lieu) PUIS son `examen` (le héros est à hauteur de l'élément) ;
  *   • on revient au lieu, les points restants toujours explorables, jusqu'à
  *     choisir de continuer (→ l'événement du lieu).
+ *
+ * ⚠️ PLUS DE PLAN RAPPROCHÉ PAR CROP (retour Patrick 26/07 : « ça ne rend pas
+ * bien »). Observer n'est plus un zoom dans l'image du lieu : le héros se
+ * DÉPLACE, et l'écran montre l'élément lui-même via son `illustration` dédiée.
+ * Sans image dédiée, l'écran garde l'image du lieu inchangée — c'est un manque
+ * d'asset à combler (visible dans `data/couverture_visuelle.html`), jamais un
+ * effet à simuler.
  */
 export type PointInteret = {
   id: string;
@@ -127,23 +134,16 @@ export type PointInteret = {
   label: string;
   /** Beat de MARCHE vers le point (2-3 phrases). Jamais sauté. */
   approche: string;
-  /** Examen au plan rapproché (crop ×2-3 de l'image du lieu). */
+  /** Examen : le héros est à hauteur de l'élément, il le détaille. */
   examen: string;
   /**
-   * Plan rapproché DÉDIÉ (retour Patrick 25/07 : « il faudrait des images plus
-   * détaillées »). Chemin `assets/…` d'une illustration produite pour ce point
-   * précis. Quand elle existe, elle REMPLACE le crop CSS ; sinon on retombe sur
-   * le zoom de l'image du lieu — donc déposer le fichier et remplir ce champ
-   * suffit, aucun autre code à toucher.
-   * ⚠️ L'image doit être dérivée de l'illustration du LIEU (même décor, même
-   * lumière, même matière) : sinon le plan rapproché ne raccorde pas.
+   * Image de l'ÉLÉMENT OBSERVÉ. Chemin `assets/…` d'une illustration produite
+   * pour ce point précis — c'est le seul moyen de montrer le focus (le crop est
+   * abandonné). Vide = l'écran garde l'image du lieu.
+   * ⚠️ L'image doit raccorder avec l'illustration du LIEU (même décor, même
+   * lumière, même matière) : le héros s'est approché, il n'a pas changé d'endroit.
    */
   illustration?: string;
-  /** Facteur de crop du plan rapproché (défaut 2.2). Utilisé seulement quand il
-      n'y a pas d'`illustration` dédiée (spec §4 : production gratuite). */
-  zoom?: number;
-  /** Cadrage du crop (object-position CSS), ex. "50% 30%". */
-  focus?: string;
   /** Le Soupçon monte/descend en examinant (ex. réagir à voix haute). */
   soupcon?: number;
   /**
@@ -359,8 +359,6 @@ export const SCENES: Scene[] = [
         chapterFragment: true,
         label: "Les gravures de la pierre",
         illustration: "assets/scene_borne_gravures_a_d.png",
-        zoom: 2.6,
-        focus: "50% 45%",
         approche:
           "Tu fais le tour de la pierre lentement, la main à plat sur le " +
           "granit. Il est froid d'une froideur qui ne vient pas du vent.",
@@ -375,8 +373,6 @@ export const SCENES: Scene[] = [
         id: "eclat-descelle",
         label: "Un angle cassé, au ras du sol",
         illustration: "assets/scene_borne_eclat_a_b.png",
-        zoom: 2.8,
-        focus: "40% 70%",
         grantsLoot: "pierre-retour",
         approche:
           "Un angle de la borne manque. Tu t'accroupis : la cassure est " +
@@ -394,8 +390,6 @@ export const SCENES: Scene[] = [
         // Le plan rapproché EST le personnage : son portrait validé existe déjà,
         // et c'est la même image que la rencontre qui suit (continuité).
         illustration: "assets/monstre_hesitant_b.png",
-        zoom: 2.4,
-        focus: "60% 40%",
         approche:
           "Tu quittes la borne et tu marches vers lui, sans te presser, en " +
           "faisant sonner tes pas — on n'arrive pas dans le dos de quelqu'un, " +
@@ -571,8 +565,6 @@ export const SCENES: Scene[] = [
         id: "charrette-embourbee",
         label: "La charrette embourbée",
         illustration: "assets/scene_chemin_charrette_a_c.png",
-        zoom: 2.5,
-        focus: "45% 60%",
         grantsLoot: "grelot-charretier",
         approche:
           "Elle penche dans l'ornière depuis si longtemps que le bois a pris " +
@@ -588,8 +580,6 @@ export const SCENES: Scene[] = [
         id: "talus-empreintes",
         label: "Le haut des talus",
         illustration: "assets/scene_chemin_talus_a_c.png",
-        zoom: 2.4,
-        focus: "50% 25%",
         approche:
           "Tu montes de trois pas dans la pente, juste assez pour voir la " +
           "crête sans t'exposer entièrement. La terre y est meuble, retournée.",
@@ -607,8 +597,6 @@ export const SCENES: Scene[] = [
         label: "L'homme qui marche à reculons",
         leadsTo: "marcheur-1",
         illustration: "assets/monstre_marcheur_a_rebours_d.png",
-        zoom: 2.3,
-        focus: "55% 45%",
         approche:
           "Tu ralentis pour le laisser venir. Il marche à reculons d'un pas " +
           "sûr, les talons trouvant le sol comme des yeux.",
@@ -875,8 +863,6 @@ export const SCENES: Scene[] = [
         chapterFragment: true,
         label: "Les potences du cercle",
         illustration: "assets/scene_colline_potences_cercle_a_c.png",
-        zoom: 2.1,
-        focus: "35% 45%",
         approche:
           "Tu entres dans le cercle. Le vent monte d'un cran dès le premier " +
           "pas entre deux potences — pas plus fort ailleurs, plus fort ICI, " +
@@ -891,8 +877,6 @@ export const SCENES: Scene[] = [
         chapterFragment: true,
         label: "Le Gibet Vide, au centre",
         illustration: "assets/scene_colline_gibet_vide_a_b.png",
-        zoom: 2.6,
-        focus: "50% 25%",
         approche:
           "Tu marches vers le centre, et la chose grandit plus vite que tes " +
           "pas. À dix mètres, tu comprends que tu avais mal jugé l'échelle. À " +
@@ -905,8 +889,6 @@ export const SCENES: Scene[] = [
       {
         id: "poteau-pendu",
         label: "Le poteau isolé, à gauche",
-        zoom: 2.4,
-        focus: "18% 50%",
         soupcon: 1, // s'intéresser au Pendu se voit de loin
         approche:
           "Tu contournes le cercle par la gauche. Le poteau isolé est plus " +
@@ -1100,8 +1082,6 @@ export const SCENES: Scene[] = [
         chapterFragment: true,
         label: "Les rangées et leurs noms",
         illustration: "assets/scene_champ_rangees_a_d.png",
-        zoom: 2.2,
-        focus: "45% 50%",
         approche:
           "Tu marches entre deux rangs. Le sol est tassé par des allées et " +
           "venues régulières — on entretient ce champ comme un jardin, et " +
@@ -1116,8 +1096,6 @@ export const SCENES: Scene[] = [
         id: "poteaux-vierges",
         label: "Les poteaux vierges, au fond",
         illustration: "assets/scene_champ_poteaux_vierges_a_a.png",
-        zoom: 2.5,
-        focus: "70% 55%",
         soupcon: 1, // réagir devant les poteaux d'avance se voit
         savoir: "savoir_poteau_a_mon_nom",
         approche:
@@ -1136,8 +1114,6 @@ export const SCENES: Scene[] = [
         grantsLoot: "craie-condamne",
         label: "Un vide dans une rangée pleine",
         illustration: "assets/scene_champ_tombe_manquante_a_c.png",
-        zoom: 2.7,
-        focus: "30% 62%",
         approche:
           "Tu l'as repéré de loin sans savoir quoi : un défaut d'alignement, " +
           "un rythme cassé. En approchant, tu comprends — il manque un poteau " +
@@ -1310,8 +1286,6 @@ export const SCENES: Scene[] = [
         soupcon: 1, // toucher à une porte marquée, dans une rue qui regarde
         label: "S'approcher de la croix",
         illustration: "assets/scene_hameau_croix_craie_a_a.png",
-        zoom: 2.6,
-        focus: "45% 45%",
         approche:
           "Dix pas dans une rue qui ne fait aucun bruit. Tu marches au milieu, " +
           "d'instinct — le plus loin possible des deux rangées de portes.",
@@ -1325,8 +1299,6 @@ export const SCENES: Scene[] = [
         label: "La femme sur le pas de porte",
         leadsTo: "femme-seuil-1",
         illustration: "assets/monstre_femme_au_seuil_b.png",
-        zoom: 2.4,
-        focus: "60% 45%",
         approche:
           "Plus bas dans la rue, une femme se tient sur un pas de porte, " +
           "immobile. Pas comme on prend l'air : comme on monte la garde. Tu " +
@@ -1606,8 +1578,6 @@ export const SCENES: Scene[] = [
         id: "pourquoi-trois-aubes",
         soupcon: 1, // poser LA question devant tout le barrage
         label: "Demander pourquoi trois aubes",
-        zoom: 2.3,
-        focus: "50% 40%",
         approche:
           "Tu ne réponds pas tout de suite. Tu poses la question, et le " +
           "barrage entier attend sa réponse avec toi — comme si personne " +
@@ -1741,8 +1711,6 @@ export const SCENES: Scene[] = [
         id: "examiner-grange",
         label: "Examiner la grange",
         illustration: "assets/scene_hameau_grange_poutres_a_d.png",
-        zoom: 2.5,
-        focus: "50% 55%",
         approche:
           "Tu prends la lampe et tu fais le tour, lentement, en te tenant " +
           "loin des murs — le vieux réflexe de qui ne veut pas être une " +
@@ -2034,8 +2002,6 @@ export const SCENES: Scene[] = [
         illustration: "assets/scene_moulin_croix_ombres_a_d.png",
         // Il faut RECULER pour la voir entière : le plan s'élargit au lieu de
         // se resserrer — seul point d'intérêt de la zone à zoom < 1.
-        zoom: 0.9,
-        focus: "50% 25%",
         approche:
           "Tu recules jusqu'au muret d'en face. Il faut de la distance pour " +
           "la voir entière — c'est une trace, pas un détail.",
@@ -2051,8 +2017,6 @@ export const SCENES: Scene[] = [
         grantsLoot: "jouet-fixee",
         label: "La lucarne, au-dessus de la porte",
         illustration: "assets/scene_moulin_lucarne_a_b.png",
-        zoom: 2.7,
-        focus: "50% 30%",
         approche:
           "Quelque chose a bougé là-haut — tu en jurerais. Tu approches sans " +
           "quitter l'ouverture des yeux, ce qui est exactement la mauvaise " +
@@ -2067,8 +2031,6 @@ export const SCENES: Scene[] = [
         chapterFragment: true,
         label: "Pousser la porte entrouverte",
         illustration: "assets/scene_moulin_interieur_a_d.png",
-        zoom: 2.2,
-        focus: "50% 55%",
         approche:
           "Tu pousses du plat de la main, lentement, en laissant à ce qu'il y " +
           "a dedans le temps de décider s'il veut être vu.",
@@ -2157,8 +2119,6 @@ export const SCENES: Scene[] = [
         id: "mur-cordes",
         label: "Le mur des cordes, au fond",
         illustration: "assets/scene_chapelle_mur_cordes_a_d.png",
-        zoom: 2.3,
-        focus: "60% 45%",
         approche:
           "Tu remontes la nef courte. L'odeur de chanvre vieux prend à la " +
           "gorge à mesure — une odeur grasse, presque animale, qui n'a rien " +
@@ -2178,8 +2138,6 @@ export const SCENES: Scene[] = [
         soupcon: 1, // fouiller sous un autel, même renversé
         label: "L'autel couché, sur le côté",
         illustration: "assets/scene_chapelle_autel_a_c.png",
-        zoom: 2.5,
-        focus: "25% 60%",
         approche:
           "Tu contournes les bancs absents — on les a brûlés, sans doute — " +
           "jusqu'à la masse de pierre couchée sur le flanc. Personne ne l'a " +
@@ -2194,8 +2152,6 @@ export const SCENES: Scene[] = [
         soupcon: -1, // refaire le geste du rite : le hameau approuve
         label: "La chaise et l'ouvrage",
         illustration: "assets/scene_chapelle_ouvrage_a_d.png",
-        zoom: 2.6,
-        focus: "40% 72%",
         approche:
           "Près de l'entrée, la chaise est tournée vers le mur des cordes — " +
           "pas vers la porte. On s'assied ici pour regarder les reliques, pas " +
@@ -2501,8 +2457,6 @@ export const SCENES: Scene[] = [
         id: "mur-ordonnance",
         label: "La feuille clouée au mur",
         illustration: "assets/scene_tribunal_ordonnance_a_c.png",
-        zoom: 2.4,
-        focus: "22% 38%",
         approche:
           "Trois pas de dalle inégale, et la feuille se précise : du papier " +
           "épais, jauni, cloué aux quatre coins par quelqu'un qui ne voulait " +
@@ -2520,8 +2474,6 @@ export const SCENES: Scene[] = [
         chapterFragment: true,
         label: "La chaire et son livre",
         illustration: "assets/scene_tribunal_chaire_a_c.png",
-        zoom: 2.5,
-        focus: "50% 30%",
         approche:
           "La chaire est haute — il faut lever les yeux, et c'est le but. Tu " +
           "montes la marche unique qui y mène, celle que le Bailli montait " +
@@ -2538,8 +2490,6 @@ export const SCENES: Scene[] = [
         chapterFragment: true,
         label: "Les bancs et leurs traces",
         illustration: "assets/scene_tribunal_bancs_a_c.png",
-        zoom: 2.2,
-        focus: "50% 70%",
         approche:
           "Tu redescends vers les bancs. Trois rangs de bois brut, et cette " +
           "disposition que tu reconnais sans l'avoir apprise : les accusés " +
@@ -2767,8 +2717,6 @@ export const SCENES: Scene[] = [
         soupcon: 1, // s'agenouiller aux creux de la Mare est un aveu de croyance
         label: "Le point de berge usé",
         illustration: "assets/scene_mare_berge_a_c.png",
-        zoom: 2.6,
-        focus: "50% 65%",
         approche:
           "Tu contournes la mare par la droite pour atteindre le seul endroit " +
           "où la boue est tassée. Le sol y est dur comme un seuil de maison.",
@@ -2781,8 +2729,6 @@ export const SCENES: Scene[] = [
       {
         id: "eau-reflet",
         label: "L'eau",
-        zoom: 2.4,
-        focus: "50% 70%",
         savoir: "savoir_reflet",
         approche:
           "Tu t'agenouilles dans les creux. Ils sont à ta taille, évidemment. " +
@@ -2799,8 +2745,6 @@ export const SCENES: Scene[] = [
         id: "reflet-metal",
         label: "Le reflet de métal, dans les roseaux",
         illustration: "assets/scene_mare_miroir_a_b.png",
-        zoom: 2.8,
-        focus: "70% 60%",
         grantsLoot: "miroir-poche",
         approche:
           "Tu écartes les roseaux à deux mains. Ils sont noirs jusqu'à la " +
@@ -2896,8 +2840,6 @@ export const SCENES: Scene[] = [
         id: "fruits-cendre",
         label: "Les fruits, dans les rangs",
         illustration: "assets/scene_verger_fruits_a_c.png",
-        zoom: 2.7,
-        focus: "45% 40%",
         grantsLoot: "fruit-cendre",
         approche:
           "Tu entres dans un rang. L'odeur devrait arriver là — pas de " +
@@ -2913,8 +2855,6 @@ export const SCENES: Scene[] = [
         soupcon: 1, // compter les rangs du Verger, ça se voit du hameau
         label: "La souche, au bout du rang",
         illustration: "assets/scene_verger_souche_a_c.png",
-        zoom: 2.8,
-        focus: "50% 65%",
         approche:
           "Au bout du rang, un arbre manque. Sa souche est nette, sciée à " +
           "hauteur de genou, et le bois de coupe est gris.",
@@ -2929,8 +2869,6 @@ export const SCENES: Scene[] = [
         label: "Les deux qui bêchent, au fond",
         leadsTo: "epoux-1",
         illustration: "assets/monstre_epoux_verger_a.png",
-        zoom: 2.3,
-        focus: "60% 50%",
         approche:
           "Tu remontes les rangs vers eux. Ils se relaient sur la même bêche " +
           "sans se parler, du geste réglé des gens qui font la même chose " +
@@ -3143,8 +3081,6 @@ export const SCENES: Scene[] = [
         id: "rondins-pointes",
         label: "Les rondins et leurs pointes",
         illustration: "assets/scene_palissade_rondins_a_c.png",
-        zoom: 2.6,
-        focus: "50% 35%",
         approche:
           "Tu longes le mur sur quelques pas, la tête levée, à suivre la " +
           "ligne des sommets taillés.",
@@ -3160,8 +3096,6 @@ export const SCENES: Scene[] = [
         grantsLoot: "cle-portillon",
         label: "Le portillon et son verrou",
         illustration: "assets/scene_palissade_portillon_a_b.png",
-        zoom: 2.8,
-        focus: "50% 55%",
         approche:
           "Tu poses la main sur le bois du portillon. Il est tiède, ce qui " +
           "n'a aucun sens sous ce crépuscule.",
@@ -3174,8 +3108,6 @@ export const SCENES: Scene[] = [
         id: "homme-guerite",
         label: "L'homme de la guérite",
         leadsTo: "veilleur-1",
-        zoom: 2.4,
-        focus: "35% 45%",
         approche:
           "Il est sorti de sa niche avant que tu aies décidé d'y aller. Tu " +
           "marches vers lui parce qu'il n'y a plus vraiment le choix.",

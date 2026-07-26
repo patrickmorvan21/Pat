@@ -6,15 +6,15 @@
       "prompt_image": "single tall standing stone in the middle of an empty moor plateau, carved marks on its faces, small pile of humble offerings at its base, path vanishing south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "hesitant-1": {
-      "description": "Rencontre à la Borne, beat 1. Un homme immobile face au sud, dos au hameau, qui ne bouge pas depuis assez longtemps pour que l'herbe se soit couchée sous lui.",
+      "description": "Un homme immobile face au sud, dos au hameau, planté depuis si longtemps que l'herbe s'est couchée sous lui. La borne dressée à côté de lui.",
       "prompt_image": "gaunt hooded man standing motionless on a moor, seen from behind at three-quarters, facing away toward a dark southern horizon, worn travelling clothes, a small bundle at his feet, grass flattened around him, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "hesitant-2": {
-      "description": "Rencontre à la Borne, beat 2 — l'échange. Il calcule à voix haute entre rentrer et descendre. Son visage de trois-quarts, la borne floue derrière lui.",
+      "description": "Il parle enfin : tourné de trois-quarts, il désigne la borne du menton sans la regarder. CHANGE : il n'est plus figé face au sud — tête tournée, menton qui pointe la pierre.",
       "prompt_image": ""
     },
     "hesitant-3": {
-      "description": "Rencontre à la Borne, beat 3 — la résolution. Selon l'issue, il rentre ou s'assied au pied de la pierre, face au sud.",
+      "description": "La borne seule au milieu du plateau, la bruyère couchée à son pied, et rien qui dise dans quel sens il est parti. CHANGE : l'homme a DISPARU du cadre — même pierre, vide.",
       "prompt_image": ""
     },
     "chemin-creux": {
@@ -26,15 +26,15 @@
       "prompt_image": "blind bend of a sunken road between high earthen banks, the path disappearing around the curve, nothing visible beyond, very deep shadow at the turn, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "marcheur-1": {
-      "description": "Rencontre du Chemin Creux, beat 1. Le Marcheur à rebours avance en marche arrière, le regard fixé derrière lui — trente ans qu'il ne montre son dos à rien.",
+      "description": "Le Marcheur à rebours avance en marche arrière dans le chemin creux, le regard fixé derrière lui : trente ans qu'il ne montre son dos à rien.",
       "prompt_image": "emaciated man walking backwards along a sunken road, face turned to look behind himself, eyes wide and fixed, arms slightly out for balance, ragged coat, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "marcheur-2": {
-      "description": "Rencontre du Chemin Creux, beat 2 — l'échange sur la crête nord.",
+      "description": "Il s'éloigne à reculons, déjà trois pas plus loin, et te parle par-dessus son épaule ; les talus se resserrent. CHANGE : il n'est plus devant toi, il recule dans la profondeur du chemin.",
       "prompt_image": ""
     },
     "marcheur-3": {
-      "description": "Rencontre du Chemin Creux, beat 3 — la résolution.",
+      "description": "Au coude du chemin il pivote face au nord et lève deux doigts vers toi, juste avant que le talus ne l'avale. CHANGE : vu de dos, et le geste des deux doigts levés.",
       "prompt_image": ""
     },
     "bete-chemins-creux": {
@@ -74,51 +74,51 @@
       "prompt_image": "distant abandoned hamlet nestled in a hollow of dead moorland at dusk, sagging slate rooftops, one single chimney smoking, low dry-stone walls leading to the village, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "hameau-entree-2": {
-      "description": "Entrée du Hameau, beat 2 : le seuil. La ruelle étroite, les portes marquées à la craie, les volets fermés.",
+      "description": "La ruelle étroite du hameau : portes marquées à la craie, volets fermés, aucun chien.",
       "prompt_image": "narrow street of an old abandoned hamlet, crooked stone houses, wooden doors marked with chalk crosses, closed shutters, wet cobblestones, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "femme-seuil-1": {
-      "description": "Rencontre du Hameau, beat 1 — étalon du format. Une femme sur le seuil d'une maison basse, une croix à la craie sur sa porte, un châle serré.",
+      "description": "Une femme sur le seuil d'une maison basse, châle serré, une croix à la craie sur sa porte. Elle regarde le sud.",
       "prompt_image": "woman standing in the doorway of a low stone house, chalk cross drawn on the door beside her, heavy shawl gripped closed at her throat, hollow-cheeked, watching, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "femme-seuil-2": {
-      "description": "Rencontre du Hameau, beat 2 — la mèche nouée qu'elle tend.",
+      "description": "Elle a sorti la main de sous son châle et tend une mèche de cheveux nouée d'un fil, bras à moitié tendu, sur le même seuil. CHANGE : le bras tendu et l'objet offert dans sa main.",
       "prompt_image": ""
     },
     "femme-seuil-3": {
-      "description": "Rencontre du Hameau, beat 3 — la résolution, puis retour à la séquence d'entrée.",
+      "description": "Elle a repris sa place sur le seuil, mains vides, et regarde le sud — de la rue, rien ne dit qu'elle a parlé à quelqu'un. CHANGE : de nouveau immobile et les mains vides.",
       "prompt_image": ""
     },
     "hameau-entree-3": {
-      "description": "Entrée du Hameau, beat 3 : le barrage. Trois hommes au milieu de la rue, pas armés — un bâton de marche, une fourche posée contre un mur, à portée sans être brandie.",
+      "description": "Trois hommes en travers de la rue, pas armés : un bâton de marche à la main, une fourche posée contre le mur, à portée sans être brandie.",
       "prompt_image": "three gaunt villagers standing abreast in a narrow village street, one old man at the centre speaking, a walking staff in one hand, a pitchfork leaning against a wall nearby, shutters closing behind them, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "hameau-entree-4": {
-      "description": "Entrée du Hameau, beat 4 : le Serment, imposé et jamais proposé. La paume ouverte et vide du vieux, tendue pour qu'on la regarde — on jure sur rien.",
+      "description": "La paume ouverte et vide du vieux, tendue à hauteur de poitrine pour qu'on la regarde — on jure sur rien.",
       "prompt_image": "close view of an old man's open empty palm held out at chest height, weathered skin, the blurred faces of two other villagers behind him, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "hameau-entree-5": {
-      "description": "Entrée du Hameau, beat 5 : on passe. La rue qui s'ouvre, les volets qui se ferment un par un, un peu en avance sur le pas.",
+      "description": "La rue qui s'ouvre devant toi, et les volets qui se ferment un par un, un peu en avance sur ton pas.",
       "prompt_image": ""
     },
     "hameau-halte-1": {
-      "description": "Halte au Hameau, beat 1 : le vieux te trouve. « On sait toujours où tu es. »",
+      "description": "Le vieux t'a trouvé dans la ruelle et se tient à deux pas, calme, sans barrer le passage.",
       "prompt_image": ""
     },
     "hameau-halte-2": {
-      "description": "Halte, beat 2 : la grange. Intérieur de nuit, une lanterne posée au sol, la paille, la barre de porte posée DEHORS, les bâtons de comptage sur les poutres.",
+      "description": "Intérieur de grange, la nuit : une lanterne posée au sol, la paille, la barre de porte posée DEHORS, des bâtons de comptage sur les poutres.",
       "prompt_image": "interior of an old barn at night, single oil lamp on the floor, straw bedding, heavy wooden door with iron fittings, tally marks carved on beams, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "hameau-halte-3": {
-      "description": "Halte, beat 3 : la nuit, la ronde que personne n'a annoncée.",
+      "description": "La grange dans le noir, vue depuis la paille : sous la porte fermée, une bande de lumière que des pieds coupent en passant. CHANGE : la lanterne est éteinte, il ne reste que la fente sous la porte.",
       "prompt_image": ""
     },
     "hameau-halte-4": {
-      "description": "Halte, beat 4 : l'aube. Le Serment tenu se paie ici.",
+      "description": "L'aube grise, la porte relevée : le vieux seul, un quignon de pain dur tendu vers toi, le regard ailleurs. CHANGE : lumière de petit matin, la barre est levée, il tend quelque chose.",
       "prompt_image": ""
     },
     "hameau-halte-5": {
-      "description": "Halte, beat 5 : l'escorte jusqu'au portillon.",
+      "description": "Le portillon sud, ouvert par le plus jeune. Les deux escortes marchent à un pas de distance de chaque côté ; le vieux reste en arrière. CHANGE : on est dehors, au portillon — plus dans la grange.",
       "prompt_image": ""
     },
     "hameau-halte-dehors": {
@@ -174,11 +174,11 @@
       "prompt_image": "small dry clerk seated on a witness bench, open ledger on his knees, quill in hand, inkpot clutched against his chest, eyes down, mid-stroke, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "meute-grise-1": {
-      "description": "Combat en deux scènes, beat 1. La Meute Grise : six silhouettes couleur de bruyère morte, immobiles aux six points d'un cercle dont tu es le centre.",
+      "description": "Six silhouettes couleur de bruyère morte, immobiles aux six points d'un cercle dont tu es le centre.",
       "prompt_image": "six lean grey hounds standing motionless in a wide circle on open moorland, seen from the centre, evenly spaced, all heads turned inward toward the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "meute-grise-2": {
-      "description": "Combat, beat 2 : la résolution de l'encerclement.",
+      "description": "Le cercle est rompu : la meute regroupée en croissant à distance de lame, et la meneuse avancée seule d'un pas, tête basse, qui te fixe. CHANGE : plus de cercle autour de toi — un croissant devant, une bête détachée en avant.",
       "prompt_image": ""
     },
     "mare-aux-regards": {
@@ -198,15 +198,15 @@
       "prompt_image": ""
     },
     "epoux-1": {
-      "description": "Rencontre du Verger, beat 1. Les Époux, deux silhouettes courbées qui creusent entre les rangs sans se parler.",
+      "description": "Les Époux, deux silhouettes courbées qui creusent entre les rangs du verger noir sans se parler.",
       "prompt_image": "elderly couple digging side by side between orchard rows, both bent low, one spade each, not looking at one another, black twisted branches above them, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "epoux-2": {
-      "description": "Rencontre du Verger, beat 2 — l'échange.",
+      "description": "L'un des deux s'est redressé entre les rangs et te tend les mains ouvertes et vides, en demande. CHANGE : ils ne sont plus tous deux courbés — l'un est debout, face à toi.",
       "prompt_image": ""
     },
     "epoux-3": {
-      "description": "Rencontre du Verger, beat 3 — la résolution.",
+      "description": "Les deux silhouettes de nouveau courbées, vues de dos, qui s'éloignent entre les rangs. CHANGE : on les quitte — vus de dos, repris au travail.",
       "prompt_image": ""
     },
     "palissade-sud": {
@@ -214,15 +214,15 @@
       "prompt_image": "tall wooden palisade of sharpened logs closing a moorland horizon, small gate, a single standing boundary stone in the foreground, path leading south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "veilleur-1": {
-      "description": "Rencontre de la Palissade, beat 1. Le Veilleur dans sa guérite de planches, une lanterne au clou, trente ans de portillon.",
+      "description": "Le Veilleur dans sa guérite de planches, une lanterne pendue à un clou au-dessus de lui.",
       "prompt_image": "old watchman inside a plank sentry box, rusty lantern hanging on a nail beside him, blanket over his shoulders, one eye milky, looking out through the opening, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "veilleur-2": {
-      "description": "Rencontre de la Palissade, beat 2 : la lanterne contre une histoire.",
+      "description": "Il a décroché sa lanterne et la tend à moitié, suspendue entre vous deux, le visage éclairé par en dessous. CHANGE : la lanterne a quitté son clou et devient le centre de l'image.",
       "prompt_image": ""
     },
     "veilleur-3": {
-      "description": "Rencontre de la Palissade, beat 3 — la résolution.",
+      "description": "Il note ton passage sur une planche clouée dans sa guérite, sans lever les yeux ; le portillon sud est ouvert derrière lui. CHANGE : le portillon est ouvert et il écrit — la lanterne n'est plus dans ses mains.",
       "prompt_image": ""
     },
     "palissade-sud-2": {

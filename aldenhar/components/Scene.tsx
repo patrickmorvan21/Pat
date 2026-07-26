@@ -198,7 +198,6 @@ export default function Scene() {
   const [savoirs, setSavoirs] = useState<string[]>([]);
   // Plan RAPPROCHÉ d'un point d'intérêt : crop de l'image du lieu (production
   // gratuite, spec §4 — on ne génère pas un asset par point). null = plan large.
-  const [poiZoom, setPoiZoom] = useState<{ zoom: number; focus: string } | null>(null);
   // Sous-menu « Observer les alentours » ouvert ? (retour Patrick 25/07 : 3 CTA
   // max par écran — les descriptions passent derrière un seul bouton.)
   const [poiOpen, setPoiOpen] = useState(false);
@@ -890,7 +889,6 @@ export default function Scene() {
     // On quitte l'écran : les points d'intérêt du lieu précédent sont oubliés
     // et l'image repasse en plan large (spec 24/07 suite §1).
     setPoiSeen([]);
-    setPoiZoom(null);
     persist((run) => {
       run.step = nextStep;
       run.lastChoiceId = null;
@@ -1020,10 +1018,11 @@ export default function Scene() {
         if (fragment) entries.push({ id: nextId(), kind: "narration", text: fragment.text });
         const seen = [...poiSeen, poi.id];
         setPoiSeen(seen);
-        // Plan rapproché : image DÉDIÉE si elle existe (25/07), sinon crop CSS
-        // de l'illustration du lieu. Les deux cas s'excluent — un asset déjà
-        // cadré ne doit pas être re-zoomé par-dessus.
-        setPoiZoom(poi.illustration ? null : { zoom: poi.zoom ?? 2.2, focus: poi.focus ?? "50% 50%" });
+        // ⚠️ PLUS DE CROP CSS (retour Patrick 26/07 : « ça ne rend pas bien »).
+        // Observer un élément n'est plus un zoom dans l'image du lieu : le héros
+        // se DÉPLACE et l'écran montre l'élément lui-même, via son image dédiée.
+        // Sans image dédiée, l'image du lieu reste telle quelle — mieux vaut ne
+        // rien changer qu'agrandir un détail qui devient illisible.
         persist((run) => {
           run.poiSeen = seen;
           if (poi.soupcon) run.soupcon = Math.max(0, Math.min(6, (run.soupcon ?? 0) + poi.soupcon));
@@ -1045,8 +1044,8 @@ export default function Scene() {
           advance({ toScene: poi.leadsTo, prepend: entries });
           return;
         }
-        // Même scène, écran remplacé : plan rapproché dédié s'il existe, sinon
-        // l'image du lieu (zoomée par `poiZoom`).
+        // Même scène, écran remplacé : l'image de l'ÉLÉMENT observé s'il en a
+        // une, sinon on garde l'image du lieu inchangée.
         showScreen(entries, { src: poi.illustration ?? lastSceneIlloRef.current, kind: "scene" });
         return;
       }
@@ -1209,7 +1208,6 @@ export default function Scene() {
           <div className="pointer-events-none absolute bottom-[2px] left-[4px] z-[6] font-[var(--font-body)] text-[9px] leading-[1.35] text-[var(--color-ink)]/50">
             <div>scène · {scene.id}</div>
             <div>image · {image.replace("assets/", "")}</div>
-            {poiZoom && <div>crop · ×{poiZoom.zoom} {poiZoom.focus}</div>}
           </div>
         )}
 
@@ -1223,14 +1221,8 @@ export default function Scene() {
           <img
             alt=""
             src={image}
-            // Plan RAPPROCHÉ d'un point d'intérêt : crop ×2-3 de l'image du
-            // lieu (spec 24/07 suite §4 — « production gratuite »). Le zoom
-            // s'applique en transform pour rester net au pixel près.
-            style={
-              poiZoom && imageKind === "scene"
-                ? { transform: `scale(${poiZoom.zoom})`, transformOrigin: poiZoom.focus, transition: "transform 320ms steps(4)" }
-                : { transform: "scale(1)", transition: "transform 320ms steps(4)" }
-            }
+            // Aucun zoom : l'élément observé a sa propre image (26/07).
+            style={{ transform: "scale(1)" }}
             className={
               imageKind === "object"
                 ? "pointer-events-none block h-[38dvh] max-h-[300px] min-h-[180px] w-full bg-[var(--color-bg)] object-contain [image-rendering:pixelated]"

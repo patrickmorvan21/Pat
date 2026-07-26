@@ -363,7 +363,12 @@ def build_items() -> tuple[list[Item], dict, list[str]]:
                     image=pimg,
                     statut=pstatut,
                     parent=sid,
-                    description="Plan rapproché — " + ("image dédiée" if pimg else "crop CSS de l'image du lieu"),
+                    description=(
+                        "Élément que le héros va observer de près, en s'en approchant."
+                        if pimg
+                        else "Élément à observer — AUCUNE image dédiée : l'écran garde "
+                        "l'image du lieu, il faut produire l'image de cet élément."
+                    ),
                     prompt="",
                     categorie=categorie(pimg, poi["id"]),
                     notes=pnotes,
@@ -1024,15 +1029,17 @@ def render(
         verdict_html = ""
         # Le marquage existe dans les DEUX modes : c'est la raison d'être de la
         # version web (juger), là où l'édition de câblage, elle, reste locale.
+        #
+        # ⚠️ Un SEUL bouton (26/07) : « ça marche » est retiré — ne pas toucher
+        # une carte vaut déjà approbation, un second bouton ne demandait qu'un
+        # clic de plus pour dire la même chose. Le verdict OK reste géré côté
+        # code pour ne pas perdre les marquages déjà enregistrés.
         if (editable or web) and i.image:
             ko_on = " on-ko" if i.verdict == A_REMPLACER else ""
-            ok_on = " on-ok" if i.verdict == OK else ""
             verdict_html = (
                 f'<div class="verdict">'
                 f'<button class="{ko_on.strip()}" data-verdict="{esc(i.id)}" '
                 f'data-v="{A_REMPLACER}">à remplacer</button>'
-                f'<button class="{ok_on.strip()}" data-verdict="{esc(i.id)}" '
-                f'data-v="{OK}">ça marche</button>'
                 f"</div>"
             )
 
@@ -1044,7 +1051,7 @@ def render(
             f' data-p-id="{esc(i.id)}"'
             f' data-p-lieu="{esc(i.lieu)}"'
             f' data-p-scene="{esc(i.scene_nom)}"'
-            f' data-p-role="{"principale" if i.principale else ("plan rapproché" if i.kind == "poi" else "variante")}"'
+            f' data-p-role="{"principale" if i.principale else ("élément observé" if i.kind == "poi" else "variante")}"'
             f' data-p-desc="{esc(i.description)}"'
             f' data-p-fichier="{esc(basename or (i.categorie + "_" + i.id.replace("-", "_") + "_a.png"))}"'
             f' data-p-ref="{esc(ref_image.get(i.group, ""))}"'
@@ -1058,7 +1065,10 @@ def render(
         role = (
             "image du lieu"
             if i.principale
-            else ("plan rapproché" if i.kind == "poi" else "autre moment du lieu")
+            # « plan rapproché » est abandonné (26/07) : ce n'est plus un zoom
+            # dans l'image du lieu, le héros se déplace et l'écran montre
+            # l'élément lui-même.
+            else ("élément observé" if i.kind == "poi" else "autre moment du lieu")
         )
         return f"""<article class="{card_cls}" data-statut="{i.statut}" data-cat="{i.categorie}" data-kind="{i.kind}" data-verdict="{i.verdict}"{prompt_data}>
   {thumb_open}{thumb_inner}{tag}</div>
@@ -1079,7 +1089,6 @@ def render(
 <div class="stat mid"><div class="n">{counts["statut"][FALLBACK]}</div><div class="l">fallback</div></div>
 <div class="stat ko"><div class="n">{counts["statut"][MANQUANTE]}</div><div class="l">manquantes</div></div>
 <div class="stat ko"><div class="n" id="n-remplacer">{counts["a_remplacer"]}</div><div class="l">à remplacer</div></div>
-<div class="stat ok"><div class="n" id="n-valides">{counts["valides"]}</div><div class="l">validées</div></div>
 <div class="stat mid"><div class="n">{len(orphans)}</div><div class="l">orphelins</div></div>
 <div class="stat mid"><div class="n">{counts["prompts_manquants"]}</div><div class="l">prompts à écrire</div></div>
 """
@@ -1160,7 +1169,7 @@ def render(
     cats = sorted(counts["categorie"])
     filter_defs = [("tous", "Tous"), (DEDIEE, "Son image"), (HERITEE, "Empruntées"),
                    (FALLBACK, "Génériques"), (MANQUANTE, "Sans image"),
-                   (A_REMPLACER, "À remplacer"), (OK, "Validées")]
+                   (A_REMPLACER, "À remplacer")]
     filter_defs += [(c, CAT_LABEL.get(c, c.capitalize())) for c in cats]
     filters_html = "".join(
         f'<button class="{"on" if f == "tous" else ""}" data-f="{f}">{label}</button>'

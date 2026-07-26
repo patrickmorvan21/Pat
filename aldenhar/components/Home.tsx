@@ -218,9 +218,9 @@ function HomeOverlay({ kind, onClose }: { kind: "reliques" | "registre" | "optio
             <div className="mt-[12px] flex flex-col gap-[12px]">
               {mem.relics.map((r, i) => (
                 <div key={`${r.name}-${i}`} className="flex items-center gap-[13px]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   {/* Icône générique des Reliques — la couronne brisée tramée
                       1000×1000, l'ancien masque faisait 68×68 (26/07). */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img alt="" src="assets/objet_couronne_brisee.png" className="size-[54px] border border-solid border-[var(--color-ink)]/30" style={{ imageRendering: "pixelated" }} />
                   <div>
                     <p className="text-[13px] text-[var(--color-ink)]">{r.name}</p>
