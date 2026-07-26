@@ -73,6 +73,20 @@ export type PlayerMemory = {
   /** Morts par fixation subies (chantier 3) : au-delà de 2, l'accueil du hameau
       change dès l'entrée — le village se souvient de la main qui lance le dé. */
   fixations: number;
+  /**
+   * L'introduction (les 4 clauses du pacte, Figma 2238:1009) a déjà été lue.
+   *
+   * ⚠️ Vit dans la mémoire du COMPTE, pas dans la run : le tuto énonce les
+   * règles du JEU, pas celles d'une partie — le rejouer à chaque mort serait
+   * une punition. Il ne se montre donc qu'au tout premier lancement, et ne
+   * revient que si le joueur le redemande depuis Options (`forgetIntro`).
+   *
+   * Optionnel pour que les sauvegardes d'avant le 26/07 restent valides ; à
+   * l'absence près, `introSeen` y est indéfini, donc l'intro se jouerait une
+   * fois — c'est pourquoi `loadMemory` la marque vue quand la mémoire montre
+   * une partie déjà entamée (voir la migration plus bas).
+   */
+  introSeen?: boolean;
 };
 
 const KEY = "aldenhar-player";
@@ -90,7 +104,32 @@ function fresh(): PlayerMemory {
     fallen: [],
     chaptersSeen: [],
     fixations: 0,
+    introSeen: false,
   };
+}
+
+/** L'intro doit-elle se jouer ? (tout premier lancement, ou redemandée.) */
+export function shouldShowIntro(): boolean {
+  return !loadMemory().introSeen;
+}
+
+/** Marque l'intro comme lue — appelé à la sortie du dernier écran. */
+export function markIntroSeen(): void {
+  mutateMemory((m) => {
+    m.introSeen = true;
+  });
+}
+
+/**
+ * Redonne l'intro au prochain lancement, SANS rien détruire.
+ *
+ * C'est la vraie réponse au besoin « je veux retester l'intro » : effacer toute
+ * la progression marcherait aussi, mais coûterait les reliques et le Registre.
+ */
+export function forgetIntro(): void {
+  mutateMemory((m) => {
+    m.introSeen = false;
+  });
 }
 
 export function loadMemory(): PlayerMemory {
@@ -111,6 +150,13 @@ export function loadMemory(): PlayerMemory {
           fallen: Array.isArray(p.fallen) ? p.fallen : [],
           chaptersSeen: Array.isArray(p.chaptersSeen) ? p.chaptersSeen : [],
           fixations: typeof p.fixations === "number" ? p.fixations : 0,
+          // Migration : une mémoire d'avant le 26/07 n'a pas le drapeau, or son
+          // porteur a déjà joué — lui infliger le tuto serait absurde. On ne le
+          // considère « à voir » que si le compte n'a jamais lancé de run.
+          introSeen:
+            typeof p.introSeen === "boolean"
+              ? p.introSeen
+              : (typeof p.runsStarted === "number" ? p.runsStarted : 0) > 0,
         };
       }
     } catch {

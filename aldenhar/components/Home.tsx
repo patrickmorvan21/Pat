@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Scene from "@/components/Scene";
 import { HeroGeolier } from "@/components/HeroGeolier";
 import Prologue from "@/components/Prologue";
-import { buildRegistre, loadMemory } from "@/lib/player-memory";
+import Intro, { ActeScreen } from "@/components/Intro";
+import { buildRegistre, loadMemory, shouldShowIntro } from "@/lib/player-memory";
 import { hasSavedRun, loadRun, resetRun } from "@/lib/state";
 import { APP_VERSION } from "@/lib/version";
 import { applySettingsToDom } from "@/lib/settings";
@@ -21,7 +22,9 @@ import { OptionsTab } from "@/components/GameMenu";
  */
 
 export default function Home() {
-  const [phase, setPhase] = useState<"boot" | "home" | "prologue" | "game">("boot");
+  const [phase, setPhase] = useState<"boot" | "home" | "intro" | "prologue" | "acte" | "game">(
+    "boot",
+  );
   const [saved, setSaved] = useState(false);
   const [overlay, setOverlay] = useState<"reliques" | "registre" | "options" | null>(null);
 
@@ -38,14 +41,27 @@ export default function Home() {
     setPhase("home");
   }, []);
 
-  /** Toute entrée en partie passe par le Seuil tant qu'il n'est pas rendu —
-      y compris une reprise en plein prologue (§9, reprise exacte). */
+  /**
+   * Toute entrée en partie passe par le Seuil tant qu'il n'est pas rendu —
+   * y compris une reprise en plein prologue (§9, reprise exacte).
+   *
+   * L'ordre complet d'une PREMIÈRE partie : intro (les 4 clauses) → Seuil →
+   * écran d'acte → zone. Une reprise saute droit au jeu, et une run neuve sur
+   * un compte qui a déjà lu l'intro démarre au Seuil.
+   */
   function enterGame() {
-    setPhase(loadRun().prologue.done ? "game" : "prologue");
+    if (loadRun().prologue.done) {
+      setPhase("game");
+      return;
+    }
+    setPhase(shouldShowIntro() ? "intro" : "prologue");
   }
 
   if (phase === "game") return <Scene />;
-  if (phase === "prologue") return <Prologue onDone={() => setPhase("game")} />;
+  if (phase === "intro") return <Intro onDone={() => setPhase("prologue")} />;
+  if (phase === "prologue") return <Prologue onDone={() => setPhase("acte")} />;
+  // Nommer l'acte juste après le scellement du pacte, avant la première scène.
+  if (phase === "acte") return <ActeScreen onDone={() => setPhase("game")} />;
 
   return (
     <main className="flex min-h-dvh items-center justify-center">
@@ -203,7 +219,9 @@ function HomeOverlay({ kind, onClose }: { kind: "reliques" | "registre" | "optio
               {mem.relics.map((r, i) => (
                 <div key={`${r.name}-${i}`} className="flex items-center gap-[13px]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img alt="" src="assets/objet_masque.png" className="size-[54px] border border-solid border-[var(--color-ink)]/30" style={{ imageRendering: "pixelated" }} />
+                  {/* Icône générique des Reliques — la couronne brisée tramée
+                      1000×1000, l'ancien masque faisait 68×68 (26/07). */}
+                  <img alt="" src="assets/objet_couronne_brisee.png" className="size-[54px] border border-solid border-[var(--color-ink)]/30" style={{ imageRendering: "pixelated" }} />
                   <div>
                     <p className="text-[13px] text-[var(--color-ink)]">{r.name}</p>
                     <p className="text-[11px] uppercase tracking-[1px] text-[var(--color-accent)]">

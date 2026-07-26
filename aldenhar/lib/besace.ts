@@ -53,7 +53,7 @@ export function startingBesace(): BesaceItem[] {
       id: "dague-simple",
       name: "Dague simple",
       rarity: "commun",
-      kind: "arme",
+      kind: "arme", illustration: "assets/objet_dague_os.png",
       slot: "passif",
       passiveMod: 1,
       passiveScope: "combat",
@@ -97,19 +97,19 @@ export function normalizeItem(i: BesaceItem): BesaceItem {
 /** Soins mineurs trouvables en exploration — ACTIFS à usage unique (~1 scène sur 5). */
 const SOINS_MINEURS: Omit<BesaceItem, "id">[] = [
   { name: "Baume de mousse noire", rarity: "commun", kind: "soin", slot: "actif", heal: 0.3, cure: true, flavor: "Ça sent la cave. Ça referme les plaies." },
-  { name: "Fiole d'eau de gouttière", rarity: "commun", kind: "soin", slot: "actif", heal: 0.25, cure: false, flavor: "Trouble, tiède — mais elle apaise." },
-  { name: "Bandage d'un autre", rarity: "commun", kind: "soin", slot: "actif", heal: 0.2, cure: true, flavor: "Son premier propriétaire n'en aura plus besoin." },
+  { name: "Fiole d'eau de gouttière", illustration: "assets/objet_fiole_baume.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.25, cure: false, flavor: "Trouble, tiède — mais elle apaise." },
+  { name: "Bandage d'un autre", illustration: "assets/objet_brin_chanvre_beni_b.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.2, cure: true, flavor: "Son premier propriétaire n'en aura plus besoin." },
   { name: "Onguent gris", rarity: "commun", kind: "soin", slot: "actif", heal: 0.3, cure: false, flavor: "L'étiquette est illisible. L'odeur, convaincante." },
 ];
 
 /** Récompenses du Destin (nat 20) : rare à légendaire, JAMAIS une Relique. Un
     mélange d'actifs (soins puissants) et de passifs (babioles / armes). */
 const RECOMPENSES_DESTIN: Omit<BesaceItem, "id">[] = [
-  { name: "Amulette d'os verdi", rarity: "rare", kind: "babiole", slot: "passif", passiveMod: 1, passiveScope: "all", flavor: "Elle vibre quand on la regarde trop longtemps — et le hasard te sourit un peu plus." },
+  { name: "Amulette d'os verdi", illustration: "assets/objet_dent_meute_d.png", rarity: "rare", kind: "babiole", slot: "passif", passiveMod: 1, passiveScope: "all", flavor: "Elle vibre quand on la regarde trop longtemps — et le hasard te sourit un peu plus." },
   { name: "Lame de lanterne", rarity: "rare", kind: "arme", slot: "passif", passiveMod: 1, passiveScope: "combat", flavor: "Forgée dans le métal d'une lanterne verte. Elle ne vacille jamais." },
   { name: "Élixir du campement perdu", rarity: "rare", kind: "soin", slot: "actif", heal: 0.5, cure: true, flavor: "Quelqu'un l'a brassé pour un repos qui n'est jamais venu." },
   { name: "Larme du Geôlier", rarity: "legendaire", kind: "babiole", slot: "passif", passiveMod: 2, passiveScope: "all", flavor: "Il jure qu'il ne pleure pas. Elle existe pourtant — et te protège de justesse." },
-  { name: "Clef sans porte", rarity: "legendaire", kind: "babiole", slot: "passif", passiveMod: 1, passiveScope: "all", flavor: "Toutes les serrures la craignent un peu." },
+  { name: "Clef sans porte", illustration: "assets/objet_cle_maison_muree_a.png", rarity: "legendaire", kind: "babiole", slot: "passif", passiveMod: 1, passiveScope: "all", flavor: "Toutes les serrures la craignent un peu." },
 ];
 
 let uid = 0;

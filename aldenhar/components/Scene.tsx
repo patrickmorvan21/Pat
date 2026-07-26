@@ -90,13 +90,16 @@ function nowMs(): number {
 const PORTAL = "assets/dithering-portal.jpg";
 
 // Image d'objet obtenu : le haut d'écran bascule sur l'objet quand une action
-// en fait gagner un (demande Patrick 19/07). Jeu d'icônes génériques par type
-// en attendant des illustrations d'objet dédiées (même convention que le menu
-// Inventaire : arme=dague, soin=crâne, babiole=masque).
+// en fait gagner un (demande Patrick 19/07).
+//
+// ⚠️ 26/07 — ces repli étaient les exports Figma en 68×68, affichés PLEIN CADRE
+// dans le bandeau « Obtenu » : c'était le plus visible des « anciennes images »
+// signalées par Patrick. Remplacés par les vraies icônes tramées 1000×1000, en
+// gardant la même convention que le menu Inventaire (cf. BESACE_ICONS).
 function objectImage(kind: BesaceItem["kind"]): string {
-  if (kind === "arme") return "assets/objet_dague.png";
-  if (kind === "babiole") return "assets/objet_masque.png";
-  return "assets/objet_crane.png";
+  if (kind === "arme") return "assets/objet_dague_os.png";
+  if (kind === "babiole") return "assets/objet_grimoire.png";
+  return "assets/objet_fiole_baume.png";
 }
 
 type ImageKind = "scene" | "object";

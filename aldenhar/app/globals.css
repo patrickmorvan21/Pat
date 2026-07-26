@@ -285,6 +285,10 @@ body {
 /* Dé armé : le hint porte la stat, en accent */
 .die-hint.accent { color: var(--color-accent); }
 
+/* Écran d'acte / intro : même respiration par paliers que le hint du dé —
+   on réutilise le keyframe `pulse` plutôt que d'en dupliquer un. */
+.acte-hint { animation: pulse 2.4s steps(2) infinite; }
+
 /* Entrée d'une nouvelle scène : fondu par paliers, cohérent avec la DA */
 .scene-enter {
   animation: fadeup 0.4s steps(4) both;
@@ -444,6 +448,7 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .die-hint { animation: none; }
+  .acte-hint { animation: none; }
   .phone-frame.quake { animation: none; }
   .scene-enter { animation: none; }
   .erosion-2.phone-frame, .erosion-3.phone-frame { animation: none; }

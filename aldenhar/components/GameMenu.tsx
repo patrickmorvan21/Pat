@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CloseX } from "@/components/Home";
-import { loadMemory } from "@/lib/player-memory";
+import { forgetIntro, loadMemory } from "@/lib/player-memory";
 import type { NarrativeEffect, RunState } from "@/lib/state";
 import { besaceBySlot, normalizeItem, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { loadSettings, mutateSettings, type Settings } from "@/lib/settings";
@@ -24,10 +24,22 @@ import { syncMusicSettings } from "@/lib/audio";
 
 type Tab = "stats" | "inventaire" | "options";
 
+/** Icône générique des Reliques (l'ancien `objet_masque.png` faisait 68×68). */
+const RELIC_ICON = "assets/objet_couronne_brisee.png";
+
+/**
+ * Repli par `kind` quand un objet n'a pas d'icône propre.
+ *
+ * ⚠️ Les anciens repli (`objet_dague/crane/masque.png`) étaient les exports
+ * Figma du 14/07 en **68×68** — d'où les icônes visiblement pâteuses signalées
+ * par Patrick le 26/07. Remplacés par les vraies icônes tramées 1000×1000 :
+ * une lame pour les armes, une fiole pour les soins, un grimoire pour les
+ * babioles (le crâne lisait comme « mort », pas comme « objet trouvé »).
+ */
 const BESACE_ICONS: Record<BesaceItem["kind"], string> = {
-  arme: "assets/objet_dague.png",
-  soin: "assets/objet_crane.png",
-  babiole: "assets/objet_crane.png",
+  arme: "assets/objet_dague_os.png",
+  soin: "assets/objet_fiole_baume.png",
+  babiole: "assets/objet_grimoire.png",
 };
 
 /** Icône d'un objet : son PNG réel (objets des Landes) sinon l'icône générique par type. */
@@ -374,7 +386,7 @@ function InventaireTab({
 
   const item = selected.type === "besace" ? besace.find((i) => i.id === selected.id) : undefined;
   const relic = selected.type === "relic" ? relics[selected.index] : undefined;
-  const detailImg = item ? itemIcon(item) : relic ? "assets/objet_masque.png" : null;
+  const detailImg = item ? itemIcon(item) : relic ? RELIC_ICON : null;
   const detailName = item?.name ?? relic?.name ?? "—";
   const detailFlavor = item
     ? item.flavor
@@ -487,7 +499,7 @@ function InventaireTab({
                     }`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img alt={r.name} src="assets/objet_masque.png" className="block size-full" style={{ imageRendering: "pixelated" }} />
+                    <img alt={r.name} src={RELIC_ICON} className="block size-full" style={{ imageRendering: "pixelated" }} />
                   </button>
                 );
               })}
@@ -698,6 +710,23 @@ export function OptionsTab() {
       <button type="button" disabled className="mt-[20px] block cursor-default font-mono text-[13px] text-[var(--color-ink)] opacity-50 underline">
         Restaurer mes achats
       </button>
+      {/* Revoir l'intro SANS rien détruire — c'est ce qu'on veut quand on
+          cherche juste à retester les clauses, alors qu'effacer la progression
+          coûterait les reliques et le Registre. */}
+      <div className="mt-[20px]">
+        <button
+          type="button"
+          onClick={() => {
+            forgetIntro();
+            window.location.reload();
+          }}
+          className="font-mono text-[13px] text-[var(--color-ink)] underline"
+        >
+          Revoir l&apos;introduction
+        </button>
+        <OptHelp>Les quatre clauses du pacte se rejoueront à la prochaine partie. Ta progression est conservée.</OptHelp>
+      </div>
+
       <div className="mt-[20px]">
         <button type="button" onClick={effacerProgression} className="font-mono text-[13px] text-[var(--color-ink)] underline">
           {eraseArmed ? "Confirmer l'effacement ?" : "Effacer la progression"}
