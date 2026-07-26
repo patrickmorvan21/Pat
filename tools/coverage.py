@@ -246,95 +246,120 @@ def build_items() -> tuple[list[Item], dict, list[str]]:
 CSS = """
 :root{--charbon:#1c1a16;--orange:#e0632a;--blanc:#fff;--b50:rgba(255,255,255,.5);
 --b20:rgba(255,255,255,.2)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--charbon);color:var(--blanc);
-font:14px/1.5 "Roboto Mono",ui-monospace,monospace}
-header{padding:22px 24px 14px;border-bottom:1px solid var(--b20)}
-h1{margin:0 0 4px;font:400 26px/1.2 "Instrument Serif",Georgia,serif;letter-spacing:.5px}
-.sub{color:var(--b50);font-size:12px}
-.counts{display:flex;flex-wrap:wrap;gap:8px;padding:14px 24px}
-.pill{border:1px solid var(--b20);padding:5px 11px;font-size:12px;letter-spacing:.6px}
-.pill b{font-weight:700}
-.pill.dediee{border-color:var(--orange);color:var(--orange)}
-.pill.heritee{border-color:var(--b50)}
-.pill.fallback{border-color:var(--b20);color:var(--b50)}
-.pill.manquante{border-color:var(--blanc);color:var(--blanc);background:rgba(255,255,255,.08)}
-.filters{display:flex;flex-wrap:wrap;gap:6px;padding:0 24px 16px;align-items:center}
-.filters span{color:var(--b50);font-size:11px;letter-spacing:1px;margin-right:4px}
-button.f{background:none;border:1px solid var(--b20);color:var(--b50);
-padding:5px 10px;font:inherit;font-size:12px;cursor:pointer}
-button.f[aria-pressed=true]{border-color:var(--orange);color:var(--orange)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));
-gap:14px;padding:0 24px 40px}
-.card{border:1px solid var(--b20);display:flex;flex-direction:column}
-.card.manquante{border-color:var(--blanc)}
-.card.dediee{border-color:var(--orange)}
-.thumb{aspect-ratio:1;background:#000 center/cover no-repeat;position:relative;
-image-rendering:pixelated}
-.thumb.none{display:flex;align-items:center;justify-content:center;color:var(--b20);
-font-size:11px;letter-spacing:1px}
-.tag{position:absolute;top:0;left:0;font-size:10px;letter-spacing:1px;
-padding:3px 7px;background:var(--charbon);border-right:1px solid var(--b20);
-border-bottom:1px solid var(--b20)}
-.body{padding:10px 11px;display:flex;flex-direction:column;gap:6px;flex:1}
-.sid{font-size:13px;color:var(--blanc);word-break:break-all}
-.sid .poi{color:var(--b50)}
-.desc{font-size:11.5px;color:var(--b50);line-height:1.45}
-.file{font-size:10.5px;color:var(--b20);word-break:break-all;margin-top:auto}
-.warn{font-size:10.5px;color:var(--blanc);letter-spacing:.5px}
-.act{display:flex;gap:6px;flex-wrap:wrap}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--charbon);color:var(--blanc);
+font:13px/1.5 "Roboto Mono",ui-monospace,monospace;padding:26px 24px 36vh}
+/* Le panneau #log est fixe en bas à droite (fidèle à la maquette) ; la
+   maquette n'a qu'une quinzaine de cartes (jamais de recouvrement), mais ce
+   rapport en a des dizaines — sans cette marge basse, les dernières cartes
+   passeraient sous le panneau et deviendraient impossibles à cliquer. */
+h1{font:400 32px/1 "Instrument Serif",Georgia,serif;letter-spacing:3px}
+.sub{font-size:11px;color:var(--b50);margin-top:6px;letter-spacing:1px}
+canvas.rule{display:block;width:100%;height:2px;image-rendering:pixelated;margin:14px 0}
+
+/* ---------- compteurs (chiffre Instrument Serif + libellé capitales) ---------- */
+.stats{display:flex;flex-wrap:wrap;gap:26px;margin:16px 0 4px}
+.stat .n{font:400 30px/1 "Instrument Serif",Georgia,serif}
+.stat .l{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--b50);margin-top:4px}
+.stat.ok .n{color:var(--orange)}
+.stat.ko .n{color:var(--blanc)}
+.stat.mid .n{color:var(--b50)}
+
+/* ---------- filtres — une seule rangée, statut + catégorie mélangés ---------- */
+.filters{display:flex;gap:7px;flex-wrap:wrap;margin:18px 0 4px}
+.filters button{background:none;border:1px solid var(--b20);color:var(--b50);
+font-family:inherit;font-size:10px;letter-spacing:1px;text-transform:uppercase;
+padding:7px 12px;cursor:pointer}
+.filters button.on{background:var(--orange);border-color:var(--orange);color:var(--charbon)}
+
+/* ---------- grille ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:20px}
+.card{border:1px solid var(--b20);padding:10px}
+.card.drag{border-color:var(--orange)}
+.card.hidden{display:none!important}
+.thumb{position:relative;width:100%;aspect-ratio:1/1;background:#000 center/cover no-repeat;
+overflow:hidden;image-rendering:pixelated}
+.thumb.none{display:flex;align-items:center;justify-content:center;
+font-size:10px;letter-spacing:2px;color:var(--b20);text-transform:uppercase}
+.tag{position:absolute;top:6px;left:6px;font-size:9px;letter-spacing:1.5px;
+text-transform:uppercase;padding:3px 6px}
+.tag.dediee{background:var(--orange);color:var(--charbon)}
+.tag.heritee{background:none;color:var(--orange);box-shadow:inset 0 0 0 1px var(--orange)}
+.tag.fallback{background:none;color:var(--b50);box-shadow:inset 0 0 0 1px var(--b20)}
+.tag.manquante{background:var(--blanc);color:var(--charbon)}
+
+.cat{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--b50);margin-top:9px}
+.id{font-size:12px;margin-top:2px;word-break:break-all}
+.id .poi{color:var(--b50)}
+.meta{font-size:10px;color:var(--b50);margin-top:3px;min-height:2.4em}
+.desc{font-size:10.5px;color:var(--b50);line-height:1.45;margin-top:2px}
+.warn{font-size:10px;color:var(--blanc);letter-spacing:.5px;margin-top:4px}
+.act{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 .act button{background:none;border:1px solid var(--b20);color:var(--b50);
-font:inherit;font-size:11px;padding:4px 8px;cursor:pointer}
+font:inherit;font-size:10.5px;padding:4px 8px;cursor:pointer}
 .act button:hover{border-color:var(--orange);color:var(--orange)}
 .act .todo{border-style:dashed;cursor:default;color:var(--b20)}
-.orphans{padding:0 24px 48px}
-.orphans h2{font:400 19px/1.2 "Instrument Serif",Georgia,serif;
-border-top:1px solid var(--b20);padding-top:18px;margin:0 0 8px}
-.orphans ul{columns:3;column-gap:20px;padding-left:18px;margin:0;
-font-size:11.5px;color:var(--b50)}
-.log{padding:0 24px 40px;font-size:11.5px;color:var(--b50)}
-.log h2{font:400 19px/1.2 "Instrument Serif",Georgia,serif;
-border-top:1px solid var(--b20);padding-top:18px;margin:0 0 8px;color:var(--blanc)}
-.log ol{padding-left:20px;margin:0}
-.log code{color:var(--orange)}
-.hidden{display:none!important}
+
+select{width:100%;margin-top:8px;background:var(--charbon);color:var(--blanc);
+border:1px solid var(--b20);font-family:inherit;font-size:11px;padding:6px}
+.drop{margin-top:6px;border:1px dashed var(--b20);color:var(--b50);
+font-size:10px;letter-spacing:1px;text-align:center;padding:8px;cursor:pointer}
+.drop.on{border-color:var(--orange);color:var(--orange)}
+.detach{background:none;border:none;color:var(--b50);font-family:inherit;font-size:10px;
+text-decoration:underline;text-underline-offset:3px;cursor:pointer;margin-top:7px;padding:0}
+.detach:hover{color:var(--orange)}
+
+/* ---------- orphelins ---------- */
+h2{font:400 20px/1.2 "Instrument Serif",Georgia,serif;letter-spacing:2px;margin-top:34px}
+.orph{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.orph div{border:1px solid var(--b20);padding:6px 10px;font-size:11px;color:var(--b50)}
+
+/* ---------- instructions de pipeline ---------- */
+.log-static{margin-top:12px;font-size:11.5px;color:var(--b50)}
+.log-static ol{padding-left:20px}
+.log-static code{color:var(--orange)}
+
 #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
 background:var(--orange);color:var(--charbon);padding:9px 16px;font-size:12px;
 letter-spacing:.5px;opacity:0;transition:opacity .2s;pointer-events:none}
 #toast.on{opacity:1}
-dialog{background:var(--charbon);color:var(--blanc);border:1px solid var(--orange);
-padding:0;max-width:560px;width:92vw;font:inherit}
-dialog::backdrop{background:rgba(0,0,0,.72)}
-dialog h3{margin:0;padding:14px 18px;border-bottom:1px solid var(--b20);
-font:400 20px/1.2 "Instrument Serif",Georgia,serif}
-dialog .in{padding:16px 18px;display:flex;flex-direction:column;gap:14px}
-dialog fieldset{border:1px solid var(--b20);padding:12px 14px;margin:0}
-dialog legend{font-size:11px;letter-spacing:1px;color:var(--orange);padding:0 6px}
-dialog select,dialog input[type=text]{width:100%;background:#000;color:var(--blanc);
-border:1px solid var(--b20);font:inherit;font-size:12px;padding:6px 8px}
-dialog .row{display:flex;gap:8px;align-items:center;margin-top:9px}
-dialog button{background:none;border:1px solid var(--b20);color:var(--b50);
-font:inherit;font-size:12px;padding:6px 12px;cursor:pointer}
-dialog button:hover{border-color:var(--orange);color:var(--orange)}
-dialog .hint{font-size:11px;color:var(--b50);line-height:1.45}
-#ed-journal{list-style:decimal;padding-left:20px;margin:0;font-size:11.5px;
-color:var(--b50)}
-#ed-journal:empty{display:none}
-dialog footer{padding:12px 18px;border-top:1px solid var(--b20);text-align:right}
+
+/* ---------- journal d'écriture — panneau fixe, jamais une popup ---------- */
+#log{position:fixed;right:0;bottom:0;width:340px;max-height:34vh;overflow-y:auto;
+background:var(--charbon);border-top:1px solid var(--b20);border-left:1px solid var(--b20);
+padding:10px 12px;font-size:10px;color:var(--b50)}
+#log b{color:var(--orange);font-weight:400}
+#log .hd{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--b50);margin-bottom:6px}
 """
 
 JS = """
-const cards=[...document.querySelectorAll('.card')];
-let fS='all',fC='all';
-function apply(){cards.forEach(c=>{
-  const ok=(fS==='all'||c.dataset.statut===fS)&&(fC==='all'||c.dataset.cat===fC);
-  c.classList.toggle('hidden',!ok);});}
-document.querySelectorAll('[data-fs]').forEach(b=>b.onclick=()=>{
-  fS=b.dataset.fs;document.querySelectorAll('[data-fs]').forEach(x=>
-    x.setAttribute('aria-pressed',x===b));apply();});
-document.querySelectorAll('[data-fc]').forEach(b=>b.onclick=()=>{
-  fC=b.dataset.fc;document.querySelectorAll('[data-fc]').forEach(x=>
-    x.setAttribute('aria-pressed',x===b));apply();});
+"use strict";
+
+/* ---------- séparateur tramé (jamais un filet net — règle DA) ---------- */
+function rule(cv){
+  const w=cv.clientWidth; cv.width=w; cv.height=2;
+  const x=cv.getContext("2d");
+  for(let i=0;i<w;i++){
+    if(Math.random()<.7){x.fillStyle="rgba(255,255,255,.26)";x.fillRect(i,0,1,1);}
+    if(Math.random()<.13){x.fillStyle="rgba(255,255,255,.14)";x.fillRect(i,1,1,1);}
+  }
+}
+addEventListener("load",()=>document.querySelectorAll("canvas.rule").forEach(rule));
+
+/* ---------- filtres — une rangée unique, statut + catégorie ---------- */
+let filter="tous";
+function applyFilter(){
+  document.querySelectorAll(".card").forEach(c=>{
+    const ok=filter==="tous"||c.dataset.statut===filter||c.dataset.cat===filter;
+    c.classList.toggle("hidden",!ok);
+  });
+}
+document.getElementById("filters").onclick=e=>{
+  const b=e.target.closest("button"); if(!b)return;
+  document.querySelectorAll("#filters button").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); filter=b.dataset.f; applyFilter();
+};
+
 function toast(m){const t=document.getElementById('toast');t.textContent=m;
   t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1800);}
 document.querySelectorAll('[data-prompt]').forEach(b=>b.onclick=async()=>{
@@ -343,53 +368,97 @@ document.querySelectorAll('[data-prompt]').forEach(b=>b.onclick=async()=>{
     document.body.append(t);t.select();document.execCommand('copy');t.remove();
     toast('Prompt copié');}});
 
-/* ——— Édition (mode --serve seulement) ———————————————————————————————
-   Deux voies : rattacher un asset DÉJÀ tramé, ou importer un fichier brut qui
-   passera par le dithering canonique avant d'atterrir dans assets/. Le serveur
-   refuse toute écriture qui court-circuiterait cet ordre. */
-const dlg=document.getElementById('editor');
-let target=null;
-async function assetList(){
-  const r=await fetch('/api/assets');return r.json();}
-document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=async()=>{
-  const card=b.closest('.card');
-  target={id:b.dataset.edit,poi:card.dataset.kind==='poi'};
-  document.getElementById('ed-id').textContent=target.id+(target.poi?' (point d\\'intérêt)':'');
-  const sel=document.getElementById('ed-existing');
-  sel.innerHTML='';
-  (await assetList()).forEach(a=>{const o=document.createElement('option');
-    o.value=a;o.textContent=a.replace('assets/','');sel.append(o);});
-  document.getElementById('ed-journal').innerHTML='';
-  dlg.showModal();});
-document.getElementById('ed-cancel').onclick=()=>dlg.close();
-function journal(steps){
-  document.getElementById('ed-journal').innerHTML=steps.map(s=>'<li>'+s+'</li>').join('');}
-async function post(url,body){
-  const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},
-    body:JSON.stringify(body)});
-  const j=await r.json();
-  if(!j.ok)throw new Error(j.error||'échec');
-  return j;}
-document.getElementById('ed-wire').onclick=async()=>{
-  const asset=document.getElementById('ed-existing').value;
-  try{const j=await post('/api/wire',{id:target.id,asset,poi:target.poi});
-    journal(['asset déjà tramé — dithering non requis',
-      'assets/ : fichier déjà en place',
-      'écrit : '+j.touched.join(', ')]);
-    toast('Image rattachée — recharge pour voir');}
-  catch(e){journal(['<span style="color:#fff">ÉCHEC : '+e.message+'</span>']);}};
-document.getElementById('ed-file').onchange=async(ev)=>{
-  const f=ev.target.files[0];if(!f)return;
-  const name=document.getElementById('ed-name').value.trim()||f.name;
-  journal(['lecture du fichier…']);
-  const data=await new Promise(res=>{const fr=new FileReader();
-    fr.onload=()=>res(fr.result);fr.readAsDataURL(f);});
-  try{const j=await post('/api/import',{id:target.id,poi:target.poi,name,data});
-    journal(['dithering canonique appliqué (Floyd-Steinberg, seuil 182, 151 %)',
-      'déposé : '+j.asset,
-      'écrit : '+j.touched.join(', ')]);
-    toast('Importé — recharge pour voir');}
-  catch(e){journal(['<span style="color:#fff">ÉCHEC : '+e.message+'</span>']);}};
+/* ---------- journal d'écriture — persistant (localStorage), jamais une popup.
+   Une action écrit sur le disque puis recharge la page (les statuts d'AUTRES
+   cartes peuvent changer — une image détachée peut redonner une carte à
+   "manquante" ailleurs — donc seul un recalcul serveur complet est fiable).
+   Le journal survit au reload en passant par localStorage. */
+const LOG_KEY="pactum-coverage-log";
+function loadLog(){try{return JSON.parse(localStorage.getItem(LOG_KEY)||"[]");}catch{return [];}}
+function renderLog(){
+  const body=document.getElementById("logbody");
+  const entries=loadLog();
+  body.innerHTML=entries.length
+    ? entries.map(e=>`<div>${e.t} — ${e.msg}</div>`).join("")
+    : "En attente d'une action…";
+}
+function log(msg){
+  const entries=loadLog();
+  entries.unshift({t:new Date().toLocaleTimeString("fr-FR"),msg});
+  localStorage.setItem(LOG_KEY,JSON.stringify(entries.slice(0,60)));
+  renderLog();
+}
+renderLog();
+
+/* ——— Édition inline (mode --serve seulement) ————————————————————————
+   Trois voies directement sur la carte, comme la maquette : un <select> pour
+   rattacher un asset déjà tramé, une zone de glisser-déposer pour importer un
+   fichier brut (passe par le dithering canonique avant assets/), et un lien
+   « détacher » (dédiées uniquement) qui retire l'image dédiée. */
+if(window.__COVERAGE_EDITABLE__){
+  async function post(url,body){
+    const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(body)});
+    const j=await r.json();
+    if(!j.ok)throw new Error(j.error||"échec");
+    return j;
+  }
+  async function afterWrite(msg){
+    log(msg);
+    await new Promise(res=>setTimeout(res,400));
+    location.reload();
+  }
+
+  fetch("/api/assets").then(r=>r.json()).then(assets=>{
+    document.querySelectorAll("[data-select]").forEach(sel=>{
+      const cur=sel.dataset.current||"";
+      let opts='<option value="">— aucune (hérite / fallback) —</option>';
+      for(const a of assets) opts+=`<option${a===cur?" selected":""}>${a}</option>`;
+      sel.innerHTML=opts;
+    });
+  });
+
+  document.querySelectorAll("[data-select]").forEach(sel=>{
+    sel.addEventListener("change",async()=>{
+      const id=sel.dataset.select, poi=sel.dataset.poi==="1", asset=sel.value;
+      try{
+        const j=await post("/api/wire",{id,asset,poi});
+        await afterWrite(`<b>${poi?"point d'intérêt":"scène"}</b> · ${id} → `+
+          (asset?asset:"détaché")+` (écrit : ${j.touched.join(", ")})`);
+      }catch(e){log(`<span style="color:#fff">ÉCHEC</span> · ${id} · ${e.message}`);}
+    });
+  });
+
+  document.querySelectorAll("[data-drop]").forEach(dz=>{
+    const card=dz.closest(".card");
+    dz.ondragover=e=>{e.preventDefault();dz.classList.add("on");card.classList.add("drag");};
+    dz.ondragleave=()=>{dz.classList.remove("on");card.classList.remove("drag");};
+    dz.ondrop=async e=>{
+      e.preventDefault();dz.classList.remove("on");card.classList.remove("drag");
+      const f=e.dataTransfer.files[0]; if(!f)return;
+      const id=dz.dataset.drop, poi=dz.dataset.poi==="1";
+      const name=prompt("Nom du fichier dans assets/ :",dz.dataset.defaultName);
+      if(!name)return;
+      const data=await new Promise(res=>{const fr=new FileReader();
+        fr.onload=()=>res(fr.result);fr.readAsDataURL(f);});
+      try{
+        const j=await post("/api/import",{id,poi,name,data});
+        await afterWrite(`<b>dithering</b> → <b>${j.asset}</b> · ${id} `+
+          `(Floyd-Steinberg 182 / 151%, écrit : ${j.touched.join(", ")})`);
+      }catch(e){log(`<span style="color:#fff">ÉCHEC import</span> · ${id} · ${e.message}`);}
+    };
+  });
+
+  document.querySelectorAll("[data-detach]").forEach(btn=>{
+    btn.addEventListener("click",async()=>{
+      const id=btn.dataset.detach, poi=btn.dataset.poi==="1";
+      try{
+        const j=await post("/api/wire",{id,asset:"",poi});
+        await afterWrite(`<b>détaché</b> · ${id} (écrit : ${j.touched.join(", ")})`);
+      }catch(e){log(`<span style="color:#fff">ÉCHEC</span> · ${id} · ${e.message}`);}
+    });
+  });
+}
 """
 
 
@@ -399,69 +468,107 @@ def esc(s: str) -> str:
     )
 
 
+# Étiquettes de catégorie pour le filtre (accord/majuscule) — la maquette de
+# référence catégorise par rôle narratif (lieu/rencontre/creature/liaison),
+# mais ce rôle n'existe pas proprement dans les données parsées : une liaison
+# n'est jamais une entrée statique de SCENES[], elle est générée à l'exécution
+# par `makeLiaison()` — il n'y a donc rien à lister sous ce nom. On garde la
+# catégorisation par TYPE D'IMAGE (scene/monstre/objet) déjà en place : c'est
+# elle qui pilote la recette de prompt Leonardo (portrait vs paysage) dans
+# data/scene-meta.json, donc ce qui compte réellement pour le pipeline.
+CAT_LABEL = {"scene": "Scènes", "monstre": "Monstres", "objet": "Objets"}
+
+
 def render(items: list[Item], counts: dict, orphans: list[str], editable: bool) -> str:
     rel = "../aldenhar/public/"  # data/couverture_visuelle.html → assets
 
     def card(i: Item) -> str:
-        thumb = (
-            f'<div class="thumb" style="background-image:url(\'{rel}{i.image}\')">'
-            if i.image
-            else '<div class="thumb none">AUCUNE IMAGE'
-        )
+        basename = i.image.split("/", 1)[1] if i.image else ""
+        if i.image:
+            thumb_open = f'<div class="thumb" style="background-image:url(\'{rel}{i.image}\')">'
+            thumb_inner = ""
+        else:
+            thumb_open = '<div class="thumb none">'
+            thumb_inner = "AUCUNE IMAGE"
+        tag = f'<span class="tag {i.statut}">{STATUT_LABEL[i.statut]}</span>'
+
+        parent_html = f' <span class="poi">← {esc(i.parent)}</span>' if i.kind == "poi" else ""
+        if i.statut == HERITEE:
+            meta = f'hérite de <b>{esc(i.parent)}</b>'
+        elif i.statut == FALLBACK:
+            meta = "ambiance générique de zone"
+        elif i.statut == MANQUANTE:
+            meta = "aucune image ni héritage"
+        else:
+            meta = esc(basename)
+
+        desc = f'<div class="desc">{esc(i.description)}</div>' if i.description else ""
+        warn = "".join(f'<div class="warn">⚠ {esc(n)}</div>' for n in i.notes)
+
         acts = []
         if i.kind == "scene":
             if i.prompt:
-                acts.append(
-                    f'<button data-prompt="{esc(i.prompt)}">Copier le prompt Leonardo</button>'
-                )
+                acts.append(f'<button data-prompt="{esc(i.prompt)}">Copier le prompt Leonardo</button>')
             else:
                 acts.append('<button class="todo" disabled>prompt à écrire</button>')
+        act_html = f'<div class="act">{"".join(acts)}</div>' if acts else ""
+
+        edit_html = ""
         if editable:
-            acts.append(f'<button data-edit="{esc(i.id)}">Remplacer l\'image</button>')
-        warn = "".join(f'<div class="warn">⚠ {esc(n)}</div>' for n in i.notes)
-        parent = (
-            f' <span class="poi">← {esc(i.parent)}</span>'
-            if i.kind == "poi"
-            else (f' <span class="poi">hérite de {esc(i.parent)}</span>' if i.parent else "")
-        )
-        return f"""<article class="card {i.statut}" data-statut="{i.statut}" data-cat="{i.categorie}" data-kind="{i.kind}">
-  {thumb}<span class="tag">{STATUT_LABEL[i.statut].upper()}</span></div>
-  <div class="body">
-    <div class="sid">{esc(i.id)}{parent}</div>
-    <div class="desc">{esc(i.description)}</div>
-    {warn}
-    <div class="file">{esc(i.image or "—")}</div>
-    <div class="act">{"".join(acts)}</div>
-  </div>
+            poi_flag = "1" if i.kind == "poi" else "0"
+            default_name = basename or f"{i.categorie}_{i.id.replace('-', '_')}.png"
+            detach_html = (
+                f'<button class="detach" data-detach="{esc(i.id)}" data-poi="{poi_flag}">détacher</button>'
+                if i.statut == DEDIEE
+                else ""
+            )
+            edit_html = (
+                f'<select data-select="{esc(i.id)}" data-poi="{poi_flag}" '
+                f'data-current="{esc(i.image or "")}"></select>'
+                f'<div class="drop" data-drop="{esc(i.id)}" data-poi="{poi_flag}" '
+                f'data-default-name="{esc(default_name)}">glisser une image ici</div>'
+                f"{detach_html}"
+            )
+
+        return f"""<article class="card" data-statut="{i.statut}" data-cat="{i.categorie}" data-kind="{i.kind}">
+  {thumb_open}{thumb_inner}{tag}</div>
+  <div class="cat">{i.categorie}</div>
+  <div class="id">{esc(i.id)}{parent_html}</div>
+  <div class="meta">{meta}</div>
+  {desc}
+  {warn}
+  {act_html}
+  {edit_html}
 </article>"""
 
-    pills = "".join(
-        f'<div class="pill {k}"><b>{counts["statut"][k]}</b> {STATUT_LABEL[k]}</div>'
-        for k in (DEDIEE, HERITEE, FALLBACK, MANQUANTE)
-    )
-    pills += f'<div class="pill"><b>{counts["prompts_manquants"]}</b> prompts à écrire</div>'
-    pills += f'<div class="pill"><b>{len(orphans)}</b> assets orphelins</div>'
+    stats = f"""
+<div class="stat ok"><div class="n">{counts["statut"][DEDIEE]}</div><div class="l">dédiées</div></div>
+<div class="stat"><div class="n" style="color:var(--orange)">{counts["statut"][HERITEE]}</div><div class="l">héritées</div></div>
+<div class="stat mid"><div class="n">{counts["statut"][FALLBACK]}</div><div class="l">fallback</div></div>
+<div class="stat ko"><div class="n">{counts["statut"][MANQUANTE]}</div><div class="l">manquantes</div></div>
+<div class="stat mid"><div class="n">{len(orphans)}</div><div class="l">orphelins</div></div>
+<div class="stat mid"><div class="n">{counts["prompts_manquants"]}</div><div class="l">prompts à écrire</div></div>
+"""
 
-    fs = '<span>STATUT</span><button class="f" data-fs="all" aria-pressed="true">tous</button>' + "".join(
-        f'<button class="f" data-fs="{k}">{STATUT_LABEL[k]}</button>'
-        for k in (DEDIEE, HERITEE, FALLBACK, MANQUANTE)
-    )
     cats = sorted(counts["categorie"])
-    fc = '<span>CATÉGORIE</span><button class="f" data-fc="all" aria-pressed="true">toutes</button>' + "".join(
-        f'<button class="f" data-fc="{c}">{c}</button>' for c in cats
+    filter_defs = [("tous", "Tous"), (DEDIEE, "Dédiées"), (HERITEE, "Héritées"),
+                   (FALLBACK, "Fallback"), (MANQUANTE, "Manquantes")]
+    filter_defs += [(c, CAT_LABEL.get(c, c.capitalize())) for c in cats]
+    filters_html = "".join(
+        f'<button class="{"on" if f == "tous" else ""}" data-f="{f}">{label}</button>'
+        for f, label in filter_defs
     )
 
     orph = (
-        "<ul>" + "".join(f"<li>{esc(o)}</li>" for o in orphans) + "</ul>"
+        "".join(f"<div>{esc(o)}</div>" for o in orphans)
         if orphans
-        else '<p class="desc">Aucun. Tout fichier de assets/ est référencé.</p>'
+        else '<div>Aucun. Tout fichier de assets/ est référencé.</div>'
     )
 
     mode = (
-        "Édition active — le serveur écrit sur le disque."
+        "édition active — le serveur écrit sur le disque"
         if editable
-        else "Lecture seule. Relancer avec <code>--serve</code> pour éditer "
-        "(une page ouverte en file:// ne peut pas écrire sur le disque)."
+        else "lecture seule — relancer avec --serve pour éditer (file:// ne peut pas écrire sur le disque)"
     )
 
     return f"""<!doctype html>
@@ -471,18 +578,22 @@ def render(items: list[Item], counts: dict, orphans: list[str], editable: bool) 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>{CSS}</style></head><body>
-<header>
-  <h1>Couverture visuelle — PACTUM</h1>
-  <div class="sub">{counts["scenes"]} scènes · {counts["pois"]} points d'intérêt ·
-  rapport généré par <code>tools/coverage.py</code> · {mode}</div>
-</header>
-<div class="counts">{pills}</div>
-<div class="filters">{fs}</div>
-<div class="filters">{fc}</div>
+<h1>COUVERTURE VISUELLE</h1>
+<div class="sub">{counts["scenes"]} scènes · {counts["pois"]} points d'intérêt · lib/scene-data.ts × assets/ · {mode}</div>
+<canvas class="rule"></canvas>
+
+<div class="stats">{stats}</div>
+
+<div class="filters" id="filters">{filters_html}</div>
+
 <div class="grid">{"".join(card(i) for i in items)}</div>
-<section class="orphans"><h2>Assets orphelins</h2>{orph}</section>
-<section class="log"><h2>Ordre d'écriture obligatoire</h2>
-<ol>
+
+<h2>Assets orphelins</h2>
+<div class="sub">Présents dans assets/, référencés par aucune scène — à rattacher ou à supprimer.</div>
+<div class="orph">{orph}</div>
+
+<h2>Ordre d'écriture obligatoire</h2>
+<div class="log-static"><ol>
   <li><code>dither_batch.py</code> — l'image brute passe par le dithering canonique
       (Floyd-Steinberg, seuil 182, contraste 151 %, Charbon/Orange). Jamais d'image
       brute en jeu.</li>
@@ -491,29 +602,11 @@ def render(items: list[Item], counts: dict, orphans: list[str], editable: bool) 
   <li><code>lib/scene-data.ts</code> puis <code>data/zones/*.json</code> — le champ
       <code>illustration</code> est mis à jour. Le .ts fait foi pour le jeu ; le JSON
       suit pour la production.</li>
-</ol></section>
-<dialog id="editor">
-  <h3>Remplacer l'image — <span id="ed-id"></span></h3>
-  <div class="in">
-    <fieldset><legend>Asset déjà tramé</legend>
-      <select id="ed-existing" size="1"></select>
-      <div class="row"><button id="ed-wire">Rattacher cet asset</button>
-        <span class="hint">Le fichier est déjà dans <code>assets/</code> : seuls les
-        champs <code>illustration</code> sont réécrits.</span></div>
-    </fieldset>
-    <fieldset><legend>Importer un fichier brut</legend>
-      <input type="text" id="ed-name" placeholder="nom cible, ex. scene_tour_de_guet_a.png">
-      <div class="row"><input type="file" id="ed-file" accept="image/*">
-      </div>
-      <div class="hint">L'image passe par <code>dither_batch.py</code> (dithering
-      canonique) AVANT d'atterrir dans <code>assets/</code>. Jamais d'image brute
-      en jeu.</div>
-    </fieldset>
-    <ol id="ed-journal"></ol>
-  </div>
-  <footer><button id="ed-cancel">Fermer</button></footer>
-</dialog>
+</ol></div>
+
+<div id="log"><div class="hd">Journal d'écriture</div><div id="logbody">En attente d'une action…</div></div>
 <div id="toast"></div>
+<script>window.__COVERAGE_EDITABLE__={str(editable).lower()};</script>
 <script>{JS}</script>
 </body></html>
 """
@@ -522,9 +615,16 @@ def render(items: list[Item], counts: dict, orphans: list[str], editable: bool) 
 # ─────────────────────────────────────────────────────────── serveur d'édition
 
 
-def wire_image(scene_id: str, asset: str, is_poi: bool) -> list[str]:
+def wire_image(scene_id: str, asset: str | None, is_poi: bool) -> list[str]:
     """Écrit `illustration: "assets/…"` sur une scène ou un point d'intérêt,
-    dans scene-data.ts ET dans les JSON de zone qui le mentionnent."""
+    dans scene-data.ts ET dans les JSON de zone qui le mentionnent.
+
+    Détachement (bouton « détacher » de la maquette) : `asset` vide/None. Le
+    champ `illustration?: string` du .ts n'accepte pas `null` — la ligne est
+    donc RETIRÉE entièrement (la scène retombe sur l'héritage/fallback existant
+    du jeu). Le JSON de zone, lui, garde la convention déjà en place dans
+    `landes.json` (beaucoup d'entrées y valent explicitement `null` en attente
+    d'écriture) : on y écrit `null` plutôt que de supprimer la clé."""
     touched = []
     src = SCENE_TS.read_text(encoding="utf-8")
     indent = "      " if is_poi else "    "
@@ -533,7 +633,7 @@ def wire_image(scene_id: str, asset: str, is_poi: bool) -> list[str]:
     m = pat.search(src)
     if not m:
         raise KeyError(f"id introuvable dans scene-data.ts : {scene_id}")
-    repl = m.group(1) + f'{indent}illustration: "{asset}",\n'
+    repl = m.group(1) + (f'{indent}illustration: "{asset}",\n' if asset else "")
     src = src[: m.start()] + repl + src[m.end() :]
     SCENE_TS.write_text(src, encoding="utf-8")
     touched.append(str(SCENE_TS.relative_to(ROOT)))
@@ -546,7 +646,7 @@ def wire_image(scene_id: str, asset: str, is_poi: bool) -> list[str]:
             nonlocal changed
             if isinstance(node, dict):
                 if node.get("id") == scene_id and "illustration" in node:
-                    node["illustration"] = asset
+                    node["illustration"] = asset or None
                     changed = True
                 for v in node.values():
                     walk(v)
