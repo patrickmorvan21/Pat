@@ -33,8 +33,31 @@ font-family:inherit;font-size:10px;letter-spacing:1px;text-transform:uppercase;
 padding:7px 12px;cursor:pointer}
 .filters button.on{background:var(--orange);border-color:var(--orange);color:var(--charbon)}
 
+/* ---------- légende des statuts ---------- */
+.legende{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:16px}
+.leg{display:flex;align-items:center;gap:8px}
+.leg .tag{position:static;top:auto;left:auto}
+.leg-txt{font-size:10.5px;color:var(--b50)}
+
+/* ---------- sections zone / lieu ---------- */
+.zone{margin-top:34px}
+.zone-head{display:flex;align-items:baseline;gap:12px;font:400 26px/1.2 "Instrument Serif",Georgia,serif;
+letter-spacing:2px;margin:0 0 4px}
+.zone-n{font:400 10px/1 "Roboto Mono",monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--b50)}
+.lieu{margin-top:20px}
+.lieu-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px;
+font:400 12px/1.2 "Roboto Mono",monospace;letter-spacing:1px;color:var(--blanc);margin:0}
+.lieu-n{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--b50)}
+.lieu-warn{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;
+background:var(--blanc);color:var(--charbon);padding:2px 6px}
+/* Un lieu dont TOUTES les cartes sont filtrées se replie. */
+.lieu.vide{display:none}
+.zone.vide{display:none}
+
 /* ---------- grille ---------- */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:10px}
+/* L'image du lieu se distingue de ses variantes : liseré orange franc. */
+.card.principale{border-color:var(--orange)}
 .card{border:1px solid var(--b20);padding:10px}
 .card.drag{border-color:var(--orange)}
 .card.hidden{display:none!important}
@@ -142,13 +165,25 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
 <div class="stat mid"><div class="n">27</div><div class="l">orphelins</div></div>
 <div class="stat mid"><div class="n">17</div><div class="l">prompts à écrire</div></div>
 </div>
+<div class="legende"><div class="leg"><span class="tag dediee">son image</span><span class="leg-txt">cette scène a une image qui n'appartient qu'à elle</span></div><div class="leg"><span class="tag heritee">image empruntée</span><span class="leg-txt">elle réutilise l'image d'une autre scène</span></div><div class="leg"><span class="tag fallback">vue générique</span><span class="leg-txt">elle montre une vue d'ambiance de la zone, pas son lieu</span></div><div class="leg"><span class="tag manquante">aucune image</span><span class="leg-txt">rien à afficher — c'est le portail par défaut qui sort</span></div></div>
 <button class="copybar" id="copy-verdicts">Copier ma liste → à me coller pour que je fasse les remplacements</button>
 
-<div class="filters" id="filters"><button class="on" data-f="tous">Tous</button><button class="" data-f="dediee">Dédiées</button><button class="" data-f="heritee">Héritées</button><button class="" data-f="fallback">Fallback</button><button class="" data-f="manquante">Manquantes</button><button class="" data-f="a_remplacer">À remplacer</button><button class="" data-f="ok">Validées</button><button class="" data-f="monstre">Monstres</button><button class="" data-f="objet">Objets</button><button class="" data-f="scene">Scènes</button></div>
+<div class="filters" id="filters"><button class="on" data-f="tous">Tous</button><button class="" data-f="dediee">Son image</button><button class="" data-f="heritee">Empruntées</button><button class="" data-f="fallback">Génériques</button><button class="" data-f="manquante">Sans image</button><button class="" data-f="a_remplacer">À remplacer</button><button class="" data-f="ok">Validées</button><button class="" data-f="monstre">Monstres</button><button class="" data-f="objet">Objets</button><button class="" data-f="scene">Scènes</button></div>
 
-<div class="grid"><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_borne_frontiere_a_c.png')" data-zoom="assets/scene_borne_frontiere_a_c.png" data-zoom-id="borne-frontiere" title="Agrandir — scene_borne_frontiere_a_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
+<section class="zone"><h2 class="zone-head">Les Landes<span class="zone-n">27 lieux · 92 images</span></h2><section class="lieu" data-lieu="bete-chemins-creux"><h3 class="lieu-head">bete-chemins-creux<span class="lieu-n">1 image</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_bete_chemins_creux_a.png')" data-zoom="assets/monstre_bete_chemins_creux_a.png" data-zoom-id="bete-chemins-creux" title="Agrandir — monstre_bete_chemins_creux_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · image du lieu</div>
+  <div class="id">bete-chemins-creux</div>
+  <div class="meta">monstre_bete_chemins_creux_a.png</div>
+  <div class="desc">Combat, une scène. La Bête des Chemins Creux, qui longe la crête nord au même pas que ce qui marche en bas. On ne la voit qu'en silhouette, au-dessus.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="bete-chemins-creux" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="bete-chemins-creux" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="borne-frontiere"><h3 class="lieu-head">borne-frontiere<span class="lieu-n">4 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_borne_frontiere_a_c.png')" data-zoom="assets/scene_borne_frontiere_a_c.png" data-zoom-id="borne-frontiere" title="Agrandir — scene_borne_frontiere_a_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
   <div class="id">borne-frontiere</div>
   <div class="meta">scene_borne_frontiere_a_c.png</div>
   <div class="desc">Entrée de zone, tout premier écran du jeu. La borne-frontière dressée seule sur le plateau, ses faces gravées, les offrandes à son pied, et le chemin qui s'enfonce au sud dans le noir.</div>
@@ -158,19 +193,8 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
 </article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_borne_gravures_a_d.png')" data-zoom="assets/scene_borne_gravures_a_d.png" data-zoom-id="gravures-borne" title="Agrandir — scene_borne_gravures_a_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">gravures-borne <span class="poi">← borne-frontiere</span></div>
-  <div class="meta">scene_borne_gravures_a_d.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="gravures-borne" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="gravures-borne" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_borne_eclat_a_b.png')" data-zoom="assets/scene_borne_eclat_a_b.png" data-zoom-id="eclat-descelle" title="Agrandir — scene_borne_eclat_a_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
+  <div class="thumb" style="background-image:url('assets/scene_borne_eclat_a_b.png')" data-zoom="assets/scene_borne_eclat_a_b.png" data-zoom-id="eclat-descelle" title="Agrandir — scene_borne_eclat_a_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
   <div class="id">eclat-descelle <span class="poi">← borne-frontiere</span></div>
   <div class="meta">scene_borne_eclat_a_b.png</div>
   <div class="desc">Plan rapproché — image dédiée</div>
@@ -179,9 +203,20 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   <div class="verdict"><button class="" data-verdict="eclat-descelle" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="eclat-descelle" data-v="ok">ça marche</button></div>
   
   
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_borne_gravures_a_d.png')" data-zoom="assets/scene_borne_gravures_a_d.png" data-zoom-id="gravures-borne" title="Agrandir — scene_borne_gravures_a_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">gravures-borne <span class="poi">← borne-frontiere</span></div>
+  <div class="meta">scene_borne_gravures_a_d.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="gravures-borne" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="gravures-borne" data-v="ok">ça marche</button></div>
+  
+  
 </article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_hesitant_b.png')" data-zoom="assets/monstre_hesitant_b.png" data-zoom-id="homme-immobile" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
+  <div class="thumb" style="background-image:url('assets/monstre_hesitant_b.png')" data-zoom="assets/monstre_hesitant_b.png" data-zoom-id="homme-immobile" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · plan rapproché</div>
   <div class="id">homme-immobile <span class="poi">← borne-frontiere</span></div>
   <div class="meta">monstre_hesitant_b.png</div>
   <div class="desc">Plan rapproché — image dédiée</div>
@@ -190,504 +225,9 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   <div class="verdict"><button class="" data-verdict="homme-immobile" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="homme-immobile" data-v="ok">ça marche</button></div>
   
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_hesitant_b.png')" data-zoom="assets/monstre_hesitant_b.png" data-zoom-id="hesitant-1" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">hesitant-1</div>
-  <div class="meta">monstre_hesitant_b.png</div>
-  <div class="desc">Rencontre à la Borne, beat 1. Un homme immobile face au sud, dos au hameau, qui ne bouge pas depuis assez longtemps pour que l'herbe se soit couchée sous lui.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="hesitant-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hesitant-1" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_hesitant_b.png')" data-zoom="assets/monstre_hesitant_b.png" data-zoom-id="hesitant-2" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">hesitant-2</div>
-  <div class="meta">monstre_hesitant_b.png</div>
-  <div class="desc">Rencontre à la Borne, beat 2 — l'échange. Il calcule à voix haute entre rentrer et descendre. Son visage de trois-quarts, la borne floue derrière lui.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="hesitant-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hesitant-2" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_hesitant_b.png')" data-zoom="assets/monstre_hesitant_b.png" data-zoom-id="hesitant-3" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">hesitant-3</div>
-  <div class="meta">monstre_hesitant_b.png</div>
-  <div class="desc">Rencontre à la Borne, beat 3 — la résolution. Selon l'issue, il rentre ou s'assied au pied de la pierre, face au sud.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="hesitant-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hesitant-3" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_chemin_creux_c.png')" data-zoom="assets/scene_chemin_creux_c.png" data-zoom-id="chemin-creux" title="Agrandir — scene_chemin_creux_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">chemin-creux</div>
-  <div class="meta">scene_chemin_creux_c.png</div>
-  <div class="desc">Arrivée au Chemin Creux. Une route encaissée entre deux hauts talus de terre, un ruban de ciel étroit au-dessus, des racines tordues qui sortent des parois.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="chemin-creux" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chemin-creux" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_chemin_charrette_a_c.png')" data-zoom="assets/scene_chemin_charrette_a_c.png" data-zoom-id="charrette-embourbee" title="Agrandir — scene_chemin_charrette_a_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">charrette-embourbee <span class="poi">← chemin-creux</span></div>
-  <div class="meta">scene_chemin_charrette_a_c.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="charrette-embourbee" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="charrette-embourbee" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_chemin_talus_a_c.png')" data-zoom="assets/scene_chemin_talus_a_c.png" data-zoom-id="talus-empreintes" title="Agrandir — scene_chemin_talus_a_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">talus-empreintes <span class="poi">← chemin-creux</span></div>
-  <div class="meta">scene_chemin_talus_a_c.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="talus-empreintes" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="talus-empreintes" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_marcheur_a_rebours_d.png')" data-zoom="assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-rebours" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">marcheur-rebours <span class="poi">← chemin-creux</span></div>
-  <div class="meta">monstre_marcheur_a_rebours_d.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="marcheur-rebours" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marcheur-rebours" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_chemin_creux_c.png')" data-zoom="assets/scene_chemin_creux_c.png" data-zoom-id="chemin-creux-2" title="Agrandir — scene_chemin_creux_c.png"><span class="tag heritee">héritée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">chemin-creux-2</div>
-  <div class="meta">hérite de <b>chemin-creux</b></div>
-  <div class="desc">Événement du Chemin Creux : le coude aveugle. Le talus mange la vue d'un coup — l'endroit exact où il devrait y avoir quelque chose, et où il n'y a rien.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="chemin-creux-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chemin-creux-2" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_marcheur_a_rebours_d.png')" data-zoom="assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-1" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">marcheur-1</div>
-  <div class="meta">monstre_marcheur_a_rebours_d.png</div>
-  <div class="desc">Rencontre du Chemin Creux, beat 1. Le Marcheur à rebours avance en marche arrière, le regard fixé derrière lui — trente ans qu'il ne montre son dos à rien.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="marcheur-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marcheur-1" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_marcheur_a_rebours_d.png')" data-zoom="assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-2" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">marcheur-2</div>
-  <div class="meta">monstre_marcheur_a_rebours_d.png</div>
-  <div class="desc">Rencontre du Chemin Creux, beat 2 — l'échange sur la crête nord.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="marcheur-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marcheur-2" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_marcheur_a_rebours_d.png')" data-zoom="assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-3" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">marcheur-3</div>
-  <div class="meta">monstre_marcheur_a_rebours_d.png</div>
-  <div class="desc">Rencontre du Chemin Creux, beat 3 — la résolution.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="marcheur-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marcheur-3" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_bete_chemins_creux_a.png')" data-zoom="assets/monstre_bete_chemins_creux_a.png" data-zoom-id="bete-chemins-creux" title="Agrandir — monstre_bete_chemins_creux_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">bete-chemins-creux</div>
-  <div class="meta">monstre_bete_chemins_creux_a.png</div>
-  <div class="desc">Combat, une scène. La Bête des Chemins Creux, qui longe la crête nord au même pas que ce qui marche en bas. On ne la voit qu'en silhouette, au-dessus.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="bete-chemins-creux" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="bete-chemins-creux" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_colline_aux_gibets_c.png')" data-zoom="assets/scene_colline_aux_gibets_c.png" data-zoom-id="colline-aux-gibets" title="Agrandir — scene_colline_aux_gibets_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">colline-aux-gibets</div>
-  <div class="meta">scene_colline_aux_gibets_c.png</div>
-  <div class="desc">Arrivée à la Colline aux Gibets, lieu-signature de la zone. Le cercle de potences sur la crête nue, vu d'en bas en contre-plongée, les cordes qui balancent.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="colline-aux-gibets" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="colline-aux-gibets" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_colline_potences_cercle_a_c.png')" data-zoom="assets/scene_colline_potences_cercle_a_c.png" data-zoom-id="potences-cercle" title="Agrandir — scene_colline_potences_cercle_a_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">potences-cercle <span class="poi">← colline-aux-gibets</span></div>
-  <div class="meta">scene_colline_potences_cercle_a_c.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="potences-cercle" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="potences-cercle" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_colline_gibet_vide_a_b.png')" data-zoom="assets/scene_colline_gibet_vide_a_b.png" data-zoom-id="gibet-vide" title="Agrandir — scene_colline_gibet_vide_a_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">gibet-vide <span class="poi">← colline-aux-gibets</span></div>
-  <div class="meta">scene_colline_gibet_vide_a_b.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="gibet-vide" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="gibet-vide" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">fallback de zone</span></div>
-  <div class="cat">scene</div>
-  <div class="id">poteau-pendu <span class="poi">← colline-aux-gibets</span></div>
-  <div class="meta">ambiance générique de zone</div>
-  <div class="desc">Plan rapproché — crop CSS de l'image du lieu</div>
-  
-  
-  
-  
-  
-</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_colline_aux_gibets_c.png')" data-zoom="assets/scene_colline_aux_gibets_c.png" data-zoom-id="colline-aux-gibets-2" title="Agrandir — scene_colline_aux_gibets_c.png"><span class="tag heritee">héritée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">colline-aux-gibets-2</div>
-  <div class="meta">hérite de <b>colline-aux-gibets</b></div>
-  <div class="desc">Événement de la Colline : au sommet, entre les potences. L'écharde du grand gibet se prélève ici.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="colline-aux-gibets-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="colline-aux-gibets-2" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_pendu_qui_parle_a.png')" data-zoom="assets/monstre_pendu_qui_parle_a.png" data-zoom-id="pendu-qui-parle" title="Agrandir — monstre_pendu_qui_parle_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">pendu-qui-parle</div>
-  <div class="meta">monstre_pendu_qui_parle_a.png</div>
-  <div class="desc">Arrivée au gardien de zone : le Bailli pendu, qui parle encore. Vu de loin, une silhouette au bout d'une corde, sur un gibet isolé.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="pendu-qui-parle" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="pendu-qui-parle" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="heritee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_pendu_qui_parle_a.png')" data-zoom="assets/monstre_pendu_qui_parle_a.png" data-zoom-id="pendu-qui-parle-2" title="Agrandir — monstre_pendu_qui_parle_a.png"><span class="tag heritee">héritée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">pendu-qui-parle-2</div>
-  <div class="meta">hérite de <b>pendu-qui-parle</b></div>
-  <div class="desc">Le gardien, à hauteur d'homme. Non-combat : il juge. Son visage de pendu qui parle, le sceau à sa ceinture.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="pendu-qui-parle-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="pendu-qui-parle-2" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_champ_des_fixes_b.png')" data-zoom="assets/scene_champ_des_fixes_b.png" data-zoom-id="champ-des-fixes" title="Agrandir — scene_champ_des_fixes_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">champ-des-fixes</div>
-  <div class="meta">scene_champ_des_fixes_b.png</div>
-  <div class="desc">Arrivée au Champ des Fixés. Des rangées de poteaux plantés dans la lande morte, un écriteau clouté sur chacun, certains encore occupés.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="champ-des-fixes" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="champ-des-fixes" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_champ_rangees_a_d.png')" data-zoom="assets/scene_champ_rangees_a_d.png" data-zoom-id="les-rangees" title="Agrandir — scene_champ_rangees_a_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">les-rangees <span class="poi">← champ-des-fixes</span></div>
-  <div class="meta">scene_champ_rangees_a_d.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="les-rangees" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="les-rangees" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_champ_poteaux_vierges_a_a.png')" data-zoom="assets/scene_champ_poteaux_vierges_a_a.png" data-zoom-id="poteaux-vierges" title="Agrandir — scene_champ_poteaux_vierges_a_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">poteaux-vierges <span class="poi">← champ-des-fixes</span></div>
-  <div class="meta">scene_champ_poteaux_vierges_a_a.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="poteaux-vierges" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="poteaux-vierges" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_champ_tombe_manquante_a_c.png')" data-zoom="assets/scene_champ_tombe_manquante_a_c.png" data-zoom-id="tombe-sans-poteau" title="Agrandir — scene_champ_tombe_manquante_a_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">tombe-sans-poteau <span class="poi">← champ-des-fixes</span></div>
-  <div class="meta">scene_champ_tombe_manquante_a_c.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="tombe-sans-poteau" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="tombe-sans-poteau" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_fossoyeur_poteaux_a.png')" data-zoom="assets/monstre_fossoyeur_poteaux_a.png" data-zoom-id="champ-des-fixes-2" title="Agrandir — monstre_fossoyeur_poteaux_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">champ-des-fixes-2</div>
-  <div class="meta">monstre_fossoyeur_poteaux_a.png</div>
-  <div class="desc">Événement du Champ : le Fossoyeur aux poteaux, qui grave d'avance les noms « dont c'est sûr ».</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="champ-des-fixes-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="champ-des-fixes-2" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_pendu_mal_fixe_a.png')" data-zoom="assets/monstre_pendu_mal_fixe_a.png" data-zoom-id="pendu-mal-fixe" title="Agrandir — monstre_pendu_mal_fixe_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">pendu-mal-fixe</div>
-  <div class="meta">monstre_pendu_mal_fixe_a.png</div>
-  <div class="desc">Combat, une scène. Le Pendu Mal Fixé : un bras tendu figé en plein geste d'agrippement, la corde trop longue qui laisse les pieds toucher le sol.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="pendu-mal-fixe" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="pendu-mal-fixe" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_hameau_dense2_b.png')" data-zoom="assets/scene_hameau_dense2_b.png" data-zoom-id="serment-hameau" title="Agrandir — scene_hameau_dense2_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">serment-hameau</div>
-  <div class="meta">scene_hameau_dense2_b.png</div>
-  <div class="desc">Approche du Hameau des Renonçants, vu de loin. Les toits d'ardoise affaissés au creux du plateau, une seule cheminée qui fume sur vingt, aucun chien qui aboie.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="serment-hameau" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="serment-hameau" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_landes_hameau_ruelle_b.png')" data-zoom="assets/scene_landes_hameau_ruelle_b.png" data-zoom-id="hameau-entree-2" title="Agrandir — scene_landes_hameau_ruelle_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">hameau-entree-2</div>
-  <div class="meta">scene_landes_hameau_ruelle_b.png</div>
-  <div class="desc">Entrée du Hameau, beat 2 : le seuil. La ruelle étroite, les portes marquées à la craie, les volets fermés.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="hameau-entree-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-entree-2" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_hameau_croix_craie_a_a.png')" data-zoom="assets/scene_hameau_croix_craie_a_a.png" data-zoom-id="croix-craie" title="Agrandir — scene_hameau_croix_craie_a_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">croix-craie <span class="poi">← hameau-entree-2</span></div>
-  <div class="meta">scene_hameau_croix_craie_a_a.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="croix-craie" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="croix-craie" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_femme_au_seuil_b.png')" data-zoom="assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-sur-le-seuil" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">femme-sur-le-seuil <span class="poi">← hameau-entree-2</span></div>
-  <div class="meta">monstre_femme_au_seuil_b.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="femme-sur-le-seuil" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="femme-sur-le-seuil" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_femme_au_seuil_b.png')" data-zoom="assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-seuil-1" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">femme-seuil-1</div>
-  <div class="meta">monstre_femme_au_seuil_b.png</div>
-  <div class="desc">Rencontre du Hameau, beat 1 — étalon du format. Une femme sur le seuil d'une maison basse, une croix à la craie sur sa porte, un châle serré.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="femme-seuil-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="femme-seuil-1" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_femme_au_seuil_b.png')" data-zoom="assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-seuil-2" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">femme-seuil-2</div>
-  <div class="meta">monstre_femme_au_seuil_b.png</div>
-  <div class="desc">Rencontre du Hameau, beat 2 — la mèche nouée qu'elle tend.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="femme-seuil-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="femme-seuil-2" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_femme_au_seuil_b.png')" data-zoom="assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-seuil-3" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">femme-seuil-3</div>
-  <div class="meta">monstre_femme_au_seuil_b.png</div>
-  <div class="desc">Rencontre du Hameau, beat 3 — la résolution, puis retour à la séquence d'entrée.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="femme-seuil-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="femme-seuil-3" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_juge_de_cendre_c.png')" data-zoom="assets/monstre_juge_de_cendre_c.png" data-zoom-id="hameau-entree-3" title="Agrandir — monstre_juge_de_cendre_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">hameau-entree-3</div>
-  <div class="meta">monstre_juge_de_cendre_c.png</div>
-  <div class="desc">Entrée du Hameau, beat 3 : le barrage. Trois hommes au milieu de la rue, pas armés — un bâton de marche, une fourche posée contre un mur, à portée sans être brandie.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="hameau-entree-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-entree-3" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_doyenne_b.png')" data-zoom="assets/monstre_doyenne_b.png" data-zoom-id="hameau-entree-4" title="Agrandir — monstre_doyenne_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">hameau-entree-4</div>
-  <div class="meta">monstre_doyenne_b.png</div>
-  <div class="desc">Entrée du Hameau, beat 4 : le Serment, imposé et jamais proposé. La paume ouverte et vide du vieux, tendue pour qu'on la regarde — on jure sur rien.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="hameau-entree-4" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-entree-4" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">fallback de zone</span></div>
-  <div class="cat">scene</div>
-  <div class="id">pourquoi-trois-aubes <span class="poi">← hameau-entree-4</span></div>
-  <div class="meta">ambiance générique de zone</div>
-  <div class="desc">Plan rapproché — crop CSS de l'image du lieu</div>
-  
-  
-  
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_landes_hameau_ruelle_b.png')" data-zoom="assets/scene_landes_hameau_ruelle_b.png" data-zoom-id="hameau-entree-5" title="Agrandir — scene_landes_hameau_ruelle_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">hameau-entree-5</div>
-  <div class="meta">scene_landes_hameau_ruelle_b.png</div>
-  <div class="desc">Entrée du Hameau, beat 5 : on passe. La rue qui s'ouvre, les volets qui se ferment un par un, un peu en avance sur le pas.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="hameau-entree-5" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-entree-5" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_landes_hameau_ruelle_b.png')" data-zoom="assets/scene_landes_hameau_ruelle_b.png" data-zoom-id="hameau-halte-1" title="Agrandir — scene_landes_hameau_ruelle_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">hameau-halte-1</div>
-  <div class="meta">scene_landes_hameau_ruelle_b.png</div>
-  <div class="desc">Halte au Hameau, beat 1 : le vieux te trouve. « On sait toujours où tu es. »</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="hameau-halte-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-1" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_landes_hameau_grange_a.png')" data-zoom="assets/scene_landes_hameau_grange_a.png" data-zoom-id="hameau-halte-2" title="Agrandir — scene_landes_hameau_grange_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">hameau-halte-2</div>
-  <div class="meta">scene_landes_hameau_grange_a.png</div>
-  <div class="desc">Halte, beat 2 : la grange. Intérieur de nuit, une lanterne posée au sol, la paille, la barre de porte posée DEHORS, les bâtons de comptage sur les poutres.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="hameau-halte-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-2" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_hameau_grange_poutres_a_d.png')" data-zoom="assets/scene_hameau_grange_poutres_a_d.png" data-zoom-id="examiner-grange" title="Agrandir — scene_hameau_grange_poutres_a_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">examiner-grange <span class="poi">← hameau-halte-2</span></div>
-  <div class="meta">scene_hameau_grange_poutres_a_d.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="examiner-grange" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="examiner-grange" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_landes_hameau_grange_a.png')" data-zoom="assets/scene_landes_hameau_grange_a.png" data-zoom-id="hameau-halte-3" title="Agrandir — scene_landes_hameau_grange_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">hameau-halte-3</div>
-  <div class="meta">scene_landes_hameau_grange_a.png</div>
-  <div class="desc">Halte, beat 3 : la nuit, la ronde que personne n'a annoncée.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="hameau-halte-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-3" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_doyenne_b.png')" data-zoom="assets/monstre_doyenne_b.png" data-zoom-id="hameau-halte-4" title="Agrandir — monstre_doyenne_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">hameau-halte-4</div>
-  <div class="meta">monstre_doyenne_b.png</div>
-  <div class="desc">Halte, beat 4 : l'aube. Le Serment tenu se paie ici.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="hameau-halte-4" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-4" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_hameau_dense_b.png')" data-zoom="assets/scene_hameau_dense_b.png" data-zoom-id="hameau-halte-5" title="Agrandir — scene_hameau_dense_b.png"><span class="tag fallback">fallback de zone</span></div>
-  <div class="cat">scene</div>
-  <div class="id">hameau-halte-5</div>
-  <div class="meta">ambiance générique de zone</div>
-  <div class="desc">Halte, beat 5 : l'escorte jusqu'au portillon.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="hameau-halte-5" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-5" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_hameau_dense_c.png')" data-zoom="assets/scene_hameau_dense_c.png" data-zoom-id="hameau-halte-dehors" title="Agrandir — scene_hameau_dense_c.png"><span class="tag fallback">fallback de zone</span></div>
-  <div class="cat">scene</div>
-  <div class="id">hameau-halte-dehors</div>
-  <div class="meta">ambiance générique de zone</div>
-  <div class="desc">Variante de Halte pour qui a refusé le Serment : la nuit dehors, contre un muret, aucune porte ouverte.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="hameau-halte-dehors" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-dehors" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_marche_muet_c.png')" data-zoom="assets/scene_marche_muet_c.png" data-zoom-id="marche-muet" title="Agrandir — scene_marche_muet_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">marche-muet</div>
-  <div class="meta">scene_marche_muet_c.png</div>
-  <div class="desc">Arrivée au Marché Muet, à l'intérieur du hameau. Des étals sans marchands, des marchandises posées et personne pour les vendre.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="marche-muet" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marche-muet" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_colporteur_b.png')" data-zoom="assets/monstre_colporteur_b.png" data-zoom-id="marche-muet-2" title="Agrandir — monstre_colporteur_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">marche-muet-2</div>
-  <div class="meta">monstre_colporteur_b.png</div>
-  <div class="desc">Événement du Marché : le Colporteur, le seul qui parle encore, et le Rebouteux derrière lui.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="marche-muet-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marche-muet-2" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_moulin_sans_ailes_d_d.png')" data-zoom="assets/scene_moulin_sans_ailes_d_d.png" data-zoom-id="campement" title="Agrandir — scene_moulin_sans_ailes_d_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
+</article></div></section><section class="lieu" data-lieu="campement"><h3 class="lieu-head">campement<span class="lieu-n">5 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_moulin_sans_ailes_d_d.png')" data-zoom="assets/scene_moulin_sans_ailes_d_d.png" data-zoom-id="campement" title="Agrandir — scene_moulin_sans_ailes_d_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
   <div class="id">campement</div>
   <div class="meta">scene_moulin_sans_ailes_d_d.png</div>
   <div class="desc">Arrivée au Moulin sans Ailes — c'est le lieu de repos de la zone. Une tour de pierre trapue SANS ailes, quatre traces pâles sur le corps du moulin, la porte entrebâillée.</div>
@@ -696,9 +236,20 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   <div class="verdict"><button class="" data-verdict="campement" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="campement" data-v="ok">ça marche</button></div>
   
   
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_moulin_sans_ailes_d_d.png')" data-zoom="assets/scene_moulin_sans_ailes_d_d.png" data-zoom-id="campement-2" title="Agrandir — scene_moulin_sans_ailes_d_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · autre moment du lieu</div>
+  <div class="id">campement-2</div>
+  <div class="meta">scene_moulin_sans_ailes_d_d.png</div>
+  <div class="desc">Événement du Moulin : la garde, ou le sommeil. Le lit de bruyère tassé, refait de frais, les marques de comptage à hauteur d'enfant sur la pierre.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="campement-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="campement-2" data-v="ok">ça marche</button></div>
+  
+  
 </article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_moulin_croix_ombres_a_d.png')" data-zoom="assets/scene_moulin_croix_ombres_a_d.png" data-zoom-id="croix-ombres" title="Agrandir — scene_moulin_croix_ombres_a_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
+  <div class="thumb" style="background-image:url('assets/scene_moulin_croix_ombres_a_d.png')" data-zoom="assets/scene_moulin_croix_ombres_a_d.png" data-zoom-id="croix-ombres" title="Agrandir — scene_moulin_croix_ombres_a_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
   <div class="id">croix-ombres <span class="poi">← campement</span></div>
   <div class="meta">scene_moulin_croix_ombres_a_d.png</div>
   <div class="desc">Plan rapproché — image dédiée</div>
@@ -708,19 +259,8 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
 </article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_moulin_lucarne_a_b.png')" data-zoom="assets/scene_moulin_lucarne_a_b.png" data-zoom-id="lucarne-moulin" title="Agrandir — scene_moulin_lucarne_a_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">lucarne-moulin <span class="poi">← campement</span></div>
-  <div class="meta">scene_moulin_lucarne_a_b.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="lucarne-moulin" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="lucarne-moulin" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_moulin_interieur_a_d.png')" data-zoom="assets/scene_moulin_interieur_a_d.png" data-zoom-id="interieur-moulin" title="Agrandir — scene_moulin_interieur_a_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
+  <div class="thumb" style="background-image:url('assets/scene_moulin_interieur_a_d.png')" data-zoom="assets/scene_moulin_interieur_a_d.png" data-zoom-id="interieur-moulin" title="Agrandir — scene_moulin_interieur_a_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
   <div class="id">interieur-moulin <span class="poi">← campement</span></div>
   <div class="meta">scene_moulin_interieur_a_d.png</div>
   <div class="desc">Plan rapproché — image dédiée</div>
@@ -729,20 +269,75 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   <div class="verdict"><button class="" data-verdict="interieur-moulin" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="interieur-moulin" data-v="ok">ça marche</button></div>
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_moulin_sans_ailes_d_d.png')" data-zoom="assets/scene_moulin_sans_ailes_d_d.png" data-zoom-id="campement-2" title="Agrandir — scene_moulin_sans_ailes_d_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">campement-2</div>
-  <div class="meta">scene_moulin_sans_ailes_d_d.png</div>
-  <div class="desc">Événement du Moulin : la garde, ou le sommeil. Le lit de bruyère tassé, refait de frais, les marques de comptage à hauteur d'enfant sur la pierre.</div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_moulin_lucarne_a_b.png')" data-zoom="assets/scene_moulin_lucarne_a_b.png" data-zoom-id="lucarne-moulin" title="Agrandir — scene_moulin_lucarne_a_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">lucarne-moulin <span class="poi">← campement</span></div>
+  <div class="meta">scene_moulin_lucarne_a_b.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
   
   
-  <div class="verdict"><button class="" data-verdict="campement-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="campement-2" data-v="ok">ça marche</button></div>
+  <div class="verdict"><button class="" data-verdict="lucarne-moulin" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="lucarne-moulin" data-v="ok">ça marche</button></div>
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_chapelle_des_cordes_d.png')" data-zoom="assets/scene_chapelle_des_cordes_d.png" data-zoom-id="chapelle-des-cordes" title="Agrandir — scene_chapelle_des_cordes_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
+</article></div></section><section class="lieu" data-lieu="champ-des-fixes"><h3 class="lieu-head">champ-des-fixes<span class="lieu-n">5 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_champ_des_fixes_b.png')" data-zoom="assets/scene_champ_des_fixes_b.png" data-zoom-id="champ-des-fixes" title="Agrandir — scene_champ_des_fixes_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
+  <div class="id">champ-des-fixes</div>
+  <div class="meta">scene_champ_des_fixes_b.png</div>
+  <div class="desc">Arrivée au Champ des Fixés. Des rangées de poteaux plantés dans la lande morte, un écriteau clouté sur chacun, certains encore occupés.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="champ-des-fixes" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="champ-des-fixes" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_fossoyeur_poteaux_a.png')" data-zoom="assets/monstre_fossoyeur_poteaux_a.png" data-zoom-id="champ-des-fixes-2" title="Agrandir — monstre_fossoyeur_poteaux_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">champ-des-fixes-2</div>
+  <div class="meta">monstre_fossoyeur_poteaux_a.png</div>
+  <div class="desc">Événement du Champ : le Fossoyeur aux poteaux, qui grave d'avance les noms « dont c'est sûr ».</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="champ-des-fixes-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="champ-des-fixes-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_champ_rangees_a_d.png')" data-zoom="assets/scene_champ_rangees_a_d.png" data-zoom-id="les-rangees" title="Agrandir — scene_champ_rangees_a_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">les-rangees <span class="poi">← champ-des-fixes</span></div>
+  <div class="meta">scene_champ_rangees_a_d.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="les-rangees" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="les-rangees" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_champ_poteaux_vierges_a_a.png')" data-zoom="assets/scene_champ_poteaux_vierges_a_a.png" data-zoom-id="poteaux-vierges" title="Agrandir — scene_champ_poteaux_vierges_a_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">poteaux-vierges <span class="poi">← champ-des-fixes</span></div>
+  <div class="meta">scene_champ_poteaux_vierges_a_a.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="poteaux-vierges" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="poteaux-vierges" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_champ_tombe_manquante_a_c.png')" data-zoom="assets/scene_champ_tombe_manquante_a_c.png" data-zoom-id="tombe-sans-poteau" title="Agrandir — scene_champ_tombe_manquante_a_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">tombe-sans-poteau <span class="poi">← champ-des-fixes</span></div>
+  <div class="meta">scene_champ_tombe_manquante_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="tombe-sans-poteau" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="tombe-sans-poteau" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="chapelle-des-cordes"><h3 class="lieu-head">chapelle-des-cordes<span class="lieu-n">5 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_chapelle_des_cordes_d.png')" data-zoom="assets/scene_chapelle_des_cordes_d.png" data-zoom-id="chapelle-des-cordes" title="Agrandir — scene_chapelle_des_cordes_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
   <div class="id">chapelle-des-cordes</div>
   <div class="meta">scene_chapelle_des_cordes_d.png</div>
   <div class="desc">Arrivée à la Chapelle des Cordes, intérieur du hameau. Une nef courte, des dizaines de cordes coupées clouées en rangs le long des murs, du sol au plafond.</div>
@@ -751,20 +346,20 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   <div class="verdict"><button class="" data-verdict="chapelle-des-cordes" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chapelle-des-cordes" data-v="ok">ça marche</button></div>
   
   
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_veuve_cordes_a.png')" data-zoom="assets/monstre_veuve_cordes_a.png" data-zoom-id="chapelle-des-cordes-2" title="Agrandir — monstre_veuve_cordes_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">chapelle-des-cordes-2</div>
+  <div class="meta">monstre_veuve_cordes_a.png</div>
+  <div class="desc">Événement de la Chapelle : la Veuve aux Cordes, assise, qui refait sans fin le même nœud. Derrière elle, sous verre, la corde coupée sans nom.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="chapelle-des-cordes-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chapelle-des-cordes-2" data-v="ok">ça marche</button></div>
+  
+  
 </article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_chapelle_mur_cordes_a_d.png')" data-zoom="assets/scene_chapelle_mur_cordes_a_d.png" data-zoom-id="mur-cordes" title="Agrandir — scene_chapelle_mur_cordes_a_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">mur-cordes <span class="poi">← chapelle-des-cordes</span></div>
-  <div class="meta">scene_chapelle_mur_cordes_a_d.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="mur-cordes" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="mur-cordes" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_chapelle_autel_a_c.png')" data-zoom="assets/scene_chapelle_autel_a_c.png" data-zoom-id="autel-renverse" title="Agrandir — scene_chapelle_autel_a_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
+  <div class="thumb" style="background-image:url('assets/scene_chapelle_autel_a_c.png')" data-zoom="assets/scene_chapelle_autel_a_c.png" data-zoom-id="autel-renverse" title="Agrandir — scene_chapelle_autel_a_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
   <div class="id">autel-renverse <span class="poi">← chapelle-des-cordes</span></div>
   <div class="meta">scene_chapelle_autel_a_c.png</div>
   <div class="desc">Plan rapproché — image dédiée</div>
@@ -774,8 +369,19 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
 </article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_chapelle_ouvrage_a_d.png')" data-zoom="assets/scene_chapelle_ouvrage_a_d.png" data-zoom-id="ouvrage-tressage" title="Agrandir — scene_chapelle_ouvrage_a_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
+  <div class="thumb" style="background-image:url('assets/scene_chapelle_mur_cordes_a_d.png')" data-zoom="assets/scene_chapelle_mur_cordes_a_d.png" data-zoom-id="mur-cordes" title="Agrandir — scene_chapelle_mur_cordes_a_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">mur-cordes <span class="poi">← chapelle-des-cordes</span></div>
+  <div class="meta">scene_chapelle_mur_cordes_a_d.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="mur-cordes" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="mur-cordes" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_chapelle_ouvrage_a_d.png')" data-zoom="assets/scene_chapelle_ouvrage_a_d.png" data-zoom-id="ouvrage-tressage" title="Agrandir — scene_chapelle_ouvrage_a_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
   <div class="id">ouvrage-tressage <span class="poi">← chapelle-des-cordes</span></div>
   <div class="meta">scene_chapelle_ouvrage_a_d.png</div>
   <div class="desc">Plan rapproché — image dédiée</div>
@@ -784,42 +390,64 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   <div class="verdict"><button class="" data-verdict="ouvrage-tressage" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="ouvrage-tressage" data-v="ok">ça marche</button></div>
   
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_veuve_cordes_a.png')" data-zoom="assets/monstre_veuve_cordes_a.png" data-zoom-id="chapelle-des-cordes-2" title="Agrandir — monstre_veuve_cordes_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">chapelle-des-cordes-2</div>
-  <div class="meta">monstre_veuve_cordes_a.png</div>
-  <div class="desc">Événement de la Chapelle : la Veuve aux Cordes, assise, qui refait sans fin le même nœud. Derrière elle, sous verre, la corde coupée sans nom.</div>
+</article></div></section><section class="lieu" data-lieu="chemin-creux"><h3 class="lieu-head">chemin-creux<span class="lieu-n">5 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_chemin_creux_c.png')" data-zoom="assets/scene_chemin_creux_c.png" data-zoom-id="chemin-creux" title="Agrandir — scene_chemin_creux_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
+  <div class="id">chemin-creux</div>
+  <div class="meta">scene_chemin_creux_c.png</div>
+  <div class="desc">Arrivée au Chemin Creux. Une route encaissée entre deux hauts talus de terre, un ruban de ciel étroit au-dessus, des racines tordues qui sortent des parois.</div>
   
   
-  <div class="verdict"><button class="" data-verdict="chapelle-des-cordes-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chapelle-des-cordes-2" data-v="ok">ça marche</button></div>
+  <div class="verdict"><button class="" data-verdict="chemin-creux" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chemin-creux" data-v="ok">ça marche</button></div>
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_puits_condamne_c.png')" data-zoom="assets/scene_puits_condamne_c.png" data-zoom-id="puits-condamne" title="Agrandir — scene_puits_condamne_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">puits-condamne</div>
-  <div class="meta">scene_puits_condamne_c.png</div>
-  <div class="desc">Arrivée au Puits Condamné. Un puits fermé par des planches clouées en croix, par-dessus, des pierres empilées.</div>
+</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_chemin_creux_c.png')" data-zoom="assets/scene_chemin_creux_c.png" data-zoom-id="chemin-creux-2" title="Agrandir — scene_chemin_creux_c.png"><span class="tag heritee">image empruntée</span></div>
+  <div class="cat">scene · autre moment du lieu</div>
+  <div class="id">chemin-creux-2</div>
+  <div class="meta">hérite de <b>chemin-creux</b></div>
+  <div class="desc">Événement du Chemin Creux : le coude aveugle. Le talus mange la vue d'un coup — l'endroit exact où il devrait y avoir quelque chose, et où il n'y a rien.</div>
   
   
-  <div class="verdict"><button class="" data-verdict="puits-condamne" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="puits-condamne" data-v="ok">ça marche</button></div>
+  <div class="verdict"><button class="" data-verdict="chemin-creux-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chemin-creux-2" data-v="ok">ça marche</button></div>
   
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_mains_du_puits_a.png')" data-zoom="assets/monstre_mains_du_puits_a.png" data-zoom-id="puits-condamne-2" title="Agrandir — monstre_mains_du_puits_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">puits-condamne-2</div>
-  <div class="meta">monstre_mains_du_puits_a.png</div>
-  <div class="desc">Événement du Puits (scène chronométrée) : les Mains du Puits, qui sortent entre les planches.</div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_chemin_charrette_a_c.png')" data-zoom="assets/scene_chemin_charrette_a_c.png" data-zoom-id="charrette-embourbee" title="Agrandir — scene_chemin_charrette_a_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">charrette-embourbee <span class="poi">← chemin-creux</span></div>
+  <div class="meta">scene_chemin_charrette_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
   
   
-  <div class="verdict"><button class="" data-verdict="puits-condamne-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="puits-condamne-2" data-v="ok">ça marche</button></div>
+  <div class="verdict"><button class="" data-verdict="charrette-embourbee" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="charrette-embourbee" data-v="ok">ça marche</button></div>
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_maison_du_bailli_c.png')" data-zoom="assets/scene_maison_du_bailli_c.png" data-zoom-id="chien-du-bailli" title="Agrandir — scene_maison_du_bailli_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_marcheur_a_rebours_d.png')" data-zoom="assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-rebours" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · plan rapproché</div>
+  <div class="id">marcheur-rebours <span class="poi">← chemin-creux</span></div>
+  <div class="meta">monstre_marcheur_a_rebours_d.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="marcheur-rebours" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marcheur-rebours" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_chemin_talus_a_c.png')" data-zoom="assets/scene_chemin_talus_a_c.png" data-zoom-id="talus-empreintes" title="Agrandir — scene_chemin_talus_a_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">talus-empreintes <span class="poi">← chemin-creux</span></div>
+  <div class="meta">scene_chemin_talus_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="talus-empreintes" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="talus-empreintes" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="chien-du-bailli"><h3 class="lieu-head">chien-du-bailli<span class="lieu-n">2 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_maison_du_bailli_c.png')" data-zoom="assets/scene_maison_du_bailli_c.png" data-zoom-id="chien-du-bailli" title="Agrandir — scene_maison_du_bailli_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
   <div class="id">chien-du-bailli</div>
   <div class="meta">scene_maison_du_bailli_c.png</div>
   <div class="desc">Arrivée à la Maison du Bailli, murée. Portes et fenêtres bouchées à la pierre, de l'extérieur — on a fermé cette maison depuis la rue.</div>
@@ -829,8 +457,8 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
 </article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_chien_du_bailli_b.png')" data-zoom="assets/monstre_chien_du_bailli_b.png" data-zoom-id="chien-du-bailli-2" title="Agrandir — monstre_chien_du_bailli_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
+  <div class="thumb" style="background-image:url('assets/monstre_chien_du_bailli_b.png')" data-zoom="assets/monstre_chien_du_bailli_b.png" data-zoom-id="chien-du-bailli-2" title="Agrandir — monstre_chien_du_bailli_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
   <div class="id">chien-du-bailli-2</div>
   <div class="meta">monstre_chien_du_bailli_b.png</div>
   <div class="desc">Combat : le Chien du Bailli, qui garde encore une maison où il n'y a plus personne.</div>
@@ -839,109 +467,43 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   <div class="verdict"><button class="" data-verdict="chien-du-bailli-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chien-du-bailli-2" data-v="ok">ça marche</button></div>
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_petit_tribunal_a.png')" data-zoom="assets/scene_petit_tribunal_a.png" data-zoom-id="petit-tribunal" title="Agrandir — scene_petit_tribunal_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">petit-tribunal</div>
-  <div class="meta">scene_petit_tribunal_a.png</div>
-  <div class="desc">Arrivée au Petit Tribunal. Une grange convertie en salle d'audience : trois bancs de bois face à une haute chaire, une feuille de règles clouée au mur.</div>
+</article></div></section><section class="lieu" data-lieu="colline-aux-gibets"><h3 class="lieu-head">colline-aux-gibets<span class="lieu-n">5 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_colline_aux_gibets_c.png')" data-zoom="assets/scene_colline_aux_gibets_c.png" data-zoom-id="colline-aux-gibets" title="Agrandir — scene_colline_aux_gibets_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
+  <div class="id">colline-aux-gibets</div>
+  <div class="meta">scene_colline_aux_gibets_c.png</div>
+  <div class="desc">Arrivée à la Colline aux Gibets, lieu-signature de la zone. Le cercle de potences sur la crête nue, vu d'en bas en contre-plongée, les cordes qui balancent.</div>
   
   
-  <div class="verdict"><button class="" data-verdict="petit-tribunal" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="petit-tribunal" data-v="ok">ça marche</button></div>
+  <div class="verdict"><button class="" data-verdict="colline-aux-gibets" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="colline-aux-gibets" data-v="ok">ça marche</button></div>
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_tribunal_ordonnance_a_c.png')" data-zoom="assets/scene_tribunal_ordonnance_a_c.png" data-zoom-id="mur-ordonnance" title="Agrandir — scene_tribunal_ordonnance_a_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">mur-ordonnance <span class="poi">← petit-tribunal</span></div>
-  <div class="meta">scene_tribunal_ordonnance_a_c.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
+</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_colline_aux_gibets_c.png')" data-zoom="assets/scene_colline_aux_gibets_c.png" data-zoom-id="colline-aux-gibets-2" title="Agrandir — scene_colline_aux_gibets_c.png"><span class="tag heritee">image empruntée</span></div>
+  <div class="cat">scene · autre moment du lieu</div>
+  <div class="id">colline-aux-gibets-2</div>
+  <div class="meta">hérite de <b>colline-aux-gibets</b></div>
+  <div class="desc">Événement de la Colline : au sommet, entre les potences. L'écharde du grand gibet se prélève ici.</div>
   
   
-  <div class="verdict"><button class="" data-verdict="mur-ordonnance" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="mur-ordonnance" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_tribunal_chaire_a_c.png')" data-zoom="assets/scene_tribunal_chaire_a_c.png" data-zoom-id="chaire-registre" title="Agrandir — scene_tribunal_chaire_a_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">chaire-registre <span class="poi">← petit-tribunal</span></div>
-  <div class="meta">scene_tribunal_chaire_a_c.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="chaire-registre" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chaire-registre" data-v="ok">ça marche</button></div>
+  <div class="verdict"><button class="" data-verdict="colline-aux-gibets-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="colline-aux-gibets-2" data-v="ok">ça marche</button></div>
   
   
 </article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_tribunal_bancs_a_c.png')" data-zoom="assets/scene_tribunal_bancs_a_c.png" data-zoom-id="les-bancs" title="Agrandir — scene_tribunal_bancs_a_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">les-bancs <span class="poi">← petit-tribunal</span></div>
-  <div class="meta">scene_tribunal_bancs_a_c.png</div>
+  <div class="thumb" style="background-image:url('assets/scene_colline_gibet_vide_a_b.png')" data-zoom="assets/scene_colline_gibet_vide_a_b.png" data-zoom-id="gibet-vide" title="Agrandir — scene_colline_gibet_vide_a_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">gibet-vide <span class="poi">← colline-aux-gibets</span></div>
+  <div class="meta">scene_colline_gibet_vide_a_b.png</div>
   <div class="desc">Plan rapproché — image dédiée</div>
   
   
-  <div class="verdict"><button class="" data-verdict="les-bancs" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="les-bancs" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_ecrivain_public_d.png')" data-zoom="assets/monstre_ecrivain_public_d.png" data-zoom-id="petit-tribunal-2" title="Agrandir — monstre_ecrivain_public_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">petit-tribunal-2</div>
-  <div class="meta">monstre_ecrivain_public_d.png</div>
-  <div class="desc">Événement du Tribunal : l'Écrivain public, qui entre, te voit à la chaire, et se met à copier sans lever les yeux.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="petit-tribunal-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="petit-tribunal-2" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_meute_grise_c.png')" data-zoom="assets/monstre_meute_grise_c.png" data-zoom-id="meute-grise-1" title="Agrandir — monstre_meute_grise_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">meute-grise-1</div>
-  <div class="meta">monstre_meute_grise_c.png</div>
-  <div class="desc">Combat en deux scènes, beat 1. La Meute Grise : six silhouettes couleur de bruyère morte, immobiles aux six points d'un cercle dont tu es le centre.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="meute-grise-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="meute-grise-1" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_meute_grise_c.png')" data-zoom="assets/monstre_meute_grise_c.png" data-zoom-id="meute-grise-2" title="Agrandir — monstre_meute_grise_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">meute-grise-2</div>
-  <div class="meta">monstre_meute_grise_c.png</div>
-  <div class="desc">Combat, beat 2 : la résolution de l'encerclement.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="meute-grise-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="meute-grise-2" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_mare_aux_regards_a.png')" data-zoom="assets/scene_mare_aux_regards_a.png" data-zoom-id="mare-aux-regards" title="Agrandir — scene_mare_aux_regards_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">mare-aux-regards</div>
-  <div class="meta">scene_mare_aux_regards_a.png</div>
-  <div class="desc">Arrivée à la Mare aux Regards. Une eau noire parfaitement immobile, la berge piétinée avec deux creux de genoux, des roseaux, aucun vent.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="mare-aux-regards" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="mare-aux-regards" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_mare_berge_a_c.png')" data-zoom="assets/scene_mare_berge_a_c.png" data-zoom-id="berge-usee" title="Agrandir — scene_mare_berge_a_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">berge-usee <span class="poi">← mare-aux-regards</span></div>
-  <div class="meta">scene_mare_berge_a_c.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="berge-usee" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="berge-usee" data-v="ok">ça marche</button></div>
+  <div class="verdict"><button class="" data-verdict="gibet-vide" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="gibet-vide" data-v="ok">ça marche</button></div>
   
   
 </article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">fallback de zone</span></div>
-  <div class="cat">scene</div>
-  <div class="id">eau-reflet <span class="poi">← mare-aux-regards</span></div>
+  <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">vue générique</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">poteau-pendu <span class="poi">← colline-aux-gibets</span></div>
   <div class="meta">ambiance générique de zone</div>
   <div class="desc">Plan rapproché — crop CSS de l'image du lieu</div>
   
@@ -950,85 +512,19 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
 </article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_mare_miroir_a_b.png')" data-zoom="assets/scene_mare_miroir_a_b.png" data-zoom-id="reflet-metal" title="Agrandir — scene_mare_miroir_a_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">reflet-metal <span class="poi">← mare-aux-regards</span></div>
-  <div class="meta">scene_mare_miroir_a_b.png</div>
+  <div class="thumb" style="background-image:url('assets/scene_colline_potences_cercle_a_c.png')" data-zoom="assets/scene_colline_potences_cercle_a_c.png" data-zoom-id="potences-cercle" title="Agrandir — scene_colline_potences_cercle_a_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">potences-cercle <span class="poi">← colline-aux-gibets</span></div>
+  <div class="meta">scene_colline_potences_cercle_a_c.png</div>
   <div class="desc">Plan rapproché — image dédiée</div>
   
   
-  <div class="verdict"><button class="" data-verdict="reflet-metal" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="reflet-metal" data-v="ok">ça marche</button></div>
+  <div class="verdict"><button class="" data-verdict="potences-cercle" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="potences-cercle" data-v="ok">ça marche</button></div>
   
   
-</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_mare_aux_regards_a.png')" data-zoom="assets/scene_mare_aux_regards_a.png" data-zoom-id="mare-aux-regards-2" title="Agrandir — scene_mare_aux_regards_a.png"><span class="tag heritee">héritée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">mare-aux-regards-2</div>
-  <div class="meta">hérite de <b>mare-aux-regards</b></div>
-  <div class="desc">Événement de la Mare : un Renonçant qui vient vérifier son propre reflet, et te trouve là.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="mare-aux-regards-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="mare-aux-regards-2" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_verger_noir_d.png')" data-zoom="assets/scene_verger_noir_d.png" data-zoom-id="verger-noir" title="Agrandir — scene_verger_noir_d.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">verger-noir</div>
-  <div class="meta">scene_verger_noir_d.png</div>
-  <div class="desc">Arrivée au Verger Noir. Des arbres noirs tordus plantés en rangs, des fruits gris et lourds sur les branches, une vieille souche au premier plan.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="verger-noir" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="verger-noir" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_verger_fruits_a_c.png')" data-zoom="assets/scene_verger_fruits_a_c.png" data-zoom-id="fruits-cendre" title="Agrandir — scene_verger_fruits_a_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">fruits-cendre <span class="poi">← verger-noir</span></div>
-  <div class="meta">scene_verger_fruits_a_c.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="fruits-cendre" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="fruits-cendre" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_verger_souche_a_c.png')" data-zoom="assets/scene_verger_souche_a_c.png" data-zoom-id="souche-premier-arbre" title="Agrandir — scene_verger_souche_a_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">souche-premier-arbre <span class="poi">← verger-noir</span></div>
-  <div class="meta">scene_verger_souche_a_c.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="souche-premier-arbre" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="souche-premier-arbre" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_epoux_verger_a.png')" data-zoom="assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-verger" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
-  <div class="id">epoux-verger <span class="poi">← verger-noir</span></div>
-  <div class="meta">monstre_epoux_verger_a.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="epoux-verger" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="epoux-verger" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_verger_noir_d.png')" data-zoom="assets/scene_verger_noir_d.png" data-zoom-id="verger-noir-2" title="Agrandir — scene_verger_noir_d.png"><span class="tag heritee">héritée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">verger-noir-2</div>
-  <div class="meta">hérite de <b>verger-noir</b></div>
-  <div class="desc">Événement du Verger : le fruit qui tombe encore chaud.</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="verger-noir-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="verger-noir-2" data-v="ok">ça marche</button></div>
-  
-  
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_epoux_verger_a.png')" data-zoom="assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-1" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
+</article></div></section><section class="lieu" data-lieu="epoux"><h3 class="lieu-head">epoux<span class="lieu-n">3 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_epoux_verger_a.png')" data-zoom="assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-1" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · image du lieu</div>
   <div class="id">epoux-1</div>
   <div class="meta">monstre_epoux_verger_a.png</div>
   <div class="desc">Rencontre du Verger, beat 1. Les Époux, deux silhouettes courbées qui creusent entre les rangs sans se parler.</div>
@@ -1038,8 +534,8 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
 </article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_epoux_verger_a.png')" data-zoom="assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-2" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
+  <div class="thumb" style="background-image:url('assets/monstre_epoux_verger_a.png')" data-zoom="assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-2" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
   <div class="id">epoux-2</div>
   <div class="meta">monstre_epoux_verger_a.png</div>
   <div class="desc">Rencontre du Verger, beat 2 — l'échange.</div>
@@ -1049,8 +545,8 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
 </article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/monstre_epoux_verger_a.png')" data-zoom="assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-3" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">monstre</div>
+  <div class="thumb" style="background-image:url('assets/monstre_epoux_verger_a.png')" data-zoom="assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-3" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
   <div class="id">epoux-3</div>
   <div class="meta">monstre_epoux_verger_a.png</div>
   <div class="desc">Rencontre du Verger, beat 3 — la résolution.</div>
@@ -1059,9 +555,361 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   <div class="verdict"><button class="" data-verdict="epoux-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="epoux-3" data-v="ok">ça marche</button></div>
   
   
+</article></div></section><section class="lieu" data-lieu="femme-seuil"><h3 class="lieu-head">femme-seuil<span class="lieu-n">3 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_femme_au_seuil_b.png')" data-zoom="assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-seuil-1" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · image du lieu</div>
+  <div class="id">femme-seuil-1</div>
+  <div class="meta">monstre_femme_au_seuil_b.png</div>
+  <div class="desc">Rencontre du Hameau, beat 1 — étalon du format. Une femme sur le seuil d'une maison basse, une croix à la craie sur sa porte, un châle serré.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="femme-seuil-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="femme-seuil-1" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_femme_au_seuil_b.png')" data-zoom="assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-seuil-2" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">femme-seuil-2</div>
+  <div class="meta">monstre_femme_au_seuil_b.png</div>
+  <div class="desc">Rencontre du Hameau, beat 2 — la mèche nouée qu'elle tend.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="femme-seuil-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="femme-seuil-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_femme_au_seuil_b.png')" data-zoom="assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-seuil-3" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">femme-seuil-3</div>
+  <div class="meta">monstre_femme_au_seuil_b.png</div>
+  <div class="desc">Rencontre du Hameau, beat 3 — la résolution, puis retour à la séquence d'entrée.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="femme-seuil-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="femme-seuil-3" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="hameau-entree"><h3 class="lieu-head">hameau-entree<span class="lieu-n">7 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_landes_hameau_ruelle_b.png')" data-zoom="assets/scene_landes_hameau_ruelle_b.png" data-zoom-id="hameau-entree-2" title="Agrandir — scene_landes_hameau_ruelle_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
+  <div class="id">hameau-entree-2</div>
+  <div class="meta">scene_landes_hameau_ruelle_b.png</div>
+  <div class="desc">Entrée du Hameau, beat 2 : le seuil. La ruelle étroite, les portes marquées à la craie, les volets fermés.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-entree-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-entree-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_juge_de_cendre_c.png')" data-zoom="assets/monstre_juge_de_cendre_c.png" data-zoom-id="hameau-entree-3" title="Agrandir — monstre_juge_de_cendre_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">hameau-entree-3</div>
+  <div class="meta">monstre_juge_de_cendre_c.png</div>
+  <div class="desc">Entrée du Hameau, beat 3 : le barrage. Trois hommes au milieu de la rue, pas armés — un bâton de marche, une fourche posée contre un mur, à portée sans être brandie.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-entree-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-entree-3" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_doyenne_b.png')" data-zoom="assets/monstre_doyenne_b.png" data-zoom-id="hameau-entree-4" title="Agrandir — monstre_doyenne_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">hameau-entree-4</div>
+  <div class="meta">monstre_doyenne_b.png</div>
+  <div class="desc">Entrée du Hameau, beat 4 : le Serment, imposé et jamais proposé. La paume ouverte et vide du vieux, tendue pour qu'on la regarde — on jure sur rien.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-entree-4" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-entree-4" data-v="ok">ça marche</button></div>
+  
+  
 </article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_palissade_sud_a_a.png')" data-zoom="assets/scene_palissade_sud_a_a.png" data-zoom-id="palissade-sud" title="Agrandir — scene_palissade_sud_a_a.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
+  <div class="thumb" style="background-image:url('assets/scene_landes_hameau_ruelle_b.png')" data-zoom="assets/scene_landes_hameau_ruelle_b.png" data-zoom-id="hameau-entree-5" title="Agrandir — scene_landes_hameau_ruelle_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · autre moment du lieu</div>
+  <div class="id">hameau-entree-5</div>
+  <div class="meta">scene_landes_hameau_ruelle_b.png</div>
+  <div class="desc">Entrée du Hameau, beat 5 : on passe. La rue qui s'ouvre, les volets qui se ferment un par un, un peu en avance sur le pas.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-entree-5" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-entree-5" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_hameau_croix_craie_a_a.png')" data-zoom="assets/scene_hameau_croix_craie_a_a.png" data-zoom-id="croix-craie" title="Agrandir — scene_hameau_croix_craie_a_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">croix-craie <span class="poi">← hameau-entree-2</span></div>
+  <div class="meta">scene_hameau_croix_craie_a_a.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="croix-craie" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="croix-craie" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_femme_au_seuil_b.png')" data-zoom="assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-sur-le-seuil" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · plan rapproché</div>
+  <div class="id">femme-sur-le-seuil <span class="poi">← hameau-entree-2</span></div>
+  <div class="meta">monstre_femme_au_seuil_b.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="femme-sur-le-seuil" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="femme-sur-le-seuil" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">vue générique</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">pourquoi-trois-aubes <span class="poi">← hameau-entree-4</span></div>
+  <div class="meta">ambiance générique de zone</div>
+  <div class="desc">Plan rapproché — crop CSS de l'image du lieu</div>
+  
+  
+  
+  
+  
+</article></div></section><section class="lieu" data-lieu="hameau-halte"><h3 class="lieu-head">hameau-halte<span class="lieu-n">6 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_landes_hameau_ruelle_b.png')" data-zoom="assets/scene_landes_hameau_ruelle_b.png" data-zoom-id="hameau-halte-1" title="Agrandir — scene_landes_hameau_ruelle_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
+  <div class="id">hameau-halte-1</div>
+  <div class="meta">scene_landes_hameau_ruelle_b.png</div>
+  <div class="desc">Halte au Hameau, beat 1 : le vieux te trouve. « On sait toujours où tu es. »</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-halte-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-1" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_landes_hameau_grange_a.png')" data-zoom="assets/scene_landes_hameau_grange_a.png" data-zoom-id="hameau-halte-2" title="Agrandir — scene_landes_hameau_grange_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · autre moment du lieu</div>
+  <div class="id">hameau-halte-2</div>
+  <div class="meta">scene_landes_hameau_grange_a.png</div>
+  <div class="desc">Halte, beat 2 : la grange. Intérieur de nuit, une lanterne posée au sol, la paille, la barre de porte posée DEHORS, les bâtons de comptage sur les poutres.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-halte-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_landes_hameau_grange_a.png')" data-zoom="assets/scene_landes_hameau_grange_a.png" data-zoom-id="hameau-halte-3" title="Agrandir — scene_landes_hameau_grange_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · autre moment du lieu</div>
+  <div class="id">hameau-halte-3</div>
+  <div class="meta">scene_landes_hameau_grange_a.png</div>
+  <div class="desc">Halte, beat 3 : la nuit, la ronde que personne n'a annoncée.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-halte-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-3" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_doyenne_b.png')" data-zoom="assets/monstre_doyenne_b.png" data-zoom-id="hameau-halte-4" title="Agrandir — monstre_doyenne_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">hameau-halte-4</div>
+  <div class="meta">monstre_doyenne_b.png</div>
+  <div class="desc">Halte, beat 4 : l'aube. Le Serment tenu se paie ici.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-halte-4" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-4" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_hameau_dense_b.png')" data-zoom="assets/scene_hameau_dense_b.png" data-zoom-id="hameau-halte-5" title="Agrandir — scene_hameau_dense_b.png"><span class="tag fallback">vue générique</span></div>
+  <div class="cat">scene · autre moment du lieu</div>
+  <div class="id">hameau-halte-5</div>
+  <div class="meta">ambiance générique de zone</div>
+  <div class="desc">Halte, beat 5 : l'escorte jusqu'au portillon.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-halte-5" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-5" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_hameau_grange_poutres_a_d.png')" data-zoom="assets/scene_hameau_grange_poutres_a_d.png" data-zoom-id="examiner-grange" title="Agrandir — scene_hameau_grange_poutres_a_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">examiner-grange <span class="poi">← hameau-halte-2</span></div>
+  <div class="meta">scene_hameau_grange_poutres_a_d.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="examiner-grange" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="examiner-grange" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="hameau-halte-dehors"><h3 class="lieu-head">hameau-halte-dehors<span class="lieu-n">1 image</span></h3><div class="grid"><article class="card principale" data-statut="fallback" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_hameau_dense_c.png')" data-zoom="assets/scene_hameau_dense_c.png" data-zoom-id="hameau-halte-dehors" title="Agrandir — scene_hameau_dense_c.png"><span class="tag fallback">vue générique</span></div>
+  <div class="cat">scene · image du lieu</div>
+  <div class="id">hameau-halte-dehors</div>
+  <div class="meta">ambiance générique de zone</div>
+  <div class="desc">Variante de Halte pour qui a refusé le Serment : la nuit dehors, contre un muret, aucune porte ouverte.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hameau-halte-dehors" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hameau-halte-dehors" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="hesitant"><h3 class="lieu-head">hesitant<span class="lieu-n">3 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_hesitant_b.png')" data-zoom="assets/monstre_hesitant_b.png" data-zoom-id="hesitant-1" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · image du lieu</div>
+  <div class="id">hesitant-1</div>
+  <div class="meta">monstre_hesitant_b.png</div>
+  <div class="desc">Rencontre à la Borne, beat 1. Un homme immobile face au sud, dos au hameau, qui ne bouge pas depuis assez longtemps pour que l'herbe se soit couchée sous lui.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hesitant-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hesitant-1" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_hesitant_b.png')" data-zoom="assets/monstre_hesitant_b.png" data-zoom-id="hesitant-2" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">hesitant-2</div>
+  <div class="meta">monstre_hesitant_b.png</div>
+  <div class="desc">Rencontre à la Borne, beat 2 — l'échange. Il calcule à voix haute entre rentrer et descendre. Son visage de trois-quarts, la borne floue derrière lui.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hesitant-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hesitant-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_hesitant_b.png')" data-zoom="assets/monstre_hesitant_b.png" data-zoom-id="hesitant-3" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">hesitant-3</div>
+  <div class="meta">monstre_hesitant_b.png</div>
+  <div class="desc">Rencontre à la Borne, beat 3 — la résolution. Selon l'issue, il rentre ou s'assied au pied de la pierre, face au sud.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="hesitant-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="hesitant-3" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="marche-muet"><h3 class="lieu-head">marche-muet<span class="lieu-n">2 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_marche_muet_c.png')" data-zoom="assets/scene_marche_muet_c.png" data-zoom-id="marche-muet" title="Agrandir — scene_marche_muet_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
+  <div class="id">marche-muet</div>
+  <div class="meta">scene_marche_muet_c.png</div>
+  <div class="desc">Arrivée au Marché Muet, à l'intérieur du hameau. Des étals sans marchands, des marchandises posées et personne pour les vendre.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="marche-muet" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marche-muet" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_colporteur_b.png')" data-zoom="assets/monstre_colporteur_b.png" data-zoom-id="marche-muet-2" title="Agrandir — monstre_colporteur_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">marche-muet-2</div>
+  <div class="meta">monstre_colporteur_b.png</div>
+  <div class="desc">Événement du Marché : le Colporteur, le seul qui parle encore, et le Rebouteux derrière lui.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="marche-muet-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marche-muet-2" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="marcheur"><h3 class="lieu-head">marcheur<span class="lieu-n">3 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_marcheur_a_rebours_d.png')" data-zoom="assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-1" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · image du lieu</div>
+  <div class="id">marcheur-1</div>
+  <div class="meta">monstre_marcheur_a_rebours_d.png</div>
+  <div class="desc">Rencontre du Chemin Creux, beat 1. Le Marcheur à rebours avance en marche arrière, le regard fixé derrière lui — trente ans qu'il ne montre son dos à rien.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="marcheur-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marcheur-1" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_marcheur_a_rebours_d.png')" data-zoom="assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-2" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">marcheur-2</div>
+  <div class="meta">monstre_marcheur_a_rebours_d.png</div>
+  <div class="desc">Rencontre du Chemin Creux, beat 2 — l'échange sur la crête nord.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="marcheur-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marcheur-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_marcheur_a_rebours_d.png')" data-zoom="assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-3" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">marcheur-3</div>
+  <div class="meta">monstre_marcheur_a_rebours_d.png</div>
+  <div class="desc">Rencontre du Chemin Creux, beat 3 — la résolution.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="marcheur-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="marcheur-3" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="mare-aux-regards"><h3 class="lieu-head">mare-aux-regards<span class="lieu-n">5 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_mare_aux_regards_a.png')" data-zoom="assets/scene_mare_aux_regards_a.png" data-zoom-id="mare-aux-regards" title="Agrandir — scene_mare_aux_regards_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
+  <div class="id">mare-aux-regards</div>
+  <div class="meta">scene_mare_aux_regards_a.png</div>
+  <div class="desc">Arrivée à la Mare aux Regards. Une eau noire parfaitement immobile, la berge piétinée avec deux creux de genoux, des roseaux, aucun vent.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="mare-aux-regards" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="mare-aux-regards" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_mare_aux_regards_a.png')" data-zoom="assets/scene_mare_aux_regards_a.png" data-zoom-id="mare-aux-regards-2" title="Agrandir — scene_mare_aux_regards_a.png"><span class="tag heritee">image empruntée</span></div>
+  <div class="cat">scene · autre moment du lieu</div>
+  <div class="id">mare-aux-regards-2</div>
+  <div class="meta">hérite de <b>mare-aux-regards</b></div>
+  <div class="desc">Événement de la Mare : un Renonçant qui vient vérifier son propre reflet, et te trouve là.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="mare-aux-regards-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="mare-aux-regards-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_mare_berge_a_c.png')" data-zoom="assets/scene_mare_berge_a_c.png" data-zoom-id="berge-usee" title="Agrandir — scene_mare_berge_a_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">berge-usee <span class="poi">← mare-aux-regards</span></div>
+  <div class="meta">scene_mare_berge_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="berge-usee" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="berge-usee" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">vue générique</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">eau-reflet <span class="poi">← mare-aux-regards</span></div>
+  <div class="meta">ambiance générique de zone</div>
+  <div class="desc">Plan rapproché — crop CSS de l'image du lieu</div>
+  
+  
+  
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_mare_miroir_a_b.png')" data-zoom="assets/scene_mare_miroir_a_b.png" data-zoom-id="reflet-metal" title="Agrandir — scene_mare_miroir_a_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">reflet-metal <span class="poi">← mare-aux-regards</span></div>
+  <div class="meta">scene_mare_miroir_a_b.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="reflet-metal" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="reflet-metal" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="meute-grise"><h3 class="lieu-head">meute-grise<span class="lieu-n">2 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_meute_grise_c.png')" data-zoom="assets/monstre_meute_grise_c.png" data-zoom-id="meute-grise-1" title="Agrandir — monstre_meute_grise_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · image du lieu</div>
+  <div class="id">meute-grise-1</div>
+  <div class="meta">monstre_meute_grise_c.png</div>
+  <div class="desc">Combat en deux scènes, beat 1. La Meute Grise : six silhouettes couleur de bruyère morte, immobiles aux six points d'un cercle dont tu es le centre.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="meute-grise-1" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="meute-grise-1" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_meute_grise_c.png')" data-zoom="assets/monstre_meute_grise_c.png" data-zoom-id="meute-grise-2" title="Agrandir — monstre_meute_grise_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">meute-grise-2</div>
+  <div class="meta">monstre_meute_grise_c.png</div>
+  <div class="desc">Combat, beat 2 : la résolution de l'encerclement.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="meute-grise-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="meute-grise-2" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="palissade-sud"><h3 class="lieu-head">palissade-sud<span class="lieu-n">5 images</span> <span class="lieu-warn">1 sans image</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_palissade_sud_a_a.png')" data-zoom="assets/scene_palissade_sud_a_a.png" data-zoom-id="palissade-sud" title="Agrandir — scene_palissade_sud_a_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
   <div class="id">palissade-sud</div>
   <div class="meta">scene_palissade_sud_a_a.png</div>
   <div class="desc">Arrivée à la Palissade Sud, seuil de l'Acte II. Une haute palissade de rondins appointés qui ferme l'horizon, un petit portillon, une borne au premier plan.</div>
@@ -1070,31 +918,20 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   <div class="verdict"><button class="" data-verdict="palissade-sud" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="palissade-sud" data-v="ok">ça marche</button></div>
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_palissade_rondins_a_c.png')" data-zoom="assets/scene_palissade_rondins_a_c.png" data-zoom-id="rondins-pointes" title="Agrandir — scene_palissade_rondins_a_c.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">rondins-pointes <span class="poi">← palissade-sud</span></div>
-  <div class="meta">scene_palissade_rondins_a_c.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
+</article><article class="card" data-statut="manquante" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb none">AUCUNE IMAGE<span class="tag manquante">aucune image</span></div>
+  <div class="cat">scene · autre moment du lieu</div>
+  <div class="id">palissade-sud-2</div>
+  <div class="meta">aucune image ni héritage</div>
+  <div class="desc">Événement de la Palissade : l'Appelé, toujours vu de dos, qui marche vers la Descente sans se retourner.</div>
   
   
-  <div class="verdict"><button class="" data-verdict="rondins-pointes" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="rondins-pointes" data-v="ok">ça marche</button></div>
   
-  
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_palissade_portillon_a_b.png')" data-zoom="assets/scene_palissade_portillon_a_b.png" data-zoom-id="portillon-verrou" title="Agrandir — scene_palissade_portillon_a_b.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">portillon-verrou <span class="poi">← palissade-sud</span></div>
-  <div class="meta">scene_palissade_portillon_a_b.png</div>
-  <div class="desc">Plan rapproché — image dédiée</div>
-  
-  
-  <div class="verdict"><button class="" data-verdict="portillon-verrou" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="portillon-verrou" data-v="ok">ça marche</button></div>
   
   
 </article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi" data-verdict="">
-  <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">fallback de zone</span></div>
-  <div class="cat">scene</div>
+  <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">vue générique</span></div>
+  <div class="cat">scene · plan rapproché</div>
   <div class="id">homme-guerite <span class="poi">← palissade-sud</span></div>
   <div class="meta">ambiance générique de zone</div>
   <div class="desc">Plan rapproché — crop CSS de l'image du lieu</div>
@@ -1103,9 +940,163 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="objet" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/objet_lanterne_rouillee.png')" data-zoom="assets/objet_lanterne_rouillee.png" data-zoom-id="veilleur-1" title="Agrandir — objet_lanterne_rouillee.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">objet</div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_palissade_portillon_a_b.png')" data-zoom="assets/scene_palissade_portillon_a_b.png" data-zoom-id="portillon-verrou" title="Agrandir — scene_palissade_portillon_a_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">portillon-verrou <span class="poi">← palissade-sud</span></div>
+  <div class="meta">scene_palissade_portillon_a_b.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="portillon-verrou" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="portillon-verrou" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_palissade_rondins_a_c.png')" data-zoom="assets/scene_palissade_rondins_a_c.png" data-zoom-id="rondins-pointes" title="Agrandir — scene_palissade_rondins_a_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">rondins-pointes <span class="poi">← palissade-sud</span></div>
+  <div class="meta">scene_palissade_rondins_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="rondins-pointes" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="rondins-pointes" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="pendu-mal-fixe"><h3 class="lieu-head">pendu-mal-fixe<span class="lieu-n">1 image</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_pendu_mal_fixe_a.png')" data-zoom="assets/monstre_pendu_mal_fixe_a.png" data-zoom-id="pendu-mal-fixe" title="Agrandir — monstre_pendu_mal_fixe_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · image du lieu</div>
+  <div class="id">pendu-mal-fixe</div>
+  <div class="meta">monstre_pendu_mal_fixe_a.png</div>
+  <div class="desc">Combat, une scène. Le Pendu Mal Fixé : un bras tendu figé en plein geste d'agrippement, la corde trop longue qui laisse les pieds toucher le sol.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="pendu-mal-fixe" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="pendu-mal-fixe" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="pendu-qui-parle"><h3 class="lieu-head">pendu-qui-parle<span class="lieu-n">2 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_pendu_qui_parle_a.png')" data-zoom="assets/monstre_pendu_qui_parle_a.png" data-zoom-id="pendu-qui-parle" title="Agrandir — monstre_pendu_qui_parle_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · image du lieu</div>
+  <div class="id">pendu-qui-parle</div>
+  <div class="meta">monstre_pendu_qui_parle_a.png</div>
+  <div class="desc">Arrivée au gardien de zone : le Bailli pendu, qui parle encore. Vu de loin, une silhouette au bout d'une corde, sur un gibet isolé.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="pendu-qui-parle" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="pendu-qui-parle" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="heritee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_pendu_qui_parle_a.png')" data-zoom="assets/monstre_pendu_qui_parle_a.png" data-zoom-id="pendu-qui-parle-2" title="Agrandir — monstre_pendu_qui_parle_a.png"><span class="tag heritee">image empruntée</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">pendu-qui-parle-2</div>
+  <div class="meta">hérite de <b>pendu-qui-parle</b></div>
+  <div class="desc">Le gardien, à hauteur d'homme. Non-combat : il juge. Son visage de pendu qui parle, le sceau à sa ceinture.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="pendu-qui-parle-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="pendu-qui-parle-2" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="petit-tribunal"><h3 class="lieu-head">petit-tribunal<span class="lieu-n">5 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_petit_tribunal_a.png')" data-zoom="assets/scene_petit_tribunal_a.png" data-zoom-id="petit-tribunal" title="Agrandir — scene_petit_tribunal_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
+  <div class="id">petit-tribunal</div>
+  <div class="meta">scene_petit_tribunal_a.png</div>
+  <div class="desc">Arrivée au Petit Tribunal. Une grange convertie en salle d'audience : trois bancs de bois face à une haute chaire, une feuille de règles clouée au mur.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="petit-tribunal" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="petit-tribunal" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_ecrivain_public_d.png')" data-zoom="assets/monstre_ecrivain_public_d.png" data-zoom-id="petit-tribunal-2" title="Agrandir — monstre_ecrivain_public_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">petit-tribunal-2</div>
+  <div class="meta">monstre_ecrivain_public_d.png</div>
+  <div class="desc">Événement du Tribunal : l'Écrivain public, qui entre, te voit à la chaire, et se met à copier sans lever les yeux.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="petit-tribunal-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="petit-tribunal-2" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_tribunal_chaire_a_c.png')" data-zoom="assets/scene_tribunal_chaire_a_c.png" data-zoom-id="chaire-registre" title="Agrandir — scene_tribunal_chaire_a_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">chaire-registre <span class="poi">← petit-tribunal</span></div>
+  <div class="meta">scene_tribunal_chaire_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="chaire-registre" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="chaire-registre" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_tribunal_bancs_a_c.png')" data-zoom="assets/scene_tribunal_bancs_a_c.png" data-zoom-id="les-bancs" title="Agrandir — scene_tribunal_bancs_a_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">les-bancs <span class="poi">← petit-tribunal</span></div>
+  <div class="meta">scene_tribunal_bancs_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="les-bancs" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="les-bancs" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_tribunal_ordonnance_a_c.png')" data-zoom="assets/scene_tribunal_ordonnance_a_c.png" data-zoom-id="mur-ordonnance" title="Agrandir — scene_tribunal_ordonnance_a_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">mur-ordonnance <span class="poi">← petit-tribunal</span></div>
+  <div class="meta">scene_tribunal_ordonnance_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="mur-ordonnance" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="mur-ordonnance" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="proces-du-heros"><h3 class="lieu-head">proces-du-heros<span class="lieu-n">1 image</span></h3><div class="grid"><article class="card principale" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_petit_tribunal_a.png')" data-zoom="assets/scene_petit_tribunal_a.png" data-zoom-id="proces-du-heros" title="Agrandir — scene_petit_tribunal_a.png"><span class="tag heritee">image empruntée</span></div>
+  <div class="cat">scene · image du lieu</div>
+  <div class="id">proces-du-heros</div>
+  <div class="meta">hérite de <b>petit-tribunal</b></div>
+  <div class="desc">Scène de déroutage au dernier palier de Soupçon : le hameau te juge. Les trois bancs pleins, tous les visages tournés vers toi, la chaire vide.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="proces-du-heros" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="proces-du-heros" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="puits-condamne"><h3 class="lieu-head">puits-condamne<span class="lieu-n">2 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_puits_condamne_c.png')" data-zoom="assets/scene_puits_condamne_c.png" data-zoom-id="puits-condamne" title="Agrandir — scene_puits_condamne_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
+  <div class="id">puits-condamne</div>
+  <div class="meta">scene_puits_condamne_c.png</div>
+  <div class="desc">Arrivée au Puits Condamné. Un puits fermé par des planches clouées en croix, par-dessus, des pierres empilées.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="puits-condamne" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="puits-condamne" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_mains_du_puits_a.png')" data-zoom="assets/monstre_mains_du_puits_a.png" data-zoom-id="puits-condamne-2" title="Agrandir — monstre_mains_du_puits_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · autre moment du lieu</div>
+  <div class="id">puits-condamne-2</div>
+  <div class="meta">monstre_mains_du_puits_a.png</div>
+  <div class="desc">Événement du Puits (scène chronométrée) : les Mains du Puits, qui sortent entre les planches.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="puits-condamne-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="puits-condamne-2" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="serment-hameau"><h3 class="lieu-head">serment-hameau<span class="lieu-n">1 image</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_hameau_dense2_b.png')" data-zoom="assets/scene_hameau_dense2_b.png" data-zoom-id="serment-hameau" title="Agrandir — scene_hameau_dense2_b.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
+  <div class="id">serment-hameau</div>
+  <div class="meta">scene_hameau_dense2_b.png</div>
+  <div class="desc">Approche du Hameau des Renonçants, vu de loin. Les toits d'ardoise affaissés au creux du plateau, une seule cheminée qui fume sur vingt, aucun chien qui aboie.</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="serment-hameau" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="serment-hameau" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section><section class="lieu" data-lieu="veilleur"><h3 class="lieu-head">veilleur<span class="lieu-n">3 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="objet" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/objet_lanterne_rouillee.png')" data-zoom="assets/objet_lanterne_rouillee.png" data-zoom-id="veilleur-1" title="Agrandir — objet_lanterne_rouillee.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">objet · image du lieu</div>
   <div class="id">veilleur-1</div>
   <div class="meta">objet_lanterne_rouillee.png</div>
   <div class="desc">Rencontre de la Palissade, beat 1. Le Veilleur dans sa guérite de planches, une lanterne au clou, trente ans de portillon.</div>
@@ -1115,8 +1106,8 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
 </article><article class="card" data-statut="dediee" data-cat="objet" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/objet_lanterne_rouillee.png')" data-zoom="assets/objet_lanterne_rouillee.png" data-zoom-id="veilleur-2" title="Agrandir — objet_lanterne_rouillee.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">objet</div>
+  <div class="thumb" style="background-image:url('assets/objet_lanterne_rouillee.png')" data-zoom="assets/objet_lanterne_rouillee.png" data-zoom-id="veilleur-2" title="Agrandir — objet_lanterne_rouillee.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">objet · autre moment du lieu</div>
   <div class="id">veilleur-2</div>
   <div class="meta">objet_lanterne_rouillee.png</div>
   <div class="desc">Rencontre de la Palissade, beat 2 : la lanterne contre une histoire.</div>
@@ -1126,8 +1117,8 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
 </article><article class="card" data-statut="dediee" data-cat="objet" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/objet_lanterne_rouillee.png')" data-zoom="assets/objet_lanterne_rouillee.png" data-zoom-id="veilleur-3" title="Agrandir — objet_lanterne_rouillee.png"><span class="tag dediee">dédiée</span></div>
-  <div class="cat">objet</div>
+  <div class="thumb" style="background-image:url('assets/objet_lanterne_rouillee.png')" data-zoom="assets/objet_lanterne_rouillee.png" data-zoom-id="veilleur-3" title="Agrandir — objet_lanterne_rouillee.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">objet · autre moment du lieu</div>
   <div class="id">veilleur-3</div>
   <div class="meta">objet_lanterne_rouillee.png</div>
   <div class="desc">Rencontre de la Palissade, beat 3 — la résolution.</div>
@@ -1136,29 +1127,62 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   <div class="verdict"><button class="" data-verdict="veilleur-3" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="veilleur-3" data-v="ok">ça marche</button></div>
   
   
-</article><article class="card" data-statut="manquante" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb none">AUCUNE IMAGE<span class="tag manquante">manquante</span></div>
-  <div class="cat">scene</div>
-  <div class="id">palissade-sud-2</div>
-  <div class="meta">aucune image ni héritage</div>
-  <div class="desc">Événement de la Palissade : l'Appelé, toujours vu de dos, qui marche vers la Descente sans se retourner.</div>
+</article></div></section><section class="lieu" data-lieu="verger-noir"><h3 class="lieu-head">verger-noir<span class="lieu-n">5 images</span></h3><div class="grid"><article class="card principale" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_verger_noir_d.png')" data-zoom="assets/scene_verger_noir_d.png" data-zoom-id="verger-noir" title="Agrandir — scene_verger_noir_d.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · image du lieu</div>
+  <div class="id">verger-noir</div>
+  <div class="meta">scene_verger_noir_d.png</div>
+  <div class="desc">Arrivée au Verger Noir. Des arbres noirs tordus plantés en rangs, des fruits gris et lourds sur les branches, une vieille souche au premier plan.</div>
   
   
-  
+  <div class="verdict"><button class="" data-verdict="verger-noir" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="verger-noir" data-v="ok">ça marche</button></div>
   
   
 </article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
-  <div class="thumb" style="background-image:url('assets/scene_petit_tribunal_a.png')" data-zoom="assets/scene_petit_tribunal_a.png" data-zoom-id="proces-du-heros" title="Agrandir — scene_petit_tribunal_a.png"><span class="tag heritee">héritée</span></div>
-  <div class="cat">scene</div>
-  <div class="id">proces-du-heros</div>
-  <div class="meta">hérite de <b>petit-tribunal</b></div>
-  <div class="desc">Scène de déroutage au dernier palier de Soupçon : le hameau te juge. Les trois bancs pleins, tous les visages tournés vers toi, la chaire vide.</div>
+  <div class="thumb" style="background-image:url('assets/scene_verger_noir_d.png')" data-zoom="assets/scene_verger_noir_d.png" data-zoom-id="verger-noir-2" title="Agrandir — scene_verger_noir_d.png"><span class="tag heritee">image empruntée</span></div>
+  <div class="cat">scene · autre moment du lieu</div>
+  <div class="id">verger-noir-2</div>
+  <div class="meta">hérite de <b>verger-noir</b></div>
+  <div class="desc">Événement du Verger : le fruit qui tombe encore chaud.</div>
   
   
-  <div class="verdict"><button class="" data-verdict="proces-du-heros" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="proces-du-heros" data-v="ok">ça marche</button></div>
+  <div class="verdict"><button class="" data-verdict="verger-noir-2" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="verger-noir-2" data-v="ok">ça marche</button></div>
   
   
-</article></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/monstre_epoux_verger_a.png')" data-zoom="assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-verger" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">monstre · plan rapproché</div>
+  <div class="id">epoux-verger <span class="poi">← verger-noir</span></div>
+  <div class="meta">monstre_epoux_verger_a.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="epoux-verger" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="epoux-verger" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_verger_fruits_a_c.png')" data-zoom="assets/scene_verger_fruits_a_c.png" data-zoom-id="fruits-cendre" title="Agrandir — scene_verger_fruits_a_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">fruits-cendre <span class="poi">← verger-noir</span></div>
+  <div class="meta">scene_verger_fruits_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="fruits-cendre" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="fruits-cendre" data-v="ok">ça marche</button></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('assets/scene_verger_souche_a_c.png')" data-zoom="assets/scene_verger_souche_a_c.png" data-zoom-id="souche-premier-arbre" title="Agrandir — scene_verger_souche_a_c.png"><span class="tag dediee">son image</span></div>
+  <div class="cat">scene · plan rapproché</div>
+  <div class="id">souche-premier-arbre <span class="poi">← verger-noir</span></div>
+  <div class="meta">scene_verger_souche_a_c.png</div>
+  <div class="desc">Plan rapproché — image dédiée</div>
+  
+  
+  <div class="verdict"><button class="" data-verdict="souche-premier-arbre" data-v="a_remplacer">à remplacer</button><button class="" data-verdict="souche-premier-arbre" data-v="ok">ça marche</button></div>
+  
+  
+</article></div></section></section>
 
 <h2>Assets orphelins</h2>
 <div class="sub">Présents dans assets/, référencés par aucune scène — en réserve, ou à supprimer.</div>
@@ -1204,6 +1228,14 @@ function applyFilter(){
     const ok=filter==="tous"||c.dataset.statut===filter||c.dataset.cat===filter
       ||c.dataset.verdict===filter;
     c.classList.toggle("hidden",!ok);
+  });
+  // Replier les lieux (puis les zones) dont plus aucune carte n'est visible :
+  // sinon le filtre laissait des titres de lieux vides partout.
+  document.querySelectorAll(".lieu").forEach(l=>{
+    l.classList.toggle("vide",!l.querySelector(".card:not(.hidden)"));
+  });
+  document.querySelectorAll(".zone").forEach(z=>{
+    z.classList.toggle("vide",!z.querySelector(".lieu:not(.vide)"));
   });
 }
 document.getElementById("filters").onclick=e=>{
