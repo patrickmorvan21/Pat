@@ -199,6 +199,11 @@ export default function Scene() {
   // Sous-menu « Observer les alentours » ouvert ? (retour Patrick 25/07 : 3 CTA
   // max par écran — les descriptions passent derrière un seul bouton.)
   const [poiOpen, setPoiOpen] = useState(false);
+  // Mode debug de couverture visuelle (journal 25/07) : triple tap sur l'icône
+  // de menu. Volontairement NON persisté — c'est un outil d'inspection, pas un
+  // réglage ; il s'éteint au rechargement.
+  const [debug, setDebug] = useState(false);
+  const menuTaps = useRef<number[]>([]);
   // Dernière illustration de SCÈNE (repos de l'image). L'image d'objet n'est
   // qu'un remplacement momentané ; on revient toujours à cette scène-là.
   const lastSceneIlloRef = useRef<string>(PORTAL);
@@ -342,6 +347,30 @@ export default function Scene() {
       r.looted = [...(r.looted ?? []), lootId];
     });
     return item;
+  }
+
+  /**
+   * Tap sur l'icône de menu. Trois taps en moins d'une seconde basculent le
+   * mode debug de couverture visuelle AU LIEU d'ouvrir le menu ; un tap normal
+   * ouvre le menu comme avant. Le seuil serré (600 ms entre deux taps) évite de
+   * déclencher le debug en ouvrant le menu plusieurs fois d'affilée.
+   */
+  /** Enregistre un tap dans la fenêtre glissante et dit si le geste est complet. */
+  function countMenuTap(): boolean {
+    const now = nowMs();
+    const taps = [...menuTaps.current, now].filter((t) => now - t < 700);
+    menuTaps.current = taps;
+    if (taps.length >= 3) {
+      menuTaps.current = [];
+      setDebug((d) => !d);
+      return true;
+    }
+    return false;
+  }
+
+  function onMenuTap() {
+    if (countMenuTap()) return; // 3e tap : debug au lieu d'ouvrir le menu
+    setMenuOpen(true);
   }
 
   /**
@@ -1156,17 +1185,30 @@ export default function Scene() {
           />
         )}
 
-        {/* En-tête : seule l'icône de menu flotte en haut à droite (spec §8). */}
+        {/* En-tête : seule l'icône de menu flotte en haut à droite (spec §8).
+            TRIPLE TAP = mode debug de couverture visuelle (journal 25/07) :
+            affiche l'id de la scène et celui de l'image courante, pour repérer
+            une image incohérente en JOUANT, sans fouiller le JSON. Réglage
+            caché : rien ne l'annonce, et il ne survit pas au rechargement. */}
         <button
           type="button"
           aria-label="Menu"
-          onClick={() => setMenuOpen(true)}
+          onClick={onMenuTap}
           className="absolute top-[11px] right-[10px] z-[5] grid size-[32px] cursor-pointer grid-cols-3 place-items-center border border-solid border-[var(--color-ink)] bg-[var(--color-bg)]/80 p-[8px]"
         >
           {Array.from({ length: 9 }).map((_, i) => (
             <span key={i} className="block size-[1.6px] bg-[var(--color-ink)]" />
           ))}
         </button>
+
+        {/* Mode debug : id de scène + id d'image, en petit dans un coin. */}
+        {debug && (
+          <div className="pointer-events-none absolute bottom-[2px] left-[4px] z-[6] font-[var(--font-body)] text-[9px] leading-[1.35] text-[var(--color-ink)]/50">
+            <div>scène · {scene.id}</div>
+            <div>image · {image.replace("assets/", "")}</div>
+            {poiZoom && <div>crop · ×{poiZoom.zoom} {poiZoom.focus}</div>}
+          </div>
+        )}
 
         {/* Illustration calée EN HAUT (fixe). Ne se ré-anime (fondu) que quand
             sa source change — même scène = image immobile (demande Patrick).
@@ -1383,7 +1425,15 @@ export default function Scene() {
         {menuOpen && (
           <GameMenu
             run={loadRun()}
-            onClose={() => setMenuOpen(false)}
+            onClose={() => {
+              // La croix de fermeture est au MÊME pixel que l'icône de menu
+              // (alignement vérifié le 16/07). Un « triple tap au même endroit »
+              // est donc, du point de vue de l'écran, ouvre → ferme → ouvre :
+              // les fermetures doivent compter dans la séquence, sinon le geste
+              // du journal 25/07 serait impossible à faire.
+              countMenuTap();
+              setMenuOpen(false);
+            }}
             onUse={(item) => {
               // Consomme l'actif côté run (spec 21/07 point 4) : soin + cure.
               persist((run) => {

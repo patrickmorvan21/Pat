@@ -1,2 +1,4 @@
 # Artefacts Next.js (un build lancé depuis la racine par erreur crée un .next/ ici)
 .next/
+__pycache__/
+*.pyc

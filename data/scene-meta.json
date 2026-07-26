@@ -1,0 +1,237 @@
+{
+  "_note": "Descriptions et prompts Leonardo par scène (journal Notion 25/07). Données de PRODUCTION : lues par tools/coverage.py, jamais par le jeu — elles ne sont pas dans lib/scene-data.ts pour ne pas alourdir le bundle envoyé au joueur. prompt_image vide = « prompt à écrire » dans l'outil de couverture.",
+  "scenes": {
+    "borne-frontiere": {
+      "description": "Entrée de zone, tout premier écran du jeu. La borne-frontière dressée seule sur le plateau, ses faces gravées, les offrandes à son pied, et le chemin qui s'enfonce au sud dans le noir.",
+      "prompt_image": "single tall standing stone in the middle of an empty moor plateau, carved marks on its faces, small pile of humble offerings at its base, path vanishing south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "hesitant-1": {
+      "description": "Rencontre à la Borne, beat 1. Un homme immobile face au sud, dos au hameau, qui ne bouge pas depuis assez longtemps pour que l'herbe se soit couchée sous lui.",
+      "prompt_image": "gaunt hooded man standing motionless on a moor, seen from behind at three-quarters, facing away toward a dark southern horizon, worn travelling clothes, a small bundle at his feet, grass flattened around him, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "hesitant-2": {
+      "description": "Rencontre à la Borne, beat 2 — l'échange. Il calcule à voix haute entre rentrer et descendre. Son visage de trois-quarts, la borne floue derrière lui.",
+      "prompt_image": ""
+    },
+    "hesitant-3": {
+      "description": "Rencontre à la Borne, beat 3 — la résolution. Selon l'issue, il rentre ou s'assied au pied de la pierre, face au sud.",
+      "prompt_image": ""
+    },
+    "chemin-creux": {
+      "description": "Arrivée au Chemin Creux. Une route encaissée entre deux hauts talus de terre, un ruban de ciel étroit au-dessus, des racines tordues qui sortent des parois.",
+      "prompt_image": "sunken road between two high earthen banks, narrow ribbon of sky above, twisted roots protruding from the banks, deep shadows, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "chemin-creux-2": {
+      "description": "Événement du Chemin Creux : le coude aveugle. Le talus mange la vue d'un coup — l'endroit exact où il devrait y avoir quelque chose, et où il n'y a rien.",
+      "prompt_image": "blind bend of a sunken road between high earthen banks, the path disappearing around the curve, nothing visible beyond, very deep shadow at the turn, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "marcheur-1": {
+      "description": "Rencontre du Chemin Creux, beat 1. Le Marcheur à rebours avance en marche arrière, le regard fixé derrière lui — trente ans qu'il ne montre son dos à rien.",
+      "prompt_image": "emaciated man walking backwards along a sunken road, face turned to look behind himself, eyes wide and fixed, arms slightly out for balance, ragged coat, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "marcheur-2": {
+      "description": "Rencontre du Chemin Creux, beat 2 — l'échange sur la crête nord.",
+      "prompt_image": ""
+    },
+    "marcheur-3": {
+      "description": "Rencontre du Chemin Creux, beat 3 — la résolution.",
+      "prompt_image": ""
+    },
+    "bete-chemins-creux": {
+      "description": "Combat, une scène. La Bête des Chemins Creux, qui longe la crête nord au même pas que ce qui marche en bas. On ne la voit qu'en silhouette, au-dessus.",
+      "prompt_image": "massive quadruped silhouette crouched on the crest of an earthen bank, seen from below against a pale sky, long low body, head lowered toward the viewer, unnaturally still, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "colline-aux-gibets": {
+      "description": "Arrivée à la Colline aux Gibets, lieu-signature de la zone. Le cercle de potences sur la crête nue, vu d'en bas en contre-plongée, les cordes qui balancent.",
+      "prompt_image": "circle of nine wooden gallows on a bare hilltop seen from below, low angle, ropes swaying, crows on the crossbeams, stormy sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "colline-aux-gibets-2": {
+      "description": "Événement de la Colline : au sommet, entre les potences. L'écharde du grand gibet se prélève ici.",
+      "prompt_image": "standing inside a circle of wooden gallows on a hilltop, ropes hanging at eye level all around, splintered beam in the foreground, vast empty sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "pendu-qui-parle": {
+      "description": "Arrivée au gardien de zone : le Bailli pendu, qui parle encore. Vu de loin, une silhouette au bout d'une corde, sur un gibet isolé.",
+      "prompt_image": "hanged man on an isolated gallows seen from a distance across dead moorland, head upright rather than slumped, rope taut, long coat, sky nearly black, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "pendu-qui-parle-2": {
+      "description": "Le gardien, à hauteur d'homme. Non-combat : il juge. Son visage de pendu qui parle, le sceau à sa ceinture.",
+      "prompt_image": "close portrait of a hanged magistrate, rope around his neck, eyes open and attentive, dried lips parted as if mid-sentence, heavy official seal hanging at his belt, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "champ-des-fixes": {
+      "description": "Arrivée au Champ des Fixés. Des rangées de poteaux plantés dans la lande morte, un écriteau clouté sur chacun, certains encore occupés.",
+      "prompt_image": "rows of wooden posts planted across dead moorland, a small nailed sign on each, some posts still bearing hanged figures in the far distance, receding perspective, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "champ-des-fixes-2": {
+      "description": "Événement du Champ : le Fossoyeur aux poteaux, qui grave d'avance les noms « dont c'est sûr ».",
+      "prompt_image": "old gravedigger kneeling at the base of a wooden post, carving letters into the wood with a knife, satchel of tools open beside him, back bent, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "pendu-mal-fixe": {
+      "description": "Combat, une scène. Le Pendu Mal Fixé : un bras tendu figé en plein geste d'agrippement, la corde trop longue qui laisse les pieds toucher le sol.",
+      "prompt_image": "hanged figure whose rope is too long so its feet touch the ground, one arm outstretched and frozen mid-grab reaching toward the viewer, head tilted at a wrong angle, tattered clothes, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "serment-hameau": {
+      "description": "Approche du Hameau des Renonçants, vu de loin. Les toits d'ardoise affaissés au creux du plateau, une seule cheminée qui fume sur vingt, aucun chien qui aboie.",
+      "prompt_image": "distant abandoned hamlet nestled in a hollow of dead moorland at dusk, sagging slate rooftops, one single chimney smoking, low dry-stone walls leading to the village, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "hameau-entree-2": {
+      "description": "Entrée du Hameau, beat 2 : le seuil. La ruelle étroite, les portes marquées à la craie, les volets fermés.",
+      "prompt_image": "narrow street of an old abandoned hamlet, crooked stone houses, wooden doors marked with chalk crosses, closed shutters, wet cobblestones, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "femme-seuil-1": {
+      "description": "Rencontre du Hameau, beat 1 — étalon du format. Une femme sur le seuil d'une maison basse, une croix à la craie sur sa porte, un châle serré.",
+      "prompt_image": "woman standing in the doorway of a low stone house, chalk cross drawn on the door beside her, heavy shawl gripped closed at her throat, hollow-cheeked, watching, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "femme-seuil-2": {
+      "description": "Rencontre du Hameau, beat 2 — la mèche nouée qu'elle tend.",
+      "prompt_image": ""
+    },
+    "femme-seuil-3": {
+      "description": "Rencontre du Hameau, beat 3 — la résolution, puis retour à la séquence d'entrée.",
+      "prompt_image": ""
+    },
+    "hameau-entree-3": {
+      "description": "Entrée du Hameau, beat 3 : le barrage. Trois hommes au milieu de la rue, pas armés — un bâton de marche, une fourche posée contre un mur, à portée sans être brandie.",
+      "prompt_image": "three gaunt villagers standing abreast in a narrow village street, one old man at the centre speaking, a walking staff in one hand, a pitchfork leaning against a wall nearby, shutters closing behind them, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "hameau-entree-4": {
+      "description": "Entrée du Hameau, beat 4 : le Serment, imposé et jamais proposé. La paume ouverte et vide du vieux, tendue pour qu'on la regarde — on jure sur rien.",
+      "prompt_image": "close view of an old man's open empty palm held out at chest height, weathered skin, the blurred faces of two other villagers behind him, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "hameau-entree-5": {
+      "description": "Entrée du Hameau, beat 5 : on passe. La rue qui s'ouvre, les volets qui se ferment un par un, un peu en avance sur le pas.",
+      "prompt_image": ""
+    },
+    "hameau-halte-1": {
+      "description": "Halte au Hameau, beat 1 : le vieux te trouve. « On sait toujours où tu es. »",
+      "prompt_image": ""
+    },
+    "hameau-halte-2": {
+      "description": "Halte, beat 2 : la grange. Intérieur de nuit, une lanterne posée au sol, la paille, la barre de porte posée DEHORS, les bâtons de comptage sur les poutres.",
+      "prompt_image": "interior of an old barn at night, single oil lamp on the floor, straw bedding, heavy wooden door with iron fittings, tally marks carved on beams, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "hameau-halte-3": {
+      "description": "Halte, beat 3 : la nuit, la ronde que personne n'a annoncée.",
+      "prompt_image": ""
+    },
+    "hameau-halte-4": {
+      "description": "Halte, beat 4 : l'aube. Le Serment tenu se paie ici.",
+      "prompt_image": ""
+    },
+    "hameau-halte-5": {
+      "description": "Halte, beat 5 : l'escorte jusqu'au portillon.",
+      "prompt_image": ""
+    },
+    "hameau-halte-dehors": {
+      "description": "Variante de Halte pour qui a refusé le Serment : la nuit dehors, contre un muret, aucune porte ouverte.",
+      "prompt_image": "man sitting against a low dry-stone wall outside a dark village at night, knees drawn up, no fire, closed shutters behind him, empty street, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "marche-muet": {
+      "description": "Arrivée au Marché Muet, à l'intérieur du hameau. Des étals sans marchands, des marchandises posées et personne pour les vendre.",
+      "prompt_image": "small deserted village market square, empty trestle stalls with goods still laid out on them, no people, low stone houses closing the square, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "marche-muet-2": {
+      "description": "Événement du Marché : le Colporteur, le seul qui parle encore, et le Rebouteux derrière lui.",
+      "prompt_image": "hunched pedlar with an enormous frame pack covered in hanging goods, standing in an empty market square, one hand raised in greeting, wide fixed smile, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "campement": {
+      "description": "Arrivée au Moulin sans Ailes — c'est le lieu de repos de la zone. Une tour de pierre trapue SANS ailes, quatre traces pâles sur le corps du moulin, la porte entrebâillée.",
+      "prompt_image": "old stone windmill without sails on a moorland crest, four pale ghost marks of the missing sails on the stone body, door ajar, small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "campement-2": {
+      "description": "Événement du Moulin : la garde, ou le sommeil. Le lit de bruyère tassé, refait de frais, les marques de comptage à hauteur d'enfant sur la pierre.",
+      "prompt_image": "interior of a derelict stone windmill, heather bedding pressed flat on the floor, tally marks scratched on the stone wall at child height, broken millstone, light through a small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "chapelle-des-cordes": {
+      "description": "Arrivée à la Chapelle des Cordes, intérieur du hameau. Une nef courte, des dizaines de cordes coupées clouées en rangs le long des murs, du sol au plafond.",
+      "prompt_image": "interior of a tiny stone chapel, dozens of cut ropes nailed in rows along the walls from floor to ceiling, small paper labels on each, overturned altar, short nave, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "chapelle-des-cordes-2": {
+      "description": "Événement de la Chapelle : la Veuve aux Cordes, assise, qui refait sans fin le même nœud. Derrière elle, sous verre, la corde coupée sans nom.",
+      "prompt_image": "old woman in black seated on a chair, tying and untying the same knot in a short length of rope, eyes down, a glass case behind her holding one cut rope, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "puits-condamne": {
+      "description": "Arrivée au Puits Condamné. Un puits fermé par des planches clouées en croix, par-dessus, des pierres empilées.",
+      "prompt_image": "village well sealed shut with planks nailed in a cross over its mouth, stones piled on top, worn rope still tied to the winch, empty square, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "puits-condamne-2": {
+      "description": "Événement du Puits (scène chronométrée) : les Mains du Puits, qui sortent entre les planches.",
+      "prompt_image": "pale emaciated hands reaching up through the gaps between nailed planks over a well mouth, fingers splayed and grasping, many more than two hands, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "chien-du-bailli": {
+      "description": "Arrivée à la Maison du Bailli, murée. Portes et fenêtres bouchées à la pierre, de l'extérieur — on a fermé cette maison depuis la rue.",
+      "prompt_image": "stone house with every door and window bricked up from the outside, fresh mortar against old walls, a low garden wall, no path worn to the door, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "chien-du-bailli-2": {
+      "description": "Combat : le Chien du Bailli, qui garde encore une maison où il n'y a plus personne.",
+      "prompt_image": "gaunt long-legged hound standing in front of a bricked-up doorway, ribs showing, head low, lips drawn back, a broken chain still on its collar, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "petit-tribunal": {
+      "description": "Arrivée au Petit Tribunal. Une grange convertie en salle d'audience : trois bancs de bois face à une haute chaire, une feuille de règles clouée au mur.",
+      "prompt_image": "interior of a barn converted into a rustic courtroom, three wooden benches facing a tall wooden pulpit, a sheet of rules nailed to the wall, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "petit-tribunal-2": {
+      "description": "Événement du Tribunal : l'Écrivain public, qui entre, te voit à la chaire, et se met à copier sans lever les yeux.",
+      "prompt_image": "small dry clerk seated on a witness bench, open ledger on his knees, quill in hand, inkpot clutched against his chest, eyes down, mid-stroke, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "meute-grise-1": {
+      "description": "Combat en deux scènes, beat 1. La Meute Grise : six silhouettes couleur de bruyère morte, immobiles aux six points d'un cercle dont tu es le centre.",
+      "prompt_image": "six lean grey hounds standing motionless in a wide circle on open moorland, seen from the centre, evenly spaced, all heads turned inward toward the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "meute-grise-2": {
+      "description": "Combat, beat 2 : la résolution de l'encerclement.",
+      "prompt_image": ""
+    },
+    "mare-aux-regards": {
+      "description": "Arrivée à la Mare aux Regards. Une eau noire parfaitement immobile, la berge piétinée avec deux creux de genoux, des roseaux, aucun vent.",
+      "prompt_image": "perfectly still black pond in dead moorland, trampled bank with two knee hollows, reeds, dark reflections, no wind, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "mare-aux-regards-2": {
+      "description": "Événement de la Mare : un Renonçant qui vient vérifier son propre reflet, et te trouve là.",
+      "prompt_image": "kneeling villager bent over the edge of a black pond staring at his own reflection, hands flat on the trampled bank, head turning sharply toward the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "verger-noir": {
+      "description": "Arrivée au Verger Noir. Des arbres noirs tordus plantés en rangs, des fruits gris et lourds sur les branches, une vieille souche au premier plan.",
+      "prompt_image": "orchard of black twisted fruit trees planted in rows on dead moorland, heavy grey ash fruits on the branches, one old stump in the foreground, two distant bent figures digging, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "verger-noir-2": {
+      "description": "Événement du Verger : le fruit qui tombe encore chaud.",
+      "prompt_image": ""
+    },
+    "epoux-1": {
+      "description": "Rencontre du Verger, beat 1. Les Époux, deux silhouettes courbées qui creusent entre les rangs sans se parler.",
+      "prompt_image": "elderly couple digging side by side between orchard rows, both bent low, one spade each, not looking at one another, black twisted branches above them, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "epoux-2": {
+      "description": "Rencontre du Verger, beat 2 — l'échange.",
+      "prompt_image": ""
+    },
+    "epoux-3": {
+      "description": "Rencontre du Verger, beat 3 — la résolution.",
+      "prompt_image": ""
+    },
+    "palissade-sud": {
+      "description": "Arrivée à la Palissade Sud, seuil de l'Acte II. Une haute palissade de rondins appointés qui ferme l'horizon, un petit portillon, une borne au premier plan.",
+      "prompt_image": "tall wooden palisade of sharpened logs closing a moorland horizon, small gate, a single standing boundary stone in the foreground, path leading south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "veilleur-1": {
+      "description": "Rencontre de la Palissade, beat 1. Le Veilleur dans sa guérite de planches, une lanterne au clou, trente ans de portillon.",
+      "prompt_image": "old watchman inside a plank sentry box, rusty lantern hanging on a nail beside him, blanket over his shoulders, one eye milky, looking out through the opening, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "veilleur-2": {
+      "description": "Rencontre de la Palissade, beat 2 : la lanterne contre une histoire.",
+      "prompt_image": ""
+    },
+    "veilleur-3": {
+      "description": "Rencontre de la Palissade, beat 3 — la résolution.",
+      "prompt_image": ""
+    },
+    "palissade-sud-2": {
+      "description": "Événement de la Palissade : l'Appelé, toujours vu de dos, qui marche vers la Descente sans se retourner.",
+      "prompt_image": "man seen from behind walking away toward a dark gap in a wooden palisade, arms loose at his sides, head level, never turning, path descending beyond the gate, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "proces-du-heros": {
+      "description": "Scène de déroutage au dernier palier de Soupçon : le hameau te juge. Les trois bancs pleins, tous les visages tournés vers toi, la chaire vide.",
+      "prompt_image": "rustic courtroom seen from the defendant's place, three benches full of gaunt villagers all facing the viewer, the tall pulpit empty above them, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    }
+  }
+}
