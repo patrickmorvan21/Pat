@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>PACTUM — Séquence de mort</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --charbon:#1c1a16;
+    --orange:#e0632a;
+    --blanc:#ffffff;
+    --blanc-50:rgba(255,255,255,.5);
+    --blanc-20:rgba(255,255,255,.2);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    background:#0e0d0b;color:var(--blanc);
+    font-family:'Roboto Mono',monospace;font-size:14px;line-height:1.6;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    overflow:hidden;
+  }
+  /* cadre téléphone, pour juger du vrai cadrage */
+  #app{
+    width:100%;max-width:400px;height:min(820px,88dvh);
+    position:relative;overflow:hidden;background:var(--charbon);
+    border:1px solid rgba(255,255,255,.12);
+  }
+
+  #ash{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none;opacity:0}
+  #ash.on{opacity:1}
+
+  .screen{position:absolute;inset:0;display:none;flex-direction:column;padding:30px 26px 26px;z-index:2}
+  .screen.on{display:flex}
+
+  .kicker{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--blanc-50);margin-bottom:10px;text-align:center}
+  h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:40px;line-height:1.05;letter-spacing:2px}
+  h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:24px;line-height:1.1}
+  p{font-size:14px;line-height:1.65}
+  .dim{color:var(--blanc-50)}
+  .cur::after{content:"▌";color:var(--orange);animation:blink 1s steps(1) infinite}
+  @keyframes blink{50%{opacity:0}}
+  .foot{margin-top:auto;text-align:center;font-size:11px;color:var(--blanc-50);letter-spacing:1px;padding-top:14px}
+  canvas.rule{display:block;width:100%;height:2px;image-rendering:pixelated;margin:18px 0}
+
+  /* 1 — beat fatal */
+  #s1 .narr{font-size:14px}
+  #s1 .fatal{color:var(--blanc);margin-top:16px;min-height:5.5em}
+  .choices{margin-top:auto}
+  .choice{
+    position:relative;display:block;width:100%;text-align:left;
+    background:none;border:2px solid var(--blanc);color:var(--blanc);
+    font-family:inherit;font-size:14px;padding:11px 13px;margin-bottom:9px;overflow:hidden;
+  }
+  .choice canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}
+  #s1.dying{animation:shake .12s steps(2) infinite}
+  @keyframes shake{0%{transform:translate(0,0)}50%{transform:translate(1px,-1px)}100%{transform:translate(-1px,1px)}}
+
+  /* 2 — la mort */
+  #s2{justify-content:center;text-align:center}
+  #s2 .jour{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--orange);margin-top:14px}
+  #s2 .epitaphe{font-size:14px;line-height:1.7}
+
+  /* 3 — le fragment */
+  #s3{justify-content:center}
+  .glyph{font-size:20px;color:var(--orange);margin-bottom:16px}
+  #s3 .txt{font-size:16px;line-height:1.7;color:var(--orange);min-height:8em;white-space:pre-line}
+
+  /* 4 — le registre */
+  #s4{justify-content:center}
+  .row{display:flex;gap:10px;align-items:baseline;padding:9px 0;opacity:.35}
+  .row.new{opacity:1;position:relative}
+  .row.new::before{content:"";position:absolute;left:-14px;top:0;bottom:0;width:3px;background:var(--orange)}
+  .row .r{width:32px;flex:0 0 32px;font-family:'Instrument Serif',serif;font-size:17px;color:var(--blanc-50)}
+  .row.new .r,.row.new .j{color:var(--orange)}
+  .row .n{flex:1 1 auto;font-size:13px}
+  .row .n em{display:block;font-style:normal;font-size:10px;color:var(--blanc-50);margin-top:3px}
+  .row .j{width:52px;flex:0 0 52px;text-align:right;font-family:'Instrument Serif',serif;font-size:19px}
+
+  /* 5 — la relique */
+  #s5{justify-content:center;text-align:center}
+  #forge{width:150px;height:150px;image-rendering:pixelated;margin:0 auto 16px;display:block}
+  #s5 .fn{font-size:13px;margin-top:10px}
+  #s5 .murmure{font-size:13px;color:var(--orange);font-style:italic;margin-top:14px;line-height:1.6}
+  .rarete{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--blanc-50);margin-top:12px}
+
+  /* 6 — la relève */
+  #s6{justify-content:center;text-align:center}
+  #s6 .txt{font-size:15px;line-height:1.7;margin-bottom:26px}
+  .cta{
+    position:relative;display:inline-block;cursor:pointer;
+    background:var(--orange);color:var(--charbon);border:none;
+    font-family:inherit;font-weight:500;font-size:14px;
+    letter-spacing:2px;text-transform:uppercase;padding:14px 28px;
+  }
+  .cta .seg{position:absolute;background:var(--orange);pointer-events:none}
+  .cta .top{height:3px;left:10px;right:-9px;top:-8px}
+  .cta .left{width:3px;top:6px;bottom:-4px;left:-9px}
+  .cta .bottom{height:5px;left:-16px;right:14px;bottom:-11px}
+  .quit{display:block;width:100%;background:none;border:none;color:var(--blanc-50);
+        font-family:inherit;font-size:11px;text-decoration:underline;text-underline-offset:3px;
+        margin-top:22px;cursor:pointer}
+
+  /* navigation de maquette — SOUS le téléphone, ne recouvre rien */
+  #nav{display:flex;gap:5px;flex-wrap:wrap;justify-content:center;margin-top:14px;max-width:640px}
+  #nav button{
+    background:none;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.5);
+    font-family:'Roboto Mono',monospace;font-size:10px;padding:6px 10px;cursor:pointer;
+  }
+  #nav button.on{background:var(--orange);border-color:var(--orange);color:var(--charbon)}
+
+  @media (prefers-reduced-motion: reduce){ #s1.dying{animation:none} .cur::after{animation:none} }
+</style>
+</head>
+<body>
+
+<div id="app">
+  <canvas id="ash"></canvas>
+
+  <!-- 1 — LE BEAT FATAL : la mort arrive DANS la scène, pas sur un écran séparé -->
+  <section class="screen" id="s1">
+    <p class="narr dim">Ils sont douze autour de toi, et pas un ne parle. Le Fossoyeur a planté le poteau la veille — le nom est gravé depuis hier soir.</p>
+    <p class="fatal" id="s1txt"></p>
+    <div class="choices" id="s1ch">
+      <button class="choice">Te débattre<canvas></canvas></button>
+      <button class="choice">Regarder le sud une dernière fois<canvas></canvas></button>
+    </div>
+    <div class="foot" id="s1foot" style="visibility:hidden">Touche pour continuer</div>
+  </section>
+
+  <!-- 2 — LA MORT : la carte d'épitaphe -->
+  <section class="screen" id="s2">
+    <div class="kicker">Ci-tombe</div>
+    <h2 style="text-align:center">BRAISE</h2>
+    <div class="jour">Jour 27</div>
+    <canvas class="rule"></canvas>
+    <p class="epitaphe">Fixée à l'aube, sur la Colline aux Gibets,<br>par ceux qu'elle avait traversés sans nuire.</p>
+    <div class="foot">Touche pour continuer</div>
+  </section>
+
+  <!-- 3 — LE FRAGMENT : la voix du Geôlier, l'histoire qui avance -->
+  <section class="screen" id="s3">
+    <div class="glyph">◉</div>
+    <p class="txt" id="s3txt"></p>
+    <div class="foot" id="s3foot" style="visibility:hidden">Touche pour continuer</div>
+  </section>
+
+  <!-- 4 — LE REGISTRE : le score -->
+  <section class="screen" id="s4">
+    <div class="kicker">Le Grand Registre</div>
+    <h3 style="text-align:center;margin-bottom:16px">Ton nom entre au livre</h3>
+    <div class="row"><span class="r">7</span><span class="n">LE TARDIF<em>Compté par l'Ossuaire</em></span><span class="j">29</span></div>
+    <div class="row new"><span class="r">8</span><span class="n">BRAISE<em>Fixée à l'aube, aux Landes</em></span><span class="j">27</span></div>
+    <div class="row"><span class="r">9</span><span class="n">CORBEAU<em>Emporté par les Eaux Dormantes</em></span><span class="j">26</span></div>
+    <canvas class="rule"></canvas>
+    <p class="dim" style="font-size:11px;text-align:center">Quatre-vingt-dix-neuf places sont prenables.<br>La première, non.</p>
+    <div class="foot">Touche pour continuer</div>
+  </section>
+
+  <!-- 5 — LA RELIQUE : ce qu'on emporte dans la run suivante -->
+  <section class="screen" id="s5">
+    <div class="kicker">Ce qui reste</div>
+    <canvas id="forge" width="150" height="150"></canvas>
+    <h3>LA CORDE SÈCHE</h3>
+    <p class="fn">Le premier échec critique d'une traversée devient un échec simple.</p>
+    <p class="murmure">« Elle a tenu. C'est bien ce qui l'a tuée. »</p>
+    <div class="rarete">Relique rare</div>
+    <div class="foot">Touche pour continuer</div>
+  </section>
+
+  <!-- 6 — LA RELÈVE -->
+  <section class="screen" id="s6">
+    <p class="txt">Un autre attend déjà au Seuil.<br><span class="dim">Il ne saura rien de toi — sauf ce que tu lui laisses.</span></p>
+    <div><button class="cta">Un autre viendra
+      <span class="seg top"></span><span class="seg left"></span><span class="seg bottom"></span>
+    </button></div>
+    <button class="quit">Reposer le livre</button>
+  </section>
+</div>
+
+<div id="nav"></div>
+
+<script>
+"use strict";
+const CHARBON="#1c1a16", ORANGE="#e0632a";
+const RMOTION=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const app=document.getElementById("app");
+
+/* ---------- cendres de fond (écrans 2→6) ---------- */
+const ash=document.getElementById("ash"), actx=ash.getContext("2d");
+let AW=0,AH=0; const motes=[];
+function fitAsh(){
+  const r=app.getBoundingClientRect();
+  AW=Math.round(r.width/3); AH=Math.round(r.height/3);
+  ash.width=AW; ash.height=AH;
+  if(!motes.length) for(let i=0;i<AH*1.1;i++) motes.push(mote(true));
+}
+function mote(seed){
+  return{x:Math.random()*AW,y:seed?Math.random()*AH:AH+2,
+    v:.25+Math.random()*.35,sway:.3+Math.random()*.5,
+    f:.06+Math.random()*.1,s:Math.random()*6.283,age:0};
+}
+function ashStep(){
+  for(let i=0;i<2;i++) motes.push(mote(false));
+  for(let i=motes.length-1;i>=0;i--){const m=motes[i];m.age++;m.y-=m.v;if(m.y<-2)motes.splice(i,1);}
+}
+function ashDraw(){
+  actx.clearRect(0,0,AW,AH);
+  for(const m of motes){
+    const fade=m.y/AH;
+    if(Math.random()>.10+fade*.55) continue;
+    actx.fillStyle=Math.random()<.7?"rgba(224,99,42,.55)":"rgba(255,255,255,.20)";
+    actx.fillRect((m.x+Math.sin(m.age*m.f+m.s)*m.sway*3)|0,m.y|0,1,1);
+  }
+}
+if(!RMOTION){let acc=0,last=0;(function loop(t){if(!last)last=t;acc+=t-last;last=t;
+  while(acc>=90){acc-=90;ashStep();} ashDraw(); requestAnimationFrame(loop);})(performance.now());}
+
+function rule(cv){
+  const w=cv.clientWidth||300; cv.width=w; cv.height=2;
+  const x=cv.getContext("2d");
+  for(let i=0;i<w;i++){
+    if(Math.random()<.7){x.fillStyle="rgba(255,255,255,.26)";x.fillRect(i,0,1,1);}
+    if(Math.random()<.13){x.fillStyle="rgba(255,255,255,.14)";x.fillRect(i,1,1,1);}
+  }
+}
+function erode(btn,amount){
+  const cv=btn.querySelector("canvas"), r=btn.getBoundingClientRect();
+  const W=Math.round(r.width/2)||100, H=Math.round(r.height/2)||20;
+  cv.width=W; cv.height=H;
+  const x=cv.getContext("2d"); x.clearRect(0,0,W,H); x.fillStyle=CHARBON;
+  for(let i=0;i<W*H*amount;i++) x.fillRect((Math.random()*W)|0,(Math.random()*H)|0,1,1);
+}
+function forge(){
+  const cv=document.getElementById("forge"), x=cv.getContext("2d");
+  const S=150, cx=S/2, cy=S/2; let t=0;
+  const cible=[];
+  for(let a=0;a<6.283;a+=0.04){
+    const rr=30+Math.sin(a*6)*2;
+    cible.push([cx+Math.cos(a)*rr, cy-8+Math.sin(a)*rr*0.55]);
+  }
+  for(let k=0;k<34;k++) cible.push([cx+14+Math.sin(k*0.3)*3, cy+10+k*1.2]);
+  const parts=cible.map(p=>({tx:p[0],ty:p[1],x:cx+(Math.random()-.5)*S,y:S+Math.random()*40}));
+  (function anim(){
+    t++; x.fillStyle=CHARBON; x.fillRect(0,0,S,S);
+    for(const p of parts){
+      p.x+=(p.tx-p.x)*0.045; p.y+=(p.ty-p.y)*0.045;
+      const ok=Math.abs(p.x-p.tx)<1.5&&Math.abs(p.y-p.ty)<1.5;
+      x.fillStyle=ok?ORANGE:(Math.random()<.5?"rgba(224,99,42,.6)":"rgba(255,255,255,.25)");
+      x.fillRect(p.x|0,p.y|0,ok?2:1,ok?2:1);
+    }
+    if(t<200&&!RMOTION) requestAnimationFrame(anim);
+  })();
+}
+function type(el,txt,speed,done){
+  el.textContent=""; el.classList.add("cur"); let i=0;
+  const iv=setInterval(()=>{i++;el.textContent=txt.slice(0,i);
+    if(i>=txt.length){clearInterval(iv);el.classList.remove("cur");done&&done();}},RMOTION?0:speed);
+  return ()=>{clearInterval(iv);el.textContent=txt;el.classList.remove("cur");done&&done();};
+}
+
+/* ---------- enchaînement ---------- */
+const ECRANS=["s1","s2","s3","s4","s5","s6"];
+const NOMS=["1 · Le beat fatal","2 · La mort","3 · Le fragment","4 · Le Registre","5 · La relique","6 · La relève"];
+let idx=0, finish=null;
+const nav=document.getElementById("nav");
+NOMS.forEach((n,i)=>{const b=document.createElement("button");b.textContent=n;b.onclick=()=>show(i);nav.appendChild(b);});
+
+function show(n){
+  idx=n; finish=null;
+  ECRANS.forEach((id,i)=>document.getElementById(id).classList.toggle("on",i===n));
+  [...nav.children].forEach((b,i)=>b.classList.toggle("on",i===n));
+  ash.classList.toggle("on",n>0);
+  document.querySelectorAll("canvas.rule").forEach(rule);
+
+  if(n===0){
+    const s1=document.getElementById("s1");
+    s1.classList.remove("dying");
+    document.getElementById("s1foot").style.visibility="hidden";
+    document.getElementById("s1txt").textContent="";
+    const btns=[...document.querySelectorAll("#s1ch .choice")];
+    btns.forEach(b=>erode(b,0));
+    let a=0;
+    const iv=setInterval(()=>{a+=.055;btns.forEach(b=>erode(b,Math.min(a,.75)));if(a>=.75)clearInterval(iv);},90);
+    setTimeout(()=>{
+      s1.classList.add("dying");
+      finish=type(document.getElementById("s1txt"),
+        "La corde prend avant que tu aies choisi. Le sud est la dernière chose que tu vois — et il te semble, une seconde, que quelque chose là-bas te regarde revenir.",
+        24,()=>{document.getElementById("s1foot").style.visibility="visible";});
+    },900);
+  }
+  if(n===2){
+    document.getElementById("s3foot").style.visibility="hidden";
+    finish=type(document.getElementById("s3txt"),
+      "Vingt-sept jours. C'est honnête.\n\nCeux qui t'ont pendue croyaient m'empêcher de te reprendre. Ils croient beaucoup de choses. Je les laisse faire — ça les occupe, et ça me fournit.",
+      42,()=>{document.getElementById("s3foot").style.visibility="visible";});
+  }
+  if(n===4) forge();
+}
+app.addEventListener("pointerdown",e=>{
+  if(e.target.closest(".cta")||e.target.closest(".quit"))return;
+  if(finish){finish();finish=null;return;}
+  if(idx<ECRANS.length-1) show(idx+1);
+});
+addEventListener("load",()=>{fitAsh();show(0);});
+addEventListener("resize",()=>{fitAsh();document.querySelectorAll("canvas.rule").forEach(rule);});
+</script>
+</body>
+</html>
