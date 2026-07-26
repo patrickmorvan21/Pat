@@ -181,5 +181,12 @@
  *           puis les CTA et le texte sont mangés pixel par pixel — chaque pixel
  *           mangé libère une braise orange qui monte. Le bilan chiffré est le
  *           seul endroit du jeu où des nombres bruts sont montrés.
+ *   1.26.0 — Lot Notion 26/07, vague 3 : LES CORBEAUX DU COMPTE reviennent —
+ *           point d'intérêt de la Colline dont l'examen ajoute une ligne
+ *           calculée sur la mémoire de compte (les corbeaux sont exactement
+ *           aussi nombreux que tes morts, dit en prose, jamais en chiffre).
+ *           + 2 illustrations du lot du 26/07 : l'Appelé vu de dos sur la
+ *           Palissade (dernière scène de la zone qui n'avait AUCUNE image) et
+ *           la guérite du Veilleur.
  */
-export const APP_VERSION = "1.25.0";
+export const APP_VERSION = "1.26.0";

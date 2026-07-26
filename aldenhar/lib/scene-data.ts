@@ -147,6 +147,14 @@ export type PointInteret = {
   /** Le Soupçon monte/descend en examinant (ex. réagir à voix haute). */
   soupcon?: number;
   /**
+   * LES CORBEAUX DU COMPTE (Notion 26/07 §6) : l'examen ajoute une ligne
+   * calculée sur la MÉMOIRE DE COMPTE — les corbeaux se posent au nombre
+   * exact des morts du joueur. C'est un des rares endroits où la
+   * méta-progression se lit dans le décor plutôt que dans un écran, donc le
+   * nombre est dit en PROSE (« trois »), jamais affiché comme un chiffre.
+   */
+  corbeaux?: boolean;
+  /**
    * SAVOIR appris en examinant ce point (journal Notion 25/07). Flag posé dans
    * `RunState.savoirs` : il ouvrira un choix marqué `requiresSavoir` dans une
    * scène ultérieure. Jamais annoncé au joueur — il découvre l'option le moment
@@ -858,6 +866,20 @@ export const SCENES: Scene[] = [
         "droite, les potences vides alignent leurs noms gravés.",
     ],
     pointsInteret: [
+      {
+        id: "corbeaux-compte",
+        corbeaux: true,
+        label: "Les corbeaux, sur la traverse",
+        illustration: "assets/monstre_corbeaux_du_compte_b.png",
+        approche:
+          "Ils sont sur la traverse du grand gibet, immobiles, et ils ne " +
+          "bougent pas quand tu approches — ce qui n'est pas un comportement " +
+          "d'oiseau. Aucun ne te regarde. Ils regardent la corde.",
+        examen:
+          "Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, " +
+          "et leurs becs sont propres. Ils attendent, et ils sont exactement " +
+          "assez nombreux pour ce qu'ils attendent.",
+      },
       {
         id: "potences-cercle",
         chapterFragment: true,
@@ -3154,7 +3176,7 @@ export const SCENES: Scene[] = [
        note les autres. Sa lanterne s'échange contre la seule histoire du
        dehors qu'il te reste : ta mort. Le jeu ne l'écrit jamais. */
     id: "veilleur-1",
-    illustration: "assets/objet_lanterne_rouillee.png",
+    illustration: "assets/objet_lanterne_rouillee_guerite.png",
     chainNext: "veilleur-2",
     narration: [
       "— « Trois jours ! » Il le crie presque — la voix de quelqu'un qui parle " +
@@ -3285,6 +3307,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "palissade-sud-2",
+    illustration: "assets/monstre_appele_descente.png",
     narration: [
       "Sur le chemin de ronde, un vieux soldat regarde vers le sud. Et en " +
         "contrebas, déjà loin de l'autre côté, un homme descend le chemin " +
@@ -3966,3 +3989,56 @@ export const DESCENTE_SCENE: Scene = {
     { id: "recommencer-descente", label: "Repartir de la Borne" },
   ],
 };
+
+/**
+ * LA LIGNE DES CORBEAUX (Notion 26/07 §6) — la seule chose du décor qui compte
+ * les morts du joueur.
+ *
+ * Le nombre est dit en PROSE, jamais en chiffre : le joueur peut les compter
+ * lui-même sur l'illustration, et la phrase confirme sans jamais ressembler à
+ * un compteur d'interface. Au-delà d'une douzaine on cesse de nommer le nombre
+ * — c'est le moment où « beaucoup » est plus juste que « quatorze », et où la
+ * ligne devient une menace au lieu d'un score.
+ */
+const CORBEAUX_MOTS = [
+  "aucun",
+  "un",
+  "deux",
+  "trois",
+  "quatre",
+  "cinq",
+  "six",
+  "sept",
+  "huit",
+  "neuf",
+  "dix",
+  "onze",
+  "douze",
+];
+
+export function ligneCorbeaux(morts: number): string {
+  if (morts <= 0)
+    return (
+      "Il n'y en a qu'un, et il se tient de travers, comme s'il gardait une " +
+      "place. Tu ne sais pas pour qui."
+    );
+  if (morts >= CORBEAUX_MOTS.length)
+    return (
+      "Tu commences à les compter, et tu t'arrêtes. Ils occupent toute la " +
+      "traverse, serrés, et il en reste qui tournent au-dessus faute de " +
+      "place. « Ils te connaissent », dit une voix qui n'est pas là. " +
+      "« Ils t'ont vu revenir plus souvent que n'importe qui. »"
+    );
+  // « ils sont un » sonne faux : le cas d'un seul corbeau se dit autrement.
+  if (morts === 1)
+    return (
+      "Il n'y en a qu'un, et il est arrivé récemment — la trace de ses " +
+      "serres est encore fraîche sur le bois. Il te regarde une fois, puis " +
+      "reprend sa faction."
+    );
+  return (
+    `Tu les comptes sans le décider : ils sont ${CORBEAUX_MOTS[morts]}. Ni ` +
+    "plus, ni moins. Et le dernier arrivé a encore de la poussière de route " +
+    "sur les plumes."
+  );
+}

@@ -20,6 +20,7 @@ import {
   type Choice,
   type LiaisonCtx,
   type Scene as SceneType,
+  ligneCorbeaux,
 } from "@/lib/scene-data";
 import { loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
 import { chapterById, drawChapter, LANDES_LORE_FRAGMENTS } from "@/lib/chapters-data";
@@ -1016,6 +1017,12 @@ export default function Scene() {
         const entries: FeedEntry[] = [
           { id: nextId(), kind: "narration", text: poi.approche },
           { id: nextId(), kind: "narration", text: poi.examen },
+          // Les Corbeaux du Compte (26/07 §6) : le décor lit la mémoire de
+          // compte. Posé APRÈS l'examen — on voit d'abord les oiseaux, on
+          // comprend leur nombre ensuite.
+          ...(poi.corbeaux
+            ? [{ id: nextId(), kind: "narration" as const, text: ligneCorbeaux(loadMemory().deaths) }]
+            : []),
         ];
         if (gained) {
           entries.push({
