@@ -65,6 +65,12 @@ font:inherit;font-size:10px;letter-spacing:.5px;padding:6px 4px;cursor:pointer}
 .verdict button:hover{border-color:var(--b50);color:var(--blanc)}
 .verdict button.on-ko{background:var(--blanc);border-color:var(--blanc);color:var(--charbon)}
 .verdict button.on-ok{background:var(--orange);border-color:var(--orange);color:var(--charbon)}
+/* Le pont marquage → moi : c'est l'action principale de la version web, donc
+   c'est le seul bloc plein orange de la page. */
+.copybar{display:block;width:100%;margin-top:16px;background:var(--orange);
+border:none;color:var(--charbon);font:inherit;font-size:12px;letter-spacing:1px;
+padding:12px;cursor:pointer;text-align:center}
+.copybar:hover{filter:brightness(1.08)}
 
 .cat{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--b50);margin-top:9px}
 .id{font-size:12px;margin-top:2px;word-break:break-all}
@@ -123,7 +129,7 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
 #log .hd{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--b50);margin-bottom:6px}
 </style></head><body>
 <h1>COUVERTURE VISUELLE</h1>
-<div class="sub">58 scènes · 34 points d'intérêt · lib/scene-data.ts × assets/ · lecture seule — relancer avec --serve pour éditer (file:// ne peut pas écrire sur le disque)</div>
+<div class="sub">58 scènes · 34 points d'intérêt · Les Landes · lecture seule — relancer avec --serve pour éditer</div>
 <canvas class="rule"></canvas>
 
 <div class="stats">
@@ -136,6 +142,7 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
 <div class="stat mid"><div class="n">28</div><div class="l">orphelins</div></div>
 <div class="stat mid"><div class="n">17</div><div class="l">prompts à écrire</div></div>
 </div>
+
 
 <div class="filters" id="filters"><button class="on" data-f="tous">Tous</button><button class="" data-f="dediee">Dédiées</button><button class="" data-f="heritee">Héritées</button><button class="" data-f="fallback">Fallback</button><button class="" data-f="manquante">Manquantes</button><button class="" data-f="a_remplacer">À remplacer</button><button class="" data-f="ok">Validées</button><button class="" data-f="monstre">Monstres</button><button class="" data-f="objet">Objets</button><button class="" data-f="scene">Scènes</button></div>
 
@@ -1154,7 +1161,7 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
 </article></div>
 
 <h2>Assets orphelins</h2>
-<div class="sub">Présents dans assets/, référencés par aucune scène — à rattacher ou à supprimer.</div>
+<div class="sub">Présents dans assets/, référencés par aucune scène — en réserve, ou à supprimer.</div>
 <div class="orph"><div>assets/monstre_deserteur_tribunal_a.png</div><div>assets/monstre_gamin_murets_a.png</div><div>assets/monstre_geryon.png</div><div>assets/monstre_la_fille_c.png</div><div>assets/monstre_limiers.png</div><div>assets/monstre_ombre_grand_gibet_a.png</div><div>assets/monstre_pendu_mal_fixe_v1_b.png</div><div>assets/monstre_rodeur.png</div><div>assets/monstre_vent_qui_ment_b.png</div><div>assets/monstre_vent_qui_ment_d.png</div><div>assets/objet_couronne_brisee.png</div><div>assets/objet_dague_os.png</div><div>assets/objet_fiole_baume.png</div><div>assets/objet_grimoire.png</div><div>assets/scene_champ_des_fixes_c.png</div><div>assets/scene_gibet_vide_c.png</div><div>assets/scene_landes_hameau_croix_craie_a.png</div><div>assets/scene_landes_hameau_puits_b.png</div><div>assets/scene_landes_tribunal_b.png</div><div>assets/scene_moulin_sans_ailes_c.png</div><div>assets/scene_tour_de_guet_a.png</div><div>assets/scene_transition_arrivee_hameau_b.png</div><div>assets/scene_transition_chemin_murets_b.png</div><div>assets/scene_transition_crete_cordes_b.png</div><div>assets/scene_transition_croisee_sud_b.png</div><div>assets/scene_transition_croix_craie_c.png</div><div>assets/scene_transition_hommes_suivent_b.png</div><div>assets/scene_transition_vols_basses_b.png</div></div>
 
 <h2>Ordre d'écriture obligatoire</h2>
@@ -1174,7 +1181,8 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
 </div>
 <div id="log"><div class="hd">Journal d'écriture</div><div id="logbody">En attente d'une action…</div></div>
 <div id="toast"></div>
-<script>window.__COVERAGE_EDITABLE__=false;</script>
+<script>window.__COVERAGE_EDITABLE__=false;
+window.__COVERAGE_WEB__=false;</script>
 <script>
 "use strict";
 
@@ -1223,8 +1231,35 @@ addEventListener("keydown",e=>{if(e.key==="Escape")closeZoom();});
 
 /* ---------- verdict de qualité ————————————————————————————————
    Contrairement au câblage, un verdict ne change le statut d'AUCUNE autre
-   carte : pas besoin de recharger la page, on met à jour sur place. */
-document.querySelectorAll("[data-verdict]").forEach(btn=>{
+   carte : pas besoin de recharger la page, on met à jour sur place.
+
+   Deux façons de le ranger selon le mode :
+   • outil local  → POST /api/verdict, écrit dans un JSON suivi par git
+   • version web  → localStorage, donc PROPRE AU NAVIGATEUR. Un lien ne peut pas
+     écrire dans le dépôt ; le bouton « copier la liste » sert de pont (coller
+     dans un message ou dans Notion). C'est une limite du web, pas un oubli. */
+const VKEY="pactum-verdicts";
+function webVerdicts(){
+  try{return JSON.parse(localStorage.getItem(VKEY)||"{}");}catch{return {};}
+}
+async function persistVerdict(id,verdict,note){
+  if(window.__COVERAGE_WEB__){
+    const all=webVerdicts();
+    if(verdict){all[id]={v:verdict};if(note)all[id].note=note;}else{delete all[id];}
+    localStorage.setItem(VKEY,JSON.stringify(all));
+    return;
+  }
+  const r=await fetch("/api/verdict",{method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({id,verdict,note})});
+  const j=await r.json();
+  if(!j.ok)throw new Error(j.error||"échec");
+}
+/* ⚠️ Sélecteur volontairement précis : la CARTE porte aussi `data-verdict`
+   (le filtre en a besoin). Un `[data-verdict]` nu attacherait le gestionnaire
+   à la carte ET au bouton — le clic remonterait à la carte, qui se relancerait
+   avec un verdict vide et effacerait aussitôt le marquage. */
+document.querySelectorAll(".verdict button[data-verdict]").forEach(btn=>{
   btn.addEventListener("click",async()=>{
     const id=btn.dataset.verdict, want=btn.dataset.v;
     const card=btn.closest(".card");
@@ -1235,11 +1270,7 @@ document.querySelectorAll("[data-verdict]").forEach(btn=>{
       note=prompt("Pourquoi elle ne marche pas ? (facultatif)","")||"";
     }
     try{
-      const r=await fetch("/api/verdict",{method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({id,verdict,note})});
-      const j=await r.json();
-      if(!j.ok)throw new Error(j.error||"échec");
+      await persistVerdict(id,verdict,note);
       applyVerdict(card,verdict,note);
       log(`<b>verdict</b> · ${id} → `+(verdict||"avis retiré")+
         (note?` (« ${note} »)`:""));
@@ -1248,6 +1279,36 @@ document.querySelectorAll("[data-verdict]").forEach(btn=>{
     }catch(e){log(`<span style="color:#fff">ÉCHEC verdict</span> · ${id} · ${e.message}`);}
   });
 });
+
+/* En mode web, les marquages du navigateur sont réappliqués au chargement, et
+   « copier la liste » les sort en texte lisible pour les rapatrier. */
+if(window.__COVERAGE_WEB__){
+  const stored=webVerdicts();
+  for(const [id,v] of Object.entries(stored)){
+    const btn=document.querySelector(
+      `.verdict button[data-verdict="${CSS.escape(id)}"]`);
+    const card=btn&&btn.closest(".card");
+    if(card)applyVerdict(card,v.v,v.note||"");
+  }
+  const cp=document.getElementById("copy-verdicts");
+  if(cp)cp.addEventListener("click",async()=>{
+    const all=webVerdicts();
+    const ko=Object.entries(all).filter(([,v])=>v.v==="a_remplacer");
+    const ok=Object.entries(all).filter(([,v])=>v.v==="ok");
+    if(!ko.length&&!ok.length){toast("Rien de marqué");return;}
+    let txt="Couverture visuelle — mes marquages\n";
+    if(ko.length){txt+="\nÀ REMPLACER\n"+ko.map(([id,v])=>
+      "- "+id+(v.note?" : "+v.note:"")).join("\n")+"\n";}
+    if(ok.length){txt+="\nÇA MARCHE\n"+ok.map(([id])=>"- "+id).join("\n")+"\n";}
+    try{await navigator.clipboard.writeText(txt);toast("Liste copiée");}
+    catch{
+      const ta=document.createElement("textarea");ta.value=txt;
+      document.body.append(ta);ta.select();document.execCommand("copy");
+      ta.remove();toast("Liste copiée");
+    }
+    log("<b>liste copiée</b> · "+ko.length+" à remplacer, "+ok.length+" validées");
+  });
+}
 function applyVerdict(card,verdict,note){
   card.dataset.verdict=verdict;
   card.classList.toggle("a_remplacer",verdict==="a_remplacer");

@@ -364,6 +364,12 @@ font:inherit;font-size:10px;letter-spacing:.5px;padding:6px 4px;cursor:pointer}
 .verdict button:hover{border-color:var(--b50);color:var(--blanc)}
 .verdict button.on-ko{background:var(--blanc);border-color:var(--blanc);color:var(--charbon)}
 .verdict button.on-ok{background:var(--orange);border-color:var(--orange);color:var(--charbon)}
+/* Le pont marquage → moi : c'est l'action principale de la version web, donc
+   c'est le seul bloc plein orange de la page. */
+.copybar{display:block;width:100%;margin-top:16px;background:var(--orange);
+border:none;color:var(--charbon);font:inherit;font-size:12px;letter-spacing:1px;
+padding:12px;cursor:pointer;text-align:center}
+.copybar:hover{filter:brightness(1.08)}
 
 .cat{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--b50);margin-top:9px}
 .id{font-size:12px;margin-top:2px;word-break:break-all}
@@ -470,8 +476,35 @@ addEventListener("keydown",e=>{if(e.key==="Escape")closeZoom();});
 
 /* ---------- verdict de qualité ————————————————————————————————
    Contrairement au câblage, un verdict ne change le statut d'AUCUNE autre
-   carte : pas besoin de recharger la page, on met à jour sur place. */
-document.querySelectorAll("[data-verdict]").forEach(btn=>{
+   carte : pas besoin de recharger la page, on met à jour sur place.
+
+   Deux façons de le ranger selon le mode :
+   • outil local  → POST /api/verdict, écrit dans un JSON suivi par git
+   • version web  → localStorage, donc PROPRE AU NAVIGATEUR. Un lien ne peut pas
+     écrire dans le dépôt ; le bouton « copier la liste » sert de pont (coller
+     dans un message ou dans Notion). C'est une limite du web, pas un oubli. */
+const VKEY="pactum-verdicts";
+function webVerdicts(){
+  try{return JSON.parse(localStorage.getItem(VKEY)||"{}");}catch{return {};}
+}
+async function persistVerdict(id,verdict,note){
+  if(window.__COVERAGE_WEB__){
+    const all=webVerdicts();
+    if(verdict){all[id]={v:verdict};if(note)all[id].note=note;}else{delete all[id];}
+    localStorage.setItem(VKEY,JSON.stringify(all));
+    return;
+  }
+  const r=await fetch("/api/verdict",{method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({id,verdict,note})});
+  const j=await r.json();
+  if(!j.ok)throw new Error(j.error||"échec");
+}
+/* ⚠️ Sélecteur volontairement précis : la CARTE porte aussi `data-verdict`
+   (le filtre en a besoin). Un `[data-verdict]` nu attacherait le gestionnaire
+   à la carte ET au bouton — le clic remonterait à la carte, qui se relancerait
+   avec un verdict vide et effacerait aussitôt le marquage. */
+document.querySelectorAll(".verdict button[data-verdict]").forEach(btn=>{
   btn.addEventListener("click",async()=>{
     const id=btn.dataset.verdict, want=btn.dataset.v;
     const card=btn.closest(".card");
@@ -482,11 +515,7 @@ document.querySelectorAll("[data-verdict]").forEach(btn=>{
       note=prompt("Pourquoi elle ne marche pas ? (facultatif)","")||"";
     }
     try{
-      const r=await fetch("/api/verdict",{method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({id,verdict,note})});
-      const j=await r.json();
-      if(!j.ok)throw new Error(j.error||"échec");
+      await persistVerdict(id,verdict,note);
       applyVerdict(card,verdict,note);
       log(`<b>verdict</b> · ${id} → `+(verdict||"avis retiré")+
         (note?` (« ${note} »)`:""));
@@ -495,6 +524,36 @@ document.querySelectorAll("[data-verdict]").forEach(btn=>{
     }catch(e){log(`<span style="color:#fff">ÉCHEC verdict</span> · ${id} · ${e.message}`);}
   });
 });
+
+/* En mode web, les marquages du navigateur sont réappliqués au chargement, et
+   « copier la liste » les sort en texte lisible pour les rapatrier. */
+if(window.__COVERAGE_WEB__){
+  const stored=webVerdicts();
+  for(const [id,v] of Object.entries(stored)){
+    const btn=document.querySelector(
+      `.verdict button[data-verdict="${CSS.escape(id)}"]`);
+    const card=btn&&btn.closest(".card");
+    if(card)applyVerdict(card,v.v,v.note||"");
+  }
+  const cp=document.getElementById("copy-verdicts");
+  if(cp)cp.addEventListener("click",async()=>{
+    const all=webVerdicts();
+    const ko=Object.entries(all).filter(([,v])=>v.v==="a_remplacer");
+    const ok=Object.entries(all).filter(([,v])=>v.v==="ok");
+    if(!ko.length&&!ok.length){toast("Rien de marqué");return;}
+    let txt="Couverture visuelle — mes marquages\\n";
+    if(ko.length){txt+="\\nÀ REMPLACER\\n"+ko.map(([id,v])=>
+      "- "+id+(v.note?" : "+v.note:"")).join("\\n")+"\\n";}
+    if(ok.length){txt+="\\nÇA MARCHE\\n"+ok.map(([id])=>"- "+id).join("\\n")+"\\n";}
+    try{await navigator.clipboard.writeText(txt);toast("Liste copiée");}
+    catch{
+      const ta=document.createElement("textarea");ta.value=txt;
+      document.body.append(ta);ta.select();document.execCommand("copy");
+      ta.remove();toast("Liste copiée");
+    }
+    log("<b>liste copiée</b> · "+ko.length+" à remplacer, "+ok.length+" validées");
+  });
+}
 function applyVerdict(card,verdict,note){
   card.dataset.verdict=verdict;
   card.classList.toggle("a_remplacer",verdict==="a_remplacer");
@@ -641,8 +700,15 @@ def esc(s: str) -> str:
 CAT_LABEL = {"scene": "Scènes", "monstre": "Monstres", "objet": "Objets"}
 
 
-def render(items: list[Item], counts: dict, orphans: list[str], editable: bool) -> str:
-    rel = "../aldenhar/public/"  # data/couverture_visuelle.html → assets
+def render(
+    items: list[Item], counts: dict, orphans: list[str], editable: bool, web: bool = False
+) -> str:
+    # `web` = version déployée sur GitHub Pages, posée à côté du jeu dans
+    # aldenhar/ : les assets y sont DÉJÀ publics, donc on les référence en
+    # relatif (aucun réencodage, les PNG 1000×1000 d'origine sont servis tels
+    # quels). Pas d'édition possible — un lien n'écrit pas sur le disque — mais
+    # le marquage de qualité fonctionne, rangé dans le navigateur.
+    rel = "" if web else "../aldenhar/public/"
 
     def card(i: Item) -> str:
         basename = i.image.split("/", 1)[1] if i.image else ""
@@ -676,8 +742,11 @@ def render(items: list[Item], counts: dict, orphans: list[str], editable: bool) 
         desc = f'<div class="desc">{esc(i.description)}</div>' if i.description else ""
         warn = "".join(f'<div class="warn">⚠ {esc(n)}</div>' for n in i.notes)
 
+        # Les prompts Leonardo ne partent PAS sur la version publique : ce sont
+        # les recettes de génération, la seule vraie matière sensible ici (les
+        # illustrations, elles, sont déjà servies publiquement par le jeu).
         acts = []
-        if i.kind == "scene":
+        if i.kind == "scene" and not web:
             if i.prompt:
                 acts.append(f'<button data-prompt="{esc(i.prompt)}">Copier le prompt Leonardo</button>')
             else:
@@ -707,7 +776,9 @@ def render(items: list[Item], counts: dict, orphans: list[str], editable: bool) 
             else ""
         )
         verdict_html = ""
-        if editable and i.image:
+        # Le marquage existe dans les DEUX modes : c'est la raison d'être de la
+        # version web (juger), là où l'édition de câblage, elle, reste locale.
+        if (editable or web) and i.image:
             ko_on = " on-ko" if i.verdict == A_REMPLACER else ""
             ok_on = " on-ok" if i.verdict == OK else ""
             verdict_html = (
@@ -760,10 +831,47 @@ def render(items: list[Item], counts: dict, orphans: list[str], editable: bool) 
         else '<div>Aucun. Tout fichier de assets/ est référencé.</div>'
     )
 
-    mode = (
-        "édition active — le serveur écrit sur le disque"
-        if editable
-        else "lecture seule — relancer avec --serve pour éditer (file:// ne peut pas écrire sur le disque)"
+    if web:
+        mode = "marque ce qui ne va pas, puis « copier ma liste » — je fais les remplacements"
+    elif editable:
+        mode = "édition active — le serveur écrit sur le disque"
+    else:
+        mode = "lecture seule — relancer avec --serve pour éditer"
+
+    copy_btn = (
+        '<button class="copybar" id="copy-verdicts">Copier ma liste '
+        "→ à me coller pour que je fasse les remplacements</button>"
+        if web
+        else ""
+    )
+
+    # Le rappel du pipeline n'a de sens que côté outil local (c'est une consigne
+    # d'écriture). Sur la version web, ce qui compte c'est comment le marquage
+    # revient jusqu'à moi.
+    footer = (
+        """<h2>Comment ça revient jusqu'à moi</h2>
+<div class="log-static"><ol>
+  <li>Tu marques les images qui ne vont pas, avec la raison si tu l'as en tête.
+      Les marquages restent dans ce navigateur, même après fermeture.</li>
+  <li>Tu cliques <b>Copier ma liste</b> en haut, et tu me la colles en message.</li>
+  <li>Je regénère ou je recâble, je pousse, et cette page se met à jour.</li>
+</ol>
+<p style="margin-top:10px">Un lien ne peut pas écrire dans le dépôt : c'est le
+navigateur qui l'interdit, pas un manque de l'outil. Comme c'est moi qui câble
+les illustrations à chaque séance, ton marquage suffit — inutile que tu touches
+au code.</p></div>"""
+        if web
+        else """<h2>Ordre d'écriture obligatoire</h2>
+<div class="log-static"><ol>
+  <li><code>dither_batch.py</code> — l'image brute passe par le dithering canonique
+      (Floyd-Steinberg, seuil 182, contraste 151 %, Charbon/Orange). Jamais d'image
+      brute en jeu.</li>
+  <li><code>aldenhar/public/assets/</code> — le PNG tramé y est déposé sous son nom
+      <code>{categorie}_{sujet}.png</code>.</li>
+  <li><code>lib/scene-data.ts</code> puis <code>data/zones/*.json</code> — le champ
+      <code>illustration</code> est mis à jour. Le .ts fait foi pour le jeu ; le JSON
+      suit pour la production.</li>
+</ol></div>"""
     )
 
     return f"""<!doctype html>
@@ -774,37 +882,29 @@ def render(items: list[Item], counts: dict, orphans: list[str], editable: bool) 
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>{CSS}</style></head><body>
 <h1>COUVERTURE VISUELLE</h1>
-<div class="sub">{counts["scenes"]} scènes · {counts["pois"]} points d'intérêt · lib/scene-data.ts × assets/ · {mode}</div>
+<div class="sub">{counts["scenes"]} scènes · {counts["pois"]} points d'intérêt · Les Landes · {mode}</div>
 <canvas class="rule"></canvas>
 
 <div class="stats">{stats}</div>
+{copy_btn}
 
 <div class="filters" id="filters">{filters_html}</div>
 
 <div class="grid">{"".join(card(i) for i in items)}</div>
 
 <h2>Assets orphelins</h2>
-<div class="sub">Présents dans assets/, référencés par aucune scène — à rattacher ou à supprimer.</div>
+<div class="sub">Présents dans assets/, référencés par aucune scène — en réserve, ou à supprimer.</div>
 <div class="orph">{orph}</div>
 
-<h2>Ordre d'écriture obligatoire</h2>
-<div class="log-static"><ol>
-  <li><code>dither_batch.py</code> — l'image brute passe par le dithering canonique
-      (Floyd-Steinberg, seuil 182, contraste 151 %, Charbon/Orange). Jamais d'image
-      brute en jeu.</li>
-  <li><code>aldenhar/public/assets/</code> — le PNG tramé y est déposé sous son nom
-      <code>{{categorie}}_{{sujet}}.png</code>.</li>
-  <li><code>lib/scene-data.ts</code> puis <code>data/zones/*.json</code> — le champ
-      <code>illustration</code> est mis à jour. Le .ts fait foi pour le jeu ; le JSON
-      suit pour la production.</li>
-</ol></div>
+{footer}
 
 <div id="zoom" role="dialog" aria-modal="true" aria-label="Image en pleine résolution">
   <img alt=""><p class="cap"></p>
 </div>
 <div id="log"><div class="hd">Journal d'écriture</div><div id="logbody">En attente d'une action…</div></div>
 <div id="toast"></div>
-<script>window.__COVERAGE_EDITABLE__={str(editable).lower()};</script>
+<script>window.__COVERAGE_EDITABLE__={str(editable).lower()};
+window.__COVERAGE_WEB__={str(web).lower()};</script>
 <script>{JS}</script>
 </body></html>
 """
@@ -974,6 +1074,15 @@ def serve(port: int = 8765) -> None:
 
 def main() -> None:
     items, counts, orphans = build_items()
+    if "--web" in sys.argv:
+        # Version déployable à côté du jeu sur GitHub Pages : les assets y sont
+        # déjà publics, donc la page ne pèse rien et sert les PNG d'origine.
+        dest = Path(sys.argv[sys.argv.index("--web") + 1])
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        dest.write_text(render(items, counts, orphans, editable=False, web=True), encoding="utf-8")
+        kb = dest.stat().st_size / 1024
+        print(f"{dest} écrit — {kb:.0f} Ko (images servies depuis assets/, non embarquées)")
+        return
     if "--serve" in sys.argv:
         OUT_HTML.write_text(render(items, counts, orphans, editable=False), encoding="utf-8")
         port = 8765
