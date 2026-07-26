@@ -5,6 +5,7 @@ import Scene from "@/components/Scene";
 import { HeroGeolier } from "@/components/HeroGeolier";
 import Prologue from "@/components/Prologue";
 import Intro, { ActeScreen } from "@/components/Intro";
+import Registre from "@/components/Registre";
 import { buildRegistre, loadMemory, shouldShowIntro } from "@/lib/player-memory";
 import { hasSavedRun, loadRun, resetRun } from "@/lib/state";
 import { APP_VERSION } from "@/lib/version";
@@ -124,16 +125,31 @@ export default function Home() {
               </div>
             </div>
 
-            {overlay && <HomeOverlay kind={overlay} onClose={() => setOverlay(null)} />}
+            {/* Le Grand Registre a son propre écran plein cadre depuis le
+                26/07 (maquette 2265:24560) — les deux autres restent en
+                overlay simple. */}
+            {overlay === "registre" ? (
+              <Registre
+                heroName={loadRun().heroName}
+                playerDays={loadRun().day}
+                onClose={() => setOverlay(null)}
+              />
+            ) : (
+              overlay && <HomeOverlay kind={overlay} onClose={() => setOverlay(null)} />
+            )}
           </>
         )}
 
         {/* Numéro de version — bas à droite du cadre, blanc opacité 50 %.
             Repère de déploiement (demande Patrick 20/07) : source unique dans
-            lib/version.ts, bumpée selon la grandeur du changement. */}
-        <span className="app-version" aria-hidden>
-          v{APP_VERSION}
-        </span>
+            lib/version.ts, bumpée selon la grandeur du changement.
+            Masqué dès qu'un écran plein cadre est ouvert : il se posait par
+            dessus le Registre (vu au test du 26/07). */}
+        {!overlay && (
+          <span className="app-version" aria-hidden>
+            v{APP_VERSION}
+          </span>
+        )}
       </div>
     </main>
   );

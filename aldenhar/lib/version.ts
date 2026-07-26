@@ -171,5 +171,9 @@
  *           l'image du lieu : le héros se déplace, et l'écran montre l'élément
  *           lui-même via son image dédiée. Sans image dédiée, l'écran garde la
  *           vue du lieu — c'est un asset à produire, pas un effet à simuler.
+ *   1.24.0 — Lot Notion 26/07, vague 1 : l'écran du Grand Registre (les cent
+ *           places, la première verrouillée et illisible, l'onglet « Tes
+ *           morts ») et l'affordance « Touche pour … » devenue une règle
+ *           globale — 50 px du bas, clignotement saccadé, partout.
  */
-export const APP_VERSION = "1.23.1";
+export const APP_VERSION = "1.24.0";

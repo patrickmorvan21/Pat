@@ -289,6 +289,13 @@ body {
    on réutilise le keyframe `pulse` plutôt que d'en dupliquer un. */
 .acte-hint { animation: pulse 2.4s steps(2) infinite; }
 
+/* Affordance « Touche pour … » (Notion 26/07 §2) : clignotement SACCADÉ —
+   l'élément est visible ou masqué, jamais entre les deux. `steps(1)` sur une
+   keyframe à deux paliers donne exactement ça ; une transition d'opacité
+   (même courte) produirait le fondu que la DA interdit. */
+@keyframes touch-blink { 0%, 62% { visibility: visible; } 63%, 100% { visibility: hidden; } }
+.touch-hint { animation: touch-blink 1.6s steps(1) infinite; }
+
 /* Entrée d'une nouvelle scène : fondu par paliers, cohérent avec la DA */
 .scene-enter {
   animation: fadeup 0.4s steps(4) both;
@@ -449,6 +456,7 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .die-hint { animation: none; }
   .acte-hint { animation: none; }
+  .touch-hint { animation: none; }
   .phone-frame.quake { animation: none; }
   .scene-enter { animation: none; }
   .erosion-2.phone-frame, .erosion-3.phone-frame { animation: none; }

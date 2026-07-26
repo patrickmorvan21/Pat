@@ -21,7 +21,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { markIntroSeen } from "@/lib/player-memory";
-import { animReduced } from "@/lib/settings";
+import TouchHint from "@/components/TouchHint";
 
 type Clause = {
   /** Chapeau (« • PREMIÈRE CLAUSE • ») — absent sur l'écran d'ouverture. */
@@ -111,11 +111,13 @@ function IntroFrame({
   onTap,
   children,
   footer,
+  first,
 }: {
   image: string;
   onTap: () => void;
   children: React.ReactNode;
   footer: React.ReactNode;
+  first?: boolean;
 }) {
   return (
     <main className="flex min-h-dvh items-center justify-center">
@@ -147,7 +149,10 @@ function IntroFrame({
 
         <div className="flex flex-1 flex-col px-[15px] pt-[16px]">{children}</div>
 
-        <div className="shrink-0 px-[46px] pb-[22px]">{footer}</div>
+        <div className="shrink-0 px-[46px] pb-[76px]">{footer}</div>
+        {/* Affordance à 50px du bas du CADRE (règle globale 26/07 §2) : le
+            premier écran dit « commencer », les suivants « continuer ». */}
+        <TouchHint first={first} />
       </div>
     </main>
   );
@@ -182,13 +187,9 @@ export default function Intro({ onDone }: { onDone: () => void }) {
     <IntroFrame
       image={c.image}
       onTap={advance}
+      first={i === 0}
       footer={
-        <div className="flex flex-col items-center gap-[16px]">
-          <Dots index={i} total={CLAUSES.length} />
-          <p className="font-mono text-[10px] tracking-[2px] text-[var(--color-ink)] opacity-50">
-            Touche pour commencer
-          </p>
-        </div>
+        <Dots index={i} total={CLAUSES.length} />
       }
     >
       {c.eyebrow && (
@@ -276,13 +277,7 @@ export function ActeScreen({ acte = 0, onDone }: { acte?: number; onDone: () => 
         {/* Sous la frise, le charbon reprend jusqu'en bas. */}
         <div className="absolute inset-x-0 bottom-0 top-[610px] bg-[var(--color-bg)]" />
 
-        <p
-          className={`absolute inset-x-0 bottom-[52px] text-center font-mono text-[10px] tracking-[2px] text-[var(--color-ink)] opacity-50 ${
-            animReduced() ? "" : "acte-hint"
-          }`}
-        >
-          Touche pour commencer
-        </p>
+        <TouchHint />
       </div>
     </main>
   );

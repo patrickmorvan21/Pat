@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import FitLabel from "@/components/FitLabel";
 import { HeroGeolier } from "@/components/HeroGeolier";
+import TouchHint from "@/components/TouchHint";
 import TypedText from "@/components/TypedText";
 import { computeVerdict, PROLOGUE_AMORCE, PROLOGUE_CLOTURE } from "@/lib/prologue-data";
 import { loadRun, saveRun, type PrologueMemory, type RunState } from "@/lib/state";
@@ -242,13 +243,10 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
           )}
         </div>
 
-        {/* Affordance « Touche pour continuer » (maquette 1997:523) : en bas,
-            centré, opacité 50 %, sur les écrans d'amorce (narration sans bouton). */}
-        {isAmorce && typedDone && (
-          <span className="absolute inset-x-0 bottom-[22px] text-center font-mono text-[13px] text-[var(--color-ink)] opacity-50">
-            Touche pour continuer
-          </span>
-        )}
+        {/* Affordance sur les écrans d'amorce (narration sans bouton). Passée
+            au composant partagé le 26/07 : position et clignotement saccadé
+            sont désormais une règle globale, plus un réglage par écran. */}
+        {isAmorce && typedDone && <TouchHint />}
       </div>
     </main>
   );
