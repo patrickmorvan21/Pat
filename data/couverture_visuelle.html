@@ -49,6 +49,23 @@ text-transform:uppercase;padding:3px 6px}
 .tag.fallback{background:none;color:var(--b50);box-shadow:inset 0 0 0 1px var(--b20)}
 .tag.manquante{background:var(--blanc);color:var(--charbon)}
 
+/* ---------- verdict (jugement de QUALITÉ, distinct du statut) ----------
+   Position et forme DIFFÉRENTES du badge de statut pour qu'on ne les confonde
+   jamais : le statut est une puce en haut à gauche, le verdict une bande pleine
+   largeur en bas de la vignette. */
+.vbar{position:absolute;left:0;right:0;bottom:0;font-size:9px;letter-spacing:1.5px;
+text-transform:uppercase;padding:4px 6px;text-align:center}
+.vbar.a_remplacer{background:var(--blanc);color:var(--charbon)}
+.vbar.ok{background:var(--orange);color:var(--charbon)}
+.card.a_remplacer{border-color:var(--blanc)}
+.vnote{font-size:10px;color:var(--blanc);margin-top:5px;line-height:1.4}
+.verdict{display:flex;gap:5px;margin-top:8px}
+.verdict button{flex:1;background:none;border:1px solid var(--b20);color:var(--b50);
+font:inherit;font-size:10px;letter-spacing:.5px;padding:6px 4px;cursor:pointer}
+.verdict button:hover{border-color:var(--b50);color:var(--blanc)}
+.verdict button.on-ko{background:var(--blanc);border-color:var(--blanc);color:var(--charbon)}
+.verdict button.on-ok{background:var(--orange);border-color:var(--orange);color:var(--charbon)}
+
 .cat{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--b50);margin-top:9px}
 .id{font-size:12px;margin-top:2px;word-break:break-all}
 .id .poi{color:var(--b50)}
@@ -82,8 +99,21 @@ h2{font:400 20px/1.2 "Instrument Serif",Georgia,serif;letter-spacing:2px;margin-
 
 #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
 background:var(--orange);color:var(--charbon);padding:9px 16px;font-size:12px;
-letter-spacing:.5px;opacity:0;transition:opacity .2s;pointer-events:none}
+letter-spacing:.5px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:11}
 #toast.on{opacity:1}
+
+/* ---------- agrandi : l'image ORIGINALE, pleine résolution ----------
+   C'est le cœur de l'usage (juger si une image marche), donc on sert le PNG
+   1000×1000 tel quel, jamais une vignette rééchantillonnée. */
+.thumb{cursor:zoom-in}
+#zoom{position:fixed;inset:0;background:rgba(10,9,7,.95);display:none;
+align-items:center;justify-content:center;flex-direction:column;gap:12px;
+padding:24px;cursor:zoom-out;z-index:9}
+#zoom.on{display:flex}
+#zoom img{max-width:min(92vw,900px);max-height:80vh;image-rendering:pixelated;
+border:1px solid var(--b20)}
+#zoom .cap{font-size:11px;color:var(--b50);letter-spacing:1px;text-align:center}
+#zoom .cap b{color:var(--orange);font-weight:400}
 
 /* ---------- journal d'écriture — panneau fixe, jamais une popup ---------- */
 #log{position:fixed;right:0;bottom:0;width:340px;max-height:34vh;overflow-y:auto;
@@ -101,23 +131,27 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
 <div class="stat"><div class="n" style="color:var(--orange)">6</div><div class="l">héritées</div></div>
 <div class="stat mid"><div class="n">6</div><div class="l">fallback</div></div>
 <div class="stat ko"><div class="n">1</div><div class="l">manquantes</div></div>
+<div class="stat ko"><div class="n" id="n-remplacer">0</div><div class="l">à remplacer</div></div>
+<div class="stat ok"><div class="n" id="n-valides">0</div><div class="l">validées</div></div>
 <div class="stat mid"><div class="n">28</div><div class="l">orphelins</div></div>
 <div class="stat mid"><div class="n">17</div><div class="l">prompts à écrire</div></div>
 </div>
 
-<div class="filters" id="filters"><button class="on" data-f="tous">Tous</button><button class="" data-f="dediee">Dédiées</button><button class="" data-f="heritee">Héritées</button><button class="" data-f="fallback">Fallback</button><button class="" data-f="manquante">Manquantes</button><button class="" data-f="monstre">Monstres</button><button class="" data-f="objet">Objets</button><button class="" data-f="scene">Scènes</button></div>
+<div class="filters" id="filters"><button class="on" data-f="tous">Tous</button><button class="" data-f="dediee">Dédiées</button><button class="" data-f="heritee">Héritées</button><button class="" data-f="fallback">Fallback</button><button class="" data-f="manquante">Manquantes</button><button class="" data-f="a_remplacer">À remplacer</button><button class="" data-f="ok">Validées</button><button class="" data-f="monstre">Monstres</button><button class="" data-f="objet">Objets</button><button class="" data-f="scene">Scènes</button></div>
 
-<div class="grid"><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_borne_frontiere_a_c.png')"><span class="tag dediee">dédiée</span></div>
+<div class="grid"><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_borne_frontiere_a_c.png')" data-zoom="../aldenhar/public/assets/scene_borne_frontiere_a_c.png" data-zoom-id="borne-frontiere" title="Agrandir — scene_borne_frontiere_a_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">borne-frontiere</div>
   <div class="meta">scene_borne_frontiere_a_c.png</div>
   <div class="desc">Entrée de zone, tout premier écran du jeu. La borne-frontière dressée seule sur le plateau, ses faces gravées, les offrandes à son pied, et le chemin qui s'enfonce au sud dans le noir.</div>
   
+  
+  
   <div class="act"><button data-prompt="single tall standing stone in the middle of an empty moor plateau, carved marks on its faces, small pile of humble offerings at its base, path vanishing south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_borne_gravures_a_d.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_borne_gravures_a_d.png')" data-zoom="../aldenhar/public/assets/scene_borne_gravures_a_d.png" data-zoom-id="gravures-borne" title="Agrandir — scene_borne_gravures_a_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">gravures-borne <span class="poi">← borne-frontiere</span></div>
   <div class="meta">scene_borne_gravures_a_d.png</div>
@@ -125,8 +159,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_borne_eclat_a_b.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_borne_eclat_a_b.png')" data-zoom="../aldenhar/public/assets/scene_borne_eclat_a_b.png" data-zoom-id="eclat-descelle" title="Agrandir — scene_borne_eclat_a_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">eclat-descelle <span class="poi">← borne-frontiere</span></div>
   <div class="meta">scene_borne_eclat_a_b.png</div>
@@ -134,8 +170,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_hesitant_b.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_hesitant_b.png')" data-zoom="../aldenhar/public/assets/monstre_hesitant_b.png" data-zoom-id="homme-immobile" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">homme-immobile <span class="poi">← borne-frontiere</span></div>
   <div class="meta">monstre_hesitant_b.png</div>
@@ -143,44 +181,54 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_hesitant_b.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_hesitant_b.png')" data-zoom="../aldenhar/public/assets/monstre_hesitant_b.png" data-zoom-id="hesitant-1" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">hesitant-1</div>
   <div class="meta">monstre_hesitant_b.png</div>
   <div class="desc">Rencontre à la Borne, beat 1. Un homme immobile face au sud, dos au hameau, qui ne bouge pas depuis assez longtemps pour que l'herbe se soit couchée sous lui.</div>
   
+  
+  
   <div class="act"><button data-prompt="gaunt hooded man standing motionless on a moor, seen from behind at three-quarters, facing away toward a dark southern horizon, worn travelling clothes, a small bundle at his feet, grass flattened around him, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_hesitant_b.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_hesitant_b.png')" data-zoom="../aldenhar/public/assets/monstre_hesitant_b.png" data-zoom-id="hesitant-2" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">hesitant-2</div>
   <div class="meta">monstre_hesitant_b.png</div>
   <div class="desc">Rencontre à la Borne, beat 2 — l'échange. Il calcule à voix haute entre rentrer et descendre. Son visage de trois-quarts, la borne floue derrière lui.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_hesitant_b.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_hesitant_b.png')" data-zoom="../aldenhar/public/assets/monstre_hesitant_b.png" data-zoom-id="hesitant-3" title="Agrandir — monstre_hesitant_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">hesitant-3</div>
   <div class="meta">monstre_hesitant_b.png</div>
   <div class="desc">Rencontre à la Borne, beat 3 — la résolution. Selon l'issue, il rentre ou s'assied au pied de la pierre, face au sud.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chemin_creux_c.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chemin_creux_c.png')" data-zoom="../aldenhar/public/assets/scene_chemin_creux_c.png" data-zoom-id="chemin-creux" title="Agrandir — scene_chemin_creux_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">chemin-creux</div>
   <div class="meta">scene_chemin_creux_c.png</div>
   <div class="desc">Arrivée au Chemin Creux. Une route encaissée entre deux hauts talus de terre, un ruban de ciel étroit au-dessus, des racines tordues qui sortent des parois.</div>
   
+  
+  
   <div class="act"><button data-prompt="sunken road between two high earthen banks, narrow ribbon of sky above, twisted roots protruding from the banks, deep shadows, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chemin_charrette_a_c.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chemin_charrette_a_c.png')" data-zoom="../aldenhar/public/assets/scene_chemin_charrette_a_c.png" data-zoom-id="charrette-embourbee" title="Agrandir — scene_chemin_charrette_a_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">charrette-embourbee <span class="poi">← chemin-creux</span></div>
   <div class="meta">scene_chemin_charrette_a_c.png</div>
@@ -188,8 +236,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chemin_talus_a_c.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chemin_talus_a_c.png')" data-zoom="../aldenhar/public/assets/scene_chemin_talus_a_c.png" data-zoom-id="talus-empreintes" title="Agrandir — scene_chemin_talus_a_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">talus-empreintes <span class="poi">← chemin-creux</span></div>
   <div class="meta">scene_chemin_talus_a_c.png</div>
@@ -197,8 +247,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_marcheur_a_rebours_d.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_marcheur_a_rebours_d.png')" data-zoom="../aldenhar/public/assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-rebours" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">marcheur-rebours <span class="poi">← chemin-creux</span></div>
   <div class="meta">monstre_marcheur_a_rebours_d.png</div>
@@ -206,62 +258,76 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chemin_creux_c.png')"><span class="tag heritee">héritée</span></div>
+  
+  
+</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chemin_creux_c.png')" data-zoom="../aldenhar/public/assets/scene_chemin_creux_c.png" data-zoom-id="chemin-creux-2" title="Agrandir — scene_chemin_creux_c.png"><span class="tag heritee">héritée</span></div>
   <div class="cat">scene</div>
   <div class="id">chemin-creux-2</div>
   <div class="meta">hérite de <b>chemin-creux</b></div>
   <div class="desc">Événement du Chemin Creux : le coude aveugle. Le talus mange la vue d'un coup — l'endroit exact où il devrait y avoir quelque chose, et où il n'y a rien.</div>
   
+  
+  
   <div class="act"><button data-prompt="blind bend of a sunken road between high earthen banks, the path disappearing around the curve, nothing visible beyond, very deep shadow at the turn, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_marcheur_a_rebours_d.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_marcheur_a_rebours_d.png')" data-zoom="../aldenhar/public/assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-1" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">marcheur-1</div>
   <div class="meta">monstre_marcheur_a_rebours_d.png</div>
   <div class="desc">Rencontre du Chemin Creux, beat 1. Le Marcheur à rebours avance en marche arrière, le regard fixé derrière lui — trente ans qu'il ne montre son dos à rien.</div>
   
+  
+  
   <div class="act"><button data-prompt="emaciated man walking backwards along a sunken road, face turned to look behind himself, eyes wide and fixed, arms slightly out for balance, ragged coat, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_marcheur_a_rebours_d.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_marcheur_a_rebours_d.png')" data-zoom="../aldenhar/public/assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-2" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">marcheur-2</div>
   <div class="meta">monstre_marcheur_a_rebours_d.png</div>
   <div class="desc">Rencontre du Chemin Creux, beat 2 — l'échange sur la crête nord.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_marcheur_a_rebours_d.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_marcheur_a_rebours_d.png')" data-zoom="../aldenhar/public/assets/monstre_marcheur_a_rebours_d.png" data-zoom-id="marcheur-3" title="Agrandir — monstre_marcheur_a_rebours_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">marcheur-3</div>
   <div class="meta">monstre_marcheur_a_rebours_d.png</div>
   <div class="desc">Rencontre du Chemin Creux, beat 3 — la résolution.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_bete_chemins_creux_a.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_bete_chemins_creux_a.png')" data-zoom="../aldenhar/public/assets/monstre_bete_chemins_creux_a.png" data-zoom-id="bete-chemins-creux" title="Agrandir — monstre_bete_chemins_creux_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">bete-chemins-creux</div>
   <div class="meta">monstre_bete_chemins_creux_a.png</div>
   <div class="desc">Combat, une scène. La Bête des Chemins Creux, qui longe la crête nord au même pas que ce qui marche en bas. On ne la voit qu'en silhouette, au-dessus.</div>
   
+  
+  
   <div class="act"><button data-prompt="massive quadruped silhouette crouched on the crest of an earthen bank, seen from below against a pale sky, long low body, head lowered toward the viewer, unnaturally still, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_colline_aux_gibets_c.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_colline_aux_gibets_c.png')" data-zoom="../aldenhar/public/assets/scene_colline_aux_gibets_c.png" data-zoom-id="colline-aux-gibets" title="Agrandir — scene_colline_aux_gibets_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">colline-aux-gibets</div>
   <div class="meta">scene_colline_aux_gibets_c.png</div>
   <div class="desc">Arrivée à la Colline aux Gibets, lieu-signature de la zone. Le cercle de potences sur la crête nue, vu d'en bas en contre-plongée, les cordes qui balancent.</div>
   
+  
+  
   <div class="act"><button data-prompt="circle of nine wooden gallows on a bare hilltop seen from below, low angle, ropes swaying, crows on the crossbeams, stormy sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_colline_potences_cercle_a_c.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_colline_potences_cercle_a_c.png')" data-zoom="../aldenhar/public/assets/scene_colline_potences_cercle_a_c.png" data-zoom-id="potences-cercle" title="Agrandir — scene_colline_potences_cercle_a_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">potences-cercle <span class="poi">← colline-aux-gibets</span></div>
   <div class="meta">scene_colline_potences_cercle_a_c.png</div>
@@ -269,8 +335,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_colline_gibet_vide_a_b.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_colline_gibet_vide_a_b.png')" data-zoom="../aldenhar/public/assets/scene_colline_gibet_vide_a_b.png" data-zoom-id="gibet-vide" title="Agrandir — scene_colline_gibet_vide_a_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">gibet-vide <span class="poi">← colline-aux-gibets</span></div>
   <div class="meta">scene_colline_gibet_vide_a_b.png</div>
@@ -278,7 +346,9 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi">
+  
+  
+</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi" data-verdict="">
   <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">fallback de zone</span></div>
   <div class="cat">scene</div>
   <div class="id">poteau-pendu <span class="poi">← colline-aux-gibets</span></div>
@@ -287,44 +357,54 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_colline_aux_gibets_c.png')"><span class="tag heritee">héritée</span></div>
+  
+  
+</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_colline_aux_gibets_c.png')" data-zoom="../aldenhar/public/assets/scene_colline_aux_gibets_c.png" data-zoom-id="colline-aux-gibets-2" title="Agrandir — scene_colline_aux_gibets_c.png"><span class="tag heritee">héritée</span></div>
   <div class="cat">scene</div>
   <div class="id">colline-aux-gibets-2</div>
   <div class="meta">hérite de <b>colline-aux-gibets</b></div>
   <div class="desc">Événement de la Colline : au sommet, entre les potences. L'écharde du grand gibet se prélève ici.</div>
   
+  
+  
   <div class="act"><button data-prompt="standing inside a circle of wooden gallows on a hilltop, ropes hanging at eye level all around, splintered beam in the foreground, vast empty sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_pendu_qui_parle_a.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_pendu_qui_parle_a.png')" data-zoom="../aldenhar/public/assets/monstre_pendu_qui_parle_a.png" data-zoom-id="pendu-qui-parle" title="Agrandir — monstre_pendu_qui_parle_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">pendu-qui-parle</div>
   <div class="meta">monstre_pendu_qui_parle_a.png</div>
   <div class="desc">Arrivée au gardien de zone : le Bailli pendu, qui parle encore. Vu de loin, une silhouette au bout d'une corde, sur un gibet isolé.</div>
   
+  
+  
   <div class="act"><button data-prompt="hanged man on an isolated gallows seen from a distance across dead moorland, head upright rather than slumped, rope taut, long coat, sky nearly black, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="heritee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_pendu_qui_parle_a.png')"><span class="tag heritee">héritée</span></div>
+</article><article class="card" data-statut="heritee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_pendu_qui_parle_a.png')" data-zoom="../aldenhar/public/assets/monstre_pendu_qui_parle_a.png" data-zoom-id="pendu-qui-parle-2" title="Agrandir — monstre_pendu_qui_parle_a.png"><span class="tag heritee">héritée</span></div>
   <div class="cat">monstre</div>
   <div class="id">pendu-qui-parle-2</div>
   <div class="meta">hérite de <b>pendu-qui-parle</b></div>
   <div class="desc">Le gardien, à hauteur d'homme. Non-combat : il juge. Son visage de pendu qui parle, le sceau à sa ceinture.</div>
   
+  
+  
   <div class="act"><button data-prompt="close portrait of a hanged magistrate, rope around his neck, eyes open and attentive, dried lips parted as if mid-sentence, heavy official seal hanging at his belt, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_champ_des_fixes_b.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_champ_des_fixes_b.png')" data-zoom="../aldenhar/public/assets/scene_champ_des_fixes_b.png" data-zoom-id="champ-des-fixes" title="Agrandir — scene_champ_des_fixes_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">champ-des-fixes</div>
   <div class="meta">scene_champ_des_fixes_b.png</div>
   <div class="desc">Arrivée au Champ des Fixés. Des rangées de poteaux plantés dans la lande morte, un écriteau clouté sur chacun, certains encore occupés.</div>
   
+  
+  
   <div class="act"><button data-prompt="rows of wooden posts planted across dead moorland, a small nailed sign on each, some posts still bearing hanged figures in the far distance, receding perspective, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_champ_rangees_a_d.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_champ_rangees_a_d.png')" data-zoom="../aldenhar/public/assets/scene_champ_rangees_a_d.png" data-zoom-id="les-rangees" title="Agrandir — scene_champ_rangees_a_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">les-rangees <span class="poi">← champ-des-fixes</span></div>
   <div class="meta">scene_champ_rangees_a_d.png</div>
@@ -332,8 +412,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_champ_poteaux_vierges_a_a.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_champ_poteaux_vierges_a_a.png')" data-zoom="../aldenhar/public/assets/scene_champ_poteaux_vierges_a_a.png" data-zoom-id="poteaux-vierges" title="Agrandir — scene_champ_poteaux_vierges_a_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">poteaux-vierges <span class="poi">← champ-des-fixes</span></div>
   <div class="meta">scene_champ_poteaux_vierges_a_a.png</div>
@@ -341,8 +423,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_champ_tombe_manquante_a_c.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_champ_tombe_manquante_a_c.png')" data-zoom="../aldenhar/public/assets/scene_champ_tombe_manquante_a_c.png" data-zoom-id="tombe-sans-poteau" title="Agrandir — scene_champ_tombe_manquante_a_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">tombe-sans-poteau <span class="poi">← champ-des-fixes</span></div>
   <div class="meta">scene_champ_tombe_manquante_a_c.png</div>
@@ -350,44 +434,54 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_fossoyeur_poteaux_a.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_fossoyeur_poteaux_a.png')" data-zoom="../aldenhar/public/assets/monstre_fossoyeur_poteaux_a.png" data-zoom-id="champ-des-fixes-2" title="Agrandir — monstre_fossoyeur_poteaux_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">champ-des-fixes-2</div>
   <div class="meta">monstre_fossoyeur_poteaux_a.png</div>
   <div class="desc">Événement du Champ : le Fossoyeur aux poteaux, qui grave d'avance les noms « dont c'est sûr ».</div>
   
+  
+  
   <div class="act"><button data-prompt="old gravedigger kneeling at the base of a wooden post, carving letters into the wood with a knife, satchel of tools open beside him, back bent, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_pendu_mal_fixe_a.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_pendu_mal_fixe_a.png')" data-zoom="../aldenhar/public/assets/monstre_pendu_mal_fixe_a.png" data-zoom-id="pendu-mal-fixe" title="Agrandir — monstre_pendu_mal_fixe_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">pendu-mal-fixe</div>
   <div class="meta">monstre_pendu_mal_fixe_a.png</div>
   <div class="desc">Combat, une scène. Le Pendu Mal Fixé : un bras tendu figé en plein geste d'agrippement, la corde trop longue qui laisse les pieds toucher le sol.</div>
   
+  
+  
   <div class="act"><button data-prompt="hanged figure whose rope is too long so its feet touch the ground, one arm outstretched and frozen mid-grab reaching toward the viewer, head tilted at a wrong angle, tattered clothes, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_hameau_dense2_b.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_hameau_dense2_b.png')" data-zoom="../aldenhar/public/assets/scene_hameau_dense2_b.png" data-zoom-id="serment-hameau" title="Agrandir — scene_hameau_dense2_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">serment-hameau</div>
   <div class="meta">scene_hameau_dense2_b.png</div>
   <div class="desc">Approche du Hameau des Renonçants, vu de loin. Les toits d'ardoise affaissés au creux du plateau, une seule cheminée qui fume sur vingt, aucun chien qui aboie.</div>
   
+  
+  
   <div class="act"><button data-prompt="distant abandoned hamlet nestled in a hollow of dead moorland at dusk, sagging slate rooftops, one single chimney smoking, low dry-stone walls leading to the village, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_landes_hameau_ruelle_b.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_landes_hameau_ruelle_b.png')" data-zoom="../aldenhar/public/assets/scene_landes_hameau_ruelle_b.png" data-zoom-id="hameau-entree-2" title="Agrandir — scene_landes_hameau_ruelle_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">hameau-entree-2</div>
   <div class="meta">scene_landes_hameau_ruelle_b.png</div>
   <div class="desc">Entrée du Hameau, beat 2 : le seuil. La ruelle étroite, les portes marquées à la craie, les volets fermés.</div>
   
+  
+  
   <div class="act"><button data-prompt="narrow street of an old abandoned hamlet, crooked stone houses, wooden doors marked with chalk crosses, closed shutters, wet cobblestones, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_hameau_croix_craie_a_a.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_hameau_croix_craie_a_a.png')" data-zoom="../aldenhar/public/assets/scene_hameau_croix_craie_a_a.png" data-zoom-id="croix-craie" title="Agrandir — scene_hameau_croix_craie_a_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">croix-craie <span class="poi">← hameau-entree-2</span></div>
   <div class="meta">scene_hameau_croix_craie_a_a.png</div>
@@ -395,8 +489,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_femme_au_seuil_b.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_femme_au_seuil_b.png')" data-zoom="../aldenhar/public/assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-sur-le-seuil" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">femme-sur-le-seuil <span class="poi">← hameau-entree-2</span></div>
   <div class="meta">monstre_femme_au_seuil_b.png</div>
@@ -404,52 +500,64 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_femme_au_seuil_b.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_femme_au_seuil_b.png')" data-zoom="../aldenhar/public/assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-seuil-1" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">femme-seuil-1</div>
   <div class="meta">monstre_femme_au_seuil_b.png</div>
   <div class="desc">Rencontre du Hameau, beat 1 — étalon du format. Une femme sur le seuil d'une maison basse, une croix à la craie sur sa porte, un châle serré.</div>
   
+  
+  
   <div class="act"><button data-prompt="woman standing in the doorway of a low stone house, chalk cross drawn on the door beside her, heavy shawl gripped closed at her throat, hollow-cheeked, watching, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_femme_au_seuil_b.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_femme_au_seuil_b.png')" data-zoom="../aldenhar/public/assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-seuil-2" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">femme-seuil-2</div>
   <div class="meta">monstre_femme_au_seuil_b.png</div>
   <div class="desc">Rencontre du Hameau, beat 2 — la mèche nouée qu'elle tend.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_femme_au_seuil_b.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_femme_au_seuil_b.png')" data-zoom="../aldenhar/public/assets/monstre_femme_au_seuil_b.png" data-zoom-id="femme-seuil-3" title="Agrandir — monstre_femme_au_seuil_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">femme-seuil-3</div>
   <div class="meta">monstre_femme_au_seuil_b.png</div>
   <div class="desc">Rencontre du Hameau, beat 3 — la résolution, puis retour à la séquence d'entrée.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_juge_de_cendre_c.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_juge_de_cendre_c.png')" data-zoom="../aldenhar/public/assets/monstre_juge_de_cendre_c.png" data-zoom-id="hameau-entree-3" title="Agrandir — monstre_juge_de_cendre_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">hameau-entree-3</div>
   <div class="meta">monstre_juge_de_cendre_c.png</div>
   <div class="desc">Entrée du Hameau, beat 3 : le barrage. Trois hommes au milieu de la rue, pas armés — un bâton de marche, une fourche posée contre un mur, à portée sans être brandie.</div>
   
+  
+  
   <div class="act"><button data-prompt="three gaunt villagers standing abreast in a narrow village street, one old man at the centre speaking, a walking staff in one hand, a pitchfork leaning against a wall nearby, shutters closing behind them, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_doyenne_b.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_doyenne_b.png')" data-zoom="../aldenhar/public/assets/monstre_doyenne_b.png" data-zoom-id="hameau-entree-4" title="Agrandir — monstre_doyenne_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">hameau-entree-4</div>
   <div class="meta">monstre_doyenne_b.png</div>
   <div class="desc">Entrée du Hameau, beat 4 : le Serment, imposé et jamais proposé. La paume ouverte et vide du vieux, tendue pour qu'on la regarde — on jure sur rien.</div>
   
+  
+  
   <div class="act"><button data-prompt="close view of an old man's open empty palm held out at chest height, weathered skin, the blurred faces of two other villagers behind him, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi">
+</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi" data-verdict="">
   <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">fallback de zone</span></div>
   <div class="cat">scene</div>
   <div class="id">pourquoi-trois-aubes <span class="poi">← hameau-entree-4</span></div>
@@ -458,35 +566,43 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_landes_hameau_ruelle_b.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_landes_hameau_ruelle_b.png')" data-zoom="../aldenhar/public/assets/scene_landes_hameau_ruelle_b.png" data-zoom-id="hameau-entree-5" title="Agrandir — scene_landes_hameau_ruelle_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">hameau-entree-5</div>
   <div class="meta">scene_landes_hameau_ruelle_b.png</div>
   <div class="desc">Entrée du Hameau, beat 5 : on passe. La rue qui s'ouvre, les volets qui se ferment un par un, un peu en avance sur le pas.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_landes_hameau_ruelle_b.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_landes_hameau_ruelle_b.png')" data-zoom="../aldenhar/public/assets/scene_landes_hameau_ruelle_b.png" data-zoom-id="hameau-halte-1" title="Agrandir — scene_landes_hameau_ruelle_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">hameau-halte-1</div>
   <div class="meta">scene_landes_hameau_ruelle_b.png</div>
   <div class="desc">Halte au Hameau, beat 1 : le vieux te trouve. « On sait toujours où tu es. »</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_landes_hameau_grange_a.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_landes_hameau_grange_a.png')" data-zoom="../aldenhar/public/assets/scene_landes_hameau_grange_a.png" data-zoom-id="hameau-halte-2" title="Agrandir — scene_landes_hameau_grange_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">hameau-halte-2</div>
   <div class="meta">scene_landes_hameau_grange_a.png</div>
   <div class="desc">Halte, beat 2 : la grange. Intérieur de nuit, une lanterne posée au sol, la paille, la barre de porte posée DEHORS, les bâtons de comptage sur les poutres.</div>
   
+  
+  
   <div class="act"><button data-prompt="interior of an old barn at night, single oil lamp on the floor, straw bedding, heavy wooden door with iron fittings, tally marks carved on beams, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_hameau_grange_poutres_a_d.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_hameau_grange_poutres_a_d.png')" data-zoom="../aldenhar/public/assets/scene_hameau_grange_poutres_a_d.png" data-zoom-id="examiner-grange" title="Agrandir — scene_hameau_grange_poutres_a_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">examiner-grange <span class="poi">← hameau-halte-2</span></div>
   <div class="meta">scene_hameau_grange_poutres_a_d.png</div>
@@ -494,71 +610,87 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_landes_hameau_grange_a.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_landes_hameau_grange_a.png')" data-zoom="../aldenhar/public/assets/scene_landes_hameau_grange_a.png" data-zoom-id="hameau-halte-3" title="Agrandir — scene_landes_hameau_grange_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">hameau-halte-3</div>
   <div class="meta">scene_landes_hameau_grange_a.png</div>
   <div class="desc">Halte, beat 3 : la nuit, la ronde que personne n'a annoncée.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_doyenne_b.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_doyenne_b.png')" data-zoom="../aldenhar/public/assets/monstre_doyenne_b.png" data-zoom-id="hameau-halte-4" title="Agrandir — monstre_doyenne_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">hameau-halte-4</div>
   <div class="meta">monstre_doyenne_b.png</div>
   <div class="desc">Halte, beat 4 : l'aube. Le Serment tenu se paie ici.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_hameau_dense_b.png')"><span class="tag fallback">fallback de zone</span></div>
+</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_hameau_dense_b.png')" data-zoom="../aldenhar/public/assets/scene_hameau_dense_b.png" data-zoom-id="hameau-halte-5" title="Agrandir — scene_hameau_dense_b.png"><span class="tag fallback">fallback de zone</span></div>
   <div class="cat">scene</div>
   <div class="id">hameau-halte-5</div>
   <div class="meta">ambiance générique de zone</div>
   <div class="desc">Halte, beat 5 : l'escorte jusqu'au portillon.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_hameau_dense_c.png')"><span class="tag fallback">fallback de zone</span></div>
+</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_hameau_dense_c.png')" data-zoom="../aldenhar/public/assets/scene_hameau_dense_c.png" data-zoom-id="hameau-halte-dehors" title="Agrandir — scene_hameau_dense_c.png"><span class="tag fallback">fallback de zone</span></div>
   <div class="cat">scene</div>
   <div class="id">hameau-halte-dehors</div>
   <div class="meta">ambiance générique de zone</div>
   <div class="desc">Variante de Halte pour qui a refusé le Serment : la nuit dehors, contre un muret, aucune porte ouverte.</div>
   
+  
+  
   <div class="act"><button data-prompt="man sitting against a low dry-stone wall outside a dark village at night, knees drawn up, no fire, closed shutters behind him, empty street, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_marche_muet_c.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_marche_muet_c.png')" data-zoom="../aldenhar/public/assets/scene_marche_muet_c.png" data-zoom-id="marche-muet" title="Agrandir — scene_marche_muet_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">marche-muet</div>
   <div class="meta">scene_marche_muet_c.png</div>
   <div class="desc">Arrivée au Marché Muet, à l'intérieur du hameau. Des étals sans marchands, des marchandises posées et personne pour les vendre.</div>
   
+  
+  
   <div class="act"><button data-prompt="small deserted village market square, empty trestle stalls with goods still laid out on them, no people, low stone houses closing the square, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_colporteur_b.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_colporteur_b.png')" data-zoom="../aldenhar/public/assets/monstre_colporteur_b.png" data-zoom-id="marche-muet-2" title="Agrandir — monstre_colporteur_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">marche-muet-2</div>
   <div class="meta">monstre_colporteur_b.png</div>
   <div class="desc">Événement du Marché : le Colporteur, le seul qui parle encore, et le Rebouteux derrière lui.</div>
   
+  
+  
   <div class="act"><button data-prompt="hunched pedlar with an enormous frame pack covered in hanging goods, standing in an empty market square, one hand raised in greeting, wide fixed smile, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_moulin_sans_ailes_d_d.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_moulin_sans_ailes_d_d.png')" data-zoom="../aldenhar/public/assets/scene_moulin_sans_ailes_d_d.png" data-zoom-id="campement" title="Agrandir — scene_moulin_sans_ailes_d_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">campement</div>
   <div class="meta">scene_moulin_sans_ailes_d_d.png</div>
   <div class="desc">Arrivée au Moulin sans Ailes — c'est le lieu de repos de la zone. Une tour de pierre trapue SANS ailes, quatre traces pâles sur le corps du moulin, la porte entrebâillée.</div>
   
+  
+  
   <div class="act"><button data-prompt="old stone windmill without sails on a moorland crest, four pale ghost marks of the missing sails on the stone body, door ajar, small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_moulin_croix_ombres_a_d.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_moulin_croix_ombres_a_d.png')" data-zoom="../aldenhar/public/assets/scene_moulin_croix_ombres_a_d.png" data-zoom-id="croix-ombres" title="Agrandir — scene_moulin_croix_ombres_a_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">croix-ombres <span class="poi">← campement</span></div>
   <div class="meta">scene_moulin_croix_ombres_a_d.png</div>
@@ -566,8 +698,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_moulin_lucarne_a_b.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_moulin_lucarne_a_b.png')" data-zoom="../aldenhar/public/assets/scene_moulin_lucarne_a_b.png" data-zoom-id="lucarne-moulin" title="Agrandir — scene_moulin_lucarne_a_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">lucarne-moulin <span class="poi">← campement</span></div>
   <div class="meta">scene_moulin_lucarne_a_b.png</div>
@@ -575,8 +709,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_moulin_interieur_a_d.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_moulin_interieur_a_d.png')" data-zoom="../aldenhar/public/assets/scene_moulin_interieur_a_d.png" data-zoom-id="interieur-moulin" title="Agrandir — scene_moulin_interieur_a_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">interieur-moulin <span class="poi">← campement</span></div>
   <div class="meta">scene_moulin_interieur_a_d.png</div>
@@ -584,26 +720,32 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_moulin_sans_ailes_d_d.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_moulin_sans_ailes_d_d.png')" data-zoom="../aldenhar/public/assets/scene_moulin_sans_ailes_d_d.png" data-zoom-id="campement-2" title="Agrandir — scene_moulin_sans_ailes_d_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">campement-2</div>
   <div class="meta">scene_moulin_sans_ailes_d_d.png</div>
   <div class="desc">Événement du Moulin : la garde, ou le sommeil. Le lit de bruyère tassé, refait de frais, les marques de comptage à hauteur d'enfant sur la pierre.</div>
   
+  
+  
   <div class="act"><button data-prompt="interior of a derelict stone windmill, heather bedding pressed flat on the floor, tally marks scratched on the stone wall at child height, broken millstone, light through a small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chapelle_des_cordes_d.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chapelle_des_cordes_d.png')" data-zoom="../aldenhar/public/assets/scene_chapelle_des_cordes_d.png" data-zoom-id="chapelle-des-cordes" title="Agrandir — scene_chapelle_des_cordes_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">chapelle-des-cordes</div>
   <div class="meta">scene_chapelle_des_cordes_d.png</div>
   <div class="desc">Arrivée à la Chapelle des Cordes, intérieur du hameau. Une nef courte, des dizaines de cordes coupées clouées en rangs le long des murs, du sol au plafond.</div>
   
+  
+  
   <div class="act"><button data-prompt="interior of a tiny stone chapel, dozens of cut ropes nailed in rows along the walls from floor to ceiling, small paper labels on each, overturned altar, short nave, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chapelle_mur_cordes_a_d.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chapelle_mur_cordes_a_d.png')" data-zoom="../aldenhar/public/assets/scene_chapelle_mur_cordes_a_d.png" data-zoom-id="mur-cordes" title="Agrandir — scene_chapelle_mur_cordes_a_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">mur-cordes <span class="poi">← chapelle-des-cordes</span></div>
   <div class="meta">scene_chapelle_mur_cordes_a_d.png</div>
@@ -611,8 +753,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chapelle_autel_a_c.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chapelle_autel_a_c.png')" data-zoom="../aldenhar/public/assets/scene_chapelle_autel_a_c.png" data-zoom-id="autel-renverse" title="Agrandir — scene_chapelle_autel_a_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">autel-renverse <span class="poi">← chapelle-des-cordes</span></div>
   <div class="meta">scene_chapelle_autel_a_c.png</div>
@@ -620,8 +764,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chapelle_ouvrage_a_d.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_chapelle_ouvrage_a_d.png')" data-zoom="../aldenhar/public/assets/scene_chapelle_ouvrage_a_d.png" data-zoom-id="ouvrage-tressage" title="Agrandir — scene_chapelle_ouvrage_a_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">ouvrage-tressage <span class="poi">← chapelle-des-cordes</span></div>
   <div class="meta">scene_chapelle_ouvrage_a_d.png</div>
@@ -629,62 +775,76 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_veuve_cordes_a.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_veuve_cordes_a.png')" data-zoom="../aldenhar/public/assets/monstre_veuve_cordes_a.png" data-zoom-id="chapelle-des-cordes-2" title="Agrandir — monstre_veuve_cordes_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">chapelle-des-cordes-2</div>
   <div class="meta">monstre_veuve_cordes_a.png</div>
   <div class="desc">Événement de la Chapelle : la Veuve aux Cordes, assise, qui refait sans fin le même nœud. Derrière elle, sous verre, la corde coupée sans nom.</div>
   
+  
+  
   <div class="act"><button data-prompt="old woman in black seated on a chair, tying and untying the same knot in a short length of rope, eyes down, a glass case behind her holding one cut rope, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_puits_condamne_c.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_puits_condamne_c.png')" data-zoom="../aldenhar/public/assets/scene_puits_condamne_c.png" data-zoom-id="puits-condamne" title="Agrandir — scene_puits_condamne_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">puits-condamne</div>
   <div class="meta">scene_puits_condamne_c.png</div>
   <div class="desc">Arrivée au Puits Condamné. Un puits fermé par des planches clouées en croix, par-dessus, des pierres empilées.</div>
   
+  
+  
   <div class="act"><button data-prompt="village well sealed shut with planks nailed in a cross over its mouth, stones piled on top, worn rope still tied to the winch, empty square, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_mains_du_puits_a.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_mains_du_puits_a.png')" data-zoom="../aldenhar/public/assets/monstre_mains_du_puits_a.png" data-zoom-id="puits-condamne-2" title="Agrandir — monstre_mains_du_puits_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">puits-condamne-2</div>
   <div class="meta">monstre_mains_du_puits_a.png</div>
   <div class="desc">Événement du Puits (scène chronométrée) : les Mains du Puits, qui sortent entre les planches.</div>
   
+  
+  
   <div class="act"><button data-prompt="pale emaciated hands reaching up through the gaps between nailed planks over a well mouth, fingers splayed and grasping, many more than two hands, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_maison_du_bailli_c.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_maison_du_bailli_c.png')" data-zoom="../aldenhar/public/assets/scene_maison_du_bailli_c.png" data-zoom-id="chien-du-bailli" title="Agrandir — scene_maison_du_bailli_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">chien-du-bailli</div>
   <div class="meta">scene_maison_du_bailli_c.png</div>
   <div class="desc">Arrivée à la Maison du Bailli, murée. Portes et fenêtres bouchées à la pierre, de l'extérieur — on a fermé cette maison depuis la rue.</div>
   
+  
+  
   <div class="act"><button data-prompt="stone house with every door and window bricked up from the outside, fresh mortar against old walls, a low garden wall, no path worn to the door, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_chien_du_bailli_b.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_chien_du_bailli_b.png')" data-zoom="../aldenhar/public/assets/monstre_chien_du_bailli_b.png" data-zoom-id="chien-du-bailli-2" title="Agrandir — monstre_chien_du_bailli_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">chien-du-bailli-2</div>
   <div class="meta">monstre_chien_du_bailli_b.png</div>
   <div class="desc">Combat : le Chien du Bailli, qui garde encore une maison où il n'y a plus personne.</div>
   
+  
+  
   <div class="act"><button data-prompt="gaunt long-legged hound standing in front of a bricked-up doorway, ribs showing, head low, lips drawn back, a broken chain still on its collar, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_petit_tribunal_a.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_petit_tribunal_a.png')" data-zoom="../aldenhar/public/assets/scene_petit_tribunal_a.png" data-zoom-id="petit-tribunal" title="Agrandir — scene_petit_tribunal_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">petit-tribunal</div>
   <div class="meta">scene_petit_tribunal_a.png</div>
   <div class="desc">Arrivée au Petit Tribunal. Une grange convertie en salle d'audience : trois bancs de bois face à une haute chaire, une feuille de règles clouée au mur.</div>
   
+  
+  
   <div class="act"><button data-prompt="interior of a barn converted into a rustic courtroom, three wooden benches facing a tall wooden pulpit, a sheet of rules nailed to the wall, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_tribunal_ordonnance_a_c.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_tribunal_ordonnance_a_c.png')" data-zoom="../aldenhar/public/assets/scene_tribunal_ordonnance_a_c.png" data-zoom-id="mur-ordonnance" title="Agrandir — scene_tribunal_ordonnance_a_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">mur-ordonnance <span class="poi">← petit-tribunal</span></div>
   <div class="meta">scene_tribunal_ordonnance_a_c.png</div>
@@ -692,8 +852,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_tribunal_chaire_a_c.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_tribunal_chaire_a_c.png')" data-zoom="../aldenhar/public/assets/scene_tribunal_chaire_a_c.png" data-zoom-id="chaire-registre" title="Agrandir — scene_tribunal_chaire_a_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">chaire-registre <span class="poi">← petit-tribunal</span></div>
   <div class="meta">scene_tribunal_chaire_a_c.png</div>
@@ -701,8 +863,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_tribunal_bancs_a_c.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_tribunal_bancs_a_c.png')" data-zoom="../aldenhar/public/assets/scene_tribunal_bancs_a_c.png" data-zoom-id="les-bancs" title="Agrandir — scene_tribunal_bancs_a_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">les-bancs <span class="poi">← petit-tribunal</span></div>
   <div class="meta">scene_tribunal_bancs_a_c.png</div>
@@ -710,44 +874,54 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_ecrivain_public_d.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_ecrivain_public_d.png')" data-zoom="../aldenhar/public/assets/monstre_ecrivain_public_d.png" data-zoom-id="petit-tribunal-2" title="Agrandir — monstre_ecrivain_public_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">petit-tribunal-2</div>
   <div class="meta">monstre_ecrivain_public_d.png</div>
   <div class="desc">Événement du Tribunal : l'Écrivain public, qui entre, te voit à la chaire, et se met à copier sans lever les yeux.</div>
   
+  
+  
   <div class="act"><button data-prompt="small dry clerk seated on a witness bench, open ledger on his knees, quill in hand, inkpot clutched against his chest, eyes down, mid-stroke, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_meute_grise_c.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_meute_grise_c.png')" data-zoom="../aldenhar/public/assets/monstre_meute_grise_c.png" data-zoom-id="meute-grise-1" title="Agrandir — monstre_meute_grise_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">meute-grise-1</div>
   <div class="meta">monstre_meute_grise_c.png</div>
   <div class="desc">Combat en deux scènes, beat 1. La Meute Grise : six silhouettes couleur de bruyère morte, immobiles aux six points d'un cercle dont tu es le centre.</div>
   
+  
+  
   <div class="act"><button data-prompt="six lean grey hounds standing motionless in a wide circle on open moorland, seen from the centre, evenly spaced, all heads turned inward toward the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_meute_grise_c.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_meute_grise_c.png')" data-zoom="../aldenhar/public/assets/monstre_meute_grise_c.png" data-zoom-id="meute-grise-2" title="Agrandir — monstre_meute_grise_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">meute-grise-2</div>
   <div class="meta">monstre_meute_grise_c.png</div>
   <div class="desc">Combat, beat 2 : la résolution de l'encerclement.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_mare_aux_regards_a.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_mare_aux_regards_a.png')" data-zoom="../aldenhar/public/assets/scene_mare_aux_regards_a.png" data-zoom-id="mare-aux-regards" title="Agrandir — scene_mare_aux_regards_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">mare-aux-regards</div>
   <div class="meta">scene_mare_aux_regards_a.png</div>
   <div class="desc">Arrivée à la Mare aux Regards. Une eau noire parfaitement immobile, la berge piétinée avec deux creux de genoux, des roseaux, aucun vent.</div>
   
+  
+  
   <div class="act"><button data-prompt="perfectly still black pond in dead moorland, trampled bank with two knee hollows, reeds, dark reflections, no wind, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_mare_berge_a_c.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_mare_berge_a_c.png')" data-zoom="../aldenhar/public/assets/scene_mare_berge_a_c.png" data-zoom-id="berge-usee" title="Agrandir — scene_mare_berge_a_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">berge-usee <span class="poi">← mare-aux-regards</span></div>
   <div class="meta">scene_mare_berge_a_c.png</div>
@@ -755,7 +929,9 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi">
+  
+  
+</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi" data-verdict="">
   <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">fallback de zone</span></div>
   <div class="cat">scene</div>
   <div class="id">eau-reflet <span class="poi">← mare-aux-regards</span></div>
@@ -764,8 +940,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_mare_miroir_a_b.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_mare_miroir_a_b.png')" data-zoom="../aldenhar/public/assets/scene_mare_miroir_a_b.png" data-zoom-id="reflet-metal" title="Agrandir — scene_mare_miroir_a_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">reflet-metal <span class="poi">← mare-aux-regards</span></div>
   <div class="meta">scene_mare_miroir_a_b.png</div>
@@ -773,26 +951,32 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_mare_aux_regards_a.png')"><span class="tag heritee">héritée</span></div>
+  
+  
+</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_mare_aux_regards_a.png')" data-zoom="../aldenhar/public/assets/scene_mare_aux_regards_a.png" data-zoom-id="mare-aux-regards-2" title="Agrandir — scene_mare_aux_regards_a.png"><span class="tag heritee">héritée</span></div>
   <div class="cat">scene</div>
   <div class="id">mare-aux-regards-2</div>
   <div class="meta">hérite de <b>mare-aux-regards</b></div>
   <div class="desc">Événement de la Mare : un Renonçant qui vient vérifier son propre reflet, et te trouve là.</div>
   
+  
+  
   <div class="act"><button data-prompt="kneeling villager bent over the edge of a black pond staring at his own reflection, hands flat on the trampled bank, head turning sharply toward the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_verger_noir_d.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_verger_noir_d.png')" data-zoom="../aldenhar/public/assets/scene_verger_noir_d.png" data-zoom-id="verger-noir" title="Agrandir — scene_verger_noir_d.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">verger-noir</div>
   <div class="meta">scene_verger_noir_d.png</div>
   <div class="desc">Arrivée au Verger Noir. Des arbres noirs tordus plantés en rangs, des fruits gris et lourds sur les branches, une vieille souche au premier plan.</div>
   
+  
+  
   <div class="act"><button data-prompt="orchard of black twisted fruit trees planted in rows on dead moorland, heavy grey ash fruits on the branches, one old stump in the foreground, two distant bent figures digging, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_verger_fruits_a_c.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_verger_fruits_a_c.png')" data-zoom="../aldenhar/public/assets/scene_verger_fruits_a_c.png" data-zoom-id="fruits-cendre" title="Agrandir — scene_verger_fruits_a_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">fruits-cendre <span class="poi">← verger-noir</span></div>
   <div class="meta">scene_verger_fruits_a_c.png</div>
@@ -800,8 +984,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_verger_souche_a_c.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_verger_souche_a_c.png')" data-zoom="../aldenhar/public/assets/scene_verger_souche_a_c.png" data-zoom-id="souche-premier-arbre" title="Agrandir — scene_verger_souche_a_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">souche-premier-arbre <span class="poi">← verger-noir</span></div>
   <div class="meta">scene_verger_souche_a_c.png</div>
@@ -809,8 +995,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_epoux_verger_a.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_epoux_verger_a.png')" data-zoom="../aldenhar/public/assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-verger" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">epoux-verger <span class="poi">← verger-noir</span></div>
   <div class="meta">monstre_epoux_verger_a.png</div>
@@ -818,53 +1006,65 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_verger_noir_d.png')"><span class="tag heritee">héritée</span></div>
+  
+  
+</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_verger_noir_d.png')" data-zoom="../aldenhar/public/assets/scene_verger_noir_d.png" data-zoom-id="verger-noir-2" title="Agrandir — scene_verger_noir_d.png"><span class="tag heritee">héritée</span></div>
   <div class="cat">scene</div>
   <div class="id">verger-noir-2</div>
   <div class="meta">hérite de <b>verger-noir</b></div>
   <div class="desc">Événement du Verger : le fruit qui tombe encore chaud.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_epoux_verger_a.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_epoux_verger_a.png')" data-zoom="../aldenhar/public/assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-1" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">epoux-1</div>
   <div class="meta">monstre_epoux_verger_a.png</div>
   <div class="desc">Rencontre du Verger, beat 1. Les Époux, deux silhouettes courbées qui creusent entre les rangs sans se parler.</div>
   
+  
+  
   <div class="act"><button data-prompt="elderly couple digging side by side between orchard rows, both bent low, one spade each, not looking at one another, black twisted branches above them, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_epoux_verger_a.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_epoux_verger_a.png')" data-zoom="../aldenhar/public/assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-2" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">epoux-2</div>
   <div class="meta">monstre_epoux_verger_a.png</div>
   <div class="desc">Rencontre du Verger, beat 2 — l'échange.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_epoux_verger_a.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="monstre" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/monstre_epoux_verger_a.png')" data-zoom="../aldenhar/public/assets/monstre_epoux_verger_a.png" data-zoom-id="epoux-3" title="Agrandir — monstre_epoux_verger_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">monstre</div>
   <div class="id">epoux-3</div>
   <div class="meta">monstre_epoux_verger_a.png</div>
   <div class="desc">Rencontre du Verger, beat 3 — la résolution.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_palissade_sud_a_a.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_palissade_sud_a_a.png')" data-zoom="../aldenhar/public/assets/scene_palissade_sud_a_a.png" data-zoom-id="palissade-sud" title="Agrandir — scene_palissade_sud_a_a.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">palissade-sud</div>
   <div class="meta">scene_palissade_sud_a_a.png</div>
   <div class="desc">Arrivée à la Palissade Sud, seuil de l'Acte II. Une haute palissade de rondins appointés qui ferme l'horizon, un petit portillon, une borne au premier plan.</div>
   
+  
+  
   <div class="act"><button data-prompt="tall wooden palisade of sharpened logs closing a moorland horizon, small gate, a single standing boundary stone in the foreground, path leading south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_palissade_rondins_a_c.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_palissade_rondins_a_c.png')" data-zoom="../aldenhar/public/assets/scene_palissade_rondins_a_c.png" data-zoom-id="rondins-pointes" title="Agrandir — scene_palissade_rondins_a_c.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">rondins-pointes <span class="poi">← palissade-sud</span></div>
   <div class="meta">scene_palissade_rondins_a_c.png</div>
@@ -872,8 +1072,10 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_palissade_portillon_a_b.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="scene" data-kind="poi" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_palissade_portillon_a_b.png')" data-zoom="../aldenhar/public/assets/scene_palissade_portillon_a_b.png" data-zoom-id="portillon-verrou" title="Agrandir — scene_palissade_portillon_a_b.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">scene</div>
   <div class="id">portillon-verrou <span class="poi">← palissade-sud</span></div>
   <div class="meta">scene_palissade_portillon_a_b.png</div>
@@ -881,7 +1083,9 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi">
+  
+  
+</article><article class="card" data-statut="fallback" data-cat="scene" data-kind="poi" data-verdict="">
   <div class="thumb none">AUCUNE IMAGE<span class="tag fallback">fallback de zone</span></div>
   <div class="cat">scene</div>
   <div class="id">homme-guerite <span class="poi">← palissade-sud</span></div>
@@ -890,48 +1094,60 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
   
   
   
-</article><article class="card" data-statut="dediee" data-cat="objet" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/objet_lanterne_rouillee.png')"><span class="tag dediee">dédiée</span></div>
+  
+  
+</article><article class="card" data-statut="dediee" data-cat="objet" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/objet_lanterne_rouillee.png')" data-zoom="../aldenhar/public/assets/objet_lanterne_rouillee.png" data-zoom-id="veilleur-1" title="Agrandir — objet_lanterne_rouillee.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">objet</div>
   <div class="id">veilleur-1</div>
   <div class="meta">objet_lanterne_rouillee.png</div>
   <div class="desc">Rencontre de la Palissade, beat 1. Le Veilleur dans sa guérite de planches, une lanterne au clou, trente ans de portillon.</div>
   
+  
+  
   <div class="act"><button data-prompt="old watchman inside a plank sentry box, rusty lantern hanging on a nail beside him, blanket over his shoulders, one eye milky, looking out through the opening, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="objet" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/objet_lanterne_rouillee.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="objet" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/objet_lanterne_rouillee.png')" data-zoom="../aldenhar/public/assets/objet_lanterne_rouillee.png" data-zoom-id="veilleur-2" title="Agrandir — objet_lanterne_rouillee.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">objet</div>
   <div class="id">veilleur-2</div>
   <div class="meta">objet_lanterne_rouillee.png</div>
   <div class="desc">Rencontre de la Palissade, beat 2 : la lanterne contre une histoire.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="dediee" data-cat="objet" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/objet_lanterne_rouillee.png')"><span class="tag dediee">dédiée</span></div>
+</article><article class="card" data-statut="dediee" data-cat="objet" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/objet_lanterne_rouillee.png')" data-zoom="../aldenhar/public/assets/objet_lanterne_rouillee.png" data-zoom-id="veilleur-3" title="Agrandir — objet_lanterne_rouillee.png"><span class="tag dediee">dédiée</span></div>
   <div class="cat">objet</div>
   <div class="id">veilleur-3</div>
   <div class="meta">objet_lanterne_rouillee.png</div>
   <div class="desc">Rencontre de la Palissade, beat 3 — la résolution.</div>
   
+  
+  
   <div class="act"><button class="todo" disabled>prompt à écrire</button></div>
   
-</article><article class="card" data-statut="manquante" data-cat="scene" data-kind="scene">
+</article><article class="card" data-statut="manquante" data-cat="scene" data-kind="scene" data-verdict="">
   <div class="thumb none">AUCUNE IMAGE<span class="tag manquante">manquante</span></div>
   <div class="cat">scene</div>
   <div class="id">palissade-sud-2</div>
   <div class="meta">aucune image ni héritage</div>
   <div class="desc">Événement de la Palissade : l'Appelé, toujours vu de dos, qui marche vers la Descente sans se retourner.</div>
   
+  
+  
   <div class="act"><button data-prompt="man seen from behind walking away toward a dark gap in a wooden palisade, arms loose at his sides, head level, never turning, path descending beyond the gate, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
-</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene">
-  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_petit_tribunal_a.png')"><span class="tag heritee">héritée</span></div>
+</article><article class="card" data-statut="heritee" data-cat="scene" data-kind="scene" data-verdict="">
+  <div class="thumb" style="background-image:url('../aldenhar/public/assets/scene_petit_tribunal_a.png')" data-zoom="../aldenhar/public/assets/scene_petit_tribunal_a.png" data-zoom-id="proces-du-heros" title="Agrandir — scene_petit_tribunal_a.png"><span class="tag heritee">héritée</span></div>
   <div class="cat">scene</div>
   <div class="id">proces-du-heros</div>
   <div class="meta">hérite de <b>petit-tribunal</b></div>
   <div class="desc">Scène de déroutage au dernier palier de Soupçon : le hameau te juge. Les trois bancs pleins, tous les visages tournés vers toi, la chaire vide.</div>
+  
+  
   
   <div class="act"><button data-prompt="rustic courtroom seen from the defendant's place, three benches full of gaunt villagers all facing the viewer, the tall pulpit empty above them, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere">Copier le prompt Leonardo</button></div>
   
@@ -953,6 +1169,9 @@ padding:10px 12px;font-size:10px;color:var(--b50)}
       suit pour la production.</li>
 </ol></div>
 
+<div id="zoom" role="dialog" aria-modal="true" aria-label="Image en pleine résolution">
+  <img alt=""><p class="cap"></p>
+</div>
 <div id="log"><div class="hd">Journal d'écriture</div><div id="logbody">En attente d'une action…</div></div>
 <div id="toast"></div>
 <script>window.__COVERAGE_EDITABLE__=false;</script>
@@ -974,7 +1193,8 @@ addEventListener("load",()=>document.querySelectorAll("canvas.rule").forEach(rul
 let filter="tous";
 function applyFilter(){
   document.querySelectorAll(".card").forEach(c=>{
-    const ok=filter==="tous"||c.dataset.statut===filter||c.dataset.cat===filter;
+    const ok=filter==="tous"||c.dataset.statut===filter||c.dataset.cat===filter
+      ||c.dataset.verdict===filter;
     c.classList.toggle("hidden",!ok);
   });
 }
@@ -986,6 +1206,77 @@ document.getElementById("filters").onclick=e=>{
 
 function toast(m){const t=document.getElementById('toast');t.textContent=m;
   t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1800);}
+
+/* ---------- agrandi sur l'image d'origine (pleine résolution) ---------- */
+const zoom=document.getElementById("zoom");
+const zoomImg=zoom.querySelector("img"), zoomCap=zoom.querySelector(".cap");
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-zoom]"); if(!t)return;
+  zoomImg.src=t.dataset.zoom;            // le serveur renvoie le PNG 1000×1000
+  zoomCap.innerHTML=t.dataset.zoom.replace("assets/","")+
+    ' — <b>'+(t.dataset.zoomId||"")+"</b> · Échap ou clic pour fermer";
+  zoom.classList.add("on");
+});
+function closeZoom(){zoom.classList.remove("on");zoomImg.src="";}
+zoom.addEventListener("click",closeZoom);
+addEventListener("keydown",e=>{if(e.key==="Escape")closeZoom();});
+
+/* ---------- verdict de qualité ————————————————————————————————
+   Contrairement au câblage, un verdict ne change le statut d'AUCUNE autre
+   carte : pas besoin de recharger la page, on met à jour sur place. */
+document.querySelectorAll("[data-verdict]").forEach(btn=>{
+  btn.addEventListener("click",async()=>{
+    const id=btn.dataset.verdict, want=btn.dataset.v;
+    const card=btn.closest(".card");
+    const already=btn.classList.contains("on-ko")||btn.classList.contains("on-ok");
+    const verdict=already?"":want;      // recliquer le même bouton retire l'avis
+    let note="";
+    if(verdict==="a_remplacer"){
+      note=prompt("Pourquoi elle ne marche pas ? (facultatif)","")||"";
+    }
+    try{
+      const r=await fetch("/api/verdict",{method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({id,verdict,note})});
+      const j=await r.json();
+      if(!j.ok)throw new Error(j.error||"échec");
+      applyVerdict(card,verdict,note);
+      log(`<b>verdict</b> · ${id} → `+(verdict||"avis retiré")+
+        (note?` (« ${note} »)`:""));
+      toast(verdict==="a_remplacer"?"Marquée à remplacer":
+            verdict==="ok"?"Marquée bonne":"Avis retiré");
+    }catch(e){log(`<span style="color:#fff">ÉCHEC verdict</span> · ${id} · ${e.message}`);}
+  });
+});
+function applyVerdict(card,verdict,note){
+  card.dataset.verdict=verdict;
+  card.classList.toggle("a_remplacer",verdict==="a_remplacer");
+  const thumb=card.querySelector(".thumb");
+  let bar=thumb&&thumb.querySelector(".vbar");
+  if(verdict&&thumb){
+    if(!bar){bar=document.createElement("span");thumb.appendChild(bar);}
+    bar.className="vbar "+verdict;
+    bar.textContent=verdict==="a_remplacer"?"à remplacer":"validée";
+  }else if(bar){bar.remove();}
+  let nEl=card.querySelector(".vnote");
+  if(verdict==="a_remplacer"&&note){
+    if(!nEl){nEl=document.createElement("p");nEl.className="vnote";
+      card.querySelector(".verdict").before(nEl);}
+    nEl.textContent="⚠ "+note;
+  }else if(nEl){nEl.remove();}
+  card.querySelectorAll("[data-verdict]").forEach(b=>{
+    b.classList.remove("on-ko","on-ok");
+    if(b.dataset.v===verdict)b.classList.add(verdict==="a_remplacer"?"on-ko":"on-ok");
+  });
+  refreshVerdictCounts();
+}
+function refreshVerdictCounts(){
+  const all=[...document.querySelectorAll(".card")];
+  const n=v=>all.filter(c=>c.dataset.verdict===v).length;
+  const a=document.getElementById("n-remplacer"), b=document.getElementById("n-valides");
+  if(a)a.textContent=n("a_remplacer");
+  if(b)b.textContent=n("ok");
+}
 document.querySelectorAll('[data-prompt]').forEach(b=>b.onclick=async()=>{
   try{await navigator.clipboard.writeText(b.dataset.prompt);toast('Prompt copié');}
   catch{const t=document.createElement('textarea');t.value=b.dataset.prompt;

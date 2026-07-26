@@ -41,6 +41,7 @@ ZONES_DIR = ROOT / "data" / "zones"
 META_JSON = ROOT / "data" / "scene-meta.json"
 ASSETS = ROOT / "aldenhar" / "public" / "assets"
 OUT_HTML = ROOT / "data" / "couverture_visuelle.html"
+VERDICTS_JSON = ROOT / "data" / "couverture-verdicts.json"
 
 PORTAL = "assets/dithering-portal.jpg"
 
@@ -52,6 +53,53 @@ STATUT_LABEL = {
     FALLBACK: "fallback de zone",
     MANQUANTE: "manquante",
 }
+
+# ⚠️ Le VERDICT est une notion distincte du STATUT, et il ne faut pas les
+# confondre : le statut dit si une image est CÂBLÉE (dédiée/héritée/fallback/
+# manquante), le verdict dit si elle est BONNE. Une scène peut très bien être
+# « dédiée » (donc techniquement complète) et « à remplacer » (l'image ne
+# raconte pas la bonne chose — le Moulin sans Ailes qui a encore ses ailes en
+# est l'exemple canonique). Le verdict est du jugement humain, jamais déduit.
+#
+# Il vit dans un JSON SUIVI PAR GIT, donc il traverse les machines : marquer une
+# image sur l'iMac la fait apparaître marquée sur le MacBook après un pull.
+A_REMPLACER, OK = "a_remplacer", "ok"
+
+
+def load_verdicts() -> dict[str, dict]:
+    if not VERDICTS_JSON.exists():
+        return {}
+    try:
+        return json.loads(VERDICTS_JSON.read_text(encoding="utf-8")).get("verdicts", {})
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def save_verdict(item_id: str, verdict: str, note: str = "") -> None:
+    """Pose ou retire un verdict. `verdict` vide = on efface l'avis."""
+    verdicts = load_verdicts()
+    if verdict:
+        entry = {"v": verdict}
+        if note:
+            entry["note"] = note
+        verdicts[item_id] = entry
+    else:
+        verdicts.pop(item_id, None)
+    VERDICTS_JSON.parent.mkdir(parents=True, exist_ok=True)
+    VERDICTS_JSON.write_text(
+        json.dumps(
+            {
+                "_comment": "Jugement humain sur la QUALITÉ des illustrations "
+                "(distinct du statut de câblage). Écrit par tools/coverage.py "
+                "--serve. Suivi par git pour synchroniser les deux postes.",
+                "verdicts": dict(sorted(verdicts.items())),
+            },
+            ensure_ascii=False,
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
 
 
 @dataclass
@@ -67,6 +115,8 @@ class Item:
     prompt: str = ""
     categorie: str = "scene"  # scene | monstre | objet | liaison
     notes: list[str] = field(default_factory=list)
+    verdict: str = ""  # "" | a_remplacer | ok  — jugement humain
+    verdict_note: str = ""
 
 
 # ─────────────────────────────────────────────────────────── parsing scene-data
@@ -162,6 +212,8 @@ def build_items() -> tuple[list[Item], dict, list[str]]:
         if img not in owners and len(sids) == 1:
             owners[img] = sids[0]
 
+    verdicts = load_verdicts()
+
     items: list[Item] = []
     for sc in scenes:
         sid, img = sc["id"], sc["illustration"]
@@ -170,6 +222,7 @@ def build_items() -> tuple[list[Item], dict, list[str]]:
         notes = []
         if img and img != PORTAL and not (ASSETS / img.split("/", 1)[1]).exists():
             notes.append("FICHIER ABSENT DU DISQUE")
+        v = verdicts.get(sid, {})
         items.append(
             Item(
                 id=sid,
@@ -181,6 +234,8 @@ def build_items() -> tuple[list[Item], dict, list[str]]:
                 prompt=m.get("prompt_image", ""),
                 categorie=categorie(img, sid),
                 notes=notes,
+                verdict=v.get("v", ""),
+                verdict_note=v.get("note", ""),
             )
         )
         for poi in sc["pois"]:
@@ -189,6 +244,7 @@ def build_items() -> tuple[list[Item], dict, list[str]]:
             pnotes = []
             if pimg and not (ASSETS / pimg.split("/", 1)[1]).exists():
                 pnotes.append("FICHIER ABSENT DU DISQUE")
+            pv = verdicts.get(poi["id"], {})
             items.append(
                 Item(
                     id=poi["id"],
@@ -200,6 +256,8 @@ def build_items() -> tuple[list[Item], dict, list[str]]:
                     prompt="",
                     categorie=categorie(pimg, poi["id"]),
                     notes=pnotes,
+                    verdict=pv.get("v", ""),
+                    verdict_note=pv.get("note", ""),
                 )
             )
 
@@ -235,6 +293,8 @@ def build_items() -> tuple[list[Item], dict, list[str]]:
         "total": len(items),
         "scenes": sum(1 for i in items if i.kind == "scene"),
         "pois": sum(1 for i in items if i.kind == "poi"),
+        "a_remplacer": sum(1 for i in items if i.verdict == A_REMPLACER),
+        "valides": sum(1 for i in items if i.verdict == OK),
     }
     for i in items:
         counts["categorie"][i.categorie] = counts["categorie"].get(i.categorie, 0) + 1
@@ -288,6 +348,23 @@ text-transform:uppercase;padding:3px 6px}
 .tag.fallback{background:none;color:var(--b50);box-shadow:inset 0 0 0 1px var(--b20)}
 .tag.manquante{background:var(--blanc);color:var(--charbon)}
 
+/* ---------- verdict (jugement de QUALITÉ, distinct du statut) ----------
+   Position et forme DIFFÉRENTES du badge de statut pour qu'on ne les confonde
+   jamais : le statut est une puce en haut à gauche, le verdict une bande pleine
+   largeur en bas de la vignette. */
+.vbar{position:absolute;left:0;right:0;bottom:0;font-size:9px;letter-spacing:1.5px;
+text-transform:uppercase;padding:4px 6px;text-align:center}
+.vbar.a_remplacer{background:var(--blanc);color:var(--charbon)}
+.vbar.ok{background:var(--orange);color:var(--charbon)}
+.card.a_remplacer{border-color:var(--blanc)}
+.vnote{font-size:10px;color:var(--blanc);margin-top:5px;line-height:1.4}
+.verdict{display:flex;gap:5px;margin-top:8px}
+.verdict button{flex:1;background:none;border:1px solid var(--b20);color:var(--b50);
+font:inherit;font-size:10px;letter-spacing:.5px;padding:6px 4px;cursor:pointer}
+.verdict button:hover{border-color:var(--b50);color:var(--blanc)}
+.verdict button.on-ko{background:var(--blanc);border-color:var(--blanc);color:var(--charbon)}
+.verdict button.on-ok{background:var(--orange);border-color:var(--orange);color:var(--charbon)}
+
 .cat{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--b50);margin-top:9px}
 .id{font-size:12px;margin-top:2px;word-break:break-all}
 .id .poi{color:var(--b50)}
@@ -321,8 +398,21 @@ h2{font:400 20px/1.2 "Instrument Serif",Georgia,serif;letter-spacing:2px;margin-
 
 #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
 background:var(--orange);color:var(--charbon);padding:9px 16px;font-size:12px;
-letter-spacing:.5px;opacity:0;transition:opacity .2s;pointer-events:none}
+letter-spacing:.5px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:11}
 #toast.on{opacity:1}
+
+/* ---------- agrandi : l'image ORIGINALE, pleine résolution ----------
+   C'est le cœur de l'usage (juger si une image marche), donc on sert le PNG
+   1000×1000 tel quel, jamais une vignette rééchantillonnée. */
+.thumb{cursor:zoom-in}
+#zoom{position:fixed;inset:0;background:rgba(10,9,7,.95);display:none;
+align-items:center;justify-content:center;flex-direction:column;gap:12px;
+padding:24px;cursor:zoom-out;z-index:9}
+#zoom.on{display:flex}
+#zoom img{max-width:min(92vw,900px);max-height:80vh;image-rendering:pixelated;
+border:1px solid var(--b20)}
+#zoom .cap{font-size:11px;color:var(--b50);letter-spacing:1px;text-align:center}
+#zoom .cap b{color:var(--orange);font-weight:400}
 
 /* ---------- journal d'écriture — panneau fixe, jamais une popup ---------- */
 #log{position:fixed;right:0;bottom:0;width:340px;max-height:34vh;overflow-y:auto;
@@ -350,7 +440,8 @@ addEventListener("load",()=>document.querySelectorAll("canvas.rule").forEach(rul
 let filter="tous";
 function applyFilter(){
   document.querySelectorAll(".card").forEach(c=>{
-    const ok=filter==="tous"||c.dataset.statut===filter||c.dataset.cat===filter;
+    const ok=filter==="tous"||c.dataset.statut===filter||c.dataset.cat===filter
+      ||c.dataset.verdict===filter;
     c.classList.toggle("hidden",!ok);
   });
 }
@@ -362,6 +453,77 @@ document.getElementById("filters").onclick=e=>{
 
 function toast(m){const t=document.getElementById('toast');t.textContent=m;
   t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1800);}
+
+/* ---------- agrandi sur l'image d'origine (pleine résolution) ---------- */
+const zoom=document.getElementById("zoom");
+const zoomImg=zoom.querySelector("img"), zoomCap=zoom.querySelector(".cap");
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-zoom]"); if(!t)return;
+  zoomImg.src=t.dataset.zoom;            // le serveur renvoie le PNG 1000×1000
+  zoomCap.innerHTML=t.dataset.zoom.replace("assets/","")+
+    ' — <b>'+(t.dataset.zoomId||"")+"</b> · Échap ou clic pour fermer";
+  zoom.classList.add("on");
+});
+function closeZoom(){zoom.classList.remove("on");zoomImg.src="";}
+zoom.addEventListener("click",closeZoom);
+addEventListener("keydown",e=>{if(e.key==="Escape")closeZoom();});
+
+/* ---------- verdict de qualité ————————————————————————————————
+   Contrairement au câblage, un verdict ne change le statut d'AUCUNE autre
+   carte : pas besoin de recharger la page, on met à jour sur place. */
+document.querySelectorAll("[data-verdict]").forEach(btn=>{
+  btn.addEventListener("click",async()=>{
+    const id=btn.dataset.verdict, want=btn.dataset.v;
+    const card=btn.closest(".card");
+    const already=btn.classList.contains("on-ko")||btn.classList.contains("on-ok");
+    const verdict=already?"":want;      // recliquer le même bouton retire l'avis
+    let note="";
+    if(verdict==="a_remplacer"){
+      note=prompt("Pourquoi elle ne marche pas ? (facultatif)","")||"";
+    }
+    try{
+      const r=await fetch("/api/verdict",{method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({id,verdict,note})});
+      const j=await r.json();
+      if(!j.ok)throw new Error(j.error||"échec");
+      applyVerdict(card,verdict,note);
+      log(`<b>verdict</b> · ${id} → `+(verdict||"avis retiré")+
+        (note?` (« ${note} »)`:""));
+      toast(verdict==="a_remplacer"?"Marquée à remplacer":
+            verdict==="ok"?"Marquée bonne":"Avis retiré");
+    }catch(e){log(`<span style="color:#fff">ÉCHEC verdict</span> · ${id} · ${e.message}`);}
+  });
+});
+function applyVerdict(card,verdict,note){
+  card.dataset.verdict=verdict;
+  card.classList.toggle("a_remplacer",verdict==="a_remplacer");
+  const thumb=card.querySelector(".thumb");
+  let bar=thumb&&thumb.querySelector(".vbar");
+  if(verdict&&thumb){
+    if(!bar){bar=document.createElement("span");thumb.appendChild(bar);}
+    bar.className="vbar "+verdict;
+    bar.textContent=verdict==="a_remplacer"?"à remplacer":"validée";
+  }else if(bar){bar.remove();}
+  let nEl=card.querySelector(".vnote");
+  if(verdict==="a_remplacer"&&note){
+    if(!nEl){nEl=document.createElement("p");nEl.className="vnote";
+      card.querySelector(".verdict").before(nEl);}
+    nEl.textContent="⚠ "+note;
+  }else if(nEl){nEl.remove();}
+  card.querySelectorAll("[data-verdict]").forEach(b=>{
+    b.classList.remove("on-ko","on-ok");
+    if(b.dataset.v===verdict)b.classList.add(verdict==="a_remplacer"?"on-ko":"on-ok");
+  });
+  refreshVerdictCounts();
+}
+function refreshVerdictCounts(){
+  const all=[...document.querySelectorAll(".card")];
+  const n=v=>all.filter(c=>c.dataset.verdict===v).length;
+  const a=document.getElementById("n-remplacer"), b=document.getElementById("n-valides");
+  if(a)a.textContent=n("a_remplacer");
+  if(b)b.textContent=n("ok");
+}
 document.querySelectorAll('[data-prompt]').forEach(b=>b.onclick=async()=>{
   try{await navigator.clipboard.writeText(b.dataset.prompt);toast('Prompt copié');}
   catch{const t=document.createElement('textarea');t.value=b.dataset.prompt;
@@ -485,12 +647,21 @@ def render(items: list[Item], counts: dict, orphans: list[str], editable: bool) 
     def card(i: Item) -> str:
         basename = i.image.split("/", 1)[1] if i.image else ""
         if i.image:
-            thumb_open = f'<div class="thumb" style="background-image:url(\'{rel}{i.image}\')">'
+            # data-zoom pointe sur l'image D'ORIGINE (pleine résolution) : c'est
+            # ce qu'on veut regarder pour juger si elle marche.
+            thumb_open = (
+                f'<div class="thumb" style="background-image:url(\'{rel}{i.image}\')"'
+                f' data-zoom="{rel}{i.image}" data-zoom-id="{esc(i.id)}"'
+                f' title="Agrandir — {esc(basename)}">'
+            )
             thumb_inner = ""
         else:
             thumb_open = '<div class="thumb none">'
             thumb_inner = "AUCUNE IMAGE"
         tag = f'<span class="tag {i.statut}">{STATUT_LABEL[i.statut]}</span>'
+        if i.verdict:
+            vlabel = "à remplacer" if i.verdict == A_REMPLACER else "validée"
+            tag += f'<span class="vbar {i.verdict}">{vlabel}</span>'
 
         parent_html = f' <span class="poi">← {esc(i.parent)}</span>' if i.kind == "poi" else ""
         if i.statut == HERITEE:
@@ -530,13 +701,34 @@ def render(items: list[Item], counts: dict, orphans: list[str], editable: bool) 
                 f"{detach_html}"
             )
 
-        return f"""<article class="card" data-statut="{i.statut}" data-cat="{i.categorie}" data-kind="{i.kind}">
+        vnote = (
+            f'<p class="vnote">⚠ {esc(i.verdict_note)}</p>'
+            if i.verdict == A_REMPLACER and i.verdict_note
+            else ""
+        )
+        verdict_html = ""
+        if editable and i.image:
+            ko_on = " on-ko" if i.verdict == A_REMPLACER else ""
+            ok_on = " on-ok" if i.verdict == OK else ""
+            verdict_html = (
+                f'<div class="verdict">'
+                f'<button class="{ko_on.strip()}" data-verdict="{esc(i.id)}" '
+                f'data-v="{A_REMPLACER}">à remplacer</button>'
+                f'<button class="{ok_on.strip()}" data-verdict="{esc(i.id)}" '
+                f'data-v="{OK}">ça marche</button>'
+                f"</div>"
+            )
+
+        card_cls = "card" + (" a_remplacer" if i.verdict == A_REMPLACER else "")
+        return f"""<article class="{card_cls}" data-statut="{i.statut}" data-cat="{i.categorie}" data-kind="{i.kind}" data-verdict="{i.verdict}">
   {thumb_open}{thumb_inner}{tag}</div>
   <div class="cat">{i.categorie}</div>
   <div class="id">{esc(i.id)}{parent_html}</div>
   <div class="meta">{meta}</div>
   {desc}
   {warn}
+  {vnote}
+  {verdict_html}
   {act_html}
   {edit_html}
 </article>"""
@@ -546,13 +738,16 @@ def render(items: list[Item], counts: dict, orphans: list[str], editable: bool) 
 <div class="stat"><div class="n" style="color:var(--orange)">{counts["statut"][HERITEE]}</div><div class="l">héritées</div></div>
 <div class="stat mid"><div class="n">{counts["statut"][FALLBACK]}</div><div class="l">fallback</div></div>
 <div class="stat ko"><div class="n">{counts["statut"][MANQUANTE]}</div><div class="l">manquantes</div></div>
+<div class="stat ko"><div class="n" id="n-remplacer">{counts["a_remplacer"]}</div><div class="l">à remplacer</div></div>
+<div class="stat ok"><div class="n" id="n-valides">{counts["valides"]}</div><div class="l">validées</div></div>
 <div class="stat mid"><div class="n">{len(orphans)}</div><div class="l">orphelins</div></div>
 <div class="stat mid"><div class="n">{counts["prompts_manquants"]}</div><div class="l">prompts à écrire</div></div>
 """
 
     cats = sorted(counts["categorie"])
     filter_defs = [("tous", "Tous"), (DEDIEE, "Dédiées"), (HERITEE, "Héritées"),
-                   (FALLBACK, "Fallback"), (MANQUANTE, "Manquantes")]
+                   (FALLBACK, "Fallback"), (MANQUANTE, "Manquantes"),
+                   (A_REMPLACER, "À remplacer"), (OK, "Validées")]
     filter_defs += [(c, CAT_LABEL.get(c, c.capitalize())) for c in cats]
     filters_html = "".join(
         f'<button class="{"on" if f == "tous" else ""}" data-f="{f}">{label}</button>'
@@ -604,6 +799,9 @@ def render(items: list[Item], counts: dict, orphans: list[str], editable: bool) 
       suit pour la production.</li>
 </ol></div>
 
+<div id="zoom" role="dialog" aria-modal="true" aria-label="Image en pleine résolution">
+  <img alt=""><p class="cap"></p>
+</div>
 <div id="log"><div class="hd">Journal d'écriture</div><div id="logbody">En attente d'une action…</div></div>
 <div id="toast"></div>
 <script>window.__COVERAGE_EDITABLE__={str(editable).lower()};</script>
@@ -753,6 +951,17 @@ def serve(port: int = 8765) -> None:
                     )
                     return self._send(
                         200, json.dumps({"ok": True, "asset": asset, "touched": touched})
+                    )
+                if self.path == "/api/verdict":
+                    v = payload.get("verdict", "")
+                    if v not in ("", A_REMPLACER, OK):
+                        raise ValueError(f"verdict inconnu : {v}")
+                    save_verdict(payload["id"], v, payload.get("note", ""))
+                    return self._send(
+                        200,
+                        json.dumps(
+                            {"ok": True, "touched": [str(VERDICTS_JSON.relative_to(ROOT))]}
+                        ),
                     )
             except Exception as exc:  # renvoyé tel quel à la page
                 return self._send(500, json.dumps({"ok": False, "error": str(exc)}))
