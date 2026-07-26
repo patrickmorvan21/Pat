@@ -457,6 +457,7 @@ body {
   .die-hint { animation: none; }
   .acte-hint { animation: none; }
   .touch-hint { animation: none; }
+  .death-quake { animation: none; }
   .phone-frame.quake { animation: none; }
   .scene-enter { animation: none; }
   .erosion-2.phone-frame, .erosion-3.phone-frame { animation: none; }
@@ -1058,3 +1059,41 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .type-cursor { animation: none; }
 }
+
+/* ═════════ Séquence de mort — 6 écrans (Notion 26/07 §3) ═════════ */
+
+/* Le mot MORT : apparition SÈCHE, sans fondu, très espacé. */
+.death-mot {
+  font-size: 46px;
+  letter-spacing: 14px;
+  color: var(--color-ink);
+  text-indent: 14px; /* compense l'espacement sur la dernière lettre */
+}
+/* Secousse de l'écran au moment du verdict — par crans, jamais lissée. */
+@keyframes death-quake {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(2px, -1px); }
+  50% { transform: translate(-1px, 2px); }
+  75% { transform: translate(1px, 1px); }
+  100% { transform: translate(0, 0); }
+}
+.death-quake { animation: death-quake 0.14s steps(2) 14; }
+
+/* CTA plein de la relève (« Un autre viendra ») : bloc orange, texte charbon,
+   segments décalés — le langage du SKILL, cet écran n'a pas de maquette. */
+.death-cta-plein {
+  position: relative;
+  display: inline-block;
+  background: var(--color-accent);
+  color: var(--color-bg);
+  padding: 14px 28px;
+}
+.death-cta-plein::before,
+.death-cta-plein::after {
+  content: "";
+  position: absolute;
+  background: var(--color-accent);
+  pointer-events: none;
+}
+.death-cta-plein::before { height: 3px; left: 10px; right: -9px; top: -8px; }
+.death-cta-plein::after { height: 5px; left: -16px; right: 14px; bottom: -11px; }

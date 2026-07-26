@@ -175,5 +175,11 @@
  *           places, la première verrouillée et illisible, l'onglet « Tes
  *           morts ») et l'affordance « Touche pour … » devenue une règle
  *           globale — 50 px du bas, clignotement saccadé, partout.
+ *   1.25.0 — Lot Notion 26/07, vague 2 : la SÉQUENCE DE MORT en six écrans
+ *           (beat fatal → mort → fragment → Registre → relique → relève). La
+ *           mort arrive dans la scène : le mot MORT tombe sec, l'écran tremble,
+ *           puis les CTA et le texte sont mangés pixel par pixel — chaque pixel
+ *           mangé libère une braise orange qui monte. Le bilan chiffré est le
+ *           seul endroit du jeu où des nombres bruts sont montrés.
  */
-export const APP_VERSION = "1.24.0";
+export const APP_VERSION = "1.25.0";

@@ -13,6 +13,9 @@ export type RollRecord = {
   choiceId: string;
   result: number;
   at: number;
+  /** Le jet a-t-il TENU (palier non-échec) ? Sert au bilan de mort (26/07),
+      seul endroit du jeu où des chiffres bruts sont autorisés. */
+  ok?: boolean;
 };
 
 /** État narratif temporaire (spec §2) : modifie les jets, se dissipe. */

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Die3D, { type RollRequest } from "@/components/Die3D";
 import ChoiceButton from "@/components/ChoiceButton";
 import TypedText from "@/components/TypedText";
-import DeathScreen from "@/components/DeathScreen";
+import DeathScreen, { type Bilan } from "@/components/DeathScreen";
 import GameMenu from "@/components/GameMenu";
 import {
   DESCENTE_SCENE,
@@ -83,6 +83,26 @@ function nextId() {
 function chance(p: number): boolean {
   return Math.random() < p;
 }
+/**
+ * Le BILAN de mort (Notion 26/07 §3, écran 2). Ce sont les SEULS chiffres
+ * bruts du jeu : un registre de greffe, pas un retour de partie — d'où la
+ * région nommée plutôt qu'un numéro d'acte.
+ */
+function bilanDeMort(run: RunState): Bilan {
+  const rolls = run.rolls ?? [];
+  return {
+    jours: run.day,
+    plusLoin: "Les Landes",
+    lieux: (run.trav?.visited ?? []).length,
+    rencontres: run.encounters,
+    des: rolls.length,
+    desTenus: rolls.filter((r) => r.ok).length,
+    destins: rolls.filter((r) => r.result === 20).length,
+    maledictions: rolls.filter((r) => r.result === 1).length,
+    reliques: loadMemory().relics.length,
+  };
+}
+
 function nowMs(): number {
   return Date.now();
 }
@@ -222,7 +242,7 @@ export default function Scene() {
   // Incrémenté à chaque tap dans la zone de texte : termine la frappe en cours.
   const [skip, setSkip] = useState(0);
   // Écran de mort : non-null dès que la santé tombe à zéro sur un jet raté.
-  const [death, setDeath] = useState<{ epitaph: string; day: number; encounters: number; relic: Relic; firstDeath: boolean } | null>(null);
+  const [death, setDeath] = useState<{ epitaph: string; day: number; bilan: Bilan; relic: Relic; heroName: string; cause: string; firstDeath: boolean } | null>(null);
   // Scène chronométrée (§18) : true une fois le délai écoulé sans choix.
   const [timedExpired, setTimedExpired] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -1314,7 +1334,7 @@ export default function Scene() {
               }
             }
             persist((run) => {
-              run.rolls.push({ step, choiceId: selectedId ?? "roll", result, at: Date.now() });
+              run.rolls.push({ step, choiceId: selectedId ?? "roll", result, at: nowMs(), ok: !tierIsFail(tier) });
               const cost =
                 tier === "malediction" ? 0.25 : tier === "critique" ? 0.2 : tier === "echec" ? 0.12 : tier === "justesse" ? 0.06 : 0;
               run.health = Math.max(0, run.health - cost);
@@ -1380,7 +1400,8 @@ export default function Scene() {
                 place: scene.id,
                 killer: { entity: "hameau-renoncants", label: "le Hameau des Renonçants" },
               });
-              const dead = { epitaph, day: run.day, encounters: run.encounters, relic, firstDeath };
+              const dead = { epitaph, day: run.day, bilan: bilanDeMort(run), relic,
+                heroName: run.heroName, cause: "le Hameau des Renonçants", firstDeath };
               resetRun();
               setDeath(dead);
               return;
@@ -1400,7 +1421,8 @@ export default function Scene() {
                 place: scene.id,
                 killer: scene.foe ? { entity: scene.foe, label: scene.foeName ?? scene.foe } : undefined,
               });
-              const dead = { epitaph, day: run.day, encounters: run.encounters, relic, firstDeath };
+              const dead = { epitaph, day: run.day, bilan: bilanDeMort(run), relic,
+                heroName: run.heroName, cause, firstDeath };
               resetRun();
               setDeath(dead);
               return;
@@ -1446,8 +1468,10 @@ export default function Scene() {
           <DeathScreen
             epitaph={death.epitaph}
             day={death.day}
-            encounters={death.encounters}
+            bilan={death.bilan}
             relic={death.relic}
+            heroName={death.heroName}
+            cause={death.cause}
             firstDeath={death.firstDeath}
             onRestart={() => window.location.reload()}
           />

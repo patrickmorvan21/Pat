@@ -11,13 +11,10 @@
  *   capitales, cause 11px à 50 % · ligne du joueur = bande pleine largeur 47px
  *   avec un liseré orange de 4px au bord gauche · croix 32×32 à x=348 y=11.
  *
- * ⚠️ Écart assumé avec la spec écrite : le Notion annonce « colonnes rang · nom
- * · jours », mais la maquette ne montre PAS de colonne jours — elle met la
- * CAUSE en sous-titre, et les jours n'apparaissent que sur la ligne verrouillée.
- * Règle du projet : pour un écran maquetté, le Figma fait foi. Les jours
- * restent donc absents de l'onglet « Les 100 » et sont, en revanche, bien là
- * dans « Tes morts », que le Notion décrit explicitement comme « jour, cause et
- * relique forgée ».
+ * Colonne JOURS à droite (en-tête x=337, valeurs alignées à droite) : elle est
+ * arrivée dans la maquette le 26/07, après une première passe où elle manquait.
+ * La ligne verrouillée n'en a pas — ses onze mille jours sont dans son
+ * sous-titre, précisément parce qu'ils ne se comparent à rien.
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -139,15 +136,14 @@ function Ligne({ e }: { e: RegistreEntry }) {
         >
           {e.rank}
         </span>
+        {/* Pas de couleur spéciale sur le nom du joueur : la maquette le repère
+            par le LISERÉ, « pas de badge » — et pas davantage par une exception
+            de couleur. */}
         <span className="min-w-0 flex-1">
           {e.locked ? (
             <NomGratte />
           ) : (
-            <span
-              className={`block font-mono text-[13px] uppercase ${
-                e.isPlayer ? "text-[var(--color-accent)]" : "text-[var(--color-ink)]"
-              }`}
-            >
+            <span className="block font-mono text-[13px] uppercase text-[var(--color-ink)]">
               {e.name}
             </span>
           )}
@@ -159,6 +155,13 @@ function Ligne({ e }: { e: RegistreEntry }) {
             {e.locked ? `${e.days.toLocaleString("fr-FR")} ${e.cause}` : e.cause}
           </span>
         </span>
+        {/* La ligne verrouillée n'a pas de valeur ici : ses jours sont dans son
+            sous-titre, parce qu'ils ne se comparent à rien. */}
+        {!e.locked && (
+          <span className="w-[42px] shrink-0 text-right font-mono text-[15px] font-medium text-[var(--color-ink)]">
+            {e.days}
+          </span>
+        )}
       </div>
     </div>
   );
@@ -245,7 +248,8 @@ export default function Registre({
         <div className="shrink-0 px-[15px] pt-[30px] pb-[40px]">
           <div className="flex font-mono text-[9px] uppercase tracking-[1.5px] text-[var(--color-ink)] opacity-50">
             <span className="w-[64px] shrink-0">rang</span>
-            <span>nom</span>
+            <span className="flex-1">nom</span>
+            <span>jours</span>
           </div>
           <div className="mt-[22px] flex flex-col gap-[25px]">
             {listeCent.map((e) => (
