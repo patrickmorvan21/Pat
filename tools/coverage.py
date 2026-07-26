@@ -47,11 +47,24 @@ PORTAL = "assets/dithering-portal.jpg"
 
 # Statuts (4 couleurs, comme la maquette de référence).
 DEDIEE, HERITEE, FALLBACK, MANQUANTE = "dediee", "heritee", "fallback", "manquante"
+
+# ⚠️ Libellés en FRANÇAIS CLAIR : « dédiée / héritée / fallback » était du
+# jargon que j'avais inventé, incompréhensible pour le seul utilisateur de
+# l'outil (retour Patrick 26/07). Les clés internes ne changent pas — elles
+# servent aux filtres et aux verdicts déjà enregistrés.
 STATUT_LABEL = {
-    DEDIEE: "dédiée",
-    HERITEE: "héritée",
-    FALLBACK: "fallback de zone",
-    MANQUANTE: "manquante",
+    DEDIEE: "son image",
+    HERITEE: "image empruntée",
+    FALLBACK: "vue générique",
+    MANQUANTE: "aucune image",
+}
+
+# Explication affichée dans la page, sous les compteurs.
+STATUT_AIDE = {
+    DEDIEE: "cette scène a une image qui n'appartient qu'à elle",
+    HERITEE: "elle réutilise l'image d'une autre scène",
+    FALLBACK: "elle montre une vue d'ambiance de la zone, pas son lieu",
+    MANQUANTE: "rien à afficher — c'est le portail par défaut qui sort",
 }
 
 # ⚠️ Le VERDICT est une notion distincte du STATUT, et il ne faut pas les
@@ -102,6 +115,38 @@ def save_verdict(item_id: str, verdict: str, note: str = "") -> None:
     )
 
 
+DEFAULT_ZONE = "Les Landes"
+
+
+def zone_index() -> dict[str, str]:
+    """id de lieu → nom de zone, lu depuis `data/zones/*.json`.
+
+    Aujourd'hui une seule zone est écrite ; l'index existe pour que l'ajout
+    d'un `data/zones/<autre>.json` range ses lieux tout seul, sans toucher au
+    code (demande Patrick 26/07 : « demain il y aura d'autres zones »).
+    """
+    idx: dict[str, str] = {}
+    for z in sorted(ZONES_DIR.glob("*.json")):
+        try:
+            data = json.loads(z.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        nom = (data.get("zone") or {}).get("nom") or z.stem.replace("_", " ").title()
+
+        def walk(node):
+            if isinstance(node, dict):
+                if isinstance(node.get("id"), str):
+                    idx.setdefault(node["id"].replace("_", "-"), nom)
+                for v in node.values():
+                    walk(v)
+            elif isinstance(node, list):
+                for v in node:
+                    walk(v)
+
+        walk(data)
+    return idx
+
+
 @dataclass
 class Item:
     """Une carte du rapport : une scène, ou un point d'intérêt."""
@@ -117,6 +162,16 @@ class Item:
     notes: list[str] = field(default_factory=list)
     verdict: str = ""  # "" | a_remplacer | ok  — jugement humain
     verdict_note: str = ""
+    # ─── Regroupement (26/07) ─────────────────────────────────────────────
+    # `zone` : le rapport était une grille à plat, or d'autres zones arrivent.
+    # `group` : le LIEU auquel la carte appartient. Une scène « hesitant-2 » ou
+    # un point d'intérêt appartiennent au même lieu que « hesitant-1 » / que
+    # leur scène porteuse — sans ça on ne voyait pas quelle image était la
+    # principale et lesquelles étaient ses variantes (retour Patrick 26/07).
+    zone: str = "Les Landes"
+    group: str = ""
+    # Carte principale de son groupe (l'image « au repos » du lieu).
+    principale: bool = False
 
 
 # ─────────────────────────────────────────────────────────── parsing scene-data
@@ -261,6 +316,21 @@ def build_items() -> tuple[list[Item], dict, list[str]]:
                 )
             )
 
+    # ── Regroupement par zone puis par lieu ───────────────────────────────
+    # Le lieu d'une carte : son id privé de son suffixe de beat (« -2 », « -3 »),
+    # et pour un point d'intérêt celui de sa scène porteuse. La PREMIÈRE carte
+    # d'un groupe (celle qui porte l'id nu) est la principale.
+    zones = zone_index()
+    for i in items:
+        base = i.parent if i.kind == "poi" else i.id
+        i.group = re.sub(r"-\d+$", "", base)
+        i.zone = zones.get(i.group, zones.get(i.id, DEFAULT_ZONE))
+    seen_group: set[str] = set()
+    for i in items:
+        if i.kind == "scene" and i.group not in seen_group:
+            seen_group.add(i.group)
+            i.principale = True
+
     # Assets orphelins : présents sur disque, référencés NULLE PART.
     # ⚠️ « nulle part » se juge sur tout le code, pas seulement sur les champs
     # `illustration` de scène : une icône d'objet est référencée dans besace.ts,
@@ -332,8 +402,31 @@ font-family:inherit;font-size:10px;letter-spacing:1px;text-transform:uppercase;
 padding:7px 12px;cursor:pointer}
 .filters button.on{background:var(--orange);border-color:var(--orange);color:var(--charbon)}
 
+/* ---------- légende des statuts ---------- */
+.legende{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:16px}
+.leg{display:flex;align-items:center;gap:8px}
+.leg .tag{position:static;top:auto;left:auto}
+.leg-txt{font-size:10.5px;color:var(--b50)}
+
+/* ---------- sections zone / lieu ---------- */
+.zone{margin-top:34px}
+.zone-head{display:flex;align-items:baseline;gap:12px;font:400 26px/1.2 "Instrument Serif",Georgia,serif;
+letter-spacing:2px;margin:0 0 4px}
+.zone-n{font:400 10px/1 "Roboto Mono",monospace;letter-spacing:1.5px;text-transform:uppercase;color:var(--b50)}
+.lieu{margin-top:20px}
+.lieu-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px;
+font:400 12px/1.2 "Roboto Mono",monospace;letter-spacing:1px;color:var(--blanc);margin:0}
+.lieu-n{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--b50)}
+.lieu-warn{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;
+background:var(--blanc);color:var(--charbon);padding:2px 6px}
+/* Un lieu dont TOUTES les cartes sont filtrées se replie. */
+.lieu.vide{display:none}
+.zone.vide{display:none}
+
 /* ---------- grille ---------- */
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:10px}
+/* L'image du lieu se distingue de ses variantes : liseré orange franc. */
+.card.principale{border-color:var(--orange)}
 .card{border:1px solid var(--b20);padding:10px}
 .card.drag{border-color:var(--orange)}
 .card.hidden{display:none!important}
@@ -449,6 +542,14 @@ function applyFilter(){
     const ok=filter==="tous"||c.dataset.statut===filter||c.dataset.cat===filter
       ||c.dataset.verdict===filter;
     c.classList.toggle("hidden",!ok);
+  });
+  // Replier les lieux (puis les zones) dont plus aucune carte n'est visible :
+  // sinon le filtre laissait des titres de lieux vides partout.
+  document.querySelectorAll(".lieu").forEach(l=>{
+    l.classList.toggle("vide",!l.querySelector(".card:not(.hidden)"));
+  });
+  document.querySelectorAll(".zone").forEach(z=>{
+    z.classList.toggle("vide",!z.querySelector(".lieu:not(.vide)"));
   });
 }
 document.getElementById("filters").onclick=e=>{
@@ -791,9 +892,18 @@ def render(
             )
 
         card_cls = "card" + (" a_remplacer" if i.verdict == A_REMPLACER else "")
+        if i.principale:
+            card_cls += " principale"
+        # Étiquette de rôle : c'est ce qui manquait pour distinguer l'image du
+        # lieu de ses variantes (retour Patrick 26/07).
+        role = (
+            "image du lieu"
+            if i.principale
+            else ("plan rapproché" if i.kind == "poi" else "autre moment du lieu")
+        )
         return f"""<article class="{card_cls}" data-statut="{i.statut}" data-cat="{i.categorie}" data-kind="{i.kind}" data-verdict="{i.verdict}">
   {thumb_open}{thumb_inner}{tag}</div>
-  <div class="cat">{i.categorie}</div>
+  <div class="cat">{i.categorie} · {role}</div>
   <div class="id">{esc(i.id)}{parent_html}</div>
   <div class="meta">{meta}</div>
   {desc}
@@ -815,9 +925,54 @@ def render(
 <div class="stat mid"><div class="n">{counts["prompts_manquants"]}</div><div class="l">prompts à écrire</div></div>
 """
 
+    # ── Sections : une par ZONE, puis un bloc par LIEU ────────────────────
+    # Le lieu porte son nom et son compte ; sa carte principale vient en tête,
+    # ses variantes derrière. C'est ce qui rend lisible « quelle est l'image
+    # principale, quelles sont ses variantes » (retour Patrick 26/07).
+    par_zone: dict[str, dict[str, list[Item]]] = {}
+    for i in items:
+        par_zone.setdefault(i.zone, {}).setdefault(i.group, []).append(i)
+    blocs = []
+    for zone in sorted(par_zone):
+        lieux = par_zone[zone]
+        n_cartes = sum(len(v) for v in lieux.values())
+        corps = []
+        for lieu in sorted(lieux):
+            cartes = sorted(lieux[lieu], key=lambda x: (not x.principale, x.kind != "scene", x.id))
+            manque = sum(1 for c in cartes if c.statut == MANQUANTE)
+            aremp = sum(1 for c in cartes if c.verdict == A_REMPLACER)
+            alerte = ""
+            if manque:
+                alerte += f' <span class="lieu-warn">{manque} sans image</span>'
+            if aremp:
+                alerte += f' <span class="lieu-warn">{aremp} à remplacer</span>'
+            corps.append(
+                f'<section class="lieu" data-lieu="{esc(lieu)}">'
+                f'<h3 class="lieu-head">{esc(lieu)}'
+                f'<span class="lieu-n">{len(cartes)} image{"s" if len(cartes) > 1 else ""}</span>'
+                f"{alerte}</h3>"
+                f'<div class="grid">{"".join(card(c) for c in cartes)}</div>'
+                f"</section>"
+            )
+        blocs.append(
+            f'<section class="zone">'
+            f'<h2 class="zone-head">{esc(zone)}'
+            f'<span class="zone-n">{len(lieux)} lieux · {n_cartes} images</span></h2>'
+            f'{"".join(corps)}</section>'
+        )
+    groups_html = "".join(blocs)
+
+    # Légende : les quatre mots expliqués en clair, dans la page — sans ça les
+    # compteurs ne veulent rien dire pour qui n'a pas écrit le code.
+    legende = "".join(
+        f'<div class="leg"><span class="tag {k}">{STATUT_LABEL[k]}</span>'
+        f'<span class="leg-txt">{STATUT_AIDE[k]}</span></div>'
+        for k in (DEDIEE, HERITEE, FALLBACK, MANQUANTE)
+    )
+
     cats = sorted(counts["categorie"])
-    filter_defs = [("tous", "Tous"), (DEDIEE, "Dédiées"), (HERITEE, "Héritées"),
-                   (FALLBACK, "Fallback"), (MANQUANTE, "Manquantes"),
+    filter_defs = [("tous", "Tous"), (DEDIEE, "Son image"), (HERITEE, "Empruntées"),
+                   (FALLBACK, "Génériques"), (MANQUANTE, "Sans image"),
                    (A_REMPLACER, "À remplacer"), (OK, "Validées")]
     filter_defs += [(c, CAT_LABEL.get(c, c.capitalize())) for c in cats]
     filters_html = "".join(
@@ -886,11 +1041,12 @@ au code.</p></div>"""
 <canvas class="rule"></canvas>
 
 <div class="stats">{stats}</div>
+<div class="legende">{legende}</div>
 {copy_btn}
 
 <div class="filters" id="filters">{filters_html}</div>
 
-<div class="grid">{"".join(card(i) for i in items)}</div>
+{groups_html}
 
 <h2>Assets orphelins</h2>
 <div class="sub">Présents dans assets/, référencés par aucune scène — en réserve, ou à supprimer.</div>
