@@ -172,6 +172,24 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     heal: 0.15, cure: false, illustration: "assets/objet_miroir_poche_fele_c.png",
     flavor: "Fêlé en travers, jeté dans les roseaux. Se regarder dedans remet en place ce que la lande a déplacé.",
   },
+  // ——— Lot 25/07 : règle de dosage (« chaque point d'intérêt rend une monnaie »).
+  // Trois objets pour les points de fouille qui ne rendaient rien. Leurs icônes
+  // attendaient dans assets/ depuis le lot du 24/07, jamais câblées.
+  "craie-condamne": {
+    name: "Craie du Condamné", rarity: "commun", kind: "babiole", slot: "passif",
+    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_craie_condamne_a.png",
+    flavor: "Un moignon de craie grasse, trouvé dans une fosse sans poteau. C'est avec ça qu'on marque les portes. Qui la tient choisit ce qui se sait.",
+  },
+  "jouet-fixee": {
+    name: "Jouet de la Petite Fixée", rarity: "rare", kind: "babiole", slot: "passif",
+    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_jouet_petite_fixee_a.png",
+    flavor: "Une poupée de chiffon et de paille, cachée sous une lucarne. Quelqu'un de très petit l'a mise là pour la sauver. Tu ne la reposeras pas.",
+  },
+  "cle-portillon": {
+    name: "Clé du Portillon", rarity: "commun", kind: "babiole", slot: "passif",
+    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_cle_rouillee.png",
+    flavor: "Rouillée, oubliée dans la gâche du verrou. Elle n'ouvre pas la Descente — elle ouvre le retour, et c'est plus rare.",
+  },
   "fruit-cendre": {
     name: "Fruit de Cendre", rarity: "commun", kind: "soin", slot: "actif",
     heal: 0.3, cure: false, illustration: "assets/objet_fruit_cendre_a.png",

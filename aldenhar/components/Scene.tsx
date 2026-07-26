@@ -22,7 +22,7 @@ import {
   type Scene as SceneType,
 } from "@/lib/scene-data";
 import { loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
-import { chapterById, drawChapter } from "@/lib/chapters-data";
+import { chapterById, drawChapter, LANDES_LORE_FRAGMENTS } from "@/lib/chapters-data";
 import { playMusic } from "@/lib/audio";
 import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import {
@@ -188,6 +188,11 @@ export default function Scene() {
   const [imageKind, setImageKind] = useState<ImageKind>("scene");
   // Points d'intérêt déjà examinés dans le lieu courant (spec 24/07 suite).
   const [poiSeen, setPoiSeen] = useState<string[]>([]);
+  // Le SAVOIR (25/07) : flags appris en examinant. Miroir d'état de
+  // `run.savoirs` — nécessaire au RENDU (les choix qui en dépendent doivent
+  // apparaître dès l'écran suivant), alors que `runRef` n'est pas lisible
+  // pendant le rendu (React Compiler).
+  const [savoirs, setSavoirs] = useState<string[]>([]);
   // Plan RAPPROCHÉ d'un point d'intérêt : crop de l'image du lieu (production
   // gratuite, spec §4 — on ne génère pas un asset par point). null = plan large.
   const [poiZoom, setPoiZoom] = useState<{ zoom: number; focus: string } | null>(null);
@@ -263,7 +268,14 @@ export default function Scene() {
 
   const rolling = roll !== null;
 
-  const baseChoices = timedExpired && scene.timed ? scene.timed.timeoutChoices : scene.choices;
+  const rawChoices = timedExpired && scene.timed ? scene.timed.timeoutChoices : scene.choices;
+  // Le SAVOIR (25/07) : un choix conditionné n'EXISTE pas tant que
+  // l'information n'a pas été apprise en explorant. Filtré ici, donc avant le
+  // mélange Fisher-Yates — une option débloquée prend une position quelconque
+  // comme les autres, sans marqueur ni place réservée.
+  const baseChoices = rawChoices.filter(
+    (c) => !c.requiresSavoir || savoirs.includes(c.requiresSavoir)
+  );
   // Les choix d'orientation d'une liaison gardent leur ordre (gauche/droite
   // stable) ; ailleurs, Fisher-Yates seedé pour casser les patterns de slot.
   const shuffledChoices = scene.liaison ? baseChoices : shuffleChoices(baseChoices, step);
@@ -332,6 +344,29 @@ export default function Scene() {
     return item;
   }
 
+  /**
+   * Fragment de chapitre à servir (4e monnaie du dosage 25/07) : le premier
+   * fragment du chapitre de la run encore non lu. Retourne son index pour que
+   * l'appelant le marque comme lu, ou null s'il n'y a pas de chapitre / plus de
+   * fragment disponible — un point d'intérêt qui « rend un fragment » ne rend
+   * alors rien de ce côté, mais il porte toujours ses autres monnaies.
+   */
+  function takeChapterFragment(): { index: number; text: string } | null {
+    const run = runRef.current ?? loadRun();
+    const lus = run.fragmentsLus ?? [];
+    const chap = run.chapter ? chapterById(run.chapter.id) : null;
+    if (chap) {
+      const index = chap.fragments.findIndex((_, i) => !lus.includes(i));
+      if (index >= 0) return { index, text: chap.fragments[index] };
+    }
+    // Filet de la règle « jamais rien » : le chapitre est épuisé (ou absent) →
+    // on sert un fragment de ZONE. Indexés à partir de 1000 pour ne jamais
+    // collisionner avec les index du chapitre dans `fragmentsLus`.
+    const zi = LANDES_LORE_FRAGMENTS.findIndex((_, i) => !lus.includes(1000 + i));
+    if (zi >= 0) return { index: 1000 + zi, text: LANDES_LORE_FRAGMENTS[zi] };
+    return null;
+  }
+
   /** Pose un nouvel écran : remplace le texte, (ré)arme la révélation, masque
       les CTA le temps de la frappe. L'image n'est touchée que si `img` est
       fourni (sinon elle reste — « même scène, seul le texte change »). */
@@ -368,6 +403,10 @@ export default function Scene() {
     // Points d'intérêt déjà examinés dans le lieu courant : on ne les
     // re-propose pas à la reprise (spec 24/07 suite §1).
     setPoiSeen(run.poiSeen ?? []);
+    // Le SAVOIR (25/07) : ce que le héros a appris survit à la fermeture de
+    // l'app (pas à sa mort) — les options débloquées restent ouvertes à la
+    // reprise.
+    setSavoirs(run.savoirs ?? []);
 
     // Musique (24/07) : l'Acte I tourne sur les boucles des Landes (rotation
     // aléatoire des 3 pistes). Silencieux si les mp3 ne sont pas déployés.
@@ -649,6 +688,11 @@ export default function Scene() {
         ? SOUPCON_PALIERS[soupAfter]
         : null;
 
+    // Savoir énoncé par la narration de la scène d'arrivée (25/07), s'il est neuf.
+    const knownNow = runRef.current?.savoirs ?? [];
+    const arrivalSavoir =
+      nextScene.savoir && !knownNow.includes(nextScene.savoir) ? nextScene.savoir : null;
+
     const nextIllustration = nextScene.illustration ?? PORTAL;
     const contextChanged = nextIllustration !== lastSceneIlloRef.current;
     const entries: FeedEntry[] = [];
@@ -841,7 +885,11 @@ export default function Scene() {
       run.soupcon = soupAfter;
       if (soupManifest) run.soupconSeen = soupAfter;
       if (nextScene.fixationTrial) run.soupconSeen = 6;
+      // Savoir livré par la narration de la scène (25/07) : certains PNJ disent
+      // l'information d'eux-mêmes, avant qu'on ait pu la demander.
+      if (arrivalSavoir) run.savoirs = [...(run.savoirs ?? []), arrivalSavoir];
     });
+    if (arrivalSavoir) setSavoirs((s) => (s.includes(arrivalSavoir) ? s : [...s, arrivalSavoir]));
     // Résolution jouée → le chapitre entre dans la rotation du compte (le
     // prochain tirage évitera ceux déjà vécus tant qu'il en reste des neufs).
     if (newChapterStage === 3 && chapSt) {
@@ -928,6 +976,16 @@ export default function Scene() {
             flavor: gained.flavor,
           });
         }
+        // Le SAVOIR (25/07) : l'examen apprend une information qui ouvrira un
+        // choix plus loin. Rien n'est annoncé — pas de bandeau, pas de « appris
+        // : … ». Le joueur découvrira l'option le moment venu, ce qui fait de
+        // l'exploration un investissement plutôt qu'une collection à cocher.
+        const learned = poi.savoir && !savoirs.includes(poi.savoir) ? poi.savoir : null;
+        if (learned) setSavoirs((s) => [...s, learned]);
+        // Fragment de chapitre (4e monnaie) : le premier encore non lu du
+        // chapitre de la run, servi comme un beat de narration en plus.
+        const fragment = poi.chapterFragment ? takeChapterFragment() : null;
+        if (fragment) entries.push({ id: nextId(), kind: "narration", text: fragment.text });
         const seen = [...poiSeen, poi.id];
         setPoiSeen(seen);
         // Plan rapproché : image DÉDIÉE si elle existe (25/07), sinon crop CSS
@@ -937,6 +995,8 @@ export default function Scene() {
         persist((run) => {
           run.poiSeen = seen;
           if (poi.soupcon) run.soupcon = Math.max(0, Math.min(6, (run.soupcon ?? 0) + poi.soupcon));
+          if (learned) run.savoirs = [...(run.savoirs ?? []), learned];
+          if (fragment) run.fragmentsLus = [...(run.fragmentsLus ?? []), fragment.index];
         });
         if (poi.setsEnvFlag) {
           const flag = poi.setsEnvFlag;
@@ -975,6 +1035,15 @@ export default function Scene() {
       const delta = choice.soupcon;
       persist((run) => {
         run.soupcon = Math.max(0, Math.min(6, (run.soupcon ?? 0) + delta));
+      });
+    }
+    // Le SAVOIR (25/07) : poser la question vaut lire une trace. Acquis à la
+    // sélection, comme le Soupçon — ce qu'on a entendu ne dépend pas du jet.
+    if (choice.grantsSavoir && !savoirs.includes(choice.grantsSavoir)) {
+      const learnedNow = choice.grantsSavoir;
+      setSavoirs((s) => [...s, learnedNow]);
+      persist((run) => {
+        run.savoirs = [...(run.savoirs ?? []), learnedNow];
       });
     }
     // Prix différé (§17) : un choix « gratuit » peut poser une dette silencieuse.

@@ -27,6 +27,19 @@ export type Chapter = {
   developpement: string[];
   /** Résolution partielle — insérée avant la narration de la Descente. */
   resolution: string[];
+  /**
+   * Fragments de lore optionnels (règle de dosage du 25/07, 4e monnaie).
+   * Servis UN PAR UN par les points d'intérêt marqués `chapterFragment` : le
+   * joueur qui fouille recolle l'histoire du Bailli plus vite que celui qui
+   * traverse tout droit. Ils n'avancent PAS le `stage` du chapitre — les trois
+   * beats garantis (amorce / développement / résolution) restent intouchés,
+   * ces fragments les épaississent seulement.
+   *
+   * Écrits pour tenir hors de leur lieu d'origine : un fragment peut tomber
+   * n'importe où dans la zone, il ne doit donc jamais dire « ici » ni décrire
+   * le décor de l'examen qui le sert.
+   */
+  fragments: string[];
 };
 
 export const LANDES_CHAPTERS: Chapter[] = [
@@ -44,6 +57,14 @@ export const LANDES_CHAPTERS: Chapter[] = [
     resolution: [
       "En quittant les Landes, la question marche avec toi : chaque pendu de la colline a eu son procès, ses trois bancs, sa sentence dite à voix haute. Tous — sauf le juge. Qui a jugé le Bailli ? Et pourquoi sa dernière entaille tremble-t-elle ?",
     ],
+    fragments: [
+      "Un détail te revient, entendu ou deviné : la sentence ne pouvait pas tomber sans un témoin du hameau. Un seul suffisait. Il n'était pas obligé de parler — juste d'être là et de ne pas partir. Rester, c'était signer.",
+      "On dit que le Bailli ne haussait jamais la voix. Il posait deux questions, toujours les mêmes, et la seconde était : « Tu veux ajouter quelque chose ? » Personne n'a jamais su si c'était une politesse ou la dernière marche.",
+      "Les sentences étaient identiques, mais pas les délais. Certains montaient le jour même. D'autres attendaient trois aubes. Le hameau appelait ça la mesure du Bailli, et personne n'a jamais su ce qu'il mesurait.",
+      "Les trois bancs n'étaient pas égaux. Celui de droite, plus bas, plus usé, était celui des familles — on s'y asseyait pour entendre la sentence de son propre sang. Le bois y est lissé par des mains qui se sont tenues.",
+      "Il y avait une règle que personne ne comprenait : aucun jugement après le crépuscule. Jamais. Le Bailli remettait au lendemain plutôt que d'ouvrir la séance à la nuit tombée. Comme si le noir pouvait témoigner à charge.",
+      "Le dernier procès a duré une nuit entière — le seul, contre toutes ses règles. Le hameau est resté dehors, et personne n'a jamais dit qui était jugé. Ceux qui étaient assez vieux pour s'en souvenir changent de rue quand on le demande.",
+    ],
   },
   {
     // L'angle : la comptabilité des morts. Question laissée : la ligne sans nom.
@@ -58,6 +79,14 @@ export const LANDES_CHAPTERS: Chapter[] = [
     ],
     resolution: [
       "Tu emportes des Landes une image : cet écriteau au motif gratté, illisible pour toujours. Qui a gratté ? La main qui a écrit — ou une main qui aimait la pendue ? Le registre, lui, n'oublie rien. Il attend juste la prochaine ligne.",
+    ],
+    fragments: [
+      "La formule est toujours la même, tu commences à la reconnaître : un nom, deux mots de motif, un nombre. Jamais de date. Comme si le jour n'avait pas d'importance — seulement combien de jours la personne avait tenu avant.",
+      "Le motif qui revient le plus n'est pas le vol, ni le meurtre. C'est trois mots : « a parlé dehors ». Tu ne sais pas encore ce qu'on parlait, ni à qui, ni pourquoi le dehors compte.",
+      "Une ligne du registre n'a pas de nom. Le motif est rempli, le nombre de jours aussi — quatre-vingt-onze — et l'emplacement du nom est laissé propre. Pas gratté : jamais écrit. Quelqu'un a compté une vie sans accepter de la nommer.",
+      "Les nombres de jours ne montent pas au hasard. Aucun n'est en dessous de neuf, aucun au-dessus de quatre-vingt-onze. Comme si en deçà on ne comptait pas encore, et au-delà on ne comptait plus.",
+      "Certaines lignes portent, tout au bout, une petite croix à l'encre. Elles sont rares. Tu finis par voir ce qu'elles ont en commun : ce sont celles dont le nombre de jours est le plus élevé. Les croix marquent ceux qui ont tenu.",
+      "Il manque une année entière au registre. Les lignes sautent d'un hiver au suivant, sans rupture apparente, sans page arrachée : simplement, cette année-là, personne n'a été compté. Ou personne n'a voulu l'écrire.",
     ],
   },
   {
@@ -74,6 +103,14 @@ export const LANDES_CHAPTERS: Chapter[] = [
     resolution: [
       "En sortant des Landes, tu sais une chose que le hameau tait : une pendue s'est relevée, et elle marche encore. La corde n'a pas cédé — on l'a coupée. Reste à savoir qui tenait la lame. Et pourquoi le Bailli n'a jamais fait repentre sa fille.",
     ],
+    fragments: [
+      "Personne ne dit son nom. On dit « elle », et on change de sujet, et on regarde ailleurs. Un hameau qui compte tout, qui grave tout, qui affiche ses morts sur des écriteaux — et qui n'écrit pas ce nom-là.",
+      "Tu recoupes deux phrases entendues à un jour d'écart : elle était la fille du Bailli. Voilà pourquoi le motif de son écriteau a été gratté. Voilà, peut-être, pourquoi la dernière entaille de la chaire tremble.",
+      "Des provisions apparaissent là où elle dort. Pas un festin : du pain dur, de l'eau, parfois du sel. Déposés par quelqu'un qui refuse qu'elle meure et refuse aussi qu'on le voie. Le hameau la renie à voix haute et la nourrit en silence.",
+      "Les marques de comptage de son mur ne s'arrêtent pas. Elles continuent après la date qu'on devine être celle de sa pendaison. Quelqu'un compte encore ses jours — et ce quelqu'un sait qu'elle en a toujours.",
+      "Les mères d'ici ne défendent pas à leurs enfants d'aller au moulin. Elles leur défendent de lui PARLER. La nuance est terrible : ils savent tous qu'elle y est.",
+      "On raconte qu'elle ne dort jamais deux nuits de suite au même endroit — sauf au moulin. Ce serait le seul endroit des Landes où elle se sent tenue, et personne ne sait ce qui la tient là.",
+    ],
   },
   {
     // L'angle : le gibet démesuré. Question laissée : pour qui — et pourquoi vide ?
@@ -89,7 +126,35 @@ export const LANDES_CHAPTERS: Chapter[] = [
     resolution: [
       "Tu quittes les Landes avec cette mesure en tête : un gibet taillé pour quelque chose de plus grand qu'un homme, dressé par un homme qui s'est pendu à côté, à sa propre hauteur. Il visait qui, le Bailli — et pourquoi la corde du grand gibet est-elle usée si personne n'y a jamais pendu ?",
     ],
+    fragments: [
+      "Le bois du grand gibet ne vient pas des Landes. Il n'y pousse rien d'assez droit ni d'assez épais. On l'a fait monter de loin, par charrette, en plusieurs voyages — un chantier, pas un accès de colère.",
+      "En le bâtissant, le Bailli aurait dit une phrase que le hameau se répète encore, sans la comprendre : « Celui-là, il faudra qu'il descende de lui-même. » On ne bâtit pas un gibet pour quelqu'un qui doit y monter volontairement. Sauf s'il n'y a pas d'autre moyen.",
+      "Il grince les nuits sans vent. Ceux qui l'ont entendu ne montent plus sur la crête après le crépuscule — non par peur du bruit, mais parce que le bruit veut dire que la corde bouge, et que rien ne la touche.",
+      "Les charretiers qui ont monté le bois ont été payés double, et aucun n'est resté pour le voir dressé. On dit qu'ils sont repartis avant la nuit, tous, le même jour, sans réclamer le repas convenu.",
+      "Le grand gibet est orienté. Pas au hasard : son bras pointe exactement le sud, vers la Descente. Un gibet ne s'oriente pas — sauf s'il désigne.",
+      "Il n'y a pas d'échelle. Aucune trace de marches, aucun montant entaillé, rien pour grimper. On a bâti une potence trop haute pour un homme et on n'a prévu aucun moyen d'y monter. Ce qu'elle attendait devait y arriver seul.",
+    ],
   },
+];
+
+/**
+ * Fragments de ZONE — filet de sécurité de la règle de dosage (25/07 : « chaque
+ * point d'intérêt rend une des quatre monnaies. JAMAIS RIEN »).
+ *
+ * Une run très fouilleuse peut épuiser les 6 fragments de son chapitre avant
+ * d'avoir vu tous les points de lore. Sans ce pool, les examens suivants ne
+ * rendraient plus rien — exactement ce que la règle interdit. Ces fragments-ci
+ * ne parlent donc pas du Bailli mais des Landes elles-mêmes : ils tiennent quel
+ * que soit le chapitre tiré, et ne referment aucune des questions posées par
+ * les quatre angles.
+ */
+export const LANDES_LORE_FRAGMENTS: string[] = [
+  "Tu remarques une chose en marchant : il n'y a pas d'oiseaux. Pas un cri, pas un vol. Seuls les corbeaux du Compte, et ceux-là ne chantent pas — ils comptent.",
+  "Le crépuscule ne bouge pas. Tu as marché des heures et la lumière est exactement la même, au même endroit du ciel. Les Renonçants ont arrêté d'appeler ça le soir. Ils disent « l'heure », comme s'il n'y en avait qu'une.",
+  "Toutes les cordes des Landes sont du même chanvre. Le même torsadage, la même épaisseur, la même odeur grasse. Quelqu'un, une fois, en a fabriqué assez pour un siècle.",
+  "Les murets ne servent à rien. Ils ne clôturent aucun champ, ne retiennent aucune bête, ne longent aucun chemin utile. Ils suivent des tracés qui ne mènent nulle part — sauf, parfois, à un poteau.",
+  "Il n'y a pas de tombes dans les Landes. Des poteaux, des potences, des écriteaux, mais pas une tombe. On expose les morts. On ne les couche pas.",
+  "Le vent porte parfois une odeur de pain chaud. Toujours du sud, toujours de la Descente, toujours quand tu as faim. Les Renonçants s'arrêtent de respirer par le nez quand ça arrive.",
 ];
 
 /**

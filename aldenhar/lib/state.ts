@@ -210,6 +210,29 @@ export type RunState = {
     serment: "jure" | "faux" | "refuse" | null;
     halte: boolean;
   };
+  /**
+   * Le SAVOIR (journal Notion 25/07 — « rendre l'exploration payante »).
+   *
+   * Flags d'information APPRISE en examinant un point d'intérêt. Un Savoir
+   * n'ajoute jamais de puissance : il ouvre une **option qui n'existait pas**
+   * dans une scène ultérieure (`Choice.requiresSavoir`). Aucun chiffre, aucune
+   * stat, aucun marqueur « débloqué » tapageur — le choix apparaît comme les
+   * autres.
+   *
+   * ⚠️ Portée = LA RUN. Le héros apprend, il meurt, le suivant repart neuf :
+   * vidé à la mort exactement comme la Besace. Seules les Reliques traversent
+   * la mort (pilier inchangé).
+   *
+   * Un Savoir n'est pas toujours une bonne carte : certaines options ouvertes
+   * sont des aveux ou des paris (cf. le poteau gravé à ton nom).
+   */
+  savoirs: string[];
+  /**
+   * Fragments de chapitre déjà lus dans cette run (4e monnaie du dosage des
+   * points d'intérêt). Index dans `Chapter.fragments` du chapitre courant :
+   * un point d'intérêt qui « rend un fragment » sert le premier non encore lu.
+   */
+  fragmentsLus: number[];
 };
 
 const KEY = "aldenhar-run";
@@ -264,6 +287,8 @@ function fresh(): RunState {
     soupconSeen: 0,
     poiSeen: [],
     hameau: { entree: false, serment: null, halte: false },
+    savoirs: [],
+    fragmentsLus: [],
   };
 }
 
@@ -317,6 +342,12 @@ export function loadRun(): RunState {
             hameau: p.hameau && typeof p.hameau.entree === "boolean"
               ? p.hameau
               : { entree: false, serment: null, halte: false },
+            // Runs d'avant le Savoir (25/07) : elles reprennent sans rien
+            // savoir. Les options débloquées n'apparaîtront que si le joueur
+            // ré-examine les points concernés — pas de rattrapage rétroactif,
+            // le Savoir se gagne en explorant.
+            savoirs: Array.isArray(p.savoirs) ? p.savoirs : [],
+            fragmentsLus: Array.isArray(p.fragmentsLus) ? p.fragmentsLus : [],
           };
         }
       }

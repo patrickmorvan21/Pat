@@ -88,6 +88,25 @@ export type Choice = {
    * nuit dehors) et la récompense de sortie.
    */
   serment?: "jure" | "faux" | "refuse";
+  /**
+   * Le SAVOIR (journal Notion 25/07) : ce choix N'EXISTE PAS tant que le flag
+   * n'a pas été appris en examinant un point d'intérêt. Il est alors ajouté aux
+   * choix de la scène comme n'importe quel autre — aucun marqueur « débloqué »,
+   * aucun chiffre : le joueur voit juste une option qu'il n'avait pas la fois
+   * d'avant. C'est le MÊME mécanisme que les choix conditionnels d'objet ou
+   * d'état, rien de nouveau à part la source de la condition.
+   *
+   * Un Savoir n'est pas forcément une bonne carte : l'option ouverte peut être
+   * un aveu (dire au juge que ton poteau est déjà gravé) ou un pari.
+   */
+  requiresSavoir?: string;
+  /**
+   * SAVOIR appris en PRENANT ce choix (poser la question à quelqu'un vaut
+   * examiner une trace : c'est la même monnaie). Posé dès la sélection, comme
+   * le Soupçon — l'acte d'avoir demandé suffit, l'issue d'un éventuel jet ne
+   * change rien à ce qu'on a entendu.
+   */
+  grantsSavoir?: string;
 };
 
 /**
@@ -127,6 +146,20 @@ export type PointInteret = {
   focus?: string;
   /** Le Soupçon monte/descend en examinant (ex. réagir à voix haute). */
   soupcon?: number;
+  /**
+   * SAVOIR appris en examinant ce point (journal Notion 25/07). Flag posé dans
+   * `RunState.savoirs` : il ouvrira un choix marqué `requiresSavoir` dans une
+   * scène ultérieure. Jamais annoncé au joueur — il découvre l'option le moment
+   * venu, ce qui fait de l'exploration un investissement et non une collection.
+   */
+  savoir?: string;
+  /**
+   * Fragment de chapitre (4e monnaie de la règle de dosage 25/07) : l'examen
+   * livre en plus un beat de lore du chapitre de la run — le premier fragment
+   * encore non lu. Sans effet si la run n'a pas de chapitre ou si tous ses
+   * fragments ont déjà été servis.
+   */
+  chapterFragment?: boolean;
   /** Objet réel des Landes trouvé au point (id de LANDES_OBJETS). */
   grantsLoot?: string;
   /** Trace durable au compte (persistance environnementale §17). */
@@ -166,6 +199,14 @@ export type Scene = {
    * (relique + fragment + épitaphe). Un jet réussi fait retomber le Soupçon.
    */
   fixationTrial?: boolean;
+  /**
+   * SAVOIR livré par la NARRATION de cette scène (25/07) : certains PNJ disent
+   * l'information tout haut avant qu'on ait pu la demander (le Marcheur à
+   * rebours prévient du versant nord dès sa première réplique). Sans ça, le
+   * joueur entendrait le conseil sans pouvoir s'en servir — incohérence pire
+   * que l'absence de conseil.
+   */
+  savoir?: string;
   /**
    * Points d'intérêt explorables du lieu (spec 24/07 suite, §1). Un lieu n'est
    * PLUS jamais un nœud unique : arrivée (les points se voient à distance) →
@@ -315,6 +356,7 @@ export const SCENES: Scene[] = [
     pointsInteret: [
       {
         id: "gravures-borne",
+        chapterFragment: true,
         label: "Les gravures de la pierre",
         illustration: "assets/scene_borne_gravures_a_d.png",
         zoom: 2.6,
@@ -551,11 +593,14 @@ export const SCENES: Scene[] = [
         approche:
           "Tu montes de trois pas dans la pente, juste assez pour voir la " +
           "crête sans t'exposer entièrement. La terre y est meuble, retournée.",
+        savoir: "savoir_bete_crete_nord",
         examen:
-          "Des empreintes. Parallèles au chemin. Sur toute sa longueur. " +
-          "Quelque chose marche là-haut quand quelqu'un marche en bas — à la " +
-          "même vitesse, du même pas. Tu redescends sans te presser, parce " +
-          "que se presser serait une information.",
+          "Des empreintes. Parallèles au chemin. Sur toute sa longueur — mais " +
+          "sur la crête NORD seulement : l'autre versant est intact, pas une " +
+          "marque. Quelque chose marche là-haut quand quelqu'un marche en bas, " +
+          "à la même vitesse, du même pas, et toujours du même côté. Tu " +
+          "redescends sans te presser, parce que se presser serait une " +
+          "information.",
       },
       {
         id: "marcheur-rebours",
@@ -628,6 +673,23 @@ export const SCENES: Scene[] = [
             "continue tout seul, et tu n'entends jamais ce qui le traverse.",
         },
       },
+      {
+        /* SAVOIR (25/07) : les empreintes du talus — ou le conseil du Marcheur
+           — apprennent que la Bête ne longe QUE la crête nord. L'information
+           remplace le jet : on ne devine plus, on sait. Le danger n'a pas
+           baissé, il a été contourné. */
+        id: "longer-cote-sud",
+        label: "Longer le côté sud",
+        requiresSavoir: "savoir_bete_crete_nord",
+        passive: {
+          consequence:
+            "Tu passes le coude épaule contre le talus SUD, du côté vierge " +
+            "d'empreintes, et tu marches sans accélérer. Au-dessus, à droite, " +
+            "sur la crête nord, quelque chose t'accompagne un moment — puis " +
+            "s'arrête, parce que le versant s'interrompt et qu'elle ne " +
+            "traverse pas. Tu ressors du creux entier, et sans avoir couru.",
+        },
+      },
     ],
     jailerLine: "Le coude. Toujours le coude. Trois cents ans que je regarde des gens accélérer juste avant.",
   },
@@ -637,6 +699,8 @@ export const SCENES: Scene[] = [
     id: "marcheur-1",
     illustration: "assets/monstre_marcheur_a_rebours_d.png",
     chainNext: "marcheur-2",
+    // Sa première réplique DIT le versant : l'écouter vaut avoir lu les traces.
+    savoir: "savoir_bete_crete_nord",
     narration: [
       "Il ne s'arrête pas à ta hauteur. Il ralentit, c'est tout — et te parle " +
         "en te dépassant, le regard toujours fixé sur le chemin derrière toi.",
@@ -808,6 +872,7 @@ export const SCENES: Scene[] = [
     pointsInteret: [
       {
         id: "potences-cercle",
+        chapterFragment: true,
         label: "Les potences du cercle",
         illustration: "assets/scene_colline_potences_cercle_a_c.png",
         zoom: 2.1,
@@ -823,6 +888,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "gibet-vide",
+        chapterFragment: true,
         label: "Le Gibet Vide, au centre",
         illustration: "assets/scene_colline_gibet_vide_a_b.png",
         zoom: 2.6,
@@ -1031,6 +1097,7 @@ export const SCENES: Scene[] = [
     pointsInteret: [
       {
         id: "les-rangees",
+        chapterFragment: true,
         label: "Les rangées et leurs noms",
         illustration: "assets/scene_champ_rangees_a_d.png",
         zoom: 2.2,
@@ -1052,6 +1119,7 @@ export const SCENES: Scene[] = [
         zoom: 2.5,
         focus: "70% 55%",
         soupcon: 1, // réagir devant les poteaux d'avance se voit
+        savoir: "savoir_poteau_a_mon_nom",
         approche:
           "Il faut traverser tout le champ pour les atteindre. Tu comptes les " +
           "poteaux vides en marchant — puis tu t'arrêtes de compter, parce que " +
@@ -1059,11 +1127,13 @@ export const SCENES: Scene[] = [
         examen:
           "Trois poteaux portent déjà des noms, sans date. Le Fossoyeur grave " +
           "d'avance « ceux dont c'est sûr ». Le troisième nom est récent — " +
-          "l'entaille est claire, le bois n'a pas encore grisé. Tu le lis deux " +
-          "fois. Tu préfères ne pas savoir pourquoi il te semble familier.",
+          "l'entaille est claire, le bois n'a pas encore grisé. Tu le lis, et " +
+          "tu le relis, et il ne change pas : c'est le tien. Quelqu'un ici " +
+          "sait déjà comment ça finit, et a pris le temps de tailler proprement.",
       },
       {
         id: "tombe-sans-poteau",
+        grantsLoot: "craie-condamne",
         label: "Un vide dans une rangée pleine",
         illustration: "assets/scene_champ_tombe_manquante_a_c.png",
         zoom: 2.7,
@@ -1237,6 +1307,7 @@ export const SCENES: Scene[] = [
     pointsInteret: [
       {
         id: "croix-craie",
+        soupcon: 1, // toucher à une porte marquée, dans une rue qui regarde
         label: "S'approcher de la croix",
         illustration: "assets/scene_hameau_croix_craie_a_a.png",
         zoom: 2.6,
@@ -1396,6 +1467,31 @@ export const SCENES: Scene[] = [
         },
         soupcon: 1,
       },
+      {
+        /* SAVOIR (25/07) : avoir vu son reflet en retard dans la Mare, c'est
+           avoir la preuve qu'on entend. On ne peut plus le nier — mais on peut
+           le DIRE, à quelqu'un qui porte une croix à la craie sur sa porte.
+           ⚠️ ÉCART ASSUMÉ avec la table Notion, qui posait cette option sur
+           l'Hésitant beat 2 : l'Hésitant n'est joignable que depuis la Borne
+           Frontière, c'est-à-dire au PREMIER écran de la run, donc toujours
+           avant la Mare — l'option n'aurait jamais pu s'ouvrir. La Femme au
+           Seuil tient le même rôle (aveu réciproque, EMPATHIE forte) et elle
+           est, elle, atteignable après la Mare. */
+        id: "femme-moi-aussi",
+        label: "« Moi aussi, j'entends. »",
+        requiresSavoir: "savoir_reflet",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Tu le dis simplement, et tu ajoutes le détail qui ne s'invente pas : le reflet en retard. Elle ferme les yeux. Quand elle les rouvre, elle ne te regarde plus comme un étranger qui descend — elle te regarde comme on regarde quelqu'un de la famille qu'on n'attendait plus. Elle te donne la mèche, le nom, et une chose que personne n'a offerte à personne ici depuis des années : sa porte, ouverte, si tu remontes.",
+            "Elle te laisse finir, sans reculer. « Je sais », dit-elle. « Ta figure le dit depuis le début. » Elle te met la mèche dans la main, referme tes doigts, et pour la première fois quelqu'un du hameau te touche sans hésiter.",
+            "Tu le dis, et elle recule. Pas de dégoût : de la panique — pour toi. « Ne le dis à personne d'autre. » Elle regarde à droite, à gauche, les volets. « À personne, tu m'entends. » Elle rentre, et tu restes seul dans la rue avec un aveu qui traîne dans l'air.",
+            "1 naturel. Tu le dis trop fort, ou pas assez seul. Un volet claque quelque part. Elle a pâli — pas de ce que tu es : de ce que ça fait de toi, ici. « Va-t'en. Maintenant. » ♦ −2"
+          ),
+        },
+        grantsLoot: "meche-nouee",
+      },
     ],
     jailerLine: "Une mèche de cheveux comme monnaie. Tu vois, même ici, tout le monde comprend le principe du pacte.",
   },
@@ -1469,6 +1565,24 @@ export const SCENES: Scene[] = [
             "méfiance : c'est de la fatigue. « C'est ça qui nous inquiète. »",
         },
       },
+      {
+        /* SAVOIR (25/07) : l'Ordonnance clouée au tribunal liste ce que le
+           hameau guette. La connaître, c'est pouvoir se tenir de façon à ne
+           déclencher aucun de ses signes — le seul choix de la scène qui FAIT
+           BAISSER le Soupçon au lieu de le monter. */
+        id: "tenir-selon-ordonnance",
+        label: "Te tenir comme eux",
+        requiresSavoir: "savoir_ordonnance",
+        soupcon: -1,
+        passive: {
+          consequence:
+            "Tu ne réponds pas tout de suite. Tu tournes les épaules au sud, " +
+            "comme eux. Tu regardes le sol quand le vieux parle, tu ne fixes " +
+            "rien plus longtemps qu'il ne faut, et quand un souffle passe " +
+            "entre les murs, tu ne lèves pas la tête. Quatre signes qu'ils " +
+            "guettent, quatre signes que tu ne donnes pas.",
+        },
+      },
     ],
     jailerLine: "Regarde-les. Trois hommes qui tremblent devant un mort. Ils ont raison, remarque.",
   },
@@ -1490,6 +1604,7 @@ export const SCENES: Scene[] = [
     pointsInteret: [
       {
         id: "pourquoi-trois-aubes",
+        soupcon: 1, // poser LA question devant tout le barrage
         label: "Demander pourquoi trois aubes",
         zoom: 2.3,
         focus: "50% 40%",
@@ -1632,11 +1747,14 @@ export const SCENES: Scene[] = [
           "Tu prends la lampe et tu fais le tour, lentement, en te tenant " +
           "loin des murs — le vieux réflexe de qui ne veut pas être une " +
           "silhouette derrière des planches.",
+        savoir: "savoir_grange_comptee",
         examen:
           "Des marques sur les poutres, à hauteur d'homme. Des bâtons de " +
           "comptage — des séries de nuits. Quelqu'un a dormi ici souvent. Ou " +
           "plusieurs quelqu'uns, une nuit chacun. La dernière série s'arrête " +
-          "à deux.",
+          "à deux. Et sous chaque bâton, une encoche plus petite, régulière : " +
+          "quatre par nuit, toujours quatre. Ce ne sont pas les nuits qu'on " +
+          "compte ici. Ce sont les passages de la ronde.",
       },
     ],
     choices: [
@@ -1694,6 +1812,30 @@ export const SCENES: Scene[] = [
             "écouter — tu comptes tes propres respirations pour couvrir le " +
             "reste. Ça marche à peu près. Au matin, tu ne sauras pas ce qui " +
             "s'est dit devant ta porte, et c'est exactement ce que tu voulais.",
+        },
+      },
+      {
+        /* SAVOIR (25/07) : les encoches des poutres disaient quatre passages
+           par nuit. Connaître le rythme de la ronde permet d'écouter dans les
+           creux, sans jet.
+           ⚠️ ARBITRAGE entre deux lignes du MÊME journal : la table demandait
+           qu'« Écouter sans bouger » gagne un cran, mais la règle du Savoir
+           (même section) interdit d'ajouter de la puissance — « il ajoute une
+           option qui n'existait pas ». On ne baisse donc AUCUN seuil : on ouvre
+           une option qui obtient l'information sans dé du tout. Bénéfice
+           identique pour le joueur, règle tenue. */
+        id: "compter-les-passages",
+        label: "Écouter entre deux rondes",
+        requiresSavoir: "savoir_grange_comptee",
+        passive: {
+          consequence:
+            "Quatre passages par nuit — c'est ce que disaient les encoches. Tu " +
+            "attends le deuxième, tu comptes vingt respirations après que les " +
+            "pas se sont éloignés, et c'est là que tu écoutes. Le creux est " +
+            "large, et les voix y tombent entières : un nom qui n'est pas le " +
+            "tien, le mot « demain », et le Petit Tribunal cité comme on cite " +
+            "une heure. Tu es recouché avant le troisième passage. Personne " +
+            "n'a rien à noter.",
         },
       },
     ],
@@ -1887,6 +2029,7 @@ export const SCENES: Scene[] = [
     pointsInteret: [
       {
         id: "croix-ombres",
+        chapterFragment: true,
         label: "La croix d'ombres, en haut",
         illustration: "assets/scene_moulin_croix_ombres_a_d.png",
         // Il faut RECULER pour la voir entière : le plan s'élargit au lieu de
@@ -1905,6 +2048,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "lucarne-moulin",
+        grantsLoot: "jouet-fixee",
         label: "La lucarne, au-dessus de la porte",
         illustration: "assets/scene_moulin_lucarne_a_b.png",
         zoom: 2.7,
@@ -1920,6 +2064,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "interieur-moulin",
+        chapterFragment: true,
         label: "Pousser la porte entrouverte",
         illustration: "assets/scene_moulin_interieur_a_d.png",
         zoom: 2.2,
@@ -2018,14 +2163,19 @@ export const SCENES: Scene[] = [
           "Tu remontes la nef courte. L'odeur de chanvre vieux prend à la " +
           "gorge à mesure — une odeur grasse, presque animale, qui n'a rien " +
           "d'une odeur d'église.",
+        savoir: "savoir_corde_vive",
         examen:
           "Des dizaines de cordes coupées, clouées en rangs, chacune " +
           "étiquetée d'un nom à l'encre pâle. Ce ne sont pas des trophées. Ce " +
           "sont des reliques — chaque corde « a tenu » quelqu'un. L'une " +
-          "d'elles bouge quand tu ne la regardes pas.",
+          "d'elles bouge quand tu ne la regardes pas : la troisième du rang " +
+          "bas, sans étiquette, plus claire que les autres. Tu note où elle " +
+          "est. Ce genre de chose, on préfère savoir où ça se trouve avant " +
+          "que ça sache où tu te trouves.",
       },
       {
         id: "autel-renverse",
+        soupcon: 1, // fouiller sous un autel, même renversé
         label: "L'autel couché, sur le côté",
         illustration: "assets/scene_chapelle_autel_a_c.png",
         zoom: 2.5,
@@ -2041,6 +2191,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "ouvrage-tressage",
+        soupcon: -1, // refaire le geste du rite : le hameau approuve
         label: "La chaise et l'ouvrage",
         illustration: "assets/scene_chapelle_ouvrage_a_d.png",
         zoom: 2.6,
@@ -2101,6 +2252,23 @@ export const SCENES: Scene[] = [
         },
       },
       { id: "corde-vive", label: "Saisir la corde vive", locked: { stat: "COURAGE" } },
+      {
+        /* SAVOIR (25/07) : avoir repéré LAQUELLE des cordes bouge permet de
+           l'éviter avant qu'elle n'attaque — la seule façon de sortir de la
+           Chapelle sans jamais tendre le poignet. */
+        id: "eviter-corde-vive",
+        label: "Longer le mur, hors d'atteinte",
+        requiresSavoir: "savoir_corde_vive",
+        passive: {
+          consequence:
+            "Tu connais son rang et sa place. Tu traverses la nef par l'autre " +
+            "côté, l'épaule au mur froid, à une largeur de bras de trop pour " +
+            "elle. Au passage tu l'entends se détendre puis se retendre, à " +
+            "vide, dans ton dos — le bruit sec d'une chose qui avait prévu " +
+            "autre chose. La Veuve, elle, lève les yeux pour la première fois. " +
+            "Elle n'a pas l'air déçue. Elle a l'air de noter.",
+        },
+      },
     ],
     jailerLine: "La corde coupée, sous verre. Ils exposent leur seul échec — c'est leur façon de le surveiller.",
   },
@@ -2339,14 +2507,17 @@ export const SCENES: Scene[] = [
           "Trois pas de dalle inégale, et la feuille se précise : du papier " +
           "épais, jauni, cloué aux quatre coins par quelqu'un qui ne voulait " +
           "pas qu'on la décroche.",
+        savoir: "savoir_ordonnance",
         examen:
           "La liste des signes, de la main du Bailli. « Parler seul face au " +
           "sud. Fixer les Profondeurs plus qu'il ne faut. Cesser de dormir. " +
           "Répondre à ce qui n'a pas parlé. » Tu la lis deux fois. La deuxième " +
-          "fois, tu comptes ceux qui te concernent déjà.",
+          "fois, tu comptes ceux qui te concernent déjà. Et la troisième, tu " +
+          "les apprends — parce que c'est exactement ce qu'ils guettent chez toi.",
       },
       {
         id: "chaire-registre",
+        chapterFragment: true,
         label: "La chaire et son livre",
         illustration: "assets/scene_tribunal_chaire_a_c.png",
         zoom: 2.5,
@@ -2364,6 +2535,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "les-bancs",
+        chapterFragment: true,
         label: "Les bancs et leurs traces",
         illustration: "assets/scene_tribunal_bancs_a_c.png",
         zoom: 2.2,
@@ -2426,6 +2598,26 @@ export const SCENES: Scene[] = [
             "colonne que tu ne verras pas. Certains comptes, on préfère ne " +
             "pas savoir où ils s'arrêtent. La porte du tribunal se referme " +
             "sans bruit : on sait que tu reviendras. Tout le monde revient.",
+        },
+      },
+      {
+        /* SAVOIR (25/07) : avoir lu son propre nom sur un poteau vierge ouvre
+           l'option la plus dangereuse de la zone. Le Notion la décrit comme
+           « aveu suicidaire ou renversement selon RUSE » — donc un vrai pari :
+           un Savoir n'est pas toujours une bonne carte. */
+        id: "dire-poteau-grave",
+        label: "« Mon poteau est déjà taillé »",
+        requiresSavoir: "savoir_poteau_a_mon_nom",
+        risky: {
+          stat: "RUSE",
+          threshold: 13,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Tu l'annonces comme un fait administratif, sans trembler : ton nom est gravé au fond du champ, l'entaille est fraîche, le bois n'a pas grisé. Puis tu ajoutes la seule question qui compte : « Qui a donné mon nom au Fossoyeur, et sur quel jugement ? » La plume s'arrête. L'Écrivain feuillette en arrière, pâlit, et tourne le cahier vers toi. La ligne existe. Elle est signée d'une main morte depuis des années. Tu ne sais pas encore ce que ça veut dire — mais lui non plus, et ça le terrifie davantage.",
+            "Tu le dis, et tu regardes l'Écrivain plutôt que le sol. Sa plume hésite. « Une erreur de greffe », finit-il par dire, et il gratte la ligne devant toi. Le bois du poteau, lui, restera taillé — mais le cahier ne te réclame plus. Ici, c'est le cahier qui décide.",
+            "Tu le dis, et le silence qui suit te apprend ton erreur. L'Écrivain ne lève pas les yeux : il écrit. Longuement. Tu viens de fournir toi-même le motif qui manquait à ta ligne, et il a l'élégance de ne pas te remercier.",
+            "1 naturel. Tu parles trop, et tu parles bien : tu expliques exactement où est le poteau, à quelle rangée, comment l'entaille est faite. L'Écrivain note tout. « Merci », dit-il enfin — le seul mot qu'il t'aura adressé. « On cherchait encore lequel c'était. » ♦ −2"
+          ),
         },
       },
     ],
@@ -2572,6 +2764,7 @@ export const SCENES: Scene[] = [
     pointsInteret: [
       {
         id: "berge-usee",
+        soupcon: 1, // s'agenouiller aux creux de la Mare est un aveu de croyance
         label: "Le point de berge usé",
         illustration: "assets/scene_mare_berge_a_c.png",
         zoom: 2.6,
@@ -2590,6 +2783,7 @@ export const SCENES: Scene[] = [
         label: "L'eau",
         zoom: 2.4,
         focus: "50% 70%",
+        savoir: "savoir_reflet",
         approche:
           "Tu t'agenouilles dans les creux. Ils sont à ta taille, évidemment. " +
           "La croyance dit : le reflet de qui entend la voix est en retard.",
@@ -2597,7 +2791,9 @@ export const SCENES: Scene[] = [
           "Tu te penches. Ton reflet se penche. Et il lève les yeux vers toi " +
           "une demi-seconde après toi. Tu le savais déjà — tu entends la voix " +
           "depuis le premier jour, c'est même comme ça que le monde te parle. " +
-          "Mais le savoir et le voir sont deux choses différentes.",
+          "Mais le savoir et le voir sont deux choses différentes. À partir de " +
+          "maintenant, tu ne pourras plus prétendre le contraire, même à " +
+          "quelqu'un qui te ressemble.",
       },
       {
         id: "reflet-metal",
@@ -2714,6 +2910,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "souche-premier-arbre",
+        soupcon: 1, // compter les rangs du Verger, ça se voit du hameau
         label: "La souche, au bout du rang",
         illustration: "assets/scene_verger_souche_a_c.png",
         zoom: 2.8,
@@ -2951,6 +3148,7 @@ export const SCENES: Scene[] = [
         approche:
           "Tu longes le mur sur quelques pas, la tête levée, à suivre la " +
           "ligne des sommets taillés.",
+        savoir: "savoir_palissade_retient",
         examen:
           "Chaque rondin est appointé — taillé en pique. Tu suis les pointes " +
           "du regard, et ton estomac comprend avant toi : elles sont tournées " +
@@ -2959,6 +3157,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "portillon-verrou",
+        grantsLoot: "cle-portillon",
         label: "Le portillon et son verrou",
         illustration: "assets/scene_palissade_portillon_a_b.png",
         zoom: 2.8,
@@ -3111,6 +3310,25 @@ export const SCENES: Scene[] = [
             "Tu ne racontes rien. Il hausse les épaules — un homme qui a " +
             "l'habitude — et remet la lanterne au clou. Elle balancera dans " +
             "ton dos tout le temps que tu franchiras le portillon.",
+        },
+      },
+      {
+        /* SAVOIR (25/07) : avoir vu le sens des pointes change la nature de
+           l'échange. On ne paie plus avec sa mort — on paie en montrant qu'on a
+           compris ce que le hameau ne dit pas. */
+        id: "veilleur-mur-inutile",
+        label: "« Ce mur ne protège de rien »",
+        requiresSavoir: "savoir_palissade_retient",
+        grantsLoot: "lanterne-veilleur",
+        passive: {
+          consequence:
+            "Tu le dis sans le défier : les pointes sont tournées vers " +
+            "l'intérieur, ce mur ne garde pas le village, il l'enferme. Il ne " +
+            "répond pas tout de suite. Il décroche la lanterne, la pose dans " +
+            "tes mains, et regarde le portillon. « Trente ans que je le dis à " +
+            "personne. » Puis, plus bas : « Ceux qui montent, on les laisse " +
+            "monter. C'est descendre qui est interdit. » Il ne réclame plus " +
+            "d'histoire. Tu viens d'en donner une.",
         },
       },
     ],
