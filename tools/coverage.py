@@ -118,33 +118,85 @@ def save_verdict(item_id: str, verdict: str, note: str = "") -> None:
 DEFAULT_ZONE = "Les Landes"
 
 
-def zone_index() -> dict[str, str]:
-    """id de lieu → nom de zone, lu depuis `data/zones/*.json`.
+def zone_index() -> tuple[dict[str, str], dict[str, str], dict[str, str]]:
+    """Lit `data/zones/*.json` et renvoie trois index : id → zone, id → LIEU,
+    id → nom lisible.
 
-    Aujourd'hui une seule zone est écrite ; l'index existe pour que l'ajout
-    d'un `data/zones/<autre>.json` range ses lieux tout seul, sans toucher au
-    code (demande Patrick 26/07 : « demain il y aura d'autres zones »).
+    ⚠️ Le regroupement du 26/07 (matin) appelait « lieu » l'id de scène privé
+    de son suffixe — mais `hesitant` n'est pas un lieu, c'est une RENCONTRE qui
+    a lieu à la Borne. D'où « encore plus confusant » (retour Patrick). Les
+    vrais lieux sont la collection `lieux` ; rencontres, créatures et objets
+    s'y rattachent par `lieu_attache`.
     """
-    idx: dict[str, str] = {}
+    zones: dict[str, str] = {}
+    lieu_de: dict[str, str] = {}
+    nom_de: dict[str, str] = {}
     for z in sorted(ZONES_DIR.glob("*.json")):
         try:
             data = json.loads(z.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):
             continue
-        nom = (data.get("zone") or {}).get("nom") or z.stem.replace("_", " ").title()
+        zone_nom = (data.get("zone") or {}).get("nom") or z.stem.replace("_", " ").title()
+        lieux = {e["id"]: (e.get("nom") or e["id"]) for e in data.get("lieux", []) if e.get("id")}
+        for lid, lnom in lieux.items():
+            k = lid.replace("_", "-")
+            zones[k] = zone_nom
+            lieu_de[k] = lnom
+            nom_de[k] = lnom
+        for coll in ("rencontres", "creatures", "objets"):
+            for e in data.get(coll, []):
+                if not e.get("id"):
+                    continue
+                k = e["id"].replace("_", "-")
+                zones[k] = zone_nom
+                nom_de[k] = e.get("nom") or k
+                att = e.get("lieu_attache")
+                # Un errant (lieu_attache null) est rangé à part : il n'a pas
+                # de lieu, et le prétendre serait un mensonge.
+                lieu_de[k] = lieux.get(att, ERRANTS) if att else ERRANTS
+    return zones, lieu_de, nom_de
 
-        def walk(node):
-            if isinstance(node, dict):
-                if isinstance(node.get("id"), str):
-                    idx.setdefault(node["id"].replace("_", "-"), nom)
-                for v in node.values():
-                    walk(v)
-            elif isinstance(node, list):
-                for v in node:
-                    walk(v)
 
-        walk(data)
-    return idx
+ERRANTS = "Sans lieu fixe"
+
+# Rattachements que les données de zone ne portent pas : séquences scriptées
+# (Hameau), scènes de structure (Descente, procès) et rencontres dont l'id de
+# scène ne colle pas à celui de landes.json. À écrit à la main faute de mieux —
+# à déplacer dans landes.json quand ces séquences y seront décrites.
+LIEU_MANUEL = {
+    "borne-frontiere": "La Borne frontière",
+    "hesitant": "La Borne frontière",
+    "chemin-creux": "Le Chemin Creux",
+    "marcheur": "Le Chemin Creux",
+    "bete-chemins-creux": "Le Chemin Creux",
+    "serment-hameau": "Le Hameau des Renonçants",
+    "hameau-entree": "Le Hameau des Renonçants",
+    "hameau-halte": "Le Hameau des Renonçants",
+    "hameau-halte-dehors": "Le Hameau des Renonçants",
+    "femme-seuil": "Le Hameau des Renonçants",
+    "proces-du-heros": "Le Hameau des Renonçants",
+    "campement": "Le Moulin sans Ailes",
+    "epoux": "Le Verger Noir",
+    "veilleur": "La Palissade Sud",
+    "palissade-sud": "La Palissade Sud",
+    "la-descente": "La Descente",
+}
+
+# Noms lisibles des scènes que landes.json ne nomme pas (séquences scriptées et
+# rencontres dont l'id de scène diffère de celui des données de zone).
+NOM_MANUEL = {
+    "hameau-entree": "L'entrée au Hameau",
+    "hameau-halte": "La halte au Hameau",
+    "hameau-halte-dehors": "La nuit dehors (Serment refusé)",
+    "serment-hameau": "L'approche du Hameau",
+    "proces-du-heros": "Le procès du héros",
+    "femme-seuil": "La Femme au Seuil",
+    "campement": "Le Moulin sans Ailes",
+    "veilleur": "Le Veilleur de la Palissade",
+    "marcheur": "Le Marcheur à rebours",
+    "epoux": "Les Époux du Verger",
+    "bete-chemins-creux": "La Bête des Chemins Creux",
+}
 
 
 @dataclass
@@ -170,6 +222,10 @@ class Item:
     # principale et lesquelles étaient ses variantes (retour Patrick 26/07).
     zone: str = "Les Landes"
     group: str = ""
+    # Le LIEU réel (« La Borne frontière »), distinct du `group` qui n'est que
+    # la clé technique de la ligne. Et le nom lisible de la scène de la ligne.
+    lieu: str = ""
+    scene_nom: str = ""
     # Carte principale de son groupe (l'image « au repos » du lieu).
     principale: bool = False
 
@@ -320,11 +376,18 @@ def build_items() -> tuple[list[Item], dict, list[str]]:
     # Le lieu d'une carte : son id privé de son suffixe de beat (« -2 », « -3 »),
     # et pour un point d'intérêt celui de sa scène porteuse. La PREMIÈRE carte
     # d'un groupe (celle qui porte l'id nu) est la principale.
-    zones = zone_index()
+    zones, lieu_de, nom_de = zone_index()
     for i in items:
         base = i.parent if i.kind == "poi" else i.id
         i.group = re.sub(r"-\d+$", "", base)
-        i.zone = zones.get(i.group, zones.get(i.id, DEFAULT_ZONE))
+        key = i.group.replace("_", "-")
+        i.zone = zones.get(key, DEFAULT_ZONE)
+        # Le LIEU réel : les données de zone d'abord, la table manuelle ensuite.
+        i.lieu = lieu_de.get(key) or LIEU_MANUEL.get(key) or ERRANTS
+        if i.lieu == ERRANTS and key in LIEU_MANUEL:
+            i.lieu = LIEU_MANUEL[key]
+        # Titre de la LIGNE : le nom lisible de la scène, pas son id technique.
+        i.scene_nom = NOM_MANUEL.get(key) or nom_de.get(key) or key.replace("-", " ")
     seen_group: set[str] = set()
     for i in items:
         if i.kind == "scene" and i.group not in seen_group:
@@ -419,13 +482,26 @@ font:400 12px/1.2 "Roboto Mono",monospace;letter-spacing:1px;color:var(--blanc);
 .lieu-n{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--b50)}
 .lieu-warn{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;
 background:var(--blanc);color:var(--charbon);padding:2px 6px}
-/* Un lieu dont TOUTES les cartes sont filtrées se replie. */
+/* Un lieu / une ligne dont TOUTES les cartes sont filtrées se replie. */
 .lieu.vide{display:none}
 .zone.vide{display:none}
+.ligne.vide{display:none}
 
-/* ---------- grille ---------- */
+/* ---------- une LIGNE = une scène : principale à gauche, variantes à droite ---------- */
+.ligne{margin-top:16px;padding-left:12px;border-left:1px solid var(--b20)}
+.ligne-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:9px;margin:0 0 8px;
+font:400 13px/1.2 "Roboto Mono",monospace;color:var(--blanc)}
+.ligne-id{font-size:9.5px;color:var(--b20)}
+.ligne-n{font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--b50)}
+/* Rangée horizontale : elle défile dans son propre conteneur, le corps de page
+   ne part JAMAIS en scroll latéral. */
+.rangee{display:flex;gap:12px;align-items:flex-start;overflow-x:auto;padding-bottom:6px}
+.rangee .card{flex:0 0 218px}
+/* L'image principale de la scène : plus large, liseré orange. */
+.rangee .card.principale{flex:0 0 248px;border-color:var(--orange)}
+
+/* ---------- grille (orphelins, listes à plat) ---------- */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-top:10px}
-/* L'image du lieu se distingue de ses variantes : liseré orange franc. */
 .card.principale{border-color:var(--orange)}
 .card{border:1px solid var(--b20);padding:10px}
 .card.drag{border-color:var(--orange)}
@@ -463,6 +539,10 @@ font:inherit;font-size:10px;letter-spacing:.5px;padding:6px 4px;cursor:pointer}
 border:none;color:var(--charbon);font:inherit;font-size:12px;letter-spacing:1px;
 padding:12px;cursor:pointer;text-align:center}
 .copybar:hover{filter:brightness(1.08)}
+/* Second bouton : même action, sortie plus courte — donc secondaire. */
+.copybar-2{margin-top:8px;background:none;color:var(--b50);
+box-shadow:inset 0 0 0 1px var(--b20);font-size:11px;padding:9px}
+.copybar-2:hover{color:var(--blanc);filter:none}
 
 .cat{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--b50);margin-top:9px}
 .id{font-size:12px;margin-top:2px;word-break:break-all}
@@ -543,8 +623,11 @@ function applyFilter(){
       ||c.dataset.verdict===filter;
     c.classList.toggle("hidden",!ok);
   });
-  // Replier les lieux (puis les zones) dont plus aucune carte n'est visible :
-  // sinon le filtre laissait des titres de lieux vides partout.
+  // Replier lignes, puis lieux, puis zones dont plus aucune carte n'est
+  // visible : sinon le filtre laissait des titres vides partout.
+  document.querySelectorAll(".ligne").forEach(r=>{
+    r.classList.toggle("vide",!r.querySelector(".card:not(.hidden)"));
+  });
   document.querySelectorAll(".lieu").forEach(l=>{
     l.classList.toggle("vide",!l.querySelector(".card:not(.hidden)"));
   });
@@ -636,6 +719,60 @@ if(window.__COVERAGE_WEB__){
     const card=btn&&btn.closest(".card");
     if(card)applyVerdict(card,v.v,v.note||"");
   }
+  /* ---------- « Générer les prompts » ------------------------------------
+     Pour chaque carte marquée à remplacer, un bloc prêt à me coller : le lieu,
+     la scène, le rôle de l'image dans sa ligne, la description, la raison du
+     rejet, le nom de fichier attendu, et surtout l'IMAGE PRINCIPALE de la
+     ligne en RÉFÉRENCE — c'est elle qui tient la cohérence de décor et de
+     personnage entre l'image principale et ses variantes. */
+  async function toClipboard(txt){
+    try{await navigator.clipboard.writeText(txt);}
+    catch{
+      const ta=document.createElement("textarea");ta.value=txt;
+      document.body.append(ta);ta.select();document.execCommand("copy");ta.remove();
+    }
+  }
+  const gp=document.getElementById("copy-prompts");
+  if(gp)gp.addEventListener("click",async()=>{
+    const all=webVerdicts();
+    const ids=Object.entries(all).filter(([,v])=>v.v==="a_remplacer").map(([id])=>id);
+    if(!ids.length){toast("Rien n'est marqué à remplacer");return;}
+    let out="Images à refaire — couverture visuelle PACTUM\\n";
+    out+=ids.length+" image(s). Pour chacune : garder la référence visuelle "
+      +"indiquée (même décor, même lumière, même personnage), ne changer que "
+      +"ce que dit « à produire ».\\n";
+    let n=0;
+    for(const id of ids){
+      const card=document.querySelector(`.card[data-p-id="${CSS.escape(id)}"]`);
+      if(!card)continue;
+      n++;
+      const d=card.dataset;
+      out+="\\n────────────────────────────────\\n";
+      out+=`${n}. ${d.pFichier}\\n`;
+      out+=`   lieu      : ${d.pLieu}\\n`;
+      out+=`   scène     : ${d.pScene}  (${d.pId})\\n`;
+      out+=`   rôle      : ${d.pRole}\\n`;
+      // Le message dépend du RÔLE, pas d'une comparaison de fichiers : quand
+      // une variante réutilise encore l'image principale (le cas le plus
+      // fréquent aujourd'hui), comparer les fichiers disait « c'est elle-même »
+      // — vrai au fichier près, mais trompeur.
+      const memeFichier = d.pRef && d.pRef.endsWith(d.pFichier);
+      if(d.pRole==="principale")
+        out+=`   référence : c'est l'image principale de la ligne — la refaire redéfinit le décor de ses variantes\\n`;
+      else if(d.pRef)
+        out+=`   référence : ${d.pRef}   ← garder ce décor, cette lumière, ce personnage`
+          +(memeFichier?"   (la variante réutilise encore cette image, d'où le besoin)":"")+"\\n";
+      if(d.pRefdesc)out+=`   la principale montre : ${d.pRefdesc}\\n`;
+      if(d.pDesc)out+=`   à produire: ${d.pDesc}\\n`;
+      if(d.pRefdesc)out+="   ⚠ dire en UNE image ce qui change par rapport à la principale\\n";
+      const note=(all[id]||{}).note;
+      if(note)out+=`   pourquoi la remplacer : ${note}\\n`;
+    }
+    await toClipboard(out);
+    toast(n+" prompt(s) copié(s)");
+    log("<b>prompts générés</b> · "+n+" image(s) à refaire");
+  });
+
   const cp=document.getElementById("copy-verdicts");
   if(cp)cp.addEventListener("click",async()=>{
     const all=webVerdicts();
@@ -804,6 +941,14 @@ CAT_LABEL = {"scene": "Scènes", "monstre": "Monstres", "objet": "Objets"}
 def render(
     items: list[Item], counts: dict, orphans: list[str], editable: bool, web: bool = False
 ) -> str:
+    # Image de référence par ligne = l'image de la carte PRINCIPALE. Injectée
+    # dans chaque prompt pour que les variantes partagent le décor, la lumière
+    # et le personnage de l'image principale.
+    ref_image = {i.group: (i.image or "") for i in items if i.principale and i.image}
+    # La description de l'image principale part aussi dans le prompt : sans
+    # elle, « selon l'issue, il rentre ou s'assied » ne dit pas EN QUOI la
+    # variante diffère de la principale (retour Patrick 26/07).
+    ref_desc = {i.group: i.description for i in items if i.principale}
     # `web` = version déployée sur GitHub Pages, posée à côté du jeu dans
     # aldenhar/ : les assets y sont DÉJÀ publics, donc on les référence en
     # relatif (aucun réencodage, les PNG 1000×1000 d'origine sont servis tels
@@ -891,6 +1036,20 @@ def render(
                 f"</div>"
             )
 
+        # Données embarquées pour la génération de prompts : la carte porte tout
+        # ce qu'il faut, y compris l'IMAGE PRINCIPALE de sa scène — c'est elle
+        # qui garantit la cohérence de décor et de personnage entre variantes
+        # (demande Patrick 26/07).
+        prompt_data = (
+            f' data-p-id="{esc(i.id)}"'
+            f' data-p-lieu="{esc(i.lieu)}"'
+            f' data-p-scene="{esc(i.scene_nom)}"'
+            f' data-p-role="{"principale" if i.principale else ("plan rapproché" if i.kind == "poi" else "variante")}"'
+            f' data-p-desc="{esc(i.description)}"'
+            f' data-p-fichier="{esc(basename or (i.categorie + "_" + i.id.replace("-", "_") + "_a.png"))}"'
+            f' data-p-ref="{esc(ref_image.get(i.group, ""))}"'
+            f' data-p-refdesc="{esc("" if i.principale else ref_desc.get(i.group, ""))}"'
+        )
         card_cls = "card" + (" a_remplacer" if i.verdict == A_REMPLACER else "")
         if i.principale:
             card_cls += " principale"
@@ -901,7 +1060,7 @@ def render(
             if i.principale
             else ("plan rapproché" if i.kind == "poi" else "autre moment du lieu")
         )
-        return f"""<article class="{card_cls}" data-statut="{i.statut}" data-cat="{i.categorie}" data-kind="{i.kind}" data-verdict="{i.verdict}">
+        return f"""<article class="{card_cls}" data-statut="{i.statut}" data-cat="{i.categorie}" data-kind="{i.kind}" data-verdict="{i.verdict}"{prompt_data}>
   {thumb_open}{thumb_inner}{tag}</div>
   <div class="cat">{i.categorie} · {role}</div>
   <div class="id">{esc(i.id)}{parent_html}</div>
@@ -929,30 +1088,58 @@ def render(
     # Le lieu porte son nom et son compte ; sa carte principale vient en tête,
     # ses variantes derrière. C'est ce qui rend lisible « quelle est l'image
     # principale, quelles sont ses variantes » (retour Patrick 26/07).
-    par_zone: dict[str, dict[str, list[Item]]] = {}
+    # Hiérarchie à TROIS niveaux (retour Patrick 26/07, 2e passe) :
+    #   zone → LIEU (nom réel) → une LIGNE par scène
+    # et sur chaque ligne : l'image principale à gauche, ses variantes à droite.
+    par_zone: dict[str, dict[str, dict[str, list[Item]]]] = {}
     for i in items:
-        par_zone.setdefault(i.zone, {}).setdefault(i.group, []).append(i)
+        par_zone.setdefault(i.zone, {}).setdefault(i.lieu, {}).setdefault(i.group, []).append(i)
+
+    def alertes(cartes: list[Item]) -> str:
+        out = ""
+        m = sum(1 for c in cartes if c.statut == MANQUANTE)
+        a = sum(1 for c in cartes if c.verdict == A_REMPLACER)
+        if m:
+            out += f' <span class="lieu-warn">{m} sans image</span>'
+        if a:
+            out += f' <span class="lieu-warn">{a} à remplacer</span>'
+        return out
+
     blocs = []
     for zone in sorted(par_zone):
         lieux = par_zone[zone]
-        n_cartes = sum(len(v) for v in lieux.values())
+        n_cartes = sum(len(g) for lg in lieux.values() for g in lg.values())
         corps = []
-        for lieu in sorted(lieux):
-            cartes = sorted(lieux[lieu], key=lambda x: (not x.principale, x.kind != "scene", x.id))
-            manque = sum(1 for c in cartes if c.statut == MANQUANTE)
-            aremp = sum(1 for c in cartes if c.verdict == A_REMPLACER)
-            alerte = ""
-            if manque:
-                alerte += f' <span class="lieu-warn">{manque} sans image</span>'
-            if aremp:
-                alerte += f' <span class="lieu-warn">{aremp} à remplacer</span>'
+        # « Sans lieu fixe » en dernier : ce sont les errants, pas un lieu.
+        for lieu in sorted(lieux, key=lambda x: (x == ERRANTS, x)):
+            lignes_src = lieux[lieu]
+            lignes = []
+            for gid in sorted(lignes_src):
+                cartes = sorted(
+                    lignes_src[gid], key=lambda x: (not x.principale, x.kind != "scene", x.id)
+                )
+                titre = cartes[0].scene_nom or gid
+                n_var = len(cartes) - 1
+                lignes.append(
+                    f'<section class="ligne" data-ligne="{esc(gid)}">'
+                    f'<h4 class="ligne-head">{esc(titre)}'
+                    f'<span class="ligne-id">{esc(gid)}</span>'
+                    + (
+                        f'<span class="ligne-n">+ {n_var} variante{"s" if n_var > 1 else ""}</span>'
+                        if n_var
+                        else '<span class="ligne-n">image seule</span>'
+                    )
+                    + f"{alertes(cartes)}</h4>"
+                    f'<div class="rangee">{"".join(card(c) for c in cartes)}</div>'
+                    f"</section>"
+                )
+            tout = [c for g in lignes_src.values() for c in g]
             corps.append(
                 f'<section class="lieu" data-lieu="{esc(lieu)}">'
                 f'<h3 class="lieu-head">{esc(lieu)}'
-                f'<span class="lieu-n">{len(cartes)} image{"s" if len(cartes) > 1 else ""}</span>'
-                f"{alerte}</h3>"
-                f'<div class="grid">{"".join(card(c) for c in cartes)}</div>'
-                f"</section>"
+                f'<span class="lieu-n">{len(lignes_src)} scène{"s" if len(lignes_src) > 1 else ""}'
+                f" · {len(tout)} images</span>{alertes(tout)}</h3>"
+                f'{"".join(lignes)}</section>'
             )
         blocs.append(
             f'<section class="zone">'
@@ -994,8 +1181,9 @@ def render(
         mode = "lecture seule — relancer avec --serve pour éditer"
 
     copy_btn = (
-        '<button class="copybar" id="copy-verdicts">Copier ma liste '
-        "→ à me coller pour que je fasse les remplacements</button>"
+        '<button class="copybar" id="copy-prompts">Générer les prompts des images à remplacer '
+        "→ à me coller</button>"
+        '<button class="copybar copybar-2" id="copy-verdicts">Copier seulement la liste</button>'
         if web
         else ""
     )
