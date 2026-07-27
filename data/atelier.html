@@ -214,7 +214,14 @@
 
 <script>
 "use strict";
-const BASE="/assets/";   // servi par tools/atelier.py depuis public/assets
+/* Chemin des images. En local, tools/atelier.py les sert sous /assets/ ; sur
+   gh-pages la page vit à côté du jeu, donc en RELATIF (assets/) — une barre de
+   plus et toutes les vignettes tombent en 404. */
+const BASE = (typeof window.__ZONE_DATA__ !== "undefined") ? "assets/" : "/assets/";
+/* ⚠️ Les noms d'image ne sont pas homogènes dans le JSON : les LIEUX portent
+   « assets/xxx.png », les SCÈNES « xxx.png ». On rabote le préfixe à la
+   lecture plutôt que de doubler /assets/assets/. */
+const fichierImage = f => f ? String(f).replace(/^assets\//, "") : f;
 const ORANGE="#e0632a";
 
 /* =====================================================================
@@ -239,10 +246,21 @@ function texteVersPara(s){
   return String(s || "").split(/\n\s*\n/).map(x => x.trim()).filter(Boolean);
 }
 
+/* WEB : la page est publiée sur gh-pages, les données du JSON y sont CUITES
+   au moment du déploiement (window.__ZONE_DATA__). Il n'y a alors aucun
+   serveur derrière — donc aucune écriture possible, et on le dit clairement
+   plutôt que de laisser croire qu'un champ modifié part quelque part. */
+const WEB = typeof window.__ZONE_DATA__ !== "undefined";
+
 async function chargerZone(){
-  const r = await fetch(`/api/zone/${ZONE}`);
-  if(!r.ok) throw new Error(`zone « ${ZONE} » illisible (${r.status})`);
-  const z = await r.json();
+  let z;
+  if(WEB){
+    z = window.__ZONE_DATA__;
+  }else{
+    const r = await fetch(`/api/zone/${ZONE}`);
+    if(!r.ok) throw new Error(`zone « ${ZONE} » illisible (${r.status})`);
+    z = await r.json();
+  }
   D = {
     lieux: (z.lieux || []).map((l, i) => ({
       id: l.id, nom: l.nom || l.id,
@@ -283,6 +301,10 @@ async function chargerZone(){
 
 /* ---------- écriture RÉELLE : chaque champ part vers le serveur ---------- */
 async function ecrire(id, champ, valeur){
+  if(WEB){
+    noteEcriture(`<b>${id}</b>.${champ} — non enregistré : cette page est en lecture seule`, false);
+    return;
+  }
   const l = noteEcriture(`<b>${id}</b>.${champ} — écriture…`);
   try{
     const r = await fetch("/api/champ", {
@@ -372,7 +394,7 @@ function ph(el,seed){
 function poseImage(box,fichier,seed){
   box.innerHTML="";
   if(fichier){
-    const im=document.createElement("img"); im.src=BASE+fichier; im.loading="lazy"; im.alt=seed;
+    const im=document.createElement("img"); im.src=BASE+fichierImage(fichier); im.loading="lazy"; im.alt=seed;
     im.onerror=()=>{im.remove();ph(box,seed);};
     box.appendChild(im);
   } else ph(box,seed);
@@ -677,6 +699,19 @@ function ouvrirFiche(id){
     }catch(_){ /* déjà signalé dans le journal */ }
   };
   fb.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>ouvrirFiche(b.dataset.go));
+
+  if(WEB){
+    // Lecture seule : on retire ce qui prétendrait écrire, on garde ce qui
+    // sert vraiment depuis un lien — lire, et copier un prompt.
+    ["ftexte","fdesc","fprompt"].forEach(k=>{
+      const e=document.getElementById(k); if(e){e.readOnly=true;e.title="lecture seule";}
+    });
+    ["fsel","fdrop","fimport"].forEach(k=>{
+      const e=document.getElementById(k); if(e) e.style.display="none";
+    });
+    const lab=fb.querySelector(".side .lab");
+    if(lab) lab.textContent="Image câblée dans le jeu";
+  }
 
   fiche.classList.add("on");
 }

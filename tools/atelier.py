@@ -357,7 +357,64 @@ class Atelier(BaseHTTPRequestHandler):
         return {"ok": True, "id": sid, "fichier": fichier, "journal": f"{note} · {compte_rendu}"}
 
 
+def payload_zone(nom: str) -> dict:
+    """Le JSON tel que la page l'attend — même contenu que /api/zone/<nom>.
+
+    Sorti de la route HTTP pour être réutilisable par le mode --web : la page
+    publiée doit voir EXACTEMENT ce que voit la page locale, sinon les deux
+    outils raconteraient deux vérités différentes.
+    """
+    _, zone = charger_zone(nom)
+    utilisees = {s.get("illustration") for s in zone.get("scenes", [])}
+    utilisees |= {l.get("illustration") for l in zone.get("lieux", [])}
+    tous = sorted(f.name for f in ASSETS.glob("*.png"))
+    zone["_assets"] = tous
+    zone["_reserve"] = [a for a in tous if a not in utilisees]
+    return zone
+
+
+def ecrire_web(dest: Path, zone: str = "landes") -> None:
+    """Publie l'atelier en page autonome, données CUITES dedans.
+
+    Pourquoi : Patrick n'a pas de terminal ouvert quand il travaille, et un
+    fichier HTML rangé dans ses Téléchargements ne se met jamais à jour — on
+    a perdu trois échanges là-dessus. Une page déployée à côté du jeu, elle,
+    est régénérée à chaque déploiement, donc elle DIT la vérité.
+
+    Les images ne sont pas embarquées : elles sont déjà publiques sous
+    `assets/`, servies par le jeu. La page les référence en relatif, donc elle
+    reste légère et montre les PNG d'origine, pas des vignettes.
+    """
+    if not PAGE.exists():
+        raise SystemExit("data/atelier.html introuvable")
+    donnees = payload_zone(zone)
+    html = PAGE.read_text(encoding="utf-8")
+    injection = (
+        "<script>window.__ZONE_DATA__="
+        + json.dumps(donnees, ensure_ascii=False)
+        + ";</script>\n</head>"
+    )
+    if "</head>" not in html:
+        raise SystemExit("atelier.html : pas de </head> où injecter les données")
+    html = html.replace("</head>", injection, 1)
+    dest.parent.mkdir(parents=True, exist_ok=True)
+    dest.write_text(html, encoding="utf-8")
+    n_lieux = len(donnees.get("lieux", []))
+    n_scenes = len(donnees.get("scenes", []))
+    print(
+        f"{dest} écrit — {len(html)//1024} Ko · {n_lieux} lieux · {n_scenes} scènes "
+        "(images servies depuis assets/, non embarquées)"
+    )
+
+
 def main() -> int:
+    if "--web" in sys.argv:
+        i = sys.argv.index("--web")
+        dest = Path(sys.argv[i + 1]) if len(sys.argv) > i + 1 else Path("data/atelier_web.html")
+        zone = sys.argv[sys.argv.index("--zone") + 1] if "--zone" in sys.argv else "landes"
+        ecrire_web(dest, zone)
+        return 0
+
     port = 8770
     if "--port" in sys.argv:
         port = int(sys.argv[sys.argv.index("--port") + 1])
