@@ -552,6 +552,11 @@ function ouvrirFiche(id){
           ${assets.map(a=>`<option ${a===n.image?"selected":""}>${a}</option>`).join("")}
         </select>
         <div class="drop" id="fdrop">glisser une nouvelle image ici<br>(passera par le dithering)</div>
+        <!-- Le glisser-déposer ne marche pas depuis tous les contextes (Drive
+             en flux, capture d'écran, iPad). Le bouton fait exactement la même
+             chose : même envoi, même dithering. -->
+        <input type="file" id="ffile" accept="image/*" hidden>
+        <button class="tbtn" id="fimport" style="width:100%;margin-top:6px">Importer une image…</button>
         <div class="btnrow">
           <button class="tbtn act" id="fcopy">Copier le prompt</button>
           <button class="tbtn" id="fleo">Ouvrir Leonardo</button>
@@ -622,6 +627,16 @@ function ouvrirFiche(id){
     const f=e.dataTransfer.files[0]; if(!f)return;
     // L'image passe par dither_batch.py côté serveur : jamais de brut
     // dans assets/. Le nom est normalisé là-bas aussi.
+    try{
+      n.image=await deposerImage(n.id,f);
+      if(!D.reserve.includes(n.image)) D.reserve.push(n.image);
+      disposer(lieuCourant); ouvrirFiche(id);
+    }catch(_){ /* déjà signalé dans le journal */ }
+  };
+  const fi=document.getElementById("ffile");
+  document.getElementById("fimport").onclick=()=>fi.click();
+  fi.onchange=async e=>{
+    const f=e.target.files[0]; if(!f)return;
     try{
       n.image=await deposerImage(n.id,f);
       if(!D.reserve.includes(n.image)) D.reserve.push(n.image);
