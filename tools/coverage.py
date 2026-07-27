@@ -1114,10 +1114,10 @@ def render(
 </article>"""
 
     stats = f"""
-<div class="stat ok"><div class="n">{counts["statut"][DEDIEE]}</div><div class="l">dédiées</div></div>
-<div class="stat"><div class="n" style="color:var(--orange)">{counts["statut"][HERITEE]}</div><div class="l">héritées</div></div>
-<div class="stat mid"><div class="n">{counts["statut"][FALLBACK]}</div><div class="l">fallback</div></div>
-<div class="stat ko"><div class="n">{counts["statut"][MANQUANTE]}</div><div class="l">manquantes</div></div>
+<div class="stat ok"><div class="n">{counts["statut"][DEDIEE]}</div><div class="l">ont leur image</div></div>
+<div class="stat"><div class="n" style="color:var(--orange)">{counts["statut"][HERITEE]}</div><div class="l">image empruntée</div></div>
+<div class="stat mid"><div class="n">{counts["statut"][FALLBACK]}</div><div class="l">vue générique</div></div>
+<div class="stat ko"><div class="n">{counts["statut"][MANQUANTE]}</div><div class="l">aucune image</div></div>
 <div class="stat ko"><div class="n" id="n-remplacer">{counts["a_remplacer"]}</div><div class="l">à remplacer</div></div>
 <div class="stat mid"><div class="n">{len(orphans)}</div><div class="l">orphelins</div></div>
 <div class="stat mid"><div class="n">{counts["prompts_manquants"]}</div><div class="l">prompts à écrire</div></div>
