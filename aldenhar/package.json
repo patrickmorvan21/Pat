@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "atelier": "python3 ../tools/atelier.py"
   },
   "dependencies": {
     "@types/three": "^0.185.0",

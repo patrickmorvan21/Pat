@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PACTUM — Atelier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --charbon:#1c1a16;
+    --orange:#e0632a;
+    --blanc:#ffffff;
+    --blanc-50:rgba(255,255,255,.5);
+    --blanc-20:rgba(255,255,255,.2);
+    --rouge:#a4001b;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{height:100%}
+  body{background:var(--charbon);color:var(--blanc);font-family:'Roboto Mono',monospace;font-size:13px;overflow:hidden}
+
+  /* ============ barre haute ============ */
+  #top{
+    position:fixed;top:0;left:0;right:0;height:58px;z-index:30;
+    background:var(--charbon);border-bottom:1px solid var(--blanc-20);
+    display:flex;align-items:center;gap:18px;padding:0 18px;
+  }
+  h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:21px;letter-spacing:2px;line-height:1;white-space:nowrap}
+  #fil{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--blanc-50);flex:1 1 auto;min-width:0}
+  #fil b{color:var(--blanc);font-weight:400}
+  #fil button{background:none;border:none;color:var(--blanc-50);font-family:inherit;font-size:11px;
+    cursor:pointer;text-decoration:underline;text-underline-offset:3px;padding:0}
+  .tbtn{
+    background:none;border:1px solid var(--blanc-20);color:var(--blanc-50);
+    font-family:inherit;font-size:10px;letter-spacing:1px;text-transform:uppercase;
+    padding:7px 11px;cursor:pointer;white-space:nowrap;
+  }
+  .tbtn:hover{border-color:var(--blanc-50);color:var(--blanc)}
+  .tbtn.act{border-color:var(--orange);color:var(--orange)}
+  .tbtn.act.on{background:var(--orange);color:var(--charbon)}
+  #dirty{font-size:10px;color:var(--orange);white-space:nowrap}
+
+  /* ============ vue carte ============ */
+  #carte{position:absolute;top:58px;left:0;right:0;bottom:0;overflow:auto;display:none}
+  #carte.on{display:block}
+  #carteInner{position:relative;width:1500px;height:1300px}
+  .lieuCard{position:absolute;width:212px;background:var(--charbon);border:2px solid var(--orange);cursor:pointer}
+  .lieuCard.pb{border-color:var(--rouge)}
+  .lieuCard .th{position:relative;width:100%;height:108px;overflow:hidden;background:#141310}
+  .lieuCard img,.lieuCard canvas{width:100%;height:100%;object-fit:cover;display:block}
+  .lieuCard .bd{padding:8px 10px 10px}
+  .lieuCard .nm{font-size:12.5px;line-height:1.3}
+  .lieuCard .sb{font-size:10px;color:var(--blanc-50);margin-top:4px}
+  .lieuCard .al{font-size:10px;color:var(--orange);margin-top:4px}
+
+  /* ============ vue graphe ============ */
+  #graphe{position:absolute;top:58px;left:0;right:0;bottom:0;overflow:hidden;display:none;cursor:grab}
+  #graphe.on{display:block}
+  #graphe.drag{cursor:grabbing}
+  #scene{position:absolute;transform-origin:0 0;will-change:transform}
+  #edges{position:absolute;top:0;left:0;overflow:visible;pointer-events:none}
+  .node{
+    position:absolute;width:210px;background:var(--charbon);
+    border:2px solid var(--blanc-20);cursor:pointer;user-select:none;
+  }
+  .node.lieu{border-color:var(--orange)}
+  .node.arrivee{border-color:var(--orange)}
+  .node.moment{border-color:var(--blanc)}
+  .node.observe{border-color:var(--blanc-20);border-style:dashed}
+  .node.pb{border-color:var(--rouge)}
+  .node.sel{outline:2px solid var(--orange);outline-offset:3px}
+  .node .th{position:relative;width:100%;height:86px;overflow:hidden;background:#141310}
+  .node img,.node .ph{width:100%;height:100%;object-fit:cover;display:block}
+  .node .bd{padding:7px 9px 9px}
+  .node .kd{font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--blanc-50)}
+  .node .nm{font-size:12px;line-height:1.35;margin-top:3px}
+  .node .al{font-size:9px;color:var(--orange);margin-top:4px}
+  .node .al.r{color:var(--rouge)}
+
+  /* ============ volet de fiche ============ */
+  #fiche{
+    position:fixed;top:0;right:0;bottom:0;width:min(720px,60vw);z-index:40;
+    background:var(--charbon);border-left:1px solid var(--blanc-20);
+    transform:translateX(101%);display:flex;flex-direction:column;
+  }
+  #fiche.on{transform:translateX(0)}
+  #fh{padding:16px 22px 12px;border-bottom:1px solid var(--blanc-20);position:relative;flex:0 0 auto}
+  #fh h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:24px;line-height:1.15;padding-right:44px}
+  #fh .mt{font-size:10px;color:var(--blanc-50);margin-top:6px;letter-spacing:1px;text-transform:uppercase}
+  #fclose{position:absolute;top:16px;right:20px;width:28px;height:28px;background:none;
+    border:2px solid var(--blanc);color:var(--blanc);font-family:inherit;font-size:12px;
+    cursor:pointer;transform:rotate(45deg)}
+  #fclose span{display:block;transform:rotate(-45deg);line-height:24px}
+  #fb{flex:1 1 auto;overflow-y:auto;padding:18px 22px 40px}
+
+  .lab{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--blanc-50);margin-bottom:7px}
+  .fld{margin-bottom:20px}
+  textarea,input[type=text]{
+    width:100%;background:#141310;border:1px solid var(--blanc-20);color:var(--blanc);
+    font-family:inherit;font-size:13px;line-height:1.6;padding:10px 12px;resize:vertical;
+  }
+  textarea:focus,input:focus{outline:none;border-color:var(--orange)}
+  textarea.mono{font-size:11.5px;line-height:1.55}
+  .imgbox{display:flex;gap:16px;align-items:flex-start}
+  .imgbox .big{flex:0 0 240px}
+  .imgbox .big .fr{width:240px;aspect-ratio:1/1;background:#141310;border:1px solid var(--blanc-20);overflow:hidden}
+  .imgbox .big .fr.pb{border-color:var(--rouge)}
+  .imgbox .big img,.imgbox .big .ph{width:100%;height:100%;object-fit:cover;display:block}
+  .imgbox .side{flex:1 1 auto;min-width:0}
+  .fname{font-size:10px;color:var(--blanc-50);margin-top:7px;word-break:break-all}
+  .warn{font-size:10px;color:var(--orange);margin-top:5px}
+  .warn.r{color:var(--rouge)}
+  select{width:100%;background:#141310;color:var(--blanc);border:1px solid var(--blanc-20);
+    font-family:inherit;font-size:11px;padding:8px}
+  .drop{margin-top:9px;border:1px dashed var(--blanc-20);color:var(--blanc-50);
+    font-size:10px;letter-spacing:1px;text-align:center;padding:14px 8px;cursor:pointer}
+  .drop.on{border-color:var(--orange);color:var(--orange)}
+  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .liens{display:flex;flex-wrap:wrap;gap:7px}
+  .lien{background:none;border:1px solid var(--blanc-20);color:var(--blanc);font-family:inherit;
+    font-size:11px;padding:6px 10px;cursor:pointer}
+  .lien:hover{border-color:var(--orange);color:var(--orange)}
+  .lien.up{color:var(--blanc-50)}
+  canvas.rule{display:block;width:100%;height:2px;image-rendering:pixelated;margin:6px 0 18px}
+
+  /* ============ journal des écritures ============ */
+  #journal{
+    position:fixed;left:16px;bottom:16px;z-index:35;width:330px;max-height:34vh;overflow-y:auto;
+    background:var(--charbon);border:1px solid var(--blanc-20);padding:10px 12px;display:none;
+  }
+  #journal.on{display:block}
+  #journal .hd{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--blanc-50);margin-bottom:8px}
+  #journal div.l{font-size:10px;color:var(--blanc-50);line-height:1.5;margin-bottom:5px}
+  #journal b{color:var(--orange);font-weight:400}
+
+  #hint{position:fixed;right:16px;bottom:16px;z-index:25;font-size:10px;color:var(--blanc-20);letter-spacing:1px}
+
+  /* ============ brief pour Claude Code ============ */
+  #brief{position:fixed;inset:0;z-index:60;background:rgba(12,11,9,.96);display:none;
+    flex-direction:column;padding:26px 30px 22px}
+  #brief.on{display:flex}
+  #brief .bh{display:flex;align-items:baseline;gap:18px;flex-wrap:wrap;margin-bottom:6px}
+  #brief h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:26px;letter-spacing:1px}
+  #brief .bc{font-size:11px;color:var(--blanc-50)}
+  #brief .bc b{color:var(--orange);font-weight:400}
+  #brief .tabs{display:flex;gap:7px;margin:12px 0 10px}
+  #brief .tabs button{background:none;border:1px solid var(--blanc-20);color:var(--blanc-50);
+    font-family:inherit;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:7px 12px;cursor:pointer}
+  #brief .tabs button.on{background:var(--orange);border-color:var(--orange);color:var(--charbon)}
+  #brief textarea{flex:1 1 auto;font-size:11.5px;line-height:1.55;min-height:0}
+  #brief .ba{display:flex;gap:9px;margin-top:12px;align-items:center}
+  #brief .note{font-size:10px;color:var(--blanc-50);margin-left:auto}
+</style>
+</head>
+<body>
+
+<div id="top">
+  <h1>ATELIER</h1>
+  <div id="fil"></div>
+  <span id="dirty"></span>
+  <button class="tbtn" id="bCarte">Carte</button>
+  <button class="tbtn" id="bJournal">Journal</button>
+  <button class="tbtn act on" id="bBrief">⌘ Briefer Claude Code</button>
+  <button class="tbtn" id="bExport" title="Filet de sécurité — les écritures sont déjà sur disque">Export de secours</button>
+</div>
+
+<div id="brief">
+  <div class="bh">
+    <h2>Ce qu'il reste à produire</h2>
+    <span class="bc" id="bcount"></span>
+  </div>
+  <div class="tabs" id="btabs">
+    <button class="on" data-b="cc">Brief Claude Code — prompts à écrire</button>
+    <button data-b="leo">Liste Leonardo — prompts prêts</button>
+    <button data-b="txt">Scènes sans texte</button>
+  </div>
+  <textarea id="btxt" spellcheck="false"></textarea>
+  <div class="ba">
+    <button class="tbtn act on" id="bcopy">Copier</button>
+    <button class="tbtn" id="bdl">Télécharger .md</button>
+    <button class="tbtn" id="bclose">Fermer</button>
+    <span class="note" id="bnote"></span>
+  </div>
+</div>
+
+<div id="carte" class="on"><div id="carteInner"></div></div>
+
+<div id="graphe">
+  <div id="scene">
+    <svg id="edges"></svg>
+  </div>
+</div>
+
+<div id="fiche">
+  <div id="fh">
+    <h2 id="ftitre"></h2>
+    <div class="mt" id="fmeta"></div>
+    <button id="fclose" aria-label="Fermer"><span>◆</span></button>
+  </div>
+  <div id="fb"></div>
+</div>
+
+<div id="journal"><div class="hd">Écritures en attente</div><div id="jbody"></div></div>
+<div id="hint">glisser pour déplacer · molette pour zoomer</div>
+
+<script>
+"use strict";
+const BASE="/assets/";   // servi par tools/atelier.py depuis public/assets
+const ORANGE="#e0632a";
+
+/* =====================================================================
+   MODÈLE — un seul objet par nœud. C'est ce que le JSON doit contenir.
+   {id, type, nom, texte, description, prompt, image, parent, mene_a[]}
+   type : lieu · arrivee · moment · observe
+   ===================================================================== */
+const ZONE = new URLSearchParams(location.search).get("zone") || "landes";
+
+/* =====================================================================
+   DONNÉES — plus rien en dur : tout vient de data/zones/<zone>.json,
+   servi par tools/atelier.py. Le schéma du JSON est celui de la maquette
+   à un détail près : `texte` y est un TABLEAU de paragraphes (c'est ce
+   que le jeu affiche, un bloc par écran), alors que l'édition se fait
+   dans un seul textarea. On aplatit à la lecture, on redécoupe à
+   l'écriture — sur les lignes vides, comme des paragraphes.
+   ===================================================================== */
+let D = { lieux: [], noeuds: [], reserve: [] };
+
+function paraVersTexte(t){ return Array.isArray(t) ? t.join("\n\n") : (t || ""); }
+function texteVersPara(s){
+  return String(s || "").split(/\n\s*\n/).map(x => x.trim()).filter(Boolean);
+}
+
+async function chargerZone(){
+  const r = await fetch(`/api/zone/${ZONE}`);
+  if(!r.ok) throw new Error(`zone « ${ZONE} » illisible (${r.status})`);
+  const z = await r.json();
+  D = {
+    lieux: (z.lieux || []).map((l, i) => ({
+      id: l.id, nom: l.nom || l.id,
+      // La carte a besoin de coordonnées ; le JSON de zone n'en porte pas
+      // encore. On dispose en grille tant que Patrick n'a pas placé les
+      // lieux à la main (le champ `x`/`y` est respecté dès qu'il existe).
+      x: l.x != null ? l.x : 60 + (i % 4) * 300,
+      y: l.y != null ? l.y : 40 + Math.floor(i / 4) * 260,
+      image: l.illustration || null
+    })),
+    noeuds: (z.scenes || []).map(s => ({
+      id: s.id, lieu: s.lieu, type: s.type, nom: s.nom || s.id,
+      parent: s.parent || null, mene_a: s.mene_a || [],
+      image: s.illustration || null,
+      texte: paraVersTexte(s.texte),
+      description: s.description || "",
+      prompt: s.prompt_image || ""
+    })),
+    reserve: z._reserve || []
+  };
+  // Les scènes errantes (Meute Grise…) n'appartiennent à aucun lieu du JSON :
+  // on leur fabrique une carte, sinon elles seraient injoignables.
+  const errants = D.noeuds.filter(n => n.lieu === "horslieu");
+  if(errants.length && !D.lieux.some(l => l.id === "horslieu")){
+    D.lieux.push({ id:"horslieu", nom:"Sans lieu fixe",
+      x: 60, y: 40 + Math.ceil(D.lieux.length / 4) * 260,
+      image: (errants.find(n => n.image) || {}).image || null });
+  }
+  // Un lieu sans image propre prend celle de sa scène d'arrivée.
+  D.lieux.forEach(l => {
+    if(!l.image){
+      const a = D.noeuds.find(n => n.lieu === l.id && n.type === "arrivee" && n.image);
+      if(a) l.image = a.image;
+    }
+  });
+}
+
+/* ---------- écriture RÉELLE : chaque champ part vers le serveur ---------- */
+async function ecrire(id, champ, valeur){
+  const l = noteEcriture(`<b>${id}</b>.${champ} — écriture…`);
+  try{
+    const r = await fetch("/api/champ", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ zone: ZONE, id, champ, valeur })
+    });
+    const j = await r.json();
+    if(!r.ok || j.erreur) throw new Error(j.erreur || `HTTP ${r.status}`);
+    majLigne(l, `<b>${id}</b>.${champ} — ${j.journal}`, true);
+    return j;
+  }catch(e){
+    // On le DIT au lieu de laisser croire que c'est écrit.
+    majLigne(l, `<b>${id}</b>.${champ} — ✗ ${e.message}`, false);
+    throw e;
+  }
+}
+
+async function deposerImage(id, fichier){
+  const l = noteEcriture(`<b>${fichier.name}</b> — dithering…`);
+  const data = await new Promise((ok, ko) => {
+    const fr = new FileReader(); fr.onload = () => ok(fr.result); fr.onerror = ko;
+    fr.readAsDataURL(fichier);
+  });
+  try{
+    const r = await fetch("/api/image", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ zone: ZONE, id, nom: fichier.name, data })
+    });
+    const j = await r.json();
+    if(!r.ok || j.erreur) throw new Error(j.erreur || `HTTP ${r.status}`);
+    majLigne(l, `<b>${j.fichier}</b> — ${j.journal}`, true);
+    return j.fichier;
+  }catch(e){
+    majLigne(l, `<b>${fichier.name}</b> — ✗ ${e.message}`, false);
+    throw e;
+  }
+}
+
+/* index rapide */
+let byId={}, lieuById={};
+function reindexer(){
+  byId={}; D.noeuds.forEach(n=>byId[n.id]=n);
+  lieuById={}; D.lieux.forEach(l=>lieuById[l.id]=l);
+}
+const ecritures=[]; let dirty=0;
+
+function tousAssets(){
+  const s=new Set(D.reserve);
+  D.noeuds.forEach(n=>{if(n.image)s.add(n.image);});
+  D.lieux.forEach(l=>{if(l.image)s.add(l.image);});
+  return [...s].sort();
+}
+/* Le journal n'est plus une liste de « modifs non exportées » : les
+   écritures sont réelles et immédiates. Chaque ligne naît « en cours »
+   puis dit ce qui s'est VRAIMENT passé, y compris un échec. */
+let nEcritures=0;
+function rendreJournal(){
+  document.getElementById("jbody").innerHTML =
+    ecritures.map(e=>`<div class="l" style="opacity:${e.etat==="cours"?.55:1};${e.etat==="ko"?"color:var(--blanc)":""}">${e.txt}</div>`).join("");
+  document.getElementById("dirty").textContent =
+    nEcritures ? nEcritures+" écriture"+(nEcritures>1?"s":"")+" sur disque" : "";
+}
+function noteEcriture(txt){
+  const l={txt,etat:"cours"}; ecritures.unshift(l); rendreJournal(); return l;
+}
+function majLigne(l,txt,ok){
+  l.txt=txt; l.etat=ok?"ok":"ko"; if(ok) nEcritures++;
+  rendreJournal();
+  document.getElementById("journal").classList.add("on");
+}
+
+/* ---------- vignette de secours ---------- */
+function ph(el,seed){
+  const c=document.createElement("canvas"); c.className="ph"; c.width=60;c.height=60;
+  const x=c.getContext("2d"); x.fillStyle="#141310"; x.fillRect(0,0,60,60);
+  let s=0; for(const ch of seed) s=(s*31+ch.charCodeAt(0))|0;
+  const rnd=()=>{s=(s*1103515245+12345)&0x7fffffff;return s/0x7fffffff;};
+  for(let i=0;i<520;i++){
+    const p=(rnd()*60)|0,q=(rnd()*60)|0;
+    if(rnd()>1-(q/60)*.85) continue;
+    x.fillStyle="rgba(224,99,42,.55)"; x.fillRect(p,q,1,1);
+  }
+  x.fillStyle="rgba(255,255,255,.25)";
+  x.fillRect(26,28,8,2); x.fillRect(29,25,2,8);
+  el.appendChild(c);
+}
+function poseImage(box,fichier,seed){
+  box.innerHTML="";
+  if(fichier){
+    const im=document.createElement("img"); im.src=BASE+fichier; im.loading="lazy"; im.alt=seed;
+    im.onerror=()=>{im.remove();ph(box,seed);};
+    box.appendChild(im);
+  } else ph(box,seed);
+}
+
+/* ============ VUE CARTE ============ */
+const carteInner=document.getElementById("carteInner");
+function renduCarte(){
+  carteInner.innerHTML="";
+  D.lieux.forEach(l=>{
+    const ns=D.noeuds.filter(n=>n.lieu===l.id);
+    const manquantes=ns.filter(n=>!n.image).length;
+    const el=document.createElement("div");
+    el.className="lieuCard"+(manquantes?" pb":"");
+    el.style.left=l.x+"px"; el.style.top=l.y+"px";
+    el.innerHTML=`<div class="th"></div><div class="bd">
+      <div class="nm">${l.nom}</div>
+      <div class="sb">${ns.length} nœud${ns.length>1?"s":""}</div>
+      ${manquantes?`<div class="al">${manquantes} sans image</div>`:""}</div>`;
+    poseImage(el.querySelector(".th"), l.image, l.id);
+    el.onclick=()=>ouvrirLieu(l.id);
+    carteInner.appendChild(el);
+  });
+}
+
+/* ============ VUE GRAPHE ============ */
+const gWrap=document.getElementById("graphe"), gScene=document.getElementById("scene"),
+      gEdges=document.getElementById("edges");
+let lieuCourant=null, tx=0, ty=0, sc=1;
+
+function applique(){ gScene.style.transform=`translate(${tx}px,${ty}px) scale(${sc})`; }
+
+function ouvrirLieu(id){
+  lieuCourant=id;
+  document.getElementById("carte").classList.remove("on");
+  gWrap.classList.add("on");
+  const l=lieuById[id];
+  document.getElementById("fil").innerHTML=
+    `<button id="retour">Carte des Landes</button> › <b>${l.nom}</b>`;
+  document.getElementById("retour").onclick=versCarte;
+  disposer(id);
+  tx=40; ty=20; sc=1; applique();
+}
+function versCarte(){
+  gWrap.classList.remove("on");
+  document.getElementById("carte").classList.add("on");
+  document.getElementById("fil").innerHTML="<b>Les Landes</b> — carte de zone";
+  fermerFiche();
+}
+
+/* disposition en arbre : racines = arrivées sans parent d'action */
+function disposer(lieuId){
+  [...gScene.querySelectorAll(".node")].forEach(n=>n.remove());
+  gEdges.innerHTML="";
+  const ns=D.noeuds.filter(n=>n.lieu===lieuId);
+  const NW=210, NH=150, GX=30, GY=80;
+
+  /* chaînes : une racine = un nœud vers lequel rien ne mène */
+  const cible=new Set(); ns.forEach(n=>(n.mene_a||[]).forEach(t=>cible.add(t)));
+  const racines=ns.filter(n=>n.type!=="observe" && !cible.has(n.id));
+
+  let colonne=0; const pos={};
+  function placerChaine(n,col,rang){
+    pos[n.id]={x:col*(NW+GX), y:rang*(NH+GY)};
+    const obs=ns.filter(o=>o.type==="observe" && o.parent===n.id);
+    obs.forEach((o,i)=>{ pos[o.id]={x:(col)*(NW+GX)+ (NW+GX)*(i+1)*0.0 + (NW+GX), y:rang*(NH+GY)+ i*(NH+20)}; });
+    let large=1+ (obs.length?1:0);
+    const suite=(n.mene_a||[]).map(id=>ns.find(x=>x.id===id)).filter(Boolean);
+    let sousCol=col;
+    suite.forEach((s,i)=>{ placerChaine(s, col, rang+1+i*0); });
+    return large;
+  }
+  /* disposition simple : une colonne par chaîne, un rang par beat */
+  racines.forEach(r=>{
+    let n=r, rang=0;
+    const colObs=[];
+    while(n){
+      pos[n.id]={x:colonne*(NW+GX)*2, y:rang*(NH+GY)};
+      const obs=ns.filter(o=>o.type==="observe" && o.parent===n.id);
+      obs.forEach((o,i)=>{ pos[o.id]={x:colonne*(NW+GX)*2 + NW+GX, y:rang*(NH+GY)+i*(NH+16)}; });
+      const suivant=(n.mene_a||[])[0];
+      n = suivant ? ns.find(x=>x.id===suivant) : null;
+      rang++;
+    }
+    colonne++;
+  });
+  /* orphelins éventuels */
+  ns.forEach(n=>{ if(!pos[n.id]) { pos[n.id]={x:colonne*(NW+GX)*2, y:0}; colonne++; } });
+
+  /* nœuds */
+  ns.forEach(n=>{
+    const el=document.createElement("div");
+    el.className="node "+n.type+(n.image?"":" pb");
+    el.style.left=pos[n.id].x+"px"; el.style.top=pos[n.id].y+"px";
+    el.dataset.id=n.id;
+    const kd={arrivee:"arrivée",moment:"moment",observe:"observé",lieu:"lieu"}[n.type]||n.type;
+    el.innerHTML=`<div class="th"></div><div class="bd">
+      <div class="kd">${kd}</div><div class="nm">${n.nom}</div>
+      ${n.image?"":'<div class="al r">image à créer</div>'}</div>`;
+    poseImage(el.querySelector(".th"), n.image, n.id);
+    el.onclick=e=>{e.stopPropagation();ouvrirFiche(n.id);};
+    gScene.appendChild(el);
+  });
+
+  /* arêtes */
+  const svgns="http://www.w3.org/2000/svg";
+  let maxX=0,maxY=0;
+  Object.values(pos).forEach(p=>{maxX=Math.max(maxX,p.x+NW);maxY=Math.max(maxY,p.y+NH);});
+  gEdges.setAttribute("width",maxX+200); gEdges.setAttribute("height",maxY+200);
+  function trait(a,b,pointille){
+    const p1=pos[a], p2=pos[b]; if(!p1||!p2) return;
+    const x1=p1.x+NW/2, y1=p1.y+NH, x2=p2.x+NW/2, y2=p2.y;
+    const path=document.createElementNS(svgns,"path");
+    const my=(y1+y2)/2;
+    path.setAttribute("d",`M${x1},${y1} C${x1},${my} ${x2},${my} ${x2},${y2}`);
+    path.setAttribute("fill","none");
+    path.setAttribute("stroke", pointille?"rgba(255,255,255,.25)":"rgba(224,99,42,.75)");
+    path.setAttribute("stroke-width","2");
+    if(pointille) path.setAttribute("stroke-dasharray","5 5");
+    gEdges.appendChild(path);
+  }
+  function traitLateral(a,b){
+    const p1=pos[a], p2=pos[b]; if(!p1||!p2) return;
+    const path=document.createElementNS(svgns,"path");
+    const x1=p1.x+NW, y1=p1.y+NH/2, x2=p2.x, y2=p2.y+NH/2;
+    const mx=(x1+x2)/2;
+    path.setAttribute("d",`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`);
+    path.setAttribute("fill","none");
+    path.setAttribute("stroke","rgba(255,255,255,.25)");
+    path.setAttribute("stroke-width","2");
+    path.setAttribute("stroke-dasharray","5 5");
+    gEdges.appendChild(path);
+  }
+  ns.forEach(n=>{
+    (n.mene_a||[]).forEach(t=>{ if(pos[t]) trait(n.id,t,false); });
+    if(n.type==="observe" && n.parent && pos[n.parent]) traitLateral(n.parent,n.id);
+  });
+}
+
+/* pan & zoom */
+let pan=false,px0=0,py0=0;
+gWrap.addEventListener("pointerdown",e=>{
+  if(e.target.closest(".node"))return;
+  pan=true;px0=e.clientX-tx;py0=e.clientY-ty;gWrap.classList.add("drag");
+});
+addEventListener("pointermove",e=>{ if(!pan)return; tx=e.clientX-px0; ty=e.clientY-py0; applique(); });
+addEventListener("pointerup",()=>{pan=false;gWrap.classList.remove("drag");});
+gWrap.addEventListener("wheel",e=>{
+  e.preventDefault();
+  const f=e.deltaY<0?1.1:0.9, ns=Math.min(2,Math.max(0.25,sc*f));
+  const r=gWrap.getBoundingClientRect(), mx=e.clientX-r.left, my=e.clientY-r.top;
+  tx=mx-(mx-tx)*(ns/sc); ty=my-(my-ty)*(ns/sc); sc=ns; applique();
+},{passive:false});
+
+/* ============ FICHE ============ */
+const fiche=document.getElementById("fiche"), fb=document.getElementById("fb");
+let noeudCourant=null;
+function fermerFiche(){ fiche.classList.remove("on"); document.querySelectorAll(".node.sel").forEach(n=>n.classList.remove("sel")); }
+document.getElementById("fclose").onclick=fermerFiche;
+
+function ouvrirFiche(id){
+  const n=byId[id]; if(!n)return;
+  noeudCourant=n;
+  document.querySelectorAll(".node.sel").forEach(x=>x.classList.remove("sel"));
+  const el=gScene.querySelector(`.node[data-id="${id}"]`); if(el) el.classList.add("sel");
+
+  document.getElementById("ftitre").textContent=n.nom;
+  const kd={arrivee:"scène d'arrivée",moment:"moment",observe:"élément observé"}[n.type];
+  document.getElementById("fmeta").textContent=`${kd} · ${lieuById[n.lieu].nom} · ${n.id}`;
+
+  const assets=tousAssets();
+  const vientDe=D.noeuds.filter(x=>(x.mene_a||[]).includes(n.id));
+  const vaVers=(n.mene_a||[]).map(i=>byId[i]).filter(Boolean);
+  const observes=D.noeuds.filter(x=>x.type==="observe"&&x.parent===n.id);
+
+  fb.innerHTML=`
+    <div class="fld imgbox">
+      <div class="big">
+        <div class="fr${n.image?"":" pb"}" id="fimg"></div>
+        <div class="fname">${n.image||"— aucune image —"}</div>
+        ${n.image?"":'<div class="warn r">Image à créer</div>'}
+      </div>
+      <div class="side">
+        <div class="lab">Remplacer par une image existante</div>
+        <select id="fsel">
+          <option value="">— aucune —</option>
+          ${assets.map(a=>`<option ${a===n.image?"selected":""}>${a}</option>`).join("")}
+        </select>
+        <div class="drop" id="fdrop">glisser une nouvelle image ici<br>(passera par le dithering)</div>
+        <div class="btnrow">
+          <button class="tbtn act" id="fcopy">Copier le prompt</button>
+          <button class="tbtn" id="fleo">Ouvrir Leonardo</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="fld">
+      <div class="lab">Texte joué</div>
+      <textarea id="ftexte" rows="7">${n.texte||""}</textarea>
+    </div>
+
+    <div class="fld">
+      <div class="lab">Ce qu'on doit voir — brief de l'image</div>
+      <textarea id="fdesc" rows="3">${n.description||""}</textarea>
+    </div>
+
+    <div class="fld">
+      <div class="lab">Prompt Leonardo</div>
+      <textarea id="fprompt" rows="5" class="mono">${n.prompt||""}</textarea>
+    </div>
+
+    <canvas class="rule"></canvas>
+    <div class="fld">
+      <div class="lab">On y arrive depuis</div>
+      <div class="liens">${vientDe.length?vientDe.map(v=>`<button class="lien up" data-go="${v.id}">↑ ${v.nom}</button>`).join(""):'<span style="color:var(--blanc-20);font-size:11px">— début de chaîne —</span>'}</div>
+    </div>
+    <div class="fld">
+      <div class="lab">Mène à</div>
+      <div class="liens">${vaVers.length?vaVers.map(v=>`<button class="lien" data-go="${v.id}">↓ ${v.nom}</button>`).join(""):'<span style="color:var(--blanc-20);font-size:11px">— fin de chaîne —</span>'}</div>
+    </div>
+    ${observes.length?`<div class="fld"><div class="lab">Éléments observables ici</div>
+      <div class="liens">${observes.map(v=>`<button class="lien" data-go="${v.id}">→ ${v.nom}</button>`).join("")}</div></div>`:""}
+  `;
+  poseImage(document.getElementById("fimg"), n.image, n.id);
+  fb.querySelectorAll("canvas.rule").forEach(rule);
+
+  /* --- édition --- */
+  document.getElementById("ftexte").onchange=e=>{
+    n.texte=e.target.value;
+    ecrire(n.id,"texte",texteVersPara(n.texte)).catch(()=>{});
+  };
+  document.getElementById("fdesc").onchange=e=>{
+    n.description=e.target.value;
+    ecrire(n.id,"description",n.description).catch(()=>{});
+  };
+  document.getElementById("fprompt").onchange=e=>{
+    n.prompt=e.target.value;
+    ecrire(n.id,"prompt_image",n.prompt).catch(()=>{});
+  };
+  document.getElementById("fsel").onchange=e=>{
+    n.image=e.target.value||null;
+    ecrire(n.id,"illustration",n.image).catch(()=>{});
+    poseImage(document.getElementById("fimg"), n.image, n.id);
+    fb.querySelector(".fname").textContent=n.image||"— aucune image —";
+    disposer(lieuCourant); ouvrirFiche(id);
+  };
+  document.getElementById("fcopy").onclick=()=>{
+    navigator.clipboard.writeText(document.getElementById("fprompt").value)
+      .then(()=>{const b=document.getElementById("fcopy");b.textContent="Copié ✓";setTimeout(()=>b.textContent="Copier le prompt",1400);});
+  };
+  document.getElementById("fleo").onclick=()=>window.open("https://app.leonardo.ai/image-generation","_blank");
+  const dz=document.getElementById("fdrop");
+  dz.ondragover=e=>{e.preventDefault();dz.classList.add("on");};
+  dz.ondragleave=()=>dz.classList.remove("on");
+  dz.ondrop=async e=>{
+    e.preventDefault();dz.classList.remove("on");
+    const f=e.dataTransfer.files[0]; if(!f)return;
+    // L'image passe par dither_batch.py côté serveur : jamais de brut
+    // dans assets/. Le nom est normalisé là-bas aussi.
+    try{
+      n.image=await deposerImage(n.id,f);
+      if(!D.reserve.includes(n.image)) D.reserve.push(n.image);
+      disposer(lieuCourant); ouvrirFiche(id);
+    }catch(_){ /* déjà signalé dans le journal */ }
+  };
+  fb.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>ouvrirFiche(b.dataset.go));
+
+  fiche.classList.add("on");
+}
+function rule(cv){
+  const w=cv.clientWidth||600; cv.width=w; cv.height=2;
+  const x=cv.getContext("2d");
+  for(let i=0;i<w;i++){
+    if(Math.random()<.7){x.fillStyle="rgba(255,255,255,.26)";x.fillRect(i,0,1,1);}
+    if(Math.random()<.13){x.fillStyle="rgba(255,255,255,.14)";x.fillRect(i,1,1,1);}
+  }
+}
+
+/* ============ barre ============ */
+document.getElementById("bCarte").onclick=versCarte;
+document.getElementById("bJournal").onclick=()=>document.getElementById("journal").classList.toggle("on");
+document.getElementById("bExport").onclick=()=>{
+  // FILET DE SÉCURITÉ seulement : les écritures sont déjà sur disque à la
+  // seconde où tu quittes un champ. Ce bouton sert si le serveur est tombé.
+  const out={zone:ZONE,lieux:D.lieux,noeuds:D.noeuds.map(n=>({
+    id:n.id,lieu:n.lieu,type:n.type,nom:n.nom,parent:n.parent||null,
+    mene_a:n.mene_a||[],illustration:n.image,texte:n.texte||"",
+    description:n.description||"",prompt_image:n.prompt||""
+  }))};
+  const blob=new Blob([JSON.stringify(out,null,2)],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob); a.download=`${ZONE}_secours.json`; a.click();
+  majLigne(noteEcriture("<b>export</b> de secours"),"<b>export</b> de secours téléchargé",true);
+};
+
+/* ============ BRIEF POUR CLAUDE CODE ============ */
+const RECETTE_SCENE="dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere";
+const RECETTE_NOIR="dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black background, subject emerging from darkness, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere";
+
+function briefClaudeCode(){
+  const aEcrire=D.noeuds.filter(n=>!n.image && !(n.prompt||"").trim());
+  if(!aEcrire.length) return "Aucune scène en attente de prompt. Tout est écrit.";
+
+  const parLieu={};
+  aEcrire.forEach(n=>{(parLieu[n.lieu]=parLieu[n.lieu]||[]).push(n);});
+
+  let out=`MISSION — écrire les prompts d'image manquants, zone LES LANDES.
+${aEcrire.length} scène${aEcrire.length>1?"s":""} sans image ni prompt.
+
+RÈGLES (non négociables)
+1. RÈGLE DU DÉTAIL UNIQUE — deux images d'un même lieu ne montrent JAMAIS le même sujet.
+   Chaque lieu ci-dessous liste d'abord ses images déjà décidées : ne répète aucun de ces
+   sujets. Isole un détail que les autres ne montrent pas (une main, un objet, des pieds,
+   une trace, une texture). Jamais deux fois le même visage, jamais deux fois le même mur.
+2. RECETTE v2 — termine chaque prompt par la bonne variante :
+   · scènes et paysages : "${RECETTE_SCENE}"
+   · gros plans, objets, créatures, portraits : "${RECETTE_NOIR}"
+3. Prompt en ANGLAIS. Si le champ description est vide, écris-le aussi (en français,
+   1-2 phrases : ce qu'on doit voir à l'écran, avec le type de cadrage).
+4. Écris directement dans data/zones/landes.json (champs prompt_image et description).
+   N'attends pas ma validation scène par scène — je relirai dans l'atelier.
+5. Termine par la liste des ids traités.
+
+`;
+  Object.keys(parLieu).forEach(lid=>{
+    const l=lieuById[lid];
+    const deja=D.noeuds.filter(n=>n.lieu===lid && (n.description||"").trim() && !parLieu[lid].includes(n));
+    out+=`\n${"═".repeat(64)}\n## ${l.nom}\n`;
+    if(deja.length){
+      out+=`\nSujets DÉJÀ pris dans ce lieu — ne pas les répéter :\n`;
+      deja.forEach(d=>{ out+=`  · ${d.id} — ${(d.description||"").split("\n")[0]}\n`; });
+    }
+    out+=`\nÀ ÉCRIRE :\n`;
+    parLieu[lid].forEach(n=>{
+      const suite=(n.mene_a||[]).map(i=>byId[i]).filter(Boolean).map(x=>x.id).join(", ");
+      const avant=D.noeuds.filter(x=>(x.mene_a||[]).includes(n.id)).map(x=>x.id).join(", ");
+      out+=`\n─── ${n.id}  ·  ${n.nom}  ·  ${n.type}\n`;
+      if(avant) out+=`vient de : ${avant}\n`;
+      if(suite) out+=`mène à   : ${suite}\n`;
+      out+=`texte joué :\n${(n.texte||"(vide)").split("\n").map(l=>"  "+l).join("\n")}\n`;
+      out+=`description : ${(n.description||"").trim()||"(à écrire)"}\n`;
+    });
+  });
+  return out;
+}
+
+function listeLeonardo(){
+  const prets=D.noeuds.filter(n=>!n.image && (n.prompt||"").trim());
+  if(!prets.length) return "Aucun prompt prêt en attente de génération.";
+  let out=`${prets.length} image${prets.length>1?"s":""} à générer dans Leonardo.\nRéglages : Lucid Origin · Dynamic · 1:1 · 1024.\nNommer le fichier avec l'id indiqué, puis /leo-import.\n`;
+  const parLieu={};
+  prets.forEach(n=>{(parLieu[n.lieu]=parLieu[n.lieu]||[]).push(n);});
+  Object.keys(parLieu).forEach(lid=>{
+    out+=`\n${"═".repeat(64)}\n## ${lieuById[lid].nom}\n`;
+    parLieu[lid].forEach(n=>{
+      out+=`\n─── ${n.id}\n${n.description||""}\n\n${n.prompt}\n`;
+    });
+  });
+  return out;
+}
+
+function sansTexte(){
+  const v=D.noeuds.filter(n=>!(n.texte||"").trim());
+  if(!v.length) return "Toutes les scènes ont leur texte.";
+  let out=`${v.length} scène${v.length>1?"s":""} sans texte joué — à écrire avant les images.\n`;
+  v.forEach(n=>{ out+=`\n─── ${n.id} · ${n.nom} · ${lieuById[n.lieu].nom}\n${n.description||"(aucune description)"}\n`; });
+  return out;
+}
+
+const brief=document.getElementById("brief"), btxt=document.getElementById("btxt");
+let bMode="cc";
+function majBrief(){
+  btxt.value = bMode==="cc" ? briefClaudeCode() : bMode==="leo" ? listeLeonardo() : sansTexte();
+  const sansImg=D.noeuds.filter(n=>!n.image).length;
+  const sansPrompt=D.noeuds.filter(n=>!n.image && !(n.prompt||"").trim()).length;
+  const prets=sansImg-sansPrompt;
+  document.getElementById("bcount").innerHTML=
+    `<b>${sansImg}</b> scènes sans image · <b>${sansPrompt}</b> sans prompt · <b>${prets}</b> prêtes à générer`;
+}
+document.getElementById("bBrief").onclick=()=>{ majBrief(); brief.classList.add("on"); };
+document.getElementById("bclose").onclick=()=>brief.classList.remove("on");
+document.getElementById("btabs").onclick=e=>{
+  const b=e.target.closest("button"); if(!b)return;
+  document.querySelectorAll("#btabs button").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); bMode=b.dataset.b; majBrief();
+};
+document.getElementById("bcopy").onclick=()=>{
+  navigator.clipboard.writeText(btxt.value).then(()=>{
+    document.getElementById("bnote").textContent="copié — colle-le dans Claude Code";
+    setTimeout(()=>document.getElementById("bnote").textContent="",2600);
+  });
+};
+document.getElementById("bdl").onclick=()=>{
+  const noms={cc:"brief_prompts_landes.md",leo:"liste_leonardo_landes.md",txt:"scenes_sans_texte.md"};
+  const blob=new Blob([btxt.value],{type:"text/markdown"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=noms[bMode]; a.click();
+};
+
+(async () => {
+  const fil=document.getElementById("fil");
+  fil.innerHTML="chargement de la zone…";
+  try{
+    await chargerZone();
+    reindexer();
+    renduCarte();
+    fil.innerHTML=`<b>${D.lieux.length} lieux</b> · ${D.noeuds.length} scènes — carte de zone`;
+  }catch(e){
+    fil.innerHTML=`✗ ${e.message}`;
+    document.getElementById("carteInner").innerHTML=
+      `<div style="padding:40px;max-width:640px;line-height:1.7">
+         <b>Le serveur n'est pas là.</b><br><br>
+         L'atelier lit <code>data/zones/${ZONE}.json</code> à travers
+         <code>tools/atelier.py</code>. Ouvre un terminal à la racine du dépôt et lance :
+         <br><br><code style="color:var(--orange)">npm run atelier --prefix aldenhar</code><br><br>
+         puis reviens sur <code>http://localhost:8770</code>.
+       </div>`;
+  }
+})();
+</script>
+</body>
+</html>

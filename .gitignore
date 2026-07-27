@@ -2,3 +2,7 @@
 .next/
 __pycache__/
 *.pyc
+
+# Sauvegardes automatiques de l'atelier (tools/atelier.py)
+*.json.bak
+*.ts.bak

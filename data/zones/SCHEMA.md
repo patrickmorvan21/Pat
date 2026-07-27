@@ -93,3 +93,36 @@ après le gel — le JSON structure d'abord.
 - **Objet attaché à une créature errante** (ex. la Dent de la Meute, collée à
   la Meute Grise, elle-même sans lieu) : `lieu_attache: null` — le lien à la
   créature se lit dans le nom et la note.
+
+
+---
+
+## `scenes[]` — ajouté le 27/07 (l'Atelier)
+
+Collection introduite pour `tools/atelier.py`. Une entrée par écran de jeu,
+points d'intérêt compris.
+
+```jsonc
+{
+  "id": "chapelle-des-cordes",     // l'id RÉEL du jeu (scene-data.ts)
+  "type": "arrivee",               // arrivee · moment · observe
+  "nom": "La Chapelle des Cordes",  // libellé d'atelier, jamais montré au joueur
+  "lieu": "chapelle_des_cordes",   // id d'un lieu de `lieux[]`, ou "horslieu"
+  "parent": null,                  // pour un `observe` : la scène qui le porte
+  "mene_a": ["chapelle-des-cordes-2"],
+  "texte": ["…", "…"],             // un élément = un paragraphe affiché
+  "description": "…",              // matière de production (quoi illustrer)
+  "prompt_image": "…",             // recette Leonardo
+  "illustration": "scene_chapelle_des_cordes_d.png"
+}
+```
+
+⚠️ **`lieu` doit porter l'id RÉEL du lieu** (`chapelle_des_cordes`), pas une
+clé courte. Une clé courte fait s'ouvrir chaque lieu vide dans l'atelier — la
+carte ne retrouve aucun nœud. Erreur commise et corrigée le 27/07.
+
+⚠️ **Le jeu ne lit pas ce fichier.** `texte` et `illustration` sont reportés
+dans `aldenhar/lib/scene-data.ts` par l'atelier à chaque écriture ;
+`description` et `prompt_image` restent ici, le jeu n'en a pas l'usage.
+Regénérer la collection : `python3 tools/atelier_migrate.py` (idempotent —
+les champs déjà remplis ici gagnent sur ceux du `.ts`).
