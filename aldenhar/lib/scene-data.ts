@@ -1908,6 +1908,148 @@ export const SCENES: Scene[] = [
     ],
     jailerLine: "Dormir dehors, comme les Appelés avant leur départ. Le village a noté. Le village note tout.",
   },
+  /* LA TOUR DE GUET EFFONDRÉE — dernier lieu du Hameau à n'avoir aucune scène
+     (relevé le 27/07 : la carte de l'atelier l'affichait « aucune scène
+     écrite »). Sa question est celle de la zone entière : on a bâti une tour
+     pour voir venir quelque chose, et personne n'a jamais dit quoi. */
+  {
+    id: "tour-de-guet",
+    jailerLine: "Ils ont bâti une tour pour voir venir. Personne n'a jamais écrit quoi.",
+    illustration: "assets/scene_tour_de_guet_a.png",
+    chainNext: "tour-de-guet-2",
+    narration: [
+      "La tour n'a plus de sommet. Elle s'arrête net à mi-hauteur, sur une " +
+        "bouche de pierres arrachées, et le reste est en tas autour du pied — " +
+        "pas éboulé, EMPILÉ. Quelqu'un a rangé les décombres.",
+      "L'escalier intérieur tient encore sur trois volées. Au-delà, il monte " +
+        "vers rien.",
+    ],
+    pointsInteret: [
+      {
+        id: "pierres-rangees",
+        chapterFragment: true,
+        label: "Les pierres, empilées au pied",
+        approche:
+          "Tu fais le tour du tas. Il est haut comme un homme et régulier " +
+          "sur toute sa longueur — un travail de plusieurs jours, fait par " +
+          "quelqu'un qui n'était pas pressé.",
+        examen:
+          "Les pierres sont posées face gravée contre terre. Tu en retournes " +
+          "une : une lettre, un fragment de date. C'était un mur de noms. " +
+          "On ne l'a pas démoli — on l'a couché, puis rangé.",
+      },
+      {
+        id: "escalier-vers-rien",
+        savoir: "savoir_guet",
+        label: "L'escalier qui monte au vide",
+        approche:
+          "Les marches sont creusées en leur milieu, usées par des passages " +
+          "quotidiens. Tu montes les trois volées qui tiennent. La dernière " +
+          "s'arrête sur le ciel.",
+        examen:
+          "À la rupture, la pierre est propre. Pas d'usure, pas de suie : la " +
+          "tour n'est pas tombée, on l'a ouverte. Et d'ici, une seule chose " +
+          "est visible à l'horizon — la Colline aux Gibets, exactement dans " +
+          "l'axe. La tour ne surveillait pas les Landes. Elle surveillait le " +
+          "grand gibet.",
+      },
+      {
+        id: "meurtriere-sud",
+        grantsLoot: "lunette-guet",
+        label: "La meurtrière du sud",
+        approche:
+          "Une seule ouverture reste intacte, au sud, à hauteur de poitrine. " +
+          "Le rebord est poli comme une rampe.",
+        examen:
+          "Des encoches dans l'embrasure, groupées par cinq. Des centaines. " +
+          "Et calée dans une fente, une lunette de cuivre à un seul verre, " +
+          "posée là comme on repose un outil qu'on reprendra demain.",
+      },
+    ],
+    choices: [
+      {
+        id: "monter-guet",
+        label: "Monter jusqu'à la rupture",
+        risky: {
+          stat: "COURAGE",
+          threshold: 11,
+          outcomes: outcomes(
+            "Tu montes jusqu'à la dernière marche et tu restes debout dessus, dans le vide. D'ici, tout le hameau est à tes pieds — et tu comprends que la tour ne servait pas à voir loin : elle servait à être vue de partout, par celui qui tenait la corne.",
+            "Tu montes. En haut, le vent te prend de face et tu tiens bon : d'ici on voit tout le hameau, et tout le hameau te voit.",
+            "Une marche cède sous ton poids. Tu te rattrapes au mur, la paume ouverte sur l'arête.",
+            "La volée entière lâche. Tu tombes sur le tas de pierres rangées, et elles se rangent autour de toi comme si elles t'attendaient.",
+          ),
+        },
+      },
+      {
+        id: "ecouter-tour",
+        passive: {
+          consequence:
+            "Tu restes au pied et tu écoutes. Le vent entre par la bouche ouverte et ressort par la meurtrière, et ça fait une note — toujours la même. Le hameau a vécu vingt ans avec cette note dans les oreilles.",
+        },
+        label: "Écouter la tour",
+      },
+      { id: "quitter-tour", label: "Redescendre le tertre", passive: { consequence: "Tu laisses la tour derrière toi. Elle ne regarde plus rien." } },
+    ],
+  },
+  {
+    id: "tour-de-guet-2",
+    jailerLine: "Vingt ans de faction. Il n'a rien manqué — il n'y avait rien à voir.",
+    // On REPOSE l'image de la tour plutôt que de laisser le champ vide : sans
+    // elle, reprendre une partie sauvegardée sur ce beat retombe sur le
+    // portail générique, en plein Hameau. Le portrait du Guetteur
+    // (`monstre_guetteur_tour`) reste à produire — il est listé dans
+    // data/images-a-produire.md.
+    illustration: "assets/scene_tour_de_guet_a.png",
+    foe: "guetteur-tour",
+    foeName: "le Guetteur sans tour",
+    narration: [
+      "Il est assis sur le tas de pierres, dos à toi, et il regarde le sud " +
+        "par-dessus le hameau. Un vieux manteau de guet, la corne au côté. " +
+        "Il ne se retourne pas.",
+      "— « Tu es monté. » Ce n'est pas une question. « Alors tu as vu ce " +
+        "qu'on surveillait. »",
+    ],
+    choices: [
+      {
+        id: "guet-demander",
+        label: "Demander qui a couché la tour",
+        requiresSavoir: "savoir_guet",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 11,
+          outcomes: outcomes(
+            "Il se retourne enfin. « Nous. Le jour où on a compris que voir venir ne servait à rien, puisque ça venait de l'intérieur. » Un temps. « Et on a couché le mur des noms en premier. Pour ne plus avoir à les lire en montant. »",
+            "Il met du temps. « Nous. Le jour où on a compris que voir venir ne servait à rien, puisque ça venait de l'intérieur. » Il crache. « On a rangé les pierres parce qu'on est des gens rangés. »",
+            "Il se ferme d'un coup. « Personne ne l'a couchée. Elle est tombée. » Et il redescend le tertre sans te regarder.",
+            "Il se lève lentement. « Qui t'a dit de monter ? » Sa main est sur la corne. En bas, deux volets s'ouvrent dans la ruelle.",
+          ),
+        },
+      },
+      {
+        id: "guet-corne",
+        label: "Lui demander de sonner",
+        risky: {
+          stat: "RUSE",
+          threshold: 13,
+          outcomes: outcomes(
+            "Il porte la corne à sa bouche — et ne souffle pas. « Voilà. C'est exactement ce qu'on entend depuis vingt ans. » Il te la tend : elle est bouchée à la cire, de l'intérieur. « Ce n'est pas moi qui l'ai bouchée. Et je continue à monter. »",
+            "Il porte la corne à sa bouche — et ne souffle pas. « Voilà. C'est exactement ce qu'on entend depuis vingt ans. » Il te la tend : elle est bouchée à la cire, de l'intérieur.",
+            "« Sonner quoi ? » Il serre la corne contre lui. « Le dernier qui a sonné, ils sont venus. Pas pour ce qu'il annonçait. Pour lui. »",
+            "Il souffle. Rien ne sort — mais dans le hameau, sous toi, on entend distinctement une porte, puis une autre, puis une autre se fermer. « Tu vois. Ils l'entendent quand même. »",
+          ),
+        },
+      },
+      {
+        id: "guet-partir",
+        passive: {
+          consequence:
+            "Tu le laisses à sa faction. En t'éloignant, tu l'entends dire, pour lui seul : « Quelqu'un doit bien regarder. »",
+        },
+        label: "Le laisser regarder",
+      },
+    ],
+  },
   {
     id: "marche-muet",
     illustration: "assets/scene_marche_muet_c.png",
@@ -3538,6 +3680,7 @@ const APPROACH: Record<string, string> = {
   "pendu-mal-fixe": "Vers un craquement de bois",
   "serment-hameau": "Vers la fumée d'un hameau",
   "marche-muet": "Vers un marché muet",
+  "tour-de-guet": "Vers une tour qui a perdu son sommet",
   "campement": "Vers un moulin sans ailes",
   "chapelle-des-cordes": "Vers une chapelle de cordes",
   "puits-condamne": "Vers des coups sourds",
@@ -3568,6 +3711,7 @@ export const TRAVERSAL_POOL = Object.keys(APPROACH);
  * pas encore de scène écrite — à ajouter ici en même temps que son contenu.
  */
 export const HAMEAU_INTERIOR = [
+  "tour-de-guet",
   "chapelle-des-cordes",
   "chien-du-bailli", // La Maison du Bailli (murée) — la scène porte le nom du chien
   "petit-tribunal",
@@ -3920,6 +4064,8 @@ export const APPROACH_NARRATION: Record<string, string> = {
   "champ-des-fixes": "L'horizon se hérisse de piquets réguliers, rangée après rangée, jusqu'à se perdre. Tu approches d'un champ qu'on n'a pas semé — on l'a planté d'hommes.",
   "pendu-mal-fixe": "Un craquement rythme ta marche, régulier, mécanique — du bois qui travaille sous un poids. Devant, une corde trop lâche laisse glisser ce qu'elle devait tenir.",
   "serment-hameau": "De la fumée basse, pas une flamme : des toits gris tassés derrière leurs murets. Le Hameau des Renonçants se découvre lentement, et déjà tu sens qu'on t'a vu venir de loin.",
+  "tour-de-guet":
+    "Le moignon de la tour grossit à mesure que tu montes le tertre — plus bas que tu ne croyais, et couché de biais, comme un os mal ressoudé. Tu arrives à son pied.",
   "marche-muet": "Un bourdonnement de foule sans une seule voix te parvient — des dizaines de gens qui s'affairent en silence. Tu entres dans le marché muet du hameau.",
   "campement": "À l'écart des toits, une masse trapue coupe le crépuscule : un moulin privé de ses ailes, debout par habitude. De la lumière n'en sort pas, mais quelque chose y veille.",
   "chapelle-des-cordes": "Une bâtisse sans croix se dresse au bout d'une ruelle. En approchant, tu vois par la porte ouverte que les murs, à l'intérieur, remuent doucement — des cordes, des dizaines, sans un souffle d'air.",

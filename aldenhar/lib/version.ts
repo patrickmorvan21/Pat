@@ -188,5 +188,13 @@
  *           + 2 illustrations du lot du 26/07 : l'Appelé vu de dos sur la
  *           Palissade (dernière scène de la zone qui n'avait AUCUNE image) et
  *           la guérite du Veilleur.
+ *   1.27.0 — LA TOUR DE GUET EFFONDRÉE : le sixième lieu du Hameau, le seul
+ *           qui n'avait aucune scène écrite. Deux écrans (le tertre et ses
+ *           trois points d'intérêt, puis le Guetteur sans tour), un Savoir
+ *           (`savoir_guet` — la tour surveillait le grand gibet, pas les
+ *           Landes) qui ouvre une question au beat suivant, et un objet
+ *           passif rare, la Lunette du guetteur.
+ *           + FlammeTramee : flamme pixel art procédurale (automate de
+ *           chaleur + seuillage de Bayer), deux couleurs, aucun asset.
  */
-export const APP_VERSION = "1.26.0";
+export const APP_VERSION = "1.27.0";

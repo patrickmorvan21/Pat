@@ -232,6 +232,14 @@
     "proces-du-heros": {
       "description": "Scène de déroutage au dernier palier de Soupçon : le hameau te juge. Les trois bancs pleins, tous les visages tournés vers toi, la chaire vide.",
       "prompt_image": "rustic courtroom seen from the defendant's place, three benches full of gaunt villagers all facing the viewer, the tall pulpit empty above them, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "tour-de-guet": {
+      "description": "Arrivée à la Tour de Guet effondrée, à l'intérieur du hameau. Une tour tronquée net à mi-hauteur, ses pierres empilées en tas régulier au pied.",
+      "prompt_image": "ruined stone watchtower cut off cleanly at mid-height, jagged open mouth of torn stone at the top, the missing upper stones STACKED in a neat man-high pile at its foot, low village roofs behind, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+    },
+    "tour-de-guet-2": {
+      "description": "Événement de la Tour : le Guetteur sans tour, assis de dos sur le tas de pierres, en manteau de guet, une corne au côté, il regarde le sud. CHANGE : c'est un portrait de l'homme, plus le plan large de la tour.",
+      "prompt_image": "old watchman seen from behind, seated on a pile of stones, heavy worn sentry cloak, a signal horn hanging at his side, head turned to scan the horizon, never facing the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     }
   }
 }

@@ -524,6 +524,71 @@ square composition, no text, no lettering, no watermark
 
 ---
 
+## Tour de Guet effondrée (ajout du 27/07)
+
+Le sixième lieu du Hameau vient d'être écrit. Il a sa vue d'ensemble
+(`scene_tour_de_guet_a.png`), mais **aucun de ses trois points d'intérêt ni son
+personnage** n'ont d'image : les quatre écrans se rabattent sur la vue de la
+tour. Raccord commun : contre-jour, la tour tronquée toujours reconnaissable à
+sa bouche de pierres arrachées, et le tas de pierres EMPILÉ (jamais éboulé) à
+son pied.
+
+### `scene_tour_pierres_rangees.png` — « Les pierres, empilées au pied »
+```
+Close view of a long neat man-high stack of dressed stones at the foot of a
+ruined tower, laid course by course by careful hands, every carved face turned
+down against the earth, one stone tipped over to reveal a fragment of an
+engraved name. Dark fantasy illustration, low raking light, deep crushed blacks,
+no fill light, high contrast, two-tone monochrome-friendly, strong readable
+shapes, matte painting, grim medieval rural, square composition, no text, no
+lettering, no watermark
+```
+
+### `scene_tour_escalier_rupture.png` — « L'escalier qui monte au vide »
+```
+Interior stone stair inside a broken tower seen from the last surviving step,
+treads hollowed in their middle by decades of daily use, the flight stopping
+dead on open sky, the clean unweathered break of the stonework in the
+foreground, a distant line of gallows on a ridge visible straight ahead through
+the opening. Dark fantasy illustration, hard backlight from the sky, deep
+crushed blacks, no fill light, high contrast, two-tone monochrome-friendly,
+strong readable shapes, matte painting, grim medieval rural, square composition,
+no text, no lettering, no watermark
+```
+
+### `scene_tour_meurtriere_sud.png` — « La meurtrière du sud »
+```
+Narrow arrow slit in a thick stone wall at chest height, its sill worn smooth
+like a handrail, hundreds of tally notches cut into the embrasure in groups of
+five, a single-lens copper spyglass wedged in a crack of the stonework as if set
+down to be picked up tomorrow. Dark fantasy illustration, single shaft of light
+entering through the slit, deep crushed blacks, no fill light, high contrast,
+two-tone monochrome-friendly, strong readable shapes, matte painting, grim
+medieval rural, square composition, no text, no lettering, no watermark
+```
+
+### `monstre_guetteur_tour.png` — « Le Guetteur sans tour »
+```
+Old watchman seen from behind, seated on a pile of stones, heavy worn sentry
+cloak, a signal horn hanging at his side, head turned to scan the southern
+horizon, never facing the viewer. Pitch-black background, subject emerging from
+darkness, dark fantasy illustration, one single light source, deep crushed
+blacks, no fill light, high contrast, two-tone monochrome-friendly, strong
+readable shapes, matte painting, grim medieval rural, square composition, no
+text, no lettering, no watermark
+```
+
+### `objet_lunette_guetteur.png` — icône d'objet (Besace)
+```
+Single-lens copper spyglass, short and stubby, its barrel polished bright by one
+hand over twenty years while the rest is tarnished, isolated object study on a
+pitch-black background, dark fantasy illustration, one single light source, deep
+crushed blacks, high contrast, two-tone monochrome-friendly, strong readable
+shapes, square composition, no text, no lettering, no watermark
+```
+
+---
+
 # Récapitulatif
 
 | Priorité | À produire | Ce que ça débloque |

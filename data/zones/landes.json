@@ -1774,6 +1774,80 @@
       "illustration": "scene_hameau_dense_c.png"
     },
     {
+      "id": "tour-de-guet",
+      "type": "arrivee",
+      "nom": "Tour de guet",
+      "lieu": "tour_de_guet_effondree",
+      "parent": null,
+      "mene_a": [
+        "tour-de-guet-2"
+      ],
+      "texte": [
+        "La tour n'a plus de sommet. Elle s'arrête net à mi-hauteur, sur une bouche de pierres arrachées, et le reste est en tas autour du pied — pas éboulé, EMPILÉ. Quelqu'un a rangé les décombres.",
+        "L'escalier intérieur tient encore sur trois volées. Au-delà, il monte vers rien."
+      ],
+      "description": "Arrivée à la Tour de Guet effondrée, à l'intérieur du hameau. Une tour tronquée net à mi-hauteur, ses pierres empilées en tas régulier au pied.",
+      "prompt_image": "ruined stone watchtower cut off cleanly at mid-height, jagged open mouth of torn stone at the top, the missing upper stones STACKED in a neat man-high pile at its foot, low village roofs behind, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "illustration": "scene_tour_de_guet_a.png"
+    },
+    {
+      "id": "pierres-rangees",
+      "type": "observe",
+      "nom": "Les pierres, empilées au pied",
+      "lieu": "tour_de_guet_effondree",
+      "parent": "tour-de-guet",
+      "mene_a": [],
+      "texte": [
+        "Tu fais le tour du tas. Il est haut comme un homme et régulier sur toute sa longueur — un travail de plusieurs jours, fait par quelqu'un qui n'était pas pressé."
+      ],
+      "description": null,
+      "prompt_image": null,
+      "illustration": null
+    },
+    {
+      "id": "escalier-vers-rien",
+      "type": "observe",
+      "nom": "L'escalier qui monte au vide",
+      "lieu": "tour_de_guet_effondree",
+      "parent": "tour-de-guet",
+      "mene_a": [],
+      "texte": [
+        "Les marches sont creusées en leur milieu, usées par des passages quotidiens. Tu montes les trois volées qui tiennent. La dernière s'arrête sur le ciel."
+      ],
+      "description": null,
+      "prompt_image": null,
+      "illustration": null
+    },
+    {
+      "id": "meurtriere-sud",
+      "type": "observe",
+      "nom": "La meurtrière du sud",
+      "lieu": "tour_de_guet_effondree",
+      "parent": "tour-de-guet",
+      "mene_a": [],
+      "texte": [
+        "Une seule ouverture reste intacte, au sud, à hauteur de poitrine. Le rebord est poli comme une rampe."
+      ],
+      "description": null,
+      "prompt_image": null,
+      "illustration": null
+    },
+    {
+      "id": "tour-de-guet-2",
+      "type": "moment",
+      "nom": "Tour de guet 2 — beat 2",
+      "lieu": "tour_de_guet_effondree",
+      "parent": null,
+      "mene_a": [],
+      "texte": [
+        "Il est assis sur le tas de pierres, dos à toi, et il regarde le sud par-dessus le hameau. Un vieux manteau de guet, la corne au côté. Il ne se retourne pas.",
+        "— « Tu es monté. » Ce n'est pas une question. « Alors tu as vu ce qu'on surveillait. »"
+      ],
+      "description": "Événement de la Tour : le Guetteur sans tour, assis de dos sur le tas de pierres, en manteau de guet, une corne au côté, il regarde le sud. CHANGE : c'est un portrait de l'homme, plus le plan large de la tour.",
+      "prompt_image": "old watchman seen from behind, seated on a pile of stones, heavy worn sentry cloak, a signal horn hanging at his side, head turned to scan the horizon, never facing the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "illustration": "scene_tour_de_guet_a.png"
+    },
+    {
       "id": "marche-muet",
       "type": "arrivee",
       "nom": "Le Marché Muet",

@@ -131,6 +131,21 @@ export function randomSoinMineur(): BesaceItem {
  * du Condamné, Dénonciation Vierge…) sont réservés au chantier n°3.
  */
 export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
+  /* Tour de Guet — l'outil d'un homme qui a passé sa vie à regarder au sud. */
+  "lunette-guet": {
+    name: "Lunette du guetteur",
+    slot: "passif",
+    rarity: "rare",
+    kind: "babiole",
+    passiveMod: 1,
+    passiveScope: "all",
+    // Pas d'icône : aucun objet tramé du lot ne ressemble à une lunette, et
+    // aucune des icônes libres ne conviendrait sans mentir sur l'objet.
+    // `objet_lunette_guetteur` reste à produire — d'ici là, repli par `kind`.
+    flavor:
+      "Un seul verre, monté dans du cuivre poli par la même main pendant vingt ans. On voit loin avec. On ne voit toujours pas ce qui vient.",
+  },
+
   "offrandes-borne": {
     name: "Offrandes de la Borne", rarity: "commun", kind: "soin", slot: "actif",
     heal: 0.25, cure: false, illustration: "assets/objet_offrandes_borne_c.png",

@@ -52,6 +52,7 @@ LIEU_DE = {
     "petit_tribunal": ["petit-tribunal"],
     "puits_condamne": ["puits-condamne"],
     "marche_muet": ["marche-muet"],
+    "tour_de_guet_effondree": ["tour-de-guet"],
     "verger_noir": ["verger-noir", "epoux-"],
     "chemin_creux": ["chemin-creux", "bete-chemins-creux", "marcheur-"],
     "borne_frontiere": ["borne-frontiere", "hesitant-"],
