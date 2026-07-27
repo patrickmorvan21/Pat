@@ -90,7 +90,16 @@
         "recontextualisation": null
       },
       "illustration": "assets/scene_hameau_dense2_b.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "region": true,
+      "contient": [
+        "tour_de_guet_effondree",
+        "marche_muet",
+        "petit_tribunal",
+        "puits_condamne",
+        "maison_du_bailli",
+        "chapelle_des_cordes"
+      ]
     },
     {
       "id": "chapelle_des_cordes",
@@ -105,7 +114,8 @@
         "recontextualisation": null
       },
       "illustration": "assets/scene_chapelle_des_cordes_d.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "dans": "hameau_des_renoncants"
     },
     {
       "id": "maison_du_bailli",
@@ -120,7 +130,8 @@
         "recontextualisation": null
       },
       "illustration": "assets/scene_maison_du_bailli_c.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "dans": "hameau_des_renoncants"
     },
     {
       "id": "petit_tribunal",
@@ -135,7 +146,8 @@
         "recontextualisation": null
       },
       "illustration": "assets/scene_petit_tribunal_a.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "dans": "hameau_des_renoncants"
     },
     {
       "id": "puits_condamne",
@@ -150,7 +162,8 @@
         "recontextualisation": null
       },
       "illustration": "assets/scene_puits_condamne_c.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "dans": "hameau_des_renoncants"
     },
     {
       "id": "marche_muet",
@@ -165,7 +178,8 @@
         "recontextualisation": null
       },
       "illustration": "assets/scene_marche_muet_c.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "dans": "hameau_des_renoncants"
     },
     {
       "id": "tour_de_guet_effondree",
@@ -180,7 +194,8 @@
         "recontextualisation": null
       },
       "illustration": null,
-      "portrait_requis": false
+      "portrait_requis": false,
+      "dans": "hameau_des_renoncants"
     },
     {
       "id": "verger_noir",

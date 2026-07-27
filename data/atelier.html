@@ -43,7 +43,7 @@
   /* ============ vue carte ============ */
   #carte{position:absolute;top:58px;left:0;right:0;bottom:0;overflow:auto;display:none}
   #carte.on{display:block}
-  #carteInner{position:relative;width:1500px;height:1300px}
+  #carteInner{position:relative;display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;padding:26px;width:1500px;height:1300px}
   .lieuCard{position:absolute;width:212px;background:var(--charbon);border:2px solid var(--orange);cursor:pointer}
   .lieuCard.pb{border-color:var(--rouge)}
   .lieuCard .th{position:relative;width:100%;height:108px;overflow:hidden;background:#141310}
@@ -150,6 +150,15 @@
   #brief textarea{flex:1 1 auto;font-size:11.5px;line-height:1.55;min-height:0}
   #brief .ba{display:flex;gap:9px;margin-top:12px;align-items:center}
   #brief .note{font-size:10px;color:var(--blanc-50);margin-left:auto}
+
+/* ── régions (le Hameau) ───────────────────────────────────────────────── */
+.lieuCard{position:static}
+.regionBox{border:1px dashed var(--blanc-20);padding:14px;display:flex;
+  flex-direction:column;gap:12px;max-width:760px}
+.regTitre{font-size:13px;letter-spacing:1px;display:flex;align-items:baseline;gap:12px}
+.regSub{font-size:10px;color:var(--blanc-50);letter-spacing:1px;text-transform:uppercase}
+.regTete{border-color:var(--orange)!important}
+.regGrille{display:flex;flex-wrap:wrap;gap:12px}
 </style>
 </head>
 <body>
@@ -242,7 +251,8 @@ async function chargerZone(){
       // lieux à la main (le champ `x`/`y` est respecté dès qu'il existe).
       x: l.x != null ? l.x : 60 + (i % 4) * 300,
       y: l.y != null ? l.y : 40 + Math.floor(i / 4) * 260,
-      image: l.illustration || null
+      image: l.illustration || null,
+      region: !!l.region, dans: l.dans || null, contient: l.contient || []
     })),
     noeuds: (z.scenes || []).map(s => ({
       id: s.id, lieu: s.lieu, type: s.type, nom: s.nom || s.id,
@@ -370,22 +380,45 @@ function poseImage(box,fichier,seed){
 
 /* ============ VUE CARTE ============ */
 const carteInner=document.getElementById("carteInner");
+/* La carte respecte la géographie : une RÉGION (le Hameau des Renonçants) est
+   un cadre qui contient ses lieux. Sur la carte Figma 2112:325 c'est le cadre
+   pointillé ; les mettre au même niveau que la Colline ou la Borne, comme le
+   faisait la première version, ment sur ce qu'est le Hameau. */
 function renduCarte(){
   carteInner.innerHTML="";
-  D.lieux.forEach(l=>{
+  const carte=(l,i)=>{
     const ns=D.noeuds.filter(n=>n.lieu===l.id);
     const manquantes=ns.filter(n=>!n.image).length;
     const el=document.createElement("div");
     el.className="lieuCard"+(manquantes?" pb":"");
-    el.style.left=l.x+"px"; el.style.top=l.y+"px";
     el.innerHTML=`<div class="th"></div><div class="bd">
       <div class="nm">${l.nom}</div>
-      <div class="sb">${ns.length} nœud${ns.length>1?"s":""}</div>
+      <div class="sb">${ns.length?ns.length+" nœud"+(ns.length>1?"s":""):"aucune scène écrite"}</div>
       ${manquantes?`<div class="al">${manquantes} sans image</div>`:""}</div>`;
     poseImage(el.querySelector(".th"), l.image, l.id);
-    el.onclick=()=>ouvrirLieu(l.id);
-    carteInner.appendChild(el);
+    el.onclick=e=>{e.stopPropagation();ouvrirLieu(l.id);};
+    return el;
+  };
+  const dedans=new Set(D.lieux.filter(l=>l.dans).map(l=>l.id));
+  D.lieux.filter(l=>!l.dans).forEach(l=>{
+    if(l.region){
+      const contenus=D.lieux.filter(x=>x.dans===l.id);
+      const box=document.createElement("div");
+      box.className="regionBox";
+      const nsr=D.noeuds.filter(n=>n.lieu===l.id);
+      box.innerHTML=`<div class="regTitre">${l.nom}
+        <span class="regSub">région · ${contenus.length} lieux · ${nsr.length} scènes propres</span></div>`;
+      const tete=carte(l); tete.classList.add("regTete"); box.appendChild(tete);
+      const grille=document.createElement("div"); grille.className="regGrille";
+      contenus.forEach(c=>grille.appendChild(carte(c)));
+      box.appendChild(grille);
+      carteInner.appendChild(box);
+    } else {
+      const el=carte(l); el.classList.add("libre");
+      carteInner.appendChild(el);
+    }
   });
+  void dedans;
 }
 
 /* ============ VUE GRAPHE ============ */
