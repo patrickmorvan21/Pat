@@ -1671,7 +1671,8 @@
       ],
       "description": null,
       "prompt_image": null,
-      "illustration": null
+      "illustration": null,
+      "sans_image": true
     },
     {
       "id": "hameau-entree-5",

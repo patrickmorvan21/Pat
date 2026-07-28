@@ -79,6 +79,19 @@
   .node.moment{border-color:var(--blanc)}
   .node.observe{border-color:var(--blanc-20);border-style:dashed}
   .node.pb{border-color:var(--rouge)}
+  /* « À modifier » : une image CÂBLÉE mais jugée mauvaise. Distinct de
+     « pb » (image manquante) par la FORME autant que par la couleur —
+     un bandeau, jamais un simple changement de bordure, pour qu'on ne
+     confonde jamais « il n'y a rien » et « ce qui est là ne va pas ». */
+  .node .mk{position:absolute;left:0;right:0;bottom:0;background:var(--orange);
+    color:var(--charbon);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
+    text-align:center;padding:2px 0}
+  .node.mod{border-color:var(--orange)}
+  .lieuCard .mk{position:absolute;left:0;right:0;bottom:0;background:var(--orange);
+    color:var(--charbon);font-size:8px;letter-spacing:1.5px;text-transform:uppercase;
+    text-align:center;padding:2px 0}
+  .tbtn.mod.on{background:var(--orange);color:var(--charbon);border-color:var(--orange)}
+  .modnote{font-size:10px;color:var(--orange);margin-top:6px;line-height:1.4}
   .node.sel{outline:2px solid var(--orange);outline-offset:3px}
   .node .th{position:relative;width:100%;height:86px;overflow:hidden;background:#141310}
   .node img,.node .ph{width:100%;height:100%;object-fit:cover;display:block}
@@ -90,7 +103,7 @@
 
   /* ============ volet de fiche ============ */
   #fiche{
-    position:fixed;top:0;right:0;bottom:0;width:min(720px,60vw);z-index:40;
+    position:fixed;top:58px;right:0;bottom:0;width:min(720px,60vw);z-index:40;
     background:var(--charbon);border-left:1px solid var(--blanc-20);
     transform:translateX(101%);display:flex;flex-direction:column;
   }
@@ -189,7 +202,7 @@
   <button class="tbtn" id="bCarte">Carte</button>
   <button class="tbtn" id="bJournal">Journal</button>
   <button class="tbtn act on" id="bBrief">⌘ Briefer Claude Code</button>
-  <button class="tbtn" id="bPos" title="Renvoie la disposition de la carte" hidden>Copier les positions</button>
+  <button class="tbtn act" id="bPrompts" title="Tout ce qu'il reste à produire, prompts compris">Copier les prompts à créer / à modifier</button>
   <button class="tbtn" id="bExport" title="Filet de sécurité — les écritures sont déjà sur disque">Export de secours</button>
 </div>
 
@@ -254,6 +267,7 @@ const BASE = (typeof window.__ZONE_DATA__ !== "undefined") ? "assets/" : "/asset
    lecture plutôt que de doubler /assets/assets/. */
 const fichierImage = f => f ? String(f).replace(/^assets\//, "") : f;
 const ORANGE="#e0632a";
+const esc = s => String(s==null?"":s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
 /* =====================================================================
    MODÈLE — un seul objet par nœud. C'est ce que le JSON doit contenir.
@@ -307,6 +321,7 @@ async function chargerZone(){
       id: s.id, lieu: s.lieu, type: s.type, nom: s.nom || s.id,
       parent: s.parent || null, mene_a: s.mene_a || [],
       image: s.illustration || null,
+      sansImage: !!s.sans_image,
       texte: paraVersTexte(s.texte),
       description: s.description || "",
       prompt: s.prompt_image || ""
@@ -441,7 +456,8 @@ function renduCarte(){
   carteInner.innerHTML="";
   const carte=(l)=>{
     const ns=D.noeuds.filter(n=>n.lieu===l.id);
-    const manquantes=ns.filter(n=>!n.image).length;
+    const manquantes=ns.filter(n=>!n.image && !n.sansImage).length;
+    const aModifier=ns.filter(n=>marque(n.id)).length;
     const el=document.createElement("div");
     el.className="lieuCard"+(manquantes?" pb":"");
     el.dataset.lieu=l.id;
@@ -449,7 +465,8 @@ function renduCarte(){
     el.innerHTML=`<div class="th"></div><div class="bd">
       <div class="nm">${l.nom}</div>
       <div class="sb">${ns.length?ns.length+" nœud"+(ns.length>1?"s":""):"aucune scène écrite"}</div>
-      ${manquantes?`<div class="al">${manquantes} sans image</div>`:""}</div>`;
+      ${manquantes?`<div class="al">${manquantes} sans image</div>`:""}
+      ${aModifier?`<div class="al">${aModifier} à modifier</div>`:""}</div>`;
     poseImage(el.querySelector(".th"), l.image, l.id);
     if(l.region) el.classList.add("regTete");
     attacherDeplacement(el, l);
@@ -548,6 +565,24 @@ function ajusterToile(){
    dans le JSON ; depuis le lien publié, il n'y a pas de serveur, donc il
    tient dans le navigateur et le bouton « copier les positions » permet de
    me les renvoyer. Un clic sans glissement ouvre le lieu, comme avant. */
+/* ── « À MODIFIER » ─────────────────────────────────────────────────────────
+   Même clé et même format que la page de couverture (`pactum-verdicts`,
+   {id:{v:"a_remplacer",note}}). Les deux pages sont servies par le même
+   domaine, donc elles partagent ce stockage : marquer une image ici la
+   marque là-bas, et inversement. Une seule liste, jamais deux avis. */
+const VERDICTS="pactum-verdicts", A_MODIFIER="a_remplacer";
+function verdicts(){
+  try{ return JSON.parse(localStorage.getItem(VERDICTS)||"{}"); }catch(_){ return {}; }
+}
+function marque(id){ return (verdicts()[id]||{}).v===A_MODIFIER; }
+function basculerMarque(id, note){
+  const v=verdicts();
+  if(v[id] && v[id].v===A_MODIFIER) delete v[id];
+  else { v[id]={v:A_MODIFIER}; if(note) v[id].note=note; }
+  localStorage.setItem(VERDICTS, JSON.stringify(v));
+  return marque(id);
+}
+
 const POSITIONS_LOCALES="pactum-atelier-positions";
 function positionsRangees(){
   try{ return JSON.parse(localStorage.getItem(POSITIONS_LOCALES)||"{}"); }
@@ -706,6 +741,12 @@ function disposer(lieuId){
       <div class="kd">${kd}</div><div class="nm">${n.nom}</div>
       ${n.image?"":'<div class="al r">image à créer</div>'}</div>`;
     poseImage(el.querySelector(".th"), n.image, n.id);
+    // ⚠️ APRÈS poseImage : celle-ci vide la vignette avant de dessiner, donc
+    // un badge posé plus tôt disparaîtrait sans bruit.
+    if(marque(n.id)){
+      el.classList.add("mod");
+      el.querySelector(".th").insertAdjacentHTML("beforeend",'<div class="mk">à modifier</div>');
+    }
     el.onclick=e=>{e.stopPropagation();ouvrirFiche(n.id);};
     gScene.appendChild(el);
   });
@@ -804,6 +845,9 @@ function ouvrirFiche(id){
           <button class="tbtn act" id="fcopy">Copier le prompt</button>
           <button class="tbtn" id="fleo">Ouvrir Leonardo</button>
         </div>
+        ${n.image?`<button class="tbtn mod${marque(n.id)?" on":""}" id="fmod"
+          style="width:100%;margin-top:8px">${marque(n.id)?"✕ à modifier":"Marquer « à modifier »"}</button>
+        <div class="modnote">${marque(n.id)&&(verdicts()[n.id]||{}).note?esc((verdicts()[n.id]||{}).note):""}</div>`:""}
       </div>
     </div>
 
@@ -874,6 +918,16 @@ function ouvrirFiche(id){
     });
   };
   document.getElementById("fleo").onclick=()=>window.open("https://app.leonardo.ai/image-generation","_blank");
+  const fmod=document.getElementById("fmod");
+  if(fmod) fmod.onclick=()=>{
+    // On demande la raison au MOMENT du marquage : c'est là qu'on l'a en
+    // tête, et c'est elle qui me sert, plus que le marquage lui-même.
+    const dejaMarque=marque(n.id);
+    const note=dejaMarque?null:(window.prompt("Ce qui ne va pas (facultatif) :")||"").trim();
+    basculerMarque(n.id, note);
+    majCompteur();
+    disposer(lieuCourant); ouvrirFiche(n.id);
+  };
   const dz=document.getElementById("fdrop");
   dz.ondragover=e=>{e.preventDefault();dz.classList.add("on");};
   dz.ondragleave=()=>dz.classList.remove("on");
@@ -925,22 +979,73 @@ function rule(cv){
 }
 
 /* ============ barre ============ */
-/* Depuis le lien publié, une page ne peut rien écrire dans le dépôt : le
-   bouton renvoie donc la disposition sous une forme que je n'ai qu'à coller
-   dans le JSON. Inutile en local, où le déplacement s'écrit tout seul. */
-const bPos=document.getElementById("bPos");
-if(WEB){
-  bPos.hidden=false;
-  bPos.onclick=()=>{
-    const lignes=D.lieux.map(l=>`  "${l.id}": [${l.x||0}, ${l.y||0}]`).join(",\n");
-    navigator.clipboard.writeText(`Positions de la carte des Landes :\n{\n${lignes}\n}`)
-      .then(()=>{bPos.textContent="Copié ✓";setTimeout(()=>bPos.textContent="Copier les positions",1600);});
-  };
+/* ── LE CTA : tout ce qu'il reste à produire, d'un coup ────────────────────
+   Deux catégories dans le même envoi, parce qu'elles appellent le même
+   travail : les écrans SANS image (à créer) et ceux dont l'image est câblée
+   mais jugée mauvaise (à modifier, avec la raison quand elle a été donnée).
+   Chaque entrée porte son nom de fichier cible et son prompt — il n'y a
+   rien à assembler derrière. Les positions ne sont plus copiées ici : elles
+   voyagent déjà dans « Export de secours ». */
+function aProduire(){
+  const v=verdicts();
+  const creer=[], modifier=[];
+  D.noeuds.forEach(n=>{
+    // Un écran marqué `sans_image` n'attend AUCUNE illustration (une question
+    // de dialogue, par exemple) : il n'a rien à faire dans une liste de
+    // production, sinon il y reste pour toujours.
+    if(n.sansImage) return;
+    if(!n.image) creer.push(n);
+    else if((v[n.id]||{}).v===A_MODIFIER) modifier.push(n);
+  });
+  return {creer, modifier, notes:v};
 }
+function texteAProduire(){
+  const {creer, modifier, notes}=aProduire();
+  const bloc=(n,quoi)=>{
+    const lieu=(lieuById[n.lieu]||{}).nom||n.lieu;
+    const note=(notes[n.id]||{}).note;
+    return [
+      `── ${n.nom}  (${n.id} · ${lieu})`,
+      quoi==="modifier" ? `   à MODIFIER · fichier actuel : ${n.image}` : `   à CRÉER`,
+      note ? `   ce qui ne va pas : ${note}` : null,
+      n.description ? `   ce qu'on doit voir : ${n.description}` : null,
+      n.prompt ? `   prompt :\n${n.prompt}` : `   (aucun prompt écrit — texte joué :)\n${n.texte||"—"}`,
+    ].filter(Boolean).join("\n");
+  };
+  const parts=[`PACTUM — Les Landes · images à produire`,
+    `${creer.length} à créer · ${modifier.length} à modifier`, ""];
+  if(modifier.length){
+    parts.push("╔═ À MODIFIER ═══════════════════════════════════════");
+    modifier.forEach(n=>parts.push(bloc(n,"modifier"), ""));
+  }
+  if(creer.length){
+    parts.push("╔═ À CRÉER ══════════════════════════════════════════");
+    creer.forEach(n=>parts.push(bloc(n,"creer"), ""));
+  }
+  if(!creer.length && !modifier.length)
+    parts.push("Rien à produire : chaque écran a une image, et aucune n'est marquée.");
+  return parts.join("\n");
+}
+const bPrompts=document.getElementById("bPrompts");
+function majCompteur(){
+  const {creer, modifier}=aProduire();
+  bPrompts.textContent = (creer.length+modifier.length)
+    ? `Copier les prompts · ${creer.length} à créer, ${modifier.length} à modifier`
+    : "Rien à produire";
+}
+bPrompts.onclick=()=>{
+  navigator.clipboard.writeText(texteAProduire()).then(()=>{
+    const avant=bPrompts.textContent;
+    bPrompts.textContent="Copié ✓";
+    setTimeout(()=>{bPrompts.textContent=avant;},1800);
+  });
+};
 
+/* Le pied de page doit dire ce qui marche dans la vue AFFICHÉE : sur la
+   carte la molette seule défile, c'est le pincement qui zoome. */
 const HINT_CARTE="glisser un lieu pour le déplacer · pincer pour zoomer";
 const HINT_GRAPHE="glisser pour déplacer · molette pour zoomer";
-function majHint(surCarte){ document.getElementById("hint").textContent = surCarte?HINT_CARTE:HINT_GRAPHE; }
+function majHint(surCarte){ document.getElementById("hint").textContent=surCarte?HINT_CARTE:HINT_GRAPHE; }
 majHint(true);
 
 document.getElementById("bCarte").onclick=versCarte;
@@ -1070,6 +1175,7 @@ document.getElementById("bdl").onclick=()=>{
     appliquerPositionsRangees();
     reindexer();
     renduCarte();
+    majCompteur();
     fil.innerHTML=`<b>${D.lieux.length} lieux</b> · ${D.noeuds.length} scènes — carte de zone`;
   }catch(e){
     fil.innerHTML=`✗ ${e.message}`;
