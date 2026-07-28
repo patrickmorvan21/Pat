@@ -1,3 +1,34 @@
+# ⚠️ La règle des variantes (28/07) — à lire avant de générer quoi que ce soit
+
+Constat de Patrick, vérifié : les prompts de variante **re-décrivaient leur
+sujet en entier**. « elderly couple digging side by side between orchard rows,
+black twisted branches above them… » — un modèle de diffusion à qui on
+redécrit un couple fabrique un AUTRE couple, dans un AUTRE verger. Deux écrans
+du même lieu ne raccordaient jamais.
+
+**Une variante ne rejoue pas la scène : elle SERRE sur un élément.**
+
+| cadrage | quand | ce que ça garantit |
+|---|---|---|
+| `pres` | par défaut, pour tout élément observé | gros plan, l'objet remplit le cadre, ni horizon ni ciel ni figure — rien qui puisse jurer avec le plan large |
+| `large` | le rare cas où le texte demande de RECULER (la croix d'ombres, l'entrée dans le cercle) | contre-jour, silhouettes sur ciel orange, comme les plans de lieu |
+| `portrait` | **la première** image d'un personnage | elle établit, donc elle décrit. Il n'y en a qu'UNE par personnage |
+| `geste` | **toute image suivante** du même personnage | mains, dos, objet tendu — le visage n'est jamais revu, donc il ne peut jamais diverger |
+
+**La lumière compte autant que le cadrage.** Les gros plans héritaient du
+« contre-jour extrême, silhouette noire sur ciel orange » des plans larges. Sur
+un détail il n'y a pas de ciel : tout virait au noir plein et la matière
+disparaissait au dithering — c'est exactement ce qui a mangé les entailles des
+potences. Un gros plan s'éclaire donc en **lumière rasante**, qui fait lire le
+relief.
+
+Les prompts de la zone sont générés depuis `tools/prompts_variantes.py`, qui
+tient cette grammaire. Pour en corriger un, modifier le sujet dans ce fichier
+et relancer `python3 tools/prompts_variantes.py` — ne pas éditer le JSON à la
+main, il serait réécrit.
+
+---
+
 # Images à produire — LES LANDES (Acte I)
 
 Prompts prêts à coller dans Leonardo, **un par plan rapproché**. Chaque prompt est

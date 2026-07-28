@@ -213,7 +213,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_tour_de_guet_a.png",
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
       "x": 1140,
@@ -265,7 +265,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/scene_transition_borne_sud_a.png",
+      "illustration": "assets/scene_borne_frontiere_a_c.png",
       "portrait_requis": false,
       "x": 1560,
       "y": 70
@@ -282,7 +282,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_palissade_sud_a_a.png",
       "portrait_requis": false,
       "x": 1160,
       "y": 1130
@@ -1078,7 +1078,7 @@
         "Tu fais le tour de la pierre lentement, la main à plat sur le granit. Il est froid d'une froideur qui ne vient pas du vent."
       ],
       "description": null,
-      "prompt_image": "Close view of the face of a granite boundary stone densely covered in carved marks layered over centuries, names and dates and tally strokes overlapping, the surface saturated on this side while the adjacent face stays almost bare with only three marks on it, low orange sun grazing the stone from the side. Dark fantasy illustration, one single raking light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "weathered granite boundary stone surface covered in shallow crowded carvings, names scratched over older names, a flat human hand resting against the stone. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_borne_gravures_a_d.png"
     },
     {
@@ -1092,7 +1092,7 @@
         "Un angle de la borne manque. Tu t'accroupis : la cassure est nette, faite au burin, patiemment. Quelqu'un a voulu emporter un morceau de la limite avec lui."
       ],
       "description": null,
-      "prompt_image": "Broken-off corner of a granite boundary marker lying half buried in heather at ground level, its fresh fracture pale against the weathered outer surface, palm sized, damp dark earth around it, low orange light grazing the ground. Dark fantasy illustration, one single raking light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "broken-off corner of a granite boundary stone at ground level, the fracture clean and chisel-cut, the raw pale inner stone against the weathered outer face. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_borne_eclat_a_b.png"
     },
     {
@@ -1108,7 +1108,7 @@
         "Tu quittes la borne et tu marches vers lui, sans te presser, en faisant sonner tes pas — on n'arrive pas dans le dos de quelqu'un, ici."
       ],
       "description": null,
-      "prompt_image": "gaunt hooded man standing motionless on a moor, seen from behind at three-quarters, facing away toward a dark southern horizon, worn travelling clothes, a small bundle at his feet, grass flattened around him, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "man standing alone facing south on open moor, back to the viewer, not turning round though he has heard the footsteps. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_hesitant_b.png"
     },
     {
@@ -1125,7 +1125,7 @@
         "— « Tu l'entends fort, toi ? » Sa voix est calme, épuisée d'être calme. « Moi, c'est encore bas. Comme des gens qui parlent dans la maison d'à côté. On comprend pas les mots. On comprend juste... qu'on parle de nous. »"
       ],
       "description": "Un homme immobile face au sud, dos au hameau, planté depuis si longtemps que l'herbe s'est couchée sous lui. La borne dressée à côté de lui.",
-      "prompt_image": "gaunt hooded man standing motionless on a moor, seen from behind at three-quarters, facing away toward a dark southern horizon, worn travelling clothes, a small bundle at his feet, grass flattened around him, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "man standing alone facing south on open moor, back to the viewer, not turning round though he has heard the footsteps. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_hesitant_b.png"
     },
     {
@@ -1142,7 +1142,7 @@
         "Un temps. « Tu descends. Tu vas voir ce qu'on devient. Alors dis-moi ce que tu choisirais. »"
       ],
       "description": "Il parle enfin : tourné de trois-quarts, il désigne la borne du menton sans la regarder. CHANGE : il n'est plus figé face au sud — tête tournée, menton qui pointe la pierre.",
-      "prompt_image": "",
+      "prompt_image": "a man's chin lifted toward a boundary stone he refuses to look at, seen from the side, cropped at the jaw. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_hesitant_b.png"
     },
     {
@@ -1157,7 +1157,7 @@
         "Au bout de vingt pas tu te retournes quand même. La borne est seule au milieu du plateau. Il n'y a plus personne à côté — et rien, sur la bruyère couchée, ne dit dans quel sens il est parti."
       ],
       "description": "La borne seule au milieu du plateau, la bruyère couchée à son pied, et rien qui dise dans quel sens il est parti. CHANGE : l'homme a DISPARU du cadre — même pierre, vide.",
-      "prompt_image": "",
+      "prompt_image": "a boundary stone standing alone in the middle of an empty plateau, nobody beside it, the moor running flat to the horizon. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_hesitant_b.png"
     },
     {
@@ -1188,7 +1188,7 @@
         "Elle penche dans l'ornière depuis si longtemps que le bois a pris racine — des pousses sortent du moyeu. Tu contournes, la main sur le ridelle."
       ],
       "description": null,
-      "prompt_image": "Abandoned cart sunk to its axles in mud at the bottom of a sunken lane, bed empty, harness hanging cleanly cut through rather than unbuckled, a small verdigrised bronze bell hanging from a nail beneath the seat, high earth banks and overhanging roots crowding both sides, the only light coming from the far end of the lane. Dark fantasy illustration, one single distant light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "wheel hub and axle of a cart long sunk in a rut, green shoots growing out of the wood of the hub, the side rail worn smooth by hands. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_chemin_charrette_a_c.png"
     },
     {
@@ -1202,7 +1202,7 @@
         "Tu montes de trois pas dans la pente, juste assez pour voir la crête sans t'exposer entièrement. La terre y est meuble, retournée."
       ],
       "description": null,
-      "prompt_image": "Top edge of a sunken lane's earth bank seen looking up from inside the lane, a line of paired footprints running along the crest parallel to the road for its whole length, tall grass and exposed roots against a thin strip of glowing orange sky, nothing visible that could have made the prints. Dark fantasy illustration, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "loose turned earth on a steep bank, a line of bare footprints pressed into it going the wrong way, grass torn at the edges. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_chemin_talus_a_c.png"
     },
     {
@@ -1218,7 +1218,7 @@
         "Tu ralentis pour le laisser venir. Il marche à reculons d'un pas sûr, les talons trouvant le sol comme des yeux."
       ],
       "description": null,
-      "prompt_image": "emaciated man walking backwards along a sunken road, face turned to look behind himself, eyes wide and fixed, arms slightly out for balance, ragged coat, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "man walking backwards along a sunken lane with a sure step, heels finding the ground like eyes, body turned away from his direction of travel. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_marcheur_a_rebours_d.png"
     },
     {
@@ -1250,7 +1250,7 @@
         "— « Marche pas côté nord du creux. » Pas de bonjour. Ici, les conseils sont les politesses. « Elle longe la crête nord. Toujours. Les empreintes du sud, c'est les vieilles. »"
       ],
       "description": "Le Marcheur à rebours avance en marche arrière dans le chemin creux, le regard fixé derrière lui : trente ans qu'il ne montre son dos à rien.",
-      "prompt_image": "emaciated man walking backwards along a sunken road, face turned to look behind himself, eyes wide and fixed, arms slightly out for balance, ragged coat, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "man walking backwards along a sunken lane with a sure step, heels finding the ground like eyes, body turned away from his direction of travel. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_marcheur_a_rebours_d.png"
     },
     {
@@ -1266,7 +1266,7 @@
         "— « Tu veux traverser entier ? » Il est déjà trois pas plus loin. « Alors fais comme moi jusqu'au coude. Après le coude, elle suit plus. Personne sait pourquoi. On va pas lui demander. »"
       ],
       "description": "Il s'éloigne à reculons, déjà trois pas plus loin, et te parle par-dessus son épaule ; les talus se resserrent. CHANGE : il n'est plus devant toi, il recule dans la profondeur du chemin.",
-      "prompt_image": "",
+      "prompt_image": "a pair of heels finding the ground behind their owner, boots walking backwards along a sunken lane, legs only. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_marcheur_a_rebours_d.png"
     },
     {
@@ -1283,7 +1283,7 @@
         "Juste avant que le talus ne le mange, il lève deux doigts vers toi. Pas un adieu. Un décompte : deux yeux. Il te rappelle d'en garder autant derrière la tête."
       ],
       "description": "Au coude du chemin il pivote face au nord et lève deux doigts vers toi, juste avant que le talus ne l'avale. CHANGE : vu de dos, et le geste des deux doigts levés.",
-      "prompt_image": "",
+      "prompt_image": "two fingers raised toward the viewer at the mouth of a sunken lane, the arm half swallowed by the earth bank, a count rather than a farewell. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_marcheur_a_rebours_d.png"
     },
     {
@@ -1298,7 +1298,7 @@
         "Pas de gueule visible. Juste une avancée du corps qui s'ouvre. La Bête ne chasse que dans le creux — c'est son couloir, son terrier, sa table. Et tu es dessus."
       ],
       "description": "Combat, une scène. La Bête des Chemins Creux, qui longe la crête nord au même pas que ce qui marche en bas. On ne la voit qu'en silhouette, au-dessus.",
-      "prompt_image": "massive quadruped silhouette crouched on the crest of an earthen bank, seen from below against a pale sky, long low body, head lowered toward the viewer, unnaturally still, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "long low beast built to run between two earth walls, no visible jaw, only a forward mass of matted hide, half detached from the bank of a sunken lane. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_bete_chemins_creux_a.png"
     },
     {
@@ -1329,7 +1329,7 @@
         "Ils sont sur la traverse du grand gibet, immobiles, et ils ne bougent pas quand tu approches — ce qui n'est pas un comportement d'oiseau. Aucun ne te regarde. Ils regardent la corde."
       ],
       "description": null,
-      "prompt_image": "Row of black crows perched shoulder to shoulder along the crossbeam of a gallows on a bare ridge, all facing the same way, one of them turned the wrong way as if keeping a place. Dark fantasy illustration, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "row of crows perched shoulder to shoulder along a gallows crossbeam, none of them looking at the viewer, all of them looking down at the rope. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_corbeaux_du_compte_b.png"
     },
     {
@@ -1343,7 +1343,7 @@
         "Tu entres dans le cercle. Le vent monte d'un cran dès le premier pas entre deux potences — pas plus fort ailleurs, plus fort ICI, comme si l'espace entre les mâts avait son climat."
       ],
       "description": null,
-      "prompt_image": "Three or four weathered wooden gallows posts curving away along a bare hill crest, seen close from below, shallow carved notches and a date cut at the foot of each post, all struck by the same careful hand, glowing orange sky filling the gaps between them, dark heather at their base. Dark fantasy illustration, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "ring of weathered gallows posts on a bare hill crest seen from inside the ring, shallow notches and a date cut at the foot of each post, wind-flattened heather. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_colline_potences_cercle_a_c.png"
     },
     {
@@ -1357,7 +1357,7 @@
         "Tu marches vers le centre, et la chose grandit plus vite que tes pas. À dix mètres, tu comprends que tu avais mal jugé l'échelle. À trois, tu dois lever la tête pour voir le nœud."
       ],
       "description": null,
-      "prompt_image": "Single tall well-built gallows alone on a hill crest, massive squared beams jointed to last for centuries, a brand new pale rope hanging empty and barely swaying, its long cast shadow stretching toward the viewer across the heather and subtly the wrong shape for the structure, low orange sun behind it. Dark fantasy illustration, extreme backlight, one single light source, near-black silhouette against a glowing orange sky, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "the noose of a great gallows seen from directly beneath, looking up, the knot huge and close, the crossbeam cutting the top of the frame. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_colline_gibet_vide_a_b.png"
     },
     {
@@ -1371,7 +1371,7 @@
         "Tu contournes le cercle par la gauche. Le poteau isolé est plus bas que les autres — à hauteur d'homme, exactement. Une hauteur qu'on choisit."
       ],
       "description": null,
-      "prompt_image": "Hanged old man on an isolated low gibbet at the edge of a hill crest, wearing a heavy magistrate chain of office at his neck and a seal ring on his fist, head lifted and eyes open, unmistakably alive and watching the viewer, rope taut above him, glowing orange sky behind. Dark fantasy illustration, extreme backlight, one single light source, near-black silhouette with a thin orange rim of light, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "hanged old man on an isolated low gibbet, a magistrate's chain at his neck and a seal ring on his fist, head lifted and eyes open, unmistakably alive. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": null
     },
     {
@@ -1402,7 +1402,7 @@
         "Au revers de la colline, un gibet bas, à hauteur d'homme. Le pendu qui s'y balance ouvre les yeux à ton approche. Chaîne de fonction au cou, sous la corde. Un sceau au poing. Le Bailli des Landes — pendu le dernier, à la place d'honneur."
       ],
       "description": "Arrivée au gardien de zone : le Bailli pendu, qui parle encore. Vu de loin, une silhouette au bout d'une corde, sur un gibet isolé.",
-      "prompt_image": "hanged man on an isolated gallows seen from a distance across dead moorland, head upright rather than slumped, rope taut, long coat, sky nearly black, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "hanged magistrate on a low gallows at head height, chain of office at his neck under the rope, a seal ring on his fist, eyes open and alive. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_pendu_qui_parle_a.png"
     },
     {
@@ -1416,7 +1416,7 @@
         "« Approche », dit-il, et la corde grince sur chaque syllabe. « Tout ce qui entre dans mes Landes passe en jugement. Toi aussi. » Il sourit. « Surtout toi. »"
       ],
       "description": "Le gardien, à hauteur d'homme. Non-combat : il juge. Son visage de pendu qui parle, le sceau à sa ceinture.",
-      "prompt_image": "close portrait of a hanged magistrate, rope around his neck, eyes open and attentive, dried lips parted as if mid-sentence, heavy official seal hanging at his belt, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "a rope creaking taut on its beam, close on the knot and the chain of office beneath it, the head out of frame. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_pendu_qui_parle_a.png"
     },
     {
@@ -1447,7 +1447,7 @@
         "Tu marches entre deux rangs. Le sol est tassé par des allées et venues régulières — on entretient ce champ comme un jardin, et c'est ça qui serre le ventre."
       ],
       "description": null,
-      "prompt_image": "Long regular rows of low wooden grave posts receding across a bleak field, the nearest posts freshly cut and pale with crisp shallow carvings, the distant ones grey and eroded almost smooth, one whole row bearing the same repeated date, low orange sun behind the ridge. Dark fantasy illustration, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "packed earth path between two rows of stakes, the ground trodden smooth by regular tending, the foot of a stake and its bindings close in the frame. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_champ_rangees_a_d.png"
     },
     {
@@ -1461,7 +1461,7 @@
         "Il faut traverser tout le champ pour les atteindre. Tu comptes les poteaux vides en marchant — puis tu t'arrêtes de compter, parce que le compte monte plus vite que tes pas."
       ],
       "description": null,
-      "prompt_image": "Three blank new grave posts standing apart at the far end of a burial field, already carved with names but no dates, the third carving noticeably fresher and paler than the other two, turned earth at their feet, low orange sun behind them. Dark fantasy illustration, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "bare unused stakes driven into the earth, no rope on them yet, the wood still pale where it has not weathered. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_champ_poteaux_vierges_a_a.png"
     },
     {
@@ -1475,7 +1475,7 @@
         "Tu l'as repéré de loin sans savoir quoi : un défaut d'alignement, un rythme cassé. En approchant, tu comprends — il manque un poteau au milieu d'une rangée pleine, comme une dent tombée."
       ],
       "description": null,
-      "prompt_image": "One conspicuous gap in an otherwise unbroken row of grave posts, the earth in the gap old and packed and the socket carefully filled in rather than torn out, the neighbouring posts leaning slightly inward toward the empty space, low orange sun raking along the row. Dark fantasy illustration, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "gap in a full row of stakes, the socket hole left in the earth still open, its rim crumbling, like a pulled tooth. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_champ_tombe_manquante_a_c.png"
     },
     {
@@ -1489,7 +1489,7 @@
         "Entre les rangs, un vieil homme redresse un poteau qui penche, avec des gestes de jardinier. Il t'a vu venir de loin — les vivants font un bruit particulier, ici. Il ne s'interrompt pas : il t'attend au travail, comme on attend un outil."
       ],
       "description": "Événement du Champ : le Fossoyeur aux poteaux, qui grave d'avance les noms « dont c'est sûr ».",
-      "prompt_image": "old gravedigger kneeling at the base of a wooden post, carving letters into the wood with a knife, satchel of tools open beside him, back bent, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "old gravedigger straightening a leaning stake with a gardener's care, not interrupting his work, a mallet hanging from his hand. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_fossoyeur_poteaux_a.png"
     },
     {
@@ -1504,7 +1504,7 @@
         "Il avance par à-coups, tiré par des ficelles que personne ne tient. Une Fixation ratée : ni mort ni tenu. Ce qui reste de son visage n'exprime qu'une chose — l'envie féroce d'échanger sa place. Contre la tienne."
       ],
       "description": "Combat, une scène. Le Pendu Mal Fixé : un bras tendu figé en plein geste d'agrippement, la corde trop longue qui laisse les pieds toucher le sol.",
-      "prompt_image": "hanged figure whose rope is too long so its feet touch the ground, one arm outstretched and frozen mid-grab reaching toward the viewer, head tilted at a wrong angle, tattered clothes, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "hanged man standing upright on his own feet, his rope still knotted at his neck and trailing behind him, a snapped stake on the ground beside him. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_pendu_mal_fixe_a.png"
     },
     {
@@ -1538,7 +1538,7 @@
         "La poudre blanche est encore sur le seuil. Ça date de ce matin."
       ],
       "description": "La ruelle étroite du hameau : portes marquées à la craie, volets fermés, aucun chien.",
-      "prompt_image": "narrow street of an old abandoned hamlet, crooked stone houses, wooden doors marked with chalk crosses, closed shutters, wet cobblestones, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "narrow village lane of low stone houses, every shutter closed, no one in the street, chalk cross on the first door. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_landes_hameau_ruelle_b.png"
     },
     {
@@ -1552,7 +1552,7 @@
         "Dix pas dans une rue qui ne fait aucun bruit. Tu marches au milieu, d'instinct — le plus loin possible des deux rangées de portes."
       ],
       "description": null,
-      "prompt_image": "Rough chalk cross drawn on the weathered plank door of a village house, the wood worn noticeably pale at that exact spot from crosses drawn and rubbed out many times before, close framing on the door, damp stone wall around it, warm light from the lit lane behind the viewer. Dark fantasy illustration, one single light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval village, square composition, no text, no lettering, no watermark",
+      "prompt_image": "chalk cross drawn at eye height on a plank door, the white powder still loose and fresh on the doorstep below it. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_hameau_croix_craie_a_a.png"
     },
     {
@@ -1568,7 +1568,7 @@
         "Plus bas dans la rue, une femme se tient sur un pas de porte, immobile. Pas comme on prend l'air : comme on monte la garde. Tu traverses la rue vers elle."
       ],
       "description": null,
-      "prompt_image": "woman standing in the doorway of a low stone house, chalk cross drawn on the door beside her, heavy shawl gripped closed at her throat, hollow-cheeked, watching, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "woman standing motionless in a doorway, not taking the air but standing guard, arms at her sides. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_femme_au_seuil_b.png"
     },
     {
@@ -1586,7 +1586,7 @@
         "Elle resserre son châle. « Mon fils est parti par là. » Elle ne montre pas la direction — personne ici ne montre le sud avec la main. « Il entendait plus ce que je disais, à la fin. Il entendait autre chose. »"
       ],
       "description": "Une femme sur le seuil d'une maison basse, châle serré, une croix à la craie sur sa porte. Elle regarde le sud.",
-      "prompt_image": "woman standing in the doorway of a low stone house, chalk cross drawn on the door beside her, heavy shawl gripped closed at her throat, hollow-cheeked, watching, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "woman standing motionless in a doorway, not taking the air but standing guard, arms at her sides. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_femme_au_seuil_b.png"
     },
     {
@@ -1604,7 +1604,7 @@
         "Une mèche de cheveux, nouée d'un fil. « Tu lui donnes. Il saura. »"
       ],
       "description": "Elle a sorti la main de sous son châle et tend une mèche de cheveux nouée d'un fil, bras à moitié tendu, sur le même seuil. CHANGE : le bras tendu et l'objet offert dans sa main.",
-      "prompt_image": "",
+      "prompt_image": "a woman's hands drawing something small and closed out from under a shawl, held tight, offered without opening. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_femme_au_seuil_b.png"
     },
     {
@@ -1621,7 +1621,7 @@
         "Ce que tu emportes ne pèse rien. C'est la promesse qui pèse."
       ],
       "description": "Elle a repris sa place sur le seuil, mains vides, et regarde le sud — de la rue, rien ne dit qu'elle a parlé à quelqu'un. CHANGE : de nouveau immobile et les mains vides.",
-      "prompt_image": "",
+      "prompt_image": "a woman back in place on her doorstep at the end of a village street, seen from far down the road, looking south, nothing about her showing that she spoke to anyone. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_femme_au_seuil_b.png"
     },
     {
@@ -1639,7 +1639,7 @@
         "— « On ne te chasse pas. » Il le dit d'abord, comme une formule apprise. « Personne n'est chassé, ici. Mais tu descends. Ça se voit à ton pas. Et ceux qui descendent... » Il ne finit pas. Derrière lui, une femme tire un enfant à l'intérieur, sans un mot."
       ],
       "description": "Trois hommes en travers de la rue, pas armés : un bâton de marche à la main, une fourche posée contre le mur, à portée sans être brandie.",
-      "prompt_image": "three gaunt villagers standing abreast in a narrow village street, one old man at the centre speaking, a walking staff in one hand, a pitchfork leaning against a wall nearby, shutters closing behind them, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "three villagers standing across a lane, unarmed — a walking staff, a pitchfork leaning on a wall within reach — the eldest at the centre doing the talking. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_juge_de_cendre_c.png"
     },
     {
@@ -1656,7 +1656,7 @@
         "— « Trois choses, et tu dors sous un toit. Tu ne parles pas aux pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et tu pars avant la troisième aube. »"
       ],
       "description": "La paume ouverte et vide du vieux, tendue à hauteur de poitrine pour qu'on la regarde — on jure sur rien.",
-      "prompt_image": "close view of an old man's open empty palm held out at chest height, weathered skin, the blurred faces of two other villagers behind him, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "an old open palm held out flat and empty, offered to be looked at rather than shaken. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_doyenne_b.png"
     },
     {
@@ -1687,7 +1687,7 @@
         "Tu es entré. Personne ne t'a souhaité la bienvenue, et pourtant tous savaient déjà que tu venais."
       ],
       "description": "La rue qui s'ouvre devant toi, et les volets qui se ferment un par un, un peu en avance sur ton pas.",
-      "prompt_image": "",
+      "prompt_image": "narrow village lane of low stone houses, every shutter closed, no one in the street, chalk cross on the first door. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_landes_hameau_ruelle_b.png"
     },
     {
@@ -1705,7 +1705,7 @@
         "Il ne t'invite pas chez lui. Personne n'invite personne. Il te mène à la grange, au bout de la rue — la seule porte du hameau qui n'a pas de marque à la craie. Pas encore."
       ],
       "description": "Le vieux t'a trouvé dans la ruelle et se tient à deux pas, calme, sans barrer le passage.",
-      "prompt_image": "",
+      "prompt_image": "narrow village lane of low stone houses, every shutter closed, no one in the street, chalk cross on the first door. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_landes_hameau_ruelle_b.png"
     },
     {
@@ -1723,7 +1723,7 @@
         "La porte se ferme. Puis le bruit que tu attendais sans le savoir : une barre qu'on pose. Dehors."
       ],
       "description": "Intérieur de grange, la nuit : une lanterne posée au sol, la paille, la barre de porte posée DEHORS, des bâtons de comptage sur les poutres.",
-      "prompt_image": "interior of an old barn at night, single oil lamp on the floor, straw bedding, heavy wooden door with iron fittings, tally marks carved on beams, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "clean straw and a used blanket laid on a barn floor, a short-wicked lamp set down beside them, the barn door shut in the background. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_landes_hameau_grange_a.png"
     },
     {
@@ -1737,7 +1737,7 @@
         "Tu prends la lampe et tu fais le tour, lentement, en te tenant loin des murs — le vieux réflexe de qui ne veut pas être une silhouette derrière des planches."
       ],
       "description": null,
-      "prompt_image": "Tally marks cut into a heavy roof beam at head height inside a barn, several separate series of scratched strokes, the last series stopping at only two marks, lit from below by a single lantern standing on the floor out of frame, straw dust drifting in the light, everything beyond the small pool of light crushed to black. Dark fantasy illustration, one single warm light source from below, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval interior, square composition, no text, no lettering, no watermark",
+      "prompt_image": "underside of barn roof beams seen by lamplight from below, rows of tally notches cut along one beam, the wood black with age. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_hameau_grange_poutres_a_d.png"
     },
     {
@@ -1753,7 +1753,7 @@
         "Le hameau ne dort pas comme un village. Pas de rires, pas de disputes, pas d'enfant qui pleure. Juste des pas, parfois, qui font une ronde que personne n'a annoncée."
       ],
       "description": "La grange dans le noir, vue depuis la paille : sous la porte fermée, une bande de lumière que des pieds coupent en passant. CHANGE : la lanterne est éteinte, il ne reste que la fente sous la porte.",
-      "prompt_image": "",
+      "prompt_image": "clean straw and a used blanket laid on a barn floor, a short-wicked lamp set down beside them, the barn door shut in the background. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_landes_hameau_grange_a.png"
     },
     {
@@ -1770,7 +1770,7 @@
         "— « Aujourd'hui, on fixe personne. » Il regarde ailleurs. « Alors pars pendant que c'est vrai. »"
       ],
       "description": "L'aube grise, la porte relevée : le vieux seul, un quignon de pain dur tendu vers toi, le regard ailleurs. CHANGE : lumière de petit matin, la barre est levée, il tend quelque chose.",
-      "prompt_image": "",
+      "prompt_image": "an old open palm held out flat and empty, offered to be looked at rather than shaken. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_doyenne_b.png"
     },
     {
@@ -1786,7 +1786,7 @@
         "— « Si tu l'entends... » Il cherche ses mots. Il les trouve : « Réponds pas. C'est tout ce qu'on sait. C'est tout ce qu'on a jamais su. »"
       ],
       "description": "Le portillon sud, ouvert par le plus jeune. Les deux escortes marchent à un pas de distance de chaque côté ; le vieux reste en arrière. CHANGE : on est dehors, au portillon — plus dans la grange.",
-      "prompt_image": "",
+      "prompt_image": "village seen from its southern gate at dawn, roofs packed low behind a stone wall, the gate standing open. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_hameau_dense_b.png"
     },
     {
@@ -1801,7 +1801,7 @@
         "La nuit des Landes n'attaque pas. Elle compte. Chaque heure a son bruit : la corde, les pas, le chant du sud. Au matin, tu n'es pas reposé — tu es inventorié."
       ],
       "description": "Variante de Halte pour qui a refusé le Serment : la nuit dehors, contre un muret, aucune porte ouverte.",
-      "prompt_image": "man sitting against a low dry-stone wall outside a dark village at night, knees drawn up, no fire, closed shutters behind him, empty street, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "low stone field wall on open moor at night, a bedroll pressed against its north side, no shelter of any kind. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_hameau_dense_c.png"
     },
     {
@@ -1832,7 +1832,7 @@
         "Tu fais le tour du tas. Il est haut comme un homme et régulier sur toute sa longueur — un travail de plusieurs jours, fait par quelqu'un qui n'était pas pressé."
       ],
       "description": null,
-      "prompt_image": "Close view of a long neat man-high stack of dressed stones at the foot of a ruined tower, laid course by course by careful hands, every carved face turned down against the earth, one stone tipped over to reveal a fragment of an engraved name. Dark fantasy illustration, low raking light, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "long neat stack of dressed stones at the foot of a tower, laid course by course, every carved face turned down against the earth, one stone tipped over to show a fragment of an engraved name. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": null
     },
     {
@@ -1846,7 +1846,7 @@
         "Les marches sont creusées en leur milieu, usées par des passages quotidiens. Tu montes les trois volées qui tiennent. La dernière s'arrête sur le ciel."
       ],
       "description": null,
-      "prompt_image": "Interior stone stair inside a broken tower seen from the last surviving step, treads hollowed in their middle by decades of daily use, the flight stopping dead on open sky, the clean unweathered break of the stonework in the foreground, a distant line of gallows on a ridge visible straight ahead through the opening. Dark fantasy illustration, hard backlight from the sky, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "last surviving step of a stone stair inside a broken tower, the tread hollowed in its middle by daily use, the stonework breaking off clean onto open sky. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": null
     },
     {
@@ -1860,7 +1860,7 @@
         "Une seule ouverture reste intacte, au sud, à hauteur de poitrine. Le rebord est poli comme une rampe."
       ],
       "description": null,
-      "prompt_image": "Narrow arrow slit in a thick stone wall at chest height, its sill worn smooth like a handrail, hundreds of tally notches cut into the embrasure in groups of five, a single-lens copper spyglass wedged in a crack of the stonework as if set down to be picked up tomorrow. Dark fantasy illustration, single shaft of light entering through the slit, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "narrow arrow slit in thick stonework at chest height, its sill worn smooth like a handrail, hundreds of tally notches in groups of five cut into the embrasure, a single-lens copper spyglass wedged in a crack. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": null
     },
     {
@@ -1905,7 +1905,7 @@
         "Au bout de la rangée, un étal différent : bric-à-brac d'ailleurs, objets qui n'ont rien à faire dans une lande. Le Colporteur te regarde venir de loin — et te reconnaît. C'est impossible. Il te fait signe quand même, comme à un client de longue date."
       ],
       "description": "Événement du Marché : le Colporteur, le seul qui parle encore, et le Rebouteux derrière lui.",
-      "prompt_image": "hunched pedlar with an enormous frame pack covered in hanging goods, standing in an empty market square, one hand raised in greeting, wide fixed smile, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "hunched pedlar behind a stall of goods that belong nowhere near a moor, one hand raised in greeting, a wide fixed smile of recognition. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_colporteur_b.png"
     },
     {
@@ -1936,7 +1936,7 @@
         "Tu recules jusqu'au muret d'en face. Il faut de la distance pour la voir entière — c'est une trace, pas un détail."
       ],
       "description": null,
-      "prompt_image": "Stone windmill tower with no sails seen from a distance and from below, four pale unweathered bands radiating from the cap across the stonework in the shape of a cross where the vanes once shielded the stone, the rest of the wall darkened by years of wind, bleak stippled sky, wide framing with the tower small in the frame. Dark fantasy illustration, extreme backlight, one single light source, near-black silhouette against a glowing orange sky, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "squat round stone tower with no blades and no vanes, four pale unweathered bands radiating from its bare cap in the shape of a cross, seen from across a low wall. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_moulin_croix_ombres_a_d.png"
     },
     {
@@ -1950,7 +1950,7 @@
         "Quelque chose a bougé là-haut — tu en jurerais. Tu approches sans quitter l'ouverture des yeux, ce qui est exactement la mauvaise façon d'approcher d'une porte."
       ],
       "description": null,
-      "prompt_image": "Small empty dormer opening above the door of a stone mill, its inner sill conspicuously clean and free of dust unlike every surface around it, the opening itself pitch black, worn stonework, low orange light raking across the wall from the side. Dark fantasy illustration, one single light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "small dark loft opening high in rough stonework, its frame splintered, nothing visible inside it. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_moulin_lucarne_a_b.png"
     },
     {
@@ -1964,7 +1964,7 @@
         "Tu pousses du plat de la main, lentement, en laissant à ce qu'il y a dedans le temps de décider s'il veut être vu."
       ],
       "description": null,
-      "prompt_image": "Inside a derelict windmill, a straw pallet made up with squared-off care, a chipped clay pot holding fresh sprigs of heather beside it, everything else rotting and abandoned, nobody present, a single shaft of orange light falling from an opening above onto the pallet. Dark fantasy illustration, one single light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval interior, square composition, no text, no lettering, no watermark",
+      "prompt_image": "inside of a disused mill, a millstone shoved aside and bedding laid on the floor beside it, a hand pushing a plank door open into the dark. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_moulin_interieur_a_d.png"
     },
     {
@@ -2009,7 +2009,7 @@
         "Tu remontes la nef courte. L'odeur de chanvre vieux prend à la gorge à mesure — une odeur grasse, presque animale, qui n'a rien d'une odeur d'église."
       ],
       "description": null,
-      "prompt_image": "Chapel wall hung with dozens of short cut ropes fixed in neat vertical rows, each carrying a small pale paper tag, arranged like relics rather than trophies, one rope hanging noticeably askew as though just disturbed, lit from behind by a bright arched window so the ropes read as dark verticals with orange rims. Dark fantasy illustration, extreme backlight, one single light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval interior, square composition, no text, no lettering, no watermark",
+      "prompt_image": "old hemp ropes hanging close together down a stone wall from ceiling to floor, greasy with age, each one ending in a finished knot. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_chapelle_mur_cordes_a_d.png"
     },
     {
@@ -2023,7 +2023,7 @@
         "Tu contournes les bancs absents — on les a brûlés, sans doute — jusqu'à la masse de pierre couchée sur le flanc. Personne ne l'a redressée. Personne ne l'a emportée non plus."
       ],
       "description": null,
-      "prompt_image": "Toppled stone altar lying on its side on a chapel floor, the hollow space beneath it now empty, a long coiled shape clearly missing from the grey dust and its clean outline still fresh, hanging ropes framing the shot on both sides, warm light across the flagstones from a bright arch behind. Dark fantasy illustration, one single light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval interior, square composition, no text, no lettering, no watermark",
+      "prompt_image": "block of altar stone lying on its side on a flagstone floor, never righted and never taken away, dust settled along its upper edge. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_chapelle_autel_a_c.png"
     },
     {
@@ -2037,7 +2037,7 @@
         "Près de l'entrée, la chaise est tournée vers le mur des cordes — pas vers la porte. On s'assied ici pour regarder les reliques, pas pour surveiller qui entre."
       ],
       "description": null,
-      "prompt_image": "Plain wooden chair standing in a chapel among hanging ropes, an unfinished braiding work resting on its seat, three strands of new pale hemp half-plaited and clamped at mid-length, a coil of raw hemp on the flagstones beside it, patient regular craftsmanship, warm light from a bright arch behind. Dark fantasy illustration, one single light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval interior, square composition, no text, no lettering, no watermark",
+      "prompt_image": "a chair turned to face a wall, a half-plaited rope laid across its seat with the work stopped mid-braid. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_chapelle_ouvrage_a_d.png"
     },
     {
@@ -2052,7 +2052,7 @@
         "— « Choisis ton brin. » Sa voix est plate, professionnelle. « Tout le monde finit par en avoir besoin. » Derrière elle, dans une niche à part, sous verre : une corde coupée net, sans nom. La seule de toute la chapelle qui n'a pas tenu."
       ],
       "description": "Événement de la Chapelle : la Veuve aux Cordes, assise, qui refait sans fin le même nœud. Derrière elle, sous verre, la corde coupée sans nom.",
-      "prompt_image": "old woman in black seated on a chair, tying and untying the same knot in a short length of rope, eyes down, a glass case behind her holding one cut rope, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "a woman's hands endlessly retying the same knot in her lap, black sleeves, the rope worn shiny at that one spot. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_veuve_cordes_a.png"
     },
     {
@@ -2083,7 +2083,7 @@
         "À ton approche, le rythme change. Plus vite, plus fort — plus personne de poli. Le cadenas saute sur son anneau à chaque série, et les planches, au dernier coup, ont bougé. Franchement bougé."
       ],
       "description": "Événement du Puits (scène chronométrée) : les Mains du Puits, qui sortent entre les planches.",
-      "prompt_image": "pale emaciated hands reaching up through the gaps between nailed planks over a well mouth, fingers splayed and grasping, many more than two hands, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "hands forcing up from under the nailed planks of a sealed well, fingers through the gap, a padlock jumping on its ring. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_mains_du_puits_a.png"
     },
     {
@@ -2113,7 +2113,7 @@
         "Le chien se lève du seuil sans aboyer. Gris, trop grand, le poil usé aux endroits d'un harnais qu'il ne porte plus. Son maître pend à la colline — mais l'ordre, lui, n'a jamais été levé. Personne n'entre. Il te le dit d'un seul regard."
       ],
       "description": "Combat : le Chien du Bailli, qui garde encore une maison où il n'y a plus personne.",
-      "prompt_image": "gaunt long-legged hound standing in front of a bricked-up doorway, ribs showing, head low, lips drawn back, a broken chain still on its collar, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "large grey dog rising from a doorstep without barking, coat worn bare where a harness used to sit, blocking the way. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_chien_du_bailli_b.png"
     },
     {
@@ -2144,7 +2144,7 @@
         "Trois pas de dalle inégale, et la feuille se précise : du papier épais, jauni, cloué aux quatre coins par quelqu'un qui ne voulait pas qu'on la décroche."
       ],
       "description": null,
-      "prompt_image": "Single sheet of parchment nailed by four nails to a bare stone wall inside a dim low chamber, edges curling, dense handwriting suggested as texture and completely unreadable, raking light from a bright arched opening out of frame grazing the stonework. Dark fantasy illustration, one single light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval interior, cold damp stone, square composition, no text, no lettering, no watermark",
+      "prompt_image": "thick yellowed sheet of paper nailed at its four corners to a stone wall, the nails driven deep, the edges of the paper curling. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_tribunal_ordonnance_a_c.png"
     },
     {
@@ -2158,7 +2158,7 @@
         "La chaire est haute — il faut lever les yeux, et c'est le but. Tu montes la marche unique qui y mène, celle que le Bailli montait chaque fois qu'il allait dire la même phrase."
       ],
       "description": null,
-      "prompt_image": "Heavy stone lectern in a village court chamber with a large ledger lying open on it, ruled columns of entries suggested as texture, many lines struck through, the bright arched opening of the room glowing directly behind the lectern so the book is lit from behind, stone floor. Dark fantasy illustration, extreme backlight, one single light source, near-black silhouette against a glowing orange arch, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, matte painting, grim medieval interior, square composition, no text, no lettering, no watermark",
+      "prompt_image": "high wooden pulpit desk seen from its single step, a heavy ledger left open on it, the wood worn pale where hands gripped the edge. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_tribunal_chaire_a_c.png"
     },
     {
@@ -2172,7 +2172,7 @@
         "Tu redescends vers les bancs. Trois rangs de bois brut, et cette disposition que tu reconnais sans l'avoir apprise : les accusés devant, les témoins de côté, le hameau derrière."
       ],
       "description": null,
-      "prompt_image": "Two low stone and timber benches facing each other in an empty court chamber, the nearer one worn smooth and pale in the middle by generations of gripping hands and gnawed at its edges, rows of tally notches cut into the side of the other, dust in the air, light grazing across from a bright opening out of frame. Dark fantasy illustration, one single light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval interior, square composition, no text, no lettering, no watermark",
+      "prompt_image": "three rows of rough wooden benches in an empty stone hall, the front bench polished smooth by use, the others barely worn. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_tribunal_bancs_a_c.png"
     },
     {
@@ -2187,7 +2187,7 @@
         "Puis il fait comme si de rien : il s'installe au banc des témoins, ouvre son cahier, et se met à copier. L'Écrivain public. Il ne lève pas les yeux — mais sa plume, elle, a ralenti."
       ],
       "description": "Événement du Tribunal : l'Écrivain public, qui entre, te voit à la chaire, et se met à copier sans lever les yeux.",
-      "prompt_image": "small dry clerk seated on a witness bench, open ledger on his knees, quill in hand, inkpot clutched against his chest, eyes down, mid-stroke, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "small dry man frozen in a doorway holding a quill and inkpot clutched to his chest, caught seeing something he should not have seen. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_ecrivain_public_d.png"
     },
     {
@@ -2204,7 +2204,7 @@
         "Pas des chiens : trop patients. Pas des loups : trop organisés. La plus grande s'assoit — le signal. Le cercle se met à tourner, lentement, en se resserrant d'un pas par tour."
       ],
       "description": "Six silhouettes couleur de bruyère morte, immobiles aux six points d'un cercle dont tu es le centre.",
-      "prompt_image": "six lean grey hounds standing motionless in a wide circle on open moorland, seen from the centre, evenly spaced, all heads turned inward toward the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "six lean grey dogs the colour of dead heather, standing still and evenly spaced, already surrounding the viewer. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_meute_grise_c.png"
     },
     {
@@ -2219,7 +2219,7 @@
         "La meneuse s'avance seule d'un pas, tête basse, et te fixe. Chez eux, c'est une question. La dernière avant la charge — ou avant autre chose. À toi d'y répondre."
       ],
       "description": "Le cercle est rompu : la meute regroupée en croissant à distance de lame, et la meneuse avancée seule d'un pas, tête basse, qui te fixe. CHANGE : plus de cercle autour de toi — un croissant devant, une bête détachée en avant.",
-      "prompt_image": "",
+      "prompt_image": "grey dogs regrouped at blade's distance in a crescent, more cautious than before, the leader one step ahead of the others. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_meute_grise_c.png"
     },
     {
@@ -2250,7 +2250,7 @@
         "Tu contournes la mare par la droite pour atteindre le seul endroit où la boue est tassée. Le sol y est dur comme un seuil de maison."
       ],
       "description": null,
-      "prompt_image": "Two knee shaped hollows worn deep into the mud at the very edge of a still black pool, remade by hundreds of people in the same exact spot, clawed finger marks pressed into the dried mud beside them, reeds silhouetted at the side, low orange sun reflected on the flat water behind. Dark fantasy illustration, extreme backlight, one single light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "trodden bank at the edge of still water, the mud packed hard as a doorstep, the last footprints stopping exactly at the waterline. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_mare_berge_a_c.png"
     },
     {
@@ -2264,7 +2264,7 @@
         "Tu t'agenouilles dans les creux. Ils sont à ta taille, évidemment. La croyance dit : le reflet de qui entend la voix est en retard."
       ],
       "description": null,
-      "prompt_image": "Perfectly still black water seen from directly above at close range, no ripples at all, a human reflection looking back up out of it with the reflected gaze lifted a fraction later than it should be, the orange disc of the low sun also reflected at the edge of the frame. Dark fantasy illustration, one single reflected light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, eerie, square composition, no text, no lettering, no watermark",
+      "prompt_image": "still black water filling the frame, a single reflected silhouette in it that does not quite match the movement above, ripples starting a beat too late. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": null
     },
     {
@@ -2278,7 +2278,7 @@
         "Tu écartes les roseaux à deux mains. Ils sont noirs jusqu'à la racine et ne cassent pas — ils plient et reviennent."
       ],
       "description": null,
-      "prompt_image": "Small tarnished pocket mirror lying among reeds at the edge of a pond, cracked straight across the middle exactly where a face would be, dull metal catching the only light in the frame from the low orange sun, dark mud and reed stems around it. Dark fantasy illustration, one single light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "cracked pocket mirror caught among black reeds at the water's edge, its backing tarnished, the reeds bending without breaking. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_mare_miroir_a_b.png"
     },
     {
@@ -2324,7 +2324,7 @@
         "Tu entres dans un rang. L'odeur devrait arriver là — pas de pourriture : pas d'odeur du tout. Un verger qui ne sent rien."
       ],
       "description": null,
-      "prompt_image": "Close view of round heavy ash grey fruit hanging from the bare black branches of a gnarled orchard tree, skin flawless and matte, unnaturally dense looking, planted orchard rows receding behind them, low orange sun burning through the branches. Dark fantasy illustration, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "single hanging fruit close in the frame, its skin ashen and split, dry grey dust spilling from the split, black branch above it. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_verger_fruits_a_c.png"
     },
     {
@@ -2338,7 +2338,7 @@
         "Au bout du rang, un arbre manque. Sa souche est nette, sciée à hauteur de genou, et le bois de coupe est gris."
       ],
       "description": null,
-      "prompt_image": "Cleanly felled tree stump at the end of an orchard row, its growth rings regular for decades then abruptly tight and black and illegible at the outer edge, the axe cut smooth and deliberate, dead grey leaves scattered around it, low orange light raking across the cut face. Dark fantasy illustration, one single raking light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "knee-high sawn stump at the end of an orchard row, the cut face flat and grey, the saw marks still legible across it. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_verger_souche_a_c.png"
     },
     {
@@ -2354,7 +2354,7 @@
         "Tu remontes les rangs vers eux. Ils se relaient sur la même bêche sans se parler, du geste réglé des gens qui font la même chose ensemble depuis toujours."
       ],
       "description": null,
-      "prompt_image": "elderly couple digging side by side between orchard rows, both bent low, one spade each, not looking at one another, black twisted branches above them, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "elderly couple sharing one spade between orchard rows, taking turns without speaking, the settled rhythm of people who have done this together for decades. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_epoux_verger_a.png"
     },
     {
@@ -2369,7 +2369,7 @@
         "Quand tu le ramasses, il est encore chaud — comme une chose qui vient de cesser d'essayer."
       ],
       "description": "Événement du Verger : le fruit qui tombe encore chaud.",
-      "prompt_image": "",
+      "prompt_image": "a single fallen fruit lying in the dirt of an orchard row, picked up in a bare hand, its skin ashen and still warm. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_verger_noir_d.png"
     },
     {
@@ -2387,7 +2387,7 @@
         "L'homme continue de bêcher. Il n'a pas levé la tête. Il compte les coups de bêche à voix basse."
       ],
       "description": "Les Époux, deux silhouettes courbées qui creusent entre les rangs du verger noir sans se parler.",
-      "prompt_image": "elderly couple digging side by side between orchard rows, both bent low, one spade each, not looking at one another, black twisted branches above them, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "elderly couple sharing one spade between orchard rows, taking turns without speaking, the settled rhythm of people who have done this together for decades. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_epoux_verger_a.png"
     },
     {
@@ -2404,7 +2404,7 @@
         "Tu sais ce que tu as : rien. Tu es arrivé ici comme tout le monde y arrive — les mains vides et mort."
       ],
       "description": "L'un des deux s'est redressé entre les rangs et te tend les mains ouvertes et vides, en demande. CHANGE : ils ne sont plus tous deux courbés — l'un est debout, face à toi.",
-      "prompt_image": "",
+      "prompt_image": "two old hands held out open toward the viewer, palms up, begging without words for anything brought from outside. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_epoux_verger_a.png"
     },
     {
@@ -2421,7 +2421,7 @@
         "Longtemps après, tu entends encore le compte à voix basse, régulier comme une corde qui grince : c'est le bruit que fait l'espoir quand il refuse de savoir."
       ],
       "description": "Les deux silhouettes de nouveau courbées, vues de dos, qui s'éloignent entre les rangs. CHANGE : on les quitte — vus de dos, repris au travail.",
-      "prompt_image": "",
+      "prompt_image": "the backs of two old people bent to their work between orchard rows, seen from behind as one walks away from them, heads never turning. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_epoux_verger_a.png"
     },
     {
@@ -2452,7 +2452,7 @@
         "Tu longes le mur sur quelques pas, la tête levée, à suivre la ligne des sommets taillés."
       ],
       "description": null,
-      "prompt_image": "Close view of a palisade of blackened sharpened logs, the points unmistakably angled inward toward the viewer's side of the wall rather than outward, rope lashings binding them, damp scarred wood, low orange sky burning in the narrow gaps between the logs. Dark fantasy illustration, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "line of log palisade tops seen from directly below, every point sharpened and angled inward, toward the inside of the wall. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_palissade_rondins_a_c.png"
     },
     {
@@ -2466,7 +2466,7 @@
         "Tu poses la main sur le bois du portillon. Il est tiède, ce qui n'a aucun sens sous ce crépuscule."
       ],
       "description": null,
-      "prompt_image": "Small wooden gate set into a palisade of blackened logs, one single heavy iron bolt fitted on the north side, the planks around the bolt deeply scratched at hand height by human fingers that wanted through, worn threshold, low orange light leaking through the seams of the gate. Dark fantasy illustration, one single light source, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "small plank gate in a log wall, a hand flat on the wood, deep claw scratches raked down the boards on the inner face. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_palissade_portillon_a_b.png"
     },
     {
@@ -2482,7 +2482,7 @@
         "Il est sorti de sa niche avant que tu aies décidé d'y aller. Tu marches vers lui parce qu'il n'y a plus vraiment le choix."
       ],
       "description": null,
-      "prompt_image": "Night watchman sitting in a narrow plank sentry box built against a log palisade, barely wide enough for him and his lantern, the lantern on the ground at his feet as the only light source, watching the viewer approach with the patience of a man who saw them coming long ago. Dark fantasy illustration, one single warm light source from below, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
+      "prompt_image": "night watchman sitting in a narrow plank sentry box built against a log wall, his lantern on the ground at his feet as the only light, watching the viewer with the patience of someone who saw them coming long ago. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": null
     },
     {
@@ -2500,7 +2500,7 @@
         "— « Tu descends. Évidemment que tu descends. On vient pas admirer ma palissade. »"
       ],
       "description": "Le Veilleur dans sa guérite de planches, une lanterne pendue à un clou au-dessus de lui.",
-      "prompt_image": "old watchman inside a plank sentry box, rusty lantern hanging on a nail beside him, blanket over his shoulders, one eye milky, looking out through the opening, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "rusted lantern standing on the floor of a narrow plank sentry box, the only light source, a bowl of cold soup set down far from it. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "objet_lanterne_rouillee_guerite.png"
     },
     {
@@ -2518,7 +2518,7 @@
         "Ses yeux brillent d'une faim que la soupe du gamin ne nourrit pas. « Raconte-moi comment c'était, la dernière chose que t'as vue. Avant. » Il te demande ta mort. C'est la seule histoire du dehors que tu possèdes encore."
       ],
       "description": "Il a décroché sa lanterne et la tend à moitié, suspendue entre vous deux, le visage éclairé par en dessous. CHANGE : la lanterne a quitté son clou et devient le centre de l'image.",
-      "prompt_image": "",
+      "prompt_image": "a weathered hand holding out a rusted lantern by its ring, half offered, the wick visible through the glass. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "objet_lanterne_rouillee.png"
     },
     {
@@ -2535,7 +2535,7 @@
         "— « Je note tout le monde », dit-il sans lever les yeux. « Comme ça, si un jour quelqu'un remonte... je saurai qui c'était. » Il sourit à sa planche. « Trente ans de descentes. La colonne des retours est toute neuve. »"
       ],
       "description": "Il note ton passage sur une planche clouée dans sa guérite, sans lever les yeux ; le portillon sud est ouvert derrière lui. CHANGE : le portillon est ouvert et il écrit — la lanterne n'est plus dans ses mains.",
-      "prompt_image": "",
+      "prompt_image": "a hand chalking a mark onto a plank board inside a sentry box, a row of earlier marks beside it. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "objet_lanterne_rouillee.png"
     },
     {
@@ -2549,7 +2549,7 @@
         "Sur le chemin de ronde, un vieux soldat regarde vers le sud. Et en contrebas, déjà loin de l'autre côté, un homme descend le chemin d'un pas égal, sans bagage, sans se retourner. Le Veilleur ne le quitte pas des yeux. « Encore un Appelé », dit-il sans se retourner. « On ne les rattrape pas. On les compte. »"
       ],
       "description": "Événement de la Palissade : l'Appelé, toujours vu de dos, qui marche vers la Descente sans se retourner.",
-      "prompt_image": "man seen from behind walking away toward a dark gap in a wooden palisade, arms loose at his sides, head level, never turning, path descending beyond the gate, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "man walking away down a road, seen from behind, no baggage, never turning round, an even unhurried step. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "monstre_appele_descente.png"
     },
     {
