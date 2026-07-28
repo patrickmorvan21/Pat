@@ -196,5 +196,9 @@
  *           passif rare, la Lunette du guetteur.
  *           + FlammeTramee : flamme pixel art procédurale (automate de
  *           chaleur + seuillage de Bayer), deux couleurs, aucun asset.
+ *   1.27.1 — Nouvelle image des Potences du cercle (Colline aux Gibets) :
+ *           plan rapproché sous les mâts, nœuds coulants visibles. L'ancienne
+ *           était une vue large, sans une seule corde — alors que le texte
+ *           fait entrer le héros DANS le cercle.
  */
-export const APP_VERSION = "1.27.0";
+export const APP_VERSION = "1.27.1";
