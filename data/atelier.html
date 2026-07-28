@@ -858,8 +858,20 @@ function ouvrirFiche(id){
     disposer(lieuCourant); ouvrirFiche(id);
   };
   document.getElementById("fcopy").onclick=()=>{
-    navigator.clipboard.writeText(document.getElementById("fprompt").value)
-      .then(()=>{const b=document.getElementById("fcopy");b.textContent="Copié ✓";setTimeout(()=>b.textContent="Copier le prompt",1400);});
+    const b=document.getElementById("fcopy");
+    const prompt=document.getElementById("fprompt").value.trim();
+    // Le bouton ne doit jamais copier du vide en disant « Copié ✓ » : sans
+    // prompt écrit, on renvoie une demande claire, que je n'ai qu'à traiter.
+    const texte = prompt
+      ? prompt
+      : `PACTUM — image à refaire pour « ${n.nom} » (${n.id}).\n`+
+        `Aucun prompt n'est encore écrit pour cet écran. `+
+        (n.description ? `Ce qu'on doit voir : ${n.description}\n` : "")+
+        `Texte joué :\n${(n.texte||"—")}`;
+    navigator.clipboard.writeText(texte).then(()=>{
+      b.textContent = prompt ? "Copié ✓" : "Demande copiée ✓";
+      setTimeout(()=>b.textContent="Copier le prompt",1800);
+    });
   };
   document.getElementById("fleo").onclick=()=>window.open("https://app.leonardo.ai/image-generation","_blank");
   const dz=document.getElementById("fdrop");

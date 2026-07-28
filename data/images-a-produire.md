@@ -587,6 +587,14 @@ crushed blacks, high contrast, two-tone monochrome-friendly, strong readable
 shapes, square composition, no text, no lettering, no watermark
 ```
 
+### `monstre_corbeaux_du_compte_b.png` — « Les corbeaux, sur la traverse »
+Image DÉJÀ validée et en jeu ; le prompt est noté pour pouvoir la refaire à
+l'identique si besoin. Le nombre de corbeaux est dit par le texte, jamais par
+l'image — n'essaie pas de le faire coller au compte du joueur.
+```
+Row of black crows perched shoulder to shoulder along the crossbeam of a gallows on a bare ridge, all facing the same way, one of them turned the wrong way as if keeping a place. Dark fantasy illustration, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark
+```
+
 ---
 
 # Récapitulatif
