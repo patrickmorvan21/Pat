@@ -151,14 +151,21 @@
   #brief .ba{display:flex;gap:9px;margin-top:12px;align-items:center}
   #brief .note{font-size:10px;color:var(--blanc-50);margin-left:auto}
 
-/* ── régions (le Hameau) ───────────────────────────────────────────────── */
-.lieuCard{position:static}
-.regionBox{border:1px dashed var(--blanc-20);padding:14px;display:flex;
-  flex-direction:column;gap:12px;max-width:760px}
-.regTitre{font-size:13px;letter-spacing:1px;display:flex;align-items:baseline;gap:12px}
+/* ── CARTE — les lieux sont POSÉS, pas empilés ────────────────────────────
+   Chaque lieu porte un x/y dans data/zones/<zone>.json. Une région (le
+   Hameau) n'a pas de position propre : son cadre est le rectangle qui
+   ENGLOBE ses lieux, recalculé à chaque rendu — comme ça, déplacer un lieu
+   du village déforme le cadre au lieu de le laisser mentir. */
+#carteInner{cursor:grab}
+#carteInner.pan{cursor:grabbing}
+.lieuCard{position:absolute;user-select:none}
+.lieuCard.drag{cursor:grabbing;z-index:9;box-shadow:0 0 0 1px var(--blanc)}
+.regionBox{position:absolute;border:1px dashed var(--blanc-20);pointer-events:none;z-index:0}
+.regTitre{position:absolute;top:-11px;left:14px;background:var(--charbon);
+  padding:0 8px;font-size:12px;letter-spacing:1px;white-space:nowrap;
+  display:flex;align-items:baseline;gap:10px}
 .regSub{font-size:10px;color:var(--blanc-50);letter-spacing:1px;text-transform:uppercase}
 .regTete{border-color:var(--orange)!important}
-.regGrille{display:flex;flex-wrap:wrap;gap:12px}
 </style>
 </head>
 <body>
@@ -170,6 +177,7 @@
   <button class="tbtn" id="bCarte">Carte</button>
   <button class="tbtn" id="bJournal">Journal</button>
   <button class="tbtn act on" id="bBrief">⌘ Briefer Claude Code</button>
+  <button class="tbtn" id="bPos" title="Renvoie la disposition de la carte" hidden>Copier les positions</button>
   <button class="tbtn" id="bExport" title="Filet de sécurité — les écritures sont déjà sur disque">Export de secours</button>
 </div>
 
@@ -408,39 +416,131 @@ const carteInner=document.getElementById("carteInner");
    faisait la première version, ment sur ce qu'est le Hameau. */
 function renduCarte(){
   carteInner.innerHTML="";
-  const carte=(l,i)=>{
+  const carte=(l)=>{
     const ns=D.noeuds.filter(n=>n.lieu===l.id);
     const manquantes=ns.filter(n=>!n.image).length;
     const el=document.createElement("div");
     el.className="lieuCard"+(manquantes?" pb":"");
+    el.dataset.lieu=l.id;
+    el.style.left=(l.x||0)+"px"; el.style.top=(l.y||0)+"px";
     el.innerHTML=`<div class="th"></div><div class="bd">
       <div class="nm">${l.nom}</div>
       <div class="sb">${ns.length?ns.length+" nœud"+(ns.length>1?"s":""):"aucune scène écrite"}</div>
       ${manquantes?`<div class="al">${manquantes} sans image</div>`:""}</div>`;
     poseImage(el.querySelector(".th"), l.image, l.id);
-    el.onclick=e=>{e.stopPropagation();ouvrirLieu(l.id);};
+    if(l.region) el.classList.add("regTete");
+    attacherDeplacement(el, l);
     return el;
   };
-  const dedans=new Set(D.lieux.filter(l=>l.dans).map(l=>l.id));
-  D.lieux.filter(l=>!l.dans).forEach(l=>{
-    if(l.region){
-      const contenus=D.lieux.filter(x=>x.dans===l.id);
-      const box=document.createElement("div");
-      box.className="regionBox";
-      const nsr=D.noeuds.filter(n=>n.lieu===l.id);
-      box.innerHTML=`<div class="regTitre">${l.nom}
-        <span class="regSub">région · ${contenus.length} lieux · ${nsr.length} scènes propres</span></div>`;
-      const tete=carte(l); tete.classList.add("regTete"); box.appendChild(tete);
-      const grille=document.createElement("div"); grille.className="regGrille";
-      contenus.forEach(c=>grille.appendChild(carte(c)));
-      box.appendChild(grille);
-      carteInner.appendChild(box);
-    } else {
-      const el=carte(l); el.classList.add("libre");
-      carteInner.appendChild(el);
-    }
+
+  // Les cadres de région d'abord : ils passent DERRIÈRE les cartes.
+  D.lieux.filter(l=>l.region).forEach(l=>{
+    const membres=[l, ...D.lieux.filter(x=>x.dans===l.id)];
+    const box=document.createElement("div");
+    box.className="regionBox";
+    const M=26;                       // air entre le cadre et les cartes
+    const x0=Math.min(...membres.map(m=>m.x||0))-M;
+    const y0=Math.min(...membres.map(m=>m.y||0))-M;
+    const x1=Math.max(...membres.map(m=>(m.x||0)+CARTE_L))+M;
+    const y1=Math.max(...membres.map(m=>(m.y||0)+CARTE_H))+M;
+    box.style.left=x0+"px"; box.style.top=y0+"px";
+    box.style.width=(x1-x0)+"px"; box.style.height=(y1-y0)+"px";
+    const nsr=D.noeuds.filter(n=>n.lieu===l.id);
+    box.innerHTML=`<div class="regTitre">${l.nom}
+      <span class="regSub">région · ${membres.length-1} lieux · ${nsr.length} scènes propres</span></div>`;
+    carteInner.appendChild(box);
   });
-  void dedans;
+
+  D.lieux.forEach(l=>carteInner.appendChild(carte(l)));
+  ajusterToile();
+}
+
+/* Taille d'une carte de lieu — sert au cadre de région et à la toile.
+   Mesurée une fois sur la première carte rendue plutôt que codée en dur :
+   la hauteur dépend du nombre de lignes du bloc de texte. */
+let CARTE_L=212, CARTE_H=190;
+function ajusterToile(){
+  const une=carteInner.querySelector(".lieuCard");
+  if(une){ CARTE_L=une.offsetWidth; CARTE_H=une.offsetHeight; }
+  const mx=Math.max(...D.lieux.map(l=>(l.x||0)+CARTE_L), 900);
+  const my=Math.max(...D.lieux.map(l=>(l.y||0)+CARTE_H), 700);
+  carteInner.style.width=(mx+80)+"px";
+  carteInner.style.height=(my+80)+"px";
+}
+
+/* ── déplacer un lieu ──────────────────────────────────────────────────────
+   Le but affiché : « une carte, un peu comme mon Figma ». Donc on doit
+   pouvoir déranger la disposition à la main. En local, le déplacement part
+   dans le JSON ; depuis le lien publié, il n'y a pas de serveur, donc il
+   tient dans le navigateur et le bouton « copier les positions » permet de
+   me les renvoyer. Un clic sans glissement ouvre le lieu, comme avant. */
+const POSITIONS_LOCALES="pactum-atelier-positions";
+function positionsRangees(){
+  try{ return JSON.parse(localStorage.getItem(POSITIONS_LOCALES)||"{}"); }
+  catch(_){ return {}; }
+}
+function rangerPosition(id,x,y){
+  const p=positionsRangees(); p[id]={x,y};
+  localStorage.setItem(POSITIONS_LOCALES, JSON.stringify(p));
+}
+function appliquerPositionsRangees(){
+  const p=positionsRangees();
+  D.lieux.forEach(l=>{ if(p[l.id]){ l.x=p[l.id].x; l.y=p[l.id].y; } });
+}
+
+function attacherDeplacement(el, l){
+  let ox=0, oy=0, px=0, py=0, bouge=false;
+  el.onpointerdown=e=>{
+    if(e.button!==0) return;
+    el.setPointerCapture(e.pointerId);
+    ox=e.clientX; oy=e.clientY; px=l.x||0; py=l.y||0; bouge=false;
+  };
+  el.onpointermove=e=>{
+    if(!el.hasPointerCapture?.(e.pointerId)) return;
+    const dx=e.clientX-ox, dy=e.clientY-oy;
+    // Seuil : sans lui, le moindre frémissement de la souris transformerait
+    // un clic d'ouverture en déplacement d'un pixel.
+    if(!bouge && Math.abs(dx)<4 && Math.abs(dy)<4) return;
+    bouge=true; el.classList.add("drag");
+    l.x=Math.max(0, Math.round(px+dx)); l.y=Math.max(0, Math.round(py+dy));
+    el.style.left=l.x+"px"; el.style.top=l.y+"px";
+    majCadresRegion();
+  };
+  el.onpointerup=e=>{
+    el.releasePointerCapture?.(e.pointerId);
+    el.classList.remove("drag");
+    if(!bouge){ ouvrirLieu(l.id); return; }
+    rangerPosition(l.id, l.x, l.y);
+    ajusterToile();
+    if(!WEB) ecrireLieu(l.id, l.x, l.y);
+    else noteEcriture(`<b>${l.nom}</b> — déplacé (gardé dans ce navigateur)`, true);
+  };
+}
+
+/* Le cadre suit les cartes pendant le glissement, sinon il saute à la fin. */
+function majCadresRegion(){
+  D.lieux.filter(l=>l.region).forEach((l,i)=>{
+    const box=carteInner.querySelectorAll(".regionBox")[i]; if(!box) return;
+    const membres=[l, ...D.lieux.filter(x=>x.dans===l.id)];
+    const M=26;
+    const x0=Math.min(...membres.map(m=>m.x||0))-M;
+    const y0=Math.min(...membres.map(m=>m.y||0))-M;
+    const x1=Math.max(...membres.map(m=>(m.x||0)+CARTE_L))+M;
+    const y1=Math.max(...membres.map(m=>(m.y||0)+CARTE_H))+M;
+    box.style.left=x0+"px"; box.style.top=y0+"px";
+    box.style.width=(x1-x0)+"px"; box.style.height=(y1-y0)+"px";
+  });
+}
+
+async function ecrireLieu(id,x,y){
+  const ligne=noteEcriture(`<b>${id}</b>.position — écriture…`);
+  try{
+    const r=await fetch("/api/lieu",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({zone:ZONE,id,x,y})});
+    const j=await r.json();
+    if(!r.ok||j.erreur) throw new Error(j.erreur||`HTTP ${r.status}`);
+    majLigne(ligne,`<b>${id}</b>.position — ${j.journal}`,true);
+  }catch(e){ majLigne(ligne,`<b>${id}</b>.position — ✗ ${e.message}`,false); }
 }
 
 /* ============ VUE GRAPHE ============ */
@@ -725,6 +825,19 @@ function rule(cv){
 }
 
 /* ============ barre ============ */
+/* Depuis le lien publié, une page ne peut rien écrire dans le dépôt : le
+   bouton renvoie donc la disposition sous une forme que je n'ai qu'à coller
+   dans le JSON. Inutile en local, où le déplacement s'écrit tout seul. */
+const bPos=document.getElementById("bPos");
+if(WEB){
+  bPos.hidden=false;
+  bPos.onclick=()=>{
+    const lignes=D.lieux.map(l=>`  "${l.id}": [${l.x||0}, ${l.y||0}]`).join(",\n");
+    navigator.clipboard.writeText(`Positions de la carte des Landes :\n{\n${lignes}\n}`)
+      .then(()=>{bPos.textContent="Copié ✓";setTimeout(()=>bPos.textContent="Copier les positions",1600);});
+  };
+}
+
 document.getElementById("bCarte").onclick=versCarte;
 document.getElementById("bJournal").onclick=()=>document.getElementById("journal").classList.toggle("on");
 document.getElementById("bExport").onclick=()=>{
@@ -849,6 +962,7 @@ document.getElementById("bdl").onclick=()=>{
   fil.innerHTML="chargement de la zone…";
   try{
     await chargerZone();
+    appliquerPositionsRangees();
     reindexer();
     renduCarte();
     fil.innerHTML=`<b>${D.lieux.length} lieux</b> · ${D.noeuds.length} scènes — carte de zone`;

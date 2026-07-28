@@ -315,6 +315,8 @@ class Atelier(BaseHTTPRequestHandler):
                 return self._json(200, self.ecrire_champ(req))
             if self.path == "/api/image":
                 return self._json(200, self.deposer_image(req))
+            if self.path == "/api/lieu":
+                return self._json(200, self.deplacer_lieu(req))
         except Exception as e:  # renvoyé à l'écran : l'atelier ne ment pas
             return self._json(500, {"erreur": f"{type(e).__name__}: {e}"})
 
@@ -339,6 +341,19 @@ class Atelier(BaseHTTPRequestHandler):
         sauver_zone(chemin, zone)
         compte_rendu = reporter_dans_ts(sid, champ, valeur)
         return {"ok": True, "id": sid, "champ": champ, "journal": compte_rendu}
+
+    # ---- position d'un lieu sur la carte ------------------------------------
+    def deplacer_lieu(self, req: dict) -> dict:
+        """Range x/y sur un LIEU. Rien à reporter dans le .ts : la carte est un
+        outil de production, le jeu n'a aucune notion de coordonnées."""
+        chemin, zone = charger_zone(req["zone"])
+        lid = req["id"]
+        lieu = next((l for l in zone.get("lieux", []) if l.get("id") == lid), None)
+        if lieu is None:
+            raise KeyError(f"lieu inconnu : {lid}")
+        lieu["x"], lieu["y"] = int(req["x"]), int(req["y"])
+        sauver_zone(chemin, zone)
+        return {"ok": True, "id": lid, "journal": f"posé en {lieu['x']},{lieu['y']}"}
 
     # ---- dépôt d'une image --------------------------------------------------
     def deposer_image(self, req: dict) -> dict:

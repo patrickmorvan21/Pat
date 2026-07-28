@@ -30,7 +30,9 @@
         "recontextualisation": null
       },
       "illustration": "assets/scene_colline_aux_gibets_c.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "x": 900,
+      "y": 80
     },
     {
       "id": "champ_des_fixes",
@@ -45,7 +47,9 @@
         "recontextualisation": null
       },
       "illustration": "assets/scene_champ_des_fixes_b.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "x": 1790,
+      "y": 430
     },
     {
       "id": "moulin_sans_ailes",
@@ -60,7 +64,9 @@
         "recontextualisation": null
       },
       "illustration": "assets/scene_moulin_sans_ailes_d_d.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "x": 300,
+      "y": 1160
     },
     {
       "id": "mare_aux_regards",
@@ -75,7 +81,9 @@
         "recontextualisation": null
       },
       "illustration": "assets/scene_mare_aux_regards_a.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "x": 320,
+      "y": 150
     },
     {
       "id": "hameau_des_renoncants",
@@ -99,7 +107,9 @@
         "puits_condamne",
         "maison_du_bailli",
         "chapelle_des_cordes"
-      ]
+      ],
+      "x": 660,
+      "y": 470
     },
     {
       "id": "chapelle_des_cordes",
@@ -115,7 +125,9 @@
       },
       "illustration": "assets/scene_chapelle_des_cordes_d.png",
       "portrait_requis": false,
-      "dans": "hameau_des_renoncants"
+      "dans": "hameau_des_renoncants",
+      "x": 900,
+      "y": 470
     },
     {
       "id": "maison_du_bailli",
@@ -131,7 +143,9 @@
       },
       "illustration": "assets/scene_maison_du_bailli_c.png",
       "portrait_requis": false,
-      "dans": "hameau_des_renoncants"
+      "dans": "hameau_des_renoncants",
+      "x": 1380,
+      "y": 470
     },
     {
       "id": "petit_tribunal",
@@ -147,7 +161,9 @@
       },
       "illustration": "assets/scene_petit_tribunal_a.png",
       "portrait_requis": false,
-      "dans": "hameau_des_renoncants"
+      "dans": "hameau_des_renoncants",
+      "x": 1140,
+      "y": 470
     },
     {
       "id": "puits_condamne",
@@ -163,7 +179,9 @@
       },
       "illustration": "assets/scene_puits_condamne_c.png",
       "portrait_requis": false,
-      "dans": "hameau_des_renoncants"
+      "dans": "hameau_des_renoncants",
+      "x": 660,
+      "y": 740
     },
     {
       "id": "marche_muet",
@@ -179,7 +197,9 @@
       },
       "illustration": "assets/scene_marche_muet_c.png",
       "portrait_requis": false,
-      "dans": "hameau_des_renoncants"
+      "dans": "hameau_des_renoncants",
+      "x": 900,
+      "y": 740
     },
     {
       "id": "tour_de_guet_effondree",
@@ -195,7 +215,9 @@
       },
       "illustration": null,
       "portrait_requis": false,
-      "dans": "hameau_des_renoncants"
+      "dans": "hameau_des_renoncants",
+      "x": 1140,
+      "y": 740
     },
     {
       "id": "verger_noir",
@@ -210,7 +232,9 @@
         "recontextualisation": null
       },
       "illustration": "assets/scene_verger_noir_d.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "x": 70,
+      "y": 480
     },
     {
       "id": "chemin_creux",
@@ -225,7 +249,9 @@
         "recontextualisation": null
       },
       "illustration": "assets/scene_chemin_creux_c.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "x": 110,
+      "y": 860
     },
     {
       "id": "borne_frontiere",
@@ -240,7 +266,9 @@
         "recontextualisation": null
       },
       "illustration": "assets/scene_transition_borne_sud_a.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "x": 1560,
+      "y": 70
     },
     {
       "id": "palissade_sud",
@@ -255,7 +283,9 @@
         "recontextualisation": null
       },
       "illustration": null,
-      "portrait_requis": false
+      "portrait_requis": false,
+      "x": 1160,
+      "y": 1130
     }
   ],
   "rencontres": [
