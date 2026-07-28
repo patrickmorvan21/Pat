@@ -43,7 +43,18 @@
   /* ============ vue carte ============ */
   #carte{position:absolute;top:58px;left:0;right:0;bottom:0;overflow:auto;display:none}
   #carte.on{display:block}
-  #carteInner{position:relative;display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start;padding:26px;width:1500px;height:1300px}
+  /* La TOILE porte la taille réelle (donc les barres de défilement) ; la
+     couche intérieure porte le zoom. Mettre le transform sur l'élément qui
+     défile donnerait des barres fausses : elles suivraient la taille avant
+     zoom, et la moitié de la carte deviendrait inatteignable. */
+  #carteToile{position:relative}
+  #carteInner{position:relative;transform-origin:0 0;width:1500px;height:1300px}
+  #zoomCarte{position:fixed;left:16px;bottom:14px;display:flex;gap:6px;z-index:20}
+  #zoomCarte button{background:var(--charbon);border:1px solid var(--blanc-20);
+    color:var(--blanc-50);font:inherit;font-size:11px;letter-spacing:1px;
+    padding:5px 9px;cursor:pointer;min-width:30px}
+  #zoomCarte button:hover{border-color:var(--orange);color:var(--orange)}
+  #zTaux{min-width:56px}
   .lieuCard{position:absolute;width:212px;background:var(--charbon);border:2px solid var(--orange);cursor:pointer}
   .lieuCard.pb{border-color:var(--rouge)}
   .lieuCard .th{position:relative;width:100%;height:108px;overflow:hidden;background:#141310}
@@ -125,7 +136,8 @@
 
   /* ============ journal des écritures ============ */
   #journal{
-    position:fixed;left:16px;bottom:16px;z-index:35;width:330px;max-height:34vh;overflow-y:auto;
+    /* Remonté au-dessus de la commande de zoom, qui occupe le coin. */
+    position:fixed;left:16px;bottom:56px;z-index:35;width:330px;max-height:34vh;overflow-y:auto;
     background:var(--charbon);border:1px solid var(--blanc-20);padding:10px 12px;display:none;
   }
   #journal.on{display:block}
@@ -200,7 +212,18 @@
   </div>
 </div>
 
-<div id="carte" class="on"><div id="carteInner"></div></div>
+<div id="carte" class="on">
+  <div id="carteToile"><div id="carteInner"></div></div>
+  <!-- Commande de zoom : flottante en bas à gauche plutôt que dans la barre
+       du haut, qui est déjà pleine — et c'est là qu'on a la main quand on
+       explore la carte. -->
+  <div id="zoomCarte">
+    <button id="zMoins" aria-label="Dézoomer">−</button>
+    <button id="zTaux" title="Revenir à 100 %">100 %</button>
+    <button id="zPlus" aria-label="Zoomer">+</button>
+    <button id="zFit" title="Voir toute la zone">Vue d'ensemble</button>
+  </div>
+</div>
 
 <div id="graphe">
   <div id="scene">
@@ -218,7 +241,7 @@
 </div>
 
 <div id="journal"><div class="hd">Écritures en attente</div><div id="jbody"></div></div>
-<div id="hint">glisser pour déplacer · molette pour zoomer</div>
+<div id="hint"></div>
 
 <script>
 "use strict";
@@ -455,6 +478,56 @@ function renduCarte(){
   ajusterToile();
 }
 
+/* ── ZOOM DE LA CARTE ──────────────────────────────────────────────────────
+   Demande : « pouvoir dézoomer encore plus pour avoir une vue d'ensemble ».
+   Le zoom s'applique à la couche intérieure ; la toile qui défile prend la
+   taille RÉELLE (naturelle × zoom), sinon les barres de défilement mentent.
+   Le taux est gardé dans le navigateur : on retrouve sa vue en revenant. */
+const ZOOM_MIN=0.25, ZOOM_MAX=1.6, ZOOM_RANGE="pactum-atelier-zoom";
+let zoomCarte=parseFloat(localStorage.getItem(ZOOM_RANGE)||"1")||1;
+const carteToile=document.getElementById("carteToile");
+
+function appliqueZoom(garderCentre){
+  zoomCarte=Math.min(ZOOM_MAX,Math.max(ZOOM_MIN,zoomCarte));
+  const vue=document.getElementById("carte");
+  // On vise le point qui était au CENTRE de l'écran avant le changement,
+  // sinon zoomer chasse la carte hors du cadre.
+  const cx=garderCentre?(vue.scrollLeft+vue.clientWidth/2):0;
+  const cy=garderCentre?(vue.scrollTop+vue.clientHeight/2):0;
+  const avant=parseFloat(carteInner.dataset.zoom||"1");
+  carteInner.style.transform=`scale(${zoomCarte})`;
+  carteInner.dataset.zoom=zoomCarte;
+  carteToile.style.width=(carteInner.offsetWidth*zoomCarte)+"px";
+  carteToile.style.height=(carteInner.offsetHeight*zoomCarte)+"px";
+  if(garderCentre){
+    const k=zoomCarte/avant;
+    vue.scrollLeft=cx*k-vue.clientWidth/2;
+    vue.scrollTop=cy*k-vue.clientHeight/2;
+  }
+  document.getElementById("zTaux").textContent=Math.round(zoomCarte*100)+" %";
+  localStorage.setItem(ZOOM_RANGE,String(zoomCarte));
+}
+function zoomAjuste(){
+  const vue=document.getElementById("carte");
+  const l=carteInner.offsetWidth, h=carteInner.offsetHeight;
+  if(!l||!h) return;
+  zoomCarte=Math.min((vue.clientWidth-24)/l,(vue.clientHeight-24)/h);
+  appliqueZoom(false);
+  vue.scrollTo(0,0);
+}
+document.getElementById("zMoins").onclick=()=>{zoomCarte-=0.1;appliqueZoom(true);};
+document.getElementById("zPlus").onclick=()=>{zoomCarte+=0.1;appliqueZoom(true);};
+document.getElementById("zTaux").onclick=()=>{zoomCarte=1;appliqueZoom(true);};
+document.getElementById("zFit").onclick=zoomAjuste;
+/* Pincer sur le trackpad arrive au navigateur comme molette + ctrl : on la
+   récupère telle quelle, la molette seule continuant de faire défiler. */
+document.getElementById("carte").addEventListener("wheel",e=>{
+  if(!e.ctrlKey&&!e.metaKey) return;
+  e.preventDefault();
+  zoomCarte*=e.deltaY<0?1.08:0.92;
+  appliqueZoom(true);
+},{passive:false});
+
 /* Taille d'une carte de lieu — sert au cadre de région et à la toile.
    Mesurée une fois sur la première carte rendue plutôt que codée en dur :
    la hauteur dépend du nombre de lignes du bloc de texte. */
@@ -466,6 +539,7 @@ function ajusterToile(){
   const my=Math.max(...D.lieux.map(l=>(l.y||0)+CARTE_H), 700);
   carteInner.style.width=(mx+80)+"px";
   carteInner.style.height=(my+80)+"px";
+  appliqueZoom(false);
 }
 
 /* ── déplacer un lieu ──────────────────────────────────────────────────────
@@ -489,31 +563,43 @@ function appliquerPositionsRangees(){
 }
 
 function attacherDeplacement(el, l){
-  let ox=0, oy=0, px=0, py=0, bouge=false;
+  /* ⚠️ Les écouteurs vivent sur la FENÊTRE, pas sur la carte. Première
+     version faite avec setPointerCapture sur l'élément : mesuré, la carte ne
+     recevait que 2 pointermove sur 10 pendant un glissement, et la première
+     alors même que la capture n'était pas encore effective — donc un
+     déplacement de 100px n'en enregistrait que 10. Sur la fenêtre, aucun
+     événement ne peut se perdre pendant que la carte se déplace sous le
+     curseur. */
   el.onpointerdown=e=>{
     if(e.button!==0) return;
-    el.setPointerCapture(e.pointerId);
-    ox=e.clientX; oy=e.clientY; px=l.x||0; py=l.y||0; bouge=false;
-  };
-  el.onpointermove=e=>{
-    if(!el.hasPointerCapture?.(e.pointerId)) return;
-    const dx=e.clientX-ox, dy=e.clientY-oy;
-    // Seuil : sans lui, le moindre frémissement de la souris transformerait
-    // un clic d'ouverture en déplacement d'un pixel.
-    if(!bouge && Math.abs(dx)<4 && Math.abs(dy)<4) return;
-    bouge=true; el.classList.add("drag");
-    l.x=Math.max(0, Math.round(px+dx)); l.y=Math.max(0, Math.round(py+dy));
-    el.style.left=l.x+"px"; el.style.top=l.y+"px";
-    majCadresRegion();
-  };
-  el.onpointerup=e=>{
-    el.releasePointerCapture?.(e.pointerId);
-    el.classList.remove("drag");
-    if(!bouge){ ouvrirLieu(l.id); return; }
-    rangerPosition(l.id, l.x, l.y);
-    ajusterToile();
-    if(!WEB) ecrireLieu(l.id, l.x, l.y);
-    else noteEcriture(`<b>${l.nom}</b> — déplacé (gardé dans ce navigateur)`, true);
+    e.preventDefault();
+    const ox=e.clientX, oy=e.clientY, px=l.x||0, py=l.y||0;
+    let bouge=false;
+
+    const bouger=ev=>{
+      const dx=(ev.clientX-ox)/zoomCarte, dy=(ev.clientY-oy)/zoomCarte;
+      // Seuil : sans lui, le moindre frémissement de la souris transformerait
+      // un clic d'ouverture en déplacement d'un pixel.
+      if(!bouge && Math.abs(dx)*zoomCarte<4 && Math.abs(dy)*zoomCarte<4) return;
+      bouge=true; el.classList.add("drag");
+      l.x=Math.max(0,Math.round(px+dx)); l.y=Math.max(0,Math.round(py+dy));
+      el.style.left=l.x+"px"; el.style.top=l.y+"px";
+      majCadresRegion();
+    };
+    const lacher=()=>{
+      window.removeEventListener("pointermove",bouger);
+      window.removeEventListener("pointerup",lacher);
+      window.removeEventListener("pointercancel",lacher);
+      el.classList.remove("drag");
+      if(!bouge){ ouvrirLieu(l.id); return; }
+      rangerPosition(l.id,l.x,l.y);
+      ajusterToile();
+      if(!WEB) ecrireLieu(l.id,l.x,l.y);
+      else noteEcriture(`<b>${l.nom}</b> — déplacé (gardé dans ce navigateur)`,true);
+    };
+    window.addEventListener("pointermove",bouger);
+    window.addEventListener("pointerup",lacher);
+    window.addEventListener("pointercancel",lacher);
   };
 }
 
@@ -551,6 +637,7 @@ let lieuCourant=null, tx=0, ty=0, sc=1;
 function applique(){ gScene.style.transform=`translate(${tx}px,${ty}px) scale(${sc})`; }
 
 function ouvrirLieu(id){
+  majHint(false);
   lieuCourant=id;
   document.getElementById("carte").classList.remove("on");
   gWrap.classList.add("on");
@@ -562,6 +649,7 @@ function ouvrirLieu(id){
   tx=40; ty=20; sc=1; applique();
 }
 function versCarte(){
+  majHint(true);
   gWrap.classList.remove("on");
   document.getElementById("carte").classList.add("on");
   document.getElementById("fil").innerHTML="<b>Les Landes</b> — carte de zone";
@@ -837,6 +925,11 @@ if(WEB){
       .then(()=>{bPos.textContent="Copié ✓";setTimeout(()=>bPos.textContent="Copier les positions",1600);});
   };
 }
+
+const HINT_CARTE="glisser un lieu pour le déplacer · pincer pour zoomer";
+const HINT_GRAPHE="glisser pour déplacer · molette pour zoomer";
+function majHint(surCarte){ document.getElementById("hint").textContent = surCarte?HINT_CARTE:HINT_GRAPHE; }
+majHint(true);
 
 document.getElementById("bCarte").onclick=versCarte;
 document.getElementById("bJournal").onclick=()=>document.getElementById("journal").classList.toggle("on");
