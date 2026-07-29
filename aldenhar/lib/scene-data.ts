@@ -1671,7 +1671,7 @@ export const SCENES: Scene[] = [
     /* Beat 5 — L'entrée. Résolution, pas de choix : on passe. */
     id: "hameau-entree-5",
     hameauEntree: true,
-    illustration: "assets/scene_landes_hameau_ruelle_b.png",
+    illustration: "assets/scene_hameau_entree_5_a.png",
     narration: [
       "Ils s'écartent. Pas beaucoup — juste assez pour que tu passes sans " +
         "toucher personne, et tu comprends que c'est calculé.",
@@ -2952,7 +2952,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "mare-aux-regards-2",
-    illustration: "assets/scene_mare_aux_regards_a.png",
+    illustration: "assets/scene_mare_aux_regards_2_b.png",
     narration: [
       "Quelqu'un arrive — un Renonçant, qui ne te voit pas. Il s'agenouille " +
         "dans les creux, se penche, et reste penché beaucoup trop longtemps.",

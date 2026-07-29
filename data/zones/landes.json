@@ -1688,7 +1688,7 @@
       ],
       "description": "La rue qui s'ouvre devant toi, et les volets qui se ferment un par un, un peu en avance sur ton pas.",
       "prompt_image": "narrow village lane of low stone houses, every shutter closed, no one in the street, chalk cross on the first door. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "scene_landes_hameau_ruelle_b.png"
+      "illustration": "scene_hameau_entree_5_a.png"
     },
     {
       "id": "hameau-halte-1",
@@ -2294,7 +2294,7 @@
       ],
       "description": "Événement de la Mare : un Renonçant qui vient vérifier son propre reflet, et te trouve là.",
       "prompt_image": "kneeling villager bent over the edge of a black pond staring at his own reflection, hands flat on the trampled bank, head turning sharply toward the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_mare_aux_regards_a.png"
+      "illustration": "scene_mare_aux_regards_2_b.png"
     },
     {
       "id": "verger-noir",
