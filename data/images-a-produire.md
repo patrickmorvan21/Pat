@@ -79,11 +79,17 @@ texte gravé lisible — suggérer les marques, ne jamais les écrire.
 
 # PRIORITÉ 0 — les 3 vues de lieu manquantes ou fausses
 
-### `scene_moulin_sans_ailes_d.png` — ⚠️ 1re tentative RATÉE, à refaire
-La génération du 25/07 a **gardé les quatre ailes** malgré « sail assembly
-completely gone ». C'est un piège classique : le mot *windmill* appelle les ailes,
-et un modèle de diffusion ne sait pas retirer un élément sur commande. Il faut
-décrire **ce qui est là**, sans jamais nommer un moulin :
+### `scene_moulin_sans_ailes_d.png` — ⚠️ 3 tentatives RATÉES, à refaire
+La génération du 25/07 (`_d_d`) a **gardé les quatre ailes** malgré « sail
+assembly completely gone ». Celle du 28/07 (`scene_moulin_campement_a.png`,
+aujourd'hui câblée sur `campement`) les garde **aussi** — quatre ailes complètes
+en croix devant le soleil. L'image est belle et bien tramée, mais elle contredit
+frontalement le nom du lieu et son point d'intérêt.
+
+C'est un piège classique : le mot *windmill* appelle les ailes, et un modèle de
+diffusion ne sait pas retirer un élément sur commande — une consigne négative
+(« no blades ») renforce même souvent ce qu'elle interdit. Il faut décrire
+**ce qui est là**, sans jamais nommer un moulin :
 ```
 Squat round stone tower alone on a low mound on open moorland, no blades, no
 vanes, no timber structure of any kind at its top, just a bare truncated cap of
