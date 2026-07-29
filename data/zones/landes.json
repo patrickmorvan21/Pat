@@ -1158,7 +1158,7 @@
       ],
       "description": "La borne seule au milieu du plateau, la bruyère couchée à son pied, et rien qui dise dans quel sens il est parti. CHANGE : l'homme a DISPARU du cadre — même pierre, vide.",
       "prompt_image": "a boundary stone standing alone in the middle of an empty plateau, nobody beside it, the moor running flat to the horizon. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_hesitant_b.png"
+      "illustration": "monstre_hesitant_3_c.png"
     },
     {
       "id": "chemin-creux",
@@ -1267,7 +1267,7 @@
       ],
       "description": "Il s'éloigne à reculons, déjà trois pas plus loin, et te parle par-dessus son épaule ; les talus se resserrent. CHANGE : il n'est plus devant toi, il recule dans la profondeur du chemin.",
       "prompt_image": "a pair of heels finding the ground behind their owner, boots walking backwards along a sunken lane, legs only. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_marcheur_a_rebours_d.png"
+      "illustration": "monstre_marcheur_2_b.png"
     },
     {
       "id": "marcheur-3",
@@ -1417,7 +1417,7 @@
       ],
       "description": "Le gardien, à hauteur d'homme. Non-combat : il juge. Son visage de pendu qui parle, le sceau à sa ceinture.",
       "prompt_image": "a rope creaking taut on its beam, close on the knot and the chain of office beneath it, the head out of frame. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_pendu_qui_parle_a.png"
+      "illustration": "monstre_pendu_qui_parle_2_a.png"
     },
     {
       "id": "champ-des-fixes",

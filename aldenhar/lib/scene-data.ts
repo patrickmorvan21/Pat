@@ -545,7 +545,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "hesitant-3",
-    illustration: "assets/monstre_hesitant_b.png",
+    illustration: "assets/monstre_hesitant_3_c.png",
     narration: [
       "Il te laisse partir le premier. C'est important pour lui : que tu ne le " +
         "voies pas décider.",
@@ -732,7 +732,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "marcheur-2",
-    illustration: "assets/monstre_marcheur_a_rebours_d.png",
+    illustration: "assets/monstre_marcheur_2_b.png",
     chainNext: "marcheur-3",
     narration: [
       "— « Tu veux traverser entier ? » Il est déjà trois pas plus loin. " +
@@ -1031,7 +1031,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "pendu-qui-parle-2",
-    illustration: "assets/monstre_pendu_qui_parle_a.png",
+    illustration: "assets/monstre_pendu_qui_parle_2_a.png",
     foe: "bailli-pendu",
     narration: [
       "« Approche », dit-il, et la corde grince sur chaque syllabe. « Tout " +
