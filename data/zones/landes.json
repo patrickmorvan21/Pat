@@ -1065,7 +1065,7 @@
       ],
       "description": "Entrée de zone, tout premier écran du jeu. La borne-frontière dressée seule sur le plateau, ses faces gravées, les offrandes à son pied, et le chemin qui s'enfonce au sud dans le noir.",
       "prompt_image": "single tall standing stone in the middle of an empty moor plateau, carved marks on its faces, small pile of humble offerings at its base, path vanishing south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_borne_frontiere_a_c.png"
+      "illustration": "scene_borne_frontiere_b.png"
     },
     {
       "id": "gravures-borne",
@@ -1387,7 +1387,7 @@
       ],
       "description": "Événement de la Colline : au sommet, entre les potences. L'écharde du grand gibet se prélève ici.",
       "prompt_image": "standing inside a circle of wooden gallows on a hilltop, ropes hanging at eye level all around, splintered beam in the foreground, vast empty sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_colline_aux_gibets_c.png"
+      "illustration": "scene_colline_gibets_2_a.png"
     },
     {
       "id": "pendu-qui-parle",
@@ -1622,7 +1622,7 @@
       ],
       "description": "Elle a repris sa place sur le seuil, mains vides, et regarde le sud — de la rue, rien ne dit qu'elle a parlé à quelqu'un. CHANGE : de nouveau immobile et les mains vides.",
       "prompt_image": "a woman back in place on her doorstep at the end of a village street, seen from far down the road, looking south, nothing about her showing that she spoke to anyone. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_femme_au_seuil_b.png"
+      "illustration": "monstre_femme_seuil_3_a.png"
     },
     {
       "id": "hameau-entree-3",
@@ -1787,7 +1787,7 @@
       ],
       "description": "Le portillon sud, ouvert par le plus jeune. Les deux escortes marchent à un pas de distance de chaque côté ; le vieux reste en arrière. CHANGE : on est dehors, au portillon — plus dans la grange.",
       "prompt_image": "village seen from its southern gate at dawn, roofs packed low behind a stone wall, the gate standing open. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "scene_hameau_dense_b.png"
+      "illustration": "scene_hameau_halte_5_b.png"
     },
     {
       "id": "hameau-halte-dehors",
@@ -1833,7 +1833,7 @@
       ],
       "description": null,
       "prompt_image": "long neat stack of dressed stones at the foot of a tower, laid course by course, every carved face turned down against the earth, one stone tipped over to show a fragment of an engraved name. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": null
+      "illustration": "scene_tour_pierres_rangees_a.png"
     },
     {
       "id": "escalier-vers-rien",
@@ -1861,7 +1861,7 @@
       ],
       "description": null,
       "prompt_image": "narrow arrow slit in thick stonework at chest height, its sill worn smooth like a handrail, hundreds of tally notches in groups of five cut into the embrasure, a single-lens copper spyglass wedged in a crack. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": null
+      "illustration": "scene_tour_meurtriere_sud_a.png"
     },
     {
       "id": "tour-de-guet-2",
@@ -1923,7 +1923,7 @@
       ],
       "description": "Arrivée au Moulin sans Ailes — c'est le lieu de repos de la zone. Une tour de pierre trapue SANS ailes, quatre traces pâles sur le corps du moulin, la porte entrebâillée.",
       "prompt_image": "old stone windmill without sails on a moorland crest, four pale ghost marks of the missing sails on the stone body, door ajar, small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_moulin_sans_ailes_d_d.png"
+      "illustration": "scene_moulin_campement_a.png"
     },
     {
       "id": "croix-ombres",
@@ -1979,7 +1979,7 @@
       ],
       "description": "Événement du Moulin : la garde, ou le sommeil. Le lit de bruyère tassé, refait de frais, les marques de comptage à hauteur d'enfant sur la pierre.",
       "prompt_image": "interior of a derelict stone windmill, heather bedding pressed flat on the floor, tally marks scratched on the stone wall at child height, broken millstone, light through a small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_moulin_sans_ailes_d_d.png"
+      "illustration": "scene_moulin_campement_2_a.png"
     },
     {
       "id": "chapelle-des-cordes",
@@ -2070,7 +2070,7 @@
       ],
       "description": "Arrivée au Puits Condamné. Un puits fermé par des planches clouées en croix, par-dessus, des pierres empilées.",
       "prompt_image": "village well sealed shut with planks nailed in a cross over its mouth, stones piled on top, worn rope still tied to the winch, empty square, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_puits_condamne_c.png"
+      "illustration": "scene_puits_condamne_a.png"
     },
     {
       "id": "puits-condamne-2",

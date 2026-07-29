@@ -351,7 +351,7 @@ export const SCENES: Scene[] = [
     id: "borne-frontiere",
     // Vue DÉDIÉE du tout premier écran du jeu (lot 25/07) : l'ancienne image
     // était une vue de transition, aussi tirée dans le pool des marches.
-    illustration: "assets/scene_borne_frontiere_a_c.png",
+    illustration: "assets/scene_borne_frontiere_b.png",
     narration: [
       "La lande s'ouvre sous un crépuscule qui ne tombe pas. La lumière " +
         "reste prise entre chien et loup, comme un souffle retenu. Quelque " +
@@ -930,7 +930,7 @@ export const SCENES: Scene[] = [
        cercle se balancent ENSEMBLE, sans vent. Compter, c'est compter ses
        propres morts (mémoire du joueur). */
     id: "colline-aux-gibets-2",
-    illustration: "assets/scene_colline_aux_gibets_c.png",
+    illustration: "assets/scene_colline_gibets_2_a.png",
     narration: [
       "Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme " +
         "plat, les neuf cordes du cercle se mettent à bouger. Pas au hasard : " +
@@ -1491,7 +1491,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "femme-seuil-3",
-    illustration: "assets/monstre_femme_au_seuil_b.png",
+    illustration: "assets/monstre_femme_seuil_3_a.png",
     chainNext: "hameau-entree-3",
     narration: [
       "Elle a déjà repris sa place sur le seuil quand tu repars. De la rue, " +
@@ -1863,7 +1863,7 @@ export const SCENES: Scene[] = [
     /* Beat 5 — Le départ escorté. Sortie de la séquence → la traversée reprend
        vers la Palissade / la Descente. */
     id: "hameau-halte-5",
-    illustration: "assets/scene_hameau_dense_b.png",
+    illustration: "assets/scene_hameau_halte_5_b.png",
     hameauHalte: true,
     narration: [
       "Ils sont deux à marcher avec toi jusqu'à la Palissade. Pas devant, pas " +
@@ -1927,6 +1927,7 @@ export const SCENES: Scene[] = [
     pointsInteret: [
       {
         id: "pierres-rangees",
+        illustration: "assets/scene_tour_pierres_rangees_a.png",
         chapterFragment: true,
         label: "Les pierres, empilées au pied",
         approche:
@@ -1956,6 +1957,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "meurtriere-sud",
+        illustration: "assets/scene_tour_meurtriere_sud_a.png",
         grantsLoot: "lunette-guet",
         label: "La meurtrière du sud",
         approche:
@@ -2150,7 +2152,7 @@ export const SCENES: Scene[] = [
     // Campement de zone : le Moulin sans Ailes. L'id reste « campement »
     // (Scene.tsx exclut cet id du soin aléatoire d'exploration).
     id: "campement",
-    illustration: "assets/scene_moulin_sans_ailes_d_d.png",
+    illustration: "assets/scene_moulin_campement_a.png",
     chainNext: "campement-2",
     narration: [
       "Le moulin n'a plus d'ailes mais il a gardé leur trace : quatre ombres " +
@@ -2240,7 +2242,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "campement-2",
-    illustration: "assets/scene_moulin_sans_ailes_d_d.png",
+    illustration: "assets/scene_moulin_campement_2_a.png",
     narration: [
       "Par la lucarne, le crépuscule ne bouge pas. On dit qu'une fille " +
         "dort ici, parfois — la seule pendue qui se soit relevée. Le lit de " +
@@ -2395,7 +2397,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "puits-condamne",
-    illustration: "assets/scene_puits_condamne_c.png",
+    illustration: "assets/scene_puits_condamne_a.png",
     chainNext: "puits-condamne-2",
     narration: [
       "Sur la place arrière du hameau, un puits — condamné de frais : " +

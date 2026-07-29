@@ -201,4 +201,4 @@
  *           était une vue large, sans une seule corde — alors que le texte
  *           fait entrer le héros DANS le cercle.
  */
-export const APP_VERSION = "1.27.1";
+export const APP_VERSION = "1.28.0";
