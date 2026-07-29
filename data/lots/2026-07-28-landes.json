@@ -37,5 +37,152 @@
     "objet_lanterne_veilleur_2_b.png": "veilleur-2",
     "objet_lanterne_veilleur_3_c.png": "veilleur-3",
     "scene_verger_noir_2_c.png": "verger-noir-2"
+  },
+  "_reprise": "Identifiants Drive et tailles attendues, pour reprendre le transfert là où il s'est arrêté. Le contrôle de taille est ce qui rend la reprise sûre : un fichier mal décodé n'est jamais écrit.",
+  "drive": {
+    "monstre_epoux_2_c.png": {
+      "id": "1cfYAzzWsMa-SI835iqD-8WDFQfhZF5uq",
+      "octets": 5053
+    },
+    "monstre_epoux_3_c.png": {
+      "id": "1aTp0cCz-g1pqiRkc7f1UG12U2fFttD_-",
+      "octets": 11528
+    },
+    "monstre_femme_seuil_1_c.png": {
+      "id": "1_5yAxOYOToha9uq6O67RAkryrUVMJdfa",
+      "octets": 4688
+    },
+    "monstre_femme_seuil_2_c.png": {
+      "id": "1QGXVHRi5A1rUOseg1qfjwdWXLcgQ6J6n",
+      "octets": 6202
+    },
+    "monstre_femme_seuil_3_a.png": {
+      "id": "1R3jEsHiwLC5pdbWMH6Wq3o_ncAQzOW59",
+      "octets": 19386
+    },
+    "monstre_hameau_entree_3_a.png": {
+      "id": "1ldO_dlnFN0EDgF2hnaX-gtA2L7nqhCvG",
+      "octets": 4616
+    },
+    "monstre_hameau_entree_4_c.png": {
+      "id": "1PqbNieJQlXkE6BIk8QxjUtKUGsRhpgup",
+      "octets": 5063
+    },
+    "monstre_hameau_halte_4_b.png": {
+      "id": "1twIWTc68SHsgZAyH2EyG_qt6DEaYIZRx",
+      "octets": 3813
+    },
+    "monstre_hesitant_3_c.png": {
+      "id": "1wA1wAJdjlzpuBKd68qoG5M1weqONJUmT",
+      "octets": 11251
+    },
+    "monstre_homme_guerite_c.png": {
+      "id": "1hpSp-x35X42hiLC7TFN8S7dHffFgV4rJ",
+      "octets": 3891
+    },
+    "monstre_marcheur_1_b.png": {
+      "id": "15c2llF4whl-SjkEiTHZe0vK-BJvDGq2A",
+      "octets": 6372
+    },
+    "monstre_marcheur_2_b.png": {
+      "id": "1-N_s7BMoMYbulGwB5HtDjEvGdwUm1kVq",
+      "octets": 10971
+    },
+    "monstre_marcheur_3_b.png": {
+      "id": "1OQ04Xy6qIJ-Lbt40FEbNjZNOwl_uNQsb",
+      "octets": 3560
+    },
+    "monstre_marcheur_rebours_c.png": {
+      "id": "1Th0F1GJhRnzWewqZX8ljD5hwgsE7pji_",
+      "octets": 7537
+    },
+    "monstre_palissade_sud_2_c.png": {
+      "id": "1CMzjwCyRmd3uRpmNyiQJXO5Yby02J5pj",
+      "octets": 4463
+    },
+    "monstre_pendu_mal_fixe_a.png": {
+      "id": "1cIYMxFgYZ7XuDjk8Qivr3cHx2XOGXWsp",
+      "octets": 5488
+    },
+    "monstre_pendu_qui_parle_2_a.png": {
+      "id": "14z-oJd5M5Osir7NOYSFaDKVnWAqTLiaA",
+      "octets": 9886
+    },
+    "objet_lanterne_veilleur_2_b.png": {
+      "id": "1wTcV57SUvm2FEcnQzhCAWsEcXmfFRHnP",
+      "octets": 7402
+    },
+    "objet_lanterne_veilleur_3_c.png": {
+      "id": "1aUSjDZQqBAUC1mL5k8T-kfEjGwohjYou",
+      "octets": 9679
+    },
+    "scene_borne_frontiere_b.png": {
+      "id": "1XWZgJMzKUug5-S-Wix4g8PccN_etCpEL",
+      "octets": 21662
+    },
+    "scene_champ_poteaux_vierges_b.png": {
+      "id": "1Vme5F1HyIdgGn_XolAqdDfNBsa28S3zM",
+      "octets": 10052
+    },
+    "scene_colline_gibets_2_a.png": {
+      "id": "1rLeu_jT88nsTLeFylZl2hpai-oJkdt86",
+      "octets": 31826
+    },
+    "scene_hameau_entree_5_a.png": {
+      "id": "1YL6zax9ujJ7G7FlWb741Nw6XsdaIvBo5",
+      "octets": 10760
+    },
+    "scene_hameau_halte_3_c.png": {
+      "id": "18gZrpNUy-bbXRTt539v7LFWKbjatEj6h",
+      "octets": 9085
+    },
+    "scene_hameau_halte_5_b.png": {
+      "id": "1dRErdQJcqhxLcYDo22NRooqajLm14jWU",
+      "octets": 18040
+    },
+    "scene_mare_aux_regards_2_b.png": {
+      "id": "1TRDh6J_UUGF2bgM_q8JHayuO0Sq7QT5V",
+      "octets": 16280
+    },
+    "scene_mare_eau_reflet_b.png": {
+      "id": "17z-hCo0fGk0jLaTPD52vtMt3VlXqzoem",
+      "octets": 2768
+    },
+    "scene_mare_reflet_metal_a.png": {
+      "id": "1QHOoYcG5M5BqVkANWnjZbnl70-DMY8wh",
+      "octets": 9684
+    },
+    "scene_moulin_campement_2_a.png": {
+      "id": "1K9xT_CFcHMcpNLCzJYoEMNfy3GqmG668",
+      "octets": 22254
+    },
+    "scene_moulin_campement_a.png": {
+      "id": "1DouyVneqfZ5__8pG-wkXNnwBYUmDj8lM",
+      "octets": 25894
+    },
+    "scene_puits_condamne_a.png": {
+      "id": "1QtMagcy3f9k7SafbjpNB753WHo_JznGo",
+      "octets": 26792
+    },
+    "scene_tour_escalier_vers_rien_b.png": {
+      "id": "1tQ5jKnioulKHY4Gau_wJTpyRTtXXVnHd",
+      "octets": 8038
+    },
+    "scene_tour_meurtriere_sud_a.png": {
+      "id": "1F_RS1RgXVbl8Vdsy2NkLHvb4Jgvr19uT",
+      "octets": 19670
+    },
+    "scene_tour_pierres_rangees_a.png": {
+      "id": "1YkwuYXoUmZUtmoQI0TGfYeLI-TI3acLu",
+      "octets": 20594
+    },
+    "scene_verger_fruits_cendre_a.png": {
+      "id": "1YrVkNaGyshoPizrtaRgGZUKUz0lqY31_",
+      "octets": 6532
+    },
+    "scene_verger_noir_2_c.png": {
+      "id": "1l_INeaZk5EpOOAJl3cwowy3CHl6wwI6t",
+      "octets": 5319
+    }
   }
 }
