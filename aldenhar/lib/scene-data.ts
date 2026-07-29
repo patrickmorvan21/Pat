@@ -604,7 +604,7 @@ export const SCENES: Scene[] = [
         id: "marcheur-rebours",
         label: "L'homme qui marche à reculons",
         leadsTo: "marcheur-1",
-        illustration: "assets/monstre_marcheur_a_rebours_d.png",
+        illustration: "assets/monstre_marcheur_rebours_c.png",
         approche:
           "Tu ralentis pour le laisser venir. Il marche à reculons d'un pas " +
           "sûr, les talons trouvant le sol comme des yeux.",
@@ -693,7 +693,7 @@ export const SCENES: Scene[] = [
     /* LE MARCHEUR À REBOURS — Chemin Creux · rare. Trente ans qu'il ne montre
        son dos à rien. Sa récompense est un SAVOIR, pas un objet. */
     id: "marcheur-1",
-    illustration: "assets/monstre_marcheur_a_rebours_d.png",
+    illustration: "assets/monstre_marcheur_1_b.png",
     chainNext: "marcheur-2",
     // Sa première réplique DIT le versant : l'écouter vaut avoir lu les traces.
     savoir: "savoir_bete_crete_nord",
@@ -769,7 +769,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "marcheur-3",
-    illustration: "assets/monstre_marcheur_a_rebours_d.png",
+    illustration: "assets/monstre_marcheur_3_b.png",
     chainNext: "chemin-creux-2",
     narration: [
       "Au coude, il pivote enfin — face au nord, dos au sud — et s'éloigne à " +
@@ -1117,7 +1117,7 @@ export const SCENES: Scene[] = [
       {
         id: "poteaux-vierges",
         label: "Les poteaux vierges, au fond",
-        illustration: "assets/scene_champ_poteaux_vierges_a_a.png",
+        illustration: "assets/scene_champ_poteaux_vierges_b.png",
         soupcon: 1, // réagir devant les poteaux d'avance se voit
         savoir: "savoir_poteau_a_mon_nom",
         approche:
@@ -1353,7 +1353,7 @@ export const SCENES: Scene[] = [
        Ouverte depuis le seuil du hameau, elle rejoint ensuite le barrage :
        une rencontre ne fait jamais dérailler la séquence garantie. */
     id: "femme-seuil-1",
-    illustration: "assets/monstre_femme_au_seuil_b.png",
+    illustration: "assets/monstre_femme_seuil_1_c.png",
     chainNext: "femme-seuil-2",
     narration: [
       "Quand tu arrives à sa hauteur, elle tressaille. Une seconde — moins — " +
@@ -1409,7 +1409,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "femme-seuil-2",
-    illustration: "assets/monstre_femme_au_seuil_b.png",
+    illustration: "assets/monstre_femme_seuil_2_c.png",
     chainNext: "femme-seuil-3",
     narration: [
       "« Tu descends, toi aussi. Ça se voit. Vous avez tous le même pas. » " +
@@ -1505,7 +1505,7 @@ export const SCENES: Scene[] = [
   {
     /* Beat 3 — Le barrage. Trois Renonçants : leur PEUR, jamais leur menace. */
     id: "hameau-entree-3",
-    illustration: "assets/monstre_juge_de_cendre_c.png",
+    illustration: "assets/monstre_hameau_entree_3_a.png",
     chainNext: "hameau-entree-4",
     narration: [
       "Ils sont trois à t'attendre au milieu de la rue. Pas armés — un bâton " +
@@ -1585,7 +1585,7 @@ export const SCENES: Scene[] = [
        « Pourquoi trois aubes » est un point d'intérêt : on peut le demander,
        puis revenir au choix (spec §1 : le POI ne consomme pas le tour). */
     id: "hameau-entree-4",
-    illustration: "assets/monstre_doyenne_b.png",
+    illustration: "assets/monstre_hameau_entree_4_c.png",
     chainNext: "hameau-entree-5",
     narration: [
       "Le vieux tend la main, paume ouverte. Pas pour serrer la tienne — pour " +
@@ -1770,7 +1770,7 @@ export const SCENES: Scene[] = [
     /* Beat 3 — La nuit. Le script prévoit des variantes par palier de Soupçon ;
        le moteur choisit la bonne au moment de l'insertion (Scene.tsx). */
     id: "hameau-halte-3",
-    illustration: "assets/scene_landes_hameau_grange_a.png",
+    illustration: "assets/scene_hameau_halte_3_c.png",
     chainNext: "hameau-halte-4",
     narration: [
       "Le hameau ne dort pas comme un village. Pas de rires, pas de disputes, " +
@@ -1834,7 +1834,7 @@ export const SCENES: Scene[] = [
   {
     /* Beat 4 — L'aube. Le Serment tenu jusqu'ici se paie ici (−1 Soupçon). */
     id: "hameau-halte-4",
-    illustration: "assets/monstre_doyenne_b.png",
+    illustration: "assets/monstre_hameau_halte_4_b.png",
     chainNext: "hameau-halte-5",
     narration: [
       "La barre se soulève au premier gris. Le vieux, seul. Il te tend un " +
@@ -1940,6 +1940,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "escalier-vers-rien",
+        illustration: "assets/scene_tour_escalier_vers_rien_b.png",
         savoir: "savoir_guet",
         label: "L'escalier qui monte au vide",
         approche:
@@ -2892,6 +2893,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "eau-reflet",
+        illustration: "assets/scene_mare_eau_reflet_b.png",
         label: "L'eau",
         savoir: "savoir_reflet",
         approche:
@@ -2908,7 +2910,7 @@ export const SCENES: Scene[] = [
       {
         id: "reflet-metal",
         label: "Le reflet de métal, dans les roseaux",
-        illustration: "assets/scene_mare_miroir_a_b.png",
+        illustration: "assets/scene_mare_reflet_metal_a.png",
         grantsLoot: "miroir-poche",
         approche:
           "Tu écartes les roseaux à deux mains. Ils sont noirs jusqu'à la " +
@@ -3003,7 +3005,7 @@ export const SCENES: Scene[] = [
       {
         id: "fruits-cendre",
         label: "Les fruits, dans les rangs",
-        illustration: "assets/scene_verger_fruits_a_c.png",
+        illustration: "assets/scene_verger_fruits_cendre_a.png",
         grantsLoot: "fruit-cendre",
         approche:
           "Tu entres dans un rang. L'odeur devrait arriver là — pas de " +
@@ -3074,7 +3076,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "verger-noir-2",
-    illustration: "assets/scene_verger_noir_d.png",
+    illustration: "assets/scene_verger_noir_2_c.png",
     narration: [
       "Un fruit tombe, derrière toi. Sans vent, sans oiseau.",
       "Quand tu le ramasses, il est encore chaud — comme une chose qui vient " +
@@ -3155,7 +3157,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "epoux-2",
-    illustration: "assets/monstre_epoux_verger_a.png",
+    illustration: "assets/monstre_epoux_2_c.png",
     chainNext: "epoux-3",
     narration: [
       "— « Tu viens du dehors. » Ce n'est pas une question : c'est une prière " +
@@ -3211,7 +3213,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "epoux-3",
-    illustration: "assets/monstre_epoux_verger_a.png",
+    illustration: "assets/monstre_epoux_3_c.png",
     chainNext: "verger-noir-2",
     narration: [
       "Ils se remettent au travail avant que tu sois sorti des rangs — le " +
@@ -3270,6 +3272,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "homme-guerite",
+        illustration: "assets/monstre_homme_guerite_c.png",
         label: "L'homme de la guérite",
         leadsTo: "veilleur-1",
         approche:
@@ -3357,7 +3360,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "veilleur-2",
-    illustration: "assets/objet_lanterne_rouillee.png",
+    illustration: "assets/objet_lanterne_veilleur_2_b.png",
     chainNext: "veilleur-3",
     narration: [
       "Il décroche sa lanterne et la soupèse, comme une décision.",
@@ -3432,7 +3435,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "veilleur-3",
-    illustration: "assets/objet_lanterne_rouillee.png",
+    illustration: "assets/objet_lanterne_veilleur_3_c.png",
     chainNext: "palissade-sud-2",
     narration: [
       "Il t'ouvre le portillon lui-même, avec la cérémonie de l'homme dont " +
@@ -3449,7 +3452,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "palissade-sud-2",
-    illustration: "assets/monstre_appele_descente.png",
+    illustration: "assets/monstre_palissade_sud_2_c.png",
     narration: [
       "Sur le chemin de ronde, un vieux soldat regarde vers le sud. Et en " +
         "contrebas, déjà loin de l'autre côté, un homme descend le chemin " +
