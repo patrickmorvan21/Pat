@@ -49,7 +49,7 @@ if [ -z "$SRC" ]; then
     exit 1
   fi
   # -maxdepth borne la recherche : le Drive complet est trop gros à parcourir.
-  SRC=$(find "$BASE" -maxdepth 6 -type d -path '*/PACTUM/Photos' -print -quit 2>/dev/null)
+  SRC=$(find "$BASE" -maxdepth 7 -type d -path '*/PACTUM/Photos' -print -quit 2>/dev/null)
 fi
 
 if [ -z "$SRC" ] || [ ! -d "$SRC" ]; then
@@ -83,7 +83,11 @@ for dossier in "${DOSSIERS[@]}"; do
     else
       inchanges=$((inchanges + 1))
     fi
-  done < <(find "$dossier" -maxdepth 1 -type f -name '*.png' -print0)
+    # ⚠️ Pas de -maxdepth : selon les périodes, les images sont soit dans
+    # « 03_Validé_Environnement » (dossiers frères), soit dans
+    # « 03_Validé/2_Environnement » (sous-dossiers). Limiter la profondeur
+    # faisait que le script ne trouvait RIEN dans le second cas.
+  done < <(find "$dossier" -type f -name '*.png' -print0)
 done
 
 echo
