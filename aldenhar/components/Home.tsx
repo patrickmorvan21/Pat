@@ -6,7 +6,8 @@ import { HeroGeolier } from "@/components/HeroGeolier";
 import Prologue from "@/components/Prologue";
 import Intro, { ActeScreen } from "@/components/Intro";
 import Registre from "@/components/Registre";
-import { buildRegistre, loadMemory, shouldShowIntro } from "@/lib/player-memory";
+import { buildRegistre, loadMemory, mutateMemory, shouldShowIntro } from "@/lib/player-memory";
+import { pickJailerQuote } from "@/lib/jailer-quotes";
 import { hasSavedRun, loadRun, resetRun } from "@/lib/state";
 import { APP_VERSION } from "@/lib/version";
 import { applySettingsToDom } from "@/lib/settings";
@@ -27,6 +28,7 @@ export default function Home() {
     "boot",
   );
   const [saved, setSaved] = useState(false);
+  const [citation, setCitation] = useState<string | null>(null);
   const [overlay, setOverlay] = useState<"reliques" | "registre" | "options" | null>(null);
 
   useEffect(() => {
@@ -39,6 +41,32 @@ export default function Home() {
     playMusic("intro");
     // eslint-disable-next-line react-hooks/set-state-in-effect -- lecture du localStorage impossible au rendu SSR, une seule fois au montage
     setSaved(hasSavedRun());
+    // La citation du Geôlier devient variable (30/07) : dès la première mort,
+    // la tagline de l'accueil est SA voix — tirée du pool conditionné par le
+    // contexte de la dernière mort, jamais deux fois la même de suite.
+    const mem = loadMemory();
+    if (mem.deaths > 0) {
+      const now = Date.now();
+      const joursHorsJeu = mem.lastPlayedAt
+        ? Math.floor((now - mem.lastPlayedAt) / 86_400_000)
+        : 0;
+      const ld = mem.lastDeath;
+      setCitation(
+        pickJailerQuote({
+          morts: mem.deaths,
+          jour: ld?.day ?? 0,
+          acte: ld?.acte ?? 1,
+          fixation: ld?.fixation ?? false,
+          rareteRare: ld ? ld.rarity !== "commune" : false,
+          classe: ld?.classed ?? false,
+          joursHorsJeu,
+          meilleurScore: ld?.meilleurScore ?? false,
+        })
+      );
+      mutateMemory((m) => {
+        m.lastPlayedAt = now;
+      });
+    }
     setPhase("home");
   }, []);
 
@@ -79,8 +107,12 @@ export default function Home() {
                   définie que l'affichage, contrairement aux textures tramées 1:1. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img alt="PACTUM" src="assets/pactum_logo.png" className="block w-[197px] select-none" />
-              <p className="mt-[14px] text-center font-mono text-[12px] leading-[1.7] tracking-[0.5px] text-[var(--color-ink)]">
-                {saved ? (
+              {/* La tagline (maquette 2333-7029 : mono 13, blanc) — remplacée
+                  par la voix du Geôlier dès la première mort (30/07). */}
+              <p className="mt-[14px] text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]">
+                {citation ? (
+                  citation
+                ) : saved ? (
                   <>
                     Aucune partie ne se ressemble.
                     <br />
@@ -194,13 +226,14 @@ function HomeCta({ label, secondary, onClick }: { label: string; secondary?: boo
 }
 
 function FooterLink({ label, onClick, disabled }: { label: string; onClick?: () => void; disabled?: boolean }) {
+  // Maquette 2333-7029 : mono 13, blanc plein, espacement 2.6px.
   return (
     <button
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className={`font-mono text-[11px] uppercase tracking-[3px] text-[var(--color-ink)] ${
-        disabled ? "cursor-not-allowed opacity-45" : "cursor-pointer opacity-90"
+      className={`font-mono text-[13px] uppercase tracking-[2.6px] text-[var(--color-ink)] ${
+        disabled ? "cursor-not-allowed opacity-45" : "cursor-pointer"
       }`}
     >
       {label}

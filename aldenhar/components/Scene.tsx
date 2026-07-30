@@ -1130,6 +1130,13 @@ export default function Scene() {
       const trav = runRef.current?.trav;
       const tension = trav && trav.visited.length >= trav.target - 1 ? 1 : 0;
       const threshold = Math.max(2, choice.risky.threshold - soft + tension);
+      // Beat fatal (30/07) : la scène sait AVANT le verdict si un palier
+      // d'échec tue — santé − coût ≤ 0, ou procès de fixation raté. Le dé
+      // s'en sert pour poser la face rongée et « MORT » au settle, à la
+      // place du verdict ordinaire. Santé et nature de la scène capturées à
+      // l'armement : rien ne les change pendant que le dé vole.
+      const healthNow = runRef.current?.health ?? 1;
+      const isTrial = Boolean(scene.fixationTrial);
       setRoll({
         key: nowMs(),
         stat: choice.risky.stat,
@@ -1138,6 +1145,12 @@ export default function Scene() {
         modifier,
         effectLabel: effects[0]?.label,
         highStakes: choice.risky.highStakes,
+        fatalCheck: (tier) => {
+          if (!tierIsFail(tier)) return false;
+          if (isTrial) return true;
+          const cost = tier === "malediction" ? 0.25 : tier === "critique" ? 0.2 : 0.12;
+          return healthNow - cost <= 0;
+        },
       });
     } else if (choice.rest) {
       // Campement (spec §7, précisé 13/07) : le jour avance, blessures atténuées.
@@ -1406,6 +1419,7 @@ export default function Scene() {
                 cause: "le Hameau des Renonçants",
                 place: scene.id,
                 killer: { entity: "hameau-renoncants", label: "le Hameau des Renonçants" },
+                fixation: true,
               });
               const dead = { epitaph, day: run.day, bilan: bilanDeMort(run), relic,
                 heroName: run.heroName, cause: "le Hameau des Renonçants", firstDeath };

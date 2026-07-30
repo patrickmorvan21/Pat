@@ -18,6 +18,9 @@
  */
 
 import type { RegistreRow } from "@/lib/state";
+// registre-data n'importe d'ici que des TYPES (import effacé au build) : ce
+// sens-ci peut donc porter la valeur `buildLesCent` sans cycle au runtime.
+import { buildLesCent } from "@/lib/registre-data";
 
 /** Un tueur nommé garde une trace liée au compte, pas au héros mort (§19). */
 export type BloodDebt = {
@@ -87,6 +90,27 @@ export type PlayerMemory = {
    * une partie déjà entamée (voir la migration plus bas).
    */
   introSeen?: boolean;
+  /**
+   * Contexte de la DERNIÈRE mort (30/07) : ce dont le pool de citations du
+   * Geôlier a besoin au retour à l'accueil — jamais affiché tel quel.
+   * Optionnel : absent sur les mémoires d'avant le 30/07 (le pool retombe
+   * alors sur ses génériques).
+   */
+  lastDeath?: {
+    day: number;
+    /** La mort était une fixation (sociale, aux Landes). */
+    fixation: boolean;
+    /** Rareté de la relique forgée par cette mort. */
+    rarity: Relic["rarity"];
+    /** Le héros est entré aux Cent du Registre. */
+    classed: boolean;
+    /** Acte le plus profond atteint par cette run. */
+    acte: number;
+    /** Cette run est le meilleur score du compte. */
+    meilleurScore: boolean;
+  };
+  /** Dernier passage en jeu (ms epoch) — pour les citations « longue absence ». */
+  lastPlayedAt?: number;
 };
 
 const KEY = "aldenhar-player";
@@ -157,6 +181,8 @@ export function loadMemory(): PlayerMemory {
             typeof p.introSeen === "boolean"
               ? p.introSeen
               : (typeof p.runsStarted === "number" ? p.runsStarted : 0) > 0,
+          lastDeath: p.lastDeath && typeof p.lastDeath === "object" ? p.lastDeath : undefined,
+          lastPlayedAt: typeof p.lastPlayedAt === "number" ? p.lastPlayedAt : undefined,
         };
       }
     } catch {
@@ -257,10 +283,17 @@ export function recordDeath(args: {
   cause: string;
   place: string;
   killer?: { entity: string; label: string };
+  /** Mort par fixation (sociale, aux Landes) — nourrit le pool de citations. */
+  fixation?: boolean;
+  /** Acte le plus profond atteint par cette run (1 tant que seul l'Acte I existe). */
+  acte?: number;
 }): Relic {
   // Première mort du compte (jalon 21/07) : relique garantie rare+ (« fragment
-  // fort »). Lu AVANT l'incrément de `deaths` ci-dessous.
-  const firstDeath = loadMemory().deaths === 0;
+  // fort »). Lu AVANT l'incrément de `deaths` ci-dessous — comme `bestBefore`,
+  // qui sert au « meilleur score » du contexte de citations (30/07).
+  const memBefore = loadMemory();
+  const firstDeath = memBefore.deaths === 0;
+  const bestBefore = memBefore.bestDays;
   const relic = forgeRelic(args.heroName, args.days, firstDeath);
   mutateMemory((m) => {
     m.deaths += 1;
@@ -277,6 +310,21 @@ export function recordDeath(args: {
         runIndex: m.runsStarted,
       });
     }
+    // Contexte de la dernière mort (30/07) — ce que le pool de citations du
+    // Geôlier lira au retour à l'accueil. `classed` se calcule sur la mémoire
+    // DÉJÀ mise à jour (le héros vient d'entrer dans `fallen`).
+    const classed = buildLesCent(m, args.heroName, 0).some(
+      (r) => r.isPlayer && !r.running && r.name === args.heroName && r.days === args.days
+    );
+    m.lastDeath = {
+      day: args.days,
+      fixation: args.fixation ?? false,
+      rarity: relic.rarity,
+      classed,
+      acte: args.acte ?? 1,
+      meilleurScore: args.days > bestBefore,
+    };
+    m.lastPlayedAt = Date.now();
   });
   return relic;
 }

@@ -1,40 +1,35 @@
 "use client";
 
 /**
- * LA SÉQUENCE DE MORT — six écrans (journal Notion 26/07, §3).
+ * LA SÉQUENCE DE MORT — combustion, braises persistantes, révélation de la
+ * relique (journal Notion 30/07 ; maquettes Figma 2314-700 / 2295-653 /
+ * 2320-4447 / 2331-675 / 2333-10146 / 2332-6998, qui font foi sur le rendu).
  *
- * Ordre VERROUILLÉ :
- *   1 · le beat fatal → 2 · la mort → 3 · le fragment → 4 · le Registre
- *   → 5 · la relique → 6 · la relève
+ * Ordre : beat fatal (le dé pose la face rongée et « MORT » — géré par Die3D)
+ * → COMBUSTION de l'écran de scène → La mort (épitaphe + bilan) → Le fragment
+ * (la voix du Geôlier) → Le Registre (si le score entre aux Cent) → La
+ * relique, en DEUX temps (le coffre, puis la révélation) → retour à l'accueil.
  *
- * Le Registre passe AVANT la relique, et ce n'est pas un détail de montage :
- * le fragment et le Registre regardent en ARRIÈRE (ce que cette vie a été),
- * la relique regarde en AVANT (ce que la suivante emporte). Elle doit donc
- * être la dernière image avant la nouvelle run.
- *
- * Écran 1 — la mort arrive DANS la scène, jamais sur un écran séparé. Ce
- * composant se monte donc par-dessus le jeu en restant TRANSPARENT : il
- * mesure les vraies boîtes des CTA et du texte, puis les mange pixel par
- * pixel. Chaque pixel mangé libère au même endroit une braise orange qui
- * monte — les pixels ne s'effacent pas, ils PARTENT. C'est le seul moment du
- * jeu où le tap ne saute rien : le joueur n'a plus la main.
+ * La combustion : tous les éléments de la scène disparaissent pixel par
+ * pixel, comme brûlés — et les pixels TOMBENT (correction 30/07 : ils ne
+ * s'envolent plus). Ils se détachent, descendent comme des braises de papier
+ * brûlé, et ALIMENTENT le lit de braises qui court ensuite en bas de tous les
+ * écrans de bilan — c'est cette continuité qui fait tenir la séquence.
+ * L'écran finit entièrement noir. Le tap ne coupe rien.
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Relic } from "@/lib/player-memory";
 import TouchHint from "@/components/TouchHint";
-import { buildLesCent } from "@/lib/registre-data";
+import FondBraises from "@/components/FondBraises";
+import { buildLesCent, type RegistreEntry } from "@/lib/registre-data";
 import { loadMemory } from "@/lib/player-memory";
+import { pickJailerQuote, reactionJours } from "@/lib/jailer-quotes";
+import { ditherFadeMaskDataUrl } from "@/lib/dither";
 import { animReduced } from "@/lib/settings";
 
 const CHARBON = "#1c1a16";
 const ORANGE = "#e0632a";
-
-const RARITY_WORDS: Record<Relic["rarity"], string> = {
-  commune: "Relique commune",
-  rare: "Relique rare",
-  legendaire: "Relique légendaire",
-};
 
 export type Bilan = {
   jours: number;
@@ -49,12 +44,14 @@ export type Bilan = {
   reliques: number;
 };
 
-type Ecran = "fatal" | "mort" | "fragment" | "registre" | "relique" | "releve";
+type Ecran = "fatal" | "mort" | "fragment" | "registre" | "relique";
 
 /**
  * Le fragment du Geôlier : une chose de plus sur cet endroit, à chaque mort.
- * Arc GARANTI aux morts 1, 2, 3, puis 5, 8, 12, 17 — entre les deux, il se
- * tait, sinon la promesse de la 3ᵉ clause s'use.
+ * Arc GARANTI aux morts 1, 2, 3, puis 5, 8, 12, 17 — entre les jalons, la
+ * citation contextuelle du pool prend le relais (l'écran du fragment se joue
+ * toujours : la maquette 2320-4447 le montre comme un beat fixe de la
+ * séquence, le Geôlier réagit d'abord aux jours tenus).
  */
 const JALONS = [1, 2, 3, 5, 8, 12, 17];
 const FRAGMENTS = [
@@ -77,18 +74,14 @@ function useTyped(texte: string, actif: boolean) {
   const [n, setN] = useState(0);
   const [fini, setFini] = useState(false);
   useEffect(() => {
-    if (!actif) return;
+    if (!actif || !texte) return;
     if (animReduced()) {
-      // Animations réduites : le texte est déjà entier, on ne « tape » pas.
-      // Passe par un tick pour ne pas poser l'état dans le corps de l'effet.
       const t = setTimeout(() => {
         setN(texte.length);
         setFini(true);
       }, 0);
       return () => clearTimeout(t);
     }
-    // Pas de remise à zéro ici : l'état part déjà de 0/false et cet effet ne
-    // s'arme qu'une fois (l'écran du fragment n'est joué qu'une fois).
     let i = 0;
     const iv = setInterval(() => {
       i += 1;
@@ -101,6 +94,18 @@ function useTyped(texte: string, actif: boolean) {
     return () => clearInterval(iv);
   }, [texte, actif]);
   return { visible: texte.slice(0, n), fini };
+}
+
+/** Voile de lisibilité du coffre : trame de pixels charbon à densité
+    croissante vers le bas — jamais un dégradé CSS (règle DA). Masque généré
+    une fois, caché au niveau module. */
+let veilCache: string | null = null;
+function getVeilMask(): string | null {
+  if (typeof document === "undefined") return null;
+  // Généré à la taille d'affichage exacte (390×170) : étirer une trame Bayer
+  // déforme ses cellules — la leçon de la bande de dissolution (25/07).
+  if (!veilCache) veilCache = ditherFadeMaskDataUrl(390, 170, (_nx, ny) => 1 - ny);
+  return veilCache;
 }
 
 export default function DeathScreen({
@@ -119,29 +124,51 @@ export default function DeathScreen({
   relic: Relic;
   heroName: string;
   cause: string;
-  /** Jalon de première fois : le Geôlier accueille au lieu de railler, et la
-      relique est un fragment fort (déjà garanti côté forge). */
+  /** Jalon de première fois : la relique est un fragment fort (déjà garanti
+      côté forge) et la ligne de fonction accueille au lieu de railler. */
   firstDeath?: boolean;
   onRestart: () => void;
 }) {
   const [ecran, setEcran] = useState<Ecran>("fatal");
+  const [coffreOuvert, setCoffreOuvert] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [motVisible, setMotVisible] = useState(false);
 
   const mem = useMemo(() => loadMemory(), []);
   const morts = mem.deaths;
-  const fragment = useMemo(() => fragmentPour(morts), [morts]);
-  const { visible: fragTexte, fini: fragFini } = useTyped(fragment ?? "", ecran === "fragment");
 
-  // Le classement, pour l'écran 4 : la ligne du héros et ses deux voisines.
-  const voisines = useMemo(() => {
-    const rows = buildLesCent(mem, heroName, 0);
-    const i = rows.findIndex((r) => r.isPlayer && r.name === heroName && r.days === day);
-    if (i < 0) return null;
-    return { avant: rows[i - 1], moi: rows[i], apres: rows[i + 1] };
-  }, [mem, heroName, day]);
+  // Le texte du fragment : réaction aux jours tenus, puis fragment d'arc au
+  // jalon — sinon une citation contextuelle du pool. Tiré dans un EFFET, pas
+  // au rendu : le tirage écrit la mémoire des « 3 dernières servies ».
+  const [fragTexteSrc, setFragTexteSrc] = useState("");
+  useEffect(() => {
+    const arc = fragmentPour(morts);
+    const suite =
+      arc ??
+      pickJailerQuote({
+        morts,
+        jour: day,
+        acte: 1,
+        fixation: cause === "le Hameau des Renonçants",
+        rareteRare: relic.rarity !== "commune",
+        classe: false,
+        joursHorsJeu: 0,
+        meilleurScore: day >= mem.bestDays && morts > 1,
+      });
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- le tirage écrit le localStorage (3 dernières servies) : impossible au rendu
+    setFragTexteSrc(`${reactionJours(day)}\n\n${suite}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- tiré une seule fois par mort
+  }, []);
+  const { visible: fragTexte, fini: fragFini } = useTyped(fragTexteSrc, ecran === "fragment");
 
-  /* ─── écran 1 : la dissolution de la scène, braises comprises ────────── */
+  // Le classement, pour l'écran du Registre : la ligne du héros doit
+  // réellement entrer aux Cent — sinon le livre perd sa valeur.
+  const lesCent = useMemo(() => buildLesCent(mem, heroName, 0), [mem, heroName]);
+  const classe = useMemo(
+    () => lesCent.some((r) => r.isPlayer && r.name === heroName && r.days === day),
+    [lesCent, heroName, day]
+  );
+
+  /* ─── écran 1 : la combustion — les pixels TOMBENT et nourrissent le lit ── */
   useEffect(() => {
     if (ecran !== "fatal") return;
     const cv = canvasRef.current;
@@ -156,31 +183,35 @@ export default function DeathScreen({
     cv.width = W;
     cv.height = H;
 
-    // On mange les VRAIES boîtes de l'écran de jeu : d'abord les CTA (le
-    // joueur perd la main), ensuite le texte (la scène perd sa voix).
+    // Tout y passe (30/07) : d'abord les CTA (le joueur perd la main), puis le
+    // texte (la scène perd sa voix), puis LE RESTE de l'écran — narration,
+    // illustration, dé, verdict. L'écran finit entièrement noir.
     const rectDe = (sel: string) => {
       const el = document.querySelector(sel) as HTMLElement | null;
       if (!el || !box) return null;
       const r = el.getBoundingClientRect();
       return { x: r.left - box.left, y: r.top - box.top, w: r.width, h: r.height };
     };
-    const zones = [rectDe(".choices-bar"), rectDe(".scene-text-zone")].filter(
-      (z): z is { x: number; y: number; w: number; h: number } => !!z
-    );
+    const zones = [
+      rectDe(".choices-bar"),
+      rectDe(".scene-text-zone"),
+      { x: 0, y: 0, w: W, h: H },
+    ].filter((z): z is { x: number; y: number; w: number; h: number } => !!z);
 
-    // Le mot MORT apparaît sèchement, puis la dissolution commence.
-    const motAt = 420;
-    const dissolveAt = 1100;
+    const dissolveAt = 500;
     const t0 = performance.now();
     const CELL = 3;
-    type Braise = { x: number; y: number; v: number; vie: number };
-    const braises: Braise[] = [];
+    // Les pixels détachés TOMBENT — gravité, légère ondulation — et
+    // s'accumulent en bas : c'est le futur lit de braises des écrans suivants.
+    type Chute = { x: number; y: number; v: number; vie: number };
+    const chutes: Chute[] = [];
+    const SOL_COL = 2; // largeur d'une colonne d'accumulation, en px
+    const sol = new Float32Array(Math.ceil(W / SOL_COL));
     const mangees = new Set<string>();
     let raf = 0;
-    let motPose = false;
 
-    // Ordre de repas : par zone, du bas vers le haut, avec un peu de désordre
-    // seedé — une grille qui se vide ligne par ligne aurait l'air d'un store.
+    // Ordre de combustion : par zone, du bas vers le haut, avec un désordre
+    // seedé — une grille qui se vide ligne à ligne aurait l'air d'un store.
     const cellules: { x: number; y: number; ordre: number }[] = [];
     zones.forEach((z, zi) => {
       for (let y = z.y; y < z.y + z.h; y += CELL) {
@@ -192,17 +223,14 @@ export default function DeathScreen({
       }
     });
     const ordreMax = Math.max(1, ...cellules.map((c) => c.ordre));
+    const duree = 3400; // toute la surface, pas seulement deux boîtes
 
     function draw(now: number) {
       raf = requestAnimationFrame(draw);
       const t = now - t0;
-      if (!motPose && t > motAt) {
-        motPose = true;
-        setMotVisible(true);
-      }
       ctx!.clearRect(0, 0, W, H);
 
-      // Ce qui a déjà été mangé reste mangé (charbon plein).
+      // Ce qui a déjà brûlé reste brûlé (charbon plein).
       ctx!.fillStyle = CHARBON;
       mangees.forEach((k) => {
         const [x, y] = k.split(",").map(Number);
@@ -210,7 +238,7 @@ export default function DeathScreen({
       });
 
       if (t > dissolveAt) {
-        const p = Math.min(1, (t - dissolveAt) / 1800);
+        const p = Math.min(1, (t - dissolveAt) / duree);
         const seuil = p * ordreMax * 1.05;
         for (const c of cellules) {
           const k = `${c.x},${c.y}`;
@@ -218,32 +246,53 @@ export default function DeathScreen({
           mangees.add(k);
           ctx!.fillStyle = CHARBON;
           ctx!.fillRect(c.x, c.y, CELL, CELL);
-          // Le pixel mangé ne disparaît pas : il s'envole.
-          if (braises.length < 900)
-            braises.push({ x: c.x + 1, y: c.y, v: 0.5 + Math.random() * 1.1, vie: 0 });
+          // Le pixel brûlé ne disparaît pas : il SE DÉTACHE et tombe.
+          if (chutes.length < 1100 && Math.random() < 0.6)
+            chutes.push({ x: c.x + 1, y: c.y, v: 0.4 + Math.random() * 0.9, vie: 0 });
         }
       }
 
-      // Les braises montent et rejoignent les cendres du Geôlier.
-      for (let i = braises.length - 1; i >= 0; i--) {
-        const b = braises[i];
-        b.y -= b.v;
+      // Les braises de papier brûlé descendent, ondulent, et se posent : le
+      // lit s'épaissit là où elles atterrissent.
+      for (let i = chutes.length - 1; i >= 0; i--) {
+        const b = chutes[i];
+        b.v += 0.05; // gravité douce — une braise, pas une pierre
+        b.y += b.v;
+        b.x += Math.sin((b.vie + i) * 0.11) * 0.5;
         b.vie += 1;
-        if (b.y < -2 || b.vie > 140) {
-          braises.splice(i, 1);
+        const col = Math.max(0, Math.min(sol.length - 1, Math.round(b.x / SOL_COL)));
+        const plancher = H - sol[col];
+        if (b.y >= plancher) {
+          sol[col] = Math.min(16, sol[col] + 0.45);
+          chutes.splice(i, 1);
           continue;
         }
         // Raréfaction par PROBABILITÉ de dessin, jamais par alpha (DA).
-        if (Math.random() > 1 - b.y / H) continue;
-        ctx!.fillStyle = Math.random() < 0.78 ? ORANGE : "rgba(224,99,42,.5)";
-        ctx!.fillRect(Math.round(b.x + Math.sin(b.vie * 0.09) * 1.5), Math.round(b.y), 1, 1);
+        if (Math.random() < 0.2) continue;
+        ctx!.fillStyle = Math.random() < 0.8 ? ORANGE : "rgba(224,99,42,.5)";
+        ctx!.fillRect(Math.round(b.x), Math.round(b.y), 1, 1);
       }
 
-      // Fin : tout est mangé et les dernières braises sont hautes. On
-      // n'attend pas que la toute dernière sorte du cadre — la séquence
-      // traînerait de plusieurs secondes pour trois pixels.
-      if (t > dissolveAt + 2600 && braises.length < 40) {
+      // Le lit qui couve en bas : pixels orange à densité décroissante vers le
+      // haut de l'accumulation — le raccord visuel avec FondBraises.
+      for (let c = 0; c < sol.length; c++) {
+        const h = sol[c];
+        if (h < 1) continue;
+        for (let y = 0; y < h; y += 1) {
+          const densite = 1 - y / Math.max(1, h);
+          if (Math.random() < densite * 0.75) {
+            ctx!.fillStyle = ORANGE;
+            ctx!.fillRect(c * SOL_COL, H - 1 - y, SOL_COL, 1);
+          }
+        }
+      }
+
+      // Fin : tout est brûlé, les dernières braises posées → noir complet,
+      // puis l'écran suivant. On n'attend pas la toute dernière chute.
+      if (t > dissolveAt + duree + 500 && chutes.length < 30) {
         cancelAnimationFrame(raf);
+        ctx!.fillStyle = CHARBON;
+        ctx!.fillRect(0, 0, W, H);
         setEcran("mort");
       }
     }
@@ -252,65 +301,62 @@ export default function DeathScreen({
   }, [ecran]);
 
   const suivant = () => {
-    if (ecran === "mort") return setEcran(fragment ? "fragment" : "registre");
+    if (ecran === "mort") return setEcran("fragment");
     if (ecran === "fragment") return setEcran("registre");
     if (ecran === "registre") return setEcran("relique");
-    if (ecran === "relique") return setEcran("releve");
+    if (ecran === "relique") {
+      // Le coffre : le premier tap RÉVÈLE, il ne fait pas avancer (30/07).
+      if (!coffreOuvert) return setCoffreOuvert(true);
+      return onRestart();
+    }
   };
 
-  /* ─── écran 1 : transparent, posé sur le jeu ─────────────────────────── */
+  /* ─── écran 1 : transparent, posé sur le jeu — le tap ne coupe rien ────── */
   if (ecran === "fatal") {
     return (
-      <div className={`absolute inset-0 z-[20] ${animReduced() ? "" : "death-quake"}`}>
+      <div className="absolute inset-0 z-[20]">
         <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
-        {motVisible && (
-          <p
-            className="death-mot absolute inset-x-0 top-[46%] z-[1] text-center"
-            style={{ fontFamily: "var(--font-title)" }}
-          >
-            MORT
-          </p>
-        )}
       </div>
     );
   }
 
-  /* ─── écrans 2 à 6 : plein cadre charbon ─────────────────────────────── */
+  /* ─── écrans de bilan : plein cadre charbon, lit de braises en bas ─────── */
   return (
     <div
-      className="absolute inset-0 z-[20] flex flex-col justify-center bg-[var(--color-bg)] px-[26px]"
-      onClick={ecran === "releve" ? undefined : suivant}
+      className="absolute inset-0 z-[20] flex flex-col overflow-hidden bg-[var(--color-bg)]"
+      onClick={suivant}
     >
       {ecran === "mort" && (
-        <div className="text-center">
-          <p className="font-mono text-[10px] uppercase tracking-[3px] text-[var(--color-ink)] opacity-50">
-            Ci-tombe
-          </p>
+        <div className="flex flex-1 flex-col px-[15px] pt-[64px]">
+          {/* Maquette 2295-653 : le nom en Instrument Serif 48 orange, la puce
+              JOUR, l'épitaphe entre deux filets, puis le bilan — les seuls
+              chiffres bruts autorisés du jeu (un registre, pas un score). */}
           <h2
-            className="mt-[10px] text-[40px] leading-[1.05] tracking-[2px] text-[var(--color-ink)]"
+            className="text-center text-[48px] leading-none text-[var(--color-accent)]"
             style={{ fontFamily: "var(--font-title)" }}
           >
-            {heroName.toUpperCase()}
+            {heroName}
           </h2>
-          <p className="mt-[14px] font-mono text-[11px] uppercase tracking-[4px] text-[var(--color-accent)]">
-            Jour {day}
-          </p>
-          <p className="mt-[18px] font-mono text-[13px] leading-[1.7] text-[var(--color-ink)]">
-            {epitaph}
-          </p>
-          {/* Le BILAN : les seuls chiffres bruts autorisés du jeu. C'est un
-              registre, pas un retour de partie — d'où le ton de greffe. */}
-          <div className="mx-auto mt-[26px] flex w-[250px] flex-col gap-[7px] text-left">
-            <LigneBilan label="Jours tenus" valeur={String(bilan.jours)} accent />
+          <div className="mt-[18px] flex items-center justify-center gap-[8px]">
+            <span className="size-[3px] rotate-45 bg-[var(--color-accent)]" aria-hidden />
+            <span className="font-mono text-[12px] font-medium uppercase tracking-[0.6px] text-[var(--color-accent)]">
+              Jour {day}
+            </span>
+            <span className="size-[3px] rotate-45 bg-[var(--color-accent)]" aria-hidden />
+          </div>
+          <div className="mt-[30px] border-t border-[var(--color-ink)]/20 pt-[22px]">
+            <p className="mx-auto w-[350px] text-center font-mono text-[13px] leading-[1.3] text-[var(--color-ink)]">
+              {epitaph}
+            </p>
+          </div>
+          <div className="mt-[22px] border-t border-[var(--color-ink)]/20" />
+          <div className="mt-[28px] flex flex-col gap-[16px]">
+            <LigneBilan label="Jours tenus" valeur={String(bilan.jours)} />
             <LigneBilan label="Plus loin descendue" valeur={bilan.plusLoin} />
             <LigneBilan label="Lieux traversés" valeur={String(bilan.lieux)} />
             <LigneBilan label="Rencontres" valeur={String(bilan.rencontres)} />
-            <LigneBilan label="Dés lancés" valeur={`${bilan.des} (${bilan.desTenus} tenus)`} />
-            <LigneBilan
-              label="Destins · Malédictions"
-              valeur={`${bilan.destins} · ${bilan.maledictions}`}
-              accent
-            />
+            <LigneBilan label="Dés lancés" valeur={`${bilan.des} · ${bilan.desTenus} tenus`} />
+            <LigneBilan label="Destins • Malédictions" valeur={`${bilan.destins} • ${bilan.maledictions}`} />
             <LigneBilan label="Reliques portées" valeur={String(bilan.reliques)} />
           </div>
           <TouchHint />
@@ -318,9 +364,18 @@ export default function DeathScreen({
       )}
 
       {ecran === "fragment" && (
-        <div>
-          <p className="text-center text-[20px] text-[var(--color-accent)]">◉</p>
-          <p className="mt-[16px] whitespace-pre-line font-mono text-[14px] leading-[1.75] text-[var(--color-accent)]">
+        <div className="flex flex-1 flex-col">
+          {/* Maquette 2320-4447 : la tête du Geôlier émerge du noir en haut,
+              sa voix au centre — réaction aux jours, puis fragment d'arc ou
+              citation contextuelle. Frappe 42 ms, la cadence du Geôlier. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            alt=""
+            src="assets/mort_geolier_tete.png"
+            className="block w-full select-none"
+            style={{ imageRendering: "pixelated" }}
+          />
+          <p className="mx-auto mt-[14px] w-[350px] whitespace-pre-line text-center font-mono text-[13px] leading-[1.55] text-[var(--color-ink)]">
             {fragTexte}
             {!fragFini && <span className="type-cursor">▌</span>}
           </p>
@@ -328,207 +383,352 @@ export default function DeathScreen({
         </div>
       )}
 
-      {ecran === "registre" && (
-        <div>
-          <p className="text-center font-mono text-[10px] uppercase tracking-[3px] text-[var(--color-ink)] opacity-50">
-            Le Grand Registre
-          </p>
-          {voisines ? (
-            <>
-              <h3
-                className="mt-[10px] mb-[20px] text-center text-[24px] leading-[1.1] text-[var(--color-ink)]"
-                style={{ fontFamily: "var(--font-title)" }}
-              >
-                Ton nom entre au livre
-              </h3>
-              <div className="flex flex-col">
-                {voisines.avant && <LigneRegistre e={voisines.avant} />}
-                <LigneRegistre e={voisines.moi} moi />
-                {voisines.apres && <LigneRegistre e={voisines.apres} />}
-              </div>
-              <p className="mt-[22px] text-center font-mono text-[11px] leading-[1.6] text-[var(--color-ink)] opacity-50">
-                Quatre-vingt-dix-neuf places sont prenables.
-                <br />
-                La première, non.
-              </p>
-            </>
-          ) : (
-            // Sans quoi le Registre perd sa valeur : on n'entre pas au livre
-            // parce qu'on est mort, on y entre parce qu'on a tenu.
-            <>
-              <h3
-                className="mt-[10px] text-center text-[24px] leading-[1.1] text-[var(--color-ink)]"
-                style={{ fontFamily: "var(--font-title)" }}
-              >
-                Ton nom n&apos;entre pas au livre
-              </h3>
-              <p className="mt-[16px] text-center font-mono text-[13px] leading-[1.7] text-[var(--color-ink)] opacity-50">
-                {day} jour{day > 1 ? "s" : ""}. Cent tiennent mieux que ça.
-              </p>
-            </>
-          )}
-          <TouchHint />
-        </div>
-      )}
-
-      {ecran === "relique" && (
-        <div className="text-center">
-          <p className="font-mono text-[10px] uppercase tracking-[3px] text-[var(--color-ink)] opacity-50">
-            Ce qui reste
-          </p>
-          <Forge />
-          <h3
-            className="mt-[10px] text-[24px] leading-[1.1] text-[var(--color-ink)]"
-            style={{ fontFamily: "var(--font-title)" }}
-          >
-            {relic.name}
-          </h3>
-          <p className="mt-[10px] font-mono text-[13px] leading-[1.6] text-[var(--color-ink)]">
-            {firstDeath
-              ? "De cette première mort, il reste plus que d'ordinaire."
-              : "Celui qui te suivra la portera."}
-          </p>
-          {relic.rarity !== "commune" && (
-            <p className="mt-[14px] font-mono text-[13px] leading-[1.6] text-[var(--color-accent)] italic">
-              «&nbsp;{cause}&nbsp;»
+      {ecran === "registre" &&
+        (classe ? (
+          <RegistreMort lesCent={lesCent} fallen={mem.fallen} heroName={heroName} day={day} cause={cause} />
+        ) : (
+          <div className="flex flex-1 flex-col justify-center px-[26px]">
+            {/* Sans quoi le Registre perd sa valeur : on n'entre pas au livre
+                parce qu'on est mort, on y entre parce qu'on a tenu. */}
+            <h3
+              className="text-center text-[24px] leading-[1.1] text-[var(--color-ink)]"
+              style={{ fontFamily: "var(--font-title)" }}
+            >
+              Ton nom n&apos;entre pas au livre
+            </h3>
+            <p className="mt-[16px] text-center font-mono text-[13px] leading-[1.7] text-[var(--color-ink)] opacity-50">
+              {day} jour{day > 1 ? "s" : ""}. Cent tiennent mieux que ça.
             </p>
-          )}
-          <p className="mt-[12px] font-mono text-[9px] uppercase tracking-[3px] text-[var(--color-ink)] opacity-50">
-            {RARITY_WORDS[relic.rarity]}
-          </p>
-          <TouchHint />
-        </div>
-      )}
+            <TouchHint />
+          </div>
+        ))}
 
-      {ecran === "releve" && (
-        <div className="text-center">
-          <p className="font-mono text-[15px] leading-[1.7] text-[var(--color-ink)]">
-            Un autre attend déjà au Seuil.
-            <br />
-            <span className="opacity-50">
-              Il ne saura rien de toi — sauf ce que tu lui laisses.
-            </span>
-          </p>
-          <button
-            type="button"
-            onClick={onRestart}
-            className="death-cta-plein mt-[26px] cursor-pointer border-none font-mono text-[14px] font-medium uppercase tracking-[2px]"
-          >
-            Un autre viendra
-          </button>
-          <button
-            type="button"
-            onClick={onRestart}
-            className="mt-[22px] block w-full cursor-pointer border-none bg-transparent font-mono text-[11px] text-[var(--color-ink)] opacity-50 underline underline-offset-[3px]"
-          >
-            Reposer le livre
-          </button>
-        </div>
-      )}
+      {ecran === "relique" &&
+        (!coffreOuvert ? (
+          /* Phase A — le coffre (maquette 2333-10146) : plein cadre, voile de
+             lisibilité TRAMÉ en bas, le tap déclenche la révélation. */
+          <div className="absolute inset-0">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              alt=""
+              src="assets/mort_coffre.png"
+              className="absolute inset-0 h-full w-full object-cover select-none"
+              style={{ imageRendering: "pixelated" }}
+            />
+            <div
+              className="absolute inset-x-0 bottom-0 h-[170px] bg-[var(--color-bg)]"
+              style={{
+                maskImage: getVeilMask() ? `url(${getVeilMask()})` : undefined,
+                WebkitMaskImage: getVeilMask() ? `url(${getVeilMask()})` : undefined,
+                maskSize: "100% 100%",
+                WebkitMaskSize: "100% 100%",
+              }}
+              aria-hidden
+            />
+            <p className="absolute inset-x-0 bottom-[42px] text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]">
+              Touche le coffre pour
+              <br />
+              découvrir ta relique
+            </p>
+          </div>
+        ) : (
+          /* Phase B — la révélation (maquette 2332-6998) : un nuage de cendres
+             se disperse en cercle irrégulier derrière la relique (~1 s), puis
+             retombe. Ensuite : tag de rareté, nom, fonction, murmure. */
+          <div className="flex flex-1 flex-col items-center px-[27px] pt-[108px]">
+            <div className="relative">
+              <CendresRevelation />
+              <div className="relative size-[336px] overflow-hidden border-2 border-solid border-[var(--color-accent)]">
+                {/* Pas encore d'illustration par relique (celle de la maquette
+                    est une démo) : l'icône tramée générique des Reliques. */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  alt=""
+                  src="assets/objet_couronne_brisee.png"
+                  className="h-full w-full object-cover select-none"
+                  style={{ imageRendering: "pixelated" }}
+                />
+              </div>
+            </div>
+            <TagRarete rarity={relic.rarity} className="mt-[20px]" />
+            <h3
+              className="mt-[12px] text-center text-[36px] leading-none text-[var(--color-accent)]"
+              style={{ fontFamily: "var(--font-title)" }}
+            >
+              {relic.name}
+            </h3>
+            <p className="mt-[24px] w-[336px] text-center font-mono text-[13px] leading-[1.3] text-[var(--color-ink)]">
+              {firstDeath
+                ? "De cette première mort, il reste plus que d'ordinaire."
+                : "Celui qui te suivra la portera."}
+            </p>
+            {relic.rarity !== "commune" && (
+              <p className="mt-[14px] text-center font-mono text-[13px] italic leading-[1.5] text-[var(--color-accent)]">
+                «&nbsp;{cause}&nbsp;»
+              </p>
+            )}
+            <TouchHint />
+          </div>
+        ))}
+
+      {/* Le fond de braises — présent en bas de TOUS les écrans de la
+          séquence (30/07) : ce qui est tombé pendant la combustion couve
+          encore, jusqu'au retour à l'accueil. */}
+      <FondBraises height={48} />
     </div>
   );
 }
 
-function LigneBilan({ label, valeur, accent }: { label: string; valeur: string; accent?: boolean }) {
+/**
+ * Tag de rareté (maquette 2333-7011, qui fait foi — AUCUNE couleur neuve, la
+ * palette reste Charbon/Orange/Blanc) : commune = contour blanc, rare = fond
+ * blanc texte charbon, légendaire = fond orange texte charbon.
+ */
+function TagRarete({ rarity, className }: { rarity: Relic["rarity"]; className?: string }) {
+  const base =
+    "inline-block p-[4px] font-mono text-[12px] font-medium uppercase tracking-[0.6px] leading-[1.2]";
+  if (rarity === "legendaire")
+    return <span className={`${base} bg-[var(--color-accent)] text-[var(--color-bg)] ${className ?? ""}`}>relique légendaire</span>;
+  if (rarity === "rare")
+    return <span className={`${base} bg-[var(--color-ink)] text-[var(--color-bg)] ${className ?? ""}`}>relique rare</span>;
+  return (
+    <span className={`${base} border border-solid border-[var(--color-ink)] text-[var(--color-ink)] ${className ?? ""}`}>
+      relique commune
+    </span>
+  );
+}
+
+function LigneBilan({ label, valeur }: { label: string; valeur: string }) {
+  // Maquette 2295-653 : libellé blanc-50 à gauche, valeur BLANCHE à droite,
+  // tout en 13px mono capitales — plus d'accent orange sur les valeurs.
   return (
     <div className="flex items-baseline justify-between gap-[10px]">
-      <span className="font-mono text-[11px] text-[var(--color-ink)] opacity-50">{label}</span>
-      <span
-        className={`font-mono text-[13px] ${
-          accent ? "text-[var(--color-accent)]" : "text-[var(--color-ink)]"
-        }`}
-      >
+      <span className="font-mono text-[13px] uppercase leading-[1.3] text-[var(--color-ink)] opacity-50">
+        {label}
+      </span>
+      <span className="text-right font-mono text-[13px] uppercase leading-[1.3] text-[var(--color-ink)]">
         {valeur}
       </span>
     </div>
   );
 }
 
-function LigneRegistre({
-  e,
+/**
+ * L'écran du Registre (maquette 2331-675) : le livre en haut, deux onglets
+ * TES MORTS / LES 100, la ligne du héros surlignée pleine largeur avec le
+ * liseré orange. TES MORTS classe les héros du COMPTE par jours tenus.
+ */
+function RegistreMort({
+  lesCent,
+  fallen,
+  heroName,
+  day,
+  cause,
+}: {
+  lesCent: RegistreEntry[];
+  fallen: { name: string; days: number; cause: string }[];
+  heroName: string;
+  day: number;
+  cause: string;
+}) {
+  const [onglet, setOnglet] = useState<"morts" | "cent">("morts");
+  const tesMorts = useMemo(() => {
+    const rows = [...fallen].sort((a, b) => b.days - a.days);
+    return rows.map((r, i) => ({ rank: i + 1, ...r }));
+  }, [fallen]);
+  // La ligne du héros qui vient de tomber : première occurrence exacte.
+  const moiIdx = tesMorts.findIndex((r) => r.name === heroName && r.days === day && r.cause === cause);
+
+  return (
+    <div className="flex min-h-0 flex-1 flex-col">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        alt=""
+        src="assets/objet_grand_registre_d.png"
+        className="block h-[128px] w-full object-cover object-[center_38%] select-none"
+        style={{ imageRendering: "pixelated" }}
+      />
+      <div className="mt-[10px] flex items-center justify-center gap-[8px]">
+        <span className="size-[3px] rotate-45 bg-[var(--color-accent)]" aria-hidden />
+        <span className="font-mono text-[12px] font-medium uppercase tracking-[0.6px] text-[var(--color-accent)]">
+          Grand Registre
+        </span>
+        <span className="size-[3px] rotate-45 bg-[var(--color-accent)]" aria-hidden />
+      </div>
+      <h3
+        className="mt-[6px] text-center text-[30px] leading-[1.05] text-[var(--color-accent)]"
+        style={{ fontFamily: "var(--font-title)" }}
+      >
+        Ton nom entre au livre
+      </h3>
+      <div className="mt-[14px] flex gap-[10px] px-[15px]">
+        <OngletRegistre actif={onglet === "morts"} label="Tes morts" onClick={() => setOnglet("morts")} />
+        <OngletRegistre actif={onglet === "cent"} label="Les 100" onClick={() => setOnglet("cent")} />
+      </div>
+      <div className="mt-[12px] flex items-baseline px-[15px] font-mono text-[10px] uppercase tracking-[1px] text-[var(--color-ink)] opacity-50">
+        <span className="w-[44px]">Rang</span>
+        <span className="flex-1">Nom</span>
+        <span>Jours</span>
+      </div>
+      <div className="mt-[4px] min-h-0 flex-1 overflow-y-auto pb-[70px]">
+        {onglet === "morts"
+          ? tesMorts.map((r, i) => (
+              <LigneRegistreMort
+                key={`${r.name}-${i}`}
+                rank={r.rank}
+                name={r.name}
+                sub={r.cause}
+                days={r.days}
+                moi={i === moiIdx}
+              />
+            ))
+          : lesCent.map((r) => (
+              <LigneRegistreMort
+                key={`${r.rank}-${r.name}`}
+                rank={r.rank}
+                name={r.name}
+                sub={r.cause}
+                days={r.days}
+                moi={Boolean(r.isPlayer && r.name === heroName && r.days === day)}
+              />
+            ))}
+      </div>
+      <TouchHint />
+    </div>
+  );
+}
+
+function OngletRegistre({ actif, label, onClick }: { actif: boolean; label: string; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        // L'onglet ne doit pas faire avancer la séquence (le conteneur écoute
+        // le tap « Touche pour continuer »).
+        e.stopPropagation();
+        onClick();
+      }}
+      className={`h-[34px] flex-1 cursor-pointer border border-solid bg-transparent font-mono text-[12px] font-medium uppercase tracking-[2px] ${
+        actif
+          ? "border-[var(--color-ink)] text-[var(--color-ink)]"
+          : "border-[var(--color-ink)]/25 text-[var(--color-ink)] opacity-50"
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function LigneRegistreMort({
+  rank,
+  name,
+  sub,
+  days,
   moi,
 }: {
-  e: { rank: number; name: string; days: number; cause: string };
+  rank: number;
+  name: string;
+  sub: string;
+  days: number;
   moi?: boolean;
 }) {
   return (
-    <div className={`relative flex items-baseline gap-[10px] py-[9px] ${moi ? "" : "opacity-35"}`}>
+    <div
+      className={`relative flex items-center gap-[12px] px-[15px] py-[9px] ${
+        moi ? "bg-[var(--color-accent)]/25" : ""
+      }`}
+    >
       {moi && (
-        <span
-          aria-hidden
-          className="pointer-events-none absolute top-0 bottom-0 left-[-14px] w-[3px] bg-[var(--color-accent)]"
-        />
+        <span aria-hidden className="absolute inset-y-0 left-0 w-[4px] bg-[var(--color-accent)]" />
       )}
       <span
-        className={`w-[32px] shrink-0 text-[17px] ${
+        className={`w-[32px] shrink-0 font-mono text-[13px] ${
           moi ? "text-[var(--color-accent)]" : "text-[var(--color-ink)] opacity-50"
         }`}
-        style={{ fontFamily: "var(--font-title)" }}
       >
-        {e.rank}
+        {rank}
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-mono text-[13px] uppercase text-[var(--color-ink)]">
-          {e.name}
+        <span className="block font-mono text-[13px] uppercase tracking-[0.5px] text-[var(--color-ink)]">
+          {name}
         </span>
-        <span className="mt-[3px] block font-mono text-[10px] text-[var(--color-ink)] opacity-50">
-          {e.cause}
+        <span className="mt-[2px] block font-mono text-[10px] text-[var(--color-ink)] opacity-50">
+          {sub}
         </span>
       </span>
       <span
-        className={`w-[52px] shrink-0 text-right text-[19px] ${
+        className={`shrink-0 text-right font-mono text-[13px] ${
           moi ? "text-[var(--color-accent)]" : "text-[var(--color-ink)]"
         }`}
-        style={{ fontFamily: "var(--font-title)" }}
       >
-        {e.days}
+        {days}
       </span>
     </div>
   );
 }
 
 /**
- * La relique SE FORGE à l'écran : les cendres du fond convergent et
- * s'agglomèrent pour dessiner sa silhouette. Pas de fondu — un pixel est en
- * vol (clairsemé) ou posé (plein).
+ * Le nuage de cendres de la révélation (30/07) : il se DISPERSE en cercle
+ * IRRÉGULIER derrière la relique sur ~1 seconde, puis retombe. Bruit sur le
+ * rayon, densité inégale selon l'angle — jamais un anneau régulier.
  */
-function Forge() {
+function CendresRevelation() {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
     const cv = ref.current;
     if (!cv) return;
-    const x = cv.getContext("2d");
-    if (!x) return;
-    const S = 150;
+    const ctx = cv.getContext("2d");
+    if (!ctx) return;
+    const S = 420;
+    cv.width = cv.height = S;
     const cx = S / 2;
     const cy = S / 2;
-    const cible: [number, number][] = [];
-    for (let a = 0; a < 6.283; a += 0.04) {
-      const rr = 30 + Math.sin(a * 6) * 2;
-      cible.push([cx + Math.cos(a) * rr, cy - 8 + Math.sin(a) * rr * 0.55]);
-    }
-    for (let k = 0; k < 34; k++) cible.push([cx + 14 + Math.sin(k * 0.3) * 3, cy + 10 + k * 1.2]);
-    const parts = cible.map(([tx, ty]) => ({
-      tx,
-      ty,
-      x: cx + (Math.random() - 0.5) * S,
-      y: S + Math.random() * 40,
+
+    // Densité inégale selon l'angle : 5 lobes de poids aléatoires, figés au
+    // montage — le cercle a des trous et des paquets, jamais une couronne.
+    const lobes = Array.from({ length: 5 }, () => ({
+      a: Math.random() * Math.PI * 2,
+      w: 0.4 + Math.random() * 0.9,
     }));
-    let t = 0;
-    let raf = 0;
+    const poids = (angle: number) =>
+      lobes.reduce((s, l) => s + l.w * Math.max(0, Math.cos(angle - l.a)) ** 2, 0.25);
+
+    type Cendre = { a: number; r0: number; r1: number; v: number; taille: number };
+    const cendres: Cendre[] = [];
+    for (let i = 0; i < 260; i++) {
+      const a = Math.random() * Math.PI * 2;
+      if (Math.random() > poids(a) / 1.6) continue;
+      cendres.push({
+        a,
+        r0: 40 + Math.random() * 40,
+        // Bruit sur le rayon final : le front du nuage n'est jamais un cercle.
+        r1: 130 + Math.random() * 80 + Math.sin(a * 3.7) * 22,
+        v: 0.8 + Math.random() * 0.5,
+        taille: Math.random() < 0.7 ? 1 : 2,
+      });
+    }
+
     const reduced = animReduced();
-    function anim() {
-      t += 1;
-      x!.fillStyle = CHARBON;
-      x!.fillRect(0, 0, S, S);
-      for (const p of parts) {
-        p.x += (p.tx - p.x) * (reduced ? 1 : 0.045);
-        p.y += (p.ty - p.y) * (reduced ? 1 : 0.045);
-        const pose = Math.abs(p.x - p.tx) < 1.5 && Math.abs(p.y - p.ty) < 1.5;
-        x!.fillStyle = pose ? ORANGE : Math.random() < 0.5 ? "rgba(224,99,42,.6)" : "rgba(255,255,255,.25)";
-        x!.fillRect(p.x | 0, p.y | 0, pose ? 2 : 1, pose ? 2 : 1);
+    const t0 = performance.now();
+    let raf = 0;
+    function anim(now: number) {
+      const t = Math.min(1.6, (now - t0) / 1000);
+      ctx!.clearRect(0, 0, S, S);
+      for (const c of cendres) {
+        // ~1 s de dispersion, puis la retombée : le rayon se fige, la cendre
+        // descend et se raréfie (probabilité de dessin, jamais l'alpha).
+        const p = Math.min(1, t * c.v);
+        const r = c.r0 + (c.r1 - c.r0) * (1 - (1 - p) * (1 - p));
+        const chute = Math.max(0, t - 1) * 60 * c.v;
+        const x = cx + Math.cos(c.a) * r;
+        const y = cy + Math.sin(c.a) * r * 0.92 + chute;
+        const survie = t < 1 ? 0.85 : Math.max(0, 1 - (t - 1) * 1.6);
+        if (Math.random() > survie) continue;
+        ctx!.fillStyle = Math.random() < 0.75 ? ORANGE : "rgba(255,255,255,.25)";
+        ctx!.fillRect(Math.round(x), Math.round(y), c.taille, c.taille);
       }
-      if (t < 200 && !reduced) raf = requestAnimationFrame(anim);
+      if (t < 1.6 && !reduced) raf = requestAnimationFrame(anim);
+      else ctx!.clearRect(0, 0, S, S);
     }
     raf = requestAnimationFrame(anim);
     return () => cancelAnimationFrame(raf);
@@ -536,10 +736,9 @@ function Forge() {
   return (
     <canvas
       ref={ref}
-      width={150}
-      height={150}
-      className="mx-auto mt-[10px] block size-[150px]"
+      className="pointer-events-none absolute left-1/2 top-1/2 size-[420px] -translate-x-1/2 -translate-y-1/2"
       style={{ imageRendering: "pixelated" }}
+      aria-hidden
     />
   );
 }

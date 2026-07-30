@@ -33,6 +33,13 @@ export type RollRequest = {
    * visuel — n'affecte JAMAIS le résultat, densifie seulement la tension.
    */
   highStakes?: boolean;
+  /**
+   * Beat fatal (30/07) : la scène sait si CE palier tue (santé − coût ≤ 0, ou
+   * procès de fixation raté). Quand c'est le cas, le dé s'immobilise sur une
+   * face RONGÉE et illisible — aucun chiffre — et « MORT » remplace le
+   * verdict. Le tap ne coupe rien : la combustion enchaîne toute seule.
+   */
+  fatalCheck?: (tier: ResolutionTier) => boolean;
 };
 
 type Props = {
@@ -196,6 +203,40 @@ export default function Die3D({ request, onComplete }: Props) {
       const tx = new THREE.CanvasTexture(c);
       // Sans ça, Three.js interprète le canvas comme linéaire et délave
       // l'orange #e0632a en saumon pâle au rendu.
+      tx.colorSpace = THREE.SRGBColorSpace;
+      tx.magFilter = THREE.NearestFilter;
+      tx.minFilter = THREE.NearestFilter;
+      return tx;
+    }
+
+    /**
+     * Face RONGÉE du beat fatal (30/07) : AUCUN chiffre. Un fond charbon
+     * terne mangé de pixels orange épars — ce qui reste d'une face après le
+     * feu. Ruine seedée (stable pendant tout le reveal), dense au centre,
+     * clairsemée aux bords : la lecture est « illisible », pas « vide ».
+     */
+    function faceRongee() {
+      const s = 96;
+      const c = document.createElement("canvas");
+      c.width = c.height = s;
+      const ctx = c.getContext("2d")!;
+      ctx.fillStyle = INK;
+      ctx.fillRect(0, 0, s, s);
+      let seed = 0xf47a1 >>> 0;
+      const rnd = () => {
+        seed = (seed * 1664525 + 1013904223) >>> 0;
+        return seed / 4294967296;
+      };
+      ctx.fillStyle = FACE_SHADE;
+      for (let y = 4; y < s - 4; y += 3) {
+        for (let x = 4; x < s - 4; x += 3) {
+          const dx = (x - s / 2) / (s / 2);
+          const dy = (y - s / 2) / (s / 2);
+          const centre = Math.max(0, 1 - Math.hypot(dx, dy));
+          if (rnd() < 0.06 + centre * 0.22) ctx.fillRect(x, y, 2, 2);
+        }
+      }
+      const tx = new THREE.CanvasTexture(c);
       tx.colorSpace = THREE.SRGBColorSpace;
       tx.magFilter = THREE.NearestFilter;
       tx.minFilter = THREE.NearestFilter;
@@ -430,6 +471,8 @@ export default function Die3D({ request, onComplete }: Props) {
     function onDown(e: MouseEvent | TouchEvent) {
       // Écran de résultat : « Touche pour continuer » — un toucher n'importe où.
       if (state === "reveal") {
+        // Beat fatal : le tap ne coupe pas — la combustion vient toute seule.
+        if (fatalLock) return;
         e.preventDefault();
         dismissResult();
         return;
@@ -585,6 +628,9 @@ export default function Die3D({ request, onComplete }: Props) {
     /** Vacillement « de justesse » : la face oscille orange/charbon avant de se fixer. */
     let revealT = 0;
     let justesseFlicker = false;
+    /** Beat fatal : tant que le verrou est posé, aucun tap ne dismisse. */
+    let fatalLock = false;
+    let fatalTimer: ReturnType<typeof setTimeout> | null = null;
 
     function finishRoll() {
       state = "reveal";
@@ -593,6 +639,28 @@ export default function Die3D({ request, onComplete }: Props) {
       chosen = outcome;
       chosenTier = tier;
       justesseFlicker = tier === "justesse";
+
+      // ── BEAT FATAL (30/07) : ce palier tue. La face gagnante devient une
+      // face rongée SANS chiffre, « MORT » tombe sec sous le dé (Instrument
+      // Serif très espacé), et la séquence enchaîne TOUTE SEULE — le tap ne
+      // coupe pas, c'est le seul moment du jeu où le joueur n'a plus la main.
+      if (requestRef.current?.fatalCheck?.(tier)) {
+        fatalLock = true;
+        justesseFlicker = false;
+        mats[result - 1].map = faceRongee();
+        mats[result - 1].needsUpdate = true;
+        vWord!.textContent = "MORT";
+        vWord!.className = "word mort";
+        vOut!.classList.add("hidden");
+        verdict!.classList.add("show");
+        hint!.classList.add("hidden");
+        haptic([90, 60, 140]);
+        fatalTimer = setTimeout(() => {
+          fatalLock = false;
+          dismissResult();
+        }, 1700);
+        return;
+      }
 
       // Aide de l'Anneau (spec 19/07) : se retire d'elle-même une fois la
       // première réussite ET le premier échec vécus.
@@ -770,6 +838,7 @@ export default function Die3D({ request, onComplete }: Props) {
     return () => {
       cancelAnimationFrame(raf);
       activateRef.current = null;
+      if (fatalTimer) clearTimeout(fatalTimer);
       stopRingReveal();
       helpLink.removeEventListener("click", onHelpDismiss);
       stage.removeEventListener("mousedown", onDown);
