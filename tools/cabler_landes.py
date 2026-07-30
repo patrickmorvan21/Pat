@@ -57,6 +57,27 @@ def main() -> int:
             s["illustration"] = nom
             print(f"  {sid:24s} → {nom}   [{reporter_dans_ts(sid, 'illustration', nom)}]")
 
+    # La carte de l'atelier affiche `lieux[].illustration`, pas celle des
+    # scènes : sans ce réalignement, un lot qui change la vue d'ÉTABLISSEMENT
+    # d'un lieu laisse la carte sur l'ancienne image (vu le 29/07 : borne,
+    # moulin, puits restés sur leurs vues d'avant le lot). La scène d'arrivée
+    # fait foi — la première en ordre de document pour ce lieu, qui est
+    # toujours l'établissement (les combats/beats arrivent après).
+    lieux_realignes = []
+    if ecrire:
+        arrivees: dict[str, dict] = {}
+        for s in d["scenes"]:
+            if s.get("type") == "arrivee" and s.get("lieu"):
+                arrivees.setdefault(s["lieu"], s)
+        for lieu in d.get("lieux", []):
+            sc = arrivees.get(lieu["id"])
+            if not sc or not sc.get("illustration"):
+                continue
+            voulu = "assets/" + sc["illustration"].rsplit("/", 1)[-1]
+            if lieu.get("illustration") != voulu:
+                lieux_realignes.append((lieu["id"], voulu.rsplit("/", 1)[-1]))
+                lieu["illustration"] = voulu
+
     # Ce qui est demandé par une scène mais absent du disque : à dire, jamais
     # à laisser passer en silence.
     orphelins: list[tuple[str, str]] = []
@@ -69,6 +90,10 @@ def main() -> int:
         ZONE.write_text(json.dumps(d, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     print(f"\n{len(poses)} image(s) à câbler · {inchanges} déjà en place")
+    if lieux_realignes:
+        print(f"{len(lieux_realignes)} lieu(x) de la carte réaligné(s) sur leur scène d'arrivée :")
+        for lid, img in lieux_realignes:
+            print(f"  {lid:24s} → {img}")
     if absents:
         print(f"⏸ {len(absents)} en attente :")
         for nom, pourquoi in absents:

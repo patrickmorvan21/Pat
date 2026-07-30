@@ -63,7 +63,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/scene_moulin_sans_ailes_d_d.png",
+      "illustration": "assets/scene_moulin_campement_a.png",
       "portrait_requis": false,
       "x": 300,
       "y": 1160
@@ -177,7 +177,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/scene_puits_condamne_c.png",
+      "illustration": "assets/scene_puits_condamne_a.png",
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
       "x": 660,
@@ -265,7 +265,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/scene_borne_frontiere_a_c.png",
+      "illustration": "assets/scene_borne_frontiere_b.png",
       "portrait_requis": false,
       "x": 1560,
       "y": 70
