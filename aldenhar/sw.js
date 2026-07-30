@@ -13,7 +13,7 @@
    dur. `cache.add("./")` → la racine servie, `cache.add("assets/x.png")`
    → <base>/assets/x.png, etc. */
 
-const CACHE_VERSION = "pactum-v51";
+const CACHE_VERSION = "pactum-v52";
 
 /* Coquille précachée à l'installation : les pages navigables + les
    assets à nom STABLE affichés tôt (logo, Geôlier, cadre). On NE code
@@ -32,6 +32,14 @@ const APP_SHELL = [
   "icons/apple-touch-icon.png",
   // Assets critiques à nom stable (rendus dès l'accueil / tôt en jeu).
   // Le dé est généré en Three.js (pas de sprite fichier) : rien à lister.
+  //
+  // ⚠️ Depuis le 30/07, l'app demande ces images AVEC le hash de leur contenu
+  // (« assets/x.png?v=a3f2b9c1 », cf. lib/assets.ts) : ces entrées non hashées
+  // ne sont donc pas celles qui seront servies. Elles restent listées comme
+  // filet (si `assetUrl` ne connaît pas un fichier, il renvoie l'URL nue) ; les
+  // URL hashées, elles, sont mises en cache au 1er chargement EN LIGNE par le
+  // handler `fetch`. Une URL qui porte son hash est immuable : la garder en
+  // cache ne peut jamais servir une vieille image.
   "assets/pactum_logo.png",
   "assets/geolier_detoure.png",
   "assets/geolier_portrait.png",
