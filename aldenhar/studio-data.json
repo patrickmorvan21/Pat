@@ -1,0 +1,4350 @@
+{
+ "regions": [
+  {
+   "id": "hameau",
+   "nom": "Le Hameau des Renonçants",
+   "scenes": [
+    "tour-de-guet",
+    "chapelle-des-cordes",
+    "chien-du-bailli",
+    "petit-tribunal",
+    "puits-condamne",
+    "marche-muet"
+   ]
+  }
+ ],
+ "genere": "2026-07-30T20:16:17Z",
+ "commit": "b5ed308",
+ "zones": [
+  {
+   "id": "landes",
+   "nom": "Les Landes",
+   "acte": 1,
+   "lieux": [
+    {
+     "id": "colline_aux_gibets",
+     "nom": "La Colline aux Gibets",
+     "illustration": "scene_colline_aux_gibets_c.png",
+     "x": 900,
+     "y": 80,
+     "note": "lieu-signature · le Gibet Vide"
+    },
+    {
+     "id": "champ_des_fixes",
+     "nom": "Le Champ des Fixés",
+     "illustration": "scene_champ_des_fixes_b.png",
+     "x": 1790,
+     "y": 430,
+     "note": "cimetière des pendus"
+    },
+    {
+     "id": "moulin_sans_ailes",
+     "nom": "Le Moulin sans Ailes",
+     "illustration": "scene_moulin_campement_a.png",
+     "x": 300,
+     "y": 1160,
+     "note": "refuge supposé de la Fille"
+    },
+    {
+     "id": "mare_aux_regards",
+     "nom": "La Mare aux Regards",
+     "illustration": "scene_mare_aux_regards_a.png",
+     "x": 320,
+     "y": 150,
+     "note": "le reflet en retard"
+    },
+    {
+     "id": "hameau_des_renoncants",
+     "nom": "Le Hameau des Renonçants",
+     "illustration": "scene_hameau_dense2_b.png",
+     "x": 660,
+     "y": 470,
+     "note": "région englobante (cadre pointillé) : contient la Chapelle des Cordes, la Maison du Bailli, le Petit Tribunal, le Puits Condamné, le Marché Muet et la Tour de Guet effondrée · le Serment s'impose à son entrée"
+    },
+    {
+     "id": "chapelle_des_cordes",
+     "nom": "La Chapelle des Cordes",
+     "illustration": "scene_chapelle_des_cordes_d.png",
+     "x": 900,
+     "y": 470,
+     "note": "reliques des fixations"
+    },
+    {
+     "id": "maison_du_bailli",
+     "nom": "La Maison du Bailli",
+     "illustration": "scene_maison_du_bailli_c.png",
+     "x": 1380,
+     "y": 470,
+     "note": "murée de l'intérieur"
+    },
+    {
+     "id": "petit_tribunal",
+     "nom": "Le Petit Tribunal",
+     "illustration": "scene_petit_tribunal_a.png",
+     "x": 1140,
+     "y": 470,
+     "note": "la Fixation y est jugée"
+    },
+    {
+     "id": "puits_condamne",
+     "nom": "Le Puits Condamné",
+     "illustration": "scene_puits_condamne_a.png",
+     "x": 660,
+     "y": 740,
+     "note": "planches et chaînes"
+    },
+    {
+     "id": "marche_muet",
+     "nom": "Le Marché Muet",
+     "illustration": "scene_marche_muet_c.png",
+     "x": 900,
+     "y": 740,
+     "note": "troc sans paroles · Colporteur"
+    },
+    {
+     "id": "tour_de_guet_effondree",
+     "nom": "La Tour de Guet effondrée",
+     "illustration": "scene_tour_de_guet_a.png",
+     "x": 1140,
+     "y": 740,
+     "note": "elle surveillait l'intérieur"
+    },
+    {
+     "id": "verger_noir",
+     "nom": "Le Verger Noir",
+     "illustration": "scene_verger_noir_d.png",
+     "x": 70,
+     "y": 480,
+     "note": "fruits de cendre"
+    },
+    {
+     "id": "chemin_creux",
+     "nom": "Le Chemin Creux",
+     "illustration": "scene_chemin_creux_c.png",
+     "x": 110,
+     "y": 860,
+     "note": "vu sans voir"
+    },
+    {
+     "id": "borne_frontiere",
+     "nom": "La Borne Frontière",
+     "illustration": "scene_borne_frontiere_b.png",
+     "x": 1560,
+     "y": 70,
+     "note": "limite des Renonçants"
+    },
+    {
+     "id": "palissade_sud",
+     "nom": "La Palissade Sud",
+     "illustration": "scene_palissade_sud_a_a.png",
+     "x": 1160,
+     "y": 1130,
+     "note": "le mur côté Profondeurs"
+    }
+   ]
+  }
+ ],
+ "scenes": [
+  {
+   "id": "borne-frontiere",
+   "narration": [
+    "La lande s'ouvre sous un crépuscule qui ne tombe pas. La lumière  reste prise entre chien et loup, comme un souffle retenu. Quelque  part, une corde grince.",
+    "La pierre est seule au milieu du plateau, dressée là où tous les murets  renoncent. Haute comme un homme, grise comme le reste — et pourtant  l'œil ne voit qu'elle. À son pied, un tas d'offrandes. Au-delà, le  sud, nu. Et à trois pas de la borne, un homme immobile, face au sud."
+   ],
+   "choix": [
+    {
+     "id": "fouiller-offrandes",
+     "label": "Fouiller les offrandes",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Sous le pain moisi, une pierre plate gravée d'un pas — une Pierre de Retour. Ceux qui la déposent reviennent, dit-on. Celle-ci n'a jamais été réclamée.",
+      "reussite": "Tes doigts trient sans déranger. Un clou tordu, une mèche de cheveux — et le sens de tout ça : on n'offre pas par foi, ici. On offre par peur. Bon à savoir.",
+      "echec": "Un ruban glisse et tout l'édifice s'éboule. Le vent se lève d'un coup, bref, comme une inspiration — la lande a noté que tu prends sans donner.",
+      "funeste": "1 naturel. Sous les offrandes, une main à plat, paume ouverte. Elle attendait la tienne. ♦ −2"
+     },
+     "donneObjet": "offrandes-borne"
+    },
+    {
+     "id": "ecouter-voix",
+     "label": "Écouter, immobile",
+     "type": "passif",
+     "consequence": "Tu ne touches à rien. Tu écoutes. Sous le vent, il y a des voix "
+    },
+    {
+     "id": "repondre-voix",
+     "label": "Répondre aux voix",
+     "type": "verrouille",
+     "stat": "EMPATHIE"
+    }
+   ],
+   "pointsInteret": [
+    {
+     "id": "gravures-borne",
+     "label": "Les gravures de la pierre",
+     "approche": "Tu fais le tour de la pierre lentement, la main à plat sur le ",
+     "examen": "Des marques sur toutes les faces, de toutes les mains, de toutes ",
+     "fragmentChapitre": true,
+     "nom": "Les gravures de la pierre",
+     "image": {
+      "fichier": "scene_borne_gravures_a_d.png",
+      "hash": "e4dd0628",
+      "taille": 12652,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "eclat-descelle",
+     "label": "Un angle cassé, au ras du sol",
+     "approche": "Un angle de la borne manque. Tu t'accroupis : la cassure est ",
+     "examen": "L'éclat est encore là, à demi enterré sous la bruyère. Il ne l'a ",
+     "donneObjet": "pierre-retour",
+     "nom": "Un angle cassé, au ras du sol",
+     "image": {
+      "fichier": "scene_borne_eclat_a_b.png",
+      "hash": "39fc719f",
+      "taille": 11742,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "homme-immobile",
+     "label": "L'homme qui regarde le sud",
+     "approche": "Tu quittes la borne et tu marches vers lui, sans te presser, en ",
+     "examen": "L'herbe autour de ses pieds est couchée, morte. Il est là depuis ",
+     "ouvreSur": "hesitant-1",
+     "nom": "L'homme qui regarde le sud",
+     "image": {
+      "fichier": "monstre_hesitant_b.png",
+      "hash": "79ff7f45",
+      "taille": 14688,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    }
+   ],
+   "nom": "La Borne Frontière",
+   "lieu": "borne_frontiere",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_borne_frontiere_b.png",
+    "hash": "fc1f6b62",
+    "taille": 21662,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Entrée de zone, tout premier écran du jeu. La borne-frontière dressée seule sur le plateau, ses faces gravées, les offrandes à son pied, et le chemin qui s'enfonce au sud dans le noir.",
+   "promptImage": "single tall standing stone in the middle of an empty moor plateau, carved marks on its faces, small pile of humble offerings at its base, path vanishing south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "hesitant-1"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "hesitant-1",
+   "narration": [
+    "Il ne se retourne pas. Il t'a entendu, pourtant — ses épaules l'ont dit.",
+    "— « Tu l'entends fort, toi ? » Sa voix est calme, épuisée d'être calme.  « Moi, c'est encore bas. Comme des gens qui parlent dans la maison  d'à côté. On comprend pas les mots. On comprend juste... qu'on parle  de nous. »"
+   ],
+   "choix": [
+    {
+     "id": "hesitant-depuis-quand",
+     "label": "« Depuis combien de temps ? »",
+     "type": "passif",
+     "consequence": "— « Ma femme dit trois semaines. » Un temps. « Ma femme dit "
+    },
+    {
+     "id": "hesitant-mentir",
+     "label": "Mentir : « Je n'entends rien. »",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu le dis avec l'ennui exact de quelqu'un qui ne comprend pas la question. Il te croit — et quelque chose se relâche dans ses épaules, une espérance idiote : si un autre n'entend rien, alors ça se peut. Tu viens de lui donner trois semaines de plus. En mentant.",
+      "reussite": "Tu hausses les épaules. Il te regarde de biais, longtemps, puis renonce à trancher. « Tant mieux pour toi », dit-il, et ça sonne presque sincère.",
+      "echec": "Tu le dis trop vite, ou trop fort. Il rit — doucement, terriblement. « Tous ceux qui descendent disent ça. C'est même à ça qu'on vous reconnaît. »",
+      "funeste": "1 naturel. « Je n'entends rien », dis-tu. Et au même instant, dans le creux de ton crâne, quelque chose répond quelque chose. Ton visage le raconte à ta place. ♦ −2"
+     },
+     "soupcon": 1
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hesitant-2",
+   "nom": "L'Hésitant",
+   "lieu": "borne_frontiere",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_hesitant_b.png",
+    "hash": "79ff7f45",
+    "taille": 14688,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Un homme immobile face au sud, dos au hameau, planté depuis si longtemps que l'herbe s'est couchée sous lui. La borne dressée à côté de lui.",
+   "promptImage": "gaunt hooded man standing motionless on a moor, seen from behind at three-quarters, facing away toward a dark southern horizon, worn travelling clothes, a small bundle at his feet, grass flattened around him, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "hesitant-2"
+   ],
+   "mèneIci": [
+    "borne-frontiere"
+   ]
+  },
+  {
+   "id": "hesitant-2",
+   "narration": [
+    "— « Je calcule. » Il montre la borne du menton, sans la regarder. « Si  je rentre, ils me liront sur la figure et je finirai au bout d'une  corde qui ne retient rien. Si je passe la pierre, je finis comme ceux  qui passent la pierre. »",
+    "Un temps. « Tu descends. Tu vas voir ce qu'on devient. Alors dis-moi ce  que tu choisirais. »"
+   ],
+   "choix": [
+    {
+     "id": "hesitant-raccompagner",
+     "label": "Le raccompagner au hameau",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu ne lui prends pas le bras — tu te mets simplement à marcher vers le nord, à son rythme, comme si c'était déjà décidé. Il suit. Les cent premiers pas, il marche à reculons, le sud toujours en face. Puis il pivote, et c'est fini : il rentre. Ce que tu viens de sauver tiendra trois semaines ou trente ans. Ici, ça s'appelle une victoire.",
+      "reussite": "Il te suit, à contrecœur, en s'arrêtant deux fois. Au deuxième arrêt il ne dit rien et repart quand même. C'est peut-être le maximum qu'on puisse obtenir d'un homme dans cet état.",
+      "echec": "Il ne bouge pas. Il s'assied au pied de la borne, dos à la pierre, face au sud — et c'est pire que tout, parce que maintenant il est confortable.",
+      "funeste": "1 naturel. Tu lui parles de sa femme. Il tourne enfin la tête vers toi, et son visage est celui de quelqu'un qui vient de comprendre qu'il ne se souvient plus de son nom à elle. ♦ −2"
+     },
+     "soupcon": -1
+    },
+    {
+     "id": "hesitant-passe",
+     "label": "« Passe. »",
+     "type": "passif",
+     "consequence": "Tu le dis sans y mettre de poids. Il hoche la tête, plusieurs "
+    },
+    {
+     "id": "hesitant-partir",
+     "label": "Ne pas répondre et partir",
+     "type": "passif",
+     "consequence": "Tu ne réponds pas. Tu reprends ta route, et derrière toi sa voix "
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hesitant-3",
+   "nom": "L'Hésitant — beat 2",
+   "lieu": "borne_frontiere",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_hesitant_b.png",
+    "hash": "79ff7f45",
+    "taille": 14688,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Il parle enfin : tourné de trois-quarts, il désigne la borne du menton sans la regarder. CHANGE : il n'est plus figé face au sud — tête tournée, menton qui pointe la pierre.",
+   "promptImage": "",
+   "mèneVers": [
+    "hesitant-3"
+   ],
+   "mèneIci": [
+    "hesitant-1"
+   ]
+  },
+  {
+   "id": "hesitant-3",
+   "narration": [
+    "Il te laisse partir le premier. C'est important pour lui : que tu ne le  voies pas décider.",
+    "Au bout de vingt pas tu te retournes quand même. La borne est seule au  milieu du plateau. Il n'y a plus personne à côté — et rien, sur la  bruyère couchée, ne dit dans quel sens il est parti."
+   ],
+   "choix": [
+    {
+     "id": "hesitant-reprendre-route",
+     "label": "Reprendre la route",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "nom": "L'Hésitant — beat 3",
+   "lieu": "borne_frontiere",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_hesitant_3_c.png",
+    "hash": "c1d9af6e",
+    "taille": 11251,
+    "recent": true,
+    "existe": true
+   },
+   "description": "La borne seule au milieu du plateau, la bruyère couchée à son pied, et rien qui dise dans quel sens il est parti. CHANGE : l'homme a DISPARU du cadre — même pierre, vide.",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "hesitant-2"
+   ]
+  },
+  {
+   "id": "chemin-creux",
+   "narration": [
+    "Le chemin s'enfonce entre deux talus plus hauts que toi ; le ciel  devient un ruban. C'est le plus court chemin des Landes, et le seul  où l'on ne voit pas venir.",
+    "Une charrette penche au premier coude. Les talus, au-dessus, sont  meubles. Plus loin, le chemin tourne et la terre mange la vue. Et  dans le creux, quelqu'un vient vers toi — de dos."
+   ],
+   "choix": [
+    {
+     "id": "couper-lande",
+     "label": "Couper par la lande",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tes pieds trouvent une sente que la bruyère cachait — un chemin de braconnier, tracé par quelqu'un qui savait exactement ce qu'il évitait. Tu sais maintenant le reconnaître.",
+      "reussite": "Tu grimpes le talus et marches à découvert. La lande te voit — mais rien ne te suit. Le chemin creux, en dessous, continue sans toi.",
+      "echec": "La bruyère s'accroche, le sol boit tes pas. Quand tu redescends dans le creux, essoufflé, tu n'as gagné que le sentiment d'avoir été observé tout du long.",
+      "funeste": "1 naturel. La lande n'est pas plate. Elle respire. Et tu marches dessus. ♦ −2"
+     }
+    }
+   ],
+   "pointsInteret": [
+    {
+     "id": "charrette-embourbee",
+     "label": "La charrette embourbée",
+     "approche": "Elle penche dans l'ornière depuis si longtemps que le bois a pris ",
+     "examen": "Le chargement a disparu depuis longtemps. Le cheval aussi : le ",
+     "donneObjet": "grelot-charretier",
+     "nom": "La charrette embourbée",
+     "image": {
+      "fichier": "scene_chemin_charrette_a_c.png",
+      "hash": "0b772c65",
+      "taille": 10947,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "talus-empreintes",
+     "label": "Le haut des talus",
+     "approche": "Tu montes de trois pas dans la pente, juste assez pour voir la ",
+     "examen": "Des empreintes. Parallèles au chemin. Sur toute sa longueur — mais ",
+     "savoir": "savoir_bete_crete_nord",
+     "nom": "Le haut des talus",
+     "image": {
+      "fichier": "scene_chemin_talus_a_c.png",
+      "hash": "df0a1dec",
+      "taille": 9840,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "marcheur-rebours",
+     "label": "L'homme qui marche à reculons",
+     "approche": "Tu ralentis pour le laisser venir. Il marche à reculons d'un pas ",
+     "examen": "Son visage est tourné vers ce qu'il laisse derrière lui. ",
+     "ouvreSur": "marcheur-1",
+     "nom": "L'homme qui marche à reculons",
+     "image": {
+      "fichier": "monstre_marcheur_rebours_c.png",
+      "hash": "be499820",
+      "taille": 7537,
+      "recent": true,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    }
+   ],
+   "suite": "chemin-creux-2",
+   "savoir": "savoir_bete_crete_nord",
+   "nom": "Le Chemin Creux",
+   "lieu": "chemin_creux",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_chemin_creux_c.png",
+    "hash": "29c27c48",
+    "taille": 22199,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Arrivée au Chemin Creux. Une route encaissée entre deux hauts talus de terre, un ruban de ciel étroit au-dessus, des racines tordues qui sortent des parois.",
+   "promptImage": "sunken road between two high earthen banks, narrow ribbon of sky above, twisted roots protruding from the banks, deep shadows, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "chemin-creux-2",
+    "marcheur-1"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "chemin-creux-2",
+   "narration": [
+    "Le chemin tourne, et le talus mange la vue d'un coup. Passé le coude :  rien. C'est-à-dire l'endroit exact où il devrait y avoir quelque  chose, et il n'y a rien.",
+    "Le silence y est plus épais d'un cran, comme après un bruit que tu  aurais raté d'une seconde."
+   ],
+   "choix": [
+    {
+     "id": "franchir-coude",
+     "label": "Franchir le coude",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu presses le pas aux bons moments et tu t'arrêtes aux autres — sans savoir pourquoi, exactement quand il faut. Derrière toi, au-dessus, quelque chose s'arrête aussi, et repart trop tard. Le creux est traversé. Tu as pris un pas d'avance sur ce qui compte les pas.",
+      "reussite": "Tu passes le coude d'une traite, l'épaule au talus nord. Rien ne tombe, rien ne sort. Le chemin se rouvre sur la lande et tu ressors du couloir de terre entier.",
+      "echec": "Tu passes trop lentement. Rien n'attaque — mais quelque chose t'accompagne sur la crête jusqu'au bout du creux, à ta hauteur, réglant son pas sur le tien, et ne s'arrête que là où le talus s'abaisse.",
+      "funeste": "1 naturel. Au milieu du coude, tu comprends que le silence n'était pas vide : il était retenu. Quelque chose, tout près, avait cessé de respirer pour t'écouter passer. ♦ −2"
+     }
+    },
+    {
+     "id": "sortir-par-le-talus",
+     "label": "Sortir par le talus",
+     "type": "passif",
+     "consequence": "Tu renonces au coude. Tu grimpes, à quatre pattes sur les trois "
+    },
+    {
+     "id": "longer-cote-sud",
+     "label": "Longer le côté sud",
+     "type": "passif",
+     "consequence": "Tu passes le coude épaule contre le talus SUD, du côté vierge ",
+     "exigeSavoir": "savoir_bete_crete_nord"
+    }
+   ],
+   "pointsInteret": [],
+   "nom": "Le Chemin Creux — beat 2",
+   "lieu": "chemin_creux",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "scene_chemin_creux_c.png",
+    "hash": "29c27c48",
+    "taille": 22199,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Événement du Chemin Creux : le coude aveugle. Le talus mange la vue d'un coup — l'endroit exact où il devrait y avoir quelque chose, et où il n'y a rien.",
+   "promptImage": "blind bend of a sunken road between high earthen banks, the path disappearing around the curve, nothing visible beyond, very deep shadow at the turn, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": [
+    "chemin-creux",
+    "marcheur-3"
+   ]
+  },
+  {
+   "id": "marcheur-1",
+   "narration": [
+    "Il ne s'arrête pas à ta hauteur. Il ralentit, c'est tout — et te parle  en te dépassant, le regard toujours fixé sur le chemin derrière toi.",
+    "— « Marche pas côté nord du creux. » Pas de bonjour. Ici, les conseils  sont les politesses. « Elle longe la crête nord. Toujours. Les  empreintes du sud, c'est les vieilles. »"
+   ],
+   "choix": [
+    {
+     "id": "marcheur-vue",
+     "label": "« Vous l'avez vue ? »",
+     "type": "passif",
+     "consequence": "— « Vue, non. » Il continue de reculer, toujours au même rythme. "
+    },
+    {
+     "id": "marcheur-pourquoi",
+     "label": "« Pourquoi à reculons ? »",
+     "type": "passif",
+     "consequence": "— « Parce qu'elle attaque ce qui lui tourne le dos. » Il le dit "
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "marcheur-2",
+   "savoir": "savoir_bete_crete_nord",
+   "nom": "Marcheur 1",
+   "lieu": "chemin_creux",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_marcheur_1_b.png",
+    "hash": "a352d5cd",
+    "taille": 6372,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Le Marcheur à rebours avance en marche arrière dans le chemin creux, le regard fixé derrière lui : trente ans qu'il ne montre son dos à rien.",
+   "promptImage": "emaciated man walking backwards along a sunken road, face turned to look behind himself, eyes wide and fixed, arms slightly out for balance, ragged coat, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "marcheur-2"
+   ],
+   "mèneIci": [
+    "chemin-creux"
+   ]
+  },
+  {
+   "id": "marcheur-2",
+   "narration": [
+    "— « Tu veux traverser entier ? » Il est déjà trois pas plus loin.  « Alors fais comme moi jusqu'au coude. Après le coude, elle suit  plus. Personne sait pourquoi. On va pas lui demander. »"
+   ],
+   "choix": [
+    {
+     "id": "marcheur-imiter",
+     "label": "Marcher à reculons avec lui",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu pivotes et tu marches. Deux paires de talons dans le silence du creux, réglées l'une sur l'autre. Il commente à voix basse chaque chose que tu ne peux pas voir — l'ornière, la racine, l'endroit où le talus s'abaisse. Tu ressortiras d'ici en sachant lire un chemin creux. Ça ne s'oublie pas.",
+      "reussite": "Tu recules avec lui. C'est atroce les vingt premiers pas, puis le corps comprend. Ses indications s'impriment : la crête nord, les vieilles empreintes, le coude. Tu sauras.",
+      "echec": "Tu trébuches dans l'ornière au cinquième pas et tu t'étales. Son rire sec est le premier rire des Landes — et il ne s'arrête pas pour t'aider. Il ne s'arrête pas, c'est tout.",
+      "funeste": "1 naturel. Tu recules, les yeux au nord — et pendant une seconde entière, tu vois exactement ce qu'il regarde depuis trente ans. Tu comprends pourquoi il ne se retourne pas. ♦ −2"
+     }
+    },
+    {
+     "id": "marcheur-continuer",
+     "label": "Continuer normalement",
+     "type": "passif",
+     "consequence": "Tu restes face au sud, comme tout le monde. « Comme tu veux », "
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "marcheur-3",
+   "nom": "Marcheur 2 — beat 2",
+   "lieu": "chemin_creux",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_marcheur_2_b.png",
+    "hash": "e7304bbf",
+    "taille": 10971,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Il s'éloigne à reculons, déjà trois pas plus loin, et te parle par-dessus son épaule ; les talus se resserrent. CHANGE : il n'est plus devant toi, il recule dans la profondeur du chemin.",
+   "promptImage": "",
+   "mèneVers": [
+    "marcheur-3"
+   ],
+   "mèneIci": [
+    "marcheur-1"
+   ]
+  },
+  {
+   "id": "marcheur-3",
+   "narration": [
+    "Au coude, il pivote enfin — face au nord, dos au sud — et s'éloigne à  reculons vers là d'où tu viens.",
+    "Juste avant que le talus ne le mange, il lève deux doigts vers toi. Pas  un adieu. Un décompte : deux yeux. Il te rappelle d'en garder autant  derrière la tête."
+   ],
+   "choix": [
+    {
+     "id": "marcheur-saluer",
+     "label": "Reprendre le creux",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "chemin-creux-2",
+   "nom": "Marcheur 3 — beat 3",
+   "lieu": "chemin_creux",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_marcheur_3_b.png",
+    "hash": "18a0050e",
+    "taille": 3560,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Au coude du chemin il pivote face au nord et lève deux doigts vers toi, juste avant que le talus ne l'avale. CHANGE : vu de dos, et le geste des deux doigts levés.",
+   "promptImage": "",
+   "mèneVers": [
+    "chemin-creux-2"
+   ],
+   "mèneIci": [
+    "marcheur-2"
+   ]
+  },
+  {
+   "id": "bete-chemins-creux",
+   "narration": [
+    "Le creux tourne — et l'odeur arrive avant la chose : suint, terre  retournée, vieux cuir. Une masse se décolle du talus, longue, basse,  taillée pour courir exactement entre deux murs de terre.",
+    "Pas de gueule visible. Juste une avancée du corps qui s'ouvre. La  Bête ne chasse que dans le creux — c'est son couloir, son terrier,  sa table. Et tu es dessus."
+   ],
+   "choix": [
+    {
+     "id": "frapper-bete",
+     "label": "Frapper la bête",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Ta lame entre là où le corps s'ouvrait — la Bête se referme sur son propre cri. Elle reflue dans le talus comme une eau sale, et le creux est à toi.",
+      "reussite": "Le coup porte. La Bête se plie, surprise qu'on morde en premier, et s'enterre à mi-corps dans le talus. Tu passes. Elle ne suit pas — pas blessée à ce point, mais vexée, oui.",
+      "echec": "Ta lame racle du cuir sans entamer. L'avancée du corps te cueille à l'épaule et te plaque au talus — tu te dégages en y laissant du tien, et elle te laisse passer, servie.",
+      "funeste": "1 naturel. Tu frappes dans l'ouverture. C'est exactement ce qu'elle voulait. ♦ −2"
+     }
+    },
+    {
+     "id": "grimper-talus",
+     "label": "Bondir hors du creux",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu es sur le talus avant qu'elle n'ait fini son élan. Hors du creux, elle n'existe plus : la masse freine pile à la limite de l'ombre, comme au bout d'une chaîne. Tu marches au-dessus d'elle, tranquillement.",
+      "reussite": "Tes mains trouvent les racines, tes pieds la terre ferme. La Bête passe en dessous, longue à n'en plus finir — mais elle ne monte pas. Elle ne monte jamais.",
+      "echec": "Le talus s'éboule sous ta prise. Tu retombes dans le creux, à demi — et la Bête prend sa part de la jambe qui traînait encore.",
+      "funeste": "1 naturel. Tu bondis. Le talus aussi était la Bête. ♦ −2"
+     }
+    },
+    {
+     "id": "ornière",
+     "label": "Se plaquer, immobile",
+     "type": "passif",
+     "consequence": "Tu te coules dans l'ornière, face contre terre. La masse passe "
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "bete-chemins-creux",
+   "adversaireNom": "La Bête des Chemins Creux",
+   "combat": true,
+   "nom": "Bete chemins creux",
+   "lieu": "chemin_creux",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "monstre_bete_chemins_creux_a.png",
+    "hash": "4348084a",
+    "taille": 23757,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Combat, une scène. La Bête des Chemins Creux, qui longe la crête nord au même pas que ce qui marche en bas. On ne la voit qu'en silhouette, au-dessus.",
+   "promptImage": "massive quadruped silhouette crouched on the crest of an earthen bank, seen from below against a pale sky, long low body, head lowered toward the viewer, unnaturally still, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": []
+  },
+  {
+   "id": "colline-aux-gibets",
+   "narration": [
+    "La pente est douce et n'en finit pas — la Colline se mérite à pas  comptés. Au sommet, le cercle : neuf potences ordinaires, plantées  comme les heures d'un cadran. Et au centre, l'autre. La grande. Sa  corde est la seule chose neuve à dix lieues.",
+    "À gauche du cercle, un poteau isolé porte encore son occupant. À  droite, les potences vides alignent leurs noms gravés."
+   ],
+   "choix": [
+    {
+     "id": "monter-sommet",
+     "label": "Rester au sommet",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [
+    {
+     "id": "corbeaux-compte",
+     "label": "Les corbeaux, sur la traverse",
+     "approche": "Ils sont sur la traverse du grand gibet, immobiles, et ils ne ",
+     "examen": "Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, ",
+     "corbeaux": true,
+     "nom": "Les corbeaux, sur la traverse",
+     "image": {
+      "fichier": "monstre_corbeaux_du_compte_b.png",
+      "hash": "03b469b0",
+      "taille": 28966,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "potences-cercle",
+     "label": "Les potences du cercle",
+     "approche": "Tu entres dans le cercle. Le vent monte d'un cran dès le premier ",
+     "examen": "Chaque potence porte un nom gravé au pied, et une date. Les ",
+     "fragmentChapitre": true,
+     "nom": "Les potences du cercle",
+     "image": {
+      "fichier": "scene_colline_potences_cercle_a_c.png",
+      "hash": "20afbb76",
+      "taille": 11627,
+      "recent": true,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "gibet-vide",
+     "label": "Le Gibet Vide, au centre",
+     "approche": "Tu marches vers le centre, et la chose grandit plus vite que tes ",
+     "examen": "Le bois est d'œuvre, assemblé pour durer mille ans. La corde ",
+     "fragmentChapitre": true,
+     "nom": "Le Gibet Vide, au centre",
+     "image": {
+      "fichier": "scene_colline_gibet_vide_a_b.png",
+      "hash": "83c68692",
+      "taille": 21563,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "poteau-pendu",
+     "label": "Le poteau isolé, à gauche",
+     "approche": "Tu contournes le cercle par la gauche. Le poteau isolé est plus ",
+     "examen": "Chaîne de fonction au cou, sous la corde. Un sceau au poing. Et ",
+     "soupcon": 1,
+     "nom": "Le poteau isolé, à gauche",
+     "image": null,
+     "description": "",
+     "promptImage": ""
+    }
+   ],
+   "suite": "colline-aux-gibets-2",
+   "soupconArrivee": 1,
+   "nom": "La Colline aux Gibets",
+   "lieu": "colline_aux_gibets",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_colline_aux_gibets_c.png",
+    "hash": "38dc9e32",
+    "taille": 34788,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Arrivée à la Colline aux Gibets, lieu-signature de la zone. Le cercle de potences sur la crête nue, vu d'en bas en contre-plongée, les cordes qui balancent.",
+   "promptImage": "circle of nine wooden gallows on a bare hilltop seen from below, low angle, ropes swaying, crows on the crossbeams, stormy sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "colline-aux-gibets-2"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "colline-aux-gibets-2",
+   "narration": [
+    "Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme  plat, les neuf cordes du cercle se mettent à bouger. Pas au hasard :  ensemble. Un balancement lent, réglé, qui va et vient sur le même temps.",
+    "Ça grince en mesure. Neuf cordes, un seul rythme. Tu comprends, avec  un retard qui te coûte, que ce rythme ne t'est pas indifférent —  tu pourrais le compter."
+   ],
+   "choix": [
+    {
+     "id": "echarde",
+     "label": "Arracher une écharde",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Le bois vient sans résister — il se donne. L'écharde est tiède dans ta paume, et la corde, au-dessus, cesse de grincer. Le Gibet Vide t'a pris en compte.",
+      "reussite": "Tu détaches une longue écharde du montant. Le bois est doux, poli par des mains — combien de mains ? L'ombre au sol frémit, mais ne bouge pas vers toi.",
+      "echec": "Le bois crie sous ta lame — un son de gorge, pas de fibre. Les corbeaux décomptent un cran, tous ensemble. Tu emportes l'écharde, mais la colline emporte quelque chose de toi.",
+      "funeste": "1 naturel. L'écharde t'entre dans la paume. Profond. C'est le gibet qui prélève. ♦ −2"
+     },
+     "donneObjet": "echarde-gibet",
+     "poseFlag": "echarde-gibet-prelevee"
+    },
+    {
+     "id": "compter-battements",
+     "label": "Rester et compter",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu comptes jusqu'au bout, sans ciller. Le nombre tombe, et il ne te dit rien — pas encore. Tu le retiens quand même. Un jour, en te réveillant sur une autre borne, tu te souviendras de ce chiffre et tu sauras exactement ce qu'il comptait.",
+      "reussite": "Tu comptes. Le nombre est petit, et c'est le pire : les cordes ne battent pas les morts de la lande. Elles battent les tiennes. Le compte est juste. Tu redescends sans le dire à voix haute.",
+      "echec": "Tu perds le fil au milieu — les cordes changent de mesure dès qu'on les suit, et tu comprends que compter, ici, c'est se faire compter. Le rythme reprend, plus lent, comme si on t'attendait.",
+      "funeste": "1 naturel. Tu comptes, et la dernière corde attend ton chiffre pour bouger. Elle a bougé. Tu as donné le nombre le premier. ♦ −2"
+     }
+    },
+    {
+     "id": "redescendre",
+     "label": "Partir avant de comprendre",
+     "type": "passif",
+     "consequence": "Tu tournes le dos au cercle avant d'avoir fini de compter — et "
+    }
+   ],
+   "pointsInteret": [],
+   "poseFlag": "echarde-gibet-prelevee",
+   "nom": "La Colline aux Gibets — beat 2",
+   "lieu": "colline_aux_gibets",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "scene_colline_gibets_2_a.png",
+    "hash": "99d86877",
+    "taille": 31826,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Événement de la Colline : au sommet, entre les potences. L'écharde du grand gibet se prélève ici.",
+   "promptImage": "standing inside a circle of wooden gallows on a hilltop, ropes hanging at eye level all around, splintered beam in the foreground, vast empty sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": [
+    "colline-aux-gibets"
+   ]
+  },
+  {
+   "id": "pendu-qui-parle",
+   "narration": [
+    "Au revers de la colline, un gibet bas, à hauteur d'homme. Le pendu  qui s'y balance ouvre les yeux à ton approche. Chaîne de fonction  au cou, sous la corde. Un sceau au poing. Le Bailli des Landes —  pendu le dernier, à la place d'honneur."
+   ],
+   "choix": [
+    {
+     "id": "detailler-sceau",
+     "label": "Détailler le sceau à son poing",
+     "type": "passif",
+     "consequence": "Le sceau est serré dans sa main comme une charge qu'on n'a pas "
+    },
+    {
+     "id": "jauger-pendu",
+     "label": "Le jauger sans approcher",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu lis le gibet avant l'homme : bâti bas EXPRÈS, à hauteur de regard. Il ne pend pas — il siège. Et sa corde à lui n'est pas usée : il ne s'est jamais débattu. Ce savoir vaut une arme, ici.",
+      "reussite": "Quelque chose cloche et tu finis par le voir : ses pieds touchent presque terre. Il pourrait se poser. Il ne le fait pas. Ce n'est pas une exécution, c'est une permanence.",
+      "echec": "Tu l'observes trop longtemps — c'est lui qui finit de t'observer le premier. « On se demande lequel est exposé », dit la corde en grinçant. Tu as perdu l'avantage du regard.",
+      "funeste": "1 naturel. Tu le jauges. Il attend poliment que tu aies fini — puis rend son verdict d'un mot que tu n'entends pas, mais que la colline note. ♦ −2"
+     }
+    },
+    {
+     "id": "approcher-gibet",
+     "label": "S'approcher du gibet bas",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "pendu-qui-parle-2",
+   "nom": "Le Pendu qui parle",
+   "lieu": "colline_aux_gibets",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "monstre_pendu_qui_parle_a.png",
+    "hash": "26043560",
+    "taille": 33787,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Arrivée au gardien de zone : le Bailli pendu, qui parle encore. Vu de loin, une silhouette au bout d'une corde, sur un gibet isolé.",
+   "promptImage": "hanged man on an isolated gallows seen from a distance across dead moorland, head upright rather than slumped, rope taut, long coat, sky nearly black, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "pendu-qui-parle-2"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "pendu-qui-parle-2",
+   "narration": [
+    "« Approche », dit-il, et la corde grince sur chaque syllabe. « Tout  ce qui entre dans mes Landes passe en jugement. Toi aussi. » Il  sourit. « Surtout toi. »"
+   ],
+   "choix": [
+    {
+     "id": "plaider",
+     "label": "Répondre à son jugement",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu ne plaides pas — tu lui retournes la question : qui l'a jugé, lui ? Le sourire du Bailli se fige. Pour la première fois depuis sa corde, c'est lui l'accusé. Il te laisse passer, et il te doit une réponse.",
+      "reussite": "Tu réponds droit, sans baisser les yeux. Le Bailli t'écoute en balançant doucement — le grincement fait office de greffier. « Passable », conclut-il. Dans sa bouche, c'est un acquittement.",
+      "echec": "Tu te défends trop. Le Bailli savoure chaque excuse : « Coupable, donc. Ils s'excusent tous. » Sa sentence te suit dans la lande, écrite quelque part où tu ne peux pas la lire.",
+      "funeste": "1 naturel. Tu plaides. Il te coupe : « J'ai déjà jugé ce plaidoyer. Mot pour mot. Tu n'es même pas le premier toi. » ♦ −2"
+     },
+     "soupcon": 1
+    },
+    {
+     "id": "decrocher",
+     "label": "Trancher sa corde",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 14,
+     "hautEnjeu": true,
+     "issues": {
+      "critique": "20 naturel. Ta lame tranche net. Le Bailli tombe à genoux — et reste là, stupéfait de peser. « Personne n'avait osé », dit-il sans grincement, et sa voix nue est celle d'un homme. Il te regarde partir comme on regarde une loi nouvelle.",
+      "reussite": "La corde cède. Le Bailli s'écrase dans la bruyère, se relève en titubant — et remonte s'asseoir sur la traverse, dignité de fonction. Mais vous savez tous les deux ce que tu as fait. La colline aussi.",
+      "echec": "Ta lame entame la corde — qui se resserre, vivante, et te fouette au visage. Le Bailli rit à s'étrangler, ce qui ne lui coûte rien : « On ne défait pas une Fixation, petit juge. On la subit. »",
+      "funeste": "1 naturel. La corde tranche plus vite que toi. Pas la sienne : une autre, tombée de nulle part, qui t'a mesuré le cou au passage. ♦ −2"
+     },
+     "soupcon": 1
+    },
+    {
+     "id": "passer-pendu",
+     "label": "Passer sans un mot",
+     "type": "passif",
+     "consequence": "Tu passes. Le Bailli ne te rappelle pas — il note. Tu l'entends "
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "bailli-pendu",
+   "nom": "Le Pendu qui parle — beat 2",
+   "lieu": "colline_aux_gibets",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_pendu_qui_parle_2_a.png",
+    "hash": "2b1bc9da",
+    "taille": 9886,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Le gardien, à hauteur d'homme. Non-combat : il juge. Son visage de pendu qui parle, le sceau à sa ceinture.",
+   "promptImage": "close portrait of a hanged magistrate, rope around his neck, eyes open and attentive, dried lips parted as if mid-sentence, heavy official seal hanging at his belt, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": [
+    "pendu-qui-parle"
+   ]
+  },
+  {
+   "id": "champ-des-fixes",
+   "narration": [
+    "Pas de tombes — des poteaux. Des rangées de poteaux plantés droit, un  nom sur chaque, alignés face au nord. Dos au sud. Même morts, surtout  morts, on ne les laisse pas regarder par là.",
+    "Au fond, des poteaux vierges attendent, déjà plantés. Près de  l'entrée, la cabane du Fossoyeur."
+   ],
+   "choix": [
+    {
+     "id": "rester-champ",
+     "label": "Rester dans le champ",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [
+    {
+     "id": "les-rangees",
+     "label": "Les rangées et leurs noms",
+     "approche": "Tu marches entre deux rangs. Le sol est tassé par des allées et ",
+     "examen": "Les noms des premières rangées sont presque effacés. Les dernières ",
+     "fragmentChapitre": true,
+     "nom": "Les rangées et leurs noms",
+     "image": {
+      "fichier": "scene_champ_rangees_a_d.png",
+      "hash": "31581022",
+      "taille": 12688,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "poteaux-vierges",
+     "label": "Les poteaux vierges, au fond",
+     "approche": "Il faut traverser tout le champ pour les atteindre. Tu comptes les ",
+     "examen": "Trois poteaux portent déjà des noms, sans date. Le Fossoyeur grave ",
+     "savoir": "savoir_poteau_a_mon_nom",
+     "soupcon": 1,
+     "nom": "Les poteaux vierges, au fond",
+     "image": {
+      "fichier": "scene_champ_poteaux_vierges_b.png",
+      "hash": "0ffc6d78",
+      "taille": 10052,
+      "recent": true,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "tombe-sans-poteau",
+     "label": "Un vide dans une rangée pleine",
+     "approche": "Tu l'as repéré de loin sans savoir quoi : un défaut d'alignement, ",
+     "examen": "La terre y est ancienne, tassée : il y a eu un poteau, ici. On l'a ",
+     "donneObjet": "craie-condamne",
+     "nom": "Un vide dans une rangée pleine",
+     "image": {
+      "fichier": "scene_champ_tombe_manquante_a_c.png",
+      "hash": "e11aa5ad",
+      "taille": 14607,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    }
+   ],
+   "suite": "champ-des-fixes-2",
+   "savoir": "savoir_poteau_a_mon_nom",
+   "nom": "Le Champ des Fixés",
+   "lieu": "champ_des_fixes",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_champ_des_fixes_b.png",
+    "hash": "ac1408d0",
+    "taille": 30830,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Arrivée au Champ des Fixés. Des rangées de poteaux plantés dans la lande morte, un écriteau clouté sur chacun, certains encore occupés.",
+   "promptImage": "rows of wooden posts planted across dead moorland, a small nailed sign on each, some posts still bearing hanged figures in the far distance, receding perspective, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "champ-des-fixes-2"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "champ-des-fixes-2",
+   "narration": [
+    "Entre les rangs, un vieil homme redresse un poteau qui penche, avec  des gestes de jardinier. Il t'a vu venir de loin — les vivants  font un bruit particulier, ici. Il ne s'interrompt pas : il  t'attend au travail, comme on attend un outil."
+   ],
+   "choix": [
+    {
+     "id": "aider-fossoyeur",
+     "label": "Aider à redresser",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. À deux, le poteau se dresse droit. Le Fossoyeur te toise, longuement : « T'es le premier qui aide sans qu'on le fixe. » Il te glisse une page arrachée de son carnet — un plan des rangs, et une croix là où il ne faut jamais passer.",
+      "reussite": "Le poteau retrouve son aplomb. Le pendu là-haut soupire — de confort, dirait-on. « Ils dorment mal quand ça penche », dit le Fossoyeur. Il te fait signe de passer par son rang : le sien est sûr.",
+      "echec": "Le poteau t'échappe et le pendu chasse au bout de sa corde, dans un grand désordre de chanvre. Tout le rang se met à osciller de proche en proche. Le Fossoyeur te chasse à gestes secs : tu as réveillé le dortoir.",
+      "funeste": "1 naturel. Le poteau tombe. Le pendu, lui, reste debout. ♦ −2"
+     },
+     "donneObjet": "carnet-fossoyeur"
+    },
+    {
+     "id": "carnet",
+     "label": "Déchiffrer le carnet",
+     "type": "verrouille",
+     "stat": "RUSE"
+    },
+    {
+     "id": "passer-fossoyeur",
+     "label": "Passer sans un mot",
+     "type": "passif",
+     "consequence": "Tu passes au large de son rang. Il ne lève pas la tête — mais "
+    }
+   ],
+   "pointsInteret": [],
+   "nom": "Le Champ des Fixés — beat 2",
+   "lieu": "champ_des_fixes",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_fossoyeur_poteaux_a.png",
+    "hash": "69a5f9b1",
+    "taille": 23540,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Événement du Champ : le Fossoyeur aux poteaux, qui grave d'avance les noms « dont c'est sûr ».",
+   "promptImage": "old gravedigger kneeling at the base of a wooden post, carving letters into the wood with a knife, satchel of tools open beside him, back bent, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": [
+    "champ-des-fixes"
+   ]
+  },
+  {
+   "id": "pendu-mal-fixe",
+   "narration": [
+    "Un craquement sec dans les rangs — un poteau vient de casser. Le  pendu qui le quittait touche terre sur ses pieds, comme s'il  n'attendait que ça depuis des années. Sa corde traîne derrière lui,  encore nouée au cou.",
+    "Il avance par à-coups, tiré par des ficelles que personne ne tient.  Une Fixation ratée : ni mort ni tenu. Ce qui reste de son visage  n'exprime qu'une chose — l'envie féroce d'échanger sa place.  Contre la tienne."
+   ],
+   "choix": [
+    {
+     "id": "refixer",
+     "label": "Le repousser au poteau",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 13,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu l'empoignes par sa propre corde et le ramènes au poteau brisé — où il se rependt de lui-même, docile soudain, presque soulagé qu'on décide pour lui. Le champ entier expire. Le Fossoyeur, au loin, te salue du chapeau.",
+      "reussite": "Tu le repousses, pas à pas, jusqu'aux rangs. Au contact du bois cassé, ses jambes cèdent : la Fixation le reprend à moitié. Assez pour qu'il ne te suive plus. Il te regarde partir avec une envie terrible.",
+      "echec": "Il est plus lourd qu'un mort n'a le droit de l'être. Vous roulez dans la bruyère — il te tient, tu le tiens, et c'est la corde qui vous départage : elle te cingle, et tu lâches le premier.",
+      "funeste": "1 naturel. Tu le pousses au poteau. Il t'y pousse aussi. La corde, elle, ne fait pas de différence entre deux cous. ♦ −2"
+     }
+    },
+    {
+     "id": "esquiver-corde",
+     "label": "Esquiver la corde",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu lis la corde comme un fouet : elle frappe où il regarde, une seconde après. Tu n'es jamais là. Épuisé d'avoir raté, le Pendu s'effondre en tas de ficelles — la Fixation ne paie pas les heures supplémentaires.",
+      "reussite": "La corde siffle, tu plies, elle passe. Deux fois, trois fois. À la quatrième, il s'emmêle dedans tout seul — et tu t'éloignes pendant qu'il se défait, jurant dans une langue de gorge broyée.",
+      "echec": "La corde feinte — elle claque au sol et remonte en fouet. Elle te prend la cheville et te couche dans la bruyère ; tu te dégages en taillant, mais il t'a coûté du sang et du terrain.",
+      "funeste": "1 naturel. Tu esquives la corde. Pas lui. Ses mains, on les oublie toujours. ♦ −2"
+     }
+    },
+    {
+     "id": "emmeler",
+     "label": "L'emmêler dans sa corde",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu tournes autour de lui comme un fuseau — deux passes, un nœud, et le Pendu se retrouve fixé à lui-même, bras au corps. La plus propre Fixation du champ. Le Fossoyeur en parlera longtemps.",
+      "reussite": "Tu attrapes le bout traînant et le fais passer sous ses jambes au bon moment. Il trébuche, s'entrave, tombe — et chaque geste pour se relever le ligote un peu plus. Tu pars sans te presser.",
+      "echec": "Le nœud que tu improvises tient une seconde de trop peu. Il s'en libère d'une secousse — et la corde, insultée qu'on la retourne contre lui, te choisit comme cible prioritaire.",
+      "funeste": "1 naturel. Tu tires sur la corde. Elle était plus longue que tu croyais. Assez longue pour deux. ♦ −2"
+     }
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "pendu-mal-fixe",
+   "adversaireNom": "Le Pendu Mal Fixé",
+   "combat": true,
+   "nom": "Le Pendu Mal Fixé",
+   "lieu": "champ_des_fixes",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "monstre_pendu_mal_fixe_a.png",
+    "hash": "51ef7252",
+    "taille": 5488,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Combat, une scène. Le Pendu Mal Fixé : un bras tendu figé en plein geste d'agrippement, la corde trop longue qui laisse les pieds toucher le sol.",
+   "promptImage": "hanged figure whose rope is too long so its feet touch the ground, one arm outstretched and frozen mid-grab reaching toward the viewer, head tilted at a wrong angle, tattered clothes, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": []
+  },
+  {
+   "id": "serment-hameau",
+   "narration": [
+    "Les toits apparaissent au creux du plateau — de l'ardoise affaissée,  des murs qui tiennent par habitude. Une seule cheminée fume, sur une  vingtaine.",
+    "Tu es encore loin quand tu comprends ce qui cloche : aucun chien  n'aboie."
+   ],
+   "choix": [
+    {
+     "id": "observer-couvert",
+     "label": "Observer d'abord, à couvert",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu te couches dans la bruyère et tu attends. Un quart d'heure, et le hameau se trahit : des silhouettes postées aux fenêtres, une par maison habitée, immobiles. Ils guettent la crête. Tu les as vus avant qu'ils te voient — et ça, ça vaut plus qu'une arme ici.",
+      "reussite": "À couvert derrière un muret, tu prends la mesure du village : onze maisons vivantes sur vingt, et pas un mouvement dehors. Ce n'est pas un hameau qui dort. C'est un hameau qui attend.",
+      "echec": "Tu restes trop longtemps immobile face au village. Quand tu te redresses enfin, une silhouette se détache d'une porte, en bas, et rentre vite. Quelqu'un t'a vu observer — et observer, ici, n'est pas une chose innocente.",
+      "funeste": "1 naturel. Tu observes, à plat ventre, concentré. Derrière toi, une voix polie : « On peut vous aider ? » Ils sont deux. Ils sont montés pendant que tu regardais en bas. ♦ −2"
+     },
+     "soupcon": 1
+    },
+    {
+     "id": "descendre-hameau",
+     "label": "Descendre vers le hameau",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hameau-entree-2",
+   "nom": "Serment hameau",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_hameau_dense2_b.png",
+    "hash": "4ee39a67",
+    "taille": 29932,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Approche du Hameau des Renonçants, vu de loin. Les toits d'ardoise affaissés au creux du plateau, une seule cheminée qui fume sur vingt, aucun chien qui aboie.",
+   "promptImage": "distant abandoned hamlet nestled in a hollow of dead moorland at dusk, sagging slate rooftops, one single chimney smoking, low dry-stone walls leading to the village, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "hameau-entree-2"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "hameau-entree-2",
+   "narration": [
+    "La première maison est à dix pas. Sur sa porte, un signe à la craie —  une croix, simple, tracée à hauteur d'œil.",
+    "La poudre blanche est encore sur le seuil. Ça date de ce matin."
+   ],
+   "choix": [
+    {
+     "id": "frapper-porte-marquee",
+     "label": "Frapper à la porte marquée",
+     "type": "passif",
+     "consequence": "Tu frappes trois coups. Personne n'ouvre. Mais derrière le bois, ",
+     "soupcon": 1
+    },
+    {
+     "id": "continuer-rue",
+     "label": "Continuer dans la rue",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [
+    {
+     "id": "croix-craie",
+     "label": "S'approcher de la croix",
+     "approche": "Dix pas dans une rue qui ne fait aucun bruit. Tu marches au milieu, ",
+     "examen": "De près, on voit que le bois est usé à cet endroit précis. Des ",
+     "soupcon": 1,
+     "nom": "S'approcher de la croix",
+     "image": {
+      "fichier": "scene_hameau_croix_craie_a_a.png",
+      "hash": "0fefe11d",
+      "taille": 10418,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "femme-sur-le-seuil",
+     "label": "La femme sur le pas de porte",
+     "approche": "Plus bas dans la rue, une femme se tient sur un pas de porte, ",
+     "examen": "Son regard est posé sur le bout de la rue, vers le sud, et il ne ",
+     "ouvreSur": "femme-seuil-1",
+     "nom": "La femme sur le pas de porte",
+     "image": {
+      "fichier": "monstre_femme_au_seuil_b.png",
+      "hash": "695862b2",
+      "taille": 12382,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    }
+   ],
+   "suite": "hameau-entree-3",
+   "nom": "Hameau entree 2 — beat 2",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_landes_hameau_ruelle_b.png",
+    "hash": "9a56edb6",
+    "taille": 26939,
+    "recent": false,
+    "existe": true
+   },
+   "description": "La ruelle étroite du hameau : portes marquées à la craie, volets fermés, aucun chien.",
+   "promptImage": "narrow street of an old abandoned hamlet, crooked stone houses, wooden doors marked with chalk crosses, closed shutters, wet cobblestones, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "femme-seuil-1",
+    "hameau-entree-3"
+   ],
+   "mèneIci": [
+    "serment-hameau"
+   ]
+  },
+  {
+   "id": "femme-seuil-1",
+   "narration": [
+    "Quand tu arrives à sa hauteur, elle tressaille. Une seconde — moins —  son visage s'ouvre, et tu vois ce qu'elle était avant : quelqu'un  qui attendait quelqu'un.",
+    "Puis ça se referme. « Non. Tu marches pas comme lui. »",
+    "Elle resserre son châle. « Mon fils est parti par là. » Elle ne montre  pas la direction — personne ici ne montre le sud avec la main. « Il  entendait plus ce que je disais, à la fin. Il entendait autre chose. »"
+   ],
+   "choix": [
+    {
+     "id": "femme-depuis-quand",
+     "label": "« Depuis combien de temps ? »",
+     "type": "passif",
+     "consequence": "Elle réfléchit, et c'est le pire : elle doit vraiment compter. "
+    },
+    {
+     "id": "femme-verite",
+     "label": "Lui dire qu'il ne reviendra pas",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 13,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu ne lui prends rien. Tu lui dis, simplement, et de telle façon qu'elle puisse le poser au lieu de le porter. Elle ne pleure pas — elle s'assied sur son seuil, pour la première fois depuis deux hivers, et te remercie d'une phrase qui n'a rien à voir : « Vous avez faim ? »",
+      "reussite": "Tu le dis. Elle ne répond pas tout de suite. Puis : « Je sais. » Et après un silence : « Mais si j'arrête de regarder, alors c'est moi qui l'aurai laissé partir. » Elle reprend sa faction. Vous avez été honnêtes tous les deux.",
+      "echec": "Les mots sortent trop droits. Son visage se ferme comme une porte de grange, et derrière ce bois-là il n'y a plus personne à qui parler. Dans la rue, deux volets bougent : on t'a vu faire pleurer une mère.",
+      "funeste": "1 naturel. Tu lui dis qu'il ne reviendra pas. Elle te regarde enfin — vraiment — et demande, très calme : « Et toi ? Tu reviendras ? » ♦ −2"
+     }
+    },
+    {
+     "id": "femme-regarder-sud",
+     "label": "Regarder le sud avec elle",
+     "type": "passif",
+     "consequence": "Tu ne dis rien. Tu te places à côté d'elle, dans le même axe, et ",
+     "soupcon": 1
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "femme-seuil-2",
+   "nom": "Femme seuil 1",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_femme_seuil_1_c.png",
+    "hash": "5d50562f",
+    "taille": 4688,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Une femme sur le seuil d'une maison basse, châle serré, une croix à la craie sur sa porte. Elle regarde le sud.",
+   "promptImage": "woman standing in the doorway of a low stone house, chalk cross drawn on the door beside her, heavy shawl gripped closed at her throat, hollow-cheeked, watching, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "femme-seuil-2"
+   ],
+   "mèneIci": [
+    "hameau-entree-2"
+   ]
+  },
+  {
+   "id": "femme-seuil-2",
+   "narration": [
+    "« Tu descends, toi aussi. Ça se voit. Vous avez tous le même pas. »  Elle fouille sous son châle et en tire quelque chose qu'elle tient  serré.",
+    "« Si tu le croises. S'il reste quelque chose à croiser. »",
+    "Une mèche de cheveux, nouée d'un fil. « Tu lui donnes. Il saura. »"
+   ],
+   "choix": [
+    {
+     "id": "femme-accepter",
+     "label": "Accepter la mèche",
+     "type": "passif",
+     "consequence": "Tu tends la main. Elle y dépose la mèche avec une précaution ",
+     "donneObjet": "meche-nouee"
+    },
+    {
+     "id": "femme-refuser",
+     "label": "Refuser doucement",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu refuses de telle manière que ça devienne une promesse plus grande : tu ne prends pas la mèche, mais tu prends le nom. Elle te le donne comme on confie une clé. Le nom, tu le porteras plus loin qu'un fil de cheveux.",
+      "reussite": "Tu refuses sans mentir : tu ne sais pas si tu ressortiras. Elle hoche la tête, range la mèche sous le châle. « C'est honnête. » Ça lui coûte de le dire, et elle le dit quand même.",
+      "echec": "Tu refuses mal — trop vite, en reculant d'un demi-pas. Sa main reste tendue trois secondes de trop, seule, dans la rue vide, et deux volets s'entrouvrent sur ce tableau-là.",
+      "funeste": "1 naturel. Tu refuses. Elle range la mèche, et dit, sans aucune méchanceté : « C'est ce qu'il a dit aussi, en partant. Qu'il ne prendrait rien. » ♦ −2"
+     },
+     "soupcon": 1
+    },
+    {
+     "id": "femme-echange",
+     "label": "« Et en échange ? »",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu poses la question de façon qu'elle sonne comme un service qu'on lui rend — accepter de recevoir. Elle disparaît un instant et revient avec du pain, du vrai, et une information qui vaut plus : qui, dans ce hameau, ouvre encore sa porte la nuit.",
+      "reussite": "Elle te regarde autrement, sans reproche : ici, on marchande tout, même les morts. Elle donne du pain et une phrase utile sur la Palissade. Le marché est équitable et vous le savez tous les deux.",
+      "echec": "La question tombe mal. Elle ne se fâche pas — elle range la mèche, c'est tout, et ça vaut toutes les insultes. Dans son dos, la porte se ferme d'elle-même, comme si la maison avait tranché.",
+      "funeste": "1 naturel. « En échange ? » Elle répète les mots lentement, puis les rend au silence. Quelque part dans la rue, quelqu'un les répète aussi. ♦ −2"
+     },
+     "soupcon": 1
+    },
+    {
+     "id": "femme-moi-aussi",
+     "label": "« Moi aussi, j'entends. »",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 13,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu le dis simplement, et tu ajoutes le détail qui ne s'invente pas : le reflet en retard. Elle ferme les yeux. Quand elle les rouvre, elle ne te regarde plus comme un étranger qui descend — elle te regarde comme on regarde quelqu'un de la famille qu'on n'attendait plus. Elle te donne la mèche, le nom, et une chose que personne n'a offerte à personne ici depuis des années : sa porte, ouverte, si tu remontes.",
+      "reussite": "Elle te laisse finir, sans reculer. « Je sais », dit-elle. « Ta figure le dit depuis le début. » Elle te met la mèche dans la main, referme tes doigts, et pour la première fois quelqu'un du hameau te touche sans hésiter.",
+      "echec": "Tu le dis, et elle recule. Pas de dégoût : de la panique — pour toi. « Ne le dis à personne d'autre. » Elle regarde à droite, à gauche, les volets. « À personne, tu m'entends. » Elle rentre, et tu restes seul dans la rue avec un aveu qui traîne dans l'air.",
+      "funeste": "1 naturel. Tu le dis trop fort, ou pas assez seul. Un volet claque quelque part. Elle a pâli — pas de ce que tu es : de ce que ça fait de toi, ici. « Va-t'en. Maintenant. » ♦ −2"
+     },
+     "donneObjet": "meche-nouee",
+     "exigeSavoir": "savoir_reflet"
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "femme-seuil-3",
+   "nom": "Femme seuil 2 — beat 2",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_femme_seuil_2_c.png",
+    "hash": "63108985",
+    "taille": 6202,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Elle a sorti la main de sous son châle et tend une mèche de cheveux nouée d'un fil, bras à moitié tendu, sur le même seuil. CHANGE : le bras tendu et l'objet offert dans sa main.",
+   "promptImage": "",
+   "mèneVers": [
+    "femme-seuil-3"
+   ],
+   "mèneIci": [
+    "femme-seuil-1"
+   ]
+  },
+  {
+   "id": "femme-seuil-3",
+   "narration": [
+    "Elle a déjà repris sa place sur le seuil quand tu repars. De la rue,  on ne voit pas qu'elle a parlé à quelqu'un. On ne voit qu'une femme  qui regarde le sud.",
+    "Ce que tu emportes ne pèse rien. C'est la promesse qui pèse."
+   ],
+   "choix": [
+    {
+     "id": "femme-repartir",
+     "label": "Redescendre la rue",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hameau-entree-3",
+   "nom": "Femme seuil 3 — beat 3",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_femme_seuil_3_a.png",
+    "hash": "8cc1e216",
+    "taille": 19386,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Elle a repris sa place sur le seuil, mains vides, et regarde le sud — de la rue, rien ne dit qu'elle a parlé à quelqu'un. CHANGE : de nouveau immobile et les mains vides.",
+   "promptImage": "",
+   "mèneVers": [
+    "hameau-entree-3"
+   ],
+   "mèneIci": [
+    "femme-seuil-2"
+   ]
+  },
+  {
+   "id": "hameau-entree-3",
+   "narration": [
+    "Ils sont trois à t'attendre au milieu de la rue. Pas armés — un bâton  de marche, une fourche posée contre un mur, à portée sans être brandie.",
+    "Celui du centre est vieux, sec comme un piquet. C'est lui qui parle, et  sa voix ne tremble pas. Ses mains, si.",
+    "— « On ne te chasse pas. » Il le dit d'abord, comme une formule  apprise. « Personne n'est chassé, ici. Mais tu descends. Ça se voit à  ton pas. Et ceux qui descendent... » Il ne finit pas. Derrière lui,  une femme tire un enfant à l'intérieur, sans un mot."
+   ],
+   "choix": [
+    {
+     "id": "demander-crainte",
+     "label": "Demander ce qu'ils craignent",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu poses la question sans défi, comme on demande le chemin. Le vieux baisse la voix, et tout le barrage se penche avec lui : « Il y a ceux qui écoutent le vent. Et il y a ceux que le vent écoute. » Il te regarde droit. « On sait pas encore lequel tu es. Nous non plus, on veut pas le savoir. »",
+      "reussite": "Le vieux mâche sa réponse longtemps. « Ce qu'on craint ? » Il montre le sud du menton — pas de la main, jamais de la main. « Ce qui appelle. Et ceux qui répondent. » C'est tout ce qu'il donnera aujourd'hui.",
+      "echec": "« Ça ne se demande pas. » Le vieux se ferme d'un coup, et les deux autres avancent d'un demi-pas. Ta question, dans leur grammaire, est déjà un aveu : seuls ceux qui entendent s'intéressent à ce qu'on entend.",
+      "funeste": "1 naturel. Tu demandes ce qu'ils craignent. Le silence qui suit dure trop. Puis, très bas, le vieux : « Toi. » Il n'a pas l'air content de sa propre réponse. ♦ −2"
+     },
+     "soupcon": 1
+    },
+    {
+     "id": "passer-sans-arret",
+     "label": "Passer sans t'arrêter",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu marches droit sur eux sans changer d'allure. À trois pas, ils s'écartent — pas par peur : par une politesse ancienne qu'ils n'ont pas eu le temps de décider. Le vieux te suit des yeux, et tu sais que le Serment t'attend quand même. Mais tu es passé debout.",
+      "reussite": "Tu ne ralentis pas. Ils s'écartent, à contrecœur, en se serrant. « On te reverra au muret », dit le vieux dans ton dos. Le Serment n'est pas évité. Il est ajourné.",
+      "echec": "Tu avances — et la fourche change de main. Pas levée : tenue. Le message est clair, et tu t'arrêtes de toi-même. Passer en force ne marche pas chez des gens qui ont déjà décidé d'avoir peur.",
+      "funeste": "1 naturel. Tu passes sans t'arrêter. Le vieux te laisse faire, et lance à la cantonade, calmement : « Notez l'heure. » Quelqu'un, quelque part, note l'heure. ♦ −2"
+     },
+     "soupcon": 1
+    },
+    {
+     "id": "ne-fais-que-passer",
+     "label": "« Je ne fais que passer. »",
+     "type": "passif",
+     "consequence": "« C'est ce qu'ils disent tous », répond le vieux, sans "
+    },
+    {
+     "id": "tenir-selon-ordonnance",
+     "label": "Te tenir comme eux",
+     "type": "passif",
+     "consequence": "Tu ne réponds pas tout de suite. Tu tournes les épaules au sud, ",
+     "exigeSavoir": "savoir_ordonnance",
+     "soupcon": -1
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hameau-entree-4",
+   "nom": "Hameau entree 3 — beat 3",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_hameau_entree_3_a.png",
+    "hash": "7e4b2271",
+    "taille": 4616,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Trois hommes en travers de la rue, pas armés : un bâton de marche à la main, une fourche posée contre le mur, à portée sans être brandie.",
+   "promptImage": "three gaunt villagers standing abreast in a narrow village street, one old man at the centre speaking, a walking staff in one hand, a pitchfork leaning against a wall nearby, shutters closing behind them, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "hameau-entree-4"
+   ],
+   "mèneIci": [
+    "femme-seuil-3",
+    "hameau-entree-2"
+   ]
+  },
+  {
+   "id": "hameau-entree-4",
+   "narration": [
+    "Le vieux tend la main, paume ouverte. Pas pour serrer la tienne — pour  que tu la regardes. Elle est vide. C'est le geste d'ici : on jure sur  rien, parce qu'il ne reste rien.",
+    "— « Trois choses, et tu dors sous un toit. Tu ne parles pas aux  pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et tu pars  avant la troisième aube. »"
+   ],
+   "choix": [
+    {
+     "id": "jurer-serment",
+     "label": "Jurer",
+     "type": "passif",
+     "consequence": "Tu poses ta main au-dessus de la sienne, sans la toucher — c'est ",
+     "serment": "jure",
+     "soupcon": -1
+    },
+    {
+     "id": "jurer-faux",
+     "label": "Jurer du bout des lèvres",
+     "type": "passif",
+     "consequence": "Tu jures. Les mots sortent dans le bon ordre, à la bonne ",
+     "serment": "faux",
+     "soupcon": 1,
+     "dette": {
+      "id": "jurer-faux",
+      "texte": "Le serment que tu as prêté du bout des lèvres au muret des "
+     }
+    },
+    {
+     "id": "refuser-serment",
+     "label": "Refuser de jurer",
+     "type": "passif",
+     "consequence": "Tu refuses. Personne ne crie. Le vieux referme lentement sa ",
+     "serment": "refuse",
+     "soupcon": 2
+    }
+   ],
+   "pointsInteret": [
+    {
+     "id": "pourquoi-trois-aubes",
+     "label": "Demander pourquoi trois aubes",
+     "approche": "Tu ne réponds pas tout de suite. Tu poses la question, et le ",
+     "examen": "— « Parce qu'à la quatrième, on commence à s'habituer à toi. » Le ",
+     "soupcon": 1,
+     "nom": "Demander pourquoi trois aubes",
+     "image": null,
+     "description": "",
+     "promptImage": ""
+    }
+   ],
+   "suite": "hameau-entree-5",
+   "nom": "Hameau entree 4 — beat 4",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "monstre_hameau_entree_4_c.png",
+    "hash": "5349dd7f",
+    "taille": 5063,
+    "recent": true,
+    "existe": true
+   },
+   "description": "La paume ouverte et vide du vieux, tendue à hauteur de poitrine pour qu'on la regarde — on jure sur rien.",
+   "promptImage": "close view of an old man's open empty palm held out at chest height, weathered skin, the blurred faces of two other villagers behind him, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "hameau-entree-5"
+   ],
+   "mèneIci": [
+    "hameau-entree-3"
+   ]
+  },
+  {
+   "id": "hameau-entree-5",
+   "narration": [
+    "Ils s'écartent. Pas beaucoup — juste assez pour que tu passes sans  toucher personne, et tu comprends que c'est calculé.",
+    "La rue s'ouvre devant toi. Des volets se ferment à mesure, un par un,  un peu en avance sur ton pas. Quelque part, une corde grince.",
+    "Tu es entré. Personne ne t'a souhaité la bienvenue, et pourtant tous  savaient déjà que tu venais."
+   ],
+   "choix": [
+    {
+     "id": "entrer-hameau",
+     "label": "Entrer dans le hameau",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "hameauEntree": true,
+   "nom": "Hameau entree 5 — beat 5",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "scene_hameau_entree_5_a.png",
+    "hash": "e012d040",
+    "taille": 10760,
+    "recent": true,
+    "existe": true
+   },
+   "description": "La rue qui s'ouvre devant toi, et les volets qui se ferment un par un, un peu en avance sur ton pas.",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "hameau-entree-4"
+   ]
+  },
+  {
+   "id": "hameau-halte-1",
+   "narration": [
+    "Le vieux te trouve avant que tu ne le cherches. C'est comme ça, ici :  on sait toujours où tu es.",
+    "— « Tu pars demain. » Ce n'est pas une question. « Personne ne marche  vers le sud de nuit. Même toi. »",
+    "Il ne t'invite pas chez lui. Personne n'invite personne. Il te mène à  la grange, au bout de la rue — la seule porte du hameau qui n'a pas  de marque à la craie. Pas encore."
+   ],
+   "choix": [
+    {
+     "id": "demander-ailleurs",
+     "label": "Demander à dormir ailleurs",
+     "type": "passif",
+     "consequence": "— « La grange, ou les Landes. » Le vieux ne discute même pas. "
+    },
+    {
+     "id": "suivre-vieux",
+     "label": "Le suivre",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hameau-halte-2",
+   "nom": "Hameau halte 1",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "scene_landes_hameau_ruelle_b.png",
+    "hash": "9a56edb6",
+    "taille": 26939,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Le vieux t'a trouvé dans la ruelle et se tient à deux pas, calme, sans barrer le passage.",
+   "promptImage": "",
+   "mèneVers": [
+    "hameau-halte-2"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "hameau-halte-2",
+   "narration": [
+    "De la paille propre, une couverture qui a servi, une lampe qu'on te  laisse — la mèche est courte, calculée pour s'éteindre seule.",
+    "— « On te rouvre à l'aube. » Le vieux pose la main sur la porte.  « C'est pas contre toi. »",
+    "La porte se ferme. Puis le bruit que tu attendais sans le savoir : une  barre qu'on pose. Dehors."
+   ],
+   "choix": [
+    {
+     "id": "veiller",
+     "label": "Veiller",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu veilles sans bouger, la lampe soufflée, adossé au bois. Et la nuit se donne tout entière : chaque pas dehors, chaque mot chuchoté, chaque hésitation devant ta porte. Au matin tu sauras du hameau ce que le hameau croyait savoir de toi.",
+      "reussite": "Tu tiens jusqu'au cœur de la nuit, l'oreille contre la planche. Assez pour entendre ce qui se dit. Pas assez pour être reposé — mais reposé n'était pas le but.",
+      "echec": "Tu veilles, tu veilles, et le sommeil te prend quand même — d'un coup, sans transition, comme une main sur la nuque. Tu te réveilles au gris de l'aube avec une nuit blanche dans les jambes.",
+      "funeste": "1 naturel. Tu veilles. Et à un moment de la nuit que tu ne sauras jamais situer, quelque chose a veillé avec toi, de l'autre côté du bois, exactement à ta hauteur. ♦ −2"
+     }
+    },
+    {
+     "id": "dormir-grange",
+     "label": "Dormir",
+     "type": "repos",
+     "repos": true
+    }
+   ],
+   "pointsInteret": [
+    {
+     "id": "examiner-grange",
+     "label": "Examiner la grange",
+     "approche": "Tu prends la lampe et tu fais le tour, lentement, en te tenant ",
+     "examen": "Des marques sur les poutres, à hauteur d'homme. Des bâtons de ",
+     "savoir": "savoir_grange_comptee",
+     "nom": "Examiner la grange",
+     "image": {
+      "fichier": "scene_hameau_grange_poutres_a_d.png",
+      "hash": "c4a77f86",
+      "taille": 7428,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    }
+   ],
+   "suite": "hameau-halte-3",
+   "savoir": "savoir_grange_comptee",
+   "nom": "Hameau halte 2 — beat 2",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_landes_hameau_grange_a.png",
+    "hash": "2faebe69",
+    "taille": 16543,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Intérieur de grange, la nuit : une lanterne posée au sol, la paille, la barre de porte posée DEHORS, des bâtons de comptage sur les poutres.",
+   "promptImage": "interior of an old barn at night, single oil lamp on the floor, straw bedding, heavy wooden door with iron fittings, tally marks carved on beams, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "hameau-halte-3"
+   ],
+   "mèneIci": [
+    "hameau-halte-1"
+   ]
+  },
+  {
+   "id": "hameau-halte-3",
+   "narration": [
+    "Le hameau ne dort pas comme un village. Pas de rires, pas de disputes,  pas d'enfant qui pleure. Juste des pas, parfois, qui font une ronde  que personne n'a annoncée."
+   ],
+   "choix": [
+    {
+     "id": "ecouter-nuit",
+     "label": "Écouter sans bouger",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu ne bouges pas d'un cil, et la nuit se laisse lire. Une dénonciation se prépare — pas forcément la tienne, pas encore. Mais le Petit Tribunal siégera avant la prochaine aube, et tu sais maintenant à quoi ressemble le bruit que ça fait.",
+      "reussite": "Les voix se rapprochent, s'attardent, repartent. Tu ne saisis que des morceaux — un nom qui n'est pas le tien, un chiffre, le mot « demain ». Assez pour dormir mal.",
+      "echec": "La paille craque sous toi. Les voix s'arrêtent net — ce silence-là est une porte qui claque. Puis des pas qui s'éloignent vite, et tu passes le reste de la nuit à te demander ce qu'ils ont compris.",
+      "funeste": "1 naturel. Tu écoutes. Et une voix, tout près, dit ton nom — celui que tu as signé au pacte, celui que personne ici n'a entendu. ♦ −2"
+     },
+     "soupcon": 1
+    },
+    {
+     "id": "dormir-vraiment",
+     "label": "Dormir vraiment",
+     "type": "passif",
+     "consequence": "Tu décides de ne rien écouter. C'est un travail, de ne pas "
+    },
+    {
+     "id": "compter-les-passages",
+     "label": "Écouter entre deux rondes",
+     "type": "passif",
+     "consequence": "Quatre passages par nuit — c'est ce que disaient les encoches. Tu ",
+     "exigeSavoir": "savoir_grange_comptee"
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hameau-halte-4",
+   "nom": "Hameau halte 3 — beat 3",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "scene_hameau_halte_3_c.png",
+    "hash": "7e916011",
+    "taille": 9085,
+    "recent": true,
+    "existe": true
+   },
+   "description": "La grange dans le noir, vue depuis la paille : sous la porte fermée, une bande de lumière que des pieds coupent en passant. CHANGE : la lanterne est éteinte, il ne reste que la fente sous la porte.",
+   "promptImage": "",
+   "mèneVers": [
+    "hameau-halte-4"
+   ],
+   "mèneIci": [
+    "hameau-halte-2"
+   ]
+  },
+  {
+   "id": "hameau-halte-4",
+   "narration": [
+    "La barre se soulève au premier gris. Le vieux, seul. Il te tend un  quignon dur et ne dit rien pendant que tu manges.",
+    "— « Aujourd'hui, on fixe personne. » Il regarde ailleurs. « Alors pars  pendant que c'est vrai. »"
+   ],
+   "choix": [
+    {
+     "id": "partir-aube",
+     "label": "Partir pendant que c'est vrai",
+     "type": "passif",
+     "consequence": "Tu manges debout, tu rends le linge, tu sors. Sur le seuil, le ",
+     "soupcon": -1
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hameau-halte-5",
+   "nom": "Hameau halte 4 — beat 4",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_hameau_halte_4_b.png",
+    "hash": "0d3c0338",
+    "taille": 3813,
+    "recent": true,
+    "existe": true
+   },
+   "description": "L'aube grise, la porte relevée : le vieux seul, un quignon de pain dur tendu vers toi, le regard ailleurs. CHANGE : lumière de petit matin, la barre est levée, il tend quelque chose.",
+   "promptImage": "",
+   "mèneVers": [
+    "hameau-halte-5"
+   ],
+   "mèneIci": [
+    "hameau-halte-3"
+   ]
+  },
+  {
+   "id": "hameau-halte-5",
+   "narration": [
+    "Ils sont deux à marcher avec toi jusqu'à la Palissade. Pas devant, pas  derrière : à côté, à un pas de distance — l'escorte de quelqu'un  qu'on ne touche pas.",
+    "Au portillon sud, le plus jeune ouvre. Le vieux reste en arrière.  C'est lui qui parle, pourtant, au moment où tu passes :",
+    "— « Si tu l'entends... » Il cherche ses mots. Il les trouve :  « Réponds pas. C'est tout ce qu'on sait. C'est tout ce qu'on a  jamais su. »"
+   ],
+   "choix": [
+    {
+     "id": "franchir-portillon",
+     "label": "Franchir le portillon",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "hameauHalte": true,
+   "nom": "Hameau halte 5 — beat 5",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "scene_hameau_halte_5_b.png",
+    "hash": "49d7b837",
+    "taille": 18040,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Le portillon sud, ouvert par le plus jeune. Les deux escortes marchent à un pas de distance de chaque côté ; le vieux reste en arrière. CHANGE : on est dehors, au portillon — plus dans la grange.",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "hameau-halte-4"
+   ]
+  },
+  {
+   "id": "hameau-halte-dehors",
+   "narration": [
+    "Aucune porte, aucune grange. Tu dors contre un muret, côté nord —  d'instinct.",
+    "La nuit des Landes n'attaque pas. Elle compte. Chaque heure a son  bruit : la corde, les pas, le chant du sud. Au matin, tu n'es pas  reposé — tu es inventorié."
+   ],
+   "choix": [
+    {
+     "id": "repartir-inventorie",
+     "label": "Repartir vers le sud",
+     "type": "passif",
+     "consequence": "Tu te lèves raide, les os pleins de froid. En quittant le ",
+     "soupcon": 1
+    }
+   ],
+   "pointsInteret": [],
+   "hameauHalte": true,
+   "nom": "Hameau halte dehors",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_hameau_dense_c.png",
+    "hash": "c3a695ff",
+    "taille": 30005,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Variante de Halte pour qui a refusé le Serment : la nuit dehors, contre un muret, aucune porte ouverte.",
+   "promptImage": "man sitting against a low dry-stone wall outside a dark village at night, knees drawn up, no fire, closed shutters behind him, empty street, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": []
+  },
+  {
+   "id": "tour-de-guet",
+   "narration": [
+    "La tour n'a plus de sommet. Elle s'arrête net à mi-hauteur, sur une  bouche de pierres arrachées, et le reste est en tas autour du pied —  pas éboulé, EMPILÉ. Quelqu'un a rangé les décombres.",
+    "L'escalier intérieur tient encore sur trois volées. Au-delà, il monte  vers rien."
+   ],
+   "choix": [
+    {
+     "id": "monter-guet",
+     "label": "Monter jusqu'à la rupture",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "Tu montes jusqu'à la dernière marche et tu restes debout dessus, dans le vide. D'ici, tout le hameau est à tes pieds — et tu comprends que la tour ne servait pas à voir loin : elle servait à être vue de partout, par celui qui tenait la corne.",
+      "reussite": "Tu montes. En haut, le vent te prend de face et tu tiens bon : d'ici on voit tout le hameau, et tout le hameau te voit.",
+      "echec": "Une marche cède sous ton poids. Tu te rattrapes au mur, la paume ouverte sur l'arête.",
+      "funeste": "La volée entière lâche. Tu tombes sur le tas de pierres rangées, et elles se rangent autour de toi comme si elles t'attendaient."
+     }
+    },
+    {
+     "id": "ecouter-tour",
+     "label": "Écouter la tour",
+     "type": "passif",
+     "consequence": "Tu restes au pied et tu écoutes. Le vent entre par la bouche ouverte et ressort par la meurtrière, et ça fait une note — toujours la même. Le hameau a vécu vingt ans avec cette note dans les oreilles."
+    },
+    {
+     "id": "quitter-tour",
+     "label": "Redescendre le tertre",
+     "type": "passif",
+     "consequence": "Tu laisses la tour derrière toi. Elle ne regarde plus rien."
+    }
+   ],
+   "pointsInteret": [
+    {
+     "id": "pierres-rangees",
+     "label": "Les pierres, empilées au pied",
+     "approche": "Tu fais le tour du tas. Il est haut comme un homme et régulier ",
+     "examen": "Les pierres sont posées face gravée contre terre. Tu en retournes ",
+     "fragmentChapitre": true,
+     "nom": "Les pierres, empilées au pied",
+     "image": {
+      "fichier": "scene_tour_pierres_rangees_a.png",
+      "hash": "a11ecafb",
+      "taille": 20594,
+      "recent": true,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "escalier-vers-rien",
+     "label": "L'escalier qui monte au vide",
+     "approche": "Les marches sont creusées en leur milieu, usées par des passages ",
+     "examen": "À la rupture, la pierre est propre. Pas d'usure, pas de suie : la ",
+     "savoir": "savoir_guet",
+     "nom": "L'escalier qui monte au vide",
+     "image": {
+      "fichier": "scene_tour_escalier_vers_rien_b.png",
+      "hash": "e404f4e6",
+      "taille": 8038,
+      "recent": true,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "meurtriere-sud",
+     "label": "La meurtrière du sud",
+     "approche": "Une seule ouverture reste intacte, au sud, à hauteur de poitrine. ",
+     "examen": "Des encoches dans l'embrasure, groupées par cinq. Des centaines. ",
+     "donneObjet": "lunette-guet",
+     "nom": "La meurtrière du sud",
+     "image": {
+      "fichier": "scene_tour_meurtriere_sud_a.png",
+      "hash": "d5008af2",
+      "taille": 19670,
+      "recent": true,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    }
+   ],
+   "suite": "tour-de-guet-2",
+   "savoir": "savoir_guet",
+   "nom": "Tour de guet",
+   "lieu": "tour_de_guet_effondree",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_tour_de_guet_a.png",
+    "hash": "2e1c76a6",
+    "taille": 25909,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Arrivée à la Tour de Guet effondrée, à l'intérieur du hameau. Une tour tronquée net à mi-hauteur, ses pierres empilées en tas régulier au pied.",
+   "promptImage": "ruined stone watchtower cut off cleanly at mid-height, jagged open mouth of torn stone at the top, the missing upper stones STACKED in a neat man-high pile at its foot, low village roofs behind, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "tour-de-guet-2"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "tour-de-guet-2",
+   "narration": [
+    "Il est assis sur le tas de pierres, dos à toi, et il regarde le sud  par-dessus le hameau. Un vieux manteau de guet, la corne au côté.  Il ne se retourne pas.",
+    "— « Tu es monté. » Ce n'est pas une question. « Alors tu as vu ce  qu'on surveillait. »"
+   ],
+   "choix": [
+    {
+     "id": "guet-demander",
+     "label": "Demander qui a couché la tour",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "Il se retourne enfin. « Nous. Le jour où on a compris que voir venir ne servait à rien, puisque ça venait de l'intérieur. » Un temps. « Et on a couché le mur des noms en premier. Pour ne plus avoir à les lire en montant. »",
+      "reussite": "Il met du temps. « Nous. Le jour où on a compris que voir venir ne servait à rien, puisque ça venait de l'intérieur. » Il crache. « On a rangé les pierres parce qu'on est des gens rangés. »",
+      "echec": "Il se ferme d'un coup. « Personne ne l'a couchée. Elle est tombée. » Et il redescend le tertre sans te regarder.",
+      "funeste": "Il se lève lentement. « Qui t'a dit de monter ? » Sa main est sur la corne. En bas, deux volets s'ouvrent dans la ruelle."
+     },
+     "exigeSavoir": "savoir_guet"
+    },
+    {
+     "id": "guet-corne",
+     "label": "Lui demander de sonner",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 13,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "Il porte la corne à sa bouche — et ne souffle pas. « Voilà. C'est exactement ce qu'on entend depuis vingt ans. » Il te la tend : elle est bouchée à la cire, de l'intérieur. « Ce n'est pas moi qui l'ai bouchée. Et je continue à monter. »",
+      "reussite": "Il porte la corne à sa bouche — et ne souffle pas. « Voilà. C'est exactement ce qu'on entend depuis vingt ans. » Il te la tend : elle est bouchée à la cire, de l'intérieur.",
+      "echec": "« Sonner quoi ? » Il serre la corne contre lui. « Le dernier qui a sonné, ils sont venus. Pas pour ce qu'il annonçait. Pour lui. »",
+      "funeste": "Il souffle. Rien ne sort — mais dans le hameau, sous toi, on entend distinctement une porte, puis une autre, puis une autre se fermer. « Tu vois. Ils l'entendent quand même. »"
+     }
+    },
+    {
+     "id": "guet-partir",
+     "label": "Le laisser regarder",
+     "type": "passif",
+     "consequence": "Tu le laisses à sa faction. En t'éloignant, tu l'entends dire, pour lui seul : « Quelqu'un doit bien regarder. »"
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "guetteur-tour",
+   "adversaireNom": "le Guetteur sans tour",
+   "nom": "Tour de guet 2 — beat 2",
+   "lieu": "tour_de_guet_effondree",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "scene_tour_de_guet_a.png",
+    "hash": "2e1c76a6",
+    "taille": 25909,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Événement de la Tour : le Guetteur sans tour, assis de dos sur le tas de pierres, en manteau de guet, une corne au côté, il regarde le sud. CHANGE : c'est un portrait de l'homme, plus le plan large de la tour.",
+   "promptImage": "old watchman seen from behind, seated on a pile of stones, heavy worn sentry cloak, a signal horn hanging at his side, head turned to scan the horizon, never facing the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": [
+    "tour-de-guet"
+   ]
+  },
+  {
+   "id": "marche-muet",
+   "narration": [
+    "Au cœur du hameau, un marché sans un cri. Des étals de trois fois  rien — clous, laine, racines — et des marchands qui négocient par  gestes, paumes et hochements. Renoncer à la parole est le  renoncement le plus courant. Le moins cher."
+   ],
+   "choix": [
+    {
+     "id": "observer-troc",
+     "label": "Observer un troc",
+     "type": "passif",
+     "consequence": "Deux paumes ouvertes, un hochement, trois doigts — refus. Deux "
+    },
+    {
+     "id": "imiter-gestes",
+     "label": "Saluer à leur manière",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Ton salut muet est si juste qu'une marchande te répond machinalement — puis se fige : elle vient de te parler comme à quelqu'un du hameau. Trop tard pour le reprendre. Aux yeux du marché, te voilà presque des leurs.",
+      "reussite": "Paumes ouvertes, menton bas : tu passes pour un voyageur qui connaît les usages. Les épaules se détendent sur ton passage. C'est peu, et c'est énorme, ici.",
+      "echec": "Ton geste dérape — une paume trop haute, et te voilà en train de proposer quelque chose que tu ne comprends pas. Un vieux marchand éclate d'un rire SILENCIEUX, à s'en plier. C'est pire qu'un rire sonore.",
+      "funeste": "1 naturel. Ton salut, dans leur grammaire, est une question qu'on ne pose pas. Le marché entier baisse les mains d'un coup. Conversation terminée. ♦ −2"
+     }
+    },
+    {
+     "id": "longer-etals",
+     "label": "Longer les étals",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "marche-muet-2",
+   "nom": "Le Marché Muet",
+   "lieu": "marche_muet",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_marche_muet_c.png",
+    "hash": "311a7b1c",
+    "taille": 28666,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Arrivée au Marché Muet, à l'intérieur du hameau. Des étals sans marchands, des marchandises posées et personne pour les vendre.",
+   "promptImage": "small deserted village market square, empty trestle stalls with goods still laid out on them, no people, low stone houses closing the square, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "marche-muet-2"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "marche-muet-2",
+   "narration": [
+    "Au bout de la rangée, un étal différent : bric-à-brac d'ailleurs,  objets qui n'ont rien à faire dans une lande. Le Colporteur te  regarde venir de loin — et te reconnaît. C'est impossible. Il te  fait signe quand même, comme à un client de longue date."
+   ],
+   "choix": [
+    {
+     "id": "troc-colporteur",
+     "label": "Troquer au Marché",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Vous marchandez par gestes, et tu gagnes l'échange — il en rit sans bruit, beau joueur. Dans ta paume : une boussole dont l'aiguille pointe non pas le nord, mais la sortie. « À la prochaine », articule-t-il en silence. La prochaine quoi ?",
+      "reussite": "L'échange se fait : trois clous et un souvenir contre un petit paquet de toile cirée. Dedans, de quoi tenir — du sûr, du sec. Le Colporteur tape deux doigts sur sa tempe : marché honnête, mémoire honnête.",
+      "echec": "Tu offres trop tôt, il le voit trop bien. L'échange se conclut à ton désavantage — un objet brillant et creux contre du solide. Son sourire s'excuse presque : les règles sont les règles, même muettes.",
+      "funeste": "1 naturel. Tu tends la main vers l'étal. Il la serre — et te rend ta propre bourse, que tu n'avais pas vue partir. Leçon offerte, dit son sourire. La leçon seulement. ♦ −2"
+     }
+    },
+    {
+     "id": "rebouteux",
+     "label": "Montrer tes plaies",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Le Rebouteux te palpe comme on lit une lettre, hoche la tête — et remet en place quelque chose que tu ne savais pas déplacé. La douleur s'éteint d'un coup, comme soufflée. Il refuse ton paiement : tu diras juste, dehors, qu'ici on répare encore.",
+      "reussite": "Ses mains sont dures et savantes. Ça craque, ça brûle, puis ça va mieux — nettement. Il désigne ta poitrine, puis la lande, puis fait « non » du doigt : ce qu'il a resserré tiendra, à condition de ne pas courir.",
+      "echec": "Il t'examine, puis recule d'un pas et te montre sa paume : refus. Tu ne sauras pas si c'est ta blessure qui le dépasse ou quelque chose qu'il a lu dessous — mais il ne te touchera pas, et son regard t'accompagne longtemps.",
+      "funeste": "1 naturel. Ses mains s'arrêtent net sur ta nuque. Il retire les siennes très lentement, comme d'un piège à loup. Ce qu'il a senti là, il ne l'a pas soigné. Il l'a salué. ♦ −2"
+     },
+     "soupcon": 1
+    },
+    {
+     "id": "traverser-marche",
+     "label": "Traverser sans offrir",
+     "type": "passif",
+     "consequence": "Tu traverses les étals sans un geste, mains visibles, et le "
+    }
+   ],
+   "pointsInteret": [],
+   "nom": "Le Marché Muet — beat 2",
+   "lieu": "marche_muet",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_colporteur_b.png",
+    "hash": "d50790a0",
+    "taille": 28370,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Événement du Marché : le Colporteur, le seul qui parle encore, et le Rebouteux derrière lui.",
+   "promptImage": "hunched pedlar with an enormous frame pack covered in hanging goods, standing in an empty market square, one hand raised in greeting, wide fixed smile, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": [
+    "marche-muet"
+   ]
+  },
+  {
+   "id": "campement",
+   "narration": [
+    "Le moulin n'a plus d'ailes mais il a gardé leur trace : quatre ombres  pâles en croix sur le corps de pierre, comme un moulin fantôme peint  sur le vrai.",
+    "La porte est entrouverte. Pas défoncée : entretenue. La croix d'ombres,  en haut. La lucarne, qui te regarde. Et la porte, qui n'attend que toi."
+   ],
+   "choix": [
+    {
+     "id": "fouiller-lit",
+     "label": "Fouiller le lit de bruyère",
+     "type": "passif",
+     "consequence": "Sous la bruyère, la pierre du mur porte des marques à hauteur "
+    },
+    {
+     "id": "ecouter-moulin",
+     "label": "Écouter le moulin",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 10,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Le moulin craque comme tout vieux bois — mais en RYTHME. Tu finis par le reconnaître : c'est une berceuse, jouée par la charpente, notée par le vent. Quelqu'un a appris à cette ruine à chanter. Tu sauras dormir dessous.",
+      "reussite": "Des craquements de bois qui travaille, le froissement de la lande — et, très loin, un pas léger qui tourne autour du moulin sans jamais s'approcher. Pas une menace : une ronde.",
+      "echec": "Tu écoutes si fort que tu n'entends plus rien — le silence se referme comme une main. Quand tu relâches, un craquement JUSTE au-dessus. Le temps de lever la tête : rien. Le moulin, dit ton pouls.",
+      "funeste": "1 naturel. Le moulin s'arrête de craquer. Complètement. Un vieux bois qui se tait, c'est un bois qui retient son souffle. ♦ −2"
+     }
+    },
+    {
+     "id": "installer-camp",
+     "label": "S'installer pour la halte",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [
+    {
+     "id": "croix-ombres",
+     "label": "La croix d'ombres, en haut",
+     "approche": "Tu recules jusqu'au muret d'en face. Il faut de la distance pour ",
+     "examen": "De loin, les quatre bandes pâles se lisent d'un coup : ce sont des ",
+     "fragmentChapitre": true,
+     "nom": "La croix d'ombres, en haut",
+     "image": {
+      "fichier": "scene_moulin_croix_ombres_a_d.png",
+      "hash": "c09deb42",
+      "taille": 21907,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "lucarne-moulin",
+     "label": "La lucarne, au-dessus de la porte",
+     "approche": "Quelque chose a bougé là-haut — tu en jurerais. Tu approches sans ",
+     "examen": "La lucarne est vide. Et propre : pas un grain de poussière sur le ",
+     "donneObjet": "jouet-fixee",
+     "nom": "La lucarne, au-dessus de la porte",
+     "image": {
+      "fichier": "scene_moulin_lucarne_a_b.png",
+      "hash": "733f07d8",
+      "taille": 8031,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "interieur-moulin",
+     "label": "Pousser la porte entrouverte",
+     "approche": "Tu pousses du plat de la main, lentement, en laissant à ce qu'il y ",
+     "examen": "Personne. Mais le contraire de l'abandon : une paillasse faite au ",
+     "fragmentChapitre": true,
+     "nom": "Pousser la porte entrouverte",
+     "image": {
+      "fichier": "scene_moulin_interieur_a_d.png",
+      "hash": "372f7583",
+      "taille": 11846,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    }
+   ],
+   "suite": "campement-2",
+   "nom": "Campement",
+   "lieu": "moulin_sans_ailes",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_moulin_campement_a.png",
+    "hash": "e330d3ee",
+    "taille": 25894,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Arrivée au Moulin sans Ailes — c'est le lieu de repos de la zone. Une tour de pierre trapue SANS ailes, quatre traces pâles sur le corps du moulin, la porte entrebâillée.",
+   "promptImage": "old stone windmill without sails on a moorland crest, four pale ghost marks of the missing sails on the stone body, door ajar, small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "campement-2"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "campement-2",
+   "narration": [
+    "Par la lucarne, le crépuscule ne bouge pas. On dit qu'une fille  dort ici, parfois — la seule pendue qui se soit relevée. Le lit de  bruyère garde une forme légère, comme un creux encore tiède."
+   ],
+   "choix": [
+    {
+     "id": "dormir",
+     "label": "Dormir malgré le crépuscule",
+     "type": "repos",
+     "repos": true
+    },
+    {
+     "id": "garde",
+     "label": "Monter la garde",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu dors d'un œil — et cet œil la voit : une silhouette entre sans bruit, une corde coupée au cou, s'assoit près de la meule et te veille, toi. À ton réveil, une marque de main dans la poussière : merci pour la place.",
+      "reussite": "Ton demi-sommeil filtre les bruits de la lande. Rien n'entre. Le repos est mince, mais il est à toi — et le creux du lit de bruyère, au matin, n'a pas changé de forme.",
+      "echec": "Tu sombres sans le décider. Au réveil, la porte est ouverte — tu l'avais calée — et sur la meule, quelqu'un a posé une fleur de bruyère. Tu n'es pas sûr que ce soit un cadeau.",
+      "funeste": "1 naturel. Tu rêves qu'on te veille. Tu te réveilles : c'est vrai. Elle est penchée sur toi, sa corde coupée pendant à ton front — puis plus rien, la porte battante, et ton cœur qui compte tout seul. ♦ −2"
+     }
+    },
+    {
+     "id": "repartir",
+     "label": "Repartir sans s'attarder",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "nom": "Campement 2 — beat 2",
+   "lieu": "moulin_sans_ailes",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "scene_moulin_campement_2_a.png",
+    "hash": "2d91a0f3",
+    "taille": 22254,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Événement du Moulin : la garde, ou le sommeil. Le lit de bruyère tassé, refait de frais, les marques de comptage à hauteur d'enfant sur la pierre.",
+   "promptImage": "interior of a derelict stone windmill, heather bedding pressed flat on the floor, tally marks scratched on the stone wall at child height, broken millstone, light through a small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": [
+    "campement"
+   ]
+  },
+  {
+   "id": "chapelle-des-cordes",
+   "narration": [
+    "La chapelle est petite et n'a plus de dieu — les niches sont vides,  l'autel renversé. Mais elle est TENUE : balayée, entretenue, occupée  par sa nouvelle religion.",
+    "Au fond, le mur des cordes. Sur le côté, l'autel couché. Près de  l'entrée, une chaise et un ouvrage de tressage — quelqu'un vit ici."
+   ],
+   "choix": [
+    {
+     "id": "rester-chapelle",
+     "label": "Rester dans la chapelle",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [
+    {
+     "id": "mur-cordes",
+     "label": "Le mur des cordes, au fond",
+     "approche": "Tu remontes la nef courte. L'odeur de chanvre vieux prend à la ",
+     "examen": "Des dizaines de cordes coupées, clouées en rangs, chacune ",
+     "savoir": "savoir_corde_vive",
+     "nom": "Le mur des cordes, au fond",
+     "image": {
+      "fichier": "scene_chapelle_mur_cordes_a_d.png",
+      "hash": "61717f26",
+      "taille": 5920,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "autel-renverse",
+     "label": "L'autel couché, sur le côté",
+     "approche": "Tu contournes les bancs absents — on les a brûlés, sans doute — ",
+     "examen": "Sous l'autel renversé, un espace. Vide — mais le creux dans la ",
+     "soupcon": 1,
+     "nom": "L'autel couché, sur le côté",
+     "image": {
+      "fichier": "scene_chapelle_autel_a_c.png",
+      "hash": "a2f7e150",
+      "taille": 12535,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "ouvrage-tressage",
+     "label": "La chaise et l'ouvrage",
+     "approche": "Près de l'entrée, la chaise est tournée vers le mur des cordes — ",
+     "examen": "Un ouvrage de tressage en cours, posé sur le siège : trois brins ",
+     "soupcon": -1,
+     "nom": "La chaise et l'ouvrage",
+     "image": {
+      "fichier": "scene_chapelle_ouvrage_a_d.png",
+      "hash": "672ac882",
+      "taille": 10796,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    }
+   ],
+   "suite": "chapelle-des-cordes-2",
+   "butin": "brin-chanvre",
+   "savoir": "savoir_corde_vive",
+   "nom": "La Chapelle des Cordes",
+   "lieu": "chapelle_des_cordes",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_chapelle_des_cordes_d.png",
+    "hash": "334043b0",
+    "taille": 22532,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Arrivée à la Chapelle des Cordes, intérieur du hameau. Une nef courte, des dizaines de cordes coupées clouées en rangs le long des murs, du sol au plafond.",
+   "promptImage": "interior of a tiny stone chapel, dozens of cut ropes nailed in rows along the walls from floor to ceiling, small paper labels on each, overturned altar, short nave, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "chapelle-des-cordes-2"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "chapelle-des-cordes-2",
+   "narration": [
+    "Elle était là depuis le début. Une femme en noir, assise à la chaise,  qui refait sans fin le même nœud sans lever les yeux sur toi.",
+    "— « Choisis ton brin. » Sa voix est plate, professionnelle. « Tout le  monde finit par en avoir besoin. » Derrière elle, dans une niche à  part, sous verre : une corde coupée net, sans nom. La seule de toute  la chapelle qui n'a pas tenu."
+   ],
+   "choix": [
+    {
+     "id": "corde-coupee",
+     "label": "Prendre la corde coupée",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Le verre pivote sans bruit — la niche n'était pas verrouillée. Elle attendait. La corde coupée s'enroule d'elle-même autour de ton poignet, légère, tiède : une relique qui a choisi son porteur. Au mur, toutes les autres cordes se figent.",
+      "reussite": "Tu soulèves le verre, tu prends la corde. Elle ne pèse rien — tout ce qu'elle devait retenir s'est relevé et marche encore. La Veuve, au fond, ne se retourne pas. Mais son nœud, pour la première fois, change de forme.",
+      "echec": "Le verre t'échappe et sonne sur la dalle. La Veuve est sur toi en trois pas, sans courir — et les cordes du mur se tendent toutes vers toi, d'un même mouvement. Tu sors avec la corde, mais la chapelle entière connaît ton visage.",
+      "funeste": "1 naturel. Tu saisis la corde coupée. Une autre corde, au mur, te saisit le poignet — la Fixation est un métier de patience, et il en pendait une au-dessus de la niche depuis toujours, pour les gens comme toi. ♦ −2"
+     }
+    },
+    {
+     "id": "prier-veuve",
+     "label": "Prier près de la Veuve",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu t'agenouilles et tu refais son nœud avec elle, geste pour geste. À la dernière boucle, ses mains s'arrêtent — finies, après tant d'années. Elle te regarde, et te donne le seul secret qui vaille ici : le nom que la corde coupée refusait de porter.",
+      "reussite": "Tu prends le bout de corde qu'elle te tend et tu suis. Le nœud qu'elle t'apprend n'attache rien — il retient quelqu'un de partir dans sa tête. Elle te tapote la main : tu sauras le refaire, quand tu en auras besoin. Tu espères que non.",
+      "echec": "Tu t'agenouilles trop près. Ses mains ne s'arrêtent pas, mais son nœud change — et tu reconnais la forme, maintenant : c'est un nœud coulant à ta taille de cou. Tu te relèves sans brusquerie. Elle sourit au mur.",
+      "funeste": "1 naturel. Tu pries avec elle. Elle prie pour toi. Au mur, un clou libre attend déjà, sous un espace sans nom — plus pour longtemps, dit son nœud. ♦ −2"
+     }
+    },
+    {
+     "id": "corde-vive",
+     "label": "Saisir la corde vive",
+     "type": "verrouille",
+     "stat": "COURAGE"
+    },
+    {
+     "id": "eviter-corde-vive",
+     "label": "Longer le mur, hors d'atteinte",
+     "type": "passif",
+     "consequence": "Tu connais son rang et sa place. Tu traverses la nef par l'autre ",
+     "exigeSavoir": "savoir_corde_vive"
+    }
+   ],
+   "pointsInteret": [],
+   "nom": "La Chapelle des Cordes — beat 2",
+   "lieu": "chapelle_des_cordes",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_veuve_cordes_a.png",
+    "hash": "87115831",
+    "taille": 18719,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Événement de la Chapelle : la Veuve aux Cordes, assise, qui refait sans fin le même nœud. Derrière elle, sous verre, la corde coupée sans nom.",
+   "promptImage": "old woman in black seated on a chair, tying and untying the same knot in a short length of rope, eyes down, a glass case behind her holding one cut rope, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": [
+    "chapelle-des-cordes"
+   ]
+  },
+  {
+   "id": "puits-condamne",
+   "narration": [
+    "Sur la place arrière du hameau, un puits — condamné de frais :  planches neuves, chaînes croisées, cadenas encore gras. Tout le  reste du hameau tombe en ruine douce, mais ça, on l'entretient.",
+    "Et dessous, ça cogne. Trois coups, une pause. Trois coups. Poli,  presque — comme on frappe à une porte dont on sait qu'on va vous  ouvrir."
+   ],
+   "choix": [
+    {
+     "id": "ecouter-puits",
+     "label": "Coller l'oreille au bois",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Entre deux coups, tu entends le fond : de l'eau, des voix — et le hameau à l'envers. Le puits ne contient pas des choses : il contient un ailleurs. Ce que tu as entendu du fond te servira, le jour où tu croiseras l'autre bout.",
+      "reussite": "À travers le bois, tu comptes : les coups ne demandent pas à sortir. Ils tiennent un registre — trois coups par nom, une pause entre les noms. Le puits fait l'appel. Tu retires l'oreille avant d'entendre le tien.",
+      "echec": "L'oreille au bois, tu n'entends plus rien — les coups se sont tus dès le contact. Puis, contre ta joue, à travers la planche : trois coups très doux. On t'a entendu écouter.",
+      "funeste": "1 naturel. Tu écoutes. Et de l'autre côté des planches, très distinctement, quelqu'un fait « chhht ». ♦ −2"
+     }
+    },
+    {
+     "id": "noeud-chaines",
+     "label": "Étudier le nœud",
+     "type": "verrouille",
+     "stat": "RUSE"
+    },
+    {
+     "id": "approcher-puits",
+     "label": "S'approcher de la margelle",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "puits-condamne-2",
+   "nom": "Le Puits Condamné",
+   "lieu": "puits_condamne",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_puits_condamne_a.png",
+    "hash": "4c2af433",
+    "taille": 26792,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Arrivée au Puits Condamné. Un puits fermé par des planches clouées en croix, par-dessus, des pierres empilées.",
+   "promptImage": "village well sealed shut with planks nailed in a cross over its mouth, stones piled on top, worn rope still tied to the winch, empty square, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "puits-condamne-2"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "puits-condamne-2",
+   "narration": [
+    "À ton approche, le rythme change. Plus vite, plus fort — plus  personne de poli. Le cadenas saute sur son anneau à chaque série,  et les planches, au dernier coup, ont bougé. Franchement bougé."
+   ],
+   "choix": [
+    {
+     "id": "reclouer",
+     "label": "Resserrer les chaînes",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu retends les chaînes au quart de tour près, cales les planches en croix — du travail de charpentier. Dessous, les coups s'arrêtent… puis un seul, léger : compris. Le hameau t'observera autrement, désormais.",
+      "reussite": "Tu resserres ce qui peut l'être. Les coups continuent, mais assourdis, repoussés d'un étage — le puits retourne à sa patience. Ce que tu as gagné s'appelle du temps, et ici ça vaut cher.",
+      "echec": "La chaîne te glisse des mains et sonne contre la margelle. Dessous, silence — le pire des silences, celui qui écoute. Tu finis le travail trop vite, mal, et tu t'éloignes sans tourner le dos au puits.",
+      "funeste": "1 naturel. Tu tires la chaîne. Elle tire aussi. Le cadenas, entre vous deux, choisit son camp — pas le tien. ♦ −2"
+     }
+    },
+    {
+     "id": "reculer-puits",
+     "label": "Reculer sans bruit",
+     "type": "passif",
+     "consequence": "Tu recules pas à pas, les yeux sur les planches. Les coups "
+    }
+   ],
+   "pointsInteret": [],
+   "chronometree": 7000,
+   "nom": "Le Puits Condamné — beat 2",
+   "lieu": "puits_condamne",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_mains_du_puits_a.png",
+    "hash": "e53cc406",
+    "taille": 21734,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Événement du Puits (scène chronométrée) : les Mains du Puits, qui sortent entre les planches.",
+   "promptImage": "pale emaciated hands reaching up through the gaps between nailed planks over a well mouth, fingers splayed and grasping, many more than two hands, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": [
+    "puits-condamne"
+   ]
+  },
+  {
+   "id": "chien-du-bailli",
+   "narration": [
+    "La plus grande maison du hameau est murée — de l'intérieur. Chaque  fenêtre bouchée de pierres posées depuis dedans, en rangs pressés,  par quelqu'un qui s'enfermait plus qu'il ne se protégeait. La  maison du Bailli. Vide depuis sa corde. Pas gardée par personne."
+   ],
+   "choix": [
+    {
+     "id": "longer-fenetres",
+     "label": "Longer les fenêtres murées",
+     "type": "passif",
+     "consequence": "Les pierres sont posées de l'intérieur, oui — mais pas "
+    },
+    {
+     "id": "jauger-garde",
+     "label": "Repérer ce qui garde",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu le vois avant qu'il te voie : couché contre le seuil, gris sur gris. Et tu vois surtout sa ronde, tracée dans l'usure de l'herbe — trente ans du même circuit. Tu connais ses horaires avant qu'il connaisse ton odeur.",
+      "reussite": "Une masse grise contre le seuil, immobile comme un sac — sauf les oreilles, qui te suivent depuis ton premier pas. Il sait que tu es là. Il attend de savoir si ça vaut de se lever.",
+      "echec": "Tu scrutes les appentis, la cour, les toits — et pendant ce temps, la masse grise du seuil s'est levée sans bruit et a raccourci la distance de moitié. Il jaugeait plus vite que toi.",
+      "funeste": "1 naturel. Tu cherches le danger partout — sauf derrière. Le souffle sur tes mollets t'informe de ton erreur. ♦ −2"
+     }
+    },
+    {
+     "id": "avancer-seuil",
+     "label": "Avancer vers le seuil",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "chien-du-bailli-2",
+   "nom": "Le Chien du Bailli",
+   "lieu": "maison_du_bailli",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_maison_du_bailli_c.png",
+    "hash": "1bd852b8",
+    "taille": 31028,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Arrivée à la Maison du Bailli, murée. Portes et fenêtres bouchées à la pierre, de l'extérieur — on a fermé cette maison depuis la rue.",
+   "promptImage": "stone house with every door and window bricked up from the outside, fresh mortar against old walls, a low garden wall, no path worn to the door, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "chien-du-bailli-2"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "chien-du-bailli-2",
+   "narration": [
+    "Le chien se lève du seuil sans aboyer. Gris, trop grand, le poil  usé aux endroits d'un harnais qu'il ne porte plus. Son maître  pend à la colline — mais l'ordre, lui, n'a jamais été levé.  Personne n'entre. Il te le dit d'un seul regard."
+   ],
+   "choix": [
+    {
+     "id": "forcer-seuil",
+     "label": "Forcer le passage",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 13,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu marches droit, sans lever la main. Le chien te jauge — et s'écarte au dernier pas, parce qu'un ordre ancien vient d'en croiser un plus vieux : on ne mord pas ce qui n'a pas peur. Il t'escorte jusqu'au seuil, tête basse, presque soulagé.",
+      "reussite": "Il charge, tu tiens la ligne. L'impact vous couche tous les deux — mais c'est toi qui te relèves entre lui et la porte, et ça, pour un chien de garde, c'est la fin du débat. Il recule en grondant sa dignité.",
+      "echec": "Il est plus vif que sa taille ne l'annonce. Ses mâchoires te prennent l'avant-bras au vol et te traînent hors du seuil comme un sac — c'est exactement son travail, et il le fait bien. Tu ne passes pas par la porte.",
+      "funeste": "1 naturel. Tu forces le seuil. Le chien te laisse faire — et tu comprends trop tard pourquoi il montait la garde tourné vers la porte : ce n'était pas pour empêcher d'entrer. ♦ −2"
+     }
+    },
+    {
+     "id": "apaiser-chien",
+     "label": "S'accroupir, lui parler",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu t'accroupis, tu lui parles de son maître — celui qui pend là-haut et qui juge encore. Le chien écoute, oreilles couchées, puis vient poser son front contre le tien. L'ordre est levé : tu es le premier à lui avoir dit que c'était fini.",
+      "reussite": "Tu lui laisses le dos de ta main, sans bouger. Il la flaire longtemps — la lande, le gibet, peut-être une trace de son maître dessus. Il ne s'écarte pas, mais il s'assoit : ce n'est plus une garde, c'est une visite. Tu peux longer le mur.",
+      "echec": "Ta voix le calme — puis un mot le hérisse d'un coup, sans que tu saches lequel. Un mot que le Bailli employait, sans doute, et pas pour de bonnes choses. Il te chasse du seuil en trois attaques sèches, plus déçu que féroce.",
+      "funeste": "1 naturel. Il pose sa tête sous ta main. Et referme ses mâchoires dessus au moment exact où tu le crois gagné — les ordres du Bailli prévoyaient les gens comme toi. ♦ −2"
+     }
+    },
+    {
+     "id": "contourner-cour",
+     "label": "Contourner par la cour",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu fais le tour par les appentis — et tu trouves mieux que la porte : le trou par lequel le chien entre et sort, taillé à sa mesure dans la pierre murée. Assez large pour toi. La seule ouverture que le Bailli n'a jamais murée : il faut bien nourrir la garde.",
+      "reussite": "Tu passes par la cour aux orties, sous le vent, hors de vue. Le chien tourne autour de la maison à ta recherche — méthodique, aux aguets — mais la routine de sa ronde a trente ans, et tu marches entre ses horaires.",
+      "echec": "La cour est un piège à bruit : ardoises brisées, seaux morts, orties jusqu'au coude. Le chien t'y cueille à mi-chemin, sans surprise aucune — sa ronde passait par là, évidemment. Tu ressors piqué, mordu et bredouille.",
+      "funeste": "1 naturel. Dans la cour arrière, tu découvres pourquoi la ronde du chien l'évite : quelque chose y est enterré, et ça n'aime pas les pas au-dessus. ♦ −2"
+     }
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "chien-du-bailli",
+   "adversaireNom": "Le Chien du Bailli",
+   "combat": true,
+   "nom": "Le Chien du Bailli — beat 2",
+   "lieu": "maison_du_bailli",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_chien_du_bailli_b.png",
+    "hash": "c9b8edb0",
+    "taille": 20638,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Combat : le Chien du Bailli, qui garde encore une maison où il n'y a plus personne.",
+   "promptImage": "gaunt long-legged hound standing in front of a bricked-up doorway, ribs showing, head low, lips drawn back, a broken chain still on its collar, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": [
+    "chien-du-bailli"
+   ]
+  },
+  {
+   "id": "petit-tribunal",
+   "narration": [
+    "La grange aux trois bancs sent le suif froid. La chaire fait face à la  porte — ici, même l'entrée est un interrogatoire.",
+    "Au mur, une feuille clouée. Sur la chaire, un livre ouvert. Les bancs,  eux, gardent leurs traces."
+   ],
+   "choix": [
+    {
+     "id": "rester-tribunal",
+     "label": "Rester dans la salle",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [
+    {
+     "id": "mur-ordonnance",
+     "label": "La feuille clouée au mur",
+     "approche": "Trois pas de dalle inégale, et la feuille se précise : du papier ",
+     "examen": "La liste des signes, de la main du Bailli. « Parler seul face au ",
+     "savoir": "savoir_ordonnance",
+     "nom": "La feuille clouée au mur",
+     "image": {
+      "fichier": "scene_tribunal_ordonnance_a_c.png",
+      "hash": "76417e2b",
+      "taille": 16420,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "chaire-registre",
+     "label": "La chaire et son livre",
+     "approche": "La chaire est haute — il faut lever les yeux, et c'est le but. Tu ",
+     "examen": "Le Registre des Pendaisons est posé là, ouvert — pas par ",
+     "fragmentChapitre": true,
+     "nom": "La chaire et son livre",
+     "image": {
+      "fichier": "scene_tribunal_chaire_a_c.png",
+      "hash": "c48ed902",
+      "taille": 9462,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "les-bancs",
+     "label": "Les bancs et leurs traces",
+     "approche": "Tu redescends vers les bancs. Trois rangs de bois brut, et cette ",
+     "examen": "Le bois du banc des accusés est poli au milieu, rongé aux bords — ",
+     "fragmentChapitre": true,
+     "nom": "Les bancs et leurs traces",
+     "image": {
+      "fichier": "scene_tribunal_bancs_a_c.png",
+      "hash": "2edb5367",
+      "taille": 19376,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    }
+   ],
+   "suite": "petit-tribunal-2",
+   "savoir": "savoir_ordonnance",
+   "nom": "Le Petit Tribunal",
+   "lieu": "petit_tribunal",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_petit_tribunal_a.png",
+    "hash": "0342cdc2",
+    "taille": 31898,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Arrivée au Petit Tribunal. Une grange convertie en salle d'audience : trois bancs de bois face à une haute chaire, une feuille de règles clouée au mur.",
+   "promptImage": "interior of a barn converted into a rustic courtroom, three wooden benches facing a tall wooden pulpit, a sheet of rules nailed to the wall, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "petit-tribunal-2"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "petit-tribunal-2",
+   "narration": [
+    "La porte s'ouvre derrière toi. Un petit homme sec entre, plume et  encrier serrés contre lui — et se fige net en te voyant à la chaire.  Une seconde entière. Assez pour que vous sachiez tous les deux qu'il  t'a vu.",
+    "Puis il fait comme si de rien : il s'installe au banc des témoins,  ouvre son cahier, et se met à copier. L'Écrivain public. Il ne lève  pas les yeux — mais sa plume, elle, a ralenti."
+   ],
+   "choix": [
+    {
+     "id": "lire-registre",
+     "label": "Lire le Registre",
+     "type": "suite"
+    },
+    {
+     "id": "denoncer-un-autre",
+     "label": "Donner un nom à la plume",
+     "type": "passif",
+     "consequence": "Tu te penches vers l'Écrivain et tu donnes un nom — quelqu'un ",
+     "poseFlag": "a-denonce",
+     "soupcon": -2
+    },
+    {
+     "id": "quitter-tribunal",
+     "label": "Quitter sans lire",
+     "type": "passif",
+     "consequence": "Tu tournes le dos à la chaire. La plume de l'Écrivain continue "
+    },
+    {
+     "id": "dire-poteau-grave",
+     "label": "« Mon poteau est déjà taillé »",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 13,
+     "hautEnjeu": true,
+     "issues": {
+      "critique": "20 naturel. Tu l'annonces comme un fait administratif, sans trembler : ton nom est gravé au fond du champ, l'entaille est fraîche, le bois n'a pas grisé. Puis tu ajoutes la seule question qui compte : « Qui a donné mon nom au Fossoyeur, et sur quel jugement ? » La plume s'arrête. L'Écrivain feuillette en arrière, pâlit, et tourne le cahier vers toi. La ligne existe. Elle est signée d'une main morte depuis des années. Tu ne sais pas encore ce que ça veut dire — mais lui non plus, et ça le terrifie davantage.",
+      "reussite": "Tu le dis, et tu regardes l'Écrivain plutôt que le sol. Sa plume hésite. « Une erreur de greffe », finit-il par dire, et il gratte la ligne devant toi. Le bois du poteau, lui, restera taillé — mais le cahier ne te réclame plus. Ici, c'est le cahier qui décide.",
+      "echec": "Tu le dis, et le silence qui suit te apprend ton erreur. L'Écrivain ne lève pas les yeux : il écrit. Longuement. Tu viens de fournir toi-même le motif qui manquait à ta ligne, et il a l'élégance de ne pas te remercier.",
+      "funeste": "1 naturel. Tu parles trop, et tu parles bien : tu expliques exactement où est le poteau, à quelle rangée, comment l'entaille est faite. L'Écrivain note tout. « Merci », dit-il enfin — le seul mot qu'il t'aura adressé. « On cherchait encore lequel c'était. » ♦ −2"
+     },
+     "exigeSavoir": "savoir_poteau_a_mon_nom"
+    }
+   ],
+   "pointsInteret": [],
+   "poseFlag": "a-denonce",
+   "registre": true,
+   "nom": "Le Petit Tribunal — beat 2",
+   "lieu": "petit_tribunal",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_ecrivain_public_d.png",
+    "hash": "13d5604d",
+    "taille": 12534,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Événement du Tribunal : l'Écrivain public, qui entre, te voit à la chaire, et se met à copier sans lever les yeux.",
+   "promptImage": "small dry clerk seated on a witness bench, open ledger on his knees, quill in hand, inkpot clutched against his chest, eyes down, mid-stroke, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": [
+    "petit-tribunal"
+   ]
+  },
+  {
+   "id": "meute-grise-1",
+   "narration": [
+    "Passé les murets du hameau, la lande redevient à eux. Tu les vois  de loin — et c'est mauvais signe : la Meute Grise ne se montre  que quand l'encerclement est fini. Six silhouettes couleur de  bruyère morte, immobiles aux six points d'un cercle dont tu es  le centre.",
+    "Pas des chiens : trop patients. Pas des loups : trop organisés. La  plus grande s'assoit — le signal. Le cercle se met à tourner,  lentement, en se resserrant d'un pas par tour."
+   ],
+   "choix": [
+    {
+     "id": "briser-cercle",
+     "label": "Charger la plus grande",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 13,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu charges la meneuse au milieu de son tour — l'impensable, au centre du cercle qui ne se défend jamais. Elle roule sous toi, se relève boiteuse, et le cercle entier perd le pas. Une meute sans cadence n'est qu'un tas de bêtes maigres.",
+      "reussite": "Ta charge la surprend à contre-pied. Ta lame la marque au flanc et le cercle s'arrête net — six têtes tournées vers la meneuse, en attente d'un ordre qu'elle met trop longtemps à donner. Tu as gagné le désordre, et c'est déjà beaucoup.",
+      "echec": "Elle t'a laissé venir. Le cercle se referme dans ton dos au moment exact de ton élan — des crocs te prennent au mollet, d'autres au flanc, précis, économes. Puis tout recule d'un pas : la première entaille est faite. Ils ne sont pas pressés.",
+      "funeste": "1 naturel. Tu charges la meneuse. C'était la seule qui n'était pas là — tu charges de la bruyère, et le cercle entier te tombe dessus, pédagogique. ♦ −2"
+     }
+    },
+    {
+     "id": "dos-muret",
+     "label": "Gagner le muret",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu perces le cercle à l'endroit exact où deux bêtes échangeaient leurs postes — le seul battement du mécanisme. Dos à la pierre sèche, tu n'offres plus de centre. Une meute sans cercle tourne à vide ; la meneuse te le reproche du regard, longuement.",
+      "reussite": "Tu atteins le muret de justesse, une lanière de manteau en moins. Adossé à la pierre, tu ne peux plus être encerclé — juste attaqué de face, et ça, visiblement, ce n'est pas leur école. Le cercle se refait plus loin, faute de mieux.",
+      "echec": "Tu cours — et le cercle tourne plus vite que toi, sans effort. Une bête t'accueille au muret, déjà assise, presque polie. Le péage se paie en chair, et tu le paies. Puis on te laisse t'adosser : même eux respectent les règles du jeu.",
+      "funeste": "1 naturel. Tu cours au muret. Le muret est leur tanière. ♦ −2"
+     }
+    },
+    {
+     "id": "hurler-meute",
+     "label": "Hurler le premier",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu renverses la tête et tu hurles — pas de peur : un vrai hurlement de meute, appris tu ne sais où, peut-être du fond de la lande elle-même. Le cercle se fige. La meneuse répond. Vous vous êtes dit quelque chose, et le cercle s'ouvre : on ne chasse pas ce qui chante.",
+      "reussite": "Ton hurlement les déroute — c'est la proie qui crie, jamais le centre. Deux bêtes rompent le tour pour interroger la meneuse du regard, et le cercle flotte, désaccordé. Tu as gagné du temps et semé le doute, leurs deux seules faiblesses.",
+      "echec": "Ton hurlement sonne faux — un cri de gorge d'homme, rien d'autre. Le cercle ne ralentit même pas. Pire : au loin, quelque chose d'autre a répondu, et la meneuse presse le pas. Ils veulent finir avant l'arrivée de ce que tu as appelé.",
+      "funeste": "1 naturel. Tu hurles. Toute la lande répond — tout ce qu'elle contient, d'un seul chœur. La meute, elle, s'assoit poliment : on ne coupe pas la parole à ce qui arrive. ♦ −2"
+     }
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "meute-grise-2",
+   "adversaire": "meute-grise",
+   "adversaireNom": "La Meute Grise",
+   "combat": true,
+   "nom": "La Meute Grise",
+   "lieu": "horslieu",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_meute_grise_c.png",
+    "hash": "dd0fe7bf",
+    "taille": 32950,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Six silhouettes couleur de bruyère morte, immobiles aux six points d'un cercle dont tu es le centre.",
+   "promptImage": "six lean grey hounds standing motionless in a wide circle on open moorland, seen from the centre, evenly spaced, all heads turned inward toward the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "meute-grise-2"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "meute-grise-2",
+   "narration": [
+    "Le cercle est rompu, mais la meute reste — regroupée à distance de  lame, en croissant, plus prudente. Ils ont compris que tu mords  aussi. Ça ne les décourage pas : ça les intéresse.",
+    "La meneuse s'avance seule d'un pas, tête basse, et te fixe. Chez  eux, c'est une question. La dernière avant la charge — ou avant  autre chose. À toi d'y répondre."
+   ],
+   "choix": [
+    {
+     "id": "abattre-meneuse",
+     "label": "Répondre par l'acier",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu réponds d'un seul coup, net, définitif. La meneuse tombe sans un bruit — et la meute ne venge pas : elle constate, se choisit une autre tête d'un simple flottement, et reflue dans la bruyère. Les questions, dans la lande, n'ont pas de rancune.",
+      "reussite": "Ta lame répond pour toi. La meneuse esquive l'essentiel, encaisse le reste, et rompt — le croissant entier reflue avec elle, réglé sur sa retraite. Ils reviendront peut-être. Pas aujourd'hui, et pas pour toi.",
+      "echec": "Elle attendait l'acier — c'est la réponse qu'ils comprennent le mieux et esquivent le mieux. Le croissant fond sur toi, prend son tribut de chair en trois passes réglées, puis décroche d'un coup, comme à un signal. La lande se referme sur eux. Le compte est bon, pour eux.",
+      "funeste": "1 naturel. Tu frappes. Ta lame se prend dans la bruyère — la lande a choisi son camp. La meute te passe dessus en une seule vague, sans s'attarder : ce qu'elle voulait savoir, elle le sait, et te laisse au sol, moins lourd de ce qu'elle emporte. ♦ −2"
+     }
+    },
+    {
+     "id": "reculer-face",
+     "label": "Reculer, sans ciller",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 13,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu recules pas à pas, les yeux dans les siens, sans un frisson. La meneuse te suit — puis s'arrête à la frontière exacte d'un territoire que toi seul ne vois pas. Elle s'assoit. Tu es sorti de leur carte : la meute te regarde partir comme on regarde la pluie quitter un champ.",
+      "reussite": "Chaque pas en arrière est un mot de la négociation. Tu la tiens du regard jusqu'au chemin, et le croissant s'effiloche à mesure — une bête qui décroche, puis deux. À la fin, il ne reste que la meneuse, qui te concède la lande d'un battement de paupières.",
+      "echec": "Ton talon accroche une racine — un quart de seconde de regard perdu. Il ne leur en faut pas plus : la charge t'arrive dessus pendant que tu te rattrapes, te roule, te coûte — puis s'arrête net, croissant reformé, et la meute s'en va. L'épreuve est finie ; tu n'as pas brillé, mais tu es debout.",
+      "funeste": "1 naturel. Tu recules sans baisser les yeux. Eux non plus. Tu recules encore. Eux avancent. Le mur de pierre sèche dans ton dos met fin à la négociation — à leurs conditions. Ils prélèvent, et te laissent contre le muret, vivant par désintérêt. ♦ −2"
+     }
+    },
+    {
+     "id": "offrir-viande",
+     "label": "Jeter tes vivres",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu jettes tes vivres — mais un par un, en reculant, en semant ta sortie. La meute suit le fil de miettes, méthodique, et la meneuse te laisse filer avec un regard entendu : elle sait qu'elle est achetée, elle accepte le prix. Marché de vieux routiers.",
+      "reussite": "Le paquet tombe entre vous. La meneuse le flaire, le juge honnête — et le croissant se referme dessus au lieu de toi. Tu pars le ventre plus léger et la peau entière. Dans la lande, c'est un excellent taux de change.",
+      "echec": "Tu jettes tout — trop vite, trop près de toi. La meute prend les vivres ET la leçon : ce qui donne tout tremble. La meneuse te bouscule au passage, sans mordre, juste pour l'inventaire — puis ils s'en vont, servis. Tu restes debout, les poches vides, jaugé au plus juste.",
+      "funeste": "1 naturel. Tu jettes tes vivres. Ils n'y touchent pas. Ce n'était pas une chasse au gibier — c'était une pesée, et ton offrande vient de te faire passer dans la mauvaise colonne. Ils prélèvent la différence sur toi, exacts comme un percepteur, puis rendent la lande au silence. ♦ −2"
+     }
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "meute-grise",
+   "adversaireNom": "La Meute Grise",
+   "combat": true,
+   "nom": "La Meute Grise — beat 2",
+   "lieu": "horslieu",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_meute_grise_c.png",
+    "hash": "dd0fe7bf",
+    "taille": 32950,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Le cercle est rompu : la meute regroupée en croissant à distance de lame, et la meneuse avancée seule d'un pas, tête basse, qui te fixe. CHANGE : plus de cercle autour de toi — un croissant devant, une bête détachée en avant.",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "meute-grise-1"
+   ]
+  },
+  {
+   "id": "mare-aux-regards",
+   "narration": [
+    "L'eau est noire et parfaitement plate — le seul endroit des Landes que  le vent évite.",
+    "La berge est piétinée en un seul point, tassée par des années de  genoux. On ne vient pas ici puiser. On vient s'agenouiller. Le point  de berge usé. L'eau. Et dans les roseaux, un reflet de métal."
+   ],
+   "choix": [
+    {
+     "id": "boire-mare",
+     "label": "Boire à la mare",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. L'eau est glacée et propre, sans un goût. Tu bois longuement, et quand tu relèves la tête tu te sens plus léger d'une chose que tu ne saurais pas nommer — comme si la mare avait pris quelque chose à ta place. Elle avait le choix. Elle a bien choisi.",
+      "reussite": "Tu bois dans le creux de ta main. C'est de l'eau, rien d'autre. Ça n'a l'air de rien mais dans les Landes, ça compte.",
+      "echec": "Tu bois — et l'eau reste au bord des lèvres, sans descendre, une seconde de trop. Quand elle passe enfin, tu as l'impression très nette d'avoir avalé quelque chose qui a accepté de se laisser avaler.",
+      "funeste": "1 naturel. Tu bois. Sous la surface, à trois doigts de ton visage, ton reflet continue de boire quand tu t'arrêtes. ♦ −2"
+     }
+    },
+    {
+     "id": "sen-aller-mare",
+     "label": "Te relever sans regarder",
+     "type": "passif",
+     "consequence": "Tu te relèves sans te pencher. La mare garde sa réponse, et "
+    }
+   ],
+   "pointsInteret": [
+    {
+     "id": "berge-usee",
+     "label": "Le point de berge usé",
+     "approche": "Tu contournes la mare par la droite pour atteindre le seul endroit ",
+     "examen": "Deux creux dans la terre, à largeur de genoux, refaits par des ",
+     "soupcon": 1,
+     "nom": "Le point de berge usé",
+     "image": {
+      "fichier": "scene_mare_berge_a_c.png",
+      "hash": "cb021c43",
+      "taille": 10114,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "eau-reflet",
+     "label": "L'eau",
+     "approche": "Tu t'agenouilles dans les creux. Ils sont à ta taille, évidemment. ",
+     "examen": "Tu te penches. Ton reflet se penche. Et il lève les yeux vers toi ",
+     "savoir": "savoir_reflet",
+     "nom": "L'eau",
+     "image": {
+      "fichier": "scene_mare_eau_reflet_b.png",
+      "hash": "239daa3e",
+      "taille": 2768,
+      "recent": true,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "reflet-metal",
+     "label": "Le reflet de métal, dans les roseaux",
+     "approche": "Tu écartes les roseaux à deux mains. Ils sont noirs jusqu'à la ",
+     "examen": "Un petit miroir de poche, fêlé en travers. Perdu — ou jeté par ",
+     "donneObjet": "miroir-poche",
+     "nom": "Le reflet de métal, dans les roseaux",
+     "image": {
+      "fichier": "scene_mare_reflet_metal_a.png",
+      "hash": "1223dff9",
+      "taille": 9684,
+      "recent": true,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    }
+   ],
+   "suite": "mare-aux-regards-2",
+   "savoir": "savoir_reflet",
+   "nom": "La Mare aux Regards",
+   "lieu": "mare_aux_regards",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_mare_aux_regards_a.png",
+    "hash": "2552346e",
+    "taille": 17038,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Arrivée à la Mare aux Regards. Une eau noire parfaitement immobile, la berge piétinée avec deux creux de genoux, des roseaux, aucun vent.",
+   "promptImage": "perfectly still black pond in dead moorland, trampled bank with two knee hollows, reeds, dark reflections, no wind, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "mare-aux-regards-2"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "mare-aux-regards-2",
+   "narration": [
+    "Quelqu'un arrive — un Renonçant, qui ne te voit pas. Il s'agenouille  dans les creux, se penche, et reste penché beaucoup trop longtemps.",
+    "Quand il se relève, il a le visage de quelqu'un qui va rentrer chez lui  et fermer ses volets pour toujours."
+   ],
+   "choix": [
+    {
+     "id": "aborder-renoncant-mare",
+     "label": "Lui parler",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu ne lui demandes rien — tu lui dis simplement que tu as vu la même chose. Il te regarde comme on regarde une rive. Puis il parle, longtemps, et tu apprends comment on vit avec : en ne se regardant plus jamais dans rien, et en occupant ses yeux à autre chose. Ça s'appelle bêcher, ici. Ou compter.",
+      "reussite": "Il sursaute, puis se laisse aborder. « C'était pas en retard, avant », dit-il seulement. « Y a deux ans, c'était pas en retard. » Il repart vers le hameau sans attendre de réponse.",
+      "echec": "Il te voit — et le fait que tu l'aies vu, lui, est la pire chose qui pouvait lui arriver aujourd'hui. Il part très vite, sans un mot, et tu sais qu'il racontera cette rencontre autrement que toi.",
+      "funeste": "1 naturel. Tu l'abordes. Il te regarde, regarde l'eau, te regarde encore. Puis il demande, d'une voix blanche : « Le vôtre aussi ? » ♦ −2"
+     },
+     "soupcon": 1
+    },
+    {
+     "id": "laisser-renoncant",
+     "label": "Le laisser à sa réponse",
+     "type": "passif",
+     "consequence": "Tu restes immobile derrière les roseaux jusqu'à ce qu'il soit "
+    }
+   ],
+   "pointsInteret": [],
+   "nom": "La Mare aux Regards — beat 2",
+   "lieu": "mare_aux_regards",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "scene_mare_aux_regards_2_b.png",
+    "hash": "1ffbe56a",
+    "taille": 16280,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Événement de la Mare : un Renonçant qui vient vérifier son propre reflet, et te trouve là.",
+   "promptImage": "kneeling villager bent over the edge of a black pond staring at his own reflection, hands flat on the trampled bank, head turning sharply toward the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": [
+    "mare-aux-regards"
+   ]
+  },
+  {
+   "id": "verger-noir",
+   "narration": [
+    "Des arbres fruitiers plantés en rangs — le seul ordre volontaire des  Landes hors du hameau. Ils ont poussé, ils ont des branches, des  feuilles noires, et des fruits. C'est pire que s'ils étaient morts.",
+    "Les rangs et leurs fruits. La souche du premier arbre, au bout. Et deux  silhouettes qui bêchent, tout au fond."
+   ],
+   "choix": [
+    {
+     "id": "compter-rangs",
+     "label": "Compter les rangs",
+     "type": "passif",
+     "consequence": "Onze rangs. Tu recomptes : onze. Chaque rang est planté d'une "
+    },
+    {
+     "id": "gouter-fruit",
+     "label": "Goûter un fruit",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 13,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu mords. C'est de la cendre — puis ce n'est plus de la cendre : c'est un verger, le vrai, au soleil, avec des enfants dedans et une femme qui appelle. Tu vois ce que ce lieu était. Tu comprends d'un coup POURQUOI ils continuent, et ça vaut mieux qu'un objet.",
+      "reussite": "Tu mords. La chair est sèche, sans goût, et se défait en poudre. Rien ne t'arrive — sauf la certitude, désormais physique, que rien ne pousse ici.",
+      "echec": "La cendre te reste dans la gorge et n'en sort plus. Tu tousses longtemps, plié en deux entre deux rangs, et l'homme au fond du verger cesse une seconde de bêcher pour te regarder faire.",
+      "funeste": "1 naturel. Tu mords. Et quelque chose, dans le fruit, mord en retour. ♦ −2"
+     }
+    }
+   ],
+   "pointsInteret": [
+    {
+     "id": "fruits-cendre",
+     "label": "Les fruits, dans les rangs",
+     "approche": "Tu entres dans un rang. L'odeur devrait arriver là — pas de ",
+     "examen": "Ronds, lourds, gris mat. La peau est parfaite et le poids ment : ",
+     "donneObjet": "fruit-cendre",
+     "nom": "Les fruits, dans les rangs",
+     "image": {
+      "fichier": "scene_verger_fruits_cendre_a.png",
+      "hash": "c3e8036d",
+      "taille": 6532,
+      "recent": true,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "souche-premier-arbre",
+     "label": "La souche, au bout du rang",
+     "approche": "Au bout du rang, un arbre manque. Sa souche est nette, sciée à ",
+     "examen": "Le premier arbre du verger, abattu net. Les cernes sont réguliers ",
+     "soupcon": 1,
+     "nom": "La souche, au bout du rang",
+     "image": {
+      "fichier": "scene_verger_souche_a_c.png",
+      "hash": "b329283c",
+      "taille": 15733,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "epoux-verger",
+     "label": "Les deux qui bêchent, au fond",
+     "approche": "Tu remontes les rangs vers eux. Ils se relaient sur la même bêche ",
+     "examen": "Ils plantent. Dans cette terre. Un trou, un plant, la terre ",
+     "ouvreSur": "epoux-1",
+     "nom": "Les deux qui bêchent, au fond",
+     "image": {
+      "fichier": "monstre_epoux_verger_a.png",
+      "hash": "78546dfe",
+      "taille": 32443,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    }
+   ],
+   "suite": "verger-noir-2",
+   "nom": "Le Verger Noir",
+   "lieu": "verger_noir",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_verger_noir_d.png",
+    "hash": "250c0753",
+    "taille": 28850,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Arrivée au Verger Noir. Des arbres noirs tordus plantés en rangs, des fruits gris et lourds sur les branches, une vieille souche au premier plan.",
+   "promptImage": "orchard of black twisted fruit trees planted in rows on dead moorland, heavy grey ash fruits on the branches, one old stump in the foreground, two distant bent figures digging, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "epoux-1",
+    "verger-noir-2"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "verger-noir-2",
+   "narration": [
+    "Un fruit tombe, derrière toi. Sans vent, sans oiseau.",
+    "Quand tu le ramasses, il est encore chaud — comme une chose qui vient  de cesser d'essayer."
+   ],
+   "choix": [
+    {
+     "id": "reposer-fruit",
+     "label": "Le reposer au pied de l'arbre",
+     "type": "passif",
+     "consequence": "Tu le reposes exactement sous la branche d'où il vient, bien "
+    },
+    {
+     "id": "quitter-verger",
+     "label": "Sortir des rangs",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu sors des rangs par le bon côté — celui d'où l'on voit encore le hameau. Derrière toi, dans l'ordre parfait des arbres, tu remarques ce que tu n'avais pas vu en entrant : les rangs ne sont pas droits. Ils s'incurvent, très légèrement, tous, vers le sud.",
+      "reussite": "Tu retrouves la sortie du premier coup. Les rangs se referment derrière toi et le verger redevient une tache noire sur la lande.",
+      "echec": "Tu tournes deux fois dans les mêmes rangs avant de retrouver la lisière. Onze rangs, ce n'est pas un labyrinthe. Ça n'aurait pas dû prendre si longtemps.",
+      "funeste": "1 naturel. Tu sors des rangs. Le compte à voix basse, derrière toi, s'est arrêté au moment exact où tu es sorti. ♦ −2"
+     }
+    }
+   ],
+   "pointsInteret": [],
+   "nom": "Le Verger Noir — beat 2",
+   "lieu": "verger_noir",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "scene_verger_noir_2_c.png",
+    "hash": "28686cc9",
+    "taille": 5319,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Événement du Verger : le fruit qui tombe encore chaud.",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "epoux-3",
+    "verger-noir"
+   ]
+  },
+  {
+   "id": "epoux-1",
+   "narration": [
+    "La femme se redresse la première. Elle ne sursaute pas — plus rien ne  les surprend, ici.",
+    "— « C'est le onzième verger. » Elle le dit avant toute autre chose,  comme on donne son nom. « Les dix premiers ont donné des fruits de  cendre. Celui-là aussi. Le douzième, on verra. »",
+    "L'homme continue de bêcher. Il n'a pas levé la tête. Il compte les  coups de bêche à voix basse."
+   ],
+   "choix": [
+    {
+     "id": "epoux-pourquoi",
+     "label": "« Pourquoi continuer ? »",
+     "type": "passif",
+     "consequence": "— « Parce qu'arrêter, c'est commencer à regarder le sud. » Elle "
+    },
+    {
+     "id": "epoux-aider",
+     "label": "Prendre la bêche un moment",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu bêches. Personne ne dit merci, personne ne dit rien — mais au bout d'un moment l'homme reprend son compte à voix haute pour que tu puisses le suivre, et vous finissez le rang à trois, au même rythme. C'est la seule chose qui ressemble à de la paix dans toutes les Landes.",
+      "reussite": "Tu creuses deux trous. La terre est lourde, morte, et cède mal. La femme corrige ton geste d'un mot. C'est peu. C'est déjà énorme.",
+      "echec": "Tu prends la bêche et l'homme la reprend aussitôt, sans brutalité, comme on retire un outil des mains d'un enfant. Le compte a repris exactement où il s'était arrêté.",
+      "funeste": "1 naturel. Tu enfonces la bêche. Elle bute sur quelque chose à trois doigts sous la surface — quelque chose de long, et qui a été mis là avec soin. Vous vous regardez tous les trois, et personne ne creuse. ♦ −2"
+     }
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "epoux-2",
+   "nom": "Epoux 1",
+   "lieu": "verger_noir",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_epoux_verger_a.png",
+    "hash": "78546dfe",
+    "taille": 32443,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Les Époux, deux silhouettes courbées qui creusent entre les rangs du verger noir sans se parler.",
+   "promptImage": "elderly couple digging side by side between orchard rows, both bent low, one spade each, not looking at one another, black twisted branches above them, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "epoux-2"
+   ],
+   "mèneIci": [
+    "verger-noir"
+   ]
+  },
+  {
+   "id": "epoux-2",
+   "narration": [
+    "— « Tu viens du dehors. » Ce n'est pas une question : c'est une prière  déguisée en constat. « Il te reste forcément quelque chose du  dehors. N'importe quoi. Une graine, un bout de vrai bois, une chose  qui a poussé sous le vrai soleil. On le planterait. »",
+    "Tu sais ce que tu as : rien. Tu es arrivé ici comme tout le monde y  arrive — les mains vides et mort."
+   ],
+   "choix": [
+    {
+     "id": "epoux-rien",
+     "label": "« Je n'ai rien. »",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu le dis de façon à ce que ça ne tue pas l'espoir : tu n'as rien, mais tu leur décris quelque chose — un arbre précis, chez toi, avec son écorce et son odeur. Ils écoutent à deux. À la fin, la femme dit : « Bon. Alors on plante celui-là. » Et l'homme se remet à creuser.",
+      "reussite": "Tu le dis simplement. Elle hoche la tête, sans surprise. « C'est ce que disent tous ceux qui viennent. » Elle retourne à son rang. Ça n'a rien cassé.",
+      "echec": "Tu le dis mal — trop court, trop net. L'homme cesse de compter ses coups de bêche. Le silence qui suit est le pire son des Landes, et il dure jusqu'à ce que tu sois sorti du rang.",
+      "funeste": "1 naturel. « Je n'ai rien. » La femme te regarde les mains, longtemps, puis le visage. « Non », dit-elle enfin, très doucement. « Toi non plus, tu ne viens pas du dehors. » ♦ −2"
+     }
+    },
+    {
+     "id": "epoux-promettre",
+     "label": "Promettre pour la prochaine fois",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu promets si bien que tu y crois toi-même une seconde. Ils te croient tout à fait — et la femme te donne, en avance, ce qu'elle donnera en échange : où trouver de l'eau propre entre ici et la Palissade, et laquelle des deux routes se referme la nuit.",
+      "reussite": "Le mensonge passe sans effort : ils veulent y croire. « Au prochain passage », répète-t-elle, et elle range ça quelque part où ça ne s'abîmera pas.",
+      "echec": "Tu promets, et elle t'écoute promettre avec un demi-sourire qui ne juge rien. « Bien sûr. » Elle retourne à son rang deux mots trop tôt.",
+      "funeste": "1 naturel. Tu promets pour la prochaine fois. L'homme, sans lever la tête, dit son premier mot : « Laquelle ? » ♦ −2"
+     }
+    },
+    {
+     "id": "epoux-donner",
+     "label": "Chercher dans ta besace",
+     "type": "passif",
+     "consequence": "Tu fouilles longuement, pour de vrai. Tout ce que tu portes "
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "epoux-3",
+   "nom": "Epoux 2 — beat 2",
+   "lieu": "verger_noir",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_epoux_2_c.png",
+    "hash": "7d46a559",
+    "taille": 5053,
+    "recent": true,
+    "existe": true
+   },
+   "description": "L'un des deux s'est redressé entre les rangs et te tend les mains ouvertes et vides, en demande. CHANGE : ils ne sont plus tous deux courbés — l'un est debout, face à toi.",
+   "promptImage": "",
+   "mèneVers": [
+    "epoux-3"
+   ],
+   "mèneIci": [
+    "epoux-1"
+   ]
+  },
+  {
+   "id": "epoux-3",
+   "narration": [
+    "Ils se remettent au travail avant que tu sois sorti des rangs — le  onzième verger n'attend pas.",
+    "Longtemps après, tu entends encore le compte à voix basse, régulier  comme une corde qui grince : c'est le bruit que fait l'espoir quand  il refuse de savoir."
+   ],
+   "choix": [
+    {
+     "id": "epoux-quitter",
+     "label": "Remonter les rangs",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "verger-noir-2",
+   "nom": "Epoux 3 — beat 3",
+   "lieu": "verger_noir",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_epoux_3_c.png",
+    "hash": "b837495f",
+    "taille": 11528,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Les deux silhouettes de nouveau courbées, vues de dos, qui s'éloignent entre les rangs. CHANGE : on les quitte — vus de dos, repris au travail.",
+   "promptImage": "",
+   "mèneVers": [
+    "verger-noir-2"
+   ],
+   "mèneIci": [
+    "epoux-2"
+   ]
+  },
+  {
+   "id": "palissade-sud",
+   "narration": [
+    "La Palissade barre le plateau d'un trait noir : des rondins plantés  serrés, hauts de deux hommes. Un portillon, une guérite, une  lanterne allumée en plein jour.",
+    "Derrière, un chemin qui descend. On le sent plus qu'on ne le voit :  l'air y coule comme une eau froide. La Descente. Et dans la guérite,  un homme qui t'a vu depuis longtemps."
+   ],
+   "choix": [
+    {
+     "id": "examiner-etais",
+     "label": "Examiner les étais",
+     "type": "passif",
+     "consequence": "Les étais sont plantés côté Landes, arc-boutés CONTRE la "
+    },
+    {
+     "id": "longer-palissade",
+     "label": "Longer la palissade",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. À cent pas de la porte, tu trouves ce que la palissade cache : une brèche ancienne, recousue de chaînes — et de l'autre côté des maillons, du tissu pris, arraché dans le sens de la SORTIE. Des gens ont voulu remonter de la Descente. La palissade a voté contre.",
+      "reussite": "Tronc après tronc, tu longes. Le bois est noirci au feu — volontairement, un tronc sur deux : du bois traité contre quelque chose qui grimpe. Tu ranges l'information avec les inquiétantes.",
+      "echec": "Tu longes trop près. Une sentinelle de bois que tu prenais pour un étai pivote en grinçant — un épouvantail de garnison, monté sur gonds, qui fait face à quiconque marche le long du mur. Tu es exactement le genre de passage qu'il annonce.",
+      "funeste": "1 naturel. Au pied d'un tronc, un paquet de toile. Dedans, un bagage complet — gourde, couverture, lettres. Quelqu'un a marché jusqu'ici, a posé son sac, et a continué SANS. Tu sais maintenant à quoi ressemble l'appel, vu de l'extérieur. ♦ −2"
+     }
+    },
+    {
+     "id": "approcher-porte",
+     "label": "Approcher de la porte",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [
+    {
+     "id": "rondins-pointes",
+     "label": "Les rondins et leurs pointes",
+     "approche": "Tu longes le mur sur quelques pas, la tête levée, à suivre la ",
+     "examen": "Chaque rondin est appointé — taillé en pique. Tu suis les pointes ",
+     "savoir": "savoir_palissade_retient",
+     "nom": "Les rondins et leurs pointes",
+     "image": {
+      "fichier": "scene_palissade_rondins_a_c.png",
+      "hash": "a092f571",
+      "taille": 13377,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "portillon-verrou",
+     "label": "Le portillon et son verrou",
+     "approche": "Tu poses la main sur le bois du portillon. Il est tiède, ce qui ",
+     "examen": "Un verrou, côté nord. Un seul. Le bois autour est griffé — pas par ",
+     "donneObjet": "cle-portillon",
+     "nom": "Le portillon et son verrou",
+     "image": {
+      "fichier": "scene_palissade_portillon_a_b.png",
+      "hash": "49b71ad8",
+      "taille": 5981,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    },
+    {
+     "id": "homme-guerite",
+     "label": "L'homme de la guérite",
+     "approche": "Il est sorti de sa niche avant que tu aies décidé d'y aller. Tu ",
+     "examen": "La guérite est une niche de planches contre les rondins, juste ",
+     "ouvreSur": "veilleur-1",
+     "nom": "L'homme de la guérite",
+     "image": {
+      "fichier": "monstre_homme_guerite_c.png",
+      "hash": "a2a2a658",
+      "taille": 3891,
+      "recent": true,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": ""
+    }
+   ],
+   "suite": "palissade-sud-2",
+   "butin": "lanterne-veilleur",
+   "savoir": "savoir_palissade_retient",
+   "nom": "La Palissade Sud",
+   "lieu": "palissade_sud",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_palissade_sud_a_a.png",
+    "hash": "aaa66925",
+    "taille": 14518,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Arrivée à la Palissade Sud, seuil de l'Acte II. Une haute palissade de rondins appointés qui ferme l'horizon, un petit portillon, une borne au premier plan.",
+   "promptImage": "tall wooden palisade of sharpened logs closing a moorland horizon, small gate, a single standing boundary stone in the foreground, path leading south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "palissade-sud-2",
+    "veilleur-1"
+   ],
+   "mèneIci": []
+  },
+  {
+   "id": "veilleur-1",
+   "narration": [
+    "— « Trois jours ! » Il le crie presque — la voix de quelqu'un qui parle  peu et qui stocke. « Trois jours que j'ai vu personne. Le hameau  m'envoie ma soupe par le gamin, et le gamin pose la soupe à vingt  pas. Vingt pas ! Comme si veiller la porte, ça s'attrapait. »",
+    "Il sort de sa niche, s'étire, et te détaille sans gêne — l'inventaire  franc de l'homme qui n'a plus de manières à user.",
+    "— « Tu descends. Évidemment que tu descends. On vient pas admirer ma  palissade. »"
+   ],
+   "choix": [
+    {
+     "id": "veilleur-pointes",
+     "label": "« Pourquoi les pointes vers l'intérieur ? »",
+     "type": "passif",
+     "consequence": "Il se rembrunit. « T'as vu ça. » Un temps — il regarde le mur "
+    },
+    {
+     "id": "veilleur-a-quoi-bon",
+     "label": "« À quoi bon veiller, alors ? »",
+     "type": "passif",
+     "consequence": "— « Le portillon. Le verrou. » Il compte sur ses doigts, sans "
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "veilleur-2",
+   "nom": "Veilleur 1",
+   "lieu": "palissade_sud",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "objet_lanterne_rouillee_guerite.png",
+    "hash": "4c4705fd",
+    "taille": 29263,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Le Veilleur dans sa guérite de planches, une lanterne pendue à un clou au-dessus de lui.",
+   "promptImage": "old watchman inside a plank sentry box, rusty lantern hanging on a nail beside him, blanket over his shoulders, one eye milky, looking out through the opening, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [
+    "veilleur-2"
+   ],
+   "mèneIci": [
+    "palissade-sud"
+   ]
+  },
+  {
+   "id": "veilleur-2",
+   "narration": [
+    "Il décroche sa lanterne et la soupèse, comme une décision.",
+    "— « En bas, y a des endroits où le noir mange tout. Ça, ça tient une  nuit de plus que les autres — je les fais moi-même, la mèche,  l'huile, tout. » Il te la tend à moitié. « Elle est à toi. Contre une  histoire. Une vraie. Du dehors. »",
+    "Ses yeux brillent d'une faim que la soupe du gamin ne nourrit pas.  « Raconte-moi comment c'était, la dernière chose que t'as vue.  Avant. » Il te demande ta mort. C'est la seule histoire du dehors que  tu possèdes encore."
+   ],
+   "choix": [
+    {
+     "id": "veilleur-raconter",
+     "label": "Raconter ta mort",
+     "type": "passif",
+     "consequence": "Tu racontes. Le récit ne s'écrit nulle part — il reste entre lui ",
+     "donneObjet": "lanterne-veilleur"
+    },
+    {
+     "id": "veilleur-inventer",
+     "label": "Inventer une belle histoire",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu lui donnes un dehors : une odeur de pluie sur des pierres chaudes, le bruit précis d'une rue à midi. Il rit, il redemande un détail, il rit encore. La lanterne est à toi avant la fin — et tu comprends que le mensonge était peut-être la vraie marchandise.",
+      "reussite": "Ton histoire tient debout et il la prend. Elle est belle, elle est fausse, elle fait le même effet. La lanterne change de main.",
+      "echec": "« J'écoute des menteurs depuis trente ans à ce portillon. » Il remet la lanterne au clou, sans colère. Pas de rancune non plus — juste la déception patiente des solitaires.",
+      "funeste": "1 naturel. Tu inventes. Et au milieu de ton histoire inventée, tu tombes par accident sur un détail vrai — le tien. Ta voix s'arrête toute seule. Il l'a entendu, ce trou-là. ♦ −2"
+     }
+    },
+    {
+     "id": "veilleur-refuser",
+     "label": "Refuser",
+     "type": "passif",
+     "consequence": "Tu ne racontes rien. Il hausse les épaules — un homme qui a "
+    },
+    {
+     "id": "veilleur-mur-inutile",
+     "label": "« Ce mur ne protège de rien »",
+     "type": "passif",
+     "consequence": "Tu le dis sans le défier : les pointes sont tournées vers ",
+     "donneObjet": "lanterne-veilleur",
+     "exigeSavoir": "savoir_palissade_retient"
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "veilleur-3",
+   "nom": "Veilleur 2 — beat 2",
+   "lieu": "palissade_sud",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "objet_lanterne_veilleur_2_b.png",
+    "hash": "2f7722d1",
+    "taille": 7402,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Il a décroché sa lanterne et la tend à moitié, suspendue entre vous deux, le visage éclairé par en dessous. CHANGE : la lanterne a quitté son clou et devient le centre de l'image.",
+   "promptImage": "",
+   "mèneVers": [
+    "veilleur-3"
+   ],
+   "mèneIci": [
+    "veilleur-1"
+   ]
+  },
+  {
+   "id": "veilleur-3",
+   "narration": [
+    "Il t'ouvre le portillon lui-même, avec la cérémonie de l'homme dont  c'est la seule prérogative. Au moment où tu passes, il note quelque  chose sur une planche de sa guérite — ton passage, ta direction,  l'heure. Le dernier acte administratif des Landes.",
+    "— « Je note tout le monde », dit-il sans lever les yeux. « Comme ça, si  un jour quelqu'un remonte... je saurai qui c'était. » Il sourit à sa  planche. « Trente ans de descentes. La colonne des retours est toute  neuve. »"
+   ],
+   "choix": [
+    {
+     "id": "veilleur-passer",
+     "label": "Passer le portillon",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "palissade-sud-2",
+   "nom": "Veilleur 3 — beat 3",
+   "lieu": "palissade_sud",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "objet_lanterne_veilleur_3_c.png",
+    "hash": "94b09b71",
+    "taille": 9679,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Il note ton passage sur une planche clouée dans sa guérite, sans lever les yeux ; le portillon sud est ouvert derrière lui. CHANGE : le portillon est ouvert et il écrit — la lanterne n'est plus dans ses mains.",
+   "promptImage": "",
+   "mèneVers": [
+    "palissade-sud-2"
+   ],
+   "mèneIci": [
+    "veilleur-2"
+   ]
+  },
+  {
+   "id": "palissade-sud-2",
+   "narration": [
+    "Sur le chemin de ronde, un vieux soldat regarde vers le sud. Et en  contrebas, déjà loin de l'autre côté, un homme descend le chemin  d'un pas égal, sans bagage, sans se retourner. Le Veilleur ne le  quitte pas des yeux. « Encore un Appelé », dit-il sans se  retourner. « On ne les rattrape pas. On les compte. »"
+   ],
+   "choix": [
+    {
+     "id": "questionner-veilleur",
+     "label": "Questionner le Veilleur",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Le vieux soldat te regarde enfin — et te tend sa lanterne, la seule allumée de toute la palissade. « Trente ans que je guette la relève. » Il te raconte tout : la voix qui appelle, les battants qu'on graisse, et pourquoi la porte s'ouvre toujours de l'intérieur. Quand tu descendras, tu sauras.",
+      "reussite": "Il parle sans quitter le sud des yeux. La Descente mène au deuxième cercle des terres du Geôlier — « plus profond, plus vieux, moins poli ». Il te jauge du coin de l'œil : « Pas encore prêt, toi. Ça se voit aux épaules. » Ce n'est pas une insulte. C'est une mesure.",
+      "echec": "À ta troisième question, il se ferme comme une porte de garnison : « On ne parle pas de la Descente à ceux qui remontent. » Tu ne sauras pas ce que tes questions ont révélé de toi — mais il a resserré sa capote, et il s'est éloigné de deux pas. De toi, pas du froid.",
+      "funeste": "1 naturel. Tu le questionnes. Il répond par une question : « Et toi, tu l'entends depuis quand, la voix ? » Tu ouvres la bouche pour dire jamais. Rien ne sort. ♦ −2"
+     }
+    },
+    {
+     "id": "regarder-appele",
+     "label": "Regarder l'Appelé",
+     "type": "passif",
+     "consequence": "Tu t'accoudes à la palissade et tu le regardes descendre, "
+    },
+    {
+     "id": "franchir-descente",
+     "label": "Franchir la Descente",
+     "type": "verrouille",
+     "stat": "COURAGE"
+    }
+   ],
+   "pointsInteret": [],
+   "nom": "La Palissade Sud — beat 2",
+   "lieu": "palissade_sud",
+   "typeScene": "moment",
+   "image": {
+    "fichier": "monstre_palissade_sud_2_c.png",
+    "hash": "e6c5355d",
+    "taille": 4463,
+    "recent": true,
+    "existe": true
+   },
+   "description": "Événement de la Palissade : l'Appelé, toujours vu de dos, qui marche vers la Descente sans se retourner.",
+   "promptImage": "man seen from behind walking away toward a dark gap in a wooden palisade, arms loose at his sides, head level, never turning, path descending beyond the gate, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": [
+    "palissade-sud",
+    "veilleur-3"
+   ]
+  },
+  {
+   "id": "proces-du-heros",
+   "narration": [
+    "Ils ne te courent pas après — ils t'attendent au tournant du muret,  le hameau entier, dans ce silence de gens qui ont déjà décidé. On  ne te touche pas. On marche autour de toi, jusqu'au Petit Tribunal.",
+    "Trois bancs pleins, la chaire vide — c'est face à elle qu'on  t'assoit. La Doyenne déplie une feuille : la Dénonciation, signée  d'une croix. L'accusation tient en peu de mots, et personne n'ose  les dire fort : tu entends une voix. L'Ordonnance de la Fixation  s'applique. À moins que tu ne parles mieux qu'elle."
+   ],
+   "choix": [
+    {
+     "id": "plaider-serre",
+     "label": "Plaider serré",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 13,
+     "hautEnjeu": true,
+     "issues": {
+      "critique": "20 naturel. Tu retournes leur procédure contre eux : pas de témoin direct, pas de voix entendue par un tiers, pas de motif inscrit au Registre. L'Écrivain vérifie — le greffe est formel. Le hameau plie devant sa propre règle, et te relâche à reculons.",
+      "reussite": "Tu plaides court : qui l'a entendue, cette voix, à part la peur ? Un silence. Personne ne se lève pour jurer. La relaxe tombe du bout des lèvres de la Doyenne. On t'escorte dehors — l'œil du hameau ne te lâche plus, mais la corde, si.",
+      "echec": "Tu plaides — trop bien. « Seul un coupable connaît si bien la procédure », dit la Doyenne, et les bancs hochent la tête. À l'aube qui ne vient jamais tout à fait, le Champ des Fixés gagne une ligne : la tienne.",
+      "funeste": "1 naturel. Au milieu de ta défense, la voix te souffle exactement le mot qu'il fallait — et tu le répètes. Tout le tribunal l'a vu passer dans tes yeux. La sentence est unanime, et l'aube, pour une fois, ponctuelle. ♦ −2"
+     }
+    },
+    {
+     "id": "prendre-a-temoin",
+     "label": "Prendre le hameau à témoin",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 13,
+     "hautEnjeu": true,
+     "issues": {
+      "critique": "20 naturel. Tu ne te défends pas : tu les regardes un par un, et tu nommes ce que chacun a laissé au muret — la hâte, la lame, la langue. Le tribunal se souvient qu'il est un hameau. On te raccompagne au seuil, et c'est presque des excuses.",
+      "reussite": "Tu parles de leurs morts fixés, de la peur qui juge à leur place depuis que le Bailli pend. Des nuques plient sur les bancs. La Doyenne tranche, lasse : « Qu'il marche. La lande jugera mieux que nous. »",
+      "echec": "Tu cherches leurs yeux — ils regardent tous la corde. Ce n'est pas de la haine, c'est du soulagement : quelqu'un d'autre qu'eux. À l'aube, on te fixe, proprement, avec les égards dus à ce qu'on craint.",
+      "funeste": "1 naturel. Ton appel réveille exactement le souvenir qu'il ne fallait pas : la dernière qui a supplié ainsi s'est relevée de sa corde. Cette fois, ils feront mieux. Double nœud. ♦ −2"
+     }
+    }
+   ],
+   "pointsInteret": [],
+   "procesFixation": true,
+   "nom": "Proces du heros",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "arrivee",
+   "image": {
+    "fichier": "scene_petit_tribunal_a.png",
+    "hash": "0342cdc2",
+    "taille": 31898,
+    "recent": false,
+    "existe": true
+   },
+   "description": "Scène de déroutage au dernier palier de Soupçon : le hameau te juge. Les trois bancs pleins, tous les visages tournés vers toi, la chaire vide.",
+   "promptImage": "rustic courtroom seen from the defendant's place, three benches full of gaunt villagers all facing the viewer, the tall pulpit empty above them, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "mèneVers": [],
+   "mèneIci": []
+  }
+ ],
+ "liens": [
+  {
+   "de": "borne-frontiere",
+   "vers": "hesitant-1",
+   "type": "secondaire",
+   "par": "homme-immobile"
+  },
+  {
+   "de": "hesitant-1",
+   "vers": "hesitant-2",
+   "type": "principal"
+  },
+  {
+   "de": "hesitant-2",
+   "vers": "hesitant-3",
+   "type": "principal"
+  },
+  {
+   "de": "chemin-creux",
+   "vers": "chemin-creux-2",
+   "type": "principal"
+  },
+  {
+   "de": "chemin-creux",
+   "vers": "marcheur-1",
+   "type": "secondaire",
+   "par": "marcheur-rebours"
+  },
+  {
+   "de": "marcheur-1",
+   "vers": "marcheur-2",
+   "type": "principal"
+  },
+  {
+   "de": "marcheur-2",
+   "vers": "marcheur-3",
+   "type": "principal"
+  },
+  {
+   "de": "marcheur-3",
+   "vers": "chemin-creux-2",
+   "type": "principal"
+  },
+  {
+   "de": "colline-aux-gibets",
+   "vers": "colline-aux-gibets-2",
+   "type": "principal"
+  },
+  {
+   "de": "pendu-qui-parle",
+   "vers": "pendu-qui-parle-2",
+   "type": "principal"
+  },
+  {
+   "de": "champ-des-fixes",
+   "vers": "champ-des-fixes-2",
+   "type": "principal"
+  },
+  {
+   "de": "serment-hameau",
+   "vers": "hameau-entree-2",
+   "type": "principal"
+  },
+  {
+   "de": "hameau-entree-2",
+   "vers": "hameau-entree-3",
+   "type": "principal"
+  },
+  {
+   "de": "hameau-entree-2",
+   "vers": "femme-seuil-1",
+   "type": "secondaire",
+   "par": "femme-sur-le-seuil"
+  },
+  {
+   "de": "femme-seuil-1",
+   "vers": "femme-seuil-2",
+   "type": "principal"
+  },
+  {
+   "de": "femme-seuil-2",
+   "vers": "femme-seuil-3",
+   "type": "principal"
+  },
+  {
+   "de": "femme-seuil-3",
+   "vers": "hameau-entree-3",
+   "type": "principal"
+  },
+  {
+   "de": "hameau-entree-3",
+   "vers": "hameau-entree-4",
+   "type": "principal"
+  },
+  {
+   "de": "hameau-entree-4",
+   "vers": "hameau-entree-5",
+   "type": "principal"
+  },
+  {
+   "de": "hameau-halte-1",
+   "vers": "hameau-halte-2",
+   "type": "principal"
+  },
+  {
+   "de": "hameau-halte-2",
+   "vers": "hameau-halte-3",
+   "type": "principal"
+  },
+  {
+   "de": "hameau-halte-3",
+   "vers": "hameau-halte-4",
+   "type": "principal"
+  },
+  {
+   "de": "hameau-halte-4",
+   "vers": "hameau-halte-5",
+   "type": "principal"
+  },
+  {
+   "de": "tour-de-guet",
+   "vers": "tour-de-guet-2",
+   "type": "principal"
+  },
+  {
+   "de": "marche-muet",
+   "vers": "marche-muet-2",
+   "type": "principal"
+  },
+  {
+   "de": "campement",
+   "vers": "campement-2",
+   "type": "principal"
+  },
+  {
+   "de": "chapelle-des-cordes",
+   "vers": "chapelle-des-cordes-2",
+   "type": "principal"
+  },
+  {
+   "de": "puits-condamne",
+   "vers": "puits-condamne-2",
+   "type": "principal"
+  },
+  {
+   "de": "chien-du-bailli",
+   "vers": "chien-du-bailli-2",
+   "type": "principal"
+  },
+  {
+   "de": "petit-tribunal",
+   "vers": "petit-tribunal-2",
+   "type": "principal"
+  },
+  {
+   "de": "meute-grise-1",
+   "vers": "meute-grise-2",
+   "type": "principal"
+  },
+  {
+   "de": "mare-aux-regards",
+   "vers": "mare-aux-regards-2",
+   "type": "principal"
+  },
+  {
+   "de": "verger-noir",
+   "vers": "verger-noir-2",
+   "type": "principal"
+  },
+  {
+   "de": "verger-noir",
+   "vers": "epoux-1",
+   "type": "secondaire",
+   "par": "epoux-verger"
+  },
+  {
+   "de": "epoux-1",
+   "vers": "epoux-2",
+   "type": "principal"
+  },
+  {
+   "de": "epoux-2",
+   "vers": "epoux-3",
+   "type": "principal"
+  },
+  {
+   "de": "epoux-3",
+   "vers": "verger-noir-2",
+   "type": "principal"
+  },
+  {
+   "de": "palissade-sud",
+   "vers": "palissade-sud-2",
+   "type": "principal"
+  },
+  {
+   "de": "palissade-sud",
+   "vers": "veilleur-1",
+   "type": "secondaire",
+   "par": "homme-guerite"
+  },
+  {
+   "de": "veilleur-1",
+   "vers": "veilleur-2",
+   "type": "principal"
+  },
+  {
+   "de": "veilleur-2",
+   "vers": "veilleur-3",
+   "type": "principal"
+  },
+  {
+   "de": "veilleur-3",
+   "vers": "palissade-sud-2",
+   "type": "principal"
+  }
+ ],
+ "reserve": [
+  {
+   "fichier": "monstre_appele_descente.png",
+   "hash": "fb4ce0fd",
+   "taille": 30568,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_corde_vive_c.png",
+   "hash": "29b70991",
+   "taille": 26099,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_deserteur_tribunal_a.png",
+   "hash": "f1a92827",
+   "taille": 33046,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_doyenne_b.png",
+   "hash": "02343d96",
+   "taille": 26282,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_fiancee_du_gibet_b.png",
+   "hash": "52d270ac",
+   "taille": 32561,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_gamin_murets_a.png",
+   "hash": "020cdcd3",
+   "taille": 28618,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_geryon.png",
+   "hash": "5c3ce062",
+   "taille": 160500,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_juge_de_cendre_c.png",
+   "hash": "9f6161b8",
+   "taille": 29017,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_la_fille_c.png",
+   "hash": "520f1630",
+   "taille": 30163,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_limiers.png",
+   "hash": "ab9d3683",
+   "taille": 121382,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_marcheur_a_rebours_d.png",
+   "hash": "c339489a",
+   "taille": 30888,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_ombre_grand_gibet_a.png",
+   "hash": "0248a50f",
+   "taille": 30711,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_pendu_mal_fixe_v1_b.png",
+   "hash": "9e0a2973",
+   "taille": 7553,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_petite_fixee_c.png",
+   "hash": "9a950537",
+   "taille": 13622,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_rebouteux_a.png",
+   "hash": "5db43f82",
+   "taille": 21275,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_recousu_c.png",
+   "hash": "04f590d1",
+   "taille": 27948,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_rodeur.png",
+   "hash": "76c37df5",
+   "taille": 147768,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_sonneur_sans_cloche_d.png",
+   "hash": "9886b4ed",
+   "taille": 15774,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_troupeau_sans_berger_a.png",
+   "hash": "8e186904",
+   "taille": 24420,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_vent_qui_ment_b.png",
+   "hash": "60cb884a",
+   "taille": 29638,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_vent_qui_ment_d.png",
+   "hash": "45d233cc",
+   "taille": 16802,
+   "recent": false
+  },
+  {
+   "fichier": "objet_battant_cloche_c.png",
+   "hash": "817f6ff4",
+   "taille": 14273,
+   "recent": false
+  },
+  {
+   "fichier": "objet_crane.png",
+   "hash": "a92b5ddd",
+   "taille": 2523,
+   "recent": false
+  },
+  {
+   "fichier": "objet_dague.png",
+   "hash": "f550e855",
+   "taille": 1627,
+   "recent": false
+  },
+  {
+   "fichier": "objet_denonciation_vierge_c.png",
+   "hash": "e0ebc424",
+   "taille": 21260,
+   "recent": false
+  },
+  {
+   "fichier": "objet_masque.png",
+   "hash": "22931d8b",
+   "taille": 4477,
+   "recent": false
+  },
+  {
+   "fichier": "objet_ordonnance_fixation_c.png",
+   "hash": "51e7d59b",
+   "taille": 17655,
+   "recent": false
+  },
+  {
+   "fichier": "objet_registre_pendaisons_c.png",
+   "hash": "05d75671",
+   "taille": 25255,
+   "recent": false
+  },
+  {
+   "fichier": "objet_sceau_bailli_c.png",
+   "hash": "f95ac07d",
+   "taille": 12265,
+   "recent": false
+  },
+  {
+   "fichier": "scene_borne_frontiere_a_c.png",
+   "hash": "6de463ec",
+   "taille": 25472,
+   "recent": false
+  },
+  {
+   "fichier": "scene_champ_des_fixes_c.png",
+   "hash": "87694710",
+   "taille": 30015,
+   "recent": false
+  },
+  {
+   "fichier": "scene_champ_poteaux_vierges_a_a.png",
+   "hash": "cb7e22bb",
+   "taille": 22794,
+   "recent": false
+  },
+  {
+   "fichier": "scene_gibet_vide_c.png",
+   "hash": "525edc71",
+   "taille": 29190,
+   "recent": false
+  },
+  {
+   "fichier": "scene_landes_hameau_croix_craie_a.png",
+   "hash": "14299db9",
+   "taille": 20718,
+   "recent": false
+  },
+  {
+   "fichier": "scene_landes_hameau_puits_b.png",
+   "hash": "edb6e6e7",
+   "taille": 31210,
+   "recent": false
+  },
+  {
+   "fichier": "scene_landes_tribunal_b.png",
+   "hash": "d32865f3",
+   "taille": 25191,
+   "recent": false
+  },
+  {
+   "fichier": "scene_mare_miroir_a_b.png",
+   "hash": "01d77b54",
+   "taille": 4700,
+   "recent": false
+  },
+  {
+   "fichier": "scene_moulin_sans_ailes_c.png",
+   "hash": "eb6852f6",
+   "taille": 25528,
+   "recent": false
+  },
+  {
+   "fichier": "scene_moulin_sans_ailes_d_d.png",
+   "hash": "a916da10",
+   "taille": 27850,
+   "recent": false
+  },
+  {
+   "fichier": "scene_transition_arrivee_hameau_b.png",
+   "hash": "9a67d38f",
+   "taille": 24021,
+   "recent": false
+  },
+  {
+   "fichier": "scene_transition_borne_sud_a.png",
+   "hash": "3549e082",
+   "taille": 21867,
+   "recent": false
+  },
+  {
+   "fichier": "scene_transition_chemin_murets_b.png",
+   "hash": "2f92c349",
+   "taille": 32733,
+   "recent": false
+  },
+  {
+   "fichier": "scene_transition_crete_cordes_b.png",
+   "hash": "ba9bee98",
+   "taille": 23613,
+   "recent": false
+  },
+  {
+   "fichier": "scene_transition_croisee_sud_b.png",
+   "hash": "e73299d9",
+   "taille": 28654,
+   "recent": false
+  },
+  {
+   "fichier": "scene_transition_croix_craie_c.png",
+   "hash": "fe6a4b97",
+   "taille": 19676,
+   "recent": false
+  },
+  {
+   "fichier": "scene_transition_hommes_suivent_b.png",
+   "hash": "2a3c3148",
+   "taille": 20174,
+   "recent": false
+  },
+  {
+   "fichier": "scene_transition_vols_basses_b.png",
+   "hash": "0b3e593b",
+   "taille": 25157,
+   "recent": false
+  },
+  {
+   "fichier": "scene_verger_fruits_a_c.png",
+   "hash": "07314d6e",
+   "taille": 16911,
+   "recent": false
+  }
+ ],
+ "totaux": {
+  "scenes": 60,
+  "pointsInteret": 38,
+  "choix": 142,
+  "illustrations": 187,
+  "sansImage": 0,
+  "imagesIntrouvables": 0,
+  "reserve": 48
+ }
+}
