@@ -28,6 +28,7 @@ import { loadMemory } from "@/lib/player-memory";
 import { pickJailerQuote, reactionJours } from "@/lib/jailer-quotes";
 import { ditherFadeMaskDataUrl } from "@/lib/dither";
 import { animReduced } from "@/lib/settings";
+import type { RunState } from "@/lib/state";
 
 const CHARBON = "#1c1a16";
 const ORANGE = "#e0632a";
@@ -44,6 +45,27 @@ export type Bilan = {
   maledictions: number;
   reliques: number;
 };
+
+/**
+ * Le BILAN de mort (Notion 26/07 §3, écran 2) à partir d'une run — SEULS
+ * chiffres bruts du jeu : un registre de greffe, pas un retour de partie.
+ * Exporté (déplacé depuis Scene.tsx) pour être réutilisable par l'aperçu de
+ * débogage (Options → « Aperçu de l'écran de mort ») sans dupliquer le calcul.
+ */
+export function bilanDeMort(run: RunState): Bilan {
+  const rolls = run.rolls ?? [];
+  return {
+    jours: run.day,
+    plusLoin: "Les Landes",
+    lieux: (run.trav?.visited ?? []).length,
+    rencontres: run.encounters,
+    des: rolls.length,
+    desTenus: rolls.filter((r) => r.ok).length,
+    destins: rolls.filter((r) => r.result === 20).length,
+    maledictions: rolls.filter((r) => r.result === 1).length,
+    reliques: loadMemory().relics.length,
+  };
+}
 
 type Ecran = "fatal" | "mort" | "fragment" | "registre" | "relique";
 

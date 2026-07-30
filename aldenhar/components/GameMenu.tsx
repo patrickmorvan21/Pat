@@ -2,11 +2,12 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CloseX } from "@/components/Home";
-import { forgetIntro, loadMemory } from "@/lib/player-memory";
-import type { NarrativeEffect, RunState } from "@/lib/state";
+import { forgetIntro, forgeRelic, loadMemory, type Relic } from "@/lib/player-memory";
+import { loadRun, type NarrativeEffect, type RunState } from "@/lib/state";
 import { besaceBySlot, normalizeItem, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { loadSettings, mutateSettings, type Settings } from "@/lib/settings";
 import { syncMusicSettings } from "@/lib/audio";
+import DeathScreen, { bilanDeMort, type Bilan } from "@/components/DeathScreen";
 
 /**
  * Menu plein cadre (spec §8 + écrans Figma 1925:559 « Essence » et 1925:524
@@ -562,10 +563,47 @@ function OptDivider() {
   return <div className="my-[24px] h-px w-full bg-[var(--color-ink)] opacity-20" aria-hidden />;
 }
 
+/** Aperçu de l'écran de mort (retour Patrick 30/07 : « je ne veux pas refaire
+    le jeu jusqu'à ce que je meure pour voir si tout est ok »). Construit une
+    séquence à partir de la run et de la mémoire RÉELLES pour rester
+    représentatif, mais NE PERSISTE RIEN : ni `recordDeath` (deaths/relics/
+    Registre inchangés), ni `resetRun` — un aller-retour sans trace, sauf la
+    rotation normale des citations du Geôlier (même mécanisme qu'une vraie
+    mort, effet cosmétique mineur assumé). */
+type PreviewMort = {
+  epitaph: string;
+  day: number;
+  bilan: Bilan;
+  relic: Relic;
+  heroName: string;
+  cause: string;
+  firstDeath: boolean;
+};
+
+const EPITAPH_APERCU = "Le sol se dérobe, et rien ne le retient.";
+
+function buildPreviewMort(): PreviewMort {
+  const run = loadRun();
+  const mem = loadMemory();
+  const heroName = run.heroName || "Cendre";
+  const day = Math.max(1, run.day || 7);
+  const firstDeath = mem.deaths === 0;
+  return {
+    epitaph: EPITAPH_APERCU,
+    day,
+    bilan: bilanDeMort(run),
+    relic: forgeRelic(heroName, day, firstDeath),
+    heroName,
+    cause: "les Landes",
+    firstDeath,
+  };
+}
+
 export function OptionsTab() {
   const [s, setS] = useState<Settings>(() => loadSettings());
   const [eraseArmed, setEraseArmed] = useState(false);
   const [aidesReset, setAidesReset] = useState(false);
+  const [preview, setPreview] = useState<PreviewMort | null>(null);
 
   function set<K extends keyof Settings>(k: K, v: Settings[K]) {
     setS(mutateSettings((d) => { d[k] = v; }));
@@ -592,6 +630,7 @@ export function OptionsTab() {
   }
 
   return (
+    <>
     <div className="px-[15px] pt-[8px]">
       {/* Musique — ACTIVE (lot 24/07) : interrupteur à glissière de la maquette
           (rail + pavé carré, position = état) + curseur de volume. Chaque
@@ -727,6 +766,19 @@ export function OptionsTab() {
         <OptHelp>Les quatre clauses du pacte se rejoueront à la prochaine partie. Ta progression est conservée.</OptHelp>
       </div>
 
+      {/* Aperçu de l'écran de mort — outil de vérification, aucune trace
+          laissée (ni relique, ni entrée au Registre, ni mort comptée). */}
+      <div className="mt-[20px]">
+        <button
+          type="button"
+          onClick={() => setPreview(buildPreviewMort())}
+          className="font-mono text-[13px] text-[var(--color-ink)] underline"
+        >
+          Aperçu de l&apos;écran de mort
+        </button>
+        <OptHelp>Rejoue la séquence sans compter de mort — pour vérifier le rendu, pas pour tester tes réflexes.</OptHelp>
+      </div>
+
       <div className="mt-[20px]">
         <button type="button" onClick={effacerProgression} className="font-mono text-[13px] text-[var(--color-ink)] underline">
           {eraseArmed ? "Confirmer l'effacement ?" : "Effacer la progression"}
@@ -743,5 +795,22 @@ export function OptionsTab() {
         ))}
       </div>
     </div>
+    {preview && (
+      <div className="absolute inset-0 z-[50]">
+        <DeathScreen
+          epitaph={preview.epitaph}
+          day={preview.day}
+          bilan={preview.bilan}
+          relic={preview.relic}
+          heroName={preview.heroName}
+          cause={preview.cause}
+          firstDeath={preview.firstDeath}
+          // Aperçu : on referme, on ne recharge jamais la page (rien n'a été
+          // détruit — la vraie mort, elle, `reload()` après `resetRun()`).
+          onRestart={() => setPreview(null)}
+        />
+      </div>
+    )}
+    </>
   );
 }

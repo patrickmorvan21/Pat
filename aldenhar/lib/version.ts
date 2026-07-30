@@ -200,5 +200,11 @@
  *           plan rapproché sous les mâts, nœuds coulants visibles. L'ancienne
  *           était une vue large, sans une seule corde — alors que le texte
  *           fait entrer le héros DANS le cercle.
+ *   1.29.3 — Options : « Aperçu de l'écran de mort » (retour Patrick 30/07 :
+ *           voir la séquence sans avoir à mourir en vrai). Rejoue combustion →
+ *           bilan → fragment → Registre → relique à partir de la run/mémoire
+ *           réelles, mais ne persiste rien (pas de `recordDeath`, pas de
+ *           `resetRun`) — se referme sur place. `bilanDeMort` déplacé dans
+ *           DeathScreen.tsx (exporté) pour être partagé sans dupliquer.
  */
-export const APP_VERSION = "1.29.2";
+export const APP_VERSION = "1.29.3";

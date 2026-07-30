@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Die3D, { type RollRequest } from "@/components/Die3D";
 import ChoiceButton from "@/components/ChoiceButton";
 import TypedText from "@/components/TypedText";
-import DeathScreen, { type Bilan } from "@/components/DeathScreen";
+import DeathScreen, { bilanDeMort, type Bilan } from "@/components/DeathScreen";
 import GameMenu from "@/components/GameMenu";
 import {
   DESCENTE_SCENE,
@@ -84,26 +84,6 @@ function nextId() {
 function chance(p: number): boolean {
   return Math.random() < p;
 }
-/**
- * Le BILAN de mort (Notion 26/07 §3, écran 2). Ce sont les SEULS chiffres
- * bruts du jeu : un registre de greffe, pas un retour de partie — d'où la
- * région nommée plutôt qu'un numéro d'acte.
- */
-function bilanDeMort(run: RunState): Bilan {
-  const rolls = run.rolls ?? [];
-  return {
-    jours: run.day,
-    plusLoin: "Les Landes",
-    lieux: (run.trav?.visited ?? []).length,
-    rencontres: run.encounters,
-    des: rolls.length,
-    desTenus: rolls.filter((r) => r.ok).length,
-    destins: rolls.filter((r) => r.result === 20).length,
-    maledictions: rolls.filter((r) => r.result === 1).length,
-    reliques: loadMemory().relics.length,
-  };
-}
-
 function nowMs(): number {
   return Date.now();
 }
