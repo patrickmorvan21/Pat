@@ -69,6 +69,11 @@ export function bilanDeMort(run: RunState): Bilan {
 
 type Ecran = "fatal" | "mort" | "fragment" | "registre" | "relique";
 
+/** Le foyer de la séquence de mort monte à ~175 px (triplé le 30/07) : les
+    affordances « Touche pour continuer » sont remontées d'autant, sinon les
+    flammes les mangent. Seule exception à la règle globale des 50 px. */
+const HINT_BAS = 200;
+
 /**
  * Le fragment du Geôlier : une chose de plus sur cet endroit, à chaque mort.
  * Arc GARANTI aux morts 1, 2, 3, puis 5, 8, 12, 17 — entre les jalons, la
@@ -382,7 +387,7 @@ export default function DeathScreen({
             <LigneBilan label="Destins • Malédictions" valeur={`${bilan.destins} • ${bilan.maledictions}`} />
             <LigneBilan label="Reliques portées" valeur={String(bilan.reliques)} />
           </div>
-          <TouchHint />
+          <TouchHint bottom={HINT_BAS} />
         </div>
       )}
 
@@ -402,7 +407,7 @@ export default function DeathScreen({
             {fragTexte}
             {!fragFini && <span className="type-cursor">▌</span>}
           </p>
-          {fragFini && <TouchHint />}
+          {fragFini && <TouchHint bottom={HINT_BAS} />}
         </div>
       )}
 
@@ -422,7 +427,7 @@ export default function DeathScreen({
             <p className="mt-[16px] text-center font-mono text-[13px] leading-[1.7] text-[var(--color-ink)] opacity-50">
               {day} jour{day > 1 ? "s" : ""}. Cent tiennent mieux que ça.
             </p>
-            <TouchHint />
+            <TouchHint bottom={HINT_BAS} />
           </div>
         ))}
 
@@ -490,14 +495,16 @@ export default function DeathScreen({
                 «&nbsp;{cause}&nbsp;»
               </p>
             )}
-            <TouchHint />
+            <TouchHint bottom={HINT_BAS} />
           </div>
         ))}
 
       {/* Le fond de braises — présent en bas de TOUS les écrans de la
           séquence (30/07) : ce qui est tombé pendant la combustion couve
-          encore, jusqu'au retour à l'accueil. */}
-      <FondBraises height={48} />
+          encore, jusqu'au retour à l'accueil. Foyer triplé (48 → 144 px,
+          retour Patrick 30/07) : les flammes montent, le bas de l'écran
+          n'est plus une bande noire sous un lit mince. */}
+      <FondBraises height={144} />
     </div>
   );
 }
@@ -617,7 +624,7 @@ function RegistreMort({
               />
             ))}
       </div>
-      <TouchHint />
+      <TouchHint bottom={HINT_BAS} />
     </div>
   );
 }
@@ -707,10 +714,40 @@ function LigneRegistreMort({
 }
 
 /**
- * Le nuage de cendres de la révélation (30/07) : il se DISPERSE en cercle
- * IRRÉGULIER derrière la relique sur ~1 seconde, puis retombe. Bruit sur le
- * rayon, densité inégale selon l'angle — jamais un anneau régulier.
+ * L'ÉCLAT DE CENDRES de la révélation (30/07, amplifié le 30/07 au soir —
+ * « plus impressionnante, plus voyante »).
+ *
+ * La relique ne se dévoile plus derrière un petit nuage : elle ARRACHE de la
+ * matière. Les cendres partent du BORD du cadre (jamais du centre, qui est
+ * caché derrière l'illustration : on ne voyait donc que la fin du mouvement),
+ * traversent tout le cadre du téléphone, et le calque passe DEVANT la relique
+ * — des débris qui volent au premier plan, pas une auréole sage.
+ *
+ * Trois populations, pour que le geste ait du corps :
+ *   • l'ONDE — très rapide, brève, dense, moitié blanche : le choc lui-même ;
+ *   • les ÉCLATS — lourds, projetés loin, puis qui retombent en accélérant ;
+ *   • les CENDRES fines — lentes, elles MONTENT et ondulent longtemps après.
+ * Rien n'est jamais dessiné en opacité variable : la raréfaction se fait par
+ * probabilité de dessin, et les seules couleurs restent orange et blanc.
  */
+type Eclat = {
+  a: number;
+  r0: number;
+  r1: number;
+  v: number;
+  taille: number;
+  /** < 0 : monte (cendre fine) · > 0 : retombe (éclat lourd). */
+  gravite: number;
+  sway: number;
+  phase: number;
+  vie: number;
+  blanc: number;
+  /** Traînée : les plus rapides laissent 2-3 pixels derrière elles. */
+  trainee: number;
+};
+
+const CENDRES_DUREE = 2.6;
+
 function CendresRevelation() {
   const ref = useRef<HTMLCanvasElement>(null);
   useEffect(() => {
@@ -718,13 +755,15 @@ function CendresRevelation() {
     if (!cv) return;
     const ctx = cv.getContext("2d");
     if (!ctx) return;
-    const S = 420;
+    // Le canvas déborde très largement le cadre de 336 px : l'éclat doit
+    // sortir du cadre de la relique et courir jusqu'aux bords du téléphone.
+    const S = 620;
     cv.width = cv.height = S;
     const cx = S / 2;
     const cy = S / 2;
 
     // Densité inégale selon l'angle : 5 lobes de poids aléatoires, figés au
-    // montage — le cercle a des trous et des paquets, jamais une couronne.
+    // montage — l'éclat a des trous et des paquets, jamais une couronne.
     const lobes = Array.from({ length: 5 }, () => ({
       a: Math.random() * Math.PI * 2,
       w: 0.4 + Math.random() * 0.9,
@@ -732,41 +771,100 @@ function CendresRevelation() {
     const poids = (angle: number) =>
       lobes.reduce((s, l) => s + l.w * Math.max(0, Math.cos(angle - l.a)) ** 2, 0.25);
 
-    type Cendre = { a: number; r0: number; r1: number; v: number; taille: number };
-    const cendres: Cendre[] = [];
-    for (let i = 0; i < 260; i++) {
-      const a = Math.random() * Math.PI * 2;
-      if (Math.random() > poids(a) / 1.6) continue;
-      cendres.push({
-        a,
-        r0: 40 + Math.random() * 40,
-        // Bruit sur le rayon final : le front du nuage n'est jamais un cercle.
-        r1: 130 + Math.random() * 80 + Math.sin(a * 3.7) * 22,
-        v: 0.8 + Math.random() * 0.5,
-        taille: Math.random() < 0.7 ? 1 : 2,
-      });
-    }
+    // Le bord du cadre (336 px de côté) vu depuis le centre : le rayon de
+    // départ suit le CARRÉ, pas un cercle — les cendres naissent bien au ras
+    // de la bordure orange, y compris dans les coins.
+    const DEMI = 168;
+    const rayonBord = (a: number) => {
+      const c = Math.abs(Math.cos(a));
+      const s = Math.abs(Math.sin(a));
+      return DEMI / Math.max(c, s, 0.0001);
+    };
+
+    const eclats: Eclat[] = [];
+    const pousse = (n: number, faire: (a: number) => Eclat) => {
+      for (let i = 0; i < n; i++) {
+        const a = Math.random() * Math.PI * 2;
+        if (Math.random() > poids(a) / 1.55) continue;
+        eclats.push(faire(a));
+      }
+    };
+    // L'onde de choc : part au ras du cadre, file vite et loin, meurt tôt.
+    pousse(520, (a) => ({
+      a,
+      r0: rayonBord(a) - 4,
+      r1: rayonBord(a) + 150 + Math.random() * 130 + Math.sin(a * 3.7) * 26,
+      v: 2.2 + Math.random() * 1.4,
+      taille: Math.random() < 0.72 ? 1 : 2,
+      gravite: 0,
+      sway: 0,
+      phase: 0,
+      vie: 0.55 + Math.random() * 0.35,
+      blanc: 0.5,
+      trainee: Math.random() < 0.45 ? 2 + ((Math.random() * 2) | 0) : 0,
+    }));
+    // Les éclats lourds : projetés, ils ralentissent puis retombent.
+    pousse(420, (a) => ({
+      a,
+      r0: rayonBord(a) - 10 - Math.random() * 30,
+      r1: rayonBord(a) + 60 + Math.random() * 180,
+      v: 1.0 + Math.random() * 0.9,
+      taille: Math.random() < 0.5 ? 2 : Math.random() < 0.75 ? 1 : 3,
+      gravite: 70 + Math.random() * 130,
+      sway: 0.5 + Math.random() * 1.4,
+      phase: Math.random() * 6.283,
+      vie: 1.5 + Math.random() * 1.1,
+      blanc: 0.18,
+      trainee: 0,
+    }));
+    // Les cendres fines : elles montent, ondulent, et s'attardent.
+    pousse(380, (a) => ({
+      a,
+      r0: rayonBord(a) - 20 - Math.random() * 60,
+      r1: rayonBord(a) + 20 + Math.random() * 150,
+      v: 0.55 + Math.random() * 0.6,
+      taille: 1,
+      gravite: -(30 + Math.random() * 80),
+      sway: 1.4 + Math.random() * 2.6,
+      phase: Math.random() * 6.283,
+      vie: 1.8 + Math.random() * 0.8,
+      blanc: 0.3,
+      trainee: 0,
+    }));
 
     const reduced = animReduced();
     const t0 = performance.now();
     let raf = 0;
     function anim(now: number) {
-      const t = Math.min(1.6, (now - t0) / 1000);
+      const t = Math.min(CENDRES_DUREE, (now - t0) / 1000);
       ctx!.clearRect(0, 0, S, S);
-      for (const c of cendres) {
-        // ~1 s de dispersion, puis la retombée : le rayon se fige, la cendre
-        // descend et se raréfie (probabilité de dessin, jamais l'alpha).
+      for (const c of eclats) {
+        if (t > c.vie) continue;
+        // Sortie franche puis freinage (ease-out quadratique).
         const p = Math.min(1, t * c.v);
         const r = c.r0 + (c.r1 - c.r0) * (1 - (1 - p) * (1 - p));
-        const chute = Math.max(0, t - 1) * 60 * c.v;
-        const x = cx + Math.cos(c.a) * r;
-        const y = cy + Math.sin(c.a) * r * 0.92 + chute;
-        const survie = t < 1 ? 0.85 : Math.max(0, 1 - (t - 1) * 1.6);
+        // La gravité ne s'applique qu'une fois la projection finie : avant,
+        // c'est l'explosion qui commande.
+        const apres = Math.max(0, t - 1 / c.v);
+        const derive = c.gravite * apres * apres;
+        const x = cx + Math.cos(c.a) * r + Math.sin(t * 3 + c.phase) * c.sway * apres * 12;
+        const y = cy + Math.sin(c.a) * r * 0.94 + derive;
+        // Raréfaction par PROBABILITÉ de dessin (jamais l'alpha) : plein
+        // pendant l'éclat, puis extinction sur le dernier tiers de vie.
+        const reste = 1 - t / c.vie;
+        const survie = reste > 0.45 ? 0.92 : reste / 0.45;
         if (Math.random() > survie) continue;
-        ctx!.fillStyle = Math.random() < 0.75 ? ORANGE : "rgba(255,255,255,.25)";
-        ctx!.fillRect(Math.round(x), Math.round(y), c.taille, c.taille);
+        ctx!.fillStyle = Math.random() < c.blanc ? "#ffffff" : ORANGE;
+        const px = Math.round(x);
+        const py = Math.round(y);
+        ctx!.fillRect(px, py, c.taille, c.taille);
+        if (c.trainee && p < 1) {
+          // Traînée dans l'axe du départ — 2-3 pixels, jamais un dégradé.
+          for (let k = 1; k <= c.trainee; k++)
+            ctx!.fillRect(px - Math.round(Math.cos(c.a) * k * 3), py - Math.round(Math.sin(c.a) * k * 3), 1, 1);
+        }
       }
-      if (t < 1.6 && !reduced) raf = requestAnimationFrame(anim);
+      if (t < CENDRES_DUREE && !reduced) raf = requestAnimationFrame(anim);
       else ctx!.clearRect(0, 0, S, S);
     }
     raf = requestAnimationFrame(anim);
@@ -775,7 +873,11 @@ function CendresRevelation() {
   return (
     <canvas
       ref={ref}
-      className="pointer-events-none absolute left-1/2 top-1/2 size-[420px] -translate-x-1/2 -translate-y-1/2"
+      // z-10 : DEVANT la relique. Les cendres sont des pixels épars, elles ne
+      // masquent pas l'illustration — mais des débris qui passent au premier
+      // plan lisent comme une explosion, là où un calque derrière lisait
+      // comme un halo.
+      className="pointer-events-none absolute left-1/2 top-1/2 z-10 size-[620px] -translate-x-1/2 -translate-y-1/2"
       style={{ imageRendering: "pixelated" }}
       aria-hidden
     />

@@ -17,10 +17,21 @@
  * Le composant est absolu : son parent doit être positionné (le phone-frame
  * l'est partout), ce qui garantit les 50 px quelle que soit la hauteur d'écran.
  */
-export default function TouchHint({ first = false }: { first?: boolean }) {
+export default function TouchHint({
+  first = false,
+  bottom,
+}: {
+  first?: boolean;
+  /** Remontée exceptionnelle, en px depuis le bas. UNIQUEMENT pour la séquence
+      de mort, dont les flammes montent maintenant à ~175 px : à 50 px la
+      phrase serait mangée par le feu. Partout ailleurs, la règle globale des
+      50 px s'applique — ne pas s'en servir pour arranger une mise en page. */
+  bottom?: number;
+}) {
   return (
     <p
-      className="touch-hint pointer-events-none absolute inset-x-0 bottom-[50px] text-center font-mono text-[10px] tracking-[2px] text-[var(--color-ink)] opacity-50"
+      className="touch-hint pointer-events-none absolute inset-x-0 text-center font-mono text-[10px] tracking-[2px] text-[var(--color-ink)] opacity-50"
+      style={{ bottom: bottom ?? 50 }}
       aria-hidden
     >
       Touche pour {first ? "commencer" : "continuer"}

@@ -206,5 +206,11 @@
  *           réelles, mais ne persiste rien (pas de `recordDeath`, pas de
  *           `resetRun`) — se referme sur place. `bilanDeMort` déplacé dans
  *           DeathScreen.tsx (exporté) pour être partagé sans dupliquer.
+ *   1.29.4 — Séquence de mort, retours 30/07 : le cadre occupe toute la
+ *           hauteur du téléphone (plus de bande noire sous le lit de braises
+ *           sur un device plus haut que 800 px) ; foyer triplé (48 → 144 px),
+ *           les flammes montent à ~170 px au lieu de couver ; l'éclat de
+ *           cendres de la relique part du bord du cadre, passe DEVANT elle et
+ *           traverse tout l'écran (onde + éclats lourds + cendres qui montent).
  */
-export const APP_VERSION = "1.29.3";
+export const APP_VERSION = "1.29.4";

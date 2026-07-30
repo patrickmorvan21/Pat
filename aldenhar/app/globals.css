@@ -36,6 +36,19 @@ body {
 .phone-frame ::-webkit-scrollbar { display: none; }
 .phone-frame * { scrollbar-width: none; }
 
+/* SUR UN TÉLÉPHONE, LE CADRE OCCUPE TOUTE LA HAUTEUR DE L'ÉCRAN.
+   Les cadres sont dimensionnés à la maquette (800/841/848 px) et CENTRÉS
+   verticalement : sur un device plus haut (iPhone récent ≈ 852 px), le fond de
+   page apparaissait donc en bande noire SOUS le cadre — d'où le « bloc noir en
+   bas » signalé le 30/07, sous le lit de braises de l'écran de mort.
+   On ne touche pas la LARGEUR : 390 px reste la largeur de référence de toutes
+   les maquettes Figma, et les mises en page sont en flex-1/dvh, donc les
+   quelques dizaines de pixels gagnés en hauteur se répartissent d'elles-mêmes.
+   Au-delà (desktop, prévisualisation), le cadre garde sa hauteur de maquette. */
+@media (max-width: 767px) {
+  .phone-frame { height: 100dvh; }
+}
+
 /* Numéro de version — accueil, bas à droite, blanc 50 % (demande Patrick 20/07) */
 .app-version {
   position: absolute;

@@ -60,6 +60,12 @@ const COOL_VAR = 0.65;
 const CENDRES_PAR_PAS = 2;
 const PALIER_PAS = 10;
 
+/** Hauteur de foyer pour laquelle les réglages ci-dessus sont ceux de la
+    maquette. Au-delà, le refroidissement est divisé d'autant (voir plus bas) :
+    sans ça, agrandir le foyer n'agrandit pas la flamme — elle meurt au même
+    nombre de pixels et on ajoute juste du vide au-dessus. */
+const HAUTEUR_REF = 48;
+
 /** Respiration : multiplicateur par paliers entiers — montée plus longue que
     la chute, jamais une interpolation. (Tableau BREATH de la maquette.) */
 const BREATH = [0.70, 0.76, 0.84, 0.93, 1.02, 1.10, 1.17, 1.21, 1.22, 1.17, 1.09, 0.99, 0.89, 0.80, 0.74, 0.71];
@@ -90,7 +96,10 @@ export default function FondBraises({
   /** Hauteur CSS du FOYER (la partie qui brûle), en px. Le canvas, lui,
       couvre tout le cadre : les cendres doivent pouvoir monter PAR-DESSUS
       l'interface (retour Patrick 30/07 — « là c'est coupé »), le composant
-      est donc un calque plein écran posé après le contenu, jamais cliquable. */
+      est donc un calque plein écran posé après le contenu, jamais cliquable.
+      Le profil de flamme s'étire proportionnellement (cf. HAUTEUR_REF) : une
+      valeur triple donne des flammes trois fois plus hautes, pas un foyer de
+      même taille avec du vide au-dessus. */
   height?: number;
   className?: string;
 }) {
@@ -109,6 +118,12 @@ export default function FondBraises({
        HF = hauteur du foyer (la simulation de chaleur reste confinée en bas). */
     const HT = Math.max(16, Math.round(cssH / GRAIN));
     const HF = Math.max(8, Math.min(HT - 4, Math.round(height / GRAIN)));
+    /* La flamme s'ÉTIRE avec la hauteur demandée : la chaleur perd `cool` par
+       rangée, donc diviser `cool` par le facteur d'agrandissement multiplie
+       d'autant le nombre de rangées avant extinction — le profil est le même,
+       à l'échelle. (Le lit, le cisaillement et la zone basse sont déjà
+       exprimés en fraction de HF : ils suivent tout seuls.) */
+    const coolEchelle = COOL * (HAUTEUR_REF / Math.max(1, height));
     cv.width = W;
     cv.height = HT;
     ctx.imageSmoothingEnabled = false;
@@ -217,7 +232,7 @@ export default function FondBraises({
       /* ── propagation : cisaillement par le vent (échantillon sous-cellule),
          refroidissement variable par colonne, freiné dans la zone basse.
          La respiration RALENTIT aussi le refroidissement (cool / respire). */
-      const coolBase = COOL / respire;
+      const coolBase = coolEchelle / respire;
       for (let y = RANGS; y < HF; y++) {
         const cis = vent * (y / HF) * 1.7; /* la flamme penche en montant */
         const zone = y / HF;
