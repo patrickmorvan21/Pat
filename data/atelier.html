@@ -59,6 +59,19 @@
   .lieuCard.pb{border-color:var(--rouge)}
   .lieuCard .th{position:relative;width:100%;height:108px;overflow:hidden;background:#141310}
   .lieuCard img,.lieuCard canvas{width:100%;height:100%;object-fit:cover;display:block}
+  /* --- manifeste : hash sur la vignette, fichier introuvable, fraîcheur --- */
+  .th,.node .th,#fimg{position:relative}
+  .hash{position:absolute;right:4px;bottom:4px;padding:1px 3px;font-size:9px;
+    letter-spacing:.5px;background:#1c1a16;color:rgba(255,255,255,.5);
+    border:1px solid rgba(255,255,255,.2);pointer-events:none;z-index:2}
+  .hash.neuf{background:var(--orange);color:#1c1a16;border-color:var(--orange)}
+  .introuvable{width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+    text-align:center;background:#fff;color:#1c1a16;font-weight:700;font-size:9px;
+    letter-spacing:.8px;padding:6px}
+  #fraicheur{font-size:10px;letter-spacing:.6px;text-transform:uppercase;
+    color:rgba(255,255,255,.5);margin-left:14px}
+  #fraicheur b{color:#fff;font-weight:400}
+  #fraicheur.perime{color:var(--orange)}
   .lieuCard .bd{padding:8px 10px 10px}
   .lieuCard .nm{font-size:12.5px;line-height:1.3}
   .lieuCard .sb{font-size:10px;color:var(--blanc-50);margin-top:4px}
@@ -198,6 +211,7 @@
 <div id="top">
   <h1>ATELIER</h1>
   <div id="fil"></div>
+  <span id="fraicheur"></span>
   <span id="dirty"></span>
   <button class="tbtn" id="bCarte">Carte</button>
   <button class="tbtn" id="bJournal">Journal</button>
@@ -266,6 +280,32 @@ const BASE = (typeof window.__ZONE_DATA__ !== "undefined") ? "assets/" : "/asset
    « assets/xxx.png », les SCÈNES « xxx.png ». On rabote le préfixe à la
    lecture plutôt que de doubler /assets/assets/. */
 const fichierImage = f => f ? String(f).replace(/^assets\//, "") : f;
+
+/* ── LE MANIFESTE DES ASSETS ────────────────────────────────────────────
+   Écrit par `npm run gen:manifest`. Il donne à chaque fichier le hash court
+   de son CONTENU. Deux usages distincts, à ne pas confondre :
+     • hash dans l'URL — la CURE : une image modifiée sous le même nom change
+       d'URL, donc aucun cache ne peut plus servir l'ancienne. Indispensable
+       ici : le service worker du jeu a pour portée tout « /Pat/aldenhar/ »,
+       cette page est dedans, et il sert le cache AVANT le réseau.
+     • hash affiché — le DIAGNOSTIC : deux vignettes au même hash sont le même
+       fichier réutilisé.
+   Chargé avec un cache-buster, sinon on relirait le manifeste… en cache. */
+let MANIF={fichiers:{}}, MANIF_OK=false;
+async function chargerManifeste(){
+  try{
+    const r=await fetch(BASE+"manifest.json?t="+Date.now(),{cache:"no-store"});
+    if(!r.ok) return;
+    MANIF=await r.json(); MANIF_OK=true;
+  }catch(_){ /* pas de manifeste : la page marche, sans hash ni contrôle */ }
+}
+const ficheAsset = f => MANIF.fichiers ? MANIF.fichiers[fichierImage(f)] : null;
+/* URL versionnée. Un fichier inconnu du manifeste ressort tel quel : mieux
+   vaut une image peut-être cachée qu'une image cassée. */
+function urlAsset(f){
+  const nom=fichierImage(f); const fi=ficheAsset(f);
+  return BASE+nom+(fi?"?v="+fi.hash:"");
+}
 const ORANGE="#e0632a";
 const esc = s => String(s==null?"":s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
@@ -439,11 +479,23 @@ function ph(el,seed){
 }
 function poseImage(box,fichier,seed){
   box.innerHTML="";
-  if(fichier){
-    const im=document.createElement("img"); im.src=BASE+fichierImage(fichier); im.loading="lazy"; im.alt=seed;
-    im.onerror=()=>{im.remove();ph(box,seed);};
-    box.appendChild(im);
-  } else ph(box,seed);
+  if(!fichier){ ph(box,seed); return; }
+  /* Câblé vers un fichier ABSENT du manifeste : c'est la cause la plus probable
+     d'une « image fantôme ». On le DIT, en blanc franc, au lieu d'afficher un
+     cadre vide qu'on prendrait pour un choix de design. */
+  const fi=ficheAsset(fichier);
+  if(MANIF_OK && !fi){
+    const d=document.createElement("div"); d.className="introuvable";
+    d.textContent="FICHIER INTROUVABLE"; box.appendChild(d); return;
+  }
+  const im=document.createElement("img"); im.src=urlAsset(fichier); im.loading="lazy"; im.alt=seed;
+  im.onerror=()=>{im.remove();ph(box,seed);};
+  box.appendChild(im);
+  if(fi){
+    const t=document.createElement("span");
+    t.className="hash"+(fi.recent?" neuf":""); t.textContent=fi.hash;
+    box.appendChild(t);
+  }
 }
 
 /* ============ VUE CARTE ============ */
@@ -1167,10 +1219,23 @@ document.getElementById("bdl").onclick=()=>{
   const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=noms[bMode]; a.click();
 };
 
+/* Bandeau de fraîcheur : à quel instant et à quel commit correspondent les
+   images que je regarde. Sans ça, impossible de distinguer « rien n'a changé »
+   de « je regarde une vieille page ». */
+function majFraicheur(){
+  const el=document.getElementById("fraicheur"); if(!el)return;
+  if(!MANIF_OK){ el.textContent="manifeste absent"; el.className="perime"; return; }
+  const d=(MANIF.genere||"").replace("T"," ").replace("Z"," UTC");
+  const n=Object.keys(MANIF.fichiers||{}).length;
+  el.innerHTML=`assets : <b>${d}</b> · commit <b>${MANIF.commit||"?"}</b> · ${n} fichiers`;
+}
+
 (async () => {
   const fil=document.getElementById("fil");
   fil.innerHTML="chargement de la zone…";
   try{
+    await chargerManifeste();
+    majFraicheur();
     await chargerZone();
     appliquerPositionsRangees();
     reindexer();

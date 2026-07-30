@@ -20,6 +20,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { loadMemory } from "@/lib/player-memory";
 import { buildLesCent, mesMorts, type RegistreEntry } from "@/lib/registre-data";
+import { assetUrl, assetCss } from "@/lib/assets";
 
 const PAGE = 12;
 
@@ -201,13 +202,13 @@ export default function Registre({
         style={{ top: 11, right: "max(10px, calc(50vw - 185px))" }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img alt="" src="assets/croix_menu.png" className="block size-full" style={{ imageRendering: "pixelated" }} />
+        <img alt="" src={assetUrl("assets/croix_menu.png")} className="block size-full" style={{ imageRendering: "pixelated" }} />
       </button>
 
       <div className="relative shrink-0">
         {/* eslint-disable-next-line @next/next/no-img-element -- rendu pixelated, jamais optimisé par next/image */}
         <img
-          src="assets/objet_grand_registre_d.png"
+          src={assetUrl("assets/objet_grand_registre_d.png")}
           alt=""
           className="block h-[390px] w-[390px] object-cover"
           style={{ imageRendering: "pixelated" }}
@@ -216,7 +217,7 @@ export default function Registre({
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 h-[42px]"
           style={{
-            backgroundImage: "url(assets/bande_dissolution_haut.svg)",
+            backgroundImage: assetCss("assets/bande_dissolution_haut.svg"),
             backgroundSize: "390px 41px",
             backgroundRepeat: "repeat-x",
             transform: "scaleY(-1)",

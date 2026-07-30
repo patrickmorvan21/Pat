@@ -217,5 +217,14 @@
  *           charbon — c'était ça, le « bloc noir en bas » qui subsistait une
  *           fois le cadre déjà collé au device. Socle de 9 px plein, bord
  *           supérieur rongé, + lit incandescent mis à l'échelle du foyer.
+ *   1.30.0 — LE MANIFESTE DES ASSETS. Plusieurs illustrations avaient changé
+ *           de contenu SOUS LE MÊME NOM : rien dans l'URL ne le signalait, et
+ *           le service worker (portée : tout /Pat/aldenhar/, donc l'atelier et
+ *           la couverture aussi) servait le cache avant le réseau. Chaque
+ *           image porte désormais le hash de son contenu dans son URL — une
+ *           image modifiée change d'URL, aucun cache ne peut plus mentir. Les
+ *           deux pages d'outillage affichent ce hash (deux vignettes au même
+ *           hash = même fichier), un bandeau de fraîcheur (date + commit), et
+ *           trois filtres : Doublons · Nouveautés · Introuvable.
  */
-export const APP_VERSION = "1.29.5";
+export const APP_VERSION = "1.30.0";

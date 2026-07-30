@@ -22,6 +22,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { markIntroSeen } from "@/lib/player-memory";
 import TouchHint from "@/components/TouchHint";
+import { assetUrl, assetCss } from "@/lib/assets";
 
 type Clause = {
   /** Chapeau (« • PREMIÈRE CLAUSE • ») — absent sur l'écran d'ouverture. */
@@ -128,7 +129,7 @@ function IntroFrame({
         <div className="relative h-[390px] w-[390px] shrink-0">
           {/* eslint-disable-next-line @next/next/no-img-element -- rendu pixelated, jamais optimisé par next/image */}
           <img
-            src={image}
+            src={assetUrl(image)}
             alt=""
             className="block size-full object-cover"
             style={{ imageRendering: "pixelated" }}
@@ -139,7 +140,7 @@ function IntroFrame({
             aria-hidden
             className="pointer-events-none absolute inset-x-0 bottom-0 h-[42px]"
             style={{
-              backgroundImage: "url(assets/bande_dissolution_haut.svg)",
+              backgroundImage: assetCss("assets/bande_dissolution_haut.svg"),
               backgroundSize: "390px 41px",
               backgroundRepeat: "repeat-x",
               transform: "scaleY(-1)",
@@ -269,7 +270,7 @@ export function ActeScreen({ acte = 0, onDone }: { acte?: number; onDone: () => 
 
         {/* eslint-disable-next-line @next/next/no-img-element -- rendu pixelated, jamais optimisé par next/image */}
         <img
-          src={a.image}
+          src={assetUrl(a.image)}
           alt=""
           className="absolute inset-x-0 top-[224px] h-[390px] w-[390px] object-cover"
           style={{ imageRendering: "pixelated" }}

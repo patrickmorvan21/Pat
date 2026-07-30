@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "atelier": "python3 ../tools/atelier.py"
+    "atelier": "python3 ../tools/atelier.py",
+    "gen:manifest": "python3 ../tools/gen_manifest.py",
+    "prebuild": "npm run gen:manifest"
   },
   "dependencies": {
     "@types/three": "^0.185.0",

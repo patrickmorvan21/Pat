@@ -26,6 +26,7 @@ import { loadRun, resetRun, saveRun, type FeedEntry, type RunState, type Travers
 import { chapterById, drawChapter, LANDES_LORE_FRAGMENTS } from "@/lib/chapters-data";
 import { playMusic } from "@/lib/audio";
 import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
+import { assetUrl, assetCss } from "@/lib/assets";
 import {
   bloodDebtFor,
   buildRegistre,
@@ -1240,7 +1241,7 @@ export default function Scene() {
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt=""
-            src={image}
+            src={assetUrl(image)}
             // Aucun zoom : l'élément observé a sa propre image (26/07).
             style={{ transform: "scale(1)" }}
             className={
@@ -1253,7 +1254,7 @@ export default function Scene() {
           />
           <div
             className="dissolve-bottom"
-            style={{ backgroundImage: 'url("assets/bande_dissolution_haut.svg")' }}
+            style={{ backgroundImage: assetCss("assets/bande_dissolution_haut.svg") }}
             aria-hidden
           />
         </div>
@@ -1519,18 +1520,18 @@ function FeedItem({
         >
           <span
             className="jailer-fringe jailer-fringe-top"
-            style={{ backgroundImage: 'url("assets/frange_geolier.svg")' }}
+            style={{ backgroundImage: assetCss("assets/frange_geolier.svg") }}
             aria-hidden
           />
           <span
             className="jailer-fringe jailer-fringe-bottom"
-            style={{ backgroundImage: 'url("assets/frange_geolier.svg")' }}
+            style={{ backgroundImage: assetCss("assets/frange_geolier.svg") }}
             aria-hidden
           />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt=""
-            src="assets/geolier_portrait.png"
+            src={assetUrl("assets/geolier_portrait.png")}
             className="pointer-events-none absolute top-0 left-0 z-0 h-full w-auto"
             style={{ imageRendering: "pixelated" }}
           />
@@ -1567,7 +1568,7 @@ function FeedItem({
               <span key={e.effectId} className={`etat-chip ${e.positive ? "is-positive" : ""}`}>
                 {(e.effectId === "aguerri" || e.effectId === "entaille") && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img alt="" src={`assets/etat_${e.effectId}.png`} className="etat-chip-icon" />
+                  <img alt="" src={assetUrl(`assets/etat_${e.effectId}.png`)} className="etat-chip-icon" />
                 )}
                 {e.label}
               </span>

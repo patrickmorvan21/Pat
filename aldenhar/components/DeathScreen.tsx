@@ -29,6 +29,7 @@ import { pickJailerQuote, reactionJours } from "@/lib/jailer-quotes";
 import { ditherFadeMaskDataUrl } from "@/lib/dither";
 import { animReduced } from "@/lib/settings";
 import type { RunState } from "@/lib/state";
+import { assetUrl } from "@/lib/assets";
 
 const CHARBON = "#1c1a16";
 const ORANGE = "#e0632a";
@@ -399,7 +400,7 @@ export default function DeathScreen({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt=""
-            src="assets/mort_geolier_tete.png"
+            src={assetUrl("assets/mort_geolier_tete.png")}
             className="block w-full select-none"
             style={{ imageRendering: "pixelated" }}
           />
@@ -439,7 +440,7 @@ export default function DeathScreen({
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt=""
-              src="assets/mort_coffre.png"
+              src={assetUrl("assets/mort_coffre.png")}
               className="absolute inset-0 h-full w-full object-cover select-none"
               style={{ imageRendering: "pixelated" }}
             />
@@ -472,7 +473,7 @@ export default function DeathScreen({
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   alt=""
-                  src="assets/objet_couronne_brisee.png"
+                  src={assetUrl("assets/objet_couronne_brisee.png")}
                   className="h-full w-full object-cover select-none"
                   style={{ imageRendering: "pixelated" }}
                 />
@@ -574,7 +575,7 @@ function RegistreMort({
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         alt=""
-        src="assets/objet_grand_registre_d.png"
+        src={assetUrl("assets/objet_grand_registre_d.png")}
         className="block h-[128px] w-full object-cover object-[center_38%] select-none"
         style={{ imageRendering: "pixelated" }}
       />

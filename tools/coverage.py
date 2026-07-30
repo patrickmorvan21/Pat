@@ -40,6 +40,28 @@ SCENE_TS = ROOT / "aldenhar" / "lib" / "scene-data.ts"
 ZONES_DIR = ROOT / "data" / "zones"
 META_JSON = ROOT / "data" / "scene-meta.json"
 ASSETS = ROOT / "aldenhar" / "public" / "assets"
+MANIFEST = ASSETS / "manifest.json"
+
+
+def load_manifest() -> dict:
+    """Le manifeste des assets (`npm run gen:manifest`).
+
+    Donne à chaque fichier son hash court, sa taille, sa date et un drapeau
+    « récent » (touché par l'un des N derniers commits). Sert à TROIS choses
+    ici, à ne pas confondre :
+      • le hash dans l'URL de la vignette — pour qu'un fichier modifié sous le
+        même nom ne puisse plus être servi depuis un cache ;
+      • le hash AFFICHÉ — deux vignettes au même hash = même fichier réutilisé ;
+      • le filtre « Introuvable » — un `illustration` qui pointe vers un fichier
+        absent du manifeste doit crier, pas se taire.
+    Absent (première exécution, script pas encore lancé) → dégradation propre :
+    la page marche, sans hash ni filtres de fraîcheur."""
+    if not MANIFEST.exists():
+        return {"genere": "", "commit": "", "fichiers": {}}
+    try:
+        return json.loads(MANIFEST.read_text(encoding="utf-8"))
+    except Exception:
+        return {"genere": "", "commit": "", "fichiers": {}}
 OUT_HTML = ROOT / "data" / "couverture_visuelle.html"
 VERDICTS_JSON = ROOT / "data" / "couverture-verdicts.json"
 
@@ -529,7 +551,7 @@ font:400 13px/1.2 "Roboto Mono",monospace;color:var(--blanc)}
 .card.principale{border-color:var(--orange)}
 .card{border:1px solid var(--b20);padding:10px}
 .card.drag{border-color:var(--orange)}
-.card.hidden{display:none!important}
+.card.hidden,.ocard.hidden{display:none!important}
 .thumb{position:relative;width:100%;aspect-ratio:1/1;background:#000 center/cover no-repeat;
 overflow:hidden;image-rendering:pixelated}
 .thumb.none{display:flex;align-items:center;justify-content:center;
@@ -599,8 +621,29 @@ text-decoration:underline;text-underline-offset:3px;cursor:pointer;margin-top:7p
 
 /* ---------- orphelins ---------- */
 h2{font:400 20px/1.2 "Instrument Serif",Georgia,serif;letter-spacing:2px;margin-top:34px}
-.orph{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-.orph div{border:1px solid var(--b20);padding:6px 10px;font-size:11px;color:var(--b50)}
+.orph{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px}
+.orph > div{border:1px solid var(--b20);padding:6px 10px;font-size:11px;color:var(--b50)}
+.ocard{width:132px;margin:0}
+.ocard .thumb{width:132px;height:132px}
+.ocard figcaption{margin-top:5px;font-size:9.5px;line-height:1.35;color:var(--b50);word-break:break-all}
+
+/* ---------- fraîcheur : à quel instant correspond ce que je regarde ---------- */
+.fraicheur{display:flex;flex-wrap:wrap;gap:18px;margin:14px 0 0;font-size:10.5px;
+  letter-spacing:.6px;text-transform:uppercase;color:var(--b50)}
+.fraicheur b{color:var(--cream);font-weight:400}
+.fraicheur .perime{color:var(--orange)}
+
+/* ---------- pastille de hash sur la vignette ----------
+   Diagnostic pur : deux vignettes au même hash sont le MÊME fichier réutilisé.
+   Posée en bas à droite pour ne pas heurter la puce de statut (haut gauche). */
+.thumb{position:relative}
+.hash{position:absolute;right:5px;bottom:5px;padding:2px 4px;font-size:9px;
+  letter-spacing:.5px;background:var(--charbon);color:var(--b50);
+  border:1px solid var(--b20);pointer-events:none}
+.hash.neuf{color:var(--charbon);background:var(--orange);border-color:var(--orange)}
+.thumb.introuvable{background:var(--cream);color:var(--charbon);font-weight:700;
+  display:flex;align-items:center;justify-content:center;text-align:center;
+  font-size:10px;letter-spacing:1px;padding:8px}
 
 /* ---------- instructions de pipeline ---------- */
 .log-static{margin-top:12px;font-size:11.5px;color:var(--b50)}
@@ -649,11 +692,34 @@ addEventListener("load",()=>document.querySelectorAll("canvas.rule").forEach(rul
 
 /* ---------- filtres — une rangée unique, statut + catégorie ---------- */
 let filter="tous";
+
+/* Images utilisées par PLUS D'UNE carte. Calculé sur `data-img` (le nom de
+   fichier), pas sur le hash : deux noms différents au même contenu, c'est un
+   doublon de FICHIER (le manifeste le signale à la génération) ; le même nom
+   sur deux scènes, c'est une image RÉUTILISÉE — et c'est ça qu'on veut voir
+   ici, pour distinguer les réemplois voulus des oublis. */
+const usages={};
+document.querySelectorAll(".card[data-img]").forEach(c=>{
+  const n=c.dataset.img; if(!n)return; usages[n]=(usages[n]||0)+1;
+});
+document.querySelectorAll(".card[data-img]").forEach(c=>{
+  if(usages[c.dataset.img]>1) c.dataset.doublon="1";
+});
+
 function applyFilter(){
   document.querySelectorAll(".card").forEach(c=>{
     const ok=filter==="tous"||c.dataset.statut===filter||c.dataset.cat===filter
-      ||c.dataset.verdict===filter;
+      ||c.dataset.verdict===filter
+      ||(filter==="doublons"&&c.dataset.doublon==="1")
+      ||(filter==="neuf"&&c.dataset.neuf==="1")
+      ||(filter==="introuvable"&&c.dataset.introuvable==="1");
     c.classList.toggle("hidden",!ok);
+  });
+  // La RÉSERVE suit les mêmes filtres quand ils la concernent, et disparaît
+  // sinon : un orphelin n'a ni statut, ni catégorie, ni verdict.
+  document.querySelectorAll(".ocard").forEach(o=>{
+    const ok=filter==="tous"||(filter==="neuf"&&o.dataset.neuf==="1");
+    o.classList.toggle("hidden",!ok);
   });
   // Replier lignes, puis lieux, puis zones dont plus aucune carte n'est
   // visible : sinon le filtre laissait des titres vides partout.
@@ -672,6 +738,27 @@ document.getElementById("filters").onclick=e=>{
   document.querySelectorAll("#filters button").forEach(x=>x.classList.remove("on"));
   b.classList.add("on"); filter=b.dataset.f; applyFilter();
 };
+
+/* Le manifeste SERVI, avec un cache-buster : c'est la seule façon de savoir si
+   cette page est à jour ou si je regarde une version plus vieille que les
+   assets. Le service worker du jeu a pour portée tout /Pat/aldenhar/ — cette
+   page est dedans, donc sans le `?t=` on relirait le manifeste en cache, ce
+   qui viderait le contrôle de tout son sens. */
+(async function fraicheurLive(){
+  const el=document.getElementById("fr-live"); if(!el)return;
+  try{
+    const r=await fetch("assets/manifest.json?t="+Date.now(),{cache:"no-store"});
+    if(!r.ok)return;
+    const m=await r.json();
+    const cuit=document.getElementById("fraicheur").textContent;
+    if(m.commit && !cuit.includes(m.commit)){
+      el.className="perime";
+      el.textContent="⚠ les assets ont bougé depuis (commit "+m.commit+") — recharge après le prochain déploiement";
+    }else{
+      el.textContent="à jour";
+    }
+  }catch(_){}
+})();
 
 function toast(m){const t=document.getElementById('toast');t.textContent=m;
   t.classList.add('on');setTimeout(()=>t.classList.remove('on'),1800);}
@@ -988,17 +1075,32 @@ def render(
     # le marquage de qualité fonctionne, rangé dans le navigateur.
     rel = "" if web else "../aldenhar/public/"
 
+    MANIF = load_manifest().get("fichiers", {})
+
     def card(i: Item) -> str:
         basename = i.image.split("/", 1)[1] if i.image else ""
-        if i.image:
+        fiche = MANIF.get(basename) if basename else None
+        h = fiche["hash"] if fiche else ""
+        # Le hash DANS l'URL : un fichier modifié sous le même nom change d'URL,
+        # donc aucun cache (navigateur ou service worker) ne peut servir
+        # l'ancienne version. C'est la cure ; la pastille ci-dessous n'est que
+        # le diagnostic.
+        ver = f"?v={h}" if h else ""
+        if i.image and not fiche:
+            # Câblé vers un fichier ABSENT du manifeste : c'est la cause la plus
+            # probable d'une « image fantôme ». Ça doit crier.
+            thumb_open = '<div class="thumb none introuvable">'
+            thumb_inner = "FICHIER INTROUVABLE"
+        elif i.image:
             # data-zoom pointe sur l'image D'ORIGINE (pleine résolution) : c'est
             # ce qu'on veut regarder pour juger si elle marche.
+            pastille = f'<span class="hash{" neuf" if fiche and fiche.get("recent") else ""}">{h}</span>' if h else ""
             thumb_open = (
-                f'<div class="thumb" style="background-image:url(\'{rel}{i.image}\')"'
-                f' data-zoom="{rel}{i.image}" data-zoom-id="{esc(i.id)}"'
+                f'<div class="thumb" style="background-image:url(\'{rel}{i.image}{ver}\')"'
+                f' data-zoom="{rel}{i.image}{ver}" data-zoom-id="{esc(i.id)}"'
                 f' title="Agrandir — {esc(basename)}">'
             )
-            thumb_inner = ""
+            thumb_inner = pastille
         else:
             thumb_open = '<div class="thumb none">'
             thumb_inner = "AUCUNE IMAGE"
@@ -1100,7 +1202,9 @@ def render(
         # Icône de rôle à gauche du nom : composant (4 losanges) pour l'image
         # principale, variante (losange creux) pour les autres — grammaire Figma.
         ico = ICON_PRINCIPALE if i.principale else ICON_VARIANTE
-        return f"""<article class="{card_cls}" data-statut="{i.statut}" data-cat="{i.categorie}" data-kind="{i.kind}" data-verdict="{i.verdict}"{prompt_data}>
+        neuf = "1" if fiche and fiche.get("recent") else "0"
+        introuvable = "1" if (i.image and not fiche) else "0"
+        return f"""<article class="{card_cls}" data-statut="{i.statut}" data-cat="{i.categorie}" data-kind="{i.kind}" data-verdict="{i.verdict}" data-img="{esc(basename)}" data-hash="{h}" data-neuf="{neuf}" data-introuvable="{introuvable}"{prompt_data}>
   {thumb_open}{thumb_inner}{tag}</div>
   <div class="cat">{i.categorie} · {role}</div>
   <div class="id">{ico}<span>{esc(i.id)}{parent_html}</span></div>
@@ -1209,14 +1313,32 @@ def render(
     filter_defs = [("tous", "Tous"), (DEDIEE, "Son image"), (HERITEE, "Empruntées"),
                    (FALLBACK, "Génériques"), (MANQUANTE, "Sans image"),
                    (A_REMPLACER, "À remplacer")]
+    filter_defs += [("doublons", "Doublons"), ("neuf", "Nouveautés"),
+                    ("introuvable", "Introuvable")]
     filter_defs += [(c, CAT_LABEL.get(c, c.capitalize())) for c in cats]
     filters_html = "".join(
         f'<button class="{"on" if f == "tous" else ""}" data-f="{f}">{label}</button>'
         for f, label in filter_defs
     )
 
+    # La RÉSERVE : les fichiers présents dans assets/ qu'aucune scène n'utilise.
+    # Affichés en vignettes (et plus en liste de noms) : on ne décide pas de
+    # garder ou de jeter une image sans la voir.
+    def carte_orph(chemin: str) -> str:
+        nom = chemin.split("/", 1)[1]
+        f = MANIF.get(nom)
+        h = f["hash"] if f else ""
+        ver = f"?v={h}" if h else ""
+        pastille = f'<span class="hash{" neuf" if f and f.get("recent") else ""}">{h}</span>' if h else ""
+        return (
+            f'<figure class="ocard" data-neuf="{"1" if f and f.get("recent") else "0"}">'
+            f'<div class="thumb" style="background-image:url(\'{rel}{chemin}{ver}\')" '
+            f'data-zoom="{rel}{chemin}{ver}" data-zoom-id="{esc(nom)}" title="Agrandir — {esc(nom)}">'
+            f"{pastille}</div><figcaption>{esc(nom)}</figcaption></figure>"
+        )
+
     orph = (
-        "".join(f"<div>{esc(o)}</div>" for o in orphans)
+        "".join(carte_orph(o) for o in orphans)
         if orphans
         else '<div>Aucun. Tout fichier de assets/ est référencé.</div>'
     )
@@ -1265,6 +1387,19 @@ au code.</p></div>"""
 </ol></div>"""
     )
 
+    # Bandeau de fraîcheur : à quel instant et à quel commit correspond ce que
+    # tu regardes. Sans lui, impossible de distinguer « rien n'a changé » de
+    # « je regarde une vieille page ». Le JS le complète en comparant au
+    # manifeste SERVI (voir `fraicheurLive` dans le script).
+    _m = load_manifest()
+    _d = (_m.get("genere") or "").replace("T", " ").replace("Z", " UTC")
+    fraicheur = (
+        f'<span>Manifeste : <b>{esc(_d) or "jamais généré"}</b></span>'
+        f'<span>commit <b>{esc(_m.get("commit") or "?")}</b></span>'
+        f'<span>{len(_m.get("fichiers", {}))} fichiers dans assets/</span>'
+        '<span id="fr-live"></span>'
+    )
+
     return f"""<!doctype html>
 <html lang="fr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -1276,6 +1411,7 @@ au code.</p></div>"""
 <div class="sub">{counts["scenes"]} scènes · {counts["pois"]} points d'intérêt · Les Landes · {mode}</div>
 <canvas class="rule"></canvas>
 
+<div class="fraicheur" id="fraicheur">{fraicheur}</div>
 <div class="stats">{stats}</div>
 <div class="legende">{legende}</div>
 {copy_btn}

@@ -13,6 +13,7 @@ import { APP_VERSION } from "@/lib/version";
 import { applySettingsToDom } from "@/lib/settings";
 import { armAudio, playMusic } from "@/lib/audio";
 import { OptionsTab } from "@/components/GameMenu";
+import { assetUrl } from "@/lib/assets";
 
 /**
  * Écrans d'accueil (Figma 1963:370 « Première partie » / 1970:458 « Reprendre
@@ -106,7 +107,7 @@ export default function Home() {
                   lissé standard (pas de pixelated) : la source est bien plus
                   définie que l'affichage, contrairement aux textures tramées 1:1. */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img alt="PACTUM" src="assets/pactum_logo.png" className="block w-[197px] select-none" />
+              <img alt="PACTUM" src={assetUrl("assets/pactum_logo.png")} className="block w-[197px] select-none" />
               {/* La tagline (maquette 2333-7029 : mono 13, blanc) — remplacée
                   par la voix du Geôlier dès la première mort (30/07). */}
               <p className="mt-[14px] text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]">
@@ -270,7 +271,7 @@ function HomeOverlay({ kind, onClose }: { kind: "reliques" | "registre" | "optio
                   {/* Icône générique des Reliques — la couronne brisée tramée
                       1000×1000, l'ancien masque faisait 68×68 (26/07). */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img alt="" src="assets/objet_couronne_brisee.png" className="size-[54px] border border-solid border-[var(--color-ink)]/30" style={{ imageRendering: "pixelated" }} />
+                  <img alt="" src={assetUrl("assets/objet_couronne_brisee.png")} className="size-[54px] border border-solid border-[var(--color-ink)]/30" style={{ imageRendering: "pixelated" }} />
                   <div>
                     <p className="text-[13px] text-[var(--color-ink)]">{r.name}</p>
                     <p className="text-[11px] uppercase tracking-[1px] text-[var(--color-accent)]">
@@ -312,7 +313,7 @@ export function CloseX({ onClose }: { onClose: () => void }) {
       className="block size-[32px] cursor-pointer border-none bg-transparent p-0"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img alt="" src="assets/croix_menu.png" className="block size-full" style={{ imageRendering: "pixelated" }} />
+      <img alt="" src={assetUrl("assets/croix_menu.png")} className="block size-full" style={{ imageRendering: "pixelated" }} />
     </button>
   );
 }

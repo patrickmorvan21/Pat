@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { animReduced } from "@/lib/settings";
+import { assetUrl } from "@/lib/assets";
 
 /* ---- Réglages repris tels quels du prototype validé (ne pas lisser) ---- */
 const TICK = 90; /* ms par pas de simulation */
@@ -164,7 +165,7 @@ export function HeroGeolier({
       <img
         ref={imgRef}
         alt=""
-        src="assets/geolier_detoure.png"
+        src={assetUrl("assets/geolier_detoure.png")}
         className="relative z-[2] mt-[40px] block w-full select-none"
         style={{ imageRendering: "pixelated", transform: "translateY(0)" }}
       />

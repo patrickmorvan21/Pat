@@ -8,6 +8,7 @@ import { besaceBySlot, normalizeItem, RARITY_LABEL, type BesaceItem, type Besace
 import { loadSettings, mutateSettings, type Settings } from "@/lib/settings";
 import { syncMusicSettings } from "@/lib/audio";
 import DeathScreen, { bilanDeMort, type Bilan } from "@/components/DeathScreen";
+import { assetUrl } from "@/lib/assets";
 
 /**
  * Menu plein cadre (spec §8 + écrans Figma 1925:559 « Essence » et 1925:524
@@ -319,7 +320,7 @@ function EssenceTab({ run }: { run: RunState }) {
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           alt=""
-                          src={d.img}
+                          src={assetUrl(d.img)}
                           className="block size-[62px]"
                           style={{
                             imageRendering: "auto",
@@ -419,7 +420,7 @@ function InventaireTab({
       >
         {it ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img alt={it.name} src={itemIcon(it)} className="block size-full" style={{ imageRendering: "pixelated" }} />
+          <img alt={it.name} src={assetUrl(itemIcon(it))} className="block size-full" style={{ imageRendering: "pixelated" }} />
         ) : (
           <span className="absolute inset-0 grid place-items-center font-mono text-[10px] uppercase tracking-[2px] text-[var(--color-ink)] opacity-45">
             VIDE
@@ -435,7 +436,7 @@ function InventaireTab({
       <div className="mx-auto size-[276px]">
         {detailImg && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img alt="" src={detailImg} className="block size-full" style={{ imageRendering: "pixelated" }} />
+          <img alt="" src={assetUrl(detailImg)} className="block size-full" style={{ imageRendering: "pixelated" }} />
         )}
       </div>
       <div className="px-[17px]">
@@ -500,7 +501,7 @@ function InventaireTab({
                     }`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img alt={r.name} src={RELIC_ICON} className="block size-full" style={{ imageRendering: "pixelated" }} />
+                    <img alt={r.name} src={assetUrl(RELIC_ICON)} className="block size-full" style={{ imageRendering: "pixelated" }} />
                   </button>
                 );
               })}
