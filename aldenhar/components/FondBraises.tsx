@@ -124,6 +124,15 @@ export default function FondBraises({
        à l'échelle. (Le lit, le cisaillement et la zone basse sont déjà
        exprimés en fraction de HF : ils suivent tout seuls.) */
     const coolEchelle = COOL * (HAUTEUR_REF / Math.max(1, height));
+    /* Le lit incandescent suit lui aussi l'échelle : garder 3 rangées sous une
+       flamme trois fois plus haute donnait un pied maigre — un feu qui flotte
+       au lieu d'être posé. */
+    const echelle = Math.max(1, height / HAUTEUR_REF);
+    const litRangs = Math.round(LIT_RANGS * echelle);
+    /* Rangées FERRÉES au bas de l'écran (voir le socle, plus bas). Fixe en
+       PIXELS, pas en fraction : c'est le contact avec le bord du device, il
+       doit avoir la même épaisseur quelle que soit la hauteur du foyer. */
+    const SOCLE = Math.max(2, Math.round(9 / GRAIN));
     cv.width = W;
     cv.height = HT;
     ctx.imageSmoothingEnabled = false;
@@ -210,7 +219,7 @@ export default function FondBraises({
       /* ── le lit : plusieurs rangées incandescentes, pas une simple ligne */
       const dx1 = tps * 0.004;
       const dx2 = tps * 0.011;
-      const RANGS = Math.min(LIT_RANGS, HF - 3);
+      const RANGS = Math.min(litRangs, HF - 3);
       for (let x = 0; x < W; x++) {
         const n = fbm(x * 0.055 + dx1) * 0.6 + fbm(x * 0.19 + dx2) * 0.4;
         let base = 0.4 + forceBraises(x) * 0.55 + n * BRUIT;
@@ -225,6 +234,19 @@ export default function FondBraises({
           let v = v0 * (0.62 + 0.75 * t) * (0.86 + Math.random() * 0.3);
           /* les trous de charbon noir ne s'ouvrent qu'en haut du lit */
           if (y > RANGS * 0.45 && Math.random() < 0.05 + 0.1 * (1 - t)) v *= 0.32;
+          /* ── LE SOCLE : le feu est FERRÉ au bas de l'écran.
+             Sans ça, les toutes dernières rangées restent tramées (mesuré :
+             69 à 77 % de remplissage, en alternance selon la ligne de Bayer)
+             et on voit le charbon à travers — c'est le « bloc noir en bas »
+             signalé par Patrick, une fois le cadre déjà collé au bas du
+             device. On plancher donc la chaleur au-dessus du seuil de trame
+             le plus haut (0,97 − BOOST) sur les premières rangées, en
+             relâchant progressivement : le pied du feu est plein, son bord
+             supérieur se ronge tout seul et rien ne ressemble à une barre. */
+          if (y < SOCLE) {
+            const force = 1 - y / SOCLE; /* 1 au sol → 0 au sommet du socle */
+            v = Math.max(v, 0.86 + 0.3 * force * force);
+          }
           heat[y * W + x] = Math.max(0, Math.min(1.6, v));
         }
       }

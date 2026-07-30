@@ -212,5 +212,10 @@
  *           les flammes montent à ~170 px au lieu de couver ; l'éclat de
  *           cendres de la relique part du bord du cadre, passe DEVANT elle et
  *           traverse tout l'écran (onde + éclats lourds + cendres qui montent).
+ *   1.29.5 — Le feu est FERRÉ au bas de l'écran : les dernières rangées
+ *           restaient tramées (69-77 % de remplissage) et laissaient voir le
+ *           charbon — c'était ça, le « bloc noir en bas » qui subsistait une
+ *           fois le cadre déjà collé au device. Socle de 9 px plein, bord
+ *           supérieur rongé, + lit incandescent mis à l'échelle du foyer.
  */
-export const APP_VERSION = "1.29.4";
+export const APP_VERSION = "1.29.5";
