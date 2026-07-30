@@ -34,7 +34,6 @@
 import { useEffect, useRef } from "react";
 import { animReduced } from "@/lib/settings";
 
-const CHARBON = "#1c1a16";
 const ORANGE = "#e0632a";
 
 const BAYER = [
@@ -88,7 +87,10 @@ export default function FondBraises({
   height = 56,
   className,
 }: {
-  /** Hauteur CSS de la bande, en px. */
+  /** Hauteur CSS du FOYER (la partie qui brûle), en px. Le canvas, lui,
+      couvre tout le cadre : les cendres doivent pouvoir monter PAR-DESSUS
+      l'interface (retour Patrick 30/07 — « là c'est coupé »), le composant
+      est donc un calque plein écran posé après le contenu, jamais cliquable. */
   height?: number;
   className?: string;
 }) {
@@ -97,25 +99,28 @@ export default function FondBraises({
   useEffect(() => {
     const cv = ref.current;
     if (!cv) return;
-    const ctx = cv.getContext("2d", { alpha: false });
+    const ctx = cv.getContext("2d", { alpha: true });
     if (!ctx) return;
 
     const cssW = cv.parentElement?.clientWidth || 390;
+    const cssH = cv.parentElement?.clientHeight || 800;
     const W = Math.max(8, Math.round(cssW / GRAIN));
-    const H = Math.max(8, Math.round(height / GRAIN));
+    /* HT = hauteur totale du canvas (tout l'écran, territoire des cendres) ;
+       HF = hauteur du foyer (la simulation de chaleur reste confinée en bas). */
+    const HT = Math.max(16, Math.round(cssH / GRAIN));
+    const HF = Math.max(8, Math.min(HT - 4, Math.round(height / GRAIN)));
     cv.width = W;
-    cv.height = H;
-    cv.style.height = `${height}px`;
+    cv.height = HT;
     ctx.imageSmoothingEnabled = false;
 
     /* La grille de chaleur vit SOL EN BAS (y=0 = sol), dessinée retournée —
-       exactement comme la maquette. */
-    const heat = new Float32Array(W * H);
+       exactement comme la maquette. Elle ne couvre que le foyer (HF). */
+    const heat = new Float32Array(W * HF);
     const Hget = (y: number, x: number) => {
       if (x < 0) x = 0;
       if (x >= W) x = W - 1;
       if (y < 0) y = 0;
-      if (y >= H) return 0;
+      if (y >= HF) return 0;
       return heat[y * W + x];
     };
 
@@ -190,7 +195,7 @@ export default function FondBraises({
       /* ── le lit : plusieurs rangées incandescentes, pas une simple ligne */
       const dx1 = tps * 0.004;
       const dx2 = tps * 0.011;
-      const RANGS = Math.min(LIT_RANGS, H - 3);
+      const RANGS = Math.min(LIT_RANGS, HF - 3);
       for (let x = 0; x < W; x++) {
         const n = fbm(x * 0.055 + dx1) * 0.6 + fbm(x * 0.19 + dx2) * 0.4;
         let base = 0.4 + forceBraises(x) * 0.55 + n * BRUIT;
@@ -213,9 +218,9 @@ export default function FondBraises({
          refroidissement variable par colonne, freiné dans la zone basse.
          La respiration RALENTIT aussi le refroidissement (cool / respire). */
       const coolBase = COOL / respire;
-      for (let y = RANGS; y < H; y++) {
-        const cis = vent * (y / H) * 1.7; /* la flamme penche en montant */
-        const zone = y / H;
+      for (let y = RANGS; y < HF; y++) {
+        const cis = vent * (y / HF) * 1.7; /* la flamme penche en montant */
+        const zone = y / HF;
         const frein = zone < ZONE_BASSE ? FREIN + (1 - FREIN) * (zone / ZONE_BASSE) : 1;
         for (let x = 0; x < W; x++) {
           const sx = x - cis;
@@ -228,10 +233,12 @@ export default function FondBraises({
         }
       }
 
-      /* ── cendres, émises à la crête des colonnes chaudes */
+      /* ── cendres, émises à la crête des colonnes chaudes. Elles quittent le
+         foyer et montent dans TOUT le cadre (le canvas couvre l'écran) : on
+         doit les voir voler par-dessus l'interface, jamais coupées. */
       for (let k = 0; k < CENDRES_PAR_PAS; k++) {
         const x = (Math.random() * W) | 0;
-        let y = H - 1;
+        let y = HF - 1;
         while (y > 0 && Hget(y, x) < 0.1) y--;
         if (y > 2)
           cendres.push({
@@ -250,17 +257,19 @@ export default function FondBraises({
         a.age++;
         a.y += a.v;
         a.x += vent * 0.05; /* les cendres suivent le vent */
-        if (a.age > a.life || a.y > H + 2) cendres.splice(i, 1);
+        if (a.age > a.life || a.y > HT + 2) cendres.splice(i, 1);
       }
     }
 
     function dessine() {
-      ctx!.fillStyle = CHARBON;
-      ctx!.fillRect(0, 0, W, H);
+      /* Calque TRANSPARENT : seul le feu et les cendres se dessinent — le
+         charbon, c'est déjà le fond de l'écran dessous. (Un fond plein ici
+         masquerait toute l'interface, puisque le canvas couvre le cadre.) */
+      ctx!.clearRect(0, 0, W, HT);
 
       ctx!.fillStyle = ORANGE;
-      for (let y = 0; y < H; y++) {
-        const py = H - 1 - y;
+      for (let y = 0; y < HF; y++) {
+        const py = HT - 1 - y;
         const brow = BAYER[py & 3];
         for (let x = 0; x < W; x++) {
           const v = heat[y * W + x];
@@ -275,8 +284,8 @@ export default function FondBraises({
         /* raréfaction par probabilité de dessin — jamais par opacité */
         if (Math.random() > reste * 0.85) continue;
         const px = (a.x + Math.sin(a.age * a.f + a.s) * a.sway) | 0;
-        const py = H - 1 - (a.y | 0);
-        if (py < 0 || py >= H || px < 0 || px >= W) continue;
+        const py = HT - 1 - (a.y | 0);
+        if (py < 0 || py >= HT || px < 0 || px >= W) continue;
         ctx!.fillStyle = Math.random() < 0.72 ? ORANGE : "rgba(255,255,255,.55)";
         ctx!.fillRect(px, py, 1, 1);
       }
@@ -311,11 +320,7 @@ export default function FondBraises({
   }, [height]);
 
   return (
-    <div
-      className={`pointer-events-none absolute inset-x-0 bottom-0 ${className ?? ""}`}
-      style={{ height }}
-      aria-hidden
-    >
+    <div className={`pointer-events-none absolute inset-0 ${className ?? ""}`} aria-hidden>
       <canvas ref={ref} className="block h-full w-full" style={{ imageRendering: "pixelated" }} />
     </div>
   );

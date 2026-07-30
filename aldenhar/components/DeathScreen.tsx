@@ -22,6 +22,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Relic } from "@/lib/player-memory";
 import TouchHint from "@/components/TouchHint";
 import FondBraises from "@/components/FondBraises";
+import { NomGratte } from "@/components/Registre";
 import { buildLesCent, type RegistreEntry } from "@/lib/registre-data";
 import { loadMemory } from "@/lib/player-memory";
 import { pickJailerQuote, reactionJours } from "@/lib/jailer-quotes";
@@ -587,9 +588,10 @@ function RegistreMort({
                 key={`${r.rank}-${r.name}`}
                 rank={r.rank}
                 name={r.name}
-                sub={r.cause}
+                sub={r.locked ? `${r.days.toLocaleString("fr-FR")} ${r.cause}` : r.cause}
                 days={r.days}
                 moi={Boolean(r.isPlayer && r.name === heroName && r.days === day)}
+                locked={r.locked}
               />
             ))}
       </div>
@@ -625,12 +627,17 @@ function LigneRegistreMort({
   sub,
   days,
   moi,
+  locked,
 }: {
   rank: number;
   name: string;
   sub: string;
   days: number;
   moi?: boolean;
+  /** La première place, verrouillée : le NOM GRATTÉ du record (le Geôlier) —
+      même traitement que le Registre plein cadre : rature de pixels, rang en
+      orange, jours dans le sous-titre parce qu'ils ne se comparent à rien. */
+  locked?: boolean;
 }) {
   return (
     <div
@@ -643,26 +650,36 @@ function LigneRegistreMort({
       )}
       <span
         className={`w-[32px] shrink-0 font-mono text-[13px] ${
-          moi ? "text-[var(--color-accent)]" : "text-[var(--color-ink)] opacity-50"
+          moi || locked ? "text-[var(--color-accent)]" : "text-[var(--color-ink)] opacity-50"
         }`}
       >
         {rank}
       </span>
       <span className="min-w-0 flex-1">
-        <span className="block font-mono text-[13px] uppercase tracking-[0.5px] text-[var(--color-ink)]">
-          {name}
-        </span>
-        <span className="mt-[2px] block font-mono text-[10px] text-[var(--color-ink)] opacity-50">
+        {locked ? (
+          <NomGratte />
+        ) : (
+          <span className="block font-mono text-[13px] uppercase tracking-[0.5px] text-[var(--color-ink)]">
+            {name}
+          </span>
+        )}
+        <span
+          className={`mt-[2px] block font-mono text-[10px] ${
+            locked ? "text-[var(--color-accent)]" : "text-[var(--color-ink)] opacity-50"
+          }`}
+        >
           {sub}
         </span>
       </span>
-      <span
-        className={`shrink-0 text-right font-mono text-[13px] ${
-          moi ? "text-[var(--color-accent)]" : "text-[var(--color-ink)]"
-        }`}
-      >
-        {days}
-      </span>
+      {!locked && (
+        <span
+          className={`shrink-0 text-right font-mono text-[13px] ${
+            moi ? "text-[var(--color-accent)]" : "text-[var(--color-ink)]"
+          }`}
+        >
+          {days}
+        </span>
+      )}
     </div>
   );
 }

@@ -29,7 +29,7 @@ const PAGE = 12;
  * un nom, on ne peut pas le lire. Tiré une fois, jamais réanimé — c'est une
  * rature dans un livre, pas un effet.
  */
-function NomGratte() {
+export function NomGratte() {
   const ref = useRef<HTMLCanvasElement | null>(null);
   useEffect(() => {
     const cv = ref.current;
