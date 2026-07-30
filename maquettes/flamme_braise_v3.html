@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>PACTUM — Braise mourante</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --charbon:#1c1a16;
+    --orange:#e0632a;
+    --blanc:#ffffff;
+    --blanc-50:rgba(255,255,255,.5);
+    --blanc-20:rgba(255,255,255,.2);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    background:var(--charbon);color:var(--blanc);
+    font-family:'Roboto Mono',monospace;font-size:13px;line-height:1.6;
+    display:flex;flex-direction:column;align-items:center;
+    padding:22px 0 30px;overflow-x:hidden;
+  }
+  h1{font-family:'Instrument Serif',serif;font-weight:400;font-size:24px;letter-spacing:2px;line-height:1}
+  .sub{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--blanc-50);margin-top:7px}
+
+  #tel{
+    width:100%;max-width:400px;margin-top:20px;
+    background:var(--charbon);border:1px solid rgba(255,255,255,.12);
+    position:relative;overflow:hidden;
+  }
+  #feu{display:block;width:100%;height:340px;image-rendering:pixelated}
+
+  #panneau{width:100%;max-width:400px;margin-top:16px;padding:0 2px}
+  .row{display:flex;align-items:center;gap:10px;min-height:34px}
+  .row .nm{flex:1 1 auto;font-size:12px}
+  .seg{display:flex;gap:5px;flex:0 0 auto}
+  .seg button{
+    background:none;border:1px solid var(--blanc-20);color:var(--blanc-50);
+    font-family:inherit;font-size:10px;letter-spacing:.5px;text-transform:uppercase;
+    padding:6px 9px;cursor:pointer;min-width:44px;
+  }
+  .seg button.on{background:var(--orange);border-color:var(--orange);color:var(--charbon)}
+  canvas.rule{display:block;width:100%;height:2px;image-rendering:pixelated;margin:14px 0 10px}
+  #reglage{
+    width:100%;max-width:400px;margin-top:14px;font-size:10px;line-height:1.7;
+    color:var(--blanc-50);word-break:break-all;
+  }
+  #reglage b{color:var(--orange);font-weight:400}
+  .note{width:100%;max-width:400px;margin-top:16px;font-size:10px;color:var(--blanc-50);line-height:1.7}
+</style>
+</head>
+<body>
+
+<h1>BRAISE MOURANTE</h1>
+<div class="sub">grain 3 · respiration · cendres</div>
+
+<div id="tel"><canvas id="feu"></canvas></div>
+
+<div id="panneau">
+  <canvas class="rule"></canvas>
+  <div class="row">
+    <span class="nm">Densité</span>
+    <div class="seg" data-p="densite">
+      <button data-v="0">Basse</button><button data-v="1" class="on">Haute</button><button data-v="2">Pleine</button>
+    </div>
+  </div>
+  <div class="row">
+    <span class="nm">Hauteur</span>
+    <div class="seg" data-p="hauteur">
+      <button data-v="0">Basse</button><button data-v="1">Moyenne</button><button data-v="2" class="on">Haute</button>
+    </div>
+  </div>
+  <div class="row">
+    <span class="nm">Lit de braises</span>
+    <div class="seg" data-p="lit">
+      <button data-v="0">Mince</button><button data-v="1" class="on">Épais</button><button data-v="2">Profond</button>
+    </div>
+  </div>
+  <div class="row">
+    <span class="nm">Irrégularité</span>
+    <div class="seg" data-p="chaos">
+      <button data-v="0">Douce</button><button data-v="1">Marquée</button><button data-v="2" class="on">Sauvage</button>
+    </div>
+  </div>
+  <div class="row">
+    <span class="nm">Cendres</span>
+    <div class="seg" data-p="cendres">
+      <button data-v="0">Aucune</button><button data-v="1" class="on">Fines</button><button data-v="2">Denses</button>
+    </div>
+  </div>
+  <div class="row">
+    <span class="nm">Respiration</span>
+    <div class="seg" data-p="souffle">
+      <button data-v="0">Lente</button><button data-v="1" class="on">Normale</button><button data-v="2">Vive</button>
+    </div>
+  </div>
+</div>
+
+<div id="reglage"></div>
+
+<p class="note">
+  Deux couleurs, aucun dégradé : la chaleur est seuillée par une trame ordonnée Bayer 4×4.
+  L'irrégularité vient de quatre sources indépendantes — un lit de braises vivantes qui
+  naissent et s'éteignent, un bruit multi-échelle sur le foyer, un vent cohérent qui fait
+  pencher toute la flamme, et des reprises brèves sur une colonne. Rien n'est périodique.
+</p>
+
+<script>
+"use strict";
+const CHARBON="#1c1a16", ORANGE="#e0632a";
+const RMOTION=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const cv=document.getElementById("feu"), ctx=cv.getContext("2d",{alpha:false});
+const GRAIN=3, TICK=45;
+
+const BAYER=[[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
+
+/* ================= bruit de valeur, lissé — casse toute périodicité ================= */
+function hash1(n){
+  n=(n<<13)^n;
+  return 1-((n*(n*n*15731+789221)+1376312589)&0x7fffffff)/1073741824;
+}
+function noise1(x){
+  const i=Math.floor(x), f=x-i;
+  const a=hash1(i), b=hash1(i+1);
+  const u=f*f*(3-2*f);
+  return a+(b-a)*u;                       /* -1 … 1 */
+}
+function fbm(x){                          /* trois octaves : grosses masses + détail */
+  return noise1(x)*0.55 + noise1(x*2.37+11.7)*0.29 + noise1(x*4.91+41.3)*0.16;
+}
+
+/* ================= réglages ================= */
+const P={densite:1, hauteur:2, chaos:2, lit:1, cendres:1, souffle:1};
+const DENSITE=[{src:0.78,boost:0.00},{src:0.94,boost:0.06},{src:1.00,boost:0.12}];
+const HAUTEUR=[{cool:0.115},{cool:0.082},{cool:0.058}];
+const CENDRES=[0,2,5];
+const SOUFFLE=[16,10,6];
+/* lit de braises : profondeur en rangées + part du bas qui refroidit moins vite */
+const LIT=[
+  {rangs:3,  zone:0.14, frein:0.55},
+  {rangs:6,  zone:0.24, frein:0.42},
+  {rangs:10, zone:0.34, frein:0.32}
+];
+/* chaos : amplitude du bruit · nombre de braises · force du vent · fréquence des reprises */
+const CHAOS=[
+  {bruit:0.22, nBraises:4,  vent:0.35, reprise:0.010, coolVar:0.25},
+  {bruit:0.38, nBraises:7,  vent:0.70, reprise:0.028, coolVar:0.45},
+  {bruit:0.52, nBraises:10, vent:1.15, reprise:0.050, coolVar:0.65}
+];
+
+const BREATH=[0.70,0.76,0.84,0.93,1.02,1.10,1.17,1.21,1.22,1.17,1.09,0.99,0.89,0.80,0.74,0.71];
+
+let W=0,H=0,heat=null;
+let bi=0,bAcc=0,tps=0;
+let vent=0, ventCible=0;
+const cendres=[], braises=[], reprises=[];
+
+function fit(){
+  const r=cv.getBoundingClientRect();
+  W=Math.max(8,Math.round(r.width/GRAIN));
+  H=Math.max(8,Math.round(r.height/GRAIN));
+  cv.width=W; cv.height=H;
+  heat=new Float32Array(W*H);
+  braises.length=0;
+  ctx.imageSmoothingEnabled=false;
+}
+addEventListener("resize",fit);
+
+function Hget(y,x){
+  if(x<0)x=0; if(x>=W)x=W-1;
+  if(y<0)y=0; if(y>=H)return 0;
+  return heat[y*W+x];
+}
+
+/* ---- braises : des foyers qui vivent, se déplacent un peu, puis meurent ---- */
+function neuveBraise(){
+  return {
+    x: Math.random()*W,
+    r: 3+Math.random()*10,               /* rayon d'influence */
+    f: 0.45+Math.random()*0.75,          /* force */
+    derive:(Math.random()-0.5)*0.05,
+    age:0, vie: 90+Math.random()*400
+  };
+}
+function majBraises(c){
+  while(braises.length<c.nBraises) braises.push(neuveBraise());
+  for(let i=braises.length-1;i>=0;i--){
+    const b=braises[i];
+    b.age++; b.x+=b.derive;
+    if(b.x<-b.r) b.x=W+b.r; if(b.x>W+b.r) b.x=-b.r;
+    if(b.age>b.vie) braises.splice(i,1);
+  }
+}
+function forceBraises(x){
+  let s=0;
+  for(const b of braises){
+    const d=Math.abs(x-b.x);
+    if(d>b.r) continue;
+    const t=1-d/b.r;
+    /* extinction progressive en fin de vie, par paliers */
+    const declin = b.age>b.vie*0.7 ? 1-((b.age-b.vie*0.7)/(b.vie*0.3)) : 1;
+    s += b.f*t*t*declin;
+  }
+  return s;
+}
+
+function pas(){
+  const d=DENSITE[P.densite], hh=HAUTEUR[P.hauteur], c=CHAOS[P.chaos];
+  tps++;
+
+  bAcc++;
+  if(bAcc>=SOUFFLE[P.souffle]){ bAcc=0; bi=(bi+1)%BREATH.length; }
+  const respire=BREATH[bi];
+
+  majBraises(c);
+
+  /* vent cohérent : une valeur unique qui dérive lentement — toute la flamme penche */
+  if(Math.random()<0.012) ventCible=(Math.random()*2-1)*c.vent;
+  vent += (ventCible-vent)*0.03;
+
+  /* reprises : une colonne s'enflamme brièvement, sans prévenir */
+  if(Math.random()<c.reprise) reprises.push({x:(Math.random()*W)|0, l:6+Math.random()*16, age:0, f:0.5+Math.random()*0.8});
+  for(let i=reprises.length-1;i>=0;i--){ if(++reprises[i].age>reprises[i].l) reprises.splice(i,1); }
+
+  /* ---- le lit de braises : plusieurs rangées incandescentes, pas une simple ligne ---- */
+  const lit=LIT[P.lit], dx1=tps*0.004, dx2=tps*0.011;
+  const RANGS=Math.min(lit.rangs, H-3);
+  for(let x=0;x<W;x++){
+    const n = fbm(x*0.055+dx1)*0.6 + fbm(x*0.19+dx2)*0.4;
+    let base = 0.40 + forceBraises(x)*0.55 + n*c.bruit;
+    for(const r of reprises){
+      const dd=Math.abs(x-r.x);
+      if(dd<4) base += r.f*(1-dd/4)*(1-r.age/r.l);
+    }
+    const v0 = d.src*respire*base;
+    for(let y=0;y<RANGS;y++){
+      const t = 1 - y/RANGS;                    /* 1 au sol → 0 au sommet du lit */
+      /* le sol brûle plein ; le haut du lit s'effiloche déjà */
+      let v = v0*(0.62+0.75*t)*(0.86+Math.random()*0.30);
+      /* les trous de charbon noir ne s'ouvrent qu'en haut du lit */
+      if(y>RANGS*0.45 && Math.random()<0.05+0.10*(1-t)) v*=0.32;
+      heat[y*W+x]=Math.max(0,Math.min(1.6,v));
+    }
+  }
+
+  /* ---- propagation : cisaillement par le vent, refroidissement variable par colonne ---- */
+  const coolBase=hh.cool/respire;
+  for(let y=RANGS;y<H;y++){
+    const cis = vent*(y/H)*1.7;                                 /* la flamme penche en montant */
+    /* le bas de la flamme refroidit nettement moins : c'est là que la matière est visible */
+    const zone = y/H;
+    const frein = zone < lit.zone ? lit.frein + (1-lit.frein)*(zone/lit.zone) : 1;
+    for(let x=0;x<W;x++){
+      const sx = x - cis;
+      const xi = Math.floor(sx), fr = sx-xi;
+      const g = Hget(y-1,xi)*(1-fr) + Hget(y-1,xi+1)*fr;        /* échantillon décalé */
+      const v = (Hget(y-1,xi-1) + g*2 + Hget(y-1,xi+1) + Hget(y-2,xi)) / 5.02;
+      const varCool = 1 + fbm(x*0.09 + tps*0.006)*c.coolVar;    /* certaines colonnes tiennent plus longtemps */
+      heat[y*W+x] = Math.max(0, v - coolBase*frein*varCool*(0.5+Math.random()*1.0));
+    }
+  }
+
+  /* ---- cendres, émises à la crête des colonnes chaudes ---- */
+  const nb=CENDRES[P.cendres];
+  for(let k=0;k<nb;k++){
+    const x=(Math.random()*W)|0;
+    let y=H-1;
+    while(y>0 && Hget(y,x)<0.10) y--;
+    if(y>2) cendres.push({
+      x, y:y+1, v:0.30+Math.random()*0.50,
+      sway:0.4+Math.random()*0.8, f:0.05+Math.random()*0.12,
+      s:Math.random()*6.283, age:0, life:44+Math.random()*80
+    });
+  }
+  for(let i=cendres.length-1;i>=0;i--){
+    const a=cendres[i];
+    a.age++; a.y+=a.v; a.x += vent*0.05;                        /* les cendres suivent le vent */
+    if(a.age>a.life || a.y>H+2) cendres.splice(i,1);
+  }
+}
+
+function dessine(){
+  ctx.fillStyle=CHARBON; ctx.fillRect(0,0,W,H);
+  const boost=DENSITE[P.densite].boost;
+
+  ctx.fillStyle=ORANGE;
+  for(let y=0;y<H;y++){
+    const py=H-1-y, brow=BAYER[py&3];
+    for(let x=0;x<W;x++){
+      const v=heat[y*W+x];
+      if(v<=0.02) continue;
+      if(v > (brow[x&3]+0.5)/16 - boost) ctx.fillRect(x,py,1,1);
+    }
+  }
+
+  for(const a of cendres){
+    const reste=1-a.age/a.life;
+    if(Math.random()>reste*0.85) continue;
+    const px=(a.x+Math.sin(a.age*a.f+a.s)*a.sway)|0;
+    const py=H-1-(a.y|0);
+    if(py<0||py>=H||px<0||px>=W) continue;
+    ctx.fillStyle = Math.random()<0.72 ? ORANGE : "rgba(255,255,255,.55)";
+    ctx.fillRect(px,py,1,1);
+  }
+}
+
+function majReglage(){
+  const d=DENSITE[P.densite], h=HAUTEUR[P.hauteur], c=CHAOS[P.chaos], l=LIT[P.lit];
+  document.getElementById("reglage").innerHTML=
+    `réglage — <b>grain</b> ${GRAIN} · <b>tick</b> ${TICK}ms · <b>src</b> ${d.src} · `+
+    `<b>boost</b> ${d.boost} · <b>cool</b> ${h.cool} · <b>lit</b> ${l.rangs} rangs · `+
+    `<b>zoneBasse</b> ${l.zone} · <b>frein</b> ${l.frein} · <b>bruit</b> ${c.bruit} · `+
+    `<b>braises</b> ${c.nBraises} · <b>vent</b> ${c.vent} · <b>reprise</b> ${c.reprise} · `+
+    `<b>coolVar</b> ${c.coolVar} · <b>cendres</b> ${CENDRES[P.cendres]}/pas · `+
+    `<b>palier</b> ${SOUFFLE[P.souffle]} pas`;
+}
+
+document.querySelectorAll(".seg").forEach(g=>{
+  g.addEventListener("click",e=>{
+    const b=e.target.closest("button"); if(!b)return;
+    g.querySelectorAll("button").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on"); P[g.dataset.p]=+b.dataset.v;
+    if(g.dataset.p==="chaos") braises.length=0;
+    majReglage();
+  });
+});
+
+function rule(c){
+  const w=c.clientWidth||360; c.width=w; c.height=2;
+  const x=c.getContext("2d");
+  for(let i=0;i<w;i++){
+    if(Math.random()<.7){x.fillStyle="rgba(255,255,255,.26)";x.fillRect(i,0,1,1);}
+    if(Math.random()<.13){x.fillStyle="rgba(255,255,255,.14)";x.fillRect(i,1,1,1);}
+  }
+}
+
+addEventListener("load",()=>{
+  fit(); majReglage();
+  document.querySelectorAll("canvas.rule").forEach(rule);
+  if(RMOTION){ for(let i=0;i<60;i++) pas(); dessine(); return; }
+  let acc=0,last=0;
+  (function boucle(t){
+    if(!last)last=t;
+    acc+=t-last; last=t;
+    let n=0;
+    while(acc>=TICK && n<4){ acc-=TICK; pas(); n++; }
+    dessine();
+    requestAnimationFrame(boucle);
+  })(performance.now());
+});
+</script>
+</body>
+</html>
