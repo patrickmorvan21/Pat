@@ -102,7 +102,7 @@ button{background:none;border:none;cursor:pointer}
 .lg .sh{width:22px;flex:none;display:flex;justify-content:center;align-items:center;font-size:11px}
 .lg u{width:22px;height:0;flex:none;border-top:2px solid #fff;text-decoration:none}
 .lg u.sec{border-top-width:1.6px;border-top-style:dashed}
-.lg u.cond{border-top-width:1.6px;border-top-style:dotted}
+.lg .ondelg{flex:none;overflow:visible}
 #fraich{padding:14px 16px 0;font-size:9.5px;color:var(--b30);letter-spacing:.4px;line-height:1.5}
 #fraich b{color:var(--b50);font-weight:400}
 #fraich .note{color:var(--b30);padding-bottom:10px}
@@ -285,6 +285,16 @@ body.mode-edition .edit:hover{border-color:var(--orange);background:rgba(224,99,
 body:not(.mode-edition) .edit{border-color:transparent;cursor:default}
 .edit.modifie{border-style:solid;border-color:var(--orange)}
 .ebtn{display:none}
+/* Barre d'action sous l'image du panneau. Le Studio n'écrit JAMAIS dans le
+   dépôt (voir l'en-tête du fichier) : « remplacer » ne remplace donc rien
+   ici — il inscrit la demande, avec le nom exact du fichier, dans le journal
+   que Patrick me recolle. C'est moi qui trame la photo et qui câble. */
+.pimgact{display:none;margin:8px 16px 0;gap:8px}
+body.mode-edition .pimgact{display:flex}
+.pimgact button{flex:1;padding:7px;font-size:11px;border:1px solid var(--b20);color:var(--b70);
+  letter-spacing:.4px}
+.pimgact button:hover{border-color:var(--orange);color:#fff}
+.pimgact button.demande{border-color:var(--orange);background:rgba(224,99,42,.1);color:#fff}
 body.mode-edition .ebtn{display:inline-flex}
 #journal{position:fixed;right:16px;bottom:16px;width:330px;max-height:44vh;z-index:60;
   background:var(--panneau);border:1px solid var(--orange);display:none;flex-direction:column}
@@ -655,6 +665,29 @@ function calculerArcs(){
 }
 const lieSel=a=>selection && (a.a.id===selection.id||a.b.id===selection.id);
 
+/* Un tracé ONDULÉ le long d'un chemin quelconque (droite ou bézier).
+   L'amplitude s'annule aux deux bouts : le départ sort proprement de la carte
+   et l'arrivée pointe dans la vraie direction, sinon la pointe de flèche se
+   retrouve de travers. */
+function ondule(d, svg, amp=3.4, periode=17){
+  const NS="http://www.w3.org/2000/svg";
+  const tmp=document.createElementNS(NS,"path");
+  tmp.setAttribute("d",d); tmp.setAttribute("fill","none"); tmp.setAttribute("stroke","none");
+  svg.appendChild(tmp);                    // getTotalLength exige d'être dans le DOM
+  const L=tmp.getTotalLength();
+  if(L<12){ tmp.remove(); return d; }
+  const n=Math.max(10, Math.round(L/3)), pts=[];
+  for(let i=0;i<=n;i++){
+    const s=L*i/n, p=tmp.getPointAtLength(s), q=tmp.getPointAtLength(Math.min(L,s+1));
+    let dx=q.x-p.x, dy=q.y-p.y; const m=Math.hypot(dx,dy)||1; dx/=m; dy/=m;
+    const fondu=Math.sin(Math.PI*i/n);     // 0 aux extrémités, 1 au milieu
+    const o=Math.sin(s/periode*Math.PI*2)*amp*fondu;
+    pts.push([p.x-dy*o, p.y+dx*o]);
+  }
+  tmp.remove();
+  return "M"+pts.map(p=>p[0].toFixed(1)+","+p[1].toFixed(1)).join(" L");
+}
+
 function rendu(){
   construire();
   /* ⚠️ Un lieu déplié occupe beaucoup plus de place que sa carte repliée : ses
@@ -705,7 +738,7 @@ function rendu(){
      sur fond charbon n'existe pas. */
   const ST={principal:{c:"#ffffff",w:2,d:null},
             secondaire:{c:"#ffffff",w:1.6,d:"6 5"},
-            conditionnel:{c:"#ffffff",w:1.6,d:"2 5"},
+            conditionnel:{c:"#ffffff",w:1.6,d:null},
             attache:{c:"#ffffff",w:1.3,d:"2 6"}};
   arcs.forEach(t=>{
     const sel=lieSel(t);
@@ -734,7 +767,12 @@ function rendu(){
       svg.appendChild(hit);
     }
     const p=document.createElementNS("http://www.w3.org/2000/svg","path");
-    p.setAttribute("d",d); p.setAttribute("fill","none");
+    // ORIENTATION = ligne ONDULÉE (retour Patrick 03/08 : un pointillé et un
+    // tireté se confondent d'un coup d'œil). L'ondulation est une différence
+    // de FORME, pas d'épaisseur — elle se lit même en petit et même en noir
+    // et blanc, contrairement à un simple changement de motif.
+    p.setAttribute("d", t.type==="conditionnel" ? ondule(d,svg) : d);
+    p.setAttribute("fill","none");
     p.setAttribute("stroke", sel?"#e0632a":st.c);
     p.setAttribute("stroke-width", sel?2:st.w);
     if(st.d && !sel) p.setAttribute("stroke-dasharray",st.d);
@@ -924,6 +962,17 @@ function champEditable(cible,quoi,valeur,ctx){
   return `<span class="edit${j?" modifie":""}" data-cible="${esc(cible)}" data-quoi="${esc(quoi)}"
     data-ctx="${esc(ctx)}" data-avant="${esc(valeur==null?"":valeur)}">${esc(v)||'<i class="vide-txt">vide</i>'}</span>`;
 }
+/* L'action « remplacer » sous une image, commune au lieu, à la scène et au
+   point d'intérêt : ils portent tous un `image.fichier`. */
+function actionImage(fichier, ctx){
+  if(!fichier) return "";
+  const cible="image:"+fichier;
+  const demande=journal.some(j=>j.cible===cible);
+  return `<div class="pimgact"><button data-remplacer="${esc(fichier)}"
+    data-ctx="${esc(ctx)}" class="${demande?"demande":""}">${
+    demande?"✓ remplacement demandé — annuler":"Remplacer cette image"}</button></div>`;
+}
+
 function renduPanneau(){
   const d=$("#droite");
   if(!selection){ d.innerHTML=""; return; }
@@ -946,6 +995,7 @@ function panneauLieu(d){
       ${(l.alertes||[]).map(a=>`<span class="alerte">${ALERTE[a]?ALERTE[a].lib:a}</span>`).join("")}</div>
     ${img?`<div class="pimg" data-zoom="${img}" data-nom="${esc(l.illustration)}" style="background-image:url('${img}')"></div>`
         :`<div class="pimg vide">AUCUNE IMAGE</div>`}
+    ${actionImage(l.illustration, "Images — "+(l.nom||l.id))}
     <div class="pcorps">
       <div class="sect"><h3>Ce que contient ce lieu</h3>
         <div class="kv"><span>Scènes</span><b>${l.nbScenes}</b></div>
@@ -981,6 +1031,7 @@ function panneauScene(d){
       ? `<div class="pimg" data-zoom="${img}" data-nom="${esc(s.image.fichier)}" style="background-image:url('${img}')"></div>`
       : `<div class="pimg ko">FICHIER INTROUVABLE<br>${esc(s.image.fichier)}</div>`)
       : `<div class="pimg vide">AUCUNE IMAGE</div>`}
+    ${actionImage(s.image&&s.image.fichier, "Images — "+(s.nom||s.id))}
     <div class="ptabs">${ong.map(([k,l])=>`<button class="ptab${onglet===k?" on":""}" data-onglet="${k}">${l}</button>`).join("")}</div>
     <div class="pcorps">${corps(s)}</div>`;
   brancher();
@@ -999,6 +1050,7 @@ function panneauPoi(d){
       ${(poi.alertes||[]).map(a=>`<span class="alerte">${ALERTE[a]?ALERTE[a].lib:a}</span>`).join("")}</div>
     ${img?`<div class="pimg" data-zoom="${img}" data-nom="${esc(poi.image.fichier)}" style="background-image:url('${img}')"></div>`
         :`<div class="pimg vide">AUCUNE IMAGE</div>`}
+    ${actionImage(poi.image&&poi.image.fichier, "Images — "+(poi.label||poi.id))}
     <div class="pcorps">
       <div class="sect"><h3>Ce qu'on voit de loin</h3><p class="para">${champEditable("poi:"+poi.id+":label","Libellé du point",poi.label,poi.label||poi.id)}</p></div>
       <div class="sect"><h3>L'approche</h3><p class="para">${champEditable("poi:"+poi.id+":approche","Texte d'approche",poi.approche,poi.label)}</p></div>
@@ -1108,6 +1160,15 @@ function brancher(){
   const im=d.querySelector(".pimg[data-zoom]");
   if(im) im.onclick=()=>{const z=$("#zoomimg");z.querySelector("img").src=im.dataset.zoom;
     z.querySelector("p").textContent=im.dataset.nom;z.classList.add("on");};
+  d.querySelectorAll("[data-remplacer]").forEach(b=>b.onclick=()=>{
+    const f=b.dataset.remplacer, cible="image:"+f;
+    const i=journal.findIndex(j=>j.cible===cible);
+    if(i>=0){ journal.splice(i,1); sauver(); renduPanneau(); return toast("Demande retirée"); }
+    const r=prompt("Ce qui ne va pas avec cette image (facultatif) :")||"à remplacer";
+    noter(cible,"Remplacer l'image",f,r,b.dataset.ctx);
+    renduPanneau();
+    toast("Noté — envoie-moi la photo, je la trame et je la câble");
+  });
   d.querySelectorAll("[data-refaire]").forEach(b=>b.onclick=()=>{
     const r=prompt("Pourquoi cette image est-elle à refaire ? (facultatif)")||"sans précision";
     noter(b.dataset.refaire+":image","Image à refaire",b.dataset.nom,r,titre()); toast("Noté");});
@@ -1210,10 +1271,26 @@ function renduGauche(){
   $("#legende").innerHTML=
     grp("Nature du contenu", Object.entries(NATURE).map(([k,v])=>
       `<div class="lg"><span class="sh">${v.ico}</span>${v.lib}</div>`).join(""))+
-    grp("Transitions",
-      `<div class="lg"><u></u>Suite de séquence</div>
-       <div class="lg"><u class="sec"></u>Ouvert par un point</div>
-       <div class="lg"><u class="cond"></u>Choix d'orientation</div>`)+
+    /* ⚠️ La légende ne liste que les transitions RÉELLEMENT présentes.
+       « Choix d'orientation » y figurait alors qu'aucun lien de ce type
+       n'existe : les orientations naissent des écrans de LIAISON, générés à
+       l'exécution par makeLiaison() — elles ne sont donc jamais des entrées
+       statiques du jeu. Une légende qui annonce un symbole qu'on ne verra
+       jamais est pire qu'une entrée manquante. */
+    grp("Transitions", (()=>{
+      const types=new Set((D.liens||[]).map(l=>l.type));
+      const l=[];
+      if(types.has("principal"))
+        l.push(`<div class="lg"><u></u>Suite de séquence</div>`);
+      if(types.has("secondaire"))
+        l.push(`<div class="lg"><u class="sec"></u>Ouvert par un point</div>`);
+      if(types.has("conditionnel"))
+        l.push(`<div class="lg"><svg class="ondelg" viewBox="0 0 22 8" width="22" height="8" aria-hidden="true">
+          <path d="M0,4 C2.8,0.6 5.7,7.4 8.5,4 C11.3,0.6 14.2,7.4 17,4 C19,1.6 20.6,4 22,4"
+                fill="none" stroke="#fff" stroke-width="1.6"/></svg>Choix d'orientation</div>`);
+      l.push(`<div class="lg"><span class="sh">◆</span>Point rattaché à sa scène</div>`);
+      return l.join("");
+    })())+
     grp("État de production", Object.entries(ETAT).map(([k,v])=>
       `<div class="lg"><span class="sh"><span class="etat ${k}" style="position:static;border:none;width:13px;height:13px">${v.ico}</span></span>${v.lib}</div>`).join(""))+
     grp("Alertes d'audit",
