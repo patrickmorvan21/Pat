@@ -355,8 +355,10 @@ def main() -> int:
     meta = json.loads(META.read_text(encoding="utf-8")).get("scenes", {}) if META.exists() else {}
 
     zones = []
+    zones_json = {}
     for zf in sorted(ZONES.glob("*.json")):
         z = json.loads(zf.read_text(encoding="utf-8"))
+        zones_json[zf.stem] = z
         noms = {s["id"]: s for s in z.get("scenes", [])}
         lieux = z.get("lieux", [])
         # Nom lisible + lieu + type, depuis la matière de production.
@@ -488,8 +490,18 @@ def main() -> int:
             for s in scenes
             if (s.get("hameauEntree") or s.get("hameauHalte")) and s.get("lieu")
         }
-        regions.append({"id": "hameau", "nom": "Le Hameau des Renonçants",
-                        "scenes": interieur, "lieuxEnPlus": sorted(porte)})
+        reg = {"id": "hameau", "nom": "Le Hameau des Renonçants",
+               "scenes": interieur, "lieuxEnPlus": sorted(porte)}
+        # Le cadre du Hameau vient du Figma (frame 2112:328), pas d'un calcul :
+        # un rectangle déduit après coup des membres englobe fatalement des
+        # lieux qui n'en sont pas. La boîte AUTORITAIRE est dans le JSON de
+        # zone, à côté des coordonnées des lieux — mêmes unités.
+        jreg = next((r for r in (zones_json.get("landes", {}).get("regions") or [])
+                     if r.get("id") == "hameau"), None)
+        if jreg and jreg.get("boite"):
+            reg["boite"] = jreg["boite"]
+            reg["lieux"] = jreg.get("lieux") or []
+        regions.append(reg)
 
     # ── LA TAXONOMIE EN QUATRE DIMENSIONS (spec Patrick 30/07) ──────────
     # Elles ne doivent JAMAIS être confondues :

@@ -14,6 +14,14 @@
       "id": "la_descente",
       "nom": "La Descente →",
       "note": "sortie de zone (Acte II)"
+    },
+    "carte": {
+      "source": "Figma 2112:325 « Carte des Landes »",
+      "systeme": "coordonnees du haut-gauche des chips LIEU, telles quelles",
+      "etendue": {
+        "w": 2600,
+        "h": 1900
+      }
     }
   },
   "lieux": [
@@ -31,8 +39,8 @@
       },
       "illustration": "assets/scene_colline_aux_gibets_c.png",
       "portrait_requis": false,
-      "x": 900,
-      "y": 80
+      "x": 1080,
+      "y": 170
     },
     {
       "id": "champ_des_fixes",
@@ -48,8 +56,8 @@
       },
       "illustration": "assets/scene_champ_des_fixes_b.png",
       "portrait_requis": false,
-      "x": 1790,
-      "y": 430
+      "x": 1620,
+      "y": 240
     },
     {
       "id": "moulin_sans_ailes",
@@ -66,7 +74,7 @@
       "illustration": "assets/scene_moulin_campement_a.png",
       "portrait_requis": false,
       "x": 300,
-      "y": 1160
+      "y": 260
     },
     {
       "id": "mare_aux_regards",
@@ -82,8 +90,8 @@
       },
       "illustration": "assets/scene_mare_aux_regards_a.png",
       "portrait_requis": false,
-      "x": 320,
-      "y": 150
+      "x": 640,
+      "y": 420
     },
     {
       "id": "hameau_des_renoncants",
@@ -108,8 +116,8 @@
         "maison_du_bailli",
         "chapelle_des_cordes"
       ],
-      "x": 660,
-      "y": 470
+      "x": 870,
+      "y": 1064
     },
     {
       "id": "chapelle_des_cordes",
@@ -126,8 +134,8 @@
       "illustration": "assets/scene_chapelle_des_cordes_d.png",
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
-      "x": 900,
-      "y": 470
+      "x": 870,
+      "y": 680
     },
     {
       "id": "maison_du_bailli",
@@ -144,8 +152,8 @@
       "illustration": "assets/scene_maison_du_bailli_c.png",
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
-      "x": 1380,
-      "y": 470
+      "x": 1180,
+      "y": 680
     },
     {
       "id": "petit_tribunal",
@@ -162,8 +170,8 @@
       "illustration": "assets/scene_petit_tribunal_a.png",
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
-      "x": 1140,
-      "y": 470
+      "x": 1470,
+      "y": 680
     },
     {
       "id": "puits_condamne",
@@ -180,8 +188,8 @@
       "illustration": "assets/scene_puits_condamne_a.png",
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
-      "x": 660,
-      "y": 740
+      "x": 950,
+      "y": 900
     },
     {
       "id": "marche_muet",
@@ -198,8 +206,8 @@
       "illustration": "assets/scene_marche_muet_c.png",
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
-      "x": 900,
-      "y": 740
+      "x": 1250,
+      "y": 900
     },
     {
       "id": "tour_de_guet_effondree",
@@ -216,8 +224,8 @@
       "illustration": "assets/scene_tour_de_guet_a.png",
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
-      "x": 1140,
-      "y": 740
+      "x": 1463,
+      "y": 1064
     },
     {
       "id": "verger_noir",
@@ -233,8 +241,8 @@
       },
       "illustration": "assets/scene_verger_noir_d.png",
       "portrait_requis": false,
-      "x": 70,
-      "y": 480
+      "x": 300,
+      "y": 860
     },
     {
       "id": "chemin_creux",
@@ -250,8 +258,8 @@
       },
       "illustration": "assets/scene_chemin_creux_c.png",
       "portrait_requis": false,
-      "x": 110,
-      "y": 860
+      "x": 520,
+      "y": 1300
     },
     {
       "id": "borne_frontiere",
@@ -267,8 +275,8 @@
       },
       "illustration": "assets/scene_borne_frontiere_b.png",
       "portrait_requis": false,
-      "x": 1560,
-      "y": 70
+      "x": 1620,
+      "y": 1420
     },
     {
       "id": "palissade_sud",
@@ -284,8 +292,8 @@
       },
       "illustration": "assets/scene_palissade_sud_a_a.png",
       "portrait_requis": false,
-      "x": 1160,
-      "y": 1130
+      "x": 1000,
+      "y": 1580
     }
   ],
   "rencontres": [
@@ -2566,6 +2574,28 @@
       "description": "Scène de déroutage au dernier palier de Soupçon : le hameau te juge. Les trois bancs pleins, tous les visages tournés vers toi, la chaire vide.",
       "prompt_image": "rustic courtroom seen from the defendant's place, three benches full of gaunt villagers all facing the viewer, the tall pulpit empty above them, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
       "illustration": "scene_petit_tribunal_a.png"
+    }
+  ],
+  "regions": [
+    {
+      "id": "hameau",
+      "nom": "Le Hameau des Renonçants",
+      "figma_node": "2112:328",
+      "boite": {
+        "x": 810,
+        "y": 620,
+        "w": 980,
+        "h": 660
+      },
+      "lieux": [
+        "chapelle_des_cordes",
+        "maison_du_bailli",
+        "petit_tribunal",
+        "puits_condamne",
+        "marche_muet",
+        "tour_de_guet_effondree",
+        "hameau_des_renoncants"
+      ]
     }
   ]
 }
