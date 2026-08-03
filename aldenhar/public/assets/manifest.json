@@ -1,6 +1,6 @@
 {
- "genere": "2026-08-03T19:34:26Z",
- "commit": "dddbf82",
+ "genere": "2026-08-03T21:20:25Z",
+ "commit": "392e272",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -127,13 +127,13 @@
    "taille": 5053,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "7d46a559",
-   "recent": true
+   "recent": false
   },
   "monstre_epoux_3_c.png": {
    "taille": 11528,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "b837495f",
-   "recent": true
+   "recent": false
   },
   "monstre_epoux_verger_a.png": {
    "taille": 32443,
@@ -151,18 +151,30 @@
    "taille": 4688,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "5d50562f",
+   "recent": false
+  },
+  "monstre_femme_seuil_1_v3_a.png": {
+   "taille": 18084,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "24a118fd",
    "recent": true
   },
   "monstre_femme_seuil_2_c.png": {
    "taille": 6202,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "63108985",
-   "recent": true
+   "recent": false
   },
   "monstre_femme_seuil_3_a.png": {
    "taille": 19386,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "8cc1e216",
+   "recent": true
+  },
+  "monstre_femme_seuil_3_v2_a.png": {
+   "taille": 19702,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "4b3125f9",
    "recent": true
   },
   "monstre_fiancee_du_gibet_b.png": {
@@ -193,24 +205,42 @@
    "taille": 4616,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "7e4b2271",
+   "recent": false
+  },
+  "monstre_hameau_entree_3_v2_a.png": {
+   "taille": 25419,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "84ac4512",
    "recent": true
   },
   "monstre_hameau_entree_4_c.png": {
    "taille": 5063,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "5349dd7f",
-   "recent": true
+   "recent": false
   },
   "monstre_hameau_halte_4_b.png": {
    "taille": 3813,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "0d3c0338",
+   "recent": false
+  },
+  "monstre_hameau_halte_4_v2_c.png": {
+   "taille": 6611,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "14ddb57e",
    "recent": true
   },
   "monstre_hesitant_3_c.png": {
    "taille": 11251,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "c1d9af6e",
+   "recent": true
+  },
+  "monstre_hesitant_3_v2_a.png": {
+   "taille": 7011,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "28f6e59a",
    "recent": true
   },
   "monstre_hesitant_b.png": {
@@ -223,7 +253,7 @@
    "taille": 3891,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "a2a2a658",
-   "recent": true
+   "recent": false
   },
   "monstre_juge_de_cendre_c.png": {
    "taille": 29017,
@@ -253,7 +283,7 @@
    "taille": 6372,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "a352d5cd",
-   "recent": true
+   "recent": false
   },
   "monstre_marcheur_2_b.png": {
    "taille": 10971,
@@ -261,10 +291,22 @@
    "hash": "e7304bbf",
    "recent": true
   },
+  "monstre_marcheur_2_v2_c.png": {
+   "taille": 18224,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "ce07449d",
+   "recent": true
+  },
   "monstre_marcheur_3_b.png": {
    "taille": 3560,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "18a0050e",
+   "recent": false
+  },
+  "monstre_marcheur_3_v2_b.png": {
+   "taille": 14018,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "147a5494",
    "recent": true
   },
   "monstre_marcheur_a_rebours_d.png": {
@@ -277,6 +319,12 @@
    "taille": 7537,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "be499820",
+   "recent": false
+  },
+  "monstre_marcheur_rebours_v2_a.png": {
+   "taille": 20815,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "ba1a5091",
    "recent": true
   },
   "monstre_meute_grise_c.png": {
@@ -295,19 +343,25 @@
    "taille": 4463,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "e6c5355d",
-   "recent": true
+   "recent": false
   },
   "monstre_pendu_mal_fixe_a.png": {
    "taille": 5488,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "51ef7252",
-   "recent": true
+   "recent": false
   },
   "monstre_pendu_mal_fixe_v1_b.png": {
    "taille": 7553,
    "modifie": "2026-07-25T08:08:56Z",
    "hash": "9e0a2973",
    "recent": false
+  },
+  "monstre_pendu_mal_fixe_v2_c.png": {
+   "taille": 11667,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "39952ee0",
+   "recent": true
   },
   "monstre_pendu_qui_parle_2_a.png": {
    "taille": 9886,
@@ -374,6 +428,12 @@
    "modifie": "2026-07-25T07:28:36Z",
    "hash": "87115831",
    "recent": false
+  },
+  "monstre_veuve_cordes_v2_a.png": {
+   "taille": 19967,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "0dd638cf",
+   "recent": true
   },
   "mort_coffre.png": {
    "taille": 117452,
@@ -541,13 +601,13 @@
    "taille": 7402,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "2f7722d1",
-   "recent": true
+   "recent": false
   },
   "objet_lanterne_veilleur_3_c.png": {
    "taille": 9679,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "94b09b71",
-   "recent": true
+   "recent": false
   },
   "objet_masque.png": {
    "taille": 4477,
@@ -615,6 +675,12 @@
    "hash": "fc1f6b62",
    "recent": true
   },
+  "scene_borne_frontiere_v2_a.png": {
+   "taille": 11903,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "6fdeb1bd",
+   "recent": true
+  },
   "scene_borne_gravures_a_d.png": {
    "taille": 12652,
    "modifie": "2026-07-25T15:23:50Z",
@@ -632,6 +698,12 @@
    "modifie": "2026-07-24T08:50:03Z",
    "hash": "87694710",
    "recent": false
+  },
+  "scene_champ_les_rangees_v2_a.png": {
+   "taille": 23864,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "ecaa522b",
+   "recent": true
   },
   "scene_champ_poteaux_vierges_a_a.png": {
    "taille": 22794,
@@ -674,6 +746,12 @@
    "modifie": "2026-07-25T15:22:04Z",
    "hash": "61717f26",
    "recent": false
+  },
+  "scene_chapelle_mur_cordes_v3_c.png": {
+   "taille": 10553,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "c50f4a0f",
+   "recent": true
   },
   "scene_chapelle_ouvrage_a_d.png": {
    "taille": 10796,
@@ -759,10 +837,22 @@
    "hash": "8bdf36f0",
    "recent": false
   },
+  "scene_hameau_entree_2_v2_a.png": {
+   "taille": 19602,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "e180c1a7",
+   "recent": true
+  },
   "scene_hameau_entree_5_a.png": {
    "taille": 10760,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "e012d040",
+   "recent": true
+  },
+  "scene_hameau_entree_5_v2_a.png": {
+   "taille": 22113,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "0a2a6cff",
    "recent": true
   },
   "scene_hameau_grange_poutres_a_d.png": {
@@ -781,6 +871,18 @@
    "taille": 18040,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "49d7b837",
+   "recent": true
+  },
+  "scene_hameau_halte_5_v2_c.png": {
+   "taille": 21413,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "6c540a40",
+   "recent": true
+  },
+  "scene_hameau_trois_aubes_v2_c.png": {
+   "taille": 28783,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "d313c2f7",
    "recent": true
   },
   "scene_lande_arbres_morts_c.png": {
@@ -907,6 +1009,12 @@
    "taille": 2768,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "239daa3e",
+   "recent": false
+  },
+  "scene_mare_eau_reflet_v2_b.png": {
+   "taille": 14472,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "a3a22e02",
    "recent": true
   },
   "scene_mare_miroir_a_b.png": {
@@ -993,6 +1101,12 @@
    "hash": "b03d7883",
    "recent": false
   },
+  "scene_proces_du_heros_v4_c.png": {
+   "taille": 23824,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "9b4d24d9",
+   "recent": true
+  },
   "scene_puits_condamne_a.png": {
    "taille": 26792,
    "modifie": "2026-07-29T06:58:50Z",
@@ -1005,6 +1119,12 @@
    "hash": "789d358d",
    "recent": false
   },
+  "scene_puits_condamne_v2_a.png": {
+   "taille": 29529,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "d7dd21eb",
+   "recent": true
+  },
   "scene_tour_de_guet_a.png": {
    "taille": 25909,
    "modifie": "2026-07-25T08:10:14Z",
@@ -1015,7 +1135,7 @@
    "taille": 8038,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "e404f4e6",
-   "recent": true
+   "recent": false
   },
   "scene_tour_meurtriere_sud_a.png": {
    "taille": 19670,
@@ -1105,12 +1225,24 @@
    "taille": 6532,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "c3e8036d",
+   "recent": false
+  },
+  "scene_verger_fruits_cendre_v2_c.png": {
+   "taille": 31026,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "de3b4985",
    "recent": true
   },
   "scene_verger_noir_2_c.png": {
    "taille": 5319,
    "modifie": "2026-07-29T06:58:50Z",
    "hash": "28686cc9",
+   "recent": false
+  },
+  "scene_verger_noir_2_v2_b.png": {
+   "taille": 19147,
+   "modifie": "2026-08-03T21:18:33Z",
+   "hash": "baf9592d",
    "recent": true
   },
   "scene_verger_noir_d.png": {

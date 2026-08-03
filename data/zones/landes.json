@@ -185,7 +185,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/scene_puits_condamne_a.png",
+      "illustration": "scene_puits_condamne_v2_a.png",
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
       "x": 950,
@@ -273,7 +273,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/scene_borne_frontiere_b.png",
+      "illustration": "scene_borne_frontiere_v2_a.png",
       "portrait_requis": false,
       "x": 1620,
       "y": 1420
@@ -1073,7 +1073,7 @@
       ],
       "description": "Entrée de zone, tout premier écran du jeu. La borne-frontière dressée seule sur le plateau, ses faces gravées, les offrandes à son pied, et le chemin qui s'enfonce au sud dans le noir.",
       "prompt_image": "single tall standing stone in the middle of an empty moor plateau, carved marks on its faces, small pile of humble offerings at its base, path vanishing south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_borne_frontiere_b.png"
+      "illustration": "scene_borne_frontiere_v2_a.png"
     },
     {
       "id": "gravures-borne",
@@ -1166,7 +1166,7 @@
       ],
       "description": "La borne seule au milieu du plateau, la bruyère couchée à son pied, et rien qui dise dans quel sens il est parti. CHANGE : l'homme a DISPARU du cadre — même pierre, vide.",
       "prompt_image": "a boundary stone standing alone in the middle of an empty plateau, nobody beside it, the moor running flat to the horizon. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_hesitant_3_c.png"
+      "illustration": "monstre_hesitant_3_v2_a.png"
     },
     {
       "id": "chemin-creux",
@@ -1275,7 +1275,7 @@
       ],
       "description": "Il s'éloigne à reculons, déjà trois pas plus loin, et te parle par-dessus son épaule ; les talus se resserrent. CHANGE : il n'est plus devant toi, il recule dans la profondeur du chemin.",
       "prompt_image": "a pair of heels finding the ground behind their owner, boots walking backwards along a sunken lane, legs only. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_marcheur_2_b.png"
+      "illustration": "monstre_marcheur_2_v2_c.png"
     },
     {
       "id": "marcheur-3",
@@ -1292,7 +1292,7 @@
       ],
       "description": "Au coude du chemin il pivote face au nord et lève deux doigts vers toi, juste avant que le talus ne l'avale. CHANGE : vu de dos, et le geste des deux doigts levés.",
       "prompt_image": "two fingers raised toward the viewer at the mouth of a sunken lane, the arm half swallowed by the earth bank, a count rather than a farewell. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_marcheur_3_b.png"
+      "illustration": "monstre_marcheur_3_v2_b.png"
     },
     {
       "id": "bete-chemins-creux",
@@ -1513,7 +1513,7 @@
       ],
       "description": "Combat, une scène. Le Pendu Mal Fixé : un bras tendu figé en plein geste d'agrippement, la corde trop longue qui laisse les pieds toucher le sol.",
       "prompt_image": "hanged man standing upright on his own feet, his rope still knotted at his neck and trailing behind him, a snapped stake on the ground beside him. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_pendu_mal_fixe_a.png"
+      "illustration": "monstre_pendu_mal_fixe_v2_c.png"
     },
     {
       "id": "serment-hameau",
@@ -1547,7 +1547,7 @@
       ],
       "description": "La ruelle étroite du hameau : portes marquées à la craie, volets fermés, aucun chien.",
       "prompt_image": "narrow village lane of low stone houses, every shutter closed, no one in the street, chalk cross on the first door. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "scene_landes_hameau_ruelle_b.png"
+      "illustration": "scene_hameau_entree_2_v2_a.png"
     },
     {
       "id": "croix-craie",
@@ -1595,7 +1595,7 @@
       ],
       "description": "Une femme sur le seuil d'une maison basse, châle serré, une croix à la craie sur sa porte. Elle regarde le sud.",
       "prompt_image": "woman standing motionless in a doorway, not taking the air but standing guard, arms at her sides. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_femme_seuil_1_c.png"
+      "illustration": "monstre_femme_seuil_1_v3_a.png"
     },
     {
       "id": "femme-seuil-2",
@@ -1630,7 +1630,7 @@
       ],
       "description": "Elle a repris sa place sur le seuil, mains vides, et regarde le sud — de la rue, rien ne dit qu'elle a parlé à quelqu'un. CHANGE : de nouveau immobile et les mains vides.",
       "prompt_image": "a woman back in place on her doorstep at the end of a village street, seen from far down the road, looking south, nothing about her showing that she spoke to anyone. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_femme_seuil_3_a.png"
+      "illustration": "monstre_femme_seuil_3_v2_a.png"
     },
     {
       "id": "hameau-entree-3",
@@ -1648,7 +1648,7 @@
       ],
       "description": "Trois hommes en travers de la rue, pas armés : un bâton de marche à la main, une fourche posée contre le mur, à portée sans être brandie.",
       "prompt_image": "three villagers standing across a lane, unarmed — a walking staff, a pitchfork leaning on a wall within reach — the eldest at the centre doing the talking. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_hameau_entree_3_a.png"
+      "illustration": "monstre_hameau_entree_3_v2_a.png"
     },
     {
       "id": "hameau-entree-4",
@@ -1696,7 +1696,7 @@
       ],
       "description": "La rue qui s'ouvre devant toi, et les volets qui se ferment un par un, un peu en avance sur ton pas.",
       "prompt_image": "narrow village lane of low stone houses, every shutter closed, no one in the street, chalk cross on the first door. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "scene_hameau_entree_5_a.png"
+      "illustration": "scene_hameau_entree_5_v2_a.png"
     },
     {
       "id": "hameau-halte-1",
@@ -1779,7 +1779,7 @@
       ],
       "description": "L'aube grise, la porte relevée : le vieux seul, un quignon de pain dur tendu vers toi, le regard ailleurs. CHANGE : lumière de petit matin, la barre est levée, il tend quelque chose.",
       "prompt_image": "an old open palm held out flat and empty, offered to be looked at rather than shaken. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_hameau_halte_4_b.png"
+      "illustration": "monstre_hameau_halte_4_v2_c.png"
     },
     {
       "id": "hameau-halte-5",
@@ -1795,7 +1795,7 @@
       ],
       "description": "Le portillon sud, ouvert par le plus jeune. Les deux escortes marchent à un pas de distance de chaque côté ; le vieux reste en arrière. CHANGE : on est dehors, au portillon — plus dans la grange.",
       "prompt_image": "village seen from its southern gate at dawn, roofs packed low behind a stone wall, the gate standing open. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "scene_hameau_halte_5_b.png"
+      "illustration": "scene_hameau_halte_5_v2_c.png"
     },
     {
       "id": "hameau-halte-dehors",
@@ -2061,7 +2061,7 @@
       ],
       "description": "Événement de la Chapelle : la Veuve aux Cordes, assise, qui refait sans fin le même nœud. Derrière elle, sous verre, la corde coupée sans nom.",
       "prompt_image": "a woman's hands endlessly retying the same knot in her lap, black sleeves, the rope worn shiny at that one spot. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_veuve_cordes_a.png"
+      "illustration": "monstre_veuve_cordes_v2_a.png"
     },
     {
       "id": "puits-condamne",
@@ -2078,7 +2078,7 @@
       ],
       "description": "Arrivée au Puits Condamné. Un puits fermé par des planches clouées en croix, par-dessus, des pierres empilées.",
       "prompt_image": "village well sealed shut with planks nailed in a cross over its mouth, stones piled on top, worn rope still tied to the winch, empty square, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_puits_condamne_a.png"
+      "illustration": "scene_puits_condamne_v2_a.png"
     },
     {
       "id": "puits-condamne-2",
@@ -2378,7 +2378,7 @@
       ],
       "description": "Événement du Verger : le fruit qui tombe encore chaud.",
       "prompt_image": "a single fallen fruit lying in the dirt of an orchard row, picked up in a bare hand, its skin ashen and still warm. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "scene_verger_noir_2_c.png"
+      "illustration": "scene_verger_noir_2_v2_b.png"
     },
     {
       "id": "epoux-1",
@@ -2573,7 +2573,7 @@
       ],
       "description": "Scène de déroutage au dernier palier de Soupçon : le hameau te juge. Les trois bancs pleins, tous les visages tournés vers toi, la chaire vide.",
       "prompt_image": "rustic courtroom seen from the defendant's place, three benches full of gaunt villagers all facing the viewer, the tall pulpit empty above them, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_petit_tribunal_a.png"
+      "illustration": "scene_proces_du_heros_v4_c.png"
     }
   ],
   "regions": [
