@@ -52,8 +52,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-07-30T20:16:17Z",
- "commit": "b5ed308",
+ "genere": "2026-08-03T19:34:26Z",
+ "commit": "dddbf82",
  "zones": [
   {
    "id": "landes",
@@ -1107,7 +1107,7 @@
       "fichier": "scene_colline_potences_cercle_a_c.png",
       "hash": "20afbb76",
       "taille": 11627,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
