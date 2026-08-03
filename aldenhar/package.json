@@ -9,7 +9,8 @@
     "lint": "eslint",
     "atelier": "python3 ../tools/atelier.py",
     "gen:manifest": "python3 ../tools/gen_manifest.py",
-    "prebuild": "npm run gen:manifest"
+    "prebuild": "npm run check:coherence && npm run gen:manifest",
+    "check:coherence": "python3 ../tools/check_coherence.py"
   },
   "dependencies": {
     "@types/three": "^0.185.0",

@@ -11,6 +11,36 @@ conception, la carte Figma fait foi sur le contenu, la page Notion sur les
 règles. Les textes (strates) et les images arrivent en temps 2 — un JSON de
 zone fraîchement gelée a donc tous ses `textes.*` et `illustration` à `null`.
 
+## ⚠️ Source de vérité — règle actée le 03/08/2026
+
+Il n'y a **pas deux sources indépendantes**. Il y a deux domaines disjoints,
+plus un miroir vérifié au build.
+
+| Ce dont il s'agit | Fichier canonique |
+|---|---|
+| Ce que le jeu **exécute** : scènes, choix, stats, seuils, issues, points d'intérêt, **et l'illustration réellement affichée** | `aldenhar/lib/scene-data.ts` |
+| Ce que le jeu **n'exécute pas** : géographie de la carte (x/y du Figma), noms lisibles, notes, strates de texte, collections de production (rencontres, créatures, objets sans scène) | `data/zones/*.json` |
+
+`scene-data.ts` est canonique **par construction** : c'est le seul fichier
+chargé au runtime. `landes.json` n'est jamais lu par le jeu (piège relevé le
+24/07 : des images câblées d'un côté et pas de l'autre). Si les deux se
+contredisent, le `.ts` a raison — ce que le joueur voit ne se discute pas.
+
+**Le seul champ partagé** est `scenes[].illustration`, reporté sur
+`lieux[].illustration` (la vignette d'un lieu = l'illustration de sa scène
+d'arrivée). Dans les JSON de zone, ce champ est un **MIROIR** : il se
+régénère, il ne s'édite pas à la main.
+
+```bash
+python3 tools/check_coherence.py         # vérifie — sort 1 en cas d'écart
+python3 tools/check_coherence.py --fix   # réaligne le miroir sur le .ts
+```
+
+Le contrôle est branché sur `npm run prebuild` : **un build ne peut pas
+partir avec un miroir périmé**. Régénérer entièrement le JSON depuis le `.ts`
+n'est pas envisageable et ne le sera jamais — cela détruirait tout ce que la
+colonne de droite énumère, qui n'existe nulle part ailleurs.
+
 ## Lecture des cartes Figma
 
 - Cadre **orange** = lieu · cadre **pointillé gris** = région englobante

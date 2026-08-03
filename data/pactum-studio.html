@@ -303,6 +303,22 @@ body:not(.mode-edition) .edit{border-color:transparent;cursor:default}
 .pimgbtns button.p{background:var(--orange);border-color:var(--orange);color:var(--charbon);font-weight:700}
 .pimgok{font-size:11px;line-height:1.5;color:var(--b50)}
 .pimgvide{font-size:11px;line-height:1.5;color:var(--b30)}
+.avant-apres{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.aa{display:flex;flex-direction:column;gap:4px}
+.aa span{font-size:9.5px;letter-spacing:1.1px;text-transform:uppercase;color:var(--b30)}
+.aa .vig{aspect-ratio:1/1;background:var(--charbon) center/cover;border:1px solid var(--b20)}
+.aa .vig.neuve{border-color:var(--orange)}
+.aa .vig.rien{display:flex;align-items:center;justify-content:center;color:var(--b20);font-size:10px}
+.pimgcible{font-size:10px;line-height:1.6;color:var(--b30);word-break:break-all}
+.pimgcible b{color:var(--b50);font-weight:400}
+.fbtn{position:relative;overflow:hidden}
+.fbtn input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:0}
+.jl .st{display:inline-block;margin-top:3px;font-size:9.5px;letter-spacing:.8px;text-transform:uppercase;
+  border:1px solid var(--orange);color:var(--orange);padding:1px 5px}
+.jl .st.txt{border-color:var(--b20);color:var(--b30)}
+#journal .jf{flex-wrap:wrap}
+#journal .jf button{flex:1 1 46%}
+#journal .jf button.large{flex:1 1 100%}
 body.mode-edition .ebtn{display:inline-flex}
 #journal{position:fixed;right:16px;bottom:16px;width:330px;max-height:44vh;z-index:60;
   background:var(--panneau);border:1px solid var(--orange);display:none;flex-direction:column}
@@ -383,7 +399,8 @@ body.mode-edition .ebtn{display:inline-flex}
   <div class="jh">Journal de modifications <button id="jClose">×</button></div>
   <div id="jbody"></div>
   <div class="jf">
-    <button class="p" id="jCopy">Copier pour Claude</button>
+    <button class="p large" id="jLot">Exporter le lot pour Claude</button>
+    <button id="jCopy">Copier le résumé textuel</button>
     <button id="jVider">Tout effacer</button>
   </div>
 </div>
@@ -417,21 +434,219 @@ function urlImg(f){ if(!f) return null;
   const n=String(f).replace(/^assets\//,""), fi=MANIF.fichiers[n];
   return BASE+n+(fi?"?v="+fi.hash:""); }
 
+/* ---------- LES FICHIERS DÉPOSÉS (IndexedDB) ----------
+   Les images choisies restent DANS LE NAVIGATEUR : le Studio n'a aucun
+   accès au dépôt et n'en aura pas dans cette version. Elles vivent en
+   IndexedDB et non en localStorage — localStorage ne stocke que du texte et
+   plafonne à ~5 Mo, une seule illustration en base64 le remplirait.
+   Le journal (localStorage) ne garde que les MÉTADONNÉES ; l'octet reste ici.
+
+   ⚠️ Ce n'est pas une impasse d'architecture : le jour où le Studio
+   s'authentifiera à GitHub, c'est exactement ce même lot (fichier + chemin
+   cible + hash de l'image publiée) qui partira en commit ou en branche. La
+   structure est déjà celle-là — seul le transport change. */
+const Fichiers=(()=>{
+  const NOM="pactum-studio-fichiers", MAG="images";
+  let db=null; const cache={};            // cible → {blob,url,nom,taille,type,at}
+  const ouvrir=()=>new Promise((ok,ko)=>{
+    const r=indexedDB.open(NOM,1);
+    r.onupgradeneeded=()=>{ if(!r.result.objectStoreNames.contains(MAG)) r.result.createObjectStore(MAG); };
+    r.onsuccess=()=>ok(r.result); r.onerror=()=>ko(r.error);
+  });
+  const tx=(mode)=>db.transaction(MAG,mode).objectStore(MAG);
+  return {
+    async init(){
+      try{ db=await ouvrir(); }catch(e){ console.warn("Studio : IndexedDB indisponible",e); return; }
+      await new Promise(ok=>{
+        const st=tx("readonly"), req=st.openCursor();
+        req.onsuccess=()=>{ const c=req.result;
+          if(!c) return ok();
+          const v=c.value; cache[c.key]={...v, url:URL.createObjectURL(v.blob)};
+          c.continue(); };
+        req.onerror=()=>ok();
+      });
+    },
+    get(cible){ return cache[cible]||null; },
+    tous(){ return Object.entries(cache).map(([cible,v])=>({cible,...v})); },
+    async poser(cible,file){
+      const v={blob:file, nom:file.name, taille:file.size, type:file.type||"image/png",
+               at:new Date().toISOString()};
+      if(cache[cible]) URL.revokeObjectURL(cache[cible].url);
+      cache[cible]={...v, url:URL.createObjectURL(file)};
+      if(db) await new Promise(ok=>{ const r=tx("readwrite").put(v,cible); r.onsuccess=ok; r.onerror=ok; });
+      return cache[cible];
+    },
+    async retirer(cible){
+      if(cache[cible]){ URL.revokeObjectURL(cache[cible].url); delete cache[cible]; }
+      if(db) await new Promise(ok=>{ const r=tx("readwrite").delete(cible); r.onsuccess=ok; r.onerror=ok; });
+    },
+    async vider(){ Object.keys(cache).forEach(k=>{URL.revokeObjectURL(cache[k].url); delete cache[k];});
+      if(db) await new Promise(ok=>{ const r=tx("readwrite").clear(); r.onsuccess=ok; r.onerror=ok; }); },
+  };
+})();
+
+/* ---------- ZIP (méthode « stored », sans dépendance) ----------
+   Une page publiée ne peut charger aucune librairie externe (politique de
+   sécurité stricte). Le format ZIP sans compression tient en une trentaine
+   de lignes, et nos entrées sont des PNG/JPEG : déjà compressés, les
+   dégonfler ne gagnerait rien. */
+const CRC_T=(()=>{ const t=new Uint32Array(256);
+  for(let n=0;n<256;n++){ let c=n; for(let k=0;k<8;k++) c=c&1?0xEDB88320^(c>>>1):c>>>1; t[n]=c>>>0; }
+  return t; })();
+function crc32(u8){ let c=0xFFFFFFFF;
+  for(let i=0;i<u8.length;i++) c=CRC_T[(c^u8[i])&0xFF]^(c>>>8);
+  return (c^0xFFFFFFFF)>>>0; }
+function zip(entrees){                       // [{nom, data:Uint8Array}]
+  const enc=new TextEncoder(), d=new Date();
+  const heure=((d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1))&0xFFFF;
+  const jour=(((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate())&0xFFFF;
+  const morceaux=[], central=[]; let pos=0;
+  entrees.forEach(e=>{
+    const nom=enc.encode(e.nom), crc=crc32(e.data);
+    const l=new DataView(new ArrayBuffer(30));
+    l.setUint32(0,0x04034b50,true); l.setUint16(4,20,true); l.setUint16(6,0x0800,true);
+    l.setUint16(8,0,true); l.setUint16(10,heure,true); l.setUint16(12,jour,true);
+    l.setUint32(14,crc,true); l.setUint32(18,e.data.length,true); l.setUint32(22,e.data.length,true);
+    l.setUint16(26,nom.length,true); l.setUint16(28,0,true);
+    morceaux.push(new Uint8Array(l.buffer),nom,e.data);
+    const c=new DataView(new ArrayBuffer(46));
+    c.setUint32(0,0x02014b50,true); c.setUint16(4,20,true); c.setUint16(6,20,true);
+    c.setUint16(8,0x0800,true); c.setUint16(10,0,true); c.setUint16(12,heure,true);
+    c.setUint16(14,jour,true); c.setUint32(16,crc,true);
+    c.setUint32(20,e.data.length,true); c.setUint32(24,e.data.length,true);
+    c.setUint16(28,nom.length,true); c.setUint32(42,pos,true);
+    central.push(new Uint8Array(c.buffer),nom);
+    pos+=30+nom.length+e.data.length;
+  });
+  const tailleC=central.reduce((n,b)=>n+b.length,0);
+  const f=new DataView(new ArrayBuffer(22));
+  f.setUint32(0,0x06054b50,true); f.setUint16(8,entrees.length,true);
+  f.setUint16(10,entrees.length,true); f.setUint32(12,tailleC,true); f.setUint32(16,pos,true);
+  return new Blob([...morceaux,...central,new Uint8Array(f.buffer)],{type:"application/zip"});
+}
+
 /* ---------- le journal de modifications ---------- */
 function charger(){ try{return JSON.parse(localStorage.getItem(CLE)||"[]")}catch(_){return[]} }
 function sauver(){ localStorage.setItem(CLE,JSON.stringify(journal));
   $("#njour").textContent=journal.length; majJournal();
   $$(".edit").forEach(e=>e.classList.toggle("modifie", journal.some(j=>j.cible===e.dataset.cible))); }
-function noter(cible,quoi,avant,apres,ctx){
-  const i=journal.findIndex(j=>j.cible===cible), e={cible,quoi,avant,apres,ctx,at:new Date().toISOString()};
+function noter(cible,quoi,avant,apres,ctx,fiche){
+  const i=journal.findIndex(j=>j.cible===cible);
+  const e={cible,quoi,avant,apres,ctx,at:new Date().toISOString(),...(fiche||{})};
   if(i>=0) journal[i]=e; else journal.push(e); sauver(); }
 function majJournal(){
   const b=$("#jbody");
-  b.innerHTML = journal.length ? journal.map((j,i)=>
-    `<div class="jl"><div><b>${esc(j.ctx||j.cible)}</b><br>${esc(j.quoi)} → ${esc(String(j.apres).slice(0,60))}</div>
-     <button data-annule="${i}" title="Annuler">×</button></div>`).join("")
-    : '<div class="vide-txt">Aucune modification. Passe en édition et clique un texte, une difficulté…</div>';
+  b.innerHTML = journal.length ? journal.map((j,i)=>{
+    const f=Fichiers.get(j.cible);
+    const st = j.statut==="remplacement-en-attente" && f
+      ? `<span class="st">remplacement en attente</span>`
+      : (j.statut ? `<span class="st txt">note seule</span>` : "");
+    return `<div class="jl"><div><b>${esc(j.ctx||j.cible)}</b><br>${esc(j.quoi)} → ${esc(String(j.apres).slice(0,60))}${st}</div>
+     <button data-annule="${i}" title="Annuler">×</button></div>`;}).join("")
+    : '<div class="vide-txt">Aucune modification. Clique « Remplacer cette image » sous une illustration, ou passe en Édition pour un texte.</div>';
+  const n=journal.filter(j=>Fichiers.get(j.cible)).length;
+  const bt=$("#jLot"); if(bt){ bt.disabled=!n;
+    bt.textContent = n ? `Exporter le lot pour Claude (${n} image${n>1?"s":""})`
+                       : "Exporter le lot — aucune image jointe"; }
 }
+/* LE LOT — un zip que Patrick joint dans le chat.
+   Il contient les images choisies, un manifeste lisible par une machine et
+   des instructions lisibles par un humain. Le manifeste porte de quoi
+   appliquer chaque remplacement SANS RIEN DEVINER : l'élément, son type, le
+   chemin cible exact, le hash de l'image publiée (donc de quelle version on
+   partait) et la note.
+   ⚠️ Les images du lot sont les sources BRUTES : le dithering canonique
+   (Floyd-Steinberg, seuil 182, contraste 151 %, Charbon/Orange) reste fait
+   par `tools/dither_batch.py`, qui est la seule implémentation validée.
+   Le tramer ici serait un troisième portage non contrôlé. */
+async function fabriquerLot(){
+  const avec=journal.filter(j=>Fichiers.get(j.cible));
+  if(!avec.length) return null;
+  const entrees=[], images=[];
+  for(const j of avec){
+    const f=Fichiers.get(j.cible);
+    const ext=(f.nom.match(/\.[a-z0-9]+$/i)||[".png"])[0].toLowerCase();
+    const dans="images/"+j.imageActuelle.replace(/\.[^.]+$/,"")+"__nouvelle"+ext;
+    entrees.push({nom:dans, data:new Uint8Array(await f.blob.arrayBuffer())});
+    images.push({
+      fichierDansLeLot: dans,
+      elementId: j.elementId||null, elementType: j.elementType||null,
+      elementNom: j.elementNom||null,
+      imageActuelle: j.imageActuelle||null,
+      cheminCible: j.cheminCible||null,
+      hashPublie: j.hashPublie||null,
+      sourceChoisie: {nom:f.nom, taille:f.taille, type:f.type},
+      note: j.apres||"", statut: "remplacement-en-attente",
+      demandeLe: j.at,
+    });
+  }
+  const sansFichier=journal.filter(j=>!Fichiers.get(j.cible)).map(j=>({
+    cible:j.cible, quoi:j.quoi, avant:j.avant??null, apres:j.apres,
+    contexte:j.ctx||null, statut:j.statut||"modification", demandeLe:j.at}));
+  const manifeste={
+    outil:"PACTUM Studio", version:1,
+    genereLe:new Date().toISOString(),
+    donneesLues:{commit:D.commit||null, manifesteAssets:D.genere||null},
+    pipeline:{
+      dithering:"tools/dither_batch.py (implémentation validée — ne pas retramer ailleurs)",
+      destination:"aldenhar/public/assets/",
+      apres:["npm run check:coherence","npm run gen:manifest","python3 tools/studio_data.py"],
+    },
+    remplacementsImages:images,
+    autresModifications:sansFichier,
+  };
+  const enc=new TextEncoder();
+  entrees.push({nom:"manifest.json", data:enc.encode(JSON.stringify(manifeste,null,2))});
+  entrees.push({nom:"instructions.txt", data:enc.encode(instructions(manifeste))});
+  return {blob:zip(entrees), n:images.length};
+}
+
+function instructions(m){
+  const L=[];
+  L.push("PACTUM — LOT DE REMPLACEMENT D'IMAGES");
+  L.push("généré par Pactum Studio le "+new Date(m.genereLe).toLocaleString("fr-FR"));
+  L.push("données lues : commit "+(m.donneesLues.commit||"?")+" · manifeste d'assets "+(m.donneesLues.manifesteAssets||"?"));
+  L.push("");
+  L.push("CONTENU");
+  L.push("  images/          les sources BRUTES choisies (non tramées)");
+  L.push("  manifest.json    la même chose en structuré, pour la machine");
+  L.push("  instructions.txt ce fichier");
+  L.push("");
+  L.push("À FAIRE (Claude)");
+  L.push("  1. Passer chaque image par tools/dither_batch.py — seule implémentation");
+  L.push("     validée du dithering canonique (Floyd-Steinberg, seuil 182,");
+  L.push("     contraste 151 % pivot 128, Charbon #1c1a16 / Orange #e0632a).");
+  L.push("  2. NE PAS réutiliser le nom de l'image remplacée : prendre la lettre de");
+  L.push("     variante suivante (_c → _d). Un remplacement silencieux sous le même");
+  L.push("     nom est invisible dans l'historique et dans les caches.");
+  L.push("  3. Déposer dans aldenhar/public/assets/, puis câbler dans");
+  L.push("     aldenhar/lib/scene-data.ts (source canonique).");
+  L.push("  4. npm run check:coherence · npm run gen:manifest · python3 tools/studio_data.py");
+  L.push("  5. Rebuild + déploiement du jeu et des pages d'outillage.");
+  L.push("");
+  L.push("REMPLACEMENTS ("+m.remplacementsImages.length+")");
+  m.remplacementsImages.forEach((r,i)=>{
+    L.push("");
+    L.push("  "+(i+1)+". "+(r.elementNom||r.elementId)+"  ["+(r.elementType||"?")+"]");
+    L.push("     id             : "+(r.elementId||"?"));
+    L.push("     image actuelle : "+(r.imageActuelle||"?")+"  (hash publié "+(r.hashPublie||"?")+")");
+    L.push("     chemin cible   : "+(r.cheminCible||"?"));
+    L.push("     nouvelle image : "+r.fichierDansLeLot+"  (source « "+r.sourceChoisie.nom+" », "+Math.round(r.sourceChoisie.taille/1024)+" Ko)");
+    L.push("     note           : "+(r.note||"—"));
+  });
+  if(m.autresModifications.length){
+    L.push("");
+    L.push("AUTRES MODIFICATIONS SANS FICHIER ("+m.autresModifications.length+")");
+    m.autresModifications.forEach(j=>{
+      L.push("  - "+(j.contexte||j.cible)+" · "+j.quoi);
+      if(j.avant!=null && String(j.avant).trim()!=="") L.push("      avant : "+String(j.avant).replace(/\n/g," "));
+      L.push("      après : "+String(j.apres).replace(/\n/g," "));
+    });
+  }
+  L.push("");
+  return L.join("\n");
+}
+
 function rapport(){
   if(!journal.length) return "Aucune modification.";
   const par={}; journal.forEach(j=>{(par[j.ctx||"Divers"] ||= []).push(j)});
@@ -440,15 +655,18 @@ function rapport(){
   t+=`# données lues : commit ${D.commit||"?"} · manifeste ${D.genere||"?"}\n\n`;
   for(const [ctx,l] of Object.entries(par)){
     t+=`## ${ctx}\n`;
-    l.forEach(j=>{ t+=`- **${j.quoi}** (\`${j.cible}\`)\n`;
+    l.forEach(j=>{ const f=Fichiers.get(j.cible);
+      t+=`- **${j.quoi}** (\`${j.cible}\`)${f?" — FICHIER JOINT DANS LE LOT : "+f.nom:""}\n`;
+      if(j.cheminCible) t+=`  - cible : \`${j.cheminCible}\` (hash publié ${j.hashPublie||"?"})\n`;
       if(j.avant!=null && String(j.avant).trim()!=="") t+=`  - avant : ${String(j.avant).replace(/\n/g," ")}\n`;
       t+=`  - après : ${String(j.apres).replace(/\n/g," ")}\n`; });
     t+="\n";
   }
-  t+="---\nÀ faire côté dépôt : appliquer dans `aldenhar/lib/scene-data.ts` (source de vérité\n";
-  t+="du jeu), répercuter dans `data/zones/*.json` et `data/scene-meta.json` si le champ y\n";
-  t+="existe, puis `npm run gen:manifest`, `python3 tools/studio_data.py`, rebuild et\n";
-  t+="déploiement des pages d'outillage.\n";
+  t+="---\nÀ faire côté dépôt : appliquer dans `aldenhar/lib/scene-data.ts` — SOURCE\n";
+  t+="CANONIQUE, c'est le fichier que le moteur exécute. Le champ `illustration` des\n";
+  t+="JSON de zone en est un MIROIR : ne pas l'éditer à la main, le régénérer avec\n";
+  t+="`npm run check:coherence -- --fix`. Puis `npm run gen:manifest`,\n";
+  t+="`python3 tools/studio_data.py`, rebuild et déploiement des pages d'outillage.\n";
   return t;
 }
 
@@ -978,25 +1196,48 @@ function champEditable(cible,quoi,valeur,ctx){
    modifier une donnée de jeu : c'est le travail principal de Patrick sur ces
    pages, il doit être à un clic, toujours visible. Le mode Édition reste
    réservé à ce qui touche au CONTENU (libellés, textes, issues). */
-function actionImage(fichier, ctx){
-  if(!fichier) return `<div class="pimgact"><p class="pimgvide">Aucune image sur cet écran — envoie-la-moi en pièce jointe et je la câble.</p></div>`;
+function actionImage(fichier, ctx, el){
+  if(!fichier) return `<div class="pimgact"><p class="pimgvide">Aucune image sur cet écran — dépose-la ici quand elle existera, ou envoie-la-moi.</p></div>`;
   const cible="image:"+fichier;
   const j=journal.find(x=>x.cible===cible);
-  const ouvert = editImage===cible;
-  if(ouvert || j) return `<div class="pimgact ouvert">
-    <label>Ce qui ne va pas avec cette image</label>
-    <textarea id="motifImage" rows="3" placeholder="Ex. : le moulin a encore ses ailes, alors que le lieu s'appelle « le Moulin sans Ailes »."
-      >${esc(j?j.apres:"")}</textarea>
+  const f=Fichiers.get(cible);
+  if(!j && editImage!==cible)
+    return `<div class="pimgact"><button data-remplacer="${esc(fichier)}" data-ctx="${esc(ctx)}">
+      ⟳ Remplacer cette image</button></div>`;
+
+  const h=(MANIF.fichiers[fichier]||{}).hash||"—";
+  return `<div class="pimgact ouvert">
+    <div class="avant-apres">
+      <div class="aa"><span>Actuelle</span>
+        <div class="vig" style="background-image:url('${urlImg("assets/"+fichier)}')"></div></div>
+      <div class="aa"><span>Nouvelle</span>
+        ${f?`<div class="vig neuve" style="background-image:url('${f.url}')"></div>`
+           :`<div class="vig rien">aucun fichier</div>`}</div>
+    </div>
     <div class="pimgbtns">
-      <button class="p" data-noter="${esc(fichier)}" data-ctx="${esc(ctx)}">${j?"Mettre à jour":"Demander le remplacement"}</button>
+      <button class="fbtn ${f?"":"p"}" data-pour="${esc(cible)}">${f?"Choisir un autre fichier":"Choisir la nouvelle image…"}
+        <input type="file" accept="image/*" data-pour="${esc(cible)}"></button>
+      ${f?`<button data-oter-fichier="${esc(cible)}">Retirer le fichier</button>`:""}
+    </div>
+    <label>Ce qui ne va pas avec cette image</label>
+    <textarea id="motifImage" rows="3"
+      placeholder="Ex. : le moulin a encore ses ailes, alors que le lieu s'appelle « le Moulin sans Ailes »."
+      >${esc(j?j.apres:"")}</textarea>
+    <p class="pimgcible">
+      <b>Élément</b> ${esc(el.type)} · <code>${esc(el.id)}</code><br>
+      <b>Chemin cible</b> <code>aldenhar/public/assets/${esc(fichier)}</code><br>
+      <b>Hash publié</b> <code>${esc(h)}</code>${f?`<br><b>Fichier choisi</b> ${esc(f.nom)} · ${(f.taille/1024).toFixed(0)} Ko`:""}
+    </p>
+    <div class="pimgbtns">
+      <button class="p" data-noter="${esc(fichier)}" data-ctx="${esc(ctx)}"
+        data-el="${esc(JSON.stringify(el))}">${j?"Mettre à jour":"Enregistrer la demande"}</button>
       ${j?`<button data-annuler="${esc(fichier)}">Retirer</button>`
          :`<button data-fermer-img="1">Annuler</button>`}
     </div>
-    ${j?`<p class="pimgok">✓ Demandé. Envoie-moi la photo en pièce jointe, ou dépose-la
-        sur GitHub — je la trame et je la câble. Retrouve la liste dans « Modifications ».</p>`:""}
+    ${j?`<p class="pimgok">${f
+       ? "✓ Remplacement en attente, fichier joint. Journal → « Exporter le lot pour Claude »."
+       : "✓ Noté, sans fichier. Choisis l'image ici, ou envoie-la-moi en pièce jointe."}</p>`:""}
   </div>`;
-  return `<div class="pimgact"><button data-remplacer="${esc(fichier)}" data-ctx="${esc(ctx)}">
-    ⟳ Remplacer cette image</button></div>`;
 }
 
 function renduPanneau(){
@@ -1021,7 +1262,7 @@ function panneauLieu(d){
       ${(l.alertes||[]).map(a=>`<span class="alerte">${ALERTE[a]?ALERTE[a].lib:a}</span>`).join("")}</div>
     ${img?`<div class="pimg" data-zoom="${img}" data-nom="${esc(l.illustration)}" style="background-image:url('${img}')"></div>`
         :`<div class="pimg vide">AUCUNE IMAGE</div>`}
-    ${actionImage(l.illustration, "Images — "+(l.nom||l.id))}
+    ${actionImage(l.illustration, "Images — "+(l.nom||l.id), {id:l.id,type:"lieu",nom:l.nom||l.id})}
     <div class="pcorps">
       <div class="sect"><h3>Ce que contient ce lieu</h3>
         <div class="kv"><span>Scènes</span><b>${l.nbScenes}</b></div>
@@ -1057,7 +1298,7 @@ function panneauScene(d){
       ? `<div class="pimg" data-zoom="${img}" data-nom="${esc(s.image.fichier)}" style="background-image:url('${img}')"></div>`
       : `<div class="pimg ko">FICHIER INTROUVABLE<br>${esc(s.image.fichier)}</div>`)
       : `<div class="pimg vide">AUCUNE IMAGE</div>`}
-    ${actionImage(s.image&&s.image.fichier, "Images — "+(s.nom||s.id))}
+    ${actionImage(s.image&&s.image.fichier, "Images — "+(s.nom||s.id), {id:s.id,type:NATURE[nat].lib.toLowerCase(),nom:s.nom||s.id})}
     <div class="ptabs">${ong.map(([k,l])=>`<button class="ptab${onglet===k?" on":""}" data-onglet="${k}">${l}</button>`).join("")}</div>
     <div class="pcorps">${corps(s)}</div>`;
   brancher();
@@ -1076,7 +1317,7 @@ function panneauPoi(d){
       ${(poi.alertes||[]).map(a=>`<span class="alerte">${ALERTE[a]?ALERTE[a].lib:a}</span>`).join("")}</div>
     ${img?`<div class="pimg" data-zoom="${img}" data-nom="${esc(poi.image.fichier)}" style="background-image:url('${img}')"></div>`
         :`<div class="pimg vide">AUCUNE IMAGE</div>`}
-    ${actionImage(poi.image&&poi.image.fichier, "Images — "+(poi.label||poi.id))}
+    ${actionImage(poi.image&&poi.image.fichier, "Images — "+(poi.label||poi.id), {id:poi.id,type:"point d’intérêt",nom:poi.label||poi.id})}
     <div class="pcorps">
       <div class="sect"><h3>Ce qu'on voit de loin</h3><p class="para">${champEditable("poi:"+poi.id+":label","Libellé du point",poi.label,poi.label||poi.id)}</p></div>
       <div class="sect"><h3>L'approche</h3><p class="para">${champEditable("poi:"+poi.id+":approche","Texte d'approche",poi.approche,poi.label)}</p></div>
@@ -1191,16 +1432,41 @@ function brancher(){
     const t=$("#motifImage"); if(t) t.focus();
   });
   d.querySelectorAll("[data-fermer-img]").forEach(b=>b.onclick=()=>{ editImage=null; renduPanneau(); });
-  d.querySelectorAll("[data-noter]").forEach(b=>b.onclick=()=>{
-    const f=b.dataset.noter, t=$("#motifImage");
-    const motif=(t&&t.value.trim())||"à remplacer, sans précision";
-    noter("image:"+f,"Remplacer l'image",f,motif,b.dataset.ctx);
-    editImage=null; renduPanneau();
-    toast("Noté — retrouve-le dans « Modifications »");
+  d.querySelectorAll('input[type=file][data-pour]').forEach(inp=>inp.onchange=async()=>{
+    const file=inp.files&&inp.files[0]; if(!file) return;
+    if(!/^image\//.test(file.type||"")) return toast("Ce n'est pas une image");
+    await Fichiers.poser(inp.dataset.pour,file);
+    editImage=inp.dataset.pour; renduPanneau();
+    toast("Image chargée — décris ce qui n'allait pas, puis enregistre");
   });
-  d.querySelectorAll("[data-annuler]").forEach(b=>b.onclick=()=>{
-    const i=journal.findIndex(j=>j.cible==="image:"+b.dataset.annuler);
+  d.querySelectorAll("[data-oter-fichier]").forEach(b=>b.onclick=async()=>{
+    await Fichiers.retirer(b.dataset.oterFichier);
+    editImage=b.dataset.oterFichier; sauver(); renduPanneau(); toast("Fichier retiré");
+  });
+  d.querySelectorAll("[data-noter]").forEach(b=>b.onclick=()=>{
+    const f=b.dataset.noter, t=$("#motifImage"), cible="image:"+f;
+    const el=JSON.parse(b.dataset.el||"{}"), fi=Fichiers.get(cible);
+    const motif=(t&&t.value.trim())||(fi?"remplacement fourni":"à remplacer, sans précision");
+    // La fiche complète voyage avec la demande : sans l'id de l'element, le
+    // chemin cible et le hash de l'image publiee, le lot ne serait pas
+    // applicable sans deviner.
+    noter(cible,"Remplacer l'image",f,motif,b.dataset.ctx,{
+      statut: fi?"remplacement-en-attente":"note",
+      elementId: el.id, elementType: el.type, elementNom: el.nom,
+      imageActuelle: f,
+      cheminCible: "aldenhar/public/assets/"+f,
+      hashPublie: (MANIF.fichiers[f]||{}).hash||null,
+      fichier: fi?{nom:fi.nom, taille:fi.taille, type:fi.type, at:fi.at}:null,
+    });
+    editImage=null; renduPanneau();
+    toast(fi?"Remplacement en attente — exporte le lot quand tu as fini"
+            :"Noté — retrouve-le dans « Modifications »");
+  });
+  d.querySelectorAll("[data-annuler]").forEach(b=>b.onclick=async()=>{
+    const cible="image:"+b.dataset.annuler;
+    const i=journal.findIndex(j=>j.cible===cible);
     if(i>=0){ journal.splice(i,1); sauver(); }
+    await Fichiers.retirer(cible);
     editImage=null; renduPanneau(); toast("Demande retirée");
   });
   d.querySelectorAll("[data-refaire]").forEach(b=>b.onclick=()=>{
@@ -1351,6 +1617,9 @@ function renduGauche(){
       <h1 style="font:400 24px var(--serif)">Les données ne se chargent pas.</h1>
       <p style="color:rgba(255,255,255,.5)">${esc(e.message)}</p></div>`; return;
   }
+  // Les fichiers déposés sont relus AVANT le premier rendu : sinon un
+  // remplacement en attente s'afficherait « sans fichier » au rechargement.
+  await Fichiers.init();
   zoneActive=D.zones[0]&&D.zones[0].id;
   $("#sousmarque").textContent=`${(D.zones[0]||{}).nom||""} · ${D.zones[0].lieux.length} lieux`;
   $("#titreZone").textContent=((D.zones[0]||{}).nom||"").toUpperCase();
@@ -1384,10 +1653,20 @@ function renduGauche(){
     toast(on?"Édition — clique un texte pour le modifier":"Lecture seule"); renduPanneau();};
   $("#bJournal").onclick=()=>$("#journal").classList.toggle("on");
   $("#jClose").onclick=()=>$("#journal").classList.remove("on");
-  $("#jVider").onclick=()=>{if(confirm("Effacer toutes les modifications non transmises ?")){
-    journal=[];sauver();toast("Journal vidé");renduPanneau();}};
+  $("#jVider").onclick=async()=>{if(confirm("Effacer toutes les modifications non transmises, fichiers joints compris ?")){
+    journal=[]; await Fichiers.vider(); sauver(); toast("Journal vidé"); renduPanneau();}};
   $("#jCopy").onclick=()=>navigator.clipboard.writeText(rapport())
-    .then(()=>toast("Rapport copié — colle-le à Claude"),()=>toast("Copie impossible"));
+    .then(()=>toast("Résumé copié — colle-le à Claude"),()=>toast("Copie impossible"));
+  $("#jLot").onclick=async()=>{
+    const lot=await fabriquerLot();
+    if(!lot) return toast("Aucune image jointe — utilise « Copier le résumé textuel »");
+    const d=new Date(), p=n=>String(n).padStart(2,"0");
+    const nom=`pactum-lot-${d.getFullYear()}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}.zip`;
+    const a=document.createElement("a");
+    a.href=URL.createObjectURL(lot.blob); a.download=nom; a.click();
+    setTimeout(()=>URL.revokeObjectURL(a.href),4000);
+    toast(`Lot de ${lot.n} image(s) téléchargé — joins-le dans le chat`);
+  };
   $("#jbody").onclick=e=>{const b=e.target.closest("[data-annule]");if(!b)return;
     journal.splice(+b.dataset.annule,1);sauver();renduPanneau();};
   window.addEventListener("resize",majMinimap);
