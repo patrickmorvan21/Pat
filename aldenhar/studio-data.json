@@ -52,8 +52,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-03T19:34:26Z",
- "commit": "dddbf82",
+ "genere": "2026-08-03T21:20:25Z",
+ "commit": "392e272",
  "zones": [
   {
    "id": "landes",
@@ -255,7 +255,7 @@
     {
      "id": "puits_condamne",
      "nom": "Le Puits Condamné",
-     "illustration": "scene_puits_condamne_a.png",
+     "illustration": "scene_puits_condamne_v2_a.png",
      "x": 950,
      "y": 900,
      "note": "planches et chaînes",
@@ -372,7 +372,7 @@
     {
      "id": "borne_frontiere",
      "nom": "La Borne Frontière",
-     "illustration": "scene_borne_frontiere_b.png",
+     "illustration": "scene_borne_frontiere_v2_a.png",
      "x": 1620,
      "y": 1420,
      "note": "limite des Renonçants",
@@ -524,9 +524,9 @@
    "lieu": "borne_frontiere",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_borne_frontiere_b.png",
-    "hash": "fc1f6b62",
-    "taille": 21662,
+    "fichier": "scene_borne_frontiere_v2_a.png",
+    "hash": "6fdeb1bd",
+    "taille": 11903,
     "recent": true,
     "existe": true
    },
@@ -678,9 +678,9 @@
    "lieu": "borne_frontiere",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_hesitant_3_c.png",
-    "hash": "c1d9af6e",
-    "taille": 11251,
+    "fichier": "monstre_hesitant_3_v2_a.png",
+    "hash": "28f6e59a",
+    "taille": 7011,
     "recent": true,
     "existe": true
    },
@@ -764,9 +764,9 @@
      "ouvreSur": "marcheur-1",
      "nom": "L'homme qui marche à reculons",
      "image": {
-      "fichier": "monstre_marcheur_rebours_c.png",
-      "hash": "be499820",
-      "taille": 7537,
+      "fichier": "monstre_marcheur_rebours_v2_a.png",
+      "hash": "ba1a5091",
+      "taille": 20815,
       "recent": true,
       "existe": true
      },
@@ -890,7 +890,7 @@
     "fichier": "monstre_marcheur_1_b.png",
     "hash": "a352d5cd",
     "taille": 6372,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Le Marcheur à rebours avance en marche arrière dans le chemin creux, le regard fixé derrière lui : trente ans qu'il ne montre son dos à rien.",
@@ -941,9 +941,9 @@
    "lieu": "chemin_creux",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_marcheur_2_b.png",
-    "hash": "e7304bbf",
-    "taille": 10971,
+    "fichier": "monstre_marcheur_2_v2_c.png",
+    "hash": "ce07449d",
+    "taille": 18224,
     "recent": true,
     "existe": true
    },
@@ -979,9 +979,9 @@
    "lieu": "chemin_creux",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_marcheur_3_b.png",
-    "hash": "18a0050e",
-    "taille": 3560,
+    "fichier": "monstre_marcheur_3_v2_b.png",
+    "hash": "147a5494",
+    "taille": 14018,
     "recent": true,
     "existe": true
    },
@@ -1383,10 +1383,10 @@
      "fragmentChapitre": true,
      "nom": "Les rangées et leurs noms",
      "image": {
-      "fichier": "scene_champ_rangees_a_d.png",
-      "hash": "31581022",
-      "taille": 12688,
-      "recent": false,
+      "fichier": "scene_champ_les_rangees_v2_a.png",
+      "hash": "ecaa522b",
+      "taille": 23864,
+      "recent": true,
       "existe": true
      },
      "description": "",
@@ -1573,9 +1573,9 @@
    "lieu": "champ_des_fixes",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "monstre_pendu_mal_fixe_a.png",
-    "hash": "51ef7252",
-    "taille": 5488,
+    "fichier": "monstre_pendu_mal_fixe_v2_c.png",
+    "hash": "39952ee0",
+    "taille": 11667,
     "recent": true,
     "existe": true
    },
@@ -1704,10 +1704,10 @@
    "lieu": "hameau_des_renoncants",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_landes_hameau_ruelle_b.png",
-    "hash": "9a56edb6",
-    "taille": 26939,
-    "recent": false,
+    "fichier": "scene_hameau_entree_2_v2_a.png",
+    "hash": "e180c1a7",
+    "taille": 19602,
+    "recent": true,
     "existe": true
    },
    "description": "La ruelle étroite du hameau : portes marquées à la craie, volets fermés, aucun chien.",
@@ -1768,9 +1768,9 @@
    "lieu": "hameau_des_renoncants",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_femme_seuil_1_c.png",
-    "hash": "5d50562f",
-    "taille": 4688,
+    "fichier": "monstre_femme_seuil_1_v3_a.png",
+    "hash": "24a118fd",
+    "taille": 18084,
     "recent": true,
     "existe": true
    },
@@ -1860,7 +1860,7 @@
     "fichier": "monstre_femme_seuil_2_c.png",
     "hash": "63108985",
     "taille": 6202,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Elle a sorti la main de sous son châle et tend une mèche de cheveux nouée d'un fil, bras à moitié tendu, sur le même seuil. CHANGE : le bras tendu et l'objet offert dans sa main.",
@@ -1895,9 +1895,9 @@
    "lieu": "hameau_des_renoncants",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_femme_seuil_3_a.png",
-    "hash": "8cc1e216",
-    "taille": 19386,
+    "fichier": "monstre_femme_seuil_3_v2_a.png",
+    "hash": "4b3125f9",
+    "taille": 19702,
     "recent": true,
     "existe": true
    },
@@ -1973,9 +1973,9 @@
    "lieu": "hameau_des_renoncants",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_hameau_entree_3_a.png",
-    "hash": "7e4b2271",
-    "taille": 4616,
+    "fichier": "monstre_hameau_entree_3_v2_a.png",
+    "hash": "84ac4512",
+    "taille": 25419,
     "recent": true,
     "existe": true
    },
@@ -2037,13 +2037,17 @@
      "examen": "— « Parce qu'à la quatrième, on commence à s'habituer à toi. » Le vieux hausse une épaule, presque désolé. « Et on ne peut pas se permettre de s'habituer. »",
      "soupcon": 1,
      "nom": "Demander pourquoi trois aubes",
-     "image": null,
+     "image": {
+      "fichier": "scene_hameau_trois_aubes_v2_c.png",
+      "hash": "d313c2f7",
+      "taille": 28783,
+      "recent": true,
+      "existe": true
+     },
      "description": "",
      "promptImage": "",
-     "etat": "acompleter",
-     "alertes": [
-      "imageManquante"
-     ]
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "suite": "hameau-entree-5",
@@ -2054,7 +2058,7 @@
     "fichier": "monstre_hameau_entree_4_c.png",
     "hash": "5349dd7f",
     "taille": 5063,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "La paume ouverte et vide du vieux, tendue à hauteur de poitrine pour qu'on la regarde — on jure sur rien.",
@@ -2090,9 +2094,9 @@
    "lieu": "hameau_des_renoncants",
    "typeScene": "moment",
    "image": {
-    "fichier": "scene_hameau_entree_5_a.png",
-    "hash": "e012d040",
-    "taille": 10760,
+    "fichier": "scene_hameau_entree_5_v2_a.png",
+    "hash": "0a2a6cff",
+    "taille": 22113,
     "recent": true,
     "existe": true
    },
@@ -2306,9 +2310,9 @@
    "lieu": "hameau_des_renoncants",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_hameau_halte_4_b.png",
-    "hash": "0d3c0338",
-    "taille": 3813,
+    "fichier": "monstre_hameau_halte_4_v2_c.png",
+    "hash": "14ddb57e",
+    "taille": 6611,
     "recent": true,
     "existe": true
    },
@@ -2345,9 +2349,9 @@
    "lieu": "hameau_des_renoncants",
    "typeScene": "moment",
    "image": {
-    "fichier": "scene_hameau_halte_5_b.png",
-    "hash": "49d7b837",
-    "taille": 18040,
+    "fichier": "scene_hameau_halte_5_v2_c.png",
+    "hash": "6c540a40",
+    "taille": 21413,
     "recent": true,
     "existe": true
    },
@@ -2463,7 +2467,7 @@
       "fichier": "scene_tour_escalier_vers_rien_b.png",
       "hash": "e404f4e6",
       "taille": 8038,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -2890,10 +2894,10 @@
      "savoir": "savoir_corde_vive",
      "nom": "Le mur des cordes, au fond",
      "image": {
-      "fichier": "scene_chapelle_mur_cordes_a_d.png",
-      "hash": "61717f26",
-      "taille": 5920,
-      "recent": false,
+      "fichier": "scene_chapelle_mur_cordes_v3_c.png",
+      "hash": "c50f4a0f",
+      "taille": 10553,
+      "recent": true,
       "existe": true
      },
      "description": "",
@@ -3018,10 +3022,10 @@
    "lieu": "chapelle_des_cordes",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_veuve_cordes_a.png",
-    "hash": "87115831",
-    "taille": 18719,
-    "recent": false,
+    "fichier": "monstre_veuve_cordes_v2_a.png",
+    "hash": "0dd638cf",
+    "taille": 19967,
+    "recent": true,
     "existe": true
    },
    "description": "Événement de la Chapelle : la Veuve aux Cordes, assise, qui refait sans fin le même nœud. Derrière elle, sous verre, la corde coupée sans nom.",
@@ -3076,9 +3080,9 @@
    "lieu": "puits_condamne",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_puits_condamne_a.png",
-    "hash": "4c2af433",
-    "taille": 26792,
+    "fichier": "scene_puits_condamne_v2_a.png",
+    "hash": "d7dd21eb",
+    "taille": 29529,
     "recent": true,
     "existe": true
    },
@@ -3642,9 +3646,9 @@
      "savoir": "savoir_reflet",
      "nom": "L'eau",
      "image": {
-      "fichier": "scene_mare_eau_reflet_b.png",
-      "hash": "239daa3e",
-      "taille": 2768,
+      "fichier": "scene_mare_eau_reflet_v2_b.png",
+      "hash": "a3a22e02",
+      "taille": 14472,
       "recent": true,
       "existe": true
      },
@@ -3784,9 +3788,9 @@
      "donneObjet": "fruit-cendre",
      "nom": "Les fruits, dans les rangs",
      "image": {
-      "fichier": "scene_verger_fruits_cendre_a.png",
-      "hash": "c3e8036d",
-      "taille": 6532,
+      "fichier": "scene_verger_fruits_cendre_v2_c.png",
+      "hash": "de3b4985",
+      "taille": 31026,
       "recent": true,
       "existe": true
      },
@@ -3892,9 +3896,9 @@
    "lieu": "verger_noir",
    "typeScene": "moment",
    "image": {
-    "fichier": "scene_verger_noir_2_c.png",
-    "hash": "28686cc9",
-    "taille": 5319,
+    "fichier": "scene_verger_noir_2_v2_b.png",
+    "hash": "baf9592d",
+    "taille": 19147,
     "recent": true,
     "existe": true
    },
@@ -4017,7 +4021,7 @@
     "fichier": "monstre_epoux_2_c.png",
     "hash": "7d46a559",
     "taille": 5053,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "L'un des deux s'est redressé entre les rangs et te tend les mains ouvertes et vides, en demande. CHANGE : ils ne sont plus tous deux courbés — l'un est debout, face à toi.",
@@ -4055,7 +4059,7 @@
     "fichier": "monstre_epoux_3_c.png",
     "hash": "b837495f",
     "taille": 11528,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Les deux silhouettes de nouveau courbées, vues de dos, qui s'éloignent entre les rangs. CHANGE : on les quitte — vus de dos, repris au travail.",
@@ -4154,7 +4158,7 @@
       "fichier": "monstre_homme_guerite_c.png",
       "hash": "a2a2a658",
       "taille": 3891,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -4291,7 +4295,7 @@
     "fichier": "objet_lanterne_veilleur_2_b.png",
     "hash": "2f7722d1",
     "taille": 7402,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Il a décroché sa lanterne et la tend à moitié, suspendue entre vous deux, le visage éclairé par en dessous. CHANGE : la lanterne a quitté son clou et devient le centre de l'image.",
@@ -4329,7 +4333,7 @@
     "fichier": "objet_lanterne_veilleur_3_c.png",
     "hash": "94b09b71",
     "taille": 9679,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Il note ton passage sur une planche clouée dans sa guérite, sans lever les yeux ; le portillon sud est ouvert derrière lui. CHANGE : le portillon est ouvert et il écrit — la lanterne n'est plus dans ses mains.",
@@ -4386,7 +4390,7 @@
     "fichier": "monstre_palissade_sud_2_c.png",
     "hash": "e6c5355d",
     "taille": 4463,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Événement de la Palissade : l'Appelé, toujours vu de dos, qui marche vers la Descente sans se retourner.",
@@ -4446,10 +4450,10 @@
    "lieu": "hameau_des_renoncants",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_petit_tribunal_a.png",
-    "hash": "0342cdc2",
-    "taille": 31898,
-    "recent": false,
+    "fichier": "scene_proces_du_heros_v4_c.png",
+    "hash": "9b4d24d9",
+    "taille": 23824,
+    "recent": true,
     "existe": true
    },
    "description": "Scène de déroutage au dernier palier de Soupçon : le hameau te juge. Les trois bancs pleins, tous les visages tournés vers toi, la chaire vide.",
@@ -4915,6 +4919,12 @@
    "recent": false
   },
   {
+   "fichier": "scene_puits_condamne_a.png",
+   "hash": "4c2af433",
+   "taille": 26792,
+   "recent": true
+  },
+  {
    "fichier": "scene_transition_arrivee_hameau_b.png",
    "hash": "9a67d38f",
    "taille": 24021,
@@ -4973,9 +4983,9 @@
   "scenes": 60,
   "pointsInteret": 38,
   "choix": 142,
-  "illustrations": 187,
+  "illustrations": 209,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 48
+  "reserve": 49
  }
 }
