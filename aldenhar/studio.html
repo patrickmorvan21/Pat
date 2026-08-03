@@ -455,7 +455,7 @@ const LIB_NIVEAU={1:"Niveau 1 — les lieux de la zone",2:"Niveau 2 — un lieu 
   3:"Niveau 3 — une scène et ses transitions",9:"Mode audit — tout déplié"};
 
 let zx=0,zy=0,zs=1;
-let noeuds=[], arcs=[], posLieu={};
+let noeuds=[], arcs=[], posLieu={}, boitesRegion=[], regionsDecalees=[];
 
 /* Disposition des LIEUX : leurs coordonnées viennent de la carte dessinée à la
    main dans l'atelier. On les met à l'échelle pour que deux grandes cartes ne
@@ -463,116 +463,189 @@ let noeuds=[], arcs=[], posLieu={};
 function disposerLieux(){
   const L=(D.zones.find(z=>z.id===zoneActive)||D.zones[0]).lieux;
   const r=$("#centre").getBoundingClientRect();
-  /* CIBLE : que la carte tienne dans le viewport à un zoom ≈ 1, pour que les
-     noms de lieu (14,5 px) restent lisibles SANS zoomer. Mettre à l'échelle
-     globalement pour éviter les chevauchements écartait tout et faisait
-     retomber le zoom d'ajustement à 0,43 — des noms à 6 px. */
   const CIBLE_W=Math.max(900,(r.width||1300)-70), CIBLE_H=Math.max(620,(r.height||900)-130);
   // ⚠️ CH = la hauteur MAXIMALE d'une carte, pas sa hauteur moyenne : un nom
-  // qui passe sur deux lignes fait 120 px là où la carte de base en fait 94.
-  // Séparer avec 104 laissait cinq recouvrements — mesuré, pas supposé.
-  const CW=286, CH=124, MARGE=26;
+  // sur deux lignes fait 120 px là où la carte de base en fait 94.
+  const CW=286, CH=124, MARGE=26, PAD=26, GAP=18;
 
-  const ok=L.filter(l=>l.x!=null&&l.y!=null);
-  const pts=L.map((l,i)=>{
-    if(l.x!=null&&l.y!=null) return {id:l.id,x:l.x,y:l.y};
-    return {id:l.id,x:(i%4)*300,y:Math.floor(i/4)*220};   // sans coordonnées : grille
-  });
-  // 1. + 2. La séparation ÉCARTE, donc elle agrandit la boîte : normaliser
-  //    directement à la taille cible puis séparer donnait un résultat 1,5×
-  //    trop large, et le zoom d'ajustement retombait à 0,66 (noms à 9 px).
-  //    On cherche donc le facteur de départ qui, APRÈS séparation, rend une
-  //    boîte de la taille du viewport. Quinze points : le balayage est gratuit.
-  const brut=pts.map(p=>({id:p.id,x:p.x,y:p.y}));
-  const xs=brut.map(p=>p.x), ys=brut.map(p=>p.y);
-  const bx0=Math.min(...xs),bx1=Math.max(...xs),by0=Math.min(...ys),by1=Math.max(...ys);
+  /* LA RÉGION EST PLACÉE COMME UN SEUL BLOC.
+     Une région dessinée après coup autour de ses membres est un RECTANGLE :
+     il englobe fatalement des lieux qui n'en font pas partie, et affirme alors
+     que la Borne Frontière est dans le Hameau. On réserve donc sa surface DÈS
+     le placement — les autres lieux se répartissent autour, jamais dedans. */
+  const REG=(D.regions||[]).map(rg=>({
+    rg, ids:L.filter(l=>(l.scenes||[]).some(sc=>rg.scenes.includes(sc))).map(l=>l.id)
+  })).filter(g=>g.ids.length>1);
+  const membres=new Set(REG.flatMap(g=>g.ids));
 
-  const essai=(f)=>{
-    const kx=(bx1-bx0)>1?CIBLE_W*f/(bx1-bx0):1, ky=(by1-by0)>1?CIBLE_H*f/(by1-by0):1;
-    const q=brut.map(p=>({id:p.id,x:(p.x-bx0)*kx,y:(p.y-by0)*ky}));
-    // Membres de chaque région, par id de lieu.
-    const groupes=(D.regions||[]).map(r=>
-      L.filter(l=>(l.scenes||[]).some(sc=>r.scenes.includes(sc))).map(l=>l.id)
-    ).filter(g=>g.length>1);
-    for(let it=0; it<400; it++){
-      let bouge=false;
-      // COHÉSION : chaque région se resserre sur son barycentre — sans ça la
-      // séparation éparpille le Hameau à travers toute la zone.
-      // ⚠️ Elle s'ARRÊTE à mi-parcours : cohésion et séparation se contredisent,
-      // et si la cohésion tire encore au dernier tour, on termine avec des
-      // cartes qui se recouvrent. Le dernier mot revient à la séparation.
-      if(it<200) groupes.forEach(g=>{
-        const m=g.map(id=>q.find(p=>p.id===id)).filter(Boolean);
-        if(m.length<2) return;
-        const cx=m.reduce((a,p)=>a+p.x,0)/m.length, cy=m.reduce((a,p)=>a+p.y,0)/m.length;
-        m.forEach(p=>{ p.x+=(cx-p.x)*0.14; p.y+=(cy-p.y)*0.14; });
-      });
-      // SÉPARATION : deux cartes ne doivent jamais se recouvrir. On repousse
-      // sur l'axe le MOINS coûteux, pour que la forme d'ensemble bouge peu.
-      for(let i=0;i<q.length;i++) for(let j=i+1;j<q.length;j++){
-        const a=q[i], b=q[j];
-        let dx=b.x-a.x, dy=b.y-a.y;
-        // Deux cartes exactement superposées : sans ce coup de pouce, la
-        // séparation n'a aucune direction et elles restent l'une sur l'autre.
-        if(dx===0 && dy===0){ dx=(i%2?1:-1)*0.5; dy=(j%2?1:-1)*0.5; a.x-=dx; b.x+=dx; a.y-=dy; b.y+=dy; }
-        const cx=(CW+MARGE)-Math.abs(dx), cy=(CH+MARGE)-Math.abs(dy);
-        if(cx<=0||cy<=0) continue;
-        bouge=true;
-        if(cx/(CW+MARGE) < cy/(CH+MARGE)){ const d=(dx>=0?1:-1)*cx/2; a.x-=d; b.x+=d; }
-        else { const d=(dy>=0?1:-1)*cy/2; a.y-=d; b.y+=d; }
-      }
-      // ⚠️ On ne peut sortir qu'APRÈS la phase de cohésion : sinon la boucle
-      // s'arrête au premier tour où la séparation ne trouve rien, alors que la
-      // cohésion vient de rapprocher les cartes — et la disposition finale
-      // garde les recouvrements qu'elle vient de créer.
-      if(!bouge && it>=200) break;
-    }
-    const qx=q.map(p=>p.x), qy=q.map(p=>p.y);
-    // Cohésion, exclusion et séparation se contredisent : il faut MESURER si
-    // la disposition obtenue est propre, jamais l'espérer.
-    let chev=0;
-    for(let i=0;i<q.length;i++) for(let j=i+1;j<q.length;j++){
-      if(Math.abs(q[j].x-q[i].x)<CW+8 && Math.abs(q[j].y-q[i].y)<CH+8) chev++;
-    }
-    return {q, chev, w:Math.max(...qx)-Math.min(...qx)+CW, h:Math.max(...qy)-Math.min(...qy)+CH};
+  const cent=(ids)=>{
+    const m=ids.map(id=>L.find(l=>l.id===id)).filter(l=>l&&l.x!=null);
+    if(!m.length) return {x:0,y:0};
+    return {x:m.reduce((a,l)=>a+l.x,0)/m.length, y:m.reduce((a,l)=>a+l.y,0)/m.length};
   };
+
+  const items=[];
+  L.forEach((l,i)=>{
+    if(membres.has(l.id)) return;
+    const p=(l.x!=null&&l.y!=null)?{x:l.x,y:l.y}:{x:(i%4)*300,y:Math.floor(i/4)*220};
+    items.push({type:"lieu",id:l.id,w:CW,h:CH,x:p.x,y:p.y});
+  });
+  REG.forEach(g=>{
+    const cols=Math.min(2,g.ids.length), rows=Math.ceil(g.ids.length/cols);
+    const w=cols*(CW+GAP)-GAP+PAD*2, h=rows*(CH+GAP)-GAP+PAD*2+10;
+    items.push({type:"region",g,cols,w,h,...cent(g.ids)});
+  });
+
   /* On balaie le facteur de départ et on garde la MEILLEURE disposition :
      d'abord celles sans aucun chevauchement, puis parmi elles celle dont le
      zoom d'ajustement approche le plus 1 (donc des noms à taille réelle). */
+  const xs=items.map(p=>p.x), ys=items.map(p=>p.y);
+  const bx0=Math.min(...xs),bx1=Math.max(...xs),by0=Math.min(...ys),by1=Math.max(...ys);
+  const essai=f=>{
+    const kx=(bx1-bx0)>1?CIBLE_W*f/(bx1-bx0):1, ky=(by1-by0)>1?CIBLE_H*f/(by1-by0):1;
+    const q=items.map(it=>({...it,x:(it.x-bx0)*kx,y:(it.y-by0)*ky}));
+    for(let it=0; it<400; it++){
+      let bouge=false;
+      for(let i=0;i<q.length;i++) for(let j=i+1;j<q.length;j++){
+        const a=q[i], b=q[j];
+        let dx=(b.x+b.w/2)-(a.x+a.w/2), dy=(b.y+b.h/2)-(a.y+a.h/2);
+        if(dx===0&&dy===0){ dx=(i%2?1:-1)*0.5; dy=(j%2?1:-1)*0.5; }
+        const cx=(a.w+b.w)/2+MARGE-Math.abs(dx), cy=(a.h+b.h)/2+MARGE-Math.abs(dy);
+        if(cx<=0||cy<=0) continue;
+        bouge=true;
+        // On repousse sur l'axe le MOINS coûteux : la forme d'ensemble bouge peu.
+        if(cx/((a.w+b.w)/2) < cy/((a.h+b.h)/2)){ const d=(dx>=0?1:-1)*cx/2; a.x-=d; b.x+=d; }
+        else { const d=(dy>=0?1:-1)*cy/2; a.y-=d; b.y+=d; }
+      }
+      if(!bouge) break;
+    }
+    let chev=0;
+    for(let i=0;i<q.length;i++) for(let j=i+1;j<q.length;j++){
+      const a=q[i],b=q[j];
+      if(a.x<b.x+b.w&&b.x<a.x+a.w&&a.y<b.y+b.h&&b.y<a.y+a.h) chev++;
+    }
+    const qx=q.map(p=>p.x), qy=q.map(p=>p.y+p.h);
+    return {q,chev,w:Math.max(...q.map(p=>p.x+p.w))-Math.min(...qx),
+            h:Math.max(...qy)-Math.min(...q.map(p=>p.y))};
+  };
   let best=null;
-  for(let f=0.25; f<=1.401; f+=0.05){
+  for(let f=0.2; f<=1.601; f+=0.05){
     const e=essai(f);
     e.z=Math.min(1, Math.min(CIBLE_W/e.w, CIBLE_H/e.h));
-    if(!best) { best=e; continue; }
-    const mieux = (e.chev===0 && best.chev>0) ||
-      (((e.chev===0)===(best.chev===0)) && (e.chev<best.chev ||
-        (e.chev===best.chev && e.z>best.z)));
+    if(!best){ best=e; continue; }
+    const mieux=(e.chev===0&&best.chev>0) ||
+      (((e.chev===0)===(best.chev===0)) && (e.chev<best.chev||(e.chev===best.chev&&e.z>best.z)));
     if(mieux) best=e;
   }
-  if(best.chev) console.warn("Studio : disposition avec",best.chev,"chevauchement(s)");
-  pts.length=0; best.q.forEach(p=>pts.push(p));
+  if(best.chev) console.warn("Studio :",best.chev,"chevauchement(s) résiduel(s)");
 
-  posLieu={}; pts.forEach(p=>{ posLieu[p.id]={x:p.x,y:p.y}; });
-  void ok;
+  // Développement : la super-boîte redevient ses membres, rangés dedans.
+  posLieu={}; boitesRegion=[];
+  best.q.forEach(it=>{
+    if(it.type==="lieu"){ posLieu[it.id]={x:it.x,y:it.y}; return; }
+    boitesRegion.push({nom:it.g.rg.nom,x:it.x,y:it.y,w:it.w,h:it.h,ids:it.g.ids});
+    it.g.ids.forEach((id,k)=>{
+      posLieu[id]={x:it.x+PAD+(k%it.cols)*(CW+GAP), y:it.y+PAD+10+Math.floor(k/it.cols)*(CH+GAP)};
+    });
+  });
+}
+
+/* Les SÉQUENCES d'un lieu, d'après `suite` (le chaînage écrit dans le jeu).
+   Un lieu n'est pas un tas de scènes : le Hameau en compte quinze, réparties
+   en cinq séquences (l'entrée, la Femme au Seuil, la halte, la nuit dehors, le
+   procès). Les empiler dans une seule colonne, comme le faisait la première
+   version, cachait exactement ce qu'il faut voir. */
+function sequences(l){
+  const ss=(l.scenes||[]).map(id=>D.scenes.find(x=>x.id===id)).filter(Boolean);
+  const dedans=new Set(ss.map(x=>x.id));
+  const suivant={}; ss.forEach(x=>{ if(x.suite&&dedans.has(x.suite)) suivant[x.id]=x.suite; });
+  const cibles=new Set(Object.values(suivant));
+  const racines=ss.filter(x=>!cibles.has(x.id)).map(x=>x.id);
+  const vus=new Set(), out=[];
+  racines.forEach(r=>{
+    const ch=[]; let cur=r;
+    // Une queue partagée (la Femme au Seuil rejoint l'entrée du Hameau) n'est
+    // placée qu'UNE fois ; la flèche montrera la jonction.
+    while(cur && !vus.has(cur)){ vus.add(cur); ch.push(cur); cur=suivant[cur]; }
+    if(ch.length) out.push(ch);
+  });
+  ss.forEach(x=>{ if(!vus.has(x.id)){ vus.add(x.id); out.push([x.id]); } });
+  return out;
 }
 
 function construire(){
   const zone=D.zones.find(z=>z.id===zoneActive)||D.zones[0];
   noeuds=[];
   zone.lieux.forEach(l=>{
-    const p=posLieu[l.id], ouvert = audit || l.id===lieuOuvert;
+    const p=posLieu[l.id]; if(!p) return;
+    const ouvert = audit || l.id===lieuOuvert;
     noeuds.push({id:l.id,kind:"lieu",x:p.x,y:p.y,w:286,h:124,data:l,ouvert});
     if(!ouvert) return;
-    // Le lieu déplié : ses scènes en colonne, leurs points d'intérêt à droite.
-    const ss=(l.scenes||[]).map(id=>D.scenes.find(s=>s.id===id)).filter(Boolean);
-    let y=p.y+146;
-    ss.forEach(s=>{
-      noeuds.push({id:s.id,kind:natureScene(s),x:p.x+24,y,w:198,h:42,data:s,lieu:l.id});
-      s.pointsInteret.forEach((poi,j)=>{
-        noeuds.push({id:poi.id,kind:"poi",x:p.x+250,y:y+j*34,w:174,h:30,data:poi,parent:s,lieu:l.id});
+    /* Le lieu déplié : UNE COLONNE PAR SÉQUENCE, les scènes dans l'ordre du
+       jeu, leurs points d'intérêt collés à droite. On lit d'un coup d'œil
+       combien de fils partent du lieu et où ils se rejoignent. */
+    let x=p.x+18;
+    sequences(l).forEach(ch=>{
+      const scenes=ch.map(id=>D.scenes.find(s=>s.id===id)).filter(Boolean);
+      const avecPoi=scenes.some(s=>s.pointsInteret.length);
+      let y=p.y+150;
+      scenes.forEach(s=>{
+        noeuds.push({id:s.id,kind:natureScene(s),x,y,w:198,h:44,data:s,lieu:l.id});
+        s.pointsInteret.forEach((poi,k)=>{
+          noeuds.push({id:poi.id,kind:"poi",x:x+210,y:y+k*34,w:174,h:30,data:poi,parent:s,lieu:l.id});
+        });
+        y += Math.max(60, s.pointsInteret.length*34+18);
       });
-      y += Math.max(52, s.pointsInteret.length*34+14);
+      x += avecPoi ? 410 : 232;
     });
+  });
+}
+
+function ecarterDuDeplie(){
+  if(audit || !lieuOuvert) { regionsDecalees=boitesRegion.map(b=>({...b})); return; }
+  const b=boiteDeplie(lieuOuvert); if(!b) { regionsDecalees=boitesRegion.map(b=>({...b})); return; }
+  const MG=34;
+  const pousse=(o)=>{
+    const w=o.w!=null?o.w:286, h=o.h!=null?o.h:124;
+    if(o.x+w<b.x0-MG||o.x>b.x0+b.w+MG||o.y+h<b.y0-MG||o.y>b.y0+b.h+MG) return;
+    const dG=o.x+w-(b.x0-MG), dD=(b.x0+b.w+MG)-o.x;
+    const dH=o.y+h-(b.y0-MG), dB=(b.y0+b.h+MG)-o.y;
+    const mn=Math.min(dG,dD,dH,dB);
+    if(mn===dG) o.x-=dG; else if(mn===dD) o.x+=dD;
+    else if(mn===dH) o.y-=dH; else o.y+=dB;
+  };
+  /* Le lieu ouvert et son contenu ne bougent pas ; tout le reste s'écarte.
+     ⚠️ Un seul passage ne suffit pas : les lieux repoussés hors de la boîte se
+     percutent ENTRE EUX (mesuré : 7 chevauchements sur le Hameau ouvert, qui
+     déplie 15 scènes en 5 colonnes). On alterne donc « sortir de la boîte » et
+     « ne pas se marcher dessus » jusqu'à ce que plus rien ne bouge. */
+  const autres=noeuds.filter(n=>n.kind==="lieu" && n.id!==lieuOuvert);
+  for(let it=0; it<80; it++){
+    let bouge=false;
+    autres.forEach(n=>{ const ax=n.x, ay=n.y; pousse(n); if(n.x!==ax||n.y!==ay) bouge=true; });
+    for(let i=0;i<autres.length;i++) for(let j=i+1;j<autres.length;j++){
+      const a=autres[i], b2=autres[j];
+      let dx=(b2.x+b2.w/2)-(a.x+a.w/2), dy=(b2.y+b2.h/2)-(a.y+a.h/2);
+      if(dx===0&&dy===0){ dx=(i%2?1:-1)*0.5; dy=0.5; }
+      const cx=(a.w+b2.w)/2+22-Math.abs(dx), cy=(a.h+b2.h)/2+22-Math.abs(dy);
+      if(cx<=0||cy<=0) continue;
+      bouge=true;
+      if(cx/((a.w+b2.w)/2) < cy/((a.h+b2.h)/2)){ const d=(dx>=0?1:-1)*cx/2; a.x-=d; b2.x+=d; }
+      else { const d=(dy>=0?1:-1)*cy/2; a.y-=d; b2.y+=d; }
+    }
+    if(!bouge) break;
+  }
+  regionsDecalees=boitesRegion.map(r=>{
+    const c={...r};
+    if(!r.ids.includes(lieuOuvert)) pousse(c);
+    else { // la région contient le lieu ouvert : elle épouse ses membres
+      const m=noeuds.filter(n=>n.kind==="lieu"&&r.ids.includes(n.id));
+      const x0=Math.min(...m.map(n=>n.x),b.x0)-26, y0=Math.min(...m.map(n=>n.y),b.y0)-36;
+      c.x=x0; c.y=y0;
+      c.w=Math.max(...m.map(n=>n.x+n.w),b.x0+b.w)+26-x0;
+      c.h=Math.max(...m.map(n=>n.y+n.h),b.y0+b.h)+26-y0;
+    }
+    return c;
   });
 }
 
@@ -603,29 +676,35 @@ function calculerArcs(){
 const lieSel=a=>selection && (a.a.id===selection.id||a.b.id===selection.id);
 
 function rendu(){
-  construire(); calculerArcs();
+  construire();
+  /* ⚠️ Un lieu déplié occupe beaucoup plus de place que sa carte repliée : ses
+     colonnes de séquences débordent sur les lieux voisins (défaut visible sur
+     la capture du Puits Condamné). On écarte donc TEMPORAIREMENT les autres
+     lieux — et le cadre de région — hors de la boîte dépliée. Rien n'est
+     mémorisé : refermer le lieu rend la carte à sa disposition d'origine. */
+  ecarterDuDeplie();
+  calculerArcs();
   const monde=$("#monde"), svg=$("#fondSvg");
   monde.querySelectorAll(".nd,.deplie,.region").forEach(e=>e.remove());
   svg.innerHTML=""; svg.setAttribute("width","12000"); svg.setAttribute("height","8000");
+  /* Des FLÈCHES, pas des traits : « quelle conséquence suit mon action » se lit
+     dans le SENS du lien. Un trait nu ne dit pas qui mène à qui. */
+  svg.insertAdjacentHTML("beforeend",`<defs>
+    <marker id="fl" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
+      orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="rgba(255,255,255,.45)"/></marker>
+    <marker id="flSel" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
+      orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#e0632a"/></marker>
+    <marker id="flSec" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6"
+      orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="rgba(255,255,255,.22)"/></marker>
+  </defs>`);
 
-  // RÉGION (le Hameau) — la seule enclave géographique réelle du jeu.
-  // ⚠️ Un cadre est un RECTANGLE : autour de 6 lieux, il en englobe fatalement
-  // d'autres selon la disposition. On ne le dessine donc QUE s'il ne contient
-  // aucun intrus ; sinon chaque carte membre porte un badge. Un cadre qui
-  // contiendrait la Borne Frontière dirait que la Borne est dans le Hameau.
-  const badgeRegion={};
-  (D.regions||[]).forEach(r=>{
-    const dedans=noeuds.filter(n=>n.kind==="lieu" && (n.data.scenes||[]).some(sc=>r.scenes.includes(sc)));
-    if(dedans.length<2) return;
-    const ids=new Set(dedans.map(n=>n.id));
-    const x0=Math.min(...dedans.map(n=>n.x))-30, y0=Math.min(...dedans.map(n=>n.y))-42;
-    const x1=Math.max(...dedans.map(n=>n.x+n.w))+30, y1=Math.max(...dedans.map(n=>n.y+n.h))+30;
-    const intrus=noeuds.some(n=>n.kind==="lieu" && !ids.has(n.id) &&
-      n.x+n.w>x0 && n.x<x1 && n.y+n.h>y0 && n.y<y1);
-    if(intrus){ dedans.forEach(n=>{badgeRegion[n.id]=r.nom;}); return; }
+  /* RÉGION — le Hameau des Renonçants, seule enclave géographique du jeu.
+     Sa surface est RÉSERVÉE au placement (voir disposerLieux) : le cadre ne
+     peut donc plus contenir un lieu qui n'en fait pas partie. */
+  regionsDecalees.forEach(b=>{
     const el=document.createElement("div"); el.className="region";
-    el.style.cssText=`left:${x0}px;top:${y0}px;width:${x1-x0}px;height:${y1-y0}px`;
-    el.innerHTML=`<span>${esc(r.nom)}</span>`;
+    el.style.cssText=`left:${b.x}px;top:${b.y}px;width:${b.w}px;height:${b.h}px`;
+    el.innerHTML=`<span>${esc(b.nom)}</span>`;
     monde.appendChild(el);
   });
 
@@ -648,8 +727,19 @@ function rendu(){
     const sel=lieSel(t);
     if(t.type==="conditionnel" && !sel && !audit) return;
     const st=ST[t.type]||ST.attache;
-    const x1=t.a.x+t.a.w/2, y1=t.a.y+t.a.h/2, x2=t.b.x+t.b.w/2, y2=t.b.y+t.b.h/2, mx=(x1+x2)/2;
-    const d=`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`;
+    // Deux scènes d'une même colonne : trait droit de bord à bord, pas une
+    // courbe entre deux centres — une bézier verticale se cache sous les cartes.
+    const memeColonne = Math.abs(t.a.x-t.b.x)<6 && t.b.y>t.a.y;
+    let x1,y1,x2,y2,d;
+    if(memeColonne){
+      x1=x2=t.a.x+t.a.w/2; y1=t.a.y+t.a.h; y2=t.b.y;
+      d=`M${x1},${y1} L${x2},${y2}`;
+    }else{
+      x1=t.a.x+t.a.w; y1=t.a.y+t.a.h/2; x2=t.b.x; y2=t.b.y+t.b.h/2;
+      if(t.b.x<t.a.x){ x1=t.a.x; x2=t.b.x+t.b.w; }
+      const mx=(x1+x2)/2;
+      d=`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`;
+    }
     if(t.via||t.type==="principal"){
       const hit=document.createElementNS("http://www.w3.org/2000/svg","path");
       hit.setAttribute("d",d); hit.setAttribute("fill","none");
@@ -665,6 +755,8 @@ function rendu(){
     p.setAttribute("stroke-width", sel?2:st.w);
     if(st.d && !sel) p.setAttribute("stroke-dasharray",st.d);
     if(selection && !sel) p.setAttribute("opacity",".3");
+    if(t.type!=="attache")
+      p.setAttribute("marker-end", sel?"url(#flSel)":(t.type==="principal"?"url(#fl)":"url(#flSec)"));
     svg.appendChild(p);
   });
 
@@ -679,7 +771,7 @@ function rendu(){
     if(selection&&selection.id===n.id) el.classList.add("sel");
     else if(selection && niveau()===3 && !voisins.has(n.id) && n.kind!=="lieu") el.classList.add("attenue");
     el.style.cssText=`left:${n.x}px;top:${n.y}px`;
-    el.innerHTML = n.kind==="lieu" ? carteLieu(n.data, badgeRegion[n.id]) : carteInterne(n);
+    el.innerHTML = n.kind==="lieu" ? carteLieu(n.data) : carteInterne(n);
     el.onclick=e=>{ e.stopPropagation();
       if(n.kind==="lieu") ouvrirLieu(n.id); else selectionner(n.kind,n.id); };
     monde.appendChild(el);
@@ -703,10 +795,9 @@ function badges(o){
     +(a.length?`<div class="alertes">${a.map(x=>`<span title="${x.lib}">${x.ico}</span>`).join("")}</div>`:"");
 }
 
-function carteLieu(l, region){
+function carteLieu(l){
   const img=urlImg(l.illustration);
-  const roles=(l.roles||[]).map(r=>`<span class="${r}">${ROLE[r]}</span>`).join("")
-    + (region?`<span title="Enclave géographique">${esc(region.replace(/^(Le|La|Les) /,""))}</span>`:"");
+  const roles=(l.roles||[]).map(r=>`<span class="${r}">${ROLE[r]}</span>`).join("");
   const io=[];
   if(l.dansPool) io.push("atteint par la traversée"); else io.push("séquence scriptée");
   if((l.sorties||[]).length) io.push(`${l.sorties.length} sortie${l.sorties.length>1?"s":""}`);
