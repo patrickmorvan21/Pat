@@ -123,16 +123,37 @@ def bloc_apres(src: str, motif: str) -> tuple[str, int] | None:
 
 
 def chaines(txt: str) -> list[str]:
-    """Les littéraux entre guillemets doubles, concaténations `+` recollées."""
+    """La LISTE des littéraux entre guillemets doubles, un par élément."""
     return [
         s.replace('\\"', '"').replace("\\'", "'").replace("\\n", "\n")
         for s in re.findall(r'"((?:[^"\\]|\\.)*)"', txt)
     ]
 
 
+# Un littéral de chaîne, et une suite de littéraux recollés par `+`.
+LITTERAL = r'"(?:[^"\\]|\\.)*"'
+CONCAT = rf"{LITTERAL}(?:\s*\+\s*{LITTERAL})*"
+
+
+def recoller(txt: str) -> str:
+    """Recolle « "abc " + "def" » en « abc def ».
+
+    ⚠️ Sans espace ajoutée : le .ts coupe ses longues lignes en laissant
+    TOUJOURS l'espace à la fin du fragment (vérifié : 562 fragments sur 562).
+    Joindre avec une espace produirait une double espace partout."""
+    return "".join(chaines(txt))
+
+
 def texte_de(txt: str, champ: str) -> str | None:
-    m = re.search(rf'{champ}:\s*("(?:[^"\\]|\\.)*")', txt)
-    return chaines(m.group(1))[0] if m else None
+    """La valeur texte d'un champ, concaténations comprises.
+
+    ⚠️ PIÈGE qui a coupé tout un export (relevé par Patrick le 03/08 : « je
+    n'ai pas tout le texte ») : le .ts écrit ses textes longs en plusieurs
+    morceaux, « "…" + "…" + "…" ». Une regex qui ne capture qu'un littéral
+    rend le PREMIER morceau et perd le reste — silencieusement, avec une
+    phrase qui s'arrête au milieu. Il faut capturer toute la chaîne."""
+    m = re.search(rf"{champ}:\s*({CONCAT})", txt)
+    return recoller(m.group(1)) if m else None
 
 
 def nombre_de(txt: str, champ: str) -> float | None:
@@ -149,6 +170,38 @@ def booleen_de(txt: str, champ: str) -> bool:
 STATS = ("COURAGE", "RUSE", "INSTINCT", "EMPATHIE")
 
 
+def args_de_haut_niveau(txt: str) -> list[str]:
+    """Découpe une liste d'arguments sur les virgules de premier niveau."""
+    out, cur, prof, mode, q, esc = [], "", 0, None, "", False
+    for c in txt:
+        if mode == "str":
+            cur += c
+            if esc:
+                esc = False
+            elif c == "\\":
+                esc = True
+            elif c == q:
+                mode = None
+            continue
+        if c in "\"'`":
+            mode, q = "str", c
+            cur += c
+        elif c in "([{":
+            prof += 1
+            cur += c
+        elif c in ")]}":
+            prof -= 1
+            cur += c
+        elif c == "," and prof == 0:
+            out.append(cur)
+            cur = ""
+        else:
+            cur += c
+    if cur.strip():
+        out.append(cur)
+    return out
+
+
 def lire_outcomes(txt: str) -> dict:
     """`outcomes(crit, réussite, échec, funeste)` → les quatre proses.
 
@@ -161,7 +214,11 @@ def lire_outcomes(txt: str) -> dict:
         brut = m.group(1) if m else txt
     else:
         brut = b[0]
-    parts = chaines(brut)
+    # ⚠️ Découper par ARGUMENT, pas par littéral : une issue écrite en deux
+    # morceaux (« "…" + "…" ») compterait pour deux et décalerait toutes les
+    # suivantes — l'échec passerait pour la réussite. Aucun appel ne le fait
+    # aujourd'hui, mais le jour où ça arrive l'erreur serait invisible.
+    parts = [recoller(a) for a in args_de_haut_niveau(brut) if '"' in a]
     cles = ["critique", "reussite", "echec", "funeste"]
     return {k: (parts[i] if i < len(parts) else "") for i, k in enumerate(cles)}
 
@@ -328,11 +385,11 @@ def paragraphes(brut: str) -> list[str]:
             prof -= 1
             if prof == 0:
                 if cur.strip():
-                    out.append(" ".join(chaines(cur)))
+                    out.append(recoller(cur))
                 break
         elif c == "," and prof == 1:
             if cur.strip():
-                out.append(" ".join(chaines(cur)))
+                out.append(recoller(cur))
             cur = ""
         else:
             cur += c
