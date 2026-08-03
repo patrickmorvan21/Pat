@@ -475,11 +475,21 @@ def main() -> int:
     mreg = re.search(r"export const HAMEAU_INTERIOR = \[([\s\S]*?)\];", src_ts)
     regions = []
     if mreg:
-        regions.append({
-            "id": "hameau",
-            "nom": "Le Hameau des Renonçants",
-            "scenes": re.findall(r'"([^"]+)"', mreg.group(1)),
-        })
+        # ⚠️ `HAMEAU_INTERIOR` est une liste de GAMEPLAY : les lieux que la
+        # traversée ne peut pas tirer tant qu'on n'est pas entré au village. Le
+        # Hameau lui-même n'y figure PAS — il est la porte d'entrée, il doit
+        # rester tirable avant. Le prendre pour une liste géographique laissait
+        # « Le Hameau des Renonçants » (15 scènes) hors de son propre cadre.
+        # La région du Studio ajoute donc le lieu qui porte la séquence
+        # d'entrée / de halte (`hameauEntree` · `hameauHalte`).
+        interieur = re.findall(r'"([^"]+)"', mreg.group(1))
+        porte = {
+            s.get("lieu")
+            for s in scenes
+            if (s.get("hameauEntree") or s.get("hameauHalte")) and s.get("lieu")
+        }
+        regions.append({"id": "hameau", "nom": "Le Hameau des Renonçants",
+                        "scenes": interieur, "lieuxEnPlus": sorted(porte)})
 
     # ── LA TAXONOMIE EN QUATRE DIMENSIONS (spec Patrick 30/07) ──────────
     # Elles ne doivent JAMAIS être confondues :
