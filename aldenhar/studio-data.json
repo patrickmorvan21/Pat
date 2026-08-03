@@ -13,6 +13,21 @@
    ],
    "lieuxEnPlus": [
     "hameau_des_renoncants"
+   ],
+   "boite": {
+    "x": 810,
+    "y": 620,
+    "w": 980,
+    "h": 660
+   },
+   "lieux": [
+    "chapelle_des_cordes",
+    "maison_du_bailli",
+    "petit_tribunal",
+    "puits_condamne",
+    "marche_muet",
+    "tour_de_guet_effondree",
+    "hameau_des_renoncants"
    ]
   }
  ],
@@ -49,8 +64,8 @@
      "id": "colline_aux_gibets",
      "nom": "La Colline aux Gibets",
      "illustration": "scene_colline_aux_gibets_c.png",
-     "x": 900,
-     "y": 80,
+     "x": 1080,
+     "y": 170,
      "note": "lieu-signature · le Gibet Vide",
      "scenes": [
       "colline-aux-gibets",
@@ -73,8 +88,8 @@
      "id": "champ_des_fixes",
      "nom": "Le Champ des Fixés",
      "illustration": "scene_champ_des_fixes_b.png",
-     "x": 1790,
-     "y": 430,
+     "x": 1620,
+     "y": 240,
      "note": "cimetière des pendus",
      "scenes": [
       "champ-des-fixes",
@@ -97,7 +112,7 @@
      "nom": "Le Moulin sans Ailes",
      "illustration": "scene_moulin_campement_a.png",
      "x": 300,
-     "y": 1160,
+     "y": 260,
      "note": "refuge supposé de la Fille",
      "scenes": [
       "campement",
@@ -118,8 +133,8 @@
      "id": "mare_aux_regards",
      "nom": "La Mare aux Regards",
      "illustration": "scene_mare_aux_regards_a.png",
-     "x": 320,
-     "y": 150,
+     "x": 640,
+     "y": 420,
      "note": "le reflet en retard",
      "scenes": [
       "mare-aux-regards",
@@ -140,8 +155,8 @@
      "id": "hameau_des_renoncants",
      "nom": "Le Hameau des Renonçants",
      "illustration": "scene_hameau_dense2_b.png",
-     "x": 660,
-     "y": 470,
+     "x": 870,
+     "y": 1064,
      "note": "région englobante (cadre pointillé) : contient la Chapelle des Cordes, la Maison du Bailli, le Petit Tribunal, le Puits Condamné, le Marché Muet et la Tour de Guet effondrée · le Serment s'impose à son entrée",
      "scenes": [
       "serment-hameau",
@@ -175,8 +190,8 @@
      "id": "chapelle_des_cordes",
      "nom": "La Chapelle des Cordes",
      "illustration": "scene_chapelle_des_cordes_d.png",
-     "x": 900,
-     "y": 470,
+     "x": 870,
+     "y": 680,
      "note": "reliques des fixations",
      "scenes": [
       "chapelle-des-cordes",
@@ -197,8 +212,8 @@
      "id": "maison_du_bailli",
      "nom": "La Maison du Bailli",
      "illustration": "scene_maison_du_bailli_c.png",
-     "x": 1380,
-     "y": 470,
+     "x": 1180,
+     "y": 680,
      "note": "murée de l'intérieur",
      "scenes": [
       "chien-du-bailli",
@@ -219,8 +234,8 @@
      "id": "petit_tribunal",
      "nom": "Le Petit Tribunal",
      "illustration": "scene_petit_tribunal_a.png",
-     "x": 1140,
-     "y": 470,
+     "x": 1470,
+     "y": 680,
      "note": "la Fixation y est jugée",
      "scenes": [
       "petit-tribunal",
@@ -241,8 +256,8 @@
      "id": "puits_condamne",
      "nom": "Le Puits Condamné",
      "illustration": "scene_puits_condamne_a.png",
-     "x": 660,
-     "y": 740,
+     "x": 950,
+     "y": 900,
      "note": "planches et chaînes",
      "scenes": [
       "puits-condamne",
@@ -263,8 +278,8 @@
      "id": "marche_muet",
      "nom": "Le Marché Muet",
      "illustration": "scene_marche_muet_c.png",
-     "x": 900,
-     "y": 740,
+     "x": 1250,
+     "y": 900,
      "note": "troc sans paroles · Colporteur",
      "scenes": [
       "marche-muet",
@@ -285,8 +300,8 @@
      "id": "tour_de_guet_effondree",
      "nom": "La Tour de Guet effondrée",
      "illustration": "scene_tour_de_guet_a.png",
-     "x": 1140,
-     "y": 740,
+     "x": 1463,
+     "y": 1064,
      "note": "elle surveillait l'intérieur",
      "scenes": [
       "tour-de-guet",
@@ -307,8 +322,8 @@
      "id": "verger_noir",
      "nom": "Le Verger Noir",
      "illustration": "scene_verger_noir_d.png",
-     "x": 70,
-     "y": 480,
+     "x": 300,
+     "y": 860,
      "note": "fruits de cendre",
      "scenes": [
       "verger-noir",
@@ -332,8 +347,8 @@
      "id": "chemin_creux",
      "nom": "Le Chemin Creux",
      "illustration": "scene_chemin_creux_c.png",
-     "x": 110,
-     "y": 860,
+     "x": 520,
+     "y": 1300,
      "note": "vu sans voir",
      "scenes": [
       "chemin-creux",
@@ -358,8 +373,8 @@
      "id": "borne_frontiere",
      "nom": "La Borne Frontière",
      "illustration": "scene_borne_frontiere_b.png",
-     "x": 1560,
-     "y": 70,
+     "x": 1620,
+     "y": 1420,
      "note": "limite des Renonçants",
      "scenes": [
       "borne-frontiere",
@@ -384,8 +399,8 @@
      "id": "palissade_sud",
      "nom": "La Palissade Sud",
      "illustration": "scene_palissade_sud_a_a.png",
-     "x": 1160,
-     "y": 1130,
+     "x": 1000,
+     "y": 1580,
      "note": "le mur côté Profondeurs",
      "scenes": [
       "palissade-sud",
