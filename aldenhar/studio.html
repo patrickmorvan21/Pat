@@ -473,8 +473,15 @@ function disposerLieux(){
      il englobe fatalement des lieux qui n'en font pas partie, et affirme alors
      que la Borne Frontière est dans le Hameau. On réserve donc sa surface DÈS
      le placement — les autres lieux se répartissent autour, jamais dedans. */
+  /* ⚠️ L'appartenance à une région ne se déduit PAS des seules scènes listées
+     dans `HAMEAU_INTERIOR` : c'est une liste de GAMEPLAY (ce que la traversée
+     ne peut pas tirer avant d'être entré), et le Hameau lui-même n'y est pas —
+     il est la porte d'entrée. Le lieu « Le Hameau des Renonçants » et ses 15
+     scènes se retrouvaient donc HORS de leur propre cadre. `lieuxEnPlus` porte
+     les lieux à rattacher explicitement (calculé côté export). */
   const REG=(D.regions||[]).map(rg=>({
-    rg, ids:L.filter(l=>(l.scenes||[]).some(sc=>rg.scenes.includes(sc))).map(l=>l.id)
+    rg, ids:L.filter(l=>(l.scenes||[]).some(sc=>rg.scenes.includes(sc))
+                     || (rg.lieuxEnPlus||[]).includes(l.id)).map(l=>l.id)
   })).filter(g=>g.ids.length>1);
   const membres=new Set(REG.flatMap(g=>g.ids));
 
