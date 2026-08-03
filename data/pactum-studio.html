@@ -100,9 +100,9 @@ button{background:none;border:none;cursor:pointer}
 .lgrp h4{margin:11px 0 5px;font-size:9px;letter-spacing:1.2px;color:var(--b50);text-transform:uppercase}
 .lg{display:flex;align-items:center;gap:8px;padding:2.5px 0;font-size:10.5px;color:var(--b50)}
 .lg .sh{width:22px;flex:none;display:flex;justify-content:center;align-items:center;font-size:11px}
-.lg u{width:22px;height:0;flex:none;border-top:2.4px solid #fff;text-decoration:none}
-.lg u.sec{border-top-width:1.8px;border-top-style:dashed}
-.lg u.cond{border-top-width:1.8px;border-top-style:dotted}
+.lg u{width:22px;height:0;flex:none;border-top:2px solid #fff;text-decoration:none}
+.lg u.sec{border-top-width:1.6px;border-top-style:dashed}
+.lg u.cond{border-top-width:1.6px;border-top-style:dotted}
 #fraich{padding:14px 16px 0;font-size:9.5px;color:var(--b30);letter-spacing:.4px;line-height:1.5}
 #fraich b{color:var(--b50);font-weight:400}
 #fraich .note{color:var(--b30);padding-bottom:10px}
@@ -112,12 +112,18 @@ button{background:none;border:none;cursor:pointer}
 #toile{position:absolute;inset:0;cursor:grab;touch-action:none}
 #toile.drag{cursor:grabbing}
 #monde{position:absolute;transform-origin:0 0;will-change:transform}
-#fondSvg{position:absolute;overflow:visible;left:0;top:0;pointer-events:none}
+/* ⚠️ z-index explicite : le panneau du lieu déplié (.deplie) a un fond
+   charbon à 94 % d'opacité. Sans empilement déclaré il se peint APRÈS le
+   SVG et VOILE toutes les flèches de la séquence — un blanc plein ressort
+   alors en gris (255×.06 + 20×.94 ≈ 34). C'était la vraie cause du
+   « les flèches ne se voient pas », pas la couleur du trait.
+   Ordre : région (0) < panneau déplié (1) < flèches (2) < cartes (5). */
+#fondSvg{position:absolute;overflow:visible;left:0;top:0;pointer-events:none;z-index:2}
 #fondSvg path.hit{pointer-events:stroke;cursor:pointer}
 
 /* --- A. NATURE : la TAILLE et la FORME d'abord, la couleur en rappel --- */
-/* ⚠️ z-index explicite : le panneau du lieu déplié est en z-index 4. Sans ça
-   les nœuds (position:absolute, z-index auto) passent DESSOUS et le fond du
+/* ⚠️ z-index explicite : les nœuds (position:absolute, z-index auto)
+   passeraient sous le panneau du lieu déplié et sous les flèches, et le fond du
    panneau les délave — les scènes du lieu ouvert devenaient illisibles. */
 .nd{position:absolute;z-index:5;background:var(--carte);border:1px solid var(--b20);cursor:pointer;
   user-select:none;display:flex;align-items:center}
@@ -174,10 +180,10 @@ button{background:none;border:none;cursor:pointer}
 
 /* Le lieu DÉPLIÉ : un panneau qui s'ouvre. Les autres restent repliés. */
 .deplie{position:absolute;border:1px solid var(--b20);background:rgba(20,19,16,.94);
-  z-index:4;pointer-events:none}
+  z-index:1;pointer-events:none}
 .deplie .titre{position:absolute;left:12px;top:-9px;background:var(--charbon);padding:0 8px;
   font-size:10px;letter-spacing:1.2px;color:var(--b50);text-transform:uppercase}
-.region{position:absolute;border:1px dashed var(--b20);pointer-events:none}
+.region{position:absolute;border:1px dashed var(--b20);pointer-events:none;z-index:0}
 .region span{position:absolute;left:12px;top:-9px;background:var(--charbon);padding:0 8px;
   font-size:11px;color:var(--b50);letter-spacing:.6px}
 
@@ -697,11 +703,11 @@ function rendu(){
   /* Des FLÈCHES, pas des traits : « quelle conséquence suit mon action » se lit
      dans le SENS du lien. Un trait nu ne dit pas qui mène à qui. */
   svg.insertAdjacentHTML("beforeend",`<defs>
-    <marker id="fl" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="9" markerHeight="9"
+    <marker id="fl" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
       orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#ffffff"/></marker>
-    <marker id="flSel" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="9" markerHeight="9"
+    <marker id="flSel" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
       orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#e0632a"/></marker>
-    <marker id="flSec" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8"
+    <marker id="flSec" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
       orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#ffffff"/></marker>
   </defs>`);
 
@@ -730,10 +736,10 @@ function rendu(){
      flèches ne se voient pas »). Ce qui distingue les types, c'est l'ÉPAISSEUR
      et le POINTILLÉ, jamais un affaiblissement — une flèche à 13 % d'opacité
      sur fond charbon n'existe pas. */
-  const ST={principal:{c:"#ffffff",w:2.4,d:null},
-            secondaire:{c:"#ffffff",w:1.8,d:"6 5"},
-            conditionnel:{c:"#ffffff",w:1.8,d:"2 5"},
-            attache:{c:"#ffffff",w:1.4,d:"2 6"}};
+  const ST={principal:{c:"#ffffff",w:2,d:null},
+            secondaire:{c:"#ffffff",w:1.6,d:"6 5"},
+            conditionnel:{c:"#ffffff",w:1.6,d:"2 5"},
+            attache:{c:"#ffffff",w:1.3,d:"2 6"}};
   arcs.forEach(t=>{
     const sel=lieSel(t);
     if(t.type==="conditionnel" && !sel && !audit) return;
