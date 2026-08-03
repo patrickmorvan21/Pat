@@ -13,6 +13,27 @@
    ]
   }
  ],
+ "entree": "borne-frontiere",
+ "pool": [
+  "chemin-creux",
+  "bete-chemins-creux",
+  "colline-aux-gibets",
+  "pendu-qui-parle",
+  "champ-des-fixes",
+  "pendu-mal-fixe",
+  "serment-hameau",
+  "marche-muet",
+  "tour-de-guet",
+  "campement",
+  "chapelle-des-cordes",
+  "puits-condamne",
+  "chien-du-bailli",
+  "petit-tribunal",
+  "mare-aux-regards",
+  "verger-noir",
+  "meute-grise-1",
+  "palissade-sud"
+ ],
  "genere": "2026-07-30T20:16:17Z",
  "commit": "b5ed308",
  "zones": [
@@ -27,7 +48,23 @@
      "illustration": "scene_colline_aux_gibets_c.png",
      "x": 900,
      "y": 80,
-     "note": "lieu-signature · le Gibet Vide"
+     "note": "lieu-signature · le Gibet Vide",
+     "scenes": [
+      "colline-aux-gibets",
+      "colline-aux-gibets-2",
+      "pendu-qui-parle",
+      "pendu-qui-parle-2"
+     ],
+     "nbScenes": 4,
+     "nbRencontres": 1,
+     "nbPois": 4,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": true,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "colline-aux-gibets"
     },
     {
      "id": "champ_des_fixes",
@@ -35,7 +72,22 @@
      "illustration": "scene_champ_des_fixes_b.png",
      "x": 1790,
      "y": 430,
-     "note": "cimetière des pendus"
+     "note": "cimetière des pendus",
+     "scenes": [
+      "champ-des-fixes",
+      "champ-des-fixes-2",
+      "pendu-mal-fixe"
+     ],
+     "nbScenes": 3,
+     "nbRencontres": 1,
+     "nbPois": 3,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": true,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "champ-des-fixes"
     },
     {
      "id": "moulin_sans_ailes",
@@ -43,7 +95,21 @@
      "illustration": "scene_moulin_campement_a.png",
      "x": 300,
      "y": 1160,
-     "note": "refuge supposé de la Fille"
+     "note": "refuge supposé de la Fille",
+     "scenes": [
+      "campement",
+      "campement-2"
+     ],
+     "nbScenes": 2,
+     "nbRencontres": 0,
+     "nbPois": 3,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": true,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "campement"
     },
     {
      "id": "mare_aux_regards",
@@ -51,7 +117,21 @@
      "illustration": "scene_mare_aux_regards_a.png",
      "x": 320,
      "y": 150,
-     "note": "le reflet en retard"
+     "note": "le reflet en retard",
+     "scenes": [
+      "mare-aux-regards",
+      "mare-aux-regards-2"
+     ],
+     "nbScenes": 2,
+     "nbRencontres": 0,
+     "nbPois": 3,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": true,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "mare-aux-regards"
     },
     {
      "id": "hameau_des_renoncants",
@@ -59,7 +139,34 @@
      "illustration": "scene_hameau_dense2_b.png",
      "x": 660,
      "y": 470,
-     "note": "région englobante (cadre pointillé) : contient la Chapelle des Cordes, la Maison du Bailli, le Petit Tribunal, le Puits Condamné, le Marché Muet et la Tour de Guet effondrée · le Serment s'impose à son entrée"
+     "note": "région englobante (cadre pointillé) : contient la Chapelle des Cordes, la Maison du Bailli, le Petit Tribunal, le Puits Condamné, le Marché Muet et la Tour de Guet effondrée · le Serment s'impose à son entrée",
+     "scenes": [
+      "serment-hameau",
+      "hameau-entree-2",
+      "femme-seuil-1",
+      "femme-seuil-2",
+      "femme-seuil-3",
+      "hameau-entree-3",
+      "hameau-entree-4",
+      "hameau-entree-5",
+      "hameau-halte-1",
+      "hameau-halte-2",
+      "hameau-halte-3",
+      "hameau-halte-4",
+      "hameau-halte-5",
+      "hameau-halte-dehors",
+      "proces-du-heros"
+     ],
+     "nbScenes": 15,
+     "nbRencontres": 0,
+     "nbPois": 4,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": true,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "serment-hameau"
     },
     {
      "id": "chapelle_des_cordes",
@@ -67,7 +174,21 @@
      "illustration": "scene_chapelle_des_cordes_d.png",
      "x": 900,
      "y": 470,
-     "note": "reliques des fixations"
+     "note": "reliques des fixations",
+     "scenes": [
+      "chapelle-des-cordes",
+      "chapelle-des-cordes-2"
+     ],
+     "nbScenes": 2,
+     "nbRencontres": 0,
+     "nbPois": 3,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": true,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "chapelle-des-cordes"
     },
     {
      "id": "maison_du_bailli",
@@ -75,7 +196,21 @@
      "illustration": "scene_maison_du_bailli_c.png",
      "x": 1380,
      "y": 470,
-     "note": "murée de l'intérieur"
+     "note": "murée de l'intérieur",
+     "scenes": [
+      "chien-du-bailli",
+      "chien-du-bailli-2"
+     ],
+     "nbScenes": 2,
+     "nbRencontres": 1,
+     "nbPois": 0,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": true,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "chien-du-bailli"
     },
     {
      "id": "petit_tribunal",
@@ -83,7 +218,21 @@
      "illustration": "scene_petit_tribunal_a.png",
      "x": 1140,
      "y": 470,
-     "note": "la Fixation y est jugée"
+     "note": "la Fixation y est jugée",
+     "scenes": [
+      "petit-tribunal",
+      "petit-tribunal-2"
+     ],
+     "nbScenes": 2,
+     "nbRencontres": 0,
+     "nbPois": 3,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": true,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "petit-tribunal"
     },
     {
      "id": "puits_condamne",
@@ -91,7 +240,21 @@
      "illustration": "scene_puits_condamne_a.png",
      "x": 660,
      "y": 740,
-     "note": "planches et chaînes"
+     "note": "planches et chaînes",
+     "scenes": [
+      "puits-condamne",
+      "puits-condamne-2"
+     ],
+     "nbScenes": 2,
+     "nbRencontres": 0,
+     "nbPois": 0,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": true,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "puits-condamne"
     },
     {
      "id": "marche_muet",
@@ -99,7 +262,21 @@
      "illustration": "scene_marche_muet_c.png",
      "x": 900,
      "y": 740,
-     "note": "troc sans paroles · Colporteur"
+     "note": "troc sans paroles · Colporteur",
+     "scenes": [
+      "marche-muet",
+      "marche-muet-2"
+     ],
+     "nbScenes": 2,
+     "nbRencontres": 0,
+     "nbPois": 0,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": true,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "marche-muet"
     },
     {
      "id": "tour_de_guet_effondree",
@@ -107,7 +284,21 @@
      "illustration": "scene_tour_de_guet_a.png",
      "x": 1140,
      "y": 740,
-     "note": "elle surveillait l'intérieur"
+     "note": "elle surveillait l'intérieur",
+     "scenes": [
+      "tour-de-guet",
+      "tour-de-guet-2"
+     ],
+     "nbScenes": 2,
+     "nbRencontres": 1,
+     "nbPois": 3,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": true,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "tour-de-guet"
     },
     {
      "id": "verger_noir",
@@ -115,7 +306,24 @@
      "illustration": "scene_verger_noir_d.png",
      "x": 70,
      "y": 480,
-     "note": "fruits de cendre"
+     "note": "fruits de cendre",
+     "scenes": [
+      "verger-noir",
+      "verger-noir-2",
+      "epoux-1",
+      "epoux-2",
+      "epoux-3"
+     ],
+     "nbScenes": 5,
+     "nbRencontres": 0,
+     "nbPois": 3,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": true,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "verger-noir"
     },
     {
      "id": "chemin_creux",
@@ -123,7 +331,25 @@
      "illustration": "scene_chemin_creux_c.png",
      "x": 110,
      "y": 860,
-     "note": "vu sans voir"
+     "note": "vu sans voir",
+     "scenes": [
+      "chemin-creux",
+      "chemin-creux-2",
+      "marcheur-1",
+      "marcheur-2",
+      "marcheur-3",
+      "bete-chemins-creux"
+     ],
+     "nbScenes": 6,
+     "nbRencontres": 1,
+     "nbPois": 3,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": true,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "chemin-creux"
     },
     {
      "id": "borne_frontiere",
@@ -131,7 +357,25 @@
      "illustration": "scene_borne_frontiere_b.png",
      "x": 1560,
      "y": 70,
-     "note": "limite des Renonçants"
+     "note": "limite des Renonçants",
+     "scenes": [
+      "borne-frontiere",
+      "hesitant-1",
+      "hesitant-2",
+      "hesitant-3"
+     ],
+     "nbScenes": 4,
+     "nbRencontres": 0,
+     "nbPois": 3,
+     "entrees": [],
+     "sorties": [],
+     "roles": [
+      "entree"
+     ],
+     "dansPool": false,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "borne-frontiere"
     },
     {
      "id": "palissade_sud",
@@ -139,7 +383,26 @@
      "illustration": "scene_palissade_sud_a_a.png",
      "x": 1160,
      "y": 1130,
-     "note": "le mur côté Profondeurs"
+     "note": "le mur côté Profondeurs",
+     "scenes": [
+      "palissade-sud",
+      "veilleur-1",
+      "veilleur-2",
+      "veilleur-3",
+      "palissade-sud-2"
+     ],
+     "nbScenes": 5,
+     "nbRencontres": 0,
+     "nbPois": 3,
+     "entrees": [],
+     "sorties": [],
+     "roles": [
+      "sortie"
+     ],
+     "dansPool": true,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "palissade-sud"
     }
    ]
   }
@@ -196,7 +459,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "eclat-descelle",
@@ -213,7 +478,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "homme-immobile",
@@ -230,7 +497,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "nom": "La Borne Frontière",
@@ -248,7 +517,14 @@
    "mèneVers": [
     "hesitant-1"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [
+    "entree",
+    "verrouille"
+   ],
+   "acces": "entrée de zone",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hesitant-1",
@@ -298,7 +574,13 @@
    ],
    "mèneIci": [
     "borne-frontiere"
-   ]
+   ],
+   "roles": [
+    "optionnel"
+   ],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hesitant-2",
@@ -354,7 +636,11 @@
    ],
    "mèneIci": [
     "hesitant-1"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hesitant-3",
@@ -385,7 +671,11 @@
    "mèneVers": [],
    "mèneIci": [
     "hesitant-2"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "chemin-creux",
@@ -425,7 +715,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "talus-empreintes",
@@ -442,7 +734,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "marcheur-rebours",
@@ -459,7 +753,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "suite": "chemin-creux-2",
@@ -480,7 +776,13 @@
     "chemin-creux-2",
     "marcheur-1"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [
+    "pivot"
+   ],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "chemin-creux-2",
@@ -534,7 +836,11 @@
    "mèneIci": [
     "chemin-creux",
     "marcheur-3"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "marcheur-1",
@@ -576,7 +882,13 @@
    ],
    "mèneIci": [
     "chemin-creux"
-   ]
+   ],
+   "roles": [
+    "optionnel"
+   ],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "marcheur-2",
@@ -624,7 +936,11 @@
    ],
    "mèneIci": [
     "marcheur-1"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "marcheur-3",
@@ -658,7 +974,11 @@
    ],
    "mèneIci": [
     "marcheur-2"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "bete-chemins-creux",
@@ -719,7 +1039,11 @@
    "description": "Combat, une scène. La Bête des Chemins Creux, qui longe la crête nord au même pas que ce qui marche en bas. On ne la voit qu'en silhouette, au-dessus.",
    "promptImage": "massive quadruped silhouette crouched on the crest of an earthen bank, seen from below against a pale sky, long low body, head lowered toward the viewer, unnaturally still, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "colline-aux-gibets",
@@ -750,7 +1074,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "potences-cercle",
@@ -767,7 +1093,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "gibet-vide",
@@ -784,7 +1112,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "poteau-pendu",
@@ -795,7 +1125,11 @@
      "nom": "Le poteau isolé, à gauche",
      "image": null,
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "acompleter",
+     "alertes": [
+      "imageManquante"
+     ]
     }
    ],
    "suite": "colline-aux-gibets-2",
@@ -815,7 +1149,11 @@
    "mèneVers": [
     "colline-aux-gibets-2"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "colline-aux-gibets-2",
@@ -878,7 +1216,11 @@
    "mèneVers": [],
    "mèneIci": [
     "colline-aux-gibets"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "pendu-qui-parle",
@@ -929,7 +1271,11 @@
    "mèneVers": [
     "pendu-qui-parle-2"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "pendu-qui-parle-2",
@@ -991,7 +1337,11 @@
    "mèneVers": [],
    "mèneIci": [
     "pendu-qui-parle"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "champ-des-fixes",
@@ -1022,7 +1372,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "poteaux-vierges",
@@ -1040,7 +1392,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "tombe-sans-poteau",
@@ -1057,7 +1411,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "suite": "champ-des-fixes-2",
@@ -1077,7 +1433,11 @@
    "mèneVers": [
     "champ-des-fixes-2"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "champ-des-fixes-2",
@@ -1129,7 +1489,13 @@
    "mèneVers": [],
    "mèneIci": [
     "champ-des-fixes"
-   ]
+   ],
+   "roles": [
+    "verrouille"
+   ],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "pendu-mal-fixe",
@@ -1198,7 +1564,11 @@
    "description": "Combat, une scène. Le Pendu Mal Fixé : un bras tendu figé en plein geste d'agrippement, la corde trop longue qui laisse les pieds toucher le sol.",
    "promptImage": "hanged figure whose rope is too long so its feet touch the ground, one arm outstretched and frozen mid-grab reaching toward the viewer, head tilted at a wrong angle, tattered clothes, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "serment-hameau",
@@ -1245,7 +1615,11 @@
    "mèneVers": [
     "hameau-entree-2"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-entree-2",
@@ -1283,7 +1657,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "femme-sur-le-seuil",
@@ -1300,7 +1676,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "suite": "hameau-entree-3",
@@ -1322,7 +1700,13 @@
    ],
    "mèneIci": [
     "serment-hameau"
-   ]
+   ],
+   "roles": [
+    "pivot"
+   ],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "femme-seuil-1",
@@ -1379,7 +1763,13 @@
    ],
    "mèneIci": [
     "hameau-entree-2"
-   ]
+   ],
+   "roles": [
+    "optionnel"
+   ],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "femme-seuil-2",
@@ -1462,7 +1852,11 @@
    ],
    "mèneIci": [
     "femme-seuil-1"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "femme-seuil-3",
@@ -1496,7 +1890,11 @@
    ],
    "mèneIci": [
     "femme-seuil-2"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-entree-3",
@@ -1571,7 +1969,11 @@
    "mèneIci": [
     "femme-seuil-3",
     "hameau-entree-2"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-entree-4",
@@ -1619,7 +2021,11 @@
      "nom": "Demander pourquoi trois aubes",
      "image": null,
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "acompleter",
+     "alertes": [
+      "imageManquante"
+     ]
     }
    ],
    "suite": "hameau-entree-5",
@@ -1640,7 +2046,11 @@
    ],
    "mèneIci": [
     "hameau-entree-3"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-entree-5",
@@ -1673,7 +2083,11 @@
    "mèneVers": [],
    "mèneIci": [
     "hameau-entree-4"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-halte-1",
@@ -1712,7 +2126,11 @@
    "mèneVers": [
     "hameau-halte-2"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "séquence du Hameau",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-halte-2",
@@ -1759,7 +2177,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "suite": "hameau-halte-3",
@@ -1781,7 +2201,11 @@
    ],
    "mèneIci": [
     "hameau-halte-1"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-halte-3",
@@ -1837,7 +2261,11 @@
    ],
    "mèneIci": [
     "hameau-halte-2"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-halte-4",
@@ -1873,7 +2301,11 @@
    ],
    "mèneIci": [
     "hameau-halte-3"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-halte-5",
@@ -1906,7 +2338,11 @@
    "mèneVers": [],
    "mèneIci": [
     "hameau-halte-4"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-halte-dehors",
@@ -1938,7 +2374,11 @@
    "description": "Variante de Halte pour qui a refusé le Serment : la nuit dehors, contre un muret, aucune porte ouverte.",
    "promptImage": "man sitting against a low dry-stone wall outside a dark village at night, knees drawn up, no fire, closed shutters behind him, empty street, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "séquence du Hameau",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "tour-de-guet",
@@ -1990,7 +2430,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "escalier-vers-rien",
@@ -2007,7 +2449,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "meurtriere-sud",
@@ -2024,7 +2468,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "suite": "tour-de-guet-2",
@@ -2044,7 +2490,11 @@
    "mèneVers": [
     "tour-de-guet-2"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "tour-de-guet-2",
@@ -2107,7 +2557,11 @@
    "mèneVers": [],
    "mèneIci": [
     "tour-de-guet"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "marche-muet",
@@ -2158,7 +2612,11 @@
    "mèneVers": [
     "marche-muet-2"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "marche-muet-2",
@@ -2218,7 +2676,11 @@
    "mèneVers": [],
    "mèneIci": [
     "marche-muet"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "campement",
@@ -2269,7 +2731,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "lucarne-moulin",
@@ -2286,7 +2750,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "interieur-moulin",
@@ -2303,7 +2769,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "suite": "campement-2",
@@ -2322,7 +2790,11 @@
    "mèneVers": [
     "campement-2"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "campement-2",
@@ -2372,7 +2844,11 @@
    "mèneVers": [],
    "mèneIci": [
     "campement"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "chapelle-des-cordes",
@@ -2403,7 +2879,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "autel-renverse",
@@ -2420,7 +2898,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "ouvrage-tressage",
@@ -2437,7 +2917,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "suite": "chapelle-des-cordes-2",
@@ -2458,7 +2940,11 @@
    "mèneVers": [
     "chapelle-des-cordes-2"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "chapelle-des-cordes-2",
@@ -2525,7 +3011,13 @@
    "mèneVers": [],
    "mèneIci": [
     "chapelle-des-cordes"
-   ]
+   ],
+   "roles": [
+    "verrouille"
+   ],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "puits-condamne",
@@ -2577,7 +3069,13 @@
    "mèneVers": [
     "puits-condamne-2"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [
+    "verrouille"
+   ],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "puits-condamne-2",
@@ -2623,7 +3121,11 @@
    "mèneVers": [],
    "mèneIci": [
     "puits-condamne"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "chien-du-bailli",
@@ -2674,7 +3176,11 @@
    "mèneVers": [
     "chien-du-bailli-2"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "chien-du-bailli-2",
@@ -2744,7 +3250,11 @@
    "mèneVers": [],
    "mèneIci": [
     "chien-du-bailli"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "petit-tribunal",
@@ -2775,7 +3285,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "chaire-registre",
@@ -2792,7 +3304,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "les-bancs",
@@ -2809,7 +3323,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "suite": "petit-tribunal-2",
@@ -2829,7 +3345,11 @@
    "mèneVers": [
     "petit-tribunal-2"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "petit-tribunal-2",
@@ -2891,7 +3411,11 @@
    "mèneVers": [],
    "mèneIci": [
     "petit-tribunal"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "meute-grise-1",
@@ -2963,7 +3487,11 @@
    "mèneVers": [
     "meute-grise-2"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "meute-grise-2",
@@ -3034,7 +3562,11 @@
    "mèneVers": [],
    "mèneIci": [
     "meute-grise-1"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "mare-aux-regards",
@@ -3080,7 +3612,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "eau-reflet",
@@ -3097,7 +3631,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "reflet-metal",
@@ -3114,7 +3650,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "suite": "mare-aux-regards-2",
@@ -3134,7 +3672,11 @@
    "mèneVers": [
     "mare-aux-regards-2"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "mare-aux-regards-2",
@@ -3181,7 +3723,11 @@
    "mèneVers": [],
    "mèneIci": [
     "mare-aux-regards"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "verger-noir",
@@ -3227,7 +3773,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "souche-premier-arbre",
@@ -3244,7 +3792,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "epoux-verger",
@@ -3261,7 +3811,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "suite": "verger-noir-2",
@@ -3281,7 +3833,13 @@
     "epoux-1",
     "verger-noir-2"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [
+    "pivot"
+   ],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "verger-noir-2",
@@ -3328,7 +3886,11 @@
    "mèneIci": [
     "epoux-3",
     "verger-noir"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "epoux-1",
@@ -3378,7 +3940,13 @@
    ],
    "mèneIci": [
     "verger-noir"
-   ]
+   ],
+   "roles": [
+    "optionnel"
+   ],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "epoux-2",
@@ -3441,7 +4009,11 @@
    ],
    "mèneIci": [
     "epoux-1"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "epoux-3",
@@ -3475,7 +4047,11 @@
    ],
    "mèneIci": [
     "epoux-2"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "palissade-sud",
@@ -3526,7 +4102,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "portillon-verrou",
@@ -3543,7 +4121,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     },
     {
      "id": "homme-guerite",
@@ -3560,7 +4140,9 @@
       "existe": true
      },
      "description": "",
-     "promptImage": ""
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "suite": "palissade-sud-2",
@@ -3582,7 +4164,13 @@
     "palissade-sud-2",
     "veilleur-1"
    ],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [
+    "pivot"
+   ],
+   "acces": "traversée",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "veilleur-1",
@@ -3624,7 +4212,13 @@
    ],
    "mèneIci": [
     "palissade-sud"
-   ]
+   ],
+   "roles": [
+    "optionnel"
+   ],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "veilleur-2",
@@ -3689,7 +4283,11 @@
    ],
    "mèneIci": [
     "veilleur-1"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "veilleur-3",
@@ -3723,7 +4321,11 @@
    ],
    "mèneIci": [
     "veilleur-2"
-   ]
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "palissade-sud-2",
@@ -3775,7 +4377,14 @@
    "mèneIci": [
     "palissade-sud",
     "veilleur-3"
-   ]
+   ],
+   "roles": [
+    "sortie",
+    "verrouille"
+   ],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "proces-du-heros",
@@ -3828,7 +4437,11 @@
    "description": "Scène de déroutage au dernier palier de Soupçon : le hameau te juge. Les trois bancs pleins, tous les visages tournés vers toi, la chaire vide.",
    "promptImage": "rustic courtroom seen from the defendant's place, three benches full of gaunt villagers all facing the viewer, the tall pulpit empty above them, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [],
-   "mèneIci": []
+   "mèneIci": [],
+   "roles": [],
+   "acces": "procès (Soupçon au maximum)",
+   "etat": "valide",
+   "alertes": []
   }
  ],
  "liens": [

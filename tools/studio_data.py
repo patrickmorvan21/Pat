@@ -481,8 +481,108 @@ def main() -> int:
             "scenes": re.findall(r'"([^"]+)"', mreg.group(1)),
         })
 
+    # ── LA TAXONOMIE EN QUATRE DIMENSIONS (spec Patrick 30/07) ──────────
+    # Elles ne doivent JAMAIS être confondues :
+    #   A. NATURE      — ce que l'élément EST (lieu, scène, rencontre, point).
+    #   B. RÔLE        — sa fonction dans le parcours (entrée, sortie, pivot,
+    #                    optionnel, verrouillé). Un point d'entrée n'est pas un
+    #                    type de lieu : c'est un badge posé sur un lieu.
+    #   C. ÉTAT        — où en est la PRODUCTION (validé, à compléter, brouillon).
+    #   D. ALERTE      — ce qui est CASSÉ (orphelin, lien mort, image absente).
+    entree = re.search(r'export const ENTRY_SCENE = "([^"]+)"', src_ts)
+    entree = entree.group(1) if entree else None
+    mapp = re.search(r"const APPROACH: Record<string, string> = \{([\s\S]*?)\n\};", src_ts)
+    pool = re.findall(r'^\s{2}"([^"]+)":', mapp.group(1), re.M) if mapp else []
+
+    ids = {s["id"] for s in scenes}
+    via_poi = {l["vers"] for l in liens if l["type"] == "secondaire"}
+    sortants = {}
+    for l in liens:
+        sortants.setdefault(l["de"], set()).add(l["vers"])
+
+    for s in scenes:
+        # ── B. RÔLES
+        r = []
+        if s["id"] == entree:
+            r.append("entree")
+        if any("Descente" in c.get("label", "") for c in s["choix"]):
+            r.append("sortie")
+        if len(sortants.get(s["id"], ())) >= 2:
+            r.append("pivot")
+        if s["id"] in via_poi:
+            r.append("optionnel")
+        if any(c["type"] == "verrouille" for c in s["choix"]):
+            r.append("verrouille")
+        s["roles"] = r
+
+        # ── COMMENT ON Y ARRIVE. Un lien explicite n'est pas le seul chemin :
+        # la traversée TIRE ses destinations, et certaines scènes sont routées
+        # par le code (la halte du Hameau, le procès au Soupçon 6). Sans ça,
+        # quatre scènes parfaitement jouables ressortaient « orphelines ».
+        if s["mèneIci"]:
+            s["acces"] = "lien"
+        elif s["id"] in pool:
+            s["acces"] = "traversée"
+        elif s["id"] == entree:
+            s["acces"] = "entrée de zone"
+        elif s.get("hameauEntree") or s.get("hameauHalte") or s["id"].startswith("hameau-"):
+            s["acces"] = "séquence du Hameau"
+        elif s.get("procesFixation"):
+            s["acces"] = "procès (Soupçon au maximum)"
+        else:
+            s["acces"] = "aucun"
+
+        # ── C. ÉTAT DE PRODUCTION (éditorial, jamais structurel)
+        if not s["image"] or not s["image"]["existe"]:
+            s["etat"] = "acompleter"
+        elif not s["narration"]:
+            s["etat"] = "brouillon"
+        else:
+            s["etat"] = "valide"
+
+        # ── D. ALERTES D'AUDIT (structurel, jamais éditorial)
+        a = []
+        if s["acces"] == "aucun":
+            a.append("orpheline")
+        if not s["image"]:
+            a.append("imageManquante")
+        elif not s["image"]["existe"]:
+            a.append("imageIntrouvable")
+        for v in sortants.get(s["id"], ()):
+            if v not in ids:
+                a.append("lienCasse")
+        s["alertes"] = a
+        for p in s["pointsInteret"]:
+            p["etat"] = "acompleter" if (not p["image"] or not p["image"]["existe"]) else "valide"
+            p["alertes"] = [] if p["image"] and p["image"]["existe"] else ["imageManquante"]
+
+    # ── AGRÉGATS PAR LIEU : le lieu devient le nœud dominant de la carte, il
+    # doit se lire seul (combien de scènes, de rencontres, de points, par où
+    # on y entre et par où on en sort).
+    for z in zones:
+        for l in z["lieux"]:
+            dedans = [s for s in scenes if s.get("lieu") == l["id"]]
+            arr = next((s for s in dedans if s.get("typeScene") == "arrivee"), dedans[0] if dedans else None)
+            ext = lambda i: (next((x for x in scenes if x["id"] == i), {}) or {}).get("lieu")
+            l["scenes"] = [s["id"] for s in dedans]
+            l["nbScenes"] = len(dedans)
+            l["nbRencontres"] = sum(1 for s in dedans if s.get("combat") or s.get("adversaire"))
+            l["nbPois"] = sum(len(s["pointsInteret"]) for s in dedans)
+            l["entrees"] = sorted({ext(i) for s in dedans for i in s["mèneIci"] if ext(i) and ext(i) != l["id"]})
+            l["sorties"] = sorted({ext(i) for s in dedans for i in s["mèneVers"] if ext(i) and ext(i) != l["id"]})
+            l["roles"] = sorted({r for s in dedans for r in s["roles"]} & {"entree", "sortie"})
+            l["dansPool"] = bool(arr and arr["id"] in pool)
+            l["alertes"] = sorted({a for s in dedans for a in s["alertes"]})
+            l["aCompleter"] = sum(1 for s in dedans if s["etat"] != "valide")
+            if arr:
+                l["scenePrincipale"] = arr["id"]
+                if arr["image"]:
+                    l["illustration"] = arr["image"]["fichier"]
+
     donnees = {
         "regions": regions,
+        "entree": entree,
+        "pool": pool,
         "genere": manifest.get("genere", ""),
         "commit": manifest.get("commit", ""),
         "zones": zones,
