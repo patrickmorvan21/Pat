@@ -100,9 +100,9 @@ button{background:none;border:none;cursor:pointer}
 .lgrp h4{margin:11px 0 5px;font-size:9px;letter-spacing:1.2px;color:var(--b50);text-transform:uppercase}
 .lg{display:flex;align-items:center;gap:8px;padding:2.5px 0;font-size:10.5px;color:var(--b50)}
 .lg .sh{width:22px;flex:none;display:flex;justify-content:center;align-items:center;font-size:11px}
-.lg u{width:22px;height:0;flex:none;border-top:1px solid var(--b50);text-decoration:none}
-.lg u.sec{border-top-style:dashed;border-color:var(--b20)}
-.lg u.cond{border-top-style:dotted;border-color:var(--orange-doux)}
+.lg u{width:22px;height:0;flex:none;border-top:2.4px solid #fff;text-decoration:none}
+.lg u.sec{border-top-width:1.8px;border-top-style:dashed}
+.lg u.cond{border-top-width:1.8px;border-top-style:dotted}
 #fraich{padding:14px 16px 0;font-size:9.5px;color:var(--b30);letter-spacing:.4px;line-height:1.5}
 #fraich b{color:var(--b50);font-weight:400}
 #fraich .note{color:var(--b30);padding-bottom:10px}
@@ -697,12 +697,12 @@ function rendu(){
   /* Des FLÈCHES, pas des traits : « quelle conséquence suit mon action » se lit
      dans le SENS du lien. Un trait nu ne dit pas qui mène à qui. */
   svg.insertAdjacentHTML("beforeend",`<defs>
-    <marker id="fl" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
-      orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="rgba(255,255,255,.45)"/></marker>
-    <marker id="flSel" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7"
+    <marker id="fl" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="9" markerHeight="9"
+      orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#ffffff"/></marker>
+    <marker id="flSel" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="9" markerHeight="9"
       orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#e0632a"/></marker>
-    <marker id="flSec" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6"
-      orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="rgba(255,255,255,.22)"/></marker>
+    <marker id="flSec" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8"
+      orient="auto-start-reverse"><path d="M0,0 L8,4 L0,8 z" fill="#ffffff"/></marker>
   </defs>`);
 
   /* RÉGION — le Hameau des Renonçants, seule enclave géographique du jeu.
@@ -726,10 +726,14 @@ function rendu(){
 
   // ── LIENS : principaux visibles, secondaires très atténués, conditionnels
   // masqués tant que rien n'est sélectionné (hors mode audit).
-  const ST={principal:{c:"rgba(255,255,255,.42)",w:1.5,d:null},
-            secondaire:{c:"rgba(255,255,255,.13)",w:1,d:"3 5"},
-            conditionnel:{c:"#8a4620",w:1.2,d:"2 5"},
-            attache:{c:"rgba(255,255,255,.10)",w:1,d:"2 4"}};
+  /* Les traits sont BLANCS À PLEINE OPACITÉ (retour Patrick 30/07 : « les
+     flèches ne se voient pas »). Ce qui distingue les types, c'est l'ÉPAISSEUR
+     et le POINTILLÉ, jamais un affaiblissement — une flèche à 13 % d'opacité
+     sur fond charbon n'existe pas. */
+  const ST={principal:{c:"#ffffff",w:2.4,d:null},
+            secondaire:{c:"#ffffff",w:1.8,d:"6 5"},
+            conditionnel:{c:"#ffffff",w:1.8,d:"2 5"},
+            attache:{c:"#ffffff",w:1.4,d:"2 6"}};
   arcs.forEach(t=>{
     const sel=lieSel(t);
     if(t.type==="conditionnel" && !sel && !audit) return;
@@ -761,7 +765,6 @@ function rendu(){
     p.setAttribute("stroke", sel?"#e0632a":st.c);
     p.setAttribute("stroke-width", sel?2:st.w);
     if(st.d && !sel) p.setAttribute("stroke-dasharray",st.d);
-    if(selection && !sel) p.setAttribute("opacity",".3");
     if(t.type!=="attache")
       p.setAttribute("marker-end", sel?"url(#flSel)":(t.type==="principal"?"url(#fl)":"url(#flSec)"));
     svg.appendChild(p);
