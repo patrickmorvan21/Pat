@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Die3D, { type RollRequest } from "@/components/Die3D";
 import ChoiceButton from "@/components/ChoiceButton";
+import TouchHint from "@/components/TouchHint";
 import TypedText from "@/components/TypedText";
 import DeathScreen, { bilanDeMort, type Bilan } from "@/components/DeathScreen";
 import GameMenu from "@/components/GameMenu";
@@ -176,6 +177,49 @@ function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
  * menu, la mort, les scènes chronométrées, les bannières et le Registre sont
  * conservés à l'identique.
  */
+/**
+ * MICRO-BEATS (doctrine 4/08, précisée par le retour externe du 4/08 soir) :
+ * jamais plus de ~90 mots ininterrompus avant un geste. Les TEXTES écrits
+ * respectent la grille (mesuré : max 102 mots par narration de scène) — mais
+ * l'écran ASSEMBLÉ au runtime les empilait : phrase d'approche + narration du
+ * lieu + beat de chapitre + dettes réglées, jusqu'à ~170 mots en 5 blocs
+ * (capture Patrick du 4/08, l'arrivée au Moulin pendant le chapitre de la
+ * Fille). Chaque pièce était dans la grille ; l'assemblage la violait.
+ *
+ * Ce découpeur transforme la pile en SÉQUENCE d'écrans : approche → arrivée →
+ * chapitre → choix, un tap entre chaque. Règles :
+ *   • budget ~90 mots de texte par écran ; on coupe AVANT le bloc qui
+ *     déborderait — jamais au milieu d'un paragraphe ;
+ *   • un bloc seul plus long que le budget reste entier (on ne coupe pas
+ *     une phrase, on coupe entre les blocs) ;
+ *   • les entrées non-texte (puce Jour, bannière d'état, Obtenu, Registre)
+ *     pèsent zéro et restent collées au bloc qu'elles accompagnent ;
+ *   • un groupe de fin sans aucun texte est fusionné avec le précédent.
+ */
+const MOTS_PAR_ECRAN = 90;
+function decouperEnEcrans(entries: FeedEntry[]): FeedEntry[][] {
+  const texte = (e: FeedEntry) =>
+    e.kind === "narration" || e.kind === "jailer" ? (e as { text: string }).text.split(/\s+/).length : 0;
+  const groupes: FeedEntry[][] = [];
+  let cur: FeedEntry[] = [];
+  let mots = 0;
+  for (const e of entries) {
+    const m = texte(e);
+    if (m > 0 && mots > 0 && mots + m > MOTS_PAR_ECRAN) {
+      groupes.push(cur);
+      cur = [];
+      mots = 0;
+    }
+    cur.push(e);
+    mots += m;
+  }
+  if (cur.length) {
+    if (mots === 0 && groupes.length) groupes[groupes.length - 1].push(...cur);
+    else groupes.push(cur);
+  }
+  return groupes.length ? groupes : [entries];
+}
+
 export default function Scene() {
   const [step, setStep] = useState(0);
   // Écran courant : un lieu/rencontre OU une scène de liaison (traversée
@@ -221,6 +265,10 @@ export default function Scene() {
   const revealedIdsRef = useRef<Set<string>>(new Set());
   // Les CTA n'apparaissent qu'une fois tout le texte de l'écran écrit.
   const [choicesHidden, setChoicesHidden] = useState(true);
+  // Écrans restants de la séquence courante (micro-beats). state + ref : les
+  // handlers de tap lisent la ref, le rendu lit le state.
+  const [beatsSuite, setBeatsSuiteState] = useState<FeedEntry[][]>([]);
+  const beatsSuiteRef = useRef<FeedEntry[][]>([]);
   // Incrémenté à chaque tap dans la zone de texte : termine la frappe en cours.
   const [skip, setSkip] = useState(0);
   // Écran de mort : non-null dès que la santé tombe à zéro sur un jet raté.
@@ -241,6 +289,10 @@ export default function Scene() {
   // fini déborde vraiment la zone — mesuré, adapté au device, une seule fois.
   const [compact, setCompact] = useState(false);
 
+  function setBeatsSuite(g: FeedEntry[][]) {
+    beatsSuiteRef.current = g;
+    setBeatsSuiteState(g);
+  }
   function setActiveTypingId(id: string | null) {
     activeTypingIdRef.current = id;
     setActiveTypingIdState(id);
@@ -255,12 +307,14 @@ export default function Scene() {
     const next = revealQueueRef.current.shift() ?? null;
     if (next) markRevealed([next]);
     setActiveTypingId(next);
-    // Tout le texte de l'écran est écrit : les CTA peuvent apparaître.
-    if (next === null) setChoicesHidden(false);
+    // Tout le texte de l'écran est écrit : les CTA peuvent apparaître — SAUF
+    // s'il reste des écrans dans la séquence (micro-beats) : c'est alors
+    // « Touche pour continuer » qui prend la main, jamais les choix.
+    if (next === null && beatsSuiteRef.current.length === 0) setChoicesHidden(false);
   }
   function enqueueReveal(ids: string[]) {
     if (ids.length === 0) {
-      setChoicesHidden(false);
+      if (beatsSuiteRef.current.length === 0) setChoicesHidden(false);
       return;
     }
     revealQueueRef.current.push(...ids);
@@ -408,6 +462,7 @@ export default function Scene() {
       setImage(img.src);
       setImageKind(img.kind);
     }
+    const groupes = decouperEnEcrans(entries);
     revealedIdsRef.current = new Set();
     setRevealedIds(new Set());
     revealQueueRef.current = [];
@@ -415,13 +470,34 @@ export default function Scene() {
     setChoicesHidden(true);
     setCompact(false); // nouvel écran : illustration pleine par défaut
     setPoiOpen(false); // et le sous-menu des descriptions se referme
-    setBeats(entries);
+    setBeats(groupes[0]);
+    setBeatsSuite(groupes.slice(1));
     persist((run) => {
       // Persisté pour la reprise : run.feed = écran courant (petit), ce qui
       // garde aussi hasSavedRun() vrai dès la 1re scène (feed non vide).
-      run.feed = entries;
+      run.feed = groupes[0];
+      run.feedSuite = groupes.slice(1);
     });
-    enqueueReveal(entries.filter((e) => e.kind === "narration" || e.kind === "jailer").map((e) => e.id));
+    enqueueReveal(groupes[0].filter((e) => e.kind === "narration" || e.kind === "jailer").map((e) => e.id));
+  }
+
+  /** L'écran suivant de la séquence (micro-beats) : REMPLACE — le lu est lu,
+      l'illustration reste, l'image pleine revient (le nouvel écran est court). */
+  function nextChunk() {
+    const [tete, ...reste] = beatsSuiteRef.current;
+    if (!tete) return;
+    setBeatsSuite(reste);
+    revealedIdsRef.current = new Set();
+    setRevealedIds(new Set());
+    revealQueueRef.current = [];
+    setActiveTypingId(null);
+    setCompact(false);
+    setBeats(tete);
+    persist((run) => {
+      run.feed = tete;
+      run.feedSuite = reste;
+    });
+    enqueueReveal(tete.filter((e) => e.kind === "narration" || e.kind === "jailer").map((e) => e.id));
   }
 
   // Reprise de run : fermer l'app ne compte jamais comme une mort. On restaure
@@ -471,7 +547,9 @@ export default function Scene() {
       // Déjà lu : tout est révélé d'emblée (affichage instantané), CTA visibles.
       markRevealed(restored.map((e) => e.id));
       setChoicesHidden(false);
+      setBeatsSuite([]);
       run.feed = restored;
+      run.feedSuite = [];
       saveRun(run);
     } else {
       // Run neuve : inscrite dans la mémoire du joueur (§17).
@@ -512,10 +590,15 @@ export default function Scene() {
       if (run.prologue.done && run.prologue.memories.length > 0) {
         seeded.push({ id: nextId(), kind: "jailer", text: "À partir de maintenant, il décide avec moi." });
       }
-      setBeats(seeded);
-      revealQueueRef.current = seeded.filter((e) => e.kind === "narration" || e.kind === "jailer").map((e) => e.id);
+      const groupes = decouperEnEcrans(seeded);
+      setBeats(groupes[0]);
+      setBeatsSuite(groupes.slice(1));
+      revealQueueRef.current = groupes[0]
+        .filter((e) => e.kind === "narration" || e.kind === "jailer")
+        .map((e) => e.id);
       advanceRevealQueue();
-      run.feed = seeded;
+      run.feed = groupes[0];
+      run.feedSuite = groupes.slice(1);
       saveRun(run);
     }
     return () => {
@@ -1263,7 +1346,13 @@ export default function Scene() {
             l'illustration rétrécie). Ne capte plus les taps pendant le lancer. */}
         <div
           ref={textRef}
-          onPointerDown={() => setSkip((s) => s + 1)}
+          onPointerDown={() => {
+            // Frappe en cours → la finir ; écran fini + séquence en attente →
+            // écran suivant. Le même geste sert les deux, dans cet ordre.
+            if (activeTypingIdRef.current) setSkip((s) => s + 1);
+            else if (beatsSuiteRef.current.length) nextChunk();
+            else setSkip((s) => s + 1);
+          }}
           className={`scene-text-zone relative min-h-0 flex-1 overflow-y-auto px-[17px] pt-[16px] ${rolling ? "pointer-events-none" : ""}`}
         >
           <div key={step + (timedExpired ? "-t" : "")}>
@@ -1289,6 +1378,13 @@ export default function Scene() {
               style={{ ["--timed-ms" as string]: `${scene.timed.ms}ms` }}
             />
           </div>
+        )}
+
+        {/* Séquence de micro-beats : il reste des écrans — l'affordance
+            globale (26/07) remplace les choix, le tap avance. `bottom: 14`
+            pour rester sous la zone de texte, au-dessus du filet des CTA. */}
+        {!activeTypingId && beatsSuite.length > 0 && !rolling && (
+          <TouchHint bottom={14} />
         )}
 
         {/* CTA ancrés en bas (fixes), masqués tant que le texte n'est pas

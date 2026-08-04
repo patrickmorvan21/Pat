@@ -175,6 +175,10 @@ export type RunState = {
   rolls: RollRecord[];
   lastChoiceId: string | null;
   feed: FeedEntry[];
+  /** Écrans RESTANTS de la séquence de micro-beats (doctrine 4/08) — la
+      reprise rejoue l'écran courant puis la suite, jamais la pile entière.
+      Optionnel : les sauvegardes d'avant n'ont pas le champ. */
+  feedSuite?: FeedEntry[][];
   /** Dettes narratives en attente de règlement dans cette run (spec §17). */
   debts: PendingDebt[];
   /** Besace (13/07) : objets mundane, vidée à la mort. */
