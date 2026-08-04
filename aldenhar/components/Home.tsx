@@ -9,6 +9,7 @@ import Registre from "@/components/Registre";
 import { buildRegistre, loadMemory, mutateMemory, shouldShowIntro } from "@/lib/player-memory";
 import { pickJailerQuote } from "@/lib/jailer-quotes";
 import { hasSavedRun, loadRun, resetRun } from "@/lib/state";
+import { lieuNom } from "@/lib/scene-data";
 import { APP_VERSION } from "@/lib/version";
 import { applySettingsToDom } from "@/lib/settings";
 import { armAudio, playMusic } from "@/lib/audio";
@@ -31,6 +32,7 @@ export default function Home() {
   const [saved, setSaved] = useState(false);
   const [citation, setCitation] = useState<string | null>(null);
   const [overlay, setOverlay] = useState<"reliques" | "registre" | "options" | null>(null);
+  const [reprise, setReprise] = useState<string[] | null>(null);
 
   useEffect(() => {
     // Réglages (Options 21/07) : applique taille de texte + animations réduites
@@ -42,6 +44,20 @@ export default function Home() {
     playMusic("intro");
     // eslint-disable-next-line react-hooks/set-state-in-effect -- lecture du localStorage impossible au rendu SSR, une seule fois au montage
     setSaved(hasSavedRun());
+    // Rappel de contexte sous « Reprendre » (spec 4/08 A1) : une vie en cours
+    // donne envie d'y retourner — un bouton nu est abstrait. Nom · Jour, puis
+    // Acte · lieu courant. En plein Seuil, on dit juste où on en est.
+    if (hasSavedRun()) {
+      const run = loadRun();
+      setReprise(
+        run.prologue && !run.prologue.done
+          ? ["Au Seuil — le pacte n'est pas signé"]
+          : [
+              `${run.heroName} · Jour ${run.day}`,
+              `Les Lisières · ${lieuNom(run.trav?.current)}`,
+            ]
+      );
+    }
     // La citation du Geôlier devient variable (30/07) : dès la première mort,
     // la tagline de l'accueil est SA voix — tirée du pool conditionné par le
     // contexte de la dernière mort, jamais deux fois la même de suite.
@@ -132,6 +148,13 @@ export default function Home() {
                 {saved ? (
                   <>
                     <HomeCta label="REPRENDRE" onClick={enterGame} />
+                    {reprise && (
+                      <div className="pointer-events-none -mt-[4px] text-center font-mono text-[10px] leading-[1.6] tracking-[1px] text-[var(--color-ink)] opacity-50">
+                        {reprise.map((l) => (
+                          <div key={l}>{l}</div>
+                        ))}
+                      </div>
+                    )}
                     <HomeCta
                       secondary
                       label="RECOMMENCER"

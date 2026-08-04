@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { resolveTier, TIER_WORDS, tierIsFail, type Outcome, type Outcomes, type ResolutionTier } from "@/lib/scene-data";
-import { haptic } from "@/lib/settings";
+import { animReduced, haptic } from "@/lib/settings";
 
 /**
  * Dé d20 tactile — moteur repris de reference/REFERENCE_de_3d_tactile.html
@@ -786,7 +786,11 @@ export default function Die3D({ request, onComplete }: Props) {
         // Destin (nat 20) : léger ralenti au settle (13/07) — la face est
         // déjà posée, seul le tempo change.
         const destinSlow = result === 20 ? 0.7 : 1;
-        settleT += (highStakes ? 0.018 : 0.03) * destinSlow;
+        // Animations réduites (Options) — spec 4/08 A6 : ce qui est intense au
+        // 1ᵉʳ jet devient lent au 40ᵉ. Le réglage écourte le settle (~×2.5) et
+        // neutralise la rallonge highStakes ; le TIRAGE, lui, ne change jamais.
+        const accel = animReduced() ? 2.5 : 1;
+        settleT += (highStakes ? 0.018 : 0.03) * destinSlow * accel;
         pos.x += (CENTER.x - pos.x) * 0.11;
         pos.y += (CENTER.y - pos.y) * 0.11;
         dieScale += (CENTER.scale - dieScale) * 0.1;

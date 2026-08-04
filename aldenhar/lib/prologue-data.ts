@@ -38,6 +38,53 @@ export const PROLOGUE_AMORCE: string[] = [
 
 export const PROLOGUE_CLOTURE = "Je sais qui tu es. Le dé, lui, décidera qui tu deviens.";
 
+/**
+ * PORTRAIT DE CLÔTURE (spec 4/08, point A2 — « la meilleure idée du lot »).
+ *
+ * Après les 4 souvenirs et le Nom, le Geôlier renvoie au joueur DEUX lignes
+ * qualitatives déduites du verdict : une pour la stat dominante, une pour la
+ * fragile. Aucun chiffre, aucune barre — la règle « pas de nombres affichés »
+ * tient. Objectif : relier les réponses au personnage, et désamorcer le futur
+ * « pourquoi le jeu a décidé que je manquais d'Empathie » quand un choix
+ * verrouillé apparaîtra.
+ *
+ * Écriture : voix du Geôlier, 2ᵉ personne, ÉPICÈNE (règle A3 — les noms de
+ * héros n'ont pas de genre, aucun participe accordé nulle part).
+ */
+const PORTRAIT_DOMINANTE: Record<StatKey, string> = {
+  courage: "Tu avances avant de comprendre. Le danger t'a toujours moins arrêté que le doute.",
+  ruse: "Tu regardes les serrures avant les portes. Il y a toujours un autre chemin, et tu le sais.",
+  instinct: "Tu sens les choses avant de les voir. Ton corps décide souvent avant toi — et il se trompe peu.",
+  empathie: "Tu protèges les autres, rarement toi-même. Les gens te parlent, même quand ils ne veulent pas.",
+};
+
+const PORTRAIT_FRAGILE: Record<StatKey, string> = {
+  courage: "Mais devant l'irrémédiable, ta main hésite. Tu le savais déjà.",
+  ruse: "Mais les détours t'ennuient. Tu forces ce qui devrait se contourner.",
+  instinct: "Mais tu n'écoutes pas ce qui murmure en toi. Tu veux des preuves, et elles arrivent tard.",
+  empathie: "Mais les autres restent pour toi un bruit de fond. Ça t'a coûté. Ça te coûtera encore.",
+};
+
+/**
+ * Les deux lignes du portrait, depuis le verdict rendu.
+ * Ex-æquo : la dominante prend la PREMIÈRE stat au max dans l'ordre du Seuil
+ * (Courage→Ruse→Instinct→Empathie), la fragile prend la DERNIÈRE au min —
+ * déterministe, et jamais la même stat des deux côtés.
+ */
+export function portraitDuSeuil(stats: RunStats): string {
+  let dominante: StatKey = PROLOGUE_STAT_ORDER[0];
+  let fragile: StatKey = PROLOGUE_STAT_ORDER[0];
+  for (const k of PROLOGUE_STAT_ORDER) {
+    if (stats[k] > stats[dominante]) dominante = k;
+    if (stats[k] <= stats[fragile]) fragile = k;
+  }
+  if (fragile === dominante) {
+    // Profil plat (possible après le jet silencieux) : on prend la suivante.
+    fragile = PROLOGUE_STAT_ORDER.find((k) => k !== dominante) ?? fragile;
+  }
+  return `${PORTRAIT_DOMINANTE[dominante]}\n${PORTRAIT_FRAGILE[fragile]}`;
+}
+
 export const MEMORY_POOL: Record<StatKey, MemoryEntry[]> = {
   courage: [
     {

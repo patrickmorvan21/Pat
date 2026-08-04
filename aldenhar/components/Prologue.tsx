@@ -5,7 +5,7 @@ import FitLabel from "@/components/FitLabel";
 import { HeroGeolier } from "@/components/HeroGeolier";
 import TouchHint from "@/components/TouchHint";
 import TypedText from "@/components/TypedText";
-import { computeVerdict, PROLOGUE_AMORCE, PROLOGUE_CLOTURE } from "@/lib/prologue-data";
+import { computeVerdict, portraitDuSeuil, PROLOGUE_AMORCE, PROLOGUE_CLOTURE } from "@/lib/prologue-data";
 import { loadRun, saveRun, type PrologueMemory, type RunState } from "@/lib/state";
 import { playMusic } from "@/lib/audio";
 
@@ -88,14 +88,33 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
   const isCloture = beat !== null && beat > nameBeat;
   const memory = isMemory ? memories[beat! - 2] : null;
 
+  /** PORTRAIT DE CLÔTURE (spec 4/08 A2) : le verdict tombe à l'ENTRÉE de la
+      clôture — pas au timer de sortie. computeVerdict tire un jet silencieux :
+      recalculé plus tard, il décrirait un AUTRE héros que celui du portrait.
+      `verdictRendu` garde la reprise sûre : rouvrir l'app en pleine clôture
+      réaffiche le même portrait depuis les stats déjà persistées. */
+  const [portrait, setPortrait] = useState<string | null>(null);
+  useEffect(() => {
+    if (!isCloture) return;
+    // React Compiler : jamais de mutation directe dans le corps de l'effet —
+    // tout passe par `persist` (même règle que partout dans le composant).
+    if (!(runRef.current ?? loadRun()).prologue.verdictRendu) {
+      persist((r) => {
+        r.stats = computeVerdict(r.prologue.memories, r.prologue.choices);
+        r.prologue.verdictRendu = true;
+      });
+    }
+    setPortrait(portraitDuSeuil((runRef.current ?? loadRun()).stats));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isCloture]);
+
   /** Clôture tapée → temporisation de 4 s, puis l'Acte I démarre TOUT SEUL
       (24/07 : pas de bouton, pas de tap — le pacte est signé, le joueur n'a
-      plus la main). Le verdict tombe ici. */
+      plus la main). */
   useEffect(() => {
     if (!isCloture || !typedDone) return;
     const t = setTimeout(() => {
       const run = runRef.current ?? loadRun();
-      run.stats = computeVerdict(run.prologue.memories, run.prologue.choices);
       run.prologue.done = true;
       runRef.current = run;
       saveRun(run);
@@ -114,7 +133,9 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
       ? memory!.narration
       : isName
         ? NAME_PROMPT
-        : PROLOGUE_CLOTURE;
+        : portrait
+          ? `${portrait}\n\n${PROLOGUE_CLOTURE}`
+          : "";
   const isJailerVoice = !isMemory;
 
   function advanceBeat() {
@@ -176,12 +197,12 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
               largeur ~300px pour qu'il revienne à la ligne ; l'écran du Nom et
               les souvenirs = texte à gauche, pleine largeur. */}
           <p
-            className={`font-mono text-[13px] leading-[1.7] text-[var(--color-ink)] ${
+            className={`font-mono text-[13px] leading-[1.7] whitespace-pre-line text-[var(--color-ink)] ${
               isAmorce || isCloture ? "mx-auto max-w-[300px] text-center" : "text-left"
             }`}
           >
             <TypedText
-              key={beat}
+              key={isCloture ? `${beat}-${portrait ? 1 : 0}` : beat}
               text={beatText}
               typed={!typedDone}
               skip={skip}

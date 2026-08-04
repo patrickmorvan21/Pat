@@ -381,7 +381,7 @@ export default function DeathScreen({
           <div className="mt-[22px] border-t border-[var(--color-ink)]/20" />
           <div className="mt-[28px] flex flex-col gap-[16px]">
             <LigneBilan label="Jours tenus" valeur={String(bilan.jours)} />
-            <LigneBilan label="Plus loin descendue" valeur={bilan.plusLoin} />
+            <LigneBilan label="Point le plus profond" valeur={bilan.plusLoin} />
             <LigneBilan label="Lieux traversés" valeur={String(bilan.lieux)} />
             <LigneBilan label="Rencontres" valeur={String(bilan.rencontres)} />
             <LigneBilan label="Dés lancés" valeur={`${bilan.des} · ${bilan.desTenus} tenus`} />

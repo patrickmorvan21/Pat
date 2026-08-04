@@ -117,6 +117,12 @@ export type PrologueState = {
   choices: number[];
   /** true une fois le verdict rendu (stats calculées) — on entre au Jour I. */
   done: boolean;
+  /** Le verdict a été calculé à l'ENTRÉE de la clôture (portrait 4/08).
+      ⚠️ Nécessaire parce que computeVerdict tire un jet silencieux : le
+      recalculer au timer de sortie donnerait un AUTRE héros que celui que le
+      portrait vient de décrire. Optionnel — les sauvegardes d'avant n'ont pas
+      le champ, et undefined vaut « pas encore rendu ». */
+  verdictRendu?: boolean;
 };
 
 /**

@@ -143,7 +143,16 @@ export default function ChoiceButton({
         }`}
       />
       {tag && (
-        <span className="absolute top-1/2 right-[4.17%] -translate-y-1/2 font-medium uppercase leading-[1.2] text-[12px] tracking-[0.6px] text-[var(--color-accent)]">
+        <span className="absolute top-1/2 right-[4.17%] flex -translate-y-1/2 items-center gap-[6px] font-medium uppercase leading-[1.2] text-[12px] tracking-[0.6px] text-[var(--color-accent)]">
+          {/* Choix verrouillé : LOSANGE VIDE en plus du grisé (spec 4/08 A7,
+              accessibilité daltoniens) — jamais un cadenas, le losange est le
+              glyphe du pacte. Carré bordé tourné 45°, pixel-art, pas d'emoji. */}
+          {locked && (
+            <span
+              aria-hidden
+              className="inline-block size-[7px] rotate-45 border border-current"
+            />
+          )}
           {tag}
         </span>
       )}

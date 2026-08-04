@@ -84,9 +84,9 @@ const QUOTES: Quote[] = [
   Q("j3-f", "Il y a des débuts prometteurs. Et il y a le tien.", "specifique", (c) => c.jour <= 3),
 
   /* ── Mort profonde (Acte II ou III) ─────────────────────────────────── */
-  Q("a2-a", "Tu es descendu loin. Assez loin pour que ça devienne intéressant.", "specifique", (c) => c.acte >= 2),
+  Q("a2-a", "Te voilà loin, très loin. Assez loin pour que ça devienne intéressant.", "specifique", (c) => c.acte >= 2),
   Q("a2-b", "Tu as vu des choses que la plupart ne voient pas. Elles ne t'ont pas aidé.", "specifique", (c) => c.acte >= 2),
-  Q("a2-c", "Tu es allé plus loin que quatre-vingt-dix-neuf sur cent. Ça n'a servi à rien, mais c'est vrai.", "specifique", (c) => c.acte >= 2),
+  Q("a2-c", "Tu as poussé plus loin que quatre-vingt-dix-neuf sur cent. Ça n'a servi à rien, mais c'est vrai.", "specifique", (c) => c.acte >= 2),
   Q("a2-d", "Tu as respiré l'air d'en bas. Il te restera dans la gorge, même mort.", "specifique", (c) => c.acte >= 2),
   Q("a2-e", "Encore un peu et tu voyais quelque chose que je préfère garder pour moi.", "specifique", (c) => c.acte >= 2),
   Q("a2-f", "Descendre est facile. C'est arriver quelque part qui pose problème.", "specifique", (c) => c.acte >= 2),
@@ -123,7 +123,7 @@ const QUOTES: Quote[] = [
   /* ── Statistiques agrégées — sa signature (fréquence basse) ─────────── */
   Q("st-a", "Douze mille trois cent quatre. C'est le nombre de fois où quelqu'un a poussé cette porte. Tu n'as pas de numéro. Tu as un rang.", "stats"),
   Q("st-b", "Sur cent qui entrent, trois voient les Profondeurs. Tu veux savoir combien voient le reste ? Non. Tu ne veux pas.", "stats"),
-  Q("st-c", "Ce matin, quatre-vingt-onze sont morts dans les Landes. Tu es le quatre-vingt-douzième. La journée est jeune.", "stats"),
+  Q("st-c", "Ce matin, quatre-vingt-onze sont morts dans les Landes. Ton nom porte le compte à quatre-vingt-douze. La journée est jeune.", "stats"),
   Q("st-d", "Il y a deux mille sept cents personnes qui portent ton nom dans mon Registre. Aucune ne l'a gardé longtemps.", "stats"),
   Q("st-e", "La moyenne est de neuf jours. Tu peux en être fier ou honteux — je te laisse faire le calcul.", "stats"),
   Q("st-f", "Cette semaine, la Colline en a pris trois cent douze. Elle n'a pas de préférence. Elle a de l'appétit.", "stats"),

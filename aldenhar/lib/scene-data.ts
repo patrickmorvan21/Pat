@@ -1480,7 +1480,7 @@ export const SCENES: Scene[] = [
           outcomes: outcomes(
             "20 naturel. Tu le dis simplement, et tu ajoutes le détail qui ne s'invente pas : le reflet en retard. Elle ferme les yeux. Quand elle les rouvre, elle ne te regarde plus comme un étranger qui descend — elle te regarde comme on regarde quelqu'un de la famille qu'on n'attendait plus. Elle te donne la mèche, le nom, et une chose que personne n'a offerte à personne ici depuis des années : sa porte, ouverte, si tu remontes.",
             "Elle te laisse finir, sans reculer. « Je sais », dit-elle. « Ta figure le dit depuis le début. » Elle te met la mèche dans la main, referme tes doigts, et pour la première fois quelqu'un du hameau te touche sans hésiter.",
-            "Tu le dis, et elle recule. Pas de dégoût : de la panique — pour toi. « Ne le dis à personne d'autre. » Elle regarde à droite, à gauche, les volets. « À personne, tu m'entends. » Elle rentre, et tu restes seul dans la rue avec un aveu qui traîne dans l'air.",
+            "Tu le dis, et elle recule. Pas de dégoût : de la panique — pour toi. « Ne le dis à personne d'autre. » Elle regarde à droite, à gauche, les volets. « À personne, tu m'entends. » Elle rentre, et tu restes là, dans la rue, avec un aveu qui traîne dans l'air.",
             "1 naturel. Tu le dis trop fort, ou pas assez seul. Un volet claque quelque part. Elle a pâli — pas de ce que tu es : de ce que ça fait de toi, ici. « Va-t'en. Maintenant. » ♦ −2"
           ),
         },
@@ -1540,7 +1540,7 @@ export const SCENES: Scene[] = [
           stat: "COURAGE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu marches droit sur eux sans changer d'allure. À trois pas, ils s'écartent — pas par peur : par une politesse ancienne qu'ils n'ont pas eu le temps de décider. Le vieux te suit des yeux, et tu sais que le Serment t'attend quand même. Mais tu es passé debout.",
+            "20 naturel. Tu marches droit sur eux sans changer d'allure. À trois pas, ils s'écartent — pas par peur : par une politesse ancienne qu'ils n'ont pas eu le temps de décider. Le vieux te suit des yeux, et tu sais que le Serment t'attend quand même. Mais tu as passé le barrage debout.",
             "Tu ne ralentis pas. Ils s'écartent, à contrecœur, en se serrant. « On te reverra au muret », dit le vieux dans ton dos. Le Serment n'est pas évité. Il est ajourné.",
             "Tu avances — et la fourche change de main. Pas levée : tenue. Le message est clair, et tu t'arrêtes de toi-même. Passer en force ne marche pas chez des gens qui ont déjà décidé d'avoir peur.",
             "1 naturel. Tu passes sans t'arrêter. Le vieux te laisse faire, et lance à la cantonade, calmement : « Notez l'heure. » Quelqu'un, quelque part, note l'heure. ♦ −2"
@@ -1678,7 +1678,7 @@ export const SCENES: Scene[] = [
         "toucher personne, et tu comprends que c'est calculé.",
       "La rue s'ouvre devant toi. Des volets se ferment à mesure, un par un, " +
         "un peu en avance sur ton pas. Quelque part, une corde grince.",
-      "Tu es entré. Personne ne t'a souhaité la bienvenue, et pourtant tous " +
+      "Te voilà dans le hameau. Personne ne t'a souhaité la bienvenue, et pourtant tous " +
         "savaient déjà que tu venais.",
     ],
     choices: [{ id: "entrer-hameau", label: "Entrer dans le hameau" }],
@@ -1825,7 +1825,7 @@ export const SCENES: Scene[] = [
             "pas se sont éloignés, et c'est là que tu écoutes. Le creux est " +
             "large, et les voix y tombent entières : un nom qui n'est pas le " +
             "tien, le mot « demain », et le Petit Tribunal cité comme on cite " +
-            "une heure. Tu es recouché avant le troisième passage. Personne " +
+            "une heure. Tu retrouves la bruyère avant le troisième passage. Personne " +
             "n'a rien à noter.",
         },
       },
@@ -1890,7 +1890,7 @@ export const SCENES: Scene[] = [
         "d'instinct.",
       "La nuit des Landes n'attaque pas. Elle compte. Chaque heure a son " +
         "bruit : la corde, les pas, le chant du sud. Au matin, tu n'es pas " +
-        "reposé — tu es inventorié.",
+        "reposé — ton nom est à l'inventaire, comme un outil.",
     ],
     choices: [
       {
@@ -2011,7 +2011,7 @@ export const SCENES: Scene[] = [
       "Il est assis sur le tas de pierres, dos à toi, et il regarde le sud " +
         "par-dessus le hameau. Un vieux manteau de guet, la corne au côté. " +
         "Il ne se retourne pas.",
-      "— « Tu es monté. » Ce n'est pas une question. « Alors tu as vu ce " +
+      "— « Tu as vu là-haut. » Ce n'est pas une question. « Alors tu as vu ce " +
         "qu'on surveillait. »",
     ],
     choices: [
@@ -2842,7 +2842,7 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu recules pas à pas, les yeux dans les siens, sans un frisson. La meneuse te suit — puis s'arrête à la frontière exacte d'un territoire que toi seul ne vois pas. Elle s'assoit. Tu es sorti de leur carte : la meute te regarde partir comme on regarde la pluie quitter un champ.",
+            "20 naturel. Tu recules pas à pas, les yeux dans les siens, sans un frisson. La meneuse te suit — puis s'arrête à la frontière exacte d'un territoire que toi, tu ne vois pas. Elle s'assoit. Te voilà dehors de leur carte : la meute te regarde partir comme on regarde la pluie quitter un champ.",
             "Chaque pas en arrière est un mot de la négociation. Tu la tiens du regard jusqu'au chemin, et le croissant s'effiloche à mesure — une bête qui décroche, puis deux. À la fin, il ne reste que la meneuse, qui te concède la lande d'un battement de paupières.",
             "Ton talon accroche une racine — un quart de seconde de regard perdu. Il ne leur en faut pas plus : la charge t'arrive dessus pendant que tu te rattrapes, te roule, te coûte — puis s'arrête net, croissant reformé, et la meute s'en va. L'épreuve est finie ; tu n'as pas brillé, mais tu es debout.",
             "1 naturel. Tu recules sans baisser les yeux. Eux non plus. Tu recules encore. Eux avancent. Le mur de pierre sèche dans ton dos met fin à la négociation — à leurs conditions. Ils prélèvent, et te laissent contre le muret, vivant par désintérêt. ♦ −2"
@@ -3107,7 +3107,7 @@ export const SCENES: Scene[] = [
             "20 naturel. Tu sors des rangs par le bon côté — celui d'où l'on voit encore le hameau. Derrière toi, dans l'ordre parfait des arbres, tu remarques ce que tu n'avais pas vu en entrant : les rangs ne sont pas droits. Ils s'incurvent, très légèrement, tous, vers le sud.",
             "Tu retrouves la sortie du premier coup. Les rangs se referment derrière toi et le verger redevient une tache noire sur la lande.",
             "Tu tournes deux fois dans les mêmes rangs avant de retrouver la lisière. Onze rangs, ce n'est pas un labyrinthe. Ça n'aurait pas dû prendre si longtemps.",
-            "1 naturel. Tu sors des rangs. Le compte à voix basse, derrière toi, s'est arrêté au moment exact où tu es sorti. ♦ −2"
+            "1 naturel. Tu sors des rangs. Le compte à voix basse, derrière toi, s'est arrêté au moment exact où tu as passé la porte. ♦ −2"
           ),
         },
       },
@@ -3167,7 +3167,7 @@ export const SCENES: Scene[] = [
         "déguisée en constat. « Il te reste forcément quelque chose du " +
         "dehors. N'importe quoi. Une graine, un bout de vrai bois, une chose " +
         "qui a poussé sous le vrai soleil. On le planterait. »",
-      "Tu sais ce que tu as : rien. Tu es arrivé ici comme tout le monde y " +
+      "Tu sais ce que tu as : rien. Tu arrives ici comme tout le monde y " +
         "arrive — les mains vides et mort.",
     ],
     choices: [
@@ -3702,6 +3702,58 @@ const APPROACH: Record<string, string> = {
 export const TRAVERSAL_POOL = Object.keys(APPROACH);
 
 /**
+ * NOM AFFICHABLE d'un lieu depuis un id de scène (spec 4/08, point A1 : le
+ * rappel de contexte sous « Reprendre »). Le runtime n'avait aucun nom
+ * français — ils vivaient tous dans data/zones/landes.json, jamais chargé.
+ * Table par RADICAL (les beats -2/-3 et les rencontres rattachées retombent
+ * sur leur lieu), fallback « En chemin » pour les liaisons générées.
+ */
+const LIEU_NOM: Record<string, string> = {
+  "borne-frontiere": "La Borne Frontière",
+  "chemin-creux": "Le Chemin Creux",
+  "bete-chemins-creux": "Le Chemin Creux",
+  marcheur: "Le Chemin Creux",
+  "colline-aux-gibets": "La Colline aux Gibets",
+  "pendu-qui-parle": "La Colline aux Gibets",
+  "champ-des-fixes": "Le Champ des Fixés",
+  "pendu-mal-fixe": "Le Champ des Fixés",
+  "serment-hameau": "Le Hameau des Renonçants",
+  "hameau-entree": "Le Hameau des Renonçants",
+  "hameau-halte": "Le Hameau des Renonçants",
+  "femme-seuil": "Le Hameau des Renonçants",
+  "marche-muet": "Le Marché Muet",
+  "tour-de-guet": "La Tour de Guet effondrée",
+  campement: "Le Moulin sans Ailes",
+  "chapelle-des-cordes": "La Chapelle des Cordes",
+  "puits-condamne": "Le Puits Condamné",
+  "chien-du-bailli": "La Maison du Bailli",
+  "petit-tribunal": "Le Petit Tribunal",
+  "proces-du-heros": "Le Petit Tribunal",
+  "mare-aux-regards": "La Mare aux Regards",
+  "verger-noir": "Le Verger Noir",
+  epoux: "Le Verger Noir",
+  "meute-grise": "La Lande",
+  "palissade-sud": "La Palissade Sud",
+  veilleur: "La Palissade Sud",
+  hesitant: "La Borne Frontière",
+  descente: "La Descente",
+};
+
+export function lieuNom(sceneId: string | undefined): string {
+  if (!sceneId) return "En chemin";
+  // Radical : on rogne les suffixes de beat (-2, -3…) puis on cherche du plus
+  // long préfixe au plus court — « hameau-entree-4 » → « hameau-entree ».
+  let id = sceneId.replace(/-\d+$/, "");
+  while (id) {
+    if (LIEU_NOM[id]) return LIEU_NOM[id];
+    const i = id.lastIndexOf("-");
+    if (i < 0) break;
+    id = id.slice(0, i);
+  }
+  return "En chemin";
+}
+
+/**
  * Les lieux qui sont DANS le Hameau des Renonçants (carte Figma 2112:325 : le
  * cadre pointillé « Le Hameau des Renonçants » va de (810,620) à (1790,1280),
  * et ces chips y tombent à l'intérieur).
@@ -4136,7 +4188,7 @@ export const DESCENTE_SCENE: Scene = {
     "Tu as traversé les Landes vivant. Peu le font. Devant, l'escalier plonge dans un noir qui n'a pas encore de nom.",
     "Ici s'arrête, pour l'instant, ce que le Geôlier a bâti. L'Acte II se creuse encore.",
   ],
-  jailerLine: "Tu es descendu jusqu'ici. Bien. Le reste n'est pas prêt — mais moi, je le serai avant toi.",
+  jailerLine: "Te voilà au bout de la descente. Bien. Le reste n'est pas prêt — mais moi, je le serai avant toi.",
   choices: [
     { id: "recommencer-descente", label: "Repartir de la Borne" },
   ],
