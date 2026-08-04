@@ -49,7 +49,36 @@ export type Relic = {
   rarity: "commune" | "rare" | "legendaire";
   heroName: string;
   days: number;
+  /** Effet de RÈGLE porté par la relique (retour test 4/08, promesse n°3 :
+      « ta mort transforme la prochaine vie »). v1 : l'effet découle de la
+      rareté — les reliques d'avant n'ont pas le champ, relicEffect() le
+      dérive. Prochaine itération : effet par NOM de relique. */
+  effect?: RelicEffect;
 };
+
+export type RelicEffect = "coussin" | "passe" | "faveur";
+
+/** L'effet d'une relique — champ posé à la forge, dérivé de la rareté pour
+    les reliques antérieures au 4/08. */
+export function relicEffect(r: Relic): RelicEffect {
+  if (r.effect) return r.effect;
+  return r.rarity === "legendaire" ? "faveur" : r.rarity === "rare" ? "passe" : "coussin";
+}
+
+/** La fonction, en mots — affichée sur la fiche de forge et dans l'Inventaire.
+    Jamais un chiffre : la règle se dit, elle ne se compte pas. */
+export const RELIC_FONCTION: Record<RelicEffect, string> = {
+  coussin: "Le premier coup dur de la prochaine vie sera amorti. Puis elle se fendra.",
+  passe: "Une fois, la prochaine vie passera un verrou que sa nature lui refuse. Le Hameau s'en souviendra.",
+  faveur: "La prochaine vie lancera chaque dé avec la faveur des morts.",
+};
+
+/** La relique PORTÉE par l'incarnation suivante = la dernière forgée.
+    « Celui qui te suivra la portera » — au singulier, et c'est voulu :
+    une seule mort pèse sur une seule vie, la collection reste au Registre. */
+export function activeRelic(mem: PlayerMemory): Relic | null {
+  return mem.relics.length ? mem.relics[mem.relics.length - 1] : null;
+}
 
 export type PlayerMemory = {
   /** Nombre de runs commencées (incrémenté au tout premier pas d'une run neuve). */
@@ -267,7 +296,8 @@ export function forgeRelic(heroName: string, days: number, floorRare = false): R
         ? "rare"
         : "legendaire";
   const pool = RELIC_NAMES[rarity];
-  return { name: pool[Math.floor(Math.random() * pool.length)], rarity, heroName, days };
+  const effect: RelicEffect = rarity === "legendaire" ? "faveur" : rarity === "rare" ? "passe" : "coussin";
+  return { name: pool[Math.floor(Math.random() * pool.length)], rarity, heroName, days, effect };
 }
 
 /**

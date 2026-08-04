@@ -29,9 +29,11 @@ import { playMusic } from "@/lib/audio";
 import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { assetUrl, assetCss } from "@/lib/assets";
 import {
+  activeRelic,
   bloodDebtFor,
   buildRegistre,
   entrySoftening,
+  relicEffect,
   jailerPosture,
   loadMemory,
   mutateMemory,
@@ -196,6 +198,33 @@ function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
  *     pèsent zéro et restent collées au bloc qu'elles accompagnent ;
  *   • un groupe de fin sans aucun texte est fusionné avec le précédent.
  */
+/**
+ * LES TROIS PROMESSES BRANCHÉES (retour test 4/08 : « le passé crée le radar,
+ * mais pas les chances ; les verrous ne consultent pas la nature du héros ;
+ * les Reliques ne transforment pas la prochaine vie »).
+ *   1. La stat du héros pèse sur CHAQUE jet : bonus = stat − 3 (1..5 → −2..+2).
+ *   2. Un verrou avec `min` s'ouvre au héros dont la stat suffit.
+ *   3. La DERNIÈRE relique forgée est portée par l'incarnation suivante.
+ * Jamais un chiffre affiché : l'Anneau reflète le bonus, le verrou se lit au
+ * losange, la relique se lit à sa fonction en mots.
+ */
+function statDe(stats: RunState["stats"] | undefined, stat: string): number {
+  const k = stat.toLowerCase() as keyof NonNullable<RunState["stats"]>;
+  return stats?.[k] ?? 3;
+}
+function verrouOuvert(choice: Choice, stats: RunState["stats"] | undefined): boolean {
+  if (!choice.locked) return true;
+  if (choice.locked.min == null) return false; // verrou DUR (tease Acte II)
+  return statDe(stats, choice.locked.stat) >= choice.locked.min;
+}
+/** Refus en diégèse (spec 4/08 B : jamais « Nécessite Empathie 3 »). */
+const VERROU_DIEGESE: Record<string, string> = {
+  COURAGE: "Il te faudrait plus de courage que tu n'en as.",
+  RUSE: "Il te faudrait plus de ruse que tu n'en as.",
+  INSTINCT: "Il te faudrait plus d'instinct que tu n'en as.",
+  EMPATHIE: "Il te faudrait plus d'empathie que tu n'en as.",
+};
+
 const MOTS_PAR_ECRAN = 90;
 function decouperEnEcrans(entries: FeedEntry[]): FeedEntry[][] {
   const texte = (e: FeedEntry) =>
@@ -265,6 +294,15 @@ export default function Scene() {
   const revealedIdsRef = useRef<Set<string>>(new Set());
   // Les CTA n'apparaissent qu'une fois tout le texte de l'écran écrit.
   const [choicesHidden, setChoicesHidden] = useState(true);
+  // Refus en diégèse d'un verrou (tap sur un choix fermé) — s'efface seul.
+  const [verrouHint, setVerrouHint] = useState<string | null>(null);
+  const verrouHintTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // Miroirs de rendu (React Compiler interdit runRef.current au rendu) :
+  // stats du héros (fixées au Seuil), effet de la relique portée, et son état
+  // de consommation — une relique = un geste par vie.
+  const [heroStats, setHeroStats] = useState<RunState["stats"] | undefined>(undefined);
+  const [relicFx, setRelicFx] = useState<"coussin" | "passe" | "faveur" | null>(null);
+  const [relicSpent, setRelicSpent] = useState(false);
   // Écrans restants de la séquence courante (micro-beats). state + ref : les
   // handlers de tap lisent la ref, le rendu lit le state.
   const [beatsSuite, setBeatsSuiteState] = useState<FeedEntry[][]>([]);
@@ -362,7 +400,10 @@ export default function Scene() {
   // passifs — jurer n'est pas un jet) se retrouvait vidé, avec le choix le plus
   // lourd de la zone caché derrière « Observer ». Un serment ne descend jamais.
   const hasPois = openPois.length > 0;
-  const demotable = (c: Choice) => Boolean(c.passive) && !c.serment;
+  // Un choix VERROUILLÉ ne descend jamais : c'est un acte fermé par la nature
+  // du héros (promesse n°2), pas une contemplation — le voir grisé au niveau
+  // supérieur fait partie de l'information (« ton incarnation ne peut pas »).
+  const demotable = (c: Choice) => Boolean(c.passive) && !c.serment && !c.locked;
   const canDemote = hasPois && shuffledChoices.some((c) => !demotable(c));
   const acts = canDemote ? shuffledChoices.filter((c) => !demotable(c)) : shuffledChoices;
   const looks = canDemote ? shuffledChoices.filter(demotable) : [];
@@ -516,6 +557,10 @@ export default function Scene() {
     // l'app (pas à sa mort) — les options débloquées restent ouvertes à la
     // reprise.
     setSavoirs(run.savoirs ?? []);
+    setHeroStats(run.stats);
+    setRelicSpent(Boolean(run.relicUsed));
+    const relicPortee = activeRelic(loadMemory());
+    setRelicFx(relicPortee ? relicEffect(relicPortee) : null);
 
     // Musique (24/07) : l'Acte I tourne sur les boucles des Landes (rotation
     // aléatoire des 3 pistes). Silencieux si les mp3 ne sont pas déployés.
@@ -1030,7 +1075,36 @@ export default function Scene() {
   }
 
   function onSelect(choice: Choice) {
-    if (choice.locked || rolling || selectedId) return;
+    if (rolling || selectedId) return;
+    if (choice.locked) {
+      const run = runRef.current;
+      const ouvert = verrouOuvert(choice, run?.stats);
+      // Passe-verrou de la relique portée (effet « passe ») : UNE fois par
+      // run, un verrou à seuil s'ouvre malgré la nature du héros — mais le
+      // Hameau s'en souvient (+1 Soupçon). Jamais sur un verrou DUR.
+      const relic = activeRelic(loadMemory());
+      const passe =
+        !ouvert &&
+        choice.locked.min != null &&
+        relic &&
+        relicEffect(relic) === "passe" &&
+        !run?.relicUsed;
+      if (!ouvert && !passe) {
+        // Refus en diégèse (spec 4/08 B) : jamais un chiffre, jamais un cadenas.
+        setVerrouHint(VERROU_DIEGESE[choice.locked.stat] ?? "Ce n'est pas pour toi.");
+        if (verrouHintTimer.current) clearTimeout(verrouHintTimer.current);
+        verrouHintTimer.current = setTimeout(() => setVerrouHint(null), 2600);
+        return;
+      }
+      if (!ouvert && passe && relic) {
+        persist((r) => {
+          r.relicUsed = true;
+          r.soupcon = Math.max(0, Math.min(6, (r.soupcon ?? 0) + 1));
+        });
+        setRelicSpent(true);
+      }
+    }
+    setVerrouHint(null);
     // Sous-menu des descriptions : pur affichage. On ne passe pas par
     // `setSelectedId` (qui masque les CTA et enclenche une transition) — le
     // texte à l'écran, l'image et la scène ne bougent pas d'un pixel.
@@ -1182,7 +1256,14 @@ export default function Scene() {
       // Modificateur = états temporaires + objets PASSIFS portés (spec 21/07
       // point 4 : effet permanent, jamais un chiffre affiché — l'Anneau reflète).
       const passives = passiveMod(runRef.current?.besace ?? [], Boolean(scene.combat));
-      const modifier = effects.reduce((sum, e) => sum + e.delta, 0) + passives;
+      // Promesse n°1 (4/08) : la stat du héros pèse ENFIN sur le jet.
+      // bonus = stat − 3 (échelle 1..5 → −2..+2) ; jamais affiché, l'Anneau
+      // reflète. Deux héros différents ont désormais des chances différentes.
+      const statBonus = statDe(runRef.current?.stats, choice.risky.stat) - 3;
+      // Relique « faveur » (légendaire) : la prochaine vie lance avec +1.
+      const relicPortee = activeRelic(loadMemory());
+      const faveur = relicPortee && relicEffect(relicPortee) === "faveur" ? 1 : 0;
+      const modifier = effects.reduce((sum, e) => sum + e.delta, 0) + passives + statBonus + faveur;
       // Courbe d'entrée invisible (spec 21/07) : seuil légèrement abaissé les
       // 2-3 premières morts, sans aucun affichage. L'Anneau, calculé sur ce
       // même seuil, montrera juste un peu plus d'encoches pleines — cohérent.
@@ -1395,10 +1476,20 @@ export default function Scene() {
             rolling ? "pointer-events-none" : ""
           } ${choicesHidden || activeTypingId ? "choices-hidden" : ""}`}
         >
+          {verrouHint && (
+            <p className="pointer-events-none text-center font-mono text-[11px] italic leading-[1.4] text-[var(--color-ink)] opacity-60">
+              {verrouHint}
+            </p>
+          )}
           {renderedChoices.map((choice) => (
             <ChoiceButton
               key={scene.id + choice.id + step}
               choice={choice}
+              unlocked={Boolean(
+                choice.locked &&
+                  (verrouOuvert(choice, heroStats) ||
+                    (choice.locked.min != null && relicFx === "passe" && !relicSpent))
+              )}
               selected={selectedId === choice.id}
               raised={rolling && selectedId === choice.id}
               erosion={erosion}
@@ -1430,10 +1521,26 @@ export default function Scene() {
                 grantedItem = landesLoot(lootId);
               }
             }
+            // Relique « coussin » (commune, portée depuis la dernière mort) :
+            // le PREMIER coup dur de la run est amorti au coût d'un échec
+            // simple — puis la relique est fendue pour cette vie. Le verdict
+            // affiché ne change pas (le jet a bien été critique) : c'est la
+            // CONSÉQUENCE qui est prise par la relique, pas le dé.
+            const relicCoussin = activeRelic(loadMemory());
+            const amorti =
+              (tier === "malediction" || tier === "critique") &&
+              relicCoussin &&
+              relicEffect(relicCoussin) === "coussin" &&
+              !runRef.current?.relicUsed;
             persist((run) => {
               run.rolls.push({ step, choiceId: selectedId ?? "roll", result, at: nowMs(), ok: !tierIsFail(tier) });
-              const cost =
+              let cost =
                 tier === "malediction" ? 0.25 : tier === "critique" ? 0.2 : tier === "echec" ? 0.12 : tier === "justesse" ? 0.06 : 0;
+              if (amorti) {
+                cost = 0.12;
+                run.relicUsed = true;
+              }
+              // (miroir de rendu mis à jour après le persist, plus bas)
               run.health = Math.max(0, run.health - cost);
               if (usureDay) run.day += 1;
               if (tier === "destin" || (scene.combat && !tierIsFail(tier)))
@@ -1478,6 +1585,7 @@ export default function Scene() {
             const run = runRef.current!;
             setHealth(run.health);
             if (usureDay) setDay(run.day);
+            if (amorti) setRelicSpent(true);
 
             // Mort par fixation (chantier 3 du 23/07, validée) : un jet raté
             // au procès tue, quelle que soit la santé — première mort du jeu
@@ -1528,7 +1636,9 @@ export default function Scene() {
             advance({
               result,
               fail: outcome.fail,
-              consequence: outcome.text,
+              consequence: amorti && relicCoussin
+                ? `${outcome.text}\n\n${relicCoussin.name} a pris le choc à ta place. Une fêlure la traverse, à présent — elle ne prendra pas le suivant.`
+                : outcome.text,
               destinItem,
               grantedItem,
               usureDay: usureDay ? run.day : undefined,

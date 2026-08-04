@@ -33,7 +33,12 @@ export type Choice = {
    */
   risky?: { stat: Stat; threshold: number; outcomes: Outcomes; highStakes?: boolean };
   /** Choix verrouillé : seuil de stat non atteint → grisé mais visible. */
-  locked?: { stat: Stat };
+  /** Verrouillé par une stat. AVEC `min` (échelle 1..5) : vraie CONDITION —
+      un héros dont la stat atteint le seuil peut agir (retour test 4/08,
+      promesse n°2 : « ta nature ouvre et ferme des actions »), la résolution
+      passe alors par `passive`. SANS `min` : verrou DUR pour tout le monde
+      (ex. Franchir la Descente = tease Acte II, jamais franchissable ici). */
+  locked?: { stat: Stat; min?: number };
   /** Repos au campement : avance le jour, atténue les blessures légères, sauvegarde (spec §7). */
   rest?: boolean;
   /**
@@ -438,7 +443,18 @@ export const SCENES: Scene[] = [
             "Au moins, maintenant, tu sais que la lande parle.",
         },
       },
-      { id: "repondre-voix", label: "Répondre aux voix", locked: { stat: "EMPATHIE" } },
+      {
+        id: "repondre-voix",
+        label: "Répondre aux voix",
+        locked: { stat: "EMPATHIE", min: 4 },
+        passive: {
+          consequence:
+            "Tu réponds au vent — pas des mots, un ton. Le même que le leur. " +
+            "Les voix se taisent une mesure entière, puis reprennent plus bas, " +
+            "et cette fois elles ne parlent plus de toi. La lande sait " +
+            "maintenant que tu entends. Ça change la manière dont elle parle.",
+        },
+      },
     ],
     jailerLine: "Les Landes. 8 941 entrées, cette saison. Les sorties, je les compte sur une autre page.",
   },
@@ -1176,7 +1192,18 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "carnet", label: "Déchiffrer le carnet", locked: { stat: "RUSE" } },
+      {
+        id: "carnet",
+        label: "Déchiffrer le carnet",
+        locked: { stat: "RUSE", min: 4 },
+        passive: {
+          consequence:
+            "Les pattes de mouche du Fossoyeur cèdent à qui sait lire à " +
+            "l'envers : des noms, des dates, des paquets de cinq. Et un nom " +
+            "écrit deux fois, à des années d'écart — même main, même corde. " +
+            "On ne pend pas deux fois. Sauf ici, apparemment.",
+        },
+      },
       {
         id: "passer-fossoyeur",
         label: "Passer sans un mot",
@@ -2375,7 +2402,18 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "corde-vive", label: "Saisir la corde vive", locked: { stat: "COURAGE" } },
+      {
+        id: "corde-vive",
+        label: "Saisir la corde vive",
+        locked: { stat: "COURAGE", min: 4 },
+        passive: {
+          consequence:
+            "Tu refermes la main dessus. Elle tire — une fois, fort, comme " +
+            "une bête ferrée — puis s'arrête net en comprenant que tu ne " +
+            "lâches pas. Sous tes doigts, un pouls. Pas le tien. La Veuve " +
+            "lève les yeux de son ouvrage : « Elle t'a jaugé. Repose-la. »",
+        },
+      },
       {
         /* SAVOIR (25/07) : avoir repéré LAQUELLE des cordes bouge permet de
            l'éviter avant qu'elle n'attaque — la seule façon de sortir de la
@@ -2423,7 +2461,18 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "noeud-chaines", label: "Étudier le nœud", locked: { stat: "RUSE" } },
+      {
+        id: "noeud-chaines",
+        label: "Étudier le nœud",
+        locked: { stat: "RUSE", min: 4 },
+        passive: {
+          consequence:
+            "Le nœud des chaînes est un travail de maître — mais tu lis les " +
+            "nœuds comme d'autres les visages, et celui-ci avoue : il a été " +
+            "noué DEPUIS le puits. Quelqu'un, en bas, a fermé sa propre " +
+            "porte. Les planches ne gardent pas l'intérieur. Elles le protègent.",
+        },
+      },
       { id: "approcher-puits", label: "S'approcher de la margelle" },
     ],
     jailerLine: "Ils ont condamné le puits. Charmant. On n'enferme pas un trou, mais l'espoir fait clouer.",

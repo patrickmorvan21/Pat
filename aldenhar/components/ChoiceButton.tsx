@@ -91,6 +91,7 @@ export default function ChoiceButton({
   selected,
   raised,
   erosion = 0,
+  unlocked = false,
   onSelect,
 }: {
   choice: Choice;
@@ -99,9 +100,12 @@ export default function ChoiceButton({
   raised?: boolean;
   /** Palier d'érosion santé : 0 intact, 1 marqué, 2 entaillé, 3 au seuil. */
   erosion?: number;
+  /** Verrou OUVERT pour ce héros (stat suffisante, ou relique passe-verrou) :
+      le choix se présente comme jouable — promesse n°2 du 4/08. */
+  unlocked?: boolean;
   onSelect: (choice: Choice) => void;
 }) {
-  const locked = Boolean(choice.locked);
+  const locked = Boolean(choice.locked) && !unlocked;
   const tag = choice.risky?.stat ?? choice.locked?.stat;
   const bites = useMemo(
     () => makeBites(choice.id + choice.label, erosion),
@@ -111,7 +115,6 @@ export default function ChoiceButton({
   return (
     <button
       type="button"
-      disabled={locked}
       onClick={() => onSelect(choice)}
       aria-disabled={locked}
       className={`choice-btn relative h-[46px] w-full text-left ${

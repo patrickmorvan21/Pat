@@ -24,7 +24,7 @@ import TouchHint from "@/components/TouchHint";
 import FondBraises from "@/components/FondBraises";
 import { NomGratte } from "@/components/Registre";
 import { buildLesCent, type RegistreEntry } from "@/lib/registre-data";
-import { loadMemory } from "@/lib/player-memory";
+import { loadMemory, relicEffect, RELIC_FONCTION } from "@/lib/player-memory";
 import { pickJailerQuote, reactionJours } from "@/lib/jailer-quotes";
 import { ditherFadeMaskDataUrl } from "@/lib/dither";
 import { animReduced } from "@/lib/settings";
@@ -383,7 +383,7 @@ export default function DeathScreen({
             <LigneBilan label="Jours tenus" valeur={String(bilan.jours)} />
             <LigneBilan label="Point le plus profond" valeur={bilan.plusLoin} />
             <LigneBilan label="Lieux traversés" valeur={String(bilan.lieux)} />
-            <LigneBilan label="Rencontres" valeur={String(bilan.rencontres)} />
+            <LigneBilan label="Combats traversés" valeur={String(bilan.rencontres)} />
             <LigneBilan label="Dés lancés" valeur={`${bilan.des} · ${bilan.desTenus} tenus`} />
             <LigneBilan label="Destins • Malédictions" valeur={`${bilan.destins} • ${bilan.maledictions}`} />
             <LigneBilan label="Reliques portées" valeur={String(bilan.reliques)} />
@@ -490,6 +490,12 @@ export default function DeathScreen({
               {firstDeath
                 ? "De cette première mort, il reste plus que d'ordinaire."
                 : "Celui qui te suivra la portera."}
+            </p>
+            {/* La FONCTION en mots (promesse n°3 du 4/08) : la relique n'est
+                plus un nom sec — elle annonce ce qu'elle fera de la prochaine
+                vie. Jamais un chiffre. */}
+            <p className="mt-[10px] w-[336px] text-center font-mono text-[12px] leading-[1.5] text-[var(--color-ink)] opacity-60">
+              {RELIC_FONCTION[relicEffect(relic)]}
             </p>
             {relic.rarity !== "commune" && (
               <p className="mt-[14px] text-center font-mono text-[13px] italic leading-[1.5] text-[var(--color-accent)]">

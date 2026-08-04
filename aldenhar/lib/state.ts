@@ -179,6 +179,9 @@ export type RunState = {
       reprise rejoue l'écran courant puis la suite, jamais la pile entière.
       Optionnel : les sauvegardes d'avant n'ont pas le champ. */
   feedSuite?: FeedEntry[][];
+  /** L'effet de la relique portée a été CONSOMMÉ cette run (coussin dépensé,
+      passe-verrou utilisé). Une relique = un geste par vie. Optionnel. */
+  relicUsed?: boolean;
   /** Dettes narratives en attente de règlement dans cette run (spec §17). */
   debts: PendingDebt[];
   /** Besace (13/07) : objets mundane, vidée à la mort. */
