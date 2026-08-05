@@ -1,6 +1,6 @@
 {
- "genere": "2026-08-05T20:36:18Z",
- "commit": "e65d48d",
+ "genere": "2026-08-05T21:13:31Z",
+ "commit": "cf9d645",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -57,18 +57,6 @@
    "hash": "aaf703c2",
    "recent": false
   },
-  "geolier_accueil.mp4": {
-   "taille": 475957,
-   "modifie": "2026-08-05T20:32:57Z",
-   "hash": "b71810af",
-   "recent": false
-  },
-  "geolier_accueil.png": {
-   "taille": 2823,
-   "modifie": "2026-08-05T20:32:37Z",
-   "hash": "d657d44a",
-   "recent": false
-  },
   "geolier_detoure.png": {
    "taille": 25832,
    "modifie": "2026-07-16T17:44:20Z",
@@ -85,6 +73,30 @@
    "taille": 25586,
    "modifie": "2026-08-05T20:32:37Z",
    "hash": "98cfb2e5",
+   "recent": true
+  },
+  "geolier_v2.mp4": {
+   "taille": 445772,
+   "modifie": "2026-08-05T21:11:29Z",
+   "hash": "eddb798b",
+   "recent": false
+  },
+  "geolier_v2_cendres.png": {
+   "taille": 18738,
+   "modifie": "2026-08-05T21:10:44Z",
+   "hash": "d87f9b99",
+   "recent": false
+  },
+  "geolier_v2_poster.png": {
+   "taille": 4239,
+   "modifie": "2026-08-05T21:10:44Z",
+   "hash": "b6cb0676",
+   "recent": false
+  },
+  "geolier_v2_sprite.png": {
+   "taille": 36246,
+   "modifie": "2026-08-05T21:10:44Z",
+   "hash": "d8745565",
    "recent": false
   },
   "monstre_appele_descente.png": {
