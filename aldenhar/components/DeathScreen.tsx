@@ -24,7 +24,7 @@ import TouchHint from "@/components/TouchHint";
 import FondBraises from "@/components/FondBraises";
 import { NomGratte } from "@/components/Registre";
 import { buildLesCent, type RegistreEntry } from "@/lib/registre-data";
-import { loadMemory, relicEffect, RELIC_FONCTION } from "@/lib/player-memory";
+import { loadMemory, relicEffect, relicFiche, RELIC_FONCTION } from "@/lib/player-memory";
 import { pickJailerQuote, reactionJours } from "@/lib/jailer-quotes";
 import { ditherFadeMaskDataUrl } from "@/lib/dither";
 import { animReduced } from "@/lib/settings";
@@ -495,11 +495,19 @@ export default function DeathScreen({
                 plus un nom sec — elle annonce ce qu'elle fera de la prochaine
                 vie. Jamais un chiffre. */}
             <p className="mt-[10px] w-[336px] text-center font-mono text-[12px] leading-[1.5] text-[var(--color-ink)] opacity-60">
-              {RELIC_FONCTION[relicEffect(relic)]}
+              {relicFiche(relic)?.fonction ?? RELIC_FONCTION[relicEffect(relic)]}
             </p>
+            {/* LE COÛT (5/08) : une relique aide ET prend. Le prix est annoncé
+                ici, à la forge, dans les mêmes mots que le don — le joueur sait
+                ce qu'il emporte avant de recommencer. Jamais un chiffre. */}
+            {relicFiche(relic)?.cout && (
+              <p className="mt-[8px] w-[336px] text-center font-mono text-[12px] leading-[1.5] text-[var(--color-accent)] opacity-80">
+                {relicFiche(relic)!.cout}
+              </p>
+            )}
             {relic.rarity !== "commune" && (
               <p className="mt-[14px] text-center font-mono text-[13px] italic leading-[1.5] text-[var(--color-accent)]">
-                «&nbsp;{cause}&nbsp;»
+                «&nbsp;{relicFiche(relic)?.murmure ?? cause}&nbsp;»
               </p>
             )}
             <TouchHint bottom={HINT_BAS} />

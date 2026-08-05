@@ -53,7 +53,18 @@ export type Choice = {
    * Choix d'orientation d'une scène de liaison (spec 21/07) : ne lance pas de
    * dé — il ENGAGE le déplacement vers le lieu `dest`. Résolution instantanée.
    */
-  orient?: { dest: string };
+  orient?: {
+    dest: string;
+    /**
+     * COMMENT on y va (5/08) : `decouvert` = par la route, franc, on te voit
+     * venir de loin ; `couvert` = par le flanc, le talus, le contre-jour. Le
+     * mode change le texte d'arrivée ET une chose réelle : à couvert, le lieu
+     * ne t'a pas vu (le Soupçon d'arrivée ne s'applique pas, et une créature
+     * est prise de vitesse) ; à découvert, tu arrives d'aplomb et le premier
+     * élan te porte. Les deux se valent — ce n'est pas un choix « optimal ».
+     */
+    mode?: "couvert" | "decouvert";
+  };
   /**
    * 4e choix contextuel (spec 21/07, point 4) : utiliser un objet ACTIF de la
    * Besace pertinent dans la scène (ex. un baume quand ENTAILLÉ). Consommé,
@@ -105,6 +116,27 @@ export type Choice = {
    * un aveu (dire au juge que ton poteau est déjà gravé) ou un pari.
    */
   requiresSavoir?: string;
+  /**
+   * LE REGISTRE MENT (5/08) : ce choix n'existe que si le COMPTE tient une
+   * contradiction — deux versions incompatibles d'un même fait, lues dans deux
+   * vies différentes (lib/contradictions.ts). Une seule vie ne peut jamais
+   * l'ouvrir : c'est le seul endroit où mourir enseigne ce que vivre ne peut
+   * pas enseigner.
+   */
+  requiresContradiction?: boolean;
+  /**
+   * DÉFENSE AU PROCÈS (5/08) : ce choix n'existe que si les TÉMOINS présents
+   * la rendent possible (lib/temoins.ts `defensesDisponibles`). Discréditer
+   * demande un témoin nommé, émouvoir demande quelqu'un du hameau lui-même,
+   * produire un papier demande un document en Besace. Assumer est toujours là.
+   */
+  defense?: "discrediter" | "emouvoir" | "assumer" | "preuve";
+  /**
+   * LE RENONCEMENT (5/08) : ce choix met FIN à la run sans mort — le héros
+   * reste au Hameau. Pas de relique, pas de fragment : son nom entre au
+   * Registre avec la mention « resté au Hameau », et c'est tout.
+   */
+  renonce?: boolean;
   /**
    * SAVOIR appris en PRENANT ce choix (poser la question à quelqu'un vaut
    * examiner une trace : c'est la même monnaie). Posé dès la sélection, comme
@@ -173,6 +205,14 @@ export type PointInteret = {
    * fragments ont déjà été servis.
    */
   chapterFragment?: boolean;
+  /**
+   * FAIT VARIABLE (5/08, lib/contradictions.ts) : l'examen énonce EN PLUS la
+   * version que cette run tient pour vraie. Le Domaine ne raconte pas la même
+   * histoire d'une vie à l'autre — le joueur ne peut s'en apercevoir qu'en
+   * mourant et en revenant. Deux versions lues = une contradiction opposable
+   * au Registre.
+   */
+  fait?: string;
   /** Objet réel des Landes trouvé au point (id de LANDES_OBJETS). */
   grantsLoot?: string;
   /** Trace durable au compte (persistance environnementale §17). */
@@ -291,6 +331,12 @@ export type Scene = {
   liaison?: boolean;
   /** Nœud terminal (la Descente) : la traversée s'arrête (fin sèche Acte II). */
   terminal?: boolean;
+  /**
+   * Terminal PAR RENONCEMENT (5/08) : la run s'arrête sans mort. Le nom entre
+   * au Registre avec la mention « resté au Hameau », aucune relique n'est
+   * forgée — on ne forge rien avec une vie qu'on n'a pas perdue.
+   */
+  renoncement?: boolean;
 };
 
 /**
@@ -913,6 +959,7 @@ export const SCENES: Scene[] = [
       {
         id: "gibet-vide",
         chapterFragment: true,
+        fait: "fait-gibet",
         label: "Le Gibet Vide, au centre",
         illustration: "assets/scene_colline_gibet_vide_a_b.png",
         approche:
@@ -1903,8 +1950,44 @@ export const SCENES: Scene[] = [
         "« Réponds pas. C'est tout ce qu'on sait. C'est tout ce qu'on a " +
         "jamais su. »",
     ],
-    choices: [{ id: "franchir-portillon", label: "Franchir le portillon" }],
+    choices: [
+      { id: "franchir-portillon", label: "Franchir le portillon" },
+      {
+        /* LE RENONÇANT (5/08) — la seule fin du jeu qui ne soit pas une mort.
+           N'apparaît QUE si le Serment a été juré ET tenu (Soupçon au plus
+           bas) : le hameau n'offre pas une place à qui il surveille. Jamais
+           suggéré, jamais mis en avant — c'est une porte, pas une récompense. */
+        id: "rester-au-hameau",
+        label: "Ne pas franchir",
+        renonce: true,
+      },
+    ],
     jailerLine: "« Réponds pas. » Trente ans de sagesse villageoise, résumés. Ça ne marche pas, mais c'est mignon.",
+  },
+  {
+    /* Nœud TERMINAL du renoncement. Hors pool, atteint uniquement par le choix
+       « Ne pas franchir » du beat 5 de la Halte. La loi de substitution est
+       ici SANS être énoncée : pour qu'une place se libère, une autre se prend
+       — et c'est le héros qui prend celle du prochain fixé. */
+    id: "renoncer",
+    illustration: "assets/scene_hameau_dense2_b.png",
+    terminal: true,
+    renoncement: true,
+    narration: [
+      "Tu ne passes pas le portillon. Tu fais un pas de côté, et tu " +
+        "t'assieds sur la pierre du seuil, du côté du hameau.",
+      "Personne ne discute. Le plus jeune referme le portillon, le vieux " +
+        "hoche la tête une fois — c'est fait, et ça s'est fait sans un mot. " +
+        "Le lendemain, on te donne une porte. Une vraie, avec un loquet. Ce " +
+        "n'est pas rien, ici, une porte.",
+      "Aux premières aubes tu comptes les jours comme eux. Puis tu cesses de " +
+        "compter. Un matin, quelqu'un frappe chez la Femme au Seuil, et sa " +
+        "croix de craie a disparu de son bois. Personne ne t'explique où elle " +
+        "est passée. Tu ne demandes pas.",
+    ],
+    choices: [{ id: "fin-renoncant", label: "Laisser le nom au Registre" }],
+    jailerLine:
+      "Tu restes ? Reste. Je n'ai jamais perdu personne. J'ai seulement changé de porte à surveiller.",
   },
   {
     /* Beat 6 — variante « nuit dehors » (Serment refusé). Remplace les beats
@@ -2224,6 +2307,9 @@ export const SCENES: Scene[] = [
       {
         id: "interieur-moulin",
         chapterFragment: true,
+        // Qui habite le moulin, c'est la Fille — et ce qu'on raconte de sa
+        // corde change d'une vie à l'autre (lib/contradictions.ts).
+        fait: "fait-fille",
         label: "Pousser la porte entrouverte",
         illustration: "assets/scene_moulin_interieur_a_d.png",
         approche:
@@ -2689,6 +2775,7 @@ export const SCENES: Scene[] = [
       {
         id: "chaire-registre",
         chapterFragment: true,
+        fait: "fait-bailli",
         label: "La chaire et son livre",
         illustration: "assets/scene_tribunal_chaire_a_c.png",
         approche:
@@ -2737,6 +2824,24 @@ export const SCENES: Scene[] = [
     ],
     choices: [
       { id: "lire-registre", label: "Lire le Registre" },
+      {
+        /* LE REGISTRE MENT (5/08) — n'apparaît QUE si le compte a lu deux
+           versions incompatibles d'un même fait, sur deux vies différentes.
+           C'est la seule option du jeu qu'une seule vie ne peut pas ouvrir.
+           Sa conséquence est écrite à l'exécution : le héros oppose au greffe
+           l'accusation du fait précis qu'il tient (lib/contradictions.ts). */
+        id: "registre-ment",
+        label: "Le Registre ment",
+        requiresContradiction: true,
+        soupcon: -1,
+        passive: {
+          consequence:
+            "Tu poses la main à plat sur la page ouverte, et tu dis ce que tu " +
+            "sais. L'Écrivain ne lève toujours pas les yeux — mais sa plume " +
+            "s'arrête, et le silence qui suit n'est pas le silence de quelqu'un " +
+            "qui n'a pas compris.",
+        },
+      },
       {
         // Dénoncer un autre (validation 23/07) : fait baisser son propre
         // Soupçon. Disponible, JAMAIS suggéré par l'interface (bouton sobre,
@@ -3560,16 +3665,19 @@ export const SCENES: Scene[] = [
       "Ils ne te courent pas après — ils t'attendent au tournant du muret, " +
         "le hameau entier, dans ce silence de gens qui ont déjà décidé. On " +
         "ne te touche pas. On marche autour de toi, jusqu'au Petit Tribunal.",
-      "Trois bancs pleins, la chaire vide — c'est face à elle qu'on " +
-        "t'assoit. La Doyenne déplie une feuille : la Dénonciation, signée " +
-        "d'une croix. L'accusation tient en peu de mots, et personne n'ose " +
-        "les dire fort : tu entends une voix. L'Ordonnance de la Fixation " +
-        "s'applique. À moins que tu ne parles mieux qu'elle.",
+      // ⚠️ Les dépositions des TÉMOINS (lib/temoins.ts) s'insèrent ICI, entre
+      // ces deux paragraphes — écrites à l'exécution depuis ce que le joueur a
+      // réellement fait. Ce paragraphe-ci doit donc rester la SENTENCE, jamais
+      // l'accusation (sinon elle serait dite deux fois).
+      "La Doyenne laisse le silence retomber, puis referme le cahier de " +
+        "l'Écrivain d'une main. L'Ordonnance de la Fixation s'applique. À " +
+        "moins que tu ne parles mieux qu'eux.",
     ],
     choices: [
       {
         id: "plaider-serre",
         label: "Plaider serré",
+        defense: "discrediter",
         risky: {
           stat: "RUSE",
           threshold: 13,
@@ -3585,6 +3693,7 @@ export const SCENES: Scene[] = [
       {
         id: "prendre-a-temoin",
         label: "Prendre le hameau à témoin",
+        defense: "emouvoir",
         risky: {
           stat: "EMPATHIE",
           threshold: 13,
@@ -3594,6 +3703,43 @@ export const SCENES: Scene[] = [
             "Tu parles de leurs morts fixés, de la peur qui juge à leur place depuis que le Bailli pend. Des nuques plient sur les bancs. La Doyenne tranche, lasse : « Qu'il marche. La lande jugera mieux que nous. »",
             "Tu cherches leurs yeux — ils regardent tous la corde. Ce n'est pas de la haine, c'est du soulagement : quelqu'un d'autre qu'eux. À l'aube, on te fixe, proprement, avec les égards dus à ce qu'on craint.",
             "1 naturel. Ton appel réveille exactement le souvenir qu'il ne fallait pas : la dernière qui a supplié ainsi s'est relevée de sa corde. Cette fois, ils feront mieux. Double nœud. ♦ −2"
+          ),
+        },
+      },
+      {
+        /* ASSUMER — toujours disponible. C'est la défense du Courage : ne rien
+           nier, tout reconnaître, et leur demander ce qu'ils comptent en faire. */
+        id: "assumer-tout",
+        label: "Tout reconnaître",
+        defense: "assumer",
+        risky: {
+          stat: "COURAGE",
+          threshold: 13,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Tu reprends chaque déposition et tu dis oui à chacune, sans un mot d'excuse — puis tu demandes, très calmement, lequel d'entre eux voudrait qu'on lise la sienne à voix haute. Personne ne se rassoit tout à fait pareil. La Doyenne te rend le seuil sans commentaire.",
+            "Tu ne nies rien. Tu tiens debout pendant qu'on énumère, et tu regardes celui qui parle jusqu'à ce qu'il s'arrête. Il n'y a rien à retourner contre quelqu'un qui n'a rien caché. On te laisse repartir — mal à l'aise, ce qui est déjà une victoire ici.",
+            "Tu reconnais tout, et ils entendent une confession. Le hameau n'a jamais eu besoin de plus. On te remercie presque de leur avoir épargné le doute, et le Champ des Fixés prépare ta place avant même le lever.",
+            "1 naturel. Tu reconnais plus que ce qu'ils avaient. Une chose qu'aucun témoin n'avait vue sort de ta bouche, et le silence qui suit a le goût d'une porte qui se ferme. Double nœud, comme pour les honnêtes. ♦ −2"
+          ),
+        },
+      },
+      {
+        /* PRODUIRE UNE PREUVE — n'apparaît que si la Besace porte un document
+           du hameau (registre, carnet, sceau, ordonnance, dénonciation). Seuil
+           plus bas : un papier vaut mieux qu'un beau discours, ici. */
+        id: "produire-preuve",
+        label: "Produire un papier",
+        defense: "preuve",
+        risky: {
+          stat: "RUSE",
+          threshold: 11,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Tu poses le document sur le banc des témoins, ouvert à la bonne page, et tu te tais. L'Écrivain se penche malgré lui — puis se redresse très vite. Ce que ce papier dit du hameau vaut infiniment plus cher que ce que le hameau dit de toi. On te raccompagne, et on ne te demande pas de le rendre.",
+            "Tu produis le papier. Il ne t'innocente pas : il rappelle simplement qui tient les comptes, et depuis quand. La Doyenne le lit deux fois, referme, et dit qu'on verra plus tard. Plus tard, ici, veut dire jamais — et jamais, aujourd'hui, veut dire libre.",
+            "Tu produis le papier, et tu comprends en le tendant que tu viens d'avouer d'où il vient. On ne te juge plus pour la voix : on te juge pour le vol. C'est un motif plus propre, et il tient aussi bien une corde.",
+            "1 naturel. Le papier passe de main en main et s'arrête sur une ligne que tu n'avais pas lue. Ton nom y est déjà, dans une écriture qui n'est pas la tienne, avec une date qui n'est pas encore arrivée. Le tribunal n'a plus qu'à respecter le calendrier. ♦ −2"
           ),
         },
       },
@@ -4170,6 +4316,11 @@ export function makeLiaison(optA: string, optB: string, seed: number, ctx?: Liai
   // l'autre sans marcher »), tiré par la graine (stable à la reprise). Fini le
   // portail figé entre deux lieux.
   const walkImg = pickWalkImage(optA, optB, seed, ctx?.from);
+  // Les deux routes ne se valent pas EN NATURE : l'une est franche, l'autre
+  // couverte. Laquelle est laquelle est tirée par la graine (stable à la
+  // reprise) — la position à l'écran ne prédit donc jamais le mode, comme pour
+  // les types de choix.
+  const modeA: "couvert" | "decouvert" = seed % 2 === 0 ? "decouvert" : "couvert";
   return {
     id: `liaison:${optA}>${optB}`,
     liaison: true,
@@ -4177,10 +4328,49 @@ export function makeLiaison(optA: string, optB: string, seed: number, ctx?: Liai
     narration: [amb, croisee(optA, optB, ctx?.liaisonsJouees ?? 0, seed)],
     jailerLine: jl,
     choices: [
-      { id: `orient-${optA}`, label: APPROACH[optA] ?? "Continuer", orient: { dest: optA } },
-      { id: `orient-${optB}`, label: APPROACH[optB] ?? "Continuer", orient: { dest: optB } },
+      {
+        id: `orient-${optA}`,
+        label: APPROACH[optA] ?? "Continuer",
+        orient: { dest: optA, mode: modeA },
+      },
+      {
+        id: `orient-${optB}`,
+        label: APPROACH[optB] ?? "Continuer",
+        orient: { dest: optB, mode: modeA === "couvert" ? "decouvert" : "couvert" },
+      },
     ],
   };
+}
+
+/**
+ * LA MANIÈRE D'ARRIVER (5/08) — une phrase de plus, posée après l'approche du
+ * lieu, qui dit COMMENT on y est entré. Une seule ligne : la route se joue,
+ * elle ne se raconte pas.
+ *
+ * ⚠️ Ces phrases ne doivent jamais nommer un lieu (elles servent aux 18
+ * destinations) ni annoncer un danger (l'approche s'arrête au seuil, règle du
+ * 5/08 sur les doubles arrivées).
+ */
+// À COUVERT : personne ne t'a vu — mais tu n'as rien vu non plus. On ne lit
+// pas un lieu qu'on aborde le nez au sol, à contre-jour, en surveillant ses pas.
+const ARRIVEE_COUVERT = [
+  "Tu es venu par le flanc, le nez au sol. Personne ne t'a vu. Toi non plus.",
+  "Tu es passé sous le vent. Rien ne s'est retourné, et tu n'as regardé que tes pieds.",
+  "Tu as longé le talus à contre-jour. Mauvais angle pour être reconnu, mauvais angle pour voir.",
+  "Tu as coupé par les fougères hautes. Aucun bruit à compter, aucune vue d'ensemble.",
+];
+
+// À DÉCOUVERT : on t'a vu venir — mais tu as vu le lieu entier avant d'y entrer.
+const ARRIVEE_DECOUVERT = [
+  "Tu as pris la route droite. On t'a vu venir — et tu as eu le temps de tout regarder.",
+  "Tu n'as rien contourné. Tu arrives par la face, et rien ne t'a échappé en chemin.",
+  "Tu es entré par où tout le monde entre. Ça se remarque, et ça permet de voir venir.",
+  "Tu as marché droit. Le lieu s'est ouvert devant toi bien avant que tu n'y sois.",
+];
+
+export function phraseArrivee(mode: "couvert" | "decouvert", seed: number): string {
+  const pool = mode === "couvert" ? ARRIVEE_COUVERT : ARRIVEE_DECOUVERT;
+  return pool[Math.abs(seed) % pool.length];
 }
 
 /** Les 4 vues génériques des Landes (fournies par Patrick, 24/07) : utilisées

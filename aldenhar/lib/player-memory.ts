@@ -18,6 +18,13 @@
  */
 
 import type { RegistreRow } from "@/lib/state";
+import {
+  forgerRelique,
+  relique,
+  type RelicDette,
+  type RelicDon,
+  type RelicLandes,
+} from "@/lib/reliques";
 // registre-data n'importe d'ici que des TYPES (import effacé au build) : ce
 // sens-ci peut donc porter la valeur `buildLesCent` sans cycle au runtime.
 import { buildLesCent } from "@/lib/registre-data";
@@ -54,6 +61,9 @@ export type Relic = {
       rareté — les reliques d'avant n'ont pas le champ, relicEffect() le
       dérive. Prochaine itération : effet par NOM de relique. */
   effect?: RelicEffect;
+  /** Id de la fiche des Landes (lib/reliques.ts) — porte le DON et la DETTE.
+      Absent sur les reliques d'avant le 5/08 : elles n'ont pas de dette. */
+  relicId?: string;
 };
 
 export type RelicEffect = "coussin" | "passe" | "faveur";
@@ -78,6 +88,33 @@ export const RELIC_FONCTION: Record<RelicEffect, string> = {
     une seule mort pèse sur une seule vie, la collection reste au Registre. */
 export function activeRelic(mem: PlayerMemory): Relic | null {
   return mem.relics.length ? mem.relics[mem.relics.length - 1] : null;
+}
+
+/**
+ * Le DON d'une relique (lib/reliques.ts). Les reliques d'avant le 5/08 n'ont
+ * pas de fiche : leur don se dérive de l'ancien `effect` — « coussin » est
+ * l'ancien nom d'« amorti ».
+ */
+export function relicDon(r: Relic | null): RelicDon | null {
+  if (!r) return null;
+  const fiche = relique(r.relicId ?? r.name);
+  if (fiche) return fiche.don;
+  const legacy = relicEffect(r);
+  return legacy === "coussin" ? "amorti" : legacy;
+}
+
+/**
+ * La DETTE d'une relique. `null` pour les reliques d'avant le 5/08 : on
+ * n'ajoute pas rétroactivement un coût à un objet gagné sans.
+ */
+export function relicDette(r: Relic | null): RelicDette | null {
+  if (!r) return null;
+  return relique(r.relicId ?? r.name)?.dette ?? null;
+}
+
+/** La fiche complète (fonction, coût, murmure) si la relique en a une. */
+export function relicFiche(r: Relic | null): RelicLandes | null {
+  return r ? relique(r.relicId ?? r.name) : null;
 }
 
 export type PlayerMemory = {
@@ -140,6 +177,18 @@ export type PlayerMemory = {
   };
   /** Dernier passage en jeu (ms epoch) — pour les citations « longue absence ». */
   lastPlayedAt?: number;
+  /**
+   * LES CONTRADICTIONS (5/08) : versions de chaque fait déjà LUES, toutes runs
+   * confondues. Deux versions du même fait = une contradiction que le héros
+   * peut opposer au Registre. Optionnel (mémoires d'avant le 5/08).
+   */
+  faitsVus?: Record<string, string[]>;
+  /**
+   * LES RENONÇANTS (5/08) : runs terminées SANS mourir — le héros est resté au
+   * Hameau. Ce n'est pas une victoire et ce n'est pas une mort : c'est une
+   * place prise à quelqu'un d'autre. Change le ton du Geôlier.
+   */
+  renoncements?: number;
 };
 
 const KEY = "aldenhar-player";
@@ -158,7 +207,48 @@ function fresh(): PlayerMemory {
     chaptersSeen: [],
     fixations: 0,
     introSeen: false,
+    faitsVus: {},
+    renoncements: 0,
   };
+}
+
+/**
+ * UN FAIT LU. Enregistre la version que cette run a montrée. Deux versions
+ * différentes du même fait, sur deux vies, = une contradiction opposable au
+ * Registre (lib/contradictions.ts).
+ */
+export function noterFait(faitId: string, versionId: string): void {
+  mutateMemory((m) => {
+    const vus = { ...(m.faitsVus ?? {}) };
+    const l = vus[faitId] ?? [];
+    if (!l.includes(versionId)) vus[faitId] = [...l, versionId];
+    m.faitsVus = vus;
+  });
+}
+
+/**
+ * LE RENONCEMENT (5/08) — une run qui s'arrête sans mort.
+ *
+ * Le héros reste au Hameau : il ne franchit pas la Descente, il ne meurt pas.
+ * Aucune relique n'est forgée — on ne forge rien avec une vie qu'on n'a pas
+ * perdue. Le nom entre au Registre quand même : c'est le prix, et c'est aussi
+ * la loi du Domaine (quelqu'un a pris sa place au Hameau, quelqu'un d'autre
+ * en est sorti). `deaths` n'est PAS incrémenté : la courbe d'entrée et les
+ * jalons de mort ne doivent pas se croire avancés.
+ */
+export function recordRenoncement(args: { heroName: string; days: number; place: string }): void {
+  mutateMemory((m) => {
+    m.renoncements = (m.renoncements ?? 0) + 1;
+    m.totalDays += args.days;
+    m.bestDays = Math.max(m.bestDays, args.days);
+    m.fallen.unshift({
+      name: args.heroName,
+      days: args.days,
+      cause: "resté au Hameau",
+      place: args.place,
+    });
+    m.lastPlayedAt = Date.now();
+  });
 }
 
 /** L'intro doit-elle se jouer ? (tout premier lancement, ou redemandée.) */
@@ -212,6 +302,10 @@ export function loadMemory(): PlayerMemory {
               : (typeof p.runsStarted === "number" ? p.runsStarted : 0) > 0,
           lastDeath: p.lastDeath && typeof p.lastDeath === "object" ? p.lastDeath : undefined,
           lastPlayedAt: typeof p.lastPlayedAt === "number" ? p.lastPlayedAt : undefined,
+          // ⚠️ Comme loadRun, cette reconstruction est CHAMP PAR CHAMP : tout
+          // champ absent ici est silencieusement perdu au rechargement.
+          faitsVus: p.faitsVus && typeof p.faitsVus === "object" ? p.faitsVus : {},
+          renoncements: typeof p.renoncements === "number" ? p.renoncements : 0,
         };
       }
     } catch {
@@ -275,29 +369,28 @@ export function entrySoftening(mem: PlayerMemory): number {
  * Forge d'une Relique à la mort (spec §10) : commune / rare / légendaire.
  * Le nom vient d'un petit pool par rareté — contenu de proto, à enrichir.
  */
-const RELIC_NAMES: Record<Relic["rarity"], string[]> = {
-  commune: ["Éclat de dé fêlé", "Anneau de suie", "Mèche de torche éteinte", "Clou du pont d'os"],
-  rare: ["Œil de lanterne verte", "Vertèbre gravée", "Sablier sans sable"],
-  legendaire: ["Dent du décompte", "Nom que l'écho a gardé"],
-};
-
-export function forgeRelic(heroName: string, days: number, floorRare = false): Relic {
-  const roll = Math.random();
-  // Jalon de première fois (spec 21/07) : la toute première mort donne un
-  // « fragment fort » — jamais une relique commune, pour que la première perte
-  // marque et récompense au-delà de l'ordinaire.
-  const rarity: Relic["rarity"] = floorRare
-    ? roll < 0.75
-      ? "rare"
-      : "legendaire"
-    : roll < 0.7
-      ? "commune"
-      : roll < 0.95
-        ? "rare"
-        : "legendaire";
-  const pool = RELIC_NAMES[rarity];
-  const effect: RelicEffect = rarity === "legendaire" ? "faveur" : rarity === "rare" ? "passe" : "coussin";
-  return { name: pool[Math.floor(Math.random() * pool.length)], rarity, heroName, days, effect };
+/**
+ * Forge d'une Relique à la mort. Depuis le 5/08, le pool ET la rareté sortent
+ * de `lib/reliques.ts` : c'est la CAUSE de la mort qui choisit la relique — une
+ * corde ne forge pas la même chose qu'une noyade. `floorRare` = jalon de
+ * première mort (spec 21/07) : la toute première perte donne un « fragment
+ * fort », jamais une commune.
+ */
+export function forgeRelic(heroName: string, days: number, floorRare = false, cause = ""): Relic {
+  const fiche = forgerRelique(cause, floorRare);
+  // L'ancien `effect` reste posé pour les lectures qui ne connaissent que les
+  // trois effets d'origine (fiches de menu, sauvegardes relues par du code
+  // antérieur) — le DON de la fiche fait autorité côté moteur.
+  const effect: RelicEffect =
+    fiche.don === "faveur" ? "faveur" : fiche.don === "passe" ? "passe" : "coussin";
+  return {
+    name: fiche.nom,
+    relicId: fiche.id,
+    rarity: fiche.rarete,
+    heroName,
+    days,
+    effect,
+  };
 }
 
 /**
@@ -324,7 +417,7 @@ export function recordDeath(args: {
   const memBefore = loadMemory();
   const firstDeath = memBefore.deaths === 0;
   const bestBefore = memBefore.bestDays;
-  const relic = forgeRelic(args.heroName, args.days, firstDeath);
+  const relic = forgeRelic(args.heroName, args.days, firstDeath, args.cause);
   mutateMemory((m) => {
     m.deaths += 1;
     m.totalDays += args.days;

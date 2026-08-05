@@ -7,6 +7,7 @@
 import { normalizeItem, startingBesace, type BesaceItem } from "@/lib/besace";
 import { drawMemories } from "@/lib/prologue-data";
 import { ENTRY_SCENE, sceneAt } from "@/lib/scene-data";
+import type { Temoin } from "@/lib/temoins";
 
 export type RollRecord = {
   step: number;
@@ -186,6 +187,23 @@ export type RunState = {
       revient jamais verbatim dans une même vie (retour test 4/08). Complétée
       en QUITTANT la liaison, pour que sa reprise reste déterministe. */
   liaisonVues?: string[];
+  /**
+   * LES TÉMOINS (5/08) : le Soupçon cesse d'être un compteur, il devient des
+   * gens. Chaque acte qui fait monter le Soupçon inscrit QUI a vu QUOI, dans
+   * l'ordre. Au procès, ce sont ces dépositions qui sont lues.
+   */
+  temoins?: Temoin[];
+  /**
+   * LA LOI DU DOMAINE (5/08) : index des manifestations déjà servies cette run.
+   * La loi se constate, elle ne se martèle pas — au plus une par vie.
+   */
+  loiVues?: number[];
+  /**
+   * ARRIVÉE (5/08) : la route choisie à la dernière Croisée. `couvert` = par le
+   * flanc, on ne t'a pas vu venir ; `decouvert` = par la route, tu arrives
+   * d'aplomb mais le lieu t'a vu. Consommé à l'arrivée, remis à null ensuite.
+   */
+  arriveeMode?: "couvert" | "decouvert" | null;
   /** Dettes narratives en attente de règlement dans cette run (spec §17). */
   debts: PendingDebt[];
   /** Besace (13/07) : objets mundane, vidée à la mort. */
@@ -309,6 +327,9 @@ function fresh(): RunState {
     hameau: { entree: false, serment: null, halte: false },
     savoirs: [],
     fragmentsLus: [],
+    temoins: [],
+    loiVues: [],
+    arriveeMode: null,
   };
 }
 
@@ -374,6 +395,9 @@ export function loadRun(): RunState {
             feedSuite: Array.isArray(p.feedSuite) ? p.feedSuite : [],
             relicUsed: Boolean(p.relicUsed),
             liaisonVues: Array.isArray(p.liaisonVues) ? p.liaisonVues : [],
+            temoins: Array.isArray(p.temoins) ? p.temoins : [],
+            loiVues: Array.isArray(p.loiVues) ? p.loiVues : [],
+            arriveeMode: p.arriveeMode === "couvert" || p.arriveeMode === "decouvert" ? p.arriveeMode : null,
           };
         }
       }

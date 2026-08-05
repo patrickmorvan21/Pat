@@ -22,7 +22,13 @@ import {
   type LiaisonCtx,
   type Scene as SceneType,
   ligneCorbeaux,
+  phraseArrivee,
 } from "@/lib/scene-data";
+import { contradictionsConnues, faitById, versionDuFait } from "@/lib/contradictions";
+import { manifestationLoi } from "@/lib/loi-substitution";
+import { perceptionDe } from "@/lib/perception";
+import { acteAccusation, defensesDisponibles, temoinPour, temoinsUniques } from "@/lib/temoins";
+import type { RelicDon } from "@/lib/reliques";
 import { loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
 import { chapterById, drawChapter, LANDES_LORE_FRAGMENTS } from "@/lib/chapters-data";
 import { playMusic } from "@/lib/audio";
@@ -33,11 +39,14 @@ import {
   bloodDebtFor,
   buildRegistre,
   entrySoftening,
-  relicEffect,
+  relicDon,
+  relicDette,
   jailerPosture,
   loadMemory,
   mutateMemory,
+  noterFait,
   recordDeath,
+  recordRenoncement,
   type Relic,
 } from "@/lib/player-memory";
 
@@ -308,8 +317,18 @@ export default function Scene() {
   // stats du héros (fixées au Seuil), effet de la relique portée, et son état
   // de consommation — une relique = un geste par vie.
   const [heroStats, setHeroStats] = useState<RunState["stats"] | undefined>(undefined);
-  const [relicFx, setRelicFx] = useState<"coussin" | "passe" | "faveur" | null>(null);
+  // Le DON de la relique portée (5/08) — remplace l'ancien trio d'effets.
+  // « amorti » est le nouveau nom de « coussin ».
+  const [relicFx, setRelicFx] = useState<RelicDon | null>(null);
   const [relicSpent, setRelicSpent] = useState(false);
+  // Contradictions tenues par le COMPTE (deux versions d'un même fait, lues
+  // dans deux vies) : ouvrent « Le Registre ment ». Lu une fois au montage.
+  const [contradictions, setContradictions] = useState(0);
+  // Défenses ouvertes au procès par les témoins réellement présents (5/08).
+  // Miroir de rendu : jamais `runRef.current` pendant le render.
+  const [defenses, setDefenses] = useState<string[]>([]);
+  // Le RENONCEMENT est-il offert sur cet écran ? Serment juré ET tenu.
+  const [renoncePossible, setRenoncePossible] = useState(false);
   // Écrans restants de la séquence courante (micro-beats). state + ref : les
   // handlers de tap lisent la ref, le rendu lit le state.
   const [beatsSuite, setBeatsSuiteState] = useState<FeedEntry[][]>([]);
@@ -381,9 +400,19 @@ export default function Scene() {
   // l'information n'a pas été apprise en explorant. Filtré ici, donc avant le
   // mélange Fisher-Yates — une option débloquée prend une position quelconque
   // comme les autres, sans marqueur ni place réservée.
-  const baseChoices = rawChoices.filter(
-    (c) => !c.requiresSavoir || savoirs.includes(c.requiresSavoir)
-  );
+  const baseChoices = rawChoices.filter((c) => {
+    if (c.requiresSavoir && !savoirs.includes(c.requiresSavoir)) return false;
+    // « Le Registre ment » (5/08) : une seule vie ne peut pas l'ouvrir. Le don
+    // « lecture » d'une relique la rend visible sans l'avoir vécue — c'est
+    // exactement ce que raconte cette relique.
+    if (c.requiresContradiction && contradictions === 0 && relicFx !== "lecture") return false;
+    // Défenses du procès : seules celles que les témoins rendent possibles.
+    if (c.defense && !defenses.includes(c.defense)) return false;
+    // Le renoncement n'est offert qu'à qui a juré ET tenu. Le hameau n'offre
+    // pas une place à quelqu'un qu'il surveille.
+    if (c.renonce && !renoncePossible) return false;
+    return true;
+  });
   // Les choix d'orientation d'une liaison gardent leur ordre (gauche/droite
   // stable) ; ailleurs, Fisher-Yates seedé pour casser les patterns de slot.
   const shuffledChoices = scene.liaison ? baseChoices : shuffleChoices(baseChoices, step);
@@ -566,8 +595,10 @@ export default function Scene() {
     setSavoirs(run.savoirs ?? []);
     setHeroStats(run.stats);
     setRelicSpent(Boolean(run.relicUsed));
-    const relicPortee = activeRelic(loadMemory());
-    setRelicFx(relicPortee ? relicEffect(relicPortee) : null);
+    const memNow = loadMemory();
+    const relicPortee = activeRelic(memNow);
+    setRelicFx(relicDon(relicPortee));
+    setContradictions(contradictionsConnues(memNow).length);
 
     // Musique (24/07) : l'Acte I tourne sur les boucles des Landes (rotation
     // aléatoire des 3 pistes). Silencieux si les mp3 ne sont pas déployés.
@@ -608,6 +639,13 @@ export default function Scene() {
       const mem = mutateMemory((m) => {
         m.runsStarted += 1;
       });
+      // LA DETTE DE LA RELIQUE PORTÉE (5/08) : une relique aide ET coûte. Les
+      // dettes qui pèsent dès le départ se posent ici, une seule fois, au seed
+      // de la run neuve — jamais à la reprise (sinon elles s'empileraient à
+      // chaque ouverture de l'app).
+      const dettePortee = relicDette(activeRelic(mem));
+      if (dettePortee === "marque") run.soupcon = Math.min(6, (run.soupcon ?? 0) + 1);
+      if (dettePortee === "usure") run.health = Math.min(run.health, 0.82);
       const opening = sceneFromTrav(run.trav); // = la Borne (ENTRY_SCENE)
       setScene(opening);
       const illo = opening.illustration ?? PORTAL;
@@ -623,6 +661,21 @@ export default function Scene() {
             "chemin et part en courant vers le hameau. Les Landes ne " +
             "connaissent pas ton visage — mais elles connaissent ta manière " +
             "d'arriver. On t'attendra les bouches closes."
+        );
+      }
+      // La dette « marque » se VOIT : on ne porte pas ça sans être reconnu.
+      if (dettePortee === "marque") {
+        openingNarration.push(
+          "Ce que tu portes à même la peau tire le regard avant toi. Deux " +
+            "gamins te croisent au premier muret, s'arrêtent net, et repartent " +
+            "vers le hameau sans courir — ce qui est pire."
+        );
+      }
+      if (dettePortee === "usure") {
+        openingNarration.push(
+          "Tu marches depuis peu et tes jambes le savent déjà. Ce que tu " +
+            "portes ne pèse rien dans la main, et pourtant quelque chose en toi " +
+            "a été prélevé pour le porter."
         );
       }
       // Persistance environnementale (§17) : trace des runs précédentes.
@@ -694,6 +747,21 @@ export default function Scene() {
     );
   }, [scene, step, health, beats]);
 
+  // Défenses du procès (5/08) : recalculées à chaque écran, parce qu'un témoin
+  // peut s'ajouter et qu'un papier peut se ramasser jusqu'au dernier moment.
+  useEffect(() => {
+    const run = runRef.current;
+    if (!run) return;
+    setRenoncePossible(run.hameau?.serment === "jure" && (run.soupcon ?? 0) <= 1);
+    if (!scene.fixationTrial) return;
+    setDefenses(
+      defensesDisponibles(
+        temoinsUniques(run.temoins ?? []),
+        (run.besace ?? []).map((i) => i.id)
+      )
+    );
+  }, [scene, step]);
+
   function onTimedExpire(timed: NonNullable<SceneType["timed"]>) {
     setCountdownArmed(false);
     setTimedExpired(true);
@@ -743,6 +811,8 @@ export default function Scene() {
     prepend?: FeedEntry[];
     /** Choix d'orientation (traversée 21/07) : force la destination (liaison → lieu). */
     toDest?: string;
+    /** Par où on y arrive (5/08) — voir Choice.orient.mode. */
+    mode?: "couvert" | "decouvert";
     /**
      * Bascule vers une scène nommée qui n'est PAS un lieu du pool (rencontre
      * ouverte par un point d'intérêt, spec 24/07 suite). N'entre pas dans
@@ -802,7 +872,13 @@ export default function Scene() {
       // « nuit dehors » : aucune porte ne s'ouvre à qui n'a pas juré.
       const ham = runRef.current?.hameau;
       if (ham?.entree && !ham.halte) {
-        nextScene = sceneById(ham.serment === "refuse" ? "hameau-halte-dehors" : "hameau-halte-1")!;
+        // Dette « exclusion » d'une relique portée (5/08, Clou du silence) :
+        // le Hameau ne t'ouvre pas sa grange, quoi que tu aies juré. Même
+        // conséquence qu'un Serment refusé — la nuit dehors.
+        const exclu = relicDette(activeRelic(loadMemory())) === "exclusion";
+        nextScene = sceneById(
+          ham.serment === "refuse" || exclu ? "hameau-halte-dehors" : "hameau-halte-1"
+        )!;
         trav.phase = "scene";
         trav.current = nextScene.id; // hors `visited` : ce n'est pas un lieu du pool
       } else {
@@ -849,7 +925,15 @@ export default function Scene() {
     // Le palier ne se MONTRE qu'une fois (soupconSeen), toujours en monde
     // lisible, jamais en chiffre. Le palier 6 n'a pas de texte : le procès
     // du héros EST sa manifestation.
-    const soupAfter = Math.max(0, Math.min(6, soupNow + (nextScene.soupconOnArrival ?? 0)));
+    // ARRIVÉE À COUVERT (5/08) : le lieu ne t'a pas vu venir, donc il n'a rien
+    // à raconter — le Soupçon d'arrivée ne s'applique pas. C'est la seule
+    // conséquence mécanique du mode de route, et elle est symétrique : arriver
+    // à découvert fait gagner un élan (AGUERRI en combat, plus bas).
+    const vuALArrivee = opts?.mode !== "couvert";
+    const soupAfter = Math.max(
+      0,
+      Math.min(6, soupNow + (vuALArrivee ? (nextScene.soupconOnArrival ?? 0) : 0))
+    );
     const soupSeen = runRef.current?.soupconSeen ?? 0;
     const soupManifest =
       !nextScene.fixationTrial && soupAfter > soupSeen && soupAfter <= 5 && SOUPCON_PALIERS[soupAfter]
@@ -944,7 +1028,56 @@ export default function Scene() {
     if (opts?.toDest && APPROACH_NARRATION[opts.toDest]) {
       entries.push({ id: nextId(), kind: "narration", text: APPROACH_NARRATION[opts.toDest] });
     }
-    entries.push(...nextScene.narration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+    // …et COMMENT on y arrive (5/08) : une seule phrase, jamais un paragraphe.
+    if (opts?.toDest && opts.mode) {
+      entries.push({ id: nextId(), kind: "narration", text: phraseArrivee(opts.mode, nextStep) });
+    }
+    // LE PROCÈS (5/08) : on ne lit pas d'acte d'accusation, on appelle des
+    // gens. Les dépositions s'intercalent entre l'arrivée au tribunal et la
+    // sentence — le joueur relit sa propre run, dans l'ordre où il l'a jouée.
+    //
+    // Le don « silence » (Clou du silence) efface le PREMIER inscrit — celui
+    // qui a entraîné les autres. Dépensé ici, une fois par vie.
+    const bailloner =
+      Boolean(nextScene.fixationTrial) &&
+      relicDon(activeRelic(loadMemory())) === "silence" &&
+      !runRef.current?.relicUsed;
+    const temoinsAuProces = (() => {
+      const t = temoinsUniques(runRef.current?.temoins ?? []);
+      return bailloner ? t.slice(1) : t;
+    })();
+    const narrationLines = nextScene.fixationTrial
+      ? [
+          nextScene.narration[0],
+          ...(bailloner
+            ? [
+                "Un nom manque à l'appel. On le cherche du regard sur les bancs, " +
+                  "on ne le trouve pas, et personne ne dit tout haut pourquoi.",
+              ]
+            : []),
+          ...acteAccusation(temoinsAuProces),
+          ...nextScene.narration.slice(1),
+        ]
+      : nextScene.narration;
+    entries.push(...narrationLines.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+    // LA PERCEPTION (5/08) : ce que ce héros-LÀ remarque, parce qu'il est
+    // ainsi fait. Une ligne, jamais deux — et jamais le nom de la stat.
+    // Le don « regard » (Œil de lanterne verte) donne accès à ces lignes même
+    // quand aucune stat n'atteint le seuil : voir avec les yeux d'un autre.
+    //
+    // ⚠️ Le VRAI arbitrage du mode de route est ici : arriver à couvert
+    // t'épargne le regard des gens, mais te prive du tien — on ne lit pas un
+    // lieu qu'on aborde par le talus, à contre-jour, en surveillant ses pas.
+    // Discrétion contre lecture : les deux routes se valent, aucune n'est la
+    // bonne. (Sans ça, « à couvert » serait strictement meilleur.)
+    const perception = vuALArrivee
+      ? perceptionDe(
+          nextScene.id,
+          runRef.current?.stats,
+          relicDon(activeRelic(loadMemory())) === "regard"
+        )
+      : null;
+    if (perception) entries.push({ id: nextId(), kind: "narration", text: perception });
     entries.push(...chapterAfter.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
     // Manifestation du Soupçon : le monde se ferme, palier par palier.
     if (soupManifest) entries.push({ id: nextId(), kind: "narration", text: soupManifest });
@@ -996,6 +1129,24 @@ export default function Scene() {
       const run = runRef.current;
       const rows = buildRegistre(loadMemory(), run?.heroName ?? "toi", run?.day ?? 1);
       entries.push({ id: nextId(), kind: "registre", rows });
+    }
+    // LA LOI DU DOMAINE (5/08) : « rien n'est libéré, quelqu'un prend toujours
+    // la place de quelqu'un d'autre. » Elle n'est JAMAIS énoncée — elle se
+    // constate, cas après cas, dans ce que les gens racontent d'eux-mêmes.
+    //
+    // Servie UNIQUEMENT en LIAISON, et au plus une fois par vie : c'est une
+    // rumeur de route, et c'est le seul écran où il reste de la place. Sur un
+    // écran d'arrivée (approche + mode + narration + perception), elle ferait
+    // exactement le mur de texte qu'on vient de démonter.
+    const loiDejaVues = runRef.current?.loiVues ?? [];
+    let loiIndex: number | null = null;
+    if (nextScene.liaison && loiDejaVues.length === 0 && chance(0.22)) {
+      const i = nextStep % 4;
+      const manif = manifestationLoi("landes", i);
+      if (manif) {
+        loiIndex = i;
+        entries.push({ id: nextId(), kind: "narration", text: manif.texte });
+      }
     }
     const result = opts?.result;
     if (result === 1 || result === 20) {
@@ -1052,11 +1203,29 @@ export default function Scene() {
       run.soupcon = soupAfter;
       if (soupManifest) run.soupconSeen = soupAfter;
       if (nextScene.fixationTrial) run.soupconSeen = 6;
+      // Un Soupçon d'arrivée qui monte a un TÉMOIN : quelqu'un t'a vu monter
+      // là-haut. Le compteur devient quelqu'un (5/08).
+      if (vuALArrivee && (nextScene.soupconOnArrival ?? 0) > 0) {
+        const t = temoinPour(`${nextScene.id.replace(/-\d+$/, "")}-arrivee`);
+        if (t && !(run.temoins ?? []).some((x) => x.id === t.id))
+          run.temoins = [...(run.temoins ?? []), t];
+      }
+      // La loi du Domaine : manifestation servie, jamais deux fois par vie.
+      if (loiIndex !== null) run.loiVues = [...(run.loiVues ?? []), loiIndex];
+      // Le témoin bâillonné l'est DÉFINITIVEMENT (il ne réapparaîtra pas si le
+      // Soupçon remonte après une relaxe), et la relique est dépensée.
+      if (bailloner) {
+        run.temoins = temoinsAuProces;
+        run.relicUsed = true;
+      }
+      // Le mode d'arrivée est CONSOMMÉ ici : il ne vaut que pour ce seuil-là.
+      run.arriveeMode = null;
       // Savoir livré par la narration de la scène (25/07) : certains PNJ disent
       // l'information d'eux-mêmes, avant qu'on ait pu la demander.
       if (arrivalSavoir) run.savoirs = [...(run.savoirs ?? []), arrivalSavoir];
     });
     if (arrivalSavoir) setSavoirs((s) => (s.includes(arrivalSavoir) ? s : [...s, arrivalSavoir]));
+    if (bailloner) setRelicSpent(true);
     // Résolution jouée → le chapitre entre dans la rotation du compte (le
     // prochain tirage évitera ceux déjà vécus tant qu'il en reste des neufs).
     if (newChapterStage === 3 && chapSt) {
@@ -1094,7 +1263,7 @@ export default function Scene() {
         !ouvert &&
         choice.locked.min != null &&
         relic &&
-        relicEffect(relic) === "passe" &&
+        relicDon(relic) === "passe" &&
         !run?.relicUsed;
       if (!ouvert && !passe) {
         // Refus en diégèse (spec 4/08 B) : jamais un chiffre, jamais un cadenas.
@@ -1104,9 +1273,15 @@ export default function Scene() {
         return;
       }
       if (!ouvert && passe && relic) {
+        const brise = relicDette(relic) === "brisure";
         persist((r) => {
           r.relicUsed = true;
           r.soupcon = Math.max(0, Math.min(6, (r.soupcon ?? 0) + 1));
+          if (brise)
+            r.effects = [
+              { id: "ebranle", label: "ÉBRANLÉ", delta: -1, scenesLeft: 2 },
+              ...r.effects.filter((e) => e.id !== "ebranle"),
+            ];
         });
         setRelicSpent(true);
       }
@@ -1126,6 +1301,14 @@ export default function Scene() {
     // Nœud terminal (la Descente, spec 21/07 « fin sèche ») : la traversée est
     // finie — on repart d'une run neuve (nouveau héros, Borne).
     if (scene.terminal) {
+      // Renoncement (5/08) : la run s'arrête SANS mort. Le nom entre au
+      // Registre avec sa mention, aucune relique n'est forgée — on ne forge
+      // rien avec une vie qu'on n'a pas perdue. Enregistré AVANT le reset,
+      // comme recordDeath : fermer l'app ici ne ressuscite pas la traversée.
+      if (scene.renoncement) {
+        const run = runRef.current ?? loadRun();
+        recordRenoncement({ heroName: run.heroName, days: run.day, place: scene.id });
+      }
       resetRun();
       window.location.reload();
       return;
@@ -1148,7 +1331,16 @@ export default function Scene() {
           if (!(r.liaisonVues ?? []).includes(amb)) r.liaisonVues = [...(r.liaisonVues ?? []), amb];
         });
       }
-      advanceTimer.current = setTimeout(() => advance({ toDest: dest }), 320);
+      const mode = choice.orient.mode;
+      if (mode) persist((r) => { r.arriveeMode = mode; });
+      advanceTimer.current = setTimeout(() => advance({ toDest: dest, mode }), 320);
+      return;
+    }
+
+    // LE RENONCEMENT (5/08) : on ne franchit pas. La run bascule sur son nœud
+    // terminal propre — pas de dé, pas de conséquence, juste un pas de côté.
+    if (choice.renonce) {
+      advanceTimer.current = setTimeout(() => advance({ toScene: "renoncer" }), 320);
       return;
     }
 
@@ -1196,6 +1388,17 @@ export default function Scene() {
         // chapitre de la run, servi comme un beat de narration en plus.
         const fragment = poi.chapterFragment ? takeChapterFragment() : null;
         if (fragment) entries.push({ id: nextId(), kind: "narration", text: fragment.text });
+        // LE FAIT VARIABLE (5/08) : cette vie-ci tient UNE version pour vraie.
+        // Elle est énoncée comme une vérité, sans réserve — le joueur ne peut
+        // s'apercevoir de rien tant qu'il n'est pas mort et revenu.
+        const version = poi.fait
+          ? versionDuFait(poi.fait, loadMemory().runsStarted)
+          : null;
+        if (poi.fait && version) {
+          entries.push({ id: nextId(), kind: "narration", text: version.texte });
+          noterFait(poi.fait, version.id);
+          setContradictions(contradictionsConnues(loadMemory()).length);
+        }
         const seen = [...poiSeen, poi.id];
         setPoiSeen(seen);
         // ⚠️ PLUS DE CROP CSS (retour Patrick 26/07 : « ça ne rend pas bien »).
@@ -1205,7 +1408,13 @@ export default function Scene() {
         // rien changer qu'agrandir un détail qui devient illisible.
         persist((run) => {
           run.poiSeen = seen;
-          if (poi.soupcon) run.soupcon = Math.max(0, Math.min(6, (run.soupcon ?? 0) + poi.soupcon));
+          if (poi.soupcon) {
+            run.soupcon = Math.max(0, Math.min(6, (run.soupcon ?? 0) + poi.soupcon));
+            // Le geste a été VU par quelqu'un de nommé (5/08) — il déposera.
+            const t = poi.soupcon > 0 ? temoinPour(poi.id) : null;
+            if (t && !(run.temoins ?? []).some((x) => x.id === t.id))
+              run.temoins = [...(run.temoins ?? []), t];
+          }
           if (learned) run.savoirs = [...(run.savoirs ?? []), learned];
           if (fragment) run.fragmentsLus = [...(run.fragmentsLus ?? []), fragment.index];
         });
@@ -1244,8 +1453,14 @@ export default function Scene() {
     // choix s'applique dès qu'il est pris. Silencieux, clampé 0..6.
     if (choice.soupcon) {
       const delta = choice.soupcon;
+      // …et il a un TÉMOIN (5/08) : le compteur devient quelqu'un. Le don
+      // « silence » d'une relique en efface un — le premier inscrit, celui qui
+      // aurait entraîné les autres.
+      const t = delta > 0 ? temoinPour(choice.id) : null;
       persist((run) => {
         run.soupcon = Math.max(0, Math.min(6, (run.soupcon ?? 0) + delta));
+        if (t && !(run.temoins ?? []).some((x) => x.id === t.id))
+          run.temoins = [...(run.temoins ?? []), t];
       });
     }
     // Le SAVOIR (25/07) : poser la question vaut lire une trace. Acquis à la
@@ -1275,10 +1490,19 @@ export default function Scene() {
       // bonus = stat − 3 (échelle 1..5 → −2..+2) ; jamais affiché, l'Anneau
       // reflète. Deux héros différents ont désormais des chances différentes.
       const statBonus = statDe(runRef.current?.stats, choice.risky.stat) - 3;
-      // Relique « faveur » (légendaire) : la prochaine vie lance avec +1.
+      // Relique portée : son DON aide, sa DETTE coûte — toujours les deux.
       const relicPortee = activeRelic(loadMemory());
-      const faveur = relicPortee && relicEffect(relicPortee) === "faveur" ? 1 : 0;
-      const modifier = effects.reduce((sum, e) => sum + e.delta, 0) + passives + statBonus + faveur;
+      const don = relicDon(relicPortee);
+      const dette = relicDette(relicPortee);
+      const faveur = don === "faveur" ? 1 : 0;
+      // « froideur » : les gens sentent ce que tu portes — un jet social de
+      // moins. « gel » : le TOUT PREMIER jet de la vie part nu, sans le
+      // secours d'aucun état ni d'aucune faveur.
+      const froideur = dette === "froideur" && choice.risky.stat === "EMPATHIE" ? -1 : 0;
+      const gele = dette === "gel" && (runRef.current?.rolls?.length ?? 0) === 0;
+      const modifier = gele
+        ? passives + statBonus
+        : effects.reduce((sum, e) => sum + e.delta, 0) + passives + statBonus + faveur + froideur;
       // Courbe d'entrée invisible (spec 21/07) : seuil légèrement abaissé les
       // 2-3 premières morts, sans aucun affichage. L'Anneau, calculé sur ce
       // même seuil, montrera juste un peu plus d'encoches pleines — cohérent.
@@ -1354,8 +1578,19 @@ export default function Scene() {
       // accepter la mèche, raconter sa mort au Veilleur) — l'objet se mérite
       // par la décision, pas par un jet, puisqu'il n'y a pas de jet ici.
       const granted = choice.grantsLoot ? grantLandesLoot(choice.grantsLoot) : null;
+      // « Le Registre ment » (5/08) : la conséquence écrite est le CADRE, ce
+      // que le héros dit vient de la contradiction qu'il tient réellement —
+      // deux versions du même fait, lues dans deux vies différentes.
+      let consequencePassive = choice.passive.consequence;
+      if (choice.requiresContradiction) {
+        const tenues = contradictionsConnues(loadMemory());
+        // Avec le don « lecture » et aucune contradiction vécue, on prend le
+        // premier fait de la table : la relique fait lire ce qu'on n'a pas vu.
+        const f = tenues[0] ?? faitById("fait-bailli");
+        if (f) consequencePassive = `${f.accusation}\n\n${consequencePassive}`;
+      }
       advanceTimer.current = setTimeout(
-        () => advance({ consequence: choice.passive!.consequence, grantedItem: granted }),
+        () => advance({ consequence: consequencePassive, grantedItem: granted }),
         320
       );
     } else {
@@ -1545,8 +1780,11 @@ export default function Scene() {
             const amorti =
               (tier === "malediction" || tier === "critique") &&
               relicCoussin &&
-              relicEffect(relicCoussin) === "coussin" &&
+              relicDon(relicCoussin) === "amorti" &&
               !runRef.current?.relicUsed;
+            // Dette « brisure » : la relique rompt en amortissant, et la
+            // secousse reste dans les bras (ÉBRANLÉ, 2 scènes).
+            const brisure = amorti && relicDette(relicCoussin) === "brisure";
             persist((run) => {
               run.rolls.push({ step, choiceId: selectedId ?? "roll", result, at: nowMs(), ok: !tierIsFail(tier) });
               let cost =
@@ -1554,6 +1792,11 @@ export default function Scene() {
               if (amorti) {
                 cost = 0.12;
                 run.relicUsed = true;
+                if (brisure)
+                  run.effects = [
+                    { id: "ebranle", label: "ÉBRANLÉ", delta: -1, scenesLeft: 2 },
+                    ...run.effects.filter((e) => e.id !== "ebranle"),
+                  ];
               }
               // (miroir de rendu mis à jour après le persist, plus bas)
               run.health = Math.max(0, run.health - cost);
@@ -1589,6 +1832,9 @@ export default function Scene() {
               // remarque — on a vu quelqu'un parler mal, ou parler seul.
               if (tierIsFail(tier) && !scene.combat && !scene.fixationTrial && roll?.stat === "EMPATHIE") {
                 run.soupcon = Math.min(6, (run.soupcon ?? 0) + 1);
+                const t = temoinPour("echec-empathie");
+                if (t && !(run.temoins ?? []).some((x) => x.id === t.id))
+                  run.temoins = [...(run.temoins ?? []), t];
               }
               // Procès du héros gagné : le hameau a jugé, il se lasse — le
               // Soupçon retombe (et pourra remonter, avec ses manifestations).
