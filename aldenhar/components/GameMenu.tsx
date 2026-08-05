@@ -8,7 +8,8 @@ import { besaceBySlot, normalizeItem, RARITY_LABEL, type BesaceItem, type Besace
 import { loadSettings, mutateSettings, type Settings } from "@/lib/settings";
 import { syncMusicSettings } from "@/lib/audio";
 import DeathScreen, { bilanDeMort, type Bilan } from "@/components/DeathScreen";
-import { assetUrl } from "@/lib/assets";
+import { assetUrl, assetExiste } from "@/lib/assets";
+import { etatsActifs } from "@/lib/etats";
 
 /**
  * Menu plein cadre (spec §8 + écrans Figma 1925:559 « Essence » et 1925:524
@@ -66,6 +67,40 @@ const ETAT_DISPLAY: Record<
   },
   ebranle: { name: "Ébranlé", desc: "Les mains tremblent encore.", img: null },
 };
+
+/**
+ * La liste d'Essence = les états du 5/08 D'ABORD, puis les effets hérités.
+ *
+ * ⚠️ C'est ici que se tient la promesse du PLAFOND D'AFFICHAGE : le bandeau de
+ * jeu n'en montre que trois, « les autres restent actifs et consultables dans
+ * l'écran Essence ». Sans cette liste, un quatrième état existerait sans que
+ * le joueur puisse jamais le lire.
+ *
+ * La fiche est dérivée de `lib/etats.ts` (nom + manifestation), jamais
+ * recopiée : deux tables qui décrivent le même état divergeraient.
+ */
+type FicheEtat = { key: string; name: string; desc: string; img: string | null; positive: boolean };
+
+function fichesEtats(run: RunState): FicheEtat[] {
+  const nouveaux = etatsActifs(
+    Object.values(run.faits ?? {})
+      .filter((f) => f.kind === "state")
+      .map((f) => f.id)
+  ).map((e): FicheEtat => ({
+    key: e.id,
+    name: e.nom,
+    // La manifestation dit ce que ça FAIT au héros — c'est la description
+    // juste, et elle est déjà écrite. Le hint mécanique reste sous l'anneau.
+    desc: e.manifestation,
+    img: assetExiste(`assets/etat_${e.id}.png`) ? `assets/etat_${e.id}.png` : null,
+    positive: e.groupe === "faveur",
+  }));
+  const anciens = run.effects.map((e): FicheEtat => {
+    const d = ETAT_DISPLAY[e.id];
+    return { key: e.id, name: d.name, desc: d.desc, img: d.img, positive: e.delta > 0 };
+  });
+  return [...nouveaux, ...anciens];
+}
 
 export default function GameMenu({
   run,
@@ -289,6 +324,7 @@ function RadarCanvas({ run }: { run: RunState }) {
 }
 
 function EssenceTab({ run }: { run: RunState }) {
+  const fiches = fichesEtats(run);
   return (
     <div className="pt-[24px]">
       <RadarCanvas run={run} />
@@ -296,17 +332,16 @@ function EssenceTab({ run }: { run: RunState }) {
       <div className="mt-[44px]">
         <SectionHead label="États" />
         <div className="px-[15px]">
-          {run.effects.length === 0 ? (
+          {fiches.length === 0 ? (
             <p className="font-mono text-[12px] leading-[1.4] text-[var(--color-ink)] opacity-55">
               Aucun état. Le corps tient — pour l&apos;instant.
             </p>
           ) : (
             <div className="flex flex-col gap-[14px]">
-              {run.effects.map((e) => {
-                const d = ETAT_DISPLAY[e.id];
-                const positive = e.delta > 0;
+              {fiches.map((d) => {
+                const positive = d.positive;
                 return (
-                  <div key={e.id} className="flex items-center gap-[14px]">
+                  <div key={d.key} className="flex items-center gap-[14px]">
                     {d.img && (
                       // Cadre orange sur les états négatifs, gris sur les
                       // positifs (maquette). Règle colorimétrique 14/07 :

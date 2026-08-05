@@ -52,8 +52,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-05T21:45:13Z",
- "commit": "90c4012",
+ "genere": "2026-08-05T22:39:01Z",
+ "commit": "b1f2172",
  "zones": [
   {
    "id": "landes",
@@ -527,7 +527,7 @@
     "fichier": "scene_borne_frontiere_v2_a.png",
     "hash": "6fdeb1bd",
     "taille": 11903,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Entrée de zone, tout premier écran du jeu. La borne-frontière dressée seule sur le plateau, ses faces gravées, les offrandes à son pied, et le chemin qui s'enfonce au sud dans le noir.",
@@ -686,7 +686,7 @@
     "fichier": "monstre_hesitant_3_v2_a.png",
     "hash": "28f6e59a",
     "taille": 7011,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "La borne seule au milieu du plateau, la bruyère couchée à son pied, et rien qui dise dans quel sens il est parti. CHANGE : l'homme a DISPARU du cadre — même pierre, vide.",
@@ -772,7 +772,7 @@
       "fichier": "monstre_marcheur_rebours_v2_a.png",
       "hash": "ba1a5091",
       "taille": 20815,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -952,7 +952,7 @@
     "fichier": "monstre_marcheur_2_v2_c.png",
     "hash": "ce07449d",
     "taille": 18224,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Il s'éloigne à reculons, déjà trois pas plus loin, et te parle par-dessus son épaule ; les talus se resserrent. CHANGE : il n'est plus devant toi, il recule dans la profondeur du chemin.",
@@ -990,7 +990,7 @@
     "fichier": "monstre_marcheur_3_v2_b.png",
     "hash": "147a5494",
     "taille": 14018,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Au coude du chemin il pivote face au nord et lève deux doigts vers toi, juste avant que le talus ne l'avale. CHANGE : vu de dos, et le geste des deux doigts levés.",
@@ -1160,13 +1160,17 @@
       "lieu": "à la Colline aux Gibets"
      },
      "nom": "Le poteau isolé, à gauche",
-     "image": null,
+     "image": {
+      "fichier": "scene_landes_poteau_pendu_c.png",
+      "hash": "055df6e3",
+      "taille": 26142,
+      "recent": false,
+      "existe": true
+     },
      "description": "",
      "promptImage": "",
-     "etat": "acompleter",
-     "alertes": [
-      "imageManquante"
-     ]
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "suite": "colline-aux-gibets-2",
@@ -1418,7 +1422,7 @@
       "fichier": "scene_champ_les_rangees_v2_a.png",
       "hash": "ecaa522b",
       "taille": 23864,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -1624,7 +1628,7 @@
     "fichier": "monstre_pendu_mal_fixe_v2_c.png",
     "hash": "39952ee0",
     "taille": 11667,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Combat, une scène. Le Pendu Mal Fixé : un bras tendu figé en plein geste d'agrippement, la corde trop longue qui laisse les pieds toucher le sol.",
@@ -1770,7 +1774,7 @@
     "fichier": "scene_hameau_entree_2_v2_a.png",
     "hash": "e180c1a7",
     "taille": 19602,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "La ruelle étroite du hameau : portes marquées à la craie, volets fermés, aucun chien.",
@@ -1839,7 +1843,7 @@
     "fichier": "monstre_femme_seuil_1_v3_a.png",
     "hash": "24a118fd",
     "taille": 18084,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Une femme sur le seuil d'une maison basse, châle serré, une croix à la craie sur sa porte. Elle regarde le sud.",
@@ -1976,7 +1980,7 @@
     "fichier": "monstre_femme_seuil_3_v2_a.png",
     "hash": "4b3125f9",
     "taille": 19702,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Elle a repris sa place sur le seuil, mains vides, et regarde le sud — de la rue, rien ne dit qu'elle a parlé à quelqu'un. CHANGE : de nouveau immobile et les mains vides.",
@@ -2064,7 +2068,7 @@
     "fichier": "monstre_hameau_entree_3_v2_a.png",
     "hash": "84ac4512",
     "taille": 25419,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Trois hommes en travers de la rue, pas armés : un bâton de marche à la main, une fourche posée contre le mur, à portée sans être brandie.",
@@ -2144,7 +2148,7 @@
       "fichier": "scene_hameau_trois_aubes_v2_c.png",
       "hash": "d313c2f7",
       "taille": 28783,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -2200,7 +2204,7 @@
     "fichier": "scene_hameau_entree_5_v2_a.png",
     "hash": "0a2a6cff",
     "taille": 22113,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "La rue qui s'ouvre devant toi, et les volets qui se ferment un par un, un peu en avance sur ton pas.",
@@ -2421,7 +2425,7 @@
     "fichier": "monstre_hameau_halte_4_v2_c.png",
     "hash": "14ddb57e",
     "taille": 6611,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "L'aube grise, la porte relevée : le vieux seul, un quignon de pain dur tendu vers toi, le regard ailleurs. CHANGE : lumière de petit matin, la barre est levée, il tend quelque chose.",
@@ -2466,7 +2470,7 @@
     "fichier": "scene_hameau_halte_5_v2_c.png",
     "hash": "6c540a40",
     "taille": 21413,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Le portillon sud, ouvert par le plus jeune. Les deux escortes marchent à un pas de distance de chaque côté ; le vieux reste en arrière. CHANGE : on est dehors, au portillon — plus dans la grange.",
@@ -3060,7 +3064,7 @@
       "fichier": "scene_chapelle_mur_cordes_v3_c.png",
       "hash": "c50f4a0f",
       "taille": 10553,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -3193,7 +3197,7 @@
     "fichier": "monstre_veuve_cordes_v2_a.png",
     "hash": "0dd638cf",
     "taille": 19967,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Événement de la Chapelle : la Veuve aux Cordes, assise, qui refait sans fin le même nœud. Derrière elle, sous verre, la corde coupée sans nom.",
@@ -3251,7 +3255,7 @@
     "fichier": "scene_puits_condamne_v2_a.png",
     "hash": "d7dd21eb",
     "taille": 29529,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Arrivée au Puits Condamné. Un puits fermé par des planches clouées en croix, par-dessus, des pierres empilées.",
@@ -3836,7 +3840,7 @@
       "fichier": "scene_mare_eau_reflet_v2_b.png",
       "hash": "a3a22e02",
       "taille": 14472,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -3983,7 +3987,7 @@
       "fichier": "scene_verger_fruits_cendre_v2_c.png",
       "hash": "de3b4985",
       "taille": 31026,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -4099,7 +4103,7 @@
     "fichier": "scene_verger_noir_2_v2_b.png",
     "hash": "baf9592d",
     "taille": 19147,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Événement du Verger : le fruit qui tombe encore chaud.",
@@ -4949,6 +4953,12 @@
    "recent": false
   },
   {
+   "fichier": "monstre_fixe_confident_b.png",
+   "hash": "bd08f765",
+   "taille": 15528,
+   "recent": false
+  },
+  {
    "fichier": "monstre_gamin_murets_a.png",
    "hash": "020cdcd3",
    "taille": 28618,
@@ -5030,6 +5040,12 @@
    "fichier": "monstre_troupeau_sans_berger_a.png",
    "hash": "8e186904",
    "taille": 24420,
+   "recent": false
+  },
+  {
+   "fichier": "monstre_veilleur_a.png",
+   "hash": "6274a344",
+   "taille": 7066,
    "recent": false
   },
   {
@@ -5789,10 +5805,10 @@
   "scenes": 61,
   "pointsInteret": 38,
   "choix": 148,
-  "illustrations": 218,
+  "illustrations": 226,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 49,
+  "reserve": 51,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

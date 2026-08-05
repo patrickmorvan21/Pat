@@ -1,0 +1,48 @@
+{
+  "lot": "2026-08-05 — icônes d'état + images des scènes de la spec « le Domaine se souvient »",
+  "note": [
+    "Manifeste de REPRISE. Le transfert Drive est le maillon coûteux : le connecteur",
+    "renvoie le base64 INLINE dans le contexte du modèle (~5-10 k tokens par PNG).",
+    "On ne rapatrie donc que ce qui a une destination dans le code.",
+    "",
+    "Procédure : mcp__Google_Drive__download_file_content par lots de 2-3, puis",
+    "scratchpad/extraire_drive.py qui lit le base64 PAR TITRE dans le .jsonl de",
+    "session, décode, et vérifie signature PNG ET taille exacte — un fichier qui",
+    "échoue n'est jamais écrit. Zéro retranscription par le modèle (une",
+    "retranscription > 5 Ko se corrompt de façon déterministe, cf. 18/07)."
+  ],
+  "recuperes": {
+    "etat_affame.png": { "source": "etat_affame_b.png", "taille": 9183, "cable": "bandeau d'état + Essence" },
+    "etat_boiteux.png": { "source": "etat_boiteux_b.png", "taille": 12643, "cable": "bandeau d'état + Essence" },
+    "etat_marque.png": { "source": "etat_marque_a.png", "taille": 9055, "cable": "bandeau d'état + Essence" },
+    "etat_hante.png": { "source": "etat_hante_c.png", "taille": 6205, "cable": "bandeau d'état + Essence" },
+    "etat_fixe.png": { "source": "etat_fixe_c.png", "taille": 12219, "cable": "bandeau d'état + Essence" },
+    "scene_landes_poteau_pendu_c.png": { "taille": 26142, "cable": "POI poteau-pendu (colline aux gibets)" },
+    "monstre_veilleur_a.png": { "taille": 7066, "cable": null, "raison": "le POI homme-guerite a déjà monstre_homme_guerite_c ; variante ou remplacement, à trancher" },
+    "monstre_fixe_confident_b.png": { "taille": 15528, "cable": null, "raison": "la confidence des Fixés est un CHOIX, pas une scène — un choix ne porte pas d'illustration" }
+  },
+  "a_recuperer": {
+    "commentaire": "Aucun de ces fichiers n'a de slot dans le code aujourd'hui. À tirer quand la scène ou l'état correspondant sera écrit (spec « le Domaine se souvient », étapes 6/10 et §6).",
+    "dossier_rencontres": "1RcHFdywckLbGr6ge92WyrHJPi-FTAx8M",
+    "dossier_environnement": "1O5WaeiuxTLph-PChonBsVSyR2W2fxDl8",
+    "fichiers": [
+      { "titre": "monstre_appele_b.png", "fileId": "1kHQhOWCpd4EM1JcMwX8-jXLe9xmvlENn", "taille": 21271, "pour": "état APPELÉ (étape 6)" },
+      { "titre": "monstre_rebouteux_c.png", "fileId": "1U0TU3Kqnm1h3yqa7y5AVcNF4ZPGZ8P_x", "taille": 26432, "pour": "scène de soin du Rebouteux (§6)" },
+      { "titre": "monstre_creancier_a.png", "fileId": "1WrLPmwZkgQr5J3ftHsVzZNzbKUgZbKz_", "taille": 13506, "pour": "recouvrement de dette / état ENDETTÉ (§6, étape 10)" },
+      { "titre": "scene_landes_soin_b.png", "fileId": "1VVdHHcqYZfRiEJCPUGtXQ1b7bAgC3IuD", "taille": 17705, "pour": "scène de soin du Rebouteux (§6)" },
+      { "titre": "scene_landes_purification_b.png", "fileId": "1i5Y_1lqVpwYgGuZPwZmJG-rfyeiJY3a7", "taille": 29484, "pour": "rituel de purification (§6)" },
+      { "titre": "scene_landes_service_renoncants_a.png", "fileId": "19AN8nt8o5ySTlD5MDWiM-zvn-MbVmUWH", "taille": 13675, "pour": "le service des Renonçants (§6, optionnel)" },
+      { "titre": "scene_landes_ouverture_potence_c.png", "fileId": "1XMur8528aqcV8izkmIrpMouHkCT7H_Al", "taille": 22633, "pour": "ouverture alternative des Landes (§6)" },
+      { "titre": "scene_landes_gibet_pi_nouveau_a.png", "fileId": "1NYOzcC9YyLQ3iAfZXN-03EwVN9NgIZ8R", "taille": 22991, "pour": "nouveau point d'intérêt du Gibet Vide — le POI actuel a déjà son image" },
+      { "titre": "scene_landes_eau_reflet_a.png", "fileId": "11TJ8Zqu-jNjGRnHsEzGjnd3mxTAeuKUl", "taille": 24102, "pour": "POI eau-reflet — a DÉJÀ scene_mare_eau_reflet_v2_b, à trancher" },
+      { "titre": "scene_landes_pourquoi_trois_aubes_b.png", "fileId": "18iVQTf_bVay8skoa8FEBZmjEvblPoPEM", "taille": 23531, "pour": "POI pourquoi-trois-aubes — a DÉJÀ scene_hameau_trois_aubes_v2_c, à trancher" },
+      { "titre": "scene_landes_corbeaux_du_compte_b.png", "fileId": "1CS1ePmEw5P97lUxRoDU_9yFe-6oRI_bP", "taille": 35440, "pour": "POI corbeaux-compte — a DÉJÀ monstre_corbeaux_du_compte_b, à trancher" }
+    ]
+  },
+  "non_recupere_volontairement": {
+    "etat_fievreux": "ABSENT du Drive (le dossier Négatif contient fixe, cru, souille, marque, hante, boiteux, affame). FIÉVREUX est l'un des six états du lot et s'affiche donc en nom seul.",
+    "etats_positifs": "etat_serein_a, etat_reconnu_a, etat_appele_c (dossier Positif) — étape 6 de la spec, états pas encore codés.",
+    "etats_cru_souille": "etat_cru_b, etat_souille_c — étape 10 de la spec.",
+    "reliques": "03_Validé_Reliques en cours de synchronisation côté Patrick, passé comme demandé."
+  }
+}

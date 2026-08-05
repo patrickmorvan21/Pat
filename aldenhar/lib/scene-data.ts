@@ -1009,6 +1009,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "poteau-pendu",
+        illustration: "assets/scene_landes_poteau_pendu_c.png",
         label: "Le poteau isolé, à gauche",
         soupcon: 1, // s'intéresser au Pendu se voit de loin
         approche:
