@@ -18,7 +18,7 @@
   /* Géométrie — LES SEULES VALEURS À TOUCHER si on regénère les planches
      avec un autre nombre de frames ou une autre largeur. */
   --w:360px;              /* largeur d'UNE frame, telle qu'exportée */
-  --h:378px;              /* hauteur d'UNE frame */
+  --h:379px;              /* hauteur d'UNE frame en grain 1 */
   --demon-frames:16;
   --demon-duree:3.2s;     /* durée d'un aller (le Geôlier est presque statique) */
   --cendres-frames:24;
@@ -63,9 +63,9 @@ h3{font:400 11px/1 "Roboto Mono",monospace;letter-spacing:2px;text-transform:upp
 }
 
 /* ── 2. SPRITE — deux couches empilées ────────────────────────────────── */
-/* Base commune aux deux planches : même façon de cadrer une frame.
-   Taille de fond explicite en px — en laissant le navigateur déduire, un DPR
-   non entier arrondit et fait « baver » la frame voisine d'un pixel. */
+/* Base commune : même façon de cadrer une frame. Taille de fond explicite en
+   px — en laissant le navigateur déduire, un DPR non entier arrondit et fait
+   « baver » la frame voisine d'un pixel. */
 .couche{
   position:absolute;inset:0;
   background-repeat:no-repeat;
@@ -73,11 +73,10 @@ h3{font:400 11px/1 "Roboto Mono",monospace;letter-spacing:2px;text-transform:upp
   image-rendering:pixelated;
 }
 /* Les CENDRES, derrière — planche à part, donc réglable sans retoucher le
-   démon. Boucle en avant seulement : des cendres qui redescendent
-   trahiraient tout de suite l'astuce. La planche est périodique, donc pas de
-   couture au bouclage. */
+   démon. Boucle en avant seulement : des cendres qui redescendent trahiraient
+   tout de suite l'astuce. La planche est périodique, donc pas de couture. */
 .cendres{
-  background-image:url("assets/geolier_v2_cendres.png");
+  background-image:url("assets/geolier_accueil_cendres.png");
   background-size:calc(var(--w) * var(--cendres-frames)) var(--h);
   animation:defile-cendres var(--cendres-duree) steps(var(--cendres-frames)) infinite;
 }
@@ -89,7 +88,7 @@ h3{font:400 11px/1 "Roboto Mono",monospace;letter-spacing:2px;text-transform:upp
    réellement derrière lui. Aller-retour : sa respiration n'a pas de sens de
    lecture, contrairement aux cendres. */
 .demon{
-  background-image:url("assets/geolier_v2_sprite.png");
+  background-image:url("assets/geolier_accueil_sprite.png");
   background-size:calc(var(--w) * var(--demon-frames)) var(--h);
   animation:respire var(--demon-duree) steps(var(--demon-frames),jump-none)
             infinite alternate;
@@ -103,12 +102,32 @@ h3{font:400 11px/1 "Roboto Mono",monospace;letter-spacing:2px;text-transform:upp
   to{background-position:calc(var(--w) * (var(--demon-frames) - 1) * -1) 0}
 }
 
-/* La v1 (première vidéo) — gardée pour comparer les deux Geôliers.
-   Pas de découpe, pas de cendres : c'est l'état d'hier. */
-.demon-v1{
-  background-image:url("assets/geolier_sprite.png");
-  background-size:calc(var(--w) * 16) var(--h);
-  animation:respire 1.6s steps(16,jump-none) infinite alternate;
+/* Variante GRAIN 2 — blocs de 2 px, quatre fois moins de cellules. Même
+   vidéo, même cadrage : seule la finesse change. Sa frame fait 378 px
+   (189 cellules × 2), une de moins qu'en grain 1 — d'où les tailles de fond
+   écrites en dur plutôt qu'un héritage de --h. */
+.cendres-g2{
+  background-image:url("assets/geolier_g2_cendres.png");
+  background-size:calc(var(--w) * var(--cendres-frames)) 378px;
+  animation:defile-cendres var(--cendres-duree) steps(var(--cendres-frames)) infinite;
+}
+.demon-g2{
+  background-image:url("assets/geolier_g2_sprite.png");
+  background-size:calc(var(--w) * var(--demon-frames)) 378px;
+  animation:respire var(--demon-duree) steps(var(--demon-frames),jump-none) infinite alternate;
+}
+
+/* L'AUTRE Geôlier (2e vidéo, 8,88 s) — même traitement, gardé pour comparer
+   les deux sources. */
+.cendres-alt{
+  background-image:url("assets/geolier_v2_cendres.png");
+  background-size:calc(var(--w) * var(--cendres-frames)) var(--h);
+  animation:defile-cendres var(--cendres-duree) steps(var(--cendres-frames)) infinite;
+}
+.demon-alt{
+  background-image:url("assets/geolier_v2_sprite.png");
+  background-size:calc(var(--w) * var(--demon-frames)) var(--h);
+  animation:respire var(--demon-duree) steps(var(--demon-frames),jump-none) infinite alternate;
 }
 
 /* Accessibilité : mouvement coupé, on retombe sur la première frame. */
@@ -116,7 +135,7 @@ h3{font:400 11px/1 "Roboto Mono",monospace;letter-spacing:2px;text-transform:upp
   .couche{animation:none!important;background-position:0 0!important}
   .cadre video{display:none}
   .cadre.repli{
-    background:url("assets/geolier_v2_poster.png") center/cover var(--orange);
+    background:url("assets/geolier_accueil_poster.png") center/cover var(--orange);
     image-rendering:pixelated;
   }
 }
@@ -138,37 +157,39 @@ tr.tot td:first-child{color:var(--blanc)}
 
 <h1>Le Geôlier animé</h1>
 <p class="sous">
-  Nouvelle source (8,88 s, 7 777 Ko), démon quasi statique sur fond orange.
-  Les cendres de l'accueil sont reproduites <strong>derrière lui</strong> —
-  il est découpé, elles passent dessous. Mêmes cadres, même palette,
-  même grain : seule la technique change.
+  Sur la <strong>vidéo originale</strong> (5,04 s, 4 140 Ko). Le démon est
+  découpé, les cendres de l'accueil passent <strong>derrière lui</strong>,
+  et tout est en <strong>grain 1</strong> — des blocs de 1 px au lieu de 2,
+  donc quatre fois plus de cellules. L'ancien grain est gardé en troisième
+  position pour mesurer l'écart.
 </p>
 
-<h3>Le nouveau Geôlier</h3>
+<h3>La vidéo originale</h3>
 <div class="grille">
 
   <section class="carte">
     <h2>1 · Vidéo optimisée</h2>
-    <p class="poids">435 Ko · H.264 · 540 px · 12 fps · sans audio</p>
+    <p class="poids">728 Ko · H.264 · 540 px · 12 fps · sans audio</p>
     <div class="cadre repli">
       <video
-        src="assets/geolier_v2.mp4"
-        poster="assets/geolier_v2_poster.png"
+        src="assets/geolier_accueil.mp4"
+        poster="assets/geolier_accueil_poster.png"
         autoplay muted loop playsinline
         disablepictureinpicture
         preload="metadata"></video>
     </div>
     <p class="note">
-      107 images distinctes, cendres comprises. Le mouvement est continu —
-      mais tout est <strong>cuit dans l'image</strong> : le H.264 n'a pas de
-      canal alpha, donc plus moyen de régler les cendres sans ré-encoder les
-      8,88 s.
+      60 images distinctes, cendres comprises. Le mouvement est continu — mais
+      tout est <strong>cuit dans l'image</strong> : le H.264 n'a pas de canal
+      alpha, donc plus moyen de régler les cendres sans ré-encoder. Et le grain
+      fin lui coûte cher (<strong>465 → 728 Ko</strong>) : une trame fine, pour
+      un codec vidéo, c'est du bruit — et le bruit ne se compresse pas.
     </p>
   </section>
 
   <section class="carte">
-    <h2>2 · Sprite sheet CSS</h2>
-    <p class="poids">53 Ko · 2 planches PNG · 16 + 24 frames</p>
+    <h2>2 · Sprite CSS · grain 1</h2>
+    <p class="poids">140 Ko · 2 planches PNG · 16 + 24 frames</p>
     <div class="cadre">
       <div class="couche cendres"></div>
       <div class="couche demon"></div>
@@ -180,15 +201,37 @@ tr.tot td:first-child{color:var(--blanc)}
     </p>
   </section>
 
+  <section class="carte">
+    <h2>3 · Sprite CSS · grain 2</h2>
+    <p class="poids">59 Ko · l'ancien réglage, blocs de 2 px</p>
+    <div class="cadre">
+      <div class="couche cendres-g2"></div>
+      <div class="couche demon-g2"></div>
+    </div>
+    <p class="note">
+      Même vidéo, quatre fois moins de cellules : le museau, les naseaux et le
+      modelé des épaules disparaissent. C'est ce que tu trouvais trop gros —
+      gardé ici pour juger l'écart, pas comme candidat.
+    </p>
+  </section>
+
 </div>
 
-<h3>Pour mémoire — le Geôlier d'hier</h3>
+<h3>Pour mémoire — l'autre Geôlier</h3>
 <div class="grille">
   <section class="carte">
-    <h2>Sprite v1 · sans cendres</h2>
-    <p class="poids">25 Ko · 16 frames</p>
-    <div class="cadre"><div class="couche demon-v1"></div></div>
-    <p class="note">Première vidéo (5,04 s) : fond dithéré, pas de découpe.</p>
+    <h2>2ᵉ vidéo · grain 1</h2>
+    <p class="poids">125 Ko · 8,88 s · même traitement</p>
+    <div class="cadre">
+      <div class="couche cendres-alt"></div>
+      <div class="couche demon-alt"></div>
+    </div>
+    <p class="note">
+      Le démon presque statique, traité à l'identique. Sa planche pèse
+      <strong>107 Ko contre 113</strong> : son fond est plus plat, donc un peu
+      moins de bruit à compresser. L'écart est mince — le choix est artistique,
+      pas technique.
+    </p>
   </section>
 </div>
 
@@ -205,12 +248,13 @@ tr.tot td:first-child{color:var(--blanc)}
 
   <table>
     <tr><th>Fichier</th><th>Poids</th><th>Part de la source</th></tr>
-    <tr><td>vidéo source (non utilisée)</td><td class="n">7 777 Ko</td><td class="n">100 %</td></tr>
-    <tr><td>geolier_v2.mp4</td><td class="n">435 Ko</td><td class="n">6 %</td></tr>
-    <tr><td>geolier_v2_sprite.png (démon, alpha)</td><td class="n">35 Ko</td><td class="n">0,5 %</td></tr>
-    <tr><td>geolier_v2_cendres.png</td><td class="n">18 Ko</td><td class="n">0,2 %</td></tr>
-    <tr><td>geolier_v2_poster.png (repli)</td><td class="n">4 Ko</td><td class="n">0,1 %</td></tr>
-    <tr class="tot"><td>→ total de la solution sprite</td><td class="n">57 Ko</td><td class="n">0,7 %</td></tr>
+    <tr><td>vidéo source (non utilisée)</td><td class="n">4 140 Ko</td><td class="n">100 %</td></tr>
+    <tr><td>geolier_accueil.mp4 (grain 1)</td><td class="n">728 Ko</td><td class="n">18 %</td></tr>
+    <tr><td>geolier_accueil_sprite.png (démon, alpha)</td><td class="n">113 Ko</td><td class="n">2,7 %</td></tr>
+    <tr><td>geolier_accueil_cendres.png</td><td class="n">18 Ko</td><td class="n">0,4 %</td></tr>
+    <tr><td>geolier_accueil_poster.png (repli)</td><td class="n">9 Ko</td><td class="n">0,2 %</td></tr>
+    <tr class="tot"><td>→ total sprite, grain 1</td><td class="n">140 Ko</td><td class="n">3,4 %</td></tr>
+    <tr><td>→ pour mémoire, en grain 2</td><td class="n">59 Ko</td><td class="n">1,4 %</td></tr>
   </table>
 </div>
 
