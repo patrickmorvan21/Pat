@@ -52,8 +52,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-05T07:03:02Z",
- "commit": "4d09894",
+ "genere": "2026-08-05T11:53:41Z",
+ "commit": "4b73c1a",
  "zones": [
   {
    "id": "landes",
@@ -1237,7 +1237,7 @@
     "fichier": "scene_colline_gibets_2_a.png",
     "hash": "99d86877",
     "taille": 31826,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Événement de la Colline : au sommet, entre les potences. L'écharde du grand gibet se prélève ici.",
@@ -2579,7 +2579,7 @@
       "fichier": "scene_tour_pierres_rangees_a.png",
       "hash": "a11ecafb",
       "taille": 20594,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -2617,7 +2617,7 @@
       "fichier": "scene_tour_meurtriere_sud_a.png",
       "hash": "d5008af2",
       "taille": 19670,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -2941,7 +2941,7 @@
     "fichier": "scene_moulin_campement_a.png",
     "hash": "e330d3ee",
     "taille": 25894,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Arrivée au Moulin sans Ailes — c'est le lieu de repos de la zone. Une tour de pierre trapue SANS ailes, quatre traces pâles sur le corps du moulin, la porte entrebâillée.",
@@ -2995,7 +2995,7 @@
     "fichier": "scene_moulin_campement_2_a.png",
     "hash": "2d91a0f3",
     "taille": 22254,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Événement du Moulin : la garde, ou le sommeil. Le lit de bruyère tassé, refait de frais, les marques de comptage à hauteur d'enfant sur la pierre.",
@@ -3898,7 +3898,7 @@
     "fichier": "scene_mare_aux_regards_2_b.png",
     "hash": "1ffbe56a",
     "taille": 16280,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Événement de la Mare : un Renonçant qui vient vérifier son propre reflet, et te trouve là.",
@@ -5119,7 +5119,7 @@
    "fichier": "scene_puits_condamne_a.png",
    "hash": "4c2af433",
    "taille": 26792,
-   "recent": true
+   "recent": false
   },
   {
    "fichier": "scene_transition_arrivee_hameau_b.png",
