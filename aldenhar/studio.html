@@ -260,6 +260,10 @@ button{background:none;border:none;cursor:pointer}
   white-space:nowrap}
 .ch .tag.st{border-color:var(--orange);color:var(--orange)}
 .ch .iss{margin-top:7px;padding-left:25px;font-size:11px;color:var(--b50);line-height:1.55}
+/* Systèmes du 5/08 : la déposition d'un témoin se lit comme une citation, pas
+   comme une issue de dé — filet gauche orange pour la distinguer. */
+.ch .iss.temoin{border-left:2px solid var(--or);padding-left:10px;margin-left:25px;color:var(--b50)}
+.sysnote{font-size:10px;color:var(--b30);margin:3px 0 0}
 .ch .iss b{color:var(--b70);font-weight:400}
 .ch .fx{margin-top:6px;padding-left:25px;display:flex;gap:6px;flex-wrap:wrap}
 .ch .fx span{font-size:9.5px;padding:2px 5px;border:1px dashed var(--b20);color:var(--b50)}
@@ -358,6 +362,7 @@ body.mode-edition .ebtn{display:inline-flex}
       <button class="tab on" data-vue="carte">◈ Carte</button>
       <button class="tab" data-vue="liste">☰ Liste</button>
       <button class="tab" data-vue="reserve">▣ Réserve</button>
+      <button class="tab" data-vue="systemes">◇ Systèmes</button>
     </div>
     <div id="recherche">
       <input type="search" id="q" placeholder="Rechercher un lieu, une scène, un choix…" autocomplete="off">
@@ -1365,11 +1370,19 @@ function ligne(c,i,s,court){
   if(c.soupcon!=null) fx.push("soupçon "+(c.soupcon>0?"+":"")+c.soupcon);
   if(c.serment) fx.push("serment : "+c.serment);
   if(c.poseFlag) fx.push("flag : "+c.poseFlag);
-  return `<div class="ch ${c.type}"><div class="l1"><span class="num">${i+1}</span>
+  // Les systèmes du 5/08 : qui t'a vu, ce que ça ouvre au procès, ce qu'il faut
+  // avoir vécu pour que le choix existe.
+  if(c.defense) fx.push("défense : "+c.defense);
+  if(c.exigeContradiction) fx.push("exige une contradiction (2 vies)");
+  if(c.renonce) fx.push("FIN — renoncement, sans mort");
+  const tem=c.temoin?`<div class="iss temoin"><div><b>${esc(c.temoin.nom)}</b>, ${esc(c.temoin.lieu)} —
+    « ${esc(c.temoin.deposition)} »</div></div>`:"";
+  return `<div class="ch ${c.type}">${tem?"":""}<div class="l1"><span class="num">${i+1}</span>
     <span class="lab">${champEditable(`choix:${s.id}:${c.id}:label`,"Libellé du choix",c.label,s.nom||s.id)}</span>
     <span class="tags">${tags.join("")}</span></div>${iss}
     ${!court&&c.type==="risque"?`<div class="fx"><span>seuil : ${champEditable(`choix:${s.id}:${c.id}:seuil`,"Difficulté (seuil)",c.seuil,`${s.nom||s.id} → ${c.label}`)}</span></div>`:""}
-    ${fx.length?`<div class="fx">${fx.map(f=>`<span>${esc(f)}</span>`).join("")}</div>`:""}</div>`;
+    ${fx.length?`<div class="fx">${fx.map(f=>`<span>${esc(f)}</span>`).join("")}</div>`:""}
+    ${court?"":tem}</div>`;
 }
 const blocChoix=s=>s.choix.length
   ? `<div class="sect"><h3>${s.choix.length} choix</h3>${s.choix.map((c,i)=>ligne(c,i,s,false)).join("")}</div>${blocLiens(s)}`
@@ -1378,7 +1391,9 @@ const blocPois=s=>s.pointsInteret.length
   ? `<div class="sect"><h3>${s.pointsInteret.length} points d'intérêt</h3>${s.pointsInteret.map(p=>{
       const img=urlImg(p.image&&p.image.fichier);
       return `<div class="poil" data-poi="${esc(p.id)}"><div class="th${img?"":" vide"}" ${img?`style="background-image:url('${img}')"`:""}>${img?"":"—"}</div>
-        <div><b>${esc(p.label||p.id)}</b><p>${esc((p.examen||p.approche||"").slice(0,130))}</p></div></div>`;}).join("")}</div>`
+        <div><b>${esc(p.label||p.id)}</b><p>${esc((p.examen||p.approche||"").slice(0,130))}</p>
+        ${p.fait?`<p class="sysnote">fait variable : <b>${esc(p.fait)}</b> — ce point ne raconte pas la même chose d'une vie à l'autre</p>`:""}
+        ${p.temoin?`<p class="sysnote">vu par <b>${esc(p.temoin.nom)}</b></p>`:""}</div></div>`;}).join("")}</div>`
   : '<p class="vide-txt">Aucun point d\'intérêt.</p>';
 function blocLiens(s){
   const nom=i=>{const x=scenePar(i);return x?(x.nom||i):i};
@@ -1506,6 +1521,8 @@ function renduVue(){
           <span style="flex:1"><b style="font-weight:400">${NATURE[natureScene(s)].ico} ${esc(s.nom||s.id)}</b>
           <span style="display:block;color:var(--b30);font-size:10px">${esc(s.id)} · ${s.choix.length} choix · accès : ${esc(s.acces)}</span></span>
           <em>→</em></button>`;}).join("");
+  }else if(vue==="systemes"){
+    l.innerHTML=vueSystemes();
   }else{
     l.innerHTML=`<h2 style="font:400 22px/1 var(--serif);margin:0 0 6px">Réserve</h2>
       <p style="color:var(--b30);font-size:11.5px;margin:0 0 16px">${D.reserve.length} images dans assets/, utilisées par aucune scène.</p>
@@ -1520,6 +1537,68 @@ function renduVue(){
     vue="carte"; renduVue(); const s=scenePar(b.dataset.vers); selectionner(natureScene(s),s.id);});
   l.querySelectorAll("[data-zoom]").forEach(b=>b.onclick=()=>{const z=$("#zoomimg");
     z.querySelector("img").src=b.dataset.zoom; z.querySelector("p").textContent=b.dataset.nom; z.classList.add("on");});
+}
+
+/* LES SYSTÈMES TRANSVERSES (5/08) — ils ne vivent dans aucune scène mais
+   pèsent sur toutes : reliques, loi du Domaine, témoins, faits variables,
+   filtres de perception. Sans cette vue, ils sont invisibles hors du code. */
+const DONS={amorti:"amortit le premier coup dur",passe:"ouvre un verrou, une fois",
+  faveur:"+1 à tous les jets",regard:"donne les lignes de perception",
+  silence:"efface un témoin au procès",lecture:"rend les contradictions lisibles"};
+const DETTES={marque:"+1 Soupçon dès l'entrée",brisure:"rompt à l'usage (ÉBRANLÉ)",
+  exclusion:"le Hameau refuse la grange",usure:"départ à santé réduite",
+  froideur:"−1 aux jets d'Empathie",gel:"premier jet sans aucun état"};
+const STATL={courage:"Courage",ruse:"Ruse",instinct:"Instinct",empathie:"Empathie"};
+
+function vueSystemes(){
+  const rel=D.reliques||[], faits=D.faits||[], perc=D.perceptions||{},
+        tem=D.temoins||{}, loi=D.loiDuDomaine||{manifestations:[]};
+  const h=t=>`<h2 style="font:400 22px/1 var(--serif);margin:26px 0 4px">${t}</h2>`;
+  const p=t=>`<p style="color:var(--b30);font-size:11.5px;margin:0 0 14px;max-width:78ch">${t}</p>`;
+  const nomScene=i=>{const s=scenePar(i);return s?(s.nom||i):i};
+
+  let out=`<h2 style="font:400 22px/1 var(--serif);margin:0 0 4px">Les systèmes du Domaine</h2>
+    ${p("Ce qui ne tient à aucune scène en particulier, et qui pèse sur toutes. Rien d'ici n'est jamais montré au joueur sous forme de chiffre.")}`;
+
+  out+=h("La loi du Domaine")+p("Jamais énoncée en jeu. Elle se constate, cas après cas — et elle prépare le twist final sans le révéler.")+
+    `<div class="sect" style="max-width:78ch"><p class="para" style="color:var(--or)">${esc(loi.loi||"—")}</p>
+     ${(loi.manifestations||[]).map(m=>`<div class="ch"><div class="l1"><span class="tags">
+       <span class="tag">${esc(m.registre||"")}</span></span></div>
+       <div class="iss"><div>${esc(m.texte||"")}</div></div></div>`).join("")}</div>`;
+
+  out+=h(`Les ${rel.length} reliques des Landes`)+
+    p("Une relique AIDE et COÛTE, toujours les deux. La cause de la mort choisit le pool : une corde ne forge pas la même chose qu'une noyade.")+
+    `<div class="sect">${rel.map(r=>`<div class="ch"><div class="l1">
+      <span class="lab"><b style="font-weight:400">${esc(r.nom)}</b></span>
+      <span class="tags"><span class="tag st">${esc(r.rarete)}</span><span class="tag">mort : ${esc(r.mort)}</span></span></div>
+      <div class="iss"><div><b>Don</b> — ${esc(r.fonction||"")} <em style="color:var(--b30)">(${esc(DONS[r.don]||r.don)})</em></div>
+      <div><b>Dette</b> — ${esc(r.cout||"")} <em style="color:var(--b30)">(${esc(DETTES[r.dette]||r.dette)})</em></div>
+      ${r.murmure?`<div style="color:var(--or)">« ${esc(r.murmure)} »</div>`:""}</div></div>`).join("")}</div>`;
+
+  out+=h(`Les ${faits.length} faits variables`)+
+    p("Le Domaine ne raconte pas la même histoire d'une vie à l'autre. Une seule version est vraie par run, tirée par l'index de la run. Deux versions lues dans deux vies = une contradiction opposable au Registre.")+
+    `<div class="sect">${faits.map(f=>`<div class="ch"><div class="l1">
+      <span class="lab"><b style="font-weight:400">${esc(f.sujet)}</b></span>
+      <span class="tags"><span class="tag">${f.versions.length} versions</span></span></div>
+      <div class="iss">${f.versions.map(v=>`<div><b>${esc(v.id)}</b> — ${esc(v.texte)}</div>`).join("")}
+      <div style="color:var(--or)"><b>Au tribunal</b> — ${esc(f.accusation)}</div></div></div>`).join("")}</div>`;
+
+  const cles=Object.keys(perc);
+  out+=h(`Les filtres de perception (${cles.length} lieux)`)+
+    p("La stat dominante du héros change ce qu'il REMARQUE. Une ligne par écran au plus, la plus haute stat gagne, jamais le nom de la stat à l'écran.")+
+    `<div class="sect">${cles.map(k=>`<div class="ch"><div class="l1">
+      <span class="lab">${esc(nomScene(k))}</span>
+      <span class="tags">${Object.keys(perc[k]).map(s=>`<span class="tag st">${esc(STATL[s]||s)}</span>`).join("")}</span></div>
+      <div class="iss">${Object.entries(perc[k]).map(([s,t])=>`<div><b>${esc(STATL[s]||s)}</b> — ${esc(t)}</div>`).join("")}</div></div>`).join("")}</div>`;
+
+  const tk=Object.keys(tem);
+  out+=h(`Les ${tk.length} témoins`)+
+    p("Le Soupçon n'est pas un compteur, ce sont des gens. Chaque acte qui le fait monter inscrit qui a vu quoi ; au procès, ce sont ces dépositions qui sont lues.")+
+    `<div class="sect">${tk.map(k=>`<div class="ch"><div class="l1">
+      <span class="lab">${esc(tem[k].nom)}</span>
+      <span class="tags"><span class="tag">${esc(k)}</span></span></div>
+      <div class="iss"><div>${esc(tem[k].lieu)} — « ${esc(tem[k].deposition)} »</div></div></div>`).join("")}</div>`;
+  return out;
 }
 
 function chercher(q){
