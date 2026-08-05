@@ -3864,6 +3864,12 @@ export type LiaisonCtx = {
   chapterId?: string | null;
   /** Noms des objets portés (Besace) — le matching se fait par inclusion. */
   itemNames?: string[];
+  /** Nombre de liaisons déjà jouées cette run (0 = première Croisée). */
+  liaisonsJouees?: number;
+  /** Débuts d'ambiances déjà servies cette run — jamais deux fois le même
+      texte verbatim dans une même vie (retour test 4/08 : « je voyais le
+      paquet de cartes sous les Landes »). */
+  dejaVues?: string[];
 };
 
 type LiaisonVariant = {
@@ -3995,19 +4001,6 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
     carrying: "Lanterne",
     text: "La lanterne du Veilleur bat contre ta hanche. Sa flamme penche toujours du même côté, quel que soit le vent — tu as fini par vérifier : elle penche vers le sud. Vers la Descente.",
   },
-  // ——— Destination offerte (3) ———
-  {
-    to: ["colline-aux-gibets"],
-    text: "D'un côté, la crête et ses mâts noirs qui grandissent au-dessus de la bruyère. Tu sens le chemin pencher vers eux — la colline aspire ses visiteurs, elle ne les invite pas.",
-  },
-  {
-    to: ["campement"],
-    text: "Quelque part devant, l'ombre d'un moulin sans ailes coupe le crépuscule. L'idée du sommeil pèse d'un coup — trop fort, trop vite, comme une offre qu'on te souffle.",
-  },
-  {
-    to: ["puits-condamne"],
-    text: "Un son porte jusqu'ici — des coups sourds, réguliers, patients. Trois, une pause. Le genre de son qu'on suit malgré soi, juste pour le faire taire.",
-  },
 
   // ——— DANS le hameau (3) — retour Patrick 25/07 ———
   // Une fois passé le barrage, on ne « marche plus dans la lande » : on longe
@@ -4041,11 +4034,19 @@ function liaisonSpecificity(v: LiaisonVariant): number {
 
 /** Choisit l'ambiance d'une liaison : la plus spécifique éligible, seedée. */
 function pickLiaisonAmbiance(ctx: LiaisonCtx | undefined, seed: number): string {
+  // Anti-répétition (retour test 4/08 §2) : un ÉVÉNEMENT de voyage ne revient
+  // jamais verbatim dans une même run — seuls les leitmotivs COURTS ont le
+  // droit de revenir, et ils vivent dans les scènes, pas ici. Une ambiance
+  // déjà servie est écartée ; si tout a été vu, on reprend le pool entier
+  // (mieux vaut une répétition tardive qu'un écran muet).
+  const deja = ctx?.dejaVues ?? [];
+  const neuve = (t: string) => !deja.includes(t);
   if (ctx) {
     const soup = ctx.soupcon ?? 0;
     const health = ctx.health ?? 1;
     const eligible = LIAISON_VARIANTS.filter(
       (v) =>
+        neuve(v.text) &&
         (!v.from || (ctx.from !== undefined && v.from.includes(ctx.from))) &&
         (!v.to || (ctx.toOptions !== undefined && v.to.some((t) => ctx.toOptions!.includes(t)))) &&
         (v.minSoupcon === undefined || soup >= v.minSoupcon) &&
@@ -4060,7 +4061,9 @@ function pickLiaisonAmbiance(ctx: LiaisonCtx | undefined, seed: number): string 
       return top[Math.floor(seeded(seed + 3) * top.length)].text;
     }
   }
-  return LIAISON_AMBIANCES[Math.floor(seeded(seed) * LIAISON_AMBIANCES.length)];
+  const fond = LIAISON_AMBIANCES.filter(neuve);
+  const pool = fond.length > 0 ? fond : LIAISON_AMBIANCES;
+  return pool[Math.floor(seeded(seed) * pool.length)];
 }
 
 const LIAISON_JAILER: string[] = [
@@ -4084,6 +4087,82 @@ function seeded(n: number): number {
  * `ctx` (chantier 4 du 23/07) : provenance/état pour une ambiance CONTEXTUELLE
  * — même ctx à la reprise (reconstruit du même RunState) = même texte.
  */
+/**
+ * INDICE DE ROUTE — un fragment sensoriel par destination (retour test 4/08
+ * §5 : « le texte préparait une destination, tandis que le bouton en
+ * choisissait une autre »). À chaque Croisée, les DEUX directions reçoivent
+ * la même grammaire : on ne nomme jamais le lieu, on donne ce que le corps
+ * perçoit d'ici. Le joueur imagine les deux avant de cliquer.
+ *
+ * ⚠️ L'indice s'arrête AU SEUIL du lieu — il ne raconte pas l'approche
+ * (`APPROACH_NARRATION` s'en charge à l'arrivée). Sans cette discipline on
+ * retombe sur la « double arrivée » : voir le lieu, le choisir, le revoir.
+ */
+const INDICE_ROUTE: Record<string, string> = {
+  "chemin-creux": "un chemin qui s'enfonce entre deux talus",
+  "bete-chemins-creux": "un creux d'où monte une odeur de suint",
+  "colline-aux-gibets": "une crête hérissée de mâts noirs",
+  "pendu-qui-parle": "un gibet bas, à hauteur d'homme, qui bouge sans vent",
+  "champ-des-fixes": "des rangées de piquets jusqu'à l'horizon",
+  "pendu-mal-fixe": "un craquement de bois, régulier, qui travaille",
+  "serment-hameau": "des toits bas et une fumée qui ne monte pas droit",
+  "marche-muet": "des bâches tendues et pas une voix",
+  "tour-de-guet": "un moignon de tour sans sommet",
+  campement: "une masse trapue privée de ses ailes",
+  "chapelle-des-cordes": "un clocher court d'où pendent des filins",
+  "puits-condamne": "des coups sourds sous des planches clouées",
+  "chien-du-bailli": "une maison murée de l'intérieur",
+  "petit-tribunal": "une porte basse et trois bancs qu'on devine",
+  "mare-aux-regards": "une eau noire où les roseaux ne bougent pas",
+  "verger-noir": "des rangs d'arbres qui n'ont plus de feuilles",
+  "meute-grise-1": "des silhouettes grises qui se déplacent ensemble",
+  "palissade-sud": "une palissade qui coupe l'horizon, une lanterne allumée en plein jour",
+};
+
+/**
+ * La Croisée présente les deux routes SYMÉTRIQUEMENT, en une phrase.
+ * Retombe sur la bifurcation de terrain si un indice manque (jamais une
+ * moitié de phrase : soit les deux routes existent, soit aucune).
+ */
+function croisee(optA: string, optB: string, liaisonsJouees: number, seed: number): string {
+  const a = INDICE_ROUTE[optA];
+  const b = INDICE_ROUTE[optB];
+  if (!a || !b) return phraseBifurcation(liaisonsJouees, seed);
+  const routes = `D'un côté, ${a}. De l'autre, ${b}.`;
+  // La PREMIÈRE Croisée de la run garde la phrase-signature — mais FONDUE
+  // avec les deux indices, pas posée à côté : on ne paie pas la signature
+  // d'un bloc de plus, et les deux routes existent dès la première fois.
+  // (« La lande attend que tu tranches » saute : c'était la moitié la plus
+  // « bouton système » de la phrase.)
+  return liaisonsJouees === 0 ? `Deux directions s'ouvrent. ${routes}` : routes;
+}
+
+/**
+ * LA PHRASE DE BIFURCATION (retour test 4/08 : « Deux directions s'ouvrent.
+ * La lande attend que tu tranches » apparaissait TREIZE fois en deux runs —
+ * une belle phrase devenue un bouton système). Elle redevient une SIGNATURE :
+ * servie à la PREMIÈRE Croisée de la run seulement. Ensuite, la bifurcation
+ * se raconte par le terrain — pool seedé, deux liaisons consécutives ne
+ * tirent jamais la même (décalage par seed, pool premier avec 9 entrées).
+ */
+const BIFURCATIONS: string[] = [
+  "Le chemin se partage autour d'un muret effondré.",
+  "La route cesse d'être une route. Deux traces continuent.",
+  "La bruyère s'ouvre en deux couloirs.",
+  "Il faut quitter la crête par l'un des deux versants.",
+  "Le sentier hésite, puis renonce : à toi de trancher.",
+  "Une pierre plantée marque la fourche. Personne n'y a gravé de direction.",
+  "Les ornières divergent — deux charrois, deux idées du sud.",
+  "Deux pentes, deux silences différents.",
+  "Le muret t'accompagnait ; il choisit l'un des deux côtés.",
+];
+function phraseBifurcation(liaisonsJouees: number, seed: number): string {
+  if (liaisonsJouees === 0) return "Deux directions s'ouvrent. La lande attend que tu tranches.";
+  // (seed×7) mod 9 : 7 et 9 premiers entre eux → deux graines consécutives
+  // ne retombent jamais sur la même entrée.
+  return BIFURCATIONS[(seed * 7 + liaisonsJouees) % BIFURCATIONS.length];
+}
+
 export function makeLiaison(optA: string, optB: string, seed: number, ctx?: LiaisonCtx): Scene {
   const amb = pickLiaisonAmbiance(ctx ? { ...ctx, toOptions: [optA, optB] } : undefined, seed);
   const jl = LIAISON_JAILER[Math.floor(seeded(seed + 7) * LIAISON_JAILER.length)];
@@ -4095,7 +4174,7 @@ export function makeLiaison(optA: string, optB: string, seed: number, ctx?: Liai
     id: `liaison:${optA}>${optB}`,
     liaison: true,
     illustration: walkImg,
-    narration: [amb, "Deux directions s'ouvrent. La lande attend que tu tranches."],
+    narration: [amb, croisee(optA, optB, ctx?.liaisonsJouees ?? 0, seed)],
     jailerLine: jl,
     choices: [
       { id: `orient-${optA}`, label: APPROACH[optA] ?? "Continuer", orient: { dest: optA } },
@@ -4164,23 +4243,23 @@ function pickWalkImage(optA: string, optB: string, seed: number, from?: string):
  * sautée. Jamais un danger frontal : juste l'approche sensorielle.
  */
 export const APPROACH_NARRATION: Record<string, string> = {
-  "chemin-creux": "Le sol se creuse devant toi. Deux talus montent, se resserrent, et avalent le chemin entre eux. Tu descends dans le couloir de terre — vu de partout, ne voyant rien.",
-  "bete-chemins-creux": "L'air se charge d'une odeur qui n'appartient pas au chemin : suint, cuir, terre remuée. Quelque part devant, dans le creux, quelque chose t'a senti avant que tu le sentes.",
-  "colline-aux-gibets": "Loin sur la lande, une bosse noire monte seule au-dessus de la bruyère — hérissée de mâts. À mesure que tu approches, les mâts deviennent des potences, et les potences se peuplent.",
-  "pendu-qui-parle": "Au revers de la colline, un seul gibet, bas, à hauteur d'homme. Tu le prends d'abord pour un épouvantail. Puis l'épouvantail tourne lentement la tête vers toi.",
+  "chemin-creux": "Le sol se creuse sous tes pas, et le ciel se rétrécit à mesure que tu descends.",
+  "bete-chemins-creux": "Quelque chose, devant, t'a senti avant que tu le sentes.",
+  "colline-aux-gibets": "Tu montes. Les mâts deviennent des potences.",
+  "pendu-qui-parle": "Tu contournes la crête. Ce que tu prenais pour un épouvantail tourne la tête.",
   "champ-des-fixes": "L'horizon se hérisse de piquets réguliers, rangée après rangée, jusqu'à se perdre. Tu approches d'un champ qu'on n'a pas semé — on l'a planté d'hommes.",
   "pendu-mal-fixe": "Un craquement rythme ta marche, régulier, mécanique — du bois qui travaille sous un poids. Devant, une corde trop lâche laisse glisser ce qu'elle devait tenir.",
   "serment-hameau": "De la fumée basse, pas une flamme : des toits gris tassés derrière leurs murets. Le Hameau des Renonçants se découvre lentement, et déjà tu sens qu'on t'a vu venir de loin.",
   "tour-de-guet":
     "Le moignon de la tour grossit à mesure que tu montes le tertre — plus bas que tu ne croyais, et couché de biais, comme un os mal ressoudé. Tu arrives à son pied.",
   "marche-muet": "Un bourdonnement de foule sans une seule voix te parvient — des dizaines de gens qui s'affairent en silence. Tu entres dans le marché muet du hameau.",
-  "campement": "À l'écart des toits, une masse trapue coupe le crépuscule : un moulin privé de ses ailes, debout par habitude. De la lumière n'en sort pas, mais quelque chose y veille.",
+  "campement": "Tu quittes les toits. La masse trapue grandit contre le crépuscule.",
   "chapelle-des-cordes": "Une bâtisse sans croix se dresse au bout d'une ruelle. En approchant, tu vois par la porte ouverte que les murs, à l'intérieur, remuent doucement — des cordes, des dizaines, sans un souffle d'air.",
-  "puits-condamne": "Un bruit sourd te guide entre les maisons : trois coups, une pause, trois coups. Tu débouches sur une margelle condamnée de planches neuves — la seule chose entretenue du hameau.",
-  "chien-du-bailli": "La plus haute maison du hameau grandit devant toi, aveugle : ses fenêtres sont murées de l'intérieur. Sur le seuil, une masse grise se lève sans un aboiement.",
+  "puits-condamne": "Un bruit sourd te guide entre les maisons : trois coups, une pause, trois coups.",
+  "chien-du-bailli": "Tu remontes vers la plus haute toiture. Sur le seuil, une masse grise se lève sans un aboiement.",
   "petit-tribunal": "Une bâtisse basse, une seule porte, et par elle un froid qui ne vient pas du dehors : le froid des endroits où l'on a beaucoup décidé. Tu entres au Petit Tribunal.",
-  "mare-aux-regards": "Le vent tombe d'un coup, comme coupé au couteau, et devant toi une plaque d'eau noire ne bouge pas du tout. Tu approches de la seule surface plate des Landes.",
-  "verger-noir": "Des rangs réguliers montent de la bruyère — des arbres, plantés à la main, alignés. De loin c'est presque rassurant. De près, les feuilles sont noires et les fruits sont gris.",
+  "mare-aux-regards": "Le vent tombe d'un coup, comme coupé au couteau. Tes derniers pas ne font plus de bruit.",
+  "verger-noir": "Des rangs réguliers montent de la bruyère. De loin, c'est presque rassurant.",
   "meute-grise-1": "La bruyère bouge sans vent, par plaques, autour de toi. Ce ne sont pas des ombres : ce sont des dos gris, bas sur pattes, qui resserrent un cercle patient.",
   "palissade-sud": "Au bout des Landes, une ligne de troncs noircis barre tout l'horizon. Derrière, l'air se fait froid et vieux — il monte d'en bas. La Descente n'est plus loin.",
 };

@@ -145,6 +145,13 @@ function liaisonCtx(run: RunState, from: string | undefined): LiaisonCtx {
     health: run.health,
     chapterId: run.chapter?.id ?? null,
     itemNames: (run.besace ?? []).map((i) => i.name),
+    // Anti-répétition (4/08) : liaisons déjà jouées (⇒ la phrase-signature ne
+    // sert qu'à la 1re Croisée) + ambiances déjà servies (jamais deux fois le
+    // même texte dans une run). ⚠️ `liaisonVues` n'est complétée qu'en
+    // QUITTANT une liaison : pendant la liaison (et à sa reprise), la liste
+    // est celle d'AVANT — la reconstruction retombe sur le même texte.
+    liaisonsJouees: Math.max(0, (run.trav?.visited.length ?? 1) - 1),
+    dejaVues: run.liaisonVues ?? [],
   };
 }
 
@@ -1133,6 +1140,14 @@ export default function Scene() {
     // déplacement vers le lieu choisi — pas de dé, pas de conséquence propre.
     if (choice.orient) {
       const dest = choice.orient.dest;
+      // L'ambiance de CETTE liaison rejoint les « déjà vues » au moment où on
+      // la quitte — pas avant, pour que sa reprise reste déterministe.
+      if (scene.liaison && scene.narration[0]) {
+        const amb = scene.narration[0];
+        persist((r) => {
+          if (!(r.liaisonVues ?? []).includes(amb)) r.liaisonVues = [...(r.liaisonVues ?? []), amb];
+        });
+      }
       advanceTimer.current = setTimeout(() => advance({ toDest: dest }), 320);
       return;
     }

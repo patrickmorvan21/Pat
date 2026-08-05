@@ -182,6 +182,10 @@ export type RunState = {
   /** L'effet de la relique portée a été CONSOMMÉ cette run (coussin dépensé,
       passe-verrou utilisé). Une relique = un geste par vie. Optionnel. */
   relicUsed?: boolean;
+  /** Ambiances de liaison déjà SERVIES cette run — un événement de voyage ne
+      revient jamais verbatim dans une même vie (retour test 4/08). Complétée
+      en QUITTANT la liaison, pour que sa reprise reste déterministe. */
+  liaisonVues?: string[];
   /** Dettes narratives en attente de règlement dans cette run (spec §17). */
   debts: PendingDebt[];
   /** Besace (13/07) : objets mundane, vidée à la mort. */
@@ -364,6 +368,12 @@ export function loadRun(): RunState {
             // le Savoir se gagne en explorant.
             savoirs: Array.isArray(p.savoirs) ? p.savoirs : [],
             fragmentsLus: Array.isArray(p.fragmentsLus) ? p.fragmentsLus : [],
+            // ⚠️ loadRun reconstruit la run CHAMP PAR CHAMP : tout champ absent
+            // ici est SILENCIEUSEMENT PERDU au rechargement. Piège vérifié le
+            // 4/08 (l'anti-répétition des liaisons ne filtrait rien).
+            feedSuite: Array.isArray(p.feedSuite) ? p.feedSuite : [],
+            relicUsed: Boolean(p.relicUsed),
+            liaisonVues: Array.isArray(p.liaisonVues) ? p.liaisonVues : [],
           };
         }
       }
