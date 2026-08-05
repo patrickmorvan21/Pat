@@ -199,11 +199,11 @@ export type RunState = {
    */
   loiVues?: number[];
   /**
-   * ARRIVÉE (5/08) : la route choisie à la dernière Croisée. `couvert` = par le
-   * flanc, on ne t'a pas vu venir ; `decouvert` = par la route, tu arrives
-   * d'aplomb mais le lieu t'a vu. Consommé à l'arrivée, remis à null ensuite.
+   * ARRIVÉE : phrases de « manière d'arriver » déjà servies dans cette vie.
+   * Variation narrative pure (décision Patrick 5/08) — aucune conséquence
+   * mécanique ; seule l'anti-répétition la concerne.
    */
-  arriveeMode?: "couvert" | "decouvert" | null;
+  arriveeVues?: string[];
   /** Dettes narratives en attente de règlement dans cette run (spec §17). */
   debts: PendingDebt[];
   /** Besace (13/07) : objets mundane, vidée à la mort. */
@@ -329,7 +329,7 @@ function fresh(): RunState {
     fragmentsLus: [],
     temoins: [],
     loiVues: [],
-    arriveeMode: null,
+    arriveeVues: [],
   };
 }
 
@@ -397,7 +397,7 @@ export function loadRun(): RunState {
             liaisonVues: Array.isArray(p.liaisonVues) ? p.liaisonVues : [],
             temoins: Array.isArray(p.temoins) ? p.temoins : [],
             loiVues: Array.isArray(p.loiVues) ? p.loiVues : [],
-            arriveeMode: p.arriveeMode === "couvert" || p.arriveeMode === "decouvert" ? p.arriveeMode : null,
+            arriveeVues: Array.isArray(p.arriveeVues) ? p.arriveeVues : [],
           };
         }
       }

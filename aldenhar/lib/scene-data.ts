@@ -53,18 +53,7 @@ export type Choice = {
    * Choix d'orientation d'une scène de liaison (spec 21/07) : ne lance pas de
    * dé — il ENGAGE le déplacement vers le lieu `dest`. Résolution instantanée.
    */
-  orient?: {
-    dest: string;
-    /**
-     * COMMENT on y va (5/08) : `decouvert` = par la route, franc, on te voit
-     * venir de loin ; `couvert` = par le flanc, le talus, le contre-jour. Le
-     * mode change le texte d'arrivée ET une chose réelle : à couvert, le lieu
-     * ne t'a pas vu (le Soupçon d'arrivée ne s'applique pas, et une créature
-     * est prise de vitesse) ; à découvert, tu arrives d'aplomb et le premier
-     * élan te porte. Les deux se valent — ce n'est pas un choix « optimal ».
-     */
-    mode?: "couvert" | "decouvert";
-  };
+  orient?: { dest: string };
   /**
    * 4e choix contextuel (spec 21/07, point 4) : utiliser un objet ACTIF de la
    * Besace pertinent dans la scène (ex. un baume quand ENTAILLÉ). Consommé,
@@ -4316,11 +4305,6 @@ export function makeLiaison(optA: string, optB: string, seed: number, ctx?: Liai
   // l'autre sans marcher »), tiré par la graine (stable à la reprise). Fini le
   // portail figé entre deux lieux.
   const walkImg = pickWalkImage(optA, optB, seed, ctx?.from);
-  // Les deux routes ne se valent pas EN NATURE : l'une est franche, l'autre
-  // couverte. Laquelle est laquelle est tirée par la graine (stable à la
-  // reprise) — la position à l'écran ne prédit donc jamais le mode, comme pour
-  // les types de choix.
-  const modeA: "couvert" | "decouvert" = seed % 2 === 0 ? "decouvert" : "couvert";
   return {
     id: `liaison:${optA}>${optB}`,
     liaison: true,
@@ -4328,31 +4312,31 @@ export function makeLiaison(optA: string, optB: string, seed: number, ctx?: Liai
     narration: [amb, croisee(optA, optB, ctx?.liaisonsJouees ?? 0, seed)],
     jailerLine: jl,
     choices: [
-      {
-        id: `orient-${optA}`,
-        label: APPROACH[optA] ?? "Continuer",
-        orient: { dest: optA, mode: modeA },
-      },
-      {
-        id: `orient-${optB}`,
-        label: APPROACH[optB] ?? "Continuer",
-        orient: { dest: optB, mode: modeA === "couvert" ? "decouvert" : "couvert" },
-      },
+      { id: `orient-${optA}`, label: APPROACH[optA] ?? "Continuer", orient: { dest: optA } },
+      { id: `orient-${optB}`, label: APPROACH[optB] ?? "Continuer", orient: { dest: optB } },
     ],
   };
 }
 
 /**
- * LA MANIÈRE D'ARRIVER (5/08) — une phrase de plus, posée après l'approche du
- * lieu, qui dit COMMENT on y est entré. Une seule ligne : la route se joue,
- * elle ne se raconte pas.
+ * LA MANIÈRE D'ARRIVER — une phrase de plus, posée après l'approche du lieu,
+ * qui dit COMMENT on y est entré.
+ *
+ * ⚠️ DÉCISION PATRICK (5/08 soir) : c'est une **variation narrative aléatoire,
+ * pas une décision tactique**. Le premier jet du système attachait le mode au
+ * CHOIX d'orientation — mais le joueur ne peut pas savoir, avant de choisir,
+ * laquelle des deux routes sera couverte : ce n'était donc pas un arbitrage,
+ * juste un état découvert après coup. Le mode est maintenant tiré à
+ * l'ARRIVÉE, indépendamment de la route prise, et **il n'a plus aucune
+ * conséquence mécanique** (ni sur le Soupçon d'arrivée, ni sur la ligne de
+ * perception) — un modificateur caché tiré au hasard serait pire qu'un choix
+ * opaque. C'est de la couleur, assumée comme telle.
  *
  * ⚠️ Ces phrases ne doivent jamais nommer un lieu (elles servent aux 18
  * destinations) ni annoncer un danger (l'approche s'arrête au seuil, règle du
  * 5/08 sur les doubles arrivées).
  */
-// À COUVERT : personne ne t'a vu — mais tu n'as rien vu non plus. On ne lit
-// pas un lieu qu'on aborde le nez au sol, à contre-jour, en surveillant ses pas.
+// À COUVERT : la couleur d'une arrivée discrète. Aucun effet mécanique.
 const ARRIVEE_COUVERT = [
   "Tu es venu par le flanc, le nez au sol. Personne ne t'a vu. Toi non plus.",
   "Tu es passé sous le vent. Rien ne s'est retourné, et tu n'as regardé que tes pieds.",
@@ -4360,7 +4344,7 @@ const ARRIVEE_COUVERT = [
   "Tu as coupé par les fougères hautes. Aucun bruit à compter, aucune vue d'ensemble.",
 ];
 
-// À DÉCOUVERT : on t'a vu venir — mais tu as vu le lieu entier avant d'y entrer.
+// À DÉCOUVERT : la couleur d'une arrivée franche. Aucun effet mécanique.
 const ARRIVEE_DECOUVERT = [
   "Tu as pris la route droite. On t'a vu venir — et tu as eu le temps de tout regarder.",
   "Tu n'as rien contourné. Tu arrives par la face, et rien ne t'a échappé en chemin.",
@@ -4368,9 +4352,17 @@ const ARRIVEE_DECOUVERT = [
   "Tu as marché droit. Le lieu s'est ouvert devant toi bien avant que tu n'y sois.",
 ];
 
-export function phraseArrivee(mode: "couvert" | "decouvert", seed: number): string {
-  const pool = mode === "couvert" ? ARRIVEE_COUVERT : ARRIVEE_DECOUVERT;
-  return pool[Math.abs(seed) % pool.length];
+/**
+ * La phrase d'arrivée, tirée par la graine du pas courant. Le pool est choisi
+ * par la parité — pas par le choix du joueur. Anti-répétition : l'appelant
+ * passe la liste des phrases déjà servies dans la vie (`vues`) ; si tout le
+ * pool est vu, on rouvre le pool entier plutôt que de ne rien dire.
+ */
+export function phraseArrivee(seed: number, vues: string[] = []): string {
+  const pool = Math.abs(seed) % 2 === 0 ? ARRIVEE_COUVERT : ARRIVEE_DECOUVERT;
+  const neuves = pool.filter((p) => !vues.includes(p));
+  const dispo = neuves.length ? neuves : pool;
+  return dispo[Math.abs(seed * 7 + 3) % dispo.length];
 }
 
 /** Les 4 vues génériques des Landes (fournies par Patrick, 24/07) : utilisées

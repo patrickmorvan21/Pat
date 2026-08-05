@@ -18,7 +18,7 @@
  * L'écran finit entièrement noir. Le tap ne coupe rien.
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Relic } from "@/lib/player-memory";
 import TouchHint from "@/components/TouchHint";
 import FondBraises from "@/components/FondBraises";
@@ -44,7 +44,11 @@ export type Bilan = {
   desTenus: number;
   destins: number;
   maledictions: number;
-  reliques: number;
+  /** La relique RÉELLEMENT portée pendant cette vie, par son nom. Un héros n'en
+      porte qu'une (la dernière forgée) — un compteur mentait deux fois : il
+      incluait celle que cette mort vient de forger, et il comptait un stock
+      que le héros n'a jamais eu sur lui. */
+  reliquePortee: string | null;
 };
 
 /**
@@ -53,7 +57,7 @@ export type Bilan = {
  * Exporté (déplacé depuis Scene.tsx) pour être réutilisable par l'aperçu de
  * débogage (Options → « Aperçu de l'écran de mort ») sans dupliquer le calcul.
  */
-export function bilanDeMort(run: RunState): Bilan {
+export function bilanDeMort(run: RunState, reliquePortee: string | null = null): Bilan {
   const rolls = run.rolls ?? [];
   return {
     jours: run.day,
@@ -64,7 +68,7 @@ export function bilanDeMort(run: RunState): Bilan {
     desTenus: rolls.filter((r) => r.ok).length,
     destins: rolls.filter((r) => r.result === 20).length,
     maledictions: rolls.filter((r) => r.result === 1).length,
-    reliques: loadMemory().relics.length,
+    reliquePortee,
   };
 }
 
@@ -102,6 +106,19 @@ function fragmentPour(morts: number): string | null {
 function useTyped(texte: string, actif: boolean) {
   const [n, setN] = useState(0);
   const [fini, setFini] = useState(false);
+  // Révélation immédiate : le premier toucher d'un texte en cours de frappe
+  // doit TOUT afficher, jamais sauter l'écran (règle globale du jeu — elle
+  // n'était pas tenue ici, et un fragment long fait ~13 s à 42 ms/caractère).
+  // ⚠️ Le piège déjà rencontré sur TypedText (26/07) : poser `n = texte.length`
+  // ne suffit pas — le tick suivant de l'intervalle (encore vivant) réécrit une
+  // tranche PARTIELLE par-dessus et le texte se retrouve tronqué. Il faut donc
+  // aussi couper l'intervalle, via un drapeau que la boucle relit.
+  const coupeRef = useRef(false);
+  const tout = useCallback(() => {
+    coupeRef.current = true;
+    setN(texte.length);
+    setFini(true);
+  }, [texte]);
   useEffect(() => {
     if (!actif || !texte) return;
     if (animReduced()) {
@@ -111,8 +128,13 @@ function useTyped(texte: string, actif: boolean) {
       }, 0);
       return () => clearTimeout(t);
     }
+    coupeRef.current = false;
     let i = 0;
     const iv = setInterval(() => {
+      if (coupeRef.current) {
+        clearInterval(iv);
+        return;
+      }
       i += 1;
       setN(i);
       if (i >= texte.length) {
@@ -122,7 +144,7 @@ function useTyped(texte: string, actif: boolean) {
     }, 42);
     return () => clearInterval(iv);
   }, [texte, actif]);
-  return { visible: texte.slice(0, n), fini };
+  return { visible: texte.slice(0, n), fini, tout };
 }
 
 /** Voile de lisibilité du coffre : trame de pixels charbon à densité
@@ -187,7 +209,7 @@ export default function DeathScreen({
     setFragTexteSrc(`${reactionJours(day)}\n\n${suite}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- tiré une seule fois par mort
   }, []);
-  const { visible: fragTexte, fini: fragFini } = useTyped(fragTexteSrc, ecran === "fragment");
+  const { visible: fragTexte, fini: fragFini, tout: fragTout } = useTyped(fragTexteSrc, ecran === "fragment");
 
   // Le classement, pour l'écran du Registre : la ligne du héros doit
   // réellement entrer aux Cent — sinon le livre perd sa valeur.
@@ -330,6 +352,10 @@ export default function DeathScreen({
   }, [ecran]);
 
   const suivant = () => {
+    // Règle globale : sur un texte en cours de frappe, le premier toucher
+    // RÉVÈLE, il n'avance pas. (Le fragment est le seul écran de la séquence
+    // qui se tape — les autres sont statiques.)
+    if (ecran === "fragment" && !fragFini) return fragTout();
     if (ecran === "mort") return setEcran("fragment");
     if (ecran === "fragment") return setEcran("registre");
     if (ecran === "registre") return setEcran("relique");
@@ -386,7 +412,7 @@ export default function DeathScreen({
             <LigneBilan label="Combats traversés" valeur={String(bilan.rencontres)} />
             <LigneBilan label="Dés lancés" valeur={`${bilan.des} · ${bilan.desTenus} tenus`} />
             <LigneBilan label="Destins • Malédictions" valeur={`${bilan.destins} • ${bilan.maledictions}`} />
-            <LigneBilan label="Reliques portées" valeur={String(bilan.reliques)} />
+            <LigneBilan label="Relique portée" valeur={bilan.reliquePortee ?? "aucune"} />
           </div>
           <TouchHint bottom={HINT_BAS} />
         </div>
@@ -464,10 +490,14 @@ export default function DeathScreen({
           /* Phase B — la révélation (maquette 2332-6998) : un nuage de cendres
              se disperse en cercle irrégulier derrière la relique (~1 s), puis
              retombe. Ensuite : tag de rareté, nom, fonction, murmure. */
-          <div className="flex flex-1 flex-col items-center px-[27px] pt-[108px]">
+          /* ⚠️ Écrans COURTS (390×720 et moins) : la maquette est dessinée pour
+             844 px de haut. En dur, la fonction et le coût de la relique
+             tombaient DANS les flammes. Le haut et le cadre se resserrent donc
+             en dessous de 800 px, sans rien changer sur un grand écran. */
+          <div className="flex flex-1 flex-col items-center px-[27px] pt-[6vh] max-[799px]:pt-[3vh]">
             <div className="relative">
               <CendresRevelation />
-              <div className="relative size-[336px] overflow-hidden border-2 border-solid border-[var(--color-accent)]">
+              <div className="relative size-[336px] max-[799px]:size-[224px] overflow-hidden border-2 border-solid border-[var(--color-accent)]">
                 {/* Pas encore d'illustration par relique (celle de la maquette
                     est une démo) : l'icône tramée générique des Reliques. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -479,14 +509,14 @@ export default function DeathScreen({
                 />
               </div>
             </div>
-            <TagRarete rarity={relic.rarity} className="mt-[20px]" />
+            <TagRarete rarity={relic.rarity} className="mt-[20px] max-[799px]:mt-[12px]" />
             <h3
-              className="mt-[12px] text-center text-[36px] leading-none text-[var(--color-accent)]"
+              className="mt-[12px] text-center text-[36px] leading-none text-[var(--color-accent)] max-[799px]:mt-[8px] max-[799px]:text-[28px]"
               style={{ fontFamily: "var(--font-title)" }}
             >
               {relic.name}
             </h3>
-            <p className="mt-[24px] w-[336px] text-center font-mono text-[13px] leading-[1.3] text-[var(--color-ink)]">
+            <p className="mt-[24px] w-[336px] max-w-full text-center font-mono text-[13px] leading-[1.3] text-[var(--color-ink)] max-[799px]:mt-[12px]">
               {firstDeath
                 ? "De cette première mort, il reste plus que d'ordinaire."
                 : "Celui qui te suivra la portera."}
@@ -494,19 +524,19 @@ export default function DeathScreen({
             {/* La FONCTION en mots (promesse n°3 du 4/08) : la relique n'est
                 plus un nom sec — elle annonce ce qu'elle fera de la prochaine
                 vie. Jamais un chiffre. */}
-            <p className="mt-[10px] w-[336px] text-center font-mono text-[12px] leading-[1.5] text-[var(--color-ink)] opacity-60">
+            <p className="mt-[10px] w-[336px] max-w-full text-center font-mono text-[12px] leading-[1.5] text-[var(--color-ink)] opacity-60 max-[799px]:mt-[6px]">
               {relicFiche(relic)?.fonction ?? RELIC_FONCTION[relicEffect(relic)]}
             </p>
             {/* LE COÛT (5/08) : une relique aide ET prend. Le prix est annoncé
                 ici, à la forge, dans les mêmes mots que le don — le joueur sait
                 ce qu'il emporte avant de recommencer. Jamais un chiffre. */}
             {relicFiche(relic)?.cout && (
-              <p className="mt-[8px] w-[336px] text-center font-mono text-[12px] leading-[1.5] text-[var(--color-accent)] opacity-80">
+              <p className="mt-[8px] w-[336px] max-w-full text-center font-mono text-[12px] leading-[1.5] text-[var(--color-accent)] opacity-80 max-[799px]:mt-[6px]">
                 {relicFiche(relic)!.cout}
               </p>
             )}
             {relic.rarity !== "commune" && (
-              <p className="mt-[14px] text-center font-mono text-[13px] italic leading-[1.5] text-[var(--color-accent)]">
+              <p className="mt-[14px] text-center font-mono text-[13px] italic leading-[1.5] text-[var(--color-accent)] max-[799px]:mt-[8px] max-[799px]:hidden">
                 «&nbsp;{relicFiche(relic)?.murmure ?? cause}&nbsp;»
               </p>
             )}

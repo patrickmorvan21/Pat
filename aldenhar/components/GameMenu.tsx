@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CloseX } from "@/components/Home";
-import { forgetIntro, forgeRelic, loadMemory, type Relic } from "@/lib/player-memory";
+import { activeRelic, forgetIntro, forgeRelic, loadMemory, type Relic } from "@/lib/player-memory";
 import { loadRun, type NarrativeEffect, type RunState } from "@/lib/state";
 import { besaceBySlot, normalizeItem, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { loadSettings, mutateSettings, type Settings } from "@/lib/settings";
@@ -592,7 +592,8 @@ function buildPreviewMort(): PreviewMort {
   return {
     epitaph: EPITAPH_APERCU,
     day,
-    bilan: bilanDeMort(run),
+    // Aperçu : la relique portée est celle du compte, telle quelle (rien n'est forgé ici).
+    bilan: bilanDeMort(run, activeRelic(mem)?.name ?? null),
     relic: forgeRelic(heroName, day, firstDeath),
     heroName,
     cause: "les Landes",

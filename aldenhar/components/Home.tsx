@@ -30,6 +30,9 @@ export default function Home() {
     "boot",
   );
   const [saved, setSaved] = useState(false);
+  // Le compte a-t-il un passé (reliques forgées ou héros tombés) ? Distinct
+  // de `saved` : une run peut ne plus exister alors que le passé, lui, reste.
+  const [aDuPasse, setADuPasse] = useState(false);
   const [citation, setCitation] = useState<string | null>(null);
   const [overlay, setOverlay] = useState<"reliques" | "registre" | "options" | null>(null);
   const [reprise, setReprise] = useState<string[] | null>(null);
@@ -44,6 +47,8 @@ export default function Home() {
     playMusic("intro");
     // eslint-disable-next-line react-hooks/set-state-in-effect -- lecture du localStorage impossible au rendu SSR, une seule fois au montage
     setSaved(hasSavedRun());
+    const m0 = loadMemory();
+    setADuPasse(m0.relics.length > 0 || m0.fallen.length > 0);
     // Rappel de contexte sous « Reprendre » (spec 4/08 A1) : une vie en cours
     // donne envie d'y retourner — un bouton nu est abstrait. Nom · Jour, puis
     // Acte · lieu courant. En plein Seuil, on dit juste où on en est.
@@ -171,7 +176,11 @@ export default function Home() {
 
               {/* Liens de pied — OPTIONS inerte (écran pas encore designé) */}
               <div className="mt-auto flex flex-col items-center gap-[14px] pb-[26px]">
-                {saved && (
+                {/* ⚠️ Ces deux écrans lisent la MÉMOIRE DU COMPTE, pas la run.
+                    Les conditionner à `saved` les rendait inaccessibles juste
+                    après une mort — le moment exact où le joueur vient de
+                    découvrir sa relique et veut la revoir. */}
+                {aDuPasse && (
                   <>
                     <FooterLink label="RELIQUES" onClick={() => setOverlay("reliques")} />
                     <FooterLink label="GRAND REGISTRE" onClick={() => setOverlay("registre")} />

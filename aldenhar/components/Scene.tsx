@@ -241,6 +241,14 @@ const VERROU_DIEGESE: Record<string, string> = {
   EMPATHIE: "Il te faudrait plus d'empathie que tu n'en as.",
 };
 
+/**
+ * Un verrou DUR (sans `min`) ne s'ouvre à AUCUNE valeur de stat — c'est un
+ * tease d'acte suivant, pas une exigence. Lui servir « il te faudrait plus de
+ * courage » est un mensonge : le joueur peut monter la stat au maximum et
+ * buter quand même. On dit la vraie raison, sans chiffre ni promesse de date.
+ */
+const VERROU_DUR = "La Descente ne s'ouvre pas encore. Ce n'est pas une question de courage.";
+
 const MOTS_PAR_ECRAN = 90;
 function decouperEnEcrans(entries: FeedEntry[]): FeedEntry[][] {
   const texte = (e: FeedEntry) =>
@@ -811,8 +819,6 @@ export default function Scene() {
     prepend?: FeedEntry[];
     /** Choix d'orientation (traversée 21/07) : force la destination (liaison → lieu). */
     toDest?: string;
-    /** Par où on y arrive (5/08) — voir Choice.orient.mode. */
-    mode?: "couvert" | "decouvert";
     /**
      * Bascule vers une scène nommée qui n'est PAS un lieu du pool (rencontre
      * ouverte par un point d'intérêt, spec 24/07 suite). N'entre pas dans
@@ -925,15 +931,7 @@ export default function Scene() {
     // Le palier ne se MONTRE qu'une fois (soupconSeen), toujours en monde
     // lisible, jamais en chiffre. Le palier 6 n'a pas de texte : le procès
     // du héros EST sa manifestation.
-    // ARRIVÉE À COUVERT (5/08) : le lieu ne t'a pas vu venir, donc il n'a rien
-    // à raconter — le Soupçon d'arrivée ne s'applique pas. C'est la seule
-    // conséquence mécanique du mode de route, et elle est symétrique : arriver
-    // à découvert fait gagner un élan (AGUERRI en combat, plus bas).
-    const vuALArrivee = opts?.mode !== "couvert";
-    const soupAfter = Math.max(
-      0,
-      Math.min(6, soupNow + (vuALArrivee ? (nextScene.soupconOnArrival ?? 0) : 0))
-    );
+    const soupAfter = Math.max(0, Math.min(6, soupNow + (nextScene.soupconOnArrival ?? 0)));
     const soupSeen = runRef.current?.soupconSeen ?? 0;
     const soupManifest =
       !nextScene.fixationTrial && soupAfter > soupSeen && soupAfter <= 5 && SOUPCON_PALIERS[soupAfter]
@@ -1028,10 +1026,13 @@ export default function Scene() {
     if (opts?.toDest && APPROACH_NARRATION[opts.toDest]) {
       entries.push({ id: nextId(), kind: "narration", text: APPROACH_NARRATION[opts.toDest] });
     }
-    // …et COMMENT on y arrive (5/08) : une seule phrase, jamais un paragraphe.
-    if (opts?.toDest && opts.mode) {
-      entries.push({ id: nextId(), kind: "narration", text: phraseArrivee(opts.mode, nextStep) });
-    }
+    // …et COMMENT on y arrive : une seule phrase, jamais un paragraphe.
+    // ⚠️ VARIATION NARRATIVE, pas une décision (voir phraseArrivee) : le mode
+    // ne dépend pas de la route choisie et n'a aucune conséquence mécanique.
+    const arriveePhrase = opts?.toDest
+      ? phraseArrivee(nextStep, runRef.current?.arriveeVues ?? [])
+      : null;
+    if (arriveePhrase) entries.push({ id: nextId(), kind: "narration", text: arriveePhrase });
     // LE PROCÈS (5/08) : on ne lit pas d'acte d'accusation, on appelle des
     // gens. Les dépositions s'intercalent entre l'arrivée au tribunal et la
     // sentence — le joueur relit sa propre run, dans l'ordre où il l'a jouée.
@@ -1064,19 +1065,13 @@ export default function Scene() {
     // ainsi fait. Une ligne, jamais deux — et jamais le nom de la stat.
     // Le don « regard » (Œil de lanterne verte) donne accès à ces lignes même
     // quand aucune stat n'atteint le seuil : voir avec les yeux d'un autre.
-    //
-    // ⚠️ Le VRAI arbitrage du mode de route est ici : arriver à couvert
-    // t'épargne le regard des gens, mais te prive du tien — on ne lit pas un
-    // lieu qu'on aborde par le talus, à contre-jour, en surveillant ses pas.
-    // Discrétion contre lecture : les deux routes se valent, aucune n'est la
-    // bonne. (Sans ça, « à couvert » serait strictement meilleur.)
-    const perception = vuALArrivee
-      ? perceptionDe(
-          nextScene.id,
-          runRef.current?.stats,
-          relicDon(activeRelic(loadMemory())) === "regard"
-        )
-      : null;
+    // Elle tombe à chaque arrivée, quelle que soit la route : le mode
+    // d'arrivée est de la couleur, il ne retient jamais une information.
+    const perception = perceptionDe(
+      nextScene.id,
+      runRef.current?.stats,
+      relicDon(activeRelic(loadMemory())) === "regard"
+    );
     if (perception) entries.push({ id: nextId(), kind: "narration", text: perception });
     entries.push(...chapterAfter.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
     // Manifestation du Soupçon : le monde se ferme, palier par palier.
@@ -1205,7 +1200,7 @@ export default function Scene() {
       if (nextScene.fixationTrial) run.soupconSeen = 6;
       // Un Soupçon d'arrivée qui monte a un TÉMOIN : quelqu'un t'a vu monter
       // là-haut. Le compteur devient quelqu'un (5/08).
-      if (vuALArrivee && (nextScene.soupconOnArrival ?? 0) > 0) {
+      if ((nextScene.soupconOnArrival ?? 0) > 0) {
         const t = temoinPour(`${nextScene.id.replace(/-\d+$/, "")}-arrivee`);
         if (t && !(run.temoins ?? []).some((x) => x.id === t.id))
           run.temoins = [...(run.temoins ?? []), t];
@@ -1218,8 +1213,10 @@ export default function Scene() {
         run.temoins = temoinsAuProces;
         run.relicUsed = true;
       }
-      // Le mode d'arrivée est CONSOMMÉ ici : il ne vaut que pour ce seuil-là.
-      run.arriveeMode = null;
+      // Anti-répétition des phrases d'arrivée (retour 5/08 : « Tu es venu par
+      // le flanc… » revenait plusieurs fois dans une même vie).
+      if (arriveePhrase && !(run.arriveeVues ?? []).includes(arriveePhrase))
+        run.arriveeVues = [...(run.arriveeVues ?? []), arriveePhrase];
       // Savoir livré par la narration de la scène (25/07) : certains PNJ disent
       // l'information d'eux-mêmes, avant qu'on ait pu la demander.
       if (arrivalSavoir) run.savoirs = [...(run.savoirs ?? []), arrivalSavoir];
@@ -1267,7 +1264,11 @@ export default function Scene() {
         !run?.relicUsed;
       if (!ouvert && !passe) {
         // Refus en diégèse (spec 4/08 B) : jamais un chiffre, jamais un cadenas.
-        setVerrouHint(VERROU_DIEGESE[choice.locked.stat] ?? "Ce n'est pas pour toi.");
+        setVerrouHint(
+          choice.locked.min == null
+            ? VERROU_DUR
+            : (VERROU_DIEGESE[choice.locked.stat] ?? "Ce n'est pas pour toi.")
+        );
         if (verrouHintTimer.current) clearTimeout(verrouHintTimer.current);
         verrouHintTimer.current = setTimeout(() => setVerrouHint(null), 2600);
         return;
@@ -1331,9 +1332,7 @@ export default function Scene() {
           if (!(r.liaisonVues ?? []).includes(amb)) r.liaisonVues = [...(r.liaisonVues ?? []), amb];
         });
       }
-      const mode = choice.orient.mode;
-      if (mode) persist((r) => { r.arriveeMode = mode; });
-      advanceTimer.current = setTimeout(() => advance({ toDest: dest, mode }), 320);
+      advanceTimer.current = setTimeout(() => advance({ toDest: dest }), 320);
       return;
     }
 
@@ -1856,6 +1855,9 @@ export default function Scene() {
             if (scene.fixationTrial && tierIsFail(tier)) {
               const epitaph = outcome.text.replace(/\s*♦.*$/, "");
               const firstDeath = loadMemory().deaths === 0;
+              // La relique RÉELLEMENT portée pendant cette vie — lue AVANT
+              // recordDeath, qui pousse celle que cette mort vient de forger.
+              const porteeNom = activeRelic(loadMemory())?.name ?? null;
               mutateMemory((m) => {
                 m.fixations += 1;
               });
@@ -1867,7 +1869,7 @@ export default function Scene() {
                 killer: { entity: "hameau-renoncants", label: "le Hameau des Renonçants" },
                 fixation: true,
               });
-              const dead = { epitaph, day: run.day, bilan: bilanDeMort(run), relic,
+              const dead = { epitaph, day: run.day, bilan: bilanDeMort(run, porteeNom), relic,
                 heroName: run.heroName, cause: "le Hameau des Renonçants", firstDeath };
               resetRun();
               setDeath(dead);
@@ -1881,6 +1883,9 @@ export default function Scene() {
               // Jalon de première fois (spec 21/07) : lu AVANT recordDeath (qui
               // incrémente `deaths`) — le Geôlier accueille, pas de moquerie.
               const firstDeath = loadMemory().deaths === 0;
+              // La relique RÉELLEMENT portée pendant cette vie — lue AVANT
+              // recordDeath, qui pousse celle que cette mort vient de forger.
+              const porteeNom = activeRelic(loadMemory())?.name ?? null;
               const relic = recordDeath({
                 heroName: run.heroName,
                 days: run.day,
@@ -1888,7 +1893,7 @@ export default function Scene() {
                 place: scene.id,
                 killer: scene.foe ? { entity: scene.foe, label: scene.foeName ?? scene.foe } : undefined,
               });
-              const dead = { epitaph, day: run.day, bilan: bilanDeMort(run), relic,
+              const dead = { epitaph, day: run.day, bilan: bilanDeMort(run, porteeNom), relic,
                 heroName: run.heroName, cause, firstDeath };
               resetRun();
               setDeath(dead);
