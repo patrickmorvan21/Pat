@@ -91,6 +91,16 @@ export const TEMOINS: Record<string, Omit<Temoin, "id">> = {
     deposition: "Il a proposé un échange. Ici, un échange, ça veut dire une place contre une place.",
     lieu: "au Hameau des Renonçants",
   },
+  "observer-couvert": {
+    nom: "Le Gamin des Murets",
+    deposition: "Il est resté longtemps derrière le talus, à nous compter, avant d'entrer.",
+    lieu: "à l'entrée du Hameau",
+  },
+  "passer-sans-arret": {
+    nom: "Les trois hommes du seuil",
+    deposition: "Il a voulu passer sans s'arrêter. Personne ne passe sans s'arrêter.",
+    lieu: "à l'entrée du Hameau",
+  },
   "demander-crainte": {
     nom: "Les trois hommes du seuil",
     deposition: "Il a demandé de quoi on avait peur. On ne pose pas cette question quand on est de passage.",

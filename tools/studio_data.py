@@ -35,6 +35,13 @@ TS = RACINE / "aldenhar/lib/scene-data.ts"
 ZONES = RACINE / "data/zones"
 META = RACINE / "data/scene-meta.json"
 MANIFEST = RACINE / "aldenhar/public/assets/manifest.json"
+# Les systèmes du 5/08 vivent dans leurs propres modules — le Studio doit les
+# montrer, sinon Patrick ne voit pas la moitié de ce qui pèse sur ses scènes.
+TS_TEMOINS = RACINE / "aldenhar/lib/temoins.ts"
+TS_RELIQUES = RACINE / "aldenhar/lib/reliques.ts"
+TS_FAITS = RACINE / "aldenhar/lib/contradictions.ts"
+TS_PERCEPTION = RACINE / "aldenhar/lib/perception.ts"
+TS_LOI = RACINE / "aldenhar/lib/loi-substitution.ts"
 SORTIE = RACINE / "data/studio-data.json"
 
 
@@ -223,6 +230,121 @@ def lire_outcomes(txt: str) -> dict:
     return {k: (parts[i] if i < len(parts) else "") for i, k in enumerate(cles)}
 
 
+
+# ───────────────────────────────────────────── les systèmes transverses (5/08)
+
+
+def lire_temoins() -> dict[str, dict]:
+    """TEMOINS : id d'acte → {nom, deposition, lieu}. Clé = id du choix/point.
+
+    ⚠️ `objets_de_haut_niveau` attend le conteneur ENTIER (`{ … }` ou `[ … ]`)
+    et rend ses objets de profondeur 1, dans l'ordre du document. On apparie
+    donc les clés (trouvées par regex) aux valeurs par position — pas en
+    relançant le découpeur sur une sous-chaîne, qui ne trouve rien.
+    """
+    if not TS_TEMOINS.exists():
+        return {}
+    src = TS_TEMOINS.read_text(encoding="utf-8")
+    b = bloc_apres(src, r"export const TEMOINS[^=]*=")
+    if not b:
+        return {}
+    cles = re.findall(r"\n  \"?([a-zA-Z0-9_-]+)\"?:\s*\{", b[0])
+    valeurs = objets_de_haut_niveau(b[0], 0)
+    out: dict[str, dict] = {}
+    for cle, c in zip(cles, valeurs):
+        out[cle] = {
+            "nom": texte_de(c, "nom") or "",
+            "deposition": texte_de(c, "deposition") or "",
+            "lieu": texte_de(c, "lieu") or "",
+        }
+    return out
+
+
+def lire_reliques() -> list[dict]:
+    if not TS_RELIQUES.exists():
+        return []
+    b = bloc_apres(TS_RELIQUES.read_text(encoding="utf-8"), r"export const RELIQUES_LANDES: RelicLandes\[\] =")
+    if not b:
+        return []
+    out = []
+    for c in objets_de_haut_niveau(b[0], 0):
+        out.append(
+            {
+                "id": texte_de(c, "id"),
+                "nom": texte_de(c, "nom"),
+                "rarete": texte_de(c, "rarete"),
+                "don": texte_de(c, "don"),
+                "dette": texte_de(c, "dette"),
+                "mort": texte_de(c, "mort"),
+                "fonction": texte_de(c, "fonction"),
+                "cout": texte_de(c, "cout"),
+                "murmure": texte_de(c, "murmure"),
+            }
+        )
+    return out
+
+
+def lire_faits() -> list[dict]:
+    if not TS_FAITS.exists():
+        return []
+    b = bloc_apres(TS_FAITS.read_text(encoding="utf-8"), r"export const FAITS: Fait\[\] =")
+    if not b:
+        return []
+    out = []
+    for c in objets_de_haut_niveau(b[0], 0):
+        vb = bloc_apres(c, r"\n    versions:\s*")
+        versions = []
+        if vb:
+            for v in objets_de_haut_niveau(vb[0], 0):
+                versions.append({"id": texte_de(v, "id"), "texte": texte_de(v, "texte")})
+        out.append(
+            {
+                "id": texte_de(c, "id"),
+                "sujet": texte_de(c, "sujet"),
+                "accusation": texte_de(c, "accusation"),
+                "versions": versions,
+            }
+        )
+    return out
+
+
+def lire_perceptions() -> dict[str, dict]:
+    """PERCEPTIONS : id de scène → {stat: ligne}. Même appariement clé/valeur."""
+    if not TS_PERCEPTION.exists():
+        return {}
+    b = bloc_apres(TS_PERCEPTION.read_text(encoding="utf-8"), r"export const PERCEPTIONS[^=]*=")
+    if not b:
+        return {}
+    cles = re.findall(r"\n  \"?([a-zA-Z0-9_-]+)\"?:\s*\{", b[0])
+    valeurs = objets_de_haut_niveau(b[0], 0)
+    out: dict[str, dict] = {}
+    for cle, c in zip(cles, valeurs):
+        lignes = {}
+        for stat in ("courage", "ruse", "instinct", "empathie"):
+            v = texte_de(c, stat)
+            if v:
+                lignes[stat] = v
+        if lignes:
+            out[cle] = lignes
+    return out
+
+
+def lire_loi() -> dict:
+    if not TS_LOI.exists():
+        return {}
+    src = TS_LOI.read_text(encoding="utf-8")
+    m = re.search(r"export const LOI_DU_DOMAINE =\s*((?:\"(?:[^\"\\\\]|\\\\.)*\"(?:\s*\+\s*\n?\s*)?)+)", src)
+    loi = recoller(m.group(1)) if m else ""
+    b = bloc_apres(src, r"export const MANIFESTATIONS_LANDES: ManifestationLoi\[\] =")
+    manifs = []
+    if b:
+        for c in objets_de_haut_niveau(b[0], 0):
+            manifs.append({"registre": texte_de(c, "registre"), "texte": texte_de(c, "texte")})
+    return {"loi": loi, "manifestations": manifs}
+
+
+TEMOINS = lire_temoins()
+
 def lire_choix(bloc: str) -> list[dict]:
     b = bloc_apres(bloc, r"\n {4}choices:\s*")
     if not b:
@@ -249,6 +371,11 @@ def lire_choix(bloc: str) -> list[dict]:
         elif "orient:" in c:
             ch["type"] = "orientation"
             ch["dest"] = texte_de(c, "dest")
+            # Le mode est posé à l'exécution par makeLiaison (une route franche,
+            # une couverte, tirées par la graine) — jamais écrit dans les données.
+            ch["modeArrivee"] = "tire a l execution"
+        elif booleen_de(c, "renonce"):
+            ch["type"] = "renoncement"
         elif booleen_de(c, "rest"):
             ch["type"] = "repos"
         else:
@@ -262,13 +389,22 @@ def lire_choix(bloc: str) -> list[dict]:
             ("grantsSavoir", "donneSavoir"),
             ("requiresSavoir", "exigeSavoir"),
             ("setsEnvFlag", "poseFlag"),
+            ("defense", "defense"),
         ):
             v = texte_de(c, champ)
             if v:
                 ch[cle] = v
+        if booleen_de(c, "requiresContradiction"):
+            ch["exigeContradiction"] = True
+        if booleen_de(c, "renonce"):
+            ch["renonce"] = True
         s = nombre_de(c, "soupcon")
         if s is not None:
             ch["soupcon"] = int(s)
+            # LE TÉMOIN (5/08) : un Soupçon qui monte a quelqu'un qui l'a vu.
+            t = TEMOINS.get(ch["id"])
+            if s > 0 and t:
+                ch["temoin"] = t
         if booleen_de(c, "rest"):
             ch["repos"] = True
         if "debt:" in c:
@@ -295,9 +431,15 @@ def lire_pois(bloc: str) -> list[dict]:
             v = texte_de(p, champ)
             if v:
                 poi[cle] = v
+        v = texte_de(p, "fait")
+        if v:
+            poi["fait"] = v
         s = nombre_de(p, "soupcon")
         if s is not None:
             poi["soupcon"] = int(s)
+            t = TEMOINS.get(poi["id"])
+            if s > 0 and t:
+                poi["temoin"] = t
         if booleen_de(p, "chapterFragment"):
             poi["fragmentChapitre"] = True
         if booleen_de(p, "corbeaux"):
@@ -668,6 +810,14 @@ def main() -> int:
         "scenes": scenes,
         "liens": liens,
         "reserve": reserve,
+        # LES SYSTÈMES TRANSVERSES (5/08) : ils ne vivent dans aucune scène,
+        # mais ils pèsent sur toutes. Exportés à part pour que le Studio puisse
+        # les montrer comme des catalogues.
+        "reliques": lire_reliques(),
+        "faits": lire_faits(),
+        "perceptions": lire_perceptions(),
+        "loiDuDomaine": lire_loi(),
+        "temoins": TEMOINS,
         "totaux": {
             "scenes": len(scenes),
             "pointsInteret": sum(len(s["pointsInteret"]) for s in scenes),
@@ -678,6 +828,10 @@ def main() -> int:
                 1 for s in scenes if s["image"] and not s["image"]["existe"]
             ),
             "reserve": len(reserve),
+            "reliques": len(lire_reliques()),
+            "faits": len(lire_faits()),
+            "perceptions": len(lire_perceptions()),
+            "temoins": len(TEMOINS),
         },
     }
     SORTIE.write_text(json.dumps(donnees, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")

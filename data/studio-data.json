@@ -52,8 +52,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-03T21:33:39Z",
- "commit": "2d0b8bc",
+ "genere": "2026-08-05T07:03:02Z",
+ "commit": "4d09894",
  "zones": [
   {
    "id": "landes",
@@ -570,7 +570,12 @@
       "echec": "Tu le dis trop vite, ou trop fort. Il rit — doucement, terriblement. « Tous ceux qui descendent disent ça. C'est même à ça qu'on vous reconnaît. »",
       "funeste": "1 naturel. « Je n'entends rien », dis-tu. Et au même instant, dans le creux de ton crâne, quelque chose répond quelque chose. Ton visage le raconte à ta place. ♦ −2"
      },
-     "soupcon": 1
+     "soupcon": 1,
+     "temoin": {
+      "nom": "Le berger des murets",
+      "deposition": "Je l'ai entendu promettre à l'homme de la Borne qu'il reviendrait. Il n'est pas revenu.",
+      "lieu": "à la Borne Frontière"
+     }
     }
    ],
    "pointsInteret": [],
@@ -1120,6 +1125,7 @@
      "label": "Le Gibet Vide, au centre",
      "approche": "Tu marches vers le centre, et la chose grandit plus vite que tes pas. À dix mètres, tu comprends que tu avais mal jugé l'échelle. À trois, tu dois lever la tête pour voir le nœud.",
      "examen": "Le bois est d'œuvre, assemblé pour durer mille ans. La corde neuve grince. Par grand soleil — rare, ici — l'ombre portée s'étend vers le sud, et elle a une forme que la potence n'explique pas.",
+     "fait": "fait-gibet",
      "fragmentChapitre": true,
      "nom": "Le Gibet Vide, au centre",
      "image": {
@@ -1140,6 +1146,11 @@
      "approche": "Tu contournes le cercle par la gauche. Le poteau isolé est plus bas que les autres — à hauteur d'homme, exactement. Une hauteur qu'on choisit.",
      "examen": "Chaîne de fonction au cou, sous la corde. Un sceau au poing. Et les yeux qui s'ouvrent quand tu arrives à portée de voix : le Bailli des Landes, pendu le dernier, à la place d'honneur.",
      "soupcon": 1,
+     "temoin": {
+      "nom": "Le Gamin des Murets",
+      "deposition": "Il est resté sous le gibet du Bailli. À le regarder. Longtemps.",
+      "lieu": "à la Colline aux Gibets"
+     },
      "nom": "Le poteau isolé, à gauche",
      "image": null,
      "description": "",
@@ -1314,7 +1325,12 @@
       "echec": "Tu te défends trop. Le Bailli savoure chaque excuse : « Coupable, donc. Ils s'excusent tous. » Sa sentence te suit dans la lande, écrite quelque part où tu ne peux pas la lire.",
       "funeste": "1 naturel. Tu plaides. Il te coupe : « J'ai déjà jugé ce plaidoyer. Mot pour mot. Tu n'es même pas le premier toi. » ♦ −2"
      },
-     "soupcon": 1
+     "soupcon": 1,
+     "temoin": {
+      "nom": "Le Sonneur sans Cloche",
+      "deposition": "Il a parlé au pendu. Et le pendu lui a répondu — j'étais à trente pas.",
+      "lieu": "à la Colline aux Gibets"
+     }
     },
     {
      "id": "decrocher",
@@ -1329,7 +1345,12 @@
       "echec": "Ta lame entame la corde — qui se resserre, vivante, et te fouette au visage. Le Bailli rit à s'étrangler, ce qui ne lui coûte rien : « On ne défait pas une Fixation, petit juge. On la subit. »",
       "funeste": "1 naturel. La corde tranche plus vite que toi. Pas la sienne : une autre, tombée de nulle part, qui t'a mesuré le cou au passage. ♦ −2"
      },
-     "soupcon": 1
+     "soupcon": 1,
+     "temoin": {
+      "nom": "La Doyenne",
+      "deposition": "Il a porté la lame sur une corde qui tenait. Chez nous, ça a un nom.",
+      "lieu": "à la Colline aux Gibets"
+     }
     },
     {
      "id": "passer-pendu",
@@ -1347,7 +1368,7 @@
     "fichier": "monstre_pendu_qui_parle_2_a.png",
     "hash": "2b1bc9da",
     "taille": 9886,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Le gardien, à hauteur d'homme. Non-combat : il juge. Son visage de pendu qui parle, le sceau à sa ceinture.",
@@ -1401,6 +1422,11 @@
      "examen": "Trois poteaux portent déjà des noms, sans date. Le Fossoyeur grave d'avance « ceux dont c'est sûr ». Le troisième nom est récent — l'entaille est claire, le bois n'a pas encore grisé. Tu le lis, et tu le relis, et il ne change pas : c'est le tien. Quelqu'un ici sait déjà comment ça finit, et a pris le temps de tailler proprement.",
      "savoir": "savoir_poteau_a_mon_nom",
      "soupcon": 1,
+     "temoin": {
+      "nom": "Le Fossoyeur des Poteaux",
+      "deposition": "Il a compté les places vides. Personne ne compte les places vides sans y penser pour soi.",
+      "lieu": "au Champ des Fixés"
+     },
      "nom": "Les poteaux vierges, au fond",
      "image": {
       "fichier": "scene_champ_poteaux_vierges_b.png",
@@ -1608,7 +1634,12 @@
       "echec": "Tu restes trop longtemps immobile face au village. Quand tu te redresses enfin, une silhouette se détache d'une porte, en bas, et rentre vite. Quelqu'un t'a vu observer — et observer, ici, n'est pas une chose innocente.",
       "funeste": "1 naturel. Tu observes, à plat ventre, concentré. Derrière toi, une voix polie : « On peut vous aider ? » Ils sont deux. Ils sont montés pendant que tu regardais en bas. ♦ −2"
      },
-     "soupcon": 1
+     "soupcon": 1,
+     "temoin": {
+      "nom": "Le Gamin des Murets",
+      "deposition": "Il est resté longtemps derrière le talus, à nous compter, avant d'entrer.",
+      "lieu": "à l'entrée du Hameau"
+     }
     },
     {
      "id": "descendre-hameau",
@@ -1651,7 +1682,12 @@
      "label": "Frapper à la porte marquée",
      "type": "passif",
      "consequence": "Tu frappes trois coups. Personne n'ouvre. Mais derrière le bois, à quelques centimètres de ta main, quelqu'un retient son souffle — et tu l'entends le retenir. Tu recules. Dans ton dos, une autre porte se ferme, qui était entrouverte.",
-     "soupcon": 1
+     "soupcon": 1,
+     "temoin": {
+      "nom": "La Femme au Seuil",
+      "deposition": "Il a frappé chez une marquée. On ne frappe pas chez une marquée, on passe.",
+      "lieu": "au Hameau des Renonçants"
+     }
     },
     {
      "id": "continuer-rue",
@@ -1666,6 +1702,11 @@
      "approche": "Dix pas dans une rue qui ne fait aucun bruit. Tu marches au milieu, d'instinct — le plus loin possible des deux rangées de portes.",
      "examen": "De près, on voit que le bois est usé à cet endroit précis. Des croix, il y en a eu d'autres, ici. Effacées, retracées. Celle-ci n'est que la dernière.",
      "soupcon": 1,
+     "temoin": {
+      "nom": "La Femme au Seuil",
+      "deposition": "Il a touché la craie de ma porte. La marque était fraîche, et c'était la mienne.",
+      "lieu": "au Hameau des Renonçants"
+     },
      "nom": "S'approcher de la croix",
      "image": {
       "fichier": "scene_hameau_croix_craie_a_a.png",
@@ -1759,7 +1800,12 @@
      "label": "Regarder le sud avec elle",
      "type": "passif",
      "consequence": "Tu ne dis rien. Tu te places à côté d'elle, dans le même axe, et tu regardes le bout de la rue. Le silence dure longtemps et ne pèse rien. Au bout d'un moment elle dit : « Vous l'entendez aussi. » Ce n'est pas une question, et tu n'as pas répondu — mais quelqu'un, derrière une fenêtre, a compté deux dos tournés vers le sud.",
-     "soupcon": 1
+     "soupcon": 1,
+     "temoin": {
+      "nom": "La Femme au Seuil",
+      "deposition": "Il a regardé le sud avec moi. On était deux à regarder le sud. Le hameau nous a vus.",
+      "lieu": "au Hameau des Renonçants"
+     }
     }
    ],
    "pointsInteret": [],
@@ -1817,7 +1863,12 @@
       "echec": "Tu refuses mal — trop vite, en reculant d'un demi-pas. Sa main reste tendue trois secondes de trop, seule, dans la rue vide, et deux volets s'entrouvrent sur ce tableau-là.",
       "funeste": "1 naturel. Tu refuses. Elle range la mèche, et dit, sans aucune méchanceté : « C'est ce qu'il a dit aussi, en partant. Qu'il ne prendrait rien. » ♦ −2"
      },
-     "soupcon": 1
+     "soupcon": 1,
+     "temoin": {
+      "nom": "La Femme au Seuil",
+      "deposition": "Je lui ai demandé une chose. Il a dit non, sans même chercher une raison.",
+      "lieu": "au Hameau des Renonçants"
+     }
     },
     {
      "id": "femme-echange",
@@ -1832,7 +1883,12 @@
       "echec": "La question tombe mal. Elle ne se fâche pas — elle range la mèche, c'est tout, et ça vaut toutes les insultes. Dans son dos, la porte se ferme d'elle-même, comme si la maison avait tranché.",
       "funeste": "1 naturel. « En échange ? » Elle répète les mots lentement, puis les rend au silence. Quelque part dans la rue, quelqu'un les répète aussi. ♦ −2"
      },
-     "soupcon": 1
+     "soupcon": 1,
+     "temoin": {
+      "nom": "La Femme au Seuil",
+      "deposition": "Il a proposé un échange. Ici, un échange, ça veut dire une place contre une place.",
+      "lieu": "au Hameau des Renonçants"
+     }
     },
     {
      "id": "femme-moi-aussi",
@@ -1935,7 +1991,12 @@
       "echec": "« Ça ne se demande pas. » Le vieux se ferme d'un coup, et les deux autres avancent d'un demi-pas. Ta question, dans leur grammaire, est déjà un aveu : seuls ceux qui entendent s'intéressent à ce qu'on entend.",
       "funeste": "1 naturel. Tu demandes ce qu'ils craignent. Le silence qui suit dure trop. Puis, très bas, le vieux : « Toi. » Il n'a pas l'air content de sa propre réponse. ♦ −2"
      },
-     "soupcon": 1
+     "soupcon": 1,
+     "temoin": {
+      "nom": "Les trois hommes du seuil",
+      "deposition": "Il a demandé de quoi on avait peur. On ne pose pas cette question quand on est de passage.",
+      "lieu": "à l'entrée du Hameau"
+     }
     },
     {
      "id": "passer-sans-arret",
@@ -1950,7 +2011,12 @@
       "echec": "Tu avances — et la fourche change de main. Pas levée : tenue. Le message est clair, et tu t'arrêtes de toi-même. Passer en force ne marche pas chez des gens qui ont déjà décidé d'avoir peur.",
       "funeste": "1 naturel. Tu passes sans t'arrêter. Le vieux te laisse faire, et lance à la cantonade, calmement : « Notez l'heure. » Quelqu'un, quelque part, note l'heure. ♦ −2"
      },
-     "soupcon": 1
+     "soupcon": 1,
+     "temoin": {
+      "nom": "Les trois hommes du seuil",
+      "deposition": "Il a voulu passer sans s'arrêter. Personne ne passe sans s'arrêter.",
+      "lieu": "à l'entrée du Hameau"
+     }
     },
     {
      "id": "ne-fais-que-passer",
@@ -2015,6 +2081,11 @@
      "consequence": "Tu jures. Les mots sortent dans le bon ordre, à la bonne vitesse, et ne pèsent rien. Le vieux les accepte — il n'a pas le choix, c'est la règle. Mais il te regarde une seconde de trop, et tu comprends qu'il a entendu le vide dedans.",
      "serment": "faux",
      "soupcon": 1,
+     "temoin": {
+      "nom": "Les trois hommes du seuil",
+      "deposition": "Il a juré. Du bout des lèvres, en regardant ailleurs. On l'a laissé entrer quand même.",
+      "lieu": "à l'entrée du Hameau"
+     },
      "dette": {
       "id": "jurer-faux",
       "texte": "Le serment que tu as prêté du bout des lèvres au muret des Renonçants se rappelle à toi : ta bouche, d'un coup, refuse un mot — un seul, celui dont tu avais justement besoin. Les serments creux se paient en paroles pleines. Quelque part, le vieux hoche la tête sans surprise."
@@ -2026,7 +2097,12 @@
      "type": "passif",
      "consequence": "Tu refuses. Personne ne crie. Le vieux referme lentement sa paume vide, et c'est tout. « Personne n'est chassé », répète-t-il — et cette fois tu entends ce que ça veut dire vraiment : on ne te chassera pas, on te laissera dehors. Aucune porte ne s'ouvrira. Aucun toit. Et le hameau te regardera vivre.",
      "serment": "refuse",
-     "soupcon": 2
+     "soupcon": 2,
+     "temoin": {
+      "nom": "Les trois hommes du seuil",
+      "deposition": "On lui a demandé de jurer comme tout le monde. Il n'a pas voulu.",
+      "lieu": "à l'entrée du Hameau"
+     }
     }
    ],
    "pointsInteret": [
@@ -2036,6 +2112,11 @@
      "approche": "Tu ne réponds pas tout de suite. Tu poses la question, et le barrage entier attend sa réponse avec toi — comme si personne n'avait jamais osé la poser.",
      "examen": "— « Parce qu'à la quatrième, on commence à s'habituer à toi. » Le vieux hausse une épaule, presque désolé. « Et on ne peut pas se permettre de s'habituer. »",
      "soupcon": 1,
+     "temoin": {
+      "nom": "Les trois hommes du seuil",
+      "deposition": "Il a voulu savoir pourquoi trois aubes. Devant tout le barrage. À voix haute.",
+      "lieu": "à l'entrée du Hameau"
+     },
      "nom": "Demander pourquoi trois aubes",
      "image": {
       "fichier": "scene_hameau_trois_aubes_v2_c.png",
@@ -2248,7 +2329,12 @@
       "echec": "La paille craque sous toi. Les voix s'arrêtent net — ce silence-là est une porte qui claque. Puis des pas qui s'éloignent vite, et tu passes le reste de la nuit à te demander ce qu'ils ont compris.",
       "funeste": "1 naturel. Tu écoutes. Et une voix, tout près, dit ton nom — celui que tu as signé au pacte, celui que personne ici n'a entendu. ♦ −2"
      },
-     "soupcon": 1
+     "soupcon": 1,
+     "temoin": {
+      "nom": "Le vieux de la grange",
+      "deposition": "Il n'a pas dormi. Il a écouté ce qui tournait dehors, toute la nuit, sans bouger.",
+      "lieu": "dans la grange du Hameau"
+     }
     },
     {
      "id": "dormir-vraiment",
@@ -2341,6 +2427,12 @@
      "id": "franchir-portillon",
      "label": "Franchir le portillon",
      "type": "suite"
+    },
+    {
+     "id": "rester-au-hameau",
+     "label": "Ne pas franchir",
+     "type": "renoncement",
+     "renonce": true
     }
    ],
    "pointsInteret": [],
@@ -2367,6 +2459,40 @@
    "alertes": []
   },
   {
+   "id": "renoncer",
+   "narration": [
+    "Tu ne passes pas le portillon. Tu fais un pas de côté, et tu t'assieds sur la pierre du seuil, du côté du hameau.",
+    "Personne ne discute. Le plus jeune referme le portillon, le vieux hoche la tête une fois — c'est fait, et ça s'est fait sans un mot. Le lendemain, on te donne une porte. Une vraie, avec un loquet. Ce n'est pas rien, ici, une porte.",
+    "Aux premières aubes tu comptes les jours comme eux. Puis tu cesses de compter. Un matin, quelqu'un frappe chez la Femme au Seuil, et sa croix de craie a disparu de son bois. Personne ne t'explique où elle est passée. Tu ne demandes pas."
+   ],
+   "choix": [
+    {
+     "id": "fin-renoncant",
+     "label": "Laisser le nom au Registre",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "terminal": true,
+   "image": {
+    "fichier": "scene_hameau_dense2_b.png",
+    "hash": "4ee39a67",
+    "taille": 29932,
+    "recent": false,
+    "existe": true
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
    "id": "hameau-halte-dehors",
    "narration": [
     "Aucune porte, aucune grange. Tu dors contre un muret, côté nord — d'instinct.",
@@ -2378,7 +2504,12 @@
      "label": "Repartir vers le sud",
      "type": "passif",
      "consequence": "Tu te lèves raide, les os pleins de froid. En quittant le muret, tu vois ce que la nuit a laissé : des traces de pas autour de l'endroit où tu dormais, un cercle complet, à trois mètres. Personne ne s'est approché plus près. Personne n'est reparti sans avoir regardé.",
-     "soupcon": 1
+     "soupcon": 1,
+     "temoin": {
+      "nom": "Le vieux de la grange",
+      "deposition": "Au matin, il a compté ce qu'il avait. Devant nous. Comme si on lui avait pris quelque chose.",
+      "lieu": "dans la grange du Hameau"
+     }
     }
    ],
    "pointsInteret": [],
@@ -2673,7 +2804,12 @@
       "echec": "Il t'examine, puis recule d'un pas et te montre sa paume : refus. Tu ne sauras pas si c'est ta blessure qui le dépasse ou quelque chose qu'il a lu dessous — mais il ne te touchera pas, et son regard t'accompagne longtemps.",
       "funeste": "1 naturel. Ses mains s'arrêtent net sur ta nuque. Il retire les siennes très lentement, comme d'un piège à loup. Ce qu'il a senti là, il ne l'a pas soigné. Il l'a salué. ♦ −2"
      },
-     "soupcon": 1
+     "soupcon": 1,
+     "temoin": {
+      "nom": "Le Rebouteux",
+      "deposition": "Il est venu se faire soigner d'une plaie qu'aucun outil du hameau ne fait.",
+      "lieu": "au Marché Muet"
+     }
     },
     {
      "id": "traverser-marche",
@@ -2781,6 +2917,7 @@
      "label": "Pousser la porte entrouverte",
      "approche": "Tu pousses du plat de la main, lentement, en laissant à ce qu'il y a dedans le temps de décider s'il veut être vu.",
      "examen": "Personne. Mais le contraire de l'abandon : une paillasse faite au carré, un pot ébréché où trempent des brins de bruyère — de la bruyère fraîche. Quelqu'un habite ici avec un soin de vivant. Tu ressors sans toucher à rien, et c'est la première politesse que tu offres aux Landes.",
+     "fait": "fait-fille",
      "fragmentChapitre": true,
      "nom": "Pousser la porte entrouverte",
      "image": {
@@ -2911,6 +3048,11 @@
      "approche": "Tu contournes les bancs absents — on les a brûlés, sans doute — jusqu'à la masse de pierre couchée sur le flanc. Personne ne l'a redressée. Personne ne l'a emportée non plus.",
      "examen": "Sous l'autel renversé, un espace. Vide — mais le creux dans la poussière dit qu'une chose y était cachée, longue, enroulée. On l'a prise récemment : la poussière n'a pas eu le temps de revenir.",
      "soupcon": 1,
+     "temoin": {
+      "nom": "La Veuve des Cordes",
+      "deposition": "Il a fouillé sous l'autel. Ce qui est dessous n'est pas à nous non plus, mais on n'y touche pas.",
+      "lieu": "à la Chapelle des Cordes"
+     },
      "nom": "L'autel couché, sur le côté",
      "image": {
       "fichier": "scene_chapelle_autel_a_c.png",
@@ -3316,6 +3458,7 @@
      "label": "La chaire et son livre",
      "approche": "La chaire est haute — il faut lever les yeux, et c'est le but. Tu montes la marche unique qui y mène, celle que le Bailli montait chaque fois qu'il allait dire la même phrase.",
      "examen": "Le Registre des Pendaisons est posé là, ouvert — pas par négligence : ici, la loi se montre. Des colonnes de noms, de dates, de signes. Une écriture appliquée qui se dégrade au fil des pages. Et un nom sur deux est barré. Pas raturé — barré, d'un trait droit, à l'encre plus récente que le nom.",
+     "fait": "fait-bailli",
      "fragmentChapitre": true,
      "nom": "La chaire et son livre",
      "image": {
@@ -3384,6 +3527,14 @@
      "id": "lire-registre",
      "label": "Lire le Registre",
      "type": "suite"
+    },
+    {
+     "id": "registre-ment",
+     "label": "Le Registre ment",
+     "type": "passif",
+     "consequence": "Tu poses la main à plat sur la page ouverte, et tu dis ce que tu sais. L'Écrivain ne lève toujours pas les yeux — mais sa plume s'arrête, et le silence qui suit n'est pas le silence de quelqu'un qui n'a pas compris.",
+     "exigeContradiction": true,
+     "soupcon": -1
     },
     {
      "id": "denoncer-un-autre",
@@ -3625,6 +3776,11 @@
      "approche": "Tu contournes la mare par la droite pour atteindre le seul endroit où la boue est tassée. Le sol y est dur comme un seuil de maison.",
      "examen": "Deux creux dans la terre, à largeur de genoux, refaits par des centaines de personnes au même endroit exact. À côté, des marques de doigts crispés dans la boue séchée. On ne s'agenouille pas ici pour prier. On s'agenouille pour vérifier.",
      "soupcon": 1,
+     "temoin": {
+      "nom": "Le Renonçant de la Mare",
+      "deposition": "Il s'est agenouillé aux creux de la berge. Comme quelqu'un qui croit à ce qu'on y raconte.",
+      "lieu": "à la Mare aux Regards"
+     },
      "nom": "Le point de berge usé",
      "image": {
       "fichier": "scene_mare_berge_a_c.png",
@@ -3720,7 +3876,12 @@
       "echec": "Il te voit — et le fait que tu l'aies vu, lui, est la pire chose qui pouvait lui arriver aujourd'hui. Il part très vite, sans un mot, et tu sais qu'il racontera cette rencontre autrement que toi.",
       "funeste": "1 naturel. Tu l'abordes. Il te regarde, regarde l'eau, te regarde encore. Puis il demande, d'une voix blanche : « Le vôtre aussi ? » ♦ −2"
      },
-     "soupcon": 1
+     "soupcon": 1,
+     "temoin": {
+      "nom": "Le Renonçant de la Mare",
+      "deposition": "Il m'a parlé au bord de l'eau. Il regardait mon reflet, pas moi.",
+      "lieu": "à la Mare aux Regards"
+     }
     },
     {
      "id": "laisser-renoncant",
@@ -3805,6 +3966,11 @@
      "approche": "Au bout du rang, un arbre manque. Sa souche est nette, sciée à hauteur de genou, et le bois de coupe est gris.",
      "examen": "Le premier arbre du verger, abattu net. Les cernes sont réguliers jusqu'aux dernières années — puis serrés, noirs, illisibles. L'arbre a compris avant les hommes où il poussait. Quelqu'un l'a abattu pour ne pas avoir à le lire.",
      "soupcon": 1,
+     "temoin": {
+      "nom": "Les Époux du Verger",
+      "deposition": "Il a compté nos rangs. On sait ce que ça veut dire, quand un étranger compte.",
+      "lieu": "au Verger Noir"
+     },
      "nom": "La souche, au bout du rang",
      "image": {
       "fichier": "scene_verger_souche_a_c.png",
@@ -4411,8 +4577,7 @@
   {
    "id": "proces-du-heros",
    "narration": [
-    "Ils ne te courent pas après — ils t'attendent au tournant du muret, le hameau entier, dans ce silence de gens qui ont déjà décidé. On ne te touche pas. On marche autour de toi, jusqu'au Petit Tribunal.",
-    "Trois bancs pleins, la chaire vide — c'est face à elle qu'on t'assoit. La Doyenne déplie une feuille : la Dénonciation, signée d'une croix. L'accusation tient en peu de mots, et personne n'ose les dire fort : tu entends une voix. L'Ordonnance de la Fixation s'applique. À moins que tu ne parles mieux qu'elle."
+    "Ils ne te courent pas après — ils t'attendent au tournant du muret, le hameau entier, dans ce silence de gens qui ont déjà décidé. On ne te touche pas. On marche autour de toi, jusqu'au Petit Tribunal."
    ],
    "choix": [
     {
@@ -4427,7 +4592,8 @@
       "reussite": "Tu plaides court : qui l'a entendue, cette voix, à part la peur ? Un silence. Personne ne se lève pour jurer. La relaxe tombe du bout des lèvres de la Doyenne. On t'escorte dehors — l'œil du hameau ne te lâche plus, mais la corde, si.",
       "echec": "Tu plaides — trop bien. « Seul un coupable connaît si bien la procédure », dit la Doyenne, et les bancs hochent la tête. À l'aube qui ne vient jamais tout à fait, le Champ des Fixés gagne une ligne : la tienne.",
       "funeste": "1 naturel. Au milieu de ta défense, la voix te souffle exactement le mot qu'il fallait — et tu le répètes. Tout le tribunal l'a vu passer dans tes yeux. La sentence est unanime, et l'aube, pour une fois, ponctuelle. ♦ −2"
-     }
+     },
+     "defense": "discrediter"
     },
     {
      "id": "prendre-a-temoin",
@@ -4441,7 +4607,38 @@
       "reussite": "Tu parles de leurs morts fixés, de la peur qui juge à leur place depuis que le Bailli pend. Des nuques plient sur les bancs. La Doyenne tranche, lasse : « Qu'il marche. La lande jugera mieux que nous. »",
       "echec": "Tu cherches leurs yeux — ils regardent tous la corde. Ce n'est pas de la haine, c'est du soulagement : quelqu'un d'autre qu'eux. À l'aube, on te fixe, proprement, avec les égards dus à ce qu'on craint.",
       "funeste": "1 naturel. Ton appel réveille exactement le souvenir qu'il ne fallait pas : la dernière qui a supplié ainsi s'est relevée de sa corde. Cette fois, ils feront mieux. Double nœud. ♦ −2"
-     }
+     },
+     "defense": "emouvoir"
+    },
+    {
+     "id": "assumer-tout",
+     "label": "Tout reconnaître",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 13,
+     "hautEnjeu": true,
+     "issues": {
+      "critique": "20 naturel. Tu reprends chaque déposition et tu dis oui à chacune, sans un mot d'excuse — puis tu demandes, très calmement, lequel d'entre eux voudrait qu'on lise la sienne à voix haute. Personne ne se rassoit tout à fait pareil. La Doyenne te rend le seuil sans commentaire.",
+      "reussite": "Tu ne nies rien. Tu tiens debout pendant qu'on énumère, et tu regardes celui qui parle jusqu'à ce qu'il s'arrête. Il n'y a rien à retourner contre quelqu'un qui n'a rien caché. On te laisse repartir — mal à l'aise, ce qui est déjà une victoire ici.",
+      "echec": "Tu reconnais tout, et ils entendent une confession. Le hameau n'a jamais eu besoin de plus. On te remercie presque de leur avoir épargné le doute, et le Champ des Fixés prépare ta place avant même le lever.",
+      "funeste": "1 naturel. Tu reconnais plus que ce qu'ils avaient. Une chose qu'aucun témoin n'avait vue sort de ta bouche, et le silence qui suit a le goût d'une porte qui se ferme. Double nœud, comme pour les honnêtes. ♦ −2"
+     },
+     "defense": "assumer"
+    },
+    {
+     "id": "produire-preuve",
+     "label": "Produire un papier",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 11,
+     "hautEnjeu": true,
+     "issues": {
+      "critique": "20 naturel. Tu poses le document sur le banc des témoins, ouvert à la bonne page, et tu te tais. L'Écrivain se penche malgré lui — puis se redresse très vite. Ce que ce papier dit du hameau vaut infiniment plus cher que ce que le hameau dit de toi. On te raccompagne, et on ne te demande pas de le rendre.",
+      "reussite": "Tu produis le papier. Il ne t'innocente pas : il rappelle simplement qui tient les comptes, et depuis quand. La Doyenne le lit deux fois, referme, et dit qu'on verra plus tard. Plus tard, ici, veut dire jamais — et jamais, aujourd'hui, veut dire libre.",
+      "echec": "Tu produis le papier, et tu comprends en le tendant que tu viens d'avouer d'où il vient. On ne te juge plus pour la voix : on te juge pour le vol. C'est un motif plus propre, et il tient aussi bien une corde.",
+      "funeste": "1 naturel. Le papier passe de main en main et s'arrête sur une ligne que tu n'avais pas lue. Ton nom y est déjà, dans une écriture qui n'est pas la tienne, avec une date qui n'est pas encore arrivée. Le tribunal n'a plus qu'à respecter le calendrier. ♦ −2"
+     },
+     "defense": "preuve"
     }
    ],
    "pointsInteret": [],
@@ -4979,13 +5176,415 @@
    "recent": false
   }
  ],
+ "reliques": [
+  {
+   "id": "vertebre-gravee",
+   "nom": "Vertèbre gravée",
+   "rarete": "rare",
+   "don": "passe",
+   "dette": "marque",
+   "mort": "corde",
+   "fonction": "Une fois, ta nature ne t'arrêtera pas. Tu feras ce que tu ne peux pas.",
+   "cout": "Le Hameau te reconnaît en entrant. On te regarde déjà de travers.",
+   "murmure": "Sept lettres gravées à l'os, à l'envers, par quelqu'un qui écrivait de l'intérieur."
+  },
+  {
+   "id": "corde-seche",
+   "nom": "La corde sèche",
+   "rarete": "commune",
+   "don": "amorti",
+   "dette": "brisure",
+   "mort": "corde",
+   "fonction": "Le premier coup qui devait t'ouvrir ne fera que t'entamer.",
+   "cout": "Elle rompt en le faisant, et la secousse reste dans tes bras.",
+   "murmure": null
+  },
+  {
+   "id": "oeil-lanterne-verte",
+   "nom": "Œil de lanterne verte",
+   "rarete": "rare",
+   "don": "regard",
+   "dette": "froideur",
+   "mort": "quelconque",
+   "fonction": "Tu remarques ce que ta nature ne t'aurait pas laissé voir.",
+   "cout": "Les gens sentent que tu regardes trop. Une porte de moins s'ouvre.",
+   "murmure": "La flamme dedans ne consomme rien. Elle attend qu'on la relève."
+  },
+  {
+   "id": "dent-du-decompte",
+   "nom": "Dent du décompte",
+   "rarete": "legendaire",
+   "don": "faveur",
+   "dette": "usure",
+   "mort": "bete",
+   "fonction": "Chaque dé tombe un peu mieux. Les morts d'avant poussent avec toi.",
+   "cout": "Tu pars le corps déjà entamé — on ne porte pas ça sans le payer.",
+   "murmure": "Une encoche par nom. La dernière est fraîche, et le compte ne s'arrête pas là."
+  },
+  {
+   "id": "clou-du-silence",
+   "nom": "Clou du silence",
+   "rarete": "rare",
+   "don": "silence",
+   "dette": "exclusion",
+   "mort": "fixation",
+   "fonction": "Une bouche de moins parlera contre toi, le jour du jugement.",
+   "cout": "Le Hameau ne t'ouvre plus sa grange. Tu dormiras dehors.",
+   "murmure": "On l'a retiré d'une planche qui tenait quelqu'un. La planche n'a pas été remplacée."
+  },
+  {
+   "id": "miroir-noye",
+   "nom": "Le miroir noyé",
+   "rarete": "rare",
+   "don": "lecture",
+   "dette": "gel",
+   "mort": "eau",
+   "fonction": "Ce que le Registre écrit deux fois, tu le vois deux fois.",
+   "cout": "Ton premier jet part nu : aucun état ne t'accompagne.",
+   "murmure": "Le reflet dedans a une demi-seconde de retard. Il finit toujours par rattraper."
+  },
+  {
+   "id": "eclat-de-de-fele",
+   "nom": "Éclat de dé fêlé",
+   "rarete": "commune",
+   "don": "amorti",
+   "dette": "gel",
+   "mort": "quelconque",
+   "fonction": "Le premier désastre s'arrête à mi-course.",
+   "cout": "Le premier jet de ta vie part sans rien pour t'aider.",
+   "murmure": null
+  },
+  {
+   "id": "anneau-de-suie",
+   "nom": "Anneau de suie",
+   "rarete": "commune",
+   "don": "passe",
+   "dette": "marque",
+   "mort": "quelconque",
+   "fonction": "Une porte fermée à ta nature s'ouvrira quand même. Une seule.",
+   "cout": "La suie ne part pas. On te voit venir de loin.",
+   "murmure": null
+  },
+  {
+   "id": "sablier-sans-sable",
+   "nom": "Sablier sans sable",
+   "rarete": "rare",
+   "don": "faveur",
+   "dette": "froideur",
+   "mort": "chute",
+   "fonction": "Le temps ne te presse plus. Tes jets s'en ressentent.",
+   "cout": "Les vivants n'aiment pas ceux que le temps a lâchés. Une porte de moins.",
+   "murmure": "Il ne s'est pas vidé. On l'a vidé. Ce n'est pas la même chose."
+  },
+  {
+   "id": "nom-que-echo-a-garde",
+   "nom": "Le nom que l'écho a gardé",
+   "rarete": "legendaire",
+   "don": "lecture",
+   "dette": "usure",
+   "mort": "quelconque",
+   "fonction": "Tu entends ce que le Domaine a réécrit. Les deux versions.",
+   "cout": "Porter un nom qui n'est pas le tien fatigue. Tu pars déjà entamé.",
+   "murmure": "Prononce-le et quelque chose répond — pas l'écho. Quelqu'un qui attend qu'on l'appelle correctement."
+  }
+ ],
+ "faits": [
+  {
+   "id": "fait-bailli",
+   "sujet": "Qui a pendu le Bailli",
+   "accusation": "Ta main écrit qu'il s'est pendu seul. Une autre main, dans ce même registre, écrit que douze croix ont signé sa mort. Les deux lignes sont de la même encre.",
+   "versions": [
+    {
+     "id": "lui-meme",
+     "texte": "Le Registre est net sur ce point : le Bailli a monté seul, a passé seul le nœud, et personne n'a eu à le pousser. La dernière ligne est de sa main."
+    },
+    {
+     "id": "le-hameau",
+     "texte": "Le Registre est net sur ce point : le hameau l'a pris un soir de comptage et l'a fixé au grand poteau. Douze croix signent la ligne — une par famille."
+    },
+    {
+     "id": "la-fille",
+     "texte": "Le Registre est net sur ce point : c'est la Fille qui a serré le nœud, et le hameau a regardé. La ligne ne porte aucune signature, seulement une entaille."
+    }
+   ]
+  },
+  {
+   "id": "fait-fille",
+   "sujet": "La corde coupée de la Fille",
+   "accusation": "On m'a montré sa corde coupée à la lame. On m'a montré la même corde rompue d'usure. On m'a dit qu'elle n'avait jamais été nouée. Choisissez.",
+   "versions": [
+    {
+     "id": "coupee",
+     "texte": "Sa corde a été coupée net, à la lame, et on l'a descendue vivante. Le brin sectionné est encore accroché à la traverse."
+    },
+    {
+     "id": "rompue",
+     "texte": "Sa corde a rompu d'elle-même, usée, et on l'a ramassée au pied du poteau. Les deux bouts sont effilochés, personne n'a touché à rien."
+    },
+    {
+     "id": "jamais",
+     "texte": "Sa corde n'a jamais été nouée : on l'a fait monter, on a compté, et on l'a fait redescendre. Elle est la seule à qui le Champ ait rendu sa place."
+    }
+   ]
+  },
+  {
+   "id": "fait-gibet",
+   "sujet": "Pour qui le grand gibet a été taillé",
+   "accusation": "Vous entretenez un gibet dont vous ne savez plus s'il attend votre Bailli, un étranger, ou rien du tout. Vous le graissez quand même.",
+   "versions": [
+    {
+     "id": "bailli",
+     "texte": "Le grand gibet a été taillé pour le Bailli, du temps où il jugeait encore. La traverse est à sa mesure : on l'a préparée avant lui."
+    },
+    {
+     "id": "etranger",
+     "texte": "Le grand gibet a été taillé pour un étranger, un seul, celui qui viendrait du sud. Le hameau l'entretient depuis, et attend."
+    },
+    {
+     "id": "personne",
+     "texte": "Le grand gibet n'a été taillé pour personne. Il était déjà là quand le hameau s'est posé autour, et c'est le hameau qui a pris sa mesure sur lui."
+    }
+   ]
+  }
+ ],
+ "perceptions": {
+  "borne-frontiere": {
+   "ruse": "La pierre a été redressée récemment — le socle est plus propre que le reste. On l'a déplacée.",
+   "instinct": "Les offrandes sont posées côté sud. Personne ne remercie ce qu'on laisse derrière soi."
+  },
+  "chemin-creux": {
+   "courage": "Les talus sont hauts, mais la terre est meuble. On peut sortir de ce couloir si on le décide.",
+   "instinct": "Les traces contournent toutes le même muret. Quelque chose attend derrière."
+  },
+  "colline-aux-gibets": {
+   "ruse": "Les potences n'ont pas le même âge. Le cercle a été complété — on a ajouté des places.",
+   "empathie": "Les cordes sont nouées différemment. Chacune par une main qui connaissait celui du bout."
+  },
+  "colline-aux-gibets-2": {
+   "instinct": "Le vent tourne autour du grand gibet sans jamais le toucher. Rien ne se pose dessus non plus."
+  },
+  "pendu-qui-parle": {
+   "ruse": "Sa chaîne de fonction est intacte. On l'a pendu avec ses insignes — c'est une mise en scène, pas une exécution.",
+   "empathie": "Il ne demande pas qu'on le descende. Il demande qu'on l'écoute. Ce n'est pas la même peur."
+  },
+  "champ-des-fixes": {
+   "ruse": "Les poteaux vierges sont plantés d'avance, en rang. On prépare les places avant d'avoir les noms.",
+   "instinct": "La terre du bout de rangée est retournée de frais. La prochaine place est déjà creusée."
+  },
+  "petit-tribunal": {
+   "ruse": "Le registre utilise deux encres. La dernière ligne a été ajoutée bien après les autres.",
+   "empathie": "Les bancs sont usés d'un seul côté. Ici, on venait toujours s'asseoir à la même place."
+  },
+  "petit-tribunal-2": {
+   "ruse": "L'écrivain trempe sa plume avant qu'on ait parlé. Il sait déjà ce qu'il va écrire."
+  },
+  "serment-hameau": {
+   "instinct": "Aucun chien n'aboie. Il n'y a plus un seul chien dans ce hameau — ça s'entend.",
+   "empathie": "Ils n'ont pas peur de toi. Ils ont peur de ce qui arrive quand quelqu'un refuse."
+  },
+  "hameau-entree-4": {
+   "courage": "Trois hommes, un bâton. S'il fallait vraiment passer en force, ça passerait.",
+   "empathie": "Le vieux récite le serment sans y croire. Il le récite quand même, tous les jours."
+  },
+  "campement": {
+   "ruse": "Les marques du mur vont par cinq, mais la dernière série est incomplète. Le comptage s'est arrêté net.",
+   "instinct": "Le lit de bruyère est tassé côté porte. Qui dort ici veut pouvoir partir vite."
+  },
+  "chapelle-des-cordes": {
+   "courage": "Le plafond tient à peine. Une seule poutre porte tout — et elle est fendue.",
+   "empathie": "Chaque corde est pendue avec soin. Ce n'est pas un dépôt : c'est un cimetière rangé."
+  },
+  "puits-condamne": {
+   "ruse": "Les clous des planches sont plantés depuis l'extérieur. On a fermé, mais on a fermé APRÈS.",
+   "instinct": "Les coups suivent un ordre. Ce n'est pas quelqu'un qui appelle : c'est quelqu'un qui compte."
+  },
+  "mare-aux-regards": {
+   "instinct": "Aucun oiseau ne se pose sur cette eau. Les bêtes savent avant nous.",
+   "empathie": "Les gens du hameau y viennent quand même. Ils cherchent quelqu'un, pas leur reflet."
+  },
+  "verger-noir": {
+   "ruse": "Les arbres sont greffés. Quelqu'un a travaillé ce verger longtemps après qu'il ait cessé de nourrir.",
+   "empathie": "Le couple bêche sans se parler. Ils ont dépassé le moment où l'on se parle."
+  },
+  "chien-du-bailli": {
+   "courage": "La porte est solide, mais ses gonds ne le sont pas. Ils sont posés à l'extérieur.",
+   "instinct": "La bête ne garde pas la maison. Elle garde ce qui pourrait en sortir."
+  },
+  "marche-muet": {
+   "ruse": "Personne ne parle, mais tout le monde compte. Les doigts bougent sous les manches.",
+   "empathie": "Le silence n'est pas une règle du marché. C'est une habitude de deuil."
+  },
+  "palissade-sud": {
+   "courage": "Les pointes des rondins sont tournées vers l'intérieur. On ne se protège pas de l'extérieur, ici.",
+   "instinct": "Le sol devant le portillon est plus tassé que derrière. Beaucoup sont venus. Peu sont repassés."
+  },
+  "tour-de-guet": {
+   "ruse": "La tour n'est pas tombée : on l'a démontée. Les pierres du haut sont empilées à côté, en ordre."
+  },
+  "meute-grise-1": {
+   "instinct": "Elles ne t'encerclent pas. Elles t'orientent — vers un endroit qu'elles ont choisi.",
+   "empathie": "Ce ne sont pas des bêtes sauvages. Elles attendent quelqu'un qui ne vient plus."
+  }
+ },
+ "loiDuDomaine": {
+  "loi": "Dans le Domaine, rien n'est libéré. Quelqu'un prend toujours la place de quelqu'un d'autre.",
+  "manifestations": [
+   {
+    "registre": "rumeur",
+    "texte": "Ici, on ne pend pas pour punir. On pend pour remplacer. Une corde tendue à temps, disent-ils, et personne d'autre n'est repris cette saison-là."
+   },
+   {
+    "registre": "lieu",
+    "texte": "Le grand gibet de la Colline n'a jamais servi. Il n'attend pas n'importe qui : il est taillé pour un cou précis, et tant qu'il reste vide, quelque chose d'autre reste occupé."
+   },
+   {
+    "registre": "objet",
+    "texte": "Le registre des pendaisons ne raye jamais un nom sans en écrire un autre à la même ligne. Le Bailli appelait ça tenir les comptes. Les comptes de quoi, il ne l'a jamais écrit."
+   },
+   {
+    "registre": "personne",
+    "texte": "Le Bailli s'est pendu le dernier, à la place d'honneur. Le hameau dit qu'il a voulu s'échanger contre quelqu'un de bien plus gros que lui. Le hameau dit aussi que ça n'a pas marché — sinon il ne parlerait plus."
+   }
+  ]
+ },
+ "temoins": {
+  "hesitant-mentir": {
+   "nom": "Le berger des murets",
+   "deposition": "Je l'ai entendu promettre à l'homme de la Borne qu'il reviendrait. Il n'est pas revenu.",
+   "lieu": "à la Borne Frontière"
+  },
+  "poteau-pendu": {
+   "nom": "Le Gamin des Murets",
+   "deposition": "Il est resté sous le gibet du Bailli. À le regarder. Longtemps.",
+   "lieu": "à la Colline aux Gibets"
+  },
+  "plaider": {
+   "nom": "Le Sonneur sans Cloche",
+   "deposition": "Il a parlé au pendu. Et le pendu lui a répondu — j'étais à trente pas.",
+   "lieu": "à la Colline aux Gibets"
+  },
+  "decrocher": {
+   "nom": "La Doyenne",
+   "deposition": "Il a porté la lame sur une corde qui tenait. Chez nous, ça a un nom.",
+   "lieu": "à la Colline aux Gibets"
+  },
+  "poteaux-vierges": {
+   "nom": "Le Fossoyeur des Poteaux",
+   "deposition": "Il a compté les places vides. Personne ne compte les places vides sans y penser pour soi.",
+   "lieu": "au Champ des Fixés"
+  },
+  "croix-craie": {
+   "nom": "La Femme au Seuil",
+   "deposition": "Il a touché la craie de ma porte. La marque était fraîche, et c'était la mienne.",
+   "lieu": "au Hameau des Renonçants"
+  },
+  "frapper-porte-marquee": {
+   "nom": "La Femme au Seuil",
+   "deposition": "Il a frappé chez une marquée. On ne frappe pas chez une marquée, on passe.",
+   "lieu": "au Hameau des Renonçants"
+  },
+  "femme-regarder-sud": {
+   "nom": "La Femme au Seuil",
+   "deposition": "Il a regardé le sud avec moi. On était deux à regarder le sud. Le hameau nous a vus.",
+   "lieu": "au Hameau des Renonçants"
+  },
+  "femme-refuser": {
+   "nom": "La Femme au Seuil",
+   "deposition": "Je lui ai demandé une chose. Il a dit non, sans même chercher une raison.",
+   "lieu": "au Hameau des Renonçants"
+  },
+  "femme-echange": {
+   "nom": "La Femme au Seuil",
+   "deposition": "Il a proposé un échange. Ici, un échange, ça veut dire une place contre une place.",
+   "lieu": "au Hameau des Renonçants"
+  },
+  "observer-couvert": {
+   "nom": "Le Gamin des Murets",
+   "deposition": "Il est resté longtemps derrière le talus, à nous compter, avant d'entrer.",
+   "lieu": "à l'entrée du Hameau"
+  },
+  "passer-sans-arret": {
+   "nom": "Les trois hommes du seuil",
+   "deposition": "Il a voulu passer sans s'arrêter. Personne ne passe sans s'arrêter.",
+   "lieu": "à l'entrée du Hameau"
+  },
+  "demander-crainte": {
+   "nom": "Les trois hommes du seuil",
+   "deposition": "Il a demandé de quoi on avait peur. On ne pose pas cette question quand on est de passage.",
+   "lieu": "à l'entrée du Hameau"
+  },
+  "pourquoi-trois-aubes": {
+   "nom": "Les trois hommes du seuil",
+   "deposition": "Il a voulu savoir pourquoi trois aubes. Devant tout le barrage. À voix haute.",
+   "lieu": "à l'entrée du Hameau"
+  },
+  "jurer-faux": {
+   "nom": "Les trois hommes du seuil",
+   "deposition": "Il a juré. Du bout des lèvres, en regardant ailleurs. On l'a laissé entrer quand même.",
+   "lieu": "à l'entrée du Hameau"
+  },
+  "refuser-serment": {
+   "nom": "Les trois hommes du seuil",
+   "deposition": "On lui a demandé de jurer comme tout le monde. Il n'a pas voulu.",
+   "lieu": "à l'entrée du Hameau"
+  },
+  "ecouter-nuit": {
+   "nom": "Le vieux de la grange",
+   "deposition": "Il n'a pas dormi. Il a écouté ce qui tournait dehors, toute la nuit, sans bouger.",
+   "lieu": "dans la grange du Hameau"
+  },
+  "repartir-inventorie": {
+   "nom": "Le vieux de la grange",
+   "deposition": "Au matin, il a compté ce qu'il avait. Devant nous. Comme si on lui avait pris quelque chose.",
+   "lieu": "dans la grange du Hameau"
+  },
+  "rebouteux": {
+   "nom": "Le Rebouteux",
+   "deposition": "Il est venu se faire soigner d'une plaie qu'aucun outil du hameau ne fait.",
+   "lieu": "au Marché Muet"
+  },
+  "autel-renverse": {
+   "nom": "La Veuve des Cordes",
+   "deposition": "Il a fouillé sous l'autel. Ce qui est dessous n'est pas à nous non plus, mais on n'y touche pas.",
+   "lieu": "à la Chapelle des Cordes"
+  },
+  "aborder-renoncant-mare": {
+   "nom": "Le Renonçant de la Mare",
+   "deposition": "Il m'a parlé au bord de l'eau. Il regardait mon reflet, pas moi.",
+   "lieu": "à la Mare aux Regards"
+  },
+  "souche-premier-arbre": {
+   "nom": "Les Époux du Verger",
+   "deposition": "Il a compté nos rangs. On sait ce que ça veut dire, quand un étranger compte.",
+   "lieu": "au Verger Noir"
+  },
+  "berge-usee": {
+   "nom": "Le Renonçant de la Mare",
+   "deposition": "Il s'est agenouillé aux creux de la berge. Comme quelqu'un qui croit à ce qu'on y raconte.",
+   "lieu": "à la Mare aux Regards"
+  },
+  "colline-aux-gibets-arrivee": {
+   "nom": "Le Gamin des Murets",
+   "deposition": "Je l'ai vu redescendre de la Colline. Personne ne monte là-haut pour rien.",
+   "lieu": "à la Colline aux Gibets"
+  },
+  "echec-empathie": {
+   "nom": "L'Écrivain public",
+   "deposition": "Il a essayé de se faire comprendre. Ce qui est sorti n'était pas de chez nous.",
+   "lieu": "au Hameau des Renonçants"
+  }
+ },
  "totaux": {
-  "scenes": 60,
+  "scenes": 61,
   "pointsInteret": 38,
-  "choix": 142,
+  "choix": 147,
   "illustrations": 209,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 49
+  "reserve": 49,
+  "reliques": 10,
+  "faits": 3,
+  "perceptions": 20,
+  "temoins": 25
  }
 }
