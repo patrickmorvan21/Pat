@@ -327,6 +327,8 @@ def main() -> int:
     ap.add_argument("--cutout", action="store_true", help="fond transparent (cendres derrière)")
     ap.add_argument("--cendres", type=int, default=0, help="frames de la nappe de cendres (0 = aucune)")
     ap.add_argument("--densite", type=int, default=2, help="densité des cendres (comme HeroGeolier)")
+    ap.add_argument("--sprite-seul", action="store_true",
+                    help="n'encode pas la vidéo (utile pour comparer des grains)")
     a = ap.parse_args()
     if not a.video.exists():
         raise SystemExit(f"introuvable : {a.video}")
@@ -374,6 +376,13 @@ def main() -> int:
             print(f"  {cendres_sprite.name} — planche {fw * a.cendres}×{fh} · {ko(cendres_sprite)}")
 
         # ── 1. VIDÉO ─────────────────────────────────────────────────────
+        if a.sprite_seul:
+            print("\n(vidéo sautée : --sprite-seul)")
+            src_ko = a.video.stat().st_size / 1024
+            print("\n─── POIDS ───")
+            for q in ecrits:
+                print(f"  {q.name:<32}{q.stat().st_size / 1024:>8.0f} Ko")
+            return 0
         n_video = max(1, int(round(total * a.fps)))
         print(f"\nvidéo : {n_video} frames à {a.fps} fps…")
         # Cendres de la vidéo : même simulation, périodique sur SA longueur.
