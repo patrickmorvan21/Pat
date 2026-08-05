@@ -15,12 +15,14 @@
   --blanc-50:rgba(255,255,255,.5);
   --blanc-20:rgba(255,255,255,.2);
 
-  /* Géométrie du sprite — LES SEULES VALEURS À TOUCHER si on regénère
-     la planche avec un autre nombre de frames ou une autre largeur. */
-  --sprite-frames:16;
-  --sprite-w:360px;      /* largeur d'UNE frame, telle qu'exportée */
-  --sprite-h:378px;      /* hauteur d'UNE frame */
-  --sprite-duree:1.6s;   /* durée d'un aller (16 frames → 10 img/s) */
+  /* Géométrie — LES SEULES VALEURS À TOUCHER si on regénère les planches
+     avec un autre nombre de frames ou une autre largeur. */
+  --w:360px;              /* largeur d'UNE frame, telle qu'exportée */
+  --h:378px;              /* hauteur d'UNE frame */
+  --demon-frames:16;
+  --demon-duree:3.2s;     /* durée d'un aller (le Geôlier est presque statique) */
+  --cendres-frames:24;
+  --cendres-duree:2.2s;   /* boucle des cendres — périodique, sans couture */
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--charbon);color:var(--blanc)}
@@ -29,30 +31,28 @@ body{
   padding:24px 16px 64px;
   -webkit-font-smoothing:antialiased;
 }
-h1{
-  font-family:"Instrument Serif",Georgia,serif;
-  font-weight:400;font-size:30px;line-height:1.1;margin:0 0 6px;
-  color:var(--orange);text-wrap:balance;
-}
-.sous{color:var(--blanc-50);font-size:12px;margin:0 0 28px;max-width:62ch}
-h2{
-  font:400 12px/1 "Roboto Mono",monospace;letter-spacing:2px;text-transform:uppercase;
-  margin:0 0 4px;color:var(--blanc);
-}
-.poids{color:var(--orange);font-size:12px;letter-spacing:1px;margin:0 0 12px}
-.note{color:var(--blanc-50);font-size:11.5px;margin:10px 0 0;max-width:46ch}
-
-.grille{display:flex;flex-wrap:wrap;gap:34px;align-items:flex-start}
 /* Sur un écran de 390 px, le cadre de 360 + sa bordure doit tenir SANS être
    rogné — sinon on compare deux images tronquées. */
 @media (max-width:420px){ body{padding-left:12px;padding-right:12px} }
+
+h1{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:30px;
+   line-height:1.1;margin:0 0 6px;color:var(--orange);text-wrap:balance}
+h2{font:400 12px/1 "Roboto Mono",monospace;letter-spacing:2px;text-transform:uppercase;
+   margin:0 0 4px;color:var(--blanc)}
+h3{font:400 11px/1 "Roboto Mono",monospace;letter-spacing:2px;text-transform:uppercase;
+   margin:34px 0 14px;color:var(--blanc-50);border-top:1px solid var(--blanc-20);padding-top:16px}
+.sous{color:var(--blanc-50);font-size:12px;margin:0 0 20px;max-width:64ch}
+.poids{color:var(--orange);font-size:12px;letter-spacing:1px;margin:0 0 12px}
+.note{color:var(--blanc-50);font-size:11.5px;margin:10px 0 0;max-width:46ch}
+.grille{display:flex;flex-wrap:wrap;gap:34px;align-items:flex-start}
 .carte{flex:0 0 auto;max-width:100%}
 
-/* Le cadre commun : même boîte pour les deux, sinon la comparaison ment. */
+/* Le cadre commun : même boîte pour tout le monde, sinon la comparaison ment.
+   Le fond orange EST le décor — les cendres se lisent dessus. */
 .cadre{
-  width:var(--sprite-w);height:var(--sprite-h);max-width:100%;
+  width:var(--w);height:var(--h);max-width:100%;
   border:1px solid var(--blanc-20);
-  background:var(--charbon);
+  background:var(--orange);
   overflow:hidden;position:relative;
 }
 
@@ -62,124 +62,172 @@ h2{
   image-rendering:pixelated;                 /* jamais de lissage à l'échelle */
 }
 
-/* ── 2. SPRITE SHEET ──────────────────────────────────────────────────── */
-.sprite{
-  width:var(--sprite-w);height:var(--sprite-h);
-  background-image:url("assets/geolier_sprite.png");
+/* ── 2. SPRITE — deux couches empilées ────────────────────────────────── */
+/* Base commune aux deux planches : même façon de cadrer une frame.
+   Taille de fond explicite en px — en laissant le navigateur déduire, un DPR
+   non entier arrondit et fait « baver » la frame voisine d'un pixel. */
+.couche{
+  position:absolute;inset:0;
   background-repeat:no-repeat;
-  /* Taille explicite en px : la planche fait 16 × 360 de large. En laissant
-     le navigateur déduire, un DPR non entier arrondit et fait « baver » la
-     frame voisine d'un pixel. */
-  background-size:calc(var(--sprite-w) * var(--sprite-frames)) var(--sprite-h);
   background-position:0 0;
   image-rendering:pixelated;
-  /* Repli statique : si le PNG ne charge pas, il reste le poster. */
-  background-color:var(--charbon);
-  animation:geolier var(--sprite-duree) steps(var(--sprite-frames),jump-none)
+}
+/* Les CENDRES, derrière — planche à part, donc réglable sans retoucher le
+   démon. Boucle en avant seulement : des cendres qui redescendent
+   trahiraient tout de suite l'astuce. La planche est périodique, donc pas de
+   couture au bouclage. */
+.cendres{
+  background-image:url("assets/geolier_v2_cendres.png");
+  background-size:calc(var(--w) * var(--cendres-frames)) var(--h);
+  animation:defile-cendres var(--cendres-duree) steps(var(--cendres-frames)) infinite;
+}
+@keyframes defile-cendres{
+  from{background-position:0 0}
+  to{background-position:calc(var(--w) * var(--cendres-frames) * -1) 0}
+}
+/* Le DÉMON, devant — fond découpé (transparent), donc les cendres passent
+   réellement derrière lui. Aller-retour : sa respiration n'a pas de sens de
+   lecture, contrairement aux cendres. */
+.demon{
+  background-image:url("assets/geolier_v2_sprite.png");
+  background-size:calc(var(--w) * var(--demon-frames)) var(--h);
+  animation:respire var(--demon-duree) steps(var(--demon-frames),jump-none)
             infinite alternate;
 }
-@keyframes geolier{
+@keyframes respire{
   from{background-position:0 0}
   /* ⚠️ On s'arrête à la DERNIÈRE frame réelle (15), pas au bout de la planche
      (16) : avec `alternate`, un keyframe à -5760px afficherait une frame vide
      pendant un tick au moment du demi-tour. `jump-none` place 16 positions
      inclusives entre 0 et -5400px, donc exactement les 16 frames. */
-  to{background-position:calc(var(--sprite-w) * (var(--sprite-frames) - 1) * -1) 0}
+  to{background-position:calc(var(--w) * (var(--demon-frames) - 1) * -1) 0}
+}
+
+/* La v1 (première vidéo) — gardée pour comparer les deux Geôliers.
+   Pas de découpe, pas de cendres : c'est l'état d'hier. */
+.demon-v1{
+  background-image:url("assets/geolier_sprite.png");
+  background-size:calc(var(--w) * 16) var(--h);
+  animation:respire 1.6s steps(16,jump-none) infinite alternate;
 }
 
 /* Accessibilité : mouvement coupé, on retombe sur la première frame. */
 @media (prefers-reduced-motion:reduce){
-  .sprite{animation:none;background-position:0 0}
+  .couche{animation:none!important;background-position:0 0!important}
   .cadre video{display:none}
-  .cadre.video-repli{
-    background:url("assets/geolier_accueil.png") center/cover var(--charbon);
+  .cadre.repli{
+    background:url("assets/geolier_v2_poster.png") center/cover var(--orange);
     image-rendering:pixelated;
   }
 }
 
-/* Panneau de contrôle — hors sujet pour le jeu, utile pour juger. */
 .reglages{margin-top:36px;border-top:1px solid var(--blanc-20);padding-top:18px}
 label{display:block;color:var(--blanc-50);font-size:11px;letter-spacing:1.5px;
-      text-transform:uppercase;margin:14px 0 6px}
-input[type=range]{width:260px;max-width:100%;accent-color:var(--orange)}
+      text-transform:uppercase;margin:16px 0 6px}
+input[type=range]{width:280px;max-width:100%;accent-color:var(--orange)}
 .val{color:var(--orange)}
-table{border-collapse:collapse;margin-top:14px;font-size:12px}
-td,th{text-align:left;padding:5px 22px 5px 0;border-bottom:1px solid var(--blanc-20)}
+table{border-collapse:collapse;margin-top:18px;font-size:12px}
+td,th{text-align:left;padding:5px 20px 5px 0;border-bottom:1px solid var(--blanc-20)}
 th{color:var(--blanc-50);font-weight:400;letter-spacing:1px;font-size:10px;text-transform:uppercase}
 td.n{color:var(--orange);font-variant-numeric:tabular-nums}
+tr.tot td{border-bottom:none;padding-top:10px}
+tr.tot td:first-child{color:var(--blanc)}
 </style>
 </head>
 <body>
 
 <h1>Le Geôlier animé</h1>
 <p class="sous">
-  Deux prototypes comparables, tirés de la même vidéo source (4 140 Ko).
-  Même cadre, même palette, même grain — seule la technique change.
-  Le panneau du bas règle la cadence du sprite en direct.
+  Nouvelle source (8,88 s, 7 777 Ko), démon quasi statique sur fond orange.
+  Les cendres de l'accueil sont reproduites <strong>derrière lui</strong> —
+  il est découpé, elles passent dessous. Mêmes cadres, même palette,
+  même grain : seule la technique change.
 </p>
 
+<h3>Le nouveau Geôlier</h3>
 <div class="grille">
 
   <section class="carte">
     <h2>1 · Vidéo optimisée</h2>
-    <p class="poids" id="p-video">465 Ko · H.264 · 540 px · 12 fps · sans audio</p>
-    <div class="cadre video-repli">
+    <p class="poids">435 Ko · H.264 · 540 px · 12 fps · sans audio</p>
+    <div class="cadre repli">
       <video
-        src="assets/geolier_accueil.mp4"
-        poster="assets/geolier_accueil.png"
+        src="assets/geolier_v2.mp4"
+        poster="assets/geolier_v2_poster.png"
         autoplay muted loop playsinline
         disablepictureinpicture
         preload="metadata"></video>
     </div>
     <p class="note">
-      60 images distinctes : le mouvement est continu, la fumée et les braises
-      vivent. En contrepartie, c'est le plus gros fichier du jeu après la
-      musique, et iOS ne garantit la lecture automatique que si la vidéo est
-      muette et <code>playsinline</code>.
+      107 images distinctes, cendres comprises. Le mouvement est continu —
+      mais tout est <strong>cuit dans l'image</strong> : le H.264 n'a pas de
+      canal alpha, donc plus moyen de régler les cendres sans ré-encoder les
+      8,88 s.
     </p>
   </section>
 
   <section class="carte">
     <h2>2 · Sprite sheet CSS</h2>
-    <p class="poids" id="p-sprite">25 Ko · PNG indexé 2 couleurs · 16 frames · aller-retour</p>
-    <div class="cadre"><div class="sprite" id="sprite"></div></div>
+    <p class="poids">53 Ko · 2 planches PNG · 16 + 24 frames</p>
+    <div class="cadre">
+      <div class="couche cendres"></div>
+      <div class="couche demon"></div>
+    </div>
     <p class="note">
-      16 images en aller-retour : le mouvement est plus court et plus raide —
-      c'est exactement la grammaire <code>steps()</code> du reste du jeu.
-      Aucun décodeur vidéo, aucun JavaScript, rien au runtime.
+      Deux couches : les cendres défilent en boucle avant, le démon respire en
+      aller-retour, à des cadences <strong>indépendantes</strong>. Aucun
+      décodeur vidéo, aucun JavaScript, rien au runtime.
     </p>
   </section>
 
 </div>
 
-<div class="reglages">
-  <h2>Réglage du sprite</h2>
+<h3>Pour mémoire — le Geôlier d'hier</h3>
+<div class="grille">
+  <section class="carte">
+    <h2>Sprite v1 · sans cendres</h2>
+    <p class="poids">25 Ko · 16 frames</p>
+    <div class="cadre"><div class="couche demon-v1"></div></div>
+    <p class="note">Première vidéo (5,04 s) : fond dithéré, pas de découpe.</p>
+  </section>
+</div>
 
-  <label>Durée d'un aller — <span class="val" id="v-duree">1.60 s</span>
-    (<span class="val" id="v-fps">10</span> images/s)</label>
-  <input type="range" id="r-duree" min="600" max="4000" step="50" value="1600">
+<div class="reglages">
+  <h2>Réglages du sprite</h2>
+
+  <label>Respiration du démon — <span class="val" id="v-d">3.20 s</span> par aller
+    (<span class="val" id="v-df">5</span> images/s)</label>
+  <input type="range" id="r-d" min="800" max="6000" step="100" value="3200">
+
+  <label>Cendres — <span class="val" id="v-c">2.20 s</span> par boucle
+    (<span class="val" id="v-cf">11</span> images/s)</label>
+  <input type="range" id="r-c" min="800" max="6000" step="100" value="2200">
 
   <table>
     <tr><th>Fichier</th><th>Poids</th><th>Part de la source</th></tr>
-    <tr><td>vidéo source (non utilisée)</td><td class="n">4 140 Ko</td><td class="n">100 %</td></tr>
-    <tr><td>geolier_accueil.mp4</td><td class="n">465 Ko</td><td class="n">11 %</td></tr>
-    <tr><td>geolier_sprite.png</td><td class="n">25 Ko</td><td class="n">1 %</td></tr>
-    <tr><td>geolier_accueil.png (poster / repli)</td><td class="n">3 Ko</td><td class="n">0 %</td></tr>
+    <tr><td>vidéo source (non utilisée)</td><td class="n">7 777 Ko</td><td class="n">100 %</td></tr>
+    <tr><td>geolier_v2.mp4</td><td class="n">435 Ko</td><td class="n">6 %</td></tr>
+    <tr><td>geolier_v2_sprite.png (démon, alpha)</td><td class="n">35 Ko</td><td class="n">0,5 %</td></tr>
+    <tr><td>geolier_v2_cendres.png</td><td class="n">18 Ko</td><td class="n">0,2 %</td></tr>
+    <tr><td>geolier_v2_poster.png (repli)</td><td class="n">4 Ko</td><td class="n">0,1 %</td></tr>
+    <tr class="tot"><td>→ total de la solution sprite</td><td class="n">57 Ko</td><td class="n">0,7 %</td></tr>
   </table>
 </div>
 
 <script>
 // Le seul JavaScript de la page — il sert au RÉGLAGE, pas au rendu.
-// Rien de tout ça ne part dans le jeu : le sprite est du CSS pur.
-const r = document.getElementById("r-duree");
-const vd = document.getElementById("v-duree");
-const vf = document.getElementById("v-fps");
-r.addEventListener("input", () => {
-  const ms = Number(r.value);
-  document.documentElement.style.setProperty("--sprite-duree", ms + "ms");
-  vd.textContent = (ms / 1000).toFixed(2) + " s";
-  vf.textContent = Math.round(16 / (ms / 1000));
-});
+// Rien de tout ça ne part dans le jeu : les deux couches sont du CSS pur.
+function lier(idRange, idVal, idFps, frames, cssVar) {
+  const r = document.getElementById(idRange);
+  r.addEventListener("input", () => {
+    const ms = Number(r.value);
+    document.documentElement.style.setProperty(cssVar, ms + "ms");
+    document.getElementById(idVal).textContent = (ms / 1000).toFixed(2) + " s";
+    document.getElementById(idFps).textContent = Math.round(frames / (ms / 1000));
+  });
+}
+lier("r-d", "v-d", "v-df", 16, "--demon-duree");
+lier("r-c", "v-c", "v-cf", 24, "--cendres-duree");
 </script>
 
 </body>
