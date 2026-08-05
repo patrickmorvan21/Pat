@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PACTUM — Le Geôlier animé : vidéo vs sprite</title>
+<style>
+/* ─────────────────────────────────────────────────────────────────────────
+   PACTUM — palette stricte, aucune autre couleur, aucun dégradé CSS.
+   ───────────────────────────────────────────────────────────────────────── */
+:root{
+  --charbon:#1c1a16;
+  --orange:#e0632a;
+  --blanc:#ffffff;
+  --blanc-50:rgba(255,255,255,.5);
+  --blanc-20:rgba(255,255,255,.2);
+
+  /* Géométrie du sprite — LES SEULES VALEURS À TOUCHER si on regénère
+     la planche avec un autre nombre de frames ou une autre largeur. */
+  --sprite-frames:16;
+  --sprite-w:360px;      /* largeur d'UNE frame, telle qu'exportée */
+  --sprite-h:378px;      /* hauteur d'UNE frame */
+  --sprite-duree:1.6s;   /* durée d'un aller (16 frames → 10 img/s) */
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--charbon);color:var(--blanc)}
+body{
+  font:400 14px/1.6 "Roboto Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  padding:24px 16px 64px;
+  -webkit-font-smoothing:antialiased;
+}
+h1{
+  font-family:"Instrument Serif",Georgia,serif;
+  font-weight:400;font-size:30px;line-height:1.1;margin:0 0 6px;
+  color:var(--orange);text-wrap:balance;
+}
+.sous{color:var(--blanc-50);font-size:12px;margin:0 0 28px;max-width:62ch}
+h2{
+  font:400 12px/1 "Roboto Mono",monospace;letter-spacing:2px;text-transform:uppercase;
+  margin:0 0 4px;color:var(--blanc);
+}
+.poids{color:var(--orange);font-size:12px;letter-spacing:1px;margin:0 0 12px}
+.note{color:var(--blanc-50);font-size:11.5px;margin:10px 0 0;max-width:46ch}
+
+.grille{display:flex;flex-wrap:wrap;gap:34px;align-items:flex-start}
+/* Sur un écran de 390 px, le cadre de 360 + sa bordure doit tenir SANS être
+   rogné — sinon on compare deux images tronquées. */
+@media (max-width:420px){ body{padding-left:12px;padding-right:12px} }
+.carte{flex:0 0 auto;max-width:100%}
+
+/* Le cadre commun : même boîte pour les deux, sinon la comparaison ment. */
+.cadre{
+  width:var(--sprite-w);height:var(--sprite-h);max-width:100%;
+  border:1px solid var(--blanc-20);
+  background:var(--charbon);
+  overflow:hidden;position:relative;
+}
+
+/* ── 1. VIDÉO ─────────────────────────────────────────────────────────── */
+.cadre video{
+  display:block;width:100%;height:100%;object-fit:cover;
+  image-rendering:pixelated;                 /* jamais de lissage à l'échelle */
+}
+
+/* ── 2. SPRITE SHEET ──────────────────────────────────────────────────── */
+.sprite{
+  width:var(--sprite-w);height:var(--sprite-h);
+  background-image:url("assets/geolier_sprite.png");
+  background-repeat:no-repeat;
+  /* Taille explicite en px : la planche fait 16 × 360 de large. En laissant
+     le navigateur déduire, un DPR non entier arrondit et fait « baver » la
+     frame voisine d'un pixel. */
+  background-size:calc(var(--sprite-w) * var(--sprite-frames)) var(--sprite-h);
+  background-position:0 0;
+  image-rendering:pixelated;
+  /* Repli statique : si le PNG ne charge pas, il reste le poster. */
+  background-color:var(--charbon);
+  animation:geolier var(--sprite-duree) steps(var(--sprite-frames),jump-none)
+            infinite alternate;
+}
+@keyframes geolier{
+  from{background-position:0 0}
+  /* ⚠️ On s'arrête à la DERNIÈRE frame réelle (15), pas au bout de la planche
+     (16) : avec `alternate`, un keyframe à -5760px afficherait une frame vide
+     pendant un tick au moment du demi-tour. `jump-none` place 16 positions
+     inclusives entre 0 et -5400px, donc exactement les 16 frames. */
+  to{background-position:calc(var(--sprite-w) * (var(--sprite-frames) - 1) * -1) 0}
+}
+
+/* Accessibilité : mouvement coupé, on retombe sur la première frame. */
+@media (prefers-reduced-motion:reduce){
+  .sprite{animation:none;background-position:0 0}
+  .cadre video{display:none}
+  .cadre.video-repli{
+    background:url("assets/geolier_accueil.png") center/cover var(--charbon);
+    image-rendering:pixelated;
+  }
+}
+
+/* Panneau de contrôle — hors sujet pour le jeu, utile pour juger. */
+.reglages{margin-top:36px;border-top:1px solid var(--blanc-20);padding-top:18px}
+label{display:block;color:var(--blanc-50);font-size:11px;letter-spacing:1.5px;
+      text-transform:uppercase;margin:14px 0 6px}
+input[type=range]{width:260px;max-width:100%;accent-color:var(--orange)}
+.val{color:var(--orange)}
+table{border-collapse:collapse;margin-top:14px;font-size:12px}
+td,th{text-align:left;padding:5px 22px 5px 0;border-bottom:1px solid var(--blanc-20)}
+th{color:var(--blanc-50);font-weight:400;letter-spacing:1px;font-size:10px;text-transform:uppercase}
+td.n{color:var(--orange);font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+
+<h1>Le Geôlier animé</h1>
+<p class="sous">
+  Deux prototypes comparables, tirés de la même vidéo source (4 140 Ko).
+  Même cadre, même palette, même grain — seule la technique change.
+  Le panneau du bas règle la cadence du sprite en direct.
+</p>
+
+<div class="grille">
+
+  <section class="carte">
+    <h2>1 · Vidéo optimisée</h2>
+    <p class="poids" id="p-video">465 Ko · H.264 · 540 px · 12 fps · sans audio</p>
+    <div class="cadre video-repli">
+      <video
+        src="assets/geolier_accueil.mp4"
+        poster="assets/geolier_accueil.png"
+        autoplay muted loop playsinline
+        disablepictureinpicture
+        preload="metadata"></video>
+    </div>
+    <p class="note">
+      60 images distinctes : le mouvement est continu, la fumée et les braises
+      vivent. En contrepartie, c'est le plus gros fichier du jeu après la
+      musique, et iOS ne garantit la lecture automatique que si la vidéo est
+      muette et <code>playsinline</code>.
+    </p>
+  </section>
+
+  <section class="carte">
+    <h2>2 · Sprite sheet CSS</h2>
+    <p class="poids" id="p-sprite">25 Ko · PNG indexé 2 couleurs · 16 frames · aller-retour</p>
+    <div class="cadre"><div class="sprite" id="sprite"></div></div>
+    <p class="note">
+      16 images en aller-retour : le mouvement est plus court et plus raide —
+      c'est exactement la grammaire <code>steps()</code> du reste du jeu.
+      Aucun décodeur vidéo, aucun JavaScript, rien au runtime.
+    </p>
+  </section>
+
+</div>
+
+<div class="reglages">
+  <h2>Réglage du sprite</h2>
+
+  <label>Durée d'un aller — <span class="val" id="v-duree">1.60 s</span>
+    (<span class="val" id="v-fps">10</span> images/s)</label>
+  <input type="range" id="r-duree" min="600" max="4000" step="50" value="1600">
+
+  <table>
+    <tr><th>Fichier</th><th>Poids</th><th>Part de la source</th></tr>
+    <tr><td>vidéo source (non utilisée)</td><td class="n">4 140 Ko</td><td class="n">100 %</td></tr>
+    <tr><td>geolier_accueil.mp4</td><td class="n">465 Ko</td><td class="n">11 %</td></tr>
+    <tr><td>geolier_sprite.png</td><td class="n">25 Ko</td><td class="n">1 %</td></tr>
+    <tr><td>geolier_accueil.png (poster / repli)</td><td class="n">3 Ko</td><td class="n">0 %</td></tr>
+  </table>
+</div>
+
+<script>
+// Le seul JavaScript de la page — il sert au RÉGLAGE, pas au rendu.
+// Rien de tout ça ne part dans le jeu : le sprite est du CSS pur.
+const r = document.getElementById("r-duree");
+const vd = document.getElementById("v-duree");
+const vf = document.getElementById("v-fps");
+r.addEventListener("input", () => {
+  const ms = Number(r.value);
+  document.documentElement.style.setProperty("--sprite-duree", ms + "ms");
+  vd.textContent = (ms / 1000).toFixed(2) + " s";
+  vf.textContent = Math.round(16 / (ms / 1000));
+});
+</script>
+
+</body>
+</html>
