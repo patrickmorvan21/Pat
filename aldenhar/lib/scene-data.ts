@@ -42,6 +42,19 @@ export type Choice = {
   /** Repos au campement : avance le jour, atténue les blessures légères, sauvegarde (spec §7). */
   rest?: boolean;
   /**
+   * TAGS du choix. `fuite` : le choix DISPARAÎT quand le héros est Boiteux —
+   * on ne fuit pas sur une jambe. C'est la spec §2 : « les options de fuite
+   * disparaissent des choix », pas « deviennent plus dures ».
+   */
+  tags?: string[];
+  /**
+   * ÉTAT posé par ce choix (spec 4/08 §2). Le monde y réagira ensuite : c'est
+   * ce qui distingue un état d'un modificateur déguisé.
+   */
+  poseEtat?: string;
+  /** Ce choix RÉPOND à un besoin (spec §3) — remet son horloge à ce jour-là. */
+  repondBesoin?: "dormir" | "soigner" | "manger" | "boire" | "laver";
+  /**
    * Choix passif — « le silence comme vraie option de jeu » (§19) : ne rien
    * faire est un vrai choix stratégique, résolu instantanément (pas de dé)
    * avec une conséquence dédiée écrite en réaction à l'inaction.
@@ -133,6 +146,21 @@ export type Choice = {
    * change rien à ce qu'on a entendu.
    */
   grantsSavoir?: string;
+  /**
+   * ÉTAT REQUIS (spec 4/08 §2) : ce choix n'existe que si le héros PORTE cet
+   * état. C'est le pendant positif de `cacheFuite` — un état ne fait pas que
+   * retirer des options, il en ouvre. Le cas fondateur est FIXÉ : ceux qui
+   * portent la même croix se mettent à te parler. Aucun marqueur à l'écran :
+   * l'option est là ou elle n'y est pas.
+   */
+  requiresEtat?: string;
+  /**
+   * ÉTAT POSÉ SEULEMENT SI LE JET ÉCHOUE. Boire l'eau de la Mare ou forcer un
+   * seuil devant témoins ne coûte pas à tous les coups — c'est le RATÉ qui
+   * coûte. Poser l'état à la sélection ferait mentir les issues écrites (« tu
+   * bois, et rien ne te prend »).
+   */
+  poseEtatSiEchec?: string;
 };
 
 /**
@@ -172,6 +200,8 @@ export type PointInteret = {
   illustration?: string;
   /** Le Soupçon monte/descend en examinant (ex. réagir à voix haute). */
   soupcon?: number;
+  /** ÉTAT posé par l'examen (spec 4/08 §2) — Hanté au pied du Gibet Vide. */
+  poseEtat?: string;
   /**
    * LES CORBEAUX DU COMPTE (Notion 26/07 §6) : l'examen ajoute une ligne
    * calculée sur la MÉMOIRE DE COMPTE — les corbeaux se posent au nombre
@@ -318,6 +348,15 @@ export type Scene = {
   chainNext?: string;
   /** Scène de liaison (spec 21/07) : marche + choix d'orientation, générée. */
   liaison?: boolean;
+  /**
+   * TAGS de la scène (spec 4/08 §2) — ce que le lieu OFFRE, pour que les états
+   * n'agissent que là où ça a du sens :
+   *   `food_available` / `stealable` → « Affamé » y ouvre un choix « voler » ;
+   *   `rough_path` / `climb` / `chase` → « Boiteux » peut y compliquer.
+   * ⚠️ Sans ces tags, un état s'appliquerait partout et deviendrait un bruit
+   * de fond : la spec l'interdit explicitement.
+   */
+  tags?: string[];
   /** Nœud terminal (la Descente) : la traversée s'arrête (fin sèche Acte II). */
   terminal?: boolean;
   /**
@@ -609,6 +648,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "chemin-creux",
+    tags: ["rough_path"],
     illustration: "assets/scene_chemin_creux_c.png",
     chainNext: "chemin-creux-2",
     narration: [
@@ -864,7 +904,10 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        // Bondir hors du creux : sur une jambe qui ne plie plus, ce n'est pas
+        // « plus dur » — c'est impossible. BOITEUX retire ce choix (cacheFuite).
         id: "grimper-talus",
+        tags: ["fuite"],
         label: "Bondir hors du creux",
         risky: {
           stat: "INSTINCT",
@@ -905,6 +948,7 @@ export const SCENES: Scene[] = [
        — Scripts ») : arrivée qui montre les points à DISTANCE → marche +
        examen → événement → sortie. Lieu-signature, quasi garanti. */
     id: "colline-aux-gibets",
+    tags: ["climb"],
     illustration: "assets/scene_colline_aux_gibets_c.png",
     soupconOnArrival: 1, // être vu près des potences (chantier 3)
     chainNext: "colline-aux-gibets-2",
@@ -919,6 +963,7 @@ export const SCENES: Scene[] = [
     pointsInteret: [
       {
         id: "corbeaux-compte",
+        poseEtat: "hante",
         corbeaux: true,
         label: "Les corbeaux, sur la traverse",
         illustration: "assets/monstre_corbeaux_du_compte_b.png",
@@ -948,6 +993,8 @@ export const SCENES: Scene[] = [
       {
         id: "gibet-vide",
         chapterFragment: true,
+        // « HANTÉ · source : avoir vu quelque chose (Gibet Vide, Corbeaux…) ».
+        poseEtat: "hante",
         fait: "fait-gibet",
         label: "Le Gibet Vide, au centre",
         illustration: "assets/scene_colline_gibet_vide_a_b.png",
@@ -1241,6 +1288,22 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        /* LA CONFIDENCE DES FIXÉS (spec §6) — la face AMBIGUË de l'état FIXÉ :
+           socialement catastrophique, mais ceux qui portent la même croix
+           cessent de se taire. Ce choix n'existe pour personne d'autre. */
+        id: "confidence-fixes",
+        label: "Écouter ce qu'on te dit maintenant",
+        requiresEtat: "fixe",
+        grantsSavoir: "savoir_rangs",
+        passive: {
+          consequence:
+            "Le Fossoyeur ne te parle pas comme aux autres. Il parle comme " +
+            "on parle à quelqu'un qui a déjà son poteau quelque part. " +
+            "« Le troisième rang, on le plante jamais. C'est pas de la " +
+            "place perdue : c'est de la place gardée. » Il ne dit pas pour qui.",
+        },
+      },
+      {
         id: "passer-fossoyeur",
         label: "Passer sans un mot",
         passive: {
@@ -1285,7 +1348,9 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        // Esquiver demande des appuis. Retiré à qui boite.
         id: "esquiver-corde",
+        tags: ["fuite"],
         label: "Esquiver la corde",
         risky: {
           stat: "INSTINCT",
@@ -2155,6 +2220,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "marche-muet",
+    tags: ["food_available"],
     illustration: "assets/scene_marche_muet_c.png",
     chainNext: "marche-muet-2",
     narration: [
@@ -2219,6 +2285,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "rebouteux",
+        repondBesoin: "soigner",
         label: "Montrer tes plaies",
         soupcon: 1, // se faire soigner par le Rebouteux, ça se remarque
         risky: {
@@ -2685,7 +2752,10 @@ export const SCENES: Scene[] = [
     ],
     choices: [
       {
+        // Violence publique dans un village qui compte tout : rater, c'est
+        // être vu en train de forcer. MARQUÉ (le Soupçon montera double).
         id: "forcer-seuil",
+        poseEtatSiEchec: "marque",
         label: "Forcer le passage",
         risky: {
           stat: "COURAGE",
@@ -2917,7 +2987,9 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        // Gagner le muret avant que le croissant ne se ferme : une course.
         id: "dos-muret",
+        tags: ["fuite"],
         label: "Gagner le muret",
         risky: {
           stat: "INSTINCT",
@@ -3069,7 +3141,10 @@ export const SCENES: Scene[] = [
     ],
     choices: [
       {
+        // « Eau de la Mare » — source de FIÉVREUX listée par la spec. Le
+        // pari est honnête : réussir, c'est boire sans rien attraper.
         id: "boire-mare",
+        poseEtatSiEchec: "fievreux",
         label: "Boire à la mare",
         risky: {
           stat: "COURAGE",
@@ -3138,6 +3213,7 @@ export const SCENES: Scene[] = [
     /* LE VERGER NOIR — le seul ordre volontaire des Landes hors du hameau.
        Les arbres poussent. C'est pire que s'ils étaient morts. */
     id: "verger-noir",
+    tags: ["food_available"],
     illustration: "assets/scene_verger_noir_d.png",
     chainNext: "verger-noir-2",
     narration: [
@@ -3375,6 +3451,7 @@ export const SCENES: Scene[] = [
     // Dernière scène de la rotation : la sortie de zone (La Descente) se
     // montre mais reste verrouillée — l'Acte II n'existe pas encore.
     id: "palissade-sud",
+    tags: ["climb"],
     // Le lieu a enfin sa propre image (lot 25/07) — il tournait sur une vue
     // générique de la lande alors que c'est le seuil de l'Acte II.
     illustration: "assets/scene_palissade_sud_a_a.png",

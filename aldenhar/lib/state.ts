@@ -8,6 +8,7 @@ import { normalizeItem, startingBesace, type BesaceItem } from "@/lib/besace";
 import { drawMemories } from "@/lib/prologue-data";
 import { ENTRY_SCENE, sceneAt } from "@/lib/scene-data";
 import type { Temoin } from "@/lib/temoins";
+import { sacDepuis, type SacFaits } from "@/lib/faits";
 
 export type RollRecord = {
   step: number;
@@ -204,6 +205,22 @@ export type RunState = {
    * mécanique ; seule l'anti-répétition la concerne.
    */
   arriveeVues?: string[];
+  /**
+   * LE MOTEUR DE FAITS (spec 4/08 §1) — scopes `run` et `zone_run` : états,
+   * savoirs, soupçon. Meurent avec le héros. Les scopes permanents vivent dans
+   * `PlayerMemory.faits`. Optionnel : les sauvegardes d'avant n'ont rien.
+   */
+  faits?: SacFaits;
+  /**
+   * BESOINS (spec §3) : id de besoin → dernier JOUR où on y a répondu. En
+   * jours, jamais en scènes — garde-fou n°2. Aucun compteur n'est jamais
+   * montré : le besoin ne se manifeste que par l'état qu'il finit par poser.
+   */
+  besoins?: Record<string, number>;
+  /** Croisées jouées depuis la dernière route forcée par le directeur. */
+  croiseesDepuisRoute?: number;
+  /** Rencontres programmées par un effet (recouvrement de dette…). */
+  rencontresDues?: { scene: string; auPas: number }[];
   /** Dettes narratives en attente de règlement dans cette run (spec §17). */
   debts: PendingDebt[];
   /** Besace (13/07) : objets mundane, vidée à la mort. */
@@ -330,6 +347,10 @@ function fresh(): RunState {
     temoins: [],
     loiVues: [],
     arriveeVues: [],
+    faits: {},
+    besoins: {},
+    croiseesDepuisRoute: 0,
+    rencontresDues: [],
   };
 }
 
@@ -398,6 +419,10 @@ export function loadRun(): RunState {
             temoins: Array.isArray(p.temoins) ? p.temoins : [],
             loiVues: Array.isArray(p.loiVues) ? p.loiVues : [],
             arriveeVues: Array.isArray(p.arriveeVues) ? p.arriveeVues : [],
+            faits: sacDepuis(p.faits),
+            besoins: p.besoins && typeof p.besoins === "object" ? p.besoins : {},
+            croiseesDepuisRoute: typeof p.croiseesDepuisRoute === "number" ? p.croiseesDepuisRoute : 0,
+            rencontresDues: Array.isArray(p.rencontresDues) ? p.rencontresDues : [],
           };
         }
       }

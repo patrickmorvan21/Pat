@@ -52,8 +52,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-05T11:53:41Z",
- "commit": "4b73c1a",
+ "genere": "2026-08-05T21:45:13Z",
+ "commit": "90c4012",
  "zones": [
   {
    "id": "landes",
@@ -783,6 +783,9 @@
    ],
    "suite": "chemin-creux-2",
    "savoir": "savoir_bete_crete_nord",
+   "tags": [
+    "rough_path"
+   ],
    "nom": "Le Chemin Creux",
    "lieu": "chemin_creux",
    "typeScene": "arrivee",
@@ -1036,7 +1039,10 @@
       "reussite": "Tes mains trouvent les racines, tes pieds la terre ferme. La Bête passe en dessous, longue à n'en plus finir — mais elle ne monte pas. Elle ne monte jamais.",
       "echec": "Le talus s'éboule sous ta prise. Tu retombes dans le creux, à demi — et la Bête prend sa part de la jambe qui traînait encore.",
       "funeste": "1 naturel. Tu bondis. Le talus aussi était la Bête. ♦ −2"
-     }
+     },
+     "tags": [
+      "fuite"
+     ]
     },
     {
      "id": "ornière",
@@ -1087,6 +1093,7 @@
      "label": "Les corbeaux, sur la traverse",
      "approche": "Ils sont sur la traverse du grand gibet, immobiles, et ils ne bougent pas quand tu approches — ce qui n'est pas un comportement d'oiseau. Aucun ne te regarde. Ils regardent la corde.",
      "examen": "Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, et leurs becs sont propres. Ils attendent, et ils sont exactement assez nombreux pour ce qu'ils attendent.",
+     "poseEtat": "hante",
      "corbeaux": true,
      "nom": "Les corbeaux, sur la traverse",
      "image": {
@@ -1125,6 +1132,7 @@
      "label": "Le Gibet Vide, au centre",
      "approche": "Tu marches vers le centre, et la chose grandit plus vite que tes pas. À dix mètres, tu comprends que tu avais mal jugé l'échelle. À trois, tu dois lever la tête pour voir le nœud.",
      "examen": "Le bois est d'œuvre, assemblé pour durer mille ans. La corde neuve grince. Par grand soleil — rare, ici — l'ombre portée s'étend vers le sud, et elle a une forme que la potence n'explique pas.",
+     "poseEtat": "hante",
      "fait": "fait-gibet",
      "fragmentChapitre": true,
      "nom": "Le Gibet Vide, au centre",
@@ -1162,6 +1170,9 @@
     }
    ],
    "suite": "colline-aux-gibets-2",
+   "tags": [
+    "climb"
+   ],
    "soupconArrivee": 1,
    "nom": "La Colline aux Gibets",
    "lieu": "colline_aux_gibets",
@@ -1511,6 +1522,14 @@
      "stat": "RUSE"
     },
     {
+     "id": "confidence-fixes",
+     "label": "Écouter ce qu'on te dit maintenant",
+     "type": "passif",
+     "consequence": "Le Fossoyeur ne te parle pas comme aux autres. Il parle comme on parle à quelqu'un qui a déjà son poteau quelque part. « Le troisième rang, on le plante jamais. C'est pas de la place perdue : c'est de la place gardée. » Il ne dit pas pour qui.",
+     "donneSavoir": "savoir_rangs",
+     "exigeEtat": "fixe"
+    },
+    {
      "id": "passer-fossoyeur",
      "label": "Passer sans un mot",
      "type": "passif",
@@ -1574,7 +1593,10 @@
       "reussite": "La corde siffle, tu plies, elle passe. Deux fois, trois fois. À la quatrième, il s'emmêle dedans tout seul — et tu t'éloignes pendant qu'il se défait, jurant dans une langue de gorge broyée.",
       "echec": "La corde feinte — elle claque au sol et remonte en fouet. Elle te prend la cheville et te couche dans la bruyère ; tu te dégages en taillant, mais il t'a coûté du sang et du terrain.",
       "funeste": "1 naturel. Tu esquives la corde. Pas lui. Ses mains, on les oublie toujours. ♦ −2"
-     }
+     },
+     "tags": [
+      "fuite"
+     ]
     },
     {
      "id": "emmeler",
@@ -2750,6 +2772,9 @@
    ],
    "pointsInteret": [],
    "suite": "marche-muet-2",
+   "tags": [
+    "food_available"
+   ],
    "nom": "Le Marché Muet",
    "lieu": "marche_muet",
    "typeScene": "arrivee",
@@ -2804,6 +2829,7 @@
       "echec": "Il t'examine, puis recule d'un pas et te montre sa paume : refus. Tu ne sauras pas si c'est ta blessure qui le dépasse ou quelque chose qu'il a lu dessous — mais il ne te touchera pas, et son regard t'accompagne longtemps.",
       "funeste": "1 naturel. Ses mains s'arrêtent net sur ta nuque. Il retire les siennes très lentement, comme d'un piège à loup. Ce qu'il a senti là, il ne l'a pas soigné. Il l'a salué. ♦ −2"
      },
+     "repondBesoin": "soigner",
      "soupcon": 1,
      "temoin": {
       "nom": "Le Rebouteux",
@@ -3364,7 +3390,8 @@
       "reussite": "Il charge, tu tiens la ligne. L'impact vous couche tous les deux — mais c'est toi qui te relèves entre lui et la porte, et ça, pour un chien de garde, c'est la fin du débat. Il recule en grondant sa dignité.",
       "echec": "Il est plus vif que sa taille ne l'annonce. Ses mâchoires te prennent l'avant-bras au vol et te traînent hors du seuil comme un sac — c'est exactement son travail, et il le fait bien. Tu ne passes pas par la porte.",
       "funeste": "1 naturel. Tu forces le seuil. Le chien te laisse faire — et tu comprends trop tard pourquoi il montait la garde tourné vers la porte : ce n'était pas pour empêcher d'entrer. ♦ −2"
-     }
+     },
+     "poseEtatSiEchec": "marque"
     },
     {
      "id": "apaiser-chien",
@@ -3623,7 +3650,10 @@
       "reussite": "Tu atteins le muret de justesse, une lanière de manteau en moins. Adossé à la pierre, tu ne peux plus être encerclé — juste attaqué de face, et ça, visiblement, ce n'est pas leur école. Le cercle se refait plus loin, faute de mieux.",
       "echec": "Tu cours — et le cercle tourne plus vite que toi, sans effort. Une bête t'accueille au muret, déjà assise, presque polie. Le péage se paie en chair, et tu le paies. Puis on te laisse t'adosser : même eux respectent les règles du jeu.",
       "funeste": "1 naturel. Tu cours au muret. Le muret est leur tanière. ♦ −2"
-     }
+     },
+     "tags": [
+      "fuite"
+     ]
     },
     {
      "id": "hurler-meute",
@@ -3760,7 +3790,8 @@
       "reussite": "Tu bois dans le creux de ta main. C'est de l'eau, rien d'autre. Ça n'a l'air de rien mais dans les Landes, ça compte.",
       "echec": "Tu bois — et l'eau reste au bord des lèvres, sans descendre, une seconde de trop. Quand elle passe enfin, tu as l'impression très nette d'avoir avalé quelque chose qui a accepté de se laisser avaler.",
       "funeste": "1 naturel. Tu bois. Sous la surface, à trois doigts de ton visage, ton reflet continue de boire quand tu t'arrêtes. ♦ −2"
-     }
+     },
+     "poseEtatSiEchec": "fievreux"
     },
     {
      "id": "sen-aller-mare",
@@ -4005,6 +4036,9 @@
     }
    ],
    "suite": "verger-noir-2",
+   "tags": [
+    "food_available"
+   ],
    "nom": "Le Verger Noir",
    "lieu": "verger_noir",
    "typeScene": "arrivee",
@@ -4336,6 +4370,9 @@
    "suite": "palissade-sud-2",
    "butin": "lanterne-veilleur",
    "savoir": "savoir_palissade_retient",
+   "tags": [
+    "climb"
+   ],
    "nom": "La Palissade Sud",
    "lieu": "palissade_sud",
    "typeScene": "arrivee",
@@ -5574,17 +5611,193 @@
    "lieu": "au Hameau des Renonçants"
   }
  },
+ "etats": [
+  {
+   "id": "fievreux",
+   "nom": "FIÉVREUX",
+   "groupe": "corps",
+   "source": "Plaie non soignée, eau de la Mare, morsure.",
+   "manifestation": "Le froid t'a lâché d'un coup, et c'est mauvais signe : ce n'est plus l'air qui te réchauffe. Tes mains tremblent quand tu ne les regardes pas.",
+   "reactions": [
+    "Un homme te croise, voit ta figure, et change de côté de chemin sans même ralentir. Ici, la fièvre et la Fixation se ressemblent trop.",
+    "On te répond de loin, en tenant sa manche devant sa bouche. Personne ne te dit pourquoi — tout le monde le sait."
+   ],
+   "remede": "Le Rebouteux, ou un objet de soin.",
+   "guerison": "La fièvre lâche prise d'un seul coup, comme une main qui s'ouvre. Le froid revient, et pour la première fois depuis des jours, tu es content de l'avoir.",
+   "hint": "Fièvre — défavorable",
+   "jets": {},
+   "effets": [
+    "seuil de tous les jets +1",
+    "use le corps chaque jour (0.12)"
+   ],
+   "lignesIntruses": []
+  },
+  {
+   "id": "boiteux",
+   "nom": "BOITEUX",
+   "groupe": "corps",
+   "source": "Chute, piège, combat perdu.",
+   "manifestation": "Le genou ne plie plus tout à fait. Tu peux marcher — tu ne peux plus courir, et tu le sais avant d'avoir essayé.",
+   "reactions": [
+    "Le chemin monte, et tu comptes tes pas comme on compte de la monnaie.",
+    "Quelqu'un ralentit pour rester à ta hauteur. Ce n'est pas de la bonté : c'est qu'on veut voir jusqu'où tu tiens."
+   ],
+   "remede": "Une nuit de repos complet au campement.",
+   "guerison": "Au matin, tu poses le pied sans y penser. C'est à ça que tu comprends que c'est passé : tu n'y as pas pensé.",
+   "hint": "Jambe — tu ne fuiras pas",
+   "jets": {
+    "COURAGE": 1.0,
+    "INSTINCT": -1.0
+   },
+   "effets": [
+    "courage +1",
+    "instinct -1",
+    "retire les choix de fuite"
+   ],
+   "lignesIntruses": []
+  },
+  {
+   "id": "affame",
+   "nom": "AFFAMÉ",
+   "groupe": "corps",
+   "source": "Plusieurs jours sans manger.",
+   "manifestation": "Ce n'est plus une faim, c'est une distraction. Tu regardes les mains des gens avant leur visage, pour voir ce qu'elles portent.",
+   "reactions": [
+    "Le vieux coupe son quignon en deux sans te demander. Tu prends la moitié plus vite que tu n'aurais voulu.",
+    "Une femme range son panier derrière elle en te voyant approcher. Elle ne dit rien. Elle n'a pas besoin."
+   ],
+   "remede": "De la nourriture — troc, fruit, ou don.",
+   "guerison": "Tu manges lentement, exprès, pour te prouver que tu peux. Le monde reprend sa taille normale.",
+   "hint": "Faim — les mots viennent mal",
+   "jets": {
+    "EMPATHIE": -1.0
+   },
+   "effets": [
+    "empathie -1",
+    "ouvre « voler » là où il y a à voler"
+   ],
+   "lignesIntruses": []
+  },
+  {
+   "id": "marque",
+   "nom": "MARQUÉ",
+   "groupe": "social",
+   "source": "Vol vu, violence publique, dénonciation.",
+   "manifestation": "Quelqu'un a parlé avant toi. Tu le vois à la façon dont les têtes se tournent : pas vers toi — vers celui qui t'a désigné.",
+   "reactions": [
+    "Une croix fraîche à la craie, sur le seuil que tu viens de passer. Elle n'y était pas ce matin.",
+    "La porte ne claque pas : elle se ferme lentement, en te regardant. C'est pire."
+   ],
+   "remede": "Quitter la zone, ou un acte de réparation.",
+   "guerison": "Le geste a été vu par les bonnes personnes. On ne t'absout pas — on cesse simplement de te compter à part.",
+   "hint": "Marqué — on te suit des yeux",
+   "jets": {},
+   "effets": [
+    "le Soupçon monte deux fois plus vite"
+   ],
+   "lignesIntruses": []
+  },
+  {
+   "id": "hante",
+   "nom": "HANTÉ",
+   "groupe": "mental",
+   "source": "Avoir vu quelque chose : le Gibet Vide, les Corbeaux, la mort d'un proche.",
+   "manifestation": "Ce que tu as vu ne s'est pas rangé. Ça reste posé de travers dans ta tête, et ça bouge quand tu ne le regardes pas.",
+   "reactions": [
+    "Tu t'entends répondre à quelqu'un qui n'a pas parlé. Personne ne relève. C'est le pire.",
+    "Une odeur de corde mouillée, ici, où il n'y a ni corde ni eau."
+   ],
+   "remede": "Aucun avant la fin de la run.",
+   "guerison": "Rien ne lève cet état. Il te suivra jusqu'au bout de cette vie-là.",
+   "hint": "Hanté — tu vois trop",
+   "jets": {
+    "INSTINCT": 1.0,
+    "EMPATHIE": -1.0
+   },
+   "effets": [
+    "instinct +1",
+    "empathie -1",
+    "8 lignes intruses"
+   ],
+   "lignesIntruses": [
+    "— « Tu comptes, toi aussi. » Personne autour de toi n'a ouvert la bouche.",
+    "Quelque chose grince très haut, très loin, à une hauteur où il n'y a rien.",
+    "Pendant une seconde, le sol sous tes pieds est de la terre retournée de frais.",
+    "Tu portes la main à ton cou. Il n'y a rien. Tu l'y portes quand même.",
+    "Une ombre passe à ta gauche, à la vitesse d'un homme qui marche. À ta gauche, il y a un mur.",
+    "Le vent dit un nom. Ce n'est pas le tien. Tu le retiens quand même.",
+    "Tu comptes les gens autour de toi et tu tombes sur un de plus qu'il n'y en a.",
+    "L'espace d'un pas, tes pieds ne touchent plus tout à fait le sol."
+   ]
+  },
+  {
+   "id": "fixe",
+   "nom": "FIXÉ",
+   "groupe": "social",
+   "source": "Le village te croit marqué par le sud — Soupçon élevé, ou ton reflet dans la Mare vu par un témoin.",
+   "manifestation": "On ne te parle plus tout à fait à toi. On parle devant toi, de toi, à voix normale, comme on parle devant un poteau déjà planté.",
+   "reactions": [
+    "Le barrage s'écarte à ton passage. Ce n'est pas du respect : on ne touche pas un fixé.",
+    "Une femme pose un bol par terre à trois pas de toi, et recule avant que tu te baisses."
+   ],
+   "remede": "Aucun remède simple : seul le procès, ou la sortie de zone, y met fin.",
+   "guerison": "Le hameau détourne son attention vers quelqu'un d'autre. Tu redeviens un étranger ordinaire, ce qui est déjà beaucoup.",
+   "hint": "Fixé — le hameau a décidé",
+   "jets": {},
+   "effets": [
+    "ceux qui portent la même croix te parlent"
+   ],
+   "lignesIntruses": []
+  }
+ ],
+ "besoins": [
+  {
+   "id": "soigner",
+   "etat": "fievreux",
+   "jours": 2.0,
+   "remedes": [
+    "marche-muet",
+    "chapelle-des-cordes"
+   ],
+   "routeSure": "marche-muet",
+   "routeRisquee": "puits-condamne"
+  },
+  {
+   "id": "dormir",
+   "etat": "boiteux",
+   "jours": 3.0,
+   "remedes": [
+    "campement",
+    "serment-hameau"
+   ],
+   "routeSure": "campement",
+   "routeRisquee": "chemin-creux"
+  },
+  {
+   "id": "manger",
+   "etat": "affame",
+   "jours": 3.0,
+   "remedes": [
+    "marche-muet",
+    "verger-noir"
+   ],
+   "routeSure": "marche-muet",
+   "routeRisquee": "verger-noir"
+  }
+ ],
  "totaux": {
   "scenes": 61,
   "pointsInteret": 38,
-  "choix": 147,
-  "illustrations": 209,
+  "choix": 148,
+  "illustrations": 218,
   "sansImage": 0,
   "imagesIntrouvables": 0,
   "reserve": 49,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
-  "temoins": 25
+  "temoins": 25,
+  "etats": 6,
+  "besoins": 3
  }
 }

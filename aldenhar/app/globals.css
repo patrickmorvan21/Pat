@@ -1089,3 +1089,23 @@ body {
    combustion et le lit de braises sont des canvas (DeathScreen, FondBraises) :
    les styles des anciens écrans (.death-mot, .death-quake, .death-cta-plein)
    sont retirés avec eux. */
+
+/* Mentions d'ÉTAT sous « Lancer le dé » (spec 4/08 §2) — « Fièvre —
+   défavorable ». Le joueur doit comprendre que son corps pèse sur le jet, sans
+   jamais lire un chiffre. Même ancrage bas que le hint, une ligne en dessous. */
+.die-etats {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 22px;
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  opacity: 0.75;
+  pointer-events: none;
+  z-index: 6;
+}
+.die-etats.hidden { display: none; }

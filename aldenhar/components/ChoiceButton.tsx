@@ -39,7 +39,8 @@ function seededRandom(seedStr: string) {
 const BTN_W = 360;
 const BTN_H = 46;
 
-/** Palier 1 « Marqué » = rendu proto validé le 11/07, inchangé.
+/** Palier 1 « Éprouvé » (ex-« Marqué », renommé le 4/08 : le nom part au
+    nouvel état social) = rendu proto validé le 11/07, inchangé.
  *  Palier 3 accentué le 14/07 (retour Patrick : « la mort n'est pas très
  *  loin » doit se SENTIR — état KO) : beaucoup plus de pixels morts, qui
  *  scintillent presque tous. Les boutons restent lisibles et tapables. */

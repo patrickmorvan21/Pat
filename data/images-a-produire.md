@@ -649,3 +649,59 @@ Row of black crows perched shoulder to shoulder along the crossbeam of a gallows
 Si tu ne dois en faire qu'une poignée : **les 3 de P0 d'abord** (elles corrigent
 une incohérence et un trou), puis les 3 de la Colline aux Gibets (le lieu-signature
 que la traversée pousse à chaque liaison).
+
+---
+
+# Lot 5/08 — LES ÉTATS (spec « États, Besoins & Sceaux »)
+
+Les six états du premier lot s'affichent aujourd'hui **en nom seul** : leur
+vignette est optionnelle et n'apparaît que si le fichier existe (le manifeste
+d'assets fait autorité, il n'y a plus de liste blanche dans le code). Déposer
+un PNG au bon nom suffit donc à l'afficher — **aucun code à changer**.
+
+Format à respecter, calé sur les deux icônes déjà en jeu
+(`etat_aguerri.png`, `etat_entaille.png`) : **800×800, palette 2 couleurs
+Charbon/Orange**, une seule figure isolée sur fond noir, lisible à 24 px de
+haut dans le bandeau et à 66 px dans l'écran Essence.
+
+⚠️ **Le contrat de lisibilité prime sur le détail** : à 24 px, seule la
+SILHOUETTE lit. Un état se reconnaît à sa forme générale (une jambe pliée, une
+main tendue, une croix), jamais à une texture.
+
+⚠️ Ces icônes ne sont **pas** des illustrations de scène : pas d'horizon, pas
+de décor, pas de ciel orange. Fond noir, sujet isolé — même grammaire que les
+deux icônes existantes.
+
+| fichier | état | ce qu'il faut montrer |
+|---|---|---|
+| `etat_fievreux.png` | FIÉVREUX (corps) | un torse voûté, les deux mains serrées l'une sur l'autre au niveau du sternum, épaules rentrées — la posture de quelqu'un qui a froid alors qu'il brûle |
+| `etat_boiteux.png` | BOITEUX (corps) | une jambe raide, l'autre pliée, le poids porté sur un bâton ou sur le genou — la silhouette d'un pas qui ne se déroule pas |
+| `etat_affame.png` | AFFAMÉ (corps) | une main ouverte, paume vers le haut, doigts creusés, tendue vers le bord du cadre — la faim se montre par le geste, jamais par un ventre |
+| `etat_marque.png` | MARQUÉ (social) | une croix tracée à la craie sur du bois, en gros — l'état est ce que les AUTRES ont fait, donc on montre leur trace, pas le héros |
+| `etat_hante.png` | HANTÉ (mental) | une tête de profil avec une seconde silhouette, plus pâle, décalée derrière elle — deux formes là où il n'y a qu'une personne |
+| `etat_fixe.png` | FIXÉ (social) | un poteau nu planté dans le sol, corde enroulée à son sommet, sans personne dessus — la place réservée |
+
+Prompt commun (coller tel quel, changer la première phrase) :
+
+> `<SUJET>`. Pitch-black background, the subject isolated and filling the
+> frame, one single hard light source raking from the side so the silhouette
+> reads at a glance, no horizon, no sky, no scenery, dark fantasy illustration,
+> deep crushed blacks, no fill light, high contrast, two-tone
+> monochrome-friendly, strong readable shapes, matte painting, grim medieval
+> rural, square composition, no text, no lettering, no watermark
+
+Sujets, dans l'ordre du tableau :
+
+1. `etat_fievreux` — *a hunched torso, both hands clamped together over the sternum, shoulders drawn in, the posture of someone freezing while burning up*
+2. `etat_boiteux` — *one leg locked straight and the other bent, the weight carried on a rough walking staff, the silhouette of a stride that will not unroll*
+3. `etat_affame` — *a single open hand, palm up, fingers hollowed, reaching toward the edge of the frame*
+4. `etat_marque` — *a fresh chalk cross scrawled across weathered wooden planks, seen close*
+5. `etat_hante` — *a head in profile with a second, paler silhouette offset just behind it, two shapes where there is only one person*
+6. `etat_fixe` — *a bare wooden post driven into the ground, a coil of rope at its top, nobody hanging from it*
+
+## Aucune image de SCÈNE à produire pour ce lot
+
+Le lot n'ajoute aucun lieu ni aucune rencontre : la confidence des Fixés se
+joue au Champ des Fixés (image déjà en place, celle du Fossoyeur), et l'eau de
+la Mare comme le seuil forcé du Bailli réutilisent leurs écrans existants.
+La couverture reste à **0 image manquante**.

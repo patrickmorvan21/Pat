@@ -42,6 +42,21 @@ export function assetUrl(chemin: string): string {
   return h ? `${nu}?v=${h}` : chemin;
 }
 
+/**
+ * L'asset existe-t-il vraiment ?
+ *
+ * Sert aux vignettes OPTIONNELLES (icônes d'état, par exemple) : le catalogue
+ * peut nommer une image qui n'a pas encore été produite, et l'écran doit alors
+ * afficher le nom seul plutôt qu'une image cassée. Le manifeste liste tous les
+ * fichiers réellement présents dans `public/assets/`, donc il fait autorité —
+ * une liste blanche écrite à la main dans un composant se périme dès qu'un
+ * fichier arrive.
+ */
+export function assetExiste(chemin: string): boolean {
+  const nom = (chemin.split("?")[0].split("/").pop() ?? "");
+  return Boolean(HASHES[nom]);
+}
+
 /** Même chose pour un `background-image` CSS. */
 export function assetCss(chemin: string): string {
   return `url("${assetUrl(chemin)}")`;

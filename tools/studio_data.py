@@ -42,6 +42,11 @@ TS_RELIQUES = RACINE / "aldenhar/lib/reliques.ts"
 TS_FAITS = RACINE / "aldenhar/lib/contradictions.ts"
 TS_PERCEPTION = RACINE / "aldenhar/lib/perception.ts"
 TS_LOI = RACINE / "aldenhar/lib/loi-substitution.ts"
+# Les ÉTATS et BESOINS (spec 5/08 « le Domaine se souvient ») : le Studio doit
+# montrer ce qu'un état change réellement, sinon on ne peut pas juger s'il est
+# « un fait auquel le monde réagit » ou seulement un modificateur déguisé.
+TS_ETATS = RACINE / "aldenhar/lib/etats.ts"
+TS_BESOINS = RACINE / "aldenhar/lib/besoins.ts"
 SORTIE = RACINE / "data/studio-data.json"
 
 
@@ -140,6 +145,16 @@ def chaines(txt: str) -> list[str]:
 # Un littéral de chaîne, et une suite de littéraux recollés par `+`.
 LITTERAL = r'"(?:[^"\\]|\\.)*"'
 CONCAT = rf"{LITTERAL}(?:\s*\+\s*{LITTERAL})*"
+
+
+def chaines_de_tableau(bloc: str) -> list[str]:
+    """Les éléments d'un tableau de TEXTES, concaténations recollées.
+
+    ⚠️ Pas `chaines()` : un élément écrit « "a " + "b" » y compterait pour DEUX
+    entrées, et une réaction du monde se retrouverait coupée en deux moitiés.
+    On découpe donc sur les virgules de premier niveau d'abord."""
+    interieur = bloc[1:-1] if bloc.startswith("[") else bloc
+    return [recoller(a) for a in args_de_haut_niveau(interieur) if '"' in a]
 
 
 def recoller(txt: str) -> str:
@@ -329,6 +344,93 @@ def lire_perceptions() -> dict[str, dict]:
     return out
 
 
+def lire_etats() -> list[dict]:
+    """Les ÉTATS + ce qu'ils changent RÉELLEMENT.
+
+    Le Studio doit permettre de trancher la question de la spec : « un état
+    n'est pas un modificateur déguisé, c'est un fait auquel le monde réagit ».
+    On exporte donc, à côté du texte, la liste EXPLICITE de ses effets
+    mécaniques — s'il n'y en a qu'un et qu'il est chiffré, ça se voit.
+    """
+    if not TS_ETATS.exists():
+        return []
+    b = bloc_apres(TS_ETATS.read_text(encoding="utf-8"), r"export const ETATS: Etat\[\] =")
+    if not b:
+        return []
+    out = []
+    for c in objets_de_haut_niveau(b[0], 0):
+        # Les réactions du monde et les lignes intruses : des tableaux de texte.
+        rb = bloc_apres(c, r"\n    reactions:\s*")
+        reactions = chaines_de_tableau(rb[0]) if rb else []
+        ib = bloc_apres(c, r"\n    lignesIntruses:\s*")
+        intruses = chaines_de_tableau(ib[0]) if ib else []
+        # Les effets mécaniques, nommés en clair plutôt qu'en champs bruts.
+        effets = []
+        seuil = nombre_de(c, "seuilTous")
+        if seuil:
+            effets.append(f"seuil de tous les jets {'+' if seuil > 0 else ''}{seuil:g}")
+        jb = bloc_apres(c, r"\n    jets:\s*")
+        jets = {}
+        if jb:
+            for stat in STATS:
+                v = nombre_de(jb[0], stat)
+                if v is not None:
+                    jets[stat] = v
+                    effets.append(f"{stat.lower()} {'+' if v > 0 else ''}{v:g}")
+        for champ, libelle in (
+            ("cacheFuite", "retire les choix de fuite"),
+            ("ouvreVol", "ouvre « voler » là où il y a à voler"),
+            ("soupconDouble", "le Soupçon monte deux fois plus vite"),
+            ("ouvreConfidences", "ceux qui portent la même croix te parlent"),
+        ):
+            if booleen_de(c, champ):
+                effets.append(libelle)
+        usure = nombre_de(c, "usureParJour")
+        if usure:
+            effets.append(f"use le corps chaque jour ({usure:g})")
+        if intruses:
+            effets.append(f"{len(intruses)} lignes intruses")
+        out.append(
+            {
+                "id": texte_de(c, "id"),
+                "nom": texte_de(c, "nom"),
+                "groupe": texte_de(c, "groupe"),
+                "source": texte_de(c, "source"),
+                "manifestation": texte_de(c, "manifestation"),
+                "reactions": reactions,
+                "remede": texte_de(c, "remede"),
+                "guerison": texte_de(c, "guerison"),
+                "hint": texte_de(c, "hint"),
+                "jets": jets,
+                "effets": effets,
+                "lignesIntruses": intruses,
+            }
+        )
+    return out
+
+
+def lire_besoins() -> list[dict]:
+    if not TS_BESOINS.exists():
+        return []
+    b = bloc_apres(TS_BESOINS.read_text(encoding="utf-8"), r"export const BESOINS: Besoin\[\] =")
+    if not b:
+        return []
+    out = []
+    for c in objets_de_haut_niveau(b[0], 0):
+        rb = bloc_apres(c, r"\n    remedes:\s*")
+        out.append(
+            {
+                "id": texte_de(c, "id"),
+                "etat": texte_de(c, "etat"),
+                "jours": nombre_de(c, "jours"),
+                "remedes": chaines_de_tableau(rb[0]) if rb else [],
+                "routeSure": texte_de(c, "routeSure"),
+                "routeRisquee": texte_de(c, "routeRisquee"),
+            }
+        )
+    return out
+
+
 def lire_loi() -> dict:
     if not TS_LOI.exists():
         return {}
@@ -390,10 +492,20 @@ def lire_choix(bloc: str) -> list[dict]:
             ("requiresSavoir", "exigeSavoir"),
             ("setsEnvFlag", "poseFlag"),
             ("defense", "defense"),
+            # États & besoins (spec 5/08) : d'où vient un état, et ce qui le lève.
+            ("poseEtat", "poseEtat"),
+            ("poseEtatSiEchec", "poseEtatSiEchec"),
+            ("repondBesoin", "repondBesoin"),
+            ("requiresEtat", "exigeEtat"),
         ):
             v = texte_de(c, champ)
             if v:
                 ch[cle] = v
+        tb = bloc_apres(c, r"\n        tags:\s*")
+        if tb:
+            t = chaines_de_tableau(tb[0])
+            if t:
+                ch["tags"] = t
         if booleen_de(c, "requiresContradiction"):
             ch["exigeContradiction"] = True
         if booleen_de(c, "renonce"):
@@ -427,7 +539,8 @@ def lire_pois(bloc: str) -> list[dict]:
             "illustration": texte_de(p, "illustration"),
         }
         for champ, cle in (("savoir", "savoir"), ("grantsLoot", "donneObjet"),
-                           ("leadsTo", "ouvreSur"), ("setsEnvFlag", "poseFlag")):
+                           ("leadsTo", "ouvreSur"), ("setsEnvFlag", "poseFlag"),
+                           ("poseEtat", "poseEtat")):
             v = texte_de(p, champ)
             if v:
                 poi[cle] = v
@@ -490,6 +603,13 @@ def lire_scenes() -> list[dict]:
                            ("fixationTrial", "procesFixation")):
             if booleen_de(bloc, champ):
                 s[cle] = True
+        # AFFORDANCES de la scène : ce sont elles qui décident si un état ouvre
+        # quelque chose ici (AFFAMÉ n'ouvre « voler » que sur `food_available`).
+        tb = bloc_apres(bloc, r"\n    tags:\s*")
+        if tb:
+            t = chaines_de_tableau(tb[0])
+            if t:
+                s["tags"] = t
         if "timed:" in bloc:
             s["chronometree"] = int(nombre_de(bloc, "ms") or 0)
         sa = nombre_de(bloc, "soupconOnArrival")
@@ -818,6 +938,8 @@ def main() -> int:
         "perceptions": lire_perceptions(),
         "loiDuDomaine": lire_loi(),
         "temoins": TEMOINS,
+        "etats": lire_etats(),
+        "besoins": lire_besoins(),
         "totaux": {
             "scenes": len(scenes),
             "pointsInteret": sum(len(s["pointsInteret"]) for s in scenes),
@@ -832,6 +954,8 @@ def main() -> int:
             "faits": len(lire_faits()),
             "perceptions": len(lire_perceptions()),
             "temoins": len(TEMOINS),
+            "etats": len(lire_etats()),
+            "besoins": len(lire_besoins()),
         },
     }
     SORTIE.write_text(json.dumps(donnees, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")

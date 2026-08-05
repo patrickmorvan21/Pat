@@ -18,6 +18,7 @@
  */
 
 import type { RegistreRow } from "@/lib/state";
+import { sacDepuis, type SacFaits } from "@/lib/faits";
 import {
   forgerRelique,
   relique,
@@ -184,6 +185,13 @@ export type PlayerMemory = {
    */
   faitsVus?: Record<string, string[]>;
   /**
+   * LE MOTEUR DE FAITS (spec 4/08 §1) — scopes `zone_permanent` et
+   * `global_permanent` : compteurs de visite, Sceaux, DÉCOUVERTES. Ne meurent
+   * jamais. ⚠️ Les Découvertes conditionnent les Sceaux et l'arc du twist,
+   * jamais ce que sait le héros courant (voir lib/faits.ts).
+   */
+  faits?: SacFaits;
+  /**
    * LES RENONÇANTS (5/08) : runs terminées SANS mourir — le héros est resté au
    * Hameau. Ce n'est pas une victoire et ce n'est pas une mort : c'est une
    * place prise à quelqu'un d'autre. Change le ton du Geôlier.
@@ -209,6 +217,7 @@ function fresh(): PlayerMemory {
     introSeen: false,
     faitsVus: {},
     renoncements: 0,
+    faits: {},
   };
 }
 
@@ -306,6 +315,7 @@ export function loadMemory(): PlayerMemory {
           // champ absent ici est silencieusement perdu au rechargement.
           faitsVus: p.faitsVus && typeof p.faitsVus === "object" ? p.faitsVus : {},
           renoncements: typeof p.renoncements === "number" ? p.renoncements : 0,
+          faits: sacDepuis(p.faits),
         };
       }
     } catch {

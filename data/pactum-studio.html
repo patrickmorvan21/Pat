@@ -1375,6 +1375,13 @@ function ligne(c,i,s,court){
   if(c.defense) fx.push("défense : "+c.defense);
   if(c.exigeContradiction) fx.push("exige une contradiction (2 vies)");
   if(c.renonce) fx.push("FIN — renoncement, sans mort");
+  // États & besoins (5/08) : ce que ce choix fait au CORPS et au statut social.
+  const nomEtat=i=>{const e=(D.etats||[]).find(x=>x.id===i);return e?e.nom:i};
+  if(c.poseEtat) fx.push("pose "+nomEtat(c.poseEtat));
+  if(c.poseEtatSiEchec) fx.push("pose "+nomEtat(c.poseEtatSiEchec)+" si le jet rate");
+  if(c.exigeEtat) fx.push("n'existe que si "+nomEtat(c.exigeEtat));
+  if(c.repondBesoin) fx.push("répond au besoin : "+c.repondBesoin);
+  if((c.tags||[]).includes("fuite")) fx.push("fuite — disparaît si BOITEUX");
   const tem=c.temoin?`<div class="iss temoin"><div><b>${esc(c.temoin.nom)}</b>, ${esc(c.temoin.lieu)} —
     « ${esc(c.temoin.deposition)} »</div></div>`:"";
   return `<div class="ch ${c.type}">${tem?"":""}<div class="l1"><span class="num">${i+1}</span>
@@ -1393,6 +1400,7 @@ const blocPois=s=>s.pointsInteret.length
       return `<div class="poil" data-poi="${esc(p.id)}"><div class="th${img?"":" vide"}" ${img?`style="background-image:url('${img}')"`:""}>${img?"":"—"}</div>
         <div><b>${esc(p.label||p.id)}</b><p>${esc((p.examen||p.approche||"").slice(0,130))}</p>
         ${p.fait?`<p class="sysnote">fait variable : <b>${esc(p.fait)}</b> — ce point ne raconte pas la même chose d'une vie à l'autre</p>`:""}
+        ${p.poseEtat?`<p class="sysnote">pose l'état <b>${esc(((D.etats||[]).find(x=>x.id===p.poseEtat)||{}).nom||p.poseEtat)}</b> — le monde y réagira ensuite</p>`:""}
         ${p.temoin?`<p class="sysnote">vu par <b>${esc(p.temoin.nom)}</b></p>`:""}</div></div>`;}).join("")}</div>`
   : '<p class="vide-txt">Aucun point d\'intérêt.</p>';
 function blocLiens(s){
@@ -1559,6 +1567,51 @@ function vueSystemes(){
 
   let out=`<h2 style="font:400 22px/1 var(--serif);margin:0 0 4px">Les systèmes du Domaine</h2>
     ${p("Ce qui ne tient à aucune scène en particulier, et qui pèse sur toutes. Rien d'ici n'est jamais montré au joueur sous forme de chiffre.")}`;
+
+  /* LES ÉTATS EN PREMIER : c'est la question la plus utile à trancher d'un
+     coup d'œil — « est-ce un fait auquel le monde réagit, ou un modificateur
+     déguisé ? ». D'où les trois colonnes SOURCE / RÉACTIONS / REMÈDE à côté
+     des effets mécaniques, et le décompte des sources réelles en jeu. */
+  const etats=D.etats||[], besoins=D.besoins||[];
+  const srcEtat={}, remEtat={};
+  D.scenes.forEach(s=>{
+    (s.pointsInteret||[]).forEach(x=>{ if(x.poseEtat)
+      (srcEtat[x.poseEtat]=srcEtat[x.poseEtat]||[]).push({s:s.id,l:x.label,q:"en examinant"});});
+    (s.choix||[]).forEach(c=>{
+      if(c.poseEtat) (srcEtat[c.poseEtat]=srcEtat[c.poseEtat]||[]).push({s:s.id,l:c.label,q:"au choix"});
+      if(c.poseEtatSiEchec) (srcEtat[c.poseEtatSiEchec]=srcEtat[c.poseEtatSiEchec]||[]).push({s:s.id,l:c.label,q:"si le jet rate"});
+      if(c.repondBesoin){const b=besoins.find(x=>x.id===c.repondBesoin);
+        if(b)(remEtat[b.etat]=remEtat[b.etat]||[]).push({s:s.id,l:c.label});}
+      if(c.exigeEtat) (srcEtat["__ouvre_"+c.exigeEtat]=srcEtat["__ouvre_"+c.exigeEtat]||[]).push({s:s.id,l:c.label});
+    });
+  });
+  out+=h(`Les ${etats.length} états`)+
+    p("Un état n'est pas un modificateur déguisé : c'est un fait sur le héros auquel le monde réagit. Aucun chiffre, aucune durée n'est jamais montrée au joueur — un état se lit à son nom et à la façon dont on le traite.")+
+    `<div class="sect">${etats.map(e=>{
+      const src=srcEtat[e.id]||[], rem=remEtat[e.id]||[], ouv=srcEtat["__ouvre_"+e.id]||[];
+      return `<div class="ch"><div class="l1">
+      <span class="lab"><b style="font-weight:400">${esc(e.nom)}</b></span>
+      <span class="tags"><span class="tag st">${esc(e.groupe)}</span>${
+        src.length?"":'<span class="tag">aucune source en jeu</span>'}${
+        e.effets.map(x=>`<span class="tag">${esc(x)}</span>`).join("")}</span></div>
+      <div class="iss">
+        <div><b>Manifestation</b> — ${esc(e.manifestation)}</div>
+        ${e.reactions.map(r=>`<div><b>Le monde</b> — ${esc(r)}</div>`).join("")}
+        ${e.hint?`<div style="color:var(--or)"><b>Sous l'anneau</b> — ${esc(e.hint)}</div>`:""}
+        ${src.length?`<div><b>S'attrape</b> — ${src.map(x=>`${esc(x.l)} <em style="color:var(--b30)">(${esc(x.q)}, ${esc(nomScene(x.s))})</em>`).join(" · ")}</div>`
+          :`<div style="color:var(--b30)"><b>S'attrape</b> — hors scène (${esc(e.source)})</div>`}
+        ${ouv.length?`<div><b>Ouvre</b> — ${ouv.map(x=>`${esc(x.l)} <em style="color:var(--b30)">(${esc(nomScene(x.s))})</em>`).join(" · ")}</div>`:""}
+        <div><b>Se lève</b> — ${esc(e.remede)}${rem.length?" · "+rem.map(x=>`${esc(x.l)} <em style="color:var(--b30)">(${esc(nomScene(x.s))})</em>`).join(" · "):""}</div>
+        ${e.lignesIntruses.length?`<div style="color:var(--b30)">${e.lignesIntruses.length} lignes intruses</div>`:""}
+      </div></div>`;}).join("")}</div>`;
+
+  out+=h(`Les ${besoins.length} besoins`)+
+    p("Ils se comptent en JOURS, jamais en scènes — un joueur qui traverse vite n'aura presque jamais faim. Aucune jauge : un besoin ne se manifeste QUE par l'état qu'il finit par poser, et il ne tue jamais.")+
+    `<div class="sect">${besoins.map(b=>`<div class="ch"><div class="l1">
+      <span class="lab"><b style="font-weight:400">${esc(b.id)}</b></span>
+      <span class="tags"><span class="tag st">${b.jours} jours</span><span class="tag">pose ${esc((etats.find(e=>e.id===b.etat)||{}).nom||b.etat)}</span></span></div>
+      <div class="iss"><div><b>Y répondent</b> — ${b.remedes.map(r=>esc(nomScene(r))).join(" · ")||"—"}</div>
+      <div style="color:var(--b30)">route sûre : ${esc(nomScene(b.routeSure))} · route risquée : ${esc(nomScene(b.routeRisquee))}</div></div></div>`).join("")}</div>`;
 
   out+=h("La loi du Domaine")+p("Jamais énoncée en jeu. Elle se constate, cas après cas — et elle prépare le twist final sans le révéler.")+
     `<div class="sect" style="max-width:78ch"><p class="para" style="color:var(--or)">${esc(loi.loi||"—")}</p>

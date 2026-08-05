@@ -29,11 +29,19 @@ import { manifestationLoi } from "@/lib/loi-substitution";
 import { perceptionDe } from "@/lib/perception";
 import { acteAccusation, defensesDisponibles, temoinPour, temoinsUniques } from "@/lib/temoins";
 import type { RelicDon } from "@/lib/reliques";
+import {
+  applique, noterVisite, parType, purger, type Faits,
+} from "@/lib/faits";
+import {
+  etat, etatsActifs, hintsEtats, modEtats, poserEtat, seuilEtats,
+  PLAFOND_AFFICHAGE, type StatNom,
+} from "@/lib/etats";
+import { besoinsEchus, routeAForcer } from "@/lib/besoins";
 import { loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
 import { chapterById, drawChapter, LANDES_LORE_FRAGMENTS } from "@/lib/chapters-data";
 import { playMusic } from "@/lib/audio";
 import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
-import { assetUrl, assetCss } from "@/lib/assets";
+import { assetUrl, assetCss, assetExiste } from "@/lib/assets";
 import {
   activeRelic,
   bloodDebtFor,
@@ -120,6 +128,13 @@ type ImageKind = "scene" | "object";
 
 /* Ouverture/fermeture du sous-menu des descriptions (points d'intérêt). Ce ne
    sont PAS des choix de fiction : ils ne consomment ni tour ni dé. */
+/** Quel état chaque besoin lève quand il est satisfait. */
+const BESOINS_ETAT: Record<string, string> = {
+  dormir: "boiteux",
+  soigner: "fievreux",
+  manger: "affame",
+};
+
 const OBSERVE_OPEN = "observe-open";
 const OBSERVE_CLOSE = "observe-close";
 
@@ -224,6 +239,21 @@ function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
  * Jamais un chiffre affiché : l'Anneau reflète le bonus, le verrou se lit au
  * losange, la relique se lit à sa fonction en mots.
  */
+/**
+ * LES DEUX SACS DE FAITS réunis pour la lecture (spec 4/08 §1). L'écriture,
+ * elle, va toujours dans UN des deux : `persist()` pour la run, `mutateMemory`
+ * pour le compte. Ne jamais garder le résultat en cache — il est reconstruit à
+ * chaque usage, sinon on lit un état périmé après un `persist`.
+ */
+function faitsDe(run: RunState | null | undefined): Faits {
+  return { run: { ...(run?.faits ?? {}) }, perm: { ...loadMemory().faits } };
+}
+
+/** Les ids des états actifs, dans l'ordre d'acquisition. */
+function idsEtats(f: Faits): string[] {
+  return parType(f, "state").map((x) => x.id);
+}
+
 function statDe(stats: RunState["stats"] | undefined, stat: string): number {
   const k = stat.toLowerCase() as keyof NonNullable<RunState["stats"]>;
   return stats?.[k] ?? 3;
@@ -332,6 +362,19 @@ export default function Scene() {
   // Contradictions tenues par le COMPTE (deux versions d'un même fait, lues
   // dans deux vies) : ouvrent « Le Registre ment ». Lu une fois au montage.
   const [contradictions, setContradictions] = useState(0);
+  /** Ids des états actifs — miroir de rendu (jamais runRef au render). */
+  const [etatsIds, setEtatsIds] = useState<string[]>([]);
+  /** États acquis depuis le dernier écran — leur manifestation reste à jouer.
+      Une ref, pas un state : on ne veut pas re-rendre pour ça, et `advance`
+      la vide au moment exact où elle sert. */
+  const manifsEnAttente = useRef<string[]>([]);
+  /** États dont la manifestation a déjà été jouée : eux seuls ont le droit de
+      faire réagir le monde (sinon la réaction précède la cause). */
+  const manifsJouees = useRef<Set<string>>(new Set());
+  /** Lignes de guérison à dire au prochain écran (remède, pas échéance). */
+  const guerisonEnAttente = useRef<string[]>([]);
+  /** Besoin qu'un choix RISQUÉ satisfera — seulement si son jet réussit. */
+  const besoinEnAttente = useRef<string | null>(null);
   // Défenses ouvertes au procès par les témoins réellement présents (5/08).
   // Miroir de rendu : jamais `runRef.current` pendant le render.
   const [defenses, setDefenses] = useState<string[]>([]);
@@ -408,8 +451,26 @@ export default function Scene() {
   // l'information n'a pas été apprise en explorant. Filtré ici, donc avant le
   // mélange Fisher-Yates — une option débloquée prend une position quelconque
   // comme les autres, sans marqueur ni place réservée.
+  // LES ÉTATS MODIFIENT LES CHOIX (spec 4/08 §2 — critère de validation :
+  // « il modifie au moins un choix ou un jet »). Deux effets réels ici :
+  //  • BOITEUX retire les options de FUITE — elles disparaissent, elles ne
+  //    deviennent pas plus dures : on ne fuit pas sur une jambe ;
+  //  • AFFAMÉ ouvre « voler », mais SEULEMENT là où il y a à voler.
+  const etatsRendus = etatsActifs(etatsIds);
+  const boiteux = etatsRendus.some((e) => e.cacheFuite);
+  const affame = etatsRendus.some((e) => e.ouvreVol);
+  const volPossible =
+    affame && (scene.tags ?? []).some((t) => t === "food_available" || t === "stealable");
   const baseChoices = rawChoices.filter((c) => {
+    if (boiteux && (c.tags ?? []).includes("fuite")) return false;
     if (c.requiresSavoir && !savoirs.includes(c.requiresSavoir)) return false;
+    // Un état n'ouvre un choix QUE si l'état correspondant l'autorise vraiment
+    // (FIXÉ → `ouvreConfidences`) : sans ce garde, `requiresEtat` deviendrait
+    // un flag libre et l'état ne serait plus la raison de l'ouverture.
+    if (c.requiresEtat) {
+      const e = etatsRendus.find((x) => x.id === c.requiresEtat);
+      if (!e || !e.ouvreConfidences) return false;
+    }
     // « Le Registre ment » (5/08) : une seule vie ne peut pas l'ouvrir. Le don
     // « lecture » d'une relique la rend visible sans l'avoir vécue — c'est
     // exactement ce que raconte cette relique.
@@ -423,7 +484,26 @@ export default function Scene() {
   });
   // Les choix d'orientation d'une liaison gardent leur ordre (gauche/droite
   // stable) ; ailleurs, Fisher-Yates seedé pour casser les patterns de slot.
-  const shuffledChoices = scene.liaison ? baseChoices : shuffleChoices(baseChoices, step);
+  // Le vol est ajouté AVANT le mélange : il prend une position quelconque,
+  // comme n'importe quel autre choix — jamais un slot réservé.
+  const avecVol: Choice[] = volPossible
+    ? [
+        ...baseChoices,
+        {
+          id: "voler-nourriture",
+          label: "Prendre sans demander",
+          poseEtat: "marque",
+          repondBesoin: "manger",
+          passive: {
+            consequence:
+              "Tu prends. C'est plus simple que tu ne l'aurais cru, et c'est " +
+              "ça qui te reste après : pas la faim en moins, la facilité en plus. " +
+              "Quelqu'un a vu. Tu ne sais pas qui — tu sais seulement que oui.",
+          },
+        },
+      ]
+    : baseChoices;
+  const shuffledChoices = scene.liaison ? avecVol : shuffleChoices(avecVol, step);
   // Points d'intérêt encore inexplorés (spec 24/07 suite §1) : proposés EN TÊTE
   // des choix — ce sont les choses vues de loin à l'arrivée. Un point examiné
   // disparaît de la liste ; quand il n'en reste plus, seuls les choix du lieu
@@ -607,6 +687,7 @@ export default function Scene() {
     const relicPortee = activeRelic(memNow);
     setRelicFx(relicDon(relicPortee));
     setContradictions(contradictionsConnues(memNow).length);
+    setEtatsIds(idsEtats(faitsDe(run)));
 
     // Musique (24/07) : l'Acte I tourne sur les boucles des Landes (rotation
     // aléatoire des 3 pistes). Silencieux si les mp3 ne sont pas déployés.
@@ -807,6 +888,49 @@ export default function Scene() {
    * est obtenu ; sinon elle reste. Narration en paragraphes courts, puis le
    * Geôlier (rare). Les états temporaires se dissipent scène après scène (§2).
    */
+  /**
+   * POSER UN ÉTAT — le seul endroit du composant qui écrit un état.
+   *
+   * Passe par `poserEtat` (groupes d'exclusivité : un état ne chasse que ceux
+   * de SON groupe — devenir Endetté ne guérit pas une jambe) puis par le
+   * moteur de faits. La manifestation est mise en attente : elle se joue au
+   * prochain écran, ce qui garantit le contrat de visibilité (§5) sans avoir à
+   * la coller au milieu d'une conséquence de dé.
+   */
+  function poserEtatRun(id: string, dureeEnLieux?: number) {
+    const e = etat(id);
+    if (!e) return;
+    const f = faitsDe(runRef.current);
+    if (idsEtats(f).includes(id)) return; // un état ne s'empile pas sur lui-même
+    applique(poserEtat(id, idsEtats(f), dureeEnLieux ? step + dureeEnLieux : undefined), f, step);
+    persist((run) => {
+      run.faits = f.run;
+    });
+    manifsEnAttente.current = [...manifsEnAttente.current, id];
+    setEtatsIds(idsEtats(f));
+  }
+
+  /**
+   * RÉPONDRE À UN BESOIN : l'horloge repart de ce jour-là et l'état qu'il avait
+   * posé se lève. On ne touche QU'À CET état — manger guérit la faim, pas la
+   * jambe : les groupes d'exclusivité restent respectés.
+   */
+  function repondreAuBesoin(b: string) {
+    const soigne = BESOINS_ETAT[b];
+    const e = soigne ? etat(soigne) : null;
+    const avait = Boolean(soigne) && idsEtats(faitsDe(runRef.current)).includes(soigne);
+    persist((run) => {
+      run.besoins = { ...(run.besoins ?? {}), [b]: run.day };
+      if (soigne && run.faits) delete run.faits[soigne];
+    });
+    if (avait) {
+      setEtatsIds((l) => l.filter((x) => x !== soigne));
+      manifsJouees.current.delete(soigne);
+      // La guérison se DIT : sans ligne, un état qui se lève est invisible.
+      if (e) guerisonEnAttente.current = [...guerisonEnAttente.current, e.guerison];
+    }
+  }
+
   function advance(opts?: {
     result?: number;
     fail?: boolean;
@@ -836,6 +960,7 @@ export default function Scene() {
     // liaison (toDest), la suite d'une chaîne de rencontre, la Descente (fin de
     // traversée), ou une nouvelle LIAISON (marche + orientation).
     const trav: TraversalState = { ...(runRef.current?.trav ?? loadRun().trav) };
+    let routeForceePosee = false;
     // Une transition qui QUITTE une liaison ne fait pas vieillir les états.
     const leavingLiaison = Boolean(scene.liaison);
     let nextScene: SceneType;
@@ -897,6 +1022,20 @@ export default function Scene() {
       const seed = (nextStep * 101 + trav.visited.length * 7) >>> 0;
       const entered = Boolean(runRef.current?.hameau?.entree);
       const pair = pickLiaisonOptions(trav.visited, seed, entered);
+      // LE DIRECTEUR DE ROUTES (spec §3) — « un héros fiévreux à qui le tirage
+      // ne propose jamais le Rebouteux ne vit pas un dilemme : il subit une
+      // punition procédurale. » On force UN slot vers un remède ; l'autre reste
+      // au tirage. Ce n'est pas un sauvetage : la route sûre peut être longue,
+      // et le joueur garde le droit de ne pas la prendre.
+      const forcee = routeAForcer(
+        idsEtats(faitsDe(runRef.current)),
+        trav.visited,
+        runRef.current?.croiseesDepuisRoute ?? 0
+      );
+      if (forcee && !pair.includes(forcee)) {
+        pair[seed % 2] = forcee;
+        routeForceePosee = true;
+      }
       // Chapitre garanti (chantier 2 du 23/07) : tant que le développement n'a
       // pas été joué, son lieu figure TOUJOURS parmi les orientations offertes
       // (slot choisi par la graine pour ne pas être toujours le même bouton).
@@ -1061,6 +1200,53 @@ export default function Scene() {
         ]
       : nextScene.narration;
     entries.push(...narrationLines.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+    // ── LES ÉTATS (spec 4/08 §2 et §5, contrat de visibilité) ─────────────
+    // Trois choses se jouent ici, dans cet ordre :
+    //  1. les états ÉCHUS se lèvent (une phrase de guérison, jamais un silence) ;
+    //  2. les états NEUFS se manifestent — dans les trois écrans suivant leur
+    //     acquisition, exigence explicite du contrat de visibilité ;
+    //  3. les états ANCIENS font réagir le monde, plus loin dans la run.
+    const faitsAv = faitsDe(runRef.current);
+    const leves = purger(faitsAv, nextStep);
+    for (const id of leves) {
+      const e = etat(id);
+      if (e) entries.push({ id: nextId(), kind: "narration", text: e.guerison });
+    }
+    // Guérisons obtenues par un REMÈDE (le Rebouteux, un objet, une nuit) :
+    // même traitement que les échues — elles se disent, jamais en silence.
+    for (const g of guerisonEnAttente.current)
+      entries.push({ id: nextId(), kind: "narration", text: g });
+    guerisonEnAttente.current = [];
+    const actifsIci = etatsActifs(idsEtats(faitsAv));
+    // Manifestation immédiate : posée par `poserEtatRun`, jouée ici.
+    for (const id of manifsEnAttente.current) {
+      const e = etat(id);
+      if (e) entries.push({ id: nextId(), kind: "narration", text: e.manifestation });
+      manifsJouees.current.add(id);
+    }
+    manifsEnAttente.current = [];
+    // Réaction du monde : une seule à la fois, tirée dans le pool de l'état le
+    // plus ancien encore actif — deux réactions d'affilée noieraient la scène.
+    const anciens = actifsIci.filter((e) => manifsJouees.current.has(e.id));
+    if (anciens.length && chance(0.4)) {
+      const e = anciens[nextStep % anciens.length];
+      entries.push({
+        id: nextId(),
+        kind: "narration",
+        text: e.reactions[Math.floor(nextStep / 2) % e.reactions.length],
+      });
+    }
+    // LIGNES INTRUSES (Hanté) : une phrase qui n'appartient pas à la scène.
+    // C'est tout leur intérêt — elles ne nomment jamais le lieu courant.
+    const hante = actifsIci.find((e) => e.lignesIntruses?.length);
+    if (hante?.lignesIntruses && chance(0.45)) {
+      entries.push({
+        id: nextId(),
+        kind: "narration",
+        text: hante.lignesIntruses[(nextStep * 3) % hante.lignesIntruses.length],
+      });
+    }
+
     // LA PERCEPTION (5/08) : ce que ce héros-LÀ remarque, parce qu'il est
     // ainsi fait. Une ligne, jamais deux — et jamais le nom de la stat.
     // Le don « regard » (Œil de lanterne verte) donne accès à ces lignes même
@@ -1213,6 +1399,11 @@ export default function Scene() {
         run.temoins = temoinsAuProces;
         run.relicUsed = true;
       }
+      run.croiseesDepuisRoute = routeForceePosee ? 0 : (run.croiseesDepuisRoute ?? 0) + (nextScene.liaison ? 1 : 0);
+      // COMPTEUR DE VISITES (spec §1, scope zone_permanent) : combien de fois
+      // ce lieu a été vu, TOUTES vies confondues. Ne se remet jamais à zéro —
+      // c'est lui qui portera les « strates de visite » (2ᵉ, 3ᵉ passage).
+      run.faits = faitsAv.run;
       // Anti-répétition des phrases d'arrivée (retour 5/08 : « Tu es venu par
       // le flanc… » revenait plusieurs fois dans une même vie).
       if (arriveePhrase && !(run.arriveeVues ?? []).includes(arriveePhrase))
@@ -1222,6 +1413,16 @@ export default function Scene() {
       if (arrivalSavoir) run.savoirs = [...(run.savoirs ?? []), arrivalSavoir];
     });
     if (arrivalSavoir) setSavoirs((s) => (s.includes(arrivalSavoir) ? s : [...s, arrivalSavoir]));
+    // Le compteur de visites vit dans la MÉMOIRE (zone_permanent) : il compte
+    // les passages de TOUTES les vies, c'est là son intérêt.
+    if (!nextScene.liaison && !nextScene.terminal) {
+      mutateMemory((m) => {
+        const f: Faits = { run: {}, perm: { ...m.faits } };
+        noterVisite(f, nextScene.id);
+        m.faits = f.perm;
+      });
+    }
+    setEtatsIds(idsEtats(faitsDe(runRef.current)));
     if (bailloner) setRelicSpent(true);
     // Résolution jouée → le chapitre entre dans la rotation du compte (le
     // prochain tirage évitera ceux déjà vécus tant qu'il en reste des neufs).
@@ -1234,12 +1435,19 @@ export default function Scene() {
     // dé, l'écran suivant s'ouvre sur les états encore actifs — un petit
     // libellé « état temporaire », le nom, jamais un chiffre.
     const activeEffects = runRef.current?.effects ?? [];
-    if (opts?.result !== undefined && activeEffects.length > 0) {
-      entries.unshift({
-        id: nextId(),
-        kind: "etat",
-        effects: activeEffects.map((e) => ({ effectId: e.id, label: e.label, positive: e.delta > 0 })),
-      });
+    // Le bandeau d'états : les NOUVEAUX états d'abord (spec 4/08), puis les
+    // anciens effets narratifs le temps de la transition du combat.
+    // ⚠️ PLAFOND D'AFFICHAGE de trois (spec §2) — ce n'est pas une limite du
+    // système : les autres restent actifs et consultables dans Essence. On
+    // garde les plus RÉCENTS : ce qui vient d'arriver au héros se lit d'abord.
+    const bandeau = [
+      ...etatsActifs(idsEtats(faitsAv))
+        .slice(-PLAFOND_AFFICHAGE)
+        .map((e) => ({ effectId: e.id, label: e.nom, positive: e.groupe === "faveur" })),
+      ...activeEffects.map((e) => ({ effectId: e.id, label: e.label, positive: e.delta > 0 })),
+    ].slice(0, PLAFOND_AFFICHAGE);
+    if (opts?.result !== undefined && bandeau.length > 0) {
+      entries.unshift({ id: nextId(), kind: "etat", effects: bandeau });
     }
     setSelectedId(null);
     setRoll(null);
@@ -1343,6 +1551,19 @@ export default function Scene() {
       return;
     }
 
+    // ÉTAT posé par le choix (spec §2) — le monde y réagira ensuite.
+    if (choice.poseEtat) poserEtatRun(choice.poseEtat);
+    // BESOIN satisfait : l'horloge repart de ce jour-là, et l'état qu'il avait
+    // posé se lève (manger guérit la faim — pas la jambe : les groupes
+    // d'exclusivité restent respectés, on ne touche qu'à CET état).
+    // ⚠️ Un choix RISQUÉ ne répond au besoin QUE s'il réussit : le Rebouteux
+    // qui recule d'un pas et refuse de te toucher ne peut pas lever ta fièvre.
+    // On diffère donc jusqu'à la résolution du jet ; les choix sans dé
+    // (passifs, repos, vol) répondent immédiatement.
+    if (choice.repondBesoin) {
+      if (choice.risky) besoinEnAttente.current = choice.repondBesoin;
+      else repondreAuBesoin(choice.repondBesoin);
+    }
     // Persistance environnementale (§17) : trace durable relue aux runs suivantes.
     if (choice.setsEnvFlag) {
       const flag = choice.setsEnvFlag;
@@ -1417,6 +1638,7 @@ export default function Scene() {
           if (learned) run.savoirs = [...(run.savoirs ?? []), learned];
           if (fragment) run.fragmentsLus = [...(run.fragmentsLus ?? []), fragment.index];
         });
+        if (poi.poseEtat) poserEtatRun(poi.poseEtat);
         if (poi.setsEnvFlag) {
           const flag = poi.setsEnvFlag;
           mutateMemory((m) => {
@@ -1451,7 +1673,10 @@ export default function Scene() {
     // Le Soupçon (chantier 3) : l'ACTE compte, pas son issue — le delta d'un
     // choix s'applique dès qu'il est pris. Silencieux, clampé 0..6.
     if (choice.soupcon) {
-      const delta = choice.soupcon;
+      // MARQUÉ : « le Soupçon monte deux fois plus vite ». La baisse, elle,
+      // reste normale — être marqué ne facilite pas la réhabilitation.
+      const marque = etatsRendus.some((e) => e.soupconDouble);
+      const delta = choice.soupcon > 0 && marque ? choice.soupcon * 2 : choice.soupcon;
       // …et il a un TÉMOIN (5/08) : le compteur devient quelqu'un. Le don
       // « silence » d'une relique en efface un — le premier inscrit, celui qui
       // aurait entraîné les autres.
@@ -1499,9 +1724,14 @@ export default function Scene() {
       // secours d'aucun état ni d'aucune faveur.
       const froideur = dette === "froideur" && choice.risky.stat === "EMPATHIE" ? -1 : 0;
       const gele = dette === "gel" && (runRef.current?.rolls?.length ?? 0) === 0;
+      // LES ÉTATS (spec 4/08 §2) — ils modifient le jet ET se disent sous
+      // l'anneau. Un état qui pèse en silence serait « un chiffre camouflé »,
+      // ce que la spec refuse explicitement.
+      const actifs = etatsActifs(idsEtats(faitsDe(runRef.current)));
+      const modEtat = modEtats(actifs, choice.risky.stat as StatNom);
       const modifier = gele
         ? passives + statBonus
-        : effects.reduce((sum, e) => sum + e.delta, 0) + passives + statBonus + faveur + froideur;
+        : effects.reduce((sum, e) => sum + e.delta, 0) + passives + statBonus + faveur + froideur + modEtat;
       // Courbe d'entrée invisible (spec 21/07) : seuil légèrement abaissé les
       // 2-3 premières morts, sans aucun affichage. L'Anneau, calculé sur ce
       // même seuil, montrera juste un peu plus d'encoches pleines — cohérent.
@@ -1512,7 +1742,9 @@ export default function Scene() {
       // courbe d'entrée : la fin d'une traversée ne doit jamais rester molle.
       const trav = runRef.current?.trav;
       const tension = trav && trav.visited.length >= trav.target - 1 ? 1 : 0;
-      const threshold = Math.max(2, choice.risky.threshold - soft + tension);
+      // Fiévreux relève le seuil des QUATRE stats d'un cran — pas un malus au
+      // jet : une difficulté du monde entier, qui se lit dans l'Anneau.
+      const threshold = Math.max(2, choice.risky.threshold - soft + tension + seuilEtats(actifs));
       // Beat fatal (30/07) : la scène sait AVANT le verdict si un palier
       // d'échec tue — santé − coût ≤ 0, ou procès de fixation raté. Le dé
       // s'en sert pour poser la face rongée et « MORT » au settle, à la
@@ -1526,7 +1758,7 @@ export default function Scene() {
         threshold,
         outcomes: choice.risky.outcomes,
         modifier,
-        effectLabel: effects[0]?.label,
+        etatHints: hintsEtats(actifs),
         highStakes: choice.risky.highStakes,
         fatalCheck: (tier) => {
           if (!tierIsFail(tier)) return false;
@@ -1540,15 +1772,29 @@ export default function Scene() {
       // Plus AUCUNE consommation automatique d'objet (spec 21/07 point 4 :
       // « rien d'automatique, jamais ») — le soin d'un actif est une décision
       // du joueur (menu → Utiliser, ou 4e choix contextuel).
+      // USURE (Etat.usureParJour) : la fièvre mange une part du repos. Elle ne
+      // tue pas — garde-fou n°3 : un besoin ne tue jamais, il rend le reste
+      // plus dur. Le plancher à 0.08 le garantit.
+      const usure = etatsActifs(idsEtats(faitsDe(runRef.current)))
+        .reduce((n, e) => n + (e.usureParJour ?? 0), 0);
       persist((run) => {
         run.day += 1;
-        run.health = Math.min(1, run.health + 0.35);
+        run.health = Math.max(0.08, Math.min(1, run.health + 0.35 - usure));
+        // BESOINS (spec §3) : dormir est satisfait ici. Les besoins se comptent
+        // en JOURS, jamais en scènes — garde-fou n°2 : un joueur qui traverse
+        // vite n'aura presque jamais faim.
+        run.besoins = { ...(run.besoins ?? {}), dormir: run.day };
         run.effects = run.effects
           .filter((e) => e.delta > 0 || e.scenesLeft >= 900)
           .map((e) => (e.scenesLeft >= 900 && e.delta < -1 ? { ...e, delta: -1 } : e));
       });
       const newDay = runRef.current?.day ?? day + 1;
       setDay(newDay);
+      // …et les besoins NON satisfaits finissent par poser leur état. Aucune
+      // jauge, aucun compteur : le besoin ne se manifeste QUE par l'état.
+      for (const b of besoinsEchus(newDay, runRef.current?.besoins ?? {}, idsEtats(faitsDe(runRef.current)))) {
+        poserEtatRun(b.etat);
+      }
       setHealth(runRef.current?.health ?? 1);
       mutateMemory((m) => {
         m.bestDays = Math.max(m.bestDays, newDay);
@@ -1598,7 +1844,9 @@ export default function Scene() {
     }
   }
 
-  // Paliers de santé discrets (spec §5) : Intact · Marqué · Entaillé · Au seuil.
+  // Paliers de santé discrets (spec §5) : Intact · Éprouvé · Entaillé · Au
+  // seuil. ⚠️ « Marqué » a été RENOMMÉ « Éprouvé » (spec 4/08 §2) : le nom part
+  // au nouvel état social, et deux choses homonymes seraient illisibles.
   const erosion = health < 0.25 ? 3 : health < 0.5 ? 2 : health < 0.75 ? 1 : 0;
 
   return (
@@ -1775,6 +2023,7 @@ export default function Scene() {
             // simple — puis la relique est fendue pour cette vie. Le verdict
             // affiché ne change pas (le jet a bien été critique) : c'est la
             // CONSÉQUENCE qui est prise par la relique, pas le dé.
+            let combatPerdu = false;
             const relicCoussin = activeRelic(loadMemory());
             const amorti =
               (tier === "malediction" || tier === "critique") &&
@@ -1805,6 +2054,9 @@ export default function Scene() {
                   { id: "aguerri", label: "AGUERRI", delta: 2, scenesLeft: 3 },
                   ...run.effects.filter((e) => e.id !== "aguerri"),
                 ];
+              // BOITEUX : « chute, piège, COMBAT PERDU ». Posé hors persist,
+              // juste après (poserEtatRun a son propre persist).
+              if (scene.combat && tierIsFail(tier)) combatPerdu = true;
               if (scene.combat && tierIsFail(tier))
                 run.effects = [
                   { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 999 },
@@ -1843,6 +2095,21 @@ export default function Scene() {
               }
             });
             const run = runRef.current!;
+            // Le remède ne prend QUE si le jet a tenu — le Rebouteux qui
+            // refuse de te toucher ne lève rien. Un échec ne reporte même pas
+            // l'horloge du besoin : rien ne s'est passé.
+            if (besoinEnAttente.current) {
+              if (!tierIsFail(tier)) repondreAuBesoin(besoinEnAttente.current);
+              besoinEnAttente.current = null;
+            }
+            // État qui ne coûte qu'au RATÉ (eau de la Mare, seuil forcé vu).
+            if (chosen?.poseEtatSiEchec && tierIsFail(tier))
+              poserEtatRun(chosen.poseEtatSiEchec);
+            if (combatPerdu) poserEtatRun("boiteux");
+            // FIXÉ : « le village te croit marqué par le sud (Soupçon élevé) ».
+            // Seuil 4 : assez haut pour que ce soit une trajectoire, assez bas
+            // pour qu'on le vive avant le procès (qui tombe à 6).
+            if ((run.soupcon ?? 0) >= 4) poserEtatRun("fixe");
             setHealth(run.health);
             if (usureDay) setDay(run.day);
             if (amorti) setRelicSpent(true);
@@ -2038,7 +2305,11 @@ function FeedItem({
           <div className="etat-banner-row">
             {entry.effects.map((e) => (
               <span key={e.effectId} className={`etat-chip ${e.positive ? "is-positive" : ""}`}>
-                {(e.effectId === "aguerri" || e.effectId === "entaille") && (
+                {/* La vignette n'apparaît que si le fichier existe VRAIMENT :
+                    les six nouveaux états n'ont pas encore leur icône, et le
+                    nom seul vaut mieux qu'une image cassée. Le manifeste fait
+                    autorité — plus de liste blanche à tenir à la main. */}
+                {assetExiste(`assets/etat_${e.effectId}.png`) && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img alt="" src={assetUrl(`assets/etat_${e.effectId}.png`)} className="etat-chip-icon" />
                 )}
