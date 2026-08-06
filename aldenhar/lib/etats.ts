@@ -74,6 +74,14 @@ export type Etat = {
   usureParJour?: number;
   /** Annule le premier échec critique de la journée (Serein — 2ᵉ lot). */
   amortitCritique?: boolean;
+  /**
+   * Un guide connaît les raccourcis : un échec dur ne coûte plus le JOUR
+   * qu'il coûte d'habitude. Bénéfice réel, jamais chiffré — il se lit au fait
+   * que la puce « Jour » ne bouge pas.
+   */
+  evitePerteJour?: boolean;
+  /** Le compagnon détale au premier combat. Se dit, ne se subit pas en silence. */
+  fuitLeCombat?: string;
 };
 
 /**
@@ -224,6 +232,51 @@ export const ETATS: Etat[] = [
     /* AMBIGU, et c'est le cœur de l'état : catastrophique socialement, mais
        ceux qui portent la même croix se mettent à parler. */
     ouvreConfidences: true,
+  },
+  {
+    /**
+     * ACCOMPAGNÉ — le premier COMPAGNON du jeu (retour Patrick 6/08 : « le
+     * gamin des murets, c'est un compagnon de voyage temporaire — jusqu'où il
+     * nous emmène, quel bénéfice ? »).
+     *
+     * Les trois réponses sont dans cet objet, et elles sont dites en jeu par
+     * le Gamin lui-même, jamais par l'interface :
+     *  • JUSQU'OÙ — `expires` posé à 2 lieux à l'acquisition. Il l'annonce
+     *    (« deux murets, après c'est plus chez moi ») et il tient parole.
+     *  • QUEL BÉNÉFICE — il connaît les raccourcis : un échec dur ne coûte
+     *    plus le Jour qu'il coûte d'habitude. Aucun chiffre : ça se lit au
+     *    fait que la puce « Jour » ne bouge pas.
+     *  • CE QUE ÇA COÛTE — emmener l'enfant du hameau se voit (+1 Soupçon,
+     *    posé par le choix), et le premier combat le fait détaler.
+     *
+     * Groupe `faveur` : il n'est chassé par aucun état de corps ni de statut
+     * social — être boiteux ne fait pas partir un gamin.
+     */
+    id: "accompagne",
+    nom: "ACCOMPAGNÉ",
+    groupe: "faveur",
+    source: "Le Gamin des Murets a accepté de te guider.",
+    remede: "Il rentre chez lui au bout de deux lieux — ou détale au premier combat.",
+    manifestation:
+      "Il marche trois pas devant, sur la crête des murets, là où personne " +
+      "ne marche. De temps en temps il s'arrête, regarde quelque chose que " +
+      "tu ne vois pas, et repart par un autre côté sans expliquer.",
+    reactions: [
+      "« Pas par là. » Il ne dit pas pourquoi. Tu contournes, et tu gagnes " +
+        "une demi-heure sur un chemin que tu aurais juré plus court.",
+      "Un homme te croise, voit l'enfant à ta hauteur, et son salut s'arrête " +
+        "au milieu. Emmener un petit du hameau dans la lande, ça se raconte.",
+    ],
+    guerison:
+      "Il s'arrête net au bout du muret. « Là, c'est plus chez moi. » Il " +
+      "attend que tu sois assez loin pour ne plus pouvoir le rappeler, puis " +
+      "il fait demi-tour en courant sur la pierre.",
+    hint: "Le gamin connaît les raccourcis",
+    evitePerteJour: true,
+    fuitLeCombat:
+      "Le gamin est parti avant que tu aies vu quoi. Pas un cri, pas un mot " +
+      "— juste le bruit de ses pieds sur la pierre sèche, qui s'éloigne, et " +
+      "qui ne ralentit pas.",
   },
 ];
 

@@ -52,8 +52,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-06T07:39:35Z",
- "commit": "c0a7e37",
+ "genere": "2026-08-06T08:17:21Z",
+ "commit": "e342c77",
  "zones": [
   {
    "id": "landes",
@@ -177,7 +177,7 @@
      ],
      "nbScenes": 15,
      "nbRencontres": 0,
-     "nbPois": 4,
+     "nbPois": 5,
      "entrees": [],
      "sorties": [],
      "roles": [],
@@ -1055,6 +1055,7 @@
    "adversaire": "bete-chemins-creux",
    "adversaireNom": "La Bête des Chemins Creux",
    "combat": true,
+   "chronometree": 4000,
    "nom": "Bete chemins creux",
    "lieu": "chemin_creux",
    "typeScene": "arrivee",
@@ -1764,6 +1765,24 @@
      "promptImage": "",
      "etat": "valide",
      "alertes": []
+    },
+    {
+     "id": "gamin-sur-le-muret",
+     "label": "Le gamin, en haut du muret",
+     "approche": "Un enfant est assis sur la crête d'un muret, les pieds dans le vide côté lande. Il ne joue à rien. Il regarde le sud comme les adultes d'ici regardent le sud, et il le fait mieux qu'eux.",
+     "examen": "Il te laisse arriver jusqu'au pied du muret sans bouger. De près, ses genoux sont râpés partout pareil — quelqu'un qui court sur la pierre, pas sur les chemins. Il attend que tu parles le premier.",
+     "ouvreSur": "gamin-murets-1",
+     "image": {
+      "fichier": "monstre_gamin_murets_a.png",
+      "hash": "020cdcd3",
+      "taille": 28618,
+      "recent": false,
+      "existe": true
+     },
+     "description": "",
+     "promptImage": "",
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "suite": "hameau-entree-3",
@@ -1781,6 +1800,7 @@
    "promptImage": "narrow street of an old abandoned hamlet, crooked stone houses, wooden doors marked with chalk crosses, closed shutters, wet cobblestones, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [
     "femme-seuil-1",
+    "gamin-murets-1",
     "hameau-entree-3"
    ],
    "mèneIci": [
@@ -1959,6 +1979,108 @@
    "alertes": []
   },
   {
+   "id": "gamin-murets-1",
+   "narration": [
+    "« T\\u2019es celui qui est entré ce matin. » Ce n\\u2019est pas une question. Il compte sur ses doigts, sans te regarder : « Trois avant toi cette année. Deux sont ressortis. »",
+    "Il désigne la lande du menton, la crête des murets qui court vers le sud, basse et sèche. « Y a le chemin, et y a les murets. Le chemin, il fait le tour de tout. Les murets, non. »"
+   ],
+   "choix": [
+    {
+     "id": "gamin-demander-guide",
+     "label": "Lui demander de te guider",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 10,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Il saute du muret avant même que tu finisses ta phrase. « Deux murets. Après c\\u2019est plus chez moi. » Il te tend la main pour que tu l\\u2019aides à passer un trou dans la pierre — et c\\u2019est TOI qu\\u2019il fait passer devant, à l\\u2019endroit précis où le mur tient encore.",
+      "reussite": "Il te jauge un moment, puis hausse une épaule. « Deux murets. Après, c\\u2019est plus chez moi. » Il descend, se met trois pas devant, et attend que tu suives — pas l\\u2019inverse.",
+      "echec": "Il secoue la tête. « Ma mère dit que ceux qui entrent, faut pas les suivre dehors. » Il reste sur son muret. Mais il ne s\\u2019en va pas non plus, et il te regarde partir longtemps.",
+      "funeste": "1 naturel. « Toi t\\u2019as déjà un poteau quelque part. » Il le dit sans méchanceté, comme on annonce la pluie, et il s\\u2019en va par l\\u2019autre côté du muret. ♦ −2"
+     },
+     "soupcon": 1
+    },
+    {
+     "id": "gamin-questionner",
+     "label": "Lui demander qui est ressorti",
+     "type": "passif",
+     "consequence": "« Le grand avec la lanterne. Et une dame, mais elle a pas pris le sud. » Il replie deux doigts. « L\\u2019autre, il est allé jusqu\\u2019à la palissade. Il a fait demi-tour. Il dit que c\\u2019est pas fermé, c\\u2019est juste que ça retient. »",
+     "donneSavoir": "savoir_palissade_retient"
+    },
+    {
+     "id": "gamin-laisser",
+     "label": "Le laisser sur son mur",
+     "type": "passif",
+     "consequence": "Tu redescends la ruelle. Il ne te rappelle pas. Beaucoup plus tard, quelque part au sud, tu longeras un muret bas qui va exactement où tu voulais aller, et tu penseras à lui."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "gamin-murets-2",
+   "image": {
+    "fichier": "monstre_gamin_murets_a.png",
+    "hash": "020cdcd3",
+    "taille": 28618,
+    "recent": false,
+    "existe": true
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "gamin-murets-2"
+   ],
+   "mèneIci": [
+    "hameau-entree-2"
+   ],
+   "roles": [
+    "optionnel"
+   ],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "gamin-murets-2",
+   "narration": [
+    "Le muret repart vers le sud, à hauteur de hanche, en pierre sèche posée sans mortier. On voit à l\\u2019usure du sommet que quelqu\\u2019un y marche tous les jours, et que ce quelqu\\u2019un est petit."
+   ],
+   "choix": [
+    {
+     "id": "gamin-partir-ensemble",
+     "label": "Partir par les murets",
+     "type": "passif",
+     "consequence": "Il passe devant sans se retourner, du pas de quelqu\\u2019un qui n\\u2019a jamais eu besoin de regarder ses pieds ici. Derrière vous, la ruelle se referme sur ses volets. Personne ne vous arrête. Plusieurs personnes vous regardent partir.",
+     "exigeEtat": "accompagne"
+    },
+    {
+     "id": "gamin-reprendre-la-rue",
+     "label": "Reprendre la ruelle",
+     "type": "passif",
+     "consequence": "Tu laisses le muret filer vers le sud sans toi. La ruelle, elle, fait le tour de tout — c\\u2019est bien ce qu\\u2019il avait dit."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hameau-entree-3",
+   "image": {
+    "fichier": "monstre_gamin_murets_a.png",
+    "hash": "020cdcd3",
+    "taille": 28618,
+    "recent": false,
+    "existe": true
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "hameau-entree-3"
+   ],
+   "mèneIci": [
+    "gamin-murets-1"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
    "id": "femme-seuil-3",
    "narration": [
     "Elle a déjà repris sa place sur le seuil quand tu repars. De la rue, on ne voit pas qu'elle a parlé à quelqu'un. On ne voit qu'une femme qui regarde le sud.",
@@ -2078,6 +2200,7 @@
    ],
    "mèneIci": [
     "femme-seuil-3",
+    "gamin-murets-2",
     "hameau-entree-2"
    ],
    "roles": [],
@@ -4779,6 +4902,12 @@
    "par": "femme-sur-le-seuil"
   },
   {
+   "de": "hameau-entree-2",
+   "vers": "gamin-murets-1",
+   "type": "secondaire",
+   "par": "gamin-sur-le-muret"
+  },
+  {
    "de": "femme-seuil-1",
    "vers": "femme-seuil-2",
    "type": "principal"
@@ -4786,6 +4915,16 @@
   {
    "de": "femme-seuil-2",
    "vers": "femme-seuil-3",
+   "type": "principal"
+  },
+  {
+   "de": "gamin-murets-1",
+   "vers": "gamin-murets-2",
+   "type": "principal"
+  },
+  {
+   "de": "gamin-murets-2",
+   "vers": "hameau-entree-3",
    "type": "principal"
   },
   {
@@ -4957,12 +5096,6 @@
    "hash": "bd08f765",
    "taille": 15528,
    "recent": true
-  },
-  {
-   "fichier": "monstre_gamin_murets_a.png",
-   "hash": "020cdcd3",
-   "taille": 28618,
-   "recent": false
   },
   {
    "fichier": "monstre_geryon.png",
@@ -5764,6 +5897,23 @@
     "ceux qui portent la même croix te parlent"
    ],
    "lignesIntruses": []
+  },
+  {
+   "id": "accompagne",
+   "nom": "ACCOMPAGNÉ",
+   "groupe": "faveur",
+   "source": "Le Gamin des Murets a accepté de te guider.",
+   "manifestation": "Il marche trois pas devant, sur la crête des murets, là où personne ne marche. De temps en temps il s'arrête, regarde quelque chose que tu ne vois pas, et repart par un autre côté sans expliquer.",
+   "reactions": [
+    "« Pas par là. » Il ne dit pas pourquoi. Tu contournes, et tu gagnes une demi-heure sur un chemin que tu aurais juré plus court.",
+    "Un homme te croise, voit l'enfant à ta hauteur, et son salut s'arrête au milieu. Emmener un petit du hameau dans la lande, ça se raconte."
+   ],
+   "remede": "Il rentre chez lui au bout de deux lieux — ou détale au premier combat.",
+   "guerison": "Il s'arrête net au bout du muret. « Là, c'est plus chez moi. » Il attend que tu sois assez loin pour ne plus pouvoir le rappeler, puis il fait demi-tour en courant sur la pierre.",
+   "hint": "Le gamin connaît les raccourcis",
+   "jets": {},
+   "effets": [],
+   "lignesIntruses": []
   }
  ],
  "besoins": [
@@ -5802,18 +5952,18 @@
   }
  ],
  "totaux": {
-  "scenes": 61,
-  "pointsInteret": 38,
-  "choix": 148,
+  "scenes": 63,
+  "pointsInteret": 39,
+  "choix": 153,
   "illustrations": 226,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 51,
+  "reserve": 50,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
   "temoins": 25,
-  "etats": 6,
+  "etats": 7,
   "besoins": 3
  }
 }

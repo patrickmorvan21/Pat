@@ -1580,7 +1580,7 @@ export default function Scene() {
     }
 
     // ÉTAT posé par le choix (spec §2) — le monde y réagira ensuite.
-    if (choice.poseEtat) poserEtatRun(choice.poseEtat);
+    if (choice.poseEtat) poserEtatRun(choice.poseEtat, choice.poseEtatDuree);
     // BESOIN satisfait : l'horloge repart de ce jour-là, et l'état qu'il avait
     // posé se lève (manger guérit la faim — pas la jambe : les groupes
     // d'exclusivité restent respectés, on ne touche qu'à CET état).
@@ -2033,7 +2033,11 @@ export default function Scene() {
             // hors combat coûte un JOUR — coût visible. En combat, le coût
             // visible est l'aggravation ENTAILLÉ (persistante) déjà posée.
             const hardFail = tier === "critique" || tier === "malediction";
-            const usureDay = hardFail && !scene.combat;
+            // Un guide connaît les raccourcis : l'échec dur ne coûte plus le
+            // JOUR qu'il coûte d'habitude. Bénéfice réel, jamais chiffré — il
+            // se lit au fait que la puce « Jour » ne bouge pas.
+            const guide = etatsActifs(idsEtats(faitsDe(runRef.current))).some((e) => e.evitePerteJour);
+            const usureDay = hardFail && !scene.combat && !guide;
             // Objet gagné par un choix d'examen réussi (grantsLoot, 23/07) :
             // l'objet se mérite — jamais accordé sur un palier d'échec.
             const chosen = scene.choices.find((c) => c.id === selectedId);
@@ -2133,6 +2137,21 @@ export default function Scene() {
             // État qui ne coûte qu'au RATÉ (eau de la Mare, seuil forcé vu).
             if (chosen?.poseEtatSiEchec && tierIsFail(tier))
               poserEtatRun(chosen.poseEtatSiEchec);
+            // …et celui qui ne s'obtient QU'au jet tenu (un compagnon accepte
+            // ou refuse ; il ne vient pas quand il vient de te dire non).
+            if (chosen?.poseEtatSiReussite && !tierIsFail(tier))
+              poserEtatRun(chosen.poseEtatSiReussite, chosen.poseEtatDuree);
+            // Le compagnon détale au premier combat — et ça se dit.
+            if (scene.combat) {
+              const f = etatsActifs(idsEtats(faitsDe(runRef.current))).find((e) => e.fuitLeCombat);
+              if (f) {
+                const ff = faitsDe(runRef.current);
+                applique([{ clear: f.id }], ff, step);
+                persist((r) => { r.faits = ff.run; });
+                setEtatsIds(idsEtats(ff));
+                guerisonEnAttente.current = [...guerisonEnAttente.current, f.fuitLeCombat!];
+              }
+            }
             if (combatPerdu) poserEtatRun("boiteux");
             // FIXÉ : « le village te croit marqué par le sud (Soupçon élevé) ».
             // Seuil 4 : assez haut pour que ce soit une trajectoire, assez bas

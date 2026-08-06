@@ -161,6 +161,18 @@ export type Choice = {
    * bois, et rien ne te prend »).
    */
   poseEtatSiEchec?: string;
+  /**
+   * ÉTAT POSÉ SEULEMENT SI LE JET TIENT. Le Gamin n'accompagne que celui qu'il
+   * a décidé de suivre : poser l'état à la sélection ferait venir un compagnon
+   * qui vient de te refuser.
+   */
+  poseEtatSiReussite?: string;
+  /**
+   * Durée en LIEUX de l'état posé par ce choix. Absent = l'état dure jusqu'à
+   * ce qu'un remède le lève (blessures, statuts sociaux). Présent = il expire
+   * seul — un compagnon qui a annoncé « deux murets » s'en va au deuxième.
+   */
+  poseEtatDuree?: number;
 };
 
 /**
@@ -888,6 +900,57 @@ export const SCENES: Scene[] = [
         "Bête ne chasse que dans le creux — c'est son couloir, son terrier, " +
         "sa table. Et tu es dessus.",
     ],
+    /**
+     * ⚠️ AMENDE la règle « jamais sous 6000 ms » du 14/07 (retour Patrick
+     * 6/08 : « il y avait un petit timer, quatre secondes, ça joue sur le
+     * réflexe — je l'ai perdu »).
+     *
+     * Les 6 secondes avaient été posées quand le compte à rebours pouvait
+     * s'armer PENDANT que le texte se tapait encore : il fallait de la marge
+     * pour lire. Il ne s'arme plus qu'une fois les choix réellement jouables
+     * (`countdownArmed`), donc 4 secondes sont 4 secondes de DÉCISION.
+     *
+     * Réservé aux scènes où la précipitation est diégétique — une bête qui
+     * charge dans un couloir. Les scènes de délibération gardent 7000 ms.
+     * Plancher absolu : 4000 ms.
+     */
+    timed: {
+      ms: 4000,
+      timeoutNarration:
+        "Le temps que tu décides, elle a couvert le creux. Tu la prends " +
+        "dans les jambes, tu pars en arrière, et le ciel te passe au-dessus " +
+        "de la tête — cette bande de ciel étroite entre deux murs de terre, " +
+        "la dernière chose que voient ceux qui décident trop lentement ici.",
+      timeoutChoices: [
+        {
+          id: "bete-au-sol",
+          label: "Frapper depuis le sol",
+          risky: {
+            stat: "COURAGE",
+            threshold: 13,
+            outcomes: outcomes(
+              "20 naturel. Couché, tu as l'angle qu'on n'a jamais debout : par en dessous, là où le corps n'est plus qu'une peau tendue. La Bête s'ouvre en deux sur toute sa longueur et t'enjambe encore trois mètres avant de comprendre qu'elle est morte.",
+              "Tu frappes de bas en haut, mal, mais assez. Elle recule d'un bond sec, se retourne dans le creux — un demi-tour de bête qui ne fait jamais demi-tour — et s'en va par où elle est venue.",
+              "Le coup part de trop loin. Elle passe sur toi de tout son long, sans même s'arrêter, et le creux redevient silencieux. Tu mets un moment à comprendre ce qu'elle a emporté au passage.",
+              "1 naturel. Tu frappes le talus. Le talus, lui, ne bouge pas. ♦ −2"
+            ),
+          },
+        },
+        {
+          id: "bete-faire-le-mort",
+          label: "Ne plus bouger du tout",
+          // L'immobilité est une vraie réponse (§19) : la Bête chasse le
+          // mouvement dans l'axe du creux.
+          passive: {
+            consequence:
+              "Tu restes exactement où elle t'a mis. Elle te renifle sur " +
+              "toute ta longueur, longuement, professionnellement — puis " +
+              "elle repart. Tu comprends en te relevant : elle ne cherchait " +
+              "pas à manger. Elle vérifiait si tu étais du couloir.",
+          },
+        },
+      ],
+    },
     choices: [
       {
         id: "frapper-bete",
@@ -1459,6 +1522,20 @@ export const SCENES: Scene[] = [
           "bouge pas quand tu approches. Elle t'a vu. Elle a décidé que tu " +
           "n'étais pas la bonne silhouette.",
       },
+      {
+        id: "gamin-sur-le-muret",
+        label: "Le gamin, en haut du muret",
+        leadsTo: "gamin-murets-1",
+        illustration: "assets/monstre_gamin_murets_a.png",
+        approche:
+          "Un enfant est assis sur la crête d'un muret, les pieds dans le " +
+          "vide côté lande. Il ne joue à rien. Il regarde le sud comme les " +
+          "adultes d'ici regardent le sud, et il le fait mieux qu'eux.",
+        examen:
+          "Il te laisse arriver jusqu'au pied du muret sans bouger. De près, " +
+          "ses genoux sont râpés partout pareil — quelqu'un qui court sur la " +
+          "pierre, pas sur les chemins. Il attend que tu parles le premier.",
+      },
     ],
     choices: [
       {
@@ -1617,6 +1694,110 @@ export const SCENES: Scene[] = [
       },
     ],
     jailerLine: "Une mèche de cheveux comme monnaie. Tu vois, même ici, tout le monde comprend le principe du pacte.",
+  },
+  /* ── LE GAMIN DES MURETS — premier compagnon temporaire (retour 6/08) ──
+     Ouvert par le point d'intérêt de la ruelle du Hameau, donc entièrement
+     refusable : il suffit de ne pas regarder le muret. Rejoint la séquence
+     d'entrée par `chainNext`, comme la Femme au Seuil — une rencontre ne fait
+     jamais dérailler une séquence garantie.
+
+     Les trois questions de Patrick trouvent leur réponse DANS LA BOUCHE du
+     gamin, jamais dans l'interface : jusqu'où (deux lieux, il le dit), quel
+     bénéfice (il connaît les raccourcis), et ce que ça coûte (le hameau te
+     voit partir avec un des siens). Voir l'état ACCOMPAGNÉ dans lib/etats.ts. */
+  {
+    id: "gamin-murets-1",
+    illustration: "assets/monstre_gamin_murets_a.png",
+    narration: [
+      "« T\u2019es celui qui est entré ce matin. » Ce n\u2019est pas une question. " +
+        "Il compte sur ses doigts, sans te regarder : « Trois avant toi cette " +
+        "année. Deux sont ressortis. »",
+      "Il désigne la lande du menton, la crête des murets qui court vers le " +
+        "sud, basse et sèche. « Y a le chemin, et y a les murets. Le chemin, " +
+        "il fait le tour de tout. Les murets, non. »",
+    ],
+    choices: [
+      {
+        id: "gamin-demander-guide",
+        label: "Lui demander de te guider",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Il saute du muret avant même que tu finisses ta phrase. « Deux murets. Après c\u2019est plus chez moi. » Il te tend la main pour que tu l\u2019aides à passer un trou dans la pierre — et c\u2019est TOI qu\u2019il fait passer devant, à l\u2019endroit précis où le mur tient encore.",
+            "Il te jauge un moment, puis hausse une épaule. « Deux murets. Après, c\u2019est plus chez moi. » Il descend, se met trois pas devant, et attend que tu suives — pas l\u2019inverse.",
+            "Il secoue la tête. « Ma mère dit que ceux qui entrent, faut pas les suivre dehors. » Il reste sur son muret. Mais il ne s\u2019en va pas non plus, et il te regarde partir longtemps.",
+            "1 naturel. « Toi t\u2019as déjà un poteau quelque part. » Il le dit sans méchanceté, comme on annonce la pluie, et il s\u2019en va par l\u2019autre côté du muret. ♦ −2"
+          ),
+        },
+        // Il ne suit que celui qu'il a décidé de suivre — d'où « si réussite ».
+        poseEtatSiReussite: "accompagne",
+        poseEtatDuree: 2, // « Deux murets. Après c'est plus chez moi. »
+        // Emmener un enfant du hameau dans la lande, ça se raconte le soir.
+        soupcon: 1,
+      },
+      {
+        id: "gamin-questionner",
+        label: "Lui demander qui est ressorti",
+        grantsSavoir: "savoir_palissade_retient",
+        passive: {
+          consequence:
+            "« Le grand avec la lanterne. Et une dame, mais elle a pas pris " +
+            "le sud. » Il replie deux doigts. « L\u2019autre, il est allé " +
+            "jusqu\u2019à la palissade. Il a fait demi-tour. Il dit que c\u2019est " +
+            "pas fermé, c\u2019est juste que ça retient. »",
+        },
+      },
+      {
+        id: "gamin-laisser",
+        label: "Le laisser sur son mur",
+        passive: {
+          consequence:
+            "Tu redescends la ruelle. Il ne te rappelle pas. Beaucoup plus " +
+            "tard, quelque part au sud, tu longeras un muret bas qui va " +
+            "exactement où tu voulais aller, et tu penseras à lui.",
+        },
+      },
+    ],
+    chainNext: "gamin-murets-2",
+    jailerLine: "Celui-là compte mieux que mes greffiers. Il compte les sorties.",
+  },
+  {
+    id: "gamin-murets-2",
+    illustration: "assets/monstre_gamin_murets_a.png",
+    chainNext: "hameau-entree-3",
+    narration: [
+      "Le muret repart vers le sud, à hauteur de hanche, en pierre sèche " +
+        "posée sans mortier. On voit à l\u2019usure du sommet que quelqu\u2019un y " +
+        "marche tous les jours, et que ce quelqu\u2019un est petit.",
+    ],
+    choices: [
+      {
+        id: "gamin-partir-ensemble",
+        // ⚠️ Ce choix n'existe QUE si le gamin a accepté : c'est l'état posé
+        // au beat précédent qui l'ouvre (voir requiresEtat, filtré en amont).
+        label: "Partir par les murets",
+        requiresEtat: "accompagne",
+        passive: {
+          consequence:
+            "Il passe devant sans se retourner, du pas de quelqu\u2019un qui " +
+            "n\u2019a jamais eu besoin de regarder ses pieds ici. Derrière " +
+            "vous, la ruelle se referme sur ses volets. Personne ne vous " +
+            "arrête. Plusieurs personnes vous regardent partir.",
+        },
+      },
+      {
+        id: "gamin-reprendre-la-rue",
+        label: "Reprendre la ruelle",
+        passive: {
+          consequence:
+            "Tu laisses le muret filer vers le sud sans toi. La ruelle, " +
+            "elle, fait le tour de tout — c\u2019est bien ce qu\u2019il avait dit.",
+        },
+      },
+    ],
+    jailerLine:
+      "Deux murets. Il a dit deux murets, et il s’y tiendra. C’est bien la seule chose qu’on tienne, par ici.",
   },
   {
     id: "femme-seuil-3",
@@ -3979,10 +4160,19 @@ const LIEU_NOM: Record<string, string> = {
   "pendu-qui-parle": "La Colline aux Gibets",
   "champ-des-fixes": "Le Champ des Fixés",
   "pendu-mal-fixe": "Le Champ des Fixés",
-  "serment-hameau": "Le Hameau des Renonçants",
-  "hameau-entree": "Le Hameau des Renonçants",
+  /* ⚠️ Le SEUIL et le VILLAGE portaient le même nom (retour Patrick 6/08 :
+     « dans le hameau des Renonçants, il y a le hameau des Renonçants — c'est
+     répété deux fois »). Le doublon venait de là : le lieu-porte s'appelait
+     comme la région qui contient les six lieux intérieurs.
+
+     La séquence d'ENTRÉE se joue à la barrière, dehors — c'est le Seuil.
+     La HALTE se joue dans la grange, dedans — c'est le village. Les nommer
+     séparément supprime le doublon ET dit la vérité géographique. */
+  "serment-hameau": "Le Seuil du Hameau",
+  "hameau-entree": "Le Seuil du Hameau",
+  "gamin-murets": "Le Seuil du Hameau",
+  "femme-seuil": "Le Seuil du Hameau",
   "hameau-halte": "Le Hameau des Renonçants",
-  "femme-seuil": "Le Hameau des Renonçants",
   "marche-muet": "Le Marché Muet",
   "tour-de-guet": "La Tour de Guet effondrée",
   campement: "Le Moulin sans Ailes",

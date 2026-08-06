@@ -227,4 +227,4 @@
  *           hash = même fichier), un bandeau de fraîcheur (date + commit), et
  *           trois filtres : Doublons · Nouveautés · Introuvable.
  */
-export const APP_VERSION = "1.37.2";
+export const APP_VERSION = "1.38.0";
