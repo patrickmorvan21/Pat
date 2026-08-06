@@ -1,6 +1,6 @@
 {
- "genere": "2026-08-06T10:19:32Z",
- "commit": "284b7a3",
+ "genere": "2026-08-06T10:58:16Z",
+ "commit": "a0bcb82",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -955,6 +955,42 @@
    "taille": 29190,
    "modifie": "2026-07-25T08:10:14Z",
    "hash": "525edc71",
+   "recent": false
+  },
+  "scene_hameau_accueil_cloche_c.png": {
+   "taille": 21661,
+   "modifie": "2026-08-06T10:56:15Z",
+   "hash": "22f05ad0",
+   "recent": false
+  },
+  "scene_hameau_accueil_depart_a.png": {
+   "taille": 14249,
+   "modifie": "2026-08-06T10:56:47Z",
+   "hash": "9b4ee237",
+   "recent": false
+  },
+  "scene_hameau_accueil_enfant_c.png": {
+   "taille": 16876,
+   "modifie": "2026-08-06T10:55:10Z",
+   "hash": "83d9cfac",
+   "recent": false
+  },
+  "scene_hameau_accueil_mur_c.png": {
+   "taille": 19016,
+   "modifie": "2026-08-06T10:54:37Z",
+   "hash": "acd7f96f",
+   "recent": false
+  },
+  "scene_hameau_accueil_table_a.png": {
+   "taille": 14598,
+   "modifie": "2026-08-06T10:55:44Z",
+   "hash": "dff69101",
+   "recent": false
+  },
+  "scene_hameau_accueil_volet_c.png": {
+   "taille": 15638,
+   "modifie": "2026-08-06T10:54:06Z",
+   "hash": "05db5d2a",
    "recent": false
   },
   "scene_hameau_croix_craie_a_a.png": {

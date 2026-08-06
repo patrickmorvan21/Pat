@@ -54,8 +54,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-06T10:19:32Z",
- "commit": "284b7a3",
+ "genere": "2026-08-06T10:58:16Z",
+ "commit": "a0bcb82",
  "zones": [
   {
    "id": "landes",
@@ -183,10 +183,8 @@
      "sorties": [],
      "roles": [],
      "dansPool": true,
-     "alertes": [
-      "imageManquante"
-     ],
-     "aCompleter": 6,
+     "alertes": [],
+     "aCompleter": 0,
      "scenePrincipale": "serment-hameau"
     },
     {
@@ -2288,7 +2286,13 @@
    "nom": "La voix au volet",
    "lieu": "seuil_du_hameau",
    "typeScene": "moment",
-   "image": null,
+   "image": {
+    "fichier": "scene_hameau_accueil_volet_c.png",
+    "hash": "05db5d2a",
+    "taille": 15638,
+    "recent": false,
+    "existe": true
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [
@@ -2297,10 +2301,8 @@
    "mèneIci": [],
    "roles": [],
    "acces": "séquence du Hameau",
-   "etat": "acompleter",
-   "alertes": [
-    "imageManquante"
-   ]
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-accueil-mur",
@@ -2352,7 +2354,13 @@
    "nom": "Le mur écrit",
    "lieu": "seuil_du_hameau",
    "typeScene": "moment",
-   "image": null,
+   "image": {
+    "fichier": "scene_hameau_accueil_mur_c.png",
+    "hash": "acd7f96f",
+    "taille": 19016,
+    "recent": false,
+    "existe": true
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [
@@ -2361,10 +2369,8 @@
    "mèneIci": [],
    "roles": [],
    "acces": "séquence du Hameau",
-   "etat": "acompleter",
-   "alertes": [
-    "imageManquante"
-   ]
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-accueil-enfant",
@@ -2416,7 +2422,13 @@
    "nom": "L'enfant qu'on envoie",
    "lieu": "seuil_du_hameau",
    "typeScene": "moment",
-   "image": null,
+   "image": {
+    "fichier": "scene_hameau_accueil_enfant_c.png",
+    "hash": "83d9cfac",
+    "taille": 16876,
+    "recent": false,
+    "existe": true
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [
@@ -2425,10 +2437,8 @@
    "mèneIci": [],
    "roles": [],
    "acces": "séquence du Hameau",
-   "etat": "acompleter",
-   "alertes": [
-    "imageManquante"
-   ]
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-accueil-table",
@@ -2481,7 +2491,13 @@
    "nom": "La table dressée",
    "lieu": "seuil_du_hameau",
    "typeScene": "moment",
-   "image": null,
+   "image": {
+    "fichier": "scene_hameau_accueil_table_a.png",
+    "hash": "dff69101",
+    "taille": 14598,
+    "recent": false,
+    "existe": true
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [
@@ -2490,10 +2506,8 @@
    "mèneIci": [],
    "roles": [],
    "acces": "séquence du Hameau",
-   "etat": "acompleter",
-   "alertes": [
-    "imageManquante"
-   ]
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-accueil-cloche",
@@ -2547,7 +2561,13 @@
    "nom": "La cloche qu'on retient",
    "lieu": "seuil_du_hameau",
    "typeScene": "moment",
-   "image": null,
+   "image": {
+    "fichier": "scene_hameau_accueil_cloche_c.png",
+    "hash": "22f05ad0",
+    "taille": 21661,
+    "recent": false,
+    "existe": true
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [
@@ -2556,10 +2576,8 @@
    "mèneIci": [],
    "roles": [],
    "acces": "séquence du Hameau",
-   "etat": "acompleter",
-   "alertes": [
-    "imageManquante"
-   ]
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-accueil-depart",
@@ -2610,7 +2628,13 @@
    "nom": "Le hameau qui s'en va",
    "lieu": "seuil_du_hameau",
    "typeScene": "moment",
-   "image": null,
+   "image": {
+    "fichier": "scene_hameau_accueil_depart_a.png",
+    "hash": "9b4ee237",
+    "taille": 14249,
+    "recent": false,
+    "existe": true
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [
@@ -2619,10 +2643,8 @@
    "mèneIci": [],
    "roles": [],
    "acces": "séquence du Hameau",
-   "etat": "acompleter",
-   "alertes": [
-    "imageManquante"
-   ]
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "hameau-entree-4",
@@ -6817,8 +6839,8 @@
   "scenes": 69,
   "pointsInteret": 39,
   "choix": 171,
-  "illustrations": 235,
-  "sansImage": 6,
+  "illustrations": 241,
+  "sansImage": 0,
   "imagesIntrouvables": 0,
   "reserve": 58,
   "reliques": 10,
