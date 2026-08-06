@@ -1974,7 +1974,7 @@ export const SCENES: Scene[] = [
        avoir laissé des noms derrière soi pour que ce mur veuille dire quelque
        chose. Voir HAMEAU_ACCUEILS. */
     id: "hameau-accueil-mur",
-    illustration: "assets/scene_hameau_accueil_mur_c.png",
+    illustration: "assets/scene_hameau_accueil_mur_a.png",
     chainNext: "hameau-entree-4",
     narration: [
       "Personne dans la rue. Mais le pignon de la grange, en face, est " +
@@ -2158,7 +2158,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "hameau-accueil-cloche",
-    illustration: "assets/scene_hameau_accueil_cloche_c.png",
+    illustration: "assets/scene_hameau_accueil_cloche_b.png",
     chainNext: "hameau-entree-4",
     narration: [
       "Tu entres dans la rue au moment où un homme se met à courir. Pas vers " +

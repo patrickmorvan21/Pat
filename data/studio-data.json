@@ -54,8 +54,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-06T10:58:16Z",
- "commit": "a0bcb82",
+ "genere": "2026-08-06T13:04:48Z",
+ "commit": "39fb3dc",
  "zones": [
   {
    "id": "landes",
@@ -2290,7 +2290,7 @@
     "fichier": "scene_hameau_accueil_volet_c.png",
     "hash": "05db5d2a",
     "taille": 15638,
-    "recent": false,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -2355,9 +2355,9 @@
    "lieu": "seuil_du_hameau",
    "typeScene": "moment",
    "image": {
-    "fichier": "scene_hameau_accueil_mur_c.png",
-    "hash": "acd7f96f",
-    "taille": 19016,
+    "fichier": "scene_hameau_accueil_mur_a.png",
+    "hash": "f7874599",
+    "taille": 16632,
     "recent": false,
     "existe": true
    },
@@ -2426,7 +2426,7 @@
     "fichier": "scene_hameau_accueil_enfant_c.png",
     "hash": "83d9cfac",
     "taille": 16876,
-    "recent": false,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -2495,7 +2495,7 @@
     "fichier": "scene_hameau_accueil_table_a.png",
     "hash": "dff69101",
     "taille": 14598,
-    "recent": false,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -2562,9 +2562,9 @@
    "lieu": "seuil_du_hameau",
    "typeScene": "moment",
    "image": {
-    "fichier": "scene_hameau_accueil_cloche_c.png",
-    "hash": "22f05ad0",
-    "taille": 21661,
+    "fichier": "scene_hameau_accueil_cloche_b.png",
+    "hash": "eeba581e",
+    "taille": 18951,
     "recent": false,
     "existe": true
    },
@@ -2632,7 +2632,7 @@
     "fichier": "scene_hameau_accueil_depart_a.png",
     "hash": "9b4ee237",
     "taille": 14249,
-    "recent": false,
+    "recent": true,
     "existe": true
    },
    "description": "",
