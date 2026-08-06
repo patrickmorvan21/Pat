@@ -54,8 +54,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-06T21:03:26Z",
- "commit": "3467eff",
+ "genere": "2026-08-06T22:19:37Z",
+ "commit": "2882899",
  "zones": [
   {
    "id": "landes",
@@ -1212,7 +1212,7 @@
       "fichier": "scene_landes_poteau_pendu_c.png",
       "hash": "055df6e3",
       "taille": 26142,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -1420,7 +1420,10 @@
      "id": "passer-pendu",
      "label": "Passer sans un mot",
      "type": "passif",
-     "consequence": "Tu passes. Le Bailli ne te rappelle pas — il note. Tu l'entends murmurer ton signalement à la corde, qui grince en l'écrivant. Refuser le jugement, ici, c'est un verdict aussi. Il t'attendra au retour : les Landes tournent en rond."
+     "consequence": "Tu passes. Le Bailli ne te rappelle pas — il note. Tu l'entends murmurer ton signalement à la corde, qui grince en l'écrivant. Refuser le jugement, ici, c'est un verdict aussi. Il t'attendra au retour : les Landes tournent en rond.",
+     "tags": [
+      "citable"
+     ]
     },
     {
      "id": "pendu-le-trois-cent-unieme",
@@ -2132,6 +2135,9 @@
      "type": "passif",
      "consequence": "Elle ferme les yeux. Tout son corps lâche d\\u2019un coup, comme une corde qu\\u2019on détend.",
      "donneDecouverte": "d.temoin_oculaire",
+     "tags": [
+      "citable"
+     ],
      "soupcon": -1
     },
     {
@@ -2402,6 +2408,9 @@
       "echec": "Il secoue la tête. « Ma mère dit que ceux qui entrent, faut pas les suivre dehors. » Il reste sur son muret. Mais il ne s\\u2019en va pas non plus, et il te regarde partir longtemps.",
       "funeste": "1 naturel. « Toi t\\u2019as déjà un poteau quelque part. » Il le dit sans méchanceté, comme on annonce la pluie, et il s\\u2019en va par l\\u2019autre côté du muret. ♦ −2"
      },
+     "tags": [
+      "citable"
+     ],
      "soupcon": 1
     },
     {
@@ -3157,6 +3166,9 @@
      "type": "passif",
      "consequence": "Tu jures. Les mots sortent dans le bon ordre, à la bonne vitesse, et ne pèsent rien. Le vieux les accepte — il n'a pas le choix, c'est la règle. Mais il te regarde une seconde de trop, et tu comprends qu'il a entendu le vide dedans.",
      "serment": "faux",
+     "tags": [
+      "citable"
+     ],
      "soupcon": 1,
      "temoin": {
       "nom": "Les trois hommes du seuil",
@@ -3174,6 +3186,9 @@
      "type": "passif",
      "consequence": "Tu refuses. Personne ne crie. Le vieux referme lentement sa paume vide, et c'est tout. « Personne n'est chassé », répète-t-il — et cette fois tu entends ce que ça veut dire vraiment : on ne te chassera pas, on te laissera dehors. Aucune porte ne s'ouvrira. Aucun toit. Et le hameau te regardera vivre.",
      "serment": "refuse",
+     "tags": [
+      "citable"
+     ],
      "soupcon": 2,
      "temoin": {
       "nom": "Les trois hommes du seuil",
@@ -3423,6 +3438,9 @@
       "echec": "La paille craque sous toi. Les voix s'arrêtent net — ce silence-là est une porte qui claque. Puis des pas qui s'éloignent vite, et tu passes le reste de la nuit à te demander ce qu'ils ont compris.",
       "funeste": "1 naturel. Tu écoutes. Et une voix, tout près, dit ton nom — celui que tu as signé au pacte, celui que personne ici n'a entendu. ♦ −2"
      },
+     "tags": [
+      "citable"
+     ],
      "soupcon": 1,
      "temoin": {
       "nom": "Le vieux de la grange",
@@ -3497,6 +3515,9 @@
       "echec": "Tu te lèves trop vite et la paille crisse. Au-dessus, le poids s\\u2019arrête net — puis se déplace, lentement, exactement au-dessus de l\\u2019endroit où tu te tiens. Tu passes le reste de la nuit assis, dos au mur, à écouter un plancher de ciel.",
       "funeste": "1 naturel. Tu approches l\\u2019œil de la fente, et quelque chose, de l\\u2019autre côté, fait exactement le même geste. ♦ −2"
      },
+     "tags": [
+      "citable"
+     ],
      "soupcon": 1
     }
    ],
@@ -3754,6 +3775,9 @@
       "funeste": "1 naturel. Tu arrives au coin au moment où il revient. Tu ne vois toujours pas de visage. Tu vois qu\\u2019il s\\u2019arrête, et qu\\u2019il attend — comme on attend que quelqu\\u2019un ait fini de comprendre. ♦ −2"
      },
      "poseEtat": "hante",
+     "tags": [
+      "citable"
+     ],
      "soupcon": 2
     }
    ],
@@ -3844,7 +3868,10 @@
      "label": "Suivre la brebis",
      "type": "orientation",
      "dest": "champ-des-fixes",
-     "modeArrivee": "tire a l execution"
+     "modeArrivee": "tire a l execution",
+     "tags": [
+      "citable"
+     ]
     },
     {
      "id": "troupeau-prendre",
@@ -3854,7 +3881,10 @@
      "donneObjet": "clochette-meneuse",
      "poseEtat": "marque",
      "repondBesoin": "manger",
-     "exigeEtat": "affame"
+     "exigeEtat": "affame",
+     "tags": [
+      "citable"
+     ]
     },
     {
      "id": "troupeau-continuer",
@@ -4478,7 +4508,10 @@
       "reussite": "Elle ne se fâche pas. Elle repose son ouvrage sur ses genoux, très lentement, et regarde la lucarne. « Je sais. » Deux mots, et le silence qui suit dure assez longtemps pour que tu comprennes qu\\u2019elle y pense tous les jours.",
       "echec": "« Ne fais pas ça. » Sa voix ne monte pas d\\u2019un ton, ce qui est pire. « Tout le monde ici me dit ce que je devrais faire de mon père. Toi tu viens d\\u2019arriver. »",
       "funeste": "1 naturel. Elle rit — un son sec, sans joie. « Il m\\u2019attend, oui. Comme il attendait l\\u2019autre. » Elle se remet à son ouvrage et ne te répondra plus de la soirée. ♦ −2"
-     }
+     },
+     "tags": [
+      "citable"
+     ]
     },
     {
      "id": "fille-ne-rien-dire",
@@ -4901,7 +4934,10 @@
      "id": "corde-vive",
      "label": "Saisir la corde vive",
      "type": "verrouille",
-     "stat": "COURAGE"
+     "stat": "COURAGE",
+     "tags": [
+      "citable"
+     ]
     },
     {
      "id": "eviter-corde-vive",
@@ -4954,7 +4990,10 @@
       "reussite": "À travers le bois, tu comptes : les coups ne demandent pas à sortir. Ils tiennent un registre — trois coups par nom, une pause entre les noms. Le puits fait l'appel. Tu retires l'oreille avant d'entendre le tien.",
       "echec": "L'oreille au bois, tu n'entends plus rien — les coups se sont tus dès le contact. Puis, contre ta joue, à travers la planche : trois coups très doux. On t'a entendu écouter.",
       "funeste": "1 naturel. Tu écoutes. Et de l'autre côté des planches, très distinctement, quelqu'un fait « chhht ». ♦ −2"
-     }
+     },
+     "tags": [
+      "citable"
+     ]
     },
     {
      "id": "noeud-chaines",
@@ -6843,6 +6882,22 @@
    "racine": "doyenne"
   },
   {
+   "fichier": "monstre_femme_seuil_1_c.png",
+   "hash": "5d50562f",
+   "taille": 4688,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "femme_seuil_1"
+  },
+  {
+   "fichier": "monstre_femme_seuil_3_a.png",
+   "hash": "8cc1e216",
+   "taille": 19386,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "femme_seuil_3"
+  },
+  {
    "fichier": "monstre_fiancee_du_gibet_b.png",
    "hash": "52d270ac",
    "taille": 32561,
@@ -6854,7 +6909,7 @@
    "fichier": "monstre_fixe_confident_b.png",
    "hash": "bd08f765",
    "taille": 15528,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "fixe_confident"
   },
@@ -6865,6 +6920,30 @@
    "recent": false,
    "groupe": "autre",
    "racine": "geryon"
+  },
+  {
+   "fichier": "monstre_hameau_entree_3_a.png",
+   "hash": "7e4b2271",
+   "taille": 4616,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "hameau_entree_3"
+  },
+  {
+   "fichier": "monstre_hameau_halte_4_b.png",
+   "hash": "0d3c0338",
+   "taille": 3813,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "hameau_halte_4"
+  },
+  {
+   "fichier": "monstre_hesitant_3_c.png",
+   "hash": "c1d9af6e",
+   "taille": 11251,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "hesitant_3"
   },
   {
    "fichier": "monstre_juge_de_cendre_c.png",
@@ -6883,12 +6962,36 @@
    "racine": "limiers"
   },
   {
+   "fichier": "monstre_marcheur_2_b.png",
+   "hash": "e7304bbf",
+   "taille": 10971,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "marcheur_2"
+  },
+  {
+   "fichier": "monstre_marcheur_3_b.png",
+   "hash": "18a0050e",
+   "taille": 3560,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "marcheur_3"
+  },
+  {
    "fichier": "monstre_marcheur_a_rebours_d.png",
    "hash": "c339489a",
    "taille": 30888,
    "recent": false,
    "groupe": "attend",
    "racine": "marcheur_a_rebours"
+  },
+  {
+   "fichier": "monstre_marcheur_rebours_c.png",
+   "hash": "be499820",
+   "taille": 7537,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "marcheur_rebours"
   },
   {
    "fichier": "monstre_ombre_grand_gibet_a.png",
@@ -6899,11 +7002,19 @@
    "racine": "ombre_grand_gibet"
   },
   {
+   "fichier": "monstre_pendu_mal_fixe_a.png",
+   "hash": "51ef7252",
+   "taille": 5488,
+   "recent": false,
+   "groupe": "doublon",
+   "racine": "pendu_mal_fixe"
+  },
+  {
    "fichier": "monstre_pendu_mal_fixe_v1_b.png",
    "hash": "9e0a2973",
    "taille": 7553,
    "recent": false,
-   "groupe": "brancher",
+   "groupe": "doublon",
    "racine": "pendu_mal_fixe"
   },
   {
@@ -6950,7 +7061,7 @@
    "fichier": "monstre_veilleur_a.png",
    "hash": "6274a344",
    "taille": 7066,
-   "recent": true,
+   "recent": false,
    "groupe": "attend",
    "racine": "veilleur"
   },
@@ -6969,6 +7080,14 @@
    "recent": false,
    "groupe": "doublon",
    "racine": "vent_qui_ment"
+  },
+  {
+   "fichier": "monstre_veuve_cordes_a.png",
+   "hash": "87115831",
+   "taille": 18719,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "veuve_cordes"
   },
   {
    "fichier": "objet_crane.png",
@@ -7031,7 +7150,15 @@
    "hash": "6de463ec",
    "taille": 25472,
    "recent": false,
-   "groupe": "brancher",
+   "groupe": "doublon",
+   "racine": "borne_frontiere"
+  },
+  {
+   "fichier": "scene_borne_frontiere_b.png",
+   "hash": "fc1f6b62",
+   "taille": 21662,
+   "recent": false,
+   "groupe": "doublon",
    "racine": "borne_frontiere"
   },
   {
@@ -7051,6 +7178,38 @@
    "racine": "champ_poteaux_vierges"
   },
   {
+   "fichier": "scene_champ_rangees_a_d.png",
+   "hash": "31581022",
+   "taille": 12688,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "champ_rangees"
+  },
+  {
+   "fichier": "scene_chapelle_mur_cordes_a_d.png",
+   "hash": "61717f26",
+   "taille": 5920,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "chapelle_mur_cordes"
+  },
+  {
+   "fichier": "scene_hameau_entree_5_a.png",
+   "hash": "e012d040",
+   "taille": 10760,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "hameau_entree_5"
+  },
+  {
+   "fichier": "scene_hameau_halte_5_b.png",
+   "hash": "49d7b837",
+   "taille": 18040,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "hameau_halte_5"
+  },
+  {
    "fichier": "scene_landes_hameau_puits_b.png",
    "hash": "edb6e6e7",
    "taille": 31210,
@@ -7065,6 +7224,14 @@
    "recent": false,
    "groupe": "autre",
    "racine": "landes_tribunal"
+  },
+  {
+   "fichier": "scene_mare_eau_reflet_b.png",
+   "hash": "239daa3e",
+   "taille": 2768,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "mare_eau_reflet"
   },
   {
    "fichier": "scene_mare_miroir_a_b.png",
@@ -7095,7 +7262,15 @@
    "hash": "4c2af433",
    "taille": 26792,
    "recent": false,
-   "groupe": "brancher",
+   "groupe": "doublon",
+   "racine": "puits_condamne"
+  },
+  {
+   "fichier": "scene_puits_condamne_c.png",
+   "hash": "789d358d",
+   "taille": 30086,
+   "recent": false,
+   "groupe": "doublon",
    "racine": "puits_condamne"
   },
   {
@@ -7169,6 +7344,22 @@
    "recent": false,
    "groupe": "autre",
    "racine": "verger_fruits"
+  },
+  {
+   "fichier": "scene_verger_fruits_cendre_a.png",
+   "hash": "c3e8036d",
+   "taille": 6532,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "verger_fruits_cendre"
+  },
+  {
+   "fichier": "scene_verger_noir_2_c.png",
+   "hash": "28686cc9",
+   "taille": 5319,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "verger_noir_2"
   }
  ],
  "reliques": [
@@ -8182,6 +8373,50 @@
    "Le muret t'accompagnait ; il choisit l'un des deux côtés."
   ]
  },
+ "surprises": [
+  {
+   "id": "choix-expire",
+   "nom": "Le choix qui expire",
+   "contexte": "Une option s'érode et disparaît si le joueur hésite trop longtemps.",
+   "garde": "Toujours une OPPORTUNITÉ (un examen, un gain), jamais l'option sûre — perdre le temps coûte une occasion, jamais la vie. Neutralisé par l'option d'accessibilité « chronomètres désactivés »."
+  },
+  {
+   "id": "retour",
+   "nom": "Le retour",
+   "contexte": "Recroiser le lieu de mort du héros précédent : la trace exacte.",
+   "garde": "Ne se joue qu'au lieu réel de la dernière mort, une fois."
+  },
+  {
+   "id": "prophetie",
+   "nom": "La prophétie datée",
+   "contexte": "Le Geôlier parie un jour de mort ; la puce JOUR blanchit à l'approche.",
+   "garde": "Jamais énoncée comme un fait — un pari statistique (« Sur cent qui te ressemblent… ») : vraie ou fausse, elle fait son travail."
+  },
+  {
+   "id": "fantome",
+   "nom": "Le fantôme de passage",
+   "contexte": "La silhouette d'un héros du Grand Registre traverse une liaison.",
+   "garde": "Généré depuis les noms du Registre — indistinguable, zéro infrastructure."
+  },
+  {
+   "id": "citation",
+   "nom": "Le PNJ qui te cite",
+   "contexte": "Un inconnu répète mot pour mot un choix fait dix scènes plus tôt.",
+   "garde": "Ne pioche que dans les choix tagués `citable` — jamais un texte qui sonne faux hors contexte."
+  },
+  {
+   "id": "vol-nocturne",
+   "nom": "Le vol nocturne",
+   "contexte": "Au réveil du campement, un objet manque — remplacé par un autre, traçable.",
+   "garde": "L'objet substitué porte la trace du voleur ; l'objet volé est retenu pour un paiement futur."
+  },
+  {
+   "id": "de-impossible",
+   "nom": "Le dé impossible",
+   "contexte": "Le dé s'arrête sur une face sans chiffre. Le Geôlier réagit immédiatement.",
+   "garde": "AUCUNE conséquence mécanique (le jet réel s'applique) — un résultat impossible qui tue serait une tricherie, pas un mystère. La réaction du Geôlier est obligatoire, sinon le joueur croit à un bug."
+  }
+ ],
  "totaux": {
   "scenes": 89,
   "pointsInteret": 46,
@@ -8189,7 +8424,7 @@
   "illustrations": 241,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 45,
+  "reserve": 64,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

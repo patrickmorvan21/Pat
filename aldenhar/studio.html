@@ -1713,13 +1713,28 @@ const STATL={courage:"Courage",ruse:"Ruse",instinct:"Instinct",empathie:"Empathi
 
 function vueSystemes(){
   const rel=D.reliques||[], faits=D.faits||[], perc=D.perceptions||{},
-        tem=D.temoins||{}, loi=D.loiDuDomaine||{manifestations:[]};
+        tem=D.temoins||{}, loi=D.loiDuDomaine||{manifestations:[]},
+        surp=D.surprises||[];
   const h=t=>`<h2 style="font:400 22px/1 var(--serif);margin:26px 0 4px">${t}</h2>`;
   const p=t=>`<p style="color:var(--b30);font-size:11.5px;margin:0 0 14px;max-width:78ch">${t}</p>`;
+  // ═══ LES ÉLÉMENTS-SURPRISES (catalogue 6/08) : rationnés à UN par run,
+  // avec récupération — leur puissance vient de leur rareté. Chaque fiche
+  // porte son garde-fou, parce que c'est lui qui fait tenir la surprise.
+  const blocSurprises = surp.length
+    ? h("Les "+surp.length+" éléments-surprises")+
+      p("Au maximum UNE par run, jamais deux runs de suite — le rationnement est non négociable. "+
+        "S'y ajoutent, hors tirage : le Geôlier métaleptique (comportemental) et la récitation du Grand Témoin (3e apparition).")+
+      surp.map(x=>`<div style="border:1px solid var(--b10);padding:10px 12px;margin-bottom:8px">
+        <b style="font-weight:400">${esc(x.nom)}</b>
+        <p style="margin:4px 0 0;font-size:11.5px;color:var(--b50)">${esc(x.contexte)}</p>
+        <p style="margin:4px 0 0;font-size:10.5px;color:var(--orange)">garde-fou — ${esc(x.garde)}</p>
+      </div>`).join("")
+    : "";
   const nomScene=i=>{const s=scenePar(i);return s?(s.nom||i):i};
 
   let out=`<h2 style="font:400 22px/1 var(--serif);margin:0 0 4px">Les systèmes du Domaine</h2>
     ${p("Ce qui ne tient à aucune scène en particulier, et qui pèse sur toutes. Rien d'ici n'est jamais montré au joueur sous forme de chiffre.")}`;
+  out+=blocSurprises;
 
   /* LES ÉTATS EN PREMIER : c'est la question la plus utile à trancher d'un
      coup d'œil — « est-ce un fait auquel le monde réagit, ou un modificateur
