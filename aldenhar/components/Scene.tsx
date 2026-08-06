@@ -19,6 +19,7 @@ import {
   SOUPCON_PALIERS,
   tierIsFail,
   type Choice,
+  type PointInteret,
   type LiaisonCtx,
   type Scene as SceneType,
   ligneCorbeaux,
@@ -531,14 +532,41 @@ export default function Scene() {
   const canDemote = hasPois && shuffledChoices.some((c) => !demotable(c));
   const acts = canDemote ? shuffledChoices.filter((c) => !demotable(c)) : shuffledChoices;
   const looks = canDemote ? shuffledChoices.filter(demotable) : [];
+  /**
+   * ⚠️ Retour Patrick 6/08 : « je devais compter les corbeaux, je n'ai plus
+   * cette action ». Les corbeaux n'avaient pas disparu — ils étaient à DEUX
+   * taps, derrière un libellé qui ne les annonce pas. La règle repliait TOUS
+   * les points dès qu'il y en avait un, même quand l'écran avait des slots
+   * libres : à la Colline, 1 seul acte + « Observer » = 2 CTA sur 3 autorisés,
+   * et les quatre choses à voir invisibles.
+   *
+   * On remplit donc l'écran jusqu'à 3 avec les points d'intérêt eux-mêmes, et
+   * « Observer les alentours » ne sert plus qu'au RELIQUAT. Si tout tient, le
+   * bouton disparaît complètement. L'ordre d'écriture décide qui monte — les
+   * points sont rangés du plus visible de loin au plus discret.
+   */
+  const SLOTS = 3;
+  const placeLibre = Math.max(0, SLOTS - acts.length);
+  const tousTiennent = openPois.length <= placeLibre && looks.length === 0;
+  // Un « Observer » n'a de sens que s'il reste quelque chose dedans : il coûte
+  // alors lui-même un slot.
+  const nbPromus = tousTiennent ? openPois.length : Math.max(0, placeLibre - 1);
+  const enPoi = (p: PointInteret): Choice => ({ id: `poi-${p.id}`, label: p.label, poi: p.id });
+  const poiPromus = openPois.slice(0, nbPromus).map(enPoi);
+  const poiCaches = openPois.slice(nbPromus);
   const poiGroup: Choice[] = poiOpen
     ? [
-        ...openPois.map((p) => ({ id: `poi-${p.id}`, label: p.label, poi: p.id })),
+        ...poiCaches.map(enPoi),
         ...looks,
         { id: OBSERVE_CLOSE, label: "Ne rien regarder de plus" },
       ]
     : hasPois
-      ? [{ id: OBSERVE_OPEN, label: "Observer les alentours" }]
+      ? [
+          ...poiPromus,
+          ...(poiCaches.length || looks.length
+            ? [{ id: OBSERVE_OPEN, label: "Observer les alentours" }]
+            : []),
+        ]
       : [];
   // Sous-menu ouvert : on n'affiche QUE les descriptions (sinon on cumule les
   // deux listes et on retombe à 5 boutons).

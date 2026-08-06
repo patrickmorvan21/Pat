@@ -308,6 +308,12 @@ body:not(.mode-edition) .edit{border-color:transparent;cursor:default}
 .pimgok{font-size:11px;line-height:1.5;color:var(--b50)}
 .pimgvide{font-size:11px;line-height:1.5;color:var(--b30)}
 .avant-apres{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.reuse{display:flex;flex-direction:column;gap:7px;border:1px solid var(--orange);padding:10px}
+.reuse label{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--b50)}
+.reuse input{width:100%;background:var(--charbon);border:1px solid var(--b20);color:#fff;
+  font:inherit;font-size:12px;padding:7px}
+.reuse input:focus{outline:none;border-color:var(--orange)}
+.reuse button[disabled]{opacity:.4;cursor:not-allowed}
 .aa{display:flex;flex-direction:column;gap:4px}
 .aa span{font-size:9.5px;letter-spacing:1.1px;text-transform:uppercase;color:var(--b30)}
 .aa .vig{aspect-ratio:1/1;background:var(--charbon) center/cover;border:1px solid var(--b20)}
@@ -400,6 +406,7 @@ body.mode-edition .ebtn{display:inline-flex}
   </div>
 </div>
 
+<datalist id="tousLesAssets"></datalist>
 <div id="journal">
   <div class="jh">Journal de modifications <button id="jClose">×</button></div>
   <div id="jbody"></div>
@@ -1189,6 +1196,8 @@ function majMinimap(){
    ===================================================================== */
 let onglet="details";
 let editImage=null;   // le fichier dont le motif de remplacement est en cours de saisie
+let reuseOuvert=null; // cible dont la reprise d'image est en cours de saisie
+let reuseVal='';      // nom tapé, conservé entre deux rendus du panneau
 function champEditable(cible,quoi,valeur,ctx){
   const j=journal.find(x=>x.cible===cible), v=j?j.apres:valeur;
   return `<span class="edit${j?" modifie":""}" data-cible="${esc(cible)}" data-quoi="${esc(quoi)}"
@@ -1201,14 +1210,75 @@ function champEditable(cible,quoi,valeur,ctx){
    modifier une donnée de jeu : c'est le travail principal de Patrick sur ces
    pages, il doit être à un clic, toujours visible. Le mode Édition reste
    réservé à ce qui touche au CONTENU (libellés, textes, issues). */
+/* RÉUTILISER UNE IMAGE DÉJÀ FAITE (demande Patrick 6/08).
+   « Je ne veux pas refaire l'image entièrement avec Leonardo — je copie le nom
+   de fichier d'une image et je le mets sur celle que je veux changer, comme ça
+   les deux sont pareilles. »
+
+   C'est une demande DISTINCTE de « Remplacer cette image » : là il n'y a
+   AUCUN fichier à produire, seulement un câblage à déplacer. D'où un chemin
+   séparé, et une cible qui porte l'ÉLÉMENT (la scène ou le point) et non le
+   fichier — c'est le pointeur de l'élément qui change, le fichier ne bouge pas.
+
+   Le champ accepte le collage libre ET propose la liste complète des assets
+   publiés : coller « scene_x.png » ou le chemin entier marche pareil. Une
+   vignette confirme visuellement AVANT d'enregistrer — sans elle on note un
+   nom sans savoir ce qu'il y a derrière, ce qui est exactement le piège. */
+function nomAsset(v){ return String(v||"").trim().replace(/^assets\//,"").split("?")[0]; }
+
+/* Les noms d'asset connus. Deux sources plutôt qu'une : le manifeste (fait
+   autorité, il liste tout ce qui est publié) ET l'export du Studio (images des
+   scènes + réserve). Si le manifeste ne charge pas — page servie ailleurs,
+   fetch en échec — le champ continuerait sinon de refuser TOUS les noms, ce
+   qui ressemble à un bug alors que c'est une donnée manquante. */
+function assetsConnus(){
+  const set=new Set(Object.keys(MANIF.fichiers||{}));
+  (D&&D.scenes||[]).forEach(sc=>{
+    if(sc.image&&sc.image.fichier) set.add(nomAsset(sc.image.fichier));
+    (sc.pointsInteret||[]).forEach(pi=>{ if(pi.image&&pi.image.fichier) set.add(nomAsset(pi.image.fichier)); });
+  });
+  (D&&D.reserve||[]).forEach(r=>set.add(nomAsset(r.fichier)));
+  return set;
+}
+
+function blocReutiliser(fichier, ctx, el){
+  const cible = "reuse:" + el.type + ":" + el.id;
+  const j = journal.find(x => x.cible === cible);
+  if (!j && reuseOuvert !== cible)
+    return `<button data-reutiliser="${esc(cible)}">≡ Utiliser une image déjà faite</button>`;
+  const choisi = j ? nomAsset(j.apres) : (reuseVal || "");
+  const existe = choisi ? assetsConnus().has(choisi) : false;
+  return `<div class="reuse">
+    <label>Nom de l'image à reprendre</label>
+    <input id="reuseNom" list="tousLesAssets" spellcheck="false"
+      placeholder="colle ici un nom, ex. monstre_meute_grise_c.png" value="${esc(choisi)}">
+    <div class="avant-apres">
+      <div class="aa"><span>Aujourd'hui</span>
+        <div class="vig" style="background-image:url('${urlImg("assets/"+fichier)}')"></div></div>
+      <div class="aa"><span>Reprendrait</span>
+        ${existe ? `<div class="vig neuve" style="background-image:url('${urlImg("assets/"+choisi)}')"></div>`
+                 : `<div class="vig rien">${choisi ? "nom inconnu" : "aucun nom"}</div>`}</div>
+    </div>
+    <p class="pimgcible"><b>Élément</b> ${esc(el.type)} · <code>${esc(el.id)}</code></p>
+    <div class="pimgbtns">
+      <button class="p" data-noter-reuse="${esc(cible)}" data-ctx="${esc(ctx)}"
+        data-actuel="${esc(fichier)}" ${existe ? "" : "disabled"}>${j ? "Mettre à jour" : "Enregistrer"}</button>
+      ${j ? `<button data-annuler-reuse="${esc(cible)}">Retirer</button>`
+          : `<button data-fermer-reuse="1">Annuler</button>`}
+    </div>
+  </div>`;
+}
+
 function actionImage(fichier, ctx, el){
   if(!fichier) return `<div class="pimgact"><p class="pimgvide">Aucune image sur cet écran — dépose-la ici quand elle existera, ou envoie-la-moi.</p></div>`;
   const cible="image:"+fichier;
   const j=journal.find(x=>x.cible===cible);
   const f=Fichiers.get(cible);
   if(!j && editImage!==cible)
-    return `<div class="pimgact"><button data-remplacer="${esc(fichier)}" data-ctx="${esc(ctx)}">
-      ⟳ Remplacer cette image</button></div>`;
+    return `<div class="pimgact">
+      <button data-remplacer="${esc(fichier)}" data-ctx="${esc(ctx)}">⟳ Remplacer cette image</button>
+      ${blocReutiliser(fichier, ctx, el)}
+    </div>`;
 
   const h=(MANIF.fichiers[fichier]||{}).hash||"—";
   return `<div class="pimgact ouvert">
@@ -1492,6 +1562,37 @@ function brancher(){
     await Fichiers.retirer(cible);
     editImage=null; renduPanneau(); toast("Demande retirée");
   });
+  d.querySelectorAll("[data-reutiliser]").forEach(b=>b.onclick=()=>{
+    reuseOuvert=b.dataset.reutiliser; reuseVal=""; renduPanneau();
+    const i=$("#reuseNom"); if(i){ i.focus(); }
+  });
+  d.querySelectorAll("[data-fermer-reuse]").forEach(b=>b.onclick=()=>{
+    reuseOuvert=null; reuseVal=""; renduPanneau(); });
+  // Le champ se relit à CHAQUE frappe : la vignette de droite doit confirmer
+  // le nom avant l'enregistrement, sinon on note un fichier sans l'avoir vu.
+  const rn=d.querySelector("#reuseNom");
+  if(rn) rn.oninput=()=>{ reuseVal=rn.value; renduPanneau(); const i=$("#reuseNom");
+    if(i){ i.focus(); i.setSelectionRange(i.value.length,i.value.length); } };
+  d.querySelectorAll("[data-noter-reuse]").forEach(b=>b.onclick=()=>{
+    const cible=b.dataset.noterReuse, nom=nomAsset(($("#reuseNom")||{}).value);
+    if(!assetsConnus().has(nom)) return toast("Ce nom n'existe pas dans les assets");
+    const [,type,id]=cible.split(":");
+    noter(cible,"Reprendre une image existante",b.dataset.actuel,nom,b.dataset.ctx,{
+      statut:"reprise",
+      elementId:id, elementType:type,
+      imageActuelle:b.dataset.actuel,
+      imageSouhaitee:nom,
+      hashSouhaite:(MANIF.fichiers[nom]||{}).hash||null,
+      // Rien à produire : c'est un CÂBLAGE à déplacer, pas un fichier à faire.
+      action:"pointer cet élément vers une image déjà présente dans assets/",
+    });
+    reuseOuvert=null; reuseVal=""; renduPanneau(); toast("Noté — la même image sera reprise");
+  });
+  d.querySelectorAll("[data-annuler-reuse]").forEach(b=>b.onclick=()=>{
+    const i=journal.findIndex(j=>j.cible===b.dataset.annulerReuse);
+    if(i>=0){ journal.splice(i,1); sauver(); }
+    reuseOuvert=null; reuseVal=""; renduPanneau(); toast("Reprise retirée");
+  });
   d.querySelectorAll("[data-refaire]").forEach(b=>b.onclick=()=>{
     const r=prompt("Pourquoi cette image est-elle à refaire ? (facultatif)")||"sans précision";
     noter(b.dataset.refaire+":image","Image à refaire",b.dataset.nom,r,titre()); toast("Noté");});
@@ -1744,6 +1845,10 @@ function renduGauche(){
       fetch(BASE+"manifest.json?t="+Date.now(),{cache:"no-store"}).catch(()=>null)]);
     if(!rd.ok) throw new Error("studio-data.json illisible ("+rd.status+")");
     D=await rd.json(); if(rm&&rm.ok) MANIF=await rm.json();
+    // La liste complète des assets publiés alimente le champ « reprendre une
+    // image » : coller un nom marche, mais la proposer évite la faute de frappe.
+    $("#tousLesAssets").innerHTML=[...assetsConnus()].sort()
+      .map(n=>`<option value="${esc(n)}">`).join("");
   }catch(e){
     document.body.innerHTML=`<div style="padding:60px;max-width:640px;line-height:1.8;font:13px var(--mono)">
       <h1 style="font:400 24px var(--serif)">Les données ne se chargent pas.</h1>

@@ -52,8 +52,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-05T22:39:01Z",
- "commit": "b1f2172",
+ "genere": "2026-08-06T07:39:35Z",
+ "commit": "c0a7e37",
  "zones": [
   {
    "id": "landes",
@@ -1164,7 +1164,7 @@
       "fichier": "scene_landes_poteau_pendu_c.png",
       "hash": "055df6e3",
       "taille": 26142,
-      "recent": false,
+      "recent": true,
       "existe": true
      },
      "description": "",
@@ -4691,7 +4691,7 @@
     "fichier": "scene_proces_du_heros_v4_c.png",
     "hash": "9b4d24d9",
     "taille": 23824,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Scène de déroutage au dernier palier de Soupçon : le hameau te juge. Les trois bancs pleins, tous les visages tournés vers toi, la chaire vide.",
@@ -4956,7 +4956,7 @@
    "fichier": "monstre_fixe_confident_b.png",
    "hash": "bd08f765",
    "taille": 15528,
-   "recent": false
+   "recent": true
   },
   {
    "fichier": "monstre_gamin_murets_a.png",
@@ -5046,7 +5046,7 @@
    "fichier": "monstre_veilleur_a.png",
    "hash": "6274a344",
    "taille": 7066,
-   "recent": false
+   "recent": true
   },
   {
    "fichier": "monstre_vent_qui_ment_b.png",
