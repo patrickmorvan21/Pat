@@ -431,6 +431,58 @@ def lire_besoins() -> list[dict]:
     return out
 
 
+def lire_transitions() -> dict:
+    """Les TEXTES DE MARCHE — ce qu'on lit entre deux lieux.
+
+    C'est le texte le plus vu du jeu, et il était le seul système à n'exister
+    NULLE PART dans le Studio : une liaison n'est pas une entrée de `SCENES[]`,
+    elle est fabriquée à l'exécution par `makeLiaison()`. Résultat, on pouvait
+    écrire quatorze vignettes de vie de village sans qu'aucune soit visible
+    dans l'éditeur. On lit donc directement les deux pools de scene-data.ts.
+
+    Chaque variante porte ses CONDITIONS en clair (provenance, destination,
+    Soupçon, santé, chapitre, objet porté, serment) : c'est ce qui permet de
+    juger si une vignette est atteignable, et à qui elle est réservée.
+    """
+    src = TS.read_text(encoding="utf-8")
+    fond = []
+    b = bloc_apres(src, r"const LIAISON_AMBIANCES: string\[\] =")
+    if b:
+        fond = chaines_de_tableau(b[0])
+    variantes = []
+    b = bloc_apres(src, r"const LIAISON_VARIANTS: LiaisonVariant\[\] =")
+    if b:
+        for c in objets_de_haut_niveau(b[0], 0):
+            cond = {}
+            # ⚠️ PAS `bloc_apres` ici : il rend le PROCHAIN bloc crocheté, où
+            # qu'il soit. Sur « from: HAMEAU_INTERIOR, serment: ["jure"] » il
+            # rendait donc le tableau du serment comme valeur de `from` — deux
+            # vignettes de village sont sorties de l'export sans un mot. On lit
+            # la valeur qui suit IMMÉDIATEMENT le champ, tableau ou identifiant.
+            for champ in ("from", "to", "serment"):
+                m = re.search(rf"\b{champ}:\s*\[([^\]]*)\]", c)
+                if m:
+                    cond[champ] = chaines_de_tableau("[" + m.group(1) + "]")
+                    continue
+                m = re.search(rf"\b{champ}:\s*([A-Za-z_][A-Za-z0-9_]*)", c)
+                if m:
+                    cond[champ] = [m.group(1)]  # une constante, ex. HAMEAU_INTERIOR
+            for champ in ("minSoupcon", "maxSoupcon", "maxHealth"):
+                v = nombre_de(c, champ)
+                if v is not None:
+                    cond[champ] = v
+            for champ in ("chapter", "carrying"):
+                v = texte_de(c, champ)
+                if v:
+                    cond[champ] = v
+            variantes.append({"texte": texte_de(c, "text") or "", "conditions": cond})
+    bif = []
+    b = bloc_apres(src, r"const BIFURCATIONS: string\[\] =")
+    if b:
+        bif = chaines_de_tableau(b[0])
+    return {"fond": fond, "variantes": variantes, "bifurcations": bif}
+
+
 def lire_loi() -> dict:
     if not TS_LOI.exists():
         return {}
@@ -940,6 +992,7 @@ def main() -> int:
         "temoins": TEMOINS,
         "etats": lire_etats(),
         "besoins": lire_besoins(),
+        "transitions": lire_transitions(),
         "totaux": {
             "scenes": len(scenes),
             "pointsInteret": sum(len(s["pointsInteret"]) for s in scenes),
@@ -956,6 +1009,7 @@ def main() -> int:
             "temoins": len(TEMOINS),
             "etats": len(lire_etats()),
             "besoins": len(lire_besoins()),
+            "transitions": len(lire_transitions()["fond"]) + len(lire_transitions()["variantes"]),
         },
     }
     SORTIE.write_text(json.dumps(donnees, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")

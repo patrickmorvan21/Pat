@@ -52,8 +52,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-06T09:14:05Z",
- "commit": "99f516b",
+ "genere": "2026-08-06T09:39:19Z",
+ "commit": "0387ab9",
  "zones": [
   {
    "id": "landes",
@@ -5675,37 +5675,49 @@
    "fichier": "relique_anneau_de_suie.png",
    "hash": "4b0a4ea5",
    "taille": 3241,
-   "recent": false
+   "recent": true
   },
   {
    "fichier": "relique_clou_du_silence.png",
    "hash": "152f2e47",
    "taille": 4086,
-   "recent": false
+   "recent": true
   },
   {
    "fichier": "relique_dent_du_decompte.png",
    "hash": "e4959469",
    "taille": 5092,
+   "recent": true
+  },
+  {
+   "fichier": "relique_eclat_de_de_fele.png",
+   "hash": "87c6ffdc",
+   "taille": 27279,
    "recent": false
   },
   {
    "fichier": "relique_miroir_noye.png",
    "hash": "e02371e8",
    "taille": 4774,
+   "recent": true
+  },
+  {
+   "fichier": "relique_nom_que_echo_a_garde.png",
+   "hash": "762f4dca",
+   "taille": 14370,
    "recent": false
   },
   {
    "fichier": "relique_oeil_lanterne_verte.png",
    "hash": "76e01835",
    "taille": 7126,
-   "recent": false
+   "recent": true
   },
   {
    "fichier": "relique_sablier_sans_sable.png",
    "hash": "914b2800",
    "taille": 6463,
-   "recent": false
+   "recent": true
   },
   {
    "fichier": "scene_borne_frontiere_a_c.png",
@@ -6417,19 +6429,382 @@
    "routeRisquee": "verger-noir"
   }
  ],
+ "transitions": {
+  "fond": [
+   "Tu marches. La lande ne finit pas — elle se répète, talus après talus, sous le même crépuscule qui ne tombe jamais.",
+   "Le vent pousse une odeur de corde mouillée et de terre retournée. Quelque part, toujours, une potence grince.",
+   "La bruyère efface derrière toi les traces de ceux qui ont choisi avant. Devant, elle ne promet rien.",
+   "Un long moment sans rien : juste tes pas, et la sensation d'être compté par quelque chose que tu ne vois pas.",
+   "Le chemin se creuse, remonte, se divise. Ici, on ne va pas quelque part — on s'éloigne de la Borne."
+  ],
+  "variantes": [
+   {
+    "texte": "Tu redescends de la colline avec les cordes dans le dos. Longtemps, leur grincement te suit — pas parce qu'il porte loin. Parce qu'il a trouvé ton rythme de marche.",
+    "conditions": {
+     "from": [
+      "colline-aux-gibets"
+     ]
+    }
+   },
+   {
+    "texte": "Les rangées de poteaux s'espacent, puis renoncent. Tu comptes tes pas pour ne pas compter les écriteaux. La lande reprend, vide — enfin, vide comme avant : surveillée.",
+    "conditions": {
+     "from": [
+      "champ-des-fixes"
+     ]
+    }
+   },
+   {
+    "texte": "Le grincement du Bailli s'éteint derrière le revers de la colline. Son jugement, lui, marche avec toi — tu l'entends peser chaque choix qui vient.",
+    "conditions": {
+     "from": [
+      "pendu-qui-parle"
+     ]
+    }
+   },
+   {
+    "texte": "Le moulin rapetisse derrière toi. Le sommeil t'a rendu des forces et pris autre chose — au réveil, la bruyère autour de ton lit était foulée en cercle.",
+    "conditions": {
+     "from": [
+      "campement"
+     ]
+    }
+   },
+   {
+    "texte": "Le froid du tribunal met du temps à sortir des os. Dehors, chaque visage croisé a l'air d'un banc : assis, patient, en train de juger.",
+    "conditions": {
+     "from": [
+      "petit-tribunal"
+     ]
+    }
+   },
+   {
+    "texte": "Les cordes clouées continuent de bouger dans ton dos, tu le sais sans te retourner. Une relique, ça garde le geste. La lande, elle, garde le tien.",
+    "conditions": {
+     "from": [
+      "chapelle-des-cordes"
+     ]
+    }
+   },
+   {
+    "texte": "Les murets du hameau te lâchent un à un. Ce que tu as laissé — ou refusé de laisser — pèse exactement le poids annoncé. La Doyenne avait raison sur ce point.",
+    "conditions": {
+     "from": [
+      "serment-hameau"
+     ]
+    }
+   },
+   {
+    "texte": "Le silence du marché te colle aux semelles. Tu mets du temps à t'autoriser un bruit — et quand tu tousses enfin, la lande entière semble le noter.",
+    "conditions": {
+     "from": [
+      "marche-muet"
+     ]
+    }
+   },
+   {
+    "texte": "Trois coups, une pause. Le rythme du puits te suit bien après qu'il est devenu inaudible. Tu marches dessus, maintenant : trois pas, une pause. Tu t'arrêtes net. Tu reprends autrement.",
+    "conditions": {
+     "from": [
+      "puits-condamne"
+     ]
+    }
+   },
+   {
+    "texte": "Tu laisses le combat derrière toi, mais pas tout : la lande a bu ce qui a coulé, et elle sait maintenant quel goût tu as. Tu marches plus léger, et moins tranquille.",
+    "conditions": {
+     "from": [
+      "bete-chemins-creux",
+      "meute-grise",
+      "pendu-mal-fixe",
+      "chien-du-bailli"
+     ]
+    }
+   },
+   {
+    "texte": "Un berger sans troupeau te croise au détour d'un talus. Il te salue — du menton, pas de la voix — et presse le pas une fois passé. Tu l'entends s'arrêter, plus loin, pour te regarder partir.",
+    "conditions": {
+     "minSoupcon": 1.0,
+     "maxSoupcon": 2.0
+    }
+   },
+   {
+    "texte": "Deux silhouettes réparent un muret à distance. Leurs mains ne s'arrêtent pas quand tu passes. Leurs têtes, si.",
+    "conditions": {
+     "minSoupcon": 1.0,
+     "maxSoupcon": 2.0
+    }
+   },
+   {
+    "texte": "Sur une pierre du chemin, une croix à la craie — vieille, à moitié lavée. Pas la tienne. Quelqu'un d'autre, avant toi, a entendu quelque chose. Tu ne sauras pas où il pend.",
+    "conditions": {
+     "minSoupcon": 1.0,
+     "maxSoupcon": 3.0
+    }
+   },
+   {
+    "texte": "Le chemin longe une maison basse. Un volet se ferme — pas vite, pas peureusement. Posément. On ne se cache pas de toi : on te retire la maison, c'est différent.",
+    "conditions": {
+     "minSoupcon": 2.0,
+     "maxSoupcon": 3.0
+    }
+   },
+   {
+    "texte": "Un mot t'arrive porté par le vent, un seul, distinct : ton nom. Personne à l'horizon. Le vent des Landes ment, tu le sais. Mais il ment avec ce qu'on lui donne.",
+    "conditions": {
+     "minSoupcon": 2.0,
+     "maxSoupcon": 4.0
+    }
+   },
+   {
+    "texte": "Il y a des traces fraîches sur ton chemin — devant toi. Quelqu'un fait ta route avant toi, dans le même sens, à petite distance. Tu ne le rattrapes jamais.",
+    "conditions": {
+     "minSoupcon": 3.0,
+     "maxSoupcon": 4.0
+    }
+   },
+   {
+    "texte": "Un enfant t'observe depuis un talus, immobile. Quand tu lèves la main, il ne fuit pas : il trace quelque chose dans la terre du bout d'un bâton, sans te quitter des yeux, puis s'en va sans courir.",
+    "conditions": {
+     "minSoupcon": 3.0,
+     "maxSoupcon": 4.0
+    }
+   },
+   {
+    "texte": "On ne croise plus personne. C'est pire que d'être suivi : la lande s'est vidée sur ton passage, comme une rue avant une arrestation.",
+    "conditions": {
+     "minSoupcon": 4.0,
+     "maxSoupcon": 5.0
+    }
+   },
+   {
+    "texte": "Au loin, une cloche muette sonne quand même — trois coups mats, du bois sur du bois. Tu comprends que ça compte tes passages. Quelqu'un, quelque part, tient le total.",
+    "conditions": {
+     "minSoupcon": 4.0,
+     "maxSoupcon": 5.0
+    }
+   },
+   {
+    "texte": "Les trois hommes sont toujours là, à la limite du regard. Quand tu t'arrêtes, ils s'arrêtent. Quand tu repars, ils attendent un peu — par politesse, dirait-on. L'aube n'est pas pressée.",
+    "conditions": {
+     "minSoupcon": 5.0,
+     "maxSoupcon": 5.0
+    }
+   },
+   {
+    "texte": "Chaque montée coûte. Tu comptes tes forces comme une bourse trop plate — et la lande le voit, qui te tend ses talus comme on tend un bras à un vieillard. Tu refuses. Pour l'instant.",
+    "conditions": {
+     "maxHealth": 0.5
+    }
+   },
+   {
+    "texte": "Tu t'arrêtes deux fois pour souffler. La deuxième, la bruyère où tu poses la main reste marquée de rouge. La lande te goûte déjà.",
+    "conditions": {
+     "maxHealth": 0.3
+    }
+   },
+   {
+    "texte": "La blessure donne le rythme, plus toi. Tu marches au pas de ce qui fait mal — c'est une laisse comme une autre.",
+    "conditions": {
+     "maxHealth": 0.5
+    }
+   },
+   {
+    "texte": "Au détour d'un talus, tu crois voir une silhouette mince, tête nue, disparaître derrière un pli du terrain. Le temps d'y être : personne. Un lit d'herbe couchée, encore tiède.",
+    "conditions": {
+     "chapter": "la-fille"
+    }
+   },
+   {
+    "texte": "Où que le chemin tourne, la couronne de la colline reste en vue — et le grand gibet dépasse, patient. Tu commences à comprendre : ce n'est pas toi qui le regardes.",
+    "conditions": {
+     "chapter": "le-gibet-vide"
+    }
+   },
+   {
+    "texte": "Dans ta besace, l'écharde du gibet est tiède — pas de ta chaleur. Elle tire doucement vers la colline, comme une aiguille vers son nord à elle.",
+    "conditions": {
+     "carrying": "Écharde"
+    }
+   },
+   {
+    "texte": "La lanterne du Veilleur bat contre ta hanche. Sa flamme penche toujours du même côté, quel que soit le vent — tu as fini par vérifier : elle penche vers le sud. Vers la Descente.",
+    "conditions": {
+     "carrying": "Lanterne"
+    }
+   },
+   {
+    "texte": "Tu longes les murets d'une ruelle à l'autre. Pas de lande ici : des murs à hauteur d'épaule, des portes closes, et le bruit de tes pas qui revient de trop près.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ]
+    }
+   },
+   {
+    "texte": "Le village se traverse en quelques dizaines de pas, et pourtant chaque rue semble tourner pour te faire repasser devant les mêmes fenêtres. Derrière les volets, on compte tes passages.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ]
+    }
+   },
+   {
+    "texte": "Une ruelle, une cour, une autre ruelle. Le hameau ne t'empêche pas de circuler — il te laisse faire, et note l'itinéraire.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ]
+    }
+   },
+   {
+    "texte": "Une femme lave une porte à grande eau, à genoux, en frottant le bas du bois là où il n'y a rien. Elle recommence quand tu passes. Elle recommencera encore après.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ]
+    }
+   },
+   {
+    "texte": "Dans une cour, deux hommes réparent un mur qui tient très bien. Ils posent des pierres, les retirent, les reposent — pour avoir les mains occupées quand quelqu'un traverse.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ]
+    }
+   },
+   {
+    "texte": "Du linge sèche en travers de la ruelle : des chemises d'hommes, toutes de la même taille, toutes reprisées au même endroit — l'épaule gauche. Tu passes dessous en te baissant.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ]
+    }
+   },
+   {
+    "texte": "Un vieux est assis sur une marche, un couteau dans une main, un bout de bois dans l'autre. Il ne taille rien : il enlève de la matière, régulièrement, jusqu'à ce qu'il n'y ait plus de bout de bois. Il en a une pile à côté de lui.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ]
+    }
+   },
+   {
+    "texte": "Quelque part derrière un mur, une femme chante à une enfant. La chanson n'a pas de refrain : c'est une liste de choses qu'on ne fait pas. Elle chante bien.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ]
+    }
+   },
+   {
+    "texte": "Une porte s'ouvre devant toi, une main jette un fond de seau sur les pavés, la porte se referme. Tu n'as vu que la main. L'eau fume un peu sur la pierre froide.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ]
+    }
+   },
+   {
+    "texte": "Trois enfants jouent au bout de la ruelle : l'un compte, face au mur, les autres se cachent. Quand tu approches, celui qui compte s'arrête net — et les cachés ne sortent pas.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ]
+    }
+   },
+   {
+    "texte": "Une charrette à bras est appuyée contre une façade, chargée, sanglée, prête depuis assez longtemps pour que la poussière ait pris sur la bâche. Ils sont plusieurs à en avoir une.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ]
+    }
+   },
+   {
+    "texte": "Sur un seuil, une écuelle pleine que personne ne vient manger. Elle est là pour un chien, et il n'y a pas de chien dans ce village. On continue à la remplir.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ]
+    }
+   },
+   {
+    "texte": "Un homme cloue un volet. Depuis l'intérieur. Tu l'entends s'y reprendre à trois fois sur le même clou, puis s'arrêter longtemps, puis recommencer ailleurs.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ]
+    }
+   },
+   {
+    "texte": "Tu changes de ruelle, et une conversation s'éteint à ton entrée, exactement comme on souffle une lampe. Trois pas plus loin, elle reprend derrière toi — pas la même, plus basse, plus courte.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ],
+     "minSoupcon": 3.0
+    }
+   },
+   {
+    "texte": "Un gamin marche à ta hauteur, de l'autre côté du muret, sans te regarder. Il s'arrête quand tu t'arrêtes. À l'angle, il tourne avant toi et va dire quelque chose à quelqu'un que tu ne vois pas.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ],
+     "minSoupcon": 4.0
+    }
+   },
+   {
+    "texte": "Une femme te croise et rectifie sa trajectoire — pas pour t'éviter : pour passer du bon côté, celui où l'on passe quand on a juré. Elle ne dit rien. Elle n'a pas eu à réfléchir.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ],
+     "serment": [
+      "jure"
+     ]
+    }
+   },
+   {
+    "texte": "Devant toi, une porte se ferme. Puis la suivante, avant même que tu arrives à sa hauteur. Ce n'est pas de la peur : c'est de l'ordre. Le mot est passé plus vite que tes pas.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ],
+     "serment": [
+      "refuse",
+      "faux"
+     ]
+    }
+   }
+  ],
+  "bifurcations": [
+   "Le chemin se partage autour d'un muret effondré.",
+   "La route cesse d'être une route. Deux traces continuent.",
+   "La bruyère s'ouvre en deux couloirs.",
+   "Il faut quitter la crête par l'un des deux versants.",
+   "Le sentier hésite, puis renonce : à toi de trancher.",
+   "Une pierre plantée marque la fourche. Personne n'y a gravé de direction.",
+   "Les ornières divergent — deux charrois, deux idées du sud.",
+   "Deux pentes, deux silences différents.",
+   "Le muret t'accompagnait ; il choisit l'un des deux côtés."
+  ]
+ },
  "totaux": {
   "scenes": 69,
   "pointsInteret": 39,
   "choix": 171,
-  "illustrations": 233,
+  "illustrations": 235,
   "sansImage": 6,
   "imagesIntrouvables": 0,
-  "reserve": 56,
+  "reserve": 58,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
   "temoins": 25,
   "etats": 7,
-  "besoins": 3
+  "besoins": 3,
+  "transitions": 49
  }
 }
