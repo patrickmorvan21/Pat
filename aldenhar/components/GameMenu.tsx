@@ -9,6 +9,7 @@ import { loadSettings, mutateSettings, type Settings } from "@/lib/settings";
 import { syncMusicSettings } from "@/lib/audio";
 import DeathScreen, { bilanDeMort, type Bilan } from "@/components/DeathScreen";
 import { assetUrl, assetExiste } from "@/lib/assets";
+import { reliqueIllustration } from "@/lib/reliques";
 import { etatsActifs } from "@/lib/etats";
 
 /**
@@ -29,6 +30,11 @@ type Tab = "stats" | "inventaire" | "options";
 
 /** Icône générique des Reliques (l'ancien `objet_masque.png` faisait 68×68). */
 const RELIC_ICON = "assets/objet_couronne_brisee.png";
+
+/** L'illustration propre d'une relique, sinon l'icône générique (6/08). */
+function relicIcon(r: { relicId?: string; name: string }): string {
+  return reliqueIllustration(r.relicId ?? r.name, assetExiste) ?? RELIC_ICON;
+}
 
 /**
  * Repli par `kind` quand un objet n'a pas d'icône propre.
@@ -423,7 +429,7 @@ function InventaireTab({
 
   const item = selected.type === "besace" ? besace.find((i) => i.id === selected.id) : undefined;
   const relic = selected.type === "relic" ? relics[selected.index] : undefined;
-  const detailImg = item ? itemIcon(item) : relic ? RELIC_ICON : null;
+  const detailImg = item ? itemIcon(item) : relic ? relicIcon(relic) : null;
   const detailName = item?.name ?? relic?.name ?? "—";
   const detailFlavor = item
     ? item.flavor
@@ -536,7 +542,7 @@ function InventaireTab({
                     }`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img alt={r.name} src={assetUrl(RELIC_ICON)} className="block size-full" style={{ imageRendering: "pixelated" }} />
+                    <img alt={r.name} src={assetUrl(relicIcon(r))} className="block size-full" style={{ imageRendering: "pixelated" }} />
                   </button>
                 );
               })}

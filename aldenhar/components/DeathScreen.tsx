@@ -29,7 +29,8 @@ import { pickJailerQuote, reactionJours } from "@/lib/jailer-quotes";
 import { ditherFadeMaskDataUrl } from "@/lib/dither";
 import { animReduced } from "@/lib/settings";
 import type { RunState } from "@/lib/state";
-import { assetUrl } from "@/lib/assets";
+import { assetUrl, assetExiste } from "@/lib/assets";
+import { reliqueIllustration } from "@/lib/reliques";
 
 const CHARBON = "#1c1a16";
 const ORANGE = "#e0632a";
@@ -498,12 +499,16 @@ export default function DeathScreen({
             <div className="relative">
               <CendresRevelation />
               <div className="relative size-[336px] max-[799px]:size-[224px] overflow-hidden border-2 border-solid border-[var(--color-accent)]">
-                {/* Pas encore d'illustration par relique (celle de la maquette
-                    est une démo) : l'icône tramée générique des Reliques. */}
+                {/* L'illustration propre de la relique quand elle existe
+                    (6/08) ; sinon l'icône tramée générique des Reliques —
+                    jamais une image cassée. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   alt=""
-                  src={assetUrl("assets/objet_couronne_brisee.png")}
+                  src={assetUrl(
+                    reliqueIllustration(relic.relicId ?? relic.name, assetExiste) ??
+                      "assets/objet_couronne_brisee.png"
+                  )}
                   className="h-full w-full object-cover select-none"
                   style={{ imageRendering: "pixelated" }}
                 />

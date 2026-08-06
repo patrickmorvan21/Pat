@@ -14,7 +14,8 @@ import { APP_VERSION } from "@/lib/version";
 import { applySettingsToDom } from "@/lib/settings";
 import { armAudio, playMusic } from "@/lib/audio";
 import { OptionsTab } from "@/components/GameMenu";
-import { assetUrl } from "@/lib/assets";
+import { assetUrl, assetExiste } from "@/lib/assets";
+import { reliqueIllustration } from "@/lib/reliques";
 
 /**
  * Écrans d'accueil (Figma 1963:370 « Première partie » / 1970:458 « Reprendre
@@ -300,10 +301,10 @@ function HomeOverlay({ kind, onClose }: { kind: "reliques" | "registre" | "optio
             <div className="mt-[12px] flex flex-col gap-[12px]">
               {mem.relics.map((r, i) => (
                 <div key={`${r.name}-${i}`} className="flex items-center gap-[13px]">
-                  {/* Icône générique des Reliques — la couronne brisée tramée
-                      1000×1000, l'ancien masque faisait 68×68 (26/07). */}
+                  {/* L'illustration propre de la relique si elle existe (6/08),
+                      sinon l'icône générique tramée 1000×1000. */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img alt="" src={assetUrl("assets/objet_couronne_brisee.png")} className="size-[54px] border border-solid border-[var(--color-ink)]/30" style={{ imageRendering: "pixelated" }} />
+                  <img alt="" src={assetUrl(reliqueIllustration(r.relicId ?? r.name, assetExiste) ?? "assets/objet_couronne_brisee.png")} className="size-[54px] border border-solid border-[var(--color-ink)]/30" style={{ imageRendering: "pixelated" }} />
                   <div>
                     <p className="text-[13px] text-[var(--color-ink)]">{r.name}</p>
                     <p className="text-[11px] uppercase tracking-[1px] text-[var(--color-accent)]">

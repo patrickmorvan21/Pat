@@ -14,6 +14,8 @@ import {
   makeLiaison,
   pickLiaisonOptions,
   isHameauInterior,
+  pickAccueil,
+  HAMEAU_ACCUEIL_SLOT,
   sceneById,
   APPROACH_NARRATION,
   SOUPCON_PALIERS,
@@ -110,6 +112,10 @@ function nowMs(): number {
   return Date.now();
 }
 
+/** Flag de compte : un Serment a déjà été prêté du bout des lèvres, dans une
+    vie d'avant. Ouvre l'accueil « le hameau qui s'en va » (6/08). */
+const FLAG_SERMENT_TRAHI = "serment-trahi-jadis";
+
 const PORTAL = "assets/dithering-portal.jpg";
 
 // Image d'objet obtenu : le haut d'écran bascule sur l'objet quand une action
@@ -170,6 +176,9 @@ function liaisonCtx(run: RunState, from: string | undefined): LiaisonCtx {
     health: run.health,
     chapterId: run.chapter?.id ?? null,
     itemNames: (run.besace ?? []).map((i) => i.name),
+    // Le village ne regarde pas de la même façon celui qui a juré, celui qui a
+    // menti et celui qui a refusé — les vignettes de ruelle s'y adaptent (6/08).
+    serment: run.hameau?.serment ?? null,
     // Anti-répétition (4/08) : liaisons déjà jouées (⇒ la phrase-signature ne
     // sert qu'à la 1re Croisée) + ambiances déjà servies (jamais deux fois le
     // même texte dans une run). ⚠️ `liaisonVues` n'est complétée qu'en
@@ -580,6 +589,32 @@ export default function Scene() {
     mutate(run);
     runRef.current = run;
     saveRun(run);
+  }
+
+  /**
+   * L'ACCUEIL DU JOUR (6/08). Résout le slot `hameau-entree-3` : tire l'accueil
+   * la première fois, le range dans la run ensuite. Note aussi l'id dans la
+   * mémoire du COMPTE — c'est ce qui permet à la vie suivante de ne pas
+   * retomber dessus. Écrit au moment où l'accueil se JOUE, pas plus tôt : un
+   * accueil tiré mais jamais atteint (mort avant le hameau) ne doit pas
+   * consommer son tour de rotation.
+   */
+  function accueilDuJour(run: RunState): string {
+    if (run.hameau?.accueil) return run.hameau.accueil;
+    const mem = loadMemory();
+    const id = pickAccueil({
+      deaths: mem.deaths,
+      sermentTrahiJadis: Boolean(mem.envFlags[FLAG_SERMENT_TRAHI]),
+      precedent: mem.lastAccueil,
+      seed: nowMs(),
+    });
+    persist((r) => {
+      r.hameau = { ...r.hameau, accueil: id };
+    });
+    mutateMemory((m) => {
+      m.lastAccueil = id;
+    });
+    return id;
   }
 
   /**
@@ -1020,7 +1055,16 @@ export default function Scene() {
       trav.phase = "scene";
       trav.current = DESCENTE_SCENE.id;
     } else if (scene.chainNext) {
-      nextScene = sceneById(scene.chainNext) ?? DESCENTE_SCENE;
+      // L'ACCUEIL DU JOUR (6/08) : `hameau-entree-3` n'est pas une scène mais
+      // un SLOT — la façon dont le village te reçoit est tirée une fois par
+      // vie. Trois chaînes y mènent (le seuil, la Femme au Seuil, le Gamin) :
+      // les rediriger ici les couvre toutes, et l'id tiré est rangé dans la
+      // run pour que la reprise retombe sur le même accueil.
+      const cible =
+        scene.chainNext === HAMEAU_ACCUEIL_SLOT
+          ? accueilDuJour(runRef.current ?? loadRun())
+          : scene.chainNext;
+      nextScene = sceneById(cible) ?? DESCENTE_SCENE;
       trav.phase = "scene";
       trav.current = nextScene.id;
     } else if (trav.visited.length >= trav.target) {
@@ -1696,6 +1740,14 @@ export default function Scene() {
       persist((run) => {
         run.hameau = { ...run.hameau, serment: s };
       });
+      // Un serment creux ne s'oublie pas avec la vie de celui qui l'a prêté
+      // (6/08) : le COMPTE en garde la trace, et c'est ce qui rend tirable
+      // l'accueil « le hameau qui s'en va » dans les vies suivantes — ils
+      // partent parce que le dernier qui a juré ici a menti.
+      if (s === "faux")
+        mutateMemory((m) => {
+          m.envFlags = { ...m.envFlags, [FLAG_SERMENT_TRAHI]: true };
+        });
     }
 
     // Le Soupçon (chantier 3) : l'ACTE compte, pas son issue — le delta d'un

@@ -226,5 +226,12 @@
  *           deux pages d'outillage affichent ce hash (deux vignettes au même
  *           hash = même fichier), un bandeau de fraîcheur (date + commit), et
  *           trois filtres : Doublons · Nouveautés · Introuvable.
+ *   1.39.0 — LES ACCUEILS DU HAMEAU. Le 3e beat de l'entrée devient un SLOT :
+ *           six accueils s'ajoutent au barrage des trois hommes, tirés une
+ *           fois par vie, jamais celui de la vie précédente. Deux sont
+ *           conditionnels (le mur de craie à partir de la 2e mort, le départ
+ *           des familles si un Serment a déjà été trahi). Le Serment reste
+ *           imposé : tout finit au muret. + 14 vignettes de vie du village
+ *           sur les liaisons intérieures, dont deux qui dépendent du Serment.
  */
-export const APP_VERSION = "1.38.0";
+export const APP_VERSION = "1.39.0";

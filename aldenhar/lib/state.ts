@@ -264,6 +264,10 @@ export type RunState = {
     entree: boolean;
     serment: "jure" | "faux" | "refuse" | null;
     halte: boolean;
+    /** L'ACCUEIL du jour (6/08) : id de la scène tirée pour le 3e beat de
+        l'entrée. Rangé ici dès le tirage — la reprise ne re-tire jamais, sinon
+        fermer l'app changerait la façon dont le village t'a reçu. */
+    accueil?: string;
   };
   /**
    * Le SAVOIR (journal Notion 25/07 — « rendre l'exploration payante »).

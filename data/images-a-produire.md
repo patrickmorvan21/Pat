@@ -302,6 +302,112 @@ no lettering, no watermark
 
 ---
 
+
+---
+
+# PRIORITÉ 1 bis — LES ACCUEILS DU HAMEAU (6 vues, 6/08)
+
+Le 3e beat de l'entrée au village est devenu un **slot** : la façon dont le
+hameau te reçoit est tirée à chaque vie parmi sept (le barrage des trois hommes
++ ces six). En attendant ces images, les six accueils héritent de la vue de la
+ruelle (`scene_landes_hameau_ruelle_b.png`) — c'est cohérent, mais on voit six
+fois le même décor pour six scènes très différentes.
+
+*Raccord commun aux six : la RUELLE de `scene_landes_hameau_ruelle_b.png` —
+pavés mouillés qui accrochent la lumière, maisons de pierre serrées des deux
+côtés, fente de ciel orange au-dessus, coins assombris. Ce sont des plans de
+LIEU (pas des gros plans) : contre-jour, silhouettes quasi noires, la même
+grammaire que les autres vues de village.*
+
+### `scene_hameau_accueil_volet_a.png` — « La voix au volet »
+La rue est vide, un seul volet entrouvert de deux doigts. Aucun visage : c'est
+tout le sujet.
+```
+Empty narrow village lane at dusk, not a single figure anywhere, one wooden
+shutter cracked open by two fingers on the left wall with a sliver of warm light
+inside, a tipped bucket and a spilled puddle on the wet cobbles, all other
+shutters closed, low orange sun at the far end of the lane, strong backlight,
+near-black silhouettes. Dark fantasy illustration, one single light source, deep
+crushed blacks, no fill light, high contrast, two-tone monochrome-friendly,
+strong readable shapes, matte painting, grim medieval village, square
+composition, no text, no lettering, no watermark
+```
+
+### `scene_hameau_accueil_mur_a.png` — « Le mur écrit »
+Le pignon d'une grange couvert de craie. Les inscriptions doivent lire comme
+des MARQUES, pas comme du texte lisible (aucune lettre reconnaissable).
+```
+Tall windowless stone gable wall of a barn covered from the ground to head
+height in dense chalk tally marks and scratched strokes arranged in two tight
+columns, many different hands, some strokes smudged and half rubbed out, a row
+of crude crosses at the bottom of the list, a small child-sized silhouette
+walking away at the far edge of the frame, low orange sun raking across the wall
+from the side so the chalk catches the light. Dark fantasy illustration, one
+single light source, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, strong readable shapes, matte painting, grim medieval
+village, square composition, illegible marks only, no text, no lettering, no
+watermark
+```
+
+### `scene_hameau_accueil_enfant_a.png` — « L'enfant qu'on envoie »
+Un enfant seul au milieu de la rue, minuscule dans le cadre, les mains dans le
+dos. Les volets entrouverts derrière lui sont le vrai sujet.
+```
+A single small child standing alone in the middle of an empty village lane,
+seen from a distance so the figure is small in the frame, hands held behind the
+back, facing the viewer as a near-black silhouette against the low orange sun at
+the end of the lane, every shutter along both walls cracked open by a hand's
+width, no adult visible anywhere. Dark fantasy illustration, one single light
+source, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, strong readable shapes, matte painting, grim medieval
+village, square composition, no text, no lettering, no watermark
+```
+
+### `scene_hameau_accueil_table_a.png` — « La table dressée »
+Une table seule au milieu des pavés, un seul couvert, tourné vers le
+spectateur. Personne. La vapeur du bol est le seul mouvement de l'image.
+```
+A single small wooden table standing alone in the middle of an empty village
+lane, one stool, one earthenware bowl with visible steam rising, a spoon set
+perfectly straight beside it, the whole setting turned to face the viewer, wet
+cobbles, closed shutters on both sides, low orange sun behind the table, no
+figure anywhere. Dark fantasy illustration, one single light source, deep
+crushed blacks, no fill light, high contrast, two-tone monochrome-friendly,
+strong readable shapes, matte painting, grim medieval village, square
+composition, no text, no lettering, no watermark
+```
+
+### `scene_hameau_accueil_cloche_a.png` — « La cloche qu'on retient »
+Une main de vieille femme sur la corde. Le geste retenu, pas le tocsin.
+```
+A thick bell rope hanging down the outside wall of a small stone chapel, an old
+woman's hand closed around it holding it still, her body a near-black silhouette
+against the low orange sun, a man frozen mid-stride two paces away, a dozen
+small figures standing motionless in their doorways along the lane behind, wet
+cobbles. Dark fantasy illustration, one single light source, deep crushed
+blacks, no fill light, high contrast, two-tone monochrome-friendly, strong
+readable shapes, matte painting, grim medieval village, square composition, no
+text, no lettering, no watermark
+```
+
+### `scene_hameau_accueil_depart_a.png` — « Le hameau qui s'en va »
+Une charrette à moitié chargée — avec une PORTE dessus, détail qui porte toute
+la scène. Les voisins regardent sans aider.
+```
+A handcart half loaded in the middle of a village lane, a chest, two rolled
+straw mattresses and a whole wooden house door strapped on top of the pile, one
+man tightening a strap, several neighbours standing motionless with folded arms
+in their own doorways watching without helping, low orange sun at the end of the
+lane, near-black silhouettes, wet cobbles. Dark fantasy illustration, one single
+light source, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, strong readable shapes, matte painting, grim medieval
+village, square composition, no text, no lettering, no watermark
+```
+
+**Câblage** : dès que les six fichiers sont dans `public/assets/`, il n'y a
+qu'un champ `illustration` à poser sur chaque scène `hameau-accueil-*` de
+`lib/scene-data.ts` — aucun autre code à toucher.
+
 # PRIORITÉ 2 — le Hameau, le Moulin, la Borne (9 plans)
 
 ## Le Hameau, entrée — base `scene_landes_hameau_ruelle_b.png`

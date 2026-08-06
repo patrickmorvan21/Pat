@@ -52,8 +52,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-06T08:21:17Z",
- "commit": "12c779a",
+ "genere": "2026-08-06T09:14:05Z",
+ "commit": "99f516b",
  "zones": [
   {
    "id": "landes",
@@ -165,6 +165,12 @@
       "femme-seuil-2",
       "femme-seuil-3",
       "hameau-entree-3",
+      "hameau-accueil-volet",
+      "hameau-accueil-mur",
+      "hameau-accueil-enfant",
+      "hameau-accueil-table",
+      "hameau-accueil-cloche",
+      "hameau-accueil-depart",
       "hameau-entree-4",
       "hameau-entree-5",
       "hameau-halte-1",
@@ -175,15 +181,17 @@
       "hameau-halte-dehors",
       "proces-du-heros"
      ],
-     "nbScenes": 15,
+     "nbScenes": 21,
      "nbRencontres": 0,
      "nbPois": 5,
      "entrees": [],
      "sorties": [],
      "roles": [],
      "dansPool": true,
-     "alertes": [],
-     "aCompleter": 0,
+     "alertes": [
+      "imageManquante"
+     ],
+     "aCompleter": 6,
      "scenePrincipale": "serment-hameau"
     },
     {
@@ -2209,17 +2217,403 @@
    "alertes": []
   },
   {
+   "id": "hameau-accueil-volet",
+   "narration": [
+    "La rue est vide. Pas déserte — vide : une porte qui bat encore, un seau posé de travers, une flaque de lait qui n'a pas eu le temps de sécher. Tout le monde vient de rentrer, et vite.",
+    "Un volet s'entrouvre à ta gauche, de deux doigts. Une voix de femme, basse, très rapide, aucun visage derrière : — « Ne touche pas les portes marquées. Ne réponds pas si on t'appelle par ton nom. Et va au muret, au bout, avant qu'on vienne te chercher. »",
+    "Le volet ne se referme pas tout de suite. Elle attend quelque chose de toi."
+   ],
+   "choix": [
+    {
+     "id": "volet-pourquoi-aider",
+     "label": "Lui demander pourquoi elle t'aide",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu ne demandes rien tout de suite : tu t'approches du volet et tu attends, à hauteur d'oreille, sans regarder à l'intérieur. Ça la décide. « Mon frère est descendu il y a deux ans. Personne ne l'a prévenu. » Un silence. « Voilà. Maintenant va. » Elle t'a donné plus qu'un conseil : elle t'a donné une raison de la croire.",
+      "reussite": "« Parce que ça ne coûte rien de parler à travers un volet », dit-elle. Puis, plus bas, comme si elle se corrigeait : « Et parce que ça coûte trop cher de se taire deux fois. » Le volet se ferme, cette fois.",
+      "echec": "Tu poses la question trop fort. Le volet claque avant la fin de ta phrase, et tu entends la barre tomber derrière. Dans la rue, deux autres volets se ferment aussitôt — le tien a fait le tour du village en trois secondes.",
+      "funeste": "1 naturel. « Pourquoi vous m'aidez ? » Le silence derrière le bois dure trop longtemps. Puis : « Qui a dit que je t'aidais ? » Le volet se referme doucement, ce qui est pire qu'un claquement. ♦ −2"
+     }
+    },
+    {
+     "id": "volet-faire-parler",
+     "label": "La faire parler encore",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu ne poses aucune question — tu répètes ses trois consignes à voix haute, dans le désordre, en te trompant exprès sur la dernière. Elle corrige. Puis elle explique pourquoi. Puis elle en ajoute une quatrième qu'elle n'avait pas prévu de donner : « Et ne dors pas dos à la fenêtre. »",
+      "reussite": "Tu prends l'air de ne pas comprendre, et elle recommence, plus lentement — en ajoutant les raisons cette fois, parce qu'expliquer va plus vite que répéter. Tu apprends deux choses qu'elle ne voulait pas dire.",
+      "echec": "Ta ruse est trop visible. « Tu me fais parler », constate-t-elle, sans colère, presque avec pitié. « C'est exactement ce que fait l'autre. » Le volet se ferme, et tu ne sauras pas de quel autre elle parlait.",
+      "funeste": "1 naturel. Tu la relances une fois de trop. Elle se tait net, puis appelle vers l'intérieur, assez fort pour être entendue de la rue : « Il pose des questions ! » Trois volets s'ouvrent d'un coup. ♦ −2"
+     },
+     "soupcon": 1
+    },
+    {
+     "id": "volet-obeir",
+     "label": "Obéir sans un mot",
+     "type": "passif",
+     "consequence": "Tu hoches la tête vers le volet — une fois, à peine — et tu prends la rue vers le bout, sans toucher un mur, sans regarder une porte. Derrière toi, le bois se referme sans bruit. Trois maisons plus loin, un autre volet s'entrouvre puis se referme aussitôt : on s'est passé le mot que tu obéissais.",
+     "soupcon": -1
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hameau-entree-4",
+   "nom": "La voix au volet",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "moment",
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "hameau-entree-4"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "séquence du Hameau",
+   "etat": "acompleter",
+   "alertes": [
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "hameau-accueil-mur",
+   "narration": [
+    "Personne dans la rue. Mais le pignon de la grange, en face, est couvert de craie du sol jusqu'à hauteur d'homme : des noms, sur deux colonnes serrées, écrits par plusieurs mains différentes.",
+    "Chaque nom a une date à côté. Sauf les sept derniers : à la place de la date, une croix.",
+    "Un gamin est accroupi tout en bas. Il ajoute une ligne, se relève, te voit, et s'éloigne très vite sans courir — ce qui est pire. Ce qu'il vient d'écrire n'est pas un nom. C'est : « un qui descend »."
+   ],
+   "choix": [
+    {
+     "id": "mur-lire",
+     "label": "Lire jusqu'au bout",
+     "type": "passif",
+     "consequence": "Tu remontes les deux colonnes jusqu'en haut. Ce ne sont pas des morts : les dates sont des dates de PASSAGE. Le hameau note qui descend et quand. Et les sept croix du bas ne veulent pas dire « mort » — elles veulent dire « n'est pas remonté ». Ils ne comptent pas leurs pertes. Ils comptent les nôtres.",
+     "donneSavoir": "savoir_mur_ecrit"
+    },
+    {
+     "id": "mur-effacee",
+     "label": "Chercher sous la craie effacée",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu inclines la tête jusqu'à prendre la lumière rasante, et le mur te rend ce qu'on lui a repris : sous la couche fraîche, d'autres colonnes, plus anciennes, effacées à la paume. Des dizaines. Et une ligne, seule, en travers de toutes les autres, tracée si fort que la pierre l'a gardée : « CELUI QUI COMPTE EST DESCENDU AUSSI ».",
+      "reussite": "Sous la craie neuve, on devine les fantômes d'une liste plus vieille — effacée, pas nettoyée. Le mur sert depuis longtemps, et il a été vidé plusieurs fois. Quelqu'un tient ce registre depuis avant les gens qui l'écrivent aujourd'hui.",
+      "echec": "Tu frottes pour voir dessous, et tu emportes la craie fraîche avec. Trois lignes récentes disparaissent sous ta paume. Derrière toi, très calme, une voix d'enfant : « Faut pas. » Il n'est pas parti si loin que ça.",
+      "funeste": "1 naturel. Tu grattes la couche du dessous, et la craie te reste sur les doigts, blanche, bien visible. Tu ne t'en apercevras qu'au muret, en tendant la main. ♦ −2"
+     }
+    },
+    {
+     "id": "mur-effacer-ligne",
+     "label": "Effacer la ligne qui te concerne",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 13,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu passes la manche sur la dernière ligne, lentement, jusqu'à ce qu'il n'en reste rien — et tu écris à la place, de la même craie, la date du jour. Sans nom. Le hameau saura que quelqu'un est passé. Il ne saura pas que c'est descendu.",
+      "reussite": "Tu effaces « un qui descend » d'un revers de manche. Le mur garde une trace pâle, mais la phrase n'y est plus. Ce n'est pas grand-chose — sauf que le gamin, lui, l'avait écrite, et qu'il te regardait faire.",
+      "echec": "Ta manche accroche la ligne du dessus en même temps. Deux noms partent avec le tien. Effacer un nom, ici, ce n'est pas nier un passage : c'est nier quelqu'un, et cette faute-là se voit de loin.",
+      "funeste": "1 naturel. Tu effaces ta ligne. Le gamin, à dix pas, la réécrit de mémoire, plus grand, en te regardant. Puis il ajoute un mot devant. Tu ne le lis pas d'ici, et tu n'as plus envie de t'approcher. ♦ −2"
+     },
+     "soupcon": 2
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hameau-entree-4",
+   "nom": "Le mur écrit",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "moment",
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "hameau-entree-4"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "séquence du Hameau",
+   "etat": "acompleter",
+   "alertes": [
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "hameau-accueil-enfant",
+   "narration": [
+    "Ils ont envoyé un gosse. Huit ans peut-être, planté au milieu de la rue, les mains dans le dos comme on lui a dit de les tenir. Aucun adulte visible — et tous les volets entrouverts de deux doigts.",
+    "Il récite. On entend les mots appris, dans l'ordre, avec les silences qu'on lui a fait répéter : — « Est-ce que tu dors la nuit ? Est-ce que tu as compté quelque chose aujourd'hui ? Est-ce qu'on t'a appelé par ton nom depuis que tu es descendu ? »",
+    "Il ne comprend pas ce qu'il demande. Les autres, si."
+   ],
+   "choix": [
+    {
+     "id": "enfant-repondre-lui",
+     "label": "Répondre à l'enfant",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu t'accroupis à sa hauteur et tu réponds pour de vrai, aux trois, sans rien arranger. Il t'écoute avec un sérieux terrible, puis il oublie sa leçon : « Moi non plus je dors pas. » Derrière les volets, personne ne dit rien — mais quand tu te relèves, deux d'entre eux se sont ouverts en grand.",
+      "reussite": "Tu réponds simplement, en le regardant lui. Il hoche la tête à chaque réponse comme s'il cochait, puis se retourne vers la maison la plus proche et crie : « Il a dit non ! » Le mot passe de porte en porte. Ce n'est pas un acquittement, mais ce n'est pas une condamnation.",
+      "echec": "Tu réponds à l'enfant, gentiment — et tu oublies les vingt personnes qui écoutent. Ta deuxième réponse est trop longue, trop précise. Un adulte sort avant la fin et le tire par le bras à l'intérieur.",
+      "funeste": "1 naturel. Tu réponds « oui » à la deuxième question sans réfléchir. *Est-ce que tu as compté quelque chose aujourd'hui.* Le gamin répète ton oui à la cantonade, fier de sa mission. Le silence qui suit n'est pas celui d'avant. ♦ −2"
+     }
+    },
+    {
+     "id": "enfant-repondre-volets",
+     "label": "Répondre aux volets",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu ne baisses pas les yeux vers l'enfant : tu parles à la rue, fort, en tournant lentement sur toi-même, et tu réponds aux trois questions par trois autres. « Est-ce que VOUS dormez la nuit ? » Personne ne répond. Mais quand tu arrives au muret, le vieux t'attend en sachant déjà qu'il ne t'aura pas au bluff.",
+      "reussite": "Tu réponds par-dessus la tête du gamin, à voix haute, pour ceux qui écoutent. Tes phrases sont propres, calibrées, impossibles à retourner. Le gosse te regarde sans comprendre pourquoi tu ne lui parles pas à lui.",
+      "echec": "Tu joues pour la galerie, et la galerie n'aime pas ça. « Il parle aux murs », dit une voix de femme, sans se cacher. Chez des gens qui ont peur d'être écoutés, parler aux murs n'est pas une image.",
+      "funeste": "1 naturel. Tu réponds à la rue au lieu de répondre à l'enfant — et l'enfant, vexé, ajoute la seule chose qu'on ne lui avait pas apprise : « Il regarde le sud tout le temps. » ♦ −2"
+     },
+     "soupcon": 1
+    },
+    {
+     "id": "enfant-ne-pas-repondre",
+     "label": "Ne pas répondre à un enfant",
+     "type": "passif",
+     "consequence": "Tu passes à côté de lui sans un mot. Il ne te suit pas, il ne répète pas sa question : on lui a appris aussi ce qu'il fallait faire dans ce cas-là. Il se tourne vers la maison la plus proche et dit, très clairement : « Il a pas répondu. » Un volet se ferme. Puis tous les autres, dans l'ordre de la rue, jusqu'au bout — jusqu'au muret où quelqu'un t'attend déjà.",
+     "soupcon": 1
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hameau-entree-4",
+   "nom": "L'enfant qu'on envoie",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "moment",
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "hameau-entree-4"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "séquence du Hameau",
+   "etat": "acompleter",
+   "alertes": [
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "hameau-accueil-table",
+   "narration": [
+    "Une table au milieu de la rue. Une seule. Un tabouret, un bol, une cuillère posée bien droite — et le tout tourné vers le côté par où tu arrives, comme on dresse un couvert pour quelqu'un dont on connaît l'heure.",
+    "Le bol fume encore. Il n'y a personne dehors, et pourtant on t'a entendu venir de loin.",
+    "Ce n'est pas de l'hospitalité. C'est un péage : ici, on mange avant de savoir à quoi ça engage."
+   ],
+   "choix": [
+    {
+     "id": "table-manger",
+     "label": "T'asseoir et manger",
+     "type": "passif",
+     "consequence": "Tu t'assois. C'est de l'orge, du gras, du sel — c'est bon, et c'est chaud, et ton corps te trahit en te disant à quel point tu en avais besoin. À la troisième cuillère, des portes s'ouvrent dans ton dos, sans hâte. Ils attendaient ça. Quand tu reposes la cuillère, le vieux est déjà assis sur le muret, au bout de la rue. Le Serment ne se demandera pas : il a commencé au premier bol.",
+     "repondBesoin": "manger",
+     "soupcon": -1
+    },
+    {
+     "id": "table-repousser",
+     "label": "Repousser le bol",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu repousses le bol de deux doigts, sans le renverser, et tu restes debout à côté de la table — assez longtemps pour que ce soit un message et pas une fuite. Une porte s'ouvre. Le vieux sort, regarde le bol intact, et hoche la tête : « Bien. » Tu ne sauras jamais ce qui serait arrivé si tu avais mangé.",
+      "reussite": "Tu repousses le bol et tu passes. Ça se remarque — mais ça se respecte : chez des gens qui ont renoncé à tout, refuser quelque chose est encore un métier qu'ils comprennent.",
+      "echec": "Tu repousses le bol un peu trop fort. Il tourne, il tient, mais la cuillère tombe et sonne sur la pierre. Le bruit fait le tour de la rue. Refuser, ici, doit se faire sans bruit — sinon c'est du mépris.",
+      "funeste": "1 naturel. Tu repousses le bol, il verse. La soupe coule entre les pavés, et personne ne sort la ramasser. Ils la laisseront là jusqu'à ce que tu repasses. ♦ −2"
+     },
+     "soupcon": 1
+    },
+    {
+     "id": "table-pain-debout",
+     "label": "Prendre le pain, debout",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu prends le quignon posé à côté du bol, tu le casses en deux, tu en manges une moitié debout et tu laisses l'autre sur la table. Ni accepté, ni refusé : partagé. C'est exactement la faille de leur règle, et le vieux, au muret, mettra un moment à décider s'il doit t'en vouloir.",
+      "reussite": "Tu prends le pain sans t'asseoir, et tu continues en mâchant. Techniquement tu n'as pas mangé à leur table. Techniquement. Deux ou trois d'entre eux comprendront la nuance ; les autres retiendront juste que tu as pris.",
+      "echec": "Tu emportes le pain debout, et la nuance t'échappe à toi aussi : dans une rue qui n'a pas mangé de blanc depuis deux hivers, prendre sans s'asseoir ne s'appelle pas de la prudence.",
+      "funeste": "1 naturel. Tu prends le pain. Une voix, derrière un volet, énonce le mot exact, sans passion : « Voleur. » Et le mot va plus vite que toi jusqu'au bout de la rue. ♦ −2"
+     }
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hameau-entree-4",
+   "nom": "La table dressée",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "moment",
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "hameau-entree-4"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "séquence du Hameau",
+   "etat": "acompleter",
+   "alertes": [
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "hameau-accueil-cloche",
+   "narration": [
+    "Tu entres dans la rue au moment où un homme se met à courir. Pas vers toi : vers la chapelle, vers la corde qui pend le long du mur.",
+    "Une vieille femme l'atteint avant lui. Elle ne crie pas, elle ne le retient pas — elle pose la main sur la corde, c'est tout, et l'homme s'arrête net comme s'il se réveillait.",
+    "Le village sort quand même. Une dizaine, sur les seuils, pour un tocsin qui n'a pas sonné. Et c'est toi qu'ils regardent : tu as failli les faire sonner."
+   ],
+   "choix": [
+    {
+     "id": "cloche-qui-repond",
+     "label": "Demander qui répondrait",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu ne demandes pas « ce » qui répondrait. Tu demandes « qui ». La vieille lève enfin les yeux, et c'est à elle que tu as parlé juste. « La dernière fois qu'on a sonné, on comptait quarante-deux. » Elle regarde la rue. « Le lendemain, trente-neuf. Personne n'est parti. » Sa main n'a pas quitté la corde.",
+      "reussite": "« Ça ne répond pas avec des mots », dit la vieille. Elle ne lâche pas la corde pour autant. « Ça répond en venant. » L'homme qui courait s'est assis contre le mur, et il ne dit rien du tout.",
+      "echec": "Tu demandes trop vite. La vieille resserre la main sur la corde et te regarde comme on regarde quelqu'un qui a demandé le prix d'une chose qui ne se vend pas. « On ne parle pas de ça dehors. »",
+      "funeste": "1 naturel. Tu poses la question à voix haute, dans la rue, devant les seuils. Une femme rentre son enfant. Un homme fait le geste de compter sur ses doigts, s'arrête, et cache sa main. ♦ −2"
+     }
+    },
+    {
+     "id": "cloche-excuser",
+     "label": "T'excuser d'être arrivé",
+     "type": "passif",
+     "consequence": "Tu lèves les mains, paumes ouvertes, et tu dis que tu es désolé — pas d'être là : d'être arrivé à ce moment-là. La nuance les atteint. La vieille lâche la corde, enfin. Les seuils se vident un par un, sans hâte et sans un mot. Elle, elle reste, et te montre le bout de la rue du menton : « Il t'attend au muret. Va, tant qu'il fait encore jour. »",
+     "soupcon": -1
+    },
+    {
+     "id": "cloche-tirer",
+     "label": "Tirer la corde toi-même",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 14,
+     "hautEnjeu": true,
+     "issues": {
+      "critique": "20 naturel. Tu écartes la vieille — doucement — et tu tires. Une fois. Le son part beaucoup plus loin qu'une cloche de village ne devrait porter, et la rue entière se fige dans la position où elle était. Puis rien. Rien du tout. Et c'est ce rien qui les terrifie : quelque chose a entendu, et a choisi de ne pas venir aujourd'hui.",
+      "reussite": "Tu tires. La cloche sonne un coup, mat, comme si le bronze était plein. Personne ne bouge, personne ne crie ; ils comptent. Tu ne sauras jamais jusqu'où, parce qu'à quatorze ils s'arrêtent tous en même temps et rentrent.",
+      "echec": "Tu attrapes la corde, la vieille ne lâche pas, et vous tirez tous les deux à contretemps : le battant touche le bronze sans le faire sonner. Un bruit sourd, humiliant. Elle te regarde, et pour la première fois quelqu'un ici a l'air d'avoir pitié de toi.",
+      "funeste": "1 naturel. Tu tires, et le son sort trop long, trop plein, comme s'il ne venait pas de cette cloche-là. Loin, au sud, quelque chose de très grand change de position. Tu le sens sous tes pieds. ♦ −2"
+     },
+     "poseFlag": "cloche-sonnee",
+     "soupcon": 2
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hameau-entree-4",
+   "poseFlag": "cloche-sonnee",
+   "nom": "La cloche qu'on retient",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "moment",
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "hameau-entree-4"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "séquence du Hameau",
+   "etat": "acompleter",
+   "alertes": [
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "hameau-accueil-depart",
+   "narration": [
+    "On ne t'arrête pas : on est occupé. Au milieu de la rue, une charrette à moitié chargée — un coffre, deux paillasses roulées, une porte. Ils emportent leur porte.",
+    "Les autres regardent. Personne n'aide. Personne ne dit au revoir non plus : ils se tiennent sur leurs seuils, bras croisés, et attendent que ça finisse.",
+    "Un homme sangle une malle, te voit, et ne s'interrompt même pas. « Vous descendez, nous on monte. Chacun son sens. »"
+   ],
+   "choix": [
+    {
+     "id": "depart-aider",
+     "label": "Aider à charger",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu prends l'autre bout de la malle sans demander, et vous la montez ensemble. Personne ne te remercie, mais quelque chose se débloque dans la rue : deux hommes viennent aider à leur tour, honteux d'avoir attendu qu'un étranger commence. Le départ se fait vite, à la fin, et presque bien.",
+      "reussite": "Tu aides à sangler. L'homme accepte sans un mot, ce qui est ici la forme la plus haute du merci. Sa femme, elle, te regarde tout le temps du chargement — pas avec méfiance : comme on regarde quelqu'un qu'on essaie de reconnaître.",
+      "echec": "Tu tends les mains vers le coffre et l'homme le retire. « Non. » Il ne s'explique pas. Sur les seuils, personne n'a bougé, et tu comprends trop tard que dans ce village, aider un partant, c'est prendre parti.",
+      "funeste": "1 naturel. Tu attrapes la porte pour la caler et elle glisse, tombe à plat, sonne sur les pavés. Toute la rue sursaute. La femme se met à pleurer, enfin — et c'est ta faute, et ce n'est pas la porte. ♦ −2"
+     },
+     "soupcon": -1
+    },
+    {
+     "id": "depart-pourquoi",
+     "label": "Demander pourquoi maintenant",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu ne demandes pas à celui qui charge : tu demandes à celle qui regarde, sur le seuil d'en face. Elle répond d'une traite, comme quelqu'un qui attendait qu'on le lui demande. « Parce que le dernier qui a juré au muret a menti, et que depuis, ça vient jusqu'ici la nuit. » Elle te regarde. « Vous jurez tous. »",
+      "reussite": "« Parce qu'on a compté trois fois ce mois-ci », dit l'homme sans lever la tête. « Et que trois fois, ça faisait pas pareil. » Il tire la sangle d'un coup sec. « Y a rien d'autre à comprendre. »",
+      "echec": "Tu demandes, et il te répond par une autre question : « Vous êtes lequel ? » Comme tu ne comprends pas, il précise : « Y en a un qui est passé avant vous et qui a juré. Vous êtes lequel des deux ? » Tu n'as pas de réponse à ça.",
+      "funeste": "1 naturel. « Pourquoi maintenant ? » L'homme s'arrête enfin, se retourne, te regarde longuement. « Parce que vous êtes revenu. » Il n'a pas l'air de savoir lui-même pourquoi il a dit ça au passé. ♦ −2"
+     }
+    },
+    {
+     "id": "depart-regarder",
+     "label": "Les regarder partir",
+     "type": "passif",
+     "consequence": "Tu t'écartes et tu laisses passer. La charrette prend la rue vers le nord, lentement, et tout le village la regarde jusqu'au bout — pas un adieu, une vérification. Ils veulent voir jusqu'où elle ira. Quand elle disparaît derrière la crête, les seuils se vident d'un coup. Sauf un vieux, tout au bout de la rue, assis sur un muret, qui n'a pas regardé la charrette une seule fois."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hameau-entree-4",
+   "nom": "Le hameau qui s'en va",
+   "lieu": "hameau_des_renoncants",
+   "typeScene": "moment",
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "hameau-entree-4"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "séquence du Hameau",
+   "etat": "acompleter",
+   "alertes": [
+    "imageManquante"
+   ]
+  },
+  {
    "id": "hameau-entree-4",
    "narration": [
-    "Le vieux tend la main, paume ouverte. Pas pour serrer la tienne — pour que tu la regardes. Elle est vide. C'est le geste d'ici : on jure sur rien, parce qu'il ne reste rien.",
-    "— « Trois choses, et tu dors sous un toit. Tu ne parles pas aux pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et tu pars avant la troisième aube. »"
+    "Au bout de la rue, un muret bas ferme le village côté sud. Le vieux y est assis, sec comme un piquet, les coudes sur les genoux. Il t'attendait là depuis le début.",
+    " +\n         +\n        "
    ],
    "choix": [
     {
      "id": "jurer-serment",
      "label": "Jurer",
      "type": "passif",
-     "consequence": "Tu poses ta main au-dessus de la sienne, sans la toucher — c'est ainsi qu'on fait, tu l'as compris à leurs regards. Tu jures les trois choses. Le vieux hoche la tête une fois, et tout le barrage se dénoue d'un coup, comme une corde qu'on lâche. « Tenu jusqu'à la sortie », rappelle-t-il. Le hameau entier a entendu. Et plus haut que le hameau, quelqu'un d'autre.",
+     "consequence": "Tu poses ta main au-dessus de la sienne, sans la toucher — c'est ainsi qu'on fait, tu l'as compris à leurs regards. Tu jures les trois choses. Le vieux hoche la tête une fois, et toute la rue se dénoue d'un coup dans ton dos, comme une corde qu'on lâche. « Tenu jusqu'à la sortie », rappelle-t-il. Le hameau entier a entendu. Et plus haut que le hameau, quelqu'un d'autre.",
      "serment": "jure",
      "soupcon": -1
     },
@@ -2258,7 +2652,7 @@
     {
      "id": "pourquoi-trois-aubes",
      "label": "Demander pourquoi trois aubes",
-     "approche": "Tu ne réponds pas tout de suite. Tu poses la question, et le barrage entier attend sa réponse avec toi — comme si personne n'avait jamais osé la poser.",
+     "approche": "Tu ne réponds pas tout de suite. Tu poses la question, et les quelques-uns qui s'étaient approchés attendent la réponse avec toi — comme si personne n'avait jamais osé la poser.",
      "examen": "— « Parce qu'à la quatrième, on commence à s'habituer à toi. » Le vieux hausse une épaule, presque désolé. « Et on ne peut pas se permettre de s'habituer. »",
      "soupcon": 1,
      "temoin": {
@@ -2297,6 +2691,12 @@
     "hameau-entree-5"
    ],
    "mèneIci": [
+    "hameau-accueil-cloche",
+    "hameau-accueil-depart",
+    "hameau-accueil-enfant",
+    "hameau-accueil-mur",
+    "hameau-accueil-table",
+    "hameau-accueil-volet",
     "hameau-entree-3"
    ],
    "roles": [],
@@ -4938,6 +5338,36 @@
    "type": "principal"
   },
   {
+   "de": "hameau-accueil-volet",
+   "vers": "hameau-entree-4",
+   "type": "principal"
+  },
+  {
+   "de": "hameau-accueil-mur",
+   "vers": "hameau-entree-4",
+   "type": "principal"
+  },
+  {
+   "de": "hameau-accueil-enfant",
+   "vers": "hameau-entree-4",
+   "type": "principal"
+  },
+  {
+   "de": "hameau-accueil-table",
+   "vers": "hameau-entree-4",
+   "type": "principal"
+  },
+  {
+   "de": "hameau-accueil-cloche",
+   "vers": "hameau-entree-4",
+   "type": "principal"
+  },
+  {
+   "de": "hameau-accueil-depart",
+   "vers": "hameau-entree-4",
+   "type": "principal"
+  },
+  {
    "de": "hameau-entree-4",
    "vers": "hameau-entree-5",
    "type": "principal"
@@ -5239,6 +5669,42 @@
    "fichier": "objet_sceau_bailli_c.png",
    "hash": "f95ac07d",
    "taille": 12265,
+   "recent": false
+  },
+  {
+   "fichier": "relique_anneau_de_suie.png",
+   "hash": "4b0a4ea5",
+   "taille": 3241,
+   "recent": false
+  },
+  {
+   "fichier": "relique_clou_du_silence.png",
+   "hash": "152f2e47",
+   "taille": 4086,
+   "recent": false
+  },
+  {
+   "fichier": "relique_dent_du_decompte.png",
+   "hash": "e4959469",
+   "taille": 5092,
+   "recent": false
+  },
+  {
+   "fichier": "relique_miroir_noye.png",
+   "hash": "e02371e8",
+   "taille": 4774,
+   "recent": false
+  },
+  {
+   "fichier": "relique_oeil_lanterne_verte.png",
+   "hash": "76e01835",
+   "taille": 7126,
+   "recent": false
+  },
+  {
+   "fichier": "relique_sablier_sans_sable.png",
+   "hash": "914b2800",
+   "taille": 6463,
    "recent": false
   },
   {
@@ -5952,13 +6418,13 @@
   }
  ],
  "totaux": {
-  "scenes": 63,
+  "scenes": 69,
   "pointsInteret": 39,
-  "choix": 153,
-  "illustrations": 226,
-  "sansImage": 0,
+  "choix": 171,
+  "illustrations": 233,
+  "sansImage": 6,
   "imagesIntrouvables": 0,
-  "reserve": 50,
+  "reserve": 56,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

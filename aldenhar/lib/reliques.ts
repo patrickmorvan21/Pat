@@ -185,6 +185,21 @@ export function relique(ref: string | undefined): RelicLandes | null {
 }
 
 /**
+ * L'ILLUSTRATION d'une relique (6/08). Dérivée de l'id plutôt qu'écrite champ
+ * par champ : les fichiers du Drive portent exactement `relique_{id}.png`, avec
+ * les tirets remplacés par des soulignés. Retourne null si le fichier n'existe
+ * pas encore — l'appelant retombe alors sur l'icône générique des Reliques,
+ * ce qui vaut toujours mieux qu'une image cassée. Accepte un id OU un nom,
+ * comme `relique()`, puisque les sauvegardes ne stockent que le nom.
+ */
+export function reliqueIllustration(ref: string | undefined, existe: (c: string) => boolean): string | null {
+  const fiche = relique(ref);
+  if (!fiche) return null;
+  const chemin = `assets/relique_${fiche.id.replace(/-/g, "_")}.png`;
+  return existe(chemin) ? chemin : null;
+}
+
+/**
  * La relique forgée par une mort donnée. La CAUSE choisit le pool — une corde
  * ne forge pas la même chose qu'une noyade —, la rareté sort du tirage
  * habituel. `floorRare` = jalon de première mort (jamais une commune).

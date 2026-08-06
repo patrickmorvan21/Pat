@@ -1556,8 +1556,9 @@ export const SCENES: Scene[] = [
   },
   {
     /* LA FEMME AU SEUIL — rencontre ÉTALON des scripts (Hameau · commune).
-       Ouverte depuis le seuil du hameau, elle rejoint ensuite le barrage :
-       une rencontre ne fait jamais dérailler la séquence garantie. */
+       Ouverte depuis le seuil du hameau, elle rejoint ensuite l'accueil du
+       jour (slot `hameau-entree-3`, résolu au tirage) : une rencontre ne fait
+       jamais dérailler la séquence garantie. */
     id: "femme-seuil-1",
     illustration: "assets/monstre_femme_seuil_1_v3_a.png",
     chainNext: "femme-seuil-2",
@@ -1890,6 +1891,392 @@ export const SCENES: Scene[] = [
     ],
     jailerLine: "Regarde-les. Trois hommes qui tremblent devant un mort. Ils ont raison, remarque.",
   },
+  /* ——————————————————————————————————————————————————————————————————————
+     LES ACCUEILS DU HAMEAU (6/08). Retour Patrick : « si à chaque run on
+     retrouve toujours ces mêmes trois messieurs qui nous attendent, c'est
+     redondant. »
+
+     Le beat 3 de l'entrée devient un SLOT : `hameau-entree-3` (le barrage des
+     trois hommes) n'est plus qu'un accueil parmi sept. Ce qui change, c'est la
+     façon dont le village te reçoit dans la rue ; ce qui ne change pas, c'est
+     que tout finit au muret, devant le vieux, pour le Serment (beat 4).
+     La séquence garantie de la spec du 24/07 reste donc entière — le Serment
+     n'est jamais contournable, il est seulement amené autrement.
+
+     Règle d'écriture : le DERNIER paragraphe de chaque accueil doit orienter
+     vers le muret, puisque le beat 4 s'ouvre là sans savoir ce qui a précédé.
+     Aucune illustration dédiée pour l'instant : l'image de la ruelle (beat 2)
+     reste à l'écran. Les 6 prompts sont dans data/images-a-produire.md.
+     —————————————————————————————————————————————————————————————————————— */
+  {
+    id: "hameau-accueil-volet",
+    chainNext: "hameau-entree-4",
+    narration: [
+      "La rue est vide. Pas déserte — vide : une porte qui bat encore, un " +
+        "seau posé de travers, une flaque de lait qui n'a pas eu le temps de " +
+        "sécher. Tout le monde vient de rentrer, et vite.",
+      "Un volet s'entrouvre à ta gauche, de deux doigts. Une voix de femme, " +
+        "basse, très rapide, aucun visage derrière : — « Ne touche pas les " +
+        "portes marquées. Ne réponds pas si on t'appelle par ton nom. Et va " +
+        "au muret, au bout, avant qu'on vienne te chercher. »",
+      "Le volet ne se referme pas tout de suite. Elle attend quelque chose de " +
+        "toi.",
+    ],
+    choices: [
+      {
+        id: "volet-pourquoi-aider",
+        label: "Lui demander pourquoi elle t'aide",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu ne demandes rien tout de suite : tu t'approches du volet et tu attends, à hauteur d'oreille, sans regarder à l'intérieur. Ça la décide. « Mon frère est descendu il y a deux ans. Personne ne l'a prévenu. » Un silence. « Voilà. Maintenant va. » Elle t'a donné plus qu'un conseil : elle t'a donné une raison de la croire.",
+            "« Parce que ça ne coûte rien de parler à travers un volet », dit-elle. Puis, plus bas, comme si elle se corrigeait : « Et parce que ça coûte trop cher de se taire deux fois. » Le volet se ferme, cette fois.",
+            "Tu poses la question trop fort. Le volet claque avant la fin de ta phrase, et tu entends la barre tomber derrière. Dans la rue, deux autres volets se ferment aussitôt — le tien a fait le tour du village en trois secondes.",
+            "1 naturel. « Pourquoi vous m'aidez ? » Le silence derrière le bois dure trop longtemps. Puis : « Qui a dit que je t'aidais ? » Le volet se referme doucement, ce qui est pire qu'un claquement. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "volet-faire-parler",
+        label: "La faire parler encore",
+        soupcon: 1,
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu ne poses aucune question — tu répètes ses trois consignes à voix haute, dans le désordre, en te trompant exprès sur la dernière. Elle corrige. Puis elle explique pourquoi. Puis elle en ajoute une quatrième qu'elle n'avait pas prévu de donner : « Et ne dors pas dos à la fenêtre. »",
+            "Tu prends l'air de ne pas comprendre, et elle recommence, plus lentement — en ajoutant les raisons cette fois, parce qu'expliquer va plus vite que répéter. Tu apprends deux choses qu'elle ne voulait pas dire.",
+            "Ta ruse est trop visible. « Tu me fais parler », constate-t-elle, sans colère, presque avec pitié. « C'est exactement ce que fait l'autre. » Le volet se ferme, et tu ne sauras pas de quel autre elle parlait.",
+            "1 naturel. Tu la relances une fois de trop. Elle se tait net, puis appelle vers l'intérieur, assez fort pour être entendue de la rue : « Il pose des questions ! » Trois volets s'ouvrent d'un coup. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "volet-obeir",
+        label: "Obéir sans un mot",
+        soupcon: -1,
+        passive: {
+          consequence:
+            "Tu hoches la tête vers le volet — une fois, à peine — et tu " +
+            "prends la rue vers le bout, sans toucher un mur, sans regarder " +
+            "une porte. Derrière toi, le bois se referme sans bruit. Trois " +
+            "maisons plus loin, un autre volet s'entrouvre puis se referme " +
+            "aussitôt : on s'est passé le mot que tu obéissais.",
+        },
+      },
+    ],
+    jailerLine: "Elle t'a donné trois règles. Moi je t'en ai donné une seule, et tu la tiens déjà mal.",
+  },
+  {
+    /* Conditionnel : ne sort qu'à partir de la 2e mort du compte — il faut
+       avoir laissé des noms derrière soi pour que ce mur veuille dire quelque
+       chose. Voir HAMEAU_ACCUEILS. */
+    id: "hameau-accueil-mur",
+    chainNext: "hameau-entree-4",
+    narration: [
+      "Personne dans la rue. Mais le pignon de la grange, en face, est " +
+        "couvert de craie du sol jusqu'à hauteur d'homme : des noms, sur deux " +
+        "colonnes serrées, écrits par plusieurs mains différentes.",
+      "Chaque nom a une date à côté. Sauf les sept derniers : à la place de " +
+        "la date, une croix.",
+      "Un gamin est accroupi tout en bas. Il ajoute une ligne, se relève, te " +
+        "voit, et s'éloigne très vite sans courir — ce qui est pire. Ce qu'il " +
+        "vient d'écrire n'est pas un nom. C'est : « un qui descend ».",
+    ],
+    choices: [
+      {
+        id: "mur-lire",
+        label: "Lire jusqu'au bout",
+        grantsSavoir: "savoir_mur_ecrit",
+        passive: {
+          consequence:
+            "Tu remontes les deux colonnes jusqu'en haut. Ce ne sont pas des " +
+            "morts : les dates sont des dates de PASSAGE. Le hameau note qui " +
+            "descend et quand. Et les sept croix du bas ne veulent pas dire " +
+            "« mort » — elles veulent dire « n'est pas remonté ». " +
+            "Ils ne comptent pas leurs pertes. Ils comptent les nôtres.",
+        },
+      },
+      {
+        id: "mur-effacee",
+        label: "Chercher sous la craie effacée",
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu inclines la tête jusqu'à prendre la lumière rasante, et le mur te rend ce qu'on lui a repris : sous la couche fraîche, d'autres colonnes, plus anciennes, effacées à la paume. Des dizaines. Et une ligne, seule, en travers de toutes les autres, tracée si fort que la pierre l'a gardée : « CELUI QUI COMPTE EST DESCENDU AUSSI ».",
+            "Sous la craie neuve, on devine les fantômes d'une liste plus vieille — effacée, pas nettoyée. Le mur sert depuis longtemps, et il a été vidé plusieurs fois. Quelqu'un tient ce registre depuis avant les gens qui l'écrivent aujourd'hui.",
+            "Tu frottes pour voir dessous, et tu emportes la craie fraîche avec. Trois lignes récentes disparaissent sous ta paume. Derrière toi, très calme, une voix d'enfant : « Faut pas. » Il n'est pas parti si loin que ça.",
+            "1 naturel. Tu grattes la couche du dessous, et la craie te reste sur les doigts, blanche, bien visible. Tu ne t'en apercevras qu'au muret, en tendant la main. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "mur-effacer-ligne",
+        label: "Effacer la ligne qui te concerne",
+        soupcon: 2,
+        risky: {
+          stat: "COURAGE",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Tu passes la manche sur la dernière ligne, lentement, jusqu'à ce qu'il n'en reste rien — et tu écris à la place, de la même craie, la date du jour. Sans nom. Le hameau saura que quelqu'un est passé. Il ne saura pas que c'est descendu.",
+            "Tu effaces « un qui descend » d'un revers de manche. Le mur garde une trace pâle, mais la phrase n'y est plus. Ce n'est pas grand-chose — sauf que le gamin, lui, l'avait écrite, et qu'il te regardait faire.",
+            "Ta manche accroche la ligne du dessus en même temps. Deux noms partent avec le tien. Effacer un nom, ici, ce n'est pas nier un passage : c'est nier quelqu'un, et cette faute-là se voit de loin.",
+            "1 naturel. Tu effaces ta ligne. Le gamin, à dix pas, la réécrit de mémoire, plus grand, en te regardant. Puis il ajoute un mot devant. Tu ne le lis pas d'ici, et tu n'as plus envie de t'approcher. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Un mur de craie. Un registre de pauvres. Le mien est plus grand, et je n'efface jamais.",
+  },
+  {
+    id: "hameau-accueil-enfant",
+    chainNext: "hameau-entree-4",
+    narration: [
+      "Ils ont envoyé un gosse. Huit ans peut-être, planté au milieu de la " +
+        "rue, les mains dans le dos comme on lui a dit de les tenir. Aucun " +
+        "adulte visible — et tous les volets entrouverts de deux doigts.",
+      "Il récite. On entend les mots appris, dans l'ordre, avec les silences " +
+        "qu'on lui a fait répéter : — « Est-ce que tu dors la nuit ? Est-ce " +
+        "que tu as compté quelque chose aujourd'hui ? Est-ce qu'on t'a appelé " +
+        "par ton nom depuis que tu es descendu ? »",
+      "Il ne comprend pas ce qu'il demande. Les autres, si.",
+    ],
+    choices: [
+      {
+        id: "enfant-repondre-lui",
+        label: "Répondre à l'enfant",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu t'accroupis à sa hauteur et tu réponds pour de vrai, aux trois, sans rien arranger. Il t'écoute avec un sérieux terrible, puis il oublie sa leçon : « Moi non plus je dors pas. » Derrière les volets, personne ne dit rien — mais quand tu te relèves, deux d'entre eux se sont ouverts en grand.",
+            "Tu réponds simplement, en le regardant lui. Il hoche la tête à chaque réponse comme s'il cochait, puis se retourne vers la maison la plus proche et crie : « Il a dit non ! » Le mot passe de porte en porte. Ce n'est pas un acquittement, mais ce n'est pas une condamnation.",
+            "Tu réponds à l'enfant, gentiment — et tu oublies les vingt personnes qui écoutent. Ta deuxième réponse est trop longue, trop précise. Un adulte sort avant la fin et le tire par le bras à l'intérieur.",
+            "1 naturel. Tu réponds « oui » à la deuxième question sans réfléchir. *Est-ce que tu as compté quelque chose aujourd'hui.* Le gamin répète ton oui à la cantonade, fier de sa mission. Le silence qui suit n'est pas celui d'avant. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "enfant-repondre-volets",
+        label: "Répondre aux volets",
+        soupcon: 1,
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu ne baisses pas les yeux vers l'enfant : tu parles à la rue, fort, en tournant lentement sur toi-même, et tu réponds aux trois questions par trois autres. « Est-ce que VOUS dormez la nuit ? » Personne ne répond. Mais quand tu arrives au muret, le vieux t'attend en sachant déjà qu'il ne t'aura pas au bluff.",
+            "Tu réponds par-dessus la tête du gamin, à voix haute, pour ceux qui écoutent. Tes phrases sont propres, calibrées, impossibles à retourner. Le gosse te regarde sans comprendre pourquoi tu ne lui parles pas à lui.",
+            "Tu joues pour la galerie, et la galerie n'aime pas ça. « Il parle aux murs », dit une voix de femme, sans se cacher. Chez des gens qui ont peur d'être écoutés, parler aux murs n'est pas une image.",
+            "1 naturel. Tu réponds à la rue au lieu de répondre à l'enfant — et l'enfant, vexé, ajoute la seule chose qu'on ne lui avait pas apprise : « Il regarde le sud tout le temps. » ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "enfant-ne-pas-repondre",
+        label: "Ne pas répondre à un enfant",
+        soupcon: 1,
+        passive: {
+          consequence:
+            "Tu passes à côté de lui sans un mot. Il ne te suit pas, il ne " +
+            "répète pas sa question : on lui a appris aussi ce qu'il fallait " +
+            "faire dans ce cas-là. Il se tourne vers la maison la plus proche " +
+            "et dit, très clairement : « Il a pas répondu. » " +
+            "Un volet se ferme. Puis tous les autres, dans l'ordre de la rue, " +
+            "jusqu'au bout — jusqu'au muret où quelqu'un t'attend déjà.",
+        },
+      },
+    ],
+    jailerLine: "Ils envoient un enfant en éclaireur. Je t'ai envoyé, toi. On fait le même métier, eux et moi.",
+  },
+  {
+    id: "hameau-accueil-table",
+    chainNext: "hameau-entree-4",
+    narration: [
+      "Une table au milieu de la rue. Une seule. Un tabouret, un bol, une " +
+        "cuillère posée bien droite — et le tout tourné vers le côté par où " +
+        "tu arrives, comme on dresse un couvert pour quelqu'un dont on " +
+        "connaît l'heure.",
+      "Le bol fume encore. Il n'y a personne dehors, et pourtant on t'a " +
+        "entendu venir de loin.",
+      "Ce n'est pas de l'hospitalité. C'est un péage : ici, on mange avant de " +
+        "savoir à quoi ça engage.",
+    ],
+    choices: [
+      {
+        id: "table-manger",
+        label: "T'asseoir et manger",
+        repondBesoin: "manger",
+        soupcon: -1,
+        passive: {
+          consequence:
+            "Tu t'assois. C'est de l'orge, du gras, du sel — c'est bon, et " +
+            "c'est chaud, et ton corps te trahit en te disant à quel point tu " +
+            "en avais besoin. À la troisième cuillère, des portes s'ouvrent " +
+            "dans ton dos, sans hâte. Ils attendaient ça. " +
+            "Quand tu reposes la cuillère, le vieux est déjà assis sur le " +
+            "muret, au bout de la rue. Le Serment ne se demandera pas : il " +
+            "a commencé au premier bol.",
+        },
+      },
+      {
+        id: "table-repousser",
+        label: "Repousser le bol",
+        soupcon: 1,
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu repousses le bol de deux doigts, sans le renverser, et tu restes debout à côté de la table — assez longtemps pour que ce soit un message et pas une fuite. Une porte s'ouvre. Le vieux sort, regarde le bol intact, et hoche la tête : « Bien. » Tu ne sauras jamais ce qui serait arrivé si tu avais mangé.",
+            "Tu repousses le bol et tu passes. Ça se remarque — mais ça se respecte : chez des gens qui ont renoncé à tout, refuser quelque chose est encore un métier qu'ils comprennent.",
+            "Tu repousses le bol un peu trop fort. Il tourne, il tient, mais la cuillère tombe et sonne sur la pierre. Le bruit fait le tour de la rue. Refuser, ici, doit se faire sans bruit — sinon c'est du mépris.",
+            "1 naturel. Tu repousses le bol, il verse. La soupe coule entre les pavés, et personne ne sort la ramasser. Ils la laisseront là jusqu'à ce que tu repasses. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "table-pain-debout",
+        label: "Prendre le pain, debout",
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu prends le quignon posé à côté du bol, tu le casses en deux, tu en manges une moitié debout et tu laisses l'autre sur la table. Ni accepté, ni refusé : partagé. C'est exactement la faille de leur règle, et le vieux, au muret, mettra un moment à décider s'il doit t'en vouloir.",
+            "Tu prends le pain sans t'asseoir, et tu continues en mâchant. Techniquement tu n'as pas mangé à leur table. Techniquement. Deux ou trois d'entre eux comprendront la nuance ; les autres retiendront juste que tu as pris.",
+            "Tu emportes le pain debout, et la nuance t'échappe à toi aussi : dans une rue qui n'a pas mangé de blanc depuis deux hivers, prendre sans s'asseoir ne s'appelle pas de la prudence.",
+            "1 naturel. Tu prends le pain. Une voix, derrière un volet, énonce le mot exact, sans passion : « Voleur. » Et le mot va plus vite que toi jusqu'au bout de la rue. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Un bol tiède contre trois promesses. Tu vois — je ne suis pas le seul à faire des pactes.",
+  },
+  {
+    id: "hameau-accueil-cloche",
+    chainNext: "hameau-entree-4",
+    narration: [
+      "Tu entres dans la rue au moment où un homme se met à courir. Pas vers " +
+        "toi : vers la chapelle, vers la corde qui pend le long du mur.",
+      "Une vieille femme l'atteint avant lui. Elle ne crie pas, elle ne le " +
+        "retient pas — elle pose la main sur la corde, c'est tout, et l'homme " +
+        "s'arrête net comme s'il se réveillait.",
+      "Le village sort quand même. Une dizaine, sur les seuils, pour un " +
+        "tocsin qui n'a pas sonné. Et c'est toi qu'ils regardent : tu as " +
+        "failli les faire sonner.",
+    ],
+    choices: [
+      {
+        id: "cloche-qui-repond",
+        label: "Demander qui répondrait",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu ne demandes pas « ce » qui répondrait. Tu demandes « qui ». La vieille lève enfin les yeux, et c'est à elle que tu as parlé juste. « La dernière fois qu'on a sonné, on comptait quarante-deux. » Elle regarde la rue. « Le lendemain, trente-neuf. Personne n'est parti. » Sa main n'a pas quitté la corde.",
+            "« Ça ne répond pas avec des mots », dit la vieille. Elle ne lâche pas la corde pour autant. « Ça répond en venant. » L'homme qui courait s'est assis contre le mur, et il ne dit rien du tout.",
+            "Tu demandes trop vite. La vieille resserre la main sur la corde et te regarde comme on regarde quelqu'un qui a demandé le prix d'une chose qui ne se vend pas. « On ne parle pas de ça dehors. »",
+            "1 naturel. Tu poses la question à voix haute, dans la rue, devant les seuils. Une femme rentre son enfant. Un homme fait le geste de compter sur ses doigts, s'arrête, et cache sa main. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "cloche-excuser",
+        label: "T'excuser d'être arrivé",
+        soupcon: -1,
+        passive: {
+          consequence:
+            "Tu lèves les mains, paumes ouvertes, et tu dis que tu es " +
+            "désolé — pas d'être là : d'être arrivé à ce moment-là. La " +
+            "nuance les atteint. La vieille lâche la corde, enfin. Les seuils " +
+            "se vident un par un, sans hâte et sans un mot. " +
+            "Elle, elle reste, et te montre le bout de la rue du menton : " +
+            "« Il t'attend au muret. Va, tant qu'il fait encore jour. »",
+        },
+      },
+      {
+        id: "cloche-tirer",
+        label: "Tirer la corde toi-même",
+        soupcon: 2,
+        setsEnvFlag: "cloche-sonnee",
+        risky: {
+          stat: "COURAGE",
+          threshold: 14,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Tu écartes la vieille — doucement — et tu tires. Une fois. Le son part beaucoup plus loin qu'une cloche de village ne devrait porter, et la rue entière se fige dans la position où elle était. Puis rien. Rien du tout. Et c'est ce rien qui les terrifie : quelque chose a entendu, et a choisi de ne pas venir aujourd'hui.",
+            "Tu tires. La cloche sonne un coup, mat, comme si le bronze était plein. Personne ne bouge, personne ne crie ; ils comptent. Tu ne sauras jamais jusqu'où, parce qu'à quatorze ils s'arrêtent tous en même temps et rentrent.",
+            "Tu attrapes la corde, la vieille ne lâche pas, et vous tirez tous les deux à contretemps : le battant touche le bronze sans le faire sonner. Un bruit sourd, humiliant. Elle te regarde, et pour la première fois quelqu'un ici a l'air d'avoir pitié de toi.",
+            "1 naturel. Tu tires, et le son sort trop long, trop plein, comme s'il ne venait pas de cette cloche-là. Loin, au sud, quelque chose de très grand change de position. Tu le sens sous tes pieds. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Sonne. Vas-y, sonne. Ça fait des années que je n'ai rien reçu d'aussi poli qu'une invitation.",
+  },
+  {
+    /* Conditionnel : ne sort que si le COMPTE a déjà juré faux dans une vie
+       précédente (fait permanent `serment_faux_jadis`). Ils partent parce que
+       le dernier qui a juré ici a menti — et ce dernier, c'était toi. */
+    id: "hameau-accueil-depart",
+    chainNext: "hameau-entree-4",
+    narration: [
+      "On ne t'arrête pas : on est occupé. Au milieu de la rue, une " +
+        "charrette à moitié chargée — un coffre, deux paillasses roulées, une " +
+        "porte. Ils emportent leur porte.",
+      "Les autres regardent. Personne n'aide. Personne ne dit au revoir non " +
+        "plus : ils se tiennent sur leurs seuils, bras croisés, et attendent " +
+        "que ça finisse.",
+      "Un homme sangle une malle, te voit, et ne s'interrompt même pas. " +
+        "« Vous descendez, nous on monte. Chacun son sens. »",
+    ],
+    choices: [
+      {
+        id: "depart-aider",
+        label: "Aider à charger",
+        soupcon: -1,
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu prends l'autre bout de la malle sans demander, et vous la montez ensemble. Personne ne te remercie, mais quelque chose se débloque dans la rue : deux hommes viennent aider à leur tour, honteux d'avoir attendu qu'un étranger commence. Le départ se fait vite, à la fin, et presque bien.",
+            "Tu aides à sangler. L'homme accepte sans un mot, ce qui est ici la forme la plus haute du merci. Sa femme, elle, te regarde tout le temps du chargement — pas avec méfiance : comme on regarde quelqu'un qu'on essaie de reconnaître.",
+            "Tu tends les mains vers le coffre et l'homme le retire. « Non. » Il ne s'explique pas. Sur les seuils, personne n'a bougé, et tu comprends trop tard que dans ce village, aider un partant, c'est prendre parti.",
+            "1 naturel. Tu attrapes la porte pour la caler et elle glisse, tombe à plat, sonne sur les pavés. Toute la rue sursaute. La femme se met à pleurer, enfin — et c'est ta faute, et ce n'est pas la porte. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "depart-pourquoi",
+        label: "Demander pourquoi maintenant",
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu ne demandes pas à celui qui charge : tu demandes à celle qui regarde, sur le seuil d'en face. Elle répond d'une traite, comme quelqu'un qui attendait qu'on le lui demande. « Parce que le dernier qui a juré au muret a menti, et que depuis, ça vient jusqu'ici la nuit. » Elle te regarde. « Vous jurez tous. »",
+            "« Parce qu'on a compté trois fois ce mois-ci », dit l'homme sans lever la tête. « Et que trois fois, ça faisait pas pareil. » Il tire la sangle d'un coup sec. « Y a rien d'autre à comprendre. »",
+            "Tu demandes, et il te répond par une autre question : « Vous êtes lequel ? » Comme tu ne comprends pas, il précise : « Y en a un qui est passé avant vous et qui a juré. Vous êtes lequel des deux ? » Tu n'as pas de réponse à ça.",
+            "1 naturel. « Pourquoi maintenant ? » L'homme s'arrête enfin, se retourne, te regarde longuement. « Parce que vous êtes revenu. » Il n'a pas l'air de savoir lui-même pourquoi il a dit ça au passé. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "depart-regarder",
+        label: "Les regarder partir",
+        passive: {
+          consequence:
+            "Tu t'écartes et tu laisses passer. La charrette prend la rue " +
+            "vers le nord, lentement, et tout le village la regarde jusqu'au " +
+            "bout — pas un adieu, une vérification. Ils veulent voir " +
+            "jusqu'où elle ira. " +
+            "Quand elle disparaît derrière la crête, les seuils se vident " +
+            "d'un coup. Sauf un vieux, tout au bout de la rue, assis sur un " +
+            "muret, qui n'a pas regardé la charrette une seule fois.",
+        },
+      },
+    ],
+    jailerLine: "Ils déménagent. Charmant. Comme si la lande avait des bords.",
+  },
   {
     /* Beat 4 — Le Serment. Mécanique de zone : IMPOSÉ, jamais proposé.
        « Pourquoi trois aubes » est un point d'intérêt : on peut le demander,
@@ -1898,7 +2285,13 @@ export const SCENES: Scene[] = [
     illustration: "assets/monstre_hameau_entree_4_c.png",
     chainNext: "hameau-entree-5",
     narration: [
-      "Le vieux tend la main, paume ouverte. Pas pour serrer la tienne — pour " +
+      // ⚠️ Ce beat s'ouvre APRÈS un accueil tiré au sort (6/08) : il ne peut
+      // plus supposer le barrage des trois hommes. D'où le raccord par le
+      // lieu — quel que soit l'accueil, tout finit au muret, devant le vieux.
+      "Au bout de la rue, un muret bas ferme le village côté sud. Le vieux y " +
+        "est assis, sec comme un piquet, les coudes sur les genoux. Il " +
+        "t'attendait là depuis le début.",
+      "Il tend la main, paume ouverte. Pas pour serrer la tienne — pour " +
         "que tu la regardes. Elle est vide. C'est le geste d'ici : on jure sur " +
         "rien, parce qu'il ne reste rien.",
       "— « Trois choses, et tu dors sous un toit. Tu ne parles pas aux " +
@@ -1908,13 +2301,13 @@ export const SCENES: Scene[] = [
     pointsInteret: [
       {
         id: "pourquoi-trois-aubes",
-        soupcon: 1, // poser LA question devant tout le barrage
+        soupcon: 1, // poser LA question au muret, devant qui écoute
         label: "Demander pourquoi trois aubes",
         illustration: "assets/scene_hameau_trois_aubes_v2_c.png",
         approche:
-          "Tu ne réponds pas tout de suite. Tu poses la question, et le " +
-          "barrage entier attend sa réponse avec toi — comme si personne " +
-          "n'avait jamais osé la poser.",
+          "Tu ne réponds pas tout de suite. Tu poses la question, et les " +
+          "quelques-uns qui s'étaient approchés attendent la réponse avec " +
+          "toi — comme si personne n'avait jamais osé la poser.",
         examen:
           "— « Parce qu'à la quatrième, on commence à s'habituer à toi. » Le " +
           "vieux hausse une épaule, presque désolé. « Et on ne peut pas se " +
@@ -1931,8 +2324,8 @@ export const SCENES: Scene[] = [
           consequence:
             "Tu poses ta main au-dessus de la sienne, sans la toucher — c'est " +
             "ainsi qu'on fait, tu l'as compris à leurs regards. Tu jures les " +
-            "trois choses. Le vieux hoche la tête une fois, et tout le " +
-            "barrage se dénoue d'un coup, comme une corde qu'on lâche. " +
+            "trois choses. Le vieux hoche la tête une fois, et toute la rue " +
+            "se dénoue d'un coup dans ton dos, comme une corde qu'on lâche. " +
             "« Tenu jusqu'à la sortie », rappelle-t-il. Le hameau entier a " +
             "entendu. Et plus haut que le hameau, quelqu'un d'autre.",
         },
@@ -4170,6 +4563,7 @@ const LIEU_NOM: Record<string, string> = {
      séparément supprime le doublon ET dit la vérité géographique. */
   "serment-hameau": "Le Seuil du Hameau",
   "hameau-entree": "Le Seuil du Hameau",
+  "hameau-accueil": "Le Seuil du Hameau", // les 6 accueils tirables (6/08)
   "gamin-murets": "Le Seuil du Hameau",
   "femme-seuil": "Le Seuil du Hameau",
   "hameau-halte": "Le Hameau des Renonçants",
@@ -4232,6 +4626,59 @@ export const HAMEAU_INTERIOR = [
 /** La séquence d'arrivée au Hameau (5 beats garantis, hors tirage). */
 const HAMEAU_GATE = "serment-hameau";
 
+/**
+ * L'ACCUEIL DU JOUR (6/08). Le 3e beat de l'entrée est un SLOT : la façon dont
+ * le village te reçoit change à chaque vie, la suite (le Serment au muret) ne
+ * change jamais. `hameau-entree-3` (le barrage des trois hommes) reste dans le
+ * lot — il ne tombe plus qu'une fois sur sept.
+ *
+ * `requiert` : deux accueils ne sont pas tirables d'emblée. Le mur de craie ne
+ * veut rien dire tant qu'on n'a pas laissé de noms derrière soi ; le départ des
+ * familles suppose qu'un serment prêté ici a déjà été trahi — par toi, dans une
+ * vie d'avant. Le village a l'air de réagir à ton histoire parce qu'il y réagit.
+ */
+export const HAMEAU_ACCUEIL_SLOT = "hameau-entree-3";
+
+export type AccueilHameau = {
+  id: string;
+  /** Condition d'apparition, évaluée sur la mémoire du compte. */
+  requiert?: "deuxMorts" | "sermentTrahiJadis";
+};
+
+export const HAMEAU_ACCUEILS: AccueilHameau[] = [
+  { id: "hameau-entree-3" }, // le barrage des trois hommes
+  { id: "hameau-accueil-volet" },
+  { id: "hameau-accueil-enfant" },
+  { id: "hameau-accueil-table" },
+  { id: "hameau-accueil-cloche" },
+  { id: "hameau-accueil-mur", requiert: "deuxMorts" },
+  { id: "hameau-accueil-depart", requiert: "sermentTrahiJadis" },
+];
+
+/**
+ * Tire l'accueil d'une vie. Jamais celui de la vie précédente (même règle
+ * anti-répétition que la rotation musicale) — c'est ce qui fait la différence
+ * entre « varié » et « aléatoire ». Déterministe une fois tiré : l'id est
+ * rangé dans la run, la reprise ne re-tire pas.
+ */
+export function pickAccueil(opts: {
+  deaths: number;
+  sermentTrahiJadis: boolean;
+  precedent?: string;
+  seed: number;
+}): string {
+  const ouverts = HAMEAU_ACCUEILS.filter((a) =>
+    a.requiert === "deuxMorts"
+      ? opts.deaths >= 2
+      : a.requiert === "sermentTrahiJadis"
+        ? opts.sermentTrahiJadis
+        : true
+  ).map((a) => a.id);
+  const neufs = ouverts.filter((id) => id !== opts.precedent);
+  const pool = neufs.length > 0 ? neufs : ouverts;
+  return pool[Math.floor(seeded(opts.seed) * pool.length)];
+}
+
 /** Un lieu est-il à l'intérieur du village ? (tolère les écrans « -2 »). */
 export function isHameauInterior(id: string | undefined): boolean {
   if (!id) return false;
@@ -4269,6 +4716,9 @@ export type LiaisonCtx = {
   itemNames?: string[];
   /** Nombre de liaisons déjà jouées cette run (0 = première Croisée). */
   liaisonsJouees?: number;
+  /** Serment prêté au muret — le village ne regarde pas de la même façon
+      celui qui a juré, celui qui a menti et celui qui a refusé (6/08). */
+  serment?: "jure" | "faux" | "refuse" | null;
   /** Débuts d'ambiances déjà servies cette run — jamais deux fois le même
       texte verbatim dans une même vie (retour test 4/08 : « je voyais le
       paquet de cartes sous les Landes »). */
@@ -4286,6 +4736,8 @@ type LiaisonVariant = {
   chapter?: string;
   /** Sous-chaîne d'un nom d'objet porté (ex. "Écharde"). */
   carrying?: string;
+  /** Serment prêté au muret (6/08). */
+  serment?: ("jure" | "faux" | "refuse")[];
 };
 
 const LIAISON_VARIANTS: LiaisonVariant[] = [
@@ -4421,6 +4873,72 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
     from: HAMEAU_INTERIOR,
     text: "Une ruelle, une cour, une autre ruelle. Le hameau ne t'empêche pas de circuler — il te laisse faire, et note l'itinéraire.",
   },
+
+  // ——— LA VIE DU VILLAGE (14) — retour Patrick 6/08 : « des petits détails
+  // qui montrent encore plus de vie dans le hameau quand on passe d'une scène
+  // à une autre ». Une vignette par déplacement intérieur : un geste, une
+  // seconde de quotidien qui continue sans toi. Jamais une menace frontale —
+  // c'est l'ordinaire qui doit inquiéter, pas l'exception.
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Une femme lave une porte à grande eau, à genoux, en frottant le bas du bois là où il n'y a rien. Elle recommence quand tu passes. Elle recommencera encore après.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Dans une cour, deux hommes réparent un mur qui tient très bien. Ils posent des pierres, les retirent, les reposent — pour avoir les mains occupées quand quelqu'un traverse.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Du linge sèche en travers de la ruelle : des chemises d'hommes, toutes de la même taille, toutes reprisées au même endroit — l'épaule gauche. Tu passes dessous en te baissant.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Un vieux est assis sur une marche, un couteau dans une main, un bout de bois dans l'autre. Il ne taille rien : il enlève de la matière, régulièrement, jusqu'à ce qu'il n'y ait plus de bout de bois. Il en a une pile à côté de lui.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Quelque part derrière un mur, une femme chante à une enfant. La chanson n'a pas de refrain : c'est une liste de choses qu'on ne fait pas. Elle chante bien.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Une porte s'ouvre devant toi, une main jette un fond de seau sur les pavés, la porte se referme. Tu n'as vu que la main. L'eau fume un peu sur la pierre froide.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Trois enfants jouent au bout de la ruelle : l'un compte, face au mur, les autres se cachent. Quand tu approches, celui qui compte s'arrête net — et les cachés ne sortent pas.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Une charrette à bras est appuyée contre une façade, chargée, sanglée, prête depuis assez longtemps pour que la poussière ait pris sur la bâche. Ils sont plusieurs à en avoir une.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Sur un seuil, une écuelle pleine que personne ne vient manger. Elle est là pour un chien, et il n'y a pas de chien dans ce village. On continue à la remplir.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Un homme cloue un volet. Depuis l'intérieur. Tu l'entends s'y reprendre à trois fois sur le même clou, puis s'arrêter longtemps, puis recommencer ailleurs.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    minSoupcon: 3,
+    text: "Tu changes de ruelle, et une conversation s'éteint à ton entrée, exactement comme on souffle une lampe. Trois pas plus loin, elle reprend derrière toi — pas la même, plus basse, plus courte.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    minSoupcon: 4,
+    text: "Un gamin marche à ta hauteur, de l'autre côté du muret, sans te regarder. Il s'arrête quand tu t'arrêtes. À l'angle, il tourne avant toi et va dire quelque chose à quelqu'un que tu ne vois pas.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    serment: ["jure"],
+    text: "Une femme te croise et rectifie sa trajectoire — pas pour t'éviter : pour passer du bon côté, celui où l'on passe quand on a juré. Elle ne dit rien. Elle n'a pas eu à réfléchir.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    serment: ["refuse", "faux"],
+    text: "Devant toi, une porte se ferme. Puis la suivante, avant même que tu arrives à sa hauteur. Ce n'est pas de la peur : c'est de l'ordre. Le mot est passé plus vite que tes pas.",
+  },
 ];
 
 /** Spécificité d'une variante = nombre de conditions posées (départage). */
@@ -4432,6 +4950,7 @@ function liaisonSpecificity(v: LiaisonVariant): number {
   if (v.maxHealth !== undefined) n += 1;
   if (v.chapter) n += 1;
   if (v.carrying) n += 1;
+  if (v.serment) n += 1;
   return n;
 }
 
@@ -4456,7 +4975,8 @@ function pickLiaisonAmbiance(ctx: LiaisonCtx | undefined, seed: number): string 
         (v.maxSoupcon === undefined || soup <= v.maxSoupcon) &&
         (v.maxHealth === undefined || health <= v.maxHealth) &&
         (!v.chapter || ctx.chapterId === v.chapter) &&
-        (!v.carrying || (ctx.itemNames ?? []).some((n) => n.includes(v.carrying!)))
+        (!v.carrying || (ctx.itemNames ?? []).some((n) => n.includes(v.carrying!))) &&
+        (!v.serment || (ctx.serment != null && v.serment.includes(ctx.serment)))
     );
     if (eligible.length > 0) {
       const maxSpec = Math.max(...eligible.map(liaisonSpecificity));

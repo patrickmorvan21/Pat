@@ -143,6 +143,10 @@ export type PlayerMemory = {
   /** Morts par fixation subies (chantier 3) : au-delà de 2, l'accueil du hameau
       change dès l'entrée — le village se souvient de la main qui lance le dé. */
   fixations: number;
+  /** L'accueil du Hameau servi à la vie PRÉCÉDENTE (6/08). Sert uniquement à
+      ne jamais le retirer deux fois de suite : c'est ce qui sépare « varié »
+      de « aléatoire ». Absent des mémoires d'avant le 6/08. */
+  lastAccueil?: string;
   /**
    * L'introduction (les 4 clauses du pacte, Figma 2238:1009) a déjà été lue.
    *
@@ -313,6 +317,9 @@ export function loadMemory(): PlayerMemory {
           lastPlayedAt: typeof p.lastPlayedAt === "number" ? p.lastPlayedAt : undefined,
           // ⚠️ Comme loadRun, cette reconstruction est CHAMP PAR CHAMP : tout
           // champ absent ici est silencieusement perdu au rechargement.
+          // (Repris une fois de plus le 6/08 avec `lastAccueil` : l'accueil de
+          // la vie précédente n'était jamais relu, donc jamais évité.)
+          lastAccueil: typeof p.lastAccueil === "string" ? p.lastAccueil : undefined,
           faitsVus: p.faitsVus && typeof p.faitsVus === "object" ? p.faitsVus : {},
           renoncements: typeof p.renoncements === "number" ? p.renoncements : 0,
           faits: sacDepuis(p.faits),
