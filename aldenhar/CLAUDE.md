@@ -171,3 +171,12 @@ Patrick a déposé les six visuels dans `03_Validé_Environnement`, aux noms des
 - Les quatre autres tiennent : **volet** (rue vide, seau renversé), **enfant** (petite silhouette seule au centre), **table** (table + bol au milieu des pavés, lisible), **depart** (la charrette chargée, très nette — la meilleure du lot).
 - Vérifié Playwright, les six scènes seedées une par une : chacune sert bien SON fichier, aucune requête d'asset en erreur, aucune erreur JS. Lint 0 erreur, typecheck, `build:pages` OK.
 - `APP_VERSION` 1.39.1 → **1.39.2**, `CACHE_VERSION` v66 → **v67**.
+
+#### Les deux images ratées regénérées (v1.39.3)
+Patrick a redéposé les deux visuels sur le Drive après les prompts v2. Les deux rendent maintenant leur sujet — **regardés avant câblage**, comme la fois précédente : c'est ce contrôle qui avait attrapé le défaut, pas le pipeline.
+- **`scene_hameau_accueil_mur_a`** — la craie est là : des colonnes de marques sur toute la façade, avec la petite silhouette au fond de la ruelle éclairée. Le prompt v2 (décrire la MATIÈRE de la craie au lieu d'interdire le texte lisible) a fonctionné.
+- **`scene_hameau_accueil_cloche_b`** — une main fermée sur une corde épaisse au premier plan, une figure debout dans la rue derrière. Le plan large de rue qui doublait la composition de l'enfant a disparu : les six accueils sont maintenant six décors distincts.
+- **⚠️ Le pipeline a renommé** (`_mur_c` → `_mur_a`, `_cloche_c` → `_cloche_b`) : ce n'était donc PAS un simple écrasement de fichier. Le champ `illustration` a dû être repointé dans **les deux sources** (`lib/scene-data.ts` pour le runtime, `data/zones/landes.json` pour les outils), et les deux fichiers d'origine retirés du repo. Un `cp` par-dessus aurait laissé le jeu sur les anciennes images.
+- Vérifié Playwright, les six accueils seedés un par un : chacun sert bien SON fichier (hash de manifeste à jour), aucune requête d'asset en erreur, aucune erreur JS. Lint 0 erreur, typecheck, `build:pages` OK. Couverture inchangée : 0 manquante.
+- **Ménage Drive à faire par Patrick** (aucun outil de suppression côté connecteur) : `scene_hameau_accueil_mur_c.png` et `scene_hameau_accueil_cloche_c.png` traînent encore dans `03_Validé_Environnement`.
+- `APP_VERSION` 1.39.2 → **1.39.3**, `CACHE_VERSION` v67 → **v68**.
