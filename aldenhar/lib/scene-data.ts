@@ -1910,6 +1910,7 @@ export const SCENES: Scene[] = [
      —————————————————————————————————————————————————————————————————————— */
   {
     id: "hameau-accueil-volet",
+    illustration: "assets/scene_hameau_accueil_volet_c.png",
     chainNext: "hameau-entree-4",
     narration: [
       "La rue est vide. Pas déserte — vide : une porte qui bat encore, un " +
@@ -1973,6 +1974,7 @@ export const SCENES: Scene[] = [
        avoir laissé des noms derrière soi pour que ce mur veuille dire quelque
        chose. Voir HAMEAU_ACCUEILS. */
     id: "hameau-accueil-mur",
+    illustration: "assets/scene_hameau_accueil_mur_c.png",
     chainNext: "hameau-entree-4",
     narration: [
       "Personne dans la rue. Mais le pignon de la grange, en face, est " +
@@ -2032,6 +2034,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "hameau-accueil-enfant",
+    illustration: "assets/scene_hameau_accueil_enfant_c.png",
     chainNext: "hameau-entree-4",
     narration: [
       "Ils ont envoyé un gosse. Huit ans peut-être, planté au milieu de la " +
@@ -2092,6 +2095,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "hameau-accueil-table",
+    illustration: "assets/scene_hameau_accueil_table_a.png",
     chainNext: "hameau-entree-4",
     narration: [
       "Une table au milieu de la rue. Une seule. Un tabouret, un bol, une " +
@@ -2154,6 +2158,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "hameau-accueil-cloche",
+    illustration: "assets/scene_hameau_accueil_cloche_c.png",
     chainNext: "hameau-entree-4",
     narration: [
       "Tu entres dans la rue au moment où un homme se met à courir. Pas vers " +
@@ -2219,6 +2224,7 @@ export const SCENES: Scene[] = [
        précédente (fait permanent `serment_faux_jadis`). Ils partent parce que
        le dernier qui a juré ici a menti — et ce dernier, c'était toi. */
     id: "hameau-accueil-depart",
+    illustration: "assets/scene_hameau_accueil_depart_a.png",
     chainNext: "hameau-entree-4",
     narration: [
       "On ne t'arrête pas : on est occupé. Au milieu de la rue, une " +
