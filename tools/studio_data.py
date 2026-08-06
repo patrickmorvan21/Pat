@@ -542,6 +542,11 @@ def lire_choix(bloc: str) -> list[dict]:
             ("grantsLoot", "donneObjet"),
             ("grantsSavoir", "donneSavoir"),
             ("requiresSavoir", "exigeSavoir"),
+            # Refonte du lore 6/08 : la DÉCOUVERTE est ce que le JOUEUR a
+            # compris, pas le héros. Elle survit à la mort — d'où son rôle de
+            # clé pour les scènes-variantes et l'arc du Grand Témoin.
+            ("decouverte", "donneDecouverte"),
+            ("requiresDecouverte", "exigeDecouverte"),
             ("setsEnvFlag", "poseFlag"),
             ("defense", "defense"),
             # États & besoins (spec 5/08) : d'où vient un état, et ce qui le lève.
@@ -592,6 +597,7 @@ def lire_pois(bloc: str) -> list[dict]:
         }
         for champ, cle in (("savoir", "savoir"), ("grantsLoot", "donneObjet"),
                            ("leadsTo", "ouvreSur"), ("setsEnvFlag", "poseFlag"),
+                           ("decouverte", "donneDecouverte"),
                            ("poseEtat", "poseEtat")):
             v = texte_de(p, champ)
             if v:
@@ -611,6 +617,17 @@ def lire_pois(bloc: str) -> list[dict]:
             poi["corbeaux"] = True
         out.append(poi)
     return out
+
+
+_CONSTANTES = {
+    "COMPTEUR_FILLE": "découvertes sur la Fille",
+    "SEUIL_MOULIN": "3",
+}
+
+
+def _const(nom: str) -> str:
+    """Rend lisible une constante du .ts citée dans une condition."""
+    return _CONSTANTES.get(nom, nom)
 
 
 def lire_scenes() -> list[dict]:
@@ -644,11 +661,26 @@ def lire_scenes() -> list[dict]:
             ("approach", "approche"),
             ("loot", "butin"),
             ("savoir", "savoir"),
+            ("decouverte", "donneDecouverte"),
             ("setsEnvFlag", "poseFlag"),
         ):
             v = texte_de(bloc, champ)
             if v:
                 s[cle] = v
+        # SCÈNE-VARIANTE (refonte du lore 6/08) : elle se joue À LA PLACE
+        # d'une autre quand une découverte est acquise. C'est l'information la
+        # plus importante à voir dans l'éditeur — sans elle, on croit avoir
+        # deux scènes concurrentes alors qu'on en a une conditionnelle.
+        m = re.search(r'\n    remplace: \{ scene: "([^"]+)", si: \{ ([^}]+)\} \}', bloc)
+        if m:
+            cond = m.group(2).strip().rstrip(",")
+            has = re.search(r'has:\s*"([^"]+)"', cond)
+            gte = re.search(r'id:\s*([A-Za-z_][\w"\.]*)\s*,\s*gte:\s*([A-Za-z_\d][\w]*)', cond)
+            s["remplace"] = {
+                "scene": m.group(1),
+                "condition": has.group(1) if has
+                else (f"{_const(gte.group(1))} ≥ {_const(gte.group(2))}" if gte else cond),
+            }
         for champ, cle in (("combat", "combat"), ("registre", "registre"),
                            ("terminal", "terminal"), ("liaison", "liaison"),
                            ("hameauEntree", "hameauEntree"), ("hameauHalte", "hameauHalte"),

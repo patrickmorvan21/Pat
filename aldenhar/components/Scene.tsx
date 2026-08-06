@@ -26,6 +26,13 @@ import {
   type Scene as SceneType,
   ligneCorbeaux,
   phraseArrivee,
+  sceneEffective,
+  corbeauxDuHameau,
+  estHameau,
+  DECOUVERTES_FILLE,
+  COMPTEUR_FILLE,
+  compteDecouvertesFille,
+  APPARITION_TEMOIN,
 } from "@/lib/scene-data";
 import { contradictionsConnues, faitById, versionDuFait } from "@/lib/contradictions";
 import { manifestationLoi } from "@/lib/loi-substitution";
@@ -33,7 +40,7 @@ import { perceptionDe } from "@/lib/perception";
 import { acteAccusation, defensesDisponibles, temoinPour, temoinsUniques } from "@/lib/temoins";
 import type { RelicDon } from "@/lib/reliques";
 import {
-  applique, noterVisite, parType, purger, type Faits,
+  applique, noterVisite, parType, purger, type Effet, type Faits,
 } from "@/lib/faits";
 import {
   etat, etatsActifs, hintsEtats, modEtats, poserEtat, seuilEtats,
@@ -179,6 +186,9 @@ function liaisonCtx(run: RunState, from: string | undefined): LiaisonCtx {
     // Le village ne regarde pas de la même façon celui qui a juré, celui qui a
     // menti et celui qui a refusé — les vignettes de ruelle s'y adaptent (6/08).
     serment: run.hameau?.serment ?? null,
+    // Ce que le COMPTE a compris sur la Fille : à partir d'une découverte,
+    // elle ne fait plus que passer — elle parle (refonte 6/08, degré 3).
+    decouvertesFille: compteDecouvertesFille(faitsDe(run)),
     // Anti-répétition (4/08) : liaisons déjà jouées (⇒ la phrase-signature ne
     // sert qu'à la 1re Croisée) + ambiances déjà servies (jamais deux fois le
     // même texte dans une run). ⚠️ `liaisonVues` n'est complétée qu'en
@@ -203,7 +213,18 @@ function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
       t.seed,
       run ? liaisonCtx(run, t.visited[t.visited.length - 1]) : undefined
     );
-  return sceneById(t.current) ?? sceneById(ENTRY_SCENE)!;
+  return resoudre(t.current, run) ?? sceneById(ENTRY_SCENE)!;
+}
+
+/**
+ * Résout un id de scène EN TENANT COMPTE DES VARIANTES (refonte du lore 6/08) :
+ * la Femme au Seuil, la Veuve et le Fossoyeur ont une version qui ne se joue
+ * qu'à partir d'une certaine découverte du COMPTE. Passer par ici plutôt que
+ * par `sceneById` est ce qui fait que le village se met à parler d'un cran
+ * dès qu'on a compris quelque chose — sans dupliquer la traversée.
+ */
+function resoudre(id: string, run?: RunState | null): SceneType | undefined {
+  return sceneEffective(id, faitsDe(run));
 }
 
 /**
@@ -257,6 +278,34 @@ function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
  */
 function faitsDe(run: RunState | null | undefined): Faits {
   return { run: { ...(run?.faits ?? {}) }, perm: { ...loadMemory().faits } };
+}
+
+/** Les découvertes déjà acquises par le COMPTE, pour le rendu. */
+function idsDecouvertes(f: Faits): string[] {
+  return parType(f, "discovery").map((d) => d.id);
+}
+
+/**
+ * Pose une DÉCOUVERTE dans la mémoire du compte (refonte du lore 6/08).
+ * Scope `global_permanent` : c'est ce que le joueur a compris, pas ce que sait
+ * le héros — ça ne meurt pas avec lui. Idempotent : re-poser ne fait rien.
+ */
+function poserDecouverte(id: string): boolean {
+  const f: Faits = { run: {}, perm: { ...loadMemory().faits } };
+  if (f.perm[id]) return false;
+  const effets: Effet[] = [
+    { set: id, kind: "discovery", scope: "global_permanent", value: 1, source: "landes" },
+  ];
+  // Le SEUIL DU MOULIN se lit sur un compteur dérivé plutôt que sur une
+  // condition qui saurait compter : le moteur n'a que `has` / `gte`, et lui
+  // ajouter un « compte les faits de cette liste » serait une exception pour
+  // un seul appelant. Le compteur est tenu ici, à la source, donc il ne peut
+  // pas diverger de la liste.
+  if (DECOUVERTES_FILLE.includes(id))
+    effets.push({ increment: COMPTEUR_FILLE, by: 1, kind: "counter", scope: "global_permanent" });
+  applique(effets, f, 0);
+  mutateMemory((m) => { m.faits = f.perm; });
+  return true;
 }
 
 /** Les ids des états actifs, dans l'ordre d'acquisition. */
@@ -335,6 +384,10 @@ export default function Scene() {
   // apparaître dès l'écran suivant), alors que `runRef` n'est pas lisible
   // pendant le rendu (React Compiler).
   const [savoirs, setSavoirs] = useState<string[]>([]);
+  // Les DÉCOUVERTES du COMPTE (refonte du lore 6/08). Même raison d'être que
+  // `savoirs` — un miroir lisible au rendu — mais la source est la mémoire
+  // permanente, pas la run : ce que le JOUEUR a compris survit à ses héros.
+  const [decouvertes, setDecouvertes] = useState<string[]>([]);
   // Plan RAPPROCHÉ d'un point d'intérêt : crop de l'image du lieu (production
   // gratuite, spec §4 — on ne génère pas un asset par point). null = plan large.
   // Sous-menu « Observer les alentours » ouvert ? (retour Patrick 25/07 : 3 CTA
@@ -474,6 +527,10 @@ export default function Scene() {
   const baseChoices = rawChoices.filter((c) => {
     if (boiteux && (c.tags ?? []).includes("fuite")) return false;
     if (c.requiresSavoir && !savoirs.includes(c.requiresSavoir)) return false;
+    // La DÉCOUVERTE (6/08) : même mécanique que le Savoir, mais la source est
+    // le COMPTE. C'est ce qui permet à une option de n'exister qu'à partir de
+    // la deuxième ou troisième vie, sans que le héros ait l'air de se souvenir.
+    if (c.requiresDecouverte && !decouvertes.includes(c.requiresDecouverte)) return false;
     // Un état n'ouvre un choix QUE si l'état correspondant l'autorise vraiment
     // (FIXÉ → `ouvreConfidences`) : sans ce garde, `requiresEtat` deviendrait
     // un flag libre et l'état ne serait plus la raison de l'ouverture.
@@ -744,6 +801,7 @@ export default function Scene() {
     // l'app (pas à sa mort) — les options débloquées restent ouvertes à la
     // reprise.
     setSavoirs(run.savoirs ?? []);
+    setDecouvertes(idsDecouvertes(faitsDe(run)));
     setHeroStats(run.stats);
     setRelicSpent(Boolean(run.relicUsed));
     const memNow = loadMemory();
@@ -1039,11 +1097,11 @@ export default function Scene() {
       // Rencontre ouverte par un point d'intérêt : on reste « dans » le lieu du
       // point de vue de la traversée (rien n'entre dans `visited`), mais l'écran
       // courant devient le premier beat de la rencontre.
-      nextScene = sceneById(opts.toScene) ?? sceneById(ENTRY_SCENE)!;
+      nextScene = resoudre(opts.toScene, runRef.current) ?? sceneById(ENTRY_SCENE)!;
       trav.phase = "scene";
       trav.current = nextScene.id;
     } else if (opts?.toDest) {
-      nextScene = sceneById(opts.toDest) ?? sceneById(ENTRY_SCENE)!;
+      nextScene = resoudre(opts.toDest, runRef.current) ?? sceneById(ENTRY_SCENE)!;
       trav.phase = "scene";
       trav.current = opts.toDest;
       trav.liaisonOpts = null;
@@ -1064,7 +1122,7 @@ export default function Scene() {
         scene.chainNext === HAMEAU_ACCUEIL_SLOT
           ? accueilDuJour(runRef.current ?? loadRun())
           : scene.chainNext;
-      nextScene = sceneById(cible) ?? DESCENTE_SCENE;
+      nextScene = resoudre(cible, runRef.current) ?? DESCENTE_SCENE;
       trav.phase = "scene";
       trav.current = nextScene.id;
     } else if (trav.visited.length >= trav.target) {
@@ -1079,8 +1137,9 @@ export default function Scene() {
         // le Hameau ne t'ouvre pas sa grange, quoi que tu aies juré. Même
         // conséquence qu'un Serment refusé — la nuit dehors.
         const exclu = relicDette(activeRelic(loadMemory())) === "exclusion";
-        nextScene = sceneById(
-          ham.serment === "refuse" || exclu ? "hameau-halte-dehors" : "hameau-halte-1"
+        nextScene = resoudre(
+          ham.serment === "refuse" || exclu ? "hameau-halte-dehors" : "hameau-halte-1",
+          runRef.current
         )!;
         trav.phase = "scene";
         trav.current = nextScene.id; // hors `visited` : ce n'est pas un lieu du pool
@@ -1153,6 +1212,10 @@ export default function Scene() {
     const knownNow = runRef.current?.savoirs ?? [];
     const arrivalSavoir =
       nextScene.savoir && !knownNow.includes(nextScene.savoir) ? nextScene.savoir : null;
+    // Découverte acquise en ATTEIGNANT la scène (6/08) : la Fille au Moulin
+    // n'a pas de choix à prendre pour qu'on ait compris qu'elle est vivante —
+    // l'avoir vue suffit.
+    const arrivalDecouverte = nextScene.decouverte ?? null;
 
     const nextIllustration = nextScene.illustration ?? PORTAL;
     const contextChanged = nextIllustration !== lastSceneIlloRef.current;
@@ -1254,6 +1317,9 @@ export default function Scene() {
       Boolean(nextScene.fixationTrial) &&
       relicDon(activeRelic(loadMemory())) === "silence" &&
       !runRef.current?.relicUsed;
+    // Il n'apparaît qu'au procès de qui l'a déjà entrevu dans une ruelle.
+    const temoinEntrevu =
+      Boolean(nextScene.fixationTrial) && decouvertes.includes("d.temoin_entrevu");
     const temoinsAuProces = (() => {
       const t = temoinsUniques(runRef.current?.temoins ?? []);
       return bailloner ? t.slice(1) : t;
@@ -1268,6 +1334,11 @@ export default function Scene() {
               ]
             : []),
           ...acteAccusation(temoinsAuProces),
+          // APPARITION 3 (refonte 6/08) : il n'entre au procès que de celui
+          // qui l'a déjà entrevu — on ne saute pas les degrés. Il ne tue pas :
+          // il regarde le vieux, et le vieux donne l'ordre. C'est tout le
+          // personnage, et c'est ce que le joueur doit comprendre en mourant.
+          ...(temoinEntrevu ? APPARITION_TEMOIN : []),
           ...nextScene.narration.slice(1),
         ]
       : nextScene.narration;
@@ -1331,6 +1402,15 @@ export default function Scene() {
       relicDon(activeRelic(loadMemory())) === "regard"
     );
     if (perception) entries.push({ id: nextId(), kind: "narration", text: perception });
+    // LES CORBEAUX SUR LES TOITS (refonte du lore 6/08, §5) : le seul signal
+    // permanent du Soupçon. Le joueur comprend qu'on le compte bien avant de
+    // comprendre pourquoi — et ce n'est jamais un chiffre, c'est un nombre
+    // d'oiseaux. Uniquement dans le village : ailleurs, les corbeaux de la
+    // Colline comptent ses morts, et mélanger les deux lectures les détruit.
+    if (estHameau(nextScene.id)) {
+      const corb = corbeauxDuHameau(runRef.current?.soupcon ?? 0);
+      if (corb) entries.push({ id: nextId(), kind: "narration", text: corb });
+    }
     entries.push(...chapterAfter.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
     // Manifestation du Soupçon : le monde se ferme, palier par palier.
     if (soupManifest) entries.push({ id: nextId(), kind: "narration", text: soupManifest });
@@ -1485,6 +1565,12 @@ export default function Scene() {
       if (arrivalSavoir) run.savoirs = [...(run.savoirs ?? []), arrivalSavoir];
     });
     if (arrivalSavoir) setSavoirs((s) => (s.includes(arrivalSavoir) ? s : [...s, arrivalSavoir]));
+    if (arrivalDecouverte && poserDecouverte(arrivalDecouverte))
+      setDecouvertes((xs) => [...xs, arrivalDecouverte]);
+    // L'avoir VU se retient : c'est le dernier degré de l'arc, et il ne se
+    // pose que quand il est réellement entré dans la salle.
+    if (temoinEntrevu && poserDecouverte("d.temoin_vu"))
+      setDecouvertes((xs) => [...xs, "d.temoin_vu"]);
     // Le compteur de visites vit dans la MÉMOIRE (zone_permanent) : il compte
     // les passages de TOUTES les vies, c'est là son intérêt.
     if (!nextScene.liaison && !nextScene.terminal) {
@@ -1676,6 +1762,12 @@ export default function Scene() {
         // l'exploration un investissement plutôt qu'une collection à cocher.
         const learned = poi.savoir && !savoirs.includes(poi.savoir) ? poi.savoir : null;
         if (learned) setSavoirs((s) => [...s, learned]);
+        // …et la DÉCOUVERTE (6/08) : ce que le joueur, lui, vient de comprendre.
+        // Rien n'est annoncé non plus — c'est le monde qui changera, plus tard.
+        if (poi.decouverte && poserDecouverte(poi.decouverte)) {
+          const d = poi.decouverte;
+          setDecouvertes((xs) => [...xs, d]);
+        }
         // Fragment de chapitre (4e monnaie) : le premier encore non lu du
         // chapitre de la run, servi comme un beat de narration en plus.
         const fragment = poi.chapterFragment ? takeChapterFragment() : null;
@@ -1775,6 +1867,13 @@ export default function Scene() {
       persist((run) => {
         run.savoirs = [...(run.savoirs ?? []), learnedNow];
       });
+    }
+    // La DÉCOUVERTE (6/08) : ce que le JOUEUR comprend. Posée à la sélection,
+    // pour la même raison que le Savoir — avoir demandé suffit, l'issue d'un
+    // éventuel jet ne change rien à ce qui vient d'être dit devant toi.
+    if (choice.decouverte) {
+      const d = choice.decouverte;
+      if (poserDecouverte(d)) setDecouvertes((xs) => [...xs, d]);
     }
     // Prix différé (§17) : un choix « gratuit » peut poser une dette silencieuse.
     if (choice.debt) {

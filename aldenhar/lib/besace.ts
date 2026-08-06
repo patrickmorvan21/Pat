@@ -182,6 +182,16 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     passiveMod: 1, passiveScope: "all", illustration: "assets/objet_miroir_ame_a.png",
     flavor: "Un éclat descellé de la Borne. Les Renonçants disent qu'on revient, si on la porte. Personne n'est revenu.",
   },
+  /* Le caillou du Gamin (refonte du lore 6/08) — la seule PREUVE matérielle
+     que la Fille existe, et elle ne prouve rien : un galet de rivière dans une
+     zone sans rivière. C'est exactement pour ça qu'il ne porte aucun bonus.
+     Un objet qui aiderait au dé ferait de la Fille une récompense ; il ne doit
+     rester qu'une question qu'on garde dans sa poche. */
+  "caillou-gamin": {
+    name: "Caillou de rivière", rarity: "commun", kind: "babiole", slot: "passif",
+    passiveMod: 0, passiveScope: "all", illustration: "assets/objet_jouet_petite_fixee_a.png",
+    flavor: "Plat, gris, poli par une eau qui n'existe nulle part ici. Un enfant te l'a mis dans la main sans que tu le demandes.",
+  },
   "miroir-poche": {
     name: "Miroir de Poche Fêlé", rarity: "commun", kind: "babiole", slot: "actif",
     heal: 0.15, cure: false, illustration: "assets/objet_miroir_poche_fele_c.png",

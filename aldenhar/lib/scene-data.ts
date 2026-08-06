@@ -8,6 +8,9 @@
  * Les stats restent cachées : jamais de chiffre affiché, seulement le tag.
  */
 
+import type { Condition, Faits } from "./faits";
+import { evalue, present } from "./faits";
+
 export type Stat = "COURAGE" | "RUSE" | "INSTINCT" | "EMPATHIE";
 
 export type Outcome = {
@@ -173,6 +176,20 @@ export type Choice = {
    * seul — un compagnon qui a annoncé « deux murets » s'en va au deuxième.
    */
   poseEtatDuree?: number;
+  /**
+   * DÉCOUVERTE posée en prenant ce choix (refonte du lore 6/08). C'est ce que
+   * LE JOUEUR a compris, pas ce que sait le héros : scope `global_permanent`,
+   * donc ça survit à la mort. La révélation des Landes est explicitement
+   * inter-runs (« 1ʳᵉ run le joueur croit que le Bailli est le tyran ; runs
+   * suivantes il découvre… ») — un savoir de run ne pourrait pas la porter.
+   *
+   * ⚠️ Ne JAMAIS s'en servir pour donner au héros courant une information
+   * qu'il n'a pas vécue : une découverte ouvre des scènes et des options, elle
+   * ne met pas de souvenirs dans sa tête.
+   */
+  decouverte?: string;
+  /** Ce choix n'existe que si le COMPTE tient cette découverte. */
+  requiresDecouverte?: string;
 };
 
 /**
@@ -257,6 +274,8 @@ export type PointInteret = {
    * (arrivée → points → événement → sortie) reste tenue.
    */
   leadsTo?: string;
+  /** DÉCOUVERTE posée par l'examen (voir `Choice.decouverte`). */
+  decouverte?: string;
 };
 
 export type Scene = {
@@ -377,6 +396,19 @@ export type Scene = {
    * forgée — on ne forge rien avec une vie qu'on n'a pas perdue.
    */
   renoncement?: boolean;
+  /** DÉCOUVERTE posée en ARRIVANT sur cette scène (voir `Choice.decouverte`). */
+  decouverte?: string;
+  /**
+   * SCÈNE-VARIANTE (refonte du lore 6/08). Cette scène se joue À LA PLACE de
+   * `scene` quand `si` est vraie. Déclaré sur la variante et non sur
+   * l'original : la condition vit à côté du texte qu'elle conditionne, et
+   * ajouter une variante ne touche jamais la scène d'origine.
+   *
+   * ⚠️ La variante n'est PAS dans le pool de traversée : elle hérite de la
+   * place de l'originale (mêmes liaisons, même `chainNext` attendu). Une
+   * variante de `femme-seuil-1` doit donc chaîner comme `femme-seuil-1`.
+   */
+  remplace?: { scene: string; si: Condition };
 };
 
 /**
@@ -433,6 +465,46 @@ function outcomes(
     fail: { word: "ÉCHEC", fail: true, text: fail },
     critFail: { word: "FUNESTE", fail: true, text: funeste },
   };
+}
+
+/* ───────────────────────────── DÉCOUVERTES & VARIANTES (refonte 6/08) ──── */
+
+/** Préfixe des découvertes, pour les distinguer des savoirs dans un même sac. */
+export const D = (nom: string) => `d.${nom}`;
+
+/**
+ * Les découvertes qui portent SUR LA FILLE. Le Moulin ne s'ouvre qu'à partir
+ * de trois d'entre elles (spec §6) — c'est le seuil qui fait de la rencontre
+ * une récompense d'enquête et non un hasard de tirage.
+ */
+export const DECOUVERTES_FILLE = [
+  D("fille_apercue"), // le Gamin et son caillou
+  D("fixation_ratee"), // la corde sans nom que la Veuve refait depuis trente ans
+  D("poteau_retire"), // le trou dans la rangée, au Champ des Fixés
+  D("temoin_oculaire"), // la Femme au Seuil, qui a attendu quarante ans
+  D("nom_gratte"), // le nom gratté au pied du grand gibet
+  D("crete_interrompue"), // le chemin de faîtage qui s'arrête à cinquante pas
+];
+
+/** Compteur dérivé, tenu à la pose — voir `poserDecouverte` dans Scene.tsx. */
+export const COMPTEUR_FILLE = "c.fille";
+
+export function compteDecouvertesFille(f: Faits): number {
+  return DECOUVERTES_FILLE.filter((id) => present(f, id)).length;
+}
+
+/** Seuil d'ouverture du Moulin (spec §6 : « ≥ 3 découvertes sur elle »). */
+export const SEUIL_MOULIN = 3;
+
+/**
+ * Résout la scène RÉELLEMENT jouée pour un id : si une variante déclare
+ * `remplace: { scene: id, si }` et que sa condition tient, c'est elle qui se
+ * joue. La première variante satisfaite l'emporte (ordre du fichier), ce qui
+ * permet de ranger la plus spécifique en premier.
+ */
+export function sceneEffective(id: string, f: Faits): Scene | undefined {
+  const variante = SCENES.find((s) => s.remplace?.scene === id && evalue(s.remplace.si, f));
+  return variante ?? sceneById(id);
 }
 
 export const SCENES: Scene[] = [
@@ -1025,6 +1097,26 @@ export const SCENES: Scene[] = [
     ],
     pointsInteret: [
       {
+        /* LA TOURNÉE (§7) : le Gibet Vide était démesuré et sans explication.
+           Le nom gravé au pied est celui de l'accusé que le Bailli citait à
+           comparaître — gratté par autre chose que le temps. */
+        id: "pied-grand-gibet",
+        label: "Le pied du grand gibet",
+        approche:
+          "Tu quittes la ligne des potences ordinaires pour celle qui les " +
+          "dépasse toutes. De près, elle est absurde : trois fois trop haute " +
+          "pour un homme, et sa corde est neuve.",
+        examen:
+          "Au pied du mât, dans le bois, un nom a été gravé profond, à la " +
+          "gouge, par quelqu\u2019un qui prenait son temps. Il est illisible — " +
+          "pas effacé par la pluie : GRATTÉ, en travers, par quelque chose " +
+          "qui a mordu le bois plus fort que l\u2019outil. Dessous, une date " +
+          "est restée entière. Elle est vieille de trente ans.",
+        decouverte: "d.nom_gratte",
+        illustration: "assets/scene_gibet_vide_c.png",
+        soupcon: 1,
+      },
+      {
         id: "corbeaux-compte",
         poseEtat: "hante",
         corbeaux: true,
@@ -1037,7 +1129,10 @@ export const SCENES: Scene[] = [
         examen:
           "Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, " +
           "et leurs becs sont propres. Ils attendent, et ils sont exactement " +
-          "assez nombreux pour ce qu'ils attendent.",
+          "assez nombreux pour ce qu'ils attendent. Ce sont les mêmes que " +
+          "sur les toits du hameau : la même immobilité, la même façon " +
+          "d'être tournés du même côté. En bas, ils comptent quelque chose " +
+          "qui te concerne. Ici aussi — mais pas la même chose.",
       },
       {
         id: "potences-cercle",
@@ -1246,8 +1341,29 @@ export const SCENES: Scene[] = [
             "au retour : les Landes tournent en rond.",
         },
       },
+      {
+        /* BEAT FINAL RÉÉCRIT (refonte du lore 6/08, §7). Le Bailli n'était
+           pas le tyran des Landes : il a bâti le grand gibet comme un
+           TRIBUNAL, pour l'accusé qui n'est jamais venu, et il s'est appliqué
+           sa propre loi pour avoir refusé de condamner sa fille. Sa Fixation,
+           ce n'est pas la corde : c'est l'attente. Deux phrases suffisent —
+           il dit la vérité, il n'excuse rien, et le joueur comprend d'un coup
+           qu'il est victime ET complice. */
+        id: "pendu-le-trois-cent-unieme",
+        label: "Lui demander combien il en a signé",
+        decouverte: "d.bailli_condamne",
+        passive: {
+          consequence:
+            "La corde s'immobilise. Pour la première fois depuis que tu es " +
+            "là, il ne joue plus au juge. « J'ai signé trois cents noms. » " +
+            "Un temps très long, à hauteur de gibet. « Le trois cent " +
+            "unième était le sien. C'est celui-là qui m'a paru injuste. » " +
+            "Puis, plus bas, comme un point de procédure : « Alors j'ai " +
+            "inscrit le mien en dessous. »",
+        },
+      },
     ],
-    jailerLine: "Le Bailli me plaît. Il a compris avant toi : un jugement, ça ne s'esquive pas. Ça s'ajourne.",
+    jailerLine: "Il attend toujours son accusé. Trente ans qu'il l'attend. Voilà ce que ça donne, la rigueur.",
   },
   {
     /* Lieu à POINTS D'INTÉRÊT (script Notion). */
@@ -1297,6 +1413,8 @@ export const SCENES: Scene[] = [
       {
         id: "tombe-sans-poteau",
         grantsLoot: "craie-condamne",
+        // Ouvre la variante du Fossoyeur : il ne parle du trou qu'à qui l'a vu.
+        decouverte: "d.emplacement_vide",
         label: "Un vide dans une rangée pleine",
         illustration: "assets/scene_champ_tombe_manquante_a_c.png",
         approche:
@@ -1311,6 +1429,117 @@ export const SCENES: Scene[] = [
     ],
     choices: [{ id: "rester-champ", label: "Rester dans le champ" }],
     jailerLine: "Un champ entier de fixés, et c'est toi qui bouges encore. Profites-en, ça fausse mes moyennes.",
+  },
+  /* ═══ LE FOSSOYEUR — variante « le trou dans la rangée » ════════════════
+     Refonte du lore 6/08, §6. Condition : avoir examiné l'emplacement vide de
+     la rangée. Il grave les écriteaux à l'avance en comptant les corbeaux, et
+     il a retiré un poteau sans savoir pourquoi — c'est le troisième témoin,
+     et le plus troublant : il n'a rien oublié, on lui a retiré la raison. */
+  {
+    id: "fossoyeur-trou-1",
+    remplace: { scene: "champ-des-fixes-2", si: { has: "d.emplacement_vide" } },
+    illustration: "assets/monstre_fossoyeur_poteaux_a.png",
+    chainNext: "fossoyeur-trou-2",
+    narration: [
+      "Il taille un écriteau sur ses genoux, au bout d\u2019une rangée. Le nom " +
+        "qu\u2019il grave n\u2019a pas encore de date.",
+      "« Je grave à l\u2019avance ceux dont c\u2019est sûr. Ça fait gagner du " +
+        "temps le jour venu. » Le couteau ne s\u2019arrête pas. « Comment je " +
+        "sais ? Je regarde les toits. Six corbeaux sur la même maison, je " +
+        "taille. Je me trompe jamais. »",
+    ],
+    choices: [
+      {
+        id: "fossoyeur-poteau-manque",
+        label: "« Il manque un poteau, là-bas. »",
+        passive: {
+          consequence:
+            "Le couteau s\u2019arrête net. Il ne lève pas la tête. Dans une " +
+            "rangée de quatre-vingts poteaux, il a su immédiatement duquel " +
+            "tu parlais.",
+        },
+      },
+      {
+        id: "fossoyeur-qui-decide",
+        label: "« Qui décide ? »",
+        passive: {
+          consequence:
+            "« Personne décide. » Il souffle sur la gravure pour en chasser " +
+            "la poussière de bois. « On constate. » Et il reprend, comme si " +
+            "la question ne s\u2019était pas posée.",
+        },
+      },
+    ],
+    jailerLine: "Il grave les noms avant les morts. Chez moi, c\u2019est la même chose. La différence, c\u2019est que je ne me trompe pas non plus.",
+  },
+  {
+    id: "fossoyeur-trou-2",
+    illustration: "assets/monstre_fossoyeur_poteaux_a.png",
+    chainNext: "fossoyeur-trou-3",
+    decouverte: "d.poteau_retire",
+    narration: [
+      "« Y avait un poteau là. On l\u2019a enlevé. »",
+      "Tu attends.",
+      "« Je l\u2019ai enlevé moi-même. Un matin. Je m\u2019en souviens très bien : " +
+        "la terre, le poids, le trou après. »",
+      "Un temps beaucoup trop long.",
+      "« Et je saurais pas te dire pourquoi. C\u2019est la seule chose de ma " +
+        "vie dont je sais pas la raison. »",
+    ],
+    choices: [
+      {
+        id: "fossoyeur-insister",
+        label: "« Essayez de vous rappeler. »",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu ne lui demandes pas de se souvenir : tu lui demandes qui était là ce matin-là. Il répond sans réfléchir — « tout le monde » — puis s\u2019entend le dire, et pose son couteau. Le hameau entier a retiré ce poteau. Il n\u2019était que la paire de bras.",
+            "Il ferme les yeux, sincèrement. Il essaie. « Y avait du gel. J\u2019avais les mains qui collaient au bois. » Puis plus rien, et sa voix se creuse : « Après ça, c\u2019est comme une page arrachée. Et pourtant j\u2019ai tout le reste. »",
+            "« J\u2019ai essayé. » Il reprend son couteau. « Pendant des années. On arrête, à un moment. » Le copeau qui tombe est plus épais que les autres.",
+            "1 naturel. Il te regarde longuement. « Toi aussi tu vas me demander de compter les corbeaux sur MA maison ? » Il ramasse ses outils et s\u2019en va au bout de la rangée. ♦ −2"
+          ),
+        },
+        soupcon: 1,
+      },
+      {
+        id: "fossoyeur-ne-pas-insister",
+        label: "Le laisser tranquille",
+        passive: {
+          consequence:
+            "Tu ne dis rien. Il grave. Au bout d\u2019un moment, sans qu\u2019on " +
+            "lui demande : « Elle était petite. » Puis il se tait pour de " +
+            "bon, et tu comprends qu\u2019il vient de te donner tout ce " +
+            "qu\u2019il a.",
+        },
+      },
+    ],
+    jailerLine: "Il se souvient du poids, du gel, du trou. Pas de la raison. Quelqu\u2019un a fait le tri à sa place.",
+  },
+  {
+    id: "fossoyeur-trou-3",
+    illustration: "assets/monstre_fossoyeur_poteaux_a.png",
+    narration: [
+      "Il pose l\u2019écriteau fini contre sa jambe, face contre terre, pour " +
+        "qu\u2019on n\u2019en lise pas le nom.",
+      "« Va-t\u2019en. Reviens quand t\u2019auras une date à me donner. »",
+    ],
+    choices: [
+      { id: "fossoyeur-partir", label: "Le laisser à ses rangées" },
+      {
+        id: "fossoyeur-demander-nom",
+        label: "Demander le nom sur l\u2019écriteau",
+        soupcon: 1,
+        passive: {
+          consequence:
+            "Il retourne la planchette contre lui, d\u2019un geste de joueur " +
+            "qui cache son jeu. « Non. » Et, presque doucement : « Si je te " +
+            "le dis, tu vas le regarder autrement quand tu le croiseras. Il " +
+            "a encore quelques jours à être regardé normalement. »",
+        },
+      },
+    ],
+    jailerLine: "Une date. C\u2019est tout ce qu\u2019il attend de toi. Et tu finiras par lui en donner une — la tienne.",
   },
   {
     id: "champ-des-fixes-2",
@@ -1365,6 +1594,22 @@ export const SCENES: Scene[] = [
             "on parle à quelqu'un qui a déjà son poteau quelque part. " +
             "« Le troisième rang, on le plante jamais. C'est pas de la " +
             "place perdue : c'est de la place gardée. » Il ne dit pas pour qui.",
+        },
+      },
+      {
+        /* UN FIXÉ (§7) — il ne peut se dire qu'entre condamnés, et c'est la
+           phrase qui contient tout le personnage : il ne vient pas pour les
+           victimes, il vient pour ceux qui osent. */
+        id: "fixe-il-vient-pour-eux",
+        label: "Demander ce qui vient, la nuit",
+        requiresEtat: "fixe",
+        decouverte: "d.temoin_entendu",
+        passive: {
+          consequence:
+            "Un homme au bout du rang redresse la tête. Il porte la même " +
+            "croix de craie que toi. « Tu l'as vu ? » Il ne baisse même pas " +
+            "la voix — on ne se cache plus, quand on est déjà compté. « Il " +
+            "vient pas pour nous. Il vient pour eux. Pour qu'ils osent. »",
         },
       },
       {
@@ -1496,6 +1741,45 @@ export const SCENES: Scene[] = [
     ],
     pointsInteret: [
       {
+        /* LA TOURNÉE (§7) : « une entaille au-dessus de chaque porte, même
+           hauteur, même outil qui n'est pas un outil. » Le joueur peut la
+           voir dès sa première entrée et n'y comprendre rien pendant trois
+           runs — c'est le but. */
+        id: "linteaux",
+        label: "Le linteau de la porte",
+        approche:
+          "Tu passes devant une porte, puis une autre, et quelque chose " +
+          "accroche ton regard sans que tu saches quoi. Tu reviens sur tes " +
+          "pas et tu lèves la tête.",
+        examen:
+          "Au-dessus du linteau, une entaille dans le bois. Courte, " +
+          "profonde, un peu de biais. Tu regardes la porte suivante : la " +
+          "même, à la même hauteur. Et la suivante. Ce n\u2019est pas une " +
+          "marque de charpentier — le bord est écrasé, pas coupé. Rien de " +
+          "ce que tu connais ne laisse cette trace-là.",
+        decouverte: "d.linteaux_entailles",
+        illustration: "assets/scene_landes_hameau_croix_craie_a.png",
+        soupcon: 1,
+      },
+      {
+        /* LA TOURNÉE (§7) : les combles sont cloués de l'intérieur DANS TOUT
+           le hameau, les rez-de-chaussée non. On ne se barricade pas contre
+           ce qui vient par la rue. */
+        id: "fenetres-clouees",
+        label: "Les fenêtres des combles",
+        approche:
+          "Tu recules de trois pas pour embrasser la façade entière, comme " +
+          "on prend du recul devant un mot mal orthographié.",
+        examen:
+          "Les fenêtres du haut sont clouées. Pas fermées : CLOUÉES, de " +
+          "l\u2019intérieur, planches en travers. Celles du bas ne le sont " +
+          "pas — volets simples, loquets ordinaires, certains même " +
+          "entrouverts. Tout le hameau est ainsi. Personne, ici, ne se " +
+          "protège de ce qui vient par la rue.",
+        decouverte: "d.combles_cloues",
+        illustration: "assets/scene_hameau_accueil_volet_c.png",
+      },
+      {
         id: "croix-craie",
         soupcon: 1, // toucher à une porte marquée, dans une rue qui regarde
         label: "S'approcher de la croix",
@@ -1553,6 +1837,115 @@ export const SCENES: Scene[] = [
       { id: "continuer-rue", label: "Continuer dans la rue" },
     ],
     jailerLine: "Une croix à la craie. Ils marquent leurs condamnés à l'avance — c'est mon métier, ça. Amateurs.",
+  },
+  /* ═══ LA FEMME AU SEUIL — variante « celle qui demande à savoir » ═══════
+     Refonte du lore 6/08, §6. Condition : savoir la Fille VIVANTE (donc être
+     allé au Moulin). C'est le quatrième témoin, et le seul qui DEMANDE — les
+     trois autres racontent sans savoir ce qu'ils racontent.
+
+     Elle avait huit ans à la pendaison, quarante ans de silence, et deux amis
+     morts en jurant qu'ils n'avaient rien vu. Le village n'a pas menti : il a
+     oublié ensemble, et elle est la preuve que quelqu'un n'a pas pu.
+
+     Elle ne dénoncera jamais (−1 Soupçon) : c'est le seul allié réel du
+     hameau, et il ne s'obtient qu'au bout de l'enquête. */
+  {
+    id: "femme-savoir-1",
+    remplace: { scene: "femme-seuil-1", si: { has: "d.fille_vivante" } },
+    illustration: "assets/monstre_femme_seuil_1_v3_a.png",
+    chainNext: "femme-savoir-2",
+    narration: [
+      "Elle est à sa place, le regard au sud. Mais quand tu passes à sa " +
+        "hauteur, sa main t\u2019attrape la manche.",
+      "Elle ne t\u2019a jamais touché. Personne ici ne touche personne.",
+    ],
+    choices: [
+      { id: "femme-savoir-ecouter", label: "La laisser parler" },
+      {
+        id: "femme-savoir-degager",
+        label: "Se dégager",
+        passive: {
+          consequence:
+            "Tu retires ton bras, doucement. Elle ne lâche pas tout de " +
+            "suite : ses doigts restent une seconde de trop sur le tissu, et " +
+            "quand ils s\u2019ouvrent, c\u2019est comme si on posait quelque " +
+            "chose de lourd.",
+        },
+      },
+    ],
+    jailerLine: "Quarante ans sans toucher personne, et c\u2019est toi qu\u2019elle attrape. Tu dois avoir une tête à écouter.",
+  },
+  {
+    id: "femme-savoir-2",
+    illustration: "assets/monstre_femme_seuil_2_c.png",
+    chainNext: "femme-savoir-3",
+    narration: [
+      "« Elle est encore là ? À l\u2019ouest. La jeune. »",
+      "Ses yeux cherchent les tiens et n\u2019en sortent plus. « Dis-le-moi. " +
+        "Dis-le juste une fois. »",
+    ],
+    choices: [
+      {
+        id: "femme-savoir-confirmer",
+        label: "« Elle est là. »",
+        decouverte: "d.temoin_oculaire",
+        soupcon: -1,
+        passive: {
+          consequence:
+            "Elle ferme les yeux. Tout son corps lâche d\u2019un coup, comme " +
+            "une corde qu\u2019on détend.",
+        },
+      },
+      {
+        id: "femme-savoir-nier",
+        label: "« Je ne sais pas de qui vous parlez. »",
+        risky: {
+          stat: "RUSE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu mens si bien que tu t\u2019en veux. Elle te croit, hoche la tête, et te remercie — parce que dans ce village quelqu\u2019un qui ne sait rien est quelqu\u2019un qui ne risque rien, et elle en est arrivée à protéger les gens de leur propre savoir.",
+            "Tu tiens le mensonge. Elle relâche ta manche et regarde ailleurs. « Bien sûr. Bien sûr que non. » Le pire, c\u2019est qu\u2019elle a l\u2019air soulagée pour toi.",
+            "Ta phrase sonne creux, et vous l\u2019entendez tous les deux. Elle sourit très légèrement, sans joie : « Oui. C\u2019est ce qu\u2019on répond. » Et elle te lâche.",
+            "1 naturel. « Ne me fais pas ça. » Sa voix monte — la seule voix qui monte de tout le hameau — et trois volets s\u2019entrouvrent dans la rue. ♦ −2"
+          ),
+        },
+        soupcon: 1,
+      },
+    ],
+    jailerLine: "Quarante ans à ne pas oser poser la question, et elle la pose à un étranger de passage.",
+  },
+  {
+    id: "femme-savoir-3",
+    illustration: "assets/monstre_femme_seuil_3_v2_a.png",
+    chainNext: "hameau-entree-3",
+    narration: [
+      "« Quarante ans que je le vois et que je le dis pas. » Elle rit — un " +
+        "son épouvantable. « J\u2019avais huit ans quand ils l\u2019ont pendue. " +
+        "On était trois enfants sur le muret. Les deux autres sont morts " +
+        "vieux en disant qu\u2019ils avaient rien vu. »",
+      "« J\u2019ai attendu quarante ans que quelqu\u2019un me dise que " +
+        "j\u2019étais pas folle. »",
+      "Elle te lâche et reprend sa position, face au sud. De la rue, rien " +
+        "n\u2019a bougé.",
+      "« Va-t\u2019en maintenant. Et redis-le à personne. Moi je peux plus " +
+        "partir : j\u2019ai plus l\u2019âge, et j\u2019ai plus le courage. Mais " +
+        "toi tu peux encore. Alors pars avant qu\u2019ils te comptent. »",
+    ],
+    choices: [
+      { id: "femme-savoir-partir", label: "Redescendre la rue" },
+      {
+        id: "femme-savoir-promettre",
+        label: "Promettre de se taire",
+        passive: {
+          consequence:
+            "Tu le promets. Elle ne répond pas — elle a repris sa faction, " +
+            "le menton vers le sud, et de la rue on ne voit qu\u2019une vieille " +
+            "femme qui regarde la route. C\u2019est exactement ce qu\u2019elle " +
+            "fait depuis quarante ans.",
+        },
+      },
+    ],
+    jailerLine: "Trois enfants sur un muret. Deux sont morts en jurant n\u2019avoir rien vu. Le silence, chez vous, se transmet mieux que les noms.",
   },
   {
     /* LA FEMME AU SEUIL — rencontre ÉTALON des scripts (Hameau · commune).
@@ -1710,9 +2103,11 @@ export const SCENES: Scene[] = [
     id: "gamin-murets-1",
     illustration: "assets/monstre_gamin_murets_a.png",
     narration: [
-      "« T\u2019es celui qui est entré ce matin. » Ce n\u2019est pas une question. " +
-        "Il compte sur ses doigts, sans te regarder : « Trois avant toi cette " +
-        "année. Deux sont ressortis. »",
+      "Il aligne des cailloux sur le muret, par taille. Il ne se cache pas de " +
+        "toi : c\u2019est le premier habitant qui ne se méfie pas. « T\u2019es le " +
+        "nouveau. T\u2019as combien de corbeaux ? »",
+      "Il n\u2019attend pas la réponse, et compte sur ses doigts. « Trois avant " +
+        "toi cette année. Deux sont ressortis. »",
       "Il désigne la lande du menton, la crête des murets qui court vers le " +
         "sud, basse et sèche. « Y a le chemin, et y a les murets. Le chemin, " +
         "il fait le tour de tout. Les murets, non. »",
@@ -1766,7 +2161,7 @@ export const SCENES: Scene[] = [
   {
     id: "gamin-murets-2",
     illustration: "assets/monstre_gamin_murets_a.png",
-    chainNext: "hameau-entree-3",
+    chainNext: "gamin-murets-3",
     narration: [
       "Le muret repart vers le sud, à hauteur de hanche, en pierre sèche " +
         "posée sans mortier. On voit à l\u2019usure du sommet que quelqu\u2019un y " +
@@ -1799,6 +2194,108 @@ export const SCENES: Scene[] = [
     ],
     jailerLine:
       "Deux murets. Il a dit deux murets, et il s’y tiendra. C’est bien la seule chose qu’on tienne, par ici.",
+  },
+  /* ── LE GAMIN, beats 3 et 4 (refonte du lore 6/08) ────────────────────
+     Le gamin est « le seul qui n'a pas appris à ne pas voir » : c'est par lui
+     que la Fille entre dans le jeu, et c'est la PORTE D'ENTRÉE de tout l'arc
+     (aucune condition). Il ne sait pas ce qu'il raconte — il raconte juste ce
+     qui lui est arrivé, et personne ne le croit. Le caillou est la seule
+     preuve matérielle de l'affaire, et il ne prouve rien du tout. */
+  {
+    id: "gamin-murets-3",
+    illustration: "assets/monstre_gamin_murets_a.png",
+    chainNext: "gamin-murets-4",
+    narration: [
+      "« Moi j\u2019en ai zéro », dit-il en revenant à ses cailloux. « Ma mère " +
+        "en a deux. Elle sait pas. Faut pas lui dire, elle a peur pour rien. »",
+      "Il fouille dans sa poche et te tend une pierre plate, grise, polie " +
+        "comme un galet de rivière. Il n\u2019y a pas de rivière dans les Landes. " +
+        "« C\u2019est la dame de l\u2019ouest qui me l\u2019a donnée. »",
+    ],
+    choices: [
+      {
+        id: "gamin-quelle-dame",
+        label: "« Quelle dame ? »",
+        decouverte: "d.fille_apercue",
+        grantsLoot: "caillou-gamin",
+        passive: {
+          consequence:
+            "« Ben, la dame. » Il hausse les épaules, comme si tu demandais " +
+            "de quelle couleur est le ciel. « Elle est jeune. Elle a un " +
+            "châle. Elle marche du côté du moulin, là où l\u2019herbe est " +
+            "couchée. » Il repose un caillou dans la rangée, très exactement " +
+            "à sa place.",
+        },
+      },
+      {
+        id: "gamin-ou-vue",
+        label: "« Où l\u2019as-tu vue ? »",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu ne demandes pas où : tu demandes QUAND. Il réfléchit vraiment, pour la première fois. « Le matin, jamais. Le soir, souvent. Et une fois dans le brouillard, très près. » Il te regarde. « Elle m\u2019a dit de rentrer. J\u2019ai rentré. »",
+            "Il pointe l\u2019ouest du menton, au-delà des murets, là où la crête remonte vers une masse noire sans ailes. « Par là. Elle va jamais plus loin que le moulin, et jamais du côté des potences. Moi non plus j\u2019y vais pas. »",
+            "« Partout », dit-il, et tu comprends qu\u2019il ne ment pas — il n\u2019a simplement jamais eu besoin de retenir où, parce que personne ne le lui a jamais demandé sérieusement.",
+            "1 naturel. Il te regarde autrement, d\u2019un coup. « Pourquoi tu demandes ça, toi ? » Il ramasse ses cailloux dans le pan de sa chemise et s\u2019en va, et tu entends très bien qu\u2019il en parlera à quelqu\u2019un. ♦ −2"
+          ),
+        },
+        decouverte: "d.fille_apercue",
+        grantsLoot: "caillou-gamin",
+      },
+      {
+        id: "gamin-ne-pas-relever",
+        label: "Ne pas relever",
+        passive: {
+          consequence:
+            "Tu refermes la main sur la pierre sans rien demander. Elle est " +
+            "tiède, ce qui n\u2019a aucun sens : elle sort d\u2019une poche " +
+            "d\u2019enfant, dehors, dans un crépuscule qui ne se réchauffe " +
+            "jamais. Il est déjà retourné à sa rangée.",
+        },
+        decouverte: "d.fille_apercue",
+        grantsLoot: "caillou-gamin",
+      },
+    ],
+    jailerLine: "Un enfant, un caillou, et personne pour l\u2019écouter. C\u2019est ainsi que commencent la plupart des vérités.",
+  },
+  {
+    id: "gamin-murets-4",
+    illustration: "assets/monstre_gamin_murets_a.png",
+    chainNext: "hameau-entree-3",
+    narration: [
+      "« Ma mère dit que j\u2019invente. Le rebouteux dit que j\u2019invente. Tout " +
+        "le monde dit que j\u2019invente. » Il te regarde enfin, droit. « Mais " +
+        "le caillou, il est vrai. Tu le tiens. »",
+      "Il redescend du muret et ramasse ses pierres une par une, dans " +
+        "l\u2019ordre. « Si tu la vois, dis-lui merci pour le caillou. " +
+        "J\u2019ai oublié la dernière fois. »",
+    ],
+    choices: [
+      {
+        id: "gamin-promettre",
+        label: "Le lui promettre",
+        passive: {
+          consequence:
+            "Il hoche la tête, satisfait, et ne vérifie pas. À dix ans, on " +
+            "croit encore qu\u2019une promesse et une chose faite sont la même " +
+            "chose. Tu redescends la ruelle avec un caillou de rivière dans " +
+            "la main, dans un pays qui n\u2019a pas de rivière.",
+        },
+      },
+      {
+        id: "gamin-rien-promettre",
+        label: "Ne rien promettre",
+        passive: {
+          consequence:
+            "Tu ne dis rien. Il ne t\u2019en veut pas : il range ses cailloux " +
+            "et s\u2019éloigne le long du mur, du pas de quelqu\u2019un qui a " +
+            "l\u2019habitude qu\u2019on ne réponde pas. Tu gardes la pierre quand " +
+            "même.",
+        },
+      },
+    ],
+    jailerLine: "Il t\u2019a confié une commission. Note bien : c\u2019est la première fois que quelqu\u2019un, ici, attend quelque chose de toi.",
   },
   {
     id: "femme-seuil-3",
@@ -2301,8 +2798,8 @@ export const SCENES: Scene[] = [
         "que tu la regardes. Elle est vide. C'est le geste d'ici : on jure sur " +
         "rien, parce qu'il ne reste rien.",
       "— « Trois choses, et tu dors sous un toit. Tu ne parles pas aux " +
-        "pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et tu pars " +
-        "avant la troisième aube. »",
+        "pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et à la " +
+        "troisième aube, tu choisis. »",
     ],
     pointsInteret: [
       {
@@ -2315,12 +2812,27 @@ export const SCENES: Scene[] = [
           "quelques-uns qui s'étaient approchés attendent la réponse avec " +
           "toi — comme si personne n'avait jamais osé la poser.",
         examen:
-          "— « Parce qu'à la quatrième, on commence à s'habituer à toi. » Le " +
-          "vieux hausse une épaule, presque désolé. « Et on ne peut pas se " +
-          "permettre de s'habituer. »",
+          "— « Trois aubes pour reprendre des forces. » Le vieux compte sur " +
+          "sa main, sans ironie aucune. « La première, on te soigne. La " +
+          "deuxième, on te montre ce que serait ta vie ici. À la troisième, " +
+          "tu repars — ou tu poses ton nom parmi les nôtres. » Il te regarde " +
+          "avec quelque chose qui ressemble beaucoup à de la bienveillance, " +
+          "et c'est bien ça qui te glace.",
       },
     ],
     choices: [
+      {
+        id: "doyenne-horaire",
+        label: "Demander qui juge, ici",
+        decouverte: "d.on_juge_la_nuit",
+        passive: {
+          consequence:
+            "La vieille femme derrière le vieux répond à sa place, sans " +
+            "qu\u2019on lui ait rien demandé. « Avant, on jugeait le jour. » " +
+            "Elle rajuste son châle. « Maintenant on juge la nuit. C\u2019est " +
+            "pas moi qui ai décidé du changement d\u2019horaire. »",
+        },
+      },
       {
         id: "jurer-serment",
         serment: "jure",
@@ -2390,7 +2902,22 @@ export const SCENES: Scene[] = [
       "Te voilà dans le hameau. Personne ne t'a souhaité la bienvenue, et pourtant tous " +
         "savaient déjà que tu venais.",
     ],
-    choices: [{ id: "entrer-hameau", label: "Entrer dans le hameau" }],
+    choices: [
+      {
+        id: "parler-de-la-dame",
+        label: "Parler de la femme de l\u2019ouest",
+        requiresDecouverte: "d.fille_vivante",
+        soupcon: 2,
+        passive: {
+          consequence:
+            "Tu poses la question à quelqu\u2019un qui rentre du puits. Le " +
+            "regard doux, la voix douce : « Tu es fatigué. Le voyage " +
+            "fatigue. » On te touche l\u2019épaule, on te souhaite une bonne " +
+            "nuit — et on s\u2019éloigne d\u2019un pas qui n\u2019est plus tout à " +
+            "fait celui de quelqu\u2019un qui rentre chez lui. Elle t\u2019avait " +
+            "prévenu que ça commençait comme ça.",
+        },
+      },{ id: "entrer-hameau", label: "Entrer dans le hameau" }],
     jailerLine: "Bienvenue. C'est moi qui te le dis, puisque personne d'autre ne le fera.",
   },
   {
@@ -2442,6 +2969,7 @@ export const SCENES: Scene[] = [
       {
         id: "examiner-grange",
         label: "Examiner la grange",
+        decouverte: "d.barre_usee",
         illustration: "assets/scene_hameau_grange_poutres_a_d.png",
         approche:
           "Tu prends la lampe et tu fais le tour, lentement, en te tenant " +
@@ -2454,7 +2982,10 @@ export const SCENES: Scene[] = [
           "plusieurs quelqu'uns, une nuit chacun. La dernière série s'arrête " +
           "à deux. Et sous chaque bâton, une encoche plus petite, régulière : " +
           "quatre par nuit, toujours quatre. Ce ne sont pas les nuits qu'on " +
-          "compte ici. Ce sont les passages de la ronde.",
+          "compte ici. Ce sont les passages de la ronde. En sortant, tu " +
+          "passes la main sur la barre : le bois est lisse à l'intérieur et " +
+          "usé jusqu'au fil dehors, comme si l'on s'y appuyait du dehors, " +
+          "souvent, longtemps.",
       },
     ],
     choices: [
@@ -2481,7 +3012,7 @@ export const SCENES: Scene[] = [
        le moteur choisit la bonne au moment de l'insertion (Scene.tsx). */
     id: "hameau-halte-3",
     illustration: "assets/scene_hameau_halte_3_c.png",
-    chainNext: "hameau-halte-4",
+    chainNext: "temoin-toit",
     narration: [
       "Le hameau ne dort pas comme un village. Pas de rires, pas de disputes, " +
         "pas d'enfant qui pleure. Juste des pas, parfois, qui font une ronde " +
@@ -2541,6 +3072,89 @@ export const SCENES: Scene[] = [
     ],
     jailerLine: "Ils parlent de toi à travers une planche. Moi je te parle à travers le crâne. Chacun ses moyens.",
   },
+  /* ═══ APPARITION 1 — LE POIDS SUR LE TOIT (refonte 6/08, §5) ════════════
+     La première des trois, et la seule garantie : elle se joue à la première
+     nuit dans la grange. On ne le voit pas, on l'ENTEND — c'est le principe
+     de l'arc (entendu → entrevu → vu, et la troisième tue).
+
+     Le retournement de la barre paie un détail écrit le 24/07 et jamais
+     expliqué : la barre est posée DEHORS. Elle n'enferme pas l'hôte et ne le
+     protège pas — elle signale une grange occupée. */
+  {
+    id: "temoin-toit",
+    illustration: "assets/scene_hameau_halte_3_c.png",
+    chainNext: "hameau-halte-4",
+    decouverte: "d.temoin_entendu",
+    narration: [
+      "Les voix s\u2019éloignent. Le silence revient, et il est plus épais " +
+        "qu\u2019avant.",
+      "Puis le toit travaille. Une poutre plie — pas le craquement du bois " +
+        "qui refroidit : le bruit d\u2019un bois qui porte quelque chose. La " +
+        "poussière tombe en fil régulier entre deux planches, juste devant toi.",
+      "Quelque chose remonte le faîtage. Ça s\u2019arrête au-dessus de la " +
+        "porte. Ça reste.",
+      "Dehors, les corbeaux ne bougent pas. C\u2019est ça, le pire : ils ne " +
+        "s\u2019envolent pas.",
+    ],
+    choices: [
+      {
+        id: "toit-ne-pas-bouger",
+        label: "Ne pas bouger",
+        passive: {
+          consequence:
+            "Tu ne bouges pas. Tu ne respires presque plus. Au bout d\u2019un " +
+            "temps que tu serais incapable de mesurer, le poids se déplace " +
+            "vers l\u2019autre pignon, sans un bruit de pas — comme si le toit " +
+            "seul savait qu\u2019il y avait quelque chose dessus.",
+        },
+      },
+      {
+        id: "toit-regarder",
+        label: "Chercher la fente",
+        risky: {
+          stat: "COURAGE",
+          threshold: 13,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Tu trouves la fente et tu colles l\u2019œil. Il n\u2019y a rien à voir : du ciel, la ligne du faîtage, et une portion de nuit un peu plus dense que le reste, qui NE BOUGE PAS avec le vent. Tu la regardes assez longtemps pour être certain que ce n\u2019est pas une illusion — et pour comprendre qu\u2019elle t\u2019a laissé faire.",
+            "Tu trouves une fente entre deux planches. Le ciel est là, gris sale, avec une bande plus noire au bord du champ de vision. Quand tu bouges la tête pour la cadrer, elle n\u2019est plus dans le cadre. Quand tu reviens, elle y est.",
+            "Tu te lèves trop vite et la paille crisse. Au-dessus, le poids s\u2019arrête net — puis se déplace, lentement, exactement au-dessus de l\u2019endroit où tu te tiens. Tu passes le reste de la nuit assis, dos au mur, à écouter un plancher de ciel.",
+            "1 naturel. Tu approches l\u2019œil de la fente, et quelque chose, de l\u2019autre côté, fait exactement le même geste. ♦ −2"
+          ),
+        },
+        soupcon: 1,
+      },
+    ],
+    jailerLine: "Ah. Lui. Il n\u2019est pas de ma maison, celui-là — il s\u2019y est installé. Comme les rats.",
+  },
+  {
+    /* VARIANTE : on ne s'étonne qu'une fois. Aux nuits suivantes le texte se
+       raccourcit — c'est devenu un bruit connu, ce qui est bien pire. */
+    id: "temoin-toit-connu",
+    remplace: { scene: "temoin-toit", si: { has: "d.temoin_entendu" } },
+    illustration: "assets/scene_hameau_halte_3_c.png",
+    chainNext: "hameau-halte-4",
+    narration: [
+      "Les voix s\u2019éloignent. Tu attends, parce que tu sais maintenant " +
+        "qu\u2019il y a quelque chose à attendre.",
+      "La poutre plie à la même heure, au même endroit. Le poids remonte le " +
+        "faîtage, s\u2019arrête au-dessus de la porte, et reste. Ce n\u2019est " +
+        "plus une découverte : c\u2019est un horaire.",
+    ],
+    choices: [
+      {
+        id: "toit-attendre-connu",
+        label: "Attendre que ça passe",
+        passive: {
+          consequence:
+            "Tu comptes. La dernière fois, ça avait duré à peu près autant. " +
+            "Il y a quelque chose d\u2019obscène à s\u2019habituer, et tu " +
+            "t\u2019habitues.",
+        },
+      },
+    ],
+    jailerLine: "La deuxième fois, on ne compte plus les battements de cœur. On compte le temps. C\u2019est un progrès, je suppose.",
+  },
   {
     /* Beat 4 — L'aube. Le Serment tenu jusqu'ici se paie ici (−1 Soupçon). */
     id: "hameau-halte-4",
@@ -2549,6 +3163,9 @@ export const SCENES: Scene[] = [
     narration: [
       "La barre se soulève au premier gris. Le vieux, seul. Il te tend un " +
         "quignon dur et ne dit rien pendant que tu manges.",
+      "Tu regardes la barre pendant qu\u2019il la repose contre le mur. Tu " +
+        "croyais qu\u2019elle t\u2019enfermait, ou qu\u2019elle te protégeait. Ni " +
+        "l\u2019un ni l\u2019autre : elle indiquait que la grange était occupée.",
       "— « Aujourd'hui, on fixe personne. » Il regarde ailleurs. « Alors pars " +
         "pendant que c'est vrai. »",
     ],
@@ -2653,6 +3270,70 @@ export const SCENES: Scene[] = [
       },
     ],
     jailerLine: "Dormir dehors, comme les Appelés avant leur départ. Le village a noté. Le village note tout.",
+  },
+  /* ═══ APPARITION 2 — LA RUELLE (refonte 6/08, §5) ═══════════════════════
+     Conditions : la nuit, HORS ABRI, et l'avoir déjà entendu. C'est la voie
+     de l'imprudent — celui qui a refusé le Serment dort dehors, et dehors on
+     ne fait pas qu'entendre. VARIANTE de la nuit dehors : elle en garde la
+     place, l'issue et la sortie de zone.
+
+     ⚠️ Ne JAMAIS montrer ce qu'il y a sous le manteau (garde-fou §8) : on
+     voit du tissu, une hauteur, et « quelque chose qui n'était pas des
+     jambes ». L'ambiguïté corbeaux-serviteurs / corbeaux-constituants doit
+     rester entière. */
+  {
+    id: "temoin-ruelle",
+    remplace: { scene: "hameau-halte-dehors", si: { has: "d.temoin_entendu" } },
+    illustration: "assets/scene_landes_hameau_ruelle_b.png",
+    hameauHalte: true,
+    decouverte: "d.temoin_entrevu",
+    narration: [
+      "Aucune porte, aucune grange. Tu dors contre un muret, côté nord — " +
+        "d\u2019instinct. Sauf que cette fois tu ne dors pas : tu sais ce qui " +
+        "marche sur les toits.",
+      "Au bout de la ruelle, quelque chose traverse. De gauche à droite, " +
+        "sans bruit — et c\u2019est l\u2019absence de bruit qui te fige, parce " +
+        "que ça faisait trois têtes de haut.",
+      "Tu vois du tissu. Beaucoup de tissu, noir, qui suit avec un temps de " +
+        "retard, comme une traîne. Et dessous, une seconde de trop, quelque " +
+        "chose qui n\u2019était pas des jambes.",
+      "Puis plus rien. Le passage est vide. Sur les toits des deux côtés, " +
+        "les corbeaux sont alignés et te regardent, toi.",
+    ],
+    choices: [
+      {
+        id: "ruelle-ne-pas-suivre",
+        label: "Ne pas suivre",
+        soupcon: 1,
+        poseEtat: "hante",
+        passive: {
+          consequence:
+            "Tu restes contre ton muret jusqu\u2019au gris. Tu ne dors pas. " +
+            "Au matin, des traces de pas font un cercle complet autour de " +
+            "l\u2019endroit où tu étais couché, à trois mètres — personne ne " +
+            "s\u2019est approché plus près, et personne n\u2019est reparti sans " +
+            "avoir regardé.",
+        },
+      },
+      {
+        id: "ruelle-suivre",
+        label: "Aller voir le passage",
+        risky: {
+          stat: "COURAGE",
+          threshold: 14,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Tu marches jusqu\u2019au coin. Le passage est vide, et le sol y est sec alors qu\u2019il a plu — sur toute la largeur, une bande où l\u2019humidité n\u2019a pas pris. Tu la suis des yeux : elle va d\u2019un linteau à l\u2019autre, d\u2019une porte à l\u2019autre, et elle s\u2019arrête à chacune. Il fait sa tournée.",
+            "Tu vas jusqu\u2019au coin, le cœur en désordre. Rien. Une ruelle, des volets clos, et sur le linteau de la maison d\u2019en face, à hauteur d\u2019homme, une entaille fraîche dans le bois. La même que sur toutes les autres portes du hameau.",
+            "Tu fais trois pas et tu t\u2019arrêtes, parce que les corbeaux se sont tous tournés en même temps. Pas vers le passage. Vers toi. Tu regagnes ton muret sans donner le dos à la rue.",
+            "1 naturel. Tu arrives au coin au moment où il revient. Tu ne vois toujours pas de visage. Tu vois qu\u2019il s\u2019arrête, et qu\u2019il attend — comme on attend que quelqu\u2019un ait fini de comprendre. ♦ −2"
+          ),
+        },
+        soupcon: 2,
+        poseEtat: "hante",
+      },
+    ],
+    jailerLine: "Il t\u2019a laissé le voir. Ce n\u2019est pas de la négligence : c\u2019est une convocation.",
   },
   /* LA TOUR DE GUET EFFONDRÉE — dernier lieu du Hameau à n'avoir aucune scène
      (relevé le 27/07 : la carte de l'atelier l'affichait « aucune scène
@@ -2851,6 +3532,38 @@ export const SCENES: Scene[] = [
     ],
     choices: [
       {
+        /* LE SONNEUR SANS CLOCHE (§7) — il n'avait aucune scène. Son
+           témoignage tient en trois phrases et dit tout du village : il a
+           voulu prévenir, et on lui a retiré le moyen de prévenir sans un
+           mot d'explication. */
+        id: "sonneur-battant",
+        label: "Parler à l\u2019homme sans étal",
+        requiresDecouverte: "d.cloche_sans_battant",
+        decouverte: "d.sonneur",
+        passive: {
+          consequence:
+            "Un homme sans marchandise se tient au bout de la rangée, les " +
+            "mains vides et l\u2019air de quelqu\u2019un qui a eu un métier. " +
+            "« J\u2019ai sonné, une nuit. Pour prévenir. » Il regarde ses " +
+            "paumes. « Le lendemain, plus de battant. Personne n\u2019a rien " +
+            "dit. C\u2019était juste plus là. »",
+        },
+      },
+      {
+        /* Témoignage court §7 : chacun sait un fragment et croit que c'est
+           tout. Le Rebouteux ne se demande même pas pourquoi personne ne
+           demande de soins la nuit — il a rangé ça dans « les habitudes ». */
+        id: "rebouteux-la-nuit",
+        label: "Demander s\u2019il soigne le soir",
+        decouverte: "d.nuit_du_hameau",
+        passive: {
+          consequence:
+            "Le rebouteux hausse les épaules sans lever les yeux de son " +
+            "baume. « Je soigne pas la nuit. » Un temps. « C\u2019est pas une " +
+            "règle, hein. C\u2019est juste que personne demande. »",
+        },
+      },
+      {
         id: "troc-colporteur",
         label: "Troquer au Marché",
         risky: {
@@ -2910,6 +3623,26 @@ export const SCENES: Scene[] = [
         "en haut. La lucarne, qui te regarde. Et la porte, qui n'attend que toi.",
     ],
     pointsInteret: [
+      {
+        /* LA TOURNÉE (§7) : le chemin de faîtage du Grand Témoin s'arrête à
+           cinquante pas du Moulin. C'est la preuve matérielle que ce lieu est
+           un sanctuaire — et le joueur peut la lire sans jamais savoir de
+           quoi il s'agit. */
+        id: "crete-interrompue",
+        label: "La crête du toit",
+        approche:
+          "Tu contournes la tour et tu lèves les yeux vers le faîtage. La " +
+          "mousse a mangé toute la pierre, sauf une bande, en haut, nette " +
+          "comme un sentier.",
+        examen:
+          "La bande sans mousse court sur toute la longueur du toit, large " +
+          "comme deux mains, usée. Puis elle s\u2019arrête. Pas en " +
+          "s\u2019amenuisant : d\u2019un coup, à cinquante pas de la porte, " +
+          "comme si quelque chose qui marchait là s\u2019était retourné " +
+          "chaque fois exactement au même endroit.",
+        decouverte: "d.crete_interrompue",
+        illustration: "assets/scene_moulin_croix_ombres_a_d.png",
+      },
       {
         id: "croix-ombres",
         chapterFragment: true,
@@ -3019,6 +3752,297 @@ export const SCENES: Scene[] = [
     ],
     jailerLine: "Dors. Le crépuscule ne tombera pas, mais toi, un jour, oui. J'aime comparer.",
   },
+  /* ═══ LA FILLE AU MOULIN — degré 4 (refonte du lore 6/08, §6) ═══════════
+     VARIANTE de l'écran-événement du Moulin, ouverte à partir de TROIS
+     découvertes sur elle. En dessous, le Moulin reste vide : la rencontre est
+     le paiement d'une enquête, jamais un tirage.
+
+     Sa Fixation a raté. Elle n'est pas morte, pas partie, et n'a pas vieilli —
+     elle est le seul échec du Grand Témoin, et il ne peut pas le corriger : il
+     lui faut une condamnation collective, et on ne condamne pas quelqu'un
+     qu'un village a décidé de ne pas voir. C'est pour ça que le Moulin est le
+     seul endroit sûr des Landes.
+
+     ⚠️ Elle ne délivre AUCUN bonus mécanique. Ce qu'elle donne est une
+     information qui coûte : en parler à un villageois fait +2 Soupçon. */
+  {
+    id: "fille-moulin-1",
+    remplace: { scene: "campement-2", si: { id: COMPTEUR_FILLE, gte: SEUIL_MOULIN } },
+    illustration: "assets/monstre_la_fille_c.png",
+    chainNext: "fille-moulin-2",
+    narration: [
+      "La porte est entrouverte, comme toujours. Mais cette fois la bruyère " +
+        "du pot n\u2019est pas seulement fraîche : elle est mouillée. " +
+        "Quelqu\u2019un vient de la cueillir.",
+      "Une femme est assise sur la paillasse, dos à toi, occupée à quelque " +
+        "chose de ses mains. Elle ne se retourne pas.",
+      "« Tu m\u2019as vue. » Ce n\u2019est pas une question. « Ça arrive une fois " +
+        "tous les dix ans. »",
+    ],
+    choices: [
+      { id: "fille-rester", label: "Rester sur le seuil" },
+      {
+        id: "fille-entrer",
+        label: "Entrer et refermer",
+        passive: {
+          consequence:
+            "Tu pousses la porte derrière toi. Le bruit de la lande " +
+            "s\u2019arrête net, comme coupé au couteau — et tu réalises que " +
+            "c\u2019est la première fois depuis la Borne que tu n\u2019entends " +
+            "plus le vent.",
+        },
+      },
+    ],
+    jailerLine: "Tiens. Une place que je ne vois pas bien. Ça ne m\u2019était pas arrivé depuis longtemps.",
+  },
+  {
+    id: "fille-moulin-2",
+    illustration: "assets/monstre_la_fille_c.png",
+    chainNext: "fille-moulin-3",
+    narration: [
+      "Elle se retourne enfin, et le compte ne marche pas. Le village parle " +
+        "d\u2019elle comme d\u2019une histoire ancienne, d\u2019un temps que même " +
+        "les vieux ont du mal à situer. Elle a vingt ans.",
+      "« Ils m\u2019ont pendue un mardi. » Elle dit ça comme on donne une " +
+        "adresse. « Ça n\u2019a pas pris. Je suis restée là, à me balancer, et " +
+        "à un moment ils sont partis manger. »",
+      "« Quand ils sont revenus, j\u2019avais défait le nœud toute seule. Alors " +
+        "ils ont décidé de ne pas m\u2019avoir vue. C\u2019était plus simple. »",
+    ],
+    choices: [
+      {
+        id: "fille-pourquoi-rester",
+        label: "« Pourquoi restez-vous ici ? »",
+        passive: {
+          consequence:
+            "« Pour aller où ? » Elle repose ses mains. « Au sud, il y a la " +
+            "Descente, et la Descente ne prend que les vivants ou les morts. " +
+            "Je ne suis ni l\u2019un ni l\u2019autre. » Un temps. « Et puis " +
+            "quelqu\u2019un doit rester pour savoir ce qui s\u2019est passé. »",
+        },
+      },
+      {
+        id: "fille-votre-pere",
+        label: "« Votre père vous attend. »",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 12,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Tu ne dis pas « il vous attend ». Tu dis : « il a tressé la corde trois mois. » Elle s\u2019arrête net. Pour la première fois depuis trente ans, quelqu\u2019un lui parle de son père comme d\u2019un homme et non comme d\u2019un pendu — et elle te raconte le reste sans que tu aies à demander.",
+            "Elle ne se fâche pas. Elle repose son ouvrage sur ses genoux, très lentement, et regarde la lucarne. « Je sais. » Deux mots, et le silence qui suit dure assez longtemps pour que tu comprennes qu\u2019elle y pense tous les jours.",
+            "« Ne fais pas ça. » Sa voix ne monte pas d\u2019un ton, ce qui est pire. « Tout le monde ici me dit ce que je devrais faire de mon père. Toi tu viens d\u2019arriver. »",
+            "1 naturel. Elle rit — un son sec, sans joie. « Il m\u2019attend, oui. Comme il attendait l\u2019autre. » Elle se remet à son ouvrage et ne te répondra plus de la soirée. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "fille-ne-rien-dire",
+        label: "Ne rien dire",
+        passive: {
+          consequence:
+            "Tu ne dis rien. Elle continue son ouvrage, et le silence " +
+            "s\u2019installe sans gêne — c\u2019est visiblement ce qu\u2019elle " +
+            "préfère. Au bout d\u2019un moment, elle parle d\u2019elle-même, " +
+            "parce que personne ne l\u2019en empêche.",
+        },
+      },
+    ],
+    jailerLine: "Trente ans qu\u2019elle refait le même geste. Je connais ça. C\u2019est ce que vous appelez « tenir ».",
+  },
+  {
+    id: "fille-moulin-3",
+    illustration: "assets/monstre_la_fille_c.png",
+    chainNext: "fille-moulin-4",
+    narration: [
+      "« Mon père a construit une potence pour la chose qui m\u2019a fait " +
+        "pendre. » Elle repose son ouvrage. « Il l\u2019a attendue trois mois. " +
+        "Elle n\u2019est pas venue. Elle ne vient jamais quand on l\u2019appelle " +
+        "— elle vient quand un village est prêt. »",
+      "Un temps.",
+      "« Il s\u2019est pendu à côté. Pas de chagrin : par règlement. Il avait " +
+        "refusé de me condamner, et refuser, dans son livre, c\u2019était une " +
+        "faute. Il a inscrit son nom et il a fait ce qu\u2019il fallait. »",
+      "« Alors non, je ne monte pas le voir. Il attend un procès. Moi " +
+        "j\u2019ai fini d\u2019attendre. »",
+    ],
+    choices: [
+      {
+        id: "fille-la-chose",
+        label: "« Quelle chose ? »",
+        decouverte: "d.temoin_nomme",
+        passive: {
+          consequence:
+            "Elle te regarde un long moment, et tu comprends qu\u2019elle " +
+            "évalue si tu es prêt à l\u2019entendre ou seulement curieux. " +
+            "« Celle qui regarde. Elle ne juge personne — elle attend que " +
+            "vous le fassiez, et pendant qu\u2019elle regarde, vous osez. » " +
+            "Elle hausse les épaules. « Mon père l\u2019a citée à comparaître. " +
+            "C\u2019était un homme très sérieux. »",
+        },
+      },
+      {
+        id: "fille-ecouter",
+        label: "La laisser finir",
+        passive: {
+          consequence:
+            "Tu ne l\u2019interromps pas. Elle va au bout, sans une hésitation " +
+            "— ce n\u2019est pas la première fois qu\u2019elle se le raconte, " +
+            "c\u2019est juste la première fois qu\u2019il y a quelqu\u2019un dans " +
+            "la pièce.",
+        },
+      },
+    ],
+    jailerLine: "Un homme qui somme la nuit de comparaître. J\u2019aurais aimé voir ça. La nuit ne s\u2019est pas présentée.",
+  },
+  {
+    id: "fille-moulin-4",
+    illustration: "assets/monstre_la_fille_c.png",
+    decouverte: "d.fille_vivante",
+    narration: [
+      "« Tu vas redescendre et tu vas leur en parler. Ils vont te regarder " +
+        "gentiment, et ils vont noter que tu parles à des gens qui " +
+        "n\u2019existent pas. » Elle se remet à son ouvrage. « C\u2019est comme " +
+        "ça qu\u2019on commence. »",
+      "« Alors garde-moi pour toi. Et si tu passes le sud, ne te retourne " +
+        "pas pour vérifier si je suis toujours là. Je serai toujours là. " +
+        "C\u2019est exactement le problème. »",
+    ],
+    choices: [
+      { id: "fille-dormir", label: "Dormir ici", rest: true },
+      {
+        id: "fille-veiller-avec",
+        label: "Veiller avec elle",
+        repondBesoin: "dormir",
+        passive: {
+          consequence:
+            "Vous ne parlez plus. Elle tresse, tu regardes la lucarne, et " +
+            "rien ne vient — ni bruit sur le toit, ni ombre à la porte, ni " +
+            "corbeau sur la crête. Tu ne dors pas et pourtant tu te lèves " +
+            "reposé, ce qui ne t\u2019était pas arrivé depuis la Borne. Le " +
+            "seul endroit du pays où l\u2019on ne te compte pas.",
+        },
+      },
+      { id: "fille-repartir", label: "Repartir sans s\u2019attarder" },
+    ],
+    jailerLine: "Elle t\u2019a demandé de te taire. Nous allons voir combien de temps tu tiens — c\u2019est toujours instructif.",
+  },
+  /* ═══ LA VEUVE AUX CORDES — variante « celle qui sait et qui refait » ════
+     Refonte du lore 6/08, §6. Condition : avoir aperçu la Fille (le caillou
+     du Gamin suffit). Sa scène ordinaire vend des cordes ; celle-ci raconte
+     la seule qui ne tient pas — parce que le joueur, lui, sait maintenant
+     qu'il y a quelqu'un à l'autre bout.
+
+     C'est le deuxième des quatre témoignages qui, mis bout à bout, racontent
+     l'histoire sans qu'aucun ne la dise. Elle ne ment pas : elle décrit son
+     travail, et son travail est absurde depuis trente ans. */
+  {
+    id: "veuve-cordes-sait-1",
+    remplace: { scene: "chapelle-des-cordes-2", si: { has: "d.fille_apercue" } },
+    illustration: "assets/monstre_veuve_cordes_v2_a.png",
+    chainNext: "veuve-cordes-sait-2",
+    narration: [
+      "Elle tresse sous le mur des cordes. Ses mains vont toutes seules — " +
+        "elle n\u2019a pas besoin de regarder, et elle ne regarde pas.",
+      "« Chacune est une personne. Je les coupe après. Ça les libère pas, " +
+        "mais ça fait quelque chose à faire. »",
+      "Toutes portent une étiquette. Sauf une, à hauteur d\u2019œil, au centre " +
+        "du mur : sans nom, plus neuve que les autres.",
+    ],
+    choices: [
+      {
+        id: "veuve-sans-nom",
+        label: "« Celle-là n\u2019a pas de nom. »",
+        passive: {
+          consequence:
+            "Ses mains ralentissent, sans s\u2019arrêter tout à fait. « Non. » " +
+            "Elle laisse le mot seul un long moment. « Non, celle-là n\u2019a " +
+            "pas de nom. »",
+        },
+      },
+      {
+        id: "veuve-plus-neuve",
+        label: "« Pourquoi est-elle plus neuve ? »",
+        risky: {
+          stat: "RUSE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu ne demandes pas pourquoi elle est neuve : tu demandes depuis quand elle l\u2019est. Ses mains s\u2019arrêtent net, et elle te répond par un chiffre — trente ans — avant d\u2019avoir décidé si elle voulait le dire.",
+            "Elle suit ton regard, et comprend que tu as compté les fibres comme elle le fait, elle. « T\u2019as l\u2019œil pour quelqu\u2019un qui passe. » Elle repose son ouvrage. C\u2019est la première fois.",
+            "« Le chanvre vieillit mal ici. On refait. » Elle reprend son geste un peu trop vite, et le nœud qu\u2019elle serre n\u2019est pas celui qu\u2019elle serrait avant.",
+            "1 naturel. « Tu poses beaucoup de questions sur une corde. » Elle te regarde enfin, et son regard fait tout le tour de toi, comme on prend une mesure. ♦ −2"
+          ),
+        },
+        soupcon: 1,
+      },
+    ],
+    jailerLine: "Une corde par personne. Elle tient un registre, elle aussi. Vous ne savez rien faire d\u2019autre.",
+  },
+  {
+    id: "veuve-cordes-sait-2",
+    illustration: "assets/monstre_veuve_cordes_v2_a.png",
+    chainNext: "veuve-cordes-sait-3",
+    decouverte: "d.fixation_ratee",
+    narration: [
+      "Ses mains s\u2019arrêtent. Première fois.",
+      "« Celle-là, je la refais. Trente ans que je la refais. Je la tresse, " +
+        "je la cloue, je la coupe. Et au matin suivant, elle est défaite. Pas " +
+        "coupée : défaite. Nœud par nœud, proprement, comme quelqu\u2019un qui " +
+        "prend son temps. »",
+      "Un silence.",
+      "« Alors je recommence. Parce que si j\u2019arrête, faudra que je dise à " +
+        "quelqu\u2019un pourquoi. »",
+    ],
+    choices: [
+      {
+        id: "veuve-qui-defait",
+        label: "« Qui la défait ? »",
+        passive: {
+          consequence:
+            "« Personne. » Elle le dit trop vite, et l\u2019entend elle-même. " +
+            "Elle reprend, plus bas : « Y a pas de nom à mettre dessus. " +
+            "C\u2019est bien tout le problème de cette corde. »",
+        },
+      },
+      {
+        id: "veuve-se-taire",
+        label: "Ne rien demander",
+        passive: {
+          consequence:
+            "Tu ne demandes rien. Elle t\u2019en est visiblement " +
+            "reconnaissante : elle vient de dire tout haut, devant un " +
+            "inconnu, la chose qu\u2019elle ne dit jamais, et elle a besoin " +
+            "d\u2019un moment pour se remettre du bruit que ça a fait.",
+        },
+      },
+    ],
+    jailerLine: "Trente ans à refaire un nœud que quelqu\u2019un défait. Il y a des enfers moins bien tenus que le vôtre.",
+  },
+  {
+    id: "veuve-cordes-sait-3",
+    illustration: "assets/monstre_veuve_cordes_v2_a.png",
+    narration: [
+      "Elle reprend son ouvrage, et le mur reprend son bruit — ce " +
+        "froissement continu de chanvre qu\u2019on croirait fait par le vent.",
+      "« Mets pas d\u2019étiquette dessus. Une corde sans nom, c\u2019est une " +
+        "corde en attente. Une corde avec un nom, c\u2019est un fait. »",
+    ],
+    choices: [
+      { id: "veuve-partir", label: "La laisser à son mur" },
+      {
+        id: "veuve-remercier",
+        label: "La remercier",
+        soupcon: -1,
+        passive: {
+          consequence:
+            "Elle hausse une épaule sans lever les yeux. « Me remercie pas. " +
+            "J\u2019ai rien dit. » Et c\u2019est vrai : si on lui demande, elle " +
+            "n\u2019aura rien dit, et elle le pensera.",
+        },
+      },
+    ],
+    jailerLine: "« Une corde avec un nom, c\u2019est un fait. » Voilà pourquoi j\u2019aime tant les registres.",
+  },
   {
     /* Lieu à POINTS D'INTÉRÊT (script Notion). */
     id: "chapelle-des-cordes",
@@ -3034,6 +4058,21 @@ export const SCENES: Scene[] = [
     ],
     pointsInteret: [
       {
+        id: "cloche-sans-battant",
+        label: "Le clocheton, dehors",
+        approche:
+          "Tu ressors par le côté. Le clocheton n\u2019est pas haut — deux " +
+          "hommes suffiraient à l\u2019atteindre, et la corde d\u2019appel " +
+          "pend jusqu\u2019à hauteur de main, propre, entretenue.",
+        examen:
+          "Tu tires la corde par curiosité. Rien ne vient. La cloche " +
+          "bascule, revient, bascule encore — et ne sonne pas : elle " +
+          "n\u2019a plus de battant. L\u2019attache est là, intacte. On ne " +
+          "l\u2019a pas cassée : on l\u2019a dévissée.",
+        decouverte: "d.cloche_sans_battant",
+        illustration: "assets/objet_battant_cloche_c.png",
+      },
+      {
         id: "mur-cordes",
         label: "Le mur des cordes, au fond",
         illustration: "assets/scene_chapelle_mur_cordes_v3_c.png",
@@ -3042,6 +4081,10 @@ export const SCENES: Scene[] = [
           "gorge à mesure — une odeur grasse, presque animale, qui n'a rien " +
           "d'une odeur d'église.",
         savoir: "savoir_corde_vive",
+        // Enrichissement §7 : trois cordes portent la même date — le Bailli,
+        // sa fille, et un troisième nom ARRACHÉ (le Renonçant qui a tenté de
+        // les défendre). Une ligne, jamais un discours.
+        decouverte: "d.trois_cordes",
         examen:
           "Des dizaines de cordes coupées, clouées en rangs, chacune " +
           "étiquetée d'un nom à l'encre pâle. Ce ne sont pas des trophées. Ce " +
@@ -3049,7 +4092,9 @@ export const SCENES: Scene[] = [
           "d'elles bouge quand tu ne la regardes pas : la troisième du rang " +
           "bas, sans étiquette, plus claire que les autres. Tu note où elle " +
           "est. Ce genre de chose, on préfère savoir où ça se trouve avant " +
-          "que ça sache où tu te trouves.",
+          "que ça sache où tu te trouves. Plus bas, trois cordes portent la " +
+          "même date. Deux noms se lisent encore : celui du Bailli, et un " +
+          "prénom de fille. Le troisième a été arraché avec l'étiquette.",
       },
       {
         id: "autel-renverse",
@@ -3164,7 +4209,9 @@ export const SCENES: Scene[] = [
     narration: [
       "Sur la place arrière du hameau, un puits — condamné de frais : " +
         "planches neuves, chaînes croisées, cadenas encore gras. Tout le " +
-        "reste du hameau tombe en ruine douce, mais ça, on l'entretient.",
+        "reste du hameau tombe en ruine douce, mais ça, on l'entretient. " +
+        "Par-dessus les planches, on a empilé des pierres — pas des moellons " +
+        "de mur : des blocs de meule, que deux hommes ne soulèveraient pas.",
       "Et dessous, ça cogne. Trois coups, une pause. Trois coups. Poli, " +
         "presque — comme on frappe à une porte dont on sait qu'on va vous " +
         "ouvrir.",
@@ -3415,6 +4462,11 @@ export const SCENES: Scene[] = [
       {
         id: "chaire-registre",
         chapterFragment: true,
+        // Enrichissement §7 : un petit signe en forme de plume au bord de la
+        // page, à côté de certains noms. JAMAIS expliqué — c'est la marque
+        // des Fixations où il était présent, et le joueur ne doit l'apprendre
+        // que par recoupement, ou jamais.
+        decouverte: "d.signe_plume",
         fait: "fait-bailli",
         label: "La chaire et son livre",
         illustration: "assets/scene_tribunal_chaire_a_c.png",
@@ -3427,7 +4479,9 @@ export const SCENES: Scene[] = [
           "négligence : ici, la loi se montre. Des colonnes de noms, de " +
           "dates, de signes. Une écriture appliquée qui se dégrade au fil des " +
           "pages. Et un nom sur deux est barré. Pas raturé — barré, d'un trait " +
-          "droit, à l'encre plus récente que le nom.",
+          "droit, à l'encre plus récente que le nom. Et, au bord de la page, à côté de certains " +
+          "noms seulement, un petit signe en forme de plume. Rien ne " +
+          "l'explique — ni la marge, ni la colonne, ni l'ordre des dates.",
       },
       {
         id: "les-bancs",
@@ -3463,6 +4517,20 @@ export const SCENES: Scene[] = [
         "pas les yeux — mais sa plume, elle, a ralenti.",
     ],
     choices: [
+      {
+        /* Témoignage court §7. La dernière défense qu'on lui ait demandée est
+           celle du Bailli — il le dit sans savoir ce qu'il dit. */
+        id: "ecrivain-defenses",
+        label: "L\u2019interroger sur son travail",
+        decouverte: "d.plus_de_defenses",
+        passive: {
+          consequence:
+            "« J\u2019écris les dénonciations et les défenses. Les deux. » Il " +
+            "range sa plume avec un soin d\u2019horloger. « Depuis quelques " +
+            "années, on me demande plus de défenses. » Il dit ça comme on " +
+            "constate une baisse de commandes.",
+        },
+      },
       { id: "lire-registre", label: "Lire le Registre" },
       {
         /* LE REGISTRE MENT (5/08) — n'apparaît QUE si le compte a lu deux
@@ -3677,6 +4745,26 @@ export const SCENES: Scene[] = [
     ],
     pointsInteret: [
       {
+        /* RECONTEXTUALISATION MAJEURE (§7) : la Mare n'est pas une curiosité
+           inoffensive, c'est l'outil de dépistage du village. On y AMÈNE ceux
+           qu'on soupçonne — d'où le second creux, derrière le premier. */
+        id: "creux-doubles",
+        label: "Les creux dans la berge",
+        approche:
+          "Tu longes la berge jusqu\u2019à l\u2019endroit où la terre est " +
+          "tassée, luisante, usée jusqu\u2019à la pierre. On s\u2019agenouille " +
+          "ici depuis longtemps.",
+        examen:
+          "Les creux de genoux sont doubles. Une paire devant, au ras de " +
+          "l\u2019eau. Une autre juste derrière, plus large, plus profonde — " +
+          "et orientée dans le même sens. Quelqu\u2019un se tenait toujours " +
+          "au-dessus de celui qui se penchait. Ce n\u2019est pas un endroit " +
+          "où l\u2019on vient voir son reflet : c\u2019est un endroit où on " +
+          "l\u2019amène.",
+        decouverte: "d.mare_depistage",
+        illustration: "assets/scene_mare_berge_a_c.png",
+      },
+      {
         id: "berge-usee",
         soupcon: 1, // s'agenouiller aux creux de la Mare est un aveu de croyance
         label: "Le point de berge usé",
@@ -3756,10 +4844,15 @@ export const SCENES: Scene[] = [
     id: "mare-aux-regards-2",
     illustration: "assets/scene_mare_aux_regards_2_b.png",
     narration: [
-      "Quelqu'un arrive — un Renonçant, qui ne te voit pas. Il s'agenouille " +
-        "dans les creux, se penche, et reste penché beaucoup trop longtemps.",
-      "Quand il se relève, il a le visage de quelqu'un qui va rentrer chez lui " +
-        "et fermer ses volets pour toujours.",
+      "Ils arrivent à deux. Le premier s'agenouille dans les creux du " +
+        "devant, se penche, et reste penché beaucoup trop longtemps. Le " +
+        "second reste debout derrière lui, dans les creux du fond, et ne " +
+        "regarde pas l'eau : il regarde la nuque de l'autre.",
+      "Personne ne parle. Ce n'est pas une prière — c'est un examen, et il " +
+        "a manifestement une procédure.",
+      "Quand le premier se relève, il a le visage de quelqu'un qui va " +
+        "rentrer chez lui et fermer ses volets pour toujours. Le second lui " +
+        "met une main sur l'épaule, presque avec douceur, et le raccompagne.",
     ],
     choices: [
       {
@@ -3831,7 +4924,9 @@ export const SCENES: Scene[] = [
           "Le premier arbre du verger, abattu net. Les cernes sont réguliers " +
           "jusqu'aux dernières années — puis serrés, noirs, illisibles. " +
           "L'arbre a compris avant les hommes où il poussait. Quelqu'un l'a " +
-          "abattu pour ne pas avoir à le lire.",
+          "abattu pour ne pas avoir à le lire. En te relevant, tu comptes " +
+          "les rangs par habitude, et le compte te reste dans la tête : " +
+          "onze vergers replantés sur une terre qui n'a jamais rien donné.",
       },
       {
         id: "epoux-verger",
@@ -3971,6 +5066,21 @@ export const SCENES: Scene[] = [
         "arrive — les mains vides et mort.",
     ],
     choices: [
+      {
+        /* Témoignage court §7 : les Époux la croisent tous les jours et la
+           saluent. Ils ne trouvent rien d'anormal — ils ont renoncé à
+           trouver quoi que ce soit d'anormal, c'est leur tâche absorbante. */
+        id: "epoux-la-dame",
+        label: "Demander qui passe par ici",
+        decouverte: "d.fille_apercue",
+        passive: {
+          consequence:
+            "« Personne. » L\u2019homme bêche. Puis, sans s\u2019arrêter : « La " +
+            "jeune, des fois. Elle passe entre les rangs. On se dit " +
+            "bonjour. » Sa femme ne dit rien. Il bêche un peu plus vite " +
+            "qu\u2019avant.",
+        },
+      },
       {
         id: "epoux-rien",
         label: "« Je n'ai rien. »",
@@ -4250,6 +5360,9 @@ export const SCENES: Scene[] = [
         "un jour quelqu'un remonte... je saurai qui c'était. » Il sourit à sa " +
         "planche. « Trente ans de descentes. La colonne des retours est toute " +
         "neuve. »",
+      "Elle ne l'est pas tout à fait. Tout en haut, au-dessus du vide, une " +
+        "marque — une seule, d'une autre main. Il ne la voit pas : sa " +
+        "planche commence en bas.",
     ],
     choices: [{ id: "veilleur-passer", label: "Passer le portillon" }],
     jailerLine: "Une colonne des retours. Vide depuis trente ans. J'adore les optimistes — ils tiennent la comptabilité pour moi.",
@@ -4511,6 +5624,50 @@ export function sceneById(id: string): Scene | undefined {
   return SCENES.find((s) => s.id === id);
 }
 
+/**
+ * ═══ APPARITION 3 — LE TÉMOIN (refonte 6/08, §5) ════════════════════════════
+ * La troisième et dernière. Elle ne se joue qu'à ton propre procès, et
+ * seulement si tu l'as déjà entrevu — sinon on ne franchit pas les degrés,
+ * on saute à la fin.
+ *
+ * ⚠️ Elle est INJECTÉE dans le procès existant (comme les dépositions des
+ * témoins), au lieu d'être une scène-variante : dupliquer la scène
+ * dupliquerait ses quatre défenses, qui divergeraient au premier correctif.
+ *
+ * ⚠️ Garde-fou §8 : ne JAMAIS montrer ce qu'il y a sous le manteau. Il n'a
+ * pas de visage, il a une attention. Et ce n'est pas lui qui tue — c'est le
+ * vieux qui donne l'ordre. C'est tout le propos du personnage : il ne
+ * condamne personne, il regarde des hommes le faire.
+ */
+export const APPARITION_TEMOIN: string[] = [
+  "Ils sont douze autour de toi, et pas un ne parle. Puis, tous ensemble, " +
+    "ils regardent par-dessus ton épaule.",
+  "Il ne marche pas : il arrive, comme une marée qui aurait choisi une " +
+    "direction. Les corbeaux quittent les toits et rentrent dans les plis du " +
+    "manteau — un par un, et à chaque fois il est un peu plus grand.",
+  "Il se penche sur toi. Il n\u2019a pas de visage. Il a une attention.",
+  "Il ne fait rien. Il ne dit rien. Il regarde le vieux, et le vieux hoche " +
+    "la tête, et c\u2019est le vieux qui donne l\u2019ordre.",
+];
+
+/**
+ * LES CORBEAUX SUR LES TOITS (spec §5) — le seul signal permanent du Soupçon.
+ * Le joueur comprend qu'on le compte bien avant de comprendre pourquoi. Trois
+ * paliers, jamais un chiffre de mécanique : le nombre d'oiseaux EST la jauge,
+ * et c'est la seule forme sous laquelle une jauge est tolérée ici.
+ *
+ * Ne sort que dans le hameau (là où l'on dénonce) — ailleurs, les corbeaux de
+ * la Colline comptent autre chose (les morts du joueur), et mélanger les deux
+ * lectures détruirait les deux.
+ */
+export function corbeauxDuHameau(soupcon: number): string | null {
+  if (soupcon >= 5) return "Les toits sont noirs, et ils sont tous tournés vers toi.";
+  if (soupcon >= 3) return "Ils sont six, alignés, du même côté.";
+  if (soupcon >= 1) return "Un corbeau sur le faîtage.";
+  return null;
+}
+
+
 /** Lieu d'entrée fixe de la zone (toujours la 1re scène après le Seuil). */
 export const ENTRY_SCENE = "borne-frontiere";
 
@@ -4697,6 +5854,21 @@ export function isHameauInterior(id: string | undefined): boolean {
   return HAMEAU_INTERIOR.includes(base) || base.startsWith("hameau-");
 }
 
+/**
+ * Où les corbeaux se comptent : le village et ses abords immédiats — là où
+ * l'on dénonce. Ailleurs, les corbeaux de la Colline comptent autre chose
+ * (les morts du joueur) ; mélanger les deux lectures détruirait les deux.
+ */
+export function estHameau(id: string): boolean {
+  const base = id.replace(/-\d+$/, "");
+  return (
+    isHameauInterior(base) ||
+    base === "serment-hameau" ||
+    base === "femme-seuil" ||
+    base === "gamin-murets"
+  );
+}
+
 /** Ambiances de marche génériques (spec 21/07) — FALLBACK quand aucune liaison
     contextuelle ne s'applique. Comptent dans le pool des ~30 (chantier 4). */
 const LIAISON_AMBIANCES: string[] = [
@@ -4730,6 +5902,10 @@ export type LiaisonCtx = {
   /** Serment prêté au muret — le village ne regarde pas de la même façon
       celui qui a juré, celui qui a menti et celui qui a refusé (6/08). */
   serment?: "jure" | "faux" | "refuse" | null;
+  /** Combien de découvertes le COMPTE tient sur la Fille (refonte 6/08).
+      C'est ce qui fait passer du degré 2 (on la croise) au degré 3 (elle
+      parle) : elle n'adresse la parole qu'à qui a commencé à comprendre. */
+  decouvertesFille?: number;
   /** Débuts d'ambiances déjà servies cette run — jamais deux fois le même
       texte verbatim dans une même vie (retour test 4/08 : « je voyais le
       paquet de cartes sous les Landes »). */
@@ -4749,9 +5925,52 @@ type LiaisonVariant = {
   carrying?: string;
   /** Serment prêté au muret (6/08). */
   serment?: ("jure" | "faux" | "refuse")[];
+  /** Minimum de découvertes sur la Fille (refonte 6/08). */
+  minFille?: number;
 };
 
 const LIAISON_VARIANTS: LiaisonVariant[] = [
+  /* ═══ LA BOUCLE OUEST — les degrés 2 et 3 de la Fille (refonte 6/08, §4) ══
+     « Plus tu vas à l'ouest, plus tu risques de la croiser. Plus tu vas à
+     l'est, plus tu risques de le croiser, lui. » La zone se lit en deux
+     moitiés, et c'est en MARCHANT qu'on l'apprend — jamais par une règle
+     énoncée. Ces vignettes ne sortent qu'au départ du Moulin, de la Mare ou
+     du Verger : le territoire où le chemin de faîtage du Grand Témoin ne va
+     pas, et où elle vivait avant.
+
+     Degré 2 — elle traverse le champ de vision et ne s'arrête pas. Aucune
+     condition : c'est le hasard de la route.
+     Degré 3 — elle parle en croisant, une phrase, jamais deux. Il faut avoir
+     compris quelque chose : elle n'adresse pas la parole à un inconnu qui ne
+     sait rien. `minFille` les rend plus spécifiques, donc prioritaires — une
+     fois qu'on sait, la croiser sans un mot n'aurait plus de sens. */
+  {
+    from: ["campement", "mare-aux-regards", "verger-noir"],
+    text: "À la berge de la mare basse, quelqu'un est agenouillé — une femme, un châle sombre, les mains dans l'eau noire. Elle se relève sans hâte en t'entendant, s'essuie aux hanches et s'éloigne vers l'ouest. Elle ne se retourne pas. Personne, dans ce pays, ne marche aussi tranquillement.",
+  },
+  {
+    from: ["campement", "mare-aux-regards", "verger-noir"],
+    text: "Entre deux rangs du verger, une silhouette immobile. Tu la fixes ; elle attend que tu l'aies bien vue, puis reprend sa marche entre les arbres, du pas de quelqu'un qui rentre chez lui. Les fruits de cendre ne bougent pas sur son passage.",
+  },
+  {
+    from: ["campement", "mare-aux-regards", "verger-noir"],
+    text: "Assise sur un muret, à contre-jour. Elle te regarde venir de loin, sans se cacher et sans se lever, puis descend de l'autre côté de la pierre au moment exact où tu arrives à sa hauteur. De ton côté du mur, il n'y a plus personne. De l'autre non plus.",
+  },
+  {
+    from: ["campement", "mare-aux-regards", "verger-noir"],
+    minFille: 1,
+    text: "Elle croise ta route sans ralentir, à trois pas, comme on croise quelqu'un dans un couloir. « Ne bois pas à la mare basse. Ils y jettent ce qu'ils ne veulent pas enterrer. » Elle est déjà loin quand tu penses à répondre.",
+  },
+  {
+    from: ["campement", "mare-aux-regards", "verger-noir"],
+    minFille: 1,
+    text: "Elle passe, et elle parle sans tourner la tête. « Tu marches comme quelqu'un qui compte les jours. » Un temps, sa voix déjà derrière toi : « Moi j'ai arrêté au troisième. » Quand tu te retournes, la bruyère se referme sur rien.",
+  },
+  {
+    from: ["campement", "mare-aux-regards", "verger-noir"],
+    minFille: 1,
+    text: "« Trois corbeaux sur ton toit ce matin. » Elle le dit du ton dont on donne l'heure, sans s'arrêter. « Quatre, c'est le moment de partir. » Tu mets le reste du trajet à décider si c'était un avertissement ou une politesse.",
+  },
   // ——— Provenance (10) ———
   {
     from: ["colline-aux-gibets"],
@@ -4962,6 +6181,7 @@ function liaisonSpecificity(v: LiaisonVariant): number {
   if (v.chapter) n += 1;
   if (v.carrying) n += 1;
   if (v.serment) n += 1;
+  if (v.minFille !== undefined) n += 1;
   return n;
 }
 
@@ -4987,7 +6207,8 @@ function pickLiaisonAmbiance(ctx: LiaisonCtx | undefined, seed: number): string 
         (v.maxHealth === undefined || health <= v.maxHealth) &&
         (!v.chapter || ctx.chapterId === v.chapter) &&
         (!v.carrying || (ctx.itemNames ?? []).some((n) => n.includes(v.carrying!))) &&
-        (!v.serment || (ctx.serment != null && v.serment.includes(ctx.serment)))
+        (!v.serment || (ctx.serment != null && v.serment.includes(ctx.serment))) &&
+        (v.minFille === undefined || (ctx.decouvertesFille ?? 0) >= v.minFille)
     );
     if (eligible.length > 0) {
       const maxSpec = Math.max(...eligible.map(liaisonSpecificity));

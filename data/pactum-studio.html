@@ -1399,8 +1399,9 @@ function panneauPoi(d){
       <div class="sect"><h3>Ce qu'on voit de loin</h3><p class="para">${champEditable("poi:"+poi.id+":label","Libellé du point",poi.label,poi.label||poi.id)}</p></div>
       <div class="sect"><h3>L'approche</h3><p class="para">${champEditable("poi:"+poi.id+":approche","Texte d'approche",poi.approche,poi.label)}</p></div>
       <div class="sect"><h3>L'examen</h3><p class="para">${champEditable("poi:"+poi.id+":examen","Texte d'examen",poi.examen,poi.label)}</p></div>
-      ${poi.savoir||poi.donneObjet||poi.ouvreSur?`<div class="sect"><h3>Ce qu'il rend</h3>
+      ${poi.savoir||poi.donneObjet||poi.ouvreSur||poi.donneDecouverte?`<div class="sect"><h3>Ce qu'il rend</h3>
         ${poi.savoir?`<div class="kv"><span>Savoir</span><b class="mono">${esc(poi.savoir)}</b></div>`:""}
+        ${poi.donneDecouverte?`<div class="kv"><span>Découverte</span><b class="mono" style="color:var(--orange)">${esc(poi.donneDecouverte)}</b></div>`:""}
         ${poi.donneObjet?`<div class="kv"><span>Objet</span><b class="mono">${esc(poi.donneObjet)}</b></div>`:""}
         ${poi.ouvreSur?`<div class="kv"><span>Ouvre sur</span><b class="mono">${esc(poi.ouvreSur)}</b></div>`:""}</div>`:""}
       ${fiche(poi.image,"poi:"+poi.id)}</div>`;
@@ -1411,11 +1412,27 @@ function corps(s){
   if(onglet==="choix") return blocChoix(s);
   if(onglet==="poi") return blocPois(s);
   if(onglet==="meta") return blocMeta(s);
-  return `<div class="sect"><h3>Narration</h3>
+  // SCÈNE-VARIANTE (refonte du lore 6/08) : sans ce bandeau, on croit avoir
+  // deux scènes concurrentes alors qu'on en a une conditionnelle — c'est
+  // l'information la plus importante de la fiche, donc elle passe en premier.
+  const varBandeau = s.remplace
+    ? `<div class="sect" style="border-left:3px solid var(--orange);padding-left:10px">
+         <h3>Variante conditionnelle</h3>
+         <p class="sysnote">Cette scène se joue <b>à la place de</b>
+           <b class="mono">${esc(s.remplace.scene)}</b> quand le compte tient
+           <b class="mono" style="color:var(--orange)">${esc(s.remplace.condition)}</b>.
+           Elle n'est pas dans le pool de traversée : elle hérite de la place
+           de l'originale.</p></div>`
+    : "";
+  return varBandeau + `<div class="sect"><h3>Narration</h3>
       ${s.narration.length? s.narration.map((p,i)=>`<p class="para">${champEditable(`scene:${s.id}:narration:${i}`,`Narration §${i+1}`,p,s.nom||s.id)}</p>`).join("")
         : '<p class="vide-txt">Aucune narration.</p>'}</div>
     <div class="sect"><h3>Choix <button data-onglet="choix">Voir les ${s.choix.length}</button></h3>
       ${s.choix.slice(0,3).map((c,i)=>ligne(c,i,s,true)).join("")||'<p class="vide-txt">Aucun choix.</p>'}</div>
+    ${s.donneDecouverte?`<div class="sect"><h3>Ce que le joueur y comprend</h3>
+      <p class="sysnote">Atteindre cet écran pose la découverte
+      <b class="mono" style="color:var(--orange)">${esc(s.donneDecouverte)}</b> —
+      elle survit à la mort du héros et conditionne d'autres scènes.</p></div>`:""}
     ${blocLiens(s)}${fiche(s.image,"scene:"+s.id)}`;
 }
 
@@ -1439,6 +1456,11 @@ function ligne(c,i,s,court){
   if(c.donneObjet) fx.push("objet : "+c.donneObjet);
   if(c.donneSavoir) fx.push("savoir : "+c.donneSavoir);
   if(c.exigeSavoir) fx.push("exige : "+c.exigeSavoir);
+  // DÉCOUVERTE (refonte du lore 6/08) : ce que le JOUEUR retient d'une vie à
+  // l'autre. À distinguer du Savoir, qui meurt avec le héros — c'est la
+  // différence la plus importante à voir ici.
+  if(c.donneDecouverte) fx.push("découverte : "+c.donneDecouverte);
+  if(c.exigeDecouverte) fx.push("exige la découverte : "+c.exigeDecouverte);
   if(c.soupcon!=null) fx.push("soupçon "+(c.soupcon>0?"+":"")+c.soupcon);
   if(c.serment) fx.push("serment : "+c.serment);
   if(c.poseFlag) fx.push("flag : "+c.poseFlag);

@@ -824,3 +824,95 @@ Le lot n'ajoute aucun lieu ni aucune rencontre : la confidence des Fixés se
 joue au Champ des Fixés (image déjà en place, celle du Fossoyeur), et l'eau de
 la Mare comme le seuil forcé du Bailli réutilisent leurs écrans existants.
 La couverture reste à **0 image manquante**.
+
+---
+
+## PRIORITÉ 1 ter — LE GRAND TÉMOIN & LA REFONTE DU LORE (6/08)
+
+Lot issu de la page Notion « 👁️ Le Grand Témoin — refonte du lore des Landes ».
+**Aucune image n'est BLOQUANTE** : les 18 scènes nouvelles réutilisent des
+visuels existants et cohérents (la Fille, la Veuve, le Fossoyeur, la Femme au
+Seuil, le Gamin, la grange, la ruelle). Les prompts ci-dessous *enrichissent* —
+ils ne réparent pas un manque.
+
+⚠️ **Garde-fou absolu du personnage (§8 de la spec) : ne JAMAIS montrer ce
+qu'il y a sous le manteau.** L'ambiguïté corbeaux-serviteurs / corbeaux-
+constituants / forme collective doit rester entière. Aucun visage, aucune
+anatomie, aucune jambe. S'il devient lisible, il devient un monstre ordinaire.
+
+### `monstre_grand_temoin.png` — la seule image vraiment demandée par la spec
+
+```
+Extreme backlit silhouette against a low burning orange sky, dark moorland
+horizon. A single towering vertical mass of heavy black cloth, three times the
+height of a human, standing motionless. The cloth falls in deep folds and
+trails behind it as if still catching up with a movement that has stopped.
+NO face, NO head shape, NO limbs, NO hands — the silhouette must remain an
+unreadable column of fabric. Crows enter the folds of the cloth: several birds
+mid-flight converging into the dark mass, half-absorbed, wings still open.
+Below the hem, absolute black — nothing resolves there.
+Shot from low and far, as if from the ground at a distance.
+Monochrome duotone, deep charcoal and burnt orange only, heavy grain,
+high contrast, no midtones, no gradient.
+```
+
+### Plans rapprochés des nouveaux points d'intérêt
+
+Ils héritent aujourd'hui de l'image de leur lieu, ce qui est cohérent mais
+générique. Par ordre d'utilité :
+
+**`scene_colline_pied_grand_gibet.png`** — le nom gratté
+```
+Close view at the foot of a massive black gallows post, backlit by a low
+orange sky. Deep gouged letters carved into the wood, then destroyed — raked
+across by something that bit deeper than any tool, wood fibres torn outward.
+Below the ruined name, a date remains fully intact and legible as marks.
+Weathered grain, lichen at the base. Extreme contrast, silhouette treatment.
+Monochrome duotone charcoal and burnt orange, heavy grain, no gradient.
+```
+
+**`scene_hameau_linteaux.png`** — l'entaille au-dessus de chaque porte
+```
+Low upward view along a row of dark village doorways, backlit orange sky
+above the rooflines. Above each lintel, at exactly the same height, a short
+deep notch in the timber — the edge crushed rather than cut. The repetition
+across three successive doors is the subject. No figures.
+Monochrome duotone charcoal and burnt orange, heavy grain, no gradient.
+```
+
+**`scene_hameau_combles_cloues.png`** — les fenêtres du haut
+```
+Full facade of a dark stone village house seen straight on against a burning
+orange sky. Upper attic windows boarded shut from inside, planks nailed in
+crossed diagonals, visible through the glass. Ground floor windows plainly
+shuttered, one hanging open. The contrast between the two floors is the
+subject. No figures. Monochrome duotone charcoal and burnt orange, heavy
+grain, high contrast, no gradient.
+```
+
+**`scene_mare_creux_doubles.png`** — la berge usée
+```
+Close ground-level view of a trampled mud bank at the edge of black still
+water, low orange light raking across. Two pairs of knee impressions pressed
+into the earth: one pair at the water's edge, a second larger and deeper pair
+directly behind it, facing the same way. Reeds motionless. No figures.
+Monochrome duotone charcoal and burnt orange, heavy grain, no gradient.
+```
+
+**`scene_moulin_crete_interrompue.png`** — le chemin de faîtage
+```
+Upward view along the ridge of a squat round stone tower roof against a low
+orange sky. A clean bare strip runs the length of the ridge where moss has
+been worn away, two hands wide, polished. The strip stops abruptly — not
+tapering, cut off — leaving thick untouched moss beyond it. No figures.
+Monochrome duotone charcoal and burnt orange, heavy grain, no gradient.
+```
+
+**`scene_chapelle_cloche_sans_battant.png`** — on a arrêté d'appeler à l'aide
+```
+Low upward view of a small stone bell-cote against a burning orange sky. The
+bell hangs tilted mid-swing, and its interior is visibly EMPTY — the clapper
+is gone, its mounting eye intact and clean, unscrewed rather than broken. A
+well-kept rope hangs down within reach. No figures. Monochrome duotone
+charcoal and burnt orange, heavy grain, high contrast, no gradient.
+```
