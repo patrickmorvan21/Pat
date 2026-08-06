@@ -333,20 +333,26 @@ strong readable shapes, matte painting, grim medieval village, square
 composition, no text, no lettering, no watermark
 ```
 
-### `scene_hameau_accueil_mur_a.png` — « Le mur écrit »
-Le pignon d'une grange couvert de craie. Les inscriptions doivent lire comme
-des MARQUES, pas comme du texte lisible (aucune lettre reconnaissable).
+### `scene_hameau_accueil_mur_a.png` — « Le mur écrit » ⚠️ v2, la v1 est à remplacer
+**Ce qui a raté (6/08)** : le fichier livré (`_mur_c`) montre un beau pignon de grange
+en contre-jour, mais **aucune craie**. Deux causes, toutes deux dans mon prompt :
+le contre-jour extrême met la façade en silhouette (donc rien ne peut s'y lire),
+et `illegible marks only` a été compris comme « pas de marques » au lieu de
+« des marques illisibles ». Le v2 décrit donc la craie comme une **matière qui
+accroche une lumière rasante**, et abandonne le contre-jour pour cette image.
 ```
-Tall windowless stone gable wall of a barn covered from the ground to head
-height in dense chalk tally marks and scratched strokes arranged in two tight
-columns, many different hands, some strokes smudged and half rubbed out, a row
-of crude crosses at the bottom of the list, a small child-sized silhouette
-walking away at the far edge of the frame, low orange sun raking across the wall
-from the side so the chalk catches the light. Dark fantasy illustration, one
-single light source, deep crushed blacks, no fill light, high contrast, two-tone
-monochrome-friendly, strong readable shapes, matte painting, grim medieval
-village, square composition, illegible marks only, no text, no lettering, no
-watermark
+Close view of a tall stone wall filling almost the entire frame, its dark
+surface covered from the ground to head height in dense pale chalk marks:
+hundreds of short vertical strokes and scratched tally lines in two tight
+crooked columns, some smudged, some half rubbed out, a row of crude chalk
+crosses along the bottom of the list. Hard raking light from the left grazes
+the wall so every chalk stroke catches the light and stands out bright against
+the dark stone. The sky is a narrow strip of dim orange at the very top of the
+frame. A small child-sized silhouette walks away at the far right edge. Dark
+fantasy illustration, one single light source, deep crushed blacks, no fill
+light, high contrast, two-tone monochrome-friendly, strong readable shapes,
+matte painting, grim medieval village, square composition, marks only, no
+readable words, no letters, no numbers, no text, no lettering, no watermark
 ```
 
 ### `scene_hameau_accueil_enfant_a.png` — « L'enfant qu'on envoie »
@@ -377,17 +383,24 @@ strong readable shapes, matte painting, grim medieval village, square
 composition, no text, no lettering, no watermark
 ```
 
-### `scene_hameau_accueil_cloche_a.png` — « La cloche qu'on retient »
-Une main de vieille femme sur la corde. Le geste retenu, pas le tocsin.
+### `scene_hameau_accueil_cloche_a.png` — « La cloche qu'on retient » ⚠️ v2, la v1 est à remplacer
+**Ce qui a raté (6/08)** : le fichier livré (`_cloche_c`) est une rue de village
+avec une silhouette au centre — ni chapelle, ni corde, ni villageois sur les
+seuils —, et sa composition double presque celle de l'accueil « l'enfant ». Mon
+prompt décrivait une SCÈNE large ; le modèle a gardé le décor et lâché le sujet.
+Le v2 s'ancre sur l'OBJET et le GESTE, en plan rapproché, sans plan de rue.
 ```
-A thick bell rope hanging down the outside wall of a small stone chapel, an old
-woman's hand closed around it holding it still, her body a near-black silhouette
-against the low orange sun, a man frozen mid-stride two paces away, a dozen
-small figures standing motionless in their doorways along the lane behind, wet
-cobbles. Dark fantasy illustration, one single light source, deep crushed
-blacks, no fill light, high contrast, two-tone monochrome-friendly, strong
-readable shapes, matte painting, grim medieval village, square composition, no
-text, no lettering, no watermark
+Close view of a thick frayed bell rope hanging straight down the rough stone
+wall of a small chapel, filling the left of the frame. An old woman's hand and
+forearm are closed tight around the rope, holding it completely still — the
+gesture is the subject. Just behind her, a man is frozen mid-stride, one arm
+still reaching for the rope he will not touch. Further back and much smaller,
+a row of motionless figures stands in lit doorways along a wall, watching. Low
+orange sun behind them, the foreground hand and rope caught by hard side light.
+Dark fantasy illustration, one single light source, deep crushed blacks, no
+fill light, high contrast, two-tone monochrome-friendly, strong readable
+shapes, matte painting, grim medieval village, square composition, no bell
+visible, no text, no lettering, no watermark
 ```
 
 ### `scene_hameau_accueil_depart_a.png` — « Le hameau qui s'en va »
