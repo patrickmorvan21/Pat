@@ -1338,6 +1338,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "passer-pendu",
+        tags: ["citable"],
         label: "Passer sans un mot",
         passive: {
           consequence:
@@ -1925,6 +1926,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "femme-savoir-confirmer",
+        tags: ["citable"],
         label: "« Elle est là. »",
         decouverte: "d.temoin_oculaire",
         soupcon: -1,
@@ -2153,6 +2155,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "gamin-demander-guide",
+        tags: ["citable"],
         label: "Lui demander de te guider",
         risky: {
           stat: "EMPATHIE",
@@ -2888,6 +2891,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "jurer-faux",
+        tags: ["citable"],
         serment: "faux",
         label: "Jurer du bout des lèvres",
         soupcon: 1,
@@ -2912,6 +2916,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "refuser-serment",
+        tags: ["citable"],
         serment: "refuse",
         label: "Refuser de jurer",
         soupcon: 2,
@@ -3059,6 +3064,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "ecouter-nuit",
+        tags: ["citable"],
         label: "Écouter sans bouger",
         risky: {
           stat: "INSTINCT",
@@ -3148,6 +3154,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "toit-regarder",
+        tags: ["citable"],
         label: "Chercher la fente",
         risky: {
           stat: "COURAGE",
@@ -3355,6 +3362,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "ruelle-suivre",
+        tags: ["citable"],
         label: "Aller voir le passage",
         risky: {
           stat: "COURAGE",
@@ -3431,6 +3439,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "troupeau-suivre",
+        tags: ["citable"],
         label: "Suivre la brebis",
         orient: { dest: "champ-des-fixes" },
       },
@@ -3440,6 +3449,7 @@ export const SCENES: Scene[] = [
            repartir avec sa clochette — l'objet qui annonce QUE TU ARRIVES.
            La charge inversée du Grelot, et le juste prix du geste. */
         id: "troupeau-prendre",
+        tags: ["citable"],
         label: "Prendre une bête",
         requiresEtat: "affame",
         poseEtat: "marque",
@@ -3881,7 +3891,7 @@ export const SCENES: Scene[] = [
         "bruyère garde une forme légère, comme un creux encore tiède.",
     ],
     choices: [
-      { id: "dormir", label: "Dormir malgré le crépuscule", rest: true },
+      { id: "dormir", label: "Dormir malgré le crépuscule", rest: true, tags: ["citable"] },
       {
         id: "garde",
         label: "Monter la garde",
@@ -3971,6 +3981,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "fille-votre-pere",
+        tags: ["citable"],
         label: "« Votre père vous attend. »",
         risky: {
           stat: "EMPATHIE",
@@ -4320,6 +4331,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "corde-vive",
+        tags: ["citable"],
         label: "Saisir la corde vive",
         locked: { stat: "COURAGE", min: 4 },
         passive: {
@@ -4367,6 +4379,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "ecouter-puits",
+        tags: ["citable"],
         label: "Coller l'oreille au bois",
         risky: {
           stat: "INSTINCT",

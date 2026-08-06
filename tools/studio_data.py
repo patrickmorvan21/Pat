@@ -431,6 +431,23 @@ def lire_besoins() -> list[dict]:
     return out
 
 
+def lire_surprises():
+    """Le catalogue des éléments-surprises (lib/surprises.ts, 6/08) : nom,
+    contexte, garde-fou. Le rationnement (1/run max) est rappelé côté page."""
+    src = (RACINE / "aldenhar/lib/surprises.ts").read_text(encoding="utf-8")
+    out = []
+    pat = (
+        r'"?([a-z-]+)"?:\s*\{\s*nom:\s*"([^"]+)",\s*'
+        r'contexte:\s*((?:"[^"]*"\s*\+?\s*)+),\s*'
+        r'garde:\s*((?:"[^"]*"\s*\+?\s*)+),'
+    )
+    for m in re.finditer(pat, src):
+        ctx = "".join(re.findall(r'"([^"]*)"', m.group(3)))
+        garde = "".join(re.findall(r'"([^"]*)"', m.group(4)))
+        out.append({"id": m.group(1), "nom": m.group(2), "contexte": ctx, "garde": garde})
+    return out
+
+
 def lire_transitions() -> dict:
     """Les TEXTES DE MARCHE — ce qu'on lit entre deux lieux.
 
@@ -1084,6 +1101,7 @@ def main() -> int:
         "etats": lire_etats(),
         "besoins": lire_besoins(),
         "transitions": lire_transitions(),
+        "surprises": lire_surprises(),
         "totaux": {
             "scenes": len(scenes),
             "pointsInteret": sum(len(s["pointsInteret"]) for s in scenes),

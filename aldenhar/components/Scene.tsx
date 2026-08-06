@@ -50,8 +50,14 @@ import {
 } from "@/lib/etats";
 import { besoinsEchus, routeAForcer } from "@/lib/besoins";
 import { loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
+import {
+  armerSurprise, surprisePrete, jourProphetie, texteProphetie, texteFantome,
+  texteCitation, texteRetour, texteVol, texteTemoinRecite, OBJET_DU_VOLEUR,
+  JAILER_METALEPTIQUE, JAILER_DE_IMPOSSIBLE, type SurpriseId,
+} from "@/lib/surprises";
 import { chapterById, drawChapter, LANDES_LORE_FRAGMENTS } from "@/lib/chapters-data";
 import { playMusic } from "@/lib/audio";
+import { loadSettings } from "@/lib/settings";
 import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { assetUrl, assetCss, assetExiste } from "@/lib/assets";
 import {
@@ -390,6 +396,15 @@ export default function Scene() {
   // `savoirs` — un miroir lisible au rendu — mais la source est la mémoire
   // permanente, pas la run : ce que le JOUEUR a compris survit à ses héros.
   const [decouvertes, setDecouvertes] = useState<string[]>([]);
+  // La prophétie datée (surprise #4) : le jour parié, miroir de rendu pour la
+  // puce Jour — elle blanchit à l'approche de la date.
+  const [prophetieJour, setProphetieJour] = useState<number | null>(null);
+  // Le choix qui expire (surprise #1) : id du choix en train de s'éroder, sa
+  // phase (1..3), et l'id une fois RETIRÉ. L'érosion réutilise le visuel de
+  // l'érosion de santé — même langage : ce qui s'use disparaît.
+  const [expChoix, setExpChoix] = useState<{ id: string; phase: number } | null>(null);
+  const [expRetire, setExpRetire] = useState<string | null>(null);
+  const expTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   // Plan RAPPROCHÉ d'un point d'intérêt : crop de l'image du lieu (production
   // gratuite, spec §4 — on ne génère pas un asset par point). null = plan large.
   // Sous-menu « Observer les alentours » ouvert ? (retour Patrick 25/07 : 3 CTA
@@ -527,6 +542,9 @@ export default function Scene() {
   const volPossible =
     affame && (scene.tags ?? []).some((t) => t === "food_available" || t === "stealable");
   const baseChoices = rawChoices.filter((c) => {
+    // #1 Le choix qui expire (6/08) : une fois l'érosion finie, l'option
+    // n'existe plus — perdre le temps coûte une occasion, jamais la vie.
+    if (c.id === expRetire) return false;
     if (boiteux && (c.tags ?? []).includes("fuite")) return false;
     if (c.requiresSavoir && !savoirs.includes(c.requiresSavoir)) return false;
     // La DÉCOUVERTE (6/08) : même mécanique que le Savoir, mais la source est
@@ -663,6 +681,19 @@ export default function Scene() {
    * accueil tiré mais jamais atteint (mort avant le hameau) ne doit pas
    * consommer son tour de rotation.
    */
+  /**
+   * Verrouille LA surprise de la run (rationnement 6/08) : plafond à un,
+   * et la mémoire retient la run — jamais deux runs de suite.
+   */
+  function jouerSurprise(id: SurpriseId | "metaleptique") {
+    persist((r) => {
+      r.surprise = { id, jouee: true };
+    });
+    mutateMemory((m) => {
+      m.surprises = { derniereRun: m.runsStarted };
+    });
+  }
+
   function accueilDuJour(run: RunState): string {
     if (run.hameau?.accueil) return run.hameau.accueil;
     const mem = loadMemory();
@@ -809,6 +840,7 @@ export default function Scene() {
     // reprise.
     setSavoirs(run.savoirs ?? []);
     setDecouvertes(idsDecouvertes(faitsDe(run)));
+    setProphetieJour(run.prophetie ?? null);
     setHeroStats(run.stats);
     setRelicSpent(Boolean(run.relicUsed));
     const memNow = loadMemory();
@@ -842,6 +874,15 @@ export default function Scene() {
       setImageKind("scene");
       const restored: FeedEntry[] = [];
       if (run.step === 0) restored.push({ id: nextId(), kind: "day", day: run.day });
+      // ═══ #3 LE GEÔLIER MÉTALEPTIQUE (6/08) : fermer l'app en plein combat
+      // et revenir. AUCUNE sanction — le pilier permadeath fictionnel reste
+      // intouchable, et c'est ce qui rend le moment fort : il a remarqué, et
+      // il ne fait rien. Hors armement (comportemental), même plafond 1/run.
+      if (cur.combat && !run.surprise?.jouee) {
+        restored.push({ id: nextId(), kind: "jailer", text: JAILER_METALEPTIQUE });
+        run.surprise = { id: "metaleptique", jouee: true };
+        mutateMemory((m) => { m.surprises = { derniereRun: m.runsStarted }; });
+      }
       restored.push(...cur.narration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
       setBeats(restored);
       // Déjà lu : tout est révélé d'emblée (affichage instantané), CTA visibles.
@@ -964,6 +1005,39 @@ export default function Scene() {
     );
   }, [scene, step, health, beats]);
 
+  // ═══ #1 LE CHOIX QUI EXPIRE (6/08) : quand la surprise est armée et que
+  // l'écran offre une OPPORTUNITÉ écrite (un gain — objet, savoir,
+  // découverte), elle commence à s'éroder une fois les CTA jouables, puis
+  // disparaît. GARDE-FOU : jamais l'option sûre, jamais la seule option,
+  // jamais un choix d'orientation (la sortie) — perdre le temps coûte une
+  // occasion, jamais la vie. Neutralisé par « Chronomètres : désactivés ».
+  useEffect(() => {
+    if (choicesHidden || expChoix || expRetire) return;
+    if (loadSettings().chronosOff) return;
+    if (scene.liaison || scene.combat || scene.timed) return;
+    if (!surprisePrete(runRef.current, "choix-expire")) return;
+    const cible = scene.choices.find(
+      (c) => !c.orient && !c.locked && (c.grantsLoot || c.grantsSavoir || c.decouverte)
+    );
+    if (!cible || scene.choices.length < 2) return;
+    jouerSurprise("choix-expire");
+    const id = cible.id;
+    // Érosion par PALIERS (steps, jamais un fondu — DA) : 5 s de répit, puis
+    // trois crans de ruine à 2 s d'intervalle, puis le retrait.
+    expTimers.current = [
+      setTimeout(() => setExpChoix({ id, phase: 1 }), 5000),
+      setTimeout(() => setExpChoix({ id, phase: 2 }), 7000),
+      setTimeout(() => setExpChoix({ id, phase: 3 }), 9000),
+      setTimeout(() => {
+        setExpChoix(null);
+        setExpRetire(id);
+      }, 11000),
+    ];
+    // `jouerSurprise` est stable par construction (persist + mutateMemory) —
+    // l'inclure re-déclencherait l'effet à chaque rendu.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [choicesHidden, scene, expChoix, expRetire]);
+
   // Défenses du procès (5/08) : recalculées à chaque écran, parce qu'un témoin
   // peut s'ajouter et qu'un papier peut se ramasser jusqu'au dernier moment.
   useEffect(() => {
@@ -995,7 +1069,11 @@ export default function Scene() {
       timedTimer.current = null;
     }
     const timed = scene.timed;
-    const canRun = !!timed && !timedExpired && !choicesHidden && !activeTypingId && !selectedId && !rolling;
+    // Accessibilité (6/08) : « Chronomètres : désactivés » — le compte à
+    // rebours ne s'arme jamais. Être interrompu ne coûte jamais rien.
+    const canRun =
+      !!timed && !timedExpired && !choicesHidden && !activeTypingId && !selectedId && !rolling &&
+      !loadSettings().chronosOff;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reflète l'armement du compte à rebours dans l'UI, synchronisé au cycle de la scène
     setCountdownArmed(canRun);
     if (canRun && timed) {
@@ -1091,6 +1169,20 @@ export default function Scene() {
     let routeForceePosee = false;
     // Une transition qui QUITTE une liaison ne fait pas vieillir les états.
     const leavingLiaison = Boolean(scene.liaison);
+    // ═══ L'ÉLÉMENT-SURPRISE (catalogue 6/08) : armé UNE fois par run, au
+    // premier pas. `{ id: "aucune", jouee: true }` évite de re-tirer — une
+    // run sans surprise est une décision, pas un oubli.
+    if (runRef.current && runRef.current.surprise === undefined) {
+      const armee = armerSurprise(loadMemory(), Math.floor(nowMs() / 7) >>> 0);
+      persist((r) => {
+        r.surprise = armee ? { id: armee } : { id: "aucune", jouee: true };
+      });
+    }
+    // Le choix qui expire ne survit jamais à l'écran : timers coupés, état vidé.
+    expTimers.current.forEach(clearTimeout);
+    expTimers.current = [];
+    setExpChoix(null);
+    setExpRetire(null);
     let nextScene: SceneType;
     // Le Soupçon au comble (chantier 3 du 23/07) : la traversée est DÉROUTÉE
     // vers le procès du héros — on vient te chercher, où que tu ailles. Jamais
@@ -1368,6 +1460,14 @@ export default function Scene() {
           // il regarde le vieux, et le vieux donne l'ordre. C'est tout le
           // personnage, et c'est ce que le joueur doit comprendre en mourant.
           ...(temoinEntrevu ? APPARITION_TEMOIN : []),
+          // #10 (6/08) : à sa 3e apparition, il n'énonce pas une accusation
+          // générique — il ASSEMBLE des fragments de décisions réelles, tirés
+          // du journal citable. Cohérent avec sa nature : il ne condamne pas,
+          // il témoigne. C'est le paiement du journal — hors rationnement,
+          // puisque cette apparition tue et ne se rejoue pas.
+          ...(temoinEntrevu && (runRef.current?.journalChoix?.length ?? 0) >= 3
+            ? texteTemoinRecite((runRef.current?.journalChoix ?? []).slice(-3).map((j) => j.t))
+            : []),
           ...nextScene.narration.slice(1),
         ]
       : nextScene.narration;
@@ -1439,6 +1539,44 @@ export default function Scene() {
     if (estHameau(nextScene.id)) {
       const corb = corbeauxDuHameau(runRef.current?.soupcon ?? 0);
       if (corb) entries.push({ id: nextId(), kind: "narration", text: corb });
+    }
+    // ═══ LES SURPRISES CONTEXTUELLES (6/08) — la surprise ARMÉE attend son
+    // contexte ; s'il n'arrive jamais, elle est perdue, on n'insiste pas.
+    {
+      const memS = loadMemory();
+      const runS = runRef.current;
+      if (surprisePrete(runS, "prophetie") && nextStep <= 6) {
+        // #4 — un pari statistique, jamais un fait. Dit une fois, tôt.
+        const jour = jourProphetie(memS, Math.floor(nowMs() / 13) >>> 0);
+        entries.push({ id: nextId(), kind: "jailer", text: texteProphetie(jour) });
+        persist((r) => { r.prophetie = jour; });
+        setProphetieJour(jour);
+        jouerSurprise("prophetie");
+      } else if (surprisePrete(runS, "fantome") && nextScene.liaison) {
+        // #6 — un nom réel du Registre, zéro infrastructure : indistinguable.
+        const nom = memS.fallen[Math.floor(nowMs() / 17) % Math.max(1, memS.fallen.length)]?.name;
+        if (nom) {
+          entries.push({ id: nextId(), kind: "narration", text: texteFantome(nom) });
+          jouerSurprise("fantome");
+        }
+      } else if (surprisePrete(runS, "retour") && !nextScene.liaison) {
+        // #2 — le lieu EXACT de la dernière mort, jamais ailleurs.
+        const lieu = memS.lastDeath?.lieu;
+        if (lieu && nextScene.id.replace(/-\d+$/, "") === lieu) {
+          const nom = memS.fallen[0]?.name ?? "Quelqu\u2019un";
+          entries.push(...texteRetour(nom).map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+          jouerSurprise("retour");
+        }
+      } else if (surprisePrete(runS, "citation") && !nextScene.liaison) {
+        // #7 — mot pour mot, dix scènes plus tard, jamais hors du journal
+        // citable : un texte qui sonne faux serait ridicule, pas troublant.
+        const vieux = (runS?.journalChoix ?? []).filter((j) => nextStep - j.step >= 10);
+        if (vieux.length > 0) {
+          const ph = vieux[Math.floor(nowMs() / 11) % vieux.length].t;
+          entries.push({ id: nextId(), kind: "narration", text: texteCitation(ph) });
+          jouerSurprise("citation");
+        }
+      }
     }
     entries.push(...chapterAfter.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
     // Manifestation du Soupçon : le monde se ferme, palier par palier.
@@ -1905,6 +2043,16 @@ export default function Scene() {
         run.savoirs = [...(run.savoirs ?? []), learnedNow];
       });
     }
+    // Le JOURNAL CITABLE (socle des surprises 6/08) : les libellés des choix
+    // tagués `citable`, avec leur pas. La citation et la récitation du Grand
+    // Témoin n'ont pas d'autre source. Plafonné à 20 — un journal infini
+    // ne servirait qu'à se relire.
+    if ((choice.tags ?? []).includes("citable")) {
+      const phrase = choice.label.replace(/[«»]/g, "").replace(/\.$/, "").trim();
+      persist((run) => {
+        run.journalChoix = [...(run.journalChoix ?? []), { t: phrase, step }].slice(-20);
+      });
+    }
     // La DÉCOUVERTE (6/08) : ce que le JOUEUR comprend. Posée à la sélection,
     // pour la même raison que le Savoir — avoir demandé suffit, l'issue d'un
     // éventuel jet ne change rien à ce qui vient d'être dit devant toi.
@@ -1968,12 +2116,20 @@ export default function Scene() {
       // l'armement : rien ne les change pendant que le dé vole.
       const healthNow = runRef.current?.health ?? 1;
       const isTrial = Boolean(scene.fixationTrial);
+      // #11 LE DÉ IMPOSSIBLE (6/08) : le prochain jet risqué s'immobilise
+      // sur une face sans chiffre. AUCUNE conséquence mécanique — le palier
+      // réel s'applique — et le Geôlier réagit à l'écran suivant (sans sa
+      // réaction, le joueur croirait à un bug). Jamais sur un jet fatal.
+      const impossibleIci =
+        surprisePrete(runRef.current, "de-impossible") && !isTrial && healthNow > 0.3;
+      if (impossibleIci) jouerSurprise("de-impossible");
       setRoll({
         key: nowMs(),
         stat: choice.risky.stat,
         threshold,
         outcomes: choice.risky.outcomes,
         modifier,
+        impossible: impossibleIci,
         etatHints: hintsEtats(actifs),
         highStakes: choice.risky.highStakes,
         fatalCheck: (tier) => {
@@ -2016,6 +2172,25 @@ export default function Scene() {
         m.bestDays = Math.max(m.bestDays, newDay);
       });
       const prepend: FeedEntry[] = [{ id: nextId(), kind: "day", day: newDay }];
+      // ═══ #8 LE VOL NOCTURNE (6/08) : au réveil, un objet manque — remplacé
+      // par un objet jamais ramassable ailleurs, TRAÇABLE. L'objet volé est
+      // retenu (run.volNocturne) pour un paiement futur : le reconnaître au
+      // cou de quelqu'un. La dague de départ n'est jamais prise — retirer
+      // l'arme de base serait une punition, pas un mystère.
+      if (surprisePrete(runRef.current, "vol-nocturne")) {
+        const cible = (runRef.current?.besace ?? []).find((i) => i.id !== "dague-simple");
+        if (cible) {
+          const laisse = { ...OBJET_DU_VOLEUR, id: "de-os-etranger" };
+          persist((run) => {
+            run.besace = [...run.besace.filter((i) => i.id !== cible.id), laisse];
+            run.volNocturne = cible.name;
+          });
+          prepend.push(
+            ...texteVol(cible.name, laisse.name).map((text): FeedEntry => ({ id: nextId(), kind: "narration", text }))
+          );
+          jouerSurprise("vol-nocturne");
+        }
+      }
       advanceTimer.current = setTimeout(() => advance({ prepend }), 320);
     } else if (choice.useItem) {
       // 4e choix contextuel (spec 21/07 point 4) : utiliser un actif de la
@@ -2158,6 +2333,7 @@ export default function Scene() {
                 revealed={revealedIds.has(entry.id)}
                 skip={skip}
                 onDone={() => onTypedDone(entry.id)}
+                prophetie={prophetieJour}
               />
             ))}
             <div ref={bottomRef} />
@@ -2205,7 +2381,7 @@ export default function Scene() {
               )}
               selected={selectedId === choice.id}
               raised={rolling && selectedId === choice.id}
-              erosion={erosion}
+              erosion={expChoix?.id === choice.id ? Math.max(erosion, expChoix.phase) : erosion}
               onSelect={onSelect}
             />
           ))}
@@ -2393,6 +2569,8 @@ export default function Scene() {
                 days: run.day,
                 cause,
                 place: scene.id,
+                // La surprise « le retour » (6/08) : le lieu EXACT, en radical.
+                lieu: scene.id.replace(/-\d+$/, ""),
                 killer: scene.foe ? { entity: scene.foe, label: scene.foeName ?? scene.foe } : undefined,
               });
               const dead = { epitaph, day: run.day, bilan: bilanDeMort(run, porteeNom), relic,
@@ -2404,6 +2582,9 @@ export default function Scene() {
             advance({
               result,
               fail: outcome.fail,
+              prepend: roll?.impossible
+                ? [{ id: nextId(), kind: "jailer", text: JAILER_DE_IMPOSSIBLE }]
+                : undefined,
               consequence: amorti && relicCoussin
                 ? `${outcome.text}\n\n${relicCoussin.name} a pris le choc à ta place. Une fêlure la traverse, à présent — elle ne prendra pas le suivant.`
                 : outcome.text,
@@ -2463,6 +2644,7 @@ function FeedItem({
   revealed,
   skip,
   onDone,
+  prophetie,
 }: {
   entry: FeedEntry;
   typed: boolean;
@@ -2470,6 +2652,8 @@ function FeedItem({
   revealed: boolean;
   skip: number;
   onDone: () => void;
+  /** Jour parié par la prophétie (#4) — la puce Jour blanchit à l'approche. */
+  prophetie?: number | null;
 }) {
   if ((entry.kind === "narration" || entry.kind === "jailer") && !revealed) return null;
 
@@ -2479,12 +2663,22 @@ function FeedItem({
     case "illustration":
     case "chosen":
       return null;
-    case "day":
+    case "day": {
+      // La prophétie datée (#4) : à J−1 et le jour même, la puce passe en
+      // blanc PLEIN. La spec du 6/08 disait Brique #ac2e26 — couleur bannie
+      // depuis le 14/07 (« plus aucun rouge », le funeste est blanc) : même
+      // arbitrage que pour le verdict FUNESTE, le blanc porte la menace.
+      const menace = prophetie != null && entry.day >= prophetie - 1 && entry.day <= prophetie;
       return (
-        <p className="scene-enter mb-[18px] text-center text-[11px] uppercase tracking-[1.2px] text-[var(--color-ink)] opacity-50 [--enter-opacity:0.5]">
+        <p
+          className={`scene-enter mb-[18px] text-center text-[11px] uppercase tracking-[1.2px] text-[var(--color-ink)] ${
+            menace ? "opacity-100 [--enter-opacity:1]" : "opacity-50 [--enter-opacity:0.5]"
+          }`}
+        >
           — Jour {entry.day} —
         </p>
       );
+    }
     case "jailer":
       return (
         <div

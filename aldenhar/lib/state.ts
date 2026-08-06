@@ -221,6 +221,24 @@ export type RunState = {
   croiseesDepuisRoute?: number;
   /** Rencontres programmées par un effet (recouvrement de dette…). */
   rencontresDues?: { scene: string; auPas: number }[];
+  /**
+   * L'ÉLÉMENT-SURPRISE de cette run (catalogue 6/08) — AU PLUS UN, armé au
+   * premier pas, joué quand son contexte arrive (ou jamais : perdu, tant pis).
+   * `jouee` verrouille le plafond ; le Geôlier métaleptique, hors armement,
+   * écrit directement ici pour respecter le même plafond.
+   */
+  surprise?: { id: string; jouee?: boolean };
+  /**
+   * LE JOURNAL DES CHOIX CITABLES (socle commun des surprises 6/08) : les
+   * libellés réels des choix tagués `citable`, avec leur pas. Nourrit « le
+   * PNJ qui te cite » et la récitation du Grand Témoin. Plafonné à 20.
+   */
+  journalChoix?: { t: string; step: number }[];
+  /** La prophétie datée (surprise #4) : le jour parié par le Geôlier. */
+  prophetie?: number;
+  /** Le vol nocturne (surprise #8) : NOM de l'objet volé — retenu pour un
+      paiement futur (le reconnaître au cou de quelqu'un). */
+  volNocturne?: string;
   /** Dettes narratives en attente de règlement dans cette run (spec §17). */
   debts: PendingDebt[];
   /** Besace (13/07) : objets mundane, vidée à la mort. */
@@ -427,6 +445,10 @@ export function loadRun(): RunState {
             besoins: p.besoins && typeof p.besoins === "object" ? p.besoins : {},
             croiseesDepuisRoute: typeof p.croiseesDepuisRoute === "number" ? p.croiseesDepuisRoute : 0,
             rencontresDues: Array.isArray(p.rencontresDues) ? p.rencontresDues : [],
+            surprise: p.surprise && typeof p.surprise === "object" ? p.surprise : undefined,
+            journalChoix: Array.isArray(p.journalChoix) ? p.journalChoix : [],
+            prophetie: typeof p.prophetie === "number" ? p.prophetie : undefined,
+            volNocturne: typeof p.volNocturne === "string" ? p.volNocturne : undefined,
           };
         }
       }

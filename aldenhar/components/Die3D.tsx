@@ -45,6 +45,14 @@ export type RollRequest = {
    * verdict. Le tap ne coupe rien : la combustion enchaîne toute seule.
    */
   fatalCheck?: (tier: ResolutionTier) => boolean;
+  /**
+   * LE DÉ IMPOSSIBLE (surprise #11, 6/08) : le dé s'immobilise sur une face
+   * RONGÉE sans chiffre — mais rien d'autre ne change : le verdict du palier
+   * réel s'affiche, le tap continue normalement, aucune conséquence
+   * mécanique. C'est la face de la MORT sans la mort — exactement ce qui ne
+   * devrait pas exister, et le Geôlier le dira à l'écran suivant.
+   */
+  impossible?: boolean;
 };
 
 type Props = {
@@ -656,6 +664,11 @@ export default function Die3D({ request, onComplete }: Props) {
       // face rongée SANS chiffre, « MORT » tombe sec sous le dé (Instrument
       // Serif très espacé), et la séquence enchaîne TOUTE SEULE — le tap ne
       // coupe pas, c'est le seul moment du jeu où le joueur n'a plus la main.
+      if (requestRef.current?.impossible && !requestRef.current?.fatalCheck?.(tier)) {
+        // La face s'efface — le verdict, lui, reste celui du jet réel.
+        mats[result - 1].map = faceRongee();
+        mats[result - 1].needsUpdate = true;
+      }
       if (requestRef.current?.fatalCheck?.(tier)) {
         fatalLock = true;
         justesseFlicker = false;

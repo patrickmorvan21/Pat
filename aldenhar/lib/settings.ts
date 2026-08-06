@@ -21,6 +21,13 @@ export type Settings = {
   animations: AnimMode;
   /** Retour haptique (le dé, les impacts). */
   vibrations: boolean;
+  /**
+   * ACCESSIBILITÉ (catalogue des surprises 6/08, garde-fou du « choix qui
+   * expire ») : désactive TOUT ce qui est chronométré — le choix qui s'érode
+   * ET les scènes à compte à rebours (l'expiration ne tombe jamais). Un
+   * joueur interrompu par un appel ne doit jamais rien perdre de l'avoir été.
+   */
+  chronosOff: boolean;
   /** Musique (lot 24/07) : marche/arrêt + volume 0..1. */
   music: boolean;
   musicVolume: number;
@@ -33,6 +40,7 @@ const DEFAULTS: Settings = {
   textSize: "normal",
   animations: "completes",
   vibrations: true,
+  chronosOff: false,
   music: true,
   musicVolume: 0.7,
 };
@@ -53,6 +61,7 @@ export function loadSettings(): Settings {
         textSize: p.textSize ?? DEFAULTS.textSize,
         animations: p.animations ?? DEFAULTS.animations,
         vibrations: typeof p.vibrations === "boolean" ? p.vibrations : DEFAULTS.vibrations,
+        chronosOff: typeof p.chronosOff === "boolean" ? p.chronosOff : DEFAULTS.chronosOff,
         music: typeof p.music === "boolean" ? p.music : DEFAULTS.music,
         musicVolume: typeof p.musicVolume === "number" ? p.musicVolume : DEFAULTS.musicVolume,
       };

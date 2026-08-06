@@ -179,7 +179,14 @@ export type PlayerMemory = {
     acte: number;
     /** Cette run est le meilleur score du compte. */
     meilleurScore: boolean;
+    /** Id (radical) de la scène de mort — la surprise « le retour » (6/08). */
+    lieu?: string;
   };
+  /**
+   * LE RATIONNEMENT DES SURPRISES (catalogue 6/08, non négociable) : run où
+   * la dernière surprise s'est JOUÉE — jamais deux runs de suite.
+   */
+  surprises?: { derniereRun?: number };
   /** Dernier passage en jeu (ms epoch) — pour les citations « longue absence ». */
   lastPlayedAt?: number;
   /**
@@ -314,6 +321,9 @@ export function loadMemory(): PlayerMemory {
               ? p.introSeen
               : (typeof p.runsStarted === "number" ? p.runsStarted : 0) > 0,
           lastDeath: p.lastDeath && typeof p.lastDeath === "object" ? p.lastDeath : undefined,
+          // (Règle du 6/08, une fois de plus : tout champ nouveau DOIT entrer
+          // ici dans le même geste, sinon il est perdu au rechargement.)
+          surprises: p.surprises && typeof p.surprises === "object" ? p.surprises : undefined,
           lastPlayedAt: typeof p.lastPlayedAt === "number" ? p.lastPlayedAt : undefined,
           // ⚠️ Comme loadRun, cette reconstruction est CHAMP PAR CHAMP : tout
           // champ absent ici est silencieusement perdu au rechargement.
@@ -427,6 +437,8 @@ export function recordDeath(args: {
   fixation?: boolean;
   /** Acte le plus profond atteint par cette run (1 tant que seul l'Acte I existe). */
   acte?: number;
+  /** Id de la scène de mort (radical) — nourrit la surprise « le retour ». */
+  lieu?: string;
 }): Relic {
   // Première mort du compte (jalon 21/07) : relique garantie rare+ (« fragment
   // fort »). Lu AVANT l'incrément de `deaths` ci-dessous — comme `bestBefore`,
@@ -463,6 +475,7 @@ export function recordDeath(args: {
       classed,
       acte: args.acte ?? 1,
       meilleurScore: args.days > bestBefore,
+      lieu: args.lieu,
     };
     m.lastPlayedAt = Date.now();
   });

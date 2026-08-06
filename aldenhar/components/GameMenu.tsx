@@ -777,6 +777,15 @@ export function OptionsTab() {
         />
       </div>
       <div className="mt-[24px]">
+        <OptLabel>Chronomètres</OptLabel>
+        <SegControl
+          options={[{ v: "actifs", label: "actifs" }, { v: "off", label: "désactivés" }]}
+          value={s.chronosOff ? "off" : "actifs"}
+          onChange={(v) => set("chronosOff", v === "off")}
+        />
+        <OptHelp>Désactivés : aucune scène ni option ne se joue contre la montre — être interrompu ne coûte jamais rien.</OptHelp>
+      </div>
+      <div className="mt-[24px]">
         <button type="button" onClick={reafficherAides} className="font-mono text-[13px] text-[var(--color-ink)] underline">
           Réafficher les aides
         </button>
