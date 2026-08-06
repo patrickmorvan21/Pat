@@ -757,7 +757,12 @@ def main() -> int:
                         "y": l.get("y"),
                         "note": l.get("note", ""),
                     }
+                    # ⚠️ Un enregistrement `region: true` est un CADRE, pas un
+                    # lieu : le dessiner aussi comme carte produisait « Le Hameau
+                    # des Renonçants » DANS « Le Hameau des Renonçants » (retour
+                    # Patrick 6/08). Les scènes vivent dans les lieux membres.
                     for l in lieux
+                    if not l.get("region")
                 ],
             }
         )
@@ -861,7 +866,7 @@ def main() -> int:
             for s in scenes
             if (s.get("hameauEntree") or s.get("hameauHalte")) and s.get("lieu")
         }
-        reg = {"id": "hameau", "nom": "Le Hameau des Renonçants",
+        reg = {"id": "hameau", "nom": "Le Hameau des Renonçants",  # nom du JSON plus bas s'il existe
                "scenes": interieur, "lieuxEnPlus": sorted(porte)}
         # Le cadre du Hameau vient du Figma (frame 2112:328), pas d'un calcul :
         # un rectangle déduit après coup des membres englobe fatalement des

@@ -96,7 +96,7 @@
   {
    "id": "hameau_des_renoncants",
    "nom": "Le Hameau des Renonçants",
-   "note": "région englobante (cadre pointillé) : contient la Chapelle des Cordes, la Maison du Bailli, le Petit Tribunal, le Puits Condamné, le Marché Muet et la Tour de Guet effondrée · le Serment s'impose à son entrée",
+   "note": "RÉGION (cadre pointillé) — le village dans son ensemble. Ne porte aucune scène : elles vivent dans ses lieux membres. Contient le Seuil, la Grange, la Chapelle des Cordes, la Maison du Bailli, le Petit Tribunal, le Puits Condamné, le Marché Muet et la Tour de Guet.",
    "lieu_attache": null,
    "histoire_bailli": false,
    "rarete": "commune",
@@ -109,6 +109,8 @@
    "portrait_requis": false,
    "region": true,
    "contient": [
+    "seuil_du_hameau",
+    "grange_des_renoncants",
     "tour_de_guet_effondree",
     "marche_muet",
     "petit_tribunal",
@@ -118,6 +120,40 @@
    ],
    "x": 870,
    "y": 1064
+  },
+  {
+   "id": "seuil_du_hameau",
+   "nom": "Le Seuil du Hameau",
+   "note": "La barrière, DEHORS : l'arrivée, l'accueil du jour et le Serment. On n'est pas encore entré.",
+   "lieu_attache": null,
+   "histoire_bailli": false,
+   "rarete": "commune",
+   "textes": {
+    "decouverte": null,
+    "familiarite": null,
+    "recontextualisation": null
+   },
+   "illustration": "assets/scene_hameau_dense2_b.png",
+   "portrait_requis": false,
+   "x": 810,
+   "y": 1024
+  },
+  {
+   "id": "grange_des_renoncants",
+   "nom": "La Grange des Renonçants",
+   "note": "DEDANS : la halte, la nuit, la barre posée à l'extérieur. Ou la nuit dehors, si le Serment a été refusé.",
+   "lieu_attache": null,
+   "histoire_bailli": false,
+   "rarete": "commune",
+   "textes": {
+    "decouverte": null,
+    "familiarite": null,
+    "recontextualisation": null
+   },
+   "illustration": "assets/scene_landes_hameau_grange_a.png",
+   "portrait_requis": false,
+   "x": 930,
+   "y": 1104
   },
   {
    "id": "chapelle_des_cordes",
@@ -1519,7 +1555,7 @@
    "id": "serment-hameau",
    "type": "arrivee",
    "nom": "Serment hameau",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": null,
    "mene_a": [
     "hameau-entree-2"
@@ -1536,7 +1572,7 @@
    "id": "hameau-entree-2",
    "type": "arrivee",
    "nom": "Hameau entree 2 — beat 2",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": null,
    "mene_a": [
     "hameau-accueil-volet",
@@ -1559,7 +1595,7 @@
    "id": "croix-craie",
    "type": "observe",
    "nom": "S'approcher de la croix",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": "hameau-entree-2",
    "mene_a": [],
    "texte": [
@@ -1573,7 +1609,7 @@
    "id": "femme-sur-le-seuil",
    "type": "observe",
    "nom": "La femme sur le pas de porte",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": "hameau-entree-2",
    "mene_a": [
     "femme-seuil-1"
@@ -1589,7 +1625,7 @@
    "id": "femme-seuil-1",
    "type": "moment",
    "nom": "Femme seuil 1",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": null,
    "mene_a": [
     "femme-seuil-2"
@@ -1607,7 +1643,7 @@
    "id": "femme-seuil-2",
    "type": "moment",
    "nom": "Femme seuil 2 — beat 2",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": null,
    "mene_a": [
     "femme-seuil-3"
@@ -1625,7 +1661,7 @@
    "id": "femme-seuil-3",
    "type": "moment",
    "nom": "Femme seuil 3 — beat 3",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": null,
    "mene_a": [
     "hameau-entree-3"
@@ -1642,7 +1678,7 @@
    "id": "hameau-entree-3",
    "type": "moment",
    "nom": "Hameau entree 3 — beat 3",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": null,
    "mene_a": [
     "hameau-entree-4"
@@ -1660,7 +1696,7 @@
    "id": "hameau-accueil-volet",
    "type": "moment",
    "nom": "La voix au volet",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": null,
    "mene_a": [
     "hameau-entree-4"
@@ -1674,7 +1710,7 @@
    "id": "hameau-accueil-mur",
    "type": "moment",
    "nom": "Le mur écrit",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": null,
    "mene_a": [
     "hameau-entree-4"
@@ -1688,7 +1724,7 @@
    "id": "hameau-accueil-enfant",
    "type": "moment",
    "nom": "L'enfant qu'on envoie",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": null,
    "mene_a": [
     "hameau-entree-4"
@@ -1702,7 +1738,7 @@
    "id": "hameau-accueil-table",
    "type": "moment",
    "nom": "La table dressée",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": null,
    "mene_a": [
     "hameau-entree-4"
@@ -1716,7 +1752,7 @@
    "id": "hameau-accueil-cloche",
    "type": "moment",
    "nom": "La cloche qu'on retient",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": null,
    "mene_a": [
     "hameau-entree-4"
@@ -1730,7 +1766,7 @@
    "id": "hameau-accueil-depart",
    "type": "moment",
    "nom": "Le hameau qui s'en va",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": null,
    "mene_a": [
     "hameau-entree-4"
@@ -1744,7 +1780,7 @@
    "id": "hameau-entree-4",
    "type": "arrivee",
    "nom": "Hameau entree 4 — beat 4",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": null,
    "mene_a": [
     "hameau-entree-5"
@@ -1762,7 +1798,7 @@
    "id": "pourquoi-trois-aubes",
    "type": "observe",
    "nom": "Demander pourquoi trois aubes",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": "hameau-entree-4",
    "mene_a": [],
    "texte": [
@@ -1777,7 +1813,7 @@
    "id": "hameau-entree-5",
    "type": "moment",
    "nom": "Hameau entree 5 — beat 5",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "parent": null,
    "mene_a": [],
    "texte": [
@@ -1793,7 +1829,7 @@
    "id": "hameau-halte-1",
    "type": "moment",
    "nom": "Hameau halte 1",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "grange_des_renoncants",
    "parent": null,
    "mene_a": [
     "hameau-halte-2"
@@ -1811,7 +1847,7 @@
    "id": "hameau-halte-2",
    "type": "arrivee",
    "nom": "Hameau halte 2 — beat 2",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "grange_des_renoncants",
    "parent": null,
    "mene_a": [
     "hameau-halte-3"
@@ -1829,7 +1865,7 @@
    "id": "examiner-grange",
    "type": "observe",
    "nom": "Examiner la grange",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "grange_des_renoncants",
    "parent": "hameau-halte-2",
    "mene_a": [],
    "texte": [
@@ -1843,7 +1879,7 @@
    "id": "hameau-halte-3",
    "type": "moment",
    "nom": "Hameau halte 3 — beat 3",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "grange_des_renoncants",
    "parent": null,
    "mene_a": [
     "hameau-halte-4"
@@ -1859,7 +1895,7 @@
    "id": "hameau-halte-4",
    "type": "moment",
    "nom": "Hameau halte 4 — beat 4",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "grange_des_renoncants",
    "parent": null,
    "mene_a": [
     "hameau-halte-5"
@@ -1876,7 +1912,7 @@
    "id": "hameau-halte-5",
    "type": "moment",
    "nom": "Hameau halte 5 — beat 5",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "grange_des_renoncants",
    "parent": null,
    "mene_a": [],
    "texte": [
@@ -1892,7 +1928,7 @@
    "id": "hameau-halte-dehors",
    "type": "arrivee",
    "nom": "Hameau halte dehors",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "grange_des_renoncants",
    "parent": null,
    "mene_a": [],
    "texte": [
@@ -2655,7 +2691,7 @@
    "id": "proces-du-heros",
    "type": "arrivee",
    "nom": "Proces du heros",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "petit_tribunal",
    "parent": null,
    "mene_a": [],
    "texte": [
@@ -2679,13 +2715,14 @@
     "h": 660
    },
    "lieux": [
+    "seuil_du_hameau",
+    "grange_des_renoncants",
     "chapelle_des_cordes",
     "maison_du_bailli",
     "petit_tribunal",
     "puits_condamne",
     "marche_muet",
-    "tour_de_guet_effondree",
-    "hameau_des_renoncants"
+    "tour_de_guet_effondree"
    ]
   }
  ]

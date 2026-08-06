@@ -4566,7 +4566,12 @@ const LIEU_NOM: Record<string, string> = {
   "hameau-accueil": "Le Seuil du Hameau", // les 6 accueils tirables (6/08)
   "gamin-murets": "Le Seuil du Hameau",
   "femme-seuil": "Le Seuil du Hameau",
-  "hameau-halte": "Le Hameau des Renonçants",
+  /* La halte se joue DANS la grange — la nommer « Le Hameau des Renonçants »
+     répétait le nom de la région entière (retour Patrick 6/08 : « dans le
+     hameau des Renonçants, il y a le hameau des Renonçants »). Le refus du
+     Serment, lui, se passe dehors contre un mur du village. */
+  "hameau-halte": "La Grange des Renonçants",
+  "hameau-halte-dehors": "Le Hameau des Renonçants",
   "marche-muet": "Le Marché Muet",
   "tour-de-guet": "La Tour de Guet effondrée",
   campement: "Le Moulin sans Ailes",

@@ -12,7 +12,8 @@
     "marche-muet"
    ],
    "lieuxEnPlus": [
-    "hameau_des_renoncants"
+    "grange_des_renoncants",
+    "seuil_du_hameau"
    ],
    "boite": {
     "x": 810,
@@ -21,13 +22,14 @@
     "h": 660
    },
    "lieux": [
+    "seuil_du_hameau",
+    "grange_des_renoncants",
     "chapelle_des_cordes",
     "maison_du_bailli",
     "petit_tribunal",
     "puits_condamne",
     "marche_muet",
-    "tour_de_guet_effondree",
-    "hameau_des_renoncants"
+    "tour_de_guet_effondree"
    ]
   }
  ],
@@ -52,8 +54,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-06T09:39:19Z",
- "commit": "0387ab9",
+ "genere": "2026-08-06T10:19:32Z",
+ "commit": "284b7a3",
  "zones": [
   {
    "id": "landes",
@@ -152,12 +154,12 @@
      "scenePrincipale": "mare-aux-regards"
     },
     {
-     "id": "hameau_des_renoncants",
-     "nom": "Le Hameau des Renonçants",
+     "id": "seuil_du_hameau",
+     "nom": "Le Seuil du Hameau",
      "illustration": "scene_hameau_dense2_b.png",
-     "x": 870,
-     "y": 1064,
-     "note": "région englobante (cadre pointillé) : contient la Chapelle des Cordes, la Maison du Bailli, le Petit Tribunal, le Puits Condamné, le Marché Muet et la Tour de Guet effondrée · le Serment s'impose à son entrée",
+     "x": 810,
+     "y": 1024,
+     "note": "La barrière, DEHORS : l'arrivée, l'accueil du jour et le Serment. On n'est pas encore entré.",
      "scenes": [
       "serment-hameau",
       "hameau-entree-2",
@@ -172,18 +174,11 @@
       "hameau-accueil-cloche",
       "hameau-accueil-depart",
       "hameau-entree-4",
-      "hameau-entree-5",
-      "hameau-halte-1",
-      "hameau-halte-2",
-      "hameau-halte-3",
-      "hameau-halte-4",
-      "hameau-halte-5",
-      "hameau-halte-dehors",
-      "proces-du-heros"
+      "hameau-entree-5"
      ],
-     "nbScenes": 21,
+     "nbScenes": 14,
      "nbRencontres": 0,
-     "nbPois": 5,
+     "nbPois": 4,
      "entrees": [],
      "sorties": [],
      "roles": [],
@@ -193,6 +188,32 @@
      ],
      "aCompleter": 6,
      "scenePrincipale": "serment-hameau"
+    },
+    {
+     "id": "grange_des_renoncants",
+     "nom": "La Grange des Renonçants",
+     "illustration": "scene_landes_hameau_grange_a.png",
+     "x": 930,
+     "y": 1104,
+     "note": "DEDANS : la halte, la nuit, la barre posée à l'extérieur. Ou la nuit dehors, si le Serment a été refusé.",
+     "scenes": [
+      "hameau-halte-1",
+      "hameau-halte-2",
+      "hameau-halte-3",
+      "hameau-halte-4",
+      "hameau-halte-5",
+      "hameau-halte-dehors"
+     ],
+     "nbScenes": 6,
+     "nbRencontres": 0,
+     "nbPois": 1,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": false,
+     "alertes": [],
+     "aCompleter": 0,
+     "scenePrincipale": "hameau-halte-2"
     },
     {
      "id": "chapelle_des_cordes",
@@ -247,9 +268,10 @@
      "note": "la Fixation y est jugée",
      "scenes": [
       "petit-tribunal",
-      "petit-tribunal-2"
+      "petit-tribunal-2",
+      "proces-du-heros"
      ],
-     "nbScenes": 2,
+     "nbScenes": 3,
      "nbRencontres": 0,
      "nbPois": 3,
      "entrees": [],
@@ -1685,7 +1707,7 @@
    "pointsInteret": [],
    "suite": "hameau-entree-2",
    "nom": "Serment hameau",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "typeScene": "arrivee",
    "image": {
     "fichier": "scene_hameau_dense2_b.png",
@@ -1795,7 +1817,7 @@
    ],
    "suite": "hameau-entree-3",
    "nom": "Hameau entree 2 — beat 2",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "typeScene": "arrivee",
    "image": {
     "fichier": "scene_hameau_entree_2_v2_a.png",
@@ -1865,7 +1887,7 @@
    "pointsInteret": [],
    "suite": "femme-seuil-2",
    "nom": "Femme seuil 1",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "typeScene": "moment",
    "image": {
     "fichier": "monstre_femme_seuil_1_v3_a.png",
@@ -1964,7 +1986,7 @@
    "pointsInteret": [],
    "suite": "femme-seuil-3",
    "nom": "Femme seuil 2 — beat 2",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "typeScene": "moment",
    "image": {
     "fichier": "monstre_femme_seuil_2_c.png",
@@ -2104,7 +2126,7 @@
    "pointsInteret": [],
    "suite": "hameau-entree-3",
    "nom": "Femme seuil 3 — beat 3",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "typeScene": "moment",
    "image": {
     "fichier": "monstre_femme_seuil_3_v2_a.png",
@@ -2192,7 +2214,7 @@
    "pointsInteret": [],
    "suite": "hameau-entree-4",
    "nom": "Hameau entree 3 — beat 3",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "typeScene": "moment",
    "image": {
     "fichier": "monstre_hameau_entree_3_v2_a.png",
@@ -2264,7 +2286,7 @@
    "pointsInteret": [],
    "suite": "hameau-entree-4",
    "nom": "La voix au volet",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "typeScene": "moment",
    "image": null,
    "description": "",
@@ -2328,7 +2350,7 @@
    "pointsInteret": [],
    "suite": "hameau-entree-4",
    "nom": "Le mur écrit",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "typeScene": "moment",
    "image": null,
    "description": "",
@@ -2392,7 +2414,7 @@
    "pointsInteret": [],
    "suite": "hameau-entree-4",
    "nom": "L'enfant qu'on envoie",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "typeScene": "moment",
    "image": null,
    "description": "",
@@ -2457,7 +2479,7 @@
    "pointsInteret": [],
    "suite": "hameau-entree-4",
    "nom": "La table dressée",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "typeScene": "moment",
    "image": null,
    "description": "",
@@ -2523,7 +2545,7 @@
    "suite": "hameau-entree-4",
    "poseFlag": "cloche-sonnee",
    "nom": "La cloche qu'on retient",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "typeScene": "moment",
    "image": null,
    "description": "",
@@ -2586,7 +2608,7 @@
    "pointsInteret": [],
    "suite": "hameau-entree-4",
    "nom": "Le hameau qui s'en va",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "typeScene": "moment",
    "image": null,
    "description": "",
@@ -2676,7 +2698,7 @@
    ],
    "suite": "hameau-entree-5",
    "nom": "Hameau entree 4 — beat 4",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "typeScene": "arrivee",
    "image": {
     "fichier": "monstre_hameau_entree_4_c.png",
@@ -2721,7 +2743,7 @@
    "pointsInteret": [],
    "hameauEntree": true,
    "nom": "Hameau entree 5 — beat 5",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "seuil_du_hameau",
    "typeScene": "moment",
    "image": {
     "fichier": "scene_hameau_entree_5_v2_a.png",
@@ -2764,7 +2786,7 @@
    "pointsInteret": [],
    "suite": "hameau-halte-2",
    "nom": "Hameau halte 1",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "grange_des_renoncants",
    "typeScene": "moment",
    "image": {
     "fichier": "scene_landes_hameau_ruelle_b.png",
@@ -2837,7 +2859,7 @@
    "suite": "hameau-halte-3",
    "savoir": "savoir_grange_comptee",
    "nom": "Hameau halte 2 — beat 2",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "grange_des_renoncants",
    "typeScene": "arrivee",
    "image": {
     "fichier": "scene_landes_hameau_grange_a.png",
@@ -2902,7 +2924,7 @@
    "pointsInteret": [],
    "suite": "hameau-halte-4",
    "nom": "Hameau halte 3 — beat 3",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "grange_des_renoncants",
    "typeScene": "moment",
    "image": {
     "fichier": "scene_hameau_halte_3_c.png",
@@ -2942,7 +2964,7 @@
    "pointsInteret": [],
    "suite": "hameau-halte-5",
    "nom": "Hameau halte 4 — beat 4",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "grange_des_renoncants",
    "typeScene": "moment",
    "image": {
     "fichier": "monstre_hameau_halte_4_v2_c.png",
@@ -2987,7 +3009,7 @@
    "pointsInteret": [],
    "hameauHalte": true,
    "nom": "Hameau halte 5 — beat 5",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "grange_des_renoncants",
    "typeScene": "moment",
    "image": {
     "fichier": "scene_hameau_halte_5_v2_c.png",
@@ -3064,7 +3086,7 @@
    "pointsInteret": [],
    "hameauHalte": true,
    "nom": "Hameau halte dehors",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "grange_des_renoncants",
    "typeScene": "arrivee",
    "image": {
     "fichier": "scene_hameau_dense_c.png",
@@ -5208,7 +5230,7 @@
    "pointsInteret": [],
    "procesFixation": true,
    "nom": "Proces du heros",
-   "lieu": "hameau_des_renoncants",
+   "lieu": "petit_tribunal",
    "typeScene": "arrivee",
    "image": {
     "fichier": "scene_proces_du_heros_v4_c.png",
@@ -5693,7 +5715,7 @@
    "fichier": "relique_eclat_de_de_fele.png",
    "hash": "87c6ffdc",
    "taille": 27279,
-   "recent": false
+   "recent": true
   },
   {
    "fichier": "relique_miroir_noye.png",
@@ -5705,7 +5727,7 @@
    "fichier": "relique_nom_que_echo_a_garde.png",
    "hash": "762f4dca",
    "taille": 14370,
-   "recent": false
+   "recent": true
   },
   {
    "fichier": "relique_oeil_lanterne_verte.png",
