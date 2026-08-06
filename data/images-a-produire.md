@@ -916,3 +916,23 @@ is gone, its mounting eye intact and clean, unscrewed rather than broken. A
 well-kept rope hangs down within reach. No figures. Monochrome duotone
 charcoal and burnt orange, heavy grain, high contrast, no gradient.
 ```
+
+### `monstre_la_fille_moulin.png` — le plan serré de la conversation (note DA 6/08)
+
+**Pourquoi** : `monstre_la_fille_c.png` (l'entrevue à distance) sert aujourd'hui
+aux QUATRE beats de la rencontre au Moulin — or elle convient au degré 2, pas à
+une conversation assise. Règle du détail unique.
+
+⚠️ **Rappel de lore : elle avait VINGT ANS quand on l'a pendue, et n'a pas
+vieilli depuis trente ans. Ce n'est pas une enfant.**
+
+```
+Interior of a dark round stone mill, a single shaft of low orange light from a
+small window. A young woman of twenty, seated on a heather pallet, seen in
+three-quarter view, calm, hands busy with a small piece of rope work in her
+lap. She wears a dark shawl. The single telling detail: a thin pale line
+across her throat, old and healed, caught by the light. Nothing else in the
+frame explains her. Quiet, domestic, wrong only if you look closely.
+Monochrome duotone, deep charcoal and burnt orange, heavy grain, high
+contrast, no gradient.
+```

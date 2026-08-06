@@ -240,6 +240,12 @@ export type PointInteret = {
    */
   corbeaux?: boolean;
   /**
+   * LE TROUPEAU SANS BERGER (6/08) : l'examen SE TERMINE par le comptage
+   * calculé (`ligneTroupeau`) — le troupeau grossit d'une run à l'autre et le
+   * nombre est dit en prose, jamais annoncé comme un compteur.
+   */
+  troupeau?: boolean;
+  /**
    * SAVOIR appris en examinant ce point (journal Notion 25/07). Flag posé dans
    * `RunState.savoirs` : il ouvrira un choix marqué `requiresSavoir` dans une
    * scène ultérieure. Jamais annoncé au joueur — il découvre l'option le moment
@@ -1450,6 +1456,22 @@ export const SCENES: Scene[] = [
     ],
     choices: [
       {
+        /* Branchement du TROUPEAU (6/08) : il connaît les cinq noms.
+           Il ne les donne pas. */
+        id: "fossoyeur-cinq-marques",
+        label: "Parler des marques d\u2019oreille",
+        requiresDecouverte: "d.troupeau_compte",
+        passive: {
+          consequence:
+            "« Cinq marques ? » Le couteau s\u2019arrête. « Fais voir. » Tu " +
+            "dessines les entailles dans la poussière, de mémoire. Il les " +
+            "regarde longtemps, et à la façon dont ses lèvres bougent sans " +
+            "bruit, tu comprends qu\u2019il est en train de mettre un nom " +
+            "sur chacune. Il efface la poussière du plat de la main. « Joli " +
+            "troupeau », dit-il. C\u2019est tout ce que tu en tireras.",
+        },
+      },
+      {
         id: "fossoyeur-poteau-manque",
         label: "« Il manque un poteau, là-bas. »",
         passive: {
@@ -1551,6 +1573,22 @@ export const SCENES: Scene[] = [
         "t'attend au travail, comme on attend un outil.",
     ],
     choices: [
+      {
+        /* Branchement du TROUPEAU (6/08) : il connaît les cinq noms.
+           Il ne les donne pas. */
+        id: "fossoyeur-cinq-marques",
+        label: "Parler des marques d\u2019oreille",
+        requiresDecouverte: "d.troupeau_compte",
+        passive: {
+          consequence:
+            "« Cinq marques ? » Le couteau s\u2019arrête. « Fais voir. » Tu " +
+            "dessines les entailles dans la poussière, de mémoire. Il les " +
+            "regarde longtemps, et à la façon dont ses lèvres bougent sans " +
+            "bruit, tu comprends qu\u2019il est en train de mettre un nom " +
+            "sur chacune. Il efface la poussière du plat de la main. « Joli " +
+            "troupeau », dit-il. C\u2019est tout ce que tu en tireras.",
+        },
+      },
       {
         id: "aider-fossoyeur",
         label: "Aider à redresser",
@@ -3335,6 +3373,103 @@ export const SCENES: Scene[] = [
     ],
     jailerLine: "Il t\u2019a laissé le voir. Ce n\u2019est pas de la négligence : c\u2019est une convocation.",
   },
+  /* ═══ LE TROUPEAU SANS BERGER (journal 6/08) — rencontre de liaison ═════
+     Croisé en MARCHANT, boucle EST, hors du Hameau — sa force vient du fait
+     qu'on le croise seul, sans personne pour l'expliquer. Sur tirage, au plus
+     une fois par vie (déroutage dans advance(), jamais dans le pool).
+
+     Trois fonctions (spec) : une PREUVE DATÉE (un troupeau vivant sans berger
+     prouve qu'il y avait un berger récemment — les Fixations ne sont pas de
+     l'histoire ancienne, on a pendu quelqu'un la semaine dernière) ; un
+     COMPTEUR SILENCIEUX (il grossit d'une run à l'autre, voir tailleTroupeau) ;
+     un DILEMME DE BESOIN (un héros Affamé peut prendre une bête — et devenir
+     exactement ce qu'ils redoutent). */
+  {
+    id: "troupeau-sans-berger",
+    illustration: "assets/monstre_troupeau_sans_berger_a.png",
+    chainNext: "troupeau-sans-berger-2",
+    narration: [
+      "Des bêtes broutent la bruyère morte au creux du vallon — un troupeau " +
+        "entier, sans personne. Elles ne s\u2019écartent pas quand tu " +
+        "approches : elles lèvent la tête, te regardent une seconde, et se " +
+        "remettent à brouter.",
+      "C\u2019est ce détail qui te dérange le plus. Elles n\u2019ont pas " +
+        "appris à se méfier.",
+    ],
+    pointsInteret: [
+      {
+        id: "compter-troupeau",
+        label: "Les marques d\u2019oreille",
+        troupeau: true,
+        decouverte: "d.troupeau_compte",
+        approche:
+          "Tu marches jusqu\u2019au bord du troupeau. Les bêtes te laissent " +
+          "entrer entre elles comme si tu étais un piquet de plus.",
+        examen:
+          "De près, elles sont grasses, entretenues — quelqu\u2019un les a " +
+          "menées, soignées, comptées, et pas il y a trente ans : cette " +
+          "laine-là a vu un berger cette saison.",
+      },
+    ],
+    choices: [
+      { id: "troupeau-approcher", label: "S\u2019avancer dans le vallon" },
+    ],
+    jailerLine: "Un troupeau qui grossit sans berger. Quelqu\u2019un, quelque part, tient très mal ses registres. Ou très bien.",
+  },
+  {
+    id: "troupeau-sans-berger-2",
+    illustration: "assets/monstre_troupeau_sans_berger_a.png",
+    narration: [
+      "Une brebis s\u2019écarte du groupe et marche droit vers le nord-est, " +
+        "s\u2019arrête, revient. Puis recommence. Cinq fois pendant que tu la " +
+        "regardes.",
+      "Elle refait un trajet. Elle attend au bout de quelque chose qui " +
+        "n\u2019arrive plus.",
+      "Dans cette direction, à un quart d\u2019heure de marche, il y a le " +
+        "Champ des Fixés.",
+    ],
+    choices: [
+      {
+        id: "troupeau-suivre",
+        label: "Suivre la brebis",
+        orient: { dest: "champ-des-fixes" },
+      },
+      {
+        /* Le DILEMME DE BESOIN : nourriture sans propriétaire vivant. Ouvert
+           par AFFAMÉ seulement (garde `ouvreVol`). Prendre la meneuse, c'est
+           repartir avec sa clochette — l'objet qui annonce QUE TU ARRIVES.
+           La charge inversée du Grelot, et le juste prix du geste. */
+        id: "troupeau-prendre",
+        label: "Prendre une bête",
+        requiresEtat: "affame",
+        poseEtat: "marque",
+        repondBesoin: "manger",
+        grantsLoot: "clochette-meneuse",
+        passive: {
+          consequence:
+            "Tu choisis la seule qui te laisse faire — la meneuse, sa " +
+            "clochette au cou. Elle te suit sans un bruit, et le troupeau ne " +
+            "bronche pas. C\u2019est après, en mangeant, que la phrase te " +
+            "vient toute seule : tu viens de prendre ce qui appartenait à un " +
+            "pendu. Si on te voit au hameau avec cette laine, on saura " +
+            "compter jusqu\u2019à cinq.",
+        },
+      },
+      {
+        id: "troupeau-continuer",
+        label: "Continuer ton chemin",
+        passive: {
+          consequence:
+            "Tu t\u2019éloignes, et le troupeau se referme derrière toi " +
+            "comme de l\u2019eau. Dans ton dos, une clochette. Une seule, " +
+            "quelque part au milieu des bêtes — celle qu\u2019on met au cou " +
+            "de la meneuse, pour que le berger sache où est son troupeau " +
+            "dans le brouillard. Elle sonne toute seule, pour personne.",
+        },
+      },
+    ],
+    jailerLine: "Elles attendent quelqu\u2019un qui ne vient plus. Toi aussi, remarque. La différence, c\u2019est qu\u2019elles ne le savent pas.",
+  },
   /* LA TOUR DE GUET EFFONDRÉE — dernier lieu du Hameau à n'avoir aucune scène
      (relevé le 27/07 : la carte de l'atelier l'affichait « aucune scène
      écrite »). Sa question est celle de la zone entière : on a bâti une tour
@@ -3531,6 +3666,19 @@ export const SCENES: Scene[] = [
         "fait signe quand même, comme à un client de longue date.",
     ],
     choices: [
+      {
+        /* Branchement du TROUPEAU (6/08). */
+        id: "colporteur-viande",
+        label: "Demander d\u2019où vient la viande",
+        requiresDecouverte: "d.troupeau_compte",
+        passive: {
+          consequence:
+            "Il suit ton regard jusqu\u2019aux quartiers salés pendus sous " +
+            "l\u2019étal, et pour la première fois son sourire de marchand " +
+            "se simplifie. « Me demande pas d\u2019où ça vient. » Il remonte " +
+            "la toile dessus, sans hâte. « Moi je revends. »",
+        },
+      },
       {
         /* LE SONNEUR SANS CLOCHE (§7) — il n'avait aucune scène. Son
            témoignage tient en trois phrases et dit tout du village : il a
@@ -5649,6 +5797,46 @@ export const APPARITION_TEMOIN: string[] = [
   "Il ne fait rien. Il ne dit rien. Il regarde le vieux, et le vieux hoche " +
     "la tête, et c\u2019est le vieux qui donne l\u2019ordre.",
 ];
+
+/**
+ * LE TROUPEAU SANS BERGER (journal 6/08) — le compteur silencieux.
+ * Le troupeau GROSSIT d'une run à l'autre (« dix bêtes à la première
+ * traversée, dix-huit à la cinquième ») : à chaque Fixation, un troupeau de
+ * plus rejoint celui-là, et le village hérite du bétail sans jamais dire
+ * d'où il vient. AUCUN texte ne l'annonce — c'est le joueur qui fait le
+ * calcul, ou ne le fait pas.
+ *
+ * ⚠️ Le beat 1 verbatim du journal disait « une trentaine » et le beat 2
+ * « trente-deux » — un instantané incompatible avec le principe du compteur
+ * énoncé trois lignes plus haut. Le principe prime : le nombre est CALCULÉ,
+ * et dit en toutes lettres (jamais un chiffre).
+ */
+export function tailleTroupeau(runsStarted: number, fixations: number): number {
+  return Math.min(58, 10 + 2 * Math.max(0, runsStarted - 1) + 3 * fixations);
+}
+
+const LETTRES: Record<number, string> = {
+  10: "dix", 12: "douze", 14: "quatorze", 16: "seize", 18: "dix-huit",
+  20: "vingt", 22: "vingt-deux", 24: "vingt-quatre", 26: "vingt-six",
+  28: "vingt-huit", 30: "trente", 32: "trente-deux", 34: "trente-quatre",
+  36: "trente-six", 38: "trente-huit", 40: "quarante", 42: "quarante-deux",
+  44: "quarante-quatre", 46: "quarante-six", 48: "quarante-huit",
+  50: "cinquante", 52: "cinquante-deux", 54: "cinquante-quatre",
+  56: "cinquante-six", 58: "cinquante-huit",
+};
+
+export function ligneTroupeau(n: number): string {
+  const pair = n - (n % 2);
+  const bas = LETTRES[pair] ?? "trente";
+  const haut = LETTRES[Math.min(58, pair + 2)] ?? "trente-deux";
+  return (
+    `Tu comptes. ${bas.charAt(0).toUpperCase() + bas.slice(1)}, peut-être ` +
+    `${haut}. Elles portent des marques d\u2019oreille, et les marques ne ` +
+    `sont pas toutes les mêmes. Tu en relèves cinq différentes. Ce ne sont ` +
+    `pas les bêtes d\u2019un seul homme : ce sont les bêtes de cinq hommes, ` +
+    `réunies en un seul troupeau, et personne n\u2019est venu les séparer.`
+  );
+}
 
 /**
  * LES CORBEAUX SUR LES TOITS (spec §5) — le seul signal permanent du Soupçon.

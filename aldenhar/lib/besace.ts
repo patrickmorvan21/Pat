@@ -192,6 +192,19 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     passiveMod: 0, passiveScope: "all", illustration: "assets/objet_jouet_petite_fixee_a.png",
     flavor: "Plat, gris, poli par une eau qui n'existe nulle part ici. Un enfant te l'a mis dans la main sans que tu le demandes.",
   },
+  /* La Clochette de meneuse (journal 6/08) — jumelle du Grelot du
+     Charretier, charge inversée : le Grelot annonce ce qui approche, la
+     Clochette annonce QUE TU ARRIVES. Gagnée en prenant la meneuse du
+     Troupeau sans Berger (Affamé seulement) : celui qui vole la bête d'un
+     pendu porte l'objet qui le signale. Aucun bonus — la charge est
+     narrative, comme la Mèche.
+     NB : icône du battant de cloche en attendant mieux (même bronze, même
+     champ lexical) — remplacer si Patrick produit `objet_clochette_meneuse`. */
+  "clochette-meneuse": {
+    name: "Clochette de meneuse", rarity: "rare", kind: "babiole", slot: "passif",
+    passiveMod: 0, passiveScope: "all", illustration: "assets/objet_battant_cloche_c.png",
+    flavor: "On la met au cou de la meneuse pour que le berger sache où est son troupeau dans le brouillard. Maintenant c'est toi qu'elle annonce.",
+  },
   "miroir-poche": {
     name: "Miroir de Poche Fêlé", rarity: "commun", kind: "babiole", slot: "actif",
     heal: 0.15, cure: false, illustration: "assets/objet_miroir_poche_fele_c.png",

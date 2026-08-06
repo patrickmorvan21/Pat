@@ -33,6 +33,8 @@ import {
   COMPTEUR_FILLE,
   compteDecouvertesFille,
   APPARITION_TEMOIN,
+  tailleTroupeau,
+  ligneTroupeau,
 } from "@/lib/scene-data";
 import { contradictionsConnues, faitById, versionDuFait } from "@/lib/contradictions";
 import { manifestationLoi } from "@/lib/loi-substitution";
@@ -536,7 +538,12 @@ export default function Scene() {
     // un flag libre et l'état ne serait plus la raison de l'ouverture.
     if (c.requiresEtat) {
       const e = etatsRendus.find((x) => x.id === c.requiresEtat);
-      if (!e || !e.ouvreConfidences) return false;
+      // L'état doit AUTORISER l'ouverture, pas seulement être porté : FIXÉ
+      // ouvre des confidences (`ouvreConfidences`), AFFAMÉ ouvre des prises de
+      // nourriture (`ouvreVol` — le Troupeau sans Berger, 6/08). Sans ce
+      // garde, `requiresEtat` deviendrait un flag libre et l'état ne serait
+      // plus la raison de l'ouverture.
+      if (!e || !(e.ouvreConfidences || e.ouvreVol)) return false;
     }
     // « Le Registre ment » (5/08) : une seule vie ne peut pas l'ouvrir. Le don
     // « lecture » d'une relique la rend visible sans l'avoir vécue — c'est
@@ -1150,6 +1157,27 @@ export default function Scene() {
         trav.current = DESCENTE_SCENE.id;
       }
     } else {
+      // ═══ LE TROUPEAU SANS BERGER (journal 6/08) ═══════════════════════
+      // Croisé en MARCHANT, boucle EST, HORS du Hameau — sa force vient du
+      // fait qu'on le croise seul, sans personne pour l'expliquer. Sur
+      // tirage, au plus une fois par vie, jamais dans le pool (comme le
+      // procès : il déroute la traversée, il n'y entre pas). Le Champ des
+      // Fixés est exclu du `from` : la brebis y RETOURNE, la croiser en
+      // sortant du champ n'aurait aucun sens.
+      const fromEst = ["colline-aux-gibets", "pendu-qui-parle", "pendu-mal-fixe"]
+        .includes(scene.id.replace(/-\d+$/, ""));
+      const troupeauVu = Boolean((runRef.current?.faits ?? {})["vu:troupeau"]);
+      if (fromEst && !troupeauVu && !scene.liaison && chance(0.35)) {
+        nextScene = resoudre("troupeau-sans-berger", runRef.current)!;
+        trav.phase = "scene";
+        trav.current = nextScene.id; // hors `visited` : pas un lieu du pool
+        persist((r) => {
+          r.faits = {
+            ...(r.faits ?? {}),
+            "vu:troupeau": { id: "vu:troupeau", kind: "knowledge", scope: "run", value: 1 },
+          };
+        });
+      } else {
       const seed = (nextStep * 101 + trav.visited.length * 7) >>> 0;
       const entered = Boolean(runRef.current?.hameau?.entree);
       const pair = pickLiaisonOptions(trav.visited, seed, entered);
@@ -1196,6 +1224,7 @@ export default function Scene() {
       trav.phase = "liaison";
       trav.liaisonOpts = pair;
       trav.seed = seed;
+      }
     }
     // ——— Soupçon (chantier 3) : montée à l'arrivée + manifestation ———
     // Le palier ne se MONTRE qu'une fois (soupconSeen), toujours en monde
@@ -1745,6 +1774,14 @@ export default function Scene() {
           // comprend leur nombre ensuite.
           ...(poi.corbeaux
             ? [{ id: nextId(), kind: "narration" as const, text: ligneCorbeaux(loadMemory().deaths) }]
+            : []),
+          // Le Troupeau sans Berger (6/08) : le comptage est CALCULÉ — il
+          // grossit d'une run à l'autre, et personne ne l'annonce jamais.
+          ...(poi.troupeau
+            ? [{
+                id: nextId(), kind: "narration" as const,
+                text: ligneTroupeau(tailleTroupeau(loadMemory().runsStarted, loadMemory().fixations)),
+              }]
             : []),
         ];
         if (gained) {

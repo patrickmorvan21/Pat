@@ -861,19 +861,73 @@ def main() -> int:
                 m.replace("assets/", "")
                 for m in re.findall(r'"(assets/[^"]+)"', f.read_text(encoding="utf-8"))
             }
+    # ⚠️ `relique_` : le chemin est DÉRIVÉ à l'exécution (`assets/relique_{id}.png`
+    # dans lib/reliques.ts), jamais littéral dans le code — sans cette entrée,
+    # les 8 icônes de reliques passaient pour orphelines (attrapé le 6/08).
     UI = ("pactum_logo", "geolier_", "accueil_demon", "frange_", "croix_menu",
-          "banner-edge", "bande_dissolution", "etat_", "dithering-demon", "mort_",
+          "banner-edge", "bande_dissolution", "etat_", "relique_", "dithering-demon", "mort_",
           "objet_couronne", "objet_dague_os", "objet_fiole", "objet_grimoire",
           "objet_grand_registre", "scene_landes_frise")
+    # ── CLASSEMENT DE LA RÉSERVE EN TROIS GROUPES (tâche du journal 6/08) ──
+    # 1. « attend » — le fichier nomme un sujet du LORE (créature, lieu,
+    #    rencontre, objet de landes.json) qui n'a pas encore de scène : il
+    #    attend qu'on l'écrive.
+    # 2. « brancher » — une scène EXISTANTE parle du même sujet mais pointe
+    #    vers une autre image (ou aucune) : rattachable en un clic.
+    # 3. « doublon » — plusieurs fichiers pour la même racine de nom
+    #    (suffixes _v1/_v2/_a.._d) : en désigner un, archiver les autres.
+    # 4. « autre » — rien de tout ça (filet, jamais caché).
+    def _racine(nom: str) -> str:
+        """`monstre_pendu_mal_fixe_v1_b.png` → `pendu_mal_fixe`."""
+        r = re.sub(r"\.png$", "", nom)
+        r = re.sub(r"^(monstre|scene|objet|etat|relique)_", "", r)
+        r = re.sub(r"(_v\d+)?(_[a-d])?(_[a-d])?$", "", r)
+        return r
+
+    # Les sujets du lore (landes.json) et leurs slugs de nom de fichier.
+    zone_json = json.loads((RACINE / "data/zones/landes.json").read_text(encoding="utf-8"))
+    import unicodedata
+    def _slug(txt: str) -> str:
+        t = unicodedata.normalize("NFD", txt.lower())
+        t = "".join(c for c in t if not unicodedata.combining(c))
+        return re.sub(r"[^a-z0-9]+", "_", t).strip("_")
+    sujets_lore: set[str] = set()
+    for coll in ("lieux", "rencontres", "creatures", "objets"):
+        for e in zone_json.get(coll, []):
+            sujets_lore.add(_slug(e.get("nom", "")))
+            sujets_lore.add(e.get("id", "").replace("-", "_"))
+
+    # Les sujets DÉJÀ mis en scène (racines des images réellement câblées).
+    racines_en_jeu = {_racine(u) for u in utilisees}
+
+    def _groupe(nom: str, doublons: set[str]) -> str:
+        rac = _racine(nom)
+        if rac in doublons:
+            return "doublon"
+        if rac in racines_en_jeu:
+            return "brancher"
+        # « attend sa scène » : la racine (ou un préfixe net) nomme un sujet
+        # du lore. Match par inclusion dans les deux sens — `la_fille` ⊂
+        # `monstre_la_fille`, `troupeau_sans_berger` = `troupeau_sans_berger`.
+        if any(rac == s2 or (len(s2) > 5 and (s2 in rac or rac in s2)) for s2 in sujets_lore):
+            return "attend"
+        return "autre"
+
+    libres = [n for n in sorted(fichiers)
+              if n not in utilisees and not any(n.startswith(u) for u in UI)]
+    from collections import Counter
+    cnt = Counter(_racine(n) for n in libres)
+    doublons = {r for r, c in cnt.items() if c > 1}
     reserve = [
         {
             "fichier": n,
             "hash": fichiers[n].get("hash"),
             "taille": fichiers[n].get("taille"),
             "recent": bool(fichiers[n].get("recent")),
+            "groupe": _groupe(n, doublons),
+            "racine": _racine(n),
         }
-        for n in sorted(fichiers)
-        if n not in utilisees and not any(n.startswith(u) for u in UI)
+        for n in libres
     ]
 
     # RÉGIONS : le seul groupement géographique RÉEL du jeu — le Hameau des
