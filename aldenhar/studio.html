@@ -1657,13 +1657,41 @@ function renduVue(){
   }else if(vue==="systemes"){
     l.innerHTML=vueSystemes();
   }else{
-    l.innerHTML=`<h2 style="font:400 22px/1 var(--serif);margin:0 0 6px">Réserve</h2>
-      <p style="color:var(--b30);font-size:11.5px;margin:0 0 16px">${D.reserve.length} images dans assets/, utilisées par aucune scène.</p>
-      <div style="display:flex;flex-wrap:wrap;gap:14px">`+D.reserve.map(r=>
-      `<figure style="width:132px;margin:0"><div class="pimg" style="margin:0;background-image:url('${urlImg(r.fichier)}')"
+    // ═══ LA RÉSERVE EN TROIS GROUPES (tâche du journal 6/08) ═════════════
+    // « Attend sa scène » = le fichier nomme un sujet du lore sans scène
+    // écrite. « À brancher » = une scène existante parle du même sujet mais
+    // pointe ailleurs (rattachement par le mécanisme de reprise d'image).
+    // « Doublons » = plusieurs fichiers pour la même racine — en désigner un.
+    // Le reste (« Sans attache ») n'est jamais caché : vestiges et matière.
+    const GROUPES=[
+      ["attend","Attend sa scène","Le nom correspond à un personnage ou un lieu du lore, mais aucune scène ne l\u2019utilise encore. La scène est à écrire — pas l\u2019image."],
+      ["brancher","À brancher","Une scène existante parle du même sujet mais pointe vers une autre image (ou une plus ancienne). Ouvre la scène et utilise « Reprendre une image déjà faite »."],
+      ["doublon","Doublons","Plusieurs fichiers pour le même sujet (_v1/_b/_c…). Désigne le bon dans la scène concernée — les autres seront à archiver côté Drive."],
+      ["autre","Sans attache","Vestiges d\u2019anciennes zones, matière des liaisons écrites à venir, exports périmés. Rien à faire tant que leur chantier n\u2019existe pas."],
+    ];
+    const vignette=r=>`<figure style="width:132px;margin:0"><div class="pimg" style="margin:0;background-image:url('${urlImg(r.fichier)}')"
         data-zoom="${urlImg(r.fichier)}" data-nom="${esc(r.fichier)}"></div>
        <figcaption style="font-size:9.5px;color:var(--b50);margin-top:5px;word-break:break-all">${esc(r.fichier)}<br>
-       <span style="color:var(--b30)">${r.hash}${r.recent?" · récent":""}</span></figcaption></figure>`).join("")+`</div>`;
+       <span style="color:var(--b30)">${r.hash}${r.recent?" · récent":""}</span></figcaption></figure>`;
+    // Les doublons se lisent par PAQUET : groupés par racine, côte à côte.
+    const parGroupe=g=>D.reserve.filter(r=>(r.groupe||"autre")===g);
+    const blocDoublons=rs=>{
+      const par={}; rs.forEach(r=>{(par[r.racine]=par[r.racine]||[]).push(r);});
+      return Object.entries(par).map(([rac,fs])=>
+        `<div style="border:1px solid var(--b10);padding:10px;margin-bottom:10px">
+           <p style="font-size:10.5px;color:var(--orange);margin:0 0 8px;letter-spacing:1px">${esc(rac)}</p>
+           <div style="display:flex;flex-wrap:wrap;gap:14px">${fs.map(vignette).join("")}</div>
+         </div>`).join("");
+    };
+    l.innerHTML=`<h2 style="font:400 22px/1 var(--serif);margin:0 0 6px">Réserve</h2>
+      <p style="color:var(--b30);font-size:11.5px;margin:0 0 16px">${D.reserve.length} images dans assets/, utilisées par aucune scène — classées par ce qu\u2019elles attendent.</p>`+
+      GROUPES.map(([g,titre,aide])=>{
+        const rs=parGroupe(g);
+        if(!rs.length) return "";
+        return `<h3 style="font:400 17px/1 var(--serif);margin:20px 0 3px">${titre} <span style="color:var(--b30);font-size:11px">· ${rs.length}</span></h3>
+          <p style="color:var(--b30);font-size:11px;margin:0 0 10px;max-width:80ch">${aide}</p>`+
+          (g==="doublon"?blocDoublons(rs):`<div style="display:flex;flex-wrap:wrap;gap:14px">${rs.map(vignette).join("")}</div>`);
+      }).join("");
   }
   $("#centre").appendChild(l);
   l.querySelectorAll("[data-vers]").forEach(b=>b.onclick=()=>{

@@ -54,8 +54,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-06T20:29:02Z",
- "commit": "0f7b882",
+ "genere": "2026-08-06T21:03:26Z",
+ "commit": "3467eff",
  "zones": [
   {
    "id": "landes",
@@ -1551,9 +1551,11 @@
    "mèneVers": [
     "champ-des-fixes-2"
    ],
-   "mèneIci": [],
+   "mèneIci": [
+    "troupeau-sans-berger-2"
+   ],
    "roles": [],
-   "acces": "traversée",
+   "acces": "lien",
    "etat": "valide",
    "alertes": []
   },
@@ -1564,6 +1566,13 @@
     "« Je grave à l\\u2019avance ceux dont c\\u2019est sûr. Ça fait gagner du temps le jour venu. » Le couteau ne s\\u2019arrête pas. « Comment je sais ? Je regarde les toits. Six corbeaux sur la même maison, je taille. Je me trompe jamais. »"
    ],
    "choix": [
+    {
+     "id": "fossoyeur-cinq-marques",
+     "label": "Parler des marques d\\u2019oreille",
+     "type": "passif",
+     "consequence": "« Cinq marques ? » Le couteau s\\u2019arrête. « Fais voir. » Tu dessines les entailles dans la poussière, de mémoire. Il les regarde longtemps, et à la façon dont ses lèvres bougent sans bruit, tu comprends qu\\u2019il est en train de mettre un nom sur chacune. Il efface la poussière du plat de la main. « Joli troupeau », dit-il. C\\u2019est tout ce que tu en tireras.",
+     "exigeDecouverte": "d.troupeau_compte"
+    },
     {
      "id": "fossoyeur-poteau-manque",
      "label": "« Il manque un poteau, là-bas. »",
@@ -1703,6 +1712,13 @@
     "Entre les rangs, un vieil homme redresse un poteau qui penche, avec des gestes de jardinier. Il t'a vu venir de loin — les vivants font un bruit particulier, ici. Il ne s'interrompt pas : il t'attend au travail, comme on attend un outil."
    ],
    "choix": [
+    {
+     "id": "fossoyeur-cinq-marques",
+     "label": "Parler des marques d\\u2019oreille",
+     "type": "passif",
+     "consequence": "« Cinq marques ? » Le couteau s\\u2019arrête. « Fais voir. » Tu dessines les entailles dans la poussière, de mémoire. Il les regarde longtemps, et à la façon dont ses lèvres bougent sans bruit, tu comprends qu\\u2019il est en train de mettre un nom sur chacune. Il efface la poussière du plat de la main. « Joli troupeau », dit-il. C\\u2019est tout ce que tu en tireras.",
+     "exigeDecouverte": "d.troupeau_compte"
+    },
     {
      "id": "aider-fossoyeur",
      "label": "Aider à redresser",
@@ -3765,6 +3781,110 @@
    "alertes": []
   },
   {
+   "id": "troupeau-sans-berger",
+   "narration": [
+    "Des bêtes broutent la bruyère morte au creux du vallon — un troupeau entier, sans personne. Elles ne s\\u2019écartent pas quand tu approches : elles lèvent la tête, te regardent une seconde, et se remettent à brouter.",
+    "C\\u2019est ce détail qui te dérange le plus. Elles n\\u2019ont pas appris à se méfier."
+   ],
+   "choix": [
+    {
+     "id": "troupeau-approcher",
+     "label": "S\\u2019avancer dans le vallon",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [
+    {
+     "id": "compter-troupeau",
+     "label": "Les marques d\\u2019oreille",
+     "approche": "Tu marches jusqu\\u2019au bord du troupeau. Les bêtes te laissent entrer entre elles comme si tu étais un piquet de plus.",
+     "examen": "De près, elles sont grasses, entretenues — quelqu\\u2019un les a menées, soignées, comptées, et pas il y a trente ans : cette laine-là a vu un berger cette saison.",
+     "donneDecouverte": "d.troupeau_compte",
+     "image": null,
+     "description": "",
+     "promptImage": "",
+     "etat": "acompleter",
+     "alertes": [
+      "imageManquante"
+     ]
+    }
+   ],
+   "suite": "troupeau-sans-berger-2",
+   "donneDecouverte": "d.troupeau_compte",
+   "image": {
+    "fichier": "monstre_troupeau_sans_berger_a.png",
+    "hash": "8e186904",
+    "taille": 24420,
+    "recent": false,
+    "existe": true
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "troupeau-sans-berger-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "troupeau-sans-berger-2",
+   "narration": [
+    "Une brebis s\\u2019écarte du groupe et marche droit vers le nord-est, s\\u2019arrête, revient. Puis recommence. Cinq fois pendant que tu la regardes.",
+    "Elle refait un trajet. Elle attend au bout de quelque chose qui n\\u2019arrive plus.",
+    "Dans cette direction, à un quart d\\u2019heure de marche, il y a le Champ des Fixés."
+   ],
+   "choix": [
+    {
+     "id": "troupeau-suivre",
+     "label": "Suivre la brebis",
+     "type": "orientation",
+     "dest": "champ-des-fixes",
+     "modeArrivee": "tire a l execution"
+    },
+    {
+     "id": "troupeau-prendre",
+     "label": "Prendre une bête",
+     "type": "passif",
+     "consequence": "Tu choisis la seule qui te laisse faire — la meneuse, sa clochette au cou. Elle te suit sans un bruit, et le troupeau ne bronche pas. C\\u2019est après, en mangeant, que la phrase te vient toute seule : tu viens de prendre ce qui appartenait à un pendu. Si on te voit au hameau avec cette laine, on saura compter jusqu\\u2019à cinq.",
+     "donneObjet": "clochette-meneuse",
+     "poseEtat": "marque",
+     "repondBesoin": "manger",
+     "exigeEtat": "affame"
+    },
+    {
+     "id": "troupeau-continuer",
+     "label": "Continuer ton chemin",
+     "type": "passif",
+     "consequence": "Tu t\\u2019éloignes, et le troupeau se referme derrière toi comme de l\\u2019eau. Dans ton dos, une clochette. Une seule, quelque part au milieu des bêtes — celle qu\\u2019on met au cou de la meneuse, pour que le berger sache où est son troupeau dans le brouillard. Elle sonne toute seule, pour personne."
+    }
+   ],
+   "pointsInteret": [],
+   "image": {
+    "fichier": "monstre_troupeau_sans_berger_a.png",
+    "hash": "8e186904",
+    "taille": 24420,
+    "recent": false,
+    "existe": true
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "champ-des-fixes"
+   ],
+   "mèneIci": [
+    "troupeau-sans-berger"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
    "id": "tour-de-guet",
    "narration": [
     "La tour n'a plus de sommet. Elle s'arrête net à mi-hauteur, sur une bouche de pierres arrachées, et le reste est en tas autour du pied — pas éboulé, EMPILÉ. Quelqu'un a rangé les décombres.",
@@ -4011,6 +4131,13 @@
     "Au bout de la rangée, un étal différent : bric-à-brac d'ailleurs, objets qui n'ont rien à faire dans une lande. Le Colporteur te regarde venir de loin — et te reconnaît. C'est impossible. Il te fait signe quand même, comme à un client de longue date."
    ],
    "choix": [
+    {
+     "id": "colporteur-viande",
+     "label": "Demander d\\u2019où vient la viande",
+     "type": "passif",
+     "consequence": "Il suit ton regard jusqu\\u2019aux quartiers salés pendus sous l\\u2019étal, et pour la première fois son sourire de marchand se simplifie. « Me demande pas d\\u2019où ça vient. » Il remonte la toile dessus, sans hâte. « Moi je revends. »",
+     "exigeDecouverte": "d.troupeau_compte"
+    },
     {
      "id": "sonneur-battant",
      "label": "Parler à l\\u2019homme sans étal",
@@ -6549,6 +6676,17 @@
    "type": "principal"
   },
   {
+   "de": "troupeau-sans-berger",
+   "vers": "troupeau-sans-berger-2",
+   "type": "principal"
+  },
+  {
+   "de": "troupeau-sans-berger-2",
+   "vers": "champ-des-fixes",
+   "type": "conditionnel",
+   "par": "troupeau-suivre"
+  },
+  {
    "de": "tour-de-guet",
    "vers": "tour-de-guet-2",
    "type": "principal"
@@ -6676,325 +6814,361 @@
    "fichier": "monstre_appele_descente.png",
    "hash": "fb4ce0fd",
    "taille": 30568,
-   "recent": false
+   "recent": false,
+   "groupe": "attend",
+   "racine": "appele_descente"
   },
   {
    "fichier": "monstre_corde_vive_c.png",
    "hash": "29b70991",
    "taille": 26099,
-   "recent": false
+   "recent": false,
+   "groupe": "attend",
+   "racine": "corde_vive"
   },
   {
    "fichier": "monstre_deserteur_tribunal_a.png",
    "hash": "f1a92827",
    "taille": 33046,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "deserteur_tribunal"
   },
   {
    "fichier": "monstre_doyenne_b.png",
    "hash": "02343d96",
    "taille": 26282,
-   "recent": false
+   "recent": false,
+   "groupe": "attend",
+   "racine": "doyenne"
   },
   {
    "fichier": "monstre_fiancee_du_gibet_b.png",
    "hash": "52d270ac",
    "taille": 32561,
-   "recent": false
+   "recent": false,
+   "groupe": "attend",
+   "racine": "fiancee_du_gibet"
   },
   {
    "fichier": "monstre_fixe_confident_b.png",
    "hash": "bd08f765",
    "taille": 15528,
-   "recent": true
+   "recent": true,
+   "groupe": "autre",
+   "racine": "fixe_confident"
   },
   {
    "fichier": "monstre_geryon.png",
    "hash": "5c3ce062",
    "taille": 160500,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "geryon"
   },
   {
    "fichier": "monstre_juge_de_cendre_c.png",
    "hash": "9f6161b8",
    "taille": 29017,
-   "recent": false
+   "recent": false,
+   "groupe": "attend",
+   "racine": "juge_de_cendre"
   },
   {
    "fichier": "monstre_limiers.png",
    "hash": "ab9d3683",
    "taille": 121382,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "limiers"
   },
   {
    "fichier": "monstre_marcheur_a_rebours_d.png",
    "hash": "c339489a",
    "taille": 30888,
-   "recent": false
+   "recent": false,
+   "groupe": "attend",
+   "racine": "marcheur_a_rebours"
   },
   {
    "fichier": "monstre_ombre_grand_gibet_a.png",
    "hash": "0248a50f",
    "taille": 30711,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "ombre_grand_gibet"
   },
   {
    "fichier": "monstre_pendu_mal_fixe_v1_b.png",
    "hash": "9e0a2973",
    "taille": 7553,
-   "recent": false
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "pendu_mal_fixe"
   },
   {
    "fichier": "monstre_petite_fixee_c.png",
    "hash": "9a950537",
    "taille": 13622,
-   "recent": false
+   "recent": false,
+   "groupe": "attend",
+   "racine": "petite_fixee"
   },
   {
    "fichier": "monstre_rebouteux_a.png",
    "hash": "5db43f82",
    "taille": 21275,
-   "recent": false
+   "recent": false,
+   "groupe": "attend",
+   "racine": "rebouteux"
   },
   {
    "fichier": "monstre_recousu_c.png",
    "hash": "04f590d1",
    "taille": 27948,
-   "recent": false
+   "recent": false,
+   "groupe": "attend",
+   "racine": "recousu"
   },
   {
    "fichier": "monstre_rodeur.png",
    "hash": "76c37df5",
    "taille": 147768,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "rodeur"
   },
   {
    "fichier": "monstre_sonneur_sans_cloche_d.png",
    "hash": "9886b4ed",
    "taille": 15774,
-   "recent": false
-  },
-  {
-   "fichier": "monstre_troupeau_sans_berger_a.png",
-   "hash": "8e186904",
-   "taille": 24420,
-   "recent": false
+   "recent": false,
+   "groupe": "attend",
+   "racine": "sonneur_sans_cloche"
   },
   {
    "fichier": "monstre_veilleur_a.png",
    "hash": "6274a344",
    "taille": 7066,
-   "recent": true
+   "recent": true,
+   "groupe": "attend",
+   "racine": "veilleur"
   },
   {
    "fichier": "monstre_vent_qui_ment_b.png",
    "hash": "60cb884a",
    "taille": 29638,
-   "recent": false
+   "recent": false,
+   "groupe": "doublon",
+   "racine": "vent_qui_ment"
   },
   {
    "fichier": "monstre_vent_qui_ment_d.png",
    "hash": "45d233cc",
    "taille": 16802,
-   "recent": false
+   "recent": false,
+   "groupe": "doublon",
+   "racine": "vent_qui_ment"
   },
   {
    "fichier": "objet_crane.png",
    "hash": "a92b5ddd",
    "taille": 2523,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "crane"
   },
   {
    "fichier": "objet_dague.png",
    "hash": "f550e855",
    "taille": 1627,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "dague"
   },
   {
    "fichier": "objet_denonciation_vierge_c.png",
    "hash": "e0ebc424",
    "taille": 21260,
-   "recent": false
+   "recent": false,
+   "groupe": "attend",
+   "racine": "denonciation_vierge"
   },
   {
    "fichier": "objet_masque.png",
    "hash": "22931d8b",
    "taille": 4477,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "masque"
   },
   {
    "fichier": "objet_ordonnance_fixation_c.png",
    "hash": "51e7d59b",
    "taille": 17655,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "ordonnance_fixation"
   },
   {
    "fichier": "objet_registre_pendaisons_c.png",
    "hash": "05d75671",
    "taille": 25255,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "registre_pendaisons"
   },
   {
    "fichier": "objet_sceau_bailli_c.png",
    "hash": "f95ac07d",
    "taille": 12265,
-   "recent": false
-  },
-  {
-   "fichier": "relique_anneau_de_suie.png",
-   "hash": "4b0a4ea5",
-   "taille": 3241,
-   "recent": true
-  },
-  {
-   "fichier": "relique_clou_du_silence.png",
-   "hash": "152f2e47",
-   "taille": 4086,
-   "recent": true
-  },
-  {
-   "fichier": "relique_dent_du_decompte.png",
-   "hash": "e4959469",
-   "taille": 5092,
-   "recent": true
-  },
-  {
-   "fichier": "relique_eclat_de_de_fele.png",
-   "hash": "87c6ffdc",
-   "taille": 27279,
-   "recent": true
-  },
-  {
-   "fichier": "relique_miroir_noye.png",
-   "hash": "e02371e8",
-   "taille": 4774,
-   "recent": true
-  },
-  {
-   "fichier": "relique_nom_que_echo_a_garde.png",
-   "hash": "762f4dca",
-   "taille": 14370,
-   "recent": true
-  },
-  {
-   "fichier": "relique_oeil_lanterne_verte.png",
-   "hash": "76e01835",
-   "taille": 7126,
-   "recent": true
-  },
-  {
-   "fichier": "relique_sablier_sans_sable.png",
-   "hash": "914b2800",
-   "taille": 6463,
-   "recent": true
+   "recent": false,
+   "groupe": "autre",
+   "racine": "sceau_bailli"
   },
   {
    "fichier": "scene_borne_frontiere_a_c.png",
    "hash": "6de463ec",
    "taille": 25472,
-   "recent": false
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "borne_frontiere"
   },
   {
    "fichier": "scene_champ_des_fixes_c.png",
    "hash": "87694710",
    "taille": 30015,
-   "recent": false
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "champ_des_fixes"
   },
   {
    "fichier": "scene_champ_poteaux_vierges_a_a.png",
    "hash": "cb7e22bb",
    "taille": 22794,
-   "recent": false
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "champ_poteaux_vierges"
   },
   {
    "fichier": "scene_landes_hameau_puits_b.png",
    "hash": "edb6e6e7",
    "taille": 31210,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "landes_hameau_puits"
   },
   {
    "fichier": "scene_landes_tribunal_b.png",
    "hash": "d32865f3",
    "taille": 25191,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "landes_tribunal"
   },
   {
    "fichier": "scene_mare_miroir_a_b.png",
    "hash": "01d77b54",
    "taille": 4700,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "mare_miroir"
   },
   {
    "fichier": "scene_moulin_sans_ailes_c.png",
    "hash": "eb6852f6",
    "taille": 25528,
-   "recent": false
+   "recent": false,
+   "groupe": "doublon",
+   "racine": "moulin_sans_ailes"
   },
   {
    "fichier": "scene_moulin_sans_ailes_d_d.png",
    "hash": "a916da10",
    "taille": 27850,
-   "recent": false
+   "recent": false,
+   "groupe": "doublon",
+   "racine": "moulin_sans_ailes"
   },
   {
    "fichier": "scene_puits_condamne_a.png",
    "hash": "4c2af433",
    "taille": 26792,
-   "recent": false
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "puits_condamne"
   },
   {
    "fichier": "scene_transition_arrivee_hameau_b.png",
    "hash": "9a67d38f",
    "taille": 24021,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "transition_arrivee_hameau"
   },
   {
    "fichier": "scene_transition_borne_sud_a.png",
    "hash": "3549e082",
    "taille": 21867,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "transition_borne_sud"
   },
   {
    "fichier": "scene_transition_chemin_murets_b.png",
    "hash": "2f92c349",
    "taille": 32733,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "transition_chemin_murets"
   },
   {
    "fichier": "scene_transition_crete_cordes_b.png",
    "hash": "ba9bee98",
    "taille": 23613,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "transition_crete_cordes"
   },
   {
    "fichier": "scene_transition_croisee_sud_b.png",
    "hash": "e73299d9",
    "taille": 28654,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "transition_croisee_sud"
   },
   {
    "fichier": "scene_transition_croix_craie_c.png",
    "hash": "fe6a4b97",
    "taille": 19676,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "transition_croix_craie"
   },
   {
    "fichier": "scene_transition_hommes_suivent_b.png",
    "hash": "2a3c3148",
    "taille": 20174,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "transition_hommes_suivent"
   },
   {
    "fichier": "scene_transition_vols_basses_b.png",
    "hash": "0b3e593b",
    "taille": 25157,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "transition_vols_basses"
   },
   {
    "fichier": "scene_verger_fruits_a_c.png",
    "hash": "07314d6e",
    "taille": 16911,
-   "recent": false
+   "recent": false,
+   "groupe": "autre",
+   "racine": "verger_fruits"
   }
  ],
  "reliques": [
@@ -8009,13 +8183,13 @@
   ]
  },
  "totaux": {
-  "scenes": 87,
-  "pointsInteret": 45,
-  "choix": 217,
+  "scenes": 89,
+  "pointsInteret": 46,
+  "choix": 224,
   "illustrations": 241,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 54,
+  "reserve": 45,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
