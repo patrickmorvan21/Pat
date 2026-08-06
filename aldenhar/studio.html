@@ -242,6 +242,8 @@ button{background:none;border:none;cursor:pointer}
 .ptab:hover{color:var(--b70)}
 .pcorps{padding:14px 16px 40px}
 .sect{margin-bottom:20px}
+/* Sous-titre de regroupement dans la vue Systèmes (transitions). */
+.sub{margin:18px 0 8px;font-size:10px;letter-spacing:1.4px;color:var(--b50);text-transform:uppercase}
 .sect>h3{margin:0 0 8px;font-size:10px;letter-spacing:1.4px;color:var(--b30);text-transform:uppercase;
   display:flex;align-items:center;gap:8px}
 .sect>h3 button{font-size:10px;color:var(--b30);border:1px solid var(--b20);padding:2px 6px;margin-left:auto}
@@ -262,7 +264,7 @@ button{background:none;border:none;cursor:pointer}
 .ch .iss{margin-top:7px;padding-left:25px;font-size:11px;color:var(--b50);line-height:1.55}
 /* Systèmes du 5/08 : la déposition d'un témoin se lit comme une citation, pas
    comme une issue de dé — filet gauche orange pour la distinguer. */
-.ch .iss.temoin{border-left:2px solid var(--or);padding-left:10px;margin-left:25px;color:var(--b50)}
+.ch .iss.temoin{border-left:2px solid var(--orange);padding-left:10px;margin-left:25px;color:var(--b50)}
 .sysnote{font-size:10px;color:var(--b30);margin:3px 0 0}
 .ch .iss b{color:var(--b70);font-weight:400}
 .ch .fx{margin-top:6px;padding-left:25px;display:flex;gap:6px;flex-wrap:wrap}
@@ -1698,7 +1700,7 @@ function vueSystemes(){
       <div class="iss">
         <div><b>Manifestation</b> — ${esc(e.manifestation)}</div>
         ${e.reactions.map(r=>`<div><b>Le monde</b> — ${esc(r)}</div>`).join("")}
-        ${e.hint?`<div style="color:var(--or)"><b>Sous l'anneau</b> — ${esc(e.hint)}</div>`:""}
+        ${e.hint?`<div style="color:var(--orange)"><b>Sous l'anneau</b> — ${esc(e.hint)}</div>`:""}
         ${src.length?`<div><b>S'attrape</b> — ${src.map(x=>`${esc(x.l)} <em style="color:var(--b30)">(${esc(x.q)}, ${esc(nomScene(x.s))})</em>`).join(" · ")}</div>`
           :`<div style="color:var(--b30)"><b>S'attrape</b> — hors scène (${esc(e.source)})</div>`}
         ${ouv.length?`<div><b>Ouvre</b> — ${ouv.map(x=>`${esc(x.l)} <em style="color:var(--b30)">(${esc(nomScene(x.s))})</em>`).join(" · ")}</div>`:""}
@@ -1714,8 +1716,52 @@ function vueSystemes(){
       <div class="iss"><div><b>Y répondent</b> — ${b.remedes.map(r=>esc(nomScene(r))).join(" · ")||"—"}</div>
       <div style="color:var(--b30)">route sûre : ${esc(nomScene(b.routeSure))} · route risquée : ${esc(nomScene(b.routeRisquee))}</div></div></div>`).join("")}</div>`;
 
+  /* LES TRANSITIONS. Le texte le plus VU du jeu, et il n'apparaissait nulle
+     part ici : une liaison n'est pas une scène, elle est fabriquée à
+     l'exécution. On pouvait donc écrire quatorze vignettes de village sans
+     qu'aucune soit visible dans l'éditeur. Regroupées par CONTEXTE, parce que
+     la vraie question à trancher est « à qui celle-ci est-elle réservée ». */
+  const tr=D.transitions||{fond:[],variantes:[],bifurcations:[]};
+  const libCond=c=>{
+    const o=[];
+    if(c.from) o.push(c.from[0]==="HAMEAU_INTERIOR"?"dans le village":"en venant de "+c.from.map(nomScene).join(" ou "));
+    if(c.to) o.push("vers "+c.to.map(nomScene).join(" ou "));
+    if(c.serment) o.push("serment "+c.serment.join(" ou "));
+    if(c.minSoupcon!=null) o.push("soupçon ≥ "+c.minSoupcon);
+    if(c.maxSoupcon!=null) o.push("soupçon ≤ "+c.maxSoupcon);
+    if(c.maxHealth!=null) o.push("blessé");
+    if(c.chapter) o.push("chapitre "+c.chapter);
+    if(c.carrying) o.push("porte « "+c.carrying+" »");
+    return o;
+  };
+  const groupes=[
+    ["Dans le village", v=>(v.conditions.from||[])[0]==="HAMEAU_INTERIOR"],
+    ["Selon d'où tu viens", v=>v.conditions.from && (v.conditions.from||[])[0]!=="HAMEAU_INTERIOR"],
+    ["Selon où tu vas", v=>!v.conditions.from && v.conditions.to],
+    ["Selon ton état", v=>!v.conditions.from && !v.conditions.to],
+  ];
+  const vus=new Set();
+  out+=h(`Les ${tr.variantes.length+tr.fond.length} textes de marche`)+
+    p("Ce qu'on lit ENTRE deux lieux — le texte le plus vu du jeu. La plus spécifique éligible gagne ; à défaut, le fond générique. Un texte servi ne revient jamais dans la même vie.")+
+    groupes.map(([titre,f])=>{
+      const l=tr.variantes.filter(v=>!vus.has(v.texte)&&f(v));
+      l.forEach(v=>vus.add(v.texte));
+      if(!l.length) return "";
+      return `<div class="sub">${esc(titre)} <span style="color:var(--b30)">· ${l.length}</span></div>
+        <div class="sect">${l.map(v=>{
+          const cs=libCond(v.conditions);
+          return `<div class="ch"><div class="l1"><span class="tags">${
+            cs.map(x=>`<span class="tag${/serment|soupçon|blessé|porte/.test(x)?" st":""}">${esc(x)}</span>`).join("")}</span></div>
+          <div class="iss"><div>${esc(v.texte)}</div></div></div>`;}).join("")}</div>`;
+    }).join("")+
+    `<div class="sub">Fond générique <span style="color:var(--b30)">· ${tr.fond.length}</span></div>
+     <div class="sect">${tr.fond.map(t=>`<div class="ch"><div class="iss"><div>${esc(t)}</div></div></div>`).join("")}</div>
+     <div class="sub">Bifurcations <span style="color:var(--b30)">· ${tr.bifurcations.length}</span></div>
+     ${p("La phrase qui annonce les deux routes. La signature (« Deux directions s'ouvrent… ») ne sert qu'à la PREMIÈRE Croisée d'une vie ; ensuite ce sont celles-ci.")}
+     <div class="sect">${tr.bifurcations.map(t=>`<div class="ch"><div class="iss"><div>${esc(t)}</div></div></div>`).join("")}</div>`;
+
   out+=h("La loi du Domaine")+p("Jamais énoncée en jeu. Elle se constate, cas après cas — et elle prépare le twist final sans le révéler.")+
-    `<div class="sect" style="max-width:78ch"><p class="para" style="color:var(--or)">${esc(loi.loi||"—")}</p>
+    `<div class="sect" style="max-width:78ch"><p class="para" style="color:var(--orange)">${esc(loi.loi||"—")}</p>
      ${(loi.manifestations||[]).map(m=>`<div class="ch"><div class="l1"><span class="tags">
        <span class="tag">${esc(m.registre||"")}</span></span></div>
        <div class="iss"><div>${esc(m.texte||"")}</div></div></div>`).join("")}</div>`;
@@ -1727,7 +1773,7 @@ function vueSystemes(){
       <span class="tags"><span class="tag st">${esc(r.rarete)}</span><span class="tag">mort : ${esc(r.mort)}</span></span></div>
       <div class="iss"><div><b>Don</b> — ${esc(r.fonction||"")} <em style="color:var(--b30)">(${esc(DONS[r.don]||r.don)})</em></div>
       <div><b>Dette</b> — ${esc(r.cout||"")} <em style="color:var(--b30)">(${esc(DETTES[r.dette]||r.dette)})</em></div>
-      ${r.murmure?`<div style="color:var(--or)">« ${esc(r.murmure)} »</div>`:""}</div></div>`).join("")}</div>`;
+      ${r.murmure?`<div style="color:var(--orange)">« ${esc(r.murmure)} »</div>`:""}</div></div>`).join("")}</div>`;
 
   out+=h(`Les ${faits.length} faits variables`)+
     p("Le Domaine ne raconte pas la même histoire d'une vie à l'autre. Une seule version est vraie par run, tirée par l'index de la run. Deux versions lues dans deux vies = une contradiction opposable au Registre.")+
@@ -1735,7 +1781,7 @@ function vueSystemes(){
       <span class="lab"><b style="font-weight:400">${esc(f.sujet)}</b></span>
       <span class="tags"><span class="tag">${f.versions.length} versions</span></span></div>
       <div class="iss">${f.versions.map(v=>`<div><b>${esc(v.id)}</b> — ${esc(v.texte)}</div>`).join("")}
-      <div style="color:var(--or)"><b>Au tribunal</b> — ${esc(f.accusation)}</div></div></div>`).join("")}</div>`;
+      <div style="color:var(--orange)"><b>Au tribunal</b> — ${esc(f.accusation)}</div></div></div>`).join("")}</div>`;
 
   const cles=Object.keys(perc);
   out+=h(`Les filtres de perception (${cles.length} lieux)`)+
