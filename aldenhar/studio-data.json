@@ -52,8 +52,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-07T12:47:14Z",
- "commit": "42287f8",
+ "genere": "2026-08-07T13:33:29Z",
+ "commit": "23a38d6",
  "zones": [
   {
    "id": "landes",
@@ -3787,9 +3787,9 @@
    },
    "hameauHalte": true,
    "image": {
-    "fichier": "monstre_temoin_ruelle_v5_d.png",
-    "hash": "b3324887",
-    "taille": 119808,
+    "fichier": "monstre_temoin_ruelle_v6_b.png",
+    "hash": "6e0b95d8",
+    "taille": 15619,
     "recent": false,
     "existe": true
    },
@@ -6933,7 +6933,7 @@
    "fichier": "monstre_grand_temoin_v4_c.png",
    "hash": "4b5989a3",
    "taille": 22770,
-   "recent": false,
+   "recent": true,
    "groupe": "doublon",
    "racine": "grand_temoin"
   },
