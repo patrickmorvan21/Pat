@@ -1,6 +1,6 @@
 {
- "genere": "2026-08-07T12:47:14Z",
- "commit": "42287f8",
+ "genere": "2026-08-07T12:48:50Z",
+ "commit": "b74abcf",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -367,7 +367,7 @@
    "taille": 22770,
    "modifie": "2026-08-07T12:46:12Z",
    "hash": "4b5989a3",
-   "recent": false
+   "recent": true
   },
   "monstre_guetteur_tour_c.png": {
    "taille": 6029,
@@ -595,7 +595,7 @@
    "taille": 119808,
    "modifie": "2026-08-07T12:46:11Z",
    "hash": "b3324887",
-   "recent": false
+   "recent": true
   },
   "monstre_troupeau_brebis_v2_b.png": {
    "taille": 23924,
