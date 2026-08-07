@@ -6640,6 +6640,24 @@ function pickWalkImage(optA: string, optB: string, seed: number, from?: string):
 }
 
 /**
+ * LA COUTURE DU VILLAGE (retour playtest 6/08 soir : « je passe du Fossoyeur
+ * à une scène au sein du hameau, c'est incompréhensible »). Quand une marche
+ * FRANCHIT la limite du village — dans un sens ou dans l'autre — une ligne le
+ * dit AVANT la phrase d'approche. Jouée à l'ARRIVÉE, quand la destination est
+ * connue : une ambiance de Croisée ne peut pas la porter, elle décrirait une
+ * seule des deux routes (leçon du 5/08).
+ */
+export const FRANCHIT_ENTREE: string[] = [
+  "Les murets se resserrent, et la bruyère cède aux ornières. Te voilà de retour entre les toits du hameau — la barrière est ouverte, et personne ne fait mine de te compter. Ce qui veut dire qu'on a déjà fini.",
+  "Le chemin redescend vers les toits gris. Tu repasses la limite du village sans t'en apercevoir tout à fait : un muret, un seuil, et le bruit de la lande qui s'arrête net derrière toi.",
+];
+
+export const FRANCHIT_SORTIE: string[] = [
+  "Tu repasses le muret d'enceinte, et le village te lâche d'un coup — plus de toits, plus de volets, plus de regards. La lande reprend, immense, et le vent te retrouve comme s'il t'avait attendu.",
+  "Les dernières maisons s'espacent, puis renoncent. Devant toi la bruyère morte reprend ses droits jusqu'à l'horizon. Dans ton dos, quelqu'un referme une porte, sans se presser.",
+];
+
+/**
  * Phrase d'APPROCHE d'un lieu (retour playtest 24/07 : « sans marcher et voir
  * le hameau au loin ») : jouée à l'arrivée, AVANT la description du lieu. On
  * voit la destination se dresser, on y marche — la transition est vécue, pas

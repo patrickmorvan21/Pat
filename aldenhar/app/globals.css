@@ -162,35 +162,24 @@ body {
   opacity: 0;
   z-index: 8;
 }
-.die-flash.crit-success {
-  background: var(--color-ink);
-  animation: flashout 0.5s steps(4) forwards;
+/* LE CONTOUR DU DESTIN (retour playtest 6/08 soir — « ça flash trop ») :
+   plus aucun flash plein écran, sur aucun palier. Au nat 20, les 4 bords de
+   l'écran diffusent des pixels blancs (data-URL tramé posé par Die3D,
+   background-size 100% pour suivre le cadre, pixelated). Respiration par
+   paliers, retombée lente — plus doux, plus frappant. Les échecs critiques
+   n'ont plus d'effet d'écran : c'est le DÉ qui devient noir à contour
+   orange (textures des faces, Die3D). */
+.die-flash.edge-destin {
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  animation: edge-destin 1.6s steps(8) forwards;
 }
-.die-flash.crit-fail {
-  background: var(--color-drama);
-  animation: flashout 0.6s steps(4) forwards;
-}
-@keyframes flashout {
-  0% { opacity: 0.85; }
+@keyframes edge-destin {
+  0% { opacity: 0; }
+  12% { opacity: 1; }
+  38% { opacity: 0.65; }
+  55% { opacity: 0.9; }
   100% { opacity: 0; }
-}
-/* Échec critique (13/07) : flash bref brique puis noir total, forte secousse. */
-.die-flash.critique {
-  animation: flash-critique 0.7s steps(4) forwards;
-}
-@keyframes flash-critique {
-  0% { opacity: 0.85; background: var(--color-drama); }
-  35% { opacity: 1; background: #000; }
-  100% { opacity: 0; background: #000; }
-}
-/* Malédiction (nat 1) : la variante la plus sombre — noir qui s'attarde. */
-.die-flash.malediction {
-  animation: flash-malediction 1.1s steps(5) forwards;
-}
-@keyframes flash-malediction {
-  0% { opacity: 0.9; background: var(--color-drama); }
-  25%, 65% { opacity: 1; background: #000; }
-  100% { opacity: 0; background: #000; }
 }
 
 /* Halo tramé du dé (résolution graduée 13/07) : disque de pixels orange,
@@ -1109,3 +1098,28 @@ body {
   z-index: 6;
 }
 .die-etats.hidden { display: none; }
+
+/* LE VOLET D'ÉTAT (retour playtest 6/08 soir) : monte du bas, 1/3 de
+   l'écran, montée en PALIERS — jamais un glissement fluide. */
+.etat-volet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 33.34%;
+  background: var(--color-bg);
+  border-top: 2px solid var(--color-accent);
+  animation: etat-volet-in 0.28s steps(4) both;
+}
+@keyframes etat-volet-in {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.etat-volet-eyebrow {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  opacity: 0.5;
+}

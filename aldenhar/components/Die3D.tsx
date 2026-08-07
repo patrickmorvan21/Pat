@@ -122,6 +122,41 @@ function getHaloDataUrl(): string | null {
   return haloCache;
 }
 
+/**
+ * CONTOUR DU DESTIN (retour playtest 6/08 soir) : au nat 20, plus de flash —
+ * les 4 bords de l'écran diffusent des pixels BLANCS, denses au ras du bord
+ * et raréfiés vers l'intérieur. Densité par seuillage Bayer, jamais un
+ * dégradé. Généré une fois (basse résolution, upscalé pixelated par le CSS).
+ */
+let edgeCache: string | null = null;
+function getEdgeGlowDataUrl(): string | null {
+  if (typeof document === "undefined") return null;
+  if (!edgeCache) {
+    const W = 130, H = 267, PROF = 16;
+    const BAYER4 = [
+      [0, 8, 2, 10],
+      [12, 4, 14, 6],
+      [3, 11, 1, 9],
+      [15, 7, 13, 5],
+    ].map((row) => row.map((v) => (v + 0.5) / 16));
+    const c = document.createElement("canvas");
+    c.width = W;
+    c.height = H;
+    const ctx = c.getContext("2d")!;
+    ctx.fillStyle = "#ffffff";
+    for (let y = 0; y < H; y++) {
+      for (let x = 0; x < W; x++) {
+        const d = Math.min(x, y, W - 1 - x, H - 1 - y);
+        if (d >= PROF) continue;
+        const density = (1 - d / PROF) ** 2 * 0.9;
+        if (density > BAYER4[y % 4][x % 4]) ctx.fillRect(x, y, 1, 1);
+      }
+    }
+    edgeCache = c.toDataURL();
+  }
+  return edgeCache;
+}
+
 export default function Die3D({ request, onComplete }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -218,6 +253,37 @@ export default function Die3D({ request, onComplete }: Props) {
       const tx = new THREE.CanvasTexture(c);
       // Sans ça, Three.js interprète le canvas comme linéaire et délave
       // l'orange #e0632a en saumon pâle au rendu.
+      tx.colorSpace = THREE.SRGBColorSpace;
+      tx.magFilter = THREE.NearestFilter;
+      tx.minFilter = THREE.NearestFilter;
+      return tx;
+    }
+
+    /**
+     * Face NOIRE du critique (retour playtest 6/08 soir) : le flash plein
+     * écran est supprimé — c'est le DÉ qui porte le verdict. Noir pur, cadre
+     * orange épais, chiffre orange. Appliquée à TOUTES les faces au settle
+     * d'un FUNESTE/MALÉDICTION : l'objet entier devient noir cerclé d'orange.
+     */
+    function faceNoire(n: number) {
+      const s = 96;
+      const c = document.createElement("canvas");
+      c.width = c.height = s;
+      const ctx = c.getContext("2d")!;
+      ctx.fillStyle = "#000000";
+      ctx.fillRect(0, 0, s, s);
+      // ⚠️ FACE = l'orange, INK = le charbon (piège d'inversion : sur les
+      // faces normales l'orange est le FOND). Ici le cadre et le chiffre
+      // doivent être ORANGE sur noir.
+      ctx.strokeStyle = FACE;
+      ctx.lineWidth = 7;
+      ctx.strokeRect(5, 5, s - 10, s - 10);
+      ctx.fillStyle = FACE;
+      ctx.font = 'bold 36px "Roboto Mono", monospace';
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(String(n), s / 2, s / 2 + 12);
+      const tx = new THREE.CanvasTexture(c);
       tx.colorSpace = THREE.SRGBColorSpace;
       tx.magFilter = THREE.NearestFilter;
       tx.minFilter = THREE.NearestFilter;
@@ -411,7 +477,19 @@ export default function Die3D({ request, onComplete }: Props) {
       settleQuat: THREE.Quaternion | null = null,
       settleT = 0;
 
+    let facesNoircies = false;
     function resetFaces() {
+      // Après un FUNESTE, le dé entier a été noirci (retour 6/08) — on
+      // restaure les 20 faces, pas seulement la gagnante.
+      if (facesNoircies) {
+        for (let i = 0; i < 20; i++) {
+          mats[i].map = faceTexture(i + 1, i % 3, false);
+          mats[i].needsUpdate = true;
+        }
+        facesNoircies = false;
+        result = 0;
+        return;
+      }
       if (result > 0) {
         mats[result - 1].map = faceTexture(result, (result - 1) % 3, false);
         mats[result - 1].needsUpdate = true;
@@ -701,22 +779,29 @@ export default function Die3D({ request, onComplete }: Props) {
       mats[result - 1].map = faceTexture(result, 0, lit);
       mats[result - 1].needsUpdate = true;
 
-      // Flashes plein écran par palier.
+      // Retour playtest 6/08 soir : « quand on fait un 20 ça flash trop,
+      // pareil pour funeste ». Les flashs plein écran sont SUPPRIMÉS.
+      //  - Destin : le CONTOUR de l'écran diffuse des pixels blancs (semis
+      //    tramé sur les 4 bords, jamais un dégradé) — plus doux, plus
+      //    frappant.
+      //  - Funeste/Malédiction : le DÉ devient tout noir à contour orange —
+      //    c'est l'objet qui porte le verdict, pas l'écran.
       flash!.className = "die-flash";
-      void flash!.offsetWidth;
       if (tier === "destin") {
-        flash!.classList.add("crit-success");
+        const edgeUrl = getEdgeGlowDataUrl();
+        if (edgeUrl) flash!.style.backgroundImage = `url(${edgeUrl})`;
+        void flash!.offsetWidth;
+        flash!.classList.add("edge-destin");
         haptic([30, 40, 80]);
-      } else if (tier === "malediction") {
-        flash!.classList.add("malediction");
+      } else if (tier === "malediction" || tier === "critique") {
+        for (let i = 0; i < 20; i++) {
+          mats[i].map = faceNoire(i + 1);
+          mats[i].needsUpdate = true;
+        }
+        facesNoircies = true;
         phone?.classList.add("quake");
-        setTimeout(() => phone?.classList.remove("quake"), 450);
-        haptic([90, 50, 140, 60, 90]);
-      } else if (tier === "critique") {
-        flash!.classList.add("critique");
-        phone?.classList.add("quake");
-        setTimeout(() => phone?.classList.remove("quake"), 380);
-        haptic([70, 40, 100]);
+        setTimeout(() => phone?.classList.remove("quake"), tier === "malediction" ? 450 : 380);
+        haptic(tier === "malediction" ? [90, 50, 140, 60, 90] : [70, 40, 100]);
       }
 
       // Halo tramé par palier : intense (Destin), franc (éclatante), sobre

@@ -35,6 +35,8 @@ import {
   APPARITION_TEMOIN,
   tailleTroupeau,
   ligneTroupeau,
+  FRANCHIT_ENTREE,
+  FRANCHIT_SORTIE,
 } from "@/lib/scene-data";
 import { contradictionsConnues, faitById, versionDuFait } from "@/lib/contradictions";
 import { manifestationLoi } from "@/lib/loi-substitution";
@@ -458,6 +460,10 @@ export default function Scene() {
   // Défenses ouvertes au procès par les témoins réellement présents (5/08).
   // Miroir de rendu : jamais `runRef.current` pendant le render.
   const [defenses, setDefenses] = useState<string[]>([]);
+  // Miroir de `run.trav.visited` pour le RENDU (React Compiler : jamais
+  // `runRef.current` dans le corps du composant) — filtre des orientations
+  // vers un lieu déjà traversé (retour 6/08 soir).
+  const [visitedMirror, setVisitedMirror] = useState<string[]>([]);
   // Le RENONCEMENT est-il offert sur cet écran ? Serment juré ET tenu.
   const [renoncePossible, setRenoncePossible] = useState(false);
   // Écrans restants de la séquence courante (micro-beats). state + ref : les
@@ -471,6 +477,10 @@ export default function Scene() {
   // Scène chronométrée (§18) : true une fois le délai écoulé sans choix.
   const [timedExpired, setTimedExpired] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  // LE VOLET D'ÉTAT (retour playtest 6/08 soir) : tap sur la puce d'un état
+  // qu'on vient d'attraper → un volet monte du bas (1/3 de l'écran) avec le
+  // détail. Affichage pur : ne consomme ni tour ni dé, se ferme au tap.
+  const [voletEtat, setVoletEtat] = useState<{ id: string; label: string; positive: boolean } | null>(null);
   const [countdownArmed, setCountdownArmed] = useState(false);
   const runRef = useRef<RunState | null>(null);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -542,6 +552,14 @@ export default function Scene() {
   const volPossible =
     affame && (scene.tags ?? []).some((t) => t === "food_available" || t === "stealable");
   const baseChoices = rawChoices.filter((c) => {
+    // Retour playtest 6/08 soir : la brebis du Troupeau ramenait à un Champ
+    // des Fixés DÉJÀ traversé — on rejouait le Fossoyeur mot pour mot. Un
+    // choix d'orientation posé DANS une scène (hors Croisée : les options
+    // d'une liaison sont déjà filtrées sur le non-visité) disparaît si sa
+    // destination a été vue. La brebis y va quand même ; toi, tu sais déjà
+    // ce qu'il y a au bout.
+    if (c.orient && !scene.liaison && visitedMirror.includes(c.orient.dest))
+      return false;
     // #1 Le choix qui expire (6/08) : une fois l'érosion finie, l'option
     // n'existe plus — perdre le temps coûte une occasion, jamais la vie.
     if (c.id === expRetire) return false;
@@ -868,6 +886,7 @@ export default function Scene() {
       // conséquence transitoire du dernier choix est perdue (sans importance).
       const cur = sceneFromTrav(run.trav, run);
       setScene(cur);
+      setVisitedMirror(run.trav.visited);
       const illo = cur.illustration ?? PORTAL;
       lastSceneIlloRef.current = illo;
       setImage(illo);
@@ -906,6 +925,7 @@ export default function Scene() {
       if (dettePortee === "usure") run.health = Math.min(run.health, 0.82);
       const opening = sceneFromTrav(run.trav); // = la Borne (ENTRY_SCENE)
       setScene(opening);
+      setVisitedMirror(run.trav.visited);
       const illo = opening.illustration ?? PORTAL;
       lastSceneIlloRef.current = illo;
       setImage(illo);
@@ -1418,6 +1438,18 @@ export default function Scene() {
     // Approche d'un lieu (retour playtest 24/07) : en arrivant par une
     // orientation, on VOIT d'abord la destination se dresser et on y marche —
     // la transition entre deux lieux est jouée, plus jamais sautée.
+    // LA COUTURE DU VILLAGE (6/08 soir) : si cette marche FRANCHIT la limite
+    // du hameau, la ligne de franchissement précède l'approche — on ne se
+    // téléporte plus d'un champ à une ruelle.
+    if (opts?.toDest) {
+      const origine = trav.visited.length >= 2 ? trav.visited[trav.visited.length - 2] : undefined;
+      const entre = isHameauInterior(opts.toDest) && !isHameauInterior(origine);
+      const sort = !isHameauInterior(opts.toDest) && isHameauInterior(origine);
+      if (entre || sort) {
+        const pool = entre ? FRANCHIT_ENTREE : FRANCHIT_SORTIE;
+        entries.push({ id: nextId(), kind: "narration", text: pool[nextStep % pool.length] });
+      }
+    }
     if (opts?.toDest && APPROACH_NARRATION[opts.toDest]) {
       entries.push({ id: nextId(), kind: "narration", text: APPROACH_NARRATION[opts.toDest] });
     }
@@ -1674,6 +1706,7 @@ export default function Scene() {
 
     setStep(nextStep);
     setScene(nextScene);
+    setVisitedMirror(trav.visited);
     // On quitte l'écran : les points d'intérêt du lieu précédent sont oubliés
     // et l'image repasse en plan large (spec 24/07 suite §1).
     setPoiSeen([]);
@@ -1765,15 +1798,23 @@ export default function Scene() {
     // ⚠️ PLAFOND D'AFFICHAGE de trois (spec §2) — ce n'est pas une limite du
     // système : les autres restent actifs et consultables dans Essence. On
     // garde les plus RÉCENTS : ce qui vient d'arriver au héros se lit d'abord.
-    const bandeau = [
+    // ⚠️ Retour playtest 6/08 soir (« toujours apparent, casse l'interface ») :
+    // le bandeau n'annonce plus les états ACTIFS à chaque écran — seulement
+    // ceux qu'on VIENT d'attraper. Le détail vit dans le volet (tap sur la
+    // puce) et dans Essence ; l'érosion de l'UI porte déjà l'état du corps.
+    const tousActifs = [
       ...etatsActifs(idsEtats(faitsAv))
-        .slice(-PLAFOND_AFFICHAGE)
         .map((e) => ({ effectId: e.id, label: e.nom, positive: e.groupe === "faveur" })),
       ...activeEffects.map((e) => ({ effectId: e.id, label: e.label, positive: e.delta > 0 })),
-    ].slice(0, PLAFOND_AFFICHAGE);
-    if (opts?.result !== undefined && bandeau.length > 0) {
+    ];
+    const dejaAnnonces = runRef.current?.etatsAffiches ?? [];
+    const bandeau = tousActifs.filter((e) => !dejaAnnonces.includes(e.effectId)).slice(0, PLAFOND_AFFICHAGE);
+    if (bandeau.length > 0) {
       entries.unshift({ id: nextId(), kind: "etat", effects: bandeau });
     }
+    // La liste mémorisée reflète TOUS les actifs : un état levé puis repris
+    // sera ré-annoncé (c'est une nouvelle prise), un état continu ne l'est plus.
+    persist((run) => { run.etatsAffiches = tousActifs.map((e) => e.effectId); });
     setSelectedId(null);
     setRoll(null);
     setTimedExpired(false);
@@ -2334,6 +2375,7 @@ export default function Scene() {
                 skip={skip}
                 onDone={() => onTypedDone(entry.id)}
                 prophetie={prophetieJour}
+                onEtat={(id, label, positive) => setVoletEtat({ id, label, positive })}
               />
             ))}
             <div ref={bottomRef} />
@@ -2633,8 +2675,58 @@ export default function Scene() {
             onRestart={() => window.location.reload()}
           />
         )}
+
+        {/* LE VOLET D'ÉTAT (retour playtest 6/08 soir) : 1/3 du bas, monte en
+            paliers, se ferme au tap n'importe où. Affichage pur. */}
+        {voletEtat && (
+          <div className="absolute inset-0 z-[40]" onClick={() => setVoletEtat(null)}>
+            <div className="etat-volet" onClick={(e) => e.stopPropagation()}>
+              <VoletEtat id={voletEtat.id} label={voletEtat.label} positive={voletEtat.positive} />
+              <button
+                type="button"
+                aria-label="Fermer"
+                onClick={() => setVoletEtat(null)}
+                className="absolute right-[14px] top-[10px] font-mono text-[16px] leading-none text-[var(--color-ink)] opacity-60"
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </main>
+  );
+}
+
+/**
+ * Contenu du volet d'état : la fiche vient de `lib/etats.ts` quand l'état en
+ * fait partie ; les effets HÉRITÉS (AGUERRI, ENTAILLÉ…) n'ont pas de fiche —
+ * on dit leur sens en mots, jamais leur chiffre.
+ */
+function VoletEtat({ id, label, positive }: { id: string; label: string; positive: boolean }) {
+  const fiche = etat(id);
+  const sens = positive
+    ? "Il joue pour toi : tes gestes portent un peu mieux, pour un temps."
+    : "Il joue contre toi : tes gestes portent un peu moins bien, tant qu'il tient.";
+  return (
+    <div className="flex h-full flex-col gap-[10px] overflow-y-auto px-[20px] pb-[16px] pt-[14px]">
+      <p className="etat-volet-eyebrow">État {positive ? "favorable" : "défavorable"}</p>
+      <p className="font-serif text-[24px] leading-none text-[var(--color-accent)]">
+        {fiche ? fiche.nom : label}
+      </p>
+      {fiche ? (
+        <>
+          <p className="font-mono text-[12px] leading-[1.55] text-[var(--color-ink)] opacity-85">{fiche.manifestation}</p>
+          <p className="font-mono text-[11px] leading-[1.5] text-[var(--color-ink)] opacity-50">
+            <span className="uppercase tracking-[1.5px]">Comment ça se lève</span>
+            <br />
+            {fiche.remede}
+          </p>
+        </>
+      ) : (
+        <p className="font-mono text-[12px] leading-[1.55] text-[var(--color-ink)] opacity-85">{sens}</p>
+      )}
+    </div>
   );
 }
 
@@ -2645,6 +2737,7 @@ function FeedItem({
   skip,
   onDone,
   prophetie,
+  onEtat,
 }: {
   entry: FeedEntry;
   typed: boolean;
@@ -2654,6 +2747,8 @@ function FeedItem({
   onDone: () => void;
   /** Jour parié par la prophétie (#4) — la puce Jour blanchit à l'approche. */
   prophetie?: number | null;
+  /** Tap sur une puce d'état → volet de détails (retour 6/08 soir). */
+  onEtat?: (effectId: string, label: string, positive: boolean) => void;
 }) {
   if ((entry.kind === "narration" || entry.kind === "jailer") && !revealed) return null;
 
@@ -2733,7 +2828,12 @@ function FeedItem({
           </span>
           <div className="etat-banner-row">
             {entry.effects.map((e) => (
-              <span key={e.effectId} className={`etat-chip ${e.positive ? "is-positive" : ""}`}>
+              <button
+                type="button"
+                key={e.effectId}
+                onClick={() => onEtat?.(e.effectId, e.label, e.positive)}
+                className={`etat-chip ${e.positive ? "is-positive" : ""}`}
+              >
                 {/* La vignette n'apparaît que si le fichier existe VRAIMENT :
                     les six nouveaux états n'ont pas encore leur icône, et le
                     nom seul vaut mieux qu'une image cassée. Le manifeste fait
@@ -2743,7 +2843,7 @@ function FeedItem({
                   <img alt="" src={assetUrl(`assets/etat_${e.effectId}.png`)} className="etat-chip-icon" />
                 )}
                 {e.label}
-              </span>
+              </button>
             ))}
           </div>
         </div>

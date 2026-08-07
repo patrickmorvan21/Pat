@@ -239,6 +239,9 @@ export type RunState = {
   /** Le vol nocturne (surprise #8) : NOM de l'objet volé — retenu pour un
       paiement futur (le reconnaître au cou de quelqu'un). */
   volNocturne?: string;
+  /** États déjà ANNONCÉS par le bandeau (retour 6/08 soir : le bandeau ne se
+      répète plus à chaque écran — il n'annonce que ce qu'on vient d'attraper). */
+  etatsAffiches?: string[];
   /** Dettes narratives en attente de règlement dans cette run (spec §17). */
   debts: PendingDebt[];
   /** Besace (13/07) : objets mundane, vidée à la mort. */
@@ -449,6 +452,7 @@ export function loadRun(): RunState {
             journalChoix: Array.isArray(p.journalChoix) ? p.journalChoix : [],
             prophetie: typeof p.prophetie === "number" ? p.prophetie : undefined,
             volNocturne: typeof p.volNocturne === "string" ? p.volNocturne : undefined,
+            etatsAffiches: Array.isArray(p.etatsAffiches) ? p.etatsAffiches : [],
           };
         }
       }
