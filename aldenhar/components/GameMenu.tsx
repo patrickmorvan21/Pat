@@ -127,7 +127,7 @@ export default function GameMenu({
       {/* La croix occupe EXACTEMENT la position du burger de l'écran de jeu
           (top 11px / right 10px, 32×32) — aucun décalage à l'ouverture
           (retour Patrick 16/07). */}
-      <div className="absolute top-[11px] right-[10px] z-[1]">
+      <div className="absolute top-[calc(env(safe-area-inset-top,0px)+11px)] right-[10px] z-[1]">
         <CloseX onClose={onClose} />
       </div>
 

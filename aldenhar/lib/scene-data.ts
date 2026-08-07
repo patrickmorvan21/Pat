@@ -5633,7 +5633,9 @@ export const SCENES: Scene[] = [
           highStakes: true,
           outcomes: outcomes(
             "20 naturel. Tu ne te défends pas : tu les regardes un par un, et tu nommes ce que chacun a laissé au muret — la hâte, la lame, la langue. Le tribunal se souvient qu'il est un hameau. On te raccompagne au seuil, et c'est presque des excuses.",
-            "Tu parles de leurs morts fixés, de la peur qui juge à leur place depuis que le Bailli pend. Des nuques plient sur les bancs. La Doyenne tranche, lasse : « Qu'il marche. La lande jugera mieux que nous. »",
+            // ⚠️ Ne jamais faire NOMMER le Bailli par le héros : rien ne
+            // garantit qu'il ait appris qui pend là-haut (retour 7/08).
+            "Tu parles de leurs morts fixés, de la peur qui juge à leur place — et de celui qui pend là-haut sans que personne n'ose plus dire son nom. Des nuques plient sur les bancs. La Doyenne tranche, lasse : « Qu'il marche. La lande jugera mieux que nous. »",
             "Tu cherches leurs yeux — ils regardent tous la corde. Ce n'est pas de la haine, c'est du soulagement : quelqu'un d'autre qu'eux. À l'aube, on te fixe, proprement, avec les égards dus à ce qu'on craint.",
             "1 naturel. Ton appel réveille exactement le souvenir qu'il ne fallait pas : la dernière qui a supplié ainsi s'est relevée de sa corde. Cette fois, ils feront mieux. Double nœud. ♦ −2"
           ),
@@ -6748,6 +6750,10 @@ export const SOUPCON_PALIERS: Record<number, string> = {
 /** La Descente — nœud terminal de la zone (fin sèche, Acte II à venir). */
 export const DESCENTE_SCENE: Scene = {
   id: "la-descente",
+  // Vue générique des Landes vers le SUD (retour Patrick 7/08 : l'écran
+  // tournait encore sur le placeholder portail). À remplacer par
+  // `scene_la_descente` dès génération (prompt dans images-a-produire.md).
+  illustration: "assets/scene_landes_liaison_sud_c.png",
   terminal: true,
   narration: [
     "Le sol s'incline. L'air se fait plus froid, plus vieux — il monte d'en bas, par la porte de la Descente restée ouverte derrière toi.",

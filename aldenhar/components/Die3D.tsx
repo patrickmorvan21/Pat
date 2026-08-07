@@ -553,6 +553,9 @@ export default function Die3D({ request, onComplete }: Props) {
       veil!.classList.remove("on");
       verdict!.classList.remove("show");
       hint!.classList.add("hidden");
+      // La mention d'états suit le hint : elle ne vit QUE pendant l'armement
+      // (retour Patrick 7/08 — elle restait collée en bas de tous les écrans).
+      etatLigne!.classList.add("hidden");
       halo!.className = "die-halo";
       hideRing();
       help!.classList.add("hidden");
@@ -583,6 +586,7 @@ export default function Die3D({ request, onComplete }: Props) {
       e.preventDefault();
       state = "held";
       hint!.classList.add("hidden");
+      etatLigne!.classList.add("hidden");
       // Au lancer (retour Patrick 19/07 soir, amende la spec du matin) :
       // l'anneau et l'aide disparaissent, mais l'image et le texte RESTENT
       // visibles derrière, estompés par le voile sombre.

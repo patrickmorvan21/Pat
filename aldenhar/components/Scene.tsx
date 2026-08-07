@@ -135,6 +135,10 @@ function nowMs(): number {
  * Seuil (accueil, rue, muret, halte) : elle se joue dans les rues même si le
  * Seuil reste « dehors » pour le tirage du pool.
  */
+/** Les états négatifs soumis au PLAFOND de deux (dosage 7/08). FIXÉ n'y est
+    pas : mécanique sociale du procès, posée par le village, jamais bloquée. */
+const ETATS_NEGATIFS_DOSES = ["fievreux", "boiteux", "affame", "marque", "hante"];
+
 function dansLeVillage(sceneId: string): boolean {
   return (
     isHameauInterior(radical(sceneId)) ||
@@ -1199,6 +1203,15 @@ export default function Scene() {
     if (!e) return;
     const f = faitsDe(runRef.current);
     if (idsEtats(f).includes(id)) return; // un état ne s'empile pas sur lui-même
+    // DOSER (retour Patrick 7/08 : « beaucoup trop d'états négatifs
+    // cumulés ») : au plus DEUX états négatifs de corps/esprit à la fois —
+    // un troisième ne se pose pas, le monde choisit ses malheurs. FIXÉ est
+    // exempt : c'est le village qui décide, pas le corps du héros (et le
+    // procès en dépend).
+    if (ETATS_NEGATIFS_DOSES.includes(id)) {
+      const actifs = idsEtats(f).filter((x) => ETATS_NEGATIFS_DOSES.includes(x));
+      if (actifs.length >= 2) return;
+    }
     applique(poserEtat(id, idsEtats(f), dureeEnLieux ? step + dureeEnLieux : undefined), f, step);
     persist((run) => {
       run.faits = f.run;
@@ -1286,7 +1299,12 @@ export default function Scene() {
     // vers le procès du héros — on vient te chercher, où que tu ailles. Jamais
     // au milieu d'une chaîne de rencontre (on finit d'abord ce qui te tient).
     const soupNow = runRef.current?.soupcon ?? 0;
-    if (soupNow >= 6 && !scene.fixationTrial && !scene.chainNext && !trav.done) {
+    // Jamais non plus au MILIEU de la séquence d'entrée du village (7/08 :
+    // « je venais de manger… ça m'a emmené direct au tribunal ») — on laisse
+    // le héros SORTIR, et le hameau vient le chercher « au tournant du
+    // muret », comme l'ouverture du procès le raconte.
+    const enSequenceHameau = /^(serment-hameau|hameau-entree|hameau-accueil)/.test(scene.id);
+    if (soupNow >= 6 && !scene.fixationTrial && !scene.chainNext && !enSequenceHameau && !trav.done) {
       nextScene = sceneById("proces-du-heros")!;
       trav.phase = "scene";
       trav.current = nextScene.id; // hors `visited` : ce n'est pas un lieu du pool
@@ -1437,8 +1455,18 @@ export default function Scene() {
     // du héros EST sa manifestation.
     const soupAfter = Math.max(0, Math.min(6, soupNow + (nextScene.soupconOnArrival ?? 0)));
     const soupSeen = runRef.current?.soupconSeen ?? 0;
+    // ⚠️ Les 5 manifestations du Soupçon mettent toutes des VILLAGEOIS en
+    // scène (la mère, la Doyenne, la croix sur un seuil, les trois hommes) :
+    // servies en pleine lande, elles téléportaient le village autour du héros
+    // (capture Patrick 7/08 — la Doyenne à la Colline aux Gibets). Le palier
+    // ATTEND donc la prochaine arrivée AU VILLAGE pour se montrer — le
+    // Soupçon compte partout, mais il ne se LIT que là où on te regarde.
     const soupManifest =
-      !nextScene.fixationTrial && soupAfter > soupSeen && soupAfter <= 5 && SOUPCON_PALIERS[soupAfter]
+      !nextScene.fixationTrial &&
+      soupAfter > soupSeen &&
+      soupAfter <= 5 &&
+      SOUPCON_PALIERS[soupAfter] &&
+      dansLeVillage(nextScene.id)
         ? SOUPCON_PALIERS[soupAfter]
         : null;
 
@@ -2482,7 +2510,7 @@ export default function Scene() {
           type="button"
           aria-label="Menu"
           onClick={onMenuTap}
-          className="absolute top-[11px] right-[10px] z-[5] grid size-[32px] cursor-pointer grid-cols-3 place-items-center border border-solid border-[var(--color-ink)] bg-[var(--color-bg)]/80 p-[8px]"
+          className="absolute top-[calc(env(safe-area-inset-top,0px)+11px)] right-[10px] z-[5] grid size-[32px] cursor-pointer grid-cols-3 place-items-center border border-solid border-[var(--color-ink)] bg-[var(--color-bg)]/80 p-[8px]"
         >
           {Array.from({ length: 9 }).map((_, i) => (
             <span key={i} className="block size-[1.6px] bg-[var(--color-ink)]" />

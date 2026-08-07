@@ -386,6 +386,27 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
             </div>
           )}
 
+          {/* Étapes du Seuil (retour Patrick 7/08 : « la première fois on ne
+              sait pas combien de temps ça dure ») — carrés pleins comme les
+              points de l'intro, JAMAIS une barre : les souvenirs + le Nom. */}
+          {(isMemory || isName) && (
+            <div className="mt-[22px] flex items-center justify-center gap-[5px]" aria-hidden>
+              {Array.from({ length: memories.length + 1 }, (_, i) => {
+                const idx = isName ? memories.length : beat! - 2;
+                return (
+                  <span
+                    key={i}
+                    className="block size-[5px]"
+                    style={{
+                      background: i <= idx ? "var(--color-accent)" : "var(--color-ink)",
+                      opacity: i <= idx ? 1 : 0.25,
+                    }}
+                  />
+                );
+              })}
+            </div>
+          )}
+
           {/* ——— Écran du Nom (maquette Figma 2167:203, reproduite fidèlement) :
               champ bordé simple « Ton Nom » (mono, aligné à gauche), bouton
               plein SCELLER LE PACTE, lien centré souligné. Le champ n'apparaît
