@@ -52,8 +52,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-07T13:33:29Z",
- "commit": "23a38d6",
+ "genere": "2026-08-07T14:49:42Z",
+ "commit": "5193cc7",
  "zones": [
   {
    "id": "landes",
@@ -3790,7 +3790,7 @@
     "fichier": "monstre_temoin_ruelle_v6_b.png",
     "hash": "6e0b95d8",
     "taille": 15619,
-    "recent": false,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -8501,7 +8501,7 @@
   "scenes": 89,
   "pointsInteret": 46,
   "choix": 224,
-  "illustrations": 276,
+  "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,
   "reserve": 74,
