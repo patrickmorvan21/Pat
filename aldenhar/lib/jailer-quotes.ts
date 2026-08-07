@@ -181,6 +181,12 @@ export function pickJailerQuote(ctx: DeathContext): string {
   const libre = (q: Quote) => !served.includes(q.id);
 
   let candidats = QUOTES.filter((q) => q.kind === "specifique" && q.cond?.(ctx) && libre(q));
+  // La traversée réussie est PRIORITAIRE, pas seulement éligible : noyée dans
+  // le pool des morts 2-4, elle perdait le tirage deux fois sur trois (vu au
+  // playtest auto du 7/08 — un survivant accueilli par « Tu apprends.
+  // Lentement. »). Un survivant qui revient est regardé en face d'abord.
+  const trav = candidats.filter((q) => q.id.startsWith("trav-"));
+  if (ctx.traversee && trav.length > 0) candidats = trav;
   if (candidats.length === 0) {
     // Le lapsus d'abord, à probabilité très basse — il ne doit jamais devenir
     // une catégorie « comme une autre », c'est un accident de langage.

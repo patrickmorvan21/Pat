@@ -48,7 +48,7 @@ import {
 } from "@/lib/faits";
 import {
   etat, etatsActifs, hintsEtats, modEtats, poserEtat, seuilEtats,
-  PLAFOND_AFFICHAGE, type StatNom,
+  type StatNom,
 } from "@/lib/etats";
 import { besoinsEchus, routeAForcer } from "@/lib/besoins";
 import { loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
@@ -144,6 +144,18 @@ function dansLeVillage(sceneId: string): boolean {
     isHameauInterior(radical(sceneId)) ||
     /^(serment-hameau|hameau-|femme-seuil|gamin-murets)/.test(sceneId)
   );
+}
+
+/**
+ * Prose d'une issue de jet, nettoyée pour l'AFFICHAGE : « 20 naturel. » /
+ * « 1 naturel. » en tête et « ♦ −2 » en queue sont des MARQUEURS D'ÉCRITURE
+ * de scene-data (ils repèrent les variantes critiques et leur coût pour la
+ * relecture) — jamais du texte joueur. Aucun chiffre de mécanique ne
+ * s'affiche, règle verrouillée. (Fuite vue au playtest auto du 7/08 :
+ * « 1 naturel. Tu lui parles de sa femme. […] ♦ −2 » servi tel quel.)
+ */
+function proseDuJet(text: string): string {
+  return text.replace(/^(?:20|1) naturel\.\s*/, "").replace(/\s*♦.*$/, "");
 }
 
 /** Préférence du popup « rangé dans le menu » (7/08) — compte, pas run :
@@ -1637,6 +1649,16 @@ export default function Scene() {
       : nextScene.narration;
     entries.push(...narrationLines.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
     // ── LES ÉTATS (spec 4/08 §2 et §5, contrat de visibilité) ─────────────
+    // FIXÉ différé (7/08) : le seuil de Soupçon (4) peut être atteint en
+    // pleine lande, mais l'état ne se pose qu'à la première arrivée LÀ OÙ ON
+    // TE REGARDE — sa manifestation met des villageois en scène. Posé ici,
+    // avant la lecture des faits, pour que sa carte joue sur CET écran.
+    if (
+      soupAfter >= 4 &&
+      dansLeVillage(nextScene.id) &&
+      !idsEtats(faitsDe(runRef.current)).includes("fixe")
+    )
+      poserEtatRun("fixe");
     // Trois choses se jouent ici, dans cet ordre :
     //  1. les états ÉCHUS se lèvent (une phrase de guérison, jamais un silence) ;
     //  2. les états NEUFS se manifestent — dans les trois écrans suivant leur
@@ -1654,10 +1676,27 @@ export default function Scene() {
       entries.push({ id: nextId(), kind: "narration", text: g });
     guerisonEnAttente.current = [];
     const actifsIci = etatsActifs(idsEtats(faitsAv));
-    // Manifestation immédiate : posée par `poserEtatRun`, jouée ici.
+    // Les CARTES d'état de cet écran, calculées ICI (une seule source — le
+    // bloc bandeau plus bas les réutilise). Plafonnées à 2 (banc v2E, 7/08) :
+    // trois cartes empilées mangent 250 px, poussent les choix sous la ligne
+    // de flottaison et occupent pile la zone où l'on tape pour continuer.
+    // Les états au-delà restent actifs et consultables (volet, Essence).
+    const CARTES_MAX = 2;
+    const activeEffects = runRef.current?.effects ?? [];
+    const tousActifs = [
+      ...actifsIci.map((e) => ({ effectId: e.id, label: e.nom, positive: e.groupe === "faveur" })),
+      ...activeEffects.map((e) => ({ effectId: e.id, label: e.label, positive: e.delta > 0 })),
+    ];
+    const dejaAnnonces = runRef.current?.etatsAffiches ?? [];
+    const bandeau = tousActifs.filter((e) => !dejaAnnonces.includes(e.effectId)).slice(0, CARTES_MAX);
+    // Manifestation immédiate : posée par `poserEtatRun`, jouée ici — SAUF si
+    // l'état reçoit sa carte sur ce même écran : la carte porte déjà la
+    // manifestation en description, la re-pousser en narration affichait la
+    // même phrase deux fois à 200 px d'écart (banc du 7/08, Boiteux).
     for (const id of manifsEnAttente.current) {
       const e = etat(id);
-      if (e) entries.push({ id: nextId(), kind: "narration", text: e.manifestation });
+      if (e && !bandeau.some((b) => b.effectId === id))
+        entries.push({ id: nextId(), kind: "narration", text: e.manifestation });
       manifsJouees.current.add(id);
     }
     manifsEnAttente.current = [];
@@ -1965,7 +2004,6 @@ export default function Scene() {
     // Rappel des états temporaires (retour Patrick 19/07) : après un jet de
     // dé, l'écran suivant s'ouvre sur les états encore actifs — un petit
     // libellé « état temporaire », le nom, jamais un chiffre.
-    const activeEffects = runRef.current?.effects ?? [];
     // Le bandeau d'états : les NOUVEAUX états d'abord (spec 4/08), puis les
     // anciens effets narratifs le temps de la transition du combat.
     // ⚠️ PLAFOND D'AFFICHAGE de trois (spec §2) — ce n'est pas une limite du
@@ -1975,13 +2013,9 @@ export default function Scene() {
     // le bandeau n'annonce plus les états ACTIFS à chaque écran — seulement
     // ceux qu'on VIENT d'attraper. Le détail vit dans le volet (tap sur la
     // puce) et dans Essence ; l'érosion de l'UI porte déjà l'état du corps.
-    const tousActifs = [
-      ...etatsActifs(idsEtats(faitsAv))
-        .map((e) => ({ effectId: e.id, label: e.nom, positive: e.groupe === "faveur" })),
-      ...activeEffects.map((e) => ({ effectId: e.id, label: e.label, positive: e.delta > 0 })),
-    ];
-    const dejaAnnonces = runRef.current?.etatsAffiches ?? [];
-    const bandeau = tousActifs.filter((e) => !dejaAnnonces.includes(e.effectId)).slice(0, PLAFOND_AFFICHAGE);
+    // `bandeau` / `tousActifs` / `CARTES_MAX` : calculés plus haut, AVANT la
+    // boucle des manifestations (une seule source — la carte remplace la
+    // manifestation en narration quand les deux tomberaient sur cet écran).
     // Maquette 2440:13429 (7/08) : la carte d'état RESTE le temps de la scène
     // où l'état a été attrapé (tous ses beats), puis QUITTE l'interface — et
     // là seulement, le popup « ton état est rangé dans le menu » peut se dire.
@@ -1992,7 +2026,7 @@ export default function Scene() {
       const effects = [
         ...bandeau,
         ...memesLieu.filter((e) => !bandeau.some((n) => n.effectId === e.effectId)),
-      ].slice(0, PLAFOND_AFFICHAGE);
+      ].slice(0, CARTES_MAX);
       entries.unshift({ id: nextId(), kind: "etat", effects });
       persist((run) => { run.etatBanniere = { effects, lieu: lieuCourant }; });
     } else if (banniereAv) {
@@ -2575,7 +2609,16 @@ export default function Scene() {
                 skip={skip}
                 onDone={() => onTypedDone(entry.id)}
                 prophetie={prophetieJour}
-                onEtat={(id, label, positive) => setVoletEtat({ id, label, positive })}
+                onEtat={(id, label, positive) => {
+                  // Pendant la frappe ou entre deux micro-beats, un tap sur la
+                  // carte est un « continuer » (déjà servi par le pointerdown
+                  // de la zone) — ouvrir le volet PAR-DESSUS volerait le geste
+                  // et couvrirait les choix (soft-lock du banc v2E, 7/08 : la
+                  // carte occupe pile la zone où l'on tape pour avancer). Le
+                  // volet ne s'ouvre qu'écran au repos.
+                  if (activeTypingIdRef.current || beatsSuiteRef.current.length) return;
+                  setVoletEtat({ id, label, positive });
+                }}
               />
             ))}
             <div ref={bottomRef} />
@@ -2701,10 +2744,21 @@ export default function Scene() {
                   ...run.effects.filter((e) => e.id !== "entaille"),
                 ];
               else if (tier === "malediction")
-                run.effects = [
-                  { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 3 },
-                  ...run.effects.filter((e) => e.id !== "entaille"),
-                ];
+                // La nature du contrecoup suit la nature du GESTE (playtest
+                // auto 7/08 : un 1 naturel en parlant à l'Hésitant posait
+                // « Entaillé — la blessure ralentit chaque geste », une plaie
+                // née d'une conversation). Corps (Courage/Instinct) → la
+                // chair ; parole ou ruse (Empathie/Ruse) → ÉBRANLÉ, le choc.
+                run.effects =
+                  roll?.stat === "COURAGE" || roll?.stat === "INSTINCT"
+                    ? [
+                        { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 3 },
+                        ...run.effects.filter((e) => e.id !== "entaille"),
+                      ]
+                    : [
+                        { id: "ebranle", label: "ÉBRANLÉ", delta: -1, scenesLeft: 2 },
+                        ...run.effects.filter((e) => e.id !== "ebranle"),
+                      ];
               // Destin : ajouté si le slot correspondant a de la place (2
               // actifs / 2 passifs). Sinon le bandeau « Obtenu » reste, mais la
               // Besace pleine impose un vrai arbitrage (l'objet est perdu).
@@ -2762,7 +2816,13 @@ export default function Scene() {
             // FIXÉ : « le village te croit marqué par le sud (Soupçon élevé) ».
             // Seuil 4 : assez haut pour que ce soit une trajectoire, assez bas
             // pour qu'on le vive avant le procès (qui tombe à 6).
-            if ((run.soupcon ?? 0) >= 4) poserEtatRun("fixe");
+            // GARDÉ PAR LE LIEU (playtest auto 7/08) : l'état — et sa carte,
+            // qui met des villageois en scène (« on parle devant toi, de
+            // toi ») — se posait seul au milieu de la lande, avec un troupeau
+            // pour tout témoin. Le seuil peut être ATTEINT n'importe où ; le
+            // regard qui te fixe, lui, attend la première arrivée au village
+            // (pose d'arrivée dans advance()).
+            if ((run.soupcon ?? 0) >= 4 && dansLeVillage(scene.id)) poserEtatRun("fixe");
             setHealth(run.health);
             if (usureDay) setDay(run.day);
             if (amorti) setRelicSpent(true);
@@ -2773,7 +2833,7 @@ export default function Scene() {
             // autres (relique + fragment + épitaphe). Le hameau s'en souvient
             // par-delà les runs (fixations).
             if (scene.fixationTrial && tierIsFail(tier)) {
-              const epitaph = outcome.text.replace(/\s*♦.*$/, "");
+              const epitaph = proseDuJet(outcome.text);
               const firstDeath = loadMemory().deaths === 0;
               // La relique RÉELLEMENT portée pendant cette vie — lue AVANT
               // recordDeath, qui pousse celle que cette mort vient de forger.
@@ -2798,7 +2858,7 @@ export default function Scene() {
 
             // Permadeath réel (spec §9) : santé à zéro sur un jet raté = mort.
             if (run.health <= 0 && tierIsFail(tier)) {
-              const epitaph = outcome.text.replace(/\s*♦.*$/, "");
+              const epitaph = proseDuJet(outcome.text);
               const cause = scene.foeName ?? "les Landes";
               // Jalon de première fois (spec 21/07) : lu AVANT recordDeath (qui
               // incrémente `deaths`) — le Geôlier accueille, pas de moquerie.
@@ -2828,8 +2888,8 @@ export default function Scene() {
                 ? [{ id: nextId(), kind: "jailer", text: JAILER_DE_IMPOSSIBLE }]
                 : undefined,
               consequence: amorti && relicCoussin
-                ? `${outcome.text}\n\n${relicCoussin.name} a pris le choc à ta place. Une fêlure la traverse, à présent — elle ne prendra pas le suivant.`
-                : outcome.text,
+                ? `${proseDuJet(outcome.text)}\n\n${relicCoussin.name} a pris le choc à ta place. Une fêlure la traverse, à présent — elle ne prendra pas le suivant.`
+                : proseDuJet(outcome.text),
               destinItem,
               grantedItem,
               usureDay: usureDay ? run.day : undefined,

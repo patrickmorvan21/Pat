@@ -40,15 +40,21 @@ LIB = RACINE / "aldenhar" / "lib"
 GENS = re.compile(
     r"(un homme|une femme|un enfant|une mère|un vieux|le vieux\b|la Doyenne"
     r"|des gens|les gens|un voisin|un passant|le barrage|trois hommes"
-    r"|on te (?:parle|répond|suit|regarde|dit|adresse)|on t'adresse"
+    # « on NE te parle plus » présuppose autant de monde que « on te parle » —
+    # la négation avait fait passer la manifestation de FIXÉ sous le radar.
+    r"|on (?:ne )?te (?:parle|répond|suit|regarde|dit|adresse)|on t'adresse"
+    r"|on parle devant toi"
     r"|te croise|son salut|son panier|son quignon|coupe son quignon"
     r"|pose un bol|conversation|quelqu'un (?:ralentit|est passé|fait ta route)"
     r"|personne ne relève|volets? se referm|une écuelle)",
     re.IGNORECASE,
 )
 # Le décor est le VILLAGE (bâti, rues, seuils).
+# NB : « muret » n'y est PAS — dans ce monde les murets courent en pleine
+# lande (« ils suivent des tracés qui ne mènent nulle part », le Gamin des
+# Murets y rôde) : un muret ne présuppose pas le village.
 VILLAGE = re.compile(
-    r"(muret|ruelle|volet|hameau|village|chapelle|cloche\b|grange|pavé"
+    r"(ruelle|volet|hameau|village|chapelle|cloche\b|grange|pavé"
     r"|une porte\b|la porte\b|un seuil|le seuil|toits?\b|linge|maison)",
     re.IGNORECASE,
 )
@@ -134,7 +140,11 @@ def pools() -> list[dict]:
         if mm:
             out.append({
                 "pool": f"etat {eid} · manifestation",
-                "garde": {"partout"},
+                # FIXÉ ne se pose plus qu'au VILLAGE depuis le 7/08 (pose de
+                # jet gardée par dansLeVillage + pose différée à l'arrivée,
+                # Scene.tsx) : sa manifestation est couverte par ce garde-là.
+                # Les autres états se posent n'importe où.
+                "garde": {"village", "gens"} if eid == "fixe" else {"partout"},
                 "textes": ["".join(re.findall(r'"((?:[^"\\]|\\.)*)"', mm.group(1)))],
             })
         reactions = chaines_de_tableau(bloc_tableau(bloc, "reactions:"))
@@ -176,6 +186,62 @@ def pools() -> list[dict]:
     # — la loi du Domaine : liaison, n'importe où.
     for i, t in enumerate(chaines_de_tableau(bloc_tableau(loi_src, "manifestations:"))):
         out.append({"pool": f"loi manifestation {i}", "garde": {"partout"}, "textes": [t]})
+
+    # — AMORCES de chapitre : jouées à la PREMIÈRE liaison, donc en pleine
+    #   lande. Une silhouette isolée y est permise (le personnel du décor :
+    #   Marcheur, berger, vieux au muret) → garde « gens » accordé ; du BÂTI,
+    #   non (trou vu au playtest auto 7/08 : « une femme au seuil d'une
+    #   maison basse » servie entre la Borne et le premier lieu).
+    chap_src = (LIB / "chapters-data.ts").read_text(encoding="utf-8")
+    for m in re.finditer(r'id:\s*"([a-z-]+)"', chap_src):
+        cid = m.group(1)
+        fin = chap_src.find('\n  {', m.start() + 10)
+        bloc = chap_src[m.start() : fin if fin > 0 else len(chap_src)]
+        for i, t in enumerate(chaines_de_tableau(bloc_tableau(bloc, "amorce:"))):
+            out.append({
+                "pool": f"chapitre {cid} · amorce {i}",
+                # « lande » (pas « partout ») : la PREMIÈRE Croisée précède
+                # toujours toute entrée possible au village — nommer la lande
+                # y est donc sûr, contrairement aux pools qui y jouent aussi.
+                "garde": {"lande", "gens"},
+                "textes": [t],
+            })
+
+    # — VARIANTES de liaison (44) : le garde dérive de leur condition `from`.
+    #   Réservée aux départs du village (from: HAMEAU_INTERIOR ou liste de
+    #   lieux intérieurs) → elle peut mettre le village en scène ; sinon elle
+    #   joue en pleine lande — silhouettes permises, bâti interdit.
+    interieur = set(re.findall(r'"([a-z-]+)"', bloc_tableau(scene_src, "export const HAMEAU_INTERIOR")))
+    vbloc = bloc_tableau(scene_src, "const LIAISON_VARIANTS")
+    # découpe des objets { … } au niveau 1 du tableau
+    objets, prof, deb = [], 0, -1
+    for k, ch in enumerate(vbloc):
+        if ch == "{":
+            if prof == 0:
+                deb = k
+            prof += 1
+        elif ch == "}":
+            prof -= 1
+            if prof == 0 and deb >= 0:
+                objets.append(vbloc[deb : k + 1])
+    def village_scene(sid: str) -> bool:
+        return sid in interieur or bool(re.match(r"^(serment-hameau|hameau-|femme-seuil|gamin-murets)", sid))
+    for i, o in enumerate(objets):
+        tm = re.search(r'text:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', o)
+        if not tm:
+            continue
+        texte = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', tm.group(1))).replace('\\"', '"')
+        if re.search(r"from:\s*HAMEAU_INTERIOR", o):
+            garde = {"village", "gens"}
+        else:
+            fm = re.search(r"from:\s*\[([^\]]*)\]", o)
+            froms = re.findall(r'"([a-z-]+)"', fm.group(1)) if fm else []
+            garde = (
+                {"village", "gens"}
+                if froms and all(village_scene(s) for s in froms)
+                else {"partout", "gens"}
+            )
+        out.append({"pool": f"liaison variante {i}", "garde": garde, "textes": [texte]})
 
     return out
 

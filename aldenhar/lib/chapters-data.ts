@@ -94,7 +94,11 @@ export const LANDES_CHAPTERS: Chapter[] = [
     id: "la-fille",
     lieuId: "campement",
     amorce: [
-      "Une femme au seuil d'une maison basse te suit des yeux, puis se signe à l'envers. « Si tu dors au moulin », dit-elle sans que tu aies rien demandé, « laisse le lit de bruyère comme tu l'as trouvé. Il sert encore. »",
+      // ⚠️ Amorce jouée à la PREMIÈRE liaison, donc en pleine lande — pas de
+      // maison, pas de seuil (playtest auto 7/08 : « une femme au seuil d'une
+      // maison basse » servie entre la Borne et le premier lieu). Une
+      // silhouette qui TRAVERSE, oui ; du bâti, non.
+      "Une femme traverse la lande en biais, un fagot sur l'épaule, et te suit des yeux sans ralentir. Puis elle se signe à l'envers. « Si tu dors au moulin », dit-elle sans que tu aies rien demandé, « laisse le lit de bruyère comme tu l'as trouvé. Il sert encore. »",
     ],
     developpement: [
       "Le lit de bruyère du moulin est tassé, refait de frais. Quelqu'un dort ici — souvent, prudemment, sans feu. Sur la pierre du mur, à hauteur d'enfant, des marques : des jours comptés par paquets de cinq, sur des années.",
