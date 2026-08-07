@@ -1084,3 +1084,30 @@ body {
   color: var(--color-ink);
   opacity: 0.5;
 }
+
+/* La porte de l'intro (clause « Une seule vie ») ANIMÉE — 7/08.
+   16 frames extraites de la vidéo de Patrick, étalonnées puis passées au
+   dithering canonique (2 couleurs), empilées verticalement dans
+   assets/intro_porte_anim.png (390×6240). Lecture en ALLER-RETOUR : la
+   lumière derrière la porte enfle puis se retire (la vidéo source monte en
+   continu, un loop sec couperait net). steps(15) + alternate = chaque frame
+   affichée sans interpolation, jamais de fondu (§5 du SKILL). */
+.porte-anim {
+  width: 390px;
+  height: 390px;
+  background-size: 390px 6240px;
+  background-repeat: no-repeat;
+  background-position-y: 0;
+  image-rendering: pixelated;
+  animation: porte-anim-cycle 4.8s steps(15) infinite alternate;
+}
+@keyframes porte-anim-cycle {
+  from { background-position-y: 0; }
+  to { background-position-y: -5850px; }
+}
+/* Animations réduites (réglage ou système) : frame fixe LUMINEUSE (13e) —
+   c'est elle qui montre la porte entière, comme l'image Figma d'origine. */
+@media (prefers-reduced-motion: reduce) {
+  .porte-anim { animation: none; background-position-y: -4680px; }
+}
+.anim-reduced .porte-anim { animation: none !important; background-position-y: -4680px; }

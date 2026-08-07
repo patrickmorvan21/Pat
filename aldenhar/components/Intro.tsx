@@ -22,7 +22,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { markIntroSeen } from "@/lib/player-memory";
 import TouchHint from "@/components/TouchHint";
-import { assetUrl } from "@/lib/assets";
+import { assetCss, assetUrl } from "@/lib/assets";
 
 type Clause = {
   /** Chapeau (« • PREMIÈRE CLAUSE • ») — absent sur l'écran d'ouverture. */
@@ -30,6 +30,13 @@ type Clause = {
   title: string;
   body: string[];
   image: string;
+  /**
+   * Sprite d'animation (16 frames 390×390 empilées) qui REMPLACE l'image
+   * fixe — utilisé par la clause « Une seule vie » (vidéo de la porte, 7/08).
+   * Les frames n'ont PAS la bande de dissolution cuite dedans (contrairement
+   * aux extraits Figma) : l'overlay `.dissolve-bottom` est reposé dessus.
+   */
+  animSprite?: string;
 };
 
 /**
@@ -59,6 +66,10 @@ const CLAUSES: Clause[] = [
       "Si tu meurs, un autre viendra. Avec un autre nom.",
     ],
     image: "assets/intro_porte.png",
+    // La porte VIVANTE : la lumière derrière enfle puis se retire (vidéo
+    // Midjourney de Patrick, 7/08, passée frame par frame au dithering
+    // canonique). `image` reste le repli si le sprite manquait au manifeste.
+    animSprite: "assets/intro_porte_anim.png",
   },
   {
     title: "Le dé tranche",
@@ -97,12 +108,14 @@ function Dots({ index, total }: { index: number; total: number }) {
 /** Cadre partagé : illustration en haut, bande de dissolution, contenu dessous. */
 function IntroFrame({
   image,
+  animSprite,
   onTap,
   children,
   footer,
   first,
 }: {
   image: string;
+  animSprite?: string;
   onTap: () => void;
   children: React.ReactNode;
   footer: React.ReactNode;
@@ -115,15 +128,34 @@ function IntroFrame({
         className="phone-frame relative flex h-[848px] max-h-[100dvh] w-[390px] shrink-0 cursor-pointer flex-col overflow-clip bg-[var(--color-bg)]"
       >
         <div className="relative h-[390px] w-[390px] shrink-0">
-          {/* eslint-disable-next-line @next/next/no-img-element -- rendu pixelated, jamais optimisé par next/image */}
-          <img
-            src={assetUrl(image)}
-            alt=""
-            className="block size-full object-cover"
-            style={{ imageRendering: "pixelated" }}
-          />
-          {/* Plus d'overlay de bande : la dissolution est CUITE dans les
-              extraits Figma du 7/08 — la doubler ferait un double liseré. */}
+          {animSprite ? (
+            /* Sprite animé (frames tramées, steps + alternate — voir
+               `.porte-anim`). Les frames n'ont pas la bande cuite dedans :
+               on repose l'overlay de dissolution du jeu. */
+            <>
+              <div
+                className="porte-anim"
+                style={{ backgroundImage: assetCss(animSprite) }}
+                aria-hidden
+              />
+              <div
+                className="dissolve-bottom"
+                style={{ backgroundImage: assetCss("assets/bande_dissolution_haut.svg") }}
+                aria-hidden
+              />
+            </>
+          ) : (
+            /* eslint-disable-next-line @next/next/no-img-element -- rendu pixelated, jamais optimisé par next/image */
+            <img
+              src={assetUrl(image)}
+              alt=""
+              className="block size-full object-cover"
+              style={{ imageRendering: "pixelated" }}
+            />
+            /* Pas d'overlay de bande sur les images fixes : la dissolution est
+               CUITE dans les extraits Figma du 7/08 — la doubler ferait un
+               double liseré. */
+          )}
         </div>
 
         <div className="flex flex-1 flex-col px-[15px] pt-[16px]">{children}</div>
@@ -165,6 +197,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   return (
     <IntroFrame
       image={c.image}
+      animSprite={c.animSprite}
       onTap={advance}
       first={i === 0}
       footer={
