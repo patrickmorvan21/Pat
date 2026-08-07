@@ -139,9 +139,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     kind: "babiole",
     passiveMod: 1,
     passiveScope: "all",
-    // Pas d'icône : aucun objet tramé du lot ne ressemble à une lunette, et
-    // aucune des icônes libres ne conviendrait sans mentir sur l'objet.
-    // `objet_lunette_guetteur` reste à produire — d'ici là, repli par `kind`.
+    illustration: "assets/objet_lunette_guetteur_b.png",
     flavor:
       "Un seul verre, monté dans du cuivre poli par la même main pendant vingt ans. On voit loin avec. On ne voit toujours pas ce qui vient.",
   },
@@ -197,12 +195,10 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
      Clochette annonce QUE TU ARRIVES. Gagnée en prenant la meneuse du
      Troupeau sans Berger (Affamé seulement) : celui qui vole la bête d'un
      pendu porte l'objet qui le signale. Aucun bonus — la charge est
-     narrative, comme la Mèche.
-     NB : icône du battant de cloche en attendant mieux (même bronze, même
-     champ lexical) — remplacer si Patrick produit `objet_clochette_meneuse`. */
+     narrative, comme la Mèche. */
   "clochette-meneuse": {
     name: "Clochette de meneuse", rarity: "rare", kind: "babiole", slot: "passif",
-    passiveMod: 0, passiveScope: "all", illustration: "assets/objet_battant_cloche_c.png",
+    passiveMod: 0, passiveScope: "all", illustration: "assets/objet_clochette_meneuse_b.png",
     flavor: "On la met au cou de la meneuse pour que le berger sache où est son troupeau dans le brouillard. Maintenant c'est toi qu'elle annonce.",
   },
   "miroir-poche": {

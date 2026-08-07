@@ -674,7 +674,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "hesitant-2",
-    illustration: "assets/monstre_hesitant_b.png",
+    illustration: "assets/monstre_hesitant_2_b.png",
     chainNext: "hesitant-3",
     narration: [
       "— « Je calcule. » Il montre la borne du menton, sans la regarder. « Si " +
@@ -816,7 +816,7 @@ export const SCENES: Scene[] = [
     /* Événement du Chemin Creux : le coude aveugle. Le lieu se referme sur son
        propre danger — l'endroit exact où il devrait y avoir quelque chose. */
     id: "chemin-creux-2",
-    illustration: "assets/scene_chemin_creux_c.png",
+    illustration: "assets/scene_chemin_creux_coude_b.png",
     narration: [
       "Le chemin tourne, et le talus mange la vue d'un coup. Passé le coude : " +
         "rien. C'est-à-dire l'endroit exact où il devrait y avoir quelque " +
@@ -1107,6 +1107,7 @@ export const SCENES: Scene[] = [
            Le nom gravé au pied est celui de l'accusé que le Bailli citait à
            comparaître — gratté par autre chose que le temps. */
         id: "pied-grand-gibet",
+        illustration: "assets/scene_colline_pied_grand_gibet_b.png",
         label: "Le pied du grand gibet",
         approche:
           "Tu quittes la ligne des potences ordinaires pour celle qui les " +
@@ -1119,7 +1120,6 @@ export const SCENES: Scene[] = [
           "qui a mordu le bois plus fort que l\u2019outil. Dessous, une date " +
           "est restée entière. Elle est vieille de trente ans.",
         decouverte: "d.nom_gratte",
-        illustration: "assets/scene_gibet_vide_c.png",
         soupcon: 1,
       },
       {
@@ -1445,7 +1445,7 @@ export const SCENES: Scene[] = [
   {
     id: "fossoyeur-trou-1",
     remplace: { scene: "champ-des-fixes-2", si: { has: "d.emplacement_vide" } },
-    illustration: "assets/monstre_fossoyeur_poteaux_a.png",
+    illustration: "assets/monstre_fossoyeur_trou_1_c.png",
     chainNext: "fossoyeur-trou-2",
     narration: [
       "Il taille un écriteau sur ses genoux, au bout d\u2019une rangée. Le nom " +
@@ -1497,7 +1497,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "fossoyeur-trou-2",
-    illustration: "assets/monstre_fossoyeur_poteaux_a.png",
+    illustration: "assets/scene_champ_poteau_retire_c.png",
     chainNext: "fossoyeur-trou-3",
     decouverte: "d.poteau_retire",
     narration: [
@@ -1541,7 +1541,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "fossoyeur-trou-3",
-    illustration: "assets/monstre_fossoyeur_poteaux_a.png",
+    illustration: "assets/monstre_fossoyeur_trou_3_a.png",
     narration: [
       "Il pose l\u2019écriteau fini contre sa jambe, face contre terre, pour " +
         "qu\u2019on n\u2019en lise pas le nom.",
@@ -1785,6 +1785,7 @@ export const SCENES: Scene[] = [
            voir dès sa première entrée et n'y comprendre rien pendant trois
            runs — c'est le but. */
         id: "linteaux",
+        illustration: "assets/scene_hameau_linteaux_v2_c.png",
         label: "Le linteau de la porte",
         approche:
           "Tu passes devant une porte, puis une autre, et quelque chose " +
@@ -1797,7 +1798,6 @@ export const SCENES: Scene[] = [
           "marque de charpentier — le bord est écrasé, pas coupé. Rien de " +
           "ce que tu connais ne laisse cette trace-là.",
         decouverte: "d.linteaux_entailles",
-        illustration: "assets/scene_landes_hameau_croix_craie_a.png",
         soupcon: 1,
       },
       {
@@ -1805,6 +1805,7 @@ export const SCENES: Scene[] = [
            le hameau, les rez-de-chaussée non. On ne se barricade pas contre
            ce qui vient par la rue. */
         id: "fenetres-clouees",
+        illustration: "assets/scene_hameau_combles_cloues_v2_a.png",
         label: "Les fenêtres des combles",
         approche:
           "Tu recules de trois pas pour embrasser la façade entière, comme " +
@@ -1816,7 +1817,6 @@ export const SCENES: Scene[] = [
           "entrouverts. Tout le hameau est ainsi. Personne, ici, ne se " +
           "protège de ce qui vient par la rue.",
         decouverte: "d.combles_cloues",
-        illustration: "assets/scene_hameau_accueil_volet_c.png",
       },
       {
         id: "croix-craie",
@@ -2201,7 +2201,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "gamin-murets-2",
-    illustration: "assets/monstre_gamin_murets_a.png",
+    illustration: "assets/scene_murets_vers_sud_c.png",
     chainNext: "gamin-murets-3",
     narration: [
       "Le muret repart vers le sud, à hauteur de hanche, en pierre sèche " +
@@ -2244,7 +2244,7 @@ export const SCENES: Scene[] = [
      preuve matérielle de l'affaire, et il ne prouve rien du tout. */
   {
     id: "gamin-murets-3",
-    illustration: "assets/monstre_gamin_murets_a.png",
+    illustration: "assets/monstre_gamin_caillou_c.png",
     chainNext: "gamin-murets-4",
     narration: [
       "« Moi j\u2019en ai zéro », dit-il en revenant à ses cailloux. « Ma mère " +
@@ -2302,7 +2302,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "gamin-murets-4",
-    illustration: "assets/monstre_gamin_murets_a.png",
+    illustration: "assets/monstre_gamin_depart_c.png",
     chainNext: "hameau-entree-3",
     narration: [
       "« Ma mère dit que j\u2019invente. Le rebouteux dit que j\u2019invente. Tout " +
@@ -3126,7 +3126,7 @@ export const SCENES: Scene[] = [
      protège pas — elle signale une grange occupée. */
   {
     id: "temoin-toit",
-    illustration: "assets/scene_hameau_halte_3_c.png",
+    illustration: "assets/scene_temoin_grange_toit_v2_c.png",
     chainNext: "hameau-halte-4",
     decouverte: "d.temoin_entendu",
     narration: [
@@ -3177,7 +3177,7 @@ export const SCENES: Scene[] = [
        raccourcit — c'est devenu un bruit connu, ce qui est bien pire. */
     id: "temoin-toit-connu",
     remplace: { scene: "temoin-toit", si: { has: "d.temoin_entendu" } },
-    illustration: "assets/scene_hameau_halte_3_c.png",
+    illustration: "assets/scene_temoin_grange_toit_v2_c.png",
     chainNext: "hameau-halte-4",
     narration: [
       "Les voix s\u2019éloignent. Tu attends, parce que tu sais maintenant " +
@@ -3267,7 +3267,7 @@ export const SCENES: Scene[] = [
        ici SANS être énoncée : pour qu'une place se libère, une autre se prend
        — et c'est le héros qui prend celle du prochain fixé. */
     id: "renoncer",
-    illustration: "assets/scene_hameau_dense2_b.png",
+    illustration: "assets/scene_renoncer_v2_b.png",
     terminal: true,
     renoncement: true,
     narration: [
@@ -3290,7 +3290,7 @@ export const SCENES: Scene[] = [
     /* Beat 6 — variante « nuit dehors » (Serment refusé). Remplace les beats
        1-5 : aucune porte ne s'ouvre à qui n'a pas juré. */
     id: "hameau-halte-dehors",
-    illustration: "assets/scene_hameau_dense_c.png",
+    illustration: "assets/scene_hameau_nuit_dehors_v2_c.png",
     hameauHalte: true,
     narration: [
       "Aucune porte, aucune grange. Tu dors contre un muret, côté nord — " +
@@ -3329,7 +3329,7 @@ export const SCENES: Scene[] = [
   {
     id: "temoin-ruelle",
     remplace: { scene: "hameau-halte-dehors", si: { has: "d.temoin_entendu" } },
-    illustration: "assets/scene_landes_hameau_ruelle_b.png",
+    illustration: "assets/monstre_temoin_ruelle_v5_d.png",
     hameauHalte: true,
     decouverte: "d.temoin_entrevu",
     narration: [
@@ -3407,6 +3407,7 @@ export const SCENES: Scene[] = [
     pointsInteret: [
       {
         id: "compter-troupeau",
+        illustration: "assets/monstre_troupeau_compte_b.png",
         label: "Les marques d\u2019oreille",
         troupeau: true,
         decouverte: "d.troupeau_compte",
@@ -3426,7 +3427,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "troupeau-sans-berger-2",
-    illustration: "assets/monstre_troupeau_sans_berger_a.png",
+    illustration: "assets/monstre_troupeau_brebis_v2_b.png",
     narration: [
       "Une brebis s\u2019écarte du groupe et marche droit vers le nord-est, " +
         "s\u2019arrête, revient. Puis recommence. Cinq fois pendant que tu la " +
@@ -3575,7 +3576,7 @@ export const SCENES: Scene[] = [
     // portail générique, en plein Hameau. Le portrait du Guetteur
     // (`monstre_guetteur_tour`) reste à produire — il est listé dans
     // data/images-a-produire.md.
-    illustration: "assets/scene_tour_de_guet_a.png",
+    illustration: "assets/monstre_guetteur_tour_c.png",
     foe: "guetteur-tour",
     foeName: "le Guetteur sans tour",
     narration: [
@@ -3787,6 +3788,7 @@ export const SCENES: Scene[] = [
            un sanctuaire — et le joueur peut la lire sans jamais savoir de
            quoi il s'agit. */
         id: "crete-interrompue",
+        illustration: "assets/scene_moulin_crete_interrompue_b.png",
         label: "La crête du toit",
         approche:
           "Tu contournes la tour et tu lèves les yeux vers le faîtage. La " +
@@ -3799,7 +3801,6 @@ export const SCENES: Scene[] = [
           "comme si quelque chose qui marchait là s\u2019était retourné " +
           "chaque fois exactement au même endroit.",
         decouverte: "d.crete_interrompue",
-        illustration: "assets/scene_moulin_croix_ombres_a_d.png",
       },
       {
         id: "croix-ombres",
@@ -3926,7 +3927,7 @@ export const SCENES: Scene[] = [
   {
     id: "fille-moulin-1",
     remplace: { scene: "campement-2", si: { id: COMPTEUR_FILLE, gte: SEUIL_MOULIN } },
-    illustration: "assets/monstre_la_fille_c.png",
+    illustration: "assets/monstre_fille_moulin_dos_v2_a.png",
     chainNext: "fille-moulin-2",
     narration: [
       "La porte est entrouverte, comme toujours. Mais cette fois la bruyère " +
@@ -3955,7 +3956,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "fille-moulin-2",
-    illustration: "assets/monstre_la_fille_c.png",
+    illustration: "assets/monstre_la_fille_moulin_v2_a.png",
     chainNext: "fille-moulin-3",
     narration: [
       "Elle se retourne enfin, et le compte ne marche pas. Le village parle " +
@@ -4011,7 +4012,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "fille-moulin-3",
-    illustration: "assets/monstre_la_fille_c.png",
+    illustration: "assets/monstre_la_fille_moulin_v2_a.png",
     chainNext: "fille-moulin-4",
     narration: [
       "« Mon père a construit une potence pour la chose qui m\u2019a fait " +
@@ -4056,7 +4057,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "fille-moulin-4",
-    illustration: "assets/monstre_la_fille_c.png",
+    illustration: "assets/monstre_fille_moulin_ouvrage_c.png",
     decouverte: "d.fille_vivante",
     narration: [
       "« Tu vas redescendre et tu vas leur en parler. Ils vont te regarder " +
@@ -4218,6 +4219,7 @@ export const SCENES: Scene[] = [
     pointsInteret: [
       {
         id: "cloche-sans-battant",
+        illustration: "assets/scene_chapelle_cloche_sans_battant_b.png",
         label: "Le clocheton, dehors",
         approche:
           "Tu ressors par le côté. Le clocheton n\u2019est pas haut — deux " +
@@ -4229,7 +4231,6 @@ export const SCENES: Scene[] = [
           "n\u2019a plus de battant. L\u2019attache est là, intacte. On ne " +
           "l\u2019a pas cassée : on l\u2019a dévissée.",
         decouverte: "d.cloche_sans_battant",
-        illustration: "assets/objet_battant_cloche_c.png",
       },
       {
         id: "mur-cordes",
@@ -4912,6 +4913,7 @@ export const SCENES: Scene[] = [
            inoffensive, c'est l'outil de dépistage du village. On y AMÈNE ceux
            qu'on soupçonne — d'où le second creux, derrière le premier. */
         id: "creux-doubles",
+        illustration: "assets/scene_mare_creux_doubles_v2_b.png",
         label: "Les creux dans la berge",
         approche:
           "Tu longes la berge jusqu\u2019à l\u2019endroit où la terre est " +
@@ -4925,7 +4927,6 @@ export const SCENES: Scene[] = [
           "où l\u2019on vient voir son reflet : c\u2019est un endroit où on " +
           "l\u2019amène.",
         decouverte: "d.mare_depistage",
-        illustration: "assets/scene_mare_berge_a_c.png",
       },
       {
         id: "berge-usee",
@@ -5349,7 +5350,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "homme-guerite",
-        illustration: "assets/monstre_homme_guerite_c.png",
+        illustration: "assets/monstre_veilleur_palissade_v2_b.png",
         label: "L'homme de la guérite",
         leadsTo: "veilleur-1",
         approche:
