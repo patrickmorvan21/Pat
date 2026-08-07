@@ -51,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-07T20:48:28Z",
- "commit": "e1261f3",
+ "genere": "2026-08-07T21:52:49Z",
+ "commit": "baf6e77",
  "zones": [
   {
    "id": "landes",
@@ -1601,7 +1601,7 @@
     "fichier": "monstre_fossoyeur_trou_1_c.png",
     "hash": "66f02057",
     "taille": 14405,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -1695,7 +1695,7 @@
     "fichier": "monstre_fossoyeur_trou_3_a.png",
     "hash": "acf3368c",
     "taille": 17126,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -2475,7 +2475,7 @@
     "fichier": "scene_murets_vers_sud_c.png",
     "hash": "c6dcf4a3",
     "taille": 14870,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -2538,7 +2538,7 @@
     "fichier": "monstre_gamin_caillou_c.png",
     "hash": "4f6c8a7a",
     "taille": 8474,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -4614,7 +4614,7 @@
     "fichier": "monstre_fille_moulin_ouvrage_c.png",
     "hash": "03e7eb7d",
     "taille": 10442,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
