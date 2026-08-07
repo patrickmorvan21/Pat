@@ -3329,7 +3329,7 @@ export const SCENES: Scene[] = [
   {
     id: "temoin-ruelle",
     remplace: { scene: "hameau-halte-dehors", si: { has: "d.temoin_entendu" } },
-    illustration: "assets/monstre_temoin_ruelle_v5_d.png",
+    illustration: "assets/monstre_temoin_ruelle_v6_b.png",
     hameauHalte: true,
     decouverte: "d.temoin_entrevu",
     narration: [
