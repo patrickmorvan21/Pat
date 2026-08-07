@@ -71,7 +71,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/scene_moulin_campement_a.png",
+      "illustration": "scene_moulin_sans_ailes_d_d.png",
       "portrait_requis": false,
       "x": 300,
       "y": 260
@@ -2057,7 +2057,7 @@
       ],
       "description": "Arrivée au Moulin sans Ailes — c'est le lieu de repos de la zone. Une tour de pierre trapue SANS ailes, quatre traces pâles sur le corps du moulin, la porte entrebâillée.",
       "prompt_image": "old stone windmill without sails on a moorland crest, four pale ghost marks of the missing sails on the stone body, door ajar, small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_moulin_campement_a.png"
+      "illustration": "scene_moulin_sans_ailes_d_d.png"
     },
     {
       "id": "croix-ombres",

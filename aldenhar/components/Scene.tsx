@@ -128,6 +128,18 @@ function chance(p: number): boolean {
 function nowMs(): number {
   return Date.now();
 }
+/**
+ * « Il y a des gens autour » — le contexte des réactions du monde (7/08).
+ * Vrai dans les lieux INTÉRIEURS du village ET dans toute la séquence du
+ * Seuil (accueil, rue, muret, halte) : elle se joue dans les rues même si le
+ * Seuil reste « dehors » pour le tirage du pool.
+ */
+function dansLeVillage(sceneId: string): boolean {
+  return (
+    isHameauInterior(radical(sceneId)) ||
+    /^(serment-hameau|hameau-|femme-seuil|gamin-murets)/.test(sceneId)
+  );
+}
 
 /** Préférence du popup « rangé dans le menu » (7/08) — compte, pas run :
     une fois compris, le rappeler à chaque héros serait du bruit. */
@@ -439,6 +451,9 @@ export default function Scene() {
   // Dernière illustration de SCÈNE (repos de l'image). L'image d'objet n'est
   // qu'un remplacement momentané ; on revient toujours à cette scène-là.
   const lastSceneIlloRef = useRef<string>(PORTAL);
+  /** Vue de marche différée : posée quand une conséquence de jet se lit sur
+      une liaison (l'image du lieu tient), appliquée au tap suivant. */
+  const imageApresConsequence = useRef<string | null>(null);
   // File de révélation séquentielle : les blocs de texte (narration/Geôlier)
   // tapent l'un après l'autre, jamais tous en même temps.
   const [activeTypingId, setActiveTypingIdState] = useState<string | null>(null);
@@ -545,7 +560,16 @@ export default function Scene() {
     // Tout le texte de l'écran est écrit : les CTA peuvent apparaître — SAUF
     // s'il reste des écrans dans la séquence (micro-beats) : c'est alors
     // « Touche pour continuer » qui prend la main, jamais les choix.
-    if (next === null && beatsSuiteRef.current.length === 0) setChoicesHidden(false);
+    if (next === null && beatsSuiteRef.current.length === 0) {
+      setChoicesHidden(false);
+      // Conséquence de jet lue sur une liaison COURTE (un seul écran) : la vue
+      // de marche prend le relais au moment où les routes s'offrent.
+      if (imageApresConsequence.current) {
+        setImage(imageApresConsequence.current);
+        setImageKind("scene");
+        imageApresConsequence.current = null;
+      }
+    }
   }
   function enqueueReveal(ids: string[]) {
     if (ids.length === 0) {
@@ -832,6 +856,8 @@ export default function Scene() {
     if (img) {
       setImage(img.src);
       setImageKind(img.kind);
+      // Un nouvel écran avec sa propre image annule toute bascule différée.
+      imageApresConsequence.current = null;
     }
     const groupes = decouperEnEcrans(entries);
     // La CARTE D'ÉTAT reste visible sur TOUS les écrans de la scène (7/08,
@@ -864,6 +890,13 @@ export default function Scene() {
   function nextChunk() {
     const [tete, ...reste] = beatsSuiteRef.current;
     if (!tete) return;
+    // La conséquence du jet a été lue sur l'image du lieu quitté : la vue de
+    // marche de la liaison prend le relais maintenant (playtest 7/08).
+    if (imageApresConsequence.current) {
+      setImage(imageApresConsequence.current);
+      setImageKind("scene");
+      imageApresConsequence.current = null;
+    }
     setBeatsSuite(reste);
     revealedIdsRef.current = new Set();
     setRevealedIds(new Set());
@@ -1261,9 +1294,16 @@ export default function Scene() {
       trav.phase = "scene";
       trav.current = nextScene.id;
     } else if (opts?.toDest) {
-      nextScene = resoudre(opts.toDest, runRef.current) ?? sceneById(ENTRY_SCENE)!;
+      // LA BÊTE GARDE SON CREUX (playtest 7/08) : plus un « lieu » du pool —
+      // elle embusque la route du Chemin Creux (1re visite), puis son
+      // chainNext enchaîne sur le lieu lui-même. La destination est comptée
+      // visitée dès l'embuscade : le pool ne la réoffre jamais.
+      const embuscade = opts.toDest === "chemin-creux" && !trav.visited.includes("chemin-creux");
+      nextScene = resoudre(embuscade ? "bete-chemins-creux" : opts.toDest, runRef.current) ?? sceneById(ENTRY_SCENE)!;
       trav.phase = "scene";
-      trav.current = opts.toDest;
+      // Reprise fidèle : fermer l'app pendant l'embuscade doit rendre la
+      // Bête, pas le lieu derrière elle.
+      trav.current = embuscade ? "bete-chemins-creux" : opts.toDest;
       trav.liaisonOpts = null;
       if (!trav.visited.includes(opts.toDest)) trav.visited = [...trav.visited, opts.toDest];
     } else if (scene.hameauHalte) {
@@ -1485,7 +1525,13 @@ export default function Scene() {
     if (opts?.toDest) {
       const origine = trav.visited.length >= 2 ? trav.visited[trav.visited.length - 2] : undefined;
       const entre = isHameauInterior(opts.toDest) && !isHameauInterior(origine);
-      const sort = !isHameauInterior(opts.toDest) && isHameauInterior(origine);
+      // SORTIE : la séquence du Seuil (accueil, rue, muret) se joue DANS les
+      // rues même si elle reste « dehors » pour le pool — la quitter vers la
+      // lande mérite la ligne de sortie (playtest 7/08 : rue → crête du Pendu
+      // sans couture). L'ENTRÉE, elle, garde le strict intérieur : la
+      // narration du Seuil raconte déjà l'arrivée au village.
+      const sort = !isHameauInterior(opts.toDest) && !!origine &&
+        (isHameauInterior(origine) || /^(serment-hameau|hameau-)/.test(origine));
       if (entre || sort) {
         const pool = entre ? FRANCHIT_ENTREE : FRANCHIT_SORTIE;
         entries.push({ id: nextId(), kind: "narration", text: pool[nextStep % pool.length] });
@@ -1572,24 +1618,38 @@ export default function Scene() {
     manifsEnAttente.current = [];
     // Réaction du monde : une seule à la fois, tirée dans le pool de l'état le
     // plus ancien encore actif — deux réactions d'affilée noieraient la scène.
+    // GARDÉE PAR LE CONTEXTE (playtest 7/08) : la plupart des réactions
+    // mettent des VILLAGEOIS en scène (« le barrage s'écarte », « une femme
+    // pose un bol ») — servies en pleine lande ou face à une bête, elles
+    // cassaient la scène. Seules celles taguées `reactionsPartout` sortent du
+    // village, et aucune ne se joue pendant un combat.
     const anciens = actifsIci.filter((e) => manifsJouees.current.has(e.id));
-    if (anciens.length && chance(0.4)) {
+    if (anciens.length && !nextScene.combat && chance(0.4)) {
       const e = anciens[nextStep % anciens.length];
-      entries.push({
-        id: nextId(),
-        kind: "narration",
-        text: e.reactions[Math.floor(nextStep / 2) % e.reactions.length],
-      });
+      const eligibles = e.reactions
+        .map((text, i) => ({ text, i }))
+        .filter(({ i }) => dansLeVillage(nextScene.id) || (e.reactionsPartout ?? []).includes(i));
+      if (eligibles.length) {
+        entries.push({
+          id: nextId(),
+          kind: "narration",
+          text: eligibles[Math.floor(nextStep / 2) % eligibles.length].text,
+        });
+      }
     }
     // LIGNES INTRUSES (Hanté) : une phrase qui n'appartient pas à la scène.
-    // C'est tout leur intérêt — elles ne nomment jamais le lieu courant.
+    // C'est tout leur intérêt — elles ne nomment jamais le lieu courant, et
+    // elles ne se REDISENT jamais mot pour mot dans la même vie (playtest
+    // 7/08 : la même phrase servie deux fois devient un tic de système).
     const hante = actifsIci.find((e) => e.lignesIntruses?.length);
+    let intruseServie: string | null = null;
     if (hante?.lignesIntruses && chance(0.45)) {
-      entries.push({
-        id: nextId(),
-        kind: "narration",
-        text: hante.lignesIntruses[(nextStep * 3) % hante.lignesIntruses.length],
-      });
+      const dejaVues = runRef.current?.intrusesVues ?? [];
+      const fraiches = hante.lignesIntruses.filter((t) => !dejaVues.includes(t));
+      if (fraiches.length) {
+        intruseServie = fraiches[(nextStep * 3) % fraiches.length];
+        entries.push({ id: nextId(), kind: "narration", text: intruseServie });
+      }
     }
 
     // LA PERCEPTION (5/08) : ce que ce héros-LÀ remarque, parce qu'il est
@@ -1690,12 +1750,19 @@ export default function Scene() {
       hasBesaceRoom(besace, "actif") &&
       chance(0.12)
     ) {
-      const found = randomSoinMineur();
-      obtainedItem = found;
-      persist((run) => {
-        run.besace = [...run.besace, found];
-      });
-      entries.push({ id: nextId(), kind: "obtenu", name: found.name, rarity: RARITY_LABEL[found.rarity as BesaceRarity], flavor: found.flavor });
+      const dejaServis = [
+        ...besace.map((b) => b.name),
+        ...(runRef.current?.dropsServis ?? []),
+      ];
+      const found = randomSoinMineur(dejaServis);
+      if (found) {
+        obtainedItem = found;
+        persist((run) => {
+          run.besace = [...run.besace, found];
+          run.dropsServis = [...(run.dropsServis ?? []), found.name];
+        });
+        entries.push({ id: nextId(), kind: "obtenu", name: found.name, rarity: RARITY_LABEL[found.rarity as BesaceRarity], flavor: found.flavor });
+      }
     }
     // Le Grand Registre (§19) : classement inline, ligne du joueur marquée.
     if (nextScene.registre) {
@@ -1734,9 +1801,22 @@ export default function Scene() {
     //  • sinon objet obtenu → image de l'objet (remplacement momentané) ;
     //  • sinon → on revient/reste sur l'illustration de scène (l'image ne bouge pas).
     let img: { src: string; kind: ImageKind };
+    let differeVueDeMarche: string | null = null;
     if (contextChanged) {
+      const ancienne = lastSceneIlloRef.current;
       lastSceneIlloRef.current = nextIllustration;
       img = { src: nextIllustration, kind: "scene" };
+      // LA CONSÉQUENCE SE LIT SUR SON IMAGE (playtest 7/08) : l'issue d'un jet
+      // s'affiche sur l'écran suivant (option A du 19/07) — quand ce suivant
+      // est une LIAISON, on lisait « ta lame répond… » par-dessus la vue de
+      // marche. L'image du lieu quitté TIENT le temps du 1er écran de la
+      // séquence ; la vue de marche prend le relais au tap suivant.
+      if (opts?.consequence && nextScene.liaison) {
+        img = { src: ancienne, kind: "scene" };
+        // ⚠️ posée APRÈS showScreen (qui purge les bascules différées d'un
+        // écran précédent) — voir la fin d'advance().
+        differeVueDeMarche = nextIllustration;
+      }
     } else if (obtainedItem) {
       // Icône réelle de l'objet si elle existe (objets des Landes), sinon
       // l'icône générique par type (arme/soin/babiole).
@@ -1756,6 +1836,8 @@ export default function Scene() {
       run.lastChoiceId = null;
       run.poiSeen = [];
       run.trav = trav;
+      // Une intruse servie ne se redira jamais dans cette vie.
+      if (intruseServie) run.intrusesVues = [...(run.intrusesVues ?? []), intruseServie];
       // Séquences garanties du Hameau (spec 24/07 suite §3) : une fois jouées,
       // elles ne se rejouent pas dans la traversée.
       if (scene.hameauEntree) run.hameau = { ...run.hameau, entree: true };
@@ -1878,6 +1960,8 @@ export default function Scene() {
     setRoll(null);
     setTimedExpired(false);
     showScreen(entries, img);
+    // La bascule différée survit à showScreen (qui purge celles d'avant).
+    if (differeVueDeMarche) imageApresConsequence.current = differeVueDeMarche;
   }
 
   function onSelect(choice: Choice) {
@@ -2305,7 +2389,7 @@ export default function Scene() {
           if (item.cure) run.effects = run.effects.filter((e) => e.delta > 0);
         });
         setHealth(runRef.current?.health ?? health);
-        consequence = `Tu uses « ${item.name} ». ${item.cure ? "La plaie se referme, l'entaille cède enfin." : "Un peu de force te revient."}`;
+        consequence = `Tu sors « ${item.name} » de la Besace. ${item.cure ? "La plaie se referme, l'entaille cède enfin." : "Un peu de force te revient."}`;
       }
       advanceTimer.current = setTimeout(() => advance({ consequence }), 320);
     } else if (choice.passive) {

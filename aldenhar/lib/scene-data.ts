@@ -968,6 +968,9 @@ export const SCENES: Scene[] = [
     id: "bete-chemins-creux",
     illustration: "assets/monstre_bete_chemins_creux_a.png",
     combat: true,
+    // L'embuscade enchaîne sur SON lieu : on descendait vers le Chemin Creux,
+    // la Bête surgit au coude, et le creux continue après le combat.
+    chainNext: "chemin-creux",
     foe: "bete-chemins-creux",
     foeName: "La Bête des Chemins Creux",
     narration: [
@@ -3772,7 +3775,11 @@ export const SCENES: Scene[] = [
     // Campement de zone : le Moulin sans Ailes. L'id reste « campement »
     // (Scene.tsx exclut cet id du soin aléatoire d'exploration).
     id: "campement",
-    illustration: "assets/scene_moulin_campement_a.png",
+    // ⚠️ Le lieu s'appelle le Moulin SANS Ailes et son point d'intérêt (« la
+    // croix d'ombres ») repose sur leur absence : la vue d'établissement doit
+    // montrer la tour tronquée. `scene_moulin_campement_a` (ailes entières)
+    // reste en réserve si Patrick préfère la regénérer.
+    illustration: "assets/scene_moulin_sans_ailes_d_d.png",
     chainNext: "campement-2",
     narration: [
       "Le moulin n'a plus d'ailes mais il a gardé leur trace : quatre ombres " +
@@ -4775,11 +4782,13 @@ export const SCENES: Scene[] = [
     foe: "meute-grise",
     foeName: "La Meute Grise",
     narration: [
-      "Passé les murets du hameau, la lande redevient à eux. Tu les vois " +
-        "de loin — et c'est mauvais signe : la Meute Grise ne se montre " +
-        "que quand l'encerclement est fini. Six silhouettes couleur de " +
-        "bruyère morte, immobiles aux six points d'un cercle dont tu es " +
-        "le centre.",
+      // ⚠️ Ne jamais présupposer d'où vient le héros : cette narration se
+      // jouait avec « Passé les murets du hameau… » chez des héros qui n'y
+      // étaient jamais entrés (playtest 7/08).
+      "Loin de tout muret, la lande est à eux. Tu les vois de loin — et " +
+        "c'est mauvais signe : la Meute Grise ne se montre que quand " +
+        "l'encerclement est fini. Six silhouettes couleur de bruyère " +
+        "morte, immobiles aux six points d'un cercle dont tu es le centre.",
       "Pas des chiens : trop patients. Pas des loups : trop organisés. La " +
         "plus grande s'assoit — le signal. Le cercle se met à tourner, " +
         "lentement, en se resserrant d'un pas par tour.",
@@ -5882,7 +5891,11 @@ export const ENTRY_SCENE = "borne-frontiere";
  */
 const APPROACH: Record<string, string> = {
   "chemin-creux": "Vers le chemin creux",
-  "bete-chemins-creux": "Vers une odeur de suint",
+  // ⚠️ La Bête n'est PLUS une destination du pool (playtest 7/08 : tirée
+  // 5 runs sur 6, parfois SUIVIE du lieu « Chemin Creux » où l'on arrivait
+  // « à neuf » après avoir combattu sa bête). Elle EMBUSQUE désormais la
+  // route du Chemin Creux — voir la branche toDest d'advance() et son
+  // chainNext : le combat, puis le lieu.
   "colline-aux-gibets": "Vers la crête aux cordes",
   "pendu-qui-parle": "Vers un gibet qui parle",
   "champ-des-fixes": "Vers les rangées de poteaux",
@@ -6461,7 +6474,6 @@ function seeded(n: number): number {
  */
 const INDICE_ROUTE: Record<string, string> = {
   "chemin-creux": "un chemin qui s'enfonce entre deux talus",
-  "bete-chemins-creux": "un creux d'où monte une odeur de suint",
   "colline-aux-gibets": "une crête hérissée de mâts noirs",
   "pendu-qui-parle": "un gibet bas, à hauteur d'homme, qui bouge sans vent",
   "champ-des-fixes": "des rangées de piquets jusqu'à l'horizon",

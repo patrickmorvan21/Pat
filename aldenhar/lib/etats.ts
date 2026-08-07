@@ -42,6 +42,15 @@ export type Etat = {
   manifestation: string;
   /** Au moins DEUX réactions du monde, servies plus loin dans la run. */
   reactions: string[];
+  /**
+   * Indices (dans `reactions`) des réactions jouables PARTOUT — celles qui ne
+   * mettent personne en scène. Les autres décrivent des VILLAGEOIS (un
+   * barrage, un bol posé, un panier rangé…) et ne se jouent QUE dans le
+   * village : servies en pleine lande ou face à une bête, elles cassaient la
+   * scène (playtest 7/08 — « Le barrage s'écarte » pendant le combat contre
+   * la Bête des Chemins Creux). Absent = toutes les réactions sont village.
+   */
+  reactionsPartout?: number[];
   /** Comment il se perd, en une phrase. */
   remede: string;
   /** La ligne servie quand il se lève enfin. */
@@ -126,6 +135,7 @@ export const ETATS: Etat[] = [
       "Quelqu'un ralentit pour rester à ta hauteur. Ce n'est pas de la bonté : " +
         "c'est qu'on veut voir jusqu'où tu tiens.",
     ],
+    reactionsPartout: [0], // « le chemin monte » ne met personne en scène
     guerison:
       "Au matin, tu poses le pied sans y penser. C'est à ça que tu comprends " +
       "que c'est passé : tu n'y as pas pensé.",
@@ -192,6 +202,7 @@ export const ETATS: Etat[] = [
         "relève. C'est le pire.",
       "Une odeur de corde mouillée, ici, où il n'y a ni corde ni eau.",
     ],
+    reactionsPartout: [1], // l'odeur de corde n'a besoin de personne
     guerison: "Rien ne lève cet état. Il te suivra jusqu'au bout de cette vie-là.",
     // L'obsession aiguise le regard et abîme le contact.
     jets: { INSTINCT: 1, EMPATHIE: -1 },
@@ -267,6 +278,9 @@ export const ETATS: Etat[] = [
       "Un homme te croise, voit l'enfant à ta hauteur, et son salut s'arrête " +
         "au milieu. Emmener un petit du hameau dans la lande, ça se raconte.",
     ],
+    // Le Gamin EST là où le héros est : sa 1re réaction se joue partout (la
+    // 2e met un passant en scène — village seulement).
+    reactionsPartout: [0],
     guerison:
       "Il s'arrête net au bout du muret. « Là, c'est plus chez moi. » Il " +
       "attend que tu sois assez loin pour ne plus pouvoir le rappeler, puis " +

@@ -1183,6 +1183,25 @@ painting, grim medieval rural, square composition, no text, no lettering, no
 watermark
 ```
 
+## PRIORITÉ 0 bis — L'ÉCRAN DE LA DESCENTE (playtest 7/08)
+
+Le SEUL écran du jeu encore sur le placeholder portail (`dithering-portal.jpg`),
+et c'est l'écran le plus rare : « Tu as traversé les Landes vivant. »
+
+### `scene_la_descente.png` — l'escalier qui plonge (établissement)
+```
+Vast dark stone stairway descending into absolute blackness, seen from the
+top step, cold air rising as faint pale mist between ancient walls, a broken
+wooden palisade gate frames the view at the top, no human figure, dark
+fantasy illustration, one single light source from behind the viewer, deep
+crushed blacks, no fill light, high contrast, two-tone monochrome-friendly,
+strong readable shapes, matte painting, grim medieval, square composition,
+no text, no lettering, no watermark
+```
+Raccord : la palissade de rondins noircis (mêmes pointes que
+`scene_palissade_sud_a_a`) doit se deviner en haut du cadre — on est passé
+de l'autre côté du portillon.
+
 ## À TRANCHER (pas des prompts) — rappels
 - **Le Moulin de `campement`** montre `scene_moulin_campement_a.png`, qui a
   QUATRE AILES — la version SANS ailes existe (`scene_moulin_sans_ailes_d_d.png`,

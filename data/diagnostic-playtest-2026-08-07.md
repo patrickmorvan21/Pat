@@ -49,7 +49,7 @@
 
 10. **Deux « Fiole d'eau de gouttière » obtenues dans la même run** (drop de soin générique). Un objet au nom si particulier qui tombe en double casse l'illusion d'objet trouvé. → Écarter les noms déjà en Besace ou déjà obtenus cette vie.
 
-11. **Le Moulin est la seule destination sans indice de route** : à une Croisée qui l'offre, une direction est décrite sensoriellement et l'autre tombe sur une phrase de bifurcation générique — exactement l'asymétrie que la règle du 5/08 interdisait. (`INDICE_ROUTE` : 17 entrées pour 18 destinations, il manque `campement`.)
+11. ~~Le Moulin sans indice de route~~ — **FAUX POSITIF de mon audit** (la clé `campement:` est écrite sans guillemets, ma regex la ratait) : les 18 destinations sont couvertes, rien à corriger.
 
 12. **La Bête des Chemins Creux est tombée dans 5 runs sur 6**, souvent tôt — et une fois SUIVIE du lieu « Chemin Creux », où l'on arrive « à neuf » alors qu'on vient d'y combattre sa bête. Le pool la tire comme n'importe quel lieu ; son nom la lie pourtant à un lieu précis. → Soit la retirer du pool et la déclencher en approchant du Chemin Creux, soit renommer.
 

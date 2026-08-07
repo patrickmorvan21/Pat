@@ -1030,6 +1030,19 @@ def main() -> int:
             s["acces"] = "séquence du Hameau"
         elif s.get("procesFixation"):
             s["acces"] = "procès (Soupçon au maximum)"
+        elif s["id"] == "bete-chemins-creux":
+            # 7/08 : la Bête n'est plus dans le pool — elle embusque la route
+            # du Chemin Creux (branche toDest d'advance()).
+            s["acces"] = "embuscade (route du Chemin Creux)"
+        elif s.get("remplace"):
+            # Une scène-variante se joue À LA PLACE d'une autre quand sa
+            # condition tient — elle n'est jamais orpheline (faux positifs du
+            # 7/08 : fossoyeur-trou-1, femme-savoir-1, fille-moulin-1…).
+            s["acces"] = "variante conditionnelle"
+        elif s["id"] == "renoncer":
+            s["acces"] = "portillon de la Halte (Serment tenu)"
+        elif s["id"] == "troupeau-sans-berger":
+            s["acces"] = "déroutage en marchant (boucle est)"
         else:
             s["acces"] = "aucun"
 

@@ -118,8 +118,13 @@ function withId(base: Omit<BesaceItem, "id">): BesaceItem {
   return { ...base, id: `${base.name.toLowerCase().replace(/[^a-z]+/g, "-")}-${uid}` };
 }
 
-export function randomSoinMineur(): BesaceItem {
-  return withId(SOINS_MINEURS[Math.floor(Math.random() * SOINS_MINEURS.length)]);
+export function randomSoinMineur(exclure: string[] = []): BesaceItem | null {
+  // Jamais deux fois le même objet « trouvé » dans une vie (playtest 7/08 :
+  // deux « Fiole d'eau de gouttière » dans la même run cassent l'illusion
+  // d'objet trouvé). Pool épuisé → pas de drop, un bonus peut manquer.
+  const pool = SOINS_MINEURS.filter((s) => !exclure.includes(s.name));
+  if (!pool.length) return null;
+  return withId(pool[Math.floor(Math.random() * pool.length)]);
 }
 
 /**

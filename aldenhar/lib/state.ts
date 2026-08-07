@@ -188,6 +188,12 @@ export type RunState = {
       revient jamais verbatim dans une même vie (retour test 4/08). Complétée
       en QUITTANT la liaison, pour que sa reprise reste déterministe. */
   liaisonVues?: string[];
+  /** Lignes intruses de HANTÉ déjà servies cette run — jamais deux fois la
+      même phrase « qui n'appartient pas là » dans une vie (playtest 7/08). */
+  intrusesVues?: string[];
+  /** Noms des soins génériques déjà trouvés cette run — un objet « trouvé »
+      ne retombe jamais sous le même nom dans la même vie (playtest 7/08). */
+  dropsServis?: string[];
   /**
    * LES TÉMOINS (5/08) : le Soupçon cesse d'être un compteur, il devient des
    * gens. Chaque acte qui fait monter le Soupçon inscrit QUI a vu QUOI, dans
@@ -445,6 +451,8 @@ export function loadRun(): RunState {
             feedSuite: Array.isArray(p.feedSuite) ? p.feedSuite : [],
             relicUsed: Boolean(p.relicUsed),
             liaisonVues: Array.isArray(p.liaisonVues) ? p.liaisonVues : [],
+            intrusesVues: Array.isArray(p.intrusesVues) ? p.intrusesVues : [],
+            dropsServis: Array.isArray(p.dropsServis) ? p.dropsServis : [],
             temoins: Array.isArray(p.temoins) ? p.temoins : [],
             loiVues: Array.isArray(p.loiVues) ? p.loiVues : [],
             arriveeVues: Array.isArray(p.arriveeVues) ? p.arriveeVues : [],

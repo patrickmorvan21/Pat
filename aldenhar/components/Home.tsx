@@ -60,7 +60,11 @@ export default function Home() {
           ? ["Au Seuil — le pacte n'est pas signé"]
           : [
               `${run.heroName} · Jour ${run.day}`,
-              `Les Lisières · ${lieuNom(run.trav?.current)}`,
+              // « Les Landes » = la ZONE (toute la prose du jeu la nomme
+              // ainsi) ; « Les Lisières » reste le nom de l'ACTE sur son
+              // carton (Figma). Le rappel parle du lieu où l'on est, donc de
+              // la zone — mélanger les deux ici perdait le joueur (7/08).
+              `Les Landes · ${lieuNom(run.trav?.current)}`,
             ]
       );
     }
