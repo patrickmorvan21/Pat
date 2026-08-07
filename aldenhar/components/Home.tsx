@@ -72,7 +72,9 @@ export default function Home() {
     // la tagline de l'accueil est SA voix — tirée du pool conditionné par le
     // contexte de la dernière mort, jamais deux fois la même de suite.
     const mem = loadMemory();
-    if (mem.deaths > 0) {
+    // La voix du Geôlier dès qu'il y a un PASSÉ — une mort OU une traversée
+    // réussie (7/08 : un survivant sans aucune mort mérite aussi son accueil).
+    if (mem.deaths > 0 || (mem.zonesCleared ?? 0) > 0) {
       const now = Date.now();
       const joursHorsJeu = mem.lastPlayedAt
         ? Math.floor((now - mem.lastPlayedAt) / 86_400_000)
@@ -88,6 +90,7 @@ export default function Home() {
           classe: ld?.classed ?? false,
           joursHorsJeu,
           meilleurScore: ld?.meilleurScore ?? false,
+          traversee: mem.derniereFinTraversee ?? false,
         })
       );
       mutateMemory((m) => {

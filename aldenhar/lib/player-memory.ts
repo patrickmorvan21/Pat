@@ -208,6 +208,17 @@ export type PlayerMemory = {
    * place prise à quelqu'un d'autre. Change le ton du Geôlier.
    */
   renoncements?: number;
+  /**
+   * LA TRACE DU SURVIVANT (arbitrage Patrick 7/08) : traversées COMPLÈTES —
+   * la Descente franchie vivant. Le nom entre au Registre (« a franchi la
+   * Descente »), le compte s'en souvient, le Geôlier accueille la run
+   * suivante en conséquence. Aucune relique : on ne forge rien d'une vie
+   * qu'on n'a pas perdue. (Le Sceau qui modifie la zone = temps 2.)
+   */
+  zonesCleared?: number;
+  /** La DERNIÈRE fin de run était une traversée réussie — consommé par
+      l'accueil du Geôlier, remis à false par la mort suivante. */
+  derniereFinTraversee?: boolean;
 };
 
 const KEY = "aldenhar-player";
@@ -228,6 +239,8 @@ function fresh(): PlayerMemory {
     introSeen: false,
     faitsVus: {},
     renoncements: 0,
+    zonesCleared: 0,
+    derniereFinTraversee: false,
     faits: {},
   };
 }
@@ -267,6 +280,30 @@ export function recordRenoncement(args: { heroName: string; days: number; place:
       cause: "resté au Hameau",
       place: args.place,
     });
+    m.derniereFinTraversee = false;
+    m.lastPlayedAt = Date.now();
+  });
+}
+
+/**
+ * LA TRACE DU SURVIVANT (7/08) — la Descente franchie vivant. Enregistré AU
+ * MOMENT du franchissement, avant le reset de la run : fermer l'app sur
+ * l'écran final ne fait pas disparaître la traversée. `deaths` n'est PAS
+ * incrémenté (la courbe d'entrée et les jalons de mort ne doivent pas se
+ * croire avancés), et aucune relique n'est forgée.
+ */
+export function recordTraversee(args: { heroName: string; days: number }): void {
+  mutateMemory((m) => {
+    m.zonesCleared = (m.zonesCleared ?? 0) + 1;
+    m.totalDays += args.days;
+    m.bestDays = Math.max(m.bestDays, args.days);
+    m.fallen.unshift({
+      name: args.heroName,
+      days: args.days,
+      cause: "a franchi la Descente",
+      place: "la-descente",
+    });
+    m.derniereFinTraversee = true;
     m.lastPlayedAt = Date.now();
   });
 }
@@ -332,6 +369,8 @@ export function loadMemory(): PlayerMemory {
           lastAccueil: typeof p.lastAccueil === "string" ? p.lastAccueil : undefined,
           faitsVus: p.faitsVus && typeof p.faitsVus === "object" ? p.faitsVus : {},
           renoncements: typeof p.renoncements === "number" ? p.renoncements : 0,
+          zonesCleared: typeof p.zonesCleared === "number" ? p.zonesCleared : 0,
+          derniereFinTraversee: Boolean(p.derniereFinTraversee),
           faits: sacDepuis(p.faits),
         };
       }
@@ -477,6 +516,9 @@ export function recordDeath(args: {
       meilleurScore: args.days > bestBefore,
       lieu: args.lieu,
     };
+    // La dernière fin de run est une MORT — l'accueil du Geôlier ne doit plus
+    // parler de la traversée d'avant.
+    m.derniereFinTraversee = false;
     m.lastPlayedAt = Date.now();
   });
   return relic;

@@ -34,6 +34,9 @@ export type DeathContext = {
   joursHorsJeu: number;
   /** La dernière run est le meilleur score du compte. */
   meilleurScore: boolean;
+  /** La DERNIÈRE fin de run était une traversée réussie (la Descente
+      franchie vivant) — l'accueil doit la regarder en face (7/08). */
+  traversee?: boolean;
 };
 
 type Kind = "specifique" | "generique" | "stats" | "lapsus";
@@ -49,6 +52,12 @@ const Q = (id: string, text: string, kind: Kind, cond?: (c: DeathContext) => boo
 
 const QUOTES: Quote[] = [
   /* ── Première mort ──────────────────────────────────────────────────── */
+  /* ── La traversée réussie (7/08) — prioritaire sur tout le reste : un
+     survivant qui revient mérite d'être regardé en face, pas raillé. ────── */
+  Q("trav-a", "Tu l'as traversée. Ne prends pas ça pour une sortie — l'étage du dessous me connaît mieux.", "specifique", (c) => c.traversee === true),
+  Q("trav-b", "Un survivant. Le Registre ne sait pas où te ranger. Moi, si.", "specifique", (c) => c.traversee === true),
+  Q("trav-c", "Peu franchissent la Descente. Aucun n'en revient pareil. Vérifie tes mains.", "specifique", (c) => c.traversee === true),
+
   Q("m1-a", "Un. C'est un début. Tout le monde commence par un.", "specifique", (c) => c.morts === 1),
   Q("m1-b", "Tu as duré moins que la moyenne. La moyenne, ici, n'est pas un compliment.", "specifique", (c) => c.morts === 1),
   Q("m1-c", "Alors. Maintenant tu sais ce que ça fait. La deuxième est plus facile. Pas moins douloureuse — plus facile.", "specifique", (c) => c.morts === 1),

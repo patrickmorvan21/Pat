@@ -75,6 +75,7 @@ import {
   noterFait,
   recordDeath,
   recordRenoncement,
+  recordTraversee,
   type Relic,
 } from "@/lib/player-memory";
 
@@ -1278,6 +1279,9 @@ export default function Scene() {
     setExpChoix(null);
     setExpRetire(null);
     let nextScene: SceneType;
+    // Le Jour de marche (arbitrage Patrick 7/08) : posé dans la branche
+    // toDest, appliqué à la puce + au persist plus bas.
+    let jourDeMarche = false;
     // Le Soupçon au comble (chantier 3 du 23/07) : la traversée est DÉROUTÉE
     // vers le procès du héros — on vient te chercher, où que tu ailles. Jamais
     // au milieu d'une chaîne de rencontre (on finit d'abord ce qui te tient).
@@ -1305,7 +1309,15 @@ export default function Scene() {
       // Bête, pas le lieu derrière elle.
       trav.current = embuscade ? "bete-chemins-creux" : opts.toDest;
       trav.liaisonOpts = null;
-      if (!trav.visited.includes(opts.toDest)) trav.visited = [...trav.visited, opts.toDest];
+      if (!trav.visited.includes(opts.toDest)) {
+        trav.visited = [...trav.visited, opts.toDest];
+        // LE JOUR AVANCE EN MARCHANT (arbitrage Patrick 7/08) : tous les
+        // trois lieux traversés, un jour passe — en plus du sommeil et des
+        // échecs durs. C'est ce qui remet l'économie du temps à l'endroit :
+        // survivre longtemps redevient avoir marché loin, et les Besoins
+        // (comptés en jours) se réveillent enfin.
+        if (trav.visited.length % 3 === 0) jourDeMarche = true;
+      }
     } else if (scene.hameauHalte) {
       // La nuit est passée : la traversée reprend vers la sortie de zone.
       nextScene = DESCENTE_SCENE;
@@ -1444,6 +1456,11 @@ export default function Scene() {
     const entries: FeedEntry[] = [];
     let obtainedItem: BesaceItem | null = null;
 
+    // Jour de marche : la puce ouvre l'écran d'arrivée, avant la couture et
+    // l'approche — le temps passe PENDANT la route, pas après.
+    if (jourDeMarche) {
+      entries.push({ id: nextId(), kind: "day", day: (runRef.current?.day ?? day) + 1 });
+    }
     if (opts?.prepend) entries.push(...opts.prepend);
     // La conséquence du jet précède la mise en place de la scène suivante.
     if (opts?.consequence) {
@@ -1826,6 +1843,9 @@ export default function Scene() {
     }
 
     setStep(nextStep);
+    // (le persist qui incrémente run.day arrive juste après — on affiche la
+    // même valeur qu'il écrira)
+    if (jourDeMarche) setDay((runRef.current?.day ?? day) + 1);
     setScene(nextScene);
     setVisitedMirror(trav.visited);
     // On quitte l'écran : les points d'intérêt du lieu précédent sont oubliés
@@ -1836,6 +1856,8 @@ export default function Scene() {
       run.lastChoiceId = null;
       run.poiSeen = [];
       run.trav = trav;
+      // Le Jour de marche : tous les trois lieux traversés (7/08).
+      if (jourDeMarche) run.day += 1;
       // Une intruse servie ne se redira jamais dans cette vie.
       if (intruseServie) run.intrusesVues = [...(run.intrusesVues ?? []), intruseServie];
       // Séquences garanties du Hameau (spec 24/07 suite §3) : une fois jouées,
@@ -2026,6 +2048,13 @@ export default function Scene() {
       if (scene.renoncement) {
         const run = runRef.current ?? loadRun();
         recordRenoncement({ heroName: run.heroName, days: run.day, place: scene.id });
+      } else {
+        // LA TRACE DU SURVIVANT (arbitrage Patrick 7/08) : franchir la
+        // Descente vivant n'est plus un reset sec — le nom entre au Registre
+        // (« a franchi la Descente »), le compte s'en souvient, et le Geôlier
+        // accueille la run suivante en conséquence. Aucune relique.
+        const run = runRef.current ?? loadRun();
+        recordTraversee({ heroName: run.heroName, days: run.day });
       }
       resetRun();
       window.location.reload();
