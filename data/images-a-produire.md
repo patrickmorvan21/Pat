@@ -936,3 +936,258 @@ frame explains her. Quiet, domestic, wrong only if you look closely.
 Monochrome duotone, deep charcoal and burnt orange, heavy grain, high
 contrast, no gradient.
 ```
+
+---
+
+# Lot 7/08 — LES RENCONTRES EN BEATS DU NOUVEAU LORE
+
+Constat de couverture (7/08) : les quatre témoins et les apparitions du Grand
+Témoin ajoutés en v1.40/v1.41 jouent leurs 3-4 beats **sur une seule image**
+(le Fossoyeur au trou, le Gamin, la Fille au Moulin, le Troupeau), et trois
+scènes fortes empruntent le décor d'une autre (les deux apparitions nocturnes,
+le Renoncement, la nuit dehors). Rien n'est cassé — mais la règle du détail
+unique (28/07) vaut pour eux comme pour le Marcheur ou les Époux, qui ont
+leurs images par beat depuis longtemps.
+
+**Rappel des cadrages (28/07, obligatoire)** : une variante ne re-décrit
+JAMAIS le personnage de l'image principale — `geste` (mains/dos, tête hors
+champ), `pres` (macro décor, aucune figure), `large` (silhouette lointaine).
+
+## Le Fossoyeur au trou — base `monstre_fossoyeur_poteaux_a.png`
+(variante du Champ des Fixés : il taille un écriteau, il a retiré un poteau)
+
+### `monstre_fossoyeur_trou_1.png` — « Je grave à l'avance » (geste)
+```
+Tight close view of weathered working hands carving letters into a small
+rough wooden grave-board resting on the knees of a seated figure, a short
+worn knife mid-stroke, curls of pale wood on the dark coat fabric, head and
+shoulders OUT of frame, a soft out-of-focus row of grave crosses far behind.
+Dark fantasy illustration, low raking backlight, deep crushed blacks, no fill
+light, high contrast, two-tone monochrome-friendly, strong readable shapes,
+matte painting, grim medieval rural, square composition, no text, no
+lettering, no watermark
+```
+
+### `scene_champ_poteau_retire.png` — « Y avait un poteau là » (pres)
+```
+Ground-level close view of a bare rectangular socket hole in dark packed
+heathland earth, in the middle of a receding row of tall grave posts — one
+post plainly missing from the line, the empty hole clean and old, spade marks
+long weathered, a little heather growing at its rim. No figures. Dark fantasy
+illustration, low raking light across the soil, deep crushed blacks, no fill
+light, high contrast, two-tone monochrome-friendly, strong readable shapes,
+matte painting, grim medieval rural, square composition, no text, no
+lettering, no watermark
+```
+
+### `monstre_fossoyeur_trou_3.png` — l'écriteau retourné (pres)
+```
+Close view of a finished small wooden grave-board leaning face-down against a
+worn leather boot and the hem of a long dark coat, the carved side hidden
+against the leg, only the plain back of the board visible, a knife being
+wiped on cloth at the edge of frame, head and body out of frame. Dark fantasy
+illustration, single low light source, deep crushed blacks, no fill light,
+high contrast, two-tone monochrome-friendly, strong readable shapes, matte
+painting, grim medieval rural, square composition, no text, no lettering, no
+watermark
+```
+
+## Le Gamin des Murets — base `monstre_gamin_murets_a.png`
+(la porte d'entrée de l'arc de la Fille — 4 beats sur une image)
+
+### `scene_murets_vers_sud.png` — « Le chemin fait le tour. Les murets, non. »
+```
+A hip-high dry-stone wall running straight away toward the southern horizon
+across dark open moorland, built without mortar, its top course polished
+smooth and pale by small feet walking it daily, low burning orange sky, the
+wall dividing the frame like a road. No figures. Dark fantasy illustration,
+hard backlight, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, strong readable shapes, matte painting, grim medieval
+rural, square composition, no text, no lettering, no watermark
+```
+
+### `monstre_gamin_caillou.png` — « C'est la dame de l'ouest » (geste)
+```
+Extreme close view of a child's small open hand holding out a flat grey
+pebble polished round like a river stone, offered toward the viewer, the
+stone catching a low warm light, ragged sleeve, dark moor out of focus
+behind, face and body out of frame. The stone is the subject. Dark fantasy
+illustration, one single light source, deep crushed blacks, no fill light,
+high contrast, two-tone monochrome-friendly, strong readable shapes, matte
+painting, grim medieval rural, square composition, no text, no lettering, no
+watermark
+```
+
+### `monstre_gamin_depart.png` — il ramasse ses cailloux, dans l'ordre
+```
+A small child figure seen from behind and at a distance, climbed down off a
+low dry-stone wall, bent over gathering a line of small stones off the top of
+the wall one by one, low burning orange sky, long shadow. Face never visible.
+Dark fantasy illustration, hard backlight, deep crushed blacks, no fill
+light, high contrast, two-tone monochrome-friendly, strong readable shapes,
+matte painting, grim medieval rural, square composition, no text, no
+lettering, no watermark
+```
+
+## La Fille au Moulin — base `monstre_la_fille_c.png` + `monstre_la_fille_moulin.png` (P1 ter)
+(4 beats sur l'image du degré 2 — le plan serré assis est déjà écrit en P1 ter)
+
+### `monstre_fille_moulin_dos.png` — beat 1, elle ne se retourne pas
+```
+Interior of a dark round stone mill, a single shaft of low orange light from
+a small window. A slender woman seated on a heather pallet seen fully from
+BEHIND, dark shawl over her shoulders, head bowed toward something her hands
+are doing in front of her, hands not visible. Near the door, a small clay pot
+holding a sprig of fresh heather still WET, droplets catching the light — the
+only fresh thing in the room. Her face is never visible. Dark fantasy
+illustration, one single light source, deep crushed blacks, no fill light,
+high contrast, two-tone monochrome-friendly, strong readable shapes, matte
+painting, grim medieval rural, square composition, no text, no lettering, no
+watermark
+```
+
+### `monstre_fille_moulin_ouvrage.png` — beats 3-4, l'ouvrage repris (geste)
+```
+Tight close view of a young woman's pale calm hands working a small piece of
+rope in her lap, tying and untying the same short knot, dark shawl fabric
+around, a heather pallet beneath, warm low sidelight from a small window.
+Head and face out of frame. The half-made knot is the subject. Dark fantasy
+illustration, one single light source, deep crushed blacks, no fill light,
+high contrast, two-tone monochrome-friendly, strong readable shapes, matte
+painting, grim medieval rural, square composition, no text, no lettering, no
+watermark
+```
+
+## Les apparitions nocturnes du Grand Témoin
+(⚠️ garde-fou §8 : jamais de visage, jamais de membres, jamais ce qu'il y a
+sous le tissu — s'il devient lisible, il devient un monstre ordinaire)
+
+### `scene_temoin_grange_toit.png` — le poids sur le toit (aucune figure)
+```
+Interior of a dark barn at night lit only by a small lantern on the floor,
+warm glow on rough roof beams and rafters overhead. ONE tie-beam visibly
+BOWED under a weight from outside, and a single thin thread of dust falling
+in a straight continuous line between two roof boards, caught in the lantern
+light. Nothing else moves. No figures, nothing visible through the boards.
+Dark fantasy illustration, one single warm light source from below, deep
+crushed blacks, no fill light, high contrast, two-tone monochrome-friendly,
+strong readable shapes, matte painting, grim medieval rural, square
+composition, no text, no lettering, no watermark
+```
+
+### `monstre_temoin_ruelle.png` — la traversée de la ruelle
+```
+A narrow cobbled village alley at night seen from ground level, houses black
+on both sides. At the FAR END of the alley, crossing left to right: a
+towering vertical mass of heavy black cloth, three times the height of a
+door, the fabric trailing behind it as if catching up with its movement.
+NO face, NO head shape, NO limbs, NO legs — below the hem, absolute black.
+On the rooflines of both sides, crows perched in a neat row, all facing DOWN
+toward the viewer, none facing the shape. Dark fantasy illustration, faint
+cold sky glow at the alley mouth, deep crushed blacks, no fill light, high
+contrast, two-tone monochrome-friendly, strong readable shapes, matte
+painting, grim medieval rural, square composition, no text, no lettering, no
+watermark
+```
+
+## La nuit refusée & le Renoncement — base `scene_hameau_dense_c.png`
+
+### `scene_hameau_nuit_dehors.png` — dormir contre le muret, côté nord
+```
+Night on the edge of a dark village: a lone figure wrapped in a travel cloak
+sitting asleep against the base of a low dry-stone wall, knees drawn up, face
+hidden in the hood, seen from a few steps away. Behind the wall, black
+village rooflines with not one lit window. Cold open moor on the near side.
+Dark fantasy illustration, faint moonless sky glow, deep crushed blacks, no
+fill light, high contrast, two-tone monochrome-friendly, strong readable
+shapes, matte painting, grim medieval rural, square composition, no text, no
+lettering, no watermark
+```
+
+### `scene_renoncer.png` — s'asseoir du côté du hameau
+```
+Dusk, seen from INSIDE a village fence: a figure seated calmly on a flat
+threshold stone beside a closed wooden wicket gate, back to the viewer,
+shoulders at rest, facing the open dark moor beyond the fence. The gate
+latch is closed. The moor outside is vast and empty; the near side is close
+and ordered. Quiet, not menacing — the picture of a decision. Face never
+visible. Dark fantasy illustration, low burning orange sky fading, deep
+crushed blacks, no fill light, high contrast, two-tone monochrome-friendly,
+strong readable shapes, matte painting, grim medieval rural, square
+composition, no text, no lettering, no watermark
+```
+
+## Le Troupeau sans Berger — base `monstre_troupeau_sans_berger_a.png`
+
+### `monstre_troupeau_brebis.png` — beat 2, la brebis qui refait un trajet
+```
+Dark moorland at dusk: ONE ewe walking away from the grazing flock with a
+level, purposeful stride toward the horizon, mid-step, head forward — not
+grazing, not fleeing, going somewhere. The flock stays behind as dim woolly
+backs in the hollow. Her separation from the group is the subject. Dark
+fantasy illustration, low raking light on the wool, deep crushed blacks, no
+fill light, high contrast, two-tone monochrome-friendly, strong readable
+shapes, matte painting, grim medieval rural, square composition, no text, no
+lettering, no watermark
+```
+
+### `monstre_troupeau_compte.png` — le comptage (point d'intérêt)
+```
+Close view over a tight flock of sheep filling the frame edge to edge, a
+mass of woolly backs in dark heathland, several heads lifted and turned
+straight toward the viewer with calm unlearned fearlessness, the rest
+grazing. No shepherd, no dog, no fence anywhere. Dark fantasy illustration,
+low raking light across the wool, deep crushed blacks, no fill light, high
+contrast, two-tone monochrome-friendly, strong readable shapes, matte
+painting, grim medieval rural, square composition, no text, no lettering, no
+watermark
+```
+
+## La Meute Grise, beat 2 — base `monstre_meute_grise_c.png`
+
+### `monstre_meute_grise_2.png` — le croissant, la meneuse qui questionne
+```
+Five lean feral dogs re-formed in a wide crescent at close range in dark
+heathland, holding their distance, and the LEAD FEMALE one full pace ahead of
+the line, head carried LOW below her shoulders, eyes fixed on the viewer —
+a question, not yet a charge. The others wait behind her, weight shifted
+back. Same lean silhouettes as the pack at dusk, sun down, sky a dim ember
+glow. Dark fantasy illustration, hard backlight, deep crushed blacks, no fill
+light, high contrast, two-tone monochrome-friendly, strong readable shapes,
+matte painting, grim medieval rural, square composition, no text, no
+lettering, no watermark
+```
+
+## Icône d'objet
+
+### `objet_clochette_meneuse.png` — la Clochette de meneuse (Besace)
+```
+A small tarnished sheep bell on a short worn leather collar strap, the strap
+cracked and darkened by years of wool grease, the bell dented and dull with
+one bright worn spot where it strikes, isolated object study on a pitch-black
+background. Dark fantasy illustration, one single light source, deep crushed
+blacks, high contrast, two-tone monochrome-friendly, strong readable shapes,
+square composition, no text, no lettering, no watermark
+```
+
+## Optionnel (P3)
+
+### `monstre_hesitant_2.png` — beat 2 de l'Hésitant (geste)
+```
+Tight close view of a man's weathered hands wringing a shapeless felt hat
+against his chest, knuckles pale from the grip, worn travel coat fabric,
+head and face out of frame, dark moor out of focus behind. Dark fantasy
+illustration, one single light source, deep crushed blacks, no fill light,
+high contrast, two-tone monochrome-friendly, strong readable shapes, matte
+painting, grim medieval rural, square composition, no text, no lettering, no
+watermark
+```
+
+## À TRANCHER (pas des prompts) — rappels
+- **Le Moulin de `campement`** montre `scene_moulin_campement_a.png`, qui a
+  QUATRE AILES — la version SANS ailes existe (`scene_moulin_sans_ailes_d_d.png`,
+  P0 résolue) : c'est un champ `illustration` à repointer, pas une image à
+  produire. En attente d'arbitrage depuis le 28/07.
+- **femme-savoir-1..3** et **veuve-cordes-sait-1..3** (variantes « le village
+  parle un cran plus fort ») réutilisent volontairement les visuels de la
+  version normale : même rencontre, mêmes lieux — aucun asset requis.
