@@ -51,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-07T20:27:15Z",
- "commit": "cc300cb",
+ "genere": "2026-08-07T20:48:28Z",
+ "commit": "e1261f3",
  "zones": [
   {
    "id": "landes",
@@ -674,7 +674,7 @@
     "fichier": "monstre_hesitant_2_b.png",
     "hash": "4a7bd6a1",
     "taille": 13371,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Il parle enfin : tourné de trois-quarts, il désigne la borne du menton sans la regarder. CHANGE : il n'est plus figé face au sud — tête tournée, menton qui pointe la pierre.",
@@ -4079,7 +4079,7 @@
     "fichier": "monstre_guetteur_tour_c.png",
     "hash": "e43e23f5",
     "taille": 6029,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Événement de la Tour : le Guetteur sans tour, assis de dos sur le tas de pierres, en manteau de guet, une corne au côté, il regarde le sud. CHANGE : c'est un portrait de l'homme, plus le plan large de la tour.",
@@ -7948,9 +7948,9 @@
     "Quelque chose grince très haut, très loin, à une hauteur où il n'y a rien.",
     "Pendant une seconde, le sol sous tes pieds est de la terre retournée de frais.",
     "Tu portes la main à ton cou. Il n'y a rien. Tu l'y portes quand même.",
-    "Une ombre passe à ta gauche, à la vitesse d'un homme qui marche. À ta gauche, il y a un mur.",
+    "Une ombre passe à ta gauche, à la vitesse d'un homme qui marche. Quand tu regardes, rien ne marche nulle part.",
     "Le vent dit un nom. Ce n'est pas le tien. Tu le retiens quand même.",
-    "Tu comptes les gens autour de toi et tu tombes sur un de plus qu'il n'y en a.",
+    "Tu comptes ce qui t'entoure — les ombres, les pierres. Il y en a toujours une de plus au deuxième compte.",
     "L'espace d'un pas, tes pieds ne touchent plus tout à fait le sol."
    ]
   },
