@@ -52,8 +52,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-07T09:07:10Z",
- "commit": "604901a",
+ "genere": "2026-08-07T12:47:14Z",
+ "commit": "42287f8",
  "zones": [
   {
    "id": "landes",
@@ -672,10 +672,10 @@
    "lieu": "borne_frontiere",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_hesitant_b.png",
-    "hash": "79ff7f45",
-    "taille": 14688,
-    "recent": false,
+    "fichier": "monstre_hesitant_2_b.png",
+    "hash": "4a7bd6a1",
+    "taille": 13371,
+    "recent": true,
     "existe": true
    },
    "description": "Il parle enfin : tourné de trois-quarts, il désigne la borne du menton sans la regarder. CHANGE : il n'est plus figé face au sud — tête tournée, menton qui pointe la pierre.",
@@ -876,10 +876,10 @@
    "lieu": "chemin_creux",
    "typeScene": "moment",
    "image": {
-    "fichier": "scene_chemin_creux_c.png",
-    "hash": "29c27c48",
-    "taille": 22199,
-    "recent": false,
+    "fichier": "scene_chemin_creux_coude_b.png",
+    "hash": "261f995a",
+    "taille": 29636,
+    "recent": true,
     "existe": true
    },
    "description": "Événement du Chemin Creux : le coude aveugle. Le talus mange la vue d'un coup — l'endroit exact où il devrait y avoir quelque chose, et où il n'y a rien.",
@@ -1123,10 +1123,10 @@
      "donneDecouverte": "d.nom_gratte",
      "soupcon": 1,
      "image": {
-      "fichier": "scene_gibet_vide_c.png",
-      "hash": "525edc71",
-      "taille": 29190,
-      "recent": false,
+      "fichier": "scene_colline_pied_grand_gibet_b.png",
+      "hash": "2559c3f3",
+      "taille": 15296,
+      "recent": true,
       "existe": true
      },
      "description": "",
@@ -1594,10 +1594,10 @@
     "condition": "d.emplacement_vide"
    },
    "image": {
-    "fichier": "monstre_fossoyeur_poteaux_a.png",
-    "hash": "69a5f9b1",
-    "taille": 23540,
-    "recent": false,
+    "fichier": "monstre_fossoyeur_trou_1_c.png",
+    "hash": "66f02057",
+    "taille": 14405,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -1649,10 +1649,10 @@
    "suite": "fossoyeur-trou-3",
    "donneDecouverte": "d.poteau_retire",
    "image": {
-    "fichier": "monstre_fossoyeur_poteaux_a.png",
-    "hash": "69a5f9b1",
-    "taille": 23540,
-    "recent": false,
+    "fichier": "scene_champ_poteau_retire_c.png",
+    "hash": "51a62089",
+    "taille": 14995,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -1690,10 +1690,10 @@
    ],
    "pointsInteret": [],
    "image": {
-    "fichier": "monstre_fossoyeur_poteaux_a.png",
-    "hash": "69a5f9b1",
-    "taille": 23540,
-    "recent": false,
+    "fichier": "monstre_fossoyeur_trou_3_a.png",
+    "hash": "acf3368c",
+    "taille": 17126,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -1955,10 +1955,10 @@
      "donneDecouverte": "d.linteaux_entailles",
      "soupcon": 1,
      "image": {
-      "fichier": "scene_landes_hameau_croix_craie_a.png",
-      "hash": "14299db9",
-      "taille": 20718,
-      "recent": false,
+      "fichier": "scene_hameau_linteaux_v2_c.png",
+      "hash": "1b90ee19",
+      "taille": 28134,
+      "recent": true,
       "existe": true
      },
      "description": "",
@@ -1973,9 +1973,9 @@
      "examen": "Les fenêtres du haut sont clouées. Pas fermées : CLOUÉES, de l\\u2019intérieur, planches en travers. Celles du bas ne le sont pas — volets simples, loquets ordinaires, certains même entrouverts. Tout le hameau est ainsi. Personne, ici, ne se protège de ce qui vient par la rue.",
      "donneDecouverte": "d.combles_cloues",
      "image": {
-      "fichier": "scene_hameau_accueil_volet_c.png",
-      "hash": "05db5d2a",
-      "taille": 15638,
+      "fichier": "scene_hameau_combles_cloues_v2_a.png",
+      "hash": "032a884e",
+      "taille": 26494,
       "recent": true,
       "existe": true
      },
@@ -2472,10 +2472,10 @@
    "pointsInteret": [],
    "suite": "gamin-murets-3",
    "image": {
-    "fichier": "monstre_gamin_murets_a.png",
-    "hash": "020cdcd3",
-    "taille": 28618,
-    "recent": false,
+    "fichier": "scene_murets_vers_sud_c.png",
+    "hash": "c6dcf4a3",
+    "taille": 14870,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -2535,10 +2535,10 @@
    "suite": "gamin-murets-4",
    "donneDecouverte": "d.fille_apercue",
    "image": {
-    "fichier": "monstre_gamin_murets_a.png",
-    "hash": "020cdcd3",
-    "taille": 28618,
-    "recent": false,
+    "fichier": "monstre_gamin_caillou_c.png",
+    "hash": "4f6c8a7a",
+    "taille": 8474,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -2577,10 +2577,10 @@
    "pointsInteret": [],
    "suite": "hameau-entree-3",
    "image": {
-    "fichier": "monstre_gamin_murets_a.png",
-    "hash": "020cdcd3",
-    "taille": 28618,
-    "recent": false,
+    "fichier": "monstre_gamin_depart_c.png",
+    "hash": "d8680ae4",
+    "taille": 10514,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -2779,7 +2779,7 @@
     "fichier": "scene_hameau_accueil_volet_c.png",
     "hash": "05db5d2a",
     "taille": 15638,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -2847,7 +2847,7 @@
     "fichier": "scene_hameau_accueil_mur_a.png",
     "hash": "f7874599",
     "taille": 16632,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -2915,7 +2915,7 @@
     "fichier": "scene_hameau_accueil_enfant_c.png",
     "hash": "83d9cfac",
     "taille": 16876,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -2984,7 +2984,7 @@
     "fichier": "scene_hameau_accueil_table_a.png",
     "hash": "dff69101",
     "taille": 14598,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -3054,7 +3054,7 @@
     "fichier": "scene_hameau_accueil_cloche_b.png",
     "hash": "eeba581e",
     "taille": 18951,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -3121,7 +3121,7 @@
     "fichier": "scene_hameau_accueil_depart_a.png",
     "hash": "9b4ee237",
     "taille": 14249,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -3523,10 +3523,10 @@
    "suite": "hameau-halte-4",
    "donneDecouverte": "d.temoin_entendu",
    "image": {
-    "fichier": "scene_hameau_halte_3_c.png",
-    "hash": "7e916011",
-    "taille": 9085,
-    "recent": false,
+    "fichier": "scene_temoin_grange_toit_v2_c.png",
+    "hash": "b8f53835",
+    "taille": 8074,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -3563,10 +3563,10 @@
     "condition": "d.temoin_entendu"
    },
    "image": {
-    "fichier": "scene_hameau_halte_3_c.png",
-    "hash": "7e916011",
-    "taille": 9085,
-    "recent": false,
+    "fichier": "scene_temoin_grange_toit_v2_c.png",
+    "hash": "b8f53835",
+    "taille": 8074,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -3684,10 +3684,10 @@
    "pointsInteret": [],
    "terminal": true,
    "image": {
-    "fichier": "scene_hameau_dense2_b.png",
-    "hash": "4ee39a67",
-    "taille": 29932,
-    "recent": false,
+    "fichier": "scene_renoncer_v2_b.png",
+    "hash": "c20a5b31",
+    "taille": 19691,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -3727,10 +3727,10 @@
    "lieu": "grange_des_renoncants",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_hameau_dense_c.png",
-    "hash": "c3a695ff",
-    "taille": 30005,
-    "recent": false,
+    "fichier": "scene_hameau_nuit_dehors_v2_c.png",
+    "hash": "7a411c8f",
+    "taille": 19147,
+    "recent": true,
     "existe": true
    },
    "description": "Variante de Halte pour qui a refusé le Serment : la nuit dehors, contre un muret, aucune porte ouverte.",
@@ -3787,9 +3787,9 @@
    },
    "hameauHalte": true,
    "image": {
-    "fichier": "scene_landes_hameau_ruelle_b.png",
-    "hash": "9a56edb6",
-    "taille": 26939,
+    "fichier": "monstre_temoin_ruelle_v5_d.png",
+    "hash": "b3324887",
+    "taille": 119808,
     "recent": false,
     "existe": true
    },
@@ -3822,13 +3822,17 @@
      "approche": "Tu marches jusqu\\u2019au bord du troupeau. Les bêtes te laissent entrer entre elles comme si tu étais un piquet de plus.",
      "examen": "De près, elles sont grasses, entretenues — quelqu\\u2019un les a menées, soignées, comptées, et pas il y a trente ans : cette laine-là a vu un berger cette saison.",
      "donneDecouverte": "d.troupeau_compte",
-     "image": null,
+     "image": {
+      "fichier": "monstre_troupeau_compte_b.png",
+      "hash": "9eb350eb",
+      "taille": 20556,
+      "recent": true,
+      "existe": true
+     },
      "description": "",
      "promptImage": "",
-     "etat": "acompleter",
-     "alertes": [
-      "imageManquante"
-     ]
+     "etat": "valide",
+     "alertes": []
     }
    ],
    "suite": "troupeau-sans-berger-2",
@@ -3893,10 +3897,10 @@
    ],
    "pointsInteret": [],
    "image": {
-    "fichier": "monstre_troupeau_sans_berger_a.png",
-    "hash": "8e186904",
-    "taille": 24420,
-    "recent": false,
+    "fichier": "monstre_troupeau_brebis_v2_b.png",
+    "hash": "594fb95a",
+    "taille": 23924,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -4078,10 +4082,10 @@
    "lieu": "tour_de_guet_effondree",
    "typeScene": "moment",
    "image": {
-    "fichier": "scene_tour_de_guet_a.png",
-    "hash": "2e1c76a6",
-    "taille": 25909,
-    "recent": false,
+    "fichier": "monstre_guetteur_tour_c.png",
+    "hash": "e43e23f5",
+    "taille": 6029,
+    "recent": true,
     "existe": true
    },
    "description": "Événement de la Tour : le Guetteur sans tour, assis de dos sur le tas de pierres, en manteau de guet, une corne au côté, il regarde le sud. CHANGE : c'est un portrait de l'homme, plus le plan large de la tour.",
@@ -4287,10 +4291,10 @@
      "examen": "La bande sans mousse court sur toute la longueur du toit, large comme deux mains, usée. Puis elle s\\u2019arrête. Pas en s\\u2019amenuisant : d\\u2019un coup, à cinquante pas de la porte, comme si quelque chose qui marchait là s\\u2019était retourné chaque fois exactement au même endroit.",
      "donneDecouverte": "d.crete_interrompue",
      "image": {
-      "fichier": "scene_moulin_croix_ombres_a_d.png",
-      "hash": "c09deb42",
-      "taille": 21907,
-      "recent": false,
+      "fichier": "scene_moulin_crete_interrompue_b.png",
+      "hash": "1754965e",
+      "taille": 26367,
+      "recent": true,
       "existe": true
      },
      "description": "",
@@ -4461,10 +4465,10 @@
     "condition": "découvertes sur la Fille ≥ 3"
    },
    "image": {
-    "fichier": "monstre_la_fille_c.png",
-    "hash": "520f1630",
-    "taille": 30163,
-    "recent": false,
+    "fichier": "monstre_fille_moulin_dos_v2_a.png",
+    "hash": "acfc2093",
+    "taille": 20117,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -4521,10 +4525,10 @@
    "pointsInteret": [],
    "suite": "fille-moulin-3",
    "image": {
-    "fichier": "monstre_la_fille_c.png",
-    "hash": "520f1630",
-    "taille": 30163,
-    "recent": false,
+    "fichier": "monstre_la_fille_moulin_v2_a.png",
+    "hash": "51147c07",
+    "taille": 12150,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -4567,10 +4571,10 @@
    "suite": "fille-moulin-4",
    "donneDecouverte": "d.temoin_nomme",
    "image": {
-    "fichier": "monstre_la_fille_c.png",
-    "hash": "520f1630",
-    "taille": 30163,
-    "recent": false,
+    "fichier": "monstre_la_fille_moulin_v2_a.png",
+    "hash": "51147c07",
+    "taille": 12150,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -4615,10 +4619,10 @@
    "pointsInteret": [],
    "donneDecouverte": "d.fille_vivante",
    "image": {
-    "fichier": "monstre_la_fille_c.png",
-    "hash": "520f1630",
-    "taille": 30163,
-    "recent": false,
+    "fichier": "monstre_fille_moulin_ouvrage_c.png",
+    "hash": "03e7eb7d",
+    "taille": 10442,
+    "recent": true,
     "existe": true
    },
    "description": "",
@@ -4793,10 +4797,10 @@
      "examen": "Tu tires la corde par curiosité. Rien ne vient. La cloche bascule, revient, bascule encore — et ne sonne pas : elle n\\u2019a plus de battant. L\\u2019attache est là, intacte. On ne l\\u2019a pas cassée : on l\\u2019a dévissée.",
      "donneDecouverte": "d.cloche_sans_battant",
      "image": {
-      "fichier": "objet_battant_cloche_c.png",
-      "hash": "817f6ff4",
-      "taille": 14273,
-      "recent": false,
+      "fichier": "scene_chapelle_cloche_sans_battant_b.png",
+      "hash": "b7b2ae8c",
+      "taille": 21366,
+      "recent": true,
       "existe": true
      },
      "description": "",
@@ -5579,10 +5583,10 @@
      "examen": "Les creux de genoux sont doubles. Une paire devant, au ras de l\\u2019eau. Une autre juste derrière, plus large, plus profonde — et orientée dans le même sens. Quelqu\\u2019un se tenait toujours au-dessus de celui qui se penchait. Ce n\\u2019est pas un endroit où l\\u2019on vient voir son reflet : c\\u2019est un endroit où on l\\u2019amène.",
      "donneDecouverte": "d.mare_depistage",
      "image": {
-      "fichier": "scene_mare_berge_a_c.png",
-      "hash": "cb021c43",
-      "taille": 10114,
-      "recent": false,
+      "fichier": "scene_mare_creux_doubles_v2_b.png",
+      "hash": "9c15e27d",
+      "taille": 25530,
+      "recent": true,
       "existe": true
      },
      "description": "",
@@ -6154,10 +6158,10 @@
      "ouvreSur": "veilleur-1",
      "nom": "L'homme de la guérite",
      "image": {
-      "fichier": "monstre_homme_guerite_c.png",
-      "hash": "a2a2a658",
-      "taille": 3891,
-      "recent": false,
+      "fichier": "monstre_veilleur_palissade_v2_b.png",
+      "hash": "a0a33a5b",
+      "taille": 15018,
+      "recent": true,
       "existe": true
      },
      "description": "",
@@ -6918,6 +6922,22 @@
    "racine": "geryon"
   },
   {
+   "fichier": "monstre_grand_temoin_v3_a.png",
+   "hash": "3bc6805c",
+   "taille": 19988,
+   "recent": true,
+   "groupe": "doublon",
+   "racine": "grand_temoin"
+  },
+  {
+   "fichier": "monstre_grand_temoin_v4_c.png",
+   "hash": "4b5989a3",
+   "taille": 22770,
+   "recent": false,
+   "groupe": "doublon",
+   "racine": "grand_temoin"
+  },
+  {
    "fichier": "monstre_hameau_entree_3_a.png",
    "hash": "7e4b2271",
    "taille": 4616,
@@ -6942,12 +6962,28 @@
    "racine": "hesitant_3"
   },
   {
+   "fichier": "monstre_homme_guerite_c.png",
+   "hash": "a2a2a658",
+   "taille": 3891,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "homme_guerite"
+  },
+  {
    "fichier": "monstre_juge_de_cendre_c.png",
    "hash": "9f6161b8",
    "taille": 29017,
    "recent": false,
    "groupe": "attend",
    "racine": "juge_de_cendre"
+  },
+  {
+   "fichier": "monstre_la_fille_c.png",
+   "hash": "520f1630",
+   "taille": 30163,
+   "recent": false,
+   "groupe": "attend",
+   "racine": "la_fille"
   },
   {
    "fichier": "monstre_limiers.png",
@@ -7086,6 +7122,14 @@
    "racine": "veuve_cordes"
   },
   {
+   "fichier": "objet_battant_cloche_c.png",
+   "hash": "817f6ff4",
+   "taille": 14273,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "battant_cloche"
+  },
+  {
    "fichier": "objet_bougie_eteinte_crane_c.png",
    "hash": "98b4f068",
    "taille": 10524,
@@ -7206,6 +7250,14 @@
    "racine": "chapelle_mur_cordes"
   },
   {
+   "fichier": "scene_gibet_vide_c.png",
+   "hash": "525edc71",
+   "taille": 29190,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "gibet_vide"
+  },
+  {
    "fichier": "scene_hameau_entree_5_a.png",
    "hash": "e012d040",
    "taille": 10760,
@@ -7220,6 +7272,14 @@
    "recent": false,
    "groupe": "brancher",
    "racine": "hameau_halte_5"
+  },
+  {
+   "fichier": "scene_landes_hameau_croix_craie_a.png",
+   "hash": "14299db9",
+   "taille": 20718,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "landes_hameau_croix_craie"
   },
   {
    "fichier": "scene_landes_hameau_puits_b.png",
@@ -8441,10 +8501,10 @@
   "scenes": 89,
   "pointsInteret": 46,
   "choix": 224,
-  "illustrations": 245,
+  "illustrations": 276,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 67,
+  "reserve": 74,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
