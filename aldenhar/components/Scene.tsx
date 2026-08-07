@@ -44,7 +44,7 @@ import { perceptionDe } from "@/lib/perception";
 import { acteAccusation, defensesDisponibles, temoinPour, temoinsUniques } from "@/lib/temoins";
 import type { RelicDon } from "@/lib/reliques";
 import {
-  applique, noterVisite, parType, purger, type Effet, type Faits,
+  applique, noterVisite, parType, purger, radical, type Effet, type Faits,
 } from "@/lib/faits";
 import {
   etat, etatsActifs, hintsEtats, modEtats, poserEtat, seuilEtats,
@@ -127,6 +127,25 @@ function chance(p: number): boolean {
 }
 function nowMs(): number {
   return Date.now();
+}
+
+/** Préférence du popup « rangé dans le menu » (7/08) — compte, pas run :
+    une fois compris, le rappeler à chaque héros serait du bruit. */
+const AIDE_MENU_KEY = "aldenhar-aide-menu";
+type AideMenuPref = { off?: boolean; etat?: boolean; objet?: boolean };
+function lireAideMenu(): AideMenuPref {
+  try {
+    return JSON.parse(localStorage.getItem(AIDE_MENU_KEY) ?? "{}") as AideMenuPref;
+  } catch {
+    return {};
+  }
+}
+function ecrireAideMenu(p: AideMenuPref) {
+  try {
+    localStorage.setItem(AIDE_MENU_KEY, JSON.stringify(p));
+  } catch {
+    /* stockage indisponible : l'aide se remontrera, sans gravité */
+  }
 }
 
 /** Flag de compte : un Serment a déjà été prêté du bout des lèvres, dans une
@@ -481,6 +500,17 @@ export default function Scene() {
   // qu'on vient d'attraper → un volet monte du bas (1/3 de l'écran) avec le
   // détail. Affichage pur : ne consomme ni tour ni dé, se ferme au tap.
   const [voletEtat, setVoletEtat] = useState<{ id: string; label: string; positive: boolean } | null>(null);
+  // POPUP « rangé dans le menu » (maquette 2442:17234, 7/08) : quand la carte
+  // d'état (ou le bandeau Obtenu) quitte l'interface, une carte en haut
+  // d'écran dit UNE FOIS où la chose vit désormais. « Ne plus afficher »
+  // coupe l'aide pour de bon ; sinon, une apparition par sujet et par compte.
+  const [aideMenu, setAideMenu] = useState<"etat" | "objet" | null>(null);
+  function maybeAideMenu(sujet: "etat" | "objet") {
+    const pref = lireAideMenu();
+    if (pref.off || pref[sujet]) return;
+    ecrireAideMenu({ ...pref, [sujet]: true });
+    setAideMenu(sujet);
+  }
   const [countdownArmed, setCountdownArmed] = useState(false);
   const runRef = useRef<RunState | null>(null);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -804,6 +834,13 @@ export default function Scene() {
       setImageKind(img.kind);
     }
     const groupes = decouperEnEcrans(entries);
+    // La CARTE D'ÉTAT reste visible sur TOUS les écrans de la scène (7/08,
+    // « il reste le temps de la séquence ») : le découpage l'attache au 1er
+    // groupe (poids 0) — on la re-pose en tête de chacun des suivants.
+    const cartes = groupes[0].filter((e) => e.kind === "etat");
+    if (cartes.length > 0) {
+      for (let g = 1; g < groupes.length; g++) groupes[g] = [...cartes, ...groupes[g]];
+    }
     revealedIdsRef.current = new Set();
     setRevealedIds(new Set());
     revealQueueRef.current = [];
@@ -1181,6 +1218,10 @@ export default function Scene() {
     usureDay?: number;
   }) {
     const nextStep = step + 1;
+    // Popup « rangé dans le menu » (7/08, vaut aussi pour les OBJETS) : si
+    // l'écran qu'on quitte portait un bandeau Obtenu, l'objet vient de sortir
+    // de l'interface — c'est le moment de dire où il vit maintenant.
+    if ((runRef.current?.feed ?? []).some((e) => e.kind === "obtenu")) maybeAideMenu("objet");
     // ——— Résolution de la traversée (spec 21/07) ———
     // On quitte l'écran courant (`scene`). Le suivant est : le lieu choisi à une
     // liaison (toDest), la suite d'une chaîne de rencontre, la Descente (fin de
@@ -1809,8 +1850,26 @@ export default function Scene() {
     ];
     const dejaAnnonces = runRef.current?.etatsAffiches ?? [];
     const bandeau = tousActifs.filter((e) => !dejaAnnonces.includes(e.effectId)).slice(0, PLAFOND_AFFICHAGE);
+    // Maquette 2440:13429 (7/08) : la carte d'état RESTE le temps de la scène
+    // où l'état a été attrapé (tous ses beats), puis QUITTE l'interface — et
+    // là seulement, le popup « ton état est rangé dans le menu » peut se dire.
+    const lieuCourant = radical(nextScene.id);
+    const banniereAv = runRef.current?.etatBanniere;
     if (bandeau.length > 0) {
-      entries.unshift({ id: nextId(), kind: "etat", effects: bandeau });
+      const memesLieu = banniereAv && banniereAv.lieu === lieuCourant ? banniereAv.effects : [];
+      const effects = [
+        ...bandeau,
+        ...memesLieu.filter((e) => !bandeau.some((n) => n.effectId === e.effectId)),
+      ].slice(0, PLAFOND_AFFICHAGE);
+      entries.unshift({ id: nextId(), kind: "etat", effects });
+      persist((run) => { run.etatBanniere = { effects, lieu: lieuCourant }; });
+    } else if (banniereAv) {
+      if (banniereAv.lieu === lieuCourant && !nextScene.liaison) {
+        entries.unshift({ id: nextId(), kind: "etat", effects: banniereAv.effects });
+      } else {
+        persist((run) => { run.etatBanniere = undefined; });
+        maybeAideMenu("etat");
+      }
     }
     // La liste mémorisée reflète TOUS les actifs : un état levé puis repris
     // sera ré-annoncé (c'est une nouvelle prise), un état continu ne l'est plus.
@@ -2693,8 +2752,70 @@ export default function Scene() {
             </div>
           </div>
         )}
+
+        {/* POPUP « rangé dans le menu » (maquette 2442:17234, 7/08) : carte
+            charbon bordée blanc en haut d'écran, une fois par sujet et par
+            compte. « Ne plus afficher » = le seul autre lien souligné du jeu
+            (avec l'aide du dé) : les aides partagent leur grammaire. */}
+        {aideMenu && (
+          <div
+            className="absolute inset-x-[15px] top-[62px] z-[36] border border-solid border-[var(--color-ink)] bg-[var(--color-bg)] px-[18px] pb-[14px] pt-[16px]"
+            role="note"
+          >
+            <button
+              type="button"
+              aria-label="Fermer"
+              onClick={() => setAideMenu(null)}
+              className="absolute right-[10px] top-[8px] font-mono text-[13px] leading-none text-[var(--color-ink)] opacity-60"
+            >
+              ✕
+            </button>
+            <p className="font-mono text-[12px] leading-[1.6] text-[var(--color-ink)]">
+              {aideMenu === "etat" ? "Ton état est rangé dans le menu." : "Ton objet est rangé dans le menu."}
+              <br />
+              Tu peux l&apos;y consulter à tout moment.
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                ecrireAideMenu({ ...lireAideMenu(), off: true });
+                setAideMenu(null);
+              }}
+              className="mt-[10px] font-mono text-[11px] tracking-[0.5px] text-[var(--color-ink)] underline underline-offset-[3px] opacity-60"
+            >
+              Ne plus afficher
+            </button>
+          </div>
+        )}
       </div>
     </main>
+  );
+}
+
+/** Libellé de la carte d'état : « Entaillé », pas « ENTAILLÉ » (maquette). */
+function libelleEtat(label: string): string {
+  const bas = label.toLocaleLowerCase("fr");
+  return bas.charAt(0).toLocaleUpperCase("fr") + bas.slice(1);
+}
+
+/**
+ * Description courte de la carte d'état (maquette 2440:13429) : la
+ * manifestation de la fiche quand elle existe, sinon une phrase écrite pour
+ * les effets hérités — jamais un chiffre.
+ */
+const DESC_EFFETS_HERITES: Record<string, string> = {
+  entaille: "La blessure ralentit chaque geste, tant qu'elle n'est pas soignée.",
+  aguerri: "Le combat t'a affûté : tes gestes portent mieux, pour un temps.",
+  ebranle: "Le choc te suit : tes gestes hésitent, pour un temps.",
+};
+function descEtat(id: string, positive: boolean): string {
+  const fiche = etat(id);
+  if (fiche) return fiche.manifestation;
+  return (
+    DESC_EFFETS_HERITES[id] ??
+    (positive
+      ? "Il joue pour toi : tes gestes portent un peu mieux, pour un temps."
+      : "Il joue contre toi : tes gestes portent un peu moins bien, tant qu'il tient.")
   );
 }
 
@@ -2818,34 +2939,47 @@ function FeedItem({
         </div>
       );
     case "etat":
-      // Rappel des états temporaires après un jet (retour Patrick 19/07) :
-      // vignette + nom — négatif = orange telle quelle, positif = désaturée
-      // vers le blanc (même convention que l'écran Essence). Jamais un chiffre.
+      // CARTE D'ÉTAT (maquette 2440:13429, 7/08) : vignette bordée orange +
+      // nom en orange + une ligne de manifestation en blanc-50. Elle reste le
+      // temps de la scène où l'état a été attrapé (voir advance), puis part.
+      // Tap sur la carte → le volet de détails. Jamais un chiffre.
       return (
-        <div className="scene-enter etat-banner" role="note">
-          <span className="etat-banner-eyebrow">
-            {entry.effects.length > 1 ? "États temporaires" : "État temporaire"}
-          </span>
-          <div className="etat-banner-row">
-            {entry.effects.map((e) => (
-              <button
-                type="button"
-                key={e.effectId}
-                onClick={() => onEtat?.(e.effectId, e.label, e.positive)}
-                className={`etat-chip ${e.positive ? "is-positive" : ""}`}
-              >
-                {/* La vignette n'apparaît que si le fichier existe VRAIMENT :
-                    les six nouveaux états n'ont pas encore leur icône, et le
-                    nom seul vaut mieux qu'une image cassée. Le manifeste fait
-                    autorité — plus de liste blanche à tenir à la main. */}
-                {assetExiste(`assets/etat_${e.effectId}.png`) && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img alt="" src={assetUrl(`assets/etat_${e.effectId}.png`)} className="etat-chip-icon" />
-                )}
-                {e.label}
-              </button>
-            ))}
-          </div>
+        <div className="scene-enter etat-banner mb-[16px] flex flex-col gap-[10px]" role="note">
+          {entry.effects.map((e) => (
+            <button
+              type="button"
+              key={e.effectId}
+              onClick={() => onEtat?.(e.effectId, e.label, e.positive)}
+              className="flex items-start gap-[14px] text-left"
+            >
+              {/* La vignette n'apparaît que si le fichier existe VRAIMENT :
+                  le nom seul vaut mieux qu'une image cassée (manifeste). */}
+              {assetExiste(`assets/etat_${e.effectId}.png`) ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  alt=""
+                  src={assetUrl(`assets/etat_${e.effectId}.png`)}
+                  className={`size-[54px] shrink-0 border border-solid border-[var(--color-accent)] object-cover ${
+                    e.positive ? "etat-icone-positive" : ""
+                  }`}
+                  style={{ imageRendering: "pixelated" }}
+                />
+              ) : (
+                <span
+                  aria-hidden
+                  className="size-[54px] shrink-0 border border-solid border-[var(--color-accent)]"
+                />
+              )}
+              <span className="flex min-w-0 flex-col gap-[4px] pt-[2px]">
+                <span className="font-mono text-[13px] leading-none text-[var(--color-accent)]">
+                  {libelleEtat(e.label)}
+                </span>
+                <span className="font-mono text-[10px] leading-[1.5] text-[var(--color-ink)] opacity-50">
+                  {descEtat(e.effectId, e.positive)}
+                </span>
+              </span>
+            </button>
+          ))}
         </div>
       );
     case "obtenu":

@@ -187,9 +187,8 @@
    },
    "illustration": "assets/scene_maison_du_bailli_c.png",
    "portrait_requis": false,
-   "dans": "hameau_des_renoncants",
-   "x": 1180,
-   "y": 680
+   "x": 500,
+   "y": 640
   },
   {
    "id": "petit_tribunal",
@@ -2718,7 +2717,6 @@
     "seuil_du_hameau",
     "grange_des_renoncants",
     "chapelle_des_cordes",
-    "maison_du_bailli",
     "petit_tribunal",
     "puits_condamne",
     "marche_muet",

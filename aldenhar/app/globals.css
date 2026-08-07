@@ -770,49 +770,10 @@ body {
 }
 
 /* Bandeau « Obtenu — … » (13/07) : objet mineur, jamais une popup. */
-/* Rappel des états temporaires après un jet (retour Patrick 19/07) :
-   libellé discret + vignette et nom de l'état. Négatif = orange telle
-   quelle, positif = désaturé vers le blanc (convention de l'écran Essence). */
-.etat-banner {
-  margin-bottom: 18px;
-  text-align: center;
-}
-.etat-banner-eyebrow {
-  display: block;
-  font-family: var(--font-body);
-  font-size: 10px;
-  letter-spacing: 2.4px;
-  text-transform: uppercase;
-  color: var(--color-ink);
-  opacity: 0.5;
-  margin-bottom: 6px;
-}
-.etat-banner-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 18px;
-}
-.etat-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 1.6px;
-  text-transform: uppercase;
-  color: var(--color-accent);
-}
-.etat-chip.is-positive {
-  color: var(--color-ink);
-}
-.etat-chip-icon {
-  width: 24px;
-  height: 24px;
-  image-rendering: pixelated;
-}
-.etat-chip.is-positive .etat-chip-icon {
+/* Carte d'état (maquette 2440:13429, 7/08) : vignette bordée orange + nom
+   orange + manifestation en blanc-50 — la mise en page vit dans le JSX,
+   seule la désaturation des états POSITIFS reste ici (convention Essence). */
+.etat-icone-positive {
   filter: saturate(0) brightness(1.6);
 }
 

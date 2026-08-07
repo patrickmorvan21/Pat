@@ -242,6 +242,10 @@ export type RunState = {
   /** États déjà ANNONCÉS par le bandeau (retour 6/08 soir : le bandeau ne se
       répète plus à chaque écran — il n'annonce que ce qu'on vient d'attraper). */
   etatsAffiches?: string[];
+  /** Carte d'état en cours (maquette 2440:13429, 7/08) : elle reste affichée
+      LE TEMPS DE LA SCÈNE où l'état a été attrapé (tous ses beats), puis
+      quitte l'interface — et le popup « c'est dans le menu » peut se montrer. */
+  etatBanniere?: { effects: { effectId: string; label: string; positive: boolean }[]; lieu: string };
   /** Dettes narratives en attente de règlement dans cette run (spec §17). */
   debts: PendingDebt[];
   /** Besace (13/07) : objets mundane, vidée à la mort. */
@@ -453,6 +457,7 @@ export function loadRun(): RunState {
             prophetie: typeof p.prophetie === "number" ? p.prophetie : undefined,
             volNocturne: typeof p.volNocturne === "string" ? p.volNocturne : undefined,
             etatsAffiches: Array.isArray(p.etatsAffiches) ? p.etatsAffiches : [],
+            etatBanniere: p.etatBanniere && Array.isArray(p.etatBanniere.effects) ? p.etatBanniere : undefined,
           };
         }
       }

@@ -6,7 +6,6 @@
    "scenes": [
     "tour-de-guet",
     "chapelle-des-cordes",
-    "chien-du-bailli",
     "petit-tribunal",
     "puits-condamne",
     "marche-muet"
@@ -25,7 +24,6 @@
     "seuil_du_hameau",
     "grange_des_renoncants",
     "chapelle_des_cordes",
-    "maison_du_bailli",
     "petit_tribunal",
     "puits_condamne",
     "marche_muet",
@@ -54,8 +52,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-07T07:25:33Z",
- "commit": "c8d40d2",
+ "genere": "2026-08-07T09:07:10Z",
+ "commit": "604901a",
  "zones": [
   {
    "id": "landes",
@@ -239,8 +237,8 @@
      "id": "maison_du_bailli",
      "nom": "La Maison du Bailli",
      "illustration": "scene_maison_du_bailli_c.png",
-     "x": 1180,
-     "y": 680,
+     "x": 500,
+     "y": 640,
      "note": "murée de l'intérieur",
      "scenes": [
       "chien-du-bailli",
@@ -254,7 +252,7 @@
      "roles": [],
      "dansPool": true,
      "alertes": [],
-     "aCompleter": 0,
+     "aCompleter": 1,
      "scenePrincipale": "chien-du-bailli"
     },
     {
@@ -5084,9 +5082,7 @@
   },
   {
    "id": "chien-du-bailli",
-   "narration": [
-    "La plus grande maison du hameau est murée — de l'intérieur. Chaque fenêtre bouchée de pierres posées depuis dedans, en rangs pressés, par quelqu'un qui s'enfermait plus qu'il ne se protégeait. La maison du Bailli. Vide depuis sa corde. Pas gardée par personne."
-   ],
+   "narration": [],
    "choix": [
     {
      "id": "longer-fenetres",
@@ -5134,7 +5130,7 @@
    "mèneIci": [],
    "roles": [],
    "acces": "traversée",
-   "etat": "valide",
+   "etat": "brouillon",
    "alertes": []
   },
   {
@@ -7090,6 +7086,14 @@
    "racine": "veuve_cordes"
   },
   {
+   "fichier": "objet_bougie_eteinte_crane_c.png",
+   "hash": "98b4f068",
+   "taille": 10524,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "bougie_eteinte_crane"
+  },
+  {
    "fichier": "objet_crane.png",
    "hash": "a92b5ddd",
    "taille": 2523,
@@ -7104,6 +7108,14 @@
    "recent": false,
    "groupe": "autre",
    "racine": "dague"
+  },
+  {
+   "fichier": "objet_dague_cendres_c.png",
+   "hash": "e45fbc83",
+   "taille": 26661,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "dague_cendres"
   },
   {
    "fichier": "objet_denonciation_vierge_c.png",
@@ -7256,6 +7268,14 @@
    "recent": false,
    "groupe": "doublon",
    "racine": "moulin_sans_ailes"
+  },
+  {
+   "fichier": "scene_porte_scellee_theatrale_c.png",
+   "hash": "b03d7883",
+   "taille": 27622,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "porte_scellee_theatrale"
   },
   {
    "fichier": "scene_puits_condamne_a.png",
@@ -8421,10 +8441,10 @@
   "scenes": 89,
   "pointsInteret": 46,
   "choix": 224,
-  "illustrations": 241,
+  "illustrations": 245,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 64,
+  "reserve": 67,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

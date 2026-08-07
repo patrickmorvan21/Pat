@@ -22,7 +22,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { markIntroSeen } from "@/lib/player-memory";
 import TouchHint from "@/components/TouchHint";
-import { assetUrl, assetCss } from "@/lib/assets";
+import { assetUrl } from "@/lib/assets";
 
 type Clause = {
   /** Chapeau (« • PREMIÈRE CLAUSE • ») — absent sur l'écran d'ouverture. */
@@ -33,58 +33,46 @@ type Clause = {
 };
 
 /**
- * Textes repris VERBATIM de la maquette — c'est de la voix du Geôlier, pas de
- * la copie d'interface : ne pas réécrire sans que Patrick le redemande.
+ * Textes repris VERBATIM de la maquette (redesign 7/08, frames 2234:580 /
+ * 2238:1009 / 2234:557 / 2238:1394 — l'intro passe de 5 écrans à 4, textes
+ * RÉDUITS) — c'est de la voix du Geôlier, pas de la copie d'interface : ne
+ * pas réécrire sans que Patrick le redemande.
+ *
+ * ⚠️ Les 4 illustrations (`intro_*.png`) sont extraites du rendu Figma en
+ * 390×390 — la bande de dissolution est CUITE dedans (plus d'overlay CSS).
+ * Si Patrick fournit les sources HD, les déposer sous les mêmes noms.
  */
 const CLAUSES: Clause[] = [
   {
     title: "Tu ne te souviens pas",
     body: [
-      "D'être entré, je veux dire. Personne ne s'en souvient, ils arrivent tous ici avec la tête que tu fais.",
-      "Tu es mort. Il y a peu.",
-      "Ce qui suit n'est pas une punition. C'est une proposition, libre à toi de la refuser. Personne ne l'a jamais fait.",
+      "D'être entré, je veux dire. Personne ne s'en souvient. Tu es mort. Il y a peu.",
+      "Ce qui suit est une proposition. Personne ne l'a jamais refusée.",
     ],
-    // Le visage du Geôlier — le même que l'accueil, c'est lui qui parle.
-    image: "assets/accueil_demon.png",
+    // Le visage du Geôlier — le même que la clôture du Seuil, c'est lui qui parle.
+    image: "assets/intro_demon.png",
   },
   {
-    eyebrow: "• PREMIÈRE CLAUSE •",
     title: "Une seule vie",
     body: [
-      "Tu traverses mon Domaine. Une fois.",
-      "Si tu meurs, il n'y a pas de retour en arrière, pas de sauvegarde à recharger, pas de seconde chance. Un autre viendra, avec un autre nom, et recommencera au début.",
+      "Tu traverses mon Domaine. Une fois. Au bout, une Porte scellée : franchis-la, et tu reprends ta vie là où tu l'as laissée.",
+      "Si tu meurs, un autre viendra. Avec un autre nom.",
     ],
-    image: "assets/objet_bougie_eteinte_crane_c.png",
+    image: "assets/intro_porte.png",
   },
   {
-    eyebrow: "• DEUXIÈME CLAUSE •",
     title: "Le dé tranche",
     body: [
-      "Ton adresse ne te sauvera pas. Ce que tu vaux (courage, ruse, instinct, empathie) a été fixé par ce que tu étais de ton vivant.",
-      "Devant chaque risque, l'anneau montre tes chances : les encoches pleines te sauvent, les rongées te perdent. Puis tu lances.",
-      "Je ne truque rien. Je n'en ai pas besoin.",
+      "Ton adresse ne te sauvera pas. Courage, ruse, instinct, empathie : ce que tu vaux vient de ce que tu étais de ton vivant.",
     ],
-    image: "assets/objet_de_vingt_c.png",
+    image: "assets/intro_de.png",
   },
   {
-    eyebrow: "• TROISIÈME CLAUSE •",
     title: "Ta mort me sert",
     body: [
-      "Chaque fin est forgée en Relique, un objet né de la manière exacte dont tu es tombé. Celui qui te suivra la portera.",
-      "Et à chaque mort, je te dirai une chose de plus sur cet endroit. Une seule.",
-      "C'est ainsi qu'on progresse ici : pas en survivant. En tombant mieux.",
+      "Ta fin est forgée en Relique. Celui qui te suivra la portera. On ne progresse pas ici en survivant. En tombant mieux.",
     ],
-    image: "assets/objet_dague_cendres_c.png",
-  },
-  {
-    eyebrow: "• QUATRIÈME CLAUSE •",
-    title: "La Porte",
-    body: [
-      "Au bout du Domaine, il y a une Porte scellée. Franchis-la, et tu reprends ta vie là où tu l'as laissée.",
-      "Douze mille avant toi ont essayé. Le Grand Registre garde leurs noms et le nombre de jours qu'ils ont tenu.",
-      "Tu peux y inscrire le tien. Il faut juste signer.",
-    ],
-    image: "assets/scene_porte_scellee_theatrale_c.png",
+    image: "assets/intro_epee.png",
   },
 ];
 
@@ -134,18 +122,8 @@ function IntroFrame({
             className="block size-full object-cover"
             style={{ imageRendering: "pixelated" }}
           />
-          {/* Bande de dissolution : bord plein collé au bas de l'image, dents
-              vers le haut (retournée — cf. la leçon du 16/07 sur le sens). */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-x-0 bottom-0 h-[42px]"
-            style={{
-              backgroundImage: assetCss("assets/bande_dissolution_haut.svg"),
-              backgroundSize: "390px 41px",
-              backgroundRepeat: "repeat-x",
-              transform: "scaleY(-1)",
-            }}
-          />
+          {/* Plus d'overlay de bande : la dissolution est CUITE dans les
+              extraits Figma du 7/08 — la doubler ferait un double liseré. */}
         </div>
 
         <div className="flex flex-1 flex-col px-[15px] pt-[16px]">{children}</div>
@@ -204,11 +182,12 @@ export default function Intro({ onDone }: { onDone: () => void }) {
       >
         {c.title}
       </h1>
+      {/* Corps CENTRÉ (redesign 7/08 — les 4 frames montrent le texte centré). */}
       <div className="mt-[26px] flex flex-col gap-[14px]">
         {c.body.map((p, n) => (
           <p
             key={n}
-            className="font-mono text-[11px] leading-[1.55] text-[var(--color-ink)] opacity-90"
+            className="text-center font-mono text-[11px] leading-[1.55] text-[var(--color-ink)] opacity-90"
           >
             {p}
           </p>

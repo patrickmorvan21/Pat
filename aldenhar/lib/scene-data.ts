@@ -4491,10 +4491,12 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_maison_du_bailli_c.png",
     chainNext: "chien-du-bailli-2",
     narration: [
-      "La plus grande maison du hameau est murée — de l'intérieur. Chaque " +
-        "fenêtre bouchée de pierres posées depuis dedans, en rangs pressés, " +
-        "par quelqu'un qui s'enfermait plus qu'il ne se protégeait. La " +
-        "maison du Bailli. Vide depuis sa corde. Pas gardée par personne.",
+      // 7/08 : la maison se dresse HORS du hameau, à l'ouest — seule.
+      "La maison se tient seule à l'ouest du hameau, haute, sans voisine — " +
+        "et murée de l'intérieur. Chaque fenêtre bouchée de pierres posées " +
+        "depuis dedans, en rangs pressés, par quelqu'un qui s'enfermait " +
+        "plus qu'il ne se protégeait. La maison du Bailli. Vide depuis sa " +
+        "corde. Pas gardée par personne.",
     ],
     choices: [
       {
@@ -5986,7 +5988,9 @@ export function lieuNom(sceneId: string | undefined): string {
 export const HAMEAU_INTERIOR = [
   "tour-de-guet",
   "chapelle-des-cordes",
-  "chien-du-bailli", // La Maison du Bailli (murée) — la scène porte le nom du chien
+  // ⚠️ La Maison du Bailli (`chien-du-bailli`) N'EST PLUS ici : décision
+  // Patrick 7/08 — elle se dresse À L'OUEST, HORS du hameau. Un Bailli
+  // n'habite pas au milieu de ceux qu'il juge.
   "petit-tribunal",
   "puits-condamne",
   "marche-muet",
@@ -6677,7 +6681,7 @@ export const APPROACH_NARRATION: Record<string, string> = {
   "campement": "Tu quittes les toits. La masse trapue grandit contre le crépuscule.",
   "chapelle-des-cordes": "Une bâtisse sans croix se dresse au bout d'une ruelle. En approchant, tu vois par la porte ouverte que les murs, à l'intérieur, remuent doucement — des cordes, des dizaines, sans un souffle d'air.",
   "puits-condamne": "Un bruit sourd te guide entre les maisons : trois coups, une pause, trois coups.",
-  "chien-du-bailli": "Tu remontes vers la plus haute toiture. Sur le seuil, une masse grise se lève sans un aboiement.",
+  "chien-du-bailli": "À l'ouest, une haute toiture seule au-dessus de la bruyère. Sur le seuil, une masse grise se lève sans un aboiement.",
   "petit-tribunal": "Une bâtisse basse, une seule porte, et par elle un froid qui ne vient pas du dehors : le froid des endroits où l'on a beaucoup décidé. Tu entres au Petit Tribunal.",
   "mare-aux-regards": "Le vent tombe d'un coup, comme coupé au couteau. Tes derniers pas ne font plus de bruit.",
   "verger-noir": "Des rangs réguliers montent de la bruyère. De loin, c'est presque rassurant.",

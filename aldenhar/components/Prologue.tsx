@@ -8,13 +8,14 @@ import TypedText from "@/components/TypedText";
 import { computeVerdict, portraitDuSeuil, PROLOGUE_AMORCE, PROLOGUE_CLOTURE } from "@/lib/prologue-data";
 import { loadRun, saveRun, type PrologueMemory, type RunState } from "@/lib/state";
 import { playMusic } from "@/lib/audio";
+import { assetUrl } from "@/lib/assets";
 
 /**
  * Prologue « Le Seuil » (Notion 16/07 + écrans Figma, complété 24/07) : le
  * joueur vient de mourir ; avant de le laisser entrer, le Geôlier feuillette
  * sa vie d'avant et JUGE ses réactions — les stats sont un verdict, pas une
  * allocation. Séquence : amorce (2) → 4 souvenirs → ÉCRAN DU NOM → clôture
- * (auto, 4 s) → Jour I.
+ * (« Touche pour commencer », 7/08) → Jour I.
  *
  * Règles verrouillées :
  * - AUCUN dé — ni visible, ni lancé. Résolution narrative immédiate.
@@ -263,20 +264,15 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
     setPortrait(portraitDuSeuil((runRef.current ?? loadRun()).stats));
   }, [isCloture]);
 
-  /** Clôture tapée → temporisation de 4 s, puis l'Acte I démarre TOUT SEUL
-      (24/07 : pas de bouton, pas de tap — le pacte est signé, le joueur n'a
-      plus la main). */
-  useEffect(() => {
-    if (!isCloture || !typedDone) return;
-    const t = setTimeout(() => {
-      const run = runRef.current ?? loadRun();
-      run.prologue.done = true;
-      runRef.current = run;
-      saveRun(run);
-      onDone();
-    }, 4000);
-    return () => clearTimeout(t);
-  }, [isCloture, typedDone, onDone]);
+  /** Clôture → « Touche pour commencer » (retour Patrick 7/08, maquette
+      1997:619 : le hint 2440:13427 y est posé). L'auto-départ à 4 s du 24/07
+      est ANNULÉ — le pacte est signé, mais c'est le joueur qui franchit. */
+  function finishSeuil() {
+    persist((r) => {
+      r.prologue.done = true;
+    });
+    onDone();
+  }
 
   if (beat === null || memories.length === 0) return <main className="flex min-h-dvh items-center justify-center" />;
 
@@ -308,8 +304,9 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
       return;
     }
     // Beats sans choix : un tap avance l'amorce. L'écran du Nom a ses propres
-    // contrôles, et la clôture avance TOUTE SEULE (24/07).
+    // contrôles. La clôture attend LE tap (7/08 — plus d'auto-départ).
     if (isAmorce) advanceBeat();
+    else if (isCloture) finishSeuil();
   }
 
   function onChoose(idx: number) {
@@ -344,7 +341,20 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
         className="phone-frame relative flex h-[800px] max-h-[100dvh] w-[390px] shrink-0 cursor-pointer flex-col overflow-clip bg-[var(--color-bg)]"
         onPointerDown={onTap}
       >
-        <HeroGeolier density={density} bstep={bstep} />
+        {/* Clôture (maquette 1997:619, 7/08) : le buste STATIQUE du Geôlier —
+            le même que la 1ʳᵉ clause de l'intro, c'est lui qui vient de
+            juger — remplace le héros animé. Ailleurs, l'animation du 16/07. */}
+        {isCloture ? (
+          // eslint-disable-next-line @next/next/no-img-element -- rendu pixelated, jamais optimisé par next/image
+          <img
+            src={assetUrl("assets/intro_demon.png")}
+            alt=""
+            className="block h-[390px] w-[390px] shrink-0 object-cover"
+            style={{ imageRendering: "pixelated" }}
+          />
+        ) : (
+          <HeroGeolier density={density} bstep={bstep} />
+        )}
 
         <div className="flex flex-1 flex-col px-[15px] pt-[40px]">
           {/* key=beat : chaque beat repart d'une frappe neuve.
@@ -423,6 +433,9 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
             au composant partagé le 26/07 : position et clignotement saccadé
             sont désormais une règle globale, plus un réglage par écran. */}
         {isAmorce && typedDone && <TouchHint />}
+        {/* Clôture : le jeu ne démarre plus tout seul — « Touche pour
+            commencer » (maquette 1997:619, hint 2440:13427). */}
+        {isCloture && typedDone && <TouchHint first />}
       </div>
     </main>
   );
