@@ -1,0 +1,38 @@
+{
+  "_note": "Lot du 7/08 (prompts du matin, générés puis retriés par Patrick). Règle : quand un sujet a une version vN, le fichier le plus récent fait foi ; sinon variantes a/b/c à départager en les regardant. Import par lots via download_file_content + extraction du b64 depuis le .jsonl de session (vérif signature PNG + taille exacte).",
+  "gagnants": {
+    "monstre_grand_temoin_v3_a.png":        {"id": "10VRZB3TyMlIZkDx59GPMq5ikHn_Ao_lF", "taille": 19988, "cible": "réserve (aucune scène ne le montre encore)"},
+    "scene_temoin_grange_toit_v2_c.png":    {"id": "1tIjqCWCxCEfILjWNkhkgNZRH5fmIpLhk", "taille": 8074,  "cible": "temoin-toit + temoin-toit-connu"},
+    "monstre_temoin_ruelle_v5_c.png":       {"id": "15EgL0XE-uW9fPXbN7Q0SVAeMQpc_BIKX", "taille": 15948, "cible": "temoin-ruelle"},
+    "monstre_la_fille_moulin_v2_a.png":     {"id": "1kuYPi5dg5GBYGUDhY_hgDrF8iQwwwyPp", "taille": 12150, "cible": "fille-moulin-2 et -3"},
+    "monstre_fille_moulin_dos_v2_a.png":    {"id": "1hcuT7hfIpAWL_qBLCOJwbLpamqV91mcX", "taille": 20117, "cible": "fille-moulin-1"},
+    "monstre_troupeau_brebis_v2_b.png":     {"id": "1N8TKEhUYttLYpIIb_KTnIPAI88y3JQRw", "taille": 23924, "cible": "troupeau-sans-berger-2"},
+    "scene_hameau_linteaux_v2_c.png":       {"id": "1A8abdk8MHZS2Za0whKrrWS_qyCgX4yUJ", "taille": 28134, "cible": "POI linteaux"},
+    "scene_hameau_combles_cloues_v2_a.png": {"id": "1ZqC4Nba9D8xHoq6LRaRdToHaHIfgyu7-", "taille": 26494, "cible": "POI fenetres-clouees"},
+    "scene_mare_creux_doubles_v2_b.png":    {"id": "134YDV5f58WZBfQD4OWvZRSdjdxKMm5Zs", "taille": 25530, "cible": "POI creux-doubles"},
+    "scene_hameau_nuit_dehors_v2_c.png":    {"id": "1PipKkom42PmHqiBOpv2pxM-V7dXbK4JW", "taille": 19147, "cible": "hameau-halte-dehors"},
+    "scene_renoncer_v2_b.png":              {"id": "1bFQw4GyOGeniky1Hpo6WRP5TiHV_bfVU", "taille": 19691, "cible": "renoncer"},
+    "monstre_veilleur_palissade_v2_b.png":  {"id": "1NxV3cbE_sHjZgb9FGMuEV6x4DjDlbpo-", "taille": 15018, "cible": "POI homme-guerite"},
+    "scene_champ_poteau_retire_c.png":      {"id": "1kq0dU84JOZS5Xjg4s0jB4Pi806RhTzvR", "taille": 14995, "cible": "fossoyeur-trou-2"},
+    "scene_chapelle_cloche_sans_battant_b.png": {"id": "1O7U6NGbZ88l4838b_HaYm0iHniPnQ9u9", "taille": 21366, "cible": "POI cloche-sans-battant"},
+    "scene_chemin_creux_coude_b.png":       {"id": "1L9bsXD3L0Fk16hk9vMLweFmBjGZMvf_G", "taille": 29636, "cible": "chemin-creux-2"},
+    "monstre_guetteur_tour_c.png":          {"id": "1I-5GyRFzvEaJi5SE-8sAnDUYLAMCJutg", "taille": 6029,  "cible": "tour-de-guet-2"},
+    "monstre_hesitant_2_b.png":             {"id": "1LhhqC9msao0asboHz2RJepiv5FcXDy4e", "taille": 13371, "cible": "hesitant-2"},
+    "objet_clochette_meneuse_b.png":        {"id": "1byRDDwCgA53jHJYABneDj1luFDkyLxXr", "taille": 5022,  "cible": "besace clochette-meneuse"},
+    "objet_lunette_guetteur_b.png":         {"id": "1BPFjrw95kjr6HKOsaLmjA4XiCyM25mAV", "taille": 6646,  "cible": "besace lunette (si l'objet existe)"},
+    "relique_vertebre_gravee_c.png":        {"id": "13afrH70FR5qR8SEnmKptKwLqXO8kJx5b", "taille": 7229,  "cible": "assets/relique_vertebre_gravee.png (chemin dérivé sans suffixe)"},
+    "relique_corde_seche_c.png":            {"id": "1fSztun3Y_7qRBrfBHTvCOfn3jkOse6PL", "taille": 5052,  "cible": "assets/relique_corde_seche.png (chemin dérivé sans suffixe)"}
+  },
+  "a_departager": {
+    "monstre_fille_moulin_ouvrage": {"a": {"id": "1ns5ItyMWw1ExFiRudbFvZO85AWS2tTxn", "taille": 7339}, "b": {"id": "1luRhpqOVkKO0yiGlaycjPYWmaPbg4KuS", "taille": 8428}, "c": {"id": "1pD48MqsMuxY0b4vDpKLnKBors2PJCBTa", "taille": 10442}, "cible": "fille-moulin-4"},
+    "monstre_fossoyeur_trou_1": {"a": {"id": "158BMshg6x-hFVffK1PcKo3dDdyZoD0zy", "taille": 15714}, "b": {"id": "1nw9wisN0Mga9qv5mOYUAO3ZGZG4AJK7j", "taille": 13531}, "c": {"id": "1ELRKC_uBvzGljg8HgF-WZ0Z4VbTdlsd8", "taille": 14405}, "cible": "fossoyeur-trou-1"},
+    "monstre_fossoyeur_trou_3": {"a": {"id": "1nX0pYtU9OJCNlaC0434kDHrlUr70yhfm", "taille": 17126}, "b": {"id": "1wZ8YotCTB--UEJ0zXFoWUfezawz4y0sB", "taille": 15068}, "c": {"id": "10aIWc8kIOcQvkCTLcY4_sbeORVyZ-E4E", "taille": 9532}, "cible": "fossoyeur-trou-3"},
+    "scene_murets_vers_sud": {"a": {"id": "1u4pFIX83wC7UlD1Pqyi1X-uVHlpIN65q", "taille": 6531}, "b": {"id": "15j2A1r8mmwlyaX1qxtZThOCpv-D01XHd", "taille": 8598}, "c": {"id": "1BgCO7C7SIcA3tpQ0nXnqAKPythMostw1", "taille": 14870}, "cible": "gamin-murets-2"},
+    "monstre_gamin_caillou": {"a": {"id": "13Kl-1_ga0IqQNSa4iWHRhgTM_gZu8VLd", "taille": 5805}, "b": {"id": "1a_zSQpU5ZmvkHmpToaSLqyRXhNqpQGwS", "taille": 7231}, "c": {"id": "1GKfHO5aur8kX7prXjK1TtSXXStkcB4LD", "taille": 8474}, "cible": "gamin-murets-3"},
+    "monstre_gamin_depart": {"a": {"id": "1ov627g_mSMwqrWomDfs5QVngPhveSejS", "taille": 15582}, "b": {"id": "1ZnoMYBFodt8boFWxE2XvDPswBRP-uv50", "taille": 9856}, "c": {"id": "1meMkD8LHwbV6ifmklSRBcMWRSHtH_AL5", "taille": 10514}, "cible": "gamin-murets-4"},
+    "monstre_troupeau_compte": {"a": {"id": "10vIK96h-b8cyGSOS1Gb6E_PxDFIfYGSy", "taille": 21272}, "b": {"id": "14UqODmJOtofeOtee1CIS6YarUuqaNiZy", "taille": 20556}, "c": {"id": "14_seeH-cO4-neVlSizPj1tABS6nCb5Px", "taille": 29626}, "cible": "POI compter-troupeau"},
+    "monstre_meute_grise_2": {"a": {"id": "1Kdb8RAMGT19KQdmxTo9aMCmIdv8o7Sqb", "taille": 4630}, "b": {"id": "1lMUAgc_F5zHckhHz_NTk18Bu3YWR4Z6L", "taille": 3852}, "c": {"id": "1lbswCXnVKiwyfdgvg7tW1KoP3KX6Vrja", "taille": 9011}, "cible": "meute-grise-2"},
+    "scene_moulin_crete_interrompue": {"a": {"id": "1Z4NCcSQjZVnVMfh788e2Lju1G2utgOOM", "taille": 27705}, "b": {"id": "1_6_DSnWIVcIpfrNs8W1Ei31rrGIBvMxn", "taille": 26367}, "c": {"id": "1xG7a4M1QclzcYB1vtSGgh6dCEJfDLQsZ", "taille": 36156}, "cible": "POI crete-interrompue"},
+    "scene_colline_pied_grand_gibet": {"a": {"id": "1o7ybBlGTquYwuqGAiI5EeeCh62OBzkyU", "taille": 17606}, "b": {"id": "1Gy6M36ptXpYhtJ709TJ7KTF3xzUQ8T_x", "taille": 15296}, "c": {"id": "15RrW62TKsYpJDfSayp8AnAycTUJsgd28", "taille": 15562}, "cible": "POI pied-grand-gibet"}
+  }
+}
