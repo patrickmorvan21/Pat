@@ -34,7 +34,6 @@
  "entree": "borne-frontiere",
  "pool": [
   "chemin-creux",
-  "bete-chemins-creux",
   "colline-aux-gibets",
   "pendu-qui-parle",
   "champ-des-fixes",
@@ -52,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-07T14:49:42Z",
- "commit": "5193cc7",
+ "genere": "2026-08-07T19:11:46Z",
+ "commit": "fccfa38",
  "zones": [
   {
    "id": "landes",
@@ -110,7 +109,7 @@
     {
      "id": "moulin_sans_ailes",
      "nom": "Le Moulin sans Ailes",
-     "illustration": "scene_moulin_campement_a.png",
+     "illustration": "scene_moulin_sans_ailes_d_d.png",
      "x": 300,
      "y": 260,
      "note": "refuge supposé de la Fille",
@@ -828,11 +827,13 @@
     "chemin-creux-2",
     "marcheur-1"
    ],
-   "mèneIci": [],
+   "mèneIci": [
+    "bete-chemins-creux"
+   ],
    "roles": [
     "pivot"
    ],
-   "acces": "traversée",
+   "acces": "lien",
    "etat": "valide",
    "alertes": []
   },
@@ -1078,6 +1079,7 @@
     }
    ],
    "pointsInteret": [],
+   "suite": "chemin-creux",
    "adversaire": "bete-chemins-creux",
    "adversaireNom": "La Bête des Chemins Creux",
    "combat": true,
@@ -1094,10 +1096,12 @@
    },
    "description": "Combat, une scène. La Bête des Chemins Creux, qui longe la crête nord au même pas que ce qui marche en bas. On ne la voit qu'en silhouette, au-dessus.",
    "promptImage": "massive quadruped silhouette crouched on the crest of an earthen bank, seen from below against a pale sky, long low body, head lowered toward the viewer, unnaturally still, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-   "mèneVers": [],
+   "mèneVers": [
+    "chemin-creux"
+   ],
    "mèneIci": [],
    "roles": [],
-   "acces": "traversée",
+   "acces": "embuscade (route du Chemin Creux)",
    "etat": "valide",
    "alertes": []
   },
@@ -1607,11 +1611,9 @@
    ],
    "mèneIci": [],
    "roles": [],
-   "acces": "aucun",
+   "acces": "variante conditionnelle",
    "etat": "valide",
-   "alertes": [
-    "orpheline"
-   ]
+   "alertes": []
   },
   {
    "id": "fossoyeur-trou-2",
@@ -2114,11 +2116,9 @@
    ],
    "mèneIci": [],
    "roles": [],
-   "acces": "aucun",
+   "acces": "variante conditionnelle",
    "etat": "valide",
-   "alertes": [
-    "orpheline"
-   ]
+   "alertes": []
   },
   {
    "id": "femme-savoir-2",
@@ -3526,7 +3526,7 @@
     "fichier": "scene_temoin_grange_toit_v2_c.png",
     "hash": "b8f53835",
     "taille": 8074,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -3566,7 +3566,7 @@
     "fichier": "scene_temoin_grange_toit_v2_c.png",
     "hash": "b8f53835",
     "taille": 8074,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -3576,11 +3576,9 @@
    ],
    "mèneIci": [],
    "roles": [],
-   "acces": "aucun",
+   "acces": "variante conditionnelle",
    "etat": "valide",
-   "alertes": [
-    "orpheline"
-   ]
+   "alertes": []
   },
   {
    "id": "hameau-halte-4",
@@ -3695,11 +3693,9 @@
    "mèneVers": [],
    "mèneIci": [],
    "roles": [],
-   "acces": "aucun",
+   "acces": "portillon de la Halte (Serment tenu)",
    "etat": "valide",
-   "alertes": [
-    "orpheline"
-   ]
+   "alertes": []
   },
   {
    "id": "hameau-halte-dehors",
@@ -3851,11 +3847,9 @@
    ],
    "mèneIci": [],
    "roles": [],
-   "acces": "aucun",
+   "acces": "déroutage en marchant (boucle est)",
    "etat": "valide",
-   "alertes": [
-    "orpheline"
-   ]
+   "alertes": []
   },
   {
    "id": "troupeau-sans-berger-2",
@@ -4367,9 +4361,9 @@
    "lieu": "moulin_sans_ailes",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_moulin_campement_a.png",
-    "hash": "e330d3ee",
-    "taille": 25894,
+    "fichier": "scene_moulin_sans_ailes_d_d.png",
+    "hash": "a916da10",
+    "taille": 27850,
     "recent": false,
     "existe": true
    },
@@ -4468,7 +4462,7 @@
     "fichier": "monstre_fille_moulin_dos_v2_a.png",
     "hash": "acfc2093",
     "taille": 20117,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -4478,11 +4472,9 @@
    ],
    "mèneIci": [],
    "roles": [],
-   "acces": "aucun",
+   "acces": "variante conditionnelle",
    "etat": "valide",
-   "alertes": [
-    "orpheline"
-   ]
+   "alertes": []
   },
   {
    "id": "fille-moulin-2",
@@ -4528,7 +4520,7 @@
     "fichier": "monstre_la_fille_moulin_v2_a.png",
     "hash": "51147c07",
     "taille": 12150,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -4574,7 +4566,7 @@
     "fichier": "monstre_la_fille_moulin_v2_a.png",
     "hash": "51147c07",
     "taille": 12150,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -4686,11 +4678,9 @@
    ],
    "mèneIci": [],
    "roles": [],
-   "acces": "aucun",
+   "acces": "variante conditionnelle",
    "etat": "valide",
-   "alertes": [
-    "orpheline"
-   ]
+   "alertes": []
   },
   {
    "id": "veuve-cordes-sait-2",
@@ -5395,7 +5385,7 @@
   {
    "id": "meute-grise-1",
    "narration": [
-    "Passé les murets du hameau, la lande redevient à eux. Tu les vois de loin — et c'est mauvais signe : la Meute Grise ne se montre que quand l'encerclement est fini. Six silhouettes couleur de bruyère morte, immobiles aux six points d'un cercle dont tu es le centre.",
+    "Loin de tout muret, la lande est à eux. Tu les vois de loin — et c'est mauvais signe : la Meute Grise ne se montre que quand l'encerclement est fini. Six silhouettes couleur de bruyère morte, immobiles aux six points d'un cercle dont tu es le centre.",
     "Pas des chiens : trop patients. Pas des loups : trop organisés. La plus grande s'assoit — le signal. Le cercle se met à tourner, lentement, en se resserrant d'un pas par tour."
    ],
    "choix": [
@@ -6548,6 +6538,11 @@
    "type": "principal"
   },
   {
+   "de": "bete-chemins-creux",
+   "vers": "chemin-creux",
+   "type": "principal"
+  },
+  {
    "de": "colline-aux-gibets",
    "vers": "colline-aux-gibets-2",
    "type": "principal"
@@ -6925,7 +6920,7 @@
    "fichier": "monstre_grand_temoin_v3_a.png",
    "hash": "3bc6805c",
    "taille": 19988,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "grand_temoin"
   },
@@ -7314,19 +7309,19 @@
    "racine": "mare_miroir"
   },
   {
+   "fichier": "scene_moulin_campement_a.png",
+   "hash": "e330d3ee",
+   "taille": 25894,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "moulin_campement"
+  },
+  {
    "fichier": "scene_moulin_sans_ailes_c.png",
    "hash": "eb6852f6",
    "taille": 25528,
    "recent": false,
-   "groupe": "doublon",
-   "racine": "moulin_sans_ailes"
-  },
-  {
-   "fichier": "scene_moulin_sans_ailes_d_d.png",
-   "hash": "a916da10",
-   "taille": 27850,
-   "recent": false,
-   "groupe": "doublon",
+   "groupe": "brancher",
    "racine": "moulin_sans_ailes"
   },
   {
