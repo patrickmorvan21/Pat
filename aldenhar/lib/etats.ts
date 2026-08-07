@@ -215,9 +215,12 @@ export const ETATS: Etat[] = [
       "Quelque chose grince très haut, très loin, à une hauteur où il n'y a rien.",
       "Pendant une seconde, le sol sous tes pieds est de la terre retournée de frais.",
       "Tu portes la main à ton cou. Il n'y a rien. Tu l'y portes quand même.",
-      "Une ombre passe à ta gauche, à la vitesse d'un homme qui marche. À ta gauche, il y a un mur.",
+      // ⚠️ Les intruses se servent PARTOUT : aucune ne doit supposer un mur,
+      // une foule, un décor (audit d'immersion 7/08 — deux d'entre elles
+      // téléportaient un mur et des gens dans la lande vide).
+      "Une ombre passe à ta gauche, à la vitesse d'un homme qui marche. Quand tu regardes, rien ne marche nulle part.",
       "Le vent dit un nom. Ce n'est pas le tien. Tu le retiens quand même.",
-      "Tu comptes les gens autour de toi et tu tombes sur un de plus qu'il n'y en a.",
+      "Tu comptes ce qui t'entoure — les ombres, les pierres. Il y en a toujours une de plus au deuxième compte.",
       "L'espace d'un pas, tes pieds ne touchent plus tout à fait le sol.",
     ],
   },
