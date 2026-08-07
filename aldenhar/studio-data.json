@@ -51,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-07T19:41:05Z",
- "commit": "6e333ac",
+ "genere": "2026-08-07T20:27:15Z",
+ "commit": "cc300cb",
  "zones": [
   {
    "id": "landes",
@@ -880,7 +880,7 @@
     "fichier": "scene_chemin_creux_coude_b.png",
     "hash": "261f995a",
     "taille": 29636,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "Événement du Chemin Creux : le coude aveugle. Le talus mange la vue d'un coup — l'endroit exact où il devrait y avoir quelque chose, et où il n'y a rien.",
@@ -1960,7 +1960,7 @@
       "fichier": "scene_hameau_linteaux_v2_c.png",
       "hash": "1b90ee19",
       "taille": 28134,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -1978,7 +1978,7 @@
       "fichier": "scene_hameau_combles_cloues_v2_a.png",
       "hash": "032a884e",
       "taille": 26494,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -4790,7 +4790,7 @@
       "fichier": "scene_chapelle_cloche_sans_battant_b.png",
       "hash": "b7b2ae8c",
       "taille": 21366,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -5576,7 +5576,7 @@
       "fichier": "scene_mare_creux_doubles_v2_b.png",
       "hash": "9c15e27d",
       "taille": 25530,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -6435,9 +6435,9 @@
      "hautEnjeu": true,
      "issues": {
       "critique": "20 naturel. Tu ne te défends pas : tu les regardes un par un, et tu nommes ce que chacun a laissé au muret — la hâte, la lame, la langue. Le tribunal se souvient qu'il est un hameau. On te raccompagne au seuil, et c'est presque des excuses.",
-      "reussite": "Tu parles de leurs morts fixés, de la peur qui juge à leur place depuis que le Bailli pend. Des nuques plient sur les bancs. La Doyenne tranche, lasse : « Qu'il marche. La lande jugera mieux que nous. »",
-      "echec": "Tu cherches leurs yeux — ils regardent tous la corde. Ce n'est pas de la haine, c'est du soulagement : quelqu'un d'autre qu'eux. À l'aube, on te fixe, proprement, avec les égards dus à ce qu'on craint.",
-      "funeste": "1 naturel. Ton appel réveille exactement le souvenir qu'il ne fallait pas : la dernière qui a supplié ainsi s'est relevée de sa corde. Cette fois, ils feront mieux. Double nœud. ♦ −2"
+      "reussite": "",
+      "echec": ",\n            ",
+      "funeste": ",\n            "
      },
      "defense": "emouvoir"
     },
