@@ -148,18 +148,52 @@ const ETATS_NEGATIFS_DOSES = ["fievreux", "boiteux", "affame", "marque", "hante"
  * chiffre : ils reconnaissent la MANIÈRE, pas la personne — le registre du
  * Colporteur (« te reconnaît. C'est impossible. ») s'étend à ses voisins.
  */
-const PNJ_MEMOIRE: Record<string, string> = {
-  "marche-muet-2":
-    "« Vous changez de visage », dit le Colporteur en rangeant une babiole " +
-    "que tu n'as pas eu le temps de voir. « Mais vous marchez tous pareil. " +
-    "Et vous regardez tous le même coin de l'étal. »",
-  "champ-des-fixes-2":
-    "Le Fossoyeur te dévisage une seconde de trop. « J'ai déjà taillé pour " +
-    "quelqu'un qui se tenait comme toi. » Il retourne à son écriteau. « Le " +
-    "poteau n'a pas servi. Pas encore. »",
-  "pendu-qui-parle-2":
-    "« Tu n'es pas le premier à te pencher sur ce sceau », dit la voix, " +
-    "sans reproche. « Le précédent avait tes yeux. Ou alors tu as les siens. »",
+const PNJ_MEMOIRE: Record<string, { lieu?: string; text: string }> = {
+  "marche-muet-2": {
+    text:
+      "« Vous changez de visage », dit le Colporteur en rangeant une babiole " +
+      "que tu n'as pas eu le temps de voir. « Mais vous marchez tous pareil. " +
+      "Et vous regardez tous le même coin de l'étal. »",
+  },
+  "champ-des-fixes-2": {
+    text:
+      "Le Fossoyeur te dévisage une seconde de trop. « J'ai déjà taillé pour " +
+      "quelqu'un qui se tenait comme toi. » Il retourne à son écriteau. « Le " +
+      "poteau n'a pas servi. Pas encore. »",
+  },
+  "pendu-qui-parle-2": {
+    text:
+      "« Tu n'es pas le premier à te pencher sur ce sceau », dit la voix, " +
+      "sans reproche. « Le précédent avait tes yeux. Ou alors tu as les siens. »",
+  },
+  // Les rencontres rattachées à un lieu déclarent leur LIEU (le compteur ne
+  // suit que les arrivées d'orientation, jamais les ids de rencontre).
+  "chapelle-des-cordes-2": {
+    text:
+      "« Tes mains, je les connais », dit la Veuve sans lever les yeux de " +
+      "son tressage. « Pas les tiennes. Des pareilles. Elles tenaient mal " +
+      "la corde aussi. »",
+  },
+  "marcheur-1": {
+    lieu: "chemin-creux",
+    text:
+      "Il ralentit une seconde à ta hauteur, sans cesser de reculer. « Je " +
+      "t'ai déjà croisé. » Un temps. « Pas toi. Quelqu'un qui mettait ses " +
+      "pieds où tu les mets. »",
+  },
+  "veilleur-1": {
+    lieu: "palissade-sud",
+    text:
+      "« Ta démarche », dit-il en plissant les yeux vers sa planche. « Je " +
+      "l'ai déjà notée. Sous un autre nom. »",
+  },
+  "hameau-entree-4": {
+    lieu: "serment-hameau",
+    text:
+      "La Doyenne te regarde plus longtemps que les autres. « On a déjà " +
+      "fait jurer quelqu'un qui avait ta façon de te taire », dit-elle. " +
+      "« Le muret s'en souvient mieux que moi. »",
+  },
 };
 
 function dansLeVillage(sceneId: string): boolean {
@@ -1734,8 +1768,11 @@ export default function Scene() {
     entries.push(...narrationLines.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
     // La ligne de mémoire du PNJ (2e passage du compte par ce lieu ou plus).
     const memPnj = PNJ_MEMOIRE[nextScene.id];
-    if (memPnj && ((loadMemory().visitesLieux ?? {})[radical(nextScene.id)] ?? 0) >= 2) {
-      entries.push({ id: nextId(), kind: "narration", text: memPnj });
+    if (
+      memPnj &&
+      ((loadMemory().visitesLieux ?? {})[memPnj.lieu ?? radical(nextScene.id)] ?? 0) >= 2
+    ) {
+      entries.push({ id: nextId(), kind: "narration", text: memPnj.text });
     }
     // ── LES ÉTATS (spec 4/08 §2 et §5, contrat de visibilité) ─────────────
     // FIXÉ différé (7/08) : le seuil de Soupçon (4) peut être atteint en
