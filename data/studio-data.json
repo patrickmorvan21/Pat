@@ -51,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-08T12:21:06Z",
- "commit": "0d6761e",
+ "genere": "2026-08-08T16:04:18Z",
+ "commit": "7e9d260",
  "zones": [
   {
    "id": "landes",
@@ -8240,6 +8240,22 @@
     }
    },
    {
+    "texte": "Par une porte entrouverte, une odeur de soupe aux herbes. Quelqu'un racle une marmite ; quelqu'un d'autre proteste qu'il en reste. C'est tout. C'est exactement tout.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ]
+    }
+   },
+   {
+    "texte": "Deux Renonçants discutent d'une gouttière à refaire, en se passant les mots comme des outils. Aucun des deux ne te regarde passer. La gouttière fuit vraiment.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ]
+    }
+   },
+   {
     "texte": "Le village se traverse en quelques dizaines de pas, et pourtant chaque rue semble tourner pour te faire repasser devant les mêmes fenêtres. Derrière les volets, on compte tes passages.",
     "conditions": {
      "from": [
@@ -8447,6 +8463,6 @@
   "temoins": 20,
   "etats": 7,
   "besoins": 3,
-  "transitions": 55
+  "transitions": 57
  }
 }
