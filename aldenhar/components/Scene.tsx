@@ -1579,7 +1579,12 @@ export default function Scene() {
     // LA COUTURE DU VILLAGE (6/08 soir) : si cette marche FRANCHIT la limite
     // du hameau, la ligne de franchissement précède l'approche — on ne se
     // téléporte plus d'un champ à une ruelle.
-    if (opts?.toDest) {
+    // ⚠️ Si le PROCÈS a dérouté la traversée, la destination choisie est
+    // ABANDONNÉE : sa couture, son approche et sa phrase d'arrivée ne doivent
+    // pas se jouer (transcript v3C du 8/08 : l'arrivée à la Mare — « Le vent
+    // tombe d'un coup… tu as longé le talus » — collée à l'ouverture du
+    // procès sur le même écran, deux lieux dans la même respiration).
+    if (opts?.toDest && !nextScene.fixationTrial) {
       const origine = trav.visited.length >= 2 ? trav.visited[trav.visited.length - 2] : undefined;
       const entre = isHameauInterior(opts.toDest) && !isHameauInterior(origine);
       // SORTIE : la séquence du Seuil (accueil, rue, muret) se joue DANS les
@@ -1594,13 +1599,13 @@ export default function Scene() {
         entries.push({ id: nextId(), kind: "narration", text: pool[nextStep % pool.length] });
       }
     }
-    if (opts?.toDest && APPROACH_NARRATION[opts.toDest]) {
+    if (opts?.toDest && !nextScene.fixationTrial && APPROACH_NARRATION[opts.toDest]) {
       entries.push({ id: nextId(), kind: "narration", text: APPROACH_NARRATION[opts.toDest] });
     }
     // …et COMMENT on y arrive : une seule phrase, jamais un paragraphe.
     // ⚠️ VARIATION NARRATIVE, pas une décision (voir phraseArrivee) : le mode
     // ne dépend pas de la route choisie et n'a aucune conséquence mécanique.
-    const arriveePhrase = opts?.toDest
+    const arriveePhrase = opts?.toDest && !nextScene.fixationTrial
       ? phraseArrivee(nextStep, runRef.current?.arriveeVues ?? [])
       : null;
     if (arriveePhrase) entries.push({ id: nextId(), kind: "narration", text: arriveePhrase });
