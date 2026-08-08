@@ -187,6 +187,32 @@ const PNJ_MEMOIRE: Record<string, { lieu?: string; text: string }> = {
       "« Ta démarche », dit-il en plissant les yeux vers sa planche. « Je " +
       "l'ai déjà notée. Sous un autre nom. »",
   },
+  "femme-seuil-1": {
+    lieu: "serment-hameau",
+    text:
+      "Elle t'ouvre avant que tu aies frappé. « L'autre aussi se tenait " +
+      "là, à deux pas du seuil, sans oser. » Elle ne dit pas quel autre. " +
+      "Elle n'a pas besoin.",
+  },
+  "hesitant-1": {
+    lieu: "borne-frontiere",
+    text:
+      "Il te regarde une seconde de trop. « J'ai déjà dit tout ça à " +
+      "quelqu'un », souffle-t-il. « Il écoutait comme toi. Il est parti " +
+      "vers le sud aussi. »",
+  },
+  "epoux-1": {
+    lieu: "verger-noir",
+    text:
+      "Elle s'arrête de bêcher, le temps d'un regard. « Le onzième verger " +
+      "a déjà eu ta visite », dit-elle. « Pas la tienne. Une pareille. »",
+  },
+  "tour-de-guet-2": {
+    lieu: "tour-de-guet",
+    text:
+      "« Je t'ai vu monter », dit le Guetteur sans se retourner. « L'autre " +
+      "fois aussi. Ce n'était pas toi — mais j'ai vu monter pareil. »",
+  },
   "hameau-entree-4": {
     lieu: "serment-hameau",
     text:
@@ -1075,6 +1101,9 @@ export default function Scene() {
       setImage(illo);
       setImageKind("scene");
       const openingNarration = [...opening.narration];
+      // Chaque vie commence à la Borne : on la compte ici (aucune
+      // orientation n'y mène) — l'Hésitant peut ainsi se souvenir.
+      if (run.step === 0) noterVisiteLieu("borne-frontiere");
       // Le hameau se souvient de la main qui lance le dé (chantier 3) : après
       // plusieurs fixations subies, l'accueil change dès l'entrée de zone.
       if (mem.fixations >= 2) {
