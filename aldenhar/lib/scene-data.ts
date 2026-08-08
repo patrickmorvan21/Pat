@@ -6343,6 +6343,17 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
     from: HAMEAU_INTERIOR,
     text: "Tu longes les murets d'une ruelle à l'autre. Pas de lande ici : des murs à hauteur d'épaule, des portes closes, et le bruit de tes pas qui revient de trop près.",
   },
+  // RESPIRATION (mémo IA externe 8/08) : deux vignettes qui ne cachent
+  // RIEN — l'ordinaire vrai, pour que l'inquiétant garde son tranchant.
+  // Ne pas leur chercher de double fond : il n'y en a pas, c'est le point.
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Par une porte entrouverte, une odeur de soupe aux herbes. Quelqu'un racle une marmite ; quelqu'un d'autre proteste qu'il en reste. C'est tout. C'est exactement tout.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Deux Renonçants discutent d'une gouttière à refaire, en se passant les mots comme des outils. Aucun des deux ne te regarde passer. La gouttière fuit vraiment.",
+  },
   {
     from: HAMEAU_INTERIOR,
     text: "Le village se traverse en quelques dizaines de pas, et pourtant chaque rue semble tourner pour te faire repasser devant les mêmes fenêtres. Derrière les volets, on compte tes passages.",

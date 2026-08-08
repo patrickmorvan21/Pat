@@ -1043,6 +1043,26 @@ export default function Scene() {
             "a été prélevé pour le porter."
         );
       }
+      // LA TRACE DE L'INCARNATION PRÉCÉDENTE (mémo IA externe 8/08, niv. 1-2 :
+      // « dans les 30 à 90 premières secondes, le joueur doit savoir que cette
+      // nouvelle vie n'est pas un recommencement identique »). La CAUSE de la
+      // dernière mort marque la Borne — une ligne, jamais une explication.
+      if (mem.deaths > 0 && mem.lastDeath && !mem.lastDeath.fixation) {
+        const lieuMort = mem.lastDeath.lieu ?? "";
+        openingNarration.push(
+          lieuMort.includes("mare")
+            ? "Au pied de la borne, une auréole sombre — de l'eau, séchée " +
+                "depuis peu, à un endroit où il n'a pas plu."
+            : lieuMort.includes("colline") || lieuMort.includes("pendu")
+              ? "Un bout de corde neuve est noué au sommet de la borne. Le " +
+                "nœud est récent. Personne n'attache rien à une borne."
+              : lieuMort.includes("bete") || lieuMort.includes("chien") || lieuMort.includes("meute")
+                ? "Le granit porte des griffures fraîches, à hauteur de " +
+                  "poitrine. Quelque chose est venu jusqu'ici. Et a attendu."
+                : "Quelqu'un est passé ici avant toi. Récemment. L'herbe est " +
+                  "couchée autour de la pierre, et aucune trace ne repart."
+        );
+      }
       // Persistance environnementale (§17) : trace des runs précédentes.
       if (mem.envFlags["echarde-gibet-prelevee"]) {
         openingNarration.push(
@@ -1339,6 +1359,30 @@ export default function Scene() {
       // Bête, pas le lieu derrière elle.
       trav.current = embuscade ? "bete-chemins-creux" : opts.toDest;
       trav.liaisonOpts = null;
+      // LES CORBEAUX QU'ON N'A PAS COMPTÉS (mémo IA externe 8/08 : l'inaction
+      // aussi laisse une trace). Quitter la Colline sans les avoir regardés
+      // arme un écho différé — canal des prix différés (§17), rien de neuf.
+      // ⚠️ Au moment de l'orientation, `scene` est la LIAISON — l'origine se
+      // lit dans `visited` (le dernier lieu, pas encore remplacé par la dest).
+      if (
+        radical(trav.visited[trav.visited.length - 1] ?? "") === "colline-aux-gibets" &&
+        !(runRef.current?.poiSeen ?? []).includes("corbeaux-compte") &&
+        !(runRef.current?.debts ?? []).some((d) => d.id === "corbeaux-ignores")
+      ) {
+        persist((r) => {
+          r.debts = [
+            ...(r.debts ?? []),
+            {
+              id: "corbeaux-ignores",
+              settleAtStep: nextStep + 3,
+              text:
+                "Derrière toi, très loin, des battements d'ailes quittent " +
+                "une traverse — exactement le compte que tu n'as pas voulu " +
+                "faire. Un battement de plus leur répond. Plus près.",
+            },
+          ];
+        });
+      }
       if (!trav.visited.includes(opts.toDest)) {
         trav.visited = [...trav.visited, opts.toDest];
         // LE JOUR AVANCE EN MARCHANT (arbitrage Patrick 7/08) : tous les
