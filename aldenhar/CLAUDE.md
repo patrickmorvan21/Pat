@@ -287,3 +287,9 @@ Deux retours de Patrick sur le rapport de la batterie v2.
 - **5 dépositions de témoins retirées** de `lib/temoins.ts` (poteau-pendu, poteaux-vierges, ecouter-nuit, souche-premier-arbre, berge-usee) : elles racontaient de l'observation — on est jugé pour ses actes. L'invariant « 0 témoin orphelin » tient (21 restantes, textes récupérables dans git si besoin).
 - Vérifié Playwright (build servi en local) : observation du pied du gibet → soupçon inchangé + POI bien consommé ; fouille de l'autel → +1 ; victoire de combat → AGUERRI posé (régression). Lint/typecheck/`build:pages`/immersion strict/cohérence propres.
 - `APP_VERSION` 1.50.0 → **1.51.0**, `CACHE_VERSION` v82 → **v83**. Déployé (gh-pages `10b5cf7`), jeu + couverture/atelier/studio + studio-data.
+
+#### Mode testeur pour IA externes (v1.51.1)
+Demande Patrick : faire tester le jeu EN LIGNE par d'autres IA (ChatGPT…) pour un regard neuf. Le jeu était déjà public, mais **le geste du dé bloquait tout agent de navigation** (ils cliquent, ils ne produisent pas de vélocité).
+- **`?testeur=1`** (Die3D) : au relâchement sans élan, une impulsion synthétique plausible lance le dé — un simple TAP suffit. Lu à CHAQUE relâchement dans l'URL, jamais mémorisé (retirer le paramètre = jeu strictement normal) ; le TIRAGE reste la physique réelle, seule l'impulsion est synthétique. Vérifié Playwright dans les deux sens (avec = verdict au clic ; sans = le dé se repose).
+- **`data/protocole-test-ia.md`** : consigne complète à copier-coller dans ChatGPT/Gemini en mode agent — URL avec le paramètre, mission (2 vies, profils curieux/pressé), 5 catégories de signalement avec citation exacte exigée, la liste de ce qui est VOULU (permadeath, pas de chiffres, esthétique) pour éviter les faux positifs, format de rapport. Conseil intégré : Options → Chronomètres désactivés (les agents sont lents).
+- `APP_VERSION` 1.51.0 → **1.51.1**, `CACHE_VERSION` v83 → **v84**. Déployé (gh-pages `3862cd7`).
