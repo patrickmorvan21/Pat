@@ -1,6 +1,6 @@
 {
- "genere": "2026-08-08T07:25:04Z",
- "commit": "048593a",
+ "genere": "2026-08-08T08:01:52Z",
+ "commit": "f4f11c2",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -373,7 +373,7 @@
    "taille": 22770,
    "modifie": "2026-08-07T12:46:12Z",
    "hash": "4b5989a3",
-   "recent": true
+   "recent": false
   },
   "monstre_guetteur_tour_c.png": {
    "taille": 6029,

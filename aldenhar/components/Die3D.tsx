@@ -615,12 +615,29 @@ export default function Die3D({ request, onComplete }: Props) {
       revealRing(true);
       syncHelp();
     }
+    /**
+     * MODE TESTEUR (`?testeur=1` dans l'URL, 8/08) : un simple TAP sur le dé
+     * armé le lance avec une impulsion aléatoire plausible. Réservé aux
+     * playtests par agents (IA de navigation, qui savent cliquer mais pas
+     * produire un geste avec de la vélocité). Lu à CHAQUE relâchement, jamais
+     * mémorisé : retirer le paramètre rend le jeu strictement normal, et le
+     * TIRAGE reste celui de la physique réelle — seule l'impulsion est
+     * synthétique.
+     */
+    function lancerSynthetique(): boolean {
+      if (typeof window === "undefined") return false;
+      if (new URLSearchParams(window.location.search).get("testeur") !== "1") return false;
+      state = "flying";
+      vel = { x: (Math.random() - 0.5) * 16, y: -(9 + Math.random() * 10) };
+      angVel = { x: -vel.y * 0.007, y: vel.x * 0.007, z: (Math.random() - 0.5) * 0.05 };
+      return true;
+    }
     function onUp() {
       if (state !== "held") return;
       const now = performance.now();
       const recent = history.filter((h) => now - h.t < 110);
       if (recent.length < 2) {
-        backToArmed();
+        if (!lancerSynthetique()) backToArmed();
         return;
       }
       const first = recent[0],
@@ -630,7 +647,7 @@ export default function Die3D({ request, onComplete }: Props) {
         vy = (last.y - first.y) / dt;
       const speed = Math.hypot(vx, vy);
       if (speed < 2.5) {
-        backToArmed();
+        if (!lancerSynthetique()) backToArmed();
         return;
       }
       state = "flying";
