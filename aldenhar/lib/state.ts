@@ -155,9 +155,11 @@ function freshTraversal(current = ENTRY_SCENE): TraversalState {
     phase: "scene",
     current,
     visited: [current],
-    // Longueur de traversée ×3 (retour playtest 24/07 : « trop court avant
-    // l'Acte 2 »). 9 à 11 lieux avant la Descente (le pool en compte 15).
-    target: 9 + Math.floor(Math.random() * 3), // 9, 10 ou 11 lieux
+    // 7 ou 8 lieux avant la Descente. Le ×3 du 24/07 (9-11) rendait la
+    // traversée interminable en jeu réel (partie de découverte 8/08 : 86
+    // écrans, Jour 3, toujours pas au bout) — et le durcissement du dernier
+    // tiers tombe maintenant assez tôt pour se sentir.
+    target: 7 + Math.floor(Math.random() * 2), // 7 ou 8 lieux
     liaisonOpts: null,
     seed: 0,
     done: false,
@@ -194,6 +196,9 @@ export type RunState = {
   /** Réactions du monde (états) déjà servies cette run — même règle que les
       intruses : jamais deux fois mot pour mot dans la même vie (8/08). */
   reactionsVues?: string[];
+  /** Échos d'objets-promesse déjà servis (« scène|objet ») — un objet ne
+      pèse qu'une fois par endroit (8/08). */
+  echosObjet?: string[];
   /** Noms des soins génériques déjà trouvés cette run — un objet « trouvé »
       ne retombe jamais sous le même nom dans la même vie (playtest 7/08). */
   dropsServis?: string[];
@@ -203,6 +208,9 @@ export type RunState = {
    * l'ordre. Au procès, ce sont ces dépositions qui sont lues.
    */
   temoins?: Temoin[];
+  /** Témoins déjà cités DANS LA RUE (rumeur, 8/08) — le procès commence
+      avant la salle, mais chaque témoin ne parle qu'une fois dehors. */
+  temoinsCites?: string[];
   /**
    * LA LOI DU DOMAINE (5/08) : index des manifestations déjà servies cette run.
    * La loi se constate, elle ne se martèle pas — au plus une par vie.
@@ -383,6 +391,7 @@ function fresh(): RunState {
     savoirs: [],
     fragmentsLus: [],
     temoins: [],
+    temoinsCites: [],
     loiVues: [],
     arriveeVues: [],
     faits: {},
@@ -456,8 +465,10 @@ export function loadRun(): RunState {
             liaisonVues: Array.isArray(p.liaisonVues) ? p.liaisonVues : [],
             intrusesVues: Array.isArray(p.intrusesVues) ? p.intrusesVues : [],
             reactionsVues: Array.isArray(p.reactionsVues) ? p.reactionsVues : [],
+            echosObjet: Array.isArray(p.echosObjet) ? p.echosObjet : [],
             dropsServis: Array.isArray(p.dropsServis) ? p.dropsServis : [],
             temoins: Array.isArray(p.temoins) ? p.temoins : [],
+            temoinsCites: Array.isArray(p.temoinsCites) ? p.temoinsCites : [],
             loiVues: Array.isArray(p.loiVues) ? p.loiVues : [],
             arriveeVues: Array.isArray(p.arriveeVues) ? p.arriveeVues : [],
             faits: sacDepuis(p.faits),

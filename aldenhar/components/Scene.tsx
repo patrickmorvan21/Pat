@@ -148,6 +148,46 @@ const ETATS_NEGATIFS_DOSES = ["fievreux", "boiteux", "affame", "marque", "hante"
  * chiffre : ils reconnaissent la MANIÈRE, pas la personne — le registre du
  * Colporteur (« te reconnaît. C'est impossible. ») s'étend à ses voisins.
  */
+/**
+ * LES OBJETS QUI PORTENT UNE PROMESSE (partie de découverte 8/08 : « j'ai
+ * accepté la mèche d'une mère pour son fils disparu — la décision la plus
+ * forte de ma partie — et plus personne n'y a fait allusion »). Un objet
+ * accepté CONTRE une promesse doit revenir peser aux moments où la promesse
+ * est en jeu. Indexé par scène, filtré sur un fragment du NOM de l'objet.
+ */
+const ECHOS_OBJET: Record<string, { objet: string; text: string }[]> = {
+  // On regarde descendre un Appelé — c'est peut-être lui, le fils.
+  "palissade-sud-2": [
+    {
+      objet: "Mèche",
+      text:
+        "Ta main est allée à la mèche sans que tu l'aies décidé. Tu la " +
+        "tiens en le regardant descendre, et tu comprends que tu n'as aucun " +
+        "moyen de savoir. Ni maintenant, ni jamais.",
+    },
+  ],
+  // Au seuil de la Descente : la promesse ou le passage.
+  "la-descente": [
+    {
+      objet: "Mèche",
+      text:
+        "La mèche est toujours dans ta poche. Personne, en bas, ne saura ce " +
+        "qu'elle est ni à qui la rendre. Une femme, quelque part derrière " +
+        "toi, tient encore son seuil pour un fils qui ne remontera pas.",
+    },
+  ],
+  // La Mare montre ce qu'on porte, pas ce qu'on est.
+  "mare-aux-regards-2": [
+    {
+      objet: "Mèche",
+      text:
+        "Dans l'eau, tu ne te vois pas seul : il y a la forme de ce que tu " +
+        "portes, un peu à côté de toi. La Mare ne compte pas les gens. Elle " +
+        "compte les promesses.",
+    },
+  ],
+};
+
 const PNJ_MEMOIRE: Record<string, { lieu?: string; text: string }> = {
   "marche-muet-2": {
     text:
@@ -1806,6 +1846,18 @@ export default function Scene() {
         ]
       : nextScene.narration;
     entries.push(...narrationLines.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+    // L'écho d'un objet-promesse (voir ECHOS_OBJET) : ce que tu portes te
+    // rattrape là où ça compte, une fois par scène et par objet.
+    for (const e of ECHOS_OBJET[nextScene.id] ?? []) {
+      const porte = (runRef.current?.besace ?? []).some((i) => i.name.includes(e.objet));
+      const dejaDit = (runRef.current?.echosObjet ?? []).includes(nextScene.id + "|" + e.objet);
+      if (porte && !dejaDit) {
+        entries.push({ id: nextId(), kind: "narration", text: e.text });
+        persist((r) => {
+          r.echosObjet = [...(r.echosObjet ?? []), nextScene.id + "|" + e.objet];
+        });
+      }
+    }
     // La ligne de mémoire du PNJ (2e passage du compte par ce lieu ou plus).
     const memPnj = PNJ_MEMOIRE[nextScene.id];
     if (
@@ -1927,7 +1979,27 @@ export default function Scene() {
     // d'oiseaux. Uniquement dans le village : ailleurs, les corbeaux de la
     // Colline comptent ses morts, et mélanger les deux lectures les détruit.
     if (estHameau(nextScene.id)) {
-      const corb = corbeauxDuHameau(
+      // LA RUMEUR (partie de découverte 8/08 : « le hameau compte mes actes
+      // mais ne les CITE jamais avant le procès »). Un témoin déjà inscrit
+      // parle en pleine rue — jamais deux fois le même, jamais plus d'un par
+      // écran, et seulement quand le village a de quoi dire (soupçon ≥ 2).
+      // C'est le procès qui commence, longtemps avant la salle.
+      const temoinsRun = runRef.current?.temoins ?? [];
+      const cites = runRef.current?.temoinsCites ?? [];
+      const frais = temoinsRun.filter((t) => !cites.includes(t.id));
+      if ((runRef.current?.soupcon ?? 0) >= 2 && frais.length && chance(0.5)) {
+        const t = frais[nextStep % frais.length];
+        entries.push({
+          id: nextId(),
+          kind: "narration",
+          text:
+            `Deux femmes s'arrêtent de parler quand tu passes — mais tu as ` +
+            `saisi la fin : « … ${t.lieu}. C'est ${t.nom} qui l'a dit. » ` +
+            `Elles reprennent leur chemin, plus vite que nécessaire.`,
+        });
+        persist((r) => { r.temoinsCites = [...(r.temoinsCites ?? []), t.id]; });
+      }
+            const corb = corbeauxDuHameau(
         runRef.current?.soupcon ?? 0,
         nextStep,
         runRef.current?.reactionsVues ?? []
@@ -2379,6 +2451,28 @@ export default function Scene() {
                 text: ligneTroupeau(tailleTroupeau(loadMemory().runsStarted, loadMemory().fixations)),
               }]
             : []),
+          // LE POTEAU QUI PORTE TON NOM suit tes vies (partie de découverte
+          // 8/08 : le moment le plus fort du Champ n'avait aucune suite). Il
+          // se remplit d'une incarnation à l'autre — jamais un chiffre, le
+          // bois raconte à ta place.
+          ...(poi.id === "poteaux-vierges" && loadMemory().deaths > 0
+            ? [{
+                id: nextId(),
+                kind: "narration" as const,
+                text:
+                  loadMemory().deaths >= 3
+                    ? "Sous ton nom, le bois n'est plus vierge : trois dates y sont " +
+                      "gravées, les unes sous les autres, de la même main appliquée. " +
+                      "Il reste de la place. On a prévu large."
+                    : loadMemory().deaths >= 2
+                      ? "Sous ton nom, deux dates. La seconde est plus récente que la " +
+                        "première, et l'entaille est plus profonde — comme si la main " +
+                        "avait pris de l'assurance."
+                      : "Sous ton nom, une date a été ajoutée depuis. Elle est ancienne " +
+                        "de quelques jours à peine, et tu ne l'avais pas vue la dernière " +
+                        "fois. Tu ne te souviens pas d'une dernière fois.",
+              }]
+            : []),
         ];
         if (gained) {
           entries.push({
@@ -2593,7 +2687,7 @@ export default function Scene() {
         fatalCheck: (tier) => {
           if (!tierIsFail(tier)) return false;
           if (isTrial) return true;
-          const cost = tier === "malediction" ? 0.25 : tier === "critique" ? 0.2 : 0.12;
+          const cost = tier === "malediction" ? 0.3 : tier === "critique" ? 0.26 : 0.16;
           return healthNow - cost <= 0;
         },
       });
@@ -2899,8 +2993,12 @@ export default function Scene() {
             const brisure = amorti && relicDette(relicCoussin) === "brisure";
             persist((run) => {
               run.rolls.push({ step, choiceId: selectedId ?? "roll", result, at: nowMs(), ok: !tierIsFail(tier) });
+              // Coûts relevés (partie de découverte 8/08 : santé 1 → 0,76 sur
+              // trois jours de jeu — la tension du permadeath ne se sentait
+              // pas). Un échec coûte maintenant un vrai cran ; la Descente
+              // reste atteignable, mais plus en pilotage automatique.
               let cost =
-                tier === "malediction" ? 0.25 : tier === "critique" ? 0.2 : tier === "echec" ? 0.12 : tier === "justesse" ? 0.06 : 0;
+                tier === "malediction" ? 0.3 : tier === "critique" ? 0.26 : tier === "echec" ? 0.16 : tier === "justesse" ? 0.08 : 0;
               if (amorti) {
                 cost = 0.12;
                 run.relicUsed = true;

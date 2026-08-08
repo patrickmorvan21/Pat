@@ -5716,12 +5716,12 @@ export const JAILER_BY_POSTURE: Record<JailerPosture, JailerPools> = {
       "{n}. Le précédent avait fait pareil. J'ai gardé sa besace.",
     ],
     critFail: [
-      "Un 1 naturel. Je l'encadrerais, si mes murs étaient à moi.",
+      "La pire face du dé. Je l'encadrerais, si mes murs étaient à moi.",
       "1. Le dé lui-même a eu pitié — puis non.",
     ],
     critSuccess: [
       "Un 20. Rare. Je note, je n'applaudis pas.",
-      "20 naturel. Ne t'y habitue pas.",
+      "Un jet parfait. Ne t'y habitue pas.",
     ],
   },
   interesse: {
@@ -5732,11 +5732,11 @@ export const JAILER_BY_POSTURE: Record<JailerPosture, JailerPools> = {
     ],
     critFail: [
       "Un 1. De ta part, ça me surprend presque. Presque.",
-      "1 naturel. Tiens. Toi qui tenais si bien.",
+      "La pire face possible. Tiens. Toi qui tenais si bien.",
     ],
     critSuccess: [
       "Un 20. Je commence à comprendre pourquoi tu dures.",
-      "20 naturel. Bien. Continue, que je voie jusqu'où.",
+      "Le dé au sommet. Bien. Continue, que je voie jusqu'où.",
     ],
   },
   respectueux: {
@@ -5747,11 +5747,11 @@ export const JAILER_BY_POSTURE: Record<JailerPosture, JailerPools> = {
     ],
     critFail: [
       "Un 1. J'en ai vu mille avant toi. Aucun ne m'avait manqué. Toi, si.",
-      "1 naturel. Si tu tombes ici, je retiendrai le jour. Je te le dois.",
+      "La pire face, au pire moment. Si tu tombes ici, je retiendrai le jour. Je te le dois.",
     ],
     critSuccess: [
       "Un 20. Voilà pourquoi ton nom monte dans le Registre.",
-      "20 naturel. Propre. Tu n'es plus tout à fait un divertissement.",
+      "Rien à redire à ce jet. Propre. Tu n'es plus tout à fait un divertissement.",
     ],
   },
 };
