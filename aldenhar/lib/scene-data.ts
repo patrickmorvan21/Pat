@@ -1580,7 +1580,9 @@ export const SCENES: Scene[] = [
       "Entre les rangs, un vieil homme redresse un poteau qui penche, avec " +
         "des gestes de jardinier. Il t'a vu venir de loin — les vivants " +
         "font un bruit particulier, ici. Il ne s'interrompt pas : il " +
-        "t'attend au travail, comme on attend un outil.",
+        "t'attend au travail, comme on attend un outil. « La Colline, " +
+        "c'est la vitrine », dit-il sans qu'on demande. « Ici, c'est " +
+        "l'arrière-boutique. »",
     ],
     choices: [
       {
@@ -3679,7 +3681,9 @@ export const SCENES: Scene[] = [
       "Au bout de la rangée, un étal différent : bric-à-brac d'ailleurs, " +
         "objets qui n'ont rien à faire dans une lande. Le Colporteur te " +
         "regarde venir de loin — et te reconnaît. C'est impossible. Il te " +
-        "fait signe quand même, comme à un client de longue date.",
+        "fait signe quand même, comme à un client de longue date. Sur " +
+        "l'étal, aucun fruit. « Ceux du Verger, j'en prends pas », dit-il " +
+        "en suivant ton regard. « Personne n'en prend. »",
       // Le Rebouteux est INTRODUIT avant que ses choix n'apparaissent
       // (rapport IA externe 8/08 : « le Rebouteux apparaît dans la
       // conséquence sans avoir été introduit »).
@@ -3730,7 +3734,7 @@ export const SCENES: Scene[] = [
           consequence:
             "Le rebouteux hausse les épaules sans lever les yeux de son " +
             "baume. « Je soigne pas la nuit. » Un temps. « C\u2019est pas une " +
-            "règle, hein. C\u2019est juste que personne demande. »",
+            "règle, hein. C\u2019est juste que personne demande. » Puis, comme on jette un os : « Et si c\u2019est l\u2019eau de la Mare que tu as bue, garde ta monnaie. Ça, ça se soigne pas ici. »",
         },
       },
       {
@@ -6125,6 +6129,10 @@ const LIAISON_AMBIANCES: string[] = [
   "La bruyère efface derrière toi les traces de ceux qui ont choisi avant. Devant, elle ne promet rien.",
   "Un long moment sans rien : juste tes pas, et la sensation d'être compté par quelque chose que tu ne vois pas.",
   "Le chemin se creuse, remonte, se divise. Ici, on ne va pas quelque part — on s'éloigne de la Borne.",
+  "Un berger recoud une sangle, assis sur une pierre, son bâton en travers des genoux. Il tire sur le fil, vérifie, tire encore. Rien d'autre. C'est reposant comme un feu éteint.",
+  "Quelqu'un a empilé des pierres plates en tas régulier au bord du chemin, pour plus tard, pour un muret. Le travail est propre. Celui qui l'a fait comptait revenir.",
+  "Deux silhouettes fauchent la bruyère au loin, à contretemps l'une de l'autre. Le bruit des lames arrive décalé, paisible, comme un vieux couple qui ne se parle plus par confort.",
+  "Une alouette monte, chante, retombe. Tu la suis des yeux jusqu'au bout. Il ne se passe rien d'autre, et pendant un instant, c'est exactement ce qu'il fallait.",
 ];
 
 /**
@@ -6353,6 +6361,26 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
   {
     from: HAMEAU_INTERIOR,
     text: "Deux Renonçants discutent d'une gouttière à refaire, en se passant les mots comme des outils. Aucun des deux ne te regarde passer. La gouttière fuit vraiment.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Un homme affûte une faux sur le pas de sa porte, au rythme lent de qui a tout son temps. Il chantonne faux. La lame est pour l'herbe, le chant pour lui.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Une femme étend du linge encore fumant. Elle jure à mi-voix contre une pince qui saute, la ramasse, recommence. Le drap claque une fois, comme partout ailleurs au monde.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Deux vieux jouent à un jeu de pions sur un banc, avec des cailloux et des fèves. L'un triche. L'autre le sait, et le laisse faire parce que c'est son tour de tricher demain.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Un gamin fait rouler un cerceau de tonneau le long d'un muret, le rattrape, recommence. Il compte ses réussites à voix haute. Il en est à onze, et il est content.",
+  },
+  {
+    from: HAMEAU_INTERIOR,
+    text: "Ça sent le pain. Quelqu'un a ouvert un four quelque part, et pendant dix pas entiers, la rue ne sent que ça.",
   },
   {
     from: HAMEAU_INTERIOR,

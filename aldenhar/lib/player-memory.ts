@@ -147,6 +147,9 @@ export type PlayerMemory = {
       ne jamais le retirer deux fois de suite : c'est ce qui sépare « varié »
       de « aléatoire ». Absent des mémoires d'avant le 6/08. */
   lastAccueil?: string;
+  /** Passages du COMPTE par chaque lieu (radical), toutes vies confondues —
+      la mémoire des PNJ entre les incarnations (arbitrage Patrick 8/08). */
+  visitesLieux?: Record<string, number>;
   /**
    * L'introduction (les 4 clauses du pacte, Figma 2238:1009) a déjà été lue.
    *
@@ -367,6 +370,7 @@ export function loadMemory(): PlayerMemory {
           // (Repris une fois de plus le 6/08 avec `lastAccueil` : l'accueil de
           // la vie précédente n'était jamais relu, donc jamais évité.)
           lastAccueil: typeof p.lastAccueil === "string" ? p.lastAccueil : undefined,
+          visitesLieux: p.visitesLieux && typeof p.visitesLieux === "object" ? p.visitesLieux : {},
           faitsVus: p.faitsVus && typeof p.faitsVus === "object" ? p.faitsVus : {},
           renoncements: typeof p.renoncements === "number" ? p.renoncements : 0,
           zonesCleared: typeof p.zonesCleared === "number" ? p.zonesCleared : 0,
@@ -556,4 +560,13 @@ export function buildRegistre(
   ];
   rows.sort((a, b) => b.days - a.days);
   return rows.map((r, i) => ({ rank: i + 1, ...r }));
+}
+
+/** Compte un passage du COMPTE par un lieu (radical) — nourrit la mémoire
+    des PNJ entre les vies (arbitrage Patrick 8/08 : « amplifier leur
+    mémoire »). Appelé à l'arrivée d'une orientation. */
+export function noterVisiteLieu(lieu: string): void {
+  mutateMemory((m) => {
+    m.visitesLieux = { ...(m.visitesLieux ?? {}), [lieu]: ((m.visitesLieux ?? {})[lieu] ?? 0) + 1 };
+  });
 }

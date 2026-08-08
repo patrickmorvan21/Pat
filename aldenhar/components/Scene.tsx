@@ -76,6 +76,7 @@ import {
   recordDeath,
   recordRenoncement,
   recordTraversee,
+  noterVisiteLieu,
   type Relic,
 } from "@/lib/player-memory";
 
@@ -138,6 +139,28 @@ function nowMs(): number {
 /** Les états négatifs soumis au PLAFOND de deux (dosage 7/08). FIXÉ n'y est
     pas : mécanique sociale du procès, posée par le village, jamais bloquée. */
 const ETATS_NEGATIFS_DOSES = ["fievreux", "boiteux", "affame", "marque", "hante"];
+
+/**
+ * MÉMOIRE DES PNJ ENTRE LES VIES (arbitrage Patrick 8/08 : « on repasse
+ * forcément aux mêmes endroits pendant les runs — amplifier leur mémoire »).
+ * Au 2e passage du COMPTE par un lieu (mem.visitesLieux), celui qui y vit
+ * montre qu'il a déjà vu quelqu'un comme toi. Jamais un nom, jamais un
+ * chiffre : ils reconnaissent la MANIÈRE, pas la personne — le registre du
+ * Colporteur (« te reconnaît. C'est impossible. ») s'étend à ses voisins.
+ */
+const PNJ_MEMOIRE: Record<string, string> = {
+  "marche-muet-2":
+    "« Vous changez de visage », dit le Colporteur en rangeant une babiole " +
+    "que tu n'as pas eu le temps de voir. « Mais vous marchez tous pareil. " +
+    "Et vous regardez tous le même coin de l'étal. »",
+  "champ-des-fixes-2":
+    "Le Fossoyeur te dévisage une seconde de trop. « J'ai déjà taillé pour " +
+    "quelqu'un qui se tenait comme toi. » Il retourne à son écriteau. « Le " +
+    "poteau n'a pas servi. Pas encore. »",
+  "pendu-qui-parle-2":
+    "« Tu n'es pas le premier à te pencher sur ce sceau », dit la voix, " +
+    "sans reproche. « Le précédent avait tes yeux. Ou alors tu as les siens. »",
+};
 
 function dansLeVillage(sceneId: string): boolean {
   return (
@@ -1385,6 +1408,7 @@ export default function Scene() {
       }
       if (!trav.visited.includes(opts.toDest)) {
         trav.visited = [...trav.visited, opts.toDest];
+        noterVisiteLieu(radical(opts.toDest));
         // LE JOUR AVANCE EN MARCHANT (arbitrage Patrick 7/08) : tous les
         // trois lieux traversés, un jour passe — en plus du sommeil et des
         // échecs durs. C'est ce qui remet l'économie du temps à l'endroit :
@@ -1708,6 +1732,11 @@ export default function Scene() {
         ]
       : nextScene.narration;
     entries.push(...narrationLines.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+    // La ligne de mémoire du PNJ (2e passage du compte par ce lieu ou plus).
+    const memPnj = PNJ_MEMOIRE[nextScene.id];
+    if (memPnj && ((loadMemory().visitesLieux ?? {})[radical(nextScene.id)] ?? 0) >= 2) {
+      entries.push({ id: nextId(), kind: "narration", text: memPnj });
+    }
     // ── LES ÉTATS (spec 4/08 §2 et §5, contrat de visibilité) ─────────────
     // FIXÉ différé (7/08) : le seuil de Soupçon (4) peut être atteint en
     // pleine lande, mais l'état ne se pose qu'à la première arrivée LÀ OÙ ON
