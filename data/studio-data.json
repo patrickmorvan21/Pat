@@ -51,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-08T07:25:04Z",
- "commit": "048593a",
+ "genere": "2026-08-08T12:21:06Z",
+ "commit": "0d6761e",
  "zones": [
   {
    "id": "landes",
@@ -1141,7 +1141,7 @@
      "id": "corbeaux-compte",
      "label": "Les corbeaux, sur la traverse",
      "approche": "Ils sont sur la traverse du grand gibet, immobiles, et ils ne bougent pas quand tu approches — ce qui n'est pas un comportement d'oiseau. Aucun ne te regarde. Ils regardent la corde.",
-     "examen": "Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, et leurs becs sont propres. Ils attendent, et ils sont exactement assez nombreux pour ce qu'ils attendent. Ce sont les mêmes que sur les toits du hameau : la même immobilité, la même façon d'être tournés du même côté. En bas, ils comptent quelque chose qui te concerne. Ici aussi — mais pas la même chose.",
+     "examen": "Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, et leurs becs sont propres. Ils attendent, et ils sont exactement assez nombreux pour ce qu'ils attendent. La même immobilité que des sentinelles payées d'avance, la même façon d'être tournés du même côté — comme des choses qu'on a postées là. Ils comptent quelque chose qui te concerne, et le compte n'a pas l'air fini.",
      "poseEtat": "hante",
      "corbeaux": true,
      "nom": "Les corbeaux, sur la traverse",
@@ -3764,7 +3764,7 @@
     "fichier": "monstre_temoin_ruelle_v6_b.png",
     "hash": "6e0b95d8",
     "taille": 15619,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -6894,7 +6894,7 @@
    "fichier": "monstre_grand_temoin_v4_c.png",
    "hash": "4b5989a3",
    "taille": 22770,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "grand_temoin"
   },
@@ -7561,15 +7561,15 @@
    "versions": [
     {
      "id": "bailli",
-     "texte": "Le grand gibet a été taillé pour le Bailli, du temps où il jugeait encore. La traverse est à sa mesure : on l'a préparée avant lui."
+     "texte": "On raconte que le grand gibet a été taillé pour le Bailli, du temps où il jugeait encore. « À sa mesure », répètent ceux qui tiennent l'histoire — sans jamais expliquer quelle mesure il faudrait à un homme pour une traverse pareille."
     },
     {
      "id": "etranger",
-     "texte": "Le grand gibet a été taillé pour un étranger, un seul, celui qui viendrait du sud. Le hameau l'entretient depuis, et attend."
+     "texte": "On raconte que le grand gibet a été taillé pour un étranger, un seul, celui qui viendrait du sud. Le hameau l'entretiendrait depuis. Et attendrait."
     },
     {
      "id": "personne",
-     "texte": "Le grand gibet n'a été taillé pour personne. Il était déjà là quand le hameau s'est posé autour, et c'est le hameau qui a pris sa mesure sur lui."
+     "texte": "Les plus vieux disent que le grand gibet n'a été taillé pour personne : il était déjà là quand le hameau s'est posé autour, et c'est le hameau qui a pris sa mesure sur lui."
     }
    ]
   }
