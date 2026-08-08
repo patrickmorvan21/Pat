@@ -2730,7 +2730,13 @@ export default function Scene() {
               // (miroir de rendu mis à jour après le persist, plus bas)
               run.health = Math.max(0, run.health - cost);
               if (usureDay) run.day += 1;
-              if (tier === "destin" || (scene.combat && !tierIsFail(tier)))
+              // AGUERRI seulement en COMBAT (symétrique du correctif
+              // ENTAILLÉ/ÉBRANLÉ, 8/08) : sa fiche dit « le combat t'a
+              // affûté » — un 20 naturel en pleine conversation la faisait
+              // mentir. Le Destin hors combat a déjà sa récompense (Besace
+              // rare/légendaire + la prose épique), il n'a pas besoin d'un
+              // état de guerrier en plus.
+              if (scene.combat && !tierIsFail(tier))
                 run.effects = [
                   { id: "aguerri", label: "AGUERRI", delta: 2, scenesLeft: 3 },
                   ...run.effects.filter((e) => e.id !== "aguerri"),

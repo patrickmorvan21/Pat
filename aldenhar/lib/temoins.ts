@@ -46,11 +46,6 @@ export const TEMOINS: Record<string, Omit<Temoin, "id">> = {
     deposition: "Je l'ai entendu promettre à l'homme de la Borne qu'il reviendrait. Il n'est pas revenu.",
     lieu: "à la Borne Frontière",
   },
-  "poteau-pendu": {
-    nom: "Le Gamin des Murets",
-    deposition: "Il est resté sous le gibet du Bailli. À le regarder. Longtemps.",
-    lieu: "à la Colline aux Gibets",
-  },
   plaider: {
     nom: "Le Sonneur sans Cloche",
     deposition: "Il a parlé au pendu. Et le pendu lui a répondu — j'étais à trente pas.",
@@ -60,11 +55,6 @@ export const TEMOINS: Record<string, Omit<Temoin, "id">> = {
     nom: "La Doyenne",
     deposition: "Il a porté la lame sur une corde qui tenait. Chez nous, ça a un nom.",
     lieu: "à la Colline aux Gibets",
-  },
-  "poteaux-vierges": {
-    nom: "Le Fossoyeur des Poteaux",
-    deposition: "Il a compté les places vides. Personne ne compte les places vides sans y penser pour soi.",
-    lieu: "au Champ des Fixés",
   },
   "croix-craie": {
     nom: "La Femme au Seuil",
@@ -121,11 +111,6 @@ export const TEMOINS: Record<string, Omit<Temoin, "id">> = {
     deposition: "On lui a demandé de jurer comme tout le monde. Il n'a pas voulu.",
     lieu: "à l'entrée du Hameau",
   },
-  "ecouter-nuit": {
-    nom: "Le vieux de la grange",
-    deposition: "Il n'a pas dormi. Il a écouté ce qui tournait dehors, toute la nuit, sans bouger.",
-    lieu: "dans la grange du Hameau",
-  },
   "repartir-inventorie": {
     nom: "Le vieux de la grange",
     deposition: "Au matin, il a compté ce qu'il avait. Devant nous. Comme si on lui avait pris quelque chose.",
@@ -144,16 +129,6 @@ export const TEMOINS: Record<string, Omit<Temoin, "id">> = {
   "aborder-renoncant-mare": {
     nom: "Le Renonçant de la Mare",
     deposition: "Il m'a parlé au bord de l'eau. Il regardait mon reflet, pas moi.",
-    lieu: "à la Mare aux Regards",
-  },
-  "souche-premier-arbre": {
-    nom: "Les Époux du Verger",
-    deposition: "Il a compté nos rangs. On sait ce que ça veut dire, quand un étranger compte.",
-    lieu: "au Verger Noir",
-  },
-  "berge-usee": {
-    nom: "Le Renonçant de la Mare",
-    deposition: "Il s'est agenouillé aux creux de la berge. Comme quelqu'un qui croit à ce qu'on y raconte.",
     lieu: "à la Mare aux Regards",
   },
   // Deux entrées SYNTHÉTIQUES (pas des ids de choix) : l'arrivée sur la Colline

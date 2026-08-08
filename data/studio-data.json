@@ -51,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-07T21:52:49Z",
- "commit": "baf6e77",
+ "genere": "2026-08-08T07:25:04Z",
+ "commit": "048593a",
  "zones": [
   {
    "id": "landes",
@@ -1125,12 +1125,11 @@
      "approche": "Tu quittes la ligne des potences ordinaires pour celle qui les dépasse toutes. De près, elle est absurde : trois fois trop haute pour un homme, et sa corde est neuve.",
      "examen": "Au pied du mât, dans le bois, un nom a été gravé profond, à la gouge, par quelqu\\u2019un qui prenait son temps. Il est illisible — pas effacé par la pluie : GRATTÉ, en travers, par quelque chose qui a mordu le bois plus fort que l\\u2019outil. Dessous, une date est restée entière. Elle est vieille de trente ans.",
      "donneDecouverte": "d.nom_gratte",
-     "soupcon": 1,
      "image": {
       "fichier": "scene_colline_pied_grand_gibet_b.png",
       "hash": "2559c3f3",
       "taille": 15296,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -1203,12 +1202,6 @@
      "label": "Le poteau isolé, à gauche",
      "approche": "Tu contournes le cercle par la gauche. Le poteau isolé est plus bas que les autres — à hauteur d'homme, exactement. Une hauteur qu'on choisit.",
      "examen": "Chaîne de fonction au cou, sous la corde. Un sceau au poing. Et les yeux qui s'ouvrent quand tu arrives à portée de voix : le Bailli des Landes, pendu le dernier, à la place d'honneur.",
-     "soupcon": 1,
-     "temoin": {
-      "nom": "Le Gamin des Murets",
-      "deposition": "Il est resté sous le gibet du Bailli. À le regarder. Longtemps.",
-      "lieu": "à la Colline aux Gibets"
-     },
      "nom": "Le poteau isolé, à gauche",
      "image": {
       "fichier": "scene_landes_poteau_pendu_c.png",
@@ -1498,12 +1491,6 @@
      "approche": "Il faut traverser tout le champ pour les atteindre. Tu comptes les poteaux vides en marchant — puis tu t'arrêtes de compter, parce que le compte monte plus vite que tes pas.",
      "examen": "Trois poteaux portent déjà des noms, sans date. Le Fossoyeur grave d'avance « ceux dont c'est sûr ». Le troisième nom est récent — l'entaille est claire, le bois n'a pas encore grisé. Tu le lis, et tu le relis, et il ne change pas : c'est le tien. Quelqu'un ici sait déjà comment ça finit, et a pris le temps de tailler proprement.",
      "savoir": "savoir_poteau_a_mon_nom",
-     "soupcon": 1,
-     "temoin": {
-      "nom": "Le Fossoyeur des Poteaux",
-      "deposition": "Il a compté les places vides. Personne ne compte les places vides sans y penser pour soi.",
-      "lieu": "au Champ des Fixés"
-     },
      "nom": "Les poteaux vierges, au fond",
      "image": {
       "fichier": "scene_champ_poteaux_vierges_b.png",
@@ -1955,7 +1942,6 @@
      "approche": "Tu passes devant une porte, puis une autre, et quelque chose accroche ton regard sans que tu saches quoi. Tu reviens sur tes pas et tu lèves la tête.",
      "examen": "Au-dessus du linteau, une entaille dans le bois. Courte, profonde, un peu de biais. Tu regardes la porte suivante : la même, à la même hauteur. Et la suivante. Ce n\\u2019est pas une marque de charpentier — le bord est écrasé, pas coupé. Rien de ce que tu connais ne laisse cette trace-là.",
      "donneDecouverte": "d.linteaux_entailles",
-     "soupcon": 1,
      "image": {
       "fichier": "scene_hameau_linteaux_v2_c.png",
       "hash": "1b90ee19",
@@ -2580,7 +2566,7 @@
     "fichier": "monstre_gamin_depart_c.png",
     "hash": "d8680ae4",
     "taille": 10514,
-    "recent": true,
+    "recent": false,
     "existe": true
    },
    "description": "",
@@ -3438,13 +3424,7 @@
      },
      "tags": [
       "citable"
-     ],
-     "soupcon": 1,
-     "temoin": {
-      "nom": "Le vieux de la grange",
-      "deposition": "Il n'a pas dormi. Il a écouté ce qui tournait dehors, toute la nuit, sans bouger.",
-      "lieu": "dans la grange du Hameau"
-     }
+     ]
     },
     {
      "id": "dormir-vraiment",
@@ -3515,8 +3495,7 @@
      },
      "tags": [
       "citable"
-     ],
-     "soupcon": 1
+     ]
     }
    ],
    "pointsInteret": [],
@@ -3771,8 +3750,7 @@
      "poseEtat": "hante",
      "tags": [
       "citable"
-     ],
-     "soupcon": 2
+     ]
     }
    ],
    "pointsInteret": [],
@@ -3822,7 +3800,7 @@
       "fichier": "monstre_troupeau_compte_b.png",
       "hash": "9eb350eb",
       "taille": 20556,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -4288,7 +4266,7 @@
       "fichier": "scene_moulin_crete_interrompue_b.png",
       "hash": "1754965e",
       "taille": 26367,
-      "recent": true,
+      "recent": false,
       "existe": true
      },
      "description": "",
@@ -5589,12 +5567,6 @@
      "label": "Le point de berge usé",
      "approche": "Tu contournes la mare par la droite pour atteindre le seul endroit où la boue est tassée. Le sol y est dur comme un seuil de maison.",
      "examen": "Deux creux dans la terre, à largeur de genoux, refaits par des centaines de personnes au même endroit exact. À côté, des marques de doigts crispés dans la boue séchée. On ne s'agenouille pas ici pour prier. On s'agenouille pour vérifier.",
-     "soupcon": 1,
-     "temoin": {
-      "nom": "Le Renonçant de la Mare",
-      "deposition": "Il s'est agenouillé aux creux de la berge. Comme quelqu'un qui croit à ce qu'on y raconte.",
-      "lieu": "à la Mare aux Regards"
-     },
      "nom": "Le point de berge usé",
      "image": {
       "fichier": "scene_mare_berge_a_c.png",
@@ -5781,12 +5753,6 @@
      "label": "La souche, au bout du rang",
      "approche": "Au bout du rang, un arbre manque. Sa souche est nette, sciée à hauteur de genou, et le bois de coupe est gris.",
      "examen": "Le premier arbre du verger, abattu net. Les cernes sont réguliers jusqu'aux dernières années — puis serrés, noirs, illisibles. L'arbre a compris avant les hommes où il poussait. Quelqu'un l'a abattu pour ne pas avoir à le lire. En te relevant, tu comptes les rangs par habitude, et le compte te reste dans la tête : onze vergers replantés sur une terre qui n'a jamais rien donné.",
-     "soupcon": 1,
-     "temoin": {
-      "nom": "Les Époux du Verger",
-      "deposition": "Il a compté nos rangs. On sait ce que ça veut dire, quand un étranger compte.",
-      "lieu": "au Verger Noir"
-     },
      "nom": "La souche, au bout du rang",
      "image": {
       "fichier": "scene_verger_souche_a_c.png",
@@ -7714,11 +7680,6 @@
    "deposition": "Je l'ai entendu promettre à l'homme de la Borne qu'il reviendrait. Il n'est pas revenu.",
    "lieu": "à la Borne Frontière"
   },
-  "poteau-pendu": {
-   "nom": "Le Gamin des Murets",
-   "deposition": "Il est resté sous le gibet du Bailli. À le regarder. Longtemps.",
-   "lieu": "à la Colline aux Gibets"
-  },
   "plaider": {
    "nom": "Le Sonneur sans Cloche",
    "deposition": "Il a parlé au pendu. Et le pendu lui a répondu — j'étais à trente pas.",
@@ -7728,11 +7689,6 @@
    "nom": "La Doyenne",
    "deposition": "Il a porté la lame sur une corde qui tenait. Chez nous, ça a un nom.",
    "lieu": "à la Colline aux Gibets"
-  },
-  "poteaux-vierges": {
-   "nom": "Le Fossoyeur des Poteaux",
-   "deposition": "Il a compté les places vides. Personne ne compte les places vides sans y penser pour soi.",
-   "lieu": "au Champ des Fixés"
   },
   "croix-craie": {
    "nom": "La Femme au Seuil",
@@ -7789,11 +7745,6 @@
    "deposition": "On lui a demandé de jurer comme tout le monde. Il n'a pas voulu.",
    "lieu": "à l'entrée du Hameau"
   },
-  "ecouter-nuit": {
-   "nom": "Le vieux de la grange",
-   "deposition": "Il n'a pas dormi. Il a écouté ce qui tournait dehors, toute la nuit, sans bouger.",
-   "lieu": "dans la grange du Hameau"
-  },
   "repartir-inventorie": {
    "nom": "Le vieux de la grange",
    "deposition": "Au matin, il a compté ce qu'il avait. Devant nous. Comme si on lui avait pris quelque chose.",
@@ -7812,16 +7763,6 @@
   "aborder-renoncant-mare": {
    "nom": "Le Renonçant de la Mare",
    "deposition": "Il m'a parlé au bord de l'eau. Il regardait mon reflet, pas moi.",
-   "lieu": "à la Mare aux Regards"
-  },
-  "souche-premier-arbre": {
-   "nom": "Les Époux du Verger",
-   "deposition": "Il a compté nos rangs. On sait ce que ça veut dire, quand un étranger compte.",
-   "lieu": "au Verger Noir"
-  },
-  "berge-usee": {
-   "nom": "Le Renonçant de la Mare",
-   "deposition": "Il s'est agenouillé aux creux de la berge. Comme quelqu'un qui croit à ce qu'on y raconte.",
    "lieu": "à la Mare aux Regards"
   },
   "colline-aux-gibets-arrivee": {
@@ -8503,7 +8444,7 @@
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
-  "temoins": 25,
+  "temoins": 20,
   "etats": 7,
   "besoins": 3,
   "transitions": 55

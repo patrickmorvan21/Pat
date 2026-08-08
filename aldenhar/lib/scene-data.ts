@@ -94,6 +94,12 @@ export type Choice = {
    * Pendu, refuser le Serment, se faire soigner par le Rebouteux…), négatif =
    * tu rentres dans le rang (jurer, dénoncer un autre…). JAMAIS affiché : le
    * Soupçon ne se lit que dans le monde, par paliers.
+   *
+   * ⚠️ DOCTRINE (arbitrage Patrick 8/08) : le Soupçon vient d'un ACTE —
+   * toucher, prélever, mentir, questionner des gens, jurer faux, regarder le
+   * sud, épier caché — JAMAIS de l'observation pure (regarder, compter,
+   * lire, écouter). La curiosité se RÉCOMPENSE (savoir, fragments, objets,
+   * découvertes — la règle des quatre monnaies), elle ne se paie pas.
    */
   soupcon?: number;
   /**
@@ -1123,7 +1129,6 @@ export const SCENES: Scene[] = [
           "qui a mordu le bois plus fort que l\u2019outil. Dessous, une date " +
           "est restée entière. Elle est vieille de trente ans.",
         decouverte: "d.nom_gratte",
-        soupcon: 1,
       },
       {
         id: "corbeaux-compte",
@@ -1178,7 +1183,6 @@ export const SCENES: Scene[] = [
         id: "poteau-pendu",
         illustration: "assets/scene_landes_poteau_pendu_c.png",
         label: "Le poteau isolé, à gauche",
-        soupcon: 1, // s'intéresser au Pendu se voit de loin
         approche:
           "Tu contournes le cercle par la gauche. Le poteau isolé est plus " +
           "bas que les autres — à hauteur d'homme, exactement. Une hauteur " +
@@ -1407,7 +1411,6 @@ export const SCENES: Scene[] = [
         id: "poteaux-vierges",
         label: "Les poteaux vierges, au fond",
         illustration: "assets/scene_champ_poteaux_vierges_b.png",
-        soupcon: 1, // réagir devant les poteaux d'avance se voit
         savoir: "savoir_poteau_a_mon_nom",
         approche:
           "Il faut traverser tout le champ pour les atteindre. Tu comptes les " +
@@ -1801,7 +1804,6 @@ export const SCENES: Scene[] = [
           "marque de charpentier — le bord est écrasé, pas coupé. Rien de " +
           "ce que tu connais ne laisse cette trace-là.",
         decouverte: "d.linteaux_entailles",
-        soupcon: 1,
       },
       {
         /* LA TOURNÉE (§7) : les combles sont cloués de l'intérieur DANS TOUT
@@ -3079,7 +3081,6 @@ export const SCENES: Scene[] = [
             "1 naturel. Tu écoutes. Et une voix, tout près, dit ton nom — celui que tu as signé au pacte, celui que personne ici n'a entendu. ♦ −2"
           ),
         },
-        soupcon: 1,
       },
       {
         id: "dormir-vraiment",
@@ -3170,7 +3171,6 @@ export const SCENES: Scene[] = [
             "1 naturel. Tu approches l\u2019œil de la fente, et quelque chose, de l\u2019autre côté, fait exactement le même geste. ♦ −2"
           ),
         },
-        soupcon: 1,
       },
     ],
     jailerLine: "Ah. Lui. Il n\u2019est pas de ma maison, celui-là — il s\u2019y est installé. Comme les rats.",
@@ -3378,7 +3378,6 @@ export const SCENES: Scene[] = [
             "1 naturel. Tu arrives au coin au moment où il revient. Tu ne vois toujours pas de visage. Tu vois qu\u2019il s\u2019arrête, et qu\u2019il attend — comme on attend que quelqu\u2019un ait fini de comprendre. ♦ −2"
           ),
         },
-        soupcon: 2,
         poseEtat: "hante",
       },
     ],
@@ -4939,7 +4938,6 @@ export const SCENES: Scene[] = [
       },
       {
         id: "berge-usee",
-        soupcon: 1, // s'agenouiller aux creux de la Mare est un aveu de croyance
         label: "Le point de berge usé",
         illustration: "assets/scene_mare_berge_a_c.png",
         approche:
@@ -5087,7 +5085,6 @@ export const SCENES: Scene[] = [
       },
       {
         id: "souche-premier-arbre",
-        soupcon: 1, // compter les rangs du Verger, ça se voit du hameau
         label: "La souche, au bout du rang",
         illustration: "assets/scene_verger_souche_a_c.png",
         approche:
