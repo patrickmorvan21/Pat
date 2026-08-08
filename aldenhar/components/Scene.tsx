@@ -1204,7 +1204,13 @@ export default function Scene() {
   // blessure persiste). Lecture du run hors rendu — jamais pendant le render.
   useEffect(() => {
     const run = runRef.current;
-    if (!run || scene.liaison || scene.terminal || scene.registre) {
+    // ⚠️ JAMAIS sur un écran à décision IMPOSÉE (partie de découverte 8/08 :
+    // « Utiliser — Offrandes de la Borne » proposé au muret du Serment, et
+    // s'en servir faisait passer à l'écran suivant SANS jurer — la séquence
+    // garantie du 24/07 était donc contournable par un objet de soin).
+    // Un écran qui porte un serment n'accepte que ses serments.
+    const impose = scene.choices.some((c) => c.serment);
+    if (!run || impose || scene.liaison || scene.terminal || scene.registre) {
       setActiveChoice(null);
       return;
     }
@@ -1404,6 +1410,11 @@ export default function Scene() {
         r.surprise = armee ? { id: armee } : { id: "aucune", jouee: true };
       });
     }
+    // Le popup d'aide vit UN écran (partie de découverte 8/08 : il restait
+    // collé en haut de l'écran ~60 écrans d'affilée, faute de fermeture
+    // automatique — il a dit ce qu'il avait à dire). Fermé d'entrée ;
+    // `maybeAideMenu` peut le reposer plus loin dans ce même cycle.
+    setAideMenu(null);
     // Le choix qui expire ne survit jamais à l'écran : timers coupés, état vidé.
     expTimers.current.forEach(clearTimeout);
     expTimers.current = [];
@@ -1916,8 +1927,18 @@ export default function Scene() {
     // d'oiseaux. Uniquement dans le village : ailleurs, les corbeaux de la
     // Colline comptent ses morts, et mélanger les deux lectures les détruit.
     if (estHameau(nextScene.id)) {
-      const corb = corbeauxDuHameau(runRef.current?.soupcon ?? 0, nextStep);
-      if (corb) entries.push({ id: nextId(), kind: "narration", text: corb });
+      const corb = corbeauxDuHameau(
+        runRef.current?.soupcon ?? 0,
+        nextStep,
+        runRef.current?.reactionsVues ?? []
+      );
+      if (corb) {
+        entries.push({ id: nextId(), kind: "narration", text: corb });
+        persist((r) => {
+          if (!(r.reactionsVues ?? []).includes(corb))
+            r.reactionsVues = [...(r.reactionsVues ?? []), corb];
+        });
+      }
     }
     // ═══ LES SURPRISES CONTEXTUELLES (6/08) — la surprise ARMÉE attend son
     // contexte ; s'il n'arrive jamais, elle est perdue, on n'insiste pas.

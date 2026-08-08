@@ -5891,8 +5891,15 @@ export function ligneTroupeau(n: number): string {
  * transformait la jauge diégétique en jauge visible). Le NOMBRE reste stable
  * — c'est lui, l'information — mais la phrase change à chaque lecture.
  */
-export function corbeauxDuHameau(soupcon: number, step = 0): string | null {
-  const pick = (pool: string[]) => pool[step % pool.length];
+export function corbeauxDuHameau(soupcon: number, step = 0, vues: string[] = []): string | null {
+  // Dédup verbatim intra-run (partie de découverte 8/08 : « Ils sont six,
+  // alignés, du même côté. » servie 3× dans la même vie — la rotation par
+  // pas ne suffit pas, deux arrivées de même parité retombent dessus).
+  const pick = (pool: string[]) => {
+    const frais = pool.filter((t) => !vues.includes(t));
+    const el = frais.length ? frais : pool;
+    return el[(step * 7) % el.length];
+  };
   if (soupcon >= 5)
     return pick([
       "Les toits sont noirs, et ils sont tous tournés vers toi.",
@@ -5909,6 +5916,9 @@ export function corbeauxDuHameau(soupcon: number, step = 0): string | null {
     return pick([
       "Un corbeau sur le faîtage.",
       "Un corbeau te suit de toit en toit, sans se presser.",
+      "Un corbeau descend d'un cran quand tu passes, comme on se rapproche pour mieux entendre.",
+      "Il y a un corbeau sur le toit d'en face. Il y était déjà dans l'autre rue.",
+      "Un seul corbeau, posé de biais. Il ne cherche pas sa nourriture : il cherche un angle.",
     ]);
   return null;
 }
