@@ -1140,13 +1140,16 @@ export const SCENES: Scene[] = [
           "Ils sont sur la traverse du grand gibet, immobiles, et ils ne " +
           "bougent pas quand tu approches — ce qui n'est pas un comportement " +
           "d'oiseau. Aucun ne te regarde. Ils regardent la corde.",
+        // ⚠️ Pas de référence au hameau ici (rapport IA externe 8/08) : ce
+        // point se joue souvent AVANT toute visite du village — comparer
+        // « aux toits du hameau » donnait au héros une connaissance du futur.
         examen:
           "Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, " +
           "et leurs becs sont propres. Ils attendent, et ils sont exactement " +
-          "assez nombreux pour ce qu'ils attendent. Ce sont les mêmes que " +
-          "sur les toits du hameau : la même immobilité, la même façon " +
-          "d'être tournés du même côté. En bas, ils comptent quelque chose " +
-          "qui te concerne. Ici aussi — mais pas la même chose.",
+          "assez nombreux pour ce qu'ils attendent. La même immobilité que " +
+          "des sentinelles payées d'avance, la même façon d'être tournés " +
+          "du même côté — comme des choses qu'on a postées là. Ils comptent " +
+          "quelque chose qui te concerne, et le compte n'a pas l'air fini.",
       },
       {
         id: "potences-cercle",
@@ -3677,6 +3680,12 @@ export const SCENES: Scene[] = [
         "objets qui n'ont rien à faire dans une lande. Le Colporteur te " +
         "regarde venir de loin — et te reconnaît. C'est impossible. Il te " +
         "fait signe quand même, comme à un client de longue date.",
+      // Le Rebouteux est INTRODUIT avant que ses choix n'apparaissent
+      // (rapport IA externe 8/08 : « le Rebouteux apparaît dans la
+      // conséquence sans avoir été introduit »).
+      "À l'étal voisin, un vieil homme écrase des feuilles dans un mortier, " +
+        "des fioles bouchées de cire alignées devant lui. Le Rebouteux. Il " +
+        "ne lève pas la tête — mais son tabouret libre est tourné vers toi.",
     ],
     choices: [
       {
@@ -5872,10 +5881,31 @@ export function ligneTroupeau(n: number): string {
  * la Colline comptent autre chose (les morts du joueur), et mélanger les deux
  * lectures détruirait les deux.
  */
-export function corbeauxDuHameau(soupcon: number): string | null {
-  if (soupcon >= 5) return "Les toits sont noirs, et ils sont tous tournés vers toi.";
-  if (soupcon >= 3) return "Ils sont six, alignés, du même côté.";
-  if (soupcon >= 1) return "Un corbeau sur le faîtage.";
+/**
+ * Chaque palier tourne sur plusieurs formulations (rapport IA externe 8/08 :
+ * « Ils sont six, alignés, du même côté » servie quatre fois mot pour mot
+ * transformait la jauge diégétique en jauge visible). Le NOMBRE reste stable
+ * — c'est lui, l'information — mais la phrase change à chaque lecture.
+ */
+export function corbeauxDuHameau(soupcon: number, step = 0): string | null {
+  const pick = (pool: string[]) => pool[step % pool.length];
+  if (soupcon >= 5)
+    return pick([
+      "Les toits sont noirs, et ils sont tous tournés vers toi.",
+      "Il n'y a plus un faîtage libre. Pas un cri. C'est le silence qui compte.",
+      "Tous les toits, un seul côté, une seule direction — la tienne.",
+    ]);
+  if (soupcon >= 3)
+    return pick([
+      "Ils sont six, alignés, du même côté.",
+      "Six, sur le faîtage d'en face. Tu changes de rue : le compte ne change pas.",
+      "Six corbeaux se posent quand tu débouches dans la rue — sans un cri, sans une dispute, comme des gens qui prennent leur poste.",
+    ]);
+  if (soupcon >= 1)
+    return pick([
+      "Un corbeau sur le faîtage.",
+      "Un corbeau te suit de toit en toit, sans se presser.",
+    ]);
   return null;
 }
 
@@ -6666,11 +6696,13 @@ function pickWalkImage(optA: string, optB: string, seed: number, from?: string):
 export const FRANCHIT_ENTREE: string[] = [
   "Les murets se resserrent, et la bruyère cède aux ornières. Te voilà de retour entre les toits du hameau — la barrière est ouverte, et personne ne fait mine de te compter. Ce qui veut dire qu'on a déjà fini.",
   "Le chemin redescend vers les toits gris. Tu repasses la limite du village sans t'en apercevoir tout à fait : un muret, un seuil, et le bruit de la lande qui s'arrête net derrière toi.",
+  "Un muret, puis un autre, puis les premiers toits — le village se referme autour de toi sans un bruit, comme une main qu'on a laissée ouverte exprès.",
 ];
 
 export const FRANCHIT_SORTIE: string[] = [
   "Tu repasses le muret d'enceinte, et le village te lâche d'un coup — plus de toits, plus de volets, plus de regards. La lande reprend, immense, et le vent te retrouve comme s'il t'avait attendu.",
   "Les dernières maisons s'espacent, puis renoncent. Devant toi la bruyère morte reprend ses droits jusqu'à l'horizon. Dans ton dos, quelqu'un referme une porte, sans se presser.",
+  "Le dernier seuil passé, la lande te reprend sans transition — le vent d'abord, l'espace ensuite. Derrière toi, le village continue de se taire, mais autrement.",
 ];
 
 /**

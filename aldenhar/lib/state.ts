@@ -191,6 +191,9 @@ export type RunState = {
   /** Lignes intruses de HANTÉ déjà servies cette run — jamais deux fois la
       même phrase « qui n'appartient pas là » dans une vie (playtest 7/08). */
   intrusesVues?: string[];
+  /** Réactions du monde (états) déjà servies cette run — même règle que les
+      intruses : jamais deux fois mot pour mot dans la même vie (8/08). */
+  reactionsVues?: string[];
   /** Noms des soins génériques déjà trouvés cette run — un objet « trouvé »
       ne retombe jamais sous le même nom dans la même vie (playtest 7/08). */
   dropsServis?: string[];
@@ -452,6 +455,7 @@ export function loadRun(): RunState {
             relicUsed: Boolean(p.relicUsed),
             liaisonVues: Array.isArray(p.liaisonVues) ? p.liaisonVues : [],
             intrusesVues: Array.isArray(p.intrusesVues) ? p.intrusesVues : [],
+            reactionsVues: Array.isArray(p.reactionsVues) ? p.reactionsVues : [],
             dropsServis: Array.isArray(p.dropsServis) ? p.dropsServis : [],
             temoins: Array.isArray(p.temoins) ? p.temoins : [],
             loiVues: Array.isArray(p.loiVues) ? p.loiVues : [],

@@ -100,24 +100,32 @@ export const FAITS: Fait[] = [
     id: "fait-gibet",
     sujet: "Pour qui le grand gibet a été taillé",
     versions: [
+      // ⚠️ Versions en OUÏ-DIRE, jamais en observation (rapport IA externe
+      // 8/08) : servies dans la même vie que le constat physique « trois fois
+      // trop haute pour un homme », une version affirmée comme un fait le
+      // contredisait frontalement — on lisait « deux auteurs », pas un
+      // mystère. En récit rapporté, l'écart DEVIENT le mystère.
       {
         id: "bailli",
         texte:
-          "Le grand gibet a été taillé pour le Bailli, du temps où il jugeait " +
-          "encore. La traverse est à sa mesure : on l'a préparée avant lui.",
+          "On raconte que le grand gibet a été taillé pour le Bailli, du " +
+          "temps où il jugeait encore. « À sa mesure », répètent ceux qui " +
+          "tiennent l'histoire — sans jamais expliquer quelle mesure il " +
+          "faudrait à un homme pour une traverse pareille.",
       },
       {
         id: "etranger",
         texte:
-          "Le grand gibet a été taillé pour un étranger, un seul, celui qui " +
-          "viendrait du sud. Le hameau l'entretient depuis, et attend.",
+          "On raconte que le grand gibet a été taillé pour un étranger, un " +
+          "seul, celui qui viendrait du sud. Le hameau l'entretiendrait " +
+          "depuis. Et attendrait.",
       },
       {
         id: "personne",
         texte:
-          "Le grand gibet n'a été taillé pour personne. Il était déjà là quand " +
-          "le hameau s'est posé autour, et c'est le hameau qui a pris sa mesure " +
-          "sur lui.",
+          "Les plus vieux disent que le grand gibet n'a été taillé pour " +
+          "personne : il était déjà là quand le hameau s'est posé autour, et " +
+          "c'est le hameau qui a pris sa mesure sur lui.",
       },
     ],
     accusation:

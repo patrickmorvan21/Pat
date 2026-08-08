@@ -109,7 +109,11 @@ export const LANDES_CHAPTERS: Chapter[] = [
     ],
     fragments: [
       "Personne ne dit son nom. On dit « elle », et on change de sujet, et on regarde ailleurs. Un hameau qui compte tout, qui grave tout, qui affiche ses morts sur des écriteaux — et qui n'écrit pas ce nom-là.",
-      "Tu recoupes deux phrases entendues à un jour d'écart : elle était la fille du Bailli. Voilà pourquoi le motif de son écriteau a été gratté. Voilà, peut-être, pourquoi la dernière entaille de la chaire tremble.",
+      // Formulation indépendante du parcours (rapport IA externe 8/08) : le
+      // fragment peut tomber n'importe où — il ne peut pas présupposer
+      // « deux phrases entendues à un jour d'écart » que le héros n'a
+      // peut-être jamais entendues.
+      "Deux détails, ramassés à des endroits différents, finissent par se rejoindre : elle était la fille du Bailli. Voilà pourquoi le motif de son écriteau a été gratté. Voilà, peut-être, pourquoi la dernière entaille de la chaire tremble.",
       "Des provisions apparaissent là où elle dort. Pas un festin : du pain dur, de l'eau, parfois du sel. Déposés par quelqu'un qui refuse qu'elle meure et refuse aussi qu'on le voie. Le hameau la renie à voix haute et la nourrit en silence.",
       "Les marques de comptage de son mur ne s'arrêtent pas. Elles continuent après la date qu'on devine être celle de sa pendaison. Quelqu'un compte encore ses jours — et ce quelqu'un sait qu'elle en a toujours.",
       "Les mères d'ici ne défendent pas à leurs enfants d'aller au moulin. Elles leur défendent de lui PARLER. La nuance est terrible : ils savent tous qu'elle y est.",

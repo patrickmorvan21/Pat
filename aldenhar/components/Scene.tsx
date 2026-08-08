@@ -1595,8 +1595,19 @@ export default function Scene() {
       const sort = !isHameauInterior(opts.toDest) && !!origine &&
         (isHameauInterior(origine) || /^(serment-hameau|hameau-)/.test(origine));
       if (entre || sort) {
+        // Anti-répétition intra-run (rapport IA externe 8/08 : la même sortie
+        // de village rejouée mot pour mot « donne l'impression de revisiter
+        // une carte déjà chargée ») — même mémoire que les ambiances de
+        // liaison. Pool épuisé → il redevient entier, comme partout.
         const pool = entre ? FRANCHIT_ENTREE : FRANCHIT_SORTIE;
-        entries.push({ id: nextId(), kind: "narration", text: pool[nextStep % pool.length] });
+        const vues = runRef.current?.liaisonVues ?? [];
+        const frais = pool.filter((t) => !vues.includes(t));
+        const eligibles = frais.length ? frais : pool;
+        const text = eligibles[nextStep % eligibles.length];
+        entries.push({ id: nextId(), kind: "narration", text });
+        persist((r) => {
+          if (!(r.liaisonVues ?? []).includes(text)) r.liaisonVues = [...(r.liaisonVues ?? []), text];
+        });
       }
     }
     if (opts?.toDest && !nextScene.fixationTrial && APPROACH_NARRATION[opts.toDest]) {
@@ -1715,14 +1726,21 @@ export default function Scene() {
     const anciens = actifsIci.filter((e) => manifsJouees.current.has(e.id));
     if (anciens.length && !nextScene.combat && chance(0.4)) {
       const e = anciens[nextStep % anciens.length];
+      // JAMAIS deux fois mot pour mot dans la même vie (rapport IA externe
+      // 8/08 : « une odeur de corde mouillée » servie NEUF fois — « j'ai
+      // compris que le jeu tirait une ligne d'état »). Même règle que les
+      // intruses ; pool épuisé → l'état se tait, il reste lisible au volet.
+      const reacVues = runRef.current?.reactionsVues ?? [];
       const eligibles = e.reactions
         .map((text, i) => ({ text, i }))
-        .filter(({ i }) => dansLeVillage(nextScene.id) || (e.reactionsPartout ?? []).includes(i));
+        .filter(({ i }) => dansLeVillage(nextScene.id) || (e.reactionsPartout ?? []).includes(i))
+        .filter(({ text }) => !reacVues.includes(text));
       if (eligibles.length) {
-        entries.push({
-          id: nextId(),
-          kind: "narration",
-          text: eligibles[Math.floor(nextStep / 2) % eligibles.length].text,
+        const servie = eligibles[Math.floor(nextStep / 2) % eligibles.length].text;
+        entries.push({ id: nextId(), kind: "narration", text: servie });
+        persist((r) => {
+          if (!(r.reactionsVues ?? []).includes(servie))
+            r.reactionsVues = [...(r.reactionsVues ?? []), servie];
         });
       }
     }
@@ -1759,7 +1777,7 @@ export default function Scene() {
     // d'oiseaux. Uniquement dans le village : ailleurs, les corbeaux de la
     // Colline comptent ses morts, et mélanger les deux lectures les détruit.
     if (estHameau(nextScene.id)) {
-      const corb = corbeauxDuHameau(runRef.current?.soupcon ?? 0);
+      const corb = corbeauxDuHameau(runRef.current?.soupcon ?? 0, nextStep);
       if (corb) entries.push({ id: nextId(), kind: "narration", text: corb });
     }
     // ═══ LES SURPRISES CONTEXTUELLES (6/08) — la surprise ARMÉE attend son
@@ -2735,13 +2753,18 @@ export default function Scene() {
               // (miroir de rendu mis à jour après le persist, plus bas)
               run.health = Math.max(0, run.health - cost);
               if (usureDay) run.day += 1;
-              // AGUERRI seulement en COMBAT (symétrique du correctif
-              // ENTAILLÉ/ÉBRANLÉ, 8/08) : sa fiche dit « le combat t'a
-              // affûté » — un 20 naturel en pleine conversation la faisait
-              // mentir. Le Destin hors combat a déjà sa récompense (Besace
-              // rare/légendaire + la prose épique), il n'a pas besoin d'un
-              // état de guerrier en plus.
-              if (scene.combat && !tierIsFail(tier))
+              // AGUERRI seulement en COMBAT, et seulement quand la victoire
+              // est PHYSIQUE (symétrique du correctif ENTAILLÉ/ÉBRANLÉ,
+              // 8/08) : sa fiche dit « le combat t'a affûté » — un 20 naturel
+              // en conversation la faisait mentir, et APAISER le Chien du
+              // Bailli à l'Empathie aussi (rapport IA externe 8/08 : « Aguerri
+              // après avoir parlé doucement à un chien »). Gagner sans se
+              // battre n'affûte pas les gestes de guerre.
+              if (
+                scene.combat &&
+                !tierIsFail(tier) &&
+                (roll?.stat === "COURAGE" || roll?.stat === "INSTINCT")
+              )
                 run.effects = [
                   { id: "aguerri", label: "AGUERRI", delta: 2, scenesLeft: 3 },
                   ...run.effects.filter((e) => e.id !== "aguerri"),
