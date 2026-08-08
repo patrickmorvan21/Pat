@@ -1,6 +1,6 @@
 {
- "genere": "2026-08-07T21:52:49Z",
- "commit": "baf6e77",
+ "genere": "2026-08-08T07:25:04Z",
+ "commit": "048593a",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -349,7 +349,7 @@
    "taille": 10514,
    "modifie": "2026-08-07T12:06:19Z",
    "hash": "d8680ae4",
-   "recent": true
+   "recent": false
   },
   "monstre_gamin_murets_a.png": {
    "taille": 28618,
@@ -613,7 +613,7 @@
    "taille": 20556,
    "modifie": "2026-08-07T12:06:19Z",
    "hash": "9eb350eb",
-   "recent": true
+   "recent": false
   },
   "monstre_troupeau_sans_berger_a.png": {
    "taille": 24420,
@@ -1111,7 +1111,7 @@
    "taille": 15296,
    "modifie": "2026-08-07T12:06:19Z",
    "hash": "2559c3f3",
-   "recent": true
+   "recent": false
   },
   "scene_colline_potences_cercle_a_c.png": {
    "taille": 11627,
@@ -1429,7 +1429,7 @@
    "taille": 26367,
    "modifie": "2026-08-07T12:06:19Z",
    "hash": "1754965e",
-   "recent": true
+   "recent": false
   },
   "scene_moulin_croix_ombres_a_d.png": {
    "taille": 21907,
