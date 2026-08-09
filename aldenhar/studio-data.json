@@ -175,7 +175,7 @@
      ],
      "nbScenes": 14,
      "nbRencontres": 0,
-     "nbPois": 6,
+     "nbPois": 7,
      "entrees": [],
      "sorties": [],
      "roles": [],
@@ -3130,13 +3130,6 @@
    ],
    "choix": [
     {
-     "id": "doyenne-horaire",
-     "label": "Demander qui juge, ici",
-     "type": "passif",
-     "consequence": "La vieille femme derrière le vieux répond à sa place, sans qu\\u2019on lui ait rien demandé. « Avant, on jugeait le jour. » Elle rajuste son châle. « Maintenant on juge la nuit. C\\u2019est pas moi qui ai décidé du changement d\\u2019horaire. »",
-     "donneDecouverte": "d.on_juge_la_nuit"
-    },
-    {
      "id": "jurer-serment",
      "label": "Jurer",
      "type": "passif",
@@ -3182,6 +3175,20 @@
     }
    ],
    "pointsInteret": [
+    {
+     "id": "doyenne-horaire",
+     "label": "Demander qui juge, ici",
+     "approche": "Tu poses la question au vieux. C\\u2019est la femme derri\\u00e8re lui qui r\\u00e9pond, sans qu\\u2019on lui ait rien demand\\u00e9.",
+     "examen": "\\u00ab Avant, on jugeait le jour. \\u00bb Elle rajuste son ch\\u00e2le. \\u00ab Maintenant on juge la nuit. C\\u2019est pas moi qui ai d\\u00e9cid\\u00e9 du changement d\\u2019horaire. \\u00bb",
+     "donneDecouverte": "d.on_juge_la_nuit",
+     "image": null,
+     "description": "",
+     "promptImage": "",
+     "etat": "acompleter",
+     "alertes": [
+      "imageManquante"
+     ]
+    },
     {
      "id": "pourquoi-trois-aubes",
      "label": "Demander pourquoi trois aubes",
@@ -8495,8 +8502,8 @@
  ],
  "totaux": {
   "scenes": 89,
-  "pointsInteret": 46,
-  "choix": 224,
+  "pointsInteret": 47,
+  "choix": 223,
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,
