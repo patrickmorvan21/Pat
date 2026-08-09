@@ -135,11 +135,17 @@ def bloc_apres(src: str, motif: str) -> tuple[str, int] | None:
 
 
 def chaines(txt: str) -> list[str]:
-    """La LISTE des littéraux entre guillemets doubles, un par élément."""
-    return [
-        s.replace('\\"', '"').replace("\\'", "'").replace("\\n", "\n")
-        for s in re.findall(r'"((?:[^"\\]|\\.)*)"', txt)
-    ]
+    """La LISTE des littéraux entre guillemets doubles, un par élément.
+
+    ⚠️ Décode aussi les `\\uXXXX` : le .ts en contient (« l\\u2019avance ») et
+    les laisser en clair fait fuir l'échappement jusqu'aux joueurs du kit
+    (panel de testeurs 9/08 : 92 occurrences à l'écran)."""
+    out = []
+    for s in re.findall(r'"((?:[^"\\]|\\.)*)"', txt):
+        s = s.replace('\\"', '"').replace("\\'", "'").replace("\\n", "\n")
+        s = re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), s)
+        out.append(s)
+    return out
 
 
 # Un littéral de chaîne, et une suite de littéraux recollés par `+`.
@@ -726,8 +732,42 @@ def lire_scenes() -> list[dict]:
     return scenes
 
 
+def _sans_commentaires(brut: str) -> str:
+    """Retire les commentaires // et /* */ HORS chaînes."""
+    out, i, n, mode = [], 0, len(brut), None
+    while i < n:
+        c = brut[i]
+        if mode == "str":
+            out.append(c)
+            if c == "\\" and i + 1 < n:
+                out.append(brut[i + 1]); i += 2; continue
+            if c == mode_q[0]:
+                mode = None
+            i += 1; continue
+        if c in '"`':
+            mode, mode_q = "str", c
+            out.append(c); i += 1; continue
+        if c == "/" and i + 1 < n and brut[i + 1] == "/":
+            while i < n and brut[i] != "\n":
+                i += 1
+            continue
+        if c == "/" and i + 1 < n and brut[i + 1] == "*":
+            i = brut.find("*/", i + 2)
+            i = n if i < 0 else i + 2
+            continue
+        out.append(c); i += 1
+    return "".join(out)
+
+
 def paragraphes(brut: str) -> list[str]:
-    """Un paragraphe par élément du tableau — les `"…" + "…"` sont recollés."""
+    """Un paragraphe par élément du tableau — les `"…" + "…"` sont recollés.
+
+    ⚠️ Deux pièges appris le 9/08 (le Serment sortait en « + , + » et ses trois
+    clauses disparaissaient du kit) : (1) un COMMENTAIRE // peut vivre DANS le
+    tableau — on le retire d'abord, hors chaînes ; (2) l'apostrophe d'un mot
+    français n'ouvre pas une chaîne — seuls `"` et le backtick comptent, le
+    .ts n'écrit jamais ses textes entre quotes simples."""
+    brut = _sans_commentaires(brut)
     out: list[str] = []
     prof = 0
     cur = ""
@@ -744,7 +784,7 @@ def paragraphes(brut: str) -> list[str]:
             elif c == q:
                 mode = None
             continue
-        if c in "\"'`":
+        if c in '"`':
             mode = "str"
             q = c
             cur += c

@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-09T12:56:09Z",
- "commit": "bf05555",
+ "genere": "2026-08-09T13:09:17Z",
+ "commit": "4735a57",
  "zones": [
   {
    "id": "landes",
@@ -250,7 +250,7 @@
      "roles": [],
      "dansPool": true,
      "alertes": [],
-     "aCompleter": 1,
+     "aCompleter": 0,
      "scenePrincipale": "chien-du-bailli"
     },
     {
@@ -1132,7 +1132,7 @@
      "id": "pied-grand-gibet",
      "label": "Le pied du grand gibet",
      "approche": "Tu quittes la ligne des potences ordinaires pour celle qui les dépasse toutes. De près, elle est absurde : trois fois trop haute pour un homme, et sa corde est neuve.",
-     "examen": "Au pied du mât, dans le bois, un nom a été gravé profond, à la gouge, par quelqu\\u2019un qui prenait son temps. Il est illisible — pas effacé par la pluie : GRATTÉ, en travers, par quelque chose qui a mordu le bois plus fort que l\\u2019outil. Dessous, une date est restée entière. Elle est vieille de trente ans.",
+     "examen": "Au pied du mât, dans le bois, un nom a été gravé profond, à la gouge, par quelqu’un qui prenait son temps. Il est illisible — pas effacé par la pluie : GRATTÉ, en travers, par quelque chose qui a mordu le bois plus fort que l’outil. Dessous, une date est restée entière. Elle est vieille de trente ans.",
      "donneDecouverte": "d.nom_gratte",
      "image": {
       "fichier": "scene_colline_pied_grand_gibet_b.png",
@@ -1568,28 +1568,28 @@
   {
    "id": "fossoyeur-trou-1",
    "narration": [
-    "Il taille un écriteau sur ses genoux, au bout d\\u2019une rangée. Le nom qu\\u2019il grave n\\u2019a pas encore de date.",
-    "« Je grave à l\\u2019avance ceux dont c\\u2019est sûr. Ça fait gagner du temps le jour venu. » Le couteau ne s\\u2019arrête pas. « Comment je sais ? Je regarde les toits. Six corbeaux sur la même maison, je taille. Je me trompe jamais. »"
+    "Il taille un écriteau sur ses genoux, au bout d’une rangée. Le nom qu’il grave n’a pas encore de date.",
+    "« Je grave à l’avance ceux dont c’est sûr. Ça fait gagner du temps le jour venu. » Le couteau ne s’arrête pas. « Comment je sais ? Je regarde les toits. Six corbeaux sur la même maison, je taille. Je me trompe jamais. »"
    ],
    "choix": [
     {
      "id": "fossoyeur-cinq-marques",
-     "label": "Parler des marques d\\u2019oreille",
+     "label": "Parler des marques d’oreille",
      "type": "passif",
-     "consequence": "« Cinq marques ? » Le couteau s\\u2019arrête. « Fais voir. » Tu dessines les entailles dans la poussière, de mémoire. Il les regarde longtemps, et à la façon dont ses lèvres bougent sans bruit, tu comprends qu\\u2019il est en train de mettre un nom sur chacune. Il efface la poussière du plat de la main. « Joli troupeau », dit-il. C\\u2019est tout ce que tu en tireras.",
+     "consequence": "« Cinq marques ? » Le couteau s’arrête. « Fais voir. » Tu dessines les entailles dans la poussière, de mémoire. Il les regarde longtemps, et à la façon dont ses lèvres bougent sans bruit, tu comprends qu’il est en train de mettre un nom sur chacune. Il efface la poussière du plat de la main. « Joli troupeau », dit-il. C’est tout ce que tu en tireras.",
      "exigeDecouverte": "d.troupeau_compte"
     },
     {
      "id": "fossoyeur-poteau-manque",
      "label": "« Il manque un poteau, là-bas. »",
      "type": "passif",
-     "consequence": "Le couteau s\\u2019arrête net. Il ne lève pas la tête. Dans une rangée de quatre-vingts poteaux, il a su immédiatement duquel tu parlais."
+     "consequence": "Le couteau s’arrête net. Il ne lève pas la tête. Dans une rangée de quatre-vingts poteaux, il a su immédiatement duquel tu parlais."
     },
     {
      "id": "fossoyeur-qui-decide",
      "label": "« Qui décide ? »",
      "type": "passif",
-     "consequence": "« Personne décide. » Il souffle sur la gravure pour en chasser la poussière de bois. « On constate. » Et il reprend, comme si la question ne s\\u2019était pas posée."
+     "consequence": "« Personne décide. » Il souffle sur la gravure pour en chasser la poussière de bois. « On constate. » Et il reprend, comme si la question ne s’était pas posée."
     }
    ],
    "pointsInteret": [],
@@ -1619,11 +1619,11 @@
   {
    "id": "fossoyeur-trou-2",
    "narration": [
-    "« Y avait un poteau là. On l\\u2019a enlevé. »",
+    "« Y avait un poteau là. On l’a enlevé. »",
     "Tu attends.",
-    "« Je l\\u2019ai enlevé moi-même. Un matin. Je m\\u2019en souviens très bien : la terre, le poids, le trou après. »",
+    "« Je l’ai enlevé moi-même. Un matin. Je m’en souviens très bien : la terre, le poids, le trou après. »",
     "Un temps beaucoup trop long.",
-    "« Et je saurais pas te dire pourquoi. C\\u2019est la seule chose de ma vie dont je sais pas la raison. »"
+    "« Et je saurais pas te dire pourquoi. C’est la seule chose de ma vie dont je sais pas la raison. »"
    ],
    "choix": [
     {
@@ -1634,10 +1634,10 @@
      "seuil": 12,
      "hautEnjeu": false,
      "issues": {
-      "critique": "20 naturel. Tu ne lui demandes pas de se souvenir : tu lui demandes qui était là ce matin-là. Il répond sans réfléchir — « tout le monde » — puis s\\u2019entend le dire, et pose son couteau. Le hameau entier a retiré ce poteau. Il n\\u2019était que la paire de bras.",
-      "reussite": "Il ferme les yeux, sincèrement. Il essaie. « Y avait du gel. J\\u2019avais les mains qui collaient au bois. » Puis plus rien, et sa voix se creuse : « Après ça, c\\u2019est comme une page arrachée. Et pourtant j\\u2019ai tout le reste. »",
-      "echec": "« J\\u2019ai essayé. » Il reprend son couteau. « Pendant des années. On arrête, à un moment. » Le copeau qui tombe est plus épais que les autres.",
-      "funeste": "1 naturel. Il te regarde longuement. « Toi aussi tu vas me demander de compter les corbeaux sur MA maison ? » Il ramasse ses outils et s\\u2019en va au bout de la rangée. ♦ −2"
+      "critique": "20 naturel. Tu ne lui demandes pas de se souvenir : tu lui demandes qui était là ce matin-là. Il répond sans réfléchir — « tout le monde » — puis s’entend le dire, et pose son couteau. Le hameau entier a retiré ce poteau. Il n’était que la paire de bras.",
+      "reussite": "Il ferme les yeux, sincèrement. Il essaie. « Y avait du gel. J’avais les mains qui collaient au bois. » Puis plus rien, et sa voix se creuse : « Après ça, c’est comme une page arrachée. Et pourtant j’ai tout le reste. »",
+      "echec": "« J’ai essayé. » Il reprend son couteau. « Pendant des années. On arrête, à un moment. » Le copeau qui tombe est plus épais que les autres.",
+      "funeste": "1 naturel. Il te regarde longuement. « Toi aussi tu vas me demander de compter les corbeaux sur MA maison ? » Il ramasse ses outils et s’en va au bout de la rangée. ♦ −2"
      },
      "nature": "social",
      "soupcon": 1
@@ -1646,7 +1646,7 @@
      "id": "fossoyeur-ne-pas-insister",
      "label": "Le laisser tranquille",
      "type": "passif",
-     "consequence": "Tu ne dis rien. Il grave. Au bout d\\u2019un moment, sans qu\\u2019on lui demande : « Elle était petite. » Puis il se tait pour de bon, et tu comprends qu\\u2019il vient de te donner tout ce qu\\u2019il a."
+     "consequence": "Tu ne dis rien. Il grave. Au bout d’un moment, sans qu’on lui demande : « Elle était petite. » Puis il se tait pour de bon, et tu comprends qu’il vient de te donner tout ce qu’il a."
     }
    ],
    "pointsInteret": [],
@@ -1675,8 +1675,8 @@
   {
    "id": "fossoyeur-trou-3",
    "narration": [
-    "Il pose l\\u2019écriteau fini contre sa jambe, face contre terre, pour qu\\u2019on n\\u2019en lise pas le nom.",
-    "« Va-t\\u2019en. Reviens quand t\\u2019auras une date à me donner. »"
+    "Il pose l’écriteau fini contre sa jambe, face contre terre, pour qu’on n’en lise pas le nom.",
+    "« Va-t’en. Reviens quand t’auras une date à me donner. »"
    ],
    "choix": [
     {
@@ -1686,9 +1686,9 @@
     },
     {
      "id": "fossoyeur-demander-nom",
-     "label": "Demander le nom sur l\\u2019écriteau",
+     "label": "Demander le nom sur l’écriteau",
      "type": "passif",
-     "consequence": "Il retourne la planchette contre lui, d\\u2019un geste de joueur qui cache son jeu. « Non. » Et, presque doucement : « Si je te le dis, tu vas le regarder autrement quand tu le croiseras. Il a encore quelques jours à être regardé normalement. »",
+     "consequence": "Il retourne la planchette contre lui, d’un geste de joueur qui cache son jeu. « Non. » Et, presque doucement : « Si je te le dis, tu vas le regarder autrement quand tu le croiseras. Il a encore quelques jours à être regardé normalement. »",
      "soupcon": 1
     }
    ],
@@ -1719,9 +1719,9 @@
    "choix": [
     {
      "id": "fossoyeur-cinq-marques",
-     "label": "Parler des marques d\\u2019oreille",
+     "label": "Parler des marques d’oreille",
      "type": "passif",
-     "consequence": "« Cinq marques ? » Le couteau s\\u2019arrête. « Fais voir. » Tu dessines les entailles dans la poussière, de mémoire. Il les regarde longtemps, et à la façon dont ses lèvres bougent sans bruit, tu comprends qu\\u2019il est en train de mettre un nom sur chacune. Il efface la poussière du plat de la main. « Joli troupeau », dit-il. C\\u2019est tout ce que tu en tireras.",
+     "consequence": "« Cinq marques ? » Le couteau s’arrête. « Fais voir. » Tu dessines les entailles dans la poussière, de mémoire. Il les regarde longtemps, et à la façon dont ses lèvres bougent sans bruit, tu comprends qu’il est en train de mettre un nom sur chacune. Il efface la poussière du plat de la main. « Joli troupeau », dit-il. C’est tout ce que tu en tireras.",
      "exigeDecouverte": "d.troupeau_compte"
     },
     {
@@ -1960,7 +1960,7 @@
      "id": "linteaux",
      "label": "Le linteau de la porte",
      "approche": "Tu passes devant une porte, puis une autre, et quelque chose accroche ton regard sans que tu saches quoi. Tu reviens sur tes pas et tu lèves la tête.",
-     "examen": "Au-dessus du linteau, une entaille dans le bois. Courte, profonde, un peu de biais. Tu regardes la porte suivante : la même, à la même hauteur. Et la suivante. Ce n\\u2019est pas une marque de charpentier — le bord est écrasé, pas coupé. Rien de ce que tu connais ne laisse cette trace-là.",
+     "examen": "Au-dessus du linteau, une entaille dans le bois. Courte, profonde, un peu de biais. Tu regardes la porte suivante : la même, à la même hauteur. Et la suivante. Ce n’est pas une marque de charpentier — le bord est écrasé, pas coupé. Rien de ce que tu connais ne laisse cette trace-là.",
      "donneDecouverte": "d.linteaux_entailles",
      "image": {
       "fichier": "scene_hameau_linteaux_v2_c.png",
@@ -1978,7 +1978,7 @@
      "id": "fenetres-clouees",
      "label": "Les fenêtres des combles",
      "approche": "Tu recules de trois pas pour embrasser la façade entière, comme on prend du recul devant un mot mal orthographié.",
-     "examen": "Les fenêtres du haut sont clouées. Pas fermées : CLOUÉES, de l\\u2019intérieur, planches en travers. Celles du bas ne le sont pas — volets simples, loquets ordinaires, certains même entrouverts. Tout le hameau est ainsi. Personne, ici, ne se protège de ce qui vient par la rue.",
+     "examen": "Les fenêtres du haut sont clouées. Pas fermées : CLOUÉES, de l’intérieur, planches en travers. Celles du bas ne le sont pas — volets simples, loquets ordinaires, certains même entrouverts. Tout le hameau est ainsi. Personne, ici, ne se protège de ce qui vient par la rue.",
      "donneDecouverte": "d.combles_cloues",
      "image": {
       "fichier": "scene_hameau_combles_cloues_v2_a.png",
@@ -2086,8 +2086,8 @@
   {
    "id": "femme-savoir-1",
    "narration": [
-    "Elle est à sa place, le regard au sud. Mais quand tu passes à sa hauteur, sa main t\\u2019attrape la manche.",
-    "Elle ne t\\u2019a jamais touché. Personne ici ne touche personne."
+    "Elle est à sa place, le regard au sud. Mais quand tu passes à sa hauteur, sa main t’attrape la manche.",
+    "Elle ne t’a jamais touché. Personne ici ne touche personne."
    ],
    "choix": [
     {
@@ -2099,7 +2099,7 @@
      "id": "femme-savoir-degager",
      "label": "Se dégager",
      "type": "passif",
-     "consequence": "Tu retires ton bras, doucement. Elle ne lâche pas tout de suite : ses doigts restent une seconde de trop sur le tissu, et quand ils s\\u2019ouvrent, c\\u2019est comme si on posait quelque chose de lourd."
+     "consequence": "Tu retires ton bras, doucement. Elle ne lâche pas tout de suite : ses doigts restent une seconde de trop sur le tissu, et quand ils s’ouvrent, c’est comme si on posait quelque chose de lourd."
     }
    ],
    "pointsInteret": [],
@@ -2129,15 +2129,15 @@
   {
    "id": "femme-savoir-2",
    "narration": [
-    "« Elle est encore là ? À l\\u2019ouest. La jeune. »",
-    "Ses yeux cherchent les tiens et n\\u2019en sortent plus. « Dis-le-moi. Dis-le juste une fois. »"
+    "« Elle est encore là ? À l’ouest. La jeune. »",
+    "Ses yeux cherchent les tiens et n’en sortent plus. « Dis-le-moi. Dis-le juste une fois. »"
    ],
    "choix": [
     {
      "id": "femme-savoir-confirmer",
      "label": "« Elle est là. »",
      "type": "passif",
-     "consequence": "Elle ferme les yeux. Tout son corps lâche d\\u2019un coup, comme une corde qu\\u2019on détend.",
+     "consequence": "Elle ferme les yeux. Tout son corps lâche d’un coup, comme une corde qu’on détend.",
      "donneDecouverte": "d.temoin_oculaire",
      "tags": [
       "citable"
@@ -2152,10 +2152,10 @@
      "seuil": 11,
      "hautEnjeu": false,
      "issues": {
-      "critique": "20 naturel. Tu mens si bien que tu t\\u2019en veux. Elle te croit, hoche la tête, et te remercie — parce que dans ce village quelqu\\u2019un qui ne sait rien est quelqu\\u2019un qui ne risque rien, et elle en est arrivée à protéger les gens de leur propre savoir.",
-      "reussite": "Tu tiens le mensonge. Elle relâche ta manche et regarde ailleurs. « Bien sûr. Bien sûr que non. » Le pire, c\\u2019est qu\\u2019elle a l\\u2019air soulagée pour toi.",
-      "echec": "Ta phrase sonne creux, et vous l\\u2019entendez tous les deux. Elle sourit très légèrement, sans joie : « Oui. C\\u2019est ce qu\\u2019on répond. » Et elle te lâche.",
-      "funeste": "1 naturel. « Ne me fais pas ça. » Sa voix monte — la seule voix qui monte de tout le hameau — et trois volets s\\u2019entrouvrent dans la rue. ♦ −2"
+      "critique": "20 naturel. Tu mens si bien que tu t’en veux. Elle te croit, hoche la tête, et te remercie — parce que dans ce village quelqu’un qui ne sait rien est quelqu’un qui ne risque rien, et elle en est arrivée à protéger les gens de leur propre savoir.",
+      "reussite": "Tu tiens le mensonge. Elle relâche ta manche et regarde ailleurs. « Bien sûr. Bien sûr que non. » Le pire, c’est qu’elle a l’air soulagée pour toi.",
+      "echec": "Ta phrase sonne creux, et vous l’entendez tous les deux. Elle sourit très légèrement, sans joie : « Oui. C’est ce qu’on répond. » Et elle te lâche.",
+      "funeste": "1 naturel. « Ne me fais pas ça. » Sa voix monte — la seule voix qui monte de tout le hameau — et trois volets s’entrouvrent dans la rue. ♦ −2"
      },
      "nature": "social",
      "soupcon": 1
@@ -2187,10 +2187,10 @@
   {
    "id": "femme-savoir-3",
    "narration": [
-    "« Quarante ans que je le vois et que je le dis pas. » Elle rit — un son épouvantable. « J\\u2019avais huit ans quand ils l\\u2019ont pendue. On était trois enfants sur le muret. Les deux autres sont morts vieux en disant qu\\u2019ils avaient rien vu. »",
-    "« J\\u2019ai attendu quarante ans que quelqu\\u2019un me dise que j\\u2019étais pas folle. »",
-    "Elle te lâche et reprend sa position, face au sud. De la rue, rien n\\u2019a bougé.",
-    "« Va-t\\u2019en maintenant. Et redis-le à personne. Moi je peux plus partir : j\\u2019ai plus l\\u2019âge, et j\\u2019ai plus le courage. Mais toi tu peux encore. Alors pars avant qu\\u2019ils te comptent. »"
+    "« Quarante ans que je le vois et que je le dis pas. » Elle rit — un son épouvantable. « J’avais huit ans quand ils l’ont pendue. On était trois enfants sur le muret. Les deux autres sont morts vieux en disant qu’ils avaient rien vu. »",
+    "« J’ai attendu quarante ans que quelqu’un me dise que j’étais pas folle. »",
+    "Elle te lâche et reprend sa position, face au sud. De la rue, rien n’a bougé.",
+    "« Va-t’en maintenant. Et redis-le à personne. Moi je peux plus partir : j’ai plus l’âge, et j’ai plus le courage. Mais toi tu peux encore. Alors pars avant qu’ils te comptent. »"
    ],
    "choix": [
     {
@@ -2202,7 +2202,7 @@
      "id": "femme-savoir-promettre",
      "label": "Promettre de se taire",
      "type": "passif",
-     "consequence": "Tu le promets. Elle ne répond pas — elle a repris sa faction, le menton vers le sud, et de la rue on ne voit qu\\u2019une vieille femme qui regarde la route. C\\u2019est exactement ce qu\\u2019elle fait depuis quarante ans."
+     "consequence": "Tu le promets. Elle ne répond pas — elle a repris sa faction, le menton vers le sud, et de la rue on ne voit qu’une vieille femme qui regarde la route. C’est exactement ce qu’elle fait depuis quarante ans."
     }
    ],
    "pointsInteret": [],
@@ -2399,8 +2399,8 @@
   {
    "id": "gamin-murets-1",
    "narration": [
-    "Il aligne des cailloux sur le muret, par taille. Il ne se cache pas de toi : c\\u2019est le premier habitant qui ne se méfie pas. « T\\u2019es le nouveau. T\\u2019as combien de corbeaux ? »",
-    "Il n\\u2019attend pas la réponse, et compte sur ses doigts. « Trois avant toi cette année. Deux sont ressortis. »",
+    "Il aligne des cailloux sur le muret, par taille. Il ne se cache pas de toi : c’est le premier habitant qui ne se méfie pas. « T’es le nouveau. T’as combien de corbeaux ? »",
+    "Il n’attend pas la réponse, et compte sur ses doigts. « Trois avant toi cette année. Deux sont ressortis. »",
     "Il désigne la lande du menton, la crête des murets qui court vers le sud, basse et sèche. « Y a le chemin, et y a les murets. Le chemin, il fait le tour de tout. Les murets, non. »"
    ],
    "choix": [
@@ -2412,10 +2412,10 @@
      "seuil": 10,
      "hautEnjeu": false,
      "issues": {
-      "critique": "20 naturel. Il saute du muret avant même que tu finisses ta phrase. « Deux murets. Après c\\u2019est plus chez moi. » Il te tend la main pour que tu l\\u2019aides à passer un trou dans la pierre — et c\\u2019est TOI qu\\u2019il fait passer devant, à l\\u2019endroit précis où le mur tient encore.",
-      "reussite": "Il te jauge un moment, puis hausse une épaule. « Deux murets. Après, c\\u2019est plus chez moi. » Il descend, se met trois pas devant, et attend que tu suives — pas l\\u2019inverse.",
-      "echec": "Il secoue la tête. « Ma mère dit que ceux qui entrent, faut pas les suivre dehors. » Il reste sur son muret. Mais il ne s\\u2019en va pas non plus, et il te regarde partir longtemps.",
-      "funeste": "1 naturel. « Toi t\\u2019as déjà un poteau quelque part. » Il le dit sans méchanceté, comme on annonce la pluie, et il s\\u2019en va par l\\u2019autre côté du muret. ♦ −2"
+      "critique": "20 naturel. Il saute du muret avant même que tu finisses ta phrase. « Deux murets. Après c’est plus chez moi. » Il te tend la main pour que tu l’aides à passer un trou dans la pierre — et c’est TOI qu’il fait passer devant, à l’endroit précis où le mur tient encore.",
+      "reussite": "Il te jauge un moment, puis hausse une épaule. « Deux murets. Après, c’est plus chez moi. » Il descend, se met trois pas devant, et attend que tu suives — pas l’inverse.",
+      "echec": "Il secoue la tête. « Ma mère dit que ceux qui entrent, faut pas les suivre dehors. » Il reste sur son muret. Mais il ne s’en va pas non plus, et il te regarde partir longtemps.",
+      "funeste": "1 naturel. « Toi t’as déjà un poteau quelque part. » Il le dit sans méchanceté, comme on annonce la pluie, et il s’en va par l’autre côté du muret. ♦ −2"
      },
      "nature": "social",
      "tags": [
@@ -2427,7 +2427,7 @@
      "id": "gamin-questionner",
      "label": "Lui demander qui est ressorti",
      "type": "passif",
-     "consequence": "« Le grand avec la lanterne. Et une dame, mais elle a pas pris le sud. » Il replie deux doigts. « L\\u2019autre, il est allé jusqu\\u2019à la palissade. Il a fait demi-tour. Il dit que c\\u2019est pas fermé, c\\u2019est juste que ça retient. »",
+     "consequence": "« Le grand avec la lanterne. Et une dame, mais elle a pas pris le sud. » Il replie deux doigts. « L’autre, il est allé jusqu’à la palissade. Il a fait demi-tour. Il dit que c’est pas fermé, c’est juste que ça retient. »",
      "donneSavoir": "savoir_palissade_retient"
     },
     {
@@ -2464,21 +2464,21 @@
   {
    "id": "gamin-murets-2",
    "narration": [
-    "Le muret repart vers le sud, à hauteur de hanche, en pierre sèche posée sans mortier. On voit à l\\u2019usure du sommet que quelqu\\u2019un y marche tous les jours, et que ce quelqu\\u2019un est petit."
+    "Le muret repart vers le sud, à hauteur de hanche, en pierre sèche posée sans mortier. On voit à l’usure du sommet que quelqu’un y marche tous les jours, et que ce quelqu’un est petit."
    ],
    "choix": [
     {
      "id": "gamin-partir-ensemble",
      "label": "Partir par les murets",
      "type": "passif",
-     "consequence": "Il passe devant sans se retourner, du pas de quelqu\\u2019un qui n\\u2019a jamais eu besoin de regarder ses pieds ici. Derrière vous, la ruelle se referme sur ses volets. Personne ne vous arrête. Plusieurs personnes vous regardent partir.",
+     "consequence": "Il passe devant sans se retourner, du pas de quelqu’un qui n’a jamais eu besoin de regarder ses pieds ici. Derrière vous, la ruelle se referme sur ses volets. Personne ne vous arrête. Plusieurs personnes vous regardent partir.",
      "exigeEtat": "accompagne"
     },
     {
      "id": "gamin-reprendre-la-rue",
      "label": "Reprendre la ruelle",
      "type": "passif",
-     "consequence": "Tu laisses le muret filer vers le sud sans toi. La ruelle, elle, fait le tour de tout — c\\u2019est bien ce qu\\u2019il avait dit."
+     "consequence": "Tu laisses le muret filer vers le sud sans toi. La ruelle, elle, fait le tour de tout — c’est bien ce qu’il avait dit."
     }
    ],
    "pointsInteret": [],
@@ -2506,30 +2506,30 @@
   {
    "id": "gamin-murets-3",
    "narration": [
-    "« Moi j\\u2019en ai zéro », dit-il en revenant à ses cailloux. « Ma mère en a deux. Elle sait pas. Faut pas lui dire, elle a peur pour rien. »",
-    "Il fouille dans sa poche et te tend une pierre plate, grise, polie comme un galet de rivière. Il n\\u2019y a pas de rivière dans les Landes. « C\\u2019est la dame de l\\u2019ouest qui me l\\u2019a donnée. »"
+    "« Moi j’en ai zéro », dit-il en revenant à ses cailloux. « Ma mère en a deux. Elle sait pas. Faut pas lui dire, elle a peur pour rien. »",
+    "Il fouille dans sa poche et te tend une pierre plate, grise, polie comme un galet de rivière. Il n’y a pas de rivière dans les Landes. « C’est la dame de l’ouest qui me l’a donnée. »"
    ],
    "choix": [
     {
      "id": "gamin-quelle-dame",
      "label": "« Quelle dame ? »",
      "type": "passif",
-     "consequence": "« Ben, la dame. » Il hausse les épaules, comme si tu demandais de quelle couleur est le ciel. « Elle est jeune. Elle a un châle. Elle marche du côté du moulin, là où l\\u2019herbe est couchée. » Il repose un caillou dans la rangée, très exactement à sa place.",
+     "consequence": "« Ben, la dame. » Il hausse les épaules, comme si tu demandais de quelle couleur est le ciel. « Elle est jeune. Elle a un châle. Elle marche du côté du moulin, là où l’herbe est couchée. » Il repose un caillou dans la rangée, très exactement à sa place.",
      "donneObjet": "caillou-gamin",
      "donneDecouverte": "d.fille_apercue"
     },
     {
      "id": "gamin-ou-vue",
-     "label": "« Où l\\u2019as-tu vue ? »",
+     "label": "« Où l’as-tu vue ? »",
      "type": "risque",
      "stat": "INSTINCT",
      "seuil": 10,
      "hautEnjeu": false,
      "issues": {
-      "critique": "20 naturel. Tu ne demandes pas où : tu demandes QUAND. Il réfléchit vraiment, pour la première fois. « Le matin, jamais. Le soir, souvent. Et une fois dans le brouillard, très près. » Il te regarde. « Elle m\\u2019a dit de rentrer. J\\u2019ai rentré. »",
-      "reussite": "Il pointe l\\u2019ouest du menton, au-delà des murets, là où la crête remonte vers une masse noire sans ailes. « Par là. Elle va jamais plus loin que le moulin, et jamais du côté des potences. Moi non plus j\\u2019y vais pas. »",
-      "echec": "« Partout », dit-il, et tu comprends qu\\u2019il ne ment pas — il n\\u2019a simplement jamais eu besoin de retenir où, parce que personne ne le lui a jamais demandé sérieusement.",
-      "funeste": "1 naturel. Il te regarde autrement, d\\u2019un coup. « Pourquoi tu demandes ça, toi ? » Il ramasse ses cailloux dans le pan de sa chemise et s\\u2019en va, et tu entends très bien qu\\u2019il en parlera à quelqu\\u2019un. ♦ −2"
+      "critique": "20 naturel. Tu ne demandes pas où : tu demandes QUAND. Il réfléchit vraiment, pour la première fois. « Le matin, jamais. Le soir, souvent. Et une fois dans le brouillard, très près. » Il te regarde. « Elle m’a dit de rentrer. J’ai rentré. »",
+      "reussite": "Il pointe l’ouest du menton, au-delà des murets, là où la crête remonte vers une masse noire sans ailes. « Par là. Elle va jamais plus loin que le moulin, et jamais du côté des potences. Moi non plus j’y vais pas. »",
+      "echec": "« Partout », dit-il, et tu comprends qu’il ne ment pas — il n’a simplement jamais eu besoin de retenir où, parce que personne ne le lui a jamais demandé sérieusement.",
+      "funeste": "1 naturel. Il te regarde autrement, d’un coup. « Pourquoi tu demandes ça, toi ? » Il ramasse ses cailloux dans le pan de sa chemise et s’en va, et tu entends très bien qu’il en parlera à quelqu’un. ♦ −2"
      },
      "nature": "social",
      "donneObjet": "caillou-gamin",
@@ -2539,7 +2539,7 @@
      "id": "gamin-ne-pas-relever",
      "label": "Ne pas relever",
      "type": "passif",
-     "consequence": "Tu refermes la main sur la pierre sans rien demander. Elle est tiède, ce qui n\\u2019a aucun sens : elle sort d\\u2019une poche d\\u2019enfant, dehors, dans un crépuscule qui ne se réchauffe jamais. Il est déjà retourné à sa rangée.",
+     "consequence": "Tu refermes la main sur la pierre sans rien demander. Elle est tiède, ce qui n’a aucun sens : elle sort d’une poche d’enfant, dehors, dans un crépuscule qui ne se réchauffe jamais. Il est déjà retourné à sa rangée.",
      "donneObjet": "caillou-gamin",
      "donneDecouverte": "d.fille_apercue"
     }
@@ -2570,21 +2570,21 @@
   {
    "id": "gamin-murets-4",
    "narration": [
-    "« Ma mère dit que j\\u2019invente. Le rebouteux dit que j\\u2019invente. Tout le monde dit que j\\u2019invente. » Il te regarde enfin, droit. « Mais le caillou, il est vrai. Tu le tiens. »",
-    "Il redescend du muret et ramasse ses pierres une par une, dans l\\u2019ordre. « Si tu la vois, dis-lui merci pour le caillou. J\\u2019ai oublié la dernière fois. »"
+    "« Ma mère dit que j’invente. Le rebouteux dit que j’invente. Tout le monde dit que j’invente. » Il te regarde enfin, droit. « Mais le caillou, il est vrai. Tu le tiens. »",
+    "Il redescend du muret et ramasse ses pierres une par une, dans l’ordre. « Si tu la vois, dis-lui merci pour le caillou. J’ai oublié la dernière fois. »"
    ],
    "choix": [
     {
      "id": "gamin-promettre",
      "label": "Le lui promettre",
      "type": "passif",
-     "consequence": "Il hoche la tête, satisfait, et ne vérifie pas. À dix ans, on croit encore qu\\u2019une promesse et une chose faite sont la même chose. Tu redescends la ruelle avec un caillou de rivière dans la main, dans un pays qui n\\u2019a pas de rivière."
+     "consequence": "Il hoche la tête, satisfait, et ne vérifie pas. À dix ans, on croit encore qu’une promesse et une chose faite sont la même chose. Tu redescends la ruelle avec un caillou de rivière dans la main, dans un pays qui n’a pas de rivière."
     },
     {
      "id": "gamin-rien-promettre",
      "label": "Ne rien promettre",
      "type": "passif",
-     "consequence": "Tu ne dis rien. Il ne t\\u2019en veut pas : il range ses cailloux et s\\u2019éloigne le long du mur, du pas de quelqu\\u2019un qui a l\\u2019habitude qu\\u2019on ne réponde pas. Tu gardes la pierre quand même."
+     "consequence": "Tu ne dis rien. Il ne t’en veut pas : il range ses cailloux et s’éloigne le long du mur, du pas de quelqu’un qui a l’habitude qu’on ne réponde pas. Tu gardes la pierre quand même."
     }
    ],
    "pointsInteret": [],
@@ -3166,8 +3166,8 @@
    "id": "hameau-entree-4",
    "narration": [
     "Au bout de la rue, un muret bas ferme le village côté sud. Le vieux y est assis, sec comme un piquet, les coudes sur les genoux. Il t'attendait là depuis le début.",
-    " +\n         +\n        ",
-    ",\n       +\n         +\n        "
+    "Il tend la main, paume ouverte. Pas pour serrer la tienne — pour que tu la regardes. Elle est vide. C'est le geste d'ici : on jure sur rien, parce qu'il ne reste rien.",
+    "— « Trois choses, et tu dors sous un toit. Tu ne parles pas aux pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et à la troisième aube, tu choisis. »"
    ],
    "choix": [
     {
@@ -3219,8 +3219,8 @@
     {
      "id": "doyenne-horaire",
      "label": "Demander qui juge, ici",
-     "approche": "Tu poses la question au vieux. C\\u2019est la femme derri\\u00e8re lui qui r\\u00e9pond, sans qu\\u2019on lui ait rien demand\\u00e9.",
-     "examen": "\\u00ab Avant, on jugeait le jour. \\u00bb Elle rajuste son ch\\u00e2le. \\u00ab Maintenant on juge la nuit. C\\u2019est pas moi qui ai d\\u00e9cid\\u00e9 du changement d\\u2019horaire. \\u00bb",
+     "approche": "Tu poses la question au vieux. C’est la femme derrière lui qui répond, sans qu’on lui ait rien demandé.",
+     "examen": "« Avant, on jugeait le jour. » Elle rajuste son châle. « Maintenant on juge la nuit. C’est pas moi qui ai décidé du changement d’horaire. »",
      "donneDecouverte": "d.on_juge_la_nuit",
      "image": null,
      "description": "",
@@ -3296,9 +3296,9 @@
    "choix": [
     {
      "id": "parler-de-la-dame",
-     "label": "Parler de la femme de l\\u2019ouest",
+     "label": "Parler de la femme de l’ouest",
      "type": "passif",
-     "consequence": "Tu poses la question à quelqu\\u2019un qui rentre du puits. Le regard doux, la voix douce : « Tu es fatigué. Le voyage fatigue. » On te touche l\\u2019épaule, on te souhaite une bonne nuit — et on s\\u2019éloigne d\\u2019un pas qui n\\u2019est plus tout à fait celui de quelqu\\u2019un qui rentre chez lui. Elle t\\u2019avait prévenu que ça commençait comme ça.",
+     "consequence": "Tu poses la question à quelqu’un qui rentre du puits. Le regard doux, la voix douce : « Tu es fatigué. Le voyage fatigue. » On te touche l’épaule, on te souhaite une bonne nuit — et on s’éloigne d’un pas qui n’est plus tout à fait celui de quelqu’un qui rentre chez lui. Elle t’avait prévenu que ça commençait comme ça.",
      "exigeDecouverte": "d.fille_vivante",
      "soupcon": 2
     },
@@ -3518,17 +3518,17 @@
   {
    "id": "temoin-toit",
    "narration": [
-    "Les voix s\\u2019éloignent. Le silence revient, et il est plus épais qu\\u2019avant.",
-    "Puis le toit travaille. Une poutre plie — pas le craquement du bois qui refroidit : le bruit d\\u2019un bois qui porte quelque chose. La poussière tombe en fil régulier entre deux planches, juste devant toi.",
-    "Quelque chose remonte le faîtage. Ça s\\u2019arrête au-dessus de la porte. Ça reste.",
-    "Dehors, les corbeaux ne bougent pas. C\\u2019est ça, le pire : ils ne s\\u2019envolent pas."
+    "Les voix s’éloignent. Le silence revient, et il est plus épais qu’avant.",
+    "Puis le toit travaille. Une poutre plie — pas le craquement du bois qui refroidit : le bruit d’un bois qui porte quelque chose. La poussière tombe en fil régulier entre deux planches, juste devant toi.",
+    "Quelque chose remonte le faîtage. Ça s’arrête au-dessus de la porte. Ça reste.",
+    "Dehors, les corbeaux ne bougent pas. C’est ça, le pire : ils ne s’envolent pas."
    ],
    "choix": [
     {
      "id": "toit-ne-pas-bouger",
      "label": "Ne pas bouger",
      "type": "passif",
-     "consequence": "Tu ne bouges pas. Tu ne respires presque plus. Au bout d\\u2019un temps que tu serais incapable de mesurer, le poids se déplace vers l\\u2019autre pignon, sans un bruit de pas — comme si le toit seul savait qu\\u2019il y avait quelque chose dessus."
+     "consequence": "Tu ne bouges pas. Tu ne respires presque plus. Au bout d’un temps que tu serais incapable de mesurer, le poids se déplace vers l’autre pignon, sans un bruit de pas — comme si le toit seul savait qu’il y avait quelque chose dessus."
     },
     {
      "id": "toit-regarder",
@@ -3538,10 +3538,10 @@
      "seuil": 13,
      "hautEnjeu": true,
      "issues": {
-      "critique": "20 naturel. Tu trouves la fente et tu colles l\\u2019œil. Il n\\u2019y a rien à voir : du ciel, la ligne du faîtage, et une portion de nuit un peu plus dense que le reste, qui NE BOUGE PAS avec le vent. Tu la regardes assez longtemps pour être certain que ce n\\u2019est pas une illusion — et pour comprendre qu\\u2019elle t\\u2019a laissé faire.",
-      "reussite": "Tu trouves une fente entre deux planches. Le ciel est là, gris sale, avec une bande plus noire au bord du champ de vision. Quand tu bouges la tête pour la cadrer, elle n\\u2019est plus dans le cadre. Quand tu reviens, elle y est.",
-      "echec": "Tu te lèves trop vite et la paille crisse. Au-dessus, le poids s\\u2019arrête net — puis se déplace, lentement, exactement au-dessus de l\\u2019endroit où tu te tiens. Tu passes le reste de la nuit assis, dos au mur, à écouter un plancher de ciel.",
-      "funeste": "1 naturel. Tu approches l\\u2019œil de la fente, et quelque chose, de l\\u2019autre côté, fait exactement le même geste. ♦ −2"
+      "critique": "20 naturel. Tu trouves la fente et tu colles l’œil. Il n’y a rien à voir : du ciel, la ligne du faîtage, et une portion de nuit un peu plus dense que le reste, qui NE BOUGE PAS avec le vent. Tu la regardes assez longtemps pour être certain que ce n’est pas une illusion — et pour comprendre qu’elle t’a laissé faire.",
+      "reussite": "Tu trouves une fente entre deux planches. Le ciel est là, gris sale, avec une bande plus noire au bord du champ de vision. Quand tu bouges la tête pour la cadrer, elle n’est plus dans le cadre. Quand tu reviens, elle y est.",
+      "echec": "Tu te lèves trop vite et la paille crisse. Au-dessus, le poids s’arrête net — puis se déplace, lentement, exactement au-dessus de l’endroit où tu te tiens. Tu passes le reste de la nuit assis, dos au mur, à écouter un plancher de ciel.",
+      "funeste": "1 naturel. Tu approches l’œil de la fente, et quelque chose, de l’autre côté, fait exactement le même geste. ♦ −2"
      },
      "nature": "surnaturel",
      "tags": [
@@ -3575,15 +3575,15 @@
   {
    "id": "temoin-toit-connu",
    "narration": [
-    "Les voix s\\u2019éloignent. Tu attends, parce que tu sais maintenant qu\\u2019il y a quelque chose à attendre.",
-    "La poutre plie à la même heure, au même endroit. Le poids remonte le faîtage, s\\u2019arrête au-dessus de la porte, et reste. Ce n\\u2019est plus une découverte : c\\u2019est un horaire."
+    "Les voix s’éloignent. Tu attends, parce que tu sais maintenant qu’il y a quelque chose à attendre.",
+    "La poutre plie à la même heure, au même endroit. Le poids remonte le faîtage, s’arrête au-dessus de la porte, et reste. Ce n’est plus une découverte : c’est un horaire."
    ],
    "choix": [
     {
      "id": "toit-attendre-connu",
      "label": "Attendre que ça passe",
      "type": "passif",
-     "consequence": "Tu comptes. La dernière fois, ça avait duré à peu près autant. Il y a quelque chose d\\u2019obscène à s\\u2019habituer, et tu t\\u2019habitues."
+     "consequence": "Tu comptes. La dernière fois, ça avait duré à peu près autant. Il y a quelque chose d’obscène à s’habituer, et tu t’habitues."
     }
    ],
    "pointsInteret": [],
@@ -3614,7 +3614,7 @@
    "id": "hameau-halte-4",
    "narration": [
     "La barre se soulève au premier gris. Le vieux, seul. Il te tend un quignon dur et ne dit rien pendant que tu manges.",
-    "Tu regardes la barre pendant qu\\u2019il la repose contre le mur. Tu croyais qu\\u2019elle t\\u2019enfermait, ou qu\\u2019elle te protégeait. Ni l\\u2019un ni l\\u2019autre : elle indiquait que la grange était occupée.",
+    "Tu regardes la barre pendant qu’il la repose contre le mur. Tu croyais qu’elle t’enfermait, ou qu’elle te protégeait. Ni l’un ni l’autre : elle indiquait que la grange était occupée.",
     "— « Aujourd'hui, on fixe personne. » Il regarde ailleurs. « Alors pars pendant que c'est vrai. »"
    ],
    "choix": [
@@ -3771,9 +3771,9 @@
   {
    "id": "temoin-ruelle",
    "narration": [
-    "Aucune porte, aucune grange. Tu dors contre un muret, côté nord — d\\u2019instinct. Sauf que cette fois tu ne dors pas : tu sais ce qui marche sur les toits.",
-    "Au bout de la ruelle, quelque chose traverse. De gauche à droite, sans bruit — et c\\u2019est l\\u2019absence de bruit qui te fige, parce que ça faisait trois têtes de haut.",
-    "Tu vois du tissu. Beaucoup de tissu, noir, qui suit avec un temps de retard, comme une traîne. Et dessous, une seconde de trop, quelque chose qui n\\u2019était pas des jambes.",
+    "Aucune porte, aucune grange. Tu dors contre un muret, côté nord — d’instinct. Sauf que cette fois tu ne dors pas : tu sais ce qui marche sur les toits.",
+    "Au bout de la ruelle, quelque chose traverse. De gauche à droite, sans bruit — et c’est l’absence de bruit qui te fige, parce que ça faisait trois têtes de haut.",
+    "Tu vois du tissu. Beaucoup de tissu, noir, qui suit avec un temps de retard, comme une traîne. Et dessous, une seconde de trop, quelque chose qui n’était pas des jambes.",
     "Puis plus rien. Le passage est vide. Sur les toits des deux côtés, les corbeaux sont alignés et te regardent, toi."
    ],
    "choix": [
@@ -3781,7 +3781,7 @@
      "id": "ruelle-ne-pas-suivre",
      "label": "Ne pas suivre",
      "type": "passif",
-     "consequence": "Tu restes contre ton muret jusqu\\u2019au gris. Tu ne dors pas. Au matin, des traces de pas font un cercle complet autour de l\\u2019endroit où tu étais couché, à trois mètres — personne ne s\\u2019est approché plus près, et personne n\\u2019est reparti sans avoir regardé.",
+     "consequence": "Tu restes contre ton muret jusqu’au gris. Tu ne dors pas. Au matin, des traces de pas font un cercle complet autour de l’endroit où tu étais couché, à trois mètres — personne ne s’est approché plus près, et personne n’est reparti sans avoir regardé.",
      "poseEtat": "hante",
      "soupcon": 1
     },
@@ -3793,10 +3793,10 @@
      "seuil": 14,
      "hautEnjeu": true,
      "issues": {
-      "critique": "20 naturel. Tu marches jusqu\\u2019au coin. Le passage est vide, et le sol y est sec alors qu\\u2019il a plu — sur toute la largeur, une bande où l\\u2019humidité n\\u2019a pas pris. Tu la suis des yeux : elle va d\\u2019un linteau à l\\u2019autre, d\\u2019une porte à l\\u2019autre, et elle s\\u2019arrête à chacune. Il fait sa tournée.",
-      "reussite": "Tu vas jusqu\\u2019au coin, le cœur en désordre. Rien. Une ruelle, des volets clos, et sur le linteau de la maison d\\u2019en face, à hauteur d\\u2019homme, une entaille fraîche dans le bois. La même que sur toutes les autres portes du hameau.",
-      "echec": "Tu fais trois pas et tu t\\u2019arrêtes, parce que les corbeaux se sont tous tournés en même temps. Pas vers le passage. Vers toi. Tu regagnes ton muret sans donner le dos à la rue.",
-      "funeste": "1 naturel. Tu arrives au coin au moment où il revient. Tu ne vois toujours pas de visage. Tu vois qu\\u2019il s\\u2019arrête, et qu\\u2019il attend — comme on attend que quelqu\\u2019un ait fini de comprendre. ♦ −2"
+      "critique": "20 naturel. Tu marches jusqu’au coin. Le passage est vide, et le sol y est sec alors qu’il a plu — sur toute la largeur, une bande où l’humidité n’a pas pris. Tu la suis des yeux : elle va d’un linteau à l’autre, d’une porte à l’autre, et elle s’arrête à chacune. Il fait sa tournée.",
+      "reussite": "Tu vas jusqu’au coin, le cœur en désordre. Rien. Une ruelle, des volets clos, et sur le linteau de la maison d’en face, à hauteur d’homme, une entaille fraîche dans le bois. La même que sur toutes les autres portes du hameau.",
+      "echec": "Tu fais trois pas et tu t’arrêtes, parce que les corbeaux se sont tous tournés en même temps. Pas vers le passage. Vers toi. Tu regagnes ton muret sans donner le dos à la rue.",
+      "funeste": "1 naturel. Tu arrives au coin au moment où il revient. Tu ne vois toujours pas de visage. Tu vois qu’il s’arrête, et qu’il attend — comme on attend que quelqu’un ait fini de comprendre. ♦ −2"
      },
      "nature": "surnaturel",
      "poseEtat": "hante",
@@ -3831,22 +3831,22 @@
   {
    "id": "troupeau-sans-berger",
    "narration": [
-    "Des bêtes broutent la bruyère morte au creux du vallon — un troupeau entier, sans personne. Elles ne s\\u2019écartent pas quand tu approches : elles lèvent la tête, te regardent une seconde, et se remettent à brouter.",
-    "C\\u2019est ce détail qui te dérange le plus. Elles n\\u2019ont pas appris à se méfier."
+    "Des bêtes broutent la bruyère morte au creux du vallon — un troupeau entier, sans personne. Elles ne s’écartent pas quand tu approches : elles lèvent la tête, te regardent une seconde, et se remettent à brouter.",
+    "C’est ce détail qui te dérange le plus. Elles n’ont pas appris à se méfier."
    ],
    "choix": [
     {
      "id": "troupeau-approcher",
-     "label": "S\\u2019avancer dans le vallon",
+     "label": "S’avancer dans le vallon",
      "type": "suite"
     }
    ],
    "pointsInteret": [
     {
      "id": "compter-troupeau",
-     "label": "Les marques d\\u2019oreille",
-     "approche": "Tu marches jusqu\\u2019au bord du troupeau. Les bêtes te laissent entrer entre elles comme si tu étais un piquet de plus.",
-     "examen": "De près, elles sont grasses, entretenues — quelqu\\u2019un les a menées, soignées, comptées, et pas il y a trente ans : cette laine-là a vu un berger cette saison.",
+     "label": "Les marques d’oreille",
+     "approche": "Tu marches jusqu’au bord du troupeau. Les bêtes te laissent entrer entre elles comme si tu étais un piquet de plus.",
+     "examen": "De près, elles sont grasses, entretenues — quelqu’un les a menées, soignées, comptées, et pas il y a trente ans : cette laine-là a vu un berger cette saison.",
      "donneDecouverte": "d.troupeau_compte",
      "image": {
       "fichier": "monstre_troupeau_compte_b.png",
@@ -3884,9 +3884,9 @@
   {
    "id": "troupeau-sans-berger-2",
    "narration": [
-    "Une brebis s\\u2019écarte du groupe et marche droit vers le nord-est, s\\u2019arrête, revient. Puis recommence. Cinq fois pendant que tu la regardes.",
-    "Elle refait un trajet. Elle attend au bout de quelque chose qui n\\u2019arrive plus.",
-    "Dans cette direction, à un quart d\\u2019heure de marche, il y a le Champ des Fixés."
+    "Une brebis s’écarte du groupe et marche droit vers le nord-est, s’arrête, revient. Puis recommence. Cinq fois pendant que tu la regardes.",
+    "Elle refait un trajet. Elle attend au bout de quelque chose qui n’arrive plus.",
+    "Dans cette direction, à un quart d’heure de marche, il y a le Champ des Fixés."
    ],
    "choix": [
     {
@@ -3903,7 +3903,7 @@
      "id": "troupeau-prendre",
      "label": "Prendre une bête",
      "type": "passif",
-     "consequence": "Tu choisis la seule qui te laisse faire — la meneuse, sa clochette au cou. Elle te suit sans un bruit, et le troupeau ne bronche pas. C\\u2019est après, en mangeant, que la phrase te vient toute seule : tu viens de prendre ce qui appartenait à un pendu. Si on te voit au hameau avec cette laine, on saura compter jusqu\\u2019à cinq.",
+     "consequence": "Tu choisis la seule qui te laisse faire — la meneuse, sa clochette au cou. Elle te suit sans un bruit, et le troupeau ne bronche pas. C’est après, en mangeant, que la phrase te vient toute seule : tu viens de prendre ce qui appartenait à un pendu. Si on te voit au hameau avec cette laine, on saura compter jusqu’à cinq.",
      "donneObjet": "clochette-meneuse",
      "poseEtat": "marque",
      "repondBesoin": "manger",
@@ -3916,7 +3916,7 @@
      "id": "troupeau-continuer",
      "label": "Continuer ton chemin",
      "type": "passif",
-     "consequence": "Tu t\\u2019éloignes, et le troupeau se referme derrière toi comme de l\\u2019eau. Dans ton dos, une clochette. Une seule, quelque part au milieu des bêtes — celle qu\\u2019on met au cou de la meneuse, pour que le berger sache où est son troupeau dans le brouillard. Elle sonne toute seule, pour personne."
+     "consequence": "Tu t’éloignes, et le troupeau se referme derrière toi comme de l’eau. Dans ton dos, une clochette. Une seule, quelque part au milieu des bêtes — celle qu’on met au cou de la meneuse, pour que le berger sache où est son troupeau dans le brouillard. Elle sonne toute seule, pour personne."
     }
    ],
    "pointsInteret": [],
@@ -4188,29 +4188,30 @@
   {
    "id": "marche-muet-2",
    "narration": [
-    "Au bout de la rangée, un étal différent : bric-à-brac d'ailleurs, objets qui n'ont rien à faire dans une lande. Le Colporteur te regarde venir de loin — et te reconnaît. C'est impossible. Il te fait signe quand même, comme à un client de longue date. Sur l'étal, aucun fruit. « Ceux du Verger, j'en prends pas », dit-il en suivant ton regard. « Personne n'en prend. »"
+    "Au bout de la rangée, un étal différent : bric-à-brac d'ailleurs, objets qui n'ont rien à faire dans une lande. Le Colporteur te regarde venir de loin — et te reconnaît. C'est impossible. Il te fait signe quand même, comme à un client de longue date. Sur l'étal, aucun fruit. « Ceux du Verger, j'en prends pas », dit-il en suivant ton regard. « Personne n'en prend. »",
+    "À l'étal voisin, un vieil homme écrase des feuilles dans un mortier, des fioles bouchées de cire alignées devant lui. Le Rebouteux. Il ne lève pas la tête — mais son tabouret libre est tourné vers toi."
    ],
    "choix": [
     {
      "id": "colporteur-viande",
-     "label": "Demander d\\u2019où vient la viande",
+     "label": "Demander d’où vient la viande",
      "type": "passif",
-     "consequence": "Il suit ton regard jusqu\\u2019aux quartiers salés pendus sous l\\u2019étal, et pour la première fois son sourire de marchand se simplifie. « Me demande pas d\\u2019où ça vient. » Il remonte la toile dessus, sans hâte. « Moi je revends. »",
+     "consequence": "Il suit ton regard jusqu’aux quartiers salés pendus sous l’étal, et pour la première fois son sourire de marchand se simplifie. « Me demande pas d’où ça vient. » Il remonte la toile dessus, sans hâte. « Moi je revends. »",
      "exigeDecouverte": "d.troupeau_compte"
     },
     {
      "id": "sonneur-battant",
-     "label": "Parler à l\\u2019homme sans étal",
+     "label": "Parler à l’homme sans étal",
      "type": "passif",
-     "consequence": "Un homme sans marchandise se tient au bout de la rangée, les mains vides et l\\u2019air de quelqu\\u2019un qui a eu un métier. « J\\u2019ai sonné, une nuit. Pour prévenir. » Il regarde ses paumes. « Le lendemain, plus de battant. Personne n\\u2019a rien dit. C\\u2019était juste plus là. »",
+     "consequence": "Un homme sans marchandise se tient au bout de la rangée, les mains vides et l’air de quelqu’un qui a eu un métier. « J’ai sonné, une nuit. Pour prévenir. » Il regarde ses paumes. « Le lendemain, plus de battant. Personne n’a rien dit. C’était juste plus là. »",
      "donneDecouverte": "d.sonneur",
      "exigeDecouverte": "d.cloche_sans_battant"
     },
     {
      "id": "rebouteux-la-nuit",
-     "label": "Demander s\\u2019il soigne le soir",
+     "label": "Demander s’il soigne le soir",
      "type": "passif",
-     "consequence": "Le rebouteux hausse les épaules sans lever les yeux de son baume. « Je soigne pas la nuit. » Un temps. « C\\u2019est pas une règle, hein. C\\u2019est juste que personne demande. » Puis, comme on jette un os : « Et si c\\u2019est l\\u2019eau de la Mare que tu as bue, garde ta monnaie. Ça, ça se soigne pas ici. »",
+     "consequence": "Le rebouteux hausse les épaules sans lever les yeux de son baume. « Je soigne pas la nuit. » Un temps. « C’est pas une règle, hein. C’est juste que personne demande. » Puis, comme on jette un os : « Et si c’est l’eau de la Mare que tu as bue, garde ta monnaie. Ça, ça se soigne pas ici. »",
      "donneDecouverte": "d.nuit_du_hameau"
     },
     {
@@ -4319,7 +4320,7 @@
      "id": "crete-interrompue",
      "label": "La crête du toit",
      "approche": "Tu contournes la tour et tu lèves les yeux vers le faîtage. La mousse a mangé toute la pierre, sauf une bande, en haut, nette comme un sentier.",
-     "examen": "La bande sans mousse court sur toute la longueur du toit, large comme deux mains, usée. Puis elle s\\u2019arrête. Pas en s\\u2019amenuisant : d\\u2019un coup, à cinquante pas de la porte, comme si quelque chose qui marchait là s\\u2019était retourné chaque fois exactement au même endroit.",
+     "examen": "La bande sans mousse court sur toute la longueur du toit, large comme deux mains, usée. Puis elle s’arrête. Pas en s’amenuisant : d’un coup, à cinquante pas de la porte, comme si quelque chose qui marchait là s’était retourné chaque fois exactement au même endroit.",
      "donneDecouverte": "d.crete_interrompue",
      "image": {
       "fichier": "scene_moulin_crete_interrompue_b.png",
@@ -4473,9 +4474,9 @@
   {
    "id": "fille-moulin-1",
    "narration": [
-    "La porte est entrouverte, comme toujours. Mais cette fois la bruyère du pot n\\u2019est pas seulement fraîche : elle est mouillée. Quelqu\\u2019un vient de la cueillir.",
+    "La porte est entrouverte, comme toujours. Mais cette fois la bruyère du pot n’est pas seulement fraîche : elle est mouillée. Quelqu’un vient de la cueillir.",
     "Une femme est assise sur la paillasse, dos à toi, occupée à quelque chose de ses mains. Elle ne se retourne pas.",
-    "« Tu m\\u2019as vue. » Ce n\\u2019est pas une question. « Ça arrive une fois tous les dix ans. »"
+    "« Tu m’as vue. » Ce n’est pas une question. « Ça arrive une fois tous les dix ans. »"
    ],
    "choix": [
     {
@@ -4487,7 +4488,7 @@
      "id": "fille-entrer",
      "label": "Entrer et refermer",
      "type": "passif",
-     "consequence": "Tu pousses la porte derrière toi. Le bruit de la lande s\\u2019arrête net, comme coupé au couteau — et tu réalises que c\\u2019est la première fois depuis la Borne que tu n\\u2019entends plus le vent."
+     "consequence": "Tu pousses la porte derrière toi. Le bruit de la lande s’arrête net, comme coupé au couteau — et tu réalises que c’est la première fois depuis la Borne que tu n’entends plus le vent."
     }
    ],
    "pointsInteret": [],
@@ -4517,16 +4518,16 @@
   {
    "id": "fille-moulin-2",
    "narration": [
-    "Elle se retourne enfin, et le compte ne marche pas. Le village parle d\\u2019elle comme d\\u2019une histoire ancienne, d\\u2019un temps que même les vieux ont du mal à situer. Elle a vingt ans.",
-    "« Ils m\\u2019ont pendue un mardi. » Elle dit ça comme on donne une adresse. « Ça n\\u2019a pas pris. Je suis restée là, à me balancer, et à un moment ils sont partis manger. »",
-    "« Quand ils sont revenus, j\\u2019avais défait le nœud toute seule. Alors ils ont décidé de ne pas m\\u2019avoir vue. C\\u2019était plus simple. »"
+    "Elle se retourne enfin, et le compte ne marche pas. Le village parle d’elle comme d’une histoire ancienne, d’un temps que même les vieux ont du mal à situer. Elle a vingt ans.",
+    "« Ils m’ont pendue un mardi. » Elle dit ça comme on donne une adresse. « Ça n’a pas pris. Je suis restée là, à me balancer, et à un moment ils sont partis manger. »",
+    "« Quand ils sont revenus, j’avais défait le nœud toute seule. Alors ils ont décidé de ne pas m’avoir vue. C’était plus simple. »"
    ],
    "choix": [
     {
      "id": "fille-pourquoi-rester",
      "label": "« Pourquoi restez-vous ici ? »",
      "type": "passif",
-     "consequence": "« Pour aller où ? » Elle repose ses mains. « Au sud, il y a la Descente, et la Descente ne prend que les vivants ou les morts. Je ne suis ni l\\u2019un ni l\\u2019autre. » Un temps. « Et puis quelqu\\u2019un doit rester pour savoir ce qui s\\u2019est passé. »"
+     "consequence": "« Pour aller où ? » Elle repose ses mains. « Au sud, il y a la Descente, et la Descente ne prend que les vivants ou les morts. Je ne suis ni l’un ni l’autre. » Un temps. « Et puis quelqu’un doit rester pour savoir ce qui s’est passé. »"
     },
     {
      "id": "fille-votre-pere",
@@ -4536,10 +4537,10 @@
      "seuil": 12,
      "hautEnjeu": true,
      "issues": {
-      "critique": "20 naturel. Tu ne dis pas « il vous attend ». Tu dis : « il a tressé la corde trois mois. » Elle s\\u2019arrête net. Pour la première fois depuis trente ans, quelqu\\u2019un lui parle de son père comme d\\u2019un homme et non comme d\\u2019un pendu — et elle te raconte le reste sans que tu aies à demander.",
-      "reussite": "Elle ne se fâche pas. Elle repose son ouvrage sur ses genoux, très lentement, et regarde la lucarne. « Je sais. » Deux mots, et le silence qui suit dure assez longtemps pour que tu comprennes qu\\u2019elle y pense tous les jours.",
-      "echec": "« Ne fais pas ça. » Sa voix ne monte pas d\\u2019un ton, ce qui est pire. « Tout le monde ici me dit ce que je devrais faire de mon père. Toi tu viens d\\u2019arriver. »",
-      "funeste": "1 naturel. Elle rit — un son sec, sans joie. « Il m\\u2019attend, oui. Comme il attendait l\\u2019autre. » Elle se remet à son ouvrage et ne te répondra plus de la soirée. ♦ −2"
+      "critique": "20 naturel. Tu ne dis pas « il vous attend ». Tu dis : « il a tressé la corde trois mois. » Elle s’arrête net. Pour la première fois depuis trente ans, quelqu’un lui parle de son père comme d’un homme et non comme d’un pendu — et elle te raconte le reste sans que tu aies à demander.",
+      "reussite": "Elle ne se fâche pas. Elle repose son ouvrage sur ses genoux, très lentement, et regarde la lucarne. « Je sais. » Deux mots, et le silence qui suit dure assez longtemps pour que tu comprennes qu’elle y pense tous les jours.",
+      "echec": "« Ne fais pas ça. » Sa voix ne monte pas d’un ton, ce qui est pire. « Tout le monde ici me dit ce que je devrais faire de mon père. Toi tu viens d’arriver. »",
+      "funeste": "1 naturel. Elle rit — un son sec, sans joie. « Il m’attend, oui. Comme il attendait l’autre. » Elle se remet à son ouvrage et ne te répondra plus de la soirée. ♦ −2"
      },
      "nature": "social",
      "tags": [
@@ -4550,7 +4551,7 @@
      "id": "fille-ne-rien-dire",
      "label": "Ne rien dire",
      "type": "passif",
-     "consequence": "Tu ne dis rien. Elle continue son ouvrage, et le silence s\\u2019installe sans gêne — c\\u2019est visiblement ce qu\\u2019elle préfère. Au bout d\\u2019un moment, elle parle d\\u2019elle-même, parce que personne ne l\\u2019en empêche."
+     "consequence": "Tu ne dis rien. Elle continue son ouvrage, et le silence s’installe sans gêne — c’est visiblement ce qu’elle préfère. Au bout d’un moment, elle parle d’elle-même, parce que personne ne l’en empêche."
     }
    ],
    "pointsInteret": [],
@@ -4578,24 +4579,24 @@
   {
    "id": "fille-moulin-3",
    "narration": [
-    "« Mon père a construit une potence pour la chose qui m\\u2019a fait pendre. » Elle repose son ouvrage. « Il l\\u2019a attendue trois mois. Elle n\\u2019est pas venue. Elle ne vient jamais quand on l\\u2019appelle — elle vient quand un village est prêt. »",
+    "« Mon père a construit une potence pour la chose qui m’a fait pendre. » Elle repose son ouvrage. « Il l’a attendue trois mois. Elle n’est pas venue. Elle ne vient jamais quand on l’appelle — elle vient quand un village est prêt. »",
     "Un temps.",
-    "« Il s\\u2019est pendu à côté. Pas de chagrin : par règlement. Il avait refusé de me condamner, et refuser, dans son livre, c\\u2019était une faute. Il a inscrit son nom et il a fait ce qu\\u2019il fallait. »",
-    "« Alors non, je ne monte pas le voir. Il attend un procès. Moi j\\u2019ai fini d\\u2019attendre. »"
+    "« Il s’est pendu à côté. Pas de chagrin : par règlement. Il avait refusé de me condamner, et refuser, dans son livre, c’était une faute. Il a inscrit son nom et il a fait ce qu’il fallait. »",
+    "« Alors non, je ne monte pas le voir. Il attend un procès. Moi j’ai fini d’attendre. »"
    ],
    "choix": [
     {
      "id": "fille-la-chose",
      "label": "« Quelle chose ? »",
      "type": "passif",
-     "consequence": "Elle te regarde un long moment, et tu comprends qu\\u2019elle évalue si tu es prêt à l\\u2019entendre ou seulement curieux. « Celle qui regarde. Elle ne juge personne — elle attend que vous le fassiez, et pendant qu\\u2019elle regarde, vous osez. » Elle hausse les épaules. « Mon père l\\u2019a citée à comparaître. C\\u2019était un homme très sérieux. »",
+     "consequence": "Elle te regarde un long moment, et tu comprends qu’elle évalue si tu es prêt à l’entendre ou seulement curieux. « Celle qui regarde. Elle ne juge personne — elle attend que vous le fassiez, et pendant qu’elle regarde, vous osez. » Elle hausse les épaules. « Mon père l’a citée à comparaître. C’était un homme très sérieux. »",
      "donneDecouverte": "d.temoin_nomme"
     },
     {
      "id": "fille-ecouter",
      "label": "La laisser finir",
      "type": "passif",
-     "consequence": "Tu ne l\\u2019interromps pas. Elle va au bout, sans une hésitation — ce n\\u2019est pas la première fois qu\\u2019elle se le raconte, c\\u2019est juste la première fois qu\\u2019il y a quelqu\\u2019un dans la pièce."
+     "consequence": "Tu ne l’interromps pas. Elle va au bout, sans une hésitation — ce n’est pas la première fois qu’elle se le raconte, c’est juste la première fois qu’il y a quelqu’un dans la pièce."
     }
    ],
    "pointsInteret": [],
@@ -4624,8 +4625,8 @@
   {
    "id": "fille-moulin-4",
    "narration": [
-    "« Tu vas redescendre et tu vas leur en parler. Ils vont te regarder gentiment, et ils vont noter que tu parles à des gens qui n\\u2019existent pas. » Elle se remet à son ouvrage. « C\\u2019est comme ça qu\\u2019on commence. »",
-    "« Alors garde-moi pour toi. Et si tu passes le sud, ne te retourne pas pour vérifier si je suis toujours là. Je serai toujours là. C\\u2019est exactement le problème. »"
+    "« Tu vas redescendre et tu vas leur en parler. Ils vont te regarder gentiment, et ils vont noter que tu parles à des gens qui n’existent pas. » Elle se remet à son ouvrage. « C’est comme ça qu’on commence. »",
+    "« Alors garde-moi pour toi. Et si tu passes le sud, ne te retourne pas pour vérifier si je suis toujours là. Je serai toujours là. C’est exactement le problème. »"
    ],
    "choix": [
     {
@@ -4638,12 +4639,12 @@
      "id": "fille-veiller-avec",
      "label": "Veiller avec elle",
      "type": "passif",
-     "consequence": "Vous ne parlez plus. Elle tresse, tu regardes la lucarne, et rien ne vient — ni bruit sur le toit, ni ombre à la porte, ni corbeau sur la crête. Tu ne dors pas et pourtant tu te lèves reposé, ce qui ne t\\u2019était pas arrivé depuis la Borne. Le seul endroit du pays où l\\u2019on ne te compte pas.",
+     "consequence": "Vous ne parlez plus. Elle tresse, tu regardes la lucarne, et rien ne vient — ni bruit sur le toit, ni ombre à la porte, ni corbeau sur la crête. Tu ne dors pas et pourtant tu te lèves reposé, ce qui ne t’était pas arrivé depuis la Borne. Le seul endroit du pays où l’on ne te compte pas.",
      "repondBesoin": "dormir"
     },
     {
      "id": "fille-repartir",
-     "label": "Repartir sans s\\u2019attarder",
+     "label": "Repartir sans s’attarder",
      "type": "suite"
     }
    ],
@@ -4670,16 +4671,16 @@
   {
    "id": "veuve-cordes-sait-1",
    "narration": [
-    "Elle tresse sous le mur des cordes. Ses mains vont toutes seules — elle n\\u2019a pas besoin de regarder, et elle ne regarde pas.",
+    "Elle tresse sous le mur des cordes. Ses mains vont toutes seules — elle n’a pas besoin de regarder, et elle ne regarde pas.",
     "« Chacune est une personne. Je les coupe après. Ça les libère pas, mais ça fait quelque chose à faire. »",
-    "Toutes portent une étiquette. Sauf une, à hauteur d\\u2019œil, au centre du mur : sans nom, plus neuve que les autres."
+    "Toutes portent une étiquette. Sauf une, à hauteur d’œil, au centre du mur : sans nom, plus neuve que les autres."
    ],
    "choix": [
     {
      "id": "veuve-sans-nom",
-     "label": "« Celle-là n\\u2019a pas de nom. »",
+     "label": "« Celle-là n’a pas de nom. »",
      "type": "passif",
-     "consequence": "Ses mains ralentissent, sans s\\u2019arrêter tout à fait. « Non. » Elle laisse le mot seul un long moment. « Non, celle-là n\\u2019a pas de nom. »"
+     "consequence": "Ses mains ralentissent, sans s’arrêter tout à fait. « Non. » Elle laisse le mot seul un long moment. « Non, celle-là n’a pas de nom. »"
     },
     {
      "id": "veuve-plus-neuve",
@@ -4689,9 +4690,9 @@
      "seuil": 11,
      "hautEnjeu": false,
      "issues": {
-      "critique": "20 naturel. Tu ne demandes pas pourquoi elle est neuve : tu demandes depuis quand elle l\\u2019est. Ses mains s\\u2019arrêtent net, et elle te répond par un chiffre — trente ans — avant d\\u2019avoir décidé si elle voulait le dire.",
-      "reussite": "Elle suit ton regard, et comprend que tu as compté les fibres comme elle le fait, elle. « T\\u2019as l\\u2019œil pour quelqu\\u2019un qui passe. » Elle repose son ouvrage. C\\u2019est la première fois.",
-      "echec": "« Le chanvre vieillit mal ici. On refait. » Elle reprend son geste un peu trop vite, et le nœud qu\\u2019elle serre n\\u2019est pas celui qu\\u2019elle serrait avant.",
+      "critique": "20 naturel. Tu ne demandes pas pourquoi elle est neuve : tu demandes depuis quand elle l’est. Ses mains s’arrêtent net, et elle te répond par un chiffre — trente ans — avant d’avoir décidé si elle voulait le dire.",
+      "reussite": "Elle suit ton regard, et comprend que tu as compté les fibres comme elle le fait, elle. « T’as l’œil pour quelqu’un qui passe. » Elle repose son ouvrage. C’est la première fois.",
+      "echec": "« Le chanvre vieillit mal ici. On refait. » Elle reprend son geste un peu trop vite, et le nœud qu’elle serre n’est pas celui qu’elle serrait avant.",
       "funeste": "1 naturel. « Tu poses beaucoup de questions sur une corde. » Elle te regarde enfin, et son regard fait tout le tour de toi, comme on prend une mesure. ♦ −2"
      },
      "nature": "social",
@@ -4725,23 +4726,23 @@
   {
    "id": "veuve-cordes-sait-2",
    "narration": [
-    "Ses mains s\\u2019arrêtent. Première fois.",
-    "« Celle-là, je la refais. Trente ans que je la refais. Je la tresse, je la cloue, je la coupe. Et au matin suivant, elle est défaite. Pas coupée : défaite. Nœud par nœud, proprement, comme quelqu\\u2019un qui prend son temps. »",
+    "Ses mains s’arrêtent. Première fois.",
+    "« Celle-là, je la refais. Trente ans que je la refais. Je la tresse, je la cloue, je la coupe. Et au matin suivant, elle est défaite. Pas coupée : défaite. Nœud par nœud, proprement, comme quelqu’un qui prend son temps. »",
     "Un silence.",
-    "« Alors je recommence. Parce que si j\\u2019arrête, faudra que je dise à quelqu\\u2019un pourquoi. »"
+    "« Alors je recommence. Parce que si j’arrête, faudra que je dise à quelqu’un pourquoi. »"
    ],
    "choix": [
     {
      "id": "veuve-qui-defait",
      "label": "« Qui la défait ? »",
      "type": "passif",
-     "consequence": "« Personne. » Elle le dit trop vite, et l\\u2019entend elle-même. Elle reprend, plus bas : « Y a pas de nom à mettre dessus. C\\u2019est bien tout le problème de cette corde. »"
+     "consequence": "« Personne. » Elle le dit trop vite, et l’entend elle-même. Elle reprend, plus bas : « Y a pas de nom à mettre dessus. C’est bien tout le problème de cette corde. »"
     },
     {
      "id": "veuve-se-taire",
      "label": "Ne rien demander",
      "type": "passif",
-     "consequence": "Tu ne demandes rien. Elle t\\u2019en est visiblement reconnaissante : elle vient de dire tout haut, devant un inconnu, la chose qu\\u2019elle ne dit jamais, et elle a besoin d\\u2019un moment pour se remettre du bruit que ça a fait."
+     "consequence": "Tu ne demandes rien. Elle t’en est visiblement reconnaissante : elle vient de dire tout haut, devant un inconnu, la chose qu’elle ne dit jamais, et elle a besoin d’un moment pour se remettre du bruit que ça a fait."
     }
    ],
    "pointsInteret": [],
@@ -4770,8 +4771,8 @@
   {
    "id": "veuve-cordes-sait-3",
    "narration": [
-    "Elle reprend son ouvrage, et le mur reprend son bruit — ce froissement continu de chanvre qu\\u2019on croirait fait par le vent.",
-    "« Mets pas d\\u2019étiquette dessus. Une corde sans nom, c\\u2019est une corde en attente. Une corde avec un nom, c\\u2019est un fait. »"
+    "Elle reprend son ouvrage, et le mur reprend son bruit — ce froissement continu de chanvre qu’on croirait fait par le vent.",
+    "« Mets pas d’étiquette dessus. Une corde sans nom, c’est une corde en attente. Une corde avec un nom, c’est un fait. »"
    ],
    "choix": [
     {
@@ -4783,7 +4784,7 @@
      "id": "veuve-remercier",
      "label": "La remercier",
      "type": "passif",
-     "consequence": "Elle hausse une épaule sans lever les yeux. « Me remercie pas. J\\u2019ai rien dit. » Et c\\u2019est vrai : si on lui demande, elle n\\u2019aura rien dit, et elle le pensera.",
+     "consequence": "Elle hausse une épaule sans lever les yeux. « Me remercie pas. J’ai rien dit. » Et c’est vrai : si on lui demande, elle n’aura rien dit, et elle le pensera.",
      "soupcon": -1
     }
    ],
@@ -4823,8 +4824,8 @@
     {
      "id": "cloche-sans-battant",
      "label": "Le clocheton, dehors",
-     "approche": "Tu ressors par le côté. Le clocheton n\\u2019est pas haut — deux hommes suffiraient à l\\u2019atteindre, et la corde d\\u2019appel pend jusqu\\u2019à hauteur de main, propre, entretenue.",
-     "examen": "Tu tires la corde par curiosité. Rien ne vient. La cloche bascule, revient, bascule encore — et ne sonne pas : elle n\\u2019a plus de battant. L\\u2019attache est là, intacte. On ne l\\u2019a pas cassée : on l\\u2019a dévissée.",
+     "approche": "Tu ressors par le côté. Le clocheton n’est pas haut — deux hommes suffiraient à l’atteindre, et la corde d’appel pend jusqu’à hauteur de main, propre, entretenue.",
+     "examen": "Tu tires la corde par curiosité. Rien ne vient. La cloche bascule, revient, bascule encore — et ne sonne pas : elle n’a plus de battant. L’attache est là, intacte. On ne l’a pas cassée : on l’a dévissée.",
      "donneDecouverte": "d.cloche_sans_battant",
      "image": {
       "fichier": "scene_chapelle_cloche_sans_battant_b.png",
@@ -5120,7 +5121,9 @@
   },
   {
    "id": "chien-du-bailli",
-   "narration": [],
+   "narration": [
+    "La maison se tient seule à l'ouest du hameau, haute, sans voisine — et murée de l'intérieur. Chaque fenêtre bouchée de pierres posées depuis dedans, en rangs pressés, par quelqu'un qui s'enfermait plus qu'il ne se protégeait. La maison du Bailli. Vide depuis sa corde. Pas gardée par personne."
+   ],
    "choix": [
     {
      "id": "longer-fenetres",
@@ -5169,7 +5172,7 @@
    "mèneIci": [],
    "roles": [],
    "acces": "traversée",
-   "etat": "brouillon",
+   "etat": "valide",
    "alertes": []
   },
   {
@@ -5357,9 +5360,9 @@
    "choix": [
     {
      "id": "ecrivain-defenses",
-     "label": "L\\u2019interroger sur son travail",
+     "label": "L’interroger sur son travail",
      "type": "passif",
-     "consequence": "« J\\u2019écris les dénonciations et les défenses. Les deux. » Il range sa plume avec un soin d\\u2019horloger. « Depuis quelques années, on me demande plus de défenses. » Il dit ça comme on constate une baisse de commandes.",
+     "consequence": "« J’écris les dénonciations et les défenses. Les deux. » Il range sa plume avec un soin d’horloger. « Depuis quelques années, on me demande plus de défenses. » Il dit ça comme on constate une baisse de commandes.",
      "donneDecouverte": "d.plus_de_defenses"
     },
     {
@@ -5625,8 +5628,8 @@
     {
      "id": "creux-doubles",
      "label": "Les creux dans la berge",
-     "approche": "Tu longes la berge jusqu\\u2019à l\\u2019endroit où la terre est tassée, luisante, usée jusqu\\u2019à la pierre. On s\\u2019agenouille ici depuis longtemps.",
-     "examen": "Les creux de genoux sont doubles. Une paire devant, au ras de l\\u2019eau. Une autre juste derrière, plus large, plus profonde — et orientée dans le même sens. Quelqu\\u2019un se tenait toujours au-dessus de celui qui se penchait. Ce n\\u2019est pas un endroit où l\\u2019on vient voir son reflet : c\\u2019est un endroit où on l\\u2019amène.",
+     "approche": "Tu longes la berge jusqu’à l’endroit où la terre est tassée, luisante, usée jusqu’à la pierre. On s’agenouille ici depuis longtemps.",
+     "examen": "Les creux de genoux sont doubles. Une paire devant, au ras de l’eau. Une autre juste derrière, plus large, plus profonde — et orientée dans le même sens. Quelqu’un se tenait toujours au-dessus de celui qui se penchait. Ce n’est pas un endroit où l’on vient voir son reflet : c’est un endroit où on l’amène.",
      "donneDecouverte": "d.mare_depistage",
      "image": {
       "fichier": "scene_mare_creux_doubles_v2_b.png",
@@ -6014,7 +6017,7 @@
      "id": "epoux-la-dame",
      "label": "Demander qui passe par ici",
      "type": "passif",
-     "consequence": "« Personne. » L\\u2019homme bêche. Puis, sans s\\u2019arrêter : « La jeune, des fois. Elle passe entre les rangs. On se dit bonjour. » Sa femme ne dit rien. Il bêche un peu plus vite qu\\u2019avant.",
+     "consequence": "« Personne. » L’homme bêche. Puis, sans s’arrêter : « La jeune, des fois. Elle passe entre les rangs. On se dit bonjour. » Sa femme ne dit rien. Il bêche un peu plus vite qu’avant.",
      "donneDecouverte": "d.fille_apercue"
     },
     {
@@ -6431,7 +6434,7 @@
      "id": "franchir-descente",
      "label": "Franchir la Descente",
      "type": "passif",
-     "consequence": "Le Veilleur ne t\\u2019arrête pas. Il pousse le portillon et se range, comme on s\\u2019écarte d\\u2019un convoi. Derrière toi, la lanterne reste allumée en plein jour \\u2014 pour le suivant.",
+     "consequence": "Le Veilleur ne t’arrête pas. Il pousse le portillon et se range, comme on s’écarte d’un convoi. Derrière toi, la lanterne reste allumée en plein jour — pour le suivant.",
      "tags": [
       "citable"
      ]
@@ -6466,7 +6469,8 @@
   {
    "id": "proces-du-heros",
    "narration": [
-    "Ils ne te courent pas après — ils t'attendent au tournant du muret, le hameau entier, dans ce silence de gens qui ont déjà décidé. On ne te touche pas. On marche autour de toi, jusqu'au Petit Tribunal."
+    "Ils ne te courent pas après — ils t'attendent au tournant du muret, le hameau entier, dans ce silence de gens qui ont déjà décidé. On ne te touche pas. On marche autour de toi, jusqu'au Petit Tribunal.",
+    "La Doyenne laisse le silence retomber, puis referme le cahier de l'Écrivain d'une main. L'Ordonnance de la Fixation s'applique. À moins que tu ne parles mieux qu'eux."
    ],
    "choix": [
     {

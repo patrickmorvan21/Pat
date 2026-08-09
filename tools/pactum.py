@@ -133,6 +133,7 @@ class Partie:
             "etats": {}, "besace": [], "poiVus": [], "geolierVus": [],
             "ambiancesVues": [], "poiOuvert": False, "morte": False,
             "des": [], "journal": [], "sortie": None, "hameauEntree": False,
+            "procesVu": False,
         }
         p = cls(d)
         p.entrer(k["entree"], premier=True)
@@ -191,6 +192,13 @@ class Partie:
             self.dit("• RENCONTRE • " + (s.get("adversaireNom") or s.get("nom") or ""), "rencontre")
         for p in s.get("narration", []):
             self.dit(p, "narration")
+        if s.get("registre"):
+            self.dit(
+                "[Le Grand Registre défile : cent noms classés par jours de "
+                "survie, la première ligne grattée jusqu'à la pierre. Ta ligne "
+                "s'y inscrit, quelque part dans le bas du livre.]",
+                "narration",
+            )
         self.geolierPeutParler(s)
 
     def geolierPeutParler(self, s: dict) -> None:
@@ -226,6 +234,15 @@ class Partie:
 
     # -- liaison
     def liaison(self) -> None:
+        # LE PROCÈS (comme le vrai moteur) : Soupçon au comble → la traversée
+        # est DÉROUTÉE, on vient te chercher. Sans ça, la réplique laissait le
+        # Soupçon monter sans conséquence et faussait tout jugement du coût
+        # social (panel 9/08).
+        if self.d["soupcon"] >= 6 and not self.d.get("procesVu") and "proces-du-heros" in self.k["scenes"]:
+            self.d["procesVu"] = True
+            self.d["phase"] = "scene"
+            self.entrer("proces-du-heros")
+            return
         libres = [x for x in self.k["pool"] if x not in self.d["visites"]]
         if not self.d["hameauEntree"]:
             libres = [x for x in libres if x not in self.k["hameauInterieur"]]
@@ -296,10 +313,9 @@ class Partie:
             self.dit(p["approche"], "narration")
             self.dit(p["examen"], "narration")
             if p.get("soupcon"):
-                self.d["soupcon"] += p["soupcon"]
+                self.d["soupcon"] = min(6, self.d["soupcon"] + p["soupcon"])
             if p.get("donneObjet"):
-                self.d["besace"].append(p["donneObjet"])
-                self.dit("OBTENU — " + p["donneObjet"].replace("-", " "), "obtenu")
+                self.gagner(p["donneObjet"])
             if p.get("ouvreSur"):
                 self.entrer(p["ouvreSur"])
             return
@@ -311,20 +327,25 @@ class Partie:
 
         c = o["c"]
         if c.get("soupcon"):
-            self.d["soupcon"] += c["soupcon"]
+            self.d["soupcon"] = min(6, self.d["soupcon"] + c["soupcon"])
         if c["type"] == "risque":
             self.resoudre(c)
         else:
             if c.get("consequence"):
                 self.dit(c["consequence"], "narration")
             if c.get("donneObjet"):
-                self.d["besace"].append(c["donneObjet"])
-                self.dit("OBTENU — " + c["donneObjet"].replace("-", " "), "obtenu")
+                self.gagner(c["donneObjet"])
             if c.get("repos"):
                 self.d["jour"] += 1
                 self.d["sante"] = min(1.0, self.d["sante"] + 0.35)
                 self.dit(f"JOUR {self.d['jour']}", "jour")
             self.suite()
+
+    def gagner(self, oid: str) -> None:
+        """L'objet est nommé par son NOM, jamais par son identifiant."""
+        self.d["besace"].append(oid)
+        nom = self.k.get("objets", {}).get(oid) or oid.replace("-", " ")
+        self.dit("OBTENU — " + nom, "obtenu")
 
     def modificateur(self) -> int:
         m = 0
@@ -369,7 +390,7 @@ class Partie:
         if cout:
             self.d["sante"] = max(0.0, round(self.d["sante"] - cout, 3))
         if rate and nature == "social" and not s.get("combat"):
-            self.d["soupcon"] += 2 if dur else 1
+            self.d["soupcon"] = min(6, self.d["soupcon"] + (2 if dur else 1))
         if dur and nature == "surnaturel":
             self.d["etats"]["hante" if palier == "critique" else "marque"] = 999
             self.dit("ÉTAT — " + ("Hanté" if palier == "critique" else "Marqué"), "etat")
@@ -390,6 +411,13 @@ class Partie:
                 if self.d["etats"][e] <= 0:
                     del self.d["etats"][e]
 
+        if not rate and c.get("donneObjet"):
+            self.gagner(c["donneObjet"])
+        if s.get("procesFixation") and rate:
+            self.mourir(texte or "Le hameau a jugé.")
+            return
+        if s.get("procesFixation"):
+            self.d["soupcon"] = 3
         if self.d["sante"] <= 0:
             self.mourir(texte)
             return

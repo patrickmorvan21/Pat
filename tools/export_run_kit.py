@@ -135,6 +135,16 @@ def main() -> int:
         "bifurcations": chaines_de_tableau(bloc_tableau(src, "const BIFURCATIONS")),
         "geolierLiaison": chaines_de_tableau(bloc_tableau(src, "const LIAISON_JAILER")),
         "geolier": geolier,
+        # Noms RÉELS des objets (le kit affichait l'identifiant brut,
+        # « craie condamne » — relevé par tout le panel du 9/08).
+        "objets": {
+            m.group(1): m.group(2)
+            for m in re.finditer(
+                r'"([a-z0-9\-]+)":\s*\{[^}]*?name:\s*"([^"]+)"',
+                (LIB / "besace.ts").read_text(encoding="utf-8"),
+                re.S,
+            )
+        },
         "lieux": {
             l["id"]: l["nom"]
             for l in json.loads((DATA / "zones" / "landes.json").read_text(encoding="utf-8")).get("lieux", [])
