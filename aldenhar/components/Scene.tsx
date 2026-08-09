@@ -3122,7 +3122,12 @@ export default function Scene() {
             // Un échec d'exploration coûte ce que son texte dit : l'occasion,
             // et le fait d'avoir été vu. Le Jour n'avance plus qu'en MARCHANT
             // (un tous les trois lieux) et au campement.
-            const usureDay = false; // plus aucun Jour automatique — voir plus haut
+            // Le Jour n'est plus JAMAIS automatique — mais un texte qui dit
+            // que des heures ont passé doit être suivi d'effet. `coutJour` est
+            // déclaré choix par choix, par celui qui écrit la prose.
+            const usureDay =
+              tierIsFail(tier) &&
+              Boolean(scene.choices.find((c) => c.id === selectedId)?.coutJour);
             // Objet gagné par un choix d'examen réussi (grantsLoot, 23/07) :
             // l'objet se mérite — jamais accordé sur un palier d'échec.
             const chosen = scene.choices.find((c) => c.id === selectedId);
@@ -3224,17 +3229,33 @@ export default function Scene() {
               // Soupçon : c'est LE coût d'un échec social (arbitrage 9/08).
               // Rater une parole ne saigne pas — ça se remarque. Un échec dur
               // se remarque deux fois plus.
+              // MALÉDICTION STRICTEMENT PIRE QUE FUNESTE (panel du 9/08, l'un
+              // des trois chiffres isolés) : la pire face du dé ne peut pas
+              // coûter la même chose qu'un simple échec dur. C'était vrai côté
+              // santé (0,30 contre 0,26), faux côté social — les deux
+              // valaient +2. Un 1 naturel se raconte plus loin qu'un ratage.
               if (tierIsFail(tier) && natureJet === "social" && !scene.combat && !scene.fixationTrial) {
-                run.soupcon = Math.min(6, (run.soupcon ?? 0) + (hardFail ? 2 : 1));
+                const vu = tier === "malediction" ? 3 : hardFail ? 2 : 1;
+                run.soupcon = Math.min(6, (run.soupcon ?? 0) + vu);
                 const t = temoinPour("echec-empathie");
                 if (t && !(run.temoins ?? []).some((x) => x.id === t.id))
                   run.temoins = [...(run.temoins ?? []), t];
               }
               // Procès du héros gagné : le hameau a jugé, il se lasse — le
               // Soupçon retombe (et pourra remonter, avec ses manifestations).
+              // ⚠️ ARBITRAGE entre deux membres du panel, à connaître.
+              // Le systémiste demandait 5 (« une relaxe ne doit pas être une
+              // remise à zéro déguisée ») ; la joueuse mobile posait une
+              // condition : « d'accord uniquement si je vois la lame venir ».
+              // À 5, une seule parole ratée rouvre un procès, avec UNE seule
+              // manifestation d'avertissement. À 4, la relaxe coûte quand même
+              // (on est à deux crans du gouffre au lieu de trois) et les
+              // paliers 5 PUIS 6 se rejouent avant le second procès — les deux
+              // exigences tiennent. `soupconSeen` suit, sinon les
+              // manifestations resteraient muettes en remontant.
               if (scene.fixationTrial && !tierIsFail(tier)) {
-                run.soupcon = 3;
-                run.soupconSeen = 3;
+                run.soupcon = 4;
+                run.soupconSeen = 4;
               }
             });
             const run = runRef.current!;

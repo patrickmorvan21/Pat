@@ -99,6 +99,18 @@ export type Choice = {
    */
   sortie?: { toScene?: string };
   /**
+   * LE TEMPS PERDU, DÉCLARÉ TEXTE PAR TEXTE. Un échec dur sur ce choix coûte
+   * un Jour — parce que SA prose dit que des heures ont passé.
+   *
+   * ⚠️ Pourquoi un champ et pas une règle par nature : le 9/08 j'ai fait payer
+   * un Jour à TOUS les échecs d'exploration, et l'audit des textes l'a démenti
+   * (« Ils sont deux. Ils sont montés pendant que tu regardais en bas » ne
+   * raconte pas des heures perdues). La règle a donc été retirée en bloc, ce
+   * qui a rendu ces échecs gratuits. Déclarer le coût sur le choix est le seul
+   * réglage qui ne peut jamais contredire ce qui est écrit.
+   */
+  coutJour?: boolean;
+  /**
    * 4e choix contextuel (spec 21/07, point 4) : utiliser un objet ACTIF de la
    * Besace pertinent dans la scène (ex. un baume quand ENTAILLÉ). Consommé,
    * puis la scène se résout. Ajouté dynamiquement, jamais écrit en dur.
@@ -5314,6 +5326,11 @@ export const SCENES: Scene[] = [
       {
         id: "quitter-verger",
         nature: "exploration",
+        // Sa prose D'ÉCHEC dit le temps, explicitement — « Tu tournes deux
+        // fois dans les mêmes rangs… Ça n'aurait pas dû prendre si
+        // longtemps. » C'est le seul échec de la zone qui le dise ; c'est donc
+        // le seul qui coûte un Jour.
+        coutJour: true,
         label: "Sortir des rangs",
         risky: {
           stat: "INSTINCT",

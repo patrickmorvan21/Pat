@@ -174,6 +174,7 @@ export default function Die3D({ request, onComplete }: Props) {
 
   const requestRef = useRef<RollRequest | null>(null);
   const onCompleteRef = useRef(onComplete);
+  const gesteRef = useRef<HTMLDivElement | null>(null);
   const activateRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
@@ -189,13 +190,14 @@ export default function Die3D({ request, onComplete }: Props) {
     const helpLink = helpLinkRef.current;
     const hint = hintRef.current;
     const etatLigne = etatLigneRef.current;
+    const geste = gesteRef.current;
     const flash = flashRef.current;
     const halo = haloRef.current;
     const veil = veilRef.current;
     const verdict = verdictRef.current;
     const vWord = vWordRef.current;
     const vOut = vOutRef.current;
-    if (!root || !canvas || !ring || !help || !helpLink || !hint || !etatLigne || !flash || !halo || !veil || !verdict || !vWord || !vOut) return;
+    if (!root || !canvas || !ring || !help || !helpLink || !hint || !etatLigne || !geste || !flash || !halo || !veil || !verdict || !vWord || !vOut) return;
 
     // Halo tramé (jamais un dégradé CSS) : image générée une fois côté client.
     const haloUrl = getHaloDataUrl();
@@ -459,6 +461,43 @@ export default function Die3D({ request, onComplete }: Props) {
     }
     helpLink.addEventListener("click", onHelpDismiss);
 
+    /**
+     * LE GESTE S'ENSEIGNE (panel du 9/08, chantier n°0 — 4 voix sur 4 de ceux
+     * qui ont pu toucher le dé, aucune contestation).
+     *
+     * Rien sur cet écran ne dit qu'il faut LANCER : trois éléments ressemblent
+     * à un bouton et n'en sont pas, et le seul vrai bouton efface l'aide. Un
+     * débutant tape trois fois, rien ne bouge, il repose le téléphone — avant
+     * la première mort, donc avant tout le reste du jeu.
+     *
+     * La réponse n'est pas d'expliquer : c'est de MONTRER, une fois, en
+     * silence — une trace de pixels qui monte du dé, par paliers (jamais un
+     * fondu : la DA l'interdit). Elle s'arrête dès que le joueur a lancé d'un
+     * vrai geste, ou après trois armements — au-delà, elle harcèle.
+     */
+    const GESTE_KEY = "pactum-de-geste";
+    function gesteVus(): number {
+      try {
+        const v = localStorage.getItem(GESTE_KEY);
+        return v === "appris" ? -1 : Number(v ?? 0) || 0;
+      } catch {
+        return -1;
+      }
+    }
+    function noterGeste(v: string) {
+      try {
+        localStorage.setItem(GESTE_KEY, v);
+      } catch {
+        /* stockage indisponible : la démonstration se contentera de la session */
+      }
+    }
+    function syncGeste(montrer: boolean) {
+      const n = gesteVus();
+      const ok = montrer && n >= 0 && n < 3 && !animReduced();
+      geste!.classList.toggle("hidden", !ok);
+      if (ok) noterGeste(String(n + 1));
+    }
+
     // hidden : invisible. armed : voile + hint, saisissable (armement §4).
     let state = "hidden";
     let pos = { x: READY.x, y: READY.y };
@@ -519,6 +558,7 @@ export default function Die3D({ request, onComplete }: Props) {
       verdict.classList.remove("show");
       revealRing();
       syncHelp();
+      syncGeste(true);
     };
 
     /** Verdict retenu au moment du jet (naturel pour les critiques, modifié sinon). */
@@ -592,6 +632,7 @@ export default function Die3D({ request, onComplete }: Props) {
       // visibles derrière, estompés par le voile sombre.
       hideRing();
       help!.classList.add("hidden");
+      geste!.classList.add("hidden");
       grabOffset = { x: dx, y: dy };
       history = [p];
       haptic(10);
@@ -608,13 +649,23 @@ export default function Die3D({ request, onComplete }: Props) {
       angVel.x = -(p.y - prev.y) * 0.005;
       angVel.y = (p.x - prev.x) * 0.005;
     }
-    /** Relâché sans élan : le dé se repose, l'anneau et l'aide reviennent. */
-    function backToArmed() {
-      state = "returning";
-      hint!.classList.remove("hidden");
-      revealRing(true);
-      syncHelp();
-    }
+    /**
+     * ⚠️ AMENDEMENT À UNE RÈGLE VERROUILLÉE, à connaître (et réversible).
+     *
+     * Le prototype validé posait : « relâché sans élan suffisant, le dé RESTE
+     * POSÉ — pas de lancer accidentel ». Depuis le 9/08, tout relâchement le
+     * lance. Ce n'est pas un oubli : la prémisse de la règle a disparu. Elle
+     * protégeait un dé qui FLOTTAIT en permanence à l'écran (spec §4), qu'on
+     * pouvait frôler sans le vouloir. Depuis la décision du 11/07, le dé
+     * n'apparaît qu'au tap d'un choix risqué, il n'est plus annulable
+     * (renoncer à un jet armé a été refusé le 8/08), et le toucher est donc
+     * toujours intentionnel — il n'existe plus de lancer accidentel à éviter,
+     * seulement des joueurs bloqués (4 testeurs sur 4 en ont fait le premier
+     * défaut du jeu).
+     *
+     * Pour revenir en arrière : rétablir `backToArmed` (git, 9/08) sur les
+     * deux branches sans élan de `onUp`.
+     */
     /**
      * MODE TESTEUR (`?testeur=1` dans l'URL, 8/08) : un simple TAP sur le dé
      * armé le lance avec une impulsion aléatoire plausible. Réservé aux
@@ -632,12 +683,29 @@ export default function Die3D({ request, onComplete }: Props) {
       angVel = { x: -vel.y * 0.007, y: vel.x * 0.007, z: (Math.random() - 0.5) * 0.05 };
       return true;
     }
+    /**
+     * LE TAP DE SECOURS (panel du 9/08). Toucher le dé et relâcher sans élan
+     * le lance quand même — d'une main molle, mais il part. Le geste reste la
+     * belle façon de jouer : il envoie le dé plus loin et le fait rebondir
+     * davantage. Ce qui ne change PAS, c'est l'équité — le résultat est lu sur
+     * la face réellement tournée vers la caméra à l'immobilisation (règle
+     * verrouillée du 21/07), donc c'est la ROTATION qui doit être franche.
+     * Elle l'est : linéaire modeste, angulaire pleine et aléatoire sur les
+     * trois axes. Distribution mesurée sur 200 taps avant de livrer.
+     */
+    function lancerAuDoigt() {
+      state = "flying";
+      vel = { x: (Math.random() - 0.5) * 7, y: -(6.5 + Math.random() * 3) };
+      const r = () => (Math.random() < 0.5 ? -1 : 1) * (0.16 + Math.random() * 0.2);
+      angVel = { x: r(), y: r(), z: r() * 0.5 };
+      haptic(14);
+    }
     function onUp() {
       if (state !== "held") return;
       const now = performance.now();
       const recent = history.filter((h) => now - h.t < 110);
       if (recent.length < 2) {
-        if (!lancerSynthetique()) backToArmed();
+        if (!lancerSynthetique()) lancerAuDoigt();
         return;
       }
       const first = recent[0],
@@ -647,13 +715,16 @@ export default function Die3D({ request, onComplete }: Props) {
         vy = (last.y - first.y) / dt;
       const speed = Math.hypot(vx, vy);
       if (speed < 2.5) {
-        if (!lancerSynthetique()) backToArmed();
+        if (!lancerSynthetique()) lancerAuDoigt();
         return;
       }
       state = "flying";
       vel = { x: vx * 1.25, y: vy * 1.25 };
       angVel = { x: -vel.y * 0.007, y: vel.x * 0.007, z: (Math.random() - 0.5) * 0.05 };
       haptic(20);
+      // Un vrai lancer : la démonstration a fait son travail, elle se retire.
+      noterGeste("appris");
+      geste!.classList.add("hidden");
     }
     // Écouteurs sur le conteneur (hit-test identique) : le dé n'est saisissable
     // qu'en le touchant lui-même, et les choix restent cliquables.
@@ -1014,6 +1085,12 @@ export default function Die3D({ request, onComplete }: Props) {
         <button ref={helpLinkRef} type="button" className="die-help-link">
           Ne plus afficher
         </button>
+      </div>
+      {/* Le geste, MONTRÉ et non expliqué : trois carrés qui montent du dé,
+          par paliers. Trois armements au plus, et plus jamais dès le premier
+          vrai lancer. Aucun texte — l'écran en a déjà trop. */}
+      <div ref={gesteRef} className="die-geste hidden" aria-hidden="true">
+        <i /><i /><i />
       </div>
       <div ref={hintRef} className="die-hint hidden">
         Lancer le dé
