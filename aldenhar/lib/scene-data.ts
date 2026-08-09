@@ -5714,14 +5714,46 @@ export const JAILER_BY_POSTURE: Record<JailerPosture, JailerPools> = {
       "J'ajoute ce {n} à ton registre. Il se remplit vite.",
       "Le dé t'a jugé. J'ai cessé de le faire depuis longtemps.",
       "{n}. Le précédent avait fait pareil. J'ai gardé sa besace.",
+      "{n}. Tu sais combien en sont morts sur ce chiffre exact ? Moi oui.",
+      "Ah. J'avais parié plus haut. Je perds rarement — profite.",
+      "{n}. Ce n'est pas de la malchance. C'est une moyenne.",
+      "Tu tiens le dé comme on tient une promesse. Ça se voit, et ça ne sert à rien.",
+      "Un {n}. Je note l'heure aussi. On ne sait jamais ce qui servira.",
+      "Tu recommenceras. Ils recommencent tous. C'est ce qui me nourrit.",
+      "{n}. Le Domaine n'a pas triché. Il n'en a pas besoin.",
+      "J'aime ce moment. Celui où tu comprends que le chiffre est tombé.",
+      "Un {n}. Je te dirais bien que ce n'est pas grave. Je mens mal.",
+      "{n}. Trois avant toi ont eu ce chiffre ce matin. Deux dorment déjà.",
+      "Le dé ne te déteste pas. Ce serait un progrès, s'il te détestait.",
+      "{n}. Tu regardes le dé comme s'il pouvait changer d'avis.",
+      "Un {n}, et cette tête. J'ai vu la même exactement, hier, ailleurs.",
+      "{n}. Voilà. C'est fait. On peut passer à la suite de ta petite affaire.",
+      "Tu voulais un signe. Le voilà : {n}. Interprète-le comme tu veux.",
+      "{n}. Rassure-toi, personne ne compte. À part moi. Uniquement moi.",
     ],
     critFail: [
       "La pire face du dé. Je l'encadrerais, si mes murs étaient à moi.",
       "1. Le dé lui-même a eu pitié — puis non.",
+      "Le plus petit chiffre qui existe, et il est pour toi. Quelle attention.",
+      "Un. Il n'y a rien en dessous. J'ai vérifié, jadis, pour quelqu'un.",
+      "Ça, c'est du travail. On ne rate pas si bien par hasard.",
+      "Le dé s'est couché sur sa plus mauvaise face, exprès, pour toi.",
+      "Un. Le chiffre des débuts et des fins. Devine lequel des deux.",
+      "J'ai un endroit où je range ces moments-là. Il est plein.",
+      "Le dé a hésité une seconde. Puis il a choisi la cruauté.",
+      "Un. Ne dis rien. Écoute plutôt : quelque chose a entendu, lui aussi.",
     ],
     critSuccess: [
       "Un 20. Rare. Je note, je n'applaudis pas.",
       "Un jet parfait. Ne t'y habitue pas.",
+      "Le dé s'est trompé en ta faveur. Ça arrive. Une fois.",
+      "Bien. Voilà de quoi tenir jusqu'au prochain chiffre.",
+      "La meilleure face. Elle ne te doit rien : elle passait par là.",
+      "Je préfère quand tu échoues. Mais je reconnais un beau jet.",
+      "Le sommet du dé. Souviens-t'en, ça t'aidera à mesurer la chute.",
+      "Impeccable. J'inscris ça aussi. Les deux colonnes servent.",
+      "Tu viens d'être chanceux. Le mot juste, c'est chanceux.",
+      "Vingt. Le Domaine te laisse ce point. Il compte les siens autrement.",
     ],
   },
   interesse: {
@@ -5729,14 +5761,42 @@ export const JAILER_BY_POSTURE: Record<JailerPosture, JailerPools> = {
       "Un {n}. Tu vaux mieux que ça, d'habitude. C'est nouveau, ça, « d'habitude ».",
       "{n}. J'ai fini par retenir ton nom. Ne me le fais pas regretter.",
       "Le dé hésite sur toi, maintenant. Moi aussi.",
+      "{n}. Ce n'est pas ton meilleur jour. J'en ai vu de meilleurs — les tiens.",
+      "Un {n}. Tu vas t'en remettre. C'est bien ce qui m'intrigue.",
+      "{n}. Tu tombes moins bêtement qu'avant. Je ne sais pas si c'est bon signe.",
+      "Je m'attendais à mieux. Note bien : je m'attends à quelque chose, désormais.",
+      "{n}. Tu as failli. Failli m'intéresse plus que raté.",
+      "Un {n}, et tu restes debout. On me l'aurait dit, la semaine dernière.",
+      "{n}. Tu apprends à perdre. C'est la moitié du chemin, ici.",
+      "Le chiffre est mauvais. Ta façon de le prendre l'est moins.",
+      "{n}. Curieux. Tu ne fais plus les mêmes erreurs — tu en trouves de neuves.",
+      "Un {n}. Je te regarde, en ce moment. Ça devrait t'inquiéter.",
+      "{n}. Tu commences à peser dans mes comptes. Un peu.",
+      "Ce n'est pas le dé qui t'a manqué. Nous le savons tous les deux.",
     ],
     critFail: [
       "Un 1. De ta part, ça me surprend presque. Presque.",
       "La pire face possible. Tiens. Toi qui tenais si bien.",
+      "Un. Après tout ce chemin. Le Domaine a de l'humour, à sa façon.",
+      "Voilà qui gâche une belle série. J'en suis presque contrarié.",
+      "Un. Je ne me moque pas. Note bien le moment : je ne me moque pas.",
+      "Le dé t'a lâché. Il ne lâche que ceux qu'il a tenus.",
+      "Un. Ça, c'est le genre de chiffre qui décide d'une histoire.",
+      "Tu ne méritais pas ce jet. Je le dis rarement.",
+      "Un. Relève-toi vite. Certains, ici, ne se relèvent pas de moins.",
+      "Le pire chiffre, et tu es encore là. Pour l'instant.",
     ],
     critSuccess: [
       "Un 20. Je commence à comprendre pourquoi tu dures.",
       "Le dé au sommet. Bien. Continue, que je voie jusqu'où.",
+      "Voilà. C'est ça que j'attendais de toi. Recommence.",
+      "Parfait. Tu deviens difficile à ranger dans mes colonnes.",
+      "Vingt. Tu ne t'es pas contenté de survivre. C'est autre chose.",
+      "Beau jet. Je vais devoir revoir ce que je pariais sur toi.",
+      "Le dé t'a suivi. Il ne suit pas n'importe qui.",
+      "Bien joué. Vraiment. Ne me fais pas répéter, ça m'écorche.",
+      "Vingt. Personne ne saura. Moi si. C'est déjà quelque chose.",
+      "Le sommet. Tu commences à ressembler à quelqu'un qu'on retient.",
     ],
   },
   respectueux: {
@@ -5744,23 +5804,62 @@ export const JAILER_BY_POSTURE: Record<JailerPosture, JailerPools> = {
       "Un {n}. Même les meilleurs trébuchent. Relève-toi — je regarde.",
       "{n}. Ce n'est pas la fin. Pas pour toi, pas encore.",
       "Le dé s'est trompé de héros. Ça arrive, même ici.",
+      "{n}. Un mauvais chiffre ne défait pas ce que tu as fait avant.",
+      "Un {n}. Je ne te compterai pas ça. Pas cette fois.",
+      "{n}. Tu as connu pire, et j'y étais.",
+      "Le dé te teste. Il ne teste que ce qui résiste.",
+      "{n}. Prends le temps. Le Domaine, lui, en a trop.",
+      "Un {n}. Je te dirais bien de faire attention. Tu le fais déjà.",
+      "{n}. Ce n'est pas la peine de serrer les dents. Je ne note pas les échecs comme les autres, pour toi.",
+      "Le chiffre est petit. Ta traversée ne l'est plus.",
+      "{n}. Je te regarde encaisser. C'est la partie que je préfère, maintenant.",
+      "Un {n}. Ça ne changera rien à la façon dont ça finira. Je le regrette presque.",
+      "{n}. Tu tomberas un jour. Ce jour-là, je serai attentif.",
+      "Le dé n'a pas voulu. Toi, si. C'est la différence.",
     ],
     critFail: [
       "Un 1. J'en ai vu mille avant toi. Aucun ne m'avait manqué. Toi, si.",
       "La pire face, au pire moment. Si tu tombes ici, je retiendrai le jour. Je te le dois.",
+      "Un. Après ce que tu as traversé, c'est presque indécent.",
+      "Le dé n'a aucune mémoire. C'est sa seule vertu, et son seul défaut.",
+      "Un. Je n'aime pas ce chiffre sur toi. Voilà, c'est dit.",
+      "Ce jet-là ne te ressemble pas. Le Domaine s'en moque, mais moi je l'ai noté.",
+      "Un. Tiens bon. Je n'ai pas fini de te regarder marcher.",
+      "Le pire chiffre. Il faudra plus que ça, et le Domaine le sait.",
+      "Un. Certains se seraient arrêtés là. Pas toi. Enfin — j'espère.",
+      "Le dé s'est couché. Reste debout, toi.",
     ],
     critSuccess: [
       "Un 20. Voilà pourquoi ton nom monte dans le Registre.",
       "Rien à redire à ce jet. Propre. Tu n'es plus tout à fait un divertissement.",
+      "Le sommet du dé, et tu ne t'en vantes même pas. C'est ce qui me retient.",
+      "Vingt. Je ne dirai pas que tu l'as mérité. Je le penserai.",
+      "Parfait. Un jour, quelqu'un racontera ce jet. Probablement moi.",
+      "Le dé et toi allez dans le même sens. Profite : ça ne dure jamais.",
+      "Vingt. Tu commences à me coûter des paris.",
+      "Beau. Franchement beau. Ne me demande pas de le répéter.",
+      "Le meilleur jet possible. Il te va bien.",
+      "Vingt. Le Registre s'en souviendra. J'y veille.",
     ],
   },
 };
 
-export function jailerTaunt(result: number, posture: JailerPosture = "amuse"): string {
+export function jailerTaunt(
+  result: number,
+  posture: JailerPosture = "amuse",
+  vues: string[] = []
+): { text: string; gabarit: string } {
   const pools = JAILER_BY_POSTURE[posture];
   const pool = result === 1 ? pools.critFail : result === 20 ? pools.critSuccess : pools.fail;
-  const line = pool[Math.floor(Math.random() * pool.length)];
-  return line.replace("{n}", String(result));
+  // Dédup intra-run (retour Patrick 8/08 : « il répète souvent les mêmes
+  // phrases dans une même run »). Les pools ont été multipliés par cinq, mais
+  // un tirage sans mémoire répète quand même — on compare sur le GABARIT
+  // (avant substitution de {n}), sinon deux résultats différents feraient
+  // passer la même phrase pour neuve.
+  const frais = pool.filter((t) => !vues.includes(t));
+  const el = frais.length ? frais : pool;
+  const gabarit = el[Math.floor(Math.random() * el.length)];
+  return { text: gabarit.replace("{n}", String(result)), gabarit };
 }
 
 /** Compat : anciens exports conservés (posture Amusé), au cas où référencés ailleurs. */
@@ -6133,16 +6232,24 @@ export function estHameau(id: string): boolean {
 
 /** Ambiances de marche génériques (spec 21/07) — FALLBACK quand aucune liaison
     contextuelle ne s'applique. Comptent dans le pool des ~30 (chantier 4). */
+// Fond de liaison NEUTRE : jouable partout, y compris d'une ruelle du hameau à
+// l'autre — ces phrases n'affirment aucun décor.
 const LIAISON_AMBIANCES: string[] = [
-  "Tu marches. La lande ne finit pas — elle se répète, talus après talus, sous le même crépuscule qui ne tombe jamais.",
   "Le vent pousse une odeur de corde mouillée et de terre retournée. Quelque part, toujours, une potence grince.",
-  "La bruyère efface derrière toi les traces de ceux qui ont choisi avant. Devant, elle ne promet rien.",
   "Un long moment sans rien : juste tes pas, et la sensation d'être compté par quelque chose que tu ne vois pas.",
   "Le chemin se creuse, remonte, se divise. Ici, on ne va pas quelque part — on s'éloigne de la Borne.",
   "Un berger recoud une sangle, assis sur une pierre, son bâton en travers des genoux. Il tire sur le fil, vérifie, tire encore. Rien d'autre. C'est reposant comme un feu éteint.",
   "Quelqu'un a empilé des pierres plates en tas régulier au bord du chemin, pour plus tard, pour un muret. Le travail est propre. Celui qui l'a fait comptait revenir.",
-  "Deux silhouettes fauchent la bruyère au loin, à contretemps l'une de l'autre. Le bruit des lames arrive décalé, paisible, comme un vieux couple qui ne se parle plus par confort.",
   "Une alouette monte, chante, retombe. Tu la suis des yeux jusqu'au bout. Il ne se passe rien d'autre, et pendant un instant, c'est exactement ce qu'il fallait.",
+];
+
+// Fond de liaison de PLEINE LANDE : ces phrases nomment la bruyère, les talus,
+// l'horizon — elles seraient fausses entre deux murets du hameau (audit
+// d'immersion 8/08). Ajoutées au fond seulement quand on ne part pas du village.
+const LIAISON_AMBIANCES_LANDE: string[] = [
+  "Tu marches. La lande ne finit pas — elle se répète, talus après talus, sous le même crépuscule qui ne tombe jamais.",
+  "La bruyère efface derrière toi les traces de ceux qui ont choisi avant. Devant, elle ne promet rien.",
+  "Deux silhouettes fauchent la bruyère au loin, à contretemps l'une de l'autre. Le bruit des lames arrive décalé, paisible, comme un vieux couple qui ne se parle plus par confort.",
 ];
 
 /**
@@ -6294,6 +6401,10 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
     text: "Sur une pierre du chemin, une croix à la craie — vieille, à moitié lavée. Pas la tienne. Quelqu'un d'autre, avant toi, a entendu quelque chose. Tu ne sauras pas où il pend.",
   },
   {
+    // « On te retire la maison » est un geste de VILLAGE : la variante est
+    // réservée aux départs du hameau (elle jouait partout, jusqu'en pleine
+    // lande où aucune maison n'est garantie — audit d'immersion 8/08).
+    from: HAMEAU_INTERIOR,
     minSoupcon: 2, maxSoupcon: 3,
     text: "Le chemin longe une maison basse. Un volet se ferme — pas vite, pas peureusement. Posément. On ne se cache pas de toi : on te retire la maison, c'est différent.",
   },
@@ -6311,7 +6422,7 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
   },
   {
     minSoupcon: 4, maxSoupcon: 5,
-    text: "On ne croise plus personne. C'est pire que d'être suivi : la lande s'est vidée sur ton passage, comme une rue avant une arrestation.",
+    text: "On ne croise plus personne. C'est pire que d'être suivi : tout s'est vidé sur ton passage, comme une rue avant une arrestation.",
   },
   {
     minSoupcon: 4, maxSoupcon: 5,
@@ -6324,11 +6435,11 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
   // ——— Santé (3) ———
   {
     maxHealth: 0.5,
-    text: "Chaque montée coûte. Tu comptes tes forces comme une bourse trop plate — et la lande le voit, qui te tend ses talus comme on tend un bras à un vieillard. Tu refuses. Pour l'instant.",
+    text: "Chaque montée coûte. Tu comptes tes forces comme une bourse trop plate — et le chemin le voit, qui te tend ses pentes comme on tend un bras à un vieillard. Tu refuses. Pour l'instant.",
   },
   {
     maxHealth: 0.3,
-    text: "Tu t'arrêtes deux fois pour souffler. La deuxième, la bruyère où tu poses la main reste marquée de rouge. La lande te goûte déjà.",
+    text: "Tu t'arrêtes deux fois pour souffler. La deuxième, la pierre où tu poses la main reste marquée de rouge. Le Domaine te goûte déjà.",
   },
   {
     maxHealth: 0.5,
@@ -6513,14 +6624,33 @@ function pickLiaisonAmbiance(ctx: LiaisonCtx | undefined, seed: number): string 
       return top[Math.floor(seeded(seed + 3) * top.length)].text;
     }
   }
-  const fond = LIAISON_AMBIANCES.filter(neuve);
-  const pool = fond.length > 0 ? fond : LIAISON_AMBIANCES;
+  // Le fond de pleine lande n'entre dans le tirage que si l'on ne part PAS du
+  // village : « la bruyère efface tes traces » sonne faux entre deux murets.
+  const tout = isHameauInterior(ctx?.from)
+    ? LIAISON_AMBIANCES
+    : [...LIAISON_AMBIANCES, ...LIAISON_AMBIANCES_LANDE];
+  const fond = tout.filter(neuve);
+  const pool = fond.length > 0 ? fond : tout;
   return pool[Math.floor(seeded(seed) * pool.length)];
 }
 
+// La liaison est l'écran le PLUS fréquent d'une run (une par lieu traversé) :
+// c'est ici que le Geôlier se répétait le plus (retour Patrick 8/08). Pool
+// porté de 2 à 12 phrases. Toutes doivent tenir en pleine lande ET dans une
+// ruelle du hameau — la même liaison sert les deux (audit d'immersion).
 const LIAISON_JAILER: string[] = [
   "Marche, marche. Toutes les routes des Landes finissent au même endroit. Je t'y attends.",
   "Tu choisis ton chemin. C'est mignon. Ça ne change que l'ordre des choses.",
+  "J'aime les marcheurs. Ils croient que le mouvement est une réponse.",
+  "Encore un pas. Encore un. Tu vois comme c'est facile de me suivre ?",
+  "Tu as mis moins de temps que le précédent. Il est mort plus loin, cela dit.",
+  "Personne ne se perd, ici. On arrive, c'est tout. Certains mettent des années.",
+  "Le Domaine ne te suit pas. Il n'en a pas besoin : il est déjà devant.",
+  "Tu comptes tes pas ? Non. Moi si. C'est mon métier, pas le tien.",
+  "Il y a des jours où je regarde onze mille silhouettes marcher en même temps. Aujourd'hui, je te regarde toi. Profites-en.",
+  "Rien ne t'attend au bout. C'est précisément pour ça que tu y vas.",
+  "Tu marches bien. Droit, régulier. Ça ne changera rien, mais ça se remarque.",
+  "Chaque route que tu ne prends pas, quelqu'un d'autre la prend. Je tiens les deux registres.",
 ];
 
 /** Une graine → un flottant [0,1) déterministe (liaisons stables à la reprise). */
@@ -6599,7 +6729,7 @@ function croisee(optA: string, optB: string, liaisonsJouees: number, seed: numbe
 const BIFURCATIONS: string[] = [
   "Le chemin se partage autour d'un muret effondré.",
   "La route cesse d'être une route. Deux traces continuent.",
-  "La bruyère s'ouvre en deux couloirs.",
+  "Le passage s'ouvre en deux couloirs.",
   "Il faut quitter la crête par l'un des deux versants.",
   "Le sentier hésite, puis renonce : à toi de trancher.",
   "Une pierre plantée marque la fourche. Personne n'y a gravé de direction.",

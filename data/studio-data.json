@@ -51,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-08-08T20:05:40Z",
- "commit": "11320ca",
+ "genere": "2026-08-09T07:37:59Z",
+ "commit": "95508ba",
  "zones": [
   {
    "id": "landes",
@@ -7969,14 +7969,11 @@
  ],
  "transitions": {
   "fond": [
-   "Tu marches. La lande ne finit pas — elle se répète, talus après talus, sous le même crépuscule qui ne tombe jamais.",
    "Le vent pousse une odeur de corde mouillée et de terre retournée. Quelque part, toujours, une potence grince.",
-   "La bruyère efface derrière toi les traces de ceux qui ont choisi avant. Devant, elle ne promet rien.",
    "Un long moment sans rien : juste tes pas, et la sensation d'être compté par quelque chose que tu ne vois pas.",
    "Le chemin se creuse, remonte, se divise. Ici, on ne va pas quelque part — on s'éloigne de la Borne.",
    "Un berger recoud une sangle, assis sur une pierre, son bâton en travers des genoux. Il tire sur le fil, vérifie, tire encore. Rien d'autre. C'est reposant comme un feu éteint.",
    "Quelqu'un a empilé des pierres plates en tas régulier au bord du chemin, pour plus tard, pour un muret. Le travail est propre. Celui qui l'a fait comptait revenir.",
-   "Deux silhouettes fauchent la bruyère au loin, à contretemps l'une de l'autre. Le bruit des lames arrive décalé, paisible, comme un vieux couple qui ne se parle plus par confort.",
    "Une alouette monte, chante, retombe. Tu la suis des yeux jusqu'au bout. Il ne se passe rien d'autre, et pendant un instant, c'est exactement ce qu'il fallait."
   ],
   "variantes": [
@@ -8147,6 +8144,9 @@
    {
     "texte": "Le chemin longe une maison basse. Un volet se ferme — pas vite, pas peureusement. Posément. On ne se cache pas de toi : on te retire la maison, c'est différent.",
     "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ],
      "minSoupcon": 2.0,
      "maxSoupcon": 3.0
     }
@@ -8173,7 +8173,7 @@
     }
    },
    {
-    "texte": "On ne croise plus personne. C'est pire que d'être suivi : la lande s'est vidée sur ton passage, comme une rue avant une arrestation.",
+    "texte": "On ne croise plus personne. C'est pire que d'être suivi : tout s'est vidé sur ton passage, comme une rue avant une arrestation.",
     "conditions": {
      "minSoupcon": 4.0,
      "maxSoupcon": 5.0
@@ -8194,13 +8194,13 @@
     }
    },
    {
-    "texte": "Chaque montée coûte. Tu comptes tes forces comme une bourse trop plate — et la lande le voit, qui te tend ses talus comme on tend un bras à un vieillard. Tu refuses. Pour l'instant.",
+    "texte": "Chaque montée coûte. Tu comptes tes forces comme une bourse trop plate — et le chemin le voit, qui te tend ses pentes comme on tend un bras à un vieillard. Tu refuses. Pour l'instant.",
     "conditions": {
      "maxHealth": 0.5
     }
    },
    {
-    "texte": "Tu t'arrêtes deux fois pour souffler. La deuxième, la bruyère où tu poses la main reste marquée de rouge. La lande te goûte déjà.",
+    "texte": "Tu t'arrêtes deux fois pour souffler. La deuxième, la pierre où tu poses la main reste marquée de rouge. Le Domaine te goûte déjà.",
     "conditions": {
      "maxHealth": 0.3
     }
@@ -8440,7 +8440,7 @@
   "bifurcations": [
    "Le chemin se partage autour d'un muret effondré.",
    "La route cesse d'être une route. Deux traces continuent.",
-   "La bruyère s'ouvre en deux couloirs.",
+   "Le passage s'ouvre en deux couloirs.",
    "Il faut quitter la crête par l'un des deux versants.",
    "Le sentier hésite, puis renonce : à toi de trancher.",
    "Une pierre plantée marque la fourche. Personne n'y a gravé de direction.",
@@ -8507,6 +8507,6 @@
   "temoins": 20,
   "etats": 7,
   "besoins": 3,
-  "transitions": 66
+  "transitions": 63
  }
 }

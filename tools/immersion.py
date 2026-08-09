@@ -101,9 +101,18 @@ def bloc_tableau(src: str, ancre: str) -> str:
     i = src.find(ancre)
     if i < 0:
         return ""
-    j = src.find("[", i)
-    if j < 0:
-        return ""
+    # ⚠️ Sauter les `[]` d'ANNOTATION DE TYPE : `const X: string[] = [` a un
+    # premier crochet qui se referme aussitôt. Ce piège rendait muets, sans
+    # rien signaler, tous les pools typés (ambiances, bifurcations, variantes
+    # de liaison) — trouvé le 8/08 en branchant le Geôlier sur l'audit.
+    j = i
+    while True:
+        j = src.find("[", j)
+        if j < 0:
+            return ""
+        if src[j + 1 :].lstrip()[:1] != "]":
+            break
+        j += 1
     prof = 0
     for k in range(j, len(src)):
         if src[k] == "[":
@@ -179,6 +188,20 @@ def pools() -> list[dict]:
     for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, "const LIAISON_AMBIANCES"))):
         out.append({"pool": f"liaison ambiance {i}", "garde": {"partout"}, "textes": [t]})
 
+    # — LE GEÔLIER. Deux pools, servis exactement là où le dé tombe et où la
+    #   marche passe : c'est-à-dire N'IMPORTE OÙ (pleine lande, combat, ruelle
+    #   du hameau). Aucune de ses phrases ne peut donc présupposer un décor.
+    jdeb = scene_src.find("export const JAILER_BY_POSTURE")
+    jobj = scene_src[jdeb : scene_src.find("\n};", jdeb)] if jdeb >= 0 else ""
+    postures = [m for m in re.finditer(r"\n  (amuse|interesse|respectueux):\s*\{", jobj)]
+    for n, m in enumerate(postures):
+        bloc = jobj[m.start() : postures[n + 1].start() if n + 1 < len(postures) else len(jobj)]
+        for cle in ("fail", "critFail", "critSuccess"):
+            for i, t in enumerate(chaines_de_tableau(bloc_tableau(bloc, f"{cle}:"))):
+                out.append({"pool": f"geôlier {m.group(1)}·{cle} {i}", "garde": {"partout"}, "textes": [t]})
+    for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, "const LIAISON_JAILER"))):
+        out.append({"pool": f"geôlier liaison {i}", "garde": {"partout"}, "textes": [t]})
+
     # — bifurcations : phrase de Croisée, partout.
     for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, "const BIFURCATIONS"))):
         out.append({"pool": f"bifurcation {i}", "garde": {"partout"}, "textes": [t]})
@@ -236,11 +259,16 @@ def pools() -> list[dict]:
         else:
             fm = re.search(r"from:\s*\[([^\]]*)\]", o)
             froms = re.findall(r'"([a-z-]+)"', fm.group(1)) if fm else []
-            garde = (
-                {"village", "gens"}
-                if froms and all(village_scene(s) for s in froms)
-                else {"partout", "gens"}
-            )
+            # Une variante conditionnée par sa PROVENANCE hérite du garde de
+            # cette provenance : partir d'un lieu du village autorise le
+            # village, partir d'un lieu extérieur GARANTIT la pleine lande.
+            # Sans `from`, elle joue partout et ne peut rien présupposer.
+            if froms and all(village_scene(s) for s in froms):
+                garde = {"village", "gens"}
+            elif froms and not any(village_scene(s) for s in froms):
+                garde = {"lande", "gens"}
+            else:
+                garde = {"partout", "gens"}
         out.append({"pool": f"liaison variante {i}", "garde": garde, "textes": [texte]})
 
     return out
@@ -256,6 +284,14 @@ EXEMPT: dict[str, str] = {
         "« à la vitesse d'un homme qui marche » est une COMPARAISON de "
         "vitesse, pas une présence — la chute (« rien ne marche nulle part ») "
         "fonctionne précisément parce qu'il n'y a personne.",
+    "liaison variante 5":
+        "« Trois corbeaux sur ton toit » est un DICTON que la Fille récite en "
+        "passant — le héros n'a pas de toit, et la phrase n'affirme rien du "
+        "décor autour de lui : c'est du discours rapporté, pas une description.",
+    "liaison variante 24":
+        "« AU LOIN, une cloche muette » place explicitement la source "
+        "ailleurs — un son de chapelle porte jusqu'en pleine lande, et rien "
+        "n'est affirmé sur ce qui entoure le héros.",
     "etat fixe · guérison":
         "« Le hameau détourne son attention » : le hameau est le SUJET du "
         "propos, pas le décor exigé — la phrase se lit de n'importe où, et la "

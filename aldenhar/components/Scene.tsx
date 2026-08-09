@@ -2127,11 +2127,23 @@ export default function Scene() {
         entries.push({ id: nextId(), kind: "narration", text: manif.texte });
       }
     }
+    // LE GEÔLIER (retour Patrick 8/08 : « il répète souvent les mêmes phrases
+    // dans une même run »). Deux sources, une seule mémoire : `run.jailerVues`
+    // retient les GABARITS servis cette vie.
+    //  • critiques → tirage dans le pool de la posture, filtré sur les vues ;
+    //  • 12 % → la ligne propre à la scène. Elle est unique par lieu, mais les
+    //    LIAISONS partagent un pool : si la ligne est déjà tombée, on se tait
+    //    plutôt que de la répéter mot pour mot (le Geôlier est rare par nature).
     const result = opts?.result;
+    const jailerVues = runRef.current?.jailerVues ?? [];
+    let jailerServi: string | null = null;
     if (result === 1 || result === 20) {
       const posture = jailerPosture(loadMemory());
-      entries.push({ id: nextId(), kind: "jailer", text: jailerTaunt(result, posture) });
-    } else if (chance(0.12)) {
+      const { text, gabarit } = jailerTaunt(result, posture, jailerVues);
+      jailerServi = gabarit;
+      entries.push({ id: nextId(), kind: "jailer", text });
+    } else if (chance(0.12) && !jailerVues.includes(nextScene.jailerLine)) {
+      jailerServi = nextScene.jailerLine;
       entries.push({ id: nextId(), kind: "jailer", text: nextScene.jailerLine });
     }
 
@@ -2212,6 +2224,8 @@ export default function Scene() {
       }
       // La loi du Domaine : manifestation servie, jamais deux fois par vie.
       if (loiIndex !== null) run.loiVues = [...(run.loiVues ?? []), loiIndex];
+      // Le Geôlier : gabarit servi, retenu pour ne pas retomber dessus.
+      if (jailerServi) run.jailerVues = [...(run.jailerVues ?? []), jailerServi];
       // Le témoin bâillonné l'est DÉFINITIVEMENT (il ne réapparaîtra pas si le
       // Soupçon remonte après une relaxe), et la relique est dépensée.
       if (bailloner) {

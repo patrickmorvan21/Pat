@@ -217,6 +217,15 @@ export type RunState = {
    */
   loiVues?: number[];
   /**
+   * LE GEÔLIER : gabarits de citations déjà servis dans cette vie (retour
+   * Patrick 8/08 : « il répète souvent les mêmes phrases dans une même run »).
+   * On mémorise le GABARIT (avant substitution de {n}) : sinon un 4 et un 11
+   * feraient passer deux fois la même phrase pour neuve. Quand un pool est
+   * épuisé, le tirage reprend dedans — mieux vaut une reprise tardive qu'un
+   * Geôlier muet.
+   */
+  jailerVues?: string[];
+  /**
    * ARRIVÉE : phrases de « manière d'arriver » déjà servies dans cette vie.
    * Variation narrative pure (décision Patrick 5/08) — aucune conséquence
    * mécanique ; seule l'anti-répétition la concerne.
@@ -393,6 +402,7 @@ function fresh(): RunState {
     temoins: [],
     temoinsCites: [],
     loiVues: [],
+    jailerVues: [],
     arriveeVues: [],
     faits: {},
     besoins: {},
@@ -470,6 +480,7 @@ export function loadRun(): RunState {
             temoins: Array.isArray(p.temoins) ? p.temoins : [],
             temoinsCites: Array.isArray(p.temoinsCites) ? p.temoinsCites : [],
             loiVues: Array.isArray(p.loiVues) ? p.loiVues : [],
+            jailerVues: Array.isArray(p.jailerVues) ? p.jailerVues : [],
             arriveeVues: Array.isArray(p.arriveeVues) ? p.arriveeVues : [],
             faits: sacDepuis(p.faits),
             besoins: p.besoins && typeof p.besoins === "object" ? p.besoins : {},
