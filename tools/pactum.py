@@ -249,8 +249,14 @@ class Partie:
         else:
             libres = [x for x in libres if x != "serment-hameau"]
         if len(libres) < 2 or len(self.d["visites"]) >= self.d["cible"]:
+            # Fin de traversée : par la PALISSADE, jamais direct à la Descente
+            # (le raccourci « coupait la scène » — grief unanime du panel 9/08,
+            # qui était un artefact de CETTE réplique, pas du jeu).
             self.d["phase"] = "scene"
-            self.entrer("la-descente")
+            if "palissade-sud" in self.k["scenes"] and "palissade-sud" not in self.d["visites"]:
+                self.entrer("palissade-sud", orientation=True)
+            else:
+                self.entrer("la-descente")
             return
         r = self.rng()
         opts = r.sample(libres, 2)
@@ -287,6 +293,12 @@ class Partie:
                         "note": f"{len(pois)} chose(s) à regarder"})
         for c in s.get("choix", []):
             if c["type"] == "verrouille":
+                continue
+            # La réplique ne trace pas le Savoir, les Découvertes ni les états
+            # requis : un choix qui en exige est retiré plutôt qu'offert à
+            # tort (« fuites de Savoir », grief 4/4 du panel 9/08 — c'était
+            # cette réplique ; le vrai jeu filtre avant l'affichage).
+            if c.get("exigeSavoir") or c.get("exigeDecouverte") or c.get("exigeEtat") or c.get("exigeContradiction"):
                 continue
             out.append({"kind": "choix", "c": c, "label": c["label"]})
         return out
@@ -398,7 +410,9 @@ class Partie:
             if palier in ("echec", "critique", "malediction"):
                 self.d["etats"]["entaille"] = 999
                 self.dit("ÉTAT — Entaillé", "etat")
-            elif palier in ("destin", "eclatante", "reussite"):
+            elif palier in ("destin", "eclatante", "reussite") and c.get("stat") in ("COURAGE", "INSTINCT"):
+                # Gagner sans se battre n'affûte pas les gestes de guerre
+                # (règle du vrai jeu — la réplique l'ignorait, panel 9/08).
                 self.d["etats"]["aguerri"] = 3
                 self.dit("ÉTAT — Aguerri", "etat")
         # Plus AUCUN Jour automatique (9/08) : aucune issue écrite ne raconte
