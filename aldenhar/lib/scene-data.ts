@@ -2854,6 +2854,23 @@ export const SCENES: Scene[] = [
     ],
     pointsInteret: [
       {
+        /* ⚠️ Poser une question NE DOIT PAS résoudre le Serment (rapport de
+           playtest 8/08 : « Demander qui juge » franchissait la scène avec
+           serment: null, et la logique des trois aubes tombait). Les questions
+           annexes sont donc des POINTS D'INTÉRÊT — on y revient au muret —,
+           et seuls Jurer / Jurer du bout des lèvres / Refuser résolvent. */
+        id: "doyenne-horaire",
+        decouverte: "d.on_juge_la_nuit",
+        label: "Demander qui juge, ici",
+        approche:
+          "Tu poses la question au vieux. C\u2019est la femme derri\u00e8re lui qui " +
+          "r\u00e9pond, sans qu\u2019on lui ait rien demand\u00e9.",
+        examen:
+          "\u00ab Avant, on jugeait le jour. \u00bb Elle rajuste son ch\u00e2le. " +
+          "\u00ab Maintenant on juge la nuit. C\u2019est pas moi qui ai d\u00e9cid\u00e9 " +
+          "du changement d\u2019horaire. \u00bb",
+      },
+      {
         id: "pourquoi-trois-aubes",
         soupcon: 1, // poser LA question au muret, devant qui écoute
         label: "Demander pourquoi trois aubes",
@@ -2872,18 +2889,6 @@ export const SCENES: Scene[] = [
       },
     ],
     choices: [
-      {
-        id: "doyenne-horaire",
-        label: "Demander qui juge, ici",
-        decouverte: "d.on_juge_la_nuit",
-        passive: {
-          consequence:
-            "La vieille femme derrière le vieux répond à sa place, sans " +
-            "qu\u2019on lui ait rien demandé. « Avant, on jugeait le jour. » " +
-            "Elle rajuste son châle. « Maintenant on juge la nuit. C\u2019est " +
-            "pas moi qui ai décidé du changement d\u2019horaire. »",
-        },
-      },
       {
         id: "jurer-serment",
         serment: "jure",
