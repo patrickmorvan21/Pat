@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+"""
+Assemble `pactum-playtest.zip` — le paquet remis aux IA sans navigateur.
+
+Contenu :
+  jouer/        la table de jeu (pactum.py + run-kit.json) : l'IA LANCE une
+                partie et la joue, choix par choix.
+  transcripts/  des parties réelles enregistrées sur le build publié — la
+                référence sans dérive (le vrai moteur, les vraies images).
+  sources/      le contenu et les règles, pour vérifier une intuition.
+
+Usage : python3 tools/faire_paquet_ia.py [transcripts…]
+"""
+
+from __future__ import annotations
+
+import re
+import shutil
+import subprocess
+import sys
+import zipfile
+from pathlib import Path
+
+RACINE = Path(__file__).resolve().parent.parent
+APP = RACINE / "aldenhar"
+SORTIE = RACINE / "aldenhar" / "public" / "pactum-playtest.zip"
+SCRATCH = Path("/tmp/paquet-ia")
+
+
+def main(argv: list[str]) -> int:
+    version = re.search(
+        r'APP_VERSION = "([^"]+)"', (APP / "lib" / "version.ts").read_text(encoding="utf-8")
+    ).group(1)
+    subprocess.run([sys.executable, str(RACINE / "tools" / "export_run_kit.py")], check=True)
+
+    if SCRATCH.exists():
+        shutil.rmtree(SCRATCH)
+    pack = SCRATCH / "pack"
+    (pack / "jouer").mkdir(parents=True)
+    (pack / "transcripts").mkdir()
+    (pack / "sources" / "lib").mkdir(parents=True)
+    (pack / "sources" / "components").mkdir()
+
+    shutil.copy(RACINE / "tools" / "pactum.py", pack / "jouer" / "pactum.py")
+    shutil.copy(RACINE / "data" / "run-kit.json", pack / "jouer" / "run-kit.json")
+    for f in sorted((APP / "lib").glob("*.ts")):
+        shutil.copy(f, pack / "sources" / "lib" / f.name)
+    for f in sorted((APP / "components").glob("*.tsx")):
+        shutil.copy(f, pack / "sources" / "components" / f.name)
+
+    trans = [Path(a) for a in argv[1:]]
+    for t in trans:
+        if t.exists():
+            shutil.copy(t, pack / "transcripts" / t.name)
+    n_trans = len(list((pack / "transcripts").glob("*.md")))
+
+    lisez = (RACINE / "data" / "paquet-ia-LISEZMOI.md").read_text(encoding="utf-8")
+    lisez = lisez.replace("{VERSION}", version).replace("{NTRANS}", str(n_trans))
+    (pack / "LISEZMOI.md").write_text(lisez, encoding="utf-8")
+
+    SORTIE.parent.mkdir(parents=True, exist_ok=True)
+    with zipfile.ZipFile(SORTIE, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as z:
+        for f in sorted(pack.rglob("*")):
+            if f.is_file():
+                z.write(f, f.relative_to(SCRATCH))
+    ko = SORTIE.stat().st_size // 1024
+    print(f"{SORTIE.relative_to(RACINE)} — v{version} · {n_trans} transcript(s) · {ko} Ko")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))

@@ -6901,7 +6901,10 @@ export const APPROACH_NARRATION: Record<string, string> = {
   "tour-de-guet":
     "Le moignon de la tour grossit à mesure que tu montes le tertre — plus bas que tu ne croyais, et couché de biais, comme un os mal ressoudé. Tu arrives à son pied.",
   "marche-muet": "Un bourdonnement de foule sans une seule voix te parvient — des dizaines de gens qui s'affairent en silence. Tu entres dans le marché muet du hameau.",
-  "campement": "Tu quittes les toits. La masse trapue grandit contre le crépuscule.",
+  // Le Moulin est en PLEINE LANDE : on y arrive de n'importe où, pas
+  // forcément du village — « tu quittes les toits » présupposait le hameau
+  // (trouvé le 9/08 en jouant le kit hors navigateur).
+  "campement": "Une masse trapue se détache du crépuscule, plus large que haute, et grandit à chaque pas.",
   "chapelle-des-cordes": "Une bâtisse sans croix se dresse au bout d'une ruelle. En approchant, tu vois par la porte ouverte que les murs, à l'intérieur, remuent doucement — des cordes, des dizaines, sans un souffle d'air.",
   "puits-condamne": "Un bruit sourd te guide entre les maisons : trois coups, une pause, trois coups.",
   "chien-du-bailli": "À l'ouest, une haute toiture seule au-dessus de la bruyère. Sur le seuil, une masse grise se lève sans un aboiement.",

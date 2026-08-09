@@ -202,6 +202,31 @@ def pools() -> list[dict]:
     for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, "const LIAISON_JAILER"))):
         out.append({"pool": f"geôlier liaison {i}", "garde": {"partout"}, "textes": [t]})
 
+    # Le village tel que le MOTEUR le délimite — sert à plusieurs pools.
+    interieur = set(re.findall(r'"([a-z-]+)"', bloc_tableau(scene_src, "export const HAMEAU_INTERIOR")))
+    def village_scene(sid: str) -> bool:
+        return sid in interieur or bool(re.match(r"^(serment-hameau|hameau-|femme-seuil|gamin-murets)", sid))
+
+    # — PHRASES D'ARRIVÉE (APPROACH_NARRATION) : servies en posant le pied sur
+    #   la destination, quelle que soit la provenance. Le garde vient donc de
+    #   la DESTINATION seule : arriver dans un lieu du village autorise le
+    #   village, arriver ailleurs garantit la pleine lande — et rien d'autre.
+    #   (Ajouté le 9/08 : « Tu quittes les toits » accueillait au Moulin, qui
+    #   est en pleine lande, quelle que soit la route empruntée.)
+    appr = re.search(r"export const APPROACH_NARRATION[^=]*=\s*\{(.*?)\n\};", scene_src, re.S)
+    if appr:
+        for m in re.finditer(
+            r'(?:"([a-z0-9\-]+)"|([a-zA-Z][a-zA-Z0-9\-]*))\s*:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)',
+            appr.group(1),
+        ):
+            dest = m.group(1) or m.group(2)
+            texte = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(3))).replace('\\"', '"')
+            out.append({
+                "pool": f"arrivée {dest}",
+                "garde": {"village", "gens"} if village_scene(dest) else {"lande", "gens"},
+                "textes": [texte],
+            })
+
     # — bifurcations : phrase de Croisée, partout.
     for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, "const BIFURCATIONS"))):
         out.append({"pool": f"bifurcation {i}", "garde": {"partout"}, "textes": [t]})
@@ -234,7 +259,6 @@ def pools() -> list[dict]:
     #   Réservée aux départs du village (from: HAMEAU_INTERIOR ou liste de
     #   lieux intérieurs) → elle peut mettre le village en scène ; sinon elle
     #   joue en pleine lande — silhouettes permises, bâti interdit.
-    interieur = set(re.findall(r'"([a-z-]+)"', bloc_tableau(scene_src, "export const HAMEAU_INTERIOR")))
     vbloc = bloc_tableau(scene_src, "const LIAISON_VARIANTS")
     # découpe des objets { … } au niveau 1 du tableau
     objets, prof, deb = [], 0, -1
@@ -247,8 +271,6 @@ def pools() -> list[dict]:
             prof -= 1
             if prof == 0 and deb >= 0:
                 objets.append(vbloc[deb : k + 1])
-    def village_scene(sid: str) -> bool:
-        return sid in interieur or bool(re.match(r"^(serment-hameau|hameau-|femme-seuil|gamin-murets)", sid))
     for i, o in enumerate(objets):
         tm = re.search(r'text:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', o)
         if not tm:
@@ -284,6 +306,11 @@ EXEMPT: dict[str, str] = {
         "« à la vitesse d'un homme qui marche » est une COMPARAISON de "
         "vitesse, pas une présence — la chute (« rien ne marche nulle part ») "
         "fonctionne précisément parce qu'il n'y a personne.",
+    "arrivée chien-du-bailli":
+        "Une phrase d'ARRIVÉE décrit sa destination : celle-ci POSE elle-même "
+        "la bâtisse (« une haute toiture SEULE au-dessus de la bruyère ») "
+        "avant d'en nommer le seuil. Le bâti n'est pas présupposé, il est "
+        "introduit — et la Maison du Bailli est bien isolée, à l'ouest.",
     "liaison variante 5":
         "« Trois corbeaux sur ton toit » est un DICTON que la Fille récite en "
         "passant — le héros n'a pas de toit, et la phrase n'affirme rien du "
