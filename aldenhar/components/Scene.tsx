@@ -20,6 +20,8 @@ import {
   APPROACH_NARRATION,
   SOUPCON_PALIERS,
   tierIsFail,
+  coutSante,
+  type NatureJet,
   type Choice,
   type PointInteret,
   type LiaisonCtx,
@@ -1568,10 +1570,16 @@ export default function Scene() {
         trav.phase = "scene";
         trav.current = nextScene.id; // hors `visited` : ce n'est pas un lieu du pool
       } else {
-        nextScene = DESCENTE_SCENE;
+        // ——— LA PALISSADE EST LA FIN DE ZONE (arbitrage Patrick 9/08).
+        // Elle était dans le pool : on pouvait donc l'atteindre au milieu
+        // d'une vie, s'entendre dire « la Descente n'est plus loin »… puis
+        // repartir tourner dans la lande. L'objectif atteint était repris.
+        // Désormais elle n'est plus tirable, et c'est ELLE qu'on rejoint au
+        // bout de la traversée : Palissade → Veilleur → la Descente.
+        nextScene = resoudre("palissade-sud", runRef.current) ?? DESCENTE_SCENE;
         trav.done = true;
         trav.phase = "scene";
-        trav.current = DESCENTE_SCENE.id;
+        trav.current = nextScene.id;
       }
     } else {
       // ═══ LE TROUPEAU SANS BERGER (journal 6/08) ═══════════════════════
@@ -2686,6 +2694,11 @@ export default function Scene() {
       // sur une face sans chiffre. AUCUNE conséquence mécanique — le palier
       // réel s'applique — et le Geôlier réagit à l'écran suivant (sans sa
       // réaction, le joueur croirait à un bug). Jamais sur un jet fatal.
+      // La NATURE du jet décide du coût de son échec (arbitrage 9/08). Défaut
+      // prudent : un jet de combat est physique, tout le reste est social —
+      // les 83 jets de la zone sont annotés explicitement, ce défaut ne sert
+      // qu'à un futur choix qu'on aurait oublié d'annoter.
+      const natureDuJet: NatureJet = choice.nature ?? (scene.combat ? "physique" : "social");
       const impossibleIci =
         surprisePrete(runRef.current, "de-impossible") && !isTrial && healthNow > 0.3;
       if (impossibleIci) jouerSurprise("de-impossible");
@@ -2701,8 +2714,10 @@ export default function Scene() {
         fatalCheck: (tier) => {
           if (!tierIsFail(tier)) return false;
           if (isTrial) return true;
-          const cost = tier === "malediction" ? 0.3 : tier === "critique" ? 0.26 : 0.16;
-          return healthNow - cost <= 0;
+          // Même source de vérité que la résolution : un échec social ou
+          // d'exploration ne coûte pas de santé, donc il ne peut pas tuer —
+          // et le dé ne doit surtout pas annoncer MORT dans ce cas.
+          return healthNow - coutSante(natureDuJet, tier) <= 0;
         },
       });
     } else if (choice.rest) {
@@ -2973,11 +2988,19 @@ export default function Scene() {
             // hors combat coûte un JOUR — coût visible. En combat, le coût
             // visible est l'aggravation ENTAILLÉ (persistante) déjà posée.
             const hardFail = tier === "critique" || tier === "malediction";
+            // La nature du jet (arbitrage 9/08) — relue ici comme à
+            // l'armement, à partir du choix réellement pris.
+            const natureJet: NatureJet =
+              scene.choices.find((c) => c.id === selectedId)?.nature ??
+              (scene.combat ? "physique" : "social");
             // Un guide connaît les raccourcis : l'échec dur ne coûte plus le
             // JOUR qu'il coûte d'habitude. Bénéfice réel, jamais chiffré — il
             // se lit au fait que la puce « Jour » ne bouge pas.
             const guide = etatsActifs(idsEtats(faitsDe(runRef.current))).some((e) => e.evitePerteJour);
-            const usureDay = hardFail && !scene.combat && !guide;
+            // Le temps n'est plus une taxe : il n'avance que si la fiction le
+            // raconte. Un échec d'EXPLORATION est exactement ce cas — on a
+            // tourné, on a perdu des heures. Un mensonge raté, non.
+            const usureDay = hardFail && natureJet === "exploration" && !scene.combat && !guide;
             // Objet gagné par un choix d'examen réussi (grantsLoot, 23/07) :
             // l'objet se mérite — jamais accordé sur un palier d'échec.
             const chosen = scene.choices.find((c) => c.id === selectedId);
@@ -3011,9 +3034,8 @@ export default function Scene() {
               // trois jours de jeu — la tension du permadeath ne se sentait
               // pas). Un échec coûte maintenant un vrai cran ; la Descente
               // reste atteignable, mais plus en pilotage automatique.
-              let cost =
-                tier === "malediction" ? 0.3 : tier === "critique" ? 0.26 : tier === "echec" ? 0.16 : tier === "justesse" ? 0.08 : 0;
-              if (amorti) {
+              let cost = coutSante(natureJet, tier);
+              if (amorti && cost > 0) {
                 cost = 0.12;
                 run.relicUsed = true;
                 if (brisure)
@@ -3077,10 +3099,11 @@ export default function Scene() {
                 run.besace = [...run.besace, grantedItem];
                 run.looted = [...(run.looted ?? []), chosen.grantsLoot];
               }
-              // Soupçon : échouer un jet SOCIAL (Empathie, hors combat) se
-              // remarque — on a vu quelqu'un parler mal, ou parler seul.
-              if (tierIsFail(tier) && !scene.combat && !scene.fixationTrial && roll?.stat === "EMPATHIE") {
-                run.soupcon = Math.min(6, (run.soupcon ?? 0) + 1);
+              // Soupçon : c'est LE coût d'un échec social (arbitrage 9/08).
+              // Rater une parole ne saigne pas — ça se remarque. Un échec dur
+              // se remarque deux fois plus.
+              if (tierIsFail(tier) && natureJet === "social" && !scene.combat && !scene.fixationTrial) {
+                run.soupcon = Math.min(6, (run.soupcon ?? 0) + (hardFail ? 2 : 1));
                 const t = temoinPour("echec-empathie");
                 if (t && !(run.temoins ?? []).some((x) => x.id === t.id))
                   run.temoins = [...(run.temoins ?? []), t];
@@ -3119,6 +3142,11 @@ export default function Scene() {
               }
             }
             if (combatPerdu) poserEtatRun("boiteux");
+            // SURNATUREL : ce n'est pas la chair qui paie, c'est ce qui reste
+            // accroché. Un échec dur laisse une marque — au sens propre si le
+            // geste a touché quelque chose, HANTÉ sinon.
+            if (natureJet === "surnaturel" && (tier === "critique" || tier === "malediction"))
+              poserEtatRun(tier === "malediction" ? "marque" : "hante");
             // FIXÉ : « le village te croit marqué par le sud (Soupçon élevé) ».
             // Seuil 4 : assez haut pour que ce soit une trajectoire, assez bas
             // pour qu'on le vive avant le procès (qui tombe à 6).

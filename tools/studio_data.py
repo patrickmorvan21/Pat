@@ -533,6 +533,12 @@ def lire_choix(bloc: str) -> list[dict]:
             ch["seuil"] = int(nombre_de(c, "threshold") or 0)
             ch["hautEnjeu"] = booleen_de(c, "highStakes")
             ch["issues"] = lire_outcomes(c)
+            # La NATURE décide du coût de l'échec (9/08) — elle doit voyager
+            # jusqu'au Studio et au kit hors navigateur, sinon la réplique
+            # jouée par les IA testeuses garde l'ancien modèle de coût.
+            m_nat = re.search(r'nature:\s*"(physique|social|exploration|surnaturel)"', c)
+            if m_nat:
+                ch["nature"] = m_nat.group(1)
         elif "locked:" in c:
             ch["type"] = "verrouille"
             ch["stat"] = next((s for s in STATS if f'"{s}"' in c), None)
@@ -994,6 +1000,12 @@ def main() -> int:
     entree = entree.group(1) if entree else None
     mapp = re.search(r"const APPROACH: Record<string, string> = \{([\s\S]*?)\n\};", src_ts)
     pool = re.findall(r'^\s{2}"([^"]+)":', mapp.group(1), re.M) if mapp else []
+    # La SORTIE DE ZONE n'est pas tirable (9/08) : elle se rejoint au bout de
+    # la traversée. L'exclure ici, sinon la carte et le kit la présentent
+    # comme une destination possible alors que le moteur ne l'offre jamais.
+    m_sortie = re.search(r'export const SORTIE_DE_ZONE = "([^"]+)"', src_ts)
+    if m_sortie:
+        pool = [x for x in pool if x != m_sortie.group(1)]
 
     ids = {s["id"] for s in scenes}
     via_poi = {l["vers"] for l in liens if l["type"] == "secondaire"}

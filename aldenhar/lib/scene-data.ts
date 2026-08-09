@@ -35,6 +35,23 @@ export type Choice = {
    * de s'immobiliser sur les jets à très fort enjeu — purement visuel.
    */
   risky?: { stat: Stat; threshold: number; outcomes: Outcomes; highStakes?: boolean };
+  /**
+   * LA NATURE DU JET DÉCIDE DU COÛT DE L'ÉCHEC (arbitrage Patrick 9/08, sur
+   * rapport de playtest). Avant, tout échec coûtait la même santé et le même
+   * Jour, quel que soit le sujet : rater un mensonge blessait autant qu'une
+   * chute, et l'on pouvait mourir d'une conversation. Désormais :
+   *   • physique   → la santé (chute, morsure, effort, combat) ;
+   *   • social     → le Soupçon, jamais la santé (on ne saigne pas d'un
+   *                  mot maladroit — on se fait remarquer) ;
+   *   • exploration→ le temps : un échec dur coûte un Jour (« tu as tourné
+   *                  pendant des heures »), jamais de santé ;
+   *   • surnaturel → un état (HANTÉ, MARQUÉ), jamais de santé.
+   * ⚠️ Conséquence directe : **on ne meurt plus que d'un échec physique**
+   * (ou du procès). C'est voulu — la mort doit être compréhensible dans la
+   * fiction. Les autres pressions tuent par un autre chemin : le Soupçon
+   * mène au procès, les Jours réveillent les Besoins.
+   */
+  nature?: "physique" | "social" | "exploration" | "surnaturel";
   /** Choix verrouillé : seuil de stat non atteint → grisé mais visible. */
   /** Verrouillé par une stat. AVEC `min` (échelle 1..5) : vraie CONDITION —
       un héros dont la stat atteint le seuil peut agir (retour test 4/08,
@@ -465,6 +482,25 @@ export function tierIsFail(tier: ResolutionTier): boolean {
   return tier === "echec" || tier === "critique" || tier === "malediction";
 }
 
+/** Nature d'un jet — voir le commentaire de `Choice.nature`. */
+export type NatureJet = "physique" | "social" | "exploration" | "surnaturel";
+
+/**
+ * Le coût en SANTÉ d'un palier, selon la nature du jet.
+ *
+ * Une seule source pour les deux appelants : la résolution qui l'applique, et
+ * `fatalCheck` qui décide si le dé doit annoncer MORT. S'ils divergeaient, le
+ * dé annoncerait une mort qui n'arrive pas — ou l'inverse.
+ */
+export function coutSante(nature: NatureJet, tier: ResolutionTier): number {
+  if (nature !== "physique") return 0;
+  return tier === "malediction" ? 0.3
+    : tier === "critique" ? 0.26
+    : tier === "echec" ? 0.16
+    : tier === "justesse" ? 0.08
+    : 0;
+}
+
 function outcomes(
   crit: string,
   success: string,
@@ -585,6 +621,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "fouiller-offrandes",
+        nature: "surnaturel",
         label: "Fouiller les offrandes",
         // L'objet vit dans le choix d'examen (23/07) : fouiller ET réussir
         // rapporte les Offrandes — les prendre est un acte, pas un ramassage.
@@ -662,6 +699,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "hesitant-mentir",
+        nature: "social",
         label: "Mentir : « Je n'entends rien. »",
         soupcon: 1,
         risky: {
@@ -693,6 +731,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "hesitant-raccompagner",
+        nature: "social",
         label: "Le raccompagner au hameau",
         soupcon: -1, // on t'a vu ramener un homme : ça compte, ici
         risky: {
@@ -803,6 +842,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "couper-lande",
+        nature: "exploration",
         label: "Couper par la lande",
         risky: {
           stat: "INSTINCT",
@@ -833,6 +873,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "franchir-coude",
+        nature: "physique",
         label: "Franchir le coude",
         risky: {
           stat: "INSTINCT",
@@ -929,6 +970,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "marcheur-imiter",
+        nature: "physique",
         label: "Marcher à reculons avec lui",
         risky: {
           stat: "INSTINCT",
@@ -1041,6 +1083,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "frapper-bete",
+        nature: "physique",
         label: "Frapper la bête",
         risky: {
           stat: "COURAGE",
@@ -1057,6 +1100,7 @@ export const SCENES: Scene[] = [
         // Bondir hors du creux : sur une jambe qui ne plie plus, ce n'est pas
         // « plus dur » — c'est impossible. BOITEUX retire ce choix (cacheFuite).
         id: "grimper-talus",
+        nature: "physique",
         tags: ["fuite"],
         label: "Bondir hors du creux",
         risky: {
@@ -1216,6 +1260,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "echarde",
+        nature: "physique",
         label: "Arracher une écharde",
         setsEnvFlag: "echarde-gibet-prelevee",
         // Chantier 1+5 : l'objet vit dans le choix d'examen — l'Écharde se
@@ -1234,6 +1279,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "compter-battements",
+        nature: "surnaturel",
         label: "Rester et compter",
         risky: {
           stat: "INSTINCT",
@@ -1287,6 +1333,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "jauger-pendu",
+        nature: "exploration",
         label: "Le jauger sans approcher",
         risky: {
           stat: "INSTINCT",
@@ -1315,6 +1362,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "plaider",
+        nature: "social",
         label: "Répondre à son jugement",
         // Parler au Pendu = parler seul face au sud, pour qui t'observe —
         // premier signe de l'Ordonnance (chantier 3).
@@ -1332,6 +1380,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "decrocher",
+        nature: "physique",
         label: "Trancher sa corde",
         soupcon: 1, // toucher à une Fixation, sous les yeux de la colline
         risky: {
@@ -1521,6 +1570,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "fossoyeur-insister",
+        nature: "social",
         label: "« Essayez de vous rappeler. »",
         risky: {
           stat: "EMPATHIE",
@@ -1603,6 +1653,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "aider-fossoyeur",
+        nature: "social",
         label: "Aider à redresser",
         // Le Carnet se GAGNE auprès du Fossoyeur (chantiers 1+5) — plus de
         // ramassage automatique à l'arrivée dans le champ.
@@ -1694,6 +1745,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "refixer",
+        nature: "physique",
         label: "Le repousser au poteau",
         risky: {
           stat: "COURAGE",
@@ -1709,6 +1761,7 @@ export const SCENES: Scene[] = [
       {
         // Esquiver demande des appuis. Retiré à qui boite.
         id: "esquiver-corde",
+        nature: "physique",
         tags: ["fuite"],
         label: "Esquiver la corde",
         risky: {
@@ -1724,6 +1777,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "emmeler",
+        nature: "physique",
         label: "L'emmêler dans sa corde",
         risky: {
           stat: "RUSE",
@@ -1761,6 +1815,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "observer-couvert",
+        nature: "exploration",
         label: "Observer d'abord, à couvert",
         risky: {
           stat: "INSTINCT",
@@ -1948,6 +2003,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "femme-savoir-nier",
+        nature: "social",
         label: "« Je ne sais pas de qui vous parlez. »",
         risky: {
           stat: "RUSE",
@@ -2028,6 +2084,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "femme-verite",
+        nature: "social",
         label: "Lui dire qu'il ne reviendra pas",
         risky: {
           stat: "EMPATHIE",
@@ -2083,6 +2140,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "femme-refuser",
+        nature: "social",
         label: "Refuser doucement",
         risky: {
           stat: "EMPATHIE",
@@ -2098,6 +2156,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "femme-echange",
+        nature: "social",
         label: "« Et en échange ? »",
         risky: {
           stat: "RUSE",
@@ -2122,6 +2181,7 @@ export const SCENES: Scene[] = [
            Seuil tient le même rôle (aveu réciproque, EMPATHIE forte) et elle
            est, elle, atteignable après la Mare. */
         id: "femme-moi-aussi",
+        nature: "social",
         label: "« Moi aussi, j'entends. »",
         requiresSavoir: "savoir_reflet",
         risky: {
@@ -2165,6 +2225,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "gamin-demander-guide",
+        nature: "social",
         tags: ["citable"],
         label: "Lui demander de te guider",
         risky: {
@@ -2280,6 +2341,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "gamin-ou-vue",
+        nature: "social",
         label: "« Où l\u2019as-tu vue ? »",
         risky: {
           stat: "INSTINCT",
@@ -2379,6 +2441,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "demander-crainte",
+        nature: "social",
         label: "Demander ce qu'ils craignent",
         risky: {
           stat: "EMPATHIE",
@@ -2394,6 +2457,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "passer-sans-arret",
+        nature: "social",
         label: "Passer sans t'arrêter",
         risky: {
           stat: "COURAGE",
@@ -2474,6 +2538,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "volet-pourquoi-aider",
+        nature: "social",
         label: "Lui demander pourquoi elle t'aide",
         risky: {
           stat: "EMPATHIE",
@@ -2488,6 +2553,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "volet-faire-parler",
+        nature: "social",
         label: "La faire parler encore",
         soupcon: 1,
         risky: {
@@ -2550,6 +2616,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "mur-effacee",
+        nature: "exploration",
         label: "Chercher sous la craie effacée",
         risky: {
           stat: "RUSE",
@@ -2564,6 +2631,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "mur-effacer-ligne",
+        nature: "social",
         label: "Effacer la ligne qui te concerne",
         soupcon: 2,
         risky: {
@@ -2597,6 +2665,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "enfant-repondre-lui",
+        nature: "social",
         label: "Répondre à l'enfant",
         risky: {
           stat: "EMPATHIE",
@@ -2611,6 +2680,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "enfant-repondre-volets",
+        nature: "social",
         label: "Répondre aux volets",
         soupcon: 1,
         risky: {
@@ -2674,6 +2744,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "table-repousser",
+        nature: "social",
         label: "Repousser le bol",
         soupcon: 1,
         risky: {
@@ -2689,6 +2760,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "table-pain-debout",
+        nature: "social",
         label: "Prendre le pain, debout",
         risky: {
           stat: "RUSE",
@@ -2721,6 +2793,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "cloche-qui-repond",
+        nature: "social",
         label: "Demander qui répondrait",
         risky: {
           stat: "INSTINCT",
@@ -2749,6 +2822,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "cloche-tirer",
+        nature: "social",
         label: "Tirer la corde toi-même",
         soupcon: 2,
         setsEnvFlag: "cloche-sonnee",
@@ -2787,6 +2861,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "depart-aider",
+        nature: "social",
         label: "Aider à charger",
         soupcon: -1,
         risky: {
@@ -2802,6 +2877,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "depart-pourquoi",
+        nature: "social",
         label: "Demander pourquoi maintenant",
         risky: {
           stat: "RUSE",
@@ -3049,6 +3125,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "veiller",
+        nature: "surnaturel",
         label: "Veiller",
         risky: {
           stat: "INSTINCT",
@@ -3079,6 +3156,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "ecouter-nuit",
+        nature: "surnaturel",
         tags: ["citable"],
         label: "Écouter sans bouger",
         risky: {
@@ -3168,6 +3246,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "toit-regarder",
+        nature: "surnaturel",
         tags: ["citable"],
         label: "Chercher la fente",
         risky: {
@@ -3375,6 +3454,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "ruelle-suivre",
+        nature: "surnaturel",
         tags: ["citable"],
         label: "Aller voir le passage",
         risky: {
@@ -3557,6 +3637,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "monter-guet",
+        nature: "physique",
         label: "Monter jusqu'à la rupture",
         risky: {
           stat: "COURAGE",
@@ -3601,6 +3682,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "guet-demander",
+        nature: "social",
         label: "Demander qui a couché la tour",
         requiresSavoir: "savoir_guet",
         risky: {
@@ -3616,6 +3698,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "guet-corne",
+        nature: "social",
         label: "Lui demander de sonner",
         risky: {
           stat: "RUSE",
@@ -3663,6 +3746,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "imiter-gestes",
+        nature: "social",
         label: "Saluer à leur manière",
         risky: {
           stat: "RUSE",
@@ -3744,6 +3828,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "troc-colporteur",
+        nature: "social",
         label: "Troquer au Marché",
         risky: {
           stat: "RUSE",
@@ -3758,6 +3843,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "rebouteux",
+        nature: "social",
         repondBesoin: "soigner",
         label: "Montrer tes plaies",
         soupcon: 1, // se faire soigner par le Rebouteux, ça se remarque
@@ -3891,6 +3977,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "ecouter-moulin",
+        nature: "surnaturel",
         label: "Écouter le moulin",
         risky: {
           stat: "INSTINCT",
@@ -3919,6 +4006,7 @@ export const SCENES: Scene[] = [
       { id: "dormir", label: "Dormir malgré le crépuscule", rest: true, tags: ["citable"] },
       {
         id: "garde",
+        nature: "surnaturel",
         label: "Monter la garde",
         risky: {
           stat: "INSTINCT",
@@ -4006,6 +4094,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "fille-votre-pere",
+        nature: "social",
         tags: ["citable"],
         label: "« Votre père vous attend. »",
         risky: {
@@ -4146,6 +4235,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "veuve-plus-neuve",
+        nature: "social",
         label: "« Pourquoi est-elle plus neuve ? »",
         risky: {
           stat: "RUSE",
@@ -4328,6 +4418,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "corde-coupee",
+        nature: "exploration",
         label: "Prendre la corde coupée",
         risky: {
           stat: "RUSE",
@@ -4342,6 +4433,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "prier-veuve",
+        nature: "social",
         label: "Prier près de la Veuve",
         risky: {
           stat: "EMPATHIE",
@@ -4404,6 +4496,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "ecouter-puits",
+        nature: "surnaturel",
         tags: ["citable"],
         label: "Coller l'oreille au bois",
         risky: {
@@ -4485,6 +4578,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "reclouer",
+        nature: "physique",
         label: "Resserrer les chaînes",
         risky: {
           stat: "COURAGE",
@@ -4538,6 +4632,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "jauger-garde",
+        nature: "exploration",
         label: "Repérer ce qui garde",
         risky: {
           stat: "INSTINCT",
@@ -4571,6 +4666,7 @@ export const SCENES: Scene[] = [
         // Violence publique dans un village qui compte tout : rater, c'est
         // être vu en train de forcer. MARQUÉ (le Soupçon montera double).
         id: "forcer-seuil",
+        nature: "physique",
         poseEtatSiEchec: "marque",
         label: "Forcer le passage",
         risky: {
@@ -4586,6 +4682,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "apaiser-chien",
+        nature: "physique",
         label: "S'accroupir, lui parler",
         risky: {
           stat: "EMPATHIE",
@@ -4600,6 +4697,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "contourner-cour",
+        nature: "physique",
         label: "Contourner par la cour",
         risky: {
           stat: "RUSE",
@@ -4774,6 +4872,7 @@ export const SCENES: Scene[] = [
            « aveu suicidaire ou renversement selon RUSE » — donc un vrai pari :
            un Savoir n'est pas toujours une bonne carte. */
         id: "dire-poteau-grave",
+        nature: "social",
         label: "« Mon poteau est déjà taillé »",
         requiresSavoir: "savoir_poteau_a_mon_nom",
         risky: {
@@ -4813,6 +4912,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "briser-cercle",
+        nature: "physique",
         label: "Charger la plus grande",
         risky: {
           stat: "COURAGE",
@@ -4828,6 +4928,7 @@ export const SCENES: Scene[] = [
       {
         // Gagner le muret avant que le croissant ne se ferme : une course.
         id: "dos-muret",
+        nature: "physique",
         tags: ["fuite"],
         label: "Gagner le muret",
         risky: {
@@ -4843,6 +4944,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "hurler-meute",
+        nature: "physique",
         label: "Hurler le premier",
         risky: {
           stat: "RUSE",
@@ -4877,6 +4979,7 @@ export const SCENES: Scene[] = [
       // éditoriale 14/07 — jamais une meute laissée « prête à charger »).
       {
         id: "abattre-meneuse",
+        nature: "physique",
         label: "Répondre par l'acier",
         risky: {
           stat: "COURAGE",
@@ -4891,6 +4994,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "reculer-face",
+        nature: "physique",
         label: "Reculer, sans ciller",
         risky: {
           stat: "INSTINCT",
@@ -4905,6 +5009,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "offrir-viande",
+        nature: "physique",
         label: "Jeter tes vivres",
         risky: {
           stat: "RUSE",
@@ -5002,6 +5107,7 @@ export const SCENES: Scene[] = [
         // « Eau de la Mare » — source de FIÉVREUX listée par la spec. Le
         // pari est honnête : réussir, c'est boire sans rien attraper.
         id: "boire-mare",
+        nature: "surnaturel",
         poseEtatSiEchec: "fievreux",
         label: "Boire à la mare",
         risky: {
@@ -5046,6 +5152,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "aborder-renoncant-mare",
+        nature: "social",
         label: "Lui parler",
         soupcon: 1,
         risky: {
@@ -5145,6 +5252,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "gouter-fruit",
+        nature: "surnaturel",
         label: "Goûter un fruit",
         risky: {
           stat: "COURAGE",
@@ -5182,6 +5290,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "quitter-verger",
+        nature: "exploration",
         label: "Sortir des rangs",
         risky: {
           stat: "INSTINCT",
@@ -5226,6 +5335,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "epoux-aider",
+        nature: "social",
         label: "Prendre la bêche un moment",
         risky: {
           stat: "EMPATHIE",
@@ -5271,6 +5381,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "epoux-rien",
+        nature: "social",
         label: "« Je n'ai rien. »",
         risky: {
           stat: "EMPATHIE",
@@ -5285,6 +5396,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "epoux-promettre",
+        nature: "social",
         label: "Promettre pour la prochaine fois",
         risky: {
           stat: "RUSE",
@@ -5402,6 +5514,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "longer-palissade",
+        nature: "exploration",
         label: "Longer la palissade",
         risky: {
           stat: "RUSE",
@@ -5491,6 +5604,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "veilleur-inventer",
+        nature: "social",
         label: "Inventer une belle histoire",
         risky: {
           stat: "RUSE",
@@ -5557,6 +5671,8 @@ export const SCENES: Scene[] = [
   },
   {
     id: "palissade-sud-2",
+    // Fin de zone : quoi qu'on fasse au pied de la Palissade, on descend.
+    chainNext: "la-descente",
     illustration: "assets/monstre_palissade_sud_2_c.png",
     narration: [
       "Sur le chemin de ronde, un vieux soldat regarde vers le sud. Et en " +
@@ -5568,6 +5684,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "questionner-veilleur",
+        nature: "social",
         label: "Questionner le Veilleur",
         risky: {
           stat: "EMPATHIE",
@@ -5595,7 +5712,20 @@ export const SCENES: Scene[] = [
             "un reflet.",
         },
       },
-      { id: "franchir-descente", label: "Franchir la Descente", locked: { stat: "COURAGE" } },
+      {
+        /* Le verrou DUR « tease Acte II » est LEVÉ (arbitrage 9/08) : la
+           Palissade est la fin de zone, on la franchit. C'est l'écran de la
+           Descente qui dit maintenant que la suite n'est pas bâtie. */
+        id: "franchir-descente",
+        label: "Franchir la Descente",
+        tags: ["citable"],
+        passive: {
+          consequence:
+            "Le Veilleur ne t\u2019arrête pas. Il pousse le portillon et se " +
+            "range, comme on s\u2019écarte d\u2019un convoi. Derrière toi, la " +
+            "lanterne reste allumée en plein jour \u2014 pour le suivant.",
+        },
+      },
     ],
     jailerLine: "La Descente t'intrigue ? Patience. Les Landes d'abord — on finit son assiette avant le plat suivant.",
   },
@@ -5624,6 +5754,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "plaider-serre",
+        nature: "social",
         label: "Plaider serré",
         defense: "discrediter",
         risky: {
@@ -5640,6 +5771,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "prendre-a-temoin",
+        nature: "social",
         label: "Prendre le hameau à témoin",
         defense: "emouvoir",
         risky: {
@@ -5660,6 +5792,7 @@ export const SCENES: Scene[] = [
         /* ASSUMER — toujours disponible. C'est la défense du Courage : ne rien
            nier, tout reconnaître, et leur demander ce qu'ils comptent en faire. */
         id: "assumer-tout",
+        nature: "social",
         label: "Tout reconnaître",
         defense: "assumer",
         risky: {
@@ -5679,6 +5812,7 @@ export const SCENES: Scene[] = [
            du hameau (registre, carnet, sceau, ordonnance, dénonciation). Seuil
            plus bas : un papier vaut mieux qu'un beau discours, ici. */
         id: "produire-preuve",
+        nature: "social",
         label: "Produire un papier",
         defense: "preuve",
         risky: {
@@ -6062,7 +6196,14 @@ const APPROACH: Record<string, string> = {
 };
 
 /** Pool des destinations tirables (tout ce qui a une phrase d'orientation). */
-export const TRAVERSAL_POOL = Object.keys(APPROACH);
+/**
+ * ⚠️ La PALISSADE SUD n'est pas tirable : c'est la SORTIE de zone (arbitrage
+ * 9/08). On l'atteint quand la traversée est faite, jamais au hasard — sinon
+ * le jeu annonce « la Descente n'est plus loin » puis rend le joueur à la
+ * rotation, ce qui revient à lui retirer l'objectif qu'il vient d'atteindre.
+ */
+export const SORTIE_DE_ZONE = "palissade-sud";
+export const TRAVERSAL_POOL = Object.keys(APPROACH).filter((id) => id !== SORTIE_DE_ZONE);
 
 /**
  * NOM AFFICHABLE d'un lieu depuis un id de scène (spec 4/08, point A1 : le

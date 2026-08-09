@@ -48,11 +48,10 @@
   "petit-tribunal",
   "mare-aux-regards",
   "verger-noir",
-  "meute-grise-1",
-  "palissade-sud"
+  "meute-grise-1"
  ],
- "genere": "2026-08-09T08:20:55Z",
- "commit": "46ffd0f",
+ "genere": "2026-08-09T12:47:54Z",
+ "commit": "bf05555",
  "zones": [
   {
    "id": "landes",
@@ -442,8 +441,10 @@
      "roles": [
       "sortie"
      ],
-     "dansPool": true,
-     "alertes": [],
+     "dansPool": false,
+     "alertes": [
+      "orpheline"
+     ],
      "aCompleter": 0,
      "scenePrincipale": "palissade-sud"
     }
@@ -471,6 +472,7 @@
       "echec": "Un ruban glisse et tout l'édifice s'éboule. Le vent se lève d'un coup, bref, comme une inspiration — la lande a noté que tu prends sans donner.",
       "funeste": "1 naturel. Sous les offrandes, une main à plat, paume ouverte. Elle attendait la tienne. ♦ −2"
      },
+     "nature": "surnaturel",
      "donneObjet": "offrandes-borne"
     },
     {
@@ -595,6 +597,7 @@
       "echec": "Tu le dis trop vite, ou trop fort. Il rit — doucement, terriblement. « Tous ceux qui descendent disent ça. C'est même à ça qu'on vous reconnaît. »",
       "funeste": "1 naturel. « Je n'entends rien », dis-tu. Et au même instant, dans le creux de ton crâne, quelque chose répond quelque chose. Ton visage le raconte à ta place. ♦ −2"
      },
+     "nature": "social",
      "soupcon": 1,
      "temoin": {
       "nom": "Le berger des murets",
@@ -650,6 +653,7 @@
       "echec": "Il ne bouge pas. Il s'assied au pied de la borne, dos à la pierre, face au sud — et c'est pire que tout, parce que maintenant il est confortable.",
       "funeste": "1 naturel. Tu lui parles de sa femme. Il tourne enfin la tête vers toi, et son visage est celui de quelqu'un qui vient de comprendre qu'il ne se souvient plus de son nom à elle. ♦ −2"
      },
+     "nature": "social",
      "soupcon": -1
     },
     {
@@ -744,7 +748,8 @@
       "reussite": "Tu grimpes le talus et marches à découvert. La lande te voit — mais rien ne te suit. Le chemin creux, en dessous, continue sans toi.",
       "echec": "La bruyère s'accroche, le sol boit tes pas. Quand tu redescends dans le creux, essoufflé, tu n'as gagné que le sentiment d'avoir été observé tout du long.",
       "funeste": "1 naturel. La lande n'est pas plate. Elle respire. Et tu marches dessus. ♦ −2"
-     }
+     },
+     "nature": "exploration"
     }
    ],
    "pointsInteret": [
@@ -856,7 +861,8 @@
       "reussite": "Tu passes le coude d'une traite, l'épaule au talus nord. Rien ne tombe, rien ne sort. Le chemin se rouvre sur la lande et tu ressors du couloir de terre entier.",
       "echec": "Tu passes trop lentement. Rien n'attaque — mais quelque chose t'accompagne sur la crête jusqu'au bout du creux, à ta hauteur, réglant son pas sur le tien, et ne s'arrête que là où le talus s'abaisse.",
       "funeste": "1 naturel. Au milieu du coude, tu comprends que le silence n'était pas vide : il était retenu. Quelque chose, tout près, avait cessé de respirer pour t'écouter passer. ♦ −2"
-     }
+     },
+     "nature": "physique"
     },
     {
      "id": "sortir-par-le-talus",
@@ -961,7 +967,8 @@
       "reussite": "Tu recules avec lui. C'est atroce les vingt premiers pas, puis le corps comprend. Ses indications s'impriment : la crête nord, les vieilles empreintes, le coude. Tu sauras.",
       "echec": "Tu trébuches dans l'ornière au cinquième pas et tu t'étales. Son rire sec est le premier rire des Landes — et il ne s'arrête pas pour t'aider. Il ne s'arrête pas, c'est tout.",
       "funeste": "1 naturel. Tu recules, les yeux au nord — et pendant une seconde entière, tu vois exactement ce qu'il regarde depuis trente ans. Tu comprends pourquoi il ne se retourne pas. ♦ −2"
-     }
+     },
+     "nature": "physique"
     },
     {
      "id": "marcheur-continuer",
@@ -1052,7 +1059,8 @@
       "reussite": "Le coup porte. La Bête se plie, surprise qu'on morde en premier, et s'enterre à mi-corps dans le talus. Tu passes. Elle ne suit pas — pas blessée à ce point, mais vexée, oui.",
       "echec": "Ta lame racle du cuir sans entamer. L'avancée du corps te cueille à l'épaule et te plaque au talus — tu te dégages en y laissant du tien, et elle te laisse passer, servie.",
       "funeste": "1 naturel. Tu frappes dans l'ouverture. C'est exactement ce qu'elle voulait. ♦ −2"
-     }
+     },
+     "nature": "physique"
     },
     {
      "id": "grimper-talus",
@@ -1067,6 +1075,7 @@
       "echec": "Le talus s'éboule sous ta prise. Tu retombes dans le creux, à demi — et la Bête prend sa part de la jambe qui traînait encore.",
       "funeste": "1 naturel. Tu bondis. Le talus aussi était la Bête. ♦ −2"
      },
+     "nature": "physique",
      "tags": [
       "fuite"
      ]
@@ -1263,6 +1272,7 @@
       "echec": "Le bois crie sous ta lame — un son de gorge, pas de fibre. Les corbeaux décomptent un cran, tous ensemble. Tu emportes l'écharde, mais la colline emporte quelque chose de toi.",
       "funeste": "1 naturel. L'écharde t'entre dans la paume. Profond. C'est le gibet qui prélève. ♦ −2"
      },
+     "nature": "physique",
      "donneObjet": "echarde-gibet",
      "poseFlag": "echarde-gibet-prelevee"
     },
@@ -1278,7 +1288,8 @@
       "reussite": "Tu comptes. Le nombre est petit, et c'est le pire : les cordes ne battent pas les morts de la lande. Elles battent les tiennes. Le compte est juste. Tu redescends sans le dire à voix haute.",
       "echec": "Tu perds le fil au milieu — les cordes changent de mesure dès qu'on les suit, et tu comprends que compter, ici, c'est se faire compter. Le rythme reprend, plus lent, comme si on t'attendait.",
       "funeste": "1 naturel. Tu comptes, et la dernière corde attend ton chiffre pour bouger. Elle a bougé. Tu as donné le nombre le premier. ♦ −2"
-     }
+     },
+     "nature": "surnaturel"
     },
     {
      "id": "redescendre",
@@ -1334,7 +1345,8 @@
       "reussite": "Quelque chose cloche et tu finis par le voir : ses pieds touchent presque terre. Il pourrait se poser. Il ne le fait pas. Ce n'est pas une exécution, c'est une permanence.",
       "echec": "Tu l'observes trop longtemps — c'est lui qui finit de t'observer le premier. « On se demande lequel est exposé », dit la corde en grinçant. Tu as perdu l'avantage du regard.",
       "funeste": "1 naturel. Tu le jauges. Il attend poliment que tu aies fini — puis rend son verdict d'un mot que tu n'entends pas, mais que la colline note. ♦ −2"
-     }
+     },
+     "nature": "exploration"
     },
     {
      "id": "approcher-gibet",
@@ -1384,6 +1396,7 @@
       "echec": "Tu te défends trop. Le Bailli savoure chaque excuse : « Coupable, donc. Ils s'excusent tous. » Sa sentence te suit dans la lande, écrite quelque part où tu ne peux pas la lire.",
       "funeste": "1 naturel. Tu plaides. Il te coupe : « J'ai déjà jugé ce plaidoyer. Mot pour mot. Tu n'es même pas le premier toi. » ♦ −2"
      },
+     "nature": "social",
      "soupcon": 1,
      "temoin": {
       "nom": "Le Sonneur sans Cloche",
@@ -1404,6 +1417,7 @@
       "echec": "Ta lame entame la corde — qui se resserre, vivante, et te fouette au visage. Le Bailli rit à s'étrangler, ce qui ne lui coûte rien : « On ne défait pas une Fixation, petit juge. On la subit. »",
       "funeste": "1 naturel. La corde tranche plus vite que toi. Pas la sienne : une autre, tombée de nulle part, qui t'a mesuré le cou au passage. ♦ −2"
      },
+     "nature": "physique",
      "soupcon": 1,
      "temoin": {
       "nom": "La Doyenne",
@@ -1625,6 +1639,7 @@
       "echec": "« J\\u2019ai essayé. » Il reprend son couteau. « Pendant des années. On arrête, à un moment. » Le copeau qui tombe est plus épais que les autres.",
       "funeste": "1 naturel. Il te regarde longuement. « Toi aussi tu vas me demander de compter les corbeaux sur MA maison ? » Il ramasse ses outils et s\\u2019en va au bout de la rangée. ♦ −2"
      },
+     "nature": "social",
      "soupcon": 1
     },
     {
@@ -1722,6 +1737,7 @@
       "echec": "Le poteau t'échappe et le pendu chasse au bout de sa corde, dans un grand désordre de chanvre. Tout le rang se met à osciller de proche en proche. Le Fossoyeur te chasse à gestes secs : tu as réveillé le dortoir.",
       "funeste": "1 naturel. Le poteau tombe. Le pendu, lui, reste debout. ♦ −2"
      },
+     "nature": "social",
      "donneObjet": "carnet-fossoyeur"
     },
     {
@@ -1797,7 +1813,8 @@
       "reussite": "Tu le repousses, pas à pas, jusqu'aux rangs. Au contact du bois cassé, ses jambes cèdent : la Fixation le reprend à moitié. Assez pour qu'il ne te suive plus. Il te regarde partir avec une envie terrible.",
       "echec": "Il est plus lourd qu'un mort n'a le droit de l'être. Vous roulez dans la bruyère — il te tient, tu le tiens, et c'est la corde qui vous départage : elle te cingle, et tu lâches le premier.",
       "funeste": "1 naturel. Tu le pousses au poteau. Il t'y pousse aussi. La corde, elle, ne fait pas de différence entre deux cous. ♦ −2"
-     }
+     },
+     "nature": "physique"
     },
     {
      "id": "esquiver-corde",
@@ -1812,6 +1829,7 @@
       "echec": "La corde feinte — elle claque au sol et remonte en fouet. Elle te prend la cheville et te couche dans la bruyère ; tu te dégages en taillant, mais il t'a coûté du sang et du terrain.",
       "funeste": "1 naturel. Tu esquives la corde. Pas lui. Ses mains, on les oublie toujours. ♦ −2"
      },
+     "nature": "physique",
      "tags": [
       "fuite"
      ]
@@ -1828,7 +1846,8 @@
       "reussite": "Tu attrapes le bout traînant et le fais passer sous ses jambes au bon moment. Il trébuche, s'entrave, tombe — et chaque geste pour se relever le ligote un peu plus. Tu pars sans te presser.",
       "echec": "Le nœud que tu improvises tient une seconde de trop peu. Il s'en libère d'une secousse — et la corde, insultée qu'on la retourne contre lui, te choisit comme cible prioritaire.",
       "funeste": "1 naturel. Tu tires sur la corde. Elle était plus longue que tu croyais. Assez longue pour deux. ♦ −2"
-     }
+     },
+     "nature": "physique"
     }
    ],
    "pointsInteret": [],
@@ -1874,6 +1893,7 @@
       "echec": "Tu restes trop longtemps immobile face au village. Quand tu te redresses enfin, une silhouette se détache d'une porte, en bas, et rentre vite. Quelqu'un t'a vu observer — et observer, ici, n'est pas une chose innocente.",
       "funeste": "1 naturel. Tu observes, à plat ventre, concentré. Derrière toi, une voix polie : « On peut vous aider ? » Ils sont deux. Ils sont montés pendant que tu regardais en bas. ♦ −2"
      },
+     "nature": "exploration",
      "soupcon": 1,
      "temoin": {
       "nom": "Le Gamin des Murets",
@@ -2137,6 +2157,7 @@
       "echec": "Ta phrase sonne creux, et vous l\\u2019entendez tous les deux. Elle sourit très légèrement, sans joie : « Oui. C\\u2019est ce qu\\u2019on répond. » Et elle te lâche.",
       "funeste": "1 naturel. « Ne me fais pas ça. » Sa voix monte — la seule voix qui monte de tout le hameau — et trois volets s\\u2019entrouvrent dans la rue. ♦ −2"
      },
+     "nature": "social",
      "soupcon": 1
     }
    ],
@@ -2232,7 +2253,8 @@
       "reussite": "Tu le dis. Elle ne répond pas tout de suite. Puis : « Je sais. » Et après un silence : « Mais si j'arrête de regarder, alors c'est moi qui l'aurai laissé partir. » Elle reprend sa faction. Vous avez été honnêtes tous les deux.",
       "echec": "Les mots sortent trop droits. Son visage se ferme comme une porte de grange, et derrière ce bois-là il n'y a plus personne à qui parler. Dans la rue, deux volets bougent : on t'a vu faire pleurer une mère.",
       "funeste": "1 naturel. Tu lui dis qu'il ne reviendra pas. Elle te regarde enfin — vraiment — et demande, très calme : « Et toi ? Tu reviendras ? » ♦ −2"
-     }
+     },
+     "nature": "social"
     },
     {
      "id": "femme-regarder-sud",
@@ -2302,6 +2324,7 @@
       "echec": "Tu refuses mal — trop vite, en reculant d'un demi-pas. Sa main reste tendue trois secondes de trop, seule, dans la rue vide, et deux volets s'entrouvrent sur ce tableau-là.",
       "funeste": "1 naturel. Tu refuses. Elle range la mèche, et dit, sans aucune méchanceté : « C'est ce qu'il a dit aussi, en partant. Qu'il ne prendrait rien. » ♦ −2"
      },
+     "nature": "social",
      "soupcon": 1,
      "temoin": {
       "nom": "La Femme au Seuil",
@@ -2322,6 +2345,7 @@
       "echec": "La question tombe mal. Elle ne se fâche pas — elle range la mèche, c'est tout, et ça vaut toutes les insultes. Dans son dos, la porte se ferme d'elle-même, comme si la maison avait tranché.",
       "funeste": "1 naturel. « En échange ? » Elle répète les mots lentement, puis les rend au silence. Quelque part dans la rue, quelqu'un les répète aussi. ♦ −2"
      },
+     "nature": "social",
      "soupcon": 1,
      "temoin": {
       "nom": "La Femme au Seuil",
@@ -2342,6 +2366,7 @@
       "echec": "Tu le dis, et elle recule. Pas de dégoût : de la panique — pour toi. « Ne le dis à personne d'autre. » Elle regarde à droite, à gauche, les volets. « À personne, tu m'entends. » Elle rentre, et tu restes là, dans la rue, avec un aveu qui traîne dans l'air.",
       "funeste": "1 naturel. Tu le dis trop fort, ou pas assez seul. Un volet claque quelque part. Elle a pâli — pas de ce que tu es : de ce que ça fait de toi, ici. « Va-t'en. Maintenant. » ♦ −2"
      },
+     "nature": "social",
      "donneObjet": "meche-nouee",
      "exigeSavoir": "savoir_reflet"
     }
@@ -2392,6 +2417,7 @@
       "echec": "Il secoue la tête. « Ma mère dit que ceux qui entrent, faut pas les suivre dehors. » Il reste sur son muret. Mais il ne s\\u2019en va pas non plus, et il te regarde partir longtemps.",
       "funeste": "1 naturel. « Toi t\\u2019as déjà un poteau quelque part. » Il le dit sans méchanceté, comme on annonce la pluie, et il s\\u2019en va par l\\u2019autre côté du muret. ♦ −2"
      },
+     "nature": "social",
      "tags": [
       "citable"
      ],
@@ -2505,6 +2531,7 @@
       "echec": "« Partout », dit-il, et tu comprends qu\\u2019il ne ment pas — il n\\u2019a simplement jamais eu besoin de retenir où, parce que personne ne le lui a jamais demandé sérieusement.",
       "funeste": "1 naturel. Il te regarde autrement, d\\u2019un coup. « Pourquoi tu demandes ça, toi ? » Il ramasse ses cailloux dans le pan de sa chemise et s\\u2019en va, et tu entends très bien qu\\u2019il en parlera à quelqu\\u2019un. ♦ −2"
      },
+     "nature": "social",
      "donneObjet": "caillou-gamin",
      "donneDecouverte": "d.fille_apercue"
     },
@@ -2641,6 +2668,7 @@
       "echec": "« Ça ne se demande pas. » Le vieux se ferme d'un coup, et les deux autres avancent d'un demi-pas. Ta question, dans leur grammaire, est déjà un aveu : seuls ceux qui entendent s'intéressent à ce qu'on entend.",
       "funeste": "1 naturel. Tu demandes ce qu'ils craignent. Le silence qui suit dure trop. Puis, très bas, le vieux : « Toi. » Il n'a pas l'air content de sa propre réponse. ♦ −2"
      },
+     "nature": "social",
      "soupcon": 1,
      "temoin": {
       "nom": "Les trois hommes du seuil",
@@ -2661,6 +2689,7 @@
       "echec": "Tu avances — et la fourche change de main. Pas levée : tenue. Le message est clair, et tu t'arrêtes de toi-même. Passer en force ne marche pas chez des gens qui ont déjà décidé d'avoir peur.",
       "funeste": "1 naturel. Tu passes sans t'arrêter. Le vieux te laisse faire, et lance à la cantonade, calmement : « Notez l'heure. » Quelqu'un, quelque part, note l'heure. ♦ −2"
      },
+     "nature": "social",
      "soupcon": 1,
      "temoin": {
       "nom": "Les trois hommes du seuil",
@@ -2731,7 +2760,8 @@
       "reussite": "« Parce que ça ne coûte rien de parler à travers un volet », dit-elle. Puis, plus bas, comme si elle se corrigeait : « Et parce que ça coûte trop cher de se taire deux fois. » Le volet se ferme, cette fois.",
       "echec": "Tu poses la question trop fort. Le volet claque avant la fin de ta phrase, et tu entends la barre tomber derrière. Dans la rue, deux autres volets se ferment aussitôt — le tien a fait le tour du village en trois secondes.",
       "funeste": "1 naturel. « Pourquoi vous m'aidez ? » Le silence derrière le bois dure trop longtemps. Puis : « Qui a dit que je t'aidais ? » Le volet se referme doucement, ce qui est pire qu'un claquement. ♦ −2"
-     }
+     },
+     "nature": "social"
     },
     {
      "id": "volet-faire-parler",
@@ -2746,6 +2776,7 @@
       "echec": "Ta ruse est trop visible. « Tu me fais parler », constate-t-elle, sans colère, presque avec pitié. « C'est exactement ce que fait l'autre. » Le volet se ferme, et tu ne sauras pas de quel autre elle parlait.",
       "funeste": "1 naturel. Tu la relances une fois de trop. Elle se tait net, puis appelle vers l'intérieur, assez fort pour être entendue de la rue : « Il pose des questions ! » Trois volets s'ouvrent d'un coup. ♦ −2"
      },
+     "nature": "social",
      "soupcon": 1
     },
     {
@@ -2806,7 +2837,8 @@
       "reussite": "Sous la craie neuve, on devine les fantômes d'une liste plus vieille — effacée, pas nettoyée. Le mur sert depuis longtemps, et il a été vidé plusieurs fois. Quelqu'un tient ce registre depuis avant les gens qui l'écrivent aujourd'hui.",
       "echec": "Tu frottes pour voir dessous, et tu emportes la craie fraîche avec. Trois lignes récentes disparaissent sous ta paume. Derrière toi, très calme, une voix d'enfant : « Faut pas. » Il n'est pas parti si loin que ça.",
       "funeste": "1 naturel. Tu grattes la couche du dessous, et la craie te reste sur les doigts, blanche, bien visible. Tu ne t'en apercevras qu'au muret, en tendant la main. ♦ −2"
-     }
+     },
+     "nature": "exploration"
     },
     {
      "id": "mur-effacer-ligne",
@@ -2821,6 +2853,7 @@
       "echec": "Ta manche accroche la ligne du dessus en même temps. Deux noms partent avec le tien. Effacer un nom, ici, ce n'est pas nier un passage : c'est nier quelqu'un, et cette faute-là se voit de loin.",
       "funeste": "1 naturel. Tu effaces ta ligne. Le gamin, à dix pas, la réécrit de mémoire, plus grand, en te regardant. Puis il ajoute un mot devant. Tu ne le lis pas d'ici, et tu n'as plus envie de t'approcher. ♦ −2"
      },
+     "nature": "social",
      "soupcon": 2
     }
    ],
@@ -2867,7 +2900,8 @@
       "reussite": "Tu réponds simplement, en le regardant lui. Il hoche la tête à chaque réponse comme s'il cochait, puis se retourne vers la maison la plus proche et crie : « Il a dit non ! » Le mot passe de porte en porte. Ce n'est pas un acquittement, mais ce n'est pas une condamnation.",
       "echec": "Tu réponds à l'enfant, gentiment — et tu oublies les vingt personnes qui écoutent. Ta deuxième réponse est trop longue, trop précise. Un adulte sort avant la fin et le tire par le bras à l'intérieur.",
       "funeste": "1 naturel. Tu réponds « oui » à la deuxième question sans réfléchir. *Est-ce que tu as compté quelque chose aujourd'hui.* Le gamin répète ton oui à la cantonade, fier de sa mission. Le silence qui suit n'est pas celui d'avant. ♦ −2"
-     }
+     },
+     "nature": "social"
     },
     {
      "id": "enfant-repondre-volets",
@@ -2882,6 +2916,7 @@
       "echec": "Tu joues pour la galerie, et la galerie n'aime pas ça. « Il parle aux murs », dit une voix de femme, sans se cacher. Chez des gens qui ont peur d'être écoutés, parler aux murs n'est pas une image.",
       "funeste": "1 naturel. Tu réponds à la rue au lieu de répondre à l'enfant — et l'enfant, vexé, ajoute la seule chose qu'on ne lui avait pas apprise : « Il regarde le sud tout le temps. » ♦ −2"
      },
+     "nature": "social",
      "soupcon": 1
     },
     {
@@ -2944,6 +2979,7 @@
       "echec": "Tu repousses le bol un peu trop fort. Il tourne, il tient, mais la cuillère tombe et sonne sur la pierre. Le bruit fait le tour de la rue. Refuser, ici, doit se faire sans bruit — sinon c'est du mépris.",
       "funeste": "1 naturel. Tu repousses le bol, il verse. La soupe coule entre les pavés, et personne ne sort la ramasser. Ils la laisseront là jusqu'à ce que tu repasses. ♦ −2"
      },
+     "nature": "social",
      "soupcon": 1
     },
     {
@@ -2958,7 +2994,8 @@
       "reussite": "Tu prends le pain sans t'asseoir, et tu continues en mâchant. Techniquement tu n'as pas mangé à leur table. Techniquement. Deux ou trois d'entre eux comprendront la nuance ; les autres retiendront juste que tu as pris.",
       "echec": "Tu emportes le pain debout, et la nuance t'échappe à toi aussi : dans une rue qui n'a pas mangé de blanc depuis deux hivers, prendre sans s'asseoir ne s'appelle pas de la prudence.",
       "funeste": "1 naturel. Tu prends le pain. Une voix, derrière un volet, énonce le mot exact, sans passion : « Voleur. » Et le mot va plus vite que toi jusqu'au bout de la rue. ♦ −2"
-     }
+     },
+     "nature": "social"
     }
    ],
    "pointsInteret": [],
@@ -3004,7 +3041,8 @@
       "reussite": "« Ça ne répond pas avec des mots », dit la vieille. Elle ne lâche pas la corde pour autant. « Ça répond en venant. » L'homme qui courait s'est assis contre le mur, et il ne dit rien du tout.",
       "echec": "Tu demandes trop vite. La vieille resserre la main sur la corde et te regarde comme on regarde quelqu'un qui a demandé le prix d'une chose qui ne se vend pas. « On ne parle pas de ça dehors. »",
       "funeste": "1 naturel. Tu poses la question à voix haute, dans la rue, devant les seuils. Une femme rentre son enfant. Un homme fait le geste de compter sur ses doigts, s'arrête, et cache sa main. ♦ −2"
-     }
+     },
+     "nature": "social"
     },
     {
      "id": "cloche-excuser",
@@ -3026,6 +3064,7 @@
       "echec": "Tu attrapes la corde, la vieille ne lâche pas, et vous tirez tous les deux à contretemps : le battant touche le bronze sans le faire sonner. Un bruit sourd, humiliant. Elle te regarde, et pour la première fois quelqu'un ici a l'air d'avoir pitié de toi.",
       "funeste": "1 naturel. Tu tires, et le son sort trop long, trop plein, comme s'il ne venait pas de cette cloche-là. Loin, au sud, quelque chose de très grand change de position. Tu le sens sous tes pieds. ♦ −2"
      },
+     "nature": "social",
      "poseFlag": "cloche-sonnee",
      "soupcon": 2
     }
@@ -3075,6 +3114,7 @@
       "echec": "Tu tends les mains vers le coffre et l'homme le retire. « Non. » Il ne s'explique pas. Sur les seuils, personne n'a bougé, et tu comprends trop tard que dans ce village, aider un partant, c'est prendre parti.",
       "funeste": "1 naturel. Tu attrapes la porte pour la caler et elle glisse, tombe à plat, sonne sur les pavés. Toute la rue sursaute. La femme se met à pleurer, enfin — et c'est ta faute, et ce n'est pas la porte. ♦ −2"
      },
+     "nature": "social",
      "soupcon": -1
     },
     {
@@ -3089,7 +3129,8 @@
       "reussite": "« Parce qu'on a compté trois fois ce mois-ci », dit l'homme sans lever la tête. « Et que trois fois, ça faisait pas pareil. » Il tire la sangle d'un coup sec. « Y a rien d'autre à comprendre. »",
       "echec": "Tu demandes, et il te répond par une autre question : « Vous êtes lequel ? » Comme tu ne comprends pas, il précise : « Y en a un qui est passé avant vous et qui a juré. Vous êtes lequel des deux ? » Tu n'as pas de réponse à ça.",
       "funeste": "1 naturel. « Pourquoi maintenant ? » L'homme s'arrête enfin, se retourne, te regarde longuement. « Parce que vous êtes revenu. » Il n'a pas l'air de savoir lui-même pourquoi il a dit ça au passé. ♦ −2"
-     }
+     },
+     "nature": "social"
     },
     {
      "id": "depart-regarder",
@@ -3353,7 +3394,8 @@
       "reussite": "Tu tiens jusqu'au cœur de la nuit, l'oreille contre la planche. Assez pour entendre ce qui se dit. Pas assez pour être reposé — mais reposé n'était pas le but.",
       "echec": "Tu veilles, tu veilles, et le sommeil te prend quand même — d'un coup, sans transition, comme une main sur la nuque. Tu te réveilles au gris de l'aube avec une nuit blanche dans les jambes.",
       "funeste": "1 naturel. Tu veilles. Et à un moment de la nuit que tu ne sauras jamais situer, quelque chose a veillé avec toi, de l'autre côté du bois, exactement à ta hauteur. ♦ −2"
-     }
+     },
+     "nature": "surnaturel"
     },
     {
      "id": "dormir-grange",
@@ -3429,6 +3471,7 @@
       "echec": "La paille craque sous toi. Les voix s'arrêtent net — ce silence-là est une porte qui claque. Puis des pas qui s'éloignent vite, et tu passes le reste de la nuit à te demander ce qu'ils ont compris.",
       "funeste": "1 naturel. Tu écoutes. Et une voix, tout près, dit ton nom — celui que tu as signé au pacte, celui que personne ici n'a entendu. ♦ −2"
      },
+     "nature": "surnaturel",
      "tags": [
       "citable"
      ]
@@ -3500,6 +3543,7 @@
       "echec": "Tu te lèves trop vite et la paille crisse. Au-dessus, le poids s\\u2019arrête net — puis se déplace, lentement, exactement au-dessus de l\\u2019endroit où tu te tiens. Tu passes le reste de la nuit assis, dos au mur, à écouter un plancher de ciel.",
       "funeste": "1 naturel. Tu approches l\\u2019œil de la fente, et quelque chose, de l\\u2019autre côté, fait exactement le même geste. ♦ −2"
      },
+     "nature": "surnaturel",
      "tags": [
       "citable"
      ]
@@ -3754,6 +3798,7 @@
       "echec": "Tu fais trois pas et tu t\\u2019arrêtes, parce que les corbeaux se sont tous tournés en même temps. Pas vers le passage. Vers toi. Tu regagnes ton muret sans donner le dos à la rue.",
       "funeste": "1 naturel. Tu arrives au coin au moment où il revient. Tu ne vois toujours pas de visage. Tu vois qu\\u2019il s\\u2019arrête, et qu\\u2019il attend — comme on attend que quelqu\\u2019un ait fini de comprendre. ♦ −2"
      },
+     "nature": "surnaturel",
      "poseEtat": "hante",
      "tags": [
       "citable"
@@ -3914,7 +3959,8 @@
       "reussite": "Tu montes. En haut, le vent te prend de face et tu tiens bon : d'ici on voit tout le hameau, et tout le hameau te voit.",
       "echec": "Une marche cède sous ton poids. Tu te rattrapes au mur, la paume ouverte sur l'arête.",
       "funeste": "La volée entière lâche. Tu tombes sur le tas de pierres rangées, et elles se rangent autour de toi comme si elles t'attendaient."
-     }
+     },
+     "nature": "physique"
     },
     {
      "id": "ecouter-tour",
@@ -4031,6 +4077,7 @@
       "echec": "Il se ferme d'un coup. « Personne ne l'a couchée. Elle est tombée. » Et il redescend le tertre sans te regarder.",
       "funeste": "Il se lève lentement. « Qui t'a dit de monter ? » Sa main est sur la corne. En bas, deux volets s'ouvrent dans la ruelle."
      },
+     "nature": "social",
      "exigeSavoir": "savoir_guet"
     },
     {
@@ -4045,7 +4092,8 @@
       "reussite": "Il porte la corne à sa bouche — et ne souffle pas. « Voilà. C'est exactement ce qu'on entend depuis vingt ans. » Il te la tend : elle est bouchée à la cire, de l'intérieur.",
       "echec": "« Sonner quoi ? » Il serre la corne contre lui. « Le dernier qui a sonné, ils sont venus. Pas pour ce qu'il annonçait. Pour lui. »",
       "funeste": "Il souffle. Rien ne sort — mais dans le hameau, sous toi, on entend distinctement une porte, puis une autre, puis une autre se fermer. « Tu vois. Ils l'entendent quand même. »"
-     }
+     },
+     "nature": "social"
     },
     {
      "id": "guet-partir",
@@ -4102,7 +4150,8 @@
       "reussite": "Paumes ouvertes, menton bas : tu passes pour un voyageur qui connaît les usages. Les épaules se détendent sur ton passage. C'est peu, et c'est énorme, ici.",
       "echec": "Ton geste dérape — une paume trop haute, et te voilà en train de proposer quelque chose que tu ne comprends pas. Un vieux marchand éclate d'un rire SILENCIEUX, à s'en plier. C'est pire qu'un rire sonore.",
       "funeste": "1 naturel. Ton salut, dans leur grammaire, est une question qu'on ne pose pas. Le marché entier baisse les mains d'un coup. Conversation terminée. ♦ −2"
-     }
+     },
+     "nature": "social"
     },
     {
      "id": "longer-etals",
@@ -4176,7 +4225,8 @@
       "reussite": "L'échange se fait : trois clous et un souvenir contre un petit paquet de toile cirée. Dedans, de quoi tenir — du sûr, du sec. Le Colporteur tape deux doigts sur sa tempe : marché honnête, mémoire honnête.",
       "echec": "Tu offres trop tôt, il le voit trop bien. L'échange se conclut à ton désavantage — un objet brillant et creux contre du solide. Son sourire s'excuse presque : les règles sont les règles, même muettes.",
       "funeste": "1 naturel. Tu tends la main vers l'étal. Il la serre — et te rend ta propre bourse, que tu n'avais pas vue partir. Leçon offerte, dit son sourire. La leçon seulement. ♦ −2"
-     }
+     },
+     "nature": "social"
     },
     {
      "id": "rebouteux",
@@ -4191,6 +4241,7 @@
       "echec": "Il t'examine, puis recule d'un pas et te montre sa paume : refus. Tu ne sauras pas si c'est ta blessure qui le dépasse ou quelque chose qu'il a lu dessous — mais il ne te touchera pas, et son regard t'accompagne longtemps.",
       "funeste": "1 naturel. Ses mains s'arrêtent net sur ta nuque. Il retire les siennes très lentement, comme d'un piège à loup. Ce qu'il a senti là, il ne l'a pas soigné. Il l'a salué. ♦ −2"
      },
+     "nature": "social",
      "repondBesoin": "soigner",
      "soupcon": 1,
      "temoin": {
@@ -4254,7 +4305,8 @@
       "reussite": "Des craquements de bois qui travaille, le froissement de la lande — et, très loin, un pas léger qui tourne autour du moulin sans jamais s'approcher. Pas une menace : une ronde.",
       "echec": "Tu écoutes si fort que tu n'entends plus rien — le silence se referme comme une main. Quand tu relâches, un craquement JUSTE au-dessus. Le temps de lever la tête : rien. Le moulin, dit ton pouls.",
       "funeste": "1 naturel. Le moulin s'arrête de craquer. Complètement. Un vieux bois qui se tait, c'est un bois qui retient son souffle. ♦ −2"
-     }
+     },
+     "nature": "surnaturel"
     },
     {
      "id": "installer-camp",
@@ -4387,7 +4439,8 @@
       "reussite": "Ton demi-sommeil filtre les bruits de la lande. Rien n'entre. Le repos est mince, mais il est à toi — et le creux du lit de bruyère, au matin, n'a pas changé de forme.",
       "echec": "Tu sombres sans le décider. Au réveil, la porte est ouverte — tu l'avais calée — et sur la meule, quelqu'un a posé une fleur de bruyère. Tu n'es pas sûr que ce soit un cadeau.",
       "funeste": "1 naturel. Tu rêves qu'on te veille. Tu te réveilles : c'est vrai. Elle est penchée sur toi, sa corde coupée pendant à ton front — puis plus rien, la porte battante, et ton cœur qui compte tout seul. ♦ −2"
-     }
+     },
+     "nature": "surnaturel"
     },
     {
      "id": "repartir",
@@ -4488,6 +4541,7 @@
       "echec": "« Ne fais pas ça. » Sa voix ne monte pas d\\u2019un ton, ce qui est pire. « Tout le monde ici me dit ce que je devrais faire de mon père. Toi tu viens d\\u2019arriver. »",
       "funeste": "1 naturel. Elle rit — un son sec, sans joie. « Il m\\u2019attend, oui. Comme il attendait l\\u2019autre. » Elle se remet à son ouvrage et ne te répondra plus de la soirée. ♦ −2"
      },
+     "nature": "social",
      "tags": [
       "citable"
      ]
@@ -4640,6 +4694,7 @@
       "echec": "« Le chanvre vieillit mal ici. On refait. » Elle reprend son geste un peu trop vite, et le nœud qu\\u2019elle serre n\\u2019est pas celui qu\\u2019elle serrait avant.",
       "funeste": "1 naturel. « Tu poses beaucoup de questions sur une corde. » Elle te regarde enfin, et son regard fait tout le tour de toi, comme on prend une mesure. ♦ −2"
      },
+     "nature": "social",
      "soupcon": 1
     }
    ],
@@ -4891,7 +4946,8 @@
       "reussite": "Tu soulèves le verre, tu prends la corde. Elle ne pèse rien — tout ce qu'elle devait retenir s'est relevé et marche encore. La Veuve, au fond, ne se retourne pas. Mais son nœud, pour la première fois, change de forme.",
       "echec": "Le verre t'échappe et sonne sur la dalle. La Veuve est sur toi en trois pas, sans courir — et les cordes du mur se tendent toutes vers toi, d'un même mouvement. Tu sors avec la corde, mais la chapelle entière connaît ton visage.",
       "funeste": "1 naturel. Tu saisis la corde coupée. Une autre corde, au mur, te saisit le poignet — la Fixation est un métier de patience, et il en pendait une au-dessus de la niche depuis toujours, pour les gens comme toi. ♦ −2"
-     }
+     },
+     "nature": "exploration"
     },
     {
      "id": "prier-veuve",
@@ -4905,7 +4961,8 @@
       "reussite": "Tu prends le bout de corde qu'elle te tend et tu suis. Le nœud qu'elle t'apprend n'attache rien — il retient quelqu'un de partir dans sa tête. Elle te tapote la main : tu sauras le refaire, quand tu en auras besoin. Tu espères que non.",
       "echec": "Tu t'agenouilles trop près. Ses mains ne s'arrêtent pas, mais son nœud change — et tu reconnais la forme, maintenant : c'est un nœud coulant à ta taille de cou. Tu te relèves sans brusquerie. Elle sourit au mur.",
       "funeste": "1 naturel. Tu pries avec elle. Elle prie pour toi. Au mur, un clou libre attend déjà, sous un espace sans nom — plus pour longtemps, dit son nœud. ♦ −2"
-     }
+     },
+     "nature": "social"
     },
     {
      "id": "corde-vive",
@@ -4968,6 +5025,7 @@
       "echec": "L'oreille au bois, tu n'entends plus rien — les coups se sont tus dès le contact. Puis, contre ta joue, à travers la planche : trois coups très doux. On t'a entendu écouter.",
       "funeste": "1 naturel. Tu écoutes. Et de l'autre côté des planches, très distinctement, quelqu'un fait « chhht ». ♦ −2"
      },
+     "nature": "surnaturel",
      "tags": [
       "citable"
      ]
@@ -5027,7 +5085,8 @@
       "reussite": "Tu resserres ce qui peut l'être. Les coups continuent, mais assourdis, repoussés d'un étage — le puits retourne à sa patience. Ce que tu as gagné s'appelle du temps, et ici ça vaut cher.",
       "echec": "La chaîne te glisse des mains et sonne contre la margelle. Dessous, silence — le pire des silences, celui qui écoute. Tu finis le travail trop vite, mal, et tu t'éloignes sans tourner le dos au puits.",
       "funeste": "1 naturel. Tu tires la chaîne. Elle tire aussi. Le cadenas, entre vous deux, choisit son camp — pas le tien. ♦ −2"
-     }
+     },
+     "nature": "physique"
     },
     {
      "id": "reculer-puits",
@@ -5081,7 +5140,8 @@
       "reussite": "Une masse grise contre le seuil, immobile comme un sac — sauf les oreilles, qui te suivent depuis ton premier pas. Il sait que tu es là. Il attend de savoir si ça vaut de se lever.",
       "echec": "Tu scrutes les appentis, la cour, les toits — et pendant ce temps, la masse grise du seuil s'est levée sans bruit et a raccourci la distance de moitié. Il jaugeait plus vite que toi.",
       "funeste": "1 naturel. Tu cherches le danger partout — sauf derrière. Le souffle sur tes mollets t'informe de ton erreur. ♦ −2"
-     }
+     },
+     "nature": "exploration"
     },
     {
      "id": "avancer-seuil",
@@ -5131,6 +5191,7 @@
       "echec": "Il est plus vif que sa taille ne l'annonce. Ses mâchoires te prennent l'avant-bras au vol et te traînent hors du seuil comme un sac — c'est exactement son travail, et il le fait bien. Tu ne passes pas par la porte.",
       "funeste": "1 naturel. Tu forces le seuil. Le chien te laisse faire — et tu comprends trop tard pourquoi il montait la garde tourné vers la porte : ce n'était pas pour empêcher d'entrer. ♦ −2"
      },
+     "nature": "physique",
      "poseEtatSiEchec": "marque"
     },
     {
@@ -5145,7 +5206,8 @@
       "reussite": "Tu lui laisses le dos de ta main, sans bouger. Il la flaire longtemps — la lande, le gibet, peut-être une trace de son maître dessus. Il ne s'écarte pas, mais il s'assoit : ce n'est plus une garde, c'est une visite. Tu peux longer le mur.",
       "echec": "Ta voix le calme — puis un mot le hérisse d'un coup, sans que tu saches lequel. Un mot que le Bailli employait, sans doute, et pas pour de bonnes choses. Il te chasse du seuil en trois attaques sèches, plus déçu que féroce.",
       "funeste": "1 naturel. Il pose sa tête sous ta main. Et referme ses mâchoires dessus au moment exact où tu le crois gagné — les ordres du Bailli prévoyaient les gens comme toi. ♦ −2"
-     }
+     },
+     "nature": "physique"
     },
     {
      "id": "contourner-cour",
@@ -5159,7 +5221,8 @@
       "reussite": "Tu passes par la cour aux orties, sous le vent, hors de vue. Le chien tourne autour de la maison à ta recherche — méthodique, aux aguets — mais la routine de sa ronde a trente ans, et tu marches entre ses horaires.",
       "echec": "La cour est un piège à bruit : ardoises brisées, seaux morts, orties jusqu'au coude. Le chien t'y cueille à mi-chemin, sans surprise aucune — sa ronde passait par là, évidemment. Tu ressors piqué, mordu et bredouille.",
       "funeste": "1 naturel. Dans la cour arrière, tu découvres pourquoi la ronde du chien l'évite : quelque chose y est enterré, et ça n'aime pas les pas au-dessus. ♦ −2"
-     }
+     },
+     "nature": "physique"
     }
    ],
    "pointsInteret": [],
@@ -5339,6 +5402,7 @@
       "echec": "Tu le dis, et le silence qui suit te apprend ton erreur. L'Écrivain ne lève pas les yeux : il écrit. Longuement. Tu viens de fournir toi-même le motif qui manquait à ta ligne, et il a l'élégance de ne pas te remercier.",
       "funeste": "1 naturel. Tu parles trop, et tu parles bien : tu expliques exactement où est le poteau, à quelle rangée, comment l'entaille est faite. L'Écrivain note tout. « Merci », dit-il enfin — le seul mot qu'il t'aura adressé. « On cherchait encore lequel c'était. » ♦ −2"
      },
+     "nature": "social",
      "exigeSavoir": "savoir_poteau_a_mon_nom"
     }
    ],
@@ -5386,7 +5450,8 @@
       "reussite": "Ta charge la surprend à contre-pied. Ta lame la marque au flanc et le cercle s'arrête net — six têtes tournées vers la meneuse, en attente d'un ordre qu'elle met trop longtemps à donner. Tu as gagné le désordre, et c'est déjà beaucoup.",
       "echec": "Elle t'a laissé venir. Le cercle se referme dans ton dos au moment exact de ton élan — des crocs te prennent au mollet, d'autres au flanc, précis, économes. Puis tout recule d'un pas : la première entaille est faite. Ils ne sont pas pressés.",
       "funeste": "1 naturel. Tu charges la meneuse. C'était la seule qui n'était pas là — tu charges de la bruyère, et le cercle entier te tombe dessus, pédagogique. ♦ −2"
-     }
+     },
+     "nature": "physique"
     },
     {
      "id": "dos-muret",
@@ -5401,6 +5466,7 @@
       "echec": "Tu cours — et le cercle tourne plus vite que toi, sans effort. Une bête t'accueille au muret, déjà assise, presque polie. Le péage se paie en chair, et tu le paies. Puis on te laisse t'adosser : même eux respectent les règles du jeu.",
       "funeste": "1 naturel. Tu cours au muret. Le muret est leur tanière. ♦ −2"
      },
+     "nature": "physique",
      "tags": [
       "fuite"
      ]
@@ -5417,7 +5483,8 @@
       "reussite": "Ton hurlement les déroute — c'est la proie qui crie, jamais le centre. Deux bêtes rompent le tour pour interroger la meneuse du regard, et le cercle flotte, désaccordé. Tu as gagné du temps et semé le doute, leurs deux seules faiblesses.",
       "echec": "Ton hurlement sonne faux — un cri de gorge d'homme, rien d'autre. Le cercle ne ralentit même pas. Pire : au loin, quelque chose d'autre a répondu, et la meneuse presse le pas. Ils veulent finir avant l'arrivée de ce que tu as appelé.",
       "funeste": "1 naturel. Tu hurles. Toute la lande répond — tout ce qu'elle contient, d'un seul chœur. La meute, elle, s'assoit poliment : on ne coupe pas la parole à ce qui arrive. ♦ −2"
-     }
+     },
+     "nature": "physique"
     }
    ],
    "pointsInteret": [],
@@ -5465,7 +5532,8 @@
       "reussite": "Ta lame répond pour toi. La meneuse esquive l'essentiel, encaisse le reste, et rompt — le croissant entier reflue avec elle, réglé sur sa retraite. Ils reviendront peut-être. Pas aujourd'hui, et pas pour toi.",
       "echec": "Elle attendait l'acier — c'est la réponse qu'ils comprennent le mieux et esquivent le mieux. Le croissant fond sur toi, prend son tribut de chair en trois passes réglées, puis décroche d'un coup, comme à un signal. La lande se referme sur eux. Le compte est bon, pour eux.",
       "funeste": "1 naturel. Tu frappes. Ta lame se prend dans la bruyère — la lande a choisi son camp. La meute te passe dessus en une seule vague, sans s'attarder : ce qu'elle voulait savoir, elle le sait, et te laisse au sol, moins lourd de ce qu'elle emporte. ♦ −2"
-     }
+     },
+     "nature": "physique"
     },
     {
      "id": "reculer-face",
@@ -5479,7 +5547,8 @@
       "reussite": "Chaque pas en arrière est un mot de la négociation. Tu la tiens du regard jusqu'au chemin, et le croissant s'effiloche à mesure — une bête qui décroche, puis deux. À la fin, il ne reste que la meneuse, qui te concède la lande d'un battement de paupières.",
       "echec": "Ton talon accroche une racine — un quart de seconde de regard perdu. Il ne leur en faut pas plus : la charge t'arrive dessus pendant que tu te rattrapes, te roule, te coûte — puis s'arrête net, croissant reformé, et la meute s'en va. L'épreuve est finie ; tu n'as pas brillé, mais tu es debout.",
       "funeste": "1 naturel. Tu recules sans baisser les yeux. Eux non plus. Tu recules encore. Eux avancent. Le mur de pierre sèche dans ton dos met fin à la négociation — à leurs conditions. Ils prélèvent, et te laissent contre le muret, vivant par désintérêt. ♦ −2"
-     }
+     },
+     "nature": "physique"
     },
     {
      "id": "offrir-viande",
@@ -5493,7 +5562,8 @@
       "reussite": "Le paquet tombe entre vous. La meneuse le flaire, le juge honnête — et le croissant se referme dessus au lieu de toi. Tu pars le ventre plus léger et la peau entière. Dans la lande, c'est un excellent taux de change.",
       "echec": "Tu jettes tout — trop vite, trop près de toi. La meute prend les vivres ET la leçon : ce qui donne tout tremble. La meneuse te bouscule au passage, sans mordre, juste pour l'inventaire — puis ils s'en vont, servis. Tu restes debout, les poches vides, jaugé au plus juste.",
       "funeste": "1 naturel. Tu jettes tes vivres. Ils n'y touchent pas. Ce n'était pas une chasse au gibier — c'était une pesée, et ton offrande vient de te faire passer dans la mauvaise colonne. Ils prélèvent la différence sur toi, exacts comme un percepteur, puis rendent la lande au silence. ♦ −2"
-     }
+     },
+     "nature": "physique"
     }
    ],
    "pointsInteret": [],
@@ -5541,6 +5611,7 @@
       "echec": "Tu bois — et l'eau reste au bord des lèvres, sans descendre, une seconde de trop. Quand elle passe enfin, tu as l'impression très nette d'avoir avalé quelque chose qui a accepté de se laisser avaler.",
       "funeste": "1 naturel. Tu bois. Sous la surface, à trois doigts de ton visage, ton reflet continue de boire quand tu t'arrêtes. ♦ −2"
      },
+     "nature": "surnaturel",
      "poseEtatSiEchec": "fievreux"
     },
     {
@@ -5671,6 +5742,7 @@
       "echec": "Il te voit — et le fait que tu l'aies vu, lui, est la pire chose qui pouvait lui arriver aujourd'hui. Il part très vite, sans un mot, et tu sais qu'il racontera cette rencontre autrement que toi.",
       "funeste": "1 naturel. Tu l'abordes. Il te regarde, regarde l'eau, te regarde encore. Puis il demande, d'une voix blanche : « Le vôtre aussi ? » ♦ −2"
      },
+     "nature": "social",
      "soupcon": 1,
      "temoin": {
       "nom": "Le Renonçant de la Mare",
@@ -5732,7 +5804,8 @@
       "reussite": "Tu mords. La chair est sèche, sans goût, et se défait en poudre. Rien ne t'arrive — sauf la certitude, désormais physique, que rien ne pousse ici.",
       "echec": "La cendre te reste dans la gorge et n'en sort plus. Tu tousses longtemps, plié en deux entre deux rangs, et l'homme au fond du verger cesse une seconde de bêcher pour te regarder faire.",
       "funeste": "1 naturel. Tu mords. Et quelque chose, dans le fruit, mord en retour. ♦ −2"
-     }
+     },
+     "nature": "surnaturel"
     }
    ],
    "pointsInteret": [
@@ -5846,7 +5919,8 @@
       "reussite": "Tu retrouves la sortie du premier coup. Les rangs se referment derrière toi et le verger redevient une tache noire sur la lande.",
       "echec": "Tu tournes deux fois dans les mêmes rangs avant de retrouver la lisière. Onze rangs, ce n'est pas un labyrinthe. Ça n'aurait pas dû prendre si longtemps.",
       "funeste": "1 naturel. Tu sors des rangs. Le compte à voix basse, derrière toi, s'est arrêté au moment exact où tu as passé la porte. ♦ −2"
-     }
+     },
+     "nature": "exploration"
     }
    ],
    "pointsInteret": [],
@@ -5898,7 +5972,8 @@
       "reussite": "Tu creuses deux trous. La terre est lourde, morte, et cède mal. La femme corrige ton geste d'un mot. C'est peu. C'est déjà énorme.",
       "echec": "Tu prends la bêche et l'homme la reprend aussitôt, sans brutalité, comme on retire un outil des mains d'un enfant. Le compte a repris exactement où il s'était arrêté.",
       "funeste": "1 naturel. Tu enfonces la bêche. Elle bute sur quelque chose à trois doigts sous la surface — quelque chose de long, et qui a été mis là avec soin. Vous vous regardez tous les trois, et personne ne creuse. ♦ −2"
-     }
+     },
+     "nature": "social"
     }
    ],
    "pointsInteret": [],
@@ -5954,7 +6029,8 @@
       "reussite": "Tu le dis simplement. Elle hoche la tête, sans surprise. « C'est ce que disent tous ceux qui viennent. » Elle retourne à son rang. Ça n'a rien cassé.",
       "echec": "Tu le dis mal — trop court, trop net. L'homme cesse de compter ses coups de bêche. Le silence qui suit est le pire son des Landes, et il dure jusqu'à ce que tu sois sorti du rang.",
       "funeste": "1 naturel. « Je n'ai rien. » La femme te regarde les mains, longtemps, puis le visage. « Non », dit-elle enfin, très doucement. « Toi non plus, tu ne viens pas du dehors. » ♦ −2"
-     }
+     },
+     "nature": "social"
     },
     {
      "id": "epoux-promettre",
@@ -5968,7 +6044,8 @@
       "reussite": "Le mensonge passe sans effort : ils veulent y croire. « Au prochain passage », répète-t-elle, et elle range ça quelque part où ça ne s'abîmera pas.",
       "echec": "Tu promets, et elle t'écoute promettre avec un demi-sourire qui ne juge rien. « Bien sûr. » Elle retourne à son rang deux mots trop tôt.",
       "funeste": "1 naturel. Tu promets pour la prochaine fois. L'homme, sans lever la tête, dit son premier mot : « Laquelle ? » ♦ −2"
-     }
+     },
+     "nature": "social"
     },
     {
      "id": "epoux-donner",
@@ -6066,7 +6143,8 @@
       "reussite": "Tronc après tronc, tu longes. Le bois est noirci au feu — volontairement, un tronc sur deux : du bois traité contre quelque chose qui grimpe. Tu ranges l'information avec les inquiétantes.",
       "echec": "Tu longes trop près. Une sentinelle de bois que tu prenais pour un étai pivote en grinçant — un épouvantail de garnison, monté sur gonds, qui fait face à quiconque marche le long du mur. Tu es exactement le genre de passage qu'il annonce.",
       "funeste": "1 naturel. Au pied d'un tronc, un paquet de toile. Dedans, un bagage complet — gourde, couverture, lettres. Quelqu'un a marché jusqu'ici, a posé son sac, et a continué SANS. Tu sais maintenant à quoi ressemble l'appel, vu de l'extérieur. ♦ −2"
-     }
+     },
+     "nature": "exploration"
     },
     {
      "id": "approcher-porte",
@@ -6159,9 +6237,11 @@
    "roles": [
     "pivot"
    ],
-   "acces": "traversée",
+   "acces": "aucun",
    "etat": "valide",
-   "alertes": []
+   "alertes": [
+    "orpheline"
+   ]
   },
   {
    "id": "veilleur-1",
@@ -6238,7 +6318,8 @@
       "reussite": "Ton histoire tient debout et il la prend. Elle est belle, elle est fausse, elle fait le même effet. La lanterne change de main.",
       "echec": "« J'écoute des menteurs depuis trente ans à ce portillon. » Il remet la lanterne au clou, sans colère. Pas de rancune non plus — juste la déception patiente des solitaires.",
       "funeste": "1 naturel. Tu inventes. Et au milieu de ton histoire inventée, tu tombes par accident sur un détail vrai — le tien. Ta voix s'arrête toute seule. Il l'a entendu, ce trou-là. ♦ −2"
-     }
+     },
+     "nature": "social"
     },
     {
      "id": "veilleur-refuser",
@@ -6337,7 +6418,8 @@
       "reussite": "Il parle sans quitter le sud des yeux. La Descente mène au deuxième cercle des terres du Geôlier — « plus profond, plus vieux, moins poli ». Il te jauge du coin de l'œil : « Pas encore prêt, toi. Ça se voit aux épaules. » Ce n'est pas une insulte. C'est une mesure.",
       "echec": "À ta troisième question, il se ferme comme une porte de garnison : « On ne parle pas de la Descente à ceux qui remontent. » Tu ne sauras pas ce que tes questions ont révélé de toi — mais il a resserré sa capote, et il s'est éloigné de deux pas. De toi, pas du froid.",
       "funeste": "1 naturel. Tu le questionnes. Il répond par une question : « Et toi, tu l'entends depuis quand, la voix ? » Tu ouvres la bouche pour dire jamais. Rien ne sort. ♦ −2"
-     }
+     },
+     "nature": "social"
     },
     {
      "id": "regarder-appele",
@@ -6348,11 +6430,15 @@
     {
      "id": "franchir-descente",
      "label": "Franchir la Descente",
-     "type": "verrouille",
-     "stat": "COURAGE"
+     "type": "passif",
+     "consequence": "Le Veilleur ne t\\u2019arrête pas. Il pousse le portillon et se range, comme on s\\u2019écarte d\\u2019un convoi. Derrière toi, la lanterne reste allumée en plein jour \\u2014 pour le suivant.",
+     "tags": [
+      "citable"
+     ]
     }
    ],
    "pointsInteret": [],
+   "suite": "la-descente",
    "nom": "La Palissade Sud — beat 2",
    "lieu": "palissade_sud",
    "typeScene": "moment",
@@ -6371,8 +6457,7 @@
     "veilleur-3"
    ],
    "roles": [
-    "sortie",
-    "verrouille"
+    "sortie"
    ],
    "acces": "lien",
    "etat": "valide",
@@ -6397,6 +6482,7 @@
       "echec": "Tu plaides — trop bien. « Seul un coupable connaît si bien la procédure », dit la Doyenne, et les bancs hochent la tête. À l'aube qui ne vient jamais tout à fait, le Champ des Fixés gagne une ligne : la tienne.",
       "funeste": "1 naturel. Au milieu de ta défense, la voix te souffle exactement le mot qu'il fallait — et tu le répètes. Tout le tribunal l'a vu passer dans tes yeux. La sentence est unanime, et l'aube, pour une fois, ponctuelle. ♦ −2"
      },
+     "nature": "social",
      "defense": "discrediter"
     },
     {
@@ -6412,6 +6498,7 @@
       "echec": ",\n            ",
       "funeste": ",\n            "
      },
+     "nature": "social",
      "defense": "emouvoir"
     },
     {
@@ -6427,6 +6514,7 @@
       "echec": "Tu reconnais tout, et ils entendent une confession. Le hameau n'a jamais eu besoin de plus. On te remercie presque de leur avoir épargné le doute, et le Champ des Fixés prépare ta place avant même le lever.",
       "funeste": "1 naturel. Tu reconnais plus que ce qu'ils avaient. Une chose qu'aucun témoin n'avait vue sort de ta bouche, et le silence qui suit a le goût d'une porte qui se ferme. Double nœud, comme pour les honnêtes. ♦ −2"
      },
+     "nature": "social",
      "defense": "assumer"
     },
     {
@@ -6442,6 +6530,7 @@
       "echec": "Tu produis le papier, et tu comprends en le tendant que tu viens d'avouer d'où il vient. On ne te juge plus pour la voix : on te juge pour le vol. C'est un motif plus propre, et il tient aussi bien une corde.",
       "funeste": "1 naturel. Le papier passe de main en main et s'arrête sur une ligne que tu n'avais pas lue. Ton nom y est déjà, dans une écriture qui n'est pas la tienne, avec une date qui n'est pas encore arrivée. Le tribunal n'a plus qu'à respecter le calendrier. ♦ −2"
      },
+     "nature": "social",
      "defense": "preuve"
     }
    ],

@@ -47,6 +47,10 @@ SAUVE = ICI / "partie.json"
 LARGEUR = 74
 
 # Coûts de santé par palier — repris de components/Scene.tsx.
+# ⚠️ Depuis le 9/08, la NATURE du jet décide : seul un échec PHYSIQUE coûte de
+# la santé. Un échec social coûte du Soupçon, un échec d'exploration coûte un
+# Jour, un échec surnaturel laisse un état. On ne meurt donc que d'un danger
+# physique — la mort doit être compréhensible dans la fiction.
 COUT = {"malediction": 0.30, "critique": 0.26, "echec": 0.16, "justesse": 0.08}
 MOTS = {
     "destin": "DESTIN", "eclatante": "RÉUSSITE ÉCLATANTE", "reussite": "RÉUSSITE",
@@ -357,10 +361,18 @@ class Partie:
         texte = texte.split(" ♦")[0].strip()
         self.dit(texte, "narration")
 
-        cout = COUT.get(palier, 0.0)
         s = self.scene()
+        nature = c.get("nature") or ("physique" if s.get("combat") else "social")
+        dur = palier in ("critique", "malediction")
+        rate = palier in ("echec", "critique", "malediction")
+        cout = COUT.get(palier, 0.0) if nature == "physique" else 0.0
         if cout:
             self.d["sante"] = max(0.0, round(self.d["sante"] - cout, 3))
+        if rate and nature == "social" and not s.get("combat"):
+            self.d["soupcon"] += 2 if dur else 1
+        if dur and nature == "surnaturel":
+            self.d["etats"]["hante" if palier == "critique" else "marque"] = 999
+            self.dit("ÉTAT — " + ("Hanté" if palier == "critique" else "Marqué"), "etat")
         if s.get("combat"):
             if palier in ("echec", "critique", "malediction"):
                 self.d["etats"]["entaille"] = 999
@@ -368,7 +380,8 @@ class Partie:
             elif palier in ("destin", "eclatante", "reussite"):
                 self.d["etats"]["aguerri"] = 3
                 self.dit("ÉTAT — Aguerri", "etat")
-        elif palier in ("critique", "malediction"):
+        elif dur and nature == "exploration":
+            # Le seul cas où le temps est diégétique : on a tourné des heures.
             self.d["jour"] += 1
             self.dit(f"JOUR {self.d['jour']}", "jour")
         self.geolierSurJet(naturel)
