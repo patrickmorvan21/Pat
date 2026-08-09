@@ -563,6 +563,9 @@ export default function Scene() {
   const [imageKind, setImageKind] = useState<ImageKind>("scene");
   // Points d'intérêt déjà examinés dans le lieu courant (spec 24/07 suite).
   const [poiSeen, setPoiSeen] = useState<string[]>([]);
+  /** Choix déjà résolus sur la scène `sejour` courante — miroir de rendu de
+      `run.choixFaits` (React Compiler interdit de lire `runRef` au rendu). */
+  const [choixFaits, setChoixFaits] = useState<string[]>([]);
   // Le SAVOIR (25/07) : flags appris en examinant. Miroir d'état de
   // `run.savoirs` — nécessaire au RENDU (les choix qui en dépendent doivent
   // apparaître dès l'écran suivant), alors que `runRef` n'est pas lisible
@@ -760,6 +763,10 @@ export default function Scene() {
     // #1 Le choix qui expire (6/08) : une fois l'érosion finie, l'option
     // n'existe plus — perdre le temps coûte une occasion, jamais la vie.
     if (c.id === expRetire) return false;
+    // SÉJOUR : ce qui a déjà été fait ici ne se refait pas. On ne pose pas
+    // deux fois la même question au Veilleur ; le lieu tient plusieurs
+    // décisions, pas la même en boucle.
+    if (scene.sejour && choixFaits.includes(c.id)) return false;
     if (boiteux && (c.tags ?? []).includes("fuite")) return false;
     if (c.requiresSavoir && !savoirs.includes(c.requiresSavoir)) return false;
     // La DÉCOUVERTE (6/08) : même mécanique que le Savoir, mais la source est
@@ -1066,6 +1073,8 @@ export default function Scene() {
     // Points d'intérêt déjà examinés dans le lieu courant : on ne les
     // re-propose pas à la reprise (spec 24/07 suite §1).
     setPoiSeen(run.poiSeen ?? []);
+    // …et ce qu'il a déjà décidé sur un lieu qui le retient (séjour).
+    setChoixFaits(run.choixFaits ?? []);
     // Le SAVOIR (25/07) : ce que le héros a appris survit à la fermeture de
     // l'app (pas à sa mort) — les options débloquées restent ouvertes à la
     // reprise.
@@ -1476,7 +1485,15 @@ export default function Scene() {
     // le héros SORTIR, et le hameau vient le chercher « au tournant du
     // muret », comme l'ouverture du procès le raconte.
     const enSequenceHameau = /^(serment-hameau|hameau-entree|hameau-accueil)/.test(scene.id);
-    if (soupNow >= 6 && !scene.fixationTrial && !scene.chainNext && !enSequenceHameau && !trav.done) {
+    // ⚠️ Jamais depuis un SÉJOUR non plus : on n'y appelle `advance` que sur
+    // le choix qui DIT qu'on part (« Franchir la Descente »). Laisser le
+    // procès le détourner referait exactement le défaut qu'on vient de
+    // corriger — un bouton qui ne fait pas ce qu'il annonce. Conséquence
+    // assumée : atteindre la Palissade à Soupçon comble est une échappée.
+    if (
+      soupNow >= 6 && !scene.fixationTrial && !scene.chainNext && !scene.sejour &&
+      !enSequenceHameau && !trav.done
+    ) {
       nextScene = sceneById("proces-du-heros")!;
       trav.phase = "scene";
       trav.current = nextScene.id; // hors `visited` : ce n'est pas un lieu du pool
@@ -1484,7 +1501,16 @@ export default function Scene() {
       // Rencontre ouverte par un point d'intérêt : on reste « dans » le lieu du
       // point de vue de la traversée (rien n'entre dans `visited`), mais l'écran
       // courant devient le premier beat de la rencontre.
-      nextScene = resoudre(opts.toScene, runRef.current) ?? sceneById(ENTRY_SCENE)!;
+      // ⚠️ La Descente ne vit PAS dans `SCENES` (elle est construite à part) :
+      // sans ce cas, `resoudre` rendrait undefined et on repartirait de la
+      // Borne. `trav.done` est posé ici pour que la reprise retombe bien sur
+      // l'écran terminal — c'est `sceneFromTrav` qui le lit.
+      if (opts.toScene === "la-descente") {
+        nextScene = DESCENTE_SCENE;
+        trav.done = true;
+      } else {
+        nextScene = resoudre(opts.toScene, runRef.current) ?? sceneById(ENTRY_SCENE)!;
+      }
       trav.phase = "scene";
       trav.current = nextScene.id;
     } else if (opts?.toDest) {
@@ -2206,10 +2232,15 @@ export default function Scene() {
     // On quitte l'écran : les points d'intérêt du lieu précédent sont oubliés
     // et l'image repasse en plan large (spec 24/07 suite §1).
     setPoiSeen([]);
+    setChoixFaits([]);
     persist((run) => {
       run.step = nextStep;
       run.lastChoiceId = null;
       run.poiSeen = [];
+      // Un lieu qu'on quitte oublie ce qu'on y a décidé — comme ses points
+      // d'intérêt. Sans ça, revenir au même id (variante, rencontre chaînée)
+      // arriverait avec des choix déjà grisés sans raison lisible.
+      run.choixFaits = [];
       run.trav = trav;
       // Le Jour de marche : tous les trois lieux traversés (7/08).
       if (jourDeMarche) run.day += 1;
@@ -2338,6 +2369,64 @@ export default function Scene() {
     if (differeVueDeMarche) imageApresConsequence.current = differeVueDeMarche;
   }
 
+  /**
+   * SÉJOUR — résoudre un choix SANS quitter le lieu (panel 9/08, chantier n°2).
+   *
+   * C'est le pendant, côté choix, de ce que l'examen d'un point d'intérêt fait
+   * déjà : la conséquence s'affiche, l'écran redonne la main, et l'option
+   * consommée disparaît. On ne repasse volontairement PAS par `advance()` —
+   * on ne rejoue ni l'arrivée, ni l'approche, ni la couture du village, ni la
+   * montée du pas : rien de tout ça n'a de sens quand on n'a pas bougé.
+   *
+   * Les coûts (santé, Soupçon, états, objets) sont déjà appliqués par
+   * l'appelant, exactement comme avant — ici on ne fait que du RÉCIT.
+   */
+  function resterSurPlace(
+    choiceId: string,
+    opts: {
+      consequence?: string;
+      prepend?: FeedEntry[];
+      result?: number;
+      grantedItem?: BesaceItem | null;
+    } = {}
+  ) {
+    const entries: FeedEntry[] = [];
+    if (opts.prepend) entries.push(...opts.prepend);
+    if (opts.consequence)
+      entries.push({ id: nextId(), kind: "narration", text: opts.consequence });
+    if (opts.grantedItem) {
+      const it = opts.grantedItem;
+      entries.push({
+        id: nextId(),
+        kind: "obtenu",
+        name: it.name,
+        rarity: RARITY_LABEL[it.rarity as BesaceRarity],
+        flavor: it.flavor,
+      });
+    }
+    // Un critique reste un critique : le Geôlier commente même quand on n'a
+    // pas changé d'endroit. Même mémoire de gabarits qu'ailleurs.
+    let jailerServi: string | null = null;
+    if (opts.result === 1 || opts.result === 20) {
+      const vues = runRef.current?.jailerVues ?? [];
+      const { text, gabarit } = jailerTaunt(opts.result, jailerPosture(loadMemory()), vues);
+      jailerServi = gabarit;
+      entries.push({ id: nextId(), kind: "jailer", text });
+    }
+    const faits = [...choixFaits, choiceId];
+    setChoixFaits(faits);
+    persist((run) => {
+      run.choixFaits = faits;
+      run.lastChoiceId = null;
+      if (jailerServi) run.jailerVues = [...(run.jailerVues ?? []), jailerServi];
+    });
+    setSelectedId(null);
+    setRoll(null);
+    setChoicesHidden(true);
+    // L'image ne bouge pas : on est toujours au même endroit.
+    showScreen(entries, { src: lastSceneIlloRef.current, kind: "scene" });
+  }
+
   function onSelect(choice: Choice) {
     if (rolling || selectedId) return;
     if (choice.locked) {
@@ -2417,6 +2506,12 @@ export default function Scene() {
     persist((run) => {
       run.lastChoiceId = choice.id;
     });
+
+    // SÉJOUR : sur un lieu qui retient, une résolution ne fait pas sortir —
+    // sauf si le choix DIT qu'on part. Calculé une fois ici et lu par les
+    // quatre voies de résolution (jet, repos, objet, passif/neutre).
+    const reste = Boolean(scene.sejour && !choice.sortie);
+    const sortieVers = choice.sortie?.toScene;
 
     // Choix d'orientation d'une liaison (traversée 21/07) : engage le
     // déplacement vers le lieu choisi — pas de dé, pas de conséquence propre.
@@ -2801,7 +2896,10 @@ export default function Scene() {
         setHealth(runRef.current?.health ?? health);
         consequence = `Tu sors « ${item.name} » de la Besace. ${item.cure ? "La plaie se referme, l'entaille cède enfin." : "Un peu de force te revient."}`;
       }
-      advanceTimer.current = setTimeout(() => advance({ consequence }), 320);
+      advanceTimer.current = setTimeout(
+        () => (reste ? resterSurPlace(choice.id, { consequence }) : advance({ consequence })),
+        320
+      );
     } else if (choice.passive) {
       // Le silence comme vraie option (§19) : conséquence dédiée, sans dé.
       // Un choix passif peut aussi DONNER (rencontres en beats du 24/07 suite :
@@ -2820,12 +2918,18 @@ export default function Scene() {
         if (f) consequencePassive = `${f.accusation}\n\n${consequencePassive}`;
       }
       advanceTimer.current = setTimeout(
-        () => advance({ consequence: consequencePassive, grantedItem: granted }),
+        () =>
+          reste
+            ? resterSurPlace(choice.id, { consequence: consequencePassive, grantedItem: granted })
+            : advance({ consequence: consequencePassive, grantedItem: granted, toScene: sortieVers }),
         320
       );
     } else {
       // Choix neutre : résolution instantanée, sans dé (spec §4).
-      advanceTimer.current = setTimeout(() => advance(), 320);
+      advanceTimer.current = setTimeout(
+        () => (reste ? resterSurPlace(choice.id) : advance({ toScene: sortieVers })),
+        320
+      );
     }
   }
 
@@ -3233,18 +3337,29 @@ export default function Scene() {
               setDeath(dead);
               return;
             }
+            const prepend = roll?.impossible
+              ? [{ id: nextId(), kind: "jailer" as const, text: JAILER_DE_IMPOSSIBLE }]
+              : undefined;
+            const prose =
+              amorti && relicCoussin
+                ? `${proseDuJet(outcome.text)}\n\n${relicCoussin.name} a pris le choc à ta place. Une fêlure la traverse, à présent — elle ne prendra pas le suivant.`
+                : proseDuJet(outcome.text);
+            // SÉJOUR : les coûts du jet viennent d'être appliqués au-dessus —
+            // seul le RÉCIT change de canal. Le lieu garde le héros, et le
+            // choix qu'il vient de tenter ne se retente pas.
+            if (scene.sejour && !chosen?.sortie && selectedId) {
+              resterSurPlace(selectedId, { consequence: prose, prepend, result, grantedItem });
+              return;
+            }
             advance({
               result,
               fail: outcome.fail,
-              prepend: roll?.impossible
-                ? [{ id: nextId(), kind: "jailer", text: JAILER_DE_IMPOSSIBLE }]
-                : undefined,
-              consequence: amorti && relicCoussin
-                ? `${proseDuJet(outcome.text)}\n\n${relicCoussin.name} a pris le choc à ta place. Une fêlure la traverse, à présent — elle ne prendra pas le suivant.`
-                : proseDuJet(outcome.text),
+              prepend,
+              consequence: prose,
               destinItem,
               grantedItem,
               usureDay: usureDay ? run.day : undefined,
+              toScene: chosen?.sortie?.toScene,
             });
           }}
         />

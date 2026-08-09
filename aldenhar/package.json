@@ -9,7 +9,7 @@
     "lint": "eslint",
     "atelier": "python3 ../tools/atelier.py",
     "gen:manifest": "python3 ../tools/gen_manifest.py",
-    "prebuild": "npm run check:coherence && npm run gen:manifest && python3 ../tools/immersion.py --strict",
+    "prebuild": "npm run check:coherence && npm run gen:manifest && python3 ../tools/immersion.py --strict && python3 ../tools/sejour.py --strict",
     "check:coherence": "python3 ../tools/check_coherence.py",
     "build:pages": "npm run prebuild && PAGES_BASE_PATH=/Pat/aldenhar next build && node -e \"const h=require('fs').readFileSync('out/index.html','utf8'); if(/\\\"\\\\/_next\\\\//.test(h)){console.error('\\\\n  ARRET : le build ne porte pas le basePath /Pat/aldenhar.\\\\n  Un deploiement de ce build donne un ECRAN BLANC sur GitHub Pages\\\\n  (toutes les URL de bundles pointent a la racine du domaine).\\\\n'); process.exit(1);} console.log('build:pages — basePath verifie');\""
   },

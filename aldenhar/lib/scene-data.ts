@@ -88,6 +88,17 @@ export type Choice = {
    */
   orient?: { dest: string };
   /**
+   * LE CHOIX QUI DIT QU'ON PART (panel du 9/08, 7 voix sur 10 — « la partie
+   * se termine sur un geste qui n'est pas partir »). Sur une scène `sejour`,
+   * une résolution ne fait PLUS quitter le lieu : on y reste, le choix
+   * consommé disparaît, et seul un choix portant `sortie` s'en va.
+   * `toScene` dit où — sans lui, la traversée reprend son cours normal.
+   *
+   * ⚠️ Invariant vérifié par `tools/sejour.py` : toute scène `sejour` doit
+   * porter au moins un choix `sortie` INCONDITIONNEL, sinon on l'enferme.
+   */
+  sortie?: { toScene?: string };
+  /**
    * 4e choix contextuel (spec 21/07, point 4) : utiliser un objet ACTIF de la
    * Besace pertinent dans la scène (ex. un baume quand ENTAILLÉ). Consommé,
    * puis la scène se résout. Ajouté dynamiquement, jamais écrit en dur.
@@ -406,6 +417,18 @@ export type Scene = {
    * compte pour UN seul lieu de la traversée.
    */
   chainNext?: string;
+  /**
+   * SÉJOUR — le lieu tient plusieurs décisions (panel du 9/08, 9 voix sur 10 :
+   * « un lieu se referme sur un seul geste »). Résoudre un choix n'en fait
+   * plus sortir : la conséquence s'affiche, le choix consommé disparaît, et
+   * l'écran redonne la main sur ce qui reste. On ne quitte la scène que par
+   * un choix portant `sortie`.
+   *
+   * Ce qu'un séjour NE fait pas : il ne rejoue ni l'arrivée, ni l'approche,
+   * ni les injections de `advance()` (rumeur, perception, franchissement) —
+   * on n'arrive pas deux fois au même endroit.
+   */
+  sejour?: boolean;
   /** Scène de liaison (spec 21/07) : marche + choix d'orientation, générée. */
   liaison?: boolean;
   /**
@@ -5671,8 +5694,12 @@ export const SCENES: Scene[] = [
   },
   {
     id: "palissade-sud-2",
-    // Fin de zone : quoi qu'on fasse au pied de la Palissade, on descend.
-    chainNext: "la-descente",
+    // FIN DE ZONE, mais on ne descend que si on le DÉCIDE (panel du 9/08,
+    // 7 voix sur 10 : finir une vie en posant une question au Veilleur était
+    // le pire moment du jeu). La Palissade reste le passage obligé — c'est
+    // son `sejour` qui retient le héros au lieu de l'aspirer : questionner,
+    // regarder, puis franchir. Seul « Franchir la Descente » s'en va.
+    sejour: true,
     illustration: "assets/monstre_palissade_sud_2_c.png",
     narration: [
       "Sur le chemin de ronde, un vieux soldat regarde vers le sud. Et en " +
@@ -5719,6 +5746,10 @@ export const SCENES: Scene[] = [
         id: "franchir-descente",
         label: "Franchir la Descente",
         tags: ["citable"],
+        // LE seul choix qui quitte la Palissade. Tant qu'il n'est pas pris,
+        // le Veilleur et l'Appelé restent à portée : descendre est un acte,
+        // pas la conséquence d'avoir posé une question.
+        sortie: { toScene: "la-descente" },
         passive: {
           consequence:
             "Le Veilleur ne t\u2019arrête pas. Il pousse le portillon et se " +

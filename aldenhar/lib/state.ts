@@ -305,6 +305,11 @@ export type RunState = {
   /** Points d'intérêt déjà examinés dans le LIEU COURANT (spec 24/07 suite) —
       vidé en quittant le lieu. Un point exploré ne se re-propose pas. */
   poiSeen: string[];
+  /** Choix déjà RÉSOLUS sur une scène `sejour` (`"<scène>:<choix>"`). Un lieu
+      qui retient le héros doit se souvenir de ce qu'il y a déjà fait, sinon on
+      rejoue indéfiniment la même question. Vidé en quittant le lieu, comme
+      `poiSeen` — c'est le même geste, côté choix. */
+  choixFaits: string[];
   /**
    * Le Hameau (spec 24/07 suite §3) : on ne le « visite » pas, on y fait
    * HALTE. Deux séquences garanties hors tirage encadrent la traversée —
@@ -396,6 +401,7 @@ function fresh(): RunState {
     soupcon: 0,
     soupconSeen: 0,
     poiSeen: [],
+    choixFaits: [],
     hameau: { entree: false, serment: null, halte: false },
     savoirs: [],
     fragmentsLus: [],
@@ -458,6 +464,7 @@ export function loadRun(): RunState {
             soupcon: typeof p.soupcon === "number" ? p.soupcon : 0,
             soupconSeen: typeof p.soupconSeen === "number" ? p.soupconSeen : 0,
             poiSeen: Array.isArray(p.poiSeen) ? p.poiSeen : [],
+            choixFaits: Array.isArray(p.choixFaits) ? p.choixFaits : [],
             hameau: p.hameau && typeof p.hameau.entree === "boolean"
               ? p.hameau
               : { entree: false, serment: null, halte: false },
