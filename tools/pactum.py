@@ -49,7 +49,7 @@ LARGEUR = 74
 # Coûts de santé par palier — repris de components/Scene.tsx.
 # ⚠️ Depuis le 9/08, la NATURE du jet décide : seul un échec PHYSIQUE coûte de
 # la santé. Un échec social coûte du Soupçon, un échec d'exploration coûte un
-# Jour, un échec surnaturel laisse un état. On ne meurt donc que d'un danger
+# rien de plus (le texte porte la perte), un échec surnaturel laisse un état. On ne meurt donc que d'un danger
 # physique — la mort doit être compréhensible dans la fiction.
 COUT = {"malediction": 0.30, "critique": 0.26, "echec": 0.16, "justesse": 0.08}
 MOTS = {
@@ -380,10 +380,8 @@ class Partie:
             elif palier in ("destin", "eclatante", "reussite"):
                 self.d["etats"]["aguerri"] = 3
                 self.dit("ÉTAT — Aguerri", "etat")
-        elif dur and nature == "exploration":
-            # Le seul cas où le temps est diégétique : on a tourné des heures.
-            self.d["jour"] += 1
-            self.dit(f"JOUR {self.d['jour']}", "jour")
+        # Plus AUCUN Jour automatique (9/08) : aucune issue écrite ne raconte
+        # des heures perdues. Le Jour n'avance qu'en marchant et au campement.
         self.geolierSurJet(naturel)
 
         for e in list(self.d["etats"]):

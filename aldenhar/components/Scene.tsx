@@ -20,6 +20,7 @@ import {
   APPROACH_NARRATION,
   SOUPCON_PALIERS,
   tierIsFail,
+  SORTIE_DE_ZONE,
   coutSante,
   type NatureJet,
   type Choice,
@@ -1530,14 +1531,26 @@ export default function Scene() {
         // échecs durs. C'est ce qui remet l'économie du temps à l'endroit :
         // survivre longtemps redevient avoir marché loin, et les Besoins
         // (comptés en jours) se réveillent enfin.
-        if (trav.visited.length % 3 === 0) jourDeMarche = true;
+        // Le GUIDE connaît les raccourcis (le Gamin des Murets, `evitePerteJour`).
+        // Son bénéfice portait sur le Jour d'un échec dur — ce Jour n'existe
+        // plus (9/08) : il porte maintenant sur le Jour de MARCHE, le seul qui
+        // reste. Sans ce report, l'état promettrait un effet devenu inexistant
+        // (le défaut `cacheFuite` du 5/08, à ne pas refaire).
+        const guideRoute = etatsActifs(idsEtats(faitsDe(runRef.current))).some(
+          (e) => e.evitePerteJour
+        );
+        if (trav.visited.length % 3 === 0 && !guideRoute) jourDeMarche = true;
       }
     } else if (scene.hameauHalte) {
       // La nuit est passée : la traversée reprend vers la sortie de zone.
-      nextScene = DESCENTE_SCENE;
+      // ⚠️ Elle passe par la PALISSADE comme l'autre chemin (9/08) — cette
+      // branche-ci allait droit à la Descente et sautait donc la sortie de
+      // zone toute neuve : mesuré sur 6 parties, 2 finissaient sans jamais
+      // voir la Palissade. Deux chemins vers la fin, un seul portail.
+      nextScene = resoudre(SORTIE_DE_ZONE, runRef.current) ?? DESCENTE_SCENE;
       trav.done = true;
       trav.phase = "scene";
-      trav.current = DESCENTE_SCENE.id;
+      trav.current = nextScene.id;
     } else if (scene.chainNext) {
       // L'ACCUEIL DU JOUR (6/08) : `hameau-entree-3` n'est pas une scène mais
       // un SLOT — la façon dont le village te reçoit est tirée une fois par
@@ -2996,11 +3009,16 @@ export default function Scene() {
             // Un guide connaît les raccourcis : l'échec dur ne coûte plus le
             // JOUR qu'il coûte d'habitude. Bénéfice réel, jamais chiffré — il
             // se lit au fait que la puce « Jour » ne bouge pas.
-            const guide = etatsActifs(idsEtats(faitsDe(runRef.current))).some((e) => e.evitePerteJour);
-            // Le temps n'est plus une taxe : il n'avance que si la fiction le
-            // raconte. Un échec d'EXPLORATION est exactement ce cas — on a
-            // tourné, on a perdu des heures. Un mensonge raté, non.
-            const usureDay = hardFail && natureJet === "exploration" && !scene.combat && !guide;
+            // LE TEMPS N'EST PLUS JAMAIS UNE TAXE (arbitrage 9/08, §17 du
+            // rapport : « time ne doit jamais être automatique »). J'avais
+            // d'abord gardé un Jour sur l'échec d'EXPLORATION — mais l'audit
+            // des textes l'a démenti : aucune des 8 issues concernées ne
+            // raconte des heures perdues (« Ils sont deux, montés pendant que
+            // tu regardais »), donc la mécanique aurait contredit la prose.
+            // Un échec d'exploration coûte ce que son texte dit : l'occasion,
+            // et le fait d'avoir été vu. Le Jour n'avance plus qu'en MARCHANT
+            // (un tous les trois lieux) et au campement.
+            const usureDay = false; // plus aucun Jour automatique — voir plus haut
             // Objet gagné par un choix d'examen réussi (grantsLoot, 23/07) :
             // l'objet se mérite — jamais accordé sur un palier d'échec.
             const chosen = scene.choices.find((c) => c.id === selectedId);
