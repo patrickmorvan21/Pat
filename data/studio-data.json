@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-09T13:09:17Z",
- "commit": "4735a57",
+ "genere": "2026-08-09T21:31:51Z",
+ "commit": "c96f916",
  "zones": [
   {
    "id": "landes",
@@ -5923,7 +5923,8 @@
       "echec": "Tu tournes deux fois dans les mêmes rangs avant de retrouver la lisière. Onze rangs, ce n'est pas un labyrinthe. Ça n'aurait pas dû prendre si longtemps.",
       "funeste": "1 naturel. Tu sors des rangs. Le compte à voix basse, derrière toi, s'est arrêté au moment exact où tu as passé la porte. ♦ −2"
      },
-     "nature": "exploration"
+     "nature": "exploration",
+     "coutJour": true
     }
    ],
    "pointsInteret": [],
@@ -6435,13 +6436,16 @@
      "label": "Franchir la Descente",
      "type": "passif",
      "consequence": "Le Veilleur ne t’arrête pas. Il pousse le portillon et se range, comme on s’écarte d’un convoi. Derrière toi, la lanterne reste allumée en plein jour — pour le suivant.",
+     "sortie": {
+      "toScene": "la-descente"
+     },
      "tags": [
       "citable"
      ]
     }
    ],
    "pointsInteret": [],
-   "suite": "la-descente",
+   "sejour": true,
    "nom": "La Palissade Sud — beat 2",
    "lieu": "palissade_sud",
    "typeScene": "moment",

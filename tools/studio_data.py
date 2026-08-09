@@ -545,6 +545,10 @@ def lire_choix(bloc: str) -> list[dict]:
             m_nat = re.search(r'nature:\s*"(physique|social|exploration|surnaturel)"', c)
             if m_nat:
                 ch["nature"] = m_nat.group(1)
+            # Le Jour perdu, déclaré texte par texte (9/08) : même raison de
+            # voyager que la nature — sans lui la réplique ne facture rien.
+            if booleen_de(c, "coutJour"):
+                ch["coutJour"] = True
         elif "locked:" in c:
             ch["type"] = "verrouille"
             ch["stat"] = next((s for s in STATS if f'"{s}"' in c), None)
@@ -566,6 +570,14 @@ def lire_choix(bloc: str) -> list[dict]:
             # CONTINUATION — il fait simplement avancer à l'écran suivant de la
             # séquence (`chainNext`). Le nommer « autre » n'apprenait rien.
             ch["type"] = "suite"
+        # LE CHOIX QUI DIT QU'ON PART (9/08) — orthogonal au type : un passif
+        # comme un jet peut être la sortie d'une scène `sejour`. Lu APRÈS la
+        # chaîne de types, jamais dedans, pour ne pas la couper.
+        m_sort = re.search(r'sortie:\s*\{[^}]*toScene:\s*"([a-z0-9\-]+)"', c)
+        if m_sort:
+            ch["sortie"] = {"toScene": m_sort.group(1)}
+        elif re.search(r"\bsortie:\s*\{", c):
+            ch["sortie"] = {}
         for champ, cle in (
             ("serment", "serment"),
             ("grantsLoot", "donneObjet"),
@@ -713,7 +725,7 @@ def lire_scenes() -> list[dict]:
         for champ, cle in (("combat", "combat"), ("registre", "registre"),
                            ("terminal", "terminal"), ("liaison", "liaison"),
                            ("hameauEntree", "hameauEntree"), ("hameauHalte", "hameauHalte"),
-                           ("fixationTrial", "procesFixation")):
+                           ("fixationTrial", "procesFixation"), ("sejour", "sejour")):
             if booleen_de(bloc, champ):
                 s[cle] = True
         # AFFORDANCES de la scène : ce sont elles qui décident si un état ouvre

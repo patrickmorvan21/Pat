@@ -100,6 +100,10 @@ def main() -> int:
                 "id", "nom", "lieu", "narration", "choix", "pointsInteret", "suite",
                 "combat", "adversaireNom", "terminal", "registre", "hameauEntree",
                 "hameauHalte", "chronometree", "procesFixation", "butin",
+                # ⚠️ Liste BLANCHE : un champ neuf de `Scene` ne voyage pas tant
+                # qu'il n'est pas nommé ici. `sejour` l'a appris à ses dépens —
+                # la réplique laissait quitter la Palissade au premier geste.
+                "sejour",
             )
             if k in s
         }

@@ -300,6 +300,9 @@ class Partie:
             # cette réplique ; le vrai jeu filtre avant l'affichage).
             if c.get("exigeSavoir") or c.get("exigeDecouverte") or c.get("exigeEtat") or c.get("exigeContradiction"):
                 continue
+            # SÉJOUR : ce qui a déjà été fait ici ne se refait pas.
+            if s.get("sejour") and c["id"] in self.d.get("choixFaits", []):
+                continue
             out.append({"kind": "choix", "c": c, "label": c["label"]})
         return out
 
@@ -351,7 +354,7 @@ class Partie:
                 self.d["jour"] += 1
                 self.d["sante"] = min(1.0, self.d["sante"] + 0.35)
                 self.dit(f"JOUR {self.d['jour']}", "jour")
-            self.suite()
+            self.suite(c)
 
     def gagner(self, oid: str) -> None:
         """L'objet est nommé par son NOM, jamais par son identifiant."""
@@ -402,7 +405,10 @@ class Partie:
         if cout:
             self.d["sante"] = max(0.0, round(self.d["sante"] - cout, 3))
         if rate and nature == "social" and not s.get("combat"):
-            self.d["soupcon"] = min(6, self.d["soupcon"] + (2 if dur else 1))
+            # MALÉDICTION strictement pire que FUNESTE (panel 9/08) : la pire
+            # face du dé ne peut pas coûter la même chose qu'un échec dur.
+            vu = 3 if palier == "malediction" else 2 if dur else 1
+            self.d["soupcon"] = min(6, self.d["soupcon"] + vu)
         if dur and nature == "surnaturel":
             self.d["etats"]["hante" if palier == "critique" else "marque"] = 999
             self.dit("ÉTAT — " + ("Hanté" if palier == "critique" else "Marqué"), "etat")
@@ -415,8 +421,12 @@ class Partie:
                 # (règle du vrai jeu — la réplique l'ignorait, panel 9/08).
                 self.d["etats"]["aguerri"] = 3
                 self.dit("ÉTAT — Aguerri", "etat")
-        # Plus AUCUN Jour automatique (9/08) : aucune issue écrite ne raconte
-        # des heures perdues. Le Jour n'avance qu'en marchant et au campement.
+        # Le Jour n'est plus JAMAIS automatique (9/08) — mais un choix dont la
+        # prose dit que des heures ont passé le déclare (`coutJour`).
+        if rate and c.get("coutJour"):
+            self.d["jour"] += 1
+            self.dit("— JOUR %d —" % self.d["jour"], "jour")
+            self.dit("La lande t'a pris un jour. La lumière a tourné sans que tu avances.")
         self.geolierSurJet(naturel)
 
         for e in list(self.d["etats"]):
@@ -431,14 +441,27 @@ class Partie:
             self.mourir(texte or "Le hameau a jugé.")
             return
         if s.get("procesFixation"):
-            self.d["soupcon"] = 3
+            # Relaxe : 4, pas 3 — une relaxe coûte, mais deux manifestations
+            # se rejouent avant un second procès (arbitrage 9/08).
+            self.d["soupcon"] = 4
         if self.d["sante"] <= 0:
             self.mourir(texte)
             return
-        self.suite()
+        self.suite(c)
 
-    def suite(self) -> None:
+    def suite(self, choix: dict | None = None) -> None:
         s = self.scene()
+        # SÉJOUR (9/08) : un lieu qui retient ne se quitte que par un choix
+        # portant `sortie`. Le choix résolu est consommé et disparaît ; on
+        # redonne la main sur ce qui reste, sans rejouer l'arrivée.
+        if s.get("sejour") and choix is not None:
+            sortie = choix.get("sortie")
+            self.d.setdefault("choixFaits", []).append(choix.get("id"))
+            if not sortie:
+                return
+            if isinstance(sortie, dict) and sortie.get("toScene"):
+                self.entrer(sortie["toScene"])
+                return
         if s.get("terminal"):
             self.d["sortie"] = "descente" if self.d["scene"] == "la-descente" else "renoncement"
             return
