@@ -416,6 +416,15 @@ body {
   background: var(--color-bg);
   pointer-events: none;
 }
+/* Le CADRE d'un choix verrouillé : l'inverse de `.bite`. Celui-ci MANGE le
+   trait (il peint le fond par-dessus) ; celui-là EST le trait, en pixels
+   espacés — un contour dessiné, jamais bâti. Deux traitements, deux sens :
+   érosion de santé d'un côté, porte fermée de l'autre. */
+.frame-px {
+  position: absolute;
+  background: var(--color-ink);
+  pointer-events: none;
+}
 .bite.flicker {
   animation: bite-flicker steps(2) infinite;
 }

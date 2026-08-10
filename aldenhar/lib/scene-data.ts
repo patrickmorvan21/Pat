@@ -763,6 +763,20 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        // Verrou d'INSTINCT : il ne dit pas ce qu'il regarde, et sans le nez
+        // pour ça on ne verra jamais que ce n'est pas le sud.
+        id: "hesitant-suivre-regard",
+        label: "Suivre son regard",
+        locked: { stat: "INSTINCT", min: 4 },
+        passive: {
+          consequence:
+            "Tu te places dans son axe exact, et tu comprends qu'il ne " +
+            "regarde pas le sud : il regarde un point, à trois cents pas, où " +
+            "l'herbe est couchée en rond. Quelqu'un s'est tenu là avant lui. " +
+            "Longtemps. Il attend son tour à un endroit qui a déjà servi.",
+        },
+      },
+      {
         id: "hesitant-mentir",
         nature: "social",
         label: "Mentir : « Je n'entends rien. »",
@@ -1046,6 +1060,21 @@ export const SCENES: Scene[] = [
             "Tu trébuches dans l'ornière au cinquième pas et tu t'étales. Son rire sec est le premier rire des Landes — et il ne s'arrête pas pour t'aider. Il ne s'arrête pas, c'est tout.",
             "1 naturel. Tu recules, les yeux au nord — et pendant une seconde entière, tu vois exactement ce qu'il regarde depuis trente ans. Tu comprends pourquoi il ne se retourne pas. ♦ −2"
           ),
+        },
+      },
+      {
+        // Verrou de RUSE : il énonce une règle et refuse de l'expliquer.
+        // Un héros retors n'a pas besoin de son explication.
+        id: "marcheur-compter-pas",
+        label: "Compter ses pas",
+        locked: { stat: "RUSE", min: 4 },
+        passive: {
+          consequence:
+            "Tu ne discutes pas sa règle : tu la mesures. Il fait onze pas, " +
+            "s'arrête une demi-seconde, repart. Toujours onze. Le coude est " +
+            "à quatre-vingt-huit pas — huit fois onze. Ce n'est pas la marche " +
+            "à reculons qui protège : c'est de ne jamais poser le pied au " +
+            "douzième. Tu ne lui dis pas que tu as compris.",
         },
       },
       {
@@ -4431,6 +4460,21 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        // Verrou d'EMPATHIE : la vraie question n'est pas « qui la défait »
+        // mais « pourquoi vous ». Il faut du cœur pour la poser.
+        id: "veuve-sait-pourquoi-vous",
+        label: "« Pourquoi vous, alors ? »",
+        locked: { stat: "EMPATHIE", min: 4 },
+        passive: {
+          consequence:
+            "Elle repose la corde. C'est la seule fois où elle la repose. " +
+            "« Parce que c'est moi qui l'ai tressée la première fois. » Un " +
+            "temps. « On m'avait dit : fais-en une bonne, on n'aura à la " +
+            "faire qu'une fois. J'en ai fait une excellente. » Elle reprend " +
+            "l'ouvrage, et ses mains tremblent, pour la première fois.",
+        },
+      },
+      {
         id: "veuve-se-taire",
         label: "Ne rien demander",
         passive: {
@@ -5352,6 +5396,21 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        // Verrou d'INSTINCT : « ça a manifestement une procédure ».
+        // Encore faut-il savoir la lire.
+        id: "mare-lire-procedure",
+        label: "Lire leur procédure",
+        locked: { stat: "INSTINCT", min: 4 },
+        passive: {
+          consequence:
+            "Tu regardes l'ordre exact des gestes, et un seul compte : le " +
+            "second ne se penche jamais. Il est là pour voir si le premier " +
+            "se relève. Ce n'est pas un examen à deux — c'est un examen et un " +
+            "témoin. Plus personne ici ne fait confiance à ce qu'on raconte " +
+            "de son propre reflet.",
+        },
+      },
+      {
         id: "laisser-renoncant",
         label: "Le laisser à sa réponse",
         sortie: {},
@@ -5524,6 +5583,22 @@ export const SCENES: Scene[] = [
             "essuie la bêche contre sa jambe, un geste d'habitude. « Bêcher, " +
             "ça occupe les yeux. » Derrière elle, le compte à voix basse " +
             "n'a pas manqué un coup.",
+        },
+      },
+      {
+        // Verrou d'EMPATHIE : il compte ses coups de bêche à voix basse.
+        // Il faut du cœur pour entendre ce que ça veut dire.
+        id: "epoux-ecouter-compte",
+        label: "Écouter ce qu'il compte",
+        locked: { stat: "EMPATHIE", min: 4 },
+        passive: {
+          consequence:
+            "Tu t'approches de l'homme et tu écoutes. Il ne compte pas ses " +
+            "coups de bêche : il récite des prénoms, un par coup, toujours " +
+            "les mêmes, dans le même ordre. Il y en a onze. La femme te voit " +
+            "comprendre et détourne les yeux. « Il les plante. C'est sa " +
+            "façon. » Le douzième arbre portera un prénom qu'ils n'ont pas " +
+            "encore choisi.",
         },
       },
       {
@@ -5750,6 +5825,21 @@ export const SCENES: Scene[] = [
             "Il se rembrunit. « T'as vu ça. » Un temps — il regarde le mur " +
             "comme on regarde un collègue. « Le mur date d'avant moi. Ceux " +
             "qui l'ont planté savaient déjà dans quel sens on perd les gens. »",
+        },
+      },
+      {
+        // Verrou de COURAGE : la Descente est en contrebas, derrière les
+        // troncs. On peut regarder. Il faut vouloir.
+        id: "veilleur-regarder-dessous",
+        label: "Regarder par-dessus",
+        locked: { stat: "COURAGE", min: 4 },
+        passive: {
+          consequence:
+            "Tu montes sur la traverse et tu regardes ce qu'il y a derrière. " +
+            "Le sol s'ouvre à vingt pas : des marches, taillées, larges, qui " +
+            "descendent en tournant jusqu'à ce que le noir les mange. Elles " +
+            "sont propres. Quelqu'un les balaie. Tu redescends sans rien " +
+            "dire, et le Veilleur ne demande pas ce que tu as vu — il le sait.",
         },
       },
       {

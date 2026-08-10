@@ -68,6 +68,12 @@ que le joueur a vu, les images affichées, les choix offerts, l'action prise.
 C'est la **référence sans dérive** — tout y est citable mot pour mot, et c'est
 là que se jugent la mise en scène et le rythme réel.
 
+⚠️ **Ces parties ont été enregistrées en v1.59.0**, avant plusieurs chantiers
+qui sont, eux, bien dans le moteur que tu joues : la scène qui lit le dé qui
+la précède, les lieux qui retiennent, le déjà-vu entre les vies, la craie du
+Soupçon, la route qui se ferme après un échec dur. Ne conclus donc pas d'un
+transcript qu'une de ces choses manque — joue-la.
+
 ## 3. Les sources — `sources/`
 
 `lib/` : le contenu et les règles (`scene-data.ts` = toutes les scènes, choix
