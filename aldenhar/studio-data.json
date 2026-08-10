@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-10T09:21:11Z",
- "commit": "3c81f11",
+ "genere": "2026-08-10T15:51:36Z",
+ "commit": "e5610fc",
  "zones": [
   {
    "id": "landes",
@@ -1919,6 +1919,7 @@
       "funeste": "1 naturel. Tu observes, à plat ventre, concentré. Derrière toi, une voix polie : « On peut vous aider ? » Ils sont deux. Ils sont montés pendant que tu regardais en bas. ♦ −2"
      },
      "nature": "exploration",
+     "vuSiEchec": true,
      "soupcon": 1,
      "temoin": {
       "nom": "Le Gamin des Murets",
@@ -2878,7 +2879,8 @@
       "echec": "Tu frottes pour voir dessous, et tu emportes la craie fraîche avec. Trois lignes récentes disparaissent sous ta paume. Derrière toi, très calme, une voix d'enfant : « Faut pas. » Il n'est pas parti si loin que ça.",
       "funeste": "1 naturel. Tu grattes la couche du dessous, et la craie te reste sur les doigts, blanche, bien visible. Tu ne t'en apercevras qu'au muret, en tendant la main. ♦ −2"
      },
-     "nature": "exploration"
+     "nature": "exploration",
+     "vuSiEchec": true
     },
     {
      "id": "mur-effacer-ligne",
@@ -5018,7 +5020,8 @@
       "echec": "Le verre t'échappe et sonne sur la dalle. La Veuve est sur toi en trois pas, sans courir — et les cordes du mur se tendent toutes vers toi, d'un même mouvement. Tu sors avec la corde, mais la chapelle entière connaît ton visage.",
       "funeste": "1 naturel. Tu saisis la corde coupée. Une autre corde, au mur, te saisit le poignet — la Fixation est un métier de patience, et il en pendait une au-dessus de la niche depuis toujours, pour les gens comme toi. ♦ −2"
      },
-     "nature": "exploration"
+     "nature": "exploration",
+     "vuSiEchec": true
     },
     {
      "id": "prier-veuve",
@@ -6620,9 +6623,9 @@
      "hautEnjeu": true,
      "issues": {
       "critique": "20 naturel. Tu ne te défends pas : tu les regardes un par un, et tu nommes ce que chacun a laissé au muret — la hâte, la lame, la langue. Le tribunal se souvient qu'il est un hameau. On te raccompagne au seuil, et c'est presque des excuses.",
-      "reussite": "",
-      "echec": ",\n            ",
-      "funeste": ",\n            "
+      "reussite": "Tu parles de leurs morts fixés, de la peur qui juge à leur place — et de celui qui pend là-haut sans que personne n'ose plus dire son nom. Des nuques plient sur les bancs. La Doyenne tranche, lasse : « Qu'il marche. La lande jugera mieux que nous. »",
+      "echec": "Tu cherches leurs yeux — ils regardent tous la corde. Ce n'est pas de la haine, c'est du soulagement : quelqu'un d'autre qu'eux. À l'aube, on te fixe, proprement, avec les égards dus à ce qu'on craint.",
+      "funeste": "1 naturel. Ton appel réveille exactement le souvenir qu'il ne fallait pas : la dernière qui a supplié ainsi s'est relevée de sa corde. Cette fois, ils feront mieux. Double nœud. ♦ −2"
      },
      "nature": "social",
      "defense": "emouvoir"
