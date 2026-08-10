@@ -90,9 +90,17 @@ def main() -> int:
         if m.group(1):
             dernier = m.group(1)
         elif "dernier" in dir():
-            lignes[dernier] = "".join(
-                re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(2))
-            ).replace('\\"', '"').replace("\\'", "'")
+            # ⚠️ DÉCODER LES `\\uXXXX` ICI AUSSI (panel du 10/08). Cette branche
+            # assemble ses chaînes à la main au lieu de passer par `chaines()`,
+            # et oubliait le décodage : 19 répliques du Geôlier partaient dans
+            # le kit avec des « l\\u2019outil » littéraux à l'écran. Le jeu, lui,
+            # est sain (c'est un échappement TypeScript valide) — c'est l'OUTIL
+            # de test qui servait du texte corrompu aux relecteurs.
+            brut = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(2)))
+            brut = brut.replace('\\"', '"').replace("\\'", "'")
+            lignes[dernier] = re.sub(
+                r"\\u([0-9a-fA-F]{4})", lambda x: chr(int(x.group(1), 16)), brut
+            )
 
     scenes = {}
     for s in d["scenes"]:
