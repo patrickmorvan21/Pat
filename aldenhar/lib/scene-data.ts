@@ -1301,6 +1301,7 @@ export const SCENES: Scene[] = [
        cercle se balancent ENSEMBLE, sans vent. Compter, c'est compter ses
        propres morts (mémoire du joueur). */
     id: "colline-aux-gibets-2",
+    sejour: true,
     illustration: "assets/scene_colline_gibets_2_a.png",
     narration: [
       "Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme " +
@@ -1348,6 +1349,7 @@ export const SCENES: Scene[] = [
       {
         id: "redescendre",
         label: "Partir avant de comprendre",
+        sortie: {},
         passive: {
           consequence:
             "Tu tournes le dos au cercle avant d'avoir fini de compter — et " +
@@ -1405,6 +1407,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "pendu-qui-parle-2",
+    sejour: true,
     illustration: "assets/monstre_pendu_qui_parle_2_a.png",
     foe: "bailli-pendu",
     narration: [
@@ -1452,6 +1455,7 @@ export const SCENES: Scene[] = [
         id: "passer-pendu",
         tags: ["citable"],
         label: "Passer sans un mot",
+        sortie: {},
         passive: {
           consequence:
             "Tu passes. Le Bailli ne te rappelle pas — il note. Tu l'entends " +
@@ -1686,6 +1690,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "champ-des-fixes-2",
+    sejour: true,
     illustration: "assets/monstre_fossoyeur_poteaux_a.png",
     narration: [
       "Entre les rangs, un vieil homme redresse un poteau qui penche, avec " +
@@ -1777,6 +1782,7 @@ export const SCENES: Scene[] = [
       {
         id: "passer-fossoyeur",
         label: "Passer sans un mot",
+        sortie: {},
         passive: {
           consequence:
             "Tu passes au large de son rang. Il ne lève pas la tête — mais " +
@@ -3757,6 +3763,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "tour-de-guet-2",
+    sejour: true,
     jailerLine: "Vingt ans de faction. Il n'a rien manqué — il n'y avait rien à voir.",
     // On REPOSE l'image de la tour plutôt que de laisser le champ vide : sans
     // elle, reprendre une partie sauvegardée sur ce beat retombe sur le
@@ -3823,6 +3830,7 @@ export const SCENES: Scene[] = [
             "Tu le laisses à sa faction. En t'éloignant, tu l'entends dire, pour lui seul : « Quelqu'un doit bien regarder. »",
         },
         label: "Le laisser regarder",
+        sortie: {},
       },
     ],
   },
@@ -3870,6 +3878,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "marche-muet-2",
+    sejour: true,
     illustration: "assets/monstre_colporteur_b.png",
     narration: [
       "Au bout de la rangée, un étal différent : bric-à-brac d'ailleurs, " +
@@ -3966,6 +3975,7 @@ export const SCENES: Scene[] = [
       {
         id: "traverser-marche",
         label: "Traverser sans offrir",
+        sortie: {},
         passive: {
           consequence:
             "Tu traverses les étals sans un geste, mains visibles, et le " +
@@ -4101,6 +4111,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "campement-2",
+    sejour: true,
     illustration: "assets/scene_moulin_campement_2_a.png",
     narration: [
       "Par la lucarne, le crépuscule ne bouge pas. On dit qu'une fille " +
@@ -4108,7 +4119,7 @@ export const SCENES: Scene[] = [
         "bruyère garde une forme légère, comme un creux encore tiède.",
     ],
     choices: [
-      { id: "dormir", label: "Dormir malgré le crépuscule", rest: true, tags: ["citable"] },
+      { id: "dormir", label: "Dormir malgré le crépuscule", sortie: {}, rest: true, tags: ["citable"] },
       {
         id: "garde",
         nature: "surnaturel",
@@ -4124,7 +4135,7 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "repartir", label: "Repartir sans s'attarder" },
+      { id: "repartir", label: "Repartir sans s'attarder", sortie: {} },
     ],
     jailerLine: "Dors. Le crépuscule ne tombera pas, mais toi, un jour, oui. J'aime comparer.",
   },
@@ -4535,6 +4546,7 @@ export const SCENES: Scene[] = [
   {
     /* Événement du lieu (script Notion) : la Veuve tresse sans te regarder. */
     id: "chapelle-des-cordes-2",
+    sejour: true,
     illustration: "assets/monstre_veuve_cordes_v2_a.png",
     narration: [
       "Elle était là depuis le début. Une femme en noir, assise à la chaise, " +
@@ -4594,6 +4606,7 @@ export const SCENES: Scene[] = [
            Chapelle sans jamais tendre le poignet. */
         id: "eviter-corde-vive",
         label: "Longer le mur, hors d'atteinte",
+        sortie: {},
         requiresSavoir: "savoir_corde_vive",
         passive: {
           consequence:
@@ -4603,6 +4616,22 @@ export const SCENES: Scene[] = [
             "vide, dans ton dos — le bruit sec d'une chose qui avait prévu " +
             "autre chose. La Veuve, elle, lève les yeux pour la première fois. " +
             "Elle n'a pas l'air déçue. Elle a l'air de noter.",
+        },
+      },
+      {
+        /* La sortie INCONDITIONNELLE de la Chapelle. Elle n'existait pas : la
+           seule façon de partir demandait le savoir de la corde vive, et poser
+           `sejour` ici enfermait donc tout héros qui ne l'avait pas. Trouvé par
+           le garde de build, pas à la relecture. */
+        id: "chapelle-ressortir",
+        label: "Ressortir par où tu es entré",
+        sortie: {},
+        passive: {
+          consequence:
+            "Tu recules jusqu'au seuil sans quitter les cordes des yeux, ce " +
+            "qui est exactement la mauvaise façon de traverser une nef : on " +
+            "ne voit pas ce qu'on laisse derrière. Aucune ne bouge. Dehors, " +
+            "l'air a le goût de dehors.",
         },
       },
     ],
@@ -4657,6 +4686,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "puits-condamne-2",
+    sejour: true,
     illustration: "assets/monstre_mains_du_puits_a.png",
     narration: [
       "À ton approche, le rythme change. Plus vite, plus fort — plus " +
@@ -4723,6 +4753,7 @@ export const SCENES: Scene[] = [
       {
         id: "reculer-puits",
         label: "Reculer sans bruit",
+        sortie: {},
         passive: {
           consequence:
             "Tu recules pas à pas, les yeux sur les planches. Les coups " +
@@ -4920,6 +4951,7 @@ export const SCENES: Scene[] = [
     /* Événement du lieu (script Notion) : l'Écrivain public entre, te voit, se
        fige — puis fait comme si de rien. Hook de sa rencontre. */
     id: "petit-tribunal-2",
+    sejour: true,
     illustration: "assets/monstre_ecrivain_public_d.png",
     registre: true,
     narration: [
@@ -4986,6 +5018,7 @@ export const SCENES: Scene[] = [
       {
         id: "quitter-tribunal",
         label: "Quitter sans lire",
+        sortie: {},
         passive: {
           consequence:
             "Tu tournes le dos à la chaire. La plume de l'Écrivain continue " +
@@ -5276,6 +5309,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "mare-aux-regards-2",
+    sejour: true,
     illustration: "assets/scene_mare_aux_regards_2_b.png",
     narration: [
       "Ils arrivent à deux. Le premier s'agenouille dans les creux du " +
@@ -5308,6 +5342,7 @@ export const SCENES: Scene[] = [
       {
         id: "laisser-renoncant",
         label: "Le laisser à sa réponse",
+        sortie: {},
         passive: {
           consequence:
             "Tu restes immobile derrière les roseaux jusqu'à ce qu'il soit " +
@@ -5409,6 +5444,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "verger-noir-2",
+    sejour: true,
     illustration: "assets/scene_verger_noir_2_v2_b.png",
     narration: [
       "Un fruit tombe, derrière toi. Sans vent, sans oiseau.",
@@ -5436,6 +5472,7 @@ export const SCENES: Scene[] = [
         // le seul qui coûte un Jour.
         coutJour: true,
         label: "Sortir des rangs",
+        sortie: {},
         risky: {
           stat: "INSTINCT",
           threshold: 11,

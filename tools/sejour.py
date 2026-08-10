@@ -40,18 +40,28 @@ CONDITIONS = (
 
 
 def blocs_de_scene(src: str) -> list[tuple[str, str]]:
-    """(id, corps) pour chaque entrée de `SCENES` — découpage par accolades."""
+    """(id, corps) pour chaque entrée de `SCENES` — découpage par accolades.
+
+    ⚠️ Ne PAS exiger `id:` juste après l'accolade : une scène sur trois porte
+    un commentaire de plusieurs lignes avant son id (« Événement du lieu… »).
+    La première version le faisait et le garde était silencieusement aveugle à
+    trois séjours sur onze — un garde plus faible que ce qu'il annonce est pire
+    qu'absent, puisqu'on cesse de chercher.
+    """
     out: list[tuple[str, str]] = []
-    for m in re.finditer(r'\n  \{\n    id: "([a-z0-9\-]+)"', src):
-        debut = m.start()
-        prof, i = 0, src.index("{", debut)
+    for m in re.finditer(r"\n  \{", src):
+        i = m.end() - 1
+        prof = 0
         for k in range(i, len(src)):
             if src[k] == "{":
                 prof += 1
             elif src[k] == "}":
                 prof -= 1
                 if prof == 0:
-                    out.append((m.group(1), src[i : k + 1]))
+                    corps = src[i : k + 1]
+                    mid = re.search(r'^\s*id: "([a-z0-9\-]+)"', corps, re.M)
+                    if mid:
+                        out.append((mid.group(1), corps))
                     break
     return out
 

@@ -34,6 +34,10 @@ from pathlib import Path
 
 RACINE = Path(__file__).resolve().parent.parent
 LIB = RACINE / "aldenhar" / "lib"
+# Les pools injectés à l'exécution ne vivent pas tous dans lib/ : ceux qui
+# n'appartiennent à aucune donnée (la porte qui se ferme) vivent dans le
+# composant qui les sert.
+COMPOSANTS = RACINE / "aldenhar" / "components"
 
 # ── lexiques de présupposition ────────────────────────────────────────────────
 # Des GENS sont là (quelqu'un d'autre que le héros agit/regarde/parle).
@@ -134,6 +138,7 @@ def pools() -> list[dict]:
     etats_src = (LIB / "etats.ts").read_text(encoding="utf-8")
     scene_src = (LIB / "scene-data.ts").read_text(encoding="utf-8")
     loi_src = (LIB / "loi-substitution.ts").read_text(encoding="utf-8")
+    scene_tsx = (COMPOSANTS / "Scene.tsx").read_text(encoding="utf-8")
 
     # — états : manifestation (servie à l'ACQUISITION, n'importe où),
     #   réactions (village sauf indices reactionsPartout), intruses (partout),
@@ -187,6 +192,12 @@ def pools() -> list[dict]:
     #   compris quand les variantes de village sont épuisées (anti-répétition).
     for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, "const LIAISON_AMBIANCES"))):
         out.append({"pool": f"liaison ambiance {i}", "garde": {"partout"}, "textes": [t]})
+
+    # — LA PORTE QUI SE FERME (9/08) : dite quand un échec dur consomme une
+    #   possibilité du lieu. Un séjour peut être n'importe où — la Colline, le
+    #   Marché, la berge de la Mare : ces lignes ne peuvent rien présupposer.
+    for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_tsx, "const PORTE_QUI_SE_FERME"))):
+        out.append({"pool": f"porte qui se ferme {i}", "garde": {"partout"}, "textes": [t]})
 
     # — LE GEÔLIER. Deux pools, servis exactement là où le dé tombe et où la
     #   marche passe : c'est-à-dire N'IMPORTE OÙ (pleine lande, combat, ruelle

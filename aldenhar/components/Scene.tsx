@@ -158,6 +158,24 @@ const ETATS_NEGATIFS_DOSES = ["fievreux", "boiteux", "affame", "marque", "hante"
  * accepté CONTRE une promesse doit revenir peser aux moments où la promesse
  * est en jeu. Indexé par scène, filtré sur un fragment du NOM de l'objet.
  */
+/**
+ * LA PORTE QUI SE FERME — dite quand un échec DUR consomme, en plus de son
+ * coût, une possibilité du lieu où l'on se tient (voir `resterSurPlace`).
+ *
+ * ⚠️ Ces lignes tombent dans N'IMPORTE QUEL lieu : aucune ne peut supposer un
+ * mur, un village, ni quelqu'un pour regarder. C'est la contrainte qui les
+ * rend abstraites, et c'est `tools/immersion.py` qui la fait respecter.
+ */
+const PORTE_QUI_SE_FERME = [
+  "Quelque chose vient de se refermer. Pas devant toi : dans ce qui te " +
+    "restait à tenter. Tu ne sauras jamais quoi exactement — seulement que " +
+    "c'était là il y a un instant.",
+  "Il y avait autre chose à tenter ici. Il y avait. Ce qui vient de rater " +
+    "n'a pas seulement raté : ça a coûté le reste.",
+  "Tu comptes ce qu'il te reste à faire, et le compte est plus court qu'avant " +
+    "d'essayer. Personne n'a rien repris. C'est toi qui as dépensé.",
+];
+
 const ECHOS_OBJET: Record<string, { objet: string; text: string }[]> = {
   // On regarde descendre un Appelé — c'est peut-être lui, le fils.
   "palissade-sud-2": [
@@ -2395,6 +2413,9 @@ export default function Scene() {
       prepend?: FeedEntry[];
       result?: number;
       grantedItem?: BesaceItem | null;
+      /** Le jet a été DUR (critique / malédiction) : le monde se referme d'un
+          cran — une possibilité de plus est consommée ici. */
+      dur?: boolean;
     } = {}
   ) {
     const entries: FeedEntry[] = [];
@@ -2421,6 +2442,33 @@ export default function Scene() {
       entries.push({ id: nextId(), kind: "jailer", text });
     }
     const faits = [...choixFaits, choiceId];
+    // L'ÉCHEC DÉPENSE QUELQUE CHOSE DU MONDE (panel 9/08, la mécanique la plus
+    // adoptée — 7 voix). Sans elle, ouvrir les lieux ne ferait qu'offrir des
+    // écrans gratuits à qui ne lance jamais le dé : c'est la condition que le
+    // systémiste posait pour retirer son objection au chantier.
+    // On ne ferme QUE ce que le joueur pouvait réellement voir : un choix
+    // conditionnel qu'il n'a pas ouvert disparaîtrait sans qu'il le sache, et
+    // la ligne mentirait. Si rien n'est fermable, on ne dit rien.
+    if (opts.dur) {
+      const fermable = scene.choices.find(
+        (c) =>
+          !faits.includes(c.id) &&
+          !c.sortie &&
+          !c.locked &&
+          !c.requiresSavoir &&
+          !c.requiresDecouverte &&
+          !c.requiresEtat &&
+          !c.requiresContradiction
+      );
+      if (fermable) {
+        faits.push(fermable.id);
+        entries.push({
+          id: nextId(),
+          kind: "narration",
+          text: PORTE_QUI_SE_FERME[Math.abs(step * 7 + faits.length) % PORTE_QUI_SE_FERME.length],
+        });
+      }
+    }
     setChoixFaits(faits);
     persist((run) => {
       run.choixFaits = faits;
@@ -3376,7 +3424,12 @@ export default function Scene() {
             // seul le RÉCIT change de canal. Le lieu garde le héros, et le
             // choix qu'il vient de tenter ne se retente pas.
             if (scene.sejour && !chosen?.sortie && selectedId) {
-              resterSurPlace(selectedId, { consequence: prose, prepend, result, grantedItem });
+              resterSurPlace(selectedId, {
+                consequence: prose, prepend, result, grantedItem,
+                // « hors combat » est acquis : aucun combat n'est un séjour —
+                // une issue de combat CLÔT la rencontre (règle du 14/07).
+                dur: tier === "critique" || tier === "malediction",
+              });
               return;
             }
             advance({
