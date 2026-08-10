@@ -34,6 +34,7 @@ from __future__ import annotations
 
 import json
 import random
+import re
 import sys
 import textwrap
 from pathlib import Path
@@ -334,7 +335,19 @@ class Partie:
         self.d["options"] = opts
         self.d["pas"] += 1
         self.d["poiOuvert"] = False
-        dans_village = self.d["scene"] in self.k["hameauInterieur"]
+        # ⚠️ Le test du village doit être celui du JEU, pas une version
+        # étroite : la séquence d'entrée (`hameau-…`) et le Seuil comptent
+        # comme village. Sans ça, sortir de « Entrer dans le hameau » servait
+        # une ambiance de pleine lande — « Tu marches. La lande ne finit
+        # pas. » — juste après avoir franchi la porte du village. Vu dans
+        # cinq vies sur cinq par un testeur du panel du 10/08, qui a cessé
+        # de croire ses choix à cet endroit précis.
+        radical = re.sub(r"-\d+$", "", self.d["scene"])
+        dans_village = (
+            radical in self.k["hameauInterieur"]
+            or radical.startswith("hameau-")
+            or radical in ("serment-hameau", "femme-seuil", "gamin-murets")
+        )
         fond = list(self.k["ambiances"]) + ([] if dans_village else list(self.k["ambiancesLande"]))
         frais = [t for t in fond if t not in self.d["ambiancesVues"]] or fond
         amb = r.choice(frais)
@@ -563,7 +576,12 @@ class Partie:
         self.d["sortie"] = "mort"
         c = lire_compte()
         c["morts"] += 1
-        c["tombes"].insert(0, {"nom": self.d["nom"], "cause": dernier[:60]})
+        # ⚠️ La cause doit rester lisible : couper la prose à 60 signes rendait
+        # parfois une cause absurde — un testeur du panel 10/08 a vu sa
+        # première mort inscrite avec pour cause « , ». On coupe à la phrase.
+        phrase = (dernier or "").strip().split(".")[0].strip(" ,;—«»")
+        cause = phrase if len(phrase) >= 8 else "les Landes"
+        c["tombes"].insert(0, {"nom": self.d["nom"], "cause": cause[:70]})
         ecrire_compte(c)
         tenus = sum(1 for x in self.d["des"] if x["palier"] in ("destin", "eclatante", "reussite", "justesse"))
         self.dit("MORT", "mort")
