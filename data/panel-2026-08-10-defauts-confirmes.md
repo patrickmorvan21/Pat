@@ -47,6 +47,23 @@ dédoublonnage était censé remplacer. Et le registre `reactionsVues` est
 partagé avec les réactions d'états, donc il s'épuise vite. *(W4 : « Ils sont
 six, alignés, du même côté » lu six fois mot pour mot)*
 
+### B4. Le portrait du Seuil dit « courageux » à qui a fui partout
+`lib/prologue-data.ts`, `portraitDuSeuil()` : la dominante est initialisée sur
+la PREMIÈRE stat de l'ordre (Courage) et ne change que sur un `>` strict. Un
+profil plat — ce qui arrive dès que le joueur répond uniformément — laisse
+donc **toujours Courage** en tête. Un joueur qui s'est dérobé aux quatre
+souvenirs s'entend dire « Tu avances avant de comprendre. Le danger t'a
+toujours moins arrêté que le doute. » C'est le moment le plus identitaire du
+jeu, et il peut décrire l'inverse de ce qu'on vient de faire. *(W2, vérifié
+dans la source)*
+
+### B5. Le bandeau du Geôlier s'écrase quand la barre de choix grandit
+La zone centrale ne se remesure pas : à trois boutons le bandeau est intact ;
+dès qu'« Observer les alentours » en affiche cinq, il tombe à une ligne, puis
+disparaît en tranchant la narration en plein mot. C'est pour ça qu'un testeur
+n'a pas reconnu le personnage central du jeu. *(W2, captures à l'appui, après
+avoir lui-même corrigé son premier diagnostic)*
+
 ### B3. Il n'existe aucune branche où la mort ne s'enregistre pas
 Vérifié : les deux seuls points de mort appellent `recordDeath` **avant**
 d'afficher l'écran, puis réinitialisent la partie. Le « permadeath
@@ -73,8 +90,23 @@ indépendants et cohérents entre eux.
 4. **Acquittement qui n'acquitte pas** — gagné, rejugé aussitôt, trois procès
    d'affilée (W3). Le code pose pourtant Soupçon à 4 : à reproduire.
 5. **Survivre ne laisse rien** — unanime, y compris sur le vrai build.
-6. **Les paliers du dé partagent leur prose** — quatre testeurs. Trois paires
-   relevées où deux paliers voisins rendent un texte identique.
+6. **Sept paliers annoncés, quatre textes écrits** — mesuré sur 111 jets :
+   DE JUSTESSE = RÉUSSITE = ÉCLATANTE mot pour mot, ÉCHEC = FUNESTE mot pour
+   mot ; seuls le 20 et le 1 ont une prose à eux (K3). C'est une décision
+   assumée du 13/07 (« le verdict et le visuel portent la nuance ») — mais
+   cinq testeurs l'ont relevée séparément comme un défaut.
+
+6 bis. **Le partage du coût est invisible, pas absent** — K5 a RETIRÉ son
+   « deux états = invulnérabilité » après re-mesure et donné la vraie règle,
+   confirmée par K3 : sur 118 échecs durs, **21/21 coûtent de la santé en
+   combat, 13/97 hors combat**. Le corps paie, la parole jamais. C'est le
+   système de coût par nature du 9/08, qui fonctionne comme prévu — mais rien
+   ne le dit au joueur : « Goûter un fruit [COURAGE] » ne peut rien coûter,
+   « Franchir le coude [INSTINCT] » coûte 0,23, même habillage.
+
+6 ter. **Toute la fiche de personnage vaut deux encoches sur vingt** (K3, en
+   croisant ses anneaux avec ceux de W3). Les stats existent, elles ne pèsent
+   presque rien.
 7. **La mémoire est branchée sur les tentatives, pas sur les actes** — le
    monde se souvient d'une écharde jamais arrachée, et oublie une corde
    tranchée (W4).
