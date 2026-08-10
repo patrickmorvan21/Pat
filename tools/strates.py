@@ -36,7 +36,17 @@ NEG_ELIDE = re.compile(r"\bn'(?:y\s+)?([a-zàâçéèêëîïôûùüÿœ]{3,})\
 # Formes qui sont AUSSI des noms courants du jeu : « un harnais qu'elle ne
 # PORTE plus » (verbe) contre « la PORTE » (nom). Les compter produirait un
 # signalement juste par accident et un garde qu'on finit par ignorer.
-AMBIGUS = {"port", "plac", "march", "gard", "rest", "tour", "cour", "somm", "sui"}
+# ⚠️ Faux amis : mots dont le radical est aussi un NOM courant, et COPULES.
+# « ce n'est pas à toi qu'il le dit » ne nie rien de ce que la scène affirme
+# quand elle contient « est » — le verbe être et le verbe avoir sont partout,
+# les mettre en regard produit du bruit pur (repasse du 10/08). Le garde ne
+# vaut que sur des verbes d'ACTION.
+AMBIGUS = {
+    "port", "plac", "march", "gard", "rest", "tour", "cour", "somm", "sui",
+    # copules et auxiliaires
+    "est", "sont", "etait", "était", "êtr", "etr", "a", "ont", "avait",
+    "fait", "fai", "va", "vont",
+}
 
 
 def radical_verbe(v: str) -> str:

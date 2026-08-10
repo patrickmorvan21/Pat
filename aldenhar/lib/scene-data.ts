@@ -1456,7 +1456,8 @@ export const SCENES: Scene[] = [
     illustration: "assets/monstre_pendu_qui_parle_a.png",
     chainNext: "pendu-qui-parle-2",
     narration: [
-      "Au revers de la colline, un gibet bas, à hauteur d'homme. Le pendu " +
+      "Au revers de la colline, un gibet dont la corde est si longue que le " +
+      "pendu t'arrive à hauteur de regard. Le pendu " +
         "qui s'y balance ouvre les yeux à ton approche. Chaîne de fonction " +
         "au cou, sous la corde. Un sceau au poing. Le Bailli des Landes — " +
         "pendu le dernier, à la place d'honneur.",
@@ -1488,7 +1489,7 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "approcher-gibet", label: "S'approcher du gibet bas" },
+      { id: "approcher-gibet", label: "S'approcher du pendu" },
     ],
     jailerLine: "Regarde-le bien. C'est ce que devient un homme qui a voulu tenir MON registre.",
   },
@@ -2632,7 +2633,7 @@ export const SCENES: Scene[] = [
     narration: [
       "Ils sont trois à t'attendre au milieu de la rue. Pas armés — un bâton " +
         "de marche, une fourche posée contre un mur, à portée sans être brandie.",
-      "Celui du centre est vieux, sec comme un piquet. C'est lui qui parle, et " +
+      "Celui du centre est vieux et large d'épaules. C'est lui qui parle, et " +
         "sa voix ne tremble pas. Ses mains, si.",
       "— « On ne te chasse pas. » Il le dit d'abord, comme une formule " +
         "apprise. « Personne n'est chassé, ici. Mais tu descends. Ça se voit à " +
@@ -3807,9 +3808,14 @@ export const SCENES: Scene[] = [
         chapterFragment: true,
         label: "Les pierres, empilées au pied",
         approche:
-          "Tu fais le tour du tas. Il est haut comme un homme et régulier " +
-          "sur toute sa longueur — un travail de plusieurs jours, fait par " +
-          "quelqu'un qui n'était pas pressé.",
+          // ⚠️ Ce POI décrivait « un tas haut comme un homme et régulier sur
+          // toute sa longueur » : il contredisait à la fois la narration
+          // recalée sur l'image (un éboulis) et l'image du Guetteur, où les
+          // pierres lui arrivent aux chevilles (repasse du 10/08).
+          "Tu fais le tour de l'éboulis. Une partie seulement a été reprise : " +
+          "des blocs choisis, posés à plat les uns sur les autres, sur deux " +
+          "coudées à peine — un travail de patience, fait par quelqu'un qui " +
+          "n'était pas pressé et qui n'en a pas fait plus.",
         examen:
           "Les pierres sont posées face gravée contre terre. Tu en retournes " +
           "une : une lettre, un fragment de date. C'était un mur de noms. " +
@@ -3915,7 +3921,7 @@ export const SCENES: Scene[] = [
             "Il se retourne enfin. « Nous. Le jour où on a compris que voir venir ne servait à rien, puisque ça venait de l'intérieur. » Un temps. « Et on a couché le mur des noms en premier. Pour ne plus avoir à les lire en montant. »",
             "Il met du temps. « Nous. Le jour où on a compris que voir venir ne servait à rien, puisque ça venait de l'intérieur. » Il crache. « On a rangé les pierres parce qu'on est des gens rangés. »",
             "Il se ferme d'un coup. « Personne ne l'a couchée. Elle est tombée. » Et il redescend le tertre sans te regarder.",
-            "Il se lève lentement. « Qui t'a dit de monter ? » Sa main est sur la corne. En bas, deux volets s'ouvrent dans la ruelle.",
+            "Il se tourne enfin, sans se presser. « Qui t'a dit de monter ? » Sa main est sur la corne. En bas, deux volets s'ouvrent dans la ruelle.",
           ),
         },
       },
@@ -4622,10 +4628,17 @@ export const SCENES: Scene[] = [
     chainNext: "chapelle-des-cordes-2",
     narration: [
       "La chapelle est petite et n'a plus de dieu — les niches sont vides, " +
-        "l'autel renversé. Mais elle est TENUE : balayée, entretenue, occupée " +
+        "l'autel dépouillé. Mais elle est TENUE : balayée, entretenue, occupée " +
         "par sa nouvelle religion.",
-      "Au fond, le mur des cordes. Sur le côté, l'autel couché. Près de " +
-        "l'entrée, une chaise et un ouvrage de tressage — quelqu'un vit ici.",
+      // ⚠️ DISPOSITION ALIGNÉE SUR L'IMAGE (repasse du 10/08) : elle met les
+      // cordes sur les deux parois LATÉRALES et un bloc debout AU FOND, sous
+      // la fenêtre. Le texte disait exactement l'inverse (cordes au fond,
+      // autel couché sur le côté) — et l'image est très forte, c'est elle
+      // qu'on garde.
+      "Les cordes pendent des deux murs, du plafond jusqu'au sol, sur toute " +
+        "la longueur. Au fond, sous la fenêtre, l'autel est resté debout — " +
+        "seul, et bien plus propre que le reste. Près de l'entrée, une chaise " +
+        "et un ouvrage de tressage : quelqu'un vit ici.",
     ],
     pointsInteret: [
       {
@@ -4669,17 +4682,23 @@ export const SCENES: Scene[] = [
       },
       {
         id: "autel-renverse",
-        soupcon: 1, // fouiller sous un autel, même renversé
-        label: "L'autel couché, sur le côté",
+        soupcon: 1, // fouiller sous un autel, c'est un acte
+        // ⚠️ RECALÉ SUR SON IMAGE (repasse du 10/08) : elle montre l'autel
+        // DEBOUT, à contre-jour de la fenêtre, avec sa dalle de base tirée
+        // devant lui et un creux d'ombre en dessous. Le texte disait « couché
+        // sur le flanc », donc l'inverse. La mécanique (une cachette qu'on
+        // vient de vider) est intacte — c'est la posture qui était fausse.
+        label: "L'autel, et la dalle tirée",
         illustration: "assets/scene_chapelle_autel_a_c.png",
         approche:
           "Tu contournes les bancs absents — on les a brûlés, sans doute — " +
-          "jusqu'à la masse de pierre couchée sur le flanc. Personne ne l'a " +
-          "redressée. Personne ne l'a emportée non plus.",
+          "jusqu'à l'autel. Il est debout, seul objet propre de la salle. Mais " +
+          "la dalle de son pied a été tirée en avant et laissée là, en travers.",
         examen:
-          "Sous l'autel renversé, un espace. Vide — mais le creux dans la " +
-          "poussière dit qu'une chose y était cachée, longue, enroulée. On " +
-          "l'a prise récemment : la poussière n'a pas eu le temps de revenir.",
+          "Sous l'autel, la dalle déplacée découvre un espace. Vide — mais le " +
+          "creux dans la poussière dit qu'une chose y était cachée, longue, " +
+          "enroulée. On l'a prise récemment : la poussière n'a pas eu le temps " +
+          "de revenir.",
       },
       {
         id: "ouvrage-tressage",
@@ -5231,7 +5250,10 @@ export const SCENES: Scene[] = [
       // douze issues qui parlent de cercle, on retourne le cadrage : ce qu'on
       // VOIT est le front ; le cercle est ce qu'on ne voit pas. L'image
       // devient littéralement vraie, et le silence derrière dit le reste.
-      "Loin de tout muret, la lande est à eux. Ils se montrent d'un coup, de " +
+      // ⚠️ « Loin de tout muret » contredisait le choix « Gagner le muret » et
+      // ses quatre issues (repasse du 10/08). Un muret court la lande dans ce
+      // monde — ce qui manque ici, c'est le hameau, pas la pierre.
+      "Hors de vue du moindre toit, la lande est à eux. Ils se montrent d'un coup, de " +
         "front, cinq silhouettes couleur de bruyère morte alignées dans " +
         "l'herbe haute — et c'est mauvais signe : la Meute Grise ne se " +
         "laisse voir que quand l'encerclement est déjà fini derrière toi.",
@@ -5288,7 +5310,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Six bêtes qui tournent en rond autour d'un vivant. Où veux-tu que j'aille ? C'est mon théâtre exact.",
+    jailerLine: "Cinq de front, et le reste derrière lui qu'il ne voit pas. Où veux-tu que j'aille ? C'est mon théâtre exact.",
   },
   {
     id: "meute-grise-2",
@@ -5372,7 +5394,7 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_mare_aux_regards_a.png",
     chainNext: "mare-aux-regards-2",
     narration: [
-      "L'eau est noire et parfaitement plate — le seul endroit des Landes que " +
+      "L'eau est noire et lente — le seul endroit des Landes que " +
         "le vent évite.",
       "La berge est piétinée en un seul point, tassée par des années de " +
         "genoux. On ne vient pas ici puiser. On vient s'agenouiller. Le point " +
@@ -5547,8 +5569,9 @@ export const SCENES: Scene[] = [
       "Des arbres fruitiers plantés en rangs — le seul ordre volontaire des " +
         "Landes hors du hameau. Ils ont poussé, ils ont des branches, des " +
         "feuilles noires, et des fruits. C'est pire que s'ils étaient morts.",
+      // « qui bêchent » : l'image montre le couple ARRÊTÉ (repasse du 10/08).
       "Les rangs et leurs fruits. La souche du premier arbre, au bout. Et deux " +
-        "silhouettes qui bêchent, tout au fond.",
+        "silhouettes immobiles, tout au fond, tournées vers toi.",
     ],
     pointsInteret: [
       {
@@ -5694,7 +5717,7 @@ export const SCENES: Scene[] = [
         passive: {
           consequence:
             "— « Parce qu'arrêter, c'est commencer à regarder le sud. » Elle " +
-            "essuie la bêche contre sa jambe, un geste d'habitude. « Bêcher, " +
+            "essuie ses paumes contre sa jupe, un geste d'habitude. « Bêcher, " +
             "ça occupe les yeux. » Derrière elle, le compte à voix basse " +
             "n'a pas manqué un coup.",
         },
@@ -5707,8 +5730,10 @@ export const SCENES: Scene[] = [
         locked: { stat: "EMPATHIE", min: 4 },
         passive: {
           consequence:
-            "Tu t'approches de l'homme et tu écoutes. Il ne compte pas ses " +
-            "coups de bêche : il récite des prénoms, un par coup, toujours " +
+            // ⚠️ Reposait sur des « coups de bêche » en cours ; l'image
+            // montre les deux redressés, bêche au repos (repasse du 10/08).
+            "Tu t'approches de l'homme et tu écoutes. Ce n'est pas un compte " +
+            "qu'il tient : il récite des prénoms, à voix presque nulle, toujours " +
             "les mêmes, dans le même ordre. Il y en a onze. La femme te voit " +
             "comprendre et détourne les yeux. « Il les plante. C'est sa " +
             "façon. » Le douzième arbre portera un prénom qu'ils n'ont pas " +
@@ -7300,7 +7325,7 @@ function seeded(n: number): number {
 const INDICE_ROUTE: Record<string, string> = {
   "chemin-creux": "un chemin qui s'enfonce entre deux talus",
   "colline-aux-gibets": "une crête hérissée de mâts noirs",
-  "pendu-qui-parle": "un gibet bas, à hauteur d'homme, qui bouge sans vent",
+  "pendu-qui-parle": "un pendu qui t'arrive à hauteur de regard, et qui bouge sans vent",
   "champ-des-fixes": "des rangées de piquets jusqu'à l'horizon",
   "pendu-mal-fixe": "un craquement de bois, régulier, qui travaille",
   "serment-hameau": "des toits bas et une fumée qui ne monte pas droit",

@@ -1354,7 +1354,7 @@
         "colline-aux-gibets-2"
       ],
       "texte": [
-        "La pente est douce et n'en finit pas — la Colline se mérite à pas comptés. Au sommet, le cercle : neuf potences ordinaires, plantées comme les heures d'un cadran. Et au centre, l'autre. La grande. Sa corde est la seule chose neuve à dix lieues.",
+        "La pente est douce et n'en finit pas — la Colline se mérite à pas comptés. Au sommet, la file des potences ordinaires, plantées comme les heures d'un cadran. Et au centre, l'autre. La grande. Sa corde est la seule chose neuve à dix lieues.",
         "À gauche du cercle, un poteau isolé porte encore son occupant. À droite, les potences vides alignent leurs noms gravés."
       ],
       "description": "Arrivée à la Colline aux Gibets, lieu-signature de la zone. La file de potences le long de la crête nue, vue d'en bas en contre-plongée, de plus en plus hautes vers le sommet, les cordes qui balancent.",
@@ -1425,7 +1425,7 @@
       "parent": null,
       "mene_a": [],
       "texte": [
-        "Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme plat, les neuf cordes du cercle se mettent à bouger. Pas au hasard : ensemble. Un balancement lent, réglé, qui va et vient sur le même temps.",
+        "Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme plat, toutes les cordes de la crête se mettent à bouger. Pas au hasard : ensemble. Un balancement lent, réglé, qui va et vient sur le même temps.",
         "Ça grince en mesure. Toutes ces cordes, un seul rythme. Tu comprends, avec un retard qui te coûte, que ce rythme ne t'est pas indifférent — tu pourrais le compter."
       ],
       "description": "Événement de la Colline : au sommet, entre les potences. L'écharde du grand gibet se prélève ici.",
@@ -1472,7 +1472,7 @@
         "champ-des-fixes-2"
       ],
       "texte": [
-        "Pas de tombes — des poteaux. Des rangées de poteaux plantés droit, un nom sur chaque, alignés face au nord. Dos au sud. Même morts, surtout morts, on ne les laisse pas regarder par là.",
+        "Il y a eu un cimetière ici, autrefois : des stèles penchées, usées. Des rangées de poteaux plantés droit, un nom sur chaque, alignés face au nord. Dos au sud. Même morts, surtout morts, on ne les laisse pas regarder par là.",
         "Au fond, des poteaux vierges attendent, déjà plantés. Près de l'entrée, la cabane du Fossoyeur."
       ],
       "description": "Arrivée au Champ des Fixés. Des rangées de poteaux plantés dans la lande morte, un écriteau clouté sur chacun, certains encore occupés.",
@@ -1684,7 +1684,7 @@
       ],
       "texte": [
         "Ils sont trois à t'attendre au milieu de la rue. Pas armés — un bâton de marche, une fourche posée contre un mur, à portée sans être brandie.",
-        "Celui du centre est vieux, sec comme un piquet. C'est lui qui parle, et sa voix ne tremble pas. Ses mains, si.",
+        "Celui du centre est vieux, large d'épaules. C'est lui qui parle, et sa voix ne tremble pas. Ses mains, si.",
         "— « On ne te chasse pas. » Il le dit d'abord, comme une formule apprise. « Personne n'est chassé, ici. Mais tu descends. Ça se voit à ton pas. Et ceux qui descendent... » Il ne finit pas. Derrière lui, une femme tire un enfant à l'intérieur, sans un mot."
       ],
       "description": "Trois hommes en travers de la rue, pas armés : un bâton de marche à la main, une fourche posée contre le mur, à portée sans être brandie.",
@@ -2126,7 +2126,7 @@
       ],
       "texte": [
         "La chapelle est petite et n'a plus de dieu — les niches sont vides, l'autel renversé. Mais elle est TENUE : balayée, entretenue, occupée par sa nouvelle religion.",
-        "Au fond, le mur des cordes. Sur le côté, l'autel couché. Près de l'entrée, une chaise et un ouvrage de tressage — quelqu'un vit ici."
+        "Les cordes pendent des deux murs, du plafond jusqu'au sol. Près de l'entrée, une chaise et un ouvrage de tressage — quelqu'un vit ici."
       ],
       "description": "Arrivée à la Chapelle des Cordes, intérieur du hameau. Une nef courte, des dizaines de cordes coupées clouées en rangs le long des murs, du sol au plafond.",
       "prompt_image": "interior of a tiny stone chapel, dozens of cut ropes nailed in rows along the walls from floor to ceiling, small paper labels on each, overturned altar, short nave, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -2334,7 +2334,7 @@
         "meute-grise-2"
       ],
       "texte": [
-        "Passé les murets du hameau, la lande redevient à eux. Ils se montrent d'un coup, de front, cinq silhouettes couleur de bruyère morte alignées dans l'herbe haute — et c'est mauvais signe : la Meute Grise ne se laisse voir que quand l'encerclement est déjà fini derrière toi.",
+        "Hors de vue du moindre toit, la lande redevient à eux. Ils se montrent d'un coup, de front, cinq silhouettes couleur de bruyère morte alignées dans l'herbe haute — et c'est mauvais signe : la Meute Grise ne se laisse voir que quand l'encerclement est déjà fini derrière toi.",
         "Pas des chiens : trop patients. Pas des loups : trop organisés. La plus grande tient le centre et avance d'un pas — le signal. Le cercle que tu ne vois pas se resserre du même pas, dans ton dos."
       ],
       "description": "Cinq silhouettes couleur de bruyère morte alignées de front dans l'herbe haute, la plus grande au centre ; le cercle est derrière toi, hors champ.",

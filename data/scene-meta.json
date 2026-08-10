@@ -166,7 +166,7 @@
       "prompt_image": "gaunt long-legged hound standing in front of a bricked-up doorway, ribs showing, head low, lips drawn back, a broken chain still on its collar, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "petit-tribunal": {
-      "description": "Arrivée au Petit Tribunal. Une grange convertie en salle d'audience : trois bancs de bois face à une haute chaire, une feuille de règles clouée au mur.",
+      "description": "Arrivée au Petit Tribunal. Une salle basse de pierre servant de salle d'audience : trois bancs de bois face à une haute chaire, une feuille de règles clouée au mur.",
       "prompt_image": "interior of a barn converted into a rustic courtroom, three wooden benches facing a tall wooden pulpit, a sheet of rules nailed to the wall, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "petit-tribunal-2": {
@@ -198,7 +198,7 @@
       "prompt_image": ""
     },
     "epoux-1": {
-      "description": "Les Époux, deux silhouettes courbées qui creusent entre les rangs du verger noir sans se parler.",
+      "description": "Les Époux, deux silhouettes redressées, tournées vers toi entre les rangs du verger noir sans se parler.",
       "prompt_image": "elderly couple digging side by side between orchard rows, both bent low, one spade each, not looking at one another, black twisted branches above them, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "epoux-2": {
@@ -238,7 +238,7 @@
       "prompt_image": "ruined stone watchtower cut off cleanly at mid-height, jagged open mouth of torn stone at the top, the missing upper stones STACKED in a neat man-high pile at its foot, low village roofs behind, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "tour-de-guet-2": {
-      "description": "Événement de la Tour : le Guetteur sans tour, assis de dos sur le tas de pierres, en manteau de guet, une corne au côté, il regarde le sud. CHANGE : c'est un portrait de l'homme, plus le plan large de la tour.",
+      "description": "Événement de la Tour : le Guetteur sans tour, debout de dos sur le tas de pierres, en manteau de guet, une corne au côté, il regarde le sud. CHANGE : c'est un portrait de l'homme, plus le plan large de la tour.",
       "prompt_image": "old watchman seen from behind, seated on a pile of stones, heavy worn sentry cloak, a signal horn hanging at his side, head turned to scan the horizon, never facing the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     }
   }

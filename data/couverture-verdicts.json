@@ -7,11 +7,11 @@
     },
     "croix-ombres": {
       "v": "replace",
-      "note": "Même défaut que la vue d'ensemble : les quatre ailes sont entières, alors que l'examen explique que les bandes pâles sont les zones que les ailes protégeaient AVANT de disparaître."
+      "note": "LE MOULIN A SES AILES SUR LE PLAN RAPPROCHÉ AUSSI — jamais relevé jusqu'ici. L'examen décrit « quatre bandes pâles où la pierre n'a pas vieilli, protégée par les ailes » et l'image montre les ailes elles-mêmes, intactes. Même prompt correctif que la vue de lieu : une tour de pierre tronquée, décrite comme un SILO, aucune clause négative."
     },
     "bete-chemins-creux": {
       "v": "replace",
-      "note": "Le texte dit un COULOIR (« taillée pour courir exactement entre deux murs de terre », « c'est son couloir, son terrier ») et le lieu dit « le ciel devient un ruban ». L'image montre une cuvette ouverte, ciel plein cadre, aucun mur de terre. Le couloir EST la mécanique de la créature."
+      "note": "Premier combat de la zone. L'image est un large vallon sous un grand ciel, la bête à peine discernable — alors que le lieu est un couloir « entre deux talus plus hauts que toi, le ciel devient un ruban » et que la Bête « est dessus ». La menace ne se lit pas. « Pas de gueule visible » excuse l'indistinction de la bête, pas l'échelle du décor."
     },
     "champ-des-fixes-2": {
       "v": "replace",
@@ -19,7 +19,7 @@
     },
     "chien-du-bailli": {
       "v": "replace",
-      "note": "Le texte dit « murée de l'intérieur, chaque fenêtre bouchée de pierres » et « seule, sans voisine ». L'image montre six baies à meneaux OUVERTES ET ÉCLAIRÉES, plus une dépendance accolée. Décrire la MATIÈRE du bouchage (assises de pierre sèche encastrées dans chaque embrasure) plutôt qu'interdire les fenêtres, et poser la bâtisse isolée sur la lande."
+      "note": "Le texte dit « seule à l'ouest du hameau, SANS VOISINE — et murée de l'intérieur, chaque fenêtre bouchée de pierres ». L'image : un manoir à fenêtres à meneaux OUVERTES (certaines éclairées), ENTOURÉ de bâtiments voisins, grille en avant-plan. Le murage de l'intérieur est tout le personnage du Bailli, et le déménagement à l'ouest date du 7/08 — l'image est antérieure. Décrire la MATIÈRE du bouchage plutôt qu'interdire les fenêtres."
     },
     "serment-hameau": {
       "v": "replace",
@@ -27,7 +27,7 @@
     },
     "colline-aux-gibets-2": {
       "v": "replace",
-      "note": "Reliquat de la version « cercle » abandonnée : rotonde circulaire de gibets sur terrain plat. Le panel a tranché que la FILE sur la crête est la signature de la zone, et toute la prose a suivi. Cette image est le dernier morceau qui n'a pas suivi."
+      "note": "RELIQUAT DE LA VERSION ABANDONNÉE : l'image montre un ANNEAU FERMÉ de potences (poteaux + linteau polygonal) avec une figure encapuchonnée au CENTRE. Toute la prose de la Colline a été réconciliée sur la FILE le long de la crête (l'écran d'arrivée, lui, est juste). Le joueur voit donc une crête, puis un cercle à l'écran suivant. En prime, la figure centrale n'est nommée par aucun texte."
     },
     "pendu-qui-parle": {
       "v": "replace",
@@ -35,7 +35,7 @@
     },
     "petit-tribunal": {
       "v": "replace",
-      "note": "Le texte cite les TROIS BANCS quatre fois et un point d'intérêt entier repose dessus ; l'image ne montre aucun banc (salle de pierre, niche en arc, autel massif). Le mot « grange » a cédé côté texte (→ « salle basse ») : c'est la pierre qui reste, ce sont les bancs qui manquent."
+      "note": "Le premier mot du lieu est « la salle basse AUX TROIS BANCS » et le ¶2 annonce « au mur, une feuille clouée ; sur la chaire, un livre ouvert » : aucun banc, aucune feuille, aucun livre. Et une CORDE DE PENDU occupe le centre du cadre sans qu'aucun texte la mentionne (beau détail, à récupérer ou à retirer). La pierre, elle, est juste — le mot « grange » a cédé côté texte."
     },
     "proces-du-heros": {
       "v": "replace",
@@ -51,7 +51,7 @@
     },
     "la-descente": {
       "v": "replace",
-      "note": "L'écran le plus rare du jeu (sortir vivant des Landes) montre `scene_landes_liaison_sud_c`, qui sert AUSSI de vue de marche à toute liaison offrant la Palissade : on y arrive sur une image anonyme déjà traversée deux ou trois fois. Seul asset dédié encore à produire de la zone ; prompt prêt dans data/images-a-produire.md."
+      "note": "Le texte dit « devant, l'ESCALIER PLONGE dans un noir qui n'a pas encore de nom » : l'image montre une brèche dans une palissade sur terrain plat, sans escalier ni pente. Elle est en plus tirée dans le pool des vues de marche, donc l'écran de sortie de zone partage son visuel avec une liaison banale. Asset dédié à produire (prompt prêt)."
     },
     "veilleur-1": {
       "v": "replace",
@@ -59,7 +59,7 @@
     },
     "palissade-sud": {
       "v": "replace",
-      "note": "Dernier écran avant la sortie de zone : tout le contenu est dans le tiers haut, ~55 % du cadre est du noir pur. Le texte dit « des rondins plantés serrés, hauts de deux hommes » ; on lit une haie lointaine sur l'horizon."
+      "note": "Dernier écran avant la sortie de zone. Le texte : « rondins hauts de deux hommes, un portillon, une guérite, une lanterne allumée en plein jour… et dans la guérite, un homme ». L'image : une ligne de pieux lointaine et une hutte minuscule — ni portillon, ni lanterne, ni homme, et ~55 % du cadre en noir pur. Trois points d'intérêt et toute la chaîne d'objets du Veilleur (la lanterne) sont invisibles."
     },
     "hameau-accueil-cloche": {
       "v": "replace",
@@ -68,6 +68,26 @@
     "meute-grise-1": {
       "v": "replace",
       "note": "⚠️ Fausse signature cursive cuite dans le dithering (coin bas gauche). L'image elle-même est BONNE et le texte a été recalé sur elle (cinq bêtes de front, le cercle est hors champ) — seul l'artefact de signature est à corriger."
+    },
+    "marche-muet": {
+      "v": "replace",
+      "note": "MARCHÉ ENTIÈREMENT VIDE D'HUMAINS. Le texte n'est que ça : « des marchands qui négocient par gestes, paumes et hochements ». Trois choix jouables en dépendent (observer le troc = deux paumes qui se répondent ; imiter les gestes = une marchande qui te répond), plus le Colporteur et le Rebouteux. Ajouter des silhouettes aux étals."
+    },
+    "verger-noir": {
+      "v": "replace",
+      "note": "Le texte dit « des arbres fruitiers plantés EN RANGS — le seul ordre volontaire des Landes hors du hameau », et un point d'intérêt entier s'appelle « compter les rangs » (le onzième verger = onze rangs). L'image montre un enchevêtrement de troncs tordus, sans aucun alignement. L'ordre volontaire est le sens du lieu."
+    },
+    "chemin-creux": {
+      "v": "replace",
+      "note": "Le texte annonce comme visibles d'ici « une charrette qui penche au premier coude » et « dans le creux, quelqu'un vient vers toi » — deux points d'intérêt jouables. Ni charrette ni figure dans l'image. Le creux lui-même est parfait : il suffit d'y poser la charrette."
+    },
+    "potences-cercle": {
+      "v": "replace",
+      "note": "L'examen ne parle que de « un nom gravé AU PIED, et une date » sur chaque potence — « la crête entière est un calendrier planté ». Le plan rapproché cadre les mâts au-dessus du sol : aucun pied, aucune gravure. Descendre le cadrage."
+    },
+    "borne-frontiere": {
+      "v": "replace",
+      "note": "Le tout premier écran du jeu se clôt sur « à trois pas de la borne, un homme immobile, face au sud » — c'est l'accroche du point d'intérêt et de la rencontre de l'Hésitant. Aucune figure dans l'image : le monolithe est seul. Le premier élément jouable que le joueur voit nommé est invisible. (Le monolithe lui-même est excellent — il ne manque qu'une silhouette à droite.)"
     }
   }
 }

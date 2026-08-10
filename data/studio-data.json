@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-10T20:42:47Z",
- "commit": "b152311",
+ "genere": "2026-08-10T20:54:46Z",
+ "commit": "8689414",
  "zones": [
   {
    "id": "landes",
@@ -1342,7 +1342,7 @@
   {
    "id": "pendu-qui-parle",
    "narration": [
-    "Au revers de la colline, un gibet bas, à hauteur d'homme. Le pendu qui s'y balance ouvre les yeux à ton approche. Chaîne de fonction au cou, sous la corde. Un sceau au poing. Le Bailli des Landes — pendu le dernier, à la place d'honneur."
+    "Au revers de la colline, un gibet dont la corde est si longue que le pendu t'arrive à hauteur de regard. Le pendu qui s'y balance ouvre les yeux à ton approche. Chaîne de fonction au cou, sous la corde. Un sceau au poing. Le Bailli des Landes — pendu le dernier, à la place d'honneur."
    ],
    "choix": [
     {
@@ -1368,7 +1368,7 @@
     },
     {
      "id": "approcher-gibet",
-     "label": "S'approcher du gibet bas",
+     "label": "S'approcher du pendu",
      "type": "suite"
     }
    ],
@@ -2693,7 +2693,7 @@
    "id": "hameau-entree-3",
    "narration": [
     "Ils sont trois à t'attendre au milieu de la rue. Pas armés — un bâton de marche, une fourche posée contre un mur, à portée sans être brandie.",
-    "Celui du centre est vieux, sec comme un piquet. C'est lui qui parle, et sa voix ne tremble pas. Ses mains, si.",
+    "Celui du centre est vieux et large d'épaules. C'est lui qui parle, et sa voix ne tremble pas. Ses mains, si.",
     "— « On ne te chasse pas. » Il le dit d'abord, comme une formule apprise. « Personne n'est chassé, ici. Mais tu descends. Ça se voit à ton pas. Et ceux qui descendent... » Il ne finit pas. Derrière lui, une femme tire un enfant à l'intérieur, sans un mot."
    ],
    "choix": [
@@ -4025,7 +4025,7 @@
     {
      "id": "pierres-rangees",
      "label": "Les pierres, empilées au pied",
-     "approche": "Tu fais le tour du tas. Il est haut comme un homme et régulier sur toute sa longueur — un travail de plusieurs jours, fait par quelqu'un qui n'était pas pressé.",
+     "approche": "",
      "examen": "Les pierres sont posées face gravée contre terre. Tu en retournes une : une lettre, un fragment de date. C'était un mur de noms. On ne l'a pas démoli — on l'a couché, puis rangé.",
      "fragmentChapitre": true,
      "nom": "Les pierres, empilées au pied",
@@ -4121,7 +4121,7 @@
       "critique": "Il se retourne enfin. « Nous. Le jour où on a compris que voir venir ne servait à rien, puisque ça venait de l'intérieur. » Un temps. « Et on a couché le mur des noms en premier. Pour ne plus avoir à les lire en montant. »",
       "reussite": "Il met du temps. « Nous. Le jour où on a compris que voir venir ne servait à rien, puisque ça venait de l'intérieur. » Il crache. « On a rangé les pierres parce qu'on est des gens rangés. »",
       "echec": "Il se ferme d'un coup. « Personne ne l'a couchée. Elle est tombée. » Et il redescend le tertre sans te regarder.",
-      "funeste": "Il se lève lentement. « Qui t'a dit de monter ? » Sa main est sur la corne. En bas, deux volets s'ouvrent dans la ruelle."
+      "funeste": "Il se tourne enfin, sans se presser. « Qui t'a dit de monter ? » Sa main est sur la corne. En bas, deux volets s'ouvrent dans la ruelle."
      },
      "nature": "social",
      "exigeSavoir": "savoir_guet"
@@ -4167,7 +4167,7 @@
     "recent": false,
     "existe": true
    },
-   "description": "Événement de la Tour : le Guetteur sans tour, assis de dos sur le tas de pierres, en manteau de guet, une corne au côté, il regarde le sud. CHANGE : c'est un portrait de l'homme, plus le plan large de la tour.",
+   "description": "Événement de la Tour : le Guetteur sans tour, debout de dos sur le tas de pierres, en manteau de guet, une corne au côté, il regarde le sud. CHANGE : c'est un portrait de l'homme, plus le plan large de la tour.",
    "promptImage": "old watchman seen from behind, seated on a pile of stones, heavy worn sentry cloak, a signal horn hanging at his side, head turned to scan the horizon, never facing the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [],
    "mèneIci": [
@@ -4892,8 +4892,8 @@
   {
    "id": "chapelle-des-cordes",
    "narration": [
-    "La chapelle est petite et n'a plus de dieu — les niches sont vides, l'autel renversé. Mais elle est TENUE : balayée, entretenue, occupée par sa nouvelle religion.",
-    "Au fond, le mur des cordes. Sur le côté, l'autel couché. Près de l'entrée, une chaise et un ouvrage de tressage — quelqu'un vit ici."
+    "La chapelle est petite et n'a plus de dieu — les niches sont vides, l'autel dépouillé. Mais elle est TENUE : balayée, entretenue, occupée par sa nouvelle religion.",
+    "Les cordes pendent des deux murs, du plafond jusqu'au sol, sur toute la longueur. Au fond, sous la fenêtre, l'autel est resté debout — seul, et bien plus propre que le reste. Près de l'entrée, une chaise et un ouvrage de tressage : quelqu'un vit ici."
    ],
    "choix": [
     {
@@ -4943,9 +4943,9 @@
     },
     {
      "id": "autel-renverse",
-     "label": "L'autel couché, sur le côté",
-     "approche": "Tu contournes les bancs absents — on les a brûlés, sans doute — jusqu'à la masse de pierre couchée sur le flanc. Personne ne l'a redressée. Personne ne l'a emportée non plus.",
-     "examen": "Sous l'autel renversé, un espace. Vide — mais le creux dans la poussière dit qu'une chose y était cachée, longue, enroulée. On l'a prise récemment : la poussière n'a pas eu le temps de revenir.",
+     "label": "L'autel, et la dalle tirée",
+     "approche": "Tu contournes les bancs absents — on les a brûlés, sans doute — jusqu'à l'autel. Il est debout, seul objet propre de la salle. Mais la dalle de son pied a été tirée en avant et laissée là, en travers.",
+     "examen": "Sous l'autel, la dalle déplacée découvre un espace. Vide — mais le creux dans la poussière dit qu'une chose y était cachée, longue, enroulée. On l'a prise récemment : la poussière n'a pas eu le temps de revenir.",
      "soupcon": 1,
      "temoin": {
       "nom": "La Veuve des Cordes",
@@ -5434,7 +5434,7 @@
     "recent": false,
     "existe": true
    },
-   "description": "Arrivée au Petit Tribunal. Une grange convertie en salle d'audience : trois bancs de bois face à une haute chaire, une feuille de règles clouée au mur.",
+   "description": "Arrivée au Petit Tribunal. Une salle basse de pierre servant de salle d'audience : trois bancs de bois face à une haute chaire, une feuille de règles clouée au mur.",
    "promptImage": "interior of a barn converted into a rustic courtroom, three wooden benches facing a tall wooden pulpit, a sheet of rules nailed to the wall, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [
     "petit-tribunal-2"
@@ -5533,7 +5533,7 @@
   {
    "id": "meute-grise-1",
    "narration": [
-    "Loin de tout muret, la lande est à eux. Ils se montrent d'un coup, de front, cinq silhouettes couleur de bruyère morte alignées dans l'herbe haute — et c'est mauvais signe : la Meute Grise ne se laisse voir que quand l'encerclement est déjà fini derrière toi.",
+    "Hors de vue du moindre toit, la lande est à eux. Ils se montrent d'un coup, de front, cinq silhouettes couleur de bruyère morte alignées dans l'herbe haute — et c'est mauvais signe : la Meute Grise ne se laisse voir que quand l'encerclement est déjà fini derrière toi.",
     "Pas des chiens : trop patients. Pas des loups : trop organisés. La plus grande tient le centre et avance d'un pas — le signal. Le cercle que tu ne vois pas se resserre du même pas, dans ton dos."
    ],
    "choix": [
@@ -5697,7 +5697,7 @@
   {
    "id": "mare-aux-regards",
    "narration": [
-    "L'eau est noire et parfaitement plate — le seul endroit des Landes que le vent évite.",
+    "L'eau est noire et lente — le seul endroit des Landes que le vent évite.",
     "La berge est piétinée en un seul point, tassée par des années de genoux. On ne vient pas ici puiser. On vient s'agenouiller. Le point de berge usé. L'eau. Et dans les roseaux, un reflet de métal."
    ],
    "choix": [
@@ -5896,7 +5896,7 @@
    "id": "verger-noir",
    "narration": [
     "Des arbres fruitiers plantés en rangs — le seul ordre volontaire des Landes hors du hameau. Ils ont poussé, ils ont des branches, des feuilles noires, et des fruits. C'est pire que s'ils étaient morts.",
-    "Les rangs et leurs fruits. La souche du premier arbre, au bout. Et deux silhouettes qui bêchent, tout au fond."
+    "Les rangs et leurs fruits. La souche du premier arbre, au bout. Et deux silhouettes immobiles, tout au fond, tournées vers toi."
    ],
    "choix": [
     {
@@ -6073,7 +6073,7 @@
      "id": "epoux-pourquoi",
      "label": "« Pourquoi continuer ? »",
      "type": "passif",
-     "consequence": "— « Parce qu'arrêter, c'est commencer à regarder le sud. » Elle essuie la bêche contre sa jambe, un geste d'habitude. « Bêcher, ça occupe les yeux. » Derrière elle, le compte à voix basse n'a pas manqué un coup."
+     "consequence": "— « Parce qu'arrêter, c'est commencer à regarder le sud. » Elle essuie ses paumes contre sa jupe, un geste d'habitude. « Bêcher, ça occupe les yeux. » Derrière elle, le compte à voix basse n'a pas manqué un coup."
     },
     {
      "id": "epoux-ecouter-compte",
@@ -6109,7 +6109,7 @@
     "recent": false,
     "existe": true
    },
-   "description": "Les Époux, deux silhouettes courbées qui creusent entre les rangs du verger noir sans se parler.",
+   "description": "Les Époux, deux silhouettes redressées, tournées vers toi entre les rangs du verger noir sans se parler.",
    "promptImage": "elderly couple digging side by side between orchard rows, both bent low, one spade each, not looking at one another, black twisted branches above them, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [
     "epoux-2"
