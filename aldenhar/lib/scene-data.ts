@@ -7102,7 +7102,34 @@ function phraseBifurcation(liaisonsJouees: number, seed: number): string {
   return BIFURCATIONS[(seed * 7 + liaisonsJouees) % BIFURCATIONS.length];
 }
 
-export function makeLiaison(optA: string, optB: string, seed: number, ctx?: LiaisonCtx): Scene {
+/**
+ * LA ROUTE QUI SE FERME — ce qu'un échec dur dépense quand il n'y a plus
+ * d'option à retirer sur l'écran (voir `RunState.routeFermeeEnAttente`).
+ *
+ * Le monde se resserre : la Croisée n'offre plus qu'une direction. Le coût est
+ * réel (une destination perdue pour cette vie) et entièrement diégétique — le
+ * panel du 9/08 avait explicitement écarté le re-durcissement du barème de
+ * santé, qui ne se lit nulle part.
+ */
+const ROUTE_FERMEE = [
+  "L'autre direction n'en est plus une : le sol s'est affaissé sur toute la " +
+    "largeur du passage, et ce qui reste ne porterait pas un chien. Ce n'est " +
+    "pas récent. Ça l'était il y a un instant.",
+  "Tu cherches la seconde route et tu ne la trouves pas. Elle était là — les " +
+    "traces y vont, s'arrêtent, et ne reviennent pas. Il ne reste qu'un " +
+    "chemin, et il ne t'a pas attendu pour être choisi.",
+  "Une seule direction s'ouvre. L'autre est barrée par quelque chose que tu " +
+    "préfères ne pas identifier de plus près, et qui n'y était pas quand tu " +
+    "as pris ta décision.",
+];
+
+export function makeLiaison(
+  optA: string,
+  optB: string,
+  seed: number,
+  ctx?: LiaisonCtx,
+  fermee = false
+): Scene {
   const amb = pickLiaisonAmbiance(ctx ? { ...ctx, toOptions: [optA, optB] } : undefined, seed);
   const jl = LIAISON_JAILER[Math.floor(seeded(seed + 7) * LIAISON_JAILER.length)];
   // La marche a SON visuel (retour playtest 24/07 : « on passe d'une scène à
@@ -7113,12 +7140,20 @@ export function makeLiaison(optA: string, optB: string, seed: number, ctx?: Liai
     id: `liaison:${optA}>${optB}`,
     liaison: true,
     illustration: walkImg,
-    narration: [amb, croisee(optA, optB, ctx?.liaisonsJouees ?? 0, seed)],
+    narration: fermee
+      ? [amb, ROUTE_FERMEE[Math.floor(seeded(seed + 13) * ROUTE_FERMEE.length)]]
+      : [amb, croisee(optA, optB, ctx?.liaisonsJouees ?? 0, seed)],
     jailerLine: jl,
-    choices: [
-      { id: `orient-${optA}`, label: APPROACH[optA] ?? "Continuer", orient: { dest: optA } },
-      { id: `orient-${optB}`, label: APPROACH[optB] ?? "Continuer", orient: { dest: optB } },
-    ],
+    // Route fermée : la Croisée ne décrit plus deux routes (`croisee` les
+    // annonce toutes les deux) et n'en offre qu'une — celle de `optA`, que
+    // l'appelant a déjà tirée. Sans ce raccord, le texte parlerait d'un
+    // embranchement dont un seul bras est cliquable.
+    choices: fermee
+      ? [{ id: `orient-${optA}`, label: APPROACH[optA] ?? "Continuer", orient: { dest: optA } }]
+      : [
+          { id: `orient-${optA}`, label: APPROACH[optA] ?? "Continuer", orient: { dest: optA } },
+          { id: `orient-${optB}`, label: APPROACH[optB] ?? "Continuer", orient: { dest: optB } },
+        ],
   };
 }
 
@@ -7478,6 +7513,48 @@ export const SOUPCON_PALIERS: Record<number, string> = {
   3: "Une mère tire son enfant à l'intérieur sans un mot. Plus loin, la Doyenne croise ton chemin et parle sans s'arrêter : « Quoi que tu entendes, ne réponds pas. Ici, on regarde les bouches. »",
   4: "Là où tu as dormi, quelqu'un est passé : une croix à la craie, tracée bas, près du sol. Elle ne t'est pas adressée. Elle est adressée aux autres.",
   5: "Trois hommes te suivent depuis le dernier muret. Ils ne pressent pas le pas. Ils n'en ont pas besoin — ils attendent quelque chose, et ce quelque chose a une aube.",
+};
+
+/**
+ * LA CRAIE QUI MIGRE — le Soupçon lisible EN PLEINE LANDE.
+ *
+ * Les cinq manifestations ci-dessus mettent toutes des villageois en scène,
+ * donc elles attendent la prochaine arrivée au village (correctif du 7/08 :
+ * la Doyenne apparaissait à la Colline aux Gibets). Effet de bord découvert
+ * par le panel du 9/08 : le Soupçon monte dehors, sur des actes commis
+ * dehors, et ne se lit qu'à la porte du hameau — la mine s'arme au large et
+ * saute au seuil, sans le moindre avertissement.
+ *
+ * Ces cinq lignes-ci sont la piste de rechange. Elles ne demandent PERSONNE
+ * en scène : une marque à la craie sur un muret, puis sur la besace, puis sur
+ * le corps. Elle migre — c'est ce qui la rend lisible sans jamais donner de
+ * chiffre : le joueur voit la distance se réduire entre la marque et lui.
+ *
+ * ⚠️ Contrainte d'écriture : aucun bâti, aucun villageois nommé. Le tracé
+ * doit toujours être découvert APRÈS coup — personne ne marque devant toi.
+ */
+export const SOUPCON_CRAIE: Record<number, string> = {
+  1: "Sur un muret, à hauteur de genou, une marque fraîche à la craie. Tu ne la remarquerais pas si elle n'était pas exactement à l'endroit où tu es passé.",
+  2: "Une croix à la craie sur ta besace, tracée bas, sur la face qui reste contre ton dos. Tu ne l'as pas vue se faire.",
+  3: "La craie a changé de place : elle est sur ta manche, à l'épaule. Pour la tracer là, il a fallu être à portée de bras — et que tu ne t'en aperçoives pas.",
+  4: "Deux marques maintenant, sur le même bras, à quelques doigts d'écart. La seconde recouvre à moitié la première, comme une signature qu'on confirme.",
+  5: "Tu passes la main dans ton dos et tes doigts reviennent blancs. Tu ne peux pas voir ce qui y est tracé. Tous les autres, si.",
+};
+
+/**
+ * LE GEÔLIER NOMME L'INVISIBLE (panel 9/08, quatre voix, coût nul).
+ *
+ * Il est le seul à voir les chiffres, et le Soupçon est le seul système
+ * majeur du jeu qui n'en montre aucun. Une ligne par palier franchi : comme
+ * un palier ne se franchit qu'une fois par vie, aucune ne peut se répéter.
+ * Il ne prévient jamais — il constate, ce qui est pire.
+ */
+export const SOUPCON_GEOLIER: Record<number, string> = {
+  1: "Ils ont commencé à te compter. C'est un pays méticuleux.",
+  2: "Tu ne sens rien ? Normal. On ne sent jamais le premier tour de corde.",
+  3: "Trois cents avant toi ont trouvé ça exagéré. Le livre dit qu'ils avaient tort.",
+  4: "Je ne te préviens pas, je constate. C'est différent, et c'est tout ce que j'ai le droit de faire.",
+  5: "À ta place, je regarderais derrière. À la mienne, on regarde devant — c'est plus distrayant.",
 };
 
 /** La Descente — nœud terminal de la zone (fin sèche, Acte II à venir). */

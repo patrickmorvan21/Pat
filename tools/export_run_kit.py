@@ -34,7 +34,9 @@ def record(src: str, ancre: str) -> dict[str, str]:
     """Un `Record<string, string> = { clef: "valeur", … }` en dict.
 
     ⚠️ Les clefs ne sont pas toutes entre guillemets (`campement:` l'est sans),
-    et les valeurs sont parfois concaténées sur plusieurs lignes.
+    et les valeurs sont parfois concaténées sur plusieurs lignes. Certaines
+    sont des NOMBRES (`Record<number, string>`, les paliers du Soupçon) : les
+    exclure rendait un dict vide sans le moindre avertissement.
     """
     i = src.find(ancre)
     if i < 0:
@@ -52,11 +54,11 @@ def record(src: str, ancre: str) -> dict[str, str]:
     corps = src[j + 1 : fin]
     out: dict[str, str] = {}
     for m in re.finditer(
-        r'(?:"([a-z0-9\-]+)"|([a-zA-Z][a-zA-Z0-9\-]*))\s*:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)',
+        r'(?:"([a-z0-9\-]+)"|([a-zA-Z][a-zA-Z0-9\-]*)|(\d+))\s*:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)',
         corps,
     ):
-        clef = m.group(1) or m.group(2)
-        val = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(3)))
+        clef = m.group(1) or m.group(2) or m.group(3)
+        val = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(4)))
         out[clef] = val.replace('\\"', '"').replace("\\'", "'")
     return out
 
@@ -146,6 +148,13 @@ def main() -> int:
         "ambiances": chaines_de_tableau(bloc_tableau(src, "const LIAISON_AMBIANCES:")),
         "ambiancesLande": chaines_de_tableau(bloc_tableau(src, "const LIAISON_AMBIANCES_LANDE")),
         "bifurcations": chaines_de_tableau(bloc_tableau(src, "const BIFURCATIONS")),
+        # LE SOUPÇON LISIBLE (vague 5) : sans ces trois pools la réplique
+        # laissait le Soupçon monter en silence jusqu'au procès — exactement
+        # le défaut que la vague corrige dans le jeu.
+        "soupconPaliers": record(src, "export const SOUPCON_PALIERS: Record<number, string>"),
+        "soupconCraie": record(src, "export const SOUPCON_CRAIE: Record<number, string>"),
+        "soupconGeolier": record(src, "export const SOUPCON_GEOLIER: Record<number, string>"),
+        "routeFermee": chaines_de_tableau(bloc_tableau(src, "const ROUTE_FERMEE")),
         "geolierLiaison": chaines_de_tableau(bloc_tableau(src, "const LIAISON_JAILER")),
         "geolier": geolier,
         # Noms RÉELS des objets (le kit affichait l'identifiant brut,

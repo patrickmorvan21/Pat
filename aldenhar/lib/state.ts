@@ -144,6 +144,9 @@ export type TraversalState = {
   target: number;
   /** Les 2 destinations offertes à la liaison courante (quand phase = "liaison"). */
   liaisonOpts: [string, string] | null;
+  /** Cette Croisée-ci n'offre qu'une direction (échec dur au coup d'avant).
+      Porté par `trav` — donc reconstruit à l'identique à la reprise. */
+  routeFermee?: boolean;
   /** Graine de la liaison courante — garde ambiance/options stables à la reprise. */
   seed: number;
   /** Descente atteinte : la traversée est finie (nœud terminal). */
@@ -205,6 +208,15 @@ export type RunState = {
   /** Registre de déjà-vu, portée RUN (lib/dejavu.ts) — un compteur par clé,
       jamais un booléen : le texte peut dire « la deuxième fois ». */
   vus?: Record<string, number>;
+  /**
+   * UN ÉCHEC DUR DOIT DÉPENSER QUELQUE CHOSE DU MONDE (panel 9/08).
+   * Sur un écran de séjour, il consomme une option (voir `choixFaits`). Hors
+   * séjour, il n'y a pas d'option à retirer — on arme donc ce drapeau, et la
+   * prochaine Croisée n'offre plus qu'UNE direction. Le coût est diégétique
+   * (le monde se referme), jamais un prélèvement de santé de plus : le panel
+   * a explicitement écarté le re-durcissement du barème.
+   */
+  routeFermeeEnAttente?: boolean;
   /**
    * LES TÉMOINS (5/08) : le Soupçon cesse d'être un compteur, il devient des
    * gens. Chaque acte qui fait monter le Soupçon inscrit QUI a vu QUOI, dans
@@ -487,6 +499,7 @@ export function loadRun(): RunState {
             reactionsVues: Array.isArray(p.reactionsVues) ? p.reactionsVues : [],
             echosObjet: Array.isArray(p.echosObjet) ? p.echosObjet : [],
             vus: p.vus && typeof p.vus === "object" ? p.vus : {},
+            routeFermeeEnAttente: p.routeFermeeEnAttente === true,
             dropsServis: Array.isArray(p.dropsServis) ? p.dropsServis : [],
             temoins: Array.isArray(p.temoins) ? p.temoins : [],
             temoinsCites: Array.isArray(p.temoinsCites) ? p.temoinsCites : [],

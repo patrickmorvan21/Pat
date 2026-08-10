@@ -156,6 +156,7 @@ class Partie:
             "cible": 7 + rng.randrange(2), "options": None, "soupcon": 0,
             "etats": {}, "besace": [], "poiVus": [], "geolierVus": [],
             "ambiancesVues": [], "poiOuvert": False, "morte": False, "famVus": [],
+            "soupconVu": 0, "routeAFermer": False,
             "des": [], "journal": [], "sortie": None, "hameauEntree": False,
             "procesVu": False,
         }
@@ -243,6 +244,28 @@ class Partie:
             )
         self.geolierPeutParler(s)
 
+    def soupconSeLit(self) -> None:
+        """Un palier franchi se voit TOUJOURS — dehors comme dedans (vague 5).
+
+        Le Soupçon monte sur des actes commis en pleine lande, et les cinq
+        manifestations écrites mettent des villageois en scène : servies
+        dehors, elles téléportaient le village. La craie est la piste de
+        rechange — une marque, personne. Sans elle, le joueur découvrait sa
+        jauge au moment du procès.
+        """
+        n = min(5, self.d["soupcon"])
+        if n <= self.d.get("soupconVu", 0):
+            return
+        self.d["soupconVu"] = n
+        dedans = self.d["scene"] in self.k["hameauInterieur"]
+        pool = self.k.get("soupconPaliers" if dedans else "soupconCraie", {})
+        ligne = pool.get(str(n))
+        if ligne:
+            self.dit(ligne, "narration")
+        mot = self.k.get("soupconGeolier", {}).get(str(n))
+        if mot:
+            self.dit(mot, "geolier")
+
     def geolierPeutParler(self, s: dict) -> None:
         """Rare (12 %), et jamais deux fois la même phrase dans une vie.
 
@@ -302,6 +325,11 @@ class Partie:
             return
         r = self.rng()
         opts = r.sample(libres, 2)
+        # UN ÉCHEC DUR DÉPENSE QUELQUE CHOSE DU MONDE (vague 5) : hors séjour
+        # il n'y avait pas d'option à retirer, alors la Croisée se resserre.
+        ferme = self.d.pop("routeAFermer", False)
+        if ferme:
+            opts = opts[:1]
         self.d["phase"] = "liaison"
         self.d["options"] = opts
         self.d["pas"] += 1
@@ -312,7 +340,10 @@ class Partie:
         amb = r.choice(frais)
         self.d["ambiancesVues"].append(amb)
         self.dit(amb, "narration")
-        self.dit(r.choice(self.k["bifurcations"]), "narration")
+        if ferme and self.k.get("routeFermee"):
+            self.dit(r.choice(self.k["routeFermee"]), "narration")
+        else:
+            self.dit(r.choice(self.k["bifurcations"]), "narration")
         self.geolierPeutParler({})
 
     # -- les choix offerts par l'écran courant
@@ -371,6 +402,7 @@ class Partie:
             self.dit(p["examen"], "narration")
             if p.get("soupcon"):
                 self.d["soupcon"] = min(6, self.d["soupcon"] + p["soupcon"])
+                self.soupconSeLit()
             if p.get("donneObjet"):
                 self.gagner(p["donneObjet"])
             if p.get("ouvreSur"):
@@ -385,6 +417,7 @@ class Partie:
         c = o["c"]
         if c.get("soupcon"):
             self.d["soupcon"] = min(6, self.d["soupcon"] + c["soupcon"])
+            self.soupconSeLit()
         if c["type"] == "risque":
             self.resoudre(c)
         else:
@@ -490,6 +523,11 @@ class Partie:
             self.mourir(texte)
             return
         self.d["dernierRate"] = rate
+        # Hors séjour, l'échec dur n'a pas d'option à retirer : il arme la
+        # Croisée qui vient (une route de moins). Le séjour, lui, consomme
+        # déjà le choix tenté — on n'y ajoute pas un second coût.
+        if dur and not s.get("sejour"):
+            self.d["routeAFermer"] = True
         self.suite(c)
 
     def suite(self, choix: dict | None = None) -> None:

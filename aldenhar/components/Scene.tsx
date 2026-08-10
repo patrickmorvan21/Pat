@@ -20,6 +20,8 @@ import {
   sceneById,
   APPROACH_NARRATION,
   SOUPCON_PALIERS,
+  SOUPCON_CRAIE,
+  SOUPCON_GEOLIER,
   tierIsFail,
   SORTIE_DE_ZONE,
   coutSante,
@@ -416,7 +418,8 @@ function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
       t.liaisonOpts[0],
       t.liaisonOpts[1],
       t.seed,
-      run ? liaisonCtx(run, t.visited[t.visited.length - 1]) : undefined
+      run ? liaisonCtx(run, t.visited[t.visited.length - 1]) : undefined,
+      t.routeFermee === true
     );
   return resoudre(t.current, run) ?? sceneById(ENTRY_SCENE)!;
 }
@@ -1494,6 +1497,9 @@ export default function Scene() {
     setExpChoix(null);
     setExpRetire(null);
     let nextScene: SceneType;
+    // Armé plus bas si la Croisée qui vient a perdu une de ses deux routes
+    // (échec dur au coup précédent, hors séjour).
+    let routeFermeeIci = false;
     // Le Jour de marche (arbitrage Patrick 7/08) : posé dans la branche
     // toDest, appliqué à la puce + au persist plus bas.
     let jourDeMarche = false;
@@ -1546,6 +1552,7 @@ export default function Scene() {
       // Bête, pas le lieu derrière elle.
       trav.current = embuscade ? "bete-chemins-creux" : opts.toDest;
       trav.liaisonOpts = null;
+      trav.routeFermee = false;
       // LES CORBEAUX QU'ON N'A PAS COMPTÉS (mémo IA externe 8/08 : l'inaction
       // aussi laisse une trace). Quitter la Colline sans les avoir regardés
       // arme un écho différé — canal des prix différés (§17), rien de neuf.
@@ -1705,9 +1712,20 @@ export default function Scene() {
         pair[(seed + 1) % 2] = "colline-aux-gibets";
       }
       // Ambiance contextuelle (chantier 4) : provenance = le lieu qu'on quitte.
-      nextScene = makeLiaison(pair[0], pair[1], seed, liaisonCtx(runRef.current ?? loadRun(), scene.liaison ? undefined : scene.id));
+      // UN ÉCHEC DUR A DÉPENSÉ QUELQUE CHOSE : hors séjour il n'y avait pas
+      // d'option à retirer, alors c'est le MONDE qui se resserre — cette
+      // Croisée-ci n'offre plus qu'une direction.
+      routeFermeeIci = runRef.current?.routeFermeeEnAttente === true;
+      nextScene = makeLiaison(
+        pair[0],
+        pair[1],
+        seed,
+        liaisonCtx(runRef.current ?? loadRun(), scene.liaison ? undefined : scene.id),
+        routeFermeeIci
+      );
       trav.phase = "liaison";
       trav.liaisonOpts = pair;
+      trav.routeFermee = routeFermeeIci;
       trav.seed = seed;
       }
     }
@@ -1723,14 +1741,21 @@ export default function Scene() {
     // (capture Patrick 7/08 — la Doyenne à la Colline aux Gibets). Le palier
     // ATTEND donc la prochaine arrivée AU VILLAGE pour se montrer — le
     // Soupçon compte partout, mais il ne se LIT que là où on te regarde.
-    const soupManifest =
-      !nextScene.fixationTrial &&
-      soupAfter > soupSeen &&
-      soupAfter <= 5 &&
-      SOUPCON_PALIERS[soupAfter] &&
-      dansLeVillage(nextScene.id)
-        ? SOUPCON_PALIERS[soupAfter]
-        : null;
+    // …mais ATTENDRE le village ne peut pas vouloir dire NE JAMAIS RIEN DIRE
+    // (panel 9/08) : le Soupçon monte dehors, sur des actes commis dehors, et
+    // le joueur découvrait sa jauge au moment du procès. Hors village, c'est
+    // donc la CRAIE qui parle — une marque, personne en scène, et elle se
+    // rapproche de la peau à chaque palier. Les deux pistes marquent
+    // `soupconSeen` : quoi qu'il arrive, un palier franchi se voit.
+    const soupCroise =
+      !nextScene.fixationTrial && soupAfter > soupSeen && soupAfter <= 5;
+    const soupManifest = !soupCroise
+      ? null
+      : dansLeVillage(nextScene.id)
+        ? (SOUPCON_PALIERS[soupAfter] ?? null)
+        : (SOUPCON_CRAIE[soupAfter] ?? null);
+    // Et le Geôlier met un mot sur ce qui n'a pas de chiffre.
+    const soupJailer = soupManifest ? (SOUPCON_GEOLIER[soupAfter] ?? null) : null;
 
     // Savoir énoncé par la narration de la scène d'arrivée (25/07), s'il est neuf.
     const knownNow = runRef.current?.savoirs ?? [];
@@ -2158,6 +2183,7 @@ export default function Scene() {
     entries.push(...chapterAfter.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
     // Manifestation du Soupçon : le monde se ferme, palier par palier.
     if (soupManifest) entries.push({ id: nextId(), kind: "narration", text: soupManifest });
+    if (soupJailer) entries.push({ id: nextId(), kind: "jailer", text: soupJailer });
     // Objets RÉELS des Landes (chantier 1 du 23/07) : un lieu donne son objet
     // une seule fois, à l'arrivée, si le slot correspondant a de la place. Les
     // objets placés remplacent le soin générique — la Besace devient réelle,
@@ -2324,6 +2350,9 @@ export default function Scene() {
       // Soupçon : montée d'arrivée + palier manifesté mémorisé.
       run.soupcon = soupAfter;
       if (soupManifest) run.soupconSeen = soupAfter;
+      // Le drapeau d'échec dur est CONSOMMÉ par la Croisée qu'il vient de
+      // resserrer : une seule route perdue par échec, jamais une traînée.
+      if (routeFermeeIci) run.routeFermeeEnAttente = false;
       if (nextScene.fixationTrial) run.soupconSeen = 6;
       // Un Soupçon d'arrivée qui monte a un TÉMOIN : quelqu'un t'a vu monter
       // là-haut. Le compteur devient quelqu'un (5/08).
@@ -3474,6 +3503,21 @@ export default function Scene() {
                 dur: tier === "critique" || tier === "malediction",
               });
               return;
+            }
+            // TOUT ÉCHEC DUR DÉPENSE QUELQUE CHOSE DU MONDE (panel 9/08).
+            // Sur un séjour, c'est une option de l'écran (ci-dessus). Ici il
+            // n'y en a pas à retirer — on arme donc la Croisée : la prochaine
+            // n'offrira qu'une direction. On n'arme pas si c'est déjà armé
+            // (deux échecs durs de suite ne ferment pas deux fois la même
+            // route) ni au bord de la Descente, où il n'y a plus de Croisée.
+            if (
+              (tier === "critique" || tier === "malediction") &&
+              !run.routeFermeeEnAttente &&
+              !scene.terminal
+            ) {
+              persist((r) => {
+                r.routeFermeeEnAttente = true;
+              });
             }
             advance({
               result,

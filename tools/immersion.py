@@ -57,6 +57,9 @@ GENS = re.compile(
 # NB : « muret » n'y est PAS — dans ce monde les murets courent en pleine
 # lande (« ils suivent des tracés qui ne mènent nulle part », le Gamin des
 # Murets y rôde) : un muret ne présuppose pas le village.
+# ⚠️ FAUX AMI connu : « la porte » attrape aussi le VERBE (« quand on la
+# porte »). Un signalement sur ce mot se relit avant d'être cru — c'est arrivé
+# le 10/08 sur la craie du Soupçon, où le texte était parfaitement en contexte.
 VILLAGE = re.compile(
     r"(ruelle|volet|hameau|village|chapelle|cloche\b|grange|pavé"
     r"|une porte\b|la porte\b|un seuil|le seuil|toits?\b|linge|maison)",
@@ -187,6 +190,25 @@ def pools() -> list[dict]:
     if paliers:
         for i, t in enumerate(chaines_de_tableau(paliers.group(1))):
             out.append({"pool": f"soupçon palier {i + 1}", "garde": {"village", "gens"}, "textes": [t]})
+
+    # — LA CRAIE : l'autre piste du même palier, servie quand on est DEHORS
+    #   (Scene.tsx : dansLeVillage(…) ? PALIERS : CRAIE). Elle ne doit donc
+    #   présupposer aucun bâti — c'est toute sa raison d'être.
+    craie = re.search(r"SOUPCON_CRAIE[^=]*=\s*\{(.*?)\n\};", scene_src, re.S)
+    if craie:
+        for i, t in enumerate(chaines_de_tableau(craie.group(1))):
+            out.append({"pool": f"soupçon craie {i + 1}", "garde": {"lande", "gens"}, "textes": [t]})
+
+    # — le Geôlier qui nomme le palier franchi : il parle de partout.
+    geol = re.search(r"SOUPCON_GEOLIER[^=]*=\s*\{(.*?)\n\};", scene_src, re.S)
+    if geol:
+        for i, t in enumerate(chaines_de_tableau(geol.group(1))):
+            out.append({"pool": f"soupçon geôlier {i + 1}", "garde": {"partout"}, "textes": [t]})
+
+    # — la route fermée par un échec dur : jouée sur une liaison, où qu'elle
+    #   soit (une ruelle du hameau est une liaison comme une autre).
+    for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, "const ROUTE_FERMEE"))):
+        out.append({"pool": f"route fermée {i}", "garde": {"partout"}, "textes": [t]})
 
     # — ambiances de liaison (fond) : servies sur TOUTE liaison, village
     #   compris quand les variantes de village sont épuisées (anti-répétition).
