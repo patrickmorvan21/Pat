@@ -235,18 +235,33 @@ class Partie:
         # `dernierRate` est posé à la résolution ; on le CONSOMME ici pour que
         # l'écran suivant (une liaison, une arrivée) reparte à neuf.
         rate = self.d.pop("dernierRate", False)
-        for p in (s.get("narrationEchec") if rate and s.get("narrationEchec") else s.get("narration", [])):
-            self.dit(p, "narration")
         # LA STRATE DE FAMILIARITÉ : une ligne de plus à partir du 2e passage
         # du COMPTE par ce lieu, une autre à partir du 4e. Le héros ne se
         # souvient de rien — c'est le monde qui porte la trace.
-        fam = self.k.get("familiarite", {}).get(sid.replace("-2", ""))
-        if fam and sid not in self.d.get("famVus", []):
-            n = lire_compte()["visites"].get(sid.replace("-2", ""), 0)
+        #
+        # Calculée AVANT la narration : elle peut REMPLACER un paragraphe
+        # (`remplace`) au lieu de s'y ajouter, et ne se joue que sur SON écran
+        # (`sur`). Une ligne de mémoire écrite comme un remplacement et
+        # injectée comme un ajout est le défaut le plus rapporté du 10/08.
+        lieu = sid.replace("-2", "")
+        fam = self.k.get("familiarite", {}).get(lieu)
+        if fam and (fam.get("sur") or lieu) != sid:
+            fam = None
+        ligne = None
+        if fam and lieu not in self.d.get("famVus", []):
+            n = lire_compte()["visites"].get(lieu, 0)
             ligne = fam.get("4") if n >= 4 and fam.get("4") else (fam.get("2") if n >= 2 else None)
             if ligne:
-                self.dit(ligne, "narration")
-                self.d.setdefault("famVus", []).append(sid)
+                self.d.setdefault("famVus", []).append(lieu)
+        remplace = fam.get("remplace") if (fam and ligne) else None
+        paras = list(s.get("narrationEchec") if rate and s.get("narrationEchec") else s.get("narration", []))
+        if remplace is not None and remplace < len(paras):
+            paras[remplace] = ligne
+            ligne = None
+        for p in paras:
+            self.dit(p, "narration")
+        if ligne:
+            self.dit(ligne, "narration")
         if s.get("registre"):
             self.dit(
                 "[Le Grand Registre défile : cent noms classés par jours de "

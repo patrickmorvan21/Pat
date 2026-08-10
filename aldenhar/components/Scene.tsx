@@ -1937,6 +1937,24 @@ export default function Scene() {
       opts?.fail && nextScene.narrationEchec?.length
         ? nextScene.narrationEchec
         : nextScene.narration;
+    // ── LA STRATE DE FAMILIARITÉ, calculée AVANT la narration ─────────────
+    // Elle peut REMPLACER un paragraphe (`remplace`) au lieu de s'y ajouter :
+    // une ligne de mémoire écrite comme un remplacement et injectée comme un
+    // ajout est le défaut que le panel du 10/08 a le plus rapporté (le chien
+    // du Bailli qui se lève et ne se lève pas sur le même écran).
+    const lieuIci = radical(nextScene.id);
+    const famDef = FAMILIARITE[lieuIci];
+    // Une strate ne se joue que sur SON écran (par défaut celui d'arrivée).
+    const famIci = famDef && (famDef.sur ?? lieuIci) === nextScene.id ? famDef : null;
+    const cleFam = "fam|" + lieuIci;
+    const strate = (() => {
+      if (!famIci) return null;
+      // Portée RUN : deux beats du même lieu passent tous deux par ici.
+      if (vu(runRef.current?.vus, cleFam) > 0) return null;
+      const passages = (loadMemory().visitesLieux ?? {})[lieuIci] ?? 0;
+      return passages >= 4 && famIci.quatre ? famIci.quatre : passages >= 2 ? famIci.deux : null;
+    })();
+
     const narrationLines = nextScene.fixationTrial
       ? [
           narrationDeScene[0],
@@ -1966,7 +1984,11 @@ export default function Scene() {
           ...narrationDeScene.slice(1),
         ]
       : narrationDeScene;
-    entries.push(...narrationLines.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+    const lignesFinales =
+      strate && famIci?.remplace !== undefined && narrationLines[famIci.remplace] !== undefined
+        ? narrationLines.map((t, i) => (i === famIci.remplace ? strate : t))
+        : narrationLines;
+    entries.push(...lignesFinales.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
     // L'écho d'un objet-promesse (voir ECHOS_OBJET) : ce que tu portes te
     // rattrape là où ça compte, une fois par scène et par objet.
     for (const e of ECHOS_OBJET[nextScene.id] ?? []) {
@@ -1980,26 +2002,17 @@ export default function Scene() {
       }
     }
     // ── LE DÉJÀ-VU (vague 4) ───────────────────────────────────────────────
-    // La STRATE DE FAMILIARITÉ du lieu, d'abord : le décor parle avant ses
-    // gens. Servie au 2e passage du COMPTE par ce lieu, puis remplacée au 4e.
-    // Le héros ne se souvient de rien — c'est le monde qui porte la trace
+    // La strate a été calculée plus haut. Si elle ne remplace aucun
+    // paragraphe, elle s'ajoute ici — après la narration, avant les gens.
+    // Le héros ne se souvient de rien : c'est le monde qui porte la trace
     // (règle d'écriture détaillée sur FAMILIARITE et lib/dejavu.ts).
-    const lieuIci = radical(nextScene.id);
-    const fam = FAMILIARITE[lieuIci];
-    if (fam) {
-      const passages = (loadMemory().visitesLieux ?? {})[lieuIci] ?? 0;
-      const strate =
-        passages >= 4 && fam.quatre ? fam.quatre : passages >= 2 ? fam.deux : null;
-      // Portée RUN : un lieu ne peut pas se rejouer dans une vie, mais deux
-      // beats du même lieu (l'arrivée et son écran-événement) passent tous
-      // deux par ici — sans la garde, la strate tomberait deux fois.
-      const cleFam = "fam|" + lieuIci;
-      if (strate && vu(runRef.current?.vus, cleFam) === 0) {
+    if (strate) {
+      if (famIci?.remplace === undefined || narrationLines[famIci.remplace] === undefined) {
         entries.push({ id: nextId(), kind: "narration", text: strate });
-        persist((r) => {
-          r.vus = noter(r.vus, cleFam);
-        });
       }
+      persist((r) => {
+        r.vus = noter(r.vus, cleFam);
+      });
     }
     // Puis la ligne de mémoire du PNJ (2e passage du compte par ce lieu ou
     // plus). Même garde de portée RUN : le Fossoyeur est déclaré sur deux
@@ -2150,16 +2163,19 @@ export default function Scene() {
         });
         persist((r) => { r.temoinsCites = [...(r.temoinsCites ?? []), t.id]; });
       }
-            const corb = corbeauxDuHameau(
+      // Registre DÉDIÉ (panel 10/08) : les corbeaux comptaient leurs passages
+      // dans `reactionsVues`, partagé avec les réactions d'états — le vivier
+      // paraissait épuisé bien avant de l'être. Ils ont maintenant leurs
+      // propres compteurs (lib/dejavu, portée run).
+      const corb = corbeauxDuHameau(
         runRef.current?.soupcon ?? 0,
         nextStep,
-        runRef.current?.reactionsVues ?? []
+        runRef.current?.vus ?? {}
       );
       if (corb) {
         entries.push({ id: nextId(), kind: "narration", text: corb });
         persist((r) => {
-          if (!(r.reactionsVues ?? []).includes(corb))
-            r.reactionsVues = [...(r.reactionsVues ?? []), corb];
+          r.vus = noter(r.vus, "corb|" + corb);
         });
       }
     }

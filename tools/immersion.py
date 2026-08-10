@@ -385,6 +385,12 @@ EXEMPT: dict[str, str] = {
         "« à la vitesse d'un homme qui marche » est une COMPARAISON de "
         "vitesse, pas une présence — la chute (« rien ne marche nulle part ») "
         "fonctionne précisément parce qu'il n'y a personne.",
+    "familiarité chien-du-bailli (quatre)":
+        "La MAISON du Bailli est un bâtiment isolé à l'ouest, hors du hameau "
+        "(décision 7/08) : sa scène POSE elle-même la bâtisse et son seuil. "
+        "Le mot « porte » y désigne la porte de CETTE maison, que le joueur a "
+        "sous les yeux — pas un village. Faux ami déjà documenté au-dessus du "
+        "lexique VILLAGE.",
     "arrivée chien-du-bailli":
         "Une phrase d'ARRIVÉE décrit sa destination : celle-ci POSE elle-même "
         "la bâtisse (« une haute toiture SEULE au-dessus de la bruyère ») "

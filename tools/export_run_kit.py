@@ -139,7 +139,11 @@ def main() -> int:
         # non corrigé (piège documenté le 9/08 : « ce n'est pas le testeur qui
         # a mal regardé, c'est le kit qui ne montre pas »).
         "familiarite": {
-            f["scene"]: {str(st["passages"]): st["texte"] for st in f["strates"]}
+            f["scene"]: {
+                **{str(st["passages"]): st["texte"] for st in f["strates"]},
+                **({"sur": f["sur"]} if f.get("sur") else {}),
+                **({"remplace": f["remplace"]} if f.get("remplace") is not None else {}),
+            }
             for f in d.get("familiarite", [])
         },
         "approche": record(src, "const APPROACH: Record<string, string>"),

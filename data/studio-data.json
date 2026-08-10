@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-10T15:51:36Z",
- "commit": "e5610fc",
+ "genere": "2026-08-10T16:22:38Z",
+ "commit": "fd7f54f",
  "zones": [
   {
    "id": "landes",
@@ -8823,13 +8823,15 @@
    "strates": [
     {
      "passages": 2,
-     "texte": "La bête grise ne se lève pas, cette fois. Elle t'a regardé venir de loin et elle a jugé que ce n'était pas la peine."
+     "texte": "La bête grise ne se lève pas. Elle t'a regardé venir de loin et elle a jugé que ce n'était pas la peine. Grise, trop grande, le poil usé aux endroits d'un harnais qu'elle ne porte plus. Son maître pend à la colline — l'ordre, lui, n'a jamais été levé. Personne n'entre. Elle te le dit sans bouger d'un pouce."
     },
     {
      "passages": 4,
-     "texte": "Elle bâille. C'est pire qu'un grognement : on ne bâille que devant ce qui revient."
+     "texte": "Elle bâille quand tu débouches. C'est pire qu'un grognement : on ne bâille que devant ce qui revient. Grise, trop grande, le poil usé aux endroits d'un harnais qu'elle ne porte plus, et derrière elle une porte qu'un mort défend encore. Personne n'entre. Elle ne se donne même plus la peine de te le dire."
     }
-   ]
+   ],
+   "sur": "chien-du-bailli-2",
+   "remplace": 0
   },
   {
    "scene": "petit-tribunal",

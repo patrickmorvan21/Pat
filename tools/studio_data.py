@@ -493,6 +493,16 @@ def lire_familiarite() -> list[dict]:
         cle = blocs[i] or blocs[i + 1]
         corps = blocs[i + 2]
         entree: dict = {"scene": cle, "strates": []}
+        # `sur` / `remplace` (10/08) : une strate peut se jouer sur un AUTRE
+        # écran du lieu et REMPLACER un paragraphe au lieu de s'y ajouter.
+        # Sans ces deux champs, la réplique rejouerait la contradiction que
+        # le jeu vient de corriger — le piège de la liste blanche.
+        msur = re.search(r'sur:\s*"([^"]+)"', corps)
+        if msur:
+            entree["sur"] = msur.group(1)
+        mrem = re.search(r"remplace:\s*(\d+)", corps)
+        if mrem:
+            entree["remplace"] = int(mrem.group(1))
         for strate, seuil in (("deux", 2), ("quatre", 4)):
             mm = re.search(rf'{strate}:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', corps)
             if not mm:

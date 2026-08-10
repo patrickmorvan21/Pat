@@ -6448,13 +6448,28 @@ export function ligneTroupeau(n: number): string {
  * transformait la jauge diégétique en jauge visible). Le NOMBRE reste stable
  * — c'est lui, l'information — mais la phrase change à chaque lecture.
  */
-export function corbeauxDuHameau(soupcon: number, step = 0, vues: string[] = []): string | null {
+export function corbeauxDuHameau(
+  soupcon: number,
+  step = 0,
+  vus: Record<string, number> = {}
+): string | null {
   // Dédup verbatim intra-run (partie de découverte 8/08 : « Ils sont six,
   // alignés, du même côté. » servie 3× dans la même vie — la rotation par
   // pas ne suffit pas, deux arrivées de même parité retombent dessus).
+  //
+  // ⚠️ REFAIT (panel 10/08). Deux défauts mesurés : (1) le vivier épuisé, la
+  // fonction RETOMBAIT sur le pool complet et re-tirait par `(pas × 7) % n` —
+  // c'est-à-dire exactement la rotation par parité que le dédoublonnage
+  // devait remplacer (un testeur a lu la même phrase six fois) ; (2) le
+  // registre était `reactionsVues`, PARTAGÉ avec les réactions d'états, donc
+  // il s'épuisait bien avant la fin de la vie. On compte désormais les
+  // passages phrase par phrase (registre `vus` de lib/dejavu, portée run) et
+  // on sert TOUJOURS la moins vue : au deuxième tour, on repart par celle
+  // qu'on a lue il y a le plus longtemps, jamais par la même.
   const pick = (pool: string[]) => {
-    const frais = pool.filter((t) => !vues.includes(t));
-    const el = frais.length ? frais : pool;
+    let min = Infinity;
+    for (const t of pool) min = Math.min(min, vus["corb|" + t] ?? 0);
+    const el = pool.filter((t) => (vus["corb|" + t] ?? 0) === min);
     return el[(step * 7) % el.length];
   };
   if (soupcon >= 5)
@@ -7474,7 +7489,32 @@ export const APPROACH_NARRATION: Record<string, string> = {
  * la pierre (`ligneBorneSud`). Une strate de plus y ferait déborder l'écran
  * sans rien ajouter.
  */
-export const FAMILIARITE: Record<string, { deux: string; quatre?: string }> = {
+export type Strate = {
+  deux: string;
+  quatre?: string;
+  /**
+   * Écran sur lequel la strate se joue. Par défaut, l'écran d'ARRIVÉE du lieu
+   * (son id de radical). À poser quand la ligne parle de ce qu'on ne voit pas
+   * encore à l'arrivée.
+   *
+   * ⚠️ Pourquoi ce champ existe (panel 10/08, le défaut le plus rapporté —
+   * six fois) : la strate du Chien du Bailli disait « la bête grise ne se
+   * lève pas, cette fois » sur l'écran d'arrivée, qui décrit une maison murée
+   * SANS chien ; deux touchers plus loin, la scène écrivait « le chien se
+   * lève du seuil ». Une ligne de mémoire écrite comme un remplacement,
+   * injectée comme un ajout, sur le mauvais écran.
+   */
+  sur?: string;
+  /**
+   * Index du paragraphe de narration que la strate REMPLACE (au lieu de s'y
+   * ajouter). C'est la forme juste quand la ligne redit autrement ce que ce
+   * paragraphe affirme : sans ça, l'écran décrit deux fois la même chose, une
+   * fois comme neuve et une fois comme connue.
+   */
+  remplace?: number;
+};
+
+export const FAMILIARITE: Record<string, Strate> = {
   "chemin-creux": {
     deux:
       "Ta main s'est posée sur le talus sans que tu l'aies décidé, juste où " +
@@ -7564,12 +7604,28 @@ export const FAMILIARITE: Record<string, { deux: string; quatre?: string }> = {
       "a appris à te distinguer.",
   },
   "chien-du-bailli": {
+    // Elle parle de la bête : elle ne peut pas se jouer sur l'écran de la
+    // maison murée, où le chien n'est pas encore là. Elle remplace le
+    // paragraphe d'ouverture de l'écran-événement — sinon le chien se lève
+    // (scène) puis ne se lève pas (strate) sur le même écran.
+    sur: "chien-du-bailli-2",
+    remplace: 0,
+    // Remplaçant un paragraphe, ces lignes doivent porter TOUT ce qu'il
+    // portait : le héros est neuf, il n'a jamais vu ce chien. Seule la
+    // MANIÈRE change — la bête, elle, a déjà vu quelqu'un qui marchait
+    // comme ça.
     deux:
-      "La bête grise ne se lève pas, cette fois. Elle t'a regardé venir de " +
-      "loin et elle a jugé que ce n'était pas la peine.",
+      "La bête grise ne se lève pas. Elle t'a regardé venir de loin et elle " +
+      "a jugé que ce n'était pas la peine. Grise, trop grande, le poil usé " +
+      "aux endroits d'un harnais qu'elle ne porte plus. Son maître pend à la " +
+      "colline — l'ordre, lui, n'a jamais été levé. Personne n'entre. Elle " +
+      "te le dit sans bouger d'un pouce.",
     quatre:
-      "Elle bâille. C'est pire qu'un grognement : on ne bâille que devant " +
-      "ce qui revient.",
+      "Elle bâille quand tu débouches. C'est pire qu'un grognement : on ne " +
+      "bâille que devant ce qui revient. Grise, trop grande, le poil usé aux " +
+      "endroits d'un harnais qu'elle ne porte plus, et derrière elle une " +
+      "porte qu'un mort défend encore. Personne n'entre. Elle ne se donne " +
+      "même plus la peine de te le dire.",
   },
   "petit-tribunal": {
     deux:
