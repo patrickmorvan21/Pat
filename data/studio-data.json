@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-10T19:22:58Z",
- "commit": "8057dad",
+ "genere": "2026-08-10T20:20:56Z",
+ "commit": "9f3d61b",
  "zones": [
   {
    "id": "landes",
@@ -3207,7 +3207,7 @@
   {
    "id": "hameau-entree-4",
    "narration": [
-    "Au bout de la rue, un muret bas ferme le village côté sud. Le vieux y est assis, sec comme un piquet, les coudes sur les genoux. Il t'attendait là depuis le début.",
+    "Au bout de la rue, un muret bas ferme le village côté sud. Le vieux y est assis, large, les coudes sur les genoux. Il t'attendait là depuis le début.",
     "Il tend la main, paume ouverte. Pas pour serrer la tienne — pour que tu la regardes. Elle est vide. C'est le geste d'ici : on jure sur rien, parce qu'il ne reste rien.",
     "— « Trois choses, et tu dors sous un toit. Tu ne parles pas aux pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et à la troisième aube, tu choisis. »"
    ],
@@ -3987,7 +3987,7 @@
   {
    "id": "tour-de-guet",
    "narration": [
-    "La tour n'a plus de sommet. Elle s'arrête net à mi-hauteur, sur une bouche de pierres arrachées, et le reste est en tas autour du pied — pas éboulé, EMPILÉ. Quelqu'un a rangé les décombres.",
+    "La tour n'a plus de sommet. Elle s'arrête net à mi-hauteur, sur une bouche de pierres arrachées, et le reste s'est répandu autour du pied. Un seul endroit fait exception : quelques blocs posés les uns sur les autres, à hauteur de siège, usés par-dessus.",
     "L'escalier intérieur tient encore sur trois volées. Au-delà, il monte vers rien."
    ],
    "choix": [
@@ -4499,7 +4499,8 @@
     {
      "id": "repartir",
      "label": "Repartir sans s'attarder",
-     "type": "suite",
+     "type": "passif",
+     "consequence": "Tu ressors avant d'avoir posé ton sac. Dehors, la lumière est exactement celle de tout à l'heure : ne pas dormir ne fait gagner aucun temps ici — ça fait seulement une nuit de moins derrière toi, et le lit de bruyère garde sa forme pour un autre.",
      "sortie": {},
      "sansNuit": true
     }
@@ -4707,8 +4708,9 @@
     },
     {
      "id": "fille-repartir",
-     "label": "Repartir sans s’attarder",
-     "type": "suite",
+     "label": "Repartir sans s'attarder",
+     "type": "passif",
+     "consequence": "Tu la laisses à sa corde et tu ressors. Elle ne te retient pas, ne lève pas les yeux — et dehors le crépuscule est le même qu'à l'entrée. Personne n'aura dormi ici cette nuit.",
      "sansNuit": true
     }
    ],
@@ -7345,14 +7347,6 @@
    "racine": "dague"
   },
   {
-   "fichier": "objet_dague_cendres_c.png",
-   "hash": "e45fbc83",
-   "taille": 26661,
-   "recent": false,
-   "groupe": "autre",
-   "racine": "dague_cendres"
-  },
-  {
    "fichier": "objet_denonciation_vierge_c.png",
    "hash": "e0ebc424",
    "taille": 21260,
@@ -8003,6 +7997,11 @@
   "echec-empathie": {
    "nom": "L'Écrivain public",
    "deposition": "Il a essayé de se faire comprendre. Ce qui est sorti n'était pas de chez nous.",
+   "lieu": "au Hameau des Renonçants"
+  },
+  "echec-exploration": {
+   "nom": "La Doyenne",
+   "deposition": "Il touchait à ce qui ne se touche pas. Il croyait que personne ne regardait — mais on regarde toujours, ici.",
    "lieu": "au Hameau des Renonçants"
   }
  },
@@ -8955,11 +8954,11 @@
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 74,
+  "reserve": 73,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
-  "temoins": 20,
+  "temoins": 21,
   "etats": 7,
   "besoins": 3,
   "transitions": 63,
