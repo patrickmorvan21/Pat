@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-10T08:47:42Z",
- "commit": "a794337",
+ "genere": "2026-08-10T09:21:11Z",
+ "commit": "3c81f11",
  "zones": [
   {
    "id": "landes",
@@ -585,6 +585,12 @@
      "consequence": "— « Ma femme dit trois semaines. » Un temps. « Ma femme dit beaucoup de choses en pleurant, maintenant. » Il ne quitte pas le sud des yeux en le disant, et c'est ça, le plus dur à voir : il parle d'elle au présent et il regarde ailleurs."
     },
     {
+     "id": "hesitant-suivre-regard",
+     "label": "Suivre son regard",
+     "type": "verrouille",
+     "stat": "INSTINCT"
+    },
+    {
      "id": "hesitant-mentir",
      "label": "Mentir : « Je n'entends rien. »",
      "type": "risque",
@@ -627,7 +633,8 @@
     "borne-frontiere"
    ],
    "roles": [
-    "optionnel"
+    "optionnel",
+    "verrouille"
    ],
    "acces": "lien",
    "etat": "valide",
@@ -971,6 +978,12 @@
      "nature": "physique"
     },
     {
+     "id": "marcheur-compter-pas",
+     "label": "Compter ses pas",
+     "type": "verrouille",
+     "stat": "RUSE"
+    },
+    {
      "id": "marcheur-continuer",
      "label": "Continuer normalement",
      "type": "passif",
@@ -997,7 +1010,9 @@
    "mèneIci": [
     "marcheur-1"
    ],
-   "roles": [],
+   "roles": [
+    "verrouille"
+   ],
    "acces": "lien",
    "etat": "valide",
    "alertes": []
@@ -4781,6 +4796,12 @@
      "consequence": "« Personne. » Elle le dit trop vite, et l’entend elle-même. Elle reprend, plus bas : « Y a pas de nom à mettre dessus. C’est bien tout le problème de cette corde. »"
     },
     {
+     "id": "veuve-sait-pourquoi-vous",
+     "label": "« Pourquoi vous, alors ? »",
+     "type": "verrouille",
+     "stat": "EMPATHIE"
+    },
+    {
      "id": "veuve-se-taire",
      "label": "Ne rien demander",
      "type": "passif",
@@ -4810,7 +4831,9 @@
    "mèneIci": [
     "veuve-cordes-sait-1"
    ],
-   "roles": [],
+   "roles": [
+    "verrouille"
+   ],
    "acces": "lien",
    "etat": "valide",
    "alertes": []
@@ -5818,6 +5841,12 @@
      }
     },
     {
+     "id": "mare-lire-procedure",
+     "label": "Lire leur procédure",
+     "type": "verrouille",
+     "stat": "INSTINCT"
+    },
+    {
      "id": "laisser-renoncant",
      "label": "Le laisser à sa réponse",
      "type": "passif",
@@ -5843,7 +5872,9 @@
    "mèneIci": [
     "mare-aux-regards"
    ],
-   "roles": [],
+   "roles": [
+    "verrouille"
+   ],
    "acces": "lien",
    "etat": "valide",
    "alertes": []
@@ -6033,6 +6064,12 @@
      "consequence": "— « Parce qu'arrêter, c'est commencer à regarder le sud. » Elle essuie la bêche contre sa jambe, un geste d'habitude. « Bêcher, ça occupe les yeux. » Derrière elle, le compte à voix basse n'a pas manqué un coup."
     },
     {
+     "id": "epoux-ecouter-compte",
+     "label": "Écouter ce qu'il compte",
+     "type": "verrouille",
+     "stat": "EMPATHIE"
+    },
+    {
      "id": "epoux-aider",
      "label": "Prendre la bêche un moment",
      "type": "risque",
@@ -6069,7 +6106,8 @@
     "verger-noir"
    ],
    "roles": [
-    "optionnel"
+    "optionnel",
+    "verrouille"
    ],
    "acces": "lien",
    "etat": "valide",
@@ -6330,6 +6368,12 @@
      "consequence": "Il se rembrunit. « T'as vu ça. » Un temps — il regarde le mur comme on regarde un collègue. « Le mur date d'avant moi. Ceux qui l'ont planté savaient déjà dans quel sens on perd les gens. »"
     },
     {
+     "id": "veilleur-regarder-dessous",
+     "label": "Regarder par-dessus",
+     "type": "verrouille",
+     "stat": "COURAGE"
+    },
+    {
      "id": "veilleur-a-quoi-bon",
      "label": "« À quoi bon veiller, alors ? »",
      "type": "passif",
@@ -6357,7 +6401,8 @@
     "palissade-sud"
    ],
    "roles": [
-    "optionnel"
+    "optionnel",
+    "verrouille"
    ],
    "acces": "lien",
    "etat": "valide",
@@ -8896,7 +8941,7 @@
  "totaux": {
   "scenes": 89,
   "pointsInteret": 47,
-  "choix": 224,
+  "choix": 230,
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,
