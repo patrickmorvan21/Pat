@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-10T17:49:32Z",
- "commit": "6e6252a",
+ "genere": "2026-08-10T18:26:19Z",
+ "commit": "9d17882",
  "zones": [
   {
    "id": "landes",
@@ -3471,6 +3471,7 @@
    "suite": "hameau-halte-3",
    "savoir": "savoir_grange_comptee",
    "donneDecouverte": "d.barre_usee",
+   "nuit": true,
    "nom": "Hameau halte 2 — beat 2",
    "lieu": "grange_des_renoncants",
    "typeScene": "arrivee",
@@ -3791,6 +3792,7 @@
    ],
    "pointsInteret": [],
    "hameauHalte": true,
+   "nuit": true,
    "nom": "Hameau halte dehors",
    "lieu": "grange_des_renoncants",
    "typeScene": "arrivee",
@@ -4503,6 +4505,7 @@
    ],
    "pointsInteret": [],
    "sejour": true,
+   "nuit": true,
    "nom": "Campement 2 — beat 2",
    "lieu": "moulin_sans_ailes",
    "typeScene": "moment",
@@ -4709,6 +4712,7 @@
    ],
    "pointsInteret": [],
    "donneDecouverte": "d.fille_vivante",
+   "nuit": true,
    "image": {
     "fichier": "monstre_fille_moulin_ouvrage_c.png",
     "hash": "03e7eb7d",
