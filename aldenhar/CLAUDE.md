@@ -478,3 +478,36 @@ Les trois contradictions vérifiées **en regardant les images**.
 - Vérifications : ~50 assertions Playwright avec jets réels (procès gagné en boucle, refus/lieu vécu, nuit, sortie de zone, reprise paginée, textes réconciliés) + 14 tests unitaires (tirage du Destin, dédup des corbeaux). Six gardes de build propres. Réplique `pactum.py` et `run-kit.json` alignés à chaque vague.
 - `APP_VERSION` 1.64.0 → **1.69.0**, `CACHE_VERSION` v103 → **v108**. Déployé (gh-pages `9971ff5`).
 - **Reste ouvert** : maquette de personnalisation des reliques · le Sceau des Landes · l'asset `scene_la_descente` · la notation « J41 » du Registre · le composeur d'écran hors jeu et les invariants de parcours (plan structurel du panel).
+
+### Session 2026-08-10 (suite #2) — DEUX DÉCISIONS DE PATRICK, à ne plus reposer
+
+**1. LA GÉOGRAPHIE DU DOMAINE — « Les Lisières » n'est PAS un autre nom des Landes.**
+- **Les Lisières = l'ACTE I.** **Les Landes = une ZONE dans les Lisières.**
+- Donc la maquette de l'écran d'acte (« • LE DOMAINE • / Les Lisières ») a
+  toujours eu raison, et l'« écart assumé » noté le 26/07 puis reposé le 10/08
+  n'existe pas : il n'y a jamais eu de contradiction, seulement deux niveaux de
+  la même hiérarchie. **Question close, ne plus la rouvrir.**
+- Conséquence à tenir dans les textes : l'acte se nomme au carton-titre, la
+  zone se nomme partout ailleurs (rappel sous REPRENDRE, Registre, prose). Un
+  écran qui parle de l'endroit où l'on marche dit « les Landes » ; seul le
+  carton d'ouverture d'acte dit « les Lisières ». Les futures zones de l'Acte I
+  seront des sœurs des Landes, pas des remplaçantes.
+
+**2. CE QUE GAGNE UN SURVIVANT : UN SCEAU** (arbitrage rendu le 10/08).
+- Franchir la Descente vivant rapporte un **Sceau**, et **le Sceau MODIFIE la
+  zone à la vie suivante** : il peut ouvrir des chemins et de nouvelles
+  conversations. C'est la réponse à l'asymétrie mesurée par la relecture du
+  10/08 (« seule la mort forge une relique, donc mourir en s'étant engagé
+  classe mieux que survivre sans rien tenter »).
+- ⚠️ Il ne contredit PAS la règle du 7/08 (« on ne forge rien d'une vie qu'on
+  n'a pas perdue ») : une relique est ce qu'on LAISSE en mourant, un Sceau est
+  ce qu'on RAPPORTE en revenant. Deux monnaies, deux portes.
+- La fondation existe déjà et attend : `PlayerMemory.zonesCleared` est
+  incrémenté par `recordTraversee` et n'a aujourd'hui **aucun effet
+  mécanique** — c'est exactement le crochet du Sceau. Le moteur de faits
+  (`lib/faits.ts`) porte déjà la nature `seal` et la portée permanente, prévues
+  pour ça depuis le 5/08 ; rien de neuf à construire côté socle.
+- **Chantier à venir, pas ce soir.** Ce qu'il faudra trancher au moment de
+  l'écrire : combien de Sceaux (un par zone ? un par manière de sortir ?), ce
+  qu'ils ouvrent concrètement dans les Landes, et s'ils se cumulent entre
+  vies. Ne rien coder avant que Patrick revienne dessus.
