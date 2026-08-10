@@ -8,6 +8,66 @@
     "croix-ombres": {
       "v": "replace",
       "note": "Même défaut que la vue d'ensemble : les quatre ailes sont entières, alors que l'examen explique que les bandes pâles sont les zones que les ailes protégeaient AVANT de disparaître."
+    },
+    "bete-chemins-creux": {
+      "v": "replace",
+      "note": "Le texte dit un COULOIR (« taillée pour courir exactement entre deux murs de terre », « c'est son couloir, son terrier ») et le lieu dit « le ciel devient un ruban ». L'image montre une cuvette ouverte, ciel plein cadre, aucun mur de terre. Le couloir EST la mécanique de la créature."
+    },
+    "champ-des-fixes-2": {
+      "v": "replace",
+      "note": "Champ de CROIX CHRÉTIENNES dressées. La Fixation plante des poteaux au LIEU d'enterrer, et le hameau a renoncé à son dieu : des croix contredisent la doctrine entière de la zone. L'image d'établissement du même lieu, elle, est juste."
+    },
+    "chien-du-bailli": {
+      "v": "replace",
+      "note": "Le texte dit « murée de l'intérieur, chaque fenêtre bouchée de pierres » et « seule, sans voisine ». L'image montre six baies à meneaux OUVERTES ET ÉCLAIRÉES, plus une dépendance accolée. Décrire la MATIÈRE du bouchage (assises de pierre sèche encastrées dans chaque embrasure) plutôt qu'interdire les fenêtres, et poser la bâtisse isolée sur la lande."
+    },
+    "serment-hameau": {
+      "v": "replace",
+      "note": "Le texte dit une vingtaine de feux, une seule cheminée qui fume, des murs qui tiennent par habitude. L'image montre une VILLE dense, 100+ toits intacts, dominée par une haute flèche gothique. La petitesse du hameau est structurante (le village entier tient dans le Petit Tribunal)."
+    },
+    "colline-aux-gibets-2": {
+      "v": "replace",
+      "note": "Reliquat de la version « cercle » abandonnée : rotonde circulaire de gibets sur terrain plat. Le panel a tranché que la FILE sur la crête est la signature de la zone, et toute la prose a suivi. Cette image est le dernier morceau qui n'a pas suivi."
+    },
+    "pendu-qui-parle": {
+      "v": "replace",
+      "note": "Le texte dit « un sceau au poing » et un choix jouable entier s'appelle « Détailler le sceau à son poing ». L'image montre les DEUX MAINS OUVERTES ET VIDES. Le sceau sème le lore de la zone (« les Landes entières sont timbrées à sa marque »). Fixer au passage la position des bras, incohérente avec l'écran suivant (poignets liés)."
+    },
+    "petit-tribunal": {
+      "v": "replace",
+      "note": "Le texte cite les TROIS BANCS quatre fois et un point d'intérêt entier repose dessus ; l'image ne montre aucun banc (salle de pierre, niche en arc, autel massif). Le mot « grange » a cédé côté texte (→ « salle basse ») : c'est la pierre qui reste, ce sont les bancs qui manquent."
+    },
+    "proces-du-heros": {
+      "v": "replace",
+      "note": "Le texte mène « jusqu'au Petit Tribunal » — bâtisse basse, trois bancs, un hameau de ~20 feux autour. L'image montre une NEF D'ÉGLISE voûtée à bas-côtés, 20+ personnes sur cinq ou six rangs de stalles. Même salle et même échelle que le Petit Tribunal : trois rangs de bois brut pleins à craquer."
+    },
+    "puits-condamne": {
+      "v": "replace",
+      "note": "Le texte dit « condamné de frais : planches neuves, chaînes croisées, cadenas encore gras », blocs de meule PAR-DESSUS. L'image montre un puits OUVERT, gueule béante, corde et seau qui pendent dedans. Le scellement EST la scène (et sa mécanique chronométrée). ⚠️ Aussi hors DA : gravure en gris moyens, pas de contre-jour. ⚠️ Fausse signature cursive cuite en bas à droite."
+    },
+    "puits-condamne-2": {
+      "v": "replace",
+      "note": "Le texte dit que rien n'est encore sorti (« le cadenas saute sur son anneau », « les planches ONT BOUGÉ ») ; l'image montre le puits grand ouvert et les BRAS DÉJÀ DEHORS. Moins cher que regénérer : déplacer cette image sur l'issue d'EXPIRATION (les Mains du Puits), où « déjà dehors » est exactement juste, et produire pour ce beat une planche qui se soulève d'un doigt."
+    },
+    "la-descente": {
+      "v": "replace",
+      "note": "L'écran le plus rare du jeu (sortir vivant des Landes) montre `scene_landes_liaison_sud_c`, qui sert AUSSI de vue de marche à toute liaison offrant la Palissade : on y arrive sur une image anonyme déjà traversée deux ou trois fois. Seul asset dédié encore à produire de la zone ; prompt prêt dans data/images-a-produire.md."
+    },
+    "veilleur-1": {
+      "v": "replace",
+      "note": "Premier beat d'une rencontre à trois écrans AVEC UN PERSONNAGE, illustré par une icône d'OBJET (`objet_lanterne_rouillee_guerite`). `monstre_veilleur_palissade` n'a jamais été livré — c'est aussi le portrait qui manque au point d'intérêt « l'homme de la guérite »."
+    },
+    "palissade-sud": {
+      "v": "replace",
+      "note": "Dernier écran avant la sortie de zone : tout le contenu est dans le tiers haut, ~55 % du cadre est du noir pur. Le texte dit « des rondins plantés serrés, hauts de deux hommes » ; on lit une haie lointaine sur l'horizon."
+    },
+    "hameau-accueil-cloche": {
+      "v": "replace",
+      "note": "⚠️ Fausse signature cursive cuite dans le dithering (coin bas droit) — artefact de génération, visible en jeu."
+    },
+    "meute-grise-1": {
+      "v": "replace",
+      "note": "⚠️ Fausse signature cursive cuite dans le dithering (coin bas gauche). L'image elle-même est BONNE et le texte a été recalé sur elle (cinq bêtes de front, le cercle est hors champ) — seul l'artefact de signature est à corriger."
     }
   }
 }
