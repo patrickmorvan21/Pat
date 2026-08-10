@@ -1500,10 +1500,6 @@ export default function Scene() {
      * `visited` : une rencontre ne compte pas comme un lieu traversé.
      */
     toScene?: string;
-    /** Usure (chantier 1 du 23/07) : un échec dur hors combat COÛTE un jour — la
-        puce Jour (déjà bumpée) s'affiche mid-scène, coût visible et non un simple
-        texte. La valeur passée est le nouveau numéro de jour. */
-    usureDay?: number;
   }) {
     const nextStep = step + 1;
     // Popup « rangé dans le menu » (7/08, vaut aussi pour les OBJETS) : si
@@ -1917,16 +1913,6 @@ export default function Scene() {
     // La conséquence du jet précède la mise en place de la scène suivante.
     if (opts?.consequence) {
       entries.push({ id: nextId(), kind: "narration", text: opts.consequence });
-    }
-    // Usure (chantier 1 du 23/07) : un échec dur a coûté un jour — la puce Jour
-    // s'affiche ici, coût VISIBLE, juste après la conséquence de l'échec.
-    if (opts?.usureDay !== undefined) {
-      entries.push({ id: nextId(), kind: "day", day: opts.usureDay });
-      entries.push({
-        id: nextId(),
-        kind: "narration",
-        text: "La lande t'a pris un jour. La lumière a tourné sans que tu avances.",
-      });
     }
     // Récompense du Destin : bandeau « Obtenu » juste après la conséquence.
     if (opts?.destinItem) {
@@ -2601,6 +2587,22 @@ export default function Scene() {
       // l'information d'eux-mêmes, avant qu'on ait pu la demander.
       if (arrivalSavoir) run.savoirs = [...(run.savoirs ?? []), arrivalSavoir];
     });
+    // ⚠️ LES BESOINS SE LISENT AUSSI EN MARCHANT (relecture par agents,
+    // 10/08). `besoinsEchus` n'était appelé QUE dans le gestionnaire de repos :
+    // l'horloge du corps avançait bien tous les trois lieux, mais personne ne
+    // la lisait — un joueur qui ne prend jamais « Dormir » ne recevait donc
+    // JAMAIS d'état de besoin, quelle que soit sa marche. Le garde-fou était
+    // rétabli dans le compteur, pas dans la lecture.
+    if (horlogeApres !== null) {
+      for (const b of besoinsEchus(
+        horlogeApres,
+        runRef.current?.besoins ?? {},
+        idsEtats(faitsDe(runRef.current))
+      )) {
+        poserEtatRun(b.etat);
+      }
+      setEtatsIds(idsEtats(faitsDe(runRef.current)));
+    }
     if (arrivalSavoir) setSavoirs((s) => (s.includes(arrivalSavoir) ? s : [...s, arrivalSavoir]));
     if (arrivalDecouverte && poserDecouverte(arrivalDecouverte))
       setDecouvertes((xs) => [...xs, arrivalDecouverte]);
@@ -3540,7 +3542,6 @@ export default function Scene() {
             // Jour est le SCORE du Grand Registre : le donner en punition
             // récompense l'échec. Le temps passé par ce jet est compté comme
             // tout le reste — le lieu a été VÉCU, il entre dans `lieuxEngages`.
-            const usureDay = false;
             // Objet gagné par un choix d'examen réussi (grantsLoot, 23/07) :
             // l'objet se mérite — jamais accordé sur un palier d'échec.
             const chosen = scene.choices.find((c) => c.id === selectedId);
@@ -3595,7 +3596,6 @@ export default function Scene() {
               }
               // (miroir de rendu mis à jour après le persist, plus bas)
               run.health = Math.max(0, run.health - cost);
-              if (usureDay) run.day += 1;
               // AGUERRI seulement en COMBAT, et seulement quand la victoire
               // est PHYSIQUE (symétrique du correctif ENTAILLÉ/ÉBRANLÉ,
               // 8/08) : sa fiche dit « le combat t'a affûté » — un 20 naturel
@@ -3678,7 +3678,9 @@ export default function Scene() {
                 const dejaPaye = (chosen.soupcon ?? 0) > 0;
                 const vu = tier === "malediction" ? (dejaPaye ? 2 : 3) : hardFail ? (dejaPaye ? 1 : 2) : 1;
                 run.soupcon = Math.min(6, (run.soupcon ?? 0) + vu);
-                const t = temoinPour("echec-empathie");
+                // Un GESTE vu, pas une parole ratée : ces échecs sont tous
+                // d'exploration (10/08).
+                const t = temoinPour("echec-exploration");
                 if (t && !(run.temoins ?? []).some((x) => x.id === t.id))
                   run.temoins = [...(run.temoins ?? []), t];
               }
@@ -3793,7 +3795,6 @@ export default function Scene() {
             // (pose d'arrivée dans advance()).
             if ((run.soupcon ?? 0) >= 4 && dansLeVillage(scene.id)) poserEtatRun("fixe");
             setHealth(run.health);
-            if (usureDay) setDay(run.day);
             if (amorti) setRelicSpent(true);
 
             // Mort par fixation (chantier 3 du 23/07, validée) : un jet raté
@@ -3898,7 +3899,6 @@ export default function Scene() {
               consequence: prose,
               destinItem,
               grantedItem,
-              usureDay: usureDay ? run.day : undefined,
               toScene: chosen?.sortie?.toScene,
             });
           }}

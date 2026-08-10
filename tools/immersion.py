@@ -82,6 +82,13 @@ def classer(texte: str) -> set[str]:
 
 # ── extraction des pools et de leurs gardes réels ─────────────────────────────
 
+def empreinte(texte: str) -> str:
+    """Trois premiers mots significatifs — un identifiant de pool qui suit le
+    TEXTE et non son rang, pour que les exemptions ne se décalent jamais."""
+    mots = [m for m in re.findall(r"[a-zà-ÿ]{4,}", texte.lower())][:3]
+    return " ".join(mots) if mots else texte[:24]
+
+
 def chaines_de_tableau(bloc: str) -> list[str]:
     """Les chaînes d'un littéral TS, en recollant les concaténations `+`."""
     morceaux = re.findall(r'"((?:[^"\\]|\\.)*)"', bloc)
@@ -242,8 +249,33 @@ def pools() -> list[dict]:
                 if prof == 0:
                     fin = k
                     break
-        for i, t in enumerate(chaines_de_tableau(scene_src[k0:fin])):
-            out.append({"pool": f"sortie de zone {i + 1}", "garde": {"lande"}, "textes": [t]})
+        # ⚠️ NOMMER PAR LE CONTENU, JAMAIS PAR LE RANG (relecture par agents,
+        # 10/08). Ces pools s'appelaient « sortie de zone 1 / 2 » et leurs
+        # exemptions étaient indexées dessus : insérer un paragraphe en tête de
+        # `traceDeSortie` décalait tout, et les exemptions atterrissaient
+        # silencieusement sur les MAUVAIS textes — exemptant un vrai défaut et
+        # signalant un texte juste. Une empreinte de contenu suit le texte.
+        # ⚠️ N'AUDITER QUE LES ARGUMENTS DE `push(...)`, pas le corps entier
+        # (relecture par agents, 10/08). Le corps contient les comparaisons
+        # `ctx.serment === "jure"` : le collecteur de chaînes les recollait à
+        # la prose voisine et le garde auditait « jurePersonne ne t'a suivi… ».
+        # Sans effet sur la classification lexicale, mais un rapport illisible
+        # — et le jour où quelqu'un lit la sortie du garde pour arbitrer, il
+        # lit du texte corrompu.
+        corps = scene_src[k0:fin]
+        for m in re.finditer(r"push\(", corps):
+            pr, deb = 0, m.end() - 1
+            for k in range(deb, len(corps)):
+                if corps[k] == "(":
+                    pr += 1
+                elif corps[k] == ")":
+                    pr -= 1
+                    if pr == 0:
+                        for t in chaines_de_tableau(corps[deb : k + 1]):
+                            out.append(
+                                {"pool": f"sortie de zone ({empreinte(t)})", "garde": {"lande"}, "textes": [t]}
+                            )
+                        break
 
     # — LE GEÔLIER QUI COMPTE (10/08) : il parle de partout.
     sr = re.search(r"JAILER_SANS_RISQUE\s*=\s*((?:\s*\"(?:[^\"\\]|\\.)*\"\s*\+?)+)", scene_src)
@@ -433,11 +465,14 @@ EXEMPT: dict[str, str] = {
         "« à la vitesse d'un homme qui marche » est une COMPARAISON de "
         "vitesse, pas une présence — la chute (« rien ne marche nulle part ») "
         "fonctionne précisément parce qu'il n'y a personne.",
-    "sortie de zone 1":
+    # ⚠️ Clés NOMMÉES PAR LE CONTENU (empreinte des 3 premiers mots longs) et
+    # non par le rang : insérer un paragraphe dans `traceDeSortie` ne peut plus
+    # faire glisser une exemption sur le mauvais texte.
+    "sortie de zone (derrière très loin)":
         "Jouée à la DESCENTE, qui surplombe la zone qu'on vient de quitter : "
         "« le chemin du hameau » y est un souvenir de traversée, pas un décor "
         "présent. Le héros regarde en arrière — c'est le sujet même de l'écran.",
-    "sortie de zone 2":
+    "sortie de zone (personne suivi jusqu)":
         "Même écran, même raison : la grange et la barre posée dehors sont ce "
         "qu'on LAISSE derrière soi. ⚠️ Ces deux exemptions n'existaient pas "
         "avant le 10/08 parce que le garde n'extrayait pas ce pool (il "

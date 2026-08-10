@@ -1224,3 +1224,30 @@ de l'autre côté du portillon.
 - **femme-savoir-1..3** et **veuve-cordes-sait-1..3** (variantes « le village
   parle un cran plus fort ») réutilisent volontairement les visuels de la
   version normale : même rencontre, mêmes lieux — aucun asset requis.
+
+---
+
+## PRIORITÉ 2 — `objet_larme_du_geolier` (relecture du 10/08)
+
+**Pourquoi** : c'est la SEULE récompense légendaire du jeu (Destin, +2 à tous
+les jets). Aucune des trente icônes d'objet ne montre une larme, donc elle
+retombe sur `objet_grimoire` — un grimoire à la place d'une larme, au moment
+le plus rare d'une partie. Le repli générique a été laissé volontairement :
+forcer un mauvais appariement serait pire.
+
+**Fichier attendu** : `objet_larme_du_geolier_a.png`
+
+**Prompt** (recette icône d'objet : fond noir, sujet centré, une seule source
+de lumière rasante, silhouette lisible en très petit) :
+
+> A single heavy dark droplet resting on bare black stone, seen close and from
+> slightly above. The droplet is dense and glassy, catching one narrow band of
+> low warm light along its curve; a faint ring of moisture has already dried
+> around its base, leaving a pale halo on the stone. Nothing else in frame — no
+> hand, no face, no vessel. Deep black background falling off to nothing at the
+> edges. Stark chiaroscuro, single raking light source from the left, heavy
+> grain, high contrast woodcut feel.
+
+⚠️ Ne rien montrer du Geôlier lui-même (garde-fou §8 : jamais de visage, jamais
+de membres). La larme existe, lui reste hors champ — c'est tout le sens de
+l'objet (« Il jure qu'il ne pleure pas »).

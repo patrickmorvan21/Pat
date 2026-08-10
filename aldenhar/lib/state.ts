@@ -377,6 +377,10 @@ export type RunState = {
   /** Croisées jouées depuis la dernière route forcée par le directeur. */
   croiseesDepuisRoute?: number;
   /** Rencontres programmées par un effet (recouvrement de dette…). */
+  /** ⚠️ DÉCLARÉ, PERSISTÉ, JAMAIS LU (relecture par agents, 10/08). Il voyage
+      dans chaque sauvegarde sans rien faire. Conservé parce que le champ est
+      inoffensif et que le système de rencontres différées reste au programme —
+      mais tant qu'aucun code ne le lit, ne pas le croire actif. */
   rencontresDues?: { scene: string; auPas: number }[];
   /**
    * L'ÉLÉMENT-SURPRISE de cette run (catalogue 6/08) — AU PLUS UN, armé au

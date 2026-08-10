@@ -143,6 +143,21 @@ export const TEMOINS: Record<string, Omit<Temoin, "id">> = {
     deposition: "Il a essayé de se faire comprendre. Ce qui est sorti n'était pas de chez nous.",
     lieu: "au Hameau des Renonçants",
   },
+  /**
+   * ⚠️ UNE DÉPOSITION DIT CE QU'ON A VU (relecture par agents, 10/08).
+   * Les échecs `vuSiEchec` sont tous d'EXPLORATION — fouiller sous un autel,
+   * gratter une craie, prendre une corde — et empruntaient la déposition de
+   * l'échec social : au procès, le hameau accusait d'avoir mal parlé un héros
+   * qui n'avait pas ouvert la bouche. Le témoin d'un geste est celui qui a vu
+   * le geste.
+   */
+  "echec-exploration": {
+    nom: "La Doyenne",
+    deposition:
+      "Il touchait à ce qui ne se touche pas. Il croyait que personne ne " +
+      "regardait — mais on regarde toujours, ici.",
+    lieu: "au Hameau des Renonçants",
+  },
 };
 
 /** La fiche d'un témoin, prête à inscrire. */

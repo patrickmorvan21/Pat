@@ -106,8 +106,17 @@ const SOINS_MINEURS: Omit<BesaceItem, "id">[] = [
     mélange d'actifs (soins puissants) et de passifs (babioles / armes). */
 const RECOMPENSES_DESTIN: Omit<BesaceItem, "id">[] = [
   { name: "Amulette d'os verdi", illustration: "assets/objet_dent_meute_d.png", rarity: "rare", kind: "babiole", slot: "passif", passiveMod: 1, passiveScope: "all", flavor: "Elle vibre quand on la regarde trop longtemps — et le hasard te sourit un peu plus." },
-  { name: "Lame de lanterne", rarity: "rare", kind: "arme", slot: "passif", passiveMod: 1, passiveScope: "combat", flavor: "Forgée dans le métal d'une lanterne verte. Elle ne vacille jamais." },
+  // ⚠️ Sans `illustration`, le repli par `kind` servait `objet_dague_os` — une
+  // dague en OS pour une lame « forgée dans le MÉTAL d'une lanterne » (relecture
+  // par agents, 10/08). Et c'est une récompense de Destin : le moment le plus
+  // rare du jeu s'illustrait d'un objet qui n'est pas celui qu'on vient de gagner.
+  { name: "Lame de lanterne", illustration: "assets/objet_dague_cendres_c.png", rarity: "rare", kind: "arme", slot: "passif", passiveMod: 1, passiveScope: "combat", flavor: "Forgée dans le métal d'une lanterne verte. Elle ne vacille jamais." },
   { name: "Élixir du campement perdu", rarity: "rare", kind: "soin", slot: "actif", heal: 0.5, cure: true, flavor: "Quelqu'un l'a brassé pour un repos qui n'est jamais venu." },
+  // ⚠️ SANS ICÔNE PROPRE, et volontairement laissée au repli : aucune des 30
+  // icônes d'objet ne montre une larme, et le repli actuel (`objet_grimoire`)
+  // est faux — mais forcer un mauvais appariement serait pire que le repli
+  // générique. Prompt écrit dans `data/images-a-produire.md`. C'est la seule
+  // récompense LÉGENDAIRE du jeu : elle mérite son image.
   { name: "Larme du Geôlier", rarity: "legendaire", kind: "babiole", slot: "passif", passiveMod: 2, passiveScope: "all", flavor: "Il jure qu'il ne pleure pas. Elle existe pourtant — et te protège de justesse." },
   { name: "Clef sans porte", illustration: "assets/objet_cle_maison_muree_a.png", rarity: "legendaire", kind: "babiole", slot: "passif", passiveMod: 1, passiveScope: "all", flavor: "Toutes les serrures la craignent un peu." },
 ];
@@ -252,19 +261,12 @@ export function landesLootSlot(id: string): BesaceSlot | null {
   return LANDES_OBJETS[id]?.slot ?? null;
 }
 
-/**
- * Tirage Destin (~75% rare / 25% légendaire).
- * `allowArme` (retour Patrick 14/07) : une ARME n'a de sens que si le héros a
- * réellement croisé le fer — fuir un Rôdeur avec un 20 ne forge pas de lame.
- * Hors engagement, le Destin offre babioles ou soins, jamais une arme.
- */
-export function randomRecompenseDestin(allowArme: boolean): BesaceItem {
-  const eligible = RECOMPENSES_DESTIN.filter((r) => allowArme || r.kind !== "arme");
-  const rares = eligible.filter((r) => r.rarity === "rare");
-  const legendaires = eligible.filter((r) => r.rarity === "legendaire");
-  const pool = Math.random() < 0.75 && rares.length > 0 ? rares : legendaires;
-  return withId(pool[Math.floor(Math.random() * pool.length)]);
-}
+/* ⚠️ `randomRecompenseDestin` a été SUPPRIMÉE le 10/08 (relecture par agents).
+   C'était la version SANS contrôle de place, remplacée par
+   `recompenseDestinQuiTient` juste dessous — mais elle survivait à côté de son
+   remplaçante, exportée : le prochain à l'importer aurait silencieusement
+   réintroduit l'objet fantôme (bandeau « Obtenu » pour un objet qui n'entre
+   nulle part) que le panel avait mesuré sur 54 tirages sur 200. */
 
 /**
  * LE DESTIN DONNE TOUJOURS QUELQUE CHOSE (panel 10/08).

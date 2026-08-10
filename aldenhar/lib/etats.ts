@@ -19,7 +19,9 @@
  *   • COUVERTURE MINIMALE, sans quoi un état n'est pas livrable : 1 manière de
  *     l'obtenir · 1 manifestation immédiate · 2 réactions du monde · 1 choix
  *     modifié · 1 manière de le perdre. Chaque entrée ci-dessous la remplit,
- *     et `auditEtats()` le vérifie par script.
+ *     et `auditEtats()` le vérifie par script — réellement, depuis le
+ *     10/08 : `tools/etats.mjs` l'exécute à chaque build (`prebuild`). Avant
+ *     cette date la phrase était fausse, personne n'appelait la fonction.
  */
 
 import type { Effet } from "@/lib/faits";
@@ -362,10 +364,17 @@ export function auditEtats(): { id: string; manques: string[] }[] {
     if (!e.manifestation) manques.push("manifestation");
     if (e.reactions.length < 2) manques.push("2 réactions du monde");
     if (!e.remede || !e.guerison) manques.push("remède");
-    const modifieUnChoix =
+    // ⚠️ CETTE LISTE DOIT SUIVRE LE TYPE `Etat` (relecture par agents, 10/08).
+    // Elle avait pris du retard sur lui : `rouvreLaRoute` et `fuitLeCombat`
+    // (le Gamin des Murets) manquaient, et l'audit déclarait donc incomplet un
+    // état parfaitement intégré. Personne ne s'en apercevait puisque aucun
+    // script n'appelait `auditEtats` — voir `tools/etats.mjs`, qui le fait
+    // désormais à chaque build. Tout nouvel effet mécanique s'ajoute ICI.
+    const modifieLeJeu =
       e.cacheFuite || e.ouvreVol || e.ouvreConfidences || e.soupconDouble ||
+      e.rouvreLaRoute || e.fuitLeCombat ||
       e.seuilTous !== undefined || e.jets !== undefined || e.lignesIntruses !== undefined;
-    if (!modifieUnChoix) manques.push("1 choix ou jet modifié");
+    if (!modifieLeJeu) manques.push("1 effet mécanique (choix, jet ou monde)");
     return { id: e.id, manques };
   }).filter((r) => r.manques.length > 0);
 }

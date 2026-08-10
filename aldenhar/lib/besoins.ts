@@ -92,6 +92,10 @@ export function besoin(id: BesoinId): Besoin | null {
 }
 
 /** Le besoin dont cet état est le symptôme — sert au directeur de routes. */
+/* Jamais appelée à ce jour (relecture 10/08). Gardée parce qu'elle est la
+   réciproque exacte de `PAR_ETAT` et qu'un écran d'état qui voudrait dire
+   « cet état vient d'un besoin » en aura besoin — mais elle est signalée
+   ici pour qu'on ne la croie pas branchée. */
 export function besoinDeLEtat(etatId: string): Besoin | null {
   return PAR_ETAT.get(etatId) ?? null;
 }

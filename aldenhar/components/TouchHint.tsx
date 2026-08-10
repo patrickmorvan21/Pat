@@ -28,10 +28,17 @@ export default function TouchHint({
       que forké inline (relecture du 10/08 : une copie inline échappe à la spec
       verrouillée et diverge au premier correctif). */
   libelle?: string;
-  /** Remontée exceptionnelle, en px depuis le bas. UNIQUEMENT pour la séquence
-      de mort, dont les flammes montent maintenant à ~175 px : à 50 px la
-      phrase serait mangée par le feu. Partout ailleurs, la règle globale des
-      50 px s'applique — ne pas s'en servir pour arranger une mise en page. */
+  /** Remontée en px depuis le bas. Le défaut est 50 px : c'est LA règle, et
+      elle vaut pour tous les écrans pleins (intro, acte, prologue).
+      ⚠️ La consigne « UNIQUEMENT pour la séquence de mort » qui figurait ici
+      était morte : `Scene.tsx` s'en sert depuis les micro-beats, où la barre
+      de choix occupe le bas de l'écran. Une règle qu'on lit et qu'on enfreint
+      dans le même dépôt n'apprend plus rien à personne — voici la vraie.
+      Deux dérogations légitimes, et deux seulement :
+        • séquence de mort — les flammes montent à ~175 px (HINT_BAS) ;
+        • écran de jeu en séquence — 14 px, sous la zone de texte.
+      Pour tout le reste, laisser le défaut : la position du hint est un
+      repère que le joueur apprend, pas un réglage de mise en page. */
   bottom?: number;
 }) {
   return (

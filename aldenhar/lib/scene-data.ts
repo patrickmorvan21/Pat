@@ -3117,7 +3117,7 @@ export const SCENES: Scene[] = [
       // plus supposer le barrage des trois hommes. D'où le raccord par le
       // lieu — quel que soit l'accueil, tout finit au muret, devant le vieux.
       "Au bout de la rue, un muret bas ferme le village côté sud. Le vieux y " +
-        "est assis, sec comme un piquet, les coudes sur les genoux. Il " +
+        "est assis, large, les coudes sur les genoux. Il " +
         "t'attendait là depuis le début.",
       "Il tend la main, paume ouverte. Pas pour serrer la tienne — pour " +
         "que tu la regardes. Elle est vide. C'est le geste d'ici : on jure sur " +
@@ -3784,8 +3784,14 @@ export const SCENES: Scene[] = [
     chainNext: "tour-de-guet-2",
     narration: [
       "La tour n'a plus de sommet. Elle s'arrête net à mi-hauteur, sur une " +
-        "bouche de pierres arrachées, et le reste est en tas autour du pied — " +
-        "pas éboulé, EMPILÉ. Quelqu'un a rangé les décombres.",
+        // ⚠️ ALIGNÉ SUR L'IMAGE (relecture par agents, 10/08) : elle montre un
+        // éboulis informe, et le texte affirmait exactement le contraire
+        // (« pas éboulé, EMPILÉ »). Ce que l'image porte, en revanche, c'est
+        // le monticule où le Guetteur se tient à l'écran suivant : le détail
+        // de caractère survit, l'affirmation invérifiable disparaît.
+        "bouche de pierres arrachées, et le reste s'est répandu autour du " +
+        "pied. Un seul endroit fait exception : quelques blocs posés les uns " +
+        "sur les autres, à hauteur de siège, usés par-dessus.",
       "L'escalier intérieur tient encore sur trois volées. Au-delà, il monte " +
         "vers rien.",
     ],
