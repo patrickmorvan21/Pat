@@ -4500,7 +4500,8 @@
      "id": "repartir",
      "label": "Repartir sans s'attarder",
      "type": "suite",
-     "sortie": {}
+     "sortie": {},
+     "sansNuit": true
     }
    ],
    "pointsInteret": [],
@@ -4707,7 +4708,8 @@
     {
      "id": "fille-repartir",
      "label": "Repartir sans s’attarder",
-     "type": "suite"
+     "type": "suite",
+     "sansNuit": true
     }
    ],
    "pointsInteret": [],
