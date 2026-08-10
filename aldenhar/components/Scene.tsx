@@ -554,7 +554,18 @@ const VERROU_DUR = "La Descente ne s'ouvre pas encore. Ce n'est pas une question
 const MOTS_PAR_ECRAN = 90;
 function decouperEnEcrans(entries: FeedEntry[]): FeedEntry[][] {
   const texte = (e: FeedEntry) =>
-    e.kind === "narration" || e.kind === "jailer" ? (e as { text: string }).text.split(/\s+/).length : 0;
+    e.kind === "narration"
+      ? (e as { text: string }).text.split(/\s+/).length
+      : e.kind === "jailer"
+        // LE BANDEAU DU GEÔLIER PÈSE PLUS QUE SES MOTS (panel 10/08).
+        // Mesuré : sur un écran court, le bandeau (111 px de chrome, portrait
+        // compris) était POUSSÉ HORS DE LA ZONE par le suivi du bas de texte —
+        // 19 px visibles sur 111 à 640 px de haut, 61 sur 111 à 700. Ce n'est
+        // pas une compression, c'est un débordement : le personnage central du
+        // jeu parlait au-dessus de la ligne de flottaison. Compté à ses mots
+        // + le chrome, il obtient son écran au lieu d'être coupé.
+        ? (e as { text: string }).text.split(/\s+/).length + 40
+        : 0;
   const groupes: FeedEntry[][] = [];
   let cur: FeedEntry[] = [];
   let mots = 0;
@@ -1154,13 +1165,20 @@ export default function Scene() {
         mutateMemory((m) => { m.surprises = { derniereRun: m.runsStarted }; });
       }
       restored.push(...cur.narration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
-      setBeats(restored);
+      // ⚠️ LA REPRISE PASSE AUSSI PAR LE DÉCOUPAGE (panel 10/08). Elle posait
+      // la scène entière d'un bloc, sans passer par `decouperEnEcrans` : sur
+      // un écran court, un bandeau du Geôlier suivi de sa narration débordait
+      // la zone et le bandeau se retrouvait au-dessus de la ligne de
+      // flottaison (mesuré : 19 px visibles sur 111 à 640 px de haut). Tout
+      // reste marqué « déjà lu » — on ne réanime rien, on pagine.
+      const groupesReprise = decouperEnEcrans(restored);
+      setBeats(groupesReprise[0]);
       // Déjà lu : tout est révélé d'emblée (affichage instantané), CTA visibles.
       markRevealed(restored.map((e) => e.id));
-      setChoicesHidden(false);
-      setBeatsSuite([]);
-      run.feed = restored;
-      run.feedSuite = [];
+      setChoicesHidden(groupesReprise.length > 1);
+      setBeatsSuite(groupesReprise.slice(1));
+      run.feed = groupesReprise[0];
+      run.feedSuite = groupesReprise.slice(1);
       saveRun(run);
     } else {
       // Run neuve : inscrite dans la mémoire du joueur (§17).
@@ -3326,6 +3344,22 @@ export default function Scene() {
           <TouchHint bottom={14} />
         )}
 
+        {/* PENDANT LA FRAPPE (panel 10/08) : la narration se tape à 15 ms par
+            caractère et les CTA sont retirés du flux — soit jusqu'à cinq
+            secondes d'écran sans un seul bouton, environ trois minutes par
+            vie. Le tap révélait déjà tout d'un coup ; rien ne le disait. Le
+            libellé diffère de « continuer » à dessein : ici le geste
+            n'avance pas, il accélère. */}
+        {activeTypingId && !rolling && (
+          <p
+            className="touch-hint pointer-events-none absolute inset-x-0 text-center font-mono text-[10px] tracking-[2px] text-[var(--color-ink)] opacity-50"
+            style={{ bottom: 14 }}
+            aria-hidden
+          >
+            Touche pour tout afficher
+          </p>
+        )}
+
         {/* CTA ancrés en bas (fixes), masqués tant que le texte n'est pas
             entièrement écrit — puis fondu. Pendant le lancer, ils ne captent
             plus les événements (sinon un bouton avale la saisie du dé). */}
@@ -3921,7 +3955,14 @@ function FeedItem({
     case "jailer":
       return (
         <div
-          className={`scene-enter jailer-banner mx-[-17px] mb-[18px] mt-[15px] relative flex min-h-[87px] items-center overflow-hidden bg-[var(--color-accent)] pl-[122px] pr-[20px] py-[16px] ${
+          // `shrink-0` : le bandeau est un enfant de la zone de texte, elle-même
+          // en flex-column contrainte. À trois boutons il tenait ses 87 px ;
+          // dès qu'« Observer les alentours » en affichait cinq, la zone se
+          // resserrait et il tombait à une ligne, puis tranchait la narration
+          // en plein mot (panel 10/08, captures à l'appui). Un `min-height` ne
+          // suffit pas ici : c'est la compression du conteneur qu'il faut
+          // refuser. C'est le TEXTE qui défile, jamais le Geôlier qu'on rogne.
+          className={`scene-enter jailer-banner mx-[-17px] mb-[18px] mt-[15px] relative flex min-h-[87px] shrink-0 items-center overflow-hidden bg-[var(--color-accent)] pl-[122px] pr-[20px] py-[16px] ${
             typed ? "jailer-speaking" : ""
           }`}
         >

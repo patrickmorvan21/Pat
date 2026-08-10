@@ -66,23 +66,59 @@ const PORTRAIT_FRAGILE: Record<StatKey, string> = {
 };
 
 /**
- * Les deux lignes du portrait, depuis le verdict rendu.
- * Ex-æquo : la dominante prend la PREMIÈRE stat au max dans l'ordre du Seuil
- * (Courage→Ruse→Instinct→Empathie), la fragile prend la DERNIÈRE au min —
- * déterministe, et jamais la même stat des deux côtés.
+ * LE PROFIL PLAT A DROIT À SON PORTRAIT (panel 10/08).
+ *
+ * Un héros qui s'est dérobé aux quatre souvenirs s'entendait dire « Tu
+ * avances avant de comprendre. Le danger t'a toujours moins arrêté que le
+ * doute. » — l'inverse exact de ce qu'il venait de jouer. Cause : la
+ * dominante était initialisée sur la PREMIÈRE stat de l'ordre (Courage) et
+ * ne bougeait que sur un `>` strict, donc un profil sans relief laissait
+ * toujours Courage en tête. C'est le moment le plus identitaire du jeu.
+ *
+ * Deux réparations. (1) Quand rien ne dépasse — écart max de 1 sur les
+ * quatre — le portrait ne DÉSIGNE plus de dominante : il dit le profil plat,
+ * qui est un caractère à part entière, et le Geôlier n'a aucune raison de
+ * flatter. (2) Sinon les ex-æquo se départagent sur les CHOIX réels du Seuil
+ * (l'engagement A/B/C avant le jet silencieux) : c'est ce que le joueur a
+ * fait qui tranche, jamais l'ordre de déclaration des stats.
  */
-export function portraitDuSeuil(stats: RunStats): string {
+const PORTRAIT_PLAT =
+  "Rien ne dépasse chez toi. Ni élan, ni ruse, ni flair, ni chaleur — tu as " +
+  "traversé ta vie d'avant en gardant les mains dans les poches.\nCe n'est " +
+  "pas un défaut. C'est juste que le dé n'aura rien à corriger, et rien à " +
+  "aider non plus.";
+
+export function portraitDuSeuil(
+  stats: RunStats,
+  /** Engagement réel au Seuil : bonus 3/2/1 par stat, avant le jet silencieux.
+      Départage les ex-æquo. Absent (vieilles sauvegardes) → ordre du Seuil. */
+  engagement?: Partial<Record<StatKey, number>>
+): string {
+  const vals = PROLOGUE_STAT_ORDER.map((k) => stats[k]);
+  if (Math.max(...vals) - Math.min(...vals) <= 1) return PORTRAIT_PLAT;
+  const poids = (k: StatKey) => stats[k] * 10 + (engagement?.[k] ?? 0);
   let dominante: StatKey = PROLOGUE_STAT_ORDER[0];
   let fragile: StatKey = PROLOGUE_STAT_ORDER[0];
   for (const k of PROLOGUE_STAT_ORDER) {
-    if (stats[k] > stats[dominante]) dominante = k;
-    if (stats[k] <= stats[fragile]) fragile = k;
+    if (poids(k) > poids(dominante)) dominante = k;
+    if (poids(k) < poids(fragile)) fragile = k;
   }
   if (fragile === dominante) {
-    // Profil plat (possible après le jet silencieux) : on prend la suivante.
     fragile = PROLOGUE_STAT_ORDER.find((k) => k !== dominante) ?? fragile;
   }
   return `${PORTRAIT_DOMINANTE[dominante]}\n${PORTRAIT_FRAGILE[fragile]}`;
+}
+
+/** L'engagement brut du Seuil (3 = direct, 2 = mesuré, 1 = retrait). */
+export function engagementDuSeuil(
+  memories: { stat: StatKey }[],
+  choices: number[]
+): Partial<Record<StatKey, number>> {
+  const out: Partial<Record<StatKey, number>> = {};
+  memories.forEach((m, i) => {
+    out[m.stat] = (out[m.stat] ?? 0) + ([3, 2, 1][choices[i] ?? 2] ?? 1);
+  });
+  return out;
 }
 
 export const MEMORY_POOL: Record<StatKey, MemoryEntry[]> = {

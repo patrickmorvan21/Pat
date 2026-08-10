@@ -5,7 +5,7 @@ import FitLabel from "@/components/FitLabel";
 import { HeroGeolier } from "@/components/HeroGeolier";
 import TouchHint from "@/components/TouchHint";
 import TypedText from "@/components/TypedText";
-import { computeVerdict, portraitDuSeuil, PROLOGUE_AMORCE, PROLOGUE_CLOTURE } from "@/lib/prologue-data";
+import { computeVerdict, engagementDuSeuil, portraitDuSeuil, PROLOGUE_AMORCE, PROLOGUE_CLOTURE } from "@/lib/prologue-data";
 import { loadRun, saveRun, type PrologueMemory, type RunState } from "@/lib/state";
 import { playMusic } from "@/lib/audio";
 import { assetUrl } from "@/lib/assets";
@@ -261,7 +261,13 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
         r.prologue.verdictRendu = true;
       });
     }
-    setPortrait(portraitDuSeuil((runRef.current ?? loadRun()).stats));
+    // Le portrait se départage sur l'ENGAGEMENT réel du Seuil, pas sur
+    // l'ordre de déclaration des stats (panel 10/08 : « courageux » servi à
+    // qui s'était dérobé quatre fois).
+    const r0 = runRef.current ?? loadRun();
+    setPortrait(
+      portraitDuSeuil(r0.stats, engagementDuSeuil(r0.prologue.memories, r0.prologue.choices))
+    );
   }, [isCloture]);
 
   /** Clôture → « Touche pour commencer » (retour Patrick 7/08, maquette
