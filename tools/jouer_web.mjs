@@ -62,6 +62,18 @@ page.on("requestfailed", (r) => {
 
 const sauve = etatSauve();
 await page.addInitScript((s) => {
+  // ⚠️ CE SCRIPT SE REJOUE À CHAQUE NAVIGATION, y compris quand le JEU
+  // lui-même recharge la page (la fin de la séquence de mort le fait). Sans
+  // garde, on réinjecte alors l'instantané pris AVANT la commande et on
+  // efface ce que le jeu vient d'écrire — la mort semble annulée, le
+  // compteur semble figé. Un testeur du panel du 10/08 a porté cette
+  // accusation contre le jeu avant de prouver qu'elle visait cet outil ; le
+  // piège était pourtant déjà documenté le 8/08.
+  // La garde vit dans sessionStorage : elle survit aux rechargements de la
+  // page, et meurt avec le contexte du navigateur, donc la commande suivante
+  // restaure bien son propre état.
+  if (sessionStorage.getItem("__pilote_pose")) return;
+  sessionStorage.setItem("__pilote_pose", "1");
   localStorage.clear();
   for (const [k, v] of Object.entries(s)) if (v != null) localStorage.setItem(k, v);
   // Le geste du dé demande une vraie vélocité : le mode testeur accepte un tap.
