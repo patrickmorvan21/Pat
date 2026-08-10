@@ -103,7 +103,7 @@ def main() -> int:
                 # ⚠️ Liste BLANCHE : un champ neuf de `Scene` ne voyage pas tant
                 # qu'il n'est pas nommé ici. `sejour` l'a appris à ses dépens —
                 # la réplique laissait quitter la Palissade au premier geste.
-                "sejour",
+                "sejour", "narrationEchec",
             )
             if k in s
         }

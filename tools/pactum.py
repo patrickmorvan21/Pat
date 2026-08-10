@@ -190,7 +190,11 @@ class Partie:
                 self.d["hameauEntree"] = True
         if s.get("combat"):
             self.dit("• RENCONTRE • " + (s.get("adversaireNom") or s.get("nom") or ""), "rencontre")
-        for p in s.get("narration", []):
+        # L'AIGUILLAGE (9/08) : la scène chaînée lit le dé qui l'a précédée.
+        # `dernierRate` est posé à la résolution ; on le CONSOMME ici pour que
+        # l'écran suivant (une liaison, une arrivée) reparte à neuf.
+        rate = self.d.pop("dernierRate", False)
+        for p in (s.get("narrationEchec") if rate and s.get("narrationEchec") else s.get("narration", [])):
             self.dit(p, "narration")
         if s.get("registre"):
             self.dit(
@@ -447,6 +451,7 @@ class Partie:
         if self.d["sante"] <= 0:
             self.mourir(texte)
             return
+        self.d["dernierRate"] = rate
         self.suite(c)
 
     def suite(self, choix: dict | None = None) -> None:

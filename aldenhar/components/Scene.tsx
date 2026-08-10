@@ -1866,9 +1866,16 @@ export default function Scene() {
       const t = temoinsUniques(runRef.current?.temoins ?? []);
       return bailloner ? t.slice(1) : t;
     })();
+    // L'AIGUILLAGE (panel 9/08) : la scène qui suit LIT le dé qui la précède.
+    // Deux versions au plus — tenu / pas tenu. Sans version d'échec, la scène
+    // se lit dans les deux cas (vérifié texte par texte, pas supposé).
+    const narrationDeScene =
+      opts?.fail && nextScene.narrationEchec?.length
+        ? nextScene.narrationEchec
+        : nextScene.narration;
     const narrationLines = nextScene.fixationTrial
       ? [
-          nextScene.narration[0],
+          narrationDeScene[0],
           ...(bailloner
             ? [
                 "Un nom manque à l'appel. On le cherche du regard sur les bancs, " +
@@ -1889,9 +1896,9 @@ export default function Scene() {
           ...(temoinEntrevu && (runRef.current?.journalChoix?.length ?? 0) >= 3
             ? texteTemoinRecite((runRef.current?.journalChoix ?? []).slice(-3).map((j) => j.t))
             : []),
-          ...nextScene.narration.slice(1),
+          ...narrationDeScene.slice(1),
         ]
-      : nextScene.narration;
+      : narrationDeScene;
     entries.push(...narrationLines.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
     // L'écho d'un objet-promesse (voir ECHOS_OBJET) : ce que tu portes te
     // rattrape là où ça compte, une fois par scène et par objet.

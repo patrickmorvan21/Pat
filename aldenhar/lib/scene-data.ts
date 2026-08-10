@@ -441,6 +441,24 @@ export type Scene = {
    * on n'arrive pas deux fois au même endroit.
    */
   sejour?: boolean;
+  /**
+   * L'AIGUILLAGE (panel du 9/08, chantier n°1 — 7 voix sur 10, trouvé
+   * séparément par quatre agents). Une scène chaînée n'avait qu'UNE narration :
+   * le Guetteur disait « Tu as vu là-haut » à qui venait de tomber de la tour,
+   * et la Meute « Ils ont compris que tu mords aussi » à qui venait de se faire
+   * mordre. Le texte contredisait le dé une fois sur six écrans.
+   *
+   * `narrationEchec` est la version servie quand le jet qui a mené ici a RATÉ.
+   * Deux versions, pas quatre : le palier qui casse la fiction est binaire —
+   * « de justesse » se lit correctement des deux côtés, et quatre versions
+   * coûteraient un budget ×4 sur la couche d'ambiance, prélevé sur celle qui
+   * manque. Absent = la scène se lit bien dans les deux cas (22 des 31 scènes
+   * chaînées sont dans ce cas, vérifiées une par une).
+   *
+   * ⚠️ Ce n'est PAS un état : rien n'est mémorisé. C'est l'issue du jet
+   * immédiatement précédent, et elle ne vaut que pour cet écran-là.
+   */
+  narrationEchec?: string[];
   /** Scène de liaison (spec 21/07) : marche + choix d'orientation, générée. */
   liaison?: boolean;
   /**
@@ -1641,6 +1659,14 @@ export const SCENES: Scene[] = [
         "qu\u2019on n\u2019en lise pas le nom.",
       "« Va-t\u2019en. Reviens quand t\u2019auras une date à me donner. »",
     ],
+    narrationEchec: [
+      "Il est déjà au bout de la rangée quand tu le rejoins, et il ne " +
+        "lève pas la tête de son écriteau. La gouge mord le bois par petits " +
+        "coups réguliers, exactement à la même profondeur.",
+      "« Non. » Il n\u2019a pas attendu que tu redemandes. « Y a des " +
+        "trous que je creuse et des trous que je creuse pas, et le mien est " +
+        "déjà commencé quelque part. Va-t\u2019en. »",
+    ],
     choices: [
       { id: "fossoyeur-partir", label: "Le laisser à ses rangées" },
       {
@@ -2072,6 +2098,20 @@ export const SCENES: Scene[] = [
         "partir : j\u2019ai plus l\u2019âge, et j\u2019ai plus le courage. Mais " +
         "toi tu peux encore. Alors pars avant qu\u2019ils te comptent. »",
     ],
+    narrationEchec: [
+      "Les volets se referment un par un, sans hâte, comme on tire un " +
+        "drap sur une chose qu\u2019on a fini de regarder. Elle attend " +
+        "qu\u2019il n\u2019en reste plus un seul.",
+      "« Voilà. C\u2019est fait. » Elle se rassoit, face au sud, les " +
+        "mains à plat sur les genoux. « Maintenant on est deux à avoir " +
+        "parlé trop fort. Sauf que moi j\u2019ai quarante ans " +
+        "d\u2019avance, et plus rien à perdre. »",
+      "Elle ne dira pas ce qu\u2019elle a vu. Tu sais seulement " +
+        "qu\u2019elle l\u2019a vu, et qu\u2019elle le sait depuis " +
+        "longtemps.",
+      "« Va-t\u2019en. Et marche comme quelqu\u2019un qui n\u2019a rien " +
+        "demandé. »",
+    ],
     choices: [
       { id: "femme-savoir-partir", label: "Redescendre la rue" },
       {
@@ -2419,6 +2459,17 @@ export const SCENES: Scene[] = [
         "l\u2019ordre. « Si tu la vois, dis-lui merci pour le caillou. " +
         "J\u2019ai oublié la dernière fois. »",
     ],
+    narrationEchec: [
+      "Il ne redescend pas du muret. Il reste debout dessus, plus haut " +
+        "que toi, ses cailloux serrés dans le pan de sa chemise, et il te " +
+        "regarde comme on regarde une chose qu\u2019on va décrire à " +
+        "quelqu\u2019un d\u2019autre tout à l\u2019heure.",
+      "« Ma mère dit que j\u2019invente. » Un temps. « Elle a peut-être " +
+        "raison. »",
+      "Il part le long de la pierre sèche, sans se retourner, du pas de " +
+        "quelqu\u2019un qui connaît chaque creux. Tu n\u2019as pas le " +
+        "caillou. Tu n\u2019as que sa direction.",
+    ],
     choices: [
       {
         id: "gamin-promettre",
@@ -2454,6 +2505,14 @@ export const SCENES: Scene[] = [
         "on ne voit pas qu'elle a parlé à quelqu'un. On ne voit qu'une femme " +
         "qui regarde le sud.",
       "Ce que tu emportes ne pèse rien. C'est la promesse qui pèse.",
+    ],
+    narrationEchec: [
+      "Elle a déjà repris sa place sur le seuil quand tu repars. De la " +
+        "rue, on ne voit pas qu\u2019elle a parlé à quelqu\u2019un. On ne " +
+        "voit qu\u2019une femme qui regarde le sud.",
+      "Tu n\u2019emportes rien. C\u2019est plus léger, et c\u2019est pire " +
+        ": il n\u2019y a personne à qui rendre ce que tu n\u2019as pas " +
+        "pris.",
     ],
     choices: [{ id: "femme-repartir", label: "Redescendre la rue" }],
     jailerLine: "Elle reprendra sa faction demain, et après-demain. La constance, chez vous, c'est presque une maladie.",
@@ -3714,6 +3773,17 @@ export const SCENES: Scene[] = [
       "— « Tu as vu là-haut. » Ce n'est pas une question. « Alors tu as vu ce " +
         "qu'on surveillait. »",
     ],
+    // Le cas emblématique du panel : « Tu as vu là-haut » tombait aussi sur
+    // qui venait de dévaler la volée — et même sur qui avait refusé de monter.
+    narrationEchec: [
+      "Il est assis sur le tas de pierres, dos à toi, et il regarde le sud " +
+        "par-dessus le hameau. Un vieux manteau de guet, la corne au côté. " +
+        "Il t'a entendu arriver de loin, et de la mauvaise manière.",
+      "— « Tu n'es pas monté. » Ce n'est pas un reproche : c'est un relevé. " +
+        "« Personne ne monte. C'est pour ça qu'on m'a laissé ici : pour être " +
+        "le seul à savoir ce qu'il y a à voir, et pour n'avoir personne à qui " +
+        "le dire. »",
+    ],
     choices: [
       {
         id: "guet-demander",
@@ -4174,6 +4244,19 @@ export const SCENES: Scene[] = [
       "« Alors non, je ne monte pas le voir. Il attend un procès. Moi " +
         "j\u2019ai fini d\u2019attendre. »",
     ],
+    narrationEchec: [
+      "Elle ne repose pas son ouvrage. Elle parle par-dessus, vite, sans " +
+        "te laisser la place d\u2019une question — comme on vide une chose " +
+        "qu\u2019on ne veut plus tenir.",
+      "« Mon père a construit une potence pour la chose qui m\u2019a fait " +
+        "pendre. Il l\u2019a attendue trois mois. Elle n\u2019est pas " +
+        "venue. Elle ne vient jamais quand on l\u2019appelle. Il s\u2019est " +
+        "pendu à côté, par règlement, parce qu\u2019il avait refusé de me " +
+        "condamner. Voilà. Tu l\u2019as. »",
+      "Un temps. Ses mains n\u2019ont pas cessé une seconde.",
+      "« Maintenant tu sais, et tu ne reviens plus. Les autres non plus " +
+        "ne revenaient plus, après. »",
+    ],
     choices: [
       {
         id: "fille-la-chose",
@@ -4301,6 +4384,17 @@ export const SCENES: Scene[] = [
       "Un silence.",
       "« Alors je recommence. Parce que si j\u2019arrête, faudra que je dise à " +
         "quelqu\u2019un pourquoi. »",
+    ],
+    narrationEchec: [
+      "Ses mains ne s\u2019arrêtent pas. C\u2019est ça, la réponse : " +
+        "elles ne s\u2019arrêtent pas.",
+      "« Celle-là je la refais. Trente ans que je la refais. Et au matin " +
+        "elle est défaite — pas coupée : défaite, nœud par nœud, " +
+        "proprement. » Elle tresse toujours. « Voilà ce que tu voulais " +
+        "savoir. Ça t\u2019avance à quoi ? »",
+      "Elle ne te regarde plus. Ce qu\u2019elle aurait ajouté, si tu " +
+        "avais posé la question autrement, elle le garde — et tu sens très " +
+        "bien qu\u2019il y avait quelque chose à ajouter.",
     ],
     choices: [
       {
@@ -5009,6 +5103,16 @@ export const SCENES: Scene[] = [
         "eux, c'est une question. La dernière avant la charge — ou avant " +
         "autre chose. À toi d'y répondre.",
     ],
+    // Le cercle ne s'est pas rompu : il s'est refermé. Même position de jeu
+    // (la meneuse pose sa question, tu réponds), monde inversé.
+    narrationEchec: [
+      "Le cercle ne s'est pas ouvert : il s'est resserré d'un pas, et il " +
+        "sent la chaleur. Ils ont compris quelque chose, oui — mais pas que " +
+        "tu mords. Que tu saignes.",
+      "La meneuse s'avance seule, sans hâte, et te fixe. Chez eux, c'est " +
+        "encore une question. Ce n'est plus la même : celle-là ne demande " +
+        "pas si tu es dangereux, elle demande combien de temps tu tiens.",
+    ],
     choices: [
       // Dernier acte de la rencontre : CHAQUE issue clôt le combat (règle
       // éditoriale 14/07 — jamais une meute laissée « prête à charger »).
@@ -5705,6 +5809,17 @@ export const SCENES: Scene[] = [
       "Elle ne l'est pas tout à fait. Tout en haut, au-dessus du vide, une " +
         "marque — une seule, d'une autre main. Il ne la voit pas : sa " +
         "planche commence en bas.",
+    ],
+    narrationEchec: [
+      "Il ouvre le portillon sans cérémonie, d\u2019une poussée du plat " +
+        "de la main, et se range comme on s\u2019écarte d\u2019une " +
+        "charrette.",
+      "Au moment où tu passes, il note quelque chose sur une planche de " +
+        "sa guérite — ton passage, ta direction, l\u2019heure. Il prend son " +
+        "temps sur la dernière colonne, celle qu\u2019il n\u2019avait pas " +
+        "remplie pour les autres.",
+      "— « Je note tout le monde », dit-il sans lever les yeux. « Ceux " +
+        "qui disent vrai, je les note vite. »",
     ],
     choices: [{ id: "veilleur-passer", label: "Passer le portillon" }],
     jailerLine: "Une colonne des retours. Vide depuis trente ans. J'adore les optimistes — ils tiennent la comptabilité pour moi.",

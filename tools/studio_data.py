@@ -695,6 +695,12 @@ def lire_scenes() -> list[dict]:
         # paragraphe, pas deux paragraphes.
         if narr:
             s["narration"] = paragraphes(narr[0])
+        # L'AIGUILLAGE (9/08) : la version servie quand le jet précédent a raté.
+        # Elle doit voyager jusqu'au Studio ET au kit — sinon Patrick ne voit
+        # qu'une moitié de la scène, et la réplique en joue une autre.
+        ne = bloc_apres(bloc, r"\n    narrationEchec:\s*")
+        if ne:
+            s["narrationEchec"] = paragraphes(ne[0])
         for champ, cle in (
             ("chainNext", "suite"),
             ("foe", "adversaire"),

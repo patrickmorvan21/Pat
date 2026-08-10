@@ -50,7 +50,7 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-09T21:31:51Z",
+ "genere": "2026-08-09T21:53:17Z",
  "commit": "c96f916",
  "zones": [
   {
@@ -1693,6 +1693,10 @@
     }
    ],
    "pointsInteret": [],
+   "narrationEchec": [
+    "Il est déjà au bout de la rangée quand tu le rejoins, et il ne lève pas la tête de son écriteau. La gouge mord le bois par petits coups réguliers, exactement à la même profondeur.",
+    "« Non. » Il n’a pas attendu que tu redemandes. « Y a des trous que je creuse et des trous que je creuse pas, et le mien est déjà commencé quelque part. Va-t’en. »"
+   ],
    "image": {
     "fichier": "monstre_fossoyeur_trou_3_a.png",
     "hash": "acf3368c",
@@ -2206,6 +2210,12 @@
     }
    ],
    "pointsInteret": [],
+   "narrationEchec": [
+    "Les volets se referment un par un, sans hâte, comme on tire un drap sur une chose qu’on a fini de regarder. Elle attend qu’il n’en reste plus un seul.",
+    "« Voilà. C’est fait. » Elle se rassoit, face au sud, les mains à plat sur les genoux. « Maintenant on est deux à avoir parlé trop fort. Sauf que moi j’ai quarante ans d’avance, et plus rien à perdre. »",
+    "Elle ne dira pas ce qu’elle a vu. Tu sais seulement qu’elle l’a vu, et qu’elle le sait depuis longtemps.",
+    "« Va-t’en. Et marche comme quelqu’un qui n’a rien demandé. »"
+   ],
    "suite": "hameau-entree-3",
    "image": {
     "fichier": "monstre_femme_seuil_3_v2_a.png",
@@ -2588,6 +2598,11 @@
     }
    ],
    "pointsInteret": [],
+   "narrationEchec": [
+    "Il ne redescend pas du muret. Il reste debout dessus, plus haut que toi, ses cailloux serrés dans le pan de sa chemise, et il te regarde comme on regarde une chose qu’on va décrire à quelqu’un d’autre tout à l’heure.",
+    "« Ma mère dit que j’invente. » Un temps. « Elle a peut-être raison. »",
+    "Il part le long de la pierre sèche, sans se retourner, du pas de quelqu’un qui connaît chaque creux. Tu n’as pas le caillou. Tu n’as que sa direction."
+   ],
    "suite": "hameau-entree-3",
    "image": {
     "fichier": "monstre_gamin_depart_c.png",
@@ -2623,6 +2638,10 @@
     }
    ],
    "pointsInteret": [],
+   "narrationEchec": [
+    "Elle a déjà repris sa place sur le seuil quand tu repars. De la rue, on ne voit pas qu’elle a parlé à quelqu’un. On ne voit qu’une femme qui regarde le sud.",
+    "Tu n’emportes rien. C’est plus léger, et c’est pire : il n’y a personne à qui rendre ce que tu n’as pas pris."
+   ],
    "suite": "hameau-entree-3",
    "nom": "Femme seuil 3 — beat 3",
    "lieu": "seuil_du_hameau",
@@ -4103,6 +4122,10 @@
     }
    ],
    "pointsInteret": [],
+   "narrationEchec": [
+    "Il est assis sur le tas de pierres, dos à toi, et il regarde le sud par-dessus le hameau. Un vieux manteau de guet, la corne au côté. Il t'a entendu arriver de loin, et de la mauvaise manière.",
+    "— « Tu n'es pas monté. » Ce n'est pas un reproche : c'est un relevé. « Personne ne monte. C'est pour ça qu'on m'a laissé ici : pour être le seul à savoir ce qu'il y a à voir, et pour n'avoir personne à qui le dire. »"
+   ],
    "adversaire": "guetteur-tour",
    "adversaireNom": "le Guetteur sans tour",
    "nom": "Tour de guet 2 — beat 2",
@@ -4600,6 +4623,12 @@
     }
    ],
    "pointsInteret": [],
+   "narrationEchec": [
+    "Elle ne repose pas son ouvrage. Elle parle par-dessus, vite, sans te laisser la place d’une question — comme on vide une chose qu’on ne veut plus tenir.",
+    "« Mon père a construit une potence pour la chose qui m’a fait pendre. Il l’a attendue trois mois. Elle n’est pas venue. Elle ne vient jamais quand on l’appelle. Il s’est pendu à côté, par règlement, parce qu’il avait refusé de me condamner. Voilà. Tu l’as. »",
+    "Un temps. Ses mains n’ont pas cessé une seconde.",
+    "« Maintenant tu sais, et tu ne reviens plus. Les autres non plus ne revenaient plus, après. »"
+   ],
    "suite": "fille-moulin-4",
    "donneDecouverte": "d.temoin_nomme",
    "image": {
@@ -4746,6 +4775,11 @@
     }
    ],
    "pointsInteret": [],
+   "narrationEchec": [
+    "Ses mains ne s’arrêtent pas. C’est ça, la réponse : elles ne s’arrêtent pas.",
+    "« Celle-là je la refais. Trente ans que je la refais. Et au matin elle est défaite — pas coupée : défaite, nœud par nœud, proprement. » Elle tresse toujours. « Voilà ce que tu voulais savoir. Ça t’avance à quoi ? »",
+    "Elle ne te regarde plus. Ce qu’elle aurait ajouté, si tu avais posé la question autrement, elle le garde — et tu sens très bien qu’il y avait quelque chose à ajouter."
+   ],
    "suite": "veuve-cordes-sait-3",
    "donneDecouverte": "d.fixation_ratee",
    "image": {
@@ -5570,6 +5604,10 @@
     }
    ],
    "pointsInteret": [],
+   "narrationEchec": [
+    "Le cercle ne s'est pas ouvert : il s'est resserré d'un pas, et il sent la chaleur. Ils ont compris quelque chose, oui — mais pas que tu mords. Que tu saignes.",
+    "La meneuse s'avance seule, sans hâte, et te fixe. Chez eux, c'est encore une question. Ce n'est plus la même : celle-là ne demande pas si tu es dangereux, elle demande combien de temps tu tiens."
+   ],
    "adversaire": "meute-grise",
    "adversaireNom": "La Meute Grise",
    "combat": true,
@@ -6380,6 +6418,11 @@
     }
    ],
    "pointsInteret": [],
+   "narrationEchec": [
+    "Il ouvre le portillon sans cérémonie, d’une poussée du plat de la main, et se range comme on s’écarte d’une charrette.",
+    "Au moment où tu passes, il note quelque chose sur une planche de sa guérite — ton passage, ta direction, l’heure. Il prend son temps sur la dernière colonne, celle qu’il n’avait pas remplie pour les autres.",
+    "— « Je note tout le monde », dit-il sans lever les yeux. « Ceux qui disent vrai, je les note vite. »"
+   ],
    "suite": "palissade-sud-2",
    "nom": "Veilleur 3 — beat 3",
    "lieu": "palissade_sud",
