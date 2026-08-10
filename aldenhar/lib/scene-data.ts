@@ -1240,12 +1240,19 @@ export const SCENES: Scene[] = [
     soupconOnArrival: 1, // être vu près des potences (chantier 3)
     chainNext: "colline-aux-gibets-2",
     narration: [
+      // ⚠️ TEXTE ALIGNÉ SUR L'IMAGE (panel 10/08). Il décrivait « le cercle :
+      // neuf potences… et au centre, l'autre » ; l'illustration montre une
+      // FILE le long de la crête, dont les dernières sont les plus hautes.
+      // L'image est la signature de la zone : c'est la prose qui cède — et
+      // elle y gagne, la file lue de bas en haut raconte une chronologie que
+      // le cercle n'avait pas.
       "La pente est douce et n'en finit pas — la Colline se mérite à pas " +
-        "comptés. Au sommet, le cercle : neuf potences ordinaires, plantées " +
-        "comme les heures d'un cadran. Et au centre, l'autre. La grande. Sa " +
-        "corde est la seule chose neuve à dix lieues.",
-      "À gauche du cercle, un poteau isolé porte encore son occupant. À " +
-        "droite, les potences vides alignent leurs noms gravés.",
+        "comptés. Sur la crête, les potences se suivent, plantées de loin en " +
+        "loin comme des bornes. Elles grandissent à mesure qu'on monte, et la " +
+        "dernière dépasse toutes les autres. Sa corde est la seule chose " +
+        "neuve à dix lieues.",
+      "En contrebas de la file, un poteau isolé porte encore son occupant. " +
+        "Plus haut, les potences vides alignent leurs noms gravés.",
     ],
     pointsInteret: [
       {
@@ -1298,9 +1305,10 @@ export const SCENES: Scene[] = [
           "pas entre deux potences — pas plus fort ailleurs, plus fort ICI, " +
           "comme si l'espace entre les mâts avait son climat.",
         examen:
-          "Chaque potence porte un nom gravé au pied, et une date. Les " +
-          "entailles sont de la même main — appliquée, régulière, la main de " +
-          "quelqu'un qui grave comme on rend un jugement.",
+          "Chaque potence porte un nom gravé au pied, et une date. En " +
+          "remontant la file, les dates avancent : la crête entière est un " +
+          "calendrier planté. Les entailles sont de la même main — appliquée, " +
+          "régulière, la main de quelqu'un qui grave comme on rend un jugement.",
       },
       {
         id: "gibet-vide",
@@ -1534,9 +1542,15 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_champ_des_fixes_b.png",
     chainNext: "champ-des-fixes-2",
     narration: [
-      "Pas de tombes — des poteaux. Des rangées de poteaux plantés droit, un " +
-        "nom sur chaque, alignés face au nord. Dos au sud. Même morts, surtout " +
-        "morts, on ne les laisse pas regarder par là.",
+      // ⚠️ TEXTE ALIGNÉ SUR L'IMAGE (panel 10/08) : elle montre de vieilles
+      // pierres tombales ET des poteaux. « Pas de tombes » la contredisait.
+      // Les deux ensemble disent mieux ce qui s'est passé ici : il y a eu un
+      // cimetière avant, et la Fixation a planté ses poteaux entre les dalles.
+      "Il y a eu un cimetière ici, autrefois : des dalles basses, usées, dont " +
+        "plus personne ne lit les noms. Entre elles, on a planté des poteaux. " +
+        "Des rangées entières, un nom sur chaque, tous tournés face au nord. " +
+        "Dos au sud. Même morts, surtout morts, on ne les laisse pas regarder " +
+        "par là.",
       "Au fond, des poteaux vierges attendent, déjà plantés. Près de " +
         "l'entrée, la cabane du Fossoyeur.",
     ],

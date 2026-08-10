@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-10T17:08:30Z",
- "commit": "80b42e1",
+ "genere": "2026-08-10T17:48:05Z",
+ "commit": "6e6252a",
  "zones": [
   {
    "id": "landes",
@@ -1132,8 +1132,8 @@
   {
    "id": "colline-aux-gibets",
    "narration": [
-    "La pente est douce et n'en finit pas — la Colline se mérite à pas comptés. Au sommet, le cercle : neuf potences ordinaires, plantées comme les heures d'un cadran. Et au centre, l'autre. La grande. Sa corde est la seule chose neuve à dix lieues.",
-    "À gauche du cercle, un poteau isolé porte encore son occupant. À droite, les potences vides alignent leurs noms gravés."
+    "La pente est douce et n'en finit pas — la Colline se mérite à pas comptés. Sur la crête, les potences se suivent, plantées de loin en loin comme des bornes. Elles grandissent à mesure qu'on monte, et la dernière dépasse toutes les autres. Sa corde est la seule chose neuve à dix lieues.",
+    "En contrebas de la file, un poteau isolé porte encore son occupant. Plus haut, les potences vides alignent leurs noms gravés."
    ],
    "choix": [
     {
@@ -1185,7 +1185,7 @@
      "id": "potences-cercle",
      "label": "Les potences du cercle",
      "approche": "Tu entres dans le cercle. Le vent monte d'un cran dès le premier pas entre deux potences — pas plus fort ailleurs, plus fort ICI, comme si l'espace entre les mâts avait son climat.",
-     "examen": "Chaque potence porte un nom gravé au pied, et une date. Les entailles sont de la même main — appliquée, régulière, la main de quelqu'un qui grave comme on rend un jugement.",
+     "examen": "Chaque potence porte un nom gravé au pied, et une date. En remontant la file, les dates avancent : la crête entière est un calendrier planté. Les entailles sont de la même main — appliquée, régulière, la main de quelqu'un qui grave comme on rend un jugement.",
      "fragmentChapitre": true,
      "nom": "Les potences du cercle",
      "image": {
@@ -1488,7 +1488,7 @@
   {
    "id": "champ-des-fixes",
    "narration": [
-    "Pas de tombes — des poteaux. Des rangées de poteaux plantés droit, un nom sur chaque, alignés face au nord. Dos au sud. Même morts, surtout morts, on ne les laisse pas regarder par là.",
+    "Il y a eu un cimetière ici, autrefois : des dalles basses, usées, dont plus personne ne lit les noms. Entre elles, on a planté des poteaux. Des rangées entières, un nom sur chaque, tous tournés face au nord. Dos au sud. Même morts, surtout morts, on ne les laisse pas regarder par là.",
     "Au fond, des poteaux vierges attendent, déjà plantés. Près de l'entrée, la cabane du Fossoyeur."
    ],
    "choix": [

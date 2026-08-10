@@ -90,20 +90,34 @@ C'est un piège classique : le mot *windmill* appelle les ailes, et un modèle d
 diffusion ne sait pas retirer un élément sur commande — une consigne négative
 (« no blades ») renforce même souvent ce qu'elle interdit. Il faut décrire
 **ce qui est là**, sans jamais nommer un moulin :
+⚠️ **4e signalement le 10/08** (panel de 10 IA). Le prompt ci-dessous a été
+RÉÉCRIT ce jour-là : la version précédente contenait encore « no blades, no
+vanes, no timber structure » — c'est-à-dire trois fois le mot que le modèle ne
+doit surtout pas lire. Un prompt de diffusion n'a pas de négation : chaque
+terme interdit est un terme évoqué. La règle est donc appliquée jusqu'au bout —
+**aucune clause négative, et le sujet n'est plus une tour de moulin mais un
+silo** (un mot qui n'appelle aucune aile) :
 ```
-Squat round stone tower alone on a low mound on open moorland, no blades, no
-vanes, no timber structure of any kind at its top, just a bare truncated cap of
-masonry with a single short broken iron stub at its centre, four pale
-unweathered vertical bands on the stonework below the cap, huge low orange sun
-disc directly behind the tower, dark moor in the foreground. Dark fantasy
-illustration, extreme backlight, one single light source, near-black silhouette
-against a glowing orange sky, deep crushed blacks, no fill light, high contrast,
-two-tone monochrome-friendly, matte painting, grim medieval rural, square
-composition, no text, no lettering, no watermark
+Squat round stone granary silo standing alone on a low mound on open moorland,
+smooth cylindrical masonry, flat truncated stone cap, a short rusted iron stub
+at the centre of the cap, four pale unweathered vertical bands on the stonework
+below the cap, small dark doorway at its base, huge low orange sun disc directly
+behind it, dark moor in the foreground. Dark fantasy illustration, extreme
+backlight, one single light source, near-black silhouette against a glowing
+orange sky, deep crushed blacks, high contrast, two-tone monochrome-friendly,
+matte painting, grim medieval rural, square composition
 ```
-Si le modèle insiste, l'autre solution est de générer une **tour ronde en
-ruine** sans mentionner de moulin du tout, et de laisser le texte du jeu faire
-le travail (« un moulin privé de ses ailes »).
+Deux images sont concernées et doivent être refaites ENSEMBLE, sinon la moitié
+du lieu se contredira toujours : la vue d'ensemble (`campement`) et le plan
+rapproché de la croix d'ombres (`croix-ombres`), dont l'examen explique
+précisément que les bandes pâles sont ce que les ailes protégeaient **avant de
+disparaître**. Les deux sont marquées « à remplacer » dans la page de
+couverture.
+
+**Pourquoi le texte ne peut pas céder ici** (alors qu'il a cédé pour la Colline
+et le Champ des Fixés le 10/08) : le lieu s'appelle *le Moulin sans Ailes*, la
+carte Figma le nomme ainsi, et son point d'intérêt entier repose sur leur
+absence. Il n'y a rien à réécrire — il faut l'image.
 
 ### `scene_palissade_sud_a.png` — ✅ FAIT (`scene_palissade_sud_a_a.png`, câblé)
 Réserve : tout le contenu est dans le tiers HAUT de l'image, la moitié basse est
