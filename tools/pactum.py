@@ -567,7 +567,14 @@ class Partie:
         ecrire_compte(c)
         tenus = sum(1 for x in self.d["des"] if x["palier"] in ("destin", "eclatante", "reussite", "justesse"))
         self.dit("MORT", "mort")
-        self.dit(dernier, "epitaphe")
+        # ⚠️ La prose du jet fatal vient d'être affichée par la résolution :
+        # la reprendre en épitaphe la fait lire DEUX FOIS d'affilée, au moment
+        # le plus solennel du jeu (relevé par un testeur du panel 10/08). Le
+        # vrai jeu ne l'affiche qu'une fois — il masque la prose sur le dé
+        # fatal et la garde pour l'épitaphe.
+        deja = [e["texte"] for e in self.d["journal"][-4:]]
+        if dernier not in deja:
+            self.dit(dernier, "epitaphe")
         self.dit(
             f"Jour {self.d['jour']} · Les Landes · {len(self.d['visites'])} lieux traversés · "
             f"{len(self.d['des'])} dés lancés dont {tenus} tenus",
