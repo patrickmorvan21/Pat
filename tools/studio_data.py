@@ -698,6 +698,13 @@ def lire_choix(bloc: str) -> list[dict]:
                 ch["temoin"] = t
         if booleen_de(c, "rest"):
             ch["repos"] = True
+        # ⚠️ SANS CE CHAMP, LA RÉPLIQUE JOUE L'ANCIENNE RÈGLE : `sansNuit` dit
+        # qu'un choix quitte une scène de nuit sans qu'une nuit passe. Un kit
+        # qui l'oublie fait mesurer aux agents un Jour gratuit qui n'existe
+        # plus dans le jeu (leçon du 10/08 : deux listes blanches, ici et dans
+        # export_run_kit.py, à nourrir en même temps que le type `Choice`).
+        if booleen_de(c, "sansNuit"):
+            ch["sansNuit"] = True
         if "debt:" in c:
             ch["dette"] = {"id": texte_de(c, "id"), "texte": texte_de(c, "text")}
         out.append(ch)

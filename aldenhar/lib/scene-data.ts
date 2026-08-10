@@ -4236,7 +4236,23 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "repartir", label: "Repartir sans s'attarder", sortie: {}, sansNuit: true },
+      {
+        id: "repartir",
+        label: "Repartir sans s'attarder",
+        sortie: {},
+        sansNuit: true,
+        // Un choix sans conséquence écrite n'est pas un choix (relecture par
+        // agents, 10/08) : celui-ci ne rendait plus rien du tout depuis qu'il
+        // ne donne plus de Jour. Il dit maintenant ce qu'il fait — ici, ne pas
+        // dormir ne fait pas gagner de temps, le crépuscule ne bouge pas.
+        passive: {
+          consequence:
+            "Tu ressors avant d'avoir posé ton sac. Dehors, la lumière est " +
+            "exactement celle de tout à l'heure : ne pas dormir ne fait " +
+            "gagner aucun temps ici — ça fait seulement une nuit de moins " +
+            "derrière toi, et le lit de bruyère garde sa forme pour un autre.",
+        },
+      },
     ],
     jailerLine: "Dors. Le crépuscule ne tombera pas, mais toi, un jour, oui. J'aime comparer.",
   },
@@ -4427,7 +4443,20 @@ export const SCENES: Scene[] = [
             "seul endroit du pays où l\u2019on ne te compte pas.",
         },
       },
-      { id: "fille-repartir", label: "Repartir sans s\u2019attarder", sansNuit: true },
+      {
+        id: "fille-repartir",
+        // Apostrophe alignée sur l'autre « Repartir » (10/08) : deux libellés
+        // identiques à l'œil mais distincts à l'octet (' vs \u2019) cassaient
+        // tout filtre de test ou de dédup.
+        label: "Repartir sans s'attarder",
+        sansNuit: true,
+        passive: {
+          consequence:
+            "Tu la laisses à sa corde et tu ressors. Elle ne te retient pas, " +
+            "ne lève pas les yeux — et dehors le crépuscule est le même " +
+            "qu'à l'entrée. Personne n'aura dormi ici cette nuit.",
+        },
+      },
     ],
     jailerLine: "Elle t\u2019a demandé de te taire. Nous allons voir combien de temps tu tiens — c\u2019est toujours instructif.",
   },

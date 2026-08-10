@@ -262,7 +262,10 @@ class Partie:
         # avance le Jour une fois, quel que soit le choix. Mesuré sur 64 vies :
         # « Dormir » donnait +1 Jour et « Veiller » rien — le choix sûr battait
         # le choix risqué sur l'écran même qui pose la question.
-        if s.get("nuit") and sid not in self.d.get("nuitsVues", []):
+        # `sansNuit` : le choix pris à l'écran précédent disait qu'on ne
+        # s'attardait pas — aucune nuit ne passe (voir `Choice.sansNuit`).
+        if s.get("nuit") and not self.d.pop("sansNuit", False) \
+                and sid not in self.d.get("nuitsVues", []):
             self.d.setdefault("nuitsVues", []).append(sid)
             self.d["jour"] += 1
             self.dit(f"JOUR {self.d['jour']}", "jour")
@@ -465,14 +468,21 @@ class Partie:
         if c["type"] == "risque":
             self.resoudre(c)
         else:
+            if c.get("sansNuit"):
+                self.d["sansNuit"] = True
             if c.get("consequence"):
                 self.dit(c["consequence"], "narration")
             if c.get("donneObjet"):
                 self.gagner(c["donneObjet"])
             if c.get("repos"):
-                self.d["jour"] += 1
+                # ⚠️ LE JOUR DE LA NUIT EST DÉJÀ PRIS À L'AFFICHAGE de la
+                # scène `nuit` (voir plus haut) — le rajouter ici donnait
+                # DEUX jours au dormeur contre un au veilleur, soit
+                # exactement l'asymétrie que le correctif du 10/08 supprime
+                # dans le jeu réel. Un agent qui mesurait sur la réplique
+                # concluait donc « le passif gagne », l'inverse de la vérité.
+                # Le repos SOIGNE ; c'est la nuit qui fait le jour.
                 self.d["sante"] = min(1.0, self.d["sante"] + 0.35)
-                self.dit(f"JOUR {self.d['jour']}", "jour")
             self.suite(c)
 
     def gagner(self, oid: str) -> None:
