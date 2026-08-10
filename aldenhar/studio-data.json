@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-10T06:40:25Z",
- "commit": "3809e3d",
+ "genere": "2026-08-10T08:47:42Z",
+ "commit": "a794337",
  "zones": [
   {
    "id": "landes",
@@ -5028,6 +5028,13 @@
      "consequence": "Tu connais son rang et sa place. Tu traverses la nef par l'autre côté, l'épaule au mur froid, à une largeur de bras de trop pour elle. Au passage tu l'entends se détendre puis se retendre, à vide, dans ton dos — le bruit sec d'une chose qui avait prévu autre chose. La Veuve, elle, lève les yeux pour la première fois. Elle n'a pas l'air déçue. Elle a l'air de noter.",
      "sortie": {},
      "exigeSavoir": "savoir_corde_vive"
+    },
+    {
+     "id": "chapelle-ressortir",
+     "label": "Ressortir par où tu es entré",
+     "type": "passif",
+     "consequence": "Tu recules jusqu'au seuil sans quitter les cordes des yeux, ce qui est exactement la mauvaise façon de traverser une nef : on ne voit pas ce qu'on laisse derrière. Aucune ne bouge. Dehors, l'air a le goût de dehors.",
+     "sortie": {}
     }
    ],
    "pointsInteret": [],
@@ -8619,6 +8626,229 @@
    "Le muret t'accompagnait ; il choisit l'un des deux côtés."
   ]
  },
+ "familiarite": [
+  {
+   "scene": "chemin-creux",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "Ta main s'est posée sur le talus sans que tu l'aies décidé, juste où la racine fait une prise."
+    },
+    {
+     "passages": 4,
+     "texte": "Tu descends sans regarder tes pieds. Le creux te reprend comme une manche qu'on renfile."
+    }
+   ]
+  },
+  {
+   "scene": "colline-aux-gibets",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "Une des potences penche plus que les autres. Tu jurerais qu'elle penchait déjà."
+    },
+    {
+     "passages": 4,
+     "texte": "Tu comptes les mâts en montant et tu tombes juste avant d'avoir fini. Le compte est dans tes jambes, pas dans ta tête."
+    }
+   ]
+  },
+  {
+   "scene": "pendu-qui-parle",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "Il tourne la tête avant que tu sois à portée de voix. Il n'a pas eu à chercher de quel côté."
+    },
+    {
+     "passages": 4,
+     "texte": "« Encore. » Il ne dit rien d'autre pendant un long moment, et ce n'est pas à toi qu'il le dit."
+    }
+   ]
+  },
+  {
+   "scene": "champ-des-fixes",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "Une rangée est plus courte que dans ton idée du champ. Tu n'as pas d'idée du champ."
+    },
+    {
+     "passages": 4,
+     "texte": "La terre entre les rangs est tassée par un passage régulier. L'écart des pas est le tien."
+    }
+   ]
+  },
+  {
+   "scene": "pendu-mal-fixe",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "Le craquement a le rythme d'un bruit qu'on aurait déjà appris à ne plus entendre."
+    },
+    {
+     "passages": 4,
+     "texte": "Tu sais de quel côté il va glisser. Tu t'écartes avant qu'il glisse, et ça ne te rassure pas."
+    }
+   ]
+  },
+  {
+   "scene": "serment-hameau",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "Les volets se ferment de proche en proche, dans l'ordre, comme une phrase qu'on récite. Elle a déjà été récitée."
+    },
+    {
+     "passages": 4,
+     "texte": "Personne ne court prévenir personne. On t'attend au bon endroit, sans se presser."
+    }
+   ]
+  },
+  {
+   "scene": "marche-muet",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "Un étal manque à sa place et un autre l'a prise. Rien d'autre n'a bougé dans le silence."
+    },
+    {
+     "passages": 4,
+     "texte": "On te fait de la place avant que tu aies bifurqué. Ils savent où tu vas parce que tu y vas toujours."
+    }
+   ]
+  },
+  {
+   "scene": "tour-de-guet",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "Une pierre du moignon est descellée et posée à plat à côté, comme un siège. Elle est creusée au milieu."
+    },
+    {
+     "passages": 4,
+     "texte": "Le creux de la pierre a la forme de quelqu'un qui s'assoit là pour regarder le sud. Il a ta forme."
+    }
+   ]
+  },
+  {
+   "scene": "campement",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "La paille du fond est couchée en creux, à peu près de ta longueur, et elle n'a pas eu le temps de se relever."
+    },
+    {
+     "passages": 4,
+     "texte": "Le creux dans la paille ne se relève plus du tout. Il t'attend, avec la patience d'un lit."
+    }
+   ]
+  },
+  {
+   "scene": "chapelle-des-cordes",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "Une corde du mur est plus neuve que ses voisines. Le chanvre n'a pas encore noirci."
+    },
+    {
+     "passages": 4,
+     "texte": "Tu comptes les cordes neuves du mur. Il y en a autant que de fois où tu es entré ici — et tu ne sais pas comment tu le sais."
+    }
+   ]
+  },
+  {
+   "scene": "puits-condamne",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "Les trois coups s'arrêtent quand tu débouches, puis reprennent. Ce n'est pas une pause : c'est un salut."
+    },
+    {
+     "passages": 4,
+     "texte": "Les coups changent de rythme à ton arrivée. Ce qui frappe là-dessous a appris à te distinguer."
+    }
+   ]
+  },
+  {
+   "scene": "chien-du-bailli",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "La bête grise ne se lève pas, cette fois. Elle t'a regardé venir de loin et elle a jugé que ce n'était pas la peine."
+    },
+    {
+     "passages": 4,
+     "texte": "Elle bâille. C'est pire qu'un grognement : on ne bâille que devant ce qui revient."
+    }
+   ]
+  },
+  {
+   "scene": "petit-tribunal",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "Un banc du fond est de biais, comme si on s'y était assis en dernier et qu'on était parti vite."
+    },
+    {
+     "passages": 4,
+     "texte": "La poussière est intacte sur tous les bancs sauf une place. On n'y va plus. On l'a laissée pour quelqu'un."
+    }
+   ]
+  },
+  {
+   "scene": "mare-aux-regards",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "L'eau se ride avant que tu sois au bord. Elle a commencé sans toi."
+    },
+    {
+     "passages": 4,
+     "texte": "Le reflet est déjà en place quand tu arrives. Il ne t'imite plus : il t'attend."
+    }
+   ]
+  },
+  {
+   "scene": "verger-noir",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "Un fruit manque à une branche basse, cueilli net, et la cassure est encore claire."
+    },
+    {
+     "passages": 4,
+     "texte": "Les branches basses sont vides sur toute la longueur du rang, à hauteur de main. À ta hauteur de main."
+    }
+   ]
+  },
+  {
+   "scene": "meute-grise-1",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "Le cercle se referme plus vite qu'il ne devrait. Ils n'essaient plus de savoir ce que tu es."
+    },
+    {
+     "passages": 4,
+     "texte": "Aucun d'eux ne gronde. Ils se placent, chacun à son endroit, comme des bêtes qui ont déjà répété."
+    }
+   ]
+  },
+  {
+   "scene": "palissade-sud",
+   "strates": [
+    {
+     "passages": 2,
+     "texte": "Une entaille fraîche marque un tronc à hauteur d'épaule. Le bois est clair dessous, et il y en a d'autres à côté, plus vieilles."
+    },
+    {
+     "passages": 4,
+     "texte": "Les entailles du tronc font une colonne. Tu n'as pas besoin de les compter pour savoir qu'il en manque une : la tienne."
+    }
+   ]
+  }
+ ],
  "surprises": [
   {
    "id": "choix-expire",
@@ -8666,7 +8896,7 @@
  "totaux": {
   "scenes": 89,
   "pointsInteret": 47,
-  "choix": 223,
+  "choix": 224,
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,
@@ -8677,6 +8907,7 @@
   "temoins": 20,
   "etats": 7,
   "besoins": 3,
-  "transitions": 63
+  "transitions": 63,
+  "familiarite": 34
  }
 }
