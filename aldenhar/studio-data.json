@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-09T21:53:17Z",
- "commit": "c96f916",
+ "genere": "2026-08-10T06:40:25Z",
+ "commit": "3809e3d",
  "zones": [
   {
    "id": "landes",
@@ -1295,11 +1295,13 @@
      "id": "redescendre",
      "label": "Partir avant de comprendre",
      "type": "passif",
-     "consequence": "Tu tournes le dos au cercle avant d'avoir fini de compter — et c'est peut-être la chose la plus sage que tu feras aujourd'hui. Le grincement continue derrière toi, patient, comme une phrase qu'on garde pour la prochaine fois."
+     "consequence": "Tu tournes le dos au cercle avant d'avoir fini de compter — et c'est peut-être la chose la plus sage que tu feras aujourd'hui. Le grincement continue derrière toi, patient, comme une phrase qu'on garde pour la prochaine fois.",
+     "sortie": {}
     }
    ],
    "pointsInteret": [],
    "poseFlag": "echarde-gibet-prelevee",
+   "sejour": true,
    "nom": "La Colline aux Gibets — beat 2",
    "lieu": "colline_aux_gibets",
    "typeScene": "moment",
@@ -1430,6 +1432,7 @@
      "label": "Passer sans un mot",
      "type": "passif",
      "consequence": "Tu passes. Le Bailli ne te rappelle pas — il note. Tu l'entends murmurer ton signalement à la corde, qui grince en l'écrivant. Refuser le jugement, ici, c'est un verdict aussi. Il t'attendra au retour : les Landes tournent en rond.",
+     "sortie": {},
      "tags": [
       "citable"
      ]
@@ -1445,6 +1448,7 @@
    "pointsInteret": [],
    "adversaire": "bailli-pendu",
    "donneDecouverte": "d.bailli_condamne",
+   "sejour": true,
    "nom": "Le Pendu qui parle — beat 2",
    "lieu": "colline_aux_gibets",
    "typeScene": "moment",
@@ -1770,11 +1774,13 @@
      "id": "passer-fossoyeur",
      "label": "Passer sans un mot",
      "type": "passif",
-     "consequence": "Tu passes au large de son rang. Il ne lève pas la tête — mais sa main s'arrête sur le poteau, juste le temps que tu sois passé. Ici, même la politesse se mesure en immobilité."
+     "consequence": "Tu passes au large de son rang. Il ne lève pas la tête — mais sa main s'arrête sur le poteau, juste le temps que tu sois passé. Ici, même la politesse se mesure en immobilité.",
+     "sortie": {}
     }
    ],
    "pointsInteret": [],
    "donneDecouverte": "d.temoin_entendu",
+   "sejour": true,
    "nom": "Le Champ des Fixés — beat 2",
    "lieu": "champ_des_fixes",
    "typeScene": "moment",
@@ -4118,7 +4124,8 @@
      "id": "guet-partir",
      "label": "Le laisser regarder",
      "type": "passif",
-     "consequence": "Tu le laisses à sa faction. En t'éloignant, tu l'entends dire, pour lui seul : « Quelqu'un doit bien regarder. »"
+     "consequence": "Tu le laisses à sa faction. En t'éloignant, tu l'entends dire, pour lui seul : « Quelqu'un doit bien regarder. »",
+     "sortie": {}
     }
    ],
    "pointsInteret": [],
@@ -4128,6 +4135,7 @@
    ],
    "adversaire": "guetteur-tour",
    "adversaireNom": "le Guetteur sans tour",
+   "sejour": true,
    "nom": "Tour de guet 2 — beat 2",
    "lieu": "tour_de_guet_effondree",
    "typeScene": "moment",
@@ -4278,11 +4286,13 @@
      "id": "traverser-marche",
      "label": "Traverser sans offrir",
      "type": "passif",
-     "consequence": "Tu traverses les étals sans un geste, mains visibles, et le marché te laisse passer — on respecte, ici, ceux qui ne prennent rien. Seul le Colporteur te suit des yeux jusqu'au bout de la rangée, déçu comme devant une vieille habitude manquée. Il tapote son étal : à la prochaine fois. Il a l'air sûr qu'il y en aura une."
+     "consequence": "Tu traverses les étals sans un geste, mains visibles, et le marché te laisse passer — on respecte, ici, ceux qui ne prennent rien. Seul le Colporteur te suit des yeux jusqu'au bout de la rangée, déçu comme devant une vieille habitude manquée. Il tapote son étal : à la prochaine fois. Il a l'air sûr qu'il y en aura une.",
+     "sortie": {}
     }
    ],
    "pointsInteret": [],
    "donneDecouverte": "d.sonneur",
+   "sejour": true,
    "nom": "Le Marché Muet — beat 2",
    "lieu": "marche_muet",
    "typeScene": "moment",
@@ -4449,6 +4459,7 @@
      "id": "dormir",
      "label": "Dormir malgré le crépuscule",
      "type": "repos",
+     "sortie": {},
      "repos": true
     },
     {
@@ -4469,10 +4480,12 @@
     {
      "id": "repartir",
      "label": "Repartir sans s'attarder",
-     "type": "suite"
+     "type": "suite",
+     "sortie": {}
     }
    ],
    "pointsInteret": [],
+   "sejour": true,
    "nom": "Campement 2 — beat 2",
    "lieu": "moulin_sans_ailes",
    "typeScene": "moment",
@@ -5013,10 +5026,12 @@
      "label": "Longer le mur, hors d'atteinte",
      "type": "passif",
      "consequence": "Tu connais son rang et sa place. Tu traverses la nef par l'autre côté, l'épaule au mur froid, à une largeur de bras de trop pour elle. Au passage tu l'entends se détendre puis se retendre, à vide, dans ton dos — le bruit sec d'une chose qui avait prévu autre chose. La Veuve, elle, lève les yeux pour la première fois. Elle n'a pas l'air déçue. Elle a l'air de noter.",
+     "sortie": {},
      "exigeSavoir": "savoir_corde_vive"
     }
    ],
    "pointsInteret": [],
+   "sejour": true,
    "nom": "La Chapelle des Cordes — beat 2",
    "lieu": "chapelle_des_cordes",
    "typeScene": "moment",
@@ -5127,10 +5142,12 @@
      "id": "reculer-puits",
      "label": "Reculer sans bruit",
      "type": "passif",
-     "consequence": "Tu recules pas à pas, les yeux sur les planches. Les coups ralentissent à mesure que tu t'éloignes — jusqu'au rythme poli du début. Ce n'était pas après les chaînes qu'ils en avaient. C'était après une audience."
+     "consequence": "Tu recules pas à pas, les yeux sur les planches. Les coups ralentissent à mesure que tu t'éloignes — jusqu'au rythme poli du début. Ce n'était pas après les chaînes qu'ils en avaient. C'était après une audience.",
+     "sortie": {}
     }
    ],
    "pointsInteret": [],
+   "sejour": true,
    "chronometree": 7000,
    "nom": "Le Puits Condamné — beat 2",
    "lieu": "puits_condamne",
@@ -5424,7 +5441,8 @@
      "id": "quitter-tribunal",
      "label": "Quitter sans lire",
      "type": "passif",
-     "consequence": "Tu tournes le dos à la chaire. La plume de l'Écrivain continue de gratter — elle écrit ta sortie, en ce moment même, dans une colonne que tu ne verras pas. Certains comptes, on préfère ne pas savoir où ils s'arrêtent. La porte du tribunal se referme sans bruit : on sait que tu reviendras. Tout le monde revient."
+     "consequence": "Tu tournes le dos à la chaire. La plume de l'Écrivain continue de gratter — elle écrit ta sortie, en ce moment même, dans une colonne que tu ne verras pas. Certains comptes, on préfère ne pas savoir où ils s'arrêtent. La porte du tribunal se referme sans bruit : on sait que tu reviendras. Tout le monde revient.",
+     "sortie": {}
     },
     {
      "id": "dire-poteau-grave",
@@ -5447,6 +5465,7 @@
    "donneDecouverte": "d.plus_de_defenses",
    "poseFlag": "a-denonce",
    "registre": true,
+   "sejour": true,
    "nom": "Le Petit Tribunal — beat 2",
    "lieu": "petit_tribunal",
    "typeScene": "moment",
@@ -5795,10 +5814,12 @@
      "id": "laisser-renoncant",
      "label": "Le laisser à sa réponse",
      "type": "passif",
-     "consequence": "Tu restes immobile derrière les roseaux jusqu'à ce qu'il soit loin. Il ne saura jamais qu'on l'a vu vérifier. C'est le seul cadeau que tu pouvais lui faire, et il ne le saura pas non plus."
+     "consequence": "Tu restes immobile derrière les roseaux jusqu'à ce qu'il soit loin. Il ne saura jamais qu'on l'a vu vérifier. C'est le seul cadeau que tu pouvais lui faire, et il ne le saura pas non plus.",
+     "sortie": {}
     }
    ],
    "pointsInteret": [],
+   "sejour": true,
    "nom": "La Mare aux Regards — beat 2",
    "lieu": "mare_aux_regards",
    "typeScene": "moment",
@@ -5962,10 +5983,12 @@
       "funeste": "1 naturel. Tu sors des rangs. Le compte à voix basse, derrière toi, s'est arrêté au moment exact où tu as passé la porte. ♦ −2"
      },
      "nature": "exploration",
-     "coutJour": true
+     "coutJour": true,
+     "sortie": {}
     }
    ],
    "pointsInteret": [],
+   "sejour": true,
    "nom": "Le Verger Noir — beat 2",
    "lieu": "verger_noir",
    "typeScene": "moment",
