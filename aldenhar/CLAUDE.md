@@ -436,3 +436,45 @@ Deuxième panel, demandé par Patrick : **10 sous-agents sans contexte, cinq pro
 - ⚠️ **Récidive : `git worktree remove` enchaîné DEPUIS le worktree** (règle du 6/08). Push passé, branche vérifiée intacte immédiatement — mais la règle est à appliquer mécaniquement, jamais en chaînage.
 - **RESTE (vagues 2 à 6, par ordre voté)** : l'aiguillage (**19 scènes** reçoivent le même texte qu'on ait réussi ou raté — portée mesurée) · un lieu tient 2-3 décisions à budget d'écrans constant · le déjà-vu à trois portées + la Borne qui se souvient · le Soupçon lisible + « tout FUNESTE retire une option » · une signification par traitement visuel + écrire d'autres choix verrouillés.
 - `APP_VERSION` 1.58.1 → **1.59.0**, `CACHE_VERSION` v97 → **v98**.
+
+### Session 2026-08-10 (suite, Claude Code, opus) — LES CINQ PRIORITÉS DU PANEL (v1.65.0 → v1.69.0)
+Les cinq chantiers de l'ordre de priorité voté par le panel du 10/08, livrés et déployés un par un.
+
+#### ⚠️ LE JOUR EST UN SCORE, PAS UNE MONNAIE DE SANCTION (correction Patrick — à ne jamais réintroduire)
+En priorité 1 j'ai fait **payer un Jour** au joueur qui quitte un lieu sans rien risquer. Patrick l'a vu immédiatement : **le Grand Registre classe par jours survécus**, donc ma « punition » donnait des points au joueur le plus passif. Une sanction qui améliore le classement n'est pas une sanction.
+- Sens **inversé** : le Jour ne se perd pas, il se **GAGNE** — il avance tous les trois lieux **où le héros a tenté quelque chose** (`RunState.lieuxEngages`, posé depuis `engageIci`). Traverser sans rien risquer reste possible, mais ce temps-là ne se dépose sur personne. Le Geôlier le dit **une fois par vie**, au 2e lieu quitté sans rien tenter (`JAILER_SANS_RISQUE`) : il est le seul à voir les chiffres.
+- Deux mécaniques souffraient du même renversement, corrigées dans la foulée : **`Choice.coutJour` SUPPRIMÉ** (champ compris) ; le **Gamin des Murets** ne fait plus sauter le Jour de marche (malus déguisé en bonus) — son `evitePerteJour` devient **`rouvreLaRoute`** : tant qu'il accompagne, un échec dur ne referme pas la Croisée suivante.
+- **RÈGLE ACTÉE** : aucune mécanique n'ajoute jamais un Jour à titre de sanction.
+
+#### Priorité 1 — rendre le dé décisif (v1.65.0)
+Mesure du panel : 0 mort sur 16 vies en lançant peu, 8 sur 16 en lançant beaucoup ; « l'anneau bouge avec ce que je porte, jamais avec ce que je tente ».
+- **Un point d'intérêt examiné ouvre l'Anneau d'un cran, au plus deux** (`RunState.poiIci`), et le bénéfice est **NOMMÉ** sous le dé (« TU AS REGARDÉ — FAVORABLE »). Un bénéfice qu'on ne nomme pas n'existe pas.
+- **Le procès CONCLUT** : une relaxe épuise les dépositions jugées (`run.temoins = []`, `procesGagnes++`). On ne juge pas deux fois les mêmes actes — un 2e procès exige de nouveaux griefs, et la salle le dit (`SECOND_PROCES`). Avant, on était rejugé six écrans plus tard avec le témoin identique ; un testeur y est mort.
+- **Le Destin donne toujours quelque chose** : `recompenseDestinQuiTient(allowArme, besace)` ne tire que parmi ce qui TIENT. Mesuré : **54 tirages sur 200** annonçaient « OBTENU » pour un objet qui n'entrait nulle part. Deux slots pleins → dit en fiction, jamais un bandeau menteur.
+- **`Choice.vuSiEchec`** : 3 des 8 jets d'exploration dont la prose nomme un témoin se paient en Soupçon (barème réduit si l'acte a déjà payé à la sélection — mesuré, sinon un seul geste montait à 3 sur 6). Et l'échec surnaturel **simple** laisse enfin une marque (HANTÉ), plus seulement les deux paliers extrêmes.
+
+#### Priorité 2 — l'injecteur de texte sous contrôle (v1.66.0)
+- **`Strate.sur` / `Strate.remplace`** : une strate de familiarité peut se jouer sur un AUTRE écran du lieu et **remplacer** un paragraphe. Le défaut le plus rapporté (6×) : « la bête grise ne se lève pas » servi sur l'écran d'une maison murée sans chien, puis « le chien se lève du seuil » deux touchers plus loin. Une ligne de mémoire écrite comme un remplacement, injectée comme un ajout.
+- **Corbeaux du hameau** : le dédoublonnage se **désarmait tout seul** (vivier épuisé → retour au pool complet + rotation par parité, soit ce qu'il devait remplacer) et son registre était **partagé** avec les réactions d'états. Compteurs dédiés (`lib/dejavu`) et service de la phrase la **moins vue**.
+- **`tools/strates.py` — 6e garde de build.** Une négation dans une strate dont le verbe est affirmé par la CHAÎNE de son lieu. ⚠️ Sa première version ne lisait qu'un écran et **ne voyait pas le cas même qui l'a fait écrire** : un garde se prouve sur son mode d'échec (1 signalement sur le défaut, 0 après correction). Stoplist `AMBIGUS` pour les faux amis nom/verbe (« porte »).
+
+#### Priorité 3 — livrer ce qui était déjà écrit (v1.67.0)
+- **La nuit se raconte** (`NUIT_OUVERTURE` + `NUIT_CORPS`) : dormir avançait le Jour, soignait, atténuait une blessure — et ne disait pas un mot. Une ligne d'ouverture dédupliquée + une ligne de corps (la plus grave d'abord).
+- **Les objets disent ce qu'ils font** : `usageEnMots()` (besace) + champ `usage` sur l'entrée « obtenu » + `.obtenu-usage`. On ramassait une lame sans savoir qu'elle pesait sur les jets.
+- **La trace du prédécesseur arrive où elle pèse** : poussée en queue de liste, elle tombait après les 90 mots du 1er écran ; insérée maintenant **après le 1er paragraphe** de la Borne.
+- **La sortie de zone se souvient** (`traceDeSortie`) : deux lignes tirées de CETTE vie + le **Registre affiché**, où le nom s'inscrit sous les yeux du joueur (`recordTraversee` ne tombait qu'après le dernier tap).
+
+#### Priorité 4 — les 90 premières secondes (v1.68.0)
+- **`portraitDuSeuil`** : la dominante était initialisée sur Courage et ne bougeait que sur un `>` strict → un profil plat s'entendait TOUJOURS dire « Tu avances avant de comprendre ». Profil plat (écart ≤ 1) → **`PORTRAIT_PLAT`** ; sinon ex-æquo départagés par l'**engagement réel** du Seuil (`engagementDuSeuil`).
+- **« Touche pour tout afficher »** pendant la frappe : jusqu'à 5 s d'écran sans un bouton, et rien ne disait que le tap révélait tout.
+- **Le bandeau du Geôlier n'est plus coupé — et la cause n'était pas celle que je croyais.** J'ai supposé une compression flex ; l'A/B sur `flex-shrink` l'a démentie (111 px dans les deux cas). Le vrai mécanisme : **la reprise de partie posait la scène entière sans passer par `decouperEnEcrans`**, la zone débordait, et le suivi du bas de texte poussait le bandeau au-dessus de la ligne de flottaison — **19 px visibles sur 111 à 640 px de haut**. La reprise pagine désormais (tout reste « déjà lu »), et un bandeau pèse ses mots **+ 40** dans le découpage. Re-mesuré : 111/111 aux trois hauteurs, 0 débordement.
+
+#### Priorité 5 — l'image et le texte d'accord (v1.69.0)
+Les trois contradictions vérifiées **en regardant les images**.
+- **Colline aux Gibets** : « le cercle : neuf potences… et au centre, la grande » contre une FILE le long de la crête. L'image est la signature de la zone → **la prose cède**, et y gagne (la file lue de bas en haut est une chronologie ; le Grand Gibet est la dernière, la plus haute).
+- **Champ des Fixés** : « Pas de tombes — des poteaux » contre une image qui montre les deux. Réécrit : un cimetière était là avant, la Fixation a planté ses poteaux entre les dalles.
+- **Moulin sans Ailes** (4e signalement) : ici le texte NE PEUT PAS céder (nom du lieu + POI « la croix d'ombres »). Les deux images marquées **« à remplacer »** dans `data/couverture-verdicts.json` — donc visibles sur la page de couverture, là où Patrick travaille. **Prompt réécrit** : l'ancien contenait « no blades, no vanes, no timber structure », soit trois fois le mot interdit — un prompt de diffusion n'a pas de négation. Plus aucune clause négative, et le sujet devient un **silo** (aucun mot n'appelle d'aile).
+
+- Vérifications : ~50 assertions Playwright avec jets réels (procès gagné en boucle, refus/lieu vécu, nuit, sortie de zone, reprise paginée, textes réconciliés) + 14 tests unitaires (tirage du Destin, dédup des corbeaux). Six gardes de build propres. Réplique `pactum.py` et `run-kit.json` alignés à chaque vague.
+- `APP_VERSION` 1.64.0 → **1.69.0**, `CACHE_VERSION` v103 → **v108**. Déployé (gh-pages `9971ff5`).
+- **Reste ouvert** : maquette de personnalisation des reliques · le Sceau des Landes · l'asset `scene_la_descente` · la notation « J41 » du Registre · le composeur d'écran hors jeu et les invariants de parcours (plan structurel du panel).
