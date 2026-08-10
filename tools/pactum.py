@@ -538,7 +538,14 @@ class Partie:
         if s.get("sejour") and choix is not None:
             sortie = choix.get("sortie")
             self.d.setdefault("choixFaits", []).append(choix.get("id"))
-            if not sortie:
+            # ⚠️ `sortie` peut valoir {} — un choix qui fait PARTIR sans nommer
+            # de destination (le cas de 13 des sorties de la zone). En
+            # JavaScript {} est vrai, en Python il est FAUX : un `if not
+            # sortie` enfermait donc le joueur dans tous les lieux qui
+            # retiennent, alors que le jeu, lui, le laissait sortir. C'est ce
+            # piège qui a rendu six vies sur sept injouables au panel du
+            # 10/08. Ne tester QUE l'absence.
+            if sortie is None:
                 return
             if isinstance(sortie, dict) and sortie.get("toScene"):
                 self.entrer(sortie["toScene"])
