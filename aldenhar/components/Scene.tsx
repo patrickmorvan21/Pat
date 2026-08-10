@@ -1542,6 +1542,15 @@ export default function Scene() {
     let engageDansLeLieu = false;
     let lieuxEngagesApres: number | null = null;
     let horlogeApres: number | null = null;
+    // L'AUBE VIENT QU'ON AIT DORMI OU VEILLÉ (relecture par agents, 10/08) :
+    // une scène de nuit avance le Jour une fois, quel que soit le choix. Le
+    // repos a son propre `run.day += 1` — la clé `nuit|<id>` évite le double
+    // comptage entre les deux voies.
+    const engageIciAvant = runRef.current?.engageIci ?? false;
+    let nuitPassee: string | null = null;
+    if (scene.nuit && vu(runRef.current?.vus, "nuit|" + scene.id) === 0) {
+      nuitPassee = "nuit|" + scene.id;
+    }
     // Le Soupçon au comble (chantier 3 du 23/07) : la traversée est DÉROUTÉE
     // vers le procès du héros — on vient te chercher, où que tu ailles. Jamais
     // au milieu d'une chaîne de rencontre (on finit d'abord ce qui te tient).
@@ -1832,6 +1841,21 @@ export default function Scene() {
     // l'avoir vue suffit.
     const arrivalDecouverte = nextScene.decouverte ?? null;
 
+    // ⚠️ LE LIEU QU'ON QUITTE COMPTE, MÊME HORS `toDest` (relecture par
+    // agents, 10/08). `lieuxEngages` n'était incrémenté que dans la branche
+    // d'orientation : toute la région terminale — la Halte du Hameau et la
+    // Palissade, entrées hors `visited` — portait SIX jets qui ne pouvaient
+    // créditer aucun Jour, contre un « Dormir » qui en créditait un. Mesuré
+    // sur 64 vies : 60 % des Jours du joueur optimal venaient du sommeil.
+    if (
+      lieuxEngagesApres === null &&
+      engageIciAvant &&
+      radical(nextScene.id) !== radical(scene.id)
+    ) {
+      lieuxEngagesApres = (runRef.current?.lieuxEngages ?? 0) + 1;
+      if (lieuxEngagesApres % 3 === 0) jourDeMarche = true;
+    }
+
     const nextIllustration = nextScene.illustration ?? PORTAL;
     const contextChanged = nextIllustration !== lastSceneIlloRef.current;
     const entries: FeedEntry[] = [];
@@ -1839,7 +1863,7 @@ export default function Scene() {
 
     // Jour de marche : la puce ouvre l'écran d'arrivée, avant la couture et
     // l'approche — le temps passe PENDANT la route, pas après.
-    if (jourDeMarche) {
+    if (jourDeMarche || nuitPassee) {
       entries.push({ id: nextId(), kind: "day", day: (runRef.current?.day ?? day) + 1 });
     }
     // LE GEÔLIER COMPTE (10/08) : il est le seul à voir les chiffres, et la
@@ -2433,7 +2457,7 @@ export default function Scene() {
     setStep(nextStep);
     // (le persist qui incrémente run.day arrive juste après — on affiche la
     // même valeur qu'il écrira)
-    if (jourDeMarche) setDay((runRef.current?.day ?? day) + 1);
+    if (jourDeMarche || nuitPassee) setDay((runRef.current?.day ?? day) + 1);
     setScene(nextScene);
     setVisitedMirror(trav.visited);
     // On quitte l'écran : les points d'intérêt du lieu précédent sont oubliés
@@ -2454,7 +2478,11 @@ export default function Scene() {
       // ⚠️ AU PLUS UN jour par arrivée, même si les deux tombent ensemble —
       // deux puces JOUR sur le même écran seraient illisibles, et « la lumière
       // a tourné » ne se dit pas deux fois. Le petit rabais est assumé.
-      if (jourDeMarche) run.day += 1;
+      if (jourDeMarche || nuitPassee) run.day += 1;
+      if (nuitPassee) {
+        run.horloge = (run.horloge ?? run.day) + 1;
+        run.vus = noter(run.vus, nuitPassee);
+      }
       if (lieuxEngagesApres !== null) run.lieuxEngages = lieuxEngagesApres;
       if (horlogeApres !== null) run.horloge = horlogeApres;
       // On entre dans un lieu neuf : ce qu'on y regardera et ce qu'on y
@@ -3134,6 +3162,9 @@ export default function Scene() {
       persist((run) => {
         run.day += 1;
         run.horloge = (run.horloge ?? run.day) + 1;
+        // Même clé que la branche « nuit » d'advance : la nuit ne se compte
+        // qu'une fois, qu'on l'ait dormie ou veillée.
+        if (scene.nuit) run.vus = noter(run.vus, "nuit|" + scene.id);
         run.health = Math.max(0.08, Math.min(1, run.health + 0.35 - usure));
         // BESOINS (spec §3) : dormir est satisfait ici. Les besoins se comptent
         // en JOURS, jamais en scènes — garde-fou n°2 : un joueur qui traverse

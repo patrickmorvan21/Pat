@@ -258,6 +258,14 @@ class Partie:
             self.dit(p, "narration")
         if ligne:
             self.dit(ligne, "narration")
+        # L'AUBE VIENT QU'ON AIT DORMI OU VEILLÉ (10/08) : une scène de nuit
+        # avance le Jour une fois, quel que soit le choix. Mesuré sur 64 vies :
+        # « Dormir » donnait +1 Jour et « Veiller » rien — le choix sûr battait
+        # le choix risqué sur l'écran même qui pose la question.
+        if s.get("nuit") and sid not in self.d.get("nuitsVues", []):
+            self.d.setdefault("nuitsVues", []).append(sid)
+            self.d["jour"] += 1
+            self.dit(f"JOUR {self.d['jour']}", "jour")
         if s.get("registre"):
             self.dit(
                 "[Le Grand Registre défile : cent noms classés par jours de "

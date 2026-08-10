@@ -425,6 +425,23 @@ export type Scene = {
    */
   registre?: boolean;
   /**
+   * CETTE SCÈNE EST UNE NUIT (relecture par agents, 10/08).
+   *
+   * Mesuré sur 64 vies : au camp, « Dormir » donnait +1 Jour et +0,35 de
+   * santé, « Veiller » (INSTINCT 11) ne donnait rien. Le choix sûr battait le
+   * choix risqué sur les trois axes, **sur l'écran même qui pose la
+   * question** — et 60 % des Jours du joueur optimal venaient de là, donc de
+   * zéro risque. C'est l'accident du Jour retourné : la récompense refusée à
+   * qui tente, accordée à qui dort.
+   *
+   * La correction est d'abord de la fiction : **l'aube vient qu'on ait dormi
+   * ou veillé**. Une scène marquée `nuit` avance donc le Jour une fois, quel
+   * que soit le choix. Seul le REPOS soigne et répond au besoin de sommeil —
+   * la différence entre dormir et veiller reste entière, elle ne porte
+   * simplement plus sur le passage du temps.
+   */
+  nuit?: boolean;
+  /**
    * Traversée (spec 21/07) : phrase sensorielle d'orientation affichée sur le
    * bouton d'une scène de liaison qui mène à ce lieu (« vers la crête où
    * grincent les cordes »). Ne révèle jamais un danger frontalement — c'est
@@ -3247,6 +3264,7 @@ export const SCENES: Scene[] = [
   {
     /* Beat 2 — La grange. La barre qu'on pose DEHORS. */
     id: "hameau-halte-2",
+    nuit: true,
     illustration: "assets/scene_landes_hameau_grange_a.png",
     chainNext: "hameau-halte-3",
     narration: [
@@ -3540,6 +3558,7 @@ export const SCENES: Scene[] = [
     /* Beat 6 — variante « nuit dehors » (Serment refusé). Remplace les beats
        1-5 : aucune porte ne s'ouvre à qui n'a pas juré. */
     id: "hameau-halte-dehors",
+    nuit: true,
     illustration: "assets/scene_hameau_nuit_dehors_v2_c.png",
     hameauHalte: true,
     narration: [
@@ -4169,6 +4188,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "campement-2",
+    nuit: true,
     sejour: true,
     illustration: "assets/scene_moulin_campement_2_a.png",
     narration: [
@@ -4357,6 +4377,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "fille-moulin-4",
+    nuit: true,
     illustration: "assets/monstre_fille_moulin_ouvrage_c.png",
     decouverte: "d.fille_vivante",
     narration: [

@@ -812,7 +812,8 @@ def lire_scenes() -> list[dict]:
         for champ, cle in (("combat", "combat"), ("registre", "registre"),
                            ("terminal", "terminal"), ("liaison", "liaison"),
                            ("hameauEntree", "hameauEntree"), ("hameauHalte", "hameauHalte"),
-                           ("fixationTrial", "procesFixation"), ("sejour", "sejour")):
+                           ("fixationTrial", "procesFixation"), ("sejour", "sejour"),
+                           ("nuit", "nuit")):
             if booleen_de(bloc, champ):
                 s[cle] = True
         # AFFORDANCES de la scène : ce sont elles qui décident si un état ouvre
