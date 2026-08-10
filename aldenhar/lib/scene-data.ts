@@ -99,18 +99,6 @@ export type Choice = {
    */
   sortie?: { toScene?: string };
   /**
-   * LE TEMPS PERDU, DÉCLARÉ TEXTE PAR TEXTE. Un échec dur sur ce choix coûte
-   * un Jour — parce que SA prose dit que des heures ont passé.
-   *
-   * ⚠️ Pourquoi un champ et pas une règle par nature : le 9/08 j'ai fait payer
-   * un Jour à TOUS les échecs d'exploration, et l'audit des textes l'a démenti
-   * (« Ils sont deux. Ils sont montés pendant que tu regardais en bas » ne
-   * raconte pas des heures perdues). La règle a donc été retirée en bloc, ce
-   * qui a rendu ces échecs gratuits. Déclarer le coût sur le choix est le seul
-   * réglage qui ne peut jamais contredire ce qui est écrit.
-   */
-  coutJour?: boolean;
-  /**
    * ON T'A VU — l'autre moitié du même problème (panel 10/08).
    *
    * Le 9/08 a retiré le Jour automatique des échecs d'exploration parce que
@@ -5558,7 +5546,6 @@ export const SCENES: Scene[] = [
         // fois dans les mêmes rangs… Ça n'aurait pas dû prendre si
         // longtemps. » C'est le seul échec de la zone qui le dise ; c'est donc
         // le seul qui coûte un Jour.
-        coutJour: true,
         label: "Sortir des rangs",
         sortie: {},
         risky: {
@@ -7400,25 +7387,55 @@ export const FRANCHIT_SORTIE: string[] = [
 ];
 
 /**
- * LE REFUS COÛTE UN JOUR (panel 10/08).
+ * LA NUIT (panel 10/08 — « le repos existe, muet »).
  *
- * Mesure du panel : ne jamais lancer le dé était la stratégie gagnante —
- * 0 mort sur 16 vies passives, 8 sur 16 en risquant. Quitter un lieu sans y
- * avoir rien tenté fait donc tourner la lumière : l'abstention cesse d'être
- * gratuite sans jamais devenir interdite, et les Besoins (comptés en jours)
- * se réveillent. **Observer reste gratuit** — l'arbitrage du 8/08
- * (« récompenser les curieux, pas les pressés ») est préservé : c'est le
- * geste évité qui coûte, pas le regard.
+ * Dormir faisait avancer la puce Jour, remontait la santé, atténuait une
+ * blessure… et ne disait pas un mot. Le seul moment de répit du jeu passait
+ * comme un écran de chargement. Ces lignes racontent ce que la nuit A FAIT —
+ * jamais un chiffre, jamais une jauge : ce qui a cédé, ce qui a tenu.
  *
- * Contrainte d'écriture : ces lignes se jouent aussi bien en pleine lande
- * que dans une ruelle du hameau — donc aucun bâti, personne, rien qu'un
- * ciel et un corps. Elles ne reprochent rien : elles constatent.
+ * Une ligne d'ouverture (au hasard, dédupliquée) + au plus une ligne d'état,
+ * la plus grave d'abord. Deux paragraphes au maximum : la grille de densité
+ * vaut aussi pour les nuits.
  */
-export const JOUR_DE_REFUS: string[] = [
-  "Tu es reparti sans rien tenter, et la lumière a tourné pendant que tu y pensais. Ce que tu n'as pas fait, tu l'as payé en heures.",
-  "Tu as regardé longtemps, puis tu es reparti les mains vides. Quand tu relèves la tête, l'ombre a changé de côté.",
-  "Rien n'a été risqué là-bas, et pourtant quelque chose s'est dépensé : le jour, qui ne t'a pas attendu.",
+export const NUIT_OUVERTURE: string[] = [
+  "Tu dors comme on s'absente : d'un coup, sans transition, et le noir ne te doit rien. Quand tu rouvres les yeux, la lumière a changé de camp.",
+  "La nuit passe sans rêve. C'est déjà ça — les rêves, ici, appartiennent à d'autres.",
+  "Tu t'éveilles deux ou trois fois sans savoir pourquoi, et chaque fois le silence est exactement au même endroit. À la fin, tu ne t'éveilles plus.",
 ];
+
+/** Ce que la nuit a fait au corps. La plus grave l'emporte. */
+export const NUIT_CORPS: Record<string, string> = {
+  entaille:
+    "Au matin, la plaie a cessé de tirer à chaque pas. Elle est toujours là — elle sera toujours là — mais elle a arrêté de parler par-dessus tout le reste.",
+  fievreux:
+    "La fièvre a mangé la nuit avant toi. Tu te lèves avec l'impression d'avoir marché en dormant, et de n'être arrivé nulle part.",
+  affame:
+    "Le ventre te réveille avant la lumière. Tu restes allongé à écouter dehors, en te disant que ça passera, et ça ne passe pas.",
+  hante:
+    "Deux fois dans la nuit, tu t'es assis d'un coup, certain qu'on venait de dire ton nom. Deux fois, il n'y avait que le vent dans les poutres.",
+  boiteux:
+    "La jambe s'est raidie pendant que tu ne t'en servais pas. Il faut quelques pas, au matin, pour lui rappeler à quoi elle sert.",
+  defaut:
+    "Tu te lèves plus solide que tu ne t'es couché. C'est peu de chose, et pourtant tu le sens dans les épaules.",
+};
+
+/**
+ * LE GEÔLIER COMPTE (correction Patrick 10/08).
+ *
+ * Première tentative : quitter un lieu sans rien risquer coûtait un JOUR.
+ * À l'envers — le Jour est le score du Grand Registre, donc la punition
+ * donnait des points au joueur le plus passif. Le Jour se GAGNE maintenant
+ * (voir `RunState.lieuxEngages`), et ce qui reste à dire au joueur prudent,
+ * c'est ce qu'il ne gagne pas. Le Geôlier est la seule voix qui puisse le
+ * dire : il voit les chiffres, et il s'ennuie.
+ *
+ * Servi UNE fois par vie, au deuxième lieu quitté sans avoir rien tenté.
+ */
+export const JAILER_SANS_RISQUE =
+  "Deux fois que tu traverses sans rien tenter. Tu peux continuer, remarque " +
+  "— on ne t'oblige à rien. Mais le livre ne compte pas les pas. Il compte " +
+  "les jours, et un jour où rien ne t'arrive ne s'écrit nulle part.";
 
 /**
  * SECOND PROCÈS (panel 10/08) : on ne juge pas deux fois les mêmes actes.
@@ -7753,6 +7770,62 @@ export const SOUPCON_GEOLIER: Record<number, string> = {
 };
 
 /** La Descente — nœud terminal de la zone (fin sèche, Acte II à venir). */
+/**
+ * LA SORTIE DE ZONE SE SOUVIENT (panel 10/08).
+ *
+ * Mesuré : « deux traversées réussies, fin identique au mot près, aucune
+ * trace ». La Descente racontait la même chose à qui avait juré et tenu qu'à
+ * qui sortait la craie sur le dos, à la première traversée qu'à la
+ * quatrième. Le Registre enregistrait bien le passage — après le dernier tap,
+ * donc invisible.
+ *
+ * Deux lignes au plus, tirées de ce que cette vie a réellement été. La
+ * mort a six écrans ; sortir vivant peut en avoir deux paragraphes.
+ */
+export function traceDeSortie(ctx: {
+  serment: "jure" | "faux" | "refuse" | null;
+  soupcon: number;
+  hameauHalte: boolean;
+  zonesCleared: number;
+  besace: number;
+}): string[] {
+  const out: string[] = [];
+  if (ctx.soupcon >= 4)
+    out.push(
+      "Derrière toi, très loin, quelqu'un a pris le chemin du hameau sans " +
+        "courir. Il n'a pas besoin de courir : tu descends, et ce qu'on dira " +
+        "de toi restera là-haut, à sécher sur les murs."
+    );
+  else if (ctx.serment === "jure" && ctx.hameauHalte)
+    out.push(
+      "Personne ne t'a suivi jusqu'à la porte. Au hameau, une barre reste " +
+        "posée dehors, contre un mur de grange : ils la remettront demain, " +
+        "pour quelqu'un d'autre. Tu as juré, et tu as tenu — c'est plus rare " +
+        "ici que de mourir."
+    );
+  else if (ctx.serment === "refuse")
+    out.push(
+      "Tu n'as rien juré à personne, et personne ne te doit rien. Le vent " +
+        "de la Descente ne fait aucune différence entre les deux."
+    );
+  else
+    out.push(
+      "Tu sors des Landes comme on quitte une pièce où l'on n'a rien dit : " +
+        "sans bruit, et sans être tout à fait sûr d'avoir été vu."
+    );
+  if (ctx.zonesCleared > 0)
+    out.push(
+      "Ce n'est pas la première fois qu'un de tes noms passe cette porte. " +
+        "Le livre les a tous. Il ne les confond jamais."
+    );
+  else if (ctx.besace > 1)
+    out.push(
+      "Tu emportes ce que tu as ramassé là-haut. En bas, ça ne vaudra " +
+        "peut-être rien — mais c'est à toi, et personne ne te l'a donné."
+    );
+  return out;
+}
+
 export const DESCENTE_SCENE: Scene = {
   id: "la-descente",
   // Vue générique des Landes vers le SUD (retour Patrick 7/08 : l'écran

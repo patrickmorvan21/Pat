@@ -212,19 +212,15 @@ class Partie:
             c = lire_compte()
             c["visites"][radical] = c["visites"].get(radical, 0) + 1
             ecrire_compte(c)
-            # LE REFUS COÛTE UN JOUR (panel 10/08) : quitter un lieu sans y
-            # avoir rien risqué fait tourner la lumière. Observer reste
-            # gratuit — c'est le geste évité qui coûte, pas le regard.
-            refus = not self.d.get("engageIci", False)
-            # Le Jour avance en MARCHANT : un jour tous les trois lieux.
-            # AU PLUS UN jour par arrivée, même si les deux tombent ensemble.
-            if len(self.d["visites"]) % 3 == 0 or refus:
-                self.d["jour"] += 1
-                self.dit(f"JOUR {self.d['jour']}", "jour")
-                if refus:
-                    self.dit("Tu es reparti sans rien tenter, et la lumière a "
-                             "tourné pendant que tu y pensais. Ce que tu n'as "
-                             "pas fait, tu l'as payé en heures.", "narration")
+            # LE JOUR SE GAGNE (correction Patrick 10/08) : il avance tous
+            # les trois lieux OÙ L'ON A TENTÉ QUELQUE CHOSE. La version d'avant
+            # faisait PAYER un jour au joueur qui ne risquait rien — à
+            # l'envers, le Jour étant le score du Grand Registre.
+            if self.d.get("engageIci", False):
+                self.d["lieuxEngages"] = self.d.get("lieuxEngages", 0) + 1
+                if self.d["lieuxEngages"] % 3 == 0:
+                    self.d["jour"] += 1
+                    self.dit(f"JOUR {self.d['jour']}", "jour")
             self.d["engageIci"] = False
             self.d["poiIci"] = 0
             if sid in self.k["hameauInterieur"] or sid.startswith("hameau-") or sid == "serment-hameau":
@@ -553,12 +549,6 @@ class Partie:
                 # (règle du vrai jeu — la réplique l'ignorait, panel 9/08).
                 self.d["etats"]["aguerri"] = 3
                 self.dit("ÉTAT — Aguerri", "etat")
-        # Le Jour n'est plus JAMAIS automatique (9/08) — mais un choix dont la
-        # prose dit que des heures ont passé le déclare (`coutJour`).
-        if rate and c.get("coutJour"):
-            self.d["jour"] += 1
-            self.dit("— JOUR %d —" % self.d["jour"], "jour")
-            self.dit("La lande t'a pris un jour. La lumière a tourné sans que tu avances.")
         self.geolierSurJet(naturel)
 
         for e in list(self.d["etats"]):

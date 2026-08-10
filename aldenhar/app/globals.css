@@ -847,6 +847,16 @@ body {
   color: var(--color-ink);
   opacity: 0.6;
 }
+/* Ce que l'objet FAIT (10/08) — distinct de la saveur : pas d'italique, et
+   l'accent, parce que c'est la seule ligne du bandeau qui engage le jeu. */
+.obtenu-usage {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  letter-spacing: 0.3px;
+  color: var(--color-accent);
+  opacity: 0.85;
+}
 
 /* ═══════════════ Galerie de revue — mini-jeux & surprises ═══════════════ */
 

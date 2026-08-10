@@ -53,7 +53,9 @@ export type FeedEntry =
   /** Bannière de rencontre : annonce clairement un combat (spec §6, lisibilité). */
   | { id: string; kind: "combat"; foe: string }
   /** Objet mineur obtenu (13/07) : bandeau tramé « Obtenu — … », pas de popup. */
-  | { id: string; kind: "obtenu"; name: string; rarity: string; flavor: string }
+  /** `usage` (10/08) : ce que l'objet FAIT, en mots. Les objets étaient
+      muets — on ramassait une lame sans savoir qu'elle pesait sur les jets. */
+  | { id: string; kind: "obtenu"; name: string; rarity: string; flavor: string; usage?: string }
   /** États narratifs temporaires actifs, rappelés en tête d'écran après un
       jet (retour Patrick 19/07) — jamais un chiffre, seulement le nom. */
   | { id: string; kind: "etat"; effects: { effectId: string; label: string; positive: boolean }[] };
@@ -225,6 +227,26 @@ export type RunState = {
    * Posé à la résolution d'un jet, remis à faux en arrivant dans un lieu neuf.
    */
   engageIci?: boolean;
+  /**
+   * LIEUX RÉELLEMENT VÉCUS — le compteur qui fait avancer le Jour.
+   *
+   * ⚠️ CORRECTION IMPORTANTE (retour Patrick, 10/08). J'avais fait PAYER un
+   * Jour au joueur qui quitte un lieu sans avoir rien risqué. C'était à
+   * l'envers : le Jour est le SCORE du Grand Registre (on est classé par
+   * jours survécus), donc ma « punition » donnait des points au joueur le
+   * plus passif. Une punition qui améliore le classement n'est pas une
+   * punition.
+   *
+   * Le sens est donc inversé : **le Jour ne se perd pas, il se GAGNE**. Il
+   * avance tous les trois lieux où le héros a réellement tenté quelque
+   * chose. Traverser les Landes sans rien risquer reste possible — mais ce
+   * temps-là ne se dépose sur personne, et le Registre ne le compte pas.
+   *
+   * RÈGLE GÉNÉRALE À TENIR : aucune mécanique ne doit jamais ajouter un Jour
+   * à titre de sanction. Le Jour est un score et une pression (les Besoins
+   * se comptent en jours) ; il se mérite, il ne se facture pas.
+   */
+  lieuxEngages?: number;
   /**
    * Points d'intérêt examinés DANS LE LIEU COURANT (panel 10/08).
    *
@@ -544,6 +566,7 @@ export function loadRun(): RunState {
             vus: p.vus && typeof p.vus === "object" ? p.vus : {},
             routeFermeeEnAttente: p.routeFermeeEnAttente === true,
             engageIci: p.engageIci === true,
+            lieuxEngages: typeof p.lieuxEngages === "number" ? p.lieuxEngages : 0,
             poiIci: typeof p.poiIci === "number" ? p.poiIci : 0,
             dropsServis: Array.isArray(p.dropsServis) ? p.dropsServis : [],
             temoins: Array.isArray(p.temoins) ? p.temoins : [],

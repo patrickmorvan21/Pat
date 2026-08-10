@@ -293,6 +293,29 @@ export function recompenseDestinQuiTient(
   return withId(choisi[Math.floor(Math.random() * choisi.length)]);
 }
 
+/**
+ * CE QUE L'OBJET FAIT, EN MOTS (panel 10/08 : « les objets sont muets »).
+ *
+ * Un objet ramassé n'annonçait que son nom, sa rareté et sa saveur — jamais
+ * son usage. Le joueur portait une lame sans savoir qu'elle pesait sur ses
+ * jets, et un baume sans savoir qu'il fallait le décider. La règle des
+ * chiffres tient : on dit CE QUE ÇA CHANGE, jamais de combien.
+ */
+export function usageEnMots(item: BesaceItem): string {
+  const it = normalizeItem(item);
+  if (it.slot === "actif") {
+    if (it.cure && it.heal) return "À garder pour un mauvais jour : referme une plaie qui dure, et rend des forces. Une seule fois.";
+    if (it.cure) return "À garder pour un mauvais jour : referme une plaie qui dure. Une seule fois.";
+    if (it.heal) return "À garder pour un mauvais jour : rend des forces. Une seule fois.";
+    return "À garder pour un mauvais jour. Une seule fois.";
+  }
+  const p = it.passiveMod ?? 0;
+  if (p <= 0) return "Ne pèse rien dans la main. C'est ailleurs que ça pèse.";
+  if (it.passiveScope === "combat")
+    return "Tant que tu la portes, tu t'en sors mieux quand il faut se battre.";
+  return "Tant que tu le portes, tout te vient un peu plus facilement.";
+}
+
 export const RARITY_LABEL: Record<BesaceRarity, string> = {
   commun: "Commun",
   rare: "Rare",

@@ -45,7 +45,10 @@ import {
   ligneTroupeau,
   FRANCHIT_ENTREE,
   FRANCHIT_SORTIE,
-  JOUR_DE_REFUS,
+  JAILER_SANS_RISQUE,
+  traceDeSortie,
+  NUIT_CORPS,
+  NUIT_OUVERTURE,
   SECOND_PROCES,
 } from "@/lib/scene-data";
 import { contradictionsConnues, faitById, versionDuFait } from "@/lib/contradictions";
@@ -70,7 +73,7 @@ import {
 import { chapterById, drawChapter, LANDES_LORE_FRAGMENTS } from "@/lib/chapters-data";
 import { playMusic } from "@/lib/audio";
 import { loadSettings } from "@/lib/settings";
-import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomSoinMineur, recompenseDestinQuiTient, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
+import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomSoinMineur, recompenseDestinQuiTient, usageEnMots, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { assetUrl, assetCss, assetExiste } from "@/lib/assets";
 import {
   activeRelic,
@@ -1179,6 +1182,34 @@ export default function Scene() {
       setImage(illo);
       setImageKind("scene");
       const openingNarration = [...opening.narration];
+      // LA TRACE DE L'INCARNATION PRÉCÉDENTE (mémo IA externe 8/08, niv. 1-2 :
+      // « dans les 30 à 90 premières secondes, le joueur doit savoir que cette
+      // nouvelle vie n'est pas un recommencement identique »). La CAUSE de la
+      // dernière mort marque la Borne — une ligne, jamais une explication.
+      let traceDuPrecedent: string | null = null;
+      if (mem.deaths > 0 && mem.lastDeath && !mem.lastDeath.fixation) {
+        const lieuMort = mem.lastDeath.lieu ?? "";
+        traceDuPrecedent = (
+          lieuMort.includes("mare")
+            ? "Au pied de la borne, une auréole sombre — de l'eau, séchée " +
+                "depuis peu, à un endroit où il n'a pas plu."
+            : lieuMort.includes("colline") || lieuMort.includes("pendu")
+              ? "Un bout de corde neuve est noué au sommet de la borne. Le " +
+                "nœud est récent. Personne n'attache rien à une borne."
+              : lieuMort.includes("bete") || lieuMort.includes("chien") || lieuMort.includes("meute")
+                ? "Le granit porte des griffures fraîches, à hauteur de " +
+                  "poitrine. Quelque chose est venu jusqu'ici. Et a attendu."
+                : "Quelqu'un est passé ici avant toi. Récemment. L'herbe est " +
+                  "couchée autour de la pierre, et aucune trace ne repart."
+        );
+      }
+      // ⚠️ ELLE ARRIVE MAINTENANT, PAS DEUX TAPS PLUS LOIN (panel 10/08).
+      // Poussée en queue de liste, elle tombait après les 90 mots du premier
+      // écran — donc sur le deuxième, seule, détachée de la pierre qu'elle
+      // décrit. Le panel : « la trace du prédécesseur arrive seule, deux
+      // touchers plus loin ». Elle s'insère donc APRÈS le premier paragraphe
+      // de la Borne, dans le même écran que la borne elle-même.
+      if (traceDuPrecedent) openingNarration.splice(1, 0, traceDuPrecedent);
       // Chaque vie commence à la Borne : on la compte ici (aucune
       // orientation n'y mène) — l'Hésitant peut ainsi se souvenir.
       if (run.step === 0) noterVisiteLieu("borne-frontiere");
@@ -1205,26 +1236,6 @@ export default function Scene() {
           "Tu marches depuis peu et tes jambes le savent déjà. Ce que tu " +
             "portes ne pèse rien dans la main, et pourtant quelque chose en toi " +
             "a été prélevé pour le porter."
-        );
-      }
-      // LA TRACE DE L'INCARNATION PRÉCÉDENTE (mémo IA externe 8/08, niv. 1-2 :
-      // « dans les 30 à 90 premières secondes, le joueur doit savoir que cette
-      // nouvelle vie n'est pas un recommencement identique »). La CAUSE de la
-      // dernière mort marque la Borne — une ligne, jamais une explication.
-      if (mem.deaths > 0 && mem.lastDeath && !mem.lastDeath.fixation) {
-        const lieuMort = mem.lastDeath.lieu ?? "";
-        openingNarration.push(
-          lieuMort.includes("mare")
-            ? "Au pied de la borne, une auréole sombre — de l'eau, séchée " +
-                "depuis peu, à un endroit où il n'a pas plu."
-            : lieuMort.includes("colline") || lieuMort.includes("pendu")
-              ? "Un bout de corde neuve est noué au sommet de la borne. Le " +
-                "nœud est récent. Personne n'attache rien à une borne."
-              : lieuMort.includes("bete") || lieuMort.includes("chien") || lieuMort.includes("meute")
-                ? "Le granit porte des griffures fraîches, à hauteur de " +
-                  "poitrine. Quelque chose est venu jusqu'ici. Et a attendu."
-                : "Quelqu'un est passé ici avant toi. Récemment. L'herbe est " +
-                  "couchée autour de la pierre, et aucune trace ne repart."
         );
       }
       // Persistance environnementale (§17) : trace des runs précédentes.
@@ -1505,9 +1516,10 @@ export default function Scene() {
     // Le Jour de marche (arbitrage Patrick 7/08) : posé dans la branche
     // toDest, appliqué à la puce + au persist plus bas.
     let jourDeMarche = false;
-    // Le Jour de refus (panel 10/08) : quitter un lieu sans y avoir rien
-    // risqué. Posé dans la branche toDest, comme le Jour de marche.
-    let jourDeRefus = false;
+    // Le lieu qu'on quitte a-t-il été vécu (un jet y a-t-il été lancé) ?
+    // Lu dans la branche toDest, avant la remise à zéro. Voir `lieuxEngages`.
+    let engageDansLeLieu = false;
+    let lieuxEngagesApres: number | null = null;
     // Le Soupçon au comble (chantier 3 du 23/07) : la traversée est DÉROUTÉE
     // vers le procès du héros — on vient te chercher, où que tu ailles. Jamais
     // au milieu d'une chaîne de rencontre (on finit d'abord ce qui te tient).
@@ -1550,10 +1562,13 @@ export default function Scene() {
       // elle embusque la route du Chemin Creux (1re visite), puis son
       // chainNext enchaîne sur le lieu lui-même. La destination est comptée
       // visitée dès l'embuscade : le pool ne la réoffre jamais.
-      // LE REFUS COÛTE UN JOUR (panel 10/08) — voir `JOUR_DE_REFUS`. On lit
-      // l'engagement AVANT de le remettre à zéro : a-t-on risqué quoi que ce
-      // soit dans le lieu qu'on quitte ? Sinon la lumière tourne.
-      jourDeRefus = !(runRef.current?.engageIci ?? false);
+      // LE JOUR SE GAGNE (correction Patrick 10/08 — voir `lieuxEngages`).
+      // On lit l'engagement AVANT de le remettre à zéro : a-t-on risqué quoi
+      // que ce soit dans le lieu qu'on quitte ? Si oui, ce lieu compte ; si
+      // non, il ne compte pas — le temps ne se dépose pas sur une traversée
+      // où rien n'est arrivé. Jamais un jour AJOUTÉ en punition : le Jour est
+      // le score du Registre.
+      engageDansLeLieu = runRef.current?.engageIci ?? false;
       const embuscade = opts.toDest === "chemin-creux" && !trav.visited.includes("chemin-creux");
       nextScene = resoudre(embuscade ? "bete-chemins-creux" : opts.toDest, runRef.current) ?? sceneById(ENTRY_SCENE)!;
       trav.phase = "scene";
@@ -1589,20 +1604,17 @@ export default function Scene() {
       if (!trav.visited.includes(opts.toDest)) {
         trav.visited = [...trav.visited, opts.toDest];
         noterVisiteLieu(radical(opts.toDest));
-        // LE JOUR AVANCE EN MARCHANT (arbitrage Patrick 7/08) : tous les
-        // trois lieux traversés, un jour passe — en plus du sommeil et des
-        // échecs durs. C'est ce qui remet l'économie du temps à l'endroit :
-        // survivre longtemps redevient avoir marché loin, et les Besoins
-        // (comptés en jours) se réveillent enfin.
-        // Le GUIDE connaît les raccourcis (le Gamin des Murets, `evitePerteJour`).
-        // Son bénéfice portait sur le Jour d'un échec dur — ce Jour n'existe
-        // plus (9/08) : il porte maintenant sur le Jour de MARCHE, le seul qui
-        // reste. Sans ce report, l'état promettrait un effet devenu inexistant
-        // (le défaut `cacheFuite` du 5/08, à ne pas refaire).
-        const guideRoute = etatsActifs(idsEtats(faitsDe(runRef.current))).some(
-          (e) => e.evitePerteJour
-        );
-        if (trav.visited.length % 3 === 0 && !guideRoute) jourDeMarche = true;
+        // LE JOUR AVANCE EN VIVANT (arbitrage 7/08, corrigé le 10/08) : tous
+        // les trois lieux OÙ L'ON A TENTÉ QUELQUE CHOSE, un jour passe. La
+        // version d'avant comptait les lieux traversés, quoi qu'on y fasse —
+        // le joueur le plus prudent accumulait donc le meilleur score du
+        // Registre en ne faisant rien. Survivre longtemps redevient avoir
+        // vécu longtemps, et les Besoins (comptés en jours) suivent la même
+        // mesure.
+        if (engageDansLeLieu) {
+          lieuxEngagesApres = (runRef.current?.lieuxEngages ?? 0) + 1;
+          if (lieuxEngagesApres % 3 === 0) jourDeMarche = true;
+        }
       }
     } else if (scene.hameauHalte) {
       // La nuit est passée : la traversée reprend vers la sortie de zone.
@@ -1724,7 +1736,14 @@ export default function Scene() {
       // UN ÉCHEC DUR A DÉPENSÉ QUELQUE CHOSE : hors séjour il n'y avait pas
       // d'option à retirer, alors c'est le MONDE qui se resserre — cette
       // Croisée-ci n'offre plus qu'une direction.
-      routeFermeeIci = runRef.current?.routeFermeeEnAttente === true;
+      // LE GUIDE CONNAÎT UN AUTRE CHEMIN (le Gamin des Murets) : tant qu'il
+      // accompagne, la route ne se referme pas. Son ancien bénéfice — sauter
+      // le Jour de marche — était un malus déguisé en bonus, le Jour étant le
+      // score du Registre (correction 10/08).
+      const guideRoute = etatsActifs(idsEtats(faitsDe(runRef.current))).some(
+        (e) => e.rouvreLaRoute
+      );
+      routeFermeeIci = runRef.current?.routeFermeeEnAttente === true && !guideRoute;
       nextScene = makeLiaison(
         pair[0],
         pair[1],
@@ -1782,16 +1801,19 @@ export default function Scene() {
 
     // Jour de marche : la puce ouvre l'écran d'arrivée, avant la couture et
     // l'approche — le temps passe PENDANT la route, pas après.
-    if (jourDeMarche || jourDeRefus) {
+    if (jourDeMarche) {
       entries.push({ id: nextId(), kind: "day", day: (runRef.current?.day ?? day) + 1 });
-      // Le refus se DIT — un coût qu'on ne comprend pas est un bug aux yeux
-      // du joueur. La marche, elle, se passe de commentaire : on a marché.
-      if (jourDeRefus) {
-        entries.push({
-          id: nextId(),
-          kind: "narration",
-          text: JOUR_DE_REFUS[nextStep % JOUR_DE_REFUS.length],
-        });
+    }
+    // LE GEÔLIER COMPTE (10/08) : il est le seul à voir les chiffres, et la
+    // seule voix qui peut dire au joueur passif ce qu'il est en train de ne
+    // pas gagner. UNE fois par vie, au deuxième lieu quitté sans avoir rien
+    // tenté — assez tôt pour servir, assez rare pour ne pas sermonner.
+    if (opts?.toDest && !engageDansLeLieu) {
+      const refus = vu(runRef.current?.vus, "refus") + 1;
+      persist((r) => { r.vus = noter(r.vus, "refus"); });
+      if (refus === 2 && vu(runRef.current?.vus, "refus-dit") === 0) {
+        entries.push({ id: nextId(), kind: "jailer", text: JAILER_SANS_RISQUE });
+        persist((r) => { r.vus = noter(r.vus, "refus-dit"); });
       }
     }
     if (opts?.prepend) entries.push(...opts.prepend);
@@ -1813,14 +1835,14 @@ export default function Scene() {
     if (opts?.destinItem) {
       const it = opts.destinItem;
       obtainedItem = it;
-      entries.push({ id: nextId(), kind: "obtenu", name: it.name, rarity: RARITY_LABEL[it.rarity as BesaceRarity], flavor: it.flavor });
+      entries.push({ id: nextId(), kind: "obtenu", name: it.name, rarity: RARITY_LABEL[it.rarity as BesaceRarity], flavor: it.flavor, usage: usageEnMots(it) });
     }
     // Objet gagné par un choix d'examen réussi (grantsLoot, 23/07) : même
     // bandeau « Obtenu » — déjà persisté côté Besace dans onComplete.
     if (opts?.grantedItem) {
       const it = opts.grantedItem;
       obtainedItem = it;
-      entries.push({ id: nextId(), kind: "obtenu", name: it.name, rarity: RARITY_LABEL[it.rarity as BesaceRarity], flavor: it.flavor });
+      entries.push({ id: nextId(), kind: "obtenu", name: it.name, rarity: RARITY_LABEL[it.rarity as BesaceRarity], flavor: it.flavor, usage: usageEnMots(it) });
     }
     // Prix différé (§17) : une dette échue se règle ici, avant la scène suivante.
     const dueDebts = (runRef.current?.debts ?? []).filter((d) => d.settleAtStep <= nextStep);
@@ -2242,7 +2264,7 @@ export default function Scene() {
           run.besace = [...run.besace, item];
           run.looted = [...(run.looted ?? []), lootId];
         });
-        entries.push({ id: nextId(), kind: "obtenu", name: item.name, rarity: RARITY_LABEL[item.rarity], flavor: item.flavor });
+        entries.push({ id: nextId(), kind: "obtenu", name: item.name, rarity: RARITY_LABEL[item.rarity], flavor: item.flavor, usage: usageEnMots(item) });
       }
     }
     // Soin générique de secours — désormais RARE (spec 23/07 : « peu de soins
@@ -2268,8 +2290,32 @@ export default function Scene() {
           run.besace = [...run.besace, found];
           run.dropsServis = [...(run.dropsServis ?? []), found.name];
         });
-        entries.push({ id: nextId(), kind: "obtenu", name: found.name, rarity: RARITY_LABEL[found.rarity as BesaceRarity], flavor: found.flavor });
+        entries.push({ id: nextId(), kind: "obtenu", name: found.name, rarity: RARITY_LABEL[found.rarity as BesaceRarity], flavor: found.flavor, usage: usageEnMots(found) });
       }
+    }
+    // LA SORTIE DE ZONE SE SOUVIENT (panel 10/08 : « deux traversées
+    // réussies, fin identique au mot près, aucune trace »). Deux lignes
+    // tirées de cette vie-ci, puis le Registre où la ligne du héros s'inscrit
+    // SOUS SES YEUX. `recordTraversee` ne tombe qu'au dernier tap, donc le
+    // joueur ne voyait jamais son nom entrer dans le livre : c'est le défaut
+    // de LIVRAISON que le panel décrit, pas un défaut de mémoire.
+    if (nextScene.terminal && !nextScene.renoncement) {
+      const r = runRef.current ?? loadRun();
+      const m = loadMemory();
+      for (const t of traceDeSortie({
+        serment: r.hameau?.serment ?? null,
+        soupcon: r.soupcon ?? 0,
+        hameauHalte: Boolean(r.hameau?.halte),
+        zonesCleared: m.zonesCleared ?? 0,
+        besace: (r.besace ?? []).length,
+      })) {
+        entries.push({ id: nextId(), kind: "narration", text: t });
+      }
+      entries.push({
+        id: nextId(),
+        kind: "registre",
+        rows: buildRegistre(m, r.heroName, r.day),
+      });
     }
     // Le Grand Registre (§19) : classement inline, ligne du joueur marquée.
     if (nextScene.registre) {
@@ -2347,7 +2393,7 @@ export default function Scene() {
     setStep(nextStep);
     // (le persist qui incrémente run.day arrive juste après — on affiche la
     // même valeur qu'il écrira)
-    if (jourDeMarche || jourDeRefus) setDay((runRef.current?.day ?? day) + 1);
+    if (jourDeMarche) setDay((runRef.current?.day ?? day) + 1);
     setScene(nextScene);
     setVisitedMirror(trav.visited);
     // On quitte l'écran : les points d'intérêt du lieu précédent sont oubliés
@@ -2368,7 +2414,8 @@ export default function Scene() {
       // ⚠️ AU PLUS UN jour par arrivée, même si les deux tombent ensemble —
       // deux puces JOUR sur le même écran seraient illisibles, et « la lumière
       // a tourné » ne se dit pas deux fois. Le petit rabais est assumé.
-      if (jourDeMarche || jourDeRefus) run.day += 1;
+      if (jourDeMarche) run.day += 1;
+      if (lieuxEngagesApres !== null) run.lieuxEngages = lieuxEngagesApres;
       // On entre dans un lieu neuf : ce qu'on y regardera et ce qu'on y
       // tentera se comptent à partir de zéro.
       if (opts?.toDest) {
@@ -2539,6 +2586,7 @@ export default function Scene() {
         name: it.name,
         rarity: RARITY_LABEL[it.rarity as BesaceRarity],
         flavor: it.flavor,
+        usage: usageEnMots(it),
       });
     }
     // Un critique reste un critique : le Geôlier commente même quand on n'a
@@ -2785,6 +2833,7 @@ export default function Scene() {
             name: gained.name,
             rarity: RARITY_LABEL[gained.rarity],
             flavor: gained.flavor,
+            usage: usageEnMots(gained),
           });
         }
         // Le SAVOIR (25/07) : l'examen apprend une information qui ouvrira un
@@ -3052,6 +3101,27 @@ export default function Scene() {
         m.bestDays = Math.max(m.bestDays, newDay);
       });
       const prepend: FeedEntry[] = [{ id: nextId(), kind: "day", day: newDay }];
+      // LA NUIT SE RACONTE (panel 10/08 : « le repos existe, muet »). Le seul
+      // répit du jeu passait comme un écran de chargement. Une ligne
+      // d'ouverture dédupliquée sur la vie + une ligne de corps, la plus
+      // grave d'abord — le joueur doit LIRE ce que la nuit vient de faire.
+      {
+        const dejaVues = runRef.current?.vus ?? {};
+        let moins = Infinity;
+        for (const t of NUIT_OUVERTURE) moins = Math.min(moins, vu(dejaVues, "nuit|" + t));
+        const frais = NUIT_OUVERTURE.filter((t) => vu(dejaVues, "nuit|" + t) === moins);
+        const ouverture = frais[newDay % frais.length];
+        prepend.push({ id: nextId(), kind: "narration", text: ouverture });
+        persist((r) => { r.vus = noter(r.vus, "nuit|" + ouverture); });
+        // Les états sont lus APRÈS le repos : c'est bien ce qui reste au
+        // matin que la ligne décrit, pas ce qu'on avait en se couchant.
+        const restants = idsEtats(faitsDe(runRef.current));
+        const blesse = (runRef.current?.effects ?? []).some((e) => e.id === "entaille");
+        const cle =
+          ["fievreux", "hante", "affame", "boiteux"].find((k) => restants.includes(k)) ??
+          (blesse ? "entaille" : "defaut");
+        prepend.push({ id: nextId(), kind: "narration", text: NUIT_CORPS[cle] });
+      }
       // ═══ #8 LE VOL NOCTURNE (6/08) : au réveil, un objet manque — remplacé
       // par un objet jamais ramassable ailleurs, TRAÇABLE. L'objet volé est
       // retenu (run.volNocturne) pour un paiement futur : le reconnaître au
@@ -3321,12 +3391,13 @@ export default function Scene() {
             // Un échec d'exploration coûte ce que son texte dit : l'occasion,
             // et le fait d'avoir été vu. Le Jour n'avance plus qu'en MARCHANT
             // (un tous les trois lieux) et au campement.
-            // Le Jour n'est plus JAMAIS automatique — mais un texte qui dit
-            // que des heures ont passé doit être suivi d'effet. `coutJour` est
-            // déclaré choix par choix, par celui qui écrit la prose.
-            const usureDay =
-              tierIsFail(tier) &&
-              Boolean(scene.choices.find((c) => c.id === selectedId)?.coutJour);
+            // ⚠️ ET PLUS AUCUN JOUR AJOUTÉ PAR UN ÉCHEC (correction Patrick
+            // 10/08). Il restait un champ `coutJour` posé sur un choix, au
+            // motif que sa prose disait que des heures avaient passé. Mais le
+            // Jour est le SCORE du Grand Registre : le donner en punition
+            // récompense l'échec. Le temps passé par ce jet est compté comme
+            // tout le reste — le lieu a été VÉCU, il entre dans `lieuxEngages`.
+            const usureDay = false;
             // Objet gagné par un choix d'examen réussi (grantsLoot, 23/07) :
             // l'objet se mérite — jamais accordé sur un palier d'échec.
             const chosen = scene.choices.find((c) => c.id === selectedId);
@@ -3941,6 +4012,11 @@ function FeedItem({
             Obtenu — {entry.name} · {entry.rarity}
           </span>
           <span className="obtenu-flavor">{entry.flavor}</span>
+          {/* CE QUE ÇA FAIT (10/08) : la saveur dit ce que l'objet EST, cette
+              ligne dit ce qu'il CHANGE. Jamais un chiffre — le joueur ne doit
+              pas avoir à ouvrir un menu pour savoir s'il vient de gagner
+              quelque chose d'utile. */}
+          {entry.usage ? <span className="obtenu-usage">{entry.usage}</span> : null}
         </div>
       );
     case "registre":

@@ -234,4 +234,4 @@
  *           imposé : tout finit au muret. + 14 vignettes de vie du village
  *           sur les liaisons intérieures, dont deux qui dépendent du Serment.
  */
-export const APP_VERSION = "1.66.0";
+export const APP_VERSION = "1.67.0";

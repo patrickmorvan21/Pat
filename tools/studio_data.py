@@ -625,8 +625,6 @@ def lire_choix(bloc: str) -> list[dict]:
                 ch["nature"] = m_nat.group(1)
             # Le Jour perdu, déclaré texte par texte (9/08) : même raison de
             # voyager que la nature — sans lui la réplique ne facture rien.
-            if booleen_de(c, "coutJour"):
-                ch["coutJour"] = True
             # ON T'A VU (10/08) : sans ce champ, la réplique jouerait un
             # modèle de coût plus doux que le jeu — le piège de la liste
             # blanche, retrouvé une fois de plus.

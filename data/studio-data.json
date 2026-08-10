@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-10T16:22:38Z",
- "commit": "fd7f54f",
+ "genere": "2026-08-10T17:08:30Z",
+ "commit": "80b42e1",
  "zones": [
   {
    "id": "landes",
@@ -6024,7 +6024,6 @@
       "funeste": "1 naturel. Tu sors des rangs. Le compte à voix basse, derrière toi, s'est arrêté au moment exact où tu as passé la porte. ♦ −2"
      },
      "nature": "exploration",
-     "coutJour": true,
      "sortie": {}
     }
    ],
@@ -8151,7 +8150,7 @@
    ],
    "remede": "Il rentre chez lui au bout de deux lieux — ou détale au premier combat.",
    "guerison": "Il s'arrête net au bout du muret. « Là, c'est plus chez moi. » Il attend que tu sois assez loin pour ne plus pouvoir le rappeler, puis il fait demi-tour en courant sur la pierre.",
-   "hint": "Le gamin connaît les raccourcis",
+   "hint": "Le gamin connaît un autre chemin",
    "jets": {},
    "effets": [],
    "lignesIntruses": []

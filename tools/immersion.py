@@ -199,12 +199,33 @@ def pools() -> list[dict]:
         for i, t in enumerate(chaines_de_tableau(craie.group(1))):
             out.append({"pool": f"soupçon craie {i + 1}", "garde": {"lande", "gens"}, "textes": [t]})
 
-    # — LE JOUR DE REFUS (10/08) : servi à l'arrivée dans le lieu suivant,
-    #   qu'on vienne de la lande ou d'une ruelle. Aucun bâti, personne.
-    refus = re.search(r"JOUR_DE_REFUS[^=]*=\s*\[(.*?)\n\];", scene_src, re.S)
-    if refus:
-        for i, t in enumerate(chaines_de_tableau(refus.group(1))):
-            out.append({"pool": f"jour de refus {i + 1}", "garde": {"partout"}, "textes": [t]})
+    # — LA NUIT (10/08) : servie au campement, qui est le Moulin sans Ailes —
+    #   un abri, donc un toit et des poutres sont acquis. En revanche aucun
+    #   VILLAGE : le Moulin est en pleine lande.
+    for nom, ancre in (("nuit ouverture", "const NUIT_OUVERTURE"), ):
+        for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, ancre))):
+            out.append({"pool": f"{nom} {i + 1}", "garde": {"lande"}, "textes": [t]})
+    mnc = re.search(r"NUIT_CORPS[^=]*=\s*\{(.*?)\n\};", scene_src, re.S)
+    if mnc:
+        for i, t in enumerate(chaines_de_tableau(mnc.group(1))):
+            out.append({"pool": f"nuit corps {i + 1}", "garde": {"lande"}, "textes": [t]})
+
+    # — LA SORTIE DE ZONE (10/08) : jouée à la Descente, au bout des Landes.
+    #   Le hameau peut y être NOMMÉ (on le laisse derrière soi, il est loin) :
+    #   c'est un souvenir de la traversée, pas un décor présent.
+    mts = re.search(r"export function traceDeSortie\(.*?\n\}", scene_src, re.S)
+    if mts:
+        for i, t in enumerate(chaines_de_tableau(mts.group(0))):
+            out.append({"pool": f"sortie de zone {i + 1}", "garde": {"lande"}, "textes": [t]})
+
+    # — LE GEÔLIER QUI COMPTE (10/08) : il parle de partout.
+    sr = re.search(r"JAILER_SANS_RISQUE\s*=\s*((?:\s*\"(?:[^\"\\]|\\.)*\"\s*\+?)+)", scene_src)
+    if sr:
+        out.append({
+            "pool": "geôlier sans risque",
+            "garde": {"partout"},
+            "textes": ["".join(re.findall(r'"((?:[^"\\]|\\.)*)"', sr.group(1)))],
+        })
 
     # — SECOND PROCÈS (10/08) : toujours au Petit Tribunal, donc le village
     #   et ses gens sont acquis.

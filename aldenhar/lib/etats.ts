@@ -84,11 +84,16 @@ export type Etat = {
   /** Annule le premier échec critique de la journée (Serein — 2ᵉ lot). */
   amortitCritique?: boolean;
   /**
-   * Un guide connaît les raccourcis : un échec dur ne coûte plus le JOUR
-   * qu'il coûte d'habitude. Bénéfice réel, jamais chiffré — il se lit au fait
-   * que la puce « Jour » ne bouge pas.
+   * Un guide connaît un autre chemin : quand un échec dur referme une route,
+   * la Croisée suivante offre quand même ses deux directions.
+   *
+   * ⚠️ Cet effet FAISAIT sauter le Jour de marche (« il connaît les
+   * raccourcis »). C'était un malus déguisé en bonus : le Jour est le SCORE
+   * du Grand Registre, donc en épargner un fait perdre du rang. Le bénéfice
+   * porte désormais sur ce qui est vraiment un coût — le monde qui se
+   * referme. Voir la note sur `RunState.lieuxEngages`.
    */
-  evitePerteJour?: boolean;
+  rouvreLaRoute?: boolean;
   /** Le compagnon détale au premier combat. Se dit, ne se subit pas en silence. */
   fuitLeCombat?: string;
 };
@@ -288,8 +293,8 @@ export const ETATS: Etat[] = [
       "Il s'arrête net au bout du muret. « Là, c'est plus chez moi. » Il " +
       "attend que tu sois assez loin pour ne plus pouvoir le rappeler, puis " +
       "il fait demi-tour en courant sur la pierre.",
-    hint: "Le gamin connaît les raccourcis",
-    evitePerteJour: true,
+    hint: "Le gamin connaît un autre chemin",
+    rouvreLaRoute: true,
     fuitLeCombat:
       "Le gamin est parti avant que tu aies vu quoi. Pas un cri, pas un mot " +
       "— juste le bruit de ses pieds sur la pierre sèche, qui s'éloigne, et " +
