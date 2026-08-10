@@ -212,10 +212,21 @@ class Partie:
             c = lire_compte()
             c["visites"][radical] = c["visites"].get(radical, 0) + 1
             ecrire_compte(c)
+            # LE REFUS COÛTE UN JOUR (panel 10/08) : quitter un lieu sans y
+            # avoir rien risqué fait tourner la lumière. Observer reste
+            # gratuit — c'est le geste évité qui coûte, pas le regard.
+            refus = not self.d.get("engageIci", False)
             # Le Jour avance en MARCHANT : un jour tous les trois lieux.
-            if len(self.d["visites"]) % 3 == 0:
+            # AU PLUS UN jour par arrivée, même si les deux tombent ensemble.
+            if len(self.d["visites"]) % 3 == 0 or refus:
                 self.d["jour"] += 1
                 self.dit(f"JOUR {self.d['jour']}", "jour")
+                if refus:
+                    self.dit("Tu es reparti sans rien tenter, et la lumière a "
+                             "tourné pendant que tu y pensais. Ce que tu n'as "
+                             "pas fait, tu l'as payé en heures.", "narration")
+            self.d["engageIci"] = False
+            self.d["poiIci"] = 0
             if sid in self.k["hameauInterieur"] or sid.startswith("hameau-") or sid == "serment-hameau":
                 self.d["hameauEntree"] = True
         if s.get("combat"):
@@ -409,6 +420,7 @@ class Partie:
         if o["kind"] == "poi":
             p = o["poi"]
             self.d["poiVus"].append(p["id"])
+            self.d["poiIci"] = self.d.get("poiIci", 0) + 1
             self.d["poiOuvert"] = False
             self.d["pas"] += 1
             self.dit(p["approche"], "narration")
@@ -456,6 +468,10 @@ class Partie:
             if tours <= 0:
                 continue
             m += 2 if e == "aguerri" else -2 if e == "entaille" else 0
+        # LA PRÉPARATION (panel 10/08) : ce qu'on a REGARDÉ dans ce lieu ouvre
+        # l'Anneau, d'un cran par point d'intérêt, au plus deux. C'est le seul
+        # levier par lequel ce que le joueur TENTE change ses chances.
+        m += min(2, self.d.get("poiIci", 0))
         return m
 
     def resoudre(self, c: dict) -> None:
@@ -484,6 +500,9 @@ class Partie:
                 texte = texte[len(pref):]
         texte = texte.split(" ♦")[0].strip()
         self.dit(texte, "narration")
+        # Tu as TENTÉ quelque chose ici : quitter ce lieu ne coûtera pas de
+        # jour. Ce qui compte est d'avoir lancé, pas d'avoir réussi.
+        self.d["engageIci"] = True
 
         s = self.scene()
         nature = c.get("nature") or ("physique" if s.get("combat") else "social")
@@ -492,14 +511,24 @@ class Partie:
         cout = COUT.get(palier, 0.0) if nature == "physique" else 0.0
         if cout:
             self.d["sante"] = max(0.0, round(self.d["sante"] - cout, 3))
+        # ON T'A VU (10/08) : un échec d'exploration dont la prose nomme un
+        # témoin se paie comme un échec social.
+        if rate and c.get("vuSiEchec") and nature != "social":
+            # Quand l'acte a DÉJÀ payé à la sélection, le ratage n'ajoute
+            # qu'un cran (sinon un seul geste montait à 3 sur 6).
+            deja = (c.get("soupcon") or 0) > 0
+            vu = (2 if deja else 3) if palier == "malediction" else (1 if deja else 2) if dur else 1
+            self.d["soupcon"] = min(6, self.d["soupcon"] + vu)
         if rate and nature == "social" and not s.get("combat"):
             # MALÉDICTION strictement pire que FUNESTE (panel 9/08) : la pire
             # face du dé ne peut pas coûter la même chose qu'un échec dur.
             vu = 3 if palier == "malediction" else 2 if dur else 1
             self.d["soupcon"] = min(6, self.d["soupcon"] + vu)
-        if dur and nature == "surnaturel":
-            self.d["etats"]["hante" if palier == "critique" else "marque"] = 999
-            self.dit("ÉTAT — " + ("Hanté" if palier == "critique" else "Marqué"), "etat")
+        # SURNATUREL : étendu à l'échec simple (10/08) — s'en tirer indemne
+        # après avoir touché ce qu'il ne faut pas vide le mot de son sens.
+        if rate and nature == "surnaturel":
+            self.d["etats"]["marque" if palier == "malediction" else "hante"] = 999
+            self.dit("ÉTAT — " + ("Marqué" if palier == "malediction" else "Hanté"), "etat")
         if s.get("combat"):
             if palier in ("echec", "critique", "malediction"):
                 self.d["etats"]["entaille"] = 999
@@ -525,6 +554,13 @@ class Partie:
 
         if not rate and c.get("donneObjet"):
             self.gagner(c["donneObjet"])
+        # LE DESTIN DONNE TOUJOURS QUELQUE CHOSE (panel 10/08) — la réplique
+        # ne donnait RIEN sur un 20 naturel : trois testeurs ont conclu que le
+        # meilleur résultat du jeu était vide. Elle ne porte pas le catalogue
+        # de la Besace, donc l'objet est nommé génériquement ; ce qui compte
+        # est que le moment le plus rare du jeu ne se solde pas par rien.
+        if palier == "destin":
+            self.dit("OBTENU — une trouvaille rare (Destin)", "obtenu")
         if s.get("procesFixation") and rate:
             self.mourir(texte or "Le hameau a jugé.")
             return

@@ -266,6 +266,33 @@ export function randomRecompenseDestin(allowArme: boolean): BesaceItem {
   return withId(pool[Math.floor(Math.random() * pool.length)]);
 }
 
+/**
+ * LE DESTIN DONNE TOUJOURS QUELQUE CHOSE (panel 10/08).
+ *
+ * Le tirage libre pouvait sortir un objet dont le slot était plein : le
+ * bandeau « Obtenu » s'affichait quand même, et le joueur cherchait ensuite
+ * dans sa Besace un objet qui n'y était jamais entré. Un 20 naturel — le
+ * moment le plus rare du jeu — se soldait par un mensonge d'interface.
+ *
+ * On tire donc parmi ce qui TIENT. Si les deux slots sont pleins, on rend
+ * null : l'appelant le dit alors dans la fiction (les mains pleines sont un
+ * vrai arbitrage) plutôt que d'annoncer un gain fantôme.
+ */
+export function recompenseDestinQuiTient(
+  allowArme: boolean,
+  besace: BesaceItem[]
+): BesaceItem | null {
+  const eligible = RECOMPENSES_DESTIN.filter(
+    (r) => (allowArme || r.kind !== "arme") && hasBesaceRoom(besace, r.slot)
+  );
+  if (eligible.length === 0) return null;
+  const rares = eligible.filter((r) => r.rarity === "rare");
+  const legendaires = eligible.filter((r) => r.rarity === "legendaire");
+  const pool = Math.random() < 0.75 && rares.length > 0 ? rares : legendaires;
+  const choisi = pool.length > 0 ? pool : eligible;
+  return withId(choisi[Math.floor(Math.random() * choisi.length)]);
+}
+
 export const RARITY_LABEL: Record<BesaceRarity, string> = {
   commun: "Commun",
   rare: "Rare",

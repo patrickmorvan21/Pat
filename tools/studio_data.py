@@ -617,6 +617,11 @@ def lire_choix(bloc: str) -> list[dict]:
             # voyager que la nature — sans lui la réplique ne facture rien.
             if booleen_de(c, "coutJour"):
                 ch["coutJour"] = True
+            # ON T'A VU (10/08) : sans ce champ, la réplique jouerait un
+            # modèle de coût plus doux que le jeu — le piège de la liste
+            # blanche, retrouvé une fois de plus.
+            if booleen_de(c, "vuSiEchec"):
+                ch["vuSiEchec"] = True
         elif "locked:" in c:
             ch["type"] = "verrouille"
             ch["stat"] = next((s for s in STATS if f'"{s}"' in c), None)

@@ -209,6 +209,36 @@ export type RunState = {
       jamais un booléen : le texte peut dire « la deuxième fois ». */
   vus?: Record<string, number>;
   /**
+   * A-T-ON ENGAGÉ QUELQUE CHOSE DANS CE LIEU ? (panel 10/08)
+   *
+   * Mesuré par le panel : traverser la zone en ne lançant presque jamais le dé
+   * est la stratégie gagnante — 0 mort sur 16 vies, contre 8 sur 16 en le
+   * lançant. Le pilier central du jeu était devenu facultatif.
+   *
+   * Le levier retenu (et débattu) : **le refus coûte un JOUR, pas de la
+   * santé**. Quitter un lieu sans y avoir rien risqué fait tourner la
+   * lumière. L'abstention cesse d'être gratuite sans devenir interdite, les
+   * Besoins — comptés en jours, donc presque jamais déclenchés — se
+   * réveillent, et surtout **l'observation reste gratuite** : l'arbitrage
+   * « récompenser les curieux, pas les pressés » (8/08) est préservé.
+   *
+   * Posé à la résolution d'un jet, remis à faux en arrivant dans un lieu neuf.
+   */
+  engageIci?: boolean;
+  /**
+   * Points d'intérêt examinés DANS LE LIEU COURANT (panel 10/08).
+   *
+   * Chacun ouvre l'Anneau d'un cran, au plus deux. C'est la réponse au
+   * constat le plus dur du panel : « l'anneau bouge, mais avec ce que je
+   * porte, jamais avec ce que je tente. » Regarder avant d'agir devient la
+   * seule chose qui améliore vraiment un jet — le curieux est payé là où le
+   * jeu fait mal, le pressé garde les chances brutes. Aucun chiffre :
+   * l'Anneau montre simplement plus d'encoches pleines.
+   *
+   * Remis à zéro en arrivant dans un lieu neuf.
+   */
+  poiIci?: number;
+  /**
    * UN ÉCHEC DUR DOIT DÉPENSER QUELQUE CHOSE DU MONDE (panel 9/08).
    * Sur un écran de séjour, il consomme une option (voir `choixFaits`). Hors
    * séjour, il n'y a pas d'option à retirer — on arme donc ce drapeau, et la
@@ -226,6 +256,18 @@ export type RunState = {
   /** Témoins déjà cités DANS LA RUE (rumeur, 8/08) — le procès commence
       avant la salle, mais chaque témoin ne parle qu'une fois dehors. */
   temoinsCites?: string[];
+  /**
+   * LE PROCÈS CONCLUT (panel 10/08).
+   *
+   * Une relaxe faisait retomber le Soupçon de 6 à 4, mais laissait les
+   * dépositions en place : six écrans plus loin, le hameau rejugeait le héros
+   * sur EXACTEMENT les mêmes griefs, avec les mêmes témoins et les mêmes
+   * phrases. Un testeur y est mort sans jamais comprendre ce qu'il aurait pu
+   * faire autrement. Le jugement rendu épuise donc les dépositions qu'il a
+   * jugées (on ne juge pas deux fois les mêmes actes) : un second procès
+   * exige de NOUVEAUX actes. Ce compteur sert à le dire dans la salle.
+   */
+  procesGagnes?: number;
   /**
    * LA LOI DU DOMAINE (5/08) : index des manifestations déjà servies cette run.
    * La loi se constate, elle ne se martèle pas — au plus une par vie.
@@ -422,6 +464,7 @@ function fresh(): RunState {
     fragmentsLus: [],
     temoins: [],
     temoinsCites: [],
+    procesGagnes: 0,
     loiVues: [],
     jailerVues: [],
     arriveeVues: [],
@@ -500,9 +543,12 @@ export function loadRun(): RunState {
             echosObjet: Array.isArray(p.echosObjet) ? p.echosObjet : [],
             vus: p.vus && typeof p.vus === "object" ? p.vus : {},
             routeFermeeEnAttente: p.routeFermeeEnAttente === true,
+            engageIci: p.engageIci === true,
+            poiIci: typeof p.poiIci === "number" ? p.poiIci : 0,
             dropsServis: Array.isArray(p.dropsServis) ? p.dropsServis : [],
             temoins: Array.isArray(p.temoins) ? p.temoins : [],
             temoinsCites: Array.isArray(p.temoinsCites) ? p.temoinsCites : [],
+            procesGagnes: typeof p.procesGagnes === "number" ? p.procesGagnes : 0,
             loiVues: Array.isArray(p.loiVues) ? p.loiVues : [],
             jailerVues: Array.isArray(p.jailerVues) ? p.jailerVues : [],
             arriveeVues: Array.isArray(p.arriveeVues) ? p.arriveeVues : [],

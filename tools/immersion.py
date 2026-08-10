@@ -199,6 +199,23 @@ def pools() -> list[dict]:
         for i, t in enumerate(chaines_de_tableau(craie.group(1))):
             out.append({"pool": f"soupçon craie {i + 1}", "garde": {"lande", "gens"}, "textes": [t]})
 
+    # — LE JOUR DE REFUS (10/08) : servi à l'arrivée dans le lieu suivant,
+    #   qu'on vienne de la lande ou d'une ruelle. Aucun bâti, personne.
+    refus = re.search(r"JOUR_DE_REFUS[^=]*=\s*\[(.*?)\n\];", scene_src, re.S)
+    if refus:
+        for i, t in enumerate(chaines_de_tableau(refus.group(1))):
+            out.append({"pool": f"jour de refus {i + 1}", "garde": {"partout"}, "textes": [t]})
+
+    # — SECOND PROCÈS (10/08) : toujours au Petit Tribunal, donc le village
+    #   et ses gens sont acquis.
+    sp = re.search(r"SECOND_PROCES\s*=\s*((?:\s*\"(?:[^\"\\]|\\.)*\"\s*\+?)+)", scene_src)
+    if sp:
+        out.append({
+            "pool": "second procès",
+            "garde": {"village", "gens"},
+            "textes": ["".join(re.findall(r'"((?:[^"\\]|\\.)*)"', sp.group(1)))],
+        })
+
     # — le Geôlier qui nomme le palier franchi : il parle de partout.
     geol = re.search(r"SOUPCON_GEOLIER[^=]*=\s*\{(.*?)\n\};", scene_src, re.S)
     if geol:

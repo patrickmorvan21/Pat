@@ -45,6 +45,8 @@ import {
   ligneTroupeau,
   FRANCHIT_ENTREE,
   FRANCHIT_SORTIE,
+  JOUR_DE_REFUS,
+  SECOND_PROCES,
 } from "@/lib/scene-data";
 import { contradictionsConnues, faitById, versionDuFait } from "@/lib/contradictions";
 import { manifestationLoi } from "@/lib/loi-substitution";
@@ -68,7 +70,7 @@ import {
 import { chapterById, drawChapter, LANDES_LORE_FRAGMENTS } from "@/lib/chapters-data";
 import { playMusic } from "@/lib/audio";
 import { loadSettings } from "@/lib/settings";
-import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomRecompenseDestin, randomSoinMineur, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
+import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomSoinMineur, recompenseDestinQuiTient, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { assetUrl, assetCss, assetExiste } from "@/lib/assets";
 import {
   activeRelic,
@@ -1503,6 +1505,9 @@ export default function Scene() {
     // Le Jour de marche (arbitrage Patrick 7/08) : posé dans la branche
     // toDest, appliqué à la puce + au persist plus bas.
     let jourDeMarche = false;
+    // Le Jour de refus (panel 10/08) : quitter un lieu sans y avoir rien
+    // risqué. Posé dans la branche toDest, comme le Jour de marche.
+    let jourDeRefus = false;
     // Le Soupçon au comble (chantier 3 du 23/07) : la traversée est DÉROUTÉE
     // vers le procès du héros — on vient te chercher, où que tu ailles. Jamais
     // au milieu d'une chaîne de rencontre (on finit d'abord ce qui te tient).
@@ -1545,6 +1550,10 @@ export default function Scene() {
       // elle embusque la route du Chemin Creux (1re visite), puis son
       // chainNext enchaîne sur le lieu lui-même. La destination est comptée
       // visitée dès l'embuscade : le pool ne la réoffre jamais.
+      // LE REFUS COÛTE UN JOUR (panel 10/08) — voir `JOUR_DE_REFUS`. On lit
+      // l'engagement AVANT de le remettre à zéro : a-t-on risqué quoi que ce
+      // soit dans le lieu qu'on quitte ? Sinon la lumière tourne.
+      jourDeRefus = !(runRef.current?.engageIci ?? false);
       const embuscade = opts.toDest === "chemin-creux" && !trav.visited.includes("chemin-creux");
       nextScene = resoudre(embuscade ? "bete-chemins-creux" : opts.toDest, runRef.current) ?? sceneById(ENTRY_SCENE)!;
       trav.phase = "scene";
@@ -1773,8 +1782,17 @@ export default function Scene() {
 
     // Jour de marche : la puce ouvre l'écran d'arrivée, avant la couture et
     // l'approche — le temps passe PENDANT la route, pas après.
-    if (jourDeMarche) {
+    if (jourDeMarche || jourDeRefus) {
       entries.push({ id: nextId(), kind: "day", day: (runRef.current?.day ?? day) + 1 });
+      // Le refus se DIT — un coût qu'on ne comprend pas est un bug aux yeux
+      // du joueur. La marche, elle, se passe de commentaire : on a marché.
+      if (jourDeRefus) {
+        entries.push({
+          id: nextId(),
+          kind: "narration",
+          text: JOUR_DE_REFUS[nextStep % JOUR_DE_REFUS.length],
+        });
+      }
     }
     if (opts?.prepend) entries.push(...opts.prepend);
     // La conséquence du jet précède la mise en place de la scène suivante.
@@ -1922,6 +1940,9 @@ export default function Scene() {
     const narrationLines = nextScene.fixationTrial
       ? [
           narrationDeScene[0],
+          // Le hameau se souvient d'avoir relaxé (panel 10/08) : la salle ne
+          // rejoue pas le premier procès, elle en tire les conséquences.
+          ...((runRef.current?.procesGagnes ?? 0) > 0 ? [SECOND_PROCES] : []),
           ...(bailloner
             ? [
                 "Un nom manque à l'appel. On le cherche du regard sur les bancs, " +
@@ -2310,7 +2331,7 @@ export default function Scene() {
     setStep(nextStep);
     // (le persist qui incrémente run.day arrive juste après — on affiche la
     // même valeur qu'il écrira)
-    if (jourDeMarche) setDay((runRef.current?.day ?? day) + 1);
+    if (jourDeMarche || jourDeRefus) setDay((runRef.current?.day ?? day) + 1);
     setScene(nextScene);
     setVisitedMirror(trav.visited);
     // On quitte l'écran : les points d'intérêt du lieu précédent sont oubliés
@@ -2327,7 +2348,17 @@ export default function Scene() {
       run.choixFaits = [];
       run.trav = trav;
       // Le Jour de marche : tous les trois lieux traversés (7/08).
-      if (jourDeMarche) run.day += 1;
+      // Le Jour de refus (10/08) : on quitte un lieu sans y avoir rien tenté.
+      // ⚠️ AU PLUS UN jour par arrivée, même si les deux tombent ensemble —
+      // deux puces JOUR sur le même écran seraient illisibles, et « la lumière
+      // a tourné » ne se dit pas deux fois. Le petit rabais est assumé.
+      if (jourDeMarche || jourDeRefus) run.day += 1;
+      // On entre dans un lieu neuf : ce qu'on y regardera et ce qu'on y
+      // tentera se comptent à partir de zéro.
+      if (opts?.toDest) {
+        run.poiIci = 0;
+        run.engageIci = false;
+      }
       // Une intruse servie ne se redira jamais dans cette vie.
       if (intruseServie) run.intrusesVues = [...(run.intrusesVues ?? []), intruseServie];
       // Séquences garanties du Hameau (spec 24/07 suite §3) : une fois jouées,
@@ -2776,6 +2807,11 @@ export default function Scene() {
         // rien changer qu'agrandir un détail qui devient illisible.
         persist((run) => {
           run.poiSeen = seen;
+          // Ce qu'on a REGARDÉ ici prépare le geste (panel 10/08) : chaque
+          // point examiné ouvre l'Anneau d'un cran, au plus deux. Voir
+          // `RunState.poiIci` — c'est le seul levier par lequel ce que le
+          // joueur TENTE change ses chances, et il est gratuit.
+          run.poiIci = (run.poiIci ?? 0) + 1;
           if (poi.soupcon) {
             run.soupcon = Math.max(0, Math.min(6, (run.soupcon ?? 0) + poi.soupcon));
             // Le geste a été VU par quelqu'un de nommé (5/08) — il déposera.
@@ -2902,9 +2938,16 @@ export default function Scene() {
       // ce que la spec refuse explicitement.
       const actifs = etatsActifs(idsEtats(faitsDe(runRef.current)));
       const modEtat = modEtats(actifs, choice.risky.stat as StatNom);
+      // PRÉPARATION (panel 10/08) : ce qu'on a REGARDÉ dans ce lieu ouvre
+      // l'Anneau, d'un cran par point d'intérêt, au plus deux. C'est la
+      // réponse au constat le plus dur du panel — « l'anneau bouge, mais avec
+      // ce que je porte, jamais avec ce que je tente ». Le curieux est payé
+      // là où le jeu fait mal, le pressé garde les chances brutes, et
+      // l'observation reste gratuite (arbitrage du 8/08 préservé).
+      const preparation = Math.min(2, runRef.current?.poiIci ?? 0);
       const modifier = gele
         ? passives + statBonus
-        : effects.reduce((sum, e) => sum + e.delta, 0) + passives + statBonus + faveur + froideur + modEtat;
+        : effects.reduce((sum, e) => sum + e.delta, 0) + passives + statBonus + faveur + froideur + modEtat + preparation;
       // Courbe d'entrée invisible (spec 21/07) : seuil légèrement abaissé les
       // 2-3 premières morts, sans aucun affichage. L'Anneau, calculé sur ce
       // même seuil, montrera juste un peu plus d'encoches pleines — cohérent.
@@ -2944,7 +2987,12 @@ export default function Scene() {
         outcomes: choice.risky.outcomes,
         modifier,
         impossible: impossibleIci,
-        etatHints: hintsEtats(actifs),
+        // Un bénéfice qu'on ne nomme pas n'existe pas : c'est tout le défaut
+        // que ce panel a mesuré. La préparation se dit, comme un état.
+        etatHints: [
+          ...hintsEtats(actifs),
+          ...(preparation > 0 ? ["TU AS REGARDÉ — FAVORABLE"] : []),
+        ],
         highStakes: choice.risky.highStakes,
         fatalCheck: (tier) => {
           if (!tierIsFail(tier)) return false;
@@ -3227,7 +3275,15 @@ export default function Scene() {
           request={roll}
           onComplete={(result, outcome, tier) => {
             const engaged = Boolean(scene.combat) && roll?.stat === "COURAGE";
-            const destinItem = tier === "destin" ? randomRecompenseDestin(engaged) : null;
+            // LE DESTIN DONNE TOUJOURS QUELQUE CHOSE (panel 10/08) : on tire
+            // parmi ce qui TIENT dans la Besace, au lieu d'annoncer un objet
+            // que le slot plein n'accepterait pas. Null = les deux slots sont
+            // pleins ; c'est dit dans la fiction, jamais escamoté.
+            const destinItem =
+              tier === "destin"
+                ? recompenseDestinQuiTient(engaged, runRef.current?.besace ?? [])
+                : null;
+            const destinSansPlace = tier === "destin" && !destinItem;
             // Usure (chantier 1 du 23/07) : un échec DUR (critique/malédiction)
             // hors combat coûte un JOUR — coût visible. En combat, le coût
             // visible est l'aggravation ENTAILLÉ (persistante) déjà posée.
@@ -3284,6 +3340,11 @@ export default function Scene() {
             const brisure = amorti && relicDette(relicCoussin) === "brisure";
             persist((run) => {
               run.rolls.push({ step, choiceId: selectedId ?? "roll", result, at: nowMs(), ok: !tierIsFail(tier) });
+              // Tu as tenté quelque chose ici : quitter ce lieu ne coûtera pas
+              // de jour (panel 10/08, voir `JOUR_DE_REFUS`). Ce qui compte est
+              // d'avoir lancé, pas d'avoir réussi — sinon le jeu punirait deux
+              // fois le même échec.
+              run.engageIci = true;
               // Coûts relevés (partie de découverte 8/08 : santé 1 → 0,76 sur
               // trois jours de jeu — la tension du permadeath ne se sentait
               // pas). Un échec coûte maintenant un vrai cran ; la Descente
@@ -3341,11 +3402,9 @@ export default function Scene() {
                         { id: "ebranle", label: "ÉBRANLÉ", delta: -1, scenesLeft: 2 },
                         ...run.effects.filter((e) => e.id !== "ebranle"),
                       ];
-              // Destin : ajouté si le slot correspondant a de la place (2
-              // actifs / 2 passifs). Sinon le bandeau « Obtenu » reste, mais la
-              // Besace pleine impose un vrai arbitrage (l'objet est perdu).
-              if (destinItem && hasBesaceRoom(run.besace, normalizeItem(destinItem).slot))
-                run.besace = [...run.besace, destinItem];
+              // Destin : le tirage n'a retenu que ce qui TIENT (10/08), donc
+              // l'objet annoncé entre toujours réellement en Besace.
+              if (destinItem) run.besace = [...run.besace, destinItem];
               // Gain d'un choix d'examen (grantsLoot) : déjà validé (place +
               // pas encore ramassé) — on l'inscrit à la Besace et au registre
               // des ramassages de la run.
@@ -3361,6 +3420,25 @@ export default function Scene() {
               // coûter la même chose qu'un simple échec dur. C'était vrai côté
               // santé (0,30 contre 0,26), faux côté social — les deux
               // valaient +2. Un 1 naturel se raconte plus loin qu'un ratage.
+              // ON T'A VU (panel 10/08) : sur les 8 jets d'EXPLORATION de la
+              // zone, un seul portait un coût — les sept autres se rataient
+              // gratuitement. Or six de leurs proses d'échec disent qu'on t'a
+              // surpris. `vuSiEchec` fait payer ce que le texte raconte déjà,
+              // au même barème que le social : le coût suit la prose, jamais
+              // l'inverse (doctrine du 9/08).
+              if (tierIsFail(tier) && chosen?.vuSiEchec && natureJet !== "social" && !scene.fixationTrial) {
+                // ⚠️ Mesuré au test : « Observer d'abord, à couvert » paie
+                // DÉJÀ +1 à la sélection (la dissimulation se paie, doctrine
+                // du 8/08). Au plein barème, un seul geste raté montait donc à
+                // 3 sur 6 — deux gestes et le procès tombe. Quand l'acte a
+                // déjà payé, le ratage n'ajoute qu'un cran de plus.
+                const dejaPaye = (chosen.soupcon ?? 0) > 0;
+                const vu = tier === "malediction" ? (dejaPaye ? 2 : 3) : hardFail ? (dejaPaye ? 1 : 2) : 1;
+                run.soupcon = Math.min(6, (run.soupcon ?? 0) + vu);
+                const t = temoinPour("echec-empathie");
+                if (t && !(run.temoins ?? []).some((x) => x.id === t.id))
+                  run.temoins = [...(run.temoins ?? []), t];
+              }
               if (tierIsFail(tier) && natureJet === "social" && !scene.combat && !scene.fixationTrial) {
                 const vu = tier === "malediction" ? 3 : hardFail ? 2 : 1;
                 run.soupcon = Math.min(6, (run.soupcon ?? 0) + vu);
@@ -3383,6 +3461,15 @@ export default function Scene() {
               if (scene.fixationTrial && !tierIsFail(tier)) {
                 run.soupcon = 4;
                 run.soupconSeen = 4;
+                // LE PROCÈS CONCLUT (panel 10/08). Le chiffre seul ne
+                // suffisait pas : les dépositions restaient en place, donc le
+                // second procès rejouait mot pour mot le premier — mêmes
+                // témoins, mêmes griefs, six écrans plus tard. On ne juge pas
+                // deux fois les mêmes actes : le jugement rendu épuise ce
+                // qu'il a jugé, et un nouveau procès exige de NOUVEAUX actes.
+                run.temoins = [];
+                run.temoinsCites = [];
+                run.procesGagnes = (run.procesGagnes ?? 0) + 1;
               }
             });
             const run = runRef.current!;
@@ -3415,7 +3502,13 @@ export default function Scene() {
             // SURNATUREL : ce n'est pas la chair qui paie, c'est ce qui reste
             // accroché. Un échec dur laisse une marque — au sens propre si le
             // geste a touché quelque chose, HANTÉ sinon.
-            if (natureJet === "surnaturel" && (tier === "critique" || tier === "malediction"))
+            // ⚠️ Étendu à l'échec SIMPLE (panel 10/08) : les onze jets
+            // surnaturels de la zone ne coûtaient rien sur les deux tiers de
+            // leurs paliers d'échec — toucher ce qu'il ne faut pas et s'en
+            // tirer indemne vide le mot « surnaturel » de son sens. Un échec
+            // ordinaire laisse le plus léger des trois (HANTÉ, mental) ; le
+            // plafond de deux états négatifs empêche l'empilement.
+            if (natureJet === "surnaturel" && tierIsFail(tier))
               poserEtatRun(tier === "malediction" ? "marque" : "hante");
             // FIXÉ : « le village te croit marqué par le sud (Soupçon élevé) ».
             // Seuil 4 : assez haut pour que ce soit une trajectoire, assez bas
@@ -3488,10 +3581,17 @@ export default function Scene() {
             const prepend = roll?.impossible
               ? [{ id: nextId(), kind: "jailer" as const, text: JAILER_DE_IMPOSSIBLE }]
               : undefined;
-            const prose =
+            const proseBase =
               amorti && relicCoussin
                 ? `${proseDuJet(outcome.text)}\n\n${relicCoussin.name} a pris le choc à ta place. Une fêlure la traverse, à présent — elle ne prendra pas le suivant.`
                 : proseDuJet(outcome.text);
+            // Destin sans place (10/08) : plutôt qu'un bandeau « Obtenu » pour
+            // un objet qui n'entrera nulle part, on le dit. Les mains pleines
+            // sont un vrai arbitrage — encore faut-il que le joueur sache
+            // qu'il vient d'en payer le prix.
+            const prose = destinSansPlace
+              ? `${proseBase}\n\nIl y aurait eu quelque chose à prendre, là. Tes mains sont pleines, et tu le sais avant même de te baisser.`
+              : proseBase;
             // SÉJOUR : les coûts du jet viennent d'être appliqués au-dessus —
             // seul le RÉCIT change de canal. Le lieu garde le héros, et le
             // choix qu'il vient de tenter ne se retente pas.

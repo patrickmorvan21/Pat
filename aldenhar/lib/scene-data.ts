@@ -111,6 +111,17 @@ export type Choice = {
    */
   coutJour?: boolean;
   /**
+   * ON T'A VU — l'autre moitié du même problème (panel 10/08).
+   *
+   * Le 9/08 a retiré le Jour automatique des échecs d'exploration parce que
+   * leur prose ne parlait pas d'heures perdues. Elle parle d'autre chose : sur
+   * huit jets d'exploration, SIX proses d'échec disent qu'on t'a surpris. Ce
+   * champ fait payer ça, au barème du social (+1, +2 dur, +3 malédiction).
+   * À ne poser que si le texte nomme un témoin — sinon on invente une
+   * conséquence, et c'est exactement ce que le 9/08 a corrigé.
+   */
+  vuSiEchec?: boolean;
+  /**
    * 4e choix contextuel (spec 21/07, point 4) : utiliser un objet ACTIF de la
    * Besace pertinent dans la scène (ex. un baume quand ENTAILLÉ). Consommé,
    * puis la scène se résout. Ajouté dynamiquement, jamais écrit en dur.
@@ -1924,6 +1935,8 @@ export const SCENES: Scene[] = [
       {
         id: "observer-couvert",
         nature: "exploration",
+        // Sa prose d'échec nomme un témoin (deux hommes montent pendant que tu regardes en bas).
+        vuSiEchec: true,
         label: "Observer d'abord, à couvert",
         risky: {
           stat: "INSTINCT",
@@ -2758,6 +2771,8 @@ export const SCENES: Scene[] = [
       {
         id: "mur-effacee",
         nature: "exploration",
+        // Sa prose d'échec nomme un témoin (l'enfant te voit, et la craie reste sur tes doigts).
+        vuSiEchec: true,
         label: "Chercher sous la craie effacée",
         risky: {
           stat: "RUSE",
@@ -4616,6 +4631,8 @@ export const SCENES: Scene[] = [
       {
         id: "corde-coupee",
         nature: "exploration",
+        // Sa prose d'échec nomme un témoin (la Veuve est sur toi en trois pas).
+        vuSiEchec: true,
         label: "Prendre la corde coupée",
         risky: {
           stat: "RUSE",
@@ -7366,6 +7383,38 @@ export const FRANCHIT_SORTIE: string[] = [
   "Les dernières maisons s'espacent, puis renoncent. Devant toi la bruyère morte reprend ses droits jusqu'à l'horizon. Dans ton dos, quelqu'un referme une porte, sans se presser.",
   "Le dernier seuil passé, la lande te reprend sans transition — le vent d'abord, l'espace ensuite. Derrière toi, le village continue de se taire, mais autrement.",
 ];
+
+/**
+ * LE REFUS COÛTE UN JOUR (panel 10/08).
+ *
+ * Mesure du panel : ne jamais lancer le dé était la stratégie gagnante —
+ * 0 mort sur 16 vies passives, 8 sur 16 en risquant. Quitter un lieu sans y
+ * avoir rien tenté fait donc tourner la lumière : l'abstention cesse d'être
+ * gratuite sans jamais devenir interdite, et les Besoins (comptés en jours)
+ * se réveillent. **Observer reste gratuit** — l'arbitrage du 8/08
+ * (« récompenser les curieux, pas les pressés ») est préservé : c'est le
+ * geste évité qui coûte, pas le regard.
+ *
+ * Contrainte d'écriture : ces lignes se jouent aussi bien en pleine lande
+ * que dans une ruelle du hameau — donc aucun bâti, personne, rien qu'un
+ * ciel et un corps. Elles ne reprochent rien : elles constatent.
+ */
+export const JOUR_DE_REFUS: string[] = [
+  "Tu es reparti sans rien tenter, et la lumière a tourné pendant que tu y pensais. Ce que tu n'as pas fait, tu l'as payé en heures.",
+  "Tu as regardé longtemps, puis tu es reparti les mains vides. Quand tu relèves la tête, l'ombre a changé de côté.",
+  "Rien n'a été risqué là-bas, et pourtant quelque chose s'est dépensé : le jour, qui ne t'a pas attendu.",
+];
+
+/**
+ * SECOND PROCÈS (panel 10/08) : on ne juge pas deux fois les mêmes actes.
+ * Servi en tête de la salle quand le héros a déjà été relaxé une fois — les
+ * dépositions d'alors ont été épuisées par le jugement, celles d'aujourd'hui
+ * sont neuves. Toujours au Petit Tribunal, donc le village peut être nommé.
+ */
+export const SECOND_PROCES =
+  "On ne relit pas ce qui a déjà été jugé — ça se fait pas. Le vieux le dit " +
+  "sans amertume, comme une règle de bon voisinage. Ce qu'on t'oppose " +
+  "aujourd'hui, tu l'as fait depuis. Le hameau a été patient une fois.";
 
 /**
  * Phrase d'APPROCHE d'un lieu (retour playtest 24/07 : « sans marcher et voir
