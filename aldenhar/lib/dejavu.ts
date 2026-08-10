@@ -14,10 +14,15 @@
  * deuxième fois », « la cinquième » — c'est-à-dire écrire la différence au
  * lieu de la signaler.
  *
- * Les trois portées :
- *   • `ecran`  — l'écran courant. Vidé à chaque changement d'écran. Sert à ne
- *                pas empiler deux fois la même injection dans un seul cycle
- *                (deux entrées de table qui pointent le même sujet).
+ * Les portées — DEUX sont vivantes, la troisième ne l'est pas :
+ *   • `ecran`  — ⚠️ INERTE (constaté à la repasse du 10/08). Prévue pour ne
+ *                pas empiler deux fois la même injection dans un seul cycle,
+ *                elle n'est écrite ni lue nulle part : `viderEcran`,
+ *                `vuEcran` et `noterEcran` n'ont AUCUN appelant. Le module
+ *                s'annonçait « à trois portées » et en a deux. Ne pas se
+ *                fier à la consigne d'usage ci-dessous tant que rien
+ *                n'écrit dans cette portée — la brancher demande d'appeler
+ *                `viderEcran()` à chaque changement d'écran de Scene.tsx.
  *   • `run`    — la vie courante. Meurt avec le héros (`RunState.vus`).
  *   • `compte` — toutes les vies (`PlayerMemory.vus`). C'est la portée qui
  *                porte le déjà-vu réel : le héros ne se souvient de rien, le
@@ -40,7 +45,8 @@ export type Portee = "ecran" | "run" | "compte";
 /** Compteurs de la portée `ecran` — volatils par construction. */
 let ecran: Record<string, number> = {};
 
-/** À appeler à chaque changement d'écran : la portée la plus courte se vide. */
+/** À appeler à chaque changement d'écran : la portée la plus courte se vide.
+    ⚠️ Aucun appelant à ce jour — voir l'avertissement en tête de module. */
 export function viderEcran(): void {
   ecran = {};
 }

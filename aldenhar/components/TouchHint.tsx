@@ -35,7 +35,7 @@ export default function TouchHint({
       de choix occupe le bas de l'écran. Une règle qu'on lit et qu'on enfreint
       dans le même dépôt n'apprend plus rien à personne — voici la vraie.
       Deux dérogations légitimes, et deux seulement :
-        • séquence de mort — les flammes montent à ~175 px (HINT_BAS) ;
+        • séquence de mort — les flammes montent à ~175 px, et le hint est posé à 200 (HINT_BAS) ;
         • écran de jeu en séquence — 14 px, sous la zone de texte.
       Pour tout le reste, laisser le défaut : la position du hint est un
       repère que le joueur apprend, pas un réglage de mise en page. */

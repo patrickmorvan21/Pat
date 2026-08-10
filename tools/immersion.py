@@ -153,7 +153,13 @@ def pools() -> list[dict]:
     # — états : manifestation (servie à l'ACQUISITION, n'importe où),
     #   réactions (village sauf indices reactionsPartout), intruses (partout),
     #   guérison (n'importe où).
-    for m in re.finditer(r'\{\s*id:\s*"([a-z]+)",\s*nom:', etats_src):
+    # ⚠️ NE PAS EXIGER `id:` JUSTE APRÈS L'ACCOLADE (repasse du 10/08) :
+    # `accompagne` porte un docblock de 19 lignes entre `{` et `id:`, et
+    # échappait donc entièrement à l'audit — sa manifestation, ses deux
+    # réactions et sa guérison n'ont jamais été examinées. `sejour.py` avait
+    # déjà documenté ce piège et l'avait corrigé POUR LUI SEUL : la leçon
+    # n'avait pas traversé. Le nombre d'états trouvés est contrôlé plus bas.
+    for m in re.finditer(r'\{\s*(?:/\*(?:[^*]|\*(?!/))*\*/\s*|//[^\n]*\n\s*)*id:\s*"([a-z]+)",\s*nom:', etats_src):
         eid = m.group(1)
         debut = m.start()
         fin = etats_src.find('\n  {', debut + 10)
@@ -391,8 +397,17 @@ def pools() -> list[dict]:
         out.append({"pool": f"bifurcation {i}", "garde": {"partout"}, "textes": [t]})
 
     # — la loi du Domaine : liaison, n'importe où.
-    for i, t in enumerate(chaines_de_tableau(bloc_tableau(loi_src, "manifestations:"))):
-        out.append({"pool": f"loi manifestation {i}", "garde": {"partout"}, "textes": [t]})
+    # ⚠️ EXTRACTEUR MUET CORRIGÉ (repasse du 10/08). L'ancre "manifestations:"
+    # n'existe NULLE PART dans loi-substitution.ts (le tableau s'appelle
+    # MANIFESTATIONS_LANDES et ses textes vivent dans des champs `texte:`).
+    # `bloc_tableau` rendait "" sans rien dire : zéro pool généré, zéro
+    # signalement possible, depuis toujours. C'est le 4e extracteur muet du
+    # projet. RÈGLE : après avoir écrit un extracteur, COMPTER ce qu'il rend
+    # et le comparer à la source — un pool à 0 entrée est une alarme, jamais
+    # un succès.
+    for i, t in enumerate(re.findall(r'texte:\s*((?:\s*"(?:[^"\\]|\\.)*"\s*\+?)+)', loi_src)):
+        txt = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', t))
+        out.append({"pool": f"loi manifestation ({empreinte(txt)})", "garde": {"partout"}, "textes": [txt]})
 
     # — AMORCES de chapitre : jouées à la PREMIÈRE liaison, donc en pleine
     #   lande. Une silhouette isolée y est permise (le personnel du décor :
@@ -414,7 +429,7 @@ def pools() -> list[dict]:
                 "textes": [t],
             })
 
-    # — VARIANTES de liaison (44) : le garde dérive de leur condition `from`.
+    # — VARIANTES de liaison (57 au 10/08 — le compte n'est pas figé) : le garde dérive de leur condition `from`.
     #   Réservée aux départs du village (from: HAMEAU_INTERIOR ou liste de
     #   lieux intérieurs) → elle peut mettre le village en scène ; sinon elle
     #   joue en pleine lande — silhouettes permises, bâti interdit.

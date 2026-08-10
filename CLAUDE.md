@@ -935,3 +935,27 @@ Patrick : « ils ont dit plein de choses pertinentes des erreurs qu'ils ont vues
 **Reste ouvert** : le levier de préparation (points d'intérêt qui ouvrent l'Anneau) n'atteint que **29 % des jets définis et 0 % des combats** — les cinq combats n'ont aucun point dans leur chaîne ; c'est du contenu d'observation à écrire. Et la traversée dépasse toujours sa cible d'un lieu (cosmétique, le compteur ment d'une unité).
 
 Six gardes verts, lint et typecheck propres. `APP_VERSION` 1.69.2 → **1.69.4**, `CACHE_VERSION` v110 → **v112**.
+
+### Session 2026-08-10 (suite #3, Claude Code, opus) — LA REPASSE : deux gardes muets, un crédit perdu (v1.69.6)
+Trois agents relancés sur mes propres correctifs du 10/08, avec pour consigne de ne rien croire sur parole. Ils ont trouvé **six défauts que j'avais introduits ou laissés**, dont deux gardes de build qui n'auditaient rien.
+
+**LE CRÉDIT PERDU DU VILLAGE.** `estUnLieu()` (posé le matin même) reposait sur `radical()`, qui **ne retire que les CHIFFRES finaux** : `radical("hameau-accueil-table")` vaut `"hameau-accueil-table"`. Les **six accueils sur sept** du Hameau — tous porteurs d'un jet — ne créditaient donc plus leur lieu, et le village valait **1 ou 2 lieux selon un tirage invisible pour le joueur**. Corrigé par `FAMILLES_DE_LIEU` (préfixes dont toutes les variantes sont le même lieu). Vérifié en jeu, jet réel : `lieuxEngages` 0 → 1, `credites: ["hameau-accueil-table"]`.
+
+**DEUX EXTRACTEURS MUETS — la pire classe de défaut, un garde branché en `--strict` qui n'examine rien.**
+- **La loi du Domaine : 0 texte sur 4 audités, depuis toujours.** `immersion.py` cherchait l'ancre `"manifestations:"`, qui **n'existe nulle part** dans `loi-substitution.ts` (le tableau s'appelle `MANIFESTATIONS_LANDES`, ses textes vivent dans des champs `texte:`). `bloc_tableau` rendait `""` sans rien dire. C'est le **4e extracteur muet** du projet. Corrigé → il a immédiatement sorti le signalement caché : une manifestation jouée en liaison **n'importe où** disait « Le hameau dit… » à un héros qui n'a peut-être jamais vu le village. Reformulée en « On dit » plutôt qu'exemptée.
+- **Un état sur sept échappait à l'audit.** Le regex exigeait `id:` juste après l'accolade ; `accompagne` porte un docblock de 19 lignes. Sa manifestation, ses deux réactions et sa guérison n'avaient **jamais** été examinées. ⚠️ `sejour.py` avait déjà documenté ce piège et l'avait corrigé **pour lui seul** — la leçon n'avait pas traversé.
+- **RÈGLE QUI EN SORT** : après avoir écrit un extracteur, **compter ce qu'il rend et le comparer à la source**. Un pool à 0 entrée est une alarme, jamais un succès.
+
+**DEUX GARDES QUI AUDITAIENT UN INSTANTANÉ.** `aiguillage.py` et `strates.py` lisent `data/studio-data.json` et ne le régénéraient **que s'il était absent** — or rien dans `prebuild` ne le régénère. Prouvé dans les deux sens : un doublon injecté dans l'instantané les fait tirer, le même doublon injecté dans `scene-data.ts` les laisse aveugles. Ils rafraîchissent maintenant dès que la source est plus récente (`export_a_jour`), et la preuve a été rejouée : le défaut injecté dans la SOURCE est désormais attrapé.
+
+**`auditEtats` manquait ENCORE trois champs d'effet** (`usureParJour`, `soupconParJour`, `amortitCritique`) après le correctif du matin — et l'avertissement que je venais d'écrire promettait précisément qu'ils y seraient. `usureParJour` n'est pas théorique : il est lu en jeu. Vérifié qu'un état qui n'a que lui n'est plus déclaré incomplet.
+
+**Le Studio laissait tomber deux champs vivants** : `PointInteret.borneSud` (la Borne qui se souvient) et `.troupeau` (le comptage) étaient déclarés, posés et LUS en jeu, mais absents de la liste blanche d'export — donc invisibles dans le Studio et **absents de la réplique**, où un agent aurait conclu qu'ils n'existent pas. Même piège que `sansNuit` la veille.
+
+**Trois autres correctifs du rapport « fuites de Jour »** : le commentaire au-dessus de `run.day += 1` décrivait encore le **Jour de refus abrogé** (deuxième fois que ce commentaire décrit une règle morte) · le bloc de crédit de la branche `toDest` était **du code mort** (à ce point `scene` est toujours une liaison, dont le radical n'est pas un lieu) et donnait l'illusion de deux compteurs concurrents · un besoin échu sur un tic de **nuit** n'était constaté qu'au tic de marche suivant, jusqu'à trois lieux plus tard.
+
+**Commentaires qui décrivaient des mécaniques inexistantes** : `Scene.tags` annonçait que `rough_path`/`climb`/`chase` sont lus par BOITEUX — **aucun code ne les lit** (il n'agit que par le tag de CHOIX `fuite`), donc écrire du contenu en comptant dessus ne produirait rien ; `dejavu.ts` s'annonce « à trois portées » et la portée `ecran` est **entièrement inerte** (aucun appelant).
+
+**Recensement exhaustif des sources de Jour** (demandé à l'agent) : deux seulement — la marche (conditionnée à l'engagement, donc inaccessible au joueur passif ✓) et **la nuit** (accessible sans risque : jusqu'à 3 Jours par vie, contre ~6 pour un joueur engagé). Ce n'est pas un Jour-sanction et c'est conforme à la règle écrite du 10/08 (« l'aube vient qu'on ait dormi ou veillé ») — **mais c'est la seule source non-risquée qui reste, à trancher si on veut la fermer.**
+
+Sept gardes verts, lint et typecheck propres. `APP_VERSION` **1.69.6**, `CACHE_VERSION` **v114**.

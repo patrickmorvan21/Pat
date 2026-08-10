@@ -1653,17 +1653,13 @@ export default function Scene() {
         // Registre en ne faisant rien. Survivre longtemps redevient avoir
         // vécu longtemps, et les Besoins (comptés en jours) suivent la même
         // mesure.
-        // Même dédup que le repli plus bas : un lieu ne se crédite qu'une fois.
-        const radQuitte = radical(scene.id);
-        if (
-          engageDansLeLieu &&
-          estUnLieu(radQuitte) &&
-          !(trav.credites ?? []).includes(radQuitte)
-        ) {
-          trav.credites = [...(trav.credites ?? []), radQuitte];
-          lieuxEngagesApres = (runRef.current?.lieuxEngages ?? 0) + 1;
-          if (lieuxEngagesApres % 3 === 0) jourDeMarche = true;
-        }
+        // ⚠️ AUCUN CRÉDIT ICI (repasse du 10/08). On y a longtemps compté le
+        // lieu quitté — mais à ce point `scene` est TOUJOURS une liaison
+        // (`liaison:a>b`), dont le radical n'est pas un lieu, et `engageIci` a
+        // déjà été remis à faux en entrant dans la liaison. Le bloc ne pouvait
+        // donc jamais tirer : c'est le repli plus bas, sur le changement de
+        // radical, qui fait tout le travail. Le garder donnait l'illusion de
+        // deux compteurs concurrents.
         // L'HORLOGE DU CORPS avance, elle, à CHAQUE trois lieux traversés —
         // qu'on y ait risqué quelque chose ou non (10/08). Marcher creuse
         // l'estomac ; c'est le Jour qui récompense, pas la faim.
@@ -2494,8 +2490,13 @@ export default function Scene() {
       // arriverait avec des choix déjà grisés sans raison lisible.
       run.choixFaits = [];
       run.trav = trav;
-      // Le Jour de marche : tous les trois lieux traversés (7/08).
-      // Le Jour de refus (10/08) : on quitte un lieu sans y avoir rien tenté.
+      // Le Jour de marche : tous les trois lieux OÙ L'ON A TENTÉ quelque
+      // chose (7/08, recentré sur l'engagement le 10/08).
+      // La nuit : l'aube vient qu'on ait dormi ou veillé.
+      // ⚠️ Le « Jour de refus » qui figurait ici est ABROGÉ (le Jour est le
+      // score du Registre : le facturer récompensait le joueur passif). Ne
+      // pas le réintroduire — c'est la deuxième fois que ce commentaire
+      // décrit une règle morte.
       // ⚠️ AU PLUS UN jour par arrivée, même si les deux tombent ensemble —
       // deux puces JOUR sur le même écran seraient illisibles, et « la lumière
       // a tourné » ne se dit pas deux fois. Le petit rabais est assumé.
@@ -2593,9 +2594,13 @@ export default function Scene() {
     // la lisait — un joueur qui ne prend jamais « Dormir » ne recevait donc
     // JAMAIS d'état de besoin, quelle que soit sa marche. Le garde-fou était
     // rétabli dans le compteur, pas dans la lecture.
-    if (horlogeApres !== null) {
+    // …y compris quand c'est la NUIT qui a fait avancer l'horloge (repasse du
+    // 10/08) : `horlogeApres` est nul dans ce cas, et un besoin échu au petit
+    // matin attendait jusqu'à trois lieux avant d'être constaté.
+    const horlogeLue = horlogeApres ?? (nuitPassee ? runRef.current?.horloge ?? null : null);
+    if (horlogeLue !== null) {
       for (const b of besoinsEchus(
-        horlogeApres,
+        horlogeLue,
         runRef.current?.besoins ?? {},
         idsEtats(faitsDe(runRef.current))
       )) {

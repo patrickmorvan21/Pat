@@ -373,7 +373,13 @@ export function auditEtats(): { id: string; manques: string[] }[] {
     const modifieLeJeu =
       e.cacheFuite || e.ouvreVol || e.ouvreConfidences || e.soupconDouble ||
       e.rouvreLaRoute || e.fuitLeCombat ||
-      e.seuilTous !== undefined || e.jets !== undefined || e.lignesIntruses !== undefined;
+      e.seuilTous !== undefined || e.jets !== undefined || e.lignesIntruses !== undefined ||
+      // ⚠️ Ajoutés à la repasse du 10/08 : ils manquaient ENCORE après le
+      // correctif du matin, et l'avertissement juste au-dessus promettait
+      // précisément qu'ils y seraient. `usureParJour` n'est pas théorique —
+      // il est lu en jeu (components/Scene.tsx, coût de santé par jour).
+      e.usureParJour !== undefined || e.soupconParJour !== undefined ||
+      e.amortitCritique !== undefined;
     if (!modifieLeJeu) manques.push("1 effet mécanique (choix, jet ou monde)");
     return { id: e.id, manques };
   }).filter((r) => r.manques.length > 0);

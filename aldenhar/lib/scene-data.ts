@@ -498,8 +498,13 @@ export type Scene = {
   /**
    * TAGS de la scène (spec 4/08 §2) — ce que le lieu OFFRE, pour que les états
    * n'agissent que là où ça a du sens :
-   *   `food_available` / `stealable` → « Affamé » y ouvre un choix « voler » ;
-   *   `rough_path` / `climb` / `chase` → « Boiteux » peut y compliquer.
+   *   `food_available` / `stealable` → « Affamé » y ouvre un choix « voler ».
+   *     Ce sont les SEULS tags de scène réellement branchés.
+   * ⚠️ `rough_path` / `climb` / `chase` étaient annoncés ici comme lus par
+   * « Boiteux » : AUCUN code ne les lit (repasse du 10/08). Boiteux n'agit
+   * que par le tag de CHOIX `fuite`. Les poser sur une scène ne produit rien
+   * aujourd'hui — c'est une intention, pas une mécanique, et il ne faut pas
+   * écrire de contenu en comptant dessus.
    * ⚠️ Sans ces tags, un état s'appliquerait partout et deviendrait un bruit
    * de fond : la spec l'interdit explicitement.
    */
@@ -6613,9 +6618,18 @@ export function estUnLieu(rad: string): boolean {
   // a pour radical « meute-grise », donc un `in APPROACH` nu aurait cessé de
   // créditer le seul combat à deux beats de la zone (attrapé au test).
   if (!LIEUX_RADICAUX) LIEUX_RADICAUX = new Set([...Object.keys(APPROACH), ...LIEUX_HORS_POOL].map(radical));
-  return LIEUX_RADICAUX.has(rad);
+  if (LIEUX_RADICAUX.has(rad)) return true;
+  // ⚠️ …ET les FAMILLES à suffixe non numérique (repasse du 10/08).
+  // `radical()` ne retire que les CHIFFRES finaux : « hameau-accueil-table »
+  // reste « hameau-accueil-table ». Six des sept accueils du village — tous
+  // porteurs d'un jet — ne se créditaient donc pas, et le Hameau valait 1 ou
+  // 2 lieux selon un tirage invisible pour le joueur. Même piège pour
+  // « hameau-halte-dehors ».
+  return FAMILLES_DE_LIEU.some((f) => rad === f || rad.startsWith(f + "-"));
 }
 let LIEUX_RADICAUX: Set<string> | null = null;
+/** Préfixes dont TOUTES les variantes sont le même lieu (suffixe non numérique). */
+const FAMILLES_DE_LIEU = ["hameau-accueil", "hameau-halte", "hameau-entree"];
 const LIEUX_HORS_POOL = [
   "borne-frontiere",
   "bete-chemins-creux",

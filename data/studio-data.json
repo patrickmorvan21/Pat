@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-10T20:20:56Z",
- "commit": "9f3d61b",
+ "genere": "2026-08-10T20:42:47Z",
+ "commit": "b152311",
  "zones": [
   {
    "id": "landes",
@@ -495,6 +495,7 @@
      "approche": "Tu fais le tour de la pierre lentement, la main à plat sur le granit. Il est froid d'une froideur qui ne vient pas du vent.",
      "examen": "Des marques sur toutes les faces, de toutes les mains, de toutes les époques : des noms, des dates, des traits de comptage. Le côté nord est saturé — les adieux de ceux qui partaient. Le côté sud est presque vierge. Trois marques seulement. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?",
      "fragmentChapitre": true,
+     "borneSud": true,
      "nom": "Les gravures de la pierre",
      "image": {
       "fichier": "scene_borne_gravures_a_d.png",
@@ -3892,6 +3893,7 @@
      "approche": "Tu marches jusqu’au bord du troupeau. Les bêtes te laissent entrer entre elles comme si tu étais un piquet de plus.",
      "examen": "De près, elles sont grasses, entretenues — quelqu’un les a menées, soignées, comptées, et pas il y a trente ans : cette laine-là a vu un berger cette saison.",
      "donneDecouverte": "d.troupeau_compte",
+     "troupeau": true,
      "image": {
       "fichier": "monstre_troupeau_compte_b.png",
       "hash": "9eb350eb",
@@ -7894,7 +7896,7 @@
    },
    {
     "registre": "personne",
-    "texte": "Le Bailli s'est pendu le dernier, à la place d'honneur. Le hameau dit qu'il a voulu s'échanger contre quelqu'un de bien plus gros que lui. Le hameau dit aussi que ça n'a pas marché — sinon il ne parlerait plus."
+    "texte": null
    }
   ]
  },

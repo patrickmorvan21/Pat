@@ -744,6 +744,15 @@ def lire_pois(bloc: str) -> list[dict]:
             poi["fragmentChapitre"] = True
         if booleen_de(p, "corbeaux"):
             poi["corbeaux"] = True
+        # ⚠️ LISTE BLANCHE À TENIR À JOUR (repasse du 10/08). `borneSud` et
+        # `troupeau` étaient déclarés, posés et LUS en jeu, mais absents d'ici :
+        # donc invisibles dans le Studio et absents de la réplique — un agent
+        # qui mesure sur le kit conclut que la mémoire de la Borne et le
+        # comptage du troupeau n'existent pas. Même piège que `sansNuit`.
+        if booleen_de(p, "borneSud"):
+            poi["borneSud"] = True
+        if booleen_de(p, "troupeau"):
+            poi["troupeau"] = True
         out.append(poi)
     return out
 

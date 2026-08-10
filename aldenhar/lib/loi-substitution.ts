@@ -70,8 +70,13 @@ export const MANIFESTATIONS_LANDES: ManifestationLoi[] = [
     zone: "landes",
     registre: "personne",
     texte:
-      "Le Bailli s'est pendu le dernier, à la place d'honneur. Le hameau dit qu'il " +
-      "a voulu s'échanger contre quelqu'un de bien plus gros que lui. Le hameau dit " +
+      // ⚠️ « Le hameau dit » ×2 → « On dit » (repasse du 10/08). Cette
+      // manifestation se joue en LIAISON, n'importe où — y compris chez un
+      // héros qui n'a jamais franchi le village : elle lui prêtait une
+      // connaissance des ragots d'un lieu qu'il n'a pas vu. La rumeur sans
+      // source located marche partout, et fait même plus peur.
+      "Le Bailli s'est pendu le dernier, à la place d'honneur. On dit qu'il " +
+      "a voulu s'échanger contre quelqu'un de bien plus gros que lui. On dit " +
       "aussi que ça n'a pas marché — sinon il ne parlerait plus.",
   },
 ];

@@ -20,6 +20,8 @@ from __future__ import annotations
 import json
 import re
 import sys
+
+sys.path.insert(0, str(__import__('pathlib').Path(__file__).resolve().parent))
 from pathlib import Path
 
 RACINE = Path(__file__).resolve().parent.parent
@@ -73,6 +75,12 @@ def strates() -> dict[str, dict]:
 
 def main() -> int:
     strict = "--strict" in sys.argv
+    # ⚠️ Même dépendance à un instantané que `aiguillage.py` (repasse du
+    # 10/08) : sans ce rafraîchissement, le garde audite l'export de la
+    # dernière génération et ignore les textes écrits depuis.
+    from aiguillage import export_a_jour  # noqa: PLC0415
+
+    export_a_jour()
     if not STUDIO.exists():
         print("studio-data.json absent — lancer tools/studio_data.py d'abord.")
         return 0

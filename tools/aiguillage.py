@@ -30,9 +30,26 @@ RACINE = Path(__file__).resolve().parent.parent
 EXPORT = RACINE / "data" / "studio-data.json"
 
 
+SOURCE = RACINE / "aldenhar" / "lib" / "scene-data.ts"
+
+
+def export_a_jour() -> None:
+    """⚠️ CE GARDE LIT UN INSTANTANÉ, PAS LA SOURCE (repasse du 10/08).
+
+    Il ne régénérait `studio-data.json` que s'il était ABSENT — et rien dans
+    `prebuild` ne le régénère. Prouvé dans les deux sens : un doublon injecté
+    dans l'instantané le fait tirer, le même doublon injecté dans
+    `scene-data.ts` sans régénérer le laisse aveugle. Autrement dit le garde
+    pouvait valider un texte qui n'existait plus et rater celui qu'on venait
+    d'écrire. On régénère donc dès que la source est plus récente.
+    """
+    if not EXPORT.exists() or (SOURCE.exists() and SOURCE.stat().st_mtime > EXPORT.stat().st_mtime):
+        subprocess.run([sys.executable, str(RACINE / "tools" / "studio_data.py")], check=True,
+                       stdout=subprocess.DEVNULL)
+
+
 def main() -> int:
-    if not EXPORT.exists():
-        subprocess.run([sys.executable, str(RACINE / "tools" / "studio_data.py")], check=True)
+    export_a_jour()
     d = json.loads(EXPORT.read_text(encoding="utf-8"))
     par_id = {s["id"]: s for s in d["scenes"]}
 
