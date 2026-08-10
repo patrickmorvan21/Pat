@@ -50,7 +50,7 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-10T17:48:05Z",
+ "genere": "2026-08-10T17:49:32Z",
  "commit": "6e6252a",
  "zones": [
   {
@@ -1183,8 +1183,8 @@
     },
     {
      "id": "potences-cercle",
-     "label": "Les potences du cercle",
-     "approche": "Tu entres dans le cercle. Le vent monte d'un cran dès le premier pas entre deux potences — pas plus fort ailleurs, plus fort ICI, comme si l'espace entre les mâts avait son climat.",
+     "label": "Les potences de la crête",
+     "approche": "Tu remontes la file. Le vent monte d'un cran dès la première pas entre deux potences — pas plus fort ailleurs, plus fort ICI, comme si l'espace entre les mâts avait son climat.",
      "examen": "Chaque potence porte un nom gravé au pied, et une date. En remontant la file, les dates avancent : la crête entière est un calendrier planté. Les entailles sont de la même main — appliquée, régulière, la main de quelqu'un qui grave comme on rend un jugement.",
      "fragmentChapitre": true,
      "nom": "Les potences du cercle",
@@ -1202,8 +1202,8 @@
     },
     {
      "id": "gibet-vide",
-     "label": "Le Gibet Vide, au centre",
-     "approche": "Tu marches vers le centre, et la chose grandit plus vite que tes pas. À dix mètres, tu comprends que tu avais mal jugé l'échelle. À trois, tu dois lever la tête pour voir le nœud.",
+     "label": "Le Gibet Vide, tout en haut",
+     "approche": "Tu marches vers le sommet, et la chose grandit plus vite que tes pas. À dix mètres, tu comprends que tu avais mal jugé l'échelle. À trois, tu dois lever la tête pour voir le nœud.",
      "examen": "Le bois est d'œuvre, assemblé pour durer mille ans. La corde neuve grince. Par grand soleil — rare, ici — l'ombre portée s'étend vers le sud, et elle a une forme que la potence n'explique pas.",
      "poseEtat": "hante",
      "fait": "fait-gibet",
@@ -1224,7 +1224,7 @@
     {
      "id": "poteau-pendu",
      "label": "Le poteau isolé, à gauche",
-     "approche": "Tu contournes le cercle par la gauche. Le poteau isolé est plus bas que les autres — à hauteur d'homme, exactement. Une hauteur qu'on choisit.",
+     "approche": "Tu redescends d'une vingtaine de pas. Le poteau isolé est plus bas que les autres — à hauteur d'homme, exactement. Une hauteur qu'on choisit.",
      "examen": "Chaîne de fonction au cou, sous la corde. Un sceau au poing. Et les yeux qui s'ouvrent quand tu arrives à portée de voix : le Bailli des Landes, pendu le dernier, à la place d'honneur.",
      "nom": "Le poteau isolé, à gauche",
      "image": {
@@ -1256,8 +1256,8 @@
     "recent": false,
     "existe": true
    },
-   "description": "Arrivée à la Colline aux Gibets, lieu-signature de la zone. Le cercle de potences sur la crête nue, vu d'en bas en contre-plongée, les cordes qui balancent.",
-   "promptImage": "circle of nine wooden gallows on a bare hilltop seen from below, low angle, ropes swaying, crows on the crossbeams, stormy sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "description": "Arrivée à la Colline aux Gibets, lieu-signature de la zone. La file de potences le long de la crête nue, vue d'en bas en contre-plongée, de plus en plus hautes vers le sommet, les cordes qui balancent.",
+   "promptImage": "row of wooden gallows following a bare hill ridge seen from below, low angle, each one taller than the last toward the crest, ropes swaying, crows on the crossbeams, stormy sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [
     "colline-aux-gibets-2"
    ],
@@ -1270,7 +1270,7 @@
   {
    "id": "colline-aux-gibets-2",
    "narration": [
-    "Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme plat, les neuf cordes du cercle se mettent à bouger. Pas au hasard : ensemble. Un balancement lent, réglé, qui va et vient sur le même temps.",
+    "Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme plat, toutes les cordes de la crête se mettent à bouger. Pas au hasard : ensemble. Un balancement lent, réglé, qui va et vient sur le même temps.",
     "Ça grince en mesure. Neuf cordes, un seul rythme. Tu comprends, avec un retard qui te coûte, que ce rythme ne t'est pas indifférent — tu pourrais le compter."
    ],
    "choix": [
@@ -1310,7 +1310,7 @@
      "id": "redescendre",
      "label": "Partir avant de comprendre",
      "type": "passif",
-     "consequence": "Tu tournes le dos au cercle avant d'avoir fini de compter — et c'est peut-être la chose la plus sage que tu feras aujourd'hui. Le grincement continue derrière toi, patient, comme une phrase qu'on garde pour la prochaine fois.",
+     "consequence": "Tu tournes le dos à la file avant d'avoir fini de compter — et c'est peut-être la chose la plus sage que tu feras aujourd'hui. Le grincement continue derrière toi, patient, comme une phrase qu'on garde pour la prochaine fois.",
      "sortie": {}
     }
    ],
@@ -1328,7 +1328,7 @@
     "existe": true
    },
    "description": "Événement de la Colline : au sommet, entre les potences. L'écharde du grand gibet se prélève ici.",
-   "promptImage": "standing inside a circle of wooden gallows on a hilltop, ropes hanging at eye level all around, splintered beam in the foreground, vast empty sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+   "promptImage": "standing among a row of wooden gallows along a hill ridge, ropes hanging at eye level on either side, splintered beam in the foreground, vast empty sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [],
    "mèneIci": [
     "colline-aux-gibets"

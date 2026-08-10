@@ -213,9 +213,36 @@ def pools() -> list[dict]:
     # — LA SORTIE DE ZONE (10/08) : jouée à la Descente, au bout des Landes.
     #   Le hameau peut y être NOMMÉ (on le laisse derrière soi, il est loin) :
     #   c'est un souvenir de la traversée, pas un décor présent.
-    mts = re.search(r"export function traceDeSortie\(.*?\n\}", scene_src, re.S)
-    if mts:
-        for i, t in enumerate(chaines_de_tableau(mts.group(0))):
+    # ⚠️ Extraire le CORPS de la fonction, par comptage d'accolades. La
+    # première version cherchait `.*?\n\}` : le non-gourmand s'arrêtait à
+    # l'accolade du TYPE du paramètre `ctx`, et l'audit examinait donc
+    # « jurefauxrefuse » — les littéraux du type — au lieu des quatre
+    # paragraphes. Un garde muet est pire que pas de garde : il rassure.
+    ideb = scene_src.find("export function traceDeSortie(")
+    if ideb >= 0:
+        # ⚠️ Le `{` de la SIGNATURE est celui du type du paramètre `ctx`, pas
+        # celui du corps : partir de lui referme sur le type et on réaudite
+        # « jurefauxrefuse ». On saute donc jusqu'après la parenthèse
+        # fermante des paramètres.
+        par, k0 = 0, ideb
+        for k in range(ideb, len(scene_src)):
+            if scene_src[k] == "(":
+                par += 1
+            elif scene_src[k] == ")":
+                par -= 1
+                if par == 0:
+                    k0 = scene_src.find("{", k)
+                    break
+        prof, fin = 0, ideb
+        for k in range(k0, len(scene_src)):
+            if scene_src[k] == "{":
+                prof += 1
+            elif scene_src[k] == "}":
+                prof -= 1
+                if prof == 0:
+                    fin = k
+                    break
+        for i, t in enumerate(chaines_de_tableau(scene_src[k0:fin])):
             out.append({"pool": f"sortie de zone {i + 1}", "garde": {"lande"}, "textes": [t]})
 
     # — LE GEÔLIER QUI COMPTE (10/08) : il parle de partout.
@@ -406,6 +433,16 @@ EXEMPT: dict[str, str] = {
         "« à la vitesse d'un homme qui marche » est une COMPARAISON de "
         "vitesse, pas une présence — la chute (« rien ne marche nulle part ») "
         "fonctionne précisément parce qu'il n'y a personne.",
+    "sortie de zone 1":
+        "Jouée à la DESCENTE, qui surplombe la zone qu'on vient de quitter : "
+        "« le chemin du hameau » y est un souvenir de traversée, pas un décor "
+        "présent. Le héros regarde en arrière — c'est le sujet même de l'écran.",
+    "sortie de zone 2":
+        "Même écran, même raison : la grange et la barre posée dehors sont ce "
+        "qu'on LAISSE derrière soi. ⚠️ Ces deux exemptions n'existaient pas "
+        "avant le 10/08 parce que le garde n'extrayait pas ce pool (il "
+        "auditait les littéraux du type du paramètre) — un garde muet qui "
+        "rassure. Exemptions écrites maintenant qu'il voit vraiment.",
     "familiarité chien-du-bailli (quatre)":
         "La MAISON du Bailli est un bâtiment isolé à l'ouest, hors du hameau "
         "(décision 7/08) : sa scène POSE elle-même la bâtisse et son seuil. "

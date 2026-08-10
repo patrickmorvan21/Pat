@@ -1461,7 +1461,8 @@ export default function Scene() {
     const e = soigne ? etat(soigne) : null;
     const avait = Boolean(soigne) && idsEtats(faitsDe(runRef.current)).includes(soigne);
     persist((run) => {
-      run.besoins = { ...(run.besoins ?? {}), [b]: run.day };
+      // L'horloge du CORPS, pas le score (10/08) — voir RunState.horloge.
+      run.besoins = { ...(run.besoins ?? {}), [b]: run.horloge ?? run.day };
       if (soigne && run.faits) delete run.faits[soigne];
     });
     if (avait) {
@@ -1531,6 +1532,8 @@ export default function Scene() {
     // Armé plus bas si la Croisée qui vient a perdu une de ses deux routes
     // (échec dur au coup précédent, hors séjour).
     let routeFermeeIci = false;
+    // Le guide a-t-il absorbé la fermeture de route ? (voir plus bas)
+    let guideAbsorbe = false;
     // Le Jour de marche (arbitrage Patrick 7/08) : posé dans la branche
     // toDest, appliqué à la puce + au persist plus bas.
     let jourDeMarche = false;
@@ -1538,6 +1541,7 @@ export default function Scene() {
     // Lu dans la branche toDest, avant la remise à zéro. Voir `lieuxEngages`.
     let engageDansLeLieu = false;
     let lieuxEngagesApres: number | null = null;
+    let horlogeApres: number | null = null;
     // Le Soupçon au comble (chantier 3 du 23/07) : la traversée est DÉROUTÉE
     // vers le procès du héros — on vient te chercher, où que tu ailles. Jamais
     // au milieu d'une chaîne de rencontre (on finit d'abord ce qui te tient).
@@ -1633,6 +1637,10 @@ export default function Scene() {
           lieuxEngagesApres = (runRef.current?.lieuxEngages ?? 0) + 1;
           if (lieuxEngagesApres % 3 === 0) jourDeMarche = true;
         }
+        // L'HORLOGE DU CORPS avance, elle, à CHAQUE trois lieux traversés —
+        // qu'on y ait risqué quelque chose ou non (10/08). Marcher creuse
+        // l'estomac ; c'est le Jour qui récompense, pas la faim.
+        if (trav.visited.length % 3 === 0) horlogeApres = (runRef.current?.horloge ?? 1) + 1;
       }
     } else if (scene.hameauHalte) {
       // La nuit est passée : la traversée reprend vers la sortie de zone.
@@ -1762,6 +1770,7 @@ export default function Scene() {
         (e) => e.rouvreLaRoute
       );
       routeFermeeIci = runRef.current?.routeFermeeEnAttente === true && !guideRoute;
+      guideAbsorbe = runRef.current?.routeFermeeEnAttente === true && guideRoute;
       nextScene = makeLiaison(
         pair[0],
         pair[1],
@@ -1769,6 +1778,17 @@ export default function Scene() {
         liaisonCtx(runRef.current ?? loadRun(), scene.liaison ? undefined : scene.id),
         routeFermeeIci
       );
+      if (guideAbsorbe) {
+        nextScene = {
+          ...nextScene,
+          narration: [
+            ...nextScene.narration,
+            "Le gamin te tire par la manche avant la fourche et coupe par un " +
+              "creux que tu n'avais pas vu. « Par là c'est fermé. Par là non. » " +
+              "Il ne dit pas comment il le sait.",
+          ],
+        };
+      }
       trav.phase = "liaison";
       trav.liaisonOpts = pair;
       trav.routeFermee = routeFermeeIci;
@@ -1967,7 +1987,9 @@ export default function Scene() {
     const temoinEntrevu =
       Boolean(nextScene.fixationTrial) && decouvertes.includes("d.temoin_entrevu");
     const temoinsAuProces = (() => {
-      const t = temoinsUniques(runRef.current?.temoins ?? []);
+      // Les actes DÉJÀ jugés ne reviennent pas à l'accusation (10/08).
+      const juges = runRef.current?.temoinsJuges ?? [];
+      const t = temoinsUniques((runRef.current?.temoins ?? []).filter((x) => !juges.includes(x.id)));
       return bailloner ? t.slice(1) : t;
     })();
     // L'AIGUILLAGE (panel 9/08) : la scène qui suit LIT le dé qui la précède.
@@ -2434,9 +2456,17 @@ export default function Scene() {
       // a tourné » ne se dit pas deux fois. Le petit rabais est assumé.
       if (jourDeMarche) run.day += 1;
       if (lieuxEngagesApres !== null) run.lieuxEngages = lieuxEngagesApres;
+      if (horlogeApres !== null) run.horloge = horlogeApres;
       // On entre dans un lieu neuf : ce qu'on y regardera et ce qu'on y
       // tentera se comptent à partir de zéro.
-      if (opts?.toDest) {
+      // ⚠️ PAS SEULEMENT sur `toDest` (relecture par agents, 10/08) : la
+      // Palissade, la séquence de Halte, le procès du Soupçon et les
+      // rencontres ouvertes par un point d'intérêt arrivent par d'autres
+      // branches. Deux points examinés au lieu précédent offraient donc
+      // encore +2 sur le jet du procès — seuil 13, mortel — avec le hint
+      // « TU AS REGARDÉ — FAVORABLE » qui l'affirmait. La préparation ne
+      // franchit aucune porte : on repart de zéro dès que le LIEU change.
+      if (radical(nextScene.id) !== radical(scene.id)) {
         run.poiIci = 0;
         run.engageIci = false;
       }
@@ -2464,7 +2494,12 @@ export default function Scene() {
       if (soupManifest) run.soupconSeen = soupAfter;
       // Le drapeau d'échec dur est CONSOMMÉ par la Croisée qu'il vient de
       // resserrer : une seule route perdue par échec, jamais une traînée.
-      if (routeFermeeIci) run.routeFermeeEnAttente = false;
+      // ⚠️ Consommé AUSSI quand le guide l'absorbe (relecture par agents,
+      // 10/08) : sans ça le drapeau restait armé et la route se refermait
+      // deux Croisées plus tard, une fois l'enfant reparti, pour un échec que
+      // le joueur ne reliait plus à rien. Un bénéfice qui n'est qu'un report
+      // n'est pas un bénéfice.
+      if (routeFermeeIci || guideAbsorbe) run.routeFermeeEnAttente = false;
       if (nextScene.fixationTrial) run.soupconSeen = 6;
       // Un Soupçon d'arrivée qui monte a un TÉMOIN : quelqu'un t'a vu monter
       // là-haut. Le compteur devient quelqu'un (5/08).
@@ -3098,11 +3133,12 @@ export default function Scene() {
         .reduce((n, e) => n + (e.usureParJour ?? 0), 0);
       persist((run) => {
         run.day += 1;
+        run.horloge = (run.horloge ?? run.day) + 1;
         run.health = Math.max(0.08, Math.min(1, run.health + 0.35 - usure));
         // BESOINS (spec §3) : dormir est satisfait ici. Les besoins se comptent
         // en JOURS, jamais en scènes — garde-fou n°2 : un joueur qui traverse
         // vite n'aura presque jamais faim.
-        run.besoins = { ...(run.besoins ?? {}), dormir: run.day };
+        run.besoins = { ...(run.besoins ?? {}), dormir: (run.horloge ?? run.day) + 1 };
         run.effects = run.effects
           .filter((e) => e.delta > 0 || e.scenesLeft >= 900)
           .map((e) => (e.scenesLeft >= 900 && e.delta < -1 ? { ...e, delta: -1 } : e));
@@ -3111,7 +3147,7 @@ export default function Scene() {
       setDay(newDay);
       // …et les besoins NON satisfaits finissent par poser leur état. Aucune
       // jauge, aucun compteur : le besoin ne se manifeste QUE par l'état.
-      for (const b of besoinsEchus(newDay, runRef.current?.besoins ?? {}, idsEtats(faitsDe(runRef.current)))) {
+      for (const b of besoinsEchus(runRef.current?.horloge ?? newDay, runRef.current?.besoins ?? {}, idsEtats(faitsDe(runRef.current)))) {
         poserEtatRun(b.etat);
       }
       setHealth(runRef.current?.health ?? 1);
@@ -3351,13 +3387,7 @@ export default function Scene() {
             libellé diffère de « continuer » à dessein : ici le geste
             n'avance pas, il accélère. */}
         {activeTypingId && !rolling && (
-          <p
-            className="touch-hint pointer-events-none absolute inset-x-0 text-center font-mono text-[10px] tracking-[2px] text-[var(--color-ink)] opacity-50"
-            style={{ bottom: 14 }}
-            aria-hidden
-          >
-            Touche pour tout afficher
-          </p>
+          <TouchHint bottom={14} libelle="Touche pour tout afficher" />
         )}
 
         {/* CTA ancrés en bas (fixes), masqués tant que le texte n'est pas
@@ -3525,11 +3555,20 @@ export default function Scene() {
                       ];
               // Destin : le tirage n'a retenu que ce qui TIENT (10/08), donc
               // l'objet annoncé entre toujours réellement en Besace.
-              if (destinItem) run.besace = [...run.besace, destinItem];
+              // ⚠️ Re-vérifier la place À L'AJOUT (relecture par agents) : le
+              // Destin et le gain d'examen sont tous deux validés contre la
+              // Besace d'AVANT le jet — un 20 naturel sur un choix qui donne
+              // déjà un objet en faisait entrer deux dans un seul slot libre.
+              if (destinItem && hasBesaceRoom(run.besace, normalizeItem(destinItem).slot))
+                run.besace = [...run.besace, destinItem];
               // Gain d'un choix d'examen (grantsLoot) : déjà validé (place +
               // pas encore ramassé) — on l'inscrit à la Besace et au registre
               // des ramassages de la run.
-              if (grantedItem && chosen?.grantsLoot) {
+              if (
+                grantedItem &&
+                chosen?.grantsLoot &&
+                hasBesaceRoom(run.besace, normalizeItem(grantedItem).slot)
+              ) {
                 run.besace = [...run.besace, grantedItem];
                 run.looted = [...(run.looted ?? []), chosen.grantsLoot];
               }
@@ -3588,7 +3627,16 @@ export default function Scene() {
                 // témoins, mêmes griefs, six écrans plus tard. On ne juge pas
                 // deux fois les mêmes actes : le jugement rendu épuise ce
                 // qu'il a jugé, et un nouveau procès exige de NOUVEAUX actes.
-                run.temoins = [];
+                // ⚠️ On ne VIDE plus `temoins` (relecture par agents 10/08) :
+                // `defensesDisponibles` lit la même liste, donc les vider
+                // rendait le second procès mortel — plus de « discréditer »,
+                // plus d'« émouvoir », seulement « Tout reconnaître » à 13.
+                // Les dépositions sont marquées JUGÉES : hors de l'acte
+                // d'accusation, toujours dans les défenses.
+                run.temoinsJuges = [
+                  ...(run.temoinsJuges ?? []),
+                  ...(run.temoins ?? []).map((t) => t.id),
+                ];
                 run.temoinsCites = [];
                 run.procesGagnes = (run.procesGagnes ?? 0) + 1;
               }

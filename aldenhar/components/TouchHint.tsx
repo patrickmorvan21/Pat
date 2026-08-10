@@ -20,8 +20,14 @@
 export default function TouchHint({
   first = false,
   bottom,
+  libelle,
 }: {
   first?: boolean;
+  /** TROISIÈME libellé, pendant la FRAPPE : là, le geste n'avance pas, il
+      ACCÉLÈRE — d'où « Touche pour tout afficher ». Ajouté au composant plutôt
+      que forké inline (relecture du 10/08 : une copie inline échappe à la spec
+      verrouillée et diverge au premier correctif). */
+  libelle?: string;
   /** Remontée exceptionnelle, en px depuis le bas. UNIQUEMENT pour la séquence
       de mort, dont les flammes montent maintenant à ~175 px : à 50 px la
       phrase serait mangée par le feu. Partout ailleurs, la règle globale des
@@ -34,7 +40,7 @@ export default function TouchHint({
       style={{ bottom: bottom ?? 50 }}
       aria-hidden
     >
-      Touche pour {first ? "commencer" : "continuer"}
+      {libelle ?? `Touche pour ${first ? "commencer" : "continuer"}`}
     </p>
   );
 }

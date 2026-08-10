@@ -42,12 +42,12 @@
       "prompt_image": "massive quadruped silhouette crouched on the crest of an earthen bank, seen from below against a pale sky, long low body, head lowered toward the viewer, unnaturally still, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "colline-aux-gibets": {
-      "description": "Arrivée à la Colline aux Gibets, lieu-signature de la zone. Le cercle de potences sur la crête nue, vu d'en bas en contre-plongée, les cordes qui balancent.",
-      "prompt_image": "circle of nine wooden gallows on a bare hilltop seen from below, low angle, ropes swaying, crows on the crossbeams, stormy sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+      "description": "Arrivée à la Colline aux Gibets, lieu-signature de la zone. La file de potences le long de la crête nue, vue d'en bas en contre-plongée, de plus en plus hautes vers le sommet, les cordes qui balancent.",
+      "prompt_image": "row of wooden gallows following a bare hill ridge seen from below, low angle, each one taller than the last toward the crest, ropes swaying, crows on the crossbeams, stormy sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "colline-aux-gibets-2": {
       "description": "Événement de la Colline : au sommet, entre les potences. L'écharde du grand gibet se prélève ici.",
-      "prompt_image": "standing inside a circle of wooden gallows on a hilltop, ropes hanging at eye level all around, splintered beam in the foreground, vast empty sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
+      "prompt_image": "standing among a row of wooden gallows along a hill ridge, ropes hanging at eye level on either side, splintered beam in the foreground, vast empty sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere"
     },
     "pendu-qui-parle": {
       "description": "Arrivée au gardien de zone : le Bailli pendu, qui parle encore. Vu de loin, une silhouette au bout d'une corde, sur un gibet isolé.",

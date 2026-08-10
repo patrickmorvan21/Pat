@@ -9,9 +9,17 @@
  * ⚠️ LES QUATRE GARDE-FOUS, tous tenus ici :
  *  1. AUCUNE JAUGE, AUCUN COMPTEUR. Un besoin ne se manifeste QUE par
  *     l'apparition d'un état — rien à l'écran ne le compte.
- *  2. LENT. Les besoins se comptent en JOURS (donc en campements), jamais en
- *     scènes. Un joueur qui traverse vite n'aura presque jamais faim : le
- *     besoin punit la lenteur, ce qui est un arbitrage intéressant.
+ *  2. LENT. Les besoins se comptent en JOURS, jamais en scènes. Un joueur qui
+ *     traverse vite n'aura presque jamais faim : le besoin punit la lenteur,
+ *     ce qui est un arbitrage intéressant.
+ *     ⚠️ PRÉCISION DU 10/08 — le « jour » compté ici est `RunState.horloge`,
+ *     PAS `RunState.day`. Les deux se sont séparés le jour où le Jour est
+ *     devenu le SCORE du Registre (il n'avance qu'aux lieux où l'on a tenté
+ *     quelque chose). Les indexer sur le score aurait dispensé de faim le
+ *     joueur qui ne risque rien — et affamé plus tôt celui qui s'engage,
+ *     l'exact inverse de l'intention. L'horloge du corps avance tous les
+ *     trois lieux TRAVERSÉS et à chaque nuit : elle mesure la marche, ce que
+ *     ce garde-fou a toujours voulu dire.
  *  3. UN BESOIN NE TUE JAMAIS. « Affamé » ne fait pas mourir de faim : il rend
  *     tout le reste plus dur. La mort ne vient que de la fiction (pilier).
  *  4. TOUJOURS AU MOINS DEUX SOLUTIONS, DONT UNE MAUVAISE.

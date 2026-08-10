@@ -248,6 +248,28 @@ export type RunState = {
    */
   lieuxEngages?: number;
   /**
+   * L'HORLOGE DU CORPS — ce sur quoi les Besoins se comptent.
+   *
+   * ⚠️ Effet de bord trouvé par la relecture du 10/08. Les Besoins (soigner
+   * 2 j · dormir 3 j · manger 3 j) se comptaient sur `day`. En recentrant le
+   * Jour sur l'ENGAGEMENT, je les ai déplacés sans le décider : le joueur
+   * passif ne gagnait plus de Jour, donc **il n'avait plus jamais faim** — le
+   * dernier vecteur de pression qui l'atteignait, coupé par le commit dont le
+   * titre est « rendre le dé décisif » ; et symétriquement le joueur engagé se
+   * retrouvait affamé plus tôt, puni de s'être engagé.
+   *
+   * Les deux horloges sont donc séparées, et chacune mesure ce qu'elle doit :
+   *  - `day` = le SCORE (Registre) — il se gagne en vivant, cf. `lieuxEngages` ;
+   *  - `horloge` = le TEMPS DU CORPS — il avance tous les trois lieux
+   *    traversés, quoi qu'on y fasse, et à chaque nuit. Marcher creuse
+   *    l'estomac qu'on ait risqué sa peau ou non.
+   *
+   * Jamais affichée, jamais comparée au Jour par le joueur : il ne voit que
+   * l'état qui finit par tomber. Le garde-fou n°2 de `lib/besoins.ts` — « le
+   * besoin punit la lenteur » — redevient vrai avec elle.
+   */
+  horloge?: number;
+  /**
    * Points d'intérêt examinés DANS LE LIEU COURANT (panel 10/08).
    *
    * Chacun ouvre l'Anneau d'un cran, au plus deux. C'est la réponse au
@@ -290,6 +312,23 @@ export type RunState = {
    * exige de NOUVEAUX actes. Ce compteur sert à le dire dans la salle.
    */
   procesGagnes?: number;
+  /**
+   * TÉMOINS DÉJÀ JUGÉS (relecture par agents, 10/08).
+   *
+   * La relaxe VIDAIT `temoins` pour que le second procès porte sur de
+   * nouveaux actes. Effet non vu : `defensesDisponibles` lit la même liste —
+   * « discréditer » exige un témoin nommé, « émouvoir » un témoin du hameau.
+   * Sans témoins, le second procès n'offrait plus que « Tout reconnaître »,
+   * seuil 13 et highStakes. **Gagner son procès rendait le suivant mortel** :
+   * une récompense qui dégrade, exactement ce que le brief d'économie
+   * interdit.
+   *
+   * Les dépositions restent donc en place, marquées jugées : elles sortent de
+   * l'ACTE D'ACCUSATION (on ne juge pas deux fois les mêmes actes) mais
+   * continuent d'ouvrir les défenses — on peut toujours discréditer les mêmes
+   * gens.
+   */
+  temoinsJuges?: string[];
   /**
    * LA LOI DU DOMAINE (5/08) : index des manifestations déjà servies cette run.
    * La loi se constate, elle ne se martèle pas — au plus une par vie.
@@ -458,6 +497,7 @@ function fresh(): RunState {
     heroName: randomHeroName(),
     step: 0,
     day: 1,
+    horloge: 1,
     health: 1,
     effects: [],
     rolls: [],
@@ -487,6 +527,7 @@ function fresh(): RunState {
     temoins: [],
     temoinsCites: [],
     procesGagnes: 0,
+    temoinsJuges: [],
     loiVues: [],
     jailerVues: [],
     arriveeVues: [],
@@ -567,11 +608,13 @@ export function loadRun(): RunState {
             routeFermeeEnAttente: p.routeFermeeEnAttente === true,
             engageIci: p.engageIci === true,
             lieuxEngages: typeof p.lieuxEngages === "number" ? p.lieuxEngages : 0,
+            horloge: typeof p.horloge === "number" ? p.horloge : (typeof p.day === "number" ? p.day : 1),
             poiIci: typeof p.poiIci === "number" ? p.poiIci : 0,
             dropsServis: Array.isArray(p.dropsServis) ? p.dropsServis : [],
             temoins: Array.isArray(p.temoins) ? p.temoins : [],
             temoinsCites: Array.isArray(p.temoinsCites) ? p.temoinsCites : [],
             procesGagnes: typeof p.procesGagnes === "number" ? p.procesGagnes : 0,
+            temoinsJuges: Array.isArray(p.temoinsJuges) ? p.temoinsJuges : [],
             loiVues: Array.isArray(p.loiVues) ? p.loiVues : [],
             jailerVues: Array.isArray(p.jailerVues) ? p.jailerVues : [],
             arriveeVues: Array.isArray(p.arriveeVues) ? p.arriveeVues : [],

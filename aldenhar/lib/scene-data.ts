@@ -1298,10 +1298,10 @@ export const SCENES: Scene[] = [
       {
         id: "potences-cercle",
         chapterFragment: true,
-        label: "Les potences du cercle",
+        label: "Les potences de la crête",
         illustration: "assets/scene_colline_potences_cercle_a_c.png",
         approche:
-          "Tu entres dans le cercle. Le vent monte d'un cran dès le premier " +
+          "Tu remontes la file. Le vent monte d'un cran dès la première " +
           "pas entre deux potences — pas plus fort ailleurs, plus fort ICI, " +
           "comme si l'espace entre les mâts avait son climat.",
         examen:
@@ -1316,10 +1316,10 @@ export const SCENES: Scene[] = [
         // « HANTÉ · source : avoir vu quelque chose (Gibet Vide, Corbeaux…) ».
         poseEtat: "hante",
         fait: "fait-gibet",
-        label: "Le Gibet Vide, au centre",
+        label: "Le Gibet Vide, tout en haut",
         illustration: "assets/scene_colline_gibet_vide_a_b.png",
         approche:
-          "Tu marches vers le centre, et la chose grandit plus vite que tes " +
+          "Tu marches vers le sommet, et la chose grandit plus vite que tes " +
           "pas. À dix mètres, tu comprends que tu avais mal jugé l'échelle. À " +
           "trois, tu dois lever la tête pour voir le nœud.",
         examen:
@@ -1332,7 +1332,7 @@ export const SCENES: Scene[] = [
         illustration: "assets/scene_landes_poteau_pendu_c.png",
         label: "Le poteau isolé, à gauche",
         approche:
-          "Tu contournes le cercle par la gauche. Le poteau isolé est plus " +
+          "Tu redescends d'une vingtaine de pas. Le poteau isolé est plus " +
           "bas que les autres — à hauteur d'homme, exactement. Une hauteur " +
           "qu'on choisit.",
         examen:
@@ -1346,14 +1346,14 @@ export const SCENES: Scene[] = [
   },
   {
     /* Événement du lieu (script Notion) : le grincement rythmé — les cordes du
-       cercle se balancent ENSEMBLE, sans vent. Compter, c'est compter ses
+       crête se balancent ENSEMBLE, sans vent. Compter, c'est compter ses
        propres morts (mémoire du joueur). */
     id: "colline-aux-gibets-2",
     sejour: true,
     illustration: "assets/scene_colline_gibets_2_a.png",
     narration: [
       "Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme " +
-        "plat, les neuf cordes du cercle se mettent à bouger. Pas au hasard : " +
+        "plat, toutes les cordes de la crête se mettent à bouger. Pas au hasard : " +
         "ensemble. Un balancement lent, réglé, qui va et vient sur le même temps.",
       "Ça grince en mesure. Neuf cordes, un seul rythme. Tu comprends, avec " +
         "un retard qui te coûte, que ce rythme ne t'est pas indifférent — " +
@@ -1400,7 +1400,7 @@ export const SCENES: Scene[] = [
         sortie: {},
         passive: {
           consequence:
-            "Tu tournes le dos au cercle avant d'avoir fini de compter — et " +
+            "Tu tournes le dos à la file avant d'avoir fini de compter — et " +
             "c'est peut-être la chose la plus sage que tu feras aujourd'hui. " +
             "Le grincement continue derrière toi, patient, comme une phrase " +
             "qu'on garde pour la prochaine fois.",

@@ -1357,8 +1357,8 @@
         "La pente est douce et n'en finit pas — la Colline se mérite à pas comptés. Au sommet, le cercle : neuf potences ordinaires, plantées comme les heures d'un cadran. Et au centre, l'autre. La grande. Sa corde est la seule chose neuve à dix lieues.",
         "À gauche du cercle, un poteau isolé porte encore son occupant. À droite, les potences vides alignent leurs noms gravés."
       ],
-      "description": "Arrivée à la Colline aux Gibets, lieu-signature de la zone. Le cercle de potences sur la crête nue, vu d'en bas en contre-plongée, les cordes qui balancent.",
-      "prompt_image": "circle of nine wooden gallows on a bare hilltop seen from below, low angle, ropes swaying, crows on the crossbeams, stormy sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "description": "Arrivée à la Colline aux Gibets, lieu-signature de la zone. La file de potences le long de la crête nue, vue d'en bas en contre-plongée, de plus en plus hautes vers le sommet, les cordes qui balancent.",
+      "prompt_image": "row of wooden gallows following a bare hill ridge seen from below, low angle, each one taller than the last toward the crest, ropes swaying, crows on the crossbeams, stormy sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
       "illustration": "scene_colline_aux_gibets_c.png"
     },
     {
@@ -1429,7 +1429,7 @@
         "Ça grince en mesure. Neuf cordes, un seul rythme. Tu comprends, avec un retard qui te coûte, que ce rythme ne t'est pas indifférent — tu pourrais le compter."
       ],
       "description": "Événement de la Colline : au sommet, entre les potences. L'écharde du grand gibet se prélève ici.",
-      "prompt_image": "standing inside a circle of wooden gallows on a hilltop, ropes hanging at eye level all around, splintered beam in the foreground, vast empty sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "prompt_image": "standing among a row of wooden gallows along a hill ridge, ropes hanging at eye level on either side, splintered beam in the foreground, vast empty sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
       "illustration": "scene_colline_gibets_2_a.png"
     },
     {
