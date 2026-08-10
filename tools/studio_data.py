@@ -199,9 +199,21 @@ STATS = ("COURAGE", "RUSE", "INSTINCT", "EMPATHIE")
 
 
 def args_de_haut_niveau(txt: str) -> list[str]:
-    """Découpe une liste d'arguments sur les virgules de premier niveau."""
+    """Découpe une liste d'arguments sur les virgules de premier niveau.
+
+    ⚠️ Les COMMENTAIRES doivent être traversés comme du texte inerte. Sans ça,
+    l'apostrophe d'un commentaire français (« qu'il ait appris ») ouvre une
+    fausse chaîne et tout ce qui suit part de travers : trois des quatre
+    issues du jet « Prendre le hameau à témoin » sortaient vides ou réduites à
+    une virgule, et un testeur du panel du 10/08 est mort avec pour épitaphe
+    « , ». C'est le même piège que celui corrigé le 9/08 dans `paragraphes()`
+    — il vivait encore ici, dans la fonction voisine.
+    """
     out, cur, prof, mode, q, esc = [], "", 0, None, "", False
-    for c in txt:
+    i, n = 0, len(txt)
+    while i < n:
+        c = txt[i]
+        suiv = txt[i + 1] if i + 1 < n else ""
         if mode == "str":
             cur += c
             if esc:
@@ -210,8 +222,30 @@ def args_de_haut_niveau(txt: str) -> list[str]:
                 esc = True
             elif c == q:
                 mode = None
+            i += 1
             continue
-        if c in "\"'`":
+        if mode == "ligne":
+            cur += c
+            if c == "\n":
+                mode = None
+            i += 1
+            continue
+        if mode == "bloc":
+            cur += c
+            if c == "*" and suiv == "/":
+                cur += suiv
+                i += 2
+                mode = None
+                continue
+            i += 1
+            continue
+        if c == "/" and suiv == "/":
+            mode = "ligne"
+            cur += c
+        elif c == "/" and suiv == "*":
+            mode = "bloc"
+            cur += c
+        elif c in "\"'`":
             mode, q = "str", c
             cur += c
         elif c in "([{":
@@ -225,6 +259,7 @@ def args_de_haut_niveau(txt: str) -> list[str]:
             cur = ""
         else:
             cur += c
+        i += 1
     if cur.strip():
         out.append(cur)
     return out
