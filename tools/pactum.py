@@ -44,6 +44,30 @@ KIT = next(
     None,
 )
 SAUVE = ICI / "partie.json"
+# LA MÉMOIRE DU COMPTE — ce qui survit à la mort du héros (vague 4).
+# Le jeu la porte depuis longtemps ; la réplique ne l'avait pas, et c'est
+# pourquoi les testeurs du panel du 9/08 ont conclu que « la vie 2 est une
+# relecture » : sans passé de compte, aucun signal inter-vies ne peut tomber.
+# Volontairement minuscule : les passages par lieu, les morts, les noms.
+COMPTE = ICI / "compte.json"
+
+
+def lire_compte() -> dict:
+    if COMPTE.exists():
+        try:
+            c = json.loads(COMPTE.read_text(encoding="utf-8"))
+        except Exception:
+            c = {}
+    else:
+        c = {}
+    c.setdefault("morts", 0)
+    c.setdefault("tombes", [])   # [{nom, cause}] — le plus récent en tête
+    c.setdefault("visites", {})  # lieu -> nombre de passages du COMPTE
+    return c
+
+
+def ecrire_compte(c: dict) -> None:
+    COMPTE.write_text(json.dumps(c, ensure_ascii=False), encoding="utf-8")
 LARGEUR = 74
 
 # Coûts de santé par palier — repris de components/Scene.tsx.
@@ -131,7 +155,7 @@ class Partie:
             "pas": 0, "phase": "scene", "scene": k["entree"], "visites": [],
             "cible": 7 + rng.randrange(2), "options": None, "soupcon": 0,
             "etats": {}, "besace": [], "poiVus": [], "geolierVus": [],
-            "ambiancesVues": [], "poiOuvert": False, "morte": False,
+            "ambiancesVues": [], "poiOuvert": False, "morte": False, "famVus": [],
             "des": [], "journal": [], "sortie": None, "hameauEntree": False,
             "procesVu": False,
         }
@@ -182,6 +206,10 @@ class Partie:
             radical = sid.replace("-2", "")
             if radical not in self.d["visites"]:
                 self.d["visites"].append(radical)
+            # Le COMPTE, lui, se souvient d'une vie à l'autre.
+            c = lire_compte()
+            c["visites"][radical] = c["visites"].get(radical, 0) + 1
+            ecrire_compte(c)
             # Le Jour avance en MARCHANT : un jour tous les trois lieux.
             if len(self.d["visites"]) % 3 == 0:
                 self.d["jour"] += 1
@@ -196,6 +224,16 @@ class Partie:
         rate = self.d.pop("dernierRate", False)
         for p in (s.get("narrationEchec") if rate and s.get("narrationEchec") else s.get("narration", [])):
             self.dit(p, "narration")
+        # LA STRATE DE FAMILIARITÉ : une ligne de plus à partir du 2e passage
+        # du COMPTE par ce lieu, une autre à partir du 4e. Le héros ne se
+        # souvient de rien — c'est le monde qui porte la trace.
+        fam = self.k.get("familiarite", {}).get(sid.replace("-2", ""))
+        if fam and sid not in self.d.get("famVus", []):
+            n = lire_compte()["visites"].get(sid.replace("-2", ""), 0)
+            ligne = fam.get("4") if n >= 4 and fam.get("4") else (fam.get("2") if n >= 2 else None)
+            if ligne:
+                self.dit(ligne, "narration")
+                self.d.setdefault("famVus", []).append(sid)
         if s.get("registre"):
             self.dit(
                 "[Le Grand Registre défile : cent noms classés par jours de "
@@ -478,6 +516,10 @@ class Partie:
     def mourir(self, dernier: str) -> None:
         self.d["morte"] = True
         self.d["sortie"] = "mort"
+        c = lire_compte()
+        c["morts"] += 1
+        c["tombes"].insert(0, {"nom": self.d["nom"], "cause": dernier[:60]})
+        ecrire_compte(c)
         tenus = sum(1 for x in self.d["des"] if x["palier"] in ("destin", "eclatante", "reussite", "justesse"))
         self.dit("MORT", "mort")
         self.dit(dernier, "epitaphe")

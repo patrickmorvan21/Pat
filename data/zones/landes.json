@@ -34,8 +34,8 @@
       "rarete": "commune",
       "textes": {
         "decouverte": "La colline monte seule au milieu de la lande, couronnée de gibets. Tous occupés, tous immobiles — sauf un. Au centre, le plus grand est vide ; sa corde pend, usée en son milieu.",
-        "familiarite": null,
-        "recontextualisation": null
+        "familiarite": "Une des potences penche plus que les autres. Tu jurerais qu'elle penchait déjà.",
+        "recontextualisation": "Tu comptes les mâts en montant et tu tombes juste avant d'avoir fini. Le compte est dans tes jambes, pas dans ta tête."
       },
       "illustration": "assets/scene_colline_aux_gibets_c.png",
       "portrait_requis": false,
@@ -51,8 +51,8 @@
       "rarete": "commune",
       "textes": {
         "decouverte": "Des rangées de poteaux à perte de vue, chacun son pendu, chacun son écriteau. Un cimetière debout. On n'enterre pas, ici : on fixe. Les morts tiennent mieux le sol que les vivants.",
-        "familiarite": null,
-        "recontextualisation": null
+        "familiarite": "Une rangée est plus courte que dans ton idée du champ. Tu n'as pas d'idée du champ.",
+        "recontextualisation": "La terre entre les rangs est tassée par un passage régulier. L'écart des pas est le tien."
       },
       "illustration": "assets/scene_champ_des_fixes_b.png",
       "portrait_requis": false,
@@ -68,8 +68,8 @@
       "rarete": "commune",
       "textes": {
         "decouverte": "À l'écart du hameau, un moulin sans ailes tient debout par habitude. Dedans, un lit de bruyère tassée — plusieurs fois refait, jamais brûlé. Un refuge qui sert, donc un refuge qui marche.",
-        "familiarite": null,
-        "recontextualisation": null
+        "familiarite": "La paille du fond est couchée en creux, à peu près de ta longueur, et elle n'a pas eu le temps de se relever.",
+        "recontextualisation": "Le creux dans la paille ne se relève plus du tout. Il t'attend, avec la patience d'un lit."
       },
       "illustration": "scene_moulin_sans_ailes_d_d.png",
       "portrait_requis": false,
@@ -85,8 +85,8 @@
       "rarete": "commune",
       "textes": {
         "decouverte": null,
-        "familiarite": null,
-        "recontextualisation": null
+        "familiarite": "L'eau se ride avant que tu sois au bord. Elle a commencé sans toi.",
+        "recontextualisation": "Le reflet est déjà en place quand tu arrives. Il ne t'imite plus : il t'attend."
       },
       "illustration": "assets/scene_mare_aux_regards_a.png",
       "portrait_requis": false,
@@ -130,8 +130,8 @@
       "rarete": "commune",
       "textes": {
         "decouverte": null,
-        "familiarite": null,
-        "recontextualisation": null
+        "familiarite": "Les volets se ferment de proche en proche, dans l'ordre, comme une phrase qu'on récite. Elle a déjà été récitée.",
+        "recontextualisation": "Personne ne court prévenir personne. On t'attend au bon endroit, sans se presser."
       },
       "illustration": "assets/scene_hameau_dense2_b.png",
       "portrait_requis": false,
@@ -164,8 +164,8 @@
       "rarete": "commune",
       "textes": {
         "decouverte": "Ni croix ni autel. Aux murs, des dizaines de cordes clouées en boucles soigneuses, chacune sous un nom gravé — les reliques des Fixations réussies. Certaines bougent doucement, sans courant d'air.",
-        "familiarite": null,
-        "recontextualisation": null
+        "familiarite": "Une corde du mur est plus neuve que ses voisines. Le chanvre n'a pas encore noirci.",
+        "recontextualisation": "Tu comptes les cordes neuves du mur. Il y en a autant que de fois où tu es entré ici — et tu ne sais pas comment tu le sais."
       },
       "illustration": "assets/scene_chapelle_des_cordes_d.png",
       "portrait_requis": false,
@@ -182,8 +182,8 @@
       "rarete": "commune",
       "textes": {
         "decouverte": "La plus grande maison du hameau est murée — de l'intérieur. Chaque fenêtre bouchée de pierres posées depuis dedans, par quelqu'un qui s'enfermait plus qu'il ne se protégeait.",
-        "familiarite": null,
-        "recontextualisation": null
+        "familiarite": "La bête grise ne se lève pas, cette fois. Elle t'a regardé venir de loin et elle a jugé que ce n'était pas la peine.",
+        "recontextualisation": "Elle bâille. C'est pire qu'un grognement : on ne bâille que devant ce qui revient."
       },
       "illustration": "assets/scene_maison_du_bailli_c.png",
       "portrait_requis": false,
@@ -199,8 +199,8 @@
       "rarete": "commune",
       "textes": {
         "decouverte": "Une seule pièce : trois bancs, une chaire, et le froid des endroits où l'on a beaucoup décidé. C'est ici que la Fixation se jugeait — le Bailli en chaire, la corde en sentence unique.",
-        "familiarite": null,
-        "recontextualisation": null
+        "familiarite": "Un banc du fond est de biais, comme si on s'y était assis en dernier et qu'on était parti vite.",
+        "recontextualisation": "La poussière est intacte sur tous les bancs sauf une place. On n'y va plus. On l'a laissée pour quelqu'un."
       },
       "illustration": "assets/scene_petit_tribunal_a.png",
       "portrait_requis": false,
@@ -217,8 +217,8 @@
       "rarete": "commune",
       "textes": {
         "decouverte": "Un puits condamné de frais : planches neuves, chaînes croisées, cadenas encore gras. Tout le hameau tombe en ruine douce, mais ça, on l'entretient. Et dessous, ça cogne. Trois coups, une pause. Trois coups.",
-        "familiarite": null,
-        "recontextualisation": null
+        "familiarite": "Les trois coups s'arrêtent quand tu débouches, puis reprennent. Ce n'est pas une pause : c'est un salut.",
+        "recontextualisation": "Les coups changent de rythme à ton arrivée. Ce qui frappe là-dessous a appris à te distinguer."
       },
       "illustration": "scene_puits_condamne_v2_a.png",
       "portrait_requis": false,
@@ -235,8 +235,8 @@
       "rarete": "commune",
       "textes": {
         "decouverte": "Un marché sans un cri, au cœur du hameau. Des étals de trois fois rien, des marchands qui négocient par gestes, paumes et hochements. Renoncer à la parole est le renoncement le plus courant. Le moins cher.",
-        "familiarite": null,
-        "recontextualisation": null
+        "familiarite": "Un étal manque à sa place et un autre l'a prise. Rien d'autre n'a bougé dans le silence.",
+        "recontextualisation": "On te fait de la place avant que tu aies bifurqué. Ils savent où tu vas parce que tu y vas toujours."
       },
       "illustration": "assets/scene_marche_muet_c.png",
       "portrait_requis": false,
@@ -253,8 +253,8 @@
       "rarete": "commune",
       "textes": {
         "decouverte": null,
-        "familiarite": null,
-        "recontextualisation": null
+        "familiarite": "Une pierre du moignon est descellée et posée à plat à côté, comme un siège. Elle est creusée au milieu.",
+        "recontextualisation": "Le creux de la pierre a la forme de quelqu'un qui s'assoit là pour regarder le sud. Il a ta forme."
       },
       "illustration": "assets/scene_tour_de_guet_a.png",
       "portrait_requis": false,
@@ -271,8 +271,8 @@
       "rarete": "commune",
       "textes": {
         "decouverte": null,
-        "familiarite": null,
-        "recontextualisation": null
+        "familiarite": "Un fruit manque à une branche basse, cueilli net, et la cassure est encore claire.",
+        "recontextualisation": "Les branches basses sont vides sur toute la longueur du rang, à hauteur de main. À ta hauteur de main."
       },
       "illustration": "assets/scene_verger_noir_d.png",
       "portrait_requis": false,
@@ -288,8 +288,8 @@
       "rarete": "commune",
       "textes": {
         "decouverte": "Le chemin s'enfonce entre deux talus plus hauts qu'un homme. On y marche vu sans voir : la lande entière vous regarde passer, et vous ne voyez que de la terre.",
-        "familiarite": null,
-        "recontextualisation": null
+        "familiarite": "Ta main s'est posée sur le talus sans que tu l'aies décidé, juste où la racine fait une prise.",
+        "recontextualisation": "Tu descends sans regarder tes pieds. Le creux te reprend comme une manche qu'on renfile."
       },
       "illustration": "assets/scene_chemin_creux_c.png",
       "portrait_requis": false,
@@ -322,8 +322,8 @@
       "rarete": "commune",
       "textes": {
         "decouverte": "Une palissade de troncs noircis barre l'horizon d'est en ouest. Les étais sont de ce côté-ci : elle n'empêche pas d'entrer. Au centre, une porte à double battant — et derrière, un chemin qui descend, où l'air coule comme une eau froide.",
-        "familiarite": null,
-        "recontextualisation": null
+        "familiarite": "Une entaille fraîche marque un tronc à hauteur d'épaule. Le bois est clair dessous, et il y en a d'autres à côté, plus vieilles.",
+        "recontextualisation": "Les entailles du tronc font une colonne. Tu n'as pas besoin de les compter pour savoir qu'il en manque une : la tienne."
       },
       "illustration": "assets/scene_palissade_sud_a_a.png",
       "portrait_requis": false,

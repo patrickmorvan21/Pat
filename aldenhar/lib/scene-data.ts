@@ -292,6 +292,15 @@ export type PointInteret = {
    */
   troupeau?: boolean;
   /**
+   * LE CÔTÉ SUD DE LA BORNE (panel 9/08, la suggestion la plus soutenue et la
+   * moins chère) : l'examen des gravures se termine par une ligne calculée sur
+   * la mémoire de compte — une des trois marques du sud porte le NOM du héros
+   * précédent, et sous ce nom une entaille par vie perdue. C'est le tout
+   * premier écran d'une partie, donc l'endroit exact où le joueur décide s'il
+   * rejoue : la trace y pèse plus qu'ailleurs.
+   */
+  borneSud?: boolean;
+  /**
    * SAVOIR appris en examinant ce point (journal Notion 25/07). Flag posé dans
    * `RunState.savoirs` : il ouvrira un choix marqué `requiresSavoir` dans une
    * scène ultérieure. Jamais annoncé au joueur — il découvre l'option le moment
@@ -629,6 +638,9 @@ export const SCENES: Scene[] = [
       {
         id: "gravures-borne",
         chapterFragment: true,
+        // « Alors qui a gravé côté sud ? » — la question que pose l'examen
+        // trouve sa réponse dans la vie d'avant, et seulement là.
+        borneSud: true,
         label: "Les gravures de la pierre",
         illustration: "assets/scene_borne_gravures_a_d.png",
         approche:
@@ -7262,6 +7274,170 @@ export const APPROACH_NARRATION: Record<string, string> = {
 };
 
 /**
+ * LA STRATE DE FAMILIARITÉ — ce que le lieu dit en plus à qui y revient.
+ *
+ * Le panel du 9/08 a mesuré que la deuxième vie est à ~60 % de relecture
+ * verbatim. C'est le trou que ces lignes bouchent : une phrase de plus à
+ * l'arrivée, à partir du DEUXIÈME passage du COMPTE par ce lieu
+ * (`PlayerMemory.visitesLieux`), puis une autre à partir du QUATRIÈME.
+ * Les champs `textes.familiarite` / `textes.recontextualisation` de
+ * data/zones/landes.json les attendaient à `null` depuis le 20/07.
+ *
+ * ⚠️ RÈGLE D'ÉCRITURE, non négociable : le héros vient de naître et ne se
+ * souvient de RIEN. Aucune de ces lignes ne dit « tu reconnais » ni « tu te
+ * souviens ». Ce qui porte la mémoire, c'est le MONDE (une trace, un objet
+ * déplacé, une usure à ta forme) ou le CORPS (la main qui trouve la prise
+ * avant l'œil). Quand une ligne frôle la connaissance — « tu ne sais pas
+ * comment tu le sais » —, l'ignorance doit être dite dans la phrase même.
+ *
+ * L'autre discipline est la place : ces lignes s'ajoutent à un écran
+ * d'arrivée déjà chargé (approche + narration). Une ou deux phrases, jamais
+ * plus — `tools/densite.py` garde le plafond de l'écran.
+ *
+ * ⚠️ `borne-frontiere` n'y figure PAS, volontairement : son écran d'ouverture
+ * est déjà le plus instrumenté du jeu (trace de la mort précédente, dette de
+ * relique, envFlags, fixations) et son déjà-vu est porté par le côté sud de
+ * la pierre (`ligneBorneSud`). Une strate de plus y ferait déborder l'écran
+ * sans rien ajouter.
+ */
+export const FAMILIARITE: Record<string, { deux: string; quatre?: string }> = {
+  "chemin-creux": {
+    deux:
+      "Ta main s'est posée sur le talus sans que tu l'aies décidé, juste où " +
+      "la racine fait une prise.",
+    quatre:
+      "Tu descends sans regarder tes pieds. Le creux te reprend comme une " +
+      "manche qu'on renfile.",
+  },
+  "colline-aux-gibets": {
+    deux:
+      "Une des potences penche plus que les autres. Tu jurerais qu'elle " +
+      "penchait déjà.",
+    quatre:
+      "Tu comptes les mâts en montant et tu tombes juste avant d'avoir " +
+      "fini. Le compte est dans tes jambes, pas dans ta tête.",
+  },
+  "pendu-qui-parle": {
+    deux:
+      "Il tourne la tête avant que tu sois à portée de voix. Il n'a pas eu " +
+      "à chercher de quel côté.",
+    quatre:
+      "« Encore. » Il ne dit rien d'autre pendant un long moment, et ce " +
+      "n'est pas à toi qu'il le dit.",
+  },
+  "champ-des-fixes": {
+    deux:
+      "Une rangée est plus courte que dans ton idée du champ. Tu n'as pas " +
+      "d'idée du champ.",
+    quatre:
+      "La terre entre les rangs est tassée par un passage régulier. " +
+      "L'écart des pas est le tien.",
+  },
+  "pendu-mal-fixe": {
+    deux:
+      "Le craquement a le rythme d'un bruit qu'on aurait déjà appris à ne " +
+      "plus entendre.",
+    quatre:
+      "Tu sais de quel côté il va glisser. Tu t'écartes avant qu'il glisse, " +
+      "et ça ne te rassure pas.",
+  },
+  "serment-hameau": {
+    deux:
+      "Les volets se ferment de proche en proche, dans l'ordre, comme une " +
+      "phrase qu'on récite. Elle a déjà été récitée.",
+    quatre:
+      "Personne ne court prévenir personne. On t'attend au bon endroit, " +
+      "sans se presser.",
+  },
+  "marche-muet": {
+    deux:
+      "Un étal manque à sa place et un autre l'a prise. Rien d'autre n'a " +
+      "bougé dans le silence.",
+    quatre:
+      "On te fait de la place avant que tu aies bifurqué. Ils savent où tu " +
+      "vas parce que tu y vas toujours.",
+  },
+  "tour-de-guet": {
+    deux:
+      "Une pierre du moignon est descellée et posée à plat à côté, comme un " +
+      "siège. Elle est creusée au milieu.",
+    quatre:
+      "Le creux de la pierre a la forme de quelqu'un qui s'assoit là pour " +
+      "regarder le sud. Il a ta forme.",
+  },
+  "campement": {
+    deux:
+      "La paille du fond est couchée en creux, à peu près de ta longueur, " +
+      "et elle n'a pas eu le temps de se relever.",
+    quatre:
+      "Le creux dans la paille ne se relève plus du tout. Il t'attend, avec " +
+      "la patience d'un lit.",
+  },
+  "chapelle-des-cordes": {
+    deux:
+      "Une corde du mur est plus neuve que ses voisines. Le chanvre n'a pas " +
+      "encore noirci.",
+    quatre:
+      "Tu comptes les cordes neuves du mur. Il y en a autant que de fois où " +
+      "tu es entré ici — et tu ne sais pas comment tu le sais.",
+  },
+  "puits-condamne": {
+    deux:
+      "Les trois coups s'arrêtent quand tu débouches, puis reprennent. Ce " +
+      "n'est pas une pause : c'est un salut.",
+    quatre:
+      "Les coups changent de rythme à ton arrivée. Ce qui frappe là-dessous " +
+      "a appris à te distinguer.",
+  },
+  "chien-du-bailli": {
+    deux:
+      "La bête grise ne se lève pas, cette fois. Elle t'a regardé venir de " +
+      "loin et elle a jugé que ce n'était pas la peine.",
+    quatre:
+      "Elle bâille. C'est pire qu'un grognement : on ne bâille que devant " +
+      "ce qui revient.",
+  },
+  "petit-tribunal": {
+    deux:
+      "Un banc du fond est de biais, comme si on s'y était assis en dernier " +
+      "et qu'on était parti vite.",
+    quatre:
+      "La poussière est intacte sur tous les bancs sauf une place. On n'y " +
+      "va plus. On l'a laissée pour quelqu'un.",
+  },
+  "mare-aux-regards": {
+    deux: "L'eau se ride avant que tu sois au bord. Elle a commencé sans toi.",
+    quatre:
+      "Le reflet est déjà en place quand tu arrives. Il ne t'imite plus : " +
+      "il t'attend.",
+  },
+  "verger-noir": {
+    deux:
+      "Un fruit manque à une branche basse, cueilli net, et la cassure est " +
+      "encore claire.",
+    quatre:
+      "Les branches basses sont vides sur toute la longueur du rang, à " +
+      "hauteur de main. À ta hauteur de main.",
+  },
+  "meute-grise-1": {
+    deux:
+      "Le cercle se referme plus vite qu'il ne devrait. Ils n'essaient plus " +
+      "de savoir ce que tu es.",
+    quatre:
+      "Aucun d'eux ne gronde. Ils se placent, chacun à son endroit, comme " +
+      "des bêtes qui ont déjà répété.",
+  },
+  "palissade-sud": {
+    deux:
+      "Une entaille fraîche marque un tronc à hauteur d'épaule. Le bois est " +
+      "clair dessous, et il y en a d'autres à côté, plus vieilles.",
+    quatre:
+      "Les entailles du tronc font une colonne. Tu n'as pas besoin de les " +
+      "compter pour savoir qu'il en manque une : la tienne.",
+  },
+};
+
+/**
  * Tire les 2 destinations offertes à une liaison : 2 lieux NON encore visités,
  * choisis dans le pool via la graine (stable à la reprise). Si le pool est
  * presque épuisé, complète avec ce qui reste.
@@ -7348,6 +7524,52 @@ const CORBEAUX_MOTS = [
   "onze",
   "douze",
 ];
+
+/**
+ * LE CÔTÉ SUD DE LA BORNE — ce que le prédécesseur y a laissé.
+ *
+ * `precedent` est la dernière ligne de `PlayerMemory.fallen` ajoutée, donc
+ * l'incarnation d'avant : elle peut être MORTE (le cas courant) ou avoir
+ * FRANCHI la Descente (`recordTraversee` l'y inscrit aussi, 8/08). La
+ * distinction porte tout le sens du côté sud : l'examen vient d'énoncer
+ * qu'« on ne grave pas au retour quand personne ne revient » — donc un nom
+ * gravé par quelqu'un qui EST revenu contredit la règle, et c'est exactement
+ * ce qu'il faut faire sentir.
+ *
+ * Les entailles comptent les vies perdues, jamais en chiffres au-delà de ce
+ * que la prose peut porter : passé douze, on cesse de compter, comme les
+ * corbeaux.
+ */
+export function ligneBorneSud(
+  precedent: { name: string; cause: string } | undefined,
+  morts: number
+): string | null {
+  if (!precedent) return null;
+  const revenu = /franchi/i.test(precedent.cause);
+  const nom = precedent.name.toUpperCase();
+  if (revenu)
+    return (
+      `Une des trois marques du sud est un nom, gravé profond, en lettres ` +
+      `carrées : ${nom}. Celui-là est revenu jusqu'ici pour l'écrire, et il ` +
+      `est reparti vers le bas quand même. Tu ne sais pas si c'est une ` +
+      `promesse ou un avertissement.`
+    );
+  if (morts <= 1)
+    return (
+      `Une des trois marques du sud est un nom : ${nom}. Sous le nom, une ` +
+      `seule entaille, fraîche, faite à l'ongle ou au clou. Tu ne connais ` +
+      `personne de ce nom. Tu ne connais pas grand monde.`
+    );
+  const compte =
+    morts < CORBEAUX_MOTS.length
+      ? `tu les comptes : ${CORBEAUX_MOTS[morts]}`
+      : `tu renonces à les compter`;
+  return (
+    `Une des trois marques du sud est un nom : ${nom}. Sous le nom, des ` +
+    `entailles alignées, de la même main — ${compte}. Quelqu'un tient un ` +
+    `compte ici, et ce n'est pas toi.`
+  );
+}
 
 export function ligneCorbeaux(morts: number): string {
   if (morts <= 0)

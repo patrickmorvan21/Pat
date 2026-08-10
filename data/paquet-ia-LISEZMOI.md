@@ -44,11 +44,16 @@ complète : c'est ce texte-là qu'il faut juger.
 - Le **moteur est une réplique simplifiée** de la vraie boucle de jeu :
   dé à vingt faces contre un seuil caché, cinq paliers de résolution, santé
   invisible, traversée par liaisons, points d'intérêt, mort permanente.
+- **Une mémoire de compte existe** (`jouer/compte.json`, créé tout seul) :
+  elle retient combien de fois tu es passé par chaque lieu et combien de
+  héros y sont morts. C'est ce qui fait qu'un lieu **ne se lit pas pareil à
+  ta deuxième vie**. Joue donc **plusieurs vies d'affilée sans effacer ce
+  fichier** : l'effacer remet le monde à neuf et tu jugeras un jeu amnésique.
 - **Ne sont pas répliqués** : les illustrations, le geste tactile du dé, les
-  scènes chronométrées, la mémoire entre les vies (Grand Registre, reliques,
-  humeur du Geôlier), les besoins, les témoins, les chapitres du Bailli, les
-  surprises. Ne les signale pas comme manquants — regarde plutôt les
-  transcripts, où tout cela joue.
+  scènes chronométrées, le Grand Registre, les reliques, l'humeur du Geôlier,
+  la trace laissée sur la Borne par le héros précédent, les besoins, les
+  témoins, les chapitres du Bailli, les surprises. Ne les signale pas comme
+  manquants — regarde plutôt les transcripts, où tout cela joue.
 
 Dans ton rapport, distingue toujours **ce que tu as joué** de **ce que tu as
 lu** dans un transcript ou déduit du code.

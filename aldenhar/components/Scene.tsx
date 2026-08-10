@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Die3D, { type RollRequest } from "@/components/Die3D";
+import { noter, vu } from "@/lib/dejavu";
 import ChoiceButton from "@/components/ChoiceButton";
 import TouchHint from "@/components/TouchHint";
 import TypedText from "@/components/TypedText";
@@ -27,7 +28,9 @@ import {
   type PointInteret,
   type LiaisonCtx,
   type Scene as SceneType,
+  ligneBorneSud,
   ligneCorbeaux,
+  FAMILIARITE,
   phraseArrivee,
   sceneEffective,
   corbeauxDuHameau,
@@ -1930,13 +1933,43 @@ export default function Scene() {
         });
       }
     }
-    // La ligne de mémoire du PNJ (2e passage du compte par ce lieu ou plus).
+    // ── LE DÉJÀ-VU (vague 4) ───────────────────────────────────────────────
+    // La STRATE DE FAMILIARITÉ du lieu, d'abord : le décor parle avant ses
+    // gens. Servie au 2e passage du COMPTE par ce lieu, puis remplacée au 4e.
+    // Le héros ne se souvient de rien — c'est le monde qui porte la trace
+    // (règle d'écriture détaillée sur FAMILIARITE et lib/dejavu.ts).
+    const lieuIci = radical(nextScene.id);
+    const fam = FAMILIARITE[lieuIci];
+    if (fam) {
+      const passages = (loadMemory().visitesLieux ?? {})[lieuIci] ?? 0;
+      const strate =
+        passages >= 4 && fam.quatre ? fam.quatre : passages >= 2 ? fam.deux : null;
+      // Portée RUN : un lieu ne peut pas se rejouer dans une vie, mais deux
+      // beats du même lieu (l'arrivée et son écran-événement) passent tous
+      // deux par ici — sans la garde, la strate tomberait deux fois.
+      const cleFam = "fam|" + lieuIci;
+      if (strate && vu(runRef.current?.vus, cleFam) === 0) {
+        entries.push({ id: nextId(), kind: "narration", text: strate });
+        persist((r) => {
+          r.vus = noter(r.vus, cleFam);
+        });
+      }
+    }
+    // Puis la ligne de mémoire du PNJ (2e passage du compte par ce lieu ou
+    // plus). Même garde de portée RUN : le Fossoyeur est déclaré sur deux
+    // scènes qui partagent son lieu (le Champ et sa variante), il ne doit pas
+    // se souvenir deux fois dans la même vie.
     const memPnj = PNJ_MEMOIRE[nextScene.id];
+    const clePnj = "pnj|" + (memPnj?.lieu ?? lieuIci);
     if (
       memPnj &&
-      ((loadMemory().visitesLieux ?? {})[memPnj.lieu ?? radical(nextScene.id)] ?? 0) >= 2
+      ((loadMemory().visitesLieux ?? {})[memPnj.lieu ?? lieuIci] ?? 0) >= 2 &&
+      vu(runRef.current?.vus, clePnj) === 0
     ) {
       entries.push({ id: nextId(), kind: "narration", text: memPnj.text });
+      persist((r) => {
+        r.vus = noter(r.vus, clePnj);
+      });
     }
     // ── LES ÉTATS (spec 4/08 §2 et §5, contrat de visibilité) ─────────────
     // FIXÉ différé (7/08) : le seuil de Soupçon (4) peut être atteint en
@@ -2635,6 +2668,16 @@ export default function Scene() {
                 id: nextId(), kind: "narration" as const,
                 text: ligneTroupeau(tailleTroupeau(loadMemory().runsStarted, loadMemory().fixations)),
               }]
+            : []),
+          // LE CÔTÉ SUD DE LA BORNE : la question posée par l'examen (« qui a
+          // gravé côté sud ? ») reçoit sa réponse de la vie précédente. Rien
+          // à la première — c'est le silence qui rend la 2e lisible.
+          ...(poi.borneSud
+            ? (() => {
+                const m = loadMemory();
+                const l = ligneBorneSud(m.fallen[0], m.deaths);
+                return l ? [{ id: nextId(), kind: "narration" as const, text: l }] : [];
+              })()
             : []),
           // LE POTEAU QUI PORTE TON NOM suit tes vies (partie de découverte
           // 8/08 : le moment le plus fort du Champ n'avait aucune suite). Il

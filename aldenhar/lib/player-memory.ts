@@ -150,6 +150,9 @@ export type PlayerMemory = {
   /** Passages du COMPTE par chaque lieu (radical), toutes vies confondues —
       la mémoire des PNJ entre les incarnations (arbitrage Patrick 8/08). */
   visitesLieux?: Record<string, number>;
+  /** Registre de déjà-vu, portée COMPTE (lib/dejavu.ts). Le héros ne se
+      souvient de rien ; c'est le monde qui tient le compte. */
+  vus?: Record<string, number>;
   /**
    * L'introduction (les 4 clauses du pacte, Figma 2238:1009) a déjà été lue.
    *
@@ -371,6 +374,7 @@ export function loadMemory(): PlayerMemory {
           // la vie précédente n'était jamais relu, donc jamais évité.)
           lastAccueil: typeof p.lastAccueil === "string" ? p.lastAccueil : undefined,
           visitesLieux: p.visitesLieux && typeof p.visitesLieux === "object" ? p.visitesLieux : {},
+          vus: p.vus && typeof p.vus === "object" ? p.vus : {},
           faitsVus: p.faitsVus && typeof p.faitsVus === "object" ? p.faitsVus : {},
           renoncements: typeof p.renoncements === "number" ? p.renoncements : 0,
           zonesCleared: typeof p.zonesCleared === "number" ? p.zonesCleared : 0,

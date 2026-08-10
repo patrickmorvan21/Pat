@@ -202,6 +202,9 @@ export type RunState = {
   /** Noms des soins génériques déjà trouvés cette run — un objet « trouvé »
       ne retombe jamais sous le même nom dans la même vie (playtest 7/08). */
   dropsServis?: string[];
+  /** Registre de déjà-vu, portée RUN (lib/dejavu.ts) — un compteur par clé,
+      jamais un booléen : le texte peut dire « la deuxième fois ». */
+  vus?: Record<string, number>;
   /**
    * LES TÉMOINS (5/08) : le Soupçon cesse d'être un compteur, il devient des
    * gens. Chaque acte qui fait monter le Soupçon inscrit QUI a vu QUOI, dans
@@ -483,6 +486,7 @@ export function loadRun(): RunState {
             intrusesVues: Array.isArray(p.intrusesVues) ? p.intrusesVues : [],
             reactionsVues: Array.isArray(p.reactionsVues) ? p.reactionsVues : [],
             echosObjet: Array.isArray(p.echosObjet) ? p.echosObjet : [],
+            vus: p.vus && typeof p.vus === "object" ? p.vus : {},
             dropsServis: Array.isArray(p.dropsServis) ? p.dropsServis : [],
             temoins: Array.isArray(p.temoins) ? p.temoins : [],
             temoinsCites: Array.isArray(p.temoinsCites) ? p.temoinsCites : [],

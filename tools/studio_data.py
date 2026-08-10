@@ -437,6 +437,39 @@ def lire_besoins() -> list[dict]:
     return out
 
 
+def lire_familiarite() -> list[dict]:
+    """LA STRATE DE FAMILIARITÉ — ce qu'un lieu dit de plus à qui y revient.
+
+    Comme les textes de marche, ces lignes ne sont dans AUCUNE scène : elles
+    sont injectées à l'arrivée depuis une table de `scene-data.ts`. Sans cet
+    export, on écrirait la réponse au « 60 % de relecture verbatim » sans
+    qu'aucune de ces phrases soit visible dans l'éditeur.
+
+    Le seuil est le nombre de passages du COMPTE par le lieu : 2 pour la
+    familiarité, 4 pour la recontextualisation.
+    """
+    src = TS.read_text(encoding="utf-8")
+    m = re.search(r"export const FAMILIARITE[^=]*=\s*\{(.*?)\n\};", src, re.S)
+    if not m:
+        return []
+    blocs = re.split(r'\n  (?:"([a-z0-9\-]+)"|([a-z][a-zA-Z0-9\-]*)):\s*\{', m.group(1))
+    sorties: list[dict] = []
+    for i in range(1, len(blocs) - 2, 3):
+        cle = blocs[i] or blocs[i + 1]
+        corps = blocs[i + 2]
+        entree: dict = {"scene": cle, "strates": []}
+        for strate, seuil in (("deux", 2), ("quatre", 4)):
+            mm = re.search(rf'{strate}:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', corps)
+            if not mm:
+                continue
+            entree["strates"].append(
+                {"passages": seuil, "texte": "".join(chaines(mm.group(1)))}
+            )
+        if entree["strates"]:
+            sorties.append(entree)
+    return sorties
+
+
 def lire_surprises():
     """Le catalogue des éléments-surprises (lib/surprises.ts, 6/08) : nom,
     contexte, garde-fou. Le rationnement (1/run max) est rappelé côté page."""
@@ -1184,6 +1217,7 @@ def main() -> int:
         "etats": lire_etats(),
         "besoins": lire_besoins(),
         "transitions": lire_transitions(),
+        "familiarite": lire_familiarite(),
         "surprises": lire_surprises(),
         "totaux": {
             "scenes": len(scenes),
@@ -1202,6 +1236,7 @@ def main() -> int:
             "etats": len(lire_etats()),
             "besoins": len(lire_besoins()),
             "transitions": len(lire_transitions()["fond"]) + len(lire_transitions()["variantes"]),
+            "familiarite": sum(len(f["strates"]) for f in lire_familiarite()),
         },
     }
     SORTIE.write_text(json.dumps(donnees, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")

@@ -131,6 +131,15 @@ def main() -> int:
         "pool": d["pool"],
         "scenes": scenes,
         "etats": d.get("etats", []),
+        # LA STRATE DE FAMILIARITÉ (vague 4) : ce qu'un lieu dit de plus à qui
+        # y revient. Sans elle, la réplique rejoue la vie 2 mot pour mot — le
+        # défaut même que la vague corrige, et que le kit ferait passer pour
+        # non corrigé (piège documenté le 9/08 : « ce n'est pas le testeur qui
+        # a mal regardé, c'est le kit qui ne montre pas »).
+        "familiarite": {
+            f["scene"]: {str(st["passages"]): st["texte"] for st in f["strates"]}
+            for f in d.get("familiarite", [])
+        },
         "approche": record(src, "const APPROACH: Record<string, string>"),
         "approcheNarration": record(src, "export const APPROACH_NARRATION: Record<string, string>"),
         "indiceRoute": record(src, "const INDICE_ROUTE: Record<string, string>"),

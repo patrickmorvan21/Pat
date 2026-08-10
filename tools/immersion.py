@@ -238,6 +238,35 @@ def pools() -> list[dict]:
                 "textes": [texte],
             })
 
+    # — STRATE DE FAMILIARITÉ (vague 4) : une ligne de plus à l'arrivée, à
+    #   partir du 2e passage du COMPTE par le lieu. Même garde que la phrase
+    #   d'arrivée — elle est servie AU MÊME ENDROIT, donc elle présuppose
+    #   exactement ce que la destination autorise, ni plus.
+    fam = re.search(r"export const FAMILIARITE[^=]*=\s*\{(.*?)\n\};", scene_src, re.S)
+    if fam:
+        # Chaque entrée est un objet { deux: …, quatre?: … } : on découpe sur
+        # les clés de lieu (colonne 2), puis on prend toutes les chaînes du
+        # bloc. Un texte hors contexte est signalé sous le nom de son lieu.
+        blocs = re.split(r'\n  (?:"([a-z0-9\-]+)"|([a-z][a-zA-Z0-9\-]*)):\s*\{', fam.group(1))
+        # split rend [préambule, cle1a, cle1b, corps1, cle2a, cle2b, corps2, …]
+        for i in range(1, len(blocs) - 2, 3):
+            dest = blocs[i] or blocs[i + 1]
+            corps = blocs[i + 2]
+            for strate in ("deux", "quatre"):
+                m = re.search(
+                    rf'{strate}:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', corps
+                )
+                if not m:
+                    continue
+                texte = "".join(
+                    re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1))
+                ).replace('\\"', '"')
+                out.append({
+                    "pool": f"familiarité {dest} ({strate})",
+                    "garde": {"village", "gens"} if village_scene(dest) else {"lande", "gens"},
+                    "textes": [texte],
+                })
+
     # — bifurcations : phrase de Croisée, partout.
     for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, "const BIFURCATIONS"))):
         out.append({"pool": f"bifurcation {i}", "garde": {"partout"}, "textes": [t]})
