@@ -18,6 +18,7 @@ import {
   pickAccueil,
   HAMEAU_ACCUEIL_SLOT,
   sceneById,
+  estUnLieu,
   APPROACH_NARRATION,
   SOUPCON_PALIERS,
   SOUPCON_CRAIE,
@@ -675,6 +676,10 @@ export default function Scene() {
   const manifsJouees = useRef<Set<string>>(new Set());
   /** Lignes de guérison à dire au prochain écran (remède, pas échéance). */
   const guerisonEnAttente = useRef<string[]>([]);
+  /** Le choix en cours quitte une scène de nuit sans qu'une nuit passe
+      (`Choice.sansNuit`). Un ref plutôt qu'un state : `advance()` le lit dans
+      le même tour que la sélection, avant tout re-rendu. */
+  const sansNuitRef = useRef(false);
   /** Besoin qu'un choix RISQUÉ satisfera — seulement si son jet réussit. */
   const besoinEnAttente = useRef<string | null>(null);
   // Défenses ouvertes au procès par les témoins réellement présents (5/08).
@@ -1429,11 +1434,14 @@ export default function Scene() {
    * prochain écran, ce qui garantit le contrat de visibilité (§5) sans avoir à
    * la coller au milieu d'une conséquence de dé.
    */
-  function poserEtatRun(id: string, dureeEnLieux?: number) {
+  /** Rend `true` si l'état a réellement PRIS. Le plafond de deux négatifs et
+      le non-empilement peuvent le refuser — et un coût qui ne se pose nulle
+      part n'est plus un coût (relecture par agents, 10/08). */
+  function poserEtatRun(id: string, dureeEnLieux?: number): boolean {
     const e = etat(id);
-    if (!e) return;
+    if (!e) return false;
     const f = faitsDe(runRef.current);
-    if (idsEtats(f).includes(id)) return; // un état ne s'empile pas sur lui-même
+    if (idsEtats(f).includes(id)) return false; // un état ne s'empile pas sur lui-même
     // DOSER (retour Patrick 7/08 : « beaucoup trop d'états négatifs
     // cumulés ») : au plus DEUX états négatifs de corps/esprit à la fois —
     // un troisième ne se pose pas, le monde choisit ses malheurs. FIXÉ est
@@ -1441,7 +1449,7 @@ export default function Scene() {
     // procès en dépend).
     if (ETATS_NEGATIFS_DOSES.includes(id)) {
       const actifs = idsEtats(f).filter((x) => ETATS_NEGATIFS_DOSES.includes(x));
-      if (actifs.length >= 2) return;
+      if (actifs.length >= 2) return false;
     }
     applique(poserEtat(id, idsEtats(f), dureeEnLieux ? step + dureeEnLieux : undefined), f, step);
     persist((run) => {
@@ -1449,6 +1457,7 @@ export default function Scene() {
     });
     manifsEnAttente.current = [...manifsEnAttente.current, id];
     setEtatsIds(idsEtats(f));
+    return true;
   }
 
   /**
@@ -1548,9 +1557,15 @@ export default function Scene() {
     // comptage entre les deux voies.
     const engageIciAvant = runRef.current?.engageIci ?? false;
     let nuitPassee: string | null = null;
-    if (scene.nuit && vu(runRef.current?.vus, "nuit|" + scene.id) === 0) {
+    if (
+      scene.nuit &&
+      // …SAUF si le choix dit qu'on ne s'attarde pas (voir `Choice.sansNuit`).
+      !sansNuitRef.current &&
+      vu(runRef.current?.vus, "nuit|" + scene.id) === 0
+    ) {
       nuitPassee = "nuit|" + scene.id;
     }
+    sansNuitRef.current = false;
     // Le Soupçon au comble (chantier 3 du 23/07) : la traversée est DÉROUTÉE
     // vers le procès du héros — on vient te chercher, où que tu ailles. Jamais
     // au milieu d'une chaîne de rencontre (on finit d'abord ce qui te tient).
@@ -1642,7 +1657,14 @@ export default function Scene() {
         // Registre en ne faisant rien. Survivre longtemps redevient avoir
         // vécu longtemps, et les Besoins (comptés en jours) suivent la même
         // mesure.
-        if (engageDansLeLieu) {
+        // Même dédup que le repli plus bas : un lieu ne se crédite qu'une fois.
+        const radQuitte = radical(scene.id);
+        if (
+          engageDansLeLieu &&
+          estUnLieu(radQuitte) &&
+          !(trav.credites ?? []).includes(radQuitte)
+        ) {
+          trav.credites = [...(trav.credites ?? []), radQuitte];
           lieuxEngagesApres = (runRef.current?.lieuxEngages ?? 0) + 1;
           if (lieuxEngagesApres % 3 === 0) jourDeMarche = true;
         }
@@ -1847,11 +1869,24 @@ export default function Scene() {
     // Palissade, entrées hors `visited` — portait SIX jets qui ne pouvaient
     // créditer aucun Jour, contre un « Dormir » qui en créditait un. Mesuré
     // sur 64 vies : 60 % des Jours du joueur optimal venaient du sommeil.
+    // ⚠️ …MAIS UNE SEULE FOIS PAR LIEU (relecture par agents, 10/08). Le
+    // crédit se prend au changement de RADICAL, or un lieu qui ouvre une
+    // rencontre en franchit trois — verger-noir → epoux → verger-noir-2 →
+    // liaison. Prendre le détour optionnel valait donc trois lieux au lieu
+    // d'un : un Jour entier offert, invisible, à cinq endroits de la zone.
+    // `trav.credites` retient les radicaux déjà comptés cette traversée.
+    const radicalQuitte = radical(scene.id);
     if (
       lieuxEngagesApres === null &&
       engageIciAvant &&
-      radical(nextScene.id) !== radical(scene.id)
+      radical(nextScene.id) !== radicalQuitte &&
+      // Une RENCONTRE n'est pas un lieu (elle n'entre déjà pas dans
+      // `trav.visited`) : quitter les Époux ne crédite rien, c'est le Verger
+      // qui compte, une fois.
+      estUnLieu(radicalQuitte) &&
+      !(trav.credites ?? []).includes(radicalQuitte)
     ) {
+      trav.credites = [...(trav.credites ?? []), radicalQuitte];
       lieuxEngagesApres = (runRef.current?.lieuxEngages ?? 0) + 1;
       if (lieuxEngagesApres % 3 === 0) jourDeMarche = true;
     }
@@ -2479,12 +2514,19 @@ export default function Scene() {
       // deux puces JOUR sur le même écran seraient illisibles, et « la lumière
       // a tourné » ne se dit pas deux fois. Le petit rabais est assumé.
       if (jourDeMarche || nuitPassee) run.day += 1;
+      if (lieuxEngagesApres !== null) run.lieuxEngages = lieuxEngagesApres;
+      // ⚠️ L'HORLOGE DU CORPS EST ADDITIVE, ET LA MARCHE PASSE AVANT LA NUIT
+      // (relecture par agents, 10/08) : `horlogeApres` est calculé tout en
+      // haut d'`advance()`, donc à partir d'une horloge d'AVANT la nuit. Posé
+      // après le bloc `nuitPassee`, il écrasait purement et simplement l'heure
+      // que la nuit venait d'ajouter. Inatteignable aujourd'hui (les quatre
+      // scènes de nuit sont chaînées ou en séjour), mais le piège attendait la
+      // première scène de nuit tirable.
+      if (horlogeApres !== null) run.horloge = horlogeApres;
       if (nuitPassee) {
         run.horloge = (run.horloge ?? run.day) + 1;
         run.vus = noter(run.vus, nuitPassee);
       }
-      if (lieuxEngagesApres !== null) run.lieuxEngages = lieuxEngagesApres;
-      if (horlogeApres !== null) run.horloge = horlogeApres;
       // On entre dans un lieu neuf : ce qu'on y regardera et ce qu'on y
       // tentera se comptent à partir de zéro.
       // ⚠️ PAS SEULEMENT sur `toDest` (relecture par agents, 10/08) : la
@@ -2722,6 +2764,7 @@ export default function Scene() {
 
   function onSelect(choice: Choice) {
     if (rolling || selectedId) return;
+    sansNuitRef.current = Boolean(choice.sansNuit);
     if (choice.locked) {
       const run = runRef.current;
       const ouvert = verrouOuvert(choice, run?.stats);
@@ -3169,7 +3212,12 @@ export default function Scene() {
         // BESOINS (spec §3) : dormir est satisfait ici. Les besoins se comptent
         // en JOURS, jamais en scènes — garde-fou n°2 : un joueur qui traverse
         // vite n'aura presque jamais faim.
-        run.besoins = { ...(run.besoins ?? {}), dormir: (run.horloge ?? run.day) + 1 };
+        // ⚠️ PAS de `+ 1` (relecture par agents, 10/08) : `run.horloge` vient
+        // d'être incrémentée par la nuit deux lignes plus haut. Le « +1 »
+        // datait le sommeil d'un cran dans le FUTUR — au réveil, `depuis`
+        // valait −1 et le besoin durait quatre crans au lieu de trois, sans
+        // s'accorder avec `repondreAuBesoin`, qui écrit l'heure telle quelle.
+        run.besoins = { ...(run.besoins ?? {}), dormir: run.horloge ?? run.day };
         run.effects = run.effects
           .filter((e) => e.delta > 0 || e.scenesLeft >= 900)
           .map((e) => (e.scenesLeft >= 900 && e.delta < -1 ? { ...e, delta: -1 } : e));
@@ -3522,10 +3570,14 @@ export default function Scene() {
             const brisure = amorti && relicDette(relicCoussin) === "brisure";
             persist((run) => {
               run.rolls.push({ step, choiceId: selectedId ?? "roll", result, at: nowMs(), ok: !tierIsFail(tier) });
-              // Tu as tenté quelque chose ici : quitter ce lieu ne coûtera pas
-              // de jour (panel 10/08, voir `JOUR_DE_REFUS`). Ce qui compte est
-              // d'avoir lancé, pas d'avoir réussi — sinon le jeu punirait deux
-              // fois le même échec.
+              // Tu as tenté quelque chose ici : ce lieu comptera dans les
+              // `lieuxEngages` qui font avancer le Jour. Ce qui compte est
+              // d'avoir LANCÉ, pas d'avoir réussi — position tenue, pas un
+              // oubli (relecture par agents, 10/08, qui la notait « à
+              // surveiller ») : l'échec se paie déjà en santé, en état et en
+              // route fermée. Le faire aussi payer sur l'axe du SCORE ferait
+              // trancher le dé à la place du joueur — la même inversion que le
+              // Jour-sanction retiré le 10/08.
               run.engageIci = true;
               // Coûts relevés (partie de découverte 8/08 : santé 1 → 0,76 sur
               // trois jours de jeu — la tension du permadeath ne se sentait
@@ -3708,8 +3760,28 @@ export default function Scene() {
             // tirer indemne vide le mot « surnaturel » de son sens. Un échec
             // ordinaire laisse le plus léger des trois (HANTÉ, mental) ; le
             // plafond de deux états négatifs empêche l'empilement.
-            if (natureJet === "surnaturel" && tierIsFail(tier))
-              poserEtatRun(tier === "malediction" ? "marque" : "hante");
+            if (natureJet === "surnaturel" && tierIsFail(tier)) {
+              const pris = poserEtatRun(tier === "malediction" ? "marque" : "hante");
+              // ⚠️ LE COÛT DOIT SE POSER QUELQUE PART (relecture par agents,
+              // 10/08). Le surnaturel ne coûte ni santé ni Soupçon : son coût
+              // EST l'état. Mais le plafond de deux négatifs pouvait le
+              // refuser — et un héros qui en portait déjà deux ratait alors
+              // GRATUITEMENT tous ses jets surnaturels, précisément le joueur
+              // le plus engagé. Quand rien ne peut plus s'accrocher, ça prend
+              // dans la chair : c'est la seule chose qui reste à prendre.
+              if (!pris) {
+                persist((r) => {
+                  r.health = Math.max(0, r.health - 0.1);
+                });
+                setHealth(runRef.current?.health ?? health);
+                guerisonEnAttente.current = [
+                  ...guerisonEnAttente.current,
+                  "Tu portes déjà tout ce qu'on peut porter. Alors cette " +
+                    "fois-ci, ça ne s'accroche pas : ça prend, simplement, " +
+                    "et tu le sens partir.",
+                ];
+              }
+            }
             // FIXÉ : « le village te croit marqué par le sud (Soupçon élevé) ».
             // Seuil 4 : assez haut pour que ce soit une trajectoire, assez bas
             // pour qu'on le vive avant le procès (qui tombe à 6).

@@ -149,6 +149,10 @@ export type TraversalState = {
   /** Cette Croisée-ci n'offre qu'une direction (échec dur au coup d'avant).
       Porté par `trav` — donc reconstruit à l'identique à la reprise. */
   routeFermee?: boolean;
+  /** Radicaux de lieu déjà crédités dans `lieuxEngages` cette traversée.
+      Empêche un lieu à rencontre optionnelle de compter trois fois — voir
+      le docblock de `RunState.lieuxEngages`. */
+  credites?: string[];
   /** Graine de la liaison courante — garde ambiance/options stables à la reprise. */
   seed: number;
   /** Descente atteinte : la traversée est finie (nœud terminal). */
@@ -217,12 +221,14 @@ export type RunState = {
    * est la stratégie gagnante — 0 mort sur 16 vies, contre 8 sur 16 en le
    * lançant. Le pilier central du jeu était devenu facultatif.
    *
-   * Le levier retenu (et débattu) : **le refus coûte un JOUR, pas de la
-   * santé**. Quitter un lieu sans y avoir rien risqué fait tourner la
-   * lumière. L'abstention cesse d'être gratuite sans devenir interdite, les
-   * Besoins — comptés en jours, donc presque jamais déclenchés — se
-   * réveillent, et surtout **l'observation reste gratuite** : l'arbitrage
-   * « récompenser les curieux, pas les pressés » (8/08) est préservé.
+   * ⚠️ LE LEVIER D'ABORD RETENU — « le refus coûte un JOUR » — A ÉTÉ ANNULÉ
+   * PAR PATRICK LE 10/08, et ce paragraphe ne subsiste que pour empêcher de
+   * le réinventer : le Jour est le SCORE du Registre, donc facturer un Jour
+   * au joueur passif le faisait MONTER au classement. Voir `lieuxEngages`
+   * ci-dessous pour la règle réellement en vigueur (le Jour se gagne).
+   *
+   * Ce qui reste vrai ici : **l'observation est gratuite** (arbitrage du
+   * 8/08), et ce drapeau est posé au LANCER — pas à la réussite.
    *
    * Posé à la résolution d'un jet, remis à faux en arrivant dans un lieu neuf.
    */
@@ -241,6 +247,13 @@ export type RunState = {
    * avance tous les trois lieux où le héros a réellement tenté quelque
    * chose. Traverser les Landes sans rien risquer reste possible — mais ce
    * temps-là ne se dépose sur personne, et le Registre ne le compte pas.
+   *
+   * ⚠️ UN LIEU NE COMPTE QU'UNE FOIS PAR TRAVERSÉE (`trav.credites`, corrigé
+   * le 10/08). Le crédit se prend au changement de RADICAL d'id, or un lieu
+   * qui ouvre une rencontre en franchit trois (verger-noir → epoux →
+   * verger-noir-2 → liaison) : prendre la rencontre optionnelle valait donc
+   * trois lieux au lieu d'un, soit un Jour entier offert pour un détour.
+   * Cinq lieux ont une rencontre de ce type.
    *
    * RÈGLE GÉNÉRALE À TENIR : aucune mécanique ne doit jamais ajouter un Jour
    * à titre de sanction. Le Jour est un score et une pression (les Besoins

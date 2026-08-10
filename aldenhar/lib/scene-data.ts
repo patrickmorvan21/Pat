@@ -9,7 +9,7 @@
  */
 
 import type { Condition, Faits } from "./faits";
-import { evalue, present } from "./faits";
+import { evalue, present, radical } from "./faits";
 
 export type Stat = "COURAGE" | "RUSE" | "INSTINCT" | "EMPATHIE";
 
@@ -98,6 +98,15 @@ export type Choice = {
    * porter au moins un choix `sortie` INCONDITIONNEL, sinon on l'enferme.
    */
   sortie?: { toScene?: string };
+  /**
+   * ON NE S'ATTARDE PAS (relecture par agents, 10/08). `Scene.nuit` fait
+   * passer l'aube qu'on ait dormi ou veillé — mais deux scènes de nuit
+   * offrent une sortie qui n'est NI l'un NI l'autre (« Repartir sans
+   * s'attarder »). Le libellé disait qu'aucun temps ne passait pendant que
+   * la mécanique offrait un Jour, gratuit et muet : la fuite de score que le
+   * Jour-de-marche venait précisément de fermer. Ce drapeau la referme.
+   */
+  sansNuit?: boolean;
   /**
    * ON T'A VU — l'autre moitié du même problème (panel 10/08).
    *
@@ -645,8 +654,13 @@ export const SCENES: Scene[] = [
       "La lande s'ouvre sous un crépuscule qui ne tombe pas. La lumière " +
         "reste prise entre chien et loup, comme un souffle retenu. Quelque " +
         "part, une corde grince.",
+      // ⚠️ TEXTE ALIGNÉ SUR L'IMAGE (relecture par agents, 10/08) : les trois
+      // vues validées de la borne s'accordent sur un monolithe qui dépasse
+      // largement l'homme — sur `hesitant-1`, la seule où une silhouette
+      // donne l'échelle, la pierre fait le double. « Haute comme un homme »
+      // était la seule ligne à dire le contraire, sur le tout premier écran.
       "La pierre est seule au milieu du plateau, dressée là où tous les murets " +
-        "renoncent. Haute comme un homme, grise comme le reste — et pourtant " +
+        "renoncent. Plus haute qu'un homme, grise comme le reste — et pourtant " +
         "l'œil ne voit qu'elle. À son pied, un tas d'offrandes. Au-delà, le " +
         "sud, nu. Et à trois pas de la borne, un homme immobile, face au sud.",
     ],
@@ -1372,7 +1386,10 @@ export const SCENES: Scene[] = [
       "Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme " +
         "plat, toutes les cordes de la crête se mettent à bouger. Pas au hasard : " +
         "ensemble. Un balancement lent, réglé, qui va et vient sur le même temps.",
-      "Ça grince en mesure. Neuf cordes, un seul rythme. Tu comprends, avec " +
+      // « Neuf cordes » n'avait pas suivi la réconciliation du cercle→crête
+      // (l'image en montre une quinzaine). Le nombre exact n'est porté par
+      // aucune mécanique : c'est l'unisson qui compte.
+      "Ça grince en mesure. Toutes ces cordes, un seul rythme. Tu comprends, avec " +
         "un retard qui te coûte, que ce rythme ne t'est pas indifférent — " +
         "tu pourrais le compter.",
     ],
@@ -1563,7 +1580,7 @@ export const SCENES: Scene[] = [
       // pierres tombales ET des poteaux. « Pas de tombes » la contredisait.
       // Les deux ensemble disent mieux ce qui s'est passé ici : il y a eu un
       // cimetière avant, et la Fixation a planté ses poteaux entre les dalles.
-      "Il y a eu un cimetière ici, autrefois : des dalles basses, usées, dont " +
+      "Il y a eu un cimetière ici, autrefois : des stèles penchées, usées, dont " +
         "plus personne ne lit les noms. Entre elles, on a planté des poteaux. " +
         "Des rangées entières, un nom sur chaque, tous tournés face au nord. " +
         "Dos au sud. Même morts, surtout morts, on ne les laisse pas regarder " +
@@ -1955,6 +1972,12 @@ export const SCENES: Scene[] = [
         id: "observer-couvert",
         nature: "exploration",
         // Sa prose d'échec nomme un témoin (deux hommes montent pendant que tu regardes en bas).
+        // ⚠️ PAS de `soupcon` à la sélection (retiré 10/08, relecture par agents) :
+        // la règle du 8/08 dit que le Soupçon naît d'un ACTE, jamais du regard —
+        // et la réussite de ce jet dit mot pour mot « tu les as vus avant qu'ils
+        // te voient ». Facturer les deux rendait le choix curieux strictement
+        // dominé : on payait pour regarder, puis on repayait pour avoir été vu.
+        // Seul l'échec coûte, parce que seul l'échec est vu.
         vuSiEchec: true,
         label: "Observer d'abord, à couvert",
         risky: {
@@ -3851,7 +3874,7 @@ export const SCENES: Scene[] = [
     foe: "guetteur-tour",
     foeName: "le Guetteur sans tour",
     narration: [
-      "Il est assis sur le tas de pierres, dos à toi, et il regarde le sud " +
+      "Il se tient sur le tas de pierres, dos à toi, et il regarde le sud " +
         "par-dessus le hameau. Un vieux manteau de guet, la corne au côté. " +
         "Il ne se retourne pas.",
       "— « Tu as vu là-haut. » Ce n'est pas une question. « Alors tu as vu ce " +
@@ -3860,7 +3883,7 @@ export const SCENES: Scene[] = [
     // Le cas emblématique du panel : « Tu as vu là-haut » tombait aussi sur
     // qui venait de dévaler la volée — et même sur qui avait refusé de monter.
     narrationEchec: [
-      "Il est assis sur le tas de pierres, dos à toi, et il regarde le sud " +
+      "Il se tient sur le tas de pierres, dos à toi, et il regarde le sud " +
         "par-dessus le hameau. Un vieux manteau de guet, la corne au côté. " +
         "Il t'a entendu arriver de loin, et de la mauvaise manière.",
       "— « Tu n'es pas monté. » Ce n'est pas un reproche : c'est un relevé. " +
@@ -4213,7 +4236,7 @@ export const SCENES: Scene[] = [
           ),
         },
       },
-      { id: "repartir", label: "Repartir sans s'attarder", sortie: {} },
+      { id: "repartir", label: "Repartir sans s'attarder", sortie: {}, sansNuit: true },
     ],
     jailerLine: "Dors. Le crépuscule ne tombera pas, mais toi, un jour, oui. J'aime comparer.",
   },
@@ -4404,7 +4427,7 @@ export const SCENES: Scene[] = [
             "seul endroit du pays où l\u2019on ne te compte pas.",
         },
       },
-      { id: "fille-repartir", label: "Repartir sans s\u2019attarder" },
+      { id: "fille-repartir", label: "Repartir sans s\u2019attarder", sansNuit: true },
     ],
     jailerLine: "Elle t\u2019a demandé de te taire. Nous allons voir combien de temps tu tiens — c\u2019est toujours instructif.",
   },
@@ -4979,7 +5002,10 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_petit_tribunal_a.png",
     chainNext: "petit-tribunal-2",
     narration: [
-      "La grange aux trois bancs sent le suif froid. La chaire fait face à la " +
+      // ⚠️ « Grange » cède, pas les bancs (relecture par agents, 10/08) : les
+      // deux images du lieu s'accordent sur de la PIERRE, et les trois bancs
+      // sont cités quatre fois et portent un point d'intérêt entier.
+      "La salle basse aux trois bancs sent le suif froid. La chaire fait face à la " +
         "porte — ici, même l'entrée est un interrogatoire.",
       "Au mur, une feuille clouée. Sur la chaire, un livre ouvert. Les bancs, " +
         "eux, gardent leurs traces.",
@@ -5159,13 +5185,19 @@ export const SCENES: Scene[] = [
       // ⚠️ Ne jamais présupposer d'où vient le héros : cette narration se
       // jouait avec « Passé les murets du hameau… » chez des héros qui n'y
       // étaient jamais entrés (playtest 7/08).
-      "Loin de tout muret, la lande est à eux. Tu les vois de loin — et " +
-        "c'est mauvais signe : la Meute Grise ne se montre que quand " +
-        "l'encerclement est fini. Six silhouettes couleur de bruyère " +
-        "morte, immobiles aux six points d'un cercle dont tu es le centre.",
+      // ⚠️ ALIGNÉ SUR L'IMAGE (relecture par agents, 10/08). Elle montre cinq
+      // bêtes DE FRONT, toutes debout, la plus grande au centre — pas six
+      // points d'un cercle, et personne ne s'assoit. Plutôt que de jeter les
+      // douze issues qui parlent de cercle, on retourne le cadrage : ce qu'on
+      // VOIT est le front ; le cercle est ce qu'on ne voit pas. L'image
+      // devient littéralement vraie, et le silence derrière dit le reste.
+      "Loin de tout muret, la lande est à eux. Ils se montrent d'un coup, de " +
+        "front, cinq silhouettes couleur de bruyère morte alignées dans " +
+        "l'herbe haute — et c'est mauvais signe : la Meute Grise ne se " +
+        "laisse voir que quand l'encerclement est déjà fini derrière toi.",
       "Pas des chiens : trop patients. Pas des loups : trop organisés. La " +
-        "plus grande s'assoit — le signal. Le cercle se met à tourner, " +
-        "lentement, en se resserrant d'un pas par tour.",
+        "plus grande tient le centre et avance d'un pas — le signal. Le " +
+        "cercle que tu ne vois pas se resserre du même pas, dans ton dos.",
     ],
     choices: [
       {
@@ -5177,7 +5209,7 @@ export const SCENES: Scene[] = [
           threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu charges la meneuse au milieu de son tour — l'impensable, au centre du cercle qui ne se défend jamais. Elle roule sous toi, se relève boiteuse, et le cercle entier perd le pas. Une meute sans cadence n'est qu'un tas de bêtes maigres.",
-            "Ta charge la surprend à contre-pied. Ta lame la marque au flanc et le cercle s'arrête net — six têtes tournées vers la meneuse, en attente d'un ordre qu'elle met trop longtemps à donner. Tu as gagné le désordre, et c'est déjà beaucoup.",
+            "Ta charge la surprend à contre-pied. Ta lame la marque au flanc et le front s'arrête net — toutes les têtes tournées vers la meneuse, en attente d'un ordre qu'elle met trop longtemps à donner. Tu as gagné le désordre, et c'est déjà beaucoup.",
             "Elle t'a laissé venir. Le cercle se referme dans ton dos au moment exact de ton élan — des crocs te prennent au mollet, d'autres au flanc, précis, économes. Puis tout recule d'un pas : la première entaille est faite. Ils ne sont pas pressés.",
             "1 naturel. Tu charges la meneuse. C'était la seule qui n'était pas là — tu charges de la bruyère, et le cercle entier te tombe dessus, pédagogique. ♦ −2"
           ),
@@ -5609,8 +5641,11 @@ export const SCENES: Scene[] = [
       "— « C'est le onzième verger. » Elle le dit avant toute autre chose, " +
         "comme on donne son nom. « Les dix premiers ont donné des fruits de " +
         "cendre. Celui-là aussi. Le douzième, on verra. »",
-      "L'homme continue de bêcher. Il n'a pas levé la tête. Il compte les " +
-        "coups de bêche à voix basse.",
+      // ⚠️ ALIGNÉ SUR L'IMAGE (10/08) : elle montre les DEUX debout, tournés
+      // vers toi, personne ne bêche. Le comptage — qui porte le lore (onze
+      // prénoms, pas onze coups) — passe en son entendu.
+      "L'homme s'est redressé aussi, la bêche encore en main. Il n'a pas " +
+        "cessé de compter à voix basse pour autant, et il ne te regarde pas.",
     ],
     choices: [
       {
@@ -6526,6 +6561,37 @@ export const ENTRY_SCENE = "borne-frontiere";
  * un danger frontal — une impression sensorielle (le « Vent qui ment » vit ici).
  * Un lieu sans entrée ici n'apparaît pas comme destination d'orientation.
  */
+/**
+ * UN LIEU EST-IL UN VRAI LIEU ? (relecture par agents, 10/08)
+ *
+ * Le crédit du Jour (`RunState.lieuxEngages`) se prend au changement de
+ * radical d'id. Or une rencontre ouverte par un point d'intérêt en franchit
+ * deux de plus — verger-noir → epoux → verger-noir-2 — et se faisait donc
+ * créditer comme un lieu à part entière. Une rencontre n'entre déjà pas dans
+ * `trav.visited` (voir `advance({toScene})`) : elle ne doit pas non plus
+ * entrer dans le compteur du score. La liste des vraies destinations est
+ * `APPROACH` (le pool), plus les séquences garanties du Hameau et les nœuds
+ * hors pool qui SONT des lieux (l'embuscade, le procès, la Descente).
+ */
+export function estUnLieu(rad: string): boolean {
+  // ⚠️ Comparer des RADICAUX des deux côtés : la clé du pool « meute-grise-1 »
+  // a pour radical « meute-grise », donc un `in APPROACH` nu aurait cessé de
+  // créditer le seul combat à deux beats de la zone (attrapé au test).
+  if (!LIEUX_RADICAUX) LIEUX_RADICAUX = new Set([...Object.keys(APPROACH), ...LIEUX_HORS_POOL].map(radical));
+  return LIEUX_RADICAUX.has(rad);
+}
+let LIEUX_RADICAUX: Set<string> | null = null;
+const LIEUX_HORS_POOL = [
+  "borne-frontiere",
+  "bete-chemins-creux",
+  "serment-hameau",
+  "hameau-entree",
+  "hameau-accueil",
+  "hameau-halte",
+  "proces-du-heros",
+  "palissade-sud",
+  "la-descente",
+];
 const APPROACH: Record<string, string> = {
   "chemin-creux": "Vers le chemin creux",
   // ⚠️ La Bête n'est PLUS une destination du pool (playtest 7/08 : tirée
