@@ -27,6 +27,15 @@ Ils ont faussé une partie des vies jouées. Détail dans les commits.
    avec pour épitaphe une virgule. Même piège que celui corrigé le 9/08 dans
    la fonction voisine. Touchait aussi le Studio.
 
+5. **Le pilote du vrai build rembobinait le jeu** — son script d'amorçage se
+   rejoue à chaque navigation, y compris quand le JEU recharge lui-même la
+   page (fin de la séquence de mort). Il réinjectait alors l'instantané pris
+   avant la commande et effaçait ce que le jeu venait d'écrire. D'où deux
+   accusations graves portées contre le jeu — « la mort s'annule au
+   rechargement » et « la fin de traversée boucle » — que le testeur a
+   lui-même retirées après avoir prouvé la cause (il écrit `deaths=99`,
+   recharge, relit `2`). ⚠️ Piège déjà documenté le 8/08, recommis.
+
 ---
 
 ## B. Défauts du JEU, vérifiés dans la source
@@ -64,13 +73,24 @@ disparaît en tranchant la narration en plein mot. C'est pour ça qu'un testeur
 n'a pas reconnu le personnage central du jeu. *(W2, captures à l'appui, après
 avoir lui-même corrigé son premier diagnostic)*
 
-### B3. Il n'existe aucune branche où la mort ne s'enregistre pas
-Vérifié : les deux seuls points de mort appellent `recordDeath` **avant**
-d'afficher l'écran, puis réinitialisent la partie. Le « permadeath
-contournable en rechargeant » rapporté par W4 s'explique donc autrement — la
-partie étant remise à neuf, un rechargement montre une vie neuve à pleine
-santé, ce qui ressemble à une résurrection. **Le compteur de morts resté à
-zéro reste à confirmer** : c'est la seule mesure qui tranche.
+### B3. RÉSOLU — le permadeath tient
+Vérifié dans la source (les deux seuls points de mort appellent `recordDeath`
+avant d'afficher l'écran, puis réinitialisent la partie) **et mesuré en jeu
+par le testeur qui l'accusait** : mort réelle au procès, compteur de morts
+1 → 2, reliques 1 → 2, héros neuf. Accusation retirée par son auteur, cause
+identifiée (artefact n°5). Le pilier tient.
+
+### B6. La mémoire entre les vies existe — c'est sa LIVRAISON qui manque
+Contre-vérifié sur le vrai build avec deux morts au compte : la Borne grave
+bien « LE SEAU » et ses deux entailles, les corbeaux disent « ils sont
+deux », le Registre liste les morts du joueur aux rangs 11-13. Le grief
+« survivre/mourir ne laisse rien », porté par six testeurs, était donc faux
+sur le fond — mais il pointait quelque chose de réel, formulé par W4 :
+
+> Le défaut n'est pas l'absence, c'est la livraison — chaque réponse arrive
+> seule, deux touchers plus loin.
+
+Les traces existent, dispersées, hors du moment où elles pèseraient.
 
 ---
 
