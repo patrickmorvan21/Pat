@@ -51,6 +51,7 @@ import {
   NUIT_CORPS,
   NUIT_OUVERTURE,
   SECOND_PROCES,
+  lieuDejaVisite,
 } from "@/lib/scene-data";
 import { contradictionsConnues, faitById, versionDuFait } from "@/lib/contradictions";
 import { manifestationLoi } from "@/lib/loi-substitution";
@@ -726,6 +727,10 @@ export default function Scene() {
   // 4e choix contextuel (spec 21/07 point 4) : objet ACTIF pertinent proposé
   // en scène. Calculé dans un effet (lecture Besace/santé hors rendu).
   const [activeChoice, setActiveChoice] = useState<Choice | null>(null);
+  /** Miroir de rendu du « corps abîmé » (React Compiler interdit de lire
+      runRef pendant le rendu) — alimenté par l'effet du 4e choix contextuel,
+      qui est le SEUL endroit où se décide ce qu'est « être blessé ». */
+  const [blesseMirror, setBlesseMirror] = useState(false);
   // Illustration rétrécie (retour 22/07) : passe à true UNIQUEMENT si le texte
   // fini déborde vraiment la zone — mesuré, adapté au device, une seule fois.
   const [compact, setCompact] = useState(false);
@@ -803,11 +808,14 @@ export default function Scene() {
     // d'une liaison sont déjà filtrées sur le non-visité) disparaît si sa
     // destination a été vue. La brebis y va quand même ; toi, tu sais déjà
     // ce qu'il y a au bout.
-    if (c.orient && !scene.liaison && visitedMirror.includes(c.orient.dest))
+    if (c.orient && !scene.liaison && lieuDejaVisite(visitedMirror, c.orient.dest))
       return false;
     // #1 Le choix qui expire (6/08) : une fois l'érosion finie, l'option
     // n'existe plus — perdre le temps coûte une occasion, jamais la vie.
     if (c.id === expRetire) return false;
+    // UN CORPS INTACT NE MONTRE PAS SES PLAIES (panel 10/08). Même prédicat
+    // que le 4e choix contextuel de soin : santé entamée OU état négatif.
+    if (c.requiresBlessure && !blesseMirror) return false;
     // SÉJOUR : ce qui a déjà été fait ici ne se refait pas. On ne pose pas
     // deux fois la même question au Veilleur ; le lieu tient plusieurs
     // décisions, pas la même en boucle.
@@ -1322,11 +1330,15 @@ export default function Scene() {
     // garantie du 24/07 était donc contournable par un objet de soin).
     // Un écran qui porte un serment n'accepte que ses serments.
     const impose = scene.choices.some((c) => c.serment);
+    // Le miroir « blessé » se calcule TOUJOURS (il conditionne des choix
+    // écrits, pas seulement l'objet de soin) — donc avant tout retour.
+    const negNow = run?.effects.some((e) => e.delta < 0) ?? false;
+    setBlesseMirror(run ? run.health < 0.75 || negNow : false);
     if (!run || impose || scene.liaison || scene.terminal || scene.registre) {
       setActiveChoice(null);
       return;
     }
-    const hasNeg = run.effects.some((e) => e.delta < 0);
+    const hasNeg = negNow;
     const hurt = run.health < 0.75 || hasNeg;
     const useful = run.besace
       .map(normalizeItem)
@@ -1695,13 +1707,20 @@ export default function Scene() {
       // Serment juré (ou prêté du bout des lèvres) → la grange ; refusé →
       // « nuit dehors » : aucune porte ne s'ouvre à qui n'a pas juré.
       const ham = runRef.current?.hameau;
-      if (ham?.entree && !ham.halte) {
+      // ⚠️ BUG D'ORDRE D'ÉCRITURE (panel 10/08, phase 0 du plan d'élagage) :
+      // le drapeau `entree` n'est PERSISTÉ qu'en fin d'advance() — or on est
+      // ICI dans le même appel quand on QUITTE la scène qui achève l'entrée
+      // (`hameauEntree`). Sans ce OU, la Halte était sautée et « Entrer dans
+      // le hameau » déposait sur la Palissade Sud (la téléportation vue par
+      // les dix testeurs n'était pas un artefact de la réplique).
+      const entreeFaite = Boolean(ham?.entree) || Boolean(scene.hameauEntree);
+      if (entreeFaite && !ham?.halte) {
         // Dette « exclusion » d'une relique portée (5/08, Clou du silence) :
         // le Hameau ne t'ouvre pas sa grange, quoi que tu aies juré. Même
         // conséquence qu'un Serment refusé — la nuit dehors.
         const exclu = relicDette(activeRelic(loadMemory())) === "exclusion";
         nextScene = resoudre(
-          ham.serment === "refuse" || exclu ? "hameau-halte-dehors" : "hameau-halte-1",
+          ham?.serment === "refuse" || exclu ? "hameau-halte-dehors" : "hameau-halte-1",
           runRef.current
         )!;
         trav.phase = "scene";
@@ -1741,7 +1760,10 @@ export default function Scene() {
         });
       } else {
       const seed = (nextStep * 101 + trav.visited.length * 7) >>> 0;
-      const entered = Boolean(runRef.current?.hameau?.entree);
+      // Même bug d'ordre d'écriture que la Halte (voir plus haut) : sans le
+      // OU, la croisée qui suit IMMÉDIATEMENT l'entrée au village excluait
+      // tout l'intérieur — dans 100 % des parties.
+      const entered = Boolean(runRef.current?.hameau?.entree) || Boolean(scene.hameauEntree);
       const pair = pickLiaisonOptions(trav.visited, seed, entered);
       // LE DIRECTEUR DE ROUTES (spec §3) — « un héros fiévreux à qui le tirage
       // ne propose jamais le Rebouteux ne vit pas un dilemme : il subit une
@@ -1767,7 +1789,7 @@ export default function Scene() {
       const chapDef = chapGuard && chapGuard.stage < 2 ? chapterById(chapGuard.id) : null;
       if (
         chapDef &&
-        !trav.visited.includes(chapDef.lieuId) &&
+        !lieuDejaVisite(trav.visited, chapDef.lieuId) &&
         !pair.includes(chapDef.lieuId) &&
         (entered || !isHameauInterior(chapDef.lieuId))
       ) {
@@ -1778,7 +1800,7 @@ export default function Scene() {
       // de la zone ne doit pas pouvoir être manquée par malchance de tirage.
       // (Le joueur peut encore choisir l'autre direction : quasi-totalité, pas
       // obligation.) Compatible avec la garantie de chapitre : slots opposés.
-      if (!trav.visited.includes("colline-aux-gibets") && !pair.includes("colline-aux-gibets")) {
+      if (!lieuDejaVisite(trav.visited, "colline-aux-gibets") && !pair.includes("colline-aux-gibets")) {
         pair[(seed + 1) % 2] = "colline-aux-gibets";
       }
       // Ambiance contextuelle (chantier 4) : provenance = le lieu qu'on quitte.
@@ -1836,15 +1858,22 @@ export default function Scene() {
     // donc la CRAIE qui parle — une marque, personne en scène, et elle se
     // rapproche de la peau à chaque palier. Les deux pistes marquent
     // `soupconSeen` : quoi qu'il arrive, un palier franchi se voit.
+    // ⚠️ UN CRAN À LA FOIS (panel 10/08, phase 0 du plan d'élagage) : un +2
+    // ou un doublement MARQUÉ sautait deux à quatre paliers et n'en montrait
+    // qu'un — d'où « la craie a CHANGÉ de place » sans première marque, et
+    // « deux marques sur le même bras » quand elles étaient sur un muret et
+    // une besace. On sert toujours le PROCHAIN palier non vu ; s'il en reste,
+    // ils se montrent aux arrivées suivantes, dans l'ordre de la migration.
+    const palierAServir = soupSeen + 1;
     const soupCroise =
-      !nextScene.fixationTrial && soupAfter > soupSeen && soupAfter <= 5;
+      !nextScene.fixationTrial && soupAfter > soupSeen && palierAServir <= 5;
     const soupManifest = !soupCroise
       ? null
       : dansLeVillage(nextScene.id)
-        ? (SOUPCON_PALIERS[soupAfter] ?? null)
-        : (SOUPCON_CRAIE[soupAfter] ?? null);
+        ? (SOUPCON_PALIERS[palierAServir] ?? null)
+        : (SOUPCON_CRAIE[palierAServir] ?? null);
     // Et le Geôlier met un mot sur ce qui n'a pas de chiffre.
-    const soupJailer = soupManifest ? (SOUPCON_GEOLIER[soupAfter] ?? null) : null;
+    const soupJailer = soupManifest ? (SOUPCON_GEOLIER[palierAServir] ?? null) : null;
 
     // Savoir énoncé par la narration de la scène d'arrivée (25/07), s'il est neuf.
     const knownNow = runRef.current?.savoirs ?? [];
@@ -2548,7 +2577,8 @@ export default function Scene() {
       if (newChapterStage && run.chapter) run.chapter = { ...run.chapter, stage: newChapterStage };
       // Soupçon : montée d'arrivée + palier manifesté mémorisé.
       run.soupcon = soupAfter;
-      if (soupManifest) run.soupconSeen = soupAfter;
+      // Un cran servi = un cran vu — jamais un saut (voir palierAServir).
+      if (soupManifest) run.soupconSeen = (run.soupconSeen ?? 0) + 1;
       // Le drapeau d'échec dur est CONSOMMÉ par la Croisée qu'il vient de
       // resserrer : une seule route perdue par échec, jamais une traînée.
       // ⚠️ Consommé AUSSI quand le guide l'absorbe (relecture par agents,
