@@ -27,7 +27,16 @@ import studio_data as sd  # noqa: E402  (le parseur .ts éprouvé)
 TS = Path(__file__).resolve().parent.parent / "aldenhar/lib/scene-data.ts"
 
 # Seuil de la règle des micro-beats, en mots, par écran OBLIGATOIRE.
-SEUIL_ECRAN = 120
+# ⚠️ GRILLE DE PRODUCTION recalée en Phase B (plan d'élagage, 11/08) :
+#   écran courant       25-60 mots
+#   moment important    60-90
+#   exception de mise en scène   > 90, et il faut que ça se mérite
+# Le seuil dur reste celui du DÉCOUPAGE runtime (`decouperEnEcrans`, 90 mots
+# par écran) : au-delà, un texte devient deux écrans — ce n'est pas un mur,
+# c'est une séquence. Le garde signale donc les dépassements de la bande
+# « important », pas seulement les murs.
+SEUIL_ECRAN = 90
+BANDE_COURANT = 60
 
 
 def mots(t: str) -> int:
@@ -69,7 +78,11 @@ def main() -> int:
     from statistics import median
 
     print(f"ÉCRANS OBLIGATOIRES (narration) — {len(ecrans)} écrans")
-    print(f"  médiane {median(tous):.0f} mots · max {max(tous)} · seuil micro-beats {SEUIL_ECRAN}")
+    courant = [m for m in tous if m <= BANDE_COURANT]
+    important = [m for m in tous if BANDE_COURANT < m <= SEUIL_ECRAN]
+    exception = [m for m in tous if m > SEUIL_ECRAN]
+    print(f"  médiane {median(tous):.0f} mots · max {max(tous)}")
+    print(f"  ≤{BANDE_COURANT} courant : {len(courant)} · {BANDE_COURANT+1}-{SEUIL_ECRAN} important : {len(important)} · >{SEUIL_ECRAN} exception : {len(exception)}")
     print(f"  au-dessus du seuil : {len(depassements)} écran(s)")
     for sid, m, c, n in depassements:
         print(f"    {sid:28s} {m:>4} mots · {c:>4} signes · {n} ¶")

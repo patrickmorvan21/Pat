@@ -594,3 +594,20 @@ Les deux raisons, à ne plus re-litiger :
 Ce qui EST retenu du §17, et qui est fait : **un seul état du corps**. La
 BLESSURE a remplacé les cinq états génériques (Phase A) — l'unification
 demandée portait sur les états, pas sur l'échelle de santé.
+
+### Session 2026-08-11 (suite #3, Claude Code, opus) — PHASE B, première passe (v1.74.0)
+La priorité éditoriale du plan : *2-3 décisions fortes par lieu* + la grille **25-60 courant / 60-90 important / >90 exception**. Mesuré avant de couper — et la mesure a corrigé l'intuition deux fois.
+
+**⚠️ LA BONNE UNITÉ N'EST PAS L'ÉCRAN, C'EST LE LIEU.** Par écran, le jeu passait déjà (médiane 3 décisions, 3 écrans sur 89 au-dessus de 4) — on aurait pu conclure qu'il n'y avait rien à faire. Mesuré **par lieu vécu** (narration découpée au budget runtime + 2 écrans par point d'intérêt), le vrai chiffre apparaît : **médiane 8 écrans par lieu, 10 lieux sur 17 au-dessus de 6**, la Colline aux Gibets à **12**. C'est ça, « on vide le lieu ».
+- ⚠️ Et mon premier extracteur de scènes ratait **36 scènes sur 89** — il exigeait `id:` immédiatement après l'accolade, or beaucoup de blocs s'ouvrent sur un commentaire. Il rendait « colline-aux-gibets : 0 point, 0 choix ». **Cinquième fois que ce piège mord dans ce projet.** Un chiffre de mesure se re-vérifie sur un cas qu'on connaît avant de servir de base à une décision.
+
+**LES DÉCISIONS — ce qui a été coupé, et pourquoi si peu.** Le tableau « ce que chaque point rapporte » (savoir · fragment · objet · découverte · rencontre) montre que **seuls 3 points sur 34 ne rendaient RIEN** : `poteau-pendu` (Colline), `berge-usee` (Mare), `souche-premier-arbre` (Verger). Ils sont retirés — et `berge-usee` était précisément le doublon que **8 testeurs sur 10** avaient signalé (les « points jumeaux de la Mare »). Tout le reste porte une des quatre monnaies : couper plus, c'est couper l'économie d'exploration sur laquelle la Phase C est bâtie. **Décision assumée : on plafonne à 3 points par lieu, pas à 2.** Les lieux encore à 4 (Chapelle, Campement) gardent leurs quatre parce que chacun rapporte ; à retrancher seulement si Patrick veut aller au bout des 4-6 écrans.
+- Les points retirés restent dans `data/zones/landes.json` (matière de production) : ils y apparaîtront comme « attend sa scène », ce qui est la vérité.
+
+**LES TEXTES — 22 paragraphes resserrés sur 11 scènes.** La méthode : couper la clause la moins porteuse de chaque paragraphe, jamais un paragraphe entier — ce qui fait tenir ces textes, c'est leur rythme. Résultat mesuré : la bande **« exception » passe de 20 % à 7 %** des écrans. Ce qui reste au-dessus de 90 est en majorité à 92-96 (marginal) plus `renoncer` à 113 — la fin alternative, une vraie exception.
+- `tools/densite.py` **recalé sur la grille** : il distingue désormais les trois bandes au lieu d'un seul seuil à 120. Le seuil dur reste 90, qui est aussi le budget de `decouperEnEcrans` — au-delà, un texte devient deux écrans, ce n'est plus un mur mais une séquence.
+- ⚠️ **Le budget runtime n'a PAS été abaissé** : le descendre à 60 aurait multiplié les écrans à texte constant, soit l'inverse du but. C'est l'écriture qui se resserre, pas le découpage.
+
+**RESTE de la Phase B, à faire** : une seconde passe sur la bande 60-90 (47 % des écrans — légitime pour des moments importants, mais pas pour tous), et la re-mesure **par lieu** après cette passe (c'est le chiffre qui compte, pas la médiane par écran).
+- Vérifié en jeu (5/5, jets réels) : rien de cassé par les coupes. Sept gardes verts, lint/typecheck propres.
+- `APP_VERSION` **1.74.0**, `CACHE_VERSION` **v119**.

@@ -1372,19 +1372,6 @@ export const SCENES: Scene[] = [
           "neuve grince. Par grand soleil — rare, ici — l'ombre portée " +
           "s'étend vers le sud, et elle a une forme que la potence n'explique pas.",
       },
-      {
-        id: "poteau-pendu",
-        illustration: "assets/scene_landes_poteau_pendu_c.png",
-        label: "Le poteau isolé, à gauche",
-        approche:
-          "Tu redescends d'une vingtaine de pas. Le poteau isolé est plus " +
-          "bas que les autres — à hauteur d'homme, exactement. Une hauteur " +
-          "qu'on choisit.",
-        examen:
-          "Chaîne de fonction au cou, sous la corde. Un sceau au poing. Et " +
-          "les yeux qui s'ouvrent quand tu arrives à portée de voix : le " +
-          "Bailli des Landes, pendu le dernier, à la place d'honneur.",
-      },
     ],
     choices: [{ id: "monter-sommet", label: "Rester au sommet" }],
     jailerLine: "Les corbeaux tiennent mes comptes locaux. Bénévoles, en plus.",
@@ -2193,17 +2180,11 @@ export const SCENES: Scene[] = [
     illustration: "assets/monstre_femme_seuil_3_v2_a.png",
     chainNext: "hameau-entree-3",
     narration: [
-      "« Quarante ans que je le vois et que je le dis pas. » Elle rit — un " +
-        "son épouvantable. « J\u2019avais huit ans quand ils l\u2019ont pendue. " +
-        "On était trois enfants sur le muret. Les deux autres sont morts " +
-        "vieux en disant qu\u2019ils avaient rien vu. »",
+      "« Quarante ans que je le vois et que je le dis pas. » Elle rit — un son épouvantable. « J'avais huit ans. On était trois sur le muret. Les deux autres sont morts vieux en disant qu'ils avaient rien vu. »",
       "« J\u2019ai attendu quarante ans que quelqu\u2019un me dise que " +
         "j\u2019étais pas folle. »",
-      "Elle te lâche et reprend sa position, face au sud. De la rue, rien " +
-        "n\u2019a bougé.",
-      "« Va-t\u2019en maintenant. Et redis-le à personne. Moi je peux plus " +
-        "partir : j\u2019ai plus l\u2019âge, et j\u2019ai plus le courage. Mais " +
-        "toi tu peux encore. Alors pars avant qu\u2019ils te comptent. »",
+      "Elle te lâche et reprend sa position, face au sud.",
+      "« Va-t'en maintenant. Et redis-le à personne. Moi je peux plus partir. Toi tu peux encore — pars avant qu'ils te comptent. »",
     ],
     narrationEchec: [
       "Les volets se referment un par un, sans hâte, comme on tire un " +
@@ -2726,15 +2707,9 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_hameau_accueil_volet_c.png",
     chainNext: "hameau-entree-4",
     narration: [
-      "La rue est vide. Pas déserte — vide : une porte qui bat encore, un " +
-        "seau posé de travers, une flaque de lait qui n'a pas eu le temps de " +
-        "sécher. Tout le monde vient de rentrer, et vite.",
-      "Un volet s'entrouvre à ta gauche, de deux doigts. Une voix de femme, " +
-        "basse, très rapide, aucun visage derrière : — « Ne touche pas les " +
-        "portes marquées. Ne réponds pas si on t'appelle par ton nom. Et va " +
-        "au muret, au bout, avant qu'on vienne te chercher. »",
-      "Le volet ne se referme pas tout de suite. Elle attend quelque chose de " +
-        "toi.",
+      "La rue est vide. Pas déserte — vide : une porte qui bat, un seau de travers, une flaque de lait qui n'a pas eu le temps de sécher. Tout le monde vient de rentrer, et vite.",
+      "Un volet s'entrouvre de deux doigts. Une voix de femme, basse, très rapide, aucun visage derrière : — « Ne touche pas les portes marquées. Ne réponds pas si on t'appelle par ton nom. Va au muret, avant qu'on vienne te chercher. »",
+      "Le volet ne se referme pas. Elle attend quelque chose de toi.",
     ],
     choices: [
       {
@@ -2856,9 +2831,7 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_hameau_accueil_enfant_c.png",
     chainNext: "hameau-entree-4",
     narration: [
-      "Ils ont envoyé un gosse. Huit ans peut-être, planté au milieu de la " +
-        "rue, les mains dans le dos comme on lui a dit de les tenir. Aucun " +
-        "adulte visible — et tous les volets entrouverts de deux doigts.",
+      "Ils ont envoyé un gosse. Huit ans peut-être, planté au milieu de la rue, les mains dans le dos. Aucun adulte visible — et tous les volets entrouverts de deux doigts.",
       "Il récite. On entend les mots appris, dans l'ordre, avec les silences " +
         "qu'on lui a fait répéter : — « Est-ce que tu dors la nuit ? Est-ce " +
         "que tu as compté quelque chose aujourd'hui ? Est-ce qu'on t'a appelé " +
@@ -3628,17 +3601,10 @@ export const SCENES: Scene[] = [
     hameauHalte: true,
     decouverte: "d.temoin_entrevu",
     narration: [
-      "Aucune porte, aucune grange. Tu dors contre un muret, côté nord — " +
-        "d\u2019instinct. Sauf que cette fois tu ne dors pas : tu sais ce qui " +
-        "marche sur les toits.",
-      "Au bout de la ruelle, quelque chose traverse. De gauche à droite, " +
-        "sans bruit — et c\u2019est l\u2019absence de bruit qui te fige, parce " +
-        "que ça faisait trois têtes de haut.",
-      "Tu vois du tissu. Beaucoup de tissu, noir, qui suit avec un temps de " +
-        "retard, comme une traîne. Et dessous, une seconde de trop, quelque " +
-        "chose qui n\u2019était pas des jambes.",
-      "Puis plus rien. Le passage est vide. Sur les toits des deux côtés, " +
-        "les corbeaux sont alignés et te regardent, toi.",
+      "Aucune porte, aucune grange. Tu dors contre un muret, côté nord. Sauf que cette fois tu ne dors pas : tu sais ce qui marche sur les toits.",
+      "Au bout de la ruelle, quelque chose traverse. Sans bruit — et c'est l'absence de bruit qui te fige, parce que ça faisait trois têtes de haut.",
+      "Du tissu noir, beaucoup, qui suit avec un temps de retard. Et dessous, une seconde de trop, quelque chose qui n'était pas des jambes.",
+      "Puis plus rien. Sur les toits des deux côtés, les corbeaux sont alignés et te regardent, toi.",
     ],
     choices: [
       {
@@ -3991,18 +3957,11 @@ export const SCENES: Scene[] = [
     sejour: true,
     illustration: "assets/monstre_colporteur_b.png",
     narration: [
-      "Au bout de la rangée, un étal différent : bric-à-brac d'ailleurs, " +
-        "objets qui n'ont rien à faire dans une lande. Le Colporteur te " +
-        "regarde venir de loin — et te reconnaît. C'est impossible. Il te " +
-        "fait signe quand même, comme à un client de longue date. Sur " +
-        "l'étal, aucun fruit. « Ceux du Verger, j'en prends pas », dit-il " +
-        "en suivant ton regard. « Personne n'en prend. »",
+      "Au bout de la rangée, un étal différent : des objets qui n'ont rien à faire dans une lande. Le Colporteur te regarde venir de loin — et te reconnaît. C'est impossible. Il te fait signe quand même. Sur l'étal, aucun fruit. « Ceux du Verger, personne n'en prend. »",
       // Le Rebouteux est INTRODUIT avant que ses choix n'apparaissent
       // (rapport IA externe 8/08 : « le Rebouteux apparaît dans la
       // conséquence sans avoir été introduit »).
-      "À l'étal voisin, un vieil homme écrase des feuilles dans un mortier, " +
-        "des fioles bouchées de cire alignées devant lui. Le Rebouteux. Il " +
-        "ne lève pas la tête — mais son tabouret libre est tourné vers toi.",
+      "À l'étal voisin, un vieil homme écrase des feuilles dans un mortier, des fioles bouchées de cire devant lui. Le Rebouteux. Il ne lève pas la tête — mais son tabouret libre est tourné vers toi.",
     ],
     choices: [
       {
@@ -4360,14 +4319,9 @@ export const SCENES: Scene[] = [
     illustration: "assets/monstre_la_fille_moulin_v2_a.png",
     chainNext: "fille-moulin-4",
     narration: [
-      "« Mon père a construit une potence pour la chose qui m\u2019a fait " +
-        "pendre. » Elle repose son ouvrage. « Il l\u2019a attendue trois mois. " +
-        "Elle n\u2019est pas venue. Elle ne vient jamais quand on l\u2019appelle " +
-        "— elle vient quand un village est prêt. »",
+      "« Mon père a construit une potence pour la chose qui m'a fait pendre. » Elle repose son ouvrage. « Il l'a attendue trois mois. Elle ne vient jamais quand on l'appelle — elle vient quand un village est prêt. »",
       "Un temps.",
-      "« Il s\u2019est pendu à côté. Pas de chagrin : par règlement. Il avait " +
-        "refusé de me condamner, et refuser, dans son livre, c\u2019était une " +
-        "faute. Il a inscrit son nom et il a fait ce qu\u2019il fallait. »",
+      "« Il s'est pendu à côté. Pas de chagrin : par règlement. Il avait refusé de me condamner, et refuser, dans son livre, c'était une faute. »",
       "« Alors non, je ne monte pas le voir. Il attend un procès. Moi " +
         "j\u2019ai fini d\u2019attendre. »",
     ],
@@ -5395,19 +5349,6 @@ export const SCENES: Scene[] = [
         decouverte: "d.mare_depistage",
       },
       {
-        id: "berge-usee",
-        label: "Le point de berge usé",
-        illustration: "assets/scene_mare_berge_a_c.png",
-        approche:
-          "Tu contournes la mare par la droite pour atteindre le seul endroit " +
-          "où la boue est tassée. Le sol y est dur comme un seuil de maison.",
-        examen:
-          "Deux creux dans la terre, à largeur de genoux, refaits par des " +
-          "centaines de personnes au même endroit exact. À côté, des marques " +
-          "de doigts crispés dans la boue séchée. On ne s'agenouille pas ici " +
-          "pour prier. On s'agenouille pour vérifier.",
-      },
-      {
         id: "eau-reflet",
         illustration: "assets/scene_mare_eau_reflet_v2_b.png",
         label: "L'eau",
@@ -5474,15 +5415,10 @@ export const SCENES: Scene[] = [
     sejour: true,
     illustration: "assets/scene_mare_aux_regards_2_b.png",
     narration: [
-      "Ils arrivent à deux. Le premier s'agenouille dans les creux du " +
-        "devant, se penche, et reste penché beaucoup trop longtemps. Le " +
-        "second reste debout derrière lui, dans les creux du fond, et ne " +
-        "regarde pas l'eau : il regarde la nuque de l'autre.",
+      "Ils arrivent à deux. Le premier s'agenouille dans les creux, se penche, et reste penché beaucoup trop longtemps. Le second reste debout derrière lui et ne regarde pas l'eau : il regarde la nuque de l'autre.",
       "Personne ne parle. Ce n'est pas une prière — c'est un examen, et il " +
         "a manifestement une procédure.",
-      "Quand le premier se relève, il a le visage de quelqu'un qui va " +
-        "rentrer chez lui et fermer ses volets pour toujours. Le second lui " +
-        "met une main sur l'épaule, presque avec douceur, et le raccompagne.",
+      "Quand le premier se relève, il a le visage de quelqu'un qui va rentrer chez lui et fermer ses volets pour toujours. Le second lui met une main sur l'épaule et le raccompagne.",
     ],
     choices: [
       {
@@ -5557,21 +5493,6 @@ export const SCENES: Scene[] = [
           "tu en décroches un, il pèse comme une pierre et cède comme du " +
           "papier. Des fruits de cendre. Tu en gardes un. On ne sait jamais " +
           "ce qu'on est prêt à parier.",
-      },
-      {
-        id: "souche-premier-arbre",
-        label: "La souche, au bout du rang",
-        illustration: "assets/scene_verger_souche_a_c.png",
-        approche:
-          "Au bout du rang, un arbre manque. Sa souche est nette, sciée à " +
-          "hauteur de genou, et le bois de coupe est gris.",
-        examen:
-          "Le premier arbre du verger, abattu net. Les cernes sont réguliers " +
-          "jusqu'aux dernières années — puis serrés, noirs, illisibles. " +
-          "L'arbre a compris avant les hommes où il poussait. Quelqu'un l'a " +
-          "abattu pour ne pas avoir à le lire. En te relevant, tu comptes " +
-          "les rangs par habitude, et le compte te reste dans la tête : " +
-          "onze vergers replantés sur une terre qui n'a jamais rien donné.",
       },
       {
         id: "epoux-verger",
@@ -5964,14 +5885,8 @@ export const SCENES: Scene[] = [
     chainNext: "veilleur-3",
     narration: [
       "Il décroche sa lanterne et la soupèse, comme une décision.",
-      "— « En bas, y a des endroits où le noir mange tout. Ça, ça tient une " +
-        "nuit de plus que les autres — je les fais moi-même, la mèche, " +
-        "l'huile, tout. » Il te la tend à moitié. « Elle est à toi. Contre une " +
-        "histoire. Une vraie. Du dehors. »",
-      "Ses yeux brillent d'une faim que la soupe du gamin ne nourrit pas. " +
-        "« Raconte-moi comment c'était, la dernière chose que t'as vue. " +
-        "Avant. » Il te demande ta mort. C'est la seule histoire du dehors que " +
-        "tu possèdes encore.",
+      "— « En bas, y a des endroits où le noir mange tout. Ça, ça tient une nuit de plus que les autres. » Il te la tend à moitié. « Elle est à toi. Contre une histoire. Une vraie. Du dehors. »",
+      "« Raconte-moi la dernière chose que t'as vue. Avant. » Il te demande ta mort. C'est la seule histoire du dehors que tu possèdes encore.",
     ],
     choices: [
       {
@@ -6039,17 +5954,9 @@ export const SCENES: Scene[] = [
     illustration: "assets/objet_lanterne_veilleur_3_c.png",
     chainNext: "palissade-sud-2",
     narration: [
-      "Il t'ouvre le portillon lui-même, avec la cérémonie de l'homme dont " +
-        "c'est la seule prérogative. Au moment où tu passes, il note quelque " +
-        "chose sur une planche de sa guérite — ton passage, ta direction, " +
-        "l'heure. Le dernier acte administratif des Landes.",
-      "— « Je note tout le monde », dit-il sans lever les yeux. « Comme ça, si " +
-        "un jour quelqu'un remonte... je saurai qui c'était. » Il sourit à sa " +
-        "planche. « Trente ans de descentes. La colonne des retours est toute " +
-        "neuve. »",
-      "Elle ne l'est pas tout à fait. Tout en haut, au-dessus du vide, une " +
-        "marque — une seule, d'une autre main. Il ne la voit pas : sa " +
-        "planche commence en bas.",
+      "Il t'ouvre le portillon lui-même, avec la cérémonie de l'homme dont c'est la seule prérogative. Au moment où tu passes, il note quelque chose sur une planche : ton passage, ta direction, l'heure.",
+      "— « Je note tout le monde », dit-il sans lever les yeux. « Comme ça, si un jour quelqu'un remonte, je saurai qui c'était. » Il sourit à sa planche. « La colonne des retours est toute neuve. »",
+      "Elle ne l'est pas tout à fait. Tout en haut, une marque — une seule, d'une autre main. Il ne la voit pas : sa planche commence en bas.",
     ],
     narrationEchec: [
       "Il ouvre le portillon sans cérémonie, d\u2019une poussée du plat " +
