@@ -61,7 +61,7 @@ import {
   applique, noterVisite, parType, purger, radical, type Effet, type Faits,
 } from "@/lib/faits";
 import {
-  etat, etatsActifs, hintsEtats, modEtats, poserEtat, seuilEtats,
+  etat, etatsActifs, modEtats, poserEtat, seuilEtats,
   type StatNom,
 } from "@/lib/etats";
 import { besoinsEchus, routeAForcer } from "@/lib/besoins";
@@ -3129,9 +3129,9 @@ export default function Scene() {
       // secours d'aucun état ni d'aucune faveur.
       const froideur = dette === "froideur" && choice.risky.stat === "EMPATHIE" ? -1 : 0;
       const gele = dette === "gel" && (runRef.current?.rolls?.length ?? 0) === 0;
-      // LES ÉTATS (spec 4/08 §2) — ils modifient le jet ET se disent sous
-      // l'anneau. Un état qui pèse en silence serait « un chiffre camouflé »,
-      // ce que la spec refuse explicitement.
+      // LES ÉTATS — ils modifient le jet, et l'Anneau (calculé sur le
+      // modificateur) montre la différence en encoches. La mention textuelle
+      // sous le dé a été retirée le 11/08 (retour Patrick).
       const actifs = etatsActifs(idsEtats(faitsDe(runRef.current)));
       const modEtat = modEtats(actifs, choice.risky.stat as StatNom);
       // PRÉPARATION (panel 10/08) : ce qu'on a REGARDÉ dans ce lieu ouvre
@@ -3183,12 +3183,12 @@ export default function Scene() {
         outcomes: choice.risky.outcomes,
         modifier,
         impossible: impossibleIci,
-        // Un bénéfice qu'on ne nomme pas n'existe pas : c'est tout le défaut
-        // que ce panel a mesuré. La préparation se dit, comme un état.
-        etatHints: [
-          ...hintsEtats(actifs),
-          ...(preparation > 0 ? ["TU AS REGARDÉ — FAVORABLE"] : []),
-        ],
+        // Plus AUCUNE mention d'état sous le dé (retour Patrick 11/08 : « les
+        // états en orange sont encore en bas quand on lance le dé, à
+        // supprimer ») — l'Anneau porte déjà l'information : états et
+        // préparation entrent dans `modifier`/`threshold`, donc dans le
+        // nombre d'encoches pleines. Le volet d'état et l'Essence restent
+        // les lieux de consultation.
         highStakes: choice.risky.highStakes,
         fatalCheck: (tier) => {
           if (!tierIsFail(tier)) return false;
@@ -3564,7 +3564,6 @@ export default function Scene() {
             // simple — puis la relique est fendue pour cette vie. Le verdict
             // affiché ne change pas (le jet a bien été critique) : c'est la
             // CONSÉQUENCE qui est prise par la relique, pas le dé.
-            let combatPerdu = false;
             const relicCoussin = activeRelic(loadMemory());
             const amorti =
               (tier === "malediction" || tier === "critique") &&
@@ -3617,9 +3616,6 @@ export default function Scene() {
                   { id: "aguerri", label: "AGUERRI", delta: 2, scenesLeft: 3 },
                   ...run.effects.filter((e) => e.id !== "aguerri"),
                 ];
-              // BOITEUX : « chute, piège, COMBAT PERDU ». Posé hors persist,
-              // juste après (poserEtatRun a son propre persist).
-              if (scene.combat && tierIsFail(tier)) combatPerdu = true;
               if (scene.combat && tierIsFail(tier))
                 run.effects = [
                   { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 999 },
@@ -3757,7 +3753,12 @@ export default function Scene() {
                 guerisonEnAttente.current = [...guerisonEnAttente.current, f.fuitLeCombat!];
               }
             }
-            if (combatPerdu) poserEtatRun("boiteux");
+            // ⚠️ UN SEUL état négatif par défaite de combat (retour Patrick
+            // 11/08 : « j'ai perdu mais je prends 2 états négatifs, violent »).
+            // La défaite pose ENTAILLÉ (la blessure, canal historique, soignée
+            // au camp ou par un actif) — le BOITEUX automatique qui s'empilait
+            // par-dessus est retiré. BOITEUX reste posé par les chutes et
+            // pièges (`poseEtatSiEchec`), plus jamais d'office.
             // SURNATUREL : ce n'est pas la chair qui paie, c'est ce qui reste
             // accroché. Un échec dur laisse une marque — au sens propre si le
             // geste a touché quelque chose, HANTÉ sinon.

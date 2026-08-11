@@ -132,7 +132,11 @@ export const ETATS: Etat[] = [
     id: "boiteux",
     nom: "BOITEUX",
     groupe: "corps",
-    source: "Chute, piège, combat perdu.",
+    // ⚠️ 11/08 : « combat perdu » retiré des déclencheurs — une défaite pose
+    // ENTAILLÉ seul (un seul état négatif par défaite, retour Patrick).
+    // BOITEUX ne vient plus que d'un `poseEtatSiEchec` de chute/piège ; aucun
+    // choix de la zone ne le porte encore — à câbler sur une vraie chute.
+    source: "Chute ou piège.",
     remede: "Une nuit de repos complet au campement.",
     manifestation:
       "Le genou ne plie plus tout à fait. Tu peux marcher — tu ne peux plus " +

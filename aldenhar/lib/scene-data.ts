@@ -763,7 +763,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Les Landes. 8 941 entrées, cette saison. Les sorties, je les compte sur une autre page.",
+    jailerLine: "Les Landes. 8 941 entrées cette saison. Les sorties : une autre page.",
   },
   /* ═══ RENCONTRES EN BEATS (spec 24/07 suite, format obligatoire) ═══
      approche → échange → enjeu → résolution. Le beat d'APPROCHE est porté par
@@ -828,7 +828,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Celui-là m'écoute depuis trois semaines et il croit encore que c'est le vent.",
+    jailerLine: "Il m'écoute depuis trois semaines. Il croit que c'est le vent.",
   },
   {
     id: "hesitant-2",
@@ -880,7 +880,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Il te demande de choisir à sa place. Comme si tu savais choisir. Comme si quelqu'un savait.",
+    jailerLine: "Il te demande de choisir à sa place. Comme si quelqu'un savait choisir.",
   },
   {
     id: "hesitant-3",
@@ -893,7 +893,7 @@ export const SCENES: Scene[] = [
         "bruyère couchée, ne dit dans quel sens il est parti.",
     ],
     choices: [{ id: "hesitant-reprendre-route", label: "Reprendre la route" }],
-    jailerLine: "Deux directions, un homme, et pas une trace. Je note ça comme une sortie. Les deux le sont.",
+    jailerLine: "Deux directions, pas une trace. Je note ça comme une sortie.",
   },
   {
     id: "chemin-creux",
@@ -1029,7 +1029,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Le coude. Toujours le coude. Trois cents ans que je regarde des gens accélérer juste avant.",
+    jailerLine: "Le coude. Trois cents ans que je vois des gens accélérer juste avant.",
   },
   {
     /* LE MARCHEUR À REBOURS — Chemin Creux · rare. Trente ans qu'il ne montre
@@ -1070,7 +1070,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Trente ans à reculer pour ne pas mourir. Il appelle ça vivre. Je l'ai noté comme tel.",
+    jailerLine: "Trente ans à reculer pour ne pas mourir. Il appelle ça vivre.",
   },
   {
     id: "marcheur-2",
@@ -1123,7 +1123,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Il t'offre trente ans d'expérience gratuitement. Prends. Les cadeaux gratuits, ici, c'est moi qui les facture.",
+    jailerLine: "Il offre trente ans d'expérience. Le gratuit, ici, je le facture.",
   },
   {
     id: "marcheur-3",
@@ -1258,7 +1258,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "La Bête ne quitte jamais son creux. C'est ce que je respecte chez elle : elle connaît sa cage.",
+    jailerLine: "La Bête ne quitte jamais son creux. Elle connaît sa cage. Je respecte.",
   },
   {
     // Lieu-signature de la zone. L'écharde pose le flag d'environnement
@@ -1491,7 +1491,7 @@ export const SCENES: Scene[] = [
       },
       { id: "approcher-gibet", label: "S'approcher du pendu" },
     ],
-    jailerLine: "Regarde-le bien. C'est ce que devient un homme qui a voulu tenir MON registre.",
+    jailerLine: "Regarde-le. Voilà un homme qui a voulu tenir MON registre.",
   },
   {
     id: "pendu-qui-parle-2",
@@ -1574,7 +1574,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Il attend toujours son accusé. Trente ans qu'il l'attend. Voilà ce que ça donne, la rigueur.",
+    jailerLine: "Trente ans qu'il attend son accusé. Voilà où mène la rigueur.",
   },
   {
     /* Lieu à POINTS D'INTÉRÊT (script Notion). */
@@ -1644,7 +1644,7 @@ export const SCENES: Scene[] = [
       },
     ],
     choices: [{ id: "rester-champ", label: "Rester dans le champ" }],
-    jailerLine: "Un champ entier de fixés, et c'est toi qui bouges encore. Profites-en, ça fausse mes moyennes.",
+    jailerLine: "Un champ de fixés, et toi qui bouges encore. Ça fausse mes moyennes.",
   },
   /* ═══ LE FOSSOYEUR — variante « le trou dans la rangée » ════════════════
      Refonte du lore 6/08, §6. Condition : avoir examiné l'emplacement vide de
@@ -1702,7 +1702,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Il grave les noms avant les morts. Chez moi, c\u2019est la même chose. La différence, c\u2019est que je ne me trompe pas non plus.",
+    jailerLine: "Il grave les noms avant les morts. Moi aussi. Sans me tromper.",
   },
   {
     id: "fossoyeur-trou-2",
@@ -1747,7 +1747,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Il se souvient du poids, du gel, du trou. Pas de la raison. Quelqu\u2019un a fait le tri à sa place.",
+    jailerLine: "Le poids, le gel, le trou — pas la raison. On a trié pour lui.",
   },
   {
     id: "fossoyeur-trou-3",
@@ -1780,7 +1780,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Une date. C\u2019est tout ce qu\u2019il attend de toi. Et tu finiras par lui en donner une — la tienne.",
+    jailerLine: "Il n'attend qu'une date. Tu finiras par donner la tienne.",
   },
   {
     id: "champ-des-fixes-2",
@@ -1885,7 +1885,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Le Fossoyeur est mon employé du mois. Tous les mois. Il ne se plaint jamais du salaire.",
+    jailerLine: "Le Fossoyeur travaille pour moi sans le savoir. Il ne se plaint jamais.",
   },
   {
     id: "pendu-mal-fixe",
@@ -1952,7 +1952,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Une Fixation ratée. Ça arrive. Mes contrats à moi ne ratent jamais — demande au Bailli.",
+    jailerLine: "Une Fixation ratée. Mes contrats ne ratent jamais. Demande au Bailli.",
   },
   {
     /* ═══ L'ENTRÉE DU HAMEAU — séquence garantie HORS TIRAGE (spec 24/07
@@ -2000,7 +2000,7 @@ export const SCENES: Scene[] = [
       },
       { id: "descendre-hameau", label: "Descendre vers le hameau" },
     ],
-    jailerLine: "Un village entier qui s'ampute à petit feu. Et c'est MOI qu'on appelle le monstre.",
+    jailerLine: "Un village qui s'ampute à petit feu. Et le monstre, c'est MOI.",
   },
   {
     /* Beat 2 — Le seuil. La croix à la craie est un POINT D'INTÉRÊT : voir de
@@ -2109,7 +2109,7 @@ export const SCENES: Scene[] = [
       },
       { id: "continuer-rue", label: "Continuer dans la rue" },
     ],
-    jailerLine: "Une croix à la craie. Ils marquent leurs condamnés à l'avance — c'est mon métier, ça. Amateurs.",
+    jailerLine: "Ils marquent leurs condamnés à l'avance. C'est mon métier. Amateurs.",
   },
   /* ═══ LA FEMME AU SEUIL — variante « celle qui demande à savoir » ═══════
      Refonte du lore 6/08, §6. Condition : savoir la Fille VIVANTE (donc être
@@ -2146,7 +2146,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Quarante ans sans toucher personne, et c\u2019est toi qu\u2019elle attrape. Tu dois avoir une tête à écouter.",
+    jailerLine: "Quarante ans sans toucher personne — et elle t'attrape, toi.",
   },
   {
     id: "femme-savoir-2",
@@ -2187,7 +2187,7 @@ export const SCENES: Scene[] = [
         soupcon: 1,
       },
     ],
-    jailerLine: "Quarante ans à ne pas oser poser la question, et elle la pose à un étranger de passage.",
+    jailerLine: "Quarante ans sans oser la question. Elle la pose à un étranger.",
   },
   {
     id: "femme-savoir-3",
@@ -2234,7 +2234,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Trois enfants sur un muret. Deux sont morts en jurant n\u2019avoir rien vu. Le silence, chez vous, se transmet mieux que les noms.",
+    jailerLine: "Trois enfants sur un muret. Deux sont morts en jurant n'avoir rien vu.",
   },
   {
     /* LA FEMME AU SEUIL — rencontre ÉTALON des scripts (Hameau · commune).
@@ -2295,7 +2295,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Elle attend un fils qui est arrivé chez moi il y a deux hivers. Il n'a pas demandé de ses nouvelles.",
+    jailerLine: "Le fils qu'elle attend est chez moi depuis deux hivers.",
   },
   {
     id: "femme-seuil-2",
@@ -2380,7 +2380,7 @@ export const SCENES: Scene[] = [
         grantsLoot: "meche-nouee",
       },
     ],
-    jailerLine: "Une mèche de cheveux comme monnaie. Tu vois, même ici, tout le monde comprend le principe du pacte.",
+    jailerLine: "Une mèche pour monnaie. Même ici, on comprend le principe du pacte.",
   },
   /* ── LE GAMIN DES MURETS — premier compagnon temporaire (retour 6/08) ──
      Ouvert par le point d'intérêt de la ruelle du Hameau, donc entièrement
@@ -2488,7 +2488,7 @@ export const SCENES: Scene[] = [
       },
     ],
     jailerLine:
-      "Deux murets. Il a dit deux murets, et il s’y tiendra. C’est bien la seule chose qu’on tienne, par ici.",
+      "Il a dit deux murets. Il s'y tiendra. On ne tient que ça, ici.",
   },
   /* ── LE GAMIN, beats 3 et 4 (refonte du lore 6/08) ────────────────────
      Le gamin est « le seul qui n'a pas appris à ne pas voir » : c'est par lui
@@ -2553,7 +2553,7 @@ export const SCENES: Scene[] = [
         grantsLoot: "caillou-gamin",
       },
     ],
-    jailerLine: "Un enfant, un caillou, et personne pour l\u2019écouter. C\u2019est ainsi que commencent la plupart des vérités.",
+    jailerLine: "Un enfant, un caillou, personne pour l'écouter. Les vérités commencent là.",
   },
   {
     id: "gamin-murets-4",
@@ -2602,7 +2602,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Il t\u2019a confié une commission. Note bien : c\u2019est la première fois que quelqu\u2019un, ici, attend quelque chose de toi.",
+    jailerLine: "Une commission. Première fois qu'on attend quelque chose de toi, ici.",
   },
   {
     id: "femme-seuil-3",
@@ -2623,7 +2623,7 @@ export const SCENES: Scene[] = [
         "pris.",
     ],
     choices: [{ id: "femme-repartir", label: "Redescendre la rue" }],
-    jailerLine: "Elle reprendra sa faction demain, et après-demain. La constance, chez vous, c'est presque une maladie.",
+    jailerLine: "Elle reprendra sa faction demain. La constance, chez vous : une maladie.",
   },
   {
     /* Beat 3 — Le barrage. Trois Renonçants : leur PEUR, jamais leur menace. */
@@ -2703,7 +2703,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Regarde-les. Trois hommes qui tremblent devant un mort. Ils ont raison, remarque.",
+    jailerLine: "Trois hommes qui tremblent devant un mort. Ils ont raison, remarque.",
   },
   /* ——————————————————————————————————————————————————————————————————————
      LES ACCUEILS DU HAMEAU (6/08). Retour Patrick : « si à chaque run on
@@ -2783,7 +2783,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Elle t'a donné trois règles. Moi je t'en ai donné une seule, et tu la tiens déjà mal.",
+    jailerLine: "Elle t'a donné trois règles. Moi une seule, et tu la tiens déjà mal.",
   },
   {
     /* Conditionnel : ne sort qu'à partir de la 2e mort du compte — il faut
@@ -2850,7 +2850,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Un mur de craie. Un registre de pauvres. Le mien est plus grand, et je n'efface jamais.",
+    jailerLine: "Un registre de pauvres. Le mien est plus grand. Je n'efface jamais.",
   },
   {
     id: "hameau-accueil-enfant",
@@ -2913,7 +2913,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Ils envoient un enfant en éclaireur. Je t'ai envoyé, toi. On fait le même métier, eux et moi.",
+    jailerLine: "Ils envoient un enfant en éclaireur. Moi, je t'ai envoyé, toi.",
   },
   {
     id: "hameau-accueil-table",
@@ -2978,7 +2978,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Un bol tiède contre trois promesses. Tu vois — je ne suis pas le seul à faire des pactes.",
+    jailerLine: "Un bol contre trois promesses. Je ne suis pas le seul à faire des pactes.",
   },
   {
     id: "hameau-accueil-cloche",
@@ -3043,7 +3043,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Sonne. Vas-y, sonne. Ça fait des années que je n'ai rien reçu d'aussi poli qu'une invitation.",
+    jailerLine: "Sonne. Vas-y. On ne m'avait plus fait d'invitation aussi polie.",
   },
   {
     /* Conditionnel : ne sort que si le COMPTE a déjà juré faux dans une vie
@@ -3345,7 +3345,7 @@ export const SCENES: Scene[] = [
       },
       { id: "dormir-grange", label: "Dormir", rest: true },
     ],
-    jailerLine: "Une barre. Dehors. Ils appellent ça l'hospitalité, ici. Moi aussi, remarque.",
+    jailerLine: "Une barre, dehors. Ici on appelle ça l'hospitalité. Moi aussi.",
   },
   {
     /* Beat 3 — La nuit. Le script prévoit des variantes par palier de Soupçon ;
@@ -3411,7 +3411,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Ils parlent de toi à travers une planche. Moi je te parle à travers le crâne. Chacun ses moyens.",
+    jailerLine: "Eux te parlent à travers une planche. Moi, à travers le crâne.",
   },
   /* ═══ APPARITION 1 — LE POIDS SUR LE TOIT (refonte 6/08, §5) ════════════
      La première des trois, et la seule garantie : elle se joue à la première
@@ -3467,7 +3467,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Ah. Lui. Il n\u2019est pas de ma maison, celui-là — il s\u2019y est installé. Comme les rats.",
+    jailerLine: "Ah, lui. Pas de ma maison — il s'y est installé. Comme les rats.",
   },
   {
     /* VARIANTE : on ne s'étonne qu'une fois. Aux nuits suivantes le texte se
@@ -3495,7 +3495,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "La deuxième fois, on ne compte plus les battements de cœur. On compte le temps. C\u2019est un progrès, je suppose.",
+    jailerLine: "La deuxième fois, on ne compte plus son cœur. On compte le temps.",
   },
   {
     /* Beat 4 — L'aube. Le Serment tenu jusqu'ici se paie ici (−1 Soupçon). */
@@ -3556,7 +3556,7 @@ export const SCENES: Scene[] = [
         renonce: true,
       },
     ],
-    jailerLine: "« Réponds pas. » Trente ans de sagesse villageoise, résumés. Ça ne marche pas, mais c'est mignon.",
+    jailerLine: "« Réponds pas. » Trente ans de sagesse. Mignon. Inefficace.",
   },
   {
     /* Nœud TERMINAL du renoncement. Hors pool, atteint uniquement par le choix
@@ -3581,7 +3581,7 @@ export const SCENES: Scene[] = [
     ],
     choices: [{ id: "fin-renoncant", label: "Laisser le nom au Registre" }],
     jailerLine:
-      "Tu restes ? Reste. Je n'ai jamais perdu personne. J'ai seulement changé de porte à surveiller.",
+      "Reste. Je ne perds jamais personne — je change de porte, c'est tout.",
   },
   {
     /* Beat 6 — variante « nuit dehors » (Serment refusé). Remplace les beats
@@ -3612,7 +3612,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Dormir dehors, comme les Appelés avant leur départ. Le village a noté. Le village note tout.",
+    jailerLine: "Dormir dehors, comme les Appelés. Le village note tout.",
   },
   /* ═══ APPARITION 2 — LA RUELLE (refonte 6/08, §5) ═══════════════════════
      Conditions : la nuit, HORS ABRI, et l'avoir déjà entendu. C'est la voie
@@ -3677,7 +3677,7 @@ export const SCENES: Scene[] = [
         poseEtat: "hante",
       },
     ],
-    jailerLine: "Il t\u2019a laissé le voir. Ce n\u2019est pas de la négligence : c\u2019est une convocation.",
+    jailerLine: "Il t'a laissé le voir. Pas une négligence : une convocation.",
   },
   /* ═══ LE TROUPEAU SANS BERGER (journal 6/08) — rencontre de liaison ═════
      Croisé en MARCHANT, boucle EST, hors du Hameau — sa force vient du fait
@@ -3721,7 +3721,7 @@ export const SCENES: Scene[] = [
     choices: [
       { id: "troupeau-approcher", label: "S\u2019avancer dans le vallon" },
     ],
-    jailerLine: "Un troupeau qui grossit sans berger. Quelqu\u2019un, quelque part, tient très mal ses registres. Ou très bien.",
+    jailerLine: "Un troupeau qui grossit sans berger. Quelqu'un tient bien ses registres.",
   },
   {
     id: "troupeau-sans-berger-2",
@@ -3777,7 +3777,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Elles attendent quelqu\u2019un qui ne vient plus. Toi aussi, remarque. La différence, c\u2019est qu\u2019elles ne le savent pas.",
+    jailerLine: "Elles attendent quelqu'un qui ne vient plus. Elles ne le savent pas.",
   },
   /* LA TOUR DE GUET EFFONDRÉE — dernier lieu du Hameau à n'avoir aucune scène
      (relevé le 27/07 : la carte de l'atelier l'affichait « aucune scène
@@ -3785,7 +3785,7 @@ export const SCENES: Scene[] = [
      pour voir venir quelque chose, et personne n'a jamais dit quoi. */
   {
     id: "tour-de-guet",
-    jailerLine: "Ils ont bâti une tour pour voir venir. Personne n'a jamais écrit quoi.",
+    jailerLine: "Une tour pour voir venir. Personne n'a jamais écrit quoi.",
     illustration: "assets/scene_tour_de_guet_a.png",
     chainNext: "tour-de-guet-2",
     narration: [
@@ -3991,7 +3991,7 @@ export const SCENES: Scene[] = [
       },
       { id: "longer-etals", label: "Longer les étals" },
     ],
-    jailerLine: "Un marché muet. Le seul endroit des Landes où PERSONNE ne peut dire de mal de moi. J'y tiens un étal, dans un sens.",
+    jailerLine: "Un marché muet. Le seul endroit où PERSONNE ne dit de mal de moi.",
   },
   {
     id: "marche-muet-2",
@@ -4104,7 +4104,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Le Colporteur ? Un confrère, en plus petit. Lui aussi fait commerce de ce que vous laissez derrière.",
+    jailerLine: "Le Colporteur ? Un confrère, en plus petit. Même commerce que moi.",
   },
   {
     // Campement de zone : le Moulin sans Ailes. L'id reste « campement »
@@ -4224,7 +4224,7 @@ export const SCENES: Scene[] = [
       },
       { id: "installer-camp", label: "S'installer pour la halte" },
     ],
-    jailerLine: "Ce moulin a moulu autre chose que du grain, dans le temps. Demande à la meule, si tu oses la toucher.",
+    jailerLine: "Ce moulin a moulu autre chose que du grain. Demande à la meule.",
   },
   {
     id: "campement-2",
@@ -4271,7 +4271,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Dors. Le crépuscule ne tombera pas, mais toi, un jour, oui. J'aime comparer.",
+    jailerLine: "Dors. Le crépuscule ne tombera pas. Toi, un jour, oui.",
   },
   /* ═══ LA FILLE AU MOULIN — degré 4 (refonte du lore 6/08, §6) ═══════════
      VARIANTE de l'écran-événement du Moulin, ouverte à partir de TROIS
@@ -4314,7 +4314,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Tiens. Une place que je ne vois pas bien. Ça ne m\u2019était pas arrivé depuis longtemps.",
+    jailerLine: "Tiens. Une place que je vois mal. Ça ne m'arrive jamais.",
   },
   {
     id: "fille-moulin-2",
@@ -4371,7 +4371,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Trente ans qu\u2019elle refait le même geste. Je connais ça. C\u2019est ce que vous appelez « tenir ».",
+    jailerLine: "Trente ans du même geste. C'est ce que vous appelez « tenir ».",
   },
   {
     id: "fille-moulin-3",
@@ -4429,7 +4429,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Un homme qui somme la nuit de comparaître. J\u2019aurais aimé voir ça. La nuit ne s\u2019est pas présentée.",
+    jailerLine: "Il a sommé la nuit de comparaître. La nuit ne s'est pas présentée.",
   },
   {
     id: "fille-moulin-4",
@@ -4475,7 +4475,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Elle t\u2019a demandé de te taire. Nous allons voir combien de temps tu tiens — c\u2019est toujours instructif.",
+    jailerLine: "Elle t'a demandé de te taire. Voyons combien de temps tu tiens.",
   },
   /* ═══ LA VEUVE AUX CORDES — variante « celle qui sait et qui refait » ════
      Refonte du lore 6/08, §6. Condition : avoir aperçu la Fille (le caillou
@@ -4527,7 +4527,7 @@ export const SCENES: Scene[] = [
         soupcon: 1,
       },
     ],
-    jailerLine: "Une corde par personne. Elle tient un registre, elle aussi. Vous ne savez rien faire d\u2019autre.",
+    jailerLine: "Une corde par personne. Elle aussi tient un registre.",
   },
   {
     id: "veuve-cordes-sait-2",
@@ -4593,7 +4593,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Trente ans à refaire un nœud que quelqu\u2019un défait. Il y a des enfers moins bien tenus que le vôtre.",
+    jailerLine: "Trente ans à refaire un nœud qu'on défait. Bel enfer, le vôtre.",
   },
   {
     id: "veuve-cordes-sait-3",
@@ -4618,7 +4618,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "« Une corde avec un nom, c\u2019est un fait. » Voilà pourquoi j\u2019aime tant les registres.",
+    jailerLine: "« Une corde avec un nom, c'est un fait. » J'aime les registres.",
   },
   {
     /* Lieu à POINTS D'INTÉRÊT (script Notion). */
@@ -4717,7 +4717,7 @@ export const SCENES: Scene[] = [
       },
     ],
     choices: [{ id: "rester-chapelle", label: "Rester dans la chapelle" }],
-    jailerLine: "Une chapelle de cordes. Les hommes prient ce qui les tient. Je trouve ça d'une honnêteté rare.",
+    jailerLine: "Une chapelle de cordes. Les hommes prient ce qui les tient. Honnête.",
   },
   {
     /* Événement du lieu (script Notion) : la Veuve tresse sans te regarder. */
@@ -4813,7 +4813,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "La corde coupée, sous verre. Ils exposent leur seul échec — c'est leur façon de le surveiller.",
+    jailerLine: "La corde coupée, sous verre. Ils surveillent leur seul échec.",
   },
   {
     id: "puits-condamne",
@@ -4860,7 +4860,7 @@ export const SCENES: Scene[] = [
       },
       { id: "approcher-puits", label: "S'approcher de la margelle" },
     ],
-    jailerLine: "Ils ont condamné le puits. Charmant. On n'enferme pas un trou, mais l'espoir fait clouer.",
+    jailerLine: "On n'enferme pas un trou. Mais l'espoir fait clouer.",
   },
   {
     id: "puits-condamne-2",
@@ -4941,7 +4941,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Trois coups, une pause. Moi aussi je frappe avant d'entrer. La différence, c'est qu'on finit toujours par m'ouvrir.",
+    jailerLine: "Moi aussi je frappe avant d'entrer. On finit toujours par m'ouvrir.",
   },
   {
     id: "chien-du-bailli",
@@ -4985,7 +4985,7 @@ export const SCENES: Scene[] = [
       },
       { id: "avancer-seuil", label: "Avancer vers le seuil" },
     ],
-    jailerLine: "Le Bailli a muré sa propre maison de l'intérieur. Les gens font des choses étranges quand ils m'entendent arriver.",
+    jailerLine: "Muré de l'intérieur. On fait des choses étranges quand je m'approche.",
   },
   {
     id: "chien-du-bailli-2",
@@ -5049,7 +5049,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Ce chien tient un poste que la mort de son maître n'a pas fermé. Prends-en de la graine : moi aussi.",
+    jailerLine: "Ce chien tient un poste que la mort n'a pas fermé. Moi aussi.",
   },
   {
     // Le Registre des Pendaisons — la mécanique du Grand Registre (§19)
@@ -5231,7 +5231,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Le Bailli tenait son registre, je tiens le mien. Le sien s'arrête aux Landes. Devine où s'arrête le mien.",
+    jailerLine: "Son registre s'arrête aux Landes. Devine où s'arrête le mien.",
   },
   {
     id: "meute-grise-1",
@@ -5310,7 +5310,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Cinq de front, et le reste derrière lui qu'il ne voit pas. Où veux-tu que j'aille ? C'est mon théâtre exact.",
+    jailerLine: "Cinq de front, le reste hors de vue. C'est mon théâtre exact.",
   },
   {
     id: "meute-grise-2",
@@ -5385,7 +5385,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "La Meute Grise ne tue presque jamais. Elle évalue. Les chiffres remontent jusqu'à moi.",
+    jailerLine: "La Meute ne tue presque jamais. Elle évalue. Les chiffres me remontent.",
   },
   {
     /* LA MARE AUX REGARDS — le seul endroit des Landes que le vent évite. On
@@ -5495,7 +5495,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Une mare qui dit la vérité. Ils viennent quand même. Vous adorez les réponses que vous connaissez.",
+    jailerLine: "Une mare qui dit la vérité. Et ils viennent quand même.",
   },
   {
     id: "mare-aux-regards-2",
@@ -5556,7 +5556,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Il rentrera, il fermera ses volets, et il tiendra deux hivers. J'ai déjà sa page.",
+    jailerLine: "Il rentrera, fermera ses volets, tiendra deux hivers. J'ai sa page.",
   },
   {
     /* LE VERGER NOIR — le seul ordre volontaire des Landes hors du hameau.
@@ -5646,7 +5646,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Onze vergers. Ils appellent ça de l'obstination. Moi j'appelle ça de la matière première.",
+    jailerLine: "Onze vergers. Eux disent obstination. Moi, matière première.",
   },
   {
     id: "verger-noir-2",
@@ -5756,7 +5756,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Le douzième verger. Je leur laisse le quinzième. Après, la terre commence à me lasser aussi.",
+    jailerLine: "Le douzième verger. Je leur laisse jusqu'au quinzième.",
   },
   {
     id: "epoux-2",
@@ -5829,7 +5829,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Ils veulent une graine du dehors. Personne n'arrive chez moi avec des poches pleines. C'est le principe.",
+    jailerLine: "Une graine du dehors ? On n'arrive pas chez moi les poches pleines.",
   },
   {
     id: "epoux-3",
@@ -5843,7 +5843,7 @@ export const SCENES: Scene[] = [
         "il refuse de savoir.",
     ],
     choices: [{ id: "epoux-quitter", label: "Remonter les rangs" }],
-    jailerLine: "Écoute-le compter. Il en est à quarante mille. Je le sais : je compte avec lui.",
+    jailerLine: "Écoute-le compter. Quarante mille. Je compte avec lui.",
   },
   {
     // Dernière scène de la rotation : la sortie de zone (La Descente) se
@@ -5936,7 +5936,7 @@ export const SCENES: Scene[] = [
       },
       { id: "approcher-porte", label: "Approcher de la porte" },
     ],
-    jailerLine: "La palissade ? Une politesse. Les vrais murs de mes terres sont ailleurs — tu marches dessus.",
+    jailerLine: "La palissade ? Une politesse. Mes vrais murs, tu marches dessus.",
   },
   {
     /* LE VEILLEUR DE LA PALISSADE — il ouvre à ceux qui partent proprement et
@@ -5993,7 +5993,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Trente ans de guérite. Il connaît mes terres mieux que certains de mes morts.",
+    jailerLine: "Trente ans de guérite. Il connaît mes terres mieux que mes morts.",
   },
   {
     id: "veilleur-2",
@@ -6069,7 +6069,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Il veut ta mort en échange d'une lampe. Moi je te l'ai prise gratuitement. Apprends à négocier.",
+    jailerLine: "Ta mort contre une lampe. Moi, je l'ai prise gratuitement.",
   },
   {
     id: "veilleur-3",
@@ -6100,7 +6100,7 @@ export const SCENES: Scene[] = [
         "qui disent vrai, je les note vite. »",
     ],
     choices: [{ id: "veilleur-passer", label: "Passer le portillon" }],
-    jailerLine: "Une colonne des retours. Vide depuis trente ans. J'adore les optimistes — ils tiennent la comptabilité pour moi.",
+    jailerLine: "La colonne des retours. Vide depuis trente ans. J'adore les optimistes.",
   },
   {
     id: "palissade-sud-2",
@@ -6168,7 +6168,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "La Descente t'intrigue ? Patience. Les Landes d'abord — on finit son assiette avant le plat suivant.",
+    jailerLine: "La Descente t'intrigue ? Les Landes d'abord. On finit son assiette.",
   },
   {
     /* Le procès du héros (chantier 3 du 23/07) — dernier palier du Soupçon.
@@ -6269,7 +6269,7 @@ export const SCENES: Scene[] = [
         },
       },
     ],
-    jailerLine: "Un procès ! J'adore les procès. Le Bailli aussi les adorait — regarde où ça pend, l'amour du droit.",
+    jailerLine: "Un procès ! J'adore. Le Bailli aussi adorait — regarde où ça pend.",
   },
 ];
 
@@ -6297,7 +6297,7 @@ export const JAILER_BY_POSTURE: Record<JailerPosture, JailerPools> = {
       "{n}. Tu sais combien en sont morts sur ce chiffre exact ? Moi oui.",
       "Ah. J'avais parié plus haut. Je perds rarement — profite.",
       "{n}. Ce n'est pas de la malchance. C'est une moyenne.",
-      "Tu tiens le dé comme on tient une promesse. Ça se voit, et ça ne sert à rien.",
+      "Tu tiens le dé comme une promesse. Ça se voit. Ça ne sert à rien.",
       "Un {n}. Je note l'heure aussi. On ne sait jamais ce qui servira.",
       "Tu recommenceras. Ils recommencent tous. C'est ce qui me nourrit.",
       "{n}. Le Domaine n'a pas triché. Il n'en a pas besoin.",
@@ -6307,7 +6307,7 @@ export const JAILER_BY_POSTURE: Record<JailerPosture, JailerPools> = {
       "Le dé ne te déteste pas. Ce serait un progrès, s'il te détestait.",
       "{n}. Tu regardes le dé comme s'il pouvait changer d'avis.",
       "Un {n}, et cette tête. J'ai vu la même exactement, hier, ailleurs.",
-      "{n}. Voilà. C'est fait. On peut passer à la suite de ta petite affaire.",
+      "{n}. Voilà. Passons à la suite de ta petite affaire.",
       "Tu voulais un signe. Le voilà : {n}. Interprète-le comme tu veux.",
       "{n}. Rassure-toi, personne ne compte. À part moi. Uniquement moi.",
     ],
@@ -6338,18 +6338,18 @@ export const JAILER_BY_POSTURE: Record<JailerPosture, JailerPools> = {
   },
   interesse: {
     fail: [
-      "Un {n}. Tu vaux mieux que ça, d'habitude. C'est nouveau, ça, « d'habitude ».",
+      "Un {n}. Tu vaux mieux que ça, d'habitude. Le mot est nouveau.",
       "{n}. J'ai fini par retenir ton nom. Ne me le fais pas regretter.",
       "Le dé hésite sur toi, maintenant. Moi aussi.",
       "{n}. Ce n'est pas ton meilleur jour. J'en ai vu de meilleurs — les tiens.",
       "Un {n}. Tu vas t'en remettre. C'est bien ce qui m'intrigue.",
-      "{n}. Tu tombes moins bêtement qu'avant. Je ne sais pas si c'est bon signe.",
-      "Je m'attendais à mieux. Note bien : je m'attends à quelque chose, désormais.",
+      "{n}. Tu tombes moins bêtement qu'avant. Bon signe ? J'hésite.",
+      "Je m'attendais à mieux. Détail neuf : je m'attends à quelque chose.",
       "{n}. Tu as failli. Failli m'intéresse plus que raté.",
       "Un {n}, et tu restes debout. On me l'aurait dit, la semaine dernière.",
       "{n}. Tu apprends à perdre. C'est la moitié du chemin, ici.",
       "Le chiffre est mauvais. Ta façon de le prendre l'est moins.",
-      "{n}. Curieux. Tu ne fais plus les mêmes erreurs — tu en trouves de neuves.",
+      "{n}. Tu ne refais plus tes erreurs — tu en trouves des neuves.",
       "Un {n}. Je te regarde, en ce moment. Ça devrait t'inquiéter.",
       "{n}. Tu commences à peser dans mes comptes. Un peu.",
       "Ce n'est pas le dé qui t'a manqué. Nous le savons tous les deux.",
@@ -6390,20 +6390,20 @@ export const JAILER_BY_POSTURE: Record<JailerPosture, JailerPools> = {
       "Le dé te teste. Il ne teste que ce qui résiste.",
       "{n}. Prends le temps. Le Domaine, lui, en a trop.",
       "Un {n}. Je te dirais bien de faire attention. Tu le fais déjà.",
-      "{n}. Ce n'est pas la peine de serrer les dents. Je ne note pas les échecs comme les autres, pour toi.",
+      "{n}. Ne serre pas les dents. Tes échecs, je les note à part.",
       "Le chiffre est petit. Ta traversée ne l'est plus.",
       "{n}. Je te regarde encaisser. C'est la partie que je préfère, maintenant.",
-      "Un {n}. Ça ne changera rien à la façon dont ça finira. Je le regrette presque.",
+      "Un {n}. Ça ne changera pas la fin. Je le regrette presque.",
       "{n}. Tu tomberas un jour. Ce jour-là, je serai attentif.",
       "Le dé n'a pas voulu. Toi, si. C'est la différence.",
     ],
     critFail: [
       "Un 1. J'en ai vu mille avant toi. Aucun ne m'avait manqué. Toi, si.",
-      "La pire face, au pire moment. Si tu tombes ici, je retiendrai le jour. Je te le dois.",
+      "La pire face, au pire moment. Si tu tombes ici, je retiendrai le jour.",
       "Un. Après ce que tu as traversé, c'est presque indécent.",
       "Le dé n'a aucune mémoire. C'est sa seule vertu, et son seul défaut.",
       "Un. Je n'aime pas ce chiffre sur toi. Voilà, c'est dit.",
-      "Ce jet-là ne te ressemble pas. Le Domaine s'en moque, mais moi je l'ai noté.",
+      "Ce jet ne te ressemble pas. Le Domaine s'en moque. Moi, j'ai noté.",
       "Un. Tiens bon. Je n'ai pas fini de te regarder marcher.",
       "Le pire chiffre. Il faudra plus que ça, et le Domaine le sait.",
       "Un. Certains se seraient arrêtés là. Pas toi. Enfin — j'espère.",
@@ -6411,7 +6411,7 @@ export const JAILER_BY_POSTURE: Record<JailerPosture, JailerPools> = {
     ],
     critSuccess: [
       "Un 20. Voilà pourquoi ton nom monte dans le Registre.",
-      "Rien à redire à ce jet. Propre. Tu n'es plus tout à fait un divertissement.",
+      "Rien à redire. Propre. Tu n'es plus tout à fait un divertissement.",
       "Le sommet du dé, et tu ne t'en vantes même pas. C'est ce qui me retient.",
       "Vingt. Je ne dirai pas que tu l'as mérité. Je le penserai.",
       "Parfait. Un jour, quelqu'un racontera ce jet. Probablement moi.",
@@ -7281,18 +7281,18 @@ function pickLiaisonAmbiance(ctx: LiaisonCtx | undefined, seed: number): string 
 // porté de 2 à 12 phrases. Toutes doivent tenir en pleine lande ET dans une
 // ruelle du hameau — la même liaison sert les deux (audit d'immersion).
 const LIAISON_JAILER: string[] = [
-  "Marche, marche. Toutes les routes des Landes finissent au même endroit. Je t'y attends.",
+  "Marche. Toutes les routes finissent au même endroit. Je t'y attends.",
   "Tu choisis ton chemin. C'est mignon. Ça ne change que l'ordre des choses.",
   "J'aime les marcheurs. Ils croient que le mouvement est une réponse.",
   "Encore un pas. Encore un. Tu vois comme c'est facile de me suivre ?",
-  "Tu as mis moins de temps que le précédent. Il est mort plus loin, cela dit.",
-  "Personne ne se perd, ici. On arrive, c'est tout. Certains mettent des années.",
+  "Plus rapide que le précédent. Il est mort plus loin, cela dit.",
+  "Personne ne se perd, ici. On arrive. Certains mettent des années.",
   "Le Domaine ne te suit pas. Il n'en a pas besoin : il est déjà devant.",
   "Tu comptes tes pas ? Non. Moi si. C'est mon métier, pas le tien.",
-  "Il y a des jours où je regarde onze mille silhouettes marcher en même temps. Aujourd'hui, je te regarde toi. Profites-en.",
+  "Onze mille silhouettes marchent en ce moment. Je te regarde, toi.",
   "Rien ne t'attend au bout. C'est précisément pour ça que tu y vas.",
-  "Tu marches bien. Droit, régulier. Ça ne changera rien, mais ça se remarque.",
-  "Chaque route que tu ne prends pas, quelqu'un d'autre la prend. Je tiens les deux registres.",
+  "Tu marches droit, régulier. Ça ne change rien. Ça se remarque.",
+  "Chaque route refusée, un autre la prend. Je tiens les deux registres.",
 ];
 
 /** Une graine → un flottant [0,1) déterministe (liaisons stables à la reprise). */
@@ -7608,9 +7608,7 @@ export const NUIT_CORPS: Record<string, string> = {
  * Servi UNE fois par vie, au deuxième lieu quitté sans avoir rien tenté.
  */
 export const JAILER_SANS_RISQUE =
-  "Deux fois que tu traverses sans rien tenter. Tu peux continuer, remarque " +
-  "— on ne t'oblige à rien. Mais le livre ne compte pas les pas. Il compte " +
-  "les jours, et un jour où rien ne t'arrive ne s'écrit nulle part.";
+  "Tu traverses sans rien tenter. Ces jours-là ne s'écrivent nulle part.";
 
 /**
  * SECOND PROCÈS (panel 10/08) : on ne juge pas deux fois les mêmes actes.
@@ -7939,9 +7937,9 @@ export const SOUPCON_CRAIE: Record<number, string> = {
 export const SOUPCON_GEOLIER: Record<number, string> = {
   1: "Ils ont commencé à te compter. C'est un pays méticuleux.",
   2: "Tu ne sens rien ? Normal. On ne sent jamais le premier tour de corde.",
-  3: "Trois cents avant toi ont trouvé ça exagéré. Le livre dit qu'ils avaient tort.",
-  4: "Je ne te préviens pas, je constate. C'est différent, et c'est tout ce que j'ai le droit de faire.",
-  5: "À ta place, je regarderais derrière. À la mienne, on regarde devant — c'est plus distrayant.",
+  3: "Trois cents ont trouvé ça exagéré. Le livre dit qu'ils avaient tort.",
+  4: "Je ne préviens pas. Je constate. C'est tout ce qu'on me permet.",
+  5: "À ta place, je regarderais derrière. À la mienne, on regarde devant.",
 };
 
 /** La Descente — nœud terminal de la zone (fin sèche, Acte II à venir). */
@@ -8013,7 +8011,7 @@ export const DESCENTE_SCENE: Scene = {
     "Tu as traversé les Landes vivant. Peu le font. Devant, l'escalier plonge dans un noir qui n'a pas encore de nom.",
     "Ici s'arrête, pour l'instant, ce que le Geôlier a bâti. L'Acte II se creuse encore.",
   ],
-  jailerLine: "Te voilà au bout de la descente. Bien. Le reste n'est pas prêt — mais moi, je le serai avant toi.",
+  jailerLine: "Le reste n'est pas prêt. Moi, je le serai avant toi.",
   choices: [
     { id: "recommencer-descente", label: "Repartir de la Borne" },
   ],

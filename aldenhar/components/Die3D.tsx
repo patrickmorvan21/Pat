@@ -26,13 +26,6 @@ export type RollRequest = {
   /** Somme des états narratifs temporaires (Aguerri +2, Entaillé −2…). */
   modifier: number;
   /**
-   * MENTIONS D'ÉTAT affichées sous « Lancer le dé » — « Fièvre —
-   * défavorable », « Jambe — tu ne fuiras pas ». Exigence explicite de la
-   * spec 4/08 §2 : sans elles, le joueur ne comprend pas que l'état agit sur
-   * son jet. JAMAIS un chiffre, seulement le sens. Deux au plus.
-   */
-  etatHints?: string[];
-  /**
    * La main qui hésite (§18) : sur un jet à très fort enjeu, le dé « traîne »
    * et tremble brièvement avant de s'immobiliser sur sa face. Purement
    * visuel — n'affecte JAMAIS le résultat, densifie seulement la tension.
@@ -164,7 +157,6 @@ export default function Die3D({ request, onComplete }: Props) {
   const helpRef = useRef<HTMLDivElement>(null);
   const helpLinkRef = useRef<HTMLButtonElement>(null);
   const hintRef = useRef<HTMLDivElement>(null);
-  const etatLigneRef = useRef<HTMLDivElement>(null);
   const flashRef = useRef<HTMLDivElement>(null);
   const haloRef = useRef<HTMLDivElement>(null);
   const veilRef = useRef<HTMLDivElement>(null);
@@ -189,7 +181,6 @@ export default function Die3D({ request, onComplete }: Props) {
     const help = helpRef.current;
     const helpLink = helpLinkRef.current;
     const hint = hintRef.current;
-    const etatLigne = etatLigneRef.current;
     const geste = gesteRef.current;
     const flash = flashRef.current;
     const halo = haloRef.current;
@@ -197,7 +188,7 @@ export default function Die3D({ request, onComplete }: Props) {
     const verdict = verdictRef.current;
     const vWord = vWordRef.current;
     const vOut = vOutRef.current;
-    if (!root || !canvas || !ring || !help || !helpLink || !hint || !etatLigne || !geste || !flash || !halo || !veil || !verdict || !vWord || !vOut) return;
+    if (!root || !canvas || !ring || !help || !helpLink || !hint || !geste || !flash || !halo || !veil || !verdict || !vWord || !vOut) return;
 
     // Halo tramé (jamais un dégradé CSS) : image générée une fois côté client.
     const haloUrl = getHaloDataUrl();
@@ -548,11 +539,6 @@ export default function Die3D({ request, onComplete }: Props) {
       // dé » (plus de stat affichée — l'Anneau porte l'information), anneau
       // des 20 encoches encoche par encoche, phrase d'aide si pas retirée.
       hint.textContent = "Lancer le dé";
-      // Les états actifs se disent SOUS le hint, en une ligne sobre : ce que
-      // le corps du héros impose au jet, sans jamais le chiffrer.
-      const mentions = requestRef.current?.etatHints ?? [];
-      etatLigne.textContent = mentions.join(" · ");
-      etatLigne.classList.toggle("hidden", mentions.length === 0);
       hint.classList.remove("accent");
       hint.classList.remove("hidden");
       verdict.classList.remove("show");
@@ -593,9 +579,6 @@ export default function Die3D({ request, onComplete }: Props) {
       veil!.classList.remove("on");
       verdict!.classList.remove("show");
       hint!.classList.add("hidden");
-      // La mention d'états suit le hint : elle ne vit QUE pendant l'armement
-      // (retour Patrick 7/08 — elle restait collée en bas de tous les écrans).
-      etatLigne!.classList.add("hidden");
       halo!.className = "die-halo";
       hideRing();
       help!.classList.add("hidden");
@@ -626,7 +609,6 @@ export default function Die3D({ request, onComplete }: Props) {
       e.preventDefault();
       state = "held";
       hint!.classList.add("hidden");
-      etatLigne!.classList.add("hidden");
       // Au lancer (retour Patrick 19/07 soir, amende la spec du matin) :
       // l'anneau et l'aide disparaissent, mais l'image et le texte RESTENT
       // visibles derrière, estompés par le voile sombre.
@@ -1095,7 +1077,6 @@ export default function Die3D({ request, onComplete }: Props) {
       <div ref={hintRef} className="die-hint hidden">
         Lancer le dé
       </div>
-      <div ref={etatLigneRef} className="die-etats hidden" />
       <div ref={flashRef} className="die-flash" />
       <div ref={verdictRef} className="die-verdict">
         <div ref={vWordRef} className="word" />

@@ -344,12 +344,11 @@ body {
    on réutilise le keyframe `pulse` plutôt que d'en dupliquer un. */
 .acte-hint { animation: pulse 2.4s steps(2) infinite; }
 
-/* Affordance « Touche pour … » (Notion 26/07 §2) : clignotement SACCADÉ —
-   l'élément est visible ou masqué, jamais entre les deux. `steps(1)` sur une
-   keyframe à deux paliers donne exactement ça ; une transition d'opacité
-   (même courte) produirait le fondu que la DA interdit. */
-@keyframes touch-blink { 0%, 62% { visibility: visible; } 63%, 100% { visibility: hidden; } }
-.touch-hint { animation: touch-blink 1.6s steps(1) infinite; }
+/* Affordance « Touche pour … » (Notion 26/07 §2, AMENDÉE 11/08) : même
+   taille et même respiration que « Lancer le dé » (retour Patrick) — on
+   réutilise le keyframe `pulse` du hint du dé au lieu du clignotement
+   visible/masqué d'origine. Toujours par paliers, jamais un fondu. */
+.touch-hint { animation: pulse 2.4s steps(2) infinite; }
 
 /* Entrée d'une nouvelle scène : fondu par paliers, cohérent avec la DA */
 .scene-enter {
@@ -414,15 +413,6 @@ body {
 .bite {
   position: absolute;
   background: var(--color-bg);
-  pointer-events: none;
-}
-/* Le CADRE d'un choix verrouillé : l'inverse de `.bite`. Celui-ci MANGE le
-   trait (il peint le fond par-dessus) ; celui-là EST le trait, en pixels
-   espacés — un contour dessiné, jamais bâti. Deux traitements, deux sens :
-   érosion de santé d'un côté, porte fermée de l'autre. */
-.frame-px {
-  position: absolute;
-  background: var(--color-ink);
   pointer-events: none;
 }
 .bite.flicker {
@@ -1099,26 +1089,6 @@ body {
    combustion et le lit de braises sont des canvas (DeathScreen, FondBraises) :
    les styles des anciens écrans (.death-mot, .death-quake, .death-cta-plein)
    sont retirés avec eux. */
-
-/* Mentions d'ÉTAT sous « Lancer le dé » (spec 4/08 §2) — « Fièvre —
-   défavorable ». Le joueur doit comprendre que son corps pèse sur le jet, sans
-   jamais lire un chiffre. Même ancrage bas que le hint, une ligne en dessous. */
-.die-etats {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 22px;
-  text-align: center;
-  font-family: var(--font-body);
-  font-size: 10px;
-  letter-spacing: 1.4px;
-  text-transform: uppercase;
-  color: var(--color-accent);
-  opacity: 0.75;
-  pointer-events: none;
-  z-index: 6;
-}
-.die-etats.hidden { display: none; }
 
 /* LE VOLET D'ÉTAT (retour playtest 6/08 soir) : monte du bas, 1/3 de
    l'écran, montée en PALIERS — jamais un glissement fluide. */

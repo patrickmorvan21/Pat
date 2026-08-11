@@ -143,11 +143,9 @@ export function texteProphetie(jour: number): string {
     4: "quatrième", 5: "cinquième", 6: "sixième", 7: "septième",
     8: "huitième", 9: "neuvième", 10: "dixième",
   };
-  return (
-    `Sur cent qui te ressemblent, la plupart tombent au ` +
-    `${lettres[jour] ?? "septième"} jour. Je ne truque rien — je n'en ai ` +
-    `pas besoin. Je te dis juste où regarder.`
-  );
+  // 2 lignes max dans le bandeau (retour Patrick 11/08) — même avec le plus
+  // long ordinal (« quatrième »), la phrase tient en deux lignes de 37 col.
+  return `Sur cent comme toi, la plupart tombent au ${lettres[jour] ?? "septième"} jour.`;
 }
 
 /** Le jour parié : autour de la médiane réelle des morts du compte. */
@@ -203,11 +201,11 @@ export const OBJET_DU_VOLEUR = {
 
 /** #3 Le Geôlier métaleptique — il a remarqué, et il ne fait rien. */
 export const JAILER_METALEPTIQUE =
-  "Te revoilà. Tu es parti au milieu du combat — pas en fuyant dans la lande, non : PARTI. J'ignore où vont les gens quand ils font ça. La bête, elle, n'a pas bougé. Moi non plus. Reprends.";
+  "Parti. Pas en fuyant — PARTI. La bête n'a pas bougé. Moi non plus.";
 
 /** #11 Le dé impossible — sa réaction immédiate, obligatoire. */
 export const JAILER_DE_IMPOSSIBLE =
-  "…Non. Ça, ce n'est pas une face de mon dé. Ne bouge pas. Je le reprends, je le relance, et nous dirons que tu n'as rien vu. C'est la première fois que je te demande quelque chose.";
+  "…Non. Ça n'est pas une face de mon dé. Je reprends. Tu n'as rien vu.";
 
 /** #10 Le Grand Témoin récite tes choix — l'assemblage, jamais générique. */
 export function texteTemoinRecite(phrases: string[]): string[] {

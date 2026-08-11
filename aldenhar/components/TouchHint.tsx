@@ -6,11 +6,10 @@
  * Présente sur tout écran d'intro et, plus largement, sur tout écran qui n'a
  * aucun bouton de choix : sans elle, rien ne dit que l'écran attend un geste.
  *
- * Spec verrouillée :
+ * Spec verrouillée (amendée 11/08, retour Patrick) :
  *   • toujours à 50 px du bas du CADRE, centrée ;
- *   • Roboto Mono, blanc-50 ;
- *   • clignotement SACCADÉ — alternance visible/masquée par paliers, jamais un
- *     fondu ni un easing (`.touch-hint`, keyframes en `steps`) ;
+ *   • MÊME taille (13px) et MÊME animation que le hint « Lancer le dé » —
+ *     respiration `pulse` par paliers (`steps(2)`), jamais un fondu ;
  *   • « Touche pour commencer » sur le PREMIER écran d'une séquence,
  *     « Touche pour continuer » ensuite.
  *
@@ -43,7 +42,7 @@ export default function TouchHint({
 }) {
   return (
     <p
-      className="touch-hint pointer-events-none absolute inset-x-0 text-center font-mono text-[10px] tracking-[2px] text-[var(--color-ink)] opacity-50"
+      className="touch-hint pointer-events-none absolute inset-x-0 text-center font-mono text-[13px] leading-[1.3] text-[var(--color-ink)]"
       style={{ bottom: bottom ?? 50 }}
       aria-hidden
     >
