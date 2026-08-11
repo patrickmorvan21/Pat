@@ -576,3 +576,21 @@ Feu vert « Enchaîne » sur mes deux recommandations : **les Besoins partent av
 - Vérifié en jeu réel (Playwright 5/5, jets réels) : la Borne s'ouvre, « Prendre une bête » est offert sans état de faim, FIXÉ ouvre toujours la confidence des Fixés, aucun état retiré ne se pose plus après un combat, la rencontre du Gamin se joue. 0 erreur JS. Sept gardes verts, lint/typecheck propres.
 - `APP_VERSION` **1.73.0**, `CACHE_VERSION` **v118**.
 - **Suite** : Phase B (2-3 décisions fortes par lieu + resserrage des textes à la grille 25-60/60-90).
+
+#### ⚠️ DÉCISION VERROUILLÉE (11/08) — LA SANTÉ RESTE CONTINUE, LUE EN PALIERS
+Le §17 du mémo « reset » demandait de discrétiser la santé en **Intact /
+Blessé / Mort**. Arbitrage rendu par Patrick : **non — la santé garde sa
+valeur continue à l'intérieur, et n'est JAMAIS exposée qu'en paliers.**
+
+Les deux raisons, à ne plus re-litiger :
+1. **Le joueur ne lit déjà que des paliers.** L'érosion du cadre en a quatre ;
+   aucun chiffre de santé n'a jamais été affiché. La promesse du §17 est donc
+   déjà tenue côté PERCEPTION — la discrétisation ne changerait que l'interne.
+2. **Trois valeurs supprimeraient la granularité des quatre coûts par palier
+   de dé** (0,08 / 0,16 / 0,26 / 0,30 selon De justesse → Malédiction). C'est
+   elle qui fait qu'un combat se sent différemment d'un autre, et les quatre
+   combats de la zone sont ce que les testeurs citent comme mémorable.
+
+Ce qui EST retenu du §17, et qui est fait : **un seul état du corps**. La
+BLESSURE a remplacé les cinq états génériques (Phase A) — l'unification
+demandée portait sur les états, pas sur l'échelle de santé.
