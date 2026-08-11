@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-11T12:10:29Z",
- "commit": "c329871",
+ "genere": "2026-08-11T12:37:47Z",
+ "commit": "c5aad83",
  "zones": [
   {
    "id": "landes",
@@ -4888,6 +4888,21 @@
    ],
    "choix": [
     {
+     "id": "monter-poutres",
+     "label": "Monter aux poutres",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu choisis sans réfléchir, et la corde te répond comme une main. En haut, les points d'attache sont taillés dans la poutre et numérotés au charbon — et la numérotation continue bien après la dernière corde pendue. Les places sont faites avant qu'on en ait besoin. Tu redescends avec ça, et ça ne se dira jamais tout haut en bas.",
+      "reussite": "La corde tient. À la poutre, tous les nœuds sont le même nœud, et tous sont récents : elle les défait et les refait un par un, sans fin. Cette chapelle n'est pas un souvenir. C'est un entretien.",
+      "echec": "Tu as pris une des vieilles. Elle lâche à la poutre, d'un coup net, et tu descends toute la longueur en une seule fois. Les dalles ne pardonnent pas la paille qu'elles n'ont pas.",
+      "funeste": "1 naturel. Tu poses ton poids sur la poutre. Tout le rang de cordes de ce mur se tend ensemble, puis relâche ensemble, et tu redescends dedans. Tu te relèves en te dépliant d'un nœud que tu n'as pas fait. ♦ −2"
+     },
+     "nature": "physique"
+    },
+    {
      "id": "rester-chapelle",
      "label": "Rester dans la chapelle",
      "type": "suite"
@@ -5890,6 +5905,21 @@
       "funeste": "1 naturel. Tu mords. Et quelque chose, dans le fruit, mord en retour. ♦ −2"
      },
      "nature": "surnaturel"
+    },
+    {
+     "id": "monter-vieil-arbre",
+     "label": "Monter au plus vieil arbre",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. D'en haut, les rangs cessent d'être des rangs. Ils sont onze, et les intervalles ne sont pas égaux : ils s'élargissent en s'éloignant de la souche, exactement comme une chose plantée un rang par an. Au fond, derrière le couple, un douzième rang commencé et laissé. Tu vois l'année où ils ont arrêté de croire que ça repartirait.",
+      "reussite": "La fourche tient. De là, tout le verger se lit d'un coup : les rangs convergent vers la souche — tout est parti de cet arbre-là. Et la terre autour des deux silhouettes est retournée cent fois, sans que rien n'y soit jamais planté.",
+      "echec": "La branche est comme les fruits : parfaite à regarder, de la cendre à tenir. Elle cède sans un bruit. Tu tombes à plat entre deux rangs, le souffle coupé, les yeux dans des feuilles noires qui ne bougent pas.",
+      "funeste": "1 naturel. Tu montes haut, et l'arbre te porte. C'est à la descente que le pied passe dans une fourche, et que le bois se referme sur la cheville comme s'il avait attendu le poids. ♦ −2"
+     },
+     "nature": "physique"
     }
    ],
    "pointsInteret": [
@@ -8776,7 +8806,7 @@
  "totaux": {
   "scenes": 89,
   "pointsInteret": 44,
-  "choix": 231,
+  "choix": 233,
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,

@@ -117,6 +117,22 @@ excédentaires fusionnent, partent en information secondaire, ou alimentent
 le futur Codex. Resserrage à la grille 25-60 / 60-90 / >90 exception, garde
 `densite.py` recalé. Tout texte coupé est archivé, jamais supprimé.
 
+> **⚠️ CORRECTION DE MESURE (11/08, seconde passe) — la cible est ATTEINTE,
+> et l'alarme venait de mon estimateur.** J'avais annoncé « médiane 8 écrans
+> par lieu, 10 sur 17 au-dessus de 6 ». Ce chiffre comptait **2 écrans par
+> point d'intérêt** — c'est faux : l'approche et l'examen sont poussés dans
+> le MÊME lot, donc repaginés au budget de 90 mots, et un point court tient
+> sur **un seul** écran. Il additionnait aussi des branches EXCLUSIVES (les
+> sept accueils du hameau alternent, on n'en joue qu'un).
+> Mesure corrigée, en suivant la chaîne réelle depuis chaque destination :
+> **médiane 5 écrans par visite, 4 destinations sur 17 au-dessus de 6** —
+> `serment-hameau` (15, mais c'est la halte scriptée du hameau, pas un lieu
+> qu'on parcourt) et la Colline, la Chapelle et le Champ à 7, soit un écran
+> de trop. Aucune coupe structurelle n'est due.
+> La mesure vit désormais DANS `tools/densite.py` (`ecrans_par_visite`), avec
+> les deux erreurs écrites au-dessus : une mesure qu'on refait de tête se
+> refait fausse.
+
 **Phase C — le Soupçon lisible + le procès par la préparation.**
 L'escalade en monde (ci-dessus) + le procès devient la VITRINE de
 « explorer prépare » : ce qu'on a découvert avant devient des options

@@ -18,6 +18,7 @@ Usage : python3 tools/densite.py [--verbose]
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
@@ -41,6 +42,85 @@ BANDE_COURANT = 60
 
 def mots(t: str) -> int:
     return len(t.split())
+
+
+BUDGET_ECRAN = 90  # doit rester égal au budget de `decouperEnEcrans` (Scene.tsx)
+
+
+def _pagine(paras: list[str]) -> int:
+    """Reproduit `decouperEnEcrans` : on coupe AVANT le bloc qui déborderait."""
+    mots, n = 0, 1
+    for p in paras:
+        m = len(p.split())
+        if mots and mots + m > BUDGET_ECRAN:
+            n += 1
+            mots = m
+        else:
+            mots += m
+    return n
+
+
+def ecrans_par_visite(src: str) -> None:
+    """LA MESURE QUI COMPTE pour la Phase B : combien d'écrans une VISITE joue.
+
+    ⚠️ Deux erreurs d'estimation ont faussé cette mesure avant qu'elle n'entre
+    ici, et c'est pour ça qu'elle y entre :
+      1. additionner toutes les scènes d'un lieu compte des branches
+         EXCLUSIVES (les sept accueils du hameau alternent, on n'en joue
+         qu'un) — on suit donc la chaîne `chainNext` depuis la destination ;
+      2. compter « 2 écrans par point d'intérêt » est faux : l'approche et
+         l'examen sont poussés dans le MÊME lot, donc repaginés au budget —
+         un point court tient sur un seul écran. C'est cette erreur-là qui a
+         fait croire à une médiane de 8 alors qu'elle est à 5.
+    Une mesure qu'on refait de tête se refait fausse. Elle vit ici désormais.
+    """
+    import json as _json
+    from statistics import median
+
+    chemin = Path(__file__).resolve().parent.parent / "data/studio-data.json"
+    if not chemin.exists():
+        return
+    d = _json.loads(chemin.read_text(encoding="utf8"))
+    par_id = {s["id"]: s for s in d["scenes"]}
+
+    m = re.search(r"const APPROACH[^=]*=\s*\{", src)
+    if not m:
+        return
+    i = src.index("{", m.start())
+    prof, fin = 0, len(src)
+    for q in range(i, len(src)):
+        if src[q] == "{":
+            prof += 1
+        elif src[q] == "}":
+            prof -= 1
+            if prof == 0:
+                fin = q
+                break
+    dests = re.findall(r'\n  "?([a-z0-9-]+)"?\s*:', src[i:fin])
+
+    def ecrans(s: dict) -> int:
+        n = _pagine(s.get("narration", []))
+        for p in s.get("pointsInteret", []):
+            n += _pagine([t for t in (p.get("approche"), p.get("examen")) if t])
+        return n
+
+    lignes = []
+    for dest in dests:
+        vus, cur, tot, dec = set(), dest, 0, 0
+        while cur and cur in par_id and cur not in vus:
+            vus.add(cur)
+            s = par_id[cur]
+            tot += ecrans(s)
+            dec += len([c for c in s.get("choix", []) if c.get("type") != "suite"])
+            cur = s.get("suite")
+        lignes.append((tot, dest, dec))
+    lignes.sort(reverse=True)
+    vals = [x[0] for x in lignes]
+    hors = [x for x in lignes if x[0] > 6]
+    print(f"\nÉCRANS PAR VISITE (cible du plan d'élagage : 4 à 6) — {len(lignes)} destinations")
+    print(f"  médiane {median(vals):.0f} · max {max(vals)} · au-dessus de 6 : {len(hors)}")
+    for e, l, dec in hors:
+        print(f"    {l:24s} {e:>3} écrans · {dec} décisions")
 
 
 def main() -> int:
@@ -95,6 +175,8 @@ def main() -> int:
     print(f"\nEXAMENS DE POINTS (optionnels, droit d'être riches) — {len(examens)}")
     if ex:
         print(f"  médiane {median(ex):.0f} mots · max {ex[0]} (grille spec : 250-450 signes ≈ 40-75 mots)")
+
+    ecrans_par_visite(src)
 
     # ── AUDIT DES RÉPÉTITIONS (retour test 4/08 : « je voyais le paquet de
     # cartes sous les Landes ») : toute PHRASE de 8 mots ou plus présente à
@@ -152,10 +234,36 @@ def main() -> int:
     for t in trop[:5]:
         print(f"    {len(t.split()):>3} mots — {t[:70]}")
     print(f"  phrases de bifurcation : {len(bifs)}")
-    sans_indice = [d for d in cles_dest if not any(d in l for l in indices)]
-    # (contrôle indicatif : INDICE_ROUTE est un Record, ses clés sortent aussi
-    #  dans `chaines` — on compte les entrées, pas l'appariement exact.)
-    print(f"  indices de route déclarés : {len(indices) // 2} pour {len(cles_dest)} destinations")
+    # ⚠️ Ce contrôle a crié au loup deux fois (25/07, puis 11/08) parce qu'il
+    # comptait les littéraux et divisait par deux : une clé écrite SANS
+    # guillemets (`campement:`) ne produit qu'une chaîne, et le total dérivait.
+    # On apparie maintenant les CLÉS pour de vrai, et on nomme ce qui manque —
+    # un compte qui ne dit pas QUOI il manque ne sert à personne.
+    def cles_record(nom: str) -> set[str]:
+        m = re.search(nom + r"[^=]*=\s*\{", src)
+        if not m:
+            return set()
+        i = src.index("{", m.start())
+        d, fin = 0, len(src)
+        for q in range(i, len(src)):
+            if src[q] == "{":
+                d += 1
+            elif src[q] == "}":
+                d -= 1
+                if d == 0:
+                    fin = q
+                    break
+        return set(re.findall(r'\n  "?([a-z0-9-]+)"?\s*:', src[i:fin]))
+
+    dest_cles = cles_record("const APPROACH")
+    ind_cles = cles_record("const INDICE_ROUTE")
+    sans_indice = sorted(dest_cles - ind_cles)
+    orphelins = sorted(ind_cles - dest_cles)
+    print(f"  indices de route : {len(ind_cles)} pour {len(dest_cles)} destinations")
+    if sans_indice:
+        print(f"    ⚠️ sans indice (route décrite en générique) : {', '.join(sans_indice)}")
+    if orphelins:
+        print(f"    ⚠️ indice orphelin (destination hors pool) : {', '.join(orphelins)}")
     # 2. une ambiance qui NOMME une destination = risque de double arrivée
     noms = ["colline", "moulin", "puits", "chapelle", "tribunal", "hameau", "verger", "mare", "palissade"]
     annonce = [t for t in liaisons if sum(n in t.lower() for n in noms) >= 1]

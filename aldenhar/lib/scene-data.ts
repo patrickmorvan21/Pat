@@ -4711,7 +4711,35 @@ export const SCENES: Scene[] = [
           "n'a pas fini.",
       },
     ],
-    choices: [{ id: "rester-chapelle", label: "Rester dans la chapelle" }],
+    choices: [
+      /**
+       * PHASE D — un jet PHYSIQUE là où le lieu fournit lui-même la hauteur.
+       * Mesuré le 11/08 : 11 lieux sur 17 n'avaient aucun jet qui touche au
+       * corps, donc la santé était gelée dès les quatre combats consommés.
+       * Le jet est posé sur l'écran d'ARRIVÉE, qui n'offrait qu'un
+       * « continuer » : le budget de 3 CTA tient sans rien retrancher (les
+       * points d'intérêt reculent d'un cran derrière « Observer »). C'est ce
+       * qui empêche la Phase D de défaire la Phase B.
+       * Pas de Soupçon : la Veuve n'apparaît qu'à l'écran suivant, personne
+       * ne te voit monter.
+       */
+      {
+        id: "monter-poutres",
+        nature: "physique",
+        label: "Monter aux poutres",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu choisis sans réfléchir, et la corde te répond comme une main. En haut, les points d'attache sont taillés dans la poutre et numérotés au charbon — et la numérotation continue bien après la dernière corde pendue. Les places sont faites avant qu'on en ait besoin. Tu redescends avec ça, et ça ne se dira jamais tout haut en bas.",
+            "La corde tient. À la poutre, tous les nœuds sont le même nœud, et tous sont récents : elle les défait et les refait un par un, sans fin. Cette chapelle n'est pas un souvenir. C'est un entretien.",
+            "Tu as pris une des vieilles. Elle lâche à la poutre, d'un coup net, et tu descends toute la longueur en une seule fois. Les dalles ne pardonnent pas la paille qu'elles n'ont pas.",
+            "1 naturel. Tu poses ton poids sur la poutre. Tout le rang de cordes de ce mur se tend ensemble, puis relâche ensemble, et tu redescends dedans. Tu te relèves en te dépliant d'un nœud que tu n'as pas fait. ♦ −2"
+          ),
+        },
+      },
+      { id: "rester-chapelle", label: "Rester dans la chapelle" },
+    ],
     jailerLine: "Une chapelle de cordes. Les hommes prient ce qui les tient. Honnête.",
   },
   {
@@ -5598,6 +5626,25 @@ export const SCENES: Scene[] = [
             "Tu mords. La chair est sèche, sans goût, et se défait en poudre. Rien ne t'arrive — sauf la certitude, désormais physique, que rien ne pousse ici.",
             "La cendre te reste dans la gorge et n'en sort plus. Tu tousses longtemps, plié en deux entre deux rangs, et l'homme au fond du verger cesse une seconde de bêcher pour te regarder faire.",
             "1 naturel. Tu mords. Et quelque chose, dans le fruit, mord en retour. ♦ −2"
+          ),
+        },
+      },
+      /* PHASE D — le second jet physique hors combat (voir la Chapelle). Le
+         verger a des arbres hauts et une souche au bout : la hauteur est déjà
+         dans le décor, et ce qu'on voit d'en haut est une vraie information de
+         carte, pas une récompense abstraite. */
+      {
+        id: "monter-vieil-arbre",
+        nature: "physique",
+        label: "Monter au plus vieil arbre",
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. D'en haut, les rangs cessent d'être des rangs. Ils sont onze, et les intervalles ne sont pas égaux : ils s'élargissent en s'éloignant de la souche, exactement comme une chose plantée un rang par an. Au fond, derrière le couple, un douzième rang commencé et laissé. Tu vois l'année où ils ont arrêté de croire que ça repartirait.",
+            "La fourche tient. De là, tout le verger se lit d'un coup : les rangs convergent vers la souche — tout est parti de cet arbre-là. Et la terre autour des deux silhouettes est retournée cent fois, sans que rien n'y soit jamais planté.",
+            "La branche est comme les fruits : parfaite à regarder, de la cendre à tenir. Elle cède sans un bruit. Tu tombes à plat entre deux rangs, le souffle coupé, les yeux dans des feuilles noires qui ne bougent pas.",
+            "1 naturel. Tu montes haut, et l'arbre te porte. C'est à la descente que le pied passe dans une fourche, et que le bois se referme sur la cheville comme s'il avait attendu le poids. ♦ −2"
           ),
         },
       },
@@ -7579,8 +7626,15 @@ export const APPROACH_NARRATION: Record<string, string> = {
   "campement": "Une masse trapue se détache du crépuscule, plus large que haute, et grandit à chaque pas.",
   "chapelle-des-cordes": "Une bâtisse sans croix se dresse au bout d'une ruelle. En approchant, tu vois par la porte ouverte que les murs, à l'intérieur, remuent doucement — des cordes, des dizaines, sans un souffle d'air.",
   "puits-condamne": "Un bruit sourd te guide entre les maisons : trois coups, une pause, trois coups.",
-  "chien-du-bailli": "À l'ouest, une haute toiture seule au-dessus de la bruyère. Sur le seuil, une masse grise se lève sans un aboiement.",
-  "petit-tribunal": "Une bâtisse basse, une seule porte, et par elle un froid qui ne vient pas du dehors : le froid des endroits où l'on a beaucoup décidé. Tu entres au Petit Tribunal.",
+  // ⚠️ Double arrivée corrigée (11/08) : « haute », « seule » et « ouest »
+  // étaient déjà les trois premiers mots du 1er ¶ du lieu — l'approche
+  // racontait l'arrivée deux fois. Elle garde sa fonction d'immersion (poser
+  // du bâti dans la lande avant d'en nommer le seuil) et s'arrête là ; le
+  // chien reste, c'est l'événement de l'arrivée, pas une description.
+  "chien-du-bailli": "À l'ouest, un toit émerge de la bruyère. Sur le seuil, une masse grise se lève sans un aboiement.",
+  // Même correction : « basse », « froid » et « porte » ouvrent le lieu deux
+  // lignes plus loin. L'approche ne fait plus que mener au seuil.
+  "petit-tribunal": "Le chemin bute sur une bâtisse sans fenêtre, plantée de travers par rapport à la rue. Tu entres au Petit Tribunal.",
   "mare-aux-regards": "Le vent tombe d'un coup, comme coupé au couteau. Tes derniers pas ne font plus de bruit.",
   "verger-noir": "Des rangs réguliers montent de la bruyère. De loin, c'est presque rassurant.",
   "meute-grise-1": "La bruyère bouge sans vent, par plaques, autour de toi. Ce ne sont pas des ombres : ce sont des dos gris, bas sur pattes, qui resserrent un cercle patient.",
