@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-11T11:01:35Z",
- "commit": "9d2a99d",
+ "genere": "2026-08-11T11:18:41Z",
+ "commit": "22cbb77",
  "zones": [
   {
    "id": "landes",
@@ -73,7 +73,7 @@
      ],
      "nbScenes": 4,
      "nbRencontres": 1,
-     "nbPois": 5,
+     "nbPois": 4,
      "entrees": [],
      "sorties": [],
      "roles": [],
@@ -140,7 +140,7 @@
      ],
      "nbScenes": 2,
      "nbRencontres": 0,
-     "nbPois": 4,
+     "nbPois": 3,
      "entrees": [],
      "sorties": [],
      "roles": [],
@@ -358,7 +358,7 @@
      ],
      "nbScenes": 5,
      "nbRencontres": 0,
-     "nbPois": 3,
+     "nbPois": 2,
      "entrees": [],
      "sorties": [],
      "roles": [],
@@ -1212,24 +1212,6 @@
       "fichier": "scene_colline_gibet_vide_a_b.png",
       "hash": "83c68692",
       "taille": 21563,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "poteau-pendu",
-     "label": "Le poteau isolé, à gauche",
-     "approche": "Tu redescends d'une vingtaine de pas. Le poteau isolé est plus bas que les autres — à hauteur d'homme, exactement. Une hauteur qu'on choisit.",
-     "examen": "Chaîne de fonction au cou, sous la corde. Un sceau au poing. Et les yeux qui s'ouvrent quand tu arrives à portée de voix : le Bailli des Landes, pendu le dernier, à la place d'honneur.",
-     "nom": "Le poteau isolé, à gauche",
-     "image": {
-      "fichier": "scene_landes_poteau_pendu_c.png",
-      "hash": "055df6e3",
-      "taille": 26142,
       "recent": false,
       "existe": true
      },
@@ -2212,10 +2194,10 @@
   {
    "id": "femme-savoir-3",
    "narration": [
-    "« Quarante ans que je le vois et que je le dis pas. » Elle rit — un son épouvantable. « J’avais huit ans quand ils l’ont pendue. On était trois enfants sur le muret. Les deux autres sont morts vieux en disant qu’ils avaient rien vu. »",
+    "« Quarante ans que je le vois et que je le dis pas. » Elle rit — un son épouvantable. « J'avais huit ans. On était trois sur le muret. Les deux autres sont morts vieux en disant qu'ils avaient rien vu. »",
     "« J’ai attendu quarante ans que quelqu’un me dise que j’étais pas folle. »",
-    "Elle te lâche et reprend sa position, face au sud. De la rue, rien n’a bougé.",
-    "« Va-t’en maintenant. Et redis-le à personne. Moi je peux plus partir : j’ai plus l’âge, et j’ai plus le courage. Mais toi tu peux encore. Alors pars avant qu’ils te comptent. »"
+    "Elle te lâche et reprend sa position, face au sud.",
+    "« Va-t'en maintenant. Et redis-le à personne. Moi je peux plus partir. Toi tu peux encore — pars avant qu'ils te comptent. »"
    ],
    "choix": [
     {
@@ -2783,9 +2765,9 @@
   {
    "id": "hameau-accueil-volet",
    "narration": [
-    "La rue est vide. Pas déserte — vide : une porte qui bat encore, un seau posé de travers, une flaque de lait qui n'a pas eu le temps de sécher. Tout le monde vient de rentrer, et vite.",
-    "Un volet s'entrouvre à ta gauche, de deux doigts. Une voix de femme, basse, très rapide, aucun visage derrière : — « Ne touche pas les portes marquées. Ne réponds pas si on t'appelle par ton nom. Et va au muret, au bout, avant qu'on vienne te chercher. »",
-    "Le volet ne se referme pas tout de suite. Elle attend quelque chose de toi."
+    "La rue est vide. Pas déserte — vide : une porte qui bat, un seau de travers, une flaque de lait qui n'a pas eu le temps de sécher. Tout le monde vient de rentrer, et vite.",
+    "Un volet s'entrouvre de deux doigts. Une voix de femme, basse, très rapide, aucun visage derrière : — « Ne touche pas les portes marquées. Ne réponds pas si on t'appelle par ton nom. Va au muret, avant qu'on vienne te chercher. »",
+    "Le volet ne se referme pas. Elle attend quelque chose de toi."
    ],
    "choix": [
     {
@@ -2924,7 +2906,7 @@
   {
    "id": "hameau-accueil-enfant",
    "narration": [
-    "Ils ont envoyé un gosse. Huit ans peut-être, planté au milieu de la rue, les mains dans le dos comme on lui a dit de les tenir. Aucun adulte visible — et tous les volets entrouverts de deux doigts.",
+    "Ils ont envoyé un gosse. Huit ans peut-être, planté au milieu de la rue, les mains dans le dos. Aucun adulte visible — et tous les volets entrouverts de deux doigts.",
     "Il récite. On entend les mots appris, dans l'ordre, avec les silences qu'on lui a fait répéter : — « Est-ce que tu dors la nuit ? Est-ce que tu as compté quelque chose aujourd'hui ? Est-ce qu'on t'a appelé par ton nom depuis que tu es descendu ? »",
     "Il ne comprend pas ce qu'il demande. Les autres, si."
    ],
@@ -3814,10 +3796,10 @@
   {
    "id": "temoin-ruelle",
    "narration": [
-    "Aucune porte, aucune grange. Tu dors contre un muret, côté nord — d’instinct. Sauf que cette fois tu ne dors pas : tu sais ce qui marche sur les toits.",
-    "Au bout de la ruelle, quelque chose traverse. De gauche à droite, sans bruit — et c’est l’absence de bruit qui te fige, parce que ça faisait trois têtes de haut.",
-    "Tu vois du tissu. Beaucoup de tissu, noir, qui suit avec un temps de retard, comme une traîne. Et dessous, une seconde de trop, quelque chose qui n’était pas des jambes.",
-    "Puis plus rien. Le passage est vide. Sur les toits des deux côtés, les corbeaux sont alignés et te regardent, toi."
+    "Aucune porte, aucune grange. Tu dors contre un muret, côté nord. Sauf que cette fois tu ne dors pas : tu sais ce qui marche sur les toits.",
+    "Au bout de la ruelle, quelque chose traverse. Sans bruit — et c'est l'absence de bruit qui te fige, parce que ça faisait trois têtes de haut.",
+    "Du tissu noir, beaucoup, qui suit avec un temps de retard. Et dessous, une seconde de trop, quelque chose qui n'était pas des jambes.",
+    "Puis plus rien. Sur les toits des deux côtés, les corbeaux sont alignés et te regardent, toi."
    ],
    "choix": [
     {
@@ -4234,8 +4216,8 @@
   {
    "id": "marche-muet-2",
    "narration": [
-    "Au bout de la rangée, un étal différent : bric-à-brac d'ailleurs, objets qui n'ont rien à faire dans une lande. Le Colporteur te regarde venir de loin — et te reconnaît. C'est impossible. Il te fait signe quand même, comme à un client de longue date. Sur l'étal, aucun fruit. « Ceux du Verger, j'en prends pas », dit-il en suivant ton regard. « Personne n'en prend. »",
-    "À l'étal voisin, un vieil homme écrase des feuilles dans un mortier, des fioles bouchées de cire alignées devant lui. Le Rebouteux. Il ne lève pas la tête — mais son tabouret libre est tourné vers toi."
+    "Au bout de la rangée, un étal différent : des objets qui n'ont rien à faire dans une lande. Le Colporteur te regarde venir de loin — et te reconnaît. C'est impossible. Il te fait signe quand même. Sur l'étal, aucun fruit. « Ceux du Verger, personne n'en prend. »",
+    "À l'étal voisin, un vieil homme écrase des feuilles dans un mortier, des fioles bouchées de cire devant lui. Le Rebouteux. Il ne lève pas la tête — mais son tabouret libre est tourné vers toi."
    ],
    "choix": [
     {
@@ -4633,9 +4615,9 @@
   {
    "id": "fille-moulin-3",
    "narration": [
-    "« Mon père a construit une potence pour la chose qui m’a fait pendre. » Elle repose son ouvrage. « Il l’a attendue trois mois. Elle n’est pas venue. Elle ne vient jamais quand on l’appelle — elle vient quand un village est prêt. »",
+    "« Mon père a construit une potence pour la chose qui m'a fait pendre. » Elle repose son ouvrage. « Il l'a attendue trois mois. Elle ne vient jamais quand on l'appelle — elle vient quand un village est prêt. »",
     "Un temps.",
-    "« Il s’est pendu à côté. Pas de chagrin : par règlement. Il avait refusé de me condamner, et refuser, dans son livre, c’était une faute. Il a inscrit son nom et il a fait ce qu’il fallait. »",
+    "« Il s'est pendu à côté. Pas de chagrin : par règlement. Il avait refusé de me condamner, et refuser, dans son livre, c'était une faute. »",
     "« Alors non, je ne monte pas le voir. Il attend un procès. Moi j’ai fini d’attendre. »"
    ],
    "choix": [
@@ -5736,24 +5718,6 @@
      "alertes": []
     },
     {
-     "id": "berge-usee",
-     "label": "Le point de berge usé",
-     "approche": "Tu contournes la mare par la droite pour atteindre le seul endroit où la boue est tassée. Le sol y est dur comme un seuil de maison.",
-     "examen": "Deux creux dans la terre, à largeur de genoux, refaits par des centaines de personnes au même endroit exact. À côté, des marques de doigts crispés dans la boue séchée. On ne s'agenouille pas ici pour prier. On s'agenouille pour vérifier.",
-     "nom": "Le point de berge usé",
-     "image": {
-      "fichier": "scene_mare_berge_a_c.png",
-      "hash": "cb021c43",
-      "taille": 10114,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
      "id": "eau-reflet",
      "label": "L'eau",
      "approche": "Tu t'agenouilles dans les creux. Ils sont à ta taille, évidemment. La croyance dit : le reflet de qui entend la voix est en retard.",
@@ -5819,9 +5783,9 @@
   {
    "id": "mare-aux-regards-2",
    "narration": [
-    "Ils arrivent à deux. Le premier s'agenouille dans les creux du devant, se penche, et reste penché beaucoup trop longtemps. Le second reste debout derrière lui, dans les creux du fond, et ne regarde pas l'eau : il regarde la nuque de l'autre.",
+    "Ils arrivent à deux. Le premier s'agenouille dans les creux, se penche, et reste penché beaucoup trop longtemps. Le second reste debout derrière lui et ne regarde pas l'eau : il regarde la nuque de l'autre.",
     "Personne ne parle. Ce n'est pas une prière — c'est un examen, et il a manifestement une procédure.",
-    "Quand le premier se relève, il a le visage de quelqu'un qui va rentrer chez lui et fermer ses volets pour toujours. Le second lui met une main sur l'épaule, presque avec douceur, et le raccompagne."
+    "Quand le premier se relève, il a le visage de quelqu'un qui va rentrer chez lui et fermer ses volets pour toujours. Le second lui met une main sur l'épaule et le raccompagne."
    ],
    "choix": [
     {
@@ -5925,24 +5889,6 @@
       "fichier": "scene_verger_fruits_cendre_v2_c.png",
       "hash": "de3b4985",
       "taille": 31026,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "souche-premier-arbre",
-     "label": "La souche, au bout du rang",
-     "approche": "Au bout du rang, un arbre manque. Sa souche est nette, sciée à hauteur de genou, et le bois de coupe est gris.",
-     "examen": "Le premier arbre du verger, abattu net. Les cernes sont réguliers jusqu'aux dernières années — puis serrés, noirs, illisibles. L'arbre a compris avant les hommes où il poussait. Quelqu'un l'a abattu pour ne pas avoir à le lire. En te relevant, tu comptes les rangs par habitude, et le compte te reste dans la tête : onze vergers replantés sur une terre qui n'a jamais rien donné.",
-     "nom": "La souche, au bout du rang",
-     "image": {
-      "fichier": "scene_verger_souche_a_c.png",
-      "hash": "b329283c",
-      "taille": 15733,
       "recent": false,
       "existe": true
      },
@@ -6415,8 +6361,8 @@
    "id": "veilleur-2",
    "narration": [
     "Il décroche sa lanterne et la soupèse, comme une décision.",
-    "— « En bas, y a des endroits où le noir mange tout. Ça, ça tient une nuit de plus que les autres — je les fais moi-même, la mèche, l'huile, tout. » Il te la tend à moitié. « Elle est à toi. Contre une histoire. Une vraie. Du dehors. »",
-    "Ses yeux brillent d'une faim que la soupe du gamin ne nourrit pas. « Raconte-moi comment c'était, la dernière chose que t'as vue. Avant. » Il te demande ta mort. C'est la seule histoire du dehors que tu possèdes encore."
+    "— « En bas, y a des endroits où le noir mange tout. Ça, ça tient une nuit de plus que les autres. » Il te la tend à moitié. « Elle est à toi. Contre une histoire. Une vraie. Du dehors. »",
+    "« Raconte-moi la dernière chose que t'as vue. Avant. » Il te demande ta mort. C'est la seule histoire du dehors que tu possèdes encore."
    ],
    "choix": [
     {
@@ -6484,9 +6430,9 @@
   {
    "id": "veilleur-3",
    "narration": [
-    "Il t'ouvre le portillon lui-même, avec la cérémonie de l'homme dont c'est la seule prérogative. Au moment où tu passes, il note quelque chose sur une planche de sa guérite — ton passage, ta direction, l'heure. Le dernier acte administratif des Landes.",
-    "— « Je note tout le monde », dit-il sans lever les yeux. « Comme ça, si un jour quelqu'un remonte... je saurai qui c'était. » Il sourit à sa planche. « Trente ans de descentes. La colonne des retours est toute neuve. »",
-    "Elle ne l'est pas tout à fait. Tout en haut, au-dessus du vide, une marque — une seule, d'une autre main. Il ne la voit pas : sa planche commence en bas."
+    "Il t'ouvre le portillon lui-même, avec la cérémonie de l'homme dont c'est la seule prérogative. Au moment où tu passes, il note quelque chose sur une planche : ton passage, ta direction, l'heure.",
+    "— « Je note tout le monde », dit-il sans lever les yeux. « Comme ça, si un jour quelqu'un remonte, je saurai qui c'était. » Il sourit à sa planche. « La colonne des retours est toute neuve. »",
+    "Elle ne l'est pas tout à fait. Tout en haut, une marque — une seule, d'une autre main. Il ne la voit pas : sa planche commence en bas."
    ],
    "choix": [
     {
@@ -7468,12 +7414,28 @@
    "racine": "landes_hameau_puits"
   },
   {
+   "fichier": "scene_landes_poteau_pendu_c.png",
+   "hash": "055df6e3",
+   "taille": 26142,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "landes_poteau_pendu"
+  },
+  {
    "fichier": "scene_landes_tribunal_b.png",
    "hash": "d32865f3",
    "taille": 25191,
    "recent": false,
    "groupe": "autre",
    "racine": "landes_tribunal"
+  },
+  {
+   "fichier": "scene_mare_berge_a_c.png",
+   "hash": "cb021c43",
+   "taille": 10114,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "mare_berge"
   },
   {
    "fichier": "scene_mare_eau_reflet_b.png",
@@ -7618,6 +7580,14 @@
    "recent": false,
    "groupe": "brancher",
    "racine": "verger_noir_2"
+  },
+  {
+   "fichier": "scene_verger_souche_a_c.png",
+   "hash": "b329283c",
+   "taille": 15733,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "verger_souche"
   }
  ],
  "reliques": [
@@ -8790,12 +8760,12 @@
  ],
  "totaux": {
   "scenes": 89,
-  "pointsInteret": 47,
+  "pointsInteret": 44,
   "choix": 230,
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 73,
+  "reserve": 76,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
