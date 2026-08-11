@@ -587,6 +587,49 @@ export function tierIsFail(tier: ResolutionTier): boolean {
 export type NatureJet = "physique" | "social" | "exploration" | "surnaturel";
 
 /**
+ * CE QU'ON APPORTE À SON PROCÈS (Phase C du plan d'élagage, 11/08).
+ *
+ * Le procès était une pièce lancée : quatre défenses à seuil fixe, et le dé
+ * tranchait. Le panel l'a mesuré — c'est la seule chose qui tue vraiment, et
+ * elle tombait sans qu'on ait pu s'y préparer. Désormais, **chaque chose
+ * gagnée AVANT de savoir que le procès existe abaisse le seuil d'un cran** :
+ * un serment tenu, une alliée au hameau, un papier, ce qu'on a appris du
+ * Bailli. C'est la vitrine de « explorer prépare » : le fonceur peut encore
+ * s'en sortir, difficilement ; l'explorateur arrive avec des solutions.
+ *
+ * ⚠️ AUCUN chiffre nulle part. Le bénéfice se voit à l'Anneau du dé, qui se
+ * calcule sur ce seuil — plus d'encoches pleines, sans un mot. Et le premier
+ * paragraphe du procès DIT en fiction ce qu'on apporte (voir `apportsProces`),
+ * parce qu'un bénéfice que rien ne raconte n'existe pas.
+ *
+ * Plafond à 3 : même très bien préparé, on ne descend pas sous un jet serré —
+ * une zone qui vous juge doit pouvoir condamner.
+ */
+export type ApportProces = { cle: string; ligne: string };
+export function apportsProces(r: {
+  hameau?: { serment?: string | null };
+  soupcon?: number;
+  savoirs?: string[];
+  besace?: { name: string }[];
+  temoins?: { id: string }[];
+}): ApportProces[] {
+  const out: ApportProces[] = [];
+  // Le Serment TENU : juré, et pas démenti depuis (le Soupçon dirait le contraire).
+  if (r.hameau?.serment === "jure" && (r.soupcon ?? 0) <= 4)
+    out.push({ cle: "serment", ligne: "Au premier rang, deux des trois hommes du muret. Ils t'ont entendu jurer. Ça ne t'excuse de rien — mais ils sont obligés de s'en souvenir devant les autres." });
+  // Une alliée : la Femme au Seuil a quarante ans de silence à réparer.
+  if ((r.savoirs ?? []).some((x) => x.includes("femme")) || (r.temoins ?? []).some((t) => t.id.includes("femme")))
+    out.push({ cle: "alliee", ligne: "La Femme au Seuil s'est mise debout au fond, là où on voit mal. Elle ne dira rien. Elle est là, c'est tout, et deux ou trois têtes se tournent." });
+  // Un papier du hameau : le tribunal respecte l'écrit plus que la parole.
+  if ((r.besace ?? []).some((i) => /registre|carnet|ordonnance|sceau|dénonciation|denonciation/i.test(i.name)))
+    out.push({ cle: "papier", ligne: "Tu as quelque chose d'écrit sur toi, et l'Écrivain le sait avant tout le monde : sa plume s'arrête, puis reprend plus lentement." });
+  // Ce qu'on a appris du Bailli : on ne juge pas de la même façon quelqu'un qui sait.
+  if ((r.savoirs ?? []).some((x) => /bailli|ordonnance|registre/i.test(x)))
+    out.push({ cle: "bailli", ligne: "Tu sais comment il tenait ses comptes. Ça ne se voit pas — mais tu n'écoutes plus l'accusation comme un étranger l'écouterait." });
+  return out.slice(0, 3);
+}
+
+/**
  * Le coût en SANTÉ d'un palier, selon la nature du jet.
  *
  * Une seule source pour les deux appelants : la résolution qui l'applique, et
@@ -1395,6 +1438,30 @@ export const SCENES: Scene[] = [
         "tu pourrais le compter.",
     ],
     choices: [
+      {
+        /* PHASE D (11/08) — LE RISQUE PHYSIQUE SORT DES COMBATS.
+           Mesuré par le panel : la santé est racontée par toute l'interface
+           mais n'est alimentée que par un quart des jets, tous groupés dans
+           quatre combats — une fois ceux-ci consommés, elle est gelée. Le
+           levier retenu n'est PAS de durcir le barème (ça punirait celui qui
+           se bat) : c'est d'ajouter des jets là où le texte décrit DÉJÀ un
+           geste dangereux. Ici, le Grand Gibet est la plus haute chose des
+           Landes, et le texte y fait monter les yeux depuis l'arrivée.
+           Modèle à décliner sur les dix autres lieux sans risque de corps. */
+        id: "monter-grand-gibet",
+        nature: "physique",
+        label: "Monter au Grand Gibet",
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu montes par les entretoises, sans te presser, et tu t'assois sur la traverse du Grand Gibet comme sur une branche. De là, tout tient dans un seul regard : le hameau, la crête, la ligne pâle de la Descente au sud. Et une chose que personne au sol ne peut voir — les potences ne sont pas plantées au hasard. Elles dessinent une flèche, et la flèche montre le Moulin.",
+            "Le bois est vieux mais franc. Tu montes assez haut pour voir par-dessus la crête : le hameau est plus près que tu ne croyais, et la Descente plus loin. Tu redescends avec la carte dans la tête, les paumes brûlées de résine noire.",
+            "À mi-hauteur, l'entretoise cède sans un bruit — le bois était mangé de l'intérieur. Tu tombes de la hauteur d'un homme et demi, sur la caillasse. Rien de cassé. Rien d'entier non plus.",
+            "1 naturel. Tu montes. Le montant tient parfaitement — c'est la traverse qui pivote, comme elle a été faite pour le faire. Tu te retrouves suspendu par les bras au-dessus du vide, et pendant une seconde très longue, le Grand Gibet fait exactement ce pour quoi on l'a bâti. ♦ −2"
+          ),
+        },
+      },
       {
         id: "echarde",
         nature: "physique",
@@ -7794,7 +7861,7 @@ export const SOUPCON_PALIERS: Record<number, string> = {
   2: "Une conversation s'éteint à ton approche. Pas interrompue : pliée, rangée, comme du linge qu'on rentre avant la pluie.",
   3: "Une mère tire son enfant à l'intérieur sans un mot. Plus loin, la Doyenne croise ton chemin et parle sans s'arrêter : « Quoi que tu entendes, ne réponds pas. Ici, on regarde les bouches. »",
   4: "Là où tu as dormi, quelqu'un est passé : une croix à la craie, tracée bas, près du sol. Elle ne t'est pas adressée. Elle est adressée aux autres.",
-  5: "Trois hommes te suivent depuis le dernier muret. Ils ne pressent pas le pas. Ils n'en ont pas besoin — ils attendent quelque chose, et ce quelque chose a une aube.",
+  5: "Trois hommes te suivent depuis le dernier muret, sans presser le pas. En passant devant le Petit Tribunal, tu vois par la porte ouverte qu'on a tiré une chaise au milieu de la salle, face aux bancs. Elle est vide. Elle attend.",
 };
 
 /**
@@ -7820,7 +7887,7 @@ export const SOUPCON_CRAIE: Record<number, string> = {
   2: "Une croix à la craie sur ta besace, tracée bas, sur la face qui reste contre ton dos. Tu ne l'as pas vue se faire.",
   3: "La craie a changé de place : elle est sur ta manche, à l'épaule. Pour la tracer là, il a fallu être à portée de bras — et que tu ne t'en aperçoives pas.",
   4: "Deux marques maintenant, sur le même bras, à quelques doigts d'écart. La seconde recouvre à moitié la première, comme une signature qu'on confirme.",
-  5: "Tu passes la main dans ton dos et tes doigts reviennent blancs. Tu ne peux pas voir ce qui y est tracé. Tous les autres, si.",
+  5: "Tu passes la main dans ton dos et tes doigts reviennent blancs. Tu ne peux pas voir ce qui y est tracé — tous les autres, si. Ce n'est plus une marque : c'est une convocation, et elle est déjà partie devant toi.",
 };
 
 /**
@@ -7836,7 +7903,7 @@ export const SOUPCON_GEOLIER: Record<number, string> = {
   2: "Tu ne sens rien ? Normal. On ne sent jamais le premier tour de corde.",
   3: "Trois cents ont trouvé ça exagéré. Le livre dit qu'ils avaient tort.",
   4: "Je ne préviens pas. Je constate. C'est tout ce qu'on me permet.",
-  5: "À ta place, je regarderais derrière. À la mienne, on regarde devant.",
+  5: "Ils ont sorti une chaise. Chez vous, ça veut dire un procès ; chez moi, ça veut dire une date.",
 };
 
 /** La Descente — nœud terminal de la zone (fin sèche, Acte II à venir). */

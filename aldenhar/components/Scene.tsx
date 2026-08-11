@@ -52,6 +52,7 @@ import {
   NUIT_OUVERTURE,
   SECOND_PROCES,
   lieuDejaVisite,
+  apportsProces,
 } from "@/lib/scene-data";
 import { contradictionsConnues, faitById, versionDuFait } from "@/lib/contradictions";
 import { manifestationLoi } from "@/lib/loi-substitution";
@@ -1392,6 +1393,24 @@ export default function Scene() {
         (run.besace ?? []).map((i) => i.id)
       )
     );
+  }, [scene, step]);
+
+  /* Les apports du procès se DISENT — un bénéfice que rien ne raconte
+     n'existe pas. Une ligne par apport, en tête de l'écran, avant les
+     dépositions : le joueur voit ce que sa trajectoire a déposé dans la
+     salle, sans jamais lire un chiffre. */
+  useEffect(() => {
+    if (!scene.fixationTrial) return;
+    const r = runRef.current;
+    if (!r) return;
+    const lignes = apportsProces(r).map((a) => a.ligne);
+    if (!lignes.length) return;
+    setBeats((b) => {
+      if (b.some((e) => e.kind === "narration" && lignes.includes(e.text))) return b;
+      const i = b.findIndex((e) => e.kind === "narration");
+      const ajout = lignes.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text }));
+      return i < 0 ? [...b, ...ajout] : [...b.slice(0, i + 1), ...ajout, ...b.slice(i + 1)];
+    });
   }, [scene, step]);
 
   function onTimedExpire(timed: NonNullable<SceneType["timed"]>) {
@@ -3143,7 +3162,14 @@ export default function Scene() {
       // porté que par FIÉVREUX, et `jets` par lui seul aussi — les deux
       // étaient des modificateurs cachés, ce que la refonte bannit. Une
       // marque agit sur ce qui S'OUVRE, jamais sur un chiffre invisible.
-      const threshold = Math.max(2, choice.risky.threshold - soft + tension);
+      // CE QU'ON APPORTE À SON PROCÈS (Phase C) : chaque chose gagnée AVANT
+      // de savoir que le procès existe abaisse le seuil d'un cran. Rien n'est
+      // affiché — l'Anneau, calculé sur ce seuil, montre juste plus
+      // d'encoches pleines, et le premier écran du procès dit en fiction ce
+      // qu'on apporte. Le plafond de 3 est dans `apportsProces` : même très
+      // bien préparé, le jet reste serré.
+      const prepare = scene.fixationTrial ? apportsProces(runRef.current ?? {}).length : 0;
+      const threshold = Math.max(2, choice.risky.threshold - soft + tension - prepare);
       // Beat fatal (30/07) : la scène sait AVANT le verdict si un palier
       // d'échec tue — santé − coût ≤ 0, ou procès de fixation raté. Le dé
       // s'en sert pour poser la face rongée et « MORT » au settle, à la
