@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-11T09:52:20Z",
- "commit": "9bb17a8",
+ "genere": "2026-08-11T10:41:36Z",
+ "commit": "d885564",
  "zones": [
   {
    "id": "landes",
@@ -467,7 +467,7 @@
      "seuil": 11,
      "hautEnjeu": false,
      "issues": {
-      "critique": "20 naturel. Sous le pain moisi, une pierre plate gravée d'un pas — une Pierre de Retour. Ceux qui la déposent reviennent, dit-on. Celle-ci n'a jamais été réclamée.",
+      "critique": "20 naturel. Tes doigts trouvent le paquet le plus ancien, noué dans un linge raide : les offrandes du premier jour, celles que personne n'a jamais osé reprendre. Tu les prends — et la borne te laisse faire.",
       "reussite": "Tes doigts trient sans déranger. Un clou tordu, une mèche de cheveux — et le sens de tout ça : on n'offre pas par foi, ici. On offre par peur. Bon à savoir.",
       "echec": "Un ruban glisse et tout l'édifice s'éboule. Le vent se lève d'un coup, bref, comme une inspiration — la lande a noté que tu prends sans donner.",
       "funeste": "1 naturel. Sous les offrandes, une main à plat, paume ouverte. Elle attendait la tienne. ♦ −2"
@@ -477,7 +477,7 @@
     },
     {
      "id": "ecouter-voix",
-     "label": "Écouter, immobile",
+     "label": "Écouter, puis partir",
      "type": "passif",
      "consequence": "Tu ne touches à rien. Tu écoutes. Sous le vent, il y a des voix — basses, à ras de bruyère, qui se passent le mot de ton arrivée. Elles ne te menacent pas. Elles préviennent quelqu'un. Au moins, maintenant, tu sais que la lande parle."
     },
@@ -764,7 +764,7 @@
     {
      "id": "charrette-embourbee",
      "label": "La charrette embourbée",
-     "approche": "Elle penche dans l'ornière depuis si longtemps que le bois a pris racine — des pousses sortent du moyeu. Tu contournes, la main sur le ridelle.",
+     "approche": "Elle penche dans l'ornière depuis si longtemps que le bois a pris racine — des pousses sortent du moyeu. Tu contournes, la main sur la ridelle.",
      "examen": "Le chargement a disparu depuis longtemps. Le cheval aussi : le harnais pend, coupé net, pas dénoué. Sous le siège, accroché à un clou, un grelot de cuivre vert-de-grisé. Il ne sonne pas quand tu le décroches. Il sonnera quand il faudra.",
      "donneObjet": "grelot-charretier",
      "nom": "La charrette embourbée",
@@ -1311,7 +1311,7 @@
      "id": "redescendre",
      "label": "Partir avant de comprendre",
      "type": "passif",
-     "consequence": "Tu tournes le dos à la file avant d'avoir fini de compter — et c'est peut-être la chose la plus sage que tu feras aujourd'hui. Le grincement continue derrière toi, patient, comme une phrase qu'on garde pour la prochaine fois.",
+     "consequence": "Tu tournes le dos à la file et tu redescends. Le grincement continue derrière toi, patient, comme une phrase qu'on garde pour la prochaine fois.",
      "sortie": {}
     }
    ],
@@ -1447,7 +1447,7 @@
      "id": "passer-pendu",
      "label": "Passer sans un mot",
      "type": "passif",
-     "consequence": "Tu passes. Le Bailli ne te rappelle pas — il note. Tu l'entends murmurer ton signalement à la corde, qui grince en l'écrivant. Refuser le jugement, ici, c'est un verdict aussi. Il t'attendra au retour : les Landes tournent en rond.",
+     "consequence": "Tu passes. Le Bailli ne te rappelle pas — il note. Tu l'entends murmurer ton signalement à la corde, qui grince en l'écrivant. Il t'attendra au retour : les Landes tournent en rond.",
      "sortie": {},
      "tags": [
       "citable"
@@ -1542,7 +1542,7 @@
      "id": "tombe-sans-poteau",
      "label": "Un vide dans une rangée pleine",
      "approche": "Tu l'as repéré de loin sans savoir quoi : un défaut d'alignement, un rythme cassé. En approchant, tu comprends — il manque un poteau au milieu d'une rangée pleine, comme une dent tombée.",
-     "examen": "La terre y est ancienne, tassée : il y a eu un poteau, ici. On l'a retiré. Pas arraché — descellé proprement, puis rebouché. Quelqu'un a voulu que ce nom-là cesse d'exister sans que le champ s'en aperçoive.",
+     "examen": "La terre y est ancienne, tassée : il y a eu un poteau, ici. On l'a retiré. Pas arraché — descellé proprement, puis rebouché. Quelqu'un a voulu que ce nom-là cesse d'exister sans que le champ s'en aperçoive. Au fond de la fosse comblée, à moitié enfoui, un moignon de craie grasse — celle qui sert à marquer les portes. Tu le ramasses.",
      "donneObjet": "craie-condamne",
      "donneDecouverte": "d.emplacement_vide",
      "nom": "Un vide dans une rangée pleine",
@@ -1790,7 +1790,7 @@
      "id": "passer-fossoyeur",
      "label": "Passer sans un mot",
      "type": "passif",
-     "consequence": "Tu passes au large de son rang. Il ne lève pas la tête — mais sa main s'arrête sur le poteau, juste le temps que tu sois passé. Ici, même la politesse se mesure en immobilité.",
+     "consequence": "Tu reprends le chemin entre les rangs. Sa main s'arrête sur le poteau, juste le temps que tu sois passé. Ici, même la politesse se mesure en immobilité.",
      "sortie": {}
     }
    ],
@@ -1915,7 +1915,7 @@
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu te couches dans la bruyère et tu attends. Un quart d'heure, et le hameau se trahit : des silhouettes postées aux fenêtres, une par maison habitée, immobiles. Ils guettent la crête. Tu les as vus avant qu'ils te voient — et ça, ça vaut plus qu'une arme ici.",
-      "reussite": "À couvert derrière un muret, tu prends la mesure du village : onze maisons vivantes sur vingt, et pas un mouvement dehors. Ce n'est pas un hameau qui dort. C'est un hameau qui attend.",
+      "reussite": "À couvert derrière un muret, tu prends la mesure du village : des seuils balayés, du linge tendu — des maisons vivantes, et pas un mouvement dehors. Ce n'est pas un hameau qui dort. C'est un hameau qui attend.",
       "echec": "Tu restes trop longtemps immobile face au village. Quand tu te redresses enfin, une silhouette se détache d'une porte, en bas, et rentre vite. Quelqu'un t'a vu observer — et observer, ici, n'est pas une chose innocente.",
       "funeste": "1 naturel. Tu observes, à plat ventre, concentré. Derrière toi, une voix polie : « On peut vous aider ? » Ils sont deux. Ils sont montés pendant que tu regardais en bas. ♦ −2"
      },
@@ -3263,7 +3263,7 @@
      "id": "doyenne-horaire",
      "label": "Demander qui juge, ici",
      "approche": "Tu poses la question au vieux. C’est la femme derrière lui qui répond, sans qu’on lui ait rien demandé.",
-     "examen": "« Avant, on jugeait le jour. » Elle rajuste son châle. « Maintenant on juge la nuit. C’est pas moi qui ai décidé du changement d’horaire. »",
+     "examen": "« Avant, on jugeait le jour. » Elle rajuste son châle. « Maintenant on juge la nuit. C'est pas moi qui en ai décidé. »",
      "donneDecouverte": "d.on_juge_la_nuit",
      "image": null,
      "description": "",
@@ -4307,7 +4307,7 @@
      "id": "traverser-marche",
      "label": "Traverser sans offrir",
      "type": "passif",
-     "consequence": "Tu traverses les étals sans un geste, mains visibles, et le marché te laisse passer — on respecte, ici, ceux qui ne prennent rien. Seul le Colporteur te suit des yeux jusqu'au bout de la rangée, déçu comme devant une vieille habitude manquée. Il tapote son étal : à la prochaine fois. Il a l'air sûr qu'il y en aura une.",
+     "consequence": "Tu traverses les étals, mains visibles, et le marché te laisse passer. Seul le Colporteur te suit des yeux jusqu'au bout de la rangée. Il tapote son étal : à la prochaine fois. Il a l'air sûr qu'il y en aura une.",
      "sortie": {}
     }
    ],
@@ -4374,7 +4374,7 @@
      "id": "crete-interrompue",
      "label": "La crête du toit",
      "approche": "Tu contournes la tour et tu lèves les yeux vers le faîtage. La mousse a mangé toute la pierre, sauf une bande, en haut, nette comme un sentier.",
-     "examen": "La bande sans mousse court sur toute la longueur du toit, large comme deux mains, usée. Puis elle s’arrête. Pas en s’amenuisant : d’un coup, à cinquante pas de la porte, comme si quelque chose qui marchait là s’était retourné chaque fois exactement au même endroit.",
+     "examen": "La bande sans mousse court sur toute la longueur du toit, large comme deux mains, usée. Puis elle s'arrête. Pas en s'amenuisant : d'un coup, à mi-pente, toujours au même point — comme si ce qui marchait là s'était retourné chaque fois exactement à la même marche.",
      "donneDecouverte": "d.crete_interrompue",
      "image": {
       "fichier": "scene_moulin_crete_interrompue_b.png",
@@ -4411,7 +4411,7 @@
      "id": "lucarne-moulin",
      "label": "La lucarne, au-dessus de la porte",
      "approche": "Quelque chose a bougé là-haut — tu en jurerais. Tu approches sans quitter l'ouverture des yeux, ce qui est exactement la mauvaise façon d'approcher d'une porte.",
-     "examen": "La lucarne est vide. Et propre : pas un grain de poussière sur le rebord intérieur. Quelqu'un s'y accoude. Souvent. Pour regarder ce chemin — celui par lequel tu viens d'arriver.",
+     "examen": "La lucarne est propre : pas un grain de poussière sur le rebord intérieur. Quelqu'un s'y accoude. Souvent. Pour regarder ce chemin — celui par lequel tu viens d'arriver. Et calée dans l'angle du rebord, à l'abri : une poupée de chiffon et de paille. Quelqu'un de très petit l'a mise là pour la sauver. Tu la prends avant d'avoir décidé de la prendre.",
      "donneObjet": "jouet-fixee",
      "nom": "La lucarne, au-dessus de la porte",
      "image": {
@@ -4502,7 +4502,7 @@
      "id": "repartir",
      "label": "Repartir sans s'attarder",
      "type": "passif",
-     "consequence": "Tu ressors avant d'avoir posé ton sac. Dehors, la lumière est exactement celle de tout à l'heure : ne pas dormir ne fait gagner aucun temps ici — ça fait seulement une nuit de moins derrière toi, et le lit de bruyère garde sa forme pour un autre.",
+     "consequence": "Tu ressors. Dehors, la lumière est exactement celle de tout à l'heure : ne pas dormir ne fait gagner aucun temps ici — ça fait seulement une nuit de moins derrière toi, et le lit de bruyère garde sa forme pour un autre.",
      "sortie": {},
      "sansNuit": true
     }
@@ -4925,7 +4925,7 @@
      "id": "mur-cordes",
      "label": "Le mur des cordes, au fond",
      "approche": "Tu remontes la nef courte. L'odeur de chanvre vieux prend à la gorge à mesure — une odeur grasse, presque animale, qui n'a rien d'une odeur d'église.",
-     "examen": "Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom à l'encre pâle. Ce ne sont pas des trophées. Ce sont des reliques — chaque corde « a tenu » quelqu'un. L'une d'elles bouge quand tu ne la regardes pas : la troisième du rang bas, sans étiquette, plus claire que les autres. Tu note où elle est. Ce genre de chose, on préfère savoir où ça se trouve avant que ça sache où tu te trouves. Plus bas, trois cordes portent la même date. Deux noms se lisent encore : celui du Bailli, et un prénom de fille. Le troisième a été arraché avec l'étiquette.",
+     "examen": "Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom à l'encre pâle. Ce ne sont pas des trophées. Ce sont des reliques — chaque corde « a tenu » quelqu'un. L'une d'elles bouge quand tu ne la regardes pas : la troisième du rang bas, sans étiquette, plus claire que les autres. Tu notes où elle est. Ce genre de chose, on préfère savoir où ça se trouve avant que ça sache où tu te trouves. Plus bas, trois cordes portent la même date. Deux noms se lisent encore : celui du Bailli, et un prénom de fille. Le troisième a été arraché avec l'étiquette.",
      "savoir": "savoir_corde_vive",
      "donneDecouverte": "d.trois_cordes",
      "nom": "Le mur des cordes, au fond",
@@ -5027,7 +5027,7 @@
      "issues": {
       "critique": "20 naturel. Le verre pivote sans bruit — la niche n'était pas verrouillée. Elle attendait. La corde coupée s'enroule d'elle-même autour de ton poignet, légère, tiède : une relique qui a choisi son porteur. Au mur, toutes les autres cordes se figent.",
       "reussite": "Tu soulèves le verre, tu prends la corde. Elle ne pèse rien — tout ce qu'elle devait retenir s'est relevé et marche encore. La Veuve, au fond, ne se retourne pas. Mais son nœud, pour la première fois, change de forme.",
-      "echec": "Le verre t'échappe et sonne sur la dalle. La Veuve est sur toi en trois pas, sans courir — et les cordes du mur se tendent toutes vers toi, d'un même mouvement. Tu sors avec la corde, mais la chapelle entière connaît ton visage.",
+      "echec": "Le verre t'échappe et sonne sur la dalle. La Veuve est sur toi en trois pas, sans courir — et les cordes du mur se tendent toutes vers toi, d'un même mouvement. Tu ressors les mains vides, et la chapelle entière connaît ton visage.",
       "funeste": "1 naturel. Tu saisis la corde coupée. Une autre corde, au mur, te saisit le poignet — la Fixation est un métier de patience, et il en pendait une au-dessus de la niche depuis toujours, pour les gens comme toi. ♦ −2"
      },
      "nature": "exploration",
@@ -5365,7 +5365,7 @@
      "id": "mur-ordonnance",
      "label": "La feuille clouée au mur",
      "approche": "Trois pas de dalle inégale, et la feuille se précise : du papier épais, jauni, cloué aux quatre coins par quelqu'un qui ne voulait pas qu'on la décroche.",
-     "examen": "La liste des signes, de la main du Bailli. « Parler seul face au sud. Fixer les Profondeurs plus qu'il ne faut. Cesser de dormir. Répondre à ce qui n'a pas parlé. » Tu la lis deux fois. La deuxième fois, tu comptes ceux qui te concernent déjà. Et la troisième, tu les apprends — parce que c'est exactement ce qu'ils guettent chez toi.",
+     "examen": "La liste des signes, de la main du Bailli. « Parler seul face au sud. Fixer les Profondeurs plus qu'il ne faut. Cesser de dormir. Répondre à ce qui n'a pas parlé. » Tu la lis trois fois. La deuxième, tu comptes ceux qui te concernent déjà. La troisième, tu les apprends — parce que c'est exactement ce qu'ils guettent chez toi.",
      "savoir": "savoir_ordonnance",
      "nom": "La feuille clouée au mur",
      "image": {
@@ -5456,7 +5456,7 @@
      "id": "ecrivain-defenses",
      "label": "L’interroger sur son travail",
      "type": "passif",
-     "consequence": "« J’écris les dénonciations et les défenses. Les deux. » Il range sa plume avec un soin d’horloger. « Depuis quelques années, on me demande plus de défenses. » Il dit ça comme on constate une baisse de commandes.",
+     "consequence": "« J'écris les dénonciations et les défenses. Les deux. » Il range sa plume avec un soin d'horloger. « Depuis quelques années, on ne me demande plus de défenses. » Il dit ça comme on constate une baisse de commandes.",
      "donneDecouverte": "d.plus_de_defenses"
     },
     {
@@ -5651,16 +5651,16 @@
     },
     {
      "id": "offrir-viande",
-     "label": "Jeter tes vivres",
+     "label": "Leur jeter ton manteau",
      "type": "risque",
      "stat": "RUSE",
      "seuil": 12,
      "hautEnjeu": false,
      "issues": {
-      "critique": "20 naturel. Tu jettes tes vivres — mais un par un, en reculant, en semant ta sortie. La meute suit le fil de miettes, méthodique, et la meneuse te laisse filer avec un regard entendu : elle sait qu'elle est achetée, elle accepte le prix. Marché de vieux routiers.",
-      "reussite": "Le paquet tombe entre vous. La meneuse le flaire, le juge honnête — et le croissant se referme dessus au lieu de toi. Tu pars le ventre plus léger et la peau entière. Dans la lande, c'est un excellent taux de change.",
-      "echec": "Tu jettes tout — trop vite, trop près de toi. La meute prend les vivres ET la leçon : ce qui donne tout tremble. La meneuse te bouscule au passage, sans mordre, juste pour l'inventaire — puis ils s'en vont, servis. Tu restes debout, les poches vides, jaugé au plus juste.",
-      "funeste": "1 naturel. Tu jettes tes vivres. Ils n'y touchent pas. Ce n'était pas une chasse au gibier — c'était une pesée, et ton offrande vient de te faire passer dans la mauvaise colonne. Ils prélèvent la différence sur toi, exacts comme un percepteur, puis rendent la lande au silence. ♦ −2"
+      "critique": "20 naturel. Tu fais glisser ton manteau et tu le lances de biais, loin sur le côté, là où le vent portera ton odeur. Il tombe en gardant ta forme. La meute entière se détourne pour le juger, méthodique, et la meneuse te laisse filer avec un regard entendu : elle sait qu'elle est achetée, elle accepte le prix. Marché de vieux routiers.",
+      "reussite": "Le manteau tombe entre vous, encore tiède de toi. La meneuse le flaire longuement, le juge honnête — et le croissant se referme dessus au lieu de toi. Tu pars les épaules nues et la peau entière. Dans la lande, c'est un excellent taux de change.",
+      "echec": "Tu le jettes trop vite, trop près de toi. La meute prend le manteau ET la leçon : ce qui se déshabille tremble. La meneuse te bouscule au passage, sans mordre, juste pour l'inventaire — puis ils s'en vont, servis. Tu restes debout, sans manteau, jaugé au plus juste.",
+      "funeste": "1 naturel. Tu jettes ton manteau. Ils n'y touchent pas. Ce n'était pas une chasse au gibier — c'était une pesée, et ton offrande vient de te faire passer dans la mauvaise colonne. Ils prélèvent la différence sur toi, exacts comme un percepteur, puis rendent la lande au silence. ♦ −2"
      },
      "nature": "physique"
     }
@@ -5863,7 +5863,7 @@
      "id": "laisser-renoncant",
      "label": "Le laisser à sa réponse",
      "type": "passif",
-     "consequence": "Tu restes immobile derrière les roseaux jusqu'à ce qu'il soit loin. Il ne saura jamais qu'on l'a vu vérifier. C'est le seul cadeau que tu pouvais lui faire, et il ne le saura pas non plus.",
+     "consequence": "Tu quittes la berge sans te retourner. Derrière toi, l'eau reprend son immobilité — elle garde ce qu'elle a vu, comme toujours.",
      "sortie": {}
     }
    ],
@@ -5901,9 +5901,9 @@
    "choix": [
     {
      "id": "compter-rangs",
-     "label": "Compter les rangs",
+     "label": "Compter les rangs en passant",
      "type": "passif",
-     "consequence": "Onze rangs. Tu recomptes : onze. Chaque rang est planté d'une essence différente, et chaque essence a donné les mêmes fruits gris. Onze tentatives, onze réponses identiques, et un douzième rang en cours de creusement au fond. Il n'y a pas de mot pour ça dans ta langue. Ici, ça s'appelle mardi."
+     "consequence": "Onze rangs. Tu recomptes : onze. Chaque rang est planté d'une essence différente, et chaque essence a donné les mêmes fruits gris. Onze tentatives, onze réponses identiques, et un douzième rang en cours de creusement au fond. Il n'y a pas de mot pour ça dans ta langue. Ici, on ne le nomme plus : c'est l'ordinaire."
     },
     {
      "id": "gouter-fruit",
@@ -6129,7 +6129,7 @@
    "id": "epoux-2",
    "narration": [
     "— « Tu viens du dehors. » Ce n'est pas une question : c'est une prière déguisée en constat. « Il te reste forcément quelque chose du dehors. N'importe quoi. Une graine, un bout de vrai bois, une chose qui a poussé sous le vrai soleil. On le planterait. »",
-    "Tu sais ce que tu as : rien. Tu arrives ici comme tout le monde y arrive — les mains vides et mort."
+    "Rien de ce que tu portes n'a poussé sous un soleil, vrai ou faux. Tu arrives ici comme tout le monde y arrive — les mains vides et mort."
    ],
    "choix": [
     {
@@ -6173,7 +6173,7 @@
      "id": "epoux-donner",
      "label": "Chercher dans ta besace",
      "type": "passif",
-     "consequence": "Tu fouilles longuement, pour de vrai. Tout ce que tu portes vient d'ici : une écharde de gibet, du chanvre béni, de la cendre. Rien du dehors. Tu leur montres tes mains ouvertes, et ils regardent dedans quand même, tous les deux, comme on regarde un puits."
+     "consequence": "Tu fouilles longuement, pour de vrai. Tout ce que tu portes, tu l'as ramassé ici — chaque chose sent la lande, la corde ou la cendre. Rien qui ait poussé sous un vrai soleil. Tu leur montres tes mains ouvertes, et ils regardent dedans quand même, tous les deux, comme on regarde un puits."
     }
    ],
    "pointsInteret": [],
@@ -6243,7 +6243,7 @@
   {
    "id": "palissade-sud",
    "narration": [
-    "La Palissade barre le plateau d'un trait noir : des rondins plantés serrés, hauts de deux hommes. Un portillon, une guérite, une lanterne allumée en plein jour.",
+    "La Palissade barre le plateau d'un trait noir : des rondins plantés serrés, hauts de deux hommes. Un portillon, une guérite, une lanterne allumée sous un ciel encore clair.",
     "Derrière, un chemin qui descend. On le sent plus qu'on ne le voit : l'air y coule comme une eau froide. La Descente. Et dans la guérite, un homme qui t'a vu depuis longtemps."
    ],
    "choix": [
@@ -6298,7 +6298,7 @@
      "id": "portillon-verrou",
      "label": "Le portillon et son verrou",
      "approche": "Tu poses la main sur le bois du portillon. Il est tiède, ce qui n'a aucun sens sous ce crépuscule.",
-     "examen": "Un verrou, côté nord. Un seul. Le bois autour est griffé — pas par des bêtes : à hauteur de mains. Des mains qui voulaient passer, une nuit, et qu'on n'a pas laissées. Ou qu'on a laissées trop tard.",
+     "examen": "Un verrou, côté nord. Un seul. Le bois autour est griffé — pas par des bêtes : à hauteur de mains. Des mains qui voulaient passer, une nuit, et qu'on n'a pas laissées. Ou qu'on a laissées trop tard. Dans la gâche du verrou, une clé rouillée est restée, oubliée par quelqu'un qui comptait revenir. Tu la prends.",
      "donneObjet": "cle-portillon",
      "nom": "Le portillon et son verrou",
      "image": {
@@ -6334,7 +6334,6 @@
     }
    ],
    "suite": "palissade-sud-2",
-   "butin": "lanterne-veilleur",
    "savoir": "savoir_palissade_retient",
    "tags": [
     "climb"
@@ -6548,7 +6547,7 @@
      "seuil": 12,
      "hautEnjeu": false,
      "issues": {
-      "critique": "20 naturel. Le vieux soldat te regarde enfin — et te tend sa lanterne, la seule allumée de toute la palissade. « Trente ans que je guette la relève. » Il te raconte tout : la voix qui appelle, les battants qu'on graisse, et pourquoi la porte s'ouvre toujours de l'intérieur. Quand tu descendras, tu sauras.",
+      "critique": "20 naturel. Le vieux soldat te regarde enfin. « Trente ans que je guette la relève. » Il te raconte tout : la voix qui appelle, les battants qu'on graisse, et pourquoi la porte s'ouvre toujours de l'intérieur. Quand tu descendras, tu sauras.",
       "reussite": "Il parle sans quitter le sud des yeux. La Descente mène au deuxième cercle des terres du Geôlier — « plus profond, plus vieux, moins poli ». Il te jauge du coin de l'œil : « Pas encore prêt, toi. Ça se voit aux épaules. » Ce n'est pas une insulte. C'est une mesure.",
       "echec": "À ta troisième question, il se ferme comme une porte de garnison : « On ne parle pas de la Descente à ceux qui remontent. » Tu ne sauras pas ce que tes questions ont révélé de toi — mais il a resserré sa capote, et il s'est éloigné de deux pas. De toi, pas du froid.",
       "funeste": "1 naturel. Tu le questionnes. Il répond par une question : « Et toi, tu l'entends depuis quand, la voix ? » Tu ouvres la bouche pour dire jamais. Rien ne sort. ♦ −2"
@@ -6565,7 +6564,7 @@
      "id": "franchir-descente",
      "label": "Franchir la Descente",
      "type": "passif",
-     "consequence": "Le Veilleur ne t’arrête pas. Il pousse le portillon et se range, comme on s’écarte d’un convoi. Derrière toi, la lanterne reste allumée en plein jour — pour le suivant.",
+     "consequence": "Le Veilleur ne t'arrête pas. Il pousse le portillon et se range, comme on s'écarte d'un convoi. Derrière toi, la guérite reste ouverte — pour le suivant.",
      "sortie": {
       "toScene": "la-descente"
      },
@@ -6665,7 +6664,7 @@
      "issues": {
       "critique": "20 naturel. Tu poses le document sur le banc des témoins, ouvert à la bonne page, et tu te tais. L'Écrivain se penche malgré lui — puis se redresse très vite. Ce que ce papier dit du hameau vaut infiniment plus cher que ce que le hameau dit de toi. On te raccompagne, et on ne te demande pas de le rendre.",
       "reussite": "Tu produis le papier. Il ne t'innocente pas : il rappelle simplement qui tient les comptes, et depuis quand. La Doyenne le lit deux fois, referme, et dit qu'on verra plus tard. Plus tard, ici, veut dire jamais — et jamais, aujourd'hui, veut dire libre.",
-      "echec": "Tu produis le papier, et tu comprends en le tendant que tu viens d'avouer d'où il vient. On ne te juge plus pour la voix : on te juge pour le vol. C'est un motif plus propre, et il tient aussi bien une corde.",
+      "echec": "Tu produis le papier, et la salle décide aussitôt d'où il vient : un document du hameau, dans une main du dehors, ne peut qu'avoir été pris. On ne te juge plus pour la voix — on te juge pour ce qu'on te croit avoir volé. C'est un motif plus propre, et il tient aussi bien une corde.",
       "funeste": "1 naturel. Le papier passe de main en main et s'arrête sur une ligne que tu n'avais pas lue. Ton nom y est déjà, dans une écriture qui n'est pas la tienne, avec une date qui n'est pas encore arrivée. Le tribunal n'a plus qu'à respecter le calendrier. ♦ −2"
      },
      "nature": "social",
