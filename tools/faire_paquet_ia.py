@@ -48,11 +48,25 @@ def main(argv: list[str]) -> int:
     for f in sorted((APP / "components").glob("*.tsx")):
         shutil.copy(f, pack / "sources" / "components" / f.name)
 
+    # ⚠️ Les transcripts venaient UNIQUEMENT de la ligne de commande. Le jour
+    # où l'outil qui les enregistrait a disparu (il vivait dans un scratchpad
+    # de session), plus personne ne les a passés — et le paquet a continué de
+    # se construire sans un mot, en promettant dans son LISEZMOI des « parties
+    # réelles enregistrées » qu'il ne contenait plus. Ils vivent maintenant
+    # dans le dépôt, et l'absence se DIT au lieu de passer inaperçue.
     trans = [Path(a) for a in argv[1:]]
+    if not trans:
+        trans = sorted((RACINE / "data" / "transcripts").glob("*.md"))
     for t in trans:
         if t.exists():
             shutil.copy(t, pack / "transcripts" / t.name)
     n_trans = len(list((pack / "transcripts").glob("*.md")))
+    if n_trans == 0:
+        print(
+            "⚠️  AUCUN TRANSCRIPT dans le paquet — or le LISEZMOI en promet.\n"
+            "    Enregistres-en avec `node tools/joueur.mjs --sortie "
+            "data/transcripts/<nom>.md` (le jeu doit être servi en local)."
+        )
 
     lisez = (RACINE / "data" / "paquet-ia-LISEZMOI.md").read_text(encoding="utf-8")
     lisez = lisez.replace("{VERSION}", version).replace("{NTRANS}", str(n_trans))

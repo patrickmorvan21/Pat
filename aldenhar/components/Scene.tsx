@@ -2273,9 +2273,18 @@ export default function Scene() {
       // parle en pleine rue — jamais deux fois le même, jamais plus d'un par
       // écran, et seulement quand le village a de quoi dire (soupçon ≥ 2).
       // C'est le procès qui commence, longtemps avant la salle.
+      // ⚠️ On déduplique par PERSONNE, pas par déposition. Cinq dépositions
+      // différentes portent « La Femme au Seuil » : filtrer sur l'id laissait
+      // ses jumelles passer, et la rumeur sortait DEUX FOIS mot pour mot (vue
+      // dans un transcript du 11/08 — la phrase ne cite que le nom et le
+      // lieu, donc deux dépositions d'une même personne sont indistinguables
+      // à l'écran). Le procès, lui, dédupliquait déjà par personne.
       const temoinsRun = runRef.current?.temoins ?? [];
       const cites = runRef.current?.temoinsCites ?? [];
-      const frais = temoinsRun.filter((t) => !cites.includes(t.id));
+      const dejaDits = new Set(
+        temoinsRun.filter((t) => cites.includes(t.id)).map((t) => t.nom),
+      );
+      const frais = temoinsRun.filter((t) => !cites.includes(t.id) && !dejaDits.has(t.nom));
       if ((runRef.current?.soupcon ?? 0) >= 2 && frais.length && chance(0.5)) {
         const t = frais[nextStep % frais.length];
         entries.push({
@@ -2286,7 +2295,12 @@ export default function Scene() {
             `saisi la fin : « … ${t.lieu}. C'est ${t.nom} qui l'a dit. » ` +
             `Elles reprennent leur chemin, plus vite que nécessaire.`,
         });
-        persist((r) => { r.temoinsCites = [...(r.temoinsCites ?? []), t.id]; });
+        // On marque TOUTES les dépositions de cette personne : elle a parlé,
+        // elle ne reparlera pas sous un autre grief.
+        const sesIds = temoinsRun.filter((x) => x.nom === t.nom).map((x) => x.id);
+        persist((r) => {
+          r.temoinsCites = [...new Set([...(r.temoinsCites ?? []), ...sesIds])];
+        });
       }
       // Registre DÉDIÉ (panel 10/08) : les corbeaux comptaient leurs passages
       // dans `reactionsVues`, partagé avec les réactions d'états — le vivier

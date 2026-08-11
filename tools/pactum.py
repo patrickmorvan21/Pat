@@ -435,6 +435,11 @@ class Partie:
 
         if o["kind"] == "ouvrir":
             self.d["poiOuvert"] = True
+            # ⚠️ Sans cette ligne l'écran suivant est VIDE (aucun beat n'est
+            # émis) — dans le vrai jeu, le texte de la scène reste affiché
+            # sous les choix. Un écran blanc se lit comme un blocage et se
+            # fait signaler comme un bug par les IA testeuses.
+            self.dit("Tu t'arrêtes, et tu prends le temps de regarder.", "narration")
             return
         if o["kind"] == "fermer":
             self.d["poiOuvert"] = False

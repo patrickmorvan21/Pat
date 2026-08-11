@@ -51,7 +51,7 @@ complète : c'est ce texte-là qu'il faut juger.
   fichier** : l'effacer remet le monde à neuf et tu jugeras un jeu amnésique.
 - **Ne sont pas répliqués** : les illustrations, le geste tactile du dé, les
   scènes chronométrées, le Grand Registre, les reliques, l'humeur du Geôlier,
-  la trace laissée sur la Borne par le héros précédent, les besoins, les
+  la trace laissée sur la Borne par le héros précédent, les
   témoins, les chapitres du Bailli, les surprises. Ne les signale pas comme
   manquants — regarde plutôt les transcripts, où tout cela joue.
 
@@ -68,16 +68,22 @@ que le joueur a vu, les images affichées, les choix offerts, l'action prise.
 C'est la **référence sans dérive** — tout y est citable mot pour mot, et c'est
 là que se jugent la mise en scène et le rythme réel.
 
-⚠️ **Ces parties ont été enregistrées en v1.59.0**, avant plusieurs chantiers
-qui sont, eux, bien dans le moteur que tu joues : la scène qui lit le dé qui
-la précède, les lieux qui retiennent, le déjà-vu entre les vies, la craie du
-Soupçon, la route qui se ferme après un échec dur. Ne conclus donc pas d'un
-transcript qu'une de ces choses manque — joue-la.
+Les trois parties : une **curieuse** (elle regarde tout et lance peu), une
+**fonceuse** (elle prend les jets), et une **toute première partie** (compte
+vierge, prologue compris). Les deux premières sont jouées sur un compte qui a
+déjà vécu — trois morts, deux reliques, des lieux déjà traversés — parce que
+c'est la seule façon de voir la mémoire du monde : la trace du héros
+précédent sur la Borne, les personnages qui te reconnaissent sans te
+reconnaître, le décor qui ne se lit plus pareil.
+
+Elles sont enregistrées sur **la version que tu peux lire dans `sources/`**,
+pas sur une version antérieure : ce que tu y vois est ce que le jeu fait
+aujourd'hui.
 
 ## 3. Les sources — `sources/`
 
 `lib/` : le contenu et les règles (`scene-data.ts` = toutes les scènes, choix
-et issues ; `etats.ts`, `besoins.ts`, `temoins.ts`, `reliques.ts`,
+et issues ; `etats.ts`, `temoins.ts`, `reliques.ts`,
 `chapters-data.ts`, `prologue-data.ts`…).
 `components/` : le moteur d'affichage (`Scene.tsx` = la boucle de jeu,
 `Die3D.tsx` = le dé, `DeathScreen.tsx` = la mort…).

@@ -1,7 +1,7 @@
 # PACTUM — protocole de playtest pour une IA externe
 
 *Deux versions selon ce que l'IA sait faire. Rédigé le 8/08/2026, mis à jour
-le 9/08 pour le build v1.57.0.*
+le 11/08 pour le build v1.76.1.*
 
 ---
 
@@ -56,8 +56,10 @@ clic dessus.
   (COURAGE, RUSE, INSTINCT, EMPATHIE) : les choisir arme un **dé** au centre
   — clique dessus pour le lancer. L'anneau d'encoches autour du dé montre tes
   chances (encoches pleines = faces qui réussissent).
-- Un choix **grisé** est verrouillé : il ne répondra pas au clic, c'est
-  normal, ne t'acharne pas dessus.
+- Un choix **grisé** est verrouillé : ton héros n'a pas ce qu'il faut pour
+  le tenter. Le cliquer n'est pas un bug — le jeu répond par une phrase qui
+  dit pourquoi, puis rien d'autre. C'est voulu : tu dois voir la porte que
+  cette incarnation-là ne peut pas ouvrir.
 - Première partie : une intro en 4 écrans, puis un prologue (« le Seuil ») où
   un démon te pose 4 questions et te demande un nom — « Qu'il choisisse pour
   moi » remplit le champ tout seul.
