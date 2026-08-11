@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-11T10:41:36Z",
- "commit": "d885564",
+ "genere": "2026-08-11T11:01:35Z",
+ "commit": "9d2a99d",
  "zones": [
   {
    "id": "landes",
@@ -1167,7 +1167,6 @@
      "label": "Les corbeaux, sur la traverse",
      "approche": "Ils sont sur la traverse du grand gibet, immobiles, et ils ne bougent pas quand tu approches — ce qui n'est pas un comportement d'oiseau. Aucun ne te regarde. Ils regardent la corde.",
      "examen": "Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, et leurs becs sont propres. Ils attendent, et ils sont exactement assez nombreux pour ce qu'ils attendent. La même immobilité que des sentinelles payées d'avance, la même façon d'être tournés du même côté — comme des choses qu'on a postées là. Ils comptent quelque chose qui te concerne, et le compte n'a pas l'air fini.",
-     "poseEtat": "hante",
      "corbeaux": true,
      "nom": "Les corbeaux, sur la traverse",
      "image": {
@@ -1206,7 +1205,6 @@
      "label": "Le Gibet Vide, tout en haut",
      "approche": "Tu marches vers le sommet, et la chose grandit plus vite que tes pas. À dix mètres, tu comprends que tu avais mal jugé l'échelle. À trois, tu dois lever la tête pour voir le nœud.",
      "examen": "Le bois est d'œuvre, assemblé pour durer mille ans. La corde neuve grince. Par grand soleil — rare, ici — l'ombre portée s'étend vers le sud, et elle a une forme que la potence n'explique pas.",
-     "poseEtat": "hante",
      "fait": "fait-gibet",
      "fragmentChapitre": true,
      "nom": "Le Gibet Vide, au centre",
@@ -3827,7 +3825,6 @@
      "label": "Ne pas suivre",
      "type": "passif",
      "consequence": "Tu restes contre ton muret jusqu’au gris. Tu ne dors pas. Au matin, des traces de pas font un cercle complet autour de l’endroit où tu étais couché, à trois mètres — personne ne s’est approché plus près, et personne n’est reparti sans avoir regardé.",
-     "poseEtat": "hante",
      "soupcon": 1
     },
     {
@@ -3844,7 +3841,6 @@
       "funeste": "1 naturel. Tu arrives au coin au moment où il revient. Tu ne vois toujours pas de visage. Tu vois qu’il s’arrête, et qu’il attend — comme on attend que quelqu’un ait fini de comprendre. ♦ −2"
      },
      "nature": "surnaturel",
-     "poseEtat": "hante",
      "tags": [
       "citable"
      ]
@@ -3951,9 +3947,7 @@
      "type": "passif",
      "consequence": "Tu choisis la seule qui te laisse faire — la meneuse, sa clochette au cou. Elle te suit sans un bruit, et le troupeau ne bronche pas. C’est après, en mangeant, que la phrase te vient toute seule : tu viens de prendre ce qui appartenait à un pendu. Si on te voit au hameau avec cette laine, on saura compter jusqu’à cinq.",
      "donneObjet": "clochette-meneuse",
-     "poseEtat": "marque",
      "repondBesoin": "manger",
-     "exigeEtat": "affame",
      "tags": [
       "citable"
      ]
@@ -5288,8 +5282,7 @@
       "echec": "Il est plus vif que sa taille ne l'annonce. Ses mâchoires te prennent l'avant-bras au vol et te traînent hors du seuil comme un sac — c'est exactement son travail, et il le fait bien. Tu ne passes pas par la porte.",
       "funeste": "1 naturel. Tu forces le seuil. Le chien te laisse faire — et tu comprends trop tard pourquoi il montait la garde tourné vers la porte : ce n'était pas pour empêcher d'entrer. ♦ −2"
      },
-     "nature": "physique",
-     "poseEtatSiEchec": "marque"
+     "nature": "physique"
     },
     {
      "id": "apaiser-chien",
@@ -5714,8 +5707,7 @@
       "echec": "Tu bois — et l'eau reste au bord des lèvres, sans descendre, une seconde de trop. Quand elle passe enfin, tu as l'impression très nette d'avoir avalé quelque chose qui a accepté de se laisser avaler.",
       "funeste": "1 naturel. Tu bois. Sous la surface, à trois doigts de ton visage, ton reflet continue de boire quand tu t'arrêtes. ♦ −2"
      },
-     "nature": "surnaturel",
-     "poseEtatSiEchec": "fievreux"
+     "nature": "surnaturel"
     },
     {
      "id": "sen-aller-mare",
@@ -8008,124 +8000,6 @@
  },
  "etats": [
   {
-   "id": "fievreux",
-   "nom": "FIÉVREUX",
-   "groupe": "corps",
-   "source": "Plaie non soignée, eau de la Mare, morsure.",
-   "manifestation": "Le froid t'a lâché d'un coup, et c'est mauvais signe : ce n'est plus l'air qui te réchauffe. Tes mains tremblent quand tu ne les regardes pas.",
-   "reactions": [
-    "Un homme te croise, voit ta figure, et change de côté de chemin sans même ralentir. Ici, la fièvre et la Fixation se ressemblent trop.",
-    "On te répond de loin, en tenant sa manche devant sa bouche. Personne ne te dit pourquoi — tout le monde le sait."
-   ],
-   "remede": "Le Rebouteux, ou un objet de soin.",
-   "guerison": "La fièvre lâche prise d'un seul coup, comme une main qui s'ouvre. Le froid revient, et pour la première fois depuis des jours, tu es content de l'avoir.",
-   "hint": "Fièvre — défavorable",
-   "jets": {},
-   "effets": [
-    "seuil de tous les jets +1",
-    "use le corps chaque jour (0.12)"
-   ],
-   "lignesIntruses": []
-  },
-  {
-   "id": "boiteux",
-   "nom": "BOITEUX",
-   "groupe": "corps",
-   "source": "Chute ou piège.",
-   "manifestation": "Le genou ne plie plus tout à fait. Tu peux marcher — tu ne peux plus courir, et tu le sais avant d'avoir essayé.",
-   "reactions": [
-    "Le chemin monte, et tu comptes tes pas comme on compte de la monnaie.",
-    "Quelqu'un ralentit pour rester à ta hauteur. Ce n'est pas de la bonté : c'est qu'on veut voir jusqu'où tu tiens."
-   ],
-   "remede": "Une nuit de repos complet au campement.",
-   "guerison": "Au matin, tu poses le pied sans y penser. C'est à ça que tu comprends que c'est passé : tu n'y as pas pensé.",
-   "hint": "Jambe — tu ne fuiras pas",
-   "jets": {
-    "COURAGE": 1.0,
-    "INSTINCT": -1.0
-   },
-   "effets": [
-    "courage +1",
-    "instinct -1",
-    "retire les choix de fuite"
-   ],
-   "lignesIntruses": []
-  },
-  {
-   "id": "affame",
-   "nom": "AFFAMÉ",
-   "groupe": "corps",
-   "source": "Plusieurs jours sans manger.",
-   "manifestation": "Ce n'est plus une faim, c'est une distraction. Tu regardes les mains des gens avant leur visage, pour voir ce qu'elles portent.",
-   "reactions": [
-    "Le vieux coupe son quignon en deux sans te demander. Tu prends la moitié plus vite que tu n'aurais voulu.",
-    "Une femme range son panier derrière elle en te voyant approcher. Elle ne dit rien. Elle n'a pas besoin."
-   ],
-   "remede": "De la nourriture — troc, fruit, ou don.",
-   "guerison": "Tu manges lentement, exprès, pour te prouver que tu peux. Le monde reprend sa taille normale.",
-   "hint": "Faim — les mots viennent mal",
-   "jets": {
-    "EMPATHIE": -1.0
-   },
-   "effets": [
-    "empathie -1",
-    "ouvre « voler » là où il y a à voler"
-   ],
-   "lignesIntruses": []
-  },
-  {
-   "id": "marque",
-   "nom": "MARQUÉ",
-   "groupe": "social",
-   "source": "Vol vu, violence publique, dénonciation.",
-   "manifestation": "Quelqu'un a parlé avant toi. Tu le vois à la façon dont les têtes se tournent : pas vers toi — vers celui qui t'a désigné.",
-   "reactions": [
-    "Une croix fraîche à la craie, sur le seuil que tu viens de passer. Elle n'y était pas ce matin.",
-    "La porte ne claque pas : elle se ferme lentement, en te regardant. C'est pire."
-   ],
-   "remede": "Quitter la zone, ou un acte de réparation.",
-   "guerison": "Le geste a été vu par les bonnes personnes. On ne t'absout pas — on cesse simplement de te compter à part.",
-   "hint": "Marqué — on te suit des yeux",
-   "jets": {},
-   "effets": [
-    "le Soupçon monte deux fois plus vite"
-   ],
-   "lignesIntruses": []
-  },
-  {
-   "id": "hante",
-   "nom": "HANTÉ",
-   "groupe": "mental",
-   "source": "Avoir vu quelque chose : le Gibet Vide, les Corbeaux, la mort d'un proche.",
-   "manifestation": "Ce que tu as vu ne s'est pas rangé. Ça reste posé de travers dans ta tête, et ça bouge quand tu ne le regardes pas.",
-   "reactions": [
-    "Tu t'entends répondre à quelqu'un qui n'a pas parlé. Personne ne relève. C'est le pire.",
-    "Une odeur de corde mouillée, ici, où il n'y a ni corde ni eau."
-   ],
-   "remede": "Aucun avant la fin de la run.",
-   "guerison": "Rien ne lève cet état. Il te suivra jusqu'au bout de cette vie-là.",
-   "hint": "Hanté — tu vois trop",
-   "jets": {
-    "INSTINCT": 1.0,
-    "EMPATHIE": -1.0
-   },
-   "effets": [
-    "instinct +1",
-    "empathie -1",
-    "8 lignes intruses"
-   ],
-   "lignesIntruses": [
-    "— « Tu comptes, toi aussi. » Personne autour de toi n'a ouvert la bouche.",
-    "Quelque chose grince très haut, très loin, à une hauteur où il n'y a rien.",
-    "Pendant une seconde, le sol sous tes pieds est de la terre retournée de frais.",
-    "Tu portes la main à ton cou. Il n'y a rien. Tu l'y portes quand même.",
-    "Une ombre passe à ta gauche, à la vitesse d'un homme qui marche. Quand tu regardes, rien ne marche nulle part.",
-    "Le vent dit un nom. Ce n'est pas le tien. Tu le retiens quand même.",
-    "Tu comptes ce qui t'entoure — les ombres, les pierres. Il y en a toujours une de plus au deuxième compte.",
-    "L'espace d'un pas, tes pieds ne touchent plus tout à fait le sol."
-   ]
-  },
-  {
    "id": "fixe",
    "nom": "FIXÉ",
    "groupe": "social",
@@ -8162,41 +8036,7 @@
    "lignesIntruses": []
   }
  ],
- "besoins": [
-  {
-   "id": "soigner",
-   "etat": "fievreux",
-   "jours": 2.0,
-   "remedes": [
-    "marche-muet",
-    "chapelle-des-cordes"
-   ],
-   "routeSure": "marche-muet",
-   "routeRisquee": "puits-condamne"
-  },
-  {
-   "id": "dormir",
-   "etat": "boiteux",
-   "jours": 3.0,
-   "remedes": [
-    "campement",
-    "serment-hameau"
-   ],
-   "routeSure": "campement",
-   "routeRisquee": "chemin-creux"
-  },
-  {
-   "id": "manger",
-   "etat": "affame",
-   "jours": 3.0,
-   "remedes": [
-    "marche-muet",
-    "verger-noir"
-   ],
-   "routeSure": "marche-muet",
-   "routeRisquee": "verger-noir"
-  }
- ],
+ "besoins": [],
  "transitions": {
   "fond": [
    "Le vent pousse une odeur de corde mouillée et de terre retournée. Quelque part, toujours, une potence grince.",
@@ -8960,8 +8800,8 @@
   "faits": 3,
   "perceptions": 20,
   "temoins": 21,
-  "etats": 7,
-  "besoins": 3,
+  "etats": 2,
+  "besoins": 0,
   "transitions": 63,
   "familiarite": 34
  }
