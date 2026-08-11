@@ -553,3 +553,26 @@ Feu vert Patrick (« lance la refonte »). Phase 0 = les correctifs déjà véri
 - ⚠️ Piège de test relevé : les DEUX slots d'une Croisée peuvent être préemptés par les garanties (Colline non visitée, lieu du chapitre à stage < 2) — un test du pool doit les neutraliser, sinon il ne prouve rien (mon 7e cas a échoué pour cette seule raison).
 - Huit gardes verts, lint/typecheck propres. `APP_VERSION` **1.72.0**, `CACHE_VERSION` **v117**.
 - **Suite** : Phase A (démontage des états), déployée et jouée seule — voir `data/plan-elagage-2026-08-11.md`.
+
+### Session 2026-08-11 (suite #2, Claude Code, opus) — PHASE A : le moteur d'états démonté (v1.73.0)
+Feu vert « Enchaîne » sur mes deux recommandations : **les Besoins partent avec les états** ; **la santé reste continue à l'intérieur, exposée en paliers** (la discrétiser à Intact/Blessé/Mort supprimerait la granularité des quatre coûts par palier de dé, qui est ce qui rend les combats mémorables).
+
+**L'AUDIT D'ABORD** (`data/phase-a-audit-etats.md`, précondition du plan). Trois constats qui ont changé l'attaque :
+- **Le système était bien moins tissé qu'il n'en avait l'air** : sur 230 choix, **8 posaient un état, 4 en dépendaient**. Le moteur ne servait donc pas à brancher du contenu — il servait à faire vivre son PROPRE contenu (7 manifestations, 7 guérisons, ~53 réactions). C'est exactement le mauvais rapport coût/bénéfice du mémo.
+- **Deux effets étaient MORTS** — `soupconParJour` et `amortitCritique` : déclarés, jamais posés, jamais lus, et le garde de couverture les comptait comme des preuves qu'un état « modifie le jeu ». Il pouvait donc valider un état sur un effet inexistant. ⚠️ Deux autres semblaient morts au premier passage (`seuilTous` est bien lu via `seuilEtats` ; `exclusiveGroup` n'existe pas, le champ s'appelle `groupe`) — **vérifiés avant d'écrire**.
+- ⚠️ **`"marque"` désignait DEUX choses** : un état (posé par le vol) et une **dette de relique** (`dette: "marque"`, +1 Soupçon au départ, lue par `dettePortee`). Aucune collision en code, mais un remplacement global aurait cassé les reliques en silence.
+
+**CE QUI EST PARTI** : les cinq états génériques (FIÉVREUX · BOITEUX · AFFAMÉ · MARQUÉ · HANTÉ), `lib/besoins.ts` et le directeur de routes, le garde `tools/etats.mjs` (retiré du prebuild — 7 gardes désormais), et avec eux tous les modificateurs cachés : `jets`, `seuilTous` (décalage de seuil), `soupconDouble` (le Soupçon qui doublait sans que rien ne le dise), `usureParJour`, `cacheFuite`, `ouvreVol`, `lignesIntruses`. **Les textes ne sont PAS perdus** : archivés dans `data/archive-etats.md`, à destination du Codex (phase E) — la règle du plan est que rien ne se supprime de la production.
+
+**CE QUI RESTE** : **la BLESSURE** comme unique état du corps (canal historique `effects`, lu par l'érosion du cadre, soigné au camp), plus **deux marques qui ne sont pas des états génériques mais des dispositifs narratifs précis** — **FIXÉ** (le regard du village, pilier du procès, garde sa carte) et **ACCOMPAGNÉ** (le Gamin des Murets, le seul compagnon). Ce sont exactement les « flags narratifs spécifiques » que la refonte demande.
+
+**LES QUATRE DÉCISIONS PRISES EN COURS DE DÉMONTAGE** (chacune commentée sur place) :
+- **Le vol n'exige plus la faim.** AFFAMÉ était la seule source d'`ouvreVol` ; le garder aurait rendu « Prendre une bête » à jamais injouable. Et c'est mieux : voler est un choix MORAL offert à tous, qui se paie en Soupçon et en regard du village — la faim n'en était pas la vraie matière.
+- **L'échec SURNATUREL tombe dans la chair** (−0,10, −0,16 en malédiction). Son coût était l'état ; c'était déjà le repli quand le plafond refusait la pose, et c'est ce que la prose de ces onze jets raconte.
+- **Plus de doublement caché du Soupçon** : ce qu'un acte coûte est ce que le choix déclare, ni plus ni moins.
+- **Le plafond de deux états négatifs** devient une liste vide plutôt qu'une suppression : si une marque de corps revient un jour, c'est là qu'elle se dose.
+- Nettoyé au passage : **7 poses d'états disparus** dans `scene-data.ts` (elles seraient devenues des no-op silencieux — « un effet promis que rien ne lit », le défaut même qu'on traque) et le garde de faim du Troupeau.
+- `studio_data.py` : `lire_besoins()` rend une liste vide plutôt que de lire un fichier supprimé (la clé reste, les pages qui la lisent ne cassent pas).
+- Vérifié en jeu réel (Playwright 5/5, jets réels) : la Borne s'ouvre, « Prendre une bête » est offert sans état de faim, FIXÉ ouvre toujours la confidence des Fixés, aucun état retiré ne se pose plus après un combat, la rencontre du Gamin se joue. 0 erreur JS. Sept gardes verts, lint/typecheck propres.
+- `APP_VERSION` **1.73.0**, `CACHE_VERSION` **v118**.
+- **Suite** : Phase B (2-3 décisions fortes par lieu + resserrage des textes à la grille 25-60/60-90).

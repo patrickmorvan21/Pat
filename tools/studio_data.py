@@ -46,7 +46,10 @@ TS_LOI = RACINE / "aldenhar/lib/loi-substitution.ts"
 # montrer ce qu'un état change réellement, sinon on ne peut pas juger s'il est
 # « un fait auquel le monde réagit » ou seulement un modificateur déguisé.
 TS_ETATS = RACINE / "aldenhar/lib/etats.ts"
-TS_BESOINS = RACINE / "aldenhar/lib/besoins.ts"
+# ⚠️ lib/besoins.ts a été SUPPRIMÉ (Phase A du plan d'élagage, 11/08) :
+# les Besoins ne se manifestaient que par un état, et les états sont
+# partis. L'export garde la clé `besoins` à vide pour ne pas casser les
+# pages qui la lisent.
 SORTIE = RACINE / "data/studio-data.json"
 
 
@@ -451,26 +454,8 @@ def lire_etats() -> list[dict]:
 
 
 def lire_besoins() -> list[dict]:
-    if not TS_BESOINS.exists():
-        return []
-    b = bloc_apres(TS_BESOINS.read_text(encoding="utf-8"), r"export const BESOINS: Besoin\[\] =")
-    if not b:
-        return []
-    out = []
-    for c in objets_de_haut_niveau(b[0], 0):
-        rb = bloc_apres(c, r"\n    remedes:\s*")
-        out.append(
-            {
-                "id": texte_de(c, "id"),
-                "etat": texte_de(c, "etat"),
-                "jours": nombre_de(c, "jours"),
-                "remedes": chaines_de_tableau(rb[0]) if rb else [],
-                "routeSure": texte_de(c, "routeSure"),
-                "routeRisquee": texte_de(c, "routeRisquee"),
-            }
-        )
-    return out
-
+    """Les Besoins ont été retirés (Phase A) — voir data/archive-etats.md."""
+    return []
 
 def lire_familiarite() -> list[dict]:
     """LA STRATE DE FAMILIARITÉ — ce qu'un lieu dit de plus à qui y revient.

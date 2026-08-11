@@ -1323,7 +1323,6 @@ export const SCENES: Scene[] = [
       },
       {
         id: "corbeaux-compte",
-        poseEtat: "hante",
         corbeaux: true,
         label: "Les corbeaux, sur la traverse",
         illustration: "assets/monstre_corbeaux_du_compte_b.png",
@@ -1361,7 +1360,6 @@ export const SCENES: Scene[] = [
         id: "gibet-vide",
         chapterFragment: true,
         // « HANTÉ · source : avoir vu quelque chose (Gibet Vide, Corbeaux…) ».
-        poseEtat: "hante",
         fait: "fait-gibet",
         label: "Le Gibet Vide, tout en haut",
         illustration: "assets/scene_colline_gibet_vide_a_b.png",
@@ -3647,7 +3645,6 @@ export const SCENES: Scene[] = [
         id: "ruelle-ne-pas-suivre",
         label: "Ne pas suivre",
         soupcon: 1,
-        poseEtat: "hante",
         passive: {
           consequence:
             "Tu restes contre ton muret jusqu\u2019au gris. Tu ne dors pas. " +
@@ -3673,7 +3670,6 @@ export const SCENES: Scene[] = [
             "1 naturel. Tu arrives au coin au moment où il revient. Tu ne vois toujours pas de visage. Tu vois qu\u2019il s\u2019arrête, et qu\u2019il attend — comme on attend que quelqu\u2019un ait fini de comprendre. ♦ −2"
           ),
         },
-        poseEtat: "hante",
       },
     ],
     jailerLine: "Il t'a laissé le voir. Pas une négligence : une convocation.",
@@ -3749,8 +3745,6 @@ export const SCENES: Scene[] = [
         id: "troupeau-prendre",
         tags: ["citable"],
         label: "Prendre une bête",
-        requiresEtat: "affame",
-        poseEtat: "marque",
         repondBesoin: "manger",
         grantsLoot: "clochette-meneuse",
         passive: {
@@ -4985,7 +4979,6 @@ export const SCENES: Scene[] = [
         // être vu en train de forcer. MARQUÉ (le Soupçon montera double).
         id: "forcer-seuil",
         nature: "physique",
-        poseEtatSiEchec: "marque",
         label: "Forcer le passage",
         risky: {
           stat: "COURAGE",
@@ -5450,7 +5443,6 @@ export const SCENES: Scene[] = [
         // pari est honnête : réussir, c'est boire sans rien attraper.
         id: "boire-mare",
         nature: "surnaturel",
-        poseEtatSiEchec: "fievreux",
         label: "Boire à la mare",
         risky: {
           stat: "COURAGE",

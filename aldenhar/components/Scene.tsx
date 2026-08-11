@@ -62,10 +62,8 @@ import {
   applique, noterVisite, parType, purger, radical, type Effet, type Faits,
 } from "@/lib/faits";
 import {
-  etat, etatsActifs, modEtats, poserEtat, seuilEtats,
-  type StatNom,
+  etat, etatsActifs, poserEtat,
 } from "@/lib/etats";
-import { besoinsEchus, routeAForcer } from "@/lib/besoins";
 import { loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
 import {
   armerSurprise, surprisePrete, jourProphetie, texteProphetie, texteFantome,
@@ -153,7 +151,12 @@ function nowMs(): number {
  */
 /** Les états négatifs soumis au PLAFOND de deux (dosage 7/08). FIXÉ n'y est
     pas : mécanique sociale du procès, posée par le village, jamais bloquée. */
-const ETATS_NEGATIFS_DOSES = ["fievreux", "boiteux", "affame", "marque", "hante"];
+/* ⚠️ Phase A : le plafond de deux états négatifs n'a plus d'objet. Les cinq
+   états qu'il dosait sont partis ; les deux marques restantes (FIXÉ, le
+   compagnon) ne s'empilent pas — l'une est posée par le village, l'autre par
+   une rencontre unique. La liste reste vide plutôt que d'être supprimée : si
+   une marque de corps revient un jour, c'est ici qu'elle se dose. */
+const ETATS_NEGATIFS_DOSES: string[] = [];
 
 /**
  * MÉMOIRE DES PNJ ENTRE LES VIES (arbitrage Patrick 8/08 : « on repasse
@@ -356,12 +359,6 @@ type ImageKind = "scene" | "object";
 
 /* Ouverture/fermeture du sous-menu des descriptions (points d'intérêt). Ce ne
    sont PAS des choix de fiction : ils ne consomment ni tour ni dé. */
-/** Quel état chaque besoin lève quand il est satisfait. */
-const BESOINS_ETAT: Record<string, string> = {
-  dormir: "boiteux",
-  soigner: "fievreux",
-  manger: "affame",
-};
 
 const OBSERVE_OPEN = "observe-open";
 const OBSERVE_CLOSE = "observe-close";
@@ -797,10 +794,12 @@ export default function Scene() {
   //    deviennent pas plus dures : on ne fuit pas sur une jambe ;
   //  • AFFAMÉ ouvre « voler », mais SEULEMENT là où il y a à voler.
   const etatsRendus = etatsActifs(etatsIds);
-  const boiteux = etatsRendus.some((e) => e.cacheFuite);
-  const affame = etatsRendus.some((e) => e.ouvreVol);
-  const volPossible =
-    affame && (scene.tags ?? []).some((t) => t === "food_available" || t === "stealable");
+  // ⚠️ Phase A : le vol n'est plus conditionné à la FAIM. AFFAMÉ est parti
+  // avec les Besoins, qui étaient sa seule source — le laisser aurait rendu
+  // « Prendre sans demander » à jamais injouable. Et c'est mieux ainsi :
+  // voler est un choix MORAL, offert à tous, qui se paie en Soupçon et en
+  // regard du village. Un gain de faim n'en était pas la vraie matière.
+  const volPossible = (scene.tags ?? []).some((t) => t === "food_available" || t === "stealable");
   const baseChoices = rawChoices.filter((c) => {
     // Retour playtest 6/08 soir : la brebis du Troupeau ramenait à un Champ
     // des Fixés DÉJÀ traversé — on rejouait le Fossoyeur mot pour mot. Un
@@ -820,7 +819,6 @@ export default function Scene() {
     // deux fois la même question au Veilleur ; le lieu tient plusieurs
     // décisions, pas la même en boucle.
     if (scene.sejour && choixFaits.includes(c.id)) return false;
-    if (boiteux && (c.tags ?? []).includes("fuite")) return false;
     if (c.requiresSavoir && !savoirs.includes(c.requiresSavoir)) return false;
     // La DÉCOUVERTE (6/08) : même mécanique que le Savoir, mais la source est
     // le COMPTE. C'est ce qui permet à une option de n'exister qu'à partir de
@@ -831,12 +829,12 @@ export default function Scene() {
     // un flag libre et l'état ne serait plus la raison de l'ouverture.
     if (c.requiresEtat) {
       const e = etatsRendus.find((x) => x.id === c.requiresEtat);
-      // L'état doit AUTORISER l'ouverture, pas seulement être porté : FIXÉ
-      // ouvre des confidences (`ouvreConfidences`), AFFAMÉ ouvre des prises de
-      // nourriture (`ouvreVol` — le Troupeau sans Berger, 6/08). Sans ce
-      // garde, `requiresEtat` deviendrait un flag libre et l'état ne serait
-      // plus la raison de l'ouverture.
-      if (!e || !(e.ouvreConfidences || e.ouvreVol)) return false;
+      // La marque doit AUTORISER l'ouverture, pas seulement être portée :
+      // FIXÉ ouvre les confidences de ceux qui portent la même croix. Sans ce
+      // garde, `requiresEtat` deviendrait un flag libre et la marque ne serait
+      // plus la raison de l'ouverture. (Le volet `ouvreVol` est parti avec
+      // AFFAMÉ — voler ne demande plus d'avoir faim.)
+      if (!e || !e.ouvreConfidences) return false;
     }
     // « Le Registre ment » (5/08) : une seule vie ne peut pas l'ouvrir. Le don
     // « lecture » d'une relique la rend visible sans l'avoir vécue — c'est
@@ -1473,26 +1471,19 @@ export default function Scene() {
   }
 
   /**
-   * RÉPONDRE À UN BESOIN : l'horloge repart de ce jour-là et l'état qu'il avait
-   * posé se lève. On ne touche QU'À CET état — manger guérit la faim, pas la
-   * jambe : les groupes d'exclusivité restent respectés.
+   * ⚠️ Phase A : les BESOINS n'existent plus comme système. Ils ne se
+   * manifestaient QUE par l'état qu'ils finissaient par poser (fièvre, faim,
+   * jambe) — les états partis, ils n'avaient plus de visage. Ce qui reste :
+   * l'heure du dernier soin / repas / sommeil, notée pour que les scènes
+   * puissent s'en servir si on veut réécrire la faim en TEXTE plutôt qu'en
+   * statut (c'est la voie que le mémo recommande). Aucun effet mécanique.
    */
   function repondreAuBesoin(b: string) {
-    const soigne = BESOINS_ETAT[b];
-    const e = soigne ? etat(soigne) : null;
-    const avait = Boolean(soigne) && idsEtats(faitsDe(runRef.current)).includes(soigne);
     persist((run) => {
-      // L'horloge du CORPS, pas le score (10/08) — voir RunState.horloge.
       run.besoins = { ...(run.besoins ?? {}), [b]: run.horloge ?? run.day };
-      if (soigne && run.faits) delete run.faits[soigne];
     });
-    if (avait) {
-      setEtatsIds((l) => l.filter((x) => x !== soigne));
-      manifsJouees.current.delete(soigne);
-      // La guérison se DIT : sans ligne, un état qui se lève est invisible.
-      if (e) guerisonEnAttente.current = [...guerisonEnAttente.current, e.guerison];
-    }
   }
+
 
   function advance(opts?: {
     result?: number;
@@ -1523,7 +1514,6 @@ export default function Scene() {
     // liaison (toDest), la suite d'une chaîne de rencontre, la Descente (fin de
     // traversée), ou une nouvelle LIAISON (marche + orientation).
     const trav: TraversalState = { ...(runRef.current?.trav ?? loadRun().trav) };
-    let routeForceePosee = false;
     // Une transition qui QUITTE une liaison ne fait pas vieillir les états.
     const leavingLiaison = Boolean(scene.liaison);
     // ═══ L'ÉLÉMENT-SURPRISE (catalogue 6/08) : armé UNE fois par run, au
@@ -1765,20 +1755,11 @@ export default function Scene() {
       // tout l'intérieur — dans 100 % des parties.
       const entered = Boolean(runRef.current?.hameau?.entree) || Boolean(scene.hameauEntree);
       const pair = pickLiaisonOptions(trav.visited, seed, entered);
-      // LE DIRECTEUR DE ROUTES (spec §3) — « un héros fiévreux à qui le tirage
-      // ne propose jamais le Rebouteux ne vit pas un dilemme : il subit une
-      // punition procédurale. » On force UN slot vers un remède ; l'autre reste
-      // au tirage. Ce n'est pas un sauvetage : la route sûre peut être longue,
-      // et le joueur garde le droit de ne pas la prendre.
-      const forcee = routeAForcer(
-        idsEtats(faitsDe(runRef.current)),
-        trav.visited,
-        runRef.current?.croiseesDepuisRoute ?? 0
-      );
-      if (forcee && !pair.includes(forcee)) {
-        pair[seed % 2] = forcee;
-        routeForceePosee = true;
-      }
+      // ⚠️ Phase A : LE DIRECTEUR DE ROUTES est retiré avec les Besoins. Il
+      // forçait une Croisée à offrir un remède quand un besoin pressait — sans
+      // besoin, il n'a plus rien à diriger. L'idée reste bonne (« ne jamais
+      // laisser un héros sans issue proposée ») et pourra revenir sur un autre
+      // porteur : la blessure, par exemple.
       // Chapitre garanti (chantier 2 du 23/07) : tant que le développement n'a
       // pas été joué, son lieu figure TOUJOURS parmi les orientations offertes
       // (slot choisi par la graine pour ne pas être toujours le même bouton).
@@ -2242,20 +2223,13 @@ export default function Scene() {
         });
       }
     }
-    // LIGNES INTRUSES (Hanté) : une phrase qui n'appartient pas à la scène.
-    // C'est tout leur intérêt — elles ne nomment jamais le lieu courant, et
-    // elles ne se REDISENT jamais mot pour mot dans la même vie (playtest
-    // 7/08 : la même phrase servie deux fois devient un tic de système).
-    const hante = actifsIci.find((e) => e.lignesIntruses?.length);
-    let intruseServie: string | null = null;
-    if (hante?.lignesIntruses && chance(0.45)) {
-      const dejaVues = runRef.current?.intrusesVues ?? [];
-      const fraiches = hante.lignesIntruses.filter((t) => !dejaVues.includes(t));
-      if (fraiches.length) {
-        intruseServie = fraiches[(nextStep * 3) % fraiches.length];
-        entries.push({ id: nextId(), kind: "narration", text: intruseServie });
-      }
-    }
+    // ⚠️ Phase A : les LIGNES INTRUSES sont parties avec HANTÉ. Une phrase
+    // générique injectée au hasard dans une scène qui ne l'a pas écrite était
+    // le contraire de la doctrine (« une mécanique ne doit jamais contredire
+    // ce que le texte raconte ») — et l'audit d'immersion la signalait
+    // régulièrement. Ce que HANTÉ voulait dire se dira par des flags précis,
+    // posés par une source nommée et lus par les scènes qui les méritent.
+    const intruseServie: string | null = null;
 
     // LA PERCEPTION (5/08) : ce que ce héros-LÀ remarque, parce qu'il est
     // ainsi fait. Une ligne, jamais deux — et jamais le nom de la stat.
@@ -2605,7 +2579,7 @@ export default function Scene() {
         run.temoins = temoinsAuProces;
         run.relicUsed = true;
       }
-      run.croiseesDepuisRoute = routeForceePosee ? 0 : (run.croiseesDepuisRoute ?? 0) + (nextScene.liaison ? 1 : 0);
+      run.croiseesDepuisRoute = (run.croiseesDepuisRoute ?? 0) + (nextScene.liaison ? 1 : 0);
       // COMPTEUR DE VISITES (spec §1, scope zone_permanent) : combien de fois
       // ce lieu a été vu, TOUTES vies confondues. Ne se remet jamais à zéro —
       // c'est lui qui portera les « strates de visite » (2ᵉ, 3ᵉ passage).
@@ -2618,26 +2592,6 @@ export default function Scene() {
       // l'information d'eux-mêmes, avant qu'on ait pu la demander.
       if (arrivalSavoir) run.savoirs = [...(run.savoirs ?? []), arrivalSavoir];
     });
-    // ⚠️ LES BESOINS SE LISENT AUSSI EN MARCHANT (relecture par agents,
-    // 10/08). `besoinsEchus` n'était appelé QUE dans le gestionnaire de repos :
-    // l'horloge du corps avançait bien tous les trois lieux, mais personne ne
-    // la lisait — un joueur qui ne prend jamais « Dormir » ne recevait donc
-    // JAMAIS d'état de besoin, quelle que soit sa marche. Le garde-fou était
-    // rétabli dans le compteur, pas dans la lecture.
-    // …y compris quand c'est la NUIT qui a fait avancer l'horloge (repasse du
-    // 10/08) : `horlogeApres` est nul dans ce cas, et un besoin échu au petit
-    // matin attendait jusqu'à trois lieux avant d'être constaté.
-    const horlogeLue = horlogeApres ?? (nuitPassee ? runRef.current?.horloge ?? null : null);
-    if (horlogeLue !== null) {
-      for (const b of besoinsEchus(
-        horlogeLue,
-        runRef.current?.besoins ?? {},
-        idsEtats(faitsDe(runRef.current))
-      )) {
-        poserEtatRun(b.etat);
-      }
-      setEtatsIds(idsEtats(faitsDe(runRef.current)));
-    }
     if (arrivalSavoir) setSavoirs((s) => (s.includes(arrivalSavoir) ? s : [...s, arrivalSavoir]));
     if (arrivalDecouverte && poserDecouverte(arrivalDecouverte))
       setDecouvertes((xs) => [...xs, arrivalDecouverte]);
@@ -3091,10 +3045,11 @@ export default function Scene() {
     // Le Soupçon (chantier 3) : l'ACTE compte, pas son issue — le delta d'un
     // choix s'applique dès qu'il est pris. Silencieux, clampé 0..6.
     if (choice.soupcon) {
-      // MARQUÉ : « le Soupçon monte deux fois plus vite ». La baisse, elle,
-      // reste normale — être marqué ne facilite pas la réhabilitation.
-      const marque = etatsRendus.some((e) => e.soupconDouble);
-      const delta = choice.soupcon > 0 && marque ? choice.soupcon * 2 : choice.soupcon;
+      // ⚠️ Phase A : plus de doublement caché. MARQUÉ multipliait le Soupçon
+      // par deux sans que rien ne le dise — exactement le « multiplicateur
+      // invisible » que la refonte bannit. Ce que coûte un acte est ce que le
+      // choix déclare, ni plus ni moins.
+      const delta = choice.soupcon;
       // …et il a un TÉMOIN (5/08) : le compteur devient quelqu'un. Le don
       // « silence » d'une relique en efface un — le premier inscrit, celui qui
       // aurait entraîné les autres.
@@ -3162,8 +3117,6 @@ export default function Scene() {
       // LES ÉTATS — ils modifient le jet, et l'Anneau (calculé sur le
       // modificateur) montre la différence en encoches. La mention textuelle
       // sous le dé a été retirée le 11/08 (retour Patrick).
-      const actifs = etatsActifs(idsEtats(faitsDe(runRef.current)));
-      const modEtat = modEtats(actifs, choice.risky.stat as StatNom);
       // PRÉPARATION (panel 10/08) : ce qu'on a REGARDÉ dans ce lieu ouvre
       // l'Anneau, d'un cran par point d'intérêt, au plus deux. C'est la
       // réponse au constat le plus dur du panel — « l'anneau bouge, mais avec
@@ -3173,7 +3126,7 @@ export default function Scene() {
       const preparation = Math.min(2, runRef.current?.poiIci ?? 0);
       const modifier = gele
         ? passives + statBonus
-        : effects.reduce((sum, e) => sum + e.delta, 0) + passives + statBonus + faveur + froideur + modEtat + preparation;
+        : effects.reduce((sum, e) => sum + e.delta, 0) + passives + statBonus + faveur + froideur + preparation;
       // Courbe d'entrée invisible (spec 21/07) : seuil légèrement abaissé les
       // 2-3 premières morts, sans aucun affichage. L'Anneau, calculé sur ce
       // même seuil, montrera juste un peu plus d'encoches pleines — cohérent.
@@ -3186,7 +3139,11 @@ export default function Scene() {
       const tension = trav && trav.visited.length >= trav.target - 1 ? 1 : 0;
       // Fiévreux relève le seuil des QUATRE stats d'un cran — pas un malus au
       // jet : une difficulté du monde entier, qui se lit dans l'Anneau.
-      const threshold = Math.max(2, choice.risky.threshold - soft + tension + seuilEtats(actifs));
+      // ⚠️ Phase A : plus de décalage de seuil par état. `seuilTous` n'était
+      // porté que par FIÉVREUX, et `jets` par lui seul aussi — les deux
+      // étaient des modificateurs cachés, ce que la refonte bannit. Une
+      // marque agit sur ce qui S'OUVRE, jamais sur un chiffre invisible.
+      const threshold = Math.max(2, choice.risky.threshold - soft + tension);
       // Beat fatal (30/07) : la scène sait AVANT le verdict si un palier
       // d'échec tue — santé − coût ≤ 0, ou procès de fixation raté. Le dé
       // s'en sert pour poser la face rongée et « MORT » au settle, à la
@@ -3234,11 +3191,9 @@ export default function Scene() {
       // Plus AUCUNE consommation automatique d'objet (spec 21/07 point 4 :
       // « rien d'automatique, jamais ») — le soin d'un actif est une décision
       // du joueur (menu → Utiliser, ou 4e choix contextuel).
-      // USURE (Etat.usureParJour) : la fièvre mange une part du repos. Elle ne
-      // tue pas — garde-fou n°3 : un besoin ne tue jamais, il rend le reste
-      // plus dur. Le plancher à 0.08 le garantit.
-      const usure = etatsActifs(idsEtats(faitsDe(runRef.current)))
-        .reduce((n, e) => n + (e.usureParJour ?? 0), 0);
+      // ⚠️ Phase A : plus d'usure du repos. Elle venait de FIÉVREUX, seul
+      // porteur de `usureParJour`, parti avec les Besoins qui le posaient.
+      const usure = 0;
       persist((run) => {
         run.day += 1;
         run.horloge = (run.horloge ?? run.day) + 1;
@@ -3261,11 +3216,6 @@ export default function Scene() {
       });
       const newDay = runRef.current?.day ?? day + 1;
       setDay(newDay);
-      // …et les besoins NON satisfaits finissent par poser leur état. Aucune
-      // jauge, aucun compteur : le besoin ne se manifeste QUE par l'état.
-      for (const b of besoinsEchus(runRef.current?.horloge ?? newDay, runRef.current?.besoins ?? {}, idsEtats(faitsDe(runRef.current)))) {
-        poserEtatRun(b.etat);
-      }
       setHealth(runRef.current?.health ?? 1);
       mutateMemory((m) => {
         m.bestDays = Math.max(m.bestDays, newDay);
@@ -3785,40 +3735,17 @@ export default function Scene() {
             }
             // ⚠️ UN SEUL état négatif par défaite de combat (retour Patrick
             // 11/08 : « j'ai perdu mais je prends 2 états négatifs, violent »).
-            // La défaite pose ENTAILLÉ (la blessure, canal historique, soignée
-            // au camp ou par un actif) — le BOITEUX automatique qui s'empilait
-            // par-dessus est retiré. BOITEUX reste posé par les chutes et
-            // pièges (`poseEtatSiEchec`), plus jamais d'office.
-            // SURNATUREL : ce n'est pas la chair qui paie, c'est ce qui reste
-            // accroché. Un échec dur laisse une marque — au sens propre si le
-            // geste a touché quelque chose, HANTÉ sinon.
-            // ⚠️ Étendu à l'échec SIMPLE (panel 10/08) : les onze jets
-            // surnaturels de la zone ne coûtaient rien sur les deux tiers de
-            // leurs paliers d'échec — toucher ce qu'il ne faut pas et s'en
-            // tirer indemne vide le mot « surnaturel » de son sens. Un échec
-            // ordinaire laisse le plus léger des trois (HANTÉ, mental) ; le
-            // plafond de deux états négatifs empêche l'empilement.
+            // La défaite de combat pose la BLESSURE, et elle seule.
+            // SURNATUREL : le coût était un ÉTAT (HANTÉ, MARQUÉ), qui n'existe
+            // plus depuis la Phase A. Il tombe donc dans la CHAIR — ce qui
+            // était déjà le repli quand le plafond d'états refusait la pose,
+            // et ce que la prose de ces onze jets raconte : quelque chose
+            // t'a touché. Ni Soupçon (personne n'a rien vu), ni Jour.
             if (natureJet === "surnaturel" && tierIsFail(tier)) {
-              const pris = poserEtatRun(tier === "malediction" ? "marque" : "hante");
-              // ⚠️ LE COÛT DOIT SE POSER QUELQUE PART (relecture par agents,
-              // 10/08). Le surnaturel ne coûte ni santé ni Soupçon : son coût
-              // EST l'état. Mais le plafond de deux négatifs pouvait le
-              // refuser — et un héros qui en portait déjà deux ratait alors
-              // GRATUITEMENT tous ses jets surnaturels, précisément le joueur
-              // le plus engagé. Quand rien ne peut plus s'accrocher, ça prend
-              // dans la chair : c'est la seule chose qui reste à prendre.
-              if (!pris) {
-                persist((r) => {
-                  r.health = Math.max(0, r.health - 0.1);
-                });
-                setHealth(runRef.current?.health ?? health);
-                guerisonEnAttente.current = [
-                  ...guerisonEnAttente.current,
-                  "Tu portes déjà tout ce qu'on peut porter. Alors cette " +
-                    "fois-ci, ça ne s'accroche pas : ça prend, simplement, " +
-                    "et tu le sens partir.",
-                ];
-              }
+              persist((r) => {
+                r.health = Math.max(0, r.health - (tier === "malediction" ? 0.16 : 0.1));
+              });
+              setHealth(runRef.current?.health ?? health);
             }
             // FIXÉ : « le village te croit marqué par le sud (Soupçon élevé) ».
             // Seuil 4 : assez haut pour que ce soit une trajectoire, assez bas

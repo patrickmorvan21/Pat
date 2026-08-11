@@ -1,27 +1,35 @@
 /**
- * LES ÉTATS — premier lot du vertical slice (spec 4/08, §2).
+ * LES DEUX MARQUES QUI RESTENT — Phase A du plan d'élagage (11/08/2026).
  *
- * ⚠️ RÈGLE FONDATRICE, qui condamne le système précédent :
- * « Un état n'est pas un modificateur déguisé. C'est un fait sur le héros
- * auquel LE MONDE RÉAGIT. Sans effet narratif, ce n'est qu'un chiffre camouflé
- * → à refuser. » Les anciens AGUERRI / ENTAILLÉ / ÉBRANLÉ étaient exactement
- * ça : un `delta` et rien d'autre. Ils sont conservés le temps de la
- * transition (le combat s'appuie encore dessus) mais n'ont pas leur place ici.
+ * ⚠️ CE FICHIER PORTAIT UN MOTEUR GÉNÉRIQUE D'ÉTATS TEMPORAIRES. Il a été
+ * démonté : sept états, leurs pools de réactions, leurs expirations, leurs
+ * interactions croisées et leur garde de couverture coûtaient plus qu'ils ne
+ * rendaient — et produisaient des anomalies récurrentes (FIXÉ posé au milieu
+ * des moutons, deux blessures pour une défaite, des effets promis que rien ne
+ * lisait). Le raisonnement qui a tranché : *si on retire les états, PACTUM
+ * reste PACTUM ; si on retire le dé, la mort permanente ou la mémoire des
+ * incarnations, il ne l'est plus.*
  *
- * Autres règles tenues dans ce fichier :
- *   • JAMAIS de nombre affiché — ni jauge, ni durée. Un état se lit à son nom,
- *     à son image, et à la façon dont le monde te traite.
- *   • GROUPES D'EXCLUSIVITÉ (corps · mental · social · faveur) : un état ne
- *     peut remplacer qu'un état du même groupe. AUCUNE suppression automatique
- *     entre groupes — devenir Endetté ne guérit pas une jambe.
- *   • La limite de trois est un PLAFOND D'AFFICHAGE : les autres restent
- *     actifs et consultables dans l'écran Essence.
- *   • COUVERTURE MINIMALE, sans quoi un état n'est pas livrable : 1 manière de
- *     l'obtenir · 1 manifestation immédiate · 2 réactions du monde · 1 choix
- *     modifié · 1 manière de le perdre. Chaque entrée ci-dessous la remplit,
- *     et `auditEtats()` le vérifie par script — réellement, depuis le
- *     10/08 : `tools/etats.mjs` l'exécute à chaque build (`prebuild`). Avant
- *     cette date la phrase était fausse, personne n'appelait la fonction.
+ * Ce qui les remplace :
+ *   • UN SEUL état du corps — BLESSÉ, porté par le canal historique
+ *     (`RunState.effects`), lu par l'érosion du cadre et soigné au camp ;
+ *   • des FLAGS NARRATIFS CIBLÉS pour tout le reste (`RunState.faits`,
+ *     moteur `lib/faits.ts`, qui sert aussi aux savoirs et aux découvertes).
+ *
+ * Restent ici les DEUX marques qui ne sont pas des états génériques mais des
+ * dispositifs narratifs précis, chacun attaché à une seule chose du monde :
+ *   • FIXÉ — le regard du village, pilier du procès ;
+ *   • ACCOMPAGNÉ — le Gamin des Murets, le seul compagnon du jeu.
+ * Elles gardent leur nom, leur carte à l'écran et leur phrase, parce que ce
+ * sont exactement les « flags narratifs spécifiques » que la refonte demande —
+ * pas parce qu'un moteur les exige.
+ *
+ * ⚠️ Les textes des cinq états retirés (manifestations, réactions, guérisons)
+ * ne sont PAS perdus : ils sont archivés dans `data/archive-etats.md`, à
+ * destination du Codex. Rien ne se supprime de la production.
+ *
+ * Règles conservées : jamais un chiffre ni une durée à l'écran ; une marque se
+ * lit à son nom, à son image, et à la façon dont le monde te traite.
  */
 
 import type { Effet } from "@/lib/faits";
@@ -44,14 +52,8 @@ export type Etat = {
   manifestation: string;
   /** Au moins DEUX réactions du monde, servies plus loin dans la run. */
   reactions: string[];
-  /**
-   * Indices (dans `reactions`) des réactions jouables PARTOUT — celles qui ne
-   * mettent personne en scène. Les autres décrivent des VILLAGEOIS (un
-   * barrage, un bol posé, un panier rangé…) et ne se jouent QUE dans le
-   * village : servies en pleine lande ou face à une bête, elles cassaient la
-   * scène (playtest 7/08 — « Le barrage s'écarte » pendant le combat contre
-   * la Bête des Chemins Creux). Absent = toutes les réactions sont village.
-   */
+  /** Index des réactions jouables HORS village (les autres mettent des
+      villageois en scène et téléporteraient le hameau autour du héros). */
   reactionsPartout?: number[];
   /** Comment il se perd, en une phrase. */
   remede: string;
@@ -59,32 +61,14 @@ export type Etat = {
   guerison: string;
 
   // ── mécanique (toujours doublée d'un effet narratif) ─────────────────────
-  /** Décale le SEUIL de tous les jets (Fiévreux : +1 cran partout). */
-  seuilTous?: number;
-  /** Modificateur par stat engagée. Positif = plus facile. */
-  jets?: Partial<Record<StatNom, number>>;
   /**
    * Mention ajoutée sous l'anneau du dé — « Fièvre — défavorable ».
    * ⚠️ Exigence explicite de la spec : sans elle, le joueur ne comprend pas que
    * l'état agit. Jamais un chiffre, seulement le sens.
    */
   hint?: string;
-  /** Les choix tagués `fuite` disparaissent (Boiteux : on ne fuit plus). */
-  cacheFuite?: boolean;
-  /** Ouvre « voler » dans les scènes taguées `food_available`/`stealable`. */
-  ouvreVol?: boolean;
-  /** Le Soupçon monte deux fois plus vite (Marqué). */
-  soupconDouble?: boolean;
-  /** Le Soupçon monte seul, chaque jour (Appelé — 2ᵉ lot, pas encore posé). */
-  soupconParJour?: number;
-  /** Lignes INTRUSES : une phrase qui n'appartient pas à la scène (Hanté). */
-  lignesIntruses?: string[];
   /** Les Fixés se mettent à te parler — confidences autrement inaccessibles. */
   ouvreConfidences?: boolean;
-  /** Perd un palier corporel à chaque nouveau jour sans soin (Fiévreux). */
-  usureParJour?: number;
-  /** Annule le premier échec critique de la journée (Serein — 2ᵉ lot). */
-  amortitCritique?: boolean;
   /**
    * Un guide connaît un autre chemin : quand un échec dur referme une route,
    * la Croisée suivante offre quand même ses deux directions.
@@ -106,135 +90,6 @@ export type Etat = {
  * états réellement intégrés au contenu. On commence par six. »
  */
 export const ETATS: Etat[] = [
-  {
-    id: "fievreux",
-    nom: "FIÉVREUX",
-    groupe: "corps",
-    source: "Plaie non soignée, eau de la Mare, morsure.",
-    remede: "Le Rebouteux, ou un objet de soin.",
-    manifestation:
-      "Le froid t'a lâché d'un coup, et c'est mauvais signe : ce n'est plus " +
-      "l'air qui te réchauffe. Tes mains tremblent quand tu ne les regardes pas.",
-    reactions: [
-      "Un homme te croise, voit ta figure, et change de côté de chemin sans " +
-        "même ralentir. Ici, la fièvre et la Fixation se ressemblent trop.",
-      "On te répond de loin, en tenant sa manche devant sa bouche. Personne ne " +
-        "te dit pourquoi — tout le monde le sait.",
-    ],
-    guerison:
-      "La fièvre lâche prise d'un seul coup, comme une main qui s'ouvre. Le " +
-      "froid revient, et pour la première fois depuis des jours, tu es content de l'avoir.",
-    seuilTous: 1,
-    hint: "Fièvre — défavorable",
-    usureParJour: 0.12,
-  },
-  {
-    id: "boiteux",
-    nom: "BOITEUX",
-    groupe: "corps",
-    // ⚠️ 11/08 : « combat perdu » retiré des déclencheurs — une défaite pose
-    // ENTAILLÉ seul (un seul état négatif par défaite, retour Patrick).
-    // BOITEUX ne vient plus que d'un `poseEtatSiEchec` de chute/piège ; aucun
-    // choix de la zone ne le porte encore — à câbler sur une vraie chute.
-    source: "Chute ou piège.",
-    remede: "Une nuit de repos complet au campement.",
-    manifestation:
-      "Le genou ne plie plus tout à fait. Tu peux marcher — tu ne peux plus " +
-      "courir, et tu le sais avant d'avoir essayé.",
-    reactions: [
-      "Le chemin monte, et tu comptes tes pas comme on compte de la monnaie.",
-      "Quelqu'un ralentit pour rester à ta hauteur. Ce n'est pas de la bonté : " +
-        "c'est qu'on veut voir jusqu'où tu tiens.",
-    ],
-    reactionsPartout: [0], // « le chemin monte » ne met personne en scène
-    guerison:
-      "Au matin, tu poses le pied sans y penser. C'est à ça que tu comprends " +
-      "que c'est passé : tu n'y as pas pensé.",
-    // On se bat quand on ne peut plus fuir.
-    jets: { COURAGE: 1, INSTINCT: -1 },
-    hint: "Jambe — tu ne fuiras pas",
-    cacheFuite: true,
-  },
-  {
-    id: "affame",
-    nom: "AFFAMÉ",
-    groupe: "corps",
-    source: "Plusieurs jours sans manger.",
-    remede: "De la nourriture — troc, fruit, ou don.",
-    manifestation:
-      "Ce n'est plus une faim, c'est une distraction. Tu regardes les mains " +
-      "des gens avant leur visage, pour voir ce qu'elles portent.",
-    reactions: [
-      "Le vieux coupe son quignon en deux sans te demander. Tu prends la " +
-        "moitié plus vite que tu n'aurais voulu.",
-      "Une femme range son panier derrière elle en te voyant approcher. Elle " +
-        "ne dit rien. Elle n'a pas besoin.",
-    ],
-    guerison:
-      "Tu manges lentement, exprès, pour te prouver que tu peux. Le monde " +
-      "reprend sa taille normale.",
-    // On est mauvais avec les gens quand on a faim.
-    jets: { EMPATHIE: -1 },
-    hint: "Faim — les mots viennent mal",
-    ouvreVol: true,
-  },
-  {
-    id: "marque",
-    nom: "MARQUÉ",
-    groupe: "social",
-    source: "Vol vu, violence publique, dénonciation.",
-    remede: "Quitter la zone, ou un acte de réparation.",
-    manifestation:
-      "Quelqu'un a parlé avant toi. Tu le vois à la façon dont les têtes se " +
-      "tournent : pas vers toi — vers celui qui t'a désigné.",
-    reactions: [
-      "Une croix fraîche à la craie, sur le seuil que tu viens de passer. Elle " +
-        "n'y était pas ce matin.",
-      "La porte ne claque pas : elle se ferme lentement, en te regardant. " +
-        "C'est pire.",
-    ],
-    guerison:
-      "Le geste a été vu par les bonnes personnes. On ne t'absout pas — on " +
-      "cesse simplement de te compter à part.",
-    soupconDouble: true,
-    hint: "Marqué — on te suit des yeux",
-  },
-  {
-    id: "hante",
-    nom: "HANTÉ",
-    groupe: "mental",
-    source: "Avoir vu quelque chose : le Gibet Vide, les Corbeaux, la mort d'un proche.",
-    remede: "Aucun avant la fin de la run.",
-    manifestation:
-      "Ce que tu as vu ne s'est pas rangé. Ça reste posé de travers dans ta " +
-      "tête, et ça bouge quand tu ne le regardes pas.",
-    reactions: [
-      "Tu t'entends répondre à quelqu'un qui n'a pas parlé. Personne ne " +
-        "relève. C'est le pire.",
-      "Une odeur de corde mouillée, ici, où il n'y a ni corde ni eau.",
-    ],
-    reactionsPartout: [1], // l'odeur de corde n'a besoin de personne
-    guerison: "Rien ne lève cet état. Il te suivra jusqu'au bout de cette vie-là.",
-    // L'obsession aiguise le regard et abîme le contact.
-    jets: { INSTINCT: 1, EMPATHIE: -1 },
-    hint: "Hanté — tu vois trop",
-    /* ⚠️ LIGNES INTRUSES : elles s'insèrent dans des scènes qui ne les ont pas
-       écrites. C'est tout leur intérêt — le joueur doit sentir qu'une phrase
-       n'appartient pas là. Elles ne doivent donc JAMAIS nommer le lieu courant. */
-    lignesIntruses: [
-      "— « Tu comptes, toi aussi. » Personne autour de toi n'a ouvert la bouche.",
-      "Quelque chose grince très haut, très loin, à une hauteur où il n'y a rien.",
-      "Pendant une seconde, le sol sous tes pieds est de la terre retournée de frais.",
-      "Tu portes la main à ton cou. Il n'y a rien. Tu l'y portes quand même.",
-      // ⚠️ Les intruses se servent PARTOUT : aucune ne doit supposer un mur,
-      // une foule, un décor (audit d'immersion 7/08 — deux d'entre elles
-      // téléportaient un mur et des gens dans la lande vide).
-      "Une ombre passe à ta gauche, à la vitesse d'un homme qui marche. Quand tu regardes, rien ne marche nulle part.",
-      "Le vent dit un nom. Ce n'est pas le tien. Tu le retiens quand même.",
-      "Tu comptes ce qui t'entoure — les ombres, les pierres. Il y en a toujours une de plus au deuxième compte.",
-      "L'espace d'un pas, tes pieds ne touchent plus tout à fait le sol.",
-    ],
-  },
   {
     id: "fixe",
     nom: "FIXÉ",
@@ -341,50 +196,16 @@ export function poserEtat(nouveau: string, actifs: string[], expires?: number): 
   ];
 }
 
-/** Le modificateur total d'un jet, tous états confondus. Jamais affiché. */
-export function modEtats(actifs: Etat[], stat: StatNom): number {
-  return actifs.reduce((n, e) => n + (e.jets?.[stat] ?? 0), 0);
-}
-
-/** Le décalage de SEUIL (Fiévreux). Positif = plus dur. */
-export function seuilEtats(actifs: Etat[]): number {
-  return actifs.reduce((n, e) => n + (e.seuilTous ?? 0), 0);
-}
-
 /** Les mentions à afficher sous l'anneau — au plus deux, sans quoi c'est un mur. */
 export function hintsEtats(actifs: Etat[]): string[] {
   return actifs.map((e) => e.hint).filter((h): h is string => Boolean(h)).slice(0, 2);
 }
 
-/**
- * CONTRÔLE DE COUVERTURE — la spec interdit de livrer un état incomplet.
- * Utilisé par `tools/audit_etats.py` : un état qui échoue ici n'est pas
- * livrable, quel que soit l'état du code autour.
+/*
+ * ⚠️ `modEtats`, `seuilEtats` et `auditEtats` ont été RETIRÉS avec le moteur
+ * générique (Phase A, 11/08). Les deux premiers sommaient des modificateurs
+ * de jet que plus aucune marque ne porte — une marque agit maintenant sur ce
+ * qui S'OUVRE ou se ferme, jamais sur un chiffre caché. Le troisième était le
+ * garde de couverture (`tools/etats.mjs`, retiré du prebuild) : il validait
+ * un état sur des effets qui, pour deux d'entre eux, n'existaient nulle part.
  */
-export function auditEtats(): { id: string; manques: string[] }[] {
-  return ETATS.map((e) => {
-    const manques: string[] = [];
-    if (!e.source) manques.push("source");
-    if (!e.manifestation) manques.push("manifestation");
-    if (e.reactions.length < 2) manques.push("2 réactions du monde");
-    if (!e.remede || !e.guerison) manques.push("remède");
-    // ⚠️ CETTE LISTE DOIT SUIVRE LE TYPE `Etat` (relecture par agents, 10/08).
-    // Elle avait pris du retard sur lui : `rouvreLaRoute` et `fuitLeCombat`
-    // (le Gamin des Murets) manquaient, et l'audit déclarait donc incomplet un
-    // état parfaitement intégré. Personne ne s'en apercevait puisque aucun
-    // script n'appelait `auditEtats` — voir `tools/etats.mjs`, qui le fait
-    // désormais à chaque build. Tout nouvel effet mécanique s'ajoute ICI.
-    const modifieLeJeu =
-      e.cacheFuite || e.ouvreVol || e.ouvreConfidences || e.soupconDouble ||
-      e.rouvreLaRoute || e.fuitLeCombat ||
-      e.seuilTous !== undefined || e.jets !== undefined || e.lignesIntruses !== undefined ||
-      // ⚠️ Ajoutés à la repasse du 10/08 : ils manquaient ENCORE après le
-      // correctif du matin, et l'avertissement juste au-dessus promettait
-      // précisément qu'ils y seraient. `usureParJour` n'est pas théorique —
-      // il est lu en jeu (components/Scene.tsx, coût de santé par jour).
-      e.usureParJour !== undefined || e.soupconParJour !== undefined ||
-      e.amortitCritique !== undefined;
-    if (!modifieLeJeu) manques.push("1 effet mécanique (choix, jet ou monde)");
-    return { id: e.id, manques };
-  }).filter((r) => r.manques.length > 0);
-}
