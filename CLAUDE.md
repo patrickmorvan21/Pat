@@ -997,3 +997,7 @@ Suite des correctifs 1-3 (v1.78.0, déployés — Pages `01cbca7` en success). L
 - `page.$("button:has-text('REPRENDRE')")` juste après `waitUntil: "domcontentloaded"` rend **null** (React n'a pas rendu l'accueil) : on reste sur l'accueil et `.choices-bar` n'apparaît jamais. Il faut `waitForSelector`.
 - Les découvertes ne sont **pas** un tableau `PlayerMemory.decouvertes` : elles vivent dans **`PlayerMemory.faits`** avec `kind: "discovery"`. Seeder le mauvais champ a fait passer les trois lecteurs — corrects — pour cassés.
 - Rappel : `page.waitForFunction(fn, options)` passe les options en **argument** ; la signature est `(fn, arg, options)`.
+
+⚠️ **PIÈGE DE DÉPLOIEMENT TROUVÉ CE JOUR — un déploiement qui paraît réussir sans rien livrer.** `git worktree add /tmp/ghpN origin/gh-pages` crée un **HEAD DÉTACHÉ**. Un `git push -u origin gh-pages` depuis ce worktree ne pousse alors PAS le commit qu'on vient de faire : il pousse la **branche locale `gh-pages`**, restée sur le déploiement précédent, et répond **« Everything up-to-date »**. Le rituel semble s'être déroulé normalement, et rien n'est en ligne. Vérifié : `git rev-parse HEAD origin/gh-pages` rendait deux sha différents après un push « réussi ».
+**Toujours pousser explicitement `git push origin HEAD:refs/heads/gh-pages`**, puis re-vérifier que les deux sha sont égaux avant de retirer le worktree.
+- Déployé : gh-pages `fd7c855` (jeu + couverture.html + atelier.html + studio.html + studio-data.json). `APP_VERSION` **1.79.0**, `CACHE_VERSION` **pactum-v125**.
