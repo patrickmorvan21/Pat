@@ -455,6 +455,20 @@ export type RunState = {
     entree: boolean;
     serment: "jure" | "faux" | "refuse" | null;
     halte: boolean;
+    /**
+     * SORTI DU VILLAGE (chantier fluidité 12/08, §3). Le Hameau devient une
+     * ENCLAVE : tant qu'on y est, la Croisée n'offre que des lieux du village ;
+     * en sortir est une décision, elle est racontée, et une fois dehors le
+     * village n'est plus tirable de la vie.
+     *
+     * ⚠️ Le défaut corrigé n'était PAS « on entre deux fois ». Cinq des dix-sept
+     * destinations tirables sont à l'intérieur du village : une fois entré, le
+     * générateur ne retirait que la PORTE, donc la Chapelle ou le Tribunal
+     * revenaient comme destinations ordinaires au milieu des lieux de lande.
+     * On ressortait et on rentrait plusieurs fois par vie sans qu'aucune
+     * entrée ne soit racontée. C'était une absence de frontière.
+     */
+    sorti?: boolean;
     /** L'ACCUEIL du jour (6/08) : id de la scène tirée pour le 3e beat de
         l'entrée. Rangé ici dès le tirage — la reprise ne re-tire jamais, sinon
         fermer l'app changerait la façon dont le village t'a reçu. */

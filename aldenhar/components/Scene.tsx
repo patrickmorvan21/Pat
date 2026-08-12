@@ -1799,7 +1799,17 @@ export default function Scene() {
       // OU, la croisée qui suit IMMÉDIATEMENT l'entrée au village excluait
       // tout l'intérieur — dans 100 % des parties.
       const entered = Boolean(runRef.current?.hameau?.entree) || Boolean(scene.hameauEntree);
-      const pair = pickLiaisonOptions(trav.visited, seed, entered);
+      // L'ENCLAVE (chantier fluidité 12/08) : d'où part-on ? Le dernier lieu
+      // traversé dit si l'on est encore dans les rues du village. La séquence
+      // du Seuil compte comme dedans — on y est déjà entre les maisons.
+      const dernier = trav.visited[trav.visited.length - 1] ?? "";
+      const dedans =
+        entered &&
+        !runRef.current?.hameau?.sorti &&
+        (isHameauInterior(dernier) || /^(serment-hameau|hameau-)/.test(dernier));
+      const pair = pickLiaisonOptions(
+        trav.visited, seed, entered, dedans, Boolean(runRef.current?.hameau?.sorti)
+      );
       // ⚠️ Phase A : LE DIRECTEUR DE ROUTES est retiré avec les Besoins. Il
       // forçait une Croisée à offrir un remède quand un besoin pressait — sans
       // besoin, il n'a plus rien à diriger. L'idée reste bonne (« ne jamais
@@ -1817,7 +1827,11 @@ export default function Scene() {
         chapDef &&
         !lieuDejaVisite(trav.visited, chapDef.lieuId) &&
         !pair.includes(chapDef.lieuId) &&
-        (entered || !isHameauInterior(chapDef.lieuId))
+        (entered || !isHameauInterior(chapDef.lieuId)) &&
+        // ⚠️ L'ENCLAVE (12/08) : la garantie ne peut pas ramener le village
+        // une fois qu'on en est sorti — elle écrasait le pool APRÈS lui, et
+        // ré-offrait le Petit Tribunal à un héros qui avait quitté le hameau.
+        !(isHameauInterior(chapDef.lieuId) && runRef.current?.hameau?.sorti)
       ) {
         pair[seed % 2] = chapDef.lieuId;
       }
@@ -1826,7 +1840,15 @@ export default function Scene() {
       // de la zone ne doit pas pouvoir être manquée par malchance de tirage.
       // (Le joueur peut encore choisir l'autre direction : quasi-totalité, pas
       // obligation.) Compatible avec la garantie de chapitre : slots opposés.
-      if (!lieuDejaVisite(trav.visited, "colline-aux-gibets") && !pair.includes("colline-aux-gibets")) {
+      // ⚠️ …mais pas DEPUIS une rue du village (enclave, 12/08) : d'un seuil
+      // à l'autre on ne part pas pour une colline à deux lieues. La signature
+      // de la zone attend qu'on soit ressorti — elle est garantie à chaque
+      // Croisée de lande, elle ne perd donc rien.
+      if (
+        !dedans &&
+        !lieuDejaVisite(trav.visited, "colline-aux-gibets") &&
+        !pair.includes("colline-aux-gibets")
+      ) {
         pair[(seed + 1) % 2] = "colline-aux-gibets";
       }
       // Ambiance contextuelle (chantier 4) : provenance = le lieu qu'on quitte.
@@ -2056,6 +2078,9 @@ export default function Scene() {
         entries.push({ id: nextId(), kind: "narration", text });
         persist((r) => {
           if (!(r.liaisonVues ?? []).includes(text)) r.liaisonVues = [...(r.liaisonVues ?? []), text];
+          // On ne quitte le village qu'une fois par vie : à partir d'ici, ni
+          // la porte ni les rues ne reviennent dans les destinations tirables.
+          if (sort && r.hameau) r.hameau = { ...r.hameau, sorti: true };
         });
       }
     }

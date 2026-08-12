@@ -7750,16 +7750,47 @@ export const FAMILIARITE: Record<string, Strate> = {
 export function pickLiaisonOptions(
   visited: string[],
   seed: number,
-  hameauEntree = true
+  hameauEntree = true,
+  /** On se trouve actuellement DANS le village. */
+  dedans = false,
+  /** On en est ressorti pour de bon (une seule halte par vie). */
+  sorti = false
 ): [string, string] {
-  // Porte du Hameau (retour Patrick 25/07) : tant qu'on n'est pas entré par la
-  // séquence garantie, l'INTÉRIEUR du village n'est pas offert — on ne se
-  // retrouve pas dans la chapelle sans avoir passé le barrage. Une fois entré,
-  // c'est la séquence d'arrivée qui disparaît du pool : on n'« arrive » pas
-  // deux fois dans un village où l'on est déjà.
-  const gated = TRAVERSAL_POOL.filter((id) =>
-    hameauEntree ? id !== HAMEAU_GATE : !isHameauInterior(id)
-  );
+  /**
+   * LE HAMEAU EST UNE ENCLAVE (chantier fluidité 12/08, §3).
+   *
+   * Trois états, et non plus deux :
+   *  • pas encore entré → l'intérieur n'est pas offert (on ne se retrouve pas
+   *    dans la chapelle sans avoir passé le barrage) ;
+   *  • DEDANS → la Croisée n'offre que des lieux du village, plus UNE issue
+   *    vers la lande : circuler dans un village, c'est aller d'une rue à
+   *    l'autre, pas se téléporter dans la bruyère entre deux maisons ;
+   *  • SORTI → ni la porte ni l'intérieur ne reviennent. On ne fait halte
+   *    qu'une fois par vie.
+   *
+   * ⚠️ Avant ce correctif, seule la PORTE disparaissait après l'entrée : les
+   * cinq lieux intérieurs restaient des destinations ordinaires mélangées aux
+   * lieux de lande, et le joueur entrait et sortait du village plusieurs fois
+   * sans qu'aucune de ces entrées ne soit racontée.
+   */
+  const gated = sorti
+    ? TRAVERSAL_POOL.filter((id) => id !== HAMEAU_GATE && !isHameauInterior(id))
+    : dedans
+      ? (() => {
+          const dedansLibres = TRAVERSAL_POOL.filter(
+            (id) => isHameauInterior(id) && !lieuDejaVisite(visited, id)
+          );
+          const dehors = TRAVERSAL_POOL.filter(
+            (id) => !isHameauInterior(id) && id !== HAMEAU_GATE && !lieuDejaVisite(visited, id)
+          );
+          // Une issue est TOUJOURS offerte : on n'enferme jamais le joueur
+          // dans le village, même quand il lui reste des rues à voir.
+          const issue = dehors.length ? [dehors[seed % dehors.length]] : [];
+          return dedansLibres.length ? [...dedansLibres, ...issue] : [...dehors, ...issue];
+        })()
+      : TRAVERSAL_POOL.filter((id) =>
+          hameauEntree ? id !== HAMEAU_GATE : !isHameauInterior(id)
+        );
   // ⚠️ LA TRAVERSÉE COMPTE PAR LIEU, PAS PAR ID (panel 10/08, phase 0 du
   // plan d'élagage). Le pool contient deux paires d'ids qui partagent un
   // LIEU (colline-aux-gibets / pendu-qui-parle → la Colline ; champ-des-fixes
