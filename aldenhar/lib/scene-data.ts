@@ -1778,12 +1778,7 @@ export const SCENES: Scene[] = [
         requiresDecouverte: "d.troupeau_compte",
         passive: {
           consequence:
-            "« Cinq marques ? » Le couteau s\u2019arrête. « Fais voir. » Tu " +
-            "dessines les entailles dans la poussière, de mémoire. Il les " +
-            "regarde longtemps, et à la façon dont ses lèvres bougent sans " +
-            "bruit, tu comprends qu\u2019il est en train de mettre un nom " +
-            "sur chacune. Il efface la poussière du plat de la main. « Joli " +
-            "troupeau », dit-il. C\u2019est tout ce que tu en tireras.",
+            "« Cinq marques ? » Le couteau s\u2019arrête. Tu les dessines dans la poussière. Il les regarde longtemps, les lèvres bougeant sans bruit : il met un nom sur chacune. Puis il efface du plat de la main. « Joli troupeau. » C\u2019est tout ce que tu en tireras.",
         },
       },
       {
@@ -1908,12 +1903,7 @@ export const SCENES: Scene[] = [
         requiresDecouverte: "d.troupeau_compte",
         passive: {
           consequence:
-            "« Cinq marques ? » Le couteau s\u2019arrête. « Fais voir. » Tu " +
-            "dessines les entailles dans la poussière, de mémoire. Il les " +
-            "regarde longtemps, et à la façon dont ses lèvres bougent sans " +
-            "bruit, tu comprends qu\u2019il est en train de mettre un nom " +
-            "sur chacune. Il efface la poussière du plat de la main. « Joli " +
-            "troupeau », dit-il. C\u2019est tout ce que tu en tireras.",
+            "« Cinq marques ? » Le couteau s\u2019arrête. Tu les dessines dans la poussière. Il les regarde longtemps, les lèvres bougeant sans bruit : il met un nom sur chacune. Puis il efface du plat de la main. « Joli troupeau. » C\u2019est tout ce que tu en tireras.",
         },
       },
       {
@@ -2356,12 +2346,7 @@ export const SCENES: Scene[] = [
         soupcon: 1, // deux personnes qui fixent le sud, ça se voit de loin
         passive: {
           consequence:
-            "Tu ne dis rien. Tu te places à côté d'elle, dans le même axe, et " +
-            "tu regardes le bout de la rue. Le silence dure longtemps et ne " +
-            "pèse rien. Au bout d'un moment elle dit : « Vous l'entendez " +
-            "aussi. » Ce n'est pas une question, et tu n'as pas répondu — " +
-            "mais quelqu'un, derrière une fenêtre, a compté deux dos tournés " +
-            "vers le sud.",
+            "Tu te places dans le même axe et tu regardes le bout de la rue. Le silence ne pèse rien. Puis : « Vous l'entendez aussi. » Ce n'est pas une question. Tu n'as pas répondu — mais derrière une fenêtre, quelqu'un a compté deux dos tournés vers le sud.",
         },
       },
     ],
@@ -2951,12 +2936,7 @@ export const SCENES: Scene[] = [
         soupcon: 1,
         passive: {
           consequence:
-            "Tu passes à côté de lui sans un mot. Il ne te suit pas, il ne " +
-            "répète pas sa question : on lui a appris aussi ce qu'il fallait " +
-            "faire dans ce cas-là. Il se tourne vers la maison la plus proche " +
-            "et dit, très clairement : « Il a pas répondu. » " +
-            "Un volet se ferme. Puis tous les autres, dans l'ordre de la rue, " +
-            "jusqu'au bout — jusqu'au muret où quelqu'un t'attend déjà.",
+            "Tu passes sans un mot. Il ne répète pas sa question : on lui a appris ce cas-là aussi. Il se tourne vers la maison la plus proche et dit, très clairement : « Il a pas répondu. »\n\nLes volets se ferment dans l'ordre de la rue, jusqu'au muret où quelqu'un attend.",
         },
       },
     ],
@@ -2984,13 +2964,7 @@ export const SCENES: Scene[] = [
         soupcon: -1,
         passive: {
           consequence:
-            "Tu t'assois. C'est de l'orge, du gras, du sel — c'est bon, et " +
-            "c'est chaud, et ton corps te trahit en te disant à quel point tu " +
-            "en avais besoin. À la troisième cuillère, des portes s'ouvrent " +
-            "dans ton dos, sans hâte. Ils attendaient ça. " +
-            "Quand tu reposes la cuillère, le vieux est déjà assis sur le " +
-            "muret, au bout de la rue. Le Serment ne se demandera pas : il " +
-            "a commencé au premier bol.",
+            "C'est chaud, et ton corps te trahit en te disant à quel point tu en avais besoin. À la troisième cuillère, des portes s'ouvrent dans ton dos. Ils attendaient ça.\n\nLe vieux est déjà assis sur le muret. Le Serment ne se demandera pas : il a commencé au premier bol.",
         },
       },
       {
@@ -3061,12 +3035,7 @@ export const SCENES: Scene[] = [
         soupcon: -1,
         passive: {
           consequence:
-            "Tu lèves les mains, paumes ouvertes, et tu dis que tu es " +
-            "désolé — pas d'être là : d'être arrivé à ce moment-là. La " +
-            "nuance les atteint. La vieille lâche la corde, enfin. Les seuils " +
-            "se vident un par un, sans hâte et sans un mot. " +
-            "Elle, elle reste, et te montre le bout de la rue du menton : " +
-            "« Il t'attend au muret. Va, tant qu'il fait encore jour. »",
+            "Tu dis que tu es désolé — pas d'être là : d'être arrivé à ce moment-là. La nuance les atteint. La vieille lâche la corde. Les seuils se vident.\n\nElle reste, et montre le bout de la rue du menton : « Il t'attend au muret. Va, tant qu'il fait jour. »",
         },
       },
       {
@@ -3144,13 +3113,7 @@ export const SCENES: Scene[] = [
         label: "Les regarder partir",
         passive: {
           consequence:
-            "Tu t'écartes et tu laisses passer. La charrette prend la rue " +
-            "vers le nord, lentement, et tout le village la regarde jusqu'au " +
-            "bout — pas un adieu, une vérification. Ils veulent voir " +
-            "jusqu'où elle ira. " +
-            "Quand elle disparaît derrière la crête, les seuils se vident " +
-            "d'un coup. Sauf un vieux, tout au bout de la rue, assis sur un " +
-            "muret, qui n'a pas regardé la charrette une seule fois.",
+            "La charrette prend la rue vers le nord, et tout le village la regarde jusqu'au bout — pas un adieu : une vérification.\n\nQuand elle passe la crête, les seuils se vident d'un coup. Sauf un vieux, au bout de la rue, qui ne l'a pas regardée une seule fois.",
         },
       },
     ],
@@ -3263,12 +3226,7 @@ export const SCENES: Scene[] = [
         soupcon: 2,
         passive: {
           consequence:
-            "Tu poses la question à quelqu\u2019un qui rentre du puits. Le " +
-            "regard doux, la voix douce : « Tu es fatigué. Le voyage " +
-            "fatigue. » On te touche l\u2019épaule, on te souhaite une bonne " +
-            "nuit — et on s\u2019éloigne d\u2019un pas qui n\u2019est plus tout à " +
-            "fait celui de quelqu\u2019un qui rentre chez lui. Elle t\u2019avait " +
-            "prévenu que ça commençait comme ça.",
+            "Le regard doux, la voix douce : « Tu es fatigué. Le voyage fatigue. » On te touche l\u2019épaule, on te souhaite bonne nuit — et on s\u2019éloigne d\u2019un pas qui n\u2019est plus celui de quelqu\u2019un qui rentre chez lui. Elle t\u2019avait prévenu.",
         },
       },{ id: "entrer-hameau", label: "Entrer dans le hameau" }],
     jailerLine: "Bienvenue. C'est moi qui te le dis, puisque personne d'autre ne le fera.",
@@ -3395,10 +3353,7 @@ export const SCENES: Scene[] = [
         label: "Dormir vraiment",
         passive: {
           consequence:
-            "Tu décides de ne rien écouter. C'est un travail, de ne pas " +
-            "écouter — tu comptes tes propres respirations pour couvrir le " +
-            "reste. Ça marche à peu près. Au matin, tu ne sauras pas ce qui " +
-            "s'est dit devant ta porte, et c'est exactement ce que tu voulais.",
+            "Quatre passages par nuit, disaient les encoches. Tu attends le deuxième et tu écoutes. Les voix tombent entières dans le creux : un nom qui n'est pas le tien, le mot « demain », et le Petit Tribunal cité comme on cite une heure. Tu es rentré avant le troisième.",
         },
       },
       {
@@ -3416,13 +3371,7 @@ export const SCENES: Scene[] = [
         requiresSavoir: "savoir_grange_comptee",
         passive: {
           consequence:
-            "Quatre passages par nuit — c'est ce que disaient les encoches. Tu " +
-            "attends le deuxième, tu comptes vingt respirations après que les " +
-            "pas se sont éloignés, et c'est là que tu écoutes. Le creux est " +
-            "large, et les voix y tombent entières : un nom qui n'est pas le " +
-            "tien, le mot « demain », et le Petit Tribunal cité comme on cite " +
-            "une heure. Tu retrouves la bruyère avant le troisième passage. Personne " +
-            "n'a rien à noter.",
+            "Quatre passages par nuit, disaient les encoches. Tu attends le deuxième et tu écoutes. Les voix tombent entières dans le creux : un nom qui n'est pas le tien, le mot « demain », et le Petit Tribunal cité comme on cite une heure. Tu es rentré avant le troisième.",
         },
       },
     ],
@@ -3802,12 +3751,7 @@ export const SCENES: Scene[] = [
         grantsLoot: "clochette-meneuse",
         passive: {
           consequence:
-            "Tu choisis la seule qui te laisse faire — la meneuse, sa " +
-            "clochette au cou. Elle te suit sans un bruit, et le troupeau ne " +
-            "bronche pas. C\u2019est après, en mangeant, que la phrase te " +
-            "vient toute seule : tu viens de prendre ce qui appartenait à un " +
-            "pendu. Si on te voit au hameau avec cette laine, on saura " +
-            "compter jusqu\u2019à cinq.",
+            "La meneuse te suit sans un bruit, clochette au cou, et le troupeau ne bronche pas. C\u2019est après, en mangeant, que la phrase vient toute seule : tu as pris ce qui appartenait à un pendu. On saura compter jusqu\u2019à cinq.",
         },
       },
       {
@@ -4089,9 +4033,7 @@ export const SCENES: Scene[] = [
         label: "Demander s\u2019il soigne le soir",
         passive: {
           consequence:
-            "Le rebouteux hausse les épaules sans lever les yeux de son " +
-            "baume. « Je soigne pas la nuit. » Un temps. « C\u2019est pas une " +
-            "règle, hein. C\u2019est juste que personne demande. » Puis, comme on jette un os : « Et si c\u2019est l\u2019eau de la Mare que tu as bue, garde ta monnaie. Ça, ça se soigne pas ici. »",
+            "Il hausse les épaules sans lever les yeux de son baume. « Je soigne pas la nuit. C\u2019est pas une règle. C\u2019est juste que personne demande. » Puis, comme on jette un os : « Si c\u2019est l\u2019eau de la Mare que tu as bue, garde ta monnaie. »",
         },
       },
       {
@@ -4787,12 +4729,7 @@ export const SCENES: Scene[] = [
         requiresSavoir: "savoir_corde_vive",
         passive: {
           consequence:
-            "Tu connais son rang et sa place. Tu traverses la nef par l'autre " +
-            "côté, l'épaule au mur froid, à une largeur de bras de trop pour " +
-            "elle. Au passage tu l'entends se détendre puis se retendre, à " +
-            "vide, dans ton dos — le bruit sec d'une chose qui avait prévu " +
-            "autre chose. La Veuve, elle, lève les yeux pour la première fois. " +
-            "Elle n'a pas l'air déçue. Elle a l'air de noter.",
+            "Tu connais son rang et sa place. Tu longes l'autre mur, à une largeur de bras de trop pour elle. Dans ton dos, elle se détend puis se retend à vide — une chose qui avait prévu autre chose. La Veuve lève les yeux pour la première fois. Elle a l'air de noter.",
         },
       },
       {
@@ -5224,12 +5161,7 @@ export const SCENES: Scene[] = [
         setsEnvFlag: "a-denonce",
         passive: {
           consequence:
-            "Tu te penches vers l'Écrivain et tu donnes un nom — quelqu'un " +
-            "d'entrevu, quelqu'un qui parlait seul, peu importe. La plume " +
-            "note sans juger. Personne ne te regarde plus : on regarde déjà " +
-            "ailleurs, vers le nom que tu as donné. C'est fou ce qu'on " +
-            "respire mieux dans l'ombre d'un autre. Le hameau, lui, " +
-            "n'oubliera pas la voix qui a donné le nom.",
+            "Tu donnes un nom — quelqu'un d'entrevu, peu importe. La plume note sans juger. Personne ne te regarde plus : on regarde vers le nom que tu as donné. On respire mieux dans l'ombre d'un autre. Le hameau, lui, retient la voix.",
         },
       },
       {
@@ -5992,11 +5924,7 @@ export const SCENES: Scene[] = [
         locked: { stat: "COURAGE", min: 4 },
         passive: {
           consequence:
-            "Tu montes sur la traverse et tu regardes ce qu'il y a derrière. " +
-            "Le sol s'ouvre à vingt pas : des marches, taillées, larges, qui " +
-            "descendent en tournant jusqu'à ce que le noir les mange. Elles " +
-            "sont propres. Quelqu'un les balaie. Tu redescends sans rien " +
-            "dire, et le Veilleur ne demande pas ce que tu as vu — il le sait.",
+            "Le sol s'ouvre à vingt pas : des marches larges, taillées, qui descendent en tournant jusqu'à ce que le noir les mange. Elles sont propres. Quelqu'un les balaie. Le Veilleur ne demande pas ce que tu as vu — il le sait.",
         },
       },
       {
@@ -6071,13 +5999,7 @@ export const SCENES: Scene[] = [
         grantsLoot: "lanterne-veilleur",
         passive: {
           consequence:
-            "Tu le dis sans le défier : les pointes sont tournées vers " +
-            "l'intérieur, ce mur ne garde pas le village, il l'enferme. Il ne " +
-            "répond pas tout de suite. Il décroche la lanterne, la pose dans " +
-            "tes mains, et regarde le portillon. « Trente ans que je le dis à " +
-            "personne. » Puis, plus bas : « Ceux qui montent, on les laisse " +
-            "monter. C'est descendre qui est interdit. » Il ne réclame plus " +
-            "d'histoire. Tu viens d'en donner une.",
+            "Ce mur ne garde pas le village : il l'enferme. Il ne répond pas. Il décroche la lanterne, la pose dans tes mains. « Trente ans que je le dis à personne. » Puis, plus bas : « Ceux qui montent, on les laisse monter. C'est descendre qui est interdit. »",
         },
       },
     ],
@@ -6143,14 +6065,7 @@ export const SCENES: Scene[] = [
         label: "Regarder l'Appelé",
         passive: {
           consequence:
-            "Tu t'accoudes à la palissade et tu le regardes descendre, " +
-            "longtemps. Il ne presse jamais le pas, ne le ralentit jamais — " +
-            "le pas de quelqu'un qui n'obéit pas à ses jambes. Juste avant " +
-            "le tournant, il s'arrête. Une seconde. Comme si, tout au fond, " +
-            "quelque chose en lui se débattait encore. Puis le chemin le " +
-            "prend. Tu sais maintenant à quoi ressemble quelqu'un qui a " +
-            "fini par répondre. Tu espères ne jamais le reconnaître dans " +
-            "un reflet.",
+            "Il descend sans jamais presser ni ralentir le pas — quelqu'un qui n'obéit pas à ses jambes. Juste avant le tournant, il s'arrête une seconde, comme si quelque chose se débattait encore. Puis le chemin le prend. Tu espères ne jamais reconnaître ce pas dans un reflet.",
         },
       },
       {

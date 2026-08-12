@@ -1517,7 +1517,7 @@
      "id": "fossoyeur-cinq-marques",
      "label": "Parler des marques d’oreille",
      "type": "passif",
-     "consequence": "« Cinq marques ? » Le couteau s’arrête. « Fais voir. » Tu dessines les entailles dans la poussière, de mémoire. Il les regarde longtemps, et à la façon dont ses lèvres bougent sans bruit, tu comprends qu’il est en train de mettre un nom sur chacune. Il efface la poussière du plat de la main. « Joli troupeau », dit-il. C’est tout ce que tu en tireras.",
+     "consequence": "« Cinq marques ? » Le couteau s’arrête. Tu les dessines dans la poussière. Il les regarde longtemps, les lèvres bougeant sans bruit : il met un nom sur chacune. Puis il efface du plat de la main. « Joli troupeau. » C’est tout ce que tu en tireras.",
      "exigeDecouverte": "d.troupeau_compte"
     },
     {
@@ -1666,7 +1666,7 @@
      "id": "fossoyeur-cinq-marques",
      "label": "Parler des marques d’oreille",
      "type": "passif",
-     "consequence": "« Cinq marques ? » Le couteau s’arrête. « Fais voir. » Tu dessines les entailles dans la poussière, de mémoire. Il les regarde longtemps, et à la façon dont ses lèvres bougent sans bruit, tu comprends qu’il est en train de mettre un nom sur chacune. Il efface la poussière du plat de la main. « Joli troupeau », dit-il. C’est tout ce que tu en tireras.",
+     "consequence": "« Cinq marques ? » Le couteau s’arrête. Tu les dessines dans la poussière. Il les regarde longtemps, les lèvres bougeant sans bruit : il met un nom sur chacune. Puis il efface du plat de la main. « Joli troupeau. » C’est tout ce que tu en tireras.",
      "exigeDecouverte": "d.troupeau_compte"
     },
     {
@@ -2147,7 +2147,7 @@
      "id": "femme-regarder-sud",
      "label": "Regarder le sud avec elle",
      "type": "passif",
-     "consequence": "Tu ne dis rien. Tu te places à côté d'elle, dans le même axe, et tu regardes le bout de la rue. Le silence dure longtemps et ne pèse rien. Au bout d'un moment elle dit : « Vous l'entendez aussi. » Ce n'est pas une question, et tu n'as pas répondu — mais quelqu'un, derrière une fenêtre, a compté deux dos tournés vers le sud.",
+     "consequence": "Tu te places dans le même axe et tu regardes le bout de la rue. Le silence ne pèse rien. Puis : « Vous l'entendez aussi. » Ce n'est pas une question. Tu n'as pas répondu — mais derrière une fenêtre, quelqu'un a compté deux dos tournés vers le sud.",
      "soupcon": 1,
      "temoin": {
       "nom": "La Femme au Seuil",
@@ -2808,7 +2808,7 @@
      "id": "enfant-ne-pas-repondre",
      "label": "Ne pas répondre à un enfant",
      "type": "passif",
-     "consequence": "Tu passes à côté de lui sans un mot. Il ne te suit pas, il ne répète pas sa question : on lui a appris aussi ce qu'il fallait faire dans ce cas-là. Il se tourne vers la maison la plus proche et dit, très clairement : « Il a pas répondu. » Un volet se ferme. Puis tous les autres, dans l'ordre de la rue, jusqu'au bout — jusqu'au muret où quelqu'un t'attend déjà.",
+     "consequence": "Tu passes sans un mot. Il ne répète pas sa question : on lui a appris ce cas-là aussi. Il se tourne vers la maison la plus proche et dit, très clairement : « Il a pas répondu. »\n\nLes volets se ferment dans l'ordre de la rue, jusqu'au muret où quelqu'un attend.",
      "soupcon": 1
     }
    ],
@@ -2847,7 +2847,7 @@
      "id": "table-manger",
      "label": "T'asseoir et manger",
      "type": "passif",
-     "consequence": "Tu t'assois. C'est de l'orge, du gras, du sel — c'est bon, et c'est chaud, et ton corps te trahit en te disant à quel point tu en avais besoin. À la troisième cuillère, des portes s'ouvrent dans ton dos, sans hâte. Ils attendaient ça. Quand tu reposes la cuillère, le vieux est déjà assis sur le muret, au bout de la rue. Le Serment ne se demandera pas : il a commencé au premier bol.",
+     "consequence": "C'est chaud, et ton corps te trahit en te disant à quel point tu en avais besoin. À la troisième cuillère, des portes s'ouvrent dans ton dos. Ils attendaient ça.\n\nLe vieux est déjà assis sur le muret. Le Serment ne se demandera pas : il a commencé au premier bol.",
      "repondBesoin": "manger",
      "soupcon": -1
     },
@@ -2933,7 +2933,7 @@
      "id": "cloche-excuser",
      "label": "T'excuser d'être arrivé",
      "type": "passif",
-     "consequence": "Tu lèves les mains, paumes ouvertes, et tu dis que tu es désolé — pas d'être là : d'être arrivé à ce moment-là. La nuance les atteint. La vieille lâche la corde, enfin. Les seuils se vident un par un, sans hâte et sans un mot. Elle, elle reste, et te montre le bout de la rue du menton : « Il t'attend au muret. Va, tant qu'il fait encore jour. »",
+     "consequence": "Tu dis que tu es désolé — pas d'être là : d'être arrivé à ce moment-là. La nuance les atteint. La vieille lâche la corde. Les seuils se vident.\n\nElle reste, et montre le bout de la rue du menton : « Il t'attend au muret. Va, tant qu'il fait jour. »",
      "soupcon": -1
     },
     {
@@ -3021,7 +3021,7 @@
      "id": "depart-regarder",
      "label": "Les regarder partir",
      "type": "passif",
-     "consequence": "Tu t'écartes et tu laisses passer. La charrette prend la rue vers le nord, lentement, et tout le village la regarde jusqu'au bout — pas un adieu, une vérification. Ils veulent voir jusqu'où elle ira. Quand elle disparaît derrière la crête, les seuils se vident d'un coup. Sauf un vieux, tout au bout de la rue, assis sur un muret, qui n'a pas regardé la charrette une seule fois."
+     "consequence": "La charrette prend la rue vers le nord, et tout le village la regarde jusqu'au bout — pas un adieu : une vérification.\n\nQuand elle passe la crête, les seuils se vident d'un coup. Sauf un vieux, au bout de la rue, qui ne l'a pas regardée une seule fois."
     }
    ],
    "pointsInteret": [],
@@ -3141,7 +3141,7 @@
      "id": "parler-de-la-dame",
      "label": "Parler de la femme de l’ouest",
      "type": "passif",
-     "consequence": "Tu poses la question à quelqu’un qui rentre du puits. Le regard doux, la voix douce : « Tu es fatigué. Le voyage fatigue. » On te touche l’épaule, on te souhaite une bonne nuit — et on s’éloigne d’un pas qui n’est plus tout à fait celui de quelqu’un qui rentre chez lui. Elle t’avait prévenu que ça commençait comme ça.",
+     "consequence": "Le regard doux, la voix douce : « Tu es fatigué. Le voyage fatigue. » On te touche l’épaule, on te souhaite bonne nuit — et on s’éloigne d’un pas qui n’est plus celui de quelqu’un qui rentre chez lui. Elle t’avait prévenu.",
      "exigeDecouverte": "d.fille_vivante",
      "soupcon": 2
     },
@@ -3324,13 +3324,13 @@
      "id": "dormir-vraiment",
      "label": "Dormir vraiment",
      "type": "passif",
-     "consequence": "Tu décides de ne rien écouter. C'est un travail, de ne pas écouter — tu comptes tes propres respirations pour couvrir le reste. Ça marche à peu près. Au matin, tu ne sauras pas ce qui s'est dit devant ta porte, et c'est exactement ce que tu voulais."
+     "consequence": "Quatre passages par nuit, disaient les encoches. Tu attends le deuxième et tu écoutes. Les voix tombent entières dans le creux : un nom qui n'est pas le tien, le mot « demain », et le Petit Tribunal cité comme on cite une heure. Tu es rentré avant le troisième."
     },
     {
      "id": "compter-les-passages",
      "label": "Écouter entre deux rondes",
      "type": "passif",
-     "consequence": "Quatre passages par nuit — c'est ce que disaient les encoches. Tu attends le deuxième, tu comptes vingt respirations après que les pas se sont éloignés, et c'est là que tu écoutes. Le creux est large, et les voix y tombent entières : un nom qui n'est pas le tien, le mot « demain », et le Petit Tribunal cité comme on cite une heure. Tu retrouves la bruyère avant le troisième passage. Personne n'a rien à noter.",
+     "consequence": "Quatre passages par nuit, disaient les encoches. Tu attends le deuxième et tu écoutes. Les voix tombent entières dans le creux : un nom qui n'est pas le tien, le mot « demain », et le Petit Tribunal cité comme on cite une heure. Tu es rentré avant le troisième.",
      "exigeSavoir": "savoir_grange_comptee"
     }
    ],
@@ -3760,7 +3760,7 @@
      "id": "troupeau-prendre",
      "label": "Prendre une bête",
      "type": "passif",
-     "consequence": "Tu choisis la seule qui te laisse faire — la meneuse, sa clochette au cou. Elle te suit sans un bruit, et le troupeau ne bronche pas. C’est après, en mangeant, que la phrase te vient toute seule : tu viens de prendre ce qui appartenait à un pendu. Si on te voit au hameau avec cette laine, on saura compter jusqu’à cinq.",
+     "consequence": "La meneuse te suit sans un bruit, clochette au cou, et le troupeau ne bronche pas. C’est après, en mangeant, que la phrase vient toute seule : tu as pris ce qui appartenait à un pendu. On saura compter jusqu’à cinq.",
      "donneObjet": "clochette-meneuse",
      "repondBesoin": "manger",
      "tags": [
@@ -4071,7 +4071,7 @@
      "id": "rebouteux-la-nuit",
      "label": "Demander s’il soigne le soir",
      "type": "passif",
-     "consequence": "Le rebouteux hausse les épaules sans lever les yeux de son baume. « Je soigne pas la nuit. » Un temps. « C’est pas une règle, hein. C’est juste que personne demande. » Puis, comme on jette un os : « Et si c’est l’eau de la Mare que tu as bue, garde ta monnaie. Ça, ça se soigne pas ici. »"
+     "consequence": "Il hausse les épaules sans lever les yeux de son baume. « Je soigne pas la nuit. C’est pas une règle. C’est juste que personne demande. » Puis, comme on jette un os : « Si c’est l’eau de la Mare que tu as bue, garde ta monnaie. »"
     },
     {
      "id": "troc-colporteur",
@@ -4809,7 +4809,7 @@
      "id": "eviter-corde-vive",
      "label": "Longer le mur, hors d'atteinte",
      "type": "passif",
-     "consequence": "Tu connais son rang et sa place. Tu traverses la nef par l'autre côté, l'épaule au mur froid, à une largeur de bras de trop pour elle. Au passage tu l'entends se détendre puis se retendre, à vide, dans ton dos — le bruit sec d'une chose qui avait prévu autre chose. La Veuve, elle, lève les yeux pour la première fois. Elle n'a pas l'air déçue. Elle a l'air de noter.",
+     "consequence": "Tu connais son rang et sa place. Tu longes l'autre mur, à une largeur de bras de trop pour elle. Dans ton dos, elle se détend puis se retend à vide — une chose qui avait prévu autre chose. La Veuve lève les yeux pour la première fois. Elle a l'air de noter.",
      "sortie": {},
      "exigeSavoir": "savoir_corde_vive"
     },
@@ -5240,7 +5240,7 @@
      "id": "denoncer-un-autre",
      "label": "Donner un nom à la plume",
      "type": "passif",
-     "consequence": "Tu te penches vers l'Écrivain et tu donnes un nom — quelqu'un d'entrevu, quelqu'un qui parlait seul, peu importe. La plume note sans juger. Personne ne te regarde plus : on regarde déjà ailleurs, vers le nom que tu as donné. C'est fou ce qu'on respire mieux dans l'ombre d'un autre. Le hameau, lui, n'oubliera pas la voix qui a donné le nom.",
+     "consequence": "Tu donnes un nom — quelqu'un d'entrevu, peu importe. La plume note sans juger. Personne ne te regarde plus : on regarde vers le nom que tu as donné. On respire mieux dans l'ombre d'un autre. Le hameau, lui, retient la voix.",
      "poseFlag": "a-denonce",
      "soupcon": -2
     },
@@ -6200,7 +6200,7 @@
      "id": "veilleur-mur-inutile",
      "label": "« Ce mur ne protège de rien »",
      "type": "passif",
-     "consequence": "Tu le dis sans le défier : les pointes sont tournées vers l'intérieur, ce mur ne garde pas le village, il l'enferme. Il ne répond pas tout de suite. Il décroche la lanterne, la pose dans tes mains, et regarde le portillon. « Trente ans que je le dis à personne. » Puis, plus bas : « Ceux qui montent, on les laisse monter. C'est descendre qui est interdit. » Il ne réclame plus d'histoire. Tu viens d'en donner une.",
+     "consequence": "Ce mur ne garde pas le village : il l'enferme. Il ne répond pas. Il décroche la lanterne, la pose dans tes mains. « Trente ans que je le dis à personne. » Puis, plus bas : « Ceux qui montent, on les laisse monter. C'est descendre qui est interdit. »",
      "donneObjet": "lanterne-veilleur",
      "exigeSavoir": "savoir_palissade_retient"
     }
@@ -6299,7 +6299,7 @@
      "id": "regarder-appele",
      "label": "Regarder l'Appelé",
      "type": "passif",
-     "consequence": "Tu t'accoudes à la palissade et tu le regardes descendre, longtemps. Il ne presse jamais le pas, ne le ralentit jamais — le pas de quelqu'un qui n'obéit pas à ses jambes. Juste avant le tournant, il s'arrête. Une seconde. Comme si, tout au fond, quelque chose en lui se débattait encore. Puis le chemin le prend. Tu sais maintenant à quoi ressemble quelqu'un qui a fini par répondre. Tu espères ne jamais le reconnaître dans un reflet."
+     "consequence": "Il descend sans jamais presser ni ralentir le pas — quelqu'un qui n'obéit pas à ses jambes. Juste avant le tournant, il s'arrête une seconde, comme si quelque chose se débattait encore. Puis le chemin le prend. Tu espères ne jamais reconnaître ce pas dans un reflet."
     },
     {
      "id": "franchir-descente",
