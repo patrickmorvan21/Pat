@@ -192,6 +192,11 @@ def scenes(src: str) -> list[dict]:
         out.append({
             "id": sid, "narration": narr, "pois": pois, "choix": chx,
             "suite": champ(b, "chainNext"),
+            # ⚠️ Un lieu peut aussi enchaîner par `sortie.toScene` (le Moulin
+            # depuis le chantier du 11/08). Sans ça l'audit ne compte que
+            # l'écran d'arrivée et le lieu paraît deux fois plus court qu'il
+            # n'est — un chiffre APRÈS flatteur est pire que pas de chiffre.
+            "suiteSortie": champ(b, "toScene"),
             "lieuSuite": champ(b, "leadsTo"),
         })
     return out
@@ -301,7 +306,7 @@ def main() -> int:
             for c in s["choix"]:
                 if c["poseEtat"]:
                     etats.add(c["poseEtat"])
-            cur = s["suite"]
+            cur = s["suite"] or s.get("suiteSortie")
         # taps ≈ un tap par écran + un tap par POI ouvert (Observer) + choix
         taps = ecrans + observers + n_choix
         lignes.append({

@@ -68,7 +68,13 @@ async function mesurer(lieu, profil) {
     localStorage.setItem("aldenhar-run", JSON.stringify({
       step: 9, day: 2, health: 1, feed: [{ id: "x", kind: "narration", text: "seed" }],
       besace: [], effects: [], soupcon: 1, soupconSeen: 1, prologue: { done: true },
-      heroName: "Braise", stats: { COURAGE: 3, RUSE: 4, INSTINCT: 4, EMPATHIE: 4 },
+      heroName: "Braise",
+      // ⚠️ MINUSCULES. `RunStats` est {courage, ruse, instinct, empathie} ;
+      // avec des capitales, `migrateStats` ne reconnaît rien et tire un
+      // profil ALÉATOIRE — la mesure porte alors sur un héros inconnu, et
+      // AVANT/APRÈS ne sont plus comparables. Défaut trouvé le 12/08 après
+      // une première campagne de mesure, qui est donc à refaire.
+      stats: { courage: 3, ruse: 4, instinct: 4, empathie: 4 },
       hameau: { entree: false, serment: null },
       trav: { phase: "scene", current: dep, visited: ["chemin-creux"], target: 14,
               liaisonOpts: null, seed: 5, done: false },

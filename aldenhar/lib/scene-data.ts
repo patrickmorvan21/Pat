@@ -184,6 +184,32 @@ export type Choice = {
    * « être blessé ».
    */
   requiresBlessure?: boolean;
+
+  /**
+   * PROFIL REQUIS (chantier du 11/08, critère C : « le joueur ne peut pas tout
+   * voir dans une même run »). Le choix n'apparaît PAS si la stat n'atteint
+   * pas le seuil — il n'est pas grisé, il n'existe pas pour ce héros-là.
+   *
+   * ⚠️ À ne pas confondre avec `locked`, qui MONTRE une porte fermée (« ton
+   * incarnation ne peut pas »). Ici on ne montre rien : deux profils différents
+   * ne voient simplement pas la même chose, et aucun des deux ne sait ce qu'il
+   * a manqué. C'est la différence entre une frustration et une rejouabilité.
+   */
+  requiresStat?: { stat: Stat; min: number };
+
+  /**
+   * PROFIL DOMINANT requis (chantier du 11/08). Le choix n'apparaît que si
+   * cette stat est LA plus haute du héros — donc au plus une variante par
+   * incarnation, quel que soit le nombre de stats élevées.
+   *
+   * ⚠️ C'est ce qu'il faut pour une « entrée variable » (arbitrage Patrick sur
+   * le Gamin des Murets) : Empathie → il vient parler ; Instinct → tu
+   * remarques qu'il te suit sur les toits ; Ruse → tu comprends qu'il veut te
+   * mener quelque part. Avec un simple seuil, un héros à deux stats hautes
+   * verrait deux variantes du même personnage sur le même écran.
+   * Égalité tranchée par l'ordre du Seuil (Courage, Ruse, Instinct, Empathie).
+   */
+  requiresDominante?: Stat;
   /**
    * LE REGISTRE MENT (5/08) : ce choix n'existe que si le COMPTE tient une
    * contradiction — deux versions incompatibles d'un même fait, lues dans deux
@@ -1348,94 +1374,67 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_colline_aux_gibets_c.png",
     soupconOnArrival: 1, // être vu près des potences (chantier 3)
     chainNext: "colline-aux-gibets-2",
+    /* ─── CHANTIER DU 11/08 — plus de sous-menu ici ─────────────────────────
+       AVANT : un seul choix (« Rester au sommet ») et QUATRE points d'intérêt
+       derrière « Observer les alentours ». Le joueur n'avait rien à décider :
+       il avait une liste à vider. C'était le cas le plus pur du défaut.
+       APRÈS : trois actions directes, mutuellement exclusives — on n'en fait
+       qu'une par visite, et le lieu ne se laisse plus aspirer.
+       Ce qui a été absorbé : `pied-grand-gibet` → « Lire le nom gravé » ;
+       `corbeaux-compte` → « Compter les corbeaux » ; `gibet-vide` → « Monter
+       jusqu'au Gibet Vide ». Ce qui a été COUPÉ : `potences-cercle`, qui ne
+       rendait que du lore — son idée (la file est un calendrier planté) tient
+       maintenant en une clause de la narration, et le détail part au Codex. */
     narration: [
-      // ⚠️ TEXTE ALIGNÉ SUR L'IMAGE (panel 10/08). Il décrivait « le cercle :
-      // neuf potences… et au centre, l'autre » ; l'illustration montre une
-      // FILE le long de la crête, dont les dernières sont les plus hautes.
-      // L'image est la signature de la zone : c'est la prose qui cède — et
-      // elle y gagne, la file lue de bas en haut raconte une chronologie que
-      // le cercle n'avait pas.
+      // ⚠️ TEXTE ALIGNÉ SUR L'IMAGE (panel 10/08) : une FILE le long de la
+      // crête, pas un cercle. La file lue de bas en haut est une chronologie.
       "La pente est douce et n'en finit pas — la Colline se mérite à pas " +
         "comptés. Sur la crête, les potences se suivent, plantées de loin en " +
-        "loin comme des bornes. Elles grandissent à mesure qu'on monte, et la " +
-        "dernière dépasse toutes les autres. Sa corde est la seule chose " +
-        "neuve à dix lieues.",
-      "En contrebas de la file, un poteau isolé porte encore son occupant. " +
-        "Plus haut, les potences vides alignent leurs noms gravés.",
+        "loin comme des bornes, chacune avec son nom et sa date : la crête " +
+        "entière est un calendrier planté. Elles grandissent à mesure qu'on " +
+        "monte, et la dernière dépasse toutes les autres. Sa corde est la " +
+        "seule chose neuve à dix lieues.",
+      "En contrebas, un poteau isolé porte encore son occupant. Sur la " +
+        "traverse du grand gibet, des oiseaux noirs attendent sans bouger.",
     ],
-    pointsInteret: [
+    choices: [
       {
-        /* LA TOURNÉE (§7) : le Gibet Vide était démesuré et sans explication.
-           Le nom gravé au pied est celui de l'accusé que le Bailli citait à
-           comparaître — gratté par autre chose que le temps. */
-        id: "pied-grand-gibet",
-        illustration: "assets/scene_colline_pied_grand_gibet_b.png",
-        label: "Le pied du grand gibet",
-        approche:
-          "Tu quittes la ligne des potences ordinaires pour celle qui les " +
-          "dépasse toutes. De près, elle est absurde : trois fois trop haute " +
-          "pour un homme, et sa corde est neuve.",
-        examen:
-          "Au pied du mât, dans le bois, un nom a été gravé profond, à la " +
-          "gouge, par quelqu\u2019un qui prenait son temps. Il est illisible — " +
-          "pas effacé par la pluie : GRATTÉ, en travers, par quelque chose " +
-          "qui a mordu le bois plus fort que l\u2019outil. Dessous, une date " +
-          "est restée entière. Elle est vieille de trente ans.",
+        id: "lire-nom-grave",
+        label: "Lire le nom gravé",
         decouverte: "d.nom_gratte",
+        passive: {
+          consequence:
+            "Au pied du mât, dans le bois, un nom a été gravé profond, à la " +
+            "gouge, par quelqu\u2019un qui prenait son temps. Il est illisible — " +
+            "pas effacé par la pluie : GRATTÉ, en travers, par quelque chose " +
+            "qui a mordu le bois plus fort que l\u2019outil. Dessous, une date " +
+            "est restée entière. Elle est vieille de trente ans.",
+        },
       },
       {
-        id: "corbeaux-compte",
+        id: "compter-corbeaux",
         corbeaux: true,
-        label: "Les corbeaux, sur la traverse",
-        illustration: "assets/monstre_corbeaux_du_compte_b.png",
-        approche:
-          "Ils sont sur la traverse du grand gibet, immobiles, et ils ne " +
-          "bougent pas quand tu approches — ce qui n'est pas un comportement " +
-          "d'oiseau. Aucun ne te regarde. Ils regardent la corde.",
-        // ⚠️ Pas de référence au hameau ici (rapport IA externe 8/08) : ce
-        // point se joue souvent AVANT toute visite du village — comparer
-        // « aux toits du hameau » donnait au héros une connaissance du futur.
-        examen:
-          "Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, " +
-          "et leurs becs sont propres. Ils attendent, et ils sont exactement " +
-          "assez nombreux pour ce qu'ils attendent. La même immobilité que " +
-          "des sentinelles payées d'avance, la même façon d'être tournés " +
-          "du même côté — comme des choses qu'on a postées là. Ils comptent " +
-          "quelque chose qui te concerne, et le compte n'a pas l'air fini.",
+        label: "Compter les corbeaux",
+        passive: {
+          consequence:
+            "Ils ne mangent pas. Il n'y a rien à manger ici depuis " +
+            "longtemps, et leurs becs sont propres. Ils attendent, tournés " +
+            "du même côté, comme des choses qu'on a postées là.",
+        },
       },
       {
-        id: "potences-cercle",
+        id: "monter-gibet-vide",
+        label: "Monter jusqu'au Gibet Vide",
         chapterFragment: true,
-        label: "Les potences de la crête",
-        illustration: "assets/scene_colline_potences_cercle_a_c.png",
-        approche:
-          "Tu remontes la file. Le vent monte d'un cran dès la première " +
-          "pas entre deux potences — pas plus fort ailleurs, plus fort ICI, " +
-          "comme si l'espace entre les mâts avait son climat.",
-        examen:
-          "Chaque potence porte un nom gravé au pied, et une date. En " +
-          "remontant la file, les dates avancent : la crête entière est un " +
-          "calendrier planté. Les entailles sont de la même main — appliquée, " +
-          "régulière, la main de quelqu'un qui grave comme on rend un jugement.",
-      },
-      {
-        id: "gibet-vide",
-        chapterFragment: true,
-        // « HANTÉ · source : avoir vu quelque chose (Gibet Vide, Corbeaux…) ».
         fait: "fait-gibet",
-        label: "Le Gibet Vide, tout en haut",
-        illustration: "assets/scene_colline_gibet_vide_a_b.png",
-        approche:
-          "Tu marches vers le sommet, et la chose grandit plus vite que tes " +
-          "pas. À dix mètres, tu comprends que tu avais mal jugé l'échelle. À " +
-          "trois, tu dois lever la tête pour voir le nœud.",
-        examen:
-          "Le bois est d'œuvre, assemblé pour durer mille ans. La corde " +
-          "neuve grince. Par grand soleil — rare, ici — l'ombre portée " +
-          "s'étend vers le sud, et elle a une forme que la potence n'explique pas.",
+        passive: {
+          consequence:
+            "La chose grandit plus vite que tes pas. À trois mètres, tu dois " +
+            "lever la tête pour voir le nœud. Le bois est d'œuvre, assemblé " +
+            "pour durer mille ans, et la corde neuve grince toute seule.",
+        },
       },
     ],
-    choices: [{ id: "monter-sommet", label: "Rester au sommet" }],
     jailerLine: "Les corbeaux tiennent mes comptes locaux. Bénévoles, en plus.",
   },
   {
@@ -1497,21 +1496,6 @@ export const SCENES: Scene[] = [
             "Tu détaches une longue écharde du montant. Le bois est doux, poli par des mains — combien de mains ? L'ombre au sol frémit, mais ne bouge pas vers toi.",
             "Le bois crie sous ta lame — un son de gorge, pas de fibre. Les corbeaux décomptent un cran, tous ensemble. Tu emportes l'écharde, mais la colline emporte quelque chose de toi.",
             "1 naturel. L'écharde t'entre dans la paume. Profond. C'est le gibet qui prélève. ♦ −2"
-          ),
-        },
-      },
-      {
-        id: "compter-battements",
-        nature: "surnaturel",
-        label: "Rester et compter",
-        risky: {
-          stat: "INSTINCT",
-          threshold: 12,
-          outcomes: outcomes(
-            "20 naturel. Tu comptes jusqu'au bout, sans ciller. Le nombre tombe, et il ne te dit rien — pas encore. Tu le retiens quand même. Un jour, en te réveillant sur une autre borne, tu te souviendras de ce chiffre et tu sauras exactement ce qu'il comptait.",
-            "Tu comptes. Le nombre est petit, et c'est le pire : les cordes ne battent pas les morts de la lande. Elles battent les tiennes. Le compte est juste. Tu redescends sans le dire à voix haute.",
-            "Tu perds le fil au milieu — les cordes changent de mesure dès qu'on les suit, et tu comprends que compter, ici, c'est se faire compter. Le rythme reprend, plus lent, comme si on t'attendait.",
-            "1 naturel. Tu comptes, et la dernière corde attend ton chiffre pour bouger. Elle a bougé. Tu as donné le nombre le premier. ♦ −2"
           ),
         },
       },
@@ -2078,108 +2062,87 @@ export const SCENES: Scene[] = [
     /* Beat 2 — Le seuil. La croix à la craie est un POINT D'INTÉRÊT : voir de
        loin → marcher → toucher (spec §1). */
     id: "hameau-entree-2",
-    illustration: "assets/scene_hameau_entree_2_v2_a.png",
+    illustration: "assets/scene_landes_hameau_ruelle_b.png",
     chainNext: "hameau-entree-3",
+    /* ─── CHANTIER DU 11/08 — la ruelle perd son sous-menu ──────────────────
+       AVANT : 2 choix + CINQ points derrière « Observer » (linteau, combles,
+       croix à la craie, la femme, le gamin). APRÈS : trois actions directes.
+       Absorbé : `fenetres-combles` + `linteau` → « Lever les yeux vers les
+       combles » (et `d.combles_cloues` reçoit enfin un consommateur, à la
+       Grange) ; `femme-seuil` → « Parler à la femme sur le seuil ».
+       Passé en NARRATION : la croix à la craie — on la VOIT en entrant.
+       COUPÉ : le linteau seul (sa découverte n'était lue nulle part) → Codex.
+       LE GAMIN devient une ENTRÉE VARIABLE (arbitrage Patrick) : trois
+       formes selon la stat DOMINANTE, jamais deux à la fois. Un héros sans
+       profil marqué ne le croise pas — et ne sait pas ce qu'il a manqué. */
     narration: [
-      "La première maison est à dix pas. Sur sa porte, un signe à la craie — " +
-        "une croix, simple, tracée à hauteur d'œil.",
-      "La poudre blanche est encore sur le seuil. Ça date de ce matin.",
-    ],
-    pointsInteret: [
-      {
-        /* LA TOURNÉE (§7) : « une entaille au-dessus de chaque porte, même
-           hauteur, même outil qui n'est pas un outil. » Le joueur peut la
-           voir dès sa première entrée et n'y comprendre rien pendant trois
-           runs — c'est le but. */
-        id: "linteaux",
-        illustration: "assets/scene_hameau_linteaux_v2_c.png",
-        label: "Le linteau de la porte",
-        approche:
-          "Tu passes devant une porte, puis une autre, et quelque chose " +
-          "accroche ton regard sans que tu saches quoi. Tu reviens sur tes " +
-          "pas et tu lèves la tête.",
-        examen:
-          "Au-dessus du linteau, une entaille dans le bois. Courte, " +
-          "profonde, un peu de biais. Tu regardes la porte suivante : la " +
-          "même, à la même hauteur. Et la suivante. Ce n\u2019est pas une " +
-          "marque de charpentier — le bord est écrasé, pas coupé. Rien de " +
-          "ce que tu connais ne laisse cette trace-là.",
-        decouverte: "d.linteaux_entailles",
-      },
-      {
-        /* LA TOURNÉE (§7) : les combles sont cloués de l'intérieur DANS TOUT
-           le hameau, les rez-de-chaussée non. On ne se barricade pas contre
-           ce qui vient par la rue. */
-        id: "fenetres-clouees",
-        illustration: "assets/scene_hameau_combles_cloues_v2_a.png",
-        label: "Les fenêtres des combles",
-        approche:
-          "Tu recules de trois pas pour embrasser la façade entière, comme " +
-          "on prend du recul devant un mot mal orthographié.",
-        examen:
-          "Les fenêtres du haut sont clouées. Pas fermées : CLOUÉES, de " +
-          "l\u2019intérieur, planches en travers. Celles du bas ne le sont " +
-          "pas — volets simples, loquets ordinaires, certains même " +
-          "entrouverts. Tout le hameau est ainsi. Personne, ici, ne se " +
-          "protège de ce qui vient par la rue.",
-        decouverte: "d.combles_cloues",
-      },
-      {
-        id: "croix-craie",
-        soupcon: 1, // toucher à une porte marquée, dans une rue qui regarde
-        label: "S'approcher de la croix",
-        illustration: "assets/scene_hameau_croix_craie_a_a.png",
-        approche:
-          "Dix pas dans une rue qui ne fait aucun bruit. Tu marches au milieu, " +
-          "d'instinct — le plus loin possible des deux rangées de portes.",
-        examen:
-          "De près, on voit que le bois est usé à cet endroit précis. Des " +
-          "croix, il y en a eu d'autres, ici. Effacées, retracées. Celle-ci " +
-          "n'est que la dernière.",
-      },
-      {
-        id: "femme-sur-le-seuil",
-        label: "La femme sur le pas de porte",
-        leadsTo: "femme-seuil-1",
-        illustration: "assets/monstre_femme_au_seuil_b.png",
-        approche:
-          "Plus bas dans la rue, une femme se tient sur un pas de porte, " +
-          "immobile. Pas comme on prend l'air : comme on monte la garde. Tu " +
-          "traverses la rue vers elle.",
-        examen:
-          "Son regard est posé sur le bout de la rue, vers le sud, et il ne " +
-          "bouge pas quand tu approches. Elle t'a vu. Elle a décidé que tu " +
-          "n'étais pas la bonne silhouette.",
-      },
-      {
-        id: "gamin-sur-le-muret",
-        label: "Le gamin, en haut du muret",
-        leadsTo: "gamin-murets-1",
-        illustration: "assets/monstre_gamin_murets_a.png",
-        approche:
-          "Un enfant est assis sur la crête d'un muret, les pieds dans le " +
-          "vide côté lande. Il ne joue à rien. Il regarde le sud comme les " +
-          "adultes d'ici regardent le sud, et il le fait mieux qu'eux.",
-        examen:
-          "Il te laisse arriver jusqu'au pied du muret sans bouger. De près, " +
-          "ses genoux sont râpés partout pareil — quelqu'un qui court sur la " +
-          "pierre, pas sur les chemins. Il attend que tu parles le premier.",
-      },
+      "La rue est en terre battue, bordée de murets bas. Sur le premier " +
+        "linteau, une croix à la craie, tracée haut. Sur le suivant aussi. " +
+        "Toutes à la même hauteur, toutes de la même main.",
+      "Une femme se tient sur un seuil, immobile. Elle ne regarde pas la " +
+        "route : elle regarde une fenêtre, en face.",
     ],
     choices: [
       {
-        id: "frapper-porte-marquee",
-        label: "Frapper à la porte marquée",
-        soupcon: 1, // on a vu l'étranger s'intéresser aux marqués
-        passive: {
-          consequence:
-            "Tu frappes trois coups. Personne n'ouvre. Mais derrière le bois, " +
-            "à quelques centimètres de ta main, quelqu'un retient son souffle " +
-            "— et tu l'entends le retenir. Tu recules. Dans ton dos, une " +
-            "autre porte se ferme, qui était entrouverte.",
+        id: "parler-femme-seuil",
+        label: "Parler à la femme sur le seuil",
+        sortie: { toScene: "femme-seuil-1" },
+      },
+      {
+        id: "lever-yeux-combles",
+        nature: "exploration",
+        label: "Lever les yeux vers les combles",
+        decouverte: "d.combles_cloues",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu comptes les clous. Ils sont posés de l'INTÉRIEUR — les têtes sont dedans, les pointes dehors. On n'a pas condamné ces combles pour empêcher d'entrer : on les a condamnés depuis l'intérieur, une nuit, en se dépêchant. Et personne n'a rouvert depuis.",
+            "Les fenêtres des combles sont clouées. Pas murées, pas bouchées : clouées, planche par planche, avec le soin de quelqu'un qui comptait revenir.",
+            "Tu lèves la tête trop longtemps. Dans la rue, deux conversations s'arrêtent en même temps, et personne ne reprend avant que tu aies baissé les yeux.",
+            "1 naturel. Tu lèves la tête, et derrière une planche disjointe, quelque chose se retire lentement. Pas vite. Comme on recule quand on ne veut pas faire de bruit. ♦ −2"
+          ),
         },
       },
-      { id: "continuer-rue", label: "Continuer dans la rue" },
+      /* Les trois formes du Gamin — `requiresDominante` garantit qu'au plus
+         une apparaît. Toutes mènent à la même rencontre : ce n'est pas le
+         contenu qui change, c'est la façon dont il t'arrive. */
+      {
+        id: "gamin-empathie",
+        label: "Répondre au gamin qui t'appelle",
+        requiresDominante: "EMPATHIE",
+        sortie: { toScene: "gamin-murets-1" },
+      },
+      {
+        id: "gamin-instinct",
+        label: "Te retourner vers les toits",
+        requiresDominante: "INSTINCT",
+        sortie: { toScene: "gamin-murets-1" },
+      },
+      {
+        id: "gamin-ruse",
+        label: "Voir où le gamin veut te mener",
+        requiresDominante: "RUSE",
+        sortie: { toScene: "gamin-murets-1" },
+      },
+      /* ⚠️ Le 4e slot est lui aussi gaté : sans ça, un héros à profil marqué
+         voyait QUATRE boutons (mesuré au premier passage — critère B violé).
+         Les quatre dominantes couvrent tous les cas, donc exactement une
+         option occupe ce slot, toujours. Pour COURAGE, le détail vient du §5
+         du chantier : « trois hommes te regardent, aucun ne détourne les
+         yeux ». */
+      {
+        id: "gamin-courage",
+        label: "Soutenir le regard des trois hommes",
+        requiresDominante: "COURAGE",
+        passive: {
+          consequence:
+            "Ils te regardent passer, et aucun ne baisse les yeux quand tu " +
+            "les surprends. Ce n'est pas de la menace : c'est de la " +
+            "comptabilité. Sur le muret, un gamin te suit du regard aussi, " +
+            "mais lui détourne la tête — le seul du village à le faire.",
+        },
+      },
     ],
     jailerLine: "Ils marquent leurs condamnés à l'avance. C'est mon métier. Amateurs.",
   },
@@ -3171,8 +3134,12 @@ export const SCENES: Scene[] = [
   },
   {
     /* Beat 4 — Le Serment. Mécanique de zone : IMPOSÉ, jamais proposé.
-       « Pourquoi trois aubes » est un point d'intérêt : on peut le demander,
-       puis revenir au choix (spec §1 : le POI ne consomme pas le tour). */
+       ⚠️ CHANTIER DU 11/08 : les deux questions (« qui juge, ici » et
+       « pourquoi trois aubes ») étaient des points d'intérêt derrière un
+       sous-menu, sur l'écran le plus lourd de la zone. Elles sont maintenant
+       DITES — le vieux répond avant qu'on demande, ce qui est plus juste pour
+       un homme qui a fait ce discours cent fois. L'écran retombe à ses trois
+       serments seuls, donc dans la règle des 3 décisions. */
     id: "hameau-entree-4",
     illustration: "assets/monstre_hameau_entree_4_c.png",
     chainNext: "hameau-entree-5",
@@ -3189,40 +3156,9 @@ export const SCENES: Scene[] = [
       "— « Trois choses, et tu dors sous un toit. Tu ne parles pas aux " +
         "pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et à la " +
         "troisième aube, tu choisis. »",
-    ],
-    pointsInteret: [
-      {
-        /* ⚠️ Poser une question NE DOIT PAS résoudre le Serment (rapport de
-           playtest 8/08 : « Demander qui juge » franchissait la scène avec
-           serment: null, et la logique des trois aubes tombait). Les questions
-           annexes sont donc des POINTS D'INTÉRÊT — on y revient au muret —,
-           et seuls Jurer / Jurer du bout des lèvres / Refuser résolvent. */
-        id: "doyenne-horaire",
-        decouverte: "d.on_juge_la_nuit",
-        label: "Demander qui juge, ici",
-        approche:
-          "Tu poses la question au vieux. C\u2019est la femme derri\u00e8re lui qui " +
-          "r\u00e9pond, sans qu\u2019on lui ait rien demand\u00e9.",
-        examen:
-          "« Avant, on jugeait le jour. » Elle rajuste son châle. « Maintenant on juge la nuit. C'est pas moi qui en ai décidé. »",
-      },
-      {
-        id: "pourquoi-trois-aubes",
-        soupcon: 1, // poser LA question au muret, devant qui écoute
-        label: "Demander pourquoi trois aubes",
-        illustration: "assets/scene_hameau_trois_aubes_v2_c.png",
-        approche:
-          "Tu ne réponds pas tout de suite. Tu poses la question, et les " +
-          "quelques-uns qui s'étaient approchés attendent la réponse avec " +
-          "toi — comme si personne n'avait jamais osé la poser.",
-        examen:
-          "— « Trois aubes pour reprendre des forces. » Le vieux compte sur " +
-          "sa main, sans ironie aucune. « La première, on te soigne. La " +
-          "deuxième, on te montre ce que serait ta vie ici. À la troisième, " +
-          "tu repars — ou tu poses ton nom parmi les nôtres. » Il te regarde " +
-          "avec quelque chose qui ressemble beaucoup à de la bienveillance, " +
-          "et c'est bien ça qui te glace.",
-      },
+      "Il n'attend pas tes questions ; il les connaît. « Qui juge ? " +
+        "Personne. On constate. Et trois aubes parce qu'au bout de trois, on " +
+        "sait. »",
     ],
     choices: [
       {
@@ -4146,113 +4082,66 @@ export const SCENES: Scene[] = [
     // Campement de zone : le Moulin sans Ailes. L'id reste « campement »
     // (Scene.tsx exclut cet id du soin aléatoire d'exploration).
     id: "campement",
-    // ⚠️ Le lieu s'appelle le Moulin SANS Ailes et son point d'intérêt (« la
-    // croix d'ombres ») repose sur leur absence : la vue d'établissement doit
-    // montrer la tour tronquée. `scene_moulin_campement_a` (ailes entières)
-    // reste en réserve si Patrick préfère la regénérer.
     illustration: "assets/scene_moulin_sans_ailes_d_d.png",
-    chainNext: "campement-2",
+    /* ─── CHANTIER DU 11/08 — la formule exacte du §3 ───────────────────────
+       AVANT : 3 choix + QUATRE points derrière « Observer ». APRÈS : Entrer /
+       Suivre les traces / Passer son chemin.
+       Absorbé : `interieur-moulin` et `lucarne-moulin` (l'objet) → « Entrer » ;
+       `crete-toit` → « Suivre les traces sur la crête ».
+       Passé en NARRATION : `croix-ombres` — c'est l'image signature du lieu
+       (les ailes absentes qui laissent leur trace), elle doit être VUE, pas
+       cliquée ; elle ouvrait déjà le premier paragraphe.
+       ⚠️ `chainNext` a été RETIRÉ : seule « Entrer » mène à l'intérieur, via
+       `sortie.toScene`. Les deux autres quittent le lieu. C'est ce qui rend
+       les trois actions réellement exclusives — on ne peut plus suivre les
+       traces PUIS dormir dans la même visite. */
     narration: [
       "Le moulin n'a plus d'ailes mais il a gardé leur trace : quatre ombres " +
         "pâles en croix sur le corps de pierre, comme un moulin fantôme peint " +
-        "sur le vrai.",
-      "La porte est entrouverte. Pas défoncée : entretenue. La croix d'ombres, " +
-        "en haut. La lucarne, qui te regarde. Et la porte, qui n'attend que toi.",
-    ],
-    pointsInteret: [
-      {
-        /* LA TOURNÉE (§7) : le chemin de faîtage du Grand Témoin s'arrête à
-           cinquante pas du Moulin. C'est la preuve matérielle que ce lieu est
-           un sanctuaire — et le joueur peut la lire sans jamais savoir de
-           quoi il s'agit. */
-        id: "crete-interrompue",
-        illustration: "assets/scene_moulin_crete_interrompue_b.png",
-        label: "La crête du toit",
-        approche:
-          "Tu contournes la tour et tu lèves les yeux vers le faîtage. La " +
-          "mousse a mangé toute la pierre, sauf une bande, en haut, nette " +
-          "comme un sentier.",
-        examen:
-          "La bande sans mousse court sur toute la longueur du toit, large comme deux mains, usée. Puis elle s'arrête. Pas en s'amenuisant : d'un coup, à mi-pente, toujours au même point — comme si ce qui marchait là s'était retourné chaque fois exactement à la même marche.",
-        decouverte: "d.crete_interrompue",
-      },
-      {
-        id: "croix-ombres",
-        chapterFragment: true,
-        label: "La croix d'ombres, en haut",
-        illustration: "assets/scene_moulin_croix_ombres_a_d.png",
-        // Il faut RECULER pour la voir entière : le plan s'élargit au lieu de
-        // se resserrer — seul point d'intérêt de la zone à zoom < 1.
-        approche:
-          "Tu recules jusqu'au muret d'en face. Il faut de la distance pour " +
-          "la voir entière — c'est une trace, pas un détail.",
-        examen:
-          "De loin, les quatre bandes pâles se lisent d'un coup : ce sont des " +
-          "zones où la pierre n'a pas vieilli, protégée des années par les " +
-          "ailes, puis abandonnée au vent d'un seul coup. On peut dater une " +
-          "catastrophe à la couleur d'un mur. Celle-ci est vieille comme le " +
-          "Domaine.",
-      },
-      {
-        id: "lucarne-moulin",
-        grantsLoot: "jouet-fixee",
-        label: "La lucarne, au-dessus de la porte",
-        illustration: "assets/scene_moulin_lucarne_a_b.png",
-        approche:
-          "Quelque chose a bougé là-haut — tu en jurerais. Tu approches sans " +
-          "quitter l'ouverture des yeux, ce qui est exactement la mauvaise " +
-          "façon d'approcher d'une porte.",
-        examen:
-          "La lucarne est propre : pas un grain de poussière sur le rebord intérieur. Quelqu'un s'y accoude. Souvent. Pour regarder ce chemin — celui par lequel tu viens d'arriver. Et calée dans l'angle du rebord, à l'abri : une poupée de chiffon et de paille. Quelqu'un de très petit l'a mise là pour la sauver. Tu la prends avant d'avoir décidé de la prendre.",
-      },
-      {
-        id: "interieur-moulin",
-        chapterFragment: true,
-        // Qui habite le moulin, c'est la Fille — et ce qu'on raconte de sa
-        // corde change d'une vie à l'autre (lib/contradictions.ts).
-        fait: "fait-fille",
-        label: "Pousser la porte entrouverte",
-        illustration: "assets/scene_moulin_interieur_a_d.png",
-        approche:
-          "Tu pousses du plat de la main, lentement, en laissant à ce qu'il y " +
-          "a dedans le temps de décider s'il veut être vu.",
-        examen:
-          "Personne. Mais le contraire de l'abandon : une paillasse faite au " +
-          "carré, un pot ébréché où trempent des brins de bruyère — de la " +
-          "bruyère fraîche. Quelqu'un habite ici avec un soin de vivant. Tu " +
-          "ressors sans toucher à rien, et c'est la première politesse que tu " +
-          "offres aux Landes.",
-      },
+        "sur le vrai. Sur la bruyère, à cinquante pas, une crête de faîtage " +
+        "s'interrompt net, sans raison.",
+      "La porte est entrouverte. Pas défoncée : entretenue.",
     ],
     choices: [
       {
-        id: "fouiller-lit",
-        label: "Fouiller le lit de bruyère",
+        id: "entrer-moulin",
+        label: "Entrer",
+        grantsLoot: "jouet-fixee",
+        sortie: { toScene: "campement-2" },
         passive: {
           consequence:
-            "Sous la bruyère, la pierre du mur porte des marques à hauteur " +
-            "d'enfant : des jours comptés par paquets de cinq, sur des " +
-            "années. Et dans un creux, serré dans un chiffon, un bout de " +
-            "corde. Coupé net. On ne garde pas ça par hasard — on garde ça " +
-            "comme une preuve, ou comme un pardon.",
+            "Dedans, il fait plus chaud que dehors. Sous la lucarne, un lit " +
+            "de bruyère garde une forme — quelqu'un dort ici, et pas depuis " +
+            "hier. Contre le mur, à hauteur d'enfant, des jours comptés par " +
+            "paquets de cinq, sur des années.",
         },
       },
       {
-        id: "ecouter-moulin",
-        nature: "surnaturel",
-        label: "Écouter le moulin",
+        id: "traces-crete",
+        nature: "exploration",
+        label: "Suivre les traces sur la crête",
+        decouverte: "d.crete_interrompue",
         risky: {
           stat: "INSTINCT",
-          threshold: 10,
+          threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Le moulin craque comme tout vieux bois — mais en RYTHME. Tu finis par le reconnaître : c'est une berceuse, jouée par la charpente, notée par le vent. Quelqu'un a appris à cette ruine à chanter. Tu sauras dormir dessous.",
-            "Des craquements de bois qui travaille, le froissement de la lande — et, très loin, un pas léger qui tourne autour du moulin sans jamais s'approcher. Pas une menace : une ronde.",
-            "Tu écoutes si fort que tu n'entends plus rien — le silence se referme comme une main. Quand tu relâches, un craquement JUSTE au-dessus. Le temps de lever la tête : rien. Le moulin, dit ton pouls.",
-            "1 naturel. Le moulin s'arrête de craquer. Complètement. Un vieux bois qui se tait, c'est un bois qui retient son souffle. ♦ −2"
+            "20 naturel. Tu remontes la ligne du faîtage jusqu'à l'endroit où elle s'arrête, et tu comprends d'un coup qu'elle ne s'arrête pas : elle a été DÉFAITE, tuile par tuile, proprement, par quelqu'un qui ne voulait pas qu'on puisse aller plus loin par les toits. Le travail est vieux de trente ans et il a été fait de l'intérieur.",
+            "Le chemin de faîtage s'interrompt à cinquante pas. Pas effondré : interrompu. Les tuiles manquantes sont empilées à côté, en ordre.",
+            "Tu perds la trace dans la bruyère, et quand tu la retrouves elle ne va plus dans le même sens. Tu renonces avant de savoir laquelle des deux était la bonne.",
+            "1 naturel. Tu suis, et la trace te ramène exactement à ton point de départ. Elle est fraîche. C'est la tienne. ♦ −2"
           ),
         },
       },
-      { id: "installer-camp", label: "S'installer pour la halte" },
+      {
+        id: "passer-moulin",
+        label: "Passer son chemin",
+        passive: {
+          consequence:
+            "Tu longes le corps de pierre sans ralentir. Dans ton dos, la " +
+            "porte entrouverte ne bouge pas, et c'est peut-être ça le plus " +
+            "désagréable : rien ne te suit.",
+        },
+      },
     ],
     jailerLine: "Ce moulin a moulu autre chose que du grain. Demande à la meule.",
   },

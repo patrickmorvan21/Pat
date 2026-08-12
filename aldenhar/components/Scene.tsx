@@ -9,6 +9,7 @@ import TypedText from "@/components/TypedText";
 import DeathScreen, { bilanDeMort, type Bilan } from "@/components/DeathScreen";
 import GameMenu from "@/components/GameMenu";
 import {
+  type Stat,
   DESCENTE_SCENE,
   ENTRY_SCENE,
   jailerTaunt,
@@ -657,6 +658,17 @@ export default function Scene() {
   // stats du héros (fixées au Seuil), effet de la relique portée, et son état
   // de consommation — une relique = un geste par vie.
   const [heroStats, setHeroStats] = useState<RunState["stats"] | undefined>(undefined);
+  /** LA stat dominante de cette incarnation (égalité tranchée par l'ordre du
+      Seuil). Sert au gating `requiresDominante` — au plus une variante de
+      profil par écran, voir le champ dans scene-data.ts. */
+  const dominanteMirror: Stat | null = heroStats
+    ? (["COURAGE", "RUSE", "INSTINCT", "EMPATHIE"] as Stat[]).reduce((a, b) => {
+        const v = (s: Stat) =>
+          ({ COURAGE: heroStats.courage, RUSE: heroStats.ruse,
+             INSTINCT: heroStats.instinct, EMPATHIE: heroStats.empathie })[s];
+        return v(b) > v(a) ? b : a;
+      })
+    : null;
   // Le DON de la relique portée (5/08) — remplace l'ancien trio d'effets.
   // « amorti » est le nouveau nom de « coussin ».
   const [relicFx, setRelicFx] = useState<RelicDon | null>(null);
@@ -816,6 +828,20 @@ export default function Scene() {
     // UN CORPS INTACT NE MONTRE PAS SES PLAIES (panel 10/08). Même prédicat
     // que le 4e choix contextuel de soin : santé entamée OU état négatif.
     if (c.requiresBlessure && !blesseMirror) return false;
+    // Profil requis (chantier 11/08) : absent, pas grisé — voir `requiresStat`.
+    // ⚠️ `Stat` est en CAPITALES (COURAGE…) et `RunStats` en minuscules —
+    // deux conventions qui se croisent ici et nulle part ailleurs.
+    if (
+      c.requiresStat &&
+      (({
+        COURAGE: heroStats?.courage,
+        RUSE: heroStats?.ruse,
+        INSTINCT: heroStats?.instinct,
+        EMPATHIE: heroStats?.empathie,
+      })[c.requiresStat.stat] ?? 3) < c.requiresStat.min
+    )
+      return false;
+    if (c.requiresDominante && dominanteMirror !== c.requiresDominante) return false;
     // SÉJOUR : ce qui a déjà été fait ici ne se refait pas. On ne pose pas
     // deux fois la même question au Veilleur ; le lieu tient plusieurs
     // décisions, pas la même en boucle.
