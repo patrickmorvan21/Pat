@@ -245,10 +245,74 @@ def sequences(es: list[dict]) -> list[dict]:
     return seqs
 
 
+def transcripts_par_defaut() -> list[Path]:
+    return sorted((RACINE / "data/transcripts").glob("v1[78]*.md"))
+
+
+def mesures(fichiers: list[Path] | None = None) -> dict:
+    """La CALIBRATION que l'estimateur consomme — mesurée, jamais postulée.
+
+    Rend, par type de séquence (arrivée · croisée · sur place) : le nombre de
+    séquences observées, la moyenne de taps, et pour chaque famille sa
+    fréquence de présence et sa longueur moyenne en mots.
+
+    ⚠️ CE QUE CES CHIFFRES VALENT. Les fréquences par famille reposent sur
+    25 arrivées : l'incertitude sur chacune est de l'ordre de ±15 points. Elles
+    servent à PONDÉRER, pas à affirmer. Le seul chiffre qui valide ou invalide
+    le modèle est l'AGRÉGAT (taps moyens, part à ≤ 1 tap), assis sur
+    122 séquences — et c'est lui qu'il faut retrouver.
+    """
+    fichiers = fichiers or transcripts_par_defaut()
+    idx = index_sources()
+    types: dict[str, list[dict]] = {"arrivée": [], "croisée": [], "sur place": []}
+    mots_fam: Counter = Counter()
+    paras_fam: Counter = Counter()
+    taps: list[int] = []
+    for f in fichiers:
+        for s in sequences(ecrans(f.read_text(encoding="utf8"))):
+            fams = []
+            for e in s["lectures"]:
+                for fam, _, m in attribue(e["paras"], idx):
+                    fams.append(fam)
+                    mots_fam[fam] += m
+                    paras_fam[fam] += 1
+            t = ("arrivée" if "approche" in fams
+                 else "croisée" if "croisée" in fams else "sur place")
+            types[t].append({"fams": fams, "taps": len(s["lectures"])})
+            taps.append(len(s["lectures"]))
+    out: dict = {"global": {"sequences": len(taps),
+                            "taps_moyens": sum(taps) / max(1, len(taps)),
+                            "part_1_ou_moins": sum(1 for t in taps if t <= 1) / max(1, len(taps)),
+                            "distribution": {k: v / max(1, len(taps))
+                                             for k, v in Counter(min(t, 4) for t in taps).items()}},
+                 "mots_par_paragraphe": {f: mots_fam[f] / paras_fam[f] for f in paras_fam},
+                 "types": {}}
+    # Ce qu'une famille apporte QUAND ELLE EST LÀ : c'est ce poids-là que le
+    # modèle doit ajouter, pas le mot moyen d'un paragraphe (le chapitre en
+    # sert 1,25 par séquence, le point d'intérêt deux blocs, etc.).
+    presente: Counter = Counter()
+    for L in types.values():
+        for x in L:
+            for fam in set(x["fams"]):
+                presente[fam] += 1
+    out["mots_quand_present"] = {f: mots_fam[f] / presente[f] for f in presente}
+    for t, L in types.items():
+        c: Counter = Counter()
+        for x in L:
+            for fam in set(x["fams"]):
+                c[fam] += 1
+        out["types"][t] = {
+            "n": len(L),
+            "taps_moyens": sum(x["taps"] for x in L) / max(1, len(L)),
+            "freq": {f: n / max(1, len(L)) for f, n in c.items()},
+        }
+    return out
+
+
 def main(args: list[str]) -> int:
     fichiers = [Path(a) for a in args if not a.startswith("--")]
     if not fichiers:
-        fichiers = sorted((RACINE / "data/transcripts").glob("v1[78]*.md"))
+        fichiers = transcripts_par_defaut()
     idx = index_sources()
     print(f"index des sources : {len(idx)} textes de ≥ 5 mots\n")
 

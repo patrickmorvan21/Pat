@@ -49,6 +49,7 @@ from pathlib import Path
 RACINE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(RACINE / "tools"))
 from audit_boucle import sans_commentaires  # noqa: E402
+from attribution import mesures  # noqa: E402
 
 SD = RACINE / "aldenhar/lib/scene-data.ts"
 
@@ -159,153 +160,168 @@ def lire_scenes(src: str) -> dict:
 
 
 
-# ─── LA TRAVERSÉE (ajoutée le 12/08 — le trou qui donnait 94,6 %) ──────────
-# Un choix de SORTIE ne mène pas au néant : il déclenche une CROISÉE
-# (`makeLiaison`) — ambiance de marche + les deux routes décrites — puis, une
-# fois la direction choisie, une ARRIVÉE (phrase d'approche + au plus un
-# rappel + la narration du lieu). Compter 0 écran sur ces 21 % de cas était
-# la cause exacte de l'écart avec les vies.
-def pools_traversee(src: str) -> dict:
-    """Longueurs réelles des blocs de transition, pas des constantes devinées."""
-    def liste(nom: str) -> list[int]:
-        m = re.search(rf'{nom}[^=]*=\s*\[([\s\S]*?)\n\];', src)
-        if not m:
-            return []
-        return [mots(t) for t in re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1)) if t.strip()]
-
-    def record(nom: str) -> list[int]:
-        m = re.search(rf'{nom}[^=]*=\s*\{{([\s\S]*?)\n\}};', src)
-        if not m:
-            return []
-        return [mots(t) for t in re.findall(r':\s*"((?:[^"\\]|\\.)*)"', m.group(1)) if t.strip()]
-
-    amb = liste("LIAISON_AMBIANCES") + liste("LIAISON_AMBIANCES_LANDE")
-    var = [mots(t) for t in re.findall(r'\btexte:\s*"((?:[^"\\]|\\.)*)"', src)]
-    indices = record("INDICE_ROUTE")
-    appro = record("APPROACH_NARRATION")
-    return {
-        # La Croisée : une ambiance + la phrase des deux routes (deux indices
-        # cousus dans « D'un côté, … De l'autre, … »).
-        "ambiance": moyenne(amb + var),
-        "routes": 2 * moyenne(indices) + 6,
-        "approche": moyenne(appro),
-    }
 
 
-def moyenne(xs: list[int]) -> float:
-    return sum(xs) / len(xs) if xs else 0.0
+def lire_points(src: str) -> dict[str, list[tuple[int, int]]]:
+    """{scène → [(mots de la marche, mots de l'examen)]}.
 
-
-# ─── L'ESTIMATION ──────────────────────────────────────────────────────────
-# Le bandeau du Geôlier ne tombe qu'à 12 % des arrivées (`chance(0.12)`,
-# Scene.tsx). Le compter à CHAQUE arrivée gonflerait la latence de tout le
-# monde — c'est la faute qu'a attrapée la preuve 1.
-FREQ_GEOLIER = 0.12
-
-
-def blocs_arrivee(sc: dict, avecJailer: bool = False) -> list[tuple[str, int, str]]:
-    """Ce qui se lit en ENTRANT dans une scène, hors injections aléatoires.
-
-    ⚠️ Le MOBILIER pèse zéro : le tableau du Registre, la puce Jour et les
-    bandeaux n'ont pas à être lus comme de la prose (l'écran de 149 mots qui
-    a orienté à tort le chantier du matin ÉTAIT le Registre).
-
-    ⚠️ `narrationEchec` n'est JAMAIS ajoutée : elle est EXCLUSIVE de
-    `narration` — on ne lit qu'une branche. Les additionner doublait le
-    volume d'une scène et aurait fait couper de la prose sur un chiffre que
-    le joueur ne rencontre jamais.
+    Un point d'intérêt est une SÉQUENCE À PART ENTIÈRE : on le choisit (c'est
+    une décision), puis on marche jusqu'à lui et on l'examine (ce sont des
+    taps), puis on revient à l'écran du lieu. Les oublier ôtait du modèle les
+    séquences les plus longues de la zone — l'examen pèse en moyenne 49 mots,
+    plus que n'importe quelle autre famille sauf la narration.
     """
-    out = [("narration", mots(t), t) for t in sc["narration"]]
-    if sc["registre"]:
-        out.append(("mobilier", 0, "— LE GRAND REGISTRE —"))
-    if avecJailer and sc["jailerLine"]:
-        out.append(("geôlier", mots(sc["jailerLine"]) + CHROME_GEOLIER, sc["jailerLine"]))
+    bornes = [(m.start(), m.group(1)) for m in re.finditer(r'\n    id: "([a-z0-9-]+)"', src)]
+    out: dict[str, list[tuple[int, int]]] = {}
+    for i, (pos, sid) in enumerate(bornes):
+        fin = bornes[i + 1][0] if i + 1 < len(bornes) else len(src)
+        bloc = src[pos:fin]
+        pts = []
+        for m in re.finditer(r'\n\s+approche:\s*(' + LITT + r')[\s\S]*?'
+                             r'\n\s+examen:\s*(' + LITT + r')', bloc):
+            pts.append((mots(concat(m.group(1))), mots(concat(m.group(2)))))
+        if pts:
+            out[sid] = pts
     return out
+
+
+# ═══ LA CALIBRATION — mesurée sur les vies enregistrées, jamais postulée ═══
+#
+# ⚠️ CONVENTION DE COMPTAGE, à tenir des deux côtés sous peine de décalage
+# d'une unité sur TOUTE mesure : un « tap » est un écran de TEXTE. Le dernier
+# écran d'une séquence porte les choix, et le joueur le touche quand même pour
+# finir la frappe. C'est ce que comptent les transcripts, donc c'est ce que
+# compte l'estimateur. (Un joueur très patient qui attend la fin de la frappe
+# en dépense un de moins ; la borne haute est la bonne pour un outil qui
+# cherche les tunnels.)
+#
+# ⚠️ CE QUE LA CALIBRATION VAUT. Les fréquences d'injection reposent sur
+# 25 arrivées : ±15 points d'incertitude chacune. Elles PONDÈRENT, elles
+# n'affirment pas. Le chiffre qui valide le modèle est l'agrégat, assis sur
+# 122 séquences — et c'est lui qu'on compare en fin de rapport.
+
+FIXES = {
+    "arrivée": {"approche", "narration"},
+    "croisée": {"croisée", "conséquence", "issue"},
+    "sur place": {"narration", "conséquence", "issue", "point · marche", "point · examen"},
+}
+
+
+def options(m: dict, typ: str) -> list[tuple[str, float, int]]:
+    """Les blocs OPTIONNELS d'un type de séquence : (famille, fréquence, mots).
+
+    Tout ce que la mesure a vu apparaître et que le modèle ne pose pas
+    lui-même. « ? » est écarté : ce sont les 3 % de paragraphes composés à
+    l'exécution qu'on n'a pas su rattacher — les compter serait ajouter du
+    poids sans savoir lequel.
+    """
+    out = []
+    for fam, fr in sorted(m["types"][typ]["freq"].items(), key=lambda x: -x[1]):
+        if fam in FIXES[typ] or fam == "?":
+            continue
+        w = round(m["mots_quand_present"].get(fam, 25))
+        if fam == "geôlier":
+            w += CHROME_GEOLIER
+        out.append((fam, fr, w))
+    return out
+
+
+def loi(fixes: list, opts: list[tuple[str, float, int]]) -> dict[int, float]:
+    """La LOI du nombre d'écrans, en énumérant les 2^n mondes possibles.
+
+    ⚠️ On rend une DISTRIBUTION, pas une moyenne — et c'est le correctif qui
+    a fait converger la part « à un tap ou moins ». Comparer une espérance
+    ARRONDIE (1,4 → 1) à des réalisations entières est une faute de méthode :
+    elle écrasait 22 points d'écart en donnant 52 % de séquences à un tap là
+    où les vies en comptent 29 %. Une séquence qui coûte 1,4 tap en moyenne
+    ne coûte JAMAIS 1,4 tap : elle en coûte 1 six fois sur dix et 2 le reste
+    du temps, et c'est cette forme-là qu'on compare.
+
+    ⚠️ On ne multiplie JAMAIS un écran par une probabilité. Un bloc qui tombe
+    à 12 % et fait basculer un écran ne coûte pas 0,12 écran partout : il
+    coûte un écran entier, 12 % du temps. La différence change le classement
+    des tunnels, donc ce qu'on irait couper.
+
+    Approximation assumée : les blocs optionnels sont empilés APRÈS les blocs
+    fixes, alors que le client en insère certains au milieu. Ça ne change le
+    nombre d'écrans que sur les rares cas à la frontière du budget.
+    """
+    d: dict[int, float] = {}
+    for masque in range(1 << len(opts)):
+        p = 1.0
+        blocs = list(fixes)
+        for i, (fam, fr, w) in enumerate(opts):
+            if masque >> i & 1:
+                p *= fr
+                blocs.append((fam, w, ""))
+            else:
+                p *= 1 - fr
+        if p > 1e-9:
+            n = len(decouper(blocs))
+            d[n] = d.get(n, 0.0) + p
+    return d
+
+
+def moyenne(d: dict[int, float]) -> float:
+    return sum(n * p for n, p in d.items()) / (sum(d.values()) or 1)
 
 
 def successeur(sc: dict, ch: dict) -> str | None:
     if ch["toScene"]:
         return ch["toScene"]
     if ch["sortie"] or ch["orient"]:
-        return None  # la traversée décide : hors du déterminisme
+        return None  # la traversée décide : c'est une Croisée
     return sc["chainNext"]
 
 
-def latences(scenes: dict, P: dict, p_rappel: float = 0.55) -> tuple[list[dict], list[dict], dict]:
-    """(post-décision, arrivée, parts des chemins).
+def latences(scenes: dict, points: dict, m: dict) -> dict[str, list[dict]]:
+    """Les trois latences, séparées — les mélanger ferait couper le mauvais texte.
 
-    DEUX LATENCES SÉPARÉES, jamais mélangées (§4 du cadrage) :
-      · POST-DÉCISION — du choix résolu à la prochaine décision jouable ;
-      · ARRIVÉE — de la destination choisie à la première décision du lieu.
-    Les mélanger ferait couper le mauvais texte.
-
-    `p_rappel` = probabilité qu'un rappel d'arrivée existe et passe le budget
-    d'UN par arrivée (familiarité, mémoire d'un PNJ, réaction d'état,
-    perception, mode d'arrivée). C'est le seul paramètre non lisible dans les
-    sources : il dépend de l'état du compte. Il se CALIBRE contre les
-    transcripts à l'étape de validation, il ne se devine pas.
+      · ARRIVÉE   — de la direction choisie à la première décision du lieu ;
+      · SUR PLACE — d'un choix résolu à la décision suivante, sans quitter ;
+      · CROISÉE   — d'un choix de sortie aux deux boutons d'orientation.
+    Un POINT D'INTÉRÊT est compté à part : il est choisi comme une action,
+    mais ce qu'il rend est une marche et un examen.
     """
-    post, arriv = [], []
-    parts = {"successeur connu": 0, "séjour": 0, "traversée": 0}
+    o = {t: options(m, t) for t in FIXES}
+    seqs: dict[str, list[dict]] = {"arrivée": [], "sur place": [], "croisée": [], "point": []}
 
-    def esperance(blocs_sans: list, poids_option: float, bloc_option) -> float:
-        """E[taps] quand un bloc n'apparaît qu'avec une probabilité donnée.
-
-        ⚠️ On ne multiplie PAS un écran par une probabilité : on calcule la
-        latence dans les deux mondes et on pondère. Un bloc à 12 % qui fait
-        basculer un écran ne coûte pas 0,12 écran partout — il coûte un
-        écran entier, 12 % du temps.
-        """
-        sans = max(0, len(decouper(blocs_sans)) - 1)
-        avec = max(0, len(decouper(blocs_sans + [bloc_option])) - 1)
-        return (1 - poids_option) * sans + poids_option * avec
-
-    # ── ARRIVÉE : approche + (au plus un rappel) + narration du lieu ──────
     for sid, sc in scenes.items():
-        if not sc["choix"]:
-            continue
-        blocs = [("approche", round(P["approche"]), "≈ phrase d'approche")]
-        blocs += [("narration", mots(t), t) for t in sc["narration"]]
-        if sc["registre"]:
-            blocs.append(("mobilier", 0, "—"))
-        e = esperance(blocs, p_rappel, ("rappel", 24, "≈ rappel d'arrivée"))
-        arriv.append({"scene": sid, "taps": e, "pic": bool(PICS.search(sid)),
-                      "mots": sum(b[1] for b in blocs)})
+        pic = bool(PICS.search(sid))
+        if sc["choix"]:
+            fixes = [("approche", round(m["mots_quand_present"]["approche"]), "")]
+            fixes += [("narration", mots(t), t) for t in sc["narration"]]
+            seqs["arrivée"].append({
+                "scene": sid, "loi": loi(fixes, o["arrivée"]), "freq": 1.0,
+                "fixes": fixes, "opts": o["arrivée"],
+                "mots": sum(b[1] for b in fixes), "famille": "narration", "pic": pic})
+        for marche, examen in points.get(sid, []):
+            fixes = [("point · marche", marche, ""), ("point · examen", examen, "")]
+            seqs["point"].append({
+                "scene": sid, "loi": loi(fixes, o["sur place"]), "freq": 1.0,
+                "fixes": fixes, "opts": o["sur place"],
+                "mots": marche + examen, "famille": "point · examen", "pic": pic})
 
-    # ── POST-DÉCISION ────────────────────────────────────────────────────
-    for sid, sc in scenes.items():
         for ch in sc["choix"]:
             if ch["orient"] or ch["locked"]:
                 continue
             suiv = successeur(sc, ch)
-            reste = sc["sejour"] and not ch["sortie"]
-            if reste:
-                suite, voie = [], "séjour"
+            if sc["sejour"] and not ch["sortie"]:
+                typ, suite = "sur place", []
             elif suiv in scenes:
-                suite = blocs_arrivee(scenes[suiv])
-                voie = "successeur connu"
+                typ = "sur place"
+                suite = [("narration", mots(t), t) for t in scenes[suiv]["narration"]]
             else:
-                # ⚠️ LE TROU CORRIGÉ : une sortie ouvre une CROISÉE. On lit
-                # l'ambiance de marche et les deux routes AVANT que les
-                # boutons d'orientation soient jouables.
-                suite = [("traversée", round(P["ambiance"]), "≈ ambiance de marche"),
-                         ("traversée", round(P["routes"]), "≈ les deux routes")]
-                voie = "traversée"
-            parts[voie] += 1
+                typ = "croisée"
+                suite = [("croisée", round(m["mots_quand_present"]["croisée"]), "")]
 
-            def cas(txt: str, fam: str, freq: float, palier: str | None):
-                blocs = [(fam, mots(txt), txt)] + suite
-                # Le bandeau du Geôlier ne tombe qu'à 12 % — pondéré, jamais
-                # ajouté d'office.
-                jl = scenes[suiv]["jailerLine"] if (suiv in scenes and not reste) else None
-                e = (esperance(blocs, FREQ_GEOLIER,
-                               ("geôlier", mots(jl) + CHROME_GEOLIER, jl))
-                     if jl else max(0, len(decouper(blocs)) - 1))
-                post.append({
-                    "scene": sid, "choix": ch["id"], "palier": palier, "voie": voie,
-                    "taps": e, "freq": freq, "mots_texte": mots(txt),
-                    "famille": fam, "pic": bool(PICS.search(sid)),
-                })
+            def cas(txt: str, fam: str, freq: float, palier: str | None) -> None:
+                fixes = [(fam, mots(txt), txt)] + suite
+                seqs[typ].append({
+                    "scene": sid, "choix": ch["id"], "palier": palier, "famille": fam,
+                    "loi": loi(fixes, o[typ]), "freq": freq,
+                    "fixes": fixes, "opts": o[typ],
+                    "mots": mots(txt), "pic": pic})
 
             if ch["issues"]:
                 for i, t in enumerate(ch["issues"]):
@@ -315,166 +331,362 @@ def latences(scenes: dict, P: dict, p_rappel: float = 0.55) -> tuple[list[dict],
                 cas(ch["consequence"], "conséquence", 1.0, None)
             else:
                 cas("", "neutre", 1.0, None)
-    return post, arriv, parts
+    return seqs
 
 
-def distribution(xs: list[int], poids: list[float] | None = None) -> dict:
-    poids = poids or [1.0] * len(xs)
-    tot = sum(poids)
-    d = {}
+def distribution(xs: list[float], poids: list[float]) -> dict[int, float]:
+    tot = sum(poids) or 1
+    d: dict[int, float] = {}
     for x, p in zip(xs, poids):
-        k = min(int(round(x)), 3)
-        d[k] = d.get(k, 0) + p
+        d[min(int(round(x)), 4)] = d.get(min(int(round(x)), 4), 0) + p
     return {k: 100 * v / tot for k, v in sorted(d.items())}
 
 
-def rapport(scenes: dict, sortie_json: str | None, P: dict, p_rappel: float = 0.55) -> dict:
-    post, arriv, parts = latences(scenes, P, p_rappel)
-    ord_p = [p for p in post if not p["pic"]]
-
-    tp = [p["taps"] for p in post]
-    fp = [p["freq"] for p in post]
-    dist_p = distribution(tp, fp)
-    ta = [a["taps"] for a in arriv]
-
+def rapport(scenes: dict, points: dict, m: dict, sortie_json: str | None) -> dict:
+    seqs = latences(scenes, points, m)
     print("L'ESTIMATEUR DÉTERMINISTE — espérance de latence, aucun tirage\n")
-    tot_v = sum(parts.values())
-    print("■ PART DES CHEMINS — pour qu'un trou de modèle se voie tout de suite")
-    for k, v in parts.items():
-        print(f"   {k:18s} {v:3d}  ({100*v/tot_v:.0f} %)")
-    print()
-    print(f"■ LATENCE POST-DÉCISION — {len(post)} cas ({len(ord_p)} hors pics)")
-    moy = sum(p["taps"] * p["freq"] for p in post) / sum(fp)
-    print(f"   moyenne pondérée par la fréquence réelle : {moy:.2f} tap(s)")
-    for k, v in dist_p.items():
-        lib = f"{k}+" if k == 3 else str(k)
-        print(f"     {lib} tap : {v:5.1f} %   {'█' * round(v / 3)}")
-    tri = sorted(tp)
-    print(f"   P95 {tri[int(.95 * len(tri))]} · max {max(tp)}")
 
-    print(f"\n■ LATENCE D'ARRIVÉE — {len(arriv)} lieux")
-    print(f"   moyenne {statistics.mean(ta):.2f} tap(s)")
-    for k, v in distribution(ta).items():
-        lib = f"{k}+" if k == 3 else str(k)
-        print(f"     {lib} tap : {v:5.1f} %   {'█' * round(v / 3)}")
+    print("■ LES TROIS LATENCES — modèle contre vies enregistrées")
+    print(f"   {'':12s}  {'modèle':>8s}  {'mesuré':>8s}  {'écart':>7s}   (n)")
+    corresp = {"arrivée": "arrivée", "croisée": "croisée",
+               "sur place": "sur place", "point": "sur place"}
+    inst_types = {}
+    for typ, L in seqs.items():
+        if not L:
+            continue
+        mod = (sum(moyenne(x["loi"]) * x["freq"] for x in L)
+               / sum(x["freq"] for x in L))
+        obs = m["types"][corresp[typ]]["taps_moyens"]
+        n = m["types"][corresp[typ]]["n"]
+        marque = "  ← même mesure que « sur place »" if typ == "point" else ""
+        print(f"   {typ:12s}  {mod:8.2f}  {obs:8.2f}  {mod-obs:+7.2f}   ({n}){marque}")
+        inst_types[typ] = round(mod, 3)
 
-    print("\n■ CONTRIBUTION PAR FAMILLE — mots lus par décision, "
-          "pondérés par la fréquence")
+    # L'agrégat : on pondère les types par leur fréquence OBSERVÉE dans les
+    # vies. C'est la seule pondération honnête — le modèle sait ce que coûte
+    # chaque type, il ne sait pas à quelle fréquence une vie les enchaîne.
+    parts = poids_des_types(m)
+    d: dict[int, float] = {}
+    poids_tot = 0.0
+    for typ, L in seqs.items():
+        if not L:
+            continue
+        w = parts[typ] / len(L)
+        for x in L:
+            pw = x["freq"] * w
+            poids_tot += pw
+            for n, p in x["loi"].items():
+                d[min(n, 4)] = d.get(min(n, 4), 0.0) + pw * p
+    d = {k: 100 * v / poids_tot for k, v in sorted(d.items())}
+    glob = sum(k * v for k, v in d.items()) / 100
+    un = sum(v for k, v in d.items() if k <= 1)
+    g = m["global"]
+    print(f"\n■ AGRÉGAT — {glob:.2f} tap(s) contre {g['taps_moyens']:.2f} mesuré "
+          f"({glob - g['taps_moyens']:+.2f})")
+    print(f"   à un tap ou moins : {un:.1f} % contre {100*g['part_1_ou_moins']:.1f} % "
+          f"({un - 100*g['part_1_ou_moins']:+.1f} pt)")
+    for k, v in d.items():
+        obs = 100 * g["distribution"].get(k, 0)
+        lib = f"{k}+" if k == 4 else str(k)
+        print(f"     {lib} tap : modèle {v:5.1f} %  · mesuré {obs:5.1f} %   {'█'*round(v/3)}")
+
+    print("\n■ CE QUE COÛTE CHAQUE FAMILLE — mots lus par séquence, "
+          "pondérés par la fréquence du palier")
     fam: dict[str, float] = {}
-    for p in post:
-        fam[p["famille"]] = fam.get(p["famille"], 0) + p["mots_texte"] * p["freq"]
-    n_dec = len({(p["scene"], p["choix"]) for p in post})
+    for L in seqs.values():
+        for x in L:
+            fam[x["famille"]] = fam.get(x["famille"], 0) + x["mots"] * x["freq"]
+    n_seq = sum(len(L) for L in seqs.values())
     for f, w in sorted(fam.items(), key=lambda x: -x[1]):
-        print(f"   {f:12s} {w / n_dec:5.1f} mots/décision")
+        print(f"   {f:16s} {w / n_seq:5.1f} mots/séquence")
 
-    print(f"\n■ TOP 20 DES TUNNELS POST-DÉCISION "
-          f"(coût = taps × fréquence, pics exclus)")
-    chers = sorted(ord_p, key=lambda p: (-p["taps"] * p["freq"], -p["mots_texte"]))[:20]
-    for p in chers:
-        pal = f" {p['palier']}" if p["palier"] else ""
-        print(f"   {p['taps']} tap × {p['freq']:.2f} · {p['mots_texte']:3d} mots · "
-              f"{p['scene']}/{p['choix']}{pal}")
+    print("\n■ LES TUNNELS — coût = espérance de taps × fréquence réelle "
+          "(pics exclus)")
+    for typ, L in seqs.items():
+        chers = sorted([x for x in L if not x["pic"]],
+                       key=lambda x: (-moyenne(x["loi"]) * x["freq"], -x["mots"]))[:8]
+        print(f"\n   ── {typ.upper()}")
+        for x in chers:
+            qui = x.get("choix", "—")
+            pal = f" {x['palier']}" if x.get("palier") else ""
+            print(f"      {moyenne(x['loi']):.2f} tap × {x['freq']:.2f} · {x['mots']:3d} mots · "
+                  f"{x['scene']}/{qui}{pal}")
 
-    print(f"\n■ TOP 20 DES TUNNELS D'ARRIVÉE")
-    for a in sorted([a for a in arriv if not a["pic"]],
-                    key=lambda a: (-a["taps"], -a["mots"]))[:20]:
-        print(f"   {a['taps']} tap · {a['mots']:3d} mots · {a['scene']}")
-
-    inst = {
-        "post_moyenne": round(moy, 3),
-        "post_distribution": {str(k): round(v, 1) for k, v in dist_p.items()},
-        "arrivee_moyenne": round(statistics.mean(ta), 3),
-        "arrivee_distribution": {str(k): round(v, 1) for k, v in distribution(ta).items()},
-        "familles": {f: round(w / n_dec, 2) for f, w in fam.items()},
-        "p95": tri[int(.95 * len(tri))], "max": max(tp),
-        "cas": len(post), "lieux": len(arriv),
-    }
+    inst = {"agregat": round(glob, 3), "part_1_ou_moins": round(un, 1),
+            "mesure": {"agregat": round(g["taps_moyens"], 3),
+                       "part_1_ou_moins": round(100 * g["part_1_ou_moins"], 1)},
+            "types": inst_types,
+            "familles": {f: round(w / n_seq, 2) for f, w in fam.items()}}
     if sortie_json:
-        Path(sortie_json).write_text(json.dumps(inst, ensure_ascii=False, indent=2), encoding="utf8")
+        Path(sortie_json).write_text(json.dumps(inst, ensure_ascii=False, indent=2),
+                                     encoding="utf8")
         print(f"\n   instantané écrit : {sortie_json}")
     return inst
 
 
-# ─── LES TROIS ÉCHECS VOLONTAIRES (§5.3) ───────────────────────────────────
+# ─── LES ÉCHECS VOLONTAIRES ────────────────────────────────────────────────
 def preuves() -> int:
-    """Prouver que l'estimateur DÉTECTE les erreurs de comptage.
+    """Prouver que l'outil DÉTECTE les fautes — sinon il ne vaut rien.
 
-    Un outil de mesure qu'on n'a pas vu échouer ne vaut rien : quatre
-    extracteurs de ce projet rendaient zéro signalement parce qu'ils ne
-    lisaient rien. On injecte donc les trois fautes réellement commises.
+    Quatre extracteurs de ce projet ont rendu zéro signalement parce qu'ils ne
+    lisaient rien. On injecte donc les fautes réellement commises, et on
+    vérifie que chacune se voit.
     """
     src = sans_commentaires(SD.read_text(encoding="utf8"))
+    sc = lire_scenes(src)
     ok = True
 
     print("PREUVE 1 — les branches EXCLUSIVES ne s'additionnent pas")
-    sc = lire_scenes(src)
     cible = next((s for s in sc.values() if s["narration"] and s["narrationEchec"]), None)
     if not cible:
         print("   ⚠️ aucune scène à deux branches — preuve impossible"); ok = False
     else:
         vu = sum(mots(t) for t in cible["narration"])
         faux = vu + sum(mots(t) for t in cible["narrationEchec"])
-        compte = sum(b[1] for b in blocs_arrivee(cible) if b[0] == "narration")
-        print(f"   {cible['id']} : branche jouée {vu} mots · somme fautive {faux}")
-        print(f"   l'estimateur compte {compte} → "
-              f"{'CORRECT' if compte == vu else 'FAUTE NON DÉTECTÉE'}")
+        compte = sum(mots(t) for t in cible["narration"])
+        print(f"   {cible['id']} : branche jouée {vu} mots · somme fautive {faux} · "
+              f"compté {compte} → {'CORRECT' if compte == vu else 'FAUTE NON DÉTECTÉE'}")
         ok &= compte == vu
 
-    print("\nPREUVE 2 — le MOBILIER d'interface ne pèse pas comme de la prose")
-    reg = next((s for s in sc.values() if s["registre"]), None)
-    if not reg:
-        print("   ⚠️ aucune scène de Registre"); ok = False
-    else:
-        blocs = blocs_arrivee(reg)
-        poids_mob = sum(b[1] for b in blocs if b[0] == "mobilier")
-        print(f"   {reg['id']} : le tableau du Registre pèse {poids_mob} "
-              f"→ {'CORRECT' if poids_mob == 0 else 'FAUTE NON DÉTECTÉE'}")
-        ok &= poids_mob == 0
+    print("\nPREUVE 2 — le MOBILIER ne pèse pas comme de la prose")
+    prose = [("narration", 88, "")]
+    avec = decouper(prose + [("mobilier", 0, "")])
+    faux = decouper(prose + [("mobilier", 30, "")])
+    print(f"   88 mots + un tableau : {len(avec)} écran(s) si le mobilier pèse 0, "
+          f"{len(faux)} s'il pèse 30")
+    print(f"   → {'CORRECT' if len(avec) == 1 and len(faux) == 2 else 'FAUTE NON DÉTECTÉE'}")
+    ok &= len(avec) == 1 and len(faux) == 2
 
     print("\nPREUVE 3 — l'appariement choix → conséquence ne dérive pas")
-    # On injecte le bug : « dernier id vu avant » au lieu de l'objet englobant.
-    faux_paires, vraies = 0, 0
-    for sid, s in sc.items():
-        for ch in s["choix"]:
-            if not ch["consequence"]:
-                continue
-            vraies += 1
-    # Reproduction du bug sur la source, pour comparaison.
-    ids_avant = []
-    for m in re.finditer(rf'(?:\n\s*id: "([a-z0-9-]+)")|(?:\bconsequence:\s*{LITT})', src):
-        if m.group(1):
-            ids_avant.append(m.group(1))
-        elif ids_avant:
-            faux_paires += 1
-    doublons = {}
+    doublons: dict[str, int] = {}
     for s in sc.values():
         for ch in s["choix"]:
             if ch["consequence"]:
                 doublons[ch["consequence"]] = doublons.get(ch["consequence"], 0) + 1
     dups = sum(1 for v in doublons.values() if v > 1)
-    print(f"   {vraies} conséquences appariées par OBJET · "
-          f"{dups} texte(s) partagé(s) entre deux choix")
-    print(f"   → {'CORRECT' if dups <= 1 else 'DOUBLONS ANORMAUX'} "
-          f"(1 doublon connu et voulu : le Fossoyeur, présent dans deux scènes)")
+    print(f"   {sum(doublons.values())} conséquences appariées par OBJET · "
+          f"{dups} texte(s) partagé(s) → "
+          f"{'CORRECT' if dups <= 1 else 'DOUBLONS ANORMAUX'}")
+    print("   (1 doublon connu et voulu : le Fossoyeur, présent dans deux scènes)")
     ok &= dups <= 1
 
-    print(f"\n{'✓ les trois preuves passent' if ok else '✗ une preuve a échoué'}")
+    print("\nPREUVE 4 — la calibration porte réellement le résultat")
+    # Si l'on retire les injections mesurées, l'agrégat doit S'EFFONDRER. Sans
+    # ce contrôle, on ne saurait pas si le modèle converge grâce à sa
+    # calibration ou malgré elle.
+    m = mesures()
+    pts = lire_points(src)
+    vrai = agregat(latences(sc, pts, m), m)
+    m_nu = json.loads(json.dumps(m))
+    for t in m_nu["types"]:
+        m_nu["types"][t]["freq"] = {f: v for f, v in m_nu["types"][t]["freq"].items()
+                                    if f in FIXES.get(t, set())}
+    nu = agregat(latences(sc, pts, m_nu), m_nu)
+    ecart = vrai - nu
+    print(f"   avec les injections {vrai:.2f} tap · sans elles {nu:.2f} tap "
+          f"(écart {ecart:+.2f})")
+    print(f"   → {'CORRECT' if ecart > 0.25 else 'LA CALIBRATION NE SERT À RIEN'}")
+    ok &= ecart > 0.25
+
+    print("\nPREUVE 5 — la vérification séquence par séquence est SÉLECTIVE")
+    # Un contrôle qui passerait quel que soit le réglage ne prouverait rien.
+    # On fausse le budget d'écran et l'on exige que le taux s'effondre.
+    import io
+    import contextlib
+    global MOTS_PAR_ECRAN
+    vrai = MOTS_PAR_ECRAN
+    taux = {}
+    for b in (70, 90, 110):
+        MOTS_PAR_ECRAN = b
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            verifier()
+        taux[b] = float(re.search(r"\((\d+) %\)", buf.getvalue()).group(1))
+    MOTS_PAR_ECRAN = vrai
+    print(f"   budget 70 → {taux[70]:.0f} % · budget 90 (le vrai) → {taux[90]:.0f} % "
+          f"· budget 110 → {taux[110]:.0f} %")
+    sel = taux[90] == 100 and taux[70] < 80 and taux[110] < 80
+    print(f"   → {'CORRECT' if sel else 'LE CONTRÔLE NE DISCRIMINE RIEN'}")
+    ok &= sel
+
+    print(f"\n{'✓ les cinq preuves passent' if ok else '✗ une preuve a échoué'}")
     return 0 if ok else 1
+
+
+def poids_des_types(m: dict) -> dict[str, float]:
+    """La part de chaque type de séquence dans une vie, mesurée.
+
+    ⚠️ Le piège corrigé ici : les séquences d'examen d'un point d'intérêt
+    SONT comptées par les transcripts parmi les « sur place ». Donner la part
+    entière des sur-place à la fois à la liste des choix et à celle des points
+    doublait la masse du type le moins coûteux, et tirait tout l'agrégat vers
+    le bas. On la PARTAGE selon la proportion mesurée de séquences où un
+    examen apparaît.
+    """
+    p = {t: m["types"][t]["n"] / m["global"]["sequences"] for t in FIXES}
+    r = m["types"]["sur place"]["freq"].get("point · examen", 0.0)
+    return {"arrivée": p["arrivée"], "croisée": p["croisée"],
+            "sur place": p["sur place"] * (1 - r), "point": p["sur place"] * r}
+
+
+def agregat(seqs: dict, m: dict) -> float:
+    parts = poids_des_types(m)
+    num = den = 0.0
+    for typ, L in seqs.items():
+        if not L:
+            continue
+        w = parts[typ] / len(L)
+        for x in L:
+            num += moyenne(x["loi"]) * x["freq"] * w
+            den += x["freq"] * w
+    return num / den
+
+
+
+
+# ─── LA VÉRIFICATION SÉQUENCE PAR SÉQUENCE ─────────────────────────────────
+def verifier(n_max: int = 0) -> int:
+    """Rejouer chaque séquence RÉELLE dans la règle de découpage du client.
+
+    C'est le contrôle le plus dur du dispositif, et le plus utile : il ne
+    dépend d'AUCUNE probabilité. On prend les paragraphes exactement tels
+    qu'ils sont tombés dans la vie enregistrée, on les passe dans
+    `decouper()`, et on exige le même nombre d'écrans que le joueur a
+    réellement touchés. Si ça tombe juste, la pagination du modèle est exacte
+    et la seule incertitude qui reste est la calibration des injections.
+    """
+    import attribution as A
+    idx = A.index_sources()
+    total = exact = 0
+    ecarts: list[tuple[str, int, int, list[str]]] = []
+    par_type: dict[str, list[int]] = {}
+    for f in A.transcripts_par_defaut():
+        for s in A.sequences(A.ecrans(f.read_text(encoding="utf8"))):
+            vus = len(s["lectures"])
+            if not vus:
+                continue
+            blocs = []
+            fams = []
+            for e in s["lectures"]:
+                for fam, txt, m in A.attribue(e["paras"], idx):
+                    # Le bandeau du Geôlier pèse ses mots PLUS son chrome :
+                    # c'est la règle du client, pas un ajustement.
+                    blocs.append((fam, m + (CHROME_GEOLIER if fam == "geôlier" else 0), txt))
+                    fams.append(fam)
+            calc = len(decouper(blocs))
+            typ = ("arrivée" if "approche" in fams
+                   else "croisée" if "croisée" in fams else "sur place")
+            par_type.setdefault(typ, []).append(calc - vus)
+            total += 1
+            if calc == vus:
+                exact += 1
+            else:
+                ecarts.append((f.name, vus, calc, fams))
+
+    print("VÉRIFICATION — les séquences réelles repassées dans la règle du client\n")
+    print(f"■ {exact}/{total} séquences retrouvées AU NOMBRE D'ÉCRANS PRÈS "
+          f"({100*exact/total:.0f} %)")
+    for typ, d in sorted(par_type.items()):
+        justes = sum(1 for x in d if x == 0)
+        print(f"   {typ:11s} {justes:3d}/{len(d):3d} exactes · "
+              f"biais moyen {sum(d)/len(d):+.2f} écran")
+    if ecarts:
+        print(f"\n■ LES {len(ecarts)} ÉCARTS — vus / calculés / composition")
+        for nom, vus, calc, fams in ecarts[:n_max or 15]:
+            print(f"   {nom[:22]:22s} {vus} vus · {calc} calculés · "
+                  f"{' · '.join(fams)}")
+    return 0 if exact / total >= 0.85 else 1
+
+
+
+# ─── LE CLASSEMENT PAR COÛT RÉEL ───────────────────────────────────────────
+TRANCHE = 10  # mots retirés, pour comparer tous les textes au même geste
+
+
+def gains(scenes: dict, points: dict, m: dict) -> int:
+    """Classer les textes par ce que COÛTE réellement leur longueur.
+
+    La question du chantier n'est pas « quel texte est long » mais « quel
+    texte fait payer un écran de plus ». Les deux ne se recouvrent pas : un
+    paragraphe de 90 mots seul sur son écran ne coûte rien à raccourcir, un
+    paragraphe de 30 mots qui fait déborder son écran coûte un tap entier.
+
+    On mesure donc le GAIN MARGINAL : ce qu'on gagne en retirant dix mots à
+    CE texte-là, toutes choses égales par ailleurs, pondéré par la fréquence
+    réelle à laquelle il s'affiche. Les pics restent exclus : ils ont le droit
+    d'être longs.
+    """
+    seqs = latences(scenes, points, m)
+    parts = poids_des_types(m)
+    lignes = []
+    for typ, L in seqs.items():
+        if not L:
+            continue
+        w = parts[typ] / len(L)
+        for x in L:
+            if x["pic"]:
+                continue
+            avant = moyenne(x["loi"])
+            for i, (fam, mo, txt) in enumerate(x["fixes"]):
+                if mo <= TRANCHE or not txt:
+                    continue
+                court = list(x["fixes"])
+                court[i] = (fam, mo - TRANCHE, txt)
+                apres = moyenne(loi(court, x["opts"]))
+                g = (avant - apres) * x["freq"] * w
+                if g > 1e-6:
+                    lignes.append({
+                        "gain": g, "delta": avant - apres, "freq": x["freq"],
+                        "type": typ, "famille": fam, "mots": mo,
+                        "scene": x["scene"], "choix": x.get("choix", "—"),
+                        "palier": x.get("palier"), "extrait": txt[:64],
+                    })
+    lignes.sort(key=lambda l: -l["gain"])
+
+    print(f"CLASSEMENT PAR COÛT RÉEL — gain de {TRANCHE} mots retirés, "
+          f"pondéré par la fréquence\n")
+    print("■ CE QU'IL FAUT COUPER EN PREMIER")
+    print(f"   {'gain':>7s} {'Δtap':>6s} {'freq':>5s} {'mots':>5s}  où")
+    for l in lignes[:30]:
+        pal = f" {l['palier']}" if l["palier"] else ""
+        print(f"   {1000*l['gain']:7.2f} {l['delta']:6.2f} {l['freq']:5.2f} {l['mots']:5d}  "
+              f"{l['famille']:14s} {l['scene']}/{l['choix']}{pal}")
+    print("   (gain en millièmes de tap par séquence de la vie moyenne)")
+
+    par_fam: dict[str, float] = {}
+    for l in lignes:
+        par_fam[l["famille"]] = par_fam.get(l["famille"], 0) + l["gain"]
+    print("\n■ OÙ EST LE GISEMENT, PAR FAMILLE")
+    tot = sum(par_fam.values()) or 1
+    for f, g in sorted(par_fam.items(), key=lambda x: -x[1]):
+        n = sum(1 for l in lignes if l["famille"] == f)
+        print(f"   {f:16s} {100*g/tot:5.1f} % du gain · {n:3d} textes concernés")
+    inertes = sum(1 for typ, L in seqs.items() for x in L
+                  for fam, mo, txt in x["fixes"] if txt and mo > TRANCHE)
+    print(f"\n   {len(lignes)} textes sur {inertes} font gagner quelque chose : "
+          f"{100*len(lignes)/max(1,inertes):.0f} %.")
+    print("   Les autres peuvent être raccourcis sans qu'un seul tap tombe — "
+          "c'est de\n   l'écriture, plus du rythme.")
+    return 0
 
 
 def main() -> int:
     if "--preuves" in sys.argv:
         return preuves()
+    if "--verifier" in sys.argv:
+        return verifier()
     src = sans_commentaires(SD.read_text(encoding="utf8"))
     scenes = lire_scenes(src)
-    P = pools_traversee(src)
-    if len(scenes) < 50:
-        print(f"⚠️ {len(scenes)} scènes seulement — analyseur cassé, ne rien conclure.")
+    points = lire_points(src)
+    if len(scenes) < 50 or len(points) < 8:
+        print(f"⚠️ {len(scenes)} scènes / {len(points)} lieux à points — "
+              f"analyseur cassé, ne rien conclure.")
         return 2
-    j = None
-    if "--json" in sys.argv:
-        j = sys.argv[sys.argv.index("--json") + 1]
-    rapport(scenes, j, P)
+    m = mesures()
+    if "--gains" in sys.argv:
+        return gains(scenes, points, m)
+    j = sys.argv[sys.argv.index("--json") + 1] if "--json" in sys.argv else None
+    rapport(scenes, points, m, j)
     return 0
 
 

@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-12T14:27:21Z",
- "commit": "e777610",
+ "genere": "2026-08-12T18:03:32Z",
+ "commit": "8cb6388",
  "zones": [
   {
    "id": "landes",
@@ -3324,7 +3324,7 @@
      "id": "dormir-vraiment",
      "label": "Dormir vraiment",
      "type": "passif",
-     "consequence": "Quatre passages par nuit, disaient les encoches. Tu attends le deuxième et tu écoutes. Les voix tombent entières dans le creux : un nom qui n'est pas le tien, le mot « demain », et le Petit Tribunal cité comme on cite une heure. Tu es rentré avant le troisième."
+     "consequence": "Tu décides de ne rien écouter. C'est un travail, de ne pas écouter — tu comptes tes propres respirations pour couvrir le reste. Au matin tu ne sauras pas ce qui s'est dit devant ta porte, et c'est exactement ce que tu voulais."
     },
     {
      "id": "compter-les-passages",
