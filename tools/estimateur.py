@@ -226,7 +226,8 @@ def options(m: dict, typ: str) -> list[tuple[str, float, int]]:
     return out
 
 
-def loi(fixes: list, opts: list[tuple[str, float, int]]) -> dict[int, float]:
+def loi(fixes: list, opts: list[tuple[str, float, int]],
+        budget: int | None = None) -> dict[int, float]:
     """La LOI du nombre d'écrans, en énumérant les 2^n mondes possibles.
 
     ⚠️ On rend une DISTRIBUTION, pas une moyenne — et c'est le correctif qui
@@ -246,6 +247,26 @@ def loi(fixes: list, opts: list[tuple[str, float, int]]) -> dict[int, float]:
     fixes, alors que le client en insère certains au milieu. Ça ne change le
     nombre d'écrans que sur les rares cas à la frontière du budget.
     """
+    if budget == 1:
+        # ── BUDGET STRICT : au plus UNE injection optionnelle ──────────────
+        # Le client rassemblerait ses candidats puis n'en servirait qu'un.
+        # On garde donc la probabilité qu'il y ait au moins un candidat
+        # (1 − Π(1−pᵢ)) et l'on répartit ce cas entre les familles au
+        # prorata. ⚠️ La RÈGLE DE PRIORITÉ (« si le Geôlier parle, il prend
+        # la place ») ne change PAS ce calcul : elle décide QUI est servi,
+        # pas COMBIEN. Le budget achète des taps, la priorité achète de
+        # l'identité — ce sont deux décisions distinctes.
+        aucun = 1.0
+        for _, fr, _ in opts:
+            aucun *= 1 - fr
+        somme = sum(fr for _, fr, _ in opts) or 1.0
+        d = {len(decouper(fixes)): aucun}
+        for fam, fr, w in opts:
+            pi = (1 - aucun) * fr / somme
+            n = len(decouper(fixes + [(fam, w, "")]))
+            d[n] = d.get(n, 0.0) + pi
+        return d
+
     d: dict[int, float] = {}
     for masque in range(1 << len(opts)):
         p = 1.0
@@ -274,7 +295,8 @@ def successeur(sc: dict, ch: dict) -> str | None:
     return sc["chainNext"]
 
 
-def latences(scenes: dict, points: dict, m: dict) -> dict[str, list[dict]]:
+def latences(scenes: dict, points: dict, m: dict,
+             budget: dict[str, int | None] | None = None) -> dict[str, list[dict]]:
     """Les trois latences, séparées — les mélanger ferait couper le mauvais texte.
 
       · ARRIVÉE   — de la direction choisie à la première décision du lieu ;
@@ -284,6 +306,7 @@ def latences(scenes: dict, points: dict, m: dict) -> dict[str, list[dict]]:
     mais ce qu'il rend est une marche et un examen.
     """
     o = {t: options(m, t) for t in FIXES}
+    b = budget or {}
     seqs: dict[str, list[dict]] = {"arrivée": [], "sur place": [], "croisée": [], "point": []}
 
     for sid, sc in scenes.items():
@@ -292,13 +315,13 @@ def latences(scenes: dict, points: dict, m: dict) -> dict[str, list[dict]]:
             fixes = [("approche", round(m["mots_quand_present"]["approche"]), "")]
             fixes += [("narration", mots(t), t) for t in sc["narration"]]
             seqs["arrivée"].append({
-                "scene": sid, "loi": loi(fixes, o["arrivée"]), "freq": 1.0,
+                "scene": sid, "loi": loi(fixes, o["arrivée"], b.get("arrivée")), "freq": 1.0,
                 "fixes": fixes, "opts": o["arrivée"],
                 "mots": sum(b[1] for b in fixes), "famille": "narration", "pic": pic})
         for marche, examen in points.get(sid, []):
             fixes = [("point · marche", marche, ""), ("point · examen", examen, "")]
             seqs["point"].append({
-                "scene": sid, "loi": loi(fixes, o["sur place"]), "freq": 1.0,
+                "scene": sid, "loi": loi(fixes, o["sur place"], b.get("sur place")), "freq": 1.0,
                 "fixes": fixes, "opts": o["sur place"],
                 "mots": marche + examen, "famille": "point · examen", "pic": pic})
 
@@ -319,7 +342,7 @@ def latences(scenes: dict, points: dict, m: dict) -> dict[str, list[dict]]:
                 fixes = [(fam, mots(txt), txt)] + suite
                 seqs[typ].append({
                     "scene": sid, "choix": ch["id"], "palier": palier, "famille": fam,
-                    "loi": loi(fixes, o[typ]), "freq": freq,
+                    "loi": loi(fixes, o[typ], b.get(typ)), "freq": freq,
                     "fixes": fixes, "opts": o[typ],
                     "mots": mots(txt), "pic": pic})
 
@@ -720,6 +743,184 @@ def leviers(scenes: dict, points: dict, m: dict) -> int:
     return 0
 
 
+
+
+# ─── LES SCÉNARIOS DE BUDGET D'INJECTION (arbitrage du 12/08) ──────────────
+#
+# Règle du chantier, à garder sous les yeux : « le but n'est pas de rendre
+# PACTUM silencieux, c'est que chaque bloc qui retarde la prochaine décision
+# mérite d'exister ». On ne baisse donc AUCUNE fréquence à l'œil : on simule,
+# on compare ce que chaque politique retire, et on tranche ensuite.
+#
+# ⚠️ CE QUE RECOUVRE LA FAMILLE « GEÔLIER » — vérifié avant de simuler, parce
+# que tout l'arbitrage en dépend. Sur les 24 prises de parole des quatre vies :
+#   15  SOUPCON_GEOLIER      il commente un palier de Soupçon franchi
+#    4  JAILER_SANS_RISQUE   il constate une traversée sans rien tenter
+#    3  jailerLine de scène  le commentaire AMBIANT (le tirage à 12 %)
+#    2  JAILER_BY_POSTURE    la raillerie d'un jet critique
+# Autrement dit il est DÉJÀ événementiel à 21 sur 24. Le « commentaire
+# générique sur une arrivée ordinaire » que la consigne veut couper ne
+# représente que trois interventions sur vingt-quatre.
+GEOLIER_COMPOSITION = {"soupçon": 15 / 24, "sans risque": 4 / 24,
+                       "ambiant": 3 / 24, "critique": 2 / 24}
+
+# Et sa VOIX est courte : 8 à 20 mots, médiane 11,5. Comptée avec le chrome du
+# bandeau (+40, correctif volontaire du 10/08 contre le débordement), une
+# intervention pèse ~52 mots — donc plus des trois quarts de son coût en taps
+# vient du CADRE, pas de ce qu'il dit.
+GEOLIER_MOTS_MEDIANE = 11.5
+
+
+def _copie(m: dict) -> dict:
+    return json.loads(json.dumps(m))
+
+
+def _echelle(m: dict, fam: str, facteur: float) -> None:
+    for t in m["types"].values():
+        if fam in t["freq"]:
+            t["freq"][fam] *= facteur
+
+
+def politiques(m: dict) -> list[tuple[str, str, dict, dict]]:
+    """(nom, ce que ça retire, calibration, budget par type)."""
+    out = []
+    out.append(("S0 — actuel", "référence", m, {}))
+
+    b1 = {"arrivée": 1, "croisée": 1}
+    out.append(("S1 — budget strict",
+                "au plus UNE injection optionnelle par arrivée et par Croisée",
+                m, b1))
+
+    m2 = _copie(m)
+    _echelle(m2, "geôlier", 1 - GEOLIER_COMPOSITION["ambiant"])
+    out.append(("S2 — Geôlier événementiel",
+                "S1 + le commentaire ambiant de scène retiré (3 interventions sur 24)",
+                m2, b1))
+
+    # S3 : un palier de Soupçon sert AUJOURD'HUI deux blocs — la manifestation
+    # (craie ou palier) ET la ligne du Geôlier qui la commente. Le déclenchement
+    # est déjà « au changement de seuil » (`soupAfter > soupSeen`, Scene.tsx) :
+    # il n'y a donc pas de rappel routinier à supprimer. Ce qui reste à gagner,
+    # c'est le DOUBLON. La politique testée : le Geôlier PREND LA PLACE de la
+    # manifestation au lieu de s'y ajouter — exactement le principe demandé.
+    # Deux façons de défaire le doublon, au COÛT IDENTIQUE — un bloc en moins
+    # dans les deux cas. Ce qui les sépare n'est pas le rythme, c'est QUI
+    # raconte le palier. Le choix revient donc au design, pas à la mesure, et
+    # c'est pour ça que les deux sont simulés.
+    m3a = _copie(m2)
+    for t in m3a["types"].values():
+        t["freq"].pop("soupçon", None)
+    out.append(("S3a — le Geôlier le dit",
+                "S2 + il PREND LA PLACE de la manifestation du palier (la craie saute)",
+                m3a, b1))
+
+    m3b = _copie(m2)
+    _echelle(m3b, "geôlier", 1 - GEOLIER_COMPOSITION["soupçon"])
+    out.append(("S3b — le monde le dit",
+                "S2 + la craie reste seule, le Geôlier ne commente plus le Soupçon",
+                m3b, b1))
+
+    # S4 : fusionner le beat de chapitre à la narration ne supprime pas un
+    # bloc au sens du découpage (il ne compte que des mots dans l'ordre) —
+    # ce qu'on gagne, c'est la redescription que la fusion permet de couper.
+    # ⚠️ Les 40 % retirés sont une HYPOTHÈSE ÉDITORIALE, pas une mesure.
+    m4 = _copie(m3a)
+    m4["mots_quand_present"]["chapitre"] *= 0.6
+    out.append(("S4 — chapitre fusionné",
+                "S3a + beat de chapitre fondu dans la scène (−40 % de mots, hypothèse)",
+                m4, b1))
+
+    # Hors consigne, mais la mesure l'impose : et si l'on ne touchait qu'au
+    # CADRE du bandeau, sans lui retirer une seule réplique ?
+    out.append(("SG — bandeau allégé",
+                "aucune parole retirée ; le chrome du bandeau passe de 40 à 20",
+                _copie(m), {}))
+    # Le plafond : la politique complète ET le bandeau redessiné.
+    out.append(("S4+SG — les deux",
+                "S4 avec le bandeau allégé — la borne haute de ce chantier",
+                _copie(m4), b1))
+    return out
+
+
+def scenarios(scenes: dict, points: dict, m: dict) -> int:
+    global CHROME_GEOLIER
+    chrome_vrai = CHROME_GEOLIER
+    seq_par_vie = m["global"]["sequences"] / 4  # quatre vies enregistrées
+
+    print("SCÉNARIOS DE BUDGET D'INJECTION — simulation, aucun code de jeu touché\n")
+    print("■ CE QUE RECOUVRE « GEÔLIER » (§6 de la consigne, vérifié d'abord)")
+    for k, v in GEOLIER_COMPOSITION.items():
+        print(f"   {v*24:4.0f}/24  {k}")
+    print(f"   sa voix : {GEOLIER_MOTS_MEDIANE:.1f} mots de médiane · "
+          f"le bandeau qui la porte : {chrome_vrai} de chrome")
+    print(f"   → {100*chrome_vrai/(chrome_vrai+GEOLIER_MOTS_MEDIANE):.0f} % de son coût "
+          f"en taps vient du CADRE, pas de ce qu'il dit.\n")
+
+    print("■ LES SCÉNARIOS")
+    ligne = (f"   {'scénario':26s} {'tap':>5s} {'≤1':>6s} {'arriv':>6s} "
+             f"{'crois':>6s} {'place':>6s} {'Geôlier/vie':>12s}")
+    print(ligne)
+    ref = None
+    for nom, quoi, mp, budget in politiques(m):
+        CHROME_GEOLIER = 20 if "SG" in nom else chrome_vrai
+        seqs = latences(scenes, points, mp, budget)
+        parts = poids_des_types(mp)
+        # agrégat + distribution
+        d: dict[int, float] = {}
+        tot = 0.0
+        geo = 0.0
+        for typ, L in seqs.items():
+            if not L:
+                continue
+            w = parts[typ] / len(L)
+            fr_geo = mp["types"][{"point": "sur place"}.get(typ, typ)]["freq"].get("geôlier", 0)
+            if budget.get(typ) == 1:
+                opts = options(mp, {"point": "sur place"}.get(typ, typ))
+                aucun = 1.0
+                for _, f_, _ in opts:
+                    aucun *= 1 - f_
+                somme = sum(f_ for _, f_, _ in opts) or 1
+                fr_geo = (1 - aucun) * fr_geo / somme
+            for x in L:
+                pw = x["freq"] * w
+                tot += pw
+                geo += pw * fr_geo
+                for n, p in x["loi"].items():
+                    d[min(n, 4)] = d.get(min(n, 4), 0.0) + pw * p
+        d = {k: v / tot for k, v in d.items()}
+        moy = sum(k * v for k, v in d.items())
+        un = 100 * sum(v for k, v in d.items() if k <= 1)
+        par_type = {}
+        for typ, L in seqs.items():
+            par_type[typ] = (sum(moyenne(x["loi"]) * x["freq"] for x in L)
+                             / sum(x["freq"] for x in L))
+        gv = geo / tot * seq_par_vie
+        if ref is None:
+            ref = (moy, un, gv)
+            suff = ""
+        else:
+            suff = f"   ({moy-ref[0]:+.2f} tap · {gv-ref[2]:+.1f} prise/vie)"
+        print(f"   {nom:26s} {moy:5.2f} {un:5.1f}% {par_type['arrivée']:6.2f} "
+              f"{par_type['croisée']:6.2f} {par_type['sur place']:6.2f} {gv:12.1f}{suff}")
+        print(f"      {quoi}")
+    CHROME_GEOLIER = chrome_vrai
+
+    print("\n■ CE QUE CHAQUE POLITIQUE RETIRE VRAIMENT")
+    print("   S1  ne retire AUCUN texte : il en diffère. Une injection non servie")
+    print("       reste disponible pour une arrivée où elle aura plus de sens.")
+    print("   S2  retire 3 interventions du Geôlier sur 24 — les seules qui soient")
+    print("       vraiment ambiantes. C'est peu, parce qu'il est déjà événementiel.")
+    print("   S3a ne retire pas une réplique : la parole du Geôlier REMPLACE la")
+    print("       manifestation du palier au lieu de la doubler. Il parle autant.")
+    print("   S3b fait l'inverse — la craie reste, il se tait sur le Soupçon. Même")
+    print("       gain en taps, mais il ne parle plus qu'une fois par vie : c'est")
+    print("       LE choix qui touche à son identité, et il n'achète rien de plus.")
+    print("   S4  ne retire pas un bloc (le découpage ne compte que des mots dans")
+    print("       l'ordre) : il retire la redescription que la fusion permet de couper.")
+    print("   SG  ne retire RIEN du tout. Il redessine le bandeau.")
+    return 0
+
+
 def main() -> int:
     if "--preuves" in sys.argv:
         return preuves()
@@ -737,6 +938,8 @@ def main() -> int:
         return gains(scenes, points, m)
     if "--leviers" in sys.argv:
         return leviers(scenes, points, m)
+    if "--scenarios" in sys.argv:
+        return scenarios(scenes, points, m)
     j = sys.argv[sys.argv.index("--json") + 1] if "--json" in sys.argv else None
     rapport(scenes, points, m, j)
     return 0
