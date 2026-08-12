@@ -158,6 +158,44 @@ def lire_scenes(src: str) -> dict:
     return scenes
 
 
+
+# ─── LA TRAVERSÉE (ajoutée le 12/08 — le trou qui donnait 94,6 %) ──────────
+# Un choix de SORTIE ne mène pas au néant : il déclenche une CROISÉE
+# (`makeLiaison`) — ambiance de marche + les deux routes décrites — puis, une
+# fois la direction choisie, une ARRIVÉE (phrase d'approche + au plus un
+# rappel + la narration du lieu). Compter 0 écran sur ces 21 % de cas était
+# la cause exacte de l'écart avec les vies.
+def pools_traversee(src: str) -> dict:
+    """Longueurs réelles des blocs de transition, pas des constantes devinées."""
+    def liste(nom: str) -> list[int]:
+        m = re.search(rf'{nom}[^=]*=\s*\[([\s\S]*?)\n\];', src)
+        if not m:
+            return []
+        return [mots(t) for t in re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1)) if t.strip()]
+
+    def record(nom: str) -> list[int]:
+        m = re.search(rf'{nom}[^=]*=\s*\{{([\s\S]*?)\n\}};', src)
+        if not m:
+            return []
+        return [mots(t) for t in re.findall(r':\s*"((?:[^"\\]|\\.)*)"', m.group(1)) if t.strip()]
+
+    amb = liste("LIAISON_AMBIANCES") + liste("LIAISON_AMBIANCES_LANDE")
+    var = [mots(t) for t in re.findall(r'\btexte:\s*"((?:[^"\\]|\\.)*)"', src)]
+    indices = record("INDICE_ROUTE")
+    appro = record("APPROACH_NARRATION")
+    return {
+        # La Croisée : une ambiance + la phrase des deux routes (deux indices
+        # cousus dans « D'un côté, … De l'autre, … »).
+        "ambiance": moyenne(amb + var),
+        "routes": 2 * moyenne(indices) + 6,
+        "approche": moyenne(appro),
+    }
+
+
+def moyenne(xs: list[int]) -> float:
+    return sum(xs) / len(xs) if xs else 0.0
+
+
 # ─── L'ESTIMATION ──────────────────────────────────────────────────────────
 # Le bandeau du Geôlier ne tombe qu'à 12 % des arrivées (`chance(0.12)`,
 # Scene.tsx). Le compter à CHAQUE arrivée gonflerait la latence de tout le
@@ -193,37 +231,80 @@ def successeur(sc: dict, ch: dict) -> str | None:
     return sc["chainNext"]
 
 
-def latences(scenes: dict) -> tuple[list[dict], list[dict]]:
-    """(post-décision, arrivée) — une entrée par cas réellement jouable."""
+def latences(scenes: dict, P: dict, p_rappel: float = 0.55) -> tuple[list[dict], list[dict], dict]:
+    """(post-décision, arrivée, parts des chemins).
+
+    DEUX LATENCES SÉPARÉES, jamais mélangées (§4 du cadrage) :
+      · POST-DÉCISION — du choix résolu à la prochaine décision jouable ;
+      · ARRIVÉE — de la destination choisie à la première décision du lieu.
+    Les mélanger ferait couper le mauvais texte.
+
+    `p_rappel` = probabilité qu'un rappel d'arrivée existe et passe le budget
+    d'UN par arrivée (familiarité, mémoire d'un PNJ, réaction d'état,
+    perception, mode d'arrivée). C'est le seul paramètre non lisible dans les
+    sources : il dépend de l'état du compte. Il se CALIBRE contre les
+    transcripts à l'étape de validation, il ne se devine pas.
+    """
     post, arriv = [], []
+    parts = {"successeur connu": 0, "séjour": 0, "traversée": 0}
 
+    def esperance(blocs_sans: list, poids_option: float, bloc_option) -> float:
+        """E[taps] quand un bloc n'apparaît qu'avec une probabilité donnée.
+
+        ⚠️ On ne multiplie PAS un écran par une probabilité : on calcule la
+        latence dans les deux mondes et on pondère. Un bloc à 12 % qui fait
+        basculer un écran ne coûte pas 0,12 écran partout — il coûte un
+        écran entier, 12 % du temps.
+        """
+        sans = max(0, len(decouper(blocs_sans)) - 1)
+        avec = max(0, len(decouper(blocs_sans + [bloc_option])) - 1)
+        return (1 - poids_option) * sans + poids_option * avec
+
+    # ── ARRIVÉE : approche + (au plus un rappel) + narration du lieu ──────
     for sid, sc in scenes.items():
-        # ── ARRIVÉE : ce qu'on lit avant la première décision du lieu.
-        if sc["choix"]:
-            g = decouper(blocs_arrivee(sc))
-            arriv.append({
-                "scene": sid, "taps": max(0, len(g) - 1), "pic": bool(PICS.search(sid)),
-                "mots": sum(b[1] for b in blocs_arrivee(sc)),
-            })
+        if not sc["choix"]:
+            continue
+        blocs = [("approche", round(P["approche"]), "≈ phrase d'approche")]
+        blocs += [("narration", mots(t), t) for t in sc["narration"]]
+        if sc["registre"]:
+            blocs.append(("mobilier", 0, "—"))
+        e = esperance(blocs, p_rappel, ("rappel", 24, "≈ rappel d'arrivée"))
+        arriv.append({"scene": sid, "taps": e, "pic": bool(PICS.search(sid)),
+                      "mots": sum(b[1] for b in blocs)})
 
-        # ── POST-DÉCISION : par choix, et par palier pour un jet.
+    # ── POST-DÉCISION ────────────────────────────────────────────────────
+    for sid, sc in scenes.items():
         for ch in sc["choix"]:
             if ch["orient"] or ch["locked"]:
                 continue
             suiv = successeur(sc, ch)
-            # Sur un SÉJOUR sans sortie, on reste : seule la conséquence se lit.
             reste = sc["sejour"] and not ch["sortie"]
-            suite = [] if (reste or suiv not in scenes) else blocs_arrivee(scenes[suiv])
+            if reste:
+                suite, voie = [], "séjour"
+            elif suiv in scenes:
+                suite = blocs_arrivee(scenes[suiv])
+                voie = "successeur connu"
+            else:
+                # ⚠️ LE TROU CORRIGÉ : une sortie ouvre une CROISÉE. On lit
+                # l'ambiance de marche et les deux routes AVANT que les
+                # boutons d'orientation soient jouables.
+                suite = [("traversée", round(P["ambiance"]), "≈ ambiance de marche"),
+                         ("traversée", round(P["routes"]), "≈ les deux routes")]
+                voie = "traversée"
+            parts[voie] += 1
 
             def cas(txt: str, fam: str, freq: float, palier: str | None):
                 blocs = [(fam, mots(txt), txt)] + suite
-                g = decouper(blocs)
+                # Le bandeau du Geôlier ne tombe qu'à 12 % — pondéré, jamais
+                # ajouté d'office.
+                jl = scenes[suiv]["jailerLine"] if (suiv in scenes and not reste) else None
+                e = (esperance(blocs, FREQ_GEOLIER,
+                               ("geôlier", mots(jl) + CHROME_GEOLIER, jl))
+                     if jl else max(0, len(decouper(blocs)) - 1))
                 post.append({
-                    "scene": sid, "choix": ch["id"], "palier": palier,
-                    "taps": max(0, len(g) - 1), "freq": freq,
-                    "mots_texte": mots(txt), "mots_total": sum(b[1] for b in blocs),
+                    "scene": sid, "choix": ch["id"], "palier": palier, "voie": voie,
+                    "taps": e, "freq": freq, "mots_texte": mots(txt),
                     "famille": fam, "pic": bool(PICS.search(sid)),
-                    "reste": reste, "suivant": None if reste else suiv,
                 })
 
             if ch["issues"]:
@@ -234,7 +315,7 @@ def latences(scenes: dict) -> tuple[list[dict], list[dict]]:
                 cas(ch["consequence"], "conséquence", 1.0, None)
             else:
                 cas("", "neutre", 1.0, None)
-    return post, arriv
+    return post, arriv, parts
 
 
 def distribution(xs: list[int], poids: list[float] | None = None) -> dict:
@@ -242,13 +323,13 @@ def distribution(xs: list[int], poids: list[float] | None = None) -> dict:
     tot = sum(poids)
     d = {}
     for x, p in zip(xs, poids):
-        k = min(x, 3)
+        k = min(int(round(x)), 3)
         d[k] = d.get(k, 0) + p
     return {k: 100 * v / tot for k, v in sorted(d.items())}
 
 
-def rapport(scenes: dict, sortie_json: str | None) -> dict:
-    post, arriv = latences(scenes)
+def rapport(scenes: dict, sortie_json: str | None, P: dict, p_rappel: float = 0.55) -> dict:
+    post, arriv, parts = latences(scenes, P, p_rappel)
     ord_p = [p for p in post if not p["pic"]]
 
     tp = [p["taps"] for p in post]
@@ -256,7 +337,12 @@ def rapport(scenes: dict, sortie_json: str | None) -> dict:
     dist_p = distribution(tp, fp)
     ta = [a["taps"] for a in arriv]
 
-    print("L'ESTIMATEUR DÉTERMINISTE — aucun tirage, aucun seed\n")
+    print("L'ESTIMATEUR DÉTERMINISTE — espérance de latence, aucun tirage\n")
+    tot_v = sum(parts.values())
+    print("■ PART DES CHEMINS — pour qu'un trou de modèle se voie tout de suite")
+    for k, v in parts.items():
+        print(f"   {k:18s} {v:3d}  ({100*v/tot_v:.0f} %)")
+    print()
     print(f"■ LATENCE POST-DÉCISION — {len(post)} cas ({len(ord_p)} hors pics)")
     moy = sum(p["taps"] * p["freq"] for p in post) / sum(fp)
     print(f"   moyenne pondérée par la fréquence réelle : {moy:.2f} tap(s)")
@@ -381,13 +467,14 @@ def main() -> int:
         return preuves()
     src = sans_commentaires(SD.read_text(encoding="utf8"))
     scenes = lire_scenes(src)
+    P = pools_traversee(src)
     if len(scenes) < 50:
         print(f"⚠️ {len(scenes)} scènes seulement — analyseur cassé, ne rien conclure.")
         return 2
     j = None
     if "--json" in sys.argv:
         j = sys.argv[sys.argv.index("--json") + 1]
-    rapport(scenes, j)
+    rapport(scenes, j, P)
     return 0
 
 
