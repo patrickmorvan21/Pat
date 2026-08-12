@@ -3225,12 +3225,12 @@ export const SCENES: Scene[] = [
     hameauEntree: true,
     illustration: "assets/scene_hameau_entree_5_v2_a.png",
     narration: [
-      "Ils s'écartent. Pas beaucoup — juste assez pour que tu passes sans " +
-        "toucher personne, et tu comprends que c'est calculé.",
-      "La rue s'ouvre devant toi. Des volets se ferment à mesure, un par un, " +
-        "un peu en avance sur ton pas. Quelque part, une corde grince.",
-      "Te voilà dans le hameau. Personne ne t'a souhaité la bienvenue, et pourtant tous " +
-        "savaient déjà que tu venais.",
+      // Chantier du 11/08 : trois paragraphes pour un beat de sortie, c'était
+      // deux écrans de lecture pour une seule décision. Resserré en un.
+      "Ils s'écartent juste assez pour que tu passes sans toucher personne, " +
+        "et tu comprends que c'est calculé. Devant toi, des volets se ferment " +
+        "un par un, un peu en avance sur ton pas. Personne ne t'a souhaité la " +
+        "bienvenue, et pourtant tous savaient que tu venais.",
     ],
     choices: [
       {

@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-12T07:42:59Z",
- "commit": "8c56580",
+ "genere": "2026-08-12T07:55:24Z",
+ "commit": "b3789fc",
  "zones": [
   {
    "id": "landes",
@@ -3145,9 +3145,7 @@
   {
    "id": "hameau-entree-5",
    "narration": [
-    "Ils s'écartent. Pas beaucoup — juste assez pour que tu passes sans toucher personne, et tu comprends que c'est calculé.",
-    "La rue s'ouvre devant toi. Des volets se ferment à mesure, un par un, un peu en avance sur ton pas. Quelque part, une corde grince.",
-    "Te voilà dans le hameau. Personne ne t'a souhaité la bienvenue, et pourtant tous savaient déjà que tu venais."
+    "Ils s'écartent juste assez pour que tu passes sans toucher personne, et tu comprends que c'est calculé. Devant toi, des volets se ferment un par un, un peu en avance sur ton pas. Personne ne t'a souhaité la bienvenue, et pourtant tous savaient que tu venais."
    ],
    "choix": [
     {
