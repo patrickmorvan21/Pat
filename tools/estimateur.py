@@ -670,6 +670,56 @@ def gains(scenes: dict, points: dict, m: dict) -> int:
     return 0
 
 
+# ─── LES LEVIERS — ce qui ferait vraiment tomber un tap ────────────────────
+def leviers(scenes: dict, points: dict, m: dict) -> int:
+    """Comparer les deux leviers possibles : couper la prose, ou injecter moins.
+
+    ⚠️ C'est le résultat le plus contre-intuitif de l'outil, et le plus utile.
+    Ramener TOUTE la narration de la zone sous 65 mots ne fait tomber que
+    0,05 tap ; les blocs injectés à l'arrivée en pèsent dix fois plus. La
+    longueur des textes n'est pas ce qui retarde la décision — c'est le
+    NOMBRE de blocs empilés avant elle.
+    """
+    import copy
+    base = agregat(latences(scenes, points, m), m)
+    print(f"LES LEVIERS — agrégat courant {base:.2f} tap\n")
+
+    print("■ COUPER LA PROSE — plafond appliqué à toute narration hors pic")
+    for plafond in (85, 75, 65, 55):
+        sc2 = copy.deepcopy(scenes)
+        n = 0
+        for sid, sc in sc2.items():
+            if PICS.search(sid):
+                continue
+            tot = sum(mots(t) for t in sc["narration"])
+            if tot > plafond:
+                f = plafond / tot
+                n += 1
+                sc["narration"] = [" ".join(t.split()[:max(1, int(mots(t) * f))])
+                                   for t in sc["narration"]]
+        a = agregat(latences(sc2, points, m), m)
+        print(f"   {plafond:3d} mots · {n:2d} scènes raccourcies → "
+              f"{a:.2f} tap ({a - base:+.2f})")
+
+    print("\n■ INJECTER MOINS — ce que coûte chaque bloc ajouté à l'exécution")
+    res = []
+    fams = set()
+    for t in m["types"].values():
+        fams |= set(t["freq"])
+    for f in sorted(fams - {"?"}):
+        m2 = copy.deepcopy(m)
+        for t in m2["types"].values():
+            t["freq"].pop(f, None)
+        a = agregat(latences(scenes, points, m2), m2)
+        if base - a > 0.001:
+            res.append((base - a, f))
+    for d, f in sorted(res, reverse=True):
+        print(f"   {d:+.3f} tap   {f}")
+    print(f"\n   les injections pèsent {sum(d for d, _ in res):.2f} tap au total, "
+          f"soit\n   dix fois ce que rapporterait de couper toute la prose de la zone.")
+    return 0
+
+
 def main() -> int:
     if "--preuves" in sys.argv:
         return preuves()
@@ -685,6 +735,8 @@ def main() -> int:
     m = mesures()
     if "--gains" in sys.argv:
         return gains(scenes, points, m)
+    if "--leviers" in sys.argv:
+        return leviers(scenes, points, m)
     j = sys.argv[sys.argv.index("--json") + 1] if "--json" in sys.argv else None
     rapport(scenes, points, m, j)
     return 0
