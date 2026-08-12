@@ -43,6 +43,18 @@ export type BesaceItem = {
       Chantier feedback+fluidité du 12/08 : un objet muet sur son usage est un
       objet qu'on ne sort jamais. */
   usage?: string;
+  /** LA PHRASE QU'ON LIT EN S'EN SERVANT — propre à cet objet-là.
+   *
+   * ⚠️ Playtest du 12/08 : le Miroir de Poche Fêlé et l'Onguent gris se
+   * consommaient sur EXACTEMENT le même texte (« Un peu de force te
+   * revient »), à deux écrans d'intervalle. Techniquement correct, et
+   * fictionnellement faux : un miroir fêlé ne se boit pas. La formule
+   * générique reste le repli, mais tout objet actif du jeu doit avoir
+   * la sienne — c'est la promesse « la fiction est la source de vérité ».
+   *
+   * Elle raconte le GESTE, pas le chiffre : ce qu'on fait, ce que ça
+   * referme, et rien de plus. */
+  usageTexte?: string;
 };
 
 /** Besace = 2 slots actifs + 2 slots passifs (spec 21/07, remplace les 4 génériques). */
@@ -101,10 +113,18 @@ export function normalizeItem(i: BesaceItem): BesaceItem {
 
 /** Soins mineurs trouvables en exploration — ACTIFS à usage unique (~1 scène sur 5). */
 const SOINS_MINEURS: Omit<BesaceItem, "id">[] = [
-  { name: "Baume de mousse noire", rarity: "commun", kind: "soin", slot: "actif", heal: 0.3, cure: true, flavor: "Ça sent la cave. Ça referme les plaies." },
-  { name: "Fiole d'eau de gouttière", illustration: "assets/objet_fiole_baume.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.25, cure: false, flavor: "Trouble, tiède — mais elle apaise." },
-  { name: "Bandage d'un autre", illustration: "assets/objet_brin_chanvre_beni_b.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.2, cure: true, flavor: "Son premier propriétaire n'en aura plus besoin." },
-  { name: "Onguent gris", rarity: "commun", kind: "soin", slot: "actif", heal: 0.3, cure: false, flavor: "L'étiquette est illisible. L'odeur, convaincante." },
+  { name: "Baume de mousse noire",
+    usageTexte:
+      "Tu racles le fond du pot et tu tasses la mousse noire à même la plaie, sans regarder. Ça mord d'abord, puis ça tient — la chair se referme autour, comme si elle avait décidé d'y croire.", rarity: "commun", kind: "soin", slot: "actif", heal: 0.3, cure: true, flavor: "Ça sent la cave. Ça referme les plaies." },
+  { name: "Fiole d'eau de gouttière",
+    usageTexte:
+      "Tu bois l'eau de gouttière au goulot, debout, en trois gorgées qui ont le goût de l'ardoise. Ce n'est pas bon. C'est de l'eau, et ton corps ne fait pas le difficile.", illustration: "assets/objet_fiole_baume.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.25, cure: false, flavor: "Trouble, tiède — mais elle apaise." },
+  { name: "Bandage d'un autre",
+    usageTexte:
+      "Tu défais le bandage de quelqu'un d'autre et tu l'enroules sur ton propre bras. Il a déjà servi — la tache est ancienne, brune, à l'endroit exact où tu saignes. Tu serres le nœud sans y penser.", illustration: "assets/objet_brin_chanvre_beni_b.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.2, cure: true, flavor: "Son premier propriétaire n'en aura plus besoin." },
+  { name: "Onguent gris",
+    usageTexte:
+      "Tu étales l'onguent gris du plat du pouce, en couche mince. Ça sent la cendre et le suif. La douleur ne part pas : elle recule d'un pas et te laisse la place.", rarity: "commun", kind: "soin", slot: "actif", heal: 0.3, cure: false, flavor: "L'étiquette est illisible. L'odeur, convaincante." },
 ];
 
 /** Récompenses du Destin (nat 20) : rare à légendaire, JAMAIS une Relique. Un
@@ -116,7 +136,9 @@ const RECOMPENSES_DESTIN: Omit<BesaceItem, "id">[] = [
   // par agents, 10/08). Et c'est une récompense de Destin : le moment le plus
   // rare du jeu s'illustrait d'un objet qui n'est pas celui qu'on vient de gagner.
   { name: "Lame de lanterne", illustration: "assets/objet_dague_cendres_c.png", rarity: "rare", kind: "arme", slot: "passif", passiveMod: 1, passiveScope: "combat", flavor: "Forgée dans le métal d'une lanterne verte. Elle ne vacille jamais." },
-  { name: "Élixir du campement perdu", rarity: "rare", kind: "soin", slot: "actif", heal: 0.5, cure: true, flavor: "Quelqu'un l'a brassé pour un repos qui n'est jamais venu." },
+  { name: "Élixir du campement perdu",
+    usageTexte:
+      "Tu descends l'élixir d'un trait. La chaleur part de l'estomac et gagne les mains, les jambes, la nuque — quelqu'un a distillé ça pour un homme qui ne comptait pas revenir.", rarity: "rare", kind: "soin", slot: "actif", heal: 0.5, cure: true, flavor: "Quelqu'un l'a brassé pour un repos qui n'est jamais venu." },
   // ⚠️ SANS ICÔNE PROPRE, et volontairement laissée au repli : aucune des 30
   // icônes d'objet ne montre une larme, et le repli actuel (`objet_grimoire`)
   // est faux — mais forcer un mauvais appariement serait pire que le repli
@@ -164,7 +186,9 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
   },
 
   "offrandes-borne": {
-    name: "Offrandes de la Borne", rarity: "commun", kind: "soin", slot: "actif",
+    name: "Offrandes de la Borne",
+    usageTexte:
+      "Tu manges ce qu'on avait laissé au pied de la borne : du pain dur, une poignée de baies noires. C'était pour autre chose que toi. C'est toi qui le prends.", rarity: "commun", kind: "soin", slot: "actif",
     heal: 0.25, cure: false, illustration: "assets/objet_offrandes_borne_c.png",
     flavor: "Pain durci, rubans, clous tordus. On les a laissés pour entrer. Tu les prends pour tenir.",
   },
@@ -174,7 +198,9 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     flavor: "Un éclat du bois qui a tenu tant de cordes. Ta main s'en trouve plus dure quand il faut frapper.",
   },
   "brin-chanvre": {
-    name: "Brin de Chanvre Béni", rarity: "commun", kind: "soin", slot: "actif",
+    name: "Brin de Chanvre Béni",
+    usageTexte:
+      "Tu noues le brin de chanvre au-dessus de la plaie, deux tours, comme on t'a dit sans te le dire. Le sang ralentit. Tu ne sais pas si c'est le nœud ou ce qu'on a récité dessus.", rarity: "commun", kind: "soin", slot: "actif",
     heal: 0.2, cure: true, illustration: "assets/objet_brin_chanvre_beni_b.png",
     flavor: "Béni pour les pendus, dit-on. Noué sur une plaie, il la referme.",
   },
@@ -221,7 +247,9 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     flavor: "On la met au cou de la meneuse pour que le berger sache où est son troupeau dans le brouillard. Maintenant c'est toi qu'elle annonce.",
   },
   "miroir-poche": {
-    name: "Miroir de Poche Fêlé", rarity: "commun", kind: "babiole", slot: "actif",
+    name: "Miroir de Poche Fêlé",
+    usageTexte:
+      "Tu ouvres le miroir fêlé et tu te regardes dedans, une fois, franchement. La fêlure te coupe le visage en deux — et quelque chose que la lande avait déplacé se remet à sa place. Tu refermes avant d'en voir plus.", rarity: "commun", kind: "babiole", slot: "actif",
     heal: 0.15, cure: false, illustration: "assets/objet_miroir_poche_fele_c.png",
     flavor: "Fêlé en travers, jeté dans les roseaux. Se regarder dedans remet en place ce que la lande a déplacé.",
   },
@@ -244,7 +272,9 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     flavor: "Rouillée, oubliée dans la gâche du verrou. Elle n'ouvre pas la Descente — elle ouvre le retour, et c'est plus rare.",
   },
   "fruit-cendre": {
-    name: "Fruit de Cendre", rarity: "commun", kind: "soin", slot: "actif",
+    name: "Fruit de Cendre",
+    usageTexte:
+      "Tu mords dans le fruit de cendre. La pulpe est tiède, farineuse, et le goût reste longtemps après. Ça nourrit. C'est déjà tout ce qu'on lui demande.", rarity: "commun", kind: "soin", slot: "actif",
     heal: 0.3, cure: false, illustration: "assets/objet_fruit_cendre_a.png",
     flavor: "La peau est parfaite et le poids ment. Le manger est un pari : une vision, ou pire.",
   },

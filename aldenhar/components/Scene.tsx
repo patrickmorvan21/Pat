@@ -1145,13 +1145,14 @@ export default function Scene() {
       imageApresConsequence.current = null;
     }
     const groupes = decouperEnEcrans(entries);
-    // La CARTE D'ÉTAT reste visible sur TOUS les écrans de la scène (7/08,
-    // « il reste le temps de la séquence ») : le découpage l'attache au 1er
-    // groupe (poids 0) — on la re-pose en tête de chacun des suivants.
-    const cartes = groupes[0].filter((e) => e.kind === "etat");
-    if (cartes.length > 0) {
-      for (let g = 1; g < groupes.length; g++) groupes[g] = [...cartes, ...groupes[g]];
-    }
+    // ⚠️ LA CARTE D'ÉTAT NE SE MONTRE QU'UNE FOIS (playtest du 12/08).
+    // Elle était re-posée en tête de CHAQUE écran de la séquence (règle du
+    // 7/08, « elle reste le temps de la scène ») — mesuré en jeu : trois
+    // réaffichages d'affilée sur une séquence à trois chunks, exactement au
+    // moment où le joueur attend la suite. On sent le composant, plus l'état.
+    // L'acquisition est un ÉVÉNEMENT : elle se dit au moment où elle arrive,
+    // puis l'érosion du cadre, les choix et la narration portent la blessure.
+    // Le détail reste consultable (tap sur la carte → volet, et Essence).
     revealedIdsRef.current = new Set();
     setRevealedIds(new Set());
     revealQueueRef.current = [];
@@ -2936,12 +2937,11 @@ export default function Scene() {
       entries.unshift({ id: nextId(), kind: "etat", effects });
       persist((run) => { run.etatBanniere = { effects, lieu: lieuCourant }; });
     } else if (banniereAv) {
-      if (banniereAv.lieu === lieuCourant && !nextScene.liaison) {
-        entries.unshift({ id: nextId(), kind: "etat", effects: banniereAv.effects });
-      } else {
-        persist((run) => { run.etatBanniere = undefined; });
-        maybeAideMenu("etat");
-      }
+      // Même règle : on ne RÉAFFICHE plus la carte aux écrans suivants du
+      // lieu. Le drapeau ne sert plus qu'à savoir quand l'état a quitté
+      // l'interface, pour dire une fois « il est rangé dans le menu ».
+      persist((run) => { run.etatBanniere = undefined; });
+      maybeAideMenu("etat");
     }
     // La liste mémorisée reflète TOUS les actifs : un état levé puis repris
     // sera ré-annoncé (c'est une nouvelle prise), un état continu ne l'est plus.
@@ -3619,16 +3619,29 @@ export default function Scene() {
         });
         setHealth(runRef.current?.health ?? health);
         if (!choice.useItem.consequence) {
-          // Le soin générique dit ce qu'il referme ET ce que ça change pour
-          // la suite — sans un chiffre : le joueur reste devant ses options,
-          // et l'Anneau du prochain jet montrera de lui-même la différence.
-          const referme = item.cure
-            ? "La plaie se referme, l'entaille cède enfin."
-            : "Un peu de force te revient.";
-          consequence =
+          // ⚠️ LE TEXTE DE L'OBJET D'ABORD (playtest du 12/08). La formule
+          // générique donnait le MÊME paragraphe au Miroir de Poche Fêlé et à
+          // l'Onguent gris, à deux écrans d'intervalle — l'objet perdait son
+          // identité au moment précis où il devait la prouver, et un miroir
+          // fêlé ne se boit pas. Chaque actif porte maintenant son
+          // `usageTexte` ; la formule générique n'est plus qu'un filet pour un
+          // objet qu'on aurait oublié d'écrire.
+          const geste =
+            item.usageTexte ??
             `Tu sors « ${item.name} » de la Besace et tu t'occupes de toi, là, ` +
-            `debout, sans t'asseoir. ${referme} Rien n'a bougé autour ; c'est toi ` +
-            `qui n'es plus le même. Ce que tu vas tenter maintenant, tu le tenteras ` +
+              `debout, sans t'asseoir. ` +
+              (item.cure
+                ? "La plaie se referme, l'entaille cède enfin."
+                : "Un peu de force te revient.");
+          // La blessure qui cède se DIT quel que soit l'objet — c'est ce que
+          // le joueur vient d'acheter — sauf si son propre geste le raconte
+          // déjà.
+          const referme =
+            item.cure && !/(referme|cède|plaie)/i.test(geste)
+              ? " La plaie se referme, l'entaille cède enfin."
+              : "";
+          consequence =
+            `${geste}${referme} Ce que tu vas tenter maintenant, tu le tenteras ` +
             `avec ce corps-là.`;
         }
       }

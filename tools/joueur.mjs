@@ -223,9 +223,22 @@ async function peutEtreLancerLeDe() {
   if (!b) return null;
   // ⚠️ le dé se saisit à ~60px de SON centre ; l'anneau est centré dessus.
   await page.mouse.click(b.x + b.width / 2, b.y + b.height / 2);
-  await page.waitForTimeout(3600);
-  const verdict = await page.evaluate(
-    () => document.querySelector(".die-verdict")?.innerText?.replace(/\s+/g, " ").trim() || "");
+  // ⚠️ ON ATTEND QUE LE VERDICT SOIT RÉELLEMENT AFFICHÉ, jamais un délai fixe.
+  // Le noeud `.die-verdict` garde son TEXTE quand la classe `show` retombe :
+  // lire après 3,6 s enregistrait donc le mot du jet PRÉCÉDENT dès qu'un jet
+  // mettait plus longtemps à se poser (un `highStakes` va jusqu'à ~9 s). C'est
+  // ce qui a produit « RÉUSSITE ÉCLATANTE » suivi d'une prose d'échec dans le
+  // rapport du 12/08 — 14 jets réels sur ce même choix donnent 0 désaccord.
+  // Troisième fois que cette classe d'artefact fait accuser le moteur à tort.
+  const verdict = await page
+    .waitForFunction(() => {
+      const v = document.querySelector(".die-verdict");
+      return v && v.classList.contains("show")
+        ? v.innerText.replace(/\s+/g, " ").trim()
+        : null;
+    }, null, { timeout: 15000 })
+    .then((h) => h.jsonValue())
+    .catch(() => "");
   // congédier l'écran de verdict
   await page.mouse.click(195, 400);
   await page.waitForTimeout(900);

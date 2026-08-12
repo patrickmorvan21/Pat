@@ -4935,7 +4935,7 @@ export const SCENES: Scene[] = [
         "et murée de l'intérieur. Chaque fenêtre bouchée de pierres posées " +
         "depuis dedans, en rangs pressés, par quelqu'un qui s'enfermait " +
         "plus qu'il ne se protégeait. La maison du Bailli. Vide depuis sa " +
-        "corde. Pas gardée par personne.",
+        "corde. Aucun homme ne la garde.",
     ],
     choices: [
       {
@@ -8022,8 +8022,14 @@ export const DESCENTE_SCENE: Scene = {
   narration: [
     "Le sol s'incline. L'air se fait plus froid, plus vieux — il monte d'en bas, par la porte de la Descente restée ouverte derrière toi.",
     "Tu as traversé les Landes vivant. Peu le font. Devant, l'escalier plonge dans un noir qui n'a pas encore de nom.",
-    "Ici s'arrête, pour l'instant, ce que le Geôlier a bâti. L'Acte II se creuse encore.",
   ],
+  // ⚠️ « Ici s'arrête ce que le Geôlier a bâti. L'Acte II se creuse encore »
+  // était le DERNIER paragraphe de la narration — playtest du 12/08 : « la
+  // phrase précédente est une vraie fin, la mention d'Acte II me sort
+  // immédiatement du Domaine ». L'information n'est pas perdue : elle passe
+  // dans la bouche du Geôlier, la seule voix du jeu qui ait le droit de
+  // savoir qu'il y a un dehors. Un aveu de prototype ne se dit pas dans la
+  // prose du monde.
   jailerLine: "Le reste n'est pas prêt. Moi, je le serai avant toi.",
   choices: [
     { id: "recommencer-descente", label: "Repartir de la Borne" },
