@@ -33,17 +33,38 @@ LECTURE = "(touche pour continuer)"
 STAT = re.compile(r"\b(COURAGE|RUSE|INSTINCT|EMPATHIE)\b")
 
 
+# ⚠️ LE MOBILIER N'EST PAS DE LA PROSE — erreur trouvée le 12/08, et elle
+# désignait la mauvaise cible. Le plus gros « écran de texte » mesuré (149
+# mots) était le tableau du Grand Registre : quatorze lignes de rang, nom,
+# jour et cause. Compter ça comme du texte à lire faisait conclure qu'il
+# fallait couper de la prose, alors que la prose de cet écran est de deux
+# phrases. Même piège pour la puce « — JOUR X — », le bandeau d'état et le
+# bandeau « OBTENU ». On mesure donc les deux séparément.
+MOBILIER = re.compile(
+    r"— LE GRAND REGISTRE —[\s\S]*"      # le tableau, jusqu'au bout de l'écran
+    r"|—\s*JOUR\s+\d+\s*—"                # la puce du jour
+    r"|OBTENU[^\n]*(?:\n(?!\n)[^\n]*)*",  # le bandeau d'un objet gagné
+    re.M)
+
+
+def sans_mobilier(t: str) -> str:
+    return re.sub(r"\n{3,}", "\n\n", MOBILIER.sub("", t)).strip()
+
+
 def ecrans(md: str) -> list[dict]:
-    """Découpe un transcript en écrans {texte, choix[], action}."""
+    """Découpe un transcript en écrans {texte, prose, choix[], action}."""
     out: list[dict] = []
     for bloc in re.split(r"^### Écran \d+\s*$", md, flags=re.M)[1:]:
         choix = re.findall(r"^- (.+)$", bloc, flags=re.M)
         act = re.search(r"^→ \*(.+)\*$", bloc, flags=re.M)
         # Le corps = tout ce qui précède la liste des choix / la flèche.
         corps = re.split(r"\n\*\*Choix proposés|\n→ \*", bloc)[0].strip()
+        prose = sans_mobilier(corps)
         out.append({
             "texte": corps,
-            "mots": len(corps.split()),
+            "prose": prose,
+            "mots": len(prose.split()),          # ce qu'il y a VRAIMENT à lire
+            "mots_ecran": len(corps.split()),    # mobilier compris
             "choix": choix,
             "action": act.group(1).strip() if act else "",
         })
@@ -109,7 +130,7 @@ def rapport(chemin: Path) -> dict:
     print(f"║    → {tenu:.0f} % des décisions arrivent après AU PLUS UN tap "
           f"(cible §10 : « la majorité »)")
     print(f"║")
-    print(f"║  LONGUEUR DES ÉCRANS")
+    print(f"║  LONGUEUR DES ÉCRANS — PROSE SEULE (mobilier d'interface exclu)")
     print(f"║    médiane {statistics.median(mots):.0f} mots · moyenne {statistics.mean(mots):.0f} "
           f"· 9e décile {sorted(mots)[int(.9*len(mots))]}")
     lourds = sorted(mots, reverse=True)[:5]
@@ -117,6 +138,10 @@ def rapport(chemin: Path) -> dict:
     trop = sum(1 for m in mots if m > 45)
     print(f"║    → {trop} écran(s) sur {len(mots)} au-dessus de 45 mots "
           f"({100*trop/len(mots):.0f} %) — cible ChatGPT : 30-45")
+    brut = [e["mots_ecran"] for e in es if e["mots_ecran"] > 3]
+    surcharge = [e for e in es if e["mots_ecran"] - e["mots"] > 25]
+    print(f"║    mobilier compris : médiane {statistics.median(brut):.0f} "
+          f"· {len(surcharge)} écran(s) alourdi(s) de +25 mots par de l'interface")
     if r["rafales"]:
         print(f"║")
         print(f"║  RAFALES — là où l'on tapote 3 fois ou plus sans rien décider")

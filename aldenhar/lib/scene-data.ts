@@ -2275,23 +2275,18 @@ export const SCENES: Scene[] = [
     illustration: "assets/monstre_femme_seuil_3_v2_a.png",
     chainNext: "hameau-entree-3",
     narration: [
-      "« Quarante ans que je le vois et que je le dis pas. » Elle rit — un son épouvantable. « J'avais huit ans. On était trois sur le muret. Les deux autres sont morts vieux en disant qu'ils avaient rien vu. »",
-      "« J\u2019ai attendu quarante ans que quelqu\u2019un me dise que " +
-        "j\u2019étais pas folle. »",
+      "« Quarante ans que je le vois et que je le dis pas. » Elle rit — un son épouvantable. « J'avais huit ans. On était trois sur le muret. Les deux autres sont morts vieux en jurant qu'ils avaient rien vu. »",
       "Elle te lâche et reprend sa position, face au sud.",
-      "« Va-t'en maintenant. Et redis-le à personne. Moi je peux plus partir. Toi tu peux encore — pars avant qu'ils te comptent. »",
+      "« Va-t'en. Et redis-le à personne. Moi je peux plus partir. Toi tu peux encore — pars avant qu'ils te comptent. »",
     ],
     narrationEchec: [
-      "Les volets se referment un par un, sans hâte, comme on tire un " +
-        "drap sur une chose qu\u2019on a fini de regarder. Elle attend " +
+      "Les volets se referment un par un, sans hâte. Elle attend " +
         "qu\u2019il n\u2019en reste plus un seul.",
-      "« Voilà. C\u2019est fait. » Elle se rassoit, face au sud, les " +
-        "mains à plat sur les genoux. « Maintenant on est deux à avoir " +
-        "parlé trop fort. Sauf que moi j\u2019ai quarante ans " +
-        "d\u2019avance, et plus rien à perdre. »",
+      "« Voilà. C\u2019est fait. » Elle se rassoit, face au sud. " +
+        "« Maintenant on est deux à avoir parlé trop fort. Sauf que moi " +
+        "j\u2019ai quarante ans d\u2019avance, et plus rien à perdre. »",
       "Elle ne dira pas ce qu\u2019elle a vu. Tu sais seulement " +
-        "qu\u2019elle l\u2019a vu, et qu\u2019elle le sait depuis " +
-        "longtemps.",
+        "qu\u2019elle l\u2019a vu.",
       "« Va-t\u2019en. Et marche comme quelqu\u2019un qui n\u2019a rien " +
         "demandé. »",
     ],
@@ -2471,14 +2466,13 @@ export const SCENES: Scene[] = [
     id: "gamin-murets-1",
     illustration: "assets/monstre_gamin_murets_a.png",
     narration: [
-      "Il aligne des cailloux sur le muret, par taille. Il ne se cache pas de " +
-        "toi : c\u2019est le premier habitant qui ne se méfie pas. « T\u2019es le " +
-        "nouveau. T\u2019as combien de corbeaux ? »",
-      "Il n\u2019attend pas la réponse, et compte sur ses doigts. « Trois avant " +
-        "toi cette année. Deux sont ressortis. »",
-      "Il désigne la lande du menton, la crête des murets qui court vers le " +
-        "sud, basse et sèche. « Y a le chemin, et y a les murets. Le chemin, " +
-        "il fait le tour de tout. Les murets, non. »",
+      "Il aligne des cailloux par taille. Le premier habitant qui ne se " +
+        "méfie pas. « T\u2019es le nouveau. T\u2019as combien de corbeaux ? »",
+      "Il n\u2019attend pas la réponse et compte sur ses doigts. « Trois " +
+        "avant toi cette année. Deux sont ressortis. »",
+      "Il désigne du menton la crête des murets, vers le sud. « Y a le " +
+        "chemin, et y a les murets. Le chemin, il fait le tour de tout. Les " +
+        "murets, non. »",
     ],
     choices: [
       {
@@ -2706,14 +2700,13 @@ export const SCENES: Scene[] = [
     illustration: "assets/monstre_hameau_entree_3_v2_a.png",
     chainNext: "hameau-entree-4",
     narration: [
-      "Ils sont trois à t'attendre au milieu de la rue. Pas armés — un bâton " +
-        "de marche, une fourche posée contre un mur, à portée sans être brandie.",
-      "Celui du centre est vieux et large d'épaules. C'est lui qui parle, et " +
-        "sa voix ne tremble pas. Ses mains, si.",
-      "— « On ne te chasse pas. » Il le dit d'abord, comme une formule " +
-        "apprise. « Personne n'est chassé, ici. Mais tu descends. Ça se voit à " +
-        "ton pas. Et ceux qui descendent... » Il ne finit pas. Derrière lui, " +
-        "une femme tire un enfant à l'intérieur, sans un mot.",
+      "Ils sont trois au milieu de la rue. Pas armés — un bâton de marche, " +
+        "une fourche contre un mur, à portée sans être brandie.",
+      "Celui du centre est vieux et large d'épaules. Sa voix ne tremble " +
+        "pas. Ses mains, si.",
+      "— « On ne te chasse pas. Mais tu descends. Ça se voit à ton pas. Et " +
+        "ceux qui descendent... » Il ne finit pas. Derrière lui, une femme " +
+        "tire un enfant à l'intérieur.",
     ],
     choices: [
       {
@@ -2791,8 +2784,8 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_hameau_accueil_volet_c.png",
     chainNext: "hameau-entree-4",
     narration: [
-      "La rue est vide. Pas déserte — vide : une porte qui bat, un seau de travers, une flaque de lait qui n'a pas eu le temps de sécher. Tout le monde vient de rentrer, et vite.",
-      "Un volet s'entrouvre de deux doigts. Une voix de femme, basse, très rapide, aucun visage derrière : — « Ne touche pas les portes marquées. Ne réponds pas si on t'appelle par ton nom. Va au muret, avant qu'on vienne te chercher. »",
+      "La rue est vide. Pas déserte — vide : une porte qui bat, un seau de travers, du lait qui n'a pas séché. Tout le monde vient de rentrer, et vite.",
+      "Un volet s'entrouvre de deux doigts. Une voix de femme, basse, aucun visage derrière : — « Ne touche pas les portes marquées. Ne réponds pas si on t'appelle par ton nom. Va au muret. »",
       "Le volet ne se referme pas. Elle attend quelque chose de toi.",
     ],
     choices: [
@@ -2851,14 +2844,13 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_hameau_accueil_mur_a.png",
     chainNext: "hameau-entree-4",
     narration: [
-      "Personne dans la rue. Mais le pignon de la grange, en face, est " +
-        "couvert de craie du sol jusqu'à hauteur d'homme : des noms, sur deux " +
-        "colonnes serrées, écrits par plusieurs mains différentes.",
-      "Chaque nom a une date à côté. Sauf les sept derniers : à la place de " +
-        "la date, une croix.",
-      "Un gamin est accroupi tout en bas. Il ajoute une ligne, se relève, te " +
-        "voit, et s'éloigne très vite sans courir — ce qui est pire. Ce qu'il " +
-        "vient d'écrire n'est pas un nom. C'est : « un qui descend ».",
+      "Personne dans la rue. Le pignon de la grange est couvert de craie " +
+        "jusqu'à hauteur d'homme : des noms, deux colonnes serrées, " +
+        "plusieurs mains. Chaque nom a sa date. Sauf les sept derniers : à " +
+        "la place, une croix.",
+      "Un gamin accroupi tout en bas ajoute une ligne, te voit, et s'éloigne " +
+        "très vite sans courir — ce qui est pire. Ce qu'il vient d'écrire " +
+        "n'est pas un nom. C'est : « un qui descend ».",
     ],
     choices: [
       {
@@ -2914,11 +2906,11 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_hameau_accueil_enfant_c.png",
     chainNext: "hameau-entree-4",
     narration: [
-      "Ils ont envoyé un gosse. Huit ans peut-être, planté au milieu de la rue, les mains dans le dos. Aucun adulte visible — et tous les volets entrouverts de deux doigts.",
-      "Il récite. On entend les mots appris, dans l'ordre, avec les silences " +
-        "qu'on lui a fait répéter : — « Est-ce que tu dors la nuit ? Est-ce " +
-        "que tu as compté quelque chose aujourd'hui ? Est-ce qu'on t'a appelé " +
-        "par ton nom depuis que tu es descendu ? »",
+      "Ils ont envoyé un gosse. Huit ans, planté au milieu de la rue, les mains dans le dos. Aucun adulte — et tous les volets entrouverts de deux doigts.",
+      "Il récite, avec les silences qu'on lui a fait répéter : — « Est-ce " +
+        "que tu dors la nuit ? Est-ce que tu as compté quelque chose " +
+        "aujourd'hui ? Est-ce qu'on t'a appelé par ton nom depuis que tu es " +
+        "descendu ? »",
       "Il ne comprend pas ce qu'il demande. Les autres, si.",
     ],
     choices: [
@@ -3041,13 +3033,11 @@ export const SCENES: Scene[] = [
     chainNext: "hameau-entree-4",
     narration: [
       "Tu entres dans la rue au moment où un homme se met à courir. Pas vers " +
-        "toi : vers la chapelle, vers la corde qui pend le long du mur.",
-      "Une vieille femme l'atteint avant lui. Elle ne crie pas, elle ne le " +
-        "retient pas — elle pose la main sur la corde, c'est tout, et l'homme " +
-        "s'arrête net comme s'il se réveillait.",
-      "Le village sort quand même. Une dizaine, sur les seuils, pour un " +
-        "tocsin qui n'a pas sonné. Et c'est toi qu'ils regardent : tu as " +
-        "failli les faire sonner.",
+        "toi : vers la corde qui pend le long de la chapelle.",
+      "Une vieille l'atteint avant lui. Elle pose la main sur la corde, " +
+        "c'est tout, et l'homme s'arrête net comme s'il se réveillait.",
+      "Le village sort quand même. Une dizaine sur les seuils, pour un " +
+        "tocsin qui n'a pas sonné. Et c'est toi qu'ils regardent.",
     ],
     choices: [
       {
@@ -3476,15 +3466,12 @@ export const SCENES: Scene[] = [
         requiresDecouverte: "d.temoin_nomme",
         passive: {
           consequence:
-            "Tu sais ce que c'est, maintenant, et tu sais ce que ça attend. " +
-            "Alors tu ne fais rien de ce qu'on fait quand on a peur : tu ne " +
-            "te caches pas, tu ne cherches pas la fente, tu ne pries pas. Tu " +
-            "restes assis dans la paille, les mains ouvertes sur les genoux, " +
-            "et tu attends l'aube en le laissant attendre aussi.\n\n" +
-            "Le poids ne s'en va pas. Mais au bout d'un long moment, il se " +
-            "déplace de quelques pouces — et se réinstalle. Le geste d'une " +
-            "chose qui change de position parce qu'elle a compris que ce " +
-            "sera long.",
+            "Tu sais ce que ça attend. Alors tu ne fais rien : ni te cacher, " +
+            "ni chercher la fente, ni prier. Assis dans la paille, les mains " +
+            "ouvertes sur les genoux, tu le laisses attendre aussi.\n\n" +
+            "Le poids ne s'en va pas. Il se déplace de quelques pouces, et se " +
+            "réinstalle — une chose qui change de position parce qu'elle a " +
+            "compris que ce sera long.",
         },
       },
       {
@@ -3578,14 +3565,11 @@ export const SCENES: Scene[] = [
         passive: {
           consequence:
             "Au gris du matin, les planches ressortent noires sur le torchis. " +
-            "Tu remontes la rue en comptant, et tu t'arrêtes avant la fin " +
-            "parce que le compte cesse d'être une information : c'est presque " +
-            "toutes les maisons. Presque. Trois pignons ont gardé leurs " +
-            "combles ouvertes, et ce sont les trois plus proches du Petit " +
-            "Tribunal.\n\n" +
-            "Le vieux te regarde compter sans rien dire. Quand tu as fini, " +
-            "il dit seulement : « C'était la même nuit. » Il ne précise pas " +
-            "laquelle. Il n'a pas besoin.",
+            "Tu comptes, et tu t'arrêtes avant la fin : c'est presque toutes " +
+            "les maisons. Trois pignons ont gardé leurs combles ouvertes — " +
+            "les trois plus proches du Petit Tribunal.\n\n" +
+            "Le vieux te regarde faire. « C'était la même nuit. » Il ne " +
+            "précise pas laquelle.",
         },
       },
       {
@@ -3644,16 +3628,14 @@ export const SCENES: Scene[] = [
     terminal: true,
     renoncement: true,
     narration: [
-      "Tu ne passes pas le portillon. Tu fais un pas de côté, et tu " +
-        "t'assieds sur la pierre du seuil, du côté du hameau.",
-      "Personne ne discute. Le plus jeune referme le portillon, le vieux " +
-        "hoche la tête une fois — c'est fait, et ça s'est fait sans un mot. " +
-        "Le lendemain, on te donne une porte. Une vraie, avec un loquet. Ce " +
-        "n'est pas rien, ici, une porte.",
-      "Aux premières aubes tu comptes les jours comme eux. Puis tu cesses de " +
-        "compter. Un matin, quelqu'un frappe chez la Femme au Seuil, et sa " +
-        "croix de craie a disparu de son bois. Personne ne t'explique où elle " +
-        "est passée. Tu ne demandes pas.",
+      "Tu ne passes pas le portillon. Tu t'assieds sur la pierre du seuil, " +
+        "du côté du hameau.",
+      "Personne ne discute. Le vieux hoche la tête une fois. Le lendemain, " +
+        "on te donne une porte — une vraie, avec un loquet. Ce n'est pas " +
+        "rien, ici, une porte.",
+      "Puis tu cesses de compter les jours. Un matin, la croix de craie de " +
+        "la Femme au Seuil a disparu de son bois. Personne n'explique. Tu ne " +
+        "demandes pas.",
     ],
     choices: [{ id: "fin-renoncant", label: "Laisser le nom au Registre" }],
     jailerLine:
@@ -3707,10 +3689,9 @@ export const SCENES: Scene[] = [
     hameauHalte: true,
     decouverte: "d.temoin_entrevu",
     narration: [
-      "Aucune porte, aucune grange. Tu dors contre un muret, côté nord. Sauf que cette fois tu ne dors pas : tu sais ce qui marche sur les toits.",
-      "Au bout de la ruelle, quelque chose traverse. Sans bruit — et c'est l'absence de bruit qui te fige, parce que ça faisait trois têtes de haut.",
-      "Du tissu noir, beaucoup, qui suit avec un temps de retard. Et dessous, une seconde de trop, quelque chose qui n'était pas des jambes.",
-      "Puis plus rien. Sur les toits des deux côtés, les corbeaux sont alignés et te regardent, toi.",
+      "Aucune porte, aucune grange. Tu dors contre un muret, côté nord — sauf que tu ne dors pas : tu sais ce qui marche sur les toits.",
+      "Au bout de la ruelle, quelque chose traverse. Sans bruit, et c'est ça qui te fige : trois têtes de haut.",
+      "Du tissu noir qui suit avec un temps de retard. Dessous, une seconde de trop, quelque chose qui n'était pas des jambes. Puis plus rien : sur les deux toits, les corbeaux te regardent, toi.",
     ],
     choices: [
       {
@@ -4848,12 +4829,10 @@ export const SCENES: Scene[] = [
       cle: "corde",
       consequence:
         "Tu passes la corde en double autour de la pierre et tu serres. " +
-        "Dessous, les coups s'arrêtent net — pour la première fois depuis " +
-        "que tu es là. Le chanvre file entre deux planches disjointes et " +
-        "descend, descend, sans jamais toucher le fond ; tu tiens le brin " +
-        "libre, il ne pèse rien. Puis, très bas, on l'a prise. Elle se tend " +
-        "d'un coup, se raidit, et reste tendue. Quelque chose l'a amarrée de " +
-        "l'autre bout. On t'invite.",
+        "Dessous, les coups s'arrêtent net. Le chanvre file entre deux " +
+        "planches et descend sans jamais toucher le fond.\n\n" +
+        "Puis, très bas, on l'a prise. Elle se tend d'un coup et reste " +
+        "tendue. Quelque chose l'a amarrée de l'autre bout. On t'invite.",
     },
     narration: [
       "Sur la place arrière du hameau, un puits — condamné de frais : " +
@@ -5986,12 +5965,11 @@ export const SCENES: Scene[] = [
     illustration: "assets/objet_lanterne_rouillee_guerite.png",
     chainNext: "veilleur-2",
     narration: [
-      "— « Trois jours ! » Il le crie presque — la voix de quelqu'un qui parle " +
-        "peu et qui stocke. « Trois jours que j'ai vu personne. Le hameau " +
-        "m'envoie ma soupe par le gamin, et le gamin pose la soupe à vingt " +
-        "pas. Vingt pas ! Comme si veiller la porte, ça s'attrapait. »",
-      "Il sort de sa niche, s'étire, et te détaille sans gêne — l'inventaire " +
-        "franc de l'homme qui n'a plus de manières à user.",
+      "— « Trois jours ! » Il le crie presque. « Trois jours que j'ai vu " +
+        "personne. Le hameau m'envoie ma soupe par le gamin, et le gamin la " +
+        "pose à vingt pas. Vingt pas ! Comme si veiller la porte, ça " +
+        "s'attrapait. »",
+      "Il sort de sa niche et te détaille sans gêne.",
       "— « Tu descends. Évidemment que tu descends. On vient pas admirer ma " +
         "palissade. »",
     ],
@@ -6110,8 +6088,8 @@ export const SCENES: Scene[] = [
     illustration: "assets/objet_lanterne_veilleur_3_c.png",
     chainNext: "palissade-sud-2",
     narration: [
-      "Il t'ouvre le portillon lui-même, avec la cérémonie de l'homme dont c'est la seule prérogative. Au moment où tu passes, il note quelque chose sur une planche : ton passage, ta direction, l'heure.",
-      "— « Je note tout le monde », dit-il sans lever les yeux. « Comme ça, si un jour quelqu'un remonte, je saurai qui c'était. » Il sourit à sa planche. « La colonne des retours est toute neuve. »",
+      "Il t'ouvre le portillon lui-même. Au moment où tu passes, il note sur une planche : ton passage, ta direction, l'heure.",
+      "— « Je note tout le monde. Comme ça, si un jour quelqu'un remonte, je saurai qui c'était. » Il sourit à sa planche. « La colonne des retours est toute neuve. »",
       "Elle ne l'est pas tout à fait. Tout en haut, une marque — une seule, d'une autre main. Il ne la voit pas : sa planche commence en bas.",
     ],
     narrationEchec: [
