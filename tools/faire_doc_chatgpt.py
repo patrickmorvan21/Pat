@@ -50,13 +50,18 @@ la scène n'écrit pas : phrase d'approche, franchissement du village, puce
 Jour, carte d'état, rumeur, manifestation du Soupçon, ligne de mémoire d'un
 PNJ — jusqu'à douze injections possibles sur un même écran.
 
-**Conséquence : le levier n'est pas l'écriture, c'est l'ASSEMBLAGE.** Aucune
-des lignes lourdes mesurées (serment-hameau 2,7 taps ; marche-muet 1,8 ;
-tour-de-guet 1,5) n'est corrigeable en raccourcissant un paragraphe. C'est
-pourquoi la cible « 25-45 mots par scène » du §10 n'a pas été appliquée :
-elle ferait perdre de la prose sans gagner un tap. La médiane est déjà à 55
-mots. Si cette cible est maintenue, elle doit être traitée comme une consigne
-d'écriture séparée, pas comme un correctif de fluidité.
+**Conséquence : une part du levier n'est pas l'écriture, c'est l'ASSEMBLAGE.**
+Aucune des lignes lourdes mesurées (serment-hameau 2,7 taps ; marche-muet
+1,8 ; tour-de-guet 1,5) n'est corrigeable en raccourcissant un paragraphe.
+
+**⚠️ CORRECTION — la première version de ce rapport concluait de là qu'il ne
+fallait pas raccourcir les textes. C'était faux, et sur deux plans.** D'abord
+le chiffre : j'avançais « la médiane est déjà à 55 mots », qui est le total
+d'une SCÈNE, tous paragraphes confondus — pas ce que le joueur voit. Mesurée
+sur des vies réelles, la médiane par ÉCRAN est de **34 mots**. Ensuite le
+raisonnement : « raccourcir ne fait pas gagner un tap » répond à une question
+de fluidité, alors que la demande portait sur le RYTHME. Les deux ne sont pas
+la même chose. Le §7 ci-dessous donne la mesure et la cible corrigée.
 
 **§12.4 — les CTA tronqués.** Un seul CTA est réellement tronqué en jeu
 (vérifié au DOM, pas à la longueur) : « Pourquoi les pointes vers
@@ -272,9 +277,9 @@ alentours » n'existe plus que comme conséquence : il n'apparaît que si une
 scène a des points. **Supprimer les points supprime le bouton** — il n'y a
 donc aucun sous-menu résiduel à traquer, seulement du contenu à convertir.
 
-**La cible de 25-45 mots par scène (§10).** Voir §1 : le tap ressenti ne vient
-pas de la longueur des textes. À traiter comme une consigne d'écriture
-séparée si elle est maintenue.
+**La cible de 25-45 mots (§10).** Elle n'est pas appliquée à ce jour — mais
+elle n'est plus refusée : la mesure sur vies complètes (§7) montre qu'elle est
+le chantier suivant, avec une cible plus précise que « raccourcir tout ».
 
 **Le Codex.** Écran non conçu, maquettes attendues. Les cinq drapeaux coupés
 en §2 le concernaient ; ils seront reposés à ce moment-là, une ligne chacun.
@@ -305,7 +310,83 @@ playtest ?
 
 ---
 
-# 7. Définition de « fini » (§13) — état point par point
+# 7. LE TEST DES DEUX VIES — la mesure qui manquait
+
+Deux vies COMPLÈTES rejouées sur v1.79, une curieuse et une pressée, sur le
+build publié : 167 écrans, 53 décisions, 0 erreur. C'est précisément ce que le
+banc ne savait pas faire — il posait le héros dans un lieu et ne jouait jamais
+d'arrivée. Nouvel outil : `tools/rythme.py`, qui lit les transcripts de
+parties réelles. Une base de comparaison existe : deux vies enregistrées de la
+même façon sur v1.59, avant tout ce chantier.
+
+**Taps de lecture avant une décision (la métrique du §5) :**
+
+v1.59 → **1,98** tap · 36 % des décisions à un tap ou moins
+
+v1.79 → **1,79** tap · 38 % des décisions à un tap ou moins
+
+**Verdict : la cible du §10 n'est PAS atteinte.** « La majorité des scènes
+mène à une décision après au plus un tap » demande plus de 50 % ; on est à
+38 %. Le gain sur la moyenne est réel mais mince, et la part des décisions
+immédiates n'a quasiment pas bougé. Sur la vie pressée, c'est pire : **19 %**
+seulement, et une décision sur trois demande trois taps.
+
+**Longueur des écrans — et c'est ici que la critique du §10 était juste :**
+
+médiane **34 mots** (bonne, et à ne pas toucher)
+
+mais **46 % des écrans dépassent 45 mots**, contre 42 % sur v1.59
+
+et la queue est lourde : 149, 108, 106, 96, 94 mots sur un seul écran
+
+**Ce n'est donc pas « tout raccourcir » qu'il faut, c'est COUPER LA QUEUE.**
+La médiane est déjà dans la cible ; ce sont les 46 % au-dessus de 45 mots, et
+surtout la poignée d'écrans à 90-150 mots, qui coûtent le tap
+supplémentaire. C'est une cible mesurable, et `tools/rythme.py` la vérifie.
+
+**Où l'on tapote sans décider.** L'outil nomme les endroits où trois taps ou
+plus s'enchaînent sans décision. Les voici, et ils sont instructifs : ce sont
+tous des écrans de TEXTE, jamais des menus.
+
+« Ils ont commencé à te compter. C'est un pays méticuleux. » · « Tu ne sens
+rien ? Normal. On ne sent jamais le premier tour de corde. » · « Un seul
+écriteau détonne : le motif a été gratté au couteau… » · « Ça grince en
+mesure. Toutes ces cordes, un seul rythme. »
+
+Autrement dit : les sous-menus et l'assemblage d'arrivée ont bien été traités
+— ce qui reste, c'est la prose. La critique était fondée.
+
+**Les autres questions posées, telles que les vies y répondent :**
+
+**« Observer » manque-t-il ?** Non — mais il est encore là : 7 apparitions
+dans la vie curieuse, sur les scènes hors lot pilote. Les 29 points restants
+se voient donc réellement en jeu.
+
+**Les objets récompensent-ils ?** Partiellement. 3 objets gagnés par vie, mais
+1 seul sorti sur la vie curieuse et 0 sur la pressée. Le nouveau geste
+(l'objet qui transforme la scène) fonctionne quand il est déclenché, mais il
+est encore trop rare pour porter une sensation de récompense. Deux objets
+pilotes sur douze : c'est attendu, et ça confirme qu'il faut étendre.
+
+**Les choix reviennent-ils hanter ?** Oui, et c'est le point le plus solide :
+9 à 10 échos de mémoire par vie, dont des reconnaissances explicites de
+personnages (« Je t'ai déjà croisé »). La chaîne « j'ai fait quelque chose →
+le monde l'a retenu » est en place et se voit sans qu'on la cherche.
+
+**Ce qui ne s'est pas produit du tout :** aucun Destin ni Malédiction sur les
+deux vies, et le Geôlier n'a parlé qu'une fois en 167 écrans. Les moments les
+plus forts du jeu sont donc rares au point d'être absents d'une partie
+entière — c'est un sujet de dosage distinct, à regarder ensuite.
+
+**Conclusion de ce test : le feu vert ne doit pas être donné.** Non pas parce
+que les correctifs livrés seraient faux — ils tiennent, et la mémoire du monde
+fonctionne — mais parce que la métrique qui décide, elle, n'est pas atteinte :
+38 % au lieu d'une majorité. Le chantier suivant est la queue des textes, pas
+la généralisation des 29 points. Les deux sont à faire ; celui-là d'abord.
+
+---
+
+# 8. Définition de « fini » (§13) — état point par point
 
 **Un objet utilisé montre ce qu'il modifie** — fait, sur deux objets pilotes,
 prouvé en jeu.
@@ -322,9 +403,9 @@ lot pilote, 29 points restants sur 11 scènes, en attente d'arbitrage.
 **Aucun CTA essentiel tronqué** — fait, et la cause systémique est réparée,
 pas contournée.
 
-**La majorité des scènes mène à une décision après au plus un tap** — non
-démontré : vrai sur la narration écrite, non mesurable aujourd'hui sur
-l'assemblage d'arrivée (voir §4).
+**La majorité des scènes mène à une décision après au plus un tap** — NON
+ATTEINT, désormais mesuré : 38 % sur deux vies complètes (§7). C'est le
+critère qui bloque le feu vert.
 """.strip()
 
 
