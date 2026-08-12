@@ -1,0 +1,357 @@
+{
+ "serment-hameau": {
+  "curieuse": {
+   "ecrans": 23,
+   "ecransDecision": 10,
+   "ecransLecture": 13,
+   "partDecision": 0.43478260869565216,
+   "tapsAvantDecision": 1.3,
+   "actionsArrivee": 2,
+   "sousMenus": 0,
+   "poiConsultes": 0,
+   "jets": 0,
+   "taps": 23,
+   "erreurs": 0,
+   "log": [
+    {
+     "boutons": [
+      "Observer d'abord, à couvert INSTINCT",
+      "Descendre vers le hameau"
+     ],
+     "pris": "Descendre vers le hameau",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Voir où le gamin veut te mener",
+      "Parler à la femme sur le seuil",
+      "Lever les yeux vers les combles INSTINCT"
+     ],
+     "pris": "Voir où le gamin veut te mener",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Lui demander de te guider EMPATHIE",
+      "Lui demander qui est ressorti",
+      "Le laisser sur son mur"
+     ],
+     "pris": "Lui demander qui est ressorti",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Reprendre la ruelle"
+     ],
+     "pris": "Reprendre la ruelle",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Ne pas relever",
+      "« Où l’as-tu vue ? » INSTINCT",
+      "« Quelle dame ? »"
+     ],
+     "pris": "Ne pas relever",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Le lui promettre",
+      "Ne rien promettre"
+     ],
+     "pris": "Le lui promettre",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Effacer la ligne qui te concerne COURAGE",
+      "Lire jusqu'au bout",
+      "Chercher sous la craie effacée RUSE"
+     ],
+     "pris": "Lire jusqu'au bout",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Refuser de jurer",
+      "Jurer du bout des lèvres",
+      "Jurer"
+     ],
+     "pris": "Refuser de jurer",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Entrer dans le hameau"
+     ],
+     "pris": "Entrer dans le hameau",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Vers la crête aux cordes",
+      "Vers un moulin sans ailes"
+     ],
+     "pris": "Vers la crête aux cordes",
+     "sousMenu": false
+    }
+   ]
+  },
+  "pressee": {
+   "ecrans": 22,
+   "ecransDecision": 6,
+   "ecransLecture": 16,
+   "partDecision": 0.2727272727272727,
+   "tapsAvantDecision": 2.6666666666666665,
+   "actionsArrivee": 2,
+   "sousMenus": 0,
+   "poiConsultes": 0,
+   "jets": 3,
+   "taps": 22,
+   "erreurs": 0,
+   "log": [
+    {
+     "boutons": [
+      "Observer d'abord, à couvert INSTINCT",
+      "Descendre vers le hameau"
+     ],
+     "pris": "Observer d'abord, à couvert INSTINCT",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Voir où le gamin veut te mener",
+      "Parler à la femme sur le seuil",
+      "Lever les yeux vers les combles INSTINCT"
+     ],
+     "pris": "Lever les yeux vers les combles INSTINCT",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "T'asseoir et manger",
+      "Repousser le bol COURAGE",
+      "Prendre le pain, debout RUSE"
+     ],
+     "pris": "Repousser le bol COURAGE",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Refuser de jurer",
+      "Jurer",
+      "Jurer du bout des lèvres"
+     ],
+     "pris": "Refuser de jurer",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Entrer dans le hameau"
+     ],
+     "pris": "Entrer dans le hameau",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Vers des silhouettes grises"
+     ],
+     "pris": "Vers des silhouettes grises",
+     "sousMenu": false
+    }
+   ]
+  }
+ },
+ "campement": {
+  "curieuse": {
+   "ecrans": 10,
+   "ecransDecision": 5,
+   "ecransLecture": 5,
+   "partDecision": 0.5,
+   "tapsAvantDecision": 1,
+   "actionsArrivee": 3,
+   "sousMenus": 0,
+   "poiConsultes": 0,
+   "jets": 0,
+   "taps": 10,
+   "erreurs": 0,
+   "log": [
+    {
+     "boutons": [
+      "Suivre les traces sur la crête INSTINCT",
+      "Entrer",
+      "Passer son chemin"
+     ],
+     "pris": "Entrer",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Repartir sans s'attarder",
+      "Dormir malgré le crépuscule",
+      "Monter la garde INSTINCT"
+     ],
+     "pris": "Repartir sans s'attarder",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Vers un moulin sans ailes",
+      "Vers la crête aux cordes"
+     ],
+     "pris": "Vers un moulin sans ailes",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Passer son chemin",
+      "Entrer",
+      "Suivre les traces sur la crête INSTINCT"
+     ],
+     "pris": "Passer son chemin",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Vers la crête aux cordes",
+      "Vers un gibet qui parle"
+     ],
+     "pris": "Vers la crête aux cordes",
+     "sousMenu": false
+    }
+   ]
+  },
+  "pressee": {
+   "ecrans": 5,
+   "ecransDecision": 2,
+   "ecransLecture": 3,
+   "partDecision": 0.4,
+   "tapsAvantDecision": 1.5,
+   "actionsArrivee": 3,
+   "sousMenus": 0,
+   "poiConsultes": 0,
+   "jets": 1,
+   "taps": 5,
+   "erreurs": 0,
+   "log": [
+    {
+     "boutons": [
+      "Suivre les traces sur la crête INSTINCT",
+      "Entrer",
+      "Passer son chemin"
+     ],
+     "pris": "Suivre les traces sur la crête INSTINCT",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Vers la crête aux cordes",
+      "Vers un gibet qui parle"
+     ],
+     "pris": "Vers la crête aux cordes",
+     "sousMenu": false
+    }
+   ]
+  }
+ },
+ "colline-aux-gibets": {
+  "curieuse": {
+   "ecrans": 8,
+   "ecransDecision": 3,
+   "ecransLecture": 5,
+   "partDecision": 0.375,
+   "tapsAvantDecision": 1.6666666666666667,
+   "actionsArrivee": 3,
+   "sousMenus": 0,
+   "poiConsultes": 0,
+   "jets": 0,
+   "taps": 8,
+   "erreurs": 0,
+   "log": [
+    {
+     "boutons": [
+      "Compter les corbeaux",
+      "Lire le nom gravé",
+      "Monter jusqu'au Gibet Vide"
+     ],
+     "pris": "Compter les corbeaux",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Partir avant de comprendre",
+      "Monter au Grand Gibet COURAGE",
+      "Arracher une écharde COURAGE"
+     ],
+     "pris": "Partir avant de comprendre",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Vers un moulin sans ailes",
+      "Vers la crête aux cordes"
+     ],
+     "pris": "Vers un moulin sans ailes",
+     "sousMenu": false
+    }
+   ]
+  },
+  "pressee": {
+   "ecrans": 9,
+   "ecransDecision": 5,
+   "ecransLecture": 4,
+   "partDecision": 0.5555555555555556,
+   "tapsAvantDecision": 0.8,
+   "actionsArrivee": 3,
+   "sousMenus": 0,
+   "poiConsultes": 0,
+   "jets": 2,
+   "taps": 9,
+   "erreurs": 0,
+   "log": [
+    {
+     "boutons": [
+      "Compter les corbeaux",
+      "Lire le nom gravé",
+      "Monter jusqu'au Gibet Vide"
+     ],
+     "pris": "Compter les corbeaux",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Partir avant de comprendre",
+      "Monter au Grand Gibet COURAGE",
+      "Arracher une écharde COURAGE"
+     ],
+     "pris": "Monter au Grand Gibet COURAGE",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Partir avant de comprendre",
+      "Arracher une écharde COURAGE"
+     ],
+     "pris": "Arracher une écharde COURAGE",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Partir avant de comprendre"
+     ],
+     "pris": "Partir avant de comprendre",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Vers une eau qui ne bouge pas",
+      "Vers la crête aux cordes"
+     ],
+     "pris": "Vers une eau qui ne bouge pas",
+     "sousMenu": false
+    }
+   ]
+  }
+ }
+}

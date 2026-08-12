@@ -1,73 +1,667 @@
 {
- "_definition": {
-  "decision_stricte": "écran dont l'action prise change le monde ; ouvrir/fermer un sous-menu et examiner un point d'intérêt ne comptent PAS",
-  "mesure": "tools/mesure_boucle.mjs, build v1.76.1, compte de vétéran, chronomètres désactivés",
-  "portee": "par LIEU (la vie entière inclut les transitions, hors périmètre du pilote)"
- },
  "serment-hameau": {
   "curieuse": {
-   "ecrans": 34,
+   "ecrans": 31,
+   "ecransDecision": 18,
+   "ecransLecture": 13,
+   "partDecision": 0.5806451612903226,
+   "tapsAvantDecision": 0.7222222222222222,
    "actionsArrivee": 2,
    "sousMenus": 5,
    "poiConsultes": 5,
    "jets": 0,
-   "decisionsStrictes": 8,
-   "partDecisionStricte": 0.235,
-   "tapsAvantDecision": 3.25
+   "taps": 31,
+   "erreurs": 0,
+   "log": [
+    {
+     "boutons": [
+      "Observer d'abord, à couvert INSTINCT",
+      "Descendre vers le hameau"
+     ],
+     "pris": "Descendre vers le hameau",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Le linteau de la porte",
+      "Observer les alentours",
+      "Continuer dans la rue"
+     ],
+     "pris": "Observer les alentours",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Les fenêtres des combles",
+      "S'approcher de la croix",
+      "La femme sur le pas de porte",
+      "Le gamin, en haut du muret",
+      "Frapper à la porte marquée",
+      "Ne rien regarder de plus"
+     ],
+     "pris": "Les fenêtres des combles",
+     "sousMenu": true
+    },
+    {
+     "boutons": [
+      "Le linteau de la porte",
+      "Observer les alentours",
+      "Continuer dans la rue"
+     ],
+     "pris": "Observer les alentours",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "S'approcher de la croix",
+      "La femme sur le pas de porte",
+      "Le gamin, en haut du muret",
+      "Frapper à la porte marquée",
+      "Ne rien regarder de plus"
+     ],
+     "pris": "S'approcher de la croix",
+     "sousMenu": true
+    },
+    {
+     "boutons": [
+      "Le linteau de la porte",
+      "Observer les alentours",
+      "Continuer dans la rue"
+     ],
+     "pris": "Observer les alentours",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "La femme sur le pas de porte",
+      "Le gamin, en haut du muret",
+      "Frapper à la porte marquée",
+      "Ne rien regarder de plus"
+     ],
+     "pris": "La femme sur le pas de porte",
+     "sousMenu": true
+    },
+    {
+     "boutons": [
+      "« Depuis combien de temps ? »",
+      "Lui dire qu'il ne reviendra pas EMPATHIE",
+      "Regarder le sud avec elle"
+     ],
+     "pris": "« Depuis combien de temps ? »",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "« Et en échange ? » RUSE",
+      "Accepter la mèche",
+      "Refuser doucement EMPATHIE"
+     ],
+     "pris": "Accepter la mèche",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Redescendre la rue"
+     ],
+     "pris": "Redescendre la rue",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Demander ce qu'ils craignent EMPATHIE",
+      "Passer sans t'arrêter COURAGE",
+      "« Je ne fais que passer. »"
+     ],
+     "pris": "« Je ne fais que passer. »",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Observer les alentours",
+      "Refuser de jurer",
+      "Jurer",
+      "Jurer du bout des lèvres"
+     ],
+     "pris": "Observer les alentours",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Demander qui juge, ici",
+      "Demander pourquoi trois aubes",
+      "Ne rien regarder de plus"
+     ],
+     "pris": "Demander qui juge, ici",
+     "sousMenu": true
+    },
+    {
+     "boutons": [
+      "Observer les alentours",
+      "Refuser de jurer",
+      "Jurer",
+      "Jurer du bout des lèvres"
+     ],
+     "pris": "Observer les alentours",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Demander pourquoi trois aubes",
+      "Ne rien regarder de plus"
+     ],
+     "pris": "Demander pourquoi trois aubes",
+     "sousMenu": true
+    },
+    {
+     "boutons": [
+      "Refuser de jurer",
+      "Jurer",
+      "Jurer du bout des lèvres"
+     ],
+     "pris": "Refuser de jurer",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Entrer dans le hameau"
+     ],
+     "pris": "Entrer dans le hameau",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Vers la crête aux cordes",
+      "Vers une tour qui a perdu son sommet"
+     ],
+     "pris": "Vers la crête aux cordes",
+     "sousMenu": false
+    }
+   ]
   },
   "pressee": {
-   "ecrans": 28,
+   "ecrans": 33,
+   "ecransDecision": 12,
+   "ecransLecture": 21,
+   "partDecision": 0.36363636363636365,
+   "tapsAvantDecision": 1.75,
    "actionsArrivee": 2,
    "sousMenus": 0,
    "poiConsultes": 0,
    "jets": 4,
-   "decisionsStrictes": 12,
-   "partDecisionStricte": 0.429,
-   "tapsAvantDecision": 1.33
+   "taps": 33,
+   "erreurs": 0,
+   "log": [
+    {
+     "boutons": [
+      "Observer d'abord, à couvert INSTINCT",
+      "Descendre vers le hameau"
+     ],
+     "pris": "Observer d'abord, à couvert INSTINCT",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Le linteau de la porte",
+      "Observer les alentours",
+      "Continuer dans la rue"
+     ],
+     "pris": "Le linteau de la porte",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Les fenêtres des combles",
+      "Observer les alentours",
+      "Continuer dans la rue"
+     ],
+     "pris": "Les fenêtres des combles",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "S'approcher de la croix",
+      "Observer les alentours",
+      "Continuer dans la rue"
+     ],
+     "pris": "S'approcher de la croix",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "La femme sur le pas de porte",
+      "Observer les alentours",
+      "Continuer dans la rue"
+     ],
+     "pris": "La femme sur le pas de porte",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "« Depuis combien de temps ? »",
+      "Lui dire qu'il ne reviendra pas EMPATHIE",
+      "Regarder le sud avec elle"
+     ],
+     "pris": "Lui dire qu'il ne reviendra pas EMPATHIE",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "« Et en échange ? » RUSE",
+      "Accepter la mèche",
+      "Refuser doucement EMPATHIE"
+     ],
+     "pris": "« Et en échange ? » RUSE",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Redescendre la rue",
+      "Utiliser — Élixir du campement perdu"
+     ],
+     "pris": "Redescendre la rue",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Demander ce qu'ils craignent EMPATHIE",
+      "Passer sans t'arrêter COURAGE",
+      "« Je ne fais que passer. »",
+      "Utiliser — Élixir du campement perdu"
+     ],
+     "pris": "Demander ce qu'ils craignent EMPATHIE",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Observer les alentours",
+      "Refuser de jurer",
+      "Jurer",
+      "Jurer du bout des lèvres"
+     ],
+     "pris": "Refuser de jurer",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Entrer dans le hameau",
+      "Utiliser — Élixir du campement perdu"
+     ],
+     "pris": "Entrer dans le hameau",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Vers les rangées de poteaux"
+     ],
+     "pris": "Vers les rangées de poteaux",
+     "sousMenu": false
+    }
+   ]
   }
  },
  "campement": {
   "curieuse": {
-   "ecrans": 18,
+   "ecrans": 17,
+   "ecransDecision": 11,
+   "ecransLecture": 6,
+   "partDecision": 0.6470588235294118,
+   "tapsAvantDecision": 0.5454545454545454,
    "actionsArrivee": 3,
    "sousMenus": 4,
    "poiConsultes": 4,
    "jets": 0,
-   "decisionsStrictes": 3,
-   "partDecisionStricte": 0.167,
-   "tapsAvantDecision": 5.0
+   "taps": 17,
+   "erreurs": 0,
+   "log": [
+    {
+     "boutons": [
+      "Observer les alentours",
+      "Écouter le moulin INSTINCT",
+      "S'installer pour la halte"
+     ],
+     "pris": "Observer les alentours",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "La crête du toit",
+      "La croix d'ombres, en haut",
+      "La lucarne, au-dessus de la porte",
+      "Pousser la porte entrouverte",
+      "Fouiller le lit de bruyère",
+      "Ne rien regarder de plus"
+     ],
+     "pris": "La crête du toit",
+     "sousMenu": true
+    },
+    {
+     "boutons": [
+      "Observer les alentours",
+      "Écouter le moulin INSTINCT",
+      "S'installer pour la halte"
+     ],
+     "pris": "Observer les alentours",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "La croix d'ombres, en haut",
+      "La lucarne, au-dessus de la porte",
+      "Pousser la porte entrouverte",
+      "Fouiller le lit de bruyère",
+      "Ne rien regarder de plus"
+     ],
+     "pris": "La croix d'ombres, en haut",
+     "sousMenu": true
+    },
+    {
+     "boutons": [
+      "Observer les alentours",
+      "Écouter le moulin INSTINCT",
+      "S'installer pour la halte"
+     ],
+     "pris": "Observer les alentours",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "La lucarne, au-dessus de la porte",
+      "Pousser la porte entrouverte",
+      "Fouiller le lit de bruyère",
+      "Ne rien regarder de plus"
+     ],
+     "pris": "La lucarne, au-dessus de la porte",
+     "sousMenu": true
+    },
+    {
+     "boutons": [
+      "Observer les alentours",
+      "Écouter le moulin INSTINCT",
+      "S'installer pour la halte"
+     ],
+     "pris": "Observer les alentours",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Pousser la porte entrouverte",
+      "Fouiller le lit de bruyère",
+      "Ne rien regarder de plus"
+     ],
+     "pris": "Pousser la porte entrouverte",
+     "sousMenu": true
+    },
+    {
+     "boutons": [
+      "Écouter le moulin INSTINCT",
+      "Fouiller le lit de bruyère",
+      "S'installer pour la halte"
+     ],
+     "pris": "Fouiller le lit de bruyère",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Repartir sans s'attarder",
+      "Dormir malgré le crépuscule",
+      "Monter la garde INSTINCT"
+     ],
+     "pris": "Repartir sans s'attarder",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Vers les rangées de poteaux",
+      "Vers la crête aux cordes"
+     ],
+     "pris": "Vers les rangées de poteaux",
+     "sousMenu": false
+    }
+   ]
   },
   "pressee": {
    "ecrans": 7,
+   "ecransDecision": 4,
+   "ecransLecture": 3,
+   "partDecision": 0.5714285714285714,
+   "tapsAvantDecision": 0.75,
    "actionsArrivee": 3,
    "sousMenus": 0,
    "poiConsultes": 0,
    "jets": 2,
-   "decisionsStrictes": 4,
-   "partDecisionStricte": 0.571,
-   "tapsAvantDecision": 0.75
+   "taps": 7,
+   "erreurs": 0,
+   "log": [
+    {
+     "boutons": [
+      "Observer les alentours",
+      "Écouter le moulin INSTINCT",
+      "S'installer pour la halte"
+     ],
+     "pris": "Écouter le moulin INSTINCT",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Repartir sans s'attarder",
+      "Dormir malgré le crépuscule",
+      "Monter la garde INSTINCT"
+     ],
+     "pris": "Monter la garde INSTINCT",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Repartir sans s'attarder",
+      "Dormir malgré le crépuscule"
+     ],
+     "pris": "Repartir sans s'attarder",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Vers une eau qui ne bouge pas",
+      "Vers la crête aux cordes"
+     ],
+     "pris": "Vers une eau qui ne bouge pas",
+     "sousMenu": false
+    }
+   ]
   }
  },
  "colline-aux-gibets": {
   "curieuse": {
-   "ecrans": 19,
+   "ecrans": 16,
+   "ecransDecision": 9,
+   "ecransLecture": 7,
+   "partDecision": 0.5625,
+   "tapsAvantDecision": 0.7777777777777778,
    "actionsArrivee": 3,
    "sousMenus": 2,
    "poiConsultes": 2,
    "jets": 0,
-   "decisionsStrictes": 5,
-   "partDecisionStricte": 0.263,
-   "tapsAvantDecision": 2.8
+   "taps": 16,
+   "erreurs": 0,
+   "log": [
+    {
+     "boutons": [
+      "Le pied du grand gibet",
+      "Observer les alentours",
+      "Rester au sommet"
+     ],
+     "pris": "Observer les alentours",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Les corbeaux, sur la traverse",
+      "Les potences de la crête",
+      "Le Gibet Vide, tout en haut",
+      "Ne rien regarder de plus"
+     ],
+     "pris": "Les corbeaux, sur la traverse",
+     "sousMenu": true
+    },
+    {
+     "boutons": [
+      "Le pied du grand gibet",
+      "Observer les alentours",
+      "Rester au sommet"
+     ],
+     "pris": "Observer les alentours",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Les potences de la crête",
+      "Le Gibet Vide, tout en haut",
+      "Ne rien regarder de plus"
+     ],
+     "pris": "Les potences de la crête",
+     "sousMenu": true
+    },
+    {
+     "boutons": [
+      "Le pied du grand gibet",
+      "Le Gibet Vide, tout en haut",
+      "Rester au sommet"
+     ],
+     "pris": "Le pied du grand gibet",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Le Gibet Vide, tout en haut",
+      "Rester au sommet"
+     ],
+     "pris": "Le Gibet Vide, tout en haut",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Rester au sommet"
+     ],
+     "pris": "Rester au sommet",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Rester et compter INSTINCT",
+      "Partir avant de comprendre",
+      "Monter au Grand Gibet COURAGE",
+      "Arracher une écharde COURAGE"
+     ],
+     "pris": "Partir avant de comprendre",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Vers une eau qui ne bouge pas",
+      "Vers la crête aux cordes"
+     ],
+     "pris": "Vers une eau qui ne bouge pas",
+     "sousMenu": false
+    }
+   ]
   },
   "pressee": {
-   "ecrans": 14,
+   "ecrans": 21,
+   "ecransDecision": 10,
+   "ecransLecture": 11,
+   "partDecision": 0.47619047619047616,
+   "tapsAvantDecision": 1.1,
    "actionsArrivee": 3,
    "sousMenus": 0,
    "poiConsultes": 0,
-   "jets": 2,
-   "decisionsStrictes": 8,
-   "partDecisionStricte": 0.571,
-   "tapsAvantDecision": 0.75
+   "jets": 3,
+   "taps": 21,
+   "erreurs": 0,
+   "log": [
+    {
+     "boutons": [
+      "Le pied du grand gibet",
+      "Observer les alentours",
+      "Rester au sommet"
+     ],
+     "pris": "Le pied du grand gibet",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Les corbeaux, sur la traverse",
+      "Observer les alentours",
+      "Rester au sommet"
+     ],
+     "pris": "Les corbeaux, sur la traverse",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Les potences de la crête",
+      "Le Gibet Vide, tout en haut",
+      "Rester au sommet"
+     ],
+     "pris": "Les potences de la crête",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Le Gibet Vide, tout en haut",
+      "Rester au sommet"
+     ],
+     "pris": "Le Gibet Vide, tout en haut",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Rester au sommet"
+     ],
+     "pris": "Rester au sommet",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Rester et compter INSTINCT",
+      "Partir avant de comprendre",
+      "Monter au Grand Gibet COURAGE",
+      "Arracher une écharde COURAGE"
+     ],
+     "pris": "Rester et compter INSTINCT",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Partir avant de comprendre",
+      "Monter au Grand Gibet COURAGE",
+      "Arracher une écharde COURAGE"
+     ],
+     "pris": "Monter au Grand Gibet COURAGE",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Partir avant de comprendre",
+      "Arracher une écharde COURAGE"
+     ],
+     "pris": "Arracher une écharde COURAGE",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Partir avant de comprendre"
+     ],
+     "pris": "Partir avant de comprendre",
+     "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Vers les rangées de poteaux",
+      "Vers la crête aux cordes"
+     ],
+     "pris": "Vers les rangées de poteaux",
+     "sousMenu": false
+    }
+   ]
   }
  }
 }
