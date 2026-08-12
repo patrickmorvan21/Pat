@@ -145,6 +145,59 @@ function chance(p: number): boolean {
 function nowMs(): number {
   return Date.now();
 }
+
+/**
+ * ─── L'ÉLECTION DU BLOC OPTIONNEL (arbitrage du 12/08) ─────────────────────
+ *
+ * Une arrivée ou une Croisée ne sert qu'UN bloc optionnel. L'ordre ci-dessous
+ * n'est pas un classement d'importance : c'est un classement de ce qui peut
+ * ATTENDRE. Tout ce qui perd revient à la prochaine arrivée, sauf le premier,
+ * qui n'a pas de prochaine fois.
+ *
+ *  1. chapitre  — son développement est accroché à un lieu qu'on ne revisite
+ *                 pas dans la vie : différé, il est perdu. Il ne peut donc
+ *                 jamais céder, et il est rare (12 % des arrivées).
+ *  2. geôlier   — la raillerie d'un jet critique. Elle commente le geste
+ *                 qu'on vient de faire : servie deux écrans plus loin, elle
+ *                 ne veut plus rien dire.
+ *  3. soupçon   — le palier franchi, craie + interprétation en un seul bloc.
+ *  4. corbeaux  — le compte sur les toits a changé.
+ *  5. rumeur    — un témoin parle en pleine rue.
+ *  6. loi       — une rumeur de route, au plus une par vie.
+ *  7. rappel    — le monde re-signale ce qu'on sait déjà. C'est le seul
+ *                 groupe qui ne raconte aucun événement : il cède en dernier.
+ */
+type Injection = "chapitre" | "geolier" | "soupcon" | "corbeaux" | "rumeur" | "loi" | "rappel";
+const ORDRE_INJECTION: Injection[] = [
+  "chapitre", "geolier", "soupcon", "corbeaux", "rumeur", "loi", "rappel",
+];
+function elireInjection(candidats: Record<Injection, boolean>): Injection | null {
+  return ORDRE_INJECTION.find((k) => candidats[k]) ?? null;
+}
+
+/**
+ * LA RUMEUR — un témoin déjà inscrit parle en pleine rue. Sortie ici parce
+ * que l'élection a besoin de savoir s'il y a un candidat AVANT le point où
+ * la rumeur se pousse ; le texte, lui, reste à sa place dans le flux.
+ *
+ * ⚠️ On déduplique par PERSONNE, pas par déposition (correctif du 11/08) :
+ * cinq dépositions différentes portent « La Femme au Seuil », et la phrase ne
+ * cite que le nom et le lieu — deux de ses dépositions sont indistinguables
+ * à l'écran, donc elle sortait deux fois mot pour mot.
+ */
+function candidatRumeur(
+  run: RunState | null | undefined,
+  sceneId: string,
+  step: number,
+): { id: string; nom: string; lieu: string } | null {
+  if (!estHameau(sceneId) || (run?.soupcon ?? 0) < 2) return null;
+  const temoins = run?.temoins ?? [];
+  const cites = run?.temoinsCites ?? [];
+  const dejaDits = new Set(temoins.filter((t) => cites.includes(t.id)).map((t) => t.nom));
+  const frais = temoins.filter((t) => !cites.includes(t.id) && !dejaDits.has(t.nom));
+  if (!frais.length || !chance(0.5)) return null;
+  return frais[step % frais.length];
+}
 /**
  * « Il y a des gens autour » — le contexte des réactions du monde (7/08).
  * Vrai dans les lieux INTÉRIEURS du village ET dans toute la séquence du
@@ -2393,12 +2446,63 @@ export default function Scene() {
     );
     if (perception) rappels.push({ prio: 4, text: perception });
     if (rappelArrivee) rappels.push({ prio: 5, text: rappelArrivee });
-    // On sert LE rappel le plus prioritaire, et lui seul.
+    /**
+     * ═══ UN SEUL BLOC OPTIONNEL PAR ARRIVÉE ET PAR CROISÉE ═══════════════
+     * (arbitrage du 12/08, scénario S1 + règle de priorité + S3a)
+     *
+     * Le budget d'un rappel posé le 12/08 ne couvrait que les RAPPELS ; les
+     * événements — palier de Soupçon, corbeaux, rumeur, loi, beat de
+     * chapitre, Geôlier — gardaient le droit de s'ajouter par-dessus, et
+     * c'est leur cumul qui produisait les 2,15 taps d'une arrivée. L'estimateur
+     * a chiffré les deux leviers possibles : ramener toute la prose de la zone
+     * sous 65 mots vaut −0,05 tap, plafonner les injections en vaut −0,17.
+     *
+     * ⚠️ RÈGLE ABSOLUE DU CHANTIER : aucun contenu narratif n'est supprimé
+     * pour faire tomber un chiffre. Un candidat qui perd n'est pas effacé —
+     * il n'est simplement pas marqué comme vu, donc il se représente à la
+     * prochaine arrivée où le budget est libre. Sauf le beat de chapitre, qui
+     * ne peut PAS attendre (son développement est accroché à un lieu qu'on ne
+     * revisite pas) : il passe donc en tête de l'ordre.
+     *
+     * ⚠️ LE PALIER DE SOUPÇON COMPTE POUR UN SEUL BLOC — la craie que le
+     * monde montre ET la ligne où le Geôlier lui donne son sens. Les séparer
+     * pour n'en garder qu'un ne vaut que 0,02 tap de plus (mesuré) et
+     * supprimerait, au choix, la migration de la marque vers la peau ou la
+     * seule voix qui nomme le compte. On paie 0,02 tap pour ne rien perdre.
+     *
+     * ⚠️ CE QUI RESTE HORS BUDGET, et pourquoi : la carte d'un état qui se
+     * pose ou se lève, un objet obtenu, le Registre, la route fermée et les
+     * surprises. Ce sont des ÉVÉNEMENTS — quelque chose vient d'arriver, et
+     * les taire ferait mentir l'écran. Les surprises sont en outre déjà
+     * rationnées à une par vie, le rationnement le plus strict du jeu.
+     */
     const rappel = rappels.sort((a, b) => a.prio - b.prio)[0];
+    // Les candidats se calculent AVANT d'élire : sans ça le premier site de
+    // poussée rencontré prendrait le budget, et l'ordre du fichier ferait
+    // office de priorité.
+    const rumeurIci = candidatRumeur(runRef.current, nextScene.id, nextStep);
+    const corbIci = estHameau(nextScene.id)
+      ? corbeauxDuHameau(
+          runRef.current?.soupcon ?? 0, nextStep, runRef.current?.vus ?? {})
+      : null;
+    const loiIci =
+      nextScene.liaison && (runRef.current?.loiVues ?? []).length === 0 && chance(0.22)
+        ? nextStep % 4
+        : null;
+    const elu = elireInjection({
+      chapitre: chapterAfter.length > 0,
+      geolier: opts?.result === 1 || opts?.result === 20,
+      soupcon: Boolean(soupManifest || soupJailer),
+      corbeaux: Boolean(corbIci),
+      rumeur: Boolean(rumeurIci),
+      loi: loiIci !== null,
+      rappel: Boolean(rappel),
+    });
     // Ce qui a été RÉELLEMENT servi — un texte écarté par le budget ne doit
     // pas être marqué comme vu, sinon on le brûle sans que le joueur l'ait lu.
-    const arriveeServie = rappel?.text === rappelArrivee ? rappelArrivee : null;
-    if (rappel) {
+    const arriveeServie =
+      elu === "rappel" && rappel?.text === rappelArrivee ? rappelArrivee : null;
+    if (rappel && elu === "rappel") {
       entries.push({ id: nextId(), kind: "narration", text: rappel.text });
       rappel.commit?.();
     }
@@ -2420,13 +2524,8 @@ export default function Scene() {
       // lieu, donc deux dépositions d'une même personne sont indistinguables
       // à l'écran). Le procès, lui, dédupliquait déjà par personne.
       const temoinsRun = runRef.current?.temoins ?? [];
-      const cites = runRef.current?.temoinsCites ?? [];
-      const dejaDits = new Set(
-        temoinsRun.filter((t) => cites.includes(t.id)).map((t) => t.nom),
-      );
-      const frais = temoinsRun.filter((t) => !cites.includes(t.id) && !dejaDits.has(t.nom));
-      if ((runRef.current?.soupcon ?? 0) >= 2 && frais.length && chance(0.5)) {
-        const t = frais[nextStep % frais.length];
+      if (rumeurIci && elu === "rumeur") {
+        const t = rumeurIci;
         entries.push({
           id: nextId(),
           kind: "narration",
@@ -2446,12 +2545,8 @@ export default function Scene() {
       // dans `reactionsVues`, partagé avec les réactions d'états — le vivier
       // paraissait épuisé bien avant de l'être. Ils ont maintenant leurs
       // propres compteurs (lib/dejavu, portée run).
-      const corb = corbeauxDuHameau(
-        runRef.current?.soupcon ?? 0,
-        nextStep,
-        runRef.current?.vus ?? {}
-      );
-      if (corb) {
+      const corb = corbIci;
+      if (corb && elu === "corbeaux") {
         entries.push({ id: nextId(), kind: "narration", text: corb });
         persist((r) => {
           r.vus = noter(r.vus, "corb|" + corb);
@@ -2496,10 +2591,18 @@ export default function Scene() {
         }
       }
     }
-    entries.push(...chapterAfter.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
-    // Manifestation du Soupçon : le monde se ferme, palier par palier.
-    if (soupManifest) entries.push({ id: nextId(), kind: "narration", text: soupManifest });
-    if (soupJailer) entries.push({ id: nextId(), kind: "jailer", text: soupJailer });
+    if (elu === "chapitre") {
+      entries.push(...chapterAfter.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+    }
+    // Manifestation du Soupçon : le monde se ferme, palier par palier. La
+    // craie MONTRE, le Geôlier INTERPRÈTE — c'est un seul événement raconté à
+    // deux voix, donc un seul bloc au budget (arbitrage du 12/08). Les
+    // séparer pour n'en garder qu'un valait 0,02 tap et coûtait, au choix, la
+    // migration de la marque ou la seule voix qui nomme le compte.
+    if (elu === "soupcon") {
+      if (soupManifest) entries.push({ id: nextId(), kind: "narration", text: soupManifest });
+      if (soupJailer) entries.push({ id: nextId(), kind: "jailer", text: soupJailer });
+    }
     // Objets RÉELS des Landes (chantier 1 du 23/07) : un lieu donne son objet
     // une seule fois, à l'arrivée, si le slot correspondant a de la place. Les
     // objets placés remplacent le soin générique — la Besace devient réelle,
@@ -2588,10 +2691,9 @@ export default function Scene() {
     // rumeur de route, et c'est le seul écran où il reste de la place. Sur un
     // écran d'arrivée (approche + mode + narration + perception), elle ferait
     // exactement le mur de texte qu'on vient de démonter.
-    const loiDejaVues = runRef.current?.loiVues ?? [];
     let loiIndex: number | null = null;
-    if (nextScene.liaison && loiDejaVues.length === 0 && chance(0.22)) {
-      const i = nextStep % 4;
+    if (loiIci !== null && elu === "loi") {
+      const i = loiIci;
       const manif = manifestationLoi("landes", i);
       if (manif) {
         loiIndex = i;
@@ -2608,14 +2710,20 @@ export default function Scene() {
     const result = opts?.result;
     const jailerVues = runRef.current?.jailerVues ?? [];
     let jailerServi: string | null = null;
+    // ⚠️ LE COMMENTAIRE AMBIANT DE SCÈNE EST RETIRÉ (arbitrage du 12/08).
+    // Vérifié avant de trancher : sur les 24 prises de parole des quatre vies
+    // enregistrées, 15 commentent un palier de Soupçon, 4 constatent une
+    // traversée sans risque, 2 raillent un jet critique — et 3 seulement
+    // étaient ce tirage à 12 % sur une arrivée ordinaire. Le Geôlier n'était
+    // donc pas bavard : il était déjà événementiel à 21 sur 24. On ne coupe
+    // que ces trois-là, les seules qui ne répondaient à rien.
     if (result === 1 || result === 20) {
-      const posture = jailerPosture(loadMemory());
-      const { text, gabarit } = jailerTaunt(result, posture, jailerVues);
-      jailerServi = gabarit;
-      entries.push({ id: nextId(), kind: "jailer", text });
-    } else if (chance(0.12) && !jailerVues.includes(nextScene.jailerLine)) {
-      jailerServi = nextScene.jailerLine;
-      entries.push({ id: nextId(), kind: "jailer", text: nextScene.jailerLine });
+      if (elu === "geolier") {
+        const posture = jailerPosture(loadMemory());
+        const { text, gabarit } = jailerTaunt(result, posture, jailerVues);
+        jailerServi = gabarit;
+        entries.push({ id: nextId(), kind: "jailer", text });
+      }
     }
 
     // Image du nouvel écran (demande Patrick 19/07) :
@@ -2721,11 +2829,20 @@ export default function Scene() {
       run.debts = (run.debts ?? []).filter((d) => d.settleAtStep > nextStep);
       if (scene.combat) run.encounters = (run.encounters ?? 0) + 1;
       // Chapitre : le beat joué fait avancer le stade (0→1→2→3).
-      if (newChapterStage && run.chapter) run.chapter = { ...run.chapter, stage: newChapterStage };
+      // ⚠️ SEULEMENT s'il a été JOUÉ. Le budget d'injection peut l'écarter ;
+      // avancer le stade quand même perdrait le beat pour toujours — et son
+      // développement est accroché à un lieu qu'on ne revisite pas. La
+      // résolution (`chapterBefore`) est servie hors budget, donc toujours.
+      const chapitreJoue = chapterBefore.length > 0 || elu === "chapitre";
+      if (newChapterStage && run.chapter && chapitreJoue)
+        run.chapter = { ...run.chapter, stage: newChapterStage };
       // Soupçon : montée d'arrivée + palier manifesté mémorisé.
       run.soupcon = soupAfter;
       // Un cran servi = un cran vu — jamais un saut (voir palierAServir).
-      if (soupManifest) run.soupconSeen = (run.soupconSeen ?? 0) + 1;
+      // ⚠️ Même règle : un palier écarté par le budget n'est PAS vu, donc il
+      // se représente à la prochaine arrivée. Le compter ici le brûlerait en
+      // silence, et le joueur passerait du muret à la peau sans rien lire.
+      if (soupManifest && elu === "soupcon") run.soupconSeen = (run.soupconSeen ?? 0) + 1;
       // Le drapeau d'échec dur est CONSOMMÉ par la Croisée qu'il vient de
       // resserrer : une seule route perdue par échec, jamais une traînée.
       // ⚠️ Consommé AUSSI quand le guide l'absorbe (relecture par agents,

@@ -246,7 +246,23 @@ def sequences(es: list[dict]) -> list[dict]:
 
 
 def transcripts_par_defaut() -> list[Path]:
-    return sorted((RACINE / "data/transcripts").glob("v1[78]*.md"))
+    """Les vies qui servent de référence — TOUTES celles enregistrées.
+
+    ⚠️ À SAVOIR quand on change la politique d'injection : ces transcripts
+    décrivent le build sur lequel ils ont été joués. Après un changement de
+    moteur, il faut en ENREGISTRER de nouveaux, sinon l'estimateur se
+    calibre sur un jeu qui n'existe plus. Les anciens ne sont pas jetés
+    (ils sont l'état « avant »), mais le mélange doit être conscient — d'où
+    la liste imprimée en tête de chaque rapport.
+    """
+    tous = sorted((RACINE / "data/transcripts").glob("v1[78]*.md"))
+    if not tous:
+        return tous
+    # Le PRÉFIXE de build le plus récent, et lui seul. Mélanger deux builds
+    # donnerait une calibration qui ne décrit aucun des deux — et la moyenne
+    # obtenue passerait pour un résultat.
+    dernier = max(f.name.split("-")[0] for f in tous)
+    return [f for f in tous if f.name.startswith(dernier + "-")]
 
 
 def mesures(fichiers: list[Path] | None = None) -> dict:

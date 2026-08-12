@@ -276,7 +276,12 @@ class Partie:
                 "s'y inscrit, quelque part dans le bas du livre.]",
                 "narration",
             )
-        self.geolierPeutParler(s)
+        # ⚠️ LE COMMENTAIRE AMBIANT DU GEÔLIER EST RETIRÉ (arbitrage du
+        # 12/08) : sur les 24 prises de parole des quatre vies enregistrées,
+        # 3 seulement étaient ce tirage à 12 % sur une arrivée ordinaire.
+        # Il reste événementiel — palier de Soupçon, jet critique, traversée
+        # sans risque. La réplique doit dire la même chose que le jeu, sinon
+        # une IA testeuse juge une version périmée.
 
     def soupconSeLit(self) -> None:
         """Un palier franchi se voit TOUJOURS — dehors comme dedans (vague 5).
@@ -299,27 +304,6 @@ class Partie:
         mot = self.k.get("soupconGeolier", {}).get(str(n))
         if mot:
             self.dit(mot, "geolier")
-
-    def geolierPeutParler(self, s: dict) -> None:
-        """Rare (12 %), et jamais deux fois la même phrase dans une vie.
-
-        En liaison il puise dans un pool commun ; ailleurs, chaque scène a SA
-        phrase — si elle est déjà tombée, il se tait plutôt que de se répéter.
-        """
-        r = self.rng()
-        if r.random() >= 0.12:
-            return
-        if self.d["phase"] == "liaison":
-            pool = [t for t in self.k["geolierLiaison"] if t not in self.d["geolierVus"]]
-            if not pool:
-                return
-            t = r.choice(pool)
-        else:
-            t = s.get("geolier")
-            if not t or t in self.d["geolierVus"]:
-                return
-        self.d["geolierVus"].append(t)
-        self.dit(t, "geolier")
 
     def geolierSurJet(self, naturel: int) -> None:
         if naturel not in (1, 20):
@@ -390,7 +374,8 @@ class Partie:
             self.dit(r.choice(self.k["routeFermee"]), "narration")
         else:
             self.dit(r.choice(self.k["bifurcations"]), "narration")
-        self.geolierPeutParler({})
+        # Idem en Croisée : plus de commentaire ambiant, il ne parle que sur
+        # un événement (voir le retrait ci-dessus).
 
     # -- les choix offerts par l'écran courant
     def choix(self) -> list[dict]:

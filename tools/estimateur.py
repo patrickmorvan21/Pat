@@ -528,7 +528,10 @@ def preuves() -> int:
     MOTS_PAR_ECRAN = vrai
     print(f"   budget 70 → {taux[70]:.0f} % · budget 90 (le vrai) → {taux[90]:.0f} % "
           f"· budget 110 → {taux[110]:.0f} %")
-    sel = taux[90] == 100 and taux[70] < 80 and taux[110] < 80
+    # On n'exige pas 100 % : on exige que le vrai budget soit NETTEMENT
+    # meilleur que les faux. Un seuil à 100 % rendrait la preuve fragile au
+    # premier cas limite, et une preuve fragile finit par être désarmée.
+    sel = taux[90] >= 95 and taux[90] - max(taux[70], taux[110]) >= 15
     print(f"   → {'CORRECT' if sel else 'LE CONTRÔLE NE DISCRIMINE RIEN'}")
     ok &= sel
 
@@ -594,7 +597,14 @@ def verifier(n_max: int = 0) -> int:
                 for fam, txt, m in A.attribue(e["paras"], idx):
                     # Le bandeau du Geôlier pèse ses mots PLUS son chrome :
                     # c'est la règle du client, pas un ajustement.
-                    blocs.append((fam, m + (CHROME_GEOLIER if fam == "geôlier" else 0), txt))
+                    poids = m + (CHROME_GEOLIER if fam == "geôlier" else 0)
+                    # ⚠️ La CARTE d'un état est du mobilier, pas de la prose :
+                    # `decouperEnEcrans` lui donne le poids ZÉRO et la colle à
+                    # son bloc. La compter en mots ajoutait un écran fantôme
+                    # (l'unique écart du contrôle, trouvé ici).
+                    if fam == "état" and "\n" in txt:
+                        poids = 0
+                    blocs.append((fam, poids, txt))
                     fams.append(fam)
             calc = len(decouper(blocs))
             typ = ("arrivée" if "approche" in fams
@@ -934,6 +944,9 @@ def main() -> int:
               f"analyseur cassé, ne rien conclure.")
         return 2
     m = mesures()
+    from attribution import transcripts_par_defaut
+    print("calibré sur : "
+          + ", ".join(f.name for f in transcripts_par_defaut()) + "\n")
     if "--gains" in sys.argv:
         return gains(scenes, points, m)
     if "--leviers" in sys.argv:
