@@ -3353,7 +3353,7 @@ export const SCENES: Scene[] = [
         label: "Dormir vraiment",
         passive: {
           consequence:
-            "Quatre passages par nuit, disaient les encoches. Tu attends le deuxième et tu écoutes. Les voix tombent entières dans le creux : un nom qui n'est pas le tien, le mot « demain », et le Petit Tribunal cité comme on cite une heure. Tu es rentré avant le troisième.",
+            "Tu décides de ne rien écouter. C'est un travail, de ne pas écouter — tu comptes tes propres respirations pour couvrir le reste. Au matin tu ne sauras pas ce qui s'est dit devant ta porte, et c'est exactement ce que tu voulais.",
         },
       },
       {

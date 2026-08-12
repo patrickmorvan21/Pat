@@ -1,0 +1,22 @@
+{
+  "post_moyenne": 0.45,
+  "post_distribution": {
+    "0": 60.4,
+    "1": 34.2,
+    "2": 5.4
+  },
+  "arrivee_moyenne": 0.024,
+  "arrivee_distribution": {
+    "0": 97.6,
+    "1": 2.4
+  },
+  "familles": {
+    "neutre": 0.0,
+    "issue": 14.62,
+    "conséquence": 20.29
+  },
+  "p95": 2,
+  "max": 2,
+  "cas": 493,
+  "lieux": 83
+}
