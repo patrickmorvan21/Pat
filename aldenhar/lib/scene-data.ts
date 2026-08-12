@@ -2703,17 +2703,6 @@ export const SCENES: Scene[] = [
         soupcon: 1,
       },
       {
-        id: "ne-fais-que-passer",
-        label: "« Je ne fais que passer. »",
-        passive: {
-          consequence:
-            "« C'est ce qu'ils disent tous », répond le vieux, sans " +
-            "agressivité aucune. « Et certains restent. » Il te regarde " +
-            "enfin dans les yeux, et ce que tu y vois n'est pas de la " +
-            "méfiance : c'est de la fatigue. « C'est ça qui nous inquiète. »",
-        },
-      },
-      {
         /* SAVOIR (25/07) : l'Ordonnance clouée au tribunal liste ce que le
            hameau guette. La connaître, c'est pouvoir se tenir de façon à ne
            déclencher aucun de ses signes — le seul choix de la scène qui FAIT
@@ -3147,18 +3136,17 @@ export const SCENES: Scene[] = [
       // ⚠️ Ce beat s'ouvre APRÈS un accueil tiré au sort (6/08) : il ne peut
       // plus supposer le barrage des trois hommes. D'où le raccord par le
       // lieu — quel que soit l'accueil, tout finit au muret, devant le vieux.
-      "Au bout de la rue, un muret bas ferme le village côté sud. Le vieux y " +
-        "est assis, large, les coudes sur les genoux. Il " +
-        "t'attendait là depuis le début.",
-      "Il tend la main, paume ouverte. Pas pour serrer la tienne — pour " +
-        "que tu la regardes. Elle est vide. C'est le geste d'ici : on jure sur " +
-        "rien, parce qu'il ne reste rien.",
+      // Chantier du 11/08 : 125 mots faisaient DEUX écrans pour une seule
+      // décision — et c'est la décision la plus lourde de la zone. Les trois
+      // clauses du serment sont intouchables ; c'est l'installation qui cède.
+      "Au bout de la rue, un muret bas. Le vieux y est assis, coudes sur les " +
+        "genoux — il t'attendait. Il tend la main, paume ouverte : pas pour " +
+        "serrer la tienne, pour que tu la regardes. Elle est vide. Ici on jure " +
+        "sur rien, parce qu'il ne reste rien.",
       "— « Trois choses, et tu dors sous un toit. Tu ne parles pas aux " +
         "pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et à la " +
         "troisième aube, tu choisis. »",
-      "Il n'attend pas tes questions ; il les connaît. « Qui juge ? " +
-        "Personne. On constate. Et trois aubes parce qu'au bout de trois, on " +
-        "sait. »",
+      "Il n'attend pas la question. « Qui juge ? Personne. On constate. »",
     ],
     choices: [
       {

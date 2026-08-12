@@ -2228,7 +2228,23 @@ export default function Scene() {
       ...activeEffects.map((e) => ({ effectId: e.id, label: e.label, positive: e.delta > 0 })),
     ];
     const dejaAnnonces = runRef.current?.etatsAffiches ?? [];
-    const bandeau = tousActifs.filter((e) => !dejaAnnonces.includes(e.effectId)).slice(0, CARTES_MAX);
+    /**
+     * ⚠️ FIXÉ N'A PLUS DE CARTE (chantier du 11/08, critère E ; arbitrage
+     * Patrick : « garder la mécanique, supprimer la carte répétée »).
+     *
+     * Le test d'acceptation dit que les états ne doivent plus se répéter comme
+     * COMPOSANTS D'INTERFACE. FIXÉ n'est pas un état générique — il porte le
+     * procès — mais il s'affichait bien comme une carte, écran après écran.
+     * Il garde donc tout : sa manifestation (qui repart en narration, puisque
+     * la boucle ci-dessous ne la saute que pour les états QUI ont une carte),
+     * ses réactions du village, son effet sur les Fixés et sur le procès.
+     * Le joueur comprend qu'il est fixé parce qu'on le TRAITE autrement.
+     */
+    const SANS_CARTE = ["fixe"];
+    const bandeau = tousActifs
+      .filter((e) => !SANS_CARTE.includes(e.effectId))
+      .filter((e) => !dejaAnnonces.includes(e.effectId))
+      .slice(0, CARTES_MAX);
     // Manifestation immédiate : posée par `poserEtatRun`, jouée ici — SAUF si
     // l'état reçoit sa carte sur ce même écran : la carte porte déjà la
     // manifestation en description, la re-pousser en narration affichait la

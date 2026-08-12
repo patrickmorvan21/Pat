@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-12T08:18:38Z",
- "commit": "c1c44e9",
+ "genere": "2026-08-12T09:08:49Z",
+ "commit": "b5dc8f5",
  "zones": [
   {
    "id": "landes",
@@ -2592,12 +2592,6 @@
      }
     },
     {
-     "id": "ne-fais-que-passer",
-     "label": "« Je ne fais que passer. »",
-     "type": "passif",
-     "consequence": "« C'est ce qu'ils disent tous », répond le vieux, sans agressivité aucune. « Et certains restent. » Il te regarde enfin dans les yeux, et ce que tu y vois n'est pas de la méfiance : c'est de la fatigue. « C'est ça qui nous inquiète. »"
-    },
-    {
      "id": "tenir-selon-ordonnance",
      "label": "Te tenir comme eux",
      "type": "passif",
@@ -3060,10 +3054,9 @@
   {
    "id": "hameau-entree-4",
    "narration": [
-    "Au bout de la rue, un muret bas ferme le village côté sud. Le vieux y est assis, large, les coudes sur les genoux. Il t'attendait là depuis le début.",
-    "Il tend la main, paume ouverte. Pas pour serrer la tienne — pour que tu la regardes. Elle est vide. C'est le geste d'ici : on jure sur rien, parce qu'il ne reste rien.",
+    "Au bout de la rue, un muret bas. Le vieux y est assis, coudes sur les genoux — il t'attendait. Il tend la main, paume ouverte : pas pour serrer la tienne, pour que tu la regardes. Elle est vide. Ici on jure sur rien, parce qu'il ne reste rien.",
     "— « Trois choses, et tu dors sous un toit. Tu ne parles pas aux pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et à la troisième aube, tu choisis. »",
-    "Il n'attend pas tes questions ; il les connaît. « Qui juge ? Personne. On constate. Et trois aubes parce qu'au bout de trois, on sait. »"
+    "Il n'attend pas la question. « Qui juge ? Personne. On constate. »"
    ],
    "choix": [
     {
@@ -8643,7 +8636,7 @@
  "totaux": {
   "scenes": 89,
   "pointsInteret": 29,
-  "choix": 238,
+  "choix": 237,
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,
