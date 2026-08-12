@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-12T19:25:20Z",
- "commit": "deaf783",
+ "genere": "2026-08-12T20:37:56Z",
+ "commit": "a7745d8",
  "zones": [
   {
    "id": "landes",
@@ -4982,7 +4982,7 @@
   {
    "id": "chien-du-bailli",
    "narration": [
-    "La maison se tient seule à l'ouest du hameau, haute, sans voisine — et murée de l'intérieur. Chaque fenêtre bouchée de pierres posées depuis dedans, en rangs pressés, par quelqu'un qui s'enfermait plus qu'il ne se protégeait. La maison du Bailli. Vide depuis sa corde. Pas gardée par personne."
+    "La maison se tient seule à l'ouest du hameau, haute, sans voisine — et murée de l'intérieur. Chaque fenêtre bouchée de pierres posées depuis dedans, en rangs pressés, par quelqu'un qui s'enfermait plus qu'il ne se protégeait. La maison du Bailli. Vide depuis sa corde. Aucun homme ne la garde."
    ],
    "choix": [
     {
