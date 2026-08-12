@@ -1,7 +1,13 @@
 # PACTUM — protocole de playtest pour une IA externe
 
 *Deux versions selon ce que l'IA sait faire. Rédigé le 8/08/2026, mis à jour
-le 11/08 pour le build v1.76.1.*
+le 12/08 pour le build **v1.80.0**.*
+
+> ⚠️ **Le paquet doit être régénéré à chaque build qu'on veut faire tester.**
+> `python3 tools/faire_paquet_ia.py` AVANT `npm run build:pages` (le zip vit
+> dans `public/`, donc il part avec le site). Sans ça l'IA juge une version
+> périmée — c'est arrivé : le paquet en ligne a passé quatre versions à
+> décrire un jeu qui n'existait plus.
 
 ---
 

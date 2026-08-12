@@ -54,9 +54,18 @@ def main(argv: list[str]) -> int:
     # se construire sans un mot, en promettant dans son LISEZMOI des « parties
     # réelles enregistrées » qu'il ne contenait plus. Ils vivent maintenant
     # dans le dépôt, et l'absence se DIT au lieu de passer inaperçue.
+    # ⚠️ ET ON NE LIVRE QUE LES VIES DU BUILD COURANT. Le dossier garde les
+    # anciennes (elles sont l'état « avant » d'un chantier), mais les mettre
+    # dans le paquet ferait juger une version périmée : un relecteur qui lit
+    # une vie d'avant le démontage des états conclut que des systèmes ont
+    # disparu. C'est arrivé le 9/08, sur des transcripts de dix-sept versions
+    # en arrière. On prend le préfixe de build le plus récent, et lui seul.
     trans = [Path(a) for a in argv[1:]]
     if not trans:
-        trans = sorted((RACINE / "data" / "transcripts").glob("*.md"))
+        tous = sorted((RACINE / "data" / "transcripts").glob("v1[0-9]*.md"))
+        if tous:
+            dernier = max(f.name.split("-")[0] for f in tous)
+            trans = [f for f in tous if f.name.startswith(dernier + "-")]
     for t in trans:
         if t.exists():
             shutil.copy(t, pack / "transcripts" / t.name)
