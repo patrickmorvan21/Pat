@@ -22,6 +22,7 @@ from pathlib import Path
 RACINE = Path(__file__).resolve().parent.parent
 SD = RACINE / "aldenhar/lib/scene-data.ts"
 SC = RACINE / "aldenhar/components/Scene.tsx"
+BESACE = RACINE / "aldenhar/lib/besace.ts"
 
 LIT = r'"(?:[^"\\]|\\.)*"(?:\s*\+\s*\n?\s*"(?:[^"\\]|\\.)*")*'
 
@@ -211,6 +212,44 @@ def main() -> int:
                         "qui n'est servi que pour les choix SANS dé. Déplace-le "
                         "sur une action sans jet, ou le contenu ne s'affichera jamais."
                     )
+
+    # ─── A-usage. L'objet qui ouvre une porte doit avoir la porte. ────────
+    # Chantier feedback+fluidité (12/08, §2) : `Scene.usageObjet` promet qu'un
+    # objet TRANSFORME la scène. La promesse ne tient que si la clé déclarée
+    # est réellement lue par un choix du MÊME écran (`requiresUsage` ou
+    # `masqueSiUsage`) — sinon on paie un objet rare pour une ligne de texte,
+    # ce que le §9 appelle « une récompense invisible ». Et l'inverse : un
+    # choix conditionné à un usage qu'aucune scène ne déclare n'apparaîtrait
+    # jamais, quoi que fasse le joueur.
+    scenes_sd = [(m.start(), m.group(1)) for m in re.finditer(r'\n    id: "([a-z0-9-]+)"', sd)]
+    for m in re.finditer(r'\n    usageObjet:\s*\{([\s\S]{0,900}?)\n    \},', sd):
+        cle = re.search(r'\bcle:\s*"([^"]+)"', m.group(1))
+        objet = re.search(r'\bobjet:\s*"([^"]+)"', m.group(1))
+        sid = next((s for p, s in reversed(scenes_sd) if p <= m.start()), "?")
+        if not cle or not objet:
+            manques.append(f"A-usage — `usageObjet` de « {sid} » sans `cle` ou sans `objet`.")
+            continue
+        # La scène va de son id à l'id suivant : on ne lit QUE ses choix.
+        fin = next((p for p, _ in scenes_sd if p > m.start()), len(sd))
+        corps = sd[m.start():fin]
+        if not re.search(rf'requires?Usage:\s*"{re.escape(cle.group(1))}"', corps) and \
+           not re.search(rf'masqueSiUsage:\s*"{re.escape(cle.group(1))}"', corps):
+            manques.append(
+                f"A-usage — « {sid} » déclare l'usage « {cle.group(1)} » mais aucun de "
+                "ses choix ne le lit : sortir l'objet ne changerait rien à l'écran."
+            )
+        if f'"{objet.group(1)}"' not in BESACE.read_text(encoding="utf8"):
+            manques.append(
+                f"A-usage — « {sid} » attend l'objet « {objet.group(1)} », absent de "
+                "`LANDES_OBJETS` : le choix ne serait jamais proposé."
+            )
+    cles_declarees = set(re.findall(r'\bcle:\s*"([^"]+)"', sd))
+    for f in ("requiresUsage", "masqueSiUsage"):
+        for k in set(re.findall(rf'{f}:\s*"([^"]+)"', sd)) - cles_declarees:
+            manques.append(
+                f"A-usage — `{f}: \"{k}\"` ne correspond à aucun `usageObjet.cle` : "
+                "aucun objet ne peut ouvrir (ou fermer) ce choix."
+            )
 
     # ─── A-nature. Tout jet déclare la nature de son échec. ──────────────
     # Sans elle, le défaut prudent décide à la place de l'auteur — et c'est

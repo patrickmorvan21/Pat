@@ -38,6 +38,11 @@ export type BesaceItem = {
   /** Icône réelle de l'objet (chantier 1 du 23/07) : les objets des Landes ont
       leur propre PNG tramé. À défaut, l'icône générique par `kind` est utilisée. */
   illustration?: string;
+  /** Ce que l'objet fait, en une phrase, quand la formule générique de
+      `usageEnMots` ne dit rien de vrai (un OUTIL ne « rend pas des forces »).
+      Chantier feedback+fluidité du 12/08 : un objet muet sur son usage est un
+      objet qu'on ne sort jamais. */
+  usage?: string;
 };
 
 /** Besace = 2 slots actifs + 2 slots passifs (spec 21/07, remplace les 4 génériques). */
@@ -243,6 +248,25 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     heal: 0.3, cure: false, illustration: "assets/objet_fruit_cendre_a.png",
     flavor: "La peau est parfaite et le poids ment. Le manger est un pari : une vision, ou pire.",
   },
+  /* ═══ OBJET PILOTE n°1 — L'OUTIL (chantier feedback+fluidité §2, 12/08).
+     Le premier objet des Landes qui ne soigne rien et ne pèse sur aucun jet :
+     il OUVRE un endroit. Pris sous verre à la Chapelle (la seule corde qui
+     n'a pas tenu), il s'amarre à la margelle du Puits Condamné — et fait
+     apparaître une descente qui n'existait pas.
+     ⚠️ `slot: "actif"` sans `heal` ni `cure` : c'est ce qui distingue un
+     OUTIL d'un remède. Sa phrase d'usage est donc écrite à la main, la
+     formule générique de `usageEnMots` ne dirait rien de vrai.
+     ⚠️ ICÔNE PARTAGÉE avec la Mèche Nouée en attendant que celle-ci ait la
+     sienne : le fichier `objet_corde_coupee_fille_a.png` a été NOMMÉ pour
+     cette corde-ci (regardé le 12/08 — un rouleau de chanvre épais, effiloché
+     d'un bout), et servait à une mèche de cheveux. Prompt de la mèche écrit
+     dans `data/images-a-produire.md`. */
+  "corde-coupee": {
+    name: "Corde coupée", rarity: "rare", kind: "babiole", slot: "actif",
+    illustration: "assets/objet_corde_coupee_fille_a.png",
+    usage: "Assez longue pour descendre là où personne ne descend. Une fois amarrée, on ne la remonte pas.",
+    flavor: "Sous verre, dans la niche, sans nom : la seule corde de toute la chapelle qui n'a pas tenu. Coupée net, pas rompue — quelqu'un a voulu que ça rate.",
+  },
   "meche-nouee": {
     name: "Mèche Nouée", rarity: "commun", kind: "babiole", slot: "passif",
     passiveMod: 0, passiveScope: "all", illustration: "assets/objet_corde_coupee_fille_a.png",
@@ -305,6 +329,9 @@ export function recompenseDestinQuiTient(
  */
 export function usageEnMots(item: BesaceItem): string {
   const it = normalizeItem(item);
+  // Un OUTIL dit lui-même ce qu'il fait : la formule générique ci-dessous ne
+  // parle que de soin et de jets, elle mentirait sur une corde.
+  if (it.usage) return it.usage;
   if (it.slot === "actif") {
     if (it.cure && it.heal) return "À garder pour un mauvais jour : referme une plaie qui dure, et rend des forces. Une seule fois.";
     if (it.cure) return "À garder pour un mauvais jour : referme une plaie qui dure. Une seule fois.";

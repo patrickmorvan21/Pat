@@ -75,7 +75,7 @@ import {
 import { chapterById, drawChapter, LANDES_LORE_FRAGMENTS } from "@/lib/chapters-data";
 import { playMusic } from "@/lib/audio";
 import { loadSettings } from "@/lib/settings";
-import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomSoinMineur, recompenseDestinQuiTient, usageEnMots, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
+import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomSoinMineur, recompenseDestinQuiTient, usageEnMots, LANDES_OBJETS, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { assetUrl, assetCss, assetExiste } from "@/lib/assets";
 import {
   activeRelic,
@@ -851,6 +851,10 @@ export default function Scene() {
     // le COMPTE. C'est ce qui permet à une option de n'exister qu'à partir de
     // la deuxième ou troisième vie, sans que le héros ait l'air de se souvenir.
     if (c.requiresDecouverte && !decouvertes.includes(c.requiresDecouverte)) return false;
+    // L'OBJET OUVRE / FERME (chantier 12/08 §2) : le jeton d'usage passe par
+    // `choixFaits`, donc sa portée est l'ÉCRAN — vidé en quittant le lieu.
+    if (c.requiresUsage && !choixFaits.includes(`usage:${c.requiresUsage}`)) return false;
+    if (c.masqueSiUsage && choixFaits.includes(`usage:${c.masqueSiUsage}`)) return false;
     // Un état n'ouvre un choix QUE si l'état correspondant l'autorise vraiment
     // (FIXÉ → `ouvreConfidences`) : sans ce garde, `requiresEtat` deviendrait
     // un flag libre et l'état ne serait plus la raison de l'ouverture.
@@ -1363,6 +1367,22 @@ export default function Scene() {
       setActiveChoice(null);
       return;
     }
+    // L'OBJET QUI SERT ICI (chantier 12/08 §2) passe AVANT le soin générique :
+    // une scène qui a écrit un usage précis l'emporte toujours sur « Utiliser
+    // — Baume ». Le jeton `usage:<cle>` sert d'id : c'est lui que
+    // `resterSurPlace` inscrit dans `choixFaits`, et que `requiresUsage` lit.
+    const uo = scene.usageObjet;
+    const porte = uo
+      ? run.besace.find((i) => LANDES_OBJETS[uo.objet] && i.name === LANDES_OBJETS[uo.objet].name)
+      : undefined;
+    if (uo && porte && !(run.choixFaits ?? []).includes(`usage:${uo.cle}`)) {
+      setActiveChoice({
+        id: `usage:${uo.cle}`,
+        label: uo.label,
+        useItem: { itemId: porte.id, consequence: uo.consequence },
+      });
+      return;
+    }
     const hasNeg = negNow;
     const hurt = run.health < 0.75 || hasNeg;
     const useful = run.besace
@@ -1371,7 +1391,7 @@ export default function Scene() {
     setActiveChoice(
       useful ? { id: `use-${useful.id}`, label: `Utiliser — ${useful.name}`, useItem: { itemId: useful.id } } : null
     );
-  }, [scene, step, health, beats]);
+  }, [scene, step, health, beats, choixFaits]);
 
   // ═══ #1 LE CHOIX QUI EXPIRE (6/08) : quand la surprise est armée et que
   // l'écran offre une OPPORTUNITÉ écrite (un gain — objet, savoir,
@@ -3458,11 +3478,22 @@ export default function Scene() {
       }
       advanceTimer.current = setTimeout(() => advance({ prepend }), 320);
     } else if (choice.useItem) {
-      // 4e choix contextuel (spec 21/07 point 4) : utiliser un actif de la
-      // Besace. Consommé, effet appliqué, la scène se résout ensuite.
+      // ═══ L'OBJET AGIT SUR PLACE (chantier feedback+fluidité 12/08, §2).
+      //
+      // Avant : l'effet s'appliquait et on enchaînait l'écran suivant — le
+      // joueur ne voyait donc JAMAIS ce que son objet venait de changer, ce
+      // que le chantier appelle « une récompense invisible ».
+      //
+      // Maintenant : `resterSurPlace` TOUJOURS, quelle que soit la scène. La
+      // conséquence s'écrit, l'écran se recompose, et les options que l'objet
+      // ouvre (`requiresUsage`) ou ferme (`masqueSiUsage`) apparaissent
+      // là-dedans. Un objet ne fait plus passer le temps : il transforme
+      // l'endroit où on est.
       const itemId = choice.useItem.itemId;
       const item = (runRef.current?.besace ?? []).map(normalizeItem).find((i) => i.id === itemId);
-      let consequence = "Tu utilises ce que tu portais. La lande ne te rendra rien en échange.";
+      let consequence =
+        choice.useItem.consequence ??
+        "Tu utilises ce que tu portais. La lande ne te rendra rien en échange.";
       if (item) {
         persist((run) => {
           run.besace = run.besace.filter((i) => i.id !== itemId);
@@ -3470,12 +3501,21 @@ export default function Scene() {
           if (item.cure) run.effects = run.effects.filter((e) => e.delta > 0);
         });
         setHealth(runRef.current?.health ?? health);
-        consequence = `Tu sors « ${item.name} » de la Besace. ${item.cure ? "La plaie se referme, l'entaille cède enfin." : "Un peu de force te revient."}`;
+        if (!choice.useItem.consequence) {
+          // Le soin générique dit ce qu'il referme ET ce que ça change pour
+          // la suite — sans un chiffre : le joueur reste devant ses options,
+          // et l'Anneau du prochain jet montrera de lui-même la différence.
+          const referme = item.cure
+            ? "La plaie se referme, l'entaille cède enfin."
+            : "Un peu de force te revient.";
+          consequence =
+            `Tu sors « ${item.name} » de la Besace et tu t'occupes de toi, là, ` +
+            `debout, sans t'asseoir. ${referme} Rien n'a bougé autour ; c'est toi ` +
+            `qui n'es plus le même. Ce que tu vas tenter maintenant, tu le tenteras ` +
+            `avec ce corps-là.`;
+        }
       }
-      advanceTimer.current = setTimeout(
-        () => (reste ? resterSurPlace(choice.id, { consequence }) : advance({ consequence })),
-        320
-      );
+      advanceTimer.current = setTimeout(() => resterSurPlace(choice.id, { consequence }), 320);
     } else if (choice.passive) {
       // Le silence comme vraie option (§19) : conséquence dédiée, sans dé.
       // Un choix passif peut aussi DONNER (rencontres en beats du 24/07 suite :

@@ -1696,7 +1696,6 @@
      "label": "Écouter ce qu'on te dit maintenant",
      "type": "passif",
      "consequence": "Le Fossoyeur ne te parle pas comme aux autres. Il parle comme on parle à quelqu'un qui a déjà son poteau quelque part. « Le troisième rang, on le plante jamais. C'est pas de la place perdue : c'est de la place gardée. » Il ne dit pas pour qui.",
-     "donneSavoir": "savoir_rangs",
      "exigeEtat": "fixe"
     },
     {
@@ -2710,8 +2709,7 @@
      "id": "mur-lire",
      "label": "Lire jusqu'au bout",
      "type": "passif",
-     "consequence": "Tu remontes les deux colonnes jusqu'en haut. Ce ne sont pas des morts : les dates sont des dates de PASSAGE. Le hameau note qui descend et quand. Et les sept croix du bas ne veulent pas dire « mort » — elles veulent dire « n'est pas remonté ». Ils ne comptent pas leurs pertes. Ils comptent les nôtres.",
-     "donneSavoir": "savoir_mur_ecrit"
+     "consequence": "Tu remontes les deux colonnes jusqu'en haut. Ce ne sont pas des morts : les dates sont des dates de PASSAGE. Le hameau note qui descend et quand. Et les sept croix du bas ne veulent pas dire « mort » — elles veulent dire « n'est pas remonté ». Ils ne comptent pas leurs pertes. Ils comptent les nôtres."
     },
     {
      "id": "mur-effacee",
@@ -3373,6 +3371,13 @@
    ],
    "choix": [
     {
+     "id": "toit-ne-rien-lui-donner",
+     "label": "Ne rien lui donner",
+     "type": "passif",
+     "consequence": "Tu sais ce que c'est, maintenant, et tu sais ce que ça attend. Alors tu ne fais rien de ce qu'on fait quand on a peur : tu ne te caches pas, tu ne cherches pas la fente, tu ne pries pas. Tu restes assis dans la paille, les mains ouvertes sur les genoux, et tu attends l'aube en le laissant attendre aussi.\n\nLe poids ne s'en va pas. Mais au bout d'un long moment, il se déplace de quelques pouces — et se réinstalle. Le geste d'une chose qui change de position parce qu'elle a compris que ce sera long.",
+     "exigeDecouverte": "d.temoin_nomme"
+    },
+    {
      "id": "toit-ne-pas-bouger",
      "label": "Ne pas bouger",
      "type": "passif",
@@ -3466,6 +3471,13 @@
     "— « Aujourd'hui, on fixe personne. » Il regarde ailleurs. « Alors pars pendant que c'est vrai. »"
    ],
    "choix": [
+    {
+     "id": "compter-combles",
+     "label": "Compter les combles clouées",
+     "type": "passif",
+     "consequence": "Au gris du matin, les planches ressortent noires sur le torchis. Tu remontes la rue en comptant, et tu t'arrêtes avant la fin parce que le compte cesse d'être une information : c'est presque toutes les maisons. Presque. Trois pignons ont gardé leurs combles ouvertes, et ce sont les trois plus proches du Petit Tribunal.\n\nLe vieux te regarde compter sans rien dire. Quand tu as fini, il dit seulement : « C'était la même nuit. » Il ne précise pas laquelle. Il n'a pas besoin.",
+     "exigeDecouverte": "d.combles_cloues"
+    },
     {
      "id": "partir-aube",
      "label": "Partir pendant que c'est vrai",
@@ -4056,15 +4068,13 @@
      "label": "Parler à l’homme sans étal",
      "type": "passif",
      "consequence": "Un homme sans marchandise se tient au bout de la rangée, les mains vides et l’air de quelqu’un qui a eu un métier. « J’ai sonné, une nuit. Pour prévenir. » Il regarde ses paumes. « Le lendemain, plus de battant. Personne n’a rien dit. C’était juste plus là. »",
-     "donneDecouverte": "d.sonneur",
      "exigeDecouverte": "d.cloche_sans_battant"
     },
     {
      "id": "rebouteux-la-nuit",
      "label": "Demander s’il soigne le soir",
      "type": "passif",
-     "consequence": "Le rebouteux hausse les épaules sans lever les yeux de son baume. « Je soigne pas la nuit. » Un temps. « C’est pas une règle, hein. C’est juste que personne demande. » Puis, comme on jette un os : « Et si c’est l’eau de la Mare que tu as bue, garde ta monnaie. Ça, ça se soigne pas ici. »",
-     "donneDecouverte": "d.nuit_du_hameau"
+     "consequence": "Le rebouteux hausse les épaules sans lever les yeux de son baume. « Je soigne pas la nuit. » Un temps. « C’est pas une règle, hein. C’est juste que personne demande. » Puis, comme on jette un os : « Et si c’est l’eau de la Mare que tu as bue, garde ta monnaie. Ça, ça se soigne pas ici. »"
     },
     {
      "id": "troc-colporteur",
@@ -4112,7 +4122,6 @@
     }
    ],
    "pointsInteret": [],
-   "donneDecouverte": "d.sonneur",
    "sejour": true,
    "nom": "Le Marché Muet — beat 2",
    "lieu": "marche_muet",
@@ -4772,7 +4781,8 @@
       "funeste": "1 naturel. Tu saisis la corde coupée. Une autre corde, au mur, te saisit le poignet — la Fixation est un métier de patience, et il en pendait une au-dessus de la niche depuis toujours, pour les gens comme toi. ♦ −2"
      },
      "nature": "exploration",
-     "vuSiEchec": true
+     "vuSiEchec": true,
+     "donneObjet": "corde-coupee"
     },
     {
      "id": "prier-veuve",
@@ -4869,6 +4879,24 @@
      "label": "Étudier le nœud",
      "type": "verrouille",
      "stat": "RUSE"
+    },
+    {
+     "id": "descendre-puits",
+     "label": "Descendre par la corde",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 13,
+     "hautEnjeu": true,
+     "issues": {
+      "critique": "20 naturel. Tu descends dans le noir jusqu'à ce que le noir cesse d'être en bas. Au fond, il n'y a pas d'eau : il y a une place de hameau, la même, à l'envers, et un puits au milieu d'où monte une corde. Des mains grises la tiennent pour toi, avec une politesse d'employés. Tu ne restes pas. Mais tu remontes en sachant que ce village a un dessous, et que le dessous t'a laissé partir — ce qui veut dire qu'il te compte parmi ses connaissances.",
+      "reussite": "Tu descends main sur main, les pieds au mur. La paroi est sèche : ce puits n'a jamais eu d'eau. À dix brasses, la corde s'arrête sur un palier de planches — un plancher, pas un fond — et dessus, rangées, des dizaines de paires de chaussures, propres, par tailles. Tu ne descends pas plus bas. Tu remontes vite, et personne ne te retient.",
+      "echec": "Tu descends trop vite et la corde te brûle les paumes jusqu'au sang. À mi-hauteur, une main sort de la paroi et se referme sur la corde au-dessus de toi — pas sur toi : sur la corde, comme on tient une porte. Tu remontes en t'arrachant les mains, et elle te laisse faire. Elle voulait juste que tu saches qui décide.",
+      "funeste": "1 naturel. Tu descends. La corde se détend d'un coup — on l'a lâchée en bas, exprès, au moment où tu ne pouvais plus remonter à la force des bras. Ce qui te rattrape ensuite le fait doucement, et te repose sur la margelle avec un soin qui est bien pire que la chute. Il te manque quelque chose et tu ne sais pas encore quoi. ♦ −2"
+     },
+     "nature": "physique",
+     "tags": [
+      "citable"
+     ]
     },
     {
      "id": "approcher-puits",
@@ -5196,8 +5224,7 @@
      "id": "ecrivain-defenses",
      "label": "L’interroger sur son travail",
      "type": "passif",
-     "consequence": "« J'écris les dénonciations et les défenses. Les deux. » Il range sa plume avec un soin d'horloger. « Depuis quelques années, on ne me demande plus de défenses. » Il dit ça comme on constate une baisse de commandes.",
-     "donneDecouverte": "d.plus_de_defenses"
+     "consequence": "« J'écris les dénonciations et les défenses. Les deux. » Il range sa plume avec un soin d'horloger. « Depuis quelques années, on ne me demande plus de défenses. » Il dit ça comme on constate une baisse de commandes."
     },
     {
      "id": "lire-registre",
@@ -5245,7 +5272,6 @@
     }
    ],
    "pointsInteret": [],
-   "donneDecouverte": "d.plus_de_defenses",
    "poseFlag": "a-denonce",
    "registre": true,
    "sejour": true,
@@ -6324,6 +6350,22 @@
     "La Doyenne laisse le silence retomber, puis referme le cahier de l'Écrivain d'une main. L'Ordonnance de la Fixation s'applique. À moins que tu ne parles mieux qu'eux."
    ],
    "choix": [
+    {
+     "id": "invoquer-trois-cent-unieme",
+     "label": "Invoquer le trois cent unième",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": true,
+     "issues": {
+      "critique": "20 naturel. Tu ne plaides pas : tu récites. Le nombre, le rang, et ce qu'il a écrit en dessous du trois cent unième nom. Le tribunal se lève d'un bloc — pas contre toi : parce qu'on se lève quand on entend ça. La Doyenne referme le cahier de l'Écrivain et le pousse loin d'elle. « Qui t'a dit ça ne peut plus parler. » Un temps. « Alors c'est vrai. » On te rend la route, et le hameau ne te regarde plus comme un passant.",
+      "reussite": "Tu dis le nombre. Trois cents noms, et le trois cent unième. Dans les bancs, quelqu'un se met à pleurer sans bruit, et ça décide tout : on ne pend pas devant quelqu'un qui pleure. La Doyenne prononce la relaxe comme on referme une porte.",
+      "echec": "Tu dis le nombre — et la Doyenne te laisse finir, ce qui est mauvais signe. « Il a signé trois cents fois. » Elle attend. « Et une fois de trop, oui. C'est bien pour ça qu'on ne le laisse plus signer. » Elle rouvre le cahier. Tu viens de leur rappeler pourquoi ils tiennent tant à leur règle.",
+      "funeste": "1 naturel. Tu invoques le Bailli devant ceux qui l'ont pendu, et tu emploies son mot à lui : « injuste ». Le silence qui suit n'est pas de la gêne. C'est celui qu'on fait quand on a fini de discuter. ♦ −2"
+     },
+     "nature": "social",
+     "exigeDecouverte": "d.bailli_condamne"
+    },
     {
      "id": "plaider-serre",
      "label": "Plaider serré",
@@ -8636,7 +8678,7 @@
  "totaux": {
   "scenes": 89,
   "pointsInteret": 29,
-  "choix": 237,
+  "choix": 241,
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,

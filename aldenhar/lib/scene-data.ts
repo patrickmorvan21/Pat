@@ -122,8 +122,15 @@ export type Choice = {
    * 4e choix contextuel (spec 21/07, point 4) : utiliser un objet ACTIF de la
    * Besace pertinent dans la scène (ex. un baume quand ENTAILLÉ). Consommé,
    * puis la scène se résout. Ajouté dynamiquement, jamais écrit en dur.
+   *
+   * ⚠️ CHANTIER FEEDBACK+FLUIDITÉ (12/08, §2) : utiliser un objet ne fait
+   * PLUS passer à l'écran suivant. L'objet agit SUR PLACE — sa conséquence
+   * s'écrit, puis on retrouve le lieu avec ses options, dont celles que
+   * l'objet vient d'ouvrir. `consequence` porte le texte quand la scène a
+   * écrit un usage précis (`Scene.usageObjet`) ; sinon le moteur écrit la
+   * ligne générique du soin.
    */
-  useItem?: { itemId: string };
+  useItem?: { itemId: string; consequence?: string };
   /**
    * Prix différé (§17) : ce choix « gratuit » contracte une dette silencieuse
    * qui se règle `settleInSteps` scènes plus loin dans la run.
@@ -298,6 +305,21 @@ export type Choice = {
   corbeaux?: boolean;
   /** Ce choix n'existe que si le COMPTE tient cette découverte. */
   requiresDecouverte?: string;
+  /**
+   * L'OBJET OUVRE UNE POSSIBILITÉ (chantier 12/08, §2). Ce choix n'existe
+   * qu'une fois l'objet de la scène employé — clé de `Scene.usageObjet.cle`.
+   * Portée : l'ÉCRAN. `choixFaits` est vidé en quittant le lieu, donc une
+   * corde amarrée ici n'ouvre rien ailleurs, et rien ne survit à la reprise
+   * dans un autre lieu. C'est voulu : l'objet transforme la scène courante,
+   * pas la partie.
+   */
+  requiresUsage?: string;
+  /**
+   * L'inverse : ce choix DISPARAÎT une fois l'objet employé. Sert à garder
+   * l'écran à trois actes — une fois la corde amarrée au-dessus d'un puits
+   * qui cogne, coller l'oreille aux planches n'est plus la question.
+   */
+  masqueSiUsage?: string;
 };
 
 /**
@@ -414,6 +436,31 @@ export type Scene = {
    * simples soins génériques.
    */
   loot?: string;
+  /**
+   * L'OBJET AGIT ICI (chantier feedback+fluidité du 12/08, §2).
+   *
+   * « L'objet doit d'abord modifier la scène actuelle, PUIS ouvrir ou
+   * transformer une possibilité. » Jusqu'ici, sortir un objet de la Besace
+   * appliquait son effet et enchaînait l'écran suivant : le joueur ne voyait
+   * jamais ce que son objet venait de changer.
+   *
+   * Une scène déclare donc l'objet qui SERT chez elle : son libellé, ce qui
+   * se passe sur place, et la clé qui ouvre (`Choice.requiresUsage`) ou ferme
+   * (`Choice.masqueSiUsage`) des options du même écran.
+   *
+   * ⚠️ Portée ÉCRAN : la clé passe par `choixFaits`, vidé en quittant le lieu.
+   * Un objet consommé ailleurs n'ouvre donc rien ici — et c'est la règle :
+   * l'objet transforme la scène où on le sort, pas la partie.
+   */
+  usageObjet?: {
+    /** Clé d'une entrée de `LANDES_OBJETS` (l'objet doit être en Besace). */
+    objet: string;
+    label: string;
+    /** Le feedback SUR PLACE — ce que l'objet vient de changer, en fiction. */
+    consequence: string;
+    /** Jeton lu par `requiresUsage` / `masqueSiUsage` des choix de la scène. */
+    cle: string;
+  };
   /**
    * Le Soupçon (chantier 3 du 23/07) : delta appliqué à l'ARRIVÉE dans ce lieu
    * (ex. être vu près des potences). Silencieux, comme tout le Soupçon.
@@ -1906,7 +1953,6 @@ export const SCENES: Scene[] = [
         id: "confidence-fixes",
         label: "Écouter ce qu'on te dit maintenant",
         requiresEtat: "fixe",
-        grantsSavoir: "savoir_rangs",
         passive: {
           consequence:
             "Le Fossoyeur ne te parle pas comme aux autres. Il parle comme " +
@@ -2818,7 +2864,6 @@ export const SCENES: Scene[] = [
       {
         id: "mur-lire",
         label: "Lire jusqu'au bout",
-        grantsSavoir: "savoir_mur_ecrit",
         passive: {
           consequence:
             "Tu remontes les deux colonnes jusqu'en haut. Ce ne sont pas des " +
@@ -3419,6 +3464,30 @@ export const SCENES: Scene[] = [
     ],
     choices: [
       {
+        /* ═══ LE LECTEUR DE `d.temoin_nomme` (chantier 12/08, §5).
+           La Fille du Moulin est la seule à NOMMER ce qui est sur ce toit :
+           « celle qui regarde — elle ne juge personne, elle attend que vous
+           le fassiez ». Ce qu'elle dit n'était lu nulle part.
+           Ici, ça change tout : un héros qui l'a entendue sait que la chose
+           attend un geste, et peut donc refuser d'en faire un — ce qui est
+           la seule chose au monde qu'elle n'attendait pas. */
+        id: "toit-ne-rien-lui-donner",
+        label: "Ne rien lui donner",
+        requiresDecouverte: "d.temoin_nomme",
+        passive: {
+          consequence:
+            "Tu sais ce que c'est, maintenant, et tu sais ce que ça attend. " +
+            "Alors tu ne fais rien de ce qu'on fait quand on a peur : tu ne " +
+            "te caches pas, tu ne cherches pas la fente, tu ne pries pas. Tu " +
+            "restes assis dans la paille, les mains ouvertes sur les genoux, " +
+            "et tu attends l'aube en le laissant attendre aussi.\n\n" +
+            "Le poids ne s'en va pas. Mais au bout d'un long moment, il se " +
+            "déplace de quelques pouces — et se réinstalle. Le geste d'une " +
+            "chose qui change de position parce qu'elle a compris que ce " +
+            "sera long.",
+        },
+      },
+      {
         id: "toit-ne-pas-bouger",
         label: "Ne pas bouger",
         passive: {
@@ -3492,6 +3561,33 @@ export const SCENES: Scene[] = [
         "pendant que c'est vrai. »",
     ],
     choices: [
+      {
+        /* ═══ LE LECTEUR DE `d.combles_cloues` (chantier 12/08, §5).
+           PROMESSE TENUE : le 11/08 j'ai posé ce drapeau en écrivant qu'il
+           « reçoit enfin un consommateur, à la Grange » — et il n'en a jamais
+           eu. C'était exactement le défaut que le §12 du chantier interdit
+           (« un flag stocké pris pour une fonctionnalité terminée »), et je
+           l'ai commis en le documentant.
+           Le voici, à l'aube : les combles clouées de l'INTÉRIEUR, une nuit,
+           en se dépêchant, ne se comptent qu'au petit jour. Le nombre dit
+           combien de familles se sont barricadées la même nuit — la nuit du
+           trois cent unième nom. */
+        id: "compter-combles",
+        label: "Compter les combles clouées",
+        requiresDecouverte: "d.combles_cloues",
+        passive: {
+          consequence:
+            "Au gris du matin, les planches ressortent noires sur le torchis. " +
+            "Tu remontes la rue en comptant, et tu t'arrêtes avant la fin " +
+            "parce que le compte cesse d'être une information : c'est presque " +
+            "toutes les maisons. Presque. Trois pignons ont gardé leurs " +
+            "combles ouvertes, et ce sont les trois plus proches du Petit " +
+            "Tribunal.\n\n" +
+            "Le vieux te regarde compter sans rien dire. Quand tu as fini, " +
+            "il dit seulement : « C'était la même nuit. » Il ne précise pas " +
+            "laquelle. Il n'a pas besoin.",
+        },
+      },
       {
         id: "partir-aube",
         label: "Partir pendant que c'est vrai",
@@ -3995,7 +4091,6 @@ export const SCENES: Scene[] = [
         id: "sonneur-battant",
         label: "Parler à l\u2019homme sans étal",
         requiresDecouverte: "d.cloche_sans_battant",
-        decouverte: "d.sonneur",
         passive: {
           consequence:
             "Un homme sans marchandise se tient au bout de la rangée, les " +
@@ -4011,7 +4106,6 @@ export const SCENES: Scene[] = [
            demande de soins la nuit — il a rangé ça dans « les habitudes ». */
         id: "rebouteux-la-nuit",
         label: "Demander s\u2019il soigne le soir",
-        decouverte: "d.nuit_du_hameau",
         passive: {
           consequence:
             "Le rebouteux hausse les épaules sans lever les yeux de son " +
@@ -4658,6 +4752,11 @@ export const SCENES: Scene[] = [
         // Sa prose d'échec nomme un témoin (la Veuve est sur toi en trois pas).
         vuSiEchec: true,
         label: "Prendre la corde coupée",
+        /* Sa prose de réussite disait depuis toujours que la corde s'enroule
+           autour du poignet — et le joueur repartait les mains vides. C'est le
+           §9 du chantier du 12/08 (« récompense invisible ») : le seul OUTIL
+           de la zone se gagne ici, et il sert au Puits Condamné. */
+        grantsLoot: "corde-coupee",
         risky: {
           stat: "RUSE",
           threshold: 12,
@@ -4738,6 +4837,24 @@ export const SCENES: Scene[] = [
     id: "puits-condamne",
     illustration: "assets/scene_puits_condamne_v2_a.png",
     chainNext: "puits-condamne-2",
+    /* OBJET PILOTE n°1 — l'outil qui ouvre un endroit (chantier 12/08 §2).
+       La corde prise à la Chapelle s'amarre ici. L'écran ne change pas : la
+       conséquence s'écrit sur place, et la descente apparaît. Les deux
+       options d'observation disparaissent en échange (`masqueSiUsage`), donc
+       le budget de trois actes tient sans exception. */
+    usageObjet: {
+      objet: "corde-coupee",
+      label: "Amarrer la corde à la margelle",
+      cle: "corde",
+      consequence:
+        "Tu passes la corde en double autour de la pierre et tu serres. " +
+        "Dessous, les coups s'arrêtent net — pour la première fois depuis " +
+        "que tu es là. Le chanvre file entre deux planches disjointes et " +
+        "descend, descend, sans jamais toucher le fond ; tu tiens le brin " +
+        "libre, il ne pèse rien. Puis, très bas, on l'a prise. Elle se tend " +
+        "d'un coup, se raidit, et reste tendue. Quelque chose l'a amarrée de " +
+        "l'autre bout. On t'invite.",
+    },
     narration: [
       "Sur la place arrière du hameau, un puits — condamné de frais : " +
         "planches neuves, chaînes croisées, cadenas encore gras. Tout le " +
@@ -4753,6 +4870,9 @@ export const SCENES: Scene[] = [
         id: "ecouter-puits",
         nature: "surnaturel",
         tags: ["citable"],
+        // Une fois la corde tendue par le fond, écouter aux planches n'est
+        // plus la question posée.
+        masqueSiUsage: "corde",
         label: "Coller l'oreille au bois",
         risky: {
           stat: "INSTINCT",
@@ -4768,6 +4888,7 @@ export const SCENES: Scene[] = [
       {
         id: "noeud-chaines",
         label: "Étudier le nœud",
+        masqueSiUsage: "corde",
         locked: { stat: "RUSE", min: 4 },
         passive: {
           consequence:
@@ -4775,6 +4896,32 @@ export const SCENES: Scene[] = [
             "nœuds comme d'autres les visages, et celui-ci avoue : il a été " +
             "noué DEPUIS le puits. Quelqu'un, en bas, a fermé sa propre " +
             "porte. Les planches ne gardent pas l'intérieur. Elles le protègent.",
+        },
+      },
+      {
+        /* LA POSSIBILITÉ QUE L'OBJET OUVRE. N'existe pas sans la corde, et
+           n'existe qu'ici. Pas de scène nouvelle : la descente se raconte en
+           quatre issues, comme les poutres de la Chapelle.
+           ⚠️ Pas de `sortie` : les quatre issues ramènent le héros à la
+           margelle, donc l'écran suivant du lieu (« à ton approche, le rythme
+           change ») enchaîne juste. Une sortie l'aurait sauté — et le lieu
+           serait le seul des Landes dont on peut voir le fond sans jamais
+           voir ce qui en sort. */
+        id: "descendre-puits",
+        nature: "physique",
+        tags: ["citable"],
+        requiresUsage: "corde",
+        label: "Descendre par la corde",
+        risky: {
+          stat: "COURAGE",
+          threshold: 13,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Tu descends dans le noir jusqu'à ce que le noir cesse d'être en bas. Au fond, il n'y a pas d'eau : il y a une place de hameau, la même, à l'envers, et un puits au milieu d'où monte une corde. Des mains grises la tiennent pour toi, avec une politesse d'employés. Tu ne restes pas. Mais tu remontes en sachant que ce village a un dessous, et que le dessous t'a laissé partir — ce qui veut dire qu'il te compte parmi ses connaissances.",
+            "Tu descends main sur main, les pieds au mur. La paroi est sèche : ce puits n'a jamais eu d'eau. À dix brasses, la corde s'arrête sur un palier de planches — un plancher, pas un fond — et dessus, rangées, des dizaines de paires de chaussures, propres, par tailles. Tu ne descends pas plus bas. Tu remontes vite, et personne ne te retient.",
+            "Tu descends trop vite et la corde te brûle les paumes jusqu'au sang. À mi-hauteur, une main sort de la paroi et se referme sur la corde au-dessus de toi — pas sur toi : sur la corde, comme on tient une porte. Tu remontes en t'arrachant les mains, et elle te laisse faire. Elle voulait juste que tu saches qui décide.",
+            "1 naturel. Tu descends. La corde se détend d'un coup — on l'a lâchée en bas, exprès, au moment où tu ne pouvais plus remonter à la force des bras. Ce qui te rattrape ensuite le fait doucement, et te repose sur la margelle avec un soin qui est bien pire que la chute. Il te manque quelque chose et tu ne sais pas encore quoi. ♦ −2"
+          ),
         },
       },
       { id: "approcher-puits", label: "S'approcher de la margelle" },
@@ -5064,7 +5211,6 @@ export const SCENES: Scene[] = [
            celle du Bailli — il le dit sans savoir ce qu'il dit. */
         id: "ecrivain-defenses",
         label: "L\u2019interroger sur son travail",
-        decouverte: "d.plus_de_defenses",
         passive: {
           consequence:
             "« J'écris les dénonciations et les défenses. Les deux. » Il range sa plume avec un soin d'horloger. « Depuis quelques années, on ne me demande plus de défenses. » Il dit ça comme on constate une baisse de commandes.",
@@ -6071,6 +6217,35 @@ export const SCENES: Scene[] = [
         "moins que tu ne parles mieux qu'eux.",
     ],
     choices: [
+      {
+        /* ═══ LE LECTEUR DE `d.bailli_condamne` (chantier 12/08, §5+§8).
+           La confession du Pendu qui parle — « le trois cent unième était le
+           sien, j'ai inscrit le mien en dessous » — dormait depuis le 6/08 :
+           on pouvait la lui arracher, elle ne servait jamais.
+           C'est ICI qu'elle vaut, et nulle part ailleurs : le hameau juge par
+           l'Ordonnance de la Fixation, et l'homme qui l'a écrite s'est
+           condamné lui-même pour avoir refusé de l'appliquer. Le joueur ne
+           l'apprend pas au procès — il l'a appris ailleurs, peut-être dans
+           une autre vie, et ça revient exactement quand il en a besoin (§8 :
+           « le jeu a retenu ça »).
+           Pas de `defense:` : cette défense-là ne vient pas des témoins, elle
+           vient de ce qu'on est allé chercher. */
+        id: "invoquer-trois-cent-unieme",
+        nature: "social",
+        label: "Invoquer le trois cent unième",
+        requiresDecouverte: "d.bailli_condamne",
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Tu ne plaides pas : tu récites. Le nombre, le rang, et ce qu'il a écrit en dessous du trois cent unième nom. Le tribunal se lève d'un bloc — pas contre toi : parce qu'on se lève quand on entend ça. La Doyenne referme le cahier de l'Écrivain et le pousse loin d'elle. « Qui t'a dit ça ne peut plus parler. » Un temps. « Alors c'est vrai. » On te rend la route, et le hameau ne te regarde plus comme un passant.",
+            "Tu dis le nombre. Trois cents noms, et le trois cent unième. Dans les bancs, quelqu'un se met à pleurer sans bruit, et ça décide tout : on ne pend pas devant quelqu'un qui pleure. La Doyenne prononce la relaxe comme on referme une porte.",
+            "Tu dis le nombre — et la Doyenne te laisse finir, ce qui est mauvais signe. « Il a signé trois cents fois. » Elle attend. « Et une fois de trop, oui. C'est bien pour ça qu'on ne le laisse plus signer. » Elle rouvre le cahier. Tu viens de leur rappeler pourquoi ils tiennent tant à leur règle.",
+            "1 naturel. Tu invoques le Bailli devant ceux qui l'ont pendu, et tu emploies son mot à lui : « injuste ». Le silence qui suit n'est pas de la gêne. C'est celui qu'on fait quand on a fini de discuter. ♦ −2"
+          ),
+        },
+      },
       {
         id: "plaider-serre",
         nature: "social",
