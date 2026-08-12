@@ -1,16 +1,16 @@
 {
  "serment-hameau": {
   "curieuse": {
-   "ecrans": 21,
+   "ecrans": 30,
    "ecransDecision": 10,
-   "ecransLecture": 11,
-   "partDecision": 0.47619047619047616,
-   "tapsAvantDecision": 1.1,
+   "ecransLecture": 20,
+   "partDecision": 0.3333333333333333,
+   "tapsAvantDecision": 2,
    "actionsArrivee": 2,
    "sousMenus": 0,
    "poiConsultes": 0,
    "jets": 1,
-   "taps": 21,
+   "taps": 30,
    "erreurs": 0,
    "log": [
     {
@@ -90,7 +90,7 @@
     {
      "boutons": [
       "Vers la crête aux cordes",
-      "Vers les rangées de poteaux"
+      "Vers un moulin sans ailes"
      ],
      "pris": "Vers la crête aux cordes",
      "sousMenu": false
@@ -98,16 +98,16 @@
    ]
   },
   "pressee": {
-   "ecrans": 25,
+   "ecrans": 23,
    "ecransDecision": 6,
-   "ecransLecture": 19,
-   "partDecision": 0.24,
-   "tapsAvantDecision": 3.1666666666666665,
+   "ecransLecture": 17,
+   "partDecision": 0.2608695652173913,
+   "tapsAvantDecision": 2.8333333333333335,
    "actionsArrivee": 2,
    "sousMenus": 0,
    "poiConsultes": 0,
    "jets": 3,
-   "taps": 25,
+   "taps": 23,
    "erreurs": 0,
    "log": [
     {
@@ -129,11 +129,11 @@
     },
     {
      "boutons": [
-      "Lire jusqu'au bout",
-      "Chercher sous la craie effacée RUSE",
-      "Effacer la ligne qui te concerne COURAGE"
+      "T'asseoir et manger",
+      "Repousser le bol COURAGE",
+      "Prendre le pain, debout RUSE"
      ],
-     "pris": "Chercher sous la craie effacée RUSE",
+     "pris": "Repousser le bol COURAGE",
      "sousMenu": false
     },
     {
@@ -164,16 +164,16 @@
  },
  "campement": {
   "curieuse": {
-   "ecrans": 6,
+   "ecrans": 4,
    "ecransDecision": 3,
-   "ecransLecture": 3,
-   "partDecision": 0.5,
-   "tapsAvantDecision": 1,
+   "ecransLecture": 1,
+   "partDecision": 0.75,
+   "tapsAvantDecision": 0.3333333333333333,
    "actionsArrivee": 3,
    "sousMenus": 0,
    "poiConsultes": 0,
    "jets": 0,
-   "taps": 6,
+   "taps": 4,
    "erreurs": 0,
    "log": [
     {
@@ -196,10 +196,10 @@
     },
     {
      "boutons": [
-      "Vers les rangées de poteaux",
+      "Vers une eau qui ne bouge pas",
       "Vers la crête aux cordes"
      ],
-     "pris": "Vers les rangées de poteaux",
+     "pris": "Vers une eau qui ne bouge pas",
      "sousMenu": false
     }
    ]
@@ -229,7 +229,7 @@
     {
      "boutons": [
       "Vers la crête aux cordes",
-      "Vers un gibet qui parle"
+      "Vers les rangées de poteaux"
      ],
      "pris": "Vers la crête aux cordes",
      "sousMenu": false
@@ -239,16 +239,16 @@
  },
  "colline-aux-gibets": {
   "curieuse": {
-   "ecrans": 3,
-   "ecransDecision": 2,
-   "ecransLecture": 1,
-   "partDecision": 0.6666666666666666,
-   "tapsAvantDecision": 0.5,
+   "ecrans": 7,
+   "ecransDecision": 3,
+   "ecransLecture": 4,
+   "partDecision": 0.42857142857142855,
+   "tapsAvantDecision": 1.3333333333333333,
    "actionsArrivee": 3,
    "sousMenus": 0,
    "poiConsultes": 0,
    "jets": 0,
-   "taps": 3,
+   "taps": 7,
    "erreurs": 0,
    "log": [
     {
@@ -268,20 +268,28 @@
      ],
      "pris": "Partir avant de comprendre",
      "sousMenu": false
+    },
+    {
+     "boutons": [
+      "Vers un moulin sans ailes",
+      "Vers la crête aux cordes"
+     ],
+     "pris": "Vers un moulin sans ailes",
+     "sousMenu": false
     }
    ]
   },
   "pressee": {
-   "ecrans": 10,
+   "ecrans": 11,
    "ecransDecision": 5,
-   "ecransLecture": 5,
-   "partDecision": 0.5,
-   "tapsAvantDecision": 1,
+   "ecransLecture": 6,
+   "partDecision": 0.45454545454545453,
+   "tapsAvantDecision": 1.2,
    "actionsArrivee": 3,
    "sousMenus": 0,
    "poiConsultes": 0,
    "jets": 2,
-   "taps": 10,
+   "taps": 11,
    "erreurs": 0,
    "log": [
     {
@@ -319,10 +327,10 @@
     },
     {
      "boutons": [
-      "Vers un moulin sans ailes",
+      "Vers une eau qui ne bouge pas",
       "Vers la crête aux cordes"
      ],
-     "pris": "Vers un moulin sans ailes",
+     "pris": "Vers une eau qui ne bouge pas",
      "sousMenu": false
     }
    ]
