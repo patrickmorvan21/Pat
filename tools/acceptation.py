@@ -54,6 +54,26 @@ def sans_commentaires(src: str) -> str:
     return "".join(out)
 
 
+def sans_chaines(src: str) -> str:
+    """Vide le CONTENU des chaînes en gardant les positions.
+
+    ⚠️ `sans_commentaires` ne suffit pas pour chercher un NOM DE CHAMP : la
+    prose du jeu contient « L'échange se fait : trois clous… », et un regex
+    `\\bfait\\s*:` y voit une déclaration de champ. C'est ce faux positif qui a
+    fait accuser `troc-colporteur` à tort. Pour toute recherche de champ,
+    passer par ici ; pour extraire un libellé, garder le texte intact."""
+    out, i, n = [], 0, len(src)
+    while i < n:
+        if src[i] == '"':
+            j = i + 1
+            while j < n and src[j] != '"':
+                j += 2 if src[j] == "\\" else 1
+            out.append('""' + " " * max(0, j - i - 1)); i = j + 1
+        else:
+            out.append(src[i]); i += 1
+    return "".join(out)
+
+
 def bloc_depuis(src: str, i: int) -> str:
     """Le bloc { … } qui commence à l'index i (accolades équilibrées)."""
     d = 0
@@ -172,6 +192,25 @@ def main() -> int:
                 f"A8 — libellé de {len(lab.group(1))} car. sur « {cid} » ({sid}) : "
                 f"plus de {MAX}, il ne se lit plus d'un coup d'œil."
             )
+
+    # ─── A-supplément. Une charge de point d'intérêt ne va pas sur un jet. ──
+    # `chapterFragment`, `fait` et `corbeaux` ont été ajoutés à `Choice` par le
+    # chantier du 11/08 pour que « Observer » puisse disparaître sans rien
+    # perdre. Ils sont servis à la SÉLECTION, donc uniquement pour les choix
+    # sans dé : sur un choix risqué ils s'afficheraient avant qu'on sache si
+    # l'action a réussi. Sans ce garde, poser l'un d'eux sur un jet donnerait
+    # un champ silencieusement inerte — le défaut que le §12 du chantier
+    # appelle « considérer un flag stocké comme une fonctionnalité terminée ».
+    for sid, cid, b in choix_de(sd):
+        bc = sans_chaines(b)  # sinon la PROSE fait passer « se fait : » pour un champ
+        if re.search(r'\brisky:\s*\{', bc):
+            for f in ("chapterFragment", "fait", "corbeaux"):
+                if re.search(rf'\n\s*{f}\s*:', bc):
+                    manques.append(
+                        f"A-supplément — le jet « {cid} » ({sid}) porte `{f}`, "
+                        "qui n'est servi que pour les choix SANS dé. Déplace-le "
+                        "sur une action sans jet, ou le contenu ne s'affichera jamais."
+                    )
 
     # ─── A-nature. Tout jet déclare la nature de son échec. ──────────────
     # Sans elle, le défaut prudent décide à la place de l'auteur — et c'est

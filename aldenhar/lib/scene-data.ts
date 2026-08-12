@@ -251,6 +251,25 @@ export type Choice = {
    * ne met pas de souvenirs dans sa tête.
    */
   decouverte?: string;
+
+  /**
+   * ─── LES TROIS CHARGES QUI MANQUAIENT À UN CHOIX (chantier du 11/08) ───
+   *
+   * Le chantier supprime le sous-menu « Observer » : les observations qui
+   * méritent de rester deviennent des ACTIONS contextuelles directes. Pour que
+   * la transformation ne perde rien, un choix doit pouvoir porter exactement
+   * ce qu'un point d'intérêt portait — sinon on ne transforme pas, on ampute,
+   * et le §12 du chantier appelle ça une exécution à moitié.
+   *
+   * `savoir` (via `grantsSavoir`), `decouverte`, `grantsLoot`, `soupcon` et
+   * `setsEnvFlag` existaient déjà. Voici les trois qui manquaient.
+   */
+  /** Sert le prochain fragment de lore du chapitre de la run (4e monnaie). */
+  chapterFragment?: boolean;
+  /** Énonce LA version que cette vie-ci tient pour vraie (contradictions.ts). */
+  fait?: string;
+  /** Les Corbeaux du Compte : leur nombre = les morts du compte, dit en prose. */
+  corbeaux?: boolean;
   /** Ce choix n'existe que si le COMPTE tient cette découverte. */
   requiresDecouverte?: string;
 };

@@ -1,0 +1,73 @@
+{
+ "_definition": {
+  "decision_stricte": "écran dont l'action prise change le monde ; ouvrir/fermer un sous-menu et examiner un point d'intérêt ne comptent PAS",
+  "mesure": "tools/mesure_boucle.mjs, build v1.76.1, compte de vétéran, chronomètres désactivés",
+  "portee": "par LIEU (la vie entière inclut les transitions, hors périmètre du pilote)"
+ },
+ "serment-hameau": {
+  "curieuse": {
+   "ecrans": 34,
+   "actionsArrivee": 2,
+   "sousMenus": 5,
+   "poiConsultes": 5,
+   "jets": 0,
+   "decisionsStrictes": 8,
+   "partDecisionStricte": 0.235,
+   "tapsAvantDecision": 3.25
+  },
+  "pressee": {
+   "ecrans": 28,
+   "actionsArrivee": 2,
+   "sousMenus": 0,
+   "poiConsultes": 0,
+   "jets": 4,
+   "decisionsStrictes": 12,
+   "partDecisionStricte": 0.429,
+   "tapsAvantDecision": 1.33
+  }
+ },
+ "campement": {
+  "curieuse": {
+   "ecrans": 18,
+   "actionsArrivee": 3,
+   "sousMenus": 4,
+   "poiConsultes": 4,
+   "jets": 0,
+   "decisionsStrictes": 3,
+   "partDecisionStricte": 0.167,
+   "tapsAvantDecision": 5.0
+  },
+  "pressee": {
+   "ecrans": 7,
+   "actionsArrivee": 3,
+   "sousMenus": 0,
+   "poiConsultes": 0,
+   "jets": 2,
+   "decisionsStrictes": 4,
+   "partDecisionStricte": 0.571,
+   "tapsAvantDecision": 0.75
+  }
+ },
+ "colline-aux-gibets": {
+  "curieuse": {
+   "ecrans": 19,
+   "actionsArrivee": 3,
+   "sousMenus": 2,
+   "poiConsultes": 2,
+   "jets": 0,
+   "decisionsStrictes": 5,
+   "partDecisionStricte": 0.263,
+   "tapsAvantDecision": 2.8
+  },
+  "pressee": {
+   "ecrans": 14,
+   "actionsArrivee": 3,
+   "sousMenus": 0,
+   "poiConsultes": 0,
+   "jets": 2,
+   "decisionsStrictes": 8,
+   "partDecisionStricte": 0.571,
+   "tapsAvantDecision": 0.75
+  }
+ }
+}

@@ -3119,6 +3119,41 @@ export default function Scene() {
       const d = choice.decouverte;
       if (poserDecouverte(d)) setDecouvertes((xs) => [...xs, d]);
     }
+    // ─── Les charges d'un point d'intérêt, portées par une ACTION ──────────
+    // Chantier du 11/08 : « Observer » disparaît, les observations qui restent
+    // deviennent des actions directes. Sans ces trois branches, transformer un
+    // point en choix perdrait son fragment de lore, sa version du fait, ou son
+    // compte de corbeaux — c'est-à-dire exactement ce qui le rendait utile.
+    // Elles sont poussées en tête des beats de la conséquence, pour être lues
+    // AVANT ce que l'action provoque.
+    const supplements: string[] = [];
+    if (choice.corbeaux) supplements.push(ligneCorbeaux(loadMemory().deaths));
+    const fragChoix = choice.chapterFragment ? takeChapterFragment() : null;
+    if (fragChoix) {
+      supplements.push(fragChoix.text);
+      persist((run) => {
+        run.fragmentsLus = [...(run.fragmentsLus ?? []), fragChoix.index];
+      });
+    }
+    if (choice.fait) {
+      const v = versionDuFait(choice.fait, loadMemory().runsStarted);
+      if (v) {
+        supplements.push(v.texte);
+        noterFait(choice.fait, v.id);
+        setContradictions(contradictionsConnues(loadMemory()).length);
+      }
+    }
+    // ⚠️ Servis pour les choix SANS dé uniquement. Sur un choix risqué, l'écran
+    // ne change qu'après la résolution : un supplément posé ici s'afficherait
+    // avant qu'on sache si l'action a réussi. Les actions issues d'un point
+    // d'intérêt (regarder, compter, lire) n'ont pas de jet — c'est cohérent.
+    // Le garde `tools/acceptation.py` refuse la combinaison, pour qu'un champ
+    // déclaré ne reste jamais silencieusement inerte.
+    const prependSupp: FeedEntry[] = supplements.map((t) => ({
+      id: nextId(),
+      kind: "narration" as const,
+      text: t,
+    }));
     // Prix différé (§17) : un choix « gratuit » peut poser une dette silencieuse.
     if (choice.debt) {
       const debt = choice.debt;
@@ -3341,14 +3376,22 @@ export default function Scene() {
       advanceTimer.current = setTimeout(
         () =>
           reste
-            ? resterSurPlace(choice.id, { consequence: consequencePassive, grantedItem: granted })
-            : advance({ consequence: consequencePassive, grantedItem: granted, toScene: sortieVers }),
+            ? resterSurPlace(choice.id, {
+                consequence: consequencePassive, grantedItem: granted, prepend: prependSupp,
+              })
+            : advance({
+                consequence: consequencePassive, grantedItem: granted,
+                toScene: sortieVers, prepend: prependSupp,
+              }),
         320
       );
     } else {
       // Choix neutre : résolution instantanée, sans dé (spec §4).
       advanceTimer.current = setTimeout(
-        () => (reste ? resterSurPlace(choice.id) : advance({ toScene: sortieVers })),
+        () =>
+          reste
+            ? resterSurPlace(choice.id, { prepend: prependSupp })
+            : advance({ toScene: sortieVers, prepend: prependSupp }),
         320
       );
     }
