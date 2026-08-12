@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-11T14:16:12Z",
- "commit": "fd2cf9c",
+ "genere": "2026-08-12T09:08:49Z",
+ "commit": "b5dc8f5",
  "zones": [
   {
    "id": "landes",
@@ -73,7 +73,7 @@
      ],
      "nbScenes": 4,
      "nbRencontres": 1,
-     "nbPois": 4,
+     "nbPois": 0,
      "entrees": [],
      "sorties": [],
      "roles": [],
@@ -118,12 +118,14 @@
      ],
      "nbScenes": 2,
      "nbRencontres": 0,
-     "nbPois": 4,
+     "nbPois": 0,
      "entrees": [],
      "sorties": [],
      "roles": [],
      "dansPool": true,
-     "alertes": [],
+     "alertes": [
+      "orpheline"
+     ],
      "aCompleter": 0,
      "scenePrincipale": "campement"
     },
@@ -174,12 +176,14 @@
      ],
      "nbScenes": 14,
      "nbRencontres": 0,
-     "nbPois": 7,
+     "nbPois": 0,
      "entrees": [],
      "sorties": [],
      "roles": [],
      "dansPool": true,
-     "alertes": [],
+     "alertes": [
+      "orpheline"
+     ],
      "aCompleter": 0,
      "scenePrincipale": "serment-hameau"
     },
@@ -1133,94 +1137,31 @@
   {
    "id": "colline-aux-gibets",
    "narration": [
-    "La pente est douce et n'en finit pas — la Colline se mérite à pas comptés. Sur la crête, les potences se suivent, plantées de loin en loin comme des bornes. Elles grandissent à mesure qu'on monte, et la dernière dépasse toutes les autres. Sa corde est la seule chose neuve à dix lieues.",
-    "En contrebas de la file, un poteau isolé porte encore son occupant. Plus haut, les potences vides alignent leurs noms gravés."
+    "La pente est douce et n'en finit pas — la Colline se mérite à pas comptés. Sur la crête, les potences se suivent, plantées de loin en loin comme des bornes, chacune avec son nom et sa date : la crête entière est un calendrier planté. Elles grandissent à mesure qu'on monte, et la dernière dépasse toutes les autres. Sa corde est la seule chose neuve à dix lieues.",
+    "En contrebas, un poteau isolé porte encore son occupant. Sur la traverse du grand gibet, des oiseaux noirs attendent sans bouger."
    ],
    "choix": [
     {
-     "id": "monter-sommet",
-     "label": "Rester au sommet",
-     "type": "suite"
+     "id": "lire-nom-grave",
+     "label": "Lire le nom gravé",
+     "type": "passif",
+     "consequence": "Au pied du mât, dans le bois, un nom a été gravé profond, à la gouge, par quelqu’un qui prenait son temps. Il est illisible — pas effacé par la pluie : GRATTÉ, en travers, par quelque chose qui a mordu le bois plus fort que l’outil. Dessous, une date est restée entière. Elle est vieille de trente ans.",
+     "donneDecouverte": "d.nom_gratte"
+    },
+    {
+     "id": "compter-corbeaux",
+     "label": "Compter les corbeaux",
+     "type": "passif",
+     "consequence": "Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, et leurs becs sont propres. Ils attendent, tournés du même côté, comme des choses qu'on a postées là."
+    },
+    {
+     "id": "monter-gibet-vide",
+     "label": "Monter jusqu'au Gibet Vide",
+     "type": "passif",
+     "consequence": "La chose grandit plus vite que tes pas. À trois mètres, tu dois lever la tête pour voir le nœud. Le bois est d'œuvre, assemblé pour durer mille ans, et la corde neuve grince toute seule."
     }
    ],
-   "pointsInteret": [
-    {
-     "id": "pied-grand-gibet",
-     "label": "Le pied du grand gibet",
-     "approche": "Tu quittes la ligne des potences ordinaires pour celle qui les dépasse toutes. De près, elle est absurde : trois fois trop haute pour un homme, et sa corde est neuve.",
-     "examen": "Au pied du mât, dans le bois, un nom a été gravé profond, à la gouge, par quelqu’un qui prenait son temps. Il est illisible — pas effacé par la pluie : GRATTÉ, en travers, par quelque chose qui a mordu le bois plus fort que l’outil. Dessous, une date est restée entière. Elle est vieille de trente ans.",
-     "donneDecouverte": "d.nom_gratte",
-     "image": {
-      "fichier": "scene_colline_pied_grand_gibet_b.png",
-      "hash": "2559c3f3",
-      "taille": 15296,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "corbeaux-compte",
-     "label": "Les corbeaux, sur la traverse",
-     "approche": "Ils sont sur la traverse du grand gibet, immobiles, et ils ne bougent pas quand tu approches — ce qui n'est pas un comportement d'oiseau. Aucun ne te regarde. Ils regardent la corde.",
-     "examen": "Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, et leurs becs sont propres. Ils attendent, et ils sont exactement assez nombreux pour ce qu'ils attendent. La même immobilité que des sentinelles payées d'avance, la même façon d'être tournés du même côté — comme des choses qu'on a postées là. Ils comptent quelque chose qui te concerne, et le compte n'a pas l'air fini.",
-     "corbeaux": true,
-     "nom": "Les corbeaux, sur la traverse",
-     "image": {
-      "fichier": "monstre_corbeaux_du_compte_b.png",
-      "hash": "03b469b0",
-      "taille": 28966,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "potences-cercle",
-     "label": "Les potences de la crête",
-     "approche": "Tu remontes la file. Le vent monte d'un cran dès la première pas entre deux potences — pas plus fort ailleurs, plus fort ICI, comme si l'espace entre les mâts avait son climat.",
-     "examen": "Chaque potence porte un nom gravé au pied, et une date. En remontant la file, les dates avancent : la crête entière est un calendrier planté. Les entailles sont de la même main — appliquée, régulière, la main de quelqu'un qui grave comme on rend un jugement.",
-     "fragmentChapitre": true,
-     "nom": "Les potences du cercle",
-     "image": {
-      "fichier": "scene_colline_potences_cercle_a_c.png",
-      "hash": "20afbb76",
-      "taille": 11627,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "gibet-vide",
-     "label": "Le Gibet Vide, tout en haut",
-     "approche": "Tu marches vers le sommet, et la chose grandit plus vite que tes pas. À dix mètres, tu comprends que tu avais mal jugé l'échelle. À trois, tu dois lever la tête pour voir le nœud.",
-     "examen": "Le bois est d'œuvre, assemblé pour durer mille ans. La corde neuve grince. Par grand soleil — rare, ici — l'ombre portée s'étend vers le sud, et elle a une forme que la potence n'explique pas.",
-     "fait": "fait-gibet",
-     "fragmentChapitre": true,
-     "nom": "Le Gibet Vide, au centre",
-     "image": {
-      "fichier": "scene_colline_gibet_vide_a_b.png",
-      "hash": "83c68692",
-      "taille": 21563,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    }
-   ],
+   "pointsInteret": [],
    "suite": "colline-aux-gibets-2",
    "donneDecouverte": "d.nom_gratte",
    "tags": [
@@ -1286,21 +1227,6 @@
      "nature": "physique",
      "donneObjet": "echarde-gibet",
      "poseFlag": "echarde-gibet-prelevee"
-    },
-    {
-     "id": "compter-battements",
-     "label": "Rester et compter",
-     "type": "risque",
-     "stat": "INSTINCT",
-     "seuil": 12,
-     "hautEnjeu": false,
-     "issues": {
-      "critique": "20 naturel. Tu comptes jusqu'au bout, sans ciller. Le nombre tombe, et il ne te dit rien — pas encore. Tu le retiens quand même. Un jour, en te réveillant sur une autre borne, tu te souviendras de ce chiffre et tu sauras exactement ce qu'il comptait.",
-      "reussite": "Tu comptes. Le nombre est petit, et c'est le pire : les cordes ne battent pas les morts de la lande. Elles battent les tiennes. Le compte est juste. Tu redescends sans le dire à voix haute.",
-      "echec": "Tu perds le fil au milieu — les cordes changent de mesure dès qu'on les suit, et tu comprends que compter, ici, c'est se faire compter. Le rythme reprend, plus lent, comme si on t'attendait.",
-      "funeste": "1 naturel. Tu comptes, et la dernière corde attend ton chiffre pour bouger. Elle a bougé. Tu as donné le nombre le premier. ♦ −2"
-     },
-     "nature": "surnaturel"
     },
     {
      "id": "redescendre",
@@ -1955,152 +1881,87 @@
   {
    "id": "hameau-entree-2",
    "narration": [
-    "La première maison est à dix pas. Sur sa porte, un signe à la craie — une croix, simple, tracée à hauteur d'œil.",
-    "La poudre blanche est encore sur le seuil. Ça date de ce matin."
+    "La rue est en terre battue, bordée de murets bas. Sur le premier linteau, une croix à la craie, tracée haut. Sur le suivant aussi. Toutes à la même hauteur, toutes de la même main.",
+    "Une femme se tient sur un seuil, immobile. Elle ne regarde pas la route : elle regarde une fenêtre, en face."
    ],
    "choix": [
     {
-     "id": "frapper-porte-marquee",
-     "label": "Frapper à la porte marquée",
-     "type": "passif",
-     "consequence": "Tu frappes trois coups. Personne n'ouvre. Mais derrière le bois, à quelques centimètres de ta main, quelqu'un retient son souffle — et tu l'entends le retenir. Tu recules. Dans ton dos, une autre porte se ferme, qui était entrouverte.",
-     "soupcon": 1,
-     "temoin": {
-      "nom": "La Femme au Seuil",
-      "deposition": "Il a frappé chez une marquée. On ne frappe pas chez une marquée, on passe.",
-      "lieu": "au Hameau des Renonçants"
+     "id": "parler-femme-seuil",
+     "label": "Parler à la femme sur le seuil",
+     "type": "suite",
+     "sortie": {
+      "toScene": "femme-seuil-1"
      }
     },
     {
-     "id": "continuer-rue",
-     "label": "Continuer dans la rue",
-     "type": "suite"
+     "id": "lever-yeux-combles",
+     "label": "Lever les yeux vers les combles",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu comptes les clous. Ils sont posés de l'INTÉRIEUR — les têtes sont dedans, les pointes dehors. On n'a pas condamné ces combles pour empêcher d'entrer : on les a condamnés depuis l'intérieur, une nuit, en se dépêchant. Et personne n'a rouvert depuis.",
+      "reussite": "Les fenêtres des combles sont clouées. Pas murées, pas bouchées : clouées, planche par planche, avec le soin de quelqu'un qui comptait revenir.",
+      "echec": "Tu lèves la tête trop longtemps. Dans la rue, deux conversations s'arrêtent en même temps, et personne ne reprend avant que tu aies baissé les yeux.",
+      "funeste": "1 naturel. Tu lèves la tête, et derrière une planche disjointe, quelque chose se retire lentement. Pas vite. Comme on recule quand on ne veut pas faire de bruit. ♦ −2"
+     },
+     "nature": "exploration",
+     "donneDecouverte": "d.combles_cloues"
+    },
+    {
+     "id": "gamin-empathie",
+     "label": "Répondre au gamin qui t'appelle",
+     "type": "suite",
+     "sortie": {
+      "toScene": "gamin-murets-1"
+     }
+    },
+    {
+     "id": "gamin-instinct",
+     "label": "Te retourner vers les toits",
+     "type": "suite",
+     "sortie": {
+      "toScene": "gamin-murets-1"
+     }
+    },
+    {
+     "id": "gamin-ruse",
+     "label": "Voir où le gamin veut te mener",
+     "type": "suite",
+     "sortie": {
+      "toScene": "gamin-murets-1"
+     }
+    },
+    {
+     "id": "gamin-courage",
+     "label": "Soutenir le regard des trois hommes",
+     "type": "passif",
+     "consequence": "Ils te regardent passer, et aucun ne baisse les yeux quand tu les surprends. Ce n'est pas de la menace : c'est de la comptabilité. Sur le muret, un gamin te suit du regard aussi, mais lui détourne la tête — le seul du village à le faire."
     }
    ],
-   "pointsInteret": [
-    {
-     "id": "linteaux",
-     "label": "Le linteau de la porte",
-     "approche": "Tu passes devant une porte, puis une autre, et quelque chose accroche ton regard sans que tu saches quoi. Tu reviens sur tes pas et tu lèves la tête.",
-     "examen": "Au-dessus du linteau, une entaille dans le bois. Courte, profonde, un peu de biais. Tu regardes la porte suivante : la même, à la même hauteur. Et la suivante. Ce n’est pas une marque de charpentier — le bord est écrasé, pas coupé. Rien de ce que tu connais ne laisse cette trace-là.",
-     "donneDecouverte": "d.linteaux_entailles",
-     "image": {
-      "fichier": "scene_hameau_linteaux_v2_c.png",
-      "hash": "1b90ee19",
-      "taille": 28134,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "fenetres-clouees",
-     "label": "Les fenêtres des combles",
-     "approche": "Tu recules de trois pas pour embrasser la façade entière, comme on prend du recul devant un mot mal orthographié.",
-     "examen": "Les fenêtres du haut sont clouées. Pas fermées : CLOUÉES, de l’intérieur, planches en travers. Celles du bas ne le sont pas — volets simples, loquets ordinaires, certains même entrouverts. Tout le hameau est ainsi. Personne, ici, ne se protège de ce qui vient par la rue.",
-     "donneDecouverte": "d.combles_cloues",
-     "image": {
-      "fichier": "scene_hameau_combles_cloues_v2_a.png",
-      "hash": "032a884e",
-      "taille": 26494,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "croix-craie",
-     "label": "S'approcher de la croix",
-     "approche": "Dix pas dans une rue qui ne fait aucun bruit. Tu marches au milieu, d'instinct — le plus loin possible des deux rangées de portes.",
-     "examen": "De près, on voit que le bois est usé à cet endroit précis. Des croix, il y en a eu d'autres, ici. Effacées, retracées. Celle-ci n'est que la dernière.",
-     "soupcon": 1,
-     "temoin": {
-      "nom": "La Femme au Seuil",
-      "deposition": "Il a touché la craie de ma porte. La marque était fraîche, et c'était la mienne.",
-      "lieu": "au Hameau des Renonçants"
-     },
-     "nom": "S'approcher de la croix",
-     "image": {
-      "fichier": "scene_hameau_croix_craie_a_a.png",
-      "hash": "0fefe11d",
-      "taille": 10418,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "femme-sur-le-seuil",
-     "label": "La femme sur le pas de porte",
-     "approche": "Plus bas dans la rue, une femme se tient sur un pas de porte, immobile. Pas comme on prend l'air : comme on monte la garde. Tu traverses la rue vers elle.",
-     "examen": "Son regard est posé sur le bout de la rue, vers le sud, et il ne bouge pas quand tu approches. Elle t'a vu. Elle a décidé que tu n'étais pas la bonne silhouette.",
-     "ouvreSur": "femme-seuil-1",
-     "nom": "La femme sur le pas de porte",
-     "image": {
-      "fichier": "monstre_femme_au_seuil_b.png",
-      "hash": "695862b2",
-      "taille": 12382,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "gamin-sur-le-muret",
-     "label": "Le gamin, en haut du muret",
-     "approche": "Un enfant est assis sur la crête d'un muret, les pieds dans le vide côté lande. Il ne joue à rien. Il regarde le sud comme les adultes d'ici regardent le sud, et il le fait mieux qu'eux.",
-     "examen": "Il te laisse arriver jusqu'au pied du muret sans bouger. De près, ses genoux sont râpés partout pareil — quelqu'un qui court sur la pierre, pas sur les chemins. Il attend que tu parles le premier.",
-     "ouvreSur": "gamin-murets-1",
-     "image": {
-      "fichier": "monstre_gamin_murets_a.png",
-      "hash": "020cdcd3",
-      "taille": 28618,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    }
-   ],
+   "pointsInteret": [],
    "suite": "hameau-entree-3",
-   "donneDecouverte": "d.linteaux_entailles",
+   "donneDecouverte": "d.combles_cloues",
    "nom": "Hameau entree 2 — beat 2",
    "lieu": "seuil_du_hameau",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_hameau_entree_2_v2_a.png",
-    "hash": "e180c1a7",
-    "taille": 19602,
+    "fichier": "scene_landes_hameau_ruelle_b.png",
+    "hash": "9a56edb6",
+    "taille": 26939,
     "recent": false,
     "existe": true
    },
    "description": "La ruelle étroite du hameau : portes marquées à la craie, volets fermés, aucun chien.",
    "promptImage": "narrow street of an old abandoned hamlet, crooked stone houses, wooden doors marked with chalk crosses, closed shutters, wet cobblestones, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [
-    "femme-seuil-1",
-    "gamin-murets-1",
     "hameau-entree-3"
    ],
    "mèneIci": [
     "serment-hameau"
    ],
-   "roles": [
-    "pivot"
-   ],
+   "roles": [],
    "acces": "lien",
    "etat": "valide",
    "alertes": []
@@ -2314,15 +2175,13 @@
    "mèneVers": [
     "femme-seuil-2"
    ],
-   "mèneIci": [
-    "hameau-entree-2"
-   ],
-   "roles": [
-    "optionnel"
-   ],
-   "acces": "lien",
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
    "etat": "valide",
-   "alertes": []
+   "alertes": [
+    "orpheline"
+   ]
   },
   {
    "id": "femme-seuil-2",
@@ -2479,15 +2338,13 @@
    "mèneVers": [
     "gamin-murets-2"
    ],
-   "mèneIci": [
-    "hameau-entree-2"
-   ],
-   "roles": [
-    "optionnel"
-   ],
-   "acces": "lien",
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
    "etat": "valide",
-   "alertes": []
+   "alertes": [
+    "orpheline"
+   ]
   },
   {
    "id": "gamin-murets-2",
@@ -2733,12 +2590,6 @@
       "deposition": "Il a voulu passer sans s'arrêter. Personne ne passe sans s'arrêter.",
       "lieu": "à l'entrée du Hameau"
      }
-    },
-    {
-     "id": "ne-fais-que-passer",
-     "label": "« Je ne fais que passer. »",
-     "type": "passif",
-     "consequence": "« C'est ce qu'ils disent tous », répond le vieux, sans agressivité aucune. « Et certains restent. » Il te regarde enfin dans les yeux, et ce que tu y vois n'est pas de la méfiance : c'est de la fatigue. « C'est ça qui nous inquiète. »"
     },
     {
      "id": "tenir-selon-ordonnance",
@@ -3203,9 +3054,9 @@
   {
    "id": "hameau-entree-4",
    "narration": [
-    "Au bout de la rue, un muret bas ferme le village côté sud. Le vieux y est assis, large, les coudes sur les genoux. Il t'attendait là depuis le début.",
-    "Il tend la main, paume ouverte. Pas pour serrer la tienne — pour que tu la regardes. Elle est vide. C'est le geste d'ici : on jure sur rien, parce qu'il ne reste rien.",
-    "— « Trois choses, et tu dors sous un toit. Tu ne parles pas aux pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et à la troisième aube, tu choisis. »"
+    "Au bout de la rue, un muret bas. Le vieux y est assis, coudes sur les genoux — il t'attendait. Il tend la main, paume ouverte : pas pour serrer la tienne, pour que tu la regardes. Elle est vide. Ici on jure sur rien, parce qu'il ne reste rien.",
+    "— « Trois choses, et tu dors sous un toit. Tu ne parles pas aux pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et à la troisième aube, tu choisis. »",
+    "Il n'attend pas la question. « Qui juge ? Personne. On constate. »"
    ],
    "choix": [
     {
@@ -3253,48 +3104,8 @@
      }
     }
    ],
-   "pointsInteret": [
-    {
-     "id": "doyenne-horaire",
-     "label": "Demander qui juge, ici",
-     "approche": "Tu poses la question au vieux. C’est la femme derrière lui qui répond, sans qu’on lui ait rien demandé.",
-     "examen": "« Avant, on jugeait le jour. » Elle rajuste son châle. « Maintenant on juge la nuit. C'est pas moi qui en ai décidé. »",
-     "donneDecouverte": "d.on_juge_la_nuit",
-     "image": null,
-     "description": "",
-     "promptImage": "",
-     "etat": "acompleter",
-     "alertes": [
-      "imageManquante"
-     ]
-    },
-    {
-     "id": "pourquoi-trois-aubes",
-     "label": "Demander pourquoi trois aubes",
-     "approche": "Tu ne réponds pas tout de suite. Tu poses la question, et les quelques-uns qui s'étaient approchés attendent la réponse avec toi — comme si personne n'avait jamais osé la poser.",
-     "examen": "— « Trois aubes pour reprendre des forces. » Le vieux compte sur sa main, sans ironie aucune. « La première, on te soigne. La deuxième, on te montre ce que serait ta vie ici. À la troisième, tu repars — ou tu poses ton nom parmi les nôtres. » Il te regarde avec quelque chose qui ressemble beaucoup à de la bienveillance, et c'est bien ça qui te glace.",
-     "soupcon": 1,
-     "temoin": {
-      "nom": "Les trois hommes du seuil",
-      "deposition": "Il a voulu savoir pourquoi trois aubes. Devant tout le barrage. À voix haute.",
-      "lieu": "à l'entrée du Hameau"
-     },
-     "nom": "Demander pourquoi trois aubes",
-     "image": {
-      "fichier": "scene_hameau_trois_aubes_v2_c.png",
-      "hash": "d313c2f7",
-      "taille": 28783,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    }
-   ],
+   "pointsInteret": [],
    "suite": "hameau-entree-5",
-   "donneDecouverte": "d.on_juge_la_nuit",
    "nom": "Hameau entree 4 — beat 4",
    "lieu": "seuil_du_hameau",
    "typeScene": "arrivee",
@@ -3327,9 +3138,7 @@
   {
    "id": "hameau-entree-5",
    "narration": [
-    "Ils s'écartent. Pas beaucoup — juste assez pour que tu passes sans toucher personne, et tu comprends que c'est calculé.",
-    "La rue s'ouvre devant toi. Des volets se ferment à mesure, un par un, un peu en avance sur ton pas. Quelque part, une corde grince.",
-    "Te voilà dans le hameau. Personne ne t'a souhaité la bienvenue, et pourtant tous savaient déjà que tu venais."
+    "Ils s'écartent juste assez pour que tu passes sans toucher personne, et tu comprends que c'est calculé. Devant toi, des volets se ferment un par un, un peu en avance sur ton pas. Personne ne t'a souhaité la bienvenue, et pourtant tous savaient que tu venais."
    ],
    "choix": [
     {
@@ -4329,116 +4138,44 @@
   {
    "id": "campement",
    "narration": [
-    "Le moulin n'a plus d'ailes mais il a gardé leur trace : quatre ombres pâles en croix sur le corps de pierre, comme un moulin fantôme peint sur le vrai.",
-    "La porte est entrouverte. Pas défoncée : entretenue. La croix d'ombres, en haut. La lucarne, qui te regarde. Et la porte, qui n'attend que toi."
+    "Le moulin n'a plus d'ailes mais il a gardé leur trace : quatre ombres pâles en croix sur le corps de pierre, comme un moulin fantôme peint sur le vrai. Sur la bruyère, à cinquante pas, une crête de faîtage s'interrompt net, sans raison.",
+    "La porte est entrouverte. Pas défoncée : entretenue."
    ],
    "choix": [
     {
-     "id": "fouiller-lit",
-     "label": "Fouiller le lit de bruyère",
+     "id": "entrer-moulin",
+     "label": "Entrer",
      "type": "passif",
-     "consequence": "Sous la bruyère, la pierre du mur porte des marques à hauteur d'enfant : des jours comptés par paquets de cinq, sur des années. Et dans un creux, serré dans un chiffon, un bout de corde. Coupé net. On ne garde pas ça par hasard — on garde ça comme une preuve, ou comme un pardon."
+     "consequence": "Dedans, il fait plus chaud que dehors. Sous la lucarne, un lit de bruyère garde une forme — quelqu'un dort ici, et pas depuis hier. Contre le mur, à hauteur d'enfant, des jours comptés par paquets de cinq, sur des années.",
+     "sortie": {
+      "toScene": "campement-2"
+     },
+     "donneObjet": "jouet-fixee"
     },
     {
-     "id": "ecouter-moulin",
-     "label": "Écouter le moulin",
+     "id": "traces-crete",
+     "label": "Suivre les traces sur la crête",
      "type": "risque",
      "stat": "INSTINCT",
-     "seuil": 10,
+     "seuil": 11,
      "hautEnjeu": false,
      "issues": {
-      "critique": "20 naturel. Le moulin craque comme tout vieux bois — mais en RYTHME. Tu finis par le reconnaître : c'est une berceuse, jouée par la charpente, notée par le vent. Quelqu'un a appris à cette ruine à chanter. Tu sauras dormir dessous.",
-      "reussite": "Des craquements de bois qui travaille, le froissement de la lande — et, très loin, un pas léger qui tourne autour du moulin sans jamais s'approcher. Pas une menace : une ronde.",
-      "echec": "Tu écoutes si fort que tu n'entends plus rien — le silence se referme comme une main. Quand tu relâches, un craquement JUSTE au-dessus. Le temps de lever la tête : rien. Le moulin, dit ton pouls.",
-      "funeste": "1 naturel. Le moulin s'arrête de craquer. Complètement. Un vieux bois qui se tait, c'est un bois qui retient son souffle. ♦ −2"
+      "critique": "20 naturel. Tu remontes la ligne du faîtage jusqu'à l'endroit où elle s'arrête, et tu comprends d'un coup qu'elle ne s'arrête pas : elle a été DÉFAITE, tuile par tuile, proprement, par quelqu'un qui ne voulait pas qu'on puisse aller plus loin par les toits. Le travail est vieux de trente ans et il a été fait de l'intérieur.",
+      "reussite": "Le chemin de faîtage s'interrompt à cinquante pas. Pas effondré : interrompu. Les tuiles manquantes sont empilées à côté, en ordre.",
+      "echec": "Tu perds la trace dans la bruyère, et quand tu la retrouves elle ne va plus dans le même sens. Tu renonces avant de savoir laquelle des deux était la bonne.",
+      "funeste": "1 naturel. Tu suis, et la trace te ramène exactement à ton point de départ. Elle est fraîche. C'est la tienne. ♦ −2"
      },
-     "nature": "surnaturel"
+     "nature": "exploration",
+     "donneDecouverte": "d.crete_interrompue"
     },
     {
-     "id": "installer-camp",
-     "label": "S'installer pour la halte",
-     "type": "suite"
+     "id": "passer-moulin",
+     "label": "Passer son chemin",
+     "type": "passif",
+     "consequence": "Tu longes le corps de pierre sans ralentir. Dans ton dos, la porte entrouverte ne bouge pas, et c'est peut-être ça le plus désagréable : rien ne te suit."
     }
    ],
-   "pointsInteret": [
-    {
-     "id": "crete-interrompue",
-     "label": "La crête du toit",
-     "approche": "Tu contournes la tour et tu lèves les yeux vers le faîtage. La mousse a mangé toute la pierre, sauf une bande, en haut, nette comme un sentier.",
-     "examen": "La bande sans mousse court sur toute la longueur du toit, large comme deux mains, usée. Puis elle s'arrête. Pas en s'amenuisant : d'un coup, à mi-pente, toujours au même point — comme si ce qui marchait là s'était retourné chaque fois exactement à la même marche.",
-     "donneDecouverte": "d.crete_interrompue",
-     "image": {
-      "fichier": "scene_moulin_crete_interrompue_b.png",
-      "hash": "1754965e",
-      "taille": 26367,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "croix-ombres",
-     "label": "La croix d'ombres, en haut",
-     "approche": "Tu recules jusqu'au muret d'en face. Il faut de la distance pour la voir entière — c'est une trace, pas un détail.",
-     "examen": "De loin, les quatre bandes pâles se lisent d'un coup : ce sont des zones où la pierre n'a pas vieilli, protégée des années par les ailes, puis abandonnée au vent d'un seul coup. On peut dater une catastrophe à la couleur d'un mur. Celle-ci est vieille comme le Domaine.",
-     "fragmentChapitre": true,
-     "nom": "La croix d'ombres, en haut",
-     "image": {
-      "fichier": "scene_moulin_croix_ombres_a_d.png",
-      "hash": "c09deb42",
-      "taille": 21907,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "lucarne-moulin",
-     "label": "La lucarne, au-dessus de la porte",
-     "approche": "Quelque chose a bougé là-haut — tu en jurerais. Tu approches sans quitter l'ouverture des yeux, ce qui est exactement la mauvaise façon d'approcher d'une porte.",
-     "examen": "La lucarne est propre : pas un grain de poussière sur le rebord intérieur. Quelqu'un s'y accoude. Souvent. Pour regarder ce chemin — celui par lequel tu viens d'arriver. Et calée dans l'angle du rebord, à l'abri : une poupée de chiffon et de paille. Quelqu'un de très petit l'a mise là pour la sauver. Tu la prends avant d'avoir décidé de la prendre.",
-     "donneObjet": "jouet-fixee",
-     "nom": "La lucarne, au-dessus de la porte",
-     "image": {
-      "fichier": "scene_moulin_lucarne_a_b.png",
-      "hash": "733f07d8",
-      "taille": 8031,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "interieur-moulin",
-     "label": "Pousser la porte entrouverte",
-     "approche": "Tu pousses du plat de la main, lentement, en laissant à ce qu'il y a dedans le temps de décider s'il veut être vu.",
-     "examen": "Personne. Mais le contraire de l'abandon : une paillasse faite au carré, un pot ébréché où trempent des brins de bruyère — de la bruyère fraîche. Quelqu'un habite ici avec un soin de vivant. Tu ressors sans toucher à rien, et c'est la première politesse que tu offres aux Landes.",
-     "fait": "fait-fille",
-     "fragmentChapitre": true,
-     "nom": "Pousser la porte entrouverte",
-     "image": {
-      "fichier": "scene_moulin_interieur_a_d.png",
-      "hash": "372f7583",
-      "taille": 11846,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    }
-   ],
-   "suite": "campement-2",
+   "pointsInteret": [],
    "donneDecouverte": "d.crete_interrompue",
    "nom": "Campement",
    "lieu": "moulin_sans_ailes",
@@ -4452,9 +4189,7 @@
    },
    "description": "Arrivée au Moulin sans Ailes — c'est le lieu de repos de la zone. Une tour de pierre trapue SANS ailes, quatre traces pâles sur le corps du moulin, la porte entrebâillée.",
    "promptImage": "old stone windmill without sails on a moorland crest, four pale ghost marks of the missing sails on the stone body, door ajar, small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-   "mèneVers": [
-    "campement-2"
-   ],
+   "mèneVers": [],
    "mèneIci": [],
    "roles": [],
    "acces": "traversée",
@@ -4514,13 +4249,13 @@
    "description": "Événement du Moulin : la garde, ou le sommeil. Le lit de bruyère tassé, refait de frais, les marques de comptage à hauteur d'enfant sur la pierre.",
    "promptImage": "interior of a derelict stone windmill, heather bedding pressed flat on the floor, tally marks scratched on the stone wall at child height, broken millstone, light through a small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [],
-   "mèneIci": [
-    "campement"
-   ],
+   "mèneIci": [],
    "roles": [],
-   "acces": "lien",
+   "acces": "aucun",
    "etat": "valide",
-   "alertes": []
+   "alertes": [
+    "orpheline"
+   ]
   },
   {
    "id": "fille-moulin-1",
@@ -6760,18 +6495,6 @@
    "type": "principal"
   },
   {
-   "de": "hameau-entree-2",
-   "vers": "femme-seuil-1",
-   "type": "secondaire",
-   "par": "femme-sur-le-seuil"
-  },
-  {
-   "de": "hameau-entree-2",
-   "vers": "gamin-murets-1",
-   "type": "secondaire",
-   "par": "gamin-sur-le-muret"
-  },
-  {
    "de": "femme-savoir-1",
    "vers": "femme-savoir-2",
    "type": "principal"
@@ -6913,11 +6636,6 @@
    "type": "principal"
   },
   {
-   "de": "campement",
-   "vers": "campement-2",
-   "type": "principal"
-  },
-  {
    "de": "fille-moulin-1",
    "vers": "fille-moulin-2",
    "type": "principal"
@@ -7035,6 +6753,14 @@
    "racine": "appele_descente"
   },
   {
+   "fichier": "monstre_corbeaux_du_compte_b.png",
+   "hash": "03b469b0",
+   "taille": 28966,
+   "recent": false,
+   "groupe": "attend",
+   "racine": "corbeaux_du_compte"
+  },
+  {
    "fichier": "monstre_corde_vive_c.png",
    "hash": "29b70991",
    "taille": 26099,
@@ -7057,6 +6783,14 @@
    "recent": false,
    "groupe": "attend",
    "racine": "doyenne"
+  },
+  {
+   "fichier": "monstre_femme_au_seuil_b.png",
+   "hash": "695862b2",
+   "taille": 12382,
+   "recent": false,
+   "groupe": "attend",
+   "racine": "femme_au_seuil"
   },
   {
    "fichier": "monstre_femme_seuil_1_c.png",
@@ -7419,12 +7153,60 @@
    "racine": "chapelle_mur_cordes"
   },
   {
+   "fichier": "scene_colline_gibet_vide_a_b.png",
+   "hash": "83c68692",
+   "taille": 21563,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "colline_gibet_vide"
+  },
+  {
+   "fichier": "scene_colline_pied_grand_gibet_b.png",
+   "hash": "2559c3f3",
+   "taille": 15296,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "colline_pied_grand_gibet"
+  },
+  {
+   "fichier": "scene_colline_potences_cercle_a_c.png",
+   "hash": "20afbb76",
+   "taille": 11627,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "colline_potences_cercle"
+  },
+  {
    "fichier": "scene_gibet_vide_c.png",
    "hash": "525edc71",
    "taille": 29190,
    "recent": false,
    "groupe": "autre",
    "racine": "gibet_vide"
+  },
+  {
+   "fichier": "scene_hameau_combles_cloues_v2_a.png",
+   "hash": "032a884e",
+   "taille": 26494,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "hameau_combles_cloues"
+  },
+  {
+   "fichier": "scene_hameau_croix_craie_a_a.png",
+   "hash": "0fefe11d",
+   "taille": 10418,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "hameau_croix_craie"
+  },
+  {
+   "fichier": "scene_hameau_entree_2_v2_a.png",
+   "hash": "e180c1a7",
+   "taille": 19602,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "hameau_entree_2"
   },
   {
    "fichier": "scene_hameau_entree_5_a.png",
@@ -7441,6 +7223,22 @@
    "recent": false,
    "groupe": "brancher",
    "racine": "hameau_halte_5"
+  },
+  {
+   "fichier": "scene_hameau_linteaux_v2_c.png",
+   "hash": "1b90ee19",
+   "taille": 28134,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "hameau_linteaux"
+  },
+  {
+   "fichier": "scene_hameau_trois_aubes_v2_c.png",
+   "hash": "d313c2f7",
+   "taille": 28783,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "hameau_trois_aubes"
   },
   {
    "fichier": "scene_landes_hameau_croix_craie_a.png",
@@ -7505,6 +7303,38 @@
    "recent": false,
    "groupe": "autre",
    "racine": "moulin_campement"
+  },
+  {
+   "fichier": "scene_moulin_crete_interrompue_b.png",
+   "hash": "1754965e",
+   "taille": 26367,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "moulin_crete_interrompue"
+  },
+  {
+   "fichier": "scene_moulin_croix_ombres_a_d.png",
+   "hash": "c09deb42",
+   "taille": 21907,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "moulin_croix_ombres"
+  },
+  {
+   "fichier": "scene_moulin_interieur_a_d.png",
+   "hash": "372f7583",
+   "taille": 11846,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "moulin_interieur"
+  },
+  {
+   "fichier": "scene_moulin_lucarne_a_b.png",
+   "hash": "733f07d8",
+   "taille": 8031,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "moulin_lucarne"
   },
   {
    "fichier": "scene_moulin_sans_ailes_c.png",
@@ -8805,12 +8635,12 @@
  ],
  "totaux": {
   "scenes": 89,
-  "pointsInteret": 44,
-  "choix": 233,
+  "pointsInteret": 29,
+  "choix": 237,
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 76,
+  "reserve": 90,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
