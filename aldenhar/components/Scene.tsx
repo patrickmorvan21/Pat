@@ -2093,7 +2093,12 @@ export default function Scene() {
     const arriveePhrase = opts?.toDest && !nextScene.fixationTrial
       ? phraseArrivee(nextStep, runRef.current?.arriveeVues ?? [])
       : null;
-    if (arriveePhrase) entries.push({ id: nextId(), kind: "narration", text: arriveePhrase });
+    // ⚠️ Chantier fluidité 12/08 : cette phrase est de la COULEUR PURE — le
+    // mode d'arrivée « n'a aucune conséquence mécanique » (décision du 5/08,
+    // juste au-dessus). Elle coûtait pourtant un bloc à CHAQUE arrivée, en
+    // plus de l'approche et du rappel. Elle entre donc au budget, en dernière
+    // priorité : elle ne passe que si rien de plus signifiant n'a à se dire.
+    const rappelArrivee = arriveePhrase;
     // LE PROCÈS (5/08) : on ne lit pas d'acte d'accusation, on appelle des
     // gens. Les dépositions s'intercalent entre l'arrivée au tribunal et la
     // sentence — le joueur relit sa propre run, dans l'ordre où il l'a jouée.
@@ -2184,18 +2189,50 @@ export default function Scene() {
         });
       }
     }
+    /**
+     * ─── BUDGET D'UN SEUL RAPPEL PAR ARRIVÉE (chantier fluidité 12/08) ─────
+     *
+     * ⚠️ Mesuré le 12/08 : DOUZE injections de narration différentes peuvent
+     * tomber sur la même arrivée (approche, mode, familiarité, mémoire d'un
+     * PNJ, perception, réaction d'état, corbeaux, fantôme, craie, loi…).
+     * C'est cet EMPILEMENT — pas la longueur des textes — qui produit les
+     * 4-5 taps de lecture avant la première décision. Aucune de ces lignes
+     * n'est mauvaise ; c'est leur cumul qui l'est.
+     *
+     * Règle : les ÉVÉNEMENTS (quelque chose arrive maintenant : un état se
+     * pose, un état se lève, les corbeaux ont changé de nombre, un fantôme
+     * passe) gardent le droit de s'afficher. Les RAPPELS (le monde te
+     * re-signale ce que tu sais déjà : familiarité, mémoire d'un PNJ,
+     * perception, réaction d'état) passent par ce collecteur, et **un seul**
+     * est servi — le plus prioritaire.
+     *
+     * Ceux qui ne sont pas servis ne sont PAS marqués comme vus : leur effet
+     * de bord n'est appliqué qu'à celui qui s'affiche, sinon on brûlerait
+     * silencieusement un texte que le joueur n'a jamais lu.
+     */
+    const rappels: { prio: number; text: string; commit?: () => void }[] = [];
+
     // ── LE DÉJÀ-VU (vague 4) ───────────────────────────────────────────────
     // La strate a été calculée plus haut. Si elle ne remplace aucun
     // paragraphe, elle s'ajoute ici — après la narration, avant les gens.
     // Le héros ne se souvient de rien : c'est le monde qui porte la trace
     // (règle d'écriture détaillée sur FAMILIARITE et lib/dejavu.ts).
     if (strate) {
-      if (famIci?.remplace === undefined || narrationLines[famIci.remplace] === undefined) {
-        entries.push({ id: nextId(), kind: "narration", text: strate });
+      // Une strate qui REMPLACE un paragraphe ne coûte aucun écran : elle
+      // passe hors budget. Celle qui s'AJOUTE entre dans le collecteur.
+      if (famIci?.remplace !== undefined && narrationLines[famIci.remplace] !== undefined) {
+        persist((r) => {
+          r.vus = noter(r.vus, cleFam);
+        });
+      } else {
+        rappels.push({
+          prio: 1,
+          text: strate,
+          commit: () => persist((r) => {
+            r.vus = noter(r.vus, cleFam);
+          }),
+        });
       }
-      persist((r) => {
-        r.vus = noter(r.vus, cleFam);
-      });
     }
     // Puis la ligne de mémoire du PNJ (2e passage du compte par ce lieu ou
     // plus). Même garde de portée RUN : le Fossoyeur est déclaré sur deux
@@ -2208,9 +2245,12 @@ export default function Scene() {
       ((loadMemory().visitesLieux ?? {})[memPnj.lieu ?? lieuIci] ?? 0) >= 2 &&
       vu(runRef.current?.vus, clePnj) === 0
     ) {
-      entries.push({ id: nextId(), kind: "narration", text: memPnj.text });
-      persist((r) => {
-        r.vus = noter(r.vus, clePnj);
+      rappels.push({
+        prio: 2,
+        text: memPnj.text,
+        commit: () => persist((r) => {
+          r.vus = noter(r.vus, clePnj);
+        }),
       });
     }
     // ── LES ÉTATS (spec 4/08 §2 et §5, contrat de visibilité) ─────────────
@@ -2302,10 +2342,13 @@ export default function Scene() {
         .filter(({ text }) => !reacVues.includes(text));
       if (eligibles.length) {
         const servie = eligibles[Math.floor(nextStep / 2) % eligibles.length].text;
-        entries.push({ id: nextId(), kind: "narration", text: servie });
-        persist((r) => {
-          if (!(r.reactionsVues ?? []).includes(servie))
-            r.reactionsVues = [...(r.reactionsVues ?? []), servie];
+        rappels.push({
+          prio: 3,
+          text: servie,
+          commit: () => persist((r) => {
+            if (!(r.reactionsVues ?? []).includes(servie))
+              r.reactionsVues = [...(r.reactionsVues ?? []), servie];
+          }),
         });
       }
     }
@@ -2328,7 +2371,17 @@ export default function Scene() {
       runRef.current?.stats,
       relicDon(activeRelic(loadMemory())) === "regard"
     );
-    if (perception) entries.push({ id: nextId(), kind: "narration", text: perception });
+    if (perception) rappels.push({ prio: 4, text: perception });
+    if (rappelArrivee) rappels.push({ prio: 5, text: rappelArrivee });
+    // On sert LE rappel le plus prioritaire, et lui seul.
+    const rappel = rappels.sort((a, b) => a.prio - b.prio)[0];
+    // Ce qui a été RÉELLEMENT servi — un texte écarté par le budget ne doit
+    // pas être marqué comme vu, sinon on le brûle sans que le joueur l'ait lu.
+    const arriveeServie = rappel?.text === rappelArrivee ? rappelArrivee : null;
+    if (rappel) {
+      entries.push({ id: nextId(), kind: "narration", text: rappel.text });
+      rappel.commit?.();
+    }
     // LES CORBEAUX SUR LES TOITS (refonte du lore 6/08, §5) : le seul signal
     // permanent du Soupçon. Le joueur comprend qu'on le compte bien avant de
     // comprendre pourquoi — et ce n'est jamais un chiffre, c'est un nombre
@@ -2686,8 +2739,8 @@ export default function Scene() {
       run.faits = faitsAv.run;
       // Anti-répétition des phrases d'arrivée (retour 5/08 : « Tu es venu par
       // le flanc… » revenait plusieurs fois dans une même vie).
-      if (arriveePhrase && !(run.arriveeVues ?? []).includes(arriveePhrase))
-        run.arriveeVues = [...(run.arriveeVues ?? []), arriveePhrase];
+      if (arriveeServie && !(run.arriveeVues ?? []).includes(arriveeServie))
+        run.arriveeVues = [...(run.arriveeVues ?? []), arriveeServie];
       // Savoir livré par la narration de la scène (25/07) : certains PNJ disent
       // l'information d'eux-mêmes, avant qu'on ait pu la demander.
       if (arrivalSavoir) run.savoirs = [...(run.savoirs ?? []), arrivalSavoir];
