@@ -51,6 +51,18 @@ export const TEMOINS: Record<string, Omit<Temoin, "id">> = {
     deposition: "Il a parlé au pendu. Et le pendu lui a répondu — j'étais à trente pas.",
     lieu: "à la Colline aux Gibets",
   },
+  "voler-nourriture": {
+    nom: "Le Colporteur",
+    deposition:
+      "Il a pris sans demander. Moi je vends, je ne juge pas — mais on m'a demandé, alors je dis.",
+    lieu: "au Marché Muet",
+  },
+  "chapelle-craie": {
+    nom: "La Veuve des Cordes",
+    deposition:
+      "Il a écrit un nom sur une corde qui n'en avait pas. La sienne. Chez nous, ça s'appelle prendre les devants.",
+    lieu: "à la Chapelle des Cordes",
+  },
   decrocher: {
     nom: "La Doyenne",
     deposition: "Il a porté la lame sur une corde qui tenait. Chez nous, ça a un nom.",

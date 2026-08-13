@@ -33,6 +33,7 @@ import {
   type LiaisonCtx,
   type Scene as SceneType,
   ligneBorneSud,
+  lignePoteauNom,
   ligneCorbeaux,
   FAMILIARITE,
   phraseArrivee,
@@ -265,6 +266,17 @@ const ECHOS_OBJET: Record<string, { objet: string; text: string }[]> = {
         "La mèche est toujours dans ta poche. Personne, en bas, ne saura ce " +
         "qu'elle est ni à qui la rendre. Une femme, quelque part derrière " +
         "toi, tient encore son seuil pour un fils qui ne remontera pas.",
+    },
+    {
+      // L'éclat descellé de la Borne, ramassé au tout premier écran de la
+      // vie, revient au tout dernier : c'est la plus longue portée que le
+      // jeu sache tenir aujourd'hui, et elle ne coûte qu'une ligne.
+      objet: "Pierre de Retour",
+      text:
+        "L'éclat de la Borne pèse dans ta poche, exactement du poids qu'il " +
+        "avait au premier pas. Les Renonçants disent qu'on revient, si on le " +
+        "porte. Ils le disent au nord de la palissade, là où personne n'a " +
+        "jamais eu à vérifier.",
     },
   ],
   // La Mare montre ce qu'on porte, pas ce qu'on est.
@@ -794,6 +806,11 @@ export default function Scene() {
       runRef pendant le rendu) — alimenté par l'effet du 4e choix contextuel,
       qui est le SEUL endroit où se décide ce qu'est « être blessé ». */
   const [blesseMirror, setBlesseMirror] = useState(false);
+  /** Les CLÉS de `LANDES_OBJETS` réellement portées (miroir de rendu — le
+      React Compiler interdit de lire `runRef.current` pendant le rendu). Sert
+      à `Choice.requiresObjet` : ce qu'on porte ouvre une porte, sans le
+      dépenser. */
+  const [besaceMirror, setBesaceMirror] = useState<string[]>([]);
   // Illustration rétrécie (retour 22/07) : passe à true UNIQUEMENT si le texte
   // fini déborde vraiment la zone — mesuré, adapté au device, une seule fois.
   const [compact, setCompact] = useState(false);
@@ -904,6 +921,15 @@ export default function Scene() {
     // le COMPTE. C'est ce qui permet à une option de n'exister qu'à partir de
     // la deuxième ou troisième vie, sans que le héros ait l'air de se souvenir.
     if (c.requiresDecouverte && !decouvertes.includes(c.requiresDecouverte)) return false;
+    // CE QU'ON PORTE OUVRE UNE PORTE (playtest v1.81, 13/08). `usageObjet`
+    // CONSOMME l'objet : c'était donc réservé aux outils et aux remèdes, et
+    // les onze objets PASSIFS des Landes ne pouvaient rien transformer — on
+    // les ramassait, on lisait leur bandeau, et ils ne reparaissaient jamais.
+    // `requiresObjet` est le pendant qui ne dépense rien : le choix EXISTE
+    // parce que tu portes la chose, et disparaît si tu ne la portes pas.
+    // C'est le vrai « explorer prépare » : ce qu'on a trouvé trois lieux plus
+    // tôt ouvre ici une option que le voisin n'a pas.
+    if (c.requiresObjet && !besaceMirror.includes(c.requiresObjet)) return false;
     // L'OBJET OUVRE / FERME (chantier 12/08 §2) : le jeton d'usage passe par
     // `choixFaits`, donc sa portée est l'ÉCRAN — vidé en quittant le lieu.
     if (c.requiresUsage && !choixFaits.includes(`usage:${c.requiresUsage}`)) return false;
@@ -941,7 +967,14 @@ export default function Scene() {
         {
           id: "voler-nourriture",
           label: "Prendre sans demander",
-          poseEtat: "marque",
+          /* ⚠️ CE CHOIX NE COÛTAIT PLUS RIEN (trouvé en jouant, 13/08). Il
+             portait `poseEtat: "marque"` et `repondBesoin: "manger"` — deux
+             promesses mortes depuis le démontage des états (11/08) : MARQUÉ
+             n'existe plus, et `repondBesoin` ne fait plus qu'horodater (voir
+             `repondreAuBesoin`). Voler était donc devenu gratuit, sur un écran
+             qui l'offre en quatrième bouton. Le coût redevient celui que sa
+             propre conséquence annonce : on t'a vu. */
+          soupcon: 2,
           repondBesoin: "manger",
           passive: {
             consequence:
@@ -1417,6 +1450,15 @@ export default function Scene() {
     // écrits, pas seulement l'objet de soin) — donc avant tout retour.
     const negNow = run?.effects.some((e) => e.delta < 0) ?? false;
     setBlesseMirror(run ? run.health < 0.75 || negNow : false);
+    // Miroir de la Besace, exprimé en CLÉS de `LANDES_OBJETS` (les instances
+    // portent un id unique — `pierre-retour-7` — donc on apparie par NOM).
+    setBesaceMirror(
+      run
+        ? Object.keys(LANDES_OBJETS).filter((k) =>
+            run.besace.some((i) => i.name === LANDES_OBJETS[k].name)
+          )
+        : []
+    );
     if (!run || impose || scene.liaison || scene.terminal || scene.registre) {
       setActiveChoice(null);
       return;
@@ -1614,6 +1656,10 @@ export default function Scene() {
     grantedItem?: BesaceItem | null;
     /** Beats à placer en tête (ex. puce Jour + soin au réveil du campement). */
     prepend?: FeedEntry[];
+    /** Beats à placer JUSTE APRÈS la conséquence (lignes calculées : corbeaux,
+        troupeau, marque du sud, poteau — elles commentent ce qu'on vient de
+        lire, elles ne l'annoncent pas). */
+    append?: FeedEntry[];
     /** Choix d'orientation (traversée 21/07) : force la destination (liaison → lieu). */
     toDest?: string;
     /**
@@ -1622,6 +1668,13 @@ export default function Scene() {
      * `visited` : une rencontre ne compte pas comme un lieu traversé.
      */
     toScene?: string;
+    /**
+     * Image de l'ÉLÉMENT qu'on vient de toucher (`Choice.illustration`) : elle
+     * tient le temps de la conséquence, puis l'écran suivant revient à l'image
+     * du lieu. Même mécanique différée que la vue de marche — c'est la
+     * grammaire « voir de loin → marcher → toucher » rendue à un choix.
+     */
+    imageElement?: string;
   }) {
     const nextStep = step + 1;
     // Popup « rangé dans le menu » (7/08, vaut aussi pour les OBJETS) : si
@@ -2061,6 +2114,12 @@ export default function Scene() {
     if (opts?.consequence) {
       entries.push({ id: nextId(), kind: "narration", text: opts.consequence });
     }
+    // ⚠️ LES LIGNES CALCULÉES SE LISENT APRÈS, JAMAIS AVANT (13/08). Un point
+    // d'intérêt les servait après son examen ; en devenant des choix, elles
+    // étaient passées en TÊTE — et la Borne annonçait le nom du prédécesseur
+    // avant le paragraphe qui pose la question « alors qui a gravé côté sud ? ».
+    // La réponse arrivait avant la question. Trouvé en jouant, pas en relisant.
+    if (opts?.append) entries.push(...opts.append);
     // Récompense du Destin : bandeau « Obtenu » juste après la conséquence.
     if (opts?.destinItem) {
       const it = opts.destinItem;
@@ -2755,6 +2814,16 @@ export default function Scene() {
     } else {
       img = { src: lastSceneIlloRef.current, kind: "scene" };
     }
+    // L'ÉLÉMENT OBSERVÉ passe devant tout le reste (conversion des points
+    // d'intérêt, 13/08) : on vient de s'approcher de quelque chose, c'est ÇA
+    // qu'on regarde pendant qu'on lit ce qu'on y trouve. L'image du lieu (ou
+    // du lieu suivant) reprend au tap d'après — jamais un plan rapproché qui
+    // s'installe.
+    if (opts?.imageElement) {
+      const reprise = img.src;
+      img = { src: opts.imageElement, kind: "scene" };
+      if (reprise !== opts.imageElement) differeVueDeMarche = reprise;
+    }
 
     setStep(nextStep);
     // (le persist qui incrémente run.day arrive juste après — on affiche la
@@ -2976,12 +3045,17 @@ export default function Scene() {
       /** Le jet a été DUR (critique / malédiction) : le monde se referme d'un
           cran — une possibilité de plus est consommée ici. */
       dur?: boolean;
+      /** Image de l'élément touché (voir `advance`) : elle tient cet écran. */
+      imageElement?: string;
+      /** Lignes calculées, servies APRÈS la conséquence (voir `advance`). */
+      append?: FeedEntry[];
     } = {}
   ) {
     const entries: FeedEntry[] = [];
     if (opts.prepend) entries.push(...opts.prepend);
     if (opts.consequence)
       entries.push({ id: nextId(), kind: "narration", text: opts.consequence });
+    if (opts.append) entries.push(...opts.append);
     if (opts.grantedItem) {
       const it = opts.grantedItem;
       entries.push({
@@ -3039,8 +3113,14 @@ export default function Scene() {
     setSelectedId(null);
     setRoll(null);
     setChoicesHidden(true);
-    // L'image ne bouge pas : on est toujours au même endroit.
-    showScreen(entries, { src: lastSceneIlloRef.current, kind: "scene" });
+    // L'image ne bouge pas : on est toujours au même endroit — sauf si on
+    // vient de s'approcher d'un élément, qui tient alors cet écran-là.
+    showScreen(entries, {
+      src: opts.imageElement ?? lastSceneIlloRef.current,
+      kind: "scene",
+    });
+    if (opts.imageElement && opts.imageElement !== lastSceneIlloRef.current)
+      imageApresConsequence.current = lastSceneIlloRef.current;
   }
 
   function onSelect(choice: Choice) {
@@ -3209,27 +3289,15 @@ export default function Scene() {
               })()
             : []),
           // LE POTEAU QUI PORTE TON NOM suit tes vies (partie de découverte
-          // 8/08 : le moment le plus fort du Champ n'avait aucune suite). Il
-          // se remplit d'une incarnation à l'autre — jamais un chiffre, le
-          // bois raconte à ta place.
-          ...(poi.id === "poteaux-vierges" && loadMemory().deaths > 0
+          // 8/08). Le texte vit dans `lignePoteauNom` depuis le 13/08 — il est
+          // servi ici ET par le choix converti du Champ des Fixés.
+          ...((poi.id === "poteaux-vierges" && lignePoteauNom(loadMemory().deaths)
             ? [{
                 id: nextId(),
                 kind: "narration" as const,
-                text:
-                  loadMemory().deaths >= 3
-                    ? "Sous ton nom, le bois n'est plus vierge : trois dates y sont " +
-                      "gravées, les unes sous les autres, de la même main appliquée. " +
-                      "Il reste de la place. On a prévu large."
-                    : loadMemory().deaths >= 2
-                      ? "Sous ton nom, deux dates. La seconde est plus récente que la " +
-                        "première, et l'entaille est plus profonde — comme si la main " +
-                        "avait pris de l'assurance."
-                      : "Sous ton nom, une date a été ajoutée depuis. Elle est ancienne " +
-                        "de quelques jours à peine, et tu ne l'avais pas vue la dernière " +
-                        "fois. Tu ne te souviens pas d'une dernière fois.",
+                text: lignePoteauNom(loadMemory().deaths) as string,
               }]
-            : []),
+            : []) as FeedEntry[]),
         ];
         if (gained) {
           entries.push({
@@ -3385,6 +3453,19 @@ export default function Scene() {
     // AVANT ce que l'action provoque.
     const supplements: string[] = [];
     if (choice.corbeaux) supplements.push(ligneCorbeaux(loadMemory().deaths));
+    if (choice.troupeau)
+      supplements.push(
+        ligneTroupeau(tailleTroupeau(loadMemory().runsStarted, loadMemory().fixations))
+      );
+    if (choice.borneSud) {
+      const m = loadMemory();
+      const l = ligneBorneSud(m.fallen[0], m.deaths);
+      if (l) supplements.push(l);
+    }
+    if (choice.poteau) {
+      const l = lignePoteauNom(loadMemory().deaths);
+      if (l) supplements.push(l);
+    }
     const fragChoix = choice.chapterFragment ? takeChapterFragment() : null;
     if (fragChoix) {
       supplements.push(fragChoix.text);
@@ -3406,11 +3487,24 @@ export default function Scene() {
     // d'intérêt (regarder, compter, lire) n'ont pas de jet — c'est cohérent.
     // Le garde `tools/acceptation.py` refuse la combinaison, pour qu'un champ
     // déclaré ne reste jamais silencieusement inerte.
-    const prependSupp: FeedEntry[] = supplements.map((t) => ({
+    const supplementsBeats: FeedEntry[] = supplements.map((t) => ({
       id: nextId(),
       kind: "narration" as const,
       text: t,
     }));
+    // ─── L'OBSERVATION PRÉPARE LE GESTE ───────────────────────────────────
+    // Même levier que l'examen d'un point d'intérêt (`RunState.poiIci`, panel
+    // 10/08) : regarder avant d'agir ouvre l'Anneau d'un cran, au plus deux.
+    // Sans ce champ, convertir un lieu en actions directes SUPPRIMAIT son
+    // économie de préparation — c'est ce qui est arrivé aux trois lieux du lot
+    // pilote du 11/08. La remise à zéro se fait au changement de LIEU, donc ce
+    // qu'on a regardé à l'arrivée pèse encore sur le jet de l'écran-événement,
+    // et nulle part ailleurs.
+    if (choice.observe) {
+      persist((run) => {
+        run.poiIci = (run.poiIci ?? 0) + 1;
+      });
+    }
     // Prix différé (§17) : un choix « gratuit » peut poser une dette silencieuse.
     if (choice.debt) {
       const debt = choice.debt;
@@ -3667,11 +3761,13 @@ export default function Scene() {
         () =>
           reste
             ? resterSurPlace(choice.id, {
-                consequence: consequencePassive, grantedItem: granted, prepend: prependSupp,
+                consequence: consequencePassive, grantedItem: granted, append: supplementsBeats,
+                imageElement: choice.illustration,
               })
             : advance({
                 consequence: consequencePassive, grantedItem: granted,
-                toScene: sortieVers, prepend: prependSupp,
+                toScene: sortieVers, append: supplementsBeats,
+                imageElement: choice.illustration,
               }),
         320
       );
@@ -3680,8 +3776,8 @@ export default function Scene() {
       advanceTimer.current = setTimeout(
         () =>
           reste
-            ? resterSurPlace(choice.id, { prepend: prependSupp })
-            : advance({ toScene: sortieVers, prepend: prependSupp }),
+            ? resterSurPlace(choice.id, { append: supplementsBeats })
+            : advance({ toScene: sortieVers, append: supplementsBeats }),
         320
       );
     }

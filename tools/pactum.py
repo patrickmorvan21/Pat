@@ -392,6 +392,10 @@ class Partie:
             return [{"kind": "poi", "poi": p, "label": p["label"]} for p in pois] + [
                 {"kind": "fermer", "label": "Ne rien regarder de plus"}]
         out: list[dict] = []
+        # ⚠️ 13/08 : les 29 derniers points d'intérêt sont devenus des ACTIONS
+        # directes — il n'en reste aucun dans la zone. Le sous-menu ne peut
+        # donc plus s'ouvrir sur rien, mais la branche reste : elle servira à
+        # la prochaine zone si le procédé y revient.
         if pois:
             out.append({"kind": "ouvrir", "label": "Observer les alentours",
                         "note": f"{len(pois)} chose(s) à regarder"})
@@ -403,6 +407,12 @@ class Partie:
             # tort (« fuites de Savoir », grief 4/4 du panel 9/08 — c'était
             # cette réplique ; le vrai jeu filtre avant l'affichage).
             if c.get("exigeSavoir") or c.get("exigeDecouverte") or c.get("exigeEtat") or c.get("exigeContradiction"):
+                continue
+            # 13/08 : « ce qu'on porte ouvre une porte ». La réplique, elle,
+            # SUIT la Besace — le choix est donc offert seulement si l'objet
+            # y est vraiment, comme dans le jeu.
+            # La Besace de la réplique stocke les CLÉS d'objet telles quelles.
+            if c.get("exigeObjet") and c["exigeObjet"] not in self.d.get("besace", []):
                 continue
             # SÉJOUR : ce qui a déjà été fait ici ne se refait pas.
             if s.get("sejour") and c["id"] in self.d.get("choixFaits", []):

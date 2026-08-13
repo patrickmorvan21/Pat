@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-12T20:37:56Z",
- "commit": "a7745d8",
+ "genere": "2026-08-13T08:13:19Z",
+ "commit": "f6f2cc9",
  "zones": [
   {
    "id": "landes",
@@ -96,7 +96,7 @@
      ],
      "nbScenes": 3,
      "nbRencontres": 1,
-     "nbPois": 3,
+     "nbPois": 0,
      "entrees": [],
      "sorties": [],
      "roles": [],
@@ -142,7 +142,7 @@
      ],
      "nbScenes": 2,
      "nbRencontres": 0,
-     "nbPois": 3,
+     "nbPois": 0,
      "entrees": [],
      "sorties": [],
      "roles": [],
@@ -204,7 +204,7 @@
      ],
      "nbScenes": 6,
      "nbRencontres": 0,
-     "nbPois": 1,
+     "nbPois": 0,
      "entrees": [],
      "sorties": [],
      "roles": [],
@@ -226,7 +226,7 @@
      ],
      "nbScenes": 2,
      "nbRencontres": 0,
-     "nbPois": 4,
+     "nbPois": 0,
      "entrees": [],
      "sorties": [],
      "roles": [],
@@ -271,7 +271,7 @@
      ],
      "nbScenes": 3,
      "nbRencontres": 0,
-     "nbPois": 3,
+     "nbPois": 0,
      "entrees": [],
      "sorties": [],
      "roles": [],
@@ -337,7 +337,7 @@
      ],
      "nbScenes": 2,
      "nbRencontres": 1,
-     "nbPois": 3,
+     "nbPois": 0,
      "entrees": [],
      "sorties": [],
      "roles": [],
@@ -362,12 +362,14 @@
      ],
      "nbScenes": 5,
      "nbRencontres": 0,
-     "nbPois": 2,
+     "nbPois": 0,
      "entrees": [],
      "sorties": [],
      "roles": [],
      "dansPool": true,
-     "alertes": [],
+     "alertes": [
+      "orpheline"
+     ],
      "aCompleter": 0,
      "scenePrincipale": "verger-noir"
     },
@@ -388,12 +390,14 @@
      ],
      "nbScenes": 6,
      "nbRencontres": 1,
-     "nbPois": 3,
+     "nbPois": 0,
      "entrees": [],
      "sorties": [],
      "roles": [],
      "dansPool": true,
-     "alertes": [],
+     "alertes": [
+      "orpheline"
+     ],
      "aCompleter": 0,
      "scenePrincipale": "chemin-creux"
     },
@@ -412,14 +416,16 @@
      ],
      "nbScenes": 4,
      "nbRencontres": 0,
-     "nbPois": 3,
+     "nbPois": 0,
      "entrees": [],
      "sorties": [],
      "roles": [
       "entree"
      ],
      "dansPool": false,
-     "alertes": [],
+     "alertes": [
+      "orpheline"
+     ],
      "aCompleter": 0,
      "scenePrincipale": "borne-frontiere"
     },
@@ -439,7 +445,7 @@
      ],
      "nbScenes": 5,
      "nbRencontres": 0,
-     "nbPois": 3,
+     "nbPois": 0,
      "entrees": [],
      "sorties": [],
      "roles": [
@@ -464,6 +470,13 @@
    ],
    "choix": [
     {
+     "id": "tour-de-pierre",
+     "label": "Faire le tour de la pierre",
+     "type": "passif",
+     "consequence": "Le granit est froid d'une froideur qui ne vient pas du vent. Des marques sur toutes les faces, de toutes les mains : des noms, des dates, des traits de comptage. Le côté nord est saturé — les adieux de ceux qui partaient. Le côté sud est presque vierge. Trois marques. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?\n\nAu ras du sol, un angle manque. La cassure est nette, faite au burin, patiemment — et l'éclat est encore là, à demi enterré. Celui qui voulait emporter un morceau de la limite ne l'a pas pris. Sous le vent, pendant que tu te relèves, il y a des voix : basses, à ras de bruyère, qui se passent le mot de ton arrivée. Elles ne te menacent pas. Elles préviennent quelqu'un.",
+     "donneObjet": "pierre-retour"
+    },
+    {
      "id": "fouiller-offrandes",
      "label": "Fouiller les offrandes",
      "type": "risque",
@@ -480,78 +493,16 @@
      "donneObjet": "offrandes-borne"
     },
     {
-     "id": "ecouter-voix",
-     "label": "Écouter, puis partir",
+     "id": "aller-vers-homme",
+     "label": "Marcher vers l'homme immobile",
      "type": "passif",
-     "consequence": "Tu ne touches à rien. Tu écoutes. Sous le vent, il y a des voix — basses, à ras de bruyère, qui se passent le mot de ton arrivée. Elles ne te menacent pas. Elles préviennent quelqu'un. Au moins, maintenant, tu sais que la lande parle."
-    },
-    {
-     "id": "repondre-voix",
-     "label": "Répondre aux voix",
-     "type": "verrouille",
-     "stat": "EMPATHIE"
+     "consequence": "Tu marches vers lui sans te presser, en faisant sonner tes pas — on n'arrive pas dans le dos de quelqu'un, ici. L'herbe autour de ses pieds est couchée, morte. Il est là depuis des jours. Immobile — mais pas comme on se repose : comme on lutte.",
+     "sortie": {
+      "toScene": "hesitant-1"
+     }
     }
    ],
-   "pointsInteret": [
-    {
-     "id": "gravures-borne",
-     "label": "Les gravures de la pierre",
-     "approche": "Tu fais le tour de la pierre lentement, la main à plat sur le granit. Il est froid d'une froideur qui ne vient pas du vent.",
-     "examen": "Des marques sur toutes les faces, de toutes les mains, de toutes les époques : des noms, des dates, des traits de comptage. Le côté nord est saturé — les adieux de ceux qui partaient. Le côté sud est presque vierge. Trois marques seulement. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?",
-     "fragmentChapitre": true,
-     "borneSud": true,
-     "nom": "Les gravures de la pierre",
-     "image": {
-      "fichier": "scene_borne_gravures_a_d.png",
-      "hash": "e4dd0628",
-      "taille": 12652,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "eclat-descelle",
-     "label": "Un angle cassé, au ras du sol",
-     "approche": "Un angle de la borne manque. Tu t'accroupis : la cassure est nette, faite au burin, patiemment. Quelqu'un a voulu emporter un morceau de la limite avec lui.",
-     "examen": "L'éclat est encore là, à demi enterré sous la bruyère. Il ne l'a pas pris. Ou il n'a pas pu. La pierre tient dans le creux de ta main, exactement comme si elle avait été taillée pour.",
-     "donneObjet": "pierre-retour",
-     "nom": "Un angle cassé, au ras du sol",
-     "image": {
-      "fichier": "scene_borne_eclat_a_b.png",
-      "hash": "39fc719f",
-      "taille": 11742,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "homme-immobile",
-     "label": "L'homme qui regarde le sud",
-     "approche": "Tu quittes la borne et tu marches vers lui, sans te presser, en faisant sonner tes pas — on n'arrive pas dans le dos de quelqu'un, ici.",
-     "examen": "L'herbe autour de ses pieds est couchée, morte. Il est là depuis des jours. Immobile — mais pas comme on se repose : comme on lutte.",
-     "ouvreSur": "hesitant-1",
-     "nom": "L'homme qui regarde le sud",
-     "image": {
-      "fichier": "monstre_hesitant_b.png",
-      "hash": "79ff7f45",
-      "taille": 14688,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    }
-   ],
+   "pointsInteret": [],
    "nom": "La Borne Frontière",
    "lieu": "borne_frontiere",
    "typeScene": "arrivee",
@@ -564,13 +515,10 @@
    },
    "description": "Entrée de zone, tout premier écran du jeu. La borne-frontière dressée seule sur le plateau, ses faces gravées, les offrandes à son pied, et le chemin qui s'enfonce au sud dans le noir.",
    "promptImage": "single tall standing stone in the middle of an empty moor plateau, carved marks on its faces, small pile of humble offerings at its base, path vanishing south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-   "mèneVers": [
-    "hesitant-1"
-   ],
+   "mèneVers": [],
    "mèneIci": [],
    "roles": [
-    "entree",
-    "verrouille"
+    "entree"
    ],
    "acces": "entrée de zone",
    "etat": "valide",
@@ -634,16 +582,15 @@
    "mèneVers": [
     "hesitant-2"
    ],
-   "mèneIci": [
-    "borne-frontiere"
-   ],
+   "mèneIci": [],
    "roles": [
-    "optionnel",
     "verrouille"
    ],
-   "acces": "lien",
+   "acces": "aucun",
    "etat": "valide",
-   "alertes": []
+   "alertes": [
+    "orpheline"
+   ]
   },
   {
    "id": "hesitant-2",
@@ -654,7 +601,7 @@
    "choix": [
     {
      "id": "hesitant-raccompagner",
-     "label": "Le raccompagner au hameau",
+     "label": "Essayer de le ramener",
      "type": "risque",
      "stat": "EMPATHIE",
      "seuil": 12,
@@ -710,7 +657,7 @@
    "id": "hesitant-3",
    "narration": [
     "Il te laisse partir le premier. C'est important pour lui : que tu ne le voies pas décider.",
-    "Au bout de vingt pas tu te retournes quand même. La borne est seule au milieu du plateau. Il n'y a plus personne à côté — et rien, sur la bruyère couchée, ne dit dans quel sens il est parti."
+    "Au bout de vingt pas tu te retournes quand même. La borne est seule au milieu du plateau, et la bruyère couchée garde une trace qui s'efface à cent pas — juste avant l'endroit où elle aurait commencé à dire quelque chose."
    ],
    "choix": [
     {
@@ -749,82 +696,31 @@
    ],
    "choix": [
     {
-     "id": "couper-lande",
-     "label": "Couper par la lande",
-     "type": "risque",
-     "stat": "INSTINCT",
-     "seuil": 11,
-     "hautEnjeu": false,
-     "issues": {
-      "critique": "20 naturel. Tes pieds trouvent une sente que la bruyère cachait — un chemin de braconnier, tracé par quelqu'un qui savait exactement ce qu'il évitait. Tu sais maintenant le reconnaître.",
-      "reussite": "Tu grimpes le talus et marches à découvert. La lande te voit — mais rien ne te suit. Le chemin creux, en dessous, continue sans toi.",
-      "echec": "La bruyère s'accroche, le sol boit tes pas. Quand tu redescends dans le creux, essoufflé, tu n'as gagné que le sentiment d'avoir été observé tout du long.",
-      "funeste": "1 naturel. La lande n'est pas plate. Elle respire. Et tu marches dessus. ♦ −2"
-     },
-     "nature": "exploration"
-    }
-   ],
-   "pointsInteret": [
-    {
      "id": "charrette-embourbee",
-     "label": "La charrette embourbée",
-     "approche": "Elle penche dans l'ornière depuis si longtemps que le bois a pris racine — des pousses sortent du moyeu. Tu contournes, la main sur la ridelle.",
-     "examen": "Le chargement a disparu depuis longtemps. Le cheval aussi : le harnais pend, coupé net, pas dénoué. Sous le siège, accroché à un clou, un grelot de cuivre vert-de-grisé. Il ne sonne pas quand tu le décroches. Il sonnera quand il faudra.",
-     "donneObjet": "grelot-charretier",
-     "nom": "La charrette embourbée",
-     "image": {
-      "fichier": "scene_chemin_charrette_a_c.png",
-      "hash": "0b772c65",
-      "taille": 10947,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "label": "Fouiller la charrette",
+     "type": "passif",
+     "consequence": "Elle penche dans l'ornière depuis si longtemps que le bois a pris racine — des pousses sortent du moyeu. Le chargement a disparu. Le cheval aussi : le harnais pend, coupé net, pas dénoué. Sous le siège, accroché à un clou, un grelot de cuivre vert-de-grisé. Il ne sonne pas quand tu le décroches. Il sonnera quand il faudra.",
+     "donneObjet": "grelot-charretier"
     },
     {
      "id": "talus-empreintes",
-     "label": "Le haut des talus",
-     "approche": "Tu montes de trois pas dans la pente, juste assez pour voir la crête sans t'exposer entièrement. La terre y est meuble, retournée.",
-     "examen": "Des empreintes. Parallèles au chemin. Sur toute sa longueur — mais sur la crête NORD seulement : l'autre versant est intact, pas une marque. Quelque chose marche là-haut quand quelqu'un marche en bas, à la même vitesse, du même pas, et toujours du même côté. Tu redescends sans te presser, parce que se presser serait une information.",
-     "savoir": "savoir_bete_crete_nord",
-     "nom": "Le haut des talus",
-     "image": {
-      "fichier": "scene_chemin_talus_a_c.png",
-      "hash": "df0a1dec",
-      "taille": 9840,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "label": "Monter voir le haut des talus",
+     "type": "passif",
+     "consequence": "Tu montes de trois pas dans la pente, juste assez pour voir la crête sans t'exposer entièrement. Des empreintes, parallèles au chemin, sur toute sa longueur — mais sur la crête NORD seulement : l'autre versant est intact, pas une marque. Quelque chose marche là-haut quand quelqu'un marche en bas, à la même vitesse, du même pas, et toujours du même côté. Tu redescends sans te presser, parce que se presser serait une information.",
+     "donneSavoir": "savoir_bete_crete_nord"
     },
     {
      "id": "marcheur-rebours",
-     "label": "L'homme qui marche à reculons",
-     "approche": "Tu ralentis pour le laisser venir. Il marche à reculons d'un pas sûr, les talons trouvant le sol comme des yeux.",
-     "examen": "Son visage est tourné vers ce qu'il laisse derrière lui. C'est-à-dire, dans un instant : vers toi.",
-     "ouvreSur": "marcheur-1",
-     "nom": "L'homme qui marche à reculons",
-     "image": {
-      "fichier": "monstre_marcheur_rebours_v2_a.png",
-      "hash": "ba1a5091",
-      "taille": 20815,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "label": "Laisser venir l'homme à reculons",
+     "type": "passif",
+     "consequence": "Tu ralentis pour le laisser venir. Il marche à reculons d'un pas sûr, les talons trouvant le sol comme des yeux. Son visage est tourné vers ce qu'il laisse derrière lui. C'est-à-dire, dans un instant : vers toi.",
+     "sortie": {
+      "toScene": "marcheur-1"
+     }
     }
    ],
+   "pointsInteret": [],
    "suite": "chemin-creux-2",
-   "savoir": "savoir_bete_crete_nord",
    "tags": [
     "rough_path"
    ],
@@ -841,15 +737,12 @@
    "description": "Arrivée au Chemin Creux. Une route encaissée entre deux hauts talus de terre, un ruban de ciel étroit au-dessus, des racines tordues qui sortent des parois.",
    "promptImage": "sunken road between two high earthen banks, narrow ribbon of sky above, twisted roots protruding from the banks, deep shadows, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [
-    "chemin-creux-2",
-    "marcheur-1"
+    "chemin-creux-2"
    ],
    "mèneIci": [
     "bete-chemins-creux"
    ],
-   "roles": [
-    "pivot"
-   ],
+   "roles": [],
    "acces": "lien",
    "etat": "valide",
    "alertes": []
@@ -951,15 +844,13 @@
    "mèneVers": [
     "marcheur-2"
    ],
-   "mèneIci": [
-    "chemin-creux"
-   ],
-   "roles": [
-    "optionnel"
-   ],
-   "acces": "lien",
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
    "etat": "valide",
-   "alertes": []
+   "alertes": [
+    "orpheline"
+   ]
   },
   {
    "id": "marcheur-2",
@@ -1197,6 +1088,13 @@
    ],
    "choix": [
     {
+     "id": "colline-lunette",
+     "label": "Chercher la Tour à la lunette",
+     "type": "passif",
+     "consequence": "Tu cales le cuivre contre l'arête du mât et tu balaies le nord. La Tour de Guet saute dans le verre d'un coup, très nette, à hauteur d'œil : sa meurtrière du sud te regarde en plein. Ce n'est pas une coïncidence de terrain — quelqu'un a choisi les deux emplacements le même jour, avec la même corde à mesurer. Le grand gibet et la tour ont été plantés l'un pour l'autre.",
+     "exigeObjet": "lunette-guet"
+    },
+    {
      "id": "monter-grand-gibet",
      "label": "Monter au Grand Gibet",
      "type": "risque",
@@ -1415,73 +1313,29 @@
    ],
    "choix": [
     {
-     "id": "rester-champ",
-     "label": "Rester dans le champ",
-     "type": "suite"
-    }
-   ],
-   "pointsInteret": [
-    {
      "id": "les-rangees",
-     "label": "Les rangées et leurs noms",
-     "approche": "Tu marches entre deux rangs. Le sol est tassé par des allées et venues régulières — on entretient ce champ comme un jardin, et c'est ça qui serre le ventre.",
-     "examen": "Les noms des premières rangées sont presque effacés. Les dernières sont fraîches. Entre les deux, une rangée entière porte la même date — un seul jour, neuf fixations. Il y a une histoire là-dedans que personne ne raconte.",
-     "fragmentChapitre": true,
-     "nom": "Les rangées et leurs noms",
-     "image": {
-      "fichier": "scene_champ_les_rangees_v2_a.png",
-      "hash": "ecaa522b",
-      "taille": 23864,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "label": "Remonter les rangées",
+     "type": "passif",
+     "consequence": "Le sol entre deux rangs est tassé par des allées et venues régulières — on entretient ce champ comme un jardin, et c'est ça qui serre le ventre. Les noms des premières rangées sont presque effacés, les dernières sont fraîches. Entre les deux, une rangée entière porte la même date : un seul jour, neuf fixations. Il y a une histoire là-dedans que personne ne raconte."
     },
     {
      "id": "poteaux-vierges",
-     "label": "Les poteaux vierges, au fond",
-     "approche": "Il faut traverser tout le champ pour les atteindre. Tu comptes les poteaux vides en marchant — puis tu t'arrêtes de compter, parce que le compte monte plus vite que tes pas.",
-     "examen": "Trois poteaux portent déjà des noms, sans date. Le Fossoyeur grave d'avance « ceux dont c'est sûr ». Le troisième nom est récent — l'entaille est claire, le bois n'a pas encore grisé. Tu le lis, et tu le relis, et il ne change pas : c'est le tien. Quelqu'un ici sait déjà comment ça finit, et a pris le temps de tailler proprement.",
-     "savoir": "savoir_poteau_a_mon_nom",
-     "nom": "Les poteaux vierges, au fond",
-     "image": {
-      "fichier": "scene_champ_poteaux_vierges_b.png",
-      "hash": "0ffc6d78",
-      "taille": 10052,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "label": "Aller lire les poteaux vierges",
+     "type": "passif",
+     "consequence": "Il faut traverser tout le champ pour les atteindre. Tu comptes les poteaux vides en marchant — puis tu t'arrêtes de compter, parce que le compte monte plus vite que tes pas. Trois portent déjà des noms, sans date : le Fossoyeur grave d'avance « ceux dont c'est sûr ». Le troisième est récent, l'entaille claire, le bois pas encore grisé. Tu le lis, et tu le relis, et il ne change pas : c'est le tien.",
+     "donneSavoir": "savoir_poteau_a_mon_nom"
     },
     {
      "id": "tombe-sans-poteau",
-     "label": "Un vide dans une rangée pleine",
-     "approche": "Tu l'as repéré de loin sans savoir quoi : un défaut d'alignement, un rythme cassé. En approchant, tu comprends — il manque un poteau au milieu d'une rangée pleine, comme une dent tombée.",
-     "examen": "La terre y est ancienne, tassée : il y a eu un poteau, ici. On l'a retiré. Pas arraché — descellé proprement, puis rebouché. Quelqu'un a voulu que ce nom-là cesse d'exister sans que le champ s'en aperçoive. Au fond de la fosse comblée, à moitié enfoui, un moignon de craie grasse — celle qui sert à marquer les portes. Tu le ramasses.",
+     "label": "Aller voir le vide dans la rangée",
+     "type": "passif",
+     "consequence": "Tu l'avais repéré de loin sans savoir quoi : un défaut d'alignement, un rythme cassé. Il manque un poteau au milieu d'une rangée pleine, comme une dent tombée. La terre y est ancienne, tassée. On l'a retiré — pas arraché : descellé proprement, puis rebouché. Quelqu'un a voulu que ce nom-là cesse d'exister sans que le champ s'en aperçoive. Au fond de la fosse comblée, à moitié enfoui, un moignon de craie grasse — celle qui sert à marquer les portes.",
      "donneObjet": "craie-condamne",
-     "donneDecouverte": "d.emplacement_vide",
-     "nom": "Un vide dans une rangée pleine",
-     "image": {
-      "fichier": "scene_champ_tombe_manquante_a_c.png",
-      "hash": "e11aa5ad",
-      "taille": 14607,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "donneDecouverte": "d.emplacement_vide"
     }
    ],
+   "pointsInteret": [],
    "suite": "champ-des-fixes-2",
-   "savoir": "savoir_poteau_a_mon_nom",
    "donneDecouverte": "d.emplacement_vide",
    "nom": "Le Champ des Fixés",
    "lieu": "champ_des_fixes",
@@ -1668,6 +1522,13 @@
      "type": "passif",
      "consequence": "« Cinq marques ? » Le couteau s’arrête. Tu les dessines dans la poussière. Il les regarde longtemps, les lèvres bougeant sans bruit : il met un nom sur chacune. Puis il efface du plat de la main. « Joli troupeau. » C’est tout ce que tu en tireras.",
      "exigeDecouverte": "d.troupeau_compte"
+    },
+    {
+     "id": "champ-jouet",
+     "label": "Lui montrer la poupée",
+     "type": "passif",
+     "consequence": "Tu sors la poupée de chiffon et tu la poses sur le rebord de sa brouette. Le Fossoyeur arrête sa bêche. Il ne la prend pas — il la regarde longtemps, comme on regarde une addition qui ne tombe pas juste. « Celle-là, j'ai jamais eu de poteau à tailler pour elle. » Il se remet au travail plus vite qu'avant. « Faudrait pas croire que j'oublie. »",
+     "exigeObjet": "jouet-fixee"
     },
     {
      "id": "aider-fossoyeur",
@@ -3226,6 +3087,14 @@
    ],
    "choix": [
     {
+     "id": "examiner-grange",
+     "label": "Fouiller la grange à la lampe",
+     "type": "passif",
+     "consequence": "Tu prends la lampe et tu fais le tour, lentement, en te tenant loin des murs — le vieux réflexe de qui ne veut pas être une silhouette derrière des planches. Des marques sur les poutres, à hauteur d'homme : des bâtons de comptage, des séries de nuits. La dernière s'arrête à deux. Et sous chaque bâton, une encoche plus petite, régulière : quatre par nuit, toujours quatre. Ce ne sont pas les nuits qu'on compte ici, ce sont les passages de la ronde. En te rasseyant, tu passes la main sur la barre : le bois est lisse dedans et usé jusqu'au fil dehors, comme si l'on s'y appuyait du dehors, souvent, longtemps.",
+     "donneSavoir": "savoir_grange_comptee",
+     "donneDecouverte": "d.barre_usee"
+    },
+    {
      "id": "veiller",
      "label": "Veiller",
      "type": "risque",
@@ -3247,30 +3116,8 @@
      "repos": true
     }
    ],
-   "pointsInteret": [
-    {
-     "id": "examiner-grange",
-     "label": "Examiner la grange",
-     "approche": "Tu prends la lampe et tu fais le tour, lentement, en te tenant loin des murs — le vieux réflexe de qui ne veut pas être une silhouette derrière des planches.",
-     "examen": "Des marques sur les poutres, à hauteur d'homme. Des bâtons de comptage — des séries de nuits. Quelqu'un a dormi ici souvent. Ou plusieurs quelqu'uns, une nuit chacun. La dernière série s'arrête à deux. Et sous chaque bâton, une encoche plus petite, régulière : quatre par nuit, toujours quatre. Ce ne sont pas les nuits qu'on compte ici. Ce sont les passages de la ronde. En sortant, tu passes la main sur la barre : le bois est lisse à l'intérieur et usé jusqu'au fil dehors, comme si l'on s'y appuyait du dehors, souvent, longtemps.",
-     "savoir": "savoir_grange_comptee",
-     "donneDecouverte": "d.barre_usee",
-     "nom": "Examiner la grange",
-     "image": {
-      "fichier": "scene_hameau_grange_poutres_a_d.png",
-      "hash": "c4a77f86",
-      "taille": 7428,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    }
-   ],
+   "pointsInteret": [],
    "suite": "hameau-halte-3",
-   "savoir": "savoir_grange_comptee",
    "donneDecouverte": "d.barre_usee",
    "nuit": true,
    "nom": "Hameau halte 2 — beat 2",
@@ -3692,32 +3539,20 @@
    ],
    "choix": [
     {
-     "id": "troupeau-approcher",
-     "label": "S’avancer dans le vallon",
-     "type": "suite"
-    }
-   ],
-   "pointsInteret": [
-    {
      "id": "compter-troupeau",
-     "label": "Les marques d’oreille",
-     "approche": "Tu marches jusqu’au bord du troupeau. Les bêtes te laissent entrer entre elles comme si tu étais un piquet de plus.",
-     "examen": "De près, elles sont grasses, entretenues — quelqu’un les a menées, soignées, comptées, et pas il y a trente ans : cette laine-là a vu un berger cette saison.",
-     "donneDecouverte": "d.troupeau_compte",
-     "troupeau": true,
-     "image": {
-      "fichier": "monstre_troupeau_compte_b.png",
-      "hash": "9eb350eb",
-      "taille": 20556,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "label": "Lire les marques d’oreille",
+     "type": "passif",
+     "consequence": "Les bêtes te laissent entrer entre elles comme si tu étais un piquet de plus. De près, elles sont grasses, entretenues — quelqu’un les a menées, soignées, comptées, et pas il y a trente ans : cette laine-là a vu un berger cette saison.",
+     "donneDecouverte": "d.troupeau_compte"
+    },
+    {
+     "id": "troupeau-approcher",
+     "label": "Traverser sans t’arrêter",
+     "type": "passif",
+     "consequence": "Tu fends le troupeau au pas, sans ralentir. Elles s’écartent juste ce qu’il faut et se referment derrière toi, et pendant quelques secondes tu marches à l’intérieur de quelque chose de chaud qui ne te veut rien."
     }
    ],
+   "pointsInteret": [],
    "suite": "troupeau-sans-berger-2",
    "donneDecouverte": "d.troupeau_compte",
    "image": {
@@ -3810,87 +3645,30 @@
      "seuil": 11,
      "hautEnjeu": false,
      "issues": {
-      "critique": "Tu montes jusqu'à la dernière marche et tu restes debout dessus, dans le vide. D'ici, tout le hameau est à tes pieds — et tu comprends que la tour ne servait pas à voir loin : elle servait à être vue de partout, par celui qui tenait la corne.",
-      "reussite": "Tu montes. En haut, le vent te prend de face et tu tiens bon : d'ici on voit tout le hameau, et tout le hameau te voit.",
+      "critique": "Tu montes jusqu'à la dernière marche et tu restes debout dessus, dans le vide. À la rupture, la pierre est propre : pas d'usure, pas de suie — la tour n'est pas tombée, on l'a ouverte. Et d'ici, une seule chose tient l'horizon : la Colline aux Gibets, exactement dans l'axe. La tour ne surveillait pas les Landes. Elle surveillait le grand gibet.",
+      "reussite": "Tu montes les trois volées qui tiennent — les marches sont creusées en leur milieu, usées par des passages quotidiens. En haut, le vent te prend de face. D'ici on voit tout le hameau, et la Colline aux Gibets se pose pile dans l'axe de l'ouverture.",
       "echec": "Une marche cède sous ton poids. Tu te rattrapes au mur, la paume ouverte sur l'arête.",
       "funeste": "La volée entière lâche. Tu tombes sur le tas de pierres rangées, et elles se rangent autour de toi comme si elles t'attendaient."
      },
-     "nature": "physique"
+     "nature": "physique",
+     "donneSavoir": "savoir_guet"
     },
-    {
-     "id": "ecouter-tour",
-     "label": "Écouter la tour",
-     "type": "passif",
-     "consequence": "Tu restes au pied et tu écoutes. Le vent entre par la bouche ouverte et ressort par la meurtrière, et ça fait une note — toujours la même. Le hameau a vécu vingt ans avec cette note dans les oreilles."
-    },
-    {
-     "id": "quitter-tour",
-     "label": "Redescendre le tertre",
-     "type": "passif",
-     "consequence": "Tu laisses la tour derrière toi. Elle ne regarde plus rien."
-    }
-   ],
-   "pointsInteret": [
     {
      "id": "pierres-rangees",
-     "label": "Les pierres, empilées au pied",
-     "approche": "",
-     "examen": "Les pierres sont posées face gravée contre terre. Tu en retournes une : une lettre, un fragment de date. C'était un mur de noms. On ne l'a pas démoli — on l'a couché, puis rangé.",
-     "fragmentChapitre": true,
-     "nom": "Les pierres, empilées au pied",
-     "image": {
-      "fichier": "scene_tour_pierres_rangees_a.png",
-      "hash": "a11ecafb",
-      "taille": 20594,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "escalier-vers-rien",
-     "label": "L'escalier qui monte au vide",
-     "approche": "Les marches sont creusées en leur milieu, usées par des passages quotidiens. Tu montes les trois volées qui tiennent. La dernière s'arrête sur le ciel.",
-     "examen": "À la rupture, la pierre est propre. Pas d'usure, pas de suie : la tour n'est pas tombée, on l'a ouverte. Et d'ici, une seule chose est visible à l'horizon — la Colline aux Gibets, exactement dans l'axe. La tour ne surveillait pas les Landes. Elle surveillait le grand gibet.",
-     "savoir": "savoir_guet",
-     "nom": "L'escalier qui monte au vide",
-     "image": {
-      "fichier": "scene_tour_escalier_vers_rien_b.png",
-      "hash": "e404f4e6",
-      "taille": 8038,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "label": "Retourner les pierres du pied",
+     "type": "passif",
+     "consequence": ""
     },
     {
      "id": "meurtriere-sud",
-     "label": "La meurtrière du sud",
-     "approche": "Une seule ouverture reste intacte, au sud, à hauteur de poitrine. Le rebord est poli comme une rampe.",
-     "examen": "Des encoches dans l'embrasure, groupées par cinq. Des centaines. Et calée dans une fente, une lunette de cuivre à un seul verre, posée là comme on repose un outil qu'on reprendra demain.",
-     "donneObjet": "lunette-guet",
-     "nom": "La meurtrière du sud",
-     "image": {
-      "fichier": "scene_tour_meurtriere_sud_a.png",
-      "hash": "d5008af2",
-      "taille": 19670,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "label": "Fouiller la meurtrière du sud",
+     "type": "passif",
+     "consequence": "Une seule ouverture reste intacte, au sud, à hauteur de poitrine, le rebord poli comme une rampe. Des encoches dans l'embrasure, groupées par cinq. Des centaines. Et calée dans une fente, une lunette de cuivre à un seul verre, posée là comme on repose un outil qu'on reprendra demain.",
+     "donneObjet": "lunette-guet"
     }
    ],
+   "pointsInteret": [],
    "suite": "tour-de-guet-2",
-   "savoir": "savoir_guet",
    "nom": "Tour de guet",
    "lieu": "tour_de_guet_effondree",
    "typeScene": "arrivee",
@@ -4059,6 +3837,13 @@
      "type": "passif",
      "consequence": "Il suit ton regard jusqu’aux quartiers salés pendus sous l’étal, et pour la première fois son sourire de marchand se simplifie. « Me demande pas d’où ça vient. » Il remonte la toile dessus, sans hâte. « Moi je revends. »",
      "exigeDecouverte": "d.troupeau_compte"
+    },
+    {
+     "id": "marche-caillou",
+     "label": "Montrer le caillou de rivière",
+     "type": "passif",
+     "consequence": "Tu poses le galet plat dans sa paume. Le Colporteur le fait rouler du pouce, le soupèse, le rend. « Ça, c'est de l'eau courante. » Il regarde autour de lui sans bouger la tête. « Y'a pas d'eau courante à trois jours d'ici, et j'ai fait tous les chemins. » Un temps. « Le petit te l'a donné ? Range-le avant qu'un autre te demande la même chose. »",
+     "exigeObjet": "caillou-gamin"
     },
     {
      "id": "sonneur-battant",
@@ -4644,98 +4429,30 @@
      "nature": "physique"
     },
     {
-     "id": "rester-chapelle",
-     "label": "Rester dans la chapelle",
-     "type": "suite"
-    }
-   ],
-   "pointsInteret": [
-    {
-     "id": "cloche-sans-battant",
-     "label": "Le clocheton, dehors",
-     "approche": "Tu ressors par le côté. Le clocheton n’est pas haut — deux hommes suffiraient à l’atteindre, et la corde d’appel pend jusqu’à hauteur de main, propre, entretenue.",
-     "examen": "Tu tires la corde par curiosité. Rien ne vient. La cloche bascule, revient, bascule encore — et ne sonne pas : elle n’a plus de battant. L’attache est là, intacte. On ne l’a pas cassée : on l’a dévissée.",
-     "donneDecouverte": "d.cloche_sans_battant",
-     "image": {
-      "fichier": "scene_chapelle_cloche_sans_battant_b.png",
-      "hash": "b7b2ae8c",
-      "taille": 21366,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
      "id": "mur-cordes",
-     "label": "Le mur des cordes, au fond",
-     "approche": "Tu remontes la nef courte. L'odeur de chanvre vieux prend à la gorge à mesure — une odeur grasse, presque animale, qui n'a rien d'une odeur d'église.",
-     "examen": "Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom à l'encre pâle. Ce ne sont pas des trophées. Ce sont des reliques — chaque corde « a tenu » quelqu'un. L'une d'elles bouge quand tu ne la regardes pas : la troisième du rang bas, sans étiquette, plus claire que les autres. Tu notes où elle est. Ce genre de chose, on préfère savoir où ça se trouve avant que ça sache où tu te trouves. Plus bas, trois cordes portent la même date. Deux noms se lisent encore : celui du Bailli, et un prénom de fille. Le troisième a été arraché avec l'étiquette.",
-     "savoir": "savoir_corde_vive",
-     "donneDecouverte": "d.trois_cordes",
-     "nom": "Le mur des cordes, au fond",
-     "image": {
-      "fichier": "scene_chapelle_mur_cordes_v3_c.png",
-      "hash": "c50f4a0f",
-      "taille": 10553,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "label": "Remonter le mur des cordes",
+     "type": "passif",
+     "consequence": "L'odeur de chanvre vieux prend à la gorge à mesure — grasse, presque animale, rien d'une odeur d'église. Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom à l'encre pâle. Ce ne sont pas des trophées : ce sont des reliques, chacune « a tenu » quelqu'un. L'une bouge quand tu ne la regardes pas — la troisième du rang bas, sans étiquette, plus claire que les autres. Tu notes où elle est. Plus bas, trois cordes portent la même date : celle du Bailli, un prénom de fille, et un troisième nom arraché avec l'étiquette.",
+     "donneSavoir": "savoir_corde_vive",
+     "donneDecouverte": "d.trois_cordes"
     },
     {
      "id": "autel-renverse",
-     "label": "L'autel, et la dalle tirée",
-     "approche": "Tu contournes les bancs absents — on les a brûlés, sans doute — jusqu'à l'autel. Il est debout, seul objet propre de la salle. Mais la dalle de son pied a été tirée en avant et laissée là, en travers.",
-     "examen": "Sous l'autel, la dalle déplacée découvre un espace. Vide — mais le creux dans la poussière dit qu'une chose y était cachée, longue, enroulée. On l'a prise récemment : la poussière n'a pas eu le temps de revenir.",
+     "label": "Tirer la dalle de l'autel",
+     "type": "passif",
+     "consequence": "",
      "soupcon": 1,
      "temoin": {
       "nom": "La Veuve des Cordes",
       "deposition": "Il a fouillé sous l'autel. Ce qui est dessous n'est pas à nous non plus, mais on n'y touche pas.",
       "lieu": "à la Chapelle des Cordes"
-     },
-     "nom": "L'autel couché, sur le côté",
-     "image": {
-      "fichier": "scene_chapelle_autel_a_c.png",
-      "hash": "a2f7e150",
-      "taille": 12535,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "ouvrage-tressage",
-     "label": "La chaise et l'ouvrage",
-     "approche": "Près de l'entrée, la chaise est tournée vers le mur des cordes — pas vers la porte. On s'assied ici pour regarder les reliques, pas pour surveiller qui entre.",
-     "examen": "Un ouvrage de tressage en cours, posé sur le siège : trois brins de chanvre neuf, serrés à mi-longueur. Le travail est régulier, sans hâte. Quelqu'un tresse ici tous les jours, et ce quelqu'un n'a pas fini.",
-     "soupcon": -1,
-     "nom": "La chaise et l'ouvrage",
-     "image": {
-      "fichier": "scene_chapelle_ouvrage_a_d.png",
-      "hash": "672ac882",
-      "taille": 10796,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     }
     }
    ],
+   "pointsInteret": [],
    "suite": "chapelle-des-cordes-2",
    "butin": "brin-chanvre",
-   "savoir": "savoir_corde_vive",
-   "donneDecouverte": "d.cloche_sans_battant",
+   "donneDecouverte": "d.trois_cordes",
    "nom": "La Chapelle des Cordes",
    "lieu": "chapelle_des_cordes",
    "typeScene": "arrivee",
@@ -4797,6 +4514,19 @@
      "nature": "social"
     },
     {
+     "id": "chapelle-craie",
+     "label": "Écrire un nom à la craie",
+     "type": "passif",
+     "consequence": "La troisième du rang bas n'a pas d'étiquette. Tu écris dessus, à la craie grasse, le premier nom qui te vient — le tien. La corde s'immobilise net. Toutes les autres continuent de bouger imperceptiblement dans le courant d'air ; celle-là, plus du tout. La Veuve lève les yeux. « On ne nomme pas ce qui n'est pas encore à nous. » Elle ne dit pas de l'effacer.",
+     "exigeObjet": "craie-condamne",
+     "soupcon": 1,
+     "temoin": {
+      "nom": "La Veuve des Cordes",
+      "deposition": "Il a écrit un nom sur une corde qui n'en avait pas. La sienne. Chez nous, ça s'appelle prendre les devants.",
+      "lieu": "à la Chapelle des Cordes"
+     }
+    },
+    {
      "id": "corde-vive",
      "label": "Saisir la corde vive",
      "type": "verrouille",
@@ -4815,13 +4545,15 @@
     },
     {
      "id": "chapelle-ressortir",
-     "label": "Ressortir par où tu es entré",
+     "label": "Ressortir par le côté",
      "type": "passif",
-     "consequence": "Tu recules jusqu'au seuil sans quitter les cordes des yeux, ce qui est exactement la mauvaise façon de traverser une nef : on ne voit pas ce qu'on laisse derrière. Aucune ne bouge. Dehors, l'air a le goût de dehors.",
-     "sortie": {}
+     "consequence": "Tu recules jusqu'au seuil sans quitter les cordes des yeux, ce qui est exactement la mauvaise façon de traverser une nef : on ne voit pas ce qu'on laisse derrière. Aucune ne bouge. Dehors, l'air a le goût de dehors.\n\nLe clocheton n'est pas haut, et la corde d'appel pend jusqu'à hauteur de main, propre, entretenue. Tu tires par curiosité. La cloche bascule, revient, bascule encore — et ne sonne pas : elle n'a plus de battant. L'attache est intacte. On ne l'a pas cassée : on l'a dévissée.",
+     "sortie": {},
+     "donneDecouverte": "d.cloche_sans_battant"
     }
    ],
    "pointsInteret": [],
+   "donneDecouverte": "d.cloche_sans_battant",
    "sejour": true,
    "nom": "La Chapelle des Cordes — beat 2",
    "lieu": "chapelle_des_cordes",
@@ -4946,6 +4678,13 @@
       "funeste": "1 naturel. Tu tires la chaîne. Elle tire aussi. Le cadenas, entre vous deux, choisit son camp — pas le tien. ♦ −2"
      },
      "nature": "physique"
+    },
+    {
+     "id": "puits-grelot",
+     "label": "Jeter le grelot dans le puits",
+     "type": "passif",
+     "consequence": "Tu glisses le grelot de cuivre entre deux planches et tu écoutes. Il ne touche pas le fond. Il tinte une fois, loin, puis une deuxième fois plus loin encore, puis plus rien pendant le temps qu'il faut pour compter jusqu'à vingt.\n\nAlors il tinte une troisième fois — juste sous les planches. On te le remonte. Les coups reprennent, et ils ont changé de rythme : ils sont polis, maintenant. On te remercie.",
+     "exigeObjet": "grelot-charretier"
     },
     {
      "id": "reculer-puits",
@@ -5120,74 +4859,28 @@
    ],
    "choix": [
     {
-     "id": "rester-tribunal",
-     "label": "Rester dans la salle",
-     "type": "suite"
-    }
-   ],
-   "pointsInteret": [
-    {
      "id": "mur-ordonnance",
-     "label": "La feuille clouée au mur",
-     "approche": "Trois pas de dalle inégale, et la feuille se précise : du papier épais, jauni, cloué aux quatre coins par quelqu'un qui ne voulait pas qu'on la décroche.",
-     "examen": "La liste des signes, de la main du Bailli. « Parler seul face au sud. Fixer les Profondeurs plus qu'il ne faut. Cesser de dormir. Répondre à ce qui n'a pas parlé. » Tu la lis trois fois. La deuxième, tu comptes ceux qui te concernent déjà. La troisième, tu les apprends — parce que c'est exactement ce qu'ils guettent chez toi.",
-     "savoir": "savoir_ordonnance",
-     "nom": "La feuille clouée au mur",
-     "image": {
-      "fichier": "scene_tribunal_ordonnance_a_c.png",
-      "hash": "76417e2b",
-      "taille": 16420,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "label": "Lire la feuille clouée au mur",
+     "type": "passif",
+     "consequence": "Du papier épais, jauni, cloué aux quatre coins par quelqu'un qui ne voulait pas qu'on le décroche : la liste des signes, de la main du Bailli. « Parler seul face au sud. Fixer les Profondeurs plus qu'il ne faut. Cesser de dormir. Répondre à ce qui n'a pas parlé. » Tu la lis trois fois. La deuxième, tu comptes ceux qui te concernent déjà. La troisième, tu les apprends — parce que c'est exactement ce qu'ils guettent chez toi.",
+     "donneSavoir": "savoir_ordonnance"
     },
     {
      "id": "chaire-registre",
-     "label": "La chaire et son livre",
-     "approche": "La chaire est haute — il faut lever les yeux, et c'est le but. Tu montes la marche unique qui y mène, celle que le Bailli montait chaque fois qu'il allait dire la même phrase.",
-     "examen": "Le Registre des Pendaisons est posé là, ouvert — pas par négligence : ici, la loi se montre. Des colonnes de noms, de dates, de signes. Une écriture appliquée qui se dégrade au fil des pages. Et un nom sur deux est barré. Pas raturé — barré, d'un trait droit, à l'encre plus récente que le nom. Et, au bord de la page, à côté de certains noms seulement, un petit signe en forme de plume. Rien ne l'explique — ni la marge, ni la colonne, ni l'ordre des dates.",
-     "donneDecouverte": "d.signe_plume",
-     "fait": "fait-bailli",
-     "fragmentChapitre": true,
-     "nom": "La chaire et son livre",
-     "image": {
-      "fichier": "scene_tribunal_chaire_a_c.png",
-      "hash": "c48ed902",
-      "taille": 9462,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "label": "Monter à la chaire",
+     "type": "passif",
+     "consequence": "Il faut lever les yeux vers elle, et c'est le but. Tu montes la marche unique que le Bailli montait chaque fois qu'il allait dire la même phrase. Le Registre des Pendaisons y est ouvert — pas par négligence : ici, la loi se montre. Des colonnes de noms, de dates, de signes, une écriture appliquée qui se dégrade au fil des pages. Un nom sur deux est barré : pas raturé, barré d'un trait droit, à l'encre plus récente que le nom. Et au bord de la page, à côté de certains noms seulement, un petit signe en forme de plume. Rien ne l'explique.",
+     "donneDecouverte": "d.signe_plume"
     },
     {
      "id": "les-bancs",
-     "label": "Les bancs et leurs traces",
-     "approche": "Tu redescends vers les bancs. Trois rangs de bois brut, et cette disposition que tu reconnais sans l'avoir apprise : les accusés devant, les témoins de côté, le hameau derrière.",
-     "examen": "Le bois du banc des accusés est poli au milieu, rongé aux bords — des mains qui serrent. Sur le banc des témoins, des entailles de comptage : quelqu'un venait souvent. Témoigner était son habitude.",
-     "fragmentChapitre": true,
-     "nom": "Les bancs et leurs traces",
-     "image": {
-      "fichier": "scene_tribunal_bancs_a_c.png",
-      "hash": "2edb5367",
-      "taille": 19376,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "label": "Passer la main sur les bancs",
+     "type": "passif",
+     "consequence": "Trois rangs de bois brut, et cette disposition que tu reconnais sans l'avoir apprise : les accusés devant, les témoins de côté, le hameau derrière. Le bois du banc des accusés est poli au milieu, rongé aux bords — des mains qui serrent. Sur le banc des témoins, des entailles de comptage : quelqu'un venait souvent. Témoigner était son habitude."
     }
    ],
+   "pointsInteret": [],
    "suite": "petit-tribunal-2",
-   "savoir": "savoir_ordonnance",
    "donneDecouverte": "d.signe_plume",
    "nom": "Le Petit Tribunal",
    "lieu": "petit_tribunal",
@@ -5222,6 +4915,13 @@
      "label": "L’interroger sur son travail",
      "type": "passif",
      "consequence": "« J'écris les dénonciations et les défenses. Les deux. » Il range sa plume avec un soin d'horloger. « Depuis quelques années, on ne me demande plus de défenses. » Il dit ça comme on constate une baisse de commandes."
+    },
+    {
+     "id": "tribunal-carnet",
+     "label": "Confronter le carnet au Registre",
+     "type": "passif",
+     "consequence": "Tu poses le carnet du Fossoyeur à plat contre la page ouverte, et tu remontes les deux colonnes du doigt. Elles s'accordent jusqu'à un tiers. Après, le Registre continue de compter des pendus que le carnet n'a jamais eu à mettre en terre. Personne n'a menti : le livre dit ce qui a été prononcé, le carnet dit ce qui a été enterré. Il manque une trentaine de corps entre les deux.",
+     "exigeObjet": "carnet-fossoyeur"
     },
     {
      "id": "lire-registre",
@@ -5465,6 +5165,21 @@
    ],
    "choix": [
     {
+     "id": "creux-doubles",
+     "label": "Longer la berge usée",
+     "type": "passif",
+     "consequence": "La terre est tassée, luisante, usée jusqu’à la pierre : on s’agenouille ici depuis longtemps. Et les creux de genoux sont DOUBLES. Une paire devant, au ras de l’eau. Une autre juste derrière, plus large, plus profonde, orientée dans le même sens. Quelqu’un se tenait toujours au-dessus de celui qui se penchait. Ce n’est pas un endroit où l’on vient voir son reflet : c’est un endroit où on l’amène.\n\nDans les roseaux, à un pas des creux, un éclat de métal : un petit miroir de poche, fêlé en travers. Perdu — ou jeté par quelqu’un qui n’a pas aimé ce qu’il y a vu. La fêlure passe exactement où serait un visage.",
+     "donneObjet": "miroir-poche",
+     "donneDecouverte": "d.mare_depistage"
+    },
+    {
+     "id": "eau-reflet",
+     "label": "T’agenouiller et te pencher",
+     "type": "passif",
+     "consequence": "Les creux sont à ta taille, évidemment. La croyance dit : le reflet de qui entend la voix est en retard. Tu te penches. Ton reflet se penche. Et il lève les yeux vers toi une demi-seconde après toi. Tu le savais déjà — tu entends la voix depuis le premier jour. Mais le savoir et le voir sont deux choses différentes. À partir de maintenant, tu ne pourras plus prétendre le contraire, même à quelqu’un qui te ressemble.",
+     "donneSavoir": "savoir_reflet"
+    },
+    {
      "id": "boire-mare",
      "label": "Boire à la mare",
      "type": "risque",
@@ -5478,74 +5193,10 @@
       "funeste": "1 naturel. Tu bois. Sous la surface, à trois doigts de ton visage, ton reflet continue de boire quand tu t'arrêtes. ♦ −2"
      },
      "nature": "surnaturel"
-    },
-    {
-     "id": "sen-aller-mare",
-     "label": "Te relever sans regarder",
-     "type": "passif",
-     "consequence": "Tu te relèves sans te pencher. La mare garde sa réponse, et c'est une politesse qu'elle te rend : rien ne te suit du regard quand tu t'éloignes de la berge. Rien, en tout cas, qui soit dans l'eau."
     }
    ],
-   "pointsInteret": [
-    {
-     "id": "creux-doubles",
-     "label": "Les creux dans la berge",
-     "approche": "Tu longes la berge jusqu’à l’endroit où la terre est tassée, luisante, usée jusqu’à la pierre. On s’agenouille ici depuis longtemps.",
-     "examen": "Les creux de genoux sont doubles. Une paire devant, au ras de l’eau. Une autre juste derrière, plus large, plus profonde — et orientée dans le même sens. Quelqu’un se tenait toujours au-dessus de celui qui se penchait. Ce n’est pas un endroit où l’on vient voir son reflet : c’est un endroit où on l’amène.",
-     "donneDecouverte": "d.mare_depistage",
-     "image": {
-      "fichier": "scene_mare_creux_doubles_v2_b.png",
-      "hash": "9c15e27d",
-      "taille": 25530,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "eau-reflet",
-     "label": "L'eau",
-     "approche": "Tu t'agenouilles dans les creux. Ils sont à ta taille, évidemment. La croyance dit : le reflet de qui entend la voix est en retard.",
-     "examen": "Tu te penches. Ton reflet se penche. Et il lève les yeux vers toi une demi-seconde après toi. Tu le savais déjà — tu entends la voix depuis le premier jour, c'est même comme ça que le monde te parle. Mais le savoir et le voir sont deux choses différentes. À partir de maintenant, tu ne pourras plus prétendre le contraire, même à quelqu'un qui te ressemble.",
-     "savoir": "savoir_reflet",
-     "nom": "L'eau",
-     "image": {
-      "fichier": "scene_mare_eau_reflet_v2_b.png",
-      "hash": "a3a22e02",
-      "taille": 14472,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "reflet-metal",
-     "label": "Le reflet de métal, dans les roseaux",
-     "approche": "Tu écartes les roseaux à deux mains. Ils sont noirs jusqu'à la racine et ne cassent pas — ils plient et reviennent.",
-     "examen": "Un petit miroir de poche, fêlé en travers. Perdu — ou jeté par quelqu'un qui n'a pas aimé ce qu'il y a vu. La fêlure passe exactement où serait un visage.",
-     "donneObjet": "miroir-poche",
-     "nom": "Le reflet de métal, dans les roseaux",
-     "image": {
-      "fichier": "scene_mare_reflet_metal_a.png",
-      "hash": "1223dff9",
-      "taille": 9684,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    }
-   ],
+   "pointsInteret": [],
    "suite": "mare-aux-regards-2",
-   "savoir": "savoir_reflet",
    "donneDecouverte": "d.mare_depistage",
    "nom": "La Mare aux Regards",
    "lieu": "mare_aux_regards",
@@ -5644,25 +5295,29 @@
    ],
    "choix": [
     {
-     "id": "compter-rangs",
-     "label": "Compter les rangs en passant",
-     "type": "passif",
-     "consequence": "Onze rangs. Tu recomptes : onze. Chaque rang est planté d'une essence différente, et chaque essence a donné les mêmes fruits gris. Onze tentatives, onze réponses identiques, et un douzième rang en cours de creusement au fond. Il n'y a pas de mot pour ça dans ta langue. Ici, on ne le nomme plus : c'est l'ordinaire."
-    },
-    {
      "id": "gouter-fruit",
-     "label": "Goûter un fruit",
+     "label": "Décrocher un fruit et mordre",
      "type": "risque",
      "stat": "COURAGE",
      "seuil": 13,
      "hautEnjeu": false,
      "issues": {
-      "critique": "20 naturel. Tu mords. C'est de la cendre — puis ce n'est plus de la cendre : c'est un verger, le vrai, au soleil, avec des enfants dedans et une femme qui appelle. Tu vois ce que ce lieu était. Tu comprends d'un coup POURQUOI ils continuent, et ça vaut mieux qu'un objet.",
-      "reussite": "Tu mords. La chair est sèche, sans goût, et se défait en poudre. Rien ne t'arrive — sauf la certitude, désormais physique, que rien ne pousse ici.",
+      "critique": "20 naturel. Ronds, lourds, gris mat : la peau est parfaite et le poids ment. Tu mords. C'est de la cendre — puis ce n'est plus de la cendre : c'est un verger, le vrai, au soleil, avec des enfants dedans et une femme qui appelle. Tu vois ce que ce lieu était. Tu comprends d'un coup POURQUOI ils continuent, et ça vaut mieux qu'un objet.",
+      "reussite": "Tu en décroches deux. La chair du premier est sèche, sans goût, et se défait en poudre. Rien ne t'arrive — sauf la certitude, désormais physique, que rien ne pousse ici.",
       "echec": "La cendre te reste dans la gorge et n'en sort plus. Tu tousses longtemps, plié en deux entre deux rangs, et l'homme au fond du verger cesse une seconde de bêcher pour te regarder faire.",
       "funeste": "1 naturel. Tu mords. Et quelque chose, dans le fruit, mord en retour. ♦ −2"
      },
-     "nature": "surnaturel"
+     "nature": "surnaturel",
+     "donneObjet": "fruit-cendre"
+    },
+    {
+     "id": "epoux-verger",
+     "label": "Remonter vers les deux du fond",
+     "type": "passif",
+     "consequence": "Tu remontes les rangs vers eux. Ils se relaient sur la même bêche sans se parler, du geste réglé des gens qui font la même chose ensemble depuis toujours. Ils plantent. Dans cette terre. Un trou, un plant, la terre refermée du talon — et le trou suivant, deux pas plus loin.",
+     "sortie": {
+      "toScene": "epoux-1"
+     }
     },
     {
      "id": "monter-vieil-arbre",
@@ -5680,50 +5335,8 @@
      "nature": "physique"
     }
    ],
-   "pointsInteret": [
-    {
-     "id": "fruits-cendre",
-     "label": "Les fruits, dans les rangs",
-     "approche": "Tu entres dans un rang. L'odeur devrait arriver là — pas de pourriture : pas d'odeur du tout. Un verger qui ne sent rien.",
-     "examen": "Ronds, lourds, gris mat. La peau est parfaite et le poids ment : tu en décroches un, il pèse comme une pierre et cède comme du papier. Des fruits de cendre. Tu en gardes un. On ne sait jamais ce qu'on est prêt à parier.",
-     "donneObjet": "fruit-cendre",
-     "nom": "Les fruits, dans les rangs",
-     "image": {
-      "fichier": "scene_verger_fruits_cendre_v2_c.png",
-      "hash": "de3b4985",
-      "taille": 31026,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    },
-    {
-     "id": "epoux-verger",
-     "label": "Les deux qui bêchent, au fond",
-     "approche": "Tu remontes les rangs vers eux. Ils se relaient sur la même bêche sans se parler, du geste réglé des gens qui font la même chose ensemble depuis toujours.",
-     "examen": "Ils plantent. Dans cette terre. Un trou, un plant, la terre refermée du talon — et le trou suivant, deux pas plus loin.",
-     "ouvreSur": "epoux-1",
-     "nom": "Les deux qui bêchent, au fond",
-     "image": {
-      "fichier": "monstre_epoux_verger_a.png",
-      "hash": "78546dfe",
-      "taille": 32443,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
-    }
-   ],
+   "pointsInteret": [],
    "suite": "verger-noir-2",
-   "tags": [
-    "food_available"
-   ],
    "nom": "Le Verger Noir",
    "lieu": "verger_noir",
    "typeScene": "arrivee",
@@ -5737,13 +5350,10 @@
    "description": "Arrivée au Verger Noir. Des arbres noirs tordus plantés en rangs, des fruits gris et lourds sur les branches, une vieille souche au premier plan.",
    "promptImage": "orchard of black twisted fruit trees planted in rows on dead moorland, heavy grey ash fruits on the branches, one old stump in the foreground, two distant bent figures digging, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [
-    "epoux-1",
     "verger-noir-2"
    ],
    "mèneIci": [],
-   "roles": [
-    "pivot"
-   ],
+   "roles": [],
    "acces": "traversée",
    "etat": "valide",
    "alertes": []
@@ -5855,16 +5465,15 @@
    "mèneVers": [
     "epoux-2"
    ],
-   "mèneIci": [
-    "verger-noir"
-   ],
+   "mèneIci": [],
    "roles": [
-    "optionnel",
     "verrouille"
    ],
-   "acces": "lien",
+   "acces": "aucun",
    "etat": "valide",
-   "alertes": []
+   "alertes": [
+    "orpheline"
+   ]
   },
   {
    "id": "epoux-2",
@@ -5989,12 +5598,6 @@
    ],
    "choix": [
     {
-     "id": "examiner-etais",
-     "label": "Examiner les étais",
-     "type": "passif",
-     "consequence": "Les étais sont plantés côté Landes, arc-boutés CONTRE la palissade — on ne retient pas un mur comme ça pour empêcher d'entrer. On le retient pour qu'il ne parte pas. Aux pieds des troncs, des entailles de comptage : quelqu'un note depuis des années tout ce qui franchit la porte. Dans un seul sens."
-    },
-    {
      "id": "longer-palissade",
      "label": "Longer la palissade",
      "type": "risque",
@@ -6002,80 +5605,33 @@
      "seuil": 11,
      "hautEnjeu": false,
      "issues": {
-      "critique": "20 naturel. À cent pas de la porte, tu trouves ce que la palissade cache : une brèche ancienne, recousue de chaînes — et de l'autre côté des maillons, du tissu pris, arraché dans le sens de la SORTIE. Des gens ont voulu remonter de la Descente. La palissade a voté contre.",
-      "reussite": "Tronc après tronc, tu longes. Le bois est noirci au feu — volontairement, un tronc sur deux : du bois traité contre quelque chose qui grimpe. Tu ranges l'information avec les inquiétantes.",
+      "critique": "20 naturel. Chaque rondin est appointé, et les pointes sont tournées vers l'INTÉRIEUR — vers les Landes. À cent pas de la porte, tu trouves ce que le mur cache : une brèche ancienne, recousue de chaînes, et de l'autre côté des maillons du tissu pris, arraché dans le sens de la SORTIE. Des gens ont voulu remonter de la Descente. La palissade a voté contre.",
+      "reussite": "Tronc après tronc, tu longes, la tête levée. Les pointes taillées sont tournées vers les Landes, pas vers le sud — ce mur n'a jamais protégé le village de ce qui monte : il retient ce qui veut descendre. Et les étais sont plantés du même côté, arc-boutés contre les rondins, comme on retient un mur pour qu'il ne parte pas.",
       "echec": "Tu longes trop près. Une sentinelle de bois que tu prenais pour un étai pivote en grinçant — un épouvantail de garnison, monté sur gonds, qui fait face à quiconque marche le long du mur. Tu es exactement le genre de passage qu'il annonce.",
       "funeste": "1 naturel. Au pied d'un tronc, un paquet de toile. Dedans, un bagage complet — gourde, couverture, lettres. Quelqu'un a marché jusqu'ici, a posé son sac, et a continué SANS. Tu sais maintenant à quoi ressemble l'appel, vu de l'extérieur. ♦ −2"
      },
-     "nature": "exploration"
-    },
-    {
-     "id": "approcher-porte",
-     "label": "Approcher de la porte",
-     "type": "suite"
-    }
-   ],
-   "pointsInteret": [
-    {
-     "id": "rondins-pointes",
-     "label": "Les rondins et leurs pointes",
-     "approche": "Tu longes le mur sur quelques pas, la tête levée, à suivre la ligne des sommets taillés.",
-     "examen": "Chaque rondin est appointé — taillé en pique. Tu suis les pointes du regard, et ton estomac comprend avant toi : elles sont tournées vers l'intérieur. Vers les Landes. Ce mur n'a jamais protégé le village de ce qui monte. Il retient ce qui veut descendre.",
-     "savoir": "savoir_palissade_retient",
-     "nom": "Les rondins et leurs pointes",
-     "image": {
-      "fichier": "scene_palissade_rondins_a_c.png",
-      "hash": "a092f571",
-      "taille": 13377,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "nature": "exploration",
+     "donneSavoir": "savoir_palissade_retient"
     },
     {
      "id": "portillon-verrou",
-     "label": "Le portillon et son verrou",
-     "approche": "Tu poses la main sur le bois du portillon. Il est tiède, ce qui n'a aucun sens sous ce crépuscule.",
-     "examen": "Un verrou, côté nord. Un seul. Le bois autour est griffé — pas par des bêtes : à hauteur de mains. Des mains qui voulaient passer, une nuit, et qu'on n'a pas laissées. Ou qu'on a laissées trop tard. Dans la gâche du verrou, une clé rouillée est restée, oubliée par quelqu'un qui comptait revenir. Tu la prends.",
-     "donneObjet": "cle-portillon",
-     "nom": "Le portillon et son verrou",
-     "image": {
-      "fichier": "scene_palissade_portillon_a_b.png",
-      "hash": "49b71ad8",
-      "taille": 5981,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "label": "Examiner le portillon",
+     "type": "passif",
+     "consequence": "Le bois du portillon est tiède, ce qui n'a aucun sens sous ce crépuscule. Un verrou, côté nord. Un seul. Le bois autour est griffé — pas par des bêtes : à hauteur de mains. Des mains qui voulaient passer, une nuit, et qu'on n'a pas laissées. Ou qu'on a laissées trop tard. Dans la gâche, une clé rouillée est restée, oubliée par quelqu'un qui comptait revenir.",
+     "donneObjet": "cle-portillon"
     },
     {
      "id": "homme-guerite",
-     "label": "L'homme de la guérite",
-     "approche": "Il est sorti de sa niche avant que tu aies décidé d'y aller. Tu marches vers lui parce qu'il n'y a plus vraiment le choix.",
-     "examen": "La guérite est une niche de planches contre les rondins, juste assez grande pour un homme et sa lanterne. Il te regarde venir depuis si longtemps qu'il a eu le temps de préparer sa première phrase.",
-     "ouvreSur": "veilleur-1",
-     "nom": "L'homme de la guérite",
-     "image": {
-      "fichier": "monstre_veilleur_palissade_v2_b.png",
-      "hash": "a0a33a5b",
-      "taille": 15018,
-      "recent": false,
-      "existe": true
-     },
-     "description": "",
-     "promptImage": "",
-     "etat": "valide",
-     "alertes": []
+     "label": "Aller vers l'homme de la guérite",
+     "type": "passif",
+     "consequence": "Il est sorti de sa niche avant que tu aies décidé d'y aller. Tu marches vers lui parce qu'il n'y a plus vraiment le choix. La guérite est une niche de planches contre les rondins, juste assez grande pour un homme et sa lanterne. Il te regarde venir depuis si longtemps qu'il a eu le temps de préparer sa première phrase.",
+     "sortie": {
+      "toScene": "veilleur-1"
+     }
     }
    ],
+   "pointsInteret": [],
    "suite": "palissade-sud-2",
-   "savoir": "savoir_palissade_retient",
    "tags": [
     "climb"
    ],
@@ -6092,13 +5648,10 @@
    "description": "Arrivée à la Palissade Sud, seuil de l'Acte II. Une haute palissade de rondins appointés qui ferme l'horizon, un petit portillon, une borne au premier plan.",
    "promptImage": "tall wooden palisade of sharpened logs closing a moorland horizon, small gate, a single standing boundary stone in the foreground, path leading south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [
-    "palissade-sud-2",
-    "veilleur-1"
+    "palissade-sud-2"
    ],
    "mèneIci": [],
-   "roles": [
-    "pivot"
-   ],
+   "roles": [],
    "acces": "aucun",
    "etat": "valide",
    "alertes": [
@@ -6149,16 +5702,15 @@
    "mèneVers": [
     "veilleur-2"
    ],
-   "mèneIci": [
-    "palissade-sud"
-   ],
+   "mèneIci": [],
    "roles": [
-    "optionnel",
     "verrouille"
    ],
-   "acces": "lien",
+   "acces": "aucun",
    "etat": "valide",
-   "alertes": []
+   "alertes": [
+    "orpheline"
+   ]
   },
   {
    "id": "veilleur-2",
@@ -6452,12 +6004,6 @@
  ],
  "liens": [
   {
-   "de": "borne-frontiere",
-   "vers": "hesitant-1",
-   "type": "secondaire",
-   "par": "homme-immobile"
-  },
-  {
    "de": "hesitant-1",
    "vers": "hesitant-2",
    "type": "principal"
@@ -6471,12 +6017,6 @@
    "de": "chemin-creux",
    "vers": "chemin-creux-2",
    "type": "principal"
-  },
-  {
-   "de": "chemin-creux",
-   "vers": "marcheur-1",
-   "type": "secondaire",
-   "par": "marcheur-rebours"
   },
   {
    "de": "marcheur-1",
@@ -6735,12 +6275,6 @@
    "type": "principal"
   },
   {
-   "de": "verger-noir",
-   "vers": "epoux-1",
-   "type": "secondaire",
-   "par": "epoux-verger"
-  },
-  {
    "de": "epoux-1",
    "vers": "epoux-2",
    "type": "principal"
@@ -6759,12 +6293,6 @@
    "de": "palissade-sud",
    "vers": "palissade-sud-2",
    "type": "principal"
-  },
-  {
-   "de": "palissade-sud",
-   "vers": "veilleur-1",
-   "type": "secondaire",
-   "par": "homme-guerite"
   },
   {
    "de": "veilleur-1",
@@ -6790,14 +6318,6 @@
    "recent": false,
    "groupe": "attend",
    "racine": "appele_descente"
-  },
-  {
-   "fichier": "monstre_corbeaux_du_compte_b.png",
-   "hash": "03b469b0",
-   "taille": 28966,
-   "recent": false,
-   "groupe": "attend",
-   "racine": "corbeaux_du_compte"
   },
   {
    "fichier": "monstre_corde_vive_c.png",
@@ -7144,6 +6664,14 @@
    "racine": "sceau_bailli"
   },
   {
+   "fichier": "scene_borne_eclat_a_b.png",
+   "hash": "39fc719f",
+   "taille": 11742,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "borne_eclat"
+  },
+  {
    "fichier": "scene_borne_frontiere_a_c.png",
    "hash": "6de463ec",
    "taille": 25472,
@@ -7192,20 +6720,12 @@
    "racine": "chapelle_mur_cordes"
   },
   {
-   "fichier": "scene_colline_gibet_vide_a_b.png",
-   "hash": "83c68692",
-   "taille": 21563,
+   "fichier": "scene_chapelle_ouvrage_a_d.png",
+   "hash": "672ac882",
+   "taille": 10796,
    "recent": false,
    "groupe": "autre",
-   "racine": "colline_gibet_vide"
-  },
-  {
-   "fichier": "scene_colline_pied_grand_gibet_b.png",
-   "hash": "2559c3f3",
-   "taille": 15296,
-   "recent": false,
-   "groupe": "autre",
-   "racine": "colline_pied_grand_gibet"
+   "racine": "chapelle_ouvrage"
   },
   {
    "fichier": "scene_colline_potences_cercle_a_c.png",
@@ -7334,6 +6854,14 @@
    "recent": false,
    "groupe": "autre",
    "racine": "mare_miroir"
+  },
+  {
+   "fichier": "scene_mare_reflet_metal_a.png",
+   "hash": "1223dff9",
+   "taille": 9684,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "mare_reflet_metal"
   },
   {
    "fichier": "scene_moulin_campement_a.png",
@@ -7785,6 +7313,16 @@
    "nom": "Le Sonneur sans Cloche",
    "deposition": "Il a parlé au pendu. Et le pendu lui a répondu — j'étais à trente pas.",
    "lieu": "à la Colline aux Gibets"
+  },
+  "voler-nourriture": {
+   "nom": "Le Colporteur",
+   "deposition": "Il a pris sans demander. Moi je vends, je ne juge pas — mais on m'a demandé, alors je dis.",
+   "lieu": "au Marché Muet"
+  },
+  "chapelle-craie": {
+   "nom": "La Veuve des Cordes",
+   "deposition": "Il a écrit un nom sur une corde qui n'en avait pas. La sienne. Chez nous, ça s'appelle prendre les devants.",
+   "lieu": "à la Chapelle des Cordes"
   },
   "decrocher": {
    "nom": "La Doyenne",
@@ -8674,8 +8212,8 @@
  ],
  "totaux": {
   "scenes": 89,
-  "pointsInteret": 29,
-  "choix": 241,
+  "pointsInteret": 0,
+  "choix": 257,
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,
@@ -8683,7 +8221,7 @@
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
-  "temoins": 21,
+  "temoins": 23,
   "etats": 2,
   "besoins": 0,
   "transitions": 63,

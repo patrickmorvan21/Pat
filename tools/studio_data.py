@@ -661,6 +661,11 @@ def lire_choix(bloc: str) -> list[dict]:
             ("poseEtatSiEchec", "poseEtatSiEchec"),
             ("repondBesoin", "repondBesoin"),
             ("requiresEtat", "exigeEtat"),
+            # 13/08 : « ce qu'on porte ouvre une porte ». Sans ce champ, la
+            # réplique offrirait à tout le monde les options réservées à qui
+            # a trouvé l'objet — et un relecteur conclurait que l'exploration
+            # ne prépare rien (le biais mesuré le 9/08, exactement).
+            ("requiresObjet", "exigeObjet"),
         ):
             v = texte_de(c, champ)
             if v:
