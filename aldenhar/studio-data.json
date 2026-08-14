@@ -1431,7 +1431,10 @@
    "suite": "fossoyeur-trou-2",
    "remplace": {
     "scene": "champ-des-fixes-2",
-    "condition": "d.emplacement_vide"
+    "condition": "d.emplacement_vide",
+    "si": {
+     "has": "d.emplacement_vide"
+    }
    },
    "image": {
     "fichier": "monstre_fossoyeur_trou_1_c.png",
@@ -1929,7 +1932,10 @@
    "suite": "femme-savoir-2",
    "remplace": {
     "scene": "femme-seuil-1",
-    "condition": "d.fille_vivante"
+    "condition": "d.fille_vivante",
+    "si": {
+     "has": "d.fille_vivante"
+    }
    },
    "image": {
     "fichier": "monstre_femme_seuil_1_v3_a.png",
@@ -3372,7 +3378,10 @@
    "suite": "hameau-halte-4",
    "remplace": {
     "scene": "temoin-toit",
-    "condition": "d.temoin_entendu"
+    "condition": "d.temoin_entendu",
+    "si": {
+     "has": "d.temoin_entendu"
+    }
    },
    "image": {
     "fichier": "scene_temoin_grange_toit_v2_c.png",
@@ -3596,7 +3605,10 @@
    "donneDecouverte": "d.temoin_entrevu",
    "remplace": {
     "scene": "hameau-halte-dehors",
-    "condition": "d.temoin_entendu"
+    "condition": "d.temoin_entendu",
+    "si": {
+     "has": "d.temoin_entendu"
+    }
    },
    "hameauHalte": true,
    "image": {
@@ -4193,7 +4205,11 @@
    "suite": "fille-moulin-2",
    "remplace": {
     "scene": "campement-2",
-    "condition": "découvertes sur la Fille ≥ 3"
+    "condition": "découvertes sur la Fille ≥ 3",
+    "si": {
+     "id": "c.fille",
+     "gte": 3
+    }
    },
    "image": {
     "fichier": "monstre_fille_moulin_dos_v2_a.png",
@@ -4410,7 +4426,10 @@
    "suite": "veuve-cordes-sait-2",
    "remplace": {
     "scene": "chapelle-des-cordes-2",
-    "condition": "d.fille_apercue"
+    "condition": "d.fille_apercue",
+    "si": {
+     "has": "d.fille_apercue"
+    }
    },
    "image": {
     "fichier": "monstre_veuve_cordes_v2_a.png",
@@ -5939,7 +5958,11 @@
    "suite": "veilleur-2",
    "remplace": {
     "scene": "veilleur-1",
-    "condition": "id: \"soupcon\", gte: 4"
+    "condition": "soupcon ≥ 4",
+    "si": {
+     "id": "soupcon",
+     "gte": 4
+    }
    },
    "image": {
     "fichier": "objet_lanterne_rouillee_guerite.png",
