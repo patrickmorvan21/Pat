@@ -5880,6 +5880,66 @@
    ]
   },
   {
+   "id": "veilleur-1-note",
+   "narration": [
+    "Il ne sort pas de sa niche. Il t'a vu venir de loin — il a eu le temps de poser sa soupe, d'ouvrir son registre et de tremper sa plume. Il attend que tu sois à dix pas pour écrire.",
+    "Pas de bonjour. Pas de « tu descends ». Il écrit trois mots, souffle dessus, et seulement là il lève les yeux.",
+    "— « Le gamin est passé avant toi. » Un temps. « Il a couru. »"
+   ],
+   "choix": [
+    {
+     "id": "veilleur-note-quoi",
+     "label": "« Qu'est-ce que tu écris ? »",
+     "type": "passif",
+     "consequence": "Il tourne le registre vers toi, une seconde, sans le lâcher. Deux colonnes : ceux qui montent, ceux qui descendent. Ton nom n'est dans ni l'une ni l'autre — il est en bas, à part, sous un trait. « Celle-là, c'est pas moi qui l'ai commencée. On me dit quoi y mettre. »"
+    },
+    {
+     "id": "veilleur-note-qui",
+     "label": "« Qui te l'a dit ? »",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. « Personne. » Il le dit trop vite, puis se reprend, parce qu'il est seul depuis trois jours et qu'un homme seul finit toujours par parler. « Le gamin apporte la soupe et un mot. Le mot vient du hameau. Mais le hameau… » Il s'arrête net et referme le registre. « Le hameau savait avant que le hameau se réunisse. Tu veux descendre ? Descends. »",
+      "reussite": "« Le gamin. » Il hausse une épaule. « Le gamin porte ce qu'on lui donne. » Il ne dira pas d'où ça vient — peut-être qu'il ne le sait pas.",
+      "echec": "Il referme le registre d'un coup sec. « Les questions, c'est mon métier, pas le tien. » Il te tourne le dos et se remet à guetter le sud, ostensiblement.",
+      "funeste": "1 naturel. « Pourquoi ? » Il te regarde autrement, d'un coup. « Pourquoi tu veux savoir qui parle de toi ? » Et il rouvre son registre pour ajouter cette question-là. ♦ −2"
+     },
+     "nature": "social"
+    },
+    {
+     "id": "veilleur-note-passer",
+     "label": "Ne rien demander",
+     "type": "passif",
+     "consequence": "Tu attends qu'il ait fini. Il finit. Il repose la plume bien droite le long du registre, comme on range un outil dont on se servira encore, et il te fait signe d'avancer. C'est tout. C'est ce qui reste le plus longtemps."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "veilleur-2",
+   "remplace": {
+    "scene": "veilleur-1",
+    "condition": "id: \"soupcon\", gte: 4"
+   },
+   "image": {
+    "fichier": "objet_lanterne_rouillee_guerite.png",
+    "hash": "4c4705fd",
+    "taille": 29263,
+    "recent": false,
+    "existe": true
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "veilleur-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "variante conditionnelle",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
    "id": "veilleur-1",
    "narration": [
     "— « Trois jours ! » Il le crie presque. « Trois jours que j'ai vu personne. Le hameau m'envoie ma soupe par le gamin, et le gamin la pose à vingt pas. Vingt pas ! Comme si veiller la porte, ça s'attrapait. »",
@@ -5999,7 +6059,8 @@
     "veilleur-3"
    ],
    "mèneIci": [
-    "veilleur-1"
+    "veilleur-1",
+    "veilleur-1-note"
    ],
    "roles": [],
    "acces": "lien",
@@ -6529,6 +6590,11 @@
   {
    "de": "palissade-sud",
    "vers": "palissade-sud-2",
+   "type": "principal"
+  },
+  {
+   "de": "veilleur-1-note",
+   "vers": "veilleur-2",
    "type": "principal"
   },
   {
@@ -7881,6 +7947,16 @@
     }
    },
    {
+    "texte": "Tu repasses par une ruelle que tu as déjà prise. La porte qui bâillait sur une cuisine est fermée, et la barre est mise — de l'intérieur, en plein jour. Personne ne barre sa porte en plein jour, sauf quand on a décidé quelque chose.",
+    "conditions": {
+     "from": [
+      "HAMEAU_INTERIOR"
+     ],
+     "minSoupcon": 3.0,
+     "maxSoupcon": 5.0
+    }
+   },
+   {
     "texte": "Un mot t'arrive porté par le vent, un seul, distinct : ton nom. Personne à l'horizon. Le vent des Landes ment, tu le sais. Mais il ment avec ce qu'on lui donne.",
     "conditions": {
      "minSoupcon": 2.0,
@@ -7916,7 +7992,7 @@
     }
    },
    {
-    "texte": "Les trois hommes sont toujours là, à la limite du regard. Quand tu t'arrêtes, ils s'arrêtent. Quand tu repars, ils attendent un peu — par politesse, dirait-on. L'aube n'est pas pressée.",
+    "texte": "Trois hommes marchent à la limite du regard, sans jamais réduire la distance. Quand tu t'arrêtes, ils s'arrêtent. Quand tu repars, ils attendent un peu — par politesse, dirait-on. L'aube n'est pas pressée.",
     "conditions": {
      "minSoupcon": 5.0,
      "maxSoupcon": 5.0
@@ -8448,9 +8524,9 @@
   }
  ],
  "totaux": {
-  "scenes": 89,
+  "scenes": 90,
   "pointsInteret": 0,
-  "choix": 265,
+  "choix": 268,
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,
@@ -8461,7 +8537,7 @@
   "temoins": 23,
   "etats": 2,
   "besoins": 0,
-  "transitions": 63,
+  "transitions": 64,
   "familiarite": 34
  }
 }

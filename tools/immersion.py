@@ -499,7 +499,16 @@ def pools() -> list[dict]:
                 garde = {"lande", "gens"}
             else:
                 garde = {"partout", "gens"}
-        out.append({"pool": f"liaison variante {i}", "garde": garde, "textes": [texte]})
+        # ⚠️ CLÉ PAR LE CONTENU, PAS PAR LE RANG (correctif du 14/08). Ces
+        # pools étaient nommés « liaison variante <i> » : insérer une variante
+        # dans le tableau décalait tous les rangs suivants et faisait GLISSER
+        # les exemptions sur le mauvais texte — le garde tirait alors sur un
+        # texte parfaitement exempté, et se taisait sur celui qui ne l'était
+        # plus. Le fichier documentait déjà la règle (`empreinte`) pour
+        # `traceDeSortie` ; elle n'avait pas été appliquée ici.
+        out.append(
+            {"pool": f"liaison variante ({empreinte(texte)})", "garde": garde, "textes": [texte]}
+        )
 
     return out
 
@@ -538,11 +547,11 @@ EXEMPT: dict[str, str] = {
         "la bâtisse (« une haute toiture SEULE au-dessus de la bruyère ») "
         "avant d'en nommer le seuil. Le bâti n'est pas présupposé, il est "
         "introduit — et la Maison du Bailli est bien isolée, à l'ouest.",
-    "liaison variante 5":
+    "liaison variante (trois corbeaux toit)":
         "« Trois corbeaux sur ton toit » est un DICTON que la Fille récite en "
         "passant — le héros n'a pas de toit, et la phrase n'affirme rien du "
         "décor autour de lui : c'est du discours rapporté, pas une description.",
-    "liaison variante 24":
+    "liaison variante (loin cloche muette)":
         "« AU LOIN, une cloche muette » place explicitement la source "
         "ailleurs — un son de chapelle porte jusqu'en pleine lande, et rien "
         "n'est affirmé sur ce qui entoure le héros.",

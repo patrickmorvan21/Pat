@@ -6289,6 +6289,73 @@ export const SCENES: Scene[] = [
     jailerLine: "La palissade ? Une politesse. Mes vrais murs, tu marches dessus.",
   },
   {
+    /* LE VEILLEUR QUI NE DEMANDE PLUS (échelle sociale du Soupçon, 14/08).
+       Dernier barreau, et le plus parlant, parce qu'il tombe sur le DERNIER
+       homme qu'on croise avant de quitter la zone : celui qui, d'ordinaire,
+       est si seul qu'il te parle avant que tu aies décidé de lui parler.
+       À Soupçon élevé, il ne pose plus de question — il en a déjà les
+       réponses, et il écrit. C'est le moment où le joueur comprend que la
+       nouvelle a fait la route avant lui.
+
+       ⚠️ SCÈNE-VARIANTE, donc un REMPLACEMENT et jamais une injection de
+       plus : elle prend la place de `veilleur-1`, garde son `chainNext` et
+       ses trois choix. Aucun écran ajouté, aucun bloc empilé.
+       ⚠️ Aucun chiffre, aucun seuil dit : il note, on ne lit pas ce qu'il
+       note. */
+    id: "veilleur-1-note",
+    remplace: { scene: "veilleur-1", si: { id: "soupcon", gte: 4 } },
+    illustration: "assets/objet_lanterne_rouillee_guerite.png",
+    chainNext: "veilleur-2",
+    narration: [
+      "Il ne sort pas de sa niche. Il t'a vu venir de loin — il a eu le " +
+        "temps de poser sa soupe, d'ouvrir son registre et de tremper sa " +
+        "plume. Il attend que tu sois à dix pas pour écrire.",
+      "Pas de bonjour. Pas de « tu descends ». Il écrit trois mots, souffle " +
+        "dessus, et seulement là il lève les yeux.",
+      "— « Le gamin est passé avant toi. » Un temps. « Il a couru. »",
+    ],
+    choices: [
+      {
+        id: "veilleur-note-quoi",
+        label: "« Qu'est-ce que tu écris ? »",
+        passive: {
+          consequence:
+            "Il tourne le registre vers toi, une seconde, sans le lâcher. " +
+            "Deux colonnes : ceux qui montent, ceux qui descendent. Ton nom " +
+            "n'est dans ni l'une ni l'autre — il est en bas, à part, sous " +
+            "un trait. « Celle-là, c'est pas moi qui l'ai commencée. On me " +
+            "dit quoi y mettre. »",
+        },
+      },
+      {
+        id: "veilleur-note-qui",
+        label: "« Qui te l'a dit ? »",
+        nature: "social",
+        risky: {
+          stat: "RUSE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. « Personne. » Il le dit trop vite, puis se reprend, parce qu'il est seul depuis trois jours et qu'un homme seul finit toujours par parler. « Le gamin apporte la soupe et un mot. Le mot vient du hameau. Mais le hameau… » Il s'arrête net et referme le registre. « Le hameau savait avant que le hameau se réunisse. Tu veux descendre ? Descends. »",
+            "« Le gamin. » Il hausse une épaule. « Le gamin porte ce qu'on lui donne. » Il ne dira pas d'où ça vient — peut-être qu'il ne le sait pas.",
+            "Il referme le registre d'un coup sec. « Les questions, c'est mon métier, pas le tien. » Il te tourne le dos et se remet à guetter le sud, ostensiblement.",
+            "1 naturel. « Pourquoi ? » Il te regarde autrement, d'un coup. « Pourquoi tu veux savoir qui parle de toi ? » Et il rouvre son registre pour ajouter cette question-là. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "veilleur-note-passer",
+        label: "Ne rien demander",
+        passive: {
+          consequence:
+            "Tu attends qu'il ait fini. Il finit. Il repose la plume bien " +
+            "droite le long du registre, comme on range un outil dont on se " +
+            "servira encore, et il te fait signe d'avancer. C'est tout. " +
+            "C'est ce qui reste le plus longtemps.",
+        },
+      },
+    ],
+  },
+  {
     /* LE VEILLEUR DE LA PALISSADE — il ouvre à ceux qui partent proprement et
        note les autres. Sa lanterne s'échange contre la seule histoire du
        dehors qu'il te reste : ta mort. Le jeu ne l'écrit jamais. */
@@ -7423,6 +7490,18 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
     text: "Le chemin longe une maison basse. Un volet se ferme — pas vite, pas peureusement. Posément. On ne se cache pas de toi : on te retire la maison, c'est différent.",
   },
   {
+    /* LA PORTE QU'ON AVAIT VUE OUVERTE (échelle sociale, 14/08). Le barreau
+       manquait : entre « on te répond sec » et « la craie », il faut un signe
+       qu'on ne peut pas mettre sur le compte de l'humeur — quelque chose que
+       le village a DÉCIDÉ, et qui a coûté un geste à quelqu'un.
+       ⚠️ Écrite pour ne rien présupposer d'une porte précise : c'est la
+       RECONNAISSANCE qui porte la ligne (on est déjà passé par cette ruelle),
+       pas une porte que le moteur aurait suivie. */
+    from: HAMEAU_INTERIOR,
+    minSoupcon: 3, maxSoupcon: 5,
+    text: "Tu repasses par une ruelle que tu as déjà prise. La porte qui bâillait sur une cuisine est fermée, et la barre est mise — de l'intérieur, en plein jour. Personne ne barre sa porte en plein jour, sauf quand on a décidé quelque chose.",
+  },
+  {
     minSoupcon: 2, maxSoupcon: 4,
     text: "Un mot t'arrive porté par le vent, un seul, distinct : ton nom. Personne à l'horizon. Le vent des Landes ment, tu le sais. Mais il ment avec ce qu'on lui donne.",
   },
@@ -7444,7 +7523,11 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
   },
   {
     minSoupcon: 5, maxSoupcon: 5,
-    text: "Les trois hommes sont toujours là, à la limite du regard. Quand tu t'arrêtes, ils s'arrêtent. Quand tu repars, ils attendent un peu — par politesse, dirait-on. L'aube n'est pas pressée.",
+    /* ⚠️ Ne présuppose PLUS la scène des trois hommes (elle disait « sont
+       TOUJOURS là »). Le palier 5 ne se montre qu'au village ; hors village
+       c'est la craie qui parle — la variante pouvait donc arriver la première
+       et se référer à un moment que le joueur n'avait pas vécu. */
+    text: "Trois hommes marchent à la limite du regard, sans jamais réduire la distance. Quand tu t'arrêtes, ils s'arrêtent. Quand tu repars, ils attendent un peu — par politesse, dirait-on. L'aube n'est pas pressée.",
   },
   // ——— Santé (3) ———
   {
@@ -7634,7 +7717,26 @@ function pickLiaisonAmbiance(ctx: LiaisonCtx | undefined, seed: number): string 
     );
     if (eligible.length > 0) {
       const maxSpec = Math.max(...eligible.map(liaisonSpecificity));
-      const top = eligible.filter((v) => liaisonSpecificity(v) === maxSpec);
+      let top = eligible.filter((v) => liaisonSpecificity(v) === maxSpec);
+      /* ⚠️ LE MONDE GRAVIT L'ÉCHELLE (correctif du 14/08 — c'était LE défaut
+         de lisibilité du Soupçon).
+         `liaisonSpecificity` compte une condition de Soupçon pour UN point,
+         quel que soit son niveau : `minSoupcon: 1` et `minSoupcon: 5` étaient
+         donc à égalité parfaite. Mesuré : à Soupçon 5, les neuf variantes de
+         l'échelle étaient éligibles ensemble, et le berger qui te salue du
+         menton (le barreau ≥1) sortait aussi souvent que les trois hommes qui
+         te suivent (le barreau ≥5) — une chance sur neuf chacun. L'escalade
+         était ÉCRITE mais pas ORDONNÉE : le joueur lisait du bruit, pas une
+         progression, et n'avait aucune raison de sentir que le hameau était
+         en train de décider quelque chose à son sujet.
+         On garde donc le barreau le plus HAUT que le joueur ait atteint. Les
+         barreaux d'en dessous restent atteignables plus tard : une variante
+         servie est écartée (`neuve`), donc quand le haut de l'échelle est
+         épuisé, on redescend d'un cran — le monde ne se répète pas, il se
+         calme un peu, ce qui est juste. */
+      const plusHaut = Math.max(...top.map((v) => v.minSoupcon ?? 0));
+      const auSommet = top.filter((v) => (v.minSoupcon ?? 0) === plusHaut);
+      if (auSommet.length) top = auSommet;
       return top[Math.floor(seeded(seed + 3) * top.length)].text;
     }
   }

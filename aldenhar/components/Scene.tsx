@@ -563,7 +563,17 @@ function resoudre(id: string, run?: RunState | null): SceneType | undefined {
  * chaque usage, sinon on lit un état périmé après un `persist`.
  */
 function faitsDe(run: RunState | null | undefined): Faits {
-  return { run: { ...(run?.faits ?? {}) }, perm: { ...loadMemory().faits } };
+  const f: Faits = { run: { ...(run?.faits ?? {}) }, perm: { ...loadMemory().faits } };
+  /* LE SOUPÇON EN FAIT DÉRIVÉ (14/08). Les scènes-variantes lisent le sac de
+     faits, jamais `RunState` : sans ce miroir, aucun texte ne peut réagir au
+     Soupçon autrement que par une injection — or l'échelle sociale doit se
+     lire dans des REMPLACEMENTS (le Veilleur qui note au lieu de demander).
+     ⚠️ Dérivé à la lecture, JAMAIS persisté : il ne peut pas diverger de
+     `run.soupcon`, exactement comme le compteur de la Fille. */
+  f.run["soupcon"] = {
+    id: "soupcon", kind: "counter", scope: "run", value: run?.soupcon ?? 0, source: "derive",
+  };
+  return f;
 }
 
 /** Les découvertes déjà acquises par le COMPTE, pour le rendu. */
