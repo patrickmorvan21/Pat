@@ -185,6 +185,10 @@ def main() -> int:
                 # réplique ne peut pas amarrer la corde, donc l'option qu'elle
                 # ouvre resterait à jamais injouable dans le kit.
                 "usageObjet",
+                # Les sources de SAVOIR/DÉCOUVERTE portées par la scène elle-même
+                # (le Marcheur enseigne la Bête en parlant). Sans elles, la
+                # réplique ne peut pas jouer « explorer prépare ».
+                "savoir", "decouverte",
                 # ⚠️ Liste BLANCHE : un champ neuf de `Scene` ne voyage pas tant
                 # qu'il n'est pas nommé ici. `sejour` l'a appris à ses dépens —
                 # la réplique laissait quitter la Palissade au premier geste.

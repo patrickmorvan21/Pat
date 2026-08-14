@@ -749,6 +749,15 @@ def lire_choix(bloc: str) -> list[dict]:
             v = texte_de(c, champ)
             if v:
                 ch[cle] = v
+        # EXPLORER PRÉPARE (14/08) : l'option aveugle s'efface quand l'option
+        # informée existe. Sans ce champ dans la liste blanche, la réplique
+        # afficherait les DEUX — donc quatre actions, et la substitution qui
+        # porte tout le sens du système passerait pour un ajout.
+        mm = re.search(r'masqueSi:\s*\{([^}]*)\}', c)
+        if mm:
+            cond = {k: v for k, v in re.findall(r'(savoir|objet|decouverte):\s*"([^"]+)"', mm.group(1))}
+            if cond:
+                ch["masqueSi"] = cond
         ms = re.search(r'requiresStat:\s*\{\s*stat:\s*"([A-Z]+)",\s*min:\s*(\d+)', c)
         if ms:
             ch["exigeStat"] = {"stat": ms.group(1), "min": int(ms.group(2))}

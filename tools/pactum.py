@@ -83,6 +83,8 @@ def lire_compte() -> dict:
     # Descente vivant. C'est la seule chose que la SURVIE laisse au compte —
     # la mort, elle, forge une relique.
     c.setdefault("sceau", 0)
+    # Ce que le JOUEUR a compris, par-delà ses morts (`discovery`).
+    c.setdefault("decouvertes", [])
     return c
 
 
@@ -184,7 +186,7 @@ class Partie:
             "ambiancesVues": [], "poiOuvert": False, "morte": False, "famVus": [],
             "soupconVu": 0, "routeAFermer": False,
             "des": [], "journal": [], "sortie": None, "hameauEntree": False,
-            "procesVu": False,
+            "procesVu": False, "savoirs": [],
             # LES STATS DU HÉROS (verdict du Seuil dans le jeu, tirage ici).
             # Elles pèsent sur le dé (`stat − 3`, promesse n°1 du 4/08) et
             # décident quelle VARIANTE de choix existe (`exigeDominante`).
@@ -275,6 +277,13 @@ class Partie:
             n = lire_compte().get("sceau", 0) + 1
             if textes:
                 self.dit(textes[min(n, len(textes)) - 1], "narration")
+        if s.get("savoir") and s["savoir"] not in self.d.get("savoirs", []):
+            self.d.setdefault("savoirs", []).append(s["savoir"])
+        if s.get("decouverte"):
+            cp = lire_compte()
+            if s["decouverte"] not in cp.setdefault("decouvertes", []):
+                cp["decouvertes"].append(s["decouverte"])
+                ecrire_compte(cp)
         if s.get("combat"):
             self.dit("• RENCONTRE • " + (s.get("adversaireNom") or s.get("nom") or ""), "rencontre")
         # L'AIGUILLAGE (9/08) : la scène chaînée lit le dé qui l'a précédée.
@@ -460,7 +469,15 @@ class Partie:
             # requis : un choix qui en exige est retiré plutôt qu'offert à
             # tort (« fuites de Savoir », grief 4/4 du panel 9/08 — c'était
             # cette réplique ; le vrai jeu filtre avant l'affichage).
-            if c.get("exigeSavoir") or c.get("exigeDecouverte") or c.get("exigeEtat") or c.get("exigeContradiction"):
+            # ⚠️ 14/08 : la réplique SUIT désormais le Savoir et les
+            # Découvertes (elle se contentait de retirer ces choix, ce qui
+            # rendait « explorer prépare » invisible dans le kit). Les états
+            # et les contradictions, eux, ne sont toujours pas répliqués.
+            if c.get("exigeEtat") or c.get("exigeContradiction"):
+                continue
+            if c.get("exigeSavoir") and c["exigeSavoir"] not in self.d.get("savoirs", []):
+                continue
+            if c.get("exigeDecouverte") and c["exigeDecouverte"] not in lire_compte().get("decouvertes", []):
                 continue
             # 13/08 : « ce qu'on porte ouvre une porte ». La réplique, elle,
             # SUIT la Besace — le choix est donc offert seulement si l'objet
@@ -480,6 +497,17 @@ class Partie:
             if c.get("exigeUsage") and f"usage:{c['exigeUsage']}" not in faits:
                 continue
             if c.get("masqueSiUsage") and f"usage:{c['masqueSiUsage']}" in faits:
+                continue
+            # EXPLORER PRÉPARE (14/08) : l'option aveugle disparaît quand la
+            # préparation est là. C'est ce qui tient le budget de trois
+            # actions — un combat préparé n'en offre pas une de plus, il en
+            # offre une AUTRE.
+            mq = c.get("masqueSi") or {}
+            if mq.get("savoir") and mq["savoir"] in self.d.get("savoirs", []):
+                continue
+            if mq.get("objet") and mq["objet"] in self.d.get("besace", []):
+                continue
+            if mq.get("decouverte") and mq["decouverte"] in lire_compte().get("decouvertes", []):
                 continue
             # LES VARIANTES DE PROFIL : au plus UNE par écran, celle du héros.
             if c.get("exigeDominante") and c["exigeDominante"] != self.dominante():
@@ -546,6 +574,15 @@ class Partie:
             return
 
         c = o["c"]
+        # Ce qu'un choix ENSEIGNE se pose à la sélection (comme le Soupçon) :
+        # poser la question vaut lire une trace.
+        if c.get("donneSavoir"):
+            self.d.setdefault("savoirs", []).append(c["donneSavoir"])
+        if c.get("donneDecouverte"):
+            cp = lire_compte()
+            if c["donneDecouverte"] not in cp.setdefault("decouvertes", []):
+                cp["decouvertes"].append(c["donneDecouverte"])
+                ecrire_compte(cp)
         if c.get("soupcon"):
             self.d["soupcon"] = min(6, self.d["soupcon"] + c["soupcon"])
             self.soupconSeLit()

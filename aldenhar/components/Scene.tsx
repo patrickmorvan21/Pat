@@ -937,6 +937,12 @@ export default function Scene() {
     // ouvre des conversations qui n'existaient pas. Même mécanique que la
     // découverte — et surtout pas un bonus de jet (voir lib/sceaux.ts).
     if (c.requiresSceau && sceauNiveau <= 0) return false;
+    // EXPLORER PRÉPARE (14/08) : l'option aveugle s'efface quand l'option
+    // informée existe. Le budget de trois actions ne bouge pas — c'est la
+    // NATURE de ce qui est offert qui change, pas la quantité.
+    if (c.masqueSi?.savoir && savoirs.includes(c.masqueSi.savoir)) return false;
+    if (c.masqueSi?.objet && besaceMirror.includes(c.masqueSi.objet)) return false;
+    if (c.masqueSi?.decouverte && decouvertes.includes(c.masqueSi.decouverte)) return false;
     // CE QU'ON PORTE OUVRE UNE PORTE (playtest v1.81, 13/08). `usageObjet`
     // CONSOMME l'objet : c'était donc réservé aux outils et aux remèdes, et
     // les onze objets PASSIFS des Landes ne pouvaient rien transformer — on

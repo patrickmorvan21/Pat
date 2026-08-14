@@ -194,6 +194,60 @@ def main() -> int:
                 f"plus de {MAX}, il ne se lit plus d'un coup d'œil."
             )
 
+    # ─── A-préparation. « Explorer prépare » atteint les cinq combats. ──────
+    # Feu vert Patrick du 14/08 : un combat doit pouvoir se souvenir de ce que
+    # le joueur a fait avant lui. Trois invariants, parce que chacun a déjà été
+    # violé ailleurs dans ce projet :
+    #   1. chaque scène `combat: true` porte au moins UNE option préparée ;
+    #   2. sa clé a une SOURCE quelque part (sinon l'option est injouable —
+    #      c'est le défaut `cacheFuite` du 5/08, un effet promis que rien ne
+    #      pose) ;
+    #   3. elle est appariée à un `masqueSi` sur la même scène — sans quoi
+    #      l'écran passerait à quatre actions et le budget de trois, tenu
+    #      depuis le 13/08, sauterait en silence.
+    GATES = ("requiresSavoir", "requiresDecouverte", "requiresObjet")
+    # ⚠️ Découper par SCÈNE avant de chercher `combat: true`. Une regex qui
+    # traverse les lignes jusqu'au drapeau rattache celui-ci au dernier `id:`
+    # rencontré — c'est-à-dire à une AUTRE scène (mesuré : elle rendait
+    # borne-frontière et le Petit Tribunal comme combats). Compter ce qu'on
+    # extrait AVANT de s'en servir : cinq combats, pas quatre inconnus.
+    debuts = [m.start() for m in re.finditer(r'\n    id: "[a-z0-9-]+"', sd)]
+    blocs = {}
+    for n, d in enumerate(debuts):
+        fin = debuts[n + 1] if n + 1 < len(debuts) else len(sd)
+        blocs[re.match(r'\n    id: "([a-z0-9-]+)"', sd[d:]).group(1)] = sd[d:fin]
+    combats = [sid for sid, b in blocs.items() if re.search(r'\n    combat: true', b)]
+    if len(combats) < 3:
+        manques.append(
+            f"A-préparation — {len(combats)} combat(s) détecté(s) : l'extracteur "
+            "ne lit plus les scènes, le garde ne prouve donc rien."
+        )
+    # Les sources : ce que le contenu POSE quelque part (scène ou choix).
+    poses = set(re.findall(r'\b(?:grantsSavoir|savoir|decouverte)\s*:\s*"([^"]+)"', sd))
+    objets = set(re.findall(r'\n  "([a-z0-9-]+)":\s*\{', BESACE.read_text(encoding="utf8")))
+    for sid in combats:
+        bloc = blocs[sid]
+        prepares = [(g, k) for g in GATES
+                    for k in re.findall(rf'{g}\s*:\s*"([^"]+)"', bloc)]
+        if not prepares:
+            manques.append(
+                f"A-préparation — le combat « {sid} » n'offre aucune option "
+                "préparée : rien de ce que le joueur a fait avant lui ne s'y lit."
+            )
+            continue
+        for g, cle in prepares:
+            connu = cle in objets if g == "requiresObjet" else cle in poses
+            if not connu:
+                manques.append(
+                    f"A-préparation — « {sid} » attend `{cle}` ({g}), que rien "
+                    "ne pose ni ne donne : l'option ne peut jamais s'ouvrir."
+                )
+        if "masqueSi" not in bloc:
+            manques.append(
+                f"A-préparation — « {sid} » ajoute une option préparée sans "
+                "`masqueSi` : l'écran passerait à quatre actions."
+            )
+
     # ─── A-supplément. Une charge de point d'intérêt ne va pas sur un jet. ──
     # `chapterFragment`, `fait` et `corbeaux` ont été ajoutés à `Choice` par le
     # chantier du 11/08 pour que « Observer » puisse disparaître sans rien
@@ -270,6 +324,7 @@ def main() -> int:
         print("  A2 aucun Jour n'est jamais retiré en sanction          ✓")
         print(f"  A4 seuls {len(ACTES)} gestes déclarés font monter le Soupçon  ✓")
         print("  A8 tous les libellés de choix se lisent d'un coup      ✓")
+        print("  les cinq combats se souviennent de l'exploration       ✓")
         print("  chaque jet déclare la nature de son échec              ✓")
     print(
         "\n  Restent au PLAYTEST (non prouvables sur les sources) : le nombre de\n"

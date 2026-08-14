@@ -334,6 +334,17 @@ export type Choice = {
   /** Ce choix n'existe que si le COMPTE tient cette découverte. */
   requiresDecouverte?: string;
   /**
+   * EXPLORER PRÉPARE (feu vert Patrick, 14/08) — le pendant de `requiresSavoir`
+   * et compagnie : ce choix DISPARAÎT quand la préparation est là.
+   *
+   * ⚠️ C'est ce qui fait tenir le budget de trois actions. Un combat préparé
+   * n'offre pas une option de PLUS : l'option informée prend la place de
+   * l'option aveugle du même registre — on ne bondit plus au hasard hors du
+   * creux, on reste sur le talus parce qu'on sait que la Bête n'y monte pas.
+   * La substitution est elle-même le récit de la préparation.
+   */
+  masqueSi?: { savoir?: string; objet?: string; decouverte?: string };
+  /**
    * LE SCEAU OUVRE UNE PORTE (arbitrage 10/08, livré le 14/08). Ce choix
    * n'existe que pour un compte qui a franchi la Descente vivant — id du
    * sceau (`SCEAU_LANDES`), voir lib/sceaux.ts.
@@ -1114,6 +1125,10 @@ export const SCENES: Scene[] = [
         illustration: "assets/scene_chemin_talus_a_c.png",
         observe: true,
         grantsSavoir: "savoir_bete_crete_nord",
+        // Ce que le talus enseigne survit à la mort : la Bête ne quitte pas
+        // son couloir. C'est la préparation de la vie SUIVANTE, puisque
+        // celle-ci l'a déjà rencontrée (elle embusque la route d'ici).
+        decouverte: "d.bete_couloir",
         passive: {
           consequence:
             "Tu montes de trois pas dans la pente, juste assez pour voir la " +
@@ -1208,6 +1223,8 @@ export const SCENES: Scene[] = [
     chainNext: "marcheur-2",
     // Sa première réplique DIT le versant : l'écouter vaut avoir lu les traces.
     savoir: "savoir_bete_crete_nord",
+    // …et ce qu'il t'apprend d'elle ne meurt pas avec toi (voir `d.bete_couloir`).
+    decouverte: "d.bete_couloir",
     narration: [
       "Il ne s'arrête pas à ta hauteur. Il ralentit, c'est tout — et te parle " +
         "en te dépassant, le regard toujours fixé sur le chemin derrière toi.",
@@ -1395,11 +1412,41 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        /* EXPLORER PRÉPARE — LA BÊTE (14/08, canal « j'ai étudié la créature »).
+           ⚠️ C'est le SEUL des cinq combats où la préparation ne peut pas
+           venir de cette vie-ci : la Bête embusque la route AVANT le Chemin
+           Creux (7/08), donc tout ce qui l'enseigne — le haut des talus, le
+           Marcheur à rebours — n'arrive qu'après elle. Sa préparation est
+           donc inter-vies, par une DÉCOUVERTE, et c'est juste ainsi : on
+           n'apprend d'elle qu'en l'ayant subie une fois.
+           Le bond aveugle DÉCOUVRE par chance ce que la découverte SAIT
+           (« elle freine pile à la limite de l'ombre, comme au bout d'une
+           chaîne ») — d'où la substitution : on ne bondit plus, on recule. */
+        id: "reculer-talus",
+        nature: "physique",
+        tags: ["fuite"],
+        label: "Reculer sur le talus, sans courir",
+        requiresDecouverte: "d.bete_couloir",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu montes à reculons, sans quitter la masse des yeux, et tu t'arrêtes exactement où l'ombre s'arrête. Elle vient jusque-là. Elle s'arrête aussi. Vous restez face à face de part et d'autre d'une ligne que tu es le seul des deux à avoir choisie — puis elle se retourne, et c'est elle qui s'en va.",
+            "Tu prends le talus de biais, sans te presser, parce que courir n'a jamais servi. La Bête accompagne ta montée le long du creux, à hauteur, jusqu'à la limite. Là, elle freine d'elle-même. Tu passes au-dessus d'elle.",
+            "La terre du talus part sous ton talon et tu glisses d'un pas vers le fond. Un pas suffit : l'avancée du corps te prend au flanc avant que tu ne remontes.",
+            "1 naturel. Tu recules trop tôt, avant qu'elle ne soit engagée — et elle ne s'engage pas. Elle attend, dans son couloir, que la nuit t'y ramène. ♦ −2"
+          ),
+        },
+      },
+      {
         // Bondir hors du creux : sur une jambe qui ne plie plus, ce n'est pas
         // « plus dur » — c'est impossible. BOITEUX retire ce choix (cacheFuite).
+        // Effacé pour qui SAIT déjà que la Bête ne quitte pas le creux : on ne
+        // saute pas dans le vide quand on connaît la longueur de la chaîne.
         id: "grimper-talus",
         nature: "physique",
         tags: ["fuite"],
+        masqueSi: { decouverte: "d.bete_couloir" },
         label: "Bondir hors du creux",
         risky: {
           stat: "INSTINCT",
@@ -2104,8 +2151,34 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        /* EXPLORER PRÉPARE — LE PENDU MAL FIXÉ (canal « j'ai lu quelque part »).
+           La feuille clouée au mur du Petit Tribunal liste les signes qui
+           désignent un homme à la Fixation, de la main du Bailli. Face à une
+           Fixation ratée, la connaître ne donne pas une arme : elle donne une
+           VOIX — celle qui l'a mis là. ⚠️ Le Champ des Fixés partage son lieu
+           avec cette rencontre (`lieuDejaVisite`), donc la préparation ne peut
+           pas venir de lui : elle vient du village, à l'autre bout de la zone. */
+        id: "reciter-ordonnance",
+        nature: "surnaturel",
+        label: "Lui réciter l'ordonnance",
+        requiresSavoir: "savoir_ordonnance",
+        risky: {
+          stat: "RUSE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu récites la liste des signes, dans l'ordre, avec les mots du Bailli. Au troisième, il s'arrête. Au cinquième, il recule d'un pas vers le poteau cassé. À la fin, il se tient droit à l'endroit exact où il a passé des années — attendant qu'on l'attache, parce que c'est ce que la phrase dit qu'il faut faire.",
+            "Tu dis les signes à voix haute. Ce n'est pas toi qu'il entend : c'est la formule, et la formule a autorité sur lui. Il te contourne sans te toucher, retourne à son rang, et se remet à attendre.",
+            "Tu écorches un mot au milieu. La liste se casse, et lui aussi : ce qui te fonce dessus n'obéit plus à rien.",
+            "1 naturel. Tu récites bien. Trop bien. Il t'écoute jusqu'au bout, penche ce qui lui reste de tête — et se demande visiblement si la liste te désigne, toi. ♦ −2"
+          ),
+        },
+      },
+      {
+        // Effacé pour qui porte l'ordonnance : on ne se bat plus à la ficelle
+        // quand on a de quoi lui parler.
         id: "emmeler",
         nature: "physique",
+        masqueSi: { savoir: "savoir_ordonnance" },
         label: "L'emmêler dans sa corde",
         risky: {
           stat: "RUSE",
@@ -5132,6 +5205,12 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        /* ⚠️ C'est CE choix que l'option préparée remplace, pas le
+           contournement : parler au chien informé est la version renseignée
+           de parler au chien à l'aveugle — même geste, même stat, un savoir
+           en plus. Masquer la RUSE aurait laissé deux options d'EMPATHIE sur
+           le même écran et brouillé l'éventail des stats. */
+        masqueSi: { decouverte: "d.bailli_condamne" },
         id: "apaiser-chien",
         nature: "physique",
         label: "S'accroupir, lui parler",
@@ -5143,6 +5222,27 @@ export const SCENES: Scene[] = [
             "Tu lui laisses le dos de ta main, sans bouger. Il la flaire longtemps — la lande, le gibet, peut-être une trace de son maître dessus. Il ne s'écarte pas, mais il s'assoit : ce n'est plus une garde, c'est une visite. Tu peux longer le mur.",
             "Ta voix le calme — puis un mot le hérisse d'un coup, sans que tu saches lequel. Un mot que le Bailli employait, sans doute, et pas pour de bonnes choses. Il te chasse du seuil en trois attaques sèches, plus déçu que féroce.",
             "1 naturel. Il pose sa tête sous ta main. Et referme ses mâchoires dessus au moment exact où tu le crois gagné — les ordres du Bailli prévoyaient les gens comme toi. ♦ −2"
+          ),
+        },
+      },
+      {
+        /* EXPLORER PRÉPARE — LE CHIEN DU BAILLI (canal « j'ai écouté quelqu'un »).
+           Le Pendu qui parle confesse avoir signé trois cents noms, et que le
+           trois cent unième était le sien. Le chien garde un ordre dont la
+           scène dit qu'il « n'a jamais été levé » : celui qui sait que le
+           maître s'est condamné lui-même détient de quoi le lever. */
+        id: "lever-ordre",
+        nature: "physique",
+        label: "Lui dire que son maître s'est jugé",
+        requiresDecouverte: "d.bailli_condamne",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu t'accroupis à sa hauteur et tu le lui dis comme on rend une nouvelle à un vieux serviteur : le nom qui l'a posté est écrit sur le registre, en dernier, de sa propre main. Le chien te regarde longtemps. Puis il se lève, quitte le seuil, et va se coucher trois pas plus loin — dehors, comme un chien sans maison. Il ne t'accompagne pas. Il ne t'arrête plus.",
+            "Tu parles doucement, et tu dis son nom à lui — celui du Bailli. L'animal dresse une oreille, puis la baisse. Il ne s'écarte pas franchement : il se décale, ce qui suffit.",
+            "Ta voix tremble sur le nom, et c'est ce tremblement qu'il entend. Il monte sur toi avant la fin de la phrase.",
+            "1 naturel. Tu lui annonces que son maître est mort. Il le savait. C'est pour ça qu'il ne quitte plus ce seuil, et pour ça qu'il n'a plus rien à perdre. ♦ −2"
           ),
         },
       },
@@ -5442,8 +5542,36 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        /* EXPLORER PRÉPARE — LA MEUTE, BEAT 1 (canal « j'ai gardé un objet »).
+           La Clochette de meneuse se prend sur la bête volée au Troupeau sans
+           Berger : celui qui la porte annonce son arrivée. Devant des chiens
+           restés à attendre un ordre, ce n'est plus une trahison — c'est un
+           grade. ⚠️ Elle n'est PAS consommée (`requiresObjet`) : ce qu'on
+           porte ouvre une porte, ça ne se dépense pas. */
+        id: "tinter-clochette",
+        nature: "physique",
+        label: "Faire tinter la clochette",
+        requiresObjet: "clochette-meneuse",
+        risky: {
+          stat: "RUSE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu sors la clochette et tu la fais sonner une fois, sèchement, comme on rappelle un troupeau. Les cinq têtes se tournent ENSEMBLE, du même côté, à la même hauteur — et le front se défait. Ils cherchent le berger derrière toi. Tu passes pendant qu'ils cherchent, et le son continue de les tenir longtemps après.",
+            "Le battant claque. La grande s'arrête net, une patte en l'air, et le silence dure assez pour que tu recules de trois pas sans qu'aucune ne bouge. Ils te laissent partir en te regardant faire : tu sens qu'ils t'ont classé quelque part.",
+            "Tu agites la clochette. Le son sort mou, faux, pas celui d'une bête qui marche. Ils comprennent immédiatement que le berger, c'est toi qui l'as pris.",
+            "1 naturel. La clochette sonne juste. Trop juste. Ils arrivent au son — c'est exactement ce qu'on leur a appris à faire. ♦ −2"
+          ),
+        },
+      },
+      {
+        // Effacé pour qui porte la clochette : on ne hurle pas quand on a de
+        // quoi leur parler dans leur propre langue.
         id: "hurler-meute",
         nature: "physique",
+        masqueSi: { objet: "clochette-meneuse" },
+        // Hurler le premier, c'est apprendre qu'ils répondent à la VOIX —
+        // ce que le beat 2 réutilise (« Leur répondre à la voix »).
+        grantsSavoir: "savoir_meute_voix",
         label: "Hurler le premier",
         risky: {
           stat: "RUSE",
@@ -5517,8 +5645,32 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        /* EXPLORER PRÉPARE — LA MEUTE, BEAT 2 (canal « la rencontre elle-même
+           m'a appris »). Avoir hurlé au premier beat enseigne qu'ils répondent
+           à la voix : la meneuse pose sa question, on peut y répondre au lieu
+           de jeter quelque chose. Préparation la plus courte du jeu — un beat
+           d'avance — et la seule qui s'acquière DANS le combat. */
+        id: "repondre-voix",
+        nature: "physique",
+        label: "Lui répondre à la voix",
+        requiresSavoir: "savoir_meute_voix",
+        risky: {
+          stat: "RUSE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu refais le son de tout à l'heure, plus bas, plus court — une réponse, pas un défi. La meneuse incline la tête, exactement comme un chien à qui l'on parle. Puis elle se détourne et le croissant se défait derrière elle, sans un bruit, comme une phrase qu'on finit.",
+            "Tu réponds. Le son n'est pas beau, mais il est dans la bonne langue. La meneuse recule d'un pas — le premier qu'aucune d'elles n'avait fait — et le reste suit son pas.",
+            "Tu réponds trop fort. Ce qui devait être un accord sonne comme une revendication, et une revendication, chez eux, se règle.",
+            "1 naturel. Tu leur réponds dans leur langue. Ils te répondent dans la leur, et la leur n'a qu'une phrase. ♦ −2"
+          ),
+        },
+      },
+      {
+        // Effacé pour qui sait leur parler : on ne jette plus son manteau
+        // quand la meneuse vient de poser une question.
         id: "offrir-viande",
         nature: "physique",
+        masqueSi: { savoir: "savoir_meute_voix" },
         // ⚠️ Le libellé disait « Jeter tes vivres » — or AUCUN objet de
         // nourriture n'existe dans tout le catalogue, alors que le jeu modèle
         // la faim (AFFAMÉ, besoin « manger ») : le choix promettait un
