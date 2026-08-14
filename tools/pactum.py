@@ -64,6 +64,10 @@ def lire_compte() -> dict:
     c.setdefault("morts", 0)
     c.setdefault("tombes", [])   # [{nom, cause}] — le plus récent en tête
     c.setdefault("visites", {})  # lieu -> nombre de passages du COMPTE
+    # LE SCEAU DES LANDES (14/08) : combien de fois ce compte a franchi la
+    # Descente vivant. C'est la seule chose que la SURVIE laisse au compte —
+    # la mort, elle, forge une relique.
+    c.setdefault("sceau", 0)
     return c
 
 
@@ -163,6 +167,12 @@ class Partie:
         }
         p = cls(d)
         p.entrer(k["entree"], premier=True)
+        # LE SCEAU SE PORTE À MÊME LA MAIN : la marque rapportée de la vie
+        # d'avant se lit dès la Borne, avant tout choix.
+        n = lire_compte().get("sceau", 0)
+        ouv = k.get("sceau", {}).get("ouverture", [])
+        if n > 0 and ouv:
+            p.dit(ouv[min(n, len(ouv)) - 1], "narration")
         return p
 
     # -- accès
@@ -225,6 +235,12 @@ class Partie:
             self.d["poiIci"] = 0
             if sid in self.k["hameauInterieur"] or sid.startswith("hameau-") or sid == "serment-hameau":
                 self.d["hameauEntree"] = True
+            # LE MONDE RECONNAÎT LA MARQUE : une ligne à l'arrivée, sur les
+            # lieux où quelqu'un est là pour la voir.
+            if lire_compte().get("sceau", 0) > 0:
+                rec = self.k.get("sceau", {}).get("reconnu", {}).get(radical)
+                if rec:
+                    self.dit(rec, "narration")
         if s.get("combat"):
             self.dit("• RENCONTRE • " + (s.get("adversaireNom") or s.get("nom") or ""), "rencontre")
         # L'AIGUILLAGE (9/08) : la scène chaînée lit le dé qui l'a précédée.
@@ -414,6 +430,10 @@ class Partie:
             # La Besace de la réplique stocke les CLÉS d'objet telles quelles.
             if c.get("exigeObjet") and c["exigeObjet"] not in self.d.get("besace", []):
                 continue
+            # LE SCEAU (14/08) : ces conversations n'existent que pour un
+            # compte qui a déjà franchi la Descente vivant.
+            if c.get("exigeSceau") and lire_compte().get("sceau", 0) <= 0:
+                continue
             # SÉJOUR : ce qui a déjà été fait ici ne se refait pas.
             if s.get("sejour") and c["id"] in self.d.get("choixFaits", []):
                 continue
@@ -555,9 +575,15 @@ class Partie:
             self.d["soupcon"] = min(6, self.d["soupcon"] + vu)
         # SURNATUREL : étendu à l'échec simple (10/08) — s'en tirer indemne
         # après avoir touché ce qu'il ne faut pas vide le mot de son sens.
+        # ⚠️ CORRIGÉ LE 14/08 (repéré par Patrick au playtest v1.82, et il a eu
+        # raison de ne pas l'imputer au build) : la réplique posait encore
+        # HANTÉ et MARQUÉ, deux états SUPPRIMÉS du vrai jeu par la Phase A du
+        # 11/08. Elle faisait donc juger une mécanique qui n'existe plus. Le
+        # coût tombe dans la CHAIR, comme dans Scene.tsx.
         if rate and nature == "surnaturel":
-            self.d["etats"]["marque" if palier == "malediction" else "hante"] = 999
-            self.dit("ÉTAT — " + ("Marqué" if palier == "malediction" else "Hanté"), "etat")
+            self.d["sante"] = max(
+                0.0, round(self.d["sante"] - (0.16 if palier == "malediction" else 0.10), 3)
+            )
         if s.get("combat"):
             if palier in ("echec", "critique", "malediction"):
                 self.d["etats"]["entaille"] = 999
@@ -623,6 +649,15 @@ class Partie:
                 self.entrer(sortie["toScene"])
                 return
         if s.get("terminal"):
+            if self.d["scene"] == "la-descente":
+                # LE SCEAU SE PREND ICI (arbitrage 10/08) : sortir vivant
+                # laisse enfin quelque chose au compte.
+                c = lire_compte()
+                c["sceau"] += 1
+                ecrire_compte(c)
+                textes = self.k.get("sceau", {}).get("sortie", [])
+                if textes:
+                    self.dit(textes[min(c["sceau"], len(textes)) - 1], "narration")
             self.d["sortie"] = "descente" if self.d["scene"] == "la-descente" else "renoncement"
             return
         if s.get("suite"):

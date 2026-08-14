@@ -392,6 +392,40 @@ def pools() -> list[dict]:
                     "textes": [texte],
                 })
 
+    # — LE SCEAU DES LANDES (14/08). Deux familles de textes :
+    #   • SCEAU_RECONNU est indexé PAR LIEU et servi à l'arrivée, exactement
+    #     comme APPROACH_NARRATION — le garde se dérive donc de la
+    #     destination, ni plus ni moins.
+    #   • les trois lignes calculées (ouverture à la Borne, réponse du côté
+    #     sud, prise du Sceau à la Descente) sont servies à des endroits fixes
+    #     de PLEINE LANDE : aucune ne peut poser de bâti ni de foule.
+    sceaux_src = (LIB / "sceaux.ts").read_text(encoding="utf-8")
+    rec = re.search(r"export const SCEAU_RECONNU[^=]*=\s*\{(.*?)\n\};", sceaux_src, re.S)
+    if rec:
+        for m in re.finditer(
+            r'(?:"([a-z0-9\-]+)"|([a-zA-Z][a-zA-Z0-9\-]*))\s*:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)',
+            rec.group(1),
+        ):
+            dest = m.group(1) or m.group(2)
+            texte = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(3))).replace('\\"', '"')
+            out.append({
+                "pool": f"sceau reconnu {dest}",
+                "garde": {"village", "gens"} if village_scene(dest) else {"lande", "gens"},
+                "textes": [texte],
+            })
+    for fn, garde in (
+        ("ligneSceauOuverture", {"lande", "gens"}),
+        ("ligneSceauBorne", {"lande"}),
+        ("ligneSceauSortie", {"lande"}),
+    ):
+        d = sceaux_src.find(f"export function {fn}")
+        corps = sceaux_src[d : sceaux_src.find("\n}", d)] if d >= 0 else ""
+        for i, t in enumerate(
+            "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', bloc))
+            for bloc in re.findall(r"return\s*\(?((?:\s*\"(?:[^\"\\]|\\.)*\"\s*\+?)+)", corps)
+        ):
+            out.append({"pool": f"{fn} {i}", "garde": garde, "textes": [t]})
+
     # — bifurcations : phrase de Croisée, partout.
     for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, "const BIFURCATIONS"))):
         out.append({"pool": f"bifurcation {i}", "garde": {"partout"}, "textes": [t]})

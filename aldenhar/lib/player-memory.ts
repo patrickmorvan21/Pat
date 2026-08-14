@@ -19,6 +19,7 @@
 
 import type { RegistreRow } from "@/lib/state";
 import { sacDepuis, type SacFaits } from "@/lib/faits";
+import { SCEAU_LANDES } from "@/lib/sceaux";
 import {
   forgerRelique,
   relique,
@@ -301,6 +302,20 @@ export function recordRenoncement(args: { heroName: string; days: number; place:
 export function recordTraversee(args: { heroName: string; days: number }): void {
   mutateMemory((m) => {
     m.zonesCleared = (m.zonesCleared ?? 0) + 1;
+    // LE SCEAU DES LANDES (arbitrage 10/08) : ce qu'on rapporte en revenant.
+    // Il vit dans le sac de faits (nature `seal`, portée `zone_permanent`),
+    // donc il n'ajoute AUCUN champ à `loadMemory` — le sac y passe déjà en
+    // bloc. Sa valeur compte les passages : une deuxième traversée ne donne
+    // pas un second sceau, elle creuse le même (voir lib/sceaux.ts).
+    const sac: SacFaits = { ...(m.faits ?? {}) };
+    sac[SCEAU_LANDES] = {
+      id: SCEAU_LANDES,
+      kind: "seal",
+      scope: "zone_permanent",
+      value: (sac[SCEAU_LANDES]?.value ?? 0) + 1,
+      source: "la-descente",
+    };
+    m.faits = sac;
     m.totalDays += args.days;
     m.bestDays = Math.max(m.bestDays, args.days);
     m.fallen.unshift({

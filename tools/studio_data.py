@@ -42,6 +42,17 @@ TS_RELIQUES = RACINE / "aldenhar/lib/reliques.ts"
 TS_FAITS = RACINE / "aldenhar/lib/contradictions.ts"
 TS_PERCEPTION = RACINE / "aldenhar/lib/perception.ts"
 TS_LOI = RACINE / "aldenhar/lib/loi-substitution.ts"
+TS_SCEAUX = RACINE / "aldenhar/lib/sceaux.ts"
+# Les CONSTANTES que le contenu utilise à la place d'un littéral. Un champ
+# renseigné par une constante ressortait VIDE de l'export (voir
+# `constante_de`) : cette table est ce qui rend la valeur réelle lisible.
+CONSTANTES_CONNUES: dict[str, str] = {
+    m.group(1): m.group(2)
+    for m in __import__("re").finditer(
+        r'export const ([A-Z][A-Z0-9_]*)\s*=\s*"([^"]+)"',
+        TS_SCEAUX.read_text(encoding="utf-8"),
+    )
+}
 # Les ÉTATS et BESOINS (spec 5/08 « le Domaine se souvient ») : le Studio doit
 # montrer ce qu'un état change réellement, sinon on ne peut pas juger s'il est
 # « un fait auquel le monde réagit » ou seulement un modificateur déguisé.
@@ -185,6 +196,21 @@ def texte_de(txt: str, champ: str) -> str | None:
     phrase qui s'arrête au milieu. Il faut capturer toute la chaîne."""
     m = re.search(rf"{champ}:\s*({CONCAT})", txt)
     return recoller(m.group(1)) if m else None
+
+
+def constante_de(txt: str, champ: str, connues: dict[str, str]) -> str | None:
+    """La valeur d'un champ écrit avec une CONSTANTE (`requiresSceau: SCEAU_LANDES`).
+
+    ⚠️ `texte_de` ne voit que les littéraux : un champ renseigné par une
+    constante importée en ressortait VIDE, sans le moindre avertissement — et
+    le Studio comme la réplique auraient alors offert à tout le monde des
+    options réservées. C'est la variante « identifiant » du piège d'extracteur
+    muet du projet ; toujours compter ce qu'on extrait.
+    """
+    m = re.search(rf"{champ}:\s*([A-Z][A-Z0-9_]*)\s*,", txt)
+    if m:
+        return connues.get(m.group(1), m.group(1))
+    return texte_de(txt, champ)
 
 
 def nombre_de(txt: str, champ: str) -> float | None:
@@ -666,8 +692,13 @@ def lire_choix(bloc: str) -> list[dict]:
             # a trouvé l'objet — et un relecteur conclurait que l'exploration
             # ne prépare rien (le biais mesuré le 9/08, exactement).
             ("requiresObjet", "exigeObjet"),
+            # 14/08 : le SCEAU, ce qu'on rapporte d'une traversée réussie.
+            # Même raison qu'`exigeObjet` de le déclarer ici : sans ce champ,
+            # le Studio ne montrerait pas ces conversations et la réplique les
+            # offrirait à un compte qui n'a jamais survécu.
+            ("requiresSceau", "exigeSceau"),
         ):
-            v = texte_de(c, champ)
+            v = constante_de(c, champ, CONSTANTES_CONNUES)
             if v:
                 ch[cle] = v
         tb = bloc_apres(c, r"\n        tags:\s*")

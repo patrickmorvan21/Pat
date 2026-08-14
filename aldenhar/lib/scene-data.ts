@@ -10,6 +10,7 @@
 
 import type { Condition, Faits } from "./faits";
 import { evalue, present, radical } from "./faits";
+import { SCEAU_LANDES } from "./sceaux";
 
 export type Stat = "COURAGE" | "RUSE" | "INSTINCT" | "EMPATHIE";
 
@@ -332,6 +333,17 @@ export type Choice = {
   observe?: boolean;
   /** Ce choix n'existe que si le COMPTE tient cette découverte. */
   requiresDecouverte?: string;
+  /**
+   * LE SCEAU OUVRE UNE PORTE (arbitrage 10/08, livré le 14/08). Ce choix
+   * n'existe que pour un compte qui a franchi la Descente vivant — id du
+   * sceau (`SCEAU_LANDES`), voir lib/sceaux.ts.
+   *
+   * ⚠️ C'est la SEULE forme que prend le Sceau côté mécanique : il n'entre
+   * jamais dans le modificateur, le seuil ni l'Anneau. Une récompense de
+   * survie qui rendrait les jets plus faciles se lirait comme un bonus de
+   * stat ; celle-ci se lit comme un monde qui te reconnaît.
+   */
+  requiresSceau?: string;
   /**
    * L'OBJET OUVRE UNE POSSIBILITÉ (chantier 12/08, §2). Ce choix n'existe
    * qu'une fois l'objet de la scène employé — clé de `Scene.usageObjet.cle`.
@@ -4086,6 +4098,27 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        /* LE SCEAU (14/08). Le Colporteur « te reconnaît, c'est impossible »
+           depuis le 20/07 : la marque explique une partie de l'impossible,
+           sans la lever. Il ne vend rien ici — il refuse un troc, ce qui de
+           sa part est l'aveu le plus cher qu'il puisse faire. */
+        id: "colporteur-paume",
+        label: "Ouvrir la main devant le Colporteur",
+        requiresSceau: SCEAU_LANDES,
+        passive: {
+          consequence:
+            "Tu ouvres la main, paume en l'air, comme on montre qu'on n'a " +
+            "rien. Le Colporteur regarde le creux, et son sourire de " +
+            "marchand tombe d'un coup — pas de peur : de fatigue.\n\n" +
+            "— « Trois. » Il replie la toile sur son étal, alors que tu n'as " +
+            "rien demandé. « J'en ai vu trois comme ça, en vingt ans de " +
+            "chemins. Et les trois, je les ai vus deux fois. » Il te tend " +
+            "l'écuelle du repas qu'il s'était gardé, refuse ta main quand tu " +
+            "cherches de quoi payer. « Toi, tu me dois rien. C'est même " +
+            "l'inverse, et j'aime pas ça. »",
+        },
+      },
+      {
         /* LE SONNEUR SANS CLOCHE (§7) — il n'avait aucune scène. Son
            témoignage tient en trois phrases et dit tout du village : il a
            voulu prévenir, et on lui a retiré le moyen de prévenir sans un
@@ -5242,6 +5275,28 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        /* LE SCEAU (14/08). L'Écrivain tient les écritures du hameau : c'est
+           lui qui sait s'il existe une page pour ceux qui reviennent. Sa
+           réponse dit la loi de substitution sans jamais la nommer — on ne
+           revient pas, on prend la place de. */
+        id: "tribunal-page-revenus",
+        label: "Demander la page des revenus",
+        requiresSceau: SCEAU_LANDES,
+        passive: {
+          consequence:
+            "Tu poses la question sans montrer ta main. Il ne demande pas " +
+            "pourquoi. Il feuillette en arrière, très loin, jusqu'à un " +
+            "cahier plus ancien que lui — et l'ouvre à une page qu'il n'a " +
+            "pas eu besoin de chercher.\n\n" +
+            "Une colonne de noms, courte. Chacun rayé d'un trait, et en " +
+            "face de chaque trait, un second nom, celui de quelqu'un du " +
+            "hameau, avec une date. « Quand il en revient un », dit " +
+            "l'Écrivain en refermant, « il en manque un. Le registre ne " +
+            "juge pas. Il équilibre. » Il te regarde enfin. « Vous croyez " +
+            "tous que vous rentrez. Personne ne rentre. On échange. »",
+        },
+      },
+      {
         id: "tribunal-carnet",
         label: "Confronter le carnet au Registre",
         requiresObjet: "carnet-fossoyeur",
@@ -6106,7 +6161,31 @@ export const SCENES: Scene[] = [
       "— « Je note tout le monde », dit-il sans lever les yeux. « Ceux " +
         "qui disent vrai, je les note vite. »",
     ],
-    choices: [{ id: "veilleur-passer", label: "Passer le portillon" }],
+    choices: [
+      {
+        /* LE SCEAU (14/08) — la conversation que le lieu attendait. Depuis le
+           7/08, la narration pose une « colonne des retours » vide, avec une
+           marque en haut, d'une autre main, que le Veilleur ne voit pas. Ce
+           choix dit à qui elle est : à la vie d'avant du même joueur. */
+        id: "veilleur-colonne",
+        label: "Lui montrer le haut de sa planche",
+        requiresSceau: SCEAU_LANDES,
+        passive: {
+          consequence:
+            "Tu poses le doigt tout en haut de la planche, sur la marque " +
+            "qu'il ne regarde jamais. Il se penche. Il approche la lanterne. " +
+            "Il compare — la marque, puis ta paume ouverte, puis la marque " +
+            "encore.\n\n" +
+            "— « C'est pas mon écriture. » Sa voix ne tremble pas, c'est " +
+            "pire : elle devient administrative. « Et c'est pas une " +
+            "écriture. C'est un creux. » Il repose la lanterne, prend son " +
+            "couteau, et raye la ligne qu'il vient d'écrire sur toi. « Je " +
+            "note ceux qui descendent. Toi, t'es dans l'autre colonne, et " +
+            "l'autre colonne, j'ai pas le droit de la tenir. »",
+        },
+      },
+      { id: "veilleur-passer", label: "Passer le portillon" },
+    ],
     jailerLine: "La colonne des retours. Vide depuis trente ans. J'adore les optimistes.",
   },
   {

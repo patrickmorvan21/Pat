@@ -95,6 +95,13 @@ import {
   noterVisiteLieu,
   type Relic,
 } from "@/lib/player-memory";
+import {
+  niveauSceau,
+  ligneSceauOuverture,
+  ligneSceauBorne,
+  ligneSceauSortie,
+  reconnaissanceSceau,
+} from "@/lib/sceaux";
 
 // Pixels morts ambiants de l'état KO (palier « Au seuil », retour Patrick
 // 14/07) : une nappe de pixels charbon épars + quelques braises orange qui
@@ -681,6 +688,11 @@ export default function Scene() {
   // `savoirs` — un miroir lisible au rendu — mais la source est la mémoire
   // permanente, pas la run : ce que le JOUEUR a compris survit à ses héros.
   const [decouvertes, setDecouvertes] = useState<string[]>([]);
+  // LE SCEAU DES LANDES (14/08) : combien de fois ce COMPTE a franchi la
+  // Descente vivant. Miroir de rendu, comme `decouvertes` — il ne bouge
+  // jamais en cours de vie (on ne franchit la Descente qu'une fois, et la run
+  // se termine dessus), donc il est posé au montage et n'est plus touché.
+  const [sceauNiveau, setSceauNiveau] = useState(0);
   // La prophétie datée (surprise #4) : le jour parié, miroir de rendu pour la
   // puce Jour — elle blanchit à l'approche de la date.
   const [prophetieJour, setProphetieJour] = useState<number | null>(null);
@@ -921,6 +933,10 @@ export default function Scene() {
     // le COMPTE. C'est ce qui permet à une option de n'exister qu'à partir de
     // la deuxième ou troisième vie, sans que le héros ait l'air de se souvenir.
     if (c.requiresDecouverte && !decouvertes.includes(c.requiresDecouverte)) return false;
+    // LE SCEAU (14/08) : ce que le compte a RAPPORTÉ d'une traversée réussie
+    // ouvre des conversations qui n'existaient pas. Même mécanique que la
+    // découverte — et surtout pas un bonus de jet (voir lib/sceaux.ts).
+    if (c.requiresSceau && sceauNiveau <= 0) return false;
     // CE QU'ON PORTE OUVRE UNE PORTE (playtest v1.81, 13/08). `usageObjet`
     // CONSOMME l'objet : c'était donc réservé aux outils et aux remèdes, et
     // les onze objets PASSIFS des Landes ne pouvaient rien transformer — on
@@ -1249,6 +1265,7 @@ export default function Scene() {
     // reprise.
     setSavoirs(run.savoirs ?? []);
     setDecouvertes(idsDecouvertes(faitsDe(run)));
+    setSceauNiveau(niveauSceau(faitsDe(run)));
     setProphetieJour(run.prophetie ?? null);
     setHeroStats(run.stats);
     setRelicSpent(Boolean(run.relicUsed));
@@ -1360,6 +1377,12 @@ export default function Scene() {
       // Chaque vie commence à la Borne : on la compte ici (aucune
       // orientation n'y mène) — l'Hésitant peut ainsi se souvenir.
       if (run.step === 0) noterVisiteLieu("borne-frontiere");
+      // LE SCEAU SE PORTE À MÊME LA MAIN (arbitrage 10/08 : « il doit
+      // produire quelque chose que je remarque dès ma prochaine
+      // incarnation »). Poussé en premier des traces permanentes : c'est le
+      // signal le plus fort, il ne doit pas arriver après l'écharde.
+      const ligneSceau = ligneSceauOuverture(niveauSceau(faitsDe(run)));
+      if (ligneSceau) openingNarration.push(ligneSceau);
       // Le hameau se souvient de la main qui lance le dé (chantier 3) : après
       // plusieurs fixations subies, l'accueil change dès l'entrée de zone.
       if (mem.fixations >= 2) {
@@ -2504,6 +2527,13 @@ export default function Scene() {
       runRef.current?.stats,
       relicDon(activeRelic(loadMemory())) === "regard"
     );
+    // LE MONDE RECONNAÎT LA MARQUE (14/08). Prioritaire sur tous les autres
+    // rappels : c'est la récompense d'une traversée réussie, elle ne doit pas
+    // se faire manger par une ligne de perception. Elle PREND la place du
+    // rappel de l'arrivée, elle ne s'y ajoute pas — le budget d'un seul bloc
+    // par arrivée (12/08) vaut pour elle comme pour les autres.
+    const reconnu = reconnaissanceSceau(lieuIci, sceauNiveau);
+    if (reconnu) rappels.push({ prio: 0, text: reconnu });
     if (perception) rappels.push({ prio: 4, text: perception });
     if (rappelArrivee) rappels.push({ prio: 5, text: rappelArrivee });
     /**
@@ -2731,6 +2761,16 @@ export default function Scene() {
       })) {
         entries.push({ id: nextId(), kind: "narration", text: t });
       }
+      // LE SCEAU SE PREND ICI (arbitrage 10/08). Il n'est POSÉ qu'au dernier
+      // tap, par `recordTraversee` — donc on annonce le passage qui vient
+      // d'être gagné, celui-ci compris : `niveau + 1`. Placé après la trace
+      // de sortie et avant le Registre : d'abord ce que cette vie a été,
+      // puis ce qu'elle rapporte, puis le livre.
+      entries.push({
+        id: nextId(),
+        kind: "narration",
+        text: ligneSceauSortie(niveauSceau({ run: {}, perm: m.faits ?? {} }) + 1),
+      });
       entries.push({
         id: nextId(),
         kind: "registre",
@@ -3461,6 +3501,12 @@ export default function Scene() {
       const m = loadMemory();
       const l = ligneBorneSud(m.fallen[0], m.deaths);
       if (l) supplements.push(l);
+      // LA BORNE RÉPOND À SA PROPRE QUESTION (14/08). L'examen finit depuis
+      // le 20/07 sur « alors qui a gravé côté sud ? ». Avec un Sceau, la
+      // réponse est dans la main du joueur — et elle vient EN DERNIER, après
+      // la marque du prédécesseur : c'est le geste qui conclut.
+      const ls = ligneSceauBorne(sceauNiveau);
+      if (ls) supplements.push(ls);
     }
     if (choice.poteau) {
       const l = lignePoteauNom(loadMemory().deaths);

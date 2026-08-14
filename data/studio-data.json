@@ -50,7 +50,7 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-13T08:13:19Z",
+ "genere": "2026-08-13T08:36:28Z",
  "commit": "f6f2cc9",
  "zones": [
   {
@@ -3846,6 +3846,13 @@
      "exigeObjet": "caillou-gamin"
     },
     {
+     "id": "colporteur-paume",
+     "label": "Ouvrir la main devant le Colporteur",
+     "type": "passif",
+     "consequence": "Tu ouvres la main, paume en l'air, comme on montre qu'on n'a rien. Le Colporteur regarde le creux, et son sourire de marchand tombe d'un coup — pas de peur : de fatigue.\n\n— « Trois. » Il replie la toile sur son étal, alors que tu n'as rien demandé. « J'en ai vu trois comme ça, en vingt ans de chemins. Et les trois, je les ai vus deux fois. » Il te tend l'écuelle du repas qu'il s'était gardé, refuse ta main quand tu cherches de quoi payer. « Toi, tu me dois rien. C'est même l'inverse, et j'aime pas ça. »",
+     "exigeSceau": "sceau:landes"
+    },
+    {
      "id": "sonneur-battant",
      "label": "Parler à l’homme sans étal",
      "type": "passif",
@@ -4917,6 +4924,13 @@
      "consequence": "« J'écris les dénonciations et les défenses. Les deux. » Il range sa plume avec un soin d'horloger. « Depuis quelques années, on ne me demande plus de défenses. » Il dit ça comme on constate une baisse de commandes."
     },
     {
+     "id": "tribunal-page-revenus",
+     "label": "Demander la page des revenus",
+     "type": "passif",
+     "consequence": "Tu poses la question sans montrer ta main. Il ne demande pas pourquoi. Il feuillette en arrière, très loin, jusqu'à un cahier plus ancien que lui — et l'ouvre à une page qu'il n'a pas eu besoin de chercher.\n\nUne colonne de noms, courte. Chacun rayé d'un trait, et en face de chaque trait, un second nom, celui de quelqu'un du hameau, avec une date. « Quand il en revient un », dit l'Écrivain en refermant, « il en manque un. Le registre ne juge pas. Il équilibre. » Il te regarde enfin. « Vous croyez tous que vous rentrez. Personne ne rentre. On échange. »",
+     "exigeSceau": "sceau:landes"
+    },
+    {
      "id": "tribunal-carnet",
      "label": "Confronter le carnet au Registre",
      "type": "passif",
@@ -5790,6 +5804,13 @@
     "Elle ne l'est pas tout à fait. Tout en haut, une marque — une seule, d'une autre main. Il ne la voit pas : sa planche commence en bas."
    ],
    "choix": [
+    {
+     "id": "veilleur-colonne",
+     "label": "Lui montrer le haut de sa planche",
+     "type": "passif",
+     "consequence": "Tu poses le doigt tout en haut de la planche, sur la marque qu'il ne regarde jamais. Il se penche. Il approche la lanterne. Il compare — la marque, puis ta paume ouverte, puis la marque encore.\n\n— « C'est pas mon écriture. » Sa voix ne tremble pas, c'est pire : elle devient administrative. « Et c'est pas une écriture. C'est un creux. » Il repose la lanterne, prend son couteau, et raye la ligne qu'il vient d'écrire sur toi. « Je note ceux qui descendent. Toi, t'es dans l'autre colonne, et l'autre colonne, j'ai pas le droit de la tenir. »",
+     "exigeSceau": "sceau:landes"
+    },
     {
      "id": "veilleur-passer",
      "label": "Passer le portillon",
@@ -8213,7 +8234,7 @@
  "totaux": {
   "scenes": 89,
   "pointsInteret": 0,
-  "choix": 257,
+  "choix": 260,
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,

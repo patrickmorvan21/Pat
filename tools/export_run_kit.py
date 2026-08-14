@@ -63,6 +63,33 @@ def record(src: str, ancre: str) -> dict[str, str]:
     return out
 
 
+def sceau_textes() -> dict:
+    """Les textes du Sceau (lib/sceaux.ts), pour que la réplique les joue.
+
+    Les trois lignes calculées sont des `return` successifs dans leur fonction,
+    du cas le plus faible au plus fort : l'ordre de lecture EST l'ordre des
+    passages, donc une liste suffit (index 0 = premier passage).
+    """
+    src = (LIB / "sceaux.ts").read_text(encoding="utf-8")
+
+    def lignes(fn: str) -> list[str]:
+        d = src.find(f"export function {fn}")
+        if d < 0:
+            return []
+        corps = src[d : src.find("\n}", d)]
+        return [
+            "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', bloc)).replace('\\"', '"').replace("\\'", "'")
+            for bloc in re.findall(r"return\s*\(?((?:\s*\"(?:[^\"\\]|\\.)*\"\s*\+?)+)", corps)
+        ]
+
+    return {
+        "ouverture": lignes("ligneSceauOuverture"),
+        "borne": lignes("ligneSceauBorne"),
+        "sortie": lignes("ligneSceauSortie"),
+        "reconnu": record(src, "export const SCEAU_RECONNU"),
+    }
+
+
 def main() -> int:
     studio = DATA / "studio-data.json"
     if not studio.exists():
@@ -187,6 +214,12 @@ def main() -> int:
         "hameauInterieur": re.findall(
             r'"([a-z\-]+)"', bloc_tableau(src, "export const HAMEAU_INTERIOR")
         ),
+        # LE SCEAU DES LANDES (14/08). Sans ces textes, la réplique ferait
+        # croire à un relecteur que survivre ne rapporte rien — exactement le
+        # biais mesuré le 9/08, où six griefs du panel venaient du kit et non
+        # du jeu. On exporte les trois lignes calculées ET les reconnaissances
+        # par lieu ; le gabarit d'index vaut le nombre de passages.
+        "sceau": sceau_textes(),
     }
     # la version : on ne garde que le numéro
     m = re.search(r'APP_VERSION = "([^"]+)"', kit["version"])
