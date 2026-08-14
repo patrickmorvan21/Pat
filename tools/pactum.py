@@ -395,6 +395,21 @@ class Partie:
             # (le raccourci « coupait la scène » — grief unanime du panel 9/08,
             # qui était un artefact de CETTE réplique, pas du jeu).
             self.d["phase"] = "scene"
+            # ⚠️ LA HALTE AU HAMEAU MANQUAIT ENTIÈREMENT (14/08). Le jeu, en
+            # fin de traversée, fait d'abord faire HALTE au village à qui y est
+            # entré : cinq beats, la nuit, la grange, le repos — c'est le toit
+            # que le Serment promet. La réplique sautait droit à la sortie.
+            # Six testeurs sur huit ont donc rapporté « aucun repos n'existe »,
+            # « le toit juré n'arrive jamais », « Entrer dans le hameau
+            # m'envoie à la Palissade Sud ». Tout le contenu de la halte était
+            # invisible. Variante `dehors` si le Serment a été refusé : aucune
+            # porte ne s'ouvre à qui n'a pas juré.
+            if self.d.get("hameauEntree") and not self.d.get("halteFaite"):
+                dehors = self.d.get("serment") == "refuse"
+                cible = "hameau-halte-dehors" if dehors else "hameau-halte-1"
+                if cible in self.k["scenes"]:
+                    self.entrer(cible)
+                    return
             if "palissade-sud" in self.k["scenes"] and "palissade-sud" not in self.d["visites"]:
                 self.entrer("palissade-sud", orientation=True)
             else:
@@ -574,6 +589,8 @@ class Partie:
             return
 
         c = o["c"]
+        if c.get("serment"):
+            self.d["serment"] = c["serment"]
         # Ce qu'un choix ENSEIGNE se pose à la sélection (comme le Soupçon) :
         # poser la question vaut lire une trace.
         if c.get("donneSavoir"):
@@ -593,6 +610,17 @@ class Partie:
                 self.d["sansNuit"] = True
             if c.get("consequence"):
                 self.dit(c["consequence"], "narration")
+            elif self.scene().get("registre"):
+                # Un choix « suite » sans conséquence sur une scène de Registre,
+                # c'est LE geste de lire le livre : dans le jeu, la table
+                # s'affiche. Sans cette ligne, la réplique rendait un écran
+                # vide, lu comme un blocage par un testeur.
+                self.dit(
+                    "[Tu lis. Cent noms classés par jours de survie, la "
+                    "première ligne grattée jusqu'à la pierre. Ta ligne est "
+                    "quelque part dans le bas du livre.]",
+                    "narration",
+                )
             # LES LIGNES CALCULÉES DE LA BORNE, après la conséquence (l'ordre
             # compte : l'examen POSE la question « qui a gravé côté sud ? »,
             # la marque du prédécesseur et le Sceau y RÉPONDENT).
@@ -749,6 +777,19 @@ class Partie:
         # SÉJOUR (9/08) : un lieu qui retient ne se quitte que par un choix
         # portant `sortie`. Le choix résolu est consommé et disparaît ; on
         # redonne la main sur ce qui reste, sans rejouer l'arrivée.
+        # ⚠️ UNE RENCONTRE S'OUVRE DEPUIS N'IMPORTE QUEL LIEU (14/08). Ce bloc
+        # ne lisait `sortie.toScene` que sur un SÉJOUR — or les cinq choix qui
+        # mènent à quelqu'un (l'homme immobile de la Borne, le Marcheur, la
+        # Femme au Seuil, le Gamin, les Époux) sont posés sur des lieux
+        # ordinaires. Résultat mesuré par trois testeurs indépendants : « je
+        # choisis d'aller vers un personnage et il a disparu à l'écran
+        # suivant », cinq fois par vie. Tout le contenu des rencontres était
+        # INJOUABLE dans la réplique, et invisible dans les rapports.
+        if choix is not None and not s.get("sejour"):
+            ouvre = choix.get("sortie")
+            if isinstance(ouvre, dict) and ouvre.get("toScene"):
+                self.entrer(ouvre["toScene"])
+                return
         if s.get("sejour") and choix is not None:
             sortie = choix.get("sortie")
             self.d.setdefault("choixFaits", []).append(choix.get("id"))
@@ -764,6 +805,15 @@ class Partie:
             if isinstance(sortie, dict) and sortie.get("toScene"):
                 self.entrer(sortie["toScene"])
                 return
+        # La halte est finie : on ressort par la Palissade, comme dans le jeu.
+        if s.get("hameauHalte"):
+            self.d["halteFaite"] = True
+            self.d["phase"] = "scene"
+            if "palissade-sud" in self.k["scenes"] and "palissade-sud" not in self.d["visites"]:
+                self.entrer("palissade-sud", orientation=True)
+            else:
+                self.entrer("la-descente")
+            return
         if s.get("terminal"):
             if self.d["scene"] == "la-descente":
                 # LE SCEAU SE PREND ICI (arbitrage 10/08) : sortir vivant
