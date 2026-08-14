@@ -206,7 +206,38 @@ class Partie:
 
     # -- accès
     def scene(self, sid: str | None = None) -> dict:
-        return self.k["scenes"][sid or self.d["scene"]]
+        """La scène EFFECTIVE : une variante peut se jouer à sa place.
+
+        ⚠️ La réplique jouait toujours l'originale, donc sept scènes entières
+        n'existaient pas dans le kit — le Veilleur demandait au lieu de noter,
+        la Fille n'était jamais au Moulin. Un relecteur en concluait que ces
+        contenus n'existent pas (le biais du 9/08). Mêmes conditions que le
+        jeu : une découverte de compte (`has`) ou un compteur (`gte`), la
+        première variante satisfaite l'emporte.
+        """
+        sid = sid or self.d["scene"]
+        for s in self.k["scenes"].values():
+            r = s.get("remplace")
+            if not r or r.get("scene") != sid:
+                continue
+            si = r.get("si") or {}
+            if "has" in si:
+                if si["has"] in lire_compte().get("decouvertes", []):
+                    return s
+            elif "id" in si and self.compteur(si["id"]) >= si.get("gte", 1):
+                return s
+        return self.k["scenes"][sid]
+
+    def compteur(self, nom: str) -> int:
+        """Les compteurs qu'une condition de variante sait lire."""
+        if nom == "soupcon":
+            return int(self.d.get("soupcon", 0))
+        if nom == "c.fille":
+            # Le compteur dérivé des découvertes sur la Fille (jeu : tenu à la
+            # source pour ne pas diverger de la liste).
+            dec = lire_compte().get("decouvertes", [])
+            return sum(1 for x in dec if "fille" in x or "temoin" in x)
+        return 0
 
     def rng(self, sel: str = "") -> random.Random:
         """Graine reproductible. `sel` distingue deux tirages d'un même écran :
@@ -234,9 +265,76 @@ class Partie:
     def dit(self, texte: str, style: str = "") -> None:
         self.d["journal"].append({"style": style, "texte": texte})
 
+    def ambiance_de_marche(self, r, dans_village: bool) -> str:
+        """Le texte de marche — et c'est là que vit L'ÉCHELLE DU SOUPÇON.
+
+        ⚠️ La réplique ne tirait que dans le FOND : les treize barreaux de
+        l'escalade sociale n'existaient pas dans le kit, donc un relecteur
+        pouvait jouer deux vies sans jamais voir le système qu'on lui demandait
+        de juger. Même règle que le jeu (`pickLiaisonAmbiance`) :
+          1. éligibles (provenance, Soupçon, santé, jamais déjà servi) ;
+          2. la SPÉCIFICITÉ maximale ;
+          3. puis LE BARREAU LE PLUS HAUT atteint — sans ce dernier tri, tous
+             les barreaux sont à égalité et le monde sert du bruit au lieu
+             d'une progression (c'était le défaut corrigé le 14/08) ;
+          4. tirage seedé parmi ce qui reste.
+        """
+        soup = int(self.d.get("soupcon", 0))
+        sante = float(self.d.get("sante", 1.0))
+        vues = self.d["ambiancesVues"]
+        elig = []
+        for v in self.k.get("variantesMarche", []):
+            t, c = v.get("texte", ""), v.get("conditions", {})
+            if not t or t in vues:
+                continue
+            frm = c.get("from")
+            if frm:
+                # `HAMEAU_INTERIOR` est exporté comme une constante nommée.
+                dedans = "HAMEAU_INTERIOR" in frm
+                if dedans != dans_village:
+                    continue
+            if "minSoupcon" in c and soup < c["minSoupcon"]:
+                continue
+            if "maxSoupcon" in c and soup > c["maxSoupcon"]:
+                continue
+            if "maxHealth" in c and sante > c["maxHealth"]:
+                continue
+            # Les axes que la réplique ne porte pas (chapitre, objet porté,
+            # serment, Fille) : on écarte plutôt que de servir à tort.
+            if any(x in c for x in ("chapter", "carrying", "serment", "minFille", "to")):
+                continue
+            elig.append((v, c))
+        if elig:
+            # ⚠️ La spécificité du JEU compte un AXE, pas un champ : `minSoupcon`
+            # et `maxSoupcon` valent UN point à eux deux. Les compter séparément
+            # ferait gagner une variante bornée des deux côtés contre une plus
+            # pertinente — la réplique aurait servi une autre échelle que le jeu.
+            def spec_de(c):
+                n = 0
+                if "from" in c:
+                    n += 1
+                if "minSoupcon" in c or "maxSoupcon" in c:
+                    n += 1
+                if "maxHealth" in c:
+                    n += 1
+                return n
+            spec = max(spec_de(c) for _, c in elig)
+            top = [(v, c) for v, c in elig if spec_de(c) == spec]
+            haut = max(c.get("minSoupcon", 0) for _, c in top)
+            sommet = [(v, c) for v, c in top if c.get("minSoupcon", 0) == haut] or top
+            amb = r.choice(sommet)[0]["texte"]
+        else:
+            fond = list(self.k["ambiances"]) + (
+                [] if dans_village else list(self.k["ambiancesLande"]))
+            frais = [t for t in fond if t not in vues] or fond
+            amb = r.choice(frais)
+        return amb
+
     # -- ouverture d'un écran
     def entrer(self, sid: str, premier: bool = False, orientation: bool = False) -> None:
-        s = self.k["scenes"][sid]
+        # ⚠️ `self.scene(sid)` et non l'accès direct : sinon la variante ne se
+        # joue jamais (elle est résolue ici, une fois, à l'ouverture).
+        s = self.scene(sid)
         self.d["scene"] = sid
         self.d["poiOuvert"] = False
         self.d["pas"] += 1
@@ -439,9 +537,7 @@ class Partie:
             or radical.startswith("hameau-")
             or radical in ("serment-hameau", "femme-seuil", "gamin-murets")
         )
-        fond = list(self.k["ambiances"]) + ([] if dans_village else list(self.k["ambiancesLande"]))
-        frais = [t for t in fond if t not in self.d["ambiancesVues"]] or fond
-        amb = r.choice(frais)
+        amb = self.ambiance_de_marche(r, dans_village)
         self.d["ambiancesVues"].append(amb)
         self.dit(amb, "narration")
         if ferme and self.k.get("routeFermee"):

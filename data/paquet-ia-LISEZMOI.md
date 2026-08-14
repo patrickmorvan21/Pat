@@ -52,6 +52,14 @@ complète : c'est ce texte-là qu'il faut juger.
 - **Le Sceau des Landes est répliqué** (nouveau en v1.83.0) : la marque que
   laisse une traversée réussie, ce qu'elle change à la vie suivante, et la
   réponse qu'elle donne au côté sud de la Borne. Voir le protocole ci-dessous.
+- **L'échelle sociale du Soupçon est répliquée** (nouveau en v1.87.0) : les
+  textes de marche changent selon ce que le village a décidé à ton sujet, et
+  ils MONTENT — le monde sert le barreau que tu as atteint, pas un barreau au
+  hasard. C'est le système à juger en priorité dans cette version.
+- **Les scènes-variantes sont répliquées** (nouveau en v1.87.0) : sept scènes
+  se jouent À LA PLACE d'une autre selon ce que tu as compris ou ce que le
+  village pense de toi. Le Veilleur de la Palissade, par exemple, ne te parle
+  pas de la même façon selon qu'on t'a dénoncé ou non.
 - **Ne sont pas répliqués** : les illustrations, le geste tactile du dé, les
   scènes chronométrées, le Grand Registre, les reliques, l'humeur du Geôlier,
   les témoins, les chapitres du Bailli, les surprises. Ne les signale pas
@@ -94,13 +102,18 @@ que le joueur a vu, les images affichées, les choix offerts, l'action prise.
 C'est la **référence sans dérive** — tout y est citable mot pour mot, et c'est
 là que se jugent la mise en scène et le rythme réel.
 
-Les trois parties : une **curieuse** (elle regarde tout et lance peu), une
-**fonceuse** (elle prend les jets), et une **toute première partie** (compte
-vierge, prologue compris). Les deux premières sont jouées sur un compte qui a
-déjà vécu — trois morts, deux reliques, des lieux déjà traversés — parce que
-c'est la seule façon de voir la mémoire du monde : la trace du héros
-précédent sur la Borne, les personnages qui te reconnaissent sans te
+Les parties : une **curieuse** (elle regarde tout et lance peu) et une
+**pressée** (elle prend le premier bouton). Toutes deux sont jouées sur un
+compte qui a déjà vécu — trois morts, deux reliques, des lieux déjà traversés
+— parce que c'est la seule façon de voir la mémoire du monde : la trace du
+héros précédent sur la Borne, les personnages qui te reconnaissent sans te
 reconnaître, le décor qui ne se lit plus pareil.
+
+⚠️ **Ces transcripts n'exercent presque pas l'échelle du Soupçon**, et il faut
+le savoir avant de les lire : ce sont des parties jouées par un automate, qui
+ne commet pas les actes qui font monter le Soupçon (mentir, voler, trancher
+une corde, questionner les gens). Elles finissent donc en bas de l'échelle.
+Pour juger ce système, **joue** — il ne se lit pas dans ces enregistrements.
 
 Elles sont enregistrées sur **la version que tu peux lire dans `sources/`**,
 pas sur une version antérieure : ce que tu y vois est ce que le jeu fait

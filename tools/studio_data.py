@@ -835,6 +835,15 @@ _CONSTANTES = {
     "SEUIL_MOULIN": "3",
 }
 
+# La VALEUR réelle des mêmes constantes, pour la forme lisible par machine des
+# conditions (`remplace.si`). ⚠️ Ne pas confondre avec `_CONSTANTES`, qui rend
+# un libellé d'affichage : le moteur de la réplique ne saurait pas lire
+# « découvertes sur la Fille ».
+VALEURS_TS = {
+    "COMPTEUR_FILLE": "c.fille",
+    "SEUIL_MOULIN": "3",
+}
+
 
 def _const(nom: str) -> str:
     """Rend lisible une constante du .ts citée dans une condition."""
@@ -892,12 +901,38 @@ def lire_scenes() -> list[dict]:
         if m:
             cond = m.group(2).strip().rstrip(",")
             has = re.search(r'has:\s*"([^"]+)"', cond)
-            gte = re.search(r'id:\s*([A-Za-z_][\w"\.]*)\s*,\s*gte:\s*([A-Za-z_\d][\w]*)', cond)
+            # ⚠️ L'id peut être une CONSTANTE (`COMPTEUR_FILLE`) ou un littéral
+            # entre guillemets (`"soupcon"`) : l'ancien motif exigeait une
+            # initiale de lettre et ratait donc silencieusement toute condition
+            # écrite en clair. Compté avant de s'en servir : la variante du
+            # Veilleur ressortait sans sa condition.
+            gte = re.search(
+                r'id:\s*(?:"([^"]+)"|([A-Za-z_][\w]*))\s*,\s*gte:\s*(?:(\d+)|([A-Za-z_][\w]*))', cond)
+            brut_id = (gte.group(1) or gte.group(2)) if gte else None
+            brut_val = (gte.group(3) or gte.group(4)) if gte else None
             s["remplace"] = {
                 "scene": m.group(1),
                 "condition": has.group(1) if has
-                else (f"{_const(gte.group(1))} ≥ {_const(gte.group(2))}" if gte else cond),
+                else (f"{_const(brut_id)} ≥ {_const(brut_val)}" if gte else cond),
             }
+            # ⚠️ ET SA FORME LISIBLE PAR MACHINE. La `condition` ci-dessus est
+            # de l'AFFICHAGE (« soupcon ≥ 4 ») : la réplique ne peut pas
+            # l'évaluer, donc elle ignorait purement et simplement toutes les
+            # scènes-variantes — un relecteur du kit concluait qu'elles
+            # n'existent pas (le biais mesuré le 9/08). Les deux formes vivent
+            # côte à côte : l'une pour l'éditeur, l'autre pour le moteur.
+            if has:
+                s["remplace"]["si"] = {"has": has.group(1)}
+            elif gte:
+                # ⚠️ La forme MACHINE prend la VALEUR de la constante, jamais
+                # son libellé d'affichage : `_const` rend « découvertes sur la
+                # Fille », que le moteur ne saurait pas lire.
+                cle = VALEURS_TS.get(brut_id, brut_id)
+                val = VALEURS_TS.get(brut_val, brut_val)
+                try:
+                    s["remplace"]["si"] = {"id": str(cle), "gte": int(val)}
+                except (TypeError, ValueError):
+                    pass
         for champ, cle in (("combat", "combat"), ("registre", "registre"),
                            ("terminal", "terminal"), ("liaison", "liaison"),
                            ("hameauEntree", "hameauEntree"), ("hameauHalte", "hameauHalte"),

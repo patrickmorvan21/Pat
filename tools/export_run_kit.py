@@ -193,6 +193,12 @@ def main() -> int:
                 # qu'il n'est pas nommé ici. `sejour` l'a appris à ses dépens —
                 # la réplique laissait quitter la Palissade au premier geste.
                 "sejour", "narrationEchec", "nuit",
+                # LA SCÈNE-VARIANTE (14/08) : elle se joue À LA PLACE d'une
+                # autre. Sans ce champ, la réplique jouait toujours l'originale
+                # — le Veilleur demandait au lieu de noter, la Fille n'était
+                # jamais au Moulin, la Veuve ne savait jamais. Sept scènes
+                # entières restaient invisibles au relecteur.
+                "remplace",
             )
             if k in s
         }
@@ -239,6 +245,14 @@ def main() -> int:
         "ambiances": chaines_de_tableau(bloc_tableau(src, "const LIAISON_AMBIANCES:")),
         "ambiancesLande": chaines_de_tableau(bloc_tableau(src, "const LIAISON_AMBIANCES_LANDE")),
         "bifurcations": chaines_de_tableau(bloc_tableau(src, "const BIFURCATIONS")),
+        # ⚠️ LES VARIANTES DE MARCHE, ET C'EST TOUTE L'ÉCHELLE DU SOUPÇON.
+        # La réplique ne tirait que dans le FOND : les treize barreaux de
+        # l'escalade sociale (« un volet se ferme », « on ne croise plus
+        # personne », « trois hommes à la limite du regard ») n'existaient pas
+        # dans le kit. Un relecteur pouvait donc jouer deux vies entières sans
+        # voir le système qu'on lui demandait de juger, et conclure que rien
+        # n'avait changé — le biais du 9/08, sur le lot précisément à valider.
+        "variantesMarche": d.get("transitions", {}).get("variantes", []),
         # LE SOUPÇON LISIBLE (vague 5) : sans ces trois pools la réplique
         # laissait le Soupçon monter en silence jusqu'au procès — exactement
         # le défaut que la vague corrige dans le jeu.
