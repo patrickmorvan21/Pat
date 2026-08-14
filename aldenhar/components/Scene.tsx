@@ -4558,9 +4558,13 @@ function libelleEtat(label: string): string {
  * les effets hérités — jamais un chiffre.
  */
 const DESC_EFFETS_HERITES: Record<string, string> = {
-  entaille: "La blessure ralentit chaque geste, tant qu'elle n'est pas soignée.",
-  aguerri: "Le combat t'a affûté : tes gestes portent mieux, pour un temps.",
-  ebranle: "Le choc te suit : tes gestes hésitent, pour un temps.",
+  // ⚠️ LOT 4 (14/08) : ces trois lignes NOMMAIENT l'effet et sa durée (« tes
+  // gestes portent mieux, pour un temps »). Le corps le montre — l'érosion du
+  // cadre, l'Anneau, la manière dont la scène suivante se passe. Ce qui reste
+  // est ce que le héros SENT, jamais ce que le moteur calcule.
+  entaille: "Quand tu poses le pied, la douleur remonte jusqu'à la hanche.",
+  aguerri: "Ta main ne tremble plus. Elle sait ce qu'elle vient de faire.",
+  ebranle: "Tu sursautes à un bruit qui ne t'aurait rien fait.",
 };
 function descEtat(id: string, positive: boolean): string {
   const fiche = etat(id);
@@ -4568,8 +4572,8 @@ function descEtat(id: string, positive: boolean): string {
   return (
     DESC_EFFETS_HERITES[id] ??
     (positive
-      ? "Il joue pour toi : tes gestes portent un peu mieux, pour un temps."
-      : "Il joue contre toi : tes gestes portent un peu moins bien, tant qu'il tient.")
+      ? "Quelque chose est avec toi. Tu le sens à ta façon d'avancer."
+      : "Quelque chose te retient. Tu le sens à ta façon d'avancer.")
   );
 }
 
@@ -4581,8 +4585,8 @@ function descEtat(id: string, positive: boolean): string {
 function VoletEtat({ id, label, positive }: { id: string; label: string; positive: boolean }) {
   const fiche = etat(id);
   const sens = positive
-    ? "Il joue pour toi : tes gestes portent un peu mieux, pour un temps."
-    : "Il joue contre toi : tes gestes portent un peu moins bien, tant qu'il tient.";
+    ? "Quelque chose est avec toi. Tu le sens à ta façon d'avancer."
+    : "Quelque chose te retient. Tu le sens à ta façon d'avancer.";
   return (
     <div className="flex h-full flex-col gap-[10px] overflow-y-auto px-[20px] pb-[16px] pt-[14px]">
       <p className="etat-volet-eyebrow">État {positive ? "favorable" : "défavorable"}</p>

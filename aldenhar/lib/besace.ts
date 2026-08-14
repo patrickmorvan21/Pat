@@ -74,7 +74,7 @@ export function startingBesace(): BesaceItem[] {
       slot: "passif",
       passiveMod: 1,
       passiveScope: "combat",
-      flavor: "Elle a déjà servi. Elle servira encore. Ta main s'en trouve plus sûre au combat.",
+      flavor: "Elle a déjà servi. Elle servira encore. Le manche garde la forme d'une main.",
     },
   ];
 }
@@ -370,9 +370,13 @@ export function usageEnMots(item: BesaceItem): string {
   }
   const p = it.passiveMod ?? 0;
   if (p <= 0) return "Ne pèse rien dans la main. C'est ailleurs que ça pèse.";
+  // ⚠️ LOT 4 (14/08) : ces deux lignes DISAIENT le modificateur passif (« tu
+  // t'en sors mieux », « plus facilement »). L'Anneau le montre déjà — un
+  // passif entre dans le seuil, donc dans le nombre d'encoches pleines. Ce
+  // qu'il reste à dire est la SENSATION, pas la règle.
   if (it.passiveScope === "combat")
-    return "Tant que tu la portes, tu t'en sors mieux quand il faut se battre.";
-  return "Tant que tu le portes, tout te vient un peu plus facilement.";
+    return "Le poids tombe juste dans la main quand il faut faire vite.";
+  return "Tu le portes sans y penser, et tu hésites moins qu'avant.";
 }
 
 export const RARITY_LABEL: Record<BesaceRarity, string> = {

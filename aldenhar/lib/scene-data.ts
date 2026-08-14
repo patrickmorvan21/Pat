@@ -5862,7 +5862,7 @@ export const SCENES: Scene[] = [
           outcomes: outcomes(
             "20 naturel. Tu refais le son de tout à l'heure, plus bas, plus court — une réponse, pas un défi. La meneuse incline la tête, exactement comme un chien à qui l'on parle. Puis elle se détourne et le croissant se défait derrière elle, sans un bruit, comme une phrase qu'on finit.",
             "Tu réponds — le même son qu'elles t'ont lancé tout à l'heure, plus bas. Ce n'est pas beau, mais c'est dans la bonne langue. La meneuse recule d'un pas — le premier qu'aucune d'elles n'avait fait — et le reste suit son pas.",
-            "Tu réponds trop fort. Ce qui devait être un accord sonne comme une revendication — et ce n'est pas à toi qu'on la règle : deux d'entre eux se retournent l'un contre l'autre dans un bruit atroce, et le demi-cercle se défait autour de la querelle. Tu n'y es pour rien, et tu n'y es pas.",
+            "Tu réponds trop fort. Ce qui devait être un accord sonne comme une revendication — et ce n'est pas à toi qu'on la règle : deux d'entre eux se retournent l'un contre l'autre dans un bruit atroce, et le demi-cercle se défait autour de la querelle. Tu passes pendant qu'ils règlent ça entre eux. Aucun ne t'a répondu.",
             "1 naturel. Tu leur réponds dans leur langue. Ils te répondent dans la leur, et la leur n'a qu'une phrase. ♦ −2"
           ),
         },
