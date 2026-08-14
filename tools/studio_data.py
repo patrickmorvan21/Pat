@@ -738,6 +738,20 @@ def lire_choix(bloc: str) -> list[dict]:
                            ("troupeau", "troupeau"), ("poteau", "poteau")):
             if booleen_de(c, champ):
                 ch[cle] = True
+        # LES QUATRE GARDES QUI MANQUAIENT À LA RÉPLIQUE (playtest 14/08).
+        # Patrick a vu au Puits « Descendre par la corde » sans corde, et six
+        # choix simultanés dans la ruelle. Le jeu, lui, filtre : ces champs
+        # n'étaient simplement pas exportés, donc la réplique les ignorait.
+        # Même piège que `sansNuit` et `exigeObjet` — la liste blanche est le
+        # point de fuite habituel.
+        for champ, cle in (("requiresUsage", "exigeUsage"), ("masqueSiUsage", "masqueSiUsage"),
+                           ("requiresDominante", "exigeDominante")):
+            v = texte_de(c, champ)
+            if v:
+                ch[cle] = v
+        ms = re.search(r'requiresStat:\s*\{\s*stat:\s*"([A-Z]+)",\s*min:\s*(\d+)', c)
+        if ms:
+            ch["exigeStat"] = {"stat": ms.group(1), "min": int(ms.group(2))}
         if "debt:" in c:
             ch["dette"] = {"id": texte_de(c, "id"), "texte": texte_de(c, "text")}
         out.append(ch)
@@ -865,6 +879,18 @@ def lire_scenes() -> list[dict]:
                            ("nuit", "nuit")):
             if booleen_de(bloc, champ):
                 s[cle] = True
+        # L'OBJET QUI TRANSFORME LA SCÈNE (12/08 §2). Sans lui, la réplique ne
+        # peut pas amarrer la corde à la margelle du Puits — donc l'option
+        # qu'elle ouvre y resterait injouable, et le Studio ne montrerait pas
+        # ce qui déclenche `exigeUsage`.
+        u = bloc_apres(bloc, r"\n    usageObjet:\s*")
+        if u:
+            s["usageObjet"] = {
+                cle: texte_de(u[0], champ)
+                for champ, cle in (("objet", "objet"), ("label", "label"),
+                                   ("cle", "cle"), ("consequence", "consequence"))
+                if texte_de(u[0], champ)
+            }
         # AFFORDANCES de la scène : ce sont elles qui décident si un état ouvre
         # quelque chose ici (AFFAMÉ n'ouvre « voler » que sur `food_available`).
         tb = bloc_apres(bloc, r"\n    tags:\s*")

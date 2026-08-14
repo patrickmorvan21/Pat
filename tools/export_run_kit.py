@@ -181,6 +181,10 @@ def main() -> int:
                 "id", "nom", "lieu", "narration", "choix", "pointsInteret", "suite",
                 "combat", "adversaireNom", "terminal", "registre", "hameauEntree",
                 "hameauHalte", "chronometree", "procesFixation", "butin",
+                # L'OBJET QUI TRANSFORME LA SCÈNE (12/08) : sans lui, la
+                # réplique ne peut pas amarrer la corde, donc l'option qu'elle
+                # ouvre resterait à jamais injouable dans le kit.
+                "usageObjet",
                 # ⚠️ Liste BLANCHE : un champ neuf de `Scene` ne voyage pas tant
                 # qu'il n'est pas nommé ici. `sejour` l'a appris à ses dépens —
                 # la réplique laissait quitter la Palissade au premier geste.

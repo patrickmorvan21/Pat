@@ -53,6 +53,21 @@ SAUVE = ICI / "partie.json"
 COMPTE = ICI / "compte.json"
 
 
+def profil_de_heros(rng) -> dict:
+    """Quatre stats de 1 à 5, une dominante et une faiblesse — comme le Seuil.
+
+    Le jeu les fixe par les souvenirs du prologue ; le kit ne joue pas le
+    prologue, donc il les tire. Ce qui compte pour le playtest est qu'elles
+    EXISTENT et qu'une seule domine.
+    """
+    stats = {k: rng.choice([2, 3, 3, 4]) for k in ("courage", "ruse", "instinct", "empathie")}
+    cles = list(stats)
+    rng.shuffle(cles)
+    stats[cles[0]] = 5
+    stats[cles[1]] = min(stats[cles[1]], 2)
+    return stats
+
+
 def lire_compte() -> dict:
     if COMPTE.exists():
         try:
@@ -146,6 +161,12 @@ class Partie:
     def __init__(self, d: dict):
         self.d = d
         self.k = kit()
+        # Une partie commencée AVANT que la réplique ne connaisse les stats
+        # n'en a pas : on lui en donne, dérivées de sa graine, plutôt que de
+        # la faire jouer avec un profil vide (elle verrait alors toujours la
+        # même variante de choix). Rien d'autre de sa sauvegarde ne bouge.
+        if not self.d.get("stats"):
+            self.d["stats"] = profil_de_heros(random.Random(self.d.get("graine", 0)))
 
     # -- création
     @classmethod
@@ -164,6 +185,12 @@ class Partie:
             "soupconVu": 0, "routeAFermer": False,
             "des": [], "journal": [], "sortie": None, "hameauEntree": False,
             "procesVu": False,
+            # LES STATS DU HÉROS (verdict du Seuil dans le jeu, tirage ici).
+            # Elles pèsent sur le dé (`stat − 3`, promesse n°1 du 4/08) et
+            # décident quelle VARIANTE de choix existe (`exigeDominante`).
+            # Sans elles, la réplique offrait les quatre variantes du gamin
+            # d'un coup — six CTA dans la ruelle, relevé au playtest du 14/08.
+            "stats": profil_de_heros(rng),
         }
         p = cls(d)
         p.entrer(k["entree"], premier=True)
@@ -422,6 +449,10 @@ class Partie:
         if pois:
             out.append({"kind": "ouvrir", "label": "Observer les alentours",
                         "note": f"{len(pois)} chose(s) à regarder"})
+        u = s.get("usageObjet")
+        if (u and u.get("objet") in self.d.get("besace", [])
+                and f"usage:{u.get('cle')}" not in self.d.get("choixFaits", [])):
+            out.append({"kind": "usage", "u": u, "label": u.get("label") or "Utiliser"})
         for c in s.get("choix", []):
             if c["type"] == "verrouille":
                 continue
@@ -440,6 +471,21 @@ class Partie:
             # LE SCEAU (14/08) : ces conversations n'existent que pour un
             # compte qui a déjà franchi la Descente vivant.
             if c.get("exigeSceau") and lire_compte().get("sceau", 0) <= 0:
+                continue
+            # L'OBJET QUI TRANSFORME LA SCÈNE (12/08) : portée ÉCRAN, le jeton
+            # vit dans `choixFaits`. Sans ce garde, la réplique proposait
+            # « Descendre par la corde » à qui n'avait pas amarré de corde
+            # (playtest 14/08).
+            faits = self.d.get("choixFaits", [])
+            if c.get("exigeUsage") and f"usage:{c['exigeUsage']}" not in faits:
+                continue
+            if c.get("masqueSiUsage") and f"usage:{c['masqueSiUsage']}" in faits:
+                continue
+            # LES VARIANTES DE PROFIL : au plus UNE par écran, celle du héros.
+            if c.get("exigeDominante") and c["exigeDominante"] != self.dominante():
+                continue
+            es = c.get("exigeStat")
+            if es and (self.d.get("stats") or {}).get(es["stat"].lower(), 3) < es["min"]:
                 continue
             # SÉJOUR : ce qui a déjà été fait ici ne se refait pas.
             if s.get("sejour") and c["id"] in self.d.get("choixFaits", []):
@@ -462,6 +508,17 @@ class Partie:
             # sous les choix. Un écran blanc se lit comme un blocage et se
             # fait signaler comme un bug par les IA testeuses.
             self.dit("Tu t'arrêtes, et tu prends le temps de regarder.", "narration")
+            return
+        if o["kind"] == "usage":
+            # L'OBJET AGIT SUR PLACE (12/08 §2) : il ne fait pas passer le
+            # temps, il transforme la scène — la conséquence s'écrit, l'objet
+            # est consommé, et les options qu'il ouvre apparaissent ici même.
+            u = o["u"]
+            self.d.setdefault("choixFaits", []).append(f"usage:{u.get('cle')}")
+            if u.get("objet") in self.d.get("besace", []):
+                self.d["besace"].remove(u["objet"])
+            if u.get("consequence"):
+                self.dit(u["consequence"], "narration")
             return
         if o["kind"] == "fermer":
             self.d["poiOuvert"] = False
@@ -524,8 +581,17 @@ class Partie:
         nom = self.k.get("objets", {}).get(oid) or oid.replace("-", " ")
         self.dit("OBTENU — " + nom, "obtenu")
 
-    def modificateur(self) -> int:
+    def dominante(self) -> str:
+        st = self.d.get("stats") or {}
+        return max(st, key=lambda k: st[k]).upper() if st else "COURAGE"
+
+    def modificateur(self, stat: str | None = None) -> int:
         m = 0
+        # LA STAT ENGAGÉE (promesse n°1 du 4/08) : échelle 1..5 → −2..+2, jamais
+        # affichée — c'est l'Anneau qui le montre. Deux héros n'ont donc pas les
+        # mêmes chances sur le même choix.
+        if stat:
+            m += (self.d.get("stats") or {}).get(stat.lower(), 3) - 3
         for e, tours in self.d["etats"].items():
             if tours <= 0:
                 continue
@@ -538,7 +604,7 @@ class Partie:
 
     def resoudre(self, c: dict) -> None:
         seuil = int(c.get("seuil") or 11)
-        mod = self.modificateur()
+        mod = self.modificateur(c.get("stat"))
         r = self.rng(c["id"])
         naturel = r.randrange(1, 21)
         effectif = naturel + mod
