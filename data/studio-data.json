@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-14T19:47:31Z",
- "commit": "dacc5d0",
+ "genere": "2026-08-14T21:20:19Z",
+ "commit": "d0baaba",
  "zones": [
   {
    "id": "landes",
@@ -982,19 +982,20 @@
      "label": "Reculer sur le talus, sans courir",
      "type": "risque",
      "stat": "INSTINCT",
-     "seuil": 10,
+     "seuil": 11,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu montes à reculons, sans quitter la masse des yeux, et tu t'arrêtes exactement où l'ombre s'arrête. Elle vient jusque-là. Elle s'arrête aussi. Vous restez face à face de part et d'autre d'une ligne que tu es le seul des deux à avoir choisie — puis elle se retourne, et c'est elle qui s'en va.",
-      "reussite": "Tu prends le talus de biais, sans te presser, parce que courir n'a jamais servi. La Bête accompagne ta montée le long du creux, à hauteur, jusqu'à la limite. Là, elle freine d'elle-même. Tu passes au-dessus d'elle.",
-      "echec": "La terre du talus part sous ton talon et tu glisses d'un pas vers le fond. Un pas suffit : l'avancée du corps te prend au flanc avant que tu ne remontes.",
+      "reussite": "Tu prends le talus de biais, sans te presser, parce que courir n'a jamais servi. Les griffures sur la paroi s'arrêtent toutes à la même hauteur — tu montes jusque-là, et un peu plus haut. La Bête t'accompagne le long du creux, à hauteur, puis freine d'elle-même sur cette ligne-là. Tu passes au-dessus d'elle.",
+      "echec": "La terre part sous ton talon et tu redescends d'un pas — d'un seul, parce que tu savais où était la ligne et que tu t'y es rattrapé. Elle arrive au bas du talus, s'arrête net, souffle une fois. Tu as perdu ta montée. Pas ton bras.",
       "funeste": "1 naturel. Tu recules trop tôt, avant qu'elle ne soit engagée — et elle ne s'engage pas. Elle attend, dans son couloir, que la nuit t'y ramène. ♦ −2"
      },
      "nature": "physique",
      "exigeDecouverte": "d.bete_couloir",
      "tags": [
       "fuite"
-     ]
+     ],
+     "horsDePortee": true
     },
     {
      "id": "grimper-talus",
@@ -1705,16 +1706,17 @@
      "label": "Lui réciter l'ordonnance",
      "type": "risque",
      "stat": "RUSE",
-     "seuil": 11,
+     "seuil": 12,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu récites la liste des signes, dans l'ordre, avec les mots du Bailli. Au troisième, il s'arrête. Au cinquième, il recule d'un pas vers le poteau cassé. À la fin, il se tient droit à l'endroit exact où il a passé des années — attendant qu'on l'attache, parce que c'est ce que la phrase dit qu'il faut faire.",
-      "reussite": "Tu dis les signes à voix haute. Ce n'est pas toi qu'il entend : c'est la formule, et la formule a autorité sur lui. Il te contourne sans te toucher, retourne à son rang, et se remet à attendre.",
-      "echec": "Tu écorches un mot au milieu. La liste se casse, et lui aussi : ce qui te fonce dessus n'obéit plus à rien.",
+      "reussite": "Tu dis les quatre signes à voix haute, dans l'ordre où ils étaient cloués. Ce n'est pas toi qu'il entend : c'est la formule, et la formule a autorité sur lui. Il te contourne sans te toucher, retourne à son rang, et se remet à attendre.",
+      "echec": "Tu écorches un mot au milieu. La liste se casse, et lui avec : il s'élance sans plus obéir à rien — et sa corde le reprend en pleine course, à deux pas de toi. Elle tient. C'est pour ça que tu es resté du côté du poteau.",
       "funeste": "1 naturel. Tu récites bien. Trop bien. Il t'écoute jusqu'au bout, penche ce qui lui reste de tête — et se demande visiblement si la liste te désigne, toi. ♦ −2"
      },
      "nature": "surnaturel",
-     "exigeSavoir": "savoir_ordonnance"
+     "exigeSavoir": "savoir_ordonnance",
+     "horsDePortee": true
     },
     {
      "id": "emmeler",
@@ -4978,16 +4980,17 @@
      "label": "Lui dire que son maître s'est jugé",
      "type": "risque",
      "stat": "EMPATHIE",
-     "seuil": 11,
+     "seuil": 12,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu t'accroupis à sa hauteur et tu le lui dis comme on rend une nouvelle à un vieux serviteur : le nom qui l'a posté est écrit sur le registre, en dernier, de sa propre main. Le chien te regarde longtemps. Puis il se lève, quitte le seuil, et va se coucher trois pas plus loin — dehors, comme un chien sans maison. Il ne t'accompagne pas. Il ne t'arrête plus.",
-      "reussite": "Tu parles doucement, et tu dis son nom à lui — celui du Bailli. L'animal dresse une oreille, puis la baisse. Il ne s'écarte pas franchement : il se décale, ce qui suffit.",
-      "echec": "Ta voix tremble sur le nom, et c'est ce tremblement qu'il entend. Il monte sur toi avant la fin de la phrase.",
+      "reussite": "Tu parles doucement, depuis le seuil, et tu dis le nom que le pendu a fini par lâcher — celui du Bailli. L'animal dresse une oreille, puis la baisse. Il ne s'écarte pas franchement : il se décale, ce qui suffit.",
+      "echec": "Ta voix tremble sur le nom, et c'est ce tremblement qu'il entend. Il se jette — et la chaîne le reprend à un pas de tes bottes, dans un bruit sec. Tu as parlé depuis le bon côté du seuil : il n'y a que ça entre lui et toi.",
       "funeste": "1 naturel. Tu lui annonces que son maître est mort. Il le savait. C'est pour ça qu'il ne quitte plus ce seuil, et pour ça qu'il n'a plus rien à perdre. ♦ −2"
      },
      "nature": "physique",
-     "exigeDecouverte": "d.bailli_condamne"
+     "exigeDecouverte": "d.bailli_condamne",
+     "horsDePortee": true
     },
     {
      "id": "contourner-cour",
@@ -5244,16 +5247,17 @@
      "label": "Faire tinter la clochette",
      "type": "risque",
      "stat": "RUSE",
-     "seuil": 11,
+     "seuil": 12,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu sors la clochette et tu la fais sonner une fois, sèchement, comme on rappelle un troupeau. Les cinq têtes se tournent ENSEMBLE, du même côté, à la même hauteur — et le front se défait. Ils cherchent le berger derrière toi. Tu passes pendant qu'ils cherchent, et le son continue de les tenir longtemps après.",
-      "reussite": "Le battant claque. La grande s'arrête net, une patte en l'air, et le silence dure assez pour que tu recules de trois pas sans qu'aucune ne bouge. Ils te laissent partir en te regardant faire : tu sens qu'ils t'ont classé quelque part.",
-      "echec": "Tu agites la clochette. Le son sort mou, faux, pas celui d'une bête qui marche. Ils comprennent immédiatement que le berger, c'est toi qui l'as pris.",
+      "reussite": "Le battant claque — celui que tu as pris au cou de la meneuse du troupeau. La grande s'arrête net, une patte en l'air, et le silence dure assez pour que tu recules de trois pas sans qu'aucune ne bouge. Ils te laissent partir en te regardant faire : tu sens qu'ils t'ont classé quelque part.",
+      "echec": "Tu agites la clochette. Le son sort mou, faux, pas celui d'une bête qui marche. Ils comprennent que le berger, c'est toi qui l'as pris — et ils ne bougent pas pour autant : on ne mord pas quelqu'un qui porte la clochette. Ils se contentent de refermer le demi-cercle d'un pas.",
       "funeste": "1 naturel. La clochette sonne juste. Trop juste. Ils arrivent au son — c'est exactement ce qu'on leur a appris à faire. ♦ −2"
      },
      "nature": "physique",
-     "exigeObjet": "clochette-meneuse"
+     "exigeObjet": "clochette-meneuse",
+     "horsDePortee": true
     },
     {
      "id": "hurler-meute",
@@ -5343,16 +5347,17 @@
      "label": "Lui répondre à la voix",
      "type": "risque",
      "stat": "RUSE",
-     "seuil": 11,
+     "seuil": 12,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu refais le son de tout à l'heure, plus bas, plus court — une réponse, pas un défi. La meneuse incline la tête, exactement comme un chien à qui l'on parle. Puis elle se détourne et le croissant se défait derrière elle, sans un bruit, comme une phrase qu'on finit.",
-      "reussite": "Tu réponds. Le son n'est pas beau, mais il est dans la bonne langue. La meneuse recule d'un pas — le premier qu'aucune d'elles n'avait fait — et le reste suit son pas.",
-      "echec": "Tu réponds trop fort. Ce qui devait être un accord sonne comme une revendication, et une revendication, chez eux, se règle.",
+      "reussite": "Tu réponds — le même son qu'elles t'ont lancé tout à l'heure, plus bas. Ce n'est pas beau, mais c'est dans la bonne langue. La meneuse recule d'un pas — le premier qu'aucune d'elles n'avait fait — et le reste suit son pas.",
+      "echec": "Tu réponds trop fort. Ce qui devait être un accord sonne comme une revendication — et ce n'est pas à toi qu'on la règle : deux d'entre eux se retournent l'un contre l'autre dans un bruit atroce, et le demi-cercle se défait autour de la querelle. Tu n'y es pour rien, et tu n'y es pas.",
       "funeste": "1 naturel. Tu leur réponds dans leur langue. Ils te répondent dans la leur, et la leur n'a qu'une phrase. ♦ −2"
      },
      "nature": "physique",
-     "exigeSavoir": "savoir_meute_voix"
+     "exigeSavoir": "savoir_meute_voix",
+     "horsDePortee": true
     },
     {
      "id": "offrir-viande",

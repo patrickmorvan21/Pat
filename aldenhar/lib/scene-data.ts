@@ -345,6 +345,28 @@ export type Choice = {
    */
   masqueSi?: { savoir?: string; objet?: string; decouverte?: string };
   /**
+   * LE PAIEMENT DE LA PRÉPARATION (lot 3, feu vert du 14/08 après playtest).
+   *
+   * Jusqu'ici l'option informée d'un combat payait par un SEUIL PLUS BAS D'UN
+   * POINT — invisible, et exactement le « bonus abstrait » que le brief
+   * interdit (« ouvrir/remplacer une action, modifier une position ou éviter
+   * un danger ; pas un bonus abstrait »). Les cinq seuils sont donc égalisés,
+   * et le paiement devient STRUCTUREL : qui sait où se placer n'est pas à
+   * portée quand il rate.
+   *
+   * Concrètement : un échec sur ce choix ne pose PAS la blessure persistante
+   * du combat et ne coûte rien au corps. Rien n'est affiché — le joueur le
+   * lit au fait qu'il rate et repart entier, ce qu'un combat aveugle ne
+   * permet jamais.
+   *
+   * ⚠️ Conséquence assumée : sur ce choix-là, on ne peut pas mourir. C'est le
+   * sens du « éviter un danger » du brief, et ça se paie cher en amont — les
+   * cinq préparations demandent un travail qui traverse souvent deux vies.
+   * L'option aveugle du même écran, elle, reste physique et reste mortelle :
+   * le joueur pressé garde son combat entier.
+   */
+  horsDePortee?: true;
+  /**
    * CE CHOIX PREND LA PLACE D'UN AUTRE (verdict des panels, 14/08).
    *
    * `masqueSi` déclare la condition une SECONDE fois, sur la victime — deux
@@ -858,7 +880,26 @@ export function apportsProces(r: {
  * `fatalCheck` qui décide si le dé doit annoncer MORT. S'ils divergeaient, le
  * dé annoncerait une mort qui n'arrive pas — ou l'inverse.
  */
-export function coutSante(nature: NatureJet, tier: ResolutionTier): number {
+export function coutSante(
+  nature: NatureJet,
+  tier: ResolutionTier,
+  horsDePortee = false,
+): number {
+  // LE PAIEMENT DE LA PRÉPARATION (lot 3) passe par ICI et nulle part
+  // ailleurs, pour la même raison que la nature : la résolution et le
+  // `fatalCheck` du dé lisent la même fonction. S'ils divergeaient, le dé
+  // annoncerait une mort qui n'arrive pas.
+  if (horsDePortee) return 0;
+  // SURNATUREL : son coût vivait à part, dans la résolution seule (Phase A —
+  // l'état a disparu, le coût est tombé dans la chair). Il échappait donc aux
+  // DEUX garanties de cette fonction : `fatalCheck` ne le voyait pas (le dé
+  // pouvait tuer sans annoncer MORT) et `horsDePortee` ne le couvrait pas
+  // (trouvé par le test du lot 3, sur « Lui réciter l'ordonnance »). Il passe
+  // ici, comme tout ce qui prend de la santé.
+  if (nature === "surnaturel")
+    return tier === "malediction" ? 0.16
+      : tier === "critique" || tier === "echec" ? 0.1
+      : 0;
   if (nature !== "physique") return 0;
   return tier === "malediction" ? 0.3
     : tier === "critique" ? 0.26
@@ -1498,13 +1539,14 @@ export const SCENES: Scene[] = [
         tags: ["fuite"],
         label: "Reculer sur le talus, sans courir",
         requiresDecouverte: "d.bete_couloir",
+        horsDePortee: true,
         risky: {
           stat: "INSTINCT",
-          threshold: 10,
+          threshold: 11,
           outcomes: outcomes(
             "20 naturel. Tu montes à reculons, sans quitter la masse des yeux, et tu t'arrêtes exactement où l'ombre s'arrête. Elle vient jusque-là. Elle s'arrête aussi. Vous restez face à face de part et d'autre d'une ligne que tu es le seul des deux à avoir choisie — puis elle se retourne, et c'est elle qui s'en va.",
-            "Tu prends le talus de biais, sans te presser, parce que courir n'a jamais servi. La Bête accompagne ta montée le long du creux, à hauteur, jusqu'à la limite. Là, elle freine d'elle-même. Tu passes au-dessus d'elle.",
-            "La terre du talus part sous ton talon et tu glisses d'un pas vers le fond. Un pas suffit : l'avancée du corps te prend au flanc avant que tu ne remontes.",
+            "Tu prends le talus de biais, sans te presser, parce que courir n'a jamais servi. Les griffures sur la paroi s'arrêtent toutes à la même hauteur — tu montes jusque-là, et un peu plus haut. La Bête t'accompagne le long du creux, à hauteur, puis freine d'elle-même sur cette ligne-là. Tu passes au-dessus d'elle.",
+            "La terre part sous ton talon et tu redescends d'un pas — d'un seul, parce que tu savais où était la ligne et que tu t'y es rattrapé. Elle arrive au bas du talus, s'arrête net, souffle une fois. Tu as perdu ta montée. Pas ton bras.",
             "1 naturel. Tu recules trop tôt, avant qu'elle ne soit engagée — et elle ne s'engage pas. Elle attend, dans son couloir, que la nuit t'y ramène. ♦ −2"
           ),
         },
@@ -2256,13 +2298,14 @@ export const SCENES: Scene[] = [
         nature: "surnaturel",
         label: "Lui réciter l'ordonnance",
         requiresSavoir: "savoir_ordonnance",
+        horsDePortee: true,
         risky: {
           stat: "RUSE",
-          threshold: 11,
+          threshold: 12,
           outcomes: outcomes(
             "20 naturel. Tu récites la liste des signes, dans l'ordre, avec les mots du Bailli. Au troisième, il s'arrête. Au cinquième, il recule d'un pas vers le poteau cassé. À la fin, il se tient droit à l'endroit exact où il a passé des années — attendant qu'on l'attache, parce que c'est ce que la phrase dit qu'il faut faire.",
-            "Tu dis les signes à voix haute. Ce n'est pas toi qu'il entend : c'est la formule, et la formule a autorité sur lui. Il te contourne sans te toucher, retourne à son rang, et se remet à attendre.",
-            "Tu écorches un mot au milieu. La liste se casse, et lui aussi : ce qui te fonce dessus n'obéit plus à rien.",
+            "Tu dis les quatre signes à voix haute, dans l'ordre où ils étaient cloués. Ce n'est pas toi qu'il entend : c'est la formule, et la formule a autorité sur lui. Il te contourne sans te toucher, retourne à son rang, et se remet à attendre.",
+            "Tu écorches un mot au milieu. La liste se casse, et lui avec : il s'élance sans plus obéir à rien — et sa corde le reprend en pleine course, à deux pas de toi. Elle tient. C'est pour ça que tu es resté du côté du poteau.",
             "1 naturel. Tu récites bien. Trop bien. Il t'écoute jusqu'au bout, penche ce qui lui reste de tête — et se demande visiblement si la liste te désigne, toi. ♦ −2"
           ),
         },
@@ -5368,13 +5411,14 @@ export const SCENES: Scene[] = [
         nature: "physique",
         label: "Lui dire que son maître s'est jugé",
         requiresDecouverte: "d.bailli_condamne",
+        horsDePortee: true,
         risky: {
           stat: "EMPATHIE",
-          threshold: 11,
+          threshold: 12,
           outcomes: outcomes(
             "20 naturel. Tu t'accroupis à sa hauteur et tu le lui dis comme on rend une nouvelle à un vieux serviteur : le nom qui l'a posté est écrit sur le registre, en dernier, de sa propre main. Le chien te regarde longtemps. Puis il se lève, quitte le seuil, et va se coucher trois pas plus loin — dehors, comme un chien sans maison. Il ne t'accompagne pas. Il ne t'arrête plus.",
-            "Tu parles doucement, et tu dis son nom à lui — celui du Bailli. L'animal dresse une oreille, puis la baisse. Il ne s'écarte pas franchement : il se décale, ce qui suffit.",
-            "Ta voix tremble sur le nom, et c'est ce tremblement qu'il entend. Il monte sur toi avant la fin de la phrase.",
+            "Tu parles doucement, depuis le seuil, et tu dis le nom que le pendu a fini par lâcher — celui du Bailli. L'animal dresse une oreille, puis la baisse. Il ne s'écarte pas franchement : il se décale, ce qui suffit.",
+            "Ta voix tremble sur le nom, et c'est ce tremblement qu'il entend. Il se jette — et la chaîne le reprend à un pas de tes bottes, dans un bruit sec. Tu as parlé depuis le bon côté du seuil : il n'y a que ça entre lui et toi.",
             "1 naturel. Tu lui annonces que son maître est mort. Il le savait. C'est pour ça qu'il ne quitte plus ce seuil, et pour ça qu'il n'a plus rien à perdre. ♦ −2"
           ),
         },
@@ -5708,13 +5752,14 @@ export const SCENES: Scene[] = [
         nature: "physique",
         label: "Faire tinter la clochette",
         requiresObjet: "clochette-meneuse",
+        horsDePortee: true,
         risky: {
           stat: "RUSE",
-          threshold: 11,
+          threshold: 12,
           outcomes: outcomes(
             "20 naturel. Tu sors la clochette et tu la fais sonner une fois, sèchement, comme on rappelle un troupeau. Les cinq têtes se tournent ENSEMBLE, du même côté, à la même hauteur — et le front se défait. Ils cherchent le berger derrière toi. Tu passes pendant qu'ils cherchent, et le son continue de les tenir longtemps après.",
-            "Le battant claque. La grande s'arrête net, une patte en l'air, et le silence dure assez pour que tu recules de trois pas sans qu'aucune ne bouge. Ils te laissent partir en te regardant faire : tu sens qu'ils t'ont classé quelque part.",
-            "Tu agites la clochette. Le son sort mou, faux, pas celui d'une bête qui marche. Ils comprennent immédiatement que le berger, c'est toi qui l'as pris.",
+            "Le battant claque — celui que tu as pris au cou de la meneuse du troupeau. La grande s'arrête net, une patte en l'air, et le silence dure assez pour que tu recules de trois pas sans qu'aucune ne bouge. Ils te laissent partir en te regardant faire : tu sens qu'ils t'ont classé quelque part.",
+            "Tu agites la clochette. Le son sort mou, faux, pas celui d'une bête qui marche. Ils comprennent que le berger, c'est toi qui l'as pris — et ils ne bougent pas pour autant : on ne mord pas quelqu'un qui porte la clochette. Ils se contentent de refermer le demi-cercle d'un pas.",
             "1 naturel. La clochette sonne juste. Trop juste. Ils arrivent au son — c'est exactement ce qu'on leur a appris à faire. ♦ −2"
           ),
         },
@@ -5810,13 +5855,14 @@ export const SCENES: Scene[] = [
         nature: "physique",
         label: "Lui répondre à la voix",
         requiresSavoir: "savoir_meute_voix",
+        horsDePortee: true,
         risky: {
           stat: "RUSE",
-          threshold: 11,
+          threshold: 12,
           outcomes: outcomes(
             "20 naturel. Tu refais le son de tout à l'heure, plus bas, plus court — une réponse, pas un défi. La meneuse incline la tête, exactement comme un chien à qui l'on parle. Puis elle se détourne et le croissant se défait derrière elle, sans un bruit, comme une phrase qu'on finit.",
-            "Tu réponds. Le son n'est pas beau, mais il est dans la bonne langue. La meneuse recule d'un pas — le premier qu'aucune d'elles n'avait fait — et le reste suit son pas.",
-            "Tu réponds trop fort. Ce qui devait être un accord sonne comme une revendication, et une revendication, chez eux, se règle.",
+            "Tu réponds — le même son qu'elles t'ont lancé tout à l'heure, plus bas. Ce n'est pas beau, mais c'est dans la bonne langue. La meneuse recule d'un pas — le premier qu'aucune d'elles n'avait fait — et le reste suit son pas.",
+            "Tu réponds trop fort. Ce qui devait être un accord sonne comme une revendication — et ce n'est pas à toi qu'on la règle : deux d'entre eux se retournent l'un contre l'autre dans un bruit atroce, et le demi-cercle se défait autour de la querelle. Tu n'y es pour rien, et tu n'y es pas.",
             "1 naturel. Tu leur réponds dans leur langue. Ils te répondent dans la leur, et la leur n'a qu'une phrase. ♦ −2"
           ),
         },

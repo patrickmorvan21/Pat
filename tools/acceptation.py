@@ -114,7 +114,7 @@ def main() -> int:
     # Prouvable : la santé n'a qu'UNE source de coût, `coutSante`, et elle
     # rend 0 pour toute nature autre que physique. Si quelqu'un ajoutait un
     # barème par nature, la garde saute ici avant le playtest.
-    m = re.search(r'export function coutSante\([\s\S]{0,600}?\n\}', sd)
+    m = re.search(r'export function coutSante\([\s\S]{0,1400}?\n\}', sd)
     if not m:
         manques.append("A1 — `coutSante` introuvable : le barème de santé n'a plus de source unique.")
     elif 'if (nature !== "physique") return 0;' not in m.group(0):
@@ -122,6 +122,18 @@ def main() -> int:
             "A1 — `coutSante` ne rend plus 0 d'emblée hors nature physique : "
             "un échec social pourrait coûter de la santé, donc tuer."
         )
+    # ⚠️ Et surtout : AUCUN coût de santé indexé sur la nature du jet ailleurs.
+    # Le surnaturel avait le sien, dans la résolution seule — il échappait donc
+    # à `fatalCheck` (le dé pouvait tuer sans annoncer MORT) et au paiement de
+    # la préparation. Un barème qui vit à côté de la source unique n'est plus
+    # une source unique.
+    for nat in ("surnaturel", "social", "exploration", "physique"):
+        if re.search(rf'natureJet === "{nat}"[\s\S]{{0,120}}?r\.health\s*=', sc):
+            manques.append(
+                f"A1 — un coût de santé propre à la nature « {nat} » vit hors de "
+                "`coutSante` (résolution). Il échapperait à `fatalCheck` et au "
+                "paiement de la préparation : le faire passer par `coutSante`."
+            )
 
     # ─── A2. « Un échec ordinaire ne fait pas avancer le jour. » ─────────
     # Deux preuves : le champ `coutJour` n'existe plus (supprimé le 10/08 —
@@ -246,6 +258,34 @@ def main() -> int:
             manques.append(
                 f"A-préparation — « {sid} » ajoute une option préparée sans "
                 "`masqueSi` : l'écran passerait à quatre actions."
+            )
+        # 4. LE PAIEMENT EST STRUCTUREL, JAMAIS UN CHIFFRE (lot 3, 14/08).
+        #    Le brief interdit le « bonus abstrait » : l'option préparée payait
+        #    par un seuil abaissé d'un point, invisible. Elle doit désormais
+        #    éviter un danger (`horsDePortee`) — et les seuils des deux options
+        #    du même registre doivent être ÉGAUX, sans quoi le vieux paiement
+        #    numérique reviendrait par la porte de derrière.
+        if "horsDePortee" not in bloc:
+            manques.append(
+                f"A-préparation — « {sid} » : l'option préparée ne paie rien de "
+                "structurel (`horsDePortee` absent). Un seuil plus bas est le "
+                "bonus abstrait que le brief du 14/08 interdit."
+            )
+        seuils_prep, seuils_aveugle = [], []
+        # ⚠️ `choix_de` rend un TRIPLET (scène, id, corps) : prendre l'élément
+        # directement pour un regex lève un TypeError silencieux à l'exécution.
+        for _, _, c in choix_de(bloc):
+            m = re.search(r"threshold:\s*(\d+)", c)
+            if not m:
+                continue
+            (seuils_prep if "horsDePortee" in c else
+             seuils_aveugle if "masqueSi" in c else []).append(int(m.group(1)))
+        if seuils_prep and seuils_aveugle and min(seuils_prep) < min(seuils_aveugle):
+            manques.append(
+                f"A-préparation — « {sid} » : l'option préparée est à "
+                f"{min(seuils_prep)} contre {min(seuils_aveugle)} pour l'aveugle. "
+                "La préparation ne rend pas le jet plus facile, elle change ce "
+                "qu'on risque."
             )
 
     # ─── A-supplément. Une charge de point d'intérêt ne va pas sur un jet. ──

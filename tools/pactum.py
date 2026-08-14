@@ -859,7 +859,23 @@ class Partie:
         nature = c.get("nature") or ("physique" if s.get("combat") else "social")
         dur = palier in ("critique", "malediction")
         rate = palier in ("echec", "critique", "malediction")
-        cout = COUT.get(palier, 0.0) if nature == "physique" else 0.0
+        # LOT 3 (14/08) : sur l'option PRÉPARÉE d'un combat, l'échec est hors de
+        # portée — la préparation ne rend pas le jet plus facile, elle change ce
+        # qu'on risque. Aucun coût au corps, aucune blessure (miroir exact de
+        # `coutSante(..., horsDePortee)` et de la garde d'ENTAILLÉ, scene-data.
+        # ⚠️ Conséquence assumée : sur ce choix-là, on ne peut pas mourir.
+        hors = bool(c.get("horsDePortee"))
+        # Miroir de `coutSante` : le SURNATUREL passe par la même porte que le
+        # physique (sinon il échappe au paiement de la préparation, défaut
+        # trouvé en jeu le 14/08).
+        if hors:
+            cout = 0.0
+        elif nature == "physique":
+            cout = COUT.get(palier, 0.0)
+        elif nature == "surnaturel" and palier in ("echec", "critique", "malediction"):
+            cout = 0.16 if palier == "malediction" else 0.10
+        else:
+            cout = 0.0
         if cout:
             self.d["sante"] = max(0.0, round(self.d["sante"] - cout, 3))
         # ON T'A VU (10/08) : un échec d'exploration dont la prose nomme un
@@ -877,17 +893,11 @@ class Partie:
             self.d["soupcon"] = min(6, self.d["soupcon"] + vu)
         # SURNATUREL : étendu à l'échec simple (10/08) — s'en tirer indemne
         # après avoir touché ce qu'il ne faut pas vide le mot de son sens.
-        # ⚠️ CORRIGÉ LE 14/08 (repéré par Patrick au playtest v1.82, et il a eu
-        # raison de ne pas l'imputer au build) : la réplique posait encore
-        # HANTÉ et MARQUÉ, deux états SUPPRIMÉS du vrai jeu par la Phase A du
-        # 11/08. Elle faisait donc juger une mécanique qui n'existe plus. Le
-        # coût tombe dans la CHAIR, comme dans Scene.tsx.
-        if rate and nature == "surnaturel":
-            self.d["sante"] = max(
-                0.0, round(self.d["sante"] - (0.16 if palier == "malediction" else 0.10), 3)
-            )
+        # ⚠️ Le surnaturel ne pose plus HANTÉ ni MARQUÉ (états supprimés du vrai
+        # jeu par la Phase A du 11/08) : son coût tombe dans la CHAIR, et il est
+        # pris plus haut, avec tous les autres.
         if s.get("combat"):
-            if palier in ("echec", "critique", "malediction"):
+            if palier in ("echec", "critique", "malediction") and not hors:
                 self.d["etats"]["entaille"] = 999
                 self.dit("ÉTAT — Entaillé", "etat")
             elif palier in ("destin", "eclatante", "reussite") and c.get("stat") in ("COURAGE", "INSTINCT"):

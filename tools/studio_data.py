@@ -731,6 +731,13 @@ def lire_choix(bloc: str) -> list[dict]:
         # et un relecteur conclurait que le Serment n'engage à rien.
         if booleen_de(c, "rompLeSerment"):
             ch["rompLeSerment"] = True
+        # LOT 3 « EXPLORER PRÉPARE » (14/08) : ce que paie une préparation est
+        # STRUCTUREL — sur l'option préparée, l'échec est hors de portée (aucun
+        # coût au corps, aucune blessure de combat). Sans ce champ, la réplique
+        # blesserait un héros préparé et un relecteur mesurerait l'ancien
+        # modèle — le biais corrigé trois fois cette semaine.
+        if booleen_de(c, "horsDePortee"):
+            ch["horsDePortee"] = True
         # LES LIGNES CALCULÉES, côté CHOIX (14/08). Elles étaient déclarées
         # pour les points d'intérêt seulement — or la conversion du 13/08 les
         # a fait passer sur des CHOIX (`tour-de-pierre` porte `borneSud`).

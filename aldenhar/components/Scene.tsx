@@ -3721,7 +3721,7 @@ export default function Scene() {
           // Même source de vérité que la résolution : un échec social ou
           // d'exploration ne coûte pas de santé, donc il ne peut pas tuer —
           // et le dé ne doit surtout pas annoncer MORT dans ce cas.
-          return healthNow - coutSante(natureDuJet, tier) <= 0;
+          return healthNow - coutSante(natureDuJet, tier, choice.horsDePortee) <= 0;
         },
       });
     } else if (choice.rest) {
@@ -4149,7 +4149,7 @@ export default function Scene() {
               // trois jours de jeu — la tension du permadeath ne se sentait
               // pas). Un échec coûte maintenant un vrai cran ; la Descente
               // reste atteignable, mais plus en pilotage automatique.
-              let cost = coutSante(natureJet, tier);
+              let cost = coutSante(natureJet, tier, chosen?.horsDePortee);
               if (amorti && cost > 0) {
                 cost = 0.12;
                 run.relicUsed = true;
@@ -4177,7 +4177,12 @@ export default function Scene() {
                   { id: "aguerri", label: "AGUERRI", delta: 2, scenesLeft: 3 },
                   ...run.effects.filter((e) => e.id !== "aguerri"),
                 ];
-              if (scene.combat && tierIsFail(tier))
+              // LE PAIEMENT DE LA PRÉPARATION (lot 3) : qui savait où se
+              // placer n'est pas à portée quand il rate. Pas de blessure
+              // persistante, et `coutSante` ne prend rien (voir plus haut).
+              // C'est le seul paiement, il remplace le seuil abaissé d'un
+              // point qui était invisible.
+              if (scene.combat && tierIsFail(tier) && !chosen?.horsDePortee)
                 run.effects = [
                   { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 999 },
                   ...run.effects.filter((e) => e.id !== "entaille"),
@@ -4318,16 +4323,13 @@ export default function Scene() {
             // 11/08 : « j'ai perdu mais je prends 2 états négatifs, violent »).
             // La défaite de combat pose la BLESSURE, et elle seule.
             // SURNATUREL : le coût était un ÉTAT (HANTÉ, MARQUÉ), qui n'existe
-            // plus depuis la Phase A. Il tombe donc dans la CHAIR — ce qui
-            // était déjà le repli quand le plafond d'états refusait la pose,
-            // et ce que la prose de ces onze jets raconte : quelque chose
-            // t'a touché. Ni Soupçon (personne n'a rien vu), ni Jour.
-            if (natureJet === "surnaturel" && tierIsFail(tier)) {
-              persist((r) => {
-                r.health = Math.max(0, r.health - (tier === "malediction" ? 0.16 : 0.1));
-              });
-              setHealth(runRef.current?.health ?? health);
-            }
+            // plus depuis la Phase A. Il tombe donc dans la CHAIR — ce que la
+            // prose de ces onze jets raconte : quelque chose t'a touché. Ni
+            // Soupçon (personne n'a rien vu), ni Jour.
+            // ⚠️ Il est appliqué plus haut, par `coutSante`, avec tous les
+            // autres : ici il vivait à part, donc `fatalCheck` l'ignorait (le
+            // dé pouvait tuer sans annoncer MORT) et le paiement de la
+            // préparation ne le couvrait pas.
             // FIXÉ : « le village te croit marqué par le sud (Soupçon élevé) ».
             // Seuil 4 : assez haut pour que ce soit une trajectoire, assez bas
             // pour qu'on le vive avant le procès (qui tombe à 6).
