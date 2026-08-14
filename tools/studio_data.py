@@ -726,6 +726,18 @@ def lire_choix(bloc: str) -> list[dict]:
         # export_run_kit.py, à nourrir en même temps que le type `Choice`).
         if booleen_de(c, "sansNuit"):
             ch["sansNuit"] = True
+        # LES LIGNES CALCULÉES, côté CHOIX (14/08). Elles étaient déclarées
+        # pour les points d'intérêt seulement — or la conversion du 13/08 les
+        # a fait passer sur des CHOIX (`tour-de-pierre` porte `borneSud`).
+        # Sans elles, la réponse du côté sud de la Borne, le comptage des
+        # corbeaux et celui du troupeau n'existent tout simplement pas dans la
+        # réplique : un relecteur du kit en conclut que la Borne ne se
+        # souvient de rien. Même piège que `sansNuit`, une liste blanche plus
+        # bas dans le même fichier.
+        for champ, cle in (("borneSud", "borneSud"), ("corbeaux", "corbeaux"),
+                           ("troupeau", "troupeau"), ("poteau", "poteau")):
+            if booleen_de(c, champ):
+                ch[cle] = True
         if "debt:" in c:
             ch["dette"] = {"id": texte_de(c, "id"), "texte": texte_de(c, "text")}
         out.append(ch)

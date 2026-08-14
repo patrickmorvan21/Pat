@@ -49,14 +49,40 @@ complète : c'est ce texte-là qu'il faut juger.
   héros y sont morts. C'est ce qui fait qu'un lieu **ne se lit pas pareil à
   ta deuxième vie**. Joue donc **plusieurs vies d'affilée sans effacer ce
   fichier** : l'effacer remet le monde à neuf et tu jugeras un jeu amnésique.
+- **Le Sceau des Landes est répliqué** (nouveau en v1.83.0) : la marque que
+  laisse une traversée réussie, ce qu'elle change à la vie suivante, et la
+  réponse qu'elle donne au côté sud de la Borne. Voir le protocole ci-dessous.
 - **Ne sont pas répliqués** : les illustrations, le geste tactile du dé, les
   scènes chronométrées, le Grand Registre, les reliques, l'humeur du Geôlier,
-  la trace laissée sur la Borne par le héros précédent, les
-  témoins, les chapitres du Bailli, les surprises. Ne les signale pas comme
-  manquants — regarde plutôt les transcripts, où tout cela joue.
+  les témoins, les chapitres du Bailli, les surprises. Ne les signale pas
+  comme manquants — regarde plutôt les transcripts, où tout cela joue.
 
 Dans ton rapport, distingue toujours **ce que tu as joué** de **ce que tu as
 lu** dans un transcript ou déduit du code.
+
+### Le protocole du SCEAU (à faire dans cet ordre, sans effacer `compte.json`)
+
+Le Sceau est ce qu'on **rapporte** d'une traversée réussie — l'inverse d'une
+relique, qui est ce qu'on **laisse** en mourant. Il n'ajoute aucun bonus de
+jet : il ouvre des conversations et fait réagir le monde.
+
+1. **Traverse.** Il faut atteindre la Palissade Sud puis franchir la
+   Descente ; compte sept ou huit lieux. Si tu meurs, recommence — mais
+   n'efface pas `compte.json`.
+2. **Au moment de passer la ligne**, une ligne t'annonce ce que tu emportes.
+3. **`python3 pactum.py nouvelle`** — nouvelle incarnation. Regarde le tout
+   premier écran : le héros porte quelque chose qu'il n'a pas gagné.
+4. **À la Borne, prends « Faire le tour de la pierre »** : l'examen pose une
+   question, et deux lignes y répondent (l'une nomme ton héros précédent).
+5. **Traverse une deuxième fois** si tu en as le courage : l'annonce de
+   sortie et la marque d'ouverture ne sont pas les mêmes qu'au premier
+   passage.
+
+Ce qu'on cherche à savoir : est-ce que ça produit « qu'est-ce que c'est que
+ça ? » ou « j'ai débloqué mon bonus » ? Est-ce qu'un porteur du Sceau se sent
+**reconnu par le monde**, ou **récompensé par le jeu** ? Et la deuxième
+traversée se distingue-t-elle vraiment de la première, ou n'est-ce qu'un
+compteur invisible qui s'incrémente ?
 
 ---
 

@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-14T07:33:09Z",
- "commit": "a04131f",
+ "genere": "2026-08-14T08:00:16Z",
+ "commit": "e67767a",
  "zones": [
   {
    "id": "landes",
@@ -474,7 +474,8 @@
      "label": "Faire le tour de la pierre",
      "type": "passif",
      "consequence": "Le granit est froid d'une froideur qui ne vient pas du vent. Des marques sur toutes les faces, de toutes les mains : des noms, des dates, des traits de comptage. Le côté nord est saturé — les adieux de ceux qui partaient. Le côté sud est presque vierge. Trois marques. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?\n\nAu ras du sol, un angle manque. La cassure est nette, faite au burin, patiemment — et l'éclat est encore là, à demi enterré. Celui qui voulait emporter un morceau de la limite ne l'a pas pris. Sous le vent, pendant que tu te relèves, il y a des voix : basses, à ras de bruyère, qui se passent le mot de ton arrivée. Elles ne te menacent pas. Elles préviennent quelqu'un.",
-     "donneObjet": "pierre-retour"
+     "donneObjet": "pierre-retour",
+     "borneSud": true
     },
     {
      "id": "fouiller-offrandes",
@@ -1043,7 +1044,8 @@
      "id": "compter-corbeaux",
      "label": "Compter les corbeaux",
      "type": "passif",
-     "consequence": "Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, et leurs becs sont propres. Ils attendent, tournés du même côté, comme des choses qu'on a postées là."
+     "consequence": "Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, et leurs becs sont propres. Ils attendent, tournés du même côté, comme des choses qu'on a postées là.",
+     "corbeaux": true
     },
     {
      "id": "monter-gibet-vide",
@@ -1323,7 +1325,8 @@
      "label": "Aller lire les poteaux vierges",
      "type": "passif",
      "consequence": "Il faut traverser tout le champ pour les atteindre. Tu comptes les poteaux vides en marchant — puis tu t'arrêtes de compter, parce que le compte monte plus vite que tes pas. Trois portent déjà des noms, sans date : le Fossoyeur grave d'avance « ceux dont c'est sûr ». Le troisième est récent, l'entaille claire, le bois pas encore grisé. Tu le lis, et tu le relis, et il ne change pas : c'est le tien.",
-     "donneSavoir": "savoir_poteau_a_mon_nom"
+     "donneSavoir": "savoir_poteau_a_mon_nom",
+     "poteau": true
     },
     {
      "id": "tombe-sans-poteau",
@@ -3543,7 +3546,8 @@
      "label": "Lire les marques d’oreille",
      "type": "passif",
      "consequence": "Les bêtes te laissent entrer entre elles comme si tu étais un piquet de plus. De près, elles sont grasses, entretenues — quelqu’un les a menées, soignées, comptées, et pas il y a trente ans : cette laine-là a vu un berger cette saison.",
-     "donneDecouverte": "d.troupeau_compte"
+     "donneDecouverte": "d.troupeau_compte",
+     "troupeau": true
     },
     {
      "id": "troupeau-approcher",

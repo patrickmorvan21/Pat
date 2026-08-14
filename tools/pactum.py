@@ -241,6 +241,13 @@ class Partie:
                 rec = self.k.get("sceau", {}).get("reconnu", {}).get(radical)
                 if rec:
                     self.dit(rec, "narration")
+        if sid == "la-descente":
+            # L'ANNONCE DU SCEAU se lit sur l'écran de la Descente, entre la
+            # trace de sortie et le livre — c'est le moment de récompense.
+            textes = self.k.get("sceau", {}).get("sortie", [])
+            n = lire_compte().get("sceau", 0) + 1
+            if textes:
+                self.dit(textes[min(n, len(textes)) - 1], "narration")
         if s.get("combat"):
             self.dit("• RENCONTRE • " + (s.get("adversaireNom") or s.get("nom") or ""), "rencontre")
         # L'AIGUILLAGE (9/08) : la scène chaînée lit le dé qui l'a précédée.
@@ -492,6 +499,12 @@ class Partie:
                 self.d["sansNuit"] = True
             if c.get("consequence"):
                 self.dit(c["consequence"], "narration")
+            # LES LIGNES CALCULÉES DE LA BORNE, après la conséquence (l'ordre
+            # compte : l'examen POSE la question « qui a gravé côté sud ? »,
+            # la marque du prédécesseur et le Sceau y RÉPONDENT).
+            if c.get("borneSud"):
+                for ligne in self.borne_sud():
+                    self.dit(ligne, "narration")
             if c.get("donneObjet"):
                 self.gagner(c["donneObjet"])
             if c.get("repos"):
@@ -654,6 +667,9 @@ class Partie:
                 # laisse enfin quelque chose au compte.
                 c = lire_compte()
                 c["sceau"] += 1
+                # Le nom entre au livre avec sa mention, comme `recordTraversee`
+                # le fait au Grand Registre — c'est ce que la Borne relira.
+                c["tombes"].insert(0, {"nom": self.d["nom"], "cause": "a franchi la Descente"})
                 ecrire_compte(c)
                 textes = self.k.get("sceau", {}).get("sortie", [])
                 if textes:
@@ -664,6 +680,36 @@ class Partie:
             self.entrer(s["suite"])
             return
         self.liaison()
+
+    def borne_sud(self) -> list[str]:
+        """Le côté sud de la Borne : le prédécesseur, puis le Sceau.
+
+        `tombes[0]` est l'incarnation d'avant — morte, ou revenue vivante
+        (le franchissement l'y inscrit comme le vrai jeu le fait au Registre).
+        C'est cette distinction qui porte tout le sens : un nom gravé par
+        quelqu'un qui EST revenu contredit la règle que l'examen vient
+        d'énoncer.
+        """
+        b = self.k.get("borneSud", {})
+        cas, mots = b.get("cas", []), b.get("mots", [])
+        c = lire_compte()
+        out: list[str] = []
+        tombes, morts = c.get("tombes", []), c.get("morts", 0)
+        if cas and tombes:
+            p = tombes[0]
+            nom = p.get("nom", "").upper()
+            if "franchi" in (p.get("cause") or ""):
+                out.append(cas[0].replace("{nom}", nom))
+            elif morts <= 1:
+                out.append(cas[1].replace("{nom}", nom))
+            else:
+                compte = (f"tu les comptes : {mots[morts]}" if morts < len(mots)
+                          else "tu renonces à les compter")
+                out.append(cas[2].replace("{nom}", nom).replace("{compte}", compte))
+        borne = self.k.get("sceau", {}).get("borne", [])
+        if c.get("sceau", 0) > 0 and borne:
+            out.append(borne[0])
+        return out
 
     def mourir(self, dernier: str) -> None:
         self.d["morte"] = True

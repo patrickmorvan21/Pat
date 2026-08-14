@@ -90,6 +90,50 @@ def sceau_textes() -> dict:
     }
 
 
+def borne_sud_gabarits() -> dict:
+    """Les trois retours de `ligneBorneSud`, avec leurs interpolations.
+
+    L'ordre de lecture de la fonction EST l'ordre des cas : revenu vivant,
+    puis une seule vie perdue, puis plusieurs (avec le comptage en toutes
+    lettres). Les `${…}` deviennent des jetons nommés, que la réplique
+    substitue — recopier la prose ici la ferait diverger au premier correctif.
+
+    ⚠️ Ces textes sont écrits en GABARITS (backticks), pas en littéraux
+    doubles : un extracteur qui ne lit que `"…"` rendait des phrases coupées
+    au milieu. On compte donc ce qu'on extrait avant de rendre.
+    """
+    src = (LIB / "scene-data.ts").read_text(encoding="utf-8")
+    d = src.find("export function ligneBorneSud")
+    if d < 0:
+        return {}
+    corps = src[d : src.find("\n}\n", d)]
+    cas: list[str] = []
+    for m in re.finditer(r"return\s*\(", corps):
+        # bloc équilibré depuis la parenthèse du return
+        prof, j = 0, m.end() - 1
+        while j < len(corps):
+            if corps[j] == "(":
+                prof += 1
+            elif corps[j] == ")":
+                prof -= 1
+                if prof == 0:
+                    break
+            j += 1
+        bloc = corps[m.end() : j]
+        morceaux = [a or b for a, b in re.findall(r'"((?:[^"\\]|\\.)*)"|`([^`]*)`', bloc)]
+        t = "".join(morceaux).replace('\\"', '"').replace("\\'", "'")
+        t = t.replace("${nom}", "{nom}").replace("${compte}", "{compte}")
+        if t.strip():
+            cas.append(t)
+    # ⚠️ Un simple `findall` ici, PAS `chaines_de_tableau` : celui-ci recolle
+    # les concaténations, donc il rendait les treize mots collés en un seul
+    # (« aucununedeux… »). Le contrôle de compte ci-dessous l'a attrapé.
+    mots = re.findall(r'"([^"]+)"', bloc_tableau(src, "const CORBEAUX_MOTS"))
+    if len(cas) != 3 or len(mots) < 5:
+        print(f"   ⚠ borneSud : {len(cas)} cas / {len(mots)} mots — extracteur à revoir")
+    return {"cas": cas, "mots": mots}
+
+
 def main() -> int:
     studio = DATA / "studio-data.json"
     if not studio.exists():
@@ -220,6 +264,12 @@ def main() -> int:
         # du jeu. On exporte les trois lignes calculées ET les reconnaissances
         # par lieu ; le gabarit d'index vaut le nombre de passages.
         "sceau": sceau_textes(),
+        # LE CÔTÉ SUD DE LA BORNE : la marque du prédécesseur. Trois gabarits
+        # (revenu vivant / une seule vie perdue / plusieurs), avec `{nom}` et
+        # `{compte}` à substituer. Sans eux, le kit fait croire que la Borne
+        # ne se souvient de personne — et c'est justement l'écran où le Sceau
+        # répond à sa question.
+        "borneSud": borne_sud_gabarits(),
     }
     # la version : on ne garde que le numéro
     m = re.search(r'APP_VERSION = "([^"]+)"', kit["version"])
