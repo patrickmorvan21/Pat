@@ -599,7 +599,27 @@ export type Scene = {
       repart vers la Palissade / la Descente. */
   hameauHalte?: boolean;
   choices: Choice[];
-  jailerLine: string;
+  /**
+   * ⚠️ CE CHAMP N'A PLUS DE LECTEUR, ET C'EST VOULU (arbitrage du 12/08,
+   * confirmé le 14/08). Il portait le commentaire AMBIANT du Geôlier, servi
+   * au hasard à 12 % par arrivée. Mesuré avant de couper : sur 24 prises de
+   * parole de quatre vies, 3 seulement venaient de ce tirage — les 21 autres
+   * répondaient à un événement. C'était le seul de ses canaux qui ne
+   * répondait à rien de ce que le joueur venait de faire.
+   *
+   * Il est OPTIONNEL depuis le 14/08 : une scène neuve n'a plus à payer une
+   * réplique livrée morte. Les 101 lignes existantes (89 de scène + les 12 de
+   * `LIAISON_JAILER`) sont conservées ici ET rassemblées dans
+   * `data/archive-geolier-lieux.md`, à destination du Codex ou d'une
+   * sélection MANUELLE pour de vrais événements.
+   *
+   * ⚠️ NE PAS REBRANCHER AU TIRAGE. Le Geôlier est classé ÉVÉNEMENT : il ne
+   * passe pas par le collecteur « un seul rappel par arrivée » (12/08), donc
+   * un rebranchement à l'arrivée s'AJOUTERAIT au rappel déjà servi, à chaque
+   * lieu. Chiffré dans `data/audit-jailerline-2026-08-14.md` : ×6,5 de prises
+   * de parole à 100 %, ×1,7 même au taux d'avant.
+   */
+  jailerLine?: string;
   /**
    * Rencontre de combat (spec §6) : pas de système séparé, pas de PV de
    * monstre — la même mécanique choix + dé, seuils de jet plus exigeants

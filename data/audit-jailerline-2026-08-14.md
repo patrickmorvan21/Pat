@@ -16,8 +16,8 @@ mesure, et propose. Rien n'est branché, rien n'est supprimé.
 |---|---|
 | Scènes du jeu | **89** |
 | Scènes portant une `jailerLine` | **89** — soit **100 %** |
-| Lignes de liaison (`LIAISON_JAILER`) | **6**, orphelines de la même façon |
-| **Total de texte sans lecteur** | **95 répliques** |
+| Lignes de liaison (`LIAISON_JAILER`) | **12**, orphelines de la même façon |
+| **Total de texte sans lecteur** | **101 répliques** |
 | Longueur | 45 à 74 caractères (médiane 64) |
 
 La couverture à 100 % n'est pas un hasard : le champ est déclaré
@@ -97,7 +97,7 @@ réel.
 
 ## 4. Le vrai défaut qui reste, et il n'est pas celui qu'on croit
 
-Ce n'est pas « 95 lignes ne se jouent pas ». C'est :
+Ce n'est pas « 101 lignes ne se jouent pas ». C'est :
 
 1. **Le champ est obligatoire.** Chaque scène écrite depuis le 12/08 a coûté
    une réplique du Geôlier livrée morte. C'est du travail d'écriture facturé
@@ -105,7 +105,7 @@ Ce n'est pas « 95 lignes ne se jouent pas ». C'est :
 2. **Le code ment au lecteur.** Un champ peuplé à 100 % et lu à 0 % se lit
    comme un bug pour tout le monde — humains et agents. Il a déjà produit un
    faux grief de panel ; il en produira d'autres.
-3. **`LIAISON_JAILER` est mort en silence.** Ses 6 lignes ne sont mentionnées
+3. **`LIAISON_JAILER` est mort en silence.** Ses 12 lignes ne sont mentionnées
    nulle part comme débranchées : elles sont tombées avec le champ, sans que
    personne le note. C'est la classe de défaut que ce projet traque depuis le
    5/08 (« un effet promis que rien ne lit »).
@@ -115,14 +115,14 @@ Ce n'est pas « 95 lignes ne se jouent pas ». C'est :
 ## 5. Trois voies, et ma recommandation
 
 ### Voie A — assumer le débranchement, proprement *(recommandée)*
-Rendre le champ **optionnel** (`jailerLine?`), archiver les 95 lignes dans
+Rendre le champ **optionnel** (`jailerLine?`), archiver les 101 lignes dans
 `data/archive-geolier-lieux.md` à destination du Codex (la règle du plan
 d'élagage : rien ne se supprime de la production), et écrire au-dessus du champ
 pourquoi il n'a pas de lecteur.
 
 - **Coût** : une heure. Aucun risque de rythme.
 - **Gain** : plus une seule réplique morte à écrire, et le code cesse de mentir.
-- **Perte** : 95 textes finis restent inemployés — mais ils le sont déjà.
+- **Perte** : 101 textes finis restent inemployés — mais ils le sont déjà.
 
 ### Voie B — rebrancher sur un ÉVÉNEMENT, jamais sur une arrivée
 Le Geôlier ne reprend la parole sur un lieu que quand le lieu vient de faire
