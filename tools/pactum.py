@@ -533,7 +533,25 @@ class Partie:
             # SÉJOUR : ce qui a déjà été fait ici ne se refait pas.
             if s.get("sejour") and c["id"] in self.d.get("choixFaits", []):
                 continue
+            # REMPLACER PAR SÉQUENCE (14/08) : on ne répond pas au jugement
+            # d'un pendu avant de l'avoir entendu.
+            if c.get("exigeChoixFait") and c["exigeChoixFait"] not in faits:
+                continue
             out.append({"kind": "choix", "c": c, "label": c["label"]})
+        # UNE OPTION CONDITIONNELLE PREND LA PLACE DE L'AVEUGLE (verdict des
+        # panels, 14/08). Ordre de déclaration = priorité, et un choix déjà
+        # retiré ne retire plus rien — même résolution que Scene.tsx, sinon
+        # la réplique afficherait quatre à huit boutons là où le jeu en montre
+        # trois, et un relecteur conclurait que le correctif n'a pas été fait.
+        pris: set[str] = set()
+        for o in out:
+            cid = o["c"]["id"]
+            if cid in pris:
+                continue
+            for cible in o["c"].get("prendLaPlaceDe") or []:
+                pris.add(cible)
+        if pris:
+            out = [o for o in out if o["c"]["id"] not in pris]
         return out
 
     # -- jouer un choix

@@ -758,6 +758,18 @@ def lire_choix(bloc: str) -> list[dict]:
             cond = {k: v for k, v in re.findall(r'(savoir|objet|decouverte):\s*"([^"]+)"', mm.group(1))}
             if cond:
                 ch["masqueSi"] = cond
+        # LA RÈGLE DES TROIS ACTIONS (verdict des panels, 14/08). Sans ces deux
+        # champs, la réplique afficherait les quatre à huit boutons que le
+        # verdict fait justement disparaître — et un relecteur conclurait que
+        # le correctif n'a pas été fait.
+        mr = re.search(r'prendLaPlaceDe:\s*(\[[^\]]*\]|"[^"]*")', c)
+        if mr:
+            cibles = re.findall(r'"([^"]+)"', mr.group(1))
+            if cibles:
+                ch["prendLaPlaceDe"] = cibles
+        v = texte_de(c, "requiresChoixFait")
+        if v:
+            ch["exigeChoixFait"] = v
         ms = re.search(r'requiresStat:\s*\{\s*stat:\s*"([A-Z]+)",\s*min:\s*(\d+)', c)
         if ms:
             ch["exigeStat"] = {"stat": ms.group(1), "min": int(ms.group(2))}

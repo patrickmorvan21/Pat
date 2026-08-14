@@ -345,6 +345,37 @@ export type Choice = {
    */
   masqueSi?: { savoir?: string; objet?: string; decouverte?: string };
   /**
+   * CE CHOIX PREND LA PLACE D'UN AUTRE (verdict des panels, 14/08).
+   *
+   * `masqueSi` déclare la condition une SECONDE fois, sur la victime — deux
+   * déclarations qui peuvent diverger au premier correctif. `remplace` la
+   * déclare une seule fois, du côté de l'option qui gagne : si ce choix
+   * survit au filtrage, les ids nommés ici disparaissent.
+   *
+   * ⚠️ C'est le mécanisme qui fait tenir la règle verrouillée des TROIS
+   * ACTIONS quand les systèmes s'additionnent (Sceau + objet + savoir +
+   * découverte + contradiction sur un même écran). La règle d'écriture qui
+   * va avec : une option conditionnelle ne s'AJOUTE jamais, elle prend la
+   * place de l'option aveugle du même geste. La substitution est elle-même
+   * le récit de la préparation.
+   *
+   * L'ORDRE DE DÉCLARATION FAIT LA PRIORITÉ : on parcourt les survivants de
+   * haut en bas, et un choix déjà retiré ne retire plus rien à son tour. Une
+   * chaîne se lit donc du plus spécifique au plus général — le premier écrit
+   * est celui qui gagne.
+   */
+  prendLaPlaceDe?: string | string[];
+  /**
+   * REMPLACER PAR SÉQUENCE. Ce choix n'existe qu'une fois tel autre choix
+   * FAIT dans ce lieu (`RunState.choixFaits`, vidé en quittant le lieu).
+   *
+   * Sert là où un écran a trop d'intentions non conditionnelles : au lieu
+   * d'en supprimer une, on l'ordonne. On ne répond pas au jugement d'un
+   * pendu avant de l'avoir entendu — l'écran offre donc la question, puis la
+   * réponse à sa place, et jamais les deux à la fois.
+   */
+  requiresChoixFait?: string;
+  /**
    * LE SCEAU OUVRE UNE PORTE (arbitrage 10/08, livré le 14/08). Ce choix
    * n'existe que pour un compte qui a franchi la Descente vivant — id du
    * sceau (`SCEAU_LANDES`), voir lib/sceaux.ts.
@@ -1588,6 +1619,7 @@ export const SCENES: Scene[] = [
            grand gibet — la réciproque se vérifie d'ici, mais seulement avec
            l'outil de celui qui regardait. L'objet n'est pas consommé. */
         id: "colline-lunette",
+        prendLaPlaceDe: "monter-grand-gibet",
         label: "Chercher la Tour \u00e0 la lunette",
         requiresObjet: "lunette-guet",
         passive: {
@@ -1713,6 +1745,8 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "plaider",
+        requiresChoixFait: "pendu-le-trois-cent-unieme",
+        prendLaPlaceDe: "pendu-le-trois-cent-unieme",
         nature: "social",
         label: "Répondre à son jugement",
         // Parler au Pendu = parler seul face au sud, pour qui t'observe —
@@ -2007,6 +2041,7 @@ export const SCENES: Scene[] = [
         /* Branchement du TROUPEAU (6/08) : il connaît les cinq noms.
            Il ne les donne pas. */
         id: "fossoyeur-cinq-marques",
+        prendLaPlaceDe: ["fixe-il-vient-pour-eux", "confidence-fixes"],
         label: "Parler des marques d\u2019oreille",
         requiresDecouverte: "d.troupeau_compte",
         passive: {
@@ -2016,6 +2051,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "champ-jouet",
+        prendLaPlaceDe: ["fossoyeur-cinq-marques", "fixe-il-vient-pour-eux", "confidence-fixes"],
         label: "Lui montrer la poup\u00e9e",
         requiresObjet: "jouet-fixee",
         passive: {
@@ -2048,6 +2084,8 @@ export const SCENES: Scene[] = [
       },
       {
         id: "carnet",
+        requiresObjet: "carnet-fossoyeur",
+        prendLaPlaceDe: "aider-fossoyeur",
         label: "Déchiffrer le carnet",
         locked: { stat: "RUSE", min: 4 },
         passive: {
@@ -2078,6 +2116,7 @@ export const SCENES: Scene[] = [
            phrase qui contient tout le personnage : il ne vient pas pour les
            victimes, il vient pour ceux qui osent. */
         id: "fixe-il-vient-pour-eux",
+        prendLaPlaceDe: "confidence-fixes",
         label: "Demander ce qui vient, la nuit",
         requiresEtat: "fixe",
         decouverte: "d.temoin_entendu",
@@ -2567,6 +2606,7 @@ export const SCENES: Scene[] = [
            Seuil tient le même rôle (aveu réciproque, EMPATHIE forte) et elle
            est, elle, atteignable après la Mare. */
         id: "femme-moi-aussi",
+        prendLaPlaceDe: "femme-refuser",
         nature: "social",
         label: "« Moi aussi, j'entends. »",
         requiresSavoir: "savoir_reflet",
@@ -4146,6 +4186,7 @@ export const SCENES: Scene[] = [
       {
         /* Branchement du TROUPEAU (6/08). */
         id: "colporteur-viande",
+        prendLaPlaceDe: "troc-colporteur",
         label: "Demander d\u2019où vient la viande",
         requiresDecouverte: "d.troupeau_compte",
         passive: {
@@ -4158,6 +4199,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "marche-caillou",
+        prendLaPlaceDe: ["colporteur-viande", "troc-colporteur"],
         label: "Montrer le caillou de rivi\u00e8re",
         requiresObjet: "caillou-gamin",
         passive: {
@@ -4176,6 +4218,7 @@ export const SCENES: Scene[] = [
            sans la lever. Il ne vend rien ici — il refuse un troc, ce qui de
            sa part est l'aveu le plus cher qu'il puisse faire. */
         id: "colporteur-paume",
+        prendLaPlaceDe: ["marche-caillou", "colporteur-viande", "troc-colporteur"],
         label: "Ouvrir la main devant le Colporteur",
         requiresSceau: SCEAU_LANDES,
         passive: {
@@ -4197,6 +4240,7 @@ export const SCENES: Scene[] = [
            voulu prévenir, et on lui a retiré le moyen de prévenir sans un
            mot d'explication. */
         id: "sonneur-battant",
+        prendLaPlaceDe: "rebouteux-la-nuit",
         label: "Parler à l\u2019homme sans étal",
         requiresDecouverte: "d.cloche_sans_battant",
         passive: {
@@ -4236,6 +4280,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "rebouteux",
+        prendLaPlaceDe: ["sonneur-battant", "rebouteux-la-nuit"],
         nature: "social",
         repondBesoin: "soigner",
         // Un corps intact n'a rien à montrer (panel 10/08) : la prose parle
@@ -4871,6 +4916,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "chapelle-craie",
+        prendLaPlaceDe: "prier-veuve",
         label: "\u00c9crire un nom \u00e0 la craie",
         requiresObjet: "craie-condamne",
         soupcon: 1,
@@ -4886,6 +4932,8 @@ export const SCENES: Scene[] = [
       },
       {
         id: "corde-vive",
+        requiresChoixFait: "mur-cordes",
+        prendLaPlaceDe: "corde-coupee",
         tags: ["citable"],
         label: "Saisir la corde vive",
         locked: { stat: "COURAGE", min: 4 },
@@ -4902,6 +4950,7 @@ export const SCENES: Scene[] = [
            l'éviter avant qu'elle n'attaque — la seule façon de sortir de la
            Chapelle sans jamais tendre le poignet. */
         id: "eviter-corde-vive",
+        prendLaPlaceDe: "chapelle-ressortir",
         label: "Longer le mur, hors d'atteinte",
         sortie: {},
         requiresSavoir: "savoir_corde_vive",
@@ -5380,6 +5429,7 @@ export const SCENES: Scene[] = [
            réponse dit la loi de substitution sans jamais la nommer — on ne
            revient pas, on prend la place de. */
         id: "tribunal-page-revenus",
+        prendLaPlaceDe: ["tribunal-carnet", "dire-poteau-grave", "registre-ment", "ecrivain-defenses"],
         label: "Demander la page des revenus",
         requiresSceau: SCEAU_LANDES,
         passive: {
@@ -5398,6 +5448,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "tribunal-carnet",
+        prendLaPlaceDe: ["dire-poteau-grave", "registre-ment", "ecrivain-defenses"],
         label: "Confronter le carnet au Registre",
         requiresObjet: "carnet-fossoyeur",
         passive: {
@@ -5419,6 +5470,7 @@ export const SCENES: Scene[] = [
            Sa conséquence est écrite à l'exécution : le héros oppose au greffe
            l'accusation du fait précis qu'il tient (lib/contradictions.ts). */
         id: "registre-ment",
+        prendLaPlaceDe: "ecrivain-defenses",
         label: "Le Registre ment",
         requiresContradiction: true,
         soupcon: -1,
@@ -5462,6 +5514,7 @@ export const SCENES: Scene[] = [
            « aveu suicidaire ou renversement selon RUSE » — donc un vrai pari :
            un Savoir n'est pas toujours une bonne carte. */
         id: "dire-poteau-grave",
+        prendLaPlaceDe: ["registre-ment", "ecrivain-defenses"],
         nature: "social",
         label: "« Mon poteau est déjà taillé »",
         requiresSavoir: "savoir_poteau_a_mon_nom",
@@ -6076,6 +6129,8 @@ export const SCENES: Scene[] = [
       },
       {
         id: "epoux-donner",
+        requiresObjet: "fruit-cendre",
+        prendLaPlaceDe: "epoux-rien",
         label: "Chercher dans ta besace",
         passive: {
           consequence:
@@ -6282,6 +6337,7 @@ export const SCENES: Scene[] = [
            l'échange. On ne paie plus avec sa mort — on paie en montrant qu'on a
            compris ce que le hameau ne dit pas. */
         id: "veilleur-mur-inutile",
+        prendLaPlaceDe: "veilleur-refuser",
         label: "« Ce mur ne protège de rien »",
         requiresSavoir: "savoir_palissade_retient",
         grantsLoot: "lanterne-veilleur",
@@ -6436,6 +6492,7 @@ export const SCENES: Scene[] = [
            Pas de `defense:` : cette défense-là ne vient pas des témoins, elle
            vient de ce qu'on est allé chercher. */
         id: "invoquer-trois-cent-unieme",
+        prendLaPlaceDe: "prendre-a-temoin",
         nature: "social",
         label: "Invoquer le trois cent unième",
         requiresDecouverte: "d.bailli_condamne",
@@ -6511,6 +6568,7 @@ export const SCENES: Scene[] = [
            du hameau (registre, carnet, sceau, ordonnance, dénonciation). Seuil
            plus bas : un papier vaut mieux qu'un beau discours, ici. */
         id: "produire-preuve",
+        prendLaPlaceDe: "plaider-serre",
         nature: "social",
         label: "Produire un papier",
         defense: "preuve",

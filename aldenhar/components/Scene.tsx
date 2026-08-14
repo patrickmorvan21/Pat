@@ -928,6 +928,11 @@ export default function Scene() {
     // deux fois la même question au Veilleur ; le lieu tient plusieurs
     // décisions, pas la même en boucle.
     if (scene.sejour && choixFaits.includes(c.id)) return false;
+    // REMPLACER PAR SÉQUENCE (verdict des panels, 14/08) : ce choix attend
+    // qu'un autre ait été fait ICI. C'est ce qui permet à un écran de tenir
+    // quatre intentions dans trois boutons sans en perdre aucune — on les
+    // ordonne au lieu de les empiler.
+    if (c.requiresChoixFait && !choixFaits.includes(c.requiresChoixFait)) return false;
     if (c.requiresSavoir && !savoirs.includes(c.requiresSavoir)) return false;
     // La DÉCOUVERTE (6/08) : même mécanique que le Savoir, mais la source est
     // le COMPTE. C'est ce qui permet à une option de n'exister qu'à partir de
@@ -979,13 +984,31 @@ export default function Scene() {
     if (c.renonce && !renoncePossible) return false;
     return true;
   });
+  // UNE OPTION CONDITIONNELLE PREND LA PLACE DE L'AVEUGLE (verdict des deux
+  // panels + ChatGPT, 14/08). Les systèmes livrés depuis fin juillet — Sceau,
+  // objets portés, savoirs, découvertes, contradictions — AJOUTAIENT chacun
+  // leur bouton : mesuré, dix écrans pouvaient dépasser trois actions, le
+  // Marché Muet jusqu'à huit et le procès à cinq. C'est le retour de l'ancien
+  // PACTUM : on cesse de choisir une intention, on relit une liste.
+  //
+  // On parcourt les survivants DANS L'ORDRE DE DÉCLARATION : le premier écrit
+  // gagne, et un choix déjà retiré ne retire plus rien (sinon une chaîne
+  // s'annulerait par le bas). Une chaîne se lit donc du plus spécifique au
+  // plus général.
+  const remplaces = new Set<string>();
+  for (const c of baseChoices) {
+    if (remplaces.has(c.id) || !c.prendLaPlaceDe) continue;
+    for (const cible of typeof c.prendLaPlaceDe === "string" ? [c.prendLaPlaceDe] : c.prendLaPlaceDe)
+      remplaces.add(cible);
+  }
+  const choixRetenus = remplaces.size ? baseChoices.filter((c) => !remplaces.has(c.id)) : baseChoices;
   // Les choix d'orientation d'une liaison gardent leur ordre (gauche/droite
   // stable) ; ailleurs, Fisher-Yates seedé pour casser les patterns de slot.
   // Le vol est ajouté AVANT le mélange : il prend une position quelconque,
   // comme n'importe quel autre choix — jamais un slot réservé.
   const avecVol: Choice[] = volPossible
     ? [
-        ...baseChoices,
+        ...choixRetenus,
         {
           id: "voler-nourriture",
           label: "Prendre sans demander",
@@ -1006,7 +1029,7 @@ export default function Scene() {
           },
         },
       ]
-    : baseChoices;
+    : choixRetenus;
   const shuffledChoices = scene.liaison ? avecVol : shuffleChoices(avecVol, step);
   // Points d'intérêt encore inexplorés (spec 24/07 suite §1) : proposés EN TÊTE
   // des choix — ce sont les choses vues de loin à l'arrivée. Un point examiné
@@ -1049,7 +1072,12 @@ export default function Scene() {
    * points sont rangés du plus visible de loin au plus discret.
    */
   const SLOTS = 3;
-  const placeLibre = Math.max(0, SLOTS - acts.length);
+  // ⚠️ Le 4e choix contextuel (« Utiliser — <objet> ») était AJOUTÉ APRÈS ce
+  // budget : mesuré par le panel du 14/08, un joueur blessé voyait donc quatre
+  // boutons en permanence, et treize des quinze dépassements relevés étaient
+  // celui-là. Il compte maintenant comme un acte — ce sont les points
+  // d'intérêt qui reculent d'un cran, jamais la règle qui cède.
+  const placeLibre = Math.max(0, SLOTS - acts.length - (activeChoice && !poiOpen ? 1 : 0));
   const tousTiennent = openPois.length <= placeLibre && looks.length === 0;
   // Un « Observer » n'a de sens que s'il reste quelque chose dedans : il coûte
   // alors lui-même un slot.
@@ -1076,7 +1104,25 @@ export default function Scene() {
   // 4e choix contextuel (spec 21/07 point 4) : un objet ACTIF pertinent ajouté
   // en bas des choix (calculé hors rendu dans un effet — lit la Besace/santé).
   const withPois = poiOpen ? poiGroup : [...poiGroup, ...acts];
-  const renderedChoices = activeChoice && !poiOpen ? [...withPois, activeChoice] : withPois;
+  const avecActif = activeChoice && !poiOpen ? [...withPois, activeChoice] : withPois;
+  /**
+   * LE FILET, jamais la méthode. La règle des trois actions se tient dans le
+   * CONTENU (`Choice.remplace`) et le garde de build `A-trois` le vérifie
+   * scène par scène. Ce plafond n'est là que pour qu'un cas non prévu — une
+   * combinaison de systèmes qu'on n'a pas encore croisée — dégrade
+   * proprement au lieu d'afficher une liste.
+   *
+   * ⚠️ Il ne coupe JAMAIS une sortie : enfermer le joueur serait pire que
+   * quatre boutons. Si les sorties débordent à elles seules, on les garde
+   * toutes et on laisse le garde de build faire son travail.
+   */
+  const renderedChoices = (() => {
+    if (avecActif.length <= SLOTS || poiOpen) return avecActif;
+    const sort = (c: Choice) => Boolean(c.sortie || c.orient || c.renonce);
+    const sorties = avecActif.filter(sort);
+    const reste = avecActif.filter((c) => !sort(c));
+    return [...reste.slice(0, Math.max(0, SLOTS - sorties.length)), ...sorties];
+  })();
 
   function persist(mutate: (run: RunState) => void) {
     const run = runRef.current ?? loadRun();
