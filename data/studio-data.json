@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-14T17:32:09Z",
- "commit": "0162677",
+ "genere": "2026-08-14T18:15:08Z",
+ "commit": "028064c",
  "zones": [
   {
    "id": "landes",
@@ -1403,7 +1403,7 @@
   {
    "id": "fossoyeur-trou-1",
    "narration": [
-    "Il taille un écriteau sur ses genoux, au bout d’une rangée. Le nom qu’il grave n’a pas encore de date.",
+    "Il taille un écriteau sur ses genoux, au bout d’une rangée. Le nom qu’il grave n’a pas encore de date. Sous le nom, il a déjà creusé un petit signe en forme de plume, machinalement, comme on trace une croix avant de savoir pour qui.",
     "« Je grave à l’avance ceux dont c’est sûr. Ça fait gagner du temps le jour venu. » Le couteau ne s’arrête pas. « Comment je sais ? Je regarde les toits. Six corbeaux sur la même maison, je taille. Je me trompe jamais. »"
    ],
    "choix": [
@@ -1553,7 +1553,7 @@
   {
    "id": "champ-des-fixes-2",
    "narration": [
-    "Entre les rangs, un vieil homme redresse un poteau qui penche, avec des gestes de jardinier. Il t'a vu venir de loin — les vivants font un bruit particulier, ici. Il ne s'interrompt pas : il t'attend au travail, comme on attend un outil. « La Colline, c'est la vitrine », dit-il sans qu'on demande. « Ici, c'est l'arrière-boutique. »"
+    "Entre les rangs, un vieil homme redresse un poteau qui penche, avec des gestes de jardinier. Il t'a vu venir de loin — les vivants font un bruit particulier, ici. Il ne s'interrompt pas : il t'attend au travail, comme on attend un outil. « La Colline, c'est la vitrine », dit-il sans qu'on demande. « Ici, c'est l'arrière-boutique. » À ses pieds, un écriteau prêt : un nom, pas de date, et sous le nom un petit signe en forme de plume."
    ],
    "choix": [
     {
@@ -3966,6 +3966,16 @@
      "consequence": "Il hausse les épaules sans lever les yeux de son baume. « Je soigne pas la nuit. C’est pas une règle. C’est juste que personne demande. » Puis, comme on jette un os : « Si c’est l’eau de la Mare que tu as bue, garde ta monnaie. »"
     },
     {
+     "id": "colporteur-sans-bouche",
+     "label": "Lui demander où il a entendu ça",
+     "type": "passif",
+     "consequence": "Il est en train de dire à un autre, sans baisser la voix, que la jeune du moulin est toujours là. Tu lui demandes d'où il le tient. « D'où je le tiens ? » Il rit. « De partout. C'est le genre de chose qu'on sait. » Il reprend son étal en main. « Personne me l'a dit, si c'est ta question. On me dit jamais rien, à moi. J'écoute, c'est tout. »",
+     "exigeDecouverte": "d.temoin_oculaire",
+     "prendLaPlaceDe": [
+      "troc-colporteur"
+     ]
+    },
+    {
      "id": "troc-colporteur",
      "label": "Troquer au Marché",
      "type": "risque",
@@ -5013,7 +5023,7 @@
      "id": "mur-ordonnance",
      "label": "Lire la feuille clouée au mur",
      "type": "passif",
-     "consequence": "Du papier épais, jauni, cloué aux quatre coins par quelqu'un qui ne voulait pas qu'on le décroche : la liste des signes, de la main du Bailli. « Parler seul face au sud. Fixer les Profondeurs plus qu'il ne faut. Cesser de dormir. Répondre à ce qui n'a pas parlé. » Tu la lis trois fois. La deuxième, tu comptes ceux qui te concernent déjà. La troisième, tu les apprends — parce que c'est exactement ce qu'ils guettent chez toi.",
+     "consequence": "Du papier épais, jauni, cloué aux quatre coins par quelqu'un qui ne voulait pas qu'on le décroche : la liste des signes, de la main du Bailli. « Parler seul face au sud. Fixer les Profondeurs plus qu'il ne faut. Cesser de dormir. Répondre à ce qui n'a pas parlé. » Tu la lis trois fois. La deuxième, tu comptes ceux qui te concernent déjà. La troisième, tu les apprends — parce que c'est exactement ce qu'ils guettent chez toi. ",
      "donneSavoir": "savoir_ordonnance",
      "donneDecouverte": "d.ordonnance_lue"
     },
@@ -5888,10 +5898,20 @@
    ],
    "choix": [
     {
+     "id": "veilleur-signe",
+     "label": "« Ce signe, en tête de la colonne »",
+     "type": "passif",
+     "consequence": "Il regarde où tu montres, et il met un temps à comprendre que tu parles de ça. « Ça ? Ça vient avec le registre. » Il hausse les épaules. « Chaque fois qu'on m'en donne un neuf, c'est déjà dessus. Le hameau dit que c'est la marque du Bailli. » Il retourne le cahier vers lui et regarde le signe comme s'il le voyait pour la première fois. « Sauf que le Bailli, il pend depuis avant mon père. Et le registre, il est neuf. »",
+     "exigeDecouverte": "d.signe_plume",
+     "prendLaPlaceDe": [
+      "veilleur-note-quoi"
+     ]
+    },
+    {
      "id": "veilleur-note-quoi",
      "label": "« Qu'est-ce que tu écris ? »",
      "type": "passif",
-     "consequence": "Il tourne le registre vers toi, une seconde, sans le lâcher. Deux colonnes : ceux qui montent, ceux qui descendent. Ton nom n'est dans ni l'une ni l'autre — il est en bas, à part, sous un trait. « Celle-là, c'est pas moi qui l'ai commencée. On me dit quoi y mettre. »"
+     "consequence": "Il tourne le registre vers toi, une seconde, sans le lâcher. Deux colonnes : ceux qui montent, ceux qui descendent. Ton nom n'est dans ni l'une ni l'autre — il est en bas, à part, sous un trait. « Celle-là, c'est pas moi qui l'ai commencée. On me dit quoi y mettre. » "
     },
     {
      "id": "veilleur-note-qui",
@@ -8526,7 +8546,7 @@
  "totaux": {
   "scenes": 90,
   "pointsInteret": 0,
-  "choix": 268,
+  "choix": 270,
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,

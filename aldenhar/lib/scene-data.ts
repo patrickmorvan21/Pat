@@ -1948,7 +1948,12 @@ export const SCENES: Scene[] = [
     chainNext: "fossoyeur-trou-2",
     narration: [
       "Il taille un écriteau sur ses genoux, au bout d\u2019une rangée. Le nom " +
-        "qu\u2019il grave n\u2019a pas encore de date.",
+        "qu\u2019il grave n\u2019a pas encore de date. Sous le nom, il a d\u00e9j\u00e0 " +
+        // TRACE DU GRAND T\u00c9MOIN (14/08) \u2014 4e occurrence du signe en forme de
+        // plume. Le Fossoyeur le grave PAR HABITUDE, sans savoir ce que c'est :
+        // c'est ce qui le rend inqui\u00e9tant apr\u00e8s coup, et anodin d'abord.
+        "creus\u00e9 un petit signe en forme de plume, machinalement, comme on " +
+        "trace une croix avant de savoir pour qui.",
       "« Je grave à l\u2019avance ceux dont c\u2019est sûr. Ça fait gagner du " +
         "temps le jour venu. » Le couteau ne s\u2019arrête pas. « Comment je " +
         "sais ? Je regarde les toits. Six corbeaux sur la même maison, je " +
@@ -2077,7 +2082,14 @@ export const SCENES: Scene[] = [
         "font un bruit particulier, ici. Il ne s'interrompt pas : il " +
         "t'attend au travail, comme on attend un outil. « La Colline, " +
         "c'est la vitrine », dit-il sans qu'on demande. « Ici, c'est " +
-        "l'arrière-boutique. »",
+        "l'arrière-boutique. » " +
+        /* TRACE DU GRAND TÉMOIN (14/08). ⚠️ Elle était d'abord posée sur la
+           seule VARIANTE `fossoyeur-trou-1`, gatée sur une découverte — donc
+           invisible en première vie, ce qui contredisait le principe même du
+           lot (une trace se voit tout de suite et ne veut rien dire). Le test
+           l'a attrapée. Elle vit ici, sur la scène que tout le monde joue. */
+        "À ses pieds, un écriteau prêt : un nom, pas de date, et sous le " +
+        "nom un petit signe en forme de plume.",
     ],
     choices: [
       {
@@ -4312,6 +4324,30 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        /* CONSOMMATEUR DE `d.temoin_oculaire` (lot Grand Témoin, 14/08).
+           Dire à la Femme au Seuil « Elle est là » était le seul aveu du jeu
+           qui ne coûtait ni ne rapportait rien : la découverte était posée et
+           lue nulle part. Elle ouvre maintenant la trace la plus retorse de
+           la zone — l'information a voyagé sans bouche.
+           ⚠️ Le Colporteur ne l'explique pas et ne peut pas l'expliquer : il
+           croit répéter une rumeur de marché. C'est au JOUEUR de se rappeler
+           qu'il ne l'a dit qu'à une personne, dans une ruelle, à voix basse.
+           ⚠️ Prend la place du troc : trois actions, comme avant. */
+        id: "colporteur-sans-bouche",
+        label: "Lui demander où il a entendu ça",
+        requiresDecouverte: "d.temoin_oculaire",
+        prendLaPlaceDe: "troc-colporteur",
+        passive: {
+          consequence:
+            "Il est en train de dire à un autre, sans baisser la voix, que " +
+            "la jeune du moulin est toujours là. Tu lui demandes d'où il le " +
+            "tient. « D'où je le tiens ? » Il rit. « De partout. C'est le " +
+            "genre de chose qu'on sait. » Il reprend son étal en main. " +
+            "« Personne me l'a dit, si c'est ta question. On me dit jamais " +
+            "rien, à moi. J'écoute, c'est tout. »",
+        },
+      },
+      {
         id: "troc-colporteur",
         nature: "social",
         label: "Troquer au Marché",
@@ -5405,7 +5441,18 @@ export const SCENES: Scene[] = [
             "plus qu'il ne faut. Cesser de dormir. Répondre à ce qui n'a pas " +
             "parlé. » Tu la lis trois fois. La deuxième, tu comptes ceux qui " +
             "te concernent déjà. La troisième, tu les apprends — parce que " +
-            "c'est exactement ce qu'ils guettent chez toi.",
+            "c'est exactement ce qu'ils guettent chez toi. " +
+            /* TRACE DU GRAND TÉMOIN (14/08) — la 2e occurrence du signe en
+               forme de plume, sur la propre liste du Bailli, et dans la marge
+               du seul signe qui parle de « ce qui n'a pas parlé ».
+               ⚠️ AUCUNE CONDITION, et c'est le principe du lot : une trace
+               doit être VISIBLE dès la première vie et n'y rien vouloir dire.
+               La gater sur la découverte ne la montrerait qu'à qui sait déjà,
+               c'est-à-dire à personne au moment où ça compte. C'est la
+               RÉCURRENCE, entre lieux et entre vies, qui la rend signifiante —
+               jamais une explication. */
+            "En marge du quatrième, un petit signe en forme de plume. " +
+            "Une encre plus pâle que le reste, et pas la même main.",
         },
       },
       {
@@ -6316,6 +6363,32 @@ export const SCENES: Scene[] = [
     ],
     choices: [
       {
+        /* CONSOMMATEUR DE `d.signe_plume` (lot Grand Témoin, 14/08). La
+           découverte était POSÉE au Registre des Pendaisons et lue nulle part
+           — un motif semé sans jamais rien ouvrir. Elle ouvre maintenant la
+           seule question qui compte, et le Veilleur y répond sans savoir ce
+           qu'il dit : la colonne est déjà signée quand on la lui remet.
+           ⚠️ PREND LA PLACE de la question aveugle : budget de trois actions
+           inchangé, et l'option informée n'est pas une option de plus.
+           ⚠️ Aucune explication : il ne sait pas, donc il ne peut rien
+           révéler. Le joueur repart avec une question de plus, pas une
+           réponse — c'est le but du lot. */
+        id: "veilleur-signe",
+        label: "« Ce signe, en tête de la colonne »",
+        requiresDecouverte: "d.signe_plume",
+        prendLaPlaceDe: "veilleur-note-quoi",
+        passive: {
+          consequence:
+            "Il regarde où tu montres, et il met un temps à comprendre que " +
+            "tu parles de ça. « Ça ? Ça vient avec le registre. » Il hausse " +
+            "les épaules. « Chaque fois qu'on m'en donne un neuf, c'est déjà " +
+            "dessus. Le hameau dit que c'est la marque du Bailli. » Il " +
+            "retourne le cahier vers lui et regarde le signe comme s'il le " +
+            "voyait pour la première fois. « Sauf que le Bailli, il pend " +
+            "depuis avant mon père. Et le registre, il est neuf. »",
+        },
+      },
+      {
         id: "veilleur-note-quoi",
         label: "« Qu'est-ce que tu écris ? »",
         passive: {
@@ -6324,7 +6397,10 @@ export const SCENES: Scene[] = [
             "Deux colonnes : ceux qui montent, ceux qui descendent. Ton nom " +
             "n'est dans ni l'une ni l'autre — il est en bas, à part, sous " +
             "un trait. « Celle-là, c'est pas moi qui l'ai commencée. On me " +
-            "dit quoi y mettre. »",
+            "dit quoi y mettre. » " +
+            // TRACE (14/08) — 3e occurrence du signe, sur la colonne dont le
+            // Veilleur dit lui-même qu'elle n'est pas de lui. Sans condition.
+            "En tête de cette colonne-là, un petit signe en forme de plume.",
         },
       },
       {
