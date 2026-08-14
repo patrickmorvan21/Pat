@@ -50,7 +50,7 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-14T11:14:01Z",
+ "genere": "2026-08-14T16:17:47Z",
  "commit": "54f03fb",
  "zones": [
   {
@@ -1121,7 +1121,10 @@
      "label": "Chercher la Tour à la lunette",
      "type": "passif",
      "consequence": "Tu cales le cuivre contre l'arête du mât et tu balaies le nord. La Tour de Guet saute dans le verre d'un coup, très nette, à hauteur d'œil : sa meurtrière du sud te regarde en plein. Ce n'est pas une coïncidence de terrain — quelqu'un a choisi les deux emplacements le même jour, avec la même corde à mesurer. Le grand gibet et la tour ont été plantés l'un pour l'autre.",
-     "exigeObjet": "lunette-guet"
+     "exigeObjet": "lunette-guet",
+     "prendLaPlaceDe": [
+      "monter-grand-gibet"
+     ]
     },
     {
      "id": "monter-grand-gibet",
@@ -1268,7 +1271,11 @@
       "nom": "Le Sonneur sans Cloche",
       "deposition": "Il a parlé au pendu. Et le pendu lui a répondu — j'étais à trente pas.",
       "lieu": "à la Colline aux Gibets"
-     }
+     },
+     "prendLaPlaceDe": [
+      "pendu-le-trois-cent-unieme"
+     ],
+     "exigeChoixFait": "pendu-le-trois-cent-unieme"
     },
     {
      "id": "decrocher",
@@ -1551,14 +1558,23 @@
      "label": "Parler des marques d’oreille",
      "type": "passif",
      "consequence": "« Cinq marques ? » Le couteau s’arrête. Tu les dessines dans la poussière. Il les regarde longtemps, les lèvres bougeant sans bruit : il met un nom sur chacune. Puis il efface du plat de la main. « Joli troupeau. » C’est tout ce que tu en tireras.",
-     "exigeDecouverte": "d.troupeau_compte"
+     "exigeDecouverte": "d.troupeau_compte",
+     "prendLaPlaceDe": [
+      "fixe-il-vient-pour-eux",
+      "confidence-fixes"
+     ]
     },
     {
      "id": "champ-jouet",
      "label": "Lui montrer la poupée",
      "type": "passif",
      "consequence": "Tu sors la poupée de chiffon et tu la poses sur le rebord de sa brouette. Le Fossoyeur arrête sa bêche. Il ne la prend pas — il la regarde longtemps, comme on regarde une addition qui ne tombe pas juste. « Celle-là, j'ai jamais eu de poteau à tailler pour elle. » Il se remet au travail plus vite qu'avant. « Faudrait pas croire que j'oublie. »",
-     "exigeObjet": "jouet-fixee"
+     "exigeObjet": "jouet-fixee",
+     "prendLaPlaceDe": [
+      "fossoyeur-cinq-marques",
+      "fixe-il-vient-pour-eux",
+      "confidence-fixes"
+     ]
     },
     {
      "id": "aider-fossoyeur",
@@ -1580,7 +1596,11 @@
      "id": "carnet",
      "label": "Déchiffrer le carnet",
      "type": "verrouille",
-     "stat": "RUSE"
+     "stat": "RUSE",
+     "exigeObjet": "carnet-fossoyeur",
+     "prendLaPlaceDe": [
+      "aider-fossoyeur"
+     ]
     },
     {
      "id": "confidence-fixes",
@@ -1595,7 +1615,10 @@
      "type": "passif",
      "consequence": "Un homme au bout du rang redresse la tête. Il porte la même croix de craie que toi. « Tu l'as vu ? » Il ne baisse même pas la voix — on ne se cache plus, quand on est déjà compté. « Il vient pas pour nous. Il vient pour eux. Pour qu'ils osent. »",
      "donneDecouverte": "d.temoin_entendu",
-     "exigeEtat": "fixe"
+     "exigeEtat": "fixe",
+     "prendLaPlaceDe": [
+      "confidence-fixes"
+     ]
     },
     {
      "id": "passer-fossoyeur",
@@ -2168,7 +2191,10 @@
      },
      "nature": "social",
      "donneObjet": "meche-nouee",
-     "exigeSavoir": "savoir_reflet"
+     "exigeSavoir": "savoir_reflet",
+     "prendLaPlaceDe": [
+      "femme-refuser"
+     ]
     }
    ],
    "pointsInteret": [],
@@ -3891,28 +3917,43 @@
      "label": "Demander d’où vient la viande",
      "type": "passif",
      "consequence": "Il suit ton regard jusqu’aux quartiers salés pendus sous l’étal, et pour la première fois son sourire de marchand se simplifie. « Me demande pas d’où ça vient. » Il remonte la toile dessus, sans hâte. « Moi je revends. »",
-     "exigeDecouverte": "d.troupeau_compte"
+     "exigeDecouverte": "d.troupeau_compte",
+     "prendLaPlaceDe": [
+      "troc-colporteur"
+     ]
     },
     {
      "id": "marche-caillou",
      "label": "Montrer le caillou de rivière",
      "type": "passif",
      "consequence": "Tu poses le galet plat dans sa paume. Le Colporteur le fait rouler du pouce, le soupèse, le rend. « Ça, c'est de l'eau courante. » Il regarde autour de lui sans bouger la tête. « Y'a pas d'eau courante à trois jours d'ici, et j'ai fait tous les chemins. » Un temps. « Le petit te l'a donné ? Range-le avant qu'un autre te demande la même chose. »",
-     "exigeObjet": "caillou-gamin"
+     "exigeObjet": "caillou-gamin",
+     "prendLaPlaceDe": [
+      "colporteur-viande",
+      "troc-colporteur"
+     ]
     },
     {
      "id": "colporteur-paume",
      "label": "Ouvrir la main devant le Colporteur",
      "type": "passif",
      "consequence": "Tu ouvres la main, paume en l'air, comme on montre qu'on n'a rien. Le Colporteur regarde le creux, et son sourire de marchand tombe d'un coup — pas de peur : de fatigue.\n\n— « Trois. » Il replie la toile sur son étal, alors que tu n'as rien demandé. « J'en ai vu trois comme ça, en vingt ans de chemins. Et les trois, je les ai vus deux fois. » Il te tend l'écuelle du repas qu'il s'était gardé, refuse ta main quand tu cherches de quoi payer. « Toi, tu me dois rien. C'est même l'inverse, et j'aime pas ça. »",
-     "exigeSceau": "sceau:landes"
+     "exigeSceau": "sceau:landes",
+     "prendLaPlaceDe": [
+      "marche-caillou",
+      "colporteur-viande",
+      "troc-colporteur"
+     ]
     },
     {
      "id": "sonneur-battant",
      "label": "Parler à l’homme sans étal",
      "type": "passif",
      "consequence": "Un homme sans marchandise se tient au bout de la rangée, les mains vides et l’air de quelqu’un qui a eu un métier. « J’ai sonné, une nuit. Pour prévenir. » Il regarde ses paumes. « Le lendemain, plus de battant. Personne n’a rien dit. C’était juste plus là. »",
-     "exigeDecouverte": "d.cloche_sans_battant"
+     "exigeDecouverte": "d.cloche_sans_battant",
+     "prendLaPlaceDe": [
+      "rebouteux-la-nuit"
+     ]
     },
     {
      "id": "rebouteux-la-nuit",
@@ -3955,7 +3996,11 @@
       "nom": "Le Rebouteux",
       "deposition": "Il est venu se faire soigner d'une plaie qu'aucun outil du hameau ne fait.",
       "lieu": "au Marché Muet"
-     }
+     },
+     "prendLaPlaceDe": [
+      "sonneur-battant",
+      "rebouteux-la-nuit"
+     ]
     },
     {
      "id": "traverser-marche",
@@ -4586,7 +4631,10 @@
       "nom": "La Veuve des Cordes",
       "deposition": "Il a écrit un nom sur une corde qui n'en avait pas. La sienne. Chez nous, ça s'appelle prendre les devants.",
       "lieu": "à la Chapelle des Cordes"
-     }
+     },
+     "prendLaPlaceDe": [
+      "prier-veuve"
+     ]
     },
     {
      "id": "corde-vive",
@@ -4595,7 +4643,11 @@
      "stat": "COURAGE",
      "tags": [
       "citable"
-     ]
+     ],
+     "prendLaPlaceDe": [
+      "corde-coupee"
+     ],
+     "exigeChoixFait": "mur-cordes"
     },
     {
      "id": "eviter-corde-vive",
@@ -4603,7 +4655,10 @@
      "type": "passif",
      "consequence": "Tu connais son rang et sa place. Tu longes l'autre mur, à une largeur de bras de trop pour elle. Dans ton dos, elle se détend puis se retend à vide — une chose qui avait prévu autre chose. La Veuve lève les yeux pour la première fois. Elle a l'air de noter.",
      "sortie": {},
-     "exigeSavoir": "savoir_corde_vive"
+     "exigeSavoir": "savoir_corde_vive",
+     "prendLaPlaceDe": [
+      "chapelle-ressortir"
+     ]
     },
     {
      "id": "chapelle-ressortir",
@@ -5013,14 +5068,25 @@
      "label": "Demander la page des revenus",
      "type": "passif",
      "consequence": "Tu poses la question sans montrer ta main. Il ne demande pas pourquoi. Il feuillette en arrière, très loin, jusqu'à un cahier plus ancien que lui — et l'ouvre à une page qu'il n'a pas eu besoin de chercher.\n\nUne colonne de noms, courte. Chacun rayé d'un trait, et en face de chaque trait, un second nom, celui de quelqu'un du hameau, avec une date. « Quand il en revient un », dit l'Écrivain en refermant, « il en manque un. Le registre ne juge pas. Il équilibre. » Il te regarde enfin. « Vous croyez tous que vous rentrez. Personne ne rentre. On échange. »",
-     "exigeSceau": "sceau:landes"
+     "exigeSceau": "sceau:landes",
+     "prendLaPlaceDe": [
+      "tribunal-carnet",
+      "dire-poteau-grave",
+      "registre-ment",
+      "ecrivain-defenses"
+     ]
     },
     {
      "id": "tribunal-carnet",
      "label": "Confronter le carnet au Registre",
      "type": "passif",
      "consequence": "Tu poses le carnet du Fossoyeur à plat contre la page ouverte, et tu remontes les deux colonnes du doigt. Elles s'accordent jusqu'à un tiers. Après, le Registre continue de compter des pendus que le carnet n'a jamais eu à mettre en terre. Personne n'a menti : le livre dit ce qui a été prononcé, le carnet dit ce qui a été enterré. Il manque une trentaine de corps entre les deux.",
-     "exigeObjet": "carnet-fossoyeur"
+     "exigeObjet": "carnet-fossoyeur",
+     "prendLaPlaceDe": [
+      "dire-poteau-grave",
+      "registre-ment",
+      "ecrivain-defenses"
+     ]
     },
     {
      "id": "lire-registre",
@@ -5033,7 +5099,10 @@
      "type": "passif",
      "consequence": "Tu poses la main à plat sur la page ouverte, et tu dis ce que tu sais. L'Écrivain ne lève toujours pas les yeux — mais sa plume s'arrête, et le silence qui suit n'est pas le silence de quelqu'un qui n'a pas compris.",
      "exigeContradiction": true,
-     "soupcon": -1
+     "soupcon": -1,
+     "prendLaPlaceDe": [
+      "ecrivain-defenses"
+     ]
     },
     {
      "id": "denoncer-un-autre",
@@ -5064,7 +5133,11 @@
       "funeste": "1 naturel. Tu parles trop, et tu parles bien : tu expliques exactement où est le poteau, à quelle rangée, comment l'entaille est faite. L'Écrivain note tout. « Merci », dit-il enfin — le seul mot qu'il t'aura adressé. « On cherchait encore lequel c'était. » ♦ −2"
      },
      "nature": "social",
-     "exigeSavoir": "savoir_poteau_a_mon_nom"
+     "exigeSavoir": "savoir_poteau_a_mon_nom",
+     "prendLaPlaceDe": [
+      "registre-ment",
+      "ecrivain-defenses"
+     ]
     }
    ],
    "pointsInteret": [],
@@ -5662,7 +5735,11 @@
      "id": "epoux-donner",
      "label": "Chercher dans ta besace",
      "type": "passif",
-     "consequence": "Tu fouilles longuement, pour de vrai. Tout ce que tu portes, tu l'as ramassé ici — chaque chose sent la lande, la corde ou la cendre. Rien qui ait poussé sous un vrai soleil. Tu leur montres tes mains ouvertes, et ils regardent dedans quand même, tous les deux, comme on regarde un puits."
+     "consequence": "Tu fouilles longuement, pour de vrai. Tout ce que tu portes, tu l'as ramassé ici — chaque chose sent la lande, la corde ou la cendre. Rien qui ait poussé sous un vrai soleil. Tu leur montres tes mains ouvertes, et ils regardent dedans quand même, tous les deux, comme on regarde un puits.",
+     "exigeObjet": "fruit-cendre",
+     "prendLaPlaceDe": [
+      "epoux-rien"
+     ]
     }
    ],
    "pointsInteret": [],
@@ -5893,7 +5970,10 @@
      "type": "passif",
      "consequence": "Ce mur ne garde pas le village : il l'enferme. Il ne répond pas. Il décroche la lanterne, la pose dans tes mains. « Trente ans que je le dis à personne. » Puis, plus bas : « Ceux qui montent, on les laisse monter. C'est descendre qui est interdit. »",
      "donneObjet": "lanterne-veilleur",
-     "exigeSavoir": "savoir_palissade_retient"
+     "exigeSavoir": "savoir_palissade_retient",
+     "prendLaPlaceDe": [
+      "veilleur-refuser"
+     ]
     }
    ],
    "pointsInteret": [],
@@ -6059,7 +6139,10 @@
       "funeste": "1 naturel. Tu invoques le Bailli devant ceux qui l'ont pendu, et tu emploies son mot à lui : « injuste ». Le silence qui suit n'est pas de la gêne. C'est celui qu'on fait quand on a fini de discuter. ♦ −2"
      },
      "nature": "social",
-     "exigeDecouverte": "d.bailli_condamne"
+     "exigeDecouverte": "d.bailli_condamne",
+     "prendLaPlaceDe": [
+      "prendre-a-temoin"
+     ]
     },
     {
      "id": "plaider-serre",
@@ -6123,7 +6206,10 @@
       "funeste": "1 naturel. Le papier passe de main en main et s'arrête sur une ligne que tu n'avais pas lue. Ton nom y est déjà, dans une écriture qui n'est pas la tienne, avec une date qui n'est pas encore arrivée. Le tribunal n'a plus qu'à respecter le calendrier. ♦ −2"
      },
      "nature": "social",
-     "defense": "preuve"
+     "defense": "preuve",
+     "prendLaPlaceDe": [
+      "plaider-serre"
+     ]
     }
    ],
    "pointsInteret": [],
