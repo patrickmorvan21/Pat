@@ -726,6 +726,11 @@ def lire_choix(bloc: str) -> list[dict]:
         # export_run_kit.py, à nourrir en même temps que le type `Choice`).
         if booleen_de(c, "sansNuit"):
             ch["sansNuit"] = True
+        # 14/08 : le geste qui ROMPT le Serment. Sans ce champ, la réplique
+        # offrirait la défense du Serment à un héros qui a parlé à un pendu —
+        # et un relecteur conclurait que le Serment n'engage à rien.
+        if booleen_de(c, "rompLeSerment"):
+            ch["rompLeSerment"] = True
         # LES LIGNES CALCULÉES, côté CHOIX (14/08). Elles étaient déclarées
         # pour les points d'intérêt seulement — or la conversion du 13/08 les
         # a fait passer sur des CHOIX (`tour-de-pierre` porte `borneSud`).

@@ -1612,24 +1612,6 @@ export default function Scene() {
     );
   }, [scene, step]);
 
-  /* Les apports du procès se DISENT — un bénéfice que rien ne raconte
-     n'existe pas. Une ligne par apport, en tête de l'écran, avant les
-     dépositions : le joueur voit ce que sa trajectoire a déposé dans la
-     salle, sans jamais lire un chiffre. */
-  useEffect(() => {
-    if (!scene.fixationTrial) return;
-    const r = runRef.current;
-    if (!r) return;
-    const lignes = apportsProces(r).map((a) => a.ligne);
-    if (!lignes.length) return;
-    setBeats((b) => {
-      if (b.some((e) => e.kind === "narration" && lignes.includes(e.text))) return b;
-      const i = b.findIndex((e) => e.kind === "narration");
-      const ajout = lignes.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text }));
-      return i < 0 ? [...b, ...ajout] : [...b.slice(0, i + 1), ...ajout, ...b.slice(i + 1)];
-    });
-  }, [scene, step]);
-
   function onTimedExpire(timed: NonNullable<SceneType["timed"]>) {
     setCountdownArmed(false);
     setTimedExpired(true);
@@ -2354,6 +2336,14 @@ export default function Scene() {
     const narrationLines = nextScene.fixationTrial
       ? [
           narrationDeScene[0],
+          /* CE QU'ON APPORTE AU PROCÈS se DIT — un bénéfice que rien ne
+             raconte n'existe pas (Phase C). ⚠️ Ces lignes étaient poussées
+             après coup par un effet, qui les insérait bien dans `beats` mais
+             JAMAIS dans la file de révélation séquentielle : un bloc qu'on
+             n'a pas enfilé ne rend rien (règle du 11/07). Elles étaient donc
+             invisibles depuis leur écriture. Assemblées ici, elles sont
+             paginées et révélées comme le reste. */
+          ...apportsProces(runRef.current ?? {}).map((a) => a.ligne),
           // Le hameau se souvient d'avoir relaxé (panel 10/08) : la salle ne
           // rejoue pas le premier procès, elle en tire les conséquences.
           ...((runRef.current?.procesGagnes ?? 0) > 0 ? [SECOND_PROCES] : []),
@@ -3475,6 +3465,20 @@ export default function Scene() {
       }
     }
 
+    // ROMPRE UNE CLAUSE (14/08). Parler à un pendu, y toucher, regarder le
+    // sud : le Serment ne se mesure plus au Soupçon (qui est au maximum au
+    // moment du procès, ce qui rendait sa défense inatteignable) mais aux
+    // gestes eux-mêmes. Posé à la SÉLECTION : c'est le geste qui rompt, pas
+    // sa réussite — un pendu à qui on adresse la parole a été adressé.
+    // ⚠️ Seulement si le Serment a DÉJÀ été prêté : on ne rompt pas une
+    // promesse qu'on n'a pas faite. La Femme au Seuil se joue avant le muret,
+    // donc regarder le sud chez elle ne doit pas marquer d'avance un serment
+    // qui n'existe pas encore.
+    if (choice.rompLeSerment && runRef.current?.hameau?.serment) {
+      persist((run) => {
+        run.hameau = { ...run.hameau, sermentRompu: true };
+      });
+    }
     // Le Serment des Renonçants (spec 24/07 suite §3) : engage la traversée —
     // il conditionne la Halte (grange vs nuit dehors) et la sortie de zone.
     if (choice.serment) {
@@ -4751,7 +4755,7 @@ function FeedItem({
                 <span className="registre-rank">{r.rank}</span>
                 <span className="registre-name">{r.name}</span>
                 <span className="registre-days">J{r.days}</span>
-                <span className="registre-cause">{r.cause}</span>
+                <span className={`registre-cause${r.destin === "traversee" ? " registre-revenu" : ""}`}>{r.cause}</span>
               </div>
             ))}
           </div>

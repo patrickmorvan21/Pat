@@ -609,6 +609,13 @@ class Partie:
         c = o["c"]
         if c.get("serment"):
             self.d["serment"] = c["serment"]
+        # LE SERMENT SE ROMPT PAR UN GESTE (14/08). Sans ça, la réplique
+        # accorderait au procès la défense du Serment à un héros qui a parlé à
+        # un pendu — et un relecteur conclurait que jurer n'engage à rien.
+        # Seulement si le Serment a DÉJÀ été prêté : la Femme au Seuil se joue
+        # avant le muret, on ne rompt pas une promesse qu'on n'a pas faite.
+        if c.get("rompLeSerment") and self.d.get("serment"):
+            self.d["sermentRompu"] = True
         # Ce qu'un choix ENSEIGNE se pose à la sélection (comme le Soupçon) :
         # poser la question vaut lire une trace.
         if c.get("donneSavoir"):
@@ -685,8 +692,37 @@ class Partie:
         m += min(2, self.d.get("poiIci", 0))
         return m
 
+    def apports_proces(self) -> list[str]:
+        """Ce qu'on APPORTE au procès, miroir d'`apportsProces` (scene-data).
+
+        ⚠️ Le kit ne le jouait pas du tout : le procès y était un jet à seuil
+        fixe, donc un relecteur mesurait « se préparer ne sert à rien » — le
+        biais du 9/08, sur la scène qui est justement la vitrine d'« explorer
+        prépare ». Aucun chiffre affiché : seul l'Anneau bouge.
+        """
+        out = []
+        # ⚠️ Jamais de borne sur le Soupçon ici : le procès ne se déclenche qu'à
+        # 6 et le Soupçon y est plafonné à 6 — une telle borne rendrait cette
+        # défense inatteignable par construction (défaut corrigé le 14/08).
+        if self.d.get("serment") == "jure" and not self.d.get("sermentRompu"):
+            out.append("serment")
+        sav = self.d.get("savoirs", [])
+        if any("femme" in x for x in sav):
+            out.append("alliee")
+        noms = self.k.get("objets", {})
+        if any(re.search(r"registre|carnet|ordonnance|sceau|d[ée]nonciation",
+                         noms.get(oid, oid), re.I)
+               for oid in self.d.get("besace", [])):
+            out.append("papier")
+        if any(re.search(r"bailli|ordonnance|registre", x, re.I) for x in sav):
+            out.append("bailli")
+        return out[:3]
+
     def resoudre(self, c: dict) -> None:
         seuil = int(c.get("seuil") or 11)
+        sc = self.k["scenes"].get(self.d.get("scene") or "", {})
+        if sc.get("procesFixation"):
+            seuil = max(2, seuil - len(self.apports_proces()))
         mod = self.modificateur(c.get("stat"))
         r = self.rng(c["id"])
         naturel = r.randrange(1, 21)

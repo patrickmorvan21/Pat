@@ -44,10 +44,22 @@ export type BloodDebt = {
 };
 
 /** Un héros tombé, pour Le Grand Registre (§19) et Le retour (§16). */
+/**
+ * LE DESTIN D'UN HÉROS. Trois façons de sortir d'une vie, et le Registre doit
+ * les distinguer — un survivant classé sous « TES MORTS » contredit la
+ * promesse centrale du jeu (verdict des panels, 14/08).
+ *
+ * ⚠️ Optionnel dans `FallenHero` à cause des sauvegardes d'avant le 14/08 :
+ * `loadMemory` le DÉDUIT alors de la cause, qui est écrite par nos trois
+ * enregistreurs et donc fiable. Voir `destinDepuisCause`.
+ */
+export type Destin = "mort" | "traversee" | "renoncement";
+
 export type FallenHero = {
   name: string;
   days: number;
   cause: string;
+  destin?: Destin;
   /** Lieu de mort (id de scène) — sert à « Le retour » (recroiser le cadavre). */
   place: string;
 };
@@ -286,6 +298,7 @@ export function recordRenoncement(args: { heroName: string; days: number; place:
       days: args.days,
       cause: "resté au Hameau",
       place: args.place,
+      destin: "renoncement",
     });
     m.derniereFinTraversee = false;
     m.lastPlayedAt = Date.now();
@@ -323,6 +336,7 @@ export function recordTraversee(args: { heroName: string; days: number }): void 
       days: args.days,
       cause: "a franchi la Descente",
       place: "la-descente",
+      destin: "traversee",
     });
     m.derniereFinTraversee = true;
     m.lastPlayedAt = Date.now();
@@ -353,6 +367,19 @@ export function forgetIntro(): void {
   });
 }
 
+/**
+ * Le destin d'une entrée d'avant le 14/08, déduit de sa CAUSE.
+ *
+ * Ce n'est pas une devinette : les trois enregistreurs écrivent une cause
+ * fixe pour la traversée et le renoncement, et tout le reste est une mort.
+ * Une sauvegarde ancienne se relit donc sans perte.
+ */
+export function destinDepuisCause(cause: string): Destin {
+  if (/franchi la Descente/i.test(cause)) return "traversee";
+  if (/resté au Hameau/i.test(cause)) return "renoncement";
+  return "mort";
+}
+
 export function loadMemory(): PlayerMemory {
   if (typeof window !== "undefined") {
     try {
@@ -368,7 +395,11 @@ export function loadMemory(): PlayerMemory {
           relics: Array.isArray(p.relics) ? p.relics : [],
           envFlags: p.envFlags && typeof p.envFlags === "object" ? p.envFlags : {},
           bloodDebts: Array.isArray(p.bloodDebts) ? p.bloodDebts : [],
-          fallen: Array.isArray(p.fallen) ? p.fallen : [],
+          // ⚠️ Même geste que l'ajout du champ (règle du 5/08) : une entrée
+          // d'avant le 14/08 n'a pas de `destin`, on le déduit de sa cause.
+          fallen: Array.isArray(p.fallen)
+            ? p.fallen.map((f) => ({ ...f, destin: f.destin ?? destinDepuisCause(f.cause ?? "") }))
+            : [],
           chaptersSeen: Array.isArray(p.chaptersSeen) ? p.chaptersSeen : [],
           fixations: typeof p.fixations === "number" ? p.fixations : 0,
           // Migration : une mémoire d'avant le 26/07 n'a pas le drapeau, or son
@@ -513,7 +544,7 @@ export function recordDeath(args: {
     m.deaths += 1;
     m.totalDays += args.days;
     m.bestDays = Math.max(m.bestDays, args.days);
-    m.fallen.unshift({ name: args.heroName, days: args.days, cause: args.cause, place: args.place });
+    m.fallen.unshift({ name: args.heroName, days: args.days, cause: args.cause, place: args.place, destin: "mort" });
     m.relics.push(relic);
     if (relic.rarity !== "commune") m.relicsRare += 1;
     if (args.killer && !m.bloodDebts.some((d) => d.entity === args.killer!.entity)) {
@@ -572,9 +603,12 @@ export function buildRegistre(
   playerName: string,
   playerDays: number
 ): RegistreRow[] {
-  const rows: { name: string; days: number; cause: string; isPlayer?: boolean }[] = [
+  const rows: { name: string; days: number; cause: string; isPlayer?: boolean; destin?: Destin }[] = [
     ...REGISTRE_BASE.map((r) => ({ ...r })),
-    ...mem.fallen.map((f) => ({ name: f.name, days: f.days, cause: f.cause, isPlayer: true })),
+    ...mem.fallen.map((f) => ({
+      name: f.name, days: f.days, cause: f.cause, isPlayer: true,
+      destin: f.destin ?? destinDepuisCause(f.cause),
+    })),
     { name: playerName, days: playerDays, cause: "— en cours —", isPlayer: true },
   ];
   rows.sort((a, b) => b.days - a.days);

@@ -19,7 +19,7 @@
  * le Geôlier.
  */
 
-import type { PlayerMemory } from "@/lib/player-memory";
+import { destinDepuisCause, type Destin, type PlayerMemory } from "@/lib/player-memory";
 
 export type RegistreEntry = {
   rank: number;
@@ -28,6 +28,12 @@ export type RegistreEntry = {
   cause: string;
   /** Ligne du joueur (héros tombé ou run en cours) → liseré orange. */
   isPlayer?: boolean;
+  /**
+   * LE DESTIN DE CE HÉROS. Les Cent classent par jours survécus, donc un
+   * survivant y a toute sa place — mais il doit s'y lire comme un survivant,
+   * pas comme un mort de plus (verdict des panels, 14/08).
+   */
+  destin?: Destin;
   /** La première place : traitement spécial, jamais prenable. */
   locked?: boolean;
   /** Run encore en cours — le Registre l'affiche déjà, sans la figer. */
@@ -138,6 +144,7 @@ export function buildLesCent(
       days: f.days,
       cause: f.cause,
       isPlayer: true,
+      destin: f.destin ?? destinDepuisCause(f.cause),
     })),
   ];
   // Une run en cours figure au livre sans y être encore inscrite.
@@ -198,8 +205,20 @@ export type MortJoueur = {
   relic?: string;
 };
 
+/**
+ * L'onglet « TES MORTS » est un CIMETIÈRE : il ne contient que des morts.
+ *
+ * ⚠️ Il listait tout `fallen`, où les trois destins se mélangent — une
+ * traversée réussie s'y affichait donc avec « a franchi la Descente » en
+ * guise de cause de décès. C'est la contradiction la plus directe avec la
+ * promesse centrale du jeu : on y lisait sa victoire comme une défaite.
+ * Les survivants et les renonçants restent dans LES 100, où ils sont
+ * classés par jours et marqués par leur destin.
+ */
 export function mesMorts(mem: PlayerMemory): MortJoueur[] {
-  return mem.fallen.map((f) => ({
+  return mem.fallen
+    .filter((f) => (f.destin ?? destinDepuisCause(f.cause)) === "mort")
+    .map((f) => ({
     name: f.name,
     days: f.days,
     cause: f.cause,

@@ -158,8 +158,17 @@ function Ligne({ e }: { e: RegistreEntry }) {
         </span>
         {/* La ligne verrouillée n'a pas de valeur ici : ses jours sont dans son
             sous-titre, parce qu'ils ne se comparent à rien. */}
+        {/* LE STATUT DU SURVIVANT (14/08). Les Cent classent par jours
+            survécus : le nombre EST le sujet, donc c'est lui qui porte le
+            statut. Un héros revenu vivant a ses jours en accent — pas de
+            badge, pas de couleur neuve, et ça se lit dans une liste où tout
+            le reste est un mort. */}
         {!e.locked && (
-          <span className="w-[42px] shrink-0 text-right font-mono text-[15px] font-medium text-[var(--color-ink)]">
+          <span
+            className={`w-[42px] shrink-0 text-right font-mono text-[15px] font-medium ${
+              e.destin === "traversee" ? "text-[var(--color-accent)]" : "text-[var(--color-ink)]"
+            }`}
+          >
             {e.days}
           </span>
         )}

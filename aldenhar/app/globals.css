@@ -717,6 +717,9 @@ body {
 .registre-row.is-player .registre-rank,
 .registre-row.is-player .registre-days,
 .registre-row.is-player .registre-cause { opacity: 0.85; color: var(--color-accent); }
+/* Le survivant a son statut jusque dans les listes inline (14/08) : une
+   traversée réussie ne se lit pas comme une cause de décès. */
+.registre-cause.registre-revenu { opacity: 1; color: var(--color-accent); font-style: normal; }
 
 /* ═════════ Écran de mort (séquence 13/07 — précède la Relique §10) ═════════ */
 

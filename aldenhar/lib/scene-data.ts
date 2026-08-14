@@ -376,6 +376,22 @@ export type Choice = {
    */
   requiresChoixFait?: string;
   /**
+   * CE GESTE ROMPT UNE CLAUSE DU SERMENT (correctif 14/08).
+   *
+   * Le Serment énonce trois interdits au muret : « Tu ne parles pas aux
+   * pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et à la troisième
+   * aube, tu choisis. » Il faut donc savoir, au procès, si le héros les a
+   * tenus — et le savoir AUTREMENT que par le Soupçon.
+   *
+   * ⚠️ C'est le correctif d'un défaut de logique, pas un durcissement :
+   * `apportsProces` mesurait « le Serment tenu » par un Soupçon ≤ 4, alors
+   * que le procès ne se déclenche qu'à 6 (plafonné). La défense était donc
+   * INATTEIGNABLE par construction — du texte écrit que personne ne pouvait
+   * lire. Le proxy était faux, pas le seuil : on compte maintenant les
+   * gestes qui rompent vraiment une clause.
+   */
+  rompLeSerment?: true;
+  /**
    * LE SCEAU OUVRE UNE PORTE (arbitrage 10/08, livré le 14/08). Ce choix
    * n'existe que pour un compte qui a franchi la Descente vivant — id du
    * sceau (`SCEAU_LANDES`), voir lib/sceaux.ts.
@@ -789,7 +805,7 @@ export type NatureJet = "physique" | "social" | "exploration" | "surnaturel";
  */
 export type ApportProces = { cle: string; ligne: string };
 export function apportsProces(r: {
-  hameau?: { serment?: string | null };
+  hameau?: { serment?: string | null; sermentRompu?: boolean };
   soupcon?: number;
   savoirs?: string[];
   besace?: { name: string }[];
@@ -797,7 +813,11 @@ export function apportsProces(r: {
 }): ApportProces[] {
   const out: ApportProces[] = [];
   // Le Serment TENU : juré, et pas démenti depuis (le Soupçon dirait le contraire).
-  if (r.hameau?.serment === "jure" && (r.soupcon ?? 0) <= 4)
+  // ⚠️ Ne JAMAIS remettre une borne sur `r.soupcon` ici : le procès ne se
+  // déclenche qu'à 6, et le Soupçon y est plafonné à 6. Toute condition
+  // `soupcon <= n` avec n < 6 rend cette défense inatteignable — c'était le
+  // défaut, et le garde `A-atteignable` le rattrape désormais.
+  if (r.hameau?.serment === "jure" && !r.hameau?.sermentRompu)
     out.push({ cle: "serment", ligne: "Au premier rang, deux des trois hommes du muret. Ils t'ont entendu jurer. Ça ne t'excuse de rien — mais ils sont obligés de s'en souvenir devant les autres." });
   // Une alliée : la Femme au Seuil a quarante ans de silence à réparer.
   if ((r.savoirs ?? []).some((x) => x.includes("femme")) || (r.temoins ?? []).some((t) => t.id.includes("femme")))
@@ -1745,6 +1765,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "plaider",
+        rompLeSerment: true, // parler à un pendu
         requiresChoixFait: "pendu-le-trois-cent-unieme",
         prendLaPlaceDe: "pendu-le-trois-cent-unieme",
         nature: "social",
@@ -1765,6 +1786,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "decrocher",
+        rompLeSerment: true, // toucher à un pendu — pire que lui parler
         nature: "physique",
         label: "Trancher sa corde",
         soupcon: 1, // toucher à une Fixation, sous les yeux de la colline
@@ -1799,6 +1821,7 @@ export const SCENES: Scene[] = [
            il dit la vérité, il n'excuse rien, et le joueur comprend d'un coup
            qu'il est victime ET complice. */
         id: "pendu-le-trois-cent-unieme",
+        rompLeSerment: true, // parler à un pendu
         label: "Lui demander combien il en a signé",
         decouverte: "d.bailli_condamne",
         passive: {
@@ -2529,6 +2552,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "femme-regarder-sud",
+        rompLeSerment: true, // regarder le sud plus qu'il ne faut
         label: "Regarder le sud avec elle",
         soupcon: 1, // deux personnes qui fixent le sud, ça se voit de loin
         passive: {
@@ -2915,13 +2939,17 @@ export const SCENES: Scene[] = [
         soupcon: 1,
       },
       {
-        /* SAVOIR (25/07) : l'Ordonnance clouée au tribunal liste ce que le
-           hameau guette. La connaître, c'est pouvoir se tenir de façon à ne
-           déclencher aucun de ses signes — le seul choix de la scène qui FAIT
-           BAISSER le Soupçon au lieu de le monter. */
+        /* L'Ordonnance clouée au tribunal liste ce que le hameau guette. La
+           connaître, c'est se tenir de façon à ne déclencher aucun de ses
+           signes — le seul choix de la scène qui FAIT BAISSER le Soupçon.
+           ⚠️ Gaté par une DÉCOUVERTE et non par le savoir de run : le tribunal
+           est à l'intérieur de l'enclave, donc TOUJOURS après ce barrage. Avec
+           `requiresSavoir` cette option ne pouvait jamais s'ouvrir (défaut
+           attrapé par le garde `A-atteignable`). On l'a lue dans une vie, on
+           se tient autrement dans la suivante. */
         id: "tenir-selon-ordonnance",
         label: "Te tenir comme eux",
-        requiresSavoir: "savoir_ordonnance",
+        requiresDecouverte: "d.ordonnance_lue",
         soupcon: -1,
         passive: {
           consequence:
@@ -5341,6 +5369,14 @@ export const SCENES: Scene[] = [
         illustration: "assets/scene_tribunal_ordonnance_a_c.png",
         observe: true,
         grantsSavoir: "savoir_ordonnance",
+        /* La liste des signes est aussi une DÉCOUVERTE de compte : le savoir
+           meurt avec le héros, or le seul endroit où l'ordonnance sert à ne
+           PAS se faire remarquer est le barrage du Hameau — qui précède
+           toujours le tribunal (l'enclave est à sens unique). Sans elle, ce
+           contenu était inatteignable par construction. Une découverte ne met
+           pas de souvenir dans la tête du nouveau héros : elle change sa
+           manière de se tenir. */
+        decouverte: "d.ordonnance_lue",
         passive: {
           consequence:
             "Du papier épais, jauni, cloué aux quatre coins par quelqu'un qui " +

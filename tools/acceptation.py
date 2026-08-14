@@ -316,6 +316,56 @@ def main() -> int:
                 "le coût de son échec serait deviné, pas écrit."
             )
 
+    # ─── A-atteignable. « Rien n'est écrit qui ne puisse jamais se jouer. » ──
+    # Critère de validation posé le 14/08 : un garde doit détecter les
+    # conditions IMPOSSIBLES PAR CONSTRUCTION, celles qui dépendent de bornes
+    # connues du moteur. Deux bornes existent aujourd'hui.
+    #
+    # (1) LE PROCÈS. Il ne se déclenche qu'à Soupçon 6, et le Soupçon est
+    #     plafonné à 6. Toute condition `soupcon <= n` avec n < 6 dans
+    #     `apportsProces` rend sa défense inatteignable — c'était le cas du
+    #     Serment : du texte écrit que personne ne pouvait lire.
+    m = re.search(r"export function apportsProces\([\s\S]*?\n\}", sd)
+    if not m:
+        manques.append("A-atteignable — `apportsProces` introuvable : la borne du procès n'est plus vérifiée.")
+    else:
+        for borne in re.finditer(r"soupcon\s*\?\?\s*0\)?\s*<=?\s*(\d+)", m.group(0)):
+            if int(borne.group(1)) < 6:
+                manques.append(
+                    f"A-atteignable — `apportsProces` exige un Soupçon ≤ {borne.group(1)}, "
+                    "or le procès ne se déclenche qu'à 6 (plafonné à 6). Cette défense "
+                    "ne peut JAMAIS s'afficher. Mesurer le Serment par les gestes "
+                    "(`rompLeSerment`), pas par le Soupçon."
+                )
+    # (2) UNE PORTE FERMÉE SUR SA PROPRE CLÉ. Un choix qui exige un savoir
+    #     dont l'UNIQUE source est derrière lui n'existe pour personne. Le
+    #     Hameau est une enclave à sens unique (on entre, on sort, on ne
+    #     revient pas), donc un savoir accordé à l'intérieur ne peut pas
+    #     ouvrir une option de la séquence d'ENTRÉE.
+    ENTREE = ("serment-hameau", "hameau-entree", "hameau-accueil")
+    sources: dict[str, set[str]] = {}
+    exiges: dict[str, set[str]] = {}
+    for sid, _cid, bloc in choix_de(sd):
+        for mm in re.finditer(r'grantsSavoir:\s*"([^"]+)"', bloc):
+            sources.setdefault(mm.group(1), set()).add(sid)
+        for mm in re.finditer(r'requiresSavoir:\s*"([^"]+)"', bloc):
+            exiges.setdefault(mm.group(1), set()).add(sid)
+    for mm in re.finditer(r'\n    id: "([a-z0-9-]+)"[\s\S]{0,4000}?savoir:\s*"([^"]+)"', sd):
+        sources.setdefault(mm.group(2), set()).add(mm.group(1))
+    interieur = set(re.findall(r'"([a-z0-9-]+)"', bloc_depuis(sd, sd.index("HAMEAU_INTERIOR")) or ""))
+    for savoir, scenes_qui_exigent in exiges.items():
+        src = sources.get(savoir, set())
+        if not src:
+            continue
+        dans_entree = {s for s in scenes_qui_exigent if s.startswith(ENTREE)}
+        if dans_entree and src and all(any(s.startswith(i) for i in interieur) for s in src):
+            manques.append(
+                f"A-atteignable — `{savoir}` n'est accordé qu'à l'intérieur du Hameau "
+                f"({', '.join(sorted(src))}) mais il est exigé dans la séquence d'ENTRÉE "
+                f"({', '.join(sorted(dans_entree))}). L'enclave est à sens unique : cette "
+                "option ne peut jamais s'ouvrir."
+            )
+
     print(f"TESTS D'ACCEPTATION — {len(manques)} signalement(s)\n")
     for x in manques:
         print("  ⚠️ " + x)

@@ -41,6 +41,8 @@ export type RegistreRow = {
   cause: string;
   /** La ligne du joueur (run en cours ou héros tombé), visuellement distincte. */
   isPlayer?: boolean;
+  /** Mort, traversée ou renoncement — un survivant ne se lit pas comme un mort. */
+  destin?: "mort" | "traversee" | "renoncement";
 };
 
 export type FeedEntry =
@@ -454,6 +456,15 @@ export type RunState = {
   hameau: {
     entree: boolean;
     serment: "jure" | "faux" | "refuse" | null;
+    /**
+     * UNE CLAUSE DU SERMENT A ÉTÉ ROMPUE (correctif 14/08). Posé par tout
+     * choix `rompLeSerment` — parler à un pendu, y toucher, regarder le sud.
+     *
+     * C'est ce qui permet à `apportsProces` de savoir si le Serment a été
+     * TENU sans passer par le Soupçon, qui est au maximum au moment du
+     * procès et rendait donc la défense inatteignable.
+     */
+    sermentRompu?: boolean;
     halte: boolean;
     /**
      * SORTI DU VILLAGE (chantier fluidité 12/08, §3). Le Hameau devient une

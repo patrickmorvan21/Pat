@@ -19,12 +19,12 @@
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { Relic } from "@/lib/player-memory";
+import type { Destin, Relic } from "@/lib/player-memory";
 import TouchHint from "@/components/TouchHint";
 import FondBraises from "@/components/FondBraises";
 import { NomGratte } from "@/components/Registre";
 import { buildLesCent, type RegistreEntry } from "@/lib/registre-data";
-import { loadMemory, relicEffect, relicFiche, RELIC_FONCTION } from "@/lib/player-memory";
+import { destinDepuisCause, loadMemory, relicEffect, relicFiche, RELIC_FONCTION } from "@/lib/player-memory";
 import { pickJailerQuote, reactionJours } from "@/lib/jailer-quotes";
 import { ditherFadeMaskDataUrl } from "@/lib/dither";
 import { animReduced } from "@/lib/settings";
@@ -606,14 +606,18 @@ function RegistreMort({
   cause,
 }: {
   lesCent: RegistreEntry[];
-  fallen: { name: string; days: number; cause: string }[];
+  fallen: { name: string; days: number; cause: string; destin?: Destin }[];
   heroName: string;
   day: number;
   cause: string;
 }) {
   const [onglet, setOnglet] = useState<"morts" | "cent">("morts");
   const tesMorts = useMemo(() => {
-    const rows = [...fallen].sort((a, b) => b.days - a.days);
+    // Même règle que `mesMorts` : le cimetière ne contient que des morts.
+    // Une traversée réussie n'a rien à faire sous cet onglet (14/08).
+    const rows = fallen
+      .filter((f) => (f.destin ?? destinDepuisCause(f.cause)) === "mort")
+      .sort((a, b) => b.days - a.days);
     return rows.map((r, i) => ({ rank: i + 1, ...r }));
   }, [fallen]);
   // La ligne du héros qui vient de tomber : première occurrence exacte.

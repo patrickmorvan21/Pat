@@ -331,7 +331,7 @@ function HomeOverlay({ kind, onClose }: { kind: "reliques" | "registre" | "optio
                   <span className="registre-rank">{r.rank}</span>
                   <span className="registre-name">{r.name}</span>
                   <span className="registre-days">J{r.days}</span>
-                  <span className="registre-cause">{r.cause}</span>
+                  <span className={`registre-cause${r.destin === "traversee" ? " registre-revenu" : ""}`}>{r.cause}</span>
                 </div>
               ))}
             </div>
