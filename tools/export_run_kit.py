@@ -30,6 +30,33 @@ sys.path.insert(0, str(RACINE / "tools"))
 from immersion import bloc_tableau, chaines_de_tableau  # noqa: E402
 
 
+def apports_proces(src: str) -> dict[str, str]:
+    """Les quatre lignes que le procès DIT selon ce qu'on lui apporte.
+
+    Elles vivent dans le corps de `apportsProces()`, pas dans une table — on
+    lit donc les `out.push({ cle, ligne })` du bloc de la fonction. Contrôle
+    de compte plus bas : un extracteur qui rend zéro entrée est une alarme,
+    jamais un succès (la règle la plus chèrement payée de ce projet).
+    """
+    i = src.find("export function apportsProces")
+    if i < 0:
+        return {}
+    # ⚠️ NE PAS borner sur le premier `\n}` : la signature de la fonction porte
+    # un type d'objet inline (`r: { hameau?…; soupcon?… }`) qui se ferme par un
+    # `}` en colonne 0 — le bloc faisait alors 201 caractères et zéro `push`.
+    # On borne sur le corps réel : de la déclaration de `out` à son `return`.
+    debut = src.find("const out: ApportProces[]", i)
+    fin = src.find("return out", debut)
+    if debut < 0 or fin < 0:
+        return {}
+    bloc = src[debut:fin]
+    paires = re.findall(
+        r'out\.push\(\{\s*cle:\s*"([^"]+)",\s*ligne:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)\}', bloc)
+    def recoller(v: str) -> str:
+        return "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', v)).replace('\\"', '"')
+    return {c: recoller(v) for c, v in paires}
+
+
 def record(src: str, ancre: str) -> dict[str, str]:
     """Un `Record<string, string> = { clef: "valeur", … }` en dict.
 
@@ -253,6 +280,12 @@ def main() -> int:
         # voir le système qu'on lui demandait de juger, et conclure que rien
         # n'avait changé — le biais du 9/08, sur le lot précisément à valider.
         "variantesMarche": d.get("transitions", {}).get("variantes", []),
+        # CE QU'ON APPORTE AU PROCÈS, dit en fiction. ⚠️ Sans ces lignes, la
+        # réplique baissait bien le seuil mais ne DISAIT rien — or c'est
+        # exactement ce qui fait qu'un procès paraît mérité plutôt que subi.
+        # Un relecteur aurait jugé « le procès arrive sans que rien ne l'ait
+        # préparé » sur une réplique muette, pas sur le jeu.
+        "apportsProces": apports_proces(src),
         # LE SOUPÇON LISIBLE (vague 5) : sans ces trois pools la réplique
         # laissait le Soupçon monter en silence jusqu'au procès — exactement
         # le défaut que la vague corrige dans le jeu.

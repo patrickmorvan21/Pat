@@ -408,6 +408,14 @@ class Partie:
                 self.d.setdefault("famVus", []).append(lieu)
         remplace = fam.get("remplace") if (fam and ligne) else None
         paras = list(s.get("narrationEchec") if rate and s.get("narrationEchec") else s.get("narration", []))
+        # CE QU'ON APPORTE AU PROCÈS SE DIT (comme dans le jeu, après le premier
+        # paragraphe). ⚠️ La réplique baissait le seuil en silence : elle
+        # récompensait la préparation sans jamais la RACONTER, donc le procès
+        # paraissait subi alors que le jeu, lui, dit ce que ta trajectoire a
+        # déposé dans la salle. Un bénéfice que rien ne raconte n'existe pas.
+        if s.get("procesFixation"):
+            lignes = self.k.get("apportsProces", {})
+            paras[1:1] = [lignes[c] for c in self.apports_proces() if c in lignes]
         if remplace is not None and remplace < len(paras):
             paras[remplace] = ligne
             ligne = None

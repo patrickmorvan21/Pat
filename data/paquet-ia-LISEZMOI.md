@@ -115,6 +115,26 @@ ne commet pas les actes qui font monter le Soupçon (mentir, voler, trancher
 une corde, questionner les gens). Elles finissent donc en bas de l'échelle.
 Pour juger ce système, **joue** — il ne se lit pas dans ces enregistrements.
 
+### Pour atteindre le procès (Soupçon au comble)
+
+Le procès ne se déclenche qu'au SIXIÈME cran, et il vient te chercher : la
+traversée est déroutée, on ne te demande pas ton avis. Vingt-neuf actes le
+font monter. Les plus rapides, **en jouant normalement** :
+
+| Où | Ce qu'il faut faire | Ce que ça coûte |
+|---|---|---|
+| Au muret du Hameau | **Refuser de jurer** | ++ |
+| Au muret du Hameau | **Jurer du bout des lèvres** | + (et une dette) |
+| En sortant du Hameau | **Parler de la femme de l'ouest** | ++ |
+| Le Pendu qui parle | **Trancher sa corde** · **Répondre à son jugement** | + chacun |
+| La Chapelle | **Tirer la dalle de l'autel** · **Écrire un nom à la craie** | + chacun |
+| L'Hésitant, à la Borne | **Mentir : « Je n'entends rien. »** | + |
+| Le Champ des Fixés | **Demander le nom sur l'écriteau** | + |
+
+⚠️ **Regarder ne coûte rien** — c'est une règle du jeu, pas un oubli : seuls
+les ACTES font monter le Soupçon. Un joueur qui examine tout sans rien commettre
+n'ira jamais au procès, et c'est voulu.
+
 Elles sont enregistrées sur **la version que tu peux lire dans `sources/`**,
 pas sur une version antérieure : ce que tu y vois est ce que le jeu fait
 aujourd'hui.
