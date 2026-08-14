@@ -106,7 +106,13 @@ Elles sont enregistrées sur **la version que tu peux lire dans `sources/`**,
 pas sur une version antérieure : ce que tu y vois est ce que le jeu fait
 aujourd'hui.
 
-## 3. Les sources — `sources/`
+## 3. `CONTEXTE-INFORME.md` — à n'ouvrir que si on te l'a dit
+
+Ce que le jeu VEUT être : intentions, règles verrouillées, systèmes existants,
+ce qui est délibéré, ce qui a déjà été refusé. **Si l'on t'a demandé un regard
+NEUF, ne l'ouvre pas** — il te dirait quoi penser avant que tu aies joué.
+
+## 4. Les sources — `sources/`
 
 `lib/` : le contenu et les règles (`scene-data.ts` = toutes les scènes, choix
 et issues ; `etats.ts`, `temoins.ts`, `reliques.ts`,

@@ -77,6 +77,13 @@ def main(argv: list[str]) -> int:
             "data/transcripts/<nom>.md` (le jeu doit être servi en local)."
         )
 
+    # LE CONTEXTE DU PANEL INFORMÉ (14/08) : intentions, règles verrouillées,
+    # systèmes existants, ce qui est délibéré, ce qui a déjà été refusé. Il
+    # voyage AVEC le paquet parce qu'un panel « qui connaît tout du jeu » ne
+    # peut pas se reconstituer à partir des sources seules — et son avant-
+    # propos dit explicitement au panel aveugle de ne pas l'ouvrir.
+    shutil.copy(RACINE / "data" / "contexte-panel-informe.md", pack / "CONTEXTE-INFORME.md")
+
     lisez = (RACINE / "data" / "paquet-ia-LISEZMOI.md").read_text(encoding="utf-8")
     lisez = lisez.replace("{VERSION}", version).replace("{NTRANS}", str(n_trans))
     (pack / "LISEZMOI.md").write_text(lisez, encoding="utf-8")
