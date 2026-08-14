@@ -1778,7 +1778,8 @@
      "type": "suite",
      "sortie": {
       "toScene": "gamin-murets-1"
-     }
+     },
+     "exigeDominante": "EMPATHIE"
     },
     {
      "id": "gamin-instinct",
@@ -1786,7 +1787,8 @@
      "type": "suite",
      "sortie": {
       "toScene": "gamin-murets-1"
-     }
+     },
+     "exigeDominante": "INSTINCT"
     },
     {
      "id": "gamin-ruse",
@@ -1794,13 +1796,15 @@
      "type": "suite",
      "sortie": {
       "toScene": "gamin-murets-1"
-     }
+     },
+     "exigeDominante": "RUSE"
     },
     {
      "id": "gamin-courage",
      "label": "Soutenir le regard des trois hommes",
      "type": "passif",
-     "consequence": "Ils te regardent passer, et aucun ne baisse les yeux quand tu les surprends. Ce n'est pas de la menace : c'est de la comptabilité. Sur le muret, un gamin te suit du regard aussi, mais lui détourne la tête — le seul du village à le faire."
+     "consequence": "Ils te regardent passer, et aucun ne baisse les yeux quand tu les surprends. Ce n'est pas de la menace : c'est de la comptabilité. Sur le muret, un gamin te suit du regard aussi, mais lui détourne la tête — le seul du village à le faire.",
+     "exigeDominante": "COURAGE"
     }
    ],
    "pointsInteret": [],
@@ -4612,13 +4616,15 @@
      "nature": "surnaturel",
      "tags": [
       "citable"
-     ]
+     ],
+     "masqueSiUsage": "corde"
     },
     {
      "id": "noeud-chaines",
      "label": "Étudier le nœud",
      "type": "verrouille",
-     "stat": "RUSE"
+     "stat": "RUSE",
+     "masqueSiUsage": "corde"
     },
     {
      "id": "descendre-puits",
@@ -4636,7 +4642,8 @@
      "nature": "physique",
      "tags": [
       "citable"
-     ]
+     ],
+     "exigeUsage": "corde"
     },
     {
      "id": "approcher-puits",
@@ -4646,6 +4653,12 @@
    ],
    "pointsInteret": [],
    "suite": "puits-condamne-2",
+   "usageObjet": {
+    "objet": "corde-coupee",
+    "label": "Amarrer la corde à la margelle",
+    "cle": "corde",
+    "consequence": "Tu passes la corde en double autour de la pierre et tu serres. Dessous, les coups s'arrêtent net. Le chanvre file entre deux planches et descend sans jamais toucher le fond.\n\nPuis, très bas, on l'a prise. Elle se tend d'un coup et reste tendue. Quelque chose l'a amarrée de l'autre bout. On t'invite."
+   },
    "nom": "Le Puits Condamné",
    "lieu": "puits_condamne",
    "typeScene": "arrivee",
