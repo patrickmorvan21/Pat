@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-14T16:17:47Z",
- "commit": "54f03fb",
+ "genere": "2026-08-14T17:32:09Z",
+ "commit": "0162677",
  "zones": [
   {
    "id": "landes",
@@ -1272,6 +1272,7 @@
       "deposition": "Il a parlé au pendu. Et le pendu lui a répondu — j'étais à trente pas.",
       "lieu": "à la Colline aux Gibets"
      },
+     "rompLeSerment": true,
      "prendLaPlaceDe": [
       "pendu-le-trois-cent-unieme"
      ],
@@ -1296,7 +1297,8 @@
       "nom": "La Doyenne",
       "deposition": "Il a porté la lame sur une corde qui tenait. Chez nous, ça a un nom.",
       "lieu": "à la Colline aux Gibets"
-     }
+     },
+     "rompLeSerment": true
     },
     {
      "id": "passer-pendu",
@@ -1313,7 +1315,8 @@
      "label": "Lui demander combien il en a signé",
      "type": "passif",
      "consequence": "La corde s'immobilise. Pour la première fois depuis que tu es là, il ne joue plus au juge. « J'ai signé trois cents noms. » Un temps très long, à hauteur de gibet. « Le trois cent unième était le sien. C'est celui-là qui m'a paru injuste. » Puis, plus bas, comme un point de procédure : « Alors j'ai inscrit le mien en dessous. »",
-     "donneDecouverte": "d.bailli_condamne"
+     "donneDecouverte": "d.bailli_condamne",
+     "rompLeSerment": true
     }
    ],
    "pointsInteret": [],
@@ -2091,7 +2094,8 @@
       "nom": "La Femme au Seuil",
       "deposition": "Il a regardé le sud avec moi. On était deux à regarder le sud. Le hameau nous a vus.",
       "lieu": "au Hameau des Renonçants"
-     }
+     },
+     "rompLeSerment": true
     }
    ],
    "pointsInteret": [],
@@ -2535,7 +2539,7 @@
      "label": "Te tenir comme eux",
      "type": "passif",
      "consequence": "Tu ne réponds pas tout de suite. Tu tournes les épaules au sud, comme eux. Tu regardes le sol quand le vieux parle, tu ne fixes rien plus longtemps qu'il ne faut, et quand un souffle passe entre les murs, tu ne lèves pas la tête. Quatre signes qu'ils guettent, quatre signes que tu ne donnes pas.",
-     "exigeSavoir": "savoir_ordonnance",
+     "exigeDecouverte": "d.ordonnance_lue",
      "soupcon": -1
     }
    ],
@@ -5010,7 +5014,8 @@
      "label": "Lire la feuille clouée au mur",
      "type": "passif",
      "consequence": "Du papier épais, jauni, cloué aux quatre coins par quelqu'un qui ne voulait pas qu'on le décroche : la liste des signes, de la main du Bailli. « Parler seul face au sud. Fixer les Profondeurs plus qu'il ne faut. Cesser de dormir. Répondre à ce qui n'a pas parlé. » Tu la lis trois fois. La deuxième, tu comptes ceux qui te concernent déjà. La troisième, tu les apprends — parce que c'est exactement ce qu'ils guettent chez toi.",
-     "donneSavoir": "savoir_ordonnance"
+     "donneSavoir": "savoir_ordonnance",
+     "donneDecouverte": "d.ordonnance_lue"
     },
     {
      "id": "chaire-registre",
@@ -5028,7 +5033,7 @@
    ],
    "pointsInteret": [],
    "suite": "petit-tribunal-2",
-   "donneDecouverte": "d.signe_plume",
+   "donneDecouverte": "d.ordonnance_lue",
    "nom": "Le Petit Tribunal",
    "lieu": "petit_tribunal",
    "typeScene": "arrivee",
