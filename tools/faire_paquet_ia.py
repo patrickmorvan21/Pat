@@ -43,6 +43,13 @@ def main(argv: list[str]) -> int:
 
     shutil.copy(RACINE / "tools" / "pactum.py", pack / "jouer" / "pactum.py")
     shutil.copy(RACINE / "data" / "run-kit.json", pack / "jouer" / "run-kit.json")
+    # ⚠️ LE GARDE VOYAGE AVEC LA TABLE (réserve du playtest du 15/08 : « le zip
+    # ne contient pas protocole_sceau.py, donc je n'ai pas pu exécuter ton
+    # garde lui-même »). Un relecteur qui doit re-dériver les assertions d'un
+    # garde ne le vérifie pas : il en écrit un autre, et les deux peuvent
+    # diverger. Il tourne tel quel depuis `jouer/` — il copie `pactum.py` et
+    # `run-kit.json` dans des tables isolées, tous deux présents ici.
+    shutil.copy(RACINE / "tools" / "protocole_sceau.py", pack / "jouer" / "protocole_sceau.py")
     for f in sorted((APP / "lib").glob("*.ts")):
         shutil.copy(f, pack / "sources" / "lib" / f.name)
     for f in sorted((APP / "components").glob("*.tsx")):

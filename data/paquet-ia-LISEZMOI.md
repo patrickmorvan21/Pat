@@ -86,6 +86,14 @@ jet : il ouvre des conversations et fait réagir le monde.
    sortie et la marque d'ouverture ne sont pas les mêmes qu'au premier
    passage.
 
+Si tu veux la version mécanique plutôt que la version vécue :
+**`python3 protocole_sceau.py`** (dans `jouer/`) joue trois traversées dans
+des tables isolées et contrôle qu'une traversée vaut exactement un Sceau par
+chacune des trois portes de sortie — l'arrivée à la Descente, le bouton
+terminal, et `nouvelle` lancée depuis cet écran. Il ne touche pas à ta
+partie. Ça ne remplace pas le jugement de la question ci-dessous : ça
+garantit seulement que ce que tu juges est bien ce que le jeu fait.
+
 Ce qu'on cherche à savoir : est-ce que ça produit « qu'est-ce que c'est que
 ça ? » ou « j'ai débloqué mon bonus » ? Est-ce qu'un porteur du Sceau se sent
 **reconnu par le monde**, ou **récompensé par le jeu** ? Et la deuxième

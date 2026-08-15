@@ -23,9 +23,24 @@ from __future__ import annotations
 import json, shutil, subprocess, sys, tempfile
 from pathlib import Path
 
-RACINE = Path(__file__).resolve().parent.parent
-PACTUM = RACINE / "tools" / "pactum.py"
-KIT = RACINE / "data" / "run-kit.json"
+# ⚠️ Deux emplacements possibles, et c'est délibéré : ce fichier vit dans
+# `tools/` du dépôt, MAIS il est aussi copié dans `jouer/` du paquet de
+# playtest — un relecteur qui doit re-dériver les assertions d'un garde ne le
+# vérifie pas, il en écrit un autre (réserve du playtest du 15/08). On cherche
+# donc la table À CÔTÉ de soi d'abord, puis dans l'arborescence du dépôt.
+ICI = Path(__file__).resolve().parent
+RACINE = ICI.parent
+
+
+def _trouver(nom: str, *candidats: Path) -> Path:
+    for c in candidats:
+        if c.exists():
+            return c
+    raise SystemExit(f"{nom} introuvable. Cherché :\n  " + "\n  ".join(map(str, candidats)))
+
+
+PACTUM = _trouver("pactum.py", ICI / "pactum.py", RACINE / "tools" / "pactum.py")
+KIT = _trouver("run-kit.json", ICI / "run-kit.json", RACINE / "data" / "run-kit.json")
 
 
 class Table:
