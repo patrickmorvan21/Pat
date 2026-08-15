@@ -114,6 +114,12 @@ def sceau_textes() -> dict:
         "borne": lignes("ligneSceauBorne"),
         "sortie": lignes("ligneSceauSortie"),
         "reconnu": record(src, "export const SCEAU_RECONNU"),
+        # LA TRANSFORMATION DU 3e PASSAGE (15/08) : ces lignes REMPLACENT les
+        # reconnaissances au-delà de deux traversées, elles ne s'y ajoutent
+        # pas. Sans elles, la réplique ferait juger une croissance purement
+        # quantitative — exactement ce que la règle du 14/08 interdit.
+        "transforme": record(src, "export const SCEAU_TRANSFORME"),
+        "geolier": lignes("ligneSceauGeolier"),
     }
 
 

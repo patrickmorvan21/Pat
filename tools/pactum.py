@@ -202,6 +202,12 @@ class Partie:
         ouv = k.get("sceau", {}).get("ouverture", [])
         if n > 0 and ouv:
             p.dit(ouv[min(n, len(ouv)) - 1], "narration")
+        # LA TRANSFORMATION DU 3e PASSAGE : le Geôlier constate, une seule fois,
+        # qu'il n'a plus rien à compter. Il est le seul à voir les chiffres —
+        # donc le seul à pouvoir dire qu'un chiffre a cessé d'en être un.
+        geo = k.get("sceau", {}).get("geolier", [])
+        if n == 3 and geo:
+            p.dit(geo[0], "geolier")
         return p
 
     # -- accès
@@ -375,8 +381,14 @@ class Partie:
                 self.d["hameauEntree"] = True
             # LE MONDE RECONNAÎT LA MARQUE : une ligne à l'arrivée, sur les
             # lieux où quelqu'un est là pour la voir.
-            if lire_compte().get("sceau", 0) > 0:
-                rec = self.k.get("sceau", {}).get("reconnu", {}).get(radical)
+            nSceau = lire_compte().get("sceau", 0)
+            if nSceau > 0:
+                sc = self.k.get("sceau", {})
+                # Au-delà de deux traversées, le monde ne regarde plus la main :
+                # ces lignes REMPLACENT la reconnaissance, elles ne s'ajoutent pas
+                # (le budget d'un seul rappel par arrivée vaut aussi pour elles).
+                rec = (sc.get("transforme", {}).get(radical) if nSceau >= 3 else None) \
+                    or sc.get("reconnu", {}).get(radical)
                 if rec:
                     self.dit(rec, "narration")
         if sid == "la-descente":

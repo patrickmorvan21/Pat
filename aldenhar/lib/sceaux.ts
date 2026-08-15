@@ -68,10 +68,20 @@ export function ligneSceauSortie(passages: number): string {
         "la première entaille, une seconde s'ouvre sans bruit, exactement " +
         "parallèle. La main de quelqu'un qui tient un compte."
     );
+  if (passages === 3)
+    // LA TRANSFORMATION. Pas un troisième trait : les deux se referment l'un
+    // sur l'autre. Une marque qui se COMPTE devient une marque qui se LIT.
+    return (
+      "Tu ouvres la main en attendant la troisième. Elle ne vient pas. Les " +
+        "deux entailles se sont rejointes par les bouts pendant que tu " +
+        "marchais, et ce qu'elles dessinent maintenant est fermé, régulier, " +
+        "et ne ressemble plus du tout à une blessure. Ça ressemble à un mot " +
+        "dans une langue que tu ne lis pas."
+    );
   return (
-    "Tu n'as plus besoin de regarder ta paume pour savoir qu'une entaille " +
-      "de plus vient d'y être portée. Elles sont alignées, régulières, " +
-      "toujours de la même profondeur. Quelqu'un s'applique."
+    "La marque ne bouge plus. Elle a la forme qu'elle doit avoir, et le " +
+      "reste du chemin s'est mis à la contourner : la lumière tombe " +
+      "autrement dans ta paume, et le froid n'y entre pas."
   );
 }
 
@@ -90,10 +100,18 @@ export function ligneSceauOuverture(passages: number): string | null {
         "refermée depuis longtemps. Tu ne te souviens pas de te l'être " +
         "faite — mais tu ne te souviens de rien, alors ça ne prouve rien."
     );
+  if (passages === 2)
+    return (
+      "Ta paume droite porte des entailles en creux, alignées, en forme de " +
+        "coin. Elles sont anciennes et de la même main. Tu ne te souviens pas " +
+        "de te les être faites, et cette fois l'idée te met mal à l'aise."
+    );
+  // ⚠️ APRÈS LA TRANSFORMATION, la paume ne se compte plus : elle se lit. Et
+  // ce n'est plus une cicatrice, c'est un TRACÉ — donc quelqu'un l'a voulu.
   return (
-    "Ta paume droite porte des entailles en creux, alignées, en forme de " +
-      "coin. Elles sont anciennes et de la même main. Tu ne te souviens pas " +
-      "de te les être faites, et cette fois l'idée te met mal à l'aise."
+    "Ta paume droite porte un tracé fermé, creusé net, que personne ne " +
+      "prend pour une cicatrice. Tu ne te souviens pas de te l'être fait. " +
+      "Ce qui te gêne, c'est qu'on ne se fait pas ça tout seul."
   );
 }
 
@@ -108,11 +126,21 @@ export function ligneSceauOuverture(passages: number): string | null {
  */
 export function ligneSceauBorne(passages: number): string | null {
   if (passages <= 0) return null;
+  if (passages <= 2)
+    return (
+      "Une des trois marques du sud est un coin, creusé dans le granit. Tu y " +
+        "poses la paume sans y penser, et ça entre — au millimètre, comme une " +
+        "clé dans sa gâche. Tu retires ta main très vite. Personne ne t'a vu " +
+        "faire, sauf le sud."
+    );
+  // LA BORNE N'A PLUS DE PLACE POUR TOI. La pierre garde un creux en forme de
+  // coin — la marque, elle, n'en est plus un. Le monde avait prévu le
+  // revenant ; il n'avait pas prévu ce qu'on devient à force de revenir.
   return (
-    "Une des trois marques du sud est un coin, creusé dans le granit. Tu y " +
-      "poses la paume sans y penser, et ça entre — au millimètre, comme une " +
-      "clé dans sa gâche. Tu retires ta main très vite. Personne ne t'a vu " +
-      "faire, sauf le sud."
+    "Tu poses la paume sur le coin du sud, comme les deux fois d'avant. Ça " +
+      "n'entre plus. Le creux est resté ce qu'il était et c'est ta main qui " +
+      "a changé de forme — elle déborde de tous les côtés, maintenant. La " +
+      "pierre avait une place pour ceux qui reviennent. Pas pour la suite."
   );
 }
 
@@ -153,8 +181,60 @@ export const SCEAU_RECONNU: Record<string, string> = {
       "encore nommer.",
 };
 
+/**
+ * APRÈS LA TRANSFORMATION, LE MONDE NE REGARDE PLUS LA MAIN.
+ *
+ * Règle de croissance posée par Patrick le 14/08 : « si chaque traversée
+ * ajoute trait 4, trait 5, trait 6, la main devient un compteur de victoires
+ * maquillé en fiction ». Donc au 3e passage la marque cesse d'augmenter et
+ * CHANGE DE SENS — et le monde change avec elle : là où on regardait la
+ * paume avec curiosité, on refuse maintenant de la voir.
+ *
+ * ⚠️ Ces lignes REMPLACENT celles de `SCEAU_RECONNU`, elles ne s'y ajoutent
+ * pas : le Sceau n'a jamais eu le droit d'ajouter un tap (budget d'un seul
+ * rappel par arrivée, 12/08), et ce n'est pas parce qu'il devient grave qu'il
+ * gagne ce droit.
+ *
+ * Trois lieux seulement, et c'est délibéré : le geste de détourner les yeux
+ * ne vaut que s'il tranche avec ceux qui regardent encore.
+ */
+export const SCEAU_TRANSFORME: Record<string, string> = {
+  "marche-muet":
+    "Le marchand qui t'avait tendu une écuelle range son étal quand tu " +
+      "arrives. Pas vite, pas en fuyant — comme on ferme boutique à l'heure. " +
+      "Il ne regarde pas ta main. Il s'applique à ne pas la regarder.",
+  "petit-tribunal":
+    "L'écrivain public ferme son registre à ton entrée, les deux mains à " +
+      "plat dessus. Il ne cherche plus la page. Il ne veut pas que tu voies " +
+      "s'il en a une.",
+  "palissade-sud":
+    "Le Veilleur sort de sa guérite et se met de côté, à deux pas du " +
+      "portillon, les yeux sur l'horizon. Il ne note rien. Depuis trente " +
+      "ans il note tout le monde, et il vient de décider que non.",
+};
+
 /** La ligne de reconnaissance d'un lieu, si le Sceau est porté. */
 export function reconnaissanceSceau(lieuRadical: string, passages: number): string | null {
   if (passages <= 0) return null;
+  if (passages >= 3 && SCEAU_TRANSFORME[lieuRadical]) return SCEAU_TRANSFORME[lieuRadical];
   return SCEAU_RECONNU[lieuRadical] ?? null;
+}
+
+/**
+ * LE GEÔLIER CESSE DE PLAISANTER — une fois, à l'ouverture de la vie qui suit
+ * la troisième traversée.
+ *
+ * C'est le beat que Patrick a nommé le 14/08, et il n'est justifiable que
+ * par lui : le Geôlier est le SEUL à voir les chiffres (règle du 5/08), donc
+ * le seul qui puisse constater qu'un chiffre a cessé d'en être un. Il ne
+ * commente pas une victoire de plus — il constate qu'il n'y a plus rien à
+ * compter, et c'est la première fois qu'il ne trouve pas ça drôle.
+ *
+ * ⚠️ Une seule fois, et jamais au-delà : au 4e passage il se tait de nouveau.
+ * Un Geôlier qui commenterait chaque retour redeviendrait le compteur qu'on
+ * vient de retirer de la main du héros.
+ */
+export function ligneSceauGeolier(passages: number): string | null {
+  if (passages !== 3) return null;
+  return "Trois. Je ne compte plus. Toi non plus, j'imagine.";
 }

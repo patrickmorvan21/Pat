@@ -400,8 +400,12 @@ def pools() -> list[dict]:
     #     sud, prise du Sceau à la Descente) sont servies à des endroits fixes
     #     de PLEINE LANDE : aucune ne peut poser de bâti ni de foule.
     sceaux_src = (LIB / "sceaux.ts").read_text(encoding="utf-8")
-    rec = re.search(r"export const SCEAU_RECONNU[^=]*=\s*\{(.*?)\n\};", sceaux_src, re.S)
-    if rec:
+    # ⚠️ Les DEUX tables passent : `SCEAU_TRANSFORME` remplace la précédente
+    # au-delà de deux traversées (15/08) — l'oublier laisserait trois textes
+    # d'arrivée hors de l'audit, sans le moindre signalement.
+    for _table in ("SCEAU_RECONNU", "SCEAU_TRANSFORME"):
+      rec = re.search(rf"export const {_table}[^=]*=\s*\{{(.*?)\n\}};", sceaux_src, re.S)
+      if rec:
         for m in re.finditer(
             r'(?:"([a-z0-9\-]+)"|([a-zA-Z][a-zA-Z0-9\-]*))\s*:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)',
             rec.group(1),
@@ -409,7 +413,7 @@ def pools() -> list[dict]:
             dest = m.group(1) or m.group(2)
             texte = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(3))).replace('\\"', '"')
             out.append({
-                "pool": f"sceau reconnu {dest}",
+                "pool": f"{_table} {dest}",
                 "garde": {"village", "gens"} if village_scene(dest) else {"lande", "gens"},
                 "textes": [texte],
             })
@@ -417,6 +421,8 @@ def pools() -> list[dict]:
         ("ligneSceauOuverture", {"lande", "gens"}),
         ("ligneSceauBorne", {"lande"}),
         ("ligneSceauSortie", {"lande"}),
+        # Le Geôlier parle à la Borne, en pleine lande, à l'ouverture d'une vie.
+        ("ligneSceauGeolier", {"lande"}),
     ):
         d = sceaux_src.find(f"export function {fn}")
         corps = sceaux_src[d : sceaux_src.find("\n}", d)] if d >= 0 else ""

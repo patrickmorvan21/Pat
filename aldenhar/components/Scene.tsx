@@ -100,6 +100,7 @@ import {
   ligneSceauOuverture,
   ligneSceauBorne,
   ligneSceauSortie,
+  ligneSceauGeolier,
   reconnaissanceSceau,
 } from "@/lib/sceaux";
 
@@ -1443,7 +1444,8 @@ export default function Scene() {
       // produire quelque chose que je remarque dès ma prochaine
       // incarnation »). Poussé en premier des traces permanentes : c'est le
       // signal le plus fort, il ne doit pas arriver après l'écharde.
-      const ligneSceau = ligneSceauOuverture(niveauSceau(faitsDe(run)));
+      const niveauDuSceau = niveauSceau(faitsDe(run));
+      const ligneSceau = ligneSceauOuverture(niveauDuSceau);
       if (ligneSceau) openingNarration.push(ligneSceau);
       // Le hameau se souvient de la main qui lance le dé (chantier 3) : après
       // plusieurs fixations subies, l'accueil change dès l'entrée de zone.
@@ -1487,6 +1489,11 @@ export default function Scene() {
       if (run.prologue.done && run.prologue.memories.length > 0) {
         seeded.push({ id: nextId(), kind: "jailer", text: "À partir de maintenant, il décide avec moi." });
       }
+      // LA TRANSFORMATION DU 3e PASSAGE : le Geôlier constate, une seule fois,
+      // qu'il n'a plus rien à compter. Poussé APRÈS la ligne du dé pour ne pas
+      // couper l'ouverture rituelle, et il ne reviendra jamais (`=== 3`).
+      const geolierSceau = ligneSceauGeolier(niveauDuSceau);
+      if (geolierSceau) seeded.push({ id: nextId(), kind: "jailer", text: geolierSceau });
       const groupes = decouperEnEcrans(seeded);
       setBeats(groupes[0]);
       setBeatsSuite(groupes.slice(1));
