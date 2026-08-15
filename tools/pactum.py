@@ -265,7 +265,7 @@ class Partie:
     def dit(self, texte: str, style: str = "") -> None:
         self.d["journal"].append({"style": style, "texte": texte})
 
-    def ambiance_de_marche(self, r, dans_village: bool) -> str:
+    def ambiance_de_marche(self, r, dans_village: bool, origine: str = "") -> str:
         """Le texte de marche — et c'est là que vit L'ÉCHELLE DU SOUPÇON.
 
         ⚠️ La réplique ne tirait que dans le FOND : les treize barreaux de
@@ -291,8 +291,19 @@ class Partie:
             if frm:
                 # `HAMEAU_INTERIOR` est exporté comme une constante nommée.
                 dedans = "HAMEAU_INTERIOR" in frm
-                if dedans != dans_village:
-                    continue
+                if dedans:
+                    if not dans_village:
+                        continue
+                else:
+                    # ⚠️ UNE PROVENANCE NOMMÉE EST UNE LISTE DE LIEUX, pas un
+                    # simple « hors village » (verdict du 15/08, point B) : la
+                    # réplique servait « Tu laisses le combat derrière toi »
+                    # au départ de la Borne, et les cordes de la Chapelle au
+                    # départ du Moulin. Le jeu, lui, teste `from.includes(a)`.
+                    # Sans origine connue (ouverture), on n'invente pas : on
+                    # écarte toute variante à provenance nommée.
+                    if not origine or origine not in frm:
+                        continue
             if "minSoupcon" in c and soup < c["minSoupcon"]:
                 continue
             if "maxSoupcon" in c and soup > c["maxSoupcon"]:
@@ -369,12 +380,7 @@ class Partie:
                 if rec:
                     self.dit(rec, "narration")
         if sid == "la-descente":
-            # L'ANNONCE DU SCEAU se lit sur l'écran de la Descente, entre la
-            # trace de sortie et le livre — c'est le moment de récompense.
-            textes = self.k.get("sceau", {}).get("sortie", [])
-            n = lire_compte().get("sceau", 0) + 1
-            if textes:
-                self.dit(textes[min(n, len(textes)) - 1], "narration")
+            self.cloturer_traversee()
         if s.get("savoir") and s["savoir"] not in self.d.get("savoirs", []):
             self.d.setdefault("savoirs", []).append(s["savoir"])
         if s.get("decouverte"):
@@ -545,7 +551,10 @@ class Partie:
             or radical.startswith("hameau-")
             or radical in ("serment-hameau", "femme-seuil", "gamin-murets")
         )
-        amb = self.ambiance_de_marche(r, dans_village)
+        # L'origine est le RADICAL du lieu qu'on quitte : `pickLiaisonAmbiance`
+        # la reçoit normalisée dans le jeu (le suffixe -2 d'un écran-événement
+        # n'est pas un autre lieu).
+        amb = self.ambiance_de_marche(r, dans_village, radical)
         self.d["ambiancesVues"].append(amb)
         self.dit(amb, "narration")
         if ferme and self.k.get("routeFermee"):
@@ -984,23 +993,43 @@ class Partie:
             return
         if s.get("terminal"):
             if self.d["scene"] == "la-descente":
-                # LE SCEAU SE PREND ICI (arbitrage 10/08) : sortir vivant
-                # laisse enfin quelque chose au compte.
-                c = lire_compte()
-                c["sceau"] += 1
-                # Le nom entre au livre avec sa mention, comme `recordTraversee`
-                # le fait au Grand Registre — c'est ce que la Borne relira.
-                c["tombes"].insert(0, {"nom": self.d["nom"], "cause": "a franchi la Descente"})
-                ecrire_compte(c)
-                textes = self.k.get("sceau", {}).get("sortie", [])
-                if textes:
-                    self.dit(textes[min(c["sceau"], len(textes)) - 1], "narration")
+                self.cloturer_traversee()
             self.d["sortie"] = "descente" if self.d["scene"] == "la-descente" else "renoncement"
             return
         if s.get("suite"):
             self.entrer(s["suite"])
             return
         self.liaison()
+
+    def cloturer_traversee(self) -> None:
+        """LA SEULE PORTE DE SORTIE VIVANTE. Idempotente.
+
+        ⚠️ Défaut trouvé au playtest global du 15/08 (point A) : le Sceau
+        n'était pris que dans la branche `terminal` de `suite()`, donc
+        UNIQUEMENT si le joueur appuyait sur « Repartir de la Borne ». Un
+        testeur qui lançait `nouvelle` depuis l'écran de la Descente — le
+        geste naturel, la vie est finie — ne le prenait jamais : la marque
+        s'annonçait à l'écran et le compte ne la portait pas. La ligne de
+        sortie était en plus affichée DEUX fois quand on appuyait vraiment.
+
+        Trois entrées (arrivée à la Descente, choix terminal, `nouvelle`)
+        passent maintenant par ici, et le drapeau garantit qu'on ne compte
+        qu'une traversée par vie.
+        """
+        if self.d.get("traverseeClose"):
+            return
+        self.d["traverseeClose"] = True
+        c = lire_compte()
+        c["sceau"] = c.get("sceau", 0) + 1
+        # Le nom entre au livre avec sa mention, comme `recordTraversee` le
+        # fait au Grand Registre — c'est ce que la Borne relira.
+        c.setdefault("tombes", []).insert(
+            0, {"nom": self.d["nom"], "cause": "a franchi la Descente"}
+        )
+        ecrire_compte(c)
+        textes = self.k.get("sceau", {}).get("sortie", [])
+        if textes:
+            self.dit(textes[min(c["sceau"], len(textes)) - 1], "narration")
 
     def borne_sud(self) -> list[str]:
         """Le côté sud de la Borne : le prédécesseur, puis le Sceau.
@@ -1141,6 +1170,18 @@ def main(argv: list[str]) -> int:
                 graine = int(a.split("=")[1])
             if a.startswith("--nom="):
                 nom = a.split("=", 1)[1]
+        # ⚠️ La TROISIÈME porte de sortie (verdict du 15/08) : ouvrir une vie
+        # neuve depuis l'écran de la Descente est le geste naturel — la vie
+        # est finie, on ne repasse pas par le bouton. Sans ce rattrapage, la
+        # traversée n'était jamais enregistrée et la vie suivante s'ouvrait
+        # sans la marque, alors que l'écran venait de l'annoncer.
+        if SAUVE.exists():
+            try:
+                ancienne = Partie(json.loads(SAUVE.read_text(encoding="utf-8")))
+                if ancienne.d.get("scene") == "la-descente":
+                    ancienne.cloturer_traversee()
+            except (ValueError, KeyError):
+                pass  # une sauvegarde illisible ne doit pas empêcher de rejouer
         p = Partie.neuve(graine, nom)
         SAUVE.write_text(json.dumps(p.d, ensure_ascii=False), encoding="utf-8")
         k = p.k
