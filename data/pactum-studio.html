@@ -369,6 +369,7 @@ body.mode-edition .ebtn{display:inline-flex}
     <div id="onglets">
       <button class="tab on" data-vue="carte">◈ Carte</button>
       <button class="tab" data-vue="liste">☰ Liste</button>
+      <button class="tab" data-vue="images">▦ Images</button>
       <button class="tab" data-vue="reserve">▣ Réserve</button>
       <button class="tab" data-vue="systemes">◇ Systèmes</button>
     </div>
@@ -1635,6 +1636,110 @@ function titre(){
 }
 
 /* ---------- vues secondaires ---------- */
+/* ═══ TOUS LES ÉCRANS QUI PORTENT UNE IMAGE ═══════════════════════════════
+   Trois natures, et il a fallu les trois pour que la liste soit complète :
+     • la SCÈNE — l'entrée de `SCENES[]`, plus le nœud terminal (la Descente,
+       qui vit hors du tableau et n'apparaissait donc nulle part) ;
+     • l'INTERACTION — depuis le 13/08 les points d'intérêt sont des CHOIX, et
+       leur image a migré avec eux. 29 écrans réels étaient invisibles ici ;
+     • l'ÉCRAN DE MARCHE — une liaison n'est pas une donnée, elle est fabriquée
+       à l'exécution par `makeLiaison()`. Ce sont pourtant les écrans les plus
+       VUS d'une vie (un par lieu traversé).
+   Sans les trois, « l'ensemble des scènes » n'en montrait que la moitié. */
+function tousLesEcrans(){
+  const out=[];
+  (D.scenes||[]).forEach(s=>{
+    if(s.image) out.push({nat:"scene", id:s.id, nom:s.nom||s.id, img:s.image,
+      vers:s.id, sous:(s.lieu||"")+(s.terminal?" · sortie de zone":"")});
+    (s.choix||[]).forEach(c=>{ if(c.image)
+      out.push({nat:"interaction", id:c.id, nom:c.label||c.id, img:c.image,
+        vers:s.id, sous:"dans « "+(s.nom||s.id)+" »"}); });
+  });
+  (D.ecransDeMarche||[]).forEach(e=>out.push({nat:"marche", id:e.id,
+    nom:e.fichier, img:e, vers:null, sous:e.regle}));
+  return out;
+}
+const NAT_ECRAN={scene:{ico:"▸",lib:"Scène"},interaction:{ico:"◆",lib:"Interaction"},
+  marche:{ico:"↝",lib:"Écran de marche"}};
+
+/* ═══ LA VUE IMAGES ════════════════════════════════════════════════════════
+   Quatre paniers, dans l'ordre où ils coûtent du travail. ⚠️ Le STATUT et le
+   VERDICT ne se déduisent JAMAIS l'un de l'autre : le statut dit si une image
+   est câblée, le verdict si elle est bonne. Une image peut très bien être
+   « dédiée » et « à refaire » — le Moulin sans Ailes qui a gardé ses ailes en
+   est l'exemple canonique. */
+function vueImages(){
+  const ec=tousLesEcrans();
+  const aRefaire=ec.filter(e=>e.img.verdict);
+  const aCreer=ec.filter(e=>!e.img.verdict && e.nat!=="marche"
+    && (e.img.statut==="heritee"||e.img.statut==="fallback"));
+  const absent=ec.filter(e=>e.img.existe===false);
+  const perimes=D.verdictsPerimes||[];
+  const doublons=(D.reserve||[]).filter(r=>r.groupe==="doublon");
+
+  const carte=e=>{
+    const u=urlImg(e.img.fichier), n=NAT_ECRAN[e.nat];
+    const st=e.img.statut==="heritee" ? `emprunte l'image de « ${esc(e.img.herite)} »`
+      : e.img.statut==="fallback" ? "vue générique de la zone, pas son lieu"
+      : "";
+    return `<div style="border:1px solid var(--b10);padding:10px;display:flex;gap:12px;margin-bottom:8px">
+      <div class="pimg" style="margin:0;width:104px;height:104px;flex:none;background-image:url('${u}')"
+        data-zoom="${u}" data-nom="${esc(e.img.fichier)}"></div>
+      <div style="flex:1;min-width:0">
+        <p style="margin:0 0 2px"><span style="color:var(--b30)">${n.ico}</span>
+          <b style="font-weight:400">${esc(e.nom)}</b></p>
+        <p style="margin:0 0 6px;font-size:10px;color:var(--b30)">${n.lib} · ${esc(e.sous||"")}</p>
+        ${st?`<p style="margin:0 0 6px;font-size:10.5px;color:var(--b50)">${esc(st)}</p>`:""}
+        ${e.img.verdictNote?`<p style="margin:0 0 6px;font-size:11px;color:var(--b50);
+          border-left:2px solid var(--orange);padding-left:8px">${esc(e.img.verdictNote)}</p>`:""}
+        <p style="margin:0;font-size:9.5px;color:var(--b30);word-break:break-all">${esc(e.img.fichier)}</p>
+        ${e.vers?`<button class="lk" data-vers="${esc(e.vers)}" style="margin-top:7px;padding:4px 9px">
+          Ouvrir l'écran <em>→</em></button>`:""}
+      </div></div>`;
+  };
+  const section=(titre,aide,html,n)=>!n?"":
+    `<h3 style="font:400 17px/1 var(--serif);margin:22px 0 3px">${titre}
+       <span style="color:var(--b30);font-size:11px">· ${n}</span></h3>
+     <p style="color:var(--b30);font-size:11px;margin:0 0 10px;max-width:82ch">${aide}</p>${html}`;
+
+  const vign=r=>`<figure style="width:120px;margin:0"><div class="pimg" style="margin:0;
+      background-image:url('${urlImg(r.fichier)}')" data-zoom="${urlImg(r.fichier)}"
+      data-nom="${esc(r.fichier)}"></div>
+    <figcaption style="font-size:9px;color:var(--b50);margin-top:4px;word-break:break-all">${esc(r.fichier)}</figcaption></figure>`;
+  const parRacine={}; doublons.forEach(r=>{(parRacine[r.racine]=parRacine[r.racine]||[]).push(r);});
+
+  return `<h2 style="font:400 22px/1 var(--serif);margin:0 0 6px">Images</h2>
+    <p style="color:var(--b30);font-size:11.5px;margin:0 0 4px">${ec.length} écrans portent une image :
+      ${ec.filter(e=>e.nat==="scene").length} scènes, ${ec.filter(e=>e.nat==="interaction").length} interactions,
+      ${ec.filter(e=>e.nat==="marche").length} écrans de marche.</p>
+    <p style="color:var(--b30);font-size:11px;margin:0 0 4px">Le <b>statut</b> dit si une image est câblée ;
+      le <b>verdict</b> dit si elle est bonne. Les deux ne se déduisent pas l'un de l'autre.</p>`
+   + section("À refaire",
+       "Marquées par toi sur la page de couverture. La note est la tienne — je m'en sers comme brief de prompt.",
+       aRefaire.map(carte).join(""), aRefaire.length)
+   + section("À créer",
+       "Ces écrans n'ont pas d'image à eux : ils empruntent celle d'un voisin, ou affichent une vue d'ambiance de la zone. Rien n'est cassé — il manque une image.",
+       aCreer.map(carte).join(""), aCreer.length)
+   + section("Fichier introuvable",
+       "Une image est câblée mais absente du disque : l'écran sortirait vide. C'est une alarme, pas une tâche de production.",
+       absent.map(carte).join(""), absent.length)
+   + section("À supprimer",
+       "Plusieurs fichiers pour le même sujet. Un seul sert — les autres encombrent le Drive et le dépôt. Dis-moi lequel garder.",
+       Object.entries(parRacine).map(([rac,fs])=>
+         `<div style="border:1px solid var(--b10);padding:10px;margin-bottom:10px">
+            <p style="font-size:10.5px;color:var(--orange);margin:0 0 8px;letter-spacing:1px">${esc(rac)}</p>
+            <div style="display:flex;flex-wrap:wrap;gap:12px">${fs.map(vign).join("")}</div></div>`).join(""),
+       doublons.length)
+   + section("Avis dont l'écran n'existe plus",
+       "Tu avais jugé ces images, mais l'écran qui les portait a été coupé ou fondu dans la narration depuis. Ton avis reste valable : les fichiers dorment en réserve, donc ils sont encore réutilisables — et encore faux.",
+       perimes.map(p=>`<div style="border:1px solid var(--b10);padding:10px;margin-bottom:8px">
+          <p style="margin:0 0 4px"><b style="font-weight:400">${esc(p.id)}</b>
+            <span style="color:var(--b30);font-size:10px"> · écran supprimé</span></p>
+          <p style="margin:0;font-size:11px;color:var(--b50);border-left:2px solid var(--orange);
+            padding-left:8px">${esc(p.note)}</p></div>`).join(""),
+       perimes.length);
+}
+
 function renduVue(){
   $$(".tab").forEach(t=>t.classList.toggle("on",t.dataset.vue===vue));
   const c=vue==="carte";
@@ -1647,13 +1752,44 @@ function renduVue(){
   const l=document.createElement("div"); l.id="liste";
   l.style.cssText="position:absolute;inset:0;overflow:auto;padding:18px 22px 60px";
   if(vue==="liste"){
-    l.innerHTML=`<h2 style="font:400 22px/1 var(--serif);margin:0 0 14px">Toutes les scènes</h2>`+
-      D.scenes.map(s=>{const img=urlImg(s.image&&s.image.fichier);
-        return `<button class="lk" data-vers="${esc(s.id)}" style="margin-bottom:6px;gap:12px">
-          <span style="width:32px;height:32px;flex:none;border:1px solid var(--b20);background:${img?`url('${img}') center/cover`:"var(--carte)"}"></span>
-          <span style="flex:1"><b style="font-weight:400">${NATURE[natureScene(s)].ico} ${esc(s.nom||s.id)}</b>
-          <span style="display:block;color:var(--b30);font-size:10px">${esc(s.id)} · ${s.choix.length} choix · accès : ${esc(s.acces)}</span></span>
-          <em>→</em></button>`;}).join("");
+    // TOUS les écrans, pas seulement les scènes : les interactions et les
+    // écrans de marche sont des écrans que le joueur voit, au même titre.
+    // Une ligne d'interaction est décalée sous sa scène porteuse — c'est là
+    // qu'elle se joue, et ça montre d'un coup d'œil ce que le lieu contient.
+    const ec=tousLesEcrans();
+    const lignes=[];
+    (D.scenes||[]).forEach(s=>{
+      const img=urlImg(s.image&&s.image.fichier);
+      lignes.push(`<button class="lk" data-vers="${esc(s.id)}" style="margin-bottom:4px;gap:12px">
+        <span style="width:32px;height:32px;flex:none;border:1px solid var(--b20);background:${img?`url('${img}') center/cover`:"var(--carte)"}"></span>
+        <span style="flex:1"><b style="font-weight:400">${NATURE[natureScene(s)].ico} ${esc(s.nom||s.id)}</b>
+        <span style="display:block;color:var(--b30);font-size:10px">${esc(s.id)} · ${s.choix.length} choix · accès : ${esc(s.acces)}</span></span>
+        <em>→</em></button>`);
+      (s.choix||[]).forEach(c=>{ if(!c.image) return;
+        const ci=urlImg(c.image.fichier);
+        lignes.push(`<button class="lk" data-vers="${esc(s.id)}" style="margin:0 0 4px 26px;gap:10px;width:calc(100% - 26px)">
+          <span style="width:26px;height:26px;flex:none;border:1px solid var(--b10);background:${ci?`url('${ci}') center/cover`:"var(--carte)"}"></span>
+          <span style="flex:1"><b style="font-weight:400;font-size:12px">◆ ${esc(c.label||c.id)}</b>
+          <span style="display:block;color:var(--b30);font-size:9.5px">interaction · ${esc(c.id)}</span></span>
+          <em>→</em></button>`); });
+    });
+    const marche=(D.ecransDeMarche||[]).map(e=>{const u=urlImg(e.fichier);
+      return `<div class="lk" style="margin-bottom:4px;gap:12px;cursor:default">
+        <span class="pimg" style="margin:0;width:32px;height:32px;flex:none;background-image:url('${u}')"
+          data-zoom="${u}" data-nom="${esc(e.fichier)}"></span>
+        <span style="flex:1"><b style="font-weight:400">↝ ${esc(e.fichier)}</b>
+        <span style="display:block;color:var(--b30);font-size:10px">écran de marche · servi ${esc(e.regle)}</span></span></div>`;}).join("");
+    l.innerHTML=`<h2 style="font:400 22px/1 var(--serif);margin:0 0 4px">Tous les écrans</h2>
+      <p style="color:var(--b30);font-size:11.5px;margin:0 0 14px">${ec.length} écrans portent une image —
+        ${ec.filter(e=>e.nat==="scene").length} scènes, ${ec.filter(e=>e.nat==="interaction").length} interactions
+        (décalées sous leur scène), ${ec.filter(e=>e.nat==="marche").length} écrans de marche.</p>`
+      + lignes.join("")
+      + `<h3 style="font:400 17px/1 var(--serif);margin:24px 0 3px">Les écrans de marche</h3>
+         <p style="color:var(--b30);font-size:11px;margin:0 0 10px;max-width:82ch">Ils n'existent dans aucune donnée :
+           une liaison est fabriquée à l'exécution, et son visuel est tiré selon la direction offerte.
+           C'est pourtant ce qu'on voit entre chaque lieu.</p>` + marche;
+  }else if(vue==="images"){
+    l.innerHTML=vueImages();
   }else if(vue==="systemes"){
     l.innerHTML=vueSystemes();
   }else{

@@ -199,6 +199,15 @@ def zone_index() -> tuple[dict[str, str], dict[str, str], dict[str, str]]:
 
 
 ERRANTS = "Sans lieu fixe"
+EN_CHEMIN = "En chemin"
+
+# Le rôle d'une carte qui n'est pas l'image principale de son lieu.
+ROLE_KIND = {
+    "poi": "élément observé",
+    "interaction": "ce que montre une action",
+    "transition": "écran de marche",
+    "scene": "autre moment du lieu",
+}
 
 # Rattachements que les données de zone ne portent pas : séquences scriptées
 # (Hameau), scènes de structure (Descente, procès) et rencontres dont l'id de
@@ -297,21 +306,98 @@ def read_scenes(src: str) -> list[dict]:
                     continue  # c'est un choix, pas un point d'intérêt
                 pillo = re.search(r'illustration: "([^"]+)"', pbody)
                 pois.append({"id": pid.group(1), "illustration": pillo.group(1) if pillo else None})
+        # ── LES INTERACTIONS (ex-points d'intérêt) ────────────────────────
+        # ⚠️ Le 13/08, les 34 points d'intérêt sont devenus des ACTIONS : leur
+        # image a migré de `PointInteret.illustration` vers `Choice.illustration`.
+        # L'extracteur ne lisant que les points, ces 70 images se sont retrouvées
+        # SANS AUCUNE FICHE — invisibles ici comme dans le Studio, donc
+        # impossibles à juger. Trois verdicts déjà posés par Patrick pointaient
+        # dans le vide pour cette seule raison (`croix-ombres`, `potences-cercle`).
+        # Un choix qui porte une image EST un écran : il se regarde comme tel.
+        inters = []
+        if "\n    choices:" in body:
+            cs = body.index("\n    choices:")
+            for cm in re.finditer(r'\n      \{\n(.*?)(?=\n      \},|\n    \])', body[cs:], re.S):
+                cbody = cm.group(1)
+                cid = re.search(r'id: "([^"]+)"', cbody)
+                cillo = re.search(r'illustration: "([^"]+)"', cbody)
+                if not cid or not cillo:
+                    continue
+                clab = re.search(r'label:\s*"((?:[^"\\]|\\.)*)"', cbody)
+                inters.append(
+                    {
+                        "id": cid.group(1),
+                        "label": clab.group(1) if clab else cid.group(1),
+                        "illustration": cillo.group(1),
+                    }
+                )
         scenes.append(
-            {"id": sid, "illustration": illo.group(1) if illo else None, "pois": pois}
+            {
+                "id": sid,
+                "illustration": illo.group(1) if illo else None,
+                "pois": pois,
+                "interactions": inters,
+            }
+        )
+    # ── LA DESCENTE ────────────────────────────────────────────────────────
+    # Elle vit HORS de `SCENES[]` (c'est le nœud terminal, `DESCENTE_SCENE`),
+    # donc aucun outil ne la voyait — alors que c'est le seul écran où l'on
+    # sort vivant de la zone, et que Patrick l'avait déjà marquée à remplacer.
+    mterm = re.search(r"const DESCENTE_SCENE[^=]*=\s*\{([\s\S]*?)\n\};", src)
+    if mterm and '\n  id: "la-descente"' in mterm.group(1):
+        timg = re.search(r'\n  illustration: "([^"]+)"', mterm.group(1))
+        scenes.append(
+            {
+                "id": "la-descente",
+                "illustration": timg.group(1) if timg else None,
+                "pois": [],
+                "interactions": [],
+            }
         )
     return scenes
 
 
+# Les vues de MARCHE, avec la règle qui les choisit (`pickWalkImage`). Ce sont
+# les écrans de TRANSITION : entre deux lieux, le héros marche, et c'est ce
+# qu'il voit. Elles n'appartiennent à aucune scène de `SCENES[]` — sans cette
+# table elles n'ont, elles non plus, aucune fiche où être jugées.
+REGLE_MARCHE = {
+    "HAMEAU_WALK": "quand on marche vers le hameau, ou d'une ruelle à l'autre",
+    "LANDES_WALK": "marche ordinaire dans la lande (tirage)",
+    "LANDES_GENERIC": "marche ordinaire dans la lande (tirage)",
+}
+
+
+def read_transitions(src: str) -> list[dict]:
+    """Les images des écrans de marche, chacune avec la règle qui la sert."""
+    out: dict[str, str] = {}
+    for nom in ("HAMEAU_WALK", "LANDES_WALK", "LANDES_GENERIC"):
+        m = re.search(nom + r"\s*[:=][^=]*?\[(.*?)\]", src, re.S)
+        if not m:
+            continue
+        for img in re.findall(r'"(assets/[^"]+)"', m.group(1)):
+            out.setdefault(img, REGLE_MARCHE[nom])
+    # Les deux vues CONTEXTUELLES, retournées en dur par `pickWalkImage` : elles
+    # ne sont dans aucun tableau, donc un balayage des pools les rate.
+    for m in re.finditer(
+        r'offered\.includes\("([^"]+)"\)\) return "(assets/[^"]+)"', src
+    ):
+        out[m.group(2)] = f"quand une des deux directions est « {m.group(1)} »"
+    return [{"image": k, "regle": v} for k, v in out.items()]
+
+
 def pool_images(src: str) -> set[str]:
-    """Images des pools de LIAISON (vues de marche) : ce sont des fallbacks de
-    zone, jamais des images dédiées à une scène."""
-    out: set[str] = set()
-    for name in ("LANDES_GENERIC", "LANDES_WALK", "HAMEAU_WALK"):
-        m = re.search(name + r"\s*[:=][^=]*?\[(.*?)\]", src, re.S)
-        if m:
-            out |= set(re.findall(r'"(assets/[^"]+)"', m.group(1)))
-    return out
+    """Images des vues de MARCHE : ce sont des fallbacks de zone, jamais des
+    images dédiées à une scène.
+
+    ⚠️ Une seule définition, partagée avec `read_transitions` : l'ancienne
+    version ne lisait que les TABLEAUX (`LANDES_WALK`…) et ratait les deux vues
+    contextuelles retournées en dur par `pickWalkImage`. Conséquence mesurée :
+    la Descente, qui emprunte `scene_landes_liaison_sud_c`, passait pour ayant
+    son image propre — donc l'écran de sortie de zone n'apparaissait dans
+    aucune liste de ce qui reste à produire.
+    """
+    return {t["image"] for t in read_transitions(src)}
 
 
 def categorie(image: str | None, sid: str) -> str:
@@ -417,6 +503,57 @@ def build_items() -> tuple[list[Item], dict, list[str]]:
                     verdict_note=pv.get("note", ""),
                 )
             )
+        # Les INTERACTIONS : une action qui porte une image est un écran à part
+        # entière (le héros s'approche, et l'écran montre l'élément lui-même).
+        for it in sc["interactions"]:
+            iimg = it["illustration"]
+            istatut, iparent = classify(iimg, owners, sid, pools)
+            if istatut == DEDIEE:
+                iparent = sid  # sa scène porteuse, pour le regroupement
+            inotes = []
+            if iimg and not (ASSETS / iimg.split("/", 1)[1]).exists():
+                inotes.append("FICHIER ABSENT DU DISQUE")
+            iv = verdicts.get(it["id"], {})
+            items.append(
+                Item(
+                    id=it["id"],
+                    kind="interaction",
+                    image=iimg,
+                    statut=istatut,
+                    parent=iparent,
+                    description=f"Action « {it['label']} » — ce que l'écran montre "
+                    "quand le héros s'en approche.",
+                    prompt="",
+                    categorie=categorie(iimg, it["id"]),
+                    notes=inotes,
+                    verdict=iv.get("v", ""),
+                    verdict_note=iv.get("note", ""),
+                )
+            )
+
+    # Les écrans de MARCHE (transitions entre deux lieux).
+    for tr in read_transitions(src):
+        timg = tr["image"]
+        tid = "marche:" + timg.split("/")[-1].rsplit(".", 1)[0]
+        tnotes = []
+        if not (ASSETS / timg.split("/", 1)[1]).exists():
+            tnotes.append("FICHIER ABSENT DU DISQUE")
+        tv = verdicts.get(tid, {})
+        items.append(
+            Item(
+                id=tid,
+                kind="transition",
+                image=timg,
+                statut=FALLBACK,
+                parent="",
+                description=f"Écran de marche — servi {tr['regle']}.",
+                prompt="",
+                categorie="scene",
+                notes=tnotes,
+                verdict=tv.get("v", ""),
+                verdict_note=tv.get("note", ""),
+            )
+        )
 
     # ── Regroupement par zone puis par lieu ───────────────────────────────
     # Le lieu d'une carte : son id privé de son suffixe de beat (« -2 », « -3 »),
@@ -424,7 +561,12 @@ def build_items() -> tuple[list[Item], dict, list[str]]:
     # d'un groupe (celle qui porte l'id nu) est la principale.
     zones, lieu_de, nom_de = zone_index()
     for i in items:
-        base = i.parent if i.kind == "poi" else i.id
+        if i.kind == "transition":
+            # La marche n'appartient à aucun lieu — c'est justement ce qu'elle
+            # est : l'entre-deux. Lui inventer un lieu serait un mensonge.
+            i.group, i.zone, i.lieu, i.scene_nom = "marche", DEFAULT_ZONE, EN_CHEMIN, EN_CHEMIN
+            continue
+        base = i.parent if i.kind in ("poi", "interaction") else i.id
         i.group = re.sub(r"-\d+$", "", base)
         key = i.group.replace("_", "-")
         i.zone = zones.get(key, DEFAULT_ZONE)
@@ -472,8 +614,20 @@ def build_items() -> tuple[list[Item], dict, list[str]]:
         "total": len(items),
         "scenes": sum(1 for i in items if i.kind == "scene"),
         "pois": sum(1 for i in items if i.kind == "poi"),
+        "interactions": sum(1 for i in items if i.kind == "interaction"),
+        "transitions": sum(1 for i in items if i.kind == "transition"),
         "a_remplacer": sum(1 for i in items if i.verdict == A_REMPLACER),
         "valides": sum(1 for i in items if i.verdict == OK),
+        # ⚠️ Un avis dont l'écran a disparu depuis (une action coupée, un point
+        # d'intérêt passé en narration). Il ne doit PAS s'évaporer en silence :
+        # c'est du jugement de Patrick, et il porte souvent sur une image qui
+        # dort maintenant en réserve — donc encore réutilisable, et encore
+        # fausse. On les remonte pour qu'il décide.
+        "verdicts_perimes": [
+            {"id": k, "note": v.get("note", "")}
+            for k, v in sorted(verdicts.items())
+            if k not in {i.id for i in items}
+        ],
     }
     for i in items:
         counts["categorie"][i.categorie] = counts["categorie"].get(i.categorie, 0) + 1
@@ -1109,7 +1263,11 @@ def render(
             vlabel = "à remplacer" if i.verdict == A_REMPLACER else "validée"
             tag += f'<span class="vbar {i.verdict}">{vlabel}</span>'
 
-        parent_html = f' <span class="poi">← {esc(i.parent)}</span>' if i.kind == "poi" else ""
+        parent_html = (
+            f' <span class="poi">← {esc(i.parent)}</span>'
+            if i.kind in ("poi", "interaction") and i.parent
+            else ""
+        )
         if i.statut == HERITEE:
             meta = f'hérite de <b>{esc(i.parent)}</b>'
         elif i.statut == FALLBACK:
@@ -1180,7 +1338,7 @@ def render(
             f' data-p-id="{esc(i.id)}"'
             f' data-p-lieu="{esc(i.lieu)}"'
             f' data-p-scene="{esc(i.scene_nom)}"'
-            f' data-p-role="{"principale" if i.principale else ("élément observé" if i.kind == "poi" else "variante")}"'
+            f' data-p-role="{"principale" if i.principale else ROLE_KIND.get(i.kind, "variante")}"'
             f' data-p-desc="{esc(i.description)}"'
             f' data-p-fichier="{esc(basename or (i.categorie + "_" + i.id.replace("-", "_") + "_a.png"))}"'
             f' data-p-ref="{esc(ref_image.get(i.group, ""))}"'
@@ -1197,7 +1355,7 @@ def render(
             # « plan rapproché » est abandonné (26/07) : ce n'est plus un zoom
             # dans l'image du lieu, le héros se déplace et l'écran montre
             # l'élément lui-même.
-            else ("élément observé" if i.kind == "poi" else "autre moment du lieu")
+            else ROLE_KIND.get(i.kind, "autre moment du lieu")
         )
         # Icône de rôle à gauche du nom : composant (4 losanges) pour l'image
         # principale, variante (losange creux) pour les autres — grammaire Figma.
@@ -1622,7 +1780,8 @@ def main() -> None:
     st = counts["statut"]
     print(f"{OUT_HTML.relative_to(ROOT)} écrit")
     print(
-        f"  {counts['scenes']} scènes · {counts['pois']} points d'intérêt\n"
+        f"  {counts['scenes']} scènes · {counts['interactions']} interactions "
+        f"· {counts['transitions']} écrans de marche\n"
         f"  dédiée {st[DEDIEE]} · héritée {st[HERITEE]} · fallback {st[FALLBACK]} "
         f"· manquante {st[MANQUANTE]}\n"
         f"  {counts['prompts_manquants']} prompts à écrire · {len(orphans)} assets orphelins"

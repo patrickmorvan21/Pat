@@ -621,6 +621,14 @@ def lire_choix(bloc: str) -> list[dict]:
             "id": texte_de(c, "id") or f"choix-{i}",
             "label": texte_de(c, "label") or "",
         }
+        # ⚠️ L'IMAGE D'UNE ACTION. Depuis le 13/08 les points d'intérêt sont
+        # des choix : leur illustration a migré ici. Sans ce champ dans la
+        # liste blanche, 29 écrans réels du jeu n'existaient nulle part dans
+        # le Studio — invisibles, donc injugeables (piège de la liste blanche,
+        # le même que `sansNuit`, `exigeObjet` et `exigeSceau` avant lui).
+        illo_c = texte_de(c, "illustration")
+        if illo_c:
+            ch["illustration"] = illo_c
         if "risky:" in c:
             stat = next((s for s in STATS if f'"{s}"' in c), None)
             ch["type"] = "risque"
@@ -972,6 +980,26 @@ def lire_scenes() -> list[dict]:
         if sa is not None:
             s["soupconArrivee"] = int(sa)
         scenes.append(s)
+    # ── LA DESCENTE ────────────────────────────────────────────────────────
+    # Le nœud terminal vit HORS de `SCENES[]` : aucun outil ne le voyait, alors
+    # que c'est le SEUL écran où l'on sort vivant de la zone. Il se lit avec les
+    # mêmes helpers — il a la forme d'une scène, il n'est simplement pas dans le
+    # tableau.
+    mterm = re.search(r"const DESCENTE_SCENE[^=]*=\s*(\{[\s\S]*?\n\});", src)
+    if mterm:
+        bloc = mterm.group(1)
+        narr = bloc_apres(bloc, r"\n  narration:\s*")
+        illo = re.search(r'\n  illustration: "([^"]+)"', bloc)
+        scenes.append(
+            {
+                "id": texte_de(bloc, "id") or "la-descente",
+                "illustration": illo.group(1) if illo else None,
+                "narration": paragraphes(narr[0]) if narr else [],
+                "choix": lire_choix(bloc.replace("\n  choices:", "\n    choices:")),
+                "pointsInteret": [],
+                "terminal": True,
+            }
+        )
     return scenes
 
 
@@ -1138,8 +1166,44 @@ def main() -> int:
     for l in liens:
         entrants.setdefault(l["vers"], []).append(l["de"])
 
+    # ── STATUT ET VERDICT DES IMAGES ───────────────────────────────────────
+    # ⚠️ On IMPORTE la logique de `coverage.py` au lieu de la réécrire. Deux
+    # implémentations de « dédiée / héritée / à refaire » divergeraient au
+    # premier correctif, et le Studio dirait alors autre chose que la page de
+    # couverture sur exactement la même image. Le statut dit si l'image est
+    # CÂBLÉE, le verdict (jugement de Patrick) si elle est BONNE : les deux ne
+    # se déduisent jamais l'un de l'autre.
+    couverture: dict[str, object] = {}
+    verdicts_perimes: list[dict] = []
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import coverage as _cov
+
+        _items, _counts, _ = _cov.build_items()
+        couverture = {i.id: i for i in _items}
+        verdicts_perimes = _counts.get("verdicts_perimes", [])
+    except Exception as e:  # l'export ne doit jamais tomber pour un statut
+        print(f"   ⚠ statuts d'image indisponibles ({e})")
+
+    def enrichir(fiche: dict | None, ident: str) -> dict | None:
+        """Ajoute à une fiche d'image son statut de câblage et son verdict."""
+        if fiche is None:
+            return None
+        it = couverture.get(ident)
+        if it is not None:
+            fiche["statut"] = it.statut
+            fiche["herite"] = it.parent if it.statut == "heritee" else ""
+            if it.verdict:
+                fiche["verdict"] = it.verdict
+                fiche["verdictNote"] = it.verdict_note
+        return fiche
+
     for s in scenes:
-        s["image"] = fiche_image(s.get("illustration"))
+        s["image"] = enrichir(fiche_image(s.get("illustration")), s["id"])
+        for c in s.get("choix", []):
+            if c.get("illustration"):
+                c["image"] = enrichir(fiche_image(c["illustration"]), c["id"])
+                c.pop("illustration", None)
         m = meta.get(s["id"], {})
         s["description"] = m.get("description", "")
         s["promptImage"] = m.get("prompt_image", "")
@@ -1388,6 +1452,21 @@ def main() -> int:
                 if arr["image"]:
                     l["illustration"] = arr["image"]["fichier"]
 
+    # Les écrans de marche, montés depuis la même source que la page de
+    # couverture (les items `transition` de coverage.py) : image, règle qui la
+    # sert, et le verdict s'il y en a un.
+    ecrans_marche = []
+    for it in couverture.values():
+        if getattr(it, "kind", "") != "transition":
+            continue
+        e = enrichir(fiche_image(it.image), it.id) or {}
+        e["id"] = it.id
+        e["regle"] = it.description.replace("Écran de marche — servi ", "").rstrip(".")
+        ecrans_marche.append(e)
+    ecrans_marche.sort(key=lambda e: (e.get("regle", ""), e.get("fichier", "")))
+
+    transitions = lire_transitions()
+
     donnees = {
         "regions": regions,
         "entree": entree,
@@ -1396,6 +1475,12 @@ def main() -> int:
         "commit": manifest.get("commit", ""),
         "zones": zones,
         "scenes": scenes,
+        # LES ÉCRANS DE MARCHE (assemblés plus haut). Une liaison n'est pas une entrée de `SCENES[]` :
+        # elle est fabriquée à l'exécution par `makeLiaison()`. Ses visuels
+        # n'apparaissaient donc nulle part, alors que ce sont les écrans les
+        # plus VUS d'une vie (un par lieu traversé). Chacun avec la règle qui
+        # le sert, pour qu'on sache ce qu'on juge.
+        "ecransDeMarche": ecrans_marche,
         "liens": liens,
         "reserve": reserve,
         # LES SYSTÈMES TRANSVERSES (5/08) : ils ne vivent dans aucune scène,
@@ -1408,7 +1493,12 @@ def main() -> int:
         "temoins": TEMOINS,
         "etats": lire_etats(),
         "besoins": lire_besoins(),
-        "transitions": lire_transitions(),
+        "transitions": transitions,
+        # Les avis de Patrick dont l'écran a disparu depuis (action coupée,
+        # point passé en narration). Remontés plutôt qu'effacés en silence :
+        # leur image dort en réserve, donc elle est encore réutilisable — et
+        # encore fausse.
+        "verdictsPerimes": verdicts_perimes,
         "familiarite": lire_familiarite(),
         "surprises": lire_surprises(),
         "totaux": {
@@ -1427,14 +1517,32 @@ def main() -> int:
             "temoins": len(TEMOINS),
             "etats": len(lire_etats()),
             "besoins": len(lire_besoins()),
-            "transitions": len(lire_transitions()["fond"]) + len(lire_transitions()["variantes"]),
+            "transitions": len(transitions["fond"]) + len(transitions["variantes"]),
+            "ecransDeMarche": len(ecrans_marche),
+            "interactions": sum(
+                1 for s in scenes for c in s["choix"] if c.get("image")
+            ),
+            "aRefaire": sum(
+                1
+                for s in scenes
+                if (s["image"] or {}).get("verdict")
+            )
+            + sum(
+                1
+                for s in scenes
+                for c in s["choix"]
+                if (c.get("image") or {}).get("verdict")
+            )
+            + sum(1 for e in ecrans_marche if e.get("verdict")),
             "familiarite": sum(len(f["strates"]) for f in lire_familiarite()),
         },
     }
     SORTIE.write_text(json.dumps(donnees, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
     t = donnees["totaux"]
     print(f"{SORTIE.relative_to(RACINE)} — {SORTIE.stat().st_size // 1024} Ko")
-    print(f"   {t['scenes']} scènes · {t['pointsInteret']} points d'intérêt · {t['choix']} choix")
+    print(f"   {t['scenes']} scènes · {t['interactions']} interactions · {t['choix']} choix")
+    print(f"   {t['ecransDeMarche']} écrans de marche · {t['aRefaire']} images à refaire"
+          f" · {len(donnees['verdictsPerimes'])} avis périmés")
     print(f"   {len(liens)} liens · {t['reserve']} en réserve · {t['imagesIntrouvables']} images introuvables")
     return 0
 

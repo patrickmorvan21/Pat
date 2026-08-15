@@ -475,7 +475,16 @@
      "type": "passif",
      "consequence": "Le granit est froid d'une froideur qui ne vient pas du vent. Des marques sur toutes les faces, de toutes les mains : des noms, des dates, des traits de comptage. Le côté nord est saturé — les adieux de ceux qui partaient. Le côté sud est presque vierge. Trois marques. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?\n\nAu ras du sol, un angle manque. La cassure est nette, faite au burin, patiemment — et l'éclat est encore là, à demi enterré. Celui qui voulait emporter un morceau de la limite ne l'a pas pris. Sous le vent, pendant que tu te relèves, il y a des voix : basses, à ras de bruyère, qui se passent le mot de ton arrivée. Elles ne te menacent pas. Elles préviennent quelqu'un.",
      "donneObjet": "pierre-retour",
-     "borneSud": true
+     "borneSud": true,
+     "image": {
+      "fichier": "scene_borne_gravures_a_d.png",
+      "hash": "e4dd0628",
+      "taille": 12652,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "fouiller-offrandes",
@@ -500,6 +509,15 @@
      "consequence": "Tu marches vers lui sans te presser, en faisant sonner tes pas — on n'arrive pas dans le dos de quelqu'un, ici. L'herbe autour de ses pieds est couchée, morte. Il est là depuis des jours. Immobile — mais pas comme on se repose : comme on lutte.",
      "sortie": {
       "toScene": "hesitant-1"
+     },
+     "image": {
+      "fichier": "monstre_hesitant_b.png",
+      "hash": "79ff7f45",
+      "taille": 14688,
+      "recent": false,
+      "existe": true,
+      "statut": "heritee",
+      "herite": "hesitant-1"
      }
     }
    ],
@@ -512,7 +530,11 @@
     "hash": "6fdeb1bd",
     "taille": 11903,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Le tout premier écran du jeu se clôt sur « à trois pas de la borne, un homme immobile, face au sud » — c'est l'accroche du point d'intérêt et de la rencontre de l'Hésitant. Aucune figure dans l'image : le monolithe est seul. Le premier élément jouable que le joueur voit nommé est invisible. (Le monolithe lui-même est excellent — il ne manque qu'une silhouette à droite.)"
    },
    "description": "Entrée de zone, tout premier écran du jeu. La borne-frontière dressée seule sur le plateau, ses faces gravées, les offrandes à son pied, et le chemin qui s'enfonce au sud dans le noir.",
    "promptImage": "single tall standing stone in the middle of an empty moor plateau, carved marks on its faces, small pile of humble offerings at its base, path vanishing south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -576,7 +598,9 @@
     "hash": "79ff7f45",
     "taille": 14688,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Un homme immobile face au sud, dos au hameau, planté depuis si longtemps que l'herbe s'est couchée sous lui. La borne dressée à côté de lui.",
    "promptImage": "gaunt hooded man standing motionless on a moor, seen from behind at three-quarters, facing away toward a dark southern horizon, worn travelling clothes, a small bundle at his feet, grass flattened around him, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -639,7 +663,9 @@
     "hash": "4a7bd6a1",
     "taille": 13371,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Il parle enfin : tourné de trois-quarts, il désigne la borne du menton sans la regarder. CHANGE : il n'est plus figé face au sud — tête tournée, menton qui pointe la pierre.",
    "promptImage": "",
@@ -676,7 +702,9 @@
     "hash": "28f6e59a",
     "taille": 7011,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "La borne seule au milieu du plateau, la bruyère couchée à son pied, et rien qui dise dans quel sens il est parti. CHANGE : l'homme a DISPARU du cadre — même pierre, vide.",
    "promptImage": "",
@@ -701,7 +729,16 @@
      "label": "Fouiller la charrette",
      "type": "passif",
      "consequence": "Elle penche dans l'ornière depuis si longtemps que le bois a pris racine — des pousses sortent du moyeu. Le chargement a disparu. Le cheval aussi : le harnais pend, coupé net, pas dénoué. Sous le siège, accroché à un clou, un grelot de cuivre vert-de-grisé. Il ne sonne pas quand tu le décroches. Il sonnera quand il faudra.",
-     "donneObjet": "grelot-charretier"
+     "donneObjet": "grelot-charretier",
+     "image": {
+      "fichier": "scene_chemin_charrette_a_c.png",
+      "hash": "0b772c65",
+      "taille": 10947,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "talus-empreintes",
@@ -709,7 +746,16 @@
      "type": "passif",
      "consequence": "Tu montes de trois pas dans la pente, juste assez pour voir la crête sans t'exposer entièrement. Des empreintes, parallèles au chemin, sur toute sa longueur — mais sur la crête NORD seulement : l'autre versant est intact, pas une marque. Quelque chose marche là-haut quand quelqu'un marche en bas, à la même vitesse, du même pas, et toujours du même côté. Tu redescends sans te presser, parce que se presser serait une information.",
      "donneSavoir": "savoir_bete_crete_nord",
-     "donneDecouverte": "d.bete_couloir"
+     "donneDecouverte": "d.bete_couloir",
+     "image": {
+      "fichier": "scene_chemin_talus_a_c.png",
+      "hash": "df0a1dec",
+      "taille": 9840,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "marcheur-rebours",
@@ -718,6 +764,15 @@
      "consequence": "Tu ralentis pour le laisser venir. Il marche à reculons d'un pas sûr, les talons trouvant le sol comme des yeux. Son visage est tourné vers ce qu'il laisse derrière lui. C'est-à-dire, dans un instant : vers toi.",
      "sortie": {
       "toScene": "marcheur-1"
+     },
+     "image": {
+      "fichier": "monstre_marcheur_rebours_v2_a.png",
+      "hash": "ba1a5091",
+      "taille": 20815,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
      }
     }
    ],
@@ -735,7 +790,11 @@
     "hash": "29c27c48",
     "taille": 22199,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Le texte annonce comme visibles d'ici « une charrette qui penche au premier coude » et « dans le creux, quelqu'un vient vers toi » — deux points d'intérêt jouables. Ni charrette ni figure dans l'image. Le creux lui-même est parfait : il suffit d'y poser la charrette."
    },
    "description": "Arrivée au Chemin Creux. Une route encaissée entre deux hauts talus de terre, un ruban de ciel étroit au-dessus, des racines tordues qui sortent des parois.",
    "promptImage": "sunken road between two high earthen banks, narrow ribbon of sky above, twisted roots protruding from the banks, deep shadows, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -795,7 +854,9 @@
     "hash": "261f995a",
     "taille": 29636,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Événement du Chemin Creux : le coude aveugle. Le talus mange la vue d'un coup — l'endroit exact où il devrait y avoir quelque chose, et où il n'y a rien.",
    "promptImage": "blind bend of a sunken road between high earthen banks, the path disappearing around the curve, nothing visible beyond, very deep shadow at the turn, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -841,7 +902,9 @@
     "hash": "a352d5cd",
     "taille": 6372,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Le Marcheur à rebours avance en marche arrière dans le chemin creux, le regard fixé derrière lui : trente ans qu'il ne montre son dos à rien.",
    "promptImage": "emaciated man walking backwards along a sunken road, face turned to look behind himself, eyes wide and fixed, arms slightly out for balance, ragged coat, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -900,7 +963,9 @@
     "hash": "ce07449d",
     "taille": 18224,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Il s'éloigne à reculons, déjà trois pas plus loin, et te parle par-dessus son épaule ; les talus se resserrent. CHANGE : il n'est plus devant toi, il recule dans la profondeur du chemin.",
    "promptImage": "",
@@ -940,7 +1005,9 @@
     "hash": "147a5494",
     "taille": 14018,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Au coude du chemin il pivote face au nord et lève deux doigts vers toi, juste avant que le talus ne l'avale. CHANGE : vu de dos, et le geste des deux doigts levés.",
    "promptImage": "",
@@ -1041,7 +1108,11 @@
     "hash": "4348084a",
     "taille": 23757,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Premier combat de la zone. L'image est un large vallon sous un grand ciel, la bête à peine discernable — alors que le lieu est un couloir « entre deux talus plus hauts que toi, le ciel devient un ruban » et que la Bête « est dessus ». La menace ne se lit pas. « Pas de gueule visible » excuse l'indistinction de la bête, pas l'échelle du décor."
    },
    "description": "Combat, une scène. La Bête des Chemins Creux, qui longe la crête nord au même pas que ce qui marche en bas. On ne la voit qu'en silhouette, au-dessus.",
    "promptImage": "massive quadruped silhouette crouched on the crest of an earthen bank, seen from below against a pale sky, long low body, head lowered toward the viewer, unnaturally still, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -1066,20 +1137,47 @@
      "label": "Lire le nom gravé",
      "type": "passif",
      "consequence": "Au pied du mât, dans le bois, un nom a été gravé profond, à la gouge, par quelqu’un qui prenait son temps. Il est illisible — pas effacé par la pluie : GRATTÉ, en travers, par quelque chose qui a mordu le bois plus fort que l’outil. Dessous, une date est restée entière. Elle est vieille de trente ans.",
-     "donneDecouverte": "d.nom_gratte"
+     "donneDecouverte": "d.nom_gratte",
+     "image": {
+      "fichier": "scene_colline_pied_grand_gibet_b.png",
+      "hash": "2559c3f3",
+      "taille": 15296,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "compter-corbeaux",
      "label": "Compter les corbeaux",
      "type": "passif",
      "consequence": "Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, et leurs becs sont propres. Ils attendent, tournés du même côté, comme des choses qu'on a postées là.",
-     "corbeaux": true
+     "corbeaux": true,
+     "image": {
+      "fichier": "monstre_corbeaux_du_compte_b.png",
+      "hash": "03b469b0",
+      "taille": 28966,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "monter-gibet-vide",
      "label": "Monter jusqu'au Gibet Vide",
      "type": "passif",
-     "consequence": "La chose grandit plus vite que tes pas. À trois mètres, tu dois lever la tête pour voir le nœud. Le bois est d'œuvre, assemblé pour durer mille ans, et la corde neuve grince toute seule."
+     "consequence": "La chose grandit plus vite que tes pas. À trois mètres, tu dois lever la tête pour voir le nœud. Le bois est d'œuvre, assemblé pour durer mille ans, et la corde neuve grince toute seule.",
+     "image": {
+      "fichier": "scene_colline_gibet_vide_a_b.png",
+      "hash": "83c68692",
+      "taille": 21563,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     }
    ],
    "pointsInteret": [],
@@ -1097,7 +1195,9 @@
     "hash": "38dc9e32",
     "taille": 34788,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Arrivée à la Colline aux Gibets, lieu-signature de la zone. La file de potences le long de la crête nue, vue d'en bas en contre-plongée, de plus en plus hautes vers le sommet, les cordes qui balancent.",
    "promptImage": "row of wooden gallows following a bare hill ridge seen from below, low angle, each one taller than the last toward the crest, ropes swaying, crows on the crossbeams, stormy sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -1178,7 +1278,11 @@
     "hash": "99d86877",
     "taille": 31826,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "RELIQUAT DE LA VERSION ABANDONNÉE : l'image montre un ANNEAU FERMÉ de potences (poteaux + linteau polygonal) avec une figure encapuchonnée au CENTRE. Toute la prose de la Colline a été réconciliée sur la FILE le long de la crête (l'écran d'arrivée, lui, est juste). Le joueur voit donc une crête, puis un cercle à l'écran suivant. En prime, la figure centrale n'est nommée par aucun texte."
    },
    "description": "Événement de la Colline : au sommet, entre les potences. L'écharde du grand gibet se prélève ici.",
    "promptImage": "standing among a row of wooden gallows along a hill ridge, ropes hanging at eye level on either side, splintered beam in the foreground, vast empty sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -1234,7 +1338,11 @@
     "hash": "26043560",
     "taille": 33787,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Le texte dit « un sceau au poing » et un choix jouable entier s'appelle « Détailler le sceau à son poing ». L'image montre les DEUX MAINS OUVERTES ET VIDES. Le sceau sème le lore de la zone (« les Landes entières sont timbrées à sa marque »). Fixer au passage la position des bras, incohérente avec l'écran suivant (poignets liés)."
    },
    "description": "Arrivée au gardien de zone : le Bailli pendu, qui parle encore. Vu de loin, une silhouette au bout d'une corde, sur un gibet isolé.",
    "promptImage": "hanged man on an isolated gallows seen from a distance across dead moorland, head upright rather than slumped, rope taut, long coat, sky nearly black, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -1332,7 +1440,9 @@
     "hash": "2b1bc9da",
     "taille": 9886,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Le gardien, à hauteur d'homme. Non-combat : il juge. Son visage de pendu qui parle, le sceau à sa ceinture.",
    "promptImage": "close portrait of a hanged magistrate, rope around his neck, eyes open and attentive, dried lips parted as if mid-sentence, heavy official seal hanging at his belt, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -1356,7 +1466,16 @@
      "id": "les-rangees",
      "label": "Remonter les rangées",
      "type": "passif",
-     "consequence": "Le sol entre deux rangs est tassé par des allées et venues régulières — on entretient ce champ comme un jardin, et c'est ça qui serre le ventre. Les noms des premières rangées sont presque effacés, les dernières sont fraîches. Entre les deux, une rangée entière porte la même date : un seul jour, neuf fixations. Il y a une histoire là-dedans que personne ne raconte."
+     "consequence": "Le sol entre deux rangs est tassé par des allées et venues régulières — on entretient ce champ comme un jardin, et c'est ça qui serre le ventre. Les noms des premières rangées sont presque effacés, les dernières sont fraîches. Entre les deux, une rangée entière porte la même date : un seul jour, neuf fixations. Il y a une histoire là-dedans que personne ne raconte.",
+     "image": {
+      "fichier": "scene_champ_les_rangees_v2_a.png",
+      "hash": "ecaa522b",
+      "taille": 23864,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "poteaux-vierges",
@@ -1364,7 +1483,16 @@
      "type": "passif",
      "consequence": "Il faut traverser tout le champ pour les atteindre. Tu comptes les poteaux vides en marchant — puis tu t'arrêtes de compter, parce que le compte monte plus vite que tes pas. Trois portent déjà des noms, sans date : le Fossoyeur grave d'avance « ceux dont c'est sûr ». Le troisième est récent, l'entaille claire, le bois pas encore grisé. Tu le lis, et tu le relis, et il ne change pas : c'est le tien.",
      "donneSavoir": "savoir_poteau_a_mon_nom",
-     "poteau": true
+     "poteau": true,
+     "image": {
+      "fichier": "scene_champ_poteaux_vierges_b.png",
+      "hash": "0ffc6d78",
+      "taille": 10052,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "tombe-sans-poteau",
@@ -1372,7 +1500,16 @@
      "type": "passif",
      "consequence": "Tu l'avais repéré de loin sans savoir quoi : un défaut d'alignement, un rythme cassé. Il manque un poteau au milieu d'une rangée pleine, comme une dent tombée. La terre y est ancienne, tassée. On l'a retiré — pas arraché : descellé proprement, puis rebouché. Quelqu'un a voulu que ce nom-là cesse d'exister sans que le champ s'en aperçoive. Au fond de la fosse comblée, à moitié enfoui, un moignon de craie grasse — celle qui sert à marquer les portes.",
      "donneObjet": "craie-condamne",
-     "donneDecouverte": "d.emplacement_vide"
+     "donneDecouverte": "d.emplacement_vide",
+     "image": {
+      "fichier": "scene_champ_tombe_manquante_a_c.png",
+      "hash": "e11aa5ad",
+      "taille": 14607,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     }
    ],
    "pointsInteret": [],
@@ -1386,7 +1523,9 @@
     "hash": "ac1408d0",
     "taille": 30830,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Arrivée au Champ des Fixés. Des rangées de poteaux plantés dans la lande morte, un écriteau clouté sur chacun, certains encore occupés.",
    "promptImage": "rows of wooden posts planted across dead moorland, a small nailed sign on each, some posts still bearing hanged figures in the far distance, receding perspective, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -1442,7 +1581,9 @@
     "hash": "66f02057",
     "taille": 14405,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -1496,7 +1637,9 @@
     "hash": "51a62089",
     "taille": 14995,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -1541,7 +1684,9 @@
     "hash": "acf3368c",
     "taille": 17126,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -1646,7 +1791,11 @@
     "hash": "69a5f9b1",
     "taille": 23540,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Champ de CROIX CHRÉTIENNES dressées. La Fixation plante des poteaux au LIEU d'enterrer, et le hameau a renoncé à son dieu : des croix contredisent la doctrine entière de la zone. L'image d'établissement du même lieu, elle, est juste."
    },
    "description": "Événement du Champ : le Fossoyeur aux poteaux, qui grave d'avance les noms « dont c'est sûr ».",
    "promptImage": "old gravedigger kneeling at the base of a wooden post, carving letters into the wood with a knife, satchel of tools open beside him, back bent, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -1750,7 +1899,9 @@
     "hash": "39952ee0",
     "taille": 11667,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Combat, une scène. Le Pendu Mal Fixé : un bras tendu figé en plein geste d'agrippement, la corde trop longue qui laisse les pieds toucher le sol.",
    "promptImage": "hanged figure whose rope is too long so its feet touch the ground, one arm outstretched and frozen mid-grab reaching toward the viewer, head tilted at a wrong angle, tattered clothes, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -1806,7 +1957,11 @@
     "hash": "4ee39a67",
     "taille": 29932,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Le texte dit une vingtaine de feux, une seule cheminée qui fume, des murs qui tiennent par habitude. L'image montre une VILLE dense, 100+ toits intacts, dominée par une haute flèche gothique. La petitesse du hameau est structurante (le village entier tient dans le Petit Tribunal)."
    },
    "description": "Approche du Hameau des Renonçants, vu de loin. Les toits d'ardoise affaissés au creux du plateau, une seule cheminée qui fume sur vingt, aucun chien qui aboie.",
    "promptImage": "distant abandoned hamlet nestled in a hollow of dead moorland at dusk, sagging slate rooftops, one single chimney smoking, low dry-stone walls leading to the village, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -1896,7 +2051,9 @@
     "hash": "9a56edb6",
     "taille": 26939,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "La ruelle étroite du hameau : portes marquées à la craie, volets fermés, aucun chien.",
    "promptImage": "narrow street of an old abandoned hamlet, crooked stone houses, wooden doors marked with chalk crosses, closed shutters, wet cobblestones, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -1944,7 +2101,9 @@
     "hash": "24a118fd",
     "taille": 18084,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "heritee",
+    "herite": "femme-seuil-1"
    },
    "description": "",
    "promptImage": "",
@@ -2000,7 +2159,9 @@
     "hash": "63108985",
     "taille": 6202,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "heritee",
+    "herite": "femme-seuil-2"
    },
    "description": "",
    "promptImage": "",
@@ -2048,7 +2209,9 @@
     "hash": "4b3125f9",
     "taille": 19702,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "heritee",
+    "herite": "femme-seuil-3"
    },
    "description": "",
    "promptImage": "",
@@ -2116,7 +2279,9 @@
     "hash": "24a118fd",
     "taille": 18084,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Une femme sur le seuil d'une maison basse, châle serré, une croix à la craie sur sa porte. Elle regarde le sud.",
    "promptImage": "woman standing in the doorway of a low stone house, chalk cross drawn on the door beside her, heavy shawl gripped closed at her throat, hollow-cheeked, watching, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -2219,7 +2384,9 @@
     "hash": "63108985",
     "taille": 6202,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Elle a sorti la main de sous son châle et tend une mèche de cheveux nouée d'un fil, bras à moitié tendu, sur le même seuil. CHANGE : le bras tendu et l'objet offert dans sa main.",
    "promptImage": "",
@@ -2282,7 +2449,9 @@
     "hash": "020cdcd3",
     "taille": 28618,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -2324,7 +2493,9 @@
     "hash": "c6dcf4a3",
     "taille": 14870,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -2388,7 +2559,9 @@
     "hash": "4f6c8a7a",
     "taille": 8474,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -2435,7 +2608,9 @@
     "hash": "d8680ae4",
     "taille": 10514,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -2477,7 +2652,9 @@
     "hash": "4b3125f9",
     "taille": 19702,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Elle a repris sa place sur le seuil, mains vides, et regarde le sud — de la rue, rien ne dit qu'elle a parlé à quelqu'un. CHANGE : de nouveau immobile et les mains vides.",
    "promptImage": "",
@@ -2561,7 +2738,9 @@
     "hash": "84ac4512",
     "taille": 25419,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Trois hommes en travers de la rue, pas armés : un bâton de marche à la main, une fourche posée contre le mur, à portée sans être brandie.",
    "promptImage": "three gaunt villagers standing abreast in a narrow village street, one old man at the centre speaking, a walking staff in one hand, a pitchfork leaning against a wall nearby, shutters closing behind them, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -2636,7 +2815,9 @@
     "hash": "05db5d2a",
     "taille": 15638,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -2705,7 +2886,9 @@
     "hash": "f7874599",
     "taille": 16632,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -2775,7 +2958,9 @@
     "hash": "83d9cfac",
     "taille": 16876,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -2846,7 +3031,9 @@
     "hash": "dff69101",
     "taille": 14598,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -2918,7 +3105,11 @@
     "hash": "eeba581e",
     "taille": 18951,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "⚠️ Fausse signature cursive cuite dans le dithering (coin bas droit) — artefact de génération, visible en jeu."
    },
    "description": "",
    "promptImage": "",
@@ -2987,7 +3178,9 @@
     "hash": "9b4ee237",
     "taille": 14249,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -3063,7 +3256,9 @@
     "hash": "5349dd7f",
     "taille": 5063,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "La paume ouverte et vide du vieux, tendue à hauteur de poitrine pour qu'on la regarde — on jure sur rien.",
    "promptImage": "close view of an old man's open empty palm held out at chest height, weathered skin, the blurred faces of two other villagers behind him, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -3114,7 +3309,9 @@
     "hash": "0a2a6cff",
     "taille": 22113,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "La rue qui s'ouvre devant toi, et les volets qui se ferment un par un, un peu en avance sur ton pas.",
    "promptImage": "",
@@ -3157,7 +3354,9 @@
     "hash": "9a56edb6",
     "taille": 26939,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Le vieux t'a trouvé dans la ruelle et se tient à deux pas, calme, sans barrer le passage.",
    "promptImage": "",
@@ -3184,7 +3383,16 @@
      "type": "passif",
      "consequence": "Tu prends la lampe et tu fais le tour, lentement, en te tenant loin des murs — le vieux réflexe de qui ne veut pas être une silhouette derrière des planches. Des marques sur les poutres, à hauteur d'homme : des bâtons de comptage, des séries de nuits. La dernière s'arrête à deux. Et sous chaque bâton, une encoche plus petite, régulière : quatre par nuit, toujours quatre. Ce ne sont pas les nuits qu'on compte ici, ce sont les passages de la ronde. En te rasseyant, tu passes la main sur la barre : le bois est lisse dedans et usé jusqu'au fil dehors, comme si l'on s'y appuyait du dehors, souvent, longtemps.",
      "donneSavoir": "savoir_grange_comptee",
-     "donneDecouverte": "d.barre_usee"
+     "donneDecouverte": "d.barre_usee",
+     "image": {
+      "fichier": "scene_hameau_grange_poutres_a_d.png",
+      "hash": "c4a77f86",
+      "taille": 7428,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "veiller",
@@ -3220,7 +3428,9 @@
     "hash": "2faebe69",
     "taille": 16543,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Intérieur de grange, la nuit : une lanterne posée au sol, la paille, la barre de porte posée DEHORS, des bâtons de comptage sur les poutres.",
    "promptImage": "interior of an old barn at night, single oil lamp on the floor, straw bedding, heavy wooden door with iron fittings, tally marks carved on beams, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -3283,7 +3493,9 @@
     "hash": "7e916011",
     "taille": 9085,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "La grange dans le noir, vue depuis la paille : sous la porte fermée, une bande de lumière que des pieds coupent en passant. CHANGE : la lanterne est éteinte, il ne reste que la fente sous la porte.",
    "promptImage": "",
@@ -3347,7 +3559,9 @@
     "hash": "b8f53835",
     "taille": 8074,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -3390,7 +3604,9 @@
     "hash": "b8f53835",
     "taille": 8074,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -3436,7 +3652,9 @@
     "hash": "14ddb57e",
     "taille": 6611,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "L'aube grise, la porte relevée : le vieux seul, un quignon de pain dur tendu vers toi, le regard ailleurs. CHANGE : lumière de petit matin, la barre est levée, il tend quelque chose.",
    "promptImage": "",
@@ -3482,7 +3700,9 @@
     "hash": "6c540a40",
     "taille": 21413,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Le portillon sud, ouvert par le plus jeune. Les deux escortes marchent à un pas de distance de chaque côté ; le vieux reste en arrière. CHANGE : on est dehors, au portillon — plus dans la grange.",
    "promptImage": "",
@@ -3516,7 +3736,9 @@
     "hash": "c20a5b31",
     "taille": 19691,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -3558,7 +3780,9 @@
     "hash": "7a411c8f",
     "taille": 19147,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Variante de Halte pour qui a refusé le Serment : la nuit dehors, contre un muret, aucune porte ouverte.",
    "promptImage": "man sitting against a low dry-stone wall outside a dark village at night, knees drawn up, no fire, closed shutters behind him, empty street, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -3618,7 +3842,9 @@
     "hash": "6e0b95d8",
     "taille": 15619,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -3642,7 +3868,16 @@
      "type": "passif",
      "consequence": "Les bêtes te laissent entrer entre elles comme si tu étais un piquet de plus. De près, elles sont grasses, entretenues — quelqu’un les a menées, soignées, comptées, et pas il y a trente ans : cette laine-là a vu un berger cette saison.",
      "donneDecouverte": "d.troupeau_compte",
-     "troupeau": true
+     "troupeau": true,
+     "image": {
+      "fichier": "monstre_troupeau_compte_b.png",
+      "hash": "9eb350eb",
+      "taille": 20556,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "troupeau-approcher",
@@ -3659,7 +3894,9 @@
     "hash": "8e186904",
     "taille": 24420,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -3714,7 +3951,9 @@
     "hash": "594fb95a",
     "taille": 23924,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -3750,20 +3989,47 @@
       "funeste": "La volée entière lâche. Tu tombes sur le tas de pierres rangées, et elles se rangent autour de toi comme si elles t'attendaient."
      },
      "nature": "physique",
-     "donneSavoir": "savoir_guet"
+     "donneSavoir": "savoir_guet",
+     "image": {
+      "fichier": "scene_tour_escalier_vers_rien_b.png",
+      "hash": "e404f4e6",
+      "taille": 8038,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "pierres-rangees",
      "label": "Retourner les pierres du pied",
      "type": "passif",
-     "consequence": ""
+     "consequence": "",
+     "image": {
+      "fichier": "scene_tour_pierres_rangees_a.png",
+      "hash": "a11ecafb",
+      "taille": 20594,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "meurtriere-sud",
      "label": "Fouiller la meurtrière du sud",
      "type": "passif",
      "consequence": "Une seule ouverture reste intacte, au sud, à hauteur de poitrine, le rebord poli comme une rampe. Des encoches dans l'embrasure, groupées par cinq. Des centaines. Et calée dans une fente, une lunette de cuivre à un seul verre, posée là comme on repose un outil qu'on reprendra demain.",
-     "donneObjet": "lunette-guet"
+     "donneObjet": "lunette-guet",
+     "image": {
+      "fichier": "scene_tour_meurtriere_sud_a.png",
+      "hash": "d5008af2",
+      "taille": 19670,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     }
    ],
    "pointsInteret": [],
@@ -3776,7 +4042,9 @@
     "hash": "2e1c76a6",
     "taille": 25909,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Arrivée à la Tour de Guet effondrée, à l'intérieur du hameau. Une tour tronquée net à mi-hauteur, ses pierres empilées en tas régulier au pied.",
    "promptImage": "ruined stone watchtower cut off cleanly at mid-height, jagged open mouth of torn stone at the top, the missing upper stones STACKED in a neat man-high pile at its foot, low village roofs behind, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -3851,7 +4119,9 @@
     "hash": "e43e23f5",
     "taille": 6029,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Événement de la Tour : le Guetteur sans tour, debout de dos sur le tas de pierres, en manteau de guet, une corne au côté, il regarde le sud. CHANGE : c'est un portrait de l'homme, plus le plan large de la tour.",
    "promptImage": "old watchman seen from behind, seated on a pile of stones, heavy worn sentry cloak, a signal horn hanging at his side, head turned to scan the horizon, never facing the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -3910,7 +4180,11 @@
     "hash": "311a7b1c",
     "taille": 28666,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "MARCHÉ ENTIÈREMENT VIDE D'HUMAINS. Le texte n'est que ça : « des marchands qui négocient par gestes, paumes et hochements ». Trois choix jouables en dépendent (observer le troc = deux paumes qui se répondent ; imiter les gestes = une marchande qui te répond), plus le Colporteur et le Rebouteux. Ajouter des silhouettes aux étals."
    },
    "description": "Arrivée au Marché Muet, à l'intérieur du hameau. Des étals sans marchands, des marchandises posées et personne pour les vendre.",
    "promptImage": "small deserted village market square, empty trestle stalls with goods still laid out on them, no people, low stone houses closing the square, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -4048,7 +4322,9 @@
     "hash": "d50790a0",
     "taille": 28370,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Événement du Marché : le Colporteur, le seul qui parle encore, et le Rebouteux derrière lui.",
    "promptImage": "hunched pedlar with an enormous frame pack covered in hanging goods, standing in an empty market square, one hand raised in greeting, wide fixed smile, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -4111,7 +4387,11 @@
     "hash": "a916da10",
     "taille": 27850,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Le lieu s'appelle le Moulin SANS Ailes et son point d'intérêt « la croix d'ombres » repose entièrement sur leur absence — l'image montre quatre ailes entières. 4e signalement. Ici le texte ne peut pas céder (le nom du lieu ET le POI en dépendent) : il faut une tour de pierre TRONQUÉE. Prompt corrigé dans data/images-a-produire.md — ne jamais écrire le mot « moulin » dans le prompt, il rappelle les ailes."
    },
    "description": "Arrivée au Moulin sans Ailes — c'est le lieu de repos de la zone. Une tour de pierre trapue SANS ailes, quatre traces pâles sur le corps du moulin, la porte entrebâillée.",
    "promptImage": "old stone windmill without sails on a moorland crest, four pale ghost marks of the missing sails on the stone body, door ajar, small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -4170,7 +4450,9 @@
     "hash": "2d91a0f3",
     "taille": 22254,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Événement du Moulin : la garde, ou le sommeil. Le lit de bruyère tassé, refait de frais, les marques de comptage à hauteur d'enfant sur la pierre.",
    "promptImage": "interior of a derelict stone windmill, heather bedding pressed flat on the floor, tally marks scratched on the stone wall at child height, broken millstone, light through a small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -4218,7 +4500,9 @@
     "hash": "acfc2093",
     "taille": 20117,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -4277,7 +4561,9 @@
     "hash": "51147c07",
     "taille": 12150,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -4329,7 +4615,9 @@
     "hash": "51147c07",
     "taille": 12150,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -4380,7 +4668,9 @@
     "hash": "03e7eb7d",
     "taille": 10442,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -4438,7 +4728,9 @@
     "hash": "0dd638cf",
     "taille": 19967,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -4492,7 +4784,9 @@
     "hash": "0dd638cf",
     "taille": 19967,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -4535,7 +4829,9 @@
     "hash": "0dd638cf",
     "taille": 19967,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -4576,7 +4872,16 @@
      "type": "passif",
      "consequence": "L'odeur de chanvre vieux prend à la gorge à mesure — grasse, presque animale, rien d'une odeur d'église. Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom à l'encre pâle. Ce ne sont pas des trophées : ce sont des reliques, chacune « a tenu » quelqu'un. L'une bouge quand tu ne la regardes pas — la troisième du rang bas, sans étiquette, plus claire que les autres. Tu notes où elle est. Plus bas, trois cordes portent la même date : celle du Bailli, un prénom de fille, et un troisième nom arraché avec l'étiquette.",
      "donneSavoir": "savoir_corde_vive",
-     "donneDecouverte": "d.trois_cordes"
+     "donneDecouverte": "d.trois_cordes",
+     "image": {
+      "fichier": "scene_chapelle_mur_cordes_v3_c.png",
+      "hash": "c50f4a0f",
+      "taille": 10553,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "autel-renverse",
@@ -4588,6 +4893,15 @@
       "nom": "La Veuve des Cordes",
       "deposition": "Il a fouillé sous l'autel. Ce qui est dessous n'est pas à nous non plus, mais on n'y touche pas.",
       "lieu": "à la Chapelle des Cordes"
+     },
+     "image": {
+      "fichier": "scene_chapelle_autel_a_c.png",
+      "hash": "a2f7e150",
+      "taille": 12535,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
      }
     }
    ],
@@ -4603,7 +4917,9 @@
     "hash": "334043b0",
     "taille": 22532,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Arrivée à la Chapelle des Cordes, intérieur du hameau. Une nef courte, des dizaines de cordes coupées clouées en rangs le long des murs, du sol au plafond.",
    "promptImage": "interior of a tiny stone chapel, dozens of cut ropes nailed in rows along the walls from floor to ceiling, small paper labels on each, overturned altar, short nave, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -4701,7 +5017,16 @@
      "type": "passif",
      "consequence": "Tu recules jusqu'au seuil sans quitter les cordes des yeux, ce qui est exactement la mauvaise façon de traverser une nef : on ne voit pas ce qu'on laisse derrière. Aucune ne bouge. Dehors, l'air a le goût de dehors.\n\nLe clocheton n'est pas haut, et la corde d'appel pend jusqu'à hauteur de main, propre, entretenue. Tu tires par curiosité. La cloche bascule, revient, bascule encore — et ne sonne pas : elle n'a plus de battant. L'attache est intacte. On ne l'a pas cassée : on l'a dévissée.",
      "sortie": {},
-     "donneDecouverte": "d.cloche_sans_battant"
+     "donneDecouverte": "d.cloche_sans_battant",
+     "image": {
+      "fichier": "scene_chapelle_cloche_sans_battant_b.png",
+      "hash": "b7b2ae8c",
+      "taille": 21366,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     }
    ],
    "pointsInteret": [],
@@ -4715,7 +5040,9 @@
     "hash": "0dd638cf",
     "taille": 19967,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Événement de la Chapelle : la Veuve aux Cordes, assise, qui refait sans fin le même nœud. Derrière elle, sous verre, la corde coupée sans nom.",
    "promptImage": "old woman in black seated on a chair, tying and untying the same knot in a short length of rope, eyes down, a glass case behind her holding one cut rope, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -4804,7 +5131,11 @@
     "hash": "d7dd21eb",
     "taille": 29529,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Le texte dit « condamné de frais : planches neuves, chaînes croisées, cadenas encore gras », blocs de meule PAR-DESSUS. L'image montre un puits OUVERT, gueule béante, corde et seau qui pendent dedans. Le scellement EST la scène (et sa mécanique chronométrée). ⚠️ Aussi hors DA : gravure en gris moyens, pas de contre-jour. ⚠️ Fausse signature cursive cuite en bas à droite."
    },
    "description": "Arrivée au Puits Condamné. Un puits fermé par des planches clouées en croix, par-dessus, des pierres empilées.",
    "promptImage": "village well sealed shut with planks nailed in a cross over its mouth, stones piled on top, worn rope still tied to the winch, empty square, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -4866,7 +5197,11 @@
     "hash": "e53cc406",
     "taille": 21734,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Le texte dit que rien n'est encore sorti (« le cadenas saute sur son anneau », « les planches ONT BOUGÉ ») ; l'image montre le puits grand ouvert et les BRAS DÉJÀ DEHORS. Moins cher que regénérer : déplacer cette image sur l'issue d'EXPIRATION (les Mains du Puits), où « déjà dehors » est exactement juste, et produire pour ce beat une planche qui se soulève d'un doigt."
    },
    "description": "Événement du Puits (scène chronométrée) : les Mains du Puits, qui sortent entre les planches.",
    "promptImage": "pale emaciated hands reaching up through the gaps between nailed planks over a well mouth, fingers splayed and grasping, many more than two hands, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -4922,7 +5257,11 @@
     "hash": "1bd852b8",
     "taille": 31028,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Le texte dit « seule à l'ouest du hameau, SANS VOISINE — et murée de l'intérieur, chaque fenêtre bouchée de pierres ». L'image : un manoir à fenêtres à meneaux OUVERTES (certaines éclairées), ENTOURÉ de bâtiments voisins, grille en avant-plan. Le murage de l'intérieur est tout le personnage du Bailli, et le déménagement à l'ouest date du 7/08 — l'image est antérieure. Décrire la MATIÈRE du bouchage plutôt qu'interdire les fenêtres."
    },
    "description": "Arrivée à la Maison du Bailli, murée. Portes et fenêtres bouchées à la pierre, de l'extérieur — on a fermé cette maison depuis la rue.",
    "promptImage": "stone house with every door and window bricked up from the outside, fresh mortar against old walls, a low garden wall, no path worn to the door, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -5021,7 +5360,9 @@
     "hash": "c9b8edb0",
     "taille": 20638,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Combat : le Chien du Bailli, qui garde encore une maison où il n'y a plus personne.",
    "promptImage": "gaunt long-legged hound standing in front of a bricked-up doorway, ribs showing, head low, lips drawn back, a broken chain still on its collar, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -5047,20 +5388,47 @@
      "type": "passif",
      "consequence": "Du papier épais, jauni, cloué aux quatre coins par quelqu'un qui ne voulait pas qu'on le décroche : la liste des signes, de la main du Bailli. « Parler seul face au sud. Fixer les Profondeurs plus qu'il ne faut. Cesser de dormir. Répondre à ce qui n'a pas parlé. » Tu la lis trois fois. La deuxième, tu comptes ceux qui te concernent déjà. La troisième, tu les apprends — parce que c'est exactement ce qu'ils guettent chez toi. ",
      "donneSavoir": "savoir_ordonnance",
-     "donneDecouverte": "d.ordonnance_lue"
+     "donneDecouverte": "d.ordonnance_lue",
+     "image": {
+      "fichier": "scene_tribunal_ordonnance_a_c.png",
+      "hash": "76417e2b",
+      "taille": 16420,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "chaire-registre",
      "label": "Monter à la chaire",
      "type": "passif",
      "consequence": "Il faut lever les yeux vers elle, et c'est le but. Tu montes la marche unique que le Bailli montait chaque fois qu'il allait dire la même phrase. Le Registre des Pendaisons y est ouvert — pas par négligence : ici, la loi se montre. Des colonnes de noms, de dates, de signes, une écriture appliquée qui se dégrade au fil des pages. Un nom sur deux est barré : pas raturé, barré d'un trait droit, à l'encre plus récente que le nom. Et au bord de la page, à côté de certains noms seulement, un petit signe en forme de plume. Rien ne l'explique.",
-     "donneDecouverte": "d.signe_plume"
+     "donneDecouverte": "d.signe_plume",
+     "image": {
+      "fichier": "scene_tribunal_chaire_a_c.png",
+      "hash": "c48ed902",
+      "taille": 9462,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "les-bancs",
      "label": "Passer la main sur les bancs",
      "type": "passif",
-     "consequence": "Trois rangs de bois brut, et cette disposition que tu reconnais sans l'avoir apprise : les accusés devant, les témoins de côté, le hameau derrière. Le bois du banc des accusés est poli au milieu, rongé aux bords — des mains qui serrent. Sur le banc des témoins, des entailles de comptage : quelqu'un venait souvent. Témoigner était son habitude."
+     "consequence": "Trois rangs de bois brut, et cette disposition que tu reconnais sans l'avoir apprise : les accusés devant, les témoins de côté, le hameau derrière. Le bois du banc des accusés est poli au milieu, rongé aux bords — des mains qui serrent. Sur le banc des témoins, des entailles de comptage : quelqu'un venait souvent. Témoigner était son habitude.",
+     "image": {
+      "fichier": "scene_tribunal_bancs_a_c.png",
+      "hash": "2edb5367",
+      "taille": 19376,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     }
    ],
    "pointsInteret": [],
@@ -5074,7 +5442,11 @@
     "hash": "0342cdc2",
     "taille": 31898,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Le premier mot du lieu est « la salle basse AUX TROIS BANCS » et le ¶2 annonce « au mur, une feuille clouée ; sur la chaire, un livre ouvert » : aucun banc, aucune feuille, aucun livre. Et une CORDE DE PENDU occupe le centre du cadre sans qu'aucun texte la mentionne (beau détail, à récupérer ou à retirer). La pierre, elle, est juste — le mot « grange » a cédé côté texte."
    },
    "description": "Arrivée au Petit Tribunal. Une salle basse de pierre servant de salle d'audience : trois bancs de bois face à une haute chaire, une feuille de règles clouée au mur.",
    "promptImage": "interior of a barn converted into a rustic courtroom, three wooden benches facing a tall wooden pulpit, a sheet of rules nailed to the wall, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -5189,7 +5561,9 @@
     "hash": "13d5604d",
     "taille": 12534,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Événement du Tribunal : l'Écrivain public, qui entre, te voit à la chaire, et se met à copier sans lever les yeux.",
    "promptImage": "small dry clerk seated on a witness bench, open ledger on his knees, quill in hand, inkpot clutched against his chest, eyes down, mid-stroke, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -5292,7 +5666,11 @@
     "hash": "dd0fe7bf",
     "taille": 32950,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "⚠️ Fausse signature cursive cuite dans le dithering (coin bas gauche). L'image elle-même est BONNE et le texte a été recalé sur elle (cinq bêtes de front, le cercle est hors champ) — seul l'artefact de signature est à corriger."
    },
    "description": "Cinq silhouettes couleur de bruyère morte alignées de front dans l'herbe haute, la plus grande au centre ; le cercle est derrière toi, hors champ.",
    "promptImage": "six lean grey hounds standing motionless in a wide circle on open moorland, seen from the centre, evenly spaced, all heads turned inward toward the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -5395,7 +5773,9 @@
     "hash": "dd0fe7bf",
     "taille": 32950,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Le cercle est rompu : la meute regroupée en croissant à distance de lame, et la meneuse avancée seule d'un pas, tête basse, qui te fixe. CHANGE : plus de cercle autour de toi — un croissant devant, une bête détachée en avant.",
    "promptImage": "",
@@ -5421,14 +5801,32 @@
      "type": "passif",
      "consequence": "La terre est tassée, luisante, usée jusqu’à la pierre : on s’agenouille ici depuis longtemps. Et les creux de genoux sont DOUBLES. Une paire devant, au ras de l’eau. Une autre juste derrière, plus large, plus profonde, orientée dans le même sens. Quelqu’un se tenait toujours au-dessus de celui qui se penchait. Ce n’est pas un endroit où l’on vient voir son reflet : c’est un endroit où on l’amène.\n\nDans les roseaux, à un pas des creux, un éclat de métal : un petit miroir de poche, fêlé en travers. Perdu — ou jeté par quelqu’un qui n’a pas aimé ce qu’il y a vu. La fêlure passe exactement où serait un visage.",
      "donneObjet": "miroir-poche",
-     "donneDecouverte": "d.mare_depistage"
+     "donneDecouverte": "d.mare_depistage",
+     "image": {
+      "fichier": "scene_mare_creux_doubles_v2_b.png",
+      "hash": "9c15e27d",
+      "taille": 25530,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "eau-reflet",
      "label": "T’agenouiller et te pencher",
      "type": "passif",
      "consequence": "Les creux sont à ta taille, évidemment. La croyance dit : le reflet de qui entend la voix est en retard. Tu te penches. Ton reflet se penche. Et il lève les yeux vers toi une demi-seconde après toi. Tu le savais déjà — tu entends la voix depuis le premier jour. Mais le savoir et le voir sont deux choses différentes. À partir de maintenant, tu ne pourras plus prétendre le contraire, même à quelqu’un qui te ressemble.",
-     "donneSavoir": "savoir_reflet"
+     "donneSavoir": "savoir_reflet",
+     "image": {
+      "fichier": "scene_mare_eau_reflet_v2_b.png",
+      "hash": "a3a22e02",
+      "taille": 14472,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "boire-mare",
@@ -5457,7 +5855,9 @@
     "hash": "2552346e",
     "taille": 17038,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Arrivée à la Mare aux Regards. Une eau noire parfaitement immobile, la berge piétinée avec deux creux de genoux, des roseaux, aucun vent.",
    "promptImage": "perfectly still black pond in dead moorland, trampled bank with two knee hollows, reeds, dark reflections, no wind, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -5523,7 +5923,9 @@
     "hash": "1ffbe56a",
     "taille": 16280,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Événement de la Mare : un Renonçant qui vient vérifier son propre reflet, et te trouve là.",
    "promptImage": "kneeling villager bent over the edge of a black pond staring at his own reflection, hands flat on the trampled bank, head turning sharply toward the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -5559,7 +5961,16 @@
       "funeste": "1 naturel. Tu mords. Et quelque chose, dans le fruit, mord en retour. ♦ −2"
      },
      "nature": "surnaturel",
-     "donneObjet": "fruit-cendre"
+     "donneObjet": "fruit-cendre",
+     "image": {
+      "fichier": "scene_verger_fruits_cendre_v2_c.png",
+      "hash": "de3b4985",
+      "taille": 31026,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "epoux-verger",
@@ -5568,6 +5979,15 @@
      "consequence": "Tu remontes les rangs vers eux. Ils se relaient sur la même bêche sans se parler, du geste réglé des gens qui font la même chose ensemble depuis toujours. Ils plantent. Dans cette terre. Un trou, un plant, la terre refermée du talon — et le trou suivant, deux pas plus loin.",
      "sortie": {
       "toScene": "epoux-1"
+     },
+     "image": {
+      "fichier": "monstre_epoux_verger_a.png",
+      "hash": "78546dfe",
+      "taille": 32443,
+      "recent": false,
+      "existe": true,
+      "statut": "heritee",
+      "herite": "epoux-1"
      }
     },
     {
@@ -5596,7 +6016,11 @@
     "hash": "250c0753",
     "taille": 28850,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Le texte dit « des arbres fruitiers plantés EN RANGS — le seul ordre volontaire des Landes hors du hameau », et un point d'intérêt entier s'appelle « compter les rangs » (le onzième verger = onze rangs). L'image montre un enchevêtrement de troncs tordus, sans aucun alignement. L'ordre volontaire est le sens du lieu."
    },
    "description": "Arrivée au Verger Noir. Des arbres noirs tordus plantés en rangs, des fruits gris et lourds sur les branches, une vieille souche au premier plan.",
    "promptImage": "orchard of black twisted fruit trees planted in rows on dead moorland, heavy grey ash fruits on the branches, one old stump in the foreground, two distant bent figures digging, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -5649,7 +6073,9 @@
     "hash": "baf9592d",
     "taille": 19147,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Événement du Verger : le fruit qui tombe encore chaud.",
    "promptImage": "",
@@ -5709,7 +6135,9 @@
     "hash": "78546dfe",
     "taille": 32443,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Les Époux, deux silhouettes redressées, tournées vers toi entre les rangs du verger noir sans se parler.",
    "promptImage": "elderly couple digging side by side between orchard rows, both bent low, one spade each, not looking at one another, black twisted branches above them, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -5792,7 +6220,9 @@
     "hash": "7d46a559",
     "taille": 5053,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "L'un des deux s'est redressé entre les rangs et te tend les mains ouvertes et vides, en demande. CHANGE : ils ne sont plus tous deux courbés — l'un est debout, face à toi.",
    "promptImage": "",
@@ -5830,7 +6260,9 @@
     "hash": "b837495f",
     "taille": 11528,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Les deux silhouettes de nouveau courbées, vues de dos, qui s'éloignent entre les rangs. CHANGE : on les quitte — vus de dos, repris au travail.",
    "promptImage": "",
@@ -5866,14 +6298,32 @@
       "funeste": "1 naturel. Au pied d'un tronc, un paquet de toile. Dedans, un bagage complet — gourde, couverture, lettres. Quelqu'un a marché jusqu'ici, a posé son sac, et a continué SANS. Tu sais maintenant à quoi ressemble l'appel, vu de l'extérieur. ♦ −2"
      },
      "nature": "exploration",
-     "donneSavoir": "savoir_palissade_retient"
+     "donneSavoir": "savoir_palissade_retient",
+     "image": {
+      "fichier": "scene_palissade_rondins_a_c.png",
+      "hash": "a092f571",
+      "taille": 13377,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "portillon-verrou",
      "label": "Examiner le portillon",
      "type": "passif",
      "consequence": "Le bois du portillon est tiède, ce qui n'a aucun sens sous ce crépuscule. Un verrou, côté nord. Un seul. Le bois autour est griffé — pas par des bêtes : à hauteur de mains. Des mains qui voulaient passer, une nuit, et qu'on n'a pas laissées. Ou qu'on a laissées trop tard. Dans la gâche, une clé rouillée est restée, oubliée par quelqu'un qui comptait revenir.",
-     "donneObjet": "cle-portillon"
+     "donneObjet": "cle-portillon",
+     "image": {
+      "fichier": "scene_palissade_portillon_a_b.png",
+      "hash": "49b71ad8",
+      "taille": 5981,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "homme-guerite",
@@ -5882,6 +6332,15 @@
      "consequence": "Il est sorti de sa niche avant que tu aies décidé d'y aller. Tu marches vers lui parce qu'il n'y a plus vraiment le choix. La guérite est une niche de planches contre les rondins, juste assez grande pour un homme et sa lanterne. Il te regarde venir depuis si longtemps qu'il a eu le temps de préparer sa première phrase.",
      "sortie": {
       "toScene": "veilleur-1"
+     },
+     "image": {
+      "fichier": "monstre_veilleur_palissade_v2_b.png",
+      "hash": "a0a33a5b",
+      "taille": 15018,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
      }
     }
    ],
@@ -5898,7 +6357,11 @@
     "hash": "aaa66925",
     "taille": 14518,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Dernier écran avant la sortie de zone. Le texte : « rondins hauts de deux hommes, un portillon, une guérite, une lanterne allumée en plein jour… et dans la guérite, un homme ». L'image : une ligne de pieux lointaine et une hutte minuscule — ni portillon, ni lanterne, ni homme, et ~55 % du cadre en noir pur. Trois points d'intérêt et toute la chaîne d'objets du Veilleur (la lanterne) sont invisibles."
    },
    "description": "Arrivée à la Palissade Sud, seuil de l'Acte II. Une haute palissade de rondins appointés qui ferme l'horizon, un petit portillon, une borne au premier plan.",
    "promptImage": "tall wooden palisade of sharpened logs closing a moorland horizon, small gate, a single standing boundary stone in the foreground, path leading south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -5974,7 +6437,9 @@
     "hash": "4c4705fd",
     "taille": 29263,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -6024,7 +6489,11 @@
     "hash": "4c4705fd",
     "taille": 29263,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Premier beat d'une rencontre à trois écrans AVEC UN PERSONNAGE, illustré par une icône d'OBJET (`objet_lanterne_rouillee_guerite`). `monstre_veilleur_palissade` n'a jamais été livré — c'est aussi le portrait qui manque au point d'intérêt « l'homme de la guérite »."
    },
    "description": "Le Veilleur dans sa guérite de planches, une lanterne pendue à un clou au-dessus de lui.",
    "promptImage": "old watchman inside a plank sentry box, rusty lantern hanging on a nail beside him, blanket over his shoulders, one eye milky, looking out through the opening, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -6099,7 +6568,9 @@
     "hash": "2f7722d1",
     "taille": 7402,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Il a décroché sa lanterne et la tend à moitié, suspendue entre vous deux, le visage éclairé par en dessous. CHANGE : la lanterne a quitté son clou et devient le centre de l'image.",
    "promptImage": "",
@@ -6151,7 +6622,9 @@
     "hash": "94b09b71",
     "taille": 9679,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Il note ton passage sur une planche clouée dans sa guérite, sans lever les yeux ; le portillon sud est ouvert derrière lui. CHANGE : le portillon est ouvert et il écrit — la lanterne n'est plus dans ses mains.",
    "promptImage": "",
@@ -6216,7 +6689,9 @@
     "hash": "e6c5355d",
     "taille": 4463,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "Événement de la Palissade : l'Appelé, toujours vu de dos, qui marche vers la Descente sans se retourner.",
    "promptImage": "man seen from behind walking away toward a dark gap in a wooden palisade, arms loose at his sides, head level, never turning, path descending beyond the gate, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -6336,7 +6811,11 @@
     "hash": "9b4d24d9",
     "taille": 23824,
     "recent": false,
-    "existe": true
+    "existe": true,
+    "statut": "dediee",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Le texte mène « jusqu'au Petit Tribunal » — bâtisse basse, trois bancs, un hameau de ~20 feux autour. L'image montre une NEF D'ÉGLISE voûtée à bas-côtés, 20+ personnes sur cinq ou six rangs de stalles. Même salle et même échelle que le Petit Tribunal : trois rangs de bois brut pleins à craquer."
    },
    "description": "Scène de déroutage au dernier palier de Soupçon : le hameau te juge. Les trois bancs pleins, tous les visages tournés vers toi, la chaire vide.",
    "promptImage": "rustic courtroom seen from the defendant's place, three benches full of gaunt villagers all facing the viewer, the tall pulpit empty above them, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
@@ -6346,6 +6825,177 @@
    "acces": "procès (Soupçon au maximum)",
    "etat": "valide",
    "alertes": []
+  },
+  {
+   "id": "la-descente",
+   "narration": [
+    "Le sol s'incline. L'air se fait plus froid, plus vieux — il monte d'en bas, par la porte de la Descente restée ouverte derrière toi.",
+    "Tu as traversé les Landes vivant. Peu le font. Devant, l'escalier plonge dans un noir qui n'a pas encore de nom."
+   ],
+   "choix": [
+    {
+     "id": "recommencer-descente",
+     "label": "Repartir de la Borne",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "terminal": true,
+   "image": {
+    "fichier": "scene_landes_liaison_sud_c.png",
+    "hash": "e4a31bad",
+    "taille": 14946,
+    "recent": false,
+    "existe": true,
+    "statut": "fallback",
+    "herite": "",
+    "verdict": "replace",
+    "verdictNote": "Le texte dit « devant, l'ESCALIER PLONGE dans un noir qui n'a pas encore de nom » : l'image montre une brèche dans une palissade sur terrain plat, sans escalier ni pente. Elle est en plus tirée dans le pool des vues de marche, donc l'écran de sortie de zone partage son visuel avec une liaison banale. Asset dédié à produire (prompt prêt)."
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  }
+ ],
+ "ecransDeMarche": [
+  {
+   "fichier": "scene_lande_arbres_morts_c.png",
+   "hash": "f272f58d",
+   "taille": 12824,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_lande_arbres_morts_c",
+   "regle": "marche ordinaire dans la lande (tirage)"
+  },
+  {
+   "fichier": "scene_lande_generique_1.png",
+   "hash": "2c4e2337",
+   "taille": 20781,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_lande_generique_1",
+   "regle": "marche ordinaire dans la lande (tirage)"
+  },
+  {
+   "fichier": "scene_lande_generique_2.png",
+   "hash": "85750f19",
+   "taille": 32814,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_lande_generique_2",
+   "regle": "marche ordinaire dans la lande (tirage)"
+  },
+  {
+   "fichier": "scene_lande_generique_3.png",
+   "hash": "9aa596fa",
+   "taille": 24607,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_lande_generique_3",
+   "regle": "marche ordinaire dans la lande (tirage)"
+  },
+  {
+   "fichier": "scene_lande_generique_4.png",
+   "hash": "152922e2",
+   "taille": 21865,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_lande_generique_4",
+   "regle": "marche ordinaire dans la lande (tirage)"
+  },
+  {
+   "fichier": "scene_landes_liaison_fourche_a.png",
+   "hash": "a21db23f",
+   "taille": 30387,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_landes_liaison_fourche_a",
+   "regle": "marche ordinaire dans la lande (tirage)"
+  },
+  {
+   "fichier": "scene_landes_liaison_plateau_d.png",
+   "hash": "4d03ba9f",
+   "taille": 28299,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_landes_liaison_plateau_d",
+   "regle": "marche ordinaire dans la lande (tirage)"
+  },
+  {
+   "fichier": "scene_hameau_dense_b.png",
+   "hash": "bcb014f6",
+   "taille": 29962,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_hameau_dense_b",
+   "regle": "quand on marche vers le hameau, ou d'une ruelle à l'autre"
+  },
+  {
+   "fichier": "scene_hameau_dense_c.png",
+   "hash": "c3a695ff",
+   "taille": 30005,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_hameau_dense_c",
+   "regle": "quand on marche vers le hameau, ou d'une ruelle à l'autre"
+  },
+  {
+   "fichier": "scene_hameau_dense_d.png",
+   "hash": "8bdf36f0",
+   "taille": 24764,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_hameau_dense_d",
+   "regle": "quand on marche vers le hameau, ou d'une ruelle à l'autre"
+  },
+  {
+   "fichier": "scene_landes_liaison_chemin_creux_a.png",
+   "hash": "a0b0f0d4",
+   "taille": 32596,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_landes_liaison_chemin_creux_a",
+   "regle": "quand une des deux directions est « chemin-creux »"
+  },
+  {
+   "fichier": "scene_landes_liaison_sud_c.png",
+   "hash": "e4a31bad",
+   "taille": 14946,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_landes_liaison_sud_c",
+   "regle": "quand une des deux directions est « palissade-sud »"
   }
  ],
  "liens": [
@@ -8302,6 +8952,16 @@
    "Le muret t'accompagnait ; il choisit l'un des deux côtés."
   ]
  },
+ "verdictsPerimes": [
+  {
+   "id": "croix-ombres",
+   "note": "LE MOULIN A SES AILES SUR LE PLAN RAPPROCHÉ AUSSI — jamais relevé jusqu'ici. L'examen décrit « quatre bandes pâles où la pierre n'a pas vieilli, protégée par les ailes » et l'image montre les ailes elles-mêmes, intactes. Même prompt correctif que la vue de lieu : une tour de pierre tronquée, décrite comme un SILO, aucune clause négative."
+  },
+  {
+   "id": "potences-cercle",
+   "note": "L'examen ne parle que de « un nom gravé AU PIED, et une date » sur chaque potence — « la crête entière est un calendrier planté ». Le plan rapproché cadre les mâts au-dessus du sol : aucun pied, aucune gravure. Descendre le cadrage."
+  }
+ ],
  "familiarite": [
   {
    "scene": "chemin-creux",
@@ -8572,9 +9232,9 @@
   }
  ],
  "totaux": {
-  "scenes": 90,
+  "scenes": 91,
   "pointsInteret": 0,
-  "choix": 270,
+  "choix": 271,
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,
@@ -8586,6 +9246,9 @@
   "etats": 2,
   "besoins": 0,
   "transitions": 64,
+  "ecransDeMarche": 12,
+  "interactions": 29,
+  "aRefaire": 20,
   "familiarite": 34
  }
 }
