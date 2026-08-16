@@ -1251,3 +1251,305 @@ de lumière rasante, silhouette lisible en très petit) :
 ⚠️ Ne rien montrer du Geôlier lui-même (garde-fou §8 : jamais de visage, jamais
 de membres). La larme existe, lui reste hors champ — c'est tout le sens de
 l'objet (« Il jure qu'il ne pleure pas »).
+
+---
+
+# LOT DU 15/08 — les 20 images marquées « à remplacer », prompts prêts
+
+Un prompt par sujet, autonome (bloc de style inclus). Toujours dark fantasy,
+contre-jour extrême, silhouettes quasi noires découpées sur un ciel orange
+brûlant — c'est ce contraste qui fait ressortir l'orange au dithering.
+
+## 1. La Borne Frontière — `scene_borne_frontiere_v2_a.png`
+Il manque l'homme immobile que le texte nomme dès le premier écran.
+```
+Tall angular granite boundary stone standing alone on a flat open moor, filling
+the left third of the frame, its faces densely covered in shallow carved marks,
+small humble offerings piled at its base, a lone motionless human silhouette
+three paces away to the right, facing south with his back to the viewer, low
+orange sun disc on the horizon, hazy stippled sky. Dark fantasy illustration,
+extreme backlight, one single light source, near-black silhouettes against a
+glowing orange sky, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, matte painting, grim medieval rural, square composition, no
+text, no lettering, no watermark
+```
+
+## 2. Le Chemin Creux — `scene_chemin_creux_c.png`
+Charrette et silhouette absentes, alors que ce sont deux points d'intérêt.
+```
+A narrow sunken path cut deep between two earthen banks taller than a man, the
+sky reduced to a thin ribbon of orange overhead, a wooden cart tilted hard at the
+first bend ahead, one wheel sunk in mud, a lone human figure approaching from
+further down the hollow, near-black walls of packed earth and exposed roots.
+Dark fantasy illustration, extreme backlight, one single light source, near-black
+silhouettes against a glowing orange sky, deep crushed blacks, no fill light,
+high contrast, two-tone monochrome-friendly, matte painting, grim medieval rural,
+square composition, no text, no lettering, no watermark
+```
+
+## 3. La Bête des Chemins Creux — `monstre_bete_chemins_creux_a.png`
+Échelle fausse : c'est un couloir resserré, pas un vallon. La bête est DESSUS.
+```
+Narrow sunken path hemmed between two steep earthen banks taller than a man, the
+sky crushed to a thin bright ribbon far overhead, a huge hunched beast looming
+directly above on the bank's rim, its shape mostly indistinct and eyeless in the
+glare, only a hint of matted fur and a heavy paw visible at the edge, packed
+earth walls filling most of the frame. Dark fantasy illustration, extreme
+backlight, one single light source, near-black silhouette against a thin glowing
+orange ribbon of sky, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, matte painting, grim medieval rural, claustrophobic framing,
+square composition, no text, no lettering, no watermark
+```
+
+## 4. La Colline aux Gibets — beat 2 — `scene_colline_gibets_2_a.png`
+Reliquat de la version en cercle fermé. Doit continuer la FILE de l'écran
+d'arrivée, jamais se refermer, et ne montrer aucune figure encapuchonnée.
+```
+Continuing along a bare hill crest, more weathered wooden gallows posts standing
+in a single receding line following the ridge into the distance, glowing orange
+sky filling the gaps between them, dark heather and exposed rock underfoot, the
+line simply climbing further ahead toward a taller shape barely visible at the
+top of the crest. Dark fantasy illustration, extreme backlight, one single light
+source, near-black silhouettes against a glowing orange sky, deep crushed blacks,
+no fill light, high contrast, two-tone monochrome-friendly, matte painting, grim
+medieval rural, square composition, no text, no lettering, no watermark
+```
+
+## 5. Le Pendu qui parle — `monstre_pendu_qui_parle_a.png`
+Le sceau au poing doit être visible ; poignets liés devant lui (cohérent avec
+l'écran suivant).
+```
+Close view of a hanged man's raised fist held against his own chest, gripping a
+fold of his robe, a heavy signet seal ring cutting into the swollen knuckle,
+wrists bound together in front of him with coarse rope, faint rope shadow
+crossing the frame, warm rim light along the hand from a low sun out of frame.
+Dark fantasy illustration, one single light source, near-black silhouette with a
+thin orange rim of light, deep crushed blacks, no fill light, high contrast,
+two-tone monochrome-friendly, matte painting, grim medieval rural, square
+composition, no text, no lettering, no watermark
+```
+
+## 6. Le Champ des Fixés — beat 2 — `monstre_fossoyeur_poteaux_a.png`
+Des poteaux droits, jamais une croix — la Fixation plante, elle n'enterre pas.
+```
+A gravedigger kneeling among rows of plain squared wooden posts driven straight
+into open ground between old flat grave slabs, every post a single upright shaft
+with no crossbar of any kind, one post held loosely in his hands with a fresh
+notch half-cut into it, low sun behind casting long post-shadows across the
+earth. Dark fantasy illustration, extreme backlight, one single light source,
+near-black silhouettes against a glowing orange sky, deep crushed blacks, no fill
+light, high contrast, two-tone monochrome-friendly, matte painting, grim medieval
+rural, square composition, no text, no lettering, no watermark
+```
+
+## 7. Le Hameau (échelle) — `scene_hameau_dense2_b.png`
+Une vingtaine de feux, une seule cheminée qui fume, rien de plus haut que les
+toits. La petitesse est structurante (tout le village tient dans le Tribunal).
+```
+A small huddle of about twenty low thatched and turf-roofed houses seen from a
+distance across open moorland, walls that look held together by habit more than
+repair, only a single thin plume of smoke rising from one chimney among them, no
+structure rising above the roofline anywhere in the settlement, low orange sun
+behind it, dark heather in the foreground. Dark fantasy illustration, extreme
+backlight, one single light source, near-black silhouettes against a glowing
+orange sky, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, matte painting, grim medieval rural, square composition, no
+text, no lettering, no watermark
+```
+
+## 8. La cloche qu'on retient — `scene_hameau_accueil_cloche_b.png`
+⚠️ Pas un problème de contenu : une fausse signature cursive est cuite dans le
+dithering. **Relance simplement ce même prompt** (une autre graine suffit) :
+```
+Close view of a thick frayed bell rope hanging straight down the rough stone
+wall of a small chapel, filling the left of the frame. An old woman's hand and
+forearm are closed tight around the rope, holding it completely still — the
+gesture is the subject. Just behind her, a man is frozen mid-stride, one arm
+still reaching for the rope he will not touch. Further back and much smaller, a
+row of motionless figures stands in lit doorways along a wall, watching. Low
+orange sun behind them, the foreground hand and rope caught by hard side light.
+Dark fantasy illustration, one single light source, deep crushed blacks, no fill
+light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte
+painting, grim medieval village, square composition, no bell visible, no text, no
+lettering, no watermark
+```
+
+## 9. Le Marché Muet — `scene_marche_muet_c.png`
+Entièrement vide d'humains ; trois choix jouables reposent sur des marchands qui
+négocient par gestes.
+```
+A row of makeshift market stalls in a village square, several traders and
+buyers frozen mid-gesture instead of speaking, palms open and matched against
+each other, one hand mid-nod, small silent goods laid out on cloth, nobody's
+mouth open, low orange evening sun raking across the stalls, near-black
+silhouettes at the far end of the square. Dark fantasy illustration, one single
+light source, strong side light, deep crushed blacks, no fill light, high
+contrast, two-tone monochrome-friendly, strong readable shapes, matte painting,
+grim medieval village, square composition, no text, no lettering, no watermark
+```
+
+## 10. Le Moulin sans Ailes — `campement` — `scene_moulin_sans_ailes_d_d.png`
+5e signalement. Prompt déjà corrigé (10/08) : aucune clause négative, le sujet
+n'est plus un moulin mais un silo — le mot « moulin » appelle les ailes.
+```
+Squat round stone granary silo standing alone on a low mound on open moorland,
+smooth cylindrical masonry, flat truncated stone cap, a short rusted iron stub at
+the centre of the cap, four pale unweathered vertical bands on the stonework
+below the cap, small dark doorway at its base, huge low orange sun disc directly
+behind it, dark moor in the foreground. Dark fantasy illustration, extreme
+backlight, one single light source, near-black silhouette against a glowing
+orange sky, deep crushed blacks, high contrast, two-tone monochrome-friendly,
+matte painting, grim medieval rural, square composition
+```
+
+## 11. Le Puits Condamné — `scene_puits_condamne_v2_a.png`
+Scellé de frais, pas ouvert : planches neuves, chaînes croisées, cadenas gras,
+blocs de meule par-dessus.
+```
+A stone well mouth completely sealed shut by fresh unweathered wooden planks
+nailed tightly across it, two heavy iron chains crossing over the planks and
+locked with a large well-oiled padlock, two flat millstone blocks stacked on top
+for extra weight, coiled rope hanging useless and unused beside the well rim,
+low orange sun raking hard across the planks from one side. Dark fantasy
+illustration, extreme backlight, one single light source, near-black silhouette
+with a thin orange rim of light, deep crushed blacks, no fill light, high
+contrast, two-tone monochrome-friendly, matte painting, grim medieval rural,
+square composition, no text, no lettering, no watermark
+```
+
+## 12. Le Puits Condamné — beat 2 — `monstre_mains_du_puits_a.png`
+⚠️ **Recommandation : ne rien produire tout de suite.** L'image actuelle (bras
+déjà dehors) est fausse ICI mais parfaitement juste sur l'issue d'EXPIRATION du
+Puits (« les Mains du Puits ») — dis-le-moi et je la redéplace côté code, à
+coût nul. Ce qu'il faut produire à la place pour CE beat, c'est l'instant
+d'avant :
+```
+Extreme close view of the sealed well planks from very close, one plank visibly
+lifted a hair's width at its edge by something pressing from beneath, a single
+pale fingertip just barely showing in the gap, the padlock and chains still
+holding everything else in place, hard raking side light catching the raised
+edge of the plank. Dark fantasy illustration, one single light source, deep
+crushed blacks, no fill light, high contrast, two-tone monochrome-friendly,
+strong readable shapes, matte painting, grim medieval rural, square composition,
+no text, no lettering, no watermark
+```
+
+## 13. La Maison du Bailli — `scene_maison_du_bailli_c.png`
+Seule à l'ouest, sans voisine, murée DE L'INTÉRIEUR — décrire la matière du
+bouchage plutôt que nier les fenêtres.
+```
+A tall isolated stone house standing utterly alone on open moorland well west of
+any settlement, no other building anywhere near it, every window opening filled
+solid with roughly mortared fieldstone from the inside, the masonry infill
+slightly paler and newer than the surrounding wall stone, a single dark low
+doorway at ground level, low orange sun behind the house, dark heather in the
+foreground. Dark fantasy illustration, extreme backlight, one single light
+source, near-black silhouette against a glowing orange sky, deep crushed blacks,
+no fill light, high contrast, two-tone monochrome-friendly, matte painting, grim
+medieval rural, square composition, no text, no lettering, no watermark
+```
+
+## 14. Le Petit Tribunal — `scene_petit_tribunal_a.png`
+La salle basse aux trois bancs ; la feuille clouée ; le livre ouvert sur la
+chaire. (La corde de pendu actuelle n'est mentionnée par aucun texte — retirée
+ci-dessous ; dis-moi si tu veux la garder, elle est belle.)
+```
+Low stone court chamber, three plain wooden benches facing a heavy stone lectern
+with a large ledger lying open on it, a single sheet of parchment nailed to the
+bare stone wall with dense unreadable handwriting suggested as texture, a bright
+arched opening glowing orange behind the lectern lighting the room from that one
+side, cold damp stone walls, dust in the air. Dark fantasy illustration, extreme
+backlight, one single light source, near-black silhouettes against a glowing
+orange arch, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, matte painting, grim medieval interior, cold damp stone,
+square composition, no text, no lettering, no watermark
+```
+
+## 15. La Meute Grise — beat 1 — `monstre_meute_grise_c.png`
+⚠️ Même cas que #8 : image bonne, fausse signature cuite dans le dithering.
+Relance ce prompt (le texte a déjà été recalé sur cette composition, cinq
+bêtes de front, le cercle reste hors champ) :
+```
+Five grey wolf-like beasts standing shoulder to shoulder in a single row
+directly facing the viewer, blocking a stretch of open moorland, low heads,
+matted fur in near-black silhouette, breath visible as pale mist, no visible
+structure or settlement anywhere in frame, low orange sun low behind them. Dark
+fantasy illustration, extreme backlight, one single light source, near-black
+silhouettes against a glowing orange sky, deep crushed blacks, no fill light,
+high contrast, two-tone monochrome-friendly, matte painting, grim medieval
+rural, square composition, no text, no lettering, no watermark
+```
+
+## 16. Le Verger Noir — `scene_verger_noir_d.png`
+L'ordre volontaire EST le sens du lieu : des rangs, pas un enchevêtrement.
+```
+A dark orchard of bare gnarled fruit trees planted in strict deliberate rows
+receding to the horizon, heavy round grey fruit hanging from every branch, the
+one visible sign of order anywhere on the moor, low orange sun burning low
+between the trunks along the row, dark tilled earth underfoot. Dark fantasy
+illustration, extreme backlight, one single light source, near-black silhouettes
+against a glowing orange sky, deep crushed blacks, no fill light, high contrast,
+two-tone monochrome-friendly, matte painting, grim medieval rural, square
+composition, no text, no lettering, no watermark
+```
+
+## 17. La Palissade Sud — `scene_palissade_sud_a_a.png`
+Dernier écran avant la sortie de zone : mur, portillon, guérite, lanterne
+allumée en plein jour, et l'homme dedans — rien de tout ça n'est visible
+aujourd'hui.
+```
+Long palisade of blackened sharpened logs twice the height of a man, cutting
+across the entire horizon of an open moor, a narrow wooden gate set in the wall
+at the centre of the frame, a small plank sentry box built against the logs
+beside the gate, a lit lantern hanging at the sentry box despite the daylight,
+a lone watchman's silhouette just visible inside the box, low orange sun sinking
+behind the wall. Dark fantasy illustration, extreme backlight, one single light
+source, near-black silhouettes against a glowing orange sky, deep crushed
+blacks, no fill light, high contrast, two-tone monochrome-friendly, strong
+readable shapes, matte painting, grim medieval rural, square composition, no
+text, no lettering, no watermark
+```
+
+## 18. Le Veilleur de la Palissade — `veilleur-1` (aujourd'hui une icône d'objet)
+Premier portrait du personnage — d'après la règle des variantes, la PREMIÈRE
+image d'un personnage établit et décrit en entier.
+```
+Portrait of a weathered watchman standing inside a narrow wooden sentry box
+built against a palisade of sharpened logs, a lit lantern hanging beside him
+despite full daylight, a heavy cloak, eyes fixed on the moor beyond the gate,
+plain black background behind the box, warm rim light from the lantern catching
+one side of his face and shoulder. Dark fantasy illustration, one single light
+source, near-black silhouette with warm rim light, deep crushed blacks, no fill
+light, high contrast, two-tone monochrome-friendly, matte painting, grim
+medieval rural, plain dark background, square composition, no text, no
+lettering, no watermark
+```
+
+## 19. Le Procès du Héros — `scene_proces_du_heros_v4_c.png`
+Même salle et même échelle que le Petit Tribunal — pas une nef d'église.
+```
+The same low stone court chamber as the village tribunal, now packed with about
+twenty villagers standing crowded along three plain wooden benches and against
+the walls, all facing the same direction in silence, a bright arched opening
+glowing orange at the far end lighting the room from that one side, cold damp
+stone, dust caught in the light. Dark fantasy illustration, extreme backlight,
+one single light source, near-black silhouettes against a glowing orange arch,
+deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly,
+matte painting, grim medieval interior, cold damp stone, square composition, no
+text, no lettering, no watermark
+```
+
+## 20. La Descente — `la-descente`
+Le seul écran où l'on sort vivant de la zone. Aujourd'hui une vue de marche
+générique — il lui faut un visuel dédié.
+```
+A wide stone stairway plunging steeply down into an open trapdoor-like gap in
+the moor, the steps disappearing into a blackness with no visible bottom, the
+last visible step catching a sliver of low orange light before the dark begins,
+open moorland and dusk sky behind the viewer, cold air seeming to rise from the
+opening. Dark fantasy illustration, extreme backlight, one single light source,
+near-black silhouette against a glowing orange sky fading to pure black at the
+opening, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, matte painting, grim medieval rural, square composition, no
+text, no lettering, no watermark
+```
