@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-17T18:12:34Z",
- "commit": "30c471a",
+ "genere": "2026-08-17T20:48:06Z",
+ "commit": "f107c12",
  "zones": [
   {
    "id": "landes",
@@ -829,7 +829,7 @@
       "echec": "Tu passes trop lentement. Rien n'attaque — mais quelque chose t'accompagne sur la crête jusqu'au bout du creux, à ta hauteur, réglant son pas sur le tien, et ne s'arrête que là où le talus s'abaisse.",
       "funeste": "1 naturel. Au milieu du coude, tu comprends que le silence n'était pas vide : il était retenu. Quelque chose, tout près, avait cessé de respirer pour t'écouter passer. ♦ −2"
      },
-     "nature": "physique"
+     "nature": "surnaturel"
     },
     {
      "id": "sortir-par-le-talus",
