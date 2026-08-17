@@ -124,6 +124,13 @@ let n = 0, dernierTexte = "";
 /** Le texte de l'écran, sans les boutons ni le chrome. */
 async function texteEcran() {
   return page.evaluate(() => {
+    // ⚠️ L'ÉCRAN DE MORT D'ABORD. Il se monte PAR-DESSUS le jeu, donc
+    // `.scene-text-zone` existe encore dessous et rend le texte de la scène
+    // fatale : on relisait la même chose à chaque tap, rien de neuf n'était
+    // enregistré, et les six écrans de la mort n'entraient dans AUCUN
+    // transcript. Le repère `data-ecran` est posé pour ça (DeathScreen.tsx).
+    const mort = document.querySelector('[data-ecran^="mort-"]');
+    if (mort && mort.getAttribute("data-ecran") !== "mort-fatal") return mort.innerText || "";
     const z = document.querySelector(".scene-text-zone") || document.querySelector(".feed");
     if (!z) return document.body.innerText || "";
     return z.innerText || "";
@@ -251,7 +258,11 @@ if (!(await page.locator(".choices-bar").count())) await jouerLeSeuil();
 while (n < MAX) {
   // avancer la frappe / les micro-beats jusqu'aux choix
   let tours = 0;
-  while (!(await pretAChoisir()) && tours < 14) {
+  // ⚠️ 24 et non 14 : la SÉQUENCE DE MORT fait six écrans sans un seul bouton,
+  // dont un tapé à 42 ms/caractère — à 14 tours, le magnétophone s'arrêtait au
+  // fragment du Geôlier et le Registre, la relique et la relève n'entraient
+  // dans aucun transcript.
+  while (!(await pretAChoisir()) && tours < 24) {
     await attendreFinDeFrappe();
     const t = nettoie(await texteEcran());
     if (t && t !== dernierTexte) {

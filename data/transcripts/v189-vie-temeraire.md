@@ -3,7 +3,7 @@
 *Partie réellement jouée sur le build publié, écran par écran.*
 *Stratégie du joueur automatique : **risque** · compte de VÉTÉRAN (3 morts, 2 reliques, des lieux déjà traversés).*
 
-- écrans enregistrés : **74**
+- écrans enregistrés : **81**
 - fin de partie : jour 1 · 1 lieux traversés · soupçon 0
 - morts du compte à la fin : 4
 - erreurs JavaScript : **0** · requêtes en échec : **0**
@@ -52,7 +52,7 @@ Au loin, sur sa colline, le Gibet Vide découpe le crépuscule — et son montan
 
 ### Écran 5
 
-[ dé lancé → FUNESTE ]
+[ dé lancé → ÉCHEC ]
 
 ### Écran 6
 
@@ -60,7 +60,7 @@ Un ruban glisse et tout l'édifice s'éboule. Le vent se lève d'un coup, bref, 
 
 Deux silhouettes réparent un muret à distance. Leurs mains ne s'arrêtent pas quand tu passes. Leurs têtes, si.
 
-L'autre direction n'en est plus une : le sol s'est affaissé sur toute la largeur du passage, et ce qui reste ne porterait pas un chien. Ce n'est pas récent. Ça l'était il y a un instant.
+Deux directions s'ouvrent. D'un côté, une masse trapue privée de ses ailes. De l'autre, une crête hérissée de mâts noirs.
 
 → *(touche pour continuer)*
 
@@ -76,6 +76,7 @@ Une femme traverse la lande en biais, un fagot sur l'épaule, et te suit des yeu
 
 **Choix proposés :**
 - Vers un moulin sans ailes
+- Vers la crête aux cordes
 
 → *Vers un moulin sans ailes*
 
@@ -110,11 +111,19 @@ Et dans un creux du mur, serré dans un chiffon : un bout de corde. Coupé net. 
 
 ### Écran 12
 
-[ dé lancé → DE JUSTESSE ]
+[ dé lancé → DESTIN ]
 
 ### Écran 13
 
-Le chemin de faîtage s'interrompt à cinquante pas. Pas effondré : interrompu. Les tuiles manquantes sont empilées à côté, en ordre.
+Tu remontes la ligne du faîtage jusqu'à l'endroit où elle s'arrête, et tu comprends d'un coup qu'elle ne s'arrête pas : elle a été DÉFAITE, tuile par tuile, proprement, par quelqu'un qui ne voulait pas qu'on puisse aller plus loin par les toits. Le travail est vieux de trente ans et il a été fait de l'intérieur.
+
+OBTENU — AMULETTE D'OS VERDI · RARE
+Elle vibre quand on la regarde trop longtemps — et le hasard te sourit un peu plus.
+Tu le portes sans y penser, et tu hésites moins qu'avant.
+
+→ *(touche pour continuer)*
+
+### Écran 14
 
 « Trois corbeaux sur ton toit ce matin. » Elle le dit du ton dont on donne l'heure, sans s'arrêter. « Quatre, c'est le moment de partir. » Tu mets le reste du trajet à décider si c'était un avertissement ou une politesse.
 
@@ -122,15 +131,13 @@ D'un côté, une crête hérissée de mâts noirs. De l'autre, des toits bas et 
 
 → *(touche pour continuer)*
 
-### Écran 14
+### Écran 15
 
-Sur un muret, à hauteur de genou, une marque fraîche à la craie. Tu ne la remarquerais pas si elle n'était pas exactement à l'endroit où tu es passé.
-
-Ils ont commencé à te compter. C'est un pays méticuleux.
+Bien joué. Vraiment. Ne me fais pas répéter, ça m'écorche.
 
 → *(touche pour continuer)*
 
-### Écran 15
+### Écran 16
 
 (même écran, choix suivant)
 
@@ -140,7 +147,7 @@ Ils ont commencé à te compter. C'est un pays méticuleux.
 
 → *Vers la crête aux cordes*
 
-### Écran 16
+### Écran 17
 
 Tu traverses sans rien tenter. Ces jours-là ne s'écrivent nulle part.
 
@@ -148,15 +155,15 @@ Tu montes. Les mâts deviennent des potences.
 
 → *(touche pour continuer)*
 
-### Écran 17
+### Écran 18
 
 La pente est douce et n'en finit pas — la Colline se mérite à pas comptés. Sur la crête, les potences se suivent, plantées de loin en loin comme des bornes, chacune avec son nom et sa date : la crête entière est un calendrier planté. Elles grandissent à mesure qu'on monte, et la dernière dépasse toutes les autres. Sa corde est la seule chose neuve à dix lieues.
 
-En contrebas, un poteau isolé porte encore son occupant. Sur la traverse du grand gibet, des oiseaux noirs attendent sans bouger▌
+En contrebas, un poteau isolé porte encore son occupant. Sur la traverse du grand gibet, des oiseaux noirs attendent sa▌
 
 → *(touche pour continuer)*
 
-### Écran 18
+### Écran 19
 
 La pente est douce et n'en finit pas — la Colline se mérite à pas comptés. Sur la crête, les potences se suivent, plantées de loin en loin comme des bornes, chacune avec son nom et sa date : la crête entière est un calendrier planté. Elles grandissent à mesure qu'on monte, et la dernière dépasse toutes les autres. Sa corde est la seule chose neuve à dix lieues.
 
@@ -164,15 +171,15 @@ En contrebas, un poteau isolé porte encore son occupant. Sur la traverse du gra
 
 → *(touche pour continuer)*
 
-### Écran 19
+### Écran 20
 
-Une croix à la craie sur ta besace, tracée bas, sur la face qui reste contre ton dos. Tu ne l'as pas vue se faire.
+Sur un muret, à hauteur de genou, une marque fraîche à la craie. Tu ne la remarquerais pas si elle n'était pas exactement à l'endroit où tu es passé.
 
-Tu ne sens rien ? Normal. On ne sent jamais le premier tour de corde.
+Ils ont commencé à te compter. C'est un pays méticuleux.
 
 → *(touche pour continuer)*
 
-### Écran 20
+### Écran 21
 
 (même écran, choix suivant)
 
@@ -183,7 +190,7 @@ Tu ne sens rien ? Normal. On ne sent jamais le premier tour de corde.
 
 → *Compter les corbeaux*
 
-### Écran 21
+### Écran 22
 
 Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, et leurs becs sont propres. Ils attendent, tournés du même côté, comme des choses qu'on a postées là.
 
@@ -191,7 +198,7 @@ Tu les comptes sans le décider : ils sont trois. Ni plus, ni moins. Et le derni
 
 → *(touche pour continuer)*
 
-### Écran 22
+### Écran 23
 
 Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme plat, toutes les cordes de la crête se mettent à bouger. Pas au hasard : ensemble. Un balancement lent, réglé, qui va et vient sur le même temps.
 
@@ -199,7 +206,15 @@ Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme plat, toutes
 
 → *(touche pour continuer)*
 
-### Écran 23
+### Écran 24
+
+Une croix à la craie sur ta besace, tracée bas, sur la face qui reste contre ton dos. Tu ne l'as pas vue se faire.
+
+Tu ne sens rien ? Normal. On ne sent jamais le premier tour de corde.
+
+→ *(touche pour continuer)*
+
+### Écran 25
 
 (même écran, choix suivant)
 
@@ -210,17 +225,17 @@ Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme plat, toutes
 
 → *Monter au Grand Gibet COURAGE*
 
-### Écran 24
+### Écran 26
 
 [ dé lancé → DE JUSTESSE ]
 
-### Écran 25
+### Écran 27
 
 Le bois est vieux mais franc. Tu montes assez haut pour voir par-dessus la crête : le hameau est plus près que tu ne croyais, et la Descente plus loin. Tu redescends avec la carte dans la tête, les paumes brûlées de résine noire.
 
 → *(touche pour continuer)*
 
-### Écran 26
+### Écran 28
 
 (même écran, choix suivant)
 
@@ -230,21 +245,21 @@ Le bois est vieux mais franc. Tu montes assez haut pour voir par-dessus la crêt
 
 → *Arracher une écharde COURAGE*
 
-### Écran 27
+### Écran 29
 
-[ dé lancé → RÉUSSITE ]
+[ dé lancé → MALÉDICTION ]
 
-### Écran 28
+### Écran 30
 
-Tu détaches une longue écharde du montant. Le bois est doux, poli par des mains — combien de mains ? L'ombre au sol frémit, mais ne bouge pas vers toi.
+L'écharde t'entre dans la paume. Profond. C'est le gibet qui prélève.
 
-OBTENU — ÉCHARDE DU GRAND GIBET · COMMUN
-Un éclat du bois qui a tenu tant de cordes. Ta main s'en trouve plus dure quand il faut frapper.
-Le poids tombe juste dans la main quand il faut faire vite.
+Le dé t'a lâché. Il ne lâche que ceux qu'il a tenus.
+
+Tu comptes ce qu'il te reste à faire, et le compte est plus court qu'avant d'essayer. Personne n'a rien repris. C'est toi qui as dépensé.
 
 → *(touche pour continuer)*
 
-### Écran 29
+### Écran 31
 
 (même écran, choix suivant)
 
@@ -253,7 +268,10 @@ Le poids tombe juste dans la main quand il faut faire vite.
 
 → *Partir avant de comprendre*
 
-### Écran 30
+### Écran 32
+
+Entaillé
+Quand tu poses le pied, la douleur remonte jusqu'à la hanche.
 
 — JOUR 2 —
 
@@ -265,7 +283,7 @@ D'un côté, une maison murée de l'intérieur. De l'autre, des silhouettes gris
 
 → *(touche pour continuer)*
 
-### Écran 31
+### Écran 33
 
 (même écran, choix suivant)
 
@@ -275,7 +293,7 @@ D'un côté, une maison murée de l'intérieur. De l'autre, des silhouettes gris
 
 → *Vers une maison murée*
 
-### Écran 32
+### Écran 34
 
 À l'ouest, un toit émerge de la bruyère. Sur le seuil, une masse grise se lève sans un aboiement.
 
@@ -285,7 +303,7 @@ Tu as pris la route droite. On t'a vu venir — et tu as eu le temps de tout reg
 
 → *(touche pour continuer)*
 
-### Écran 33
+### Écran 35
 
 (même écran, choix suivant)
 
@@ -296,17 +314,14 @@ Tu as pris la route droite. On t'a vu venir — et tu as eu le temps de tout reg
 
 → *Repérer ce qui garde INSTINCT*
 
-### Écran 34
+### Écran 36
 
-[ dé lancé → DESTIN ]
+[ dé lancé → ÉCHEC ]
 
-### Écran 35
+### Écran 37
 
-Tu le vois avant qu'il te voie : couché contre le seuil, gris sur gris. Et tu vois surtout sa ronde, tracée dans l'usure de l'herbe — trente ans du même circuit. Tu connais ses horaires avant qu'il connaisse ton odeur.
+Tu scrutes les appentis, la cour, les toits — et pendant ce temps, la masse grise du seuil s'est levée sans bruit et a raccourci la distance de moitié. Il jaugeait plus vite que toi.
 
-OBTENU — ÉLIXIR DU CAMPEMENT PERDU · RARE
-Quelqu'un l'a brassé pour un repos qui n'est jamais venu.
-À garder pour un mauvais jour : referme une plaie qui dure, et rend des forces. Une seule fois.
 • RENCONTRE •
 Le Chien du Bailli
 
@@ -314,13 +329,7 @@ Le chien se lève du seuil sans aboyer. Gris, trop grand, le poil usé aux endro
 
 → *(touche pour continuer)*
 
-### Écran 36
-
-Beau jet. Je vais devoir revoir ce que je pariais sur toi.
-
-→ *(touche pour continuer)*
-
-### Écran 37
+### Écran 38
 
 (même écran, choix suivant)
 
@@ -331,11 +340,11 @@ Beau jet. Je vais devoir revoir ce que je pariais sur toi.
 
 → *Contourner par la cour RUSE*
 
-### Écran 38
+### Écran 39
 
 [ dé lancé → DESTIN ]
 
-### Écran 39
+### Écran 40
 
 Tu fais le tour par les appentis — et tu trouves mieux que la porte : le trou par lequel le chien entre et sort, taillé à sa mesure dans la pierre murée. Assez large pour toi. La seule ouverture que le Bailli n'a jamais murée : il faut bien nourrir la garde.
 
@@ -347,15 +356,15 @@ Sur une pierre du chemin, une croix à la craie — vieille, à moitié lavée. 
 
 → *(touche pour continuer)*
 
-### Écran 40
+### Écran 41
 
 D'un côté, une eau noire où les roseaux ne bougent pas. De l'autre, un craquement de bois, régulier, qui travaille.
 
-Parfait. Tu deviens difficile à ranger dans mes colonnes.
+Un 20. Je commence à comprendre pourquoi tu dures.
 
 → *(touche pour continuer)*
 
-### Écran 41
+### Écran 42
 
 (même écran, choix suivant)
 
@@ -365,7 +374,7 @@ Parfait. Tu deviens difficile à ranger dans mes colonnes.
 
 → *Vers une eau qui ne bouge pas*
 
-### Écran 42
+### Écran 43
 
 Derrière toi, très loin, des battements d'ailes quittent une traverse — exactement le compte que tu n'as pas voulu faire. Un battement de plus leur répond. Plus près.
 
@@ -375,7 +384,7 @@ L'eau est noire et lente — le seul endroit des Landes que le vent évite.
 
 → *(touche pour continuer)*
 
-### Écran 43
+### Écran 44
 
 La berge est piétinée en un seul point, tassée par des années de genoux. On ne vient pas ici puiser. On vient s'agenouiller. Le point de berge usé. L'eau. Et dans les roseaux, un reflet de métal.
 
@@ -383,7 +392,7 @@ Tu es passé sous le vent. Rien ne s'est retourné, et tu n'as regardé que tes 
 
 → *(touche pour continuer)*
 
-### Écran 44
+### Écran 45
 
 (même écran, choix suivant)
 
@@ -394,11 +403,11 @@ Tu es passé sous le vent. Rien ne s'est retourné, et tu n'as regardé que tes 
 
 → *Boire à la mare COURAGE*
 
-### Écran 45
+### Écran 46
 
 [ dé lancé → ÉCHEC ]
 
-### Écran 46
+### Écran 47
 
 Tu bois — et l'eau reste au bord des lèvres, sans descendre, une seconde de trop. Quand elle passe enfin, tu as l'impression très nette d'avoir avalé quelque chose qui a accepté de se laisser avaler.
 
@@ -408,13 +417,13 @@ Personne ne parle. Ce n'est pas une prière — c'est un examen, et il a manifes
 
 → *(touche pour continuer)*
 
-### Écran 47
+### Écran 48
 
 Quand le premier se relève, il a le visage de quelqu'un qui va rentrer chez lui et fermer ses volets pour toujours. Le second lui met une main sur l'épaule et le raccompagne.
 
 → *(touche pour continuer)*
 
-### Écran 48
+### Écran 49
 
 (même écran, choix suivant)
 
@@ -425,17 +434,17 @@ Quand le premier se relève, il a le visage de quelqu'un qui va rentrer chez lui
 
 → *Lui parler EMPATHIE*
 
-### Écran 49
-
-[ dé lancé → ÉCHEC ]
-
 ### Écran 50
+
+[ dé lancé → FUNESTE ]
+
+### Écran 51
 
 Il te voit — et le fait que tu l'aies vu, lui, est la pire chose qui pouvait lui arriver aujourd'hui. Il part très vite, sans un mot, et tu sais qu'il racontera cette rencontre autrement que toi.
 
 → *(touche pour continuer)*
 
-### Écran 51
+### Écran 52
 
 (même écran, choix suivant)
 
@@ -446,13 +455,13 @@ Il te voit — et le fait que tu l'aies vu, lui, est la pire chose qui pouvait l
 
 → *Lire leur procédure INSTINCT*
 
-### Écran 52
+### Écran 53
 
 Tu regardes l'ordre exact des gestes, et un seul compte : le second ne se penche jamais. Il est là pour voir si le premier se relève. Ce n'est pas un examen à deux — c'est un examen et un témoin. Plus personne ici ne fait confiance à ce qu'on raconte de son propre reflet.
 
 → *(touche pour continuer)*
 
-### Écran 53
+### Écran 54
 
 (même écran, choix suivant)
 
@@ -462,7 +471,7 @@ Tu regardes l'ordre exact des gestes, et un seul compte : le second ne se penche
 
 → *Le laisser à sa réponse*
 
-### Écran 54
+### Écran 55
 
 Tu quittes la berge sans te retourner. Derrière toi, l'eau reprend son immobilité — elle garde ce qu'elle a vu, comme toujours.
 
@@ -472,7 +481,7 @@ D'un côté, des rangées de piquets jusqu'à l'horizon. De l'autre, un chemin q
 
 → *(touche pour continuer)*
 
-### Écran 55
+### Écran 56
 
 La craie a changé de place : elle est sur ta manche, à l'épaule. Pour la tracer là, il a fallu être à portée de bras — et que tu ne t'en aperçoives pas.
 
@@ -480,7 +489,7 @@ Trois cents ont trouvé ça exagéré. Le livre dit qu'ils avaient tort.
 
 → *(touche pour continuer)*
 
-### Écran 56
+### Écran 57
 
 (même écran, choix suivant)
 
@@ -490,7 +499,7 @@ Trois cents ont trouvé ça exagéré. Le livre dit qu'ils avaient tort.
 
 → *Vers les rangées de poteaux*
 
-### Écran 57
+### Écran 58
 
 L'horizon se hérisse de piquets réguliers, rangée après rangée, jusqu'à se perdre. Tu approches d'un champ qu'on n'a pas semé — on l'a planté d'hommes.
 
@@ -498,7 +507,7 @@ Il y a eu un cimetière ici, autrefois : des stèles penchées, usées, dont plu
 
 → *(touche pour continuer)*
 
-### Écran 58
+### Écran 59
 
 Au fond, des poteaux vierges attendent, déjà plantés. Près de l'entrée, la cabane du Fossoyeur.
 
@@ -508,7 +517,7 @@ Je ne préviens pas. Je constate. C'est tout ce qu'on me permet.
 
 → *(touche pour continuer)*
 
-### Écran 59
+### Écran 60
 
 (même écran, choix suivant)
 
@@ -519,13 +528,13 @@ Je ne préviens pas. Je constate. C'est tout ce qu'on me permet.
 
 → *Aller voir le vide dans la rangée*
 
-### Écran 60
+### Écran 61
 
 Tu l'avais repéré de loin sans savoir quoi : un défaut d'alignement, un rythme cassé. Il manque un poteau au milieu d'une rangée pleine, comme une dent tombée. La terre y est ancienne, tassée. On l'a retiré — pas arraché : descellé proprement, puis rebouché. Quelqu'un a voulu que ce nom-là cesse d'exister sans que le champ s'en aperçoive. Au fond de la fosse comblée, à moitié enfoui, un moignon de craie grasse — celle qui sert à marquer les portes.
 
 → *(touche pour continuer)*
 
-### Écran 61
+### Écran 62
 
 Il taille un écriteau sur ses genoux, au bout d’une rangée. Le nom qu’il grave n’a pas encore de date. Sous le nom, il a déjà creusé un petit signe en forme de plume, machinalement, comme on trace une croix avant de savoir pour qui.
 
@@ -533,19 +542,19 @@ Il taille un écriteau sur ses genoux, au bout d’une rangée. Le nom qu’il g
 
 → *(touche pour continuer)*
 
-### Écran 62
+### Écran 63
 
 Tu passes la main dans ton dos et tes doigts reviennent blancs. Tu ne peux pas voir ce qui y est tracé — tous les autres, si. Ce n'est plus une marque : c'est une convocation, et elle est déjà partie devant toi.
 
 → *(touche pour continuer)*
 
-### Écran 63
+### Écran 64
 
 Ils ont sorti une chaise. Chez vous, ça veut dire un procès ; chez moi, ça veut dire une date.
 
 → *(touche pour continuer)*
 
-### Écran 64
+### Écran 65
 
 (même écran, choix suivant)
 
@@ -556,7 +565,7 @@ Ils ont sorti une chaise. Chez vous, ça veut dire un procès ; chez moi, ça ve
 
 → *« Il manque un poteau, là-bas. »*
 
-### Écran 65
+### Écran 66
 
 Le couteau s’arrête net. Il ne lève pas la tête. Dans une rangée de quatre-vingts poteaux, il a su immédiatement duquel tu parlais.
 
@@ -572,7 +581,7 @@ Un temps beaucoup trop long.
 
 → *(touche pour continuer)*
 
-### Écran 66
+### Écran 67
 
 (même écran, choix suivant)
 
@@ -583,11 +592,11 @@ Un temps beaucoup trop long.
 
 → *« Essayez de vous rappeler. » EMPATHIE*
 
-### Écran 67
-
-[ dé lancé → RÉUSSITE ÉCLATANTE ]
-
 ### Écran 68
+
+[ dé lancé → DE JUSTESSE ]
+
+### Écran 69
 
 Il ferme les yeux, sincèrement. Il essaie. « Y avait du gel. J’avais les mains qui collaient au bois. » Puis plus rien, et sa voix se creuse : « Après ça, c’est comme une page arrachée. Et pourtant j’ai tout le reste. »
 
@@ -597,7 +606,7 @@ Il pose l’écriteau fini contre sa jambe, face contre terre, pour qu’on n’
 
 → *(touche pour continuer)*
 
-### Écran 69
+### Écran 70
 
 (même écran, choix suivant)
 
@@ -608,7 +617,7 @@ Il pose l’écriteau fini contre sa jambe, face contre terre, pour qu’on n’
 
 → *Demander le nom sur l’écriteau*
 
-### Écran 70
+### Écran 71
 
 Il retourne la planchette contre lui, d’un geste de joueur qui cache son jeu. « Non. » Et, presque doucement : « Si je te le dis, tu vas le regarder autrement quand tu le croiseras. Il a encore quelques jours à être regardé normalement. »
 
@@ -616,7 +625,7 @@ Ils ne te courent pas après — ils t'attendent au tournant du muret, le hameau
 
 → *(touche pour continuer)*
 
-### Écran 71
+### Écran 72
 
 On ne te lit pas d'acte d'accusation. On appelle des gens, et les gens racontent.
 
@@ -626,7 +635,7 @@ Le Renonçant de la Mare, à la Mare aux Regards : « Il m'a parlé au bord de l
 
 → *(touche pour continuer)*
 
-### Écran 72
+### Écran 73
 
 L'Écrivain public, au Hameau des Renonçants : « Il a essayé de se faire comprendre. Ce qui est sorti n'était pas de chez nous. »
 
@@ -634,7 +643,7 @@ La Doyenne laisse le silence retomber, puis referme le cahier de l'Écrivain d'u
 
 → *(touche pour continuer)*
 
-### Écran 73
+### Écran 74
 
 (même écran, choix suivant)
 
@@ -645,6 +654,100 @@ La Doyenne laisse le silence retomber, puis referme le cahier de l'Écrivain d'u
 
 → *Plaider serré RUSE*
 
-### Écran 74
+### Écran 75
 
 [ dé lancé → MORT ]
+
+### Écran 76
+
+Cendre
+JOUR 2
+
+Tu plaides — trop bien. « Seul un coupable connaît si bien la procédure », dit la Doyenne, et les bancs hochent la tête. À l'aube qui ne vient jamais tout à fait, le Champ des Fixés gagne une ligne : la tienne.
+
+JOURS TENUS
+2
+POINT LE PLUS PROFOND
+LES LANDES
+LIEUX TRAVERSÉS
+6
+COMBATS TRAVERSÉS
+1
+DÉS LANCÉS
+10 · 4 TENUS
+DESTINS • MALÉDICTIONS
+2 • 1
+RELIQUE PORTÉE
+VERTÈBRE GRAVÉE
+
+Touche pour continuer
+
+→ *(touche pour continuer)*
+
+### Écran 77
+
+Deux jours. Le temps d'entrer, pas celui d'exister.
+
+Ils pensent que leur corde me gêne. Je les laisse le penser.
+
+Touche pour continuer
+
+→ *(touche pour continuer)*
+
+### Écran 78
+
+GRAND REGISTRE
+Ton nom entre au livre
+TES MORTS
+LES 100
+RANG
+NOM
+JOURS
+1
+SUIE
+pendu au Grand Gibet
+11
+2
+LE TARDIF
+noyé à la Mare
+6
+3
+CORBEAU
+jugé au Petit Tribunal
+4
+4
+CENDRE
+le Hameau des Renonçants
+2
+
+Touche pour continuer
+
+→ *(touche pour continuer)*
+
+### Écran 79
+
+Touche le coffre pour
+découvrir ta relique
+
+→ *(touche pour continuer)*
+
+### Écran 80
+
+RELIQUE RARE
+Clou du silence
+
+Celui qui te suivra la portera.
+
+Une bouche de moins parlera contre toi, le jour du jugement.
+
+Le Hameau ne t'ouvre plus sa grange. Tu dormiras dehors.
+
+Touche pour continuer
+
+→ *(touche pour continuer)*
+
+### Écran 81
+
+v1.89.1
+
+→ *(touche pour continuer)*

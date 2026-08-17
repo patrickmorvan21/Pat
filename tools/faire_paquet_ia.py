@@ -84,12 +84,24 @@ def main(argv: list[str]) -> int:
             "data/transcripts/<nom>.md` (le jeu doit être servi en local)."
         )
 
-    # LE CONTEXTE DU PANEL INFORMÉ (14/08) : intentions, règles verrouillées,
-    # systèmes existants, ce qui est délibéré, ce qui a déjà été refusé. Il
-    # voyage AVEC le paquet parce qu'un panel « qui connaît tout du jeu » ne
-    # peut pas se reconstituer à partir des sources seules — et son avant-
-    # propos dit explicitement au panel aveugle de ne pas l'ouvrir.
-    shutil.copy(RACINE / "data" / "contexte-panel-informe.md", pack / "CONTEXTE-INFORME.md")
+    # LE CONTEXTE DE DESIGN — intentions, règles verrouillées, systèmes
+    # existants, ce qui est délibéré, ce qui a déjà été refusé.
+    # ⚠️ IL EST RANGÉ DANS `_orchestrateur/`, ET C'EST DÉLIBÉRÉ. Quand tous les
+    # agents du panel jouent EN AVEUGLE, un fichier posé à la racine finit par
+    # être ouvert « pour se documenter » — et un agent qui l'a lu ne rend plus
+    # un ressenti, il rend une note de conformité. Le sous-dossier et son nom
+    # font la barrière que l'avant-propos seul ne faisait pas.
+    (pack / "_orchestrateur").mkdir()
+    shutil.copy(
+        RACINE / "data" / "contexte-panel-informe.md",
+        pack / "_orchestrateur" / "CONTEXTE-DESIGN.md",
+    )
+    # La consigne du panel voyage avec le paquet : sans elle, le zip ouvert
+    # trois semaines plus tard ne dit plus pour quel protocole il a été bâti.
+    brief = (RACINE / "data" / "brief-panel-20-aveugle.md").read_text(encoding="utf-8")
+    (pack / "_orchestrateur" / "CONSIGNE-PANEL-20.md").write_text(
+        brief.replace("{VERSION}", version), encoding="utf-8"
+    )
 
     lisez = (RACINE / "data" / "paquet-ia-LISEZMOI.md").read_text(encoding="utf-8")
     lisez = lisez.replace("{VERSION}", version).replace("{NTRANS}", str(n_trans))

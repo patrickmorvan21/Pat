@@ -25,12 +25,14 @@ Python seul, aucune dépendance, aucun réseau. `nouvelle --graine=42` rejoue
 exactement la même vie (utile pour comparer deux façons de jouer), et
 `--nom=Cendre` impose le nom du héros.
 
-**Joue au moins deux vies entières**, jusqu'à la mort ou jusqu'à la
+**Joue au moins trois vies entières**, jusqu'à la mort ou jusqu'à la
 « Descente » (la sortie de zone) :
 
 1. une vie **curieuse** — regarde tout ce que le jeu propose de regarder,
    parle à tout le monde ;
-2. une vie **pressée** — va droit au but, prends les options d'action.
+2. une vie **pressée** — va droit au but, prends les options d'action ;
+3. une vie **à ta façon** — celle que tu aurais jouée si personne ne
+   regardait. C'est souvent la plus utile des trois.
 
 À la fin de chaque vie, `python3 pactum.py journal` te rend la partie
 complète : c'est ce texte-là qu'il faut juger.
@@ -110,12 +112,20 @@ que le joueur a vu, les images affichées, les choix offerts, l'action prise.
 C'est la **référence sans dérive** — tout y est citable mot pour mot, et c'est
 là que se jugent la mise en scène et le rythme réel.
 
-Les parties : une **curieuse** (elle regarde tout et lance peu) et une
-**pressée** (elle prend le premier bouton). Toutes deux sont jouées sur un
-compte qui a déjà vécu — trois morts, deux reliques, des lieux déjà traversés
-— parce que c'est la seule façon de voir la mémoire du monde : la trace du
-héros précédent sur la Borne, les personnages qui te reconnaissent sans te
-reconnaître, le décor qui ne se lit plus pareil.
+Les parties : une **curieuse** (elle regarde tout et lance peu), une
+**pressée** (elle prend le premier bouton), et une **téméraire** (elle lance le
+dé dès qu'elle le peut — celle-là **meurt**, et c'est la seule où l'on voit la
+séquence de mort en entier : le verdict fatal, le bilan, le mot du Geôlier,
+l'entrée au Grand Registre, la relique forgée).
+
+Toutes trois sont jouées sur un compte qui a déjà vécu — trois morts, deux
+reliques, des lieux déjà traversés — parce que c'est la seule façon de voir la
+mémoire du monde : la trace du héros précédent sur la Borne, les personnages
+qui te reconnaissent sans te reconnaître, le décor qui ne se lit plus pareil.
+
+⚠️ **Deux des trois vies survivent, et ce n'est pas un tri de ma part** : elles
+ont été enregistrées telles quelles. Si tu trouves que la mort ne vient pas
+assez, dis-le — c'est un constat, pas un défaut de l'échantillon.
 
 ⚠️ **Ces transcripts n'exercent presque pas l'échelle du Soupçon**, et il faut
 le savoir avant de les lire : ce sont des parties jouées par un automate, qui
@@ -147,11 +157,14 @@ Elles sont enregistrées sur **la version que tu peux lire dans `sources/`**,
 pas sur une version antérieure : ce que tu y vois est ce que le jeu fait
 aujourd'hui.
 
-## 3. `CONTEXTE-INFORME.md` — à n'ouvrir que si on te l'a dit
+## 3. `_orchestrateur/` — n'ouvre pas ce dossier
 
-Ce que le jeu VEUT être : intentions, règles verrouillées, systèmes existants,
-ce qui est délibéré, ce qui a déjà été refusé. **Si l'on t'a demandé un regard
-NEUF, ne l'ouvre pas** — il te dirait quoi penser avant que tu aies joué.
+Il contient la consigne du panel et le document de design (intentions, règles
+verrouillées, ce qui est délibéré, ce qui a déjà été refusé). Il est réservé à
+la personne qui organise le test.
+
+**Si tu es un des agents du panel, ne l'ouvre pas** — il te dirait quoi penser
+avant que tu aies joué, et ton rapport ne vaudrait plus rien.
 
 ## 4. Les sources — `sources/`
 
@@ -166,23 +179,32 @@ partie n'a pas tirées.
 
 ---
 
-## Ce qu'on te demande de chercher
+## Ce qu'on te demande de rendre
 
-Classe chaque trouvaille, avec la **citation exacte** et sa provenance
-(« joué, écran N », ou nom du transcript, ou fichier) :
+**Ton ressenti de joueur**, en cinq sections, dans cet ordre. Chaque fois : la
+**citation exacte** et sa provenance (« joué, vie 2, écran 14 », ou le nom du
+transcript, ou le fichier).
 
-1. **Rupture de cohérence** — le texte contredit la situation : un personnage
-   ou un décor qui ne peut pas être là, une conséquence sans rapport avec
-   l'action, une blessure sans cause, un lieu qui change sans transition.
-2. **Rupture d'immersion** — vocabulaire de système qui perce, répétition mot
-   pour mot dans une même vie, phrase qui « sent le bouton ».
-3. **Blocage ou incohérence mécanique** — un écran d'où rien n'avance ; une
-   règle qui en contredit une autre ; un choix qui ne peut jamais s'ouvrir.
-4. **Confusion** — un moment où un joueur ne comprendrait pas ce qu'on attend
-   de lui, ou pourquoi une chose vient d'arriver. Dis ce que tu as cru, et ce
-   qui t'aurait aidé.
-5. **Rythme** — trop long, trop court, trop répétitif ; les moments où tu as
-   eu envie d'arrêter.
+1. **CE QUE TU ADORES** — le moment précis que tu raconterais à quelqu'un.
+2. **CE QUE TU AIMES** — ce qui marche, sans être marquant.
+3. **CE QUE TU AIMES MOINS** — tiède, mou, trop long, mal placé.
+4. **CE QUE TU N'AIMES PAS DU TOUT** — ce qui t'a agacé, ennuyé ou paru raté.
+5. **CE QUI BLOQUE L'EXPÉRIENCE** — le plus important. Tu n'as pas compris ce
+   qu'on attendait de toi · tu t'es senti puni sans savoir pourquoi · tu t'es
+   ennuyé au point de vouloir arrêter · tu t'es retrouvé coincé sans issue · le
+   texte contredisait la situation au point de te sortir du monde. Pour chacun :
+   **l'écran exact**, ce que tu as cru, et ce qui t'aurait aidé.
+
+Termine par **une phrase** : aurais-tu relancé une vie de plus, oui ou non, et
+pourquoi ?
+
+Quatre familles de défauts, si ça t'aide à regarder au bon endroit — mais range
+ta trouvaille dans une des cinq sections ci-dessus, pas dans cette liste :
+rupture de **cohérence** (un personnage ou un décor qui ne peut pas être là,
+une conséquence sans rapport avec l'action) · rupture d'**immersion**
+(vocabulaire de système qui perce, répétition mot pour mot, phrase qui « sent
+le bouton ») · **blocage mécanique** (un écran d'où rien n'avance, une règle qui
+en contredit une autre, un choix qui ne peut jamais s'ouvrir) · **rythme**.
 
 ## Ce qui est VOULU (ne le signale pas comme défaut)
 

@@ -370,7 +370,13 @@ export default function DeathScreen({
   /* ─── écran 1 : transparent, posé sur le jeu — le tap ne coupe rien ────── */
   if (ecran === "fatal") {
     return (
-      <div className="absolute inset-0 z-[20]">
+      // `data-ecran` : point d'accroche STABLE pour l'enregistreur de parties
+      // (tools/joueur.mjs). L'écran de mort se monte PAR-DESSUS le jeu, donc
+      // `.scene-text-zone` existe encore dessous : sans ce repère, le
+      // magnétophone relisait la scène d'avant, ne voyait aucun texte neuf, et
+      // les six écrans de la mort n'entraient dans AUCUN transcript — un
+      // relecteur en concluait que mourir interrompt le jeu.
+      <div className="absolute inset-0 z-[20]" data-ecran="mort-fatal">
         <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
       </div>
     );
@@ -380,6 +386,7 @@ export default function DeathScreen({
   return (
     <div
       className="absolute inset-0 z-[20] flex flex-col overflow-hidden bg-[var(--color-bg)]"
+      data-ecran={"mort-" + ecran}
       onClick={suivant}
     >
       {ecran === "mort" && (
