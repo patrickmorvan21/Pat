@@ -908,6 +908,36 @@ export function coutSante(
     : 0;
 }
 
+/**
+ * L'EFFROI NE TUE PAS (verdict du panel de 20, 17/08 — et c'est une
+ * RESTAURATION, pas une règle neuve : la v1.58.0 avait acté « on ne meurt
+ * que d'un échec PHYSIQUE ou du procès, la mort doit être compréhensible
+ * dans la fiction », et la Phase A a fait tomber le surnaturel dans la
+ * chair en affirmant que « c'est ce que la prose de ces onze jets
+ * raconte » — relu le 17/08 : c'est FAUX pour neuf des dix. « Rien
+ * n'attaque » ne peut pas être une épitaphe).
+ *
+ * Le surnaturel continue d'USER le corps (nuit blanche, toux, effroi —
+ * l'érosion du cadre le montre), mais il ne porte jamais le coup fatal :
+ * son coût est borné pour laisser le héros AU SEUIL. Le palier d'érosion
+ * le plus grave s'affiche, la mort ne vient que d'un échec physique ou du
+ * procès. Cette fonction est la SEULE porte pour tout coût de santé —
+ * la résolution ET le `fatalCheck` du dé l'appellent tous deux : s'ils
+ * lisaient des sources différentes, le dé annoncerait une mort qui
+ * n'arrive pas (leçon du lot 3).
+ */
+export const PLANCHER_EFFROI = 0.05;
+export function coutSanteBorne(
+  nature: NatureJet,
+  tier: ResolutionTier,
+  horsDePortee: boolean | undefined,
+  sante: number,
+): number {
+  const brut = coutSante(nature, tier, horsDePortee);
+  if (nature !== "surnaturel") return brut;
+  return Math.min(brut, Math.max(0, sante - PLANCHER_EFFROI));
+}
+
 function outcomes(
   crit: string,
   success: string,
@@ -1283,7 +1313,11 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "franchir-coude",
-        nature: "physique",
+        // SURNATUREL, pas physique (verdict du panel 17/08 : « Rien
+        // n'attaque » suivi de MORT — deux agents tués par cette annotation).
+        // Les QUATRE issues décrivent une présence, jamais un contact : le
+        // danger du coude aveugle est ce qu'on ne voit pas, pas une chute.
+        nature: "surnaturel",
         label: "Franchir le coude",
         risky: {
           stat: "INSTINCT",

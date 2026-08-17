@@ -26,7 +26,7 @@ import {
   SOUPCON_GEOLIER,
   tierIsFail,
   SORTIE_DE_ZONE,
-  coutSante,
+  coutSanteBorne,
   type NatureJet,
   type Choice,
   type PointInteret,
@@ -3727,8 +3727,10 @@ export default function Scene() {
           if (isTrial) return true;
           // Même source de vérité que la résolution : un échec social ou
           // d'exploration ne coûte pas de santé, donc il ne peut pas tuer —
-          // et le dé ne doit surtout pas annoncer MORT dans ce cas.
-          return healthNow - coutSante(natureDuJet, tier, choice.horsDePortee) <= 0;
+          // et le dé ne doit surtout pas annoncer MORT dans ce cas. La borne
+          // (17/08) rend AUSSI le surnaturel non fatal : l'effroi laisse au
+          // seuil, il ne franchit pas.
+          return healthNow - coutSanteBorne(natureDuJet, tier, choice.horsDePortee, healthNow) <= 0;
         },
       });
     } else if (choice.rest) {
@@ -4156,8 +4158,13 @@ export default function Scene() {
               // trois jours de jeu — la tension du permadeath ne se sentait
               // pas). Un échec coûte maintenant un vrai cran ; la Descente
               // reste atteignable, mais plus en pilotage automatique.
-              let cost = coutSante(natureJet, tier, chosen?.horsDePortee);
-              if (amorti && cost > 0) {
+              let cost = coutSanteBorne(natureJet, tier, chosen?.horsDePortee, run.health);
+              // Le coussin ne prend que les CHOCS — un coup physique. Sur un
+              // jet surnaturel il n'a rien à amortir (l'effroi n'a pas de
+              // choc), et le laisser jouer aurait DEUX défauts : porter un
+              // échec surnaturel simple de 0,10 à 0,12 (un coussin qui
+              // aggrave), et contourner la borne « l'effroi ne tue pas ».
+              if (amorti && cost > 0 && natureJet === "physique") {
                 cost = 0.12;
                 run.relicUsed = true;
                 if (brisure)
@@ -4330,12 +4337,17 @@ export default function Scene() {
             // 11/08 : « j'ai perdu mais je prends 2 états négatifs, violent »).
             // La défaite de combat pose la BLESSURE, et elle seule.
             // SURNATUREL : le coût était un ÉTAT (HANTÉ, MARQUÉ), qui n'existe
-            // plus depuis la Phase A. Il tombe donc dans la CHAIR — ce que la
-            // prose de ces onze jets raconte : quelque chose t'a touché. Ni
-            // Soupçon (personne n'a rien vu), ni Jour.
-            // ⚠️ Il est appliqué plus haut, par `coutSante`, avec tous les
-            // autres : ici il vivait à part, donc `fatalCheck` l'ignorait (le
-            // dé pouvait tuer sans annoncer MORT) et le paiement de la
+            // plus depuis la Phase A. Il USE donc la chair — mais ne la tue
+            // JAMAIS : `coutSanteBorne` le laisse au seuil (verdict du panel
+            // 17/08, qui restaure la règle du 9/08 « la mort doit être
+            // compréhensible dans la fiction »). ⚠️ La justification de la
+            // Phase A (« c'est ce que la prose de ces onze jets raconte »)
+            // était FAUSSE — relue le 17/08 : neuf des dix proses d'échec ne
+            // décrivent aucune atteinte au corps (« Rien n'attaque »…).
+            // Ni Soupçon (personne n'a rien vu), ni Jour.
+            // ⚠️ Il est appliqué plus haut, par `coutSanteBorne`, avec tous
+            // les autres : ici il vivait à part, donc `fatalCheck` l'ignorait
+            // (le dé pouvait tuer sans annoncer MORT) et le paiement de la
             // préparation ne le couvrait pas.
             // FIXÉ : « le village te croit marqué par le sud (Soupçon élevé) ».
             // Seuil 4 : assez haut pour que ce soit une trajectoire, assez bas

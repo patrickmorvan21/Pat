@@ -572,7 +572,25 @@ class Partie:
         if ferme and self.k.get("routeFermee"):
             self.dit(r.choice(self.k["routeFermee"]), "narration")
         else:
-            self.dit(r.choice(self.k["bifurcations"]), "narration")
+            # LA CROISÉE FIDÈLE (17/08). La réplique tirait ici une
+            # bifurcation AU HASARD à chaque Croisée — or le vrai jeu sert
+            # « D'un côté, X. De l'autre, Y. » (les indices des deux routes,
+            # couverts 18/18) et ne retombe sur le pool de bifurcations que
+            # si un indice MANQUE, c'est-à-dire jamais en pratique. Résultat
+            # mesuré par le panel de 20 : « Une pierre plantée marque la
+            # fourche » servie 43 fois dans 60 vies, 19 agents sur 20 — un
+            # grief entier fabriqué par l'infidélité de la table. Un panel
+            # teste d'abord l'outil qu'on lui donne.
+            opts = self.d.get("options") or []
+            ia = self.k["indiceRoute"].get(opts[0], "") if len(opts) > 0 else ""
+            ib = self.k["indiceRoute"].get(opts[1], "") if len(opts) > 1 else ""
+            if ia and ib:
+                routes = f"D'un côté, {ia}. De l'autre, {ib}."
+                premiere = len(self.d.get("ambiancesVues") or []) <= 1
+                self.dit(("Deux directions s'ouvrent. " + routes) if premiere else routes,
+                         "narration")
+            else:
+                self.dit(r.choice(self.k["bifurcations"]), "narration")
         # Idem en Croisée : plus de commentaire ambiant, il ne parle que sur
         # un événement (voir le retrait ci-dessus).
 
@@ -895,6 +913,13 @@ class Partie:
             cout = COUT.get(palier, 0.0)
         elif nature == "surnaturel" and palier in ("echec", "critique", "malediction"):
             cout = 0.16 if palier == "malediction" else 0.10
+            # L'EFFROI NE TUE PAS (verdict panel 17/08, restaure la règle du
+            # 9/08 « on ne meurt que d'un échec physique ou du procès ») : le
+            # surnaturel use le corps mais laisse AU SEUIL — miroir exact de
+            # `coutSanteBorne` (scene-data). Deux agents du panel sont morts
+            # sur « Rien n'attaque » ; ce n'était pas un artefact de la
+            # réplique, le vrai jeu vient d'être corrigé au même endroit.
+            cout = min(cout, max(0.0, self.d["sante"] - 0.05))
         else:
             cout = 0.0
         if cout:
@@ -1163,8 +1188,9 @@ class Partie:
                 tag = f"   [{o['c']['stat']}]"
             if o["kind"] == "ouvrir":
                 tag = f"   ({o['note']})"
-            if o["kind"] == "aller" and o.get("indice"):
-                tag = f"   — {o['indice']}"
+            # (17/08) Plus de rappel d'indice sur le bouton : la Croisée les
+            # sert désormais en narration comme le vrai jeu — les garder ici
+            # les ferait lire DEUX fois sur le même écran.
             out.append(f"  {i}) {lab}{tag}")
         out += ["═" * LARGEUR, "  → python3 pactum.py <numéro>"]
         return "\n".join(out)

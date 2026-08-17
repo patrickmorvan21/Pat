@@ -135,6 +135,39 @@ def main() -> int:
                 "paiement de la préparation : le faire passer par `coutSante`."
             )
 
+    # ─── A-effroi. « Seul un échec PHYSIQUE (ou le procès) peut tuer. » ──
+    # Règle arbitrée le 9/08 (« la mort doit être compréhensible dans la
+    # fiction »), cassée en silence par la Phase A (le surnaturel est tombé
+    # dans la chair SANS borne), redécouverte par le panel de 20 le 17/08 —
+    # deux agents tués sur une prose qui disait « Rien n'attaque ». Trois
+    # preuves : la borne existe dans `coutSanteBorne`, et les DEUX points
+    # d'appel de Scene.tsx (fatalCheck + résolution) passent par elle —
+    # jamais par `coutSante` nu, qui ignorerait le plancher.
+    mb = re.search(r'export function coutSanteBorne\([\s\S]{0,900}?\n\}', sd)
+    if not mb:
+        manques.append(
+            "A-effroi — `coutSanteBorne` introuvable : plus rien ne borne le "
+            "coût surnaturel, l'effroi peut de nouveau porter le coup fatal."
+        )
+    elif 'if (nature !== "surnaturel") return brut;' not in mb.group(0) \
+            or "PLANCHER_EFFROI" not in mb.group(0):
+        manques.append(
+            "A-effroi — la borne du surnaturel a disparu de `coutSanteBorne` : "
+            "un échec « Rien n'attaque » redevient une épitaphe possible."
+        )
+    if re.search(r'\bcoutSante\(', sc):
+        manques.append(
+            "A-effroi — Scene.tsx appelle `coutSante` NU quelque part : ce "
+            "point d'appel ignore le plancher de l'effroi, et fatalCheck et la "
+            "résolution peuvent diverger (le dé annoncerait une mort qui "
+            "n'arrive pas, ou l'inverse)."
+        )
+    if len(re.findall(r'\bcoutSanteBorne\(', sc)) < 2:
+        manques.append(
+            "A-effroi — moins de deux appels à `coutSanteBorne` dans Scene.tsx : "
+            "fatalCheck et la résolution doivent TOUS DEUX lire la borne."
+        )
+
     # ─── A2. « Un échec ordinaire ne fait pas avancer le jour. » ─────────
     # Deux preuves : le champ `coutJour` n'existe plus (supprimé le 10/08 —
     # le Jour est un SCORE, jamais une sanction), et les sites qui touchent
@@ -411,6 +444,7 @@ def main() -> int:
         print("  ⚠️ " + x)
     if not manques:
         print("  A1 un échec non physique ne peut pas coûter de santé  ✓")
+        print("  A-effroi seul un échec physique (ou le procès) tue     ✓")
         print("  A2 aucun Jour n'est jamais retiré en sanction          ✓")
         print(f"  A4 seuls {len(ACTES)} gestes déclarés font monter le Soupçon  ✓")
         print("  A8 tous les libellés de choix se lisent d'un coup      ✓")
