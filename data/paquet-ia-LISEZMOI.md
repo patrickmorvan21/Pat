@@ -58,6 +58,13 @@ complète : c'est ce texte-là qu'il faut juger.
   textes de marche changent selon ce que le village a décidé à ton sujet, et
   ils MONTENT — le monde sert le barreau que tu as atteint, pas un barreau au
   hasard. C'est le système à juger en priorité dans cette version.
+- **La menace laissée active est répliquée** (nouveau en v1.91.0) : contourner
+  la Meute à une Croisée ou se dérober à la Bête ne les efface plus. La menace
+  suit — des traces se lisent dans les marches suivantes — puis la route que
+  tu n'as pas prise **te retrouve**, à un moment qu'elle choisit. Et l'issue
+  parfaitement sûre de ce face-à-face a un prix certain et dit : la Croisée
+  suivante n'offre plus qu'une direction. C'est l'autre système à juger en
+  priorité dans cette version — voir la question en fin de section Sceau.
 - **Les scènes-variantes sont répliquées** (nouveau en v1.87.0) : sept scènes
   se jouent À LA PLACE d'une autre selon ce que tu as compris ou ce que le
   village pense de toi. Le Veilleur de la Palissade, par exemple, ne te parle
@@ -101,6 +108,19 @@ Ce qu'on cherche à savoir : est-ce que ça produit « qu'est-ce que c'est que
 **reconnu par le monde**, ou **récompensé par le jeu** ? Et la deuxième
 traversée se distingue-t-elle vraiment de la première, ou n'est-ce qu'un
 compteur invisible qui s'incrémente ?
+
+### La menace laissée active (à juger en jouant)
+
+Deux façons de l'armer : **refuser la direction où les silhouettes grises
+attendent** à une Croisée, ou **te plaquer dans l'ornière** quand la Bête
+charge le Chemin Creux. Ensuite, marche. Ce qu'on cherche à savoir : les
+traces dans les liaisons se lisent-elles comme une **causalité** (« c'est la
+route que j'ai refusée qui me suit ») ou comme un script ? Le retour
+paraît-il **mérité** ou arbitraire ? Et le prix de l'issue sûre (« Leur céder
+le chemin » — la Croisée suivante n'offre qu'une direction) se comprend-il au
+moment où on le paie ? Note aussi ce qui NE se produit pas : jamais plus
+d'une menace à la fois, jamais dans les rues du village, jamais sans qu'une
+trace ait précédé.
 
 ---
 

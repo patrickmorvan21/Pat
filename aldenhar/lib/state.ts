@@ -307,6 +307,20 @@ export type RunState = {
    */
   routeFermeeEnAttente?: boolean;
   /**
+   * LA MENACE LAISSÉE ACTIVE (compte rendu 17/08, §2 : « une menace évitée
+   * peut rester dans le monde »). Contourner la Meute à la Croisée ou se
+   * dérober à la Bête ne les EFFACE plus : la menace suit, laisse des traces
+   * en liaison (la causalité doit être lisible AVANT le retour), puis revient
+   * une fois — et la préparation transforme ce retour (clochette, découverte).
+   * ⚠️ AU PLUS UNE menace active par vie (garde-fou du même document : « ne
+   * pas transformer la run en liste invisible de dettes ») — la première
+   * posée tient le seul créneau, les suivantes ne s'enregistrent pas.
+   * `poseeA` = taille de `trav.visited` au moment de la pose (le retour ne
+   * peut tomber qu'à ≥ 2 lieux de là) ; `traces` = combien de traces déjà
+   * servies (au moins une AVANT tout retour, par construction).
+   */
+  menace?: { id: "meute" | "bete"; poseeA: number; traces: number } | null;
+  /**
    * LES TÉMOINS (5/08) : le Soupçon cesse d'être un compteur, il devient des
    * gens. Chaque acte qui fait monter le Soupçon inscrit QUI a vu QUOI, dans
    * l'ordre. Au procès, ce sont ces dépositions qui sont lues.
@@ -648,6 +662,7 @@ export function loadRun(): RunState {
             echosObjet: Array.isArray(p.echosObjet) ? p.echosObjet : [],
             vus: p.vus && typeof p.vus === "object" ? p.vus : {},
             routeFermeeEnAttente: p.routeFermeeEnAttente === true,
+            menace: p.menace && typeof p.menace === "object" ? p.menace : null,
             engageIci: p.engageIci === true,
             lieuxEngages: typeof p.lieuxEngages === "number" ? p.lieuxEngages : 0,
             horloge: typeof p.horloge === "number" ? p.horloge : (typeof p.day === "number" ? p.day : 1),

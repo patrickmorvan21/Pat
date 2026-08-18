@@ -739,6 +739,16 @@ def lire_choix(bloc: str) -> list[dict]:
         # et un relecteur conclurait que le Serment n'engage à rien.
         if booleen_de(c, "rompLeSerment"):
             ch["rompLeSerment"] = True
+        # 17/08 : LA MENACE LAISSÉE ACTIVE. Sans ce champ, la réplique
+        # laisserait un contournement effacer la menace du monde — le défaut
+        # exact que le chantier corrige, rejoué dans l'outil de test.
+        v = texte_de(c, "laisseMenace")
+        if v:
+            ch["laisseMenace"] = v
+        # 17/08 : CHOIX CERTAIN = PRIX CERTAIN — la sortie sûre referme la
+        # Croisée suivante. Même canal que l'échec dur.
+        if booleen_de(c, "fermeLaRoute"):
+            ch["fermeLaRoute"] = True
         # LOT 3 « EXPLORER PRÉPARE » (14/08) : ce que paie une préparation est
         # STRUCTUREL — sur l'option préparée, l'échec est hors de portée (aucun
         # coût au corps, aucune blessure de combat). Sans ce champ, la réplique
@@ -1402,6 +1412,8 @@ def main() -> int:
             s["acces"] = "portillon de la Halte (Serment tenu)"
         elif s["id"] == "troupeau-sans-berger":
             s["acces"] = "déroutage en marchant (boucle est)"
+        elif s["id"].startswith("menace-retour-"):
+            s["acces"] = "retour d'une menace contournée (17/08)"
         else:
             s["acces"] = "aucun"
 

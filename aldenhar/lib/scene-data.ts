@@ -414,6 +414,22 @@ export type Choice = {
    */
   rompLeSerment?: true;
   /**
+   * LA MENACE LAISSÉE ACTIVE (compte rendu 17/08, §2). Ce choix ÉVITE un
+   * danger sans le résoudre : la menace reste dans le monde (`RunState.menace`,
+   * une seule à la fois), laisse des traces, et peut revenir. C'est le levier
+   * privilégié du document — jamais un compteur abstrait de prudence : la
+   * probabilité de retour vient d'un FAIT (tu l'as laissée derrière toi).
+   */
+  laisseMenace?: "meute" | "bete";
+  /**
+   * CHOIX CERTAIN = PRIX CERTAIN (17/08, §2). Cette sortie sûre se paie en
+   * monde : la Croisée suivante n'offre qu'une direction (le détour qu'on
+   * t'impose). Réutilise le canal `routeFermeeEnAttente` de l'échec dur —
+   * même langage, même lecture. À poser SEULEMENT quand la fiction le dit
+   * (céder le passage, faire le grand tour), jamais en taxe générique.
+   */
+  fermeLaRoute?: true;
+  /**
    * LE SCEAU OUVRE UNE PORTE (arbitrage 10/08, livré le 14/08). Ce choix
    * n'existe que pour un compte qui a franchi la Descente vivant — id du
    * sceau (`SCEAU_LANDES`), voir lib/sceaux.ts.
@@ -1333,6 +1349,10 @@ export const SCENES: Scene[] = [
       {
         id: "sortir-par-le-talus",
         label: "Sortir par le talus",
+        // Sûr immédiatement — mais le problème reste en bas (17/08 §2) : ce
+        // qu'on n'a pas réglé peut suivre. La conséquence l'annonce déjà
+        // (« tu n'entends jamais ce qui le traverse »).
+        laisseMenace: "bete",
         passive: {
           consequence:
             "Tu renonces au coude. Tu grimpes, à quatre pattes sur les trois " +
@@ -1610,7 +1630,9 @@ export const SCENES: Scene[] = [
         id: "ornière",
         label: "Se plaquer, immobile",
         // La Bête chasse le mouvement dans l'axe du creux — l'immobilité
-        // est une vraie réponse (§19).
+        // est une vraie réponse (§19). Mais elle t'a SENTI passer (17/08 §2) :
+        // se dérober à un combat ne l'efface pas du monde, elle peut suivre.
+        laisseMenace: "bete",
         passive: {
           consequence:
             "Tu te coules dans l'ornière, face contre terre. La masse passe " +
@@ -4015,6 +4037,152 @@ export const SCENES: Scene[] = [
      COMPTEUR SILENCIEUX (il grossit d'une run à l'autre, voir tailleTroupeau) ;
      un DILEMME DE BESOIN (un héros Affamé peut prendre une bête — et devenir
      exactement ce qu'ils redoutent). */
+  /* ═══ LES RETOURS DE MENACE (compte rendu 17/08, §2-4) ═════════════════
+     Une menace ÉVITÉE reste dans le monde : elle a laissé des traces en
+     liaison (la causalité se lit AVANT le retour, jamais après), et elle
+     revient UNE fois, en déroutage de marche — comme le Troupeau, jamais
+     dans le pool. Règles d'écriture tenues : toutes les issues CLOSENT
+     (règle du 14/07) ; une option PRÉPARÉE remplace l'option aveugle du même
+     registre (clochette pour la Meute, la découverte du couloir pour la
+     Bête — `horsDePortee` : l'échec rate son objectif sans prendre le
+     corps) ; la sortie sûre paie un prix CERTAIN et lisible — le détour
+     qu'on t'impose (`fermeLaRoute`, le canal de l'échec dur). */
+  {
+    id: "menace-retour-meute",
+    illustration: "assets/monstre_meute_grise_c.png",
+    combat: true,
+    foe: "meute-grise",
+    foeName: "La Meute Grise",
+    narration: [
+      "Tu les retrouves parce qu'elles l'ont voulu. Le terrain est à " +
+        "découvert, sans un muret, sans un creux — c'est elles qui ont " +
+        "choisi l'endroit, et elles ont marché ton pas pendant que tu " +
+        "choisissais tout le reste.",
+      "Cinq silhouettes couleur de bruyère morte, déjà déployées. La route " +
+        "que tu n'as pas prise t'a suivi.",
+    ],
+    choices: [
+      {
+        id: "retour-tenir",
+        nature: "physique",
+        label: "Tenir le premier assaut",
+        masqueSi: { objet: "clochette-meneuse" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu ne recules pas d'un pouce, et c'est la seule chose qu'elles n'avaient pas marchée d'avance. Le premier assaut se brise sur ta lame ; la meneuse rappelle les autres d'un souffle. Elles ont leur réponse : celui-là coûte plus qu'il ne rapporte. La lande se referme derrière leur départ, et le compte est soldé.",
+            "Le premier assaut te teste, le second te jauge — ta lame répond aux deux. La meneuse te regarde longuement, puis détourne la tête, et le front entier se défait dans la bruyère. Elles ne te suivront plus : ce qu'elles voulaient savoir, elles le savent.",
+            "Elles te prennent en trois passes réglées, précises, économes — le tribut de la route esquivée, ni plus ni moins. Puis elles décrochent d'un coup, comme à un signal, et disparaissent dans l'herbe haute. La dette est réglée ; il ne reste que l'entaille.",
+            "1 naturel. Tu tiens le premier assaut. C'était le seul prévu pour être tenu. ♦ −2"
+          ),
+        },
+      },
+      {
+        /* EXPLORER PRÉPARE : la Clochette de meneuse (prise au Troupeau) —
+           devant des bêtes restées à attendre un ordre, la porter te classe.
+           Même canal que le beat 1 de la Meute, même paiement (§lot 3) :
+           l'échec ne prend pas le corps, il rate l'objectif. */
+        id: "retour-clochette",
+        nature: "physique",
+        label: "Faire tinter la clochette",
+        requiresObjet: "clochette-meneuse",
+        horsDePortee: true,
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Un seul tintement, sec, posé au milieu de leur silence. Les cinq têtes se lèvent ENSEMBLE — et le front s'ouvre en deux, comme une porte qu'on tient à un supérieur. Tu passes entre elles au pas, sans hâte, et aucune ne tourne la tête. On ne suit pas ce qu'on escorte.",
+            "Le battant claque, et la poursuite meurt sur place : on ne traque pas ce qui porte la clochette. La meneuse s'assoit — s'assoit — et attend que tu sois passé. Ce qu'elles étaient venues régler ne se règle pas avec un berger.",
+            "Tu sonnes trop tard, ou trop faible : le son se perd dans le vent. Elles ne bougent pas — la clochette les retient, mais elle ne les renvoie pas. Vous restez là, figés de part et d'autre du tintement, jusqu'à ce que la meneuse choisisse pour tout le monde : elles refluent, sans te quitter des yeux. Tu n'as rien réglé, mais rien payé.",
+            "1 naturel. La clochette sonne — et répond, loin derrière elles, à un autre battant que le tien. Elles partent vers lui. Tu ne sauras jamais qui a sonné. ♦ −2"
+          ),
+        },
+      },
+      {
+        // CHOIX CERTAIN = PRIX CERTAIN (17/08 §2) : céder le passage est
+        // parfaitement sûr, et le prix est dit — le grand tour qu'elles
+        // t'imposent (la Croisée suivante n'offre qu'une direction).
+        id: "retour-ceder",
+        label: "Leur céder le chemin",
+        fermeLaRoute: true,
+        passive: {
+          consequence:
+            "Tu quittes la route sans leur tourner le dos, un pas de côté " +
+            "après l'autre, jusqu'à ce que la bruyère te prenne aux genoux. " +
+            "Elles ne te suivent pas : elles voulaient le chemin, pas toi. " +
+            "Le tien, maintenant, fait le grand tour — c'est le prix, et tu " +
+            "le connais au moment où tu le paies.",
+        },
+      },
+    ],
+  },
+  {
+    id: "menace-retour-bete",
+    illustration: "assets/monstre_bete_chemins_creux_a.png",
+    combat: true,
+    foe: "bete-chemins-creux",
+    foeName: "La Bête des Chemins Creux",
+    narration: [
+      "Le chemin s'enfonce entre deux talus que tu n'avais pas vus venir — " +
+        "et tu comprends trop tard que ce n'est pas le chemin qui s'est " +
+        "creusé. C'est elle qui l'a creusé, cette nuit, sur ta route.",
+      "Le souffle est déjà là, au-dessus, réglé sur ton pas depuis " +
+        "longtemps. Tu ne l'avais pas semée. On ne sème pas ce qui compte " +
+        "les pas.",
+    ],
+    choices: [
+      {
+        id: "retour-forcer",
+        nature: "physique",
+        label: "Forcer le passage",
+        masqueSi: { decouverte: "d.bete_couloir" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu ne ralentis pas — tu accélères, droit dans l'axe, là où rien de ce qui la fuit ne va jamais. La masse hésite un souffle de trop : le creux est à toi avant qu'elle ne retombe. Derrière, le silence se referme, vexé, et ne te suit pas. Elle ne suit que ce qui fuit.",
+            "Tu passes en force, l'épaule au talus, ta lame fendant l'ombre au jugé. Quelque chose cède au-dessus — un poids qui se retire, pas un cri. Le creux se rouvre sur la lande, et cette fois le souffle ne t'accompagne pas : elle a son compte, et toi ton passage.",
+            "La masse te prend à mi-course et te roule contre le talus — une seule passe, lourde, qui te laisse la jambe en feu et le souffle court. Puis elle remonte dans son ombre, sans insister : le creux voulait son péage, il l'a pris. Le chemin est à toi, au prix affiché.",
+            "1 naturel. Tu forces le passage. Le passage était son dos. ♦ −2"
+          ),
+        },
+      },
+      {
+        /* EXPLORER PRÉPARE (inter-vies) : `d.bete_couloir` — savoir qu'elle
+           ne travaille qu'en couloir, dans l'axe, jamais sur les bords.
+           L'échec rate la manœuvre, pas le corps (`horsDePortee`). */
+        id: "retour-couloir",
+        nature: "physique",
+        label: "Refuser le couloir",
+        requiresDecouverte: "d.bete_couloir",
+        horsDePortee: true,
+        risky: {
+          stat: "INSTINCT",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu sais ce qu'elle est : un couloir avec un appétit. Alors tu refuses le couloir — tu obliques AVANT les talus, en travers, là où sa charge n'a rien à suivre. La masse freine au bord de son propre piège et n'en sort pas. Tu passes au large, à découvert, et le creux chasse tout seul, pour personne.",
+            "Tu quittes l'axe avant qu'elle ne l'ait refermé — deux pas de biais, pas plus, mais les deux pas qu'elle ne sait pas chasser. Le souffle te cherche dans le couloir où tu n'es plus. Tu contournes le creux par le plat, sans presser, et il ne te suit pas : hors de ses murs, elle n'existe pas.",
+            "Tu obliques trop tôt : elle le voit, et déplace son couloir — la nuit lui a appris ta route, pas ta ruse. Vous tournez l'un autour de l'autre un long moment, chacun refusant le terrain de l'autre, jusqu'à ce qu'elle renonce la première. Tu repars par le plat, entier. Le détour t'a coûté la matinée, pas la jambe.",
+            "1 naturel. Tu refuses le couloir. Elle en a creusé deux. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "retour-hauteur",
+        label: "Prendre la hauteur et attendre",
+        fermeLaRoute: true,
+        passive: {
+          consequence:
+            "Tu montes au premier tas de pierres venu et tu t'assois, bien " +
+            "visible, hors de tout couloir. En bas, le creux patiente — " +
+            "longtemps. Puis le souffle se retire, déçu, chercher un chemin " +
+            "qui marche. Quand tu redescends, la route directe est à elle : " +
+            "la tienne fera le tour, et tu le sais en la prenant.",
+        },
+      },
+    ],
+  },
   {
     id: "troupeau-sans-berger",
     illustration: "assets/monstre_troupeau_sans_berger_a.png",
@@ -7998,6 +8166,35 @@ function croisee(optA: string, optB: string, liaisonsJouees: number, seed: numbe
  * se raconte par le terrain — pool seedé, deux liaisons consécutives ne
  * tirent jamais la même (décalage par seed, pool premier avec 9 entrées).
  */
+/**
+ * LES TRACES DE LA MENACE LAISSÉE ACTIVE (17/08, §2). Servies en LIAISON,
+ * hors village, dans l'ordre — la première tombe TOUJOURS avant tout retour
+ * (le retour exige deux lieux de distance, la trace 1 part à la première
+ * marche) : la causalité se lit avant la conséquence, jamais après. Deux par
+ * menace, pas plus — au-delà, l'avertissement deviendrait du harcèlement.
+ * Contrainte d'immersion : pleine lande, aucun bâti, aucune personne.
+ */
+export const TRACES_MENACE: Record<"meute" | "bete", string[]> = {
+  meute: [
+    "Des empreintes croisent le chemin — plusieurs bêtes, du même pas, dans " +
+      "le même sens que toi. Elles ne chassaient pas quand elles sont " +
+      "passées ici. Elles suivaient.",
+    "Sur une plaque de boue, les empreintes reviennent. Plus fraîches, plus " +
+      "serrées. L'écart entre elles s'est raccourci : elles ne suivent " +
+      "plus — elles rattrapent.",
+  ],
+  bete: [
+    // ⚠️ Ne jamais finir un fragment de concaténation sur une ponctuation
+    // forte : `chaines_de_tableau` (immersion/kit) y lirait une fin d'entrée
+    // et couperait le texte en deux (trouvé au contrôle de compte, 17/08).
+    "Au sommet du talus, la bruyère est couchée en une longue ligne — " +
+      "quelque chose de lourd est passé là, réglé sur le chemin " +
+      "d'en bas. Sur le tien.",
+    "Un souffle, quelque part au ras du sol, derrière. Pas le vent : le " +
+      "vent ne s'arrête pas quand tu t'arrêtes.",
+  ],
+};
+
 const BIFURCATIONS: string[] = [
   "Le chemin se partage autour d'un muret effondré.",
   "La route cesse d'être une route. Deux traces continuent.",

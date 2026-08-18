@@ -400,6 +400,20 @@ def pools() -> list[dict]:
     #     sud, prise du Sceau à la Descente) sont servies à des endroits fixes
     #     de PLEINE LANDE : aucune ne peut poser de bâti ni de foule.
     sceaux_src = (LIB / "sceaux.ts").read_text(encoding="utf-8")
+    # LES TRACES DE LA MENACE (17/08) : servies en LIAISON, hors village —
+    # garde lande stricte (aucun bâti, aucune personne : des empreintes, un
+    # souffle). Un texte de trace qui nommerait un mur ou un villageois se
+    # jouerait en pleine lande.
+    tm = re.search(r"export const TRACES_MENACE[^=]*=\s*\{(.*?)\n\};", scene_src, re.S)
+    if tm:
+        for cle in ("meute", "bete"):
+            bloc = bloc_tableau(tm.group(1), cle + ":")
+            out.append({
+                "pool": f"TRACES_MENACE {cle}",
+                "garde": {"lande"},
+                "textes": chaines_de_tableau(bloc),
+            })
+
     # ⚠️ Les DEUX tables passent : `SCEAU_TRANSFORME` remplace la précédente
     # au-delà de deux traversées (15/08) — l'oublier laisserait trois textes
     # d'arrivée hors de l'audit, sans le moindre signalement.

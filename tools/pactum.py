@@ -184,7 +184,7 @@ class Partie:
             "cible": 7 + rng.randrange(2), "options": None, "soupcon": 0,
             "etats": {}, "besace": [], "poiVus": [], "geolierVus": [],
             "ambiancesVues": [], "poiOuvert": False, "morte": False, "famVus": [],
-            "soupconVu": 0, "routeAFermer": False,
+            "soupconVu": 0, "routeAFermer": False, "menace": None,
             "des": [], "journal": [], "sortie": None, "hameauEntree": False,
             "procesVu": False, "savoirs": [],
             # LES STATS DU HÉROS (verdict du Seuil dans le jeu, tirage ici).
@@ -540,6 +540,24 @@ class Partie:
                 self.entrer("la-descente")
             return
         r = self.rng()
+        # ═══ LE RETOUR DE LA MENACE (17/08 §2-4) — miroir du jeu. Une menace
+        # contournée revient UNE fois, en déroutage de marche, hors du
+        # village, à ≥ 2 lieux de sa pose (les traces ont eu le temps de se
+        # lire). Elle se consomme au retour, gagné ou perdu.
+        men = self.d.get("menace")
+        rad0 = re.sub(r"-\d+$", "", self.d["scene"])
+        en_lande = not (
+            rad0 in self.k["hameauInterieur"]
+            or rad0.startswith("hameau-")
+            or rad0 in ("serment-hameau", "femme-seuil", "gamin-murets")
+        )
+        if (men and en_lande and len(self.d["visites"]) - men["poseeA"] >= 2
+                and r.random() < 0.45
+                and "menace-retour-" + men["id"] in self.k["scenes"]):
+            self.d["menace"] = None
+            self.d["options"] = None
+            self.entrer("menace-retour-" + men["id"])
+            return
         opts = r.sample(libres, 2)
         # UN ÉCHEC DUR DÉPENSE QUELQUE CHOSE DU MONDE (vague 5) : hors séjour
         # il n'y avait pas d'option à retirer, alors la Croisée se resserre.
@@ -569,6 +587,12 @@ class Partie:
         amb = self.ambiance_de_marche(r, dans_village, radical)
         self.d["ambiancesVues"].append(amb)
         self.dit(amb, "narration")
+        # LES TRACES DE LA MENACE (17/08) : la première tombe TOUJOURS avant
+        # tout retour possible — la causalité se lit avant la conséquence.
+        traces = self.k.get("tracesMenace", {}).get((men or {}).get("id"), [])
+        if men and en_lande and men["traces"] < len(traces):
+            self.dit(traces[men["traces"]], "narration")
+            men["traces"] += 1
         if ferme and self.k.get("routeFermee"):
             self.dit(r.choice(self.k["routeFermee"]), "narration")
         else:
@@ -744,6 +768,19 @@ class Partie:
                 self.entrer(p["ouvreSur"])
             return
         if o["kind"] == "aller":
+            # LA ROUTE DES LOUPS REFUSÉE (17/08 §2) : l'indice annonçait des
+            # silhouettes grises — choisir l'autre direction est un vrai
+            # contournement, et il ne les efface pas. Une seule menace à la
+            # fois ; marcher VERS la meute l'apure (on n'est pas suivi par ce
+            # qu'on affronte). Miroir exact de la branche toDest du jeu.
+            offert = self.d.get("options") or []
+            if ("meute-grise-1" in offert and o["dest"] != "meute-grise-1"
+                    and not self.d.get("menace")):
+                self.d["menace"] = {"id": "meute",
+                                    "poseeA": len(self.d["visites"]), "traces": 0}
+            elif (o["dest"] == "meute-grise-1"
+                    and (self.d.get("menace") or {}).get("id") == "meute"):
+                self.d["menace"] = None
             self.d["phase"] = "scene"
             self.d["options"] = None
             self.entrer(o["dest"], orientation=True)
@@ -759,6 +796,15 @@ class Partie:
         # avant le muret, on ne rompt pas une promesse qu'on n'a pas faite.
         if c.get("rompLeSerment") and self.d.get("serment"):
             self.d["sermentRompu"] = True
+        # LA MENACE LAISSÉE ACTIVE (17/08) : se dérober à un danger ne
+        # l'efface pas du monde — au plus UNE à la fois (garde-fou du
+        # document). Et CHOIX CERTAIN = PRIX CERTAIN : la sortie sûre qui le
+        # déclare referme la Croisée suivante, comme un échec dur.
+        if c.get("laisseMenace") and not self.d.get("menace"):
+            self.d["menace"] = {"id": c["laisseMenace"],
+                                "poseeA": len(self.d["visites"]), "traces": 0}
+        if c.get("fermeLaRoute"):
+            self.d["routeAFermer"] = True
         # Ce qu'un choix ENSEIGNE se pose à la sélection (comme le Soupçon) :
         # poser la question vaut lire une trace.
         if c.get("donneSavoir"):

@@ -14,6 +14,7 @@ import {
   ENTRY_SCENE,
   jailerTaunt,
   makeLiaison,
+  TRACES_MENACE,
   pickLiaisonOptions,
   isHameauInterior,
   pickAccueil,
@@ -666,6 +667,31 @@ function decouperEnEcrans(entries: FeedEntry[]): FeedEntry[][] {
   if (cur.length) {
     if (mots === 0 && groupes.length) groupes[groupes.length - 1].push(...cur);
     else groupes.push(cur);
+  }
+  // LA DERNIÈRE PAGE NE VIT PAS SEULE (compte rendu 17/08, §6 : « on ne tape
+  // pas pour tourner une page »). La coupe avant-débordement laissait souvent
+  // un dernier groupe COURT — 25-45 mots orphelins qui coûtaient un tap de
+  // plus avant les choix (mesuré : l'ouverture d'un compte vétéran mettait la
+  // première décision à l'écran 4 ; la trace d'écharde y vivait seule).
+  // Un dernier groupe court rejoint l'écran précédent tant que le total reste
+  // sous le PLAFOND DUR de 120 mots (doctrine du 4/08 : 90 = budget, 120 =
+  // maximum absolu d'un écran). Jamais pour un bandeau du Geôlier : son
+  // chrome de 111 px repousserait le contenu sous la ligne de flottaison
+  // (le débordement corrigé le 10/08). Les taps MÉRITÉS (mort, Sceau,
+  // révélation) ne passent pas par ce découpage — ils ont leurs écrans.
+  if (groupes.length >= 2) {
+    const poids = (g: FeedEntry[]) => g.reduce((n, e) => n + texte(e), 0);
+    const dernier = groupes[groupes.length - 1];
+    const pDernier = poids(dernier);
+    if (
+      pDernier > 0 &&
+      pDernier <= 45 &&
+      !dernier.some((e) => e.kind === "jailer") &&
+      poids(groupes[groupes.length - 2]) + pDernier <= 120
+    ) {
+      groupes[groupes.length - 2].push(...dernier);
+      groupes.pop();
+    }
   }
   return groupes.length ? groupes : [entries];
 }
@@ -1860,6 +1886,27 @@ export default function Scene() {
       // le score du Registre.
       engageDansLeLieu = runRef.current?.engageIci ?? false;
       const embuscade = opts.toDest === "chemin-creux" && !trav.visited.includes("chemin-creux");
+      // LA ROUTE DES LOUPS REFUSÉE (17/08 §2, l'exemple même du document) :
+      // l'indice de la Croisée annonçait « des silhouettes grises » — choisir
+      // l'autre direction est un vrai contournement, en connaissance de
+      // cause, et il ne les efface pas. La menace se pose ICI, avant que
+      // `liaisonOpts` ne soit remis à zéro trois lignes plus bas.
+      // (Une seule menace à la fois ; et marcher VERS la meute l'apure : on
+      // ne peut pas être suivi par ce qu'on affronte.)
+      const offert = trav.liaisonOpts;
+      if (
+        offert?.includes("meute-grise-1") &&
+        opts.toDest !== "meute-grise-1" &&
+        !runRef.current?.menace
+      ) {
+        persist((r) => {
+          r.menace = { id: "meute", poseeA: trav.visited.length, traces: 0 };
+        });
+      } else if (opts.toDest === "meute-grise-1" && runRef.current?.menace?.id === "meute") {
+        persist((r) => {
+          r.menace = null;
+        });
+      }
       nextScene = resoudre(embuscade ? "bete-chemins-creux" : opts.toDest, runRef.current) ?? sceneById(ENTRY_SCENE)!;
       trav.phase = "scene";
       // Reprise fidèle : fermer l'app pendant l'embuscade doit rendre la
@@ -1984,7 +2031,31 @@ export default function Scene() {
       const fromEst = ["colline-aux-gibets", "pendu-qui-parle", "pendu-mal-fixe"]
         .includes(scene.id.replace(/-\d+$/, ""));
       const troupeauVu = Boolean((runRef.current?.faits ?? {})["vu:troupeau"]);
-      if (fromEst && !troupeauVu && !scene.liaison && chance(0.35)) {
+      // ═══ LE RETOUR DE LA MENACE (17/08 §2-4) ═══════════════════════════
+      // Même grammaire que le Troupeau : un déroutage de MARCHE, jamais une
+      // entrée du pool. Conditions, toutes causales : une menace est active
+      // (posée par un contournement réel), au moins DEUX lieux ont passé
+      // (les traces ont eu le temps de se lire), et on marche en pleine
+      // lande — une meute dans les ruelles du village serait un non-sens.
+      // La menace se CONSOMME au retour, gagné ou perdu : une seule fois.
+      const men = runRef.current?.menace;
+      const dernierLieu = trav.visited[trav.visited.length - 1] ?? "";
+      const enLande =
+        !isHameauInterior(dernierLieu) && !/^(serment-hameau|hameau-)/.test(dernierLieu);
+      if (
+        men &&
+        enLande &&
+        trav.visited.length - men.poseeA >= 2 &&
+        !scene.liaison &&
+        chance(0.45)
+      ) {
+        nextScene = resoudre("menace-retour-" + men.id, runRef.current)!;
+        trav.phase = "scene";
+        trav.current = nextScene.id; // hors `visited` : pas un lieu du pool
+        persist((r) => {
+          r.menace = null;
+        });
+      } else if (fromEst && !troupeauVu && !scene.liaison && chance(0.35)) {
         nextScene = resoudre("troupeau-sans-berger", runRef.current)!;
         trav.phase = "scene";
         trav.current = nextScene.id; // hors `visited` : pas un lieu du pool
@@ -2082,6 +2153,19 @@ export default function Scene() {
               "Il ne dit pas comment il le sait.",
           ],
         };
+      }
+      // LES TRACES DE LA MENACE (17/08) : tant qu'elle suit et qu'on marche
+      // en lande, chaque liaison sert la trace suivante — la première tombe
+      // TOUJOURS avant tout retour possible (il exige deux lieux d'écart) :
+      // la causalité se lit avant la conséquence. Deux traces, pas plus.
+      if (men && enLande && men.traces < TRACES_MENACE[men.id].length) {
+        nextScene = {
+          ...nextScene,
+          narration: [...nextScene.narration, TRACES_MENACE[men.id][men.traces]],
+        };
+        persist((r) => {
+          if (r.menace) r.menace = { ...r.menace, traces: r.menace.traces + 1 };
+        });
       }
       trav.phase = "liaison";
       trav.liaisonOpts = pair;
@@ -3494,6 +3578,23 @@ export default function Scene() {
     if (choice.rompLeSerment && runRef.current?.hameau?.serment) {
       persist((run) => {
         run.hameau = { ...run.hameau, sermentRompu: true };
+      });
+    }
+    // LA MENACE LAISSÉE ACTIVE (17/08 §2) : se dérober à un danger ne
+    // l'efface pas du monde. AU PLUS UNE à la fois — la première tient le
+    // créneau, les suivantes ne s'enregistrent pas (garde-fou du document :
+    // jamais une liste invisible de dettes).
+    if (choice.laisseMenace && !runRef.current?.menace) {
+      const idM = choice.laisseMenace;
+      persist((run) => {
+        run.menace = { id: idM, poseeA: run.trav?.visited.length ?? 0, traces: 0 };
+      });
+    }
+    // CHOIX CERTAIN = PRIX CERTAIN (17/08 §2) : cette sortie sûre referme la
+    // prochaine Croisée — même canal, même lecture que l'échec dur.
+    if (choice.fermeLaRoute) {
+      persist((run) => {
+        run.routeFermeeEnAttente = true;
       });
     }
     // Le Serment des Renonçants (spec 24/07 suite §3) : engage la traversée —

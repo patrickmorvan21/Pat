@@ -57,6 +57,19 @@ def apports_proces(src: str) -> dict[str, str]:
     return {c: recoller(v) for c, v in paires}
 
 
+def traces_menace(src: str) -> dict[str, list[str]]:
+    """Les traces de `TRACES_MENACE` (Record clé → tableau de chaînes).
+
+    Compte contrôlé à l'appel (règle des extracteurs muets) : une clé à zéro
+    trace ferait revenir la menace SANS avertissement dans la réplique.
+    """
+    i = src.find("export const TRACES_MENACE")
+    if i < 0:
+        return {}
+    seg = src[i : src.find("};", i)]
+    return {cle: chaines_de_tableau(bloc_tableau(seg, cle + ":")) for cle in ("meute", "bete")}
+
+
 def record(src: str, ancre: str) -> dict[str, str]:
     """Un `Record<string, string> = { clef: "valeur", … }` en dict.
 
@@ -169,7 +182,13 @@ def borne_sud_gabarits() -> dict:
 
 def main() -> int:
     studio = DATA / "studio-data.json"
-    if not studio.exists():
+    # ⚠️ Régénéré dès que la SOURCE est plus récente — pas seulement s'il
+    # manque. C'est le défaut « auditer un instantané » corrigé le 10/08 pour
+    # aiguillage.py et strates.py, retrouvé ICI le 17/08 : le kit a livré des
+    # scènes de la veille (les retours de menace absents, `laisseMenace`
+    # invisible) en annonçant un export réussi.
+    sd_ts = LIB / "scene-data.ts"
+    if not studio.exists() or studio.stat().st_mtime < sd_ts.stat().st_mtime:
         subprocess.run([sys.executable, str(RACINE / "tools" / "studio_data.py")], check=True)
     d = json.loads(studio.read_text(encoding="utf-8"))
     src = (LIB / "scene-data.ts").read_text(encoding="utf-8")
@@ -299,6 +318,11 @@ def main() -> int:
         "soupconCraie": record(src, "export const SOUPCON_CRAIE: Record<number, string>"),
         "soupconGeolier": record(src, "export const SOUPCON_GEOLIER: Record<number, string>"),
         "routeFermee": chaines_de_tableau(bloc_tableau(src, "const ROUTE_FERMEE")),
+        # LA MENACE LAISSÉE ACTIVE (17/08) : les traces voyagent avec le kit —
+        # sans elles, la réplique ferait revenir la Meute SANS avertissement,
+        # et un relecteur jugerait le retour arbitraire (la causalité lisible
+        # est la condition n°1 du document).
+        "tracesMenace": traces_menace(src),
         "geolierLiaison": chaines_de_tableau(bloc_tableau(src, "const LIAISON_JAILER")),
         "geolier": geolier,
         # Noms RÉELS des objets (le kit affichait l'identifiant brut,
@@ -345,6 +369,10 @@ def main() -> int:
           f"· {n_poi} points · {len(kit['pool'])} destinations · {n_geol} citations du Geôlier")
     manquant = [c for c in ("approche", "approcheNarration", "indiceRoute", "ambiances",
                             "bifurcations", "geolierLiaison", "hameauInterieur") if not kit[c]]
+    # Les traces de menace : chaque clé doit rendre ses textes (extracteur muet
+    # = la Meute reviendrait sans avertissement dans la réplique).
+    manquant += [f"tracesMenace.{k}" for k in ("meute", "bete")
+                 if not kit["tracesMenace"].get(k)]
     if manquant:
         print("⚠️ extraction VIDE pour :", ", ".join(manquant))
         return 1
