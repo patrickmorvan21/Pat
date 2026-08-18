@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-17T20:48:06Z",
- "commit": "f107c12",
+ "genere": "2026-08-18T06:21:41Z",
+ "commit": "9414b71",
  "zones": [
   {
    "id": "landes",
@@ -835,7 +835,8 @@
      "id": "sortir-par-le-talus",
      "label": "Sortir par le talus",
      "type": "passif",
-     "consequence": "Tu renonces au coude. Tu grimpes, à quatre pattes sur les trois derniers pas, et tu ressors à découvert dans la bruyère. La lande te voit — tant mieux. Derrière toi, en bas, le creux continue tout seul, et tu n'entends jamais ce qui le traverse."
+     "consequence": "Tu renonces au coude. Tu grimpes, à quatre pattes sur les trois derniers pas, et tu ressors à découvert dans la bruyère. La lande te voit — tant mieux. Derrière toi, en bas, le creux continue tout seul, et tu n'entends jamais ce qui le traverse.",
+     "laisseMenace": "bete"
     },
     {
      "id": "longer-cote-sud",
@@ -1090,7 +1091,8 @@
      "id": "ornière",
      "label": "Se plaquer, immobile",
      "type": "passif",
-     "consequence": "Tu te coules dans l'ornière, face contre terre. La masse passe au-dessus de toi — un pont de cuir et de suint, interminable. Elle cherche ce qui court, pas ce qui gît : la lande est pleine de gisants, elle a l'habitude. Quand le silence revient, tu recraches de la terre et tu marches."
+     "consequence": "Tu te coules dans l'ornière, face contre terre. La masse passe au-dessus de toi — un pont de cuir et de suint, interminable. Elle cherche ce qui court, pas ce qui gît : la lande est pleine de gisants, elle a l'habitude. Quand le silence revient, tu recraches de la terre et tu marches.",
+     "laisseMenace": "bete"
     }
    ],
    "pointsInteret": [],
@@ -3852,6 +3854,152 @@
    "mèneIci": [],
    "roles": [],
    "acces": "séquence du Hameau",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "menace-retour-meute",
+   "narration": [
+    "Tu les retrouves parce qu'elles l'ont voulu. Le terrain est à découvert, sans un muret, sans un creux — c'est elles qui ont choisi l'endroit, et elles ont marché ton pas pendant que tu choisissais tout le reste.",
+    "Cinq silhouettes couleur de bruyère morte, déjà déployées. La route que tu n'as pas prise t'a suivi."
+   ],
+   "choix": [
+    {
+     "id": "retour-tenir",
+     "label": "Tenir le premier assaut",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu ne recules pas d'un pouce, et c'est la seule chose qu'elles n'avaient pas marchée d'avance. Le premier assaut se brise sur ta lame ; la meneuse rappelle les autres d'un souffle. Elles ont leur réponse : celui-là coûte plus qu'il ne rapporte. La lande se referme derrière leur départ, et le compte est soldé.",
+      "reussite": "Le premier assaut te teste, le second te jauge — ta lame répond aux deux. La meneuse te regarde longuement, puis détourne la tête, et le front entier se défait dans la bruyère. Elles ne te suivront plus : ce qu'elles voulaient savoir, elles le savent.",
+      "echec": "Elles te prennent en trois passes réglées, précises, économes — le tribut de la route esquivée, ni plus ni moins. Puis elles décrochent d'un coup, comme à un signal, et disparaissent dans l'herbe haute. La dette est réglée ; il ne reste que l'entaille.",
+      "funeste": "1 naturel. Tu tiens le premier assaut. C'était le seul prévu pour être tenu. ♦ −2"
+     },
+     "nature": "physique",
+     "masqueSi": {
+      "objet": "clochette-meneuse"
+     }
+    },
+    {
+     "id": "retour-clochette",
+     "label": "Faire tinter la clochette",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Un seul tintement, sec, posé au milieu de leur silence. Les cinq têtes se lèvent ENSEMBLE — et le front s'ouvre en deux, comme une porte qu'on tient à un supérieur. Tu passes entre elles au pas, sans hâte, et aucune ne tourne la tête. On ne suit pas ce qu'on escorte.",
+      "reussite": "Le battant claque, et la poursuite meurt sur place : on ne traque pas ce qui porte la clochette. La meneuse s'assoit — s'assoit — et attend que tu sois passé. Ce qu'elles étaient venues régler ne se règle pas avec un berger.",
+      "echec": "Tu sonnes trop tard, ou trop faible : le son se perd dans le vent. Elles ne bougent pas — la clochette les retient, mais elle ne les renvoie pas. Vous restez là, figés de part et d'autre du tintement, jusqu'à ce que la meneuse choisisse pour tout le monde : elles refluent, sans te quitter des yeux. Tu n'as rien réglé, mais rien payé.",
+      "funeste": "1 naturel. La clochette sonne — et répond, loin derrière elles, à un autre battant que le tien. Elles partent vers lui. Tu ne sauras jamais qui a sonné. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeObjet": "clochette-meneuse",
+     "horsDePortee": true
+    },
+    {
+     "id": "retour-ceder",
+     "label": "Leur céder le chemin",
+     "type": "passif",
+     "consequence": "Tu quittes la route sans leur tourner le dos, un pas de côté après l'autre, jusqu'à ce que la bruyère te prenne aux genoux. Elles ne te suivent pas : elles voulaient le chemin, pas toi. Le tien, maintenant, fait le grand tour — c'est le prix, et tu le connais au moment où tu le paies.",
+     "fermeLaRoute": true
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "meute-grise",
+   "adversaireNom": "La Meute Grise",
+   "combat": true,
+   "image": {
+    "fichier": "monstre_meute_grise_c.png",
+    "hash": "dd0fe7bf",
+    "taille": 32950,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "retour d'une menace contournée (17/08)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "menace-retour-bete",
+   "narration": [
+    "Le chemin s'enfonce entre deux talus que tu n'avais pas vus venir — et tu comprends trop tard que ce n'est pas le chemin qui s'est creusé. C'est elle qui l'a creusé, cette nuit, sur ta route.",
+    "Le souffle est déjà là, au-dessus, réglé sur ton pas depuis longtemps. Tu ne l'avais pas semée. On ne sème pas ce qui compte les pas."
+   ],
+   "choix": [
+    {
+     "id": "retour-forcer",
+     "label": "Forcer le passage",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu ne ralentis pas — tu accélères, droit dans l'axe, là où rien de ce qui la fuit ne va jamais. La masse hésite un souffle de trop : le creux est à toi avant qu'elle ne retombe. Derrière, le silence se referme, vexé, et ne te suit pas. Elle ne suit que ce qui fuit.",
+      "reussite": "Tu passes en force, l'épaule au talus, ta lame fendant l'ombre au jugé. Quelque chose cède au-dessus — un poids qui se retire, pas un cri. Le creux se rouvre sur la lande, et cette fois le souffle ne t'accompagne pas : elle a son compte, et toi ton passage.",
+      "echec": "La masse te prend à mi-course et te roule contre le talus — une seule passe, lourde, qui te laisse la jambe en feu et le souffle court. Puis elle remonte dans son ombre, sans insister : le creux voulait son péage, il l'a pris. Le chemin est à toi, au prix affiché.",
+      "funeste": "1 naturel. Tu forces le passage. Le passage était son dos. ♦ −2"
+     },
+     "nature": "physique",
+     "donneDecouverte": "d.bete_couloir",
+     "masqueSi": {
+      "decouverte": "d.bete_couloir"
+     }
+    },
+    {
+     "id": "retour-couloir",
+     "label": "Refuser le couloir",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu sais ce qu'elle est : un couloir avec un appétit. Alors tu refuses le couloir — tu obliques AVANT les talus, en travers, là où sa charge n'a rien à suivre. La masse freine au bord de son propre piège et n'en sort pas. Tu passes au large, à découvert, et le creux chasse tout seul, pour personne.",
+      "reussite": "Tu quittes l'axe avant qu'elle ne l'ait refermé — deux pas de biais, pas plus, mais les deux pas qu'elle ne sait pas chasser. Le souffle te cherche dans le couloir où tu n'es plus. Tu contournes le creux par le plat, sans presser, et il ne te suit pas : hors de ses murs, elle n'existe pas.",
+      "echec": "Tu obliques trop tôt : elle le voit, et déplace son couloir — la nuit lui a appris ta route, pas ta ruse. Vous tournez l'un autour de l'autre un long moment, chacun refusant le terrain de l'autre, jusqu'à ce qu'elle renonce la première. Tu repars par le plat, entier. Le détour t'a coûté la matinée, pas la jambe.",
+      "funeste": "1 naturel. Tu refuses le couloir. Elle en a creusé deux. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeDecouverte": "d.bete_couloir",
+     "horsDePortee": true
+    },
+    {
+     "id": "retour-hauteur",
+     "label": "Prendre la hauteur et attendre",
+     "type": "passif",
+     "consequence": "Tu montes au premier tas de pierres venu et tu t'assois, bien visible, hors de tout couloir. En bas, le creux patiente — longtemps. Puis le souffle se retire, déçu, chercher un chemin qui marche. Quand tu redescends, la route directe est à elle : la tienne fera le tour, et tu le sais en la prenant.",
+     "fermeLaRoute": true
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "bete-chemins-creux",
+   "adversaireNom": "La Bête des Chemins Creux",
+   "donneDecouverte": "d.bete_couloir",
+   "combat": true,
+   "image": {
+    "fichier": "monstre_bete_chemins_creux_a.png",
+    "hash": "4348084a",
+    "taille": 23757,
+    "recent": false,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "bete-chemins-creux"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "retour d'une menace contournée (17/08)",
    "etat": "valide",
    "alertes": []
   },
@@ -9232,9 +9380,9 @@
   }
  ],
  "totaux": {
-  "scenes": 91,
+  "scenes": 93,
   "pointsInteret": 0,
-  "choix": 271,
+  "choix": 277,
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,
