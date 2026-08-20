@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-18T06:21:41Z",
- "commit": "9414b71",
+ "genere": "2026-08-18T07:18:45Z",
+ "commit": "8db92d7",
  "zones": [
   {
    "id": "landes",
@@ -107,8 +107,8 @@
     },
     {
      "id": "moulin_sans_ailes",
-     "nom": "Le Moulin sans Ailes",
-     "illustration": "scene_moulin_sans_ailes_d_d.png",
+     "nom": "Le Moulin Arrêté",
+     "illustration": "scene_moulin_campement_a.png",
      "x": 300,
      "y": 260,
      "note": "refuge supposé de la Fille",
@@ -2536,7 +2536,7 @@
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu ne demandes pas où : tu demandes QUAND. Il réfléchit vraiment, pour la première fois. « Le matin, jamais. Le soir, souvent. Et une fois dans le brouillard, très près. » Il te regarde. « Elle m’a dit de rentrer. J’ai rentré. »",
-      "reussite": "Il pointe l’ouest du menton, au-delà des murets, là où la crête remonte vers une masse noire sans ailes. « Par là. Elle va jamais plus loin que le moulin, et jamais du côté des potences. Moi non plus j’y vais pas. »",
+      "reussite": "Il pointe l’ouest du menton, au-delà des murets, là où la crête remonte vers une croix noire qui ne tourne jamais. « Par là. Elle va jamais plus loin que le moulin, et jamais du côté des potences. Moi non plus j’y vais pas. »",
       "echec": "« Partout », dit-il, et tu comprends qu’il ne ment pas — il n’a simplement jamais eu besoin de retenir où, parce que personne ne le lui a jamais demandé sérieusement.",
       "funeste": "1 naturel. Il te regarde autrement, d’un coup. « Pourquoi tu demandes ça, toi ? » Il ramasse ses cailloux dans le pan de sa chemise et s’en va, et tu entends très bien qu’il en parlera à quelqu’un. ♦ −2"
      },
@@ -4488,7 +4488,7 @@
   {
    "id": "campement",
    "narration": [
-    "Le moulin n'a plus d'ailes mais il a gardé leur trace : quatre ombres pâles en croix sur le corps de pierre, comme un moulin fantôme peint sur le vrai. Sur la bruyère, à cinquante pas, une crête de faîtage s'interrompt net, sans raison.",
+    "Le moulin a gardé ses quatre ailes, ouvertes en croix sur le couchant. Le vent couche la bruyère jusqu'à son pied — et elles ne bougent pas. Leur ombre non plus. Sur la crête, à cinquante pas, une ligne de faîtage s'interrompt net, sans raison.",
     "La porte est entrouverte. Pas défoncée : entretenue."
    ],
    "choix": [
@@ -4500,7 +4500,16 @@
      "sortie": {
       "toScene": "campement-2"
      },
-     "donneObjet": "jouet-fixee"
+     "donneObjet": "jouet-fixee",
+     "image": {
+      "fichier": "scene_moulin_interieur_a_d.png",
+      "hash": "372f7583",
+      "taille": 11846,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "traces-crete",
@@ -4531,17 +4540,15 @@
    "lieu": "moulin_sans_ailes",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_moulin_sans_ailes_d_d.png",
-    "hash": "a916da10",
-    "taille": 27850,
+    "fichier": "scene_moulin_campement_a.png",
+    "hash": "e330d3ee",
+    "taille": 25894,
     "recent": false,
     "existe": true,
     "statut": "dediee",
-    "herite": "",
-    "verdict": "replace",
-    "verdictNote": "Le lieu s'appelle le Moulin SANS Ailes et son point d'intérêt « la croix d'ombres » repose entièrement sur leur absence — l'image montre quatre ailes entières. 4e signalement. Ici le texte ne peut pas céder (le nom du lieu ET le POI en dépendent) : il faut une tour de pierre TRONQUÉE. Prompt corrigé dans data/images-a-produire.md — ne jamais écrire le mot « moulin » dans le prompt, il rappelle les ailes."
+    "herite": ""
    },
-   "description": "Arrivée au Moulin sans Ailes — c'est le lieu de repos de la zone. Une tour de pierre trapue SANS ailes, quatre traces pâles sur le corps du moulin, la porte entrebâillée.",
+   "description": "Arrivée au Moulin Arrêté — c'est le lieu de repos de la zone. Le moulin garde ses quatre ailes en croix devant le soleil bas, immobiles quel que soit le vent, la porte entrebâillée.",
    "promptImage": "old stone windmill without sails on a moorland crest, four pale ghost marks of the missing sails on the stone body, door ajar, small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
    "mèneVers": [],
    "mèneIci": [],
@@ -8013,14 +8020,6 @@
    "racine": "mare_reflet_metal"
   },
   {
-   "fichier": "scene_moulin_campement_a.png",
-   "hash": "e330d3ee",
-   "taille": 25894,
-   "recent": false,
-   "groupe": "autre",
-   "racine": "moulin_campement"
-  },
-  {
    "fichier": "scene_moulin_crete_interrompue_b.png",
    "hash": "1754965e",
    "taille": 26367,
@@ -8037,14 +8036,6 @@
    "racine": "moulin_croix_ombres"
   },
   {
-   "fichier": "scene_moulin_interieur_a_d.png",
-   "hash": "372f7583",
-   "taille": 11846,
-   "recent": false,
-   "groupe": "autre",
-   "racine": "moulin_interieur"
-  },
-  {
    "fichier": "scene_moulin_lucarne_a_b.png",
    "hash": "733f07d8",
    "taille": 8031,
@@ -8057,7 +8048,15 @@
    "hash": "eb6852f6",
    "taille": 25528,
    "recent": false,
-   "groupe": "brancher",
+   "groupe": "doublon",
+   "racine": "moulin_sans_ailes"
+  },
+  {
+   "fichier": "scene_moulin_sans_ailes_d_d.png",
+   "hash": "a916da10",
+   "taille": 27850,
+   "recent": false,
+   "groupe": "doublon",
    "racine": "moulin_sans_ailes"
   },
   {
@@ -9102,10 +9101,6 @@
  },
  "verdictsPerimes": [
   {
-   "id": "croix-ombres",
-   "note": "LE MOULIN A SES AILES SUR LE PLAN RAPPROCHÉ AUSSI — jamais relevé jusqu'ici. L'examen décrit « quatre bandes pâles où la pierre n'a pas vieilli, protégée par les ailes » et l'image montre les ailes elles-mêmes, intactes. Même prompt correctif que la vue de lieu : une tour de pierre tronquée, décrite comme un SILO, aucune clause négative."
-  },
-  {
    "id": "potences-cercle",
    "note": "L'examen ne parle que de « un nom gravé AU PIED, et une date » sur chaque potence — « la crête entière est un calendrier planté ». Le plan rapproché cadre les mâts au-dessus du sol : aucun pied, aucune gravure. Descendre le cadrage."
   }
@@ -9386,7 +9381,7 @@
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 90,
+  "reserve": 89,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
@@ -9395,8 +9390,8 @@
   "besoins": 0,
   "transitions": 64,
   "ecransDeMarche": 12,
-  "interactions": 29,
-  "aRefaire": 20,
+  "interactions": 30,
+  "aRefaire": 19,
   "familiarite": 34
  }
 }
