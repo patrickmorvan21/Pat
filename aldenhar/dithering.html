@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Générateur de Dithering — Aldenhar</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&family=Fraunces:opsz,wght@9..144,300..900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1c1a16;
+    --bg-2: #211f1a;
+    --cream: #e8e1d2;
+    --cream-dim: #8a8375;
+    --orange: #e0632a;
+    --ink: #171310;
+    --line: rgba(232,225,210,0.08);
+    --line-strong: rgba(232,225,210,0.16);
+    --grid: 160px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background:
+      repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px var(--grid)),
+      repeating-linear-gradient(0deg, var(--line) 0 1px, transparent 1px var(--grid)),
+      var(--bg);
+    color: var(--cream);
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    min-height: 100vh;
+  }
+  .mono { font-family: 'Space Mono', monospace; }
+
+  .wrap { max-width: 1440px; margin: 0 auto; padding: 0 48px; }
+
+  /* ============ HEADER ============ */
+  header {
+    padding: 34px 0 0;
+  }
+  .overline {
+    display: flex; align-items: center; gap: 14px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px; letter-spacing: 1px;
+    color: var(--cream);
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line-strong);
+    position: relative;
+  }
+  .diamond-outline {
+    width: 10px; height: 10px;
+    border: 1.5px solid var(--cream);
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+  .overline .dots {
+    flex: 1; height: 4px;
+    background-image: radial-gradient(var(--cream-dim) 1px, transparent 1.2px);
+    background-size: 8px 4px;
+    background-repeat: repeat-x;
+    background-position: left center;
+    opacity: 0.55;
+    margin-left: 6px;
+  }
+
+  .head-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 60px;
+    padding: 42px 0 38px;
+  }
+  @media (max-width: 1000px) { .head-grid { grid-template-columns: 1fr; gap: 30px; } }
+
+  h1.headline {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: clamp(38px, 4.6vw, 58px);
+    line-height: 1.08;
+    letter-spacing: -1.5px;
+    color: var(--cream);
+    margin-bottom: 20px;
+  }
+  p.lead {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--cream-dim);
+    max-width: 480px;
+    font-weight: 400;
+  }
+
+  .arcs-box { position: relative; overflow: hidden; min-height: 150px; }
+  .arcs-box svg { position: absolute; right: 0; top: 0; width: 100%; height: 100%; }
+
+  /* ============ LAYOUT OUTIL ============ */
+  .layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 0;
+    border-top: 1px solid var(--line-strong);
+  }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; } }
+
+  .controls {
+    border-right: 1px solid var(--line-strong);
+    padding: 36px 36px 36px 0;
+  }
+  @media (max-width: 900px) { .controls { border-right: none; padding-right: 0; } }
+
+  .section { margin-bottom: 30px; }
+  .section-head {
+    display: flex; align-items: baseline; gap: 12px;
+    padding-bottom: 12px; margin-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .section-head .n {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px; color: var(--cream-dim);
+  }
+  .section-head .t {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: -0.2px;
+    color: var(--cream);
+  }
+
+  .drop {
+    border: 1px dashed rgba(232,225,210,0.3);
+    padding: 30px 12px;
+    text-align: center;
+    cursor: pointer;
+    font-family: 'Space Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    color: var(--cream-dim);
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .drop:hover, .drop.drag { border-color: var(--orange); color: var(--cream); }
+  .drop input { display: none; }
+
+  .field { margin-bottom: 20px; }
+  .field > label {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: 'Space Mono', monospace;
+    font-size: 11.5px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--cream-dim); margin-bottom: 10px;
+  }
+  .field > label .val { color: var(--orange); font-size: 13px; }
+  .field input[type=range] {
+    width: 100%; height: 2px;
+    -webkit-appearance: none;
+    background: rgba(232,225,210,0.18);
+    outline: none;
+  }
+  .field input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 11px; height: 11px;
+    background: var(--orange);
+    cursor: pointer;
+    transform: rotate(45deg);
+  }
+  .field input[type=range]::-moz-range-thumb {
+    width: 11px; height: 11px;
+    background: var(--orange);
+    border: none; cursor: pointer;
+    transform: rotate(45deg);
+  }
+  .field select {
+    width: 100%;
+    background: var(--bg-2);
+    color: var(--cream);
+    border: 1px solid var(--line-strong);
+    padding: 11px 12px;
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, var(--cream-dim) 50%), linear-gradient(135deg, var(--cream-dim) 50%, transparent 50%);
+    background-position: calc(100% - 18px) 50%, calc(100% - 13px) 50%;
+    background-size: 5px 5px;
+    background-repeat: no-repeat;
+  }
+
+  .swatches { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .swatch {
+    width: 42px; height: 42px;
+    border: 1px solid var(--line-strong);
+    cursor: pointer;
+    position: relative;
+  }
+  .swatch.active { border-color: var(--orange); box-shadow: 0 0 0 1px var(--orange); }
+  .swatch .a { position: absolute; top: 0; left: 0; width: 100%; height: 50%; }
+  .swatch .b { position: absolute; bottom: 0; left: 0; width: 100%; height: 50%; }
+
+  .custom-colors { display: flex; gap: 12px; }
+  .custom-colors > div { flex: 1; }
+  .custom-colors label {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px; color: var(--cream-dim); display: block;
+    margin-bottom: 6px; letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .custom-colors input[type=color] {
+    width: 100%; height: 30px; border: 1px solid var(--line-strong); background: none; cursor: pointer;
+  }
+
+  .check-row {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 11.5px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--cream-dim);
+  }
+  .check-row input { accent-color: var(--orange); }
+
+  /* ============ BOUTONS (plaque chanfreinée réf.) ============ */
+  .btn-row { display: flex; gap: 12px; }
+  .btn {
+    flex: 1;
+    background: var(--cream);
+    border: none;
+    color: var(--ink);
+    padding: 15px 12px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+    transition: opacity 0.15s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn:disabled { background: rgba(232,225,210,0.14); color: var(--cream-dim); cursor: default; }
+  .btn:disabled:hover { opacity: 1; }
+  .btn.secondary {
+    background: transparent;
+    color: var(--cream-dim);
+    border: 1px solid var(--line-strong);
+    clip-path: none;
+  }
+  .btn.secondary:hover { color: var(--cream); border-color: var(--cream); opacity: 1; }
+
+  .hint {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px; color: var(--cream-dim); line-height: 1.65; margin-top: 14px;
+  }
+
+  /* ============ ZONE DE RENDU ============ */
+  .canvas-zone {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 560px;
+    position: relative;
+    padding: 48px;
+    overflow: hidden;
+  }
+  .halftone-corner {
+    position: absolute; top: 0; right: 0;
+    width: 200px; height: 130px;
+    background-image: radial-gradient(var(--cream-dim) 1px, transparent 1.3px);
+    background-size: 8px 8px;
+    -webkit-mask-image: linear-gradient(225deg, #000 0%, transparent 60%);
+    mask-image: linear-gradient(225deg, #000 0%, transparent 60%);
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .canvas-zone .empty {
+    font-family: 'Space Mono', monospace;
+    color: var(--cream-dim); text-align: center; font-size: 13px; line-height: 1.7;
+  }
+  canvas { max-width: 100%; max-height: 680px; image-rendering: pixelated; display: none; }
+  canvas.show { display: block; }
+
+  /* ============ BLOC ORANGE (réplique structure réf.) ============ */
+  .brand-outer { padding: 60px 48px 0; max-width: 1440px; margin: 0 auto; }
+  .brand-inner {
+    background: var(--orange);
+    color: var(--ink);
+    clip-path: polygon(34px 0, 100% 0, 100% calc(100% - 34px), calc(100% - 34px) 100%, 0 100%, 0 34px);
+    display: grid;
+    grid-template-columns: 96px 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+  .brand-inner::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: radial-gradient(var(--ink) 1px, transparent 1.3px);
+    background-size: 5px 5px;
+    opacity: 0.06;
+    pointer-events: none;
+  }
+  /* bande texturée gauche + losange logo */
+  .brand-side {
+    border-right: 1px solid rgba(23,19,16,0.25);
+    background: repeating-linear-gradient(45deg, rgba(23,19,16,0.14) 0 1px, transparent 1px 7px);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .logo-diamond {
+    width: 40px; height: 40px;
+    background: var(--ink);
+    transform: rotate(45deg);
+    position: relative;
+  }
+  .logo-diamond::after {
+    content: '';
+    position: absolute;
+    left: 12px; top: 13px;
+    border-left: 12px solid var(--orange);
+    border-top: 7px solid transparent;
+    border-bottom: 7px solid transparent;
+    transform: rotate(-45deg);
+  }
+  @media (max-width: 700px) {
+    .brand-inner { grid-template-columns: 1fr; }
+    .brand-side { display: none; }
+  }
+
+  .brand-main { padding: 34px 40px 0; }
+  .brand-top {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 56px;
+    align-items: start;
+    padding-bottom: 30px;
+    border-bottom: 1px solid rgba(23,19,16,0.25);
+  }
+  @media (max-width: 800px) { .brand-top { grid-template-columns: 1fr; gap: 20px; } }
+  .brand-stat .value {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 30px;
+    letter-spacing: -0.5px;
+    line-height: 1;
+  }
+  .brand-stat .label {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    margin-top: 6px;
+    opacity: 0.72;
+  }
+  .brand-desc {
+    font-family: 'Space Mono', monospace;
+    font-size: 13.5px;
+    line-height: 1.6;
+    max-width: 560px;
+    justify-self: end;
+  }
+  @media (max-width: 800px) { .brand-desc { justify-self: start; } }
+
+  /* wordmark géant, rogné par le bas du bloc comme la réf */
+  .brand-word {
+    font-family: 'Fraunces', serif;
+    font-optical-sizing: auto;
+    font-weight: 560;
+    font-size: clamp(88px, 17vw, 260px);
+    line-height: 0.94;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    display: block;
+    margin-bottom: -0.16em;
+    white-space: nowrap;
+  }
+
+  /* ============ FOOTER (sous le bloc, sur fond sombre) ============ */
+  .site-foot {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 26px 48px 34px;
+    display: flex; align-items: center; gap: 20px;
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    color: var(--cream-dim);
+  }
+  .site-foot .dots {
+    flex: 1; height: 4px;
+    background-image: radial-gradient(var(--cream-dim) 1px, transparent 1.2px);
+    background-size: 8px 4px;
+    background-repeat: repeat-x;
+    background-position: left center;
+    opacity: 0.4;
+  }
+  .site-foot a { color: var(--cream-dim); text-decoration: none; margin-left: 22px; }
+  .site-foot a:hover { color: var(--cream); }
+  .foot-diamond { width: 9px; height: 9px; background: var(--orange); transform: rotate(45deg); flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="overline">
+      <span class="diamond-outline"></span>
+      <span>Prêt à tramer vos visuels</span>
+      <span class="dots"></span>
+    </div>
+
+    <div class="head-grid">
+      <div>
+        <h1 class="headline">Tramez l'image.<br>Gardez la trichromie.</h1>
+        <p class="lead">Convertit n'importe quelle photo en pixel art bicolore — tramage en damier, points de gravure ou diffusion d'erreur — dans les couleurs exactes de la direction artistique, sans dépendance externe.</p>
+      </div>
+      <div class="arcs-box">
+        <svg viewBox="0 0 400 150" xmlns="http://www.w3.org/2000/svg" fill="none" preserveAspectRatio="xMaxYMin meet">
+          <g stroke="#e8e1d2" stroke-width="1" opacity="0.8">
+            <path d="M20,150 A130,130 0 0 1 280,150"/>
+            <path d="M70,150 A130,130 0 0 1 330,150"/>
+            <path d="M120,150 A130,130 0 0 1 380,150"/>
+            <path d="M170,150 A130,130 0 0 1 430,150"/>
+            <path d="M-30,150 A130,130 0 0 1 230,150"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <div class="controls">
+
+      <div class="section">
+        <div class="section-head"><span class="n">01</span><span class="t">Source</span></div>
+        <div class="drop" id="drop">
+          Dépose une image ici<br>ou clique pour choisir
+          <input type="file" id="fileInput" accept="image/*">
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><span class="n">02</span><span class="t">Palette</span></div>
+        <div class="swatches" id="swatches">
+          <div class="swatch active" data-a="#211e33" data-b="#d8a25f" title="Nuit / Sable">
+            <div class="a" style="background:#211e33"></div><div class="b" style="background:#d8a25f"></div>
+          </div>
+          <div class="swatch" data-a="#211e33" data-b="#ac2e26" title="Nuit / Brique">
+            <div class="a" style="background:#211e33"></div><div class="b" style="background:#ac2e26"></div>
+          </div>
+          <div class="swatch" data-a="#ac2e26" data-b="#d8a25f" title="Brique / Sable">
+            <div class="a" style="background:#ac2e26"></div><div class="b" style="background:#d8a25f"></div>
+          </div>
+          <div class="swatch" data-a="#0a0a0a" data-b="#f2f2f2" title="Noir / Blanc">
+            <div class="a" style="background:#0a0a0a"></div><div class="b" style="background:#f2f2f2"></div>
+          </div>
+          <div class="swatch" data-a="#1c1a16" data-b="#e0632a" title="Charbon / Orange">
+            <div class="a" style="background:#1c1a16"></div><div class="b" style="background:#e0632a"></div>
+          </div>
+        </div>
+        <div class="custom-colors">
+          <div>
+            <label>Fond</label>
+            <input type="color" id="colorA" value="#211e33">
+          </div>
+          <div>
+            <label>Trait</label>
+            <input type="color" id="colorB" value="#d8a25f">
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><span class="n">03</span><span class="t">Réglages</span></div>
+
+        <div class="field">
+          <label>Style de tramage</label>
+          <select id="ditherStyle">
+            <option value="bayer2">Damier fin (Bayer 2×2)</option>
+            <option value="bayer4" selected>Damier (Bayer 4×4) — signature</option>
+            <option value="bayer8">Damier large (Bayer 8×8)</option>
+            <option value="noise">Points aléatoires (gravure)</option>
+            <option value="floyd">Floyd-Steinberg (organique)</option>
+            <option value="lines">Hachures diagonales</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Taille du pixel <span class="val" id="pixelVal">4</span></label>
+          <input type="range" id="pixelSize" min="1" max="12" value="4">
+        </div>
+
+        <div class="field">
+          <label>Seuil clair/sombre <span class="val" id="thresholdVal">128</span></label>
+          <input type="range" id="threshold" min="0" max="255" value="128">
+        </div>
+
+        <div class="field">
+          <label>Contraste <span class="val" id="contrastVal">110</span></label>
+          <input type="range" id="contrast" min="50" max="200" value="110">
+        </div>
+
+        <div class="field check-row">
+          <span>Inverser</span>
+          <input type="checkbox" id="invert">
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-head"><span class="n">04</span><span class="t">Export</span></div>
+        <div class="btn-row">
+          <button class="btn secondary" id="resetBtn">Réinitialiser</button>
+          <button class="btn" id="downloadBtn" disabled>Télécharger</button>
+        </div>
+        <p class="hint">Export en pleine résolution. Traitement 100% local — ton image ne quitte jamais le navigateur.</p>
+      </div>
+
+    </div>
+
+    <div class="canvas-zone" id="canvasZone">
+      <div class="halftone-corner"></div>
+      <p class="empty" id="emptyMsg">Ton image tramée apparaîtra ici.<br>Ajuste les réglages en temps réel.</p>
+      <canvas id="outputCanvas"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="brand-outer">
+  <div class="brand-inner">
+    <div class="brand-side">
+      <div class="logo-diamond"></div>
+    </div>
+    <div class="brand-main">
+      <div class="brand-top">
+        <div class="brand-stat">
+          <div class="value">Actif</div>
+          <div class="label">Statut de l'outil</div>
+        </div>
+        <div class="brand-stat">
+          <div class="value">6</div>
+          <div class="label">Algorithmes de tramage</div>
+        </div>
+        <div class="brand-desc">
+          Outil interne de conversion pixel art pour le projet Aldenhar. Il applique le tramage, la trichromie stricte et les seuils de contraste définis dans la direction artistique — automatiquement, sans dépendance externe.
+        </div>
+      </div>
+      <span class="brand-word">Aldenhar</span>
+    </div>
+  </div>
+</div>
+
+<div class="site-foot">
+  <span>© Aldenhar, 2026</span>
+  <span class="dots"></span>
+  <span>Tous droits réservés</span>
+  <a href="#">Conditions d'utilisation</a>
+  <a href="#">Confidentialité</a>
+  <span class="foot-diamond" style="margin-left:22px;"></span>
+</div>
+
+<script>
+(function() {
+  const fileInput = document.getElementById('fileInput');
+  const drop = document.getElementById('drop');
+  const canvas = document.getElementById('outputCanvas');
+  const ctx = canvas.getContext('2d');
+  const emptyMsg = document.getElementById('emptyMsg');
+  const downloadBtn = document.getElementById('downloadBtn');
+  const resetBtn = document.getElementById('resetBtn');
+
+  const pixelSize = document.getElementById('pixelSize');
+  const threshold = document.getElementById('threshold');
+  const contrast = document.getElementById('contrast');
+  const invert = document.getElementById('invert');
+  const ditherStyle = document.getElementById('ditherStyle');
+  const colorA = document.getElementById('colorA');
+  const colorB = document.getElementById('colorB');
+  const swatches = document.querySelectorAll('.swatch');
+
+  let sourceImg = null;
+
+  const DEFAULTS = {
+    pixelSize: 4, threshold: 128, contrast: 110, invert: false,
+    ditherStyle: 'bayer4', colorA: '#211e33', colorB: '#d8a25f', swatchIndex: 0
+  };
+
+  const BAYER2 = [[0,2],[3,1]];
+  const BAYER4 = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
+  const BAYER8 = [
+    [0,32,8,40,2,34,10,42],[48,16,56,24,50,18,58,26],
+    [12,44,4,36,14,46,6,38],[60,28,52,20,62,30,54,22],
+    [3,35,11,43,1,33,9,41],[51,19,59,27,49,17,57,25],
+    [15,47,7,39,13,45,5,37],[63,31,55,23,61,29,53,21]
+  ];
+
+  function render() {
+    if (!sourceImg) return;
+    const px = parseInt(pixelSize.value);
+    const thr = parseInt(threshold.value);
+    const con = parseInt(contrast.value) / 100;
+    const inv = invert.checked;
+    const style = ditherStyle.value;
+
+    const maxDim = 900;
+    let sw = sourceImg.width, sh = sourceImg.height;
+    const scale = Math.min(1, maxDim / Math.max(sw, sh));
+    sw = Math.round(sw * scale); sh = Math.round(sh * scale);
+
+    const lowW = Math.max(1, Math.floor(sw / px));
+    const lowH = Math.max(1, Math.floor(sh / px));
+
+    const tmp = document.createElement('canvas');
+    tmp.width = lowW; tmp.height = lowH;
+    const tctx = tmp.getContext('2d');
+    tctx.imageSmoothingEnabled = true;
+    tctx.drawImage(sourceImg, 0, 0, lowW, lowH);
+    const data = tctx.getImageData(0, 0, lowW, lowH);
+
+    const gray = new Float32Array(lowW * lowH);
+    for (let i = 0; i < lowW * lowH; i++) {
+      const r = data.data[i*4], g = data.data[i*4+1], b = data.data[i*4+2];
+      let v = 0.299*r + 0.587*g + 0.114*b;
+      v = (v - 128) * con + 128;
+      gray[i] = Math.max(0, Math.min(255, v));
+    }
+
+    canvas.width = lowW * px;
+    canvas.height = lowH * px;
+    ctx.imageSmoothingEnabled = false;
+
+    const bits = new Uint8Array(lowW * lowH);
+
+    if (style === 'floyd') {
+      const buf = Float32Array.from(gray);
+      for (let y = 0; y < lowH; y++) {
+        for (let x = 0; x < lowW; x++) {
+          const idx = y*lowW+x;
+          const old = buf[idx];
+          const on = old > thr ? 1 : 0;
+          bits[idx] = inv ? 1-on : on;
+          const err = old - (on ? 255 : 0);
+          if (x+1 < lowW) buf[idx+1] += err * 7/16;
+          if (y+1 < lowH) {
+            if (x > 0) buf[idx+lowW-1] += err * 3/16;
+            buf[idx+lowW] += err * 5/16;
+            if (x+1 < lowW) buf[idx+lowW+1] += err * 1/16;
+          }
+        }
+      }
+    } else if (style === 'noise') {
+      for (let y = 0; y < lowH; y++) for (let x = 0; x < lowW; x++) {
+        const idx = y*lowW+x;
+        const jitter = (Math.random() - 0.5) * 190;
+        const on = (gray[idx] + jitter) > thr ? 1 : 0;
+        bits[idx] = inv ? 1-on : on;
+      }
+    } else if (style === 'lines') {
+      for (let y = 0; y < lowH; y++) for (let x = 0; x < lowW; x++) {
+        const idx = y*lowW+x;
+        const m = ((x + y) % 6) * (255/6) - 128;
+        const on = (gray[idx] + m*0.6) > thr ? 1 : 0;
+        bits[idx] = inv ? 1-on : on;
+      }
+    } else {
+      const M = style === 'bayer2' ? BAYER2 : style === 'bayer8' ? BAYER8 : BAYER4;
+      const n = M.length;
+      const maxV = n*n;
+      for (let y = 0; y < lowH; y++) for (let x = 0; x < lowW; x++) {
+        const idx = y*lowW+x;
+        const m = (M[y%n][x%n] / maxV) * 255 - 128;
+        const on = (gray[idx] + m*0.9) > thr ? 1 : 0;
+        bits[idx] = inv ? 1-on : on;
+      }
+    }
+
+    for (let y = 0; y < lowH; y++) {
+      for (let x = 0; x < lowW; x++) {
+        const on = bits[y*lowW+x];
+        ctx.fillStyle = on ? colorB.value : colorA.value;
+        ctx.fillRect(x*px, y*px, px, px);
+      }
+    }
+
+    canvas.classList.add('show');
+    emptyMsg.style.display = 'none';
+    downloadBtn.disabled = false;
+  }
+
+  function loadFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => { sourceImg = img; render(); };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
+  drop.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', e => loadFile(e.target.files[0]));
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('drag'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('drag'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('drag'); loadFile(e.dataTransfer.files[0]); });
+
+  [pixelSize, threshold, contrast].forEach(el => {
+    el.addEventListener('input', () => {
+      document.getElementById(el.id === 'pixelSize' ? 'pixelVal' : el.id + 'Val').textContent = el.value;
+      render();
+    });
+  });
+  [invert, ditherStyle, colorA, colorB].forEach(el => el.addEventListener('input', render));
+
+  swatches.forEach((s) => {
+    s.addEventListener('click', () => {
+      swatches.forEach(x => x.classList.remove('active'));
+      s.classList.add('active');
+      colorA.value = s.dataset.a;
+      colorB.value = s.dataset.b;
+      render();
+    });
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.download = 'dithering-aldenhar.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    pixelSize.value = DEFAULTS.pixelSize;
+    threshold.value = DEFAULTS.threshold;
+    contrast.value = DEFAULTS.contrast;
+    invert.checked = DEFAULTS.invert;
+    ditherStyle.value = DEFAULTS.ditherStyle;
+    colorA.value = DEFAULTS.colorA;
+    colorB.value = DEFAULTS.colorB;
+
+    document.getElementById('pixelVal').textContent = DEFAULTS.pixelSize;
+    document.getElementById('thresholdVal').textContent = DEFAULTS.threshold;
+    document.getElementById('contrastVal').textContent = DEFAULTS.contrast;
+
+    swatches.forEach((s, i) => s.classList.toggle('active', i === DEFAULTS.swatchIndex));
+
+    render();
+  });
+})();
+</script>
+
+</body>
+</html>
