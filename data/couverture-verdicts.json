@@ -1,14 +1,6 @@
 {
   "_comment": "Jugement humain sur la QUALITÉ des illustrations (distinct du statut de câblage). Écrit par tools/coverage.py --serve. Suivi par git pour synchroniser les deux postes.",
   "verdicts": {
-    "campement": {
-      "v": "replace",
-      "note": "Le lieu s'appelle le Moulin SANS Ailes et son point d'intérêt « la croix d'ombres » repose entièrement sur leur absence — l'image montre quatre ailes entières. 4e signalement. Ici le texte ne peut pas céder (le nom du lieu ET le POI en dépendent) : il faut une tour de pierre TRONQUÉE. Prompt corrigé dans data/images-a-produire.md — ne jamais écrire le mot « moulin » dans le prompt, il rappelle les ailes."
-    },
-    "croix-ombres": {
-      "v": "replace",
-      "note": "LE MOULIN A SES AILES SUR LE PLAN RAPPROCHÉ AUSSI — jamais relevé jusqu'ici. L'examen décrit « quatre bandes pâles où la pierre n'a pas vieilli, protégée par les ailes » et l'image montre les ailes elles-mêmes, intactes. Même prompt correctif que la vue de lieu : une tour de pierre tronquée, décrite comme un SILO, aucune clause négative."
-    },
     "bete-chemins-creux": {
       "v": "replace",
       "note": "Premier combat de la zone. L'image est un large vallon sous un grand ciel, la bête à peine discernable — alors que le lieu est un couloir « entre deux talus plus hauts que toi, le ciel devient un ruban » et que la Bête « est dessus ». La menace ne se lit pas. « Pas de gueule visible » excuse l'indistinction de la bête, pas l'échelle du décor."

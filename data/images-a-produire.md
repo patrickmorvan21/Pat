@@ -42,13 +42,12 @@ l'illusion qu'on s'est déplacé dans le même endroit. Les raccords ci-dessous 
 
 ## Ce que la lecture des images a révélé (à trancher avant de produire)
 
-1. **⚠️ `scene_moulin_sans_ailes_c.png` montre un moulin AVEC ses ailes** — une
-   grande croix de lattes complète, en silhouette devant le soleil. Or le lieu
-   s'appelle *le Moulin sans Ailes* et son point d'intérêt (« la croix d'ombres »)
-   repose entièrement sur le fait que les ailes ont **disparu** : les quatre
-   bandes pâles sont la trace de la pierre protégée par les ailes, puis exposée
-   d'un coup. L'image contredit le texte. **Il faut une nouvelle image de lieu**
-   (prompt fourni plus bas) — sinon c'est le texte qu'il faut changer.
+1. ~~`scene_moulin_sans_ailes_c.png` montre un moulin AVEC ses ailes~~ —
+   **CLOS le 18/08, dans l'autre sens : c'est le TEXTE qui a cédé.** Décision
+   Patrick : trois générations n'ont jamais réussi le « sans ailes » et le
+   visuel ailé (`scene_moulin_campement_a.png`) est superbe. Le lieu devient
+   **le Moulin Arrêté** — les ailes sont là, elles ne tournent JAMAIS, leur
+   ombre non plus. Aucune image de moulin à produire.
 2. **`palissade-sud` n'a aucune image de lieu** : elle tourne sur une vue
    générique des Landes. C'est le dernier lieu de la zone, le seuil de l'Acte II.
    Prompt fourni.
@@ -79,7 +78,16 @@ texte gravé lisible — suggérer les marques, ne jamais les écrire.
 
 # PRIORITÉ 0 — les 3 vues de lieu manquantes ou fausses
 
-### `scene_moulin_sans_ailes_d.png` — ⚠️ 3 tentatives RATÉES, à refaire
+### ~~`scene_moulin_sans_ailes_d.png`~~ — ✅ CLOS le 18/08 : chantier ABANDONNÉ, le texte a cédé
+**Décision Patrick : le moulin garde ses ailes.** Le lieu est renommé « le
+Moulin Arrêté » (les ailes ne tournent jamais, l'ombre en croix non plus —
+l'inquiétant a changé de place, pas de force), `campement` est câblé sur
+`scene_moulin_campement_a.png` (le visuel qu'il aime), et l'intérieur au vase
+de fleurs sèches (`scene_moulin_interieur_a_d.png`) illustre « Entrer ». Le
+prompt-silo ci-dessous est conservé pour mémoire du piège de diffusion (un
+mot interdit est un mot évoqué), plus comme travail à faire.
+
+### archive — l'ancien chantier « sans ailes » (3 tentatives, jamais réussi)
 La génération du 25/07 (`_d_d`) a **gardé les quatre ailes** malgré « sail
 assembly completely gone ». Celle du 28/07 (`scene_moulin_campement_a.png`,
 aujourd'hui câblée sur `campement`) les garde **aussi** — quatre ailes complètes

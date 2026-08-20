@@ -2928,7 +2928,7 @@ export const SCENES: Scene[] = [
           threshold: 10,
           outcomes: outcomes(
             "20 naturel. Tu ne demandes pas où : tu demandes QUAND. Il réfléchit vraiment, pour la première fois. « Le matin, jamais. Le soir, souvent. Et une fois dans le brouillard, très près. » Il te regarde. « Elle m\u2019a dit de rentrer. J\u2019ai rentré. »",
-            "Il pointe l\u2019ouest du menton, au-delà des murets, là où la crête remonte vers une masse noire sans ailes. « Par là. Elle va jamais plus loin que le moulin, et jamais du côté des potences. Moi non plus j\u2019y vais pas. »",
+            "Il pointe l\u2019ouest du menton, au-delà des murets, là où la crête remonte vers une croix noire qui ne tourne jamais. « Par là. Elle va jamais plus loin que le moulin, et jamais du côté des potences. Moi non plus j\u2019y vais pas. »",
             "« Partout », dit-il, et tu comprends qu\u2019il ne ment pas — il n\u2019a simplement jamais eu besoin de retenir où, parce que personne ne le lui a jamais demandé sérieusement.",
             "1 naturel. Il te regarde autrement, d\u2019un coup. « Pourquoi tu demandes ça, toi ? » Il ramasse ses cailloux dans le pan de sa chemise et s\u2019en va, et tu entends très bien qu\u2019il en parlera à quelqu\u2019un. ♦ −2"
           ),
@@ -4641,33 +4641,44 @@ export const SCENES: Scene[] = [
     jailerLine: "Le Colporteur ? Un confrère, en plus petit. Même commerce que moi.",
   },
   {
-    // Campement de zone : le Moulin sans Ailes. L'id reste « campement »
+    // Campement de zone : le Moulin Arrêté. L'id reste « campement »
     // (Scene.tsx exclut cet id du soin aléatoire d'exploration).
+    // ⚠️ DOCTRINE CHANGÉE PAR PATRICK (18/08) : le moulin GARDE ses quatre
+    // ailes — trois générations d'images n'ont jamais réussi le « sans
+    // ailes », et le visuel ailé validé est superbe. Ce qui cloche n'est
+    // plus l'absence des ailes : c'est qu'elles NE TOURNENT JAMAIS, quel que
+    // soit le vent. Ne plus jamais rouvrir le chantier « moulin sans ailes ».
     id: "campement",
-    illustration: "assets/scene_moulin_sans_ailes_d_d.png",
+    illustration: "assets/scene_moulin_campement_a.png",
     /* ─── CHANTIER DU 11/08 — la formule exacte du §3 ───────────────────────
        AVANT : 3 choix + QUATRE points derrière « Observer ». APRÈS : Entrer /
        Suivre les traces / Passer son chemin.
        Absorbé : `interieur-moulin` et `lucarne-moulin` (l'objet) → « Entrer » ;
        `crete-toit` → « Suivre les traces sur la crête ».
        Passé en NARRATION : `croix-ombres` — c'est l'image signature du lieu
-       (les ailes absentes qui laissent leur trace), elle doit être VUE, pas
-       cliquée ; elle ouvrait déjà le premier paragraphe.
+       (l'ombre en croix des ailes, qui ne bouge pas même quand le vent
+       souffle), elle doit être VUE, pas cliquée ; elle ouvre le premier
+       paragraphe.
        ⚠️ `chainNext` a été RETIRÉ : seule « Entrer » mène à l'intérieur, via
        `sortie.toScene`. Les deux autres quittent le lieu. C'est ce qui rend
        les trois actions réellement exclusives — on ne peut plus suivre les
        traces PUIS dormir dans la même visite. */
     narration: [
-      "Le moulin n'a plus d'ailes mais il a gardé leur trace : quatre ombres " +
-        "pâles en croix sur le corps de pierre, comme un moulin fantôme peint " +
-        "sur le vrai. Sur la bruyère, à cinquante pas, une crête de faîtage " +
-        "s'interrompt net, sans raison.",
+      "Le moulin a gardé ses quatre ailes, ouvertes en croix sur le couchant. " +
+        "Le vent couche la bruyère jusqu'à son pied — et elles ne bougent " +
+        "pas. Leur ombre non plus. Sur la crête, à cinquante pas, une ligne " +
+        "de faîtage s'interrompt net, sans raison.",
       "La porte est entrouverte. Pas défoncée : entretenue.",
     ],
     choices: [
       {
         id: "entrer-moulin",
         label: "Entrer",
+        // L'intérieur habité (la table, le vase de fleurs sèches sous le
+        // rai de la lucarne) — quelqu'un TIENT ce lieu, et on le voit avant
+        // de le lire. Image validée par Patrick (18/08), orpheline depuis la
+        // conversion des points d'intérêt du 13/08.
+        illustration: "assets/scene_moulin_interieur_a_d.png",
         grantsLoot: "jouet-fixee",
         sortie: { toScene: "campement-2" },
         passive: {
@@ -7443,7 +7454,7 @@ const APPROACH: Record<string, string> = {
   "serment-hameau": "Vers la fumée d'un hameau",
   "marche-muet": "Vers un marché muet",
   "tour-de-guet": "Vers une tour qui a perdu son sommet",
-  "campement": "Vers un moulin sans ailes",
+  "campement": "Vers un moulin arrêté",
   "chapelle-des-cordes": "Vers une chapelle de cordes",
   "puits-condamne": "Vers des coups sourds",
   "chien-du-bailli": "Vers une maison murée",
@@ -7501,7 +7512,7 @@ const LIEU_NOM: Record<string, string> = {
   "hameau-halte-dehors": "Le Hameau des Renonçants",
   "marche-muet": "Le Marché Muet",
   "tour-de-guet": "La Tour de Guet effondrée",
-  campement: "Le Moulin sans Ailes",
+  campement: "Le Moulin Arrêté",
   "chapelle-des-cordes": "La Chapelle des Cordes",
   "puits-condamne": "Le Puits Condamné",
   "chien-du-bailli": "La Maison du Bailli",
@@ -8129,7 +8140,7 @@ const INDICE_ROUTE: Record<string, string> = {
   "serment-hameau": "des toits bas et une fumée qui ne monte pas droit",
   "marche-muet": "des bâches tendues et pas une voix",
   "tour-de-guet": "un moignon de tour sans sommet",
-  campement: "une masse trapue privée de ses ailes",
+  campement: "une croix d'ailes immobiles sur le couchant",
   "chapelle-des-cordes": "un clocher court d'où pendent des filins",
   "puits-condamne": "des coups sourds sous des planches clouées",
   "chien-du-bailli": "une maison murée de l'intérieur",

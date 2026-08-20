@@ -61,17 +61,17 @@
     },
     {
       "id": "moulin_sans_ailes",
-      "nom": "Le Moulin sans Ailes",
+      "nom": "Le Moulin Arrêté",
       "note": "refuge supposé de la Fille",
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
       "textes": {
-        "decouverte": "À l'écart du hameau, un moulin sans ailes tient debout par habitude. Dedans, un lit de bruyère tassée — plusieurs fois refait, jamais brûlé. Un refuge qui sert, donc un refuge qui marche.",
+        "decouverte": "À l'écart du hameau, un moulin garde ses quatre ailes ouvertes — et aucun vent ne les fait tourner. Dedans, un lit de bruyère tassée — plusieurs fois refait, jamais brûlé. Un refuge qui sert, donc un refuge qui marche.",
         "familiarite": "La paille du fond est couchée en creux, à peu près de ta longueur, et elle n'a pas eu le temps de se relever.",
         "recontextualisation": "Le creux dans la paille ne se relève plus du tout. Il t'attend, avec la patience d'un lit."
       },
-      "illustration": "scene_moulin_sans_ailes_d_d.png",
+      "illustration": "scene_moulin_campement_a.png",
       "portrait_requis": false,
       "x": 300,
       "y": 260
@@ -2052,12 +2052,12 @@
         "campement-2"
       ],
       "texte": [
-        "Le moulin n'a plus d'ailes mais il a gardé leur trace : quatre ombres pâles en croix sur le corps de pierre, comme un moulin fantôme peint sur le vrai.",
+        "Le moulin a gardé ses quatre ailes, ouvertes en croix sur le couchant. Le vent couche la bruyère jusqu'à son pied — et elles ne bougent pas. Leur ombre non plus.",
         "La porte est entrouverte. Pas défoncée : entretenue. La croix d'ombres, en haut. La lucarne, qui te regarde. Et la porte, qui n'attend que toi."
       ],
-      "description": "Arrivée au Moulin sans Ailes — c'est le lieu de repos de la zone. Une tour de pierre trapue SANS ailes, quatre traces pâles sur le corps du moulin, la porte entrebâillée.",
-      "prompt_image": "old stone windmill without sails on a moorland crest, four pale ghost marks of the missing sails on the stone body, door ajar, small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_moulin_sans_ailes_d_d.png"
+      "description": "Arrivée au Moulin Arrêté — c'est le lieu de repos de la zone. Le moulin garde ses quatre ailes en croix devant le soleil bas, immobiles quel que soit le vent, la porte entrebâillée.",
+      "prompt_image": "old windmill with four latticed sails in a still cross against a huge low sun, moorland foreground, door ajar, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
+      "illustration": "scene_moulin_campement_a.png"
     },
     {
       "id": "croix-ombres",

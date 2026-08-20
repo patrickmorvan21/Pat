@@ -106,11 +106,11 @@ SUJETS: dict[str, tuple[str, str]] = {
  "monstre_pendu_mal_fixe_a.png": ("portrait",
    "hanged man standing upright on his own feet, his rope still knotted at his "
    "neck and trailing behind him, a snapped stake on the ground beside him"),
- # ---- Le Moulin sans Ailes ----
+ # ---- Le Moulin Arrêté (doctrine 18/08 : les ailes SONT là, immobiles) ----
  "scene_moulin_croix_ombres_a_d.png": ("large",
-   "squat round stone tower with no blades and no vanes, four pale unweathered "
-   "bands radiating from its bare cap in the shape of a cross, seen from across a "
-   "low wall"),
+   "old windmill with four latticed sails frozen in a perfect cross, their long "
+   "cross-shaped shadow lying rigid on wind-flattened heather, seen from across "
+   "a low wall"),
  "scene_moulin_lucarne_a_b.png": ("pres",
    "small dark loft opening high in rough stonework, its frame splintered, nothing "
    "visible inside it"),
