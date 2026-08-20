@@ -133,26 +133,27 @@ C'est la **référence sans dérive** — tout y est citable mot pour mot, et c'
 là que se jugent la mise en scène et le rythme réel.
 
 Les parties : une **curieuse** (elle regarde tout et lance peu — c'est elle
-qui arme la menace de la Bête et lit ses deux traces), une **pressée** (elle
-prend le premier bouton), et une **téméraire** enregistrée DEUX fois (elle
-lance le dé dès qu'elle le peut) — les deux tirages sont inclus, dans l'ordre
-où ils sont tombés, sans tri. Le second va au bout : il **franchit la
-Descente**, et c'est le seul transcript où l'on voit la sortie de zone en
-entier (la trace de sortie, le Sceau, le Registre, l'accueil du Geôlier qui
-te dit de vérifier tes mains).
+qui va au bout : elle **franchit la Descente**, et c'est le seul transcript
+où l'on voit la sortie de zone en entier, la marque du Sceau qui s'ouvre
+dans la paume comprise), une **pressée** (elle prend le premier bouton), et
+une **téméraire** enregistrée DEUX fois (elle lance le dé dès qu'elle le
+peut) — les deux tirages sont inclus, dans l'ordre où ils sont tombés, sans
+tri, et **les deux meurent**. Le premier meurt au procès : c'est là que se
+lit la séquence de mort complète (verdict fatal, bilan, mot du Geôlier,
+entrée au Grand Registre). Le second **refuse la route de la Meute à une
+Croisée, lit la trace qui le suit, et meurt quand la route qu'il n'a pas
+prise le retrouve** — l'arc entier de la menace laissée active, du refus à
+la conséquence, tient dans ce seul transcript.
 
 Toutes sont jouées sur un compte qui a déjà vécu — trois morts, deux
 reliques, des lieux déjà traversés — parce que c'est la seule façon de voir la
 mémoire du monde : la trace du héros précédent sur la Borne, les personnages
 qui te reconnaissent sans te reconnaître, le décor qui ne se lit plus pareil.
 
-⚠️ **AUCUNE de ces vies ne meurt, et ce n'est pas un tri de ma part** : elles
-ont été enregistrées telles quelles, y compris les deux tirages de la
-téméraire. Si tu trouves que la mort ne vient pas assez — surtout depuis que
-l'effroi ne tue plus (v1.90.0) — dis-le : c'est précisément le genre de
-constat qu'on te demande, pas un défaut de l'échantillon. La séquence de mort
-complète (verdict fatal, bilan, mot du Geôlier, Registre, relique forgée) se
-joue dans la réplique : il suffit d'y mourir.
+⚠️ **Rien n'est trié** : le lot précédent, enregistré au même protocole,
+n'avait AUCUNE mort ; celui-ci en a deux. C'est la variance réelle du jeu,
+pas un choix d'échantillon — deux vies ne prouvent rien sur la mortalité, et
+si ton ressenti diverge des chiffres, c'est le ressenti qu'on te demande.
 
 ⚠️ **Ces transcripts n'exercent presque pas l'échelle du Soupçon**, et il faut
 le savoir avant de les lire : ce sont des parties jouées par un automate, qui
