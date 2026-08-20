@@ -55,8 +55,14 @@ import {
   NUIT_OUVERTURE,
   SECOND_PROCES,
   lieuDejaVisite,
+  lieuNom,
   apportsProces,
 } from "@/lib/scene-data";
+import {
+  CODEX_PAR_DECOUVERTE,
+  CODEX_PAR_LIEU,
+  CODEX_PAR_SCENE,
+} from "@/lib/codex-data";
 import { contradictionsConnues, faitById, versionDuFait } from "@/lib/contradictions";
 import { manifestationLoi } from "@/lib/loi-substitution";
 import { perceptionDe } from "@/lib/perception";
@@ -80,12 +86,16 @@ import { loadSettings } from "@/lib/settings";
 import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomSoinMineur, recompenseDestinQuiTient, usageEnMots, LANDES_OBJETS, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { assetUrl, assetCss, assetExiste } from "@/lib/assets";
 import {
-  activeRelic,
   bloodDebtFor,
   buildRegistre,
+  dettesPortees,
+  donsPortes,
   entrySoftening,
   relicDon,
   relicDette,
+  reliquesPortees,
+  debloquerCodex,
+  type ReliquePortee,
   jailerPosture,
   loadMemory,
   mutateMemory,
@@ -149,6 +159,22 @@ function nextId() {
    corps du composant, même à travers un gestionnaire d'événement. Les isoler
    ici garde le composant analysable — et le hasard reste au même endroit
    logique (un tirage par appel, jamais mémoïsé). */
+/**
+ * La première relique PORTÉE offrant ce don dont le geste n'est pas encore
+ * dépensé — un geste PAR relique (spec 20/08 : la Descente en emporte jusqu'à
+ * trois, leurs effets s'additionnent : trois amortis = trois chocs pris).
+ * `relicUsed` hérité à true (run d'avant la migration) = tout est dépensé.
+ */
+function porteuseDisponible(don: RelicDon, run: RunState | null): ReliquePortee | null {
+  if (run?.relicUsed === true) return null;
+  const usees = run?.reliquesUsees ?? [];
+  return (
+    reliquesPortees(loadMemory()).find(
+      (p) => relicDon(p.relic) === don && !usees.includes(p.idx)
+    ) ?? null
+  );
+}
+
 function chance(p: number): boolean {
   return Math.random() < p;
 }
@@ -603,6 +629,14 @@ function poserDecouverte(id: string): boolean {
     effets.push({ increment: COMPTEUR_FILLE, by: 1, kind: "counter", scope: "global_permanent" });
   applique(effets, f, 0);
   mutateMemory((m) => { m.faits = f.perm; });
+  // LE CODEX (20/08) : comprendre quelque chose ouvre l'ARC qui le porte —
+  // point unique, toutes les découvertes passent par ici. Lecture pure :
+  // le déblocage ne change rien en jeu.
+  const arc = CODEX_PAR_DECOUVERTE[id];
+  if (arc) {
+    const run = loadRun();
+    debloquerCodex(arc, run.heroName, run.day);
+  }
   return true;
 }
 
@@ -785,8 +819,10 @@ export default function Scene() {
     : null;
   // Le DON de la relique portée (5/08) — remplace l'ancien trio d'effets.
   // « amorti » est le nouveau nom de « coussin ».
-  const [relicFx, setRelicFx] = useState<RelicDon | null>(null);
-  const [relicSpent, setRelicSpent] = useState(false);
+  // Miroirs de rendu des reliques PORTÉES (jusqu'à trois — spec 20/08).
+  const [donsMirror, setDonsMirror] = useState<RelicDon[]>([]);
+  // Un « passe » au moins reste-t-il disponible ? (affordance des verrous)
+  const [passeDispoMirror, setPasseDispoMirror] = useState(false);
   // Contradictions tenues par le COMPTE (deux versions d'un même fait, lues
   // dans deux vies) : ouvrent « Le Registre ment ». Lu une fois au montage.
   const [contradictions, setContradictions] = useState(0);
@@ -1013,7 +1049,7 @@ export default function Scene() {
     // « Le Registre ment » (5/08) : une seule vie ne peut pas l'ouvrir. Le don
     // « lecture » d'une relique la rend visible sans l'avoir vécue — c'est
     // exactement ce que raconte cette relique.
-    if (c.requiresContradiction && contradictions === 0 && relicFx !== "lecture") return false;
+    if (c.requiresContradiction && contradictions === 0 && !donsMirror.includes("lecture")) return false;
     // Défenses du procès : seules celles que les témoins rendent possibles.
     if (c.defense && !defenses.includes(c.defense)) return false;
     // Le renoncement n'est offert qu'à qui a juré ET tenu. Le hameau n'offre
@@ -1357,10 +1393,9 @@ export default function Scene() {
     setSceauNiveau(niveauSceau(faitsDe(run)));
     setProphetieJour(run.prophetie ?? null);
     setHeroStats(run.stats);
-    setRelicSpent(Boolean(run.relicUsed));
     const memNow = loadMemory();
-    const relicPortee = activeRelic(memNow);
-    setRelicFx(relicDon(relicPortee));
+    setDonsMirror(donsPortes(memNow));
+    setPasseDispoMirror(Boolean(porteuseDisponible("passe", run)));
     setContradictions(contradictionsConnues(memNow).length);
     setEtatsIds(idsEtats(faitsDe(run)));
 
@@ -1424,9 +1459,14 @@ export default function Scene() {
       // dettes qui pèsent dès le départ se posent ici, une seule fois, au seed
       // de la run neuve — jamais à la reprise (sinon elles s'empileraient à
       // chaque ouverture de l'app).
-      const dettePortee = relicDette(activeRelic(mem));
-      if (dettePortee === "marque") run.soupcon = Math.min(6, (run.soupcon ?? 0) + 1);
-      if (dettePortee === "usure") run.health = Math.min(run.health, 0.82);
+      // Jusqu'à trois reliques portées (spec 20/08) : les dettes s'additionnent
+      // comme les dons — deux « marque » pèsent deux crans, deux « usure »
+      // entament deux fois le corps.
+      const dettesDepart = dettesPortees(mem);
+      const nMarque = dettesDepart.filter((d) => d === "marque").length;
+      const nUsure = dettesDepart.filter((d) => d === "usure").length;
+      if (nMarque > 0) run.soupcon = Math.min(6, (run.soupcon ?? 0) + nMarque);
+      if (nUsure > 0) run.health = Math.min(run.health, 1 - 0.18 * nUsure);
       const opening = sceneFromTrav(run.trav); // = la Borne (ENTRY_SCENE)
       setScene(opening);
       setVisitedMirror(run.trav.visited);
@@ -1465,7 +1505,12 @@ export default function Scene() {
       if (traceDuPrecedent) openingNarration.splice(1, 0, traceDuPrecedent);
       // Chaque vie commence à la Borne : on la compte ici (aucune
       // orientation n'y mène) — l'Hésitant peut ainsi se souvenir.
-      if (run.step === 0) noterVisiteLieu("borne-frontiere");
+      if (run.step === 0) {
+        noterVisiteLieu("borne-frontiere");
+        // Codex : la Borne est le seul lieu qu'aucune orientation n'atteint —
+        // son entrée se débloque ici, au premier pas de chaque vie.
+        debloquerCodex("lieu:borne-frontiere", run.heroName, run.day);
+      }
       // LE SCEAU SE PORTE À MÊME LA MAIN (arbitrage 10/08 : « il doit
       // produire quelque chose que je remarque dès ma prochaine
       // incarnation »). Poussé en premier des traces permanentes : c'est le
@@ -1484,14 +1529,15 @@ export default function Scene() {
         );
       }
       // La dette « marque » se VOIT : on ne porte pas ça sans être reconnu.
-      if (dettePortee === "marque") {
+      // (Une ligne, même à deux marques — c'est le Soupçon qui cumule.)
+      if (nMarque > 0) {
         openingNarration.push(
           "Ce que tu portes à même la peau tire le regard avant toi. Deux " +
             "gamins te croisent au premier muret, s'arrêtent net, et repartent " +
             "vers le hameau sans courir — ce qui est pire."
         );
       }
-      if (dettePortee === "usure") {
+      if (nUsure > 0) {
         openingNarration.push(
           "Tu marches depuis peu et tes jambes le savent déjà. Ce que tu " +
             "portes ne pèse rien dans la main, et pourtant quelque chose en toi " +
@@ -2001,7 +2047,7 @@ export default function Scene() {
         // Dette « exclusion » d'une relique portée (5/08, Clou du silence) :
         // le Hameau ne t'ouvre pas sa grange, quoi que tu aies juré. Même
         // conséquence qu'un Serment refusé — la nuit dehors.
-        const exclu = relicDette(activeRelic(loadMemory())) === "exclusion";
+        const exclu = dettesPortees(loadMemory()).includes("exclusion");
         nextScene = resoudre(
           ham?.serment === "refuse" || exclu ? "hameau-halte-dehors" : "hameau-halte-1",
           runRef.current
@@ -2396,10 +2442,10 @@ export default function Scene() {
     //
     // Le don « silence » (Clou du silence) efface le PREMIER inscrit — celui
     // qui a entraîné les autres. Dépensé ici, une fois par vie.
-    const bailloner =
-      Boolean(nextScene.fixationTrial) &&
-      relicDon(activeRelic(loadMemory())) === "silence" &&
-      !runRef.current?.relicUsed;
+    const porteuseSilence = nextScene.fixationTrial
+      ? porteuseDisponible("silence", runRef.current)
+      : null;
+    const bailloner = Boolean(porteuseSilence);
     // Il n'apparaît qu'au procès de qui l'a déjà entrevu dans une ruelle.
     const temoinEntrevu =
       Boolean(nextScene.fixationTrial) && decouvertes.includes("d.temoin_entrevu");
@@ -2668,7 +2714,7 @@ export default function Scene() {
     const perception = perceptionDe(
       nextScene.id,
       runRef.current?.stats,
-      relicDon(activeRelic(loadMemory())) === "regard"
+      donsPortes(loadMemory()).includes("regard")
     );
     // LE MONDE RECONNAÎT LA MARQUE (14/08). Prioritaire sur tous les autres
     // rappels : c'est la récompense d'une traversée réussie, elle ne doit pas
@@ -3012,6 +3058,18 @@ export default function Scene() {
     // (le persist qui incrémente run.day arrive juste après — on affiche la
     // même valeur qu'il écrira)
     if (jourDeMarche || nuitPassee) setDay((runRef.current?.day ?? day) + 1);
+    // ═══ LE CODEX (Phase E, 20/08) : l'écran qu'on atteint débloque son
+    // entrée — le LIEU par son nom, la RENCONTRE par son radical de scène.
+    // Point unique : toutes les branches d'advance() passent par ici, la
+    // REPRISE non (elle rebâtit un écran déjà vécu, rien de neuf à noter).
+    {
+      const par = runRef.current?.heroName ?? "";
+      const jour = runRef.current?.day ?? 1;
+      const eLieu = CODEX_PAR_LIEU[lieuNom(nextScene.id)];
+      if (eLieu) debloquerCodex(eLieu, par, jour);
+      const eScene = CODEX_PAR_SCENE[nextScene.id] ?? CODEX_PAR_SCENE[radical(nextScene.id)];
+      if (eScene) debloquerCodex(eScene, par, jour);
+    }
     setScene(nextScene);
     setVisitedMirror(trav.visited);
     // On quitte l'écran : les points d'intérêt du lieu précédent sont oubliés
@@ -3118,9 +3176,9 @@ export default function Scene() {
       if (jailerServi) run.jailerVues = [...(run.jailerVues ?? []), jailerServi];
       // Le témoin bâillonné l'est DÉFINITIVEMENT (il ne réapparaîtra pas si le
       // Soupçon remonte après une relaxe), et la relique est dépensée.
-      if (bailloner) {
+      if (bailloner && porteuseSilence) {
         run.temoins = temoinsAuProces;
-        run.relicUsed = true;
+        run.reliquesUsees = [...(run.reliquesUsees ?? []), porteuseSilence.idx];
       }
       run.croiseesDepuisRoute = (run.croiseesDepuisRoute ?? 0) + (nextScene.liaison ? 1 : 0);
       // COMPTEUR DE VISITES (spec §1, scope zone_permanent) : combien de fois
@@ -3152,10 +3210,13 @@ export default function Scene() {
       });
     }
     setEtatsIds(idsEtats(faitsDe(runRef.current)));
-    if (bailloner) setRelicSpent(true);
+    if (bailloner) setPasseDispoMirror(Boolean(porteuseDisponible("passe", runRef.current)));
     // Résolution jouée → le chapitre entre dans la rotation du compte (le
     // prochain tirage évitera ceux déjà vécus tant qu'il en reste des neufs).
     if (newChapterStage === 3 && chapSt) {
+      // Codex : un chapitre du Bailli mené à sa résolution débloque l'arc
+      // des trois cents noms.
+      debloquerCodex("arc:bailli", runRef.current?.heroName ?? "", runRef.current?.day ?? 1);
       mutateMemory((m) => {
         if (!m.chaptersSeen.includes(chapSt.id)) m.chaptersSeen = [...m.chaptersSeen, chapSt.id];
       });
@@ -3315,13 +3376,9 @@ export default function Scene() {
       // Passe-verrou de la relique portée (effet « passe ») : UNE fois par
       // run, un verrou à seuil s'ouvre malgré la nature du héros — mais le
       // Hameau s'en souvient (+1 Soupçon). Jamais sur un verrou DUR.
-      const relic = activeRelic(loadMemory());
-      const passe =
-        !ouvert &&
-        choice.locked.min != null &&
-        relic &&
-        relicDon(relic) === "passe" &&
-        !run?.relicUsed;
+      const porteusePasse =
+        !ouvert && choice.locked.min != null ? porteuseDisponible("passe", run) : null;
+      const passe = Boolean(porteusePasse);
       if (!ouvert && !passe) {
         // Refus en diégèse (spec 4/08 B) : jamais un chiffre, jamais un cadenas.
         setVerrouHint(
@@ -3333,10 +3390,13 @@ export default function Scene() {
         verrouHintTimer.current = setTimeout(() => setVerrouHint(null), 2600);
         return;
       }
-      if (!ouvert && passe && relic) {
-        const brise = relicDette(relic) === "brisure";
+      if (!ouvert && porteusePasse) {
+        // La dette « brisure » est celle de LA relique qui vient de servir —
+        // pas d'une autre portée (spec 20/08 : un geste par relique).
+        const brise = relicDette(porteusePasse.relic) === "brisure";
+        const idx = porteusePasse.idx;
         persist((r) => {
-          r.relicUsed = true;
+          r.reliquesUsees = [...(r.reliquesUsees ?? []), idx];
           r.soupcon = Math.max(0, Math.min(6, (r.soupcon ?? 0) + 1));
           if (brise)
             r.effects = [
@@ -3344,7 +3404,7 @@ export default function Scene() {
               ...r.effects.filter((e) => e.id !== "ebranle"),
             ];
         });
-        setRelicSpent(true);
+        setPasseDispoMirror(Boolean(porteuseDisponible("passe", runRef.current)));
       }
     }
     setVerrouHint(null);
@@ -3376,6 +3436,9 @@ export default function Scene() {
         // accueille la run suivante en conséquence. Aucune relique.
         const run = runRef.current ?? loadRun();
         recordTraversee({ heroName: run.heroName, days: run.day });
+        // Codex : la première traversée révèle l'arc du Sceau — la marque
+        // vient d'apparaître dans la paume.
+        debloquerCodex("arc:sceau", run.heroName, run.day);
       }
       resetRun();
       window.location.reload();
@@ -3604,6 +3667,9 @@ export default function Scene() {
       persist((run) => {
         run.hameau = { ...run.hameau, serment: s };
       });
+      // Codex : prêter (ou refuser) le Serment débloque son arc — on a
+      // entendu les trois clauses, l'idée est vécue.
+      debloquerCodex("arc:serment", runRef.current?.heroName ?? "", runRef.current?.day ?? 1);
       // Un serment creux ne s'oublie pas avec la vie de celui qui l'a prêté
       // (6/08) : le COMPTE en garde la trace, et c'est ce qui rend tirable
       // l'accueil « le hameau qui s'en va » dans les vies suivantes — ils
@@ -3743,16 +3809,21 @@ export default function Scene() {
       // bonus = stat − 3 (échelle 1..5 → −2..+2) ; jamais affiché, l'Anneau
       // reflète. Deux héros différents ont désormais des chances différentes.
       const statBonus = statDe(runRef.current?.stats, choice.risky.stat) - 3;
-      // Relique portée : son DON aide, sa DETTE coûte — toujours les deux.
-      const relicPortee = activeRelic(loadMemory());
-      const don = relicDon(relicPortee);
-      const dette = relicDette(relicPortee);
-      const faveur = don === "faveur" ? 1 : 0;
+      // Reliques portées (jusqu'à trois, spec 20/08) : les DONS aident, les
+      // DETTES coûtent — et tout s'additionne. Deux « faveur » pèsent +2,
+      // deux « froideur » ferment deux crans d'EMPATHIE.
+      const donsRel = donsPortes(loadMemory());
+      const dettesRel = dettesPortees(loadMemory());
+      const faveur = donsRel.filter((d) => d === "faveur").length;
       // « froideur » : les gens sentent ce que tu portes — un jet social de
       // moins. « gel » : le TOUT PREMIER jet de la vie part nu, sans le
-      // secours d'aucun état ni d'aucune faveur.
-      const froideur = dette === "froideur" && choice.risky.stat === "EMPATHIE" ? -1 : 0;
-      const gele = dette === "gel" && (runRef.current?.rolls?.length ?? 0) === 0;
+      // secours d'aucun état ni d'aucune faveur (binaire : deux gels ne
+      // gèlent pas deux jets — le premier jet n'existe qu'une fois).
+      const froideur =
+        choice.risky.stat === "EMPATHIE"
+          ? -dettesRel.filter((d) => d === "froideur").length
+          : 0;
+      const gele = dettesRel.includes("gel") && (runRef.current?.rolls?.length ?? 0) === 0;
       // LES ÉTATS — ils modifient le jet, et l'Anneau (calculé sur le
       // modificateur) montre la différence en encoches. La mention textuelle
       // sous le dé a été retirée le 11/08 (retour Patrick).
@@ -4167,7 +4238,7 @@ export default function Scene() {
               unlocked={Boolean(
                 choice.locked &&
                   (verrouOuvert(choice, heroStats) ||
-                    (choice.locked.min != null && relicFx === "passe" && !relicSpent))
+                    (choice.locked.min != null && passeDispoMirror))
               )}
               selected={selectedId === choice.id}
               raised={rolling && selectedId === choice.id}
@@ -4235,15 +4306,14 @@ export default function Scene() {
             // simple — puis la relique est fendue pour cette vie. Le verdict
             // affiché ne change pas (le jet a bien été critique) : c'est la
             // CONSÉQUENCE qui est prise par la relique, pas le dé.
-            const relicCoussin = activeRelic(loadMemory());
-            const amorti =
-              (tier === "malediction" || tier === "critique") &&
-              relicCoussin &&
-              relicDon(relicCoussin) === "amorti" &&
-              !runRef.current?.relicUsed;
-            // Dette « brisure » : la relique rompt en amortissant, et la
-            // secousse reste dans les bras (ÉBRANLÉ, 2 scènes).
-            const brisure = amorti && relicDette(relicCoussin) === "brisure";
+            const porteuseAmorti =
+              tier === "malediction" || tier === "critique"
+                ? porteuseDisponible("amorti", runRef.current)
+                : null;
+            const amorti = Boolean(porteuseAmorti);
+            // Dette « brisure » : LA relique qui amortit rompt en le faisant,
+            // et la secousse reste dans les bras (ÉBRANLÉ, 2 scènes).
+            const brisure = amorti && relicDette(porteuseAmorti!.relic) === "brisure";
             persist((run) => {
               run.rolls.push({ step, choiceId: selectedId ?? "roll", result, at: nowMs(), ok: !tierIsFail(tier) });
               // Tu as tenté quelque chose ici : ce lieu comptera dans les
@@ -4265,9 +4335,9 @@ export default function Scene() {
               // choc), et le laisser jouer aurait DEUX défauts : porter un
               // échec surnaturel simple de 0,10 à 0,12 (un coussin qui
               // aggrave), et contourner la borne « l'effroi ne tue pas ».
-              if (amorti && cost > 0 && natureJet === "physique") {
+              if (amorti && porteuseAmorti && cost > 0 && natureJet === "physique") {
                 cost = 0.12;
-                run.relicUsed = true;
+                run.reliquesUsees = [...(run.reliquesUsees ?? []), porteuseAmorti.idx];
                 if (brisure)
                   run.effects = [
                     { id: "ebranle", label: "ÉBRANLÉ", delta: -1, scenesLeft: 2 },
@@ -4461,7 +4531,7 @@ export default function Scene() {
             // (pose d'arrivée dans advance()).
             if ((run.soupcon ?? 0) >= 4 && dansLeVillage(scene.id)) poserEtatRun("fixe");
             setHealth(run.health);
-            if (amorti) setRelicSpent(true);
+            if (amorti) setPasseDispoMirror(Boolean(porteuseDisponible("passe", runRef.current)));
 
             // Mort par fixation (chantier 3 du 23/07, validée) : un jet raté
             // au procès tue, quelle que soit la santé — première mort du jeu
@@ -4473,7 +4543,8 @@ export default function Scene() {
               const firstDeath = loadMemory().deaths === 0;
               // La relique RÉELLEMENT portée pendant cette vie — lue AVANT
               // recordDeath, qui pousse celle que cette mort vient de forger.
-              const porteeNom = activeRelic(loadMemory())?.name ?? null;
+              const porteeNom =
+                reliquesPortees(loadMemory()).map((p) => p.relic.name).join(" \u00b7 ") || null;
               mutateMemory((m) => {
                 m.fixations += 1;
               });
@@ -4501,7 +4572,8 @@ export default function Scene() {
               const firstDeath = loadMemory().deaths === 0;
               // La relique RÉELLEMENT portée pendant cette vie — lue AVANT
               // recordDeath, qui pousse celle que cette mort vient de forger.
-              const porteeNom = activeRelic(loadMemory())?.name ?? null;
+              const porteeNom =
+                reliquesPortees(loadMemory()).map((p) => p.relic.name).join(" \u00b7 ") || null;
               const relic = recordDeath({
                 heroName: run.heroName,
                 days: run.day,
@@ -4521,8 +4593,8 @@ export default function Scene() {
               ? [{ id: nextId(), kind: "jailer" as const, text: JAILER_DE_IMPOSSIBLE }]
               : undefined;
             const proseBase =
-              amorti && relicCoussin
-                ? `${proseDuJet(outcome.text)}\n\n${relicCoussin.name} a pris le choc à ta place. Une fêlure la traverse, à présent — elle ne prendra pas le suivant.`
+              amorti && porteuseAmorti
+                ? `${proseDuJet(outcome.text)}\n\n${porteuseAmorti.relic.name} a pris le choc à ta place. Une fêlure la traverse, à présent — elle ne prendra pas le suivant.`
                 : proseDuJet(outcome.text);
             // Destin sans place (10/08) : plutôt qu'un bandeau « Obtenu » pour
             // un objet qui n'entrera nulle part, on le dit. Les mains pleines

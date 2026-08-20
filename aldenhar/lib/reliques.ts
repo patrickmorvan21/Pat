@@ -20,7 +20,9 @@
 
 import type { Relic } from "@/lib/player-memory";
 
-/** Les dons câblés. Un seul par relique — lisible, testable, jamais cumulé. */
+/** Les dons câblés. Un seul par relique — lisible et testable. (Depuis la
+    spec du 20/08, la Descente porte jusqu'à TROIS reliques : les dons se
+    cumulent donc ENTRE reliques, jamais au sein d'une même relique.) */
 export type RelicDon =
   /** Le 1ᵉʳ coup dur de la run coûte un échec simple, puis la relique se fend. */
   | "amorti"

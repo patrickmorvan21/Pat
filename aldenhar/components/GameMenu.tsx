@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { CloseX } from "@/components/Home";
-import { activeRelic, forgetIntro, forgeRelic, loadMemory, type Relic } from "@/lib/player-memory";
+import { forgetIntro, forgeRelic, loadMemory, reliquesPortees, type Relic } from "@/lib/player-memory";
 import { loadRun, type NarrativeEffect, type RunState } from "@/lib/state";
 import { besaceBySlot, normalizeItem, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { loadSettings, mutateSettings, type Settings } from "@/lib/settings";
@@ -415,9 +415,11 @@ function InventaireTab({
   relics: { name: string; rarity: string; heroName: string; days: number }[];
   onUse?: (item: BesaceItem) => void;
 }) {
-  // Inventaire limité à 3 reliques (retour Patrick 22/07) : on garde les 3 plus
-  // récentes (dernières forgées).
-  const relics = allRelics.slice(-3);
+  // Les 3 slots de reliques montrent LA DESCENTE (spec 20/08) : ce que cette
+  // vie porte réellement — plus « les 3 plus récentes » (règle du 22/07,
+  // remplacée). Le choix se fait sur l'écran Reliques de l'accueil.
+  const relics = reliquesPortees(loadMemory()).map((p) => p.relic);
+  void allRelics;
   // Copie locale : « Utiliser » retire l'objet de l'affichage immédiatement, en
   // plus de le consommer côté run (via onUse) — les deux restent synchronisés.
   const [besace, setBesace] = useState<BesaceItem[]>(() => run.besace.map(normalizeItem));
@@ -633,8 +635,9 @@ function buildPreviewMort(): PreviewMort {
   return {
     epitaph: EPITAPH_APERCU,
     day,
-    // Aperçu : la relique portée est celle du compte, telle quelle (rien n'est forgé ici).
-    bilan: bilanDeMort(run, activeRelic(mem)?.name ?? null),
+    // Aperçu : les reliques portées sont celles de la Descente du compte,
+    // telles quelles (rien n'est forgé ici).
+    bilan: bilanDeMort(run, reliquesPortees(mem).map((p) => p.relic.name).join(" · ") || null),
     relic: forgeRelic(heroName, day, firstDeath),
     heroName,
     cause: "les Landes",

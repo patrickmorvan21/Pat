@@ -70,7 +70,9 @@ complète : c'est ce texte-là qu'il faut juger.
   village pense de toi. Le Veilleur de la Palissade, par exemple, ne te parle
   pas de la même façon selon qu'on t'a dénoncé ou non.
 - **Ne sont pas répliqués** : les illustrations, le geste tactile du dé, les
-  scènes chronométrées, le Grand Registre, les reliques, l'humeur du Geôlier,
+  scènes chronométrées, le Grand Registre, les reliques (y compris l'écran
+  Descente/Reliquaire et le cumul des trois portées, v1.93.0), le Codex
+  (lecture pure, hors run par construction), l'humeur du Geôlier,
   les témoins, les chapitres du Bailli, les surprises. Ne les signale pas
   comme manquants — regarde plutôt les transcripts, où tout cela joue.
 

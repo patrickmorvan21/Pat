@@ -97,11 +97,72 @@ export const RELIC_FONCTION: Record<RelicEffect, string> = {
   faveur: "La prochaine vie lancera chaque dé avec la faveur des morts.",
 };
 
-/** La relique PORTÉE par l'incarnation suivante = la dernière forgée.
-    « Celui qui te suivra la portera » — au singulier, et c'est voulu :
-    une seule mort pèse sur une seule vie, la collection reste au Registre. */
+/** La dernière relique forgée. ⚠️ Depuis la spec du 20/08 (écran Reliques),
+    ce n'est plus forcément « LA relique portée » : la Descente peut en
+    emporter jusqu'à trois (`reliquesPortees`). Cette fonction reste la
+    RÈGLE PAR DÉFAUT d'un compte qui n'a jamais ouvert l'écran, et la fiche
+    montrée à la forge. */
 export function activeRelic(mem: PlayerMemory): Relic | null {
   return mem.relics.length ? mem.relics[mem.relics.length - 1] : null;
+}
+
+/** Une relique portée, avec son identité (index dans `mem.relics`). */
+export type ReliquePortee = { relic: Relic; idx: number };
+
+/**
+ * LES RELIQUES DE LA DESCENTE (spec 20/08) — jusqu'à trois, effets cumulés.
+ * Défaut (compte qui n'a jamais ouvert l'écran, `descente === undefined`) :
+ * la dernière forgée, comme depuis le 4/08 — « Celui qui te suivra la
+ * portera » reste vrai pour ces comptes-là. Un `[]` explicite porte zéro.
+ */
+export function reliquesPortees(mem: PlayerMemory): ReliquePortee[] {
+  if (Array.isArray(mem.descente)) {
+    return mem.descente
+      .filter((i) => i >= 0 && i < mem.relics.length)
+      .slice(0, 3)
+      .map((i) => ({ relic: mem.relics[i], idx: i }));
+  }
+  return mem.relics.length
+    ? [{ relic: mem.relics[mem.relics.length - 1], idx: mem.relics.length - 1 }]
+    : [];
+}
+
+/** Les DONS portés, cumulés (deux « faveur » comptent deux fois). */
+export function donsPortes(mem: PlayerMemory): RelicDon[] {
+  return reliquesPortees(mem)
+    .map((p) => relicDon(p.relic))
+    .filter((d): d is RelicDon => d !== null);
+}
+
+/** Les DETTES portées, cumulées — une relique aide ET coûte, toujours. */
+export function dettesPortees(mem: PlayerMemory): RelicDette[] {
+  return reliquesPortees(mem)
+    .map((p) => relicDette(p.relic))
+    .filter((d): d is RelicDette => d !== null);
+}
+
+/**
+ * Débloque une entrée du Codex avec sa provenance — silencieux si elle est
+ * déjà débloquée (la PREMIÈRE découverte fait foi : « Découvert par Maël —
+ * Jour IV » ne se réécrit jamais). Ne rend rien : le Codex est de la
+ * lecture pure, un déblocage ne change rien en jeu.
+ */
+export function debloquerCodex(id: string, par: string, jour: number): void {
+  const mem = loadMemory();
+  if (mem.codex?.[id]) return;
+  mutateMemory((m) => {
+    m.codex = { ...(m.codex ?? {}), [id]: { par: par || "Sans-Nom", jour: Math.max(1, jour) } };
+  });
+}
+
+/** Ouvre une fiche : le NOUVEAU tombe, le losange se recalcule. */
+export function marquerCodexVu(id: string): void {
+  const mem = loadMemory();
+  const e = mem.codex?.[id];
+  if (!e || e.vu) return;
+  mutateMemory((m) => {
+    m.codex = { ...(m.codex ?? {}), [id]: { ...e, vu: true } };
+  });
 }
 
 /**
@@ -144,6 +205,25 @@ export type PlayerMemory = {
   relicsRare: number;
   /** Toutes les reliques forgées, dans l'ordre des morts. */
   relics: Relic[];
+  /**
+   * LA DESCENTE (spec 20/08, écran Reliques — Figma 2496:4745) : jusqu'à
+   * TROIS reliques choisies pour la prochaine incarnation, référencées par
+   * leur INDEX dans `relics` (le tableau est append-only, l'index est donc
+   * une identité stable). Leurs effets — dons ET dettes — s'additionnent.
+   * `undefined` = le joueur n'a jamais ouvert l'écran → comportement
+   * historique (la dernière forgée est portée, voir `reliquesPortees`).
+   * `[]` = choix explicite de ne rien porter — on le respecte.
+   */
+  descente?: number[];
+  /**
+   * LE CODEX (Phase E, spec 20/08) : provenance des entrées débloquées —
+   * id d'entrée → { par (nom du héros qui a découvert), jour, vu }.
+   * La provenance est OBLIGATOIRE sur chaque fiche (« Découvert par Maël —
+   * Jour IV ») : c'est elle qui fait du Codex un registre des morts du
+   * joueur et pas une encyclopédie. `vu` pilote le tag NOUVEAU et le
+   * losange orange propagé vers le haut.
+   */
+  codex?: Record<string, { par: string; jour: number; vu?: boolean }>;
   /** Éléments d'environnement modifiés durablement : "porte-balafree-defoncee", etc. */
   envFlags: Record<string, boolean>;
   /** Rivalités personnelles qui traversent les runs (§19). */
@@ -393,6 +473,12 @@ export function loadMemory(): PlayerMemory {
           totalDays: typeof p.totalDays === "number" ? p.totalDays : 0,
           relicsRare: typeof p.relicsRare === "number" ? p.relicsRare : 0,
           relics: Array.isArray(p.relics) ? p.relics : [],
+          // La Descente (20/08) — même geste que l'ajout du champ. `undefined`
+          // et `[]` ne veulent PAS dire la même chose (défaut vs choix vide).
+          descente: Array.isArray(p.descente)
+            ? p.descente.filter((n): n is number => typeof n === "number")
+            : undefined,
+          codex: p.codex && typeof p.codex === "object" ? p.codex : undefined,
           envFlags: p.envFlags && typeof p.envFlags === "object" ? p.envFlags : {},
           bloodDebts: Array.isArray(p.bloodDebts) ? p.bloodDebts : [],
           // ⚠️ Même geste que l'ajout du champ (règle du 5/08) : une entrée

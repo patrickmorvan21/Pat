@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-18T07:18:45Z",
- "commit": "8db92d7",
+ "genere": "2026-08-20T21:52:15Z",
+ "commit": "6e99e6a",
  "zones": [
   {
    "id": "landes",
@@ -7684,14 +7684,6 @@
    "racine": "petite_fixee"
   },
   {
-   "fichier": "monstre_rebouteux_a.png",
-   "hash": "5db43f82",
-   "taille": 21275,
-   "recent": false,
-   "groupe": "attend",
-   "racine": "rebouteux"
-  },
-  {
    "fichier": "monstre_recousu_c.png",
    "hash": "04f590d1",
    "taille": 27948,
@@ -9381,7 +9373,7 @@
   "illustrations": 277,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 89,
+  "reserve": 88,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

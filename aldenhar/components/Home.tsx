@@ -6,7 +6,7 @@ import { HeroGeolier } from "@/components/HeroGeolier";
 import Prologue from "@/components/Prologue";
 import Intro, { ActeScreen } from "@/components/Intro";
 import Registre from "@/components/Registre";
-import { buildRegistre, loadMemory, mutateMemory, shouldShowIntro } from "@/lib/player-memory";
+import { loadMemory, mutateMemory, shouldShowIntro } from "@/lib/player-memory";
 import { pickJailerQuote } from "@/lib/jailer-quotes";
 import { hasSavedRun, loadRun, resetRun } from "@/lib/state";
 import { lieuNom } from "@/lib/scene-data";
@@ -14,8 +14,9 @@ import { APP_VERSION } from "@/lib/version";
 import { applySettingsToDom } from "@/lib/settings";
 import { armAudio, playMusic } from "@/lib/audio";
 import { OptionsTab } from "@/components/GameMenu";
-import { assetUrl, assetExiste } from "@/lib/assets";
-import { reliqueIllustration } from "@/lib/reliques";
+import { assetUrl } from "@/lib/assets";
+import Reliques from "@/components/Reliques";
+import Codex from "@/components/Codex";
 
 /**
  * Écrans d'accueil (Figma 1963:370 « Première partie » / 1970:458 « Reprendre
@@ -35,7 +36,8 @@ export default function Home() {
   // de `saved` : une run peut ne plus exister alors que le passé, lui, reste.
   const [aDuPasse, setADuPasse] = useState(false);
   const [citation, setCitation] = useState<string | null>(null);
-  const [overlay, setOverlay] = useState<"reliques" | "registre" | "options" | null>(null);
+  const [overlay, setOverlay] = useState<"reliques" | "registre" | "codex" | "options" | null>(null);
+  const [aDuCodex, setADuCodex] = useState(false);
   const [reprise, setReprise] = useState<string[] | null>(null);
 
   useEffect(() => {
@@ -50,6 +52,7 @@ export default function Home() {
     setSaved(hasSavedRun());
     const m0 = loadMemory();
     setADuPasse(m0.relics.length > 0 || m0.fallen.length > 0);
+    setADuCodex(Object.keys(m0.codex ?? {}).length > 0);
     // Rappel de contexte sous « Reprendre » (spec 4/08 A1) : une vie en cours
     // donne envie d'y retourner — un bouton nu est abstrait. Nom · Jour, puis
     // Acte · lieu courant. En plein Seuil, on dit juste où on en est.
@@ -194,6 +197,11 @@ export default function Home() {
                     <FooterLink label="GRAND REGISTRE" onClick={() => setOverlay("registre")} />
                   </>
                 )}
+                {/* LE CODEX (spec 20/08) : ordre verrouillé Reliques · Grand
+                    Registre · Codex · Options — juste avant Options. Visible
+                    dès qu'une entrée existe (la Borne se débloque au premier
+                    pas de la première vie). */}
+                {aDuCodex && <FooterLink label="CODEX" onClick={() => setOverlay("codex")} />}
                 <FooterLink label="OPTIONS" onClick={() => setOverlay("options")} />
               </div>
             </div>
@@ -207,6 +215,14 @@ export default function Home() {
                 playerDays={loadRun().day}
                 onClose={() => setOverlay(null)}
               />
+            ) : overlay === "codex" ? (
+              <Codex onClose={() => setOverlay(null)} />
+            ) : overlay === "reliques" ? (
+              /* L'écran DESCENTE / RELIQUAIRE (spec 20/08, Figma 2496:4745).
+                 Révocable jusqu'au DÉPART en run : une partie engagée scelle
+                 la Descente (lecture seule) — elle se rouvre à la prochaine
+                 incarnation. */
+              <Reliques onClose={() => setOverlay(null)} verrouille={saved} />
             ) : (
               overlay && <HomeOverlay kind={overlay} onClose={() => setOverlay(null)} />
             )}
@@ -282,61 +298,21 @@ function FooterLink({ label, onClick, disabled }: { label: string; onClick?: () 
   );
 }
 
-/** Plein cadre charbon (jamais une popup — spec §8) : Reliques ou Registre. */
-function HomeOverlay({ kind, onClose }: { kind: "reliques" | "registre" | "options"; onClose: () => void }) {
-  const mem = loadMemory();
-  const run = loadRun();
+/** Plein cadre charbon (jamais une popup — spec §8). Depuis le 20/08, seules
+    les OPTIONS passent encore ici : le Registre (26/07) et les Reliques
+    (écran Descente/Reliquaire) ont chacun leur écran dédié. */
+function HomeOverlay({ kind, onClose }: { kind: "options"; onClose: () => void }) {
+  void kind;
   return (
     <div className="absolute inset-0 z-[9] flex flex-col bg-[var(--color-bg)]">
       <div className="flex items-center justify-between px-[15px] py-[11px]">
         <span className="text-[12px] font-medium uppercase tracking-[2.4px] text-[var(--color-ink)]">
-          {kind === "reliques" ? "Reliques" : kind === "registre" ? "Grand Registre" : "Options"}
+          Options
         </span>
         <CloseX onClose={onClose} />
       </div>
-      <div className="flex-1 overflow-y-auto px-[17px] pb-[24px]">
-        {kind === "options" ? (
-          <div className="mx-[-17px]">
-            <OptionsTab />
-          </div>
-        ) : kind === "reliques" ? (
-          mem.relics.length === 0 ? (
-            <p className="mt-[18px] text-[13px] leading-[1.4] text-[var(--color-ink)] opacity-60">
-              Aucune relique. Elles se forgent d&apos;une mort — la tienne.
-            </p>
-          ) : (
-            <div className="mt-[12px] flex flex-col gap-[12px]">
-              {mem.relics.map((r, i) => (
-                <div key={`${r.name}-${i}`} className="flex items-center gap-[13px]">
-                  {/* L'illustration propre de la relique si elle existe (6/08),
-                      sinon l'icône générique tramée 1000×1000. */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img alt="" src={assetUrl(reliqueIllustration(r.relicId ?? r.name, assetExiste) ?? "assets/objet_couronne_brisee.png")} className="size-[54px] border border-solid border-[var(--color-ink)]/30" style={{ imageRendering: "pixelated" }} />
-                  <div>
-                    <p className="text-[13px] text-[var(--color-ink)]">{r.name}</p>
-                    <p className="text-[11px] uppercase tracking-[1px] text-[var(--color-accent)]">
-                      {r.rarity} — {r.heroName}, J{r.days}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )
-        ) : (
-          <div className="registre mx-[-17px]">
-            <p className="registre-head">— LE GRAND REGISTRE —</p>
-            <div className="registre-list">
-              {buildRegistre(mem, run.heroName, run.day).map((r) => (
-                <div key={`${r.rank}-${r.name}`} className={`registre-row ${r.isPlayer ? "is-player" : ""}`}>
-                  <span className="registre-rank">{r.rank}</span>
-                  <span className="registre-name">{r.name}</span>
-                  <span className="registre-days">J{r.days}</span>
-                  <span className={`registre-cause${r.destin === "traversee" ? " registre-revenu" : ""}`}>{r.cause}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+      <div className="flex-1 overflow-y-auto pb-[24px]">
+        <OptionsTab />
       </div>
     </div>
   );

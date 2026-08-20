@@ -187,6 +187,10 @@ export default function DeathScreen({
 
   const mem = useMemo(() => loadMemory(), []);
   const morts = mem.deaths;
+  // Descente jamais gérée (spec 20/08) → la relique fraîche sera portée par
+  // défaut ; Descente explicite → elle rejoint le Reliquaire, et la ligne de
+  // forge doit dire lequel des deux est vrai.
+  const porteeParDefaut = !Array.isArray(mem.descente);
 
   // Le texte du fragment : réaction aux jours tenus, puis fragment d'arc au
   // jalon — sinon une citation contextuelle du pool. Tiré dans un EFFET, pas
@@ -531,7 +535,9 @@ export default function DeathScreen({
             <p className="mt-[24px] w-[336px] max-w-full text-center font-mono text-[13px] leading-[1.3] text-[var(--color-ink)] max-[799px]:mt-[12px]">
               {firstDeath
                 ? "De cette première mort, il reste plus que d'ordinaire."
-                : "Celui qui te suivra la portera."}
+                : porteeParDefaut
+                  ? "Celui qui te suivra la portera."
+                  : "Elle rejoint le Reliquaire. À toi de dire qui la portera."}
             </p>
             {/* La FONCTION en mots (promesse n°3 du 4/08) : la relique n'est
                 plus un nom sec — elle annonce ce qu'elle fera de la prochaine

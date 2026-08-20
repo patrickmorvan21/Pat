@@ -194,9 +194,15 @@ export type RunState = {
       reprise rejoue l'écran courant puis la suite, jamais la pile entière.
       Optionnel : les sauvegardes d'avant n'ont pas le champ. */
   feedSuite?: FeedEntry[][];
-  /** L'effet de la relique portée a été CONSOMMÉ cette run (coussin dépensé,
-      passe-verrou utilisé). Une relique = un geste par vie. Optionnel. */
+  /** ⚠️ HÉRITÉ (avant la Descente du 20/08) : l'unique relique portée avait
+      dépensé son geste. Les nouvelles écritures passent par `reliquesUsees` ;
+      un `true` ici (run en cours au moment de la migration) est lu comme
+      « tous les gestes dépensés » — conservateur, une seule vie concernée. */
   relicUsed?: boolean;
+  /** LA DESCENTE (20/08) : index (dans `mem.relics`) des reliques portées
+      dont le geste — amorti, passe, silence — a été consommé CETTE vie.
+      Chaque relique portée a son geste : trois amortis = trois chocs pris. */
+  reliquesUsees?: number[];
   /** Ambiances de liaison déjà SERVIES cette run — un événement de voyage ne
       revient jamais verbatim dans une même vie (retour test 4/08). Complétée
       en QUITTANT la liaison, pour que sa reprise reste déterministe. */
@@ -656,6 +662,9 @@ export function loadRun(): RunState {
             // 4/08 (l'anti-répétition des liaisons ne filtrait rien).
             feedSuite: Array.isArray(p.feedSuite) ? p.feedSuite : [],
             relicUsed: Boolean(p.relicUsed),
+            reliquesUsees: Array.isArray(p.reliquesUsees)
+              ? p.reliquesUsees.filter((n): n is number => typeof n === "number")
+              : [],
             liaisonVues: Array.isArray(p.liaisonVues) ? p.liaisonVues : [],
             intrusesVues: Array.isArray(p.intrusesVues) ? p.intrusesVues : [],
             reactionsVues: Array.isArray(p.reactionsVues) ? p.reactionsVues : [],
