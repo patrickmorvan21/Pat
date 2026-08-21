@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-20T21:52:15Z",
- "commit": "6e99e6a",
+ "genere": "2026-08-21T08:32:55Z",
+ "commit": "e471b72",
  "zones": [
   {
    "id": "landes",
@@ -7468,6 +7468,14 @@
  ],
  "reserve": [
   {
+   "fichier": "codex_lisieres_basse.png",
+   "hash": "d525af7c",
+   "taille": 7928,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "codex_lisieres_basse"
+  },
+  {
    "fichier": "monstre_appele_descente.png",
    "hash": "fb4ce0fd",
    "taille": 30568,
@@ -9370,10 +9378,10 @@
   "scenes": 93,
   "pointsInteret": 0,
   "choix": 277,
-  "illustrations": 277,
+  "illustrations": 282,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 88,
+  "reserve": 89,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
