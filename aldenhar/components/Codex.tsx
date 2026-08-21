@@ -36,7 +36,8 @@ import {
   type CodexType,
 } from "@/lib/codex-data";
 import { loadMemory, marquerCodexVu } from "@/lib/player-memory";
-import { assetUrl } from "@/lib/assets";
+import { assetUrl, assetCss } from "@/lib/assets";
+import { BoutonNav } from "@/components/NavIcons";
 
 type Niveau =
   | { t: "actes" }
@@ -102,25 +103,6 @@ function Losange() {
   );
 }
 
-/** Retour = la FLÈCHE de la maquette (asset Figma « Group 16 »), fermeture =
-    la croix habituelle — jamais une croix retournée (retour Patrick 21/08). */
-function NavIcon({ icone, onClick, label }: { icone: "retour" | "fermer"; onClick: () => void; label: string }) {
-  return (
-    <button
-      aria-label={label}
-      onClick={onClick}
-      className="flex size-[32px] items-center justify-center border border-solid border-[var(--color-ink)]/40 bg-[var(--color-bg)]/80"
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        alt=""
-        src={assetUrl(icone === "retour" ? "assets/fleche_retour.png" : "assets/croix_menu.png")}
-        className="size-[32px]"
-        style={{ imageRendering: "pixelated" }}
-      />
-    </button>
-  );
-}
 
 export default function Codex({ onClose }: { onClose: () => void }) {
   const [niveau, setNiveau] = useState<Niveau>({ t: "actes" });
@@ -158,21 +140,22 @@ export default function Codex({ onClose }: { onClose: () => void }) {
           MÊME hauteur que le menu en jeu : sous la barre iOS (safe-area),
           jamais dedans (retour Patrick 21/08). */}
       <div className="absolute left-[10px] top-[calc(env(safe-area-inset-top,0px)+11px)] z-[3]">
-        <NavIcon icone="retour" label="Retour" onClick={retour} />
+        <BoutonNav icone="fleche" label="Retour" onClick={retour} />
       </div>
       <div className="absolute right-[10px] top-[calc(env(safe-area-inset-top,0px)+11px)] z-[3]">
-        <NavIcon icone="fermer" label="Fermer" onClick={onClose} />
+        <BoutonNav icone="croix" label="Fermer" onClick={onClose} />
       </div>
 
       {niveau.t === "entree" && entree ? (
         <EntreeFiche entree={entree} prov={prov} />
       ) : (
         <>
-          {/* ─── En-tête (géométrie maquette 2492:1379) : l'image commence à
-              35px du bord haut, le bloc-titre se pose à 85px — c'est-à-dire
-              SUR l'image, dans son ciel orange plat (les visuels sont composés
-              pour ça : sujet en bas, ciel en haut). CODEX et le titre sont en
-              BLANC, lisibles sur l'orange (retour Patrick 21/08). */}
+          {/* ─── En-tête : l'image monte AU RAS du haut de l'écran (retour
+              Patrick 21/08 — le retrait de 35px de la maquette était la barre
+              de statut iOS mimée dans Figma, pas du charbon à rendre). Le
+              bloc-titre reste à y=85, SUR le ciel orange plat de l'image
+              (visuels composés sujet en bas, ciel en haut) : CODEX et le
+              titre se lisent en BLANC sur l'orange. */}
           <div className="relative shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -180,13 +163,18 @@ export default function Codex({ onClose }: { onClose: () => void }) {
               /* Cette branche ne rend jamais le niveau « entree » (il a sa
                  propre fiche au-dessus) — le cast dit juste ça à TypeScript. */
               src={assetUrl(HERO[niveau.t as Exclude<Niveau["t"], "entree">])}
-              /* object-top : les visuels sont composés sujet EN BAS, ciel en
-                 haut — on rogne le bas s'il faut, jamais le ciel qui porte le
-                 titre (retour Patrick : « l'image est beaucoup plus en bas »). */
-              className={`mt-[35px] w-full object-cover object-top ${niveau.t === "zone" ? "h-[312px]" : "h-[390px]"}`}
+              /* object-top : on rogne le bas s'il le faut, jamais le ciel qui
+                 porte le titre. Hauteurs 425/347 = les bords BAS de la
+                 maquette (35+390 / 35+312), conservés pour que les boutons
+                 chevauchent l'image au même endroit. */
+              className={`w-full object-cover object-top ${niveau.t === "zone" ? "h-[347px]" : "h-[425px]"}`}
               style={{ imageRendering: "pixelated" }}
             />
-            <div className="dissolve-bottom" aria-hidden />
+            <div
+              className="dissolve-bottom"
+              style={{ backgroundImage: assetCss("assets/bande_dissolution_haut.svg") }}
+              aria-hidden
+            />
             <div className="absolute inset-x-0 top-[85px] text-center">
               <Eyebrow texte="CODEX" blanc />
               <h1
@@ -314,7 +302,14 @@ function EntreeFiche({
           className={`w-full object-cover ${arc ? "h-[190px]" : "h-[352px]"}`}
           style={{ imageRendering: "pixelated" }}
         />
-        <div className="dissolve-bottom" aria-hidden />
+        {/* ⚠️ La bande de dissolution n'a PAS de background dans le CSS : il
+            se pose inline (URL compatible basePath) — sans lui elle est
+            invisible, le défaut exact du retour Patrick 21/08. */}
+        <div
+          className="dissolve-bottom"
+          style={{ backgroundImage: assetCss("assets/bande_dissolution_haut.svg") }}
+          aria-hidden
+        />
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto px-[16px] pb-[24px]">
         <div className="mt-[14px]">

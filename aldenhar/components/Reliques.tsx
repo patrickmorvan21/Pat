@@ -51,6 +51,7 @@ import {
 } from "@/lib/player-memory";
 import { reliqueIllustration } from "@/lib/reliques";
 import { assetUrl, assetExiste } from "@/lib/assets";
+import { BoutonNav } from "@/components/NavIcons";
 
 const RARETE_LABEL: Record<Relic["rarity"], string> = {
   commune: "RELIQUE COMMUNE",
@@ -100,6 +101,9 @@ type Drag = {
   arme: boolean;
   x0: number;
   y0: number;
+  /** Un geste HORIZONTAL depuis le Reliquaire fait DÉFILER la bande (défilement
+      manuel — les vignettes sont en touch-action: none, voir plus bas). */
+  mode?: "scroll";
 };
 
 export default function Reliques({
@@ -165,22 +169,37 @@ export default function Reliques({
 
   // ⚠️ Les écouteurs de drag vivent sur WINDOW, pas sur l'élément — un
   // setPointerCapture sur la vignette perdait 8 pointermove sur 10 (mesuré
-  // sur la carte de l'atelier, 28/07).
+  // sur la carte de l'atelier, 28/07). Et les vignettes sont en
+  // touch-action: none (retour Patrick 21/08 : le pan-x natif de la bande
+  // AVALAIT le geste sur iOS — pointercancel dès que le doigt bougeait,
+  // donc impossible de glisser depuis le Reliquaire) : le défilement
+  // horizontal de la bande est refait À LA MAIN dans move().
   useEffect(() => {
     if (!drag) return;
     const move = (e: PointerEvent) => {
-      setDrag((d) => {
-        if (!d) return d;
-        const arme = d.arme || Math.abs(e.clientY - d.y0) > 14 || Math.abs(e.clientX - d.x0) > 14;
-        return { ...d, x: e.clientX, y: e.clientY, arme };
-      });
+      const d = drag;
+      if (!d) return;
+      if (d.mode === "scroll") {
+        if (bandeRef.current) bandeRef.current.scrollLeft += d.x - e.clientX;
+        setDrag({ ...d, x: e.clientX, y: e.clientY });
+        return;
+      }
+      const dx = e.clientX - d.x0;
+      const dy = e.clientY - d.y0;
+      // Depuis le Reliquaire, un geste franchement horizontal = faire
+      // défiler la bande, jamais un drag.
+      if (!d.arme && !d.depuisDescente && Math.abs(dx) > 10 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+        setDrag({ ...d, x: e.clientX, y: e.clientY, mode: "scroll" });
+        return;
+      }
+      const arme = d.arme || Math.abs(dy) > 14 || (d.depuisDescente && Math.abs(dx) > 14);
+      setDrag({ ...d, x: e.clientX, y: e.clientY, arme });
     };
     const up = (e: PointerEvent) => {
       setDrag(null);
       const d = drag;
-      if (!d) return;
-      const arme =
-        d.arme || Math.abs(e.clientY - d.y0) > 14 || Math.abs(e.clientX - d.x0) > 14;
+      if (!d || d.mode === "scroll") return;
+      const arme = d.arme || Math.abs(e.clientY - d.y0) > 14;
       if (!arme) {
         // Un tap : sélection seule — il ne déplace jamais rien.
         setSel(d.idx);
@@ -192,7 +211,7 @@ export default function Reliques({
         if (e.clientY > d.y0 + 24) reposer(d.idx);
         return;
       }
-      // Depuis le Reliquaire : le drop se juge sur les slots de la Descente.
+      // Depuis le Reliquaire : le drop se juge sur les slots de la Descente…
       const slot = slotRefs.current.findIndex((el) => {
         if (!el) return false;
         const r = el.getBoundingClientRect();
@@ -201,13 +220,35 @@ export default function Reliques({
           e.clientY >= r.top - 10 && e.clientY <= r.bottom + 10
         );
       });
-      if (slot >= 0) equiper(d.idx, slot);
+      if (slot >= 0) {
+        equiper(d.idx, slot);
+        return;
+      }
+      // …avec un filet : un geste franchement MONTANT relâché à côté des
+      // slots équipe quand même (premier slot libre, sinon le plus proche
+      // en X) — rater la cible de 20px ne doit pas lire comme une panne.
+      if (e.clientY < d.y0 - 60) {
+        let cible = descente.length < 3 ? descente.length : 0;
+        if (descente.length >= 3) {
+          let best = Infinity;
+          slotRefs.current.forEach((el, i) => {
+            if (!el) return;
+            const r = el.getBoundingClientRect();
+            const dist = Math.abs((r.left + r.right) / 2 - e.clientX);
+            if (dist < best) { best = dist; cible = i; }
+          });
+        }
+        equiper(d.idx, cible);
+      }
     };
+    const cancel = () => setDrag(null);
     window.addEventListener("pointermove", move);
     window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", cancel);
     return () => {
       window.removeEventListener("pointermove", move);
       window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", cancel);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [drag, verrouille, descente]);
@@ -239,18 +280,15 @@ export default function Reliques({
     >
       {/* Croix de fermeture — même position que le menu en jeu : sous la
           barre iOS (safe-area), jamais dedans (retour Patrick 21/08). */}
-      <button
-        aria-label="Fermer"
-        onClick={onClose}
-        className="absolute right-[10px] top-[calc(env(safe-area-inset-top,0px)+11px)] z-[3] flex size-[32px] items-center justify-center border border-solid border-[var(--color-ink)]/40 bg-[var(--color-bg)]"
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img alt="" src={assetUrl("assets/croix_menu.png")} className="size-[32px]" style={{ imageRendering: "pixelated" }} />
-      </button>
+      <div className="absolute right-[10px] top-[calc(env(safe-area-inset-top,0px)+11px)] z-[3]">
+        <BoutonNav icone="croix" label="Fermer" onClick={onClose} />
+      </div>
 
-      {/* ─── 1. LA FICHE ─── flex-1 : les deux sections du bas sont ANCRÉES,
-          elles ne bougent jamais, quelle que soit la description. */}
-      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+      {/* ─── 1. LA FICHE ─── plafonnée en hauteur (retour Patrick 21/08 :
+          « Descente + Reliquaire sont ferrés en bas de l'écran ») — les deux
+          sections suivent la fiche au lieu d'être poussées contre le bord
+          bas ; sur un grand écran, l'espace libre reste EN DESSOUS. */}
+      <div className="flex max-h-[440px] min-h-0 flex-1 flex-col overflow-hidden">
         <div className="flex min-h-0 flex-1 items-center justify-center px-[16px] pt-[10px]">
           {relicSel ? (
             /* eslint-disable-next-line @next/next/no-img-element */
@@ -352,6 +390,10 @@ export default function Reliques({
                 className={`relative flex size-[70px] shrink-0 items-center justify-center overflow-hidden border border-solid ${
                   !porte && sel === i ? "border-[var(--color-ink)]" : porte ? "border-[var(--color-ink)]/20" : "border-[var(--color-ink)]/50"
                 } bg-[var(--color-bg)]`}
+                /* touch-action none : sans lui, le pan-x natif de la bande
+                   annule le pointer (pointercancel) et le drag est mort sur
+                   iOS. Le défilement horizontal est refait dans move(). */
+                style={{ touchAction: "none" }}
               >
                 {/* Le CREUX FANTÔME : même silhouette, trame très faible. */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -371,8 +413,8 @@ export default function Reliques({
         </div>
       </div>
 
-      {/* Microcopie — une seule ligne, en bas d'écran. */}
-      <p className="shrink-0 py-[14px] text-center font-mono text-[12px] tracking-[0.5px] text-[var(--color-ink)] opacity-50">
+      {/* Microcopie — une seule ligne, sous les sections. */}
+      <p className="shrink-0 pt-[14px] pb-[calc(env(safe-area-inset-bottom,0px)+14px)] text-center font-mono text-[12px] tracking-[0.5px] text-[var(--color-ink)] opacity-50">
         {microcopie}
       </p>
 

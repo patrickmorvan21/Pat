@@ -21,6 +21,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { loadMemory } from "@/lib/player-memory";
 import { buildLesCent, mesMorts, type RegistreEntry } from "@/lib/registre-data";
 import { assetUrl, assetCss } from "@/lib/assets";
+import { BoutonNav } from "@/components/NavIcons";
 
 const PAGE = 12;
 
@@ -203,16 +204,12 @@ export default function Registre({
     <div className="absolute inset-0 z-[9] flex flex-col overflow-y-auto bg-[var(--color-bg)]">
       {/* Croix de fermeture : posée comme l'icône de menu du jeu (11/10), et
           fixe — la liste défile dessous, on doit pouvoir sortir à tout moment. */}
-      <button
-        type="button"
-        aria-label="Fermer"
-        onClick={onClose}
-        className="fixed z-[11] block size-[32px] cursor-pointer border-none bg-transparent p-0"
+      <div
+        className="fixed z-[11]"
         style={{ top: "calc(env(safe-area-inset-top, 0px) + 11px)", right: "max(10px, calc(50vw - 185px))" }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img alt="" src={assetUrl("assets/croix_menu.png")} className="block size-full" style={{ imageRendering: "pixelated" }} />
-      </button>
+        <BoutonNav icone="croix" label="Fermer" onClick={onClose} />
+      </div>
 
       <div className="relative shrink-0">
         {/* eslint-disable-next-line @next/next/no-img-element -- rendu pixelated, jamais optimisé par next/image */}

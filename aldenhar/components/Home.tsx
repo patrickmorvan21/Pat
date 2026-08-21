@@ -14,6 +14,7 @@ import { APP_VERSION } from "@/lib/version";
 import { applySettingsToDom } from "@/lib/settings";
 import { armAudio, playMusic } from "@/lib/audio";
 import { OptionsTab } from "@/components/GameMenu";
+import { BoutonNav } from "@/components/NavIcons";
 import { assetUrl } from "@/lib/assets";
 import Reliques from "@/components/Reliques";
 import Codex from "@/components/Codex";
@@ -320,18 +321,8 @@ function HomeOverlay({ kind, onClose }: { kind: "options"; onClose: () => void }
   );
 }
 
-/** Croix de fermeture pixel art (asset Figma « Group 15 », 32×32, fourni par
-    Patrick 16/07) — plus jamais deux traits CSS lisses. Réutilisée partout. */
+/** Croix de fermeture — CSS propre depuis le 21/08 (décision Patrick : les
+    assets pixel rendaient un glyphe illisible). Réutilisée partout. */
 export function CloseX({ onClose }: { onClose: () => void }) {
-  return (
-    <button
-      type="button"
-      aria-label="Fermer"
-      onClick={onClose}
-      className="block size-[32px] cursor-pointer border-none bg-transparent p-0"
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img alt="" src={assetUrl("assets/croix_menu.png")} className="block size-full" style={{ imageRendering: "pixelated" }} />
-    </button>
-  );
+  return <BoutonNav icone="croix" onClick={onClose} label="Fermer" />;
 }
