@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-21T15:38:06Z",
- "commit": "07979ae",
+ "genere": "2026-08-21T15:59:51Z",
+ "commit": "a60c324",
  "zones": [
   {
    "id": "landes",
@@ -7476,6 +7476,14 @@
    "racine": "codex_lisieres_basse"
   },
   {
+   "fichier": "fermer.svg",
+   "hash": "81984d4a",
+   "taille": 870,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "fermer.svg"
+  },
+  {
    "fichier": "fleche_retour.png",
    "hash": "52d0be5e",
    "taille": 306,
@@ -7826,6 +7834,14 @@
    "recent": false,
    "groupe": "autre",
    "racine": "sceau_bailli"
+  },
+  {
+   "fichier": "retour.svg",
+   "hash": "3fb4fc41",
+   "taille": 565,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "retour.svg"
   },
   {
    "fichier": "scene_borne_eclat_a_b.png",
@@ -9386,10 +9402,10 @@
   "scenes": 93,
   "pointsInteret": 0,
   "choix": 277,
-  "illustrations": 282,
+  "illustrations": 284,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 90,
+  "reserve": 92,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
