@@ -208,7 +208,7 @@ export default function Registre({
         aria-label="Fermer"
         onClick={onClose}
         className="fixed z-[11] block size-[32px] cursor-pointer border-none bg-transparent p-0"
-        style={{ top: 11, right: "max(10px, calc(50vw - 185px))" }}
+        style={{ top: "calc(env(safe-area-inset-top, 0px) + 11px)", right: "max(10px, calc(50vw - 185px))" }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img alt="" src={assetUrl("assets/croix_menu.png")} className="block size-full" style={{ imageRendering: "pixelated" }} />

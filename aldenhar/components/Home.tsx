@@ -305,7 +305,9 @@ function HomeOverlay({ kind, onClose }: { kind: "options"; onClose: () => void }
   void kind;
   return (
     <div className="absolute inset-0 z-[9] flex flex-col bg-[var(--color-bg)]">
-      <div className="flex items-center justify-between px-[15px] py-[11px]">
+      {/* La croix descend sous la barre iOS (safe-area) — même hauteur que
+          le menu en jeu (retour Patrick 21/08). */}
+      <div className="flex items-center justify-between px-[15px] pb-[11px] pt-[calc(env(safe-area-inset-top,0px)+11px)]">
         <span className="text-[12px] font-medium uppercase tracking-[2.4px] text-[var(--color-ink)]">
           Options
         </span>

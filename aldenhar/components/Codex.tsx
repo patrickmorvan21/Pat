@@ -45,9 +45,18 @@ type Niveau =
   | { t: "entree"; id: string };
 
 const EYEBROW: Record<CodexType, string> = {
-  lieu: "• LIEUX •",
-  rencontre: "• RENCONTRES •",
-  arc: "• ARCS •",
+  lieu: "LIEUX",
+  rencontre: "RENCONTRES",
+  arc: "ARCS",
+};
+
+/** Les visuels d'en-tête des trois écrans de navigation — fournis par
+    Patrick (PJ du 21/08), composés EXPRÈS avec le sujet en bas et un grand
+    ciel orange plat en haut : c'est ce ciel qui rend le bloc-titre lisible. */
+const HERO: Record<"actes" | "zones" | "zone", string> = {
+  actes: "assets/codex_accueil.png",
+  zones: "assets/codex_lisieres.png",
+  zone: "assets/codex_landes.png",
 };
 
 const SECTIONS: { type: CodexType; label: string }[] = [
@@ -67,6 +76,22 @@ function romain(n: number): string {
   return r;
 }
 
+/** L'eyebrow de la maquette : deux CARRÉS de 3px tournés à 45° (jamais des
+    ronds — retour Patrick 21/08), gap 8px, libellé Roboto Mono Medium 12px
+    espacé 0.6px. Blanc sur les écrans de navigation (posé sur le ciel
+    orange), orange sur les fiches (posé sur le charbon). */
+function Eyebrow({ texte, blanc }: { texte: string; blanc?: boolean }) {
+  const carre = blanc ? "bg-[var(--color-ink)]" : "bg-[var(--color-accent)]";
+  const encre = blanc ? "text-[var(--color-ink)]" : "text-[var(--color-accent)]";
+  return (
+    <div className="flex items-center justify-center gap-[8px]">
+      <span aria-hidden className={`size-[3px] rotate-45 ${carre}`} />
+      <span className={`font-mono text-[12px] font-medium tracking-[0.6px] ${encre}`}>{texte}</span>
+      <span aria-hidden className={`size-[3px] rotate-45 ${carre}`} />
+    </div>
+  );
+}
+
 /** Le losange orange de nouveauté (coin haut-droit d'un bouton). */
 function Losange() {
   return (
@@ -77,7 +102,9 @@ function Losange() {
   );
 }
 
-function NavIcon({ flip, onClick, label }: { flip?: boolean; onClick: () => void; label: string }) {
+/** Retour = la FLÈCHE de la maquette (asset Figma « Group 16 »), fermeture =
+    la croix habituelle — jamais une croix retournée (retour Patrick 21/08). */
+function NavIcon({ icone, onClick, label }: { icone: "retour" | "fermer"; onClick: () => void; label: string }) {
   return (
     <button
       aria-label={label}
@@ -87,9 +114,9 @@ function NavIcon({ flip, onClick, label }: { flip?: boolean; onClick: () => void
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         alt=""
-        src={assetUrl("assets/croix_menu.png")}
+        src={assetUrl(icone === "retour" ? "assets/fleche_retour.png" : "assets/croix_menu.png")}
         className="size-[32px]"
-        style={{ imageRendering: "pixelated", transform: flip ? "scaleX(-1)" : undefined }}
+        style={{ imageRendering: "pixelated" }}
       />
     </button>
   );
@@ -100,8 +127,9 @@ export default function Codex({ onClose }: { onClose: () => void }) {
   // Le `vu` change quand on ouvre une fiche → on relit la mémoire à chaque
   // navigation (tick), pas seulement au montage.
   const [tick, setTick] = useState(0);
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- `tick` force la
-  // relecture du localStorage après `marquerCodexVu` (le NOUVEAU doit tomber)
+  // `tick` force la relecture du localStorage après `marquerCodexVu`
+  // (le NOUVEAU doit tomber).
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const codex = useMemo(() => loadMemory().codex ?? {}, [tick]);
   const totaux = useMemo(() => totauxCodex("landes"), []);
 
@@ -126,40 +154,43 @@ export default function Codex({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="absolute inset-0 z-[9] flex flex-col overflow-hidden bg-[var(--color-bg)]">
-      {/* Navigation — retour à gauche, fermeture à droite (maquettes). */}
-      <div className="absolute left-[10px] top-[11px] z-[3]">
-        <NavIcon flip label="Retour" onClick={retour} />
+      {/* Navigation — retour à gauche, fermeture à droite (maquettes), à la
+          MÊME hauteur que le menu en jeu : sous la barre iOS (safe-area),
+          jamais dedans (retour Patrick 21/08). */}
+      <div className="absolute left-[10px] top-[calc(env(safe-area-inset-top,0px)+11px)] z-[3]">
+        <NavIcon icone="retour" label="Retour" onClick={retour} />
       </div>
-      <div className="absolute right-[10px] top-[11px] z-[3]">
-        <NavIcon label="Fermer" onClick={onClose} />
+      <div className="absolute right-[10px] top-[calc(env(safe-area-inset-top,0px)+11px)] z-[3]">
+        <NavIcon icone="fermer" label="Fermer" onClick={onClose} />
       </div>
 
       {niveau.t === "entree" && entree ? (
         <EntreeFiche entree={entree} prov={prov} />
       ) : (
         <>
-          {/* ─── En-tête : image + eyebrow + titre ─── */}
+          {/* ─── En-tête (géométrie maquette 2492:1379) : l'image commence à
+              35px du bord haut, le bloc-titre se pose à 85px — c'est-à-dire
+              SUR l'image, dans son ciel orange plat (les visuels sont composés
+              pour ça : sujet en bas, ciel en haut). CODEX et le titre sont en
+              BLANC, lisibles sur l'orange (retour Patrick 21/08). */}
           <div className="relative shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               alt=""
-              src={assetUrl(
-                niveau.t === "actes"
-                  ? "assets/dithering-portal.jpg"
-                  : niveau.t === "zones"
-                    ? IMAGE_ACTE_I
-                    : "assets/scene_borne_frontiere_v2_a.png"
-              )}
-              className={`w-full object-cover ${niveau.t === "actes" ? "h-[250px]" : "h-[230px]"}`}
+              /* Cette branche ne rend jamais le niveau « entree » (il a sa
+                 propre fiche au-dessus) — le cast dit juste ça à TypeScript. */
+              src={assetUrl(HERO[niveau.t as Exclude<Niveau["t"], "entree">])}
+              /* object-top : les visuels sont composés sujet EN BAS, ciel en
+                 haut — on rogne le bas s'il faut, jamais le ciel qui porte le
+                 titre (retour Patrick : « l'image est beaucoup plus en bas »). */
+              className={`mt-[35px] w-full object-cover object-top ${niveau.t === "zone" ? "h-[312px]" : "h-[390px]"}`}
               style={{ imageRendering: "pixelated" }}
             />
             <div className="dissolve-bottom" aria-hidden />
-            <div className="absolute inset-x-0 top-[78px] text-center">
-              <p className="font-mono text-[12px] font-bold tracking-[3px] text-[var(--color-accent)]">
-                • CODEX •
-              </p>
+            <div className="absolute inset-x-0 top-[85px] text-center">
+              <Eyebrow texte="CODEX" blanc />
               <h1
-                className="mt-[4px] px-[40px] text-[28px] leading-[1.15] text-[var(--color-ink)]"
+                className="mt-[6px] px-[40px] text-[36px] leading-[1.1] text-[var(--color-ink)]"
                 style={{ fontFamily: "var(--font-title)" }}
               >
                 {niveau.t === "actes"
@@ -178,8 +209,10 @@ export default function Codex({ onClose }: { onClose: () => void }) {
           </div>
 
           {niveau.t !== "zone" ? (
-            /* ─── Écrans 1 et 2 : listes de boutons pleine largeur ─── */
-            <div className="flex flex-col gap-[14px] px-[15px] pt-[14px]">
+            /* ─── Écrans 1 et 2 : listes de boutons pleine largeur, posées à
+                y=262 (maquette) — elles CHEVAUCHENT le bas sombre de l'image
+                (35 + 390 − 262 = 163px de remontée). ─── */
+            <div className="relative z-[2] mt-[-163px] flex flex-col gap-[14px] px-[15px]">
               {(niveau.t === "actes"
                 ? [
                     { nom: "Les Lisières", actif: true },
@@ -284,9 +317,9 @@ function EntreeFiche({
         <div className="dissolve-bottom" aria-hidden />
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto px-[16px] pb-[24px]">
-        <p className="mt-[14px] text-center font-mono text-[12px] font-bold tracking-[3px] text-[var(--color-accent)]">
-          {EYEBROW[entree.type]}
-        </p>
+        <div className="mt-[14px]">
+          <Eyebrow texte={EYEBROW[entree.type]} />
+        </div>
         <h2
           className="mt-[6px] text-center text-[28px] leading-[1.15] text-[var(--color-ink)]"
           style={{ fontFamily: "var(--font-title)" }}

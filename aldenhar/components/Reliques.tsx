@@ -237,11 +237,12 @@ export default function Reliques({
       className="absolute inset-0 z-[9] flex flex-col bg-[var(--color-bg)] select-none"
       style={{ touchAction: "none" }}
     >
-      {/* Croix de fermeture — même position que partout (règle du 16/07). */}
+      {/* Croix de fermeture — même position que le menu en jeu : sous la
+          barre iOS (safe-area), jamais dedans (retour Patrick 21/08). */}
       <button
         aria-label="Fermer"
         onClick={onClose}
-        className="absolute right-[10px] top-[11px] z-[3] flex size-[32px] items-center justify-center border border-solid border-[var(--color-ink)]/40 bg-[var(--color-bg)]"
+        className="absolute right-[10px] top-[calc(env(safe-area-inset-top,0px)+11px)] z-[3] flex size-[32px] items-center justify-center border border-solid border-[var(--color-ink)]/40 bg-[var(--color-bg)]"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img alt="" src={assetUrl("assets/croix_menu.png")} className="size-[32px]" style={{ imageRendering: "pixelated" }} />
@@ -364,16 +365,9 @@ export default function Reliques({
               </div>
             );
           })}
-          {/* Cases vides de comblement (maquette) : la bande garde sa ligne
-              même quand le Reliquaire est court. */}
-          {Array.from({ length: Math.max(0, 5 - relics.length) }).map((_, i) => (
-            <div
-              key={`v${i}`}
-              className="flex size-[70px] shrink-0 items-center justify-center border border-solid border-[var(--color-ink)]/30"
-            >
-              <span className="font-mono text-[11px] tracking-[2px] text-[var(--color-ink)] opacity-30">VIDE</span>
-            </div>
-          ))}
+          {/* PAS de cases vides de comblement ici (retour Patrick 21/08) :
+              seule la DESCENTE montre ses vides — c'est elle qui dit « trois
+              maximum ». Le Reliquaire n'a que ce que les morts ont laissé. */}
         </div>
       </div>
 
