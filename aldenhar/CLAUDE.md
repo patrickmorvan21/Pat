@@ -849,3 +849,9 @@ Quatre nouveaux retours de Patrick sur la v1.93.1, vérifiés 18/18 en Playwrigh
 - ⚠️ Piège de test : mon « drop hors slot » atterrissait DANS le slot 1 → le jeu faisait un ÉCHANGE correct que le test lisait comme un échec. Relâcher à x=340 (après le 3e slot) pour tester le filet.
 - Vérifié Playwright (18 assertions) : 0 `<img>` dans les 5 boutons de nav (traits CSS comptés et blancs), images Codex à top 0 (h 425/425/347), dissolve avec background sur navigation ET fiches, boutons à 262, Descente à ~450 avec vide d'écran sous la microcopie, drag vertical équipe, drag montant hors slot équipe (filet), geste horizontal = scroll sans équiper, touch-action none, 0 erreur JS. Lint (0 erreur) + typecheck + gardes verts.
 - `APP_VERSION` 1.93.1 → **1.93.2**, `CACHE_VERSION` v148 → **pactum-v149**.
+
+#### Les icônes en POINTS DE PIXELS, rendus par le CSS (v1.93.3)
+Retour Patrick sur la v1.93.2 : « je veux que ce soit des points de pixels comme il y avait sur ma maquette » — le DESSIN des assets (semis de points épars) était le bon, c'était le RENDU bitmap qui pêchait, pas le motif. Mes traits pleins de 2px sont retirés.
+- **`NavIcons.tsx` refait** : les motifs EXACTS des deux PNG (« Group 15 » = 10 points pour la croix, « Group 16 » = 7 points pour la flèche-chevron), transcrits pixel par pixel depuis les assets, rendus par **box-shadow** — un seul élément 1×1, chaque point est une copie décalée, net à toutes les densités d'écran. Les asymétries des motifs (points doublés) sont conservées : elles font partie du dessin, ne pas « symétriser ».
+- **Prouvé au pixel** : screenshot des deux boutons rendus → comparaison position par position contre les coordonnées des PNG : croix 10/10, flèche 7/7, zéro écart.
+- Suite complète re-passée : 18/18. `APP_VERSION` 1.93.2 → **1.93.3**, `CACHE_VERSION` v149 → **pactum-v150**.
