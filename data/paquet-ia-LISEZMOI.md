@@ -14,8 +14,8 @@ Ce paquet contient **deux objets**, et il ne faut surtout pas les confondre.
 
 | | où | ce que c'est |
 |---|---|---|
-| **LA DÉMO** — *« La Nuit du Serment »* | `transcripts/v196-demo-*.md` | Une **tranche verticale** d'environ 20 minutes : entrée compressée, route scriptée, prose courte, gestes tactiles. **C'est elle qu'on veut faire juger.** |
-| **LE JEU COMPLET** | `jouer/` (la table Python) + `transcripts/v196-vie-*.md` | Le jeu tel qu'il est aujourd'hui : entrée longue, parcours tiré au sort, prose entière. Utile en **comparaison**, pas comme sujet. |
+| **LA DÉMO** — *« La Nuit du Serment »* | `transcripts/v197-demo-*.md` | Une **tranche verticale** d'environ 20 minutes, ORCHESTRÉE en quatre mouvements (accroche → ouverture → pression → climax, jamais nommés à l'écran) : entrée compressée, gestes tactiles garantis, la nuit au village, les décisions du début qui reviennent à la fin, la Falaise aux Cordes en dernier lieu. **C'est elle qu'on veut faire juger — et d'abord sa COURBE.** |
+| **LE JEU COMPLET** | `jouer/` (la table Python) + `transcripts/v197-vie-*.md` | Le jeu tel qu'il est aujourd'hui : entrée longue, parcours tiré au sort, prose entière. Utile en **comparaison**, pas comme sujet. |
 
 **⚠️ `pactum.py` NE JOUE PAS LA DÉMO.** La table Python rejoue le jeu
 complet : sa prose est la longue, son parcours est tiré au sort, et ses
@@ -172,18 +172,18 @@ que le joueur a vu, les images affichées, les choix offerts, l'action prise.
 C'est la **référence sans dérive** — tout y est citable mot pour mot, et c'est
 là que se jugent la mise en scène et le rythme réel.
 
-**Les deux parties de DÉMO** (`v196-demo-*.md`) sont le sujet principal —
-voir la section 0. L'une **explore** (elle joue les deux gestes tactiles de
-la démo : le frottage de la Borne, l'appui tenu face à la Bête) ; l'autre
-**lance le dé dès qu'elle peut** (quatorze jets) et **rate les deux gestes
-tactiles sans jamais les croiser** — c'est un fait de la démo, pas un défaut
-d'enregistrement : dis-nous si ça te paraît juste ou non.
+**Les deux parties de DÉMO** (`v197-demo-*.md`) sont le sujet principal —
+voir la section 0. L'une **explore** (76 écrans : trois gestes tactiles, le
+retour de ce qu'elle a semé, la Falaise et la Descente) ; l'autre **lance le
+dé dès qu'elle peut** — et croise QUAND MÊME deux gestes : le geste de la
+Borne est garanti quel que soit le premier choix (avec un cadrage différent
+selon ce qu'on a fait), et la cérémonie de la corde clôt toute traversée.
+Juge en priorité la COURBE : est-ce qu'on sent, sans qu'aucun écran ne le
+dise, « ça démarre vite → j'explore → ce que j'ai fait me revient dessus →
+ça se resserre → un vrai dernier moment » ?
 
-⚠️ **La sortie du village est OFFERTE dans les deux vies de démo** (« Vers le
-portillon, et la lande au-delà ») mais l'automate ne la prend jamais : la
-transition de sortie elle-même n'est donc dans aucun transcript. Elle est
-vérifiée par ailleurs, et c'est le point le plus récent du jeu — si tu juges
-les transitions, sache que celle-là existe et qu'elle manque seulement ici.
+⚠️ En démo, franchir le portillon déclenche la MEUTE (la réponse à « aucun
+chien n'aboie ») : la sortie du village se lit dans les deux transcripts.
 
 Les parties du **jeu complet** (`v196-vie-*.md`), pour comparaison : une
 **curieuse** (elle regarde tout et lance peu — c'est elle

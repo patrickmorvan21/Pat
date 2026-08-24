@@ -56,6 +56,10 @@ import {
   NUIT_CORPS,
   NUIT_OUVERTURE,
   SECOND_PROCES,
+  DEMO_BORNE_CADRAGES,
+  DEMO_FALAISE_APPROCHE,
+  DEMO_FALAISE_LECTURES,
+  DEMO_MEUTE_COUTURE,
   lieuDejaVisite,
   lieuNom,
   apportsProces,
@@ -85,10 +89,13 @@ import {
   JAILER_METALEPTIQUE, JAILER_DE_IMPOSSIBLE, type SurpriseId,
 } from "@/lib/surprises";
 import { chapterById, drawChapter, LANDES_LORE_FRAGMENTS } from "@/lib/chapters-data";
-import { demoActive, demoRouteRestante } from "@/lib/demo";
+import { demoActive, demoPhase, demoRouteRestante } from "@/lib/demo";
 import RubReveal from "@/components/minigames/engines/RubReveal";
 import HoldSteady from "@/components/minigames/engines/HoldSteady";
-import { playMusic } from "@/lib/audio";
+import GlyphTrace from "@/components/minigames/engines/GlyphTrace";
+import TimingTap from "@/components/minigames/engines/TimingTap";
+import SlowSwipe from "@/components/minigames/engines/SlowSwipe";
+import { forcerPiste, playMusic } from "@/lib/audio";
 import { loadSettings } from "@/lib/settings";
 import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomSoinMineur, recompenseDestinQuiTient, usageEnMots, LANDES_OBJETS, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { assetUrl, assetCss, assetExiste } from "@/lib/assets";
@@ -765,7 +772,12 @@ function decouperEnEcrans(entries: FeedEntry[]): FeedEntry[][] {
   let mots = 0;
   for (const e of entries) {
     const m = texte(e);
-    if (m > 0 && mots > 0 && mots + m > MOTS_PAR_ECRAN) {
+    // LA DÉMO RESPIRE PLUS LARGE (go 24/08, chantier taps) : un écran de démo
+    // porte jusqu'à 150 mots — la prose y est déjà courte (narrationDemo), et
+    // « un écran sans décision doit justifier son existence ». Le jeu complet
+    // garde ses 90 : sa prose entière en a besoin.
+    const budget = demoActive() ? 150 : MOTS_PAR_ECRAN;
+    if (m > 0 && mots > 0 && mots + m > budget) {
       groupes.push(cur);
       cur = [];
       mots = 0;
@@ -962,6 +974,12 @@ export default function Scene() {
   const [minigameChoice, setMinigameChoice] = useState<Choice | null>(null);
   const [minigameConfig, setMinigameConfig] = useState<Record<string, unknown> | null>(null);
   const minigamesJoues = useRef<string[]>([]);
+  /* La CÉRÉMONIE (swipe) est insensible à l'échec : trop vite, la corde ne
+     file pas et le geste se représente — ce compteur remonte le moteur. */
+  const [minigameRetry, setMinigameRetry] = useState(0);
+  /* Mode testeur (`?testeur=1`) : trois taps sur l'overlay résolvent le geste
+     en réussite — les IA sans geste tactile réel (et l'auto-joueur) passent. */
+  const testeurTaps = useRef(0);
   const runRef = useRef<RunState | null>(null);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const timedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -1484,6 +1502,8 @@ export default function Scene() {
 
     // Musique (24/07) : l'Acte I tourne sur les boucles des Landes (rotation
     // aléatoire des 3 pistes). Silencieux si les mp3 ne sont pas déployés.
+    // (En démo, l'effet « la musique suit la courbe » ci-dessous impose la
+    // piste de la phase avant ce premier départ.)
     playMusic("landes");
 
     // Chapitre garanti (chantier 2 du 23/07) : chaque traversée en reçoit UN,
@@ -1798,6 +1818,30 @@ export default function Scene() {
   // Scène chronométrée (§18) : le compte à rebours ne démarre que lorsque les
   // choix d'origine sont réellement jouables (texte fini, pas de dé, pas de
   // choix fait).
+  /* LA MUSIQUE SUIT LA COURBE (go 24/08 : « la musique se penche, puis
+     sombre, puis meurt »). En démo, la phase impose la piste des Landes —
+     ouverture = 1re boucle, pression = 2e, climax = 3e, la Falaise = silence
+     (fondu). Hors démo : rotation normale (forcerPiste(null)). Lu à chaque
+     changement d'écran ; lire runRef dans un effet est permis. */
+  useEffect(() => {
+    if (!demoActive()) {
+      forcerPiste(null);
+      return;
+    }
+    const r = runRef.current;
+    if (!r) return;
+    if (/^falaise-cordes/.test(scene.id) || scene.terminal) {
+      forcerPiste("off");
+      return;
+    }
+    const ph = demoPhase({
+      visitedCount: r.trav?.visited?.length ?? 1,
+      entree: Boolean(r.hameau?.entree) || Boolean(scene.hameauEntree),
+      sorti: Boolean(r.hameau?.sorti),
+    });
+    forcerPiste(ph === "pression" ? 1 : ph === "climax" ? 2 : 0);
+  }, [scene]);
+
   useEffect(() => {
     if (timedTimer.current) {
       clearTimeout(timedTimer.current);
@@ -2009,8 +2053,52 @@ export default function Scene() {
       } else {
         nextScene = resoudre(opts.toScene, runRef.current) ?? sceneById(ENTRY_SCENE)!;
       }
+      /* LE CLIMAX LIT LA TRAVERSÉE (go 24/08, verrou n°1) : sur l'écran des
+         cordes, ce que CETTE vie a fait revient — le tressage déjà vu si la
+         Chapelle a été traversée, la corde qu'on transporte si on l'a prise.
+         Jamais récité : le joueur reconnaît, ou ne reconnaît pas. */
+      if (demoActive() && nextScene.id === "falaise-cordes-2") {
+        const lectures: string[] = [];
+        if (lieuDejaVisite(trav.visited, "chapelle-des-cordes"))
+          lectures.push(DEMO_FALAISE_LECTURES.tressage);
+        if ((runRef.current?.besace ?? []).some((b) => /corde coup/i.test(b.name)))
+          lectures.push(DEMO_FALAISE_LECTURES.cordeCoupee);
+        if (lectures.length)
+          nextScene = { ...nextScene, narration: [...nextScene.narration, ...lectures] };
+      }
       trav.phase = "scene";
       trav.current = nextScene.id;
+    } else if (
+      opts?.toDest === HAMEAU_SORTIE &&
+      demoActive() &&
+      vu(runRef.current?.vus, "demo|meute") === 0
+    ) {
+      /* LA MEUTE AU PORTILLON (démo, segment 9 — la phase Climax commence).
+         Franchir le portillon en démo ne rend pas la Croisée : la sortie du
+         village EST la rencontre — la réponse, neuf minutes plus tard, à
+         « aucun chien n'aboie » de l'arrivée. La couture de sortie se joue
+         quand même (on ne se téléporte pas), puis le front des chiens.
+         Cas d'école de la CATÉGORIE « retour garanti » (verrou n°2 du go) :
+         le jeu complet choisira parmi ce que la vie a réellement planté. */
+      const base = resoudre("meute-grise-1", runRef.current) ?? sceneById(ENTRY_SCENE)!;
+      const seed = (nextStep * 101 + 13) >>> 0;
+      nextScene = {
+        ...base,
+        narration: [
+          FRANCHIT_SORTIE[seed % FRANCHIT_SORTIE.length],
+          DEMO_MEUTE_COUTURE,
+          ...base.narration,
+        ],
+      };
+      trav.phase = "scene";
+      trav.current = "meute-grise-1"; // hors `visited` : un retour, pas un lieu
+      trav.liaisonOpts = null;
+      persist((r) => {
+        if (r.hameau) r.hameau = { ...r.hameau, sorti: true };
+        r.vus = noter(r.vus, "demo|meute");
+        // La menace de la Meute, si elle avait été plantée, se consomme ici.
+        if (r.menace?.id === "meute") r.menace = null;
+      });
     } else if (opts?.toDest === HAMEAU_SORTIE) {
       // LE PORTILLON (24/08) : quitter le village est une TRANSITION jouée,
       // pas une arrivée. Rien n'entre dans `visited` (aucun lieu traversé),
@@ -2202,12 +2290,78 @@ export default function Scene() {
       const dernierLieu = trav.visited[trav.visited.length - 1] ?? "";
       const enLande =
         !isHameauInterior(dernierLieu) && !/^(serment-hameau|hameau-)/.test(dernierLieu);
+      const demoOn = demoActive();
+      /* ═══ LA COURBE DE LA DÉMO (go 24/08) — trois déroutages scriptés,
+         AVANT le tirage. Chacun se joue une fois (marqué dans `vus`, donc
+         fidèle à la reprise), aucun n'entre dans `visited`. */
       if (
+        demoOn &&
+        trav.visited.length === 1 &&
+        trav.visited[0] === "borne-frontiere" &&
+        vu(runRef.current?.vus, "demo|geste|borne-frontiere") === 0 &&
+        !scene.liaison
+      ) {
+        /* LE GESTE DE LA BORNE EST GARANTI (verrou n°1) : si le premier acte
+           n'était pas le tour de la pierre (dont le frottage est le geste),
+           la Borne retient le héros un pas de plus — et le CADRAGE dit
+           pourquoi LUI veut regarder : l'éclat frôlé sous les offrandes, ou
+           le point que l'homme immobile fixait. Jamais trois routes qui
+           convergent vers le même bouton : la situation converge, pas l'acte. */
+        const base = resoudre("demo-borne-geste", runRef.current)!;
+        const cadrage = (runRef.current?.looted ?? []).includes("offrandes-borne")
+          ? DEMO_BORNE_CADRAGES.offrandes
+          : /^hesitant/.test(scene.id)
+            ? DEMO_BORNE_CADRAGES.homme
+            : DEMO_BORNE_CADRAGES.defaut;
+        nextScene = { ...base, narration: [cadrage, ...base.narration] };
+        trav.phase = "scene";
+        trav.current = "demo-borne-geste";
+        persist((r) => {
+          r.vus = noter(r.vus, "demo|geste|borne-frontiere");
+        });
+      } else if (
+        demoOn &&
+        vu(runRef.current?.vus, "demo|nuit") === 0 &&
+        Boolean(runRef.current?.hameau?.entree) &&
+        !runRef.current?.hameau?.sorti &&
+        lieuDejaVisite(trav.visited, "chapelle-des-cordes") &&
+        lieuDejaVisite(trav.visited, "marche-muet") &&
+        !lieuDejaVisite(trav.visited, "puits-condamne")
+      ) {
+        /* LA NUIT TOMBE (segment 7 — la phase Pression devient DIÉGÉTIQUE :
+           pas un compteur, la nuit). Entre le Marché et le Puits, dormir
+           s'impose — trois portes, dont le Crochetage. */
+        nextScene = resoudre("demo-nuit", runRef.current)!;
+        trav.phase = "scene";
+        trav.current = "demo-nuit";
+        persist((r) => {
+          r.vus = noter(r.vus, "demo|nuit");
+        });
+      } else if (
+        demoOn &&
+        /^meute-grise/.test(scene.id) &&
+        vu(runRef.current?.vus, "demo|falaise") === 0
+      ) {
+        /* LA FALAISE (segment 10) : passé la Meute, le sol descend vers le
+           bord du monde. Déroutage direct — la Falaise n'est pas un lieu du
+           pool, c'est le dernier beat de la courbe. */
+        const base = resoudre("falaise-cordes", runRef.current)!;
+        nextScene = { ...base, narration: [DEMO_FALAISE_APPROCHE, ...base.narration] };
+        trav.phase = "scene";
+        trav.current = "falaise-cordes";
+        persist((r) => {
+          r.vus = noter(r.vus, "demo|falaise");
+        });
+      } else if (
         men &&
         enLande &&
-        trav.visited.length - men.poseeA >= 2 &&
+        // EN DÉMO LE RETOUR EST GARANTI dès qu'une trace s'est lue (verrou
+        // n°1 : « si j'ai esquivé la Bête, je dois reconnaître que c'est
+        // elle qui me rattrape ») — le 45 % du jeu complet rendait la
+        // phase Pression invisible une partie sur deux.
+        trav.visited.length - men.poseeA >= (demoOn ? 1 : 2) &&
         !scene.liaison &&
-        chance(0.45)
+        (demoOn ? men.traces >= 1 : chance(0.45))
       ) {
         nextScene = resoudre("menace-retour-" + men.id, runRef.current)!;
         trav.phase = "scene";
@@ -3564,10 +3718,38 @@ export default function Scene() {
    */
   function finirMinigame(ok: boolean) {
     const c = minigameChoice;
-    if (!c) return;
+    if (!c || !c.minigame) return;
+    // LA CÉRÉMONIE (swipe) : l'échec n'existe pas — trop vite, la corde ne
+    // file pas, tout s'attend, et le geste se représente. Jamais un test
+    // d'adresse devant la Descente (doctrine du script, verrouillée).
+    if (c.minigame.engine === "swipe" && !ok) {
+      setMinigameRetry((n) => n + 1);
+      return;
+    }
     setMinigameChoice(null);
     minigamesJoues.current = [...minigamesJoues.current, c.id];
-    if (ok || !c.minigame?.echec) {
+    // Un geste par SITUATION et par vie (le beat garanti de la Borne lit ce
+    // marqueur) — persisté, donc fidèle à la reprise.
+    persist((r) => {
+      r.vus = noter(r.vus, "demo|geste|" + radical(scene.id));
+    });
+    if (ok) {
+      // Un choix RISQUÉ porteur d'un geste (le Tracé de la Chapelle) : en
+      // démo le geste DÉCIDE — pas de dé derrière. La réussite sert l'issue
+      // écrite de réussite ; le loot passe par la voie passive normale.
+      if (c.risky) {
+        onSelect({
+          ...c,
+          risky: undefined,
+          minigame: undefined,
+          passive: { consequence: c.risky.outcomes.success.text },
+        });
+        return;
+      }
+      onSelect(c);
+      return;
+    }
+    if (!c.minigame.echec) {
       onSelect(c);
       return;
     }
@@ -3581,7 +3763,25 @@ export default function Scene() {
       });
       setHealth(runRef.current?.health ?? health);
     }
-    onSelect({ ...c, grantsLoot: undefined, passive: { consequence: c.minigame.echec } });
+    // Le bruit se paie en Soupçon (le volet qui s'entrouvre, la Veuve qui
+    // te voit) — jamais en mur : la doctrine « l'échec est un prix ».
+    const soup = c.minigame.echecSoupcon ?? 0;
+    if (soup > 0) {
+      persist((run) => {
+        run.soupcon = Math.min(6, (run.soupcon ?? 0) + soup);
+      });
+    }
+    onSelect({
+      ...c,
+      risky: undefined,
+      minigame: undefined,
+      // L'échec ne donne pas la récompense… sauf si le script dit le
+      // contraire (la Corde coupée : « tu l'as quand même »).
+      grantsLoot: c.minigame.echecGardeLoot ? c.grantsLoot : undefined,
+      // Et il ne FRANCHIT pas la porte (le Crochetage raté n'ouvre rien).
+      sortie: undefined,
+      passive: { consequence: c.minigame.echec },
+    });
   }
 
   function onSelect(choice: Choice) {
@@ -3592,7 +3792,8 @@ export default function Scene() {
     // stat module la difficulté du geste, comme dans la galerie — l'Instinct
     // du héros raccourcit l'appui à tenir et rend les alertes lisibles.
     if (choice.minigame && demoActive() && !minigamesJoues.current.includes(choice.id)) {
-      if (choice.minigame.engine === "hold") {
+      const eng = choice.minigame.engine;
+      if (eng === "hold") {
         const inst = statDe(runRef.current?.stats, "INSTINCT");
         setMinigameConfig(
           inst >= 4
@@ -3601,13 +3802,61 @@ export default function Scene() {
               ? { durationMs: 3000, clearCue: true, grazeCount: 3 }
               : { durationMs: 3800, clearCue: false, grazeCount: 6 }
         );
+      } else if (eng === "trace") {
+        // Le Tracé (la Chapelle) : la Ruse simplifie le nœud à suivre.
+        const ruse = statDe(runRef.current?.stats, "RUSE");
+        setMinigameConfig(
+          ruse >= 4
+            ? { points: 5, tolerance: 26 }
+            : ruse >= 3
+              ? { points: 6, tolerance: 22 }
+              : { points: 7, tolerance: 19 }
+        );
+      } else if (eng === "pick") {
+        // Le Crochetage (la nuit) : la Ruse élargit la gorge — trois essais,
+        // comme au catalogue (le curseur oscille, un raté n'est pas la fin).
+        const ruse = statDe(runRef.current?.stats, "RUSE");
+        setMinigameConfig({
+          mode: "track",
+          windowWidth: ruse >= 4 ? 0.22 : ruse >= 3 ? 0.17 : 0.13,
+          maxAttempts: 3,
+        });
+      } else if (eng === "swipe") {
+        // La cérémonie : cinq paliers, lentement. Trop vite = rien.
+        setMinigameConfig({ pagesNeeded: 5, maxSpeed: 6, label: "paliers" });
       } else {
-        setMinigameConfig({ label: choice.minigame.label ?? "", threshold: 0.62 });
+        // rub — l'inscription du geste garanti de la Borne suit le cadrage.
+        const label =
+          choice.id === "geste-borne" &&
+          (runRef.current?.looted ?? []).includes("offrandes-borne")
+            ? "TROIS MARQUES"
+            : (choice.minigame.label ?? "CÔTÉ SUD");
+        setMinigameConfig({ label, threshold: 0.62 });
       }
+      testeurTaps.current = 0;
+      setMinigameRetry(0);
       setMinigameChoice(choice);
       return;
     }
     sansNuitRef.current = Boolean(choice.sansNuit);
+    /* LE REPOS DE LA NUIT DÉMO (segment 7) : la qualité de la porte trouvée
+       se paie ou se gagne EN CORPS — la maison crochetée referme tout (le
+       seul soin complet de la démo), la grange soigne à moitié, le muret
+       presque rien. Jamais un chiffre à l'écran : l'érosion du cadre dit le
+       reste. */
+    if (choice.repos && demoActive()) {
+      persist((run) => {
+        if (choice.repos === "complet") {
+          run.health = 1;
+          run.effects = run.effects.filter((e) => e.delta >= 0);
+        } else if (choice.repos === "partiel") {
+          run.health = Math.min(1, run.health + 0.35);
+        } else {
+          run.health = Math.min(1, run.health + 0.15);
+        }
+      });
+      setHealth(runRef.current?.health ?? health);
+    }
     if (choice.locked) {
       const run = runRef.current;
       const ouvert = verrouOuvert(choice, run?.stats);
@@ -4891,6 +5140,17 @@ export default function Scene() {
           <div
             className="absolute inset-0 z-[45] flex flex-col items-center justify-center px-[24px]"
             style={{ backgroundColor: "rgba(28, 26, 22, 0.94)" }}
+            onPointerDown={() => {
+              // Mode testeur (`?testeur=1`) : trois taps résolvent le geste —
+              // une IA sans geste réel (ou l'auto-joueur) n'est jamais murée
+              // devant un canvas. Hors testeur : inerte.
+              if (!/[?&]testeur=1/.test(window.location.search)) return;
+              testeurTaps.current += 1;
+              if (testeurTaps.current >= 3) {
+                testeurTaps.current = 0;
+                finirMinigame(true);
+              }
+            }}
           >
             <p className="mb-[14px] max-w-[320px] text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]/85">
               {minigameChoice.label}
@@ -4900,6 +5160,36 @@ export default function Scene() {
                 <RubReveal
                   seed={`demo-${scene.id}`}
                   config={(minigameConfig ?? { label: "" }) as { label: string; threshold?: number }}
+                  onResult={finirMinigame}
+                />
+              ) : minigameChoice.minigame.engine === "trace" ? (
+                <GlyphTrace
+                  seed={`demo-${scene.id}`}
+                  config={(minigameConfig ?? { points: 6 }) as { points: number; tolerance?: number }}
+                  onResult={finirMinigame}
+                />
+              ) : minigameChoice.minigame.engine === "pick" ? (
+                <TimingTap
+                  seed={`demo-${scene.id}`}
+                  config={
+                    (minigameConfig ?? { mode: "track", windowWidth: 0.16 }) as {
+                      mode: "track" | "release" | "point";
+                      windowWidth: number;
+                      speed?: number;
+                      maxAttempts?: number;
+                    }
+                  }
+                  onResult={finirMinigame}
+                />
+              ) : minigameChoice.minigame.engine === "swipe" ? (
+                <SlowSwipe
+                  seed={`demo-${scene.id}-${minigameRetry}`}
+                  config={
+                    (minigameConfig ?? { pagesNeeded: 5, maxSpeed: 6 }) as {
+                      pagesNeeded: number;
+                      maxSpeed: number;
+                    }
+                  }
                   onResult={finirMinigame}
                 />
               ) : (
@@ -4920,7 +5210,13 @@ export default function Scene() {
             <p className="mt-[14px] text-center font-mono text-[11px] uppercase tracking-[2px] text-[var(--color-ink)]/50">
               {minigameChoice.minigame.engine === "rub"
                 ? "Frotte la pierre"
-                : "Maintiens l'appui — tiens bon"}
+                : minigameChoice.minigame.engine === "trace"
+                  ? "Suis le tracé du tressage, point après point"
+                  : minigameChoice.minigame.engine === "pick"
+                    ? "Tape quand le crochet est dans la gorge"
+                    : minigameChoice.minigame.engine === "swipe"
+                      ? "Laisse filer la corde — lentement"
+                      : "Maintiens l'appui — tiens bon"}
             </p>
           </div>
         )}

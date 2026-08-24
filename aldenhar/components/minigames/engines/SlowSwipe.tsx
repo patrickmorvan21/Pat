@@ -17,7 +17,7 @@ export default function SlowSwipe({
   onResult,
 }: {
   seed: string;
-  config: { pagesNeeded: number; maxSpeed: number };
+  config: { pagesNeeded: number; maxSpeed: number; label?: string };
   onResult: (success: boolean) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -83,7 +83,7 @@ export default function SlowSwipe({
       for (let i = 0; i < 5; i++) ctx.fillText("— — —", bx, H / 2 - 40 + i * 18);
       ctx.fillStyle = CREME;
       ctx.font = "12px 'Roboto Mono', monospace";
-      ctx.fillText(`pages : ${pagesTurned}/${config.pagesNeeded}`, W / 2, H - 14);
+      ctx.fillText(`${config.label ?? "pages"} : ${pagesTurned}/${config.pagesNeeded}`, W / 2, H - 14);
     }
     draw();
     return () => {

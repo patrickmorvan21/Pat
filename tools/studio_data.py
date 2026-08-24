@@ -717,6 +717,10 @@ def lire_choix(bloc: str) -> list[dict]:
         mj = texte_de(c, "engine")
         if mj and "minigame:" in c:
             ch["miniJeuDemo"] = mj
+        # Le repos de la nuit démo (complet/partiel/mauvais) — segment 7.
+        rp = texte_de(c, "repos")
+        if rp:
+            ch["reposDemo"] = rp
         # 24/08 — la conséquence COURTE servie en démo (même règle que
         # `narrationDemo` : les deux textes doivent être visibles au Studio).
         cd = texte_de(c, "consequenceDemo")
@@ -1442,6 +1446,11 @@ def main() -> int:
             s["acces"] = "déroutage en marchant (boucle est)"
         elif s["id"].startswith("menace-retour-"):
             s["acces"] = "retour d'une menace contournée (17/08)"
+        elif s["id"].startswith("demo-") or s["id"].startswith("falaise-cordes"):
+            # LA COURBE DE LA DÉMO (24/08) : le geste de la Borne, la nuit au
+            # village et la Falaise aux Cordes sont routés par les déroutages
+            # du mode démo (Scene.tsx) — jamais par le pool, jamais un lien.
+            s["acces"] = "courbe de la démo (déroutage)"
         else:
             s["acces"] = "aucun"
 

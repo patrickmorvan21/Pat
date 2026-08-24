@@ -78,18 +78,21 @@ export const DEMO_SOUVENIRS = ["courage", "instinct"] as const;
  */
 export const DEMO_ROUTE: string[] = [
   "chemin-creux", //          segment 3 — la Bête embusque cette route
-  "colline-aux-gibets", //    segment 4 — le Pendu qui parle (payoff du désir)
+  // Segment 4 — LA COLLINE, servie par la scène du PENDU QUI PARLE (même
+  // lieu) : c'est le payoff de la graine plantée à la Borne (« le pendu de
+  // la colline a parlé hier »). L'ancienne entrée colline-aux-gibets ne
+  // livrait jamais le Pendu — le désir restait sans réponse.
+  "pendu-qui-parle",
   "serment-hameau", //        segment 5 — l'entrée au village, le Serment
-  "chapelle-des-cordes", //   segment 6 — la Veuve, la Corde coupée
+  "chapelle-des-cordes", //   segment 6 — la Veuve, la Corde coupée (Tracé)
   "marche-muet", //           segment 6 — le malaise diurne, court
-  "puits-condamne", //        segment 8 — le climax
-  // FINALE PROVISOIRE (retour Patrick 24/08 : la route épuisée retombait sur
-  // le tirage — la sortie du village n'était plus racontée, l'immersion
-  // cassait pile à la fin). La Palissade Sud est la fin de zone EXISTANTE
-  // (le Veilleur, l'Appelé, la Descente) : elle donne à la démo une sortie
-  // scriptée dès aujourd'hui. La Falaise aux Cordes la remplacera (segment 10
-  // du script) quand elle sera construite.
-  "palissade-sud",
+  // Segment 7 (la NUIT au village) : ce n'est pas une destination — elle se
+  // GLISSE entre le Marché et le Puits (déroutage dans Scene.tsx quand il ne
+  // reste que le Puits à visiter dedans).
+  "puits-condamne", //        segment 8 — le climax intérieur
+  // Segments 9-10 (la MEUTE au portillon, la FALAISE AUX CORDES) : hors
+  // route — servis par déroutage à la sortie du village. La Falaise n'est
+  // pas un lieu du pool (exclue de TRAVERSAL_POOL, comme la Descente).
 ];
 
 /**
@@ -102,4 +105,35 @@ export function demoRouteRestante(
   dejaVisite: (visited: string[], dest: string) => boolean
 ): string[] {
   return DEMO_ROUTE.filter((id) => !dejaVisite(visited, id));
+}
+
+
+/**
+ * LA PHASE DE LA COURBE (go du 24/08 — Accroche → Ouverture → Pression →
+ * Climax). JAMAIS nommée à l'écran : elle pilote la musique, le resserrement
+ * des marches et les RETOURS garantis (« pendant l'Ouverture je provoque le
+ * monde ; pendant la Pression, le monde commence à me répondre »).
+ *
+ * Dérivée de l'état de la traversée, jamais persistée :
+ *  - accroche  : la Borne (rien encore visité au-delà) ;
+ *  - ouverture : la lande, avant l'entrée au village ;
+ *  - pression  : le village (Serment → nuit → Puits) ;
+ *  - climax    : ressorti du village (la Meute, la Falaise).
+ *
+ * ⚠️ La machinerie des RETOURS est une CATÉGORIE, pas un événement (verrou
+ * n°2 de Patrick) : en Pression/Climax, au moins une chose PLANTÉE plus tôt
+ * revient — la démo câble la Bête (si fuie) et la Meute comme cas d'école,
+ * le jeu complet choisira parmi ce que la vie a réellement planté.
+ */
+export type DemoPhase = "accroche" | "ouverture" | "pression" | "climax";
+
+export function demoPhase(opts: {
+  visitedCount: number;
+  entree: boolean;
+  sorti: boolean;
+}): DemoPhase {
+  if (opts.sorti) return "climax";
+  if (opts.entree) return "pression";
+  if (opts.visitedCount <= 1) return "accroche";
+  return "ouverture";
 }

@@ -308,6 +308,35 @@ def pools() -> list[dict]:
         for i, t in enumerate(chaines_de_tableau(geol.group(1))):
             out.append({"pool": f"soupçon geôlier {i + 1}", "garde": {"partout"}, "textes": [t]})
 
+    # — LA COURBE DE LA DÉMO (24/08). Quatre tables injectées à l'exécution :
+    #   les lectures de la Falaise (pleine lande, au bord du vide — aucun
+    #   bâti, aucun nom propre), les cadrages du geste de la Borne (le tout
+    #   premier écran, lande nue), l'approche de la Falaise (lande), et la
+    #   couture de la Meute — servie AU PORTILLON, un pied encore au village :
+    #   les murets et les chiens du pays y sont acquis.
+    fal = re.search(r"DEMO_FALAISE_LECTURES[^=]*=\s*\{(.*?)\n\};", scene_src, re.S)
+    if fal:
+        for i, t in enumerate(chaines_de_tableau(fal.group(1))):
+            out.append({"pool": f"falaise lecture {i + 1}", "garde": {"lande"}, "textes": [t]})
+    cad = re.search(r"DEMO_BORNE_CADRAGES[^=]*=\s*\{(.*?)\n\};", scene_src, re.S)
+    if cad:
+        for i, t in enumerate(chaines_de_tableau(cad.group(1))):
+            out.append({"pool": f"borne cadrage {i + 1}", "garde": {"lande", "gens"}, "textes": [t]})
+    app = re.search(r"DEMO_FALAISE_APPROCHE\s*=\s*((?:\s*\"(?:[^\"\\]|\\.)*\"\s*\+?)+)", scene_src)
+    if app:
+        out.append({
+            "pool": "falaise approche",
+            "garde": {"lande"},
+            "textes": ["".join(re.findall(r'"((?:[^"\\]|\\.)*)"', app.group(1)))],
+        })
+    meu = re.search(r"DEMO_MEUTE_COUTURE\s*=\s*((?:\s*\"(?:[^\"\\]|\\.)*\"\s*\+?)+)", scene_src)
+    if meu:
+        out.append({
+            "pool": "meute couture",
+            "garde": {"village", "gens"},
+            "textes": ["".join(re.findall(r'"((?:[^"\\]|\\.)*)"', meu.group(1)))],
+        })
+
     # — la route fermée par un échec dur : jouée sur une liaison, où qu'elle
     #   soit (une ruelle du hameau est une liaison comme une autre).
     for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, "const ROUTE_FERMEE"))):

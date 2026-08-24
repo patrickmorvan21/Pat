@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-24T15:25:35Z",
- "commit": "4beacdd",
+ "genere": "2026-08-24T17:53:05Z",
+ "commit": "5b5f0e7",
  "zones": [
   {
    "id": "landes",
@@ -484,8 +484,8 @@
       "taille": 12652,
       "recent": false,
       "existe": true,
-      "statut": "dediee",
-      "herite": ""
+      "statut": "heritee",
+      "herite": "demo-borne-geste"
      }
     },
     {
@@ -525,7 +525,8 @@
    ],
    "pointsInteret": [],
    "narrationDemo": [
-    "La lande s'ouvre sous un crépuscule qui ne tombe pas. Une pierre seule au milieu du plateau, plus haute qu'un homme. À son pied, un tas d'offrandes. À trois pas, un homme immobile, face au sud. Quelque part, une corde grince."
+    "La lande s'ouvre sous un crépuscule qui ne tombe pas. Une pierre seule au milieu du plateau, plus haute qu'un homme. À son pied, un tas d'offrandes. À trois pas, un homme immobile, face au sud. Quelque part, une corde grince.",
+    "Au pied du tas, un mot gravé de frais, la rainure encore claire : « Hier, le pendu de la colline a répondu. »"
    ],
    "nom": "La Borne Frontière",
    "lieu": "borne_frontiere",
@@ -1353,6 +1354,10 @@
     }
    ],
    "pointsInteret": [],
+   "narrationDemo": [
+    "Au revers de la colline, un gibet à corde longue : le pendu t'arrive à hauteur de regard. Chaîne de fonction au cou, un sceau au poing. À ton approche, il ouvre les yeux.",
+    "Sur la traverse, une rangée de corbeaux regarde le nord. Un seul est de travers. Celui-là te regarde, toi."
+   ],
    "suite": "pendu-qui-parle-2",
    "nom": "Le Pendu qui parle",
    "lieu": "colline_aux_gibets",
@@ -2069,7 +2074,8 @@
    ],
    "pointsInteret": [],
    "narrationDemo": [
-    "Une rue en terre battue, des murets. Sur chaque linteau, une croix à la craie — même hauteur, même main. Sur un seuil, une femme immobile regarde une fenêtre, en face."
+    "Une rue en terre battue, des murets. Sur chaque linteau, une croix à la craie — même hauteur, même main. Sur un seuil, une femme immobile regarde une fenêtre, en face.",
+    "Au bout de la rue, entre deux toits : une silhouette. La forme d'un corbeau. Pas la taille d'un corbeau. Le temps de regarder mieux, le bout de la rue est vide."
    ],
    "suite": "hameau-entree-3",
    "donneDecouverte": "d.combles_cloues",
@@ -5158,7 +5164,8 @@
      },
      "nature": "exploration",
      "vuSiEchec": true,
-     "donneObjet": "corde-coupee"
+     "donneObjet": "corde-coupee",
+     "miniJeuDemo": "trace"
     },
     {
      "id": "prier-veuve",
@@ -7045,6 +7052,315 @@
    "alertes": []
   },
   {
+   "id": "demo-borne-geste",
+   "narration": [
+    "La Borne te retient un pas de plus. Sur la face sud, sous la mousse, quelque chose est écrit — et la mousse s'écarte sous les doigts."
+   ],
+   "choix": [
+    {
+     "id": "geste-borne",
+     "label": "Écarter la mousse de la pierre",
+     "type": "passif",
+     "consequence": "Le côté sud, à nu. Trois marques — trois seulement, sur toute la face, quand le nord est saturé d'adieux. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?",
+     "miniJeuDemo": "rub",
+     "borneSud": true
+    }
+   ],
+   "pointsInteret": [],
+   "image": {
+    "fichier": "scene_borne_gravures_a_d.png",
+    "hash": "e4dd0628",
+    "taille": 12652,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "courbe de la démo (déroutage)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "demo-nuit",
+   "narration": [
+    "Le soir tombe d'un coup, comme une porte. Les volets se ferment sans se répondre — pas un chien, pas une voix. Il faut dormir quelque part. Reste à savoir derrière quelle porte."
+   ],
+   "choix": [
+    {
+     "id": "crocheter-maison",
+     "label": "Crocheter une maison fermée",
+     "type": "passif",
+     "consequence": "Le pêne glisse sans un bruit. La porte s'ouvre sur un noir tiède — une maison vide depuis des années, murée de silence. Personne ne t'a vu entrer.",
+     "sortie": {
+      "toScene": "demo-nuit-maison"
+     },
+     "miniJeuDemo": "pick"
+    },
+    {
+     "id": "nuit-grange",
+     "label": "Frapper à la grange",
+     "type": "passif",
+     "consequence": "On t'ouvre avant le deuxième coup. On t'attendait — c'est ça, le plus étrange. On t'attendait.",
+     "sortie": {
+      "toScene": "demo-nuit-grange"
+     }
+    },
+    {
+     "id": "nuit-dehors",
+     "label": "Dormir dehors, contre un muret",
+     "type": "passif",
+     "consequence": "Tu choisis un muret qui coupe le vent, dos à la pierre, face à la rue. Personne à prévenir, personne à devoir.",
+     "sortie": {
+      "toScene": "demo-nuit-dehors"
+     }
+    }
+   ],
+   "pointsInteret": [],
+   "sejour": true,
+   "image": {
+    "fichier": "scene_landes_hameau_ruelle_b.png",
+    "hash": "9a56edb6",
+    "taille": 26939,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "courbe de la démo (déroutage)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "demo-nuit-maison",
+   "narration": [
+    "Avant de fermer l'œil, tu montes voir les combles. Tu redescends plus lentement que tu n'es monté : la trappe est clouée. De l'intérieur du toit. Les clous sont tordus par quelqu'un qui se dépêchait — et le rez-de-chaussée, lui, n'est pas cloué du tout.",
+    "Cette maison ne se protégeait pas de ce qui entre par les portes."
+   ],
+   "choix": [
+    {
+     "id": "dormir-maison",
+     "label": "Dormir jusqu'à l'aube",
+     "type": "passif",
+     "consequence": "Le sommeil vient d'un bloc, sans rêve. L'aube est grise au ras des volets — et ton corps répond entier, pour la première fois depuis la Borne. Personne ne saura jamais que tu as dormi là.",
+     "reposDemo": "complet"
+    }
+   ],
+   "pointsInteret": [],
+   "nuit": true,
+   "image": {
+    "fichier": "scene_landes_hameau_ruelle_b.png",
+    "hash": "9a56edb6",
+    "taille": 26939,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "courbe de la démo (déroutage)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "demo-nuit-grange",
+   "narration": [
+    "La grange sent la paille et le suif. Le vieux te montre ton coin d'un geste, puis reste debout, la barre à la main. « La trappe des combles, chez nous, on la cloue de l'intérieur », dit-il sans que tu aies rien demandé. « Toutes les maisons. Depuis avant moi. » Il ne dit pas contre quoi."
+   ],
+   "choix": [
+    {
+     "id": "dormir-grange",
+     "label": "Dormir jusqu'à l'aube",
+     "type": "passif",
+     "consequence": "Tu dors d'une oreille, sous des yeux qui se relaient sans bruit. L'aube te trouve reposé à moitié — mais tu as dormi sous leur toit, et ça, ici, se retient.",
+     "reposDemo": "partiel"
+    }
+   ],
+   "pointsInteret": [],
+   "nuit": true,
+   "image": {
+    "fichier": "scene_landes_hameau_grange_a.png",
+    "hash": "2faebe69",
+    "taille": 16543,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "courbe de la démo (déroutage)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "demo-nuit-dehors",
+   "narration": [
+    "Le muret coupe le vent, pas le froid. Vers le milieu de la nuit, un pas — au-dessus de toi. Sur un toit. Quelque chose marche sur les toits, lentement, comme on compte. Tu ne bouges plus jusqu'au gris."
+   ],
+   "choix": [
+    {
+     "id": "dormir-dehors",
+     "label": "Attendre l'aube sans bouger",
+     "type": "passif",
+     "consequence": "L'aube te trouve raide, les doigts gourds. Tu n'as pas dormi — tu as attendu. Sur les toits d'en face : rien. Des traces de rien.",
+     "reposDemo": "mauvais"
+    }
+   ],
+   "pointsInteret": [],
+   "nuit": true,
+   "image": {
+    "fichier": "scene_hameau_dense2_b.png",
+    "hash": "4ee39a67",
+    "taille": 29932,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "courbe de la démo (déroutage)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "falaise-cordes",
+   "narration": [
+    "Le sol cesse. Pas une pente — une fin : la lande s'arrête net sur le vide, et la paroi descend plus bas que le regard ne porte.",
+    "Sur toute sa largeur, des cordes. Des centaines, nouées à des pieux, qui pendent dans le noir et bougent ensemble sous le vent. On ne gâche pas le chanvre, dans les Landes : chaque corde qui a pendu quelqu'un sert une seconde fois. Elle fait descendre. Personne ne descend autrement."
+   ],
+   "choix": [
+    {
+     "id": "approcher-pieux",
+     "label": "S'approcher des pieux",
+     "type": "passif",
+     "consequence": "Les pieux tiennent chacun leur corde comme une tombe tient son nom.",
+     "sortie": {
+      "toScene": "falaise-cordes-2"
+     }
+    }
+   ],
+   "pointsInteret": [],
+   "image": {
+    "fichier": "scene_landes_liaison_sud_c.png",
+    "hash": "e4a31bad",
+    "taille": 14946,
+    "recent": false,
+    "existe": true,
+    "statut": "fallback",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "courbe de la démo (déroutage)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "falaise-cordes-2",
+   "narration": [
+    "Des vieilles, grises, raides de sel. Des neuves, encore blondes. Et trois ou quatre, en bas de leur course, tranchées net — à la lame. Par en dessous."
+   ],
+   "choix": [
+    {
+     "id": "bout-surplomb",
+     "label": "Aller au bout du surplomb",
+     "type": "passif",
+     "consequence": "Le vent monte du vide, régulier, comme une respiration qui ne serait pas la tienne.",
+     "sortie": {
+      "toScene": "falaise-cordes-3"
+     }
+    }
+   ],
+   "pointsInteret": [],
+   "image": {
+    "fichier": "scene_landes_liaison_sud_c.png",
+    "hash": "e4a31bad",
+    "taille": 14946,
+    "recent": false,
+    "existe": true,
+    "statut": "fallback",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "courbe de la démo (déroutage)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "falaise-cordes-3",
+   "narration": [
+    "Au bout du surplomb, quelqu'un. Il ne regarde pas les cordes : il en prend une, sans choisir, comme on prend la rampe d'un escalier qu'on connaît. Il passe le bord. Il descend. Le vent rabat un pan de son manteau — puis plus rien. La corde tremble encore un moment, toute seule."
+   ],
+   "choix": [
+    {
+     "id": "saisir-corde",
+     "label": "Saisir une corde",
+     "type": "passif",
+     "consequence": "La corde file entre tes mains, palier par palier, et la lande monte au-dessus de toi comme une eau qui se referme. La paume chauffe là où le chanvre passe. En haut, le vent continue sans toi.",
+     "sortie": {
+      "toScene": "la-descente"
+     },
+     "miniJeuDemo": "swipe",
+     "tags": [
+      "citable"
+     ]
+    },
+    {
+     "id": "reculer-bord",
+     "label": "Reculer d'un pas",
+     "type": "passif",
+     "consequence": "Le bord reste où il est. Les cordes aussi. Tout, ici, sait attendre — c'est même la seule chose que ce pays fasse bien."
+    }
+   ],
+   "pointsInteret": [],
+   "sejour": true,
+   "image": {
+    "fichier": "monstre_appele_descente.png",
+    "hash": "fb4ce0fd",
+    "taille": 30568,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "courbe de la démo (déroutage)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
    "id": "la-descente",
    "narration": [
     "Le sol s'incline. L'air se fait plus froid, plus vieux — il monte d'en bas, par la porte de la Descente restée ouverte derrière toi.",
@@ -7553,14 +7869,6 @@
    "recent": true,
    "groupe": "autre",
    "racine": "fleche_retour"
-  },
-  {
-   "fichier": "monstre_appele_descente.png",
-   "hash": "fb4ce0fd",
-   "taille": 30568,
-   "recent": false,
-   "groupe": "attend",
-   "racine": "appele_descente"
   },
   {
    "fichier": "monstre_corde_vive_c.png",
@@ -9462,13 +9770,13 @@
   }
  ],
  "totaux": {
-  "scenes": 93,
+  "scenes": 101,
   "pointsInteret": 0,
-  "choix": 277,
+  "choix": 288,
   "illustrations": 284,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 92,
+  "reserve": 91,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

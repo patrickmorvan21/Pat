@@ -476,12 +476,28 @@ export type Choice = {
    * fait payer le corps (ENTAILLÉ + santé), jamais la mort sèche.
    */
   minigame?: {
-    engine: "rub" | "hold";
+    /** rub = frotter · hold = retenir son souffle · trace = suivre un tracé ·
+        pick = crochetage (curseur oscillant) · swipe = le geste lent de la
+        cérémonie (INSENSIBLE à l'échec : trop vite = rien, on recommence). */
+    engine: "rub" | "hold" | "trace" | "pick" | "swipe";
     /** Inscription révélée (rub) — courte, en capitales. */
     label?: string;
     echec?: string;
     echecBlesse?: boolean;
+    /** L'échec DONNE quand même le loot du choix (script 24/08, la Corde
+        coupée : « tu l'as quand même, mais la Veuve t'a vu ») — le prix est
+        ailleurs (echecSoupcon), jamais la perte. */
+    echecGardeLoot?: boolean;
+    /** Soupçon payé sur l'échec du geste (le bruit, le témoin). */
+    echecSoupcon?: number;
   };
+  /**
+   * LA NUIT DE LA DÉMO (segment 7) : qualité du repos selon la porte trouvée.
+   * complet = la maison crochetée (soin entier, blessure refermée) ·
+   * partiel = la grange (+0.35) · mauvais = dehors (+0.15). Champ inerte hors
+   * démo — le jeu complet dort au campement, avec ses règles à lui.
+   */
+  repos?: "complet" | "partiel" | "mauvais";
   /**
    * VERSION COURTE DÉMO de la conséquence d'un choix passif (arbitrage
    * Patrick 24/08 : « les changements uniquement sur la démo, c'est elle qui
@@ -1067,6 +1083,9 @@ export const SCENES: Scene[] = [
     ],
     narrationDemo: [
       "La lande s'ouvre sous un crépuscule qui ne tombe pas. Une pierre seule au milieu du plateau, plus haute qu'un homme. À son pied, un tas d'offrandes. À trois pas, un homme immobile, face au sud. Quelque part, une corde grince.",
+      // LA GRAINE (go 24/08 : « une seule bonne phrase très tôt, sans
+      // objectif ni marqueur ») — payée à la Colline par le Pendu qui parle.
+      "Au pied du tas, un mot gravé de frais, la rainure encore claire : « Hier, le pendu de la colline a répondu. »",
     ],
     /* ─── CONVERSION DES POINTS D'INTÉRÊT (playtest v1.81, 13/08) ───────────
        Le tout premier écran de chaque vie offrait SIX choses derrière un
@@ -1910,6 +1929,12 @@ export const SCENES: Scene[] = [
     id: "pendu-qui-parle",
     illustration: "assets/monstre_pendu_qui_parle_a.png",
     chainNext: "pendu-qui-parle-2",
+    // Démo : prose courte + TOUCHE 1 du Grand Témoin (le corbeau de travers
+    // qui te regarde, toi) — une trace, jamais une explication (règle lot 2).
+    narrationDemo: [
+      "Au revers de la colline, un gibet à corde longue : le pendu t'arrive à hauteur de regard. Chaîne de fonction au cou, un sceau au poing. À ton approche, il ouvre les yeux.",
+      "Sur la traverse, une rangée de corbeaux regarde le nord. Un seul est de travers. Celui-là te regarde, toi.",
+    ],
     narration: [
       "Au revers de la colline, un gibet dont la corde est si longue que le " +
       "pendu t'arrive à hauteur de regard. Le pendu " +
@@ -2542,6 +2567,8 @@ export const SCENES: Scene[] = [
     ],
     narrationDemo: [
       "Une rue en terre battue, des murets. Sur chaque linteau, une croix à la craie — même hauteur, même main. Sur un seuil, une femme immobile regarde une fenêtre, en face.",
+      // TOUCHE 2 du Grand Témoin (script 24/08, segment 5).
+      "Au bout de la rue, entre deux toits : une silhouette. La forme d'un corbeau. Pas la taille d'un corbeau. Le temps de regarder mieux, le bout de la rue est vide.",
     ],
     choices: [
       {
@@ -5334,6 +5361,21 @@ export const SCENES: Scene[] = [
         // Sa prose d'échec nomme un témoin (la Veuve est sur toi en trois pas).
         vuSiEchec: true,
         label: "Prendre la corde coupée",
+        /* DÉMO (segment 6) : le TRACÉ du tressage remplace le jet — suivre le
+           nœud de la Veuve du doigt, sous verre. Échec = tu l'as QUAND MÊME
+           (la vitrine se décroche, elle s'enroule à ton poignet dans la
+           chute) : le prix est le bruit et le regard de la Veuve, jamais la
+           perte (doctrine « l'échec est un prix »). */
+        minigame: {
+          engine: "trace",
+          echec:
+            "Ton doigt perd le fil du tressage — la vitrine se décroche et " +
+            "sonne sur la dalle. La Veuve est sur toi en trois pas, sans " +
+            "courir. Tu as la corde : elle s'est enroulée à ton poignet dans " +
+            "la chute. Mais la chapelle entière connaît ton visage, maintenant.",
+          echecGardeLoot: true,
+          echecSoupcon: 1,
+        },
         /* Sa prose de réussite disait depuis toujours que la corde s'enroule
            autour du poignet — et le joueur repartait les mains vides. C'est le
            §9 du chantier du 12/08 (« récompense invisible ») : le seul OUTIL
@@ -7169,6 +7211,245 @@ export const SCENES: Scene[] = [
     ],
     jailerLine: "Un procès ! J'adore. Le Bailli aussi adorait — regarde où ça pend.",
   },
+
+  /* ═══════════════ LA COURBE DE LA DÉMO (go Patrick 24/08) ═══════════════
+     Sept écrans SERVIS UNIQUEMENT PAR LES DÉROUTAGES DU MODE DÉMO
+     (Scene.tsx) : le geste de la Borne, la nuit au village (segment 7,
+     trois portes), la Falaise aux Cordes (segment 10, le climax). Aucun
+     n'est dans le pool ni dans APPROACH — le jeu complet ne peut pas les
+     tirer. La grammaire ne change pas : mêmes champs, mêmes moteurs. */
+
+  {
+    /* LE GESTE DE LA BORNE — servi avant la première Croisée SI le frottage
+       du « tour de la pierre » n'a pas été joué (verrou n°1 du go : garantir
+       la SITUATION tactile, jamais faire converger trois boutons vers la
+       même interaction — le cadrage et l'inscription varient selon le
+       premier acte, injectés par le déroutage). */
+    id: "demo-borne-geste",
+    illustration: "assets/scene_borne_gravures_a_d.png",
+    narration: [
+      "La Borne te retient un pas de plus. Sur la face sud, sous la mousse, quelque chose est écrit — et la mousse s'écarte sous les doigts.",
+    ],
+    choices: [
+      {
+        id: "geste-borne",
+        label: "Écarter la mousse de la pierre",
+        minigame: { engine: "rub", label: "CÔTÉ SUD" },
+        borneSud: true,
+        passive: {
+          consequence:
+            "Le côté sud, à nu. Trois marques — trois seulement, sur toute " +
+            "la face, quand le nord est saturé d'adieux. On ne grave pas au " +
+            "retour quand personne ne revient. Alors qui a gravé côté sud ?",
+        },
+      },
+    ],
+  },
+
+  /* ─────────────────────────── LA NUIT (segment 7) ─────────────────────── */
+  {
+    /* Le soir tombe sur le hameau — trois portes pour dormir. Séjour : le
+       Crochetage raté se consomme (le bruit, le volet) et il reste la grange
+       ou le muret. La doctrine tient : l'échec du geste est un embranchement,
+       jamais un mur — d'autres portes existent. */
+    id: "demo-nuit",
+    sejour: true,
+    illustration: "assets/scene_landes_hameau_ruelle_b.png",
+    narration: [
+      "Le soir tombe d'un coup, comme une porte. Les volets se ferment sans se répondre — pas un chien, pas une voix. Il faut dormir quelque part. Reste à savoir derrière quelle porte.",
+    ],
+    choices: [
+      {
+        id: "crocheter-maison",
+        label: "Crocheter une maison fermée",
+        minigame: {
+          engine: "pick",
+          echec:
+            "Le crochet ripe et le pêne claque, fort. En face, un volet " +
+            "s'entrouvre — le temps de te fondre dans l'ombre, on t'a vu la " +
+            "main sur une serrure. La porte, elle, ne cède pas.",
+          echecSoupcon: 1,
+        },
+        passive: {
+          consequence:
+            "Le pêne glisse sans un bruit. La porte s'ouvre sur un noir " +
+            "tiède — une maison vide depuis des années, murée de silence. " +
+            "Personne ne t'a vu entrer.",
+        },
+        sortie: { toScene: "demo-nuit-maison" },
+      },
+      {
+        id: "nuit-grange",
+        label: "Frapper à la grange",
+        passive: {
+          consequence:
+            "On t'ouvre avant le deuxième coup. On t'attendait — c'est ça, " +
+            "le plus étrange. On t'attendait.",
+        },
+        sortie: { toScene: "demo-nuit-grange" },
+      },
+      {
+        id: "nuit-dehors",
+        label: "Dormir dehors, contre un muret",
+        passive: {
+          consequence:
+            "Tu choisis un muret qui coupe le vent, dos à la pierre, face à " +
+            "la rue. Personne à prévenir, personne à devoir.",
+        },
+        sortie: { toScene: "demo-nuit-dehors" },
+      },
+    ],
+  },
+  {
+    /* La maison crochetée — TOUCHE 3 du Grand Témoin, découverte SEUL. */
+    id: "demo-nuit-maison",
+    nuit: true,
+    illustration: "assets/scene_landes_hameau_ruelle_b.png",
+    narration: [
+      "Avant de fermer l'œil, tu montes voir les combles. Tu redescends plus lentement que tu n'es monté : la trappe est clouée. De l'intérieur du toit. Les clous sont tordus par quelqu'un qui se dépêchait — et le rez-de-chaussée, lui, n'est pas cloué du tout.",
+      "Cette maison ne se protégeait pas de ce qui entre par les portes.",
+    ],
+    choices: [
+      {
+        id: "dormir-maison",
+        label: "Dormir jusqu'à l'aube",
+        repos: "complet",
+        passive: {
+          consequence:
+            "Le sommeil vient d'un bloc, sans rêve. L'aube est grise au ras " +
+            "des volets — et ton corps répond entier, pour la première fois " +
+            "depuis la Borne. Personne ne saura jamais que tu as dormi là.",
+        },
+      },
+    ],
+  },
+  {
+    /* La grange — la version RACONTÉE de la touche 3 (le vieux). */
+    id: "demo-nuit-grange",
+    nuit: true,
+    illustration: "assets/scene_landes_hameau_grange_a.png",
+    narration: [
+      "La grange sent la paille et le suif. Le vieux te montre ton coin d'un geste, puis reste debout, la barre à la main. « La trappe des combles, chez nous, on la cloue de l'intérieur », dit-il sans que tu aies rien demandé. « Toutes les maisons. Depuis avant moi. » Il ne dit pas contre quoi.",
+    ],
+    choices: [
+      {
+        id: "dormir-grange",
+        label: "Dormir jusqu'à l'aube",
+        repos: "partiel",
+        passive: {
+          consequence:
+            "Tu dors d'une oreille, sous des yeux qui se relaient sans " +
+            "bruit. L'aube te trouve reposé à moitié — mais tu as dormi " +
+            "sous leur toit, et ça, ici, se retient.",
+        },
+      },
+    ],
+  },
+  {
+    /* Dehors — le repos au rabais, et Quelque chose marche sur les toits. */
+    id: "demo-nuit-dehors",
+    nuit: true,
+    illustration: "assets/scene_hameau_dense2_b.png",
+    narration: [
+      "Le muret coupe le vent, pas le froid. Vers le milieu de la nuit, un pas — au-dessus de toi. Sur un toit. Quelque chose marche sur les toits, lentement, comme on compte. Tu ne bouges plus jusqu'au gris.",
+    ],
+    choices: [
+      {
+        id: "dormir-dehors",
+        label: "Attendre l'aube sans bouger",
+        repos: "mauvais",
+        passive: {
+          consequence:
+            "L'aube te trouve raide, les doigts gourds. Tu n'as pas dormi — " +
+            "tu as attendu. Sur les toits d'en face : rien. Des traces de " +
+            "rien.",
+        },
+      },
+    ],
+  },
+
+  /* ──────────────── LA FALAISE AUX CORDES (segment 10) ─────────────────── */
+  {
+    /* Écran 1 — le bord. Visuel PROVISOIRE (vue du sud) : les deux images du
+       lieu sont à produire (prompts dans le script) — le climax doit tenir
+       par sa structure d'abord (verrou n°2 du go). */
+    id: "falaise-cordes",
+    illustration: "assets/scene_landes_liaison_sud_c.png",
+    narration: [
+      "Le sol cesse. Pas une pente — une fin : la lande s'arrête net sur le vide, et la paroi descend plus bas que le regard ne porte.",
+      "Sur toute sa largeur, des cordes. Des centaines, nouées à des pieux, qui pendent dans le noir et bougent ensemble sous le vent. On ne gâche pas le chanvre, dans les Landes : chaque corde qui a pendu quelqu'un sert une seconde fois. Elle fait descendre. Personne ne descend autrement.",
+    ],
+    choices: [
+      {
+        id: "approcher-pieux",
+        label: "S'approcher des pieux",
+        passive: {
+          consequence:
+            "Les pieux tiennent chacun leur corde comme une tombe tient son nom.",
+        },
+        sortie: { toScene: "falaise-cordes-2" },
+      },
+    ],
+  },
+  {
+    /* Écran 2 — choisir sa corde. Les lignes qui LISENT la traversée (le
+       tressage déjà vu, la corde qu'on porte) sont injectées par le
+       déroutage — voir DEMO_FALAISE_LECTURES. */
+    id: "falaise-cordes-2",
+    illustration: "assets/scene_landes_liaison_sud_c.png",
+    narration: [
+      "Des vieilles, grises, raides de sel. Des neuves, encore blondes. Et trois ou quatre, en bas de leur course, tranchées net — à la lame. Par en dessous.",
+    ],
+    choices: [
+      {
+        id: "bout-surplomb",
+        label: "Aller au bout du surplomb",
+        passive: {
+          consequence:
+            "Le vent monte du vide, régulier, comme une respiration qui ne " +
+            "serait pas la tienne.",
+        },
+        sortie: { toScene: "falaise-cordes-3" },
+      },
+    ],
+  },
+  {
+    /* Écran 3 — l'Appelé, puis LE CHOIX, sec. La cérémonie est le geste
+       « swipe » : INSENSIBLE à l'échec (trop vite = la corde ne file pas,
+       tout s'attend, on recommence) — jamais un test d'adresse devant la
+       Descente (doctrine du script). */
+    id: "falaise-cordes-3",
+    sejour: true,
+    illustration: "assets/monstre_appele_descente.png",
+    narration: [
+      "Au bout du surplomb, quelqu'un. Il ne regarde pas les cordes : il en prend une, sans choisir, comme on prend la rampe d'un escalier qu'on connaît. Il passe le bord. Il descend. Le vent rabat un pan de son manteau — puis plus rien. La corde tremble encore un moment, toute seule.",
+    ],
+    choices: [
+      {
+        id: "saisir-corde",
+        tags: ["citable"],
+        label: "Saisir une corde",
+        minigame: { engine: "swipe" },
+        passive: {
+          consequence:
+            "La corde file entre tes mains, palier par palier, et la lande " +
+            "monte au-dessus de toi comme une eau qui se referme. La paume " +
+            "chauffe là où le chanvre passe. En haut, le vent continue sans " +
+            "toi.",
+        },
+        sortie: { toScene: "la-descente" },
+      },
+      {
+        id: "reculer-bord",
+        label: "Reculer d'un pas",
+        passive: {
+          consequence:
+            "Le bord reste où il est. Les cordes aussi. Tout, ici, sait " +
+            "attendre — c'est même la seule chose que ce pays fasse bien.",
+        },
+      },
+    ],
+  },
 ];
 
 /**
@@ -7579,6 +7860,7 @@ const LIEUX_HORS_POOL = [
   "proces-du-heros",
   "palissade-sud",
   "la-descente",
+  "falaise-cordes", // le lieu final de la DÉMO — déroutage, jamais le pool
 ];
 const APPROACH: Record<string, string> = {
   "chemin-creux": "Vers le chemin creux",
@@ -7645,6 +7927,11 @@ const LIEU_NOM: Record<string, string> = {
   marcheur: "Le Chemin Creux",
   "colline-aux-gibets": "La Colline aux Gibets",
   "pendu-qui-parle": "La Colline aux Gibets",
+  "falaise-cordes": "La Falaise aux Cordes",
+  "demo-nuit": "Le Hameau des Renonçants",
+  "demo-nuit-maison": "Le Hameau des Renonçants",
+  "demo-nuit-grange": "La Grange des Renonçants",
+  "demo-nuit-dehors": "Le Hameau des Renonçants",
   "champ-des-fixes": "Le Champ des Fixés",
   "pendu-mal-fixe": "Le Champ des Fixés",
   /* ⚠️ Le SEUIL et le VILLAGE portaient le même nom (retour Patrick 6/08 :
@@ -8624,6 +8911,55 @@ export const SECOND_PROCES =
  * voit la destination se dresser, on y marche — la transition est vécue, pas
  * sautée. Jamais un danger frontal : juste l'approche sensorielle.
  */
+/**
+ * LE CLIMAX LIT LA TRAVERSÉE (go 24/08, verrou n°1 : « la Pression doit
+ * relire au moins une décision antérieure de manière identifiable »). Ces
+ * lignes s'injectent sur l'écran 2 de la Falaise selon ce que CETTE vie a
+ * réellement fait — jamais toutes, jamais aucune n'est obligatoire.
+ * Écrites sans nom propre : le joueur reconnaît, le texte ne récite pas.
+ */
+export const DEMO_FALAISE_LECTURES: Record<string, string> = {
+  // La Chapelle a été traversée (le tressage de la Veuve, sous verre).
+  tressage:
+    "Trois cordes sur dix portent un tressage que tu as déjà vu — sous un " +
+    "verre, entre des mains qui ne s'arrêtaient jamais. Celle qui tresse ce " +
+    "nœud-là tresse aussi celles qui descendent.",
+  // La Corde coupée est dans la Besace (prise à la Chapelle).
+  cordeCoupee:
+    "Dans ta besace, la corde coupée pèse soudain autrement. Tranchée net, " +
+    "par en dessous — comme celles-là, en bas de leur course. Tu transportes " +
+    "la preuve que quelqu'un, tout en bas, coupe les cordes.",
+};
+
+/**
+ * LE CADRAGE DU GESTE DE LA BORNE varie selon le premier acte (verrou n°1
+ * du go : garantir la situation tactile, pas trois routes qui convergent
+ * vers le même bouton) — injecté par le déroutage devant `demo-borne-geste`.
+ */
+export const DEMO_BORNE_CADRAGES: Record<string, string> = {
+  offrandes:
+    "L'éclat descellé que tes doigts ont frôlé sous les offrandes venait du " +
+    "côté sud. Avant de partir, tu veux voir le trou qu'il a laissé.",
+  homme:
+    "L'homme immobile ne regardait pas le sud — il regardait un point précis " +
+    "de la pierre, à hauteur de main. Avant de partir, tu veux voir quoi.",
+  // Ni l'éclat ni l'homme (les offrandes ont refusé, par exemple) : la
+  // question s'impose d'elle-même — c'est la Borne qui retient.
+  defaut:
+    "Tu allais partir. Mais la face sud te retient — presque nue quand tout " +
+    "le reste est saturé de marques. Presque.",
+};
+
+/** L'arrivée à la Falaise (déroutage — hors table APPROACH, hors pool). */
+export const DEMO_FALAISE_APPROCHE =
+  "Passé les silhouettes grises, la lande descend sans prévenir, et le vent " +
+  "change de goût : plus de bruyère. Du vide.";
+
+/** La Meute au portillon (segment 9) : la réponse à « aucun chien n'aboie ». */
+export const DEMO_MEUTE_COUTURE =
+  "Tu comprends enfin pourquoi aucun chien n'aboie entre les murets : les " +
+  "chiens du pays sont dehors. Tous.";
+
 export const APPROACH_NARRATION: Record<string, string> = {
   "chemin-creux": "Le sol se creuse sous tes pas, et le ciel se rétrécit à mesure que tu descends.",
   "bete-chemins-creux": "Quelque chose, devant, t'a senti avant que tu le sentes.",

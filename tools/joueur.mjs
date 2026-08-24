@@ -249,11 +249,54 @@ async function peutEtreJouerLeGeste() {
   if (!b) return null;
   const consigne = await page.evaluate(() => {
     const ps = [...document.querySelectorAll("p")];
-    const c = ps.find((x) => /frotte|maintiens/i.test(x.innerText || ""));
+    // ⚠️ Chaque nouveau moteur ajoute SA consigne ici — sinon le driver
+    // retombe sur « appui tenu » et laisse l'overlay ouvert (vécu le 24/08).
+    const c = ps.find((x) => /frotte|maintiens|trac|crochet|filer/i.test(x.innerText || ""));
     return (c?.innerText || "").replace(/\s+/g, " ").trim();
   });
   const frottage = /frotte/i.test(consigne);
+  const trace = /trac/i.test(consigne);
+  const crochet = /crochet/i.test(consigne);
+  const corde = /corde|filer/i.test(consigne);
   const parti = async () => !(await page.locator(".minigame-canvas").count());
+  if (trace) {
+    // Le Tracé exige de VOIR les points — infaisable pour un automate.
+    // L'échappement testeur (3 taps sur l'overlay, ?testeur=1) le résout.
+    for (let i = 0; i < 3 && !(await parti()); i++) {
+      await page.mouse.click(b.x + b.width / 2, b.y - 30);
+      await page.waitForTimeout(350);
+    }
+    await page.waitForTimeout(600);
+    return `[ geste tactile : tracé — ${consigne} ]`;
+  }
+  if (crochet) {
+    // Le Crochetage se joue au TAP : trois essais réels sur le curseur
+    // oscillant — l'un tombe dans la gorge ou pas, les deux issues avancent.
+    for (let i = 0; i < 3 && !(await parti()); i++) {
+      await page.mouse.click(b.x + b.width / 2, b.y + b.height / 2);
+      await page.waitForTimeout(650);
+    }
+    await page.waitForTimeout(600);
+    return `[ geste tactile : crochetage — ${consigne} ]`;
+  }
+  if (corde) {
+    // La cérémonie : des glissements LENTS, paliers par paliers. Trop vite,
+    // la corde ne file pas — le moteur se représente, on recommence calmement.
+    for (let essai = 0; essai < 4 && !(await parti()); essai++) {
+      await page.mouse.move(b.x + 20, b.y + b.height / 2);
+      await page.mouse.down();
+      for (let k = 0; k < 8 && !(await parti()); k++) {
+        for (let m = 0; m < 6; m++) {
+          await page.mouse.move(b.x + 20 + k * 34 + m * 6, b.y + b.height / 2);
+          await page.waitForTimeout(70);
+        }
+      }
+      await page.mouse.up();
+      await page.waitForTimeout(400);
+    }
+    await page.waitForTimeout(600);
+    return `[ geste tactile : la corde file entre les mains — ${consigne} ]`;
+  }
   if (frottage) {
     // ⚠️ LA DENSITÉ COMPTE : le moteur retire 0,35 par cellule touchée et
     // 0,15 aux voisines, sur une grille de 30×18, et il faut en découvrir

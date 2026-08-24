@@ -32,6 +32,36 @@ const TRACKS: Record<MusicKind, string[]> = {
 let el: HTMLAudioElement | null = null;
 let current: MusicKind | null = null;
 let fadeTimer: ReturnType<typeof setInterval> | null = null;
+/* LA MUSIQUE SUIT LA COURBE (démo, go du 24/08 : « la musique se penche au
+   6, sombre au 8, morte au 10 »). En mode démo, la phase de la traversée
+   IMPOSE la piste des Landes au lieu de la rotation mélangée :
+     ouverture → landes_1 · pression → landes_2 · climax → landes_3 ·
+     falaise → silence (fondu, jamais une coupure).
+   `null` = comportement normal (jeu complet). Idempotent : re-poser la même
+   piste ne redémarre rien. */
+let pisteForcee: number | "off" | null = null;
+
+export function forcerPiste(p: number | "off" | null): void {
+  if (p === pisteForcee) return;
+  pisteForcee = p;
+  if (typeof window === "undefined") return;
+  if (p === "off") {
+    stopMusic();
+    return;
+  }
+  if (p === null) return;
+  const src = TRACKS.landes[Math.max(0, Math.min(TRACKS.landes.length - 1, p))];
+  if (!src) return;
+  // Si les Landes jouent déjà (ou sont le contexte demandé), on bascule en
+  // fondu vers la piste de la phase ; sinon playMusic la prendra au départ.
+  if (current === "landes") {
+    const audio = ensureEl();
+    const deja = audio?.getAttribute("data-src") ?? "";
+    if (deja === src && audio && !audio.paused) return;
+    if (loadSettings().music) fadeOutAndStop(() => startTrack(src));
+  }
+}
+
 // Pistes introuvables (404/erreur) : on ne réessaie pas en boucle.
 const missing = new Set<string>();
 // Geste utilisateur déjà obtenu (autoplay débloqué) ?
@@ -101,6 +131,12 @@ function ensureEl(): HTMLAudioElement | null {
       // Rotation : piste suivante de la FILE mélangée. En fin de file on en
       // retire une neuve, sans enchaîner deux fois la même piste.
       if (!current) return;
+      if (current === "landes" && typeof pisteForcee === "number") {
+        // Phase imposée : la piste de la phase reboucle sur elle-même.
+        const src = el?.getAttribute("data-src");
+        if (src) startTrack(src);
+        return;
+      }
       queuePos += 1;
       if (queuePos >= queue.length) {
         queue = buildQueue(current, queue[queue.length - 1] ?? null);
@@ -168,7 +204,12 @@ export function playMusic(kind: MusicKind): void {
   // entendue la dernière fois (mémoire localStorage).
   queue = buildQueue(kind, readLast(kind));
   queuePos = 0;
-  const src = queue[0];
+  // Piste imposée par la courbe de la démo : elle prime sur la rotation.
+  if (kind === "landes" && pisteForcee === "off") return;
+  const src =
+    kind === "landes" && typeof pisteForcee === "number"
+      ? TRACKS.landes[Math.max(0, Math.min(TRACKS.landes.length - 1, pisteForcee))]
+      : queue[0];
   // On TENTE de jouer immédiatement (retour Patrick 24/07 : la musique doit
   // partir dès l'ouverture de l'appli, sans attendre un clic). Beaucoup de
   // navigateurs — surtout une PWA installée lancée depuis l'icône — l'ont
