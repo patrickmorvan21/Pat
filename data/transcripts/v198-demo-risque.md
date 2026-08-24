@@ -38,24 +38,15 @@ Au pied du tas, un mot gravé de frais, la rainure encore claire : « Hier, le p
 
 ### Écran 3
 
-[ dé lancé → DESTIN ]
+[ dé lancé → FUNESTE ]
 
 ### Écran 4
 
-Tes doigts trouvent le paquet le plus ancien, noué dans un linge raide : les offrandes du premier jour, celles que personne n'a jamais osé reprendre. Tu les prends — et la borne te laisse faire.
+Un ruban glisse et tout l'édifice s'éboule. Le vent se lève d'un coup, bref, comme une inspiration — la lande a noté que tu prends sans donner.
 
-OBTENU — AMULETTE D'OS VERDI · RARE
-Elle vibre quand on la regarde trop longtemps — et le hasard te sourit un peu plus.
-Tu le portes sans y penser, et tu hésites moins qu'avant.
-OBTENU — OFFRANDES DE LA BORNE · COMMUN
-Pain durci, rubans, clous tordus. On les a laissés pour entrer. Tu les prends pour tenir.
-À garder pour un mauvais jour : rend des forces. Une seule fois.
-
-L'éclat descellé que tes doigts ont frôlé sous les offrandes venait du côté sud. Avant de partir, tu veux voir le trou qu'il a laissé.
+Tu allais partir. Mais la face sud te retient — presque nue quand tout le reste est saturé de marques. Presque.
 
 La Borne te retient un pas de plus. Sur la face sud, sous la mousse, quelque chose est écrit — et la mousse s'écarte sous les doigts.
-
-Impeccable. J'inscris ça aussi. Les deux colonnes servent.
 
 → *(touche pour continuer)*
 
@@ -78,7 +69,7 @@ Le côté sud, à nu. Trois marques — trois seulement, sur toute la face, quan
 
 Tu marches. La lande ne finit pas — elle se répète, talus après talus, sous le même crépuscule qui ne tombe jamais.
 
-Deux directions s'ouvrent. D'un côté, un chemin qui s'enfonce entre deux talus. De l'autre, un pendu qui t'arrive à hauteur de regard, et qui bouge sans vent.
+Tu cherches la seconde route et tu ne la trouves pas. Elle était là — les traces y vont, s'arrêtent, et ne reviennent pas. Il ne reste qu'un chemin, et il ne t'a pas attendu pour être choisi.
 
 Sur un muret, quelqu'un a gravé une phrase, puis l'a barrée : « Ici, tout passe en jugement. » La barre est plus récente que les mots — comme si l'auteur avait compris trop tard que ce n'était pas une menace, mais une procédure.
 
@@ -90,7 +81,6 @@ Sur un muret, quelqu'un a gravé une phrase, puis l'a barrée : « Ici, tout pas
 
 **Choix proposés :**
 - Vers le chemin creux
-- Vers un gibet qui parle
 
 → *Vers le chemin creux*
 
@@ -103,7 +93,7 @@ Le sol se creuse sous tes pas, et le ciel se rétrécit à mesure que tu descend
 
 L'odeur arrive avant la chose : suint, terre retournée. Une masse se décolle du talus, longue, basse, taillée pour courir entre deux murs de terre. Le creux est son couloir — et tu es dessus.
 
-Tu as pris la route droite. On t'a vu venir — et tu as eu le temps de tout regarder.
+La route est droite sur la fin. On t'a vu venir — et tu as eu le temps de tout regarder.
 
 → *(touche pour continuer)*
 
@@ -120,7 +110,7 @@ Tu as pris la route droite. On t'a vu venir — et tu as eu le temps de tout reg
 
 ### Écran 11
 
-[ dé lancé → RÉUSSITE ÉCLATANTE ]
+[ dé lancé → DE JUSTESSE ]
 
 ### Écran 12
 
@@ -131,7 +121,7 @@ Tes mains trouvent les racines, tes pieds la terre ferme. La Bête passe en dess
 
 Le chemin s'enfonce entre deux talus ; le ciel devient un ruban. Une charrette penche au premier coude — et dans le creux, quelqu'un vient vers toi. De dos.
 
-Les traces contournent toutes le même muret. Quelque chose attend derrière.
+Les talus sont hauts, mais la terre est meuble. On peut sortir de ce couloir si on le décide.
 
 → *(touche pour continuer)*
 
@@ -193,7 +183,7 @@ D'un côté, un pendu qui t'arrive à hauteur de regard, et qui bouge sans vent.
 
 ### Écran 19
 
-Tu traverses sans rien tenter. Ces jours-là ne s'écrivent nulle part.
+Tu regardes tout, tu ne risques rien. Ces jours-là ne s'écrivent pas.
 
 Tu contournes la crête. Ce que tu prenais pour un épouvantail tourne la tête.
 
@@ -201,7 +191,7 @@ Au revers de la colline, un gibet à corde longue : le pendu t'arrive à hauteur
 
 Sur la traverse, une rangée de corbeaux regarde le nord. Un seul est de travers. Celui-là te regarde, toi.
 
-Tu es entré par où tout le monde entre. Ça se remarque, et ça permet de voir venir.
+On entre ici par où tout le monde entre. Ça se remarque, et ça permet de voir venir.
 
 → *(touche pour continuer)*
 
@@ -277,7 +267,7 @@ La corde s'immobilise. Pour la première fois depuis que tu es là, il ne joue p
 
 ### Écran 29
 
-[ dé lancé → RÉUSSITE ÉCLATANTE ]
+[ dé lancé → RÉUSSITE ]
 
 ### Écran 30
 
@@ -364,10 +354,6 @@ Une mère tire son enfant à l'intérieur sans un mot. Plus loin, la Doyenne cro
 
 Trois cents ont trouvé ça exagéré. Le livre dit qu'ils avaient tort.
 
-OBTENU — BAUME DE MOUSSE NOIRE · COMMUN
-Ça sent la cave. Ça referme les plaies.
-À garder pour un mauvais jour : referme une plaie qui dure, et rend des forces. Une seule fois.
-
 → *(touche pour continuer)*
 
 ### Écran 40
@@ -377,7 +363,7 @@ OBTENU — BAUME DE MOUSSE NOIRE · COMMUN
 **Choix proposés :**
 - Parler à la femme sur le seuil
 - Lever les yeux vers les combles INSTINCT
-- Te retourner vers les toits
+- Soutenir le regard des trois hommes
 
 → *Lever les yeux vers les combles INSTINCT*
 
@@ -391,11 +377,11 @@ OBTENU — BAUME DE MOUSSE NOIRE · COMMUN
 
 Les fenêtres des combles sont clouées. Pas murées, pas bouchées : clouées, planche par planche, avec le soin de quelqu'un qui comptait revenir.
 
-La rue est vide. Pas déserte — vide : une porte qui bat, un seau de travers, du lait qui n'a pas séché. Tout le monde vient de rentrer, et vite.
+Ils ont envoyé un gosse. Huit ans, planté au milieu de la rue, les mains dans le dos. Aucun adulte — et tous les volets entrouverts de deux doigts.
 
-Un volet s'entrouvre de deux doigts. Une voix de femme, basse, aucun visage derrière : — « Ne touche pas les portes marquées. Ne réponds pas si on t'appelle par ton nom. Va au muret. »
+Il récite, avec les silences qu'on lui a fait répéter : — « Est-ce que tu dors la nuit ? Est-ce que tu as compté quelque chose aujourd'hui ? Est-ce qu'on t'a appelé par ton nom depuis que tu es descendu ? »
 
-Le volet ne se referme pas. Elle attend quelque chose de toi.
+Il ne comprend pas ce qu'il demande. Les autres, si.
 
 Ils sont six, alignés, du même côté.
 
@@ -406,23 +392,27 @@ Ils sont six, alignés, du même côté.
 (même écran, choix suivant)
 
 **Choix proposés :**
-- Obéir sans un mot
-- Lui demander pourquoi elle t'aide EMPATHIE
-- La faire parler encore RUSE
+- Ne pas répondre à un enfant
+- Répondre à l'enfant EMPATHIE
+- Répondre aux volets RUSE
 
-→ *Lui demander pourquoi elle t'aide EMPATHIE*
+→ *Répondre à l'enfant EMPATHIE*
 
 ### Écran 44
 
-[ dé lancé → RÉUSSITE ]
+[ dé lancé → RÉUSSITE ÉCLATANTE ]
 
 ### Écran 45
 
-« Parce que ça ne coûte rien de parler à travers un volet », dit-elle. Puis, plus bas, comme si elle se corrigeait : « Et parce que ça coûte trop cher de se taire deux fois. » Le volet se ferme, cette fois.
+Tu réponds simplement, en le regardant lui. Il hoche la tête à chaque réponse comme s'il cochait, puis se retourne vers la maison la plus proche et crie : « Il a dit non ! » Le mot passe de porte en porte. Ce n'est pas un acquittement, mais ce n'est pas une condamnation.
 
 Le vieux t'attend sur un muret, paume ouverte — vide. Ici on jure sur rien. « Trois choses, et tu dors sous un toit : tu ne parles pas aux pendus, tu ne regardes pas le sud plus qu'il ne faut, et à la troisième aube, tu choisis. »
 
 Six corbeaux se posent quand tu débouches dans la rue — sans un cri, sans une dispute, comme des gens qui prennent leur poste.
+
+OBTENU — FIOLE D'EAU DE GOUTTIÈRE · COMMUN
+Trouble, tiède — mais elle apaise.
+À garder pour un mauvais jour : rend des forces. Une seule fois.
 
 → *(touche pour continuer)*
 
@@ -445,7 +435,7 @@ Ils s'écartent juste assez pour que tu passes sans toucher personne — c'est c
 
 On ne te parle plus tout à fait à toi. On parle devant toi, de toi, à voix normale, comme on parle devant un poteau déjà planté.
 
-Là où tu as dormi, quelqu'un est passé : une croix à la craie, tracée bas, près du sol. Elle ne t'est pas adressée. Elle est adressée aux autres.
+Là où tu t'es arrêté tout à l'heure, quelqu'un est passé après toi : une croix à la craie, tracée bas, près du sol. Elle ne t'est pas adressée. Elle est adressée aux autres.
 
 → *(touche pour continuer)*
 
@@ -460,9 +450,10 @@ Je ne préviens pas. Je constate. C'est tout ce qu'on me permet.
 (même écran, choix suivant)
 
 **Choix proposés :**
-- Entrer dans le hameau
+- Avancer dans la rue
+- Utiliser — Fiole d'eau de gouttière
 
-→ *Entrer dans le hameau*
+→ *Avancer dans la rue*
 
 ### Écran 50
 
@@ -507,7 +498,7 @@ Pas des chiens : trop patients. Pas des loups : trop organisés. La plus grande 
 
 ### Écran 54
 
-Elles ne t'encerclent pas. Elles t'orientent — vers un endroit qu'elles ont choisi.
+Les fougères montent à hauteur d'épaule sur le dernier bout. Aucun bruit à compter, aucune vue d'ensemble.
 
 → *(touche pour continuer)*
 
@@ -524,18 +515,21 @@ Elles ne t'encerclent pas. Elles t'orientent — vers un endroit qu'elles ont ch
 
 ### Écran 56
 
-[ dé lancé → RÉUSSITE ÉCLATANTE ]
+[ dé lancé → ÉCHEC ]
 
 ### Écran 57
 
-Ton hurlement les déroute — c'est la proie qui crie, jamais le centre. Deux bêtes rompent le tour pour interroger la meneuse du regard, et le cercle flotte, désaccordé. Tu as gagné du temps et semé le doute, leurs deux seules faiblesses.
+Entaillé
+Quand tu poses le pied, la douleur remonte jusqu'à la hanche.
+
+Ton hurlement sonne faux — un cri de gorge d'homme, rien d'autre. Le cercle ne ralentit même pas. Pire : au loin, quelque chose d'autre a répondu, et la meneuse presse le pas. Ils veulent finir avant l'arrivée de ce que tu as appelé.
 
 • RENCONTRE •
 La Meute Grise
 
-Le cercle est rompu, mais la meute reste — regroupée à distance de lame, en croissant, plus prudente. Ils ont compris que tu mords aussi. Ça ne les décourage pas : ça les intéresse.
+Le cercle ne s'est pas ouvert : il s'est resserré d'un pas, et il sent la chaleur. Ils ont compris quelque chose, oui — mais pas que tu mords. Que tu saignes.
 
-La meneuse s'avance seule d'un pas, tête basse, et te fixe. Chez eux, c'est une question. La dernière avant la charge — ou avant autre chose. À toi d'y répondre.
+La meneuse s'avance seule, sans hâte, et te fixe. Chez eux, c'est encore une question. Ce n'est plus la même : celle-là ne demande pas si tu es dangereux, elle demande combien de temps tu tiens.
 
 → *(touche pour continuer)*
 
@@ -552,14 +546,14 @@ La meneuse s'avance seule d'un pas, tête basse, et te fixe. Chez eux, c'est une
 
 ### Écran 59
 
-[ dé lancé → ÉCHEC ]
+[ dé lancé → RÉUSSITE ÉCLATANTE ]
 
 ### Écran 60
 
-Entaillé
-Quand tu poses le pied, la douleur remonte jusqu'à la hanche.
+Aguerri
+Ta main ne tremble plus. Elle sait ce qu'elle vient de faire.
 
-Elle attendait l'acier — c'est la réponse qu'ils comprennent le mieux et esquivent le mieux. Le croissant fond sur toi, prend son tribut de chair en trois passes réglées, puis décroche d'un coup, comme à un signal. La lande se referme sur eux. Le compte est bon, pour eux.
+Ta lame répond pour toi. La meneuse esquive l'essentiel, encaisse le reste, et rompt — le croissant entier reflue avec elle, réglé sur sa retraite. Ils reviendront peut-être. Pas aujourd'hui, et pas pour toi.
 
 Passé les silhouettes grises, la lande descend sans prévenir, et le vent change de goût : plus de bruyère. Du vide.
 
@@ -575,7 +569,7 @@ Sur toute sa largeur, des cordes. Des centaines, nouées à des pieux, qui pende
 
 **Choix proposés :**
 - S'approcher des pieux
-- Utiliser — Offrandes de la Borne
+- Utiliser — Fiole d'eau de gouttière
 
 → *S'approcher des pieux*
 
@@ -593,7 +587,7 @@ Des vieilles, grises, raides de sel. Des neuves, encore blondes. Et trois ou qua
 
 **Choix proposés :**
 - Aller au bout du surplomb
-- Utiliser — Offrandes de la Borne
+- Utiliser — Fiole d'eau de gouttière
 
 → *Aller au bout du surplomb*
 
@@ -611,8 +605,8 @@ Au bout du surplomb, quelqu'un. Il ne regarde pas les cordes : il en prend une, 
 
 **Choix proposés :**
 - Reculer d'un pas
-- Saisir une corde
-- Utiliser — Offrandes de la Borne
+- Chercher la corde du trois cent unième
+- Utiliser — Fiole d'eau de gouttière
 
 → *Reculer d'un pas*
 
@@ -627,10 +621,10 @@ Le bord reste où il est. Les cordes aussi. Tout, ici, sait attendre — c'est m
 (même écran, choix suivant)
 
 **Choix proposés :**
-- Saisir une corde
-- Utiliser — Offrandes de la Borne
+- Chercher la corde du trois cent unième
+- Utiliser — Fiole d'eau de gouttière
 
-→ *Saisir une corde*
+→ *Chercher la corde du trois cent unième*
 
 ### Écran 68
 
@@ -638,17 +632,17 @@ Le bord reste où il est. Les cordes aussi. Tout, ici, sait attendre — c'est m
 
 ### Écran 69
 
-La corde file entre tes mains, palier par palier, et la lande monte au-dessus de toi comme une eau qui se referme. La paume chauffe là où le chanvre passe. En haut, le vent continue sans toi.
+Tu longes les pieux en lisant les entailles, et tu la trouves : un pieu marqué d'une chaîne de fonction, gravée maigre. La corde du trois cent unième — celui qui a signé son propre nom sous le dernier de sa liste. Elle est grise, plus usée que les autres : on descend souvent par celle-là. Tu la prends, palier par palier, et le chanvre file doux, comme s'il avait l'habitude de porter ceux qui savent.
 
 En quittant les Landes, la question marche avec toi : chaque pendu de la colline a eu son procès, ses trois bancs, sa sentence dite à voix haute. Tous — sauf le juge. Qui a jugé le Bailli ? Et pourquoi sa dernière entaille tremble-t-elle ?
 
 Le sol s'incline. L'air se fait plus froid, plus vieux — il monte d'en bas, par la porte de la Descente restée ouverte derrière toi.
 
-Tu as traversé les Landes vivant. Peu le font. Devant, l'escalier plonge dans un noir qui n'a pas encore de nom.
-
 → *(touche pour continuer)*
 
 ### Écran 70
+
+Tu as traversé les Landes vivant. Peu le font. Devant, l'escalier plonge dans un noir qui n'a pas encore de nom.
 
 Derrière toi, très loin, quelqu'un a pris le chemin du hameau sans courir. Il n'a pas besoin de courir : tu descends, et ce qu'on dira de toi restera là-haut, à sécher sur les murs.
 
@@ -716,23 +710,27 @@ J3
 
 ### Écran 72
 
-v1.97.0
+v1.98.0
 
 → *(touche pour continuer)*
 
 ### Écran 73
 
-Un survivant. Le Registre ne sait pas où te ranger. Moi, si.
+Tu l'as traversée. Ne prends pas ça pour une sortie — l'étage du dessous me connaît mieux.
 
 COMMENCER
 RELIQUES
 GRAND REGISTRE
 CODEX
 OPTIONS
-v1.97.0 · démo
+v1.98.0 · démo
 
 → *(touche pour continuer)*
 
 ### Écran 74
 
-— la vie s'achève, retour à l'accueil —
+Avant que tu passes, je veux voir qui tu étais.
+
+Touche pour continuer
+
+→ *(touche pour continuer)*
