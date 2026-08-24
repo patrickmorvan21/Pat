@@ -482,6 +482,15 @@ export type Choice = {
     echec?: string;
     echecBlesse?: boolean;
   };
+  /**
+   * VERSION COURTE DÉMO de la conséquence d'un choix passif (arbitrage
+   * Patrick 24/08 : « les changements uniquement sur la démo, c'est elle qui
+   * nous sert de base »). Servie à la place de `passive.consequence` quand le
+   * mode démo est actif ; le jeu complet garde sa prose intacte. Réservée aux
+   * conséquences les plus lourdes de la route démo — pas une réécriture
+   * générale.
+   */
+  consequenceDemo?: string;
 };
 
 /**
@@ -589,6 +598,14 @@ export type Scene = {
   id: string;
   /** Plusieurs paragraphes courts (2-4 phrases chacun), pas des pavés — chacun type séparément dans le fil. */
   narration: string[];
+  /**
+   * VERSION COURTE DÉMO (arbitrage Patrick 24/08 : « les changements
+   * uniquement sur la démo, c'est elle qui nous sert de base »). Servie à la
+   * place de `narration` quand le mode démo est actif — UN paragraphe serré
+   * (~25-45 mots) qui garde l'accroche et tout ce que les choix référencent.
+   * Le jeu complet garde sa prose. Réservée aux écrans de la route démo.
+   */
+  narrationDemo?: string[];
   /** Asset tramé de la scène (public/assets/…). Défaut : portail. Temps 2 : varier par contexte. */
   illustration?: string;
   /**
@@ -1048,6 +1065,9 @@ export const SCENES: Scene[] = [
         "l'œil ne voit qu'elle. À son pied, un tas d'offrandes. Au-delà, le " +
         "sud, nu. Et à trois pas de la borne, un homme immobile, face au sud.",
     ],
+    narrationDemo: [
+      "La lande s'ouvre sous un crépuscule qui ne tombe pas. Une pierre seule au milieu du plateau, plus haute qu'un homme. À son pied, un tas d'offrandes. À trois pas, un homme immobile, face au sud. Quelque part, une corde grince.",
+    ],
     /* ─── CONVERSION DES POINTS D'INTÉRÊT (playtest v1.81, 13/08) ───────────
        Le tout premier écran de chaque vie offrait SIX choses derrière un
        « Observer les alentours », alors qu'on n'en fait jamais qu'une : la
@@ -1060,6 +1080,8 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "tour-de-pierre",
+        consequenceDemo:
+          "Des marques sur toutes les faces — des noms, des dates, des traits de comptage. Le côté nord est saturé : les adieux de ceux qui partaient. Le côté sud : trois marques. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?\n\nAu ras du sol, un éclat descellé, à demi enterré. Quelqu'un a voulu emporter un morceau de la limite — et ne l'a pas pris.",
         label: "Faire le tour de la pierre",
         observe: true,
         illustration: "assets/scene_borne_gravures_a_d.png",
@@ -1280,6 +1302,9 @@ export const SCENES: Scene[] = [
         "meubles. Plus loin, le chemin tourne et la terre mange la vue. Et " +
         "dans le creux, quelqu'un vient vers toi — de dos.",
     ],
+    narrationDemo: [
+      "Le chemin s'enfonce entre deux talus ; le ciel devient un ruban. Une charrette penche au premier coude — et dans le creux, quelqu'un vient vers toi. De dos.",
+    ],
     /* Conversion des points d'intérêt (13/08). Trois actions exclusives : ce
        qu'on prend (le grelot), ce qu'on apprend (la crête nord, qui ouvrira
        un choix à la Bête), et qui on laisse venir. `couper-lande` disparaît :
@@ -1302,6 +1327,8 @@ export const SCENES: Scene[] = [
       },
       {
         id: "talus-empreintes",
+        consequenceDemo:
+          "Des empreintes sur la crête nord — parallèles au chemin, sur toute sa longueur. L'autre versant est intact. Quelque chose marche là-haut quand quelqu'un marche en bas, du même pas, toujours du même côté. Tu redescends sans te presser : se presser serait une information.",
         label: "Monter voir le haut des talus",
         illustration: "assets/scene_chemin_talus_a_c.png",
         observe: true,
@@ -1348,6 +1375,9 @@ export const SCENES: Scene[] = [
         "chose, et il n'y a rien.",
       "Le silence y est plus épais d'un cran, comme après un bruit que tu " +
         "aurais raté d'une seconde.",
+    ],
+    narrationDemo: [
+      "Passé le coude : rien. L'endroit exact où il devrait y avoir quelque chose, et il n'y a rien. Le silence y est plus épais d'un cran.",
     ],
     choices: [
       {
@@ -1532,6 +1562,9 @@ export const SCENES: Scene[] = [
       "Pas de gueule visible. Juste une avancée du corps qui s'ouvre. La " +
         "Bête ne chasse que dans le creux — c'est son couloir, son terrier, " +
         "sa table. Et tu es dessus.",
+    ],
+    narrationDemo: [
+      "L'odeur arrive avant la chose : suint, terre retournée. Une masse se décolle du talus, longue, basse, taillée pour courir entre deux murs de terre. Le creux est son couloir — et tu es dessus.",
     ],
     /**
      * ⚠️ AMENDE la règle « jamais sous 6000 ms » du 14/07 (retour Patrick
@@ -1722,6 +1755,9 @@ export const SCENES: Scene[] = [
       "En contrebas, un poteau isolé porte encore son occupant. Sur la " +
         "traverse du grand gibet, des oiseaux noirs attendent sans bouger.",
     ],
+    narrationDemo: [
+      "Sur la crête, les potences se suivent comme des bornes, chacune avec son nom et sa date. La dernière dépasse toutes les autres — sa corde est la seule chose neuve à dix lieues. En contrebas, un poteau porte encore son occupant.",
+    ],
     choices: [
       {
         id: "lire-nom-grave",
@@ -1789,6 +1825,9 @@ export const SCENES: Scene[] = [
       "Ça grince en mesure. Toutes ces cordes, un seul rythme. Tu comprends, avec " +
         "un retard qui te coûte, que ce rythme ne t'est pas indifférent — " +
         "tu pourrais le compter.",
+    ],
+    narrationDemo: [
+      "Le vent tombe d'un coup. Et dans ce calme plat, toutes les cordes de la crête se mettent à bouger — ensemble. Un balancement lent, réglé. Tu pourrais le compter.",
     ],
     choices: [
       {
@@ -2445,6 +2484,9 @@ export const SCENES: Scene[] = [
       "Tu es encore loin quand tu comprends ce qui cloche : aucun chien " +
         "n'aboie.",
     ],
+    narrationDemo: [
+      "Des toits au creux du plateau, une seule cheminée qui fume sur vingt. Tu es encore loin quand tu comprends ce qui cloche : aucun chien n'aboie.",
+    ],
     choices: [
       {
         id: "observer-couvert",
@@ -2497,6 +2539,9 @@ export const SCENES: Scene[] = [
         "Toutes à la même hauteur, toutes de la même main.",
       "Une femme se tient sur un seuil, immobile. Elle ne regarde pas la " +
         "route : elle regarde une fenêtre, en face.",
+    ],
+    narrationDemo: [
+      "Une rue en terre battue, des murets. Sur chaque linteau, une croix à la craie — même hauteur, même main. Sur un seuil, une femme immobile regarde une fenêtre, en face.",
     ],
     choices: [
       {
@@ -3075,6 +3120,9 @@ export const SCENES: Scene[] = [
         "ceux qui descendent... » Il ne finit pas. Derrière lui, une femme " +
         "tire un enfant à l'intérieur.",
     ],
+    narrationDemo: [
+      "Ils sont trois au milieu de la rue. Pas armés — une fourche à portée, sans être brandie. Le vieux du centre : « On ne te chasse pas. Mais tu descends, ça se voit à ton pas. » Derrière lui, on rentre un enfant.",
+    ],
     choices: [
       {
         id: "demander-crainte",
@@ -3532,9 +3580,14 @@ export const SCENES: Scene[] = [
         "troisième aube, tu choisis. »",
       "Il n'attend pas la question. « Qui juge ? Personne. On constate. »",
     ],
+    narrationDemo: [
+      "Le vieux t'attend sur un muret, paume ouverte — vide. Ici on jure sur rien. « Trois choses, et tu dors sous un toit : tu ne parles pas aux pendus, tu ne regardes pas le sud plus qu'il ne faut, et à la troisième aube, tu choisis. »",
+    ],
     choices: [
       {
         id: "jurer-serment",
+        consequenceDemo:
+          "Tu poses ta main au-dessus de la sienne, sans la toucher, et tu jures les trois choses. Toute la rue se dénoue d'un coup dans ton dos. « Tenu jusqu'à la sortie », rappelle le vieux. Le hameau entier a entendu. Et plus haut que le hameau, quelqu'un d'autre.",
         serment: "jure",
         label: "Jurer",
         soupcon: -1,
@@ -3603,6 +3656,9 @@ export const SCENES: Scene[] = [
         "et tu comprends que c'est calculé. Devant toi, des volets se ferment " +
         "un par un, un peu en avance sur ton pas. Personne ne t'a souhaité la " +
         "bienvenue, et pourtant tous savaient que tu venais.",
+    ],
+    narrationDemo: [
+      "Ils s'écartent juste assez pour que tu passes sans toucher personne — c'est calculé. Devant toi, les volets se ferment un peu en avance sur ton pas.",
     ],
     choices: [
       {
@@ -4484,6 +4540,9 @@ export const SCENES: Scene[] = [
         "gestes, paumes et hochements. Renoncer à la parole est le " +
         "renoncement le plus courant. Le moins cher.",
     ],
+    narrationDemo: [
+      "Un marché sans un cri : des étals de trois fois rien, des marchands qui négocient par gestes. Renoncer à la parole est le renoncement le moins cher.",
+    ],
     choices: [
       {
         id: "observer-troc",
@@ -4525,6 +4584,9 @@ export const SCENES: Scene[] = [
       // (rapport IA externe 8/08 : « le Rebouteux apparaît dans la
       // conséquence sans avoir été introduit »).
       "À l'étal voisin, un vieil homme écrase des feuilles dans un mortier, des fioles bouchées de cire devant lui. Le Rebouteux. Il ne lève pas la tête — mais son tabouret libre est tourné vers toi.",
+    ],
+    narrationDemo: [
+      "Au bout de la rangée, le Colporteur te regarde venir — et te reconnaît. C'est impossible. Il te fait signe quand même. À l'étal voisin, le Rebouteux écrase des feuilles sans lever la tête ; son tabouret libre est tourné vers toi.",
     ],
     choices: [
       {
@@ -4618,6 +4680,8 @@ export const SCENES: Scene[] = [
            qu'il ne l'a dit qu'à une personne, dans une ruelle, à voix basse.
            ⚠️ Prend la place du troc : trois actions, comme avant. */
         id: "colporteur-sans-bouche",
+        consequenceDemo:
+          "Il est en train de dire, sans baisser la voix, que la jeune du moulin est toujours là. D'où il le tient ? Il rit. « De partout. Personne me dit rien, à moi. J'écoute, c'est tout. »",
         label: "Lui demander où il a entendu ça",
         requiresDecouverte: "d.temoin_oculaire",
         prendLaPlaceDe: "troc-colporteur",
@@ -5163,6 +5227,9 @@ export const SCENES: Scene[] = [
         "seul, et bien plus propre que le reste. Près de l'entrée, une chaise " +
         "et un ouvrage de tressage : quelqu'un vit ici.",
     ],
+    narrationDemo: [
+      "La chapelle n'a plus de dieu, mais elle est tenue. Des cordes pendent des deux murs, du plafond au sol. Au fond, l'autel est resté debout, plus propre que le reste. Près de l'entrée, un ouvrage de tressage : quelqu'un vit ici.",
+    ],
     /* Conversion des points d'intérêt (13/08) : six entrées pour un lieu qui
        n'en accorde qu'une. Trois actes de nature différente — le corps, la
        lecture, la fouille. Coupés : `ouvrage-tressage` (la chaise et
@@ -5200,6 +5267,8 @@ export const SCENES: Scene[] = [
       },
       {
         id: "mur-cordes",
+        consequenceDemo:
+          "Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom — des reliques : chacune « a tenu » quelqu'un. La troisième du rang bas n'a pas d'étiquette, et bouge quand tu ne la regardes pas. Plus bas, trois cordes portent la même date : celle du Bailli, un prénom de fille, et un nom arraché.",
         label: "Remonter le mur des cordes",
         illustration: "assets/scene_chapelle_mur_cordes_v3_c.png",
         observe: true,
@@ -5254,6 +5323,9 @@ export const SCENES: Scene[] = [
         "monde finit par en avoir besoin. » Derrière elle, dans une niche à " +
         "part, sous verre : une corde coupée net, sans nom. La seule de toute " +
         "la chapelle qui n'a pas tenu.",
+    ],
+    narrationDemo: [
+      "Elle était là depuis le début — une femme en noir qui refait sans fin le même nœud. « Choisis ton brin. Tout le monde finit par en avoir besoin. » Derrière elle, sous verre : une corde coupée net. La seule qui n'a pas tenu.",
     ],
     choices: [
       {
@@ -5344,6 +5416,8 @@ export const SCENES: Scene[] = [
            `sejour` ici enfermait donc tout héros qui ne l'avait pas. Trouvé par
            le garde de build, pas à la relecture. */
         id: "chapelle-ressortir",
+        consequenceDemo:
+          "Tu recules jusqu'au seuil sans quitter les cordes des yeux. Aucune ne bouge. Dehors, la corde d'appel du clocheton pend à hauteur de main. Tu tires : la cloche bascule et ne sonne pas — plus de battant. On ne l'a pas cassé : on l'a dévissé.",
         label: "Ressortir par le côté",
         sortie: {},
         /* LE CLOCHETON (ex-point d'intérêt `cloche-sans-battant`, 13/08) : il
@@ -5398,6 +5472,9 @@ export const SCENES: Scene[] = [
       "Et dessous, ça cogne. Trois coups, une pause. Trois coups. Poli, " +
         "presque — comme on frappe à une porte dont on sait qu'on va vous " +
         "ouvrir.",
+    ],
+    narrationDemo: [
+      "Un puits condamné de frais : planches neuves, chaînes, blocs de meule empilés. Tout le hameau tombe en ruine — ça, on l'entretient. Et dessous, ça cogne. Trois coups, une pause. Trois coups. Poli, comme on frappe à une porte qu'on va vous ouvrir.",
     ],
     choices: [
       {
@@ -6575,6 +6652,9 @@ export const SCENES: Scene[] = [
         "l'air y coule comme une eau froide. La Descente. Et dans la guérite, " +
         "un homme qui t'a vu depuis longtemps.",
     ],
+    narrationDemo: [
+      "La Palissade barre le plateau : des rondins hauts de deux hommes, un portillon, une guérite éclairée. Derrière, un chemin descend — l'air y coule comme une eau froide. La Descente. Dans la guérite, un homme t'a vu depuis longtemps.",
+    ],
     /* Conversion des points d'intérêt (13/08). Six entrées disaient trois
        choses, dont deux la MÊME : `rondins-pointes` (les pointes tournées
        vers l'intérieur) et `examiner-etais` (les étais arc-boutés côté
@@ -6602,6 +6682,8 @@ export const SCENES: Scene[] = [
       },
       {
         id: "portillon-verrou",
+        consequenceDemo:
+          "Le bois du portillon est tiède — aucun sens sous ce crépuscule. Autour du verrou, des griffures à hauteur de mains : des mains qui voulaient passer, une nuit, et qu'on n'a pas laissées. Dans la gâche, une clé rouillée, oubliée par quelqu'un qui comptait revenir.",
         label: "Examiner le portillon",
         illustration: "assets/scene_palissade_portillon_a_b.png",
         observe: true,
@@ -6908,6 +6990,9 @@ export const SCENES: Scene[] = [
         "d'un pas égal, sans bagage, sans se retourner. Le Veilleur ne le " +
         "quitte pas des yeux. « Encore un Appelé », dit-il sans se " +
         "retourner. « On ne les rattrape pas. On les compte. »",
+    ],
+    narrationDemo: [
+      "En contrebas, déjà loin, un homme descend le chemin d'un pas égal, sans bagage, sans se retourner. « Encore un Appelé », dit le Veilleur. « On ne les rattrape pas. On les compte. »",
     ],
     choices: [
       {
@@ -7299,6 +7384,22 @@ export function chapterLabel(step: number): string {
 
 export function sceneById(id: string): Scene | undefined {
   return SCENES.find((s) => s.id === id);
+}
+
+/**
+ * La narration à AFFICHER pour une scène. En mode démo, la version courte si
+ * la scène en a une (`narrationDemo`) ; sinon — et toujours hors démo — la
+ * prose complète. Point unique : tout affichage de narration passe par ici,
+ * sinon un écran de la route servirait la longue pendant qu'un autre sert la
+ * courte.
+ */
+export function narrationAffichee(s: Scene, demo: boolean): string[] {
+  return demo && s.narrationDemo?.length ? s.narrationDemo : s.narration;
+}
+
+/** Même règle pour la conséquence d'un choix passif. */
+export function consequenceAffichee(c: Choice, demo: boolean): string {
+  return (demo && c.consequenceDemo) || c.passive?.consequence || "";
 }
 
 /**

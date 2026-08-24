@@ -57,6 +57,8 @@ import {
   lieuDejaVisite,
   lieuNom,
   apportsProces,
+  narrationAffichee,
+  consequenceAffichee,
 } from "@/lib/scene-data";
 import {
   CODEX_PAR_DECOUVERTE,
@@ -1445,7 +1447,11 @@ export default function Scene() {
         run.surprise = { id: "metaleptique", jouee: true };
         mutateMemory((m) => { m.surprises = { derniereRun: m.runsStarted }; });
       }
-      restored.push(...cur.narration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+      restored.push(
+        ...narrationAffichee(cur, demoActive()).map(
+          (text): FeedEntry => ({ id: nextId(), kind: "narration", text })
+        )
+      );
       // ⚠️ LA REPRISE PASSE AUSSI PAR LE DÉCOUPAGE (panel 10/08). Elle posait
       // la scène entière d'un bloc, sans passer par `decouperEnEcrans` : sur
       // un écran court, un bandeau du Geôlier suivi de sa narration débordait
@@ -1485,7 +1491,7 @@ export default function Scene() {
       lastSceneIlloRef.current = illo;
       setImage(illo);
       setImageKind("scene");
-      const openingNarration = [...opening.narration];
+      const openingNarration = [...narrationAffichee(opening, demoActive())];
       // LA TRACE DE L'INCARNATION PRÉCÉDENTE (mémo IA externe 8/08, niv. 1-2 :
       // « dans les 30 à 90 premières secondes, le joueur doit savoir que cette
       // nouvelle vie n'est pas un recommencement identique »). La CAUSE de la
@@ -2514,7 +2520,7 @@ export default function Scene() {
     const narrationDeScene =
       opts?.fail && nextScene.narrationEchec?.length
         ? nextScene.narrationEchec
-        : nextScene.narration;
+        : narrationAffichee(nextScene, demoActive());
     // ── LA STRATE DE FAMILIARITÉ, calculée AVANT la narration ─────────────
     // Elle peut REMPLACER un paragraphe (`remplace`) au lieu de s'y ajouter :
     // une ligne de mémoire écrite comme un remplacement et injectée comme un
@@ -4147,7 +4153,7 @@ export default function Scene() {
       // « Le Registre ment » (5/08) : la conséquence écrite est le CADRE, ce
       // que le héros dit vient de la contradiction qu'il tient réellement —
       // deux versions du même fait, lues dans deux vies différentes.
-      let consequencePassive = choice.passive.consequence;
+      let consequencePassive = consequenceAffichee(choice, demoActive());
       if (choice.requiresContradiction) {
         const tenues = contradictionsConnues(loadMemory());
         // Avec le don « lecture » et aucune contradiction vécue, on prend le

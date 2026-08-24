@@ -717,6 +717,11 @@ def lire_choix(bloc: str) -> list[dict]:
         mj = texte_de(c, "engine")
         if mj and "minigame:" in c:
             ch["miniJeuDemo"] = mj
+        # 24/08 — la conséquence COURTE servie en démo (même règle que
+        # `narrationDemo` : les deux textes doivent être visibles au Studio).
+        cd = texte_de(c, "consequenceDemo")
+        if cd:
+            ch["consequenceDemo"] = cd
         tb = bloc_apres(c, r"\n        tags:\s*")
         if tb:
             t = chaines_de_tableau(tb[0])
@@ -913,6 +918,15 @@ def lire_scenes() -> list[dict]:
         ne = bloc_apres(bloc, r"\n    narrationEchec:\s*")
         if ne:
             s["narrationEchec"] = paragraphes(ne[0])
+        # 24/08 — VERSION COURTE DÉMO (arbitrage Patrick : les coupes ne
+        # touchent que la démo, le jeu complet garde sa prose). Exportée pour
+        # que le Studio montre LES DEUX textes d'un écran de la route — sans
+        # ça, Patrick relirait la longue en croyant relire ce que la démo sert.
+        # NB : le motif `narration:` ne matche pas `narrationDemo:` (le deux-
+        # points suit directement), pas de collision d'extraction.
+        ndemo = bloc_apres(bloc, r"\n    narrationDemo:\s*")
+        if ndemo:
+            s["narrationDemo"] = paragraphes(ndemo[0])
         for champ, cle in (
             ("chainNext", "suite"),
             ("foe", "adversaire"),
