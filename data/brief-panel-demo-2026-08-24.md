@@ -212,9 +212,18 @@ la même suite de scènes. *(Question réservée à l'agent 9.)*
    agents sur dix ?
 2. Y a-t-il une intention en **PAS RESSENTI** chez une majorité ? Laquelle, et
    qu'est-ce qui l'a empêchée d'exister à l'écran ?
-3. **La question qui décide de la suite** : cette démo donne-t-elle envie de
-   jouer le jeu complet ? Si non — est-ce un problème de rythme, d'écriture, de
-   clarté, ou d'enjeu ?
+3. **La question qui décide de la suite**, en DEUX parties — répondez aux deux,
+   quelle que soit la première réponse :
+   - **(a)** cette démo donne-t-elle envie de jouer le jeu complet ? Réponds
+     par **oui**, **non**, ou **mitigé** — et si c'est mitigé, dis à quel
+     moment précis ça donne envie et à quel moment ça décroche.
+   - **(b)** **classe les quatre axes du plus faible au plus solide** :
+     *rythme · écriture · clarté · enjeu*. Même si tu as répondu « oui » : il y
+     a forcément un axe le plus faible, et c'est celui-là qu'on veut connaître.
+     Une phrase par axe, avec une citation.
+
+   ⚠️ Ne conditionne PAS la seconde partie à un « non » : un panel à qui l'on
+   ne demande ses griefs qu'en cas de rejet global ne les formule jamais.
 
 ---
 
@@ -226,6 +235,8 @@ Un seul document :
 - la grille du temps 3, remplie, avec le compte des trois colonnes ;
 - **les trois choses à corriger en priorité**, classées, chacune avec la
   citation exacte qui la prouve ;
+- **le classement des quatre axes** (rythme / écriture / clarté / enjeu), du
+  plus faible au plus solide, avec le consensus du panel s'il y en a un ;
 - et une phrase franche : est-ce que ce jeu est amusant à jouer, oui ou non.
 
 Sois direct. Un rapport poli qui ménage le jeu ne sert à rien.
