@@ -2190,11 +2190,33 @@ export default function Scene() {
       // l'agentivité se sente. Route épuisée → le tirage normal reprend
       // (les segments au-delà du Puits arrivent aux vagues suivantes).
       if (demoActive()) {
-        const reste = demoRouteRestante(trav.visited, lieuDejaVisite);
+        // ⚠️ L'ENCLAVE VAUT AUSSI POUR LA ROUTE SCRIPTÉE (retour Patrick
+        // 24/08 : « je quitte le hameau en une seule scène », immersion
+        // cassée). La 1re version écrasait la paire SANS la porte du village :
+        // le second bouton pouvait offrir la Chapelle depuis la lande (entrer
+        // sans barrage), ou un lieu de lande depuis une ruelle (sortir sans
+        // couture). La route respecte désormais les mêmes murs que le tirage :
+        // pas d'intérieur avant d'être entré, pas d'extérieur offert tant
+        // qu'il reste des étapes intérieures à jouer.
+        const resteBrut = demoRouteRestante(trav.visited, lieuDejaVisite);
+        const resteDedans = resteBrut.filter((id) => isHameauInterior(id));
+        const reste = !entered
+          ? // Dehors, pas encore entré : jamais un lieu intérieur (la porte —
+            // le Serment — n'est pas dans HAMEAU_INTERIOR, elle reste offerte).
+            resteBrut.filter((id) => !isHameauInterior(id))
+          : dedans && resteDedans.length
+            ? // Dans les rues, des étapes intérieures restent : on les finit
+              // avant que la route n'offre la lande.
+              resteDedans
+            : resteBrut;
         if (reste.length) {
           const second =
             reste[1] ??
-            pair.find((p) => !lieuDejaVisite([reste[0]], p)) ??
+            pair.find(
+              (p) =>
+                !lieuDejaVisite([reste[0]], p) &&
+                (entered ? true : !isHameauInterior(p))
+            ) ??
             reste[0];
           pair[0] = reste[0];
           pair[1] = second;

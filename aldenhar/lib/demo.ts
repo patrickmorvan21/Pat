@@ -83,6 +83,13 @@ export const DEMO_ROUTE: string[] = [
   "chapelle-des-cordes", //   segment 6 — la Veuve, la Corde coupée
   "marche-muet", //           segment 6 — le malaise diurne, court
   "puits-condamne", //        segment 8 — le climax
+  // FINALE PROVISOIRE (retour Patrick 24/08 : la route épuisée retombait sur
+  // le tirage — la sortie du village n'était plus racontée, l'immersion
+  // cassait pile à la fin). La Palissade Sud est la fin de zone EXISTANTE
+  // (le Veilleur, l'Appelé, la Descente) : elle donne à la démo une sortie
+  // scriptée dès aujourd'hui. La Falaise aux Cordes la remplacera (segment 10
+  // du script) quand elle sera construite.
+  "palissade-sud",
 ];
 
 /**

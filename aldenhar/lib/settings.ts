@@ -8,6 +8,8 @@
  * Restaurer mes achats) sont affichées grisées dans l'UI, pas d'état stocké.
  */
 
+import { demoActive } from "@/lib/demo";
+
 export type TextReveal = "lente" | "normale" | "instantanee";
 export type TextSize = "petit" | "normal" | "grand";
 export type AnimMode = "completes" | "reduites";
@@ -101,10 +103,16 @@ export function applySettingsToDom(s: Settings = loadSettings()): void {
   el.classList.toggle("anim-reduced", s.animations === "reduites");
 }
 
-/** Multiplicateur de vitesse de frappe (Apparition). `instantanee` → 0 = instant. */
+/** Multiplicateur de vitesse de frappe (Apparition). `instantanee` → 0 = instant.
+    MODE DÉMO (retour Patrick 24/08 : « beaucoup de lecture, c'est long ») :
+    la frappe « normale » est accélérée (×0.55) — un testeur lit, il ne
+    savoure pas la cadence. Les réglages explicites (lente / instantanée)
+    restent respectés tels quels : la démo ne pilote que le défaut. */
 export function revealFactor(): number {
   const r = loadSettings().textReveal;
-  return r === "instantanee" ? 0 : r === "lente" ? 2.2 : 1;
+  if (r === "instantanee") return 0;
+  if (r === "lente") return 2.2;
+  return demoActive() ? 0.55 : 1;
 }
 
 /** Retour haptique respectant le réglage Vibrations (spec 21/07). */
