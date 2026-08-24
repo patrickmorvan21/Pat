@@ -6,6 +6,7 @@ import { forgetIntro, forgeRelic, loadMemory, reliquesPortees, type Relic } from
 import { loadRun, type NarrativeEffect, type RunState } from "@/lib/state";
 import { besaceBySlot, normalizeItem, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { loadSettings, mutateSettings, type Settings } from "@/lib/settings";
+import { demoActive, setDemo } from "@/lib/demo";
 import { syncMusicSettings } from "@/lib/audio";
 import DeathScreen, { bilanDeMort, type Bilan } from "@/components/DeathScreen";
 import { assetUrl, assetExiste } from "@/lib/assets";
@@ -647,6 +648,7 @@ function buildPreviewMort(): PreviewMort {
 
 export function OptionsTab() {
   const [s, setS] = useState<Settings>(() => loadSettings());
+  const [demoOn] = useState(() => demoActive());
   const [eraseArmed, setEraseArmed] = useState(false);
   const [aidesReset, setAidesReset] = useState(false);
   const [preview, setPreview] = useState<PreviewMort | null>(null);
@@ -804,6 +806,27 @@ export function OptionsTab() {
       <button type="button" disabled className="mt-[20px] block cursor-default font-mono text-[13px] text-[var(--color-ink)] opacity-50 underline">
         Restaurer mes achats
       </button>
+      {/* MODE DÉMO (script 24/08) : l'interrupteur en clair, parce que le
+          `?demo=1` d'URL est HORS DE PORTÉE d'une PWA installée (l'icône ne
+          transmet aucun paramètre, et son stockage est séparé de Safari —
+          constaté par Patrick le jour même). L'URL reste le canal des
+          testeurs ; cet interrupteur est celui du poste de travail. */}
+      <div className="mt-[24px]">
+        <OptLabel>Mode démo</OptLabel>
+        <SegControl
+          options={[{ v: "non", label: "non" }, { v: "oui", label: "oui" }]}
+          value={demoOn ? "oui" : "non"}
+          onChange={(v) => {
+            setDemo(v === "oui");
+            window.location.reload();
+          }}
+        />
+        <OptHelp>
+          La traversée scriptée de la démo (entrée courte, mini-jeux). Se joue
+          sur une partie NEUVE — recommence après l&apos;avoir activé.
+        </OptHelp>
+      </div>
+
       {/* Revoir l'intro SANS rien détruire — c'est ce qu'on veut quand on
           cherche juste à retester les clauses, alors qu'effacer la progression
           coûterait les reliques et le Registre. */}

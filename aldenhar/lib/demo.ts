@@ -32,6 +32,23 @@ export function demoActive(): boolean {
 }
 
 /**
+ * Pose ou retire le drapeau (interrupteur « Mode démo » des Options — ajouté
+ * le 24/08 quand le `?demo=1` s'est avéré inaccessible depuis la PWA
+ * installée : l'icône de l'écran d'accueil ne transmet aucun paramètre, et
+ * son stockage est séparé de celui de Safari).
+ */
+export function setDemo(on: boolean): void {
+  if (typeof window === "undefined") return;
+  try {
+    if (on) localStorage.setItem(KEY, "1");
+    else localStorage.removeItem(KEY);
+    cache = null;
+  } catch {
+    /* stockage bloqué */
+  }
+}
+
+/**
  * À appeler UNE fois au montage de l'accueil : `?demo=1` (ou `?demo` nu)
  * pose le drapeau pour toutes les sessions suivantes — un testeur reçoit un
  * lien, pas une procédure. `?demo=0` le retire (retour au jeu complet).
