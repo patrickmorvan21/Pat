@@ -924,6 +924,11 @@ class Partie:
                     self.dit(ligne, "narration")
             if c.get("donneObjet"):
                 self.gagner(c["donneObjet"])
+            # L'OBJET RESTE SUR PLACE (Falaise 24/08) : miroir de
+            # `Choice.laisseObjet` — une instance quitte la besace, le prix
+            # est dit par la conséquence du choix.
+            if c.get("laisseObjet") and c["laisseObjet"] in self.d.get("besace", []):
+                self.d["besace"].remove(c["laisseObjet"])
             if c.get("repos"):
                 # ⚠️ LE JOUR DE LA NUIT EST DÉJÀ PRIS À L'AFFICHAGE de la
                 # scène `nuit` (voir plus haut) — le rajouter ici donnait
@@ -955,7 +960,7 @@ class Partie:
         for e, tours in self.d["etats"].items():
             if tours <= 0:
                 continue
-            m += 2 if e == "aguerri" else -2 if e == "entaille" else 0
+            m += 2 if e == "aguerri" else -2 if e == "entaille" else -1 if e == "ebranle" else 0
         # LA PRÉPARATION (panel 10/08) : ce qu'on a REGARDÉ dans ce lieu ouvre
         # l'Anneau, d'un cran par point d'intérêt, au plus deux. C'est le seul
         # levier par lequel ce que le joueur TENTE change ses chances.
@@ -1078,6 +1083,16 @@ class Partie:
                 # (règle du vrai jeu — la réplique l'ignorait, panel 9/08).
                 self.d["etats"]["aguerri"] = 3
                 self.dit("ÉTAT — Aguerri", "etat")
+        elif palier == "malediction" and not hors:
+            # Miroir du contrecoup de malédiction hors combat (corrigé 24/08 :
+            # il suit la NATURE du jet, pas sa stat — une malédiction sociale
+            # ne pose plus une plaie). Physique → Entaillé 3 ; sinon Ébranlé 2.
+            if nature == "physique":
+                self.d["etats"]["entaille"] = 3
+                self.dit("ÉTAT — Entaillé", "etat")
+            else:
+                self.d["etats"]["ebranle"] = 2
+                self.dit("ÉTAT — Ébranlé", "etat")
         self.geolierSurJet(naturel)
 
         for e in list(self.d["etats"]):

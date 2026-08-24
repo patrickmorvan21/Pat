@@ -4526,6 +4526,16 @@ export default function Scene() {
       // accepter la mèche, raconter sa mort au Veilleur) — l'objet se mérite
       // par la décision, pas par un jet, puisqu'il n'y a pas de jet ici.
       const granted = choice.grantsLoot ? grantLandesLoot(choice.grantsLoot) : null;
+      // L'OBJET RESTE SUR PLACE (`laisseObjet`, Falaise 24/08) : une seule
+      // instance quitte la Besace — le prix est raconté par la conséquence
+      // du choix, jamais par un bandeau. Persisté par le persist du flux.
+      if (choice.laisseObjet) {
+        const nomLaisse = LANDES_OBJETS[choice.laisseObjet]?.name;
+        persist((run) => {
+          const idx = run.besace.findIndex((i) => i.name === nomLaisse);
+          if (idx >= 0) run.besace = run.besace.filter((_, i) => i !== idx);
+        });
+      }
       // « Le Registre ment » (5/08) : la conséquence écrite est le CADRE, ce
       // que le héros dit vient de la contradiction qu'il tient réellement —
       // deux versions du même fait, lues dans deux vies différentes.
@@ -4859,14 +4869,19 @@ export default function Scene() {
                   { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 999 },
                   ...run.effects.filter((e) => e.id !== "entaille"),
                 ];
-              else if (tier === "malediction")
-                // La nature du contrecoup suit la nature du GESTE (playtest
-                // auto 7/08 : un 1 naturel en parlant à l'Hésitant posait
-                // « Entaillé — la blessure ralentit chaque geste », une plaie
-                // née d'une conversation). Corps (Courage/Instinct) → la
-                // chair ; parole ou ruse (Empathie/Ruse) → ÉBRANLÉ, le choc.
+              else if (tier === "malediction" && !chosen?.horsDePortee) {
+                // Le contrecoup suit la NATURE du jet, pas sa stat (panel
+                // 24/08) : l'ancienne clé Courage/Instinct posait ENTAILLÉ —
+                // une plaie — sur un jet SOCIAL ou SURNATUREL porté par le
+                // Courage, sans blessure racontée (elle datait du 7/08 et
+                // n'avait jamais été alignée sur le modèle par nature de
+                // v1.58). Physique → la chair ; tout le reste → ÉBRANLÉ, le
+                // choc. Et `horsDePortee` (lot 3 du 14/08) vaut ici aussi :
+                // qui savait où se placer ne ressort pas blessé d'un raté.
+                const natureDuJet =
+                  chosen?.nature ?? (scene.combat ? "physique" : "social");
                 run.effects =
-                  roll?.stat === "COURAGE" || roll?.stat === "INSTINCT"
+                  natureDuJet === "physique"
                     ? [
                         { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 3 },
                         ...run.effects.filter((e) => e.id !== "entaille"),
@@ -4875,6 +4890,7 @@ export default function Scene() {
                         { id: "ebranle", label: "ÉBRANLÉ", delta: -1, scenesLeft: 2 },
                         ...run.effects.filter((e) => e.id !== "ebranle"),
                       ];
+              }
               // Destin : le tirage n'a retenu que ce qui TIENT (10/08), donc
               // l'objet annoncé entre toujours réellement en Besace.
               // ⚠️ Re-vérifier la place À L'AJOUT (relecture par agents) : le

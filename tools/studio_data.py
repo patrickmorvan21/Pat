@@ -705,6 +705,11 @@ def lire_choix(bloc: str) -> list[dict]:
             # le Studio ne montrerait pas ces conversations et la réplique les
             # offrirait à un compte qui n'a jamais survécu.
             ("requiresSceau", "exigeSceau"),
+            # 24/08 : l'objet RESTE SUR PLACE (payoff de la Falaise) — la
+            # corde nouée là-haut ne redescend pas. Sans ce champ, la réplique
+            # garderait l'objet et un relecteur conclurait que le payoff est
+            # gratuit.
+            ("laisseObjet", "laisseObjet"),
         ):
             v = constante_de(c, champ, CONSTANTES_CONNUES)
             if v:

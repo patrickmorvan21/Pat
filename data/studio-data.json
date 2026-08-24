@@ -50,7 +50,7 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-24T17:53:05Z",
+ "genere": "2026-08-24T18:47:58Z",
  "commit": "5b5f0e7",
  "zones": [
   {
@@ -1959,7 +1959,7 @@
       "critique": "20 naturel. Tu te couches dans la bruyère et tu attends. Un quart d'heure, et le hameau se trahit : des silhouettes postées aux fenêtres, une par maison habitée, immobiles. Ils guettent la crête. Tu les as vus avant qu'ils te voient — et ça, ça vaut plus qu'une arme ici.",
       "reussite": "À couvert derrière un muret, tu prends la mesure du village : des seuils balayés, du linge tendu — des maisons vivantes, et pas un mouvement dehors. Ce n'est pas un hameau qui dort. C'est un hameau qui attend.",
       "echec": "Tu restes trop longtemps immobile face au village. Quand tu te redresses enfin, une silhouette se détache d'une porte, en bas, et rentre vite. Quelqu'un t'a vu observer — et observer, ici, n'est pas une chose innocente.",
-      "funeste": "1 naturel. Tu observes, à plat ventre, concentré. Derrière toi, une voix polie : « On peut vous aider ? » Ils sont deux. Ils sont montés pendant que tu regardais en bas. ♦ −2"
+      "funeste": "1 naturel. Tu observes, à plat ventre, concentré. Derrière toi, une voix polie : « On peut vous aider ? » Ils sont trois. Ils sont montés pendant que tu regardais en bas. ♦ −2"
      },
      "nature": "exploration",
      "vuSiEchec": true,
@@ -3338,7 +3338,7 @@
     },
     {
      "id": "entrer-hameau",
-     "label": "Entrer dans le hameau",
+     "label": "Avancer dans la rue",
      "type": "suite"
     }
    ],
@@ -7321,6 +7321,42 @@
    ],
    "choix": [
     {
+     "id": "nouer-sa-corde",
+     "label": "Nouer ta corde au chanvre coupé",
+     "type": "passif",
+     "consequence": "Tu choisis une corde tranchée en bas de sa course et tu noues la tienne au moignon — celle de la chapelle, coupée net, par en dessous, comme celles-là. Le nœud prend du premier coup : le chanvre se reconnaît. Tu descends, palier par palier, et au point du raccord ta paume passe sur ton propre nœud. Plus bas que toutes les autres cordes, plus bas que le regard ne portait. Elle reste nouée là-haut. Tu ne la reverras pas — quelqu'un, en bas, saura qu'on peut descendre plus loin.",
+     "sortie": {
+      "toScene": "la-descente"
+     },
+     "exigeObjet": "corde-coupee",
+     "laisseObjet": "corde-coupee",
+     "miniJeuDemo": "swipe",
+     "tags": [
+      "citable"
+     ],
+     "prendLaPlaceDe": [
+      "saisir-corde",
+      "corde-du-bailli"
+     ]
+    },
+    {
+     "id": "corde-du-bailli",
+     "label": "Chercher la corde du trois cent unième",
+     "type": "passif",
+     "consequence": "Tu longes les pieux en lisant les entailles, et tu la trouves : un pieu marqué d'une chaîne de fonction, gravée maigre. La corde du trois cent unième — celui qui a signé son propre nom sous le dernier de sa liste. Elle est grise, plus usée que les autres : on descend souvent par celle-là. Tu la prends, palier par palier, et le chanvre file doux, comme s'il avait l'habitude de porter ceux qui savent.",
+     "sortie": {
+      "toScene": "la-descente"
+     },
+     "exigeDecouverte": "d.bailli_condamne",
+     "miniJeuDemo": "swipe",
+     "tags": [
+      "citable"
+     ],
+     "prendLaPlaceDe": [
+      "saisir-corde"
+     ]
+    },
+    {
      "id": "saisir-corde",
      "label": "Saisir une corde",
      "type": "passif",
@@ -9772,7 +9808,7 @@
  "totaux": {
   "scenes": 101,
   "pointsInteret": 0,
-  "choix": 288,
+  "choix": 290,
   "illustrations": 284,
   "sansImage": 0,
   "imagesIntrouvables": 0,

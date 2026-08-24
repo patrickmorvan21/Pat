@@ -457,6 +457,15 @@ export type Choice = {
    * « Obtenu ». Portée : la partie, pas l'écran.
    */
   requiresObjet?: string;
+  /**
+   * L'OBJET RESTE SUR PLACE (Falaise, 24/08) : clé de `LANDES_OBJETS` retirée
+   * de la Besace quand ce choix se résout — la corde qu'on noue à la falaise
+   * ne redescend pas avec soi. Le prix doit être DIT dans la conséquence du
+   * choix (un coût que rien ne raconte n'existe pas). Ne retire qu'UNE
+   * instance. Distinct d'`usageObjet` (qui consomme un remède/outil via le
+   * 4e choix) : ici c'est le choix écrit lui-même qui dépose l'objet.
+   */
+  laisseObjet?: string;
   requiresUsage?: string;
   /**
    * L'inverse : ce choix DISPARAÎT une fois l'objet employé. Sert à garder
@@ -2516,7 +2525,9 @@ export const SCENES: Scene[] = [
       {
         id: "observer-couvert",
         nature: "exploration",
-        // Sa prose d'échec nomme un témoin (deux hommes montent pendant que tu regardes en bas).
+        // Sa prose d'échec nomme un témoin (trois hommes montent pendant que tu regardes
+        // en bas — TROIS, pas deux : ce sont ceux du barrage de la rue, deux écrans plus
+        // loin, et le panel du 24/08 a lu l'écart de compte comme un faux souvenir).
         // ⚠️ PAS de `soupcon` à la sélection (retiré 10/08, relecture par agents) :
         // la règle du 8/08 dit que le Soupçon naît d'un ACTE, jamais du regard —
         // et la réussite de ce jet dit mot pour mot « tu les as vus avant qu'ils
@@ -2532,7 +2543,7 @@ export const SCENES: Scene[] = [
             "20 naturel. Tu te couches dans la bruyère et tu attends. Un quart d'heure, et le hameau se trahit : des silhouettes postées aux fenêtres, une par maison habitée, immobiles. Ils guettent la crête. Tu les as vus avant qu'ils te voient — et ça, ça vaut plus qu'une arme ici.",
             "À couvert derrière un muret, tu prends la mesure du village : des seuils balayés, du linge tendu — des maisons vivantes, et pas un mouvement dehors. Ce n'est pas un hameau qui dort. C'est un hameau qui attend.",
             "Tu restes trop longtemps immobile face au village. Quand tu te redresses enfin, une silhouette se détache d'une porte, en bas, et rentre vite. Quelqu'un t'a vu observer — et observer, ici, n'est pas une chose innocente.",
-            "1 naturel. Tu observes, à plat ventre, concentré. Derrière toi, une voix polie : « On peut vous aider ? » Ils sont deux. Ils sont montés pendant que tu regardais en bas. ♦ −2"
+            "1 naturel. Tu observes, à plat ventre, concentré. Derrière toi, une voix polie : « On peut vous aider ? » Ils sont trois. Ils sont montés pendant que tu regardais en bas. ♦ −2"
           ),
         },
         soupcon: 1,
@@ -3697,7 +3708,11 @@ export const SCENES: Scene[] = [
           consequence:
             "Le regard doux, la voix douce : « Tu es fatigué. Le voyage fatigue. » On te touche l\u2019épaule, on te souhaite bonne nuit — et on s\u2019éloigne d\u2019un pas qui n\u2019est plus celui de quelqu\u2019un qui rentre chez lui. Elle t\u2019avait prévenu.",
         },
-      },{ id: "entrer-hameau", label: "Entrer dans le hameau" }],
+      },
+      // ⚠️ Pas « Entrer dans le hameau » : à ce beat le barrage est franchi et
+      // les volets se ferment déjà devant le héros — il EST dans la rue
+      // (faux souvenir relevé par le panel du 24/08). L'id ne bouge pas.
+      { id: "entrer-hameau", label: "Avancer dans la rue" }],
     jailerLine: "Bienvenue. C'est moi qui te le dis, puisque personne d'autre ne le fera.",
   },
   {
@@ -7425,6 +7440,64 @@ export const SCENES: Scene[] = [
       "Au bout du surplomb, quelqu'un. Il ne regarde pas les cordes : il en prend une, sans choisir, comme on prend la rampe d'un escalier qu'on connaît. Il passe le bord. Il descend. Le vent rabat un pan de son manteau — puis plus rien. La corde tremble encore un moment, toute seule.",
     ],
     choices: [
+      /* ─── LE PAYOFF PERSONNEL DE LA FALAISE (recommandation unique du panel
+         du 24/08) : le climax sélectionne UN fait réellement planté dans
+         CETTE vie, le vérifie, et TRANSFORME l'option de descente — jamais
+         une simple ligne de reconnaissance. Échelle par `prendLaPlaceDe`
+         (l'ordre de déclaration fait la priorité, du plus spécifique au plus
+         général) : la corde qu'on PORTE > ce qu'on SAIT > la descente nue.
+         Critère du panel, à tenir pour tout palier futur : « ce qui m'arrive
+         à la Falaise ne pouvait arriver exactement ainsi qu'à cause de ce
+         que j'ai fait plus tôt. » Les trois gardent le même geste lent
+         (swipe insensible à l'échec) et la même sortie — c'est la FORME de
+         la Descente qui change, pas son rite. */
+      {
+        // Palier 1 — la Corde coupée, prise à la Chapelle, s'ajoute au
+        // chanvre tranché : on descend sur sa propre preuve, et elle RESTE
+        // nouée là-haut (`laisseObjet` — le coût est dit dans la prose).
+        id: "nouer-sa-corde",
+        tags: ["citable"],
+        label: "Nouer ta corde au chanvre coupé",
+        requiresObjet: "corde-coupee",
+        laisseObjet: "corde-coupee",
+        // Remplace AUSSI le palier 2 : le climax sélectionne UN seul fait
+        // (règle du panel) — deux payoffs côte à côte se diluent l'un l'autre.
+        prendLaPlaceDe: ["saisir-corde", "corde-du-bailli"],
+        minigame: { engine: "swipe" },
+        passive: {
+          consequence:
+            "Tu choisis une corde tranchée en bas de sa course et tu noues " +
+            "la tienne au moignon — celle de la chapelle, coupée net, par en " +
+            "dessous, comme celles-là. Le nœud prend du premier coup : le " +
+            "chanvre se reconnaît. Tu descends, palier par palier, et au " +
+            "point du raccord ta paume passe sur ton propre nœud. Plus bas " +
+            "que toutes les autres cordes, plus bas que le regard ne " +
+            "portait. Elle reste nouée là-haut. Tu ne la reverras pas — " +
+            "quelqu'un, en bas, saura qu'on peut descendre plus loin.",
+        },
+        sortie: { toScene: "la-descente" },
+      },
+      {
+        // Palier 2 — le savoir du trois cent unième (la confession du Pendu
+        // qui parle, découverte de COMPTE : elle peut venir d'une autre vie).
+        id: "corde-du-bailli",
+        tags: ["citable"],
+        label: "Chercher la corde du trois cent unième",
+        requiresDecouverte: "d.bailli_condamne",
+        prendLaPlaceDe: "saisir-corde",
+        minigame: { engine: "swipe" },
+        passive: {
+          consequence:
+            "Tu longes les pieux en lisant les entailles, et tu la trouves : " +
+            "un pieu marqué d'une chaîne de fonction, gravée maigre. La " +
+            "corde du trois cent unième — celui qui a signé son propre nom " +
+            "sous le dernier de sa liste. Elle est grise, plus usée que les " +
+            "autres : on descend souvent par celle-là. Tu la prends, palier " +
+            "par palier, et le chanvre file doux, comme s'il avait " +
+            "l'habitude de porter ceux qui savent.",
+        },
+        sortie: { toScene: "la-descente" },
+      },
       {
         id: "saisir-corde",
         tags: ["citable"],
@@ -8742,21 +8815,27 @@ export function makeLiaison(
  * ⚠️ Ces phrases ne doivent jamais nommer un lieu (elles servent aux 18
  * destinations) ni annoncer un danger (l'approche s'arrête au seuil, règle du
  * 5/08 sur les doubles arrivées).
+ *
+ * ⚠️ RÈGLE AJOUTÉE (panel 24/08, « faux souvenirs ») : la phrase décrit le
+ * TERRAIN et la lumière du moment, jamais une MANŒUVRE que le joueur n'a pas
+ * choisie. « Tu as coupé par les fougères hautes » inventait un trajet — dans
+ * un jeu qui met sa mémoire au premier plan, une phrase qui te prête une
+ * décision se lit comme une mémoire qui ment.
  */
 // À COUVERT : la couleur d'une arrivée discrète. Aucun effet mécanique.
 const ARRIVEE_COUVERT = [
-  "Tu es venu par le flanc, le nez au sol. Personne ne t'a vu. Toi non plus.",
-  "Tu es passé sous le vent. Rien ne s'est retourné, et tu n'as regardé que tes pieds.",
-  "Tu as longé le talus à contre-jour. Mauvais angle pour être reconnu, mauvais angle pour voir.",
-  "Tu as coupé par les fougères hautes. Aucun bruit à compter, aucune vue d'ensemble.",
+  "Le chemin arrive par le flanc, en contrebas. Personne ne t'a vu venir — mais toi non plus, tu n'as rien vu venir.",
+  "Le vent portait vers toi sur la fin. Rien ne s'est retourné, et tu n'as regardé que tes pieds.",
+  "Le talus t'a tenu à contre-jour tout du long. Mauvais angle pour être reconnu, mauvais angle pour voir.",
+  "Les fougères montent à hauteur d'épaule sur le dernier bout. Aucun bruit à compter, aucune vue d'ensemble.",
 ];
 
 // À DÉCOUVERT : la couleur d'une arrivée franche. Aucun effet mécanique.
 const ARRIVEE_DECOUVERT = [
-  "Tu as pris la route droite. On t'a vu venir — et tu as eu le temps de tout regarder.",
-  "Tu n'as rien contourné. Tu arrives par la face, et rien ne t'a échappé en chemin.",
-  "Tu es entré par où tout le monde entre. Ça se remarque, et ça permet de voir venir.",
-  "Tu as marché droit. Le lieu s'est ouvert devant toi bien avant que tu n'y sois.",
+  "La route est droite sur la fin. On t'a vu venir — et tu as eu le temps de tout regarder.",
+  "Rien à contourner sur ce dernier bout : le chemin arrive par la face, et rien ne t'a échappé.",
+  "On entre ici par où tout le monde entre. Ça se remarque, et ça permet de voir venir.",
+  "Le lieu s'est ouvert devant toi bien avant que tu n'y sois. Ça vaut dans les deux sens.",
 ];
 
 /**
@@ -8891,8 +8970,11 @@ export const NUIT_CORPS: Record<string, string> = {
  *
  * Servi UNE fois par vie, au deuxième lieu quitté sans avoir rien tenté.
  */
+// ⚠️ « tenter » = engager un jet. Un explorateur qui a tout regardé sans
+// lancer entendait « sans rien tenter » comme un mensonge (panel 24/08) —
+// la ligne reconnaît le regard, elle ne vise que le risque.
 export const JAILER_SANS_RISQUE =
-  "Tu traverses sans rien tenter. Ces jours-là ne s'écrivent nulle part.";
+  "Tu regardes tout, tu ne risques rien. Ces jours-là ne s'écrivent pas.";
 
 /**
  * SECOND PROCÈS (panel 10/08) : on ne juge pas deux fois les mêmes actes.
@@ -9301,7 +9383,9 @@ export const SOUPCON_PALIERS: Record<number, string> = {
   1: "Les rares mots qu'on t'adresse ont raccourci. On te répond sec, sans te regarder — pas de l'hostilité. De l'économie.",
   2: "Une conversation s'éteint à ton approche. Pas interrompue : pliée, rangée, comme du linge qu'on rentre avant la pluie.",
   3: "Une mère tire son enfant à l'intérieur sans un mot. Plus loin, la Doyenne croise ton chemin et parle sans s'arrêter : « Quoi que tu entendes, ne réponds pas. Ici, on regarde les bouches. »",
-  4: "Là où tu as dormi, quelqu'un est passé : une croix à la craie, tracée bas, près du sol. Elle ne t'est pas adressée. Elle est adressée aux autres.",
+  // ⚠️ Pas de « là où tu as dormi » : le palier se sert à l'arrivée, rien ne
+  // garantit une nuit passée (faux souvenir relevé par le panel du 24/08).
+  4: "Là où tu t'es arrêté tout à l'heure, quelqu'un est passé après toi : une croix à la craie, tracée bas, près du sol. Elle ne t'est pas adressée. Elle est adressée aux autres.",
   5: "Trois hommes te suivent depuis le dernier muret, sans presser le pas. En passant devant le Petit Tribunal, tu vois par la porte ouverte qu'on a tiré une chaise au milieu de la salle, face aux bancs. Elle est vide. Elle attend.",
 };
 
