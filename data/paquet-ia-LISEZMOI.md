@@ -8,7 +8,45 @@ besoin de JavaScript). Ce paquet te donne deux choses à la place : de quoi
 
 ---
 
-## 1. Lance une partie (c'est le cœur du paquet)
+## 0. ⚠️ CE QU'ON TE DEMANDE DE JUGER EN PRIORITÉ : **LA DÉMO**
+
+Ce paquet contient **deux objets**, et il ne faut surtout pas les confondre.
+
+| | où | ce que c'est |
+|---|---|---|
+| **LA DÉMO** — *« La Nuit du Serment »* | `transcripts/v196-demo-*.md` | Une **tranche verticale** d'environ 20 minutes : entrée compressée, route scriptée, prose courte, gestes tactiles. **C'est elle qu'on veut faire juger.** |
+| **LE JEU COMPLET** | `jouer/` (la table Python) + `transcripts/v196-vie-*.md` | Le jeu tel qu'il est aujourd'hui : entrée longue, parcours tiré au sort, prose entière. Utile en **comparaison**, pas comme sujet. |
+
+**⚠️ `pactum.py` NE JOUE PAS LA DÉMO.** La table Python rejoue le jeu
+complet : sa prose est la longue, son parcours est tiré au sort, et ses
+mini-jeux n'existent pas. Si tu la joues en croyant tester la démo, tu
+jugeras exactement ce que la démo corrige. **La démo se juge sur ses deux
+transcripts**, écran par écran.
+
+### Ce qui se juge sur un transcript de démo… et ce qui ne s'y juge pas
+
+Jugeable, et c'est là qu'on t'attend :
+- **la quantité de lecture** — combien de mots avant chaque décision, et
+  est-ce qu'un écran te donne envie de continuer ou de sauter ;
+- **le rythme et la courbe** — l'enchaînement des ~20 minutes, les temps
+  morts, les moments où il ne se passe rien ;
+- **les transitions** — est-ce qu'on comprend toujours OÙ l'on est et
+  comment on y est arrivé (entrer dans le village, en ressortir, marcher
+  d'un lieu à l'autre) ;
+- **la cohérence** — un texte qui contredit un autre, un personnage qui te
+  connaît sans raison, une conséquence qui ne suit pas l'action.
+
+**Pas jugeable ici, ne le signale pas comme un manque** : les gestes
+tactiles (une ligne `[ geste tactile : … ]` remplace un vrai frottage ou un
+appui tenu au doigt), la vitesse d'apparition du texte, les illustrations,
+le son, et la sensation de lancer le dé à la main.
+
+---
+
+## 1. Lance une partie — **du jeu complet** (pas de la démo)
+
+⚠️ Rappel de la section 0 : cette table rejoue **le jeu complet**, pas la
+démo. Joue-la pour comparer, ou si on t'a demandé un avis sur le jeu entier.
 
 Une commande = un écran. La partie se garde toute seule entre deux commandes.
 
@@ -134,18 +172,26 @@ que le joueur a vu, les images affichées, les choix offerts, l'action prise.
 C'est la **référence sans dérive** — tout y est citable mot pour mot, et c'est
 là que se jugent la mise en scène et le rythme réel.
 
-Les parties : une **curieuse** (elle regarde tout et lance peu — c'est elle
+**Les deux parties de DÉMO** (`v196-demo-*.md`) sont le sujet principal —
+voir la section 0. L'une **explore** (elle joue les deux gestes tactiles de
+la démo : le frottage de la Borne, l'appui tenu face à la Bête) ; l'autre
+**lance le dé dès qu'elle peut** (quatorze jets) et **rate les deux gestes
+tactiles sans jamais les croiser** — c'est un fait de la démo, pas un défaut
+d'enregistrement : dis-nous si ça te paraît juste ou non.
+
+⚠️ **La sortie du village est OFFERTE dans les deux vies de démo** (« Vers le
+portillon, et la lande au-delà ») mais l'automate ne la prend jamais : la
+transition de sortie elle-même n'est donc dans aucun transcript. Elle est
+vérifiée par ailleurs, et c'est le point le plus récent du jeu — si tu juges
+les transitions, sache que celle-là existe et qu'elle manque seulement ici.
+
+Les parties du **jeu complet** (`v196-vie-*.md`), pour comparaison : une
+**curieuse** (elle regarde tout et lance peu — c'est elle
 qui va au bout : elle **franchit la Descente**, et c'est le seul transcript
 où l'on voit la sortie de zone en entier, la marque du Sceau qui s'ouvre
-dans la paume comprise), une **pressée** (elle prend le premier bouton), et
-une **téméraire** enregistrée DEUX fois (elle lance le dé dès qu'elle le
-peut) — les deux tirages sont inclus, dans l'ordre où ils sont tombés, sans
-tri, et **les deux meurent**. Le premier meurt au procès : c'est là que se
-lit la séquence de mort complète (verdict fatal, bilan, mot du Geôlier,
-entrée au Grand Registre). Le second **refuse la route de la Meute à une
-Croisée, lit la trace qui le suit, et meurt quand la route qu'il n'a pas
-prise le retrouve** — l'arc entier de la menace laissée active, du refus à
-la conséquence, tient dans ce seul transcript.
+dans la paume comprise), une **pressée** (elle prend le premier bouton), et une
+**téméraire** (elle lance le dé dès qu'elle le peut, quatorze jets). Aucune
+des deux ne meurt dans ce lot — c'est la variance réelle, pas un tri.
 
 Toutes sont jouées sur un compte qui a déjà vécu — trois morts, deux
 reliques, des lieux déjà traversés — parce que c'est la seule façon de voir la

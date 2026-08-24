@@ -51,6 +51,15 @@ const STRAT = String(arg("strategie", "explore"));
 const SORTIE = String(arg("sortie", "/tmp/vie-pactum.md"));
 const MAX = Number(arg("ecrans", 140));
 const VIERGE = Boolean(arg("vierge", false));
+/**
+ * MODE DÉMO (24/08) — « La Nuit du Serment », la tranche verticale.
+ * Il change TROIS choses qu'un transcript doit montrer : l'entrée compressée
+ * (une seule clause, deux souvenirs, pas de carton d'acte), la ROUTE scriptée
+ * aux Croisées, et la prose courte. Il implique donc un compte VIERGE : une
+ * démo se juge depuis le premier écran, pas au milieu d'une vie de vétéran.
+ */
+const DEMO = Boolean(arg("demo", false));
+const NEUF = VIERGE || DEMO;
 
 /** Un compte qui a vécu : c'est la seule façon de voir la mémoire du monde. */
 const MEMOIRE_VETERAN = {
@@ -98,15 +107,17 @@ const echecsReseau = [];
 page.on("pageerror", (e) => erreurs.push(String(e)));
 page.on("response", (r) => { if (r.status() >= 400) echecsReseau.push(`${r.status()} ${r.url()}`); });
 
-await page.addInitScript(([mem, vierge]) => {
+await page.addInitScript(([mem, vierge, demo]) => {
   if (localStorage.getItem("__joueur")) return;
   localStorage.setItem("__joueur", "1");
   localStorage.setItem("aldenhar-settings", JSON.stringify({ music: false, chronosOff: true }));
   localStorage.setItem("aldenhar-aide-de", JSON.stringify({ off: true, ok: true, ko: true }));
   localStorage.setItem("aldenhar-aide-menu", JSON.stringify({ off: true }));
   localStorage.setItem("pactum-de-geste", "1");
+  if (demo) localStorage.setItem("pactum-demo", "1");
+  else localStorage.removeItem("pactum-demo");
   if (!vierge) localStorage.setItem("aldenhar-player", JSON.stringify(mem));
-}, [MEMOIRE_VETERAN, VIERGE]);
+}, [MEMOIRE_VETERAN, NEUF, DEMO]);
 
 await page.goto(URL_BASE + "?testeur=1", { waitUntil: "domcontentloaded" });
 await page.waitForTimeout(1500);
@@ -222,6 +233,59 @@ function choisir(bs) {
   }
 }
 
+/**
+ * LE GESTE DU MINI-JEU (mode démo seulement).
+ *
+ * En démo, certains choix ouvrent un overlay tactile AU LIEU de se résoudre :
+ * sans ce geste, l'auto-joueur reste bloqué devant un canvas et le transcript
+ * s'arrête au 3e écran. On joue le geste RÉEL (frottage en serpentin, appui
+ * tenu) — jamais un raccourci de code : c'est justement ce que la démo veut
+ * faire juger. Rend une ligne de journal, ou null si aucun overlay.
+ */
+async function peutEtreJouerLeGeste() {
+  const cv = page.locator(".minigame-canvas");
+  if (!(await cv.count())) return null;
+  const b = await cv.first().boundingBox();
+  if (!b) return null;
+  const consigne = await page.evaluate(() => {
+    const ps = [...document.querySelectorAll("p")];
+    const c = ps.find((x) => /frotte|maintiens/i.test(x.innerText || ""));
+    return (c?.innerText || "").replace(/\s+/g, " ").trim();
+  });
+  const frottage = /frotte/i.test(consigne);
+  const parti = async () => !(await page.locator(".minigame-canvas").count());
+  if (frottage) {
+    // ⚠️ LA DENSITÉ COMPTE : le moteur retire 0,35 par cellule touchée et
+    // 0,15 aux voisines, sur une grille de 30×18, et il faut en découvrir
+    // 62 %. Un serpentin lâche (8 lignes × 15 points) plafonne à ~35 % et
+    // laisse l'overlay ouvert — l'auto-joueur se bloquait alors sur le
+    // premier écran de la démo. On balaie ligne à ligne, plusieurs fois.
+    await page.mouse.move(b.x + 12, b.y + 14);
+    await page.mouse.down();
+    for (let balayage = 0; balayage < 4 && !(await parti()); balayage++) {
+      for (let ligne = 0; ligne < 18 && !(await parti()); ligne++) {
+        const y = b.y + 6 + (ligne * (b.height - 12)) / 17;
+        const aller = ligne % 2 === 0;
+        for (let k = 0; k <= 30; k++) {
+          const x = aller ? b.x + 6 + (k * (b.width - 12)) / 30
+                          : b.x + b.width - 6 - (k * (b.width - 12)) / 30;
+          await page.mouse.move(x, y);
+        }
+      }
+    }
+    await page.mouse.up();
+  } else {
+    // appui tenu, immobile : le moteur décide de la durée (elle dépend de
+    // l'Instinct du héros). On tient jusqu'à ce qu'il tranche.
+    await page.mouse.move(b.x + b.width / 2, b.y + b.height / 2);
+    await page.mouse.down();
+    for (let i = 0; i < 60 && !(await parti()); i++) await page.waitForTimeout(120);
+    await page.mouse.up();
+  }
+  await page.waitForTimeout(900);
+  return `[ geste tactile : ${frottage ? "frottage" : "appui tenu"} — ${consigne} ]`;
+}
+
 /** Lance le dé s'il est armé, et rend le verdict lu à l'écran. */
 async function peutEtreLancerLeDe() {
   const ring = page.locator(".die-ring");
@@ -302,6 +366,8 @@ while (n < MAX) {
 
   await page.locator(".choices-bar button.choice-btn").nth(pick.i).click();
   await page.waitForTimeout(900);
+  const geste = DEMO ? await peutEtreJouerLeGeste() : null;
+  if (geste) journal.push({ n: ++n, texte: geste, boutons: [], action: "" });
   const verdict = await peutEtreLancerLeDe();
   if (verdict) journal.push({ n: ++n, texte: `[ dé lancé → ${verdict} ]`, boutons: [], action: "" });
 }
@@ -320,7 +386,7 @@ const entete = [
   `# PACTUM — une vie enregistrée`,
   ``,
   `*Partie réellement jouée sur le build publié, écran par écran.*`,
-  `*Stratégie du joueur automatique : **${STRAT}**${VIERGE ? " · compte VIERGE (première partie)" : " · compte de VÉTÉRAN (3 morts, 2 reliques, des lieux déjà traversés)"}.*`,
+  `*Stratégie du joueur automatique : **${STRAT}**${DEMO ? " · **MODE DÉMO** (« La Nuit du Serment »), compte vierge" : VIERGE ? " · compte VIERGE (première partie)" : " · compte de VÉTÉRAN (3 morts, 2 reliques, des lieux déjà traversés)"}.*`,
   ``,
   `- écrans enregistrés : **${journal.length}**`,
   `- fin de partie : jour ${etat.jour ?? "?"} · ${etat.lieux ?? 0} lieux traversés · soupçon ${etat.soupcon ?? 0}`,
