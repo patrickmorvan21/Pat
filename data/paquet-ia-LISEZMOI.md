@@ -14,8 +14,8 @@ Ce paquet contient **deux objets**, et il ne faut surtout pas les confondre.
 
 | | où | ce que c'est |
 |---|---|---|
-| **LA DÉMO** — *« La Nuit du Serment »* | `transcripts/v197-demo-*.md` | Une **tranche verticale** d'environ 20 minutes, ORCHESTRÉE en quatre mouvements (accroche → ouverture → pression → climax, jamais nommés à l'écran) : entrée compressée, gestes tactiles garantis, la nuit au village, les décisions du début qui reviennent à la fin, la Falaise aux Cordes en dernier lieu. **C'est elle qu'on veut faire juger — et d'abord sa COURBE.** |
-| **LE JEU COMPLET** | `jouer/` (la table Python) + `transcripts/v197-vie-*.md` | Le jeu tel qu'il est aujourd'hui : entrée longue, parcours tiré au sort, prose entière. Utile en **comparaison**, pas comme sujet. |
+| **LA DÉMO** — *« La Nuit du Serment »* | `transcripts/v198-demo-*.md` | Une **tranche verticale** d'environ 20 minutes, ORCHESTRÉE en quatre mouvements (accroche → ouverture → pression → climax, jamais nommés à l'écran) : entrée compressée, gestes tactiles garantis, la nuit au village, les décisions du début qui reviennent à la fin, la Falaise aux Cordes en dernier lieu. **C'est elle qu'on veut faire juger — et d'abord sa COURBE.** |
+| **LE JEU COMPLET** | `jouer/` (la table Python) + `transcripts/v198-vie-*.md` | Le jeu tel qu'il est aujourd'hui : entrée longue, parcours tiré au sort, prose entière. Utile en **comparaison**, pas comme sujet. |
 
 **⚠️ `pactum.py` NE JOUE PAS LA DÉMO.** La table Python rejoue le jeu
 complet : sa prose est la longue, son parcours est tiré au sort, et ses
@@ -172,7 +172,7 @@ que le joueur a vu, les images affichées, les choix offerts, l'action prise.
 C'est la **référence sans dérive** — tout y est citable mot pour mot, et c'est
 là que se jugent la mise en scène et le rythme réel.
 
-**Les deux parties de DÉMO** (`v197-demo-*.md`) sont le sujet principal —
+**Les deux parties de DÉMO** (`v198-demo-*.md`) sont le sujet principal —
 voir la section 0. L'une **explore** (76 écrans : trois gestes tactiles, le
 retour de ce qu'elle a semé, la Falaise et la Descente) ; l'autre **lance le
 dé dès qu'elle peut** — et croise QUAND MÊME deux gestes : le geste de la

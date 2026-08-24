@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-24T18:47:58Z",
- "commit": "5b5f0e7",
+ "genere": "2026-08-24T21:53:18Z",
+ "commit": "ca46d8d",
  "zones": [
   {
    "id": "landes",
@@ -7886,7 +7886,7 @@
    "fichier": "codex_lisieres_basse.png",
    "hash": "d525af7c",
    "taille": 7928,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "codex_lisieres_basse"
   },
@@ -7902,7 +7902,7 @@
    "fichier": "fleche_retour.png",
    "hash": "52d0be5e",
    "taille": 306,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "fleche_retour"
   },
