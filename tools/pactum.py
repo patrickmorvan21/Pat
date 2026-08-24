@@ -186,7 +186,7 @@ class Partie:
             "ambiancesVues": [], "poiOuvert": False, "morte": False, "famVus": [],
             "soupconVu": 0, "routeAFermer": False, "menace": None,
             "des": [], "journal": [], "sortie": None, "hameauEntree": False,
-            "procesVu": False, "savoirs": [],
+            "hameauSorti": False, "procesVu": False, "savoirs": [],
             # LES STATS DU HÉROS (verdict du Seuil dans le jeu, tirage ici).
             # Elles pèsent sur le dé (`stat − 3`, promesse n°1 du 4/08) et
             # décident quelle VARIANTE de choix existe (`exigeDominante`).
@@ -498,6 +498,42 @@ class Partie:
         self.d["geolierVus"].append(g)
         self.dit(g.replace("{n}", str(naturel)), "geolier")
 
+    # -- la sortie du village (24/08) : une transition JOUÉE, miroir du jeu.
+    # Depuis une rue, la Croisée n'offre jamais un lieu de lande : elle offre
+    # le portillon, et le franchir sert CET écran — la couture du
+    # franchissement d'abord, PUIS deux directions de lande avec leurs
+    # indices. Sortir, ensuite choisir : dans cet ordre.
+    def sortie_hameau(self) -> None:
+        self.d["hameauSorti"] = True
+        r = self.rng()
+        libres = [x for x in self.k["pool"] if x not in self.d["visites"]
+                  and x != "serment-hameau" and x not in self.k["hameauInterieur"]]
+        if len(libres) < 2 or len(self.d["visites"]) >= self.d["cible"]:
+            self.d["phase"] = "scene"
+            if "palissade-sud" in self.k["scenes"] and "palissade-sud" not in self.d["visites"]:
+                self.entrer("palissade-sud", orientation=True)
+            else:
+                self.entrer("la-descente")
+            return
+        opts = r.sample(libres, 2)
+        ferme = self.d.pop("routeAFermer", False)
+        if ferme:
+            opts = opts[:1]
+        self.d["phase"] = "liaison"
+        self.d["options"] = opts
+        self.d["pas"] += 1
+        self.d["poiOuvert"] = False
+        cout = self.k.get("franchitSortie") or []
+        self.dit(cout[self.d["pas"] % len(cout)] if cout else
+                 "Tu repasses la limite du village. La lande reprend.", "narration")
+        if ferme and self.k.get("routeFermee"):
+            self.dit(r.choice(self.k["routeFermee"]), "narration")
+        else:
+            ia = self.k["indiceRoute"].get(opts[0], "")
+            ib = self.k["indiceRoute"].get(opts[1], "") if len(opts) > 1 else ""
+            if ia and ib:
+                self.dit(f"D'un côté, {ia}. De l'autre, {ib}.", "narration")
+
     # -- liaison
     def liaison(self) -> None:
         # LE PROCÈS (comme le vrai moteur) : Soupçon au comble → la traversée
@@ -510,8 +546,21 @@ class Partie:
             self.entrer("proces-du-heros")
             return
         libres = [x for x in self.k["pool"] if x not in self.d["visites"]]
+        # L'ENCLAVE À TROIS ÉTATS (12/08, jamais portée à la réplique) + LE
+        # PORTILLON (24/08) : pas entré → l'intérieur est fermé ; DEDANS → la
+        # Croisée n'offre qu'une rue + le portillon (jamais un lieu de lande
+        # depuis une ruelle — le Pendu Mal Fixé « à deux pas du Puits » venait
+        # de là) ; SORTI → ni la porte ni les rues ne reviennent.
+        rad0 = re.sub(r"-\d+$", "", self.d["scene"])
+        dans_vill = (rad0 in self.k["hameauInterieur"] or rad0.startswith("hameau-")
+                     or rad0 in ("serment-hameau", "femme-seuil", "gamin-murets"))
+        dedans = (self.d.get("hameauEntree") and not self.d.get("hameauSorti")
+                  and dans_vill)
         if not self.d["hameauEntree"]:
             libres = [x for x in libres if x not in self.k["hameauInterieur"]]
+        elif not dedans:
+            libres = [x for x in libres if x != "serment-hameau"
+                      and x not in self.k["hameauInterieur"]]
         else:
             libres = [x for x in libres if x != "serment-hameau"]
         if len(libres) < 2 or len(self.d["visites"]) >= self.d["cible"]:
@@ -538,6 +587,27 @@ class Partie:
                 self.entrer("palissade-sud", orientation=True)
             else:
                 self.entrer("la-descente")
+            return
+        if dedans:
+            # LA CROISÉE DE RUE (24/08) : une rue inconnue + LE PORTILLON.
+            # Plus une rue → la marche suivante EST la sortie (couture + deux
+            # directions de lande sur le même écran, cf. sortie_hameau).
+            rues = [x for x in libres if x in self.k["hameauInterieur"]]
+            if not rues:
+                self.sortie_hameau()
+                return
+            r = self.rng()
+            self.d["phase"] = "liaison"
+            self.d["options"] = [r.choice(rues), "sortie-hameau"]
+            self.d["pas"] += 1
+            self.d["poiOuvert"] = False
+            amb = self.ambiance_de_marche(r, True, rad0)
+            self.d["ambiancesVues"].append(amb)
+            self.dit(amb, "narration")
+            ia = self.k["indiceRoute"].get(self.d["options"][0], "")
+            ib = self.k["indiceRoute"].get(self.d["options"][1], "")
+            if ia and ib:
+                self.dit(f"D'un côté, {ia}. De l'autre, {ib}.", "narration")
             return
         r = self.rng()
         # ═══ LE RETOUR DE LA MENACE (17/08 §2-4) — miroir du jeu. Une menace
@@ -774,6 +844,11 @@ class Partie:
                 self.entrer(p["ouvreSur"])
             return
         if o["kind"] == "aller":
+            # LE PORTILLON (24/08) : pas une destination — la sortie JOUÉE.
+            if o["dest"] == "sortie-hameau":
+                self.d["options"] = None
+                self.sortie_hameau()
+                return
             # LA ROUTE DES LOUPS REFUSÉE (17/08 §2) : l'indice annonçait des
             # silhouettes grises — choisir l'autre direction est un vrai
             # contournement, et il ne les efface pas. Une seule menace à la

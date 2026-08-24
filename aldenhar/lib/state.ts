@@ -152,6 +152,13 @@ export type TraversalState = {
   /** Cette Croisée-ci n'offre qu'une direction (échec dur au coup d'avant).
       Porté par `trav` — donc reconstruit à l'identique à la reprise. */
   routeFermee?: boolean;
+  /** La liaison courante est la SORTIE du village (24/08) : couture
+      FRANCHIT_SORTIE en tête + Croisée de lande. Porté par `trav` pour que la
+      reprise rebâtisse le MÊME écran (texte de sortie, image de lande) — sans
+      lui, `sceneFromTrav` rendrait une marche de ruelle. NB : `trav` est
+      rechargé en bloc par `loadRun` (pas champ par champ), un optionnel neuf
+      survit sans migration. */
+  sortieHameau?: boolean;
   /** Radicaux de lieu déjà crédités dans `lieuxEngages` cette traversée.
       Empêche un lieu à rencontre optionnelle de compter trois fois — voir
       le docblock de `RunState.lieuxEngages`. */

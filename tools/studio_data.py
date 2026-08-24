@@ -1385,6 +1385,12 @@ def main() -> int:
     m_sortie = re.search(r'export const SORTIE_DE_ZONE = "([^"]+)"', src_ts)
     if m_sortie:
         pool = [x for x in pool if x != m_sortie.group(1)]
+    # LE PORTILLON (24/08) : sentinelle de la sortie du village, dans APPROACH
+    # pour son libellé de bouton mais JAMAIS un lieu — même exclusion que la
+    # sortie de zone, sinon la réplique l'offrirait comme destination de lande.
+    m_portillon = re.search(r'export const HAMEAU_SORTIE = "([^"]+)"', src_ts)
+    if m_portillon:
+        pool = [x for x in pool if x != m_portillon.group(1)]
 
     ids = {s["id"] for s in scenes}
     via_poi = {l["vers"] for l in liens if l["type"] == "secondaire"}

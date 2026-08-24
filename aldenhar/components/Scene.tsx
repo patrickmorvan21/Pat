@@ -49,6 +49,8 @@ import {
   ligneTroupeau,
   FRANCHIT_ENTREE,
   FRANCHIT_SORTIE,
+  HAMEAU_SORTIE,
+  TRAVERSAL_POOL,
   JAILER_SANS_RISQUE,
   traceDeSortie,
   NUIT_CORPS,
@@ -524,15 +526,83 @@ function liaisonCtx(run: RunState, from: string | undefined): LiaisonCtx {
  */
 function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
   if (t.done) return DESCENTE_SCENE;
-  if (t.phase === "liaison" && t.liaisonOpts)
-    return makeLiaison(
+  if (t.phase === "liaison" && t.liaisonOpts) {
+    const base = makeLiaison(
       t.liaisonOpts[0],
       t.liaisonOpts[1],
       t.seed,
-      run ? liaisonCtx(run, t.visited[t.visited.length - 1]) : undefined,
+      // Liaison de SORTIE (24/08) : pas de provenance — l'image de marche et
+      // l'ambiance sont celles de la lande retrouvée, pas d'une ruelle.
+      run
+        ? liaisonCtx(run, t.sortieHameau ? undefined : t.visited[t.visited.length - 1])
+        : undefined,
       t.routeFermee === true
     );
+    return t.sortieHameau ? habillageSortie(base, t.seed) : base;
+  }
   return resoudre(t.current, run) ?? sceneById(ENTRY_SCENE)!;
+}
+
+/**
+ * LA SORTIE DU VILLAGE EST UNE TRANSITION JOUÉE (retour Patrick 24/08, 3e
+ * signalement : « je me téléporte du Puits au Pendu Mal Fixé, puis je vois le
+ * chemin creux depuis le hameau »). Avant : depuis une rue, la Croisée offrait
+ * « une issue » qui était un lieu de LANDE servi comme une direction ordinaire
+ * — la ligne de franchissement n'arrivait qu'à l'écran d'ARRIVÉE, collée au
+ * mauvais écran. Désormais l'écran de sortie dit d'abord le franchissement
+ * (couture FRANCHIT_SORTIE), PUIS ouvre deux directions de lande avec leurs
+ * indices : sortir, ensuite choisir. Dans cet ordre.
+ */
+function habillageSortie(base: SceneType, seed: number): SceneType {
+  return {
+    ...base,
+    // La couture remplace l'ambiance (narration[0]). Tirée par la graine —
+    // identique à la reprise ; pas de dédup `liaisonVues` : la sortie ne se
+    // joue qu'une fois par vie.
+    narration: [FRANCHIT_SORTIE[seed % FRANCHIT_SORTIE.length], ...base.narration.slice(1)],
+  };
+}
+
+function makeSortieHameau(
+  trav: TraversalState,
+  seed: number,
+  run: RunState | null | undefined,
+  fermee: boolean
+): { scene: SceneType; pair: [string, string] } {
+  // sorti=true : le tirage n'offre que la lande (ni la porte, ni les rues).
+  const pair = pickLiaisonOptions(trav.visited, seed, true, false, true);
+  // La signature de la zone reste garantie (chantier 6 du 23/07) : cette
+  // Croisée-ci est une Croisée de lande comme les autres.
+  if (
+    !lieuDejaVisite(trav.visited, "colline-aux-gibets") &&
+    !pair.includes("colline-aux-gibets")
+  ) {
+    pair[(seed + 1) % 2] = "colline-aux-gibets";
+  }
+  // MODE DÉMO : la route scriptée reprend DEHORS, sur cet écran même.
+  if (demoActive()) {
+    const reste = demoRouteRestante(trav.visited, lieuDejaVisite).filter(
+      (id) => !isHameauInterior(id)
+    );
+    if (reste.length) {
+      const second =
+        reste[1] ??
+        pair.find((p) => !lieuDejaVisite([reste[0]], p) && !isHameauInterior(p)) ??
+        reste[0];
+      pair[0] = reste[0];
+      pair[1] = second;
+    }
+  }
+  const base = makeLiaison(
+    pair[0],
+    pair[1],
+    seed,
+    // `from` absent à dessein : on vient de FRANCHIR la limite — l'ambiance
+    // et l'image de marche sont celles de la lande, pas d'une ruelle.
+    run ? liaisonCtx(run, undefined) : undefined,
+    fermee
+  );
+  return { scene: habillageSortie(base, seed), pair };
 }
 
 /**
@@ -1851,6 +1921,9 @@ export default function Scene() {
     // liaison (toDest), la suite d'une chaîne de rencontre, la Descente (fin de
     // traversée), ou une nouvelle LIAISON (marche + orientation).
     const trav: TraversalState = { ...(runRef.current?.trav ?? loadRun().trav) };
+    // Le drapeau décrit la liaison COURANTE : tout nouvel écran le recalcule
+    // (les deux branches de sortie le reposent à true).
+    trav.sortieHameau = false;
     // Une transition qui QUITTE une liaison ne fait pas vieillir les états.
     const leavingLiaison = Boolean(scene.liaison);
     // ═══ L'ÉLÉMENT-SURPRISE (catalogue 6/08) : armé UNE fois par run, au
@@ -1938,6 +2011,28 @@ export default function Scene() {
       }
       trav.phase = "scene";
       trav.current = nextScene.id;
+    } else if (opts?.toDest === HAMEAU_SORTIE) {
+      // LE PORTILLON (24/08) : quitter le village est une TRANSITION jouée,
+      // pas une arrivée. Rien n'entre dans `visited` (aucun lieu traversé),
+      // pas de crédit de Jour, pas d'approche — la liaison de sortie dit
+      // d'abord le franchissement (couture), PUIS ouvre deux directions de
+      // lande. `hameau.sorti` se pose ICI : c'est le geste qui sort.
+      const seed = (nextStep * 101 + trav.visited.length * 7 + 13) >>> 0;
+      const guideRoute = etatsActifs(idsEtats(faitsDe(runRef.current))).some(
+        (e) => e.rouvreLaRoute
+      );
+      routeFermeeIci = runRef.current?.routeFermeeEnAttente === true && !guideRoute;
+      guideAbsorbe = runRef.current?.routeFermeeEnAttente === true && guideRoute;
+      const sortie = makeSortieHameau(trav, seed, runRef.current, routeFermeeIci);
+      nextScene = sortie.scene;
+      trav.phase = "liaison";
+      trav.liaisonOpts = sortie.pair;
+      trav.routeFermee = routeFermeeIci;
+      trav.seed = seed;
+      trav.sortieHameau = true;
+      persist((r) => {
+        if (r.hameau) r.hameau = { ...r.hameau, sorti: true };
+      });
     } else if (opts?.toDest) {
       // LA BÊTE GARDE SON CREUX (playtest 7/08) : plus un « lieu » du pool —
       // elle embusque la route du Chemin Creux (1re visite), puis son
@@ -2144,6 +2239,34 @@ export default function Scene() {
         entered &&
         !runRef.current?.hameau?.sorti &&
         (isHameauInterior(dernier) || /^(serment-hameau|hameau-)/.test(dernier));
+      // UN ÉCHEC DUR A DÉPENSÉ QUELQUE CHOSE : hors séjour il n'y avait pas
+      // d'option à retirer, alors c'est le MONDE qui se resserre — cette
+      // Croisée-ci n'offre plus qu'une direction.
+      // LE GUIDE CONNAÎT UN AUTRE CHEMIN (le Gamin des Murets) : tant qu'il
+      // accompagne, la route ne se referme pas. Calculé AVANT le fork
+      // sortie/Croisée (24/08) : les deux écrans paient le même prix.
+      const guideRoute = etatsActifs(idsEtats(faitsDe(runRef.current))).some(
+        (e) => e.rouvreLaRoute
+      );
+      routeFermeeIci = runRef.current?.routeFermeeEnAttente === true && !guideRoute;
+      guideAbsorbe = runRef.current?.routeFermeeEnAttente === true && guideRoute;
+      // LES RUES ENCORE INCONNUES (24/08) : quand il n'en reste aucune, on ne
+      // fabrique pas une Croisée pour un seul bouton — la marche suivante EST
+      // la sortie du village (couture + deux directions de lande, un écran).
+      const ruesLibres = dedans
+        ? TRAVERSAL_POOL.filter(
+            (id) => isHameauInterior(id) && !lieuDejaVisite(trav.visited, id)
+          )
+        : [];
+      if (dedans && !ruesLibres.length) {
+        const sortie = makeSortieHameau(trav, seed, runRef.current, routeFermeeIci);
+        nextScene = sortie.scene;
+        trav.liaisonOpts = sortie.pair;
+        trav.sortieHameau = true;
+        persist((r) => {
+          if (r.hameau) r.hameau = { ...r.hameau, sorti: true };
+        });
+      } else {
       const pair = pickLiaisonOptions(
         trav.visited, seed, entered, dedans, Boolean(runRef.current?.hameau?.sorti)
       );
@@ -2168,9 +2291,16 @@ export default function Scene() {
         // ⚠️ L'ENCLAVE (12/08) : la garantie ne peut pas ramener le village
         // une fois qu'on en est sorti — elle écrasait le pool APRÈS lui, et
         // ré-offrait le Petit Tribunal à un héros qui avait quitté le hameau.
-        !(isHameauInterior(chapDef.lieuId) && runRef.current?.hameau?.sorti)
+        !(isHameauInterior(chapDef.lieuId) && runRef.current?.hameau?.sorti) &&
+        // ⚠️ …et dans l'AUTRE sens aussi (24/08) : depuis une rue, un lieu de
+        // chapitre EXTÉRIEUR ne peut pas être offert — c'est par cette brèche
+        // qu'un combat de lande arrivait « à deux pas du Puits ».
+        !(dedans && !isHameauInterior(chapDef.lieuId))
       ) {
-        pair[seed % 2] = chapDef.lieuId;
+        // Jamais sur le slot du portillon : sortir reste toujours possible.
+        const slot =
+          pair[0] === HAMEAU_SORTIE ? 1 : pair[1] === HAMEAU_SORTIE ? 0 : seed % 2;
+        pair[slot] = chapDef.lieuId;
       }
       // Signature garantie (chantier 6 du 23/07) : la Colline aux Gibets est
       // OFFERTE à chaque liaison tant qu'elle n'a pas été visitée — l'identité
@@ -2196,51 +2326,42 @@ export default function Scene() {
       // l'agentivité se sente. Route épuisée → le tirage normal reprend
       // (les segments au-delà du Puits arrivent aux vagues suivantes).
       if (demoActive()) {
-        // ⚠️ L'ENCLAVE VAUT AUSSI POUR LA ROUTE SCRIPTÉE (retour Patrick
-        // 24/08 : « je quitte le hameau en une seule scène », immersion
-        // cassée). La 1re version écrasait la paire SANS la porte du village :
-        // le second bouton pouvait offrir la Chapelle depuis la lande (entrer
-        // sans barrage), ou un lieu de lande depuis une ruelle (sortir sans
-        // couture). La route respecte désormais les mêmes murs que le tirage :
-        // pas d'intérieur avant d'être entré, pas d'extérieur offert tant
-        // qu'il reste des étapes intérieures à jouer.
+        // ⚠️ L'ENCLAVE VAUT AUSSI POUR LA ROUTE SCRIPTÉE (retours Patrick
+        // 24/08, deux fois). La 1re version écrasait la paire sans la porte
+        // du village ; la 2e respectait la porte mais servait ENCORE la lande
+        // depuis une rue quand les étapes intérieures étaient épuisées, et
+        // son second bouton de repli acceptait n'importe quel lieu du tirage
+        // une fois entré. Désormais la route passe par les MÊMES murs que le
+        // tirage : dedans elle ne remplace que la RUE offerte (jamais le
+        // portillon), et la lande ne revient qu'après la sortie jouée
+        // (makeSortieHameau la sert sur l'écran de sortie lui-même).
         const resteBrut = demoRouteRestante(trav.visited, lieuDejaVisite);
-        const resteDedans = resteBrut.filter((id) => isHameauInterior(id));
-        const reste = !entered
-          ? // Dehors, pas encore entré : jamais un lieu intérieur (la porte —
-            // le Serment — n'est pas dans HAMEAU_INTERIOR, elle reste offerte).
-            resteBrut.filter((id) => !isHameauInterior(id))
-          : dedans && resteDedans.length
-            ? // Dans les rues, des étapes intérieures restent : on les finit
-              // avant que la route n'offre la lande.
-              resteDedans
-            : resteBrut;
-        if (reste.length) {
-          const second =
-            reste[1] ??
-            pair.find(
-              (p) =>
-                !lieuDejaVisite([reste[0]], p) &&
-                (entered ? true : !isHameauInterior(p))
-            ) ??
-            reste[0];
-          pair[0] = reste[0];
-          pair[1] = second;
+        if (dedans) {
+          const resteDedans = resteBrut.filter((id) => isHameauInterior(id));
+          if (resteDedans.length) {
+            pair[pair[0] === HAMEAU_SORTIE ? 1 : 0] = resteDedans[0];
+          }
+        } else {
+          // Dehors (avant l'entrée ou après la sortie) : jamais un lieu
+          // intérieur — la porte (le Serment) n'est pas dans HAMEAU_INTERIOR,
+          // elle reste offerte tant qu'elle n'est pas visitée.
+          const reste = resteBrut.filter((id) => !isHameauInterior(id));
+          if (reste.length) {
+            const second =
+              reste[1] ??
+              pair.find(
+                (p) =>
+                  !lieuDejaVisite([reste[0]], p) &&
+                  !isHameauInterior(p) &&
+                  p !== HAMEAU_SORTIE
+              ) ??
+              reste[0];
+            pair[0] = reste[0];
+            pair[1] = second;
+          }
         }
       }
       // Ambiance contextuelle (chantier 4) : provenance = le lieu qu'on quitte.
-      // UN ÉCHEC DUR A DÉPENSÉ QUELQUE CHOSE : hors séjour il n'y avait pas
-      // d'option à retirer, alors c'est le MONDE qui se resserre — cette
-      // Croisée-ci n'offre plus qu'une direction.
-      // LE GUIDE CONNAÎT UN AUTRE CHEMIN (le Gamin des Murets) : tant qu'il
-      // accompagne, la route ne se referme pas. Son ancien bénéfice — sauter
-      // le Jour de marche — était un malus déguisé en bonus, le Jour étant le
-      // score du Registre (correction 10/08).
-      const guideRoute = etatsActifs(idsEtats(faitsDe(runRef.current))).some(
-        (e) => e.rouvreLaRoute
-      );
-      routeFermeeIci = runRef.current?.routeFermeeEnAttente === true && !guideRoute;
-      guideAbsorbe = runRef.current?.routeFermeeEnAttente === true && guideRoute;
       nextScene = makeLiaison(
         pair[0],
         pair[1],
@@ -2248,6 +2369,8 @@ export default function Scene() {
         liaisonCtx(runRef.current ?? loadRun(), scene.liaison ? undefined : scene.id),
         routeFermeeIci
       );
+      trav.liaisonOpts = pair;
+      }
       if (guideAbsorbe) {
         nextScene = {
           ...nextScene,
@@ -2273,7 +2396,6 @@ export default function Scene() {
         });
       }
       trav.phase = "liaison";
-      trav.liaisonOpts = pair;
       trav.routeFermee = routeFermeeIci;
       trav.seed = seed;
       }
@@ -2460,7 +2582,12 @@ export default function Scene() {
       // sans couture). L'ENTRÉE, elle, garde le strict intérieur : la
       // narration du Seuil raconte déjà l'arrivée au village.
       const sort = !isHameauInterior(opts.toDest) && !!origine &&
-        (isHameauInterior(origine) || /^(serment-hameau|hameau-)/.test(origine));
+        (isHameauInterior(origine) || /^(serment-hameau|hameau-)/.test(origine)) &&
+        // La sortie JOUÉE (le portillon, 24/08) a déjà dit le franchissement
+        // sur son propre écran — on ne le redit pas à l'arrivée du premier
+        // lieu de lande. Ce bloc reste le filet des chemins qui n'y passent
+        // pas (et c'est lui qui pose `sorti` dans ce cas).
+        !runRef.current?.hameau?.sorti;
       if (entre || sort) {
         // Anti-répétition intra-run (rapport IA externe 8/08 : la même sortie
         // de village rejouée mot pour mot « donne l'impression de revisiter

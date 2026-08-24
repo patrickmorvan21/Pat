@@ -318,6 +318,11 @@ def main() -> int:
         "soupconCraie": record(src, "export const SOUPCON_CRAIE: Record<number, string>"),
         "soupconGeolier": record(src, "export const SOUPCON_GEOLIER: Record<number, string>"),
         "routeFermee": chaines_de_tableau(bloc_tableau(src, "const ROUTE_FERMEE")),
+        # LA SORTIE DU VILLAGE JOUÉE (24/08) : la couture du franchissement
+        # ouvre l'écran de sortie (portillon). Sans elle, la réplique ferait
+        # « sortir » le joueur d'un tap muet — exactement la téléportation que
+        # ce lot corrige dans le jeu.
+        "franchitSortie": chaines_de_tableau(bloc_tableau(src, "export const FRANCHIT_SORTIE")),
         # LA MENACE LAISSÉE ACTIVE (17/08) : les traces voyagent avec le kit —
         # sans elles, la réplique ferait revenir la Meute SANS avertissement,
         # et un relecteur jugerait le retour arbitraire (la causalité lisible
@@ -368,7 +373,8 @@ def main() -> int:
     print(f"run-kit.json — v{kit['version']} · {len(scenes)} scènes · {n_choix} choix "
           f"· {n_poi} points · {len(kit['pool'])} destinations · {n_geol} citations du Geôlier")
     manquant = [c for c in ("approche", "approcheNarration", "indiceRoute", "ambiances",
-                            "bifurcations", "geolierLiaison", "hameauInterieur") if not kit[c]]
+                            "bifurcations", "geolierLiaison", "hameauInterieur",
+                            "franchitSortie") if not kit[c]]
     # Les traces de menace : chaque clé doit rendre ses textes (extracteur muet
     # = la Meute reviendrait sans avertissement dans la réplique).
     manquant += [f"tracesMenace.{k}" for k in ("meute", "bete")

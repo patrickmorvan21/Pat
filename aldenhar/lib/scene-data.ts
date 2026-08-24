@@ -7603,6 +7603,11 @@ const APPROACH: Record<string, string> = {
   "verger-noir": "Vers des rangs d'arbres noirs",
   "meute-grise-1": "Vers des silhouettes grises",
   "palissade-sud": "Vers une palissade au sud",
+  // ⚠️ SENTINELLE, pas un lieu (24/08) : le libellé du PORTILLON — l'unique
+  // façon de quitter le village depuis une rue. Exclue de TRAVERSAL_POOL
+  // ci-dessous ; jamais dans `visited` ; interceptée par advance() AVANT la
+  // branche toDest (voir Scene.tsx, la liaison de sortie).
+  "sortie-hameau": "Vers le portillon, et la lande au-delà",
 };
 
 /** Pool des destinations tirables (tout ce qui a une phrase d'orientation). */
@@ -7613,7 +7618,18 @@ const APPROACH: Record<string, string> = {
  * rotation, ce qui revient à lui retirer l'objectif qu'il vient d'atteindre.
  */
 export const SORTIE_DE_ZONE = "palissade-sud";
-export const TRAVERSAL_POOL = Object.keys(APPROACH).filter((id) => id !== SORTIE_DE_ZONE);
+/**
+ * LE PORTILLON (24/08, 3e signalement Patrick : « je me téléporte du Puits au
+ * Pendu Mal Fixé, puis je vois le chemin creux depuis le hameau »). La sortie
+ * du village est une TRANSITION, pas une destination : depuis une rue, la
+ * Croisée n'offre plus jamais un lieu de lande — elle offre CE choix-ci, et
+ * le franchir joue la liaison de SORTIE (couture FRANCHIT_SORTIE + Croisée de
+ * lande). Sentinelle : jamais un lieu, jamais dans `visited`, hors du pool.
+ */
+export const HAMEAU_SORTIE = "sortie-hameau";
+export const TRAVERSAL_POOL = Object.keys(APPROACH).filter(
+  (id) => id !== SORTIE_DE_ZONE && id !== HAMEAU_SORTIE
+);
 
 /**
  * NOM AFFICHABLE d'un lieu depuis un id de scène (spec 4/08, point A1 : le
@@ -8289,6 +8305,9 @@ const INDICE_ROUTE: Record<string, string> = {
   "verger-noir": "des rangs d'arbres qui n'ont plus de feuilles",
   "meute-grise-1": "des silhouettes grises qui se déplacent ensemble",
   "palissade-sud": "une palissade qui coupe l'horizon, une lanterne allumée sous le ciel clair",
+  // Le PORTILLON (24/08) : cet indice ne se lit que sur une Croisée de RUE
+  // (la sentinelle n'est offerte que dedans) — le bâti y est donc en contexte.
+  "sortie-hameau": "le portillon, et la lande ouverte au-delà",
 };
 
 /**
@@ -8877,16 +8896,21 @@ export function pickLiaisonOptions(
     ? TRAVERSAL_POOL.filter((id) => id !== HAMEAU_GATE && !isHameauInterior(id))
     : dedans
       ? (() => {
-          const dedansLibres = TRAVERSAL_POOL.filter(
+          // LA SORTIE EST UNE TRANSITION, PLUS UNE DESTINATION (24/08, 3e
+          // signalement Patrick). L'ancienne « issue » servait un lieu de
+          // LANDE comme direction ordinaire depuis une rue — et TOUT le pool
+          // extérieur quand les rues étaient épuisées : le Pendu Mal Fixé à
+          // deux pas du Puits, sans un mot de franchissement. Désormais une
+          // Croisée de rue offre UNE rue inconnue + LE PORTILLON (sortir
+          // reste toujours possible, on n'enferme jamais). Plus aucune rue →
+          // l'appelant sert directement la liaison de SORTIE (couture +
+          // Croisée de lande) et ne passe plus par ici.
+          const rues = TRAVERSAL_POOL.filter(
             (id) => isHameauInterior(id) && !lieuDejaVisite(visited, id)
           );
-          const dehors = TRAVERSAL_POOL.filter(
-            (id) => !isHameauInterior(id) && id !== HAMEAU_GATE && !lieuDejaVisite(visited, id)
-          );
-          // Une issue est TOUJOURS offerte : on n'enferme jamais le joueur
-          // dans le village, même quand il lui reste des rues à voir.
-          const issue = dehors.length ? [dehors[seed % dehors.length]] : [];
-          return dedansLibres.length ? [...dedansLibres, ...issue] : [...dehors, ...issue];
+          return rues.length
+            ? [rues[seed % rues.length], HAMEAU_SORTIE]
+            : [HAMEAU_SORTIE];
         })()
       : TRAVERSAL_POOL.filter((id) =>
           hameauEntree ? id !== HAMEAU_GATE : !isHameauInterior(id)
