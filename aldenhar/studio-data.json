@@ -475,6 +475,7 @@
      "type": "passif",
      "consequence": "Le granit est froid d'une froideur qui ne vient pas du vent. Des marques sur toutes les faces, de toutes les mains : des noms, des dates, des traits de comptage. Le côté nord est saturé — les adieux de ceux qui partaient. Le côté sud est presque vierge. Trois marques. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?\n\nAu ras du sol, un angle manque. La cassure est nette, faite au burin, patiemment — et l'éclat est encore là, à demi enterré. Celui qui voulait emporter un morceau de la limite ne l'a pas pris. Sous le vent, pendant que tu te relèves, il y a des voix : basses, à ras de bruyère, qui se passent le mot de ton arrivée. Elles ne te menacent pas. Elles préviennent quelqu'un.",
      "donneObjet": "pierre-retour",
+     "miniJeuDemo": "rub",
      "borneSud": true,
      "image": {
       "fichier": "scene_borne_gravures_a_d.png",
@@ -1092,6 +1093,7 @@
      "label": "Se plaquer, immobile",
      "type": "passif",
      "consequence": "Tu te coules dans l'ornière, face contre terre. La masse passe au-dessus de toi — un pont de cuir et de suint, interminable. Elle cherche ce qui court, pas ce qui gît : la lande est pleine de gisants, elle a l'habitude. Quand le silence revient, tu recraches de la terre et tu marches.",
+     "miniJeuDemo": "hold",
      "laisseMenace": "bete"
     }
    ],
