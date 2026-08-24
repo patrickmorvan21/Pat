@@ -464,6 +464,24 @@ export type Choice = {
    * qui cogne, coller l'oreille aux planches n'est plus la question.
    */
   masqueSiUsage?: string;
+  /**
+   * MINI-JEU POSÉ SUR LE CHOIX (mode démo, script 24/08 segments 1-3).
+   * Servi UNIQUEMENT quand le mode démo est actif : hors démo, le choix se
+   * résout par sa voie écrite normale (l'intégration au jeu complet attend
+   * le re-skin réaliste des moteurs — temps 2, décision Patrick 24/08).
+   *
+   * Règle du script : un échec de mini-jeu n'est jamais un mur, c'est un
+   * PRIX. `echec` remplace la conséquence écrite quand le geste rate (absent
+   * = le mini-jeu ne peut pas échouer, cas du Frottage) ; `echecBlesse`
+   * fait payer le corps (ENTAILLÉ + santé), jamais la mort sèche.
+   */
+  minigame?: {
+    engine: "rub" | "hold";
+    /** Inscription révélée (rub) — courte, en capitales. */
+    label?: string;
+    echec?: string;
+    echecBlesse?: boolean;
+  };
 };
 
 /**
@@ -1048,6 +1066,11 @@ export const SCENES: Scene[] = [
         // La question que pose l'examen — « qui a gravé côté sud ? » — trouve
         // sa réponse dans la vie d'avant, et seulement là.
         borneSud: true,
+        // Démo, segment 1 : le premier geste du jeu est un FROTTAGE — écarter
+        // la mousse de la pierre révèle les marques du sud. Zéro risque : le
+        // tutoriel tactile déguisé en lore (pas d'`echec`, le Frottage ne
+        // peut pas rater). La conséquence écrite joue ensuite, inchangée.
+        minigame: { engine: "rub", label: "CÔTÉ SUD" },
         grantsLoot: "pierre-retour",
         passive: {
           consequence:
@@ -1633,6 +1656,22 @@ export const SCENES: Scene[] = [
         // est une vraie réponse (§19). Mais elle t'a SENTI passer (17/08 §2) :
         // se dérober à un combat ne l'efface pas du monde, elle peut suivre.
         laisseMenace: "bete",
+        // Démo, segment 3 : RETENIR SON SOUFFLE pendant que la masse passe —
+        // le premier moment de peur se joue au corps, pas au dé. L'échec ne
+        // tue pas : elle te trouve, te marque, et repart (le prix, jamais le
+        // mur). La menace reste armée dans les deux issues — se dérober ne
+        // l'efface pas du monde, réussi ou pas.
+        minigame: {
+          engine: "hold",
+          echecBlesse: true,
+          echec:
+            "Ton souffle te lâche sur un rien — un gravier qui roule sous ta " +
+            "paume. La masse s'arrête au-dessus de toi. Le museau descend, " +
+            "te trouve, te retourne d'un coup de tête qui te laboure " +
+            "l'épaule — puis la Bête repart sans se presser, comme on repose " +
+            "une chose sans intérêt. Le creux te laisse te relever. Pas " +
+            "indemne.",
+        },
         passive: {
           consequence:
             "Tu te coules dans l'ornière, face contre terre. La masse passe " +

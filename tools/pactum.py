@@ -661,6 +661,12 @@ class Partie:
                 continue
             if c.get("exigeDecouverte") and c["exigeDecouverte"] not in lire_compte().get("decouvertes", []):
                 continue
+            # 24/08 — `miniJeuDemo` : un mini-jeu tactile posé sur ce choix en
+            # MODE DÉMO uniquement. La réplique joue le jeu COMPLET, où le
+            # champ est inerte : rien à simuler ici, et c'est un choix assumé
+            # (un geste tactile n'a pas d'équivalent en réplique textuelle).
+            # Si un jour la démo doit être répliquée, le mini-jeu se simule
+            # comme un jet à ~70 % de réussite — noté, pas fait.
             # 13/08 : « ce qu'on porte ouvre une porte ». La réplique, elle,
             # SUIT la Besace — le choix est donc offert seulement si l'objet
             # y est vraiment, comme dans le jeu.

@@ -732,9 +732,14 @@ export const MEMORY_POOL: Record<StatKey, MemoryEntry[]> = {
   ],
 };
 
-/** Tirage du prologue : 1 souvenir par stat, indépendant, fixé pour la run. */
-export function drawMemories(): { stat: StatKey; entry: MemoryEntry }[] {
-  return PROLOGUE_STAT_ORDER.map((stat) => {
+/** Tirage du prologue : 1 souvenir par stat, indépendant, fixé pour la run.
+    `stats` permet un Seuil COURT (mode démo, script 24/08 : Courage + Instinct
+    seulement) — les stats non tirées restent à leur base, un héros de démo
+    est fort là où la démo le sollicite et faible ailleurs, comme un vrai. */
+export function drawMemories(
+  stats: readonly StatKey[] = PROLOGUE_STAT_ORDER
+): { stat: StatKey; entry: MemoryEntry }[] {
+  return stats.map((stat) => {
     const pool = MEMORY_POOL[stat];
     return { stat, entry: pool[Math.floor(Math.random() * pool.length)] };
   });

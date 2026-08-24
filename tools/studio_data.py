@@ -709,6 +709,14 @@ def lire_choix(bloc: str) -> list[dict]:
             v = constante_de(c, champ, CONSTANTES_CONNUES)
             if v:
                 ch[cle] = v
+        # 24/08 — MODE DÉMO : un mini-jeu tactile posé sur le choix (segments
+        # 1-3 du script de démo). Hors démo le champ est INERTE, et la réplique
+        # joue le jeu complet — rien à simuler côté pactum.py. Mais le Studio
+        # doit le MONTRER : sans cet export, la Borne et la Bête mentiraient
+        # sur ce qu'elles font en démo (règle des deux listes blanches).
+        mj = texte_de(c, "engine")
+        if mj and "minigame:" in c:
+            ch["miniJeuDemo"] = mj
         tb = bloc_apres(c, r"\n        tags:\s*")
         if tb:
             t = chaines_de_tableau(tb[0])

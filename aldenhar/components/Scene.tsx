@@ -81,6 +81,9 @@ import {
   JAILER_METALEPTIQUE, JAILER_DE_IMPOSSIBLE, type SurpriseId,
 } from "@/lib/surprises";
 import { chapterById, drawChapter, LANDES_LORE_FRAGMENTS } from "@/lib/chapters-data";
+import { demoActive, demoRouteRestante } from "@/lib/demo";
+import RubReveal from "@/components/minigames/engines/RubReveal";
+import HoldSteady from "@/components/minigames/engines/HoldSteady";
 import { playMusic } from "@/lib/audio";
 import { loadSettings } from "@/lib/settings";
 import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomSoinMineur, recompenseDestinQuiTient, usageEnMots, LANDES_OBJETS, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
@@ -879,6 +882,14 @@ export default function Scene() {
     setAideMenu(sujet);
   }
   const [countdownArmed, setCountdownArmed] = useState(false);
+  /** MODE DÉMO — mini-jeu en cours (le choix qui l'a ouvert). Tant qu'il est
+      posé, l'écran est à lui : compte à rebours suspendu, CTA sous l'overlay.
+      `minigamesJoues` empêche de rejouer le geste sur le même choix (la
+      ré-entrée d'`onSelect` après le résultat passe alors par la voie
+      écrite normale du choix). */
+  const [minigameChoice, setMinigameChoice] = useState<Choice | null>(null);
+  const [minigameConfig, setMinigameConfig] = useState<Record<string, unknown> | null>(null);
+  const minigamesJoues = useRef<string[]>([]);
   const runRef = useRef<RunState | null>(null);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const timedTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -1721,6 +1732,8 @@ export default function Scene() {
     // rebours ne s'arme jamais. Être interrompu ne coûte jamais rien.
     const canRun =
       !!timed && !timedExpired && !choicesHidden && !activeTypingId && !selectedId && !rolling &&
+      // Mini-jeu ouvert (mode démo) : l'écran est au geste, le sablier attend.
+      !minigameChoice &&
       !loadSettings().chronosOff;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reflète l'armement du compte à rebours dans l'UI, synchronisé au cycle de la scène
     setCountdownArmed(canRun);
@@ -1734,7 +1747,7 @@ export default function Scene() {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scene, step, choicesHidden, activeTypingId, selectedId, rolling, timedExpired]);
+  }, [scene, step, choicesHidden, activeTypingId, selectedId, rolling, timedExpired, minigameChoice]);
 
   /**
    * Scène suivante = NOUVEL écran (remplace le précédent). L'image ne change
@@ -2168,6 +2181,24 @@ export default function Scene() {
         !pair.includes("colline-aux-gibets")
       ) {
         pair[(seed + 1) % 2] = "colline-aux-gibets";
+      }
+      // ═══ MODE DÉMO (script 24/08) : la Croisée sert la ROUTE scriptée.
+      // Le rythme d'une démo est une courbe dessinée à la main, jamais un
+      // tirage — on écrase la paire APRÈS les garanties (chapitre, Colline) :
+      // en démo, la courbe prime sur elles. Le second bouton reste une vraie
+      // direction (l'étape d'après, ou un lieu du tirage) pour que
+      // l'agentivité se sente. Route épuisée → le tirage normal reprend
+      // (les segments au-delà du Puits arrivent aux vagues suivantes).
+      if (demoActive()) {
+        const reste = demoRouteRestante(trav.visited, lieuDejaVisite);
+        if (reste.length) {
+          const second =
+            reste[1] ??
+            pair.find((p) => !lieuDejaVisite([reste[0]], p)) ??
+            reste[0];
+          pair[0] = reste[0];
+          pair[1] = second;
+        }
       }
       // Ambiance contextuelle (chantier 4) : provenance = le lieu qu'on quitte.
       // UN ÉCHEC DUR A DÉPENSÉ QUELQUE CHOSE : hors séjour il n'y avait pas
@@ -3367,8 +3398,60 @@ export default function Scene() {
       imageApresConsequence.current = lastSceneIlloRef.current;
   }
 
+  /**
+   * MODE DÉMO — résultat du mini-jeu (script 24/08, doctrine « l'échec est un
+   * prix, jamais un mur »). Réussite : le choix se résout par sa voie écrite
+   * normale (loot, borneSud, laisseMenace — rien à dupliquer, on ré-entre
+   * dans `onSelect` avec le geste marqué joué). Échec : la conséquence
+   * d'échec remplace la réussite, le corps paie si le choix le déclare
+   * (ENTAILLÉ + santé — jamais la mort sèche sur un geste d'adresse), et le
+   * gain éventuel du choix ne se donne pas (on ne récompense pas un raté).
+   */
+  function finirMinigame(ok: boolean) {
+    const c = minigameChoice;
+    if (!c) return;
+    setMinigameChoice(null);
+    minigamesJoues.current = [...minigamesJoues.current, c.id];
+    if (ok || !c.minigame?.echec) {
+      onSelect(c);
+      return;
+    }
+    if (c.minigame.echecBlesse) {
+      persist((run) => {
+        run.health = Math.max(0.08, run.health - 0.12);
+        run.effects = [
+          { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 999 },
+          ...run.effects.filter((e) => e.id !== "entaille"),
+        ];
+      });
+      setHealth(runRef.current?.health ?? health);
+    }
+    onSelect({ ...c, grantsLoot: undefined, passive: { consequence: c.minigame.echec } });
+  }
+
   function onSelect(choice: Choice) {
     if (rolling || selectedId) return;
+    // MODE DÉMO : un choix qui porte un mini-jeu l'ouvre AVANT de se résoudre
+    // — le geste décide, puis la résolution normale reprend (finirMinigame).
+    // La config se calcule ICI (lecture de runRef interdite au rendu) : la
+    // stat module la difficulté du geste, comme dans la galerie — l'Instinct
+    // du héros raccourcit l'appui à tenir et rend les alertes lisibles.
+    if (choice.minigame && demoActive() && !minigamesJoues.current.includes(choice.id)) {
+      if (choice.minigame.engine === "hold") {
+        const inst = statDe(runRef.current?.stats, "INSTINCT");
+        setMinigameConfig(
+          inst >= 4
+            ? { durationMs: 2200, clearCue: true, grazeCount: 3 }
+            : inst >= 3
+              ? { durationMs: 3000, clearCue: true, grazeCount: 3 }
+              : { durationMs: 3800, clearCue: false, grazeCount: 6 }
+        );
+      } else {
+        setMinigameConfig({ label: choice.minigame.label ?? "", threshold: 0.62 });
+      }
+      setMinigameChoice(choice);
+      return;
+    }
     sansNuitRef.current = Boolean(choice.sansNuit);
     if (choice.locked) {
       const run = runRef.current;
@@ -4641,6 +4724,51 @@ export default function Scene() {
             });
           }}
         />
+
+        {/* ═══ MODE DÉMO — L'ÉCRAN DU GESTE (script 24/08, segments 1-3).
+            Un choix à mini-jeu ouvre cet overlay : le libellé du choix en
+            chapeau, le canvas du moteur au centre, la consigne du geste en
+            pied. Le compte à rebours des scènes chronométrées est suspendu
+            tant qu'il est ouvert (garde dans l'effet du sablier). Le rendu
+            des moteurs est celui de la galerie — le re-skin réaliste est le
+            temps 2 (décision Patrick 24/08). */}
+        {minigameChoice && minigameChoice.minigame && (
+          <div
+            className="absolute inset-0 z-[45] flex flex-col items-center justify-center px-[24px]"
+            style={{ backgroundColor: "rgba(28, 26, 22, 0.94)" }}
+          >
+            <p className="mb-[14px] max-w-[320px] text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]/85">
+              {minigameChoice.label}
+            </p>
+            <div className="w-[320px]">
+              {minigameChoice.minigame.engine === "rub" ? (
+                <RubReveal
+                  seed={`demo-${scene.id}`}
+                  config={(minigameConfig ?? { label: "" }) as { label: string; threshold?: number }}
+                  onResult={finirMinigame}
+                />
+              ) : (
+                <HoldSteady
+                  seed={`demo-${scene.id}`}
+                  config={
+                    (minigameConfig ?? { durationMs: 3000 }) as {
+                      durationMs: number;
+                      noMove?: boolean;
+                      clearCue?: boolean;
+                      grazeCount?: number;
+                    }
+                  }
+                  onResult={finirMinigame}
+                />
+              )}
+            </div>
+            <p className="mt-[14px] text-center font-mono text-[11px] uppercase tracking-[2px] text-[var(--color-ink)]/50">
+              {minigameChoice.minigame.engine === "rub"
+                ? "Frotte la pierre"
+                : "Maintiens l'appui — tiens bon"}
+            </p>
+          </div>
+        )}
 
         {/* Menu plein cadre (spec §8) : Essence + Inventaire. */}
         {menuOpen && (

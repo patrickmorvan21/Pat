@@ -12,6 +12,7 @@ import { hasSavedRun, loadRun, resetRun } from "@/lib/state";
 import { lieuNom } from "@/lib/scene-data";
 import { APP_VERSION } from "@/lib/version";
 import { applySettingsToDom } from "@/lib/settings";
+import { demoActive, initDemoFromUrl } from "@/lib/demo";
 import { armAudio, playMusic } from "@/lib/audio";
 import { OptionsTab } from "@/components/GameMenu";
 import { BoutonNav } from "@/components/NavIcons";
@@ -42,6 +43,9 @@ export default function Home() {
   const [reprise, setReprise] = useState<string[] | null>(null);
 
   useEffect(() => {
+    // Mode démo (script 24/08) : `?demo=1` dans l'URL pose le drapeau — un
+    // testeur reçoit un LIEN, pas une procédure. Lu avant tout le reste.
+    initDemoFromUrl();
     // Réglages (Options 21/07) : applique taille de texte + animations réduites
     // au <html> dès le démarrage de l'app (persiste à travers accueil/jeu).
     applySettingsToDom();
@@ -122,7 +126,10 @@ export default function Home() {
 
   if (phase === "game") return <Scene />;
   if (phase === "intro") return <Intro onDone={() => setPhase("prologue")} />;
-  if (phase === "prologue") return <Prologue onDone={() => setPhase("acte")} />;
+  // Mode démo (script 24/08, segment 0) : pas de carton d'acte — le Seuil
+  // débouche droit sur la Borne, le premier geste avant la minute 2.
+  if (phase === "prologue")
+    return <Prologue onDone={() => setPhase(demoActive() ? "game" : "acte")} />;
   // Nommer l'acte juste après le scellement du pacte, avant la première scène.
   if (phase === "acte") return <ActeScreen onDone={() => setPhase("game")} />;
 

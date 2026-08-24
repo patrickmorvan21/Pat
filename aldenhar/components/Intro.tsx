@@ -21,6 +21,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { markIntroSeen } from "@/lib/player-memory";
+import { demoActive } from "@/lib/demo";
 import TouchHint from "@/components/TouchHint";
 import { assetCss, assetUrl } from "@/lib/assets";
 
@@ -169,10 +170,14 @@ function IntroFrame({
   );
 }
 
-/** Les 5 écrans de clauses, enchaînés au tap. */
+/** Les 5 écrans de clauses, enchaînés au tap.
+    Mode démo (script 24/08, segment 0) : une SEULE clause — la porte animée
+    « Une seule vie ». Le pacte complet reste au jeu entier ; une démo doit
+    mettre le premier geste dans les mains avant la minute 1. */
 export default function Intro({ onDone }: { onDone: () => void }) {
+  const clauses = demoActive() ? CLAUSES.filter((c) => c.animSprite) : CLAUSES;
   const [i, setI] = useState(0);
-  const last = i >= CLAUSES.length - 1;
+  const last = i >= clauses.length - 1;
 
   const advance = useCallback(() => {
     if (last) {
@@ -193,7 +198,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
     return () => window.removeEventListener("keydown", onKey);
   }, [advance]);
 
-  const c = CLAUSES[i];
+  const c = clauses[i];
   return (
     <IntroFrame
       image={c.image}
@@ -201,7 +206,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
       onTap={advance}
       first={i === 0}
       footer={
-        <Dots index={i} total={CLAUSES.length} />
+        <Dots index={i} total={clauses.length} />
       }
     >
       {c.eyebrow && (

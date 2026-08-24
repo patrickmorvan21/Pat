@@ -6,6 +6,7 @@
 
 import { normalizeItem, startingBesace, type BesaceItem } from "@/lib/besace";
 import { drawMemories } from "@/lib/prologue-data";
+import { demoActive, DEMO_SOUVENIRS } from "@/lib/demo";
 import { ENTRY_SCENE, sceneAt } from "@/lib/scene-data";
 import type { Temoin } from "@/lib/temoins";
 import { sacDepuis, type SacFaits } from "@/lib/faits";
@@ -571,8 +572,11 @@ function fresh(): RunState {
     encounters: 0,
     stats: randomStats(),
     // Tirage du prologue : 1 souvenir par stat, fixé pour toute la run.
+    // Mode démo (script 24/08) : Seuil COURT — deux souvenirs seulement.
     prologue: {
-      memories: drawMemories().map(({ stat, entry }) => ({ stat, ...entry })),
+      memories: drawMemories(demoActive() ? DEMO_SOUVENIRS : undefined).map(
+        ({ stat, entry }) => ({ stat, ...entry })
+      ),
       beat: 0,
       choices: [],
       done: false,
