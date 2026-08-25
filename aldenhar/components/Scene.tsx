@@ -3822,8 +3822,16 @@ export default function Scene() {
           maxAttempts: 3,
         });
       } else if (eng === "swipe") {
-        // La cérémonie : cinq paliers, lentement. Trop vite = rien.
-        setMinigameConfig({ pagesNeeded: 5, maxSpeed: 6, label: "paliers" });
+        // La cérémonie : cinq paliers, vers le BAS, lentement. Trop vite ne
+        // rate rien — la corde ne file pas (`forgiving`), et ça se voit.
+        // ⚠️ `axis`/`skin` sont obligatoires ici : sans eux le moteur sert son
+        // décor d'origine (les pages du grimoire) et attend un geste LATÉRAL
+        // pour une descente en rappel — l'écran que Patrick n'a pas pu
+        // comprendre au playtest du 25/08.
+        setMinigameConfig({
+          pagesNeeded: 5, maxSpeed: 9, label: "paliers",
+          axis: "y", skin: "corde", step: 30, forgiving: true,
+        });
       } else {
         // rub — l'inscription du geste garanti de la Borne suit le cadrage.
         const label =
@@ -5201,9 +5209,17 @@ export default function Scene() {
                 <SlowSwipe
                   seed={`demo-${scene.id}-${minigameRetry}`}
                   config={
-                    (minigameConfig ?? { pagesNeeded: 5, maxSpeed: 6 }) as {
+                    (minigameConfig ?? {
+                      pagesNeeded: 5, maxSpeed: 9,
+                      axis: "y", skin: "corde", step: 30, forgiving: true,
+                    }) as {
                       pagesNeeded: number;
                       maxSpeed: number;
+                      label?: string;
+                      axis?: "x" | "y";
+                      skin?: "page" | "corde";
+                      step?: number;
+                      forgiving?: boolean;
                     }
                   }
                   onResult={finirMinigame}
@@ -5231,7 +5247,7 @@ export default function Scene() {
                   : minigameChoice.minigame.engine === "pick"
                     ? "Tape quand le crochet est dans la gorge"
                     : minigameChoice.minigame.engine === "swipe"
-                      ? "Laisse filer la corde — lentement"
+                      ? "Fais glisser vers le bas — lentement"
                       : "Maintiens l'appui — tiens bon"}
             </p>
           </div>
