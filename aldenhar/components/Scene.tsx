@@ -472,6 +472,26 @@ function objectImage(kind: BesaceItem["kind"]): string {
   return "assets/objet_fiole_baume.png";
 }
 
+/**
+ * LA CARTE D'OBJET (maquette Figma 2531:825, 25/08). Une seule fabrique pour
+ * les six points d'acquisition — avant, chacun recopiait cinq champs à la
+ * main, et l'icône ou la rareté auraient divergé au premier ajout.
+ * `icone` prend l'asset RÉEL de l'objet quand il en a un, sinon l'icône
+ * générique de son type : la carte n'affiche jamais un cadre vide.
+ */
+function entreeObtenu(id: string, it: BesaceItem): Extract<FeedEntry, { kind: "obtenu" }> {
+  return {
+    id,
+    kind: "obtenu",
+    name: it.name,
+    rarity: RARITY_LABEL[it.rarity as BesaceRarity],
+    rarete: it.rarity as BesaceRarity,
+    flavor: it.flavor,
+    usage: usageEnMots(it),
+    icone: it.illustration ?? objectImage(it.kind),
+  };
+}
+
 type ImageKind = "scene" | "object";
 
 /* Ouverture/fermeture du sous-menu des descriptions (points d'intérêt). Ce ne
@@ -1469,6 +1489,21 @@ export default function Scene() {
       run.feedSuite = groupes.slice(1);
     });
     enqueueReveal(groupes[0].filter((e) => e.kind === "narration" || e.kind === "jailer").map((e) => e.id));
+    aideSiObjet(groupes[0]);
+  }
+
+  /**
+   * LE POPUP D'ACQUISITION (demande Patrick 25/08 : « une fenêtre la première
+   * fois qu'on acquiert un objet, comme on a fait pour les états »). Il se
+   * déclenche quand la CARTE est à l'écran, pas quand elle le quitte — c'est
+   * ce que la demande dit, et c'est le seul point robuste : le trigger
+   * précédent lisait `run.feed` à l'écran SUIVANT, or la pagination y avait
+   * déjà remplacé le chunk qui portait la carte, donc il ne partait jamais
+   * dès que la scène tenait sur plus d'un écran.
+   * Une fois par compte (`maybeAideMenu`), et « Ne plus afficher » coupe tout.
+   */
+  function aideSiObjet(groupe: FeedEntry[]) {
+    if (groupe.some((e) => e.kind === "obtenu")) maybeAideMenu("objet");
   }
 
   /** L'écran suivant de la séquence (micro-beats) : REMPLACE — le lu est lu,
@@ -1495,6 +1530,7 @@ export default function Scene() {
       run.feedSuite = reste;
     });
     enqueueReveal(tete.filter((e) => e.kind === "narration" || e.kind === "jailer").map((e) => e.id));
+    aideSiObjet(tete);
   }
 
   // Reprise de run : fermer l'app ne compte jamais comme une mort. On restaure
@@ -1981,10 +2017,6 @@ export default function Scene() {
     imageElement?: string;
   }) {
     const nextStep = step + 1;
-    // Popup « rangé dans le menu » (7/08, vaut aussi pour les OBJETS) : si
-    // l'écran qu'on quitte portait un bandeau Obtenu, l'objet vient de sortir
-    // de l'interface — c'est le moment de dire où il vit maintenant.
-    if ((runRef.current?.feed ?? []).some((e) => e.kind === "obtenu")) maybeAideMenu("objet");
     // ——— Résolution de la traversée (spec 21/07) ———
     // On quitte l'écran courant (`scene`). Le suivant est : le lieu choisi à une
     // liaison (toDest), la suite d'une chaîne de rencontre, la Descente (fin de
@@ -2702,14 +2734,14 @@ export default function Scene() {
     if (opts?.destinItem) {
       const it = opts.destinItem;
       obtainedItem = it;
-      entries.push({ id: nextId(), kind: "obtenu", name: it.name, rarity: RARITY_LABEL[it.rarity as BesaceRarity], flavor: it.flavor, usage: usageEnMots(it) });
+      entries.push(entreeObtenu(nextId(), it));
     }
     // Objet gagné par un choix d'examen réussi (grantsLoot, 23/07) : même
     // bandeau « Obtenu » — déjà persisté côté Besace dans onComplete.
     if (opts?.grantedItem) {
       const it = opts.grantedItem;
       obtainedItem = it;
-      entries.push({ id: nextId(), kind: "obtenu", name: it.name, rarity: RARITY_LABEL[it.rarity as BesaceRarity], flavor: it.flavor, usage: usageEnMots(it) });
+      entries.push(entreeObtenu(nextId(), it));
     }
     // Prix différé (§17) : une dette échue se règle ici, avant la scène suivante.
     const dueDebts = (runRef.current?.debts ?? []).filter((d) => d.settleAtStep <= nextStep);
@@ -3292,7 +3324,7 @@ export default function Scene() {
           run.besace = [...run.besace, item];
           run.looted = [...(run.looted ?? []), lootId];
         });
-        entries.push({ id: nextId(), kind: "obtenu", name: item.name, rarity: RARITY_LABEL[item.rarity], flavor: item.flavor, usage: usageEnMots(item) });
+        entries.push(entreeObtenu(nextId(), item));
       }
     }
     // Soin générique de secours — désormais RARE (spec 23/07 : « peu de soins
@@ -3318,7 +3350,7 @@ export default function Scene() {
           run.besace = [...run.besace, found];
           run.dropsServis = [...(run.dropsServis ?? []), found.name];
         });
-        entries.push({ id: nextId(), kind: "obtenu", name: found.name, rarity: RARITY_LABEL[found.rarity as BesaceRarity], flavor: found.flavor, usage: usageEnMots(found) });
+        entries.push(entreeObtenu(nextId(), found));
       }
     }
     // LA SORTIE DE ZONE SE SOUVIENT (panel 10/08 : « deux traversées
@@ -3438,11 +3470,13 @@ export default function Scene() {
         img = { src: nextScene.illustrationArrivee, kind: "scene" };
         differeVueDeMarche = nextIllustration;
       }
-    } else if (obtainedItem) {
-      // Icône réelle de l'objet si elle existe (objets des Landes), sinon
-      // l'icône générique par type (arme/soin/babiole).
-      img = { src: obtainedItem.illustration ?? objectImage(obtainedItem.kind), kind: "object" };
     } else {
+      /* ⚠️ L'OBJET NE PREND PLUS LE CADRE (maquette 2531:825, 25/08). Avant,
+         un objet obtenu remplaçait l'illustration de la scène par son icône
+         en grand : on perdait le décor au moment même où on le lisait. La
+         carte porte désormais sa propre vignette 92×92, et l'image du lieu
+         ne bouge pas. `ImageKind: "object"` reste dans le type pour les
+         sauvegardes en cours ; plus rien ne le pose. */
       img = { src: lastSceneIlloRef.current, kind: "scene" };
     }
     // L'ÉLÉMENT OBSERVÉ passe devant tout le reste (conversion des points
@@ -3704,14 +3738,7 @@ export default function Scene() {
     if (opts.append) entries.push(...opts.append);
     if (opts.grantedItem) {
       const it = opts.grantedItem;
-      entries.push({
-        id: nextId(),
-        kind: "obtenu",
-        name: it.name,
-        rarity: RARITY_LABEL[it.rarity as BesaceRarity],
-        flavor: it.flavor,
-        usage: usageEnMots(it),
-      });
+      entries.push(entreeObtenu(nextId(), it));
     }
     // Un critique reste un critique : le Geôlier commente même quand on n'a
     // pas changé d'endroit. Même mémoire de gabarits qu'ailleurs.
@@ -4124,14 +4151,7 @@ export default function Scene() {
             : []) as FeedEntry[]),
         ];
         if (gained) {
-          entries.push({
-            id: nextId(),
-            kind: "obtenu",
-            name: gained.name,
-            rarity: RARITY_LABEL[gained.rarity],
-            flavor: gained.flavor,
-            usage: usageEnMots(gained),
-          });
+          entries.push(entreeObtenu(nextId(), gained));
         }
         // Le SAVOIR (25/07) : l'examen apprend une information qui ouvrira un
         // choix plus loin. Rien n'est annoncé — pas de bandeau, pas de « appris
@@ -5411,9 +5431,19 @@ export default function Scene() {
               ✕
             </button>
             <p className="font-mono text-[12px] leading-[1.6] text-[var(--color-ink)]">
-              {aideMenu === "etat" ? "Ton état est rangé dans le menu." : "Ton objet est rangé dans le menu."}
-              <br />
-              Tu peux l&apos;y consulter à tout moment.
+              {aideMenu === "etat" ? (
+                <>
+                  Ton état est rangé dans le menu.
+                  <br />
+                  Tu peux l&apos;y consulter à tout moment.
+                </>
+              ) : (
+                <>
+                  Ton objet est rangé dans ta besace.
+                  <br />
+                  Tu la retrouves dans le menu, à tout moment.
+                </>
+              )}
             </p>
             <button
               type="button"
@@ -5634,17 +5664,46 @@ function FeedItem({
         </div>
       );
     case "obtenu":
+      /* LA CARTE D'OBJET (maquette Figma 2531:825, 25/08) — remplace le
+         bandeau à filet orange. Géométrie relevée sur la maquette : carte
+         360×104 bordée blanc-30, vignette 92×92 à gauche, filet vertical à
+         103,5 px, filet horizontal sous l'en-tête à 34,5 px.
+         ⚠️ L'illustration de la SCÈNE ne cède plus la place à l'objet : la
+         maquette garde le décor en haut et pose la vignette DANS la carte.
+         ⚠️ La carte dit ce que l'objet FAIT (`usage`), pas ce qu'il EST — la
+         saveur vit dans la fiche d'inventaire, où le popup renvoie. */
       return (
-        <div className="scene-enter obtenu-banner mb-[18px]">
-          <span className="obtenu-line">
-            Obtenu — {entry.name} · {entry.rarity}
+        <div className="scene-enter obtenu-carte mx-[-2px] mb-[18px]">
+          <span className="obtenu-vignette">
+            {entry.icone ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={assetUrl(entry.icone)} alt="" />
+            ) : null}
           </span>
-          <span className="obtenu-flavor">{entry.flavor}</span>
-          {/* CE QUE ÇA FAIT (10/08) : la saveur dit ce que l'objet EST, cette
-              ligne dit ce qu'il CHANGE. Jamais un chiffre — le joueur ne doit
-              pas avoir à ouvrir un menu pour savoir s'il vient de gagner
-              quelque chose d'utile. */}
-          {entry.usage ? <span className="obtenu-usage">{entry.usage}</span> : null}
+          <span className="obtenu-corps">
+            <span className="obtenu-tete">
+              <span className="obtenu-titre">
+                {/* Glyphe « ↓ » de la maquette : traits nets, aucun arrondi
+                    — même grammaire que les icônes de navigation. */}
+                <svg
+                  aria-hidden
+                  className="obtenu-fleche"
+                  viewBox="0 0 13 13"
+                  width="13"
+                  height="13"
+                  fill="currentColor"
+                >
+                  <rect x="6" y="1" width="1" height="6" />
+                  <path d="M3 6h7l-3.5 4z" />
+                  <rect x="2" y="11" width="9" height="1" />
+                </svg>
+                OBTENU
+              </span>
+              <span className={`obtenu-tag obtenu-tag-${entry.rarete ?? "commun"}`}>{entry.rarity}</span>
+            </span>
+            <span className="obtenu-nom">{entry.name}</span>
+            <span className="obtenu-quoi">{entry.usage || entry.flavor}</span>
+          </span>
         </div>
       );
     case "registre":

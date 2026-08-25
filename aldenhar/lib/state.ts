@@ -4,7 +4,7 @@
  * L'état est persisté à chaque évènement et repris exactement où on l'a laissé.
  */
 
-import { normalizeItem, startingBesace, type BesaceItem } from "@/lib/besace";
+import { normalizeItem, startingBesace, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { drawMemories } from "@/lib/prologue-data";
 import { demoActive, DEMO_SOUVENIRS } from "@/lib/demo";
 import { ENTRY_SCENE, sceneAt } from "@/lib/scene-data";
@@ -58,7 +58,23 @@ export type FeedEntry =
   /** Objet mineur obtenu (13/07) : bandeau tramé « Obtenu — … », pas de popup. */
   /** `usage` (10/08) : ce que l'objet FAIT, en mots. Les objets étaient
       muets — on ramassait une lame sans savoir qu'elle pesait sur les jets. */
-  | { id: string; kind: "obtenu"; name: string; rarity: string; flavor: string; usage?: string }
+  /**
+   * OBTENU — la carte d'objet (maquette Figma 2531:825, 25/08). `rarity` est
+   * le LIBELLÉ affiché (« Commun ») ; `rarete` est la CLÉ, dont dépendent les
+   * trois traitements du tag (contour / plein blanc / plein orange). `icone`
+   * est le chemin de l'asset réel de l'objet — une sauvegarde d'avant le
+   * 25/08 n'en a pas, la carte retombe alors sur l'icône générique.
+   */
+  | {
+      id: string;
+      kind: "obtenu";
+      name: string;
+      rarity: string;
+      flavor: string;
+      usage?: string;
+      rarete?: BesaceRarity;
+      icone?: string;
+    }
   /** États narratifs temporaires actifs, rappelés en tête d'écran après un
       jet (retour Patrick 19/07) — jamais un chiffre, seulement le nom. */
   | { id: string; kind: "etat"; effects: { effectId: string; label: string; positive: boolean }[] };

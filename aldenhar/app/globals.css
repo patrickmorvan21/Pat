@@ -820,35 +820,118 @@ body {
   filter: saturate(0) brightness(1.6);
 }
 
-.obtenu-banner {
+/* ═════════════════ LA CARTE D'OBJET (Figma 2531:825, 25/08) ═════════════════
+   Remplace le bandeau à filet orange. Géométrie relevée au pixel sur la
+   maquette (carte 360×104 posée à x=15) : vignette 92×92 à 7/5 du coin, filet
+   vertical à 103,5, filet horizontal sous l'en-tête à 34,5, colonne de texte
+   à 117. Les deux filets sont des pseudo-éléments de la carte : ils doivent
+   traverser toute sa hauteur même si le texte la fait grandir.
+   ⚠️ 360 px dans une zone de texte à 17 px de marge : `mx-[-2px]` côté TSX. */
+.obtenu-carte {
+  position: relative;
   display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 10px 14px;
-  border-left: 2px solid var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  min-height: 104px;
+  padding: 5px 0 5px 6px;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  background: var(--color-bg);
 }
-.obtenu-line {
+.obtenu-carte::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 103px;
+  width: 1px;
+  background: rgb(255 255 255 / 0.3);
+}
+.obtenu-carte::after {
+  content: "";
+  position: absolute;
+  top: 33px;
+  right: 0;
+  left: 103px;
+  height: 1px;
+  background: rgb(255 255 255 / 0.3);
+}
+.obtenu-vignette {
+  display: block;
+  flex: none;
+  width: 92px;
+  height: 92px;
+  overflow: hidden;
+}
+.obtenu-vignette img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+}
+.obtenu-corps {
+  display: flex;
+  min-width: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+  margin-left: 18px;
+  padding-right: 12px;
+}
+.obtenu-tete {
+  display: flex;
+  height: 17px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 2px;
+}
+.obtenu-titre {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--color-ink);
+}
+.obtenu-fleche {
+  display: block;
+  flex: none;
+}
+/* Les trois traitements de rareté de la maquette de mort (2333:7011), repris
+   ici tels quels : la palette à trois couleurs tient, aucune couleur neuve. */
+.obtenu-tag {
+  flex: none;
+  padding: 4px;
   font-size: 12px;
-  letter-spacing: 1px;
+  font-weight: 500;
+  letter-spacing: 0.6px;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+.obtenu-tag-commun {
+  border: 1px solid var(--color-ink);
+  color: var(--color-ink);
+}
+.obtenu-tag-rare {
+  background: var(--color-ink);
+  color: var(--color-bg);
+}
+.obtenu-tag-legendaire {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+/* Le NOM (accent) puis CE QUE ÇA FAIT (blanc-50). La SAVEUR n'est pas sur la
+   carte : elle vit dans la fiche d'inventaire, où le popup renvoie. */
+.obtenu-nom {
+  margin-top: 22px;
+  font-size: 13px;
+  line-height: 1.3;
   text-transform: uppercase;
   color: var(--color-accent);
 }
-.obtenu-flavor {
-  font-size: 12px;
-  font-style: italic;
-  color: var(--color-ink);
-  opacity: 0.6;
-}
-/* Ce que l'objet FAIT (10/08) — distinct de la saveur : pas d'italique, et
-   l'accent, parce que c'est la seule ligne du bandeau qui engage le jeu. */
-.obtenu-usage {
-  display: block;
+.obtenu-quoi {
   margin-top: 4px;
   font-size: 11px;
-  letter-spacing: 0.3px;
-  color: var(--color-accent);
-  opacity: 0.85;
+  line-height: 1.3;
+  color: var(--color-ink);
+  opacity: 0.5;
 }
 
 /* ═══════════════ Galerie de revue — mini-jeux & surprises ═══════════════ */
