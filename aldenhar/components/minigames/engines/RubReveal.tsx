@@ -135,24 +135,59 @@ export default function RubReveal({
         charges += 1;
         if (charges < 2) return;
         mctx.drawImage(mousse, 0, 0, CW, CH);
-        /* PRÉ-ÉCLAIRCIE : des plaques irrégulières où la mousse manque déjà —
-           densité réduite au CENTRE du blob, dégressive au bord (la pierre se
-           devine, elle ne s'étale pas). Les cellules touchées comptent dans le
-           score : le geste n'a plus que le reste à gratter. */
+        /* PRÉ-ÉCLAIRCIE : des TROUÉES organiques où la mousse est déjà
+           PARTIE — entièrement dégagées au cœur, bord rongé pavé par pavé.
+           ⚠️ Jamais un semis dégressif de densité (1re version) : réparti
+           uniformément, il lisait comme une OPACITÉ appliquée à toute la
+           couche (retour Patrick 25/08), pas comme une absence de matière.
+           Une trouée est un trou : dedans on voit la pierre, autour la
+           mousse est pleine. */
         const part = config.preEclaircie ?? 0.12;
-        const nBlobs = Math.round(6 + part * 25);
+        const nBlobs = 4 + Math.round(part * 25);
         for (let b = 0; b < nBlobs; b++) {
-          const bx = rnd() * CW,
-            by = rnd() * CH;
-          const r = 22 + rnd() * 34;
-          for (let i = 0; i < GC * GR; i++) {
-            const cx = (i % GC) * cellW + cellW / 2,
-              cy = Math.floor(i / GC) * cellH + cellH / 2;
-            const d = Math.hypot(cx - bx, cy - by) / r;
-            if (d > 1) continue;
-            const manque = (1 - d) * (0.35 + rnd() * 0.3);
-            dens[i] = Math.max(0.25, dens[i] - manque);
-            syncCell(i);
+          const bx = 30 + rnd() * (CW - 60),
+            by = 30 + rnd() * (CH - 60);
+          const r = 14 + rnd() * 22;
+          // Contour irrégulier : 10 lobes radiaux interpolés par l'angle.
+          const lobes: number[] = [];
+          for (let k = 0; k < 10; k++) lobes.push(0.55 + rnd() * 0.75);
+          const rayonA = (a: number) => {
+            const t = ((((a / (Math.PI * 2)) % 1) + 1) % 1) * 10;
+            const k = Math.floor(t),
+              f = t - k;
+            return r * (lobes[k % 10] * (1 - f) + lobes[(k + 1) % 10] * f);
+          };
+          const rmax = r * 1.6;
+          // Pavés de 3 px (le grain de la perforation) : dedans = dégagé
+          // net ; frange (+22 %) = dégagé par probabilité — bord rongé,
+          // jamais un dégradé.
+          for (let py = by - rmax; py < by + rmax; py += 3) {
+            for (let px = bx - rmax; px < bx + rmax; px += 3) {
+              const d = Math.hypot(px - bx, py - by);
+              const rr = rayonA(Math.atan2(py - by, px - bx));
+              if (d < rr) mctx.clearRect(px, py, 3, 3);
+              else if (d < rr * 1.22 && rnd() < 0.35) mctx.clearRect(px, py, 3, 3);
+            }
+          }
+        }
+        /* Comptabilité : relire la couche et caler dens[]/perces[] sur ce
+           qui RESTE réellement — le score du grattage part de l'état
+           visible, et l'envol reprendra chaque cellule où elle en est. */
+        const img = mctx.getImageData(0, 0, CW, CH).data;
+        for (let i = 0; i < GC * GR; i++) {
+          const cx0 = Math.floor((i % GC) * cellW),
+            cy0 = Math.floor(Math.floor(i / GC) * cellH);
+          let opaque = 0,
+            total = 0;
+          for (let y = cy0; y < Math.min(CH, cy0 + cellH); y += 2)
+            for (let x = cx0; x < Math.min(CW, cx0 + cellW); x += 2) {
+              total += 1;
+              if (img[(Math.floor(y) * CW + Math.floor(x)) * 4 + 3] > 40) opaque += 1;
+            }
+          const restant = total ? opaque / total : 1;
+          if (restant < dens[i]) {
+            dens[i] = restant;
+            perces[i] = Math.round((1 - restant) * SLOTS);
           }
         }
         phase = "gratte";

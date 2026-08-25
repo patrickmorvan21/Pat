@@ -1,6 +1,6 @@
 {
- "genere": "2026-08-25T21:12:10Z",
- "commit": "dabbd5e",
+ "genere": "2026-08-25T21:28:54Z",
+ "commit": "6749b22",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -229,13 +229,13 @@
    "taille": 40084,
    "modifie": "2026-08-25T21:01:19Z",
    "hash": "ab189495",
-   "recent": false
+   "recent": true
   },
   "minijeu_borne_pierre.png": {
-   "taille": 36364,
-   "modifie": "2026-08-25T21:01:19Z",
-   "hash": "e8e94c5a",
-   "recent": false
+   "taille": 22040,
+   "modifie": "2026-08-25T21:24:27Z",
+   "hash": "01640b33",
+   "recent": true
   },
   "monstre_appele_descente.png": {
    "taille": 30568,
