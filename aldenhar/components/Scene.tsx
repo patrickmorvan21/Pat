@@ -1018,6 +1018,10 @@ export default function Scene() {
       écrite normale du choix). */
   const [minigameChoice, setMinigameChoice] = useState<Choice | null>(null);
   const [minigameConfig, setMinigameConfig] = useState<Record<string, unknown> | null>(null);
+  /* Phase du frottage à skin image : le hint du bas suit — « Gratte la
+     mousse » pendant le geste, « Touche pour continuer » une fois la pierre
+     nue (même comportement clignotant que le TouchHint, demande du 25/08). */
+  const [minigamePhase, setMinigamePhase] = useState<"gratte" | "envol" | "lu">("gratte");
   const minigamesJoues = useRef<string[]>([]);
   /* La CÉRÉMONIE (swipe) est insensible à l'échec : trop vite, la corde ne
      file pas et le geste se représente — ce compteur remonte le moteur. */
@@ -3943,16 +3947,23 @@ export default function Scene() {
           axis: "y", skin: "corde", step: 30, forgiving: true,
         });
       } else {
-        // rub — l'inscription du geste garanti de la Borne suit le cadrage.
-        const label =
-          choice.id === "geste-borne" &&
-          (runRef.current?.looted ?? []).includes("offrandes-borne")
-            ? "TROIS MARQUES"
-            : (choice.minigame.label ?? "CÔTÉ SUD");
-        setMinigameConfig({ label, threshold: 0.62 });
+        /* rub — SKIN IMAGE (maquettes Figma 2544:10906 / 2558:23211, 25/08) :
+           la mousse de Patrick par-dessus sa pierre aux marques. Le mot dessiné
+           au canvas disparaît pour ce geste — l'image PORTE les marques (la
+           voie (a) de la question du 25/08, tranchée par la maquette même).
+           Le seuil descend à 0.45 : on gratte une bonne partie, et TOUTE la
+           mousse s'envole (le cycle voulu : gratter → envol → lire → tap). */
+        setMinigameConfig({
+          label: choice.minigame.label ?? "CÔTÉ SUD",
+          threshold: 0.45,
+          preEclaircie: 0.12,
+          imageFond: assetUrl("assets/minijeu_borne_pierre.png"),
+          imageMousse: assetUrl("assets/minijeu_borne_mousse.png"),
+        });
       }
       testeurTaps.current = 0;
       setMinigameRetry(0);
+      setMinigamePhase("gratte");
       setMinigameChoice(choice);
       return;
     }
@@ -5279,15 +5290,32 @@ export default function Scene() {
               }
             }}
           >
-            <p className="mb-[14px] max-w-[320px] text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]/85">
-              {minigameChoice.label}
-            </p>
-            <div className="w-[320px]">
+            {!(minigameConfig as { imageFond?: string } | null)?.imageFond && (
+              <p className="mb-[14px] max-w-[320px] text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]/85">
+                {minigameChoice.label}
+              </p>
+            )}
+            <div
+              className={
+                (minigameConfig as { imageFond?: string } | null)?.imageFond
+                  ? "flex w-full justify-center"
+                  : "w-[320px]"
+              }
+            >
               {minigameChoice.minigame.engine === "rub" ? (
                 <RubReveal
                   seed={`demo-${scene.id}`}
-                  config={(minigameConfig ?? { label: "" }) as { label: string; threshold?: number }}
+                  config={
+                    (minigameConfig ?? { label: "" }) as {
+                      label: string;
+                      threshold?: number;
+                      imageFond?: string;
+                      imageMousse?: string;
+                      preEclaircie?: number;
+                    }
+                  }
                   onResult={finirMinigame}
+                  onPhase={setMinigamePhase}
                 />
               ) : minigameChoice.minigame.engine === "trace" ? (
                 <GlyphTrace
@@ -5342,8 +5370,24 @@ export default function Scene() {
                 />
               )}
             </div>
-            <p className="mt-[14px] text-center font-mono text-[11px] uppercase tracking-[2px] text-[var(--color-ink)]/50">
-              {minigameChoice.minigame.engine === "rub"
+            {/* Le hint du frottage à skin image suit la PHASE et CLIGNOTE
+                comme « Touche pour continuer » (classe `touch-hint` = la même
+                respiration pulse steps(2), demande Patrick 25/08). Pendant
+                l'envol il se tait : la mousse qui part est le message. */}
+            <p
+              className={`touch-hint mt-[14px] text-center font-mono text-[11px] uppercase tracking-[2px] text-[var(--color-ink)]/50 ${
+                minigamePhase === "envol" &&
+                (minigameConfig as { imageFond?: string } | null)?.imageFond
+                  ? "invisible"
+                  : ""
+              }`}
+            >
+              {minigameChoice.minigame.engine === "rub" &&
+              (minigameConfig as { imageFond?: string } | null)?.imageFond
+                ? minigamePhase === "lu"
+                  ? "Touche pour continuer"
+                  : "Gratte la mousse"
+                : minigameChoice.minigame.engine === "rub"
                 ? "Frotte la pierre"
                 : minigameChoice.minigame.engine === "trace"
                   ? "Suis le tracé du tressage, point après point"

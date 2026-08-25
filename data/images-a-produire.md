@@ -1265,7 +1265,17 @@ aucune image de lieu à poser en arrivée (`Scene.illustrationArrivee`). Soit on
 lui écrit une vue d'approche dédiée (un chemin vide, des formes au bout), soit
 on assume qu'une meute n'a pas de décor : à trancher.
 
-## PRIORITÉ 0 quater — LE FOND DU FROTTAGE DE LA BORNE (demande Patrick 25/08)
+## ~~PRIORITÉ 0 quater — LE FOND DU FROTTAGE DE LA BORNE~~ — RÉSOLU AUTREMENT (25/08 soir)
+
+**✅ CADUC — Patrick a construit le mini-jeu lui-même dans Figma** (nodes
+2544-10906 « Borne : avant » / 2558-23211 « Borne : après ») : la mousse ET la
+pierre révélée sont SES visuels, intégrés en jeu sous
+`assets/minijeu_borne_mousse.png` + `assets/minijeu_borne_pierre.png`
+(RubReveal à deux peaux, v1.101.0). Le prompt ci-dessous n'est PLUS à générer.
+La « décision (a) vs (b) » en bas de section est tranchée par la maquette
+elle-même : voie (a) — l'image porte les marques, le mot dessiné au canvas ne
+sert plus à ce geste. La section est conservée pour ses leçons de raccord
+(polarité, piège « pas de texte lisible »).
 
 Premier asset du **re-skin réaliste des mini-jeux** (doctrine du script de
 démo : « le fond d'un mini-jeu est une VRAIE illustration tramée, le dessin
