@@ -1265,6 +1265,71 @@ aucune image de lieu à poser en arrivée (`Scene.illustrationArrivee`). Soit on
 lui écrit une vue d'approche dédiée (un chemin vide, des formes au bout), soit
 on assume qu'une meute n'a pas de décor : à trancher.
 
+## PRIORITÉ 0 quater — LE FOND DU FROTTAGE DE LA BORNE (demande Patrick 25/08)
+
+Premier asset du **re-skin réaliste des mini-jeux** (doctrine du script de
+démo : « le fond d'un mini-jeu est une VRAIE illustration tramée, le dessin
+procédural est réservé au FEEDBACK »). Aujourd'hui `RubReveal` dessine sa
+tablette au canvas — cadre gravé, fissures, grain — et c'est exactement le
+« trop pixel, trop jeu bêta » que ce lot corrige.
+
+**Le sujet, dicté par la scène** : c'est le **CÔTÉ SUD** de la Borne, celui
+que le texte décrit comme *presque vierge — trois marques*, sous la mousse
+qu'on efface. Ce n'est pas la face nord saturée de noms (`scene_borne_gravures_a_d`,
+déjà en jeu) : le sud est nu, et c'est ce vide qui pose la question du lieu
+(« on ne grave pas au retour quand personne ne revient »).
+
+### `scene_borne_mousse_sud_a.png` — macro sur les trois marques
+```
+Extreme macro of a rough granite surface filling the entire frame, no sky, no
+horizon, no landscape; three deep chisel-cut marks carved into the stone near
+the centre — one short vertical wedge, one pair of crossed strokes, one row of
+small tally notches — their cut edges catching hard raking light from the
+upper right while their depths stay black; coarse crystalline grain, two hairline
+fractures crossing the surface, patches of dry flat lichen clinging in the
+hollows around the marks, dark fantasy illustration, single raking light source,
+deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly,
+strong readable shapes, matte painting, grim medieval, square composition, no
+text, no lettering, no watermark
+```
+
+**Raccord (les deux images de la Borne ont été rouvertes avant d'écrire ceci)** :
+- **Polarité, non négociable** — sur `scene_borne_gravures_a_d`, la pierre est
+  charbon et les gravures ressortent en **points ORANGE** (elles accrochent la
+  lumière). Le macro doit garder cette polarité, sinon les deux plans de la
+  même pierre se contredisent. La lumière rasante vient du **haut-droite**,
+  comme sur cette image-là.
+- **Pas l'établissement** — `scene_borne_frontiere_a_c` est un monolithe en
+  contre-jour **totalement noir**, sans aucun détail de surface. Ce n'est PAS
+  le raccord : on est ici collé à la pierre, la surface est le sujet.
+- **Cadrage** : le pipeline recadre en CARRÉ puis 1000×1000, et le moteur
+  affiche du **300×180 (5:3 paysage)**. Composer les trois marques dans la
+  **bande horizontale centrale**, sinon un recadrage les mange.
+
+⚠️ **Le piège du 6/08, à ne pas refaire** : ne jamais écrire « marques
+illisibles » ou « pas de texte lisible » — le modèle SUPPRIME alors les
+marques (c'est ce qui a vidé `scene_hameau_accueil_mur` de sa craie). Le
+prompt décrit donc la **MATIÈRE** du geste (coup de ciseau, entaille,
+encoche), jamais son illisibilité. Les trois marques doivent rester des
+FORMES, jamais des lettres qu'on puisse lire.
+
+⚠️ **Ce que l'image NE doit PAS porter** : aucun NOM gravé. La troisième
+marque du sud est celle du prédécesseur, et le jeu la calcule à l'exécution
+(`borneSud` — un nom de compte, plus une entaille par vie perdue). Un nom
+peint dans l'image mentirait à chaque partie sauf une.
+
+### La décision que cet asset force, à trancher avant de le câbler
+`RubReveal` révèle aujourd'hui **un mot dessiné au canvas** (`config.label`,
+« CÔTÉ SUD », en Instrument Serif). Si l'image porte elle-même les marques,
+ce mot fait doublon. Deux voies :
+- **(a)** l'image devient la couche révélée, et le libellé du moteur est
+  retiré pour ce mini-jeu — la mousse s'efface sur de la vraie pierre gravée.
+  C'est ce que la demande implique, et c'est le re-skin voulu.
+- **(b)** l'image reste un fond de pierre NUE et le mot continue d'être
+  dessiné par-dessus — moins beau, mais aucun changement de moteur.
+Rien n'est câblé tant que ce n'est pas tranché : déposer le PNG ne casse
+rien, il ne sera simplement pas encore servi.
+
 ## À TRANCHER (pas des prompts) — rappels
 - **Le Moulin de `campement`** montre `scene_moulin_campement_a.png`, qui a
   QUATRE AILES — la version SANS ailes existe (`scene_moulin_sans_ailes_d_d.png`,
