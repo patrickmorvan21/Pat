@@ -329,6 +329,14 @@ def pools() -> list[dict]:
             "garde": {"lande"},
             "textes": ["".join(re.findall(r'"((?:[^"\\]|\\.)*)"', app.group(1)))],
         })
+    # — LE GRIMPEUR QUI REMONTE (25/08) : joué au bord de la falaise, pleine
+    #   lande, hors de tout bâti — et c'est le seul « passant » que la Falaise
+    #   admet (toute injection ambiante y est coupée, cf. `auBord`).
+    rem = bloc_tableau(scene_src, "const FALAISE_REMONTE")
+    remt = chaines_de_tableau(rem)
+    assert len(remt) == 3, f"FALAISE_REMONTE : {len(remt)} textes extraits, 3 attendus"
+    for i, t in enumerate(remt):
+        out.append({"pool": f"falaise remonte {i + 1}", "garde": {"lande"}, "textes": [t]})
     meu = re.search(r"DEMO_MEUTE_COUTURE\s*=\s*((?:\s*\"(?:[^\"\\]|\\.)*\"\s*\+?)+)", scene_src)
     if meu:
         out.append({

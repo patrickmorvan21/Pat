@@ -11,9 +11,14 @@ import type { Choice } from "@/lib/scene-data";
  *
  * VERROUILLÉ (décision Patrick 11/08, ANNULE la refonte du 10/08) : retour au
  * traitement d'origine — bouton entier à 40 % d'opacité, bordure continue,
- * tag de stat en accent, losange vide devant le tag. Le « cadre en pointillés
- * de pixels » du panel a été jugé moche et moins lisible que le grisé
- * (« on comprenait ») : ne pas le réintroduire.
+ * tag de stat en accent. Le « cadre en pointillés de pixels » du panel a été
+ * jugé moche et moins lisible que le grisé (« on comprenait ») : ne pas le
+ * réintroduire.
+ * ⚠️ Le LOSANGE VIDE devant le tag (spec 4/08 A7) est RETIRÉ le 25/08 sur
+ * retour de Patrick (« ce n'est pas censé y être »). Il ne se rendait que sur
+ * un choix verrouillé — jamais sur un CTA jouable —, donc rien ne change pour
+ * les autres. L'accessibilité daltonienne reste tenue : le signal du verrou
+ * est l'OPACITÉ (un canal de contraste, pas de teinte), pas la couleur.
  * État cliqué (Figma 95:1541) : liseré blanc intérieur inséré à 3px.
  *
  * Érosion santé (spec §5, 4 paliers validés 11/07) : des pixels se perdent
@@ -154,15 +159,6 @@ export default function ChoiceButton({
       />
       {tag && (
         <span className="absolute top-1/2 right-[4.17%] flex -translate-y-1/2 items-center gap-[6px] font-medium uppercase leading-[1.2] text-[12px] tracking-[0.6px] text-[var(--color-accent)]">
-          {/* Choix verrouillé : LOSANGE VIDE en plus du grisé (spec 4/08 A7,
-              accessibilité daltoniens) — jamais un cadenas, le losange est le
-              glyphe du pacte. Carré bordé tourné 45°, pixel-art, pas d'emoji. */}
-          {locked && (
-            <span
-              aria-hidden
-              className="inline-block size-[7px] rotate-45 border border-current"
-            />
-          )}
           {tag}
         </span>
       )}

@@ -1224,6 +1224,47 @@ Raccord : la palissade de rondins noircis (mêmes pointes que
 `scene_palissade_sud_a_a`) doit se deviner en haut du cadre — on est passé
 de l'autre côté du portillon.
 
+## PRIORITÉ 0 ter — LA SORTIE DU HAMEAU, DEUX CHEMINS (retour Patrick 25/08)
+
+« Penser à faire image de transition de deux chemins entre le hameau des
+Renonçants et un autre chemin. » C'est le SEUL écran du jeu où l'on voit à la
+fois le village dans le dos et les deux routes qui s'ouvrent — aujourd'hui il
+sert une marche de lande tirée au sort, qui ne dit ni d'où l'on vient ni ce
+qui s'offre.
+
+Le câblage est DÉJÀ EN PLACE et gardé (`SORTIE_DEUX_CHEMINS` dans
+`components/Scene.tsx`, replié sur la vue de marche tant que le fichier est
+absent) : déposer le PNG sous ce nom exact suffit, aucun code à changer.
+
+### `scene_transition_sortie_hameau_deux_chemins_a.png` — le muret franchi
+```
+Low dry-stone boundary wall in the near foreground, just crossed, behind it a
+huddle of low village rooftops in silhouette; ahead the open moor splits into
+two bare footpaths that diverge around a dead thorn bush and vanish over the
+horizon, one climbing slightly, one dropping into a hollow; no human figure,
+dark fantasy illustration, extreme backlight, low sun on the horizon, figures
+and structures as near-black silhouettes, deep crushed blacks, no fill light,
+high contrast, two-tone monochrome-friendly, strong readable shapes, matte
+painting, grim medieval, square composition, no text, no lettering, no
+watermark
+```
+Raccord : les toits du fond partagent la ligne de faîtage et la matière de
+`scene_hameau_dense2_b` ; le muret au premier plan est celui des vues de
+ruelle (`scene_landes_hameau_ruelle_b`). Les DEUX chemins doivent se lire du
+premier coup d'œil — c'est tout le sujet de l'image.
+
+### En réserve, si Patrick veut aller plus loin
+Même principe pour l'ENTRÉE (`scene_transition_entree_hameau_a`) : la lande
+dans le dos, les premiers toits devant, un seul chemin qui se resserre. Le
+champ à poser serait le pendant de `SORTIE_DEUX_CHEMINS` côté `FRANCHIT_ENTREE`.
+
+### Manque signalé, pas deviné
+`meute-grise-1` arrive DIRECTEMENT sur la meute (comme le Pendu Mal Fixé et la
+Bête avant ce lot) — mais la Meute est une ERRANTE : elle n'a aucun lieu, donc
+aucune image de lieu à poser en arrivée (`Scene.illustrationArrivee`). Soit on
+lui écrit une vue d'approche dédiée (un chemin vide, des formes au bout), soit
+on assume qu'une meute n'a pas de décor : à trancher.
+
 ## À TRANCHER (pas des prompts) — rappels
 - **Le Moulin de `campement`** montre `scene_moulin_campement_a.png`, qui a
   QUATRE AILES — la version SANS ailes existe (`scene_moulin_sans_ailes_d_d.png`,

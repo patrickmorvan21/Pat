@@ -288,7 +288,14 @@ export default function Reliques({
           « Descente + Reliquaire sont ferrés en bas de l'écran ») — les deux
           sections suivent la fiche au lieu d'être poussées contre le bord
           bas ; sur un grand écran, l'espace libre reste EN DESSOUS. */}
-      <div className="flex max-h-[440px] min-h-0 flex-1 flex-col overflow-hidden">
+      {/* ⚠️ LE FERRAGE (retour Patrick 25/08) : la FICHE est ferrée en HAUT,
+          la DESCENTE et le RELIQUAIRE sont ferrés en BAS. Le 21/08 j'avais
+          plafonné la fiche à 440px pour « dé-ferrer » les sections du bas —
+          elles se retrouvaient donc à flotter au milieu de l'écran. La bonne
+          structure est l'inverse : la fiche prend la place disponible en
+          haut (`flex-1`), et le bloc du bas est poussé contre le bord par
+          `mt-auto`. L'espace libre vit ENTRE les deux, jamais en dessous. */}
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
         <div className="flex min-h-0 flex-1 items-center justify-center px-[16px] pt-[10px]">
           {relicSel ? (
             /* eslint-disable-next-line @next/next/no-img-element */
@@ -324,8 +331,8 @@ export default function Reliques({
         )}
       </div>
 
-      {/* ─── 2. LA DESCENTE ─── */}
-      <div className="shrink-0 px-[13px]">
+      {/* ─── 2. LA DESCENTE ─── (premier élément du bloc FERRÉ EN BAS) */}
+      <div className="mt-auto shrink-0 px-[13px]">
         <SectionRule label="Descente">
           <span className="ml-[6px] tracking-[3px]">
             {[0, 1, 2].map((i) => (

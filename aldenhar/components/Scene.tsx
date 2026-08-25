@@ -59,6 +59,7 @@ import {
   DEMO_BORNE_CADRAGES,
   DEMO_FALAISE_APPROCHE,
   DEMO_FALAISE_LECTURES,
+  FALAISE_REMONTE,
   DEMO_MEUTE_COUTURE,
   lieuDejaVisite,
   lieuNom,
@@ -560,9 +561,22 @@ function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
  * (couture FRANCHIT_SORTIE), PUIS ouvre deux directions de lande avec leurs
  * indices : sortir, ensuite choisir. Dans cet ordre.
  */
+/** LA VUE DES DEUX CHEMINS (retour Patrick 25/08 : « penser à faire une image
+ *  de transition de deux chemins entre le hameau des Renonçants et un autre
+ *  chemin »). L'écran de sortie est le seul du jeu où l'on voit à la fois le
+ *  village dans le dos et les deux routes qui s'ouvrent : il mérite sa propre
+ *  vue, pas une marche de lande tirée au sort.
+ *  ⚠️ L'asset n'existe pas encore (prompt dans `data/images-a-produire.md`) :
+ *  le garde `assetExiste` retombe sur la vue de marche tant qu'il n'est pas
+ *  déposé dans `public/assets/`. Aucun code à changer à sa réception. */
+const SORTIE_DEUX_CHEMINS = "assets/scene_transition_sortie_hameau_deux_chemins_a.png";
+
 function habillageSortie(base: SceneType, seed: number): SceneType {
   return {
     ...base,
+    illustration: assetExiste(SORTIE_DEUX_CHEMINS)
+      ? SORTIE_DEUX_CHEMINS
+      : base.illustration,
     // La couture remplace l'ambiance (narration[0]). Tirée par la graine —
     // identique à la reprise ; pas de dédup `liaisonVues` : la sortie ne se
     // joue qu'une fois par vie.
@@ -753,6 +767,17 @@ const VERROU_DIEGESE: Record<string, string> = {
 const VERROU_DUR = "La Descente ne s'ouvre pas encore. Ce n'est pas une question de courage.";
 
 const MOTS_PAR_ECRAN = 90;
+/**
+ * Un geste tactile a-t-il DÉJÀ été vécu par ce compte ? (Retour du 25/08.)
+ * `null` = le geste est rejouable à volonté, on ne consulte rien.
+ * La mémoire est celle du COMPTE : la découverte survit à la mort du héros,
+ * exactement comme une découverte de lore.
+ */
+function gesteDejaVecu(cle: string | null): boolean {
+  if (!cle) return false;
+  return vu(loadMemory().vus, "geste|" + cle) > 0;
+}
+
 function decouperEnEcrans(entries: FeedEntry[]): FeedEntry[][] {
   const texte = (e: FeedEntry) =>
     e.kind === "narration"
@@ -2066,6 +2091,20 @@ export default function Scene() {
         if (lectures.length)
           nextScene = { ...nextScene, narration: [...nextScene.narration, ...lectures] };
       }
+      /* LE GRIMPEUR QUI REMONTE (retour Patrick 25/08) — UNE fois par COMPTE,
+         à la première arrivée devant les cordes. C'est le seul « passant » que
+         la Falaise admet, et il dit sa règle en échouant : on ne remonte pas.
+         Marqueur de compte (jamais de run) : une deuxième vie n'a pas la même
+         Falaise, exactement comme le rationnement des surprises. */
+      if (nextScene.id === "falaise-cordes-2" && vu(loadMemory().vus, "falaise|remonte") === 0) {
+        nextScene = {
+          ...nextScene,
+          narration: [...nextScene.narration, ...FALAISE_REMONTE],
+        };
+        mutateMemory((mem) => {
+          mem.vus = noter(mem.vus, "falaise|remonte");
+        });
+      }
       trav.phase = "scene";
       trav.current = nextScene.id;
     } else if (
@@ -3108,7 +3147,15 @@ export default function Scene() {
       nextScene.liaison && (runRef.current?.loiVues ?? []).length === 0 && chance(0.22)
         ? nextStep % 4
         : null;
-    const elu = elireInjection({
+    /* ⚠️ AU BORD DU MONDE, PLUS RIEN DU MONDE DERRIÈRE (retour Patrick
+       25/08 : « j'ai cru voir passer quelqu'un qui prenait une route pour
+       aller au hameau — ça n'a pas de sens alors que je descendais »). À la
+       Falaise, le héros est passé le point de non-retour : aucune injection
+       ambiante (rappel, rumeur, corbeaux, loi, Geôlier de scène) ni aucune
+       surprise contextuelle ne s'y joue. Le seul passant admis est celui que
+       la Falaise écrit elle-même — l'Appelé, puis le grimpeur qui remonte. */
+    const auBord = /^falaise-cordes/.test(nextScene.id) || Boolean(nextScene.terminal);
+    const elu = auBord ? null : elireInjection({
       chapitre: chapterAfter.length > 0,
       geolier: opts?.result === 1 || opts?.result === 20,
       soupcon: Boolean(soupManifest || soupJailer),
@@ -3174,7 +3221,9 @@ export default function Scene() {
     }
     // ═══ LES SURPRISES CONTEXTUELLES (6/08) — la surprise ARMÉE attend son
     // contexte ; s'il n'arrive jamais, elle est perdue, on n'insiste pas.
-    {
+    // Jamais à la Falaise (voir `auBord`) : un inconnu qui te croise n'a plus
+    // de route à prendre quand le sol s'arrête.
+    if (!auBord) {
       const memS = loadMemory();
       const runS = runRef.current;
       if (surprisePrete(runS, "prophetie") && nextStep <= 6) {
@@ -3374,6 +3423,19 @@ export default function Scene() {
         img = { src: ancienne, kind: "scene" };
         // ⚠️ posée APRÈS showScreen (qui purge les bascules différées d'un
         // écran précédent) — voir la fin d'advance().
+        differeVueDeMarche = nextIllustration;
+      } else if (
+        nextScene.illustrationArrivee &&
+        nextScene.illustrationArrivee !== nextIllustration
+      ) {
+        /* LE LIEU AVANT LA RENCONTRE (retour Patrick 25/08). Les rencontres
+           qui n'ont pas d'écran-2 pour porter leur décor arrivaient DIRECTEMENT
+           sur la créature : on se retrouvait devant une gueule sans avoir vu
+           où l'on était. Le premier écran montre le LIEU pendant qu'on lit
+           l'approche ; la créature prend le relais au tap suivant, par la même
+           bascule différée que la vue de marche. Aucun écran, aucun tap de
+           plus — la même arrivée, dans l'ordre où on la vit. */
+        img = { src: nextScene.illustrationArrivee, kind: "scene" };
         differeVueDeMarche = nextIllustration;
       }
     } else if (obtainedItem) {
@@ -3733,6 +3795,15 @@ export default function Scene() {
     persist((r) => {
       r.vus = noter(r.vus, "demo|geste|" + radical(scene.id));
     });
+    // Un geste de DÉCOUVERTE (`rejouable: false`) ne se rejoue pas d'une vie
+    // à l'autre : effacer la mousse de la borne est bon UNE fois, ensuite le
+    // héros sait déjà ce qu'il y a dessous. Marqueur de COMPTE, lu par
+    // `gesteDejaVecu` à l'armement du geste.
+    if (c.minigame.rejouable === false) {
+      mutateMemory((mem) => {
+        mem.vus = noter(mem.vus, "geste|" + c.id);
+      });
+    }
     if (ok) {
       // Un choix RISQUÉ porteur d'un geste (le Tracé de la Chapelle) : en
       // démo le geste DÉCIDE — pas de dé derrière. La réussite sert l'issue
@@ -3791,7 +3862,19 @@ export default function Scene() {
     // La config se calcule ICI (lecture de runRef interdite au rendu) : la
     // stat module la difficulté du geste, comme dans la galerie — l'Instinct
     // du héros raccourcit l'appui à tenir et rend les alertes lisibles.
-    if (choice.minigame && demoActive() && !minigamesJoues.current.includes(choice.id)) {
+    /* ⚠️ UN GESTE NE SE REJOUE PAS D'UNE VIE À L'AUTRE (retour Patrick 25/08 :
+       « effacer la mousse de la borne est marrant la première fois mais
+       ensuite c'est juste redondant »). Un geste tactile est une DÉCOUVERTE :
+       la première fois on apprend ce qu'il y a dessous, les fois suivantes on
+       le sait déjà — le refaire est une corvée. `gesteDejaVecu` lit la
+       mémoire du COMPTE : passé la première fois, le choix se résout par sa
+       voie écrite (le jeu répond, il ne fait pas répéter). */
+    if (
+      choice.minigame &&
+      demoActive() &&
+      !minigamesJoues.current.includes(choice.id) &&
+      !gesteDejaVecu(choice.minigame.rejouable === false ? choice.id : null)
+    ) {
       const eng = choice.minigame.engine;
       if (eng === "hold") {
         const inst = statDe(runRef.current?.stats, "INSTINCT");

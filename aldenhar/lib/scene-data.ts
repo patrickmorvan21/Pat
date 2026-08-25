@@ -499,7 +499,16 @@ export type Choice = {
     echecGardeLoot?: boolean;
     /** Soupçon payé sur l'échec du geste (le bruit, le témoin). */
     echecSoupcon?: number;
-  };
+      /**
+     * `false` = le geste ne se joue qu'UNE fois par compte (retour Patrick
+     * 25/08). Réservé aux gestes de DÉCOUVERTE — frotter la mousse révèle une
+     * inscription : une fois qu'on l'a lue, la refaire apparaître est une
+     * corvée. Les gestes qui portent une DÉCISION (le Crochetage, la
+     * cérémonie de la corde) restent rejouables : ce qu'on y joue change à
+     * chaque fois. Par défaut, un geste est rejouable.
+     */
+    rejouable?: boolean;
+};
   /**
    * LA NUIT DE LA DÉMO (segment 7) : qualité du repos selon la porte trouvée.
    * complet = la maison crochetée (soin entier, blessure refermée) ·
@@ -633,6 +642,24 @@ export type Scene = {
   narrationDemo?: string[];
   /** Asset tramé de la scène (public/assets/…). Défaut : portail. Temps 2 : varier par contexte. */
   illustration?: string;
+  /**
+   * LE LIEU AVANT LA RENCONTRE (retour Patrick 25/08 : « avant de tomber sur
+   * le Pendu Mal Fixé, mettre l'image du lieu, le Champ des Fixés, pour
+   * donner du contexte — faire la même chose pour tous »).
+   *
+   * Certaines destinations du pool arrivent DIRECTEMENT sur la créature :
+   * on est téléporté devant une gueule sans avoir vu où l'on est. Ce champ
+   * pose l'image du LIEU sur le premier écran d'arrivée ; `illustration`
+   * (la créature) prend le relais au tap suivant, par la même bascule
+   * différée que la vue de marche (`imageApresConsequence`). Aucun écran de
+   * plus, aucun tap de plus : c'est la même arrivée, montrée dans l'ordre où
+   * on la vit — le lieu, puis ce qui s'y trouve.
+   *
+   * ⚠️ Le modèle est `chien-du-bailli` (arrivée = la maison murée, écran-2 =
+   * le chien), qui le faisait déjà par la structure. Ce champ sert aux
+   * rencontres qui n'ont pas d'écran-2 pour porter le lieu.
+   */
+  illustrationArrivee?: string;
   /**
    * Objet RÉEL des Landes ancré à ce lieu (chantier 1 du 23/07) : id d'une entrée
    * de `LANDES_OBJETS`. Ramassé une seule fois à l'arrivée, si le slot (actif ou
@@ -1120,7 +1147,7 @@ export const SCENES: Scene[] = [
         // la mousse de la pierre révèle les marques du sud. Zéro risque : le
         // tutoriel tactile déguisé en lore (pas d'`echec`, le Frottage ne
         // peut pas rater). La conséquence écrite joue ensuite, inchangée.
-        minigame: { engine: "rub", label: "CÔTÉ SUD" },
+        minigame: { engine: "rub", label: "CÔTÉ SUD", rejouable: false },
         grantsLoot: "pierre-retour",
         passive: {
           consequence:
@@ -1577,6 +1604,7 @@ export const SCENES: Scene[] = [
     // une seule scène (amende §6 : durée par poids narratif).
     id: "bete-chemins-creux",
     illustration: "assets/monstre_bete_chemins_creux_a.png",
+    illustrationArrivee: "assets/scene_chemin_creux_c.png",
     combat: true,
     // L'embuscade enchaîne sur SON lieu : on descendait vers le Chemin Creux,
     // la Bête surgit au coude, et le creux continue après le combat.
@@ -1937,6 +1965,7 @@ export const SCENES: Scene[] = [
     // scène pose l'identité). Pas un combat : le Bailli pendu JUGE.
     id: "pendu-qui-parle",
     illustration: "assets/monstre_pendu_qui_parle_a.png",
+    illustrationArrivee: "assets/scene_colline_aux_gibets_c.png",
     chainNext: "pendu-qui-parle-2",
     // Démo : prose courte + TOUCHE 1 du Grand Témoin (le corbeau de travers
     // qui te regarde, toi) — une trace, jamais une explication (règle lot 2).
@@ -2408,6 +2437,7 @@ export const SCENES: Scene[] = [
   {
     id: "pendu-mal-fixe",
     illustration: "assets/monstre_pendu_mal_fixe_v2_c.png",
+    illustrationArrivee: "assets/scene_champ_des_fixes_b.png",
     combat: true,
     foe: "pendu-mal-fixe",
     foeName: "Le Pendu Mal Fixé",
@@ -7249,7 +7279,7 @@ export const SCENES: Scene[] = [
       {
         id: "geste-borne",
         label: "Écarter la mousse de la pierre",
-        minigame: { engine: "rub", label: "CÔTÉ SUD" },
+        minigame: { engine: "rub", label: "CÔTÉ SUD", rejouable: false },
         borneSud: true,
         passive: {
           consequence:
@@ -9036,6 +9066,18 @@ export const DEMO_BORNE_CADRAGES: Record<string, string> = {
 export const DEMO_FALAISE_APPROCHE =
   "Passé les silhouettes grises, la lande descend sans prévenir, et le vent " +
   "change de goût : plus de bruyère. Du vide.";
+
+/** LE GRIMPEUR QUI REMONTE (retour Patrick 25/08) — la Falaise dit sa règle
+ *  en la faisant échouer sous les yeux du joueur : personne ne remonte. UNE
+ *  SEULE FOIS PAR COMPTE (rationnement des surprises), à la première arrivée
+ *  devant les cordes : chaque joueur le voit une fois, et une seconde vie n'a
+ *  pas la même Falaise. On n'explique jamais ce qu'il a vu en bas — c'est le
+ *  seul endroit du jeu où le vide a le dernier mot. */
+export const FALAISE_REMONTE: string[] = [
+  "Une des cordes est tendue. Pas balancée par le vent \u2014 tendue, et elle bouge par à-coups. Quelqu\u2019un remonte.",
+  "Une main passe le bord, puis un visage. Il a vu quelque chose en bas et il n\u2019arrive pas à dire quoi : il ouvre la bouche, la referme, recommence.",
+  "Puis la corde se met à trembler sous lui, de plus en plus vite. Tu tends la main. Il te regarde la tendre \u2014 et il tombe, devant toi, sans un cri. La corde remonte, molle, allégée. On ne remonte pas, ici. C\u2019est tout ce que ça voulait dire.",
+];
 
 /** La Meute au portillon (segment 9) : la réponse à « aucun chien n'aboie ». */
 export const DEMO_MEUTE_COUTURE =

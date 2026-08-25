@@ -149,7 +149,7 @@ export default function Codex({ onClose }: { onClose: () => void }) {
       {niveau.t === "entree" && entree ? (
         <EntreeFiche entree={entree} prov={prov} />
       ) : (
-        <>
+        <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
           {/* ─── En-tête : l'image monte AU RAS du haut de l'écran (retour
               Patrick 21/08 — le retrait de 35px de la maquette était la barre
               de statut iOS mimée dans Figma, pas du charbon à rendre). Le
@@ -234,7 +234,14 @@ export default function Codex({ onClose }: { onClose: () => void }) {
             </div>
           ) : (
             /* ─── Écran 3 : la zone, trois sections réglées ─── */
-            <div className="min-h-0 flex-1 overflow-y-auto px-[13px] pb-[20px] pt-[6px]">
+            /* ⚠️ PAS de `overflow-y-auto` ici : c'est le conteneur PARENT qui
+               défile, image d'en-tête comprise (retour Patrick 25/08 — « quand
+               je scrolle les Landes, l'image en haut est en fixe, il faut
+               qu'elle scrolle »). Un en-tête `shrink-0` au-dessus d'une liste
+               scrollable fige l'image par construction : la seule façon de la
+               faire défiler avec le contenu est qu'ils partagent le même
+               conteneur de défilement. */
+            <div className="px-[13px] pb-[20px] pt-[6px]">
               {SECTIONS.map(({ type, label }) => {
                 const rows = debloquees.filter((e) => e.type === type);
                 return (
@@ -273,7 +280,7 @@ export default function Codex({ onClose }: { onClose: () => void }) {
               })}
             </div>
           )}
-        </>
+        </div>
       )}
     </div>
   );

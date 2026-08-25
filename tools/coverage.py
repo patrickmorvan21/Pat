@@ -362,9 +362,29 @@ def read_scenes(src: str) -> list[dict]:
 # qu'il voit. Elles n'appartiennent à aucune scène de `SCENES[]` — sans cette
 # table elles n'ont, elles non plus, aucune fiche où être jugées.
 REGLE_MARCHE = {
-    "HAMEAU_WALK": "quand on marche vers le hameau, ou d'une ruelle à l'autre",
-    "LANDES_WALK": "marche ordinaire dans la lande (tirage)",
-    "LANDES_GENERIC": "marche ordinaire dans la lande (tirage)",
+    "HAMEAU_WALK": (
+        "d'une ruelle du hameau à l'autre, ou quand une des deux directions "
+        "offertes est le village (le hameau grossit à l'horizon)"
+    ),
+    "LANDES_WALK": (
+        "en pleine lande, entre deux lieux extérieurs — tirée par la graine "
+        "du pas : ni la provenance ni la destination ne la choisissent"
+    ),
+    "LANDES_GENERIC": (
+        "en pleine lande, entre deux lieux extérieurs — tirée par la graine "
+        "du pas : ni la provenance ni la destination ne la choisissent"
+    ),
+}
+
+# Les vues de marche dont la règle est écrite AILLEURS que dans `pickWalkImage`
+# (retour Patrick 25/08 : « savoir d'où on venait, où on s'apprête à aller »).
+# Sans cette table, l'écran de transition le plus chargé de sens du jeu — la
+# sortie du village — n'a aucune fiche où être jugé.
+MARCHE_HORS_POOL = {
+    "SORTIE_DEUX_CHEMINS": (
+        "AU SORTIR DU HAMEAU : le muret d'enceinte vient d'être franchi, le "
+        "village est dans le dos, et deux routes de lande s'ouvrent devant"
+    ),
 }
 
 
@@ -382,7 +402,26 @@ def read_transitions(src: str) -> list[dict]:
     for m in re.finditer(
         r'offered\.includes\("([^"]+)"\)\) return "(assets/[^"]+)"', src
     ):
-        out[m.group(2)] = f"quand une des deux directions est « {m.group(1)} »"
+        # Le NOM du lieu, pas son identifiant : la fiche se lit, elle ne se
+        # débogue pas (retour Patrick 25/08 sur le contexte des transitions).
+        nm = re.search(r'"?%s"?\s*:\s*"([^"]+)"' % re.escape(m.group(1)), src)
+        dest = nm.group(1) if nm else m.group(1)
+        out[m.group(2)] = (
+            f"quand une des deux directions offertes est « {dest} » — "
+            f"on marche déjà vers ce lieu-là"
+        )
+    # La sortie du village : sa vue est posée par `habillageSortie` dans
+    # `components/Scene.tsx`, pas par `pickWalkImage`. Le garde `assetExiste`
+    # la replie sur la marche de lande tant que le fichier n'est pas déposé —
+    # elle apparaît donc ici comme « FICHIER ABSENT DU DISQUE », ce qui est
+    # exactement l'information utile.
+    scn = ROOT / "aldenhar" / "components" / "Scene.tsx"
+    if scn.exists():
+        stx = scn.read_text(encoding="utf-8")
+        for nom, regle in MARCHE_HORS_POOL.items():
+            m2 = re.search(nom + r'\s*=\s*"(assets/[^"]+)"', stx)
+            if m2:
+                out[m2.group(1)] = regle
     return [{"image": k, "regle": v} for k, v in out.items()]
 
 

@@ -475,7 +475,11 @@ function InventaireTab({
   };
 
   return (
-    <div className="pt-[4px]">
+    /* ⚠️ MÊME FERRAGE QUE L'ÉCRAN RELIQUES (retour Patrick 25/08) : la fiche
+       de l'objet est ferrée en HAUT, les groupes Passifs/Actifs/Reliques sont
+       ferrés en BAS (`mt-auto` sur le premier d'entre eux). L'espace libre
+       vit entre les deux. */
+    <div className="flex min-h-full flex-col pt-[4px]">
       {/* Détail de l'objet sélectionné — icône tramée agrandie au pixel. */}
       <div className="mx-auto size-[276px]">
         {detailImg && (
@@ -509,7 +513,7 @@ function InventaireTab({
       </div>
 
       {/* Deux groupes côte à côte (maquette 1925:524) : Passifs · Actifs. */}
-      <div className="mt-[26px] flex gap-[28px] px-[15px]">
+      <div className="mt-auto mt-[26px] flex gap-[28px] px-[15px]">
         <div>
           <SectionHead label="Passifs" inset />
           <div className="mt-[10px] flex gap-[9px]">

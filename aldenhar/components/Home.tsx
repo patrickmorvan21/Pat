@@ -130,10 +130,13 @@ export default function Home() {
 
   if (phase === "game") return <Scene />;
   if (phase === "intro") return <Intro onDone={() => setPhase("prologue")} />;
-  // Mode démo (script 24/08, segment 0) : pas de carton d'acte — le Seuil
+  // ⚠️ LE CARTON D'ACTE SE JOUE AUSSI EN DÉMO (retour Patrick, 25/08 : « on a
+  // perdu l'introduction de l'acte 1 les Lisières, c'était beau »). Il avait
+  // été sauté le 24/08 pour compresser l'entrée — mais c'est le seul écran qui
+  // NOMME le monde, et il coûte un tap. La compression se paie ailleurs.
   // débouche droit sur la Borne, le premier geste avant la minute 2.
   if (phase === "prologue")
-    return <Prologue onDone={() => setPhase(demoActive() ? "game" : "acte")} />;
+    return <Prologue onDone={() => setPhase("acte")} />;
   // Nommer l'acte juste après le scellement du pacte, avant la première scène.
   if (phase === "acte") return <ActeScreen onDone={() => setPhase("game")} />;
 
