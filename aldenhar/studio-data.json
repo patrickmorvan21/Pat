@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-25T07:19:01Z",
- "commit": "dfce1de",
+ "genere": "2026-08-25T19:12:39Z",
+ "commit": "032d944",
  "zones": [
   {
    "id": "landes",
@@ -7436,81 +7436,15 @@
  ],
  "ecransDeMarche": [
   {
-   "fichier": "scene_lande_arbres_morts_c.png",
-   "hash": "f272f58d",
-   "taille": 12824,
+   "fichier": "scene_transition_sortie_hameau_deux_chemins_a.png",
+   "hash": null,
+   "taille": null,
    "recent": false,
-   "existe": true,
+   "existe": false,
    "statut": "fallback",
    "herite": "",
-   "id": "marche:scene_lande_arbres_morts_c",
-   "regle": "marche ordinaire dans la lande (tirage)"
-  },
-  {
-   "fichier": "scene_lande_generique_1.png",
-   "hash": "2c4e2337",
-   "taille": 20781,
-   "recent": false,
-   "existe": true,
-   "statut": "fallback",
-   "herite": "",
-   "id": "marche:scene_lande_generique_1",
-   "regle": "marche ordinaire dans la lande (tirage)"
-  },
-  {
-   "fichier": "scene_lande_generique_2.png",
-   "hash": "85750f19",
-   "taille": 32814,
-   "recent": false,
-   "existe": true,
-   "statut": "fallback",
-   "herite": "",
-   "id": "marche:scene_lande_generique_2",
-   "regle": "marche ordinaire dans la lande (tirage)"
-  },
-  {
-   "fichier": "scene_lande_generique_3.png",
-   "hash": "9aa596fa",
-   "taille": 24607,
-   "recent": false,
-   "existe": true,
-   "statut": "fallback",
-   "herite": "",
-   "id": "marche:scene_lande_generique_3",
-   "regle": "marche ordinaire dans la lande (tirage)"
-  },
-  {
-   "fichier": "scene_lande_generique_4.png",
-   "hash": "152922e2",
-   "taille": 21865,
-   "recent": false,
-   "existe": true,
-   "statut": "fallback",
-   "herite": "",
-   "id": "marche:scene_lande_generique_4",
-   "regle": "marche ordinaire dans la lande (tirage)"
-  },
-  {
-   "fichier": "scene_landes_liaison_fourche_a.png",
-   "hash": "a21db23f",
-   "taille": 30387,
-   "recent": false,
-   "existe": true,
-   "statut": "fallback",
-   "herite": "",
-   "id": "marche:scene_landes_liaison_fourche_a",
-   "regle": "marche ordinaire dans la lande (tirage)"
-  },
-  {
-   "fichier": "scene_landes_liaison_plateau_d.png",
-   "hash": "4d03ba9f",
-   "taille": 28299,
-   "recent": false,
-   "existe": true,
-   "statut": "fallback",
-   "herite": "",
-   "id": "marche:scene_landes_liaison_plateau_d",
-   "regle": "marche ordinaire dans la lande (tirage)"
+   "id": "marche:scene_transition_sortie_hameau_deux_chemins_a",
+   "regle": "AU SORTIR DU HAMEAU : le muret d'enceinte vient d'être franchi, le village est dans le dos, et deux routes de lande s'ouvrent devant"
   },
   {
    "fichier": "scene_hameau_dense_b.png",
@@ -7521,7 +7455,7 @@
    "statut": "fallback",
    "herite": "",
    "id": "marche:scene_hameau_dense_b",
-   "regle": "quand on marche vers le hameau, ou d'une ruelle à l'autre"
+   "regle": "d'une ruelle du hameau à l'autre, ou quand une des deux directions offertes est le village (le hameau grossit à l'horizon)"
   },
   {
    "fichier": "scene_hameau_dense_c.png",
@@ -7532,7 +7466,7 @@
    "statut": "fallback",
    "herite": "",
    "id": "marche:scene_hameau_dense_c",
-   "regle": "quand on marche vers le hameau, ou d'une ruelle à l'autre"
+   "regle": "d'une ruelle du hameau à l'autre, ou quand une des deux directions offertes est le village (le hameau grossit à l'horizon)"
   },
   {
    "fichier": "scene_hameau_dense_d.png",
@@ -7543,7 +7477,84 @@
    "statut": "fallback",
    "herite": "",
    "id": "marche:scene_hameau_dense_d",
-   "regle": "quand on marche vers le hameau, ou d'une ruelle à l'autre"
+   "regle": "d'une ruelle du hameau à l'autre, ou quand une des deux directions offertes est le village (le hameau grossit à l'horizon)"
+  },
+  {
+   "fichier": "scene_lande_arbres_morts_c.png",
+   "hash": "f272f58d",
+   "taille": 12824,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_lande_arbres_morts_c",
+   "regle": "en pleine lande, entre deux lieux extérieurs — tirée par la graine du pas : ni la provenance ni la destination ne la choisissent"
+  },
+  {
+   "fichier": "scene_lande_generique_1.png",
+   "hash": "2c4e2337",
+   "taille": 20781,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_lande_generique_1",
+   "regle": "en pleine lande, entre deux lieux extérieurs — tirée par la graine du pas : ni la provenance ni la destination ne la choisissent"
+  },
+  {
+   "fichier": "scene_lande_generique_2.png",
+   "hash": "85750f19",
+   "taille": 32814,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_lande_generique_2",
+   "regle": "en pleine lande, entre deux lieux extérieurs — tirée par la graine du pas : ni la provenance ni la destination ne la choisissent"
+  },
+  {
+   "fichier": "scene_lande_generique_3.png",
+   "hash": "9aa596fa",
+   "taille": 24607,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_lande_generique_3",
+   "regle": "en pleine lande, entre deux lieux extérieurs — tirée par la graine du pas : ni la provenance ni la destination ne la choisissent"
+  },
+  {
+   "fichier": "scene_lande_generique_4.png",
+   "hash": "152922e2",
+   "taille": 21865,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_lande_generique_4",
+   "regle": "en pleine lande, entre deux lieux extérieurs — tirée par la graine du pas : ni la provenance ni la destination ne la choisissent"
+  },
+  {
+   "fichier": "scene_landes_liaison_fourche_a.png",
+   "hash": "a21db23f",
+   "taille": 30387,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_landes_liaison_fourche_a",
+   "regle": "en pleine lande, entre deux lieux extérieurs — tirée par la graine du pas : ni la provenance ni la destination ne la choisissent"
+  },
+  {
+   "fichier": "scene_landes_liaison_plateau_d.png",
+   "hash": "4d03ba9f",
+   "taille": 28299,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_landes_liaison_plateau_d",
+   "regle": "en pleine lande, entre deux lieux extérieurs — tirée par la graine du pas : ni la provenance ni la destination ne la choisissent"
   },
   {
    "fichier": "scene_landes_liaison_chemin_creux_a.png",
@@ -7554,7 +7565,7 @@
    "statut": "fallback",
    "herite": "",
    "id": "marche:scene_landes_liaison_chemin_creux_a",
-   "regle": "quand une des deux directions est « chemin-creux »"
+   "regle": "quand une des deux directions offertes est « Vers le chemin creux » — on marche déjà vers ce lieu-là"
   },
   {
    "fichier": "scene_landes_liaison_sud_c.png",
@@ -7565,7 +7576,7 @@
    "statut": "fallback",
    "herite": "",
    "id": "marche:scene_landes_liaison_sud_c",
-   "regle": "quand une des deux directions est « palissade-sud »"
+   "regle": "quand une des deux directions offertes est « Vers une palissade au sud » — on marche déjà vers ce lieu-là"
   }
  ],
  "liens": [
@@ -7894,7 +7905,7 @@
    "fichier": "fermer.svg",
    "hash": "81984d4a",
    "taille": 870,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "fermer.svg"
   },
@@ -8246,7 +8257,7 @@
    "fichier": "retour.svg",
    "hash": "3fb4fc41",
    "taille": 565,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "retour.svg"
   },
@@ -9820,7 +9831,7 @@
   "etats": 2,
   "besoins": 0,
   "transitions": 64,
-  "ecransDeMarche": 12,
+  "ecransDeMarche": 13,
   "interactions": 30,
   "aRefaire": 19,
   "familiarite": 34
