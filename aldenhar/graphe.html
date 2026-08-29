@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PACTUM — Le Graphe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ------------------------------------------------------------------ *
+ * PACTUM — Le Graphe.  Palette VERROUILLÉE : charbon, orange, blanc.
+ * Aucune autre teinte : les catégories se distinguent par l'opacité du
+ * blanc et par la TAILLE, jamais par une couleur inventée.
+ * Aucun dégradé, aucune interpolation : les animations sont en steps().
+ * ------------------------------------------------------------------ */
+:root{
+  --charbon:#1c1a16;
+  --orange:#e0632a;
+  --blanc:#ffffff;
+  --blanc-70:rgba(255,255,255,.7);
+  --blanc-50:rgba(255,255,255,.5);
+  --blanc-20:rgba(255,255,255,.2);
+  --blanc-08:rgba(255,255,255,.08);
+  --mono:"Roboto Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--charbon)}
+body{font-family:var(--mono);color:var(--blanc-70);font-size:12px;-webkit-font-smoothing:antialiased}
+canvas#toile{position:absolute;inset:0;display:block;cursor:grab}
+canvas#toile.tire{cursor:grabbing}
+
+/* ----------------------------- panneaux --------------------------- */
+.volet{
+  position:absolute;background:var(--charbon);border:1px solid var(--blanc-20);
+  z-index:5;
+}
+#gauche{top:14px;left:14px;width:252px;max-height:calc(100% - 28px);overflow:auto}
+#gauche::-webkit-scrollbar,#fiche::-webkit-scrollbar{width:6px}
+#gauche::-webkit-scrollbar-thumb,#fiche::-webkit-scrollbar-thumb{background:var(--blanc-20)}
+
+.marque{padding:12px 14px 10px;border-bottom:1px solid var(--blanc-08)}
+.marque b{font-weight:700;letter-spacing:2.4px;font-size:11px;color:var(--blanc);display:block}
+.marque span{font-size:10px;color:var(--blanc-50);letter-spacing:.4px}
+
+.bloc{border-bottom:1px solid var(--blanc-08)}
+.bloc > summary{
+  padding:9px 14px;cursor:pointer;list-style:none;font-size:10px;letter-spacing:1.6px;
+  text-transform:uppercase;color:var(--blanc-50);user-select:none;display:flex;
+  align-items:center;justify-content:space-between;
+}
+.bloc > summary::-webkit-details-marker{display:none}
+.bloc > summary:hover{color:var(--blanc)}
+.bloc > summary i{font-style:normal;font-size:9px;color:var(--blanc-20)}
+.bloc[open] > summary i{color:var(--orange)}
+.corps{padding:2px 14px 13px}
+
+#q{
+  width:100%;background:transparent;border:1px solid var(--blanc-20);color:var(--blanc);
+  font-family:var(--mono);font-size:12px;padding:7px 8px;outline:none;
+}
+#q:focus{border-color:var(--orange)}
+#q::placeholder{color:var(--blanc-20)}
+#resultats{margin-top:8px;max-height:190px;overflow:auto}
+#resultats div{padding:4px 0;cursor:pointer;color:var(--blanc-50);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#resultats div:hover{color:var(--orange)}
+
+label.ligne{display:flex;align-items:center;gap:8px;padding:4px 0;cursor:pointer;user-select:none}
+label.ligne:hover{color:var(--blanc)}
+label.ligne input{appearance:none;width:11px;height:11px;border:1px solid var(--blanc-20);background:transparent;flex:0 0 auto;cursor:pointer}
+label.ligne input:checked{background:var(--orange);border-color:var(--orange)}
+label.ligne .pastille{width:9px;height:9px;flex:0 0 auto;border-radius:50%}
+label.ligne .compte{margin-left:auto;color:var(--blanc-20);font-size:10px}
+
+.curseur{display:block;padding:6px 0 2px}
+.curseur span{display:flex;justify-content:space-between;font-size:10px;color:var(--blanc-50);letter-spacing:.6px}
+input[type=range]{
+  appearance:none;width:100%;height:1px;background:var(--blanc-20);outline:none;margin:8px 0 2px;
+}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:9px;height:9px;background:var(--orange);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:9px;height:9px;border:0;background:var(--orange);cursor:pointer}
+
+/* ------------------------------ la fiche -------------------------- */
+#fiche{
+  top:14px;right:14px;bottom:14px;width:392px;overflow:auto;
+  display:none;flex-direction:column;
+}
+#fiche.ouverte{display:flex}
+#fermer{
+  position:absolute;top:9px;right:9px;width:26px;height:26px;background:var(--charbon);
+  border:1px solid var(--blanc-20);cursor:pointer;padding:0;z-index:2;
+}
+#fermer::before,#fermer::after{
+  content:"";position:absolute;left:6px;top:11px;width:12px;height:2px;background:var(--blanc);
+}
+#fermer::before{transform:rotate(45deg)}#fermer::after{transform:rotate(-45deg)}
+#fermer:hover{border-color:var(--orange)}
+
+#fimg{width:100%;aspect-ratio:1/1;background:#000;object-fit:cover;image-rendering:pixelated;display:block}
+#fimg.vide{display:none}
+#fsansimg{
+  display:none;padding:26px 18px;text-align:center;color:var(--blanc-20);font-size:10px;
+  letter-spacing:1.4px;text-transform:uppercase;border-bottom:1px solid var(--blanc-08);
+}
+#fsansimg.on{display:block}
+
+.ftexte{padding:16px 18px 26px}
+#fcat{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:6px}
+#fnom{font-family:var(--serif);font-size:29px;line-height:1.1;color:var(--blanc);margin:0 0 8px;font-weight:400}
+#fmeta{font-size:10px;color:var(--blanc-50);letter-spacing:.5px;margin-bottom:16px;line-height:1.7}
+#fdesc p{margin:0 0 13px;line-height:1.75;font-size:12.5px;color:var(--blanc-70)}
+#fdesc p:last-child{margin-bottom:0}
+.sstitre{
+  font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--blanc-20);
+  margin:22px 0 10px;padding-top:12px;border-top:1px solid var(--blanc-08);
+}
+#fsorties a{display:block;color:var(--blanc-50);padding:4px 0;cursor:pointer;text-decoration:none;font-size:11.5px}
+#fsorties a:hover{color:var(--orange)}
+#fsorties a b{color:var(--blanc-20);font-weight:400}
+#fchemin{font-size:10px;color:var(--blanc-20);margin-top:20px;word-break:break-all}
+
+/* ------------------------------ le pied --------------------------- */
+#pied{
+  position:absolute;left:14px;bottom:14px;z-index:4;font-size:10px;color:var(--blanc-20);
+  letter-spacing:.6px;pointer-events:none;background:var(--charbon);padding:7px 10px;
+  border:1px solid var(--blanc-08);line-height:1.8;
+}
+#pied b{color:var(--blanc-50);font-weight:400}
+#etat{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:6;
+  font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--blanc-20);
+}
+#infobulle{
+  position:absolute;z-index:7;pointer-events:none;background:var(--charbon);
+  border:1px solid var(--blanc-20);padding:5px 9px;font-size:11px;color:var(--blanc);
+  display:none;max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+@media (max-width:820px){
+  #gauche{width:calc(100% - 28px)}
+  #fiche{left:14px;right:14px;width:auto;top:auto;height:64%}
+}
+</style>
+</head>
+<body>
+<canvas id="toile"></canvas>
+<div id="etat">chargement…</div>
+<div id="infobulle"></div>
+
+<div class="volet" id="gauche">
+  <div class="marque"><b>PACTUM</b><span id="soustitre">le graphe</span></div>
+
+  <details class="bloc" open><summary>Recherche <i>◆</i></summary>
+    <div class="corps">
+      <input id="q" placeholder="une scène, un lieu, un mot…" autocomplete="off">
+      <div id="resultats"></div>
+    </div>
+  </details>
+
+  <details class="bloc" open><summary>Groupes <i>◆</i></summary>
+    <div class="corps" id="groupes"></div>
+  </details>
+
+  <details class="bloc"><summary>Affichage <i>◆</i></summary>
+    <div class="corps" id="affichage"></div>
+  </details>
+
+  <details class="bloc"><summary>Forces <i>◆</i></summary>
+    <div class="corps" id="forces"></div>
+  </details>
+</div>
+
+<div class="volet" id="fiche">
+  <button id="fermer" aria-label="Fermer"></button>
+  <img id="fimg" alt="">
+  <div id="fsansimg">aucune image</div>
+  <div class="ftexte">
+    <div id="fcat"></div>
+    <h1 id="fnom"></h1>
+    <div id="fmeta"></div>
+    <div id="fdesc"></div>
+    <div id="fsortiesBloc" style="display:none">
+      <div class="sstitre" id="fsortiesTitre">Ce qui s'ouvre ici</div>
+      <div id="fsorties"></div>
+    </div>
+    <div id="fchemin"></div>
+  </div>
+</div>
+
+<div id="pied"></div>
+
+<script>
+"use strict";
+/* =====================================================================
+ * LE GRAPHE DE PACTUM
+ * La page ne contient AUCUNE donnée : elle va chercher graphe-data.json
+ * à côté d'elle. C'est ce qui la fait suivre le jeu sans reconstruction.
+ * ===================================================================== */
+
+// --- les catégories : forme et poids, jamais une couleur inventée -----
+const CAT = {
+  lieu:       { nom:"Lieux",        c:"#e0632a", a:1,   r:7.5, ordre:0 },
+  arrivee:    { nom:"Arrivées",     c:"#e0632a", a:.62, r:4.6, ordre:1 },
+  rencontre:  { nom:"Rencontres",   c:"#ffffff", a:1,   r:4.8, ordre:2 },
+  scene:      { nom:"Scènes",       c:"#ffffff", a:.62, r:3.6, ordre:3 },
+  terminal:   { nom:"Sorties",      c:"#e0632a", a:1,   r:6.2, ordre:4 },
+  marche:     { nom:"Vues de marche",c:"#ffffff",a:.3,  r:3.4, ordre:5 },
+  transition: { nom:"Transitions",  c:"#ffffff", a:.22, r:2.6, ordre:6 },
+};
+const LIENS = { appartient:.055, contexte:.045, suite:.16, sortie:.13, variante:.10 };
+
+const toile = document.getElementById("toile"), ctx = toile.getContext("2d");
+const bulle = document.getElementById("infobulle");
+let N = [], L = [], parId = new Map(), voisins = new Map();
+let vue = { x:0, y:0, k:1 }, alpha = 1, brut = "";
+let survol = null, choisi = null, tire = null, souris = { x:0, y:0 };
+const on = { lieu:1, arrivee:1, rencontre:1, scene:1, terminal:1, marche:1, transition:1 };
+const opt = { noms:1, images:0, liensFaibles:1 };
+const F = { repulsion:1, longueur:1, gravite:1 };
+
+/* --------------------------- chargement ---------------------------- */
+const CHEMIN = new URL("graphe-data.json", location.href).href;
+fetch(CHEMIN + "?t=" + Date.now())
+  .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+  .then(demarrer)
+  .catch(e => {
+    document.getElementById("etat").textContent = "graphe-data.json introuvable (" + e.message + ")";
+  });
+
+function demarrer(g) {
+  document.getElementById("etat").style.display = "none";
+  brut = g.brut || "";
+  N = g.noeuds; L = g.liens;
+
+  // disposition de départ : un anneau par catégorie, la simulation fait le reste
+  const R = Math.min(innerWidth, innerHeight) * .38;
+  N.forEach((n, i) => {
+    const a = (i / N.length) * Math.PI * 2, d = R * (.35 + .65 * ((CAT[n.cat] || CAT.scene).ordre / 6));
+    n.x = Math.cos(a) * d; n.y = Math.sin(a) * d; n.vx = 0; n.vy = 0;
+    n.r = (CAT[n.cat] || CAT.scene).r * (1 + Math.min(n.deg, 14) * .045);
+    let h = 0; for (let c = 0; c < n.id.length; c++) h = (h * 31 + n.id.charCodeAt(c)) % 997;
+    n.coh = .004 + (h / 997) * .016;
+    parId.set(n.id, n);
+  });
+  L = L.filter(l => parId.has(l.a) && parId.has(l.b));
+  L.forEach(l => { l.na = parId.get(l.a); l.nb = parId.get(l.b); });
+  N.forEach(n => voisins.set(n.id, new Set()));
+  L.forEach(l => { voisins.get(l.a).add(l.b); voisins.get(l.b).add(l.a); });
+
+  vue.x = innerWidth / 2; vue.y = innerHeight / 2;
+  // on laisse la simulation se poser AVANT le premier rendu : un graphe qui
+  // s'ouvre en pelote puis explose se lit mal.
+  for (let i = 0; i < 320; i++) pas();
+  alpha = .12;
+  batirPanneaux(g);
+  recadrer();
+  document.getElementById("soustitre").textContent =
+    g.totaux.scenes + " scènes · " + g.totaux.transitions + " transitions";
+  document.getElementById("pied").innerHTML =
+    "<b>" + g.totaux.scenes + "</b> scènes &nbsp;·&nbsp; <b>" + g.totaux.lieux + "</b> lieux &nbsp;·&nbsp; <b>"
+    + g.totaux.transitions + "</b> transitions &nbsp;·&nbsp; <b>" + g.totaux.marches + "</b> vues de marche"
+    + "<br>export du " + g.genere + (g.commit ? " · " + g.commit : "");
+  redimensionner(); boucle();
+}
+
+/* ------------------------------ panneaux --------------------------- */
+function batirPanneaux(g) {
+  const cpt = {};
+  N.forEach(n => cpt[n.cat] = (cpt[n.cat] || 0) + 1);
+  const gr = document.getElementById("groupes");
+  Object.keys(CAT).sort((a, b) => CAT[a].ordre - CAT[b].ordre).forEach(k => {
+    if (!cpt[k]) return;
+    const l = document.createElement("label"); l.className = "ligne";
+    l.innerHTML = '<input type="checkbox" checked><span class="pastille"></span><span>'
+      + CAT[k].nom + '</span><span class="compte">' + cpt[k] + '</span>';
+    const p = l.querySelector(".pastille");
+    p.style.background = CAT[k].c; p.style.opacity = CAT[k].a;
+    l.querySelector("input").onchange = e => { on[k] = e.target.checked ? 1 : 0; alpha = Math.max(alpha, .3); };
+    gr.appendChild(l);
+  });
+
+  const af = document.getElementById("affichage");
+  const rc = document.createElement("label"); rc.className = "ligne";
+  rc.style.cssText = "color:var(--orange);padding-top:8px";
+  rc.innerHTML = "<span>Recadrer la vue</span>";
+  rc.onclick = recadrer; af.appendChild(rc);
+  [["noms", "Noms des lieux"], ["images", "Vignettes"], ["liensFaibles", "Liens d'appartenance"]].forEach(([k, t]) => {
+    const l = document.createElement("label"); l.className = "ligne";
+    l.innerHTML = '<input type="checkbox"' + (opt[k] ? " checked" : "") + '><span>' + t + '</span>';
+    l.querySelector("input").onchange = e => { opt[k] = e.target.checked ? 1 : 0; };
+    af.appendChild(l);
+  });
+
+  const fo = document.getElementById("forces");
+  [["repulsion", "Répulsion", .2, 2.5], ["longueur", "Longueur des liens", .3, 2.5], ["gravite", "Gravité", 0, 2.5]]
+    .forEach(([k, t, mn, mx]) => {
+      const d = document.createElement("div"); d.className = "curseur";
+      d.innerHTML = '<span><i style="font-style:normal">' + t + '</i><i style="font-style:normal" class="v"></i></span>'
+        + '<input type="range" min="' + mn + '" max="' + mx + '" step="0.05" value="' + F[k] + '">';
+      const v = d.querySelector(".v"); v.textContent = F[k].toFixed(2);
+      d.querySelector("input").oninput = e => {
+        F[k] = +e.target.value; v.textContent = F[k].toFixed(2); alpha = Math.max(alpha, .25);
+      };
+      fo.appendChild(d);
+    });
+
+  const q = document.getElementById("q"), res = document.getElementById("resultats");
+  q.oninput = () => {
+    const t = q.value.trim().toLowerCase(); res.innerHTML = "";
+    if (t.length < 2) return;
+    N.filter(n => (n.nom + " " + n.id + " " + (n.desc || []).join(" ")).toLowerCase().includes(t))
+      .slice(0, 40).forEach(n => {
+        const d = document.createElement("div");
+        d.textContent = n.nom;
+        d.onclick = () => { ouvrir(n); viser(n); };
+        res.appendChild(d);
+      });
+  };
+}
+
+/* ---------------------------- simulation --------------------------- */
+function pas() {
+  if (alpha < .002) return;
+  const rep = 620 * F.repulsion, lon = 46 * F.longueur;
+  for (let i = 0; i < N.length; i++) {
+    const a = N[i];
+    for (let j = i + 1; j < N.length; j++) {
+      const b = N[j];
+      let dx = b.x - a.x, dy = b.y - a.y, d2 = dx * dx + dy * dy;
+      if (d2 > 260000 || d2 === 0) continue;
+      const f = rep / d2, d = Math.sqrt(d2);
+      const ux = dx / d * f, uy = dy / d * f;
+      a.vx -= ux; a.vy -= uy; b.vx += ux; b.vy += uy;
+    }
+  }
+  for (const l of L) {
+    const a = l.na, b = l.nb;
+    const cible = lon * (l.t === "appartient" ? .78 : l.t === "contexte" ? 2.1 : 1.45);
+    const raideur = l.t === "appartient" ? .085 : l.t === "contexte" ? .012 : .038;
+    let dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || .01;
+    const f = (d - cible) / d * raideur;
+    const ux = dx * f, uy = dy * f;
+    a.vx += ux; a.vy += uy; b.vx -= ux; b.vy -= uy;
+  }
+  // cohésion des nœuds sans lien : un nuage par catégorie, jamais un lien inventé
+  const centres = {};
+  for (const n of N) {
+    if (n.deg) continue;
+    const c = centres[n.cat] || (centres[n.cat] = { x: 0, y: 0, n: 0 });
+    c.x += n.x; c.y += n.y; c.n++;
+  }
+  for (const k in centres) { centres[k].x /= centres[k].n; centres[k].y /= centres[k].n; }
+  for (const n of N) {
+    if (!n.deg) {
+      const c = centres[n.cat];
+      n.vx += (c.x - n.x) * n.coh; n.vy += (c.y - n.y) * n.coh;
+    }
+  }
+
+  const g = .0016 * F.gravite;
+  for (const n of N) {
+    if (n === tire) { n.vx = n.vy = 0; continue; }
+    n.vx -= n.x * g; n.vy -= n.y * g;
+    n.vx *= .82; n.vy *= .82;
+    n.x += n.vx * alpha; n.y += n.vy * alpha;
+  }
+  alpha *= .994;
+}
+
+/* ------------------------------- rendu ----------------------------- */
+const cacheImg = new Map();
+function vignette(n) {
+  if (!n.image) return null;
+  if (cacheImg.has(n.id)) return cacheImg.get(n.id);
+  const im = new Image(); im.decoding = "async";
+  const src = sources(n); let i = 0;
+  im.onerror = () => { if (++i < src.length) im.src = src[i]; };
+  im.src = src[0];
+  cacheImg.set(n.id, im);
+  return im;
+}
+function sources(n) {
+  const f = n.image.f, v = n.image.h ? "?v=" + n.image.h : "";
+  return ["assets/" + f + v, "../aldenhar/public/assets/" + f + v, brut + f];
+}
+
+function dessiner() {
+  const w = toile.width / devicePixelRatio, h = toile.height / devicePixelRatio;
+  ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  ctx.fillStyle = "#1c1a16"; ctx.fillRect(0, 0, w, h);
+  ctx.save(); ctx.translate(vue.x, vue.y); ctx.scale(vue.k, vue.k);
+
+  const focus = survol || choisi;
+  const proches = focus ? voisins.get(focus.id) : null;
+  const visible = n => on[n.cat];
+
+  // les liens d'abord, toujours sous les points
+  for (const l of L) {
+    if (!visible(l.na) || !visible(l.nb)) continue;
+    const faible = l.t === "appartient" || l.t === "contexte";
+    if (faible && !opt.liensFaibles) continue;
+    let o = LIENS[l.t] || .1;
+    if (focus) o = (l.a === focus.id || l.b === focus.id) ? .55 : o * .22;
+    ctx.strokeStyle = "rgba(255,255,255," + o + ")";
+    ctx.lineWidth = (focus && (l.a === focus.id || l.b === focus.id)) ? 1.2 / vue.k : .8 / vue.k;
+    ctx.beginPath(); ctx.moveTo(l.na.x, l.na.y); ctx.lineTo(l.nb.x, l.nb.y); ctx.stroke();
+  }
+
+  for (const n of N) {
+    if (!visible(n)) continue;
+    const d = CAT[n.cat] || CAT.scene;
+    let a = d.a;
+    if (focus) a = (n === focus) ? 1 : (proches.has(n.id) ? d.a : d.a * .18);
+
+    if (opt.images && n.image && vue.k > .55) {
+      const im = vignette(n), s = n.r * 3.2;
+      if (im && im.complete && im.naturalWidth) {
+        ctx.save(); ctx.globalAlpha = a;
+        ctx.beginPath(); ctx.arc(n.x, n.y, s, 0, 6.284); ctx.clip();
+        ctx.imageSmoothingEnabled = false;
+        ctx.drawImage(im, n.x - s, n.y - s, s * 2, s * 2);
+        ctx.restore();
+        ctx.strokeStyle = d.c; ctx.globalAlpha = a; ctx.lineWidth = 1.4 / vue.k;
+        ctx.beginPath(); ctx.arc(n.x, n.y, s, 0, 6.284); ctx.stroke(); ctx.globalAlpha = 1;
+        continue;
+      }
+    }
+
+    ctx.globalAlpha = a; ctx.fillStyle = d.c;
+    ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, 6.284); ctx.fill();
+    if (n === choisi) {
+      ctx.strokeStyle = "#e0632a"; ctx.lineWidth = 1.6 / vue.k;
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r + 4.5 / vue.k, 0, 6.284); ctx.stroke();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // les noms : les lieux d'abord, le reste seulement quand on est près
+  ctx.textAlign = "center"; ctx.textBaseline = "top";
+  for (const n of N) {
+    if (!visible(n)) continue;
+    const estLieu = n.cat === "lieu" || n.cat === "terminal";
+    const proche = focus && proches.has(n.id);
+    const montre = (opt.noms && estLieu && vue.k > .38) || (vue.k > 2.4 && n.cat !== "transition")
+                || n === focus || (proche && vue.k > .8);
+    if (!montre) continue;
+    let a = focus ? (n === focus ? 1 : (proches.has(n.id) ? .7 : .12)) : (estLieu ? .78 : .42);
+    ctx.globalAlpha = a;
+    ctx.fillStyle = estLieu ? "#e0632a" : "#ffffff";
+    ctx.font = (estLieu ? "500 " : "400 ") + (estLieu ? 12 : 10.5) / vue.k + "px " + getComputedStyle(document.body).fontFamily;
+    ctx.fillText(n.nom, n.x, n.y + n.r + 5 / vue.k);
+    ctx.globalAlpha = 1;
+  }
+  ctx.restore();
+}
+
+function boucle() { pas(); dessiner(); requestAnimationFrame(boucle); }
+
+/* ---------------------------- interactions ------------------------- */
+function redimensionner() {
+  toile.width = innerWidth * devicePixelRatio;
+  toile.height = innerHeight * devicePixelRatio;
+  toile.style.width = innerWidth + "px"; toile.style.height = innerHeight + "px";
+}
+addEventListener("resize", redimensionner);
+
+function sousLaSouris(mx, my) {
+  const x = (mx - vue.x) / vue.k, y = (my - vue.y) / vue.k;
+  let best = null, bd = 1e9;
+  for (const n of N) {
+    if (!on[n.cat]) continue;
+    const d = Math.hypot(n.x - x, n.y - y);
+    if (d < Math.max(n.r + 6 / vue.k, 9 / vue.k) && d < bd) { bd = d; best = n; }
+  }
+  return best;
+}
+
+let pointe = null, bougé = false;
+toile.addEventListener("pointerdown", e => {
+  toile.setPointerCapture(e.pointerId); bougé = false;
+  const n = sousLaSouris(e.clientX, e.clientY);
+  if (n) { tire = n; } else { pointe = { x: e.clientX, y: e.clientY, vx: vue.x, vy: vue.y }; toile.classList.add("tire"); }
+});
+addEventListener("pointermove", e => {
+  souris = { x: e.clientX, y: e.clientY };
+  if (tire) {
+    bougé = true; alpha = Math.max(alpha, .35);
+    tire.x = (e.clientX - vue.x) / vue.k; tire.y = (e.clientY - vue.y) / vue.k;
+    return;
+  }
+  if (pointe) {
+    bougé = true;
+    vue.x = pointe.vx + (e.clientX - pointe.x); vue.y = pointe.vy + (e.clientY - pointe.y);
+    return;
+  }
+  const n = sousLaSouris(e.clientX, e.clientY);
+  if (n !== survol) {
+    survol = n;
+    toile.style.cursor = n ? "pointer" : "grab";
+    if (n) {
+      bulle.style.display = "block"; bulle.textContent = n.nom;
+      bulle.style.left = (e.clientX + 14) + "px"; bulle.style.top = (e.clientY + 14) + "px";
+    } else bulle.style.display = "none";
+  } else if (n) {
+    bulle.style.left = (e.clientX + 14) + "px"; bulle.style.top = (e.clientY + 14) + "px";
+  }
+});
+addEventListener("pointerup", e => {
+  if (tire && !bougé) ouvrir(tire);
+  else if (!tire && !bougé && pointe) fermer();
+  tire = null; pointe = null; toile.classList.remove("tire");
+});
+toile.addEventListener("dblclick", e => { if (!sousLaSouris(e.clientX, e.clientY)) recadrer(); });
+toile.addEventListener("wheel", e => {
+  e.preventDefault();
+  const f = Math.exp(-e.deltaY * .0016), k = Math.min(6, Math.max(.15, vue.k * f));
+  vue.x = e.clientX - (e.clientX - vue.x) * (k / vue.k);
+  vue.y = e.clientY - (e.clientY - vue.y) * (k / vue.k);
+  vue.k = k;
+}, { passive: false });
+
+function recadrer() {
+  const v = N.filter(n => on[n.cat]);
+  if (!v.length) return;
+  let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  for (const n of v) { x0 = Math.min(x0, n.x); y0 = Math.min(y0, n.y); x1 = Math.max(x1, n.x); y1 = Math.max(y1, n.y); }
+  // la zone libre : ce qui reste entre le panneau de gauche et la fiche
+  const gA = innerWidth > 820 ? 286 : 14;
+  const gB = innerWidth - (document.getElementById("fiche").classList.contains("ouverte") && innerWidth > 820 ? 420 : 14);
+  const marge = 70, l = Math.max(x1 - x0, 1), h = Math.max(y1 - y0, 1);
+  vue.k = Math.min(3, Math.max(.12, Math.min((gB - gA - marge) / l, (innerHeight - marge) / h)));
+  vue.x = (gA + gB) / 2 - (x0 + x1) / 2 * vue.k;
+  vue.y = innerHeight / 2 - (y0 + y1) / 2 * vue.k;
+}
+
+function viser(n) {
+  vue.k = 1.6;
+  vue.x = innerWidth / 2 - n.x * vue.k - 170;
+  vue.y = innerHeight / 2 - n.y * vue.k;
+}
+
+/* ------------------------------ la fiche --------------------------- */
+const fiche = document.getElementById("fiche");
+function fermer() { fiche.classList.remove("ouverte"); choisi = null; }
+document.getElementById("fermer").onclick = fermer;
+addEventListener("keydown", e => { if (e.key === "Escape") fermer(); });
+
+function ouvrir(n) {
+  choisi = n;
+  const d = CAT[n.cat] || CAT.scene;
+  document.getElementById("fcat").textContent = d.nom.replace(/s$/, "");
+  document.getElementById("fnom").textContent = n.nom;
+  document.getElementById("fmeta").textContent = (n.meta || []).join("  ·  ");
+
+  const im = document.getElementById("fimg"), sans = document.getElementById("fsansimg");
+  if (n.image) {
+    const src = sources(n); let i = 0;
+    im.onerror = () => { if (++i < src.length) im.src = src[i]; else { im.classList.add("vide"); sans.classList.add("on"); } };
+    im.classList.remove("vide"); sans.classList.remove("on"); im.src = src[0];
+  } else { im.classList.add("vide"); sans.classList.add("on"); }
+
+  // LA DESCRIPTION EXACTE — le texte du jeu, jamais un résumé.
+  const dd = document.getElementById("fdesc"); dd.innerHTML = "";
+  const par = t => { const p = document.createElement("p"); p.textContent = t; dd.appendChild(p); };
+  const titre = t => { const s = document.createElement("div"); s.className = "sstitre"; s.textContent = t; dd.appendChild(s); };
+  if (n.desc && n.desc.length) n.desc.forEach(par);
+  else if (n.resume) par(n.resume);
+  else if (n.cat === "lieu") par("Un lieu n'a pas de texte à lui : il n'existe que par les écrans qu'on y joue.");
+  else par("—");
+  if (n.descEchec && n.descEchec.length) { titre("Si l'on revient après un échec"); n.descEchec.forEach(par); }
+  if (n.descDemo && n.descDemo.length) { titre("Version démo"); n.descDemo.forEach(par); }
+  if (n.desc && n.desc.length && n.resume) { titre("Ce que l'écran montre"); par(n.resume); }
+
+  const bloc = document.getElementById("fsortiesBloc"), so = document.getElementById("fsorties");
+  so.innerHTML = "";
+  let sorties = (n.sorties || []).filter(s => s.label);
+  if (n.cat === "lieu") {
+    // ses écrans, dans l'ordre du graphe — c'est le contenu du lieu.
+    sorties = [...(voisins.get(n.id) || [])].map(id => parId.get(id))
+      .filter(Boolean).map(c => ({ label: c.nom, vers: c.id }));
+  }
+  if (sorties.length) {
+    bloc.style.display = "block";
+    document.getElementById("fsortiesTitre").textContent =
+      n.cat === "lieu" ? "Les écrans de ce lieu" : "Ce qui s'ouvre ici";
+    sorties.forEach(s => {
+      const a = document.createElement("a");
+      a.textContent = s.label;
+      if (s.vers && parId.has(s.vers)) {
+        const b = document.createElement("b"); b.textContent = "  → " + parId.get(s.vers).nom;
+        a.appendChild(b);
+        a.onclick = () => { const c = parId.get(s.vers); ouvrir(c); viser(c); };
+      }
+      so.appendChild(a);
+    });
+  } else bloc.style.display = "none";
+
+  document.getElementById("fchemin").textContent =
+    n.id + (n.image ? "  ·  " + n.image.f : "");
+  fiche.classList.add("ouverte");
+  fiche.scrollTop = 0;
+}
+</script>
+</body>
+</html>
