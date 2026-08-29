@@ -1265,92 +1265,104 @@ aucune image de lieu à poser en arrivée (`Scene.illustrationArrivee`). Soit on
 lui écrit une vue d'approche dédiée (un chemin vide, des formes au bout), soit
 on assume qu'une meute n'a pas de décor : à trancher.
 
-## PRIORITÉ 0 quinquies — LES VISUELS DU CROCHETAGE (demande Patrick 29/08)
+## PRIORITÉ 0 quinquies — LES VISUELS DU CROCHETAGE (29/08, RÉÉCRIT le soir)
 
-Deuxième mini-jeu re-skinné (après la mousse de la Borne). Le geste existe et
-il est joué : `TimingTap` mode `track` — un crochet OSCILLE en éventail dans le
-trou de serrure, on tape quand il passe dans la gorge. Trois essais, la Ruse
-élargit la gorge. Scène : `demo-nuit`, choix « Crocheter une maison fermée »,
-la nuit, dans une ruelle du hameau.
+⚠️ **Cette section a été refaite : le geste a changé.** La première version
+décrivait un crochet qui PIVOTE en éventail dans un trou de serrure (pivot en
+(180,360), arc 200°→340°, planche de 15 frames). Patrick a arbitré en faveur de
+l'ancienne animation — **une PISTE HORIZONTALE**, un curseur qui fait
+l'aller-retour, on tape quand il passe dans la gorge orange. Toute la géométrie
+en éventail de la v1 est donc caduque : ne pas la produire.
+
+**Conséquence, et c'est une simplification franche** : un curseur qui TRANSLATE
+n'a besoin d'AUCUNE planche de frames. Faire tourner une image tramée à
+l'exécution détruit la trame (c'est pour ça que la porte de l'intro est une
+bande de 16 frames) — une simple translation, elle, la préserve intacte. Il
+reste donc **une seule image indispensable**, et zéro sprite-sheet.
+
+Le geste tel qu'il est joué aujourd'hui : `TimingTap` mode `track`, **trois
+goupilles** à faire tomber (chacune déplace la gorge et accélère le curseur
+d'un cran), **trois ratés** comptés sur l'ensemble. La Ruse élargit la gorge.
+Scène : `demo-nuit`, choix « Crocheter une maison fermée », la nuit, dans une
+ruelle du hameau.
 
 **Ce que le canvas dessine aujourd'hui et qui doit DISPARAÎTRE sous ton image**
-— une plaque de serrure au trait, un trou de serrure schématique, 7 goupilles
-en éventail. C'est le « trop pixel, trop jeu bêta » que ce lot corrige.
+— rien qu'un trait rongé pour la piste et un fond charbon plat. Il n'y a pas de
+décor : c'est ça qu'on remplace.
 
 **Ce qui reste procédural quoi qu'il arrive** (et ne doit donc PAS être dans
-l'image) : la GORGE (sa position est tirée à chaque partie), les GOUPILLES qui
-s'illuminent, le décompte des trois essais. Doctrine du script du 24/08 : le
-fond est une vraie illustration, le procédural est réservé au FEEDBACK.
+l'image) : la GORGE orange (sa position est retirée au sort à chaque goupille),
+le CURSEUR blanc, les trois ENCOCHES de goupilles et l'éclat quand l'une cède.
+Doctrine du script du 24/08 : le fond est une vraie illustration, le procédural
+est réservé au FEEDBACK.
 
 ---
 
-### 1. `minijeu_serrure_fond.png` — LA PORTE, DE NUIT ⭐ le seul indispensable
+### 1. `minijeu_serrure_fond.png` — LA PLATINE, DE NUIT ⭐ le seul indispensable
 
 **Format** : **360×499** (la zone de jeu, exactement le même cadre Figma que la
-mousse — Frame 36753). Si tu préfères générer en CARRÉ dans Leonardo, fais-le :
-je recadre en 360×499 et je place le trou de serrure au bon endroit.
+mousse de la Borne — Frame 36753). Si tu préfères générer en CARRÉ dans
+Leonardo, fais-le : je recadre et je place la fente au bon endroit.
 
-**Le sujet** : une porte de planches d'une maison du hameau, vue de TRÈS PRÈS,
-accroupi, la nuit. Sa platine de serrure en fer forgé, et le trou de serrure —
-le point le plus noir de l'image. Rien d'autre : pas de rue, pas d'horizon.
+**Le sujet** : la platine de serrure d'une porte du hameau, vue de TRÈS PRÈS,
+accroupi, la nuit. Du fer forgé posé sur des planches, et **une longue fente de
+serrure HORIZONTALE** au milieu — c'est elle que le curseur parcourt. Rien
+d'autre : pas de rue, pas d'horizon.
+
+**Pourquoi une fente horizontale et pas un trou de serrure rond** : c'est le
+raccord du geste. Le doigt et le curseur vont de gauche à droite ; une serrure
+à fente (mécanisme à garde, un pêne qui court dans une rainure) rend le
+mouvement évident sans qu'aucun texte ait à l'expliquer. Un trou rond ferait
+attendre une rotation — celle qu'on vient justement de retirer.
 
 **Géométrie si tu composes toi-même dans Figma** :
 
 | Élément | Position dans le cadre 360×499 |
 |---|---|
-| Trou de serrure (pivot du crochet) | x = 180 (centré), **y = 360** |
-| Zone à garder SOBRE (le crochet y balaie) | bande **y = 205 → 375**, toute la largeur |
-| Libre pour le décor | au-dessus de 205 (haut de porte, linteau) et sous 375 (bas des planches, seuil de pierre) |
+| La fente horizontale (l'axe du curseur) | **y = 300**, de x = 36 à x = 324 |
+| Rangée des trois goupilles (procédurale) | **y ≈ 246**, centrée en x = 180 |
+| Bande à garder SOBRE | **y = 235 → 325**, toute la largeur |
+| Libre pour le décor | au-dessus de 235 (haut de platine, planches, clous) et sous 325 (bas de porte, seuil de pierre) |
 
-⚠️ **La bande du milieu doit rester calme** : du bois, du grain, des ombres —
-jamais un élément clair ou contrasté. C'est là que passent le crochet (blanc)
-et la gorge (lueur tramée). Une ferrure brillante à cet endroit les avalerait.
+⚠️ **La bande du milieu doit rester calme** : du fer, du grain, des ombres —
+jamais un élément clair ou contrasté. C'est là que passent le curseur (blanc)
+et la gorge (trame orange). Une ferrure brillante à cet endroit les avalerait.
 
 **Polarité** : charbon + orange comme toutes les illustrations (la lumière
-rasante accroche l'orange, les creux restent charbon plein). Le crochet sera
+rasante accroche l'orange, les creux restent charbon plein). Le curseur sera
 BLANC par-dessus — c'est ce qui le rend lisible sur ton image.
 
 ```
-Extreme close-up of a heavy plank door at night, filling the entire frame, seen
-from crouching height; hand-forged iron lock plate set low on the door, its
-keyhole a deep black cutout, square-headed nails around the plate, coarse
-vertical wood grain and dark gaps between the boards, worn stone threshold at
-the very bottom edge; single low raking light from the left grazing the planks
-so the grain and the plate edge catch it, everything else falling to black;
-dark fantasy illustration, deep crushed blacks, no fill light, high contrast,
-two-tone monochrome-friendly, strong readable shapes, matte painting, grim
-medieval, no text, no lettering, no watermark
+Extreme close-up of a hand-forged iron lock plate on a heavy plank door at
+night, filling the entire frame, seen from crouching height; a long horizontal
+keyway slot cut across the middle of the plate, its interior deep black,
+square-headed nails around the plate edges, coarse vertical wood grain and dark
+gaps between the boards above and below, worn stone threshold at the very
+bottom edge; single low raking light from the left grazing the iron and the
+grain so the edges catch it, everything else falling to black; dark fantasy
+illustration, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, strong readable shapes, matte painting, grim medieval,
+no text, no lettering, no watermark
 ```
 
 **Raccord** : c'est une porte du hameau des Renonçants — même bois, même
-lumière basse que `scene_landes_hameau_ruelle_b.png` (l'image de la scène
-juste avant). Les volets clos de cette ruelle sont faits du même bois.
+lumière basse que `scene_landes_hameau_ruelle_b.png` (l'image de la scène juste
+avant). Les volets clos de cette ruelle sont faits du même bois.
 
 ---
 
-### 2. `minijeu_serrure_crochet.png` — LE CROCHET, en sprite-sheet ◇ recommandé
+### 2. `minijeu_serrure_crochet.png` — LE CROCHET, UNE SEULE IMAGE ◇ confort
 
-C'est ce que le script du 24/08 prévoit (« bras du crochet en sprite-sheet
-pré-tramée, technique porte animée »). **Si tu ne le fais pas, je dessine le
-crochet au canvas par-dessus ton fond** — l'écran sera déjà transformé par
-l'image 1. C'est du confort, pas un blocage.
+**Plus de planche de frames.** Le curseur ne fait que translater : une image
+suffit, elle garde sa trame intacte à toutes les positions.
 
-⚠️ **Pourquoi une planche de frames et pas une image qu'on ferait tourner** :
-faire pivoter une image tramée à l'exécution détruit la trame (le moteur
-ré-échantillonne, le motif part en bouillie). La porte animée de l'intro règle
-déjà ça — une bande verticale de frames, jouée en `steps()`.
+**Format** : **~28×70**, fond transparent — une tige de fer fine, un peu
+irrégulière, terminée par un crochet, pointe vers le BAS (elle plonge dans la
+fente). En **blanc** : c'est l'élément vivant, comme le curseur du frottage.
 
-**Format** : **15 frames** de 360×499, empilées verticalement → **360×7485**,
-**fond transparent** (le crochet seul, rien d'autre).
-
-**Comment les composer** : dessine le crochet UNE fois — une tige de fer fine,
-un peu irrégulière, terminée par un crochet — sa base dans le trou de serrure.
-Puis rotation autour du point **(180, 360)**, par pas de **10°**, de **200° à
-340°** (l'éventail s'ouvre vers le HAUT ; frame 1 = penché à gauche, frame 8 =
-vertical, frame 15 = penché à droite). Rotation de la FORME dans Figma, puis
-tramage de la planche entière à la fin — jamais l'inverse.
-
-Le crochet en **blanc** (c'est l'élément vivant, comme le curseur du frottage).
+Si tu ne la fais pas, je garde le curseur dessiné au canvas — un pavé tramé
+blanc, déjà lisible. L'écran sera de toute façon transformé par l'image 1 :
+c'est du confort, pas un blocage.
 
 ---
 
@@ -1382,12 +1394,13 @@ maison ne se protégeait pas de ce qui entre par les portes.
 
 ### 4. (optionnel) `scene_hameau_volet_entrouvert.png` — L'ÉCHEC
 
-Sur un crochetage raté, le texte dit : *« le pêne claque, fort. En face, un
-volet s'entrouvre — on t'a vu la main sur une serrure. »* Aujourd'hui l'écran
-retombe sur la ruelle générique. Une vue du volet qui s'entrebâille en face,
-une bande de noir dedans, personne de visible — ça vaudrait le coup un jour,
-ce n'est pas prioritaire. (Vérifié : `scene_hameau_accueil_volet_c.png` ne
-convient pas — c'est une rue au couchant, aucun volet en train de s'ouvrir.)
+Sur un crochetage raté, le texte dit : *« Le crochet ripe et le pêne claque,
+fort. En face, un volet s'entrouvre — le temps de te fondre dans l'ombre. »*
+Aujourd'hui l'écran retombe sur la ruelle générique. Une vue du volet qui
+s'entrebâille en face, une bande de noir dedans, personne de visible — ça
+vaudrait le coup un jour, ce n'est pas prioritaire. (Vérifié :
+`scene_hameau_accueil_volet_c.png` ne convient pas — c'est une rue au couchant,
+aucun volet en train de s'ouvrir.)
 
 ---
 

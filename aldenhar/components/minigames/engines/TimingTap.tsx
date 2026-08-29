@@ -1,13 +1,25 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { bayerFill, bayerFillClipped, CHARBON, CREME, erodedRectPath, ORANGE, seededRandom } from "@/lib/dither";
+import { bayerFill, CHARBON, CREME, ORANGE, seededRandom } from "@/lib/dither";
 
 /**
  * Crochetage (référence #4, « meilleur du lot ») : fenêtre de réussite qui
  * s'élargit avec la stat, tap au bon moment. Rendu toujours tramé/bruité,
  * jamais un rectangle plein et net. Trois modes réutilisent ce moteur :
- * - "track" : curseur oscillant, taper dans la fenêtre (Crochetage).
+ * - "track" : PISTE HORIZONTALE, curseur qui fait l'aller-retour, on tape
+ *   quand il passe dans la gorge orange (Crochetage).
+ *
+ * ⚠️ LA PISTE EST REVENUE (29/08). La passe « réalisme » du 11/07 avait
+ * remplacé la piste par un ÉVENTAIL (crochet pivotant dans un trou de serrure,
+ * goupilles en rayons). Arbitrage de Patrick : il préférait la piste — elle se
+ * lit d'un coup d'œil, l'éventail demandait de suivre une pointe sur un arc.
+ * Ne pas « re-réaliser » ce mini-jeu sans arbitrage : ici la lisibilité prime.
+ *
+ * ⚠️ Et une serrure a PLUSIEURS goupilles (`config.goupilles`, 29/08) : il
+ * faut réussir N taps, pas un seul. C'est ce qui sépare un test de réflexe
+ * d'un crochetage — chaque goupille tombe, la gorge se déplace, le curseur
+ * accélère d'un cran, et les ratés se comptent sur l'ensemble.
  * - "release" : maintenir puis relâcher au frémissement (Piège à mâchoire).
  * - "point" : taper la bonne zone sur un sceau fissuré (Sceau de cire).
  */
@@ -25,6 +37,7 @@ export default function TimingTap({
     windowWidth: number; // 0..1 fraction de la piste, ou tolérance angulaire pour "point"
     speed?: number;
     maxAttempts?: number;
+    goupilles?: number; // "track" : nombre de taps réussis pour ouvrir (défaut 1)
   };
   onResult: (success: boolean) => void;
 }) {
@@ -39,8 +52,15 @@ export default function TimingTap({
     let t = 0;
     let finished = false;
     let attemptsLeft = config.maxAttempts ?? 1;
-    const windowCenter = 0.5 + (rnd() - 0.5) * 0.3;
+    let windowCenter = 0.5 + (rnd() - 0.5) * 0.3;
     const speed = config.speed ?? 0.9;
+    /* Les goupilles : chacune a SA gorge et fait accélérer le curseur d'un
+       cran. La dernière est la plus tendue — c'est le rythme d'une serrure,
+       jamais une difficulté cachée (le nombre restant se VOIT sur la piste). */
+    const goupilles = Math.max(1, config.goupilles ?? 1);
+    let tombees = 0;
+    let vitesse = speed;
+    let eclat = 0; // frames de flash blanc quand une goupille cède
     let holding = false;
     let releaseArmed = false;
     const snapAt = 0.82 + rnd() * 0.1;
@@ -53,7 +73,7 @@ export default function TimingTap({
 
     function trackPos() {
       // va-et-vient 0..1
-      const cycle = (t * speed) % 2;
+      const cycle = (t * vitesse) % 2;
       return cycle <= 1 ? cycle : 2 - cycle;
     }
 
@@ -61,8 +81,15 @@ export default function TimingTap({
       if (finished) return;
       if (config.mode === "track") {
         const p = trackPos();
-        if (Math.abs(p - windowCenter) < config.windowWidth / 2) finish(true);
-        else {
+        if (Math.abs(p - windowCenter) < config.windowWidth / 2) {
+          tombees += 1;
+          eclat = 9;
+          if (tombees >= goupilles) finish(true);
+          else {
+            windowCenter = 0.5 + (rnd() - 0.5) * 0.44;
+            vitesse *= 1.12;
+          }
+        } else {
           attemptsLeft--;
           if (attemptsLeft <= 0) finish(false);
         }
@@ -100,86 +127,57 @@ export default function TimingTap({
       ctx.fillRect(0, 0, W, H);
 
       if (config.mode === "track") {
-        const pivot = { x: W / 2, y: H - 4 };
-        const armR = 108;
-        const angleStart = Math.PI * 1.12;
-        const angleEnd = Math.PI * 1.88;
-        const sweep = angleEnd - angleStart;
+        /* LA PISTE (restaurée le 29/08 — voir le docblock). Une ligne
+           horizontale, une gorge orange tramée, un curseur qui fait
+           l'aller-retour. Tout se lit d'un coup d'œil, sans suivre un arc. */
+        const trackY = H / 2 + 6;
+        const x0 = 30,
+          x1 = W - 30;
 
-        // Plaque de serrure gravée
-        erodedRectPath(ctx, 14, 8, W - 28, H - 20, rnd, "rgba(232,223,200,0.3)", 16);
-
-        // Silhouette du trou de serrure au pivot
-        ctx.fillStyle = "rgba(0,0,0,0.55)";
-        ctx.beginPath();
-        ctx.arc(pivot.x, pivot.y - 14, 7, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(pivot.x - 4, pivot.y - 8);
-        ctx.lineTo(pivot.x + 4, pivot.y - 8);
-        ctx.lineTo(pivot.x + 7, pivot.y + 4);
-        ctx.lineTo(pivot.x - 7, pivot.y + 4);
-        ctx.closePath();
-        ctx.fill();
-
-        // Fenêtre de réussite = lueur tramée sur l'arc
-        const winStartA = angleStart + (windowCenter - config.windowWidth / 2) * sweep;
-        const winEndA = angleStart + (windowCenter + config.windowWidth / 2) * sweep;
-        bayerFillClipped(
-          ctx,
-          (c) => {
-            c.moveTo(pivot.x, pivot.y);
-            c.arc(pivot.x, pivot.y, armR + 14, winStartA, winEndA);
-            c.closePath();
-          },
-          pivot.x - armR - 14,
-          pivot.y - armR - 14,
-          (armR + 14) * 2,
-          (armR + 14) * 2,
-          0.55,
-          ORANGE,
-          2
-        );
-
-        // Piste (arc de guidage)
-        ctx.strokeStyle = "rgba(232,223,200,0.2)";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.arc(pivot.x, pivot.y, armR, angleStart, angleEnd);
-        ctx.stroke();
-
-        // Goupilles (tumblers) en éventail — celle qui coïncide avec la fenêtre s'illumine
-        const pinCount = 7;
-        for (let i = 0; i < pinCount; i++) {
-          const frac = i / (pinCount - 1);
-          const a = angleStart + frac * sweep;
-          const isTarget = Math.abs(frac - windowCenter) < config.windowWidth / 2 + 0.05;
-          const x1 = pivot.x + Math.cos(a) * (armR - 10);
-          const y1 = pivot.y + Math.sin(a) * (armR - 10);
-          const x2 = pivot.x + Math.cos(a) * (armR + 8);
-          const y2 = pivot.y + Math.sin(a) * (armR + 8);
-          ctx.strokeStyle = isTarget ? ORANGE : "rgba(232,223,200,0.28)";
-          ctx.lineWidth = isTarget ? 3 : 2;
-          ctx.beginPath();
-          ctx.moveTo(x1, y1);
-          ctx.lineTo(x2, y2);
-          ctx.stroke();
+        // La piste : un trait rongé, jamais un rectangle net (DA §4).
+        for (let x = x0; x < x1; x += 2) {
+          const jitter = ((x * 7919) % 3) - 1;
+          ctx.fillStyle = "rgba(255,255,255,0.26)";
+          ctx.fillRect(x, trackY - 2 + jitter, 2, 4);
         }
 
-        // Le crochet : bras rigide depuis le pivot jusqu'à sa position actuelle
-        const pAngle = angleStart + trackPos() * sweep;
-        const tipX = pivot.x + Math.cos(pAngle) * armR;
-        const tipY = pivot.y + Math.sin(pAngle) * armR;
-        ctx.strokeStyle = CREME;
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.moveTo(pivot.x, pivot.y - 10);
-        ctx.lineTo(tipX, tipY);
-        ctx.stroke();
-        ctx.fillStyle = CREME;
-        ctx.beginPath();
-        ctx.arc(tipX, tipY, 4, 0, Math.PI * 2);
-        ctx.fill();
+        // LA GORGE : la fenêtre de réussite, tramée orange.
+        const winX = x0 + (windowCenter - config.windowWidth / 2) * (x1 - x0);
+        const winW = config.windowWidth * (x1 - x0);
+        bayerFill(ctx, winX, trackY - 11, winW, 22, 0.85, ORANGE, null, 2);
+        // Deux montants qui bornent la gorge — on vise entre eux.
+        ctx.fillStyle = ORANGE;
+        ctx.fillRect(winX - 1, trackY - 17, 2, 12);
+        ctx.fillRect(winX + winW - 1, trackY - 17, 2, 12);
+
+        // LES GOUPILLES : une encoche par goupille, remplie quand elle cède.
+        if (goupilles > 1) {
+          const pas = 18;
+          const bx = W / 2 - ((goupilles - 1) * pas) / 2;
+          for (let k = 0; k < goupilles; k++) {
+            const gx = bx + k * pas;
+            const gy = trackY - 48;
+            if (k < tombees) {
+              bayerFill(ctx, gx - 5, gy - 5, 10, 10, 1, CREME, null, 2);
+            } else {
+              ctx.strokeStyle = "rgba(255,255,255,0.32)";
+              ctx.lineWidth = 1;
+              ctx.strokeRect(gx - 5.5, gy - 5.5, 11, 11);
+            }
+          }
+        }
+
+        // LE CURSEUR : le crochet qui court sur la piste.
+        const px = x0 + trackPos() * (x1 - x0);
+        bayerFill(ctx, px - 5, trackY - 18, 10, 36, 1, CREME, null, 2);
+
+        // La goupille qui cède : un éclat bref, en paliers (jamais un fondu).
+        if (eclat > 0) {
+          eclat -= 1;
+          if (eclat % 3 !== 1) {
+            bayerFill(ctx, x0, trackY - 26, x1 - x0, 52, 0.35, CREME, null, 2);
+          }
+        }
       } else if (config.mode === "release") {
         const progress = Math.min(1, t / 1.4);
         const barW = (W - 60) * progress;

@@ -3927,13 +3927,18 @@ export default function Scene() {
               : { points: 7, tolerance: 19 }
         );
       } else if (eng === "pick") {
-        // Le Crochetage (la nuit) : la Ruse élargit la gorge — trois essais,
-        // comme au catalogue (le curseur oscille, un raté n'est pas la fin).
+        /* Le Crochetage (la nuit) : la Ruse élargit la gorge. TROIS goupilles
+           à faire tomber (29/08) — une serrure ne cède pas sur un seul geste,
+           et le nombre restant se VOIT sur la piste. Les trois ratés se
+           comptent sur l'ensemble : on peut manquer et rattraper. La gorge est
+           élargie par rapport au tap unique, sinon trois taps d'affilée
+           feraient de ce geste le plus dur de la démo. */
         const ruse = statDe(runRef.current?.stats, "RUSE");
         setMinigameConfig({
           mode: "track",
-          windowWidth: ruse >= 4 ? 0.22 : ruse >= 3 ? 0.17 : 0.13,
+          windowWidth: ruse >= 4 ? 0.26 : ruse >= 3 ? 0.21 : 0.17,
           maxAttempts: 3,
+          goupilles: 3,
         });
       } else if (eng === "swipe") {
         // La cérémonie : cinq paliers, vers le BAS, lentement. Trop vite ne
