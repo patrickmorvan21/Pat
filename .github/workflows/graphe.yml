@@ -1,0 +1,79 @@
+# =====================================================================
+# LE GRAPHE SE MET À JOUR TOUT SEUL
+#
+# À chaque push sur la branche de développement, ce workflow régénère
+# l'export du jeu et dépose la page + ses données sur gh-pages, à côté
+# du jeu :  https://patrickmorvan21.github.io/Pat/aldenhar/graphe.html
+#
+# ⚠️ Il ne touche QUE ces deux fichiers dans gh-pages. Le jeu, la
+# couverture, l'atelier et le Studio ne sont jamais réécrits ici — ils
+# partent par le déploiement manuel, qui a son propre rituel.
+#
+# ⚠️ En revanche, ce déploiement manuel REMPLACE le dossier aldenhar/ :
+# il doit donc recopier graphe.html et graphe-data.json, comme il le
+# fait déjà pour couverture.html, atelier.html et studio.html.
+# =====================================================================
+name: Le graphe
+
+on:
+  push:
+    branches: [claude/3d-tactile-prototype-dhd5mi, main]
+    paths:
+      - "aldenhar/lib/scene-data.ts"
+      - "aldenhar/lib/temoins.ts"
+      - "aldenhar/public/assets/manifest.json"
+      - "data/zones/**"
+      - "data/scene-meta.json"
+      - "tools/studio_data.py"
+      - "tools/graphe.py"
+      - "tools/graphe_page.html"
+      - ".github/workflows/graphe.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: graphe
+  cancel-in-progress: true
+
+jobs:
+  publier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer la branche du jeu
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Régénérer l'export et le graphe
+        run: |
+          python3 tools/studio_data.py
+          python3 tools/graphe.py
+
+      - name: Récupérer gh-pages
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: .pages
+          fetch-depth: 1
+
+      - name: Déposer la page et ses données
+        run: |
+          mkdir -p .pages/aldenhar
+          cp data/pactum-graphe.html .pages/aldenhar/graphe.html
+          cp data/graphe-data.json  .pages/aldenhar/graphe-data.json
+          cd .pages
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add aldenhar/graphe.html aldenhar/graphe-data.json
+          if git diff --cached --quiet; then
+            echo "Le graphe est déjà à jour — rien à publier."
+          else
+            git commit -m "Le graphe suit ${GITHUB_SHA:0:7}"
+            git push origin gh-pages
+          fi
