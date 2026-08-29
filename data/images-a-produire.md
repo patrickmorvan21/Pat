@@ -1265,6 +1265,136 @@ aucune image de lieu à poser en arrivée (`Scene.illustrationArrivee`). Soit on
 lui écrit une vue d'approche dédiée (un chemin vide, des formes au bout), soit
 on assume qu'une meute n'a pas de décor : à trancher.
 
+## PRIORITÉ 0 quinquies — LES VISUELS DU CROCHETAGE (demande Patrick 29/08)
+
+Deuxième mini-jeu re-skinné (après la mousse de la Borne). Le geste existe et
+il est joué : `TimingTap` mode `track` — un crochet OSCILLE en éventail dans le
+trou de serrure, on tape quand il passe dans la gorge. Trois essais, la Ruse
+élargit la gorge. Scène : `demo-nuit`, choix « Crocheter une maison fermée »,
+la nuit, dans une ruelle du hameau.
+
+**Ce que le canvas dessine aujourd'hui et qui doit DISPARAÎTRE sous ton image**
+— une plaque de serrure au trait, un trou de serrure schématique, 7 goupilles
+en éventail. C'est le « trop pixel, trop jeu bêta » que ce lot corrige.
+
+**Ce qui reste procédural quoi qu'il arrive** (et ne doit donc PAS être dans
+l'image) : la GORGE (sa position est tirée à chaque partie), les GOUPILLES qui
+s'illuminent, le décompte des trois essais. Doctrine du script du 24/08 : le
+fond est une vraie illustration, le procédural est réservé au FEEDBACK.
+
+---
+
+### 1. `minijeu_serrure_fond.png` — LA PORTE, DE NUIT ⭐ le seul indispensable
+
+**Format** : **360×499** (la zone de jeu, exactement le même cadre Figma que la
+mousse — Frame 36753). Si tu préfères générer en CARRÉ dans Leonardo, fais-le :
+je recadre en 360×499 et je place le trou de serrure au bon endroit.
+
+**Le sujet** : une porte de planches d'une maison du hameau, vue de TRÈS PRÈS,
+accroupi, la nuit. Sa platine de serrure en fer forgé, et le trou de serrure —
+le point le plus noir de l'image. Rien d'autre : pas de rue, pas d'horizon.
+
+**Géométrie si tu composes toi-même dans Figma** :
+
+| Élément | Position dans le cadre 360×499 |
+|---|---|
+| Trou de serrure (pivot du crochet) | x = 180 (centré), **y = 360** |
+| Zone à garder SOBRE (le crochet y balaie) | bande **y = 205 → 375**, toute la largeur |
+| Libre pour le décor | au-dessus de 205 (haut de porte, linteau) et sous 375 (bas des planches, seuil de pierre) |
+
+⚠️ **La bande du milieu doit rester calme** : du bois, du grain, des ombres —
+jamais un élément clair ou contrasté. C'est là que passent le crochet (blanc)
+et la gorge (lueur tramée). Une ferrure brillante à cet endroit les avalerait.
+
+**Polarité** : charbon + orange comme toutes les illustrations (la lumière
+rasante accroche l'orange, les creux restent charbon plein). Le crochet sera
+BLANC par-dessus — c'est ce qui le rend lisible sur ton image.
+
+```
+Extreme close-up of a heavy plank door at night, filling the entire frame, seen
+from crouching height; hand-forged iron lock plate set low on the door, its
+keyhole a deep black cutout, square-headed nails around the plate, coarse
+vertical wood grain and dark gaps between the boards, worn stone threshold at
+the very bottom edge; single low raking light from the left grazing the planks
+so the grain and the plate edge catch it, everything else falling to black;
+dark fantasy illustration, deep crushed blacks, no fill light, high contrast,
+two-tone monochrome-friendly, strong readable shapes, matte painting, grim
+medieval, no text, no lettering, no watermark
+```
+
+**Raccord** : c'est une porte du hameau des Renonçants — même bois, même
+lumière basse que `scene_landes_hameau_ruelle_b.png` (l'image de la scène
+juste avant). Les volets clos de cette ruelle sont faits du même bois.
+
+---
+
+### 2. `minijeu_serrure_crochet.png` — LE CROCHET, en sprite-sheet ◇ recommandé
+
+C'est ce que le script du 24/08 prévoit (« bras du crochet en sprite-sheet
+pré-tramée, technique porte animée »). **Si tu ne le fais pas, je dessine le
+crochet au canvas par-dessus ton fond** — l'écran sera déjà transformé par
+l'image 1. C'est du confort, pas un blocage.
+
+⚠️ **Pourquoi une planche de frames et pas une image qu'on ferait tourner** :
+faire pivoter une image tramée à l'exécution détruit la trame (le moteur
+ré-échantillonne, le motif part en bouillie). La porte animée de l'intro règle
+déjà ça — une bande verticale de frames, jouée en `steps()`.
+
+**Format** : **15 frames** de 360×499, empilées verticalement → **360×7485**,
+**fond transparent** (le crochet seul, rien d'autre).
+
+**Comment les composer** : dessine le crochet UNE fois — une tige de fer fine,
+un peu irrégulière, terminée par un crochet — sa base dans le trou de serrure.
+Puis rotation autour du point **(180, 360)**, par pas de **10°**, de **200° à
+340°** (l'éventail s'ouvre vers le HAUT ; frame 1 = penché à gauche, frame 8 =
+vertical, frame 15 = penché à droite). Rotation de la FORME dans Figma, puis
+tramage de la planche entière à la fin — jamais l'inverse.
+
+Le crochet en **blanc** (c'est l'élément vivant, comme le curseur du frottage).
+
+---
+
+### 3. `scene_hameau_maison_muree_combles.png` — L'INTÉRIEUR (trou réel actuel)
+
+Rien à voir avec le geste, mais c'est le trou le plus visible de la séquence :
+la scène qui SUIT le crochetage réussi (`demo-nuit-maison`) montre encore **la
+rue**, alors qu'on est à l'intérieur, dans les combles, devant la trappe clouée
+DE L'INTÉRIEUR. C'est la touche 3 du Grand Témoin, découverte seul — le plus
+gros moment de lore de la nuit, sur une image qui le contredit.
+
+**Format** : 1000×1000, pipeline normal (`/leo-import`).
+
+```
+Interior of an abandoned house at night, low under a bare roof frame; a square
+ceiling hatch closed above, its planks crossed by long iron nails driven from
+this side and bent over, hammered in haste; bare rafters, thick dust, a single
+weak lantern light from below and to the left throwing the nail heads into
+relief, the corners of the roof space swallowed by black; dark fantasy
+illustration, deep crushed blacks, no fill light, high contrast, two-tone
+monochrome-friendly, strong readable shapes, matte painting, grim medieval,
+square composition, no text, no lettering, no watermark
+```
+
+⚠️ Les clous se voient **de ce côté-ci** — c'est tout le sens de la scène : la
+maison ne se protégeait pas de ce qui entre par les portes.
+
+---
+
+### 4. (optionnel) `scene_hameau_volet_entrouvert.png` — L'ÉCHEC
+
+Sur un crochetage raté, le texte dit : *« le pêne claque, fort. En face, un
+volet s'entrouvre — on t'a vu la main sur une serrure. »* Aujourd'hui l'écran
+retombe sur la ruelle générique. Une vue du volet qui s'entrebâille en face,
+une bande de noir dedans, personne de visible — ça vaudrait le coup un jour,
+ce n'est pas prioritaire. (Vérifié : `scene_hameau_accueil_volet_c.png` ne
+convient pas — c'est une rue au couchant, aucun volet en train de s'ouvrir.)
+
+---
+
+**Câblage à réception** : dépose les fichiers sous ces noms exacts dans
+`aldenhar/public/assets/`, et je branche la peau image de `TimingTap` (même
+mécanisme que `RubReveal` : deux champs de config, aucun changement de moteur).
+
 ## ~~PRIORITÉ 0 quater — LE FOND DU FROTTAGE DE LA BORNE~~ — RÉSOLU AUTREMENT (25/08 soir)
 
 **✅ CADUC — Patrick a construit le mini-jeu lui-même dans Figma** (nodes
