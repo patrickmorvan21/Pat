@@ -294,7 +294,7 @@ function demarrer(g) {
   N = g.noeuds; L = g.liens;
 
   // disposition de départ : un anneau par catégorie, la simulation fait le reste
-  const R = Math.min(innerWidth, innerHeight) * .42;
+  const R = 460;   // constante : la disposition ne doit pas dépendre de l'écran
   const OR = Math.PI * (3 - Math.sqrt(5));   // angle d'or
   N.forEach((n, i) => {
     const a = i * OR, d = R * Math.sqrt((i + .5) / N.length);
@@ -403,7 +403,8 @@ function pas() {
     for (let j = i + 1; j < N.length; j++) {
       const b = N[j];
       let dx = b.x - a.x, dy = b.y - a.y, d2 = dx * dx + dy * dy;
-      if (d2 > 260000 || d2 === 0) continue;
+      if (d2 > 260000) continue;
+      if (d2 < 400) d2 = 400;                 // plancher : pas de force infinie
       const paire = (a.cat === "lieu" ? 1 : 0) + (b.cat === "lieu" ? 1 : 0);
       const f = rep * (paire === 2 ? 1.9 : paire === 1 ? 1.25 : 1) / d2, d = Math.sqrt(d2);
       const ux = dx / d * f, uy = dy / d * f;
