@@ -97,7 +97,13 @@ def main() -> int:
             porte.setdefault(f, []).append(sc.get("nom") or sc["id"])
 
     lignes, manquants = [], []
-    lots: dict[str, list] = {"Objets": [], "Reliques": [], "Rencontres": [], "Lieux et écrans": []}
+    lots: dict[str, list] = {"À créer — n'existe pas encore": [],
+                             "Objets": [], "Reliques": [], "Rencontres": [], "Lieux et écrans": []}
+
+    # Les sujets écrits pour une image qui N'EXISTE PAS encore : ce sont des
+    # créations, pas des refontes — elles gardent donc leur nom tel quel, sans
+    # variante suivante (il n'y a rien à remplacer).
+    a_creer = [k for k in sujets_fichier if not (ASSETS / f"{k}.png").exists()]
 
     for fich in sorted(assets_du_jeu()):
         base = fich[:-4]
@@ -165,13 +171,20 @@ def main() -> int:
     lignes.append("> ⚠️ Ne rien supprimer dans le Drive avant que le remplaçant soit validé "
                   "**et câblé** : l'ancienne image reste le seul point de comparaison.\n")
 
-    for lot in ("Objets", "Reliques", "Rencontres", "Lieux et écrans"):
+    for k in a_creer:
+        cadre, sujet = sujets_fichier[k]
+        pr = composer(f"{sujet}. {CADRES[cadre]}") if cadre != "scene" else composer(sujet)
+        lots["À créer — n'existe pas encore"].append((f"{k}.png", "", "image neuve", pr))
+    total = sum(len(v) for v in lots.values())
+
+    for lot in ("À créer — n'existe pas encore", "Objets", "Reliques", "Rencontres", "Lieux et écrans"):
         if not lots[lot]:
             continue
         lignes.append(f"\n---\n\n## {lot} ({len(lots[lot])})\n")
         for nouveau, ancien, ou, prompt in lots[lot]:
             lignes.append(f"### `{nouveau}`")
-            lignes.append(f"remplace `{ancien}`" + (f" — {ou}" if ou else ""))
+            lignes.append((f"remplace `{ancien}`" if ancien else "**image neuve**")
+                          + (f" — {ou}" if ou else ""))
             lignes.append(f"\n```\n{nouveau[:-4]}={prompt}\n```\n")
 
     if manquants:

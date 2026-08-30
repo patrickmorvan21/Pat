@@ -457,6 +457,16 @@ function ecrireAideMenu(p: AideMenuPref) {
     vie d'avant. Ouvre l'accueil « le hameau qui s'en va » (6/08). */
 const FLAG_SERMENT_TRAHI = "serment-trahi-jadis";
 
+/* L'APPARITION 3 A SON IMAGE (retour Patrick 30/08). Le climax de l'arc du
+   Grand Témoin — les douze qui regardent tous par-dessus ton épaule en même
+   temps — se jouait sur l'illustration d'une salle d'audience ordinaire. La
+   salle TIENT le premier écran (on y lit l'accusation), et le Témoin prend le
+   relais au tap suivant : c'est là que l'apparition se lit, elle arrive après
+   les dépositions et déborde donc le budget du premier écran.
+   ⚠️ Gardée par `assetExiste` : tant que l'image n'est pas produite, l'écran
+   reste sur la salle plutôt que d'afficher une image cassée. */
+const TEMOIN_PROCES = "assets/monstre_temoin_proces_a.png";
+
 const PORTAL = "assets/dithering-portal.jpg";
 
 // Image d'objet obtenu : le haut d'écran bascule sur l'objet quand une action
@@ -3460,6 +3470,9 @@ export default function Scene() {
         // ⚠️ posée APRÈS showScreen (qui purge les bascules différées d'un
         // écran précédent) — voir la fin d'advance().
         differeVueDeMarche = nextIllustration;
+      } else if (temoinEntrevu && assetExiste(TEMOIN_PROCES)) {
+        // la salle d'abord, le Témoin au tap suivant (voir TEMOIN_PROCES)
+        differeVueDeMarche = TEMOIN_PROCES;
       } else if (
         nextScene.illustrationArrivee &&
         nextScene.illustrationArrivee !== nextIllustration
