@@ -1104,3 +1104,8 @@ Retour Patrick sur le rappel des trois degrés : « on n'a pas d'images où on l
 - ⚠️ **Gardée par `assetExiste`** : tant que l'image n'est pas produite, l'écran reste sur la salle plutôt que d'afficher une image cassée. Vérifié : elle est absente du manifeste, donc **le comportement d'aujourd'hui est strictement inchangé** — le câblage s'activera à l'import.
 - **`scene_hameau_maison_muree_combles_a`** commandée aussi : la touche 3 du Témoin en démo (`demo-nuit-maison`, la trappe clouée de l'intérieur) s'affiche encore sur l'image d'une RUELLE alors qu'on est dans les combles.
 - **Le carnet gagne une section « À créer »** : une image qui n'existe pas encore garde son nom tel quel, sans variante suivante — il n'y a rien à remplacer. **158 images** au total.
+
+#### Les lots prêts à envoyer à un générateur d'images (30/08)
+`tools/prompts_refonte.py` écrit aussi **`data/pactum-photos/` — 12 lots autonomes** (18 images maximum, ≤ 20 000 caractères chacun, donc collables en un seul message). Le carnet `prompts-refonte.md` reste le format `/leo-import` (`nom=prompt`) ; ces lots-ci sont le format CONVERSATION : un en-tête de consigne, puis chaque image avec son nom en gras et son prompt en clair.
+- L'en-tête dit les trois choses qui font rater un lot : **deux variantes** par image · **ne pas retoucher le prompt** (sa seconde moitié est la recette verrouillée qui tient l'aplat et l'époque — la modifier casse l'unité de la série) · **rendre chaque fichier sous le nom exact**.
+- Découpage **par catégorie d'abord**, jamais par simple tranche : un lot ne mélange pas des icônes sur fond noir et des paysages en contre-jour, sinon la recette dominante de l'un déteint sur l'autre.

@@ -64,6 +64,38 @@ def assets_du_jeu() -> set[str]:
     return {u for u in utilises if (ASSETS / u).exists() and not HORS.match(u)}
 
 
+EN_TETE = """# PACTUM — commande d'images · lot {n}/{tot} · {lot}
+
+Génère **deux variantes** de chacune des images ci-dessous.
+
+- Format **carré**, le plus grand disponible (elles seront réduites à 1000×1000).
+- **Ne modifie pas le texte du prompt.** Sa seconde moitié est une recette
+  verrouillée : elle tient l'aplat de couleur et l'époque. La retoucher casse
+  l'unité de la série.
+- **Rends-moi chaque image sous le nom exact indiqué en gras**, sans rien y
+  ajouter.
+
+---
+"""
+
+
+def ecrire_lots(lots: dict, dossier: Path, par_lot: int = 18) -> int:
+    """Un fichier par lot, assez court pour tenir dans un seul message."""
+    dossier.mkdir(parents=True, exist_ok=True)
+    for vieux in dossier.glob("lot-*.md"):
+        vieux.unlink()
+    paquets = []
+    for lot, items in lots.items():
+        for i in range(0, len(items), par_lot):
+            paquets.append((lot, items[i:i + par_lot]))
+    for n, (lot, items) in enumerate(paquets, 1):
+        txt = [EN_TETE.format(n=n, tot=len(paquets), lot=lot)]
+        for k, (nouveau, _ancien, _ou, prompt) in enumerate(items, 1):
+            txt.append(f"**{k}. {nouveau[:-4]}**\n\n{prompt}\n")
+        (dossier / f"lot-{n:02d}.md").write_text("\n".join(txt), encoding="utf-8")
+    return len(paquets)
+
+
 def main() -> int:
     meta = json.loads((RACINE / "data/scene-meta.json").read_text(encoding="utf-8"))["scenes"]
     om = json.loads((RACINE / "data/objet-meta.json").read_text(encoding="utf-8"))
@@ -193,9 +225,11 @@ def main() -> int:
             lignes.append(f"- `{f}`" + (f" — {ou}" if ou else ""))
 
     SORTIE.write_text("\n".join(lignes), encoding="utf-8")
+    n_lots = ecrire_lots(lots, RACINE / "data/pactum-photos")
     print(f"data/prompts-refonte.md — {total} images à commander "
           f"({', '.join(f'{k} {len(v)}' for k, v in lots.items() if v)})"
           + (f" · {len(manquants)} sans sujet" if manquants else ""))
+    print(f"data/pactum-photos/ — {n_lots} lots prêts à envoyer")
     return 0
 
 
