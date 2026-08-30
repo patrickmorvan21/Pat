@@ -29,6 +29,7 @@ from __future__ import annotations
 import json
 import subprocess
 import sys
+from collections import deque
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -77,6 +78,31 @@ def construire() -> dict:
         for lid in r.get("lieux", []) + r.get("lieuxEnPlus", []):
             region_de[lid] = r["nom"]
 
+    # ⚠️ 35 scènes n'ont AUCUN lieu dans les données de zone : les rencontres,
+    # les variantes conditionnelles (celles du Grand Témoin, entre autres) et
+    # les nœuds hors pool. Elles se jouent pourtant bien quelque part — une
+    # variante remplace un écran DANS son lieu, une suite enchaîne sur place.
+    # Sans ce rattrapage elles flottent loin de leur village et deviennent
+    # introuvables. Le lieu déduit est marqué comme tel : on ne le fait jamais
+    # passer pour une donnée de zone.
+    adj: dict[str, set[str]] = {sid: set() for sid in scenes}
+    for sid, sc in scenes.items():
+        for autre in (sc.get("suite"), (sc.get("remplace") or {}).get("scene")):
+            if autre in adj:
+                adj[sid].add(autre)
+                adj[autre].add(sid)
+    file = deque(sid for sid in scenes if sid in lieu_de)
+    deduit: dict[str, str] = {}
+    while file:
+        cur = file.popleft()
+        source = lieu_de.get(cur) or deduit.get(cur)
+        if not source:
+            continue
+        for v in adj[cur]:
+            if v not in lieu_de and v not in deduit:
+                deduit[v] = source
+                file.append(v)
+
     noeuds: list[dict] = []
     liens: list[dict] = []
     vus = set()
@@ -118,9 +144,10 @@ def construire() -> dict:
             cat = "terminal"
 
         meta = []
-        lid = lieu_de.get(sid) or (s.get("lieu") or "")
+        lid = lieu_de.get(sid) or deduit.get(sid) or (s.get("lieu") or "")
+        herite = sid not in lieu_de and sid in deduit
         if lid and lid in lieux_meta:
-            meta.append(lieux_meta[lid]["nom"])
+            meta.append(lieux_meta[lid]["nom"] + (" (rattachée)" if herite else ""))
         if s.get("adversaireNom"):
             meta.append(s["adversaireNom"])
         for drapeau, mot in (
@@ -137,6 +164,7 @@ def construire() -> dict:
             "nom": s.get("nom") or sid,
             "cat": cat,
             "lieu": lid,
+            "lieuHerite": herite,
             "region": region_de.get(lid, ""),
             "image": img(s),
             # LA DESCRIPTION EXACTE : la narration telle que le joueur la lit.
@@ -202,7 +230,7 @@ def construire() -> dict:
             if p.get("mèneVers"):
                 lien(sid, p["mèneVers"], "sortie")
         # appartenance : c'est elle qui fait apparaître les grappes
-        lid = lieu_de.get(sid)
+        lid = lieu_de.get(sid) or deduit.get(sid)
         if lid:
             lien("lieu:" + lid, sid, "appartient")
 
@@ -237,6 +265,7 @@ def construire() -> dict:
         "noeuds": noeuds,
         "liens": liens,
         "totaux": {
+            "scenesRattachees": len(deduit),
             "scenes": len(scenes),
             "lieux": len(lieux_meta),
             "transitions": len(T.get("fond", [])) + len(T.get("variantes", [])) + len(T.get("bifurcations", [])),
@@ -257,6 +286,7 @@ def main() -> int:
     t = g["totaux"]
     print(f"data/graphe-data.json   — {t['scenes']} scènes · {t['lieux']} lieux · "
           f"{t['transitions']} transitions · {t['marches']} vues de marche · {t['liens']} liens "
+          f"({t['scenesRattachees']} scènes rattachées à leur lieu par déduction) "
           f"({SORTIE_JSON.stat().st_size // 1024} Ko)")
     print(f"data/pactum-graphe.html — {SORTIE_HTML.stat().st_size // 1024} Ko")
     return 0
