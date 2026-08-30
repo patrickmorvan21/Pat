@@ -295,7 +295,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     name: "Corde coupée", rarity: "rare", kind: "babiole", slot: "actif",
     illustration: "assets/objet_corde_coupee_fille_a.png",
     usage: "Assez longue pour descendre là où personne ne descend. Une fois amarrée, on ne la remonte pas.",
-    flavor: "Sous verre, dans la niche, sans nom : la seule corde de toute la chapelle qui n'a pas tenu. Coupée net, pas rompue — quelqu'un a voulu que ça rate.",
+    flavor: "Sous verre, dans la niche, sans nom : la seule corde de toute la chapelle qui n'a pas tenu. Coupée net, et courte — beaucoup trop courte pour la hauteur d'un poteau.",
   },
   "meche-nouee": {
     name: "Mèche Nouée", rarity: "commun", kind: "babiole", slot: "passif",

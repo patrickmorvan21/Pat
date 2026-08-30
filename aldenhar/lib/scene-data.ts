@@ -4849,6 +4849,42 @@ export const SCENES: Scene[] = [
     ],
     choices: [
       {
+        /* ELLE SE MONTRE — le degré manquant de l'arc (30/08). Entre le
+           ouï-dire (le caillou du Gamin) et la conversation (les quatre beats
+           du Moulin, à trois découvertes), le joueur n'avait aucun écran où
+           il la VOIT. Elle en a un, une seule fois par compte.
+
+           Prend la place de « Entrer » plutôt que d'ajouter un bouton : le
+           budget de trois actions ne bouge pas, et c'est la même intention
+           (rentrer au moulin) jouée par quelqu'un qui sait qu'il y a
+           quelqu'un dedans.
+
+           `masqueSi` sur la découverte qu'elle pose elle-même : au passage
+           suivant, l'option s'efface et « Entrer » revient. Se laisser voir
+           n'arrive pas deux fois — c'est ce qu'elle dit au Moulin (« Ça
+           arrive une fois tous les dix ans »), et c'est ce qui fait de son
+           « Tu m'as vue » un rappel plutôt qu'une entrée en matière. */
+        id: "entrer-moulin-elle",
+        label: "Entrer",
+        prendLaPlaceDe: "entrer-moulin",
+        requiresDecouverte: "d.fille_apercue",
+        masqueSi: { decouverte: "d.fille_vue" },
+        decouverte: "d.fille_vue",
+        illustration: "assets/monstre_petite_fixee_c.png",
+        grantsLoot: "jouet-fixee",
+        sortie: { toScene: "campement-2" },
+        passive: {
+          consequence:
+            "Entre toi et la porte, dans la bruyère, quelqu\u2019un est debout " +
+            "au milieu des troncs morts. Une enfant. Elle ne se cache pas et " +
+            "ne recule pas : elle attend que tu l\u2019aies bien vue.\n\n" +
+            "Puis elle s\u2019écarte de deux pas et te laisse passer. Dedans, " +
+            "sous la lucarne, un lit de bruyère garde une forme courte, et " +
+            "contre le mur, à hauteur d\u2019enfant, des jours comptés par " +
+            "paquets de cinq.",
+        },
+      },
+      {
         id: "entrer-moulin",
         label: "Entrer",
         // L'intérieur habité (la table, le vase de fleurs sèches sous le

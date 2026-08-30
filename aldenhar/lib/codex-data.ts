@@ -490,6 +490,7 @@ export const CODEX_PAR_DECOUVERTE: Record<string, string> = {
   "d.temoin_entrevu": "arc:temoin",
   "d.combles_cloues": "arc:temoin",
   "d.fille_vivante": "arc:fille",
+  "d.fille_vue": "arc:fille",
   "d.emplacement_vide": "arc:fille",
   "d.fille_apercue": "arc:fille",
   "d.fixation_ratee": "arc:fille",

@@ -75,7 +75,7 @@ export const FAITS: Fait[] = [
       {
         id: "coupee",
         texte:
-          "Sa corde a été coupée net, à la lame, et on l'a descendue vivante. " +
+          "Sa corde a été coupée net, et on l'a descendue vivante. " +
           "Le brin sectionné est encore accroché à la traverse.",
       },
       {
@@ -93,7 +93,7 @@ export const FAITS: Fait[] = [
       },
     ],
     accusation:
-      "On m'a montré sa corde coupée à la lame. On m'a montré la même corde " +
+      "On m'a montré sa corde coupée net. On m'a montré la même corde " +
       "rompue d'usure. On m'a dit qu'elle n'avait jamais été nouée. Choisissez.",
   },
   {

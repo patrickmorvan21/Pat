@@ -370,13 +370,13 @@
     },
     {
       "id": "petite_fixee",
-      "nom": "Le Poteau Court",
-      "note": "le poteau de la Petite Fixée au Champ des Fixés — le seul dont la corde a été coupée et le seul qui n'ait jamais porté d'écriteau. Même personne que la rencontre « fille ».",
+      "nom": "L'Emplacement Vide",
+      "note": "le poteau de la Petite Fixée au Champ des Fixés — descellé proprement puis rebouché, pour que ce nom cesse d'exister sans que le champ s'en aperçoive. Même personne que la rencontre « fille ».",
       "lieu_attache": "champ_des_fixes",
       "histoire_bailli": false,
       "rarete": "commune",
       "textes": {
-        "decouverte": "Au bout d'un rang, un poteau taillé plus court que les autres. Sa corde y pend encore, sectionnée net à hauteur d'enfant. Aucun écriteau n'a jamais été cloué dessus, et le fossoyeur passe à côté sans le redresser.",
+        "decouverte": "Un défaut d'alignement au milieu d'une rangée pleine, comme une dent tombée. La terre y est ancienne, tassée. On n'a pas arraché le poteau : on l'a descellé, puis rebouché. Aucun écriteau n'a jamais eu à être décloué, puisqu'il n'y en a plus.",
         "familiarite": null,
         "recontextualisation": null
       },

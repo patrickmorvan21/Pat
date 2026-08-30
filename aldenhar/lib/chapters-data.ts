@@ -102,10 +102,10 @@ export const LANDES_CHAPTERS: Chapter[] = [
     ],
     developpement: [
       "Le lit de bruyère du moulin est tassé, refait de frais, et court — bien trop court pour un adulte. Sur la pierre du mur, à hauteur d'enfant, des marques : des jours comptés par paquets de cinq, sur des années.",
-      "Et dans un creux du mur, serré dans un chiffon : un bout de corde. Coupé net. Pas usé, pas rompu — coupé. On ne garde pas ça par hasard. On garde ça comme une preuve, ou comme un pardon.",
+      "Et dans un creux du mur, serré dans un chiffon : un bout de corde. Court. Trop court pour un cou d'homme. On ne garde pas ça par hasard — on garde ça comme on garde la chose qui aurait dû nous tuer, pour vérifier de temps en temps qu'elle n'a pas grandi non plus.",
     ],
     resolution: [
-      "En sortant des Landes, tu sais une chose que le hameau tait : une pendue s'est relevée, et elle marche encore. La corde n'a pas cédé — on l'a coupée. Reste à savoir qui tenait la lame. Et pourquoi le Bailli n'a jamais fait repentre sa fille.",
+      "En sortant des Landes, tu sais une chose que le hameau tait : une pendue s'est relevée, et elle marche encore. Elle a huit ans, et le village a préféré ne pas la voir plutôt que d'admettre que la Fixation peut rater. C'est ça, le secret — pas un coupable : une lâcheté que trois cents noms couvrent.",
     ],
     fragments: [
       "Personne ne dit son nom. On dit « la Petite Fixée », comme on lit un écriteau, et on change de sujet, et on regarde ailleurs. Un hameau qui compte tout, qui grave tout, qui affiche ses morts — et qui a trouvé le moyen de nommer celle-là sans jamais dire son nom.",

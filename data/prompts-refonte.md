@@ -1,6 +1,6 @@
 # PACTUM — carnet de commande d'images
 
-**156 images** prêtes à regénérer · **0** sans sujet écrit.
+**157 images** prêtes à regénérer · **0** sans sujet écrit.
 
 Chaque entrée donne le **nom à produire** (variante suivante) et le prompt complet. Deux images par prompt suffisent : on garde la meilleure.
 
@@ -299,7 +299,7 @@ relique_vertebre_gravee_b=a single human vertebra, dense carved marks covering e
 
 ---
 
-## Rencontres (45)
+## Rencontres (46)
 
 ### `monstre_appele_descente_b.png`
 remplace `monstre_appele_descente.png` — falaise-cordes-3
@@ -565,6 +565,13 @@ remplace `monstre_pendu_qui_parle_a.png` — Le Pendu qui parle
 
 ```
 monstre_pendu_qui_parle_b=hanged man on an isolated gallows seen from a distance across dead moorland, head upright rather than slumped, rope taut, long coat, sky nearly black, pitch-black background, subject emerging from darkness, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `monstre_petite_fixee_d.png`
+remplace `monstre_petite_fixee_c.png`
+
+```
+monstre_petite_fixee_d=a small child of about eight standing motionless among tall bare weathered posts on open moorland scrub, plain shift dress, long loose hair, seen from some distance and reduced to a dark shape against the bright low sun behind her, facing the viewer, no facial features visible, nothing around her neck, nothing hanging from any of the posts. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
 ### `monstre_rebouteux_b.png`
