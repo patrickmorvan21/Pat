@@ -1,0 +1,814 @@
+{
+  "lot": "2026-08-30 refonte flat-orange",
+  "drive": {
+    "scene_hameau_accueil_cloche_c.png": {
+      "id": "11jmI_WGhwyQJaaLB6mdmpkHX19FVMIF6",
+      "taille": 21661,
+      "dossier": "2_Environnement"
+    },
+    "scene_hameau_accueil_mur_c.png": {
+      "id": "1wTuYg58Qv8Hz_BwJsUm4YeJr5kHI5Fqc",
+      "taille": 19016,
+      "dossier": "2_Environnement"
+    },
+    "relique_vertebre_gravee_v2_a.png": {
+      "id": "10JSlnDW3_70NJRlQihn3jM3v34WbtbXC",
+      "taille": 6126,
+      "dossier": "4_Reliques"
+    },
+    "relique_vertebre_gravee_a.png": {
+      "id": "13WqdvpCrOVxyg8fakixBs9RkAAQVMMe_",
+      "taille": 6728,
+      "dossier": "4_Reliques"
+    },
+    "relique_sablier_sans_sable_a.png": {
+      "id": "1A1LUfAJxZXLkY99DaBTjcIXo8pGyOt6V",
+      "taille": 6463,
+      "dossier": "4_Reliques"
+    },
+    "relique_miroir_noye_b.png": {
+      "id": "127YIm_s4tFB5x-XQhk77VOANm44lI7H0",
+      "taille": 4774,
+      "dossier": "4_Reliques"
+    },
+    "relique_dent_du_decompte_a.png": {
+      "id": "1r6IbRyopC2gqXabVwIvefT5lL0OvzYjo",
+      "taille": 5092,
+      "dossier": "4_Reliques"
+    },
+    "relique_clou_du_silence_c.png": {
+      "id": "1dleHww2LBult8I6u_qgyHWCLf-0Rtwe-",
+      "taille": 4086,
+      "dossier": "4_Reliques"
+    },
+    "relique_anneau_de_suie_a.png": {
+      "id": "1BdHBLuuwcrlhJFfeowex55TQoiMcn2tg",
+      "taille": 3241,
+      "dossier": "4_Reliques"
+    },
+    "relique_oeil_lanterne_verte_a.png": {
+      "id": "1AKYMxTv26pbsSyC3mHEkzso28NK_F0L0",
+      "taille": 7126,
+      "dossier": "4_Reliques"
+    },
+    "relique_nom_que_echo_a_garde_c.png": {
+      "id": "1q9J7NXbILRYs3Gq5BDFY2S2MuNlmx7tm",
+      "taille": 14370,
+      "dossier": "4_Reliques"
+    },
+    "relique_eclat_de_de_fele_c.png": {
+      "id": "1W2oO4HU5UwYCvHVb9PgPrm0RDT_9yu-T",
+      "taille": 27279,
+      "dossier": "4_Reliques"
+    },
+    "relique_sceau_fendu_a.png": {
+      "id": "1GMntJdEwvFrjo3c9uT4DBS_hPR4iR4cP",
+      "taille": 8828,
+      "dossier": "4_Reliques"
+    },
+    "relique_pierre_de_retour_a.png": {
+      "id": "1HYydOzbiaKDaCIxpg3-t7BL85IDodBJ9",
+      "taille": 23053,
+      "dossier": "4_Reliques"
+    },
+    "relique_clou_du_registre_c.png": {
+      "id": "1heAY_93RCaPm7kUA-4Fe_IB14xAzzVMT",
+      "taille": 12561,
+      "dossier": "4_Reliques"
+    },
+    "relique_echarde_a.png": {
+      "id": "1WvUuPKSfWY28I38Js036Obgd8wZOWVOV",
+      "taille": 7045,
+      "dossier": "4_Reliques"
+    },
+    "relique_anse_rompue_a.png": {
+      "id": "1tCxU6fR8Y7Uo-1npwQAs-BJG9FriZKMh",
+      "taille": 18582,
+      "dossier": "4_Reliques"
+    },
+    "relique_dague_emoussee_c.png": {
+      "id": "1hX7_W_Tq896P33HmbqU2_nsx4OZzS-4N",
+      "taille": 27888,
+      "dossier": "4_Reliques"
+    },
+    "scene_landes_pourquoi_trois_aubes_b.png": {
+      "id": "18iVQTf_bVay8skoa8FEBZmjEvblPoPEM",
+      "taille": 23531,
+      "dossier": "2_Environnement"
+    },
+    "scene_landes_eau_reflet_a.png": {
+      "id": "11TJ8Zqu-jNjGRnHsEzGjnd3mxTAeuKUl",
+      "taille": 24102,
+      "dossier": "2_Environnement"
+    },
+    "monstre_temoin_ruelle_v5_c.png": {
+      "id": "15EgL0XE-uW9fPXbN7Q0SVAeMQpc_BIKX",
+      "taille": 15948,
+      "dossier": "1_Rencontres"
+    },
+    "relique_vertebre_gravee_c.png": {
+      "id": "13afrH70FR5qR8SEnmKptKwLqXO8kJx5b",
+      "taille": 7229,
+      "dossier": "4_Reliques"
+    },
+    "relique_corde_seche_c.png": {
+      "id": "1fSztun3Y_7qRBrfBHTvCOfn3jkOse6PL",
+      "taille": 5052,
+      "dossier": "4_Reliques"
+    },
+    "monstre_temoin_ruelle_v5_d.png": {
+      "id": "1EipCouh26dyK3fkGSAdA1t848ozMjZ-k",
+      "taille": 119808,
+      "dossier": "1_Rencontres"
+    },
+    "scene_descente_a.png": {
+      "id": "19M4jfRmvUCeU3u_sDYPqDy3c5_RCxQuR",
+      "taille": 9087,
+      "dossier": "2_Environnement"
+    },
+    "scene_puits_condamne_beat2_b.png": {
+      "id": "1x8cHMPmtuA1ZWpqUr4FxhwLeT3TdI7l-",
+      "taille": 6801,
+      "dossier": "2_Environnement"
+    },
+    "scene_hameau_echelle_c.png": {
+      "id": "1MxVUxDS9RbkjJZAfn9tzTRFNeeIOVcKL",
+      "taille": 19111,
+      "dossier": "2_Environnement"
+    },
+    "scene_champ_des_fixes_v2_c.png": {
+      "id": "1E_SF71ulTx-yB4neIgRVxwG_8-KvHWdY",
+      "taille": 20186,
+      "dossier": "2_Environnement"
+    },
+    "scene_colline_aux_gibets_b.png": {
+      "id": "1e3MmUhnj1NbGPvEeqy9RBZQgSQ_bL_8Q",
+      "taille": 11967,
+      "dossier": "2_Environnement"
+    },
+    "scene_chemin_creux_v2_a.png": {
+      "id": "1lpQVgy6hkTeIelTgWKjW6atj58adyeTR",
+      "taille": 8047,
+      "dossier": "2_Environnement"
+    },
+    "scene_borne_frontiere_v3_a.png": {
+      "id": "1kLcLLSaAdLuUmxSMhQSyb2eJmqhr8tbQ",
+      "taille": 22422,
+      "dossier": "2_Environnement"
+    },
+    "monstre_cloche_retenue_a.png": {
+      "id": "1dKnQa8xpQhT7lqZqtn5mRrkUsJGyA1Z3",
+      "taille": 16291,
+      "dossier": "1_Rencontres"
+    },
+    "scene_tour_meurtriere_sud_b_d.png": {
+      "id": "1sz7Xktvp1qdUtq7KnFGyIo1KbZ59JrJx",
+      "taille": 13612,
+      "dossier": "2_Environnement"
+    },
+    "scene_puits_condamne_v2_b_f.png": {
+      "id": "10LPJhVy8Roq9IS5SuOfpysUpxzvIL7_E",
+      "taille": 25213,
+      "dossier": "2_Environnement"
+    },
+    "scene_tribunal_chaire_a_d_c.png": {
+      "id": "1S1zALY6UVzTsBaJA9ZWt2ccwAV1gPF46",
+      "taille": 14546,
+      "dossier": "2_Environnement"
+    },
+    "scene_marche_muet_d_f.png": {
+      "id": "1UH5ZNPD8AgqQ1xxin10rY5DlAbXRqaAr",
+      "taille": 20039,
+      "dossier": "2_Environnement"
+    },
+    "scene_mare_creux_doubles_v2_c_b.png": {
+      "id": "1_xNAYGFsNqO9QeuiHdOLhnDxbVy3Eig8",
+      "taille": 12423,
+      "dossier": "2_Environnement"
+    },
+    "scene_lande_generique_1_b_d.png": {
+      "id": "1Z13vnhKlhlcyRldh91_nH4S_qOW1e-Bp",
+      "taille": 12326,
+      "dossier": "2_Environnement"
+    },
+    "scene_landes_liaison_chemin_creux_b_f.png": {
+      "id": "1-lREZKyCcWyBUWuE7RX0fcflRd90EJP8",
+      "taille": 11299,
+      "dossier": "2_Environnement"
+    },
+    "scene_hameau_accueil_enfant_d_a.png": {
+      "id": "1mTH3UuQeOjbZQSauab9qiLfcukN87PpF",
+      "taille": 27092,
+      "dossier": "2_Environnement"
+    },
+    "scene_tribunal_ordonnance_a_d_e.png": {
+      "id": "1E2gvmPerKhzNVydsf5V9n_GqM8hfA3Cb",
+      "taille": 31953,
+      "dossier": "2_Environnement"
+    },
+    "scene_landes_liaison_fourche_b_d.png": {
+      "id": "1gV5AnFBmRGclGH94SXjJv2wo0dQfpF-y",
+      "taille": 12792,
+      "dossier": "2_Environnement"
+    },
+    "scene_palissade_rondins_a_d_f.png": {
+      "id": "1rkoIi2ezC-PPSe43qIekG3sPjiTvCx0-",
+      "taille": 10927,
+      "dossier": "2_Environnement"
+    },
+    "scene_palissade_portillon_a_c_f.png": {
+      "id": "1-Bn3XPknUp-WUsoYUjZxGQRVvHgYfuPD",
+      "taille": 31061,
+      "dossier": "2_Environnement"
+    },
+    "scene_landes_frise_montagnes_pleine_c_d.png": {
+      "id": "1y6uLVEFW4iU6l-2yPz1boYXB_RP4WCDq",
+      "taille": 10413,
+      "dossier": "2_Environnement"
+    },
+    "scene_tour_pierres_rangees_b_a.png": {
+      "id": "1TnEXtwgBkEGGE66FsgBrvqZmnd0eD5m_",
+      "taille": 22767,
+      "dossier": "2_Environnement"
+    },
+    "scene_hameau_accueil_depart_b_f.png": {
+      "id": "1zNwnKxu1fTZ1faMKjfuzJ9-aQuK0Lw3D",
+      "taille": 25701,
+      "dossier": "2_Environnement"
+    },
+    "scene_landes_liaison_sud_d_h.png": {
+      "id": "1taWQ5IThbCJfXPi_AfJZwh8b0TdhwE9K",
+      "taille": 13178,
+      "dossier": "2_Environnement"
+    },
+    "scene_lande_generique_4_b_f.png": {
+      "id": "1128xThzW6Oebdn78RUqm8ZruXzSxIDBu",
+      "taille": 6734,
+      "dossier": "2_Environnement"
+    },
+    "scene_hameau_accueil_table_b_d.png": {
+      "id": "1flQq4haLC2aLfkiWS_t-e7dcivCo3mVj",
+      "taille": 21990,
+      "dossier": "2_Environnement"
+    },
+    "scene_hameau_accueil_mur_b_c.png": {
+      "id": "1f3_cpdulWckXo3hRunvtcNb7tBSYr0iw",
+      "taille": 22945,
+      "dossier": "2_Environnement"
+    },
+    "scene_verger_noir_e_f.png": {
+      "id": "1AJr_N_hk6ISIUarj_jy_qRXUp2maxnGI",
+      "taille": 30462,
+      "dossier": "2_Environnement"
+    },
+    "scene_tribunal_bancs_a_d_b.png": {
+      "id": "1FTf989cWNqsObsoj565CwnlJlWwh7nBM",
+      "taille": 10241,
+      "dossier": "2_Environnement"
+    },
+    "scene_landes_hameau_grange_b_d.png": {
+      "id": "1TzEcwsQ8CYjMnfNvNZKpzZYYCFjpqwCI",
+      "taille": 29610,
+      "dossier": "2_Environnement"
+    },
+    "scene_lande_generique_3_b_e.png": {
+      "id": "1pio-vSxfreu8cHoqblmqidhwnAb7JViD",
+      "taille": 7838,
+      "dossier": "2_Environnement"
+    },
+    "scene_lande_generique_2_b_b.png": {
+      "id": "1VXCrllUWs8xuw328j1pffjR5aXdyW9JU",
+      "taille": 10733,
+      "dossier": "2_Environnement"
+    },
+    "scene_hameau_accueil_cloche_c_f.png": {
+      "id": "1MGUcYz-_t0ikQFSwdV4UMt5kPD66Ajce",
+      "taille": 25922,
+      "dossier": "2_Environnement"
+    },
+    "scene_palissade_sud_a_b_a.png": {
+      "id": "11aRm4abo3TXej_8NKeElob5xwxrQvCqb",
+      "taille": 20638,
+      "dossier": "2_Environnement"
+    },
+    "scene_hameau_dense2_c_e.png": {
+      "id": "1wj2xvWZquPZdMHIhdt0ex8jANHtSALAA",
+      "taille": 22967,
+      "dossier": "2_Environnement"
+    },
+    "scene_renoncer_v2_c_f.png": {
+      "id": "1lJ8terxCI52ZT4wW2X3kG43_bNrHumFV",
+      "taille": 14104,
+      "dossier": "2_Environnement"
+    },
+    "scene_moulin_interieur_a_e_b.png": {
+      "id": "1Ui8Pq0W2srK_UfNpEPdS2AayjoQO7SdT",
+      "taille": 20995,
+      "dossier": "2_Environnement"
+    },
+    "scene_moulin_campement_2_b_b.png": {
+      "id": "1K3hZxIOgtFm1RFMGNJMuVax3VeW0UFrQ",
+      "taille": 22865,
+      "dossier": "2_Environnement"
+    },
+    "scene_mare_aux_regards_2_c_d.png": {
+      "id": "1LwuupX6tTpJq95Zaxl8w1ORN-Onkh2pr",
+      "taille": 9832,
+      "dossier": "2_Environnement"
+    },
+    "scene_landes_liaison_plateau_e_a.png": {
+      "id": "1pK1dmgGGe8XJV7bfsnA5HCAqXmNerkmi",
+      "taille": 5274,
+      "dossier": "2_Environnement"
+    },
+    "scene_tour_escalier_vers_rien_c_a.png": {
+      "id": "1w_8I056XGGtAGlduVZQJjC_kl96Key38",
+      "taille": 18328,
+      "dossier": "2_Environnement"
+    },
+    "scene_petit_tribunal_b_g.png": {
+      "id": "1AEwpOVedE7nHBtv7nR4Y3vwjj2Hac6bS",
+      "taille": 24045,
+      "dossier": "2_Environnement"
+    },
+    "scene_proces_du_heros_v4_d_b.png": {
+      "id": "15_t5_G9hAAgfoLdmPvvqZhKYvO-hDtfH",
+      "taille": 26264,
+      "dossier": "2_Environnement"
+    },
+    "scene_mare_aux_regards_b_a.png": {
+      "id": "1PQrPGEJoDw37hOO6XGzj8bwAN5AvWiiq",
+      "taille": 17766,
+      "dossier": "2_Environnement"
+    },
+    "scene_landes_hameau_ruelle_c_b.png": {
+      "id": "1TB9LHtRc9uAGsfxpjA3A2VWsIe4Hagc2",
+      "taille": 24488,
+      "dossier": "2_Environnement"
+    },
+    "scene_hameau_dense_c_a.png": {
+      "id": "1f_lMSOuePSybAT9A2rltx9BtFBvqcOun",
+      "taille": 10034,
+      "dossier": "2_Environnement"
+    },
+    "scene_lande_arbres_morts_d_d.png": {
+      "id": "1mg-GXCtmYg6hlC46hUvrBkG9xEN4Ea4w",
+      "taille": 8152,
+      "dossier": "2_Environnement"
+    },
+    "scene_chemin_creux_d_a.png": {
+      "id": "13iMe8vVpGFXz9pIqph7xIYgVLNHDxw7n",
+      "taille": 30231,
+      "dossier": "2_Environnement"
+    },
+    "scene_champ_tombe_manquante_a_d_f.png": {
+      "id": "1JcSdoTIJXEuLoioG4JhRB-pMbbfIxQcK",
+      "taille": 23086,
+      "dossier": "2_Environnement"
+    },
+    "scene_champ_poteaux_vierges_c_e.png": {
+      "id": "140V0UEWXmI8XxbQITg5XWL-OjvcCg1LJ",
+      "taille": 12503,
+      "dossier": "2_Environnement"
+    },
+    "scene_chemin_talus_a_d_c.png": {
+      "id": "1hipYRc6Kb9nRexb_sPiS-VreAFWboCrI",
+      "taille": 28252,
+      "dossier": "2_Environnement"
+    },
+    "scene_chapelle_cloche_sans_battant_c_a.png": {
+      "id": "1CFul0xdhedkwlfmJ38DsRlS8xAPR8CKu",
+      "taille": 15010,
+      "dossier": "2_Environnement"
+    },
+    "scene_chapelle_mur_cordes_v3_d_a.png": {
+      "id": "1oreQf0J5tVO22CXAWLdWC99xEJifrjWd",
+      "taille": 16654,
+      "dossier": "2_Environnement"
+    },
+    "scene_chemin_creux_coude_c_c.png": {
+      "id": "1Gc8XyYWWxL7j0os0-oDJhP04GkGMdc-D",
+      "taille": 21631,
+      "dossier": "2_Environnement"
+    },
+    "scene_chapelle_des_cordes_e_d.png": {
+      "id": "1lMcsXECRuJhgQ7r58uwjSNJw6nIYN-cD",
+      "taille": 26422,
+      "dossier": "2_Environnement"
+    },
+    "scene_colline_gibet_vide_a_c_d.png": {
+      "id": "1dUfFQ1mJ2qh2JSyLizYyUjS44WmUMKwK",
+      "taille": 17002,
+      "dossier": "2_Environnement"
+    },
+    "scene_colline_pied_grand_gibet_c_b.png": {
+      "id": "1RConUL4W_0mb1l3KfsC5ivH8of0LhpiI",
+      "taille": 9903,
+      "dossier": "2_Environnement"
+    },
+    "scene_chemin_charrette_a_d_b.png": {
+      "id": "1HaCfnlf8hqH0JO7QXsj4crN4N2OUeYxf",
+      "taille": 19673,
+      "dossier": "2_Environnement"
+    },
+    "scene_colline_aux_gibets_d_d.png": {
+      "id": "1vdvAR54hhHs39NqFwvbwXbBsyP-IZjmO",
+      "taille": 18352,
+      "dossier": "2_Environnement"
+    },
+    "scene_champ_des_fixes_c_a.png": {
+      "id": "1WpQenZuFGph3RuoN2X9RWopNQS3JdkO6",
+      "taille": 28028,
+      "dossier": "2_Environnement"
+    },
+    "scene_champ_tombe_manquante_a_d_e.png": {
+      "id": "1gPdI9Aby1pBuPAdBvPiePTz5e5HZJ8Oh",
+      "taille": 11860,
+      "dossier": "2_Environnement"
+    },
+    "scene_champ_poteau_retire_d_e.png": {
+      "id": "1vLZngrl4nBK6dR5lK4z6w6WcgkQn0tQI",
+      "taille": 13781,
+      "dossier": "2_Environnement"
+    },
+    "scene_borne_gravures_a_e_d.png": {
+      "id": "1R0SAnizFByVW-wc79N2bfFWEdMzA8Tkc",
+      "taille": 21464,
+      "dossier": "2_Environnement"
+    },
+    "scene_landes_gibet_pi_nouveau_a.png": {
+      "id": "1NYOzcC9YyLQ3iAfZXN-03EwVN9NgIZ8R",
+      "taille": 22991,
+      "dossier": "2_Environnement"
+    },
+    "scene_landes_soin_b.png": {
+      "id": "1VVdHHcqYZfRiEJCPUGtXQ1b7bAgC3IuD",
+      "taille": 17705,
+      "dossier": "2_Environnement"
+    },
+    "scene_landes_service_renoncants_a.png": {
+      "id": "19AN8nt8o5ySTlD5MDWiM-zvn-MbVmUWH",
+      "taille": 13675,
+      "dossier": "2_Environnement"
+    },
+    "scene_landes_corbeaux_du_compte_b.png": {
+      "id": "1CS1ePmEw5P97lUxRoDU_9yFe-6oRI_bP",
+      "taille": 35440,
+      "dossier": "2_Environnement"
+    },
+    "scene_landes_ouverture_potence_c.png": {
+      "id": "1XMur8528aqcV8izkmIrpMouHkCT7H_Al",
+      "taille": 22633,
+      "dossier": "2_Environnement"
+    },
+    "scene_landes_purification_b.png": {
+      "id": "1i5Y_1lqVpwYgGuZPwZmJG-rfyeiJY3a7",
+      "taille": 29484,
+      "dossier": "2_Environnement"
+    },
+    "monstre_temoin_proces_v2b_b.png": {
+      "id": "1sZRdxZPEPsp-ucI5LRZhQPDxagtuNKs1",
+      "taille": 22140,
+      "dossier": "1_Rencontres"
+    },
+    "relique_vertebre_gravee_b_a.png": {
+      "id": "1lQujvZC5oZGh7Y4vsQIPxDsFqH6XS9ok",
+      "taille": 10855,
+      "dossier": "4_Reliques"
+    },
+    "monstre_fossoyeur_trou_1_d_a.png": {
+      "id": "1Je72S764paRGyvu-S5kX0ZUOfjjA0pHR",
+      "taille": 20060,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_gamin_caillou_d_b.png": {
+      "id": "1huIQjChL8l3q4lM4QGAZUK7ie6Ajk6av",
+      "taille": 8676,
+      "dossier": "1_Rencontres"
+    },
+    "relique_sablier_sans_sable_b_b.png": {
+      "id": "1OSpK2gBHZ9ZYbqhDO49BPlPG_pCQ6T2F",
+      "taille": 7411,
+      "dossier": "4_Reliques"
+    },
+    "monstre_fossoyeur_trou_3_b_b.png": {
+      "id": "1M4iv6KYt3HiSfCswbOX6GA_Z0-mNLswe",
+      "taille": 15689,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_appele_descente_b_b.png": {
+      "id": "1ZLIO47_GXNqVr0Ch9CDjNpSLlNeLnjUq",
+      "taille": 10532,
+      "dossier": "1_Rencontres"
+    },
+    "relique_oeil_lanterne_verte_b_b.png": {
+      "id": "1tXZL2uN_LhhMAGZxYXxqF1IULKp-G3aJ",
+      "taille": 4206,
+      "dossier": "4_Reliques"
+    },
+    "relique_anneau_de_suie_b_a.png": {
+      "id": "1hF9TL8u-oGRyy8U7-M0sPp1tN0xPxmxl",
+      "taille": 6433,
+      "dossier": "4_Reliques"
+    },
+    "monstre_temoin_ruelle_v6_c_b.png": {
+      "id": "1jg7s5EVqvRnGGxsAyhu587YvUnS7xUwU",
+      "taille": 23564,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_hesitant_c_b.png": {
+      "id": "1Nz9SqFtugSxsUl0Kq5wr6CbGltHQiHRe",
+      "taille": 10881,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_pendu_qui_parle_2_b_a.png": {
+      "id": "1c_jQF9jdykS8EUcm92rity9QV6vOVZat",
+      "taille": 7419,
+      "dossier": "1_Rencontres"
+    },
+    "relique_miroir_noye_b_d.png": {
+      "id": "1roMCasLILftrW2oBk9NNmmW8RuNhVfok",
+      "taille": 7959,
+      "dossier": "4_Reliques"
+    },
+    "monstre_ecrivain_public_e_a.png": {
+      "id": "12zwTwS5TQFp3F9DMDWowvKQ4drUxWvbQ",
+      "taille": 7621,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_palissade_sud_2_d_b.png": {
+      "id": "1DkoxSYgXfiXm4t5r70wwp7J5iYnzP6JC",
+      "taille": 12886,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_pendu_qui_parle_b_a.png": {
+      "id": "1oDomOX_mrFQ21-UF14t8-MnZ_Hiio6BN",
+      "taille": 16708,
+      "dossier": "1_Rencontres"
+    },
+    "relique_eclat_de_de_fele_b_d.png": {
+      "id": "1JKGQi7L20ABmgLC4-jq5aP4A_FgqUbWc",
+      "taille": 5745,
+      "dossier": "4_Reliques"
+    },
+    "monstre_hameau_entree_4_d_b.png": {
+      "id": "1HBj4w5DJ_KShYaDTaSMMtw7wi9sQlGM7",
+      "taille": 9392,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_epoux_verger_b_b.png": {
+      "id": "1uSNoNBjpJZDxJwPdRJKjcKhUGGXXblOf",
+      "taille": 21367,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_pendu_mal_fixe_v2_d_b.png": {
+      "id": "1wFFFeyjZCdSus3irpAX3xZZEhgqlYAr9",
+      "taille": 21234,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_rebouteux_b_b.png": {
+      "id": "1ZjS5XT37HbCGDZJBozRpU6j7yD5I-pu7",
+      "taille": 9790,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_hameau_entree_3_v2_b_c.png": {
+      "id": "1YO1a5CMC4WuupRnF13JArL6deCRrfejq",
+      "taille": 18597,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_fossoyeur_poteaux_b_a.png": {
+      "id": "177Hi17lRR0utLy3L9tZywj1lG1jK_q0V",
+      "taille": 17792,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_fille_moulin_dos_v2_b_b.png": {
+      "id": "1Jz77HlWe5aslviAOuYf20RnHvoTcRMfX",
+      "taille": 9805,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_la_fille_moulin_v2_b_d.png": {
+      "id": "1dSVaQf-bEk0A0xd1PQfPDnJaWdV-3zwY",
+      "taille": 13355,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_gamin_murets_b_b.png": {
+      "id": "1npDEfkeYwCSCczceMSzMGARq_ANe9YLb",
+      "taille": 9201,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_gamin_depart_d_a.png": {
+      "id": "1g3ETe_bJF2gL1j5CAUTFtguogQxA3DDf",
+      "taille": 9897,
+      "dossier": "1_Rencontres"
+    },
+    "relique_dent_du_decompte_b_d.png": {
+      "id": "1dg_UQrczTnnwHZy8UeWiP0MgV9aR7hTh",
+      "taille": 5477,
+      "dossier": "4_Reliques"
+    },
+    "monstre_bete_chemins_creux_b_a.png": {
+      "id": "1SIBsTMl8_kvMluhs9Bb6oZuQfj_YEQdn",
+      "taille": 5661,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_marcheur_1_c_b.png": {
+      "id": "12ZNmobby2PSrwW6d5KTWXjzkpI6aPVXr",
+      "taille": 10569,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_fille_moulin_ouvrage_d_b.png": {
+      "id": "1R3Oqnr-fu7au2EqrvDHWigdEAooq1kCd",
+      "taille": 11741,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_guetteur_tour_d_a.png": {
+      "id": "1YpeqHrQBXdGB6wCncsh22kudwZ0mdLU0",
+      "taille": 11627,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_veuve_cordes_v2_b_d.png": {
+      "id": "1QpUxiOxcm5oVVOS8448N2TZkemT7QPS7",
+      "taille": 5800,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_corbeaux_du_compte_c_b.png": {
+      "id": "1BZAIDFIUKLfNyXKqQ5XiC1KNDZBtSyRT",
+      "taille": 7836,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_marcheur_rebours_v2_b_a.png": {
+      "id": "1CQQNPtycmqtw8qp91lesdii3rREj8KIq",
+      "taille": 9333,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_mains_du_puits_b_b.png": {
+      "id": "1uJ2n35SvuA0vri7Uuj1J4e0bQuqTgS3y",
+      "taille": 16329,
+      "dossier": "1_Rencontres"
+    },
+    "relique_nom_que_echo_a_garde_b_b.png": {
+      "id": "1f0PzWCX-KBXqzWkBh8_90GQpNapXeLU8",
+      "taille": 3618,
+      "dossier": "4_Reliques"
+    },
+    "monstre_troupeau_compte_c_b.png": {
+      "id": "1IcDFduSRIccDgdyAIzFy2NJw6B8PElW4",
+      "taille": 16220,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_colporteur_c_c.png": {
+      "id": "1oxnferzJhp9P_R1CafQKUoRV3yPAhYwr",
+      "taille": 12053,
+      "dossier": "1_Rencontres"
+    },
+    "objet_miroir_ame_b_b.png": {
+      "id": "1wv4i8I8-xTur2ZjIPJnNmLBMWD9b90Hb",
+      "taille": 8514,
+      "dossier": "3_Objets"
+    },
+    "relique_clou_du_silence_b_b.png": {
+      "id": "1Com4fytbICrKacJTU3JkeLsDh_oajM0h",
+      "taille": 4121,
+      "dossier": "4_Reliques"
+    },
+    "objet_grelot_charretier_b_a.png": {
+      "id": "1e5DCrQ4XLE_oo5BxY62k-H0WPgh7EVEA",
+      "taille": 4193,
+      "dossier": "3_Objets"
+    },
+    "objet_jouet_petite_fixee_b_a.png": {
+      "id": "1_7ARm4DJvTPmwtRHpyLPgZ4XeQcdpazB",
+      "taille": 7328,
+      "dossier": "3_Objets"
+    },
+    "objet_lanterne_rouillee_guerite_b_a.png": {
+      "id": "13xMJLUs9_4MctfVGTXmi0ISRFvECn3qq",
+      "taille": 19259,
+      "dossier": "3_Objets"
+    },
+    "objet_lanterne_rouillee_b_a.png": {
+      "id": "1aCR5bpSR3ZXHSFdzhxp0cF8DpH6rbOUJ",
+      "taille": 6307,
+      "dossier": "3_Objets"
+    },
+    "objet_fruit_cendre_b_b.png": {
+      "id": "1m9atxF_k8i-SuvxngDfGMmkE1N_ihltY",
+      "taille": 3426,
+      "dossier": "3_Objets"
+    },
+    "objet_carnet_fossoyeur_e_a.png": {
+      "id": "18KiclZWrn96w6R78eWAjs_jgCVcjIcnT",
+      "taille": 9995,
+      "dossier": "3_Objets"
+    },
+    "objet_grimoire_b_b.png": {
+      "id": "1KHujjzDo4oy2LRZPPjuDmHqGfMnoib5Q",
+      "taille": 4887,
+      "dossier": "3_Objets"
+    },
+    "objet_miroir_poche_fele_d_a.png": {
+      "id": "1uOCSGEqKjXXy8WaCqc5L-6ge-Hh23InE",
+      "taille": 4212,
+      "dossier": "3_Objets"
+    },
+    "objet_offrandes_borne_d_b.png": {
+      "id": "1ck8_W7WfBa1SkJDvGHHhOLnlCdDAErm4",
+      "taille": 6093,
+      "dossier": "3_Objets"
+    },
+    "relique_corde_seche_b_b.png": {
+      "id": "11r6zfojpAw2IHSUhdYuJHAODwV7OWbw1",
+      "taille": 9619,
+      "dossier": "4_Reliques"
+    },
+    "objet_craie_condamne_b_a.png": {
+      "id": "1SXDxshZq5PVge7UKifZs1IkkA7cAbHk6",
+      "taille": 6678,
+      "dossier": "3_Objets"
+    },
+    "objet_fiole_baume_b_b.png": {
+      "id": "1hIvHpc8fbnbmq-KSBvdSpPLpCqxrNhnd",
+      "taille": 4270,
+      "dossier": "3_Objets"
+    },
+    "objet_corde_coupee_fille_b_b.png": {
+      "id": "1LE1JyViEKWnTjEXKC86EHTpUSHJPZF5Z",
+      "taille": 5396,
+      "dossier": "3_Objets"
+    },
+    "objet_lunette_guetteur_c_b.png": {
+      "id": "1_Nj6SIB3rZvRKfjWBnTqOiW60TBnlnXt",
+      "taille": 2760,
+      "dossier": "3_Objets"
+    },
+    "objet_echarde_grand_gibet_c_b.png": {
+      "id": "1ly2mMoVeRbbrg_WCzYhM5T1SnMwSsuiT",
+      "taille": 3322,
+      "dossier": "3_Objets"
+    },
+    "objet_lanterne_veilleur_3_d_b.png": {
+      "id": "1h2_nokt9_oQAwdwnEFMFbbV1SL3rNg6T",
+      "taille": 15580,
+      "dossier": "3_Objets"
+    },
+    "objet_dague_os_b_b.png": {
+      "id": "1jXZl4q2S9jhEBfjXQ-_Lh1xUu2aHuLx4",
+      "taille": 5266,
+      "dossier": "3_Objets"
+    },
+    "objet_dague_cendres_d_a.png": {
+      "id": "1-lW0xHBnLTGSRWrV_FUJ-4sI9wxKR82Q",
+      "taille": 4752,
+      "dossier": "3_Objets"
+    },
+    "objet_grand_registre_e_b.png": {
+      "id": "1osNj5ytCci1qqTLiMVgX6u3fUtm196ba",
+      "taille": 10212,
+      "dossier": "3_Objets"
+    },
+    "objet_brin_chanvre_beni_c_b.png": {
+      "id": "1MAbcRDRX4D2tp4cZagMNvgVbRJ5Gb_ZX",
+      "taille": 4373,
+      "dossier": "3_Objets"
+    },
+    "objet_cle_rouillee_b_a.png": {
+      "id": "1CIYf4nY6dMZGQJcsrOf9XPFaGucCu8H5",
+      "taille": 4107,
+      "dossier": "3_Objets"
+    },
+    "objet_lanterne_veilleur_2_c_a.png": {
+      "id": "1yRbW50XMweHAaUBud4FieshZ7wVBmvlL",
+      "taille": 6417,
+      "dossier": "3_Objets"
+    },
+    "objet_dent_meute_e_a.png": {
+      "id": "1AcrGeLUsAoqIDfk_EBXptgPBxVuwv5Hk",
+      "taille": 4943,
+      "dossier": "3_Objets"
+    },
+    "objet_couronne_brisee_b_b.png": {
+      "id": "1uuS7PZcR7cdVTh8NCf7BOKsS4eDVW1Me",
+      "taille": 4720,
+      "dossier": "3_Objets"
+    },
+    "objet_cle_maison_muree_b_b.png": {
+      "id": "1zjNC_l5CFgCw5YUAJHLZU86lBVrRCu8n",
+      "taille": 6190,
+      "dossier": "3_Objets"
+    },
+    "objet_de_vingt_d_a.png": {
+      "id": "1HNhUaJ2f0OodUCTjJBGAuNMoKzqurWYY",
+      "taille": 4222,
+      "dossier": "3_Objets"
+    }
+  },
+  "note": "Lot trié par Patrick le 30/08 à 11h05-11h15 : refonte « aplat orange » des images déjà en jeu. 160 nouveaux fichiers, dont 108 remplacent une image affichée.",
+  "a_regenerer": {
+    "raison": "Générées à 11h05, AVANT la réécriture des prompts de la Petite Fixée (commit du 30/08 après-midi). Elles rendent l'ANCIEN sujet — une adulte — en meilleure qualité : monstre_la_fille_moulin_v2_b_d = femme encapuchonnée, visage visible, intérieur sombre ; _dos_v2_b_b = silhouette adulte de dos devant un grand soleil, pas de rangée de cailloux ; _ouvrage_d_b = mains ADULTES qui tressent une CORDE, c'est-à-dire l'ouvrage retiré du jeu le 30/08. Non câblées, non importées : les recommander depuis data/prompts-refonte.md.",
+    "fichiers": [
+      "monstre_la_fille_moulin_v2_b_d.png",
+      "monstre_fille_moulin_dos_v2_b_b.png",
+      "monstre_fille_moulin_ouvrage_d_b.png"
+    ]
+  }
+}
