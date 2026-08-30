@@ -2717,7 +2717,8 @@ export const SCENES: Scene[] = [
     illustration: "assets/monstre_femme_seuil_2_c.png",
     chainNext: "femme-savoir-3",
     narration: [
-      "« Elle est encore là ? À l\u2019ouest. La jeune. »",
+      "« Elle est encore là ? À l\u2019ouest. La petite. » Elle se corrige " +
+        "toute seule, plus bas : « Enfin. On avait le même âge. »",
       "Ses yeux cherchent les tiens et n\u2019en sortent plus. « Dis-le-moi. " +
         "Dis-le juste une fois. »",
     ],
@@ -3054,21 +3055,22 @@ export const SCENES: Scene[] = [
         "en a deux. Elle sait pas. Faut pas lui dire, elle a peur pour rien. »",
       "Il fouille dans sa poche et te tend une pierre plate, grise, polie " +
         "comme un galet de rivière. Il n\u2019y a pas de rivière dans les Landes. " +
-        "« C\u2019est la dame de l\u2019ouest qui me l\u2019a donnée. »",
+        "« C\u2019est la petite de l\u2019ouest qui me l\u2019a donnée. »",
     ],
     choices: [
       {
         id: "gamin-quelle-dame",
-        label: "« Quelle dame ? »",
+        label: "« Quelle petite ? »",
         decouverte: "d.fille_apercue",
         grantsLoot: "caillou-gamin",
         passive: {
           consequence:
-            "« Ben, la dame. » Il hausse les épaules, comme si tu demandais " +
-            "de quelle couleur est le ciel. « Elle est jeune. Elle a un " +
-            "châle. Elle marche du côté du moulin, là où l\u2019herbe est " +
-            "couchée. » Il repose un caillou dans la rangée, très exactement " +
-            "à sa place.",
+            "« Ben, la petite. » Il hausse les épaules, comme si tu demandais " +
+            "de quelle couleur est le ciel. « Elle a mon âge. Elle a un " +
+            "châle trop grand. Elle marche du côté du moulin, là où " +
+            "l\u2019herbe est couchée. » Il repose un caillou dans la rangée, " +
+            "très exactement à sa place. « C\u2019est elle qui m\u2019a montré " +
+            "comment on range. »",
         },
       },
       {
@@ -3731,7 +3733,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "parler-de-la-dame",
-        label: "Parler de la femme de l\u2019ouest",
+        label: "Parler de la petite de l\u2019ouest",
         requiresDecouverte: "d.fille_vivante",
         soupcon: 2,
         passive: {
@@ -3921,7 +3923,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         /* ═══ LE LECTEUR DE `d.temoin_nomme` (chantier 12/08, §5).
-           La Fille du Moulin est la seule à NOMMER ce qui est sur ce toit :
+           La Petite Fixée est la seule à NOMMER ce qui est sur ce toit :
            « celle qui regarde — elle ne juge personne, elle attend que vous
            le fassiez ». Ce qu'elle dit n'était lu nulle part.
            Ici, ça change tout : un héros qui l'a entendue sait que la chose
@@ -4913,10 +4915,10 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu dors d'un œil — et cet œil la voit : une silhouette entre sans bruit, une corde coupée au cou, s'assoit près de la meule et te veille, toi. À ton réveil, une marque de main dans la poussière : merci pour la place.",
+            "20 naturel. Tu dors d'un œil — et cet œil la voit : une petite silhouette entre sans bruit, une corde coupée au cou, s'assoit près de la meule et te veille, toi. À ton réveil, une marque de main dans la poussière — une main d'enfant : merci pour la place.",
             "Ton demi-sommeil filtre les bruits de la lande. Rien n'entre. Le repos est mince, mais il est à toi — et le creux du lit de bruyère, au matin, n'a pas changé de forme.",
             "Tu sombres sans le décider. Au réveil, la porte est ouverte — tu l'avais calée — et sur la meule, quelqu'un a posé une fleur de bruyère. Tu n'es pas sûr que ce soit un cadeau.",
-            "1 naturel. Tu rêves qu'on te veille. Tu te réveilles : c'est vrai. Elle est penchée sur toi, sa corde coupée pendant à ton front — puis plus rien, la porte battante, et ton cœur qui compte tout seul. ♦ −2"
+            "1 naturel. Tu rêves qu'on te veille. Tu te réveilles : c'est vrai. Elle est penchée sur toi, si petite qu'elle n'a pas eu à se pencher beaucoup, sa corde coupée pendant à ton front — puis plus rien, la porte battante, et ton cœur qui compte tout seul. ♦ −2"
           ),
         },
       },
@@ -4948,6 +4950,18 @@ export const SCENES: Scene[] = [
      qu'un village a décidé de ne pas voir. C'est pour ça que le Moulin est le
      seul endroit sûr des Landes.
 
+     ⚠️ ELLE A HUIT ANS (décision Patrick, 30/08). Pas vieillir, à vingt ans,
+     c'est une grâce ; à huit, c'est la sentence. Le hameau l'appelle « la
+     Petite Fixée » — un nom d'écriteau, administratif, qui évite d'avoir à
+     dire le sien. Que ce soit la fille du Bailli est ce que le joueur
+     DÉCOUVRE, jamais ce que le hameau annonce.
+     Règle d'écriture pour toutes ses répliques : elle répète ce qu'elle a
+     entendu dire d'elle, à plat, sans analyse et sans plainte. L'effroi naît
+     de l'écart entre ce qu'elle dit et la façon dont elle le dit — jamais
+     d'un enfant qui parlerait comme une adulte. Elle ne tresse pas : elle
+     aligne des cailloux, comme le Gamin des murets, et c'est elle qui lui a
+     donné le sien.
+
      ⚠️ Elle ne délivre AUCUN bonus mécanique. Ce qu'elle donne est une
      information qui coûte : en parler à un villageois fait +2 Soupçon. */
   {
@@ -4959,8 +4973,9 @@ export const SCENES: Scene[] = [
       "La porte est entrouverte, comme toujours. Mais cette fois la bruyère " +
         "du pot n\u2019est pas seulement fraîche : elle est mouillée. " +
         "Quelqu\u2019un vient de la cueillir.",
-      "Une femme est assise sur la paillasse, dos à toi, occupée à quelque " +
-        "chose de ses mains. Elle ne se retourne pas.",
+      "Près de la meule, quelqu\u2019un est accroupi, dos à toi, en train " +
+        "de ranger de petites choses en ligne sur la pierre. La silhouette " +
+        "t\u2019arrive à la hanche.",
       "« Tu m\u2019as vue. » Ce n\u2019est pas une question. « Ça arrive une fois " +
         "tous les dix ans. »",
     ],
@@ -4987,39 +5002,42 @@ export const SCENES: Scene[] = [
     narration: [
       "Elle se retourne enfin, et le compte ne marche pas. Le village parle " +
         "d\u2019elle comme d\u2019une histoire ancienne, d\u2019un temps que même " +
-        "les vieux ont du mal à situer. Elle a vingt ans.",
-      "« Ils m\u2019ont pendue un mardi. » Elle dit ça comme on donne une " +
-        "adresse. « Ça n\u2019a pas pris. Je suis restée là, à me balancer, et " +
+        "les vieux ont du mal à situer. Elle a huit ans.",
+      "« Ils m\u2019ont pendue un mardi. » Elle dit ça comme on récite le jour " +
+        "du marché. « Ça n\u2019a pas pris. Je suis restée là à me balancer, et " +
         "à un moment ils sont partis manger. »",
-      "« Quand ils sont revenus, j\u2019avais défait le nœud toute seule. Alors " +
-        "ils ont décidé de ne pas m\u2019avoir vue. C\u2019était plus simple. »",
+      "« Quand ils sont revenus, j\u2019avais défait le nœud toute seule. » Elle " +
+        "le dit avec un tout petit peu de fierté, celle d\u2019un enfant qui a " +
+        "appris à faire ses lacets. « Alors ils ont décidé de pas m\u2019avoir " +
+        "vue. C\u2019était plus simple. »",
     ],
     choices: [
       {
         id: "fille-pourquoi-rester",
-        label: "« Pourquoi restez-vous ici ? »",
+        label: "« Pourquoi tu restes ici ? »",
         passive: {
           consequence:
-            "« Pour aller où ? » Elle repose ses mains. « Au sud, il y a la " +
-            "Descente, et la Descente ne prend que les vivants ou les morts. " +
-            "Je ne suis ni l\u2019un ni l\u2019autre. » Un temps. « Et puis " +
-            "quelqu\u2019un doit rester pour savoir ce qui s\u2019est passé. »",
+            "« Pour aller où ? » Elle repose le caillou qu\u2019elle tenait. " +
+            "« Au sud il y a la Descente. La Descente elle prend que les " +
+            "vivants ou les morts. » Elle compte deux doigts et s\u2019arrête. " +
+            "« Moi je suis pas dans les deux. » Un temps. « Et puis si je " +
+            "pars, personne se rappelle. »",
         },
       },
       {
         id: "fille-votre-pere",
         nature: "social",
         tags: ["citable"],
-        label: "« Votre père vous attend. »",
+        label: "« Ton père t\u2019attend. »",
         risky: {
           stat: "EMPATHIE",
           threshold: 12,
           highStakes: true,
           outcomes: outcomes(
-            "20 naturel. Tu ne dis pas « il vous attend ». Tu dis : « il a tressé la corde trois mois. » Elle s\u2019arrête net. Pour la première fois depuis trente ans, quelqu\u2019un lui parle de son père comme d\u2019un homme et non comme d\u2019un pendu — et elle te raconte le reste sans que tu aies à demander.",
-            "Elle ne se fâche pas. Elle repose son ouvrage sur ses genoux, très lentement, et regarde la lucarne. « Je sais. » Deux mots, et le silence qui suit dure assez longtemps pour que tu comprennes qu\u2019elle y pense tous les jours.",
-            "« Ne fais pas ça. » Sa voix ne monte pas d\u2019un ton, ce qui est pire. « Tout le monde ici me dit ce que je devrais faire de mon père. Toi tu viens d\u2019arriver. »",
-            "1 naturel. Elle rit — un son sec, sans joie. « Il m\u2019attend, oui. Comme il attendait l\u2019autre. » Elle se remet à son ouvrage et ne te répondra plus de la soirée. ♦ −2"
+            "20 naturel. Tu ne dis pas « il t\u2019attend ». Tu dis : « il a tressé la corde trois mois. » Elle s\u2019arrête net. Pour la première fois depuis quarante ans, quelqu\u2019un lui parle de son père comme d\u2019un homme et non comme d\u2019un pendu — et elle te raconte le reste sans que tu aies à demander.",
+            "Elle ne se fâche pas. Elle repose le caillou sur la pierre, très exactement à sa place, et regarde la lucarne. « Je sais. » Deux mots, et le silence qui suit dure assez longtemps pour que tu comprennes qu\u2019elle y pense tous les jours.",
+            "« Faut pas dire ça. » Sa voix ne monte pas d\u2019un ton, ce qui est pire. « Tout le monde me dit ce que je devrais faire de mon père. Toi t\u2019es arrivé hier. »",
+            "1 naturel. Elle rit — un petit rire d\u2019enfant, à contretemps, qui ne va pas du tout avec ce qu\u2019elle vient de dire. « Il m\u2019attend, oui. Comme il attendait l\u2019autre. » Elle se remet à ranger ses cailloux et ne te répondra plus de la soirée. ♦ −2"
           ),
         },
       },
@@ -5028,38 +5046,38 @@ export const SCENES: Scene[] = [
         label: "Ne rien dire",
         passive: {
           consequence:
-            "Tu ne dis rien. Elle continue son ouvrage, et le silence " +
-            "s\u2019installe sans gêne — c\u2019est visiblement ce qu\u2019elle " +
-            "préfère. Au bout d\u2019un moment, elle parle d\u2019elle-même, " +
-            "parce que personne ne l\u2019en empêche.",
+            "Tu ne dis rien. Elle continue d\u2019aligner ses cailloux, et le " +
+            "silence s\u2019installe sans gêne — c\u2019est visiblement ce " +
+            "qu\u2019elle préfère. Au bout d\u2019un moment, elle parle " +
+            "d\u2019elle-même, parce que personne ne l\u2019en empêche.",
         },
       },
     ],
-    jailerLine: "Trente ans du même geste. C'est ce que vous appelez « tenir ».",
+    jailerLine: "Quarante ans qu'elle a huit ans. Vous appelez ça une chance ?",
   },
   {
     id: "fille-moulin-3",
     illustration: "assets/monstre_la_fille_moulin_v2_a.png",
     chainNext: "fille-moulin-4",
     narration: [
-      "« Mon père a construit une potence pour la chose qui m'a fait pendre. » Elle repose son ouvrage. « Il l'a attendue trois mois. Elle ne vient jamais quand on l'appelle — elle vient quand un village est prêt. »",
+      "« Mon père il a fait construire une grande potence pour la chose qui m'a fait pendre. » Elle aligne un caillou. « Il l'a attendue trois mois. Elle vient jamais quand on l'appelle — elle vient quand un village est prêt. »",
       "Un temps.",
-      "« Il s'est pendu à côté. Pas de chagrin : par règlement. Il avait refusé de me condamner, et refuser, dans son livre, c'était une faute. »",
-      "« Alors non, je ne monte pas le voir. Il attend un procès. Moi " +
+      "« Après il est monté à côté. Pas parce qu'il était triste : parce que c'était le règlement. Il avait refusé de me condamner, et refuser, dans son livre, c'était une faute. » Elle hausse les épaules. « Je sais pas ce que ça veut dire, règlement. Lui il savait. »",
+      "« Alors non, je monte pas le voir. Il attend un procès. Moi " +
         "j\u2019ai fini d\u2019attendre. »",
     ],
     narrationEchec: [
-      "Elle ne repose pas son ouvrage. Elle parle par-dessus, vite, sans " +
-        "te laisser la place d\u2019une question — comme on vide une chose " +
-        "qu\u2019on ne veut plus tenir.",
-      "« Mon père a construit une potence pour la chose qui m\u2019a fait " +
-        "pendre. Il l\u2019a attendue trois mois. Elle n\u2019est pas " +
-        "venue. Elle ne vient jamais quand on l\u2019appelle. Il s\u2019est " +
-        "pendu à côté, par règlement, parce qu\u2019il avait refusé de me " +
+      "Elle ne lève pas les yeux de ses cailloux. Elle parle par-dessus, " +
+        "vite, sans te laisser la place d\u2019une question — comme on vide " +
+        "une chose qu\u2019on ne veut plus tenir.",
+      "« Mon père il a fait construire une grande potence pour la chose " +
+        "qui m\u2019a fait pendre. Il l\u2019a attendue trois mois. Elle est " +
+        "pas venue. Elle vient jamais quand on l\u2019appelle. Après il est " +
+        "monté à côté, par règlement, parce qu\u2019il avait refusé de me " +
         "condamner. Voilà. Tu l\u2019as. »",
       "Un temps. Ses mains n\u2019ont pas cessé une seconde.",
-      "« Maintenant tu sais, et tu ne reviens plus. Les autres non plus " +
-        "ne revenaient plus, après. »",
+      "« Maintenant tu sais, et tu reviens plus. Les autres non plus ils " +
+        "revenaient plus, après. »",
     ],
     choices: [
       {
@@ -5069,11 +5087,12 @@ export const SCENES: Scene[] = [
         passive: {
           consequence:
             "Elle te regarde un long moment, et tu comprends qu\u2019elle " +
-            "évalue si tu es prêt à l\u2019entendre ou seulement curieux. " +
-            "« Celle qui regarde. Elle ne juge personne — elle attend que " +
-            "vous le fassiez, et pendant qu\u2019elle regarde, vous osez. » " +
-            "Elle hausse les épaules. « Mon père l\u2019a citée à comparaître. " +
-            "C\u2019était un homme très sérieux. »",
+            "décide si tu es prêt à l\u2019entendre ou juste curieux. " +
+            "« Celle qui regarde. Elle fait rien. Elle attend que vous, vous " +
+            "fassiez — et pendant qu\u2019elle regarde, vous osez. » Elle " +
+            "répète la phrase sans en changer un mot : ce n\u2019est pas " +
+            "d\u2019elle. « Mon père il l\u2019a citée à comparaître. Il était " +
+            "très sérieux. »",
         },
       },
       {
@@ -5097,12 +5116,12 @@ export const SCENES: Scene[] = [
     decouverte: "d.fille_vivante",
     narration: [
       "« Tu vas redescendre et tu vas leur en parler. Ils vont te regarder " +
-        "gentiment, et ils vont noter que tu parles à des gens qui " +
-        "n\u2019existent pas. » Elle se remet à son ouvrage. « C\u2019est comme " +
-        "ça qu\u2019on commence. »",
-      "« Alors garde-moi pour toi. Et si tu passes le sud, ne te retourne " +
-        "pas pour vérifier si je suis toujours là. Je serai toujours là. " +
-        "C\u2019est exactement le problème. »",
+        "gentiment, et après ils vont noter que tu parles à des gens qui " +
+        "existent pas. » Elle se remet à ses cailloux. « C\u2019est comme ça " +
+        "que ça commence. »",
+      "« Alors garde-moi pour toi. Et si tu passes le sud, te retourne pas " +
+        "pour vérifier si je suis encore là. Je serai encore là. C\u2019est " +
+        "justement le problème. »",
     ],
     choices: [
       { id: "fille-dormir", label: "Dormir ici", rest: true },
@@ -5112,8 +5131,9 @@ export const SCENES: Scene[] = [
         repondBesoin: "dormir",
         passive: {
           consequence:
-            "Vous ne parlez plus. Elle tresse, tu regardes la lucarne, et " +
-            "rien ne vient — ni bruit sur le toit, ni ombre à la porte, ni " +
+            "Vous ne parlez plus. Elle range ses cailloux par tailles, tu " +
+            "regardes la lucarne, et rien ne vient — ni bruit sur le toit, " +
+            "ni ombre à la porte, ni " +
             "corbeau sur la crête. Tu ne dors pas et pourtant tu te lèves " +
             "reposé, ce qui ne t\u2019était pas arrivé depuis la Borne. Le " +
             "seul endroit du pays où l\u2019on ne te compte pas.",
@@ -5128,7 +5148,7 @@ export const SCENES: Scene[] = [
         sansNuit: true,
         passive: {
           consequence:
-            "Tu la laisses à sa corde et tu ressors. Elle ne te retient pas, " +
+            "Tu la laisses à ses cailloux et tu ressors. Elle ne te retient pas, " +
             "ne lève pas les yeux — et dehors le crépuscule est le même " +
             "qu'à l'entrée. Personne n'aura dormi ici cette nuit.",
         },
@@ -6657,7 +6677,7 @@ export const SCENES: Scene[] = [
         passive: {
           consequence:
             "« Personne. » L\u2019homme bêche. Puis, sans s\u2019arrêter : « La " +
-            "jeune, des fois. Elle passe entre les rangs. On se dit " +
+            "petite, des fois. Elle passe entre les rangs. On se dit " +
             "bonjour. » Sa femme ne dit rien. Il bêche un peu plus vite " +
             "qu\u2019avant.",
         },
@@ -8281,30 +8301,30 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
      fois qu'on sait, la croiser sans un mot n'aurait plus de sens. */
   {
     from: ["campement", "mare-aux-regards", "verger-noir"],
-    text: "À la berge de la mare basse, quelqu'un est agenouillé — une femme, un châle sombre, les mains dans l'eau noire. Elle se relève sans hâte en t'entendant, s'essuie aux hanches et s'éloigne vers l'ouest. Elle ne se retourne pas. Personne, dans ce pays, ne marche aussi tranquillement.",
+    text: "À la berge de la mare basse, quelqu'un est accroupi — un enfant, un châle sombre bien trop grand, les mains dans l'eau noire. Elle se relève sans hâte en t'entendant, s'essuie aux hanches et s'éloigne vers l'ouest. Elle ne se retourne pas. Aucun enfant, dans ce pays, ne marche aussi tranquillement.",
   },
   {
     from: ["campement", "mare-aux-regards", "verger-noir"],
-    text: "Entre deux rangs du verger, une silhouette immobile. Tu la fixes ; elle attend que tu l'aies bien vue, puis reprend sa marche entre les arbres, du pas de quelqu'un qui rentre chez lui. Les fruits de cendre ne bougent pas sur son passage.",
+    text: "Entre deux rangs du verger, une petite silhouette immobile. Tu la fixes ; elle attend que tu l'aies bien vue, puis reprend sa marche entre les arbres, du pas de quelqu'un qui rentre chez lui. Les fruits de cendre ne bougent pas sur son passage.",
   },
   {
     from: ["campement", "mare-aux-regards", "verger-noir"],
-    text: "Assise sur un muret, à contre-jour. Elle te regarde venir de loin, sans se cacher et sans se lever, puis descend de l'autre côté de la pierre au moment exact où tu arrives à sa hauteur. De ton côté du mur, il n'y a plus personne. De l'autre non plus.",
-  },
-  {
-    from: ["campement", "mare-aux-regards", "verger-noir"],
-    minFille: 1,
-    text: "Elle croise ta route sans ralentir, à trois pas, comme on croise quelqu'un dans un couloir. « Ne bois pas à la mare basse. Ils y jettent ce qu'ils ne veulent pas enterrer. » Elle est déjà loin quand tu penses à répondre.",
+    text: "Assise sur un muret, à contre-jour, les jambes trop courtes pour toucher terre. Elle te regarde venir de loin, sans se cacher et sans se lever, puis descend de l'autre côté de la pierre au moment exact où tu arrives à sa hauteur. De ton côté du mur, il n'y a plus personne. De l'autre non plus.",
   },
   {
     from: ["campement", "mare-aux-regards", "verger-noir"],
     minFille: 1,
-    text: "Elle passe, et elle parle sans tourner la tête. « Tu marches comme quelqu'un qui compte les jours. » Un temps, sa voix déjà derrière toi : « Moi j'ai arrêté au troisième. » Quand tu te retournes, la bruyère se referme sur rien.",
+    text: "Elle croise ta route sans ralentir, à trois pas, comme on croise quelqu'un dans un couloir. « Bois pas à la mare basse. Ils y jettent ce qu'ils veulent pas enterrer. » Elle est déjà loin quand tu penses à répondre.",
   },
   {
     from: ["campement", "mare-aux-regards", "verger-noir"],
     minFille: 1,
-    text: "« Trois corbeaux sur ton toit ce matin. » Elle le dit du ton dont on donne l'heure, sans s'arrêter. « Quatre, c'est le moment de partir. » Tu mets le reste du trajet à décider si c'était un avertissement ou une politesse.",
+    text: "Elle passe, et elle parle sans tourner la tête. « Tu marches comme les gens qui comptent les jours. » Un temps, sa voix déjà derrière toi — une voix d'enfant, sur le ton de quelqu'un qui a fini d'apprendre : « Moi j'ai arrêté au troisième. » Quand tu te retournes, la bruyère se referme sur rien.",
+  },
+  {
+    from: ["campement", "mare-aux-regards", "verger-noir"],
+    minFille: 1,
+    text: "« Trois corbeaux sur ton toit ce matin. » Elle le dit du ton dont un enfant récite la règle d'un jeu, sans s'arrêter. « Quatre, faut partir. » Tu mets le reste du trajet à décider si c'était un avertissement ou une politesse.",
   },
   // ——— Provenance (10) ———
   {

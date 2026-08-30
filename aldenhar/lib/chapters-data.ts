@@ -101,22 +101,22 @@ export const LANDES_CHAPTERS: Chapter[] = [
       "Une femme traverse la lande en biais, un fagot sur l'épaule, et te suit des yeux sans ralentir. Puis elle se signe à l'envers. « Si tu dors au moulin », dit-elle sans que tu aies rien demandé, « laisse le lit de bruyère comme tu l'as trouvé. Il sert encore. »",
     ],
     developpement: [
-      "Le lit de bruyère du moulin est tassé, refait de frais. Quelqu'un dort ici — souvent, prudemment, sans feu. Sur la pierre du mur, à hauteur d'enfant, des marques : des jours comptés par paquets de cinq, sur des années.",
+      "Le lit de bruyère du moulin est tassé, refait de frais, et court — bien trop court pour un adulte. Sur la pierre du mur, à hauteur d'enfant, des marques : des jours comptés par paquets de cinq, sur des années.",
       "Et dans un creux du mur, serré dans un chiffon : un bout de corde. Coupé net. Pas usé, pas rompu — coupé. On ne garde pas ça par hasard. On garde ça comme une preuve, ou comme un pardon.",
     ],
     resolution: [
       "En sortant des Landes, tu sais une chose que le hameau tait : une pendue s'est relevée, et elle marche encore. La corde n'a pas cédé — on l'a coupée. Reste à savoir qui tenait la lame. Et pourquoi le Bailli n'a jamais fait repentre sa fille.",
     ],
     fragments: [
-      "Personne ne dit son nom. On dit « elle », et on change de sujet, et on regarde ailleurs. Un hameau qui compte tout, qui grave tout, qui affiche ses morts sur des écriteaux — et qui n'écrit pas ce nom-là.",
+      "Personne ne dit son nom. On dit « la Petite Fixée », comme on lit un écriteau, et on change de sujet, et on regarde ailleurs. Un hameau qui compte tout, qui grave tout, qui affiche ses morts — et qui a trouvé le moyen de nommer celle-là sans jamais dire son nom.",
       // Formulation indépendante du parcours (rapport IA externe 8/08) : le
       // fragment peut tomber n'importe où — il ne peut pas présupposer
       // « deux phrases entendues à un jour d'écart » que le héros n'a
       // peut-être jamais entendues.
       "Deux détails, ramassés à des endroits différents, finissent par se rejoindre : elle était la fille du Bailli. Voilà pourquoi le motif de son écriteau a été gratté. Voilà, peut-être, pourquoi la dernière entaille de la chaire tremble.",
       "Des provisions apparaissent là où elle dort. Pas un festin : du pain dur, de l'eau, parfois du sel. Déposés par quelqu'un qui refuse qu'elle meure et refuse aussi qu'on le voie. Le hameau la renie à voix haute et la nourrit en silence.",
-      "Les marques de comptage de son mur ne s'arrêtent pas. Elles continuent après la date qu'on devine être celle de sa pendaison. Quelqu'un compte encore ses jours — et ce quelqu'un sait qu'elle en a toujours.",
-      "Les mères d'ici ne défendent pas à leurs enfants d'aller au moulin. Elles leur défendent de lui PARLER. La nuance est terrible : ils savent tous qu'elle y est.",
+      "Les marques de comptage de son mur ne s'arrêtent pas. Elles continuent après la date qu'on devine être celle de sa pendaison — et elles restent toutes à la même hauteur, année après année. Celle qui les trace n'a jamais eu à lever le bras plus haut.",
+      "Les mères d'ici ne défendent pas à leurs enfants d'aller au moulin. Elles leur défendent de lui PARLER. La nuance est terrible : ils savent tous qu'elle y est. Et les enfants, eux, ne trouvent rien d'étrange à jouer avec quelqu'un de leur âge.",
       "On raconte qu'elle ne dort jamais deux nuits de suite au même endroit — sauf au moulin. Ce serait le seul endroit des Landes où elle se sent tenue, et personne ne sait ce qui la tient là.",
     ],
   },

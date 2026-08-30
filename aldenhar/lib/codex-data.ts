@@ -362,9 +362,9 @@ export const CODEX_LANDES: CodexEntry[] = [
     id: "renc:fille",
     type: "rencontre",
     zone: "landes",
-    titre: "La Fille du Moulin",
+    titre: "La Petite Fixée",
     corps:
-      "Ni morte, ni partie, pas vieillie — sa Fixation a raté, et la reconnaître serait admettre que trois cents noms sont morts pour rien. Alors le village la voit, et refuse de la voir. Elle a vingt ans. Elle les a depuis longtemps.",
+      "Ni morte, ni partie, pas grandie — sa Fixation a raté, et la reconnaître serait admettre que trois cents noms sont morts pour rien. Alors le village la voit, et refuse de la voir. Le hameau lui donne un nom d'écriteau plutôt que le sien. Elle a huit ans. Elle les a depuis quarante ans.",
     illustration: "assets/monstre_la_fille_moulin_v2_a.png",
   },
 

@@ -370,13 +370,13 @@
     },
     {
       "id": "petite_fixee",
-      "nom": "La Petite Fixée",
-      "note": null,
+      "nom": "Le Poteau Court",
+      "note": "le poteau de la Petite Fixée au Champ des Fixés — le seul dont la corde a été coupée et le seul qui n'ait jamais porté d'écriteau. Même personne que la rencontre « fille ».",
       "lieu_attache": "champ_des_fixes",
       "histoire_bailli": false,
       "rarete": "commune",
       "textes": {
-        "decouverte": "Au bout d'une corde trop courte, une petite fille pend sans se balancer. Les autres fixés regardent tous droit devant. Pas elle : elle vous suit des yeux.",
+        "decouverte": "Au bout d'un rang, un poteau taillé plus court que les autres. Sa corde y pend encore, sectionnée net à hauteur d'enfant. Aucun écriteau n'a jamais été cloué dessus, et le fossoyeur passe à côté sans le redresser.",
         "familiarite": null,
         "recontextualisation": null
       },
@@ -385,13 +385,13 @@
     },
     {
       "id": "fille",
-      "nom": "La Fille",
-      "note": "la fille du Bailli — la seule pendue qui se soit relevée ; elle erre encore",
+      "nom": "La Petite Fixée",
+      "note": "la fille du Bailli — huit ans, la seule pendue qui se soit relevée ; elle erre autour du moulin. Le hameau l'appelle par ce nom d'écriteau pour éviter de dire le sien.",
       "lieu_attache": "moulin_sans_ailes",
       "histoire_bailli": true,
       "rarete": "rare",
       "textes": {
-        "decouverte": null,
+        "decouverte": "Près de la meule, quelqu'un est accroupi, dos à toi, en train de ranger de petites choses en ligne sur la pierre. La silhouette t'arrive à la hanche. « Tu m'as vue. » Ce n'est pas une question. Elle a huit ans, et les a depuis quarante ans.",
         "familiarite": null,
         "recontextualisation": null
       },

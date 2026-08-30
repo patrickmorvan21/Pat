@@ -1,16 +1,16 @@
 {
   "_note": "Sujets d'image indexés par NOM DE FICHIER — l'unité que manipule le carnet de commande. Couvre les écrans portés par un choix et les vues de marche, que scene-meta.json (indexé par scène) ne peut pas atteindre. `cadre` : scene | pres | large | portrait | geste — la clause de style est ajoutée par tools/style_image.py, ne jamais la recopier ici.",
   "monstre_la_fille_moulin_v2_a": [
-    "portrait",
-    "a woman of about twenty turning to face the viewer inside a disused mill room, a faded rope mark across her throat, calm and entirely unafraid, plainly young and not a child and not an old woman"
+    "large",
+    "a small child of about eight standing alone in the open doorway of a disused mill, seen from across the room at a distance, reduced to a black silhouette against the blazing doorway light behind her, an oversized shawl hanging to her ankles, perfectly still and unafraid, no facial features visible, nothing around her neck"
   ],
   "monstre_fille_moulin_dos_v2_a": [
     "geste",
-    "a woman seated on a straw pallet with her back fully turned, working at something in her lap, a clay pot of freshly cut wet heather beside her, head never shown"
+    "a small child crouched on a stone mill floor with her back fully turned, laying out little pebbles in a straight line on the stone, an oversized shawl trailing on the ground, a clay pot of freshly cut wet heather beside her, head never shown, nothing around her neck"
   ],
   "monstre_fille_moulin_ouvrage_c": [
-    "geste",
-    "close on a woman's hands returning to a half-finished piece of plaiting in her lap, unhurried, the work already long, head and face out of frame"
+    "pres",
+    "close on two small child hands on cold stone, setting a flat grey river pebble at the end of a neat row of pebbles, a rag and straw doll lying just outside the row, unhurried, head and body entirely out of frame"
   ],
   "monstre_gamin_murets_a": [
     "portrait",
@@ -167,5 +167,9 @@
   "scene_hameau_maison_muree_combles_a": [
     "pres",
     "looking up at a closed square ceiling hatch from inside a roof space, long iron nails driven through its planks from this side and hammered over flat, dust thick on the beams, a single lantern standing on the floor below and behind the viewer throwing the nail heads and the plank grain into hard relief, nothing visible above the boards"
+  ],
+  "monstre_petite_fixee_c": [
+    "large",
+    "at the end of a row of tall execution posts on an open moor, one post cut much shorter than all the others, a single severed rope hanging from it at child height, no body, no name board nailed to it, the other posts receding into the bright empty sky"
   ]
 }
