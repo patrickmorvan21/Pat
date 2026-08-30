@@ -5912,6 +5912,124 @@ export const SCENES: Scene[] = [
       },
     ],
     jailerLine: "Ce chien tient un poste que la mort n'a pas fermé. Moi aussi.",
+    chainNext: "bailli-dedans",
+  },
+  /* ═══ LA MAISON DU BAILLI, DEDANS (30/08) ══════════════════════════════
+     Le lieu promettait quatre fois qu'il y a quelque chose derrière ces
+     pierres — « murée de l'intérieur, sans hâte » ; le 1 naturel en forçant
+     (« il montait la garde tourné vers la porte : ce n'était pas pour
+     empêcher d'entrer ») ; le 20 naturel dans la cour, qui donne le trou du
+     chien, « assez large pour toi » ; le quelque chose d'enterré derrière.
+     Et le lieu s'arrêtait là. Une promesse faite quatre fois et jamais
+     encaissée est pire qu'un lieu vide.
+
+     L'intérieur ne RÉVÈLE rien que les murs ne disaient déjà : c'est le
+     principe. Un homme s'est enfermé pour ne plus rien voir — sauf une
+     chose. Le reste (la Fixation, sa fille, le Grand Témoin) est déjà
+     ailleurs et n'a pas besoin d'être répété ici.
+
+     Pas de nouvelle mécanique : le passage se joue au dé sur l'écran du
+     chien, et `narrationEchec` sert la version « tu n'es pas entré ». Le
+     lieu tient donc trois beats dans les deux cas, sans jamais forcer
+     l'entrée ni la donner gratuitement. */
+  {
+    id: "bailli-dedans",
+    /* SÉJOUR : la pièce fait deux pas carrés, on ne choisit pas ENTRE regarder
+       le mur et s'asseoir — les deux gestes sont possibles, et on ne sort que
+       par la porte. C'est le cas « physiquement simultané » que Patrick a
+       signalé le 13/08 : l'exclusivité vaut quand il faut se déplacer, pas
+       dans un intérieur de trois mètres. */
+    sejour: true,
+    // ⚠️ Pas d'illustration propre : le sujet `scene_maison_bailli_dedans`
+    // est écrit dans les sujets d'image mais n'est pas encore produit. En
+    // attendant, l'écran garde l'image du lieu — la maison. C'est le même
+    // endroit, donc ce n'est pas une image qui contredit son texte, mais
+    // c'est bien une image à produire.
+    narration: [
+      "Dedans, il fait le noir des caves alors qu'il est midi dehors. " +
+        "L'odeur n'est pas celle d'un abandon : c'est celle d'un homme qui " +
+        "a vécu longtemps dans une pièce fermée.",
+      "Une seule chaise, au milieu. Tournée vers la porte. Il ne s'asseyait " +
+        "pas pour regarder le feu ni pour manger : il s'asseyait pour " +
+        "surveiller ce qui entrerait, et il l'a fait assez d'années pour " +
+        "creuser deux ronds dans la terre battue sous les pieds avant.",
+      "Et sur le mur ouest, une fenêtre. La seule qu'il n'a pas murée. " +
+        "Elle donne sur la lande, la crête, et la croix noire d'un moulin " +
+        "qui ne tourne pas.",
+    ],
+    narrationEchec: [
+      "Tu ne passes pas. Mais en te relevant tu es à hauteur du trou du " +
+        "chien, et de là on voit le sol de la pièce en enfilade.",
+      "Deux ronds creusés dans la terre battue, au milieu, sous les pieds " +
+        "avant d'une chaise tournée vers la porte. Et au fond, sur le mur " +
+        "ouest, un carré de jour : une fenêtre qu'il n'a pas murée.",
+      "Le chien se recouche entre toi et l'ouverture. Ce sera pour une " +
+        "autre fois, ou pour personne.",
+    ],
+    choices: [
+      {
+        /* Les marques de comptage — les MÊMES que celles du moulin, au même
+           relevé et à la même hauteur. Le rapprochement n'est jamais dit :
+           le joueur qui a vu les deux le fait tout seul, et celui qui n'a vu
+           que celles-ci lit juste un homme qui comptait. */
+        id: "bailli-comptage",
+        label: "Suivre les marques du mur",
+        observe: true,
+        decouverte: "d.bailli_comptait",
+        chapterFragment: true,
+        passive: {
+          consequence:
+            "Elles courent tout le long du mur nord, par paquets de cinq, " +
+            "creusées au couteau. Elles commencent à hauteur d'homme et " +
+            "descendent — il s'est assis pour continuer, puis il a compté " +
+            "sans se relever.\n\nLa dernière série s'arrête à hauteur " +
+            "d'enfant. Elle n'est pas finie : le cinquième trait manque.",
+        },
+      },
+      {
+        /* La fenêtre : le seul geste qui explique la maison entière. Sans
+           jet — s'asseoir n'est pas un risque, c'est une compréhension. */
+        id: "bailli-fenetre",
+        label: "S'asseoir sur la chaise",
+        illustration: "assets/scene_moulin_sans_ailes_d_d.png",
+        decouverte: "d.fenetre_ouest",
+        tags: ["citable"],
+        passive: {
+          consequence:
+            "Tu t'assieds. Tes pieds tombent dans les deux ronds sans que " +
+            "tu aies à chercher.\n\nDe cette place, et de cette place " +
+            "seulement, la fenêtre non murée cadre le moulin. Pas la lande, " +
+            "pas la crête, pas la route du hameau : le moulin, entier, au " +
+            "milieu du carré de jour. Il n'a pas gardé une fenêtre. Il a " +
+            "gardé celle-là.",
+        },
+      },
+      {
+        /* LA PORTE EST LA SORTIE (règle des trois actions, 13/08). Quatre
+           choix ici en auraient fait supprimer un EN SILENCE : le moteur
+           tronque à trois en gardant les sorties. Défaire la porte est donc
+           à la fois le dernier examen et le geste qui fait partir — et c'est
+           le plus juste : on n'apprend ce que valait cette porte qu'en
+           l'ouvrant, ce que personne n'a fait depuis trente ans.
+           Pas de jet : ce n'est pas un risque, c'est une constatation. */
+        id: "bailli-porte",
+        label: "Défaire la porte et sortir",
+        sortie: {},
+        decouverte: "d.porte_clouee",
+        passive: {
+          consequence:
+            "Les clous sont plantés de l\u2019intérieur, et pas droit : en " +
+            "biais, croisés, chacun mordant sur le suivant. Un homme seul, " +
+            "dans le noir, qui reclouait par-dessus son propre travail à " +
+            "chaque fois qu\u2019il entendait quelque chose. Tu comptes les " +
+            "couches en les défaisant. Il y en a onze.\n\nEt le chambranle " +
+            "est marqué de l\u2019intérieur lui aussi — des raclures basses, " +
+            "régulières, à hauteur de genou. Tu ressors par où lui n\u2019est " +
+            "jamais ressorti.",
+        },
+      },
+    ],
+    jailerLine: "Une chaise, une fenêtre, et trente ans. Certains n'ont pas eu besoin de moi.",
   },
   {
     // Le Registre des Pendaisons — la mécanique du Grand Registre (§19)

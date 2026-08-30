@@ -1,6 +1,6 @@
 # PACTUM — carnet de commande d'images
 
-**157 images** prêtes à regénérer · **0** sans sujet écrit.
+**157 images** prêtes à regénérer · **1** sans sujet écrit.
 
 Chaque entrée donne le **nom à produire** (variante suivante) et le prompt complet. Deux images par prompt suffisent : on garde la meilleure.
 
@@ -11,7 +11,7 @@ Chaque entrée donne le **nom à produire** (variante suivante) et le prompt com
 
 ---
 
-## À créer — n'existe pas encore (2)
+## À créer — n'existe pas encore (3)
 
 ### `monstre_temoin_proces_a.png`
 **image neuve** — image neuve
@@ -25,6 +25,13 @@ monstre_temoin_proces_a=inside a low village courtroom at night, twelve villager
 
 ```
 scene_hameau_maison_muree_combles_a=looking up at a closed square ceiling hatch from inside a roof space, long iron nails driven through its planks from this side and hammered over flat, dust thick on the beams, a single lantern standing on the floor below and behind the viewer throwing the nail heads and the plank grain into hard relief, nothing visible above the boards. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_maison_bailli_dedans.png`
+**image neuve** — image neuve
+
+```
+scene_maison_bailli_dedans=the pitch-dark interior of a stone house whose windows are all bricked up from within, one single plain wooden chair standing alone in the middle of the bare earth floor and turned to face the barred door, and on the far wall one unbricked window casting a single hard rectangle of daylight across the floor, tally scratches cut in rows of five along the side wall, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
 
@@ -1145,3 +1152,10 @@ remplace `scene_verger_noir_d.png` — Le Verger Noir
 ```
 scene_verger_noir_e=orchard of black twisted fruit trees planted in rows on dead moorland, heavy grey ash fruits on the branches, one old stump in the foreground, two distant bent figures digging, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
+
+
+---
+
+## Sans sujet écrit — à faire avant de commander
+
+- `scene_moulin_sans_ailes_d_d.png`

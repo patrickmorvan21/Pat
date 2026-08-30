@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-30T17:25:53Z",
- "commit": "5243894",
+ "genere": "2026-08-30T18:35:07Z",
+ "commit": "bebd57f",
  "zones": [
   {
    "id": "landes",
@@ -5593,6 +5593,7 @@
     }
    ],
    "pointsInteret": [],
+   "suite": "bailli-dedans",
    "adversaire": "chien-du-bailli",
    "adversaireNom": "Le Chien du Bailli",
    "donneDecouverte": "d.bailli_condamne",
@@ -5611,7 +5612,9 @@
    },
    "description": "Combat : le Chien du Bailli, qui garde encore une maison où il n'y a plus personne.",
    "promptImage": "gaunt long-legged hound standing in front of a bricked-up doorway, ribs showing, head low, lips drawn back, a broken chain still on its collar, pitch-black background, subject emerging from darkness, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-   "mèneVers": [],
+   "mèneVers": [
+    "bailli-dedans"
+   ],
    "mèneIci": [
     "chien-du-bailli"
    ],
@@ -5619,6 +5622,71 @@
    "acces": "lien",
    "etat": "valide",
    "alertes": []
+  },
+  {
+   "id": "bailli-dedans",
+   "narration": [
+    "Dedans, il fait le noir des caves alors qu'il est midi dehors. L'odeur n'est pas celle d'un abandon : c'est celle d'un homme qui a vécu longtemps dans une pièce fermée.",
+    "Une seule chaise, au milieu. Tournée vers la porte. Il ne s'asseyait pas pour regarder le feu ni pour manger : il s'asseyait pour surveiller ce qui entrerait, et il l'a fait assez d'années pour creuser deux ronds dans la terre battue sous les pieds avant.",
+    "Et sur le mur ouest, une fenêtre. La seule qu'il n'a pas murée. Elle donne sur la lande, la crête, et la croix noire d'un moulin qui ne tourne pas."
+   ],
+   "choix": [
+    {
+     "id": "bailli-comptage",
+     "label": "Suivre les marques du mur",
+     "type": "passif",
+     "consequence": "Elles courent tout le long du mur nord, par paquets de cinq, creusées au couteau. Elles commencent à hauteur d'homme et descendent — il s'est assis pour continuer, puis il a compté sans se relever.\n\nLa dernière série s'arrête à hauteur d'enfant. Elle n'est pas finie : le cinquième trait manque.",
+     "donneDecouverte": "d.bailli_comptait"
+    },
+    {
+     "id": "bailli-fenetre",
+     "label": "S'asseoir sur la chaise",
+     "type": "passif",
+     "consequence": "Tu t'assieds. Tes pieds tombent dans les deux ronds sans que tu aies à chercher.\n\nDe cette place, et de cette place seulement, la fenêtre non murée cadre le moulin. Pas la lande, pas la crête, pas la route du hameau : le moulin, entier, au milieu du carré de jour. Il n'a pas gardé une fenêtre. Il a gardé celle-là.",
+     "donneDecouverte": "d.fenetre_ouest",
+     "tags": [
+      "citable"
+     ],
+     "image": {
+      "fichier": "scene_moulin_sans_ailes_d_d.png",
+      "hash": "a916da10",
+      "taille": 27850,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
+    },
+    {
+     "id": "bailli-porte",
+     "label": "Défaire la porte et sortir",
+     "type": "passif",
+     "consequence": "Les clous sont plantés de l’intérieur, et pas droit : en biais, croisés, chacun mordant sur le suivant. Un homme seul, dans le noir, qui reclouait par-dessus son propre travail à chaque fois qu’il entendait quelque chose. Tu comptes les couches en les défaisant. Il y en a onze.\n\nEt le chambranle est marqué de l’intérieur lui aussi — des raclures basses, régulières, à hauteur de genou. Tu ressors par où lui n’est jamais ressorti.",
+     "sortie": {},
+     "donneDecouverte": "d.porte_clouee"
+    }
+   ],
+   "pointsInteret": [],
+   "narrationEchec": [
+    "Tu ne passes pas. Mais en te relevant tu es à hauteur du trou du chien, et de là on voit le sol de la pièce en enfilade.",
+    "Deux ronds creusés dans la terre battue, au milieu, sous les pieds avant d'une chaise tournée vers la porte. Et au fond, sur le mur ouest, un carré de jour : une fenêtre qu'il n'a pas murée.",
+    "Le chien se recouche entre toi et l'ouverture. Ce sera pour une autre fois, ou pour personne."
+   ],
+   "donneDecouverte": "d.bailli_comptait",
+   "sejour": true,
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "chien-du-bailli-2"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "acompleter",
+   "alertes": [
+    "imageManquante"
+   ]
   },
   {
    "id": "petit-tribunal",
@@ -7859,6 +7927,11 @@
    "type": "principal"
   },
   {
+   "de": "chien-du-bailli-2",
+   "vers": "bailli-dedans",
+   "type": "principal"
+  },
+  {
    "de": "petit-tribunal",
    "vers": "petit-tribunal-2",
    "type": "principal"
@@ -8509,15 +8582,7 @@
    "hash": "eb6852f6",
    "taille": 25528,
    "recent": false,
-   "groupe": "doublon",
-   "racine": "moulin_sans_ailes"
-  },
-  {
-   "fichier": "scene_moulin_sans_ailes_d_d.png",
-   "hash": "a916da10",
-   "taille": 27850,
-   "recent": false,
-   "groupe": "doublon",
+   "groupe": "brancher",
    "racine": "moulin_sans_ailes"
   },
   {
@@ -9836,13 +9901,13 @@
   }
  ],
  "totaux": {
-  "scenes": 101,
+  "scenes": 102,
   "pointsInteret": 0,
-  "choix": 291,
+  "choix": 294,
   "illustrations": 286,
-  "sansImage": 0,
+  "sansImage": 1,
   "imagesIntrouvables": 0,
-  "reserve": 90,
+  "reserve": 89,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
@@ -9851,7 +9916,7 @@
   "besoins": 0,
   "transitions": 64,
   "ecransDeMarche": 13,
-  "interactions": 31,
+  "interactions": 32,
   "aRefaire": 19,
   "familiarite": 34
  }
