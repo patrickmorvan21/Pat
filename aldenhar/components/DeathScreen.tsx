@@ -518,7 +518,7 @@ export default function DeathScreen({
                   alt=""
                   src={assetUrl(
                     reliqueIllustration(relic.relicId ?? relic.name, assetExiste) ??
-                      "assets/objet_couronne_brisee.png"
+                      "assets/objet_couronne_brisee_b_b.png"
                   )}
                   className="h-full w-full object-cover select-none"
                   style={{ imageRendering: "pixelated" }}
@@ -641,7 +641,7 @@ function RegistreMort({
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         alt=""
-        src={assetUrl("assets/objet_grand_registre_d.png")}
+        src={assetUrl("assets/objet_grand_registre_e_b.png")}
         className="block h-[128px] w-full object-cover object-[center_38%] select-none"
         style={{ imageRendering: "pixelated" }}
       />

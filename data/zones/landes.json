@@ -37,7 +37,7 @@
         "familiarite": "Une des potences penche plus que les autres. Tu jurerais qu'elle penchait déjà.",
         "recontextualisation": "Tu comptes les mâts en montant et tu tombes juste avant d'avoir fini. Le compte est dans tes jambes, pas dans ta tête."
       },
-      "illustration": "assets/scene_colline_aux_gibets_c.png",
+      "illustration": "assets/scene_colline_aux_gibets_d_d.png",
       "portrait_requis": false,
       "x": 1080,
       "y": 170
@@ -54,7 +54,7 @@
         "familiarite": "Une rangée est plus courte que dans ton idée du champ. Tu n'as pas d'idée du champ.",
         "recontextualisation": "La terre entre les rangs est tassée par un passage régulier. L'écart des pas est le tien."
       },
-      "illustration": "assets/scene_champ_des_fixes_b.png",
+      "illustration": "assets/scene_champ_des_fixes_c_a.png",
       "portrait_requis": false,
       "x": 1620,
       "y": 240
@@ -88,7 +88,7 @@
         "familiarite": "L'eau se ride avant que tu sois au bord. Elle a commencé sans toi.",
         "recontextualisation": "Le reflet est déjà en place quand tu arrives. Il ne t'imite plus : il t'attend."
       },
-      "illustration": "assets/scene_mare_aux_regards_a.png",
+      "illustration": "assets/scene_mare_aux_regards_b_a.png",
       "portrait_requis": false,
       "x": 640,
       "y": 420
@@ -105,7 +105,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/scene_hameau_dense2_b.png",
+      "illustration": "assets/scene_hameau_dense2_c_e.png",
       "portrait_requis": false,
       "region": true,
       "contient": [
@@ -133,7 +133,7 @@
         "familiarite": "Les volets se ferment de proche en proche, dans l'ordre, comme une phrase qu'on récite. Elle a déjà été récitée.",
         "recontextualisation": "Personne ne court prévenir personne. On t'attend au bon endroit, sans se presser."
       },
-      "illustration": "assets/scene_hameau_dense2_b.png",
+      "illustration": "assets/scene_hameau_dense2_c_e.png",
       "portrait_requis": false,
       "x": 810,
       "y": 1024
@@ -150,7 +150,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/scene_landes_hameau_grange_a.png",
+      "illustration": "assets/scene_landes_hameau_grange_b_d.png",
       "portrait_requis": false,
       "x": 930,
       "y": 1104
@@ -167,7 +167,7 @@
         "familiarite": "Une corde du mur est plus neuve que ses voisines. Le chanvre n'a pas encore noirci.",
         "recontextualisation": "Tu comptes les cordes neuves du mur. Il y en a autant que de fois où tu es entré ici — et tu ne sais pas comment tu le sais."
       },
-      "illustration": "assets/scene_chapelle_des_cordes_d.png",
+      "illustration": "assets/scene_chapelle_des_cordes_e_d.png",
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
       "x": 870,
@@ -202,7 +202,7 @@
         "familiarite": "Un banc du fond est de biais, comme si on s'y était assis en dernier et qu'on était parti vite.",
         "recontextualisation": "La poussière est intacte sur tous les bancs sauf une place. On n'y va plus. On l'a laissée pour quelqu'un."
       },
-      "illustration": "assets/scene_petit_tribunal_a.png",
+      "illustration": "assets/scene_petit_tribunal_b_g.png",
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
       "x": 1470,
@@ -220,7 +220,7 @@
         "familiarite": "Les trois coups s'arrêtent quand tu débouches, puis reprennent. Ce n'est pas une pause : c'est un salut.",
         "recontextualisation": "Les coups changent de rythme à ton arrivée. Ce qui frappe là-dessous a appris à te distinguer."
       },
-      "illustration": "scene_puits_condamne_v2_a.png",
+      "illustration": "scene_puits_condamne_v2_b_f.png",
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
       "x": 950,
@@ -238,7 +238,7 @@
         "familiarite": "Un étal manque à sa place et un autre l'a prise. Rien d'autre n'a bougé dans le silence.",
         "recontextualisation": "On te fait de la place avant que tu aies bifurqué. Ils savent où tu vas parce que tu y vas toujours."
       },
-      "illustration": "assets/scene_marche_muet_c.png",
+      "illustration": "assets/scene_marche_muet_d_f.png",
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
       "x": 1250,
@@ -274,7 +274,7 @@
         "familiarite": "Un fruit manque à une branche basse, cueilli net, et la cassure est encore claire.",
         "recontextualisation": "Les branches basses sont vides sur toute la longueur du rang, à hauteur de main. À ta hauteur de main."
       },
-      "illustration": "assets/scene_verger_noir_d.png",
+      "illustration": "assets/scene_verger_noir_e_f.png",
       "portrait_requis": false,
       "x": 300,
       "y": 860
@@ -291,7 +291,7 @@
         "familiarite": "Ta main s'est posée sur le talus sans que tu l'aies décidé, juste où la racine fait une prise.",
         "recontextualisation": "Tu descends sans regarder tes pieds. Le creux te reprend comme une manche qu'on renfile."
       },
-      "illustration": "assets/scene_chemin_creux_c.png",
+      "illustration": "assets/scene_chemin_creux_d_a.png",
       "portrait_requis": false,
       "x": 520,
       "y": 1300
@@ -325,7 +325,7 @@
         "familiarite": "Une entaille fraîche marque un tronc à hauteur d'épaule. Le bois est clair dessous, et il y en a d'autres à côté, plus vieilles.",
         "recontextualisation": "Les entailles du tronc font une colonne. Tu n'as pas besoin de les compter pour savoir qu'il en manque une : la tienne."
       },
-      "illustration": "assets/scene_palissade_sud_a_a.png",
+      "illustration": "assets/scene_palissade_sud_a_b_a.png",
       "portrait_requis": false,
       "x": 1000,
       "y": 1580
@@ -365,7 +365,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_fossoyeur_poteaux_a.png",
+      "illustration": "assets/monstre_fossoyeur_poteaux_b_a.png",
       "portrait_requis": false
     },
     {
@@ -440,7 +440,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_ecrivain_public_d.png",
+      "illustration": "assets/monstre_ecrivain_public_e_a.png",
       "portrait_requis": false
     },
     {
@@ -456,7 +456,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_colporteur_b.png",
+      "illustration": "assets/monstre_colporteur_c_c.png",
       "portrait_requis": false
     },
     {
@@ -546,7 +546,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_epoux_verger_a.png",
+      "illustration": "assets/monstre_epoux_verger_b_b.png",
       "portrait_requis": false
     },
     {
@@ -653,7 +653,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_corbeaux_du_compte_b.png",
+      "illustration": "assets/monstre_corbeaux_du_compte_c_b.png",
       "portrait_requis": false
     },
     {
@@ -728,7 +728,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_bete_chemins_creux_a.png",
+      "illustration": "assets/monstre_bete_chemins_creux_b_a.png",
       "portrait_requis": true
     },
     {
@@ -835,7 +835,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/objet_echarde_grand_gibet_b.png",
+      "illustration": "assets/objet_echarde_grand_gibet_c_b.png",
       "portrait_requis": false
     },
     {
@@ -850,7 +850,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/objet_carnet_fossoyeur_d.png",
+      "illustration": "assets/objet_carnet_fossoyeur_e_a.png",
       "portrait_requis": false
     },
     {
@@ -865,7 +865,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/objet_jouet_petite_fixee_a.png",
+      "illustration": "assets/objet_jouet_petite_fixee_b_a.png",
       "portrait_requis": false
     },
     {
@@ -880,7 +880,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/objet_miroir_poche_fele_c.png",
+      "illustration": "assets/objet_miroir_poche_fele_d_a.png",
       "portrait_requis": false
     },
     {
@@ -895,7 +895,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/objet_brin_chanvre_beni_b.png",
+      "illustration": "assets/objet_brin_chanvre_beni_c_b.png",
       "portrait_requis": false
     },
     {
@@ -910,7 +910,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/objet_corde_coupee_fille_a.png",
+      "illustration": "assets/objet_corde_coupee_fille_b_b.png",
       "portrait_requis": false
     },
     {
@@ -940,7 +940,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/objet_cle_maison_muree_a.png",
+      "illustration": "assets/objet_cle_maison_muree_b_b.png",
       "portrait_requis": false
     },
     {
@@ -1015,7 +1015,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/objet_fruit_cendre_a.png",
+      "illustration": "assets/objet_fruit_cendre_b_b.png",
       "portrait_requis": false
     },
     {
@@ -1030,7 +1030,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/objet_dent_meute_d.png",
+      "illustration": "assets/objet_dent_meute_e_a.png",
       "portrait_requis": false
     },
     {
@@ -1045,7 +1045,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/objet_grelot_charretier_a.png",
+      "illustration": "assets/objet_grelot_charretier_b_a.png",
       "portrait_requis": false
     },
     {
@@ -1060,7 +1060,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/objet_offrandes_borne_c.png",
+      "illustration": "assets/objet_offrandes_borne_d_b.png",
       "portrait_requis": false
     },
     {
@@ -1090,7 +1090,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/objet_lanterne_rouillee.png",
+      "illustration": "assets/objet_lanterne_rouillee_b_a.png",
       "portrait_requis": false
     }
   ],
@@ -1122,7 +1122,7 @@
       ],
       "description": null,
       "prompt_image": "weathered granite boundary stone surface covered in shallow crowded carvings, names scratched over older names, a flat human hand resting against the stone. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_borne_gravures_a_d.png"
+      "illustration": "scene_borne_gravures_a_e_d.png"
     },
     {
       "id": "eclat-descelle",
@@ -1218,7 +1218,7 @@
       ],
       "description": "Arrivée au Chemin Creux. Une route encaissée entre deux hauts talus de terre, un ruban de ciel étroit au-dessus, des racines tordues qui sortent des parois.",
       "prompt_image": "sunken road between two high earthen banks, narrow ribbon of sky above, twisted roots protruding from the banks, deep shadows, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_chemin_creux_c.png"
+      "illustration": "scene_chemin_creux_d_a.png"
     },
     {
       "id": "charrette-embourbee",
@@ -1232,7 +1232,7 @@
       ],
       "description": null,
       "prompt_image": "wheel hub and axle of a cart long sunk in a rut, green shoots growing out of the wood of the hub, the side rail worn smooth by hands. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_chemin_charrette_a_c.png"
+      "illustration": "scene_chemin_charrette_a_d_b.png"
     },
     {
       "id": "talus-empreintes",
@@ -1246,7 +1246,7 @@
       ],
       "description": null,
       "prompt_image": "loose turned earth on a steep bank, a line of bare footprints pressed into it going the wrong way, grass torn at the edges. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_chemin_talus_a_c.png"
+      "illustration": "scene_chemin_talus_a_d_c.png"
     },
     {
       "id": "marcheur-rebours",
@@ -1277,7 +1277,7 @@
       ],
       "description": "Événement du Chemin Creux : le coude aveugle. Le talus mange la vue d'un coup — l'endroit exact où il devrait y avoir quelque chose, et où il n'y a rien.",
       "prompt_image": "blind bend of a sunken road between high earthen banks, the path disappearing around the curve, nothing visible beyond, very deep shadow at the turn, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_chemin_creux_coude_b.png"
+      "illustration": "scene_chemin_creux_coude_c_c.png"
     },
     {
       "id": "marcheur-1",
@@ -1342,7 +1342,7 @@
       ],
       "description": "Combat, une scène. La Bête des Chemins Creux, qui longe la crête nord au même pas que ce qui marche en bas. On ne la voit qu'en silhouette, au-dessus.",
       "prompt_image": "long low beast built to run between two earth walls, no visible jaw, only a forward mass of matted hide, half detached from the bank of a sunken lane. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "monstre_bete_chemins_creux_a.png"
+      "illustration": "monstre_bete_chemins_creux_b_a.png"
     },
     {
       "id": "colline-aux-gibets",
@@ -1359,7 +1359,7 @@
       ],
       "description": "Arrivée à la Colline aux Gibets, lieu-signature de la zone. La file de potences le long de la crête nue, vue d'en bas en contre-plongée, de plus en plus hautes vers le sommet, les cordes qui balancent.",
       "prompt_image": "row of wooden gallows following a bare hill ridge seen from below, low angle, each one taller than the last toward the crest, ropes swaying, crows on the crossbeams, stormy sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_colline_aux_gibets_c.png"
+      "illustration": "scene_colline_aux_gibets_d_d.png"
     },
     {
       "id": "corbeaux-compte",
@@ -1373,7 +1373,7 @@
       ],
       "description": null,
       "prompt_image": "row of crows perched shoulder to shoulder along a gallows crossbeam, none of them looking at the viewer, all of them looking down at the rope. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "monstre_corbeaux_du_compte_b.png"
+      "illustration": "monstre_corbeaux_du_compte_c_b.png"
     },
     {
       "id": "potences-cercle",
@@ -1401,7 +1401,7 @@
       ],
       "description": null,
       "prompt_image": "the noose of a great gallows seen from directly beneath, looking up, the knot huge and close, the crossbeam cutting the top of the frame. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_colline_gibet_vide_a_b.png"
+      "illustration": "scene_colline_gibet_vide_a_c_d.png"
     },
     {
       "id": "poteau-pendu",
@@ -1477,7 +1477,7 @@
       ],
       "description": "Arrivée au Champ des Fixés. Des rangées de poteaux plantés dans la lande morte, un écriteau clouté sur chacun, certains encore occupés.",
       "prompt_image": "rows of wooden posts planted across dead moorland, a small nailed sign on each, some posts still bearing hanged figures in the far distance, receding perspective, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_champ_des_fixes_b.png"
+      "illustration": "scene_champ_des_fixes_c_a.png"
     },
     {
       "id": "les-rangees",
@@ -1505,7 +1505,7 @@
       ],
       "description": null,
       "prompt_image": "bare unused stakes driven into the earth, no rope on them yet, the wood still pale where it has not weathered. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "scene_champ_poteaux_vierges_b.png"
+      "illustration": "scene_champ_poteaux_vierges_c_e.png"
     },
     {
       "id": "tombe-sans-poteau",
@@ -1519,7 +1519,7 @@
       ],
       "description": null,
       "prompt_image": "gap in a full row of stakes, the socket hole left in the earth still open, its rim crumbling, like a pulled tooth. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_champ_tombe_manquante_a_c.png"
+      "illustration": "scene_champ_tombe_manquante_a_d_e.png"
     },
     {
       "id": "champ-des-fixes-2",
@@ -1533,7 +1533,7 @@
       ],
       "description": "Événement du Champ : le Fossoyeur aux poteaux, qui grave d'avance les noms « dont c'est sûr ».",
       "prompt_image": "old gravedigger straightening a leaning stake with a gardener's care, not interrupting his work, a mallet hanging from his hand. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "monstre_fossoyeur_poteaux_a.png"
+      "illustration": "monstre_fossoyeur_poteaux_b_a.png"
     },
     {
       "id": "pendu-mal-fixe",
@@ -1565,7 +1565,7 @@
       ],
       "description": "Approche du Hameau des Renonçants, vu de loin. Les toits d'ardoise affaissés au creux du plateau, une seule cheminée qui fume sur vingt, aucun chien qui aboie.",
       "prompt_image": "distant abandoned hamlet nestled in a hollow of dead moorland at dusk, sagging slate rooftops, one single chimney smoking, low dry-stone walls leading to the village, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_hameau_dense2_b.png"
+      "illustration": "scene_hameau_dense2_c_e.png"
     },
     {
       "id": "hameau-entree-2",
@@ -1588,7 +1588,7 @@
       ],
       "description": "La ruelle étroite du hameau : portes marquées à la craie, volets fermés, aucun chien.",
       "prompt_image": "narrow village lane of low stone houses, every shutter closed, no one in the street, chalk cross on the first door. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_landes_hameau_ruelle_b.png"
+      "illustration": "scene_landes_hameau_ruelle_c_b.png"
     },
     {
       "id": "croix-craie",
@@ -1717,7 +1717,7 @@
       "texte": [],
       "description": "Le pignon d'une grange couvert de craie : deux colonnes de noms, des croix à la place des dates pour les sept derniers.",
       "prompt_image": "tall windowless stone gable wall covered from ground to head height in dense chalk tally marks in two tight columns, a row of crude crosses at the bottom, a small child-sized silhouette walking away at the edge of the frame. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval village, square composition, no text, no lettering, no watermark",
-      "illustration": "scene_hameau_accueil_mur_a.png"
+      "illustration": "scene_hameau_accueil_mur_b_c.png"
     },
     {
       "id": "hameau-accueil-enfant",
@@ -1731,7 +1731,7 @@
       "texte": [],
       "description": "Un enfant seul au milieu de la rue, les mains dans le dos, et tous les volets entrouverts de deux doigts derrière lui.",
       "prompt_image": "a single small child standing alone in the middle of an empty village lane, hands held behind the back, every shutter along both walls cracked open by a hand's width, no adult visible. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval village, square composition, no text, no lettering, no watermark",
-      "illustration": "scene_hameau_accueil_enfant_c.png"
+      "illustration": "scene_hameau_accueil_enfant_d_a.png"
     },
     {
       "id": "hameau-accueil-table",
@@ -1745,7 +1745,7 @@
       "texte": [],
       "description": "Une table seule au milieu des pavés, un bol qui fume encore, un tabouret tourné vers le côté par où tu arrives. Personne.",
       "prompt_image": "a single small wooden table alone in the middle of an empty village lane, one stool, one earthenware bowl with visible steam, a spoon set perfectly straight beside it, the setting turned to face the viewer, no figure anywhere. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval village, square composition, no text, no lettering, no watermark",
-      "illustration": "scene_hameau_accueil_table_a.png"
+      "illustration": "scene_hameau_accueil_table_b_d.png"
     },
     {
       "id": "hameau-accueil-cloche",
@@ -1759,7 +1759,7 @@
       "texte": [],
       "description": "Une vieille femme la main sur la corde de la chapelle, un homme figé à deux pas, le village sorti sur ses seuils pour un tocsin qui n'a pas sonné.",
       "prompt_image": "a thick bell rope hanging down the wall of a small stone chapel, an old woman's hand closed around it holding it still, a man frozen mid-stride two paces away, a dozen small figures motionless in their doorways. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval village, square composition, no text, no lettering, no watermark",
-      "illustration": "scene_hameau_accueil_cloche_b.png"
+      "illustration": "scene_hameau_accueil_cloche_c_f.png"
     },
     {
       "id": "hameau-accueil-depart",
@@ -1773,7 +1773,7 @@
       "texte": [],
       "description": "Une charrette à moitié chargée au milieu de la rue — avec une porte sanglée sur le tas — et les voisins qui regardent sans aider.",
       "prompt_image": "a handcart half loaded in the middle of a village lane, a chest, two rolled straw mattresses and a whole wooden house door strapped on top, one man tightening a strap, several neighbours motionless with folded arms in their doorways watching without helping. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval village, square composition, no text, no lettering, no watermark",
-      "illustration": "scene_hameau_accueil_depart_a.png"
+      "illustration": "scene_hameau_accueil_depart_b_f.png"
     },
     {
       "id": "hameau-entree-4",
@@ -1840,7 +1840,7 @@
       ],
       "description": "Le vieux t'a trouvé dans la ruelle et se tient à deux pas, calme, sans barrer le passage.",
       "prompt_image": "narrow village lane of low stone houses, every shutter closed, no one in the street, chalk cross on the first door. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_landes_hameau_ruelle_b.png"
+      "illustration": "scene_landes_hameau_ruelle_c_b.png"
     },
     {
       "id": "hameau-halte-2",
@@ -1858,7 +1858,7 @@
       ],
       "description": "Intérieur de grange, la nuit : une lanterne posée au sol, la paille, la barre de porte posée DEHORS, des bâtons de comptage sur les poutres.",
       "prompt_image": "clean straw and a used blanket laid on a barn floor, a short-wicked lamp set down beside them, the barn door shut in the background. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "scene_landes_hameau_grange_a.png"
+      "illustration": "scene_landes_hameau_grange_b_d.png"
     },
     {
       "id": "examiner-grange",
@@ -1967,7 +1967,7 @@
       ],
       "description": null,
       "prompt_image": "long neat stack of dressed stones at the foot of a tower, laid course by course, every carved face turned down against the earth, one stone tipped over to show a fragment of an engraved name. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_tour_pierres_rangees_a.png"
+      "illustration": "scene_tour_pierres_rangees_b_a.png"
     },
     {
       "id": "escalier-vers-rien",
@@ -1981,7 +1981,7 @@
       ],
       "description": null,
       "prompt_image": "last surviving step of a stone stair inside a broken tower, the tread hollowed in its middle by daily use, the stonework breaking off clean onto open sky. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_tour_escalier_vers_rien_b.png"
+      "illustration": "scene_tour_escalier_vers_rien_c_a.png"
     },
     {
       "id": "meurtriere-sud",
@@ -1995,7 +1995,7 @@
       ],
       "description": null,
       "prompt_image": "narrow arrow slit in thick stonework at chest height, its sill worn smooth like a handrail, hundreds of tally notches in groups of five cut into the embrasure, a single-lens copper spyglass wedged in a crack. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_tour_meurtriere_sud_a.png"
+      "illustration": "scene_tour_meurtriere_sud_b_d.png"
     },
     {
       "id": "tour-de-guet-2",
@@ -2026,7 +2026,7 @@
       ],
       "description": "Arrivée au Marché Muet, à l'intérieur du hameau. Des étals sans marchands, des marchandises posées et personne pour les vendre.",
       "prompt_image": "small deserted village market square, empty trestle stalls with goods still laid out on them, no people, low stone houses closing the square, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_marche_muet_c.png"
+      "illustration": "scene_marche_muet_d_f.png"
     },
     {
       "id": "marche-muet-2",
@@ -2040,7 +2040,7 @@
       ],
       "description": "Événement du Marché : le Colporteur, le seul qui parle encore, et le Rebouteux derrière lui.",
       "prompt_image": "hunched pedlar behind a stall of goods that belong nowhere near a moor, one hand raised in greeting, a wide fixed smile of recognition. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "monstre_colporteur_b.png"
+      "illustration": "monstre_colporteur_c_c.png"
     },
     {
       "id": "campement",
@@ -2099,7 +2099,7 @@
       ],
       "description": null,
       "prompt_image": "inside of a disused mill, a millstone shoved aside and bedding laid on the floor beside it, a hand pushing a plank door open into the dark. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_moulin_interieur_a_d.png"
+      "illustration": "scene_moulin_interieur_a_e_b.png"
     },
     {
       "id": "campement-2",
@@ -2113,7 +2113,7 @@
       ],
       "description": "Événement du Moulin : la garde, ou le sommeil. Le lit de bruyère tassé, refait de frais, les marques de comptage à hauteur d'enfant sur la pierre.",
       "prompt_image": "interior of a derelict stone windmill, heather bedding pressed flat on the floor, tally marks scratched on the stone wall at child height, broken millstone, light through a small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_moulin_campement_2_a.png"
+      "illustration": "scene_moulin_campement_2_b_b.png"
     },
     {
       "id": "chapelle-des-cordes",
@@ -2130,7 +2130,7 @@
       ],
       "description": "Arrivée à la Chapelle des Cordes, intérieur du hameau. Une nef courte, des dizaines de cordes coupées clouées en rangs le long des murs, du sol au plafond.",
       "prompt_image": "interior of a tiny stone chapel, dozens of cut ropes nailed in rows along the walls from floor to ceiling, small paper labels on each, overturned altar, short nave, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_chapelle_des_cordes_d.png"
+      "illustration": "scene_chapelle_des_cordes_e_d.png"
     },
     {
       "id": "mur-cordes",
@@ -2204,7 +2204,7 @@
       ],
       "description": "Arrivée au Puits Condamné. Un puits fermé par des planches clouées en croix, par-dessus, des pierres empilées.",
       "prompt_image": "village well sealed shut with planks nailed in a cross over its mouth, stones piled on top, worn rope still tied to the winch, empty square, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_puits_condamne_v2_a.png"
+      "illustration": "scene_puits_condamne_v2_b_f.png"
     },
     {
       "id": "puits-condamne-2",
@@ -2265,7 +2265,7 @@
       ],
       "description": "Arrivée au Petit Tribunal. Une grange convertie en salle d'audience : trois bancs de bois face à une haute chaire, une feuille de règles clouée au mur.",
       "prompt_image": "interior of a barn converted into a rustic courtroom, three wooden benches facing a tall wooden pulpit, a sheet of rules nailed to the wall, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_petit_tribunal_a.png"
+      "illustration": "scene_petit_tribunal_b_g.png"
     },
     {
       "id": "mur-ordonnance",
@@ -2279,7 +2279,7 @@
       ],
       "description": null,
       "prompt_image": "thick yellowed sheet of paper nailed at its four corners to a stone wall, the nails driven deep, the edges of the paper curling. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_tribunal_ordonnance_a_c.png"
+      "illustration": "scene_tribunal_ordonnance_a_d_e.png"
     },
     {
       "id": "chaire-registre",
@@ -2293,7 +2293,7 @@
       ],
       "description": null,
       "prompt_image": "high wooden pulpit desk seen from its single step, a heavy ledger left open on it, the wood worn pale where hands gripped the edge. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_tribunal_chaire_a_c.png"
+      "illustration": "scene_tribunal_chaire_a_d_c.png"
     },
     {
       "id": "les-bancs",
@@ -2307,7 +2307,7 @@
       ],
       "description": null,
       "prompt_image": "three rows of rough wooden benches in an empty stone hall, the front bench polished smooth by use, the others barely worn. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_tribunal_bancs_a_c.png"
+      "illustration": "scene_tribunal_bancs_a_d_b.png"
     },
     {
       "id": "petit-tribunal-2",
@@ -2322,7 +2322,7 @@
       ],
       "description": "Événement du Tribunal : l'Écrivain public, qui entre, te voit à la chaire, et se met à copier sans lever les yeux.",
       "prompt_image": "small dry man frozen in a doorway holding a quill and inkpot clutched to his chest, caught seeing something he should not have seen. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "monstre_ecrivain_public_d.png"
+      "illustration": "monstre_ecrivain_public_e_a.png"
     },
     {
       "id": "meute-grise-1",
@@ -2371,7 +2371,7 @@
       ],
       "description": "Arrivée à la Mare aux Regards. Une eau noire parfaitement immobile, la berge piétinée avec deux creux de genoux, des roseaux, aucun vent.",
       "prompt_image": "perfectly still black pond in dead moorland, trampled bank with two knee hollows, reeds, dark reflections, no wind, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_mare_aux_regards_a.png"
+      "illustration": "scene_mare_aux_regards_b_a.png"
     },
     {
       "id": "berge-usee",
@@ -2428,7 +2428,7 @@
       ],
       "description": "Événement de la Mare : un Renonçant qui vient vérifier son propre reflet, et te trouve là.",
       "prompt_image": "kneeling villager bent over the edge of a black pond staring at his own reflection, hands flat on the trampled bank, head turning sharply toward the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_mare_aux_regards_2_b.png"
+      "illustration": "scene_mare_aux_regards_2_c_d.png"
     },
     {
       "id": "verger-noir",
@@ -2445,7 +2445,7 @@
       ],
       "description": "Arrivée au Verger Noir. Des arbres noirs tordus plantés en rangs, des fruits gris et lourds sur les branches, une vieille souche au premier plan.",
       "prompt_image": "orchard of black twisted fruit trees planted in rows on dead moorland, heavy grey ash fruits on the branches, one old stump in the foreground, two distant bent figures digging, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_verger_noir_d.png"
+      "illustration": "scene_verger_noir_e_f.png"
     },
     {
       "id": "fruits-cendre",
@@ -2489,7 +2489,7 @@
       ],
       "description": null,
       "prompt_image": "elderly couple sharing one spade between orchard rows, taking turns without speaking, the settled rhythm of people who have done this together for decades. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "monstre_epoux_verger_a.png"
+      "illustration": "monstre_epoux_verger_b_b.png"
     },
     {
       "id": "verger-noir-2",
@@ -2522,7 +2522,7 @@
       ],
       "description": "Les Époux, deux silhouettes courbées qui creusent entre les rangs du verger noir sans se parler.",
       "prompt_image": "elderly couple sharing one spade between orchard rows, taking turns without speaking, the settled rhythm of people who have done this together for decades. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "monstre_epoux_verger_a.png"
+      "illustration": "monstre_epoux_verger_b_b.png"
     },
     {
       "id": "epoux-2",
@@ -2573,7 +2573,7 @@
       ],
       "description": "Arrivée à la Palissade Sud, seuil de l'Acte II. Une haute palissade de rondins appointés qui ferme l'horizon, un petit portillon, une borne au premier plan.",
       "prompt_image": "tall wooden palisade of sharpened logs closing a moorland horizon, small gate, a single standing boundary stone in the foreground, path leading south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_palissade_sud_a_a.png"
+      "illustration": "scene_palissade_sud_a_b_a.png"
     },
     {
       "id": "rondins-pointes",
@@ -2587,7 +2587,7 @@
       ],
       "description": null,
       "prompt_image": "line of log palisade tops seen from directly below, every point sharpened and angled inward, toward the inside of the wall. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_palissade_rondins_a_c.png"
+      "illustration": "scene_palissade_rondins_a_d_f.png"
     },
     {
       "id": "portillon-verrou",
@@ -2601,7 +2601,7 @@
       ],
       "description": null,
       "prompt_image": "small plank gate in a log wall, a hand flat on the wood, deep claw scratches raked down the boards on the inner face. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_palissade_portillon_a_b.png"
+      "illustration": "scene_palissade_portillon_a_c_f.png"
     },
     {
       "id": "homme-guerite",
@@ -2635,7 +2635,7 @@
       ],
       "description": "Le Veilleur dans sa guérite de planches, une lanterne pendue à un clou au-dessus de lui.",
       "prompt_image": "rusted lantern standing on the floor of a narrow plank sentry box, the only light source, a bowl of cold soup set down far from it. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "objet_lanterne_rouillee_guerite.png"
+      "illustration": "objet_lanterne_rouillee_guerite_b_a.png"
     },
     {
       "id": "veilleur-2",
@@ -2653,7 +2653,7 @@
       ],
       "description": "Il a décroché sa lanterne et la tend à moitié, suspendue entre vous deux, le visage éclairé par en dessous. CHANGE : la lanterne a quitté son clou et devient le centre de l'image.",
       "prompt_image": "a weathered hand holding out a rusted lantern by its ring, half offered, the wick visible through the glass. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "objet_lanterne_veilleur_2_b.png"
+      "illustration": "objet_lanterne_veilleur_2_c_a.png"
     },
     {
       "id": "veilleur-3",
@@ -2670,7 +2670,7 @@
       ],
       "description": "Il note ton passage sur une planche clouée dans sa guérite, sans lever les yeux ; le portillon sud est ouvert derrière lui. CHANGE : le portillon est ouvert et il écrit — la lanterne n'est plus dans ses mains.",
       "prompt_image": "a hand chalking a mark onto a plank board inside a sentry box, a row of earlier marks beside it. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "objet_lanterne_veilleur_3_c.png"
+      "illustration": "objet_lanterne_veilleur_3_d_b.png"
     },
     {
       "id": "palissade-sud-2",
@@ -2699,7 +2699,7 @@
       ],
       "description": "Scène de déroutage au dernier palier de Soupçon : le hameau te juge. Les trois bancs pleins, tous les visages tournés vers toi, la chaire vide.",
       "prompt_image": "rustic courtroom seen from the defendant's place, three benches full of gaunt villagers all facing the viewer, the tall pulpit empty above them, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_proces_du_heros_v4_c.png"
+      "illustration": "scene_proces_du_heros_v4_d_b.png"
     }
   ],
   "regions": [

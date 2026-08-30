@@ -194,7 +194,7 @@ export const OBJET_DU_VOLEUR = {
   slot: "passif" as const,
   passiveMod: 0,
   passiveScope: "all" as const,
-  illustration: "assets/objet_de_vingt_c.png",
+  illustration: "assets/objet_de_vingt_d_a.png",
   flavor:
     "Un dé taillé dans un os que tu préfères ne pas identifier. Ce n'est pas le tien. Celui qui te l'a laissé saura te reconnaître — il compte dessus.",
 };

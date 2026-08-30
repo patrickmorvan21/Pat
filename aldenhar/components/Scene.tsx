@@ -477,9 +477,9 @@ const PORTAL = "assets/dithering-portal.jpg";
 // signalées par Patrick. Remplacés par les vraies icônes tramées 1000×1000, en
 // gardant la même convention que le menu Inventaire (cf. BESACE_ICONS).
 function objectImage(kind: BesaceItem["kind"]): string {
-  if (kind === "arme") return "assets/objet_dague_os.png";
-  if (kind === "babiole") return "assets/objet_grimoire.png";
-  return "assets/objet_fiole_baume.png";
+  if (kind === "arme") return "assets/objet_dague_os_b_b.png";
+  if (kind === "babiole") return "assets/objet_grimoire_b_b.png";
+  return "assets/objet_fiole_baume_b_b.png";
 }
 
 /**

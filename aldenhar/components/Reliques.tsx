@@ -78,7 +78,7 @@ function TagRarete({ rarity }: { rarity: Relic["rarity"] }) {
 
 function imgDe(r: Relic): string {
   return (
-    reliqueIllustration(r.relicId ?? r.name, assetExiste) ?? "assets/objet_couronne_brisee.png"
+    reliqueIllustration(r.relicId ?? r.name, assetExiste) ?? "assets/objet_couronne_brisee_b_b.png"
   );
 }
 

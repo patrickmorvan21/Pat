@@ -250,7 +250,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
  * les visuels d'acte vivent dans le Drive sous `Assets/IMG/3 actes`.
  */
 const ACTES = [
-  { eyebrow: "• LE DOMAINE •", title: "Les Lisières", image: "assets/scene_landes_frise_montagnes_pleine_b.png" },
+  { eyebrow: "• LE DOMAINE •", title: "Les Lisières", image: "assets/scene_landes_frise_montagnes_pleine_c_d.png" },
 ];
 
 export function ActeScreen({ acte = 0, onDone }: { acte?: number; onDone: () => void }) {

@@ -30,7 +30,7 @@ import { etatsActifs } from "@/lib/etats";
 type Tab = "stats" | "inventaire" | "options";
 
 /** Icône générique des Reliques (l'ancien `objet_masque.png` faisait 68×68). */
-const RELIC_ICON = "assets/objet_couronne_brisee.png";
+const RELIC_ICON = "assets/objet_couronne_brisee_b_b.png";
 
 /** L'illustration propre d'une relique, sinon l'icône générique (6/08). */
 function relicIcon(r: { relicId?: string; name: string }): string {
@@ -47,9 +47,9 @@ function relicIcon(r: { relicId?: string; name: string }): string {
  * babioles (le crâne lisait comme « mort », pas comme « objet trouvé »).
  */
 const BESACE_ICONS: Record<BesaceItem["kind"], string> = {
-  arme: "assets/objet_dague_os.png",
-  soin: "assets/objet_fiole_baume.png",
-  babiole: "assets/objet_grimoire.png",
+  arme: "assets/objet_dague_os_b_b.png",
+  soin: "assets/objet_fiole_baume_b_b.png",
+  babiole: "assets/objet_grimoire_b_b.png",
 };
 
 /** Icône d'un objet : son PNG réel (objets des Landes) sinon l'icône générique par type. */

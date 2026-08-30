@@ -70,7 +70,7 @@ export function startingBesace(): BesaceItem[] {
       id: "dague-simple",
       name: "Dague simple",
       rarity: "commun",
-      kind: "arme", illustration: "assets/objet_dague_os.png",
+      kind: "arme", illustration: "assets/objet_dague_os_b_b.png",
       slot: "passif",
       passiveMod: 1,
       passiveScope: "combat",
@@ -118,10 +118,10 @@ const SOINS_MINEURS: Omit<BesaceItem, "id">[] = [
       "Tu racles le fond du pot et tu tasses la mousse noire à même la plaie, sans regarder. Ça mord d'abord, puis ça tient — la chair se referme autour, comme si elle avait décidé d'y croire.", rarity: "commun", kind: "soin", slot: "actif", heal: 0.3, cure: true, flavor: "Ça sent la cave. Ça referme les plaies." },
   { name: "Fiole d'eau de gouttière",
     usageTexte:
-      "Tu bois l'eau de gouttière au goulot, debout, en trois gorgées qui ont le goût de l'ardoise. Ce n'est pas bon. C'est de l'eau, et ton corps ne fait pas le difficile.", illustration: "assets/objet_fiole_baume.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.25, cure: false, flavor: "Trouble, tiède — mais elle apaise." },
+      "Tu bois l'eau de gouttière au goulot, debout, en trois gorgées qui ont le goût de l'ardoise. Ce n'est pas bon. C'est de l'eau, et ton corps ne fait pas le difficile.", illustration: "assets/objet_fiole_baume_b_b.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.25, cure: false, flavor: "Trouble, tiède — mais elle apaise." },
   { name: "Bandage d'un autre",
     usageTexte:
-      "Tu défais le bandage de quelqu'un d'autre et tu l'enroules sur ton propre bras. Il a déjà servi — la tache est ancienne, brune, à l'endroit exact où tu saignes. Tu serres le nœud sans y penser.", illustration: "assets/objet_brin_chanvre_beni_b.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.2, cure: true, flavor: "Son premier propriétaire n'en aura plus besoin." },
+      "Tu défais le bandage de quelqu'un d'autre et tu l'enroules sur ton propre bras. Il a déjà servi — la tache est ancienne, brune, à l'endroit exact où tu saignes. Tu serres le nœud sans y penser.", illustration: "assets/objet_brin_chanvre_beni_c_b.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.2, cure: true, flavor: "Son premier propriétaire n'en aura plus besoin." },
   { name: "Onguent gris",
     usageTexte:
       "Tu étales l'onguent gris du plat du pouce, en couche mince. Ça sent la cendre et le suif. La douleur ne part pas : elle recule d'un pas et te laisse la place.", rarity: "commun", kind: "soin", slot: "actif", heal: 0.3, cure: false, flavor: "L'étiquette est illisible. L'odeur, convaincante." },
@@ -130,12 +130,12 @@ const SOINS_MINEURS: Omit<BesaceItem, "id">[] = [
 /** Récompenses du Destin (nat 20) : rare à légendaire, JAMAIS une Relique. Un
     mélange d'actifs (soins puissants) et de passifs (babioles / armes). */
 const RECOMPENSES_DESTIN: Omit<BesaceItem, "id">[] = [
-  { name: "Amulette d'os verdi", illustration: "assets/objet_dent_meute_d.png", rarity: "rare", kind: "babiole", slot: "passif", passiveMod: 1, passiveScope: "all", flavor: "Elle vibre quand on la regarde trop longtemps — et le hasard te sourit un peu plus." },
+  { name: "Amulette d'os verdi", illustration: "assets/objet_dent_meute_e_a.png", rarity: "rare", kind: "babiole", slot: "passif", passiveMod: 1, passiveScope: "all", flavor: "Elle vibre quand on la regarde trop longtemps — et le hasard te sourit un peu plus." },
   // ⚠️ Sans `illustration`, le repli par `kind` servait `objet_dague_os` — une
   // dague en OS pour une lame « forgée dans le MÉTAL d'une lanterne » (relecture
   // par agents, 10/08). Et c'est une récompense de Destin : le moment le plus
   // rare du jeu s'illustrait d'un objet qui n'est pas celui qu'on vient de gagner.
-  { name: "Lame de lanterne", illustration: "assets/objet_dague_cendres_c.png", rarity: "rare", kind: "arme", slot: "passif", passiveMod: 1, passiveScope: "combat", flavor: "Forgée dans le métal d'une lanterne verte. Elle ne vacille jamais." },
+  { name: "Lame de lanterne", illustration: "assets/objet_dague_cendres_d_a.png", rarity: "rare", kind: "arme", slot: "passif", passiveMod: 1, passiveScope: "combat", flavor: "Forgée dans le métal d'une lanterne verte. Elle ne vacille jamais." },
   { name: "Élixir du campement perdu",
     usageTexte:
       "Tu descends l'élixir d'un trait. La chaleur part de l'estomac et gagne les mains, les jambes, la nuque — quelqu'un a distillé ça pour un homme qui ne comptait pas revenir.", rarity: "rare", kind: "soin", slot: "actif", heal: 0.5, cure: true, flavor: "Quelqu'un l'a brassé pour un repos qui n'est jamais venu." },
@@ -145,7 +145,7 @@ const RECOMPENSES_DESTIN: Omit<BesaceItem, "id">[] = [
   // générique. Prompt écrit dans `data/images-a-produire.md`. C'est la seule
   // récompense LÉGENDAIRE du jeu : elle mérite son image.
   { name: "Larme du Geôlier", rarity: "legendaire", kind: "babiole", slot: "passif", passiveMod: 2, passiveScope: "all", flavor: "Il jure qu'il ne pleure pas. Elle existe pourtant — et te protège de justesse." },
-  { name: "Clef sans porte", illustration: "assets/objet_cle_maison_muree_a.png", rarity: "legendaire", kind: "babiole", slot: "passif", passiveMod: 1, passiveScope: "all", flavor: "Toutes les serrures la craignent un peu." },
+  { name: "Clef sans porte", illustration: "assets/objet_cle_maison_muree_b_b.png", rarity: "legendaire", kind: "babiole", slot: "passif", passiveMod: 1, passiveScope: "all", flavor: "Toutes les serrures la craignent un peu." },
 ];
 
 let uid = 0;
@@ -180,7 +180,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     kind: "babiole",
     passiveMod: 1,
     passiveScope: "all",
-    illustration: "assets/objet_lunette_guetteur_b.png",
+    illustration: "assets/objet_lunette_guetteur_c_b.png",
     flavor:
       "Un seul verre, monté dans du cuivre poli par la même main pendant vingt ans. On voit loin avec. On ne voit toujours pas ce qui vient.",
   },
@@ -189,40 +189,40 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     name: "Offrandes de la Borne",
     usageTexte:
       "Tu manges ce qu'on avait laissé au pied de la borne : du pain dur, une poignée de baies noires. C'était pour autre chose que toi. C'est toi qui le prends.", rarity: "commun", kind: "soin", slot: "actif",
-    heal: 0.25, cure: false, illustration: "assets/objet_offrandes_borne_c.png",
+    heal: 0.25, cure: false, illustration: "assets/objet_offrandes_borne_d_b.png",
     flavor: "Pain durci, rubans, clous tordus. On les a laissés pour entrer. Tu les prends pour tenir.",
   },
   "echarde-gibet": {
     name: "Écharde du Grand Gibet", rarity: "commun", kind: "arme", slot: "passif",
-    passiveMod: 1, passiveScope: "combat", illustration: "assets/objet_echarde_grand_gibet_b.png",
+    passiveMod: 1, passiveScope: "combat", illustration: "assets/objet_echarde_grand_gibet_c_b.png",
     flavor: "Un éclat du bois qui a tenu tant de cordes. Ta main s'en trouve plus dure quand il faut frapper.",
   },
   "brin-chanvre": {
     name: "Brin de Chanvre Béni",
     usageTexte:
       "Tu noues le brin de chanvre au-dessus de la plaie, deux tours, comme on t'a dit sans te le dire. Le sang ralentit. Tu ne sais pas si c'est le nœud ou ce qu'on a récité dessus.", rarity: "commun", kind: "soin", slot: "actif",
-    heal: 0.2, cure: true, illustration: "assets/objet_brin_chanvre_beni_b.png",
+    heal: 0.2, cure: true, illustration: "assets/objet_brin_chanvre_beni_c_b.png",
     flavor: "Béni pour les pendus, dit-on. Noué sur une plaie, il la referme.",
   },
   "carnet-fossoyeur": {
     name: "Carnet du Fossoyeur", rarity: "commun", kind: "babiole", slot: "passif",
-    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_carnet_fossoyeur_d.png",
+    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_carnet_fossoyeur_e_a.png",
     flavor: "Qui repose où, et pourquoi. Savoir où sont les morts, c'est savoir où poser le pied.",
   },
   "lanterne-veilleur": {
     name: "Lanterne du Veilleur", rarity: "commun", kind: "babiole", slot: "passif",
-    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_lanterne_rouillee.png",
+    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_lanterne_rouillee_b_a.png",
     flavor: "Sa flamme tient contre le vent des Landes. Tu vois venir ce que les autres subissent.",
   },
   // ——— Lot 24/07 suite : objets des lieux extérieurs et des rencontres ———
   "grelot-charretier": {
     name: "Grelot du Charretier", rarity: "commun", kind: "babiole", slot: "passif",
-    passiveMod: 1, passiveScope: "combat", illustration: "assets/objet_grelot_charretier_a.png",
+    passiveMod: 1, passiveScope: "combat", illustration: "assets/objet_grelot_charretier_b_a.png",
     flavor: "Il tinte quand quelque chose approche dans le creux. Rien ne te tombera plus dessus sans s'annoncer.",
   },
   "pierre-retour": {
     name: "Pierre de Retour", rarity: "rare", kind: "babiole", slot: "passif",
-    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_miroir_ame_a.png",
+    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_miroir_ame_b_b.png",
     flavor: "Un éclat descellé de la Borne. Les Renonçants disent qu'on revient, si on la porte. Personne n'est revenu.",
   },
   /* Le caillou du Gamin (refonte du lore 6/08) — la seule PREUVE matérielle
@@ -232,7 +232,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
      rester qu'une question qu'on garde dans sa poche. */
   "caillou-gamin": {
     name: "Caillou de rivière", rarity: "commun", kind: "babiole", slot: "passif",
-    passiveMod: 0, passiveScope: "all", illustration: "assets/objet_jouet_petite_fixee_a.png",
+    passiveMod: 0, passiveScope: "all", illustration: "assets/objet_jouet_petite_fixee_b_a.png",
     flavor: "Plat, gris, poli par une eau qui n'existe nulle part ici. Un enfant te l'a mis dans la main sans que tu le demandes.",
   },
   /* La Clochette de meneuse (journal 6/08) — jumelle du Grelot du
@@ -250,7 +250,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     name: "Miroir de Poche Fêlé",
     usageTexte:
       "Tu ouvres le miroir fêlé et tu te regardes dedans, une fois, franchement. La fêlure te coupe le visage en deux — et quelque chose que la lande avait déplacé se remet à sa place. Tu refermes avant d'en voir plus.", rarity: "commun", kind: "babiole", slot: "actif",
-    heal: 0.15, cure: false, illustration: "assets/objet_miroir_poche_fele_c.png",
+    heal: 0.15, cure: false, illustration: "assets/objet_miroir_poche_fele_d_a.png",
     flavor: "Fêlé en travers, jeté dans les roseaux. Se regarder dedans remet en place ce que la lande a déplacé.",
   },
   // ——— Lot 25/07 : règle de dosage (« chaque point d'intérêt rend une monnaie »).
@@ -258,24 +258,24 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
   // attendaient dans assets/ depuis le lot du 24/07, jamais câblées.
   "craie-condamne": {
     name: "Craie du Condamné", rarity: "commun", kind: "babiole", slot: "passif",
-    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_craie_condamne_a.png",
+    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_craie_condamne_b_a.png",
     flavor: "Un moignon de craie grasse, trouvé dans une fosse sans poteau. C'est avec ça qu'on marque les portes. Qui la tient choisit ce qui se sait.",
   },
   "jouet-fixee": {
     name: "Jouet de la Petite Fixée", rarity: "rare", kind: "babiole", slot: "passif",
-    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_jouet_petite_fixee_a.png",
+    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_jouet_petite_fixee_b_a.png",
     flavor: "Une poupée de chiffon et de paille, cachée sous une lucarne. Quelqu'un de très petit l'a mise là pour la sauver. Tu ne la reposeras pas.",
   },
   "cle-portillon": {
     name: "Clé du Portillon", rarity: "commun", kind: "babiole", slot: "passif",
-    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_cle_rouillee.png",
+    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_cle_rouillee_b_a.png",
     flavor: "Rouillée, oubliée dans la gâche du verrou. Elle n'ouvre pas la Descente — elle ouvre le retour, et c'est plus rare.",
   },
   "fruit-cendre": {
     name: "Fruit de Cendre",
     usageTexte:
       "Tu mords dans le fruit de cendre. La pulpe est tiède, farineuse, et le goût reste longtemps après. Ça nourrit. C'est déjà tout ce qu'on lui demande.", rarity: "commun", kind: "soin", slot: "actif",
-    heal: 0.3, cure: false, illustration: "assets/objet_fruit_cendre_a.png",
+    heal: 0.3, cure: false, illustration: "assets/objet_fruit_cendre_b_b.png",
     flavor: "La peau est parfaite et le poids ment. Le manger est un pari : une vision, ou pire.",
   },
   /* ═══ OBJET PILOTE n°1 — L'OUTIL (chantier feedback+fluidité §2, 12/08).
@@ -287,19 +287,19 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
      OUTIL d'un remède. Sa phrase d'usage est donc écrite à la main, la
      formule générique de `usageEnMots` ne dirait rien de vrai.
      ⚠️ ICÔNE PARTAGÉE avec la Mèche Nouée en attendant que celle-ci ait la
-     sienne : le fichier `objet_corde_coupee_fille_a.png` a été NOMMÉ pour
+     sienne : le fichier `objet_corde_coupee_fille_b_b.png` a été NOMMÉ pour
      cette corde-ci (regardé le 12/08 — un rouleau de chanvre épais, effiloché
      d'un bout), et servait à une mèche de cheveux. Prompt de la mèche écrit
      dans `data/images-a-produire.md`. */
   "corde-coupee": {
     name: "Corde coupée", rarity: "rare", kind: "babiole", slot: "actif",
-    illustration: "assets/objet_corde_coupee_fille_a.png",
+    illustration: "assets/objet_corde_coupee_fille_b_b.png",
     usage: "Assez longue pour descendre là où personne ne descend. Une fois amarrée, on ne la remonte pas.",
     flavor: "Sous verre, dans la niche, sans nom : la seule corde de toute la chapelle qui n'a pas tenu. Coupée net, et courte — beaucoup trop courte pour la hauteur d'un poteau.",
   },
   "meche-nouee": {
     name: "Mèche Nouée", rarity: "commun", kind: "babiole", slot: "passif",
-    passiveMod: 0, passiveScope: "all", illustration: "assets/objet_corde_coupee_fille_a.png",
+    passiveMod: 0, passiveScope: "all", illustration: "assets/objet_corde_coupee_fille_b_b.png",
     flavor: "Les cheveux d'un fils parti par le sud, noués d'un fil. Elle ne pèse rien. C'est la promesse qui pèse.",
   },
 };

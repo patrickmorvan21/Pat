@@ -1139,7 +1139,7 @@ export const SCENES: Scene[] = [
           "Des marques sur toutes les faces — des noms, des dates, des traits de comptage. Le côté nord est saturé : les adieux de ceux qui partaient. Le côté sud : trois marques. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?\n\nAu ras du sol, un éclat descellé, à demi enterré. Quelqu'un a voulu emporter un morceau de la limite — et ne l'a pas pris.",
         label: "Faire le tour de la pierre",
         observe: true,
-        illustration: "assets/scene_borne_gravures_a_d.png",
+        illustration: "assets/scene_borne_gravures_a_e_d.png",
         // La question que pose l'examen — « qui a gravé côté sud ? » — trouve
         // sa réponse dans la vie d'avant, et seulement là.
         borneSud: true,
@@ -1347,7 +1347,7 @@ export const SCENES: Scene[] = [
   {
     id: "chemin-creux",
     tags: ["rough_path"],
-    illustration: "assets/scene_chemin_creux_c.png",
+    illustration: "assets/scene_chemin_creux_d_a.png",
     chainNext: "chemin-creux-2",
     narration: [
       "Le chemin s'enfonce entre deux talus plus hauts que toi ; le ciel " +
@@ -1368,7 +1368,7 @@ export const SCENES: Scene[] = [
       {
         id: "charrette-embourbee",
         label: "Fouiller la charrette",
-        illustration: "assets/scene_chemin_charrette_a_c.png",
+        illustration: "assets/scene_chemin_charrette_a_d_b.png",
         observe: true,
         grantsLoot: "grelot-charretier",
         passive: {
@@ -1385,7 +1385,7 @@ export const SCENES: Scene[] = [
         consequenceDemo:
           "Des empreintes sur la crête nord — parallèles au chemin, sur toute sa longueur. L'autre versant est intact. Quelque chose marche là-haut quand quelqu'un marche en bas, du même pas, toujours du même côté. Tu redescends sans te presser : se presser serait une information.",
         label: "Monter voir le haut des talus",
-        illustration: "assets/scene_chemin_talus_a_c.png",
+        illustration: "assets/scene_chemin_talus_a_d_c.png",
         observe: true,
         grantsSavoir: "savoir_bete_crete_nord",
         // Ce que le talus enseigne survit à la mort : la Bête ne quitte pas
@@ -1423,7 +1423,7 @@ export const SCENES: Scene[] = [
     /* Événement du Chemin Creux : le coude aveugle. Le lieu se referme sur son
        propre danger — l'endroit exact où il devrait y avoir quelque chose. */
     id: "chemin-creux-2",
-    illustration: "assets/scene_chemin_creux_coude_b.png",
+    illustration: "assets/scene_chemin_creux_coude_c_c.png",
     narration: [
       "Le chemin tourne, et le talus mange la vue d'un coup. Passé le coude : " +
         "rien. C'est-à-dire l'endroit exact où il devrait y avoir quelque " +
@@ -1603,8 +1603,8 @@ export const SCENES: Scene[] = [
     // Première rencontre volontairement précoce (3e scène) — anecdotique,
     // une seule scène (amende §6 : durée par poids narratif).
     id: "bete-chemins-creux",
-    illustration: "assets/monstre_bete_chemins_creux_a.png",
-    illustrationArrivee: "assets/scene_chemin_creux_c.png",
+    illustration: "assets/monstre_bete_chemins_creux_b_a.png",
+    illustrationArrivee: "assets/scene_chemin_creux_d_a.png",
     combat: true,
     // L'embuscade enchaîne sur SON lieu : on descendait vers le Chemin Creux,
     // la Bête surgit au coude, et le creux continue après le combat.
@@ -1785,7 +1785,7 @@ export const SCENES: Scene[] = [
        examen → événement → sortie. Lieu-signature, quasi garanti. */
     id: "colline-aux-gibets",
     tags: ["climb"],
-    illustration: "assets/scene_colline_aux_gibets_c.png",
+    illustration: "assets/scene_colline_aux_gibets_d_d.png",
     soupconOnArrival: 1, // être vu près des potences (chantier 3)
     chainNext: "colline-aux-gibets-2",
     /* ─── CHANTIER DU 11/08 — plus de sous-menu ici ─────────────────────────
@@ -1822,7 +1822,7 @@ export const SCENES: Scene[] = [
         // sans ces deux champs le 11/08, ce lieu avait perdu ses trois plans
         // rapprochés (devenus orphelins sur le disque) ET la préparation de
         // l'Anneau que l'examen d'un point posait.
-        illustration: "assets/scene_colline_pied_grand_gibet_b.png",
+        illustration: "assets/scene_colline_pied_grand_gibet_c_b.png",
         observe: true,
         decouverte: "d.nom_gratte",
         passive: {
@@ -1837,7 +1837,7 @@ export const SCENES: Scene[] = [
       {
         id: "compter-corbeaux",
         corbeaux: true,
-        illustration: "assets/monstre_corbeaux_du_compte_b.png",
+        illustration: "assets/monstre_corbeaux_du_compte_c_b.png",
         observe: true,
         label: "Compter les corbeaux",
         passive: {
@@ -1850,7 +1850,7 @@ export const SCENES: Scene[] = [
       {
         id: "monter-gibet-vide",
         label: "Monter jusqu'au Gibet Vide",
-        illustration: "assets/scene_colline_gibet_vide_a_b.png",
+        illustration: "assets/scene_colline_gibet_vide_a_c_d.png",
         observe: true,
         chapterFragment: true,
         fait: "fait-gibet",
@@ -1965,7 +1965,7 @@ export const SCENES: Scene[] = [
     // scène pose l'identité). Pas un combat : le Bailli pendu JUGE.
     id: "pendu-qui-parle",
     illustration: "assets/monstre_pendu_qui_parle_a.png",
-    illustrationArrivee: "assets/scene_colline_aux_gibets_c.png",
+    illustrationArrivee: "assets/scene_colline_aux_gibets_d_d.png",
     chainNext: "pendu-qui-parle-2",
     // Démo : prose courte + TOUCHE 1 du Grand Témoin (le corbeau de travers
     // qui te regarde, toi) — une trace, jamais une explication (règle lot 2).
@@ -2099,7 +2099,7 @@ export const SCENES: Scene[] = [
   {
     /* Lieu à POINTS D'INTÉRÊT (script Notion). */
     id: "champ-des-fixes",
-    illustration: "assets/scene_champ_des_fixes_b.png",
+    illustration: "assets/scene_champ_des_fixes_c_a.png",
     chainNext: "champ-des-fixes-2",
     narration: [
       // ⚠️ TEXTE ALIGNÉ SUR L'IMAGE (panel 10/08) : elle montre de vieilles
@@ -2137,7 +2137,7 @@ export const SCENES: Scene[] = [
       {
         id: "poteaux-vierges",
         label: "Aller lire les poteaux vierges",
-        illustration: "assets/scene_champ_poteaux_vierges_b.png",
+        illustration: "assets/scene_champ_poteaux_vierges_c_e.png",
         observe: true,
         poteau: true,
         grantsSavoir: "savoir_poteau_a_mon_nom",
@@ -2155,7 +2155,7 @@ export const SCENES: Scene[] = [
       {
         id: "tombe-sans-poteau",
         label: "Aller voir le vide dans la rangée",
-        illustration: "assets/scene_champ_tombe_manquante_a_c.png",
+        illustration: "assets/scene_champ_tombe_manquante_a_d_e.png",
         observe: true,
         grantsLoot: "craie-condamne",
         // Ouvre la variante du Fossoyeur : il ne parle du trou qu'à qui l'a vu.
@@ -2235,7 +2235,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "fossoyeur-trou-2",
-    illustration: "assets/scene_champ_poteau_retire_c.png",
+    illustration: "assets/scene_champ_poteau_retire_d_e.png",
     chainNext: "fossoyeur-trou-3",
     decouverte: "d.poteau_retire",
     narration: [
@@ -2314,7 +2314,7 @@ export const SCENES: Scene[] = [
   {
     id: "champ-des-fixes-2",
     sejour: true,
-    illustration: "assets/monstre_fossoyeur_poteaux_a.png",
+    illustration: "assets/monstre_fossoyeur_poteaux_b_a.png",
     narration: [
       "Entre les rangs, un vieil homme redresse un poteau qui penche, avec " +
         "des gestes de jardinier. Il t'a vu venir de loin — les vivants " +
@@ -2437,7 +2437,7 @@ export const SCENES: Scene[] = [
   {
     id: "pendu-mal-fixe",
     illustration: "assets/monstre_pendu_mal_fixe_v2_c.png",
-    illustrationArrivee: "assets/scene_champ_des_fixes_b.png",
+    illustrationArrivee: "assets/scene_champ_des_fixes_c_a.png",
     combat: true,
     foe: "pendu-mal-fixe",
     foeName: "Le Pendu Mal Fixé",
@@ -2539,7 +2539,7 @@ export const SCENES: Scene[] = [
        venir — on retombe en attendant sur l'ambiance générique de zone et les
        portraits existants (fallback prévu par la spec §4). */
     id: "serment-hameau",
-    illustration: "assets/scene_hameau_dense2_b.png",
+    illustration: "assets/scene_hameau_dense2_c_e.png",
     chainNext: "hameau-entree-2",
     narration: [
       "Les toits apparaissent au creux du plateau — de l'ardoise affaissée, " +
@@ -2586,7 +2586,7 @@ export const SCENES: Scene[] = [
     /* Beat 2 — Le seuil. La croix à la craie est un POINT D'INTÉRÊT : voir de
        loin → marcher → toucher (spec §1). */
     id: "hameau-entree-2",
-    illustration: "assets/scene_landes_hameau_ruelle_b.png",
+    illustration: "assets/scene_landes_hameau_ruelle_c_b.png",
     chainNext: "hameau-entree-3",
     /* ─── CHANTIER DU 11/08 — la ruelle perd son sous-menu ──────────────────
        AVANT : 2 choix + CINQ points derrière « Observer » (linteau, combles,
@@ -3330,7 +3330,7 @@ export const SCENES: Scene[] = [
        avoir laissé des noms derrière soi pour que ce mur veuille dire quelque
        chose. Voir HAMEAU_ACCUEILS. */
     id: "hameau-accueil-mur",
-    illustration: "assets/scene_hameau_accueil_mur_a.png",
+    illustration: "assets/scene_hameau_accueil_mur_b_c.png",
     chainNext: "hameau-entree-4",
     narration: [
       "Personne dans la rue. Le pignon de la grange est couvert de craie " +
@@ -3392,7 +3392,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "hameau-accueil-enfant",
-    illustration: "assets/scene_hameau_accueil_enfant_c.png",
+    illustration: "assets/scene_hameau_accueil_enfant_d_a.png",
     chainNext: "hameau-entree-4",
     narration: [
       "Ils ont envoyé un gosse. Huit ans, planté au milieu de la rue, les mains dans le dos. Aucun adulte — et tous les volets entrouverts de deux doigts.",
@@ -3448,7 +3448,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "hameau-accueil-table",
-    illustration: "assets/scene_hameau_accueil_table_a.png",
+    illustration: "assets/scene_hameau_accueil_table_b_d.png",
     chainNext: "hameau-entree-4",
     narration: [
       "Une table au milieu de la rue. Une seule. Un tabouret, un bol, une " +
@@ -3507,7 +3507,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "hameau-accueil-cloche",
-    illustration: "assets/scene_hameau_accueil_cloche_b.png",
+    illustration: "assets/scene_hameau_accueil_cloche_c_f.png",
     chainNext: "hameau-entree-4",
     narration: [
       "Tu entres dans la rue au moment où un homme se met à courir. Pas vers " +
@@ -3568,7 +3568,7 @@ export const SCENES: Scene[] = [
        précédente (fait permanent `serment_faux_jadis`). Ils partent parce que
        le dernier qui a juré ici a menti — et ce dernier, c'était toi. */
     id: "hameau-accueil-depart",
-    illustration: "assets/scene_hameau_accueil_depart_a.png",
+    illustration: "assets/scene_hameau_accueil_depart_b_f.png",
     chainNext: "hameau-entree-4",
     narration: [
       "On ne t'arrête pas : on est occupé. Au milieu de la rue, une " +
@@ -3753,7 +3753,7 @@ export const SCENES: Scene[] = [
        après l'Entrée. Serment juré → la grange ; Serment refusé → beat 6
        « nuit dehors ». Émotion de sortie : soulagé ET coupable à la fois. */
     id: "hameau-halte-1",
-    illustration: "assets/scene_landes_hameau_ruelle_b.png",
+    illustration: "assets/scene_landes_hameau_ruelle_c_b.png",
     chainNext: "hameau-halte-2",
     narration: [
       "Le vieux te trouve avant que tu ne le cherches. C'est comme ça, ici : " +
@@ -3783,7 +3783,7 @@ export const SCENES: Scene[] = [
     /* Beat 2 — La grange. La barre qu'on pose DEHORS. */
     id: "hameau-halte-2",
     nuit: true,
-    illustration: "assets/scene_landes_hameau_grange_a.png",
+    illustration: "assets/scene_landes_hameau_grange_b_d.png",
     chainNext: "hameau-halte-3",
     narration: [
       "De la paille propre, une couverture qui a servi, une lampe qu'on te " +
@@ -4092,7 +4092,7 @@ export const SCENES: Scene[] = [
        ici SANS être énoncée : pour qu'une place se libère, une autre se prend
        — et c'est le héros qui prend celle du prochain fixé. */
     id: "renoncer",
-    illustration: "assets/scene_renoncer_v2_b.png",
+    illustration: "assets/scene_renoncer_v2_c_f.png",
     terminal: true,
     renoncement: true,
     narration: [
@@ -4288,7 +4288,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "menace-retour-bete",
-    illustration: "assets/monstre_bete_chemins_creux_a.png",
+    illustration: "assets/monstre_bete_chemins_creux_b_a.png",
     combat: true,
     foe: "bete-chemins-creux",
     foeName: "La Bête des Chemins Creux",
@@ -4479,7 +4479,7 @@ export const SCENES: Scene[] = [
         id: "monter-guet",
         nature: "physique",
         label: "Monter jusqu'à la rupture",
-        illustration: "assets/scene_tour_escalier_vers_rien_b.png",
+        illustration: "assets/scene_tour_escalier_vers_rien_c_a.png",
         grantsSavoir: "savoir_guet",
         risky: {
           stat: "COURAGE",
@@ -4495,7 +4495,7 @@ export const SCENES: Scene[] = [
       {
         id: "pierres-rangees",
         label: "Retourner les pierres du pied",
-        illustration: "assets/scene_tour_pierres_rangees_a.png",
+        illustration: "assets/scene_tour_pierres_rangees_b_a.png",
         observe: true,
         chapterFragment: true,
         passive: {
@@ -4516,7 +4516,7 @@ export const SCENES: Scene[] = [
       {
         id: "meurtriere-sud",
         label: "Fouiller la meurtrière du sud",
-        illustration: "assets/scene_tour_meurtriere_sud_a.png",
+        illustration: "assets/scene_tour_meurtriere_sud_b_d.png",
         observe: true,
         grantsLoot: "lunette-guet",
         passive: {
@@ -4606,7 +4606,7 @@ export const SCENES: Scene[] = [
   {
     id: "marche-muet",
     tags: ["food_available"],
-    illustration: "assets/scene_marche_muet_c.png",
+    illustration: "assets/scene_marche_muet_d_f.png",
     chainNext: "marche-muet-2",
     narration: [
       "Au cœur du hameau, un marché sans un cri. Des étals de trois fois " +
@@ -4651,7 +4651,7 @@ export const SCENES: Scene[] = [
   {
     id: "marche-muet-2",
     sejour: true,
-    illustration: "assets/monstre_colporteur_b.png",
+    illustration: "assets/monstre_colporteur_c_c.png",
     narration: [
       "Au bout de la rangée, un étal différent : des objets qui n'ont rien à faire dans une lande. Le Colporteur te regarde venir de loin — et te reconnaît. C'est impossible. Il te fait signe quand même. Sur l'étal, aucun fruit. « Ceux du Verger, personne n'en prend. »",
       // Le Rebouteux est INTRODUIT avant que ses choix n'apparaissent
@@ -4891,7 +4891,7 @@ export const SCENES: Scene[] = [
         // rai de la lucarne) — quelqu'un TIENT ce lieu, et on le voit avant
         // de le lire. Image validée par Patrick (18/08), orpheline depuis la
         // conversion des points d'intérêt du 13/08.
-        illustration: "assets/scene_moulin_interieur_a_d.png",
+        illustration: "assets/scene_moulin_interieur_a_e_b.png",
         grantsLoot: "jouet-fixee",
         sortie: { toScene: "campement-2" },
         passive: {
@@ -4935,7 +4935,7 @@ export const SCENES: Scene[] = [
     id: "campement-2",
     nuit: true,
     sejour: true,
-    illustration: "assets/scene_moulin_campement_2_a.png",
+    illustration: "assets/scene_moulin_campement_2_b_b.png",
     narration: [
       "Par la lucarne, le crépuscule ne bouge pas. On dit qu'une fille " +
         "dort ici, parfois — la seule pendue qui se soit relevée. Le lit de " +
@@ -5338,7 +5338,7 @@ export const SCENES: Scene[] = [
   {
     /* Lieu à POINTS D'INTÉRÊT (script Notion). */
     id: "chapelle-des-cordes",
-    illustration: "assets/scene_chapelle_des_cordes_d.png",
+    illustration: "assets/scene_chapelle_des_cordes_e_d.png",
     loot: "brin-chanvre",
     chainNext: "chapelle-des-cordes-2",
     narration: [
@@ -5398,7 +5398,7 @@ export const SCENES: Scene[] = [
         consequenceDemo:
           "Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom — des reliques : chacune « a tenu » quelqu'un. La troisième du rang bas n'a pas d'étiquette, et bouge quand tu ne la regardes pas. Plus bas, trois cordes portent la même date : celle du Bailli, un prénom de fille, et un nom arraché.",
         label: "Remonter le mur des cordes",
-        illustration: "assets/scene_chapelle_mur_cordes_v3_c.png",
+        illustration: "assets/scene_chapelle_mur_cordes_v3_d_a.png",
         observe: true,
         grantsSavoir: "savoir_corde_vive",
         // Enrichissement §7 : trois cordes portent la même date — le Bailli,
@@ -5569,7 +5569,7 @@ export const SCENES: Scene[] = [
            slot et garde ce personnage joignable — sans elle, le Sonneur
            n'aurait plus aucune porte. */
         decouverte: "d.cloche_sans_battant",
-        illustration: "assets/scene_chapelle_cloche_sans_battant_b.png",
+        illustration: "assets/scene_chapelle_cloche_sans_battant_c_a.png",
         passive: {
           consequence:
             "Tu recules jusqu'au seuil sans quitter les cordes des yeux, ce " +
@@ -5588,7 +5588,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "puits-condamne",
-    illustration: "assets/scene_puits_condamne_v2_a.png",
+    illustration: "assets/scene_puits_condamne_v2_b_f.png",
     chainNext: "puits-condamne-2",
     /* OBJET PILOTE n°1 — l'outil qui ouvre un endroit (chantier 12/08 §2).
        La corde prise à la Chapelle s'amarre ici. L'écran ne change pas : la
@@ -6038,7 +6038,7 @@ export const SCENES: Scene[] = [
     /* Lieu à POINTS D'INTÉRÊT (script Notion) — garanti si les chapitres
        Procès ou Registre sont actifs. */
     id: "petit-tribunal",
-    illustration: "assets/scene_petit_tribunal_a.png",
+    illustration: "assets/scene_petit_tribunal_b_g.png",
     chainNext: "petit-tribunal-2",
     narration: [
       // ⚠️ « Grange » cède, pas les bancs (relecture par agents, 10/08) : les
@@ -6056,7 +6056,7 @@ export const SCENES: Scene[] = [
       {
         id: "mur-ordonnance",
         label: "Lire la feuille clouée au mur",
-        illustration: "assets/scene_tribunal_ordonnance_a_c.png",
+        illustration: "assets/scene_tribunal_ordonnance_a_d_e.png",
         observe: true,
         grantsSavoir: "savoir_ordonnance",
         /* La liste des signes est aussi une DÉCOUVERTE de compte : le savoir
@@ -6092,7 +6092,7 @@ export const SCENES: Scene[] = [
       {
         id: "chaire-registre",
         label: "Monter à la chaire",
-        illustration: "assets/scene_tribunal_chaire_a_c.png",
+        illustration: "assets/scene_tribunal_chaire_a_d_c.png",
         observe: true,
         chapterFragment: true,
         // Enrichissement §7 : un petit signe en forme de plume au bord de la
@@ -6117,7 +6117,7 @@ export const SCENES: Scene[] = [
       {
         id: "les-bancs",
         label: "Passer la main sur les bancs",
-        illustration: "assets/scene_tribunal_bancs_a_c.png",
+        illustration: "assets/scene_tribunal_bancs_a_d_b.png",
         observe: true,
         chapterFragment: true,
         passive: {
@@ -6138,7 +6138,7 @@ export const SCENES: Scene[] = [
        fige — puis fait comme si de rien. Hook de sa rencontre. */
     id: "petit-tribunal-2",
     sejour: true,
-    illustration: "assets/monstre_ecrivain_public_d.png",
+    illustration: "assets/monstre_ecrivain_public_e_a.png",
     registre: true,
     narration: [
       "La porte s'ouvre derrière toi. Un petit homme sec entre, plume et " +
@@ -6489,7 +6489,7 @@ export const SCENES: Scene[] = [
     /* LA MARE AUX REGARDS — le seul endroit des Landes que le vent évite. On
        n'y vient pas puiser : on y vient vérifier. */
     id: "mare-aux-regards",
-    illustration: "assets/scene_mare_aux_regards_a.png",
+    illustration: "assets/scene_mare_aux_regards_b_a.png",
     chainNext: "mare-aux-regards-2",
     narration: [
       "L'eau est noire et lente — le seul endroit des Landes que " +
@@ -6510,7 +6510,7 @@ export const SCENES: Scene[] = [
            qu'on soupçonne — d'où le second creux, derrière le premier. */
         id: "creux-doubles",
         label: "Longer la berge usée",
-        illustration: "assets/scene_mare_creux_doubles_v2_b.png",
+        illustration: "assets/scene_mare_creux_doubles_v2_c_b.png",
         observe: true,
         decouverte: "d.mare_depistage",
         grantsLoot: "miroir-poche",
@@ -6569,7 +6569,7 @@ export const SCENES: Scene[] = [
   {
     id: "mare-aux-regards-2",
     sejour: true,
-    illustration: "assets/scene_mare_aux_regards_2_b.png",
+    illustration: "assets/scene_mare_aux_regards_2_c_d.png",
     narration: [
       "Ils arrivent à deux. Le premier s'agenouille dans les creux, se penche, et reste penché beaucoup trop longtemps. Le second reste debout derrière lui et ne regarde pas l'eau : il regarde la nuque de l'autre.",
       "Personne ne parle. Ce n'est pas une prière — c'est un examen, et il " +
@@ -6630,7 +6630,7 @@ export const SCENES: Scene[] = [
        n'avait pas de sens, et ça faisait du Verger le seul lieu converti à
        déborder de la règle des trois actions. Le vol reste au Marché Muet, où
        de la viande salée pend vraiment sous l'étal. */
-    illustration: "assets/scene_verger_noir_d.png",
+    illustration: "assets/scene_verger_noir_e_f.png",
     chainNext: "verger-noir-2",
     narration: [
       "Des arbres fruitiers plantés en rangs — le seul ordre volontaire des " +
@@ -6666,7 +6666,7 @@ export const SCENES: Scene[] = [
       {
         id: "epoux-verger",
         label: "Remonter vers les deux du fond",
-        illustration: "assets/monstre_epoux_verger_a.png",
+        illustration: "assets/monstre_epoux_verger_b_b.png",
         sortie: { toScene: "epoux-1" },
         passive: {
           consequence:
@@ -6747,7 +6747,7 @@ export const SCENES: Scene[] = [
     /* LES ÉPOUX DU VERGER — ils plantent le douzième. Ce qu'ils demandent
        n'est pas de l'aide : c'est une preuve que le dehors existe. */
     id: "epoux-1",
-    illustration: "assets/monstre_epoux_verger_a.png",
+    illustration: "assets/monstre_epoux_verger_b_b.png",
     chainNext: "epoux-2",
     narration: [
       "La femme se redresse la première. Elle ne sursaute pas — plus rien ne " +
@@ -6900,7 +6900,7 @@ export const SCENES: Scene[] = [
     tags: ["climb"],
     // Le lieu a enfin sa propre image (lot 25/07) — il tournait sur une vue
     // générique de la lande alors que c'est le seuil de l'Acte II.
-    illustration: "assets/scene_palissade_sud_a_a.png",
+    illustration: "assets/scene_palissade_sud_a_b_a.png",
     // ⚠️ Plus de `loot` d'arrivée ici (phase 0 du plan d'élagage) : la
     // Lanterne du Veilleur tombait dans la Besace en ARRIVANT, avant même
     // d'avoir vu l'homme à qui elle appartient — et il pouvait ensuite te
@@ -6928,7 +6928,7 @@ export const SCENES: Scene[] = [
         id: "longer-palissade",
         nature: "exploration",
         label: "Longer la palissade",
-        illustration: "assets/scene_palissade_rondins_a_c.png",
+        illustration: "assets/scene_palissade_rondins_a_d_f.png",
         grantsSavoir: "savoir_palissade_retient",
         risky: {
           stat: "RUSE",
@@ -6946,7 +6946,7 @@ export const SCENES: Scene[] = [
         consequenceDemo:
           "Le bois du portillon est tiède — aucun sens sous ce crépuscule. Autour du verrou, des griffures à hauteur de mains : des mains qui voulaient passer, une nuit, et qu'on n'a pas laissées. Dans la gâche, une clé rouillée, oubliée par quelqu'un qui comptait revenir.",
         label: "Examiner le portillon",
-        illustration: "assets/scene_palissade_portillon_a_b.png",
+        illustration: "assets/scene_palissade_portillon_a_c_f.png",
         observe: true,
         grantsLoot: "cle-portillon",
         passive: {
@@ -6992,7 +6992,7 @@ export const SCENES: Scene[] = [
        note. */
     id: "veilleur-1-note",
     remplace: { scene: "veilleur-1", si: { id: "soupcon", gte: 4 } },
-    illustration: "assets/objet_lanterne_rouillee_guerite.png",
+    illustration: "assets/objet_lanterne_rouillee_guerite_b_a.png",
     chainNext: "veilleur-2",
     narration: [
       "Il ne sort pas de sa niche. Il t'a vu venir de loin — il a eu le " +
@@ -7077,7 +7077,7 @@ export const SCENES: Scene[] = [
        note les autres. Sa lanterne s'échange contre la seule histoire du
        dehors qu'il te reste : ta mort. Le jeu ne l'écrit jamais. */
     id: "veilleur-1",
-    illustration: "assets/objet_lanterne_rouillee_guerite.png",
+    illustration: "assets/objet_lanterne_rouillee_guerite_b_a.png",
     chainNext: "veilleur-2",
     narration: [
       "— « Trois jours ! » Il le crie presque. « Trois jours que j'ai vu " +
@@ -7126,7 +7126,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "veilleur-2",
-    illustration: "assets/objet_lanterne_veilleur_2_b.png",
+    illustration: "assets/objet_lanterne_veilleur_2_c_a.png",
     chainNext: "veilleur-3",
     narration: [
       "Il décroche sa lanterne et la soupèse, comme une décision.",
@@ -7191,7 +7191,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "veilleur-3",
-    illustration: "assets/objet_lanterne_veilleur_3_c.png",
+    illustration: "assets/objet_lanterne_veilleur_3_d_b.png",
     chainNext: "palissade-sud-2",
     narration: [
       "Il t'ouvre le portillon lui-même. Au moment où tu passes, il note sur une planche : ton passage, ta direction, l'heure.",
@@ -7306,7 +7306,7 @@ export const SCENES: Scene[] = [
        traitée comme toutes les autres (relique + fragment + épitaphe). Un jet
        réussi fait retomber le Soupçon : le hameau a jugé, il se lasse. */
     id: "proces-du-heros",
-    illustration: "assets/scene_proces_du_heros_v4_c.png",
+    illustration: "assets/scene_proces_du_heros_v4_d_b.png",
     fixationTrial: true,
     narration: [
       "Ils ne te courent pas après — ils t'attendent au tournant du muret, " +
@@ -7445,7 +7445,7 @@ export const SCENES: Scene[] = [
        même interaction — le cadrage et l'inscription varient selon le
        premier acte, injectés par le déroutage). */
     id: "demo-borne-geste",
-    illustration: "assets/scene_borne_gravures_a_d.png",
+    illustration: "assets/scene_borne_gravures_a_e_d.png",
     narration: [
       "La Borne te retient un pas de plus. Sur la face sud, sous la mousse, quelque chose est écrit — et la mousse s'écarte sous les doigts.",
     ],
@@ -7473,7 +7473,7 @@ export const SCENES: Scene[] = [
        jamais un mur — d'autres portes existent. */
     id: "demo-nuit",
     sejour: true,
-    illustration: "assets/scene_landes_hameau_ruelle_b.png",
+    illustration: "assets/scene_landes_hameau_ruelle_c_b.png",
     narration: [
       "Le soir tombe d'un coup, comme une porte. Les volets se ferment sans se répondre — pas un chien, pas une voix. Il faut dormir quelque part. Reste à savoir derrière quelle porte.",
     ],
@@ -7523,7 +7523,7 @@ export const SCENES: Scene[] = [
     /* La maison crochetée — TOUCHE 3 du Grand Témoin, découverte SEUL. */
     id: "demo-nuit-maison",
     nuit: true,
-    illustration: "assets/scene_landes_hameau_ruelle_b.png",
+    illustration: "assets/scene_landes_hameau_ruelle_c_b.png",
     narration: [
       "Avant de fermer l'œil, tu montes voir les combles. Tu redescends plus lentement que tu n'es monté : la trappe est clouée. De l'intérieur du toit. Les clous sont tordus par quelqu'un qui se dépêchait — et le rez-de-chaussée, lui, n'est pas cloué du tout.",
       "Cette maison ne se protégeait pas de ce qui entre par les portes.",
@@ -7546,7 +7546,7 @@ export const SCENES: Scene[] = [
     /* La grange — la version RACONTÉE de la touche 3 (le vieux). */
     id: "demo-nuit-grange",
     nuit: true,
-    illustration: "assets/scene_landes_hameau_grange_a.png",
+    illustration: "assets/scene_landes_hameau_grange_b_d.png",
     narration: [
       "La grange sent la paille et le suif. Le vieux te montre ton coin d'un geste, puis reste debout, la barre à la main. « La trappe des combles, chez nous, on la cloue de l'intérieur », dit-il sans que tu aies rien demandé. « Toutes les maisons. Depuis avant moi. » Il ne dit pas contre quoi.",
     ],
@@ -7568,7 +7568,7 @@ export const SCENES: Scene[] = [
     /* Dehors — le repos au rabais, et Quelque chose marche sur les toits. */
     id: "demo-nuit-dehors",
     nuit: true,
-    illustration: "assets/scene_hameau_dense2_b.png",
+    illustration: "assets/scene_hameau_dense2_c_e.png",
     narration: [
       "Le muret coupe le vent, pas le froid. Vers le milieu de la nuit, un pas — au-dessus de toi. Sur un toit. Quelque chose marche sur les toits, lentement, comme on compte. Tu ne bouges plus jusqu'au gris.",
     ],
@@ -7593,7 +7593,7 @@ export const SCENES: Scene[] = [
        lieu sont à produire (prompts dans le script) — le climax doit tenir
        par sa structure d'abord (verrou n°2 du go). */
     id: "falaise-cordes",
-    illustration: "assets/scene_landes_liaison_sud_c.png",
+    illustration: "assets/scene_landes_liaison_sud_d_h.png",
     narration: [
       "Le sol cesse. Pas une pente — une fin : la lande s'arrête net sur le vide, et la paroi descend plus bas que le regard ne porte.",
       "Sur toute sa largeur, des cordes. Des centaines, nouées à des pieux, qui pendent dans le noir et bougent ensemble sous le vent. On ne gâche pas le chanvre, dans les Landes : chaque corde qui a pendu quelqu'un sert une seconde fois. Elle fait descendre. Personne ne descend autrement.",
@@ -7615,7 +7615,7 @@ export const SCENES: Scene[] = [
        tressage déjà vu, la corde qu'on porte) sont injectées par le
        déroutage — voir DEMO_FALAISE_LECTURES. */
     id: "falaise-cordes-2",
-    illustration: "assets/scene_landes_liaison_sud_c.png",
+    illustration: "assets/scene_landes_liaison_sud_d_h.png",
     narration: [
       "Des vieilles, grises, raides de sel. Des neuves, encore blondes. Et trois ou quatre, en bas de leur course, tranchées net — à la lame. Par en dessous.",
     ],
@@ -7639,7 +7639,7 @@ export const SCENES: Scene[] = [
        Descente (doctrine du script). */
     id: "falaise-cordes-3",
     sejour: true,
-    illustration: "assets/monstre_appele_descente.png",
+    illustration: "assets/monstre_appele_descente_b_b.png",
     narration: [
       "Au bout du surplomb, quelqu'un. Il ne regarde pas les cordes : il en prend une, sans choisir, comme on prend la rampe d'un escalier qu'on connaît. Il passe le bord. Il descend. Le vent rabat un pan de son manteau — puis plus rien. La corde tremble encore un moment, toute seule.",
     ],
@@ -9059,19 +9059,19 @@ export function phraseArrivee(seed: number, vues: string[] = []): string {
     pour la MARCHE (liaisons) et comme secours quand un lieu n'a pas d'asset
     propre. Donnent au visuel de quoi bouger scène après scène. */
 export const LANDES_GENERIC = [
-  "assets/scene_lande_generique_1.png",
-  "assets/scene_lande_generique_2.png",
-  "assets/scene_lande_generique_3.png",
-  "assets/scene_lande_generique_4.png",
+  "assets/scene_lande_generique_1_b_d.png",
+  "assets/scene_lande_generique_2_b_b.png",
+  "assets/scene_lande_generique_3_b_e.png",
+  "assets/scene_lande_generique_4_b_f.png",
 ];
 
 /** Vues de MARCHE des Landes (lot Drive 25/07) : chemins, plateaux, fourches —
     des images faites pour la liaison, pas pour un lieu. Elles s'ajoutent aux
     4 génériques dans le tirage par défaut. */
 const LANDES_WALK = [
-  "assets/scene_landes_liaison_plateau_d.png",
-  "assets/scene_landes_liaison_fourche_a.png",
-  "assets/scene_lande_arbres_morts_c.png",
+  "assets/scene_landes_liaison_plateau_e_a.png",
+  "assets/scene_landes_liaison_fourche_b_d.png",
+  "assets/scene_lande_arbres_morts_d_d.png",
   ...LANDES_GENERIC,
 ];
 
@@ -9079,7 +9079,7 @@ const LANDES_WALK = [
     scènes » (25/07) — la 4e, `scene_hameau_dense2_b`, est réservée au lieu
     lui-même (« celle qui représente vraiment le hameau »). */
 const HAMEAU_WALK = [
-  "assets/scene_hameau_dense_b.png",
+  "assets/scene_hameau_dense_c_a.png",
   "assets/scene_hameau_dense_c.png",
   "assets/scene_hameau_dense_d.png",
 ];
@@ -9103,8 +9103,8 @@ function pickWalkImage(optA: string, optB: string, seed: number, from?: string):
   ) {
     return HAMEAU_WALK[Math.floor(seeded(seed + 11) * HAMEAU_WALK.length)];
   }
-  if (offered.includes("chemin-creux")) return "assets/scene_landes_liaison_chemin_creux_a.png";
-  if (offered.includes("palissade-sud")) return "assets/scene_landes_liaison_sud_c.png";
+  if (offered.includes("chemin-creux")) return "assets/scene_landes_liaison_chemin_creux_b_f.png";
+  if (offered.includes("palissade-sud")) return "assets/scene_landes_liaison_sud_d_h.png";
   return LANDES_WALK[Math.floor(seeded(seed + 11) * LANDES_WALK.length)];
 }
 
@@ -9709,7 +9709,7 @@ export const DESCENTE_SCENE: Scene = {
   // Vue générique des Landes vers le SUD (retour Patrick 7/08 : l'écran
   // tournait encore sur le placeholder portail). À remplacer par
   // `scene_la_descente` dès génération (prompt dans images-a-produire.md).
-  illustration: "assets/scene_landes_liaison_sud_c.png",
+  illustration: "assets/scene_landes_liaison_sud_d_h.png",
   terminal: true,
   narration: [
     "Le sol s'incline. L'air se fait plus froid, plus vieux — il monte d'en bas, par la porte de la Descente restée ouverte derrière toi.",

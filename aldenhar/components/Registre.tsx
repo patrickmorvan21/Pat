@@ -214,7 +214,7 @@ export default function Registre({
       <div className="relative shrink-0">
         {/* eslint-disable-next-line @next/next/no-img-element -- rendu pixelated, jamais optimisé par next/image */}
         <img
-          src={assetUrl("assets/objet_grand_registre_d.png")}
+          src={assetUrl("assets/objet_grand_registre_e_b.png")}
           alt=""
           className="block h-[390px] w-[390px] object-cover"
           style={{ imageRendering: "pixelated" }}

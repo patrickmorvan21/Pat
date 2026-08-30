@@ -37,7 +37,7 @@ export type CodexEntry = {
 };
 
 /** L'image de l'Acte I (la frise des Lisières — celle du carton d'acte). */
-export const IMAGE_ACTE_I = "assets/scene_landes_frise_montagnes_pleine_b.png";
+export const IMAGE_ACTE_I = "assets/scene_landes_frise_montagnes_pleine_c_d.png";
 
 export const CODEX_LANDES: CodexEntry[] = [
   // ─── LIEUX ────────────────────────────────────────────────────────────
@@ -57,7 +57,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Chemin Creux",
     corps:
       "Deux talus plus hauts que la tête, et une charrette qui penche au premier coude depuis assez longtemps pour que la bruyère l'ait prise. On y marche plus vite qu'ailleurs, sans se le dire. Le coude aveugle mange la vue — et ce qu'il y a derrière compte les pas.",
-    illustration: "assets/scene_chemin_creux_c.png",
+    illustration: "assets/scene_chemin_creux_d_a.png",
   },
   {
     id: "lieu:colline-aux-gibets",
@@ -66,7 +66,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "La Colline aux Gibets",
     corps:
       "Une file de potences le long de la crête, lisible de bas en haut comme une chronologie. La dernière est la plus haute, et son nom a été gratté. Les corbeaux qui s'y posent ne se posent jamais au hasard : ils sont toujours exactement le bon nombre.",
-    illustration: "assets/scene_colline_aux_gibets_c.png",
+    illustration: "assets/scene_colline_aux_gibets_d_d.png",
   },
   {
     id: "lieu:champ-des-fixes",
@@ -75,7 +75,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Champ des Fixés",
     corps:
       "Un cimetière était là avant — la Fixation a planté ses poteaux entre les stèles penchées. Chaque poteau porte un nom et une date, sauf les vierges, taillés d'avance. Le Fossoyeur y creuse des trous qu'on ne lui a pas commandés.",
-    illustration: "assets/scene_champ_des_fixes_b.png",
+    illustration: "assets/scene_champ_des_fixes_c_a.png",
   },
   {
     id: "lieu:serment-hameau",
@@ -84,7 +84,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Seuil du Hameau",
     corps:
       "La barrière se franchit sans un garde — le village n'a pas besoin de gardes. Au bout de la rue, un muret bas où l'on jure trois clauses pour trois aubes. Aucun chien n'aboie, et ce silence-là a été décidé.",
-    illustration: "assets/scene_hameau_dense2_b.png",
+    illustration: "assets/scene_hameau_dense2_c_e.png",
   },
   {
     id: "lieu:hameau-halte",
@@ -93,7 +93,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "La Grange des Renonçants",
     corps:
       "La seule porte du village qui s'ouvre à qui a juré. La barre se pose DEHORS — elle n'enferme pas, elle signale une grange occupée. Les combles sont cloués de l'intérieur, et personne ne dort sous le toit.",
-    illustration: "assets/scene_landes_hameau_grange_a.png",
+    illustration: "assets/scene_landes_hameau_grange_b_d.png",
   },
   {
     id: "lieu:marche-muet",
@@ -102,7 +102,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Marché Muet",
     corps:
       "On y négocie par gestes, sous des bâches tendues, et le premier mot dit à voix haute fait tourner toutes les têtes. Le Colporteur y revend ce qu'on ne lui demande pas d'où il vient. C'est le seul endroit des Landes où l'on échange encore quelque chose.",
-    illustration: "assets/scene_marche_muet_c.png",
+    illustration: "assets/scene_marche_muet_d_f.png",
   },
   {
     id: "lieu:tour-de-guet",
@@ -129,7 +129,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "La Chapelle des Cordes",
     corps:
       "Les cordes pendent du plafond le long des deux parois, chacune tressée pour un nom. Au fond, l'autel est debout, sa dalle de base tirée en avant sur un creux vide. La Veuve refait depuis trente ans une corde que quelqu'un défait.",
-    illustration: "assets/scene_chapelle_des_cordes_d.png",
+    illustration: "assets/scene_chapelle_des_cordes_e_d.png",
   },
   {
     id: "lieu:puits-condamne",
@@ -138,7 +138,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Puits Condamné",
     corps:
       "Les planches sont clouées du dessus, mais l'eau, en bas, bouge quand personne ne la touche. Ceux qui ont collé l'oreille aux planches parlent de mains. Le hameau n'y puise plus — il y descend des choses.",
-    illustration: "assets/scene_puits_condamne_v2_a.png",
+    illustration: "assets/scene_puits_condamne_v2_b_f.png",
   },
   {
     id: "lieu:chien-du-bailli",
@@ -156,7 +156,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Petit Tribunal",
     corps:
       "Une salle basse de pierre, plantée de travers par rapport à la rue, trois bancs face à une chaire. L'Ordonnance de la Fixation est clouée au mur, et l'Écrivain public tient un registre qui n'est pas de sa main. On y juge vite, et toujours à l'unanimité.",
-    illustration: "assets/scene_petit_tribunal_a.png",
+    illustration: "assets/scene_petit_tribunal_b_g.png",
   },
   {
     id: "lieu:mare-aux-regards",
@@ -165,7 +165,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "La Mare aux Regards",
     corps:
       "Une eau noire où les roseaux ne bougent pas. Le reflet y est en retard d'une demi-seconde — il finit toujours par rattraper. La berge est usée à UN endroit précis, par des gens qui viennent vérifier quelque chose, toujours au même.",
-    illustration: "assets/scene_mare_aux_regards_a.png",
+    illustration: "assets/scene_mare_aux_regards_b_a.png",
   },
   {
     id: "lieu:verger-noir",
@@ -174,7 +174,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Verger Noir",
     corps:
       "Onze rangs plantés un par an, et les fruits mûrissent en cendre. Les arbres poussent — c'est pire que s'ils étaient morts. Deux silhouettes y travaillent encore, redressées entre les rangs, et récitent des prénoms au lieu de compter.",
-    illustration: "assets/scene_verger_noir_d.png",
+    illustration: "assets/scene_verger_noir_e_f.png",
   },
   {
     id: "lieu:palissade-sud",
@@ -183,7 +183,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "La Palissade Sud",
     corps:
       "Des rondins pointés vers l'INTÉRIEUR : ce mur ne défend pas les Landes — il retient ce qui voudrait descendre. Derrière le portillon, des marches balayées de frais s'enfoncent. Le Veilleur note les départs dans une colonne, et les retours dans une autre, vide depuis trente ans.",
-    illustration: "assets/scene_palissade_sud_a_a.png",
+    illustration: "assets/scene_palissade_sud_a_b_a.png",
   },
   {
     id: "lieu:la-descente",
@@ -192,7 +192,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "La Descente",
     corps:
       "L'escalier au-delà du portillon, balayé par personne qu'on ait vu. C'est la seule sortie des Landes qui ne passe pas par un poteau. Ceux qui la franchissent ne reviennent pas — sauf que la Borne, côté sud, porte trois marques.",
-    illustration: "assets/scene_landes_liaison_sud_c.png",
+    illustration: "assets/scene_landes_liaison_sud_d_h.png",
   },
 
   // ─── RENCONTRES ───────────────────────────────────────────────────────
@@ -239,7 +239,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Les Époux du Verger",
     corps:
       "Ils ont planté un rang par an, onze ans, et un douzième commencé. Lui récite des prénoms en travaillant — onze prénoms. Elle essuie une bêche qui n'est pas la sienne. Ils offrent leurs fruits à qui passe, et leurs fruits sont de la cendre.",
-    illustration: "assets/monstre_epoux_verger_a.png",
+    illustration: "assets/monstre_epoux_verger_b_b.png",
   },
   {
     id: "renc:veilleur",
@@ -266,7 +266,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Colporteur",
     corps:
       "Le seul étal du Marché qui parle. Il revend ce qui vient d'ailleurs et ne demande pas d'où — « moi je revends ». Il reconnaît les visages qu'il ne devrait pas reconnaître : en vingt ans, dit-il, il en a vu trois comme ça. Et les trois, deux fois.",
-    illustration: "assets/monstre_colporteur_b.png",
+    illustration: "assets/monstre_colporteur_c_c.png",
   },
   {
     id: "renc:rebouteux",
@@ -284,7 +284,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Fossoyeur",
     corps:
       "Il taille les poteaux du Champ et grave un écriteau dont il ne connaît pas le sens. Une fois, une seule, il a retiré un poteau sans savoir pourquoi — la seule chose de sa vie dont il ne sait pas la raison. Il creuse d'avance, parce qu'on a prévu large.",
-    illustration: "assets/monstre_fossoyeur_poteaux_a.png",
+    illustration: "assets/monstre_fossoyeur_poteaux_b_a.png",
   },
   {
     id: "renc:veuve",
@@ -302,7 +302,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "L'Écrivain public",
     corps:
       "Il tient le Registre des Pendaisons au Petit Tribunal, les deux mains à plat dessus quand on s'approche trop. En face de chaque nom rayé, un nom du hameau — « le registre ne juge pas, il équilibre ». Le petit signe en marge n'est pas de sa main.",
-    illustration: "assets/monstre_ecrivain_public_d.png",
+    illustration: "assets/monstre_ecrivain_public_e_a.png",
   },
   {
     id: "renc:bailli",
@@ -329,7 +329,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "La Bête des Chemins Creux",
     corps:
       "Elle ne creuse pas ses couloirs : elle les choisit — et parfois elle les creuse sur ta route, dans la nuit. Elle travaille dans l'axe, jamais sur les bords, et ne suit que ce qui fuit. On ne la sème pas. On ne sème pas ce qui compte les pas.",
-    illustration: "assets/monstre_bete_chemins_creux_a.png",
+    illustration: "assets/monstre_bete_chemins_creux_b_a.png",
   },
   {
     id: "renc:meute",
