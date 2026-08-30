@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-30T10:30:58Z",
- "commit": "61abe2f",
+ "genere": "2026-08-30T16:49:10Z",
+ "commit": "b42f8eb",
  "zones": [
   {
    "id": "landes",
@@ -2155,7 +2155,7 @@
   {
    "id": "femme-savoir-2",
    "narration": [
-    "« Elle est encore là ? À l’ouest. La jeune. »",
+    "« Elle est encore là ? À l’ouest. La petite. » Elle se corrige toute seule, plus bas : « Enfin. On avait le même âge. »",
     "Ses yeux cherchent les tiens et n’en sortent plus. « Dis-le-moi. Dis-le juste une fois. »"
    ],
    "choix": [
@@ -2550,14 +2550,14 @@
    "id": "gamin-murets-3",
    "narration": [
     "« Moi j’en ai zéro », dit-il en revenant à ses cailloux. « Ma mère en a deux. Elle sait pas. Faut pas lui dire, elle a peur pour rien. »",
-    "Il fouille dans sa poche et te tend une pierre plate, grise, polie comme un galet de rivière. Il n’y a pas de rivière dans les Landes. « C’est la dame de l’ouest qui me l’a donnée. »"
+    "Il fouille dans sa poche et te tend une pierre plate, grise, polie comme un galet de rivière. Il n’y a pas de rivière dans les Landes. « C’est la petite de l’ouest qui me l’a donnée. »"
    ],
    "choix": [
     {
      "id": "gamin-quelle-dame",
-     "label": "« Quelle dame ? »",
+     "label": "« Quelle petite ? »",
      "type": "passif",
-     "consequence": "« Ben, la dame. » Il hausse les épaules, comme si tu demandais de quelle couleur est le ciel. « Elle est jeune. Elle a un châle. Elle marche du côté du moulin, là où l’herbe est couchée. » Il repose un caillou dans la rangée, très exactement à sa place.",
+     "consequence": "« Ben, la petite. » Il hausse les épaules, comme si tu demandais de quelle couleur est le ciel. « Elle a mon âge. Elle a un châle trop grand. Elle marche du côté du moulin, là où l’herbe est couchée. » Il repose un caillou dans la rangée, très exactement à sa place. « C’est elle qui m’a montré comment on range. »",
      "donneObjet": "caillou-gamin",
      "donneDecouverte": "d.fille_apercue"
     },
@@ -3330,7 +3330,7 @@
    "choix": [
     {
      "id": "parler-de-la-dame",
-     "label": "Parler de la femme de l’ouest",
+     "label": "Parler de la petite de l’ouest",
      "type": "passif",
      "consequence": "Le regard doux, la voix douce : « Tu es fatigué. Le voyage fatigue. » On te touche l’épaule, on te souhaite bonne nuit — et on s’éloigne d’un pas qui n’est plus celui de quelqu’un qui rentre chez lui. Elle t’avait prévenu.",
      "exigeDecouverte": "d.fille_vivante",
@@ -4629,10 +4629,10 @@
      "seuil": 11,
      "hautEnjeu": false,
      "issues": {
-      "critique": "20 naturel. Tu dors d'un œil — et cet œil la voit : une silhouette entre sans bruit, une corde coupée au cou, s'assoit près de la meule et te veille, toi. À ton réveil, une marque de main dans la poussière : merci pour la place.",
+      "critique": "20 naturel. Tu dors d'un œil — et cet œil la voit : une petite silhouette entre sans bruit, une corde coupée au cou, s'assoit près de la meule et te veille, toi. À ton réveil, une marque de main dans la poussière — une main d'enfant : merci pour la place.",
       "reussite": "Ton demi-sommeil filtre les bruits de la lande. Rien n'entre. Le repos est mince, mais il est à toi — et le creux du lit de bruyère, au matin, n'a pas changé de forme.",
       "echec": "Tu sombres sans le décider. Au réveil, la porte est ouverte — tu l'avais calée — et sur la meule, quelqu'un a posé une fleur de bruyère. Tu n'es pas sûr que ce soit un cadeau.",
-      "funeste": "1 naturel. Tu rêves qu'on te veille. Tu te réveilles : c'est vrai. Elle est penchée sur toi, sa corde coupée pendant à ton front — puis plus rien, la porte battante, et ton cœur qui compte tout seul. ♦ −2"
+      "funeste": "1 naturel. Tu rêves qu'on te veille. Tu te réveilles : c'est vrai. Elle est penchée sur toi, si petite qu'elle n'a pas eu à se pencher beaucoup, sa corde coupée pendant à ton front — puis plus rien, la porte battante, et ton cœur qui compte tout seul. ♦ −2"
      },
      "nature": "surnaturel"
     },
@@ -4675,7 +4675,7 @@
    "id": "fille-moulin-1",
    "narration": [
     "La porte est entrouverte, comme toujours. Mais cette fois la bruyère du pot n’est pas seulement fraîche : elle est mouillée. Quelqu’un vient de la cueillir.",
-    "Une femme est assise sur la paillasse, dos à toi, occupée à quelque chose de ses mains. Elle ne se retourne pas.",
+    "Près de la meule, quelqu’un est accroupi, dos à toi, en train de ranger de petites choses en ligne sur la pierre. La silhouette t’arrive à la hanche.",
     "« Tu m’as vue. » Ce n’est pas une question. « Ça arrive une fois tous les dix ans. »"
    ],
    "choix": [
@@ -4724,29 +4724,29 @@
   {
    "id": "fille-moulin-2",
    "narration": [
-    "Elle se retourne enfin, et le compte ne marche pas. Le village parle d’elle comme d’une histoire ancienne, d’un temps que même les vieux ont du mal à situer. Elle a vingt ans.",
-    "« Ils m’ont pendue un mardi. » Elle dit ça comme on donne une adresse. « Ça n’a pas pris. Je suis restée là, à me balancer, et à un moment ils sont partis manger. »",
-    "« Quand ils sont revenus, j’avais défait le nœud toute seule. Alors ils ont décidé de ne pas m’avoir vue. C’était plus simple. »"
+    "Elle se retourne enfin, et le compte ne marche pas. Le village parle d’elle comme d’une histoire ancienne, d’un temps que même les vieux ont du mal à situer. Elle a huit ans.",
+    "« Ils m’ont pendue un mardi. » Elle dit ça comme on récite le jour du marché. « Ça n’a pas pris. Je suis restée là à me balancer, et à un moment ils sont partis manger. »",
+    "« Quand ils sont revenus, j’avais défait le nœud toute seule. » Elle le dit avec un tout petit peu de fierté, celle d’un enfant qui a appris à faire ses lacets. « Alors ils ont décidé de pas m’avoir vue. C’était plus simple. »"
    ],
    "choix": [
     {
      "id": "fille-pourquoi-rester",
-     "label": "« Pourquoi restez-vous ici ? »",
+     "label": "« Pourquoi tu restes ici ? »",
      "type": "passif",
-     "consequence": "« Pour aller où ? » Elle repose ses mains. « Au sud, il y a la Descente, et la Descente ne prend que les vivants ou les morts. Je ne suis ni l’un ni l’autre. » Un temps. « Et puis quelqu’un doit rester pour savoir ce qui s’est passé. »"
+     "consequence": "« Pour aller où ? » Elle repose le caillou qu’elle tenait. « Au sud il y a la Descente. La Descente elle prend que les vivants ou les morts. » Elle compte deux doigts et s’arrête. « Moi je suis pas dans les deux. » Un temps. « Et puis si je pars, personne se rappelle. »"
     },
     {
      "id": "fille-votre-pere",
-     "label": "« Votre père vous attend. »",
+     "label": "« Ton père t’attend. »",
      "type": "risque",
      "stat": "EMPATHIE",
      "seuil": 12,
      "hautEnjeu": true,
      "issues": {
-      "critique": "20 naturel. Tu ne dis pas « il vous attend ». Tu dis : « il a tressé la corde trois mois. » Elle s’arrête net. Pour la première fois depuis trente ans, quelqu’un lui parle de son père comme d’un homme et non comme d’un pendu — et elle te raconte le reste sans que tu aies à demander.",
-      "reussite": "Elle ne se fâche pas. Elle repose son ouvrage sur ses genoux, très lentement, et regarde la lucarne. « Je sais. » Deux mots, et le silence qui suit dure assez longtemps pour que tu comprennes qu’elle y pense tous les jours.",
-      "echec": "« Ne fais pas ça. » Sa voix ne monte pas d’un ton, ce qui est pire. « Tout le monde ici me dit ce que je devrais faire de mon père. Toi tu viens d’arriver. »",
-      "funeste": "1 naturel. Elle rit — un son sec, sans joie. « Il m’attend, oui. Comme il attendait l’autre. » Elle se remet à son ouvrage et ne te répondra plus de la soirée. ♦ −2"
+      "critique": "20 naturel. Tu ne dis pas « il t’attend ». Tu dis : « il a tressé la corde trois mois. » Elle s’arrête net. Pour la première fois depuis quarante ans, quelqu’un lui parle de son père comme d’un homme et non comme d’un pendu — et elle te raconte le reste sans que tu aies à demander.",
+      "reussite": "Elle ne se fâche pas. Elle repose le caillou sur la pierre, très exactement à sa place, et regarde la lucarne. « Je sais. » Deux mots, et le silence qui suit dure assez longtemps pour que tu comprennes qu’elle y pense tous les jours.",
+      "echec": "« Faut pas dire ça. » Sa voix ne monte pas d’un ton, ce qui est pire. « Tout le monde me dit ce que je devrais faire de mon père. Toi t’es arrivé hier. »",
+      "funeste": "1 naturel. Elle rit — un petit rire d’enfant, à contretemps, qui ne va pas du tout avec ce qu’elle vient de dire. « Il m’attend, oui. Comme il attendait l’autre. » Elle se remet à ranger ses cailloux et ne te répondra plus de la soirée. ♦ −2"
      },
      "nature": "social",
      "tags": [
@@ -4757,7 +4757,7 @@
      "id": "fille-ne-rien-dire",
      "label": "Ne rien dire",
      "type": "passif",
-     "consequence": "Tu ne dis rien. Elle continue son ouvrage, et le silence s’installe sans gêne — c’est visiblement ce qu’elle préfère. Au bout d’un moment, elle parle d’elle-même, parce que personne ne l’en empêche."
+     "consequence": "Tu ne dis rien. Elle continue d’aligner ses cailloux, et le silence s’installe sans gêne — c’est visiblement ce qu’elle préfère. Au bout d’un moment, elle parle d’elle-même, parce que personne ne l’en empêche."
     }
    ],
    "pointsInteret": [],
@@ -4787,17 +4787,17 @@
   {
    "id": "fille-moulin-3",
    "narration": [
-    "« Mon père a construit une potence pour la chose qui m'a fait pendre. » Elle repose son ouvrage. « Il l'a attendue trois mois. Elle ne vient jamais quand on l'appelle — elle vient quand un village est prêt. »",
+    "« Mon père il a fait construire une grande potence pour la chose qui m'a fait pendre. » Elle aligne un caillou. « Il l'a attendue trois mois. Elle vient jamais quand on l'appelle — elle vient quand un village est prêt. »",
     "Un temps.",
-    "« Il s'est pendu à côté. Pas de chagrin : par règlement. Il avait refusé de me condamner, et refuser, dans son livre, c'était une faute. »",
-    "« Alors non, je ne monte pas le voir. Il attend un procès. Moi j’ai fini d’attendre. »"
+    "« Après il est monté à côté. Pas parce qu'il était triste : parce que c'était le règlement. Il avait refusé de me condamner, et refuser, dans son livre, c'était une faute. » Elle hausse les épaules. « Je sais pas ce que ça veut dire, règlement. Lui il savait. »",
+    "« Alors non, je monte pas le voir. Il attend un procès. Moi j’ai fini d’attendre. »"
    ],
    "choix": [
     {
      "id": "fille-la-chose",
      "label": "« Quelle chose ? »",
      "type": "passif",
-     "consequence": "Elle te regarde un long moment, et tu comprends qu’elle évalue si tu es prêt à l’entendre ou seulement curieux. « Celle qui regarde. Elle ne juge personne — elle attend que vous le fassiez, et pendant qu’elle regarde, vous osez. » Elle hausse les épaules. « Mon père l’a citée à comparaître. C’était un homme très sérieux. »",
+     "consequence": "Elle te regarde un long moment, et tu comprends qu’elle décide si tu es prêt à l’entendre ou juste curieux. « Celle qui regarde. Elle fait rien. Elle attend que vous, vous fassiez — et pendant qu’elle regarde, vous osez. » Elle répète la phrase sans en changer un mot : ce n’est pas d’elle. « Mon père il l’a citée à comparaître. Il était très sérieux. »",
      "donneDecouverte": "d.temoin_nomme"
     },
     {
@@ -4809,10 +4809,10 @@
    ],
    "pointsInteret": [],
    "narrationEchec": [
-    "Elle ne repose pas son ouvrage. Elle parle par-dessus, vite, sans te laisser la place d’une question — comme on vide une chose qu’on ne veut plus tenir.",
-    "« Mon père a construit une potence pour la chose qui m’a fait pendre. Il l’a attendue trois mois. Elle n’est pas venue. Elle ne vient jamais quand on l’appelle. Il s’est pendu à côté, par règlement, parce qu’il avait refusé de me condamner. Voilà. Tu l’as. »",
+    "Elle ne lève pas les yeux de ses cailloux. Elle parle par-dessus, vite, sans te laisser la place d’une question — comme on vide une chose qu’on ne veut plus tenir.",
+    "« Mon père il a fait construire une grande potence pour la chose qui m’a fait pendre. Il l’a attendue trois mois. Elle est pas venue. Elle vient jamais quand on l’appelle. Après il est monté à côté, par règlement, parce qu’il avait refusé de me condamner. Voilà. Tu l’as. »",
     "Un temps. Ses mains n’ont pas cessé une seconde.",
-    "« Maintenant tu sais, et tu ne reviens plus. Les autres non plus ne revenaient plus, après. »"
+    "« Maintenant tu sais, et tu reviens plus. Les autres non plus ils revenaient plus, après. »"
    ],
    "suite": "fille-moulin-4",
    "donneDecouverte": "d.temoin_nomme",
@@ -4841,8 +4841,8 @@
   {
    "id": "fille-moulin-4",
    "narration": [
-    "« Tu vas redescendre et tu vas leur en parler. Ils vont te regarder gentiment, et ils vont noter que tu parles à des gens qui n’existent pas. » Elle se remet à son ouvrage. « C’est comme ça qu’on commence. »",
-    "« Alors garde-moi pour toi. Et si tu passes le sud, ne te retourne pas pour vérifier si je suis toujours là. Je serai toujours là. C’est exactement le problème. »"
+    "« Tu vas redescendre et tu vas leur en parler. Ils vont te regarder gentiment, et après ils vont noter que tu parles à des gens qui existent pas. » Elle se remet à ses cailloux. « C’est comme ça que ça commence. »",
+    "« Alors garde-moi pour toi. Et si tu passes le sud, te retourne pas pour vérifier si je suis encore là. Je serai encore là. C’est justement le problème. »"
    ],
    "choix": [
     {
@@ -4855,14 +4855,14 @@
      "id": "fille-veiller-avec",
      "label": "Veiller avec elle",
      "type": "passif",
-     "consequence": "Vous ne parlez plus. Elle tresse, tu regardes la lucarne, et rien ne vient — ni bruit sur le toit, ni ombre à la porte, ni corbeau sur la crête. Tu ne dors pas et pourtant tu te lèves reposé, ce qui ne t’était pas arrivé depuis la Borne. Le seul endroit du pays où l’on ne te compte pas.",
+     "consequence": "Vous ne parlez plus. Elle range ses cailloux par tailles, tu regardes la lucarne, et rien ne vient — ni bruit sur le toit, ni ombre à la porte, ni corbeau sur la crête. Tu ne dors pas et pourtant tu te lèves reposé, ce qui ne t’était pas arrivé depuis la Borne. Le seul endroit du pays où l’on ne te compte pas.",
      "repondBesoin": "dormir"
     },
     {
      "id": "fille-repartir",
      "label": "Repartir sans s'attarder",
      "type": "passif",
-     "consequence": "Tu la laisses à sa corde et tu ressors. Elle ne te retient pas, ne lève pas les yeux — et dehors le crépuscule est le même qu'à l'entrée. Personne n'aura dormi ici cette nuit.",
+     "consequence": "Tu la laisses à ses cailloux et tu ressors. Elle ne te retient pas, ne lève pas les yeux — et dehors le crépuscule est le même qu'à l'entrée. Personne n'aura dormi ici cette nuit.",
      "sansNuit": true
     }
    ],
@@ -6383,7 +6383,7 @@
      "id": "epoux-la-dame",
      "label": "Demander qui passe par ici",
      "type": "passif",
-     "consequence": "« Personne. » L’homme bêche. Puis, sans s’arrêter : « La jeune, des fois. Elle passe entre les rangs. On se dit bonjour. » Sa femme ne dit rien. Il bêche un peu plus vite qu’avant.",
+     "consequence": "« Personne. » L’homme bêche. Puis, sans s’arrêter : « La petite, des fois. Elle passe entre les rangs. On se dit bonjour. » Sa femme ne dit rien. Il bêche un peu plus vite qu’avant.",
      "donneDecouverte": "d.fille_apercue"
     },
     {
@@ -9060,7 +9060,7 @@
   ],
   "variantes": [
    {
-    "texte": "À la berge de la mare basse, quelqu'un est agenouillé — une femme, un châle sombre, les mains dans l'eau noire. Elle se relève sans hâte en t'entendant, s'essuie aux hanches et s'éloigne vers l'ouest. Elle ne se retourne pas. Personne, dans ce pays, ne marche aussi tranquillement.",
+    "texte": "À la berge de la mare basse, quelqu'un est accroupi — un enfant, un châle sombre bien trop grand, les mains dans l'eau noire. Elle se relève sans hâte en t'entendant, s'essuie aux hanches et s'éloigne vers l'ouest. Elle ne se retourne pas. Aucun enfant, dans ce pays, ne marche aussi tranquillement.",
     "conditions": {
      "from": [
       "campement",
@@ -9070,7 +9070,7 @@
     }
    },
    {
-    "texte": "Entre deux rangs du verger, une silhouette immobile. Tu la fixes ; elle attend que tu l'aies bien vue, puis reprend sa marche entre les arbres, du pas de quelqu'un qui rentre chez lui. Les fruits de cendre ne bougent pas sur son passage.",
+    "texte": "Entre deux rangs du verger, une petite silhouette immobile. Tu la fixes ; elle attend que tu l'aies bien vue, puis reprend sa marche entre les arbres, du pas de quelqu'un qui rentre chez lui. Les fruits de cendre ne bougent pas sur son passage.",
     "conditions": {
      "from": [
       "campement",
@@ -9080,7 +9080,7 @@
     }
    },
    {
-    "texte": "Assise sur un muret, à contre-jour. Elle te regarde venir de loin, sans se cacher et sans se lever, puis descend de l'autre côté de la pierre au moment exact où tu arrives à sa hauteur. De ton côté du mur, il n'y a plus personne. De l'autre non plus.",
+    "texte": "Assise sur un muret, à contre-jour, les jambes trop courtes pour toucher terre. Elle te regarde venir de loin, sans se cacher et sans se lever, puis descend de l'autre côté de la pierre au moment exact où tu arrives à sa hauteur. De ton côté du mur, il n'y a plus personne. De l'autre non plus.",
     "conditions": {
      "from": [
       "campement",
@@ -9090,7 +9090,7 @@
     }
    },
    {
-    "texte": "Elle croise ta route sans ralentir, à trois pas, comme on croise quelqu'un dans un couloir. « Ne bois pas à la mare basse. Ils y jettent ce qu'ils ne veulent pas enterrer. » Elle est déjà loin quand tu penses à répondre.",
+    "texte": "Elle croise ta route sans ralentir, à trois pas, comme on croise quelqu'un dans un couloir. « Bois pas à la mare basse. Ils y jettent ce qu'ils veulent pas enterrer. » Elle est déjà loin quand tu penses à répondre.",
     "conditions": {
      "from": [
       "campement",
@@ -9100,7 +9100,7 @@
     }
    },
    {
-    "texte": "Elle passe, et elle parle sans tourner la tête. « Tu marches comme quelqu'un qui compte les jours. » Un temps, sa voix déjà derrière toi : « Moi j'ai arrêté au troisième. » Quand tu te retournes, la bruyère se referme sur rien.",
+    "texte": "Elle passe, et elle parle sans tourner la tête. « Tu marches comme les gens qui comptent les jours. » Un temps, sa voix déjà derrière toi — une voix d'enfant, sur le ton de quelqu'un qui a fini d'apprendre : « Moi j'ai arrêté au troisième. » Quand tu te retournes, la bruyère se referme sur rien.",
     "conditions": {
      "from": [
       "campement",
@@ -9110,7 +9110,7 @@
     }
    },
    {
-    "texte": "« Trois corbeaux sur ton toit ce matin. » Elle le dit du ton dont on donne l'heure, sans s'arrêter. « Quatre, c'est le moment de partir. » Tu mets le reste du trajet à décider si c'était un avertissement ou une politesse.",
+    "texte": "« Trois corbeaux sur ton toit ce matin. » Elle le dit du ton dont un enfant récite la règle d'un jeu, sans s'arrêter. « Quatre, faut partir. » Tu mets le reste du trajet à décider si c'était un avertissement ou une politesse.",
     "conditions": {
      "from": [
       "campement",
