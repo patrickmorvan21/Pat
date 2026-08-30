@@ -125,6 +125,32 @@ input[type=range]::-moz-range-thumb{width:9px;height:9px;border:0;background:var
   white-space:pre-wrap;word-break:break-word;
 }
 .actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+/* LES DEUX RACCOURCIS D'IMAGE, repris du Studio qui disparaît (30/08).
+   « Remplacer » = il faut produire un fichier. « Reprendre » = aucun fichier
+   à produire, seulement un câblage à déplacer : deux gestes distincts, donc
+   deux chemins. */
+.imgact{display:flex;flex-direction:column;gap:7px;margin-top:9px}
+.imgact button{width:100%}
+.repbloc{display:flex;flex-direction:column;gap:7px;border:1px solid var(--orange);padding:9px}
+.repbloc label{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--blanc-20)}
+.repbloc input[type=text]{background:#151310;border:1px solid var(--blanc-20);color:var(--blanc);
+  font:inherit;font-size:12px;padding:6px 7px}
+.aa2{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.aa2 > div span{display:block;font-size:10px;letter-spacing:1px;text-transform:uppercase;
+  color:var(--blanc-20);margin-bottom:3px}
+.aa2 .vig{aspect-ratio:1/1;background:#000 center/cover;border:1px solid var(--blanc-20);
+  image-rendering:pixelated}
+.aa2 .vig.neuve{border-color:var(--orange)}
+.aa2 .vig.rien{display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--blanc-20)}
+/* La galerie : on choisit à l'ŒIL. Un champ qui ne liste que des NOMS oblige
+   à connaître le fichier avant de voir l'image — l'inverse du besoin. */
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:4px;
+  max-height:228px;overflow-y:auto;padding:4px;border:1px solid var(--blanc-20);background:#151310}
+.gal .g{aspect-ratio:1/1;background:#000 center/cover;border:1px solid transparent;cursor:pointer;
+  image-rendering:pixelated}
+.gal .g:hover{border-color:var(--blanc-50)}
+.gal .g.actif{border:2px solid var(--orange)}
+.galcpt{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--blanc-20)}
 .actions button{
   background:transparent;border:1px solid var(--blanc-20);color:var(--blanc-70);
   font-family:var(--mono);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;
@@ -203,7 +229,7 @@ input[type=range]::-moz-range-thumb{width:9px;height:9px;border:0;background:var
     <div class="corps" id="forces"></div>
   </details>
   <div id="panier">
-    <span><b id="panierN">0</b> image(s) à refaire</span>
+    <span><b id="panierN">0</b> demande(s) sur les images</span>
     <button id="bClaude">Copier pour Claude Code</button>
     <a id="bVider">tout effacer</a>
   </div>
@@ -229,6 +255,7 @@ input[type=range]::-moz-range-thumb{width:9px;height:9px;border:0;background:var
       <button id="bCopie">Copier le prompt</button>
       <button id="bRefaire">À refaire</button>
     </div>
+    <div class="imgact" id="fimgact"></div>
     <div id="fchemin"></div>
   </div>
 </div>
@@ -269,6 +296,37 @@ let groupes = [], clauseStyle = "";
    liste » de la page de couverture — son travail est le JUGEMENT, le mien
    l'exécution. */
 const CLE_PANIER = "pactum-graphe-refaire";
+/* LES DEUX AUTRES DEMANDES, reprises du Studio supprimé le 30/08.
+   ⚠️ Elles sont SÉPARÉES du panier « à refaire » parce qu'elles ne demandent
+   pas la même chose de moi : refaire = réécrire un prompt ; remplacer = tu me
+   donnes un fichier ; reprendre = je déplace un câblage, aucune image à
+   produire. Trois listes, trois actions, un seul rapport à la fin. */
+const CLE_REMPL  = "pactum-graphe-remplacer";   // {id: {nom, actuel, fichier, note}}
+const CLE_REPR   = "pactum-graphe-reprendre";   // {id: {nom, actuel, reprend}}
+let remplacer = {}, reprendre = {};
+try { remplacer = JSON.parse(localStorage.getItem(CLE_REMPL) || "{}"); } catch (e) { remplacer = {}; }
+try { reprendre = JSON.parse(localStorage.getItem(CLE_REPR)  || "{}"); } catch (e) { reprendre = {}; }
+let panneauOuvert = null;   // "rempl" | "repr" | null, pour l'écran courant
+let filtreGal = "";         // ce qui est tapé dans le champ de la galerie
+let apercuLocal = null;     // {id, url} — l'image que tu viens de choisir sur ton disque
+
+/* TOUS LES FICHIERS PUBLIÉS. Le graphe ne les connaissait pas : il ne voit que
+   les images RÉFÉRENCÉES par un écran. Le manifeste du jeu, lui, liste tout ce
+   qui est déployé — y compris la réserve. Il est servi à côté de cette page
+   (`assets/manifest.json`), donc un simple fetch relatif suffit. En cas
+   d'échec on retombe sur les images des nœuds : la galerie est plus courte,
+   mais elle marche, au lieu de rester vide sans explication. */
+let ASSETS = new Set();
+fetch("assets/manifest.json").then(r => r.ok ? r.json() : null).then(m => {
+  if (m && m.fichiers) Object.keys(m.fichiers).forEach(f => ASSETS.add(f));
+  if (choisi) majImgAct(choisi);
+}).catch(() => {});
+function assetsConnus() {
+  if (ASSETS.size) return ASSETS;
+  const s = new Set();
+  N.forEach(n => { if (n.image && n.image.f) s.add(n.image.f); });
+  return s;
+}
 let panier = {};
 try { panier = JSON.parse(localStorage.getItem(CLE_PANIER) || "{}"); } catch (e) { panier = {}; }
 const NUAGE = { transition:"Les textes de marche — joués partout, sans lieu fixe",
@@ -791,6 +849,8 @@ function ouvrir(n) {
     bloc2.textContent = n.prompt ? "Le prompt de cette image" : "Prompt à écrire (composé depuis la description)";
   }
   majNote(n);
+  panneauOuvert = null; filtreGal = ""; apercuLocal = null;
+  majImgAct(n);
 
   document.getElementById("fchemin").textContent =
     n.id + (n.image ? "  ·  " + n.image.f : "");
@@ -812,6 +872,120 @@ function majNote(n) {
   note.classList.toggle("on", !!dem);
   document.getElementById("bRefaire").classList.toggle("actif", !!dem);
   document.getElementById("bRefaire").textContent = dem ? "Ne plus refaire" : "À refaire";
+}
+
+/* ─────────── LES DEUX RACCOURCIS D'IMAGE (portés du Studio) ─────────── */
+function esc(x){ return String(x==null?"":x).replace(/[&<>"']/g,c=>
+  ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function urlAsset(f){ return "assets/" + f; }
+
+/* La galerie. Le champ est un FILTRE, pas une liste de noms à connaître.
+   ⚠️ Un nom complet et valide n'est pas un filtre mais une SÉLECTION : sinon
+   cliquer une vignette ne laisserait qu'elle et masquerait la galerie, donc
+   impossible de changer d'avis sans tout réeffacer. */
+function galerie(choisiNom) {
+  const tous = [...assetsConnus()].filter(n => /\.(png|jpe?g)$/i.test(n)).sort();
+  const saisi = String(filtreGal || "").trim().replace(/^assets\//, "");
+  const q = (saisi && assetsConnus().has(saisi)) ? "" : saisi.toLowerCase();
+  const vus = q ? tous.filter(n => n.toLowerCase().includes(q)) : tous;
+  if (!vus.length) return `<div class="galcpt">aucune image ne contient « ${esc(q)} »</div>`;
+  return `<div class="galcpt">${vus.length} image${vus.length>1?"s":""}${q?" trouvée"+(vus.length>1?"s":""):" publiées"}</div>
+  <div class="gal">` + vus.map(n =>
+    `<div class="g${n===choisiNom?" actif":""}" data-pick="${esc(n)}" title="${esc(n)}"
+      style="background-image:url('${urlAsset(n)}')"></div>`).join("") + `</div>`;
+}
+
+function majImgAct(n) {
+  const z = document.getElementById("fimgact");
+  if (!z) return;
+  if (n.cat === "lieu" || !n.image || !n.image.f) { z.innerHTML = ""; return; }
+  const actuel = n.image.f, dR = remplacer[n.id], dP = reprendre[n.id];
+
+  if (panneauOuvert === "rempl") {
+    const u = (apercuLocal && apercuLocal.id === n.id) ? apercuLocal.url : null;
+    z.innerHTML = `<div class="repbloc">
+      <label>La nouvelle image</label>
+      <div class="aa2">
+        <div><span>Aujourd'hui</span><div class="vig" style="background-image:url('${urlAsset(actuel)}')"></div></div>
+        <div><span>Deviendrait</span>${u
+          ? `<div class="vig neuve" style="background-image:url('${u}')"></div>`
+          : `<div class="vig rien">aucun fichier</div>`}</div>
+      </div>
+      <button id="bFichier">${u ? "Choisir un autre fichier…" : "Choisir un fichier sur ton disque…"}</button>
+      <input type="file" id="finput" accept="image/*" hidden>
+      <label>Ce qui ne va pas avec l'image actuelle</label>
+      <input type="text" id="rNote" placeholder="facultatif — ça devient ma consigne"
+        value="${esc(dR ? dR.note : "")}">
+      <div class="actions">
+        <button id="bNoterRempl">${dR ? "Mettre à jour" : "Enregistrer"}</button>
+        <button id="bFermerImg">Annuler</button>
+      </div>
+    </div>`;
+  } else if (panneauOuvert === "repr") {
+    const pris = dP ? dP.reprend : (assetsConnus().has(String(filtreGal||"").trim()) ? filtreGal.trim() : "");
+    z.innerHTML = `<div class="repbloc">
+      <label>L'image à reprendre</label>
+      <input type="text" id="galFiltre" spellcheck="false"
+        placeholder="filtre par nom — ex. meute" value="${esc(filtreGal)}">
+      ${galerie(pris)}
+      <div class="aa2">
+        <div><span>Aujourd'hui</span><div class="vig" style="background-image:url('${urlAsset(actuel)}')"></div></div>
+        <div><span>Reprendrait</span>${pris
+          ? `<div class="vig neuve" style="background-image:url('${urlAsset(pris)}')"></div>`
+          : `<div class="vig rien">aucune image choisie</div>`}</div>
+      </div>
+      <div class="actions">
+        <button id="bNoterRepr" ${pris ? "" : "disabled"}>${dP ? "Mettre à jour" : "Enregistrer"}</button>
+        <button id="bFermerImg">Annuler</button>
+      </div>
+    </div>`;
+  } else {
+    z.innerHTML =
+      `<button id="bRempl" class="${dR ? "actif" : ""}">⟳ ${dR ? "Remplacement noté — modifier" : "Remplacer cette image"}</button>
+       <button id="bRepr"  class="${dP ? "actif" : ""}">≡ ${dP ? "Reprend « " + esc(dP.reprend) + " »" : "Utiliser une image déjà faite"}</button>`;
+  }
+  brancherImgAct(n);
+}
+
+function brancherImgAct(n) {
+  const q = id => document.getElementById(id);
+  const rouvrir = () => { majImgAct(n); majPanier(); };
+  if (q("bRempl")) q("bRempl").onclick = () => { panneauOuvert = "rempl"; majImgAct(n); };
+  if (q("bRepr"))  q("bRepr").onclick  = () => { panneauOuvert = "repr"; filtreGal = ""; majImgAct(n); };
+  if (q("bFermerImg")) q("bFermerImg").onclick = () => { panneauOuvert = null; apercuLocal = null; majImgAct(n); };
+  if (q("bFichier")) q("bFichier").onclick = () => q("finput").click();
+  if (q("finput")) q("finput").onchange = e => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    if (apercuLocal) URL.revokeObjectURL(apercuLocal.url);
+    apercuLocal = { id: n.id, url: URL.createObjectURL(f), nom: f.name };
+    majImgAct(n);
+  };
+  if (q("rNote")) q("rNote").oninput = () => {};   // lu à l'enregistrement
+  if (q("bNoterRempl")) q("bNoterRempl").onclick = () => {
+    const note = (q("rNote") || {}).value || "";
+    remplacer[n.id] = { nom: n.nom, actuel: n.image.f,
+      fichier: apercuLocal && apercuLocal.id === n.id ? apercuLocal.nom : "", note: note.trim() };
+    localStorage.setItem(CLE_REMPL, JSON.stringify(remplacer));
+    panneauOuvert = null; rouvrir(); toast("remplacement noté");
+  };
+  // Choisir à l'ŒIL : la vignette écrit le nom, la comparaison se met à jour.
+  document.querySelectorAll("#fimgact [data-pick]").forEach(g => g.onclick = () => {
+    filtreGal = g.dataset.pick; majImgAct(n);
+  });
+  if (q("galFiltre")) {
+    const inp = q("galFiltre");
+    inp.oninput = () => { filtreGal = inp.value; majImgAct(n);
+      const i = document.getElementById("galFiltre");
+      if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } };
+  }
+  if (q("bNoterRepr")) q("bNoterRepr").onclick = () => {
+    const pris = String(filtreGal || "").trim();
+    if (!assetsConnus().has(pris)) return toast("choisis une image dans la galerie");
+    reprendre[n.id] = { nom: n.nom, actuel: n.image.f, reprend: pris };
+    localStorage.setItem(CLE_REPR, JSON.stringify(reprendre));
+    panneauOuvert = null; rouvrir(); toast("reprise notée");
+  };
 }
 
 function toast(t) {
@@ -845,29 +1019,57 @@ document.getElementById("bRefaire").onclick = () => {
 };
 
 function majPanier() {
-  const ids = Object.keys(panier);
-  document.getElementById("panier").classList.toggle("on", ids.length > 0);
-  document.getElementById("panierN").textContent = ids.length;
+  const n = Object.keys(panier).length + Object.keys(remplacer).length + Object.keys(reprendre).length;
+  document.getElementById("panier").classList.toggle("on", n > 0);
+  document.getElementById("panierN").textContent = n;
 }
 document.getElementById("bVider").onclick = () => {
-  panier = {}; localStorage.setItem(CLE_PANIER, "{}");
-  majPanier(); if (choisi) majNote(choisi);
+  panier = {}; remplacer = {}; reprendre = {};
+  localStorage.setItem(CLE_PANIER, "{}");
+  localStorage.setItem(CLE_REMPL, "{}");
+  localStorage.setItem(CLE_REPR, "{}");
+  panneauOuvert = null; apercuLocal = null;
+  majPanier(); if (choisi) { majNote(choisi); majImgAct(choisi); }
 };
 document.getElementById("bClaude").onclick = () => {
-  const ids = Object.keys(panier);
-  let t = "Images à refaire dans PACTUM (" + ids.length + ") — depuis le Graphe.\n\n";
-  ids.forEach((id, i) => {
-    const d = panier[id], n = parId.get(id);
-    t += (i + 1) + ". " + d.nom + "  [" + id + "]\n";
-    if (d.fichier) t += "   fichier actuel : " + d.fichier + "\n";
-    if (d.note) t += "   ce qui ne va pas : " + d.note + "\n";
-    if (n && n.desc && n.desc.length) t += "   la scène dit : " + n.desc.join(" ").slice(0, 260) + "\n";
-    t += "\n";
-  });
-  t += "Réécris le prompt de chacune en tenant compte de la remarque, "
-     + "garde la clause de style commune, puis donne-moi les prompts prêts à coller.";
+  const aR = Object.keys(panier), aX = Object.keys(remplacer), aP = Object.keys(reprendre);
+  const total = aR.length + aX.length + aP.length;
+  let t = "Demandes sur les images de PACTUM (" + total + ") — depuis le Graphe.\n";
+  if (aR.length) {
+    t += "\n=== À REFAIRE (" + aR.length + ") — réécris le prompt ===\n\n";
+    aR.forEach((id, i) => {
+      const d = panier[id], n = parId.get(id);
+      t += (i + 1) + ". " + d.nom + "  [" + id + "]\n";
+      if (d.fichier) t += "   fichier actuel : " + d.fichier + "\n";
+      if (d.note) t += "   ce qui ne va pas : " + d.note + "\n";
+      if (n && n.desc && n.desc.length) t += "   la scène dit : " + n.desc.join(" ").slice(0, 260) + "\n";
+      t += "\n";
+    });
+  }
+  if (aX.length) {
+    t += "\n=== À REMPLACER PAR UN FICHIER (" + aX.length + ") — je te l'envoie ===\n\n";
+    aX.forEach((id, i) => {
+      const d = remplacer[id];
+      t += (i + 1) + ". " + d.nom + "  [" + id + "]\n";
+      t += "   remplace : " + d.actuel + "\n";
+      t += "   fichier joint : " + (d.fichier || "(à envoyer)") + "\n";
+      if (d.note) t += "   pourquoi : " + d.note + "\n";
+      t += "\n";
+    });
+  }
+  if (aP.length) {
+    t += "\n=== À RECÂBLER SUR UNE IMAGE EXISTANTE (" + aP.length + ") — aucun fichier à produire ===\n\n";
+    aP.forEach((id, i) => {
+      const d = reprendre[id];
+      t += (i + 1) + ". " + d.nom + "  [" + id + "]\n";
+      t += "   " + d.actuel + "  →  " + d.reprend + "\n\n";
+    });
+  }
+  t += "\nPour « à refaire » : réécris le prompt de chacune en tenant compte de la "
+     + "remarque, garde la clause de style commune, et donne-les prêts à coller.\n"
+     + "Pour « à recâbler » : change juste le pointeur de l'écran, ne touche pas au fichier.";
   copier(t);
-  toast(ids.length + " demande(s) copiée(s)");
+  toast(total + " demande(s) copiée(s)");
 };
 </script>
 </body>
