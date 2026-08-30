@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-30T19:15:30Z",
- "commit": "06d8a6e",
+ "genere": "2026-08-30T20:18:47Z",
+ "commit": "dcf4079",
  "zones": [
   {
    "id": "landes",
@@ -2850,9 +2850,9 @@
    "lieu": "seuil_du_hameau",
    "typeScene": "moment",
    "image": {
-    "fichier": "scene_hameau_accueil_volet_c.png",
-    "hash": "05db5d2a",
-    "taille": 15638,
+    "fichier": "scene_hameau_accueil_volet_e_b.png",
+    "hash": "d7e03fe9",
+    "taille": 22160,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -4729,9 +4729,9 @@
     }
    },
    "image": {
-    "fichier": "monstre_fille_moulin_dos_v2_a.png",
-    "hash": "acfc2093",
-    "taille": 20117,
+    "fichier": "monstre_fille_moulin_dos_v2_c_a.png",
+    "hash": "3b83041b",
+    "taille": 18064,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -4790,9 +4790,9 @@
    "pointsInteret": [],
    "suite": "fille-moulin-3",
    "image": {
-    "fichier": "monstre_la_fille_moulin_v2_a.png",
-    "hash": "51147c07",
-    "taille": 12150,
+    "fichier": "monstre_la_fille_moulin_v2_c_b.png",
+    "hash": "63f8a6f2",
+    "taille": 9100,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -4844,9 +4844,9 @@
    "suite": "fille-moulin-4",
    "donneDecouverte": "d.temoin_nomme",
    "image": {
-    "fichier": "monstre_la_fille_moulin_v2_a.png",
-    "hash": "51147c07",
-    "taille": 12150,
+    "fichier": "monstre_la_fille_moulin_v2_c_b.png",
+    "hash": "63f8a6f2",
+    "taille": 9100,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -4897,9 +4897,9 @@
    "donneDecouverte": "d.fille_vivante",
    "nuit": true,
    "image": {
-    "fichier": "monstre_fille_moulin_ouvrage_c.png",
-    "hash": "03e7eb7d",
-    "taille": 10442,
+    "fichier": "monstre_fille_moulin_ouvrage_e_b.png",
+    "hash": "5a3ad301",
+    "taille": 8755,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -5674,7 +5674,15 @@
    ],
    "donneDecouverte": "d.bailli_comptait",
    "sejour": true,
-   "image": null,
+   "image": {
+    "fichier": "scene_maison_bailli_dedans_b.png",
+    "hash": "f5e0f930",
+    "taille": 17212,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [],
@@ -5683,10 +5691,8 @@
    ],
    "roles": [],
    "acces": "lien",
-   "etat": "acompleter",
-   "alertes": [
-    "imageManquante"
-   ]
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "petit-tribunal",
@@ -7253,10 +7259,10 @@
    "pointsInteret": [],
    "nuit": true,
    "image": {
-    "fichier": "scene_landes_hameau_ruelle_c_b.png",
-    "hash": "818ce9ba",
-    "taille": 24488,
-    "recent": true,
+    "fichier": "scene_hameau_maison_muree_combles_v4_b.png",
+    "hash": "881d7a46",
+    "taille": 21848,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7507,12 +7513,12 @@
    "pointsInteret": [],
    "terminal": true,
    "image": {
-    "fichier": "scene_landes_liaison_sud_d_h.png",
-    "hash": "fede2150",
-    "taille": 13178,
-    "recent": true,
+    "fichier": "scene_la_descente_a_a.png",
+    "hash": "095542f3",
+    "taille": 24986,
+    "recent": false,
     "existe": true,
-    "statut": "fallback",
+    "statut": "dediee",
     "herite": "",
     "verdict": "replace",
     "verdictNote": "Le texte dit « devant, l'ESCALIER PLONGE dans un noir qui n'a pas encore de nom » : l'image montre une brèche dans une palissade sur terrain plat, sans escalier ni pente. Elle est en plus tirée dans le pool des vues de marche, donc l'écran de sortie de zone partage son visuel avec une liaison banale. Asset dédié à produire (prompt prêt)."
@@ -7542,17 +7548,6 @@
    "regle": "AU SORTIR DU HAMEAU : le muret d'enceinte vient d'être franchi, le village est dans le dos, et deux routes de lande s'ouvrent devant"
   },
   {
-   "fichier": "scene_hameau_dense_c.png",
-   "hash": "c3a695ff",
-   "taille": 30005,
-   "recent": false,
-   "existe": true,
-   "statut": "fallback",
-   "herite": "",
-   "id": "marche:scene_hameau_dense_c",
-   "regle": "d'une ruelle du hameau à l'autre, ou quand une des deux directions offertes est le village (le hameau grossit à l'horizon)"
-  },
-  {
    "fichier": "scene_hameau_dense_c_a.png",
    "hash": "feb9cf32",
    "taille": 10034,
@@ -7564,14 +7559,25 @@
    "regle": "d'une ruelle du hameau à l'autre, ou quand une des deux directions offertes est le village (le hameau grossit à l'horizon)"
   },
   {
-   "fichier": "scene_hameau_dense_d.png",
-   "hash": "8bdf36f0",
-   "taille": 24764,
+   "fichier": "scene_hameau_dense_d_v2_a.png",
+   "hash": "8f0e34c8",
+   "taille": 29093,
    "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
-   "id": "marche:scene_hameau_dense_d",
+   "id": "marche:scene_hameau_dense_d_v2_a",
+   "regle": "d'une ruelle du hameau à l'autre, ou quand une des deux directions offertes est le village (le hameau grossit à l'horizon)"
+  },
+  {
+   "fichier": "scene_hameau_dense_e_v2_b.png",
+   "hash": "48d1b693",
+   "taille": 19884,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_hameau_dense_e_v2_b",
    "regle": "d'une ruelle du hameau à l'autre, ou quand une des deux directions offertes est le village (le hameau grossit à l'horizon)"
   },
   {
@@ -8488,6 +8494,22 @@
    "recent": false,
    "groupe": "autre",
    "racine": "hameau_linteaux"
+  },
+  {
+   "fichier": "scene_hameau_maison_muree_combles_v5_b.png",
+   "hash": "c24d5c09",
+   "taille": 18970,
+   "recent": false,
+   "groupe": "doublon",
+   "racine": "hameau_maison_muree_combles"
+  },
+  {
+   "fichier": "scene_hameau_maison_muree_combles_v6_a.png",
+   "hash": "0964899b",
+   "taille": 24128,
+   "recent": false,
+   "groupe": "doublon",
+   "racine": "hameau_maison_muree_combles"
   },
   {
    "fichier": "scene_hameau_trois_aubes_v2_c.png",
@@ -9912,10 +9934,10 @@
   "scenes": 102,
   "pointsInteret": 0,
   "choix": 294,
-  "illustrations": 287,
-  "sansImage": 1,
+  "illustrations": 293,
+  "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 90,
+  "reserve": 92,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

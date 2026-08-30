@@ -3265,12 +3265,12 @@ export const SCENES: Scene[] = [
 
      Règle d'écriture : le DERNIER paragraphe de chaque accueil doit orienter
      vers le muret, puisque le beat 4 s'ouvre là sans savoir ce qui a précédé.
-     Aucune illustration dédiée pour l'instant : l'image de la ruelle (beat 2)
-     reste à l'écran. Les 6 prompts sont dans data/images-a-produire.md.
+     Les 6 accueils ont leur illustration dédiée depuis le 6/08 (le volet
+     refait au lot du 30/08 soir) : chaque accueil est un décor distinct.
      —————————————————————————————————————————————————————————————————————— */
   {
     id: "hameau-accueil-volet",
-    illustration: "assets/scene_hameau_accueil_volet_c.png",
+    illustration: "assets/scene_hameau_accueil_volet_e_b.png",
     chainNext: "hameau-entree-4",
     narration: [
       "La rue est vide. Pas déserte — vide : une porte qui bat, un seau de travers, du lait qui n'a pas séché. Tout le monde vient de rentrer, et vite.",
@@ -5003,7 +5003,7 @@ export const SCENES: Scene[] = [
   {
     id: "fille-moulin-1",
     remplace: { scene: "campement-2", si: { id: COMPTEUR_FILLE, gte: SEUIL_MOULIN } },
-    illustration: "assets/monstre_fille_moulin_dos_v2_a.png",
+    illustration: "assets/monstre_fille_moulin_dos_v2_c_a.png",
     chainNext: "fille-moulin-2",
     narration: [
       "La porte est entrouverte, comme toujours. Mais cette fois la bruyère " +
@@ -5033,7 +5033,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "fille-moulin-2",
-    illustration: "assets/monstre_la_fille_moulin_v2_a.png",
+    illustration: "assets/monstre_la_fille_moulin_v2_c_b.png",
     chainNext: "fille-moulin-3",
     narration: [
       "Elle se retourne enfin, et le compte ne marche pas. Le village parle " +
@@ -5093,7 +5093,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "fille-moulin-3",
-    illustration: "assets/monstre_la_fille_moulin_v2_a.png",
+    illustration: "assets/monstre_la_fille_moulin_v2_c_b.png",
     chainNext: "fille-moulin-4",
     narration: [
       "« Mon père il a fait construire une grande potence pour la chose qui m'a fait pendre. » Elle aligne un caillou. « Il l'a attendue trois mois. Elle vient jamais quand on l'appelle — elle vient quand un village est prêt. »",
@@ -5148,7 +5148,7 @@ export const SCENES: Scene[] = [
   {
     id: "fille-moulin-4",
     nuit: true,
-    illustration: "assets/monstre_fille_moulin_ouvrage_c.png",
+    illustration: "assets/monstre_fille_moulin_ouvrage_e_b.png",
     decouverte: "d.fille_vivante",
     narration: [
       "« Tu vas redescendre et tu vas leur en parler. Ils vont te regarder " +
@@ -5934,6 +5934,7 @@ export const SCENES: Scene[] = [
      l'entrée ni la donner gratuitement. */
   {
     id: "bailli-dedans",
+    illustration: "assets/scene_maison_bailli_dedans_b.png",
     /* SÉJOUR : la pièce fait deux pas carrés, on ne choisit pas ENTRE regarder
        le mur et s'asseoir — les deux gestes sont possibles, et on ne sort que
        par la porte. C'est le cas « physiquement simultané » que Patrick a
@@ -7523,7 +7524,7 @@ export const SCENES: Scene[] = [
     /* La maison crochetée — TOUCHE 3 du Grand Témoin, découverte SEUL. */
     id: "demo-nuit-maison",
     nuit: true,
-    illustration: "assets/scene_landes_hameau_ruelle_c_b.png",
+    illustration: "assets/scene_hameau_maison_muree_combles_v4_b.png",
     narration: [
       "Avant de fermer l'œil, tu montes voir les combles. Tu redescends plus lentement que tu n'es monté : la trappe est clouée. De l'intérieur du toit. Les clous sont tordus par quelqu'un qui se dépêchait — et le rez-de-chaussée, lui, n'est pas cloué du tout.",
       "Cette maison ne se protégeait pas de ce qui entre par les portes.",
@@ -9080,8 +9081,8 @@ const LANDES_WALK = [
     lui-même (« celle qui représente vraiment le hameau »). */
 const HAMEAU_WALK = [
   "assets/scene_hameau_dense_c_a.png",
-  "assets/scene_hameau_dense_c.png",
-  "assets/scene_hameau_dense_d.png",
+  "assets/scene_hameau_dense_d_v2_a.png",
+  "assets/scene_hameau_dense_e_v2_b.png",
 ];
 
 /**
@@ -9709,7 +9710,7 @@ export const DESCENTE_SCENE: Scene = {
   // Vue générique des Landes vers le SUD (retour Patrick 7/08 : l'écran
   // tournait encore sur le placeholder portail). À remplacer par
   // `scene_la_descente` dès génération (prompt dans images-a-produire.md).
-  illustration: "assets/scene_landes_liaison_sud_d_h.png",
+  illustration: "assets/scene_la_descente_a_a.png",
   terminal: true,
   narration: [
     "Le sol s'incline. L'air se fait plus froid, plus vieux — il monte d'en bas, par la porte de la Descente restée ouverte derrière toi.",

@@ -1,0 +1,79 @@
+{
+  "lot": "2026-08-30 soir — nouveaux ecrans (Petite Fixee, Bailli dedans, Descente, temoin, combles, hameau)",
+  "note": "03_Valide uniquement. Les variantes restees dans 01_En attente sont les rejetees de Patrick. monstre_temoin_proces_v3_z : livre a 92426 o avec 993 couleurs (bruit d'anti-aliasing marginal, 96,9 % des pixels deja sur la palette) — requantise sur place a 2 couleurs exactes, ECART 0 PIXEL sur le dessin, 4795 o. La taille du manifeste est donc celle du Drive, pas celle du fichier en jeu.",
+  "drive": {
+    "scene_maison_bailli_dedans_b.png": {
+      "id": "1RkAZWleGF927zxy_XMwOLB6Cv-yy9phU",
+      "taille": 17212,
+      "dossier": "2_Environnement"
+    },
+    "scene_la_descente_a_a.png": {
+      "id": "1mJAEdiQE2UNyPO0gwYXXtLKB0gR-x98d",
+      "taille": 24986,
+      "dossier": "2_Environnement"
+    },
+    "scene_hameau_accueil_volet_e_b.png": {
+      "id": "1Q4hStefXNbbefhsEraEoG1J-oZFXHAby",
+      "taille": 22160,
+      "dossier": "2_Environnement"
+    },
+    "scene_hameau_dense_d_v2_a.png": {
+      "id": "1h_CilkqoLiAO-SlpwkfPw4B-kiZWEHQ9",
+      "taille": 29093,
+      "dossier": "2_Environnement"
+    },
+    "scene_hameau_dense_e_v2_b.png": {
+      "id": "1AMdLPqjc5-lLBPtzkOT83SomFC34I6hO",
+      "taille": 19884,
+      "dossier": "2_Environnement"
+    },
+    "scene_hameau_maison_muree_combles_v4_b.png": {
+      "id": "1c3kGerxPEzet1K4NCyoJOTHkfzfN4Kn7",
+      "taille": 21848,
+      "dossier": "2_Environnement"
+    },
+    "scene_hameau_maison_muree_combles_v5_b.png": {
+      "id": "1WHZnV18OZhESp_VS8Q7RpS1WCBWsGX2A",
+      "taille": 18970,
+      "dossier": "2_Environnement"
+    },
+    "scene_hameau_maison_muree_combles_v6_a.png": {
+      "id": "1cQgP-HycVM8U1hvIoQnAAmTVaTVGtk2V",
+      "taille": 24128,
+      "dossier": "2_Environnement"
+    },
+    "monstre_la_fille_moulin_v2_c_b.png": {
+      "id": "14WUS93H2CuxQM03CmoGE4NaDComLe7ys",
+      "taille": 9100,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_fille_moulin_dos_v2_c_a.png": {
+      "id": "1N_-Z8k1n4b5AdWbECXK3CIQWZPTabgLo",
+      "taille": 18064,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_fille_moulin_ouvrage_e_b.png": {
+      "id": "1_9FmDoCL9q28HScimn9bgN09j5Fi-Qnv",
+      "taille": 8755,
+      "dossier": "1_Rencontres"
+    },
+    "monstre_temoin_proces_v3_z.png": {
+      "id": "1--hfLLUyC8POPaNzKv-RJgK28u1zCPJI",
+      "taille": 92426,
+      "dossier": "1_Rencontres"
+    }
+  },
+  "combles": "Trois versions VALIDEES du meme sujet (v4_b, v5_b, v6_a). Retenue : v4_b — la seule ou la TRAPPE domine le cadre, or le texte de demo-nuit-maison ne parle que d'elle (« la trappe est clouee, de l'interieur du toit »). v5_b et v6_a sont de belles vues de combles ou la trappe n'est pas le sujet ; gardees sur disque, une ligne suffit a basculer.",
+  "cablage": {
+    "scene_maison_bailli_dedans_b.png": "bailli-dedans (ajout : la scene heritait de la maison)",
+    "scene_la_descente_a_a.png": "DESCENTE_SCENE uniquement",
+    "monstre_temoin_proces_v3_z.png": "TEMOIN_PROCES (Scene.tsx) — garde assetExiste desormais satisfaite",
+    "monstre_fille_moulin_dos_v2_c_a.png": "fille-moulin-1",
+    "monstre_la_fille_moulin_v2_c_b.png": "fille-moulin-2, fille-moulin-3",
+    "monstre_fille_moulin_ouvrage_e_b.png": "fille-moulin-4",
+    "scene_hameau_maison_muree_combles_v4_b.png": "demo-nuit-maison",
+    "scene_hameau_accueil_volet_e_b.png": "accueil « La voix au volet »",
+    "scene_hameau_dense_d_v2_a.png": "HAMEAU_WALK (remplace dense_c)",
+    "scene_hameau_dense_e_v2_b.png": "HAMEAU_WALK (remplace dense_d)"
+  }
+}

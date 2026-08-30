@@ -465,7 +465,7 @@ const FLAG_SERMENT_TRAHI = "serment-trahi-jadis";
    les dépositions et déborde donc le budget du premier écran.
    ⚠️ Gardée par `assetExiste` : tant que l'image n'est pas produite, l'écran
    reste sur la salle plutôt que d'afficher une image cassée. */
-const TEMOIN_PROCES = "assets/monstre_temoin_proces_a.png";
+const TEMOIN_PROCES = "assets/monstre_temoin_proces_v3_z.png";
 
 const PORTAL = "assets/dithering-portal.jpg";
 
