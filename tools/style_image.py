@@ -55,3 +55,25 @@ def composer(sujet: str) -> str:
     """Un sujet + la clause canonique = le prompt à coller dans Leonardo."""
     sujet = sujet.strip().rstrip(",; ").strip()
     return f"{sujet}, {CLAUSE}" if sujet else CLAUSE
+
+
+# ---------------------------------------------------------------------------
+# LES ICÔNES D'OBJET n'ont pas la même grammaire qu'un décor : un seul sujet,
+# aucun horizon, aucun sol, et surtout le rapport de valeurs est INVERSÉ —
+# l'objet est la zone claire, le fond est l'aplat noir. C'est ce qui les rend
+# lisibles en petit, dans une case d'inventaire de 92 pixels.
+CLAUSE_OBJET = (
+    "single isolated object centred on a pure black background, nothing else in frame, "
+    "no ground, no horizon, no hands, no table; "
+    "medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, "
+    "no 18th or 19th century manufacture, no machine finish, no printed labels; "
+    "extreme two-value contrast, the object lit as a large uniform very bright shape "
+    "against flat pure black, almost no mid-greys, crisp readable silhouette; "
+    "vintage engraving feel, grainy etching texture, single hard raking light from the left, "
+    "monochrome, museum plate composition, no text, no lettering, no watermark"
+)
+
+
+def composer_objet(sujet: str) -> str:
+    sujet = sujet.strip().rstrip(",; ").strip()
+    return f"{sujet}, {CLAUSE_OBJET}" if sujet else CLAUSE_OBJET

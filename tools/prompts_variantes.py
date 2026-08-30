@@ -34,9 +34,12 @@ from pathlib import Path
 RACINE = Path(__file__).resolve().parent.parent
 ZONES = RACINE / "data" / "zones"
 
-STYLE = ("dark fantasy illustration, deep crushed blacks, no fill light, high contrast, "
-         "two-tone monochrome-friendly, strong readable shapes, matte painting, "
-         "grim medieval rural, square composition, no text, no lettering, no watermark")
+# ⚠️ LA CLAUSE DE STYLE VIT DANS `style_image.py`, PAS ICI. Elle a vécu en
+# double jusqu'au 30/08 : les variantes sortaient donc dans l'ancien style
+# pendant que les plans larges passaient au nouveau (l'aplat d'orange et
+# l'époque médiévale datée). Une clause en double diverge toujours.
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from style_image import CLAUSE as STYLE  # noqa: E402
 
 CADRES = {
     # Le cadrage porte l'anti-dérive : ce qu'on ne montre pas ne peut pas jurer.
