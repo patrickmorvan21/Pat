@@ -213,7 +213,10 @@ const toile = document.getElementById("toile"), ctx = toile.getContext("2d");
 const bulle = document.getElementById("infobulle");
 let N = [], L = [], parId = new Map(), voisins = new Map();
 let vue = { x:0, y:0, k:1 }, alpha = 1, brut = "";
-let survol = null, choisi = null, tire = null, souris = { x:0, y:0 };
+let survol = null, choisi = null, tire = null, souris = { x:0, y:0 }, vueTouchee = false;
+let nuages = {};
+const NUAGE = { transition:"Les textes de marche — joués partout, sans lieu fixe",
+                marche:"Les vues de marche", scene:"Hors traversée" };
 const on = { lieu:1, arrivee:1, rencontre:1, scene:1, terminal:1, marche:1, transition:1 };
 const opt = { noms:1, images:0, liensFaibles:1 };
 const F = { repulsion:1, longueur:1, gravite:1 };
@@ -233,9 +236,10 @@ function demarrer(g) {
   N = g.noeuds; L = g.liens;
 
   // disposition de départ : un anneau par catégorie, la simulation fait le reste
-  const R = Math.min(innerWidth, innerHeight) * .38;
+  const R = Math.min(innerWidth, innerHeight) * .42;
+  const OR = Math.PI * (3 - Math.sqrt(5));   // angle d'or
   N.forEach((n, i) => {
-    const a = (i / N.length) * Math.PI * 2, d = R * (.35 + .65 * ((CAT[n.cat] || CAT.scene).ordre / 6));
+    const a = i * OR, d = R * Math.sqrt((i + .5) / N.length);
     n.x = Math.cos(a) * d; n.y = Math.sin(a) * d; n.vx = 0; n.vy = 0;
     n.r = (CAT[n.cat] || CAT.scene).r * (1 + Math.min(n.deg, 14) * .045);
     let h = 0; for (let c = 0; c < n.id.length; c++) h = (h * 31 + n.id.charCodeAt(c)) % 997;
@@ -250,16 +254,18 @@ function demarrer(g) {
   vue.x = innerWidth / 2; vue.y = innerHeight / 2;
   // on laisse la simulation se poser AVANT le premier rendu : un graphe qui
   // s'ouvre en pelote puis explose se lit mal.
-  for (let i = 0; i < 320; i++) pas();
-  alpha = .12;
+  for (let i = 0; i < 800; i++) { if (i < 350) alpha = 1; pas(); }
+  alpha = .10;
   batirPanneaux(g);
   recadrer();
+  setTimeout(() => { if (!vueTouchee) recadrer(); }, 1600);
   document.getElementById("soustitre").textContent =
     g.totaux.scenes + " scènes · " + g.totaux.transitions + " transitions";
   document.getElementById("pied").innerHTML =
     "<b>" + g.totaux.scenes + "</b> scènes &nbsp;·&nbsp; <b>" + g.totaux.lieux + "</b> lieux &nbsp;·&nbsp; <b>"
     + g.totaux.transitions + "</b> transitions &nbsp;·&nbsp; <b>" + g.totaux.marches + "</b> vues de marche"
-    + "<br>export du " + g.genere + (g.commit ? " · " + g.commit : "");
+    + "<br>export du " + g.genere + (g.commit ? " · " + g.commit : "")
+    + "<br>molette ou pincement pour zoomer &nbsp;·&nbsp; + &minus; 0 au clavier &nbsp;·&nbsp; double-clic pour recadrer";
   redimensionner(); boucle();
 }
 
@@ -304,14 +310,17 @@ function batirPanneaux(g) {
       fo.appendChild(d);
     });
 
+  const pliage = t => (t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  N.forEach(n => { n.cle = pliage(n.nom + " " + n.id + " " + (n.meta || []).join(" ")
+                                 + " " + (n.desc || []).join(" ") + " " + (n.resume || "")); });
   const q = document.getElementById("q"), res = document.getElementById("resultats");
   q.oninput = () => {
-    const t = q.value.trim().toLowerCase(); res.innerHTML = "";
+    const t = pliage(q.value.trim()); res.innerHTML = "";
     if (t.length < 2) return;
-    N.filter(n => (n.nom + " " + n.id + " " + (n.desc || []).join(" ")).toLowerCase().includes(t))
-      .slice(0, 40).forEach(n => {
+    N.filter(n => n.cle.includes(t)).slice(0, 40).forEach(n => {
         const d = document.createElement("div");
-        d.textContent = n.nom;
+        d.textContent = n.nom + (n.lieu && n.nom !== n.id ? "" : "");
+        if (n.meta && n.meta[0] && n.meta[0] !== n.nom) d.title = n.meta.join(" · ");
         d.onclick = () => { ouvrir(n); viser(n); };
         res.appendChild(d);
       });
@@ -350,6 +359,7 @@ function pas() {
     c.x += n.x; c.y += n.y; c.n++;
   }
   for (const k in centres) { centres[k].x /= centres[k].n; centres[k].y /= centres[k].n; }
+  nuages = centres;
   for (const n of N) {
     if (!n.deg) {
       const c = centres[n.cat];
@@ -451,6 +461,19 @@ function dessiner() {
     ctx.fillText(n.nom, n.x, n.y + n.r + 5 / vue.k);
     ctx.globalAlpha = 1;
   }
+  // le nom du nuage, sous les points qui n'ont pas d'ancre
+  if (!focus && vue.k > .28) {
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    for (const k in nuages) {
+      if (!on[k] || nuages[k].n < 4 || !NUAGE[k]) continue;
+      let bas = -1e9;
+      for (const n of N) if (!n.deg && n.cat === k && on[k]) bas = Math.max(bas, n.y);
+      ctx.globalAlpha = .5; ctx.fillStyle = "#ffffff";
+      ctx.font = "400 " + 11 / vue.k + "px " + getComputedStyle(document.body).fontFamily;
+      ctx.fillText(NUAGE[k] + "  (" + nuages[k].n + ")", nuages[k].x, bas + 22 / vue.k);
+      ctx.globalAlpha = 1;
+    }
+  }
   ctx.restore();
 }
 
@@ -477,6 +500,7 @@ function sousLaSouris(mx, my) {
 
 let pointe = null, bougé = false;
 toile.addEventListener("pointerdown", e => {
+  vueTouchee = true;
   toile.setPointerCapture(e.pointerId); bougé = false;
   const n = sousLaSouris(e.clientX, e.clientY);
   if (n) { tire = n; } else { pointe = { x: e.clientX, y: e.clientY, vx: vue.x, vy: vue.y }; toile.classList.add("tire"); }
@@ -511,9 +535,26 @@ addEventListener("pointerup", e => {
   tire = null; pointe = null; toile.classList.remove("tire");
 });
 toile.addEventListener("dblclick", e => { if (!sousLaSouris(e.clientX, e.clientY)) recadrer(); });
+/* ZOOM — un même événement `wheel`, trois périphériques très différents.
+   ⚠️ Le pincement d'un trackpad envoie des deltas MINUSCULES (2-5) là où une
+   molette en envoie 100 : au même facteur, le trackpad ne zoomait presque pas
+   (mesuré : ×1,05 en dix gestes, contre ×4,95 à la molette). On normalise donc
+   l'unité (pixels / lignes / pages) ET on donne au pincement sa propre
+   sensibilité. Le plafond évite qu'un gros cran de molette fasse un saut. */
 toile.addEventListener("wheel", e => {
   e.preventDefault();
-  const f = Math.exp(-e.deltaY * .0016), k = Math.min(6, Math.max(.15, vue.k * f));
+  vueTouchee = true;
+  let d = e.deltaY;
+  if (e.deltaMode === 1) d *= 16;        // lignes → pixels
+  else if (e.deltaMode === 2) d *= 400;  // pages  → pixels
+  d = Math.max(-140, Math.min(140, d));
+  const pincee = e.ctrlKey;              // pincement trackpad, ou ctrl+molette
+  // Hors pincement, le dosage DÉCROÎT avec l'amplitude : un glissement à deux
+  // doigts (deltas fins, très fréquents) a besoin de beaucoup plus de sensibilité
+  // qu'un cran de molette, qui doit rester un pas franc et non un saut.
+  const s = pincee ? .028 : .0035 + .0125 * Math.exp(-Math.abs(d) / 25);
+  const f = Math.exp(-d * s);
+  const k = Math.min(8, Math.max(.1, vue.k * f));
   vue.x = e.clientX - (e.clientX - vue.x) * (k / vue.k);
   vue.y = e.clientY - (e.clientY - vue.y) * (k / vue.k);
   vue.k = k;
@@ -543,7 +584,21 @@ function viser(n) {
 const fiche = document.getElementById("fiche");
 function fermer() { fiche.classList.remove("ouverte"); choisi = null; }
 document.getElementById("fermer").onclick = fermer;
-addEventListener("keydown", e => { if (e.key === "Escape") fermer(); });
+addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT") return;
+  if (e.key === "Escape") fermer();
+  else if (e.key === "+" || e.key === "=") zoomAuCentre(1.35);
+  else if (e.key === "-" || e.key === "_") zoomAuCentre(1 / 1.35);
+  else if (e.key === "0") recadrer();
+});
+function zoomAuCentre(f) {
+  vueTouchee = true;
+  const cx = innerWidth / 2, cy = innerHeight / 2;
+  const k = Math.min(8, Math.max(.1, vue.k * f));
+  vue.x = cx - (cx - vue.x) * (k / vue.k);
+  vue.y = cy - (cy - vue.y) * (k / vue.k);
+  vue.k = k;
+}
 
 function ouvrir(n) {
   choisi = n;
@@ -551,6 +606,8 @@ function ouvrir(n) {
   document.getElementById("fcat").textContent = d.nom.replace(/s$/, "");
   document.getElementById("fnom").textContent = n.nom;
   document.getElementById("fmeta").textContent = (n.meta || []).join("  ·  ");
+  // « (rattachée) » : le lieu n'est pas dans les données de zone, il est
+  // déduit de la scène que cet écran remplace ou prolonge.
 
   const im = document.getElementById("fimg"), sans = document.getElementById("fsansimg");
   if (n.image) {
