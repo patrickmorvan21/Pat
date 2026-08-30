@@ -319,6 +319,19 @@ body:not(.mode-edition) .edit{border-color:transparent;cursor:default}
 .aa{display:flex;flex-direction:column;gap:4px}
 .aa span{font-size:9.5px;letter-spacing:1.1px;text-transform:uppercase;color:var(--b30)}
 .aa .vig{aspect-ratio:1/1;background:var(--charbon) center/cover;border:1px solid var(--b20)}
+/* LA GALERIE DE REPRISE (retour Patrick 30/08) : « je ne vois pas en visu les
+   images, juste les noms, peu pratique ». Le champ restait un datalist natif,
+   qui ne sait afficher que du texte — il fallait donc CONNAÎTRE le nom avant
+   de pouvoir voir l'image, ce qui est l'inverse de ce qu'on veut faire ici.
+   On choisit maintenant à l'œil ; le champ reste, pour le collage direct. */
+.galerie{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:5px;
+  max-height:242px;overflow-y:auto;padding:5px;border:1px solid var(--b20);background:#151310}
+.galerie .g{aspect-ratio:1/1;background:var(--charbon) center/cover;border:1px solid transparent;
+  cursor:pointer;image-rendering:pixelated;position:relative}
+.galerie .g:hover{border-color:var(--b50)}
+.galerie .g.actif{border-color:var(--orange);border-width:2px}
+.galerie-vide{padding:14px 6px;color:var(--b50);font-size:12px;text-align:center}
+.galerie-cpt{font-size:11px;color:var(--b50);letter-spacing:1px;text-transform:uppercase}
 .aa .vig.neuve{border-color:var(--orange)}
 .aa .vig.rien{display:flex;align-items:center;justify-content:center;color:var(--b20);font-size:10px}
 .pimgcible{font-size:10px;line-height:1.6;color:var(--b30);word-break:break-all}
@@ -1244,6 +1257,25 @@ function assetsConnus(){
   return set;
 }
 
+/* La galerie : toutes les images publiées, filtrées par ce qui est tapé.
+   Le filtre porte sur le nom ; taper « meute » suffit à ne garder qu'elles.
+   Le nom reste écrit sous chaque vignette au survol (title), mais c'est
+   l'IMAGE qui décide — c'est tout l'objet du correctif. */
+function galerieAssets(choisi){
+  const tous = [...assetsConnus()].filter(n=>/\.(png|jpe?g)$/i.test(n)).sort();
+  // ⚠️ Un nom COMPLET et valide n'est pas un filtre, c'est une sélection :
+  // sinon cliquer une vignette ne laisserait qu'elle et masquerait la galerie,
+  // rendant impossible de changer d'avis sans tout réeffacer.
+  const saisi = nomAsset(reuseVal || "");
+  const q = (saisi && assetsConnus().has(saisi)) ? "" : saisi.toLowerCase();
+  const vus = q ? tous.filter(n=>n.toLowerCase().includes(q)) : tous;
+  if(!vus.length) return `<div class="galerie-vide">Aucune image ne contient « ${esc(q)} »</div>`;
+  return `<div class="galerie-cpt">${vus.length} image${vus.length>1?"s":""}${q?" trouvée"+(vus.length>1?"s":""):" publiées"}</div>
+  <div class="galerie">` + vus.map(n =>
+    `<div class="g${n===choisi?" actif":""}" data-pick="${esc(n)}" title="${esc(n)}"
+       style="background-image:url('${urlImg("assets/"+n)}')"></div>`).join("") + `</div>`;
+}
+
 function blocReutiliser(fichier, ctx, el){
   const cible = "reuse:" + el.type + ":" + el.id;
   const j = journal.find(x => x.cible === cible);
@@ -1254,7 +1286,8 @@ function blocReutiliser(fichier, ctx, el){
   return `<div class="reuse">
     <label>Nom de l'image à reprendre</label>
     <input id="reuseNom" list="tousLesAssets" spellcheck="false"
-      placeholder="colle ici un nom, ex. monstre_meute_grise_c.png" value="${esc(choisi)}">
+      placeholder="filtre par nom, ou colle-en un — ex. meute" value="${esc(choisi)}">
+    ${galerieAssets(choisi)}
     <div class="avant-apres">
       <div class="aa"><span>Aujourd'hui</span>
         <div class="vig" style="background-image:url('${urlImg("assets/"+fichier)}')"></div></div>
@@ -1593,6 +1626,10 @@ function brancher(){
   });
   d.querySelectorAll("[data-fermer-reuse]").forEach(b=>b.onclick=()=>{
     reuseOuvert=null; reuseVal=""; renduPanneau(); });
+  // Choisir à l'œil : la vignette écrit le nom dans le champ, et la
+  // comparaison « Aujourd'hui / Reprendrait » se met à jour aussitôt.
+  d.querySelectorAll("[data-pick]").forEach(g=>g.onclick=()=>{
+    reuseVal=g.dataset.pick; renduPanneau(); });
   // Le champ se relit à CHAQUE frappe : la vignette de droite doit confirmer
   // le nom avant l'enregistrement, sinon on note un fichier sans l'avoir vu.
   const rn=d.querySelector("#reuseNom");
