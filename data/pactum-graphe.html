@@ -119,6 +119,40 @@ input[type=range]::-moz-range-thumb{width:9px;height:9px;border:0;background:var
 #fsorties a:hover{color:var(--orange)}
 #fsorties a b{color:var(--blanc-20);font-weight:400}
 #fchemin{font-size:10px;color:var(--blanc-20);margin-top:20px;word-break:break-all}
+#fprompt{
+  font-size:10.5px;line-height:1.6;color:var(--blanc-50);background:rgba(255,255,255,.04);
+  border:1px solid var(--blanc-08);padding:9px 10px;max-height:168px;overflow:auto;
+  white-space:pre-wrap;word-break:break-word;
+}
+.actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.actions button{
+  background:transparent;border:1px solid var(--blanc-20);color:var(--blanc-70);
+  font-family:var(--mono);font-size:10px;letter-spacing:1.2px;text-transform:uppercase;
+  padding:7px 10px;cursor:pointer;
+}
+.actions button:hover{border-color:var(--orange);color:var(--orange)}
+.actions button.actif{background:var(--orange);border-color:var(--orange);color:var(--charbon)}
+#fnote{
+  margin-top:9px;font-size:11px;color:var(--orange);line-height:1.6;display:none;
+  border-left:2px solid var(--orange);padding-left:9px;
+}
+#fnote.on{display:block}
+#panier{
+  border-top:1px solid var(--blanc-08);padding:11px 14px;display:none;
+}
+#panier.on{display:block}
+#panier b{color:var(--orange);font-weight:400}
+#panier button{
+  width:100%;margin-top:8px;background:var(--orange);border:0;color:var(--charbon);
+  font-family:var(--mono);font-size:10px;letter-spacing:1.4px;text-transform:uppercase;
+  padding:8px;cursor:pointer;
+}
+#panier a{display:block;margin-top:6px;color:var(--blanc-20);font-size:10px;cursor:pointer;text-decoration:underline}
+#toast{
+  position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:9;
+  background:var(--orange);color:var(--charbon);padding:8px 16px;font-size:11px;
+  letter-spacing:1.2px;text-transform:uppercase;display:none;
+}
 
 /* ------------------------------ le pied --------------------------- */
 #pied{
@@ -168,6 +202,11 @@ input[type=range]::-moz-range-thumb{width:9px;height:9px;border:0;background:var
   <details class="bloc"><summary>Forces <i>◆</i></summary>
     <div class="corps" id="forces"></div>
   </details>
+  <div id="panier">
+    <span><b id="panierN">0</b> image(s) à refaire</span>
+    <button id="bClaude">Copier pour Claude Code</button>
+    <a id="bVider">tout effacer</a>
+  </div>
 </div>
 
 <div class="volet" id="fiche">
@@ -183,11 +222,19 @@ input[type=range]::-moz-range-thumb{width:9px;height:9px;border:0;background:var
       <div class="sstitre" id="fsortiesTitre">Ce qui s'ouvre ici</div>
       <div id="fsorties"></div>
     </div>
+    <div id="fnote"></div>
+    <div class="sstitre" id="fpromptTitre">Le prompt de cette image</div>
+    <div id="fprompt"></div>
+    <div class="actions">
+      <button id="bCopie">Copier le prompt</button>
+      <button id="bRefaire">À refaire</button>
+    </div>
     <div id="fchemin"></div>
   </div>
 </div>
 
 <div id="pied"></div>
+<div id="toast"></div>
 
 <script>
 "use strict";
@@ -215,6 +262,15 @@ let N = [], L = [], parId = new Map(), voisins = new Map();
 let vue = { x:0, y:0, k:1 }, alpha = 1, brut = "";
 let survol = null, choisi = null, tire = null, souris = { x:0, y:0 }, vueTouchee = false;
 let nuages = {};
+let groupes = [], clauseStyle = "";
+/* LE PANIER — ce que la page peut faire et ce qu'elle ne peut pas.
+   Une page web ne peut pas écrire dans le dépôt : elle range les demandes en
+   local, et sort un texte que Patrick me recolle. Même modèle que « Copier ma
+   liste » de la page de couverture — son travail est le JUGEMENT, le mien
+   l'exécution. */
+const CLE_PANIER = "pactum-graphe-refaire";
+let panier = {};
+try { panier = JSON.parse(localStorage.getItem(CLE_PANIER) || "{}"); } catch (e) { panier = {}; }
 const NUAGE = { transition:"Les textes de marche — joués partout, sans lieu fixe",
                 marche:"Les vues de marche", scene:"Hors traversée" };
 const on = { lieu:1, arrivee:1, rencontre:1, scene:1, terminal:1, marche:1, transition:1 };
@@ -233,6 +289,8 @@ fetch(CHEMIN + "?t=" + Date.now())
 function demarrer(g) {
   document.getElementById("etat").style.display = "none";
   brut = g.brut || "";
+  groupes = g.groupes || [];
+  clauseStyle = g.clauseStyle || "";
   N = g.noeuds; L = g.liens;
 
   // disposition de départ : un anneau par catégorie, la simulation fait le reste
@@ -248,6 +306,14 @@ function demarrer(g) {
   });
   L = L.filter(l => parId.has(l.a) && parId.has(l.b));
   L.forEach(l => { l.na = parId.get(l.a); l.nb = parId.get(l.b); });
+  // Les membres d'un groupe : ses lieux ET les écrans qui s'y jouent. Sans les
+  // scènes, on rassemblerait seize points en laissant leurs cent écrans dehors.
+  groupes.forEach(gr => {
+    const m = new Set(gr.lieux);
+    L.forEach(l => { if (l.t === "appartient" && m.has(l.a)) m.add(l.b); });
+    gr.membres = [...m].map(id => parId.get(id)).filter(Boolean);
+    gr.membres.forEach(n => n.groupe = gr.id);
+  });
   N.forEach(n => voisins.set(n.id, new Set()));
   L.forEach(l => { voisins.get(l.a).add(l.b); voisins.get(l.b).add(l.a); });
 
@@ -258,6 +324,7 @@ function demarrer(g) {
   alpha = .10;
   batirPanneaux(g);
   recadrer();
+  majPanier();
   setTimeout(() => { if (!vueTouchee) recadrer(); }, 1600);
   document.getElementById("soustitre").textContent =
     g.totaux.scenes + " scènes · " + g.totaux.transitions + " transitions";
@@ -337,7 +404,8 @@ function pas() {
       const b = N[j];
       let dx = b.x - a.x, dy = b.y - a.y, d2 = dx * dx + dy * dy;
       if (d2 > 260000 || d2 === 0) continue;
-      const f = rep / d2, d = Math.sqrt(d2);
+      const paire = (a.cat === "lieu" ? 1 : 0) + (b.cat === "lieu" ? 1 : 0);
+      const f = rep * (paire === 2 ? 1.9 : paire === 1 ? 1.25 : 1) / d2, d = Math.sqrt(d2);
       const ux = dx / d * f, uy = dy / d * f;
       a.vx -= ux; a.vy -= uy; b.vx += ux; b.vy += uy;
     }
@@ -364,6 +432,38 @@ function pas() {
     if (!n.deg) {
       const c = centres[n.cat];
       n.vx += (c.x - n.x) * n.coh; n.vy += (c.y - n.y) * n.coh;
+    }
+  }
+
+  /* LE HAMEAU EST UNE ENCLAVE — la seule de la zone. Ses lieux sont VOISINS
+     dans la fiction ; le reste de la lande n'a aucune adjacence (la traversée
+     tire au sort), c'est pourquoi on ne groupe que lui.
+     ⚠️ On RÉSERVE sa place au lieu de dessiner un cadre après coup : sans ça
+     le cadre finit par englober des intrus et affirme une géographie fausse
+     (le piège corrigé sur la carte du Studio le 30/07). */
+  for (const gr of groupes) {
+    if (!gr.membres || !gr.membres.length) continue;
+    let cx = 0, cy = 0, vus = 0;
+    for (const n of gr.membres) { if (!on[n.cat]) continue; cx += n.x; cy += n.y; vus++; }
+    if (!vus) { gr.rayon = 0; continue; }
+    cx /= vus; cy /= vus;
+    // le groupe se tient au centre de la carte
+    cx *= .88; cy *= .88;
+    let r = 0;
+    for (const n of gr.membres) {
+      if (!on[n.cat]) continue;
+      n.vx += (cx - n.x) * .022; n.vy += (cy - n.y) * .022;   // cohésion
+      r = Math.max(r, Math.hypot(n.x - cx, n.y - cy));
+    }
+    gr.cx = cx; gr.cy = cy; gr.rayon = r + 26;
+    // tout ce qui n'est pas du groupe est poussé hors de son disque
+    for (const n of N) {
+      if (n.groupe === gr.id || !on[n.cat]) continue;
+      const dx = n.x - cx, dy = n.y - cy, d = Math.hypot(dx, dy) || .01;
+      if (d < gr.rayon) {
+        const f = (gr.rayon - d) / d * .06;
+        n.vx += dx * f; n.vy += dy * f;
+      }
     }
   }
 
@@ -394,6 +494,9 @@ function sources(n) {
   return ["assets/" + f + v, "../aldenhar/public/assets/" + f + v, brut + f];
 }
 
+const cx0 = (a, r, gr) => gr.cx + Math.cos(a) * r;
+const cy0 = (a, r, gr) => gr.cy + Math.sin(a) * r;
+
 function dessiner() {
   const w = toile.width / devicePixelRatio, h = toile.height / devicePixelRatio;
   ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
@@ -403,6 +506,24 @@ function dessiner() {
   const focus = survol || choisi;
   const proches = focus ? voisins.get(focus.id) : null;
   const visible = n => on[n.cat];
+
+  // LE CADRE DU GROUPE : un anneau de pixels épars, jamais un trait net (DA).
+  for (const gr of groupes) {
+    if (!gr.rayon || !gr.membres.some(n => on[n.cat])) continue;
+    ctx.fillStyle = "rgba(255,255,255,.30)";
+    const pas = Math.max(.012, 2.2 / gr.rayon);
+    for (let a = 0; a < 6.283; a += pas) {
+      const j = ((Math.sin(a * 37.7) + 1) * .5);           // bruit stable
+      if (j < .34) continue;
+      const rr = gr.rayon + (j - .5) * 7;
+      ctx.fillRect(cx0(a, rr, gr), cy0(a, rr, gr), 1.6 / vue.k, 1.6 / vue.k);
+    }
+    ctx.globalAlpha = .55; ctx.fillStyle = "#ffffff";
+    ctx.textAlign = "center"; ctx.textBaseline = "bottom";
+    ctx.font = "400 " + 11 / vue.k + "px " + getComputedStyle(document.body).fontFamily;
+    ctx.fillText(gr.nom, gr.cx, gr.cy - gr.rayon - 9 / vue.k);
+    ctx.globalAlpha = 1;
+  }
 
   // les liens d'abord, toujours sous les points
   for (const l of L) {
@@ -565,6 +686,12 @@ function recadrer() {
   if (!v.length) return;
   let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
   for (const n of v) { x0 = Math.min(x0, n.x); y0 = Math.min(y0, n.y); x1 = Math.max(x1, n.x); y1 = Math.max(y1, n.y); }
+  // le cercle d'un groupe et son nom débordent des points : ils comptent aussi
+  for (const gr of groupes) {
+    if (!gr.rayon || !gr.membres.some(n => on[n.cat])) continue;
+    x0 = Math.min(x0, gr.cx - gr.rayon); x1 = Math.max(x1, gr.cx + gr.rayon);
+    y0 = Math.min(y0, gr.cy - gr.rayon - 22); y1 = Math.max(y1, gr.cy + gr.rayon);
+  }
   // la zone libre : ce qui reste entre le panneau de gauche et la fiche
   const gA = innerWidth > 820 ? 286 : 14;
   const gB = innerWidth - (document.getElementById("fiche").classList.contains("ouverte") && innerWidth > 820 ? 420 : 14);
@@ -652,11 +779,95 @@ function ouvrir(n) {
     });
   } else bloc.style.display = "none";
 
+  // ---- L'IMAGE : son prompt, et les deux raccourcis -------------------
+  const pr = n.prompt || (n.resume ? composerPrompt(n.resume) : "");
+  const bloc2 = document.getElementById("fpromptTitre"), champ = document.getElementById("fprompt");
+  const acts = document.querySelector(".actions");
+  const montrable = n.cat !== "lieu";
+  bloc2.style.display = champ.style.display = acts.style.display = montrable ? "" : "none";
+  if (montrable) {
+    champ.textContent = pr || "— aucun prompt écrit pour cet écran —";
+    bloc2.textContent = n.prompt ? "Le prompt de cette image" : "Prompt à écrire (composé depuis la description)";
+  }
+  majNote(n);
+
   document.getElementById("fchemin").textContent =
     n.id + (n.image ? "  ·  " + n.image.f : "");
   fiche.classList.add("ouverte");
   fiche.scrollTop = 0;
 }
+
+/* Un écran sans prompt écrit : on en compose un depuis sa description, avec la
+   MÊME clause de style que tous les autres — c'est elle qui garantit l'aplat
+   d'orange et l'époque médiévale. Jamais une recette rédigée à part. */
+function composerPrompt(sujet) {
+  return String(sujet).trim().replace(/[,;\s]+$/, "") + ", " + clauseStyle;
+}
+
+function majNote(n) {
+  const dem = panier[n.id];
+  const note = document.getElementById("fnote");
+  note.textContent = dem ? (dem.note || "à refaire") : "";
+  note.classList.toggle("on", !!dem);
+  document.getElementById("bRefaire").classList.toggle("actif", !!dem);
+  document.getElementById("bRefaire").textContent = dem ? "Ne plus refaire" : "À refaire";
+}
+
+function toast(t) {
+  const e = document.getElementById("toast");
+  e.textContent = t; e.style.display = "block";
+  clearTimeout(toast.t); toast.t = setTimeout(() => e.style.display = "none", 1800);
+}
+async function copier(t) {
+  try { await navigator.clipboard.writeText(t); }
+  catch (e) {
+    const a = document.createElement("textarea");
+    a.value = t; document.body.appendChild(a); a.select();
+    document.execCommand("copy"); a.remove();
+  }
+}
+
+document.getElementById("bCopie").onclick = () => {
+  copier(document.getElementById("fprompt").textContent);
+  toast("prompt copié");
+};
+document.getElementById("bRefaire").onclick = () => {
+  if (!choisi) return;
+  if (panier[choisi.id]) delete panier[choisi.id];
+  else {
+    const q = window.prompt("Qu'est-ce qui ne va pas sur cette image ?\n(facultatif — ça devient ma consigne de réécriture)", "");
+    if (q === null) return;
+    panier[choisi.id] = { nom: choisi.nom, fichier: choisi.image ? choisi.image.f : "", note: q.trim() };
+  }
+  localStorage.setItem(CLE_PANIER, JSON.stringify(panier));
+  majNote(choisi); majPanier();
+};
+
+function majPanier() {
+  const ids = Object.keys(panier);
+  document.getElementById("panier").classList.toggle("on", ids.length > 0);
+  document.getElementById("panierN").textContent = ids.length;
+}
+document.getElementById("bVider").onclick = () => {
+  panier = {}; localStorage.setItem(CLE_PANIER, "{}");
+  majPanier(); if (choisi) majNote(choisi);
+};
+document.getElementById("bClaude").onclick = () => {
+  const ids = Object.keys(panier);
+  let t = "Images à refaire dans PACTUM (" + ids.length + ") — depuis le Graphe.\n\n";
+  ids.forEach((id, i) => {
+    const d = panier[id], n = parId.get(id);
+    t += (i + 1) + ". " + d.nom + "  [" + id + "]\n";
+    if (d.fichier) t += "   fichier actuel : " + d.fichier + "\n";
+    if (d.note) t += "   ce qui ne va pas : " + d.note + "\n";
+    if (n && n.desc && n.desc.length) t += "   la scène dit : " + n.desc.join(" ").slice(0, 260) + "\n";
+    t += "\n";
+  });
+  t += "Réécris le prompt de chacune en tenant compte de la remarque, "
+     + "garde la clause de style commune, puis donne-moi les prompts prêts à coller.";
+  copier(t);
+  toast(ids.length + " demande(s) copiée(s)");
+};
 </script>
 </body>
 </html>

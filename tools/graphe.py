@@ -33,6 +33,9 @@ from collections import deque
 from datetime import datetime, timezone
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from style_image import CLAUSE  # noqa: E402  (la recette d'image, source unique)
+
 RACINE = Path(__file__).resolve().parent.parent
 STUDIO = RACINE / "data/studio-data.json"
 SORTIE_JSON = RACINE / "data/graphe-data.json"
@@ -129,6 +132,7 @@ def construire() -> dict:
             "note": L.get("note") or "",
             "region": region_de.get(lid, ""),
             "image": {"f": L["illustration"], "h": "", "ok": True} if L.get("illustration") else None,
+            "prompt": "",
             "desc": [],
             "meta": [f"{L.get('nbScenes', 0)} scènes"] + ([L["note"]] if L.get("note") else []),
         })
@@ -172,6 +176,7 @@ def construire() -> dict:
             "descEchec": list(s.get("narrationEchec") or []),
             "descDemo": list(s.get("narrationDemo") or []),
             "resume": s.get("description") or "",
+            "prompt": s.get("promptImage") or "",
             "meta": meta,
             "sorties": [
                 {"label": c.get("label", ""), "vers": (c.get("sortie") or {}).get("toScene") or c.get("dest") or ""}
@@ -258,10 +263,23 @@ def construire() -> dict:
     except Exception:
         commit = ""
 
+    # Le Hameau est la seule enclave géographique réelle de la zone : ses lieux
+    # sont VOISINS dans la fiction, alors que le reste de la lande n'a aucune
+    # adjacence (la traversée tire au sort). On l'exporte donc comme groupe pour
+    # que la page puisse le rassembler et l'entourer — sans inventer de chemin.
+    groupes = []
+    for r in regions:
+        membres = ["lieu:" + l for l in (r.get("lieux", []) + r.get("lieuxEnPlus", []))
+                   if l in lieux_meta]
+        if len(membres) > 1:
+            groupes.append({"id": r["id"], "nom": r["nom"], "lieux": membres})
+
     return {
+        "groupes": groupes,
         "genere": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
         "commit": commit,
         "brut": BRUT,
+        "clauseStyle": CLAUSE,
         "noeuds": noeuds,
         "liens": liens,
         "totaux": {

@@ -26,6 +26,7 @@ on:
       - "data/scene-meta.json"
       - "tools/studio_data.py"
       - "tools/graphe.py"
+      - "tools/style_image.py"
       - "tools/graphe_page.html"
       - ".github/workflows/graphe.yml"
   workflow_dispatch:
