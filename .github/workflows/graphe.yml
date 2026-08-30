@@ -11,7 +11,7 @@
 #
 # ⚠️ En revanche, ce déploiement manuel REMPLACE le dossier aldenhar/ :
 # il doit donc recopier graphe.html et graphe-data.json, comme il le
-# fait déjà pour couverture.html, atelier.html et studio.html.
+# fait déjà pour couverture.html et atelier.html.
 # =====================================================================
 name: Le graphe
 
