@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-30T16:49:10Z",
- "commit": "b42f8eb",
+ "genere": "2026-08-30T17:25:53Z",
+ "commit": "5243894",
  "zones": [
   {
    "id": "landes",
@@ -4544,6 +4544,33 @@
    ],
    "choix": [
     {
+     "id": "entrer-moulin-elle",
+     "label": "Entrer",
+     "type": "passif",
+     "consequence": "Entre toi et la porte, dans la bruyère, quelqu’un est debout au milieu des troncs morts. Une enfant. Elle ne se cache pas et ne recule pas : elle attend que tu l’aies bien vue.\n\nPuis elle s’écarte de deux pas et te laisse passer. Dedans, sous la lucarne, un lit de bruyère garde une forme courte, et contre le mur, à hauteur d’enfant, des jours comptés par paquets de cinq.",
+     "sortie": {
+      "toScene": "campement-2"
+     },
+     "donneObjet": "jouet-fixee",
+     "donneDecouverte": "d.fille_vue",
+     "exigeDecouverte": "d.fille_apercue",
+     "masqueSi": {
+      "decouverte": "d.fille_vue"
+     },
+     "prendLaPlaceDe": [
+      "entrer-moulin"
+     ],
+     "image": {
+      "fichier": "monstre_petite_fixee_c.png",
+      "hash": "9a950537",
+      "taille": 13622,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
+    },
+    {
      "id": "entrer-moulin",
      "label": "Entrer",
      "type": "passif",
@@ -4586,7 +4613,7 @@
     }
    ],
    "pointsInteret": [],
-   "donneDecouverte": "d.crete_interrompue",
+   "donneDecouverte": "d.fille_vue",
    "nom": "Campement",
    "lieu": "moulin_sans_ailes",
    "typeScene": "arrivee",
@@ -8118,14 +8145,6 @@
    "racine": "pendu_mal_fixe"
   },
   {
-   "fichier": "monstre_petite_fixee_c.png",
-   "hash": "9a950537",
-   "taille": 13622,
-   "recent": false,
-   "groupe": "attend",
-   "racine": "petite_fixee"
-  },
-  {
    "fichier": "monstre_recousu_c.png",
    "hash": "04f590d1",
    "taille": 27948,
@@ -8757,11 +8776,11 @@
   {
    "id": "fait-fille",
    "sujet": "La corde coupée de la Fille",
-   "accusation": "On m'a montré sa corde coupée à la lame. On m'a montré la même corde rompue d'usure. On m'a dit qu'elle n'avait jamais été nouée. Choisissez.",
+   "accusation": "On m'a montré sa corde coupée net. On m'a montré la même corde rompue d'usure. On m'a dit qu'elle n'avait jamais été nouée. Choisissez.",
    "versions": [
     {
      "id": "coupee",
-     "texte": "Sa corde a été coupée net, à la lame, et on l'a descendue vivante. Le brin sectionné est encore accroché à la traverse."
+     "texte": "Sa corde a été coupée net, et on l'a descendue vivante. Le brin sectionné est encore accroché à la traverse."
     },
     {
      "id": "rompue",
@@ -9819,11 +9838,11 @@
  "totaux": {
   "scenes": 101,
   "pointsInteret": 0,
-  "choix": 290,
+  "choix": 291,
   "illustrations": 286,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 91,
+  "reserve": 90,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
@@ -9832,7 +9851,7 @@
   "besoins": 0,
   "transitions": 64,
   "ecransDeMarche": 13,
-  "interactions": 30,
+  "interactions": 31,
   "aRefaire": 19,
   "familiarite": 34
  }
