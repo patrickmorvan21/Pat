@@ -28,6 +28,7 @@ from pathlib import Path
 RACINE = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from style_image import composer, composer_objet  # noqa: E402
+from prompts_variantes import CADRES  # noqa: E402  (les 4 cadrages de variante)
 
 ASSETS = RACINE / "aldenhar/public/assets"
 SORTIE = RACINE / "data/prompts-refonte.md"
@@ -66,6 +67,11 @@ def assets_du_jeu() -> set[str]:
 def main() -> int:
     meta = json.loads((RACINE / "data/scene-meta.json").read_text(encoding="utf-8"))["scenes"]
     om = json.loads((RACINE / "data/objet-meta.json").read_text(encoding="utf-8"))
+    # Source PRIORITAIRE, indexée par nom de fichier : elle atteint les écrans
+    # portés par un CHOIX et les vues de marche, que scene-meta.json (indexé
+    # par scène) ne peut pas couvrir.
+    sj = json.loads((RACINE / "data/sujets-images.json").read_text(encoding="utf-8"))
+    sujets_fichier = {k: v for k, v in sj.items() if not k.startswith("_")}
     studio = json.loads((RACINE / "data/studio-data.json").read_text(encoding="utf-8"))
     # 2e source de sujet : les prompts de VARIANTE, écrits par
     # tools/prompts_variantes.py dans les fiches de zone. Ils portent déjà leur
@@ -96,9 +102,13 @@ def main() -> int:
     for fich in sorted(assets_du_jeu()):
         base = fich[:-4]
         racine_var = re.sub(r"_[a-z](_[a-z])?$", "", base)
-        sujet, lot = "", "Lieux et écrans"
+        sujet, lot, cadre = "", "Lieux et écrans", ""
+        if base in sujets_fichier:
+            cadre, sujet = sujets_fichier[base]
 
-        if base.startswith("objet_"):
+        if cadre:
+            lot = "Rencontres" if base.startswith("monstre_") else "Lieux et écrans"
+        elif base.startswith("objet_"):
             lot = "Objets"
             sujet = om["objets"].get(racine_var) or om["objets"].get(base, "")
         elif base.startswith("relique_"):
@@ -133,7 +143,16 @@ def main() -> int:
         if not sujet and not pret:
             manquants.append((fich, ", ".join(porte.get(fich, []))[:70]))
             continue
-        prompt = pret or (composer_objet(sujet) if lot in ("Objets", "Reliques") else composer(sujet))
+        if pret:
+            prompt = pret
+        elif cadre and cadre != "scene":
+            # un cadrage de variante : c'est lui qui empêche un personnage de
+            # changer de visage d'une image à l'autre
+            prompt = composer(f"{sujet}. {CADRES[cadre]}")
+        elif lot in ("Objets", "Reliques"):
+            prompt = composer_objet(sujet)
+        else:
+            prompt = composer(sujet)
         lots[lot].append((suivante(fich), fich, ", ".join(porte.get(fich, []))[:70], prompt))
 
     total = sum(len(v) for v in lots.values())

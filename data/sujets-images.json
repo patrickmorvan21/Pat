@@ -1,0 +1,163 @@
+{
+  "_note": "Sujets d'image indexés par NOM DE FICHIER — l'unité que manipule le carnet de commande. Couvre les écrans portés par un choix et les vues de marche, que scene-meta.json (indexé par scène) ne peut pas atteindre. `cadre` : scene | pres | large | portrait | geste — la clause de style est ajoutée par tools/style_image.py, ne jamais la recopier ici.",
+  "monstre_la_fille_moulin_v2_a": [
+    "portrait",
+    "a woman of about twenty turning to face the viewer inside a disused mill room, a faded rope mark across her throat, calm and entirely unafraid, plainly young and not a child and not an old woman"
+  ],
+  "monstre_fille_moulin_dos_v2_a": [
+    "geste",
+    "a woman seated on a straw pallet with her back fully turned, working at something in her lap, a clay pot of freshly cut wet heather beside her, head never shown"
+  ],
+  "monstre_fille_moulin_ouvrage_c": [
+    "geste",
+    "close on a woman's hands returning to a half-finished piece of plaiting in her lap, unhurried, the work already long, head and face out of frame"
+  ],
+  "monstre_gamin_murets_a": [
+    "portrait",
+    "a small boy sitting on a low drystone wall, sorting pebbles by size into a row beside him, looking up at the viewer without any wariness at all"
+  ],
+  "monstre_gamin_caillou_c": [
+    "geste",
+    "a child's hand held out flat, offering a smooth grey river pebble, the palm dirty, head and face out of frame"
+  ],
+  "monstre_gamin_depart_c": [
+    "geste",
+    "a small boy seen from behind climbing down off a low wall, gathering his pebbles into a fist as he goes, walking away along the wall line"
+  ],
+  "monstre_fossoyeur_trou_1_c": [
+    "geste",
+    "close on a gravedigger's hands carving a wooden grave marker across his knees, a name cut into it with no date yet, and beneath the name a small feather-shaped mark scratched absently, head out of frame"
+  ],
+  "monstre_fossoyeur_trou_3_a": [
+    "geste",
+    "a finished wooden grave marker propped face-down against a man's leg so its name cannot be read, a spade upright in the turned earth behind, head out of frame"
+  ],
+  "monstre_marcheur_rebours_v2_a": [
+    "portrait",
+    "a lean man walking backwards along a sunken track between high banks, facing the way he came, watching the path behind him, perfectly steady on his feet"
+  ],
+  "monstre_rebouteux_a": [
+    "portrait",
+    "a rural bonesetter standing at a market stall of splints, bindings and small clay pots, sleeves pushed up, hands held slightly away from his body as if reluctant to touch anything"
+  ],
+  "monstre_veilleur_palissade_v2_b": [
+    "portrait",
+    "a night watchman standing at the door of a narrow plank sentry box against a log palisade, a lit lantern hanging beside him, a tally register under his arm"
+  ],
+  "monstre_temoin_ruelle_v6_b": [
+    "large",
+    "a narrow village lane at night seen down its length, and at the far end a shape crossing the gap in complete silence, cloaked and unreadable, roughly the outline of a large bird but far too tall for one, no face, no limbs, nothing beneath the cloak, gone before the eye settles"
+  ],
+  "monstre_troupeau_sans_berger_a": [
+    "large",
+    "a whole flock of sheep grazing dead heather in a shallow valley with no shepherd and no dog anywhere, several heads lifted toward the viewer, entirely unbothered"
+  ],
+  "monstre_troupeau_compte_b": [
+    "pres",
+    "extreme close on a sheep's ear, an old owner's notch cut into its edge and a second, fresher notch cut across the first"
+  ],
+  "monstre_troupeau_brebis_v2_b": [
+    "large",
+    "one ewe stepping out of a grazing flock and walking away north-east on her own, stopping at the same spot, the grass worn into a faint line by the same short journey repeated"
+  ],
+  "scene_champ_les_rangees_v2_a": [
+    "large",
+    "rows of plain wooden posts driven between old leaning gravestones in a field, every post carrying one name, all of them turned to face north"
+  ],
+  "scene_champ_poteau_retire_c": [
+    "pres",
+    "a shallow empty socket in turned earth where a post has been pulled out, the hole square and clean, the grass around it grown back unevenly"
+  ],
+  "scene_chapelle_mur_cordes_v3_c": [
+    "pres",
+    "a chapel wall hung floor to ceiling with hanging ropes of every age, each one finished with the same knot, swept and kept"
+  ],
+  "scene_chapelle_cloche_sans_battant_b": [
+    "pres",
+    "a small chapel bell hanging in its frame with the clapper missing entirely, the hook it hung from still bright from use"
+  ],
+  "scene_colline_pied_grand_gibet_b": [
+    "pres",
+    "the foot of a tall gallows post, a name and a date cut deep into the grain at knee height, the timber worn smooth above by rope"
+  ],
+  "scene_mare_creux_doubles_v2_b": [
+    "pres",
+    "a trampled bank of black water where the ground is pressed into two knee hollows side by side, worn by years of the same two people kneeling"
+  ],
+  "scene_mare_eau_reflet_v2_b": [
+    "pres",
+    "black still water filling the frame with a single reflected figure in it, the reflection lagging a beat behind the movement above it"
+  ],
+  "scene_murets_vers_sud_c": [
+    "large",
+    "a hip-high drystone wall running away south across empty moor, the top course worn smooth in a narrow line by someone small walking it every day"
+  ],
+  "scene_temoin_grange_toit_v2_c": [
+    "pres",
+    "seen from inside a barn looking up at the roof timbers, one beam bowed downward under a weight, dust sifting from the joint, nothing visible above the boards"
+  ],
+  "scene_verger_fruits_cendre_v2_c": [
+    "pres",
+    "a dark orchard fruit broken open in the hand, perfectly formed outside and packed with dry grey ash inside"
+  ],
+  "scene_renoncer_v2_b": [
+    "scene",
+    "a doorstep stone at the edge of a village with a plain plank door standing shut behind it, a new iron latch fitted to the door, the moor beginning just beyond"
+  ],
+  "scene_landes_liaison_sud_c": [
+    "large",
+    "the moor ending abruptly at a cliff edge, hundreds of ropes knotted to stakes along its whole width and hanging down into a drop deeper than the eye follows"
+  ],
+  "monstre_appele_descente": [
+    "geste",
+    "a cloaked figure at a cliff edge seen from behind, taking hold of one hanging rope without looking at the others and stepping over the lip, the wind lifting the back of the cloak, head never shown"
+  ],
+  "scene_lande_generique_1": [
+    "large",
+    "open empty moor under a low sky, a faint footpath crossing the frame, no building and no figure anywhere"
+  ],
+  "scene_lande_generique_2": [
+    "large",
+    "rolling heather moor with a shallow hollow in the middle distance, standing water in the bottom of it, no building and no figure"
+  ],
+  "scene_lande_generique_3": [
+    "large",
+    "a bare ridge of moorland with the track running along its spine, wind laying the heather flat, no building and no figure"
+  ],
+  "scene_lande_generique_4": [
+    "large",
+    "flat open moor with a scatter of loose stones and a broken drystone line half swallowed by heather, no building and no figure"
+  ],
+  "scene_lande_arbres_morts_c": [
+    "large",
+    "a stand of dead leafless trees alone on open moor, trunks bare and pale, no building and no figure"
+  ],
+  "scene_landes_liaison_chemin_creux_a": [
+    "large",
+    "a track dropping into a sunken lane between two high earth banks, the opening dark, the moor level above it on both sides"
+  ],
+  "scene_landes_liaison_fourche_a": [
+    "large",
+    "a moorland track splitting in two around a collapsed drystone wall, neither branch marked, no building and no figure"
+  ],
+  "scene_landes_liaison_plateau_d": [
+    "large",
+    "a wide flat moorland plateau with the horizon almost level all the way round, the path faint underfoot, no building and no figure"
+  ],
+  "scene_hameau_dense_b": [
+    "large",
+    "a small huddle of thatched cottages seen from the moor at a distance, packed tight together, smoke from one roof only, no figure"
+  ],
+  "scene_hameau_dense_c": [
+    "large",
+    "the same tight village nearer now, roof lines overlapping, every shutter closed, a low drystone wall running out toward the viewer, no figure"
+  ],
+  "scene_hameau_dense_d": [
+    "large",
+    "a village edge close to, gable ends and thatch filling the horizon, a gap between two cottages leading in, no figure"
+  ],
+  "scene_landes_frise_montagnes_pleine_b": [
+    "large",
+    "a long unbroken ridge of distant mountains across the full width of the frame, seen from far off over empty ground, nothing else"
+  ]
+}

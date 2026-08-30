@@ -1,6 +1,6 @@
 # PACTUM — carnet de commande d'images
 
-**116 images** prêtes à regénérer · **40** sans sujet écrit.
+**156 images** prêtes à regénérer · **0** sans sujet écrit.
 
 Chaque entrée donne le **nom à produire** (variante suivante) et le prompt complet. Deux images par prompt suffisent : on garde la meilleure.
 
@@ -280,7 +280,14 @@ relique_vertebre_gravee_b=a single human vertebra, dense carved marks covering e
 
 ---
 
-## Rencontres (29)
+## Rencontres (45)
+
+### `monstre_appele_descente_b.png`
+remplace `monstre_appele_descente.png` — falaise-cordes-3
+
+```
+monstre_appele_descente_b=a cloaked figure at a cliff edge seen from behind, taking hold of one hanging rope without looking at the others and stepping over the lip, the wind lifting the back of the cloak, head never shown. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
 
 ### `monstre_bete_chemins_creux_b.png`
 remplace `monstre_bete_chemins_creux_a.png` — Bete chemins creux, menace-retour-bete
@@ -359,11 +366,60 @@ remplace `monstre_femme_seuil_3_v2_a.png` — femme-savoir-3, Femme seuil 3 — 
 monstre_femme_seuil_3_v2_b=Elle a repris sa place sur le seuil, mains vides, et regarde le sud — de la rue, rien ne dit qu'elle a parlé à quelqu'un. CHANGE : de nouveau immobile et les mains vides., medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
+### `monstre_fille_moulin_dos_v2_b.png`
+remplace `monstre_fille_moulin_dos_v2_a.png` — fille-moulin-1
+
+```
+monstre_fille_moulin_dos_v2_b=a woman seated on a straw pallet with her back fully turned, working at something in her lap, a clay pot of freshly cut wet heather beside her, head never shown. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `monstre_fille_moulin_ouvrage_d.png`
+remplace `monstre_fille_moulin_ouvrage_c.png` — fille-moulin-4
+
+```
+monstre_fille_moulin_ouvrage_d=close on a woman's hands returning to a half-finished piece of plaiting in her lap, unhurried, the work already long, head and face out of frame. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
 ### `monstre_fossoyeur_poteaux_b.png`
 remplace `monstre_fossoyeur_poteaux_a.png` — Le Champ des Fixés — beat 2
 
 ```
 monstre_fossoyeur_poteaux_b=old gravedigger kneeling at the base of a wooden post, carving letters into the wood with a knife, satchel of tools open beside him, back bent, pitch-black background, subject emerging from darkness, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `monstre_fossoyeur_trou_1_d.png`
+remplace `monstre_fossoyeur_trou_1_c.png` — fossoyeur-trou-1
+
+```
+monstre_fossoyeur_trou_1_d=close on a gravedigger's hands carving a wooden grave marker across his knees, a name cut into it with no date yet, and beneath the name a small feather-shaped mark scratched absently, head out of frame. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `monstre_fossoyeur_trou_3_b.png`
+remplace `monstre_fossoyeur_trou_3_a.png` — fossoyeur-trou-3
+
+```
+monstre_fossoyeur_trou_3_b=a finished wooden grave marker propped face-down against a man's leg so its name cannot be read, a spade upright in the turned earth behind, head out of frame. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `monstre_gamin_caillou_d.png`
+remplace `monstre_gamin_caillou_c.png` — gamin-murets-3
+
+```
+monstre_gamin_caillou_d=a child's hand held out flat, offering a smooth grey river pebble, the palm dirty, head and face out of frame. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `monstre_gamin_depart_d.png`
+remplace `monstre_gamin_depart_c.png` — gamin-murets-4
+
+```
+monstre_gamin_depart_d=a small boy seen from behind climbing down off a low wall, gathering his pebbles into a fist as he goes, walking away along the wall line. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `monstre_gamin_murets_b.png`
+remplace `monstre_gamin_murets_a.png` — gamin-murets-1
+
+```
+monstre_gamin_murets_b=a small boy sitting on a low drystone wall, sorting pebbles by size into a row beside him, looking up at the viewer without any wariness at all. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
 ### `monstre_guetteur_tour_d.png`
@@ -415,6 +471,13 @@ remplace `monstre_hesitant_b.png` — L'Hésitant
 monstre_hesitant_c=gaunt hooded man standing motionless on a moor, seen from behind at three-quarters, facing away toward a dark southern horizon, worn travelling clothes, a small bundle at his feet, grass flattened around him, pitch-black background, subject emerging from darkness, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
+### `monstre_la_fille_moulin_v2_b.png`
+remplace `monstre_la_fille_moulin_v2_a.png` — fille-moulin-2, fille-moulin-3
+
+```
+monstre_la_fille_moulin_v2_b=a woman of about twenty turning to face the viewer inside a disused mill room, a faded rope mark across her throat, calm and entirely unafraid, plainly young and not a child and not an old woman. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
 ### `monstre_mains_du_puits_b.png`
 remplace `monstre_mains_du_puits_a.png` — Le Puits Condamné — beat 2
 
@@ -441,6 +504,13 @@ remplace `monstre_marcheur_3_v2_b.png` — Marcheur 3 — beat 3
 
 ```
 monstre_marcheur_3_v2_c=Au coude du chemin il pivote face au nord et lève deux doigts vers toi, juste avant que le talus ne l'avale. CHANGE : vu de dos, et le geste des deux doigts levés., medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `monstre_marcheur_rebours_v2_b.png`
+remplace `monstre_marcheur_rebours_v2_a.png`
+
+```
+monstre_marcheur_rebours_v2_b=a lean man walking backwards along a sunken track between high banks, facing the way he came, watching the path behind him, perfectly steady on his feet. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
 ### `monstre_meute_grise_d.png`
@@ -478,6 +548,48 @@ remplace `monstre_pendu_qui_parle_a.png` — Le Pendu qui parle
 monstre_pendu_qui_parle_b=hanged man on an isolated gallows seen from a distance across dead moorland, head upright rather than slumped, rope taut, long coat, sky nearly black, pitch-black background, subject emerging from darkness, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
+### `monstre_rebouteux_b.png`
+remplace `monstre_rebouteux_a.png`
+
+```
+monstre_rebouteux_b=a rural bonesetter standing at a market stall of splints, bindings and small clay pots, sleeves pushed up, hands held slightly away from his body as if reluctant to touch anything. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `monstre_temoin_ruelle_v6_c.png`
+remplace `monstre_temoin_ruelle_v6_b.png` — temoin-ruelle
+
+```
+monstre_temoin_ruelle_v6_c=a narrow village lane at night seen down its length, and at the far end a shape crossing the gap in complete silence, cloaked and unreadable, roughly the outline of a large bird but far too tall for one, no face, no limbs, nothing beneath the cloak, gone before the eye settles. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `monstre_troupeau_brebis_v2_c.png`
+remplace `monstre_troupeau_brebis_v2_b.png` — troupeau-sans-berger-2
+
+```
+monstre_troupeau_brebis_v2_c=one ewe stepping out of a grazing flock and walking away north-east on her own, stopping at the same spot, the grass worn into a faint line by the same short journey repeated. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `monstre_troupeau_compte_c.png`
+remplace `monstre_troupeau_compte_b.png`
+
+```
+monstre_troupeau_compte_c=extreme close on a sheep's ear, an old owner's notch cut into its edge and a second, fresher notch cut across the first. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `monstre_troupeau_sans_berger_b.png`
+remplace `monstre_troupeau_sans_berger_a.png` — troupeau-sans-berger
+
+```
+monstre_troupeau_sans_berger_b=a whole flock of sheep grazing dead heather in a shallow valley with no shepherd and no dog anywhere, several heads lifted toward the viewer, entirely unbothered. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `monstre_veilleur_palissade_v2_c.png`
+remplace `monstre_veilleur_palissade_v2_b.png`
+
+```
+monstre_veilleur_palissade_v2_c=a night watchman standing at the door of a narrow plank sentry box against a log palisade, a lit lantern hanging beside him, a tally register under his arm. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
 ### `monstre_veuve_cordes_v2_b.png`
 remplace `monstre_veuve_cordes_v2_a.png` — veuve-cordes-sait-1, veuve-cordes-sait-2, veuve-cordes-sait-3, La Chap
 
@@ -488,7 +600,7 @@ monstre_veuve_cordes_v2_b=old woman in black seated on a chair, tying and untyin
 
 ---
 
-## Lieux et écrans (50)
+## Lieux et écrans (74)
 
 ### `scene_borne_frontiere_v2_b.png`
 remplace `scene_borne_frontiere_v2_a.png` — La Borne Frontière
@@ -509,6 +621,20 @@ remplace `scene_champ_des_fixes_b.png` — Le Champ des Fixés
 
 ```
 scene_champ_des_fixes_c=rows of wooden posts planted across dead moorland, a small nailed sign on each, some posts still bearing hanged figures in the far distance, receding perspective, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_champ_les_rangees_v2_b.png`
+remplace `scene_champ_les_rangees_v2_a.png`
+
+```
+scene_champ_les_rangees_v2_b=rows of plain wooden posts driven between old leaning gravestones in a field, every post carrying one name, all of them turned to face north. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_champ_poteau_retire_d.png`
+remplace `scene_champ_poteau_retire_c.png` — fossoyeur-trou-2
+
+```
+scene_champ_poteau_retire_d=a shallow empty socket in turned earth where a post has been pulled out, the hole square and clean, the grass around it grown back unevenly. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
 ### `scene_champ_poteaux_vierges_c.png`
@@ -532,11 +658,25 @@ remplace `scene_chapelle_autel_a_c.png`
 scene_chapelle_autel_a_d=block of altar stone lying on its side on a flagstone floor, never righted and never taken away, dust settled along its upper edge. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
+### `scene_chapelle_cloche_sans_battant_c.png`
+remplace `scene_chapelle_cloche_sans_battant_b.png`
+
+```
+scene_chapelle_cloche_sans_battant_c=a small chapel bell hanging in its frame with the clapper missing entirely, the hook it hung from still bright from use. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
 ### `scene_chapelle_des_cordes_e.png`
 remplace `scene_chapelle_des_cordes_d.png` — La Chapelle des Cordes
 
 ```
 scene_chapelle_des_cordes_e=interior of a tiny stone chapel, dozens of cut ropes nailed in rows along the walls from floor to ceiling, small paper labels on each, overturned altar, short nave, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_chapelle_mur_cordes_v3_d.png`
+remplace `scene_chapelle_mur_cordes_v3_c.png`
+
+```
+scene_chapelle_mur_cordes_v3_d=a chapel wall hung floor to ceiling with hanging ropes of every age, each one finished with the same knot, swept and kept. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
 ### `scene_chemin_charrette_a_d.png`
@@ -588,6 +728,13 @@ remplace `scene_colline_gibets_2_a.png` — La Colline aux Gibets — beat 2
 scene_colline_gibets_2_b=standing among a row of wooden gallows along a hill ridge, ropes hanging at eye level on either side, splintered beam in the foreground, vast empty sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
+### `scene_colline_pied_grand_gibet_c.png`
+remplace `scene_colline_pied_grand_gibet_b.png`
+
+```
+scene_colline_pied_grand_gibet_c=the foot of a tall gallows post, a name and a date cut deep into the grain at knee height, the timber worn smooth above by rope. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
 ### `scene_hameau_accueil_cloche_c.png`
 remplace `scene_hameau_accueil_cloche_b.png` — La cloche qu'on retient
 
@@ -637,6 +784,27 @@ remplace `scene_hameau_dense2_b.png` — Serment hameau, demo-nuit-dehors
 scene_hameau_dense2_c=distant abandoned hamlet nestled in a hollow of dead moorland at dusk, sagging slate rooftops, one single chimney smoking, low dry-stone walls leading to the village, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
+### `scene_hameau_dense_c.png`
+remplace `scene_hameau_dense_b.png`
+
+```
+scene_hameau_dense_c=a small huddle of thatched cottages seen from the moor at a distance, packed tight together, smoke from one roof only, no figure. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_hameau_dense_d.png`
+remplace `scene_hameau_dense_c.png`
+
+```
+scene_hameau_dense_d=the same tight village nearer now, roof lines overlapping, every shutter closed, a low drystone wall running out toward the viewer, no figure. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_hameau_dense_e.png`
+remplace `scene_hameau_dense_d.png`
+
+```
+scene_hameau_dense_e=a village edge close to, gable ends and thatch filling the horizon, a gap between two cottages leading in, no figure. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
 ### `scene_hameau_entree_5_v2_b.png`
 remplace `scene_hameau_entree_5_v2_a.png` — Hameau entree 5 — beat 5
 
@@ -672,6 +840,48 @@ remplace `scene_hameau_nuit_dehors_v2_c.png` — Hameau halte dehors
 scene_hameau_nuit_dehors_v2_d=man sitting against a low dry-stone wall outside a dark village at night, knees drawn up, no fire, closed shutters behind him, empty street, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
+### `scene_lande_arbres_morts_d.png`
+remplace `scene_lande_arbres_morts_c.png`
+
+```
+scene_lande_arbres_morts_d=a stand of dead leafless trees alone on open moor, trunks bare and pale, no building and no figure. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_lande_generique_1_b.png`
+remplace `scene_lande_generique_1.png`
+
+```
+scene_lande_generique_1_b=open empty moor under a low sky, a faint footpath crossing the frame, no building and no figure anywhere. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_lande_generique_2_b.png`
+remplace `scene_lande_generique_2.png`
+
+```
+scene_lande_generique_2_b=rolling heather moor with a shallow hollow in the middle distance, standing water in the bottom of it, no building and no figure. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_lande_generique_3_b.png`
+remplace `scene_lande_generique_3.png`
+
+```
+scene_lande_generique_3_b=a bare ridge of moorland with the track running along its spine, wind laying the heather flat, no building and no figure. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_lande_generique_4_b.png`
+remplace `scene_lande_generique_4.png`
+
+```
+scene_lande_generique_4_b=flat open moor with a scatter of loose stones and a broken drystone line half swallowed by heather, no building and no figure. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_landes_frise_montagnes_pleine_c.png`
+remplace `scene_landes_frise_montagnes_pleine_b.png`
+
+```
+scene_landes_frise_montagnes_pleine_c=a long unbroken ridge of distant mountains across the full width of the frame, seen from far off over empty ground, nothing else. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
 ### `scene_landes_hameau_grange_b.png`
 remplace `scene_landes_hameau_grange_a.png` — Hameau halte 2 — beat 2, demo-nuit-grange
 
@@ -684,6 +894,34 @@ remplace `scene_landes_hameau_ruelle_b.png` — Hameau entree 2 — beat 2, Hame
 
 ```
 scene_landes_hameau_ruelle_c=narrow street of an old abandoned hamlet, crooked stone houses, wooden doors marked with chalk crosses, closed shutters, wet cobblestones, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_landes_liaison_chemin_creux_b.png`
+remplace `scene_landes_liaison_chemin_creux_a.png`
+
+```
+scene_landes_liaison_chemin_creux_b=a track dropping into a sunken lane between two high earth banks, the opening dark, the moor level above it on both sides. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_landes_liaison_fourche_b.png`
+remplace `scene_landes_liaison_fourche_a.png`
+
+```
+scene_landes_liaison_fourche_b=a moorland track splitting in two around a collapsed drystone wall, neither branch marked, no building and no figure. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_landes_liaison_plateau_e.png`
+remplace `scene_landes_liaison_plateau_d.png`
+
+```
+scene_landes_liaison_plateau_e=a wide flat moorland plateau with the horizon almost level all the way round, the path faint underfoot, no building and no figure. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_landes_liaison_sud_d.png`
+remplace `scene_landes_liaison_sud_c.png` — falaise-cordes, falaise-cordes-2, la-descente
+
+```
+scene_landes_liaison_sud_d=the moor ending abruptly at a cliff edge, hundreds of ropes knotted to stakes along its whole width and hanging down into a drop deeper than the eye follows. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
 ### `scene_maison_du_bailli_d.png`
@@ -714,6 +952,20 @@ remplace `scene_mare_aux_regards_a.png` — La Mare aux Regards
 scene_mare_aux_regards_b=perfectly still black pond in dead moorland, trampled bank with two knee hollows, reeds, dark reflections, no wind, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
+### `scene_mare_creux_doubles_v2_c.png`
+remplace `scene_mare_creux_doubles_v2_b.png`
+
+```
+scene_mare_creux_doubles_v2_c=a trampled bank of black water where the ground is pressed into two knee hollows side by side, worn by years of the same two people kneeling. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_mare_eau_reflet_v2_c.png`
+remplace `scene_mare_eau_reflet_v2_b.png`
+
+```
+scene_mare_eau_reflet_v2_c=black still water filling the frame with a single reflected figure in it, the reflection lagging a beat behind the movement above it. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
 ### `scene_moulin_campement_2_b.png`
 remplace `scene_moulin_campement_2_a.png` — Campement 2 — beat 2
 
@@ -733,6 +985,13 @@ remplace `scene_moulin_interieur_a_d.png`
 
 ```
 scene_moulin_interieur_a_e=inside of a disused mill, a millstone shoved aside and bedding laid on the floor beside it, a hand pushing a plank door open into the dark. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_murets_vers_sud_d.png`
+remplace `scene_murets_vers_sud_c.png` — gamin-murets-2
+
+```
+scene_murets_vers_sud_d=a hip-high drystone wall running away south across empty moor, the top course worn smooth in a narrow line by someone small walking it every day. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
 ### `scene_palissade_portillon_a_c.png`
@@ -775,6 +1034,20 @@ remplace `scene_puits_condamne_v2_a.png` — Le Puits Condamné
 
 ```
 scene_puits_condamne_v2_b=village well sealed shut with planks nailed in a cross over its mouth, stones piled on top, worn rope still tied to the winch, empty square, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_renoncer_v2_c.png`
+remplace `scene_renoncer_v2_b.png` — renoncer
+
+```
+scene_renoncer_v2_c=a doorstep stone at the edge of a village with a plain plank door standing shut behind it, a new iron latch fitted to the door, the moor beginning just beyond, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_temoin_grange_toit_v2_d.png`
+remplace `scene_temoin_grange_toit_v2_c.png` — temoin-toit, temoin-toit-connu
+
+```
+scene_temoin_grange_toit_v2_d=seen from inside a barn looking up at the roof timbers, one beam bowed downward under a weight, dust sifting from the joint, nothing visible above the boards. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
 ### `scene_tour_de_guet_b.png`
@@ -826,6 +1099,13 @@ remplace `scene_tribunal_ordonnance_a_c.png`
 scene_tribunal_ordonnance_a_d=thick yellowed sheet of paper nailed at its four corners to a stone wall, the nails driven deep, the edges of the paper curling. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
+### `scene_verger_fruits_cendre_v2_d.png`
+remplace `scene_verger_fruits_cendre_v2_c.png`
+
+```
+scene_verger_fruits_cendre_v2_d=a dark orchard fruit broken open in the hand, perfectly formed outside and packed with dry grey ash inside. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
 ### `scene_verger_noir_2_v2_c.png`
 remplace `scene_verger_noir_2_v2_b.png` — Le Verger Noir — beat 2
 
@@ -839,49 +1119,3 @@ remplace `scene_verger_noir_d.png` — Le Verger Noir
 ```
 scene_verger_noir_e=orchard of black twisted fruit trees planted in rows on dead moorland, heavy grey ash fruits on the branches, one old stump in the foreground, two distant bent figures digging, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
-
-
----
-
-## Sans sujet écrit — à faire avant de commander
-
-- `monstre_appele_descente.png` — falaise-cordes-3
-- `monstre_fille_moulin_dos_v2_a.png` — fille-moulin-1
-- `monstre_fille_moulin_ouvrage_c.png` — fille-moulin-4
-- `monstre_fossoyeur_trou_1_c.png` — fossoyeur-trou-1
-- `monstre_fossoyeur_trou_3_a.png` — fossoyeur-trou-3
-- `monstre_gamin_caillou_c.png` — gamin-murets-3
-- `monstre_gamin_depart_c.png` — gamin-murets-4
-- `monstre_gamin_murets_a.png` — gamin-murets-1
-- `monstre_la_fille_moulin_v2_a.png` — fille-moulin-2, fille-moulin-3
-- `monstre_marcheur_rebours_v2_a.png`
-- `monstre_rebouteux_a.png`
-- `monstre_temoin_ruelle_v6_b.png` — temoin-ruelle
-- `monstre_troupeau_brebis_v2_b.png` — troupeau-sans-berger-2
-- `monstre_troupeau_compte_b.png`
-- `monstre_troupeau_sans_berger_a.png` — troupeau-sans-berger
-- `monstre_veilleur_palissade_v2_b.png`
-- `scene_champ_les_rangees_v2_a.png`
-- `scene_champ_poteau_retire_c.png` — fossoyeur-trou-2
-- `scene_chapelle_cloche_sans_battant_b.png`
-- `scene_chapelle_mur_cordes_v3_c.png`
-- `scene_colline_pied_grand_gibet_b.png`
-- `scene_hameau_dense_b.png`
-- `scene_hameau_dense_c.png`
-- `scene_hameau_dense_d.png`
-- `scene_lande_arbres_morts_c.png`
-- `scene_lande_generique_1.png`
-- `scene_lande_generique_2.png`
-- `scene_lande_generique_3.png`
-- `scene_lande_generique_4.png`
-- `scene_landes_frise_montagnes_pleine_b.png`
-- `scene_landes_liaison_chemin_creux_a.png`
-- `scene_landes_liaison_fourche_a.png`
-- `scene_landes_liaison_plateau_d.png`
-- `scene_landes_liaison_sud_c.png` — falaise-cordes, falaise-cordes-2, la-descente
-- `scene_mare_creux_doubles_v2_b.png`
-- `scene_mare_eau_reflet_v2_b.png`
-- `scene_murets_vers_sud_c.png` — gamin-murets-2
-- `scene_renoncer_v2_b.png` — renoncer
-- `scene_temoin_grange_toit_v2_c.png` — temoin-toit, temoin-toit-connu
-- `scene_verger_fruits_cendre_v2_c.png`
