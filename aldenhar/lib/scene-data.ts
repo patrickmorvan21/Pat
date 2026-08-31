@@ -1269,7 +1269,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "hesitant-2",
-    illustration: "assets/monstre_hesitant_2_b.png",
+    illustration: "assets/monstre_hesitant_b.png",
     chainNext: "hesitant-3",
     narration: [
       "— « Je calcule. » Il montre la borne du menton, sans la regarder. « Si " +
@@ -1348,7 +1348,7 @@ export const SCENES: Scene[] = [
   {
     id: "chemin-creux",
     tags: ["rough_path"],
-    illustration: "assets/scene_chemin_creux_d_a.png",
+    illustration: "assets/scene_chemin_creux_coude_b.png",
     chainNext: "chemin-creux-2",
     narration: [
       "Le chemin s'enfonce entre deux talus plus hauts que toi ; le ciel " +
@@ -1605,7 +1605,7 @@ export const SCENES: Scene[] = [
     // une seule scène (amende §6 : durée par poids narratif).
     id: "bete-chemins-creux",
     illustration: "assets/monstre_bete_chemins_creux_a.png",
-    illustrationArrivee: "assets/scene_chemin_creux_d_a.png",
+    illustrationArrivee: "assets/scene_chemin_creux_coude_b.png",
     combat: true,
     // L'embuscade enchaîne sur SON lieu : on descendait vers le Chemin Creux,
     // la Bête surgit au coude, et le creux continue après le combat.
@@ -1871,7 +1871,7 @@ export const SCENES: Scene[] = [
        propres morts (mémoire du joueur). */
     id: "colline-aux-gibets-2",
     sejour: true,
-    illustration: "assets/scene_colline_gibets_2_a.png",
+    illustration: "assets/scene_colline_aux_gibets_c.png",
     narration: [
       "Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme " +
         "plat, toutes les cordes de la crête se mettent à bouger. Pas au hasard : " +
@@ -2100,7 +2100,7 @@ export const SCENES: Scene[] = [
   {
     /* Lieu à POINTS D'INTÉRÊT (script Notion). */
     id: "champ-des-fixes",
-    illustration: "assets/scene_champ_des_fixes_c_a.png",
+    illustration: "assets/scene_champ_des_fixes_c.png",
     chainNext: "champ-des-fixes-2",
     narration: [
       // ⚠️ TEXTE ALIGNÉ SUR L'IMAGE (panel 10/08) : elle montre de vieilles
@@ -2281,7 +2281,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "fossoyeur-trou-3",
-    illustration: "assets/monstre_fossoyeur_trou_3_b_b.png",
+    illustration: "assets/monstre_fossoyeur_poteaux_a.png",
     narration: [
       "Il pose l\u2019écriteau fini contre sa jambe, face contre terre, pour " +
         "qu\u2019on n\u2019en lise pas le nom.",
@@ -2438,7 +2438,7 @@ export const SCENES: Scene[] = [
   {
     id: "pendu-mal-fixe",
     illustration: "assets/monstre_pendu_mal_fixe_v2_d_b.png",
-    illustrationArrivee: "assets/scene_champ_des_fixes_c_a.png",
+    illustrationArrivee: "assets/scene_champ_des_fixes_c.png",
     combat: true,
     foe: "pendu-mal-fixe",
     foeName: "Le Pendu Mal Fixé",
@@ -2540,7 +2540,7 @@ export const SCENES: Scene[] = [
        venir — on retombe en attendant sur l'ambiance générique de zone et les
        portraits existants (fallback prévu par la spec §4). */
     id: "serment-hameau",
-    illustration: "assets/scene_hameau_dense2_c_e.png",
+    illustration: "assets/scene_hameau_dense2_b.png",
     chainNext: "hameau-entree-2",
     narration: [
       "Les toits apparaissent au creux du plateau — de l'ardoise affaissée, " +
@@ -2587,7 +2587,7 @@ export const SCENES: Scene[] = [
     /* Beat 2 — Le seuil. La croix à la craie est un POINT D'INTÉRÊT : voir de
        loin → marcher → toucher (spec §1). */
     id: "hameau-entree-2",
-    illustration: "assets/scene_landes_hameau_ruelle_c_b.png",
+    illustration: "assets/scene_hameau_dense2_b.png",
     chainNext: "hameau-entree-3",
     /* ─── CHANTIER DU 11/08 — la ruelle perd son sous-menu ──────────────────
        AVANT : 2 choix + CINQ points derrière « Observer » (linteau, combles,
@@ -4607,7 +4607,7 @@ export const SCENES: Scene[] = [
   {
     id: "marche-muet",
     tags: ["food_available"],
-    illustration: "assets/scene_marche_muet_d_f.png",
+    illustration: "assets/scene_marche_muet_c.png",
     chainNext: "marche-muet-2",
     narration: [
       "Au cœur du hameau, un marché sans un cri. Des étals de trois fois " +
@@ -4936,7 +4936,7 @@ export const SCENES: Scene[] = [
     id: "campement-2",
     nuit: true,
     sejour: true,
-    illustration: "assets/scene_moulin_campement_2_b_b.png",
+    illustration: "assets/scene_moulin_interieur_a_d.png",
     narration: [
       "Par la lucarne, le crépuscule ne bouge pas. On dit qu'une fille " +
         "dort ici, parfois — la seule pendue qui se soit relevée. Le lit de " +
@@ -6491,7 +6491,7 @@ export const SCENES: Scene[] = [
     /* LA MARE AUX REGARDS — le seul endroit des Landes que le vent évite. On
        n'y vient pas puiser : on y vient vérifier. */
     id: "mare-aux-regards",
-    illustration: "assets/scene_mare_aux_regards_b_a.png",
+    illustration: "assets/scene_mare_aux_regards_a.png",
     chainNext: "mare-aux-regards-2",
     narration: [
       "L'eau est noire et lente — le seul endroit des Landes que " +
@@ -6883,7 +6883,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "epoux-3",
-    illustration: "assets/monstre_epoux_3_c.png",
+    illustration: "assets/monstre_epoux_verger_b_b.png",
     chainNext: "verger-noir-2",
     narration: [
       "Ils se remettent au travail avant que tu sois sorti des rangs — le " +
@@ -7475,7 +7475,7 @@ export const SCENES: Scene[] = [
        jamais un mur — d'autres portes existent. */
     id: "demo-nuit",
     sejour: true,
-    illustration: "assets/scene_landes_hameau_ruelle_c_b.png",
+    illustration: "assets/scene_hameau_entree_2_v2_a.png",
     narration: [
       "Le soir tombe d'un coup, comme une porte. Les volets se ferment sans se répondre — pas un chien, pas une voix. Il faut dormir quelque part. Reste à savoir derrière quelle porte.",
     ],
@@ -7570,7 +7570,7 @@ export const SCENES: Scene[] = [
     /* Dehors — le repos au rabais, et Quelque chose marche sur les toits. */
     id: "demo-nuit-dehors",
     nuit: true,
-    illustration: "assets/scene_hameau_dense2_c_e.png",
+    illustration: "assets/scene_temoin_grange_toit_v2_c.png",
     narration: [
       "Le muret coupe le vent, pas le froid. Vers le milieu de la nuit, un pas — au-dessus de toi. Sur un toit. Quelque chose marche sur les toits, lentement, comme on compte. Tu ne bouges plus jusqu'au gris.",
     ],
@@ -8615,6 +8615,10 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
        c'est la craie qui parle — la variante pouvait donc arriver la première
        et se référer à un moment que le joueur n'avait pas vécu. */
     text: "Trois hommes marchent à la limite du regard, sans jamais réduire la distance. Quand tu t'arrêtes, ils s'arrêtent. Quand tu repars, ils attendent un peu — par politesse, dirait-on. L'aube n'est pas pressée.",
+    // PREMIÈRE marche illustrée (choix Patrick, 31/08) : le mécanisme posé la
+    // veille attendait qu'on lui désigne laquelle. Celle-ci le mérite — c'est
+    // le dernier barreau du Soupçon, le seul où le monde te suit vraiment.
+    illustration: "assets/scene_transition_hommes_suivent_b.png",
   },
   // ——— Santé (3) ———
   {
@@ -9126,8 +9130,8 @@ const LANDES_WALK = [
     lui-même (« celle qui représente vraiment le hameau »). */
 const HAMEAU_WALK = [
   "assets/scene_hameau_dense_c_a.png",
-  "assets/scene_hameau_dense_d_v2_a.png",
-  "assets/scene_hameau_dense_e_v2_b.png",
+  "assets/scene_transition_chemin_murets_b.png",
+  "assets/scene_hameau_dense_c.png",
 ];
 
 /**
@@ -9763,9 +9767,10 @@ export const DESCENTE_SCENE: Scene = {
   // alors que les cordes portent un lieu entier (la Falaise), un objet qui
   // s'y noue et le motif du tranchage par en dessous ; c'est donc lui qui
   // cède, comme le cercle de la Colline a cédé à la crête.
-  // L'image reste la vue neutre du sud tant que `scene_la_descente` (version
-  // CORDES) n'est pas générée : neutre vaut mieux que contradictoire.
-  illustration: "assets/scene_landes_liaison_sud_d_h.png",
+  // L'image montre enfin ce que le texte dit (choix Patrick, 31/08) : une
+  // silhouette au bord, la corde en main, qui passe la lèvre. La vue neutre
+  // du sud n'était qu'un pis-aller en attendant `scene_la_descente`.
+  illustration: "assets/monstre_appele_descente_b_b.png",
   terminal: true,
   narration: [
     "Passé le portillon, le sol ne descend pas : il cesse. La lande s'arrête net et la paroi tombe plus bas que le regard ne porte. L'air qui monte de là est plus froid, et plus vieux.",

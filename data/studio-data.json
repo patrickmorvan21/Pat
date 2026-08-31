@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-31T19:30:12Z",
- "commit": "4f7d7c3",
+ "genere": "2026-08-31T20:37:51Z",
+ "commit": "a6a5e97",
  "zones": [
   {
    "id": "landes",
@@ -85,7 +85,7 @@
     {
      "id": "champ_des_fixes",
      "nom": "Le Champ des Fixés",
-     "illustration": "scene_champ_des_fixes_c_a.png",
+     "illustration": "scene_champ_des_fixes_c.png",
      "x": 1620,
      "y": 240,
      "note": "cimetière des pendus",
@@ -132,7 +132,7 @@
     {
      "id": "mare_aux_regards",
      "nom": "La Mare aux Regards",
-     "illustration": "scene_mare_aux_regards_b_a.png",
+     "illustration": "scene_mare_aux_regards_a.png",
      "x": 640,
      "y": 420,
      "note": "le reflet en retard",
@@ -154,7 +154,7 @@
     {
      "id": "seuil_du_hameau",
      "nom": "Le Seuil du Hameau",
-     "illustration": "scene_hameau_dense2_c_e.png",
+     "illustration": "scene_hameau_dense2_b.png",
      "x": 810,
      "y": 1024,
      "note": "La barrière, DEHORS : l'arrivée, l'accueil du jour et le Serment. On n'est pas encore entré.",
@@ -305,7 +305,7 @@
     {
      "id": "marche_muet",
      "nom": "Le Marché Muet",
-     "illustration": "scene_marche_muet_d_f.png",
+     "illustration": "scene_marche_muet_c.png",
      "x": 1250,
      "y": 900,
      "note": "troc sans paroles · Colporteur",
@@ -376,7 +376,7 @@
     {
      "id": "chemin_creux",
      "nom": "Le Chemin Creux",
-     "illustration": "scene_chemin_creux_d_a.png",
+     "illustration": "scene_chemin_creux_coude_b.png",
      "x": 520,
      "y": 1300,
      "note": "vu sans voir",
@@ -665,10 +665,10 @@
    "lieu": "borne_frontiere",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_hesitant_2_b.png",
-    "hash": "4a7bd6a1",
-    "taille": 13371,
-    "recent": false,
+    "fichier": "monstre_hesitant_b.png",
+    "hash": "79ff7f45",
+    "taille": 14688,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -796,10 +796,10 @@
    "lieu": "chemin_creux",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_chemin_creux_d_a.png",
-    "hash": "ddd4dc8b",
-    "taille": 30231,
-    "recent": false,
+    "fichier": "scene_chemin_creux_coude_b.png",
+    "hash": "261f995a",
+    "taille": 29636,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -1177,7 +1177,7 @@
       "fichier": "monstre_corbeaux_du_compte_d.png",
       "hash": "688228de",
       "taille": 27822,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -1299,10 +1299,10 @@
    "lieu": "colline_aux_gibets",
    "typeScene": "moment",
    "image": {
-    "fichier": "scene_colline_gibets_2_a.png",
-    "hash": "99d86877",
-    "taille": 31826,
-    "recent": false,
+    "fichier": "scene_colline_aux_gibets_c.png",
+    "hash": "38dc9e32",
+    "taille": 34788,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -1548,9 +1548,9 @@
    "lieu": "champ_des_fixes",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_champ_des_fixes_c_a.png",
-    "hash": "83f6d0f5",
-    "taille": 28028,
+    "fichier": "scene_champ_des_fixes_c.png",
+    "hash": "87694710",
+    "taille": 30015,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -1709,10 +1709,10 @@
     "« Non. » Il n’a pas attendu que tu redemandes. « Y a des trous que je creuse et des trous que je creuse pas, et le mien est déjà commencé quelque part. Va-t’en. »"
    ],
    "image": {
-    "fichier": "monstre_fossoyeur_trou_3_b_b.png",
-    "hash": "06eae8d5",
-    "taille": 15689,
-    "recent": false,
+    "fichier": "monstre_fossoyeur_poteaux_a.png",
+    "hash": "69a5f9b1",
+    "taille": 23540,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -1985,10 +1985,10 @@
    "lieu": "seuil_du_hameau",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_hameau_dense2_c_e.png",
-    "hash": "52cdf13c",
-    "taille": 22967,
-    "recent": false,
+    "fichier": "scene_hameau_dense2_b.png",
+    "hash": "4ee39a67",
+    "taille": 29932,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -2083,10 +2083,10 @@
    "lieu": "seuil_du_hameau",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_landes_hameau_ruelle_c_b.png",
-    "hash": "818ce9ba",
-    "taille": 24488,
-    "recent": false,
+    "fichier": "scene_hameau_dense2_b.png",
+    "hash": "4ee39a67",
+    "taille": 29932,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -4371,10 +4371,10 @@
    "lieu": "marche_muet",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_marche_muet_d_f.png",
-    "hash": "878ca2e7",
-    "taille": 20039,
-    "recent": false,
+    "fichier": "scene_marche_muet_c.png",
+    "hash": "311a7b1c",
+    "taille": 28666,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -4679,10 +4679,10 @@
    "lieu": "moulin_sans_ailes",
    "typeScene": "moment",
    "image": {
-    "fichier": "scene_moulin_campement_2_b_b.png",
-    "hash": "15dcd920",
-    "taille": 22865,
-    "recent": false,
+    "fichier": "scene_moulin_interieur_a_d.png",
+    "hash": "372f7583",
+    "taille": 11846,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -6170,10 +6170,10 @@
    "lieu": "mare_aux_regards",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_mare_aux_regards_b_a.png",
-    "hash": "acc3c49c",
-    "taille": 17766,
-    "recent": false,
+    "fichier": "scene_mare_aux_regards_a.png",
+    "hash": "2552346e",
+    "taille": 17038,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -6305,8 +6305,8 @@
       "taille": 21367,
       "recent": false,
       "existe": true,
-      "statut": "heritee",
-      "herite": "epoux-1"
+      "statut": "dediee",
+      "herite": ""
      }
     },
     {
@@ -6575,9 +6575,9 @@
    "lieu": "verger_noir",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_epoux_3_c.png",
-    "hash": "b837495f",
-    "taille": 11528,
+    "fichier": "monstre_epoux_verger_b_b.png",
+    "hash": "c8c7586c",
+    "taille": 21367,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -7224,9 +7224,9 @@
    "pointsInteret": [],
    "sejour": true,
    "image": {
-    "fichier": "scene_landes_hameau_ruelle_c_b.png",
-    "hash": "818ce9ba",
-    "taille": 24488,
+    "fichier": "scene_hameau_entree_2_v2_a.png",
+    "hash": "e180c1a7",
+    "taille": 19602,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -7327,9 +7327,9 @@
    "pointsInteret": [],
    "nuit": true,
    "image": {
-    "fichier": "scene_hameau_dense2_c_e.png",
-    "hash": "52cdf13c",
-    "taille": 22967,
+    "fichier": "scene_temoin_grange_toit_v2_c.png",
+    "hash": "b8f53835",
+    "taille": 8074,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -7514,12 +7514,12 @@
    "pointsInteret": [],
    "terminal": true,
    "image": {
-    "fichier": "scene_landes_liaison_sud_d_h.png",
-    "hash": "fede2150",
-    "taille": 13178,
+    "fichier": "monstre_appele_descente_b_b.png",
+    "hash": "f91221f1",
+    "taille": 10532,
     "recent": false,
     "existe": true,
-    "statut": "fallback",
+    "statut": "dediee",
     "herite": ""
    },
    "description": "",
@@ -7536,15 +7536,26 @@
  ],
  "ecransDeMarche": [
   {
-   "fichier": "scene_transition_sortie_hameau_deux_chemins_a.png",
-   "hash": null,
-   "taille": null,
+   "fichier": "scene_transition_arrivee_hameau_b.png",
+   "hash": "9a67d38f",
+   "taille": 24021,
    "recent": false,
-   "existe": false,
+   "existe": true,
    "statut": "fallback",
    "herite": "",
-   "id": "marche:scene_transition_sortie_hameau_deux_chemins_a",
+   "id": "marche:scene_transition_arrivee_hameau_b",
    "regle": "AU SORTIR DU HAMEAU : le muret d'enceinte vient d'être franchi, le village est dans le dos, et deux routes de lande s'ouvrent devant"
+  },
+  {
+   "fichier": "scene_hameau_dense_c.png",
+   "hash": "c3a695ff",
+   "taille": 30005,
+   "recent": true,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_hameau_dense_c",
+   "regle": "d'une ruelle du hameau à l'autre, ou quand une des deux directions offertes est le village (le hameau grossit à l'horizon)"
   },
   {
    "fichier": "scene_hameau_dense_c_a.png",
@@ -7558,25 +7569,14 @@
    "regle": "d'une ruelle du hameau à l'autre, ou quand une des deux directions offertes est le village (le hameau grossit à l'horizon)"
   },
   {
-   "fichier": "scene_hameau_dense_d_v2_a.png",
-   "hash": "8f0e34c8",
-   "taille": 29093,
+   "fichier": "scene_transition_chemin_murets_b.png",
+   "hash": "2f92c349",
+   "taille": 32733,
    "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
-   "id": "marche:scene_hameau_dense_d_v2_a",
-   "regle": "d'une ruelle du hameau à l'autre, ou quand une des deux directions offertes est le village (le hameau grossit à l'horizon)"
-  },
-  {
-   "fichier": "scene_hameau_dense_e_v2_b.png",
-   "hash": "48d1b693",
-   "taille": 19884,
-   "recent": false,
-   "existe": true,
-   "statut": "fallback",
-   "herite": "",
-   "id": "marche:scene_hameau_dense_e_v2_b",
+   "id": "marche:scene_transition_chemin_murets_b",
    "regle": "d'une ruelle du hameau à l'autre, ou quand une des deux directions offertes est le village (le hameau grossit à l'horizon)"
   },
   {
@@ -8095,6 +8095,14 @@
    "racine": "ecrivain_public"
   },
   {
+   "fichier": "monstre_epoux_3_c.png",
+   "hash": "b837495f",
+   "taille": 11528,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "epoux_3"
+  },
+  {
    "fichier": "monstre_epoux_verger_a.png",
    "hash": "78546dfe",
    "taille": 32443,
@@ -8175,14 +8183,6 @@
    "racine": "fixe_confident"
   },
   {
-   "fichier": "monstre_fossoyeur_poteaux_a.png",
-   "hash": "69a5f9b1",
-   "taille": 23540,
-   "recent": true,
-   "groupe": "brancher",
-   "racine": "fossoyeur_poteaux"
-  },
-  {
    "fichier": "monstre_fossoyeur_trou_1_c.png",
    "hash": "66f02057",
    "taille": 14405,
@@ -8195,7 +8195,15 @@
    "hash": "acf3368c",
    "taille": 17126,
    "recent": true,
-   "groupe": "brancher",
+   "groupe": "doublon",
+   "racine": "fossoyeur_trou_3"
+  },
+  {
+   "fichier": "monstre_fossoyeur_trou_3_b_b.png",
+   "hash": "06eae8d5",
+   "taille": 15689,
+   "recent": false,
+   "groupe": "doublon",
    "racine": "fossoyeur_trou_3"
   },
   {
@@ -8295,20 +8303,20 @@
    "racine": "hameau_halte_4"
   },
   {
+   "fichier": "monstre_hesitant_2_b.png",
+   "hash": "4a7bd6a1",
+   "taille": 13371,
+   "recent": false,
+   "groupe": "attend",
+   "racine": "hesitant_2"
+  },
+  {
    "fichier": "monstre_hesitant_3_c.png",
    "hash": "c1d9af6e",
    "taille": 11251,
    "recent": false,
    "groupe": "brancher",
    "racine": "hesitant_3"
-  },
-  {
-   "fichier": "monstre_hesitant_b.png",
-   "hash": "79ff7f45",
-   "taille": 14688,
-   "recent": true,
-   "groupe": "brancher",
-   "racine": "hesitant"
   },
   {
    "fichier": "monstre_homme_guerite_c.png",
@@ -8871,9 +8879,9 @@
    "racine": "champ_des_fixes"
   },
   {
-   "fichier": "scene_champ_des_fixes_c.png",
-   "hash": "87694710",
-   "taille": 30015,
+   "fichier": "scene_champ_des_fixes_c_a.png",
+   "hash": "83f6d0f5",
+   "taille": 28028,
    "recent": false,
    "groupe": "doublon",
    "racine": "champ_des_fixes"
@@ -8979,16 +8987,16 @@
    "hash": "29c27c48",
    "taille": 22199,
    "recent": true,
-   "groupe": "brancher",
+   "groupe": "doublon",
    "racine": "chemin_creux"
   },
   {
-   "fichier": "scene_chemin_creux_coude_b.png",
-   "hash": "261f995a",
-   "taille": 29636,
-   "recent": true,
-   "groupe": "brancher",
-   "racine": "chemin_creux_coude"
+   "fichier": "scene_chemin_creux_d_a.png",
+   "hash": "ddd4dc8b",
+   "taille": 30231,
+   "recent": false,
+   "groupe": "doublon",
+   "racine": "chemin_creux"
   },
   {
    "fichier": "scene_chemin_talus_a_c.png",
@@ -8999,20 +9007,20 @@
    "racine": "chemin_talus"
   },
   {
-   "fichier": "scene_colline_aux_gibets_c.png",
-   "hash": "38dc9e32",
-   "taille": 34788,
-   "recent": true,
-   "groupe": "brancher",
-   "racine": "colline_aux_gibets"
-  },
-  {
    "fichier": "scene_colline_gibet_vide_a_b.png",
    "hash": "83c68692",
    "taille": 21563,
    "recent": true,
    "groupe": "autre",
    "racine": "colline_gibet_vide"
+  },
+  {
+   "fichier": "scene_colline_gibets_2_a.png",
+   "hash": "99d86877",
+   "taille": 31826,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "colline_gibets_2"
   },
   {
    "fichier": "scene_colline_pied_grand_gibet_b.png",
@@ -9119,25 +9127,17 @@
    "racine": "hameau_croix_craie"
   },
   {
-   "fichier": "scene_hameau_dense2_b.png",
-   "hash": "4ee39a67",
-   "taille": 29932,
-   "recent": true,
+   "fichier": "scene_hameau_dense2_c_e.png",
+   "hash": "52cdf13c",
+   "taille": 22967,
+   "recent": false,
    "groupe": "autre",
-   "racine": "hameau_dense2"
+   "racine": "hameau_dense2_c_e"
   },
   {
    "fichier": "scene_hameau_dense_b.png",
    "hash": "bcb014f6",
    "taille": 29962,
-   "recent": true,
-   "groupe": "doublon",
-   "racine": "hameau_dense"
-  },
-  {
-   "fichier": "scene_hameau_dense_c.png",
-   "hash": "c3a695ff",
-   "taille": 30005,
    "recent": true,
    "groupe": "doublon",
    "racine": "hameau_dense"
@@ -9151,12 +9151,20 @@
    "racine": "hameau_dense"
   },
   {
-   "fichier": "scene_hameau_entree_2_v2_a.png",
-   "hash": "e180c1a7",
-   "taille": 19602,
+   "fichier": "scene_hameau_dense_d_v2_a.png",
+   "hash": "8f0e34c8",
+   "taille": 29093,
    "recent": false,
    "groupe": "autre",
-   "racine": "hameau_entree_2"
+   "racine": "hameau_dense_d"
+  },
+  {
+   "fichier": "scene_hameau_dense_e_v2_b.png",
+   "hash": "48d1b693",
+   "taille": 19884,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "hameau_dense_e"
   },
   {
    "fichier": "scene_hameau_entree_5_a.png",
@@ -9327,12 +9335,12 @@
    "racine": "landes_tribunal"
   },
   {
-   "fichier": "scene_marche_muet_c.png",
-   "hash": "311a7b1c",
-   "taille": 28666,
-   "recent": true,
+   "fichier": "scene_marche_muet_d_f.png",
+   "hash": "878ca2e7",
+   "taille": 20039,
+   "recent": false,
    "groupe": "attend",
-   "racine": "marche_muet"
+   "racine": "marche_muet_d_f"
   },
   {
    "fichier": "scene_mare_aux_regards_2_b.png",
@@ -9343,10 +9351,10 @@
    "racine": "mare_aux_regards_2"
   },
   {
-   "fichier": "scene_mare_aux_regards_a.png",
-   "hash": "2552346e",
-   "taille": 17038,
-   "recent": true,
+   "fichier": "scene_mare_aux_regards_b_a.png",
+   "hash": "acc3c49c",
+   "taille": 17766,
+   "recent": false,
    "groupe": "brancher",
    "racine": "mare_aux_regards"
   },
@@ -9395,7 +9403,15 @@
    "hash": "2d91a0f3",
    "taille": 22254,
    "recent": true,
-   "groupe": "brancher",
+   "groupe": "doublon",
+   "racine": "moulin_campement_2"
+  },
+  {
+   "fichier": "scene_moulin_campement_2_b_b.png",
+   "hash": "15dcd920",
+   "taille": 22865,
+   "recent": false,
+   "groupe": "doublon",
    "racine": "moulin_campement_2"
   },
   {
@@ -9413,14 +9429,6 @@
    "recent": false,
    "groupe": "autre",
    "racine": "moulin_croix_ombres"
-  },
-  {
-   "fichier": "scene_moulin_interieur_a_d.png",
-   "hash": "372f7583",
-   "taille": 11846,
-   "recent": true,
-   "groupe": "autre",
-   "racine": "moulin_interieur"
   },
   {
    "fichier": "scene_moulin_lucarne_a_b.png",
@@ -9543,28 +9551,12 @@
    "racine": "tour_pierres_rangees"
   },
   {
-   "fichier": "scene_transition_arrivee_hameau_b.png",
-   "hash": "9a67d38f",
-   "taille": 24021,
-   "recent": false,
-   "groupe": "autre",
-   "racine": "transition_arrivee_hameau"
-  },
-  {
    "fichier": "scene_transition_borne_sud_a.png",
    "hash": "3549e082",
    "taille": 21867,
    "recent": false,
    "groupe": "autre",
    "racine": "transition_borne_sud"
-  },
-  {
-   "fichier": "scene_transition_chemin_murets_b.png",
-   "hash": "2f92c349",
-   "taille": 32733,
-   "recent": false,
-   "groupe": "autre",
-   "racine": "transition_chemin_murets"
   },
   {
    "fichier": "scene_transition_crete_cordes_b.png",
@@ -9589,14 +9581,6 @@
    "recent": false,
    "groupe": "autre",
    "racine": "transition_croix_craie"
-  },
-  {
-   "fichier": "scene_transition_hommes_suivent_b.png",
-   "hash": "2a3c3148",
-   "taille": 20174,
-   "recent": false,
-   "groupe": "autre",
-   "racine": "transition_hommes_suivent"
   },
   {
    "fichier": "scene_transition_vols_basses_b.png",
@@ -10391,7 +10375,7 @@
      "maxSoupcon": 5.0
     },
     "ou": "partout",
-    "illustration": null
+    "illustration": "assets/scene_transition_hommes_suivent_b.png"
    },
    {
     "texte": "Chaque montée coûte. Tu comptes tes forces comme une bourse trop plate — et le chemin le voit, qui te tend ses pentes comme on tend un bras à un vieillard. Tu refuses. Pour l'instant.",
@@ -10993,7 +10977,7 @@
   "illustrations": 431,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 209,
+  "reserve": 207,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

@@ -599,7 +599,7 @@ function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
  *  ⚠️ L'asset n'existe pas encore (prompt dans `data/images-a-produire.md`) :
  *  le garde `assetExiste` retombe sur la vue de marche tant qu'il n'est pas
  *  déposé dans `public/assets/`. Aucun code à changer à sa réception. */
-const SORTIE_DEUX_CHEMINS = "assets/scene_transition_sortie_hameau_deux_chemins_a.png";
+const SORTIE_DEUX_CHEMINS = "assets/scene_transition_arrivee_hameau_b.png";
 
 function habillageSortie(base: SceneType, seed: number): SceneType {
   return {

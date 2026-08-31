@@ -57,7 +57,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Chemin Creux",
     corps:
       "Deux talus plus hauts que la tête, et une charrette qui penche au premier coude depuis assez longtemps pour que la bruyère l'ait prise. On y marche plus vite qu'ailleurs, sans se le dire. Le coude aveugle mange la vue — et ce qu'il y a derrière compte les pas.",
-    illustration: "assets/scene_chemin_creux_d_a.png",
+    illustration: "assets/scene_chemin_creux_coude_b.png",
   },
   {
     id: "lieu:colline-aux-gibets",
@@ -75,7 +75,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Champ des Fixés",
     corps:
       "Un cimetière était là avant — la Fixation a planté ses poteaux entre les stèles penchées. Chaque poteau porte un nom et une date, sauf les vierges, taillés d'avance. Le Fossoyeur y creuse des trous qu'on ne lui a pas commandés.",
-    illustration: "assets/scene_champ_des_fixes_c_a.png",
+    illustration: "assets/scene_champ_des_fixes_c.png",
   },
   {
     id: "lieu:serment-hameau",
@@ -84,7 +84,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Seuil du Hameau",
     corps:
       "La barrière se franchit sans un garde — le village n'a pas besoin de gardes. Au bout de la rue, un muret bas où l'on jure trois clauses pour trois aubes. Aucun chien n'aboie, et ce silence-là a été décidé.",
-    illustration: "assets/scene_hameau_dense2_c_e.png",
+    illustration: "assets/scene_hameau_dense2_b.png",
   },
   {
     id: "lieu:hameau-halte",
@@ -102,7 +102,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Marché Muet",
     corps:
       "On y négocie par gestes, sous des bâches tendues, et le premier mot dit à voix haute fait tourner toutes les têtes. Le Colporteur y revend ce qu'on ne lui demande pas d'où il vient. C'est le seul endroit des Landes où l'on échange encore quelque chose.",
-    illustration: "assets/scene_marche_muet_d_f.png",
+    illustration: "assets/scene_marche_muet_c.png",
   },
   {
     id: "lieu:tour-de-guet",
@@ -165,7 +165,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "La Mare aux Regards",
     corps:
       "Une eau noire où les roseaux ne bougent pas. Le reflet y est en retard d'une demi-seconde — il finit toujours par rattraper. La berge est usée à UN endroit précis, par des gens qui viennent vérifier quelque chose, toujours au même.",
-    illustration: "assets/scene_mare_aux_regards_b_a.png",
+    illustration: "assets/scene_mare_aux_regards_a.png",
   },
   {
     id: "lieu:verger-noir",

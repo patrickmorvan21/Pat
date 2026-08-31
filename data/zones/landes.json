@@ -54,7 +54,7 @@
         "familiarite": "Une rangée est plus courte que dans ton idée du champ. Tu n'as pas d'idée du champ.",
         "recontextualisation": "La terre entre les rangs est tassée par un passage régulier. L'écart des pas est le tien."
       },
-      "illustration": "assets/scene_champ_des_fixes_c_a.png",
+      "illustration": "scene_champ_des_fixes_c.png",
       "portrait_requis": false,
       "x": 1620,
       "y": 240
@@ -88,7 +88,7 @@
         "familiarite": "L'eau se ride avant que tu sois au bord. Elle a commencé sans toi.",
         "recontextualisation": "Le reflet est déjà en place quand tu arrives. Il ne t'imite plus : il t'attend."
       },
-      "illustration": "assets/scene_mare_aux_regards_b_a.png",
+      "illustration": "scene_mare_aux_regards_a.png",
       "portrait_requis": false,
       "x": 640,
       "y": 420
@@ -105,7 +105,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/scene_hameau_dense2_c_e.png",
+      "illustration": "assets/scene_hameau_dense2_b.png",
       "portrait_requis": false,
       "region": true,
       "contient": [
@@ -133,7 +133,7 @@
         "familiarite": "Les volets se ferment de proche en proche, dans l'ordre, comme une phrase qu'on récite. Elle a déjà été récitée.",
         "recontextualisation": "Personne ne court prévenir personne. On t'attend au bon endroit, sans se presser."
       },
-      "illustration": "assets/scene_hameau_dense2_c_e.png",
+      "illustration": "scene_hameau_dense2_b.png",
       "portrait_requis": false,
       "x": 810,
       "y": 1024
@@ -238,7 +238,7 @@
         "familiarite": "Un étal manque à sa place et un autre l'a prise. Rien d'autre n'a bougé dans le silence.",
         "recontextualisation": "On te fait de la place avant que tu aies bifurqué. Ils savent où tu vas parce que tu y vas toujours."
       },
-      "illustration": "assets/scene_marche_muet_d_f.png",
+      "illustration": "scene_marche_muet_c.png",
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
       "x": 1250,
@@ -291,7 +291,7 @@
         "familiarite": "Ta main s'est posée sur le talus sans que tu l'aies décidé, juste où la racine fait une prise.",
         "recontextualisation": "Tu descends sans regarder tes pieds. Le creux te reprend comme une manche qu'on renfile."
       },
-      "illustration": "assets/scene_chemin_creux_d_a.png",
+      "illustration": "scene_chemin_creux_coude_b.png",
       "portrait_requis": false,
       "x": 520,
       "y": 1300
@@ -1186,7 +1186,7 @@
       ],
       "description": "Il parle enfin : tourné de trois-quarts, il désigne la borne du menton sans la regarder. CHANGE : il n'est plus figé face au sud — tête tournée, menton qui pointe la pierre.",
       "prompt_image": "a man's chin lifted toward a boundary stone he refuses to look at, seen from the side, cropped at the jaw. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "monstre_hesitant_2_b.png"
+      "illustration": "monstre_hesitant_b.png"
     },
     {
       "id": "hesitant-3",
@@ -1218,7 +1218,7 @@
       ],
       "description": "Arrivée au Chemin Creux. Une route encaissée entre deux hauts talus de terre, un ruban de ciel étroit au-dessus, des racines tordues qui sortent des parois.",
       "prompt_image": "sunken road between two high earthen banks, narrow ribbon of sky above, twisted roots protruding from the banks, deep shadows, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_chemin_creux_d_a.png"
+      "illustration": "scene_chemin_creux_coude_b.png"
     },
     {
       "id": "charrette-embourbee",
@@ -1430,7 +1430,7 @@
       ],
       "description": "Événement de la Colline : au sommet, entre les potences. L'écharde du grand gibet se prélève ici.",
       "prompt_image": "standing among a row of wooden gallows along a hill ridge, ropes hanging at eye level on either side, splintered beam in the foreground, vast empty sky, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_colline_gibets_2_a.png"
+      "illustration": "scene_colline_aux_gibets_c.png"
     },
     {
       "id": "pendu-qui-parle",
@@ -1477,7 +1477,7 @@
       ],
       "description": "Arrivée au Champ des Fixés. Des rangées de poteaux plantés dans la lande morte, un écriteau clouté sur chacun, certains encore occupés.",
       "prompt_image": "rows of wooden posts planted across dead moorland, a small nailed sign on each, some posts still bearing hanged figures in the far distance, receding perspective, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_champ_des_fixes_c_a.png"
+      "illustration": "scene_champ_des_fixes_c.png"
     },
     {
       "id": "les-rangees",
@@ -1565,7 +1565,7 @@
       ],
       "description": "Approche du Hameau des Renonçants, vu de loin. Les toits d'ardoise affaissés au creux du plateau, une seule cheminée qui fume sur vingt, aucun chien qui aboie.",
       "prompt_image": "distant abandoned hamlet nestled in a hollow of dead moorland at dusk, sagging slate rooftops, one single chimney smoking, low dry-stone walls leading to the village, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_hameau_dense2_c_e.png"
+      "illustration": "scene_hameau_dense2_b.png"
     },
     {
       "id": "hameau-entree-2",
@@ -1588,7 +1588,7 @@
       ],
       "description": "La ruelle étroite du hameau : portes marquées à la craie, volets fermés, aucun chien.",
       "prompt_image": "narrow village lane of low stone houses, every shutter closed, no one in the street, chalk cross on the first door. wide shot, the subject small in the frame, seen from a distance, extreme backlight, one single light source, near-black silhouettes against a glowing orange sky, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_landes_hameau_ruelle_c_b.png"
+      "illustration": "scene_hameau_dense2_b.png"
     },
     {
       "id": "croix-craie",
@@ -2026,7 +2026,7 @@
       ],
       "description": "Arrivée au Marché Muet, à l'intérieur du hameau. Des étals sans marchands, des marchandises posées et personne pour les vendre.",
       "prompt_image": "small deserted village market square, empty trestle stalls with goods still laid out on them, no people, low stone houses closing the square, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_marche_muet_d_f.png"
+      "illustration": "scene_marche_muet_c.png"
     },
     {
       "id": "marche-muet-2",
@@ -2113,7 +2113,7 @@
       ],
       "description": "Événement du Moulin : la garde, ou le sommeil. Le lit de bruyère tassé, refait de frais, les marques de comptage à hauteur d'enfant sur la pierre.",
       "prompt_image": "interior of a derelict stone windmill, heather bedding pressed flat on the floor, tally marks scratched on the stone wall at child height, broken millstone, light through a small attic window, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_moulin_campement_2_b_b.png"
+      "illustration": "scene_moulin_interieur_a_d.png"
     },
     {
       "id": "chapelle-des-cordes",
@@ -2371,7 +2371,7 @@
       ],
       "description": "Arrivée à la Mare aux Regards. Une eau noire parfaitement immobile, la berge piétinée avec deux creux de genoux, des roseaux, aucun vent.",
       "prompt_image": "perfectly still black pond in dead moorland, trampled bank with two knee hollows, reeds, dark reflections, no wind, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_mare_aux_regards_b_a.png"
+      "illustration": "scene_mare_aux_regards_a.png"
     },
     {
       "id": "berge-usee",
@@ -2556,7 +2556,7 @@
       ],
       "description": "Les deux silhouettes de nouveau courbées, vues de dos, qui s'éloignent entre les rangs. CHANGE : on les quitte — vus de dos, repris au travail.",
       "prompt_image": "the backs of two old people bent to their work between orchard rows, seen from behind as one walks away from them, heads never turning. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "monstre_epoux_3_c.png"
+      "illustration": "monstre_epoux_verger_b_b.png"
     },
     {
       "id": "palissade-sud",
