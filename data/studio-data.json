@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-31T19:28:40Z",
- "commit": "02788c7",
+ "genere": "2026-08-31T19:30:12Z",
+ "commit": "4f7d7c3",
  "zones": [
   {
    "id": "landes",
@@ -1126,7 +1126,7 @@
     "fichier": "monstre_bete_chemins_creux_a.png",
     "hash": "4348084a",
     "taille": 23757,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -3887,7 +3887,7 @@
     "fichier": "monstre_temoin_ruelle_v5_d.png",
     "hash": "b3324887",
     "taille": 119808,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -4033,7 +4033,7 @@
     "fichier": "monstre_bete_chemins_creux_a.png",
     "hash": "4348084a",
     "taille": 23757,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "heritee",
     "herite": "bete-chemins-creux"
@@ -7366,7 +7366,7 @@
     "fichier": "scene_falaise_fond_d_a.png",
     "hash": "d04e7f68",
     "taille": 15850,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7402,7 +7402,7 @@
     "fichier": "scene_falaise_bord_c_a.png",
     "hash": "e2abb0bf",
     "taille": 15153,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10107,6 +10107,11 @@
    "Quelqu'un a empilé des pierres plates en tas régulier au bord du chemin, pour plus tard, pour un muret. Le travail est propre. Celui qui l'a fait comptait revenir.",
    "Une alouette monte, chante, retombe. Tu la suis des yeux jusqu'au bout. Il ne se passe rien d'autre, et pendant un instant, c'est exactement ce qu'il fallait."
   ],
+  "fondLande": [
+   "Tu marches. La lande ne finit pas — elle se répète, talus après talus, sous le même crépuscule qui ne tombe jamais.",
+   "La bruyère efface derrière toi les traces de ceux qui ont choisi avant. Devant, elle ne promet rien.",
+   "Deux silhouettes fauchent la bruyère au loin, à contretemps l'une de l'autre. Le bruit des lames arrive décalé, paisible, comme un vieux couple qui ne se parle plus par confort."
+  ],
   "variantes": [
    {
     "texte": "À la berge de la mare basse, quelqu'un est accroupi — un enfant, un châle sombre bien trop grand, les mains dans l'eau noire. Elle se relève sans hâte en t'entendant, s'essuie aux hanches et s'éloigne vers l'ouest. Elle ne se retourne pas. Aucun enfant, dans ce pays, ne marche aussi tranquillement.",
@@ -10117,6 +10122,7 @@
       "verger-noir"
      ]
     },
+    "ou": "lande",
     "illustration": null
    },
    {
@@ -10128,6 +10134,7 @@
       "verger-noir"
      ]
     },
+    "ou": "lande",
     "illustration": null
    },
    {
@@ -10139,6 +10146,7 @@
       "verger-noir"
      ]
     },
+    "ou": "lande",
     "illustration": null
    },
    {
@@ -10150,6 +10158,7 @@
       "verger-noir"
      ]
     },
+    "ou": "lande",
     "illustration": null
    },
    {
@@ -10161,6 +10170,7 @@
       "verger-noir"
      ]
     },
+    "ou": "lande",
     "illustration": null
    },
    {
@@ -10172,6 +10182,7 @@
       "verger-noir"
      ]
     },
+    "ou": "lande",
     "illustration": null
    },
    {
@@ -10181,6 +10192,7 @@
       "colline-aux-gibets"
      ]
     },
+    "ou": "lande",
     "illustration": null
    },
    {
@@ -10190,6 +10202,7 @@
       "champ-des-fixes"
      ]
     },
+    "ou": "lande",
     "illustration": null
    },
    {
@@ -10199,6 +10212,7 @@
       "pendu-qui-parle"
      ]
     },
+    "ou": "lande",
     "illustration": null
    },
    {
@@ -10208,6 +10222,7 @@
       "campement"
      ]
     },
+    "ou": "lande",
     "illustration": null
    },
    {
@@ -10217,6 +10232,7 @@
       "petit-tribunal"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10226,6 +10242,7 @@
       "chapelle-des-cordes"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10235,6 +10252,7 @@
       "serment-hameau"
      ]
     },
+    "ou": "lande",
     "illustration": null
    },
    {
@@ -10244,6 +10262,7 @@
       "marche-muet"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10253,6 +10272,7 @@
       "puits-condamne"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10265,6 +10285,7 @@
       "chien-du-bailli"
      ]
     },
+    "ou": "lande",
     "illustration": null
    },
    {
@@ -10273,6 +10294,7 @@
      "minSoupcon": 1.0,
      "maxSoupcon": 2.0
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10281,6 +10303,7 @@
      "minSoupcon": 1.0,
      "maxSoupcon": 2.0
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10289,6 +10312,7 @@
      "minSoupcon": 1.0,
      "maxSoupcon": 3.0
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10300,6 +10324,7 @@
      "minSoupcon": 2.0,
      "maxSoupcon": 3.0
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10311,6 +10336,7 @@
      "minSoupcon": 3.0,
      "maxSoupcon": 5.0
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10319,6 +10345,7 @@
      "minSoupcon": 2.0,
      "maxSoupcon": 4.0
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10327,6 +10354,7 @@
      "minSoupcon": 3.0,
      "maxSoupcon": 4.0
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10335,6 +10363,7 @@
      "minSoupcon": 3.0,
      "maxSoupcon": 4.0
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10343,6 +10372,7 @@
      "minSoupcon": 4.0,
      "maxSoupcon": 5.0
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10351,6 +10381,7 @@
      "minSoupcon": 4.0,
      "maxSoupcon": 5.0
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10359,6 +10390,7 @@
      "minSoupcon": 5.0,
      "maxSoupcon": 5.0
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10366,6 +10398,7 @@
     "conditions": {
      "maxHealth": 0.5
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10373,6 +10406,7 @@
     "conditions": {
      "maxHealth": 0.3
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10380,6 +10414,7 @@
     "conditions": {
      "maxHealth": 0.5
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10387,6 +10422,7 @@
     "conditions": {
      "chapter": "la-fille"
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10394,6 +10430,7 @@
     "conditions": {
      "chapter": "le-gibet-vide"
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10401,6 +10438,7 @@
     "conditions": {
      "carrying": "Écharde"
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10408,6 +10446,7 @@
     "conditions": {
      "carrying": "Lanterne"
     },
+    "ou": "partout",
     "illustration": null
    },
    {
@@ -10417,6 +10456,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10426,6 +10466,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10435,6 +10476,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10444,6 +10486,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10453,6 +10496,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10462,6 +10506,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10471,6 +10516,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10480,6 +10526,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10489,6 +10536,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10498,6 +10546,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10507,6 +10556,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10516,6 +10566,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10525,6 +10576,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10534,6 +10586,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10543,6 +10596,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10552,6 +10606,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10561,6 +10616,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10570,6 +10626,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10579,6 +10636,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10588,6 +10646,7 @@
       "HAMEAU_INTERIOR"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10598,6 +10657,7 @@
      ],
      "minSoupcon": 3.0
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10608,6 +10668,7 @@
      ],
      "minSoupcon": 4.0
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10620,6 +10681,7 @@
       "jure"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    },
    {
@@ -10633,6 +10695,7 @@
       "faux"
      ]
     },
+    "ou": "hameau",
     "illustration": null
    }
   ],

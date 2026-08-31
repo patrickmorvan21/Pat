@@ -187,17 +187,29 @@ def construire() -> dict:
     # --------------------------- LES TRANSITIONS ----------------------------
     # Elles n'existent nulle part comme scènes : une liaison est fabriquée à
     # l'exécution. Ce sont pourtant les écrans les plus VUS d'une vie.
+    # L'enclave du village : la seule région de la zone. Son id sert à ranger
+    # DANS son cercle les textes de marche qui ne se jouent que dedans.
+    groupe_enclave = next((r["id"] for r in regions if len(r.get("lieux", [])) > 1), "")
+
     T = d.get("transitions", {})
     for i, txt in enumerate(T.get("fond", [])):
         nid = f"trans:fond:{i}"
         vus.add(nid)
         noeuds.append({"id": nid, "nom": court(txt), "cat": "transition",
-                       "image": None, "desc": [txt], "meta": ["marche · fond"]})
+                       "image": None, "desc": [txt],
+                       "meta": ["marche · fond", "jouée des deux côtés"]})
+    for i, txt in enumerate(T.get("fondLande", [])):
+        nid = f"trans:fondLande:{i}"
+        vus.add(nid)
+        noeuds.append({"id": nid, "nom": court(txt), "cat": "transition",
+                       "image": None, "desc": [txt],
+                       "meta": ["marche · fond de pleine lande", "hors du village"]})
     for i, b in enumerate(T.get("bifurcations", [])):
         nid = f"trans:bif:{i}"
         vus.add(nid)
         noeuds.append({"id": nid, "nom": court(b), "cat": "transition",
-                       "image": None, "desc": [b], "meta": ["marche · bifurcation"]})
+                       "image": None, "desc": [b],
+                       "meta": ["marche · bifurcation", "jouée des deux côtés"]})
     for i, v in enumerate(T.get("variantes", [])):
         nid = f"trans:var:{i}"
         cond = v.get("conditions") or {}
@@ -211,10 +223,22 @@ def construire() -> dict:
         # dirait « sans image » alors qu'elle en sert une en jeu.
         ill = v.get("illustration")
         f = ill.split("/")[-1] if ill else None
-        noeuds.append({"id": nid, "nom": court(v.get("texte", "")), "cat": "transition",
-                       "image": ({"f": f, "h": "", "ok": True} if f else None),
-                       "desc": [v.get("texte", "")],
-                       "meta": ["marche · variante"] + etiq})
+        # OÙ cette marche se joue, d'après sa seule condition de PROVENANCE
+        # (`ou_se_joue`, studio_data). Une transition gardée sur l'intérieur du
+        # village n'est pas « jouée partout » : elle appartient à l'enclave, au
+        # même titre que ses lieux — d'où le `groupe`, qui la place DANS le
+        # cercle. On ne lui invente pour autant aucun lien vers un lieu précis :
+        # elle se joue d'une ruelle à l'autre, pas depuis une porte nommée.
+        ou = v.get("ou") or "partout"
+        n = {"id": nid, "nom": court(v.get("texte", "")), "cat": "transition",
+             "image": ({"f": f, "h": "", "ok": True} if f else None),
+             "desc": [v.get("texte", "")],
+             "meta": ["marche · variante",
+                      {"hameau": "dans le village", "lande": "hors du village",
+                       "partout": "jouée des deux côtés"}[ou]] + etiq}
+        if ou == "hameau" and groupe_enclave:
+            n["groupe"] = groupe_enclave
+        noeuds.append(n)
 
     # -------------------------- LES VUES DE MARCHE --------------------------
     for m in d.get("ecransDeMarche", []):
@@ -246,6 +270,11 @@ def construire() -> dict:
 
     for i, v in enumerate(T.get("variantes", [])):
         for f in (v.get("conditions") or {}).get("from", []) or []:
+            # ⚠️ `from: HAMEAU_INTERIOR` sort de l'export sous le NOM de la
+            # constante (la réplique en dépend). Ce n'est pas un id de scène :
+            # le lien serait mort. Ces variantes-là sont rangées par `groupe`.
+            if f == "HAMEAU_INTERIOR":
+                continue
             lien(f"trans:var:{i}", f, "contexte")
 
     # les vues de marche gravitent autour du lieu qu'elles annoncent
@@ -291,7 +320,8 @@ def construire() -> dict:
             "scenesRattachees": len(deduit),
             "scenes": len(scenes),
             "lieux": len(lieux_meta),
-            "transitions": len(T.get("fond", [])) + len(T.get("variantes", [])) + len(T.get("bifurcations", [])),
+            "transitions": (len(T.get("fond", [])) + len(T.get("fondLande", []))
+                            + len(T.get("variantes", [])) + len(T.get("bifurcations", []))),
             "marches": len(d.get("ecransDeMarche", [])),
             "liens": len(liens),
         },

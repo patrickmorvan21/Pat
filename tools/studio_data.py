@@ -543,6 +543,36 @@ def lire_surprises():
     return out
 
 
+def lieux_du_hameau() -> list[str]:
+    """Les lieux INTÉRIEURS au village, lus dans scene-data (`HAMEAU_INTERIOR`).
+
+    ⚠️ On ne se contente pas de la liste : le runtime y ajoute tout id qui
+    commence par « hameau- » (`isHameauInterior`). Un texte gardé sur cette
+    constante ne se joue donc QUE dans le village — c'est ce qui permet de dire
+    d'une transition où elle a lieu, au lieu de la ranger avec celles qui se
+    jouent partout."""
+    src = TS.read_text(encoding="utf-8")
+    b = bloc_apres(src, r"export const HAMEAU_INTERIOR\s*=")
+    return chaines_de_tableau(b[0]) if b else []
+
+
+def ou_se_joue(cond: dict, hameau: list[str]) -> str:
+    """« hameau » · « lande » · « partout » — d'après la seule PROVENANCE.
+
+    C'est la provenance qui dit où l'écran se joue : une marche qui VA au
+    village se joue encore dans la lande. Sans condition de provenance, le
+    texte est servi des deux côtés — il n'appartient à aucun des deux.
+    """
+    src = cond.get("from") or []
+    if not src:
+        return "partout"
+    dedans = all(
+        f == "HAMEAU_INTERIOR" or f in hameau or f.startswith("hameau-")
+        for f in src
+    )
+    return "hameau" if dedans else "lande"
+
+
 def lire_transitions() -> dict:
     """Les TEXTES DE MARCHE — ce qu'on lit entre deux lieux.
 
@@ -557,10 +587,17 @@ def lire_transitions() -> dict:
     juger si une vignette est atteignable, et à qui elle est réservée.
     """
     src = TS.read_text(encoding="utf-8")
+    hameau = lieux_du_hameau()
     fond = []
     b = bloc_apres(src, r"const LIAISON_AMBIANCES: string\[\] =")
     if b:
         fond = chaines_de_tableau(b[0])
+    # Le fond de PLEINE LANDE n'était exporté NULLE PART : trois textes de
+    # marche sans fiche, alors qu'ils sont écartés dès qu'on part du village.
+    fond_lande = []
+    b = bloc_apres(src, r"const LIAISON_AMBIANCES_LANDE: string\[\] =")
+    if b:
+        fond_lande = chaines_de_tableau(b[0])
     variantes = []
     b = bloc_apres(src, r"const LIAISON_VARIANTS: LiaisonVariant\[\] =")
     if b:
@@ -594,13 +631,15 @@ def lire_transitions() -> dict:
             variantes.append({
                 "texte": texte_de(c, "text") or "",
                 "conditions": cond,
+                "ou": ou_se_joue(cond, hameau),
                 "illustration": texte_de(c, "illustration") or None,
             })
     bif = []
     b = bloc_apres(src, r"const BIFURCATIONS: string\[\] =")
     if b:
         bif = chaines_de_tableau(b[0])
-    return {"fond": fond, "variantes": variantes, "bifurcations": bif}
+    return {"fond": fond, "fondLande": fond_lande,
+            "variantes": variantes, "bifurcations": bif}
 
 
 def lire_loi() -> dict:

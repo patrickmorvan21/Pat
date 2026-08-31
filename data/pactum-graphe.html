@@ -356,7 +356,11 @@ function assetsConnus() {
 }
 let panier = {};
 try { panier = JSON.parse(localStorage.getItem(CLE_PANIER) || "{}"); } catch (e) { panier = {}; }
-const NUAGE = { transition:"Les textes de marche — joués partout, sans lieu fixe",
+// ⚠️ « sans lieu fixe » et rien de plus : depuis que les marches du village
+// rejoignent l'enclave, ce nuage mêle des textes joués des deux côtés et
+// des textes de pleine lande. Dire « joués partout » mentirait sur ces
+// derniers ; chaque fiche porte son propre « où ».
+const NUAGE = { transition:"Les textes de marche — sans lieu fixe",
                 marche:"Les vues de marche", scene:"Hors traversée" };
 const on = { lieu:1, arrivee:1, rencontre:1, scene:1, terminal:1, marche:1, transition:1 };
 const opt = { noms:1, images:0, liensFaibles:1 };
@@ -396,6 +400,12 @@ function demarrer(g) {
   groupes.forEach(gr => {
     const m = new Set(gr.lieux);
     L.forEach(l => { if (l.t === "appartient" && m.has(l.a)) m.add(l.b); });
+    // Une transition n'appartient à aucun LIEU — mais certaines ne se jouent
+    // que dans le village (leur condition de provenance l'exige). Elles sont
+    // donc membres de l'enclave, déclarées telles par l'export. Sans ça elles
+    // tombaient dans le nuage des textes « joués partout », ce qui est faux :
+    // on ne lit pas le silence du marché en pleine bruyère.
+    N.forEach(n => { if (n.groupe === gr.id) m.add(n.id); });
     gr.membres = [...m].map(id => parId.get(id)).filter(Boolean);
     gr.membres.forEach(n => n.groupe = gr.id);
   });
@@ -508,14 +518,16 @@ function pas() {
   // cohésion des nœuds sans lien : un nuage par catégorie, jamais un lien inventé
   const centres = {};
   for (const n of N) {
-    if (n.deg) continue;
+    // `n.groupe` : membre d'une enclave — il a déjà sa place, et la cohésion du
+    // nuage tirerait dans l'autre sens. Son étiquette mentirait aussi.
+    if (n.deg || n.groupe) continue;
     const c = centres[n.cat] || (centres[n.cat] = { x: 0, y: 0, n: 0 });
     c.x += n.x; c.y += n.y; c.n++;
   }
   for (const k in centres) { centres[k].x /= centres[k].n; centres[k].y /= centres[k].n; }
   nuages = centres;
   for (const n of N) {
-    if (!n.deg) {
+    if (!n.deg && !n.groupe) {
       const c = centres[n.cat];
       n.vx += (c.x - n.x) * n.coh; n.vy += (c.y - n.y) * n.coh;
     }
@@ -674,7 +686,7 @@ function dessiner() {
     for (const k in nuages) {
       if (!on[k] || nuages[k].n < 4 || !NUAGE[k]) continue;
       let bas = -1e9;
-      for (const n of N) if (!n.deg && n.cat === k && on[k]) bas = Math.max(bas, n.y);
+      for (const n of N) if (!n.deg && !n.groupe && n.cat === k && on[k]) bas = Math.max(bas, n.y);
       ctx.globalAlpha = .5; ctx.fillStyle = "#ffffff";
       ctx.font = "400 " + 11 / vue.k + "px " + getComputedStyle(document.body).fontFamily;
       ctx.fillText(NUAGE[k] + "  (" + nuages[k].n + ")", nuages[k].x, bas + 22 / vue.k);
