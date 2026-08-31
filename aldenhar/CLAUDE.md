@@ -1285,3 +1285,19 @@ Suite du point 1 du 31/08, tranché par Patrick : **« pour tous »** — la gra
 - **Cliquer à côté ferme la fiche.** En capture sur le document (le canvas gère ses propres pointeurs), et **seulement sur un vrai clic** — un déplacement de plus de 6 px est un glissement de carte, qui ne ferme rien. Le panneau de gauche est exclu : il a ses propres actions.
 - Vérifié en Playwright : jeu **13/13** (jets réels, vitesse normale — la frappe instantanée rend intestables les images différées, leçon du 30/08), Graphe **13/13**, 0 erreur JS, 0 asset en échec. Huit gardes verts, lint et typecheck propres.
 - `APP_VERSION` 1.110.0 → **1.111.0**, `CACHE_VERSION` v176 → **pactum-v177**.
+
+#### Les 131 anciennes images récupérées de l'historique git (v1.111.1)
+Retour Patrick : « je ne retrouve pas toutes les anciennes photos dans le glyphe — possible d'importer toutes celles du Drive qui sont validées ? plus simple pour remettre une ancienne image ».
+- **Le Drive n'était pas nécessaire.** Chaque image remplacée depuis juillet a été RETIRÉE du dépôt au moment du câblage (règle du garde-fou : on ne supprime que ce qu'aucune source ne mentionne plus) — donc elle a disparu de la galerie, qui lit `public/assets/`. Mais **git les a toutes**. `git log --diff-filter=D` en liste **133**, dont **131 absentes du disque** ; restaurées par `git show <sha>^:<chemin>`, **131/131, 0 échec, 0 PNG invalide**.
+- **Coût : nul.** L'import Drive équivalent aurait coûté ~600 k tokens de contexte (mesuré le 30/08) ; l'historique est local. **Réflexe à garder : avant de redemander un lot au Drive, vérifier ce que git a déjà.**
+- Galerie du Graphe : **293 → 424 vignettes**, dont **329 en réserve** (la section atténuée du 31/08, qui prend enfin tout son sens). Assets sur disque 291 → 422, manifeste à 429 entrées, poids total 8,4 Mo — **sans effet sur le jeu** : `APP_SHELL` du service worker est une courte liste explicite, ces images ne sont servies que si un écran les demande.
+- ⚠️ **La réserve contient aussi des images REFUSÉES**, pas seulement des remplacées : les trois de la Petite Fixée générées le 30/08 à 11h05 (une adulte encapuchonnée, un dos d'adulte, des mains adultes qui tressent) reviennent avec le lot. Elles sont dans la réserve comme les autres — à ne pas rappeler par mégarde, l'enfant a huit ans.
+- `APP_VERSION` 1.111.0 → **1.111.1**, `CACHE_VERSION` v177 → **pactum-v178**.
+
+#### État du mini-jeu de la porte du hameau (vérifié, pas déduit)
+Patrick : « il manque le mini-jeu pour ouvrir la porte au sein du hameau ». **Vérifié dans le code et JOUÉ : il existe entièrement.**
+- La nuit (`demo-nuit`, séjour) offre bien ses **trois portes** — Crocheter une maison fermée · Frapper à la grange · Dormir dehors — et le Crochetage porte `minigame: { engine: "pick" }` avec sa conséquence d'échec (+1 Soupçon, la porte ne cède pas).
+- Le moteur répond : canvas `minigame-canvas` **300×160, visible, 48 000 pixels dessinés**, consigne « TAPE QUAND LE CROCHET EST DANS LA GORGE », config à trois goupilles et gorge élargie par la Ruse, **0 erreur JS**.
+- Le déroutage est posé entre le Marché et le Puits (`chapelle` ET `marche-muet` visités, `puits-condamne` pas encore, toujours dans le village) — donc il tombe sur la route scriptée. S'il n'est pas apparu, c'est le **second bouton** d'une Croisée qui a fait sortir de la route, pas une absence.
+- **Le seul manque est COSMÉTIQUE** : `minijeu_serrure_fond.png` n'existe pas sur le disque. La piste est entièrement procédurale (trait rongé, gorge tramée, trois encoches) et se joue sans lui ; l'image serait un habillage, pas une condition.
+- ⚠️ **Piège de mesure, troisième fois dans la même session** : `document.querySelector("canvas")` attrape l'**anneau du dé** (`die-ring hidden`, 200×200, vide), pas le mini-jeu — j'ai d'abord rapporté « 0 pixel dessiné » sur un moteur qui rendait parfaitement. **Énumérer TOUS les canvas et lire leur classe, jamais le premier.**
