@@ -98,6 +98,9 @@ export const REFERENCE_GAMES: MiniGameEntry[] = [
       windowWidth: tier === "haut" ? 0.34 : tier === "moyen" ? 0.22 : 0.12,
       speed: 1.1,
       maxAttempts: 3,
+      // La galerie sert à REVOIR ce que le jeu fait : elle montre donc les
+      // trois goupilles du crochetage réel (29/08), pas un tap unique.
+      goupilles: 3,
     }),
     successText: "Le mécanisme cède avec un déclic sourd.",
     failText: "La pointe dérape — il faut recommencer.",

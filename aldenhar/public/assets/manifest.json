@@ -1,6 +1,6 @@
 {
- "genere": "2026-08-31T21:19:17Z",
- "commit": "2728ff3",
+ "genere": "2026-08-31T21:51:07Z",
+ "commit": "f8bde0c",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -296,6 +296,13 @@
    "hash": "01640b33",
    "recent": false,
    "ajoute": "2026-08-25T21:12:49+00:00"
+  },
+  "minijeu_serrure_fond.png": {
+   "taille": 7270,
+   "modifie": "2026-08-31T21:28:33Z",
+   "hash": "6ad7e1e9",
+   "recent": false,
+   "ajoute": ""
   },
   "monstre_appele_descente.png": {
    "taille": 30568,
@@ -924,8 +931,8 @@
    "taille": 22448,
    "modifie": "2026-08-31T21:05:21Z",
    "hash": "7b4e1107",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-08-31T21:20:48+00:00"
   },
   "monstre_pendu_qui_parle_2_a.png": {
    "taille": 9886,
@@ -2373,8 +2380,8 @@
    "taille": 22674,
    "modifie": "2026-08-31T21:08:21Z",
    "hash": "8c31ff3d",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-08-31T21:20:48+00:00"
   },
   "scene_lande_generique_4.png": {
    "taille": 21865,
@@ -2485,8 +2492,8 @@
    "taille": 29134,
    "modifie": "2026-08-31T21:08:21Z",
    "hash": "e97725f3",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-08-31T21:20:48+00:00"
   },
   "scene_landes_liaison_plateau_d.png": {
    "taille": 28299,
@@ -2506,8 +2513,8 @@
    "taille": 20931,
    "modifie": "2026-08-31T21:08:21Z",
    "hash": "6dc92a0e",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-08-31T21:20:48+00:00"
   },
   "scene_landes_liaison_sud_c.png": {
    "taille": 14946,

@@ -100,7 +100,7 @@ import StraightSwipe from "@/components/minigames/engines/StraightSwipe";
 import { forcerPiste, playMusic } from "@/lib/audio";
 import { loadSettings } from "@/lib/settings";
 import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomSoinMineur, recompenseDestinQuiTient, usageEnMots, LANDES_OBJETS, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
-import { assetUrl, assetCss, assetExiste } from "@/lib/assets";
+import { assetUrl, assetSrc, assetCss, assetExiste } from "@/lib/assets";
 import {
   bloodDebtFor,
   buildRegistre,
@@ -4097,8 +4097,8 @@ export default function Scene() {
           label: choice.minigame.label ?? "CÔTÉ SUD",
           threshold: 0.45,
           preEclaircie: 0.12,
-          imageFond: assetUrl("assets/minijeu_borne_pierre.png"),
-          imageMousse: assetUrl("assets/minijeu_borne_mousse.png"),
+          imageFond: assetSrc("assets/minijeu_borne_pierre.png"),
+          imageMousse: assetSrc("assets/minijeu_borne_mousse.png"),
         });
       }
       testeurTaps.current = 0;

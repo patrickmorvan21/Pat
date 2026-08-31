@@ -43,6 +43,33 @@ export function assetUrl(chemin: string): string {
 }
 
 /**
+ * Comme `assetUrl`, mais ABSOLU depuis la racine du déploiement.
+ *
+ * ⚠️ `assetUrl` rend un chemin RELATIF (`assets/x.png?v=…`). Dans une balise
+ * `<img>` d'un écran servi à la racine (`/Pat/aldenhar/`) c'est correct — mais
+ * depuis une page en sous-dossier (`/Pat/aldenhar/minijeux/`) il résout en
+ * `…/minijeux/assets/x.png` et tombe en 404. Le défaut est SILENCIEUX : un
+ * `new Image()` qui échoue ne déclenche pas `requestfailed` (un 404 est une
+ * réponse), donc l'image manque sans qu'aucun test réseau ne le voie.
+ *
+ * On ne peut pas lire `process.env.PAGES_BASE_PATH` ici : ce module est chargé
+ * côté client, et Next n'inline que les `NEXT_PUBLIC_*`. On déduit donc la
+ * racine du `<link rel="manifest">` que le layout pose DÉJÀ avec le bon
+ * basePath — une source qui ne peut pas diverger de la configuration réelle.
+ * Repli sur le chemin relatif si le lien manque (le rendu reste correct à la
+ * racine, qui est le cas de tous les écrans du jeu).
+ */
+export function assetSrc(chemin: string): string {
+  const rel = assetUrl(chemin);
+  if (typeof document === "undefined" || rel.startsWith("/") || rel.startsWith("http")) return rel;
+  const lien = document.querySelector('link[rel="manifest"]') as HTMLLinkElement | null;
+  const href = lien?.getAttribute("href");
+  if (!href) return rel;
+  const racine = href.slice(0, href.lastIndexOf("/") + 1);
+  return racine + rel;
+}
+
+/**
  * L'asset existe-t-il vraiment ?
  *
  * Sert aux vignettes OPTIONNELLES (icônes d'état, par exemple) : le catalogue
