@@ -42,8 +42,8 @@
       "note": "Le texte dit que rien n'est encore sorti (« le cadenas saute sur son anneau », « les planches ONT BOUGÉ ») ; l'image montre le puits grand ouvert et les BRAS DÉJÀ DEHORS. Moins cher que regénérer : déplacer cette image sur l'issue d'EXPIRATION (les Mains du Puits), où « déjà dehors » est exactement juste, et produire pour ce beat une planche qui se soulève d'un doigt."
     },
     "la-descente": {
-      "v": "replace",
-      "note": "Le texte dit « devant, l'ESCALIER PLONGE dans un noir qui n'a pas encore de nom » : l'image montre une brèche dans une palissade sur terrain plat, sans escalier ni pente. Elle est en plus tirée dans le pool des vues de marche, donc l'écran de sortie de zone partage son visuel avec une liaison banale. Asset dédié à produire (prompt prêt)."
+      "verdict": "replace",
+      "note": "L'escalier est SUPPRIMÉ (31/08) : on ne quitte les Landes que par les cordes. L'image de l'escalier est retirée du câblage ; l'écran sert la vue neutre du sud en attendant scene_falaise_cordes_a, qui deviendra l'emblème de la sortie (prompt dans data/prompts-sortie-de-zone.md)."
     },
     "veilleur-1": {
       "v": "replace",

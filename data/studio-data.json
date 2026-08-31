@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-31T07:37:30Z",
- "commit": "6768b75",
+ "genere": "2026-08-31T13:41:44Z",
+ "commit": "4b254d6",
  "zones": [
   {
    "id": "landes",
@@ -6965,7 +6965,7 @@
   {
    "id": "palissade-sud-2",
    "narration": [
-    "Sur le chemin de ronde, un vieux soldat regarde vers le sud. Et en contrebas, déjà loin de l'autre côté, un homme descend le chemin d'un pas égal, sans bagage, sans se retourner. Le Veilleur ne le quitte pas des yeux. « Encore un Appelé », dit-il sans se retourner. « On ne les rattrape pas. On les compte. »"
+    "Sur le chemin de ronde, un vieux soldat regarde vers le sud. Et en contrebas, par-dessus le bord, un homme descend au bout d'une corde, d'un rythme égal, sans bagage, sans lever la tête. Le Veilleur ne le quitte pas des yeux. « Encore un Appelé », dit-il sans se retourner. « On ne les rattrape pas. On les compte. »"
    ],
    "choix": [
     {
@@ -7004,7 +7004,7 @@
    ],
    "pointsInteret": [],
    "narrationDemo": [
-    "En contrebas, déjà loin, un homme descend le chemin d'un pas égal, sans bagage, sans se retourner. « Encore un Appelé », dit le Veilleur. « On ne les rattrape pas. On les compte. »"
+    "Par-dessus le bord, un homme descend au bout d'une corde, d'un rythme égal, sans bagage, sans lever la tête. « Encore un Appelé », dit le Veilleur. « On ne les rattrape pas. On les compte. »"
    ],
    "sejour": true,
    "nom": "La Palissade Sud — beat 2",
@@ -7500,8 +7500,8 @@
   {
    "id": "la-descente",
    "narration": [
-    "Le sol s'incline. L'air se fait plus froid, plus vieux — il monte d'en bas, par la porte de la Descente restée ouverte derrière toi.",
-    "Tu as traversé les Landes vivant. Peu le font. Devant, l'escalier plonge dans un noir qui n'a pas encore de nom."
+    "Passé le portillon, le sol ne descend pas : il cesse. La lande s'arrête net et la paroi tombe plus bas que le regard ne porte. L'air qui monte de là est plus froid, et plus vieux.",
+    "Sur toute la largeur du bord, des cordes. Nouées aux pieux, elles pendent dans le noir et bougent ensemble. Tu as traversé les Landes vivant — peu le font. Tu en prends une, et le sol te lâche."
    ],
    "choix": [
     {
@@ -7513,12 +7513,12 @@
    "pointsInteret": [],
    "terminal": true,
    "image": {
-    "fichier": "scene_la_descente_a_a.png",
-    "hash": "095542f3",
-    "taille": 24986,
+    "fichier": "scene_landes_liaison_sud_d_h.png",
+    "hash": "fede2150",
+    "taille": 13178,
     "recent": true,
     "existe": true,
-    "statut": "dediee",
+    "statut": "fallback",
     "herite": "",
     "verdict": "replace",
     "verdictNote": "Le texte dit « devant, l'ESCALIER PLONGE dans un noir qui n'a pas encore de nom » : l'image montre une brèche dans une palissade sur terrain plat, sans escalier ni pente. Elle est en plus tirée dans le pool des vues de marche, donc l'écran de sortie de zone partage son visuel avec une liaison banale. Asset dédié à produire (prompt prêt)."
@@ -8558,6 +8558,14 @@
    "recent": true,
    "groupe": "doublon",
    "racine": "hameau_maison_muree_combles"
+  },
+  {
+   "fichier": "scene_la_descente_a_a.png",
+   "hash": "095542f3",
+   "taille": 24986,
+   "recent": true,
+   "groupe": "autre",
+   "racine": "la_descente"
   },
   {
    "fichier": "scene_landes_hameau_croix_craie_a.png",
@@ -9977,7 +9985,7 @@
   "illustrations": 298,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 97,
+  "reserve": 98,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

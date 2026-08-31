@@ -7248,13 +7248,13 @@ export const SCENES: Scene[] = [
     illustration: "assets/monstre_palissade_sud_2_d_b.png",
     narration: [
       "Sur le chemin de ronde, un vieux soldat regarde vers le sud. Et en " +
-        "contrebas, déjà loin de l'autre côté, un homme descend le chemin " +
-        "d'un pas égal, sans bagage, sans se retourner. Le Veilleur ne le " +
+        "contrebas, par-dessus le bord, un homme descend au bout d'une corde, " +
+        "d'un rythme égal, sans bagage, sans lever la tête. Le Veilleur ne le " +
         "quitte pas des yeux. « Encore un Appelé », dit-il sans se " +
         "retourner. « On ne les rattrape pas. On les compte. »",
     ],
     narrationDemo: [
-      "En contrebas, déjà loin, un homme descend le chemin d'un pas égal, sans bagage, sans se retourner. « Encore un Appelé », dit le Veilleur. « On ne les rattrape pas. On les compte. »",
+      "Par-dessus le bord, un homme descend au bout d'une corde, d'un rythme égal, sans bagage, sans lever la tête. « Encore un Appelé », dit le Veilleur. « On ne les rattrape pas. On les compte. »",
     ],
     choices: [
       {
@@ -9707,14 +9707,26 @@ export function traceDeSortie(ctx: {
 
 export const DESCENTE_SCENE: Scene = {
   id: "la-descente",
-  // Vue générique des Landes vers le SUD (retour Patrick 7/08 : l'écran
-  // tournait encore sur le placeholder portail). À remplacer par
-  // `scene_la_descente` dès génération (prompt dans images-a-produire.md).
-  illustration: "assets/scene_la_descente_a_a.png",
+  // ⚠️ L'ESCALIER EST SUPPRIMÉ (décision Patrick, 31/08). On ne descend
+  // des Landes que par les CORDES — l'image emblématique de la sortie de
+  // zone. L'escalier n'était affirmé que dans UNE phrase de tout le jeu,
+  // alors que les cordes portent un lieu entier (la Falaise), un objet qui
+  // s'y noue et le motif du tranchage par en dessous ; c'est donc lui qui
+  // cède, comme le cercle de la Colline a cédé à la crête.
+  // L'image reste la vue neutre du sud tant que `scene_la_descente` (version
+  // CORDES) n'est pas générée : neutre vaut mieux que contradictoire.
+  illustration: "assets/scene_landes_liaison_sud_d_h.png",
   terminal: true,
   narration: [
-    "Le sol s'incline. L'air se fait plus froid, plus vieux — il monte d'en bas, par la porte de la Descente restée ouverte derrière toi.",
-    "Tu as traversé les Landes vivant. Peu le font. Devant, l'escalier plonge dans un noir qui n'a pas encore de nom.",
+    "Passé le portillon, le sol ne descend pas : il cesse. La lande s'arrête net et la paroi tombe plus bas que le regard ne porte. L'air qui monte de là est plus froid, et plus vieux.",
+    "Sur toute la largeur du bord, des cordes. Nouées aux pieux, elles pendent dans le noir et bougent ensemble. Tu as traversé les Landes vivant — peu le font. Tu en prends une, et le sol te lâche.",
+  ],
+  // En DÉMO on arrive de la Falaise : la descente vient d'être JOUÉE (le
+  // geste lent, palier par palier). L'écran ne peut donc pas la redemander —
+  // il la referme. C'est exactement ce que `narrationDemo` sert à faire.
+  narrationDemo: [
+    "La corde s'arrête. Sous tes pieds, quelque chose de plat, de taillé — et très haut au-dessus, le jour par où tu es passé s'est refermé sur lui-même.",
+    "Tu as traversé les Landes vivant. Peu le font. Devant, le noir n'a pas encore de nom.",
   ],
   // ⚠️ « Ici s'arrête ce que le Geôlier a bâti. L'Acte II se creuse encore »
   // était le DERNIER paragraphe de la narration — playtest du 12/08 : « la
