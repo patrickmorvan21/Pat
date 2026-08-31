@@ -36,7 +36,7 @@ import {
   type CodexType,
 } from "@/lib/codex-data";
 import { loadMemory, marquerCodexVu } from "@/lib/player-memory";
-import { assetUrl, assetCss } from "@/lib/assets";
+import { assetUrl } from "@/lib/assets";
 import { BoutonNav } from "@/components/NavIcons";
 
 type Niveau =
@@ -172,7 +172,6 @@ export default function Codex({ onClose }: { onClose: () => void }) {
             />
             <div
               className="dissolve-bottom"
-              style={{ backgroundImage: assetCss("assets/bande_dissolution_haut.svg") }}
               aria-hidden
             />
             <div className="absolute inset-x-0 top-[85px] text-center">
@@ -314,7 +313,6 @@ function EntreeFiche({
             invisible, le défaut exact du retour Patrick 21/08. */}
         <div
           className="dissolve-bottom"
-          style={{ backgroundImage: assetCss("assets/bande_dissolution_haut.svg") }}
           aria-hidden
         />
       </div>

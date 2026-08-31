@@ -37,6 +37,9 @@ TS = Path(__file__).resolve().parent.parent / "aldenhar/lib/scene-data.ts"
 # c'est une séquence. Le garde signale donc les dépassements de la bande
 # « important », pas seulement les murs.
 SEUIL_ECRAN = 90
+# Plafond de SOURCE : au-delà, aucune pagination ne sauve la scène (elle ferait
+# trois écrans pour une seule décision). 90 reste le budget d'un ÉCRAN.
+PLAFOND_SCENE = 120
 BANDE_COURANT = 60
 
 
@@ -125,6 +128,7 @@ def ecrans_par_visite(src: str) -> None:
 
 def main() -> int:
     verbose = "--verbose" in sys.argv
+    strict = "--strict" in sys.argv
     src = TS.read_text(encoding="utf-8")
     bloc = sd.bloc_apres(src, r"const SCENES: Scene\[\] =")
     assert bloc, "SCENES introuvable"
@@ -311,6 +315,31 @@ def main() -> int:
         for sid, m, c, n in ecrans:
             marque = " ⚠" if m > SEUIL_ECRAN else ""
             print(f"  {sid:30s} {m:>4} mots · {n} ¶{marque}")
+
+    # ─── GARDE DE BUILD (--strict), demandé par Patrick le 31/08 : « à chaque
+    # modification il faut que tu check ça pour ne pas refaire la même erreur ».
+    # ⚠️ Le seuil de garde N'EST PAS 90. 90 est le budget d'ÉCRAN, tenu par le
+    # découpage runtime : une scène de 116 mots en trois paragraphes devient
+    # deux écrans, ce qui est le comportement voulu. Ce qu'aucune pagination ne
+    # peut rattraper, c'est un PARAGRAPHE unique trop long (il reste entier) et
+    # une scène si dense qu'elle ferait trois écrans pour une seule décision.
+    # D'où deux règles, sur la source :
+    #   · aucun paragraphe seul au-dessus de 90 mots ;
+    #   · aucune scène au-dessus de PLAFOND_SCENE mots.
+    if strict:
+        fautes = []
+        for sid, m, c, n in ecrans:
+            if m > PLAFOND_SCENE:
+                fautes.append(f"{sid} : {m} mots (plafond {PLAFOND_SCENE})")
+        for sid, m in paragraphes_longs:
+            fautes.append(f"{sid} : un ¶ de {m} mots (un ¶ ne se coupe jamais)")
+        if fautes:
+            print("\n❌ densité — " + str(len(fautes)) + " scène(s) hors grille :")
+            for f in fautes:
+                print("   " + f)
+            return 1
+        print("\n✓ densité : aucun ¶ au-dessus de 90 mots, aucune scène au-dessus de "
+              f"{PLAFOND_SCENE}.")
     return 0
 
 

@@ -553,12 +553,34 @@ body {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 41px;
-  /* background-image posé inline dans Scene.tsx (URL relative, compatible basePath) */
-  background-size: 390px 41px;
+  height: 42px;
+  /* ⚠️ 100 % CSS depuis le 31/08 (retour Patrick : la bande SVG paraissait
+     ÉTIRÉE — elle était rendue en 390×41 alors que le vecteur fait 41,27 de
+     haut, donc mise à l'échelle sur un demi-pixel puis lissée par le
+     navigateur). Ici : un liseré plein au ras du bord, puis 13 lignes de
+     CARRÉS de 2px dont la période s'allonge en montant — la densité décroît,
+     jamais l'opacité (règle DA). Bords francs (0 2px / 2px Npx) : ce sont des
+     pavés, pas des dégradés. Aucun fichier, aucune mise à l'échelle, net à
+     toutes les densités d'écran et à toutes les largeurs. */
+  background-color: transparent;
+  background-image:
+    linear-gradient(var(--color-bg), var(--color-bg)),
+    repeating-linear-gradient(to right, var(--color-bg) 0 2px, transparent 2px 3px),
+    repeating-linear-gradient(to right, var(--color-bg) 0 2px, transparent 2px 4px),
+    repeating-linear-gradient(to right, var(--color-bg) 0 2px, transparent 2px 5px),
+    repeating-linear-gradient(to right, var(--color-bg) 0 2px, transparent 2px 6px),
+    repeating-linear-gradient(to right, var(--color-bg) 0 2px, transparent 2px 8px),
+    repeating-linear-gradient(to right, var(--color-bg) 0 2px, transparent 2px 10px),
+    repeating-linear-gradient(to right, var(--color-bg) 0 2px, transparent 2px 13px),
+    repeating-linear-gradient(to right, var(--color-bg) 0 2px, transparent 2px 17px),
+    repeating-linear-gradient(to right, var(--color-bg) 0 2px, transparent 2px 22px),
+    repeating-linear-gradient(to right, var(--color-bg) 0 2px, transparent 2px 29px),
+    repeating-linear-gradient(to right, var(--color-bg) 0 2px, transparent 2px 38px),
+    repeating-linear-gradient(to right, var(--color-bg) 0 2px, transparent 2px 50px),
+    repeating-linear-gradient(to right, var(--color-bg) 0 2px, transparent 2px 66px);
+  background-size: 100% 3px, 3px 3px, 4px 3px, 5px 3px, 6px 3px, 8px 3px, 10px 3px, 13px 3px, 17px 3px, 22px 3px, 29px 3px, 38px 3px, 50px 3px, 66px 3px;
+  background-position: left bottom, left 0px bottom 3px, left 2px bottom 6px, left 1px bottom 9px, left 0px bottom 12px, left 4px bottom 15px, left 0px bottom 18px, left 7px bottom 21px, left 9px bottom 24px, left 6px bottom 27px, left 16px bottom 30px, left 28px bottom 33px, left 40px bottom 36px, left 54px bottom 39px;
   background-repeat: repeat-x;
-  background-position: left bottom;
-  transform: scaleY(-1);
   pointer-events: none;
 }
 

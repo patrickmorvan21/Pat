@@ -827,11 +827,16 @@ function decouperEnEcrans(entries: FeedEntry[]): FeedEntry[][] {
   let mots = 0;
   for (const e of entries) {
     const m = texte(e);
-    // LA DÉMO RESPIRE PLUS LARGE (go 24/08, chantier taps) : un écran de démo
-    // porte jusqu'à 150 mots — la prose y est déjà courte (narrationDemo), et
-    // « un écran sans décision doit justifier son existence ». Le jeu complet
-    // garde ses 90 : sa prose entière en a besoin.
-    const budget = demoActive() ? 150 : MOTS_PAR_ECRAN;
+    /* ⚠️ UN SEUL BUDGET, 90 MOTS, DÉMO COMPRISE (correctif Patrick 31/08 :
+       « certaines pages ont encore énormément de texte »). La démo tournait
+       à 150 depuis le 24/08, au motif que sa prose est déjà courte — mais
+       ce n'est vrai que des scènes qui ont un `narrationDemo`. Les autres
+       (la Meute, les combats, tout ce qui n'est pas sur la route scriptée)
+       servaient leur narration ENTIÈRE plus les injections d'arrivée sur un
+       seul écran : cinq paragraphes d'un coup, mesuré en jeu. Le budget
+       n'est pas ce qui coûte des taps — c'est l'empilement des injections,
+       traité par le budget d'un seul rappel par arrivée. */
+    const budget = MOTS_PAR_ECRAN;
     if (m > 0 && mots > 0 && mots + m > budget) {
       groupes.push(cur);
       cur = [];
@@ -850,8 +855,12 @@ function decouperEnEcrans(entries: FeedEntry[]): FeedEntry[][] {
   // plus avant les choix (mesuré : l'ouverture d'un compte vétéran mettait la
   // première décision à l'écran 4 ; la trace d'écharde y vivait seule).
   // Un dernier groupe court rejoint l'écran précédent tant que le total reste
-  // sous le PLAFOND DUR de 120 mots (doctrine du 4/08 : 90 = budget, 120 =
-  // maximum absolu d'un écran). Jamais pour un bandeau du Geôlier : son
+  // sous LE BUDGET (correctif Patrick 31/08 : le plafond était à 120, donc la
+  // fusion produisait légitimement des écrans de 106-120 mots — c'est ce qui
+  // faisait « des pages avec énormément de texte », mesuré à 106 sur la Meute.
+  // Fusionner pour épargner un tap ne doit jamais fabriquer le mur qu'on
+  // vient d'éviter : le budget est le budget). Jamais pour un bandeau du
+  // Geôlier : son
   // chrome de 111 px repousserait le contenu sous la ligne de flottaison
   // (le débordement corrigé le 10/08). Les taps MÉRITÉS (mort, Sceau,
   // révélation) ne passent pas par ce découpage — ils ont leurs écrans.
@@ -863,7 +872,7 @@ function decouperEnEcrans(entries: FeedEntry[]): FeedEntry[][] {
       pDernier > 0 &&
       pDernier <= 45 &&
       !dernier.some((e) => e.kind === "jailer") &&
-      poids(groupes[groupes.length - 2]) + pDernier <= 120
+      poids(groupes[groupes.length - 2]) + pDernier <= MOTS_PAR_ECRAN
     ) {
       groupes[groupes.length - 2].push(...dernier);
       groupes.pop();
@@ -931,6 +940,9 @@ export default function Scene() {
   /** Vue de marche différée : posée quand une conséquence de jet se lit sur
       une liaison (l'image du lieu tient), appliquée au tap suivant. */
   const imageApresConsequence = useRef<string | null>(null);
+  /* Combien d'écrans le découpage vient de produire. Sert à décider QUAND
+     poser une bascule d'image différée : jamais au milieu d'un écran. */
+  const nbEcransRef = useRef(1);
   // File de révélation séquentielle : les blocs de texte (narration/Geôlier)
   // tapent l'un après l'autre, jamais tous en même temps.
   const [activeTypingId, setActiveTypingIdState] = useState<string | null>(null);
@@ -1083,13 +1095,14 @@ export default function Scene() {
     // « Touche pour continuer » qui prend la main, jamais les choix.
     if (next === null && beatsSuiteRef.current.length === 0) {
       setChoicesHidden(false);
-      // Conséquence de jet lue sur une liaison COURTE (un seul écran) : la vue
-      // de marche prend le relais au moment où les routes s'offrent.
-      if (imageApresConsequence.current) {
-        setImage(imageApresConsequence.current);
-        setImageKind("scene");
-        imageApresConsequence.current = null;
-      }
+      /* ⚠️ PLUS AUCUNE BASCULE D'IMAGE ICI (correctif Patrick 31/08 :
+         « quand on arrive sur une scène, quelques secondes après l'image
+         change »). C'était exactement ce site : la vue de marche se posait à
+         la FIN DE LA FRAPPE, donc au milieu d'un écran déjà lu, au moment
+         même où les CTA apparaissent — ça se lit comme un défaut, pas comme
+         un plan. Une image ne change plus qu'à une FRONTIÈRE d'écran : soit
+         au tap suivant (`nextChunk`), soit d'emblée quand l'écran est seul
+         (posé dans `advance`). */
     }
   }
   function enqueueReveal(ids: string[]) {
@@ -1479,6 +1492,7 @@ export default function Scene() {
       imageApresConsequence.current = null;
     }
     const groupes = decouperEnEcrans(entries);
+    nbEcransRef.current = groupes.length;
     // ⚠️ LA CARTE D'ÉTAT NE SE MONTRE QU'UNE FOIS (playtest du 12/08).
     // Elle était re-posée en tête de CHAQUE écran de la séquence (règle du
     // 7/08, « elle reste le temps de la scène ») — mesuré en jeu : trois
@@ -2153,37 +2167,6 @@ export default function Scene() {
       }
       trav.phase = "scene";
       trav.current = nextScene.id;
-    } else if (
-      opts?.toDest === HAMEAU_SORTIE &&
-      demoActive() &&
-      vu(runRef.current?.vus, "demo|meute") === 0
-    ) {
-      /* LA MEUTE AU PORTILLON (démo, segment 9 — la phase Climax commence).
-         Franchir le portillon en démo ne rend pas la Croisée : la sortie du
-         village EST la rencontre — la réponse, neuf minutes plus tard, à
-         « aucun chien n'aboie » de l'arrivée. La couture de sortie se joue
-         quand même (on ne se téléporte pas), puis le front des chiens.
-         Cas d'école de la CATÉGORIE « retour garanti » (verrou n°2 du go) :
-         le jeu complet choisira parmi ce que la vie a réellement planté. */
-      const base = resoudre("meute-grise-1", runRef.current) ?? sceneById(ENTRY_SCENE)!;
-      const seed = (nextStep * 101 + 13) >>> 0;
-      nextScene = {
-        ...base,
-        narration: [
-          FRANCHIT_SORTIE[seed % FRANCHIT_SORTIE.length],
-          DEMO_MEUTE_COUTURE,
-          ...base.narration,
-        ],
-      };
-      trav.phase = "scene";
-      trav.current = "meute-grise-1"; // hors `visited` : un retour, pas un lieu
-      trav.liaisonOpts = null;
-      persist((r) => {
-        if (r.hameau) r.hameau = { ...r.hameau, sorti: true };
-        r.vus = noter(r.vus, "demo|meute");
-        // La menace de la Meute, si elle avait été plantée, se consomme ici.
-        if (r.menace?.id === "meute") r.menace = null;
-      });
     } else if (opts?.toDest === HAMEAU_SORTIE) {
       // LE PORTILLON (24/08) : quitter le village est une TRANSITION jouée,
       // pas une arrivée. Rien n'entre dans `visited` (aucun lieu traversé),
@@ -2219,6 +2202,18 @@ export default function Scene() {
       // le score du Registre.
       engageDansLeLieu = runRef.current?.engageIci ?? false;
       const embuscade = opts.toDest === "chemin-creux" && !trav.visited.includes("chemin-creux");
+      /* LA MEUTE SE RENCONTRE EN CHEMIN (correctif Patrick 31/08). Elle était
+         posée SUR le portillon : choisir « vers le portillon » depuis une
+         ruelle déposait droit devant les cinq chiens — donc on les voyait
+         depuis le village, et on y était. Elle se joue maintenant sur la
+         marche SUIVANTE, une fois le village réellement quitté
+         (`hameau.sorti`, posé par le portillon) : on sort, on marche, et on
+         tombe dessus. Même grammaire que l'embuscade de la Bête. */
+      const meuteDemo =
+        demoActive() &&
+        Boolean(runRef.current?.hameau?.sorti) &&
+        vu(runRef.current?.vus, "demo|meute") === 0 &&
+        opts.toDest !== HAMEAU_SORTIE;
       // LA ROUTE DES LOUPS REFUSÉE (17/08 §2, l'exemple même du document) :
       // l'indice de la Croisée annonçait « des silhouettes grises » — choisir
       // l'autre direction est un vrai contournement, en connaissance de
@@ -2240,11 +2235,25 @@ export default function Scene() {
           r.menace = null;
         });
       }
-      nextScene = resoudre(embuscade ? "bete-chemins-creux" : opts.toDest, runRef.current) ?? sceneById(ENTRY_SCENE)!;
+      const cible = meuteDemo
+        ? "meute-grise-1"
+        : embuscade
+          ? "bete-chemins-creux"
+          : opts.toDest;
+      const socle = resoudre(cible, runRef.current) ?? sceneById(ENTRY_SCENE)!;
+      nextScene = meuteDemo
+        ? { ...socle, narration: [DEMO_MEUTE_COUTURE, ...socle.narration] }
+        : socle;
+      if (meuteDemo)
+        persist((r) => {
+          r.vus = noter(r.vus, "demo|meute");
+          // La menace de la Meute, si elle avait été plantée, se consomme ici.
+          if (r.menace?.id === "meute") r.menace = null;
+        });
       trav.phase = "scene";
       // Reprise fidèle : fermer l'app pendant l'embuscade doit rendre la
       // Bête, pas le lieu derrière elle.
-      trav.current = embuscade ? "bete-chemins-creux" : opts.toDest;
+      trav.current = cible;
       trav.liaisonOpts = null;
       trav.routeFermee = false;
       // LES CORBEAUX QU'ON N'A PAS COMPTÉS (mémo IA externe 8/08 : l'inaction
@@ -3717,7 +3726,17 @@ export default function Scene() {
     setTimedExpired(false);
     showScreen(entries, img);
     // La bascule différée survit à showScreen (qui purge celles d'avant).
-    if (differeVueDeMarche) imageApresConsequence.current = differeVueDeMarche;
+    if (differeVueDeMarche) {
+      if (nbEcransRef.current > 1) {
+        // Il reste des écrans : la bascule attend la frontière (nextChunk).
+        imageApresConsequence.current = differeVueDeMarche;
+      } else {
+        // Écran unique : la poser plus tard la ferait changer SOUS les yeux.
+        setImage(differeVueDeMarche);
+        setImageKind("scene");
+        imageApresConsequence.current = null;
+      }
+    }
   }
 
   /**
@@ -4784,7 +4803,6 @@ export default function Scene() {
           />
           <div
             className="dissolve-bottom"
-            style={{ backgroundImage: assetCss("assets/bande_dissolution_haut.svg") }}
             aria-hidden
           />
         </div>

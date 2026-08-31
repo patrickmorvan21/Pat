@@ -141,7 +141,6 @@ function IntroFrame({
               />
               <div
                 className="dissolve-bottom"
-                style={{ backgroundImage: assetCss("assets/bande_dissolution_haut.svg") }}
                 aria-hidden
               />
             </>

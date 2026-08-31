@@ -20,7 +20,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { loadMemory } from "@/lib/player-memory";
 import { buildLesCent, mesMorts, type RegistreEntry } from "@/lib/registre-data";
-import { assetUrl, assetCss } from "@/lib/assets";
+import { assetUrl } from "@/lib/assets";
 import { BoutonNav } from "@/components/NavIcons";
 
 const PAGE = 12;
@@ -219,16 +219,7 @@ export default function Registre({
           className="block h-[390px] w-[390px] object-cover"
           style={{ imageRendering: "pixelated" }}
         />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-[42px]"
-          style={{
-            backgroundImage: assetCss("assets/bande_dissolution_haut.svg"),
-            backgroundSize: "390px 41px",
-            backgroundRepeat: "repeat-x",
-            transform: "scaleY(-1)",
-          }}
-        />
+        <div aria-hidden className="dissolve-bottom" />
       </div>
 
       {/* Bloc de tête : il MONTE sur le bas de l'illustration (y=325 dans la

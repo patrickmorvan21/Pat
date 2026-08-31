@@ -144,6 +144,8 @@ input[type=range]::-moz-range-thumb{width:9px;height:9px;border:0;background:var
 .aa2 .vig.rien{display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--blanc-20)}
 /* La galerie : on choisit à l'ŒIL. Un champ qui ne liste que des NOMS oblige
    à connaître le fichier avant de voir l'image — l'inverse du besoin. */
+.g.res{opacity:.45;filter:saturate(.6)}
+.g.res:hover{opacity:1;filter:none}
 .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:4px;
   max-height:228px;overflow-y:auto;padding:4px;border:1px solid var(--blanc-20);background:#151310}
 .gal .g{aspect-ratio:1/1;background:#000 center/cover;border:1px solid transparent;cursor:pointer;
@@ -883,16 +885,37 @@ function urlAsset(f){ return "assets/" + f; }
    ⚠️ Un nom complet et valide n'est pas un filtre mais une SÉLECTION : sinon
    cliquer une vignette ne laisserait qu'elle et masquerait la galerie, donc
    impossible de changer d'avis sans tout réeffacer. */
+/* CE QUI EST RÉELLEMENT SERVI PAR UN ÉCRAN, aujourd'hui. Le manifeste liste
+   TOUT ce qui est déployé, réserve comprise — d'où le retour de Patrick
+   (31/08) : « c'est aussi les anciennes images qui ne sont plus dans le jeu ».
+   On ne les retire pas (c'est cette réserve qui a permis de récupérer deux
+   images le 31/08), on les SÉPARE : en jeu d'abord, réserve ensuite, et la
+   réserve est atténuée pour qu'on sache ce qu'on choisit. */
+function enJeu() {
+  const s = new Set();
+  N.forEach(n => { if (n.image && n.image.f) s.add(n.image.f); });
+  return s;
+}
+
 function galerie(choisiNom) {
   const tous = [...assetsConnus()].filter(n => /\.(png|jpe?g)$/i.test(n)).sort();
   const saisi = String(filtreGal || "").trim().replace(/^assets\//, "");
   const q = (saisi && assetsConnus().has(saisi)) ? "" : saisi.toLowerCase();
   const vus = q ? tous.filter(n => n.toLowerCase().includes(q)) : tous;
   if (!vus.length) return `<div class="galcpt">aucune image ne contient « ${esc(q)} »</div>`;
-  return `<div class="galcpt">${vus.length} image${vus.length>1?"s":""}${q?" trouvée"+(vus.length>1?"s":""):" publiées"}</div>
-  <div class="gal">` + vus.map(n =>
-    `<div class="g${n===choisiNom?" actif":""}" data-pick="${esc(n)}" title="${esc(n)}"
+  const jeu = enJeu();
+  const actifs  = vus.filter(n => jeu.has(n));
+  const reserve = vus.filter(n => !jeu.has(n));
+  const bloc = (liste, cls) => `<div class="gal">` + liste.map(n =>
+    `<div class="g${cls}${n===choisiNom?" actif":""}" data-pick="${esc(n)}" title="${esc(n)}"
       style="background-image:url('${urlAsset(n)}')"></div>`).join("") + `</div>`;
+  let h = "";
+  if (actifs.length)
+    h += `<div class="galcpt">${actifs.length} en jeu${q?" (filtré)":""}</div>` + bloc(actifs, "");
+  if (reserve.length)
+    h += `<div class="galcpt">${reserve.length} en réserve — téléchargées, plus servies par aucun écran</div>`
+       + bloc(reserve, " res");
+  return h;
 }
 
 function majImgAct(n) {
