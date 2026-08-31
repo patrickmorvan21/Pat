@@ -1,12 +1,21 @@
 /**
  * LES ÉLÉMENTS-SURPRISES (catalogue du journal Notion 6/08).
  *
- * ── LE PRINCIPE DE RATIONNEMENT, NON NÉGOCIABLE ─────────────────────────────
- * Au maximum UNE surprise par run, avec un délai de récupération entre runs :
- * si une surprise s'est jouée à la run N, la run N+1 n'en arme aucune. « Si
- * plusieurs se déclenchent dans la même partie, elles cessent d'être des
- * surprises et deviennent le mode bizarre du jeu. Leur puissance vient
- * exclusivement de leur rareté. »
+ * ── LE PRINCIPE DE RATIONNEMENT ─────────────────────────────────────────────
+ * AU MAXIMUM UNE SURPRISE PAR RUN — ça, c'est intouchable. « Si plusieurs se
+ * déclenchent dans la même partie, elles cessent d'être des surprises et
+ * deviennent le mode bizarre du jeu. »
+ *
+ * ⚠️ AMENDEMENT DU 31/08 (décision Patrick) : le DÉLAI DE RÉCUPÉRATION entre
+ * runs, lui, ne vaut plus pour les PREMIÈRES VIES. Le rationnement d'origine
+ * rendait le début du jeu le plus pauvre de tous — mesuré : la vie 1 n'armait
+ * JAMAIS rien (toutes les entrées éligibles exigeaient `runsStarted >= 2` ou
+ * `deaths >= 1`), et la vie 2 avait encore une chance sur trois de ne rien
+ * avoir. Or c'est exactement là qu'il faut surprendre : un joueur qui découvre
+ * n'a pas encore de norme à casser, il s'en fabrique une.
+ * Les quatre premières vies suivent donc un LOT DE DÉCOUVERTE ordonné (ci-
+ * dessous) ; à partir de la cinquième, le tirage rare d'origine reprend, délai
+ * de récupération compris. Le plafond de 1/run n'est levé à aucun moment.
  *
  * Deux moments distincts, et c'est ce qui rend le rationnement simple :
  *  - l'ARMEMENT (une fois par run, au premier pas) choisit au plus UNE
@@ -87,10 +96,43 @@ export const SURPRISES: Record<SurpriseId, { nom: string; contexte: string; gard
 };
 
 /**
+ * LE LOT DE DÉCOUVERTE (31/08) — ce qu'un joueur neuf rencontre, dans l'ordre.
+ *
+ * Patrick a nommé les trois qu'il veut voir tôt : le retour, le Geôlier
+ * métaleptique, le vol nocturne. Deux d'entre elles s'arment ici ; la
+ * troisième ne peut pas — le MÉTALEPTIQUE est comportemental (il se déclenche
+ * quand on ferme l'app en plein combat et qu'on revient), donc il ne se
+ * programme pas, il se DÉBLOQUE (voir Scene.tsx : une run « aucune » le
+ * bloquait, c'est corrigé).
+ *
+ * L'ordre suit ce que la vie PEUT porter, pas une préférence :
+ *  - vie 1 → le vol nocturne. Aucun prérequis de compte, et le campement est
+ *    sur la route de presque toutes les traversées. C'est aussi la meilleure
+ *    première : elle ne punit pas, elle intrigue.
+ *  - vie 2 → le retour, s'il y a un lieu de mort à revoir. Un survivant n'en a
+ *    pas : on lui redonne alors le vol, qu'il a peut-être manqué.
+ *  - vie 3 → le choix qui expire (il suppose de savoir ce qu'est une option).
+ *  - vie 4 → la citation (le journal citable a eu le temps de se remplir).
+ */
+function lotDecouverte(mem: PlayerMemory): SurpriseId | null {
+  switch (mem.runsStarted) {
+    case 1: return "vol-nocturne";
+    case 2: return mem.lastDeath?.lieu ? "retour" : "vol-nocturne";
+    case 3: return "choix-expire";
+    case 4: return "citation";
+    default: return null;
+  }
+}
+
+/**
  * ARMEMENT — appelé une fois par run, au premier pas. Rend `null` une bonne
- * partie du temps : une surprise qui tombe à chaque run n'en est plus une.
+ * partie du temps PASSÉ LE LOT DE DÉCOUVERTE : une surprise qui tombe à chaque
+ * run n'en est plus une.
  */
 export function armerSurprise(mem: PlayerMemory, alea: number): SurpriseId | null {
+  // Les premières vies sont scriptées : ni délai de récupération, ni tirage.
+  const lot = lotDecouverte(mem);
+  if (lot) return lot;
   // Délai de récupération : jamais deux runs de suite.
   const derniere = mem.surprises?.derniereRun;
   if (derniere !== undefined && mem.runsStarted - derniere <= 1) return null;
@@ -109,8 +151,9 @@ export function armerSurprise(mem: PlayerMemory, alea: number): SurpriseId | nul
   if (mem.fallen.length >= 1) eligibles.push("fantome");
   // La citation : le journal se remplit en cours de run — armable dès la 2e.
   if (mem.runsStarted >= 2) eligibles.push("citation");
-  // Le vol nocturne : dès qu'on a déjà perdu quelque chose une fois.
-  if (mem.deaths >= 1) eligibles.push("vol-nocturne");
+  // Le vol nocturne : plus aucun prérequis depuis le 31/08 — c'est lui qui
+  // ouvre le lot de découverte, il ne peut pas être verrouillé au-delà.
+  eligibles.push("vol-nocturne");
   // Le dé impossible : réservé à qui connaît déjà le dé normal.
   if (mem.deaths >= 1) eligibles.push("de-impossible");
 

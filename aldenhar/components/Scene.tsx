@@ -1657,7 +1657,13 @@ export default function Scene() {
       // et revenir. AUCUNE sanction — le pilier permadeath fictionnel reste
       // intouchable, et c'est ce qui rend le moment fort : il a remarqué, et
       // il ne fait rien. Hors armement (comportemental), même plafond 1/run.
-      if (cur.combat && !run.surprise?.jouee) {
+      // ⚠️ « aucune » NE BLOQUE PLUS (31/08). Une run sans surprise armée était
+      // rangée en `{ id: "aucune", jouee: true }` — donc le métaleptique, qui
+      // teste `jouee`, était impossible exactement dans les vies où Patrick le
+      // veut : la vie 1 n'arme jamais rien. Le plafond de 1/run tient toujours,
+      // c'est le créneau VIDE qui redevient disponible.
+      const creneauLibre = !run.surprise?.jouee || run.surprise.id === "aucune";
+      if (cur.combat && creneauLibre) {
         restored.push({ id: nextId(), kind: "jailer", text: JAILER_METALEPTIQUE });
         run.surprise = { id: "metaleptique", jouee: true };
         mutateMemory((m) => { m.surprises = { derniereRun: m.runsStarted }; });
