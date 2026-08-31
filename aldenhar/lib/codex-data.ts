@@ -37,7 +37,7 @@ export type CodexEntry = {
 };
 
 /** L'image de l'Acte I (la frise des Lisières — celle du carton d'acte). */
-export const IMAGE_ACTE_I = "assets/scene_landes_frise_montagnes_pleine_c_d.png";
+export const IMAGE_ACTE_I = "assets/scene_landes_frise_montagnes_pleine_b.png";
 
 export const CODEX_LANDES: CodexEntry[] = [
   // ─── LIEUX ────────────────────────────────────────────────────────────

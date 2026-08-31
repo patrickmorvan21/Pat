@@ -7601,7 +7601,7 @@ export const SCENES: Scene[] = [
        qu'au bord (écran 2), où il devient un désenchantement — ce qui
        semblait tomber du ciel part d'ici. */
     id: "falaise-cordes",
-    illustration: "assets/scene_landes_liaison_sud_d_h.png",
+    illustration: "assets/scene_falaise_fond_d_a.png",
     narration: [
       "Tu montes une dernière ondulation de bruyère, et la lande s'ouvre.",
       "Devant toi, un trou. Large comme un village, et sans fond visible. Du ciel, des cordes descendent dedans — des centaines, venues de si haut qu'on ne voit pas à quoi elles tiennent. Elles entrent toutes ensemble dans le noir et bougent du même côté, lentement, comme une seule chose qui respire.",
@@ -7624,7 +7624,7 @@ export const SCENES: Scene[] = [
        lignes qui LISENT la traversée (le tressage déjà vu, la corde qu'on
        porte) sont injectées par le déroutage — voir DEMO_FALAISE_LECTURES. */
     id: "falaise-cordes-2",
-    illustration: "assets/scene_landes_liaison_sud_d_h.png",
+    illustration: "assets/scene_falaise_bord_c_a.png",
     narration: [
       "Au ras de la lèvre, les pieux : une rangée qui suit tout le pourtour. De près, les cordes ne tombent plus du ciel — elles partent d'ici. On ne gâche pas le chanvre, dans les Landes : chaque corde qui a pendu quelqu'un sert une seconde fois.",
       "Tu te penches. Elles descendent jusqu'à ce que la lumière les abandonne, et elles continuent. Des vieilles, grises, raides de sel. Des neuves, encore blondes. Et trois ou quatre qui s'arrêtent en plein vide, tranchées net — à la lame. Par en dessous.",

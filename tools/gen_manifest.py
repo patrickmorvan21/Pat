@@ -77,12 +77,42 @@ def fichiers_recents() -> set[str]:
     return noms
 
 
+def dates_d_entree() -> dict[str, str]:
+    """Date à laquelle chaque image est ENTRÉE dans le projet, depuis git.
+
+    ⚠️ PAS la date du fichier sur disque. Le 31/08, 131 anciennes images ont
+    été restaurées de l'historique git : leur `mtime` est donc « aujourd'hui »
+    alors qu'elles datent de juillet. Trier la galerie du Graphe sur le mtime
+    les remonterait toutes en tête — l'inverse exact de « du plus récent au
+    plus ancien ».
+
+    On prend donc la PREMIÈRE fois que git a vu le chemin (`--reverse`, on
+    garde la première date rencontrée par nom). Une seule traversée de
+    l'historique, ~1 s pour 430 fichiers. Sans git : dictionnaire vide, et
+    l'appelant retombe sur le mtime — une galerie mal triée vaut mieux qu'une
+    galerie vide."""
+    sortie = git(
+        "log", "--reverse", "--format=C%aI", "--name-only", "--", "aldenhar/public/assets"
+    )
+    dates: dict[str, str] = {}
+    courante = ""
+    for ligne in sortie.splitlines():
+        ligne = ligne.strip()
+        if ligne.startswith("C") and "T" in ligne[:25]:
+            courante = ligne[1:]
+        elif ligne.endswith((".png", ".jpg", ".jpeg", ".svg")) and courante:
+            nom = Path(ligne).name
+            dates.setdefault(nom, courante)
+    return dates
+
+
 def main() -> int:
     if not ASSETS.is_dir():
         print(f"ERREUR : {ASSETS} introuvable", file=sys.stderr)
         return 1
 
     recents = fichiers_recents()
+    entrees = dates_d_entree()
     commit = git("rev-parse", "--short", "HEAD") or "?"
     fichiers: dict[str, dict] = {}
     hashes: dict[str, str] = {}
@@ -100,6 +130,9 @@ def main() -> int:
             .replace("+00:00", "Z"),
             "hash": h,
             "recent": p.name in recents,
+            # Date d'ENTRÉE dans le projet (git), pas le mtime : voir
+            # dates_d_entree(). C'est elle qui trie la galerie du Graphe.
+            "ajoute": entrees.get(p.name, ""),
         }
 
     # Sortie MINIMALE pour le bundle du jeu : seul le hash sert à `assetUrl()`,
