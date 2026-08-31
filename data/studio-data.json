@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-31T06:38:46Z",
- "commit": "0c2a9b8",
+ "genere": "2026-08-31T07:17:50Z",
+ "commit": "56fa9d1",
  "zones": [
   {
    "id": "landes",
@@ -1174,10 +1174,10 @@
      "consequence": "Ils ne mangent pas. Il n'y a rien à manger ici depuis longtemps, et leurs becs sont propres. Ils attendent, tournés du même côté, comme des choses qu'on a postées là.",
      "corbeaux": true,
      "image": {
-      "fichier": "monstre_corbeaux_du_compte_c_b.png",
-      "hash": "5c17aa5b",
-      "taille": 7836,
-      "recent": true,
+      "fichier": "monstre_corbeaux_du_compte_d.png",
+      "hash": "688228de",
+      "taille": 27822,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -3887,7 +3887,7 @@
     "fichier": "monstre_temoin_ruelle_v5_d.png",
     "hash": "b3324887",
     "taille": 119808,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""

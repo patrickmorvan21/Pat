@@ -1210,3 +1210,11 @@ Patrick a déposé 35 fichiers de plus par le glisser-déposer de github.com (24
 - Vérifié en jeu (Playwright, 6 scènes seedées) : chacune sert son nouveau fichier, 0 erreur JS, 0 asset en échec. Huit gardes verts, typecheck et `build:pages` propres. Couverture : 125 dédiées · 7 héritées · 15 fallback · **0 manquante**.
 - **Reste du lot Drive** : **15 fichiers `scene_*` d'Environnement** jamais arrivés — tous « à créer » (aucun ne remplace une image câblée), dont `scene_descente_a`, `scene_landes_eau_reflet_a`, `scene_landes_corbeaux_du_compte_b`, `scene_landes_pourquoi_trois_aubes_b`. Un troisième envoi permettrait de les poser sur des écrans qui héritent aujourd'hui.
 - `APP_VERSION` 1.106.0 → **1.107.0**, `CACHE_VERSION` v170 → **pactum-v171**. Déployé (gh-pages `529724c`).
+
+#### Les deux images désignées par Patrick (v1.107.1)
+Deux PJ, deux réponses différentes — les regarder avant d'agir a évité un doublon inutile.
+- **L'apparition de la Petite Fixée** : la PJ est **`monstre_petite_fixee_c.png`, déjà dans le dépôt et déjà câblée** sur le choix `entrer-moulin-elle` depuis le 30/08 (md5 identique). **Rien à faire** — Patrick confirmait un câblage existant sans le savoir. Vérifié en jeu plutôt que déduit du code.
+- **Les corbeaux du Compte** : image NEUVE (aucun fichier du dépôt ne correspond). Installée sous **`monstre_corbeaux_du_compte_d.png`** — la variante suivante, jamais le nom de l'ancienne (règle du 30/07 : une image regénérée change de nom pour que le changement se voie dans l'historique). `_c_b` retirée. Câblée sur le point `compter-corbeaux` de la Colline (`scene-data.ts` + `landes.json`).
+- ⚠️ **Les PJ n'arrivent PLUS sur le disque** (`/root/.claude/uploads/` s'arrête au 25/08) : leurs octets ne vivent que dans le transcript `.jsonl` de session. Technique confirmée (14/07) — parcourir le `.jsonl`, garder les blocs `type: "image"` des messages `role: "user"`, décoder le base64, vérifier la signature PNG. Les deux fichiers en sont sortis intacts (1000×1000, 2 couleurs exactes).
+- Vérifié en jeu (Playwright, jets et taps réels) : l'examen des corbeaux sert `_d`, le choix « Entrer » sert la Petite Fixée, 0 erreur JS, 0 asset en échec.
+- `APP_VERSION` **1.107.1**, `CACHE_VERSION` **pactum-v172**.

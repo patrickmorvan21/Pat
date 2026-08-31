@@ -1837,7 +1837,7 @@ export const SCENES: Scene[] = [
       {
         id: "compter-corbeaux",
         corbeaux: true,
-        illustration: "assets/monstre_corbeaux_du_compte_c_b.png",
+        illustration: "assets/monstre_corbeaux_du_compte_d.png",
         observe: true,
         label: "Compter les corbeaux",
         passive: {
