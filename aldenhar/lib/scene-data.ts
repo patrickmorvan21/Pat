@@ -7593,32 +7593,40 @@ export const SCENES: Scene[] = [
     /* Écran 1 — le bord. Visuel PROVISOIRE (vue du sud) : les deux images du
        lieu sont à produire (prompts dans le script) — le climax doit tenir
        par sa structure d'abord (verrou n°2 du go). */
+    /* Écran 1 — L'ENTRÉE THÉÂTRALE (décision Patrick, 31/08). On voit
+       d'abord les cordes DE LOIN, tombant du ciel dans le trou : à cette
+       distance rien ne dit à quoi elles tiennent, et c'est l'image
+       emblématique de la sortie de zone. L'ancrage aux pieux n'est révélé
+       qu'au bord (écran 2), où il devient un désenchantement — ce qui
+       semblait tomber du ciel part d'ici. */
     id: "falaise-cordes",
     illustration: "assets/scene_landes_liaison_sud_d_h.png",
     narration: [
-      "Le sol cesse. Pas une pente — une fin : la lande s'arrête net sur le vide, et la paroi descend plus bas que le regard ne porte.",
-      "Sur toute sa largeur, des cordes. Des centaines, nouées à des pieux, qui pendent dans le noir et bougent ensemble sous le vent. On ne gâche pas le chanvre, dans les Landes : chaque corde qui a pendu quelqu'un sert une seconde fois. Elle fait descendre. Personne ne descend autrement.",
+      "Tu montes une dernière ondulation de bruyère, et la lande s'ouvre.",
+      "Devant toi, un trou. Large comme un village, et sans fond visible. Du ciel, des cordes descendent dedans — des centaines, venues de si haut qu'on ne voit pas à quoi elles tiennent. Elles entrent toutes ensemble dans le noir et bougent du même côté, lentement, comme une seule chose qui respire.",
     ],
     choices: [
       {
         id: "approcher-pieux",
-        label: "S'approcher des pieux",
+        label: "Avancer jusqu'au bord",
         passive: {
           consequence:
-            "Les pieux tiennent chacun leur corde comme une tombe tient son nom.",
+            "Les cent derniers pas se font sans un mot. Le vent tombe d'un coup — c'est le trou qui l'avale.",
         },
         sortie: { toScene: "falaise-cordes-2" },
       },
     ],
   },
   {
-    /* Écran 2 — choisir sa corde. Les lignes qui LISENT la traversée (le
-       tressage déjà vu, la corde qu'on porte) sont injectées par le
-       déroutage — voir DEMO_FALAISE_LECTURES. */
+    /* Écran 2 — LE BORD. On se penche, et les cordes plongent jusque dans
+       les ténèbres : c'est la profondeur qui se joue ici, pas un tri. Les
+       lignes qui LISENT la traversée (le tressage déjà vu, la corde qu'on
+       porte) sont injectées par le déroutage — voir DEMO_FALAISE_LECTURES. */
     id: "falaise-cordes-2",
     illustration: "assets/scene_landes_liaison_sud_d_h.png",
     narration: [
-      "Des vieilles, grises, raides de sel. Des neuves, encore blondes. Et trois ou quatre, en bas de leur course, tranchées net — à la lame. Par en dessous.",
+      "Au ras de la lèvre, les pieux : une rangée qui suit tout le pourtour. De près, les cordes ne tombent plus du ciel — elles partent d'ici. On ne gâche pas le chanvre, dans les Landes : chaque corde qui a pendu quelqu'un sert une seconde fois.",
+      "Tu te penches. Elles descendent jusqu'à ce que la lumière les abandonne, et elles continuent. Des vieilles, grises, raides de sel. Des neuves, encore blondes. Et trois ou quatre qui s'arrêtent en plein vide, tranchées net — à la lame. Par en dessous.",
     ],
     choices: [
       {
@@ -7634,7 +7642,14 @@ export const SCENES: Scene[] = [
     ],
   },
   {
-    /* Écran 3 — l'Appelé, puis LE CHOIX, sec. La cérémonie est le geste
+    /* Écran 3 — l'Appelé, puis LA DESCENTE. ⚠️ IL N'Y A PAS DE CHOIX DE
+       CORDE et il n'y en a jamais eu : les trois entrées ci-dessous se
+       REMPLACENT (`prendLaPlaceDe`), donc une seule est jamais affichée.
+       Patrick l'a pourtant lu comme un tri à réussir (31/08) — parce que
+       les libellés nommaient des cordes différentes juste après un écran
+       qui annonce des cordes tranchées. Les trois portent désormais le
+       MÊME libellé, « Descendre » : ce qu'on a vécu change la PROSE de la
+       descente, jamais la décision. La cérémonie est le geste
        « swipe » : INSENSIBLE à l'échec (trop vite = la corde ne file pas,
        tout s'attend, on recommence) — jamais un test d'adresse devant la
        Descente (doctrine du script). */
@@ -7662,7 +7677,7 @@ export const SCENES: Scene[] = [
         // nouée là-haut (`laisseObjet` — le coût est dit dans la prose).
         id: "nouer-sa-corde",
         tags: ["citable"],
-        label: "Nouer ta corde au chanvre coupé",
+        label: "Descendre",
         requiresObjet: "corde-coupee",
         laisseObjet: "corde-coupee",
         // Remplace AUSSI le palier 2 : le climax sélectionne UN seul fait
@@ -7687,7 +7702,7 @@ export const SCENES: Scene[] = [
         // qui parle, découverte de COMPTE : elle peut venir d'une autre vie).
         id: "corde-du-bailli",
         tags: ["citable"],
-        label: "Chercher la corde du trois cent unième",
+        label: "Descendre",
         requiresDecouverte: "d.bailli_condamne",
         prendLaPlaceDe: "saisir-corde",
         minigame: { engine: "swipe" },
@@ -7706,7 +7721,7 @@ export const SCENES: Scene[] = [
       {
         id: "saisir-corde",
         tags: ["citable"],
-        label: "Saisir une corde",
+        label: "Descendre",
         minigame: { engine: "swipe" },
         passive: {
           consequence:

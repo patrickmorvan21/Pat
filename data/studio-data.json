@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-31T13:41:44Z",
- "commit": "4b254d6",
+ "genere": "2026-08-31T13:55:17Z",
+ "commit": "2cf1131",
  "zones": [
   {
    "id": "landes",
@@ -7347,15 +7347,15 @@
   {
    "id": "falaise-cordes",
    "narration": [
-    "Le sol cesse. Pas une pente — une fin : la lande s'arrête net sur le vide, et la paroi descend plus bas que le regard ne porte.",
-    "Sur toute sa largeur, des cordes. Des centaines, nouées à des pieux, qui pendent dans le noir et bougent ensemble sous le vent. On ne gâche pas le chanvre, dans les Landes : chaque corde qui a pendu quelqu'un sert une seconde fois. Elle fait descendre. Personne ne descend autrement."
+    "Tu montes une dernière ondulation de bruyère, et la lande s'ouvre.",
+    "Devant toi, un trou. Large comme un village, et sans fond visible. Du ciel, des cordes descendent dedans — des centaines, venues de si haut qu'on ne voit pas à quoi elles tiennent. Elles entrent toutes ensemble dans le noir et bougent du même côté, lentement, comme une seule chose qui respire."
    ],
    "choix": [
     {
      "id": "approcher-pieux",
-     "label": "S'approcher des pieux",
+     "label": "Avancer jusqu'au bord",
      "type": "passif",
-     "consequence": "Les pieux tiennent chacun leur corde comme une tombe tient son nom.",
+     "consequence": "Les cent derniers pas se font sans un mot. Le vent tombe d'un coup — c'est le trou qui l'avale.",
      "sortie": {
       "toScene": "falaise-cordes-2"
      }
@@ -7383,7 +7383,8 @@
   {
    "id": "falaise-cordes-2",
    "narration": [
-    "Des vieilles, grises, raides de sel. Des neuves, encore blondes. Et trois ou quatre, en bas de leur course, tranchées net — à la lame. Par en dessous."
+    "Au ras de la lèvre, les pieux : une rangée qui suit tout le pourtour. De près, les cordes ne tombent plus du ciel — elles partent d'ici. On ne gâche pas le chanvre, dans les Landes : chaque corde qui a pendu quelqu'un sert une seconde fois.",
+    "Tu te penches. Elles descendent jusqu'à ce que la lumière les abandonne, et elles continuent. Des vieilles, grises, raides de sel. Des neuves, encore blondes. Et trois ou quatre qui s'arrêtent en plein vide, tranchées net — à la lame. Par en dessous."
    ],
    "choix": [
     {
@@ -7423,7 +7424,7 @@
    "choix": [
     {
      "id": "nouer-sa-corde",
-     "label": "Nouer ta corde au chanvre coupé",
+     "label": "Descendre",
      "type": "passif",
      "consequence": "Tu choisis une corde tranchée en bas de sa course et tu noues la tienne au moignon — celle de la chapelle, coupée net, par en dessous, comme celles-là. Le nœud prend du premier coup : le chanvre se reconnaît. Tu descends, palier par palier, et au point du raccord ta paume passe sur ton propre nœud. Plus bas que toutes les autres cordes, plus bas que le regard ne portait. Elle reste nouée là-haut. Tu ne la reverras pas — quelqu'un, en bas, saura qu'on peut descendre plus loin.",
      "sortie": {
@@ -7442,7 +7443,7 @@
     },
     {
      "id": "corde-du-bailli",
-     "label": "Chercher la corde du trois cent unième",
+     "label": "Descendre",
      "type": "passif",
      "consequence": "Tu longes les pieux en lisant les entailles, et tu la trouves : un pieu marqué d'une chaîne de fonction, gravée maigre. La corde du trois cent unième — celui qui a signé son propre nom sous le dernier de sa liste. Elle est grise, plus usée que les autres : on descend souvent par celle-là. Tu la prends, palier par palier, et le chanvre file doux, comme s'il avait l'habitude de porter ceux qui savent.",
      "sortie": {
@@ -7459,7 +7460,7 @@
     },
     {
      "id": "saisir-corde",
-     "label": "Saisir une corde",
+     "label": "Descendre",
      "type": "passif",
      "consequence": "La corde file entre tes mains, palier par palier, et la lande monte au-dessus de toi comme une eau qui se referme. La paume chauffe là où le chanvre passe. En haut, le vent continue sans toi.",
      "sortie": {
@@ -7519,9 +7520,7 @@
     "recent": true,
     "existe": true,
     "statut": "fallback",
-    "herite": "",
-    "verdict": "replace",
-    "verdictNote": "Le texte dit « devant, l'ESCALIER PLONGE dans un noir qui n'a pas encore de nom » : l'image montre une brèche dans une palissade sur terrain plat, sans escalier ni pente. Elle est en plus tirée dans le pool des vues de marche, donc l'écran de sortie de zone partage son visuel avec une liaison banale. Asset dédié à produire (prompt prêt)."
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -9995,7 +9994,7 @@
   "transitions": 64,
   "ecransDeMarche": 13,
   "interactions": 32,
-  "aRefaire": 19,
+  "aRefaire": 18,
   "familiarite": 34
  }
 }
