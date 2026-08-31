@@ -808,7 +808,21 @@ function gesteDejaVecu(cle: string | null): boolean {
   return vu(loadMemory().vus, "geste|" + cle) > 0;
 }
 
-function decouperEnEcrans(entries: FeedEntry[]): FeedEntry[][] {
+/**
+ * `coupures` — LES FRONTIÈRES IMPOSÉES (grammaire d'arrivée, 31/08).
+ *
+ * Le découpage suit d'ordinaire le seul budget de mots. Mais une arrivée se
+ * lit en trois temps — on voit de loin, on identifie le lieu, la rencontre se
+ * lève — et chacun a SON image. Or ces trois temps tiennent en 40 mots : le
+ * budget ne les séparerait jamais, et les trois images se joueraient sur un
+ * écran unique, c'est-à-dire pas du tout.
+ *
+ * On passe donc les ids des entrées après lesquelles l'écran DOIT se fermer.
+ * Le marqueur reste hors du type `FeedEntry` (union discriminée, persistée
+ * telle quelle dans la sauvegarde) : c'est une consigne de mise en écran, pas
+ * une donnée de récit.
+ */
+function decouperEnEcrans(entries: FeedEntry[], coupures?: Set<string>): FeedEntry[][] {
   const texte = (e: FeedEntry) =>
     e.kind === "narration"
       ? (e as { text: string }).text.split(/\s+/).length
@@ -844,6 +858,11 @@ function decouperEnEcrans(entries: FeedEntry[]): FeedEntry[][] {
     }
     cur.push(e);
     mots += m;
+    if (coupures?.has(e.id)) {
+      groupes.push(cur);
+      cur = [];
+      mots = 0;
+    }
   }
   if (cur.length) {
     if (mots === 0 && groupes.length) groupes[groupes.length - 1].push(...cur);
@@ -868,10 +887,15 @@ function decouperEnEcrans(entries: FeedEntry[]): FeedEntry[][] {
     const poids = (g: FeedEntry[]) => g.reduce((n, e) => n + texte(e), 0);
     const dernier = groupes[groupes.length - 1];
     const pDernier = poids(dernier);
+    const avant = groupes[groupes.length - 2];
     if (
       pDernier > 0 &&
       pDernier <= 45 &&
       !dernier.some((e) => e.kind === "jailer") &&
+      // …et jamais par-dessus une frontière imposée : celle-ci sépare deux
+      // IMAGES (le loin, le lieu, la rencontre). Fusionner ferait disparaître
+      // un des trois temps de l'arrivée pour épargner un tap.
+      !coupures?.has(avant[avant.length - 1]?.id) &&
       poids(groupes[groupes.length - 2]) + pDernier <= MOTS_PAR_ECRAN
     ) {
       groupes[groupes.length - 2].push(...dernier);
@@ -937,9 +961,16 @@ export default function Scene() {
   // Dernière illustration de SCÈNE (repos de l'image). L'image d'objet n'est
   // qu'un remplacement momentané ; on revient toujours à cette scène-là.
   const lastSceneIlloRef = useRef<string>(PORTAL);
-  /** Vue de marche différée : posée quand une conséquence de jet se lit sur
-      une liaison (l'image du lieu tient), appliquée au tap suivant. */
-  const imageApresConsequence = useRef<string | null>(null);
+  /**
+   * LES IMAGES DIFFÉRÉES — une FILE, pas une valeur (31/08).
+   *
+   * Une image posée d'avance attend la prochaine frontière d'écran. C'était un
+   * seul créneau tant qu'il n'y avait qu'une bascule à faire (la vue de marche
+   * après une conséquence). L'arrivée en trois temps en demande DEUX d'affilée
+   * — le loin, puis le lieu, puis la rencontre — donc on empile : une bascule
+   * consommée par frontière, dans l'ordre où elles ont été posées.
+   */
+  const imagesDifferees = useRef<string[]>([]);
   /* Combien d'écrans le découpage vient de produire. Sert à décider QUAND
      poser une bascule d'image différée : jamais au milieu d'un écran. */
   const nbEcransRef = useRef(1);
@@ -1484,14 +1515,18 @@ export default function Scene() {
   /** Pose un nouvel écran : remplace le texte, (ré)arme la révélation, masque
       les CTA le temps de la frappe. L'image n'est touchée que si `img` est
       fourni (sinon elle reste — « même scène, seul le texte change »). */
-  function showScreen(entries: FeedEntry[], img?: { src: string; kind: ImageKind }) {
+  function showScreen(
+    entries: FeedEntry[],
+    img?: { src: string; kind: ImageKind },
+    coupures?: Set<string>,
+  ) {
     if (img) {
       setImage(img.src);
       setImageKind(img.kind);
       // Un nouvel écran avec sa propre image annule toute bascule différée.
-      imageApresConsequence.current = null;
+      imagesDifferees.current = [];
     }
-    const groupes = decouperEnEcrans(entries);
+    const groupes = decouperEnEcrans(entries, coupures);
     nbEcransRef.current = groupes.length;
     // ⚠️ LA CARTE D'ÉTAT NE SE MONTRE QU'UNE FOIS (playtest du 12/08).
     // Elle était re-posée en tête de CHAQUE écran de la séquence (règle du
@@ -1541,10 +1576,11 @@ export default function Scene() {
     if (!tete) return;
     // La conséquence du jet a été lue sur l'image du lieu quitté : la vue de
     // marche de la liaison prend le relais maintenant (playtest 7/08).
-    if (imageApresConsequence.current) {
-      setImage(imageApresConsequence.current);
+    if (imagesDifferees.current.length) {
+      const [suivante, ...reste] = imagesDifferees.current;
+      imagesDifferees.current = reste;
+      setImage(suivante);
       setImageKind("scene");
-      imageApresConsequence.current = null;
     }
     setBeatsSuite(reste);
     revealedIdsRef.current = new Set();
@@ -2855,8 +2891,20 @@ export default function Scene() {
         });
       }
     }
+    /* ─── LES TROIS TEMPS D'UNE ARRIVÉE (demande Patrick 31/08) ───────────
+       « Quand on choisit une direction on doit imager ce que le héros peut
+       voir au loin, ensuite scène suivante où il identifie l'environnement,
+       ensuite un tap pour faire apparaître la rencontre s'il y en a une. »
+
+       Les trois temps existaient déjà comme MATIÈRE (la vue de marche, la
+       phrase d'approche, l'illustration du lieu, celle de la créature) mais
+       ils se jouaient sur UN seul écran : trois images pour un seul regard,
+       donc aucune. On garde ici l'id de l'approche pour fermer l'écran
+       dessus — c'est la frontière du temps 1. */
+    let idApproche: string | null = null;
     if (opts?.toDest && !nextScene.fixationTrial && APPROACH_NARRATION[opts.toDest]) {
-      entries.push({ id: nextId(), kind: "narration", text: APPROACH_NARRATION[opts.toDest] });
+      idApproche = nextId();
+      entries.push({ id: idApproche, kind: "narration", text: APPROACH_NARRATION[opts.toDest] });
     }
     // …et COMMENT on y arrive : une seule phrase, jamais un paragraphe.
     // ⚠️ VARIATION NARRATIVE, pas une décision (voir phraseArrivee) : le mode
@@ -2955,7 +3003,13 @@ export default function Scene() {
       strate && famIci?.remplace !== undefined && narrationLines[famIci.remplace] !== undefined
         ? narrationLines.map((t, i) => (i === famIci.remplace ? strate : t))
         : narrationLines;
-    entries.push(...lignesFinales.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })));
+    const entreesNarration = lignesFinales.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text }));
+    // Temps 2 → temps 3 : la frontière tombe après le PREMIER paragraphe du
+    // lieu (celui qui dit où l'on est) ; ce qui suit se lit devant la
+    // créature. Utilisé plus bas, et seulement si une rencontre a bien une
+    // image de lieu distincte de la sienne.
+    const idPremiereNarration = entreesNarration[0]?.id ?? null;
+    entries.push(...entreesNarration);
     // L'écho d'un objet-promesse (voir ECHOS_OBJET) : ce que tu portes te
     // rattrape là où ça compte, une fois par scène et par objet.
     for (const e of ECHOS_OBJET[nextScene.id] ?? []) {
@@ -3464,11 +3518,20 @@ export default function Scene() {
     //  • sinon objet obtenu → image de l'objet (remplacement momentané) ;
     //  • sinon → on revient/reste sur l'illustration de scène (l'image ne bouge pas).
     let img: { src: string; kind: ImageKind };
-    let differeVueDeMarche: string | null = null;
+    const differees: string[] = [];
+    /* Les frontières d'écran IMPOSÉES par la grammaire d'arrivée (31/08).
+       Vide partout ailleurs : le budget de mots continue de décider seul. */
+    const coupures = new Set<string>();
     if (contextChanged) {
       const ancienne = lastSceneIlloRef.current;
       lastSceneIlloRef.current = nextIllustration;
       img = { src: nextIllustration, kind: "scene" };
+      /* LE LIEU AVANT LA RENCONTRE (25/08) : une rencontre dont l'image EST
+         la créature déclare l'image de son lieu, qu'on regarde d'abord. */
+      const lieuArrivee =
+        nextScene.illustrationArrivee && nextScene.illustrationArrivee !== nextIllustration
+          ? nextScene.illustrationArrivee
+          : nextIllustration;
       // LA CONSÉQUENCE SE LIT SUR SON IMAGE (playtest 7/08) : l'issue d'un jet
       // s'affiche sur l'écran suivant (option A du 19/07) — quand ce suivant
       // est une LIAISON, on lisait « ta lame répond… » par-dessus la vue de
@@ -3478,23 +3541,41 @@ export default function Scene() {
         img = { src: ancienne, kind: "scene" };
         // ⚠️ posée APRÈS showScreen (qui purge les bascules différées d'un
         // écran précédent) — voir la fin d'advance().
-        differeVueDeMarche = nextIllustration;
+        differees.push(nextIllustration);
       } else if (temoinEntrevu && assetExiste(TEMOIN_PROCES)) {
         // la salle d'abord, le Témoin au tap suivant (voir TEMOIN_PROCES)
-        differeVueDeMarche = TEMOIN_PROCES;
-      } else if (
-        nextScene.illustrationArrivee &&
-        nextScene.illustrationArrivee !== nextIllustration
-      ) {
-        /* LE LIEU AVANT LA RENCONTRE (retour Patrick 25/08). Les rencontres
-           qui n'ont pas d'écran-2 pour porter leur décor arrivaient DIRECTEMENT
-           sur la créature : on se retrouvait devant une gueule sans avoir vu
-           où l'on était. Le premier écran montre le LIEU pendant qu'on lit
-           l'approche ; la créature prend le relais au tap suivant, par la même
-           bascule différée que la vue de marche. Aucun écran, aucun tap de
-           plus — la même arrivée, dans l'ordre où on la vit. */
-        img = { src: nextScene.illustrationArrivee, kind: "scene" };
-        differeVueDeMarche = nextIllustration;
+        differees.push(TEMOIN_PROCES);
+      } else if (idApproche) {
+        /* ─── LES TROIS TEMPS D'UNE ARRIVÉE (demande Patrick 31/08) ────────
+           On arrive quelque part parce qu'on a choisi une direction. Trois
+           regards, trois images, dans l'ordre où on les vit :
+
+             1. LE LOIN  — l'écran garde la VUE DE MARCHE qu'on avait déjà
+                sous les yeux (`image`), pendant qu'on lit l'approche. On
+                marche encore ; on ne peut pas déjà être dans le lieu.
+             2. LE LIEU  — au tap, l'illustration du lieu prend la place, et
+                c'est là que la narration dit où l'on est.
+             3. LA RENCONTRE — au tap suivant, la créature, s'il y en a une.
+
+           ⚠️ Aucune de ces trois images n'est nouvelle : elles existaient
+           toutes et se jouaient sur UN écran, donc deux d'entre elles ne se
+           voyaient jamais. Ce qui change est la frontière, pas la matière.
+
+           Coût honnête : un tap de plus par arrivée (l'approche fait 5-13
+           mots, le budget ne l'aurait jamais séparée du reste). C'est le
+           prix demandé pour que le déplacement se voie. */
+        img = { src: image, kind: "scene" };
+        coupures.add(idApproche);
+        differees.push(lieuArrivee);
+        if (lieuArrivee !== nextIllustration && idPremiereNarration) {
+          coupures.add(idPremiereNarration);
+          differees.push(nextIllustration);
+        }
+      } else if (lieuArrivee !== nextIllustration) {
+        // Arrivée sans phrase d'approche (chaîne, déroutage) : on garde la
+        // bascule lieu → créature, sans frontière imposée.
+        img = { src: lieuArrivee, kind: "scene" };
+        differees.push(nextIllustration);
       }
     } else {
       /* ⚠️ L'OBJET NE PREND PLUS LE CADRE (maquette 2531:825, 25/08). Avant,
@@ -3513,7 +3594,7 @@ export default function Scene() {
     if (opts?.imageElement) {
       const reprise = img.src;
       img = { src: opts.imageElement, kind: "scene" };
-      if (reprise !== opts.imageElement) differeVueDeMarche = reprise;
+      if (reprise !== opts.imageElement) differees.unshift(reprise);
     }
 
     setStep(nextStep);
@@ -3724,18 +3805,21 @@ export default function Scene() {
     setSelectedId(null);
     setRoll(null);
     setTimedExpired(false);
-    showScreen(entries, img);
-    // La bascule différée survit à showScreen (qui purge celles d'avant).
-    if (differeVueDeMarche) {
-      if (nbEcransRef.current > 1) {
-        // Il reste des écrans : la bascule attend la frontière (nextChunk).
-        imageApresConsequence.current = differeVueDeMarche;
-      } else {
-        // Écran unique : la poser plus tard la ferait changer SOUS les yeux.
-        setImage(differeVueDeMarche);
+    showScreen(entries, img, coupures);
+    // Les bascules différées survivent à showScreen (qui purge celles d'avant).
+    if (differees.length) {
+      // Une bascule par FRONTIÈRE d'écran (correctif Patrick 31/08 : l'image
+      // ne doit jamais changer au milieu d'un texte). S'il y a moins de
+      // frontières que de bascules, celles qui n'en ont pas s'appliquent tout
+      // de suite — les poser plus tard les ferait changer sous les yeux.
+      const frontieres = Math.max(0, nbEcransRef.current - 1);
+      const differables = differees.slice(0, frontieres);
+      const immediates = differees.slice(frontieres);
+      if (immediates.length) {
+        setImage(immediates[immediates.length - 1]);
         setImageKind("scene");
-        imageApresConsequence.current = null;
       }
+      imagesDifferees.current = differables;
     }
   }
 
@@ -3829,7 +3913,7 @@ export default function Scene() {
       kind: "scene",
     });
     if (opts.imageElement && opts.imageElement !== lastSceneIlloRef.current)
-      imageApresConsequence.current = lastSceneIlloRef.current;
+      imagesDifferees.current = [lastSceneIlloRef.current];
   }
 
   /**

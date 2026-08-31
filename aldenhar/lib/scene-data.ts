@@ -11,6 +11,7 @@
 import type { Condition, Faits } from "./faits";
 import { evalue, present, radical } from "./faits";
 import { SCEAU_LANDES } from "./sceaux";
+import { assetExiste } from "./assets";
 
 export type Stat = "COURAGE" | "RUSE" | "INSTINCT" | "EMPATHIE";
 
@@ -8452,6 +8453,21 @@ type LiaisonVariant = {
   serment?: ("jure" | "faux" | "refuse")[];
   /** Minimum de découvertes sur la Fille (refonte 6/08). */
   minFille?: number;
+  /**
+   * L'IMAGE DE CETTE MARCHE-LÀ (demande Patrick 31/08 : « j'aimerais pouvoir
+   * mettre des images sur des transitions si j'en ai envie »).
+   *
+   * Par défaut une liaison sert une VUE DE MARCHE tirée par `pickWalkImage`
+   * (le terrain entre deux lieux, seedé donc stable). Quand une variante
+   * raconte quelque chose de précis — trois hommes qui suivent, un enfant qui
+   * traverse — on peut lui donner son propre visuel ; il remplace la vue de
+   * marche pour cette liaison-là seulement.
+   *
+   * ⚠️ Gardé par `assetExiste` : tant que le fichier n'est pas déposé, la vue
+   * de marche continue de servir. On peut donc écrire le câblage avant que
+   * l'image existe, sans jamais afficher une image cassée.
+   */
+  illustration?: string;
 };
 
 const LIAISON_VARIANTS: LiaisonVariant[] = [
@@ -8984,6 +9000,20 @@ const ROUTE_FERMEE = [
     "as pris ta décision.",
 ];
 
+/**
+ * L'image propre à une ambiance de marche, si elle en a une ET si le fichier
+ * existe. La table est indexée par le TEXTE : c'est lui que `pickLiaisonAmbiance`
+ * rend, et c'est ce qui garantit que l'image servie est bien celle de la
+ * vignette affichée — jamais celle d'une autre variante éligible.
+ */
+const ILLUSTRATION_AMBIANCE: Record<string, string> = Object.fromEntries(
+  LIAISON_VARIANTS.filter((v) => v.illustration).map((v) => [v.text, v.illustration!]),
+);
+export function illustrationDeMarche(texte: string): string | undefined {
+  const f = ILLUSTRATION_AMBIANCE[texte];
+  return f && assetExiste(f) ? f : undefined;
+}
+
 export function makeLiaison(
   optA: string,
   optB: string,
@@ -8996,7 +9026,7 @@ export function makeLiaison(
   // La marche a SON visuel (retour playtest 24/07 : « on passe d'une scène à
   // l'autre sans marcher »), tiré par la graine (stable à la reprise). Fini le
   // portail figé entre deux lieux.
-  const walkImg = pickWalkImage(optA, optB, seed, ctx?.from);
+  const walkImg = illustrationDeMarche(amb) ?? pickWalkImage(optA, optB, seed, ctx?.from);
   return {
     id: `liaison:${optA}>${optB}`,
     liaison: true,
@@ -9277,7 +9307,12 @@ export const DEMO_MEUTE_COUTURE =
 export const APPROACH_NARRATION: Record<string, string> = {
   "chemin-creux": "Le sol se creuse sous tes pas, et le ciel se rétrécit à mesure que tu descends.",
   "bete-chemins-creux": "Quelque chose, devant, t'a senti avant que tu le sentes.",
-  "colline-aux-gibets": "Tu montes. Les mâts deviennent des potences.",
+  // ⚠️ Seule approche vraiment trop courte (7 mots) pour porter son propre
+  // écran depuis la grammaire en trois temps du 31/08 — les 17 autres sont à
+  // 12-34 mots. Enrichie SANS franchir le seuil (règle du 5/08) : ce qu'on
+  // voit de loin, jamais ce que le lieu dira une fois en haut.
+  "colline-aux-gibets":
+    "Tu montes. Ce que la lande te montrait comme une file de mâts se redresse à chaque pas : ce sont des potences, et il y en a plus que tu n'en avais compté d'en bas.",
   "pendu-qui-parle": "Tu contournes la crête. Ce que tu prenais pour un épouvantail tourne la tête.",
   "champ-des-fixes": "L'horizon se hérisse de piquets réguliers, rangée après rangée, jusqu'à se perdre. Tu approches d'un champ qu'on n'a pas semé — on l'a planté d'hommes.",
   "pendu-mal-fixe": "Un craquement rythme ta marche, régulier, mécanique — du bois qui travaille sous un poids. Devant, une corde trop lâche laisse glisser ce qu'elle devait tenir.",

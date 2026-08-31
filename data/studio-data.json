@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-31T17:53:18Z",
- "commit": "69979be",
+ "genere": "2026-08-31T18:35:41Z",
+ "commit": "99b6278",
  "zones": [
   {
    "id": "landes",
@@ -482,7 +482,7 @@
       "fichier": "scene_borne_gravures_a_e_d.png",
       "hash": "0f26c58e",
       "taille": 21464,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "heritee",
       "herite": "demo-borne-geste"
@@ -740,7 +740,7 @@
       "fichier": "scene_chemin_charrette_a_d_b.png",
       "hash": "6fca7d10",
       "taille": 19673,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -758,7 +758,7 @@
       "fichier": "scene_chemin_talus_a_d_c.png",
       "hash": "f1f303b3",
       "taille": 28252,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -799,7 +799,7 @@
     "fichier": "scene_chemin_creux_d_a.png",
     "hash": "ddd4dc8b",
     "taille": 30231,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -867,7 +867,7 @@
     "fichier": "scene_chemin_creux_coude_c_c.png",
     "hash": "6525b86b",
     "taille": 21631,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -1161,7 +1161,7 @@
       "fichier": "scene_colline_pied_grand_gibet_c_b.png",
       "hash": "d43b1f54",
       "taille": 9903,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -1192,7 +1192,7 @@
       "fichier": "scene_colline_gibet_vide_a_c_d.png",
       "hash": "8e4a974f",
       "taille": 17002,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -1216,7 +1216,7 @@
     "fichier": "scene_colline_aux_gibets_d_d.png",
     "hash": "52730390",
     "taille": 18352,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -1517,7 +1517,7 @@
       "fichier": "scene_champ_poteaux_vierges_c_e.png",
       "hash": "74528dc2",
       "taille": 12503,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -1534,7 +1534,7 @@
       "fichier": "scene_champ_tombe_manquante_a_d_e.png",
       "hash": "3d1b79d2",
       "taille": 11860,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -1551,7 +1551,7 @@
     "fichier": "scene_champ_des_fixes_c_a.png",
     "hash": "83f6d0f5",
     "taille": 28028,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -1665,7 +1665,7 @@
     "fichier": "scene_champ_poteau_retire_d_e.png",
     "hash": "75a0a151",
     "taille": 13781,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -1819,7 +1819,7 @@
     "fichier": "monstre_fossoyeur_poteaux_b_a.png",
     "hash": "f536c216",
     "taille": 17792,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -1988,7 +1988,7 @@
     "fichier": "scene_hameau_dense2_c_e.png",
     "hash": "52cdf13c",
     "taille": 22967,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -2086,7 +2086,7 @@
     "fichier": "scene_landes_hameau_ruelle_c_b.png",
     "hash": "818ce9ba",
     "taille": 24488,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -2924,7 +2924,7 @@
     "fichier": "scene_hameau_accueil_mur_b_c.png",
     "hash": "002a0a52",
     "taille": 22945,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -2996,7 +2996,7 @@
     "fichier": "scene_hameau_accueil_enfant_d_a.png",
     "hash": "32ae7777",
     "taille": 27092,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -3069,7 +3069,7 @@
     "fichier": "scene_hameau_accueil_table_b_d.png",
     "hash": "34b1745f",
     "taille": 21990,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -3143,7 +3143,7 @@
     "fichier": "scene_hameau_accueil_cloche_c_f.png",
     "hash": "fac9b00c",
     "taille": 25922,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -3216,7 +3216,7 @@
     "fichier": "scene_hameau_accueil_depart_b_f.png",
     "hash": "e99f8951",
     "taille": 25701,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -3399,7 +3399,7 @@
     "fichier": "scene_landes_hameau_ruelle_c_b.png",
     "hash": "818ce9ba",
     "taille": 24488,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -3473,7 +3473,7 @@
     "fichier": "scene_landes_hameau_grange_b_d.png",
     "hash": "ff6c17c4",
     "taille": 29610,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -3781,7 +3781,7 @@
     "fichier": "scene_renoncer_v2_c_f.png",
     "hash": "da9dc036",
     "taille": 14104,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -4186,7 +4186,7 @@
       "fichier": "scene_tour_escalier_vers_rien_c_a.png",
       "hash": "d29e8414",
       "taille": 18328,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -4201,7 +4201,7 @@
       "fichier": "scene_tour_pierres_rangees_b_a.png",
       "hash": "f2dc8449",
       "taille": 22767,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -4217,7 +4217,7 @@
       "fichier": "scene_tour_meurtriere_sud_b_d.png",
       "hash": "8cb46432",
       "taille": 13612,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -4374,7 +4374,7 @@
     "fichier": "scene_marche_muet_d_f.png",
     "hash": "878ca2e7",
     "taille": 20039,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -4520,7 +4520,7 @@
     "fichier": "monstre_colporteur_c_c.png",
     "hash": "74a57185",
     "taille": 12053,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -4583,7 +4583,7 @@
       "fichier": "scene_moulin_interieur_a_e_b.png",
       "hash": "f692ec95",
       "taille": 20995,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -4682,7 +4682,7 @@
     "fichier": "scene_moulin_campement_2_b_b.png",
     "hash": "15dcd920",
     "taille": 22865,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -5111,7 +5111,7 @@
       "fichier": "scene_chapelle_mur_cordes_v3_d_a.png",
       "hash": "889beb50",
       "taille": 16654,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -5153,7 +5153,7 @@
     "fichier": "scene_chapelle_des_cordes_e_d.png",
     "hash": "81730269",
     "taille": 26422,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -5261,7 +5261,7 @@
       "fichier": "scene_chapelle_cloche_sans_battant_c_a.png",
       "hash": "3918817f",
       "taille": 15010,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -5375,7 +5375,7 @@
     "fichier": "scene_puits_condamne_v2_b_f.png",
     "hash": "91eb1675",
     "taille": 25213,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -5712,7 +5712,7 @@
       "fichier": "scene_tribunal_ordonnance_a_d_e.png",
       "hash": "259e602a",
       "taille": 31953,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -5728,7 +5728,7 @@
       "fichier": "scene_tribunal_chaire_a_d_c.png",
       "hash": "2cad81bf",
       "taille": 14546,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -5743,7 +5743,7 @@
       "fichier": "scene_tribunal_bancs_a_d_b.png",
       "hash": "6b3958a0",
       "taille": 10241,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -5760,7 +5760,7 @@
     "fichier": "scene_petit_tribunal_b_g.png",
     "hash": "f448163e",
     "taille": 24045,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -5879,7 +5879,7 @@
     "fichier": "monstre_ecrivain_public_e_a.png",
     "hash": "05063fa8",
     "taille": 7621,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -6125,7 +6125,7 @@
       "fichier": "scene_mare_creux_doubles_v2_c_b.png",
       "hash": "a5a725c0",
       "taille": 12423,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -6173,7 +6173,7 @@
     "fichier": "scene_mare_aux_regards_b_a.png",
     "hash": "acc3c49c",
     "taille": 17766,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -6241,7 +6241,7 @@
     "fichier": "scene_mare_aux_regards_2_c_d.png",
     "hash": "2c8411a5",
     "taille": 9832,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -6303,7 +6303,7 @@
       "fichier": "monstre_epoux_verger_b_b.png",
       "hash": "c8c7586c",
       "taille": 21367,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "heritee",
       "herite": "epoux-1"
@@ -6334,7 +6334,7 @@
     "fichier": "scene_verger_noir_e_f.png",
     "hash": "f25146bd",
     "taille": 30462,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -6453,7 +6453,7 @@
     "fichier": "monstre_epoux_verger_b_b.png",
     "hash": "c8c7586c",
     "taille": 21367,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -6622,7 +6622,7 @@
       "fichier": "scene_palissade_rondins_a_d_f.png",
       "hash": "fade7e54",
       "taille": 10927,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -6639,7 +6639,7 @@
       "fichier": "scene_palissade_portillon_a_c_f.png",
       "hash": "43e40b32",
       "taille": 31061,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -6679,7 +6679,7 @@
     "fichier": "scene_palissade_sud_a_b_a.png",
     "hash": "c207f7c4",
     "taille": 20638,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -6759,7 +6759,7 @@
     "fichier": "objet_lanterne_rouillee_guerite_b_a.png",
     "hash": "554e8c03",
     "taille": 19259,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -6811,7 +6811,7 @@
     "fichier": "objet_lanterne_rouillee_guerite_b_a.png",
     "hash": "554e8c03",
     "taille": 19259,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -6890,7 +6890,7 @@
     "fichier": "objet_lanterne_veilleur_2_c_a.png",
     "hash": "9269b3e5",
     "taille": 6417,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -6944,7 +6944,7 @@
     "fichier": "objet_lanterne_veilleur_3_d_b.png",
     "hash": "b61ee889",
     "taille": 15580,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7136,7 +7136,7 @@
     "fichier": "scene_proces_du_heros_v4_d_b.png",
     "hash": "ad1e6762",
     "taille": 26264,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -7172,7 +7172,7 @@
     "fichier": "scene_borne_gravures_a_e_d.png",
     "hash": "0f26c58e",
     "taille": 21464,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7227,7 +7227,7 @@
     "fichier": "scene_landes_hameau_ruelle_c_b.png",
     "hash": "818ce9ba",
     "taille": 24488,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7296,7 +7296,7 @@
     "fichier": "scene_landes_hameau_grange_b_d.png",
     "hash": "ff6c17c4",
     "taille": 29610,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7330,7 +7330,7 @@
     "fichier": "scene_hameau_dense2_c_e.png",
     "hash": "52cdf13c",
     "taille": 22967,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7366,7 +7366,7 @@
     "fichier": "scene_landes_liaison_sud_d_h.png",
     "hash": "fede2150",
     "taille": 13178,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "fallback",
     "herite": ""
@@ -7402,7 +7402,7 @@
     "fichier": "scene_landes_liaison_sud_d_h.png",
     "hash": "fede2150",
     "taille": 13178,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "fallback",
     "herite": ""
@@ -7484,7 +7484,7 @@
     "fichier": "monstre_appele_descente_b_b.png",
     "hash": "f91221f1",
     "taille": 10532,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7517,7 +7517,7 @@
     "fichier": "scene_landes_liaison_sud_d_h.png",
     "hash": "fede2150",
     "taille": 13178,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "fallback",
     "herite": ""
@@ -7550,7 +7550,7 @@
    "fichier": "scene_hameau_dense_c_a.png",
    "hash": "feb9cf32",
    "taille": 10034,
-   "recent": true,
+   "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -7583,7 +7583,7 @@
    "fichier": "scene_lande_arbres_morts_d_d.png",
    "hash": "31e0d106",
    "taille": 8152,
-   "recent": true,
+   "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -7594,7 +7594,7 @@
    "fichier": "scene_lande_generique_1_b_d.png",
    "hash": "ffb2140b",
    "taille": 12326,
-   "recent": true,
+   "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -7605,7 +7605,7 @@
    "fichier": "scene_lande_generique_2_b_b.png",
    "hash": "1d702fde",
    "taille": 10733,
-   "recent": true,
+   "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -7616,7 +7616,7 @@
    "fichier": "scene_lande_generique_3_b_e.png",
    "hash": "cf015fd6",
    "taille": 7838,
-   "recent": true,
+   "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -7627,7 +7627,7 @@
    "fichier": "scene_lande_generique_4_b_f.png",
    "hash": "9a17ad44",
    "taille": 6734,
-   "recent": true,
+   "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -7638,7 +7638,7 @@
    "fichier": "scene_landes_liaison_fourche_b_d.png",
    "hash": "3b477457",
    "taille": 12792,
-   "recent": true,
+   "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -7649,7 +7649,7 @@
    "fichier": "scene_landes_liaison_plateau_e_a.png",
    "hash": "d3b342d3",
    "taille": 5274,
-   "recent": true,
+   "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -7660,7 +7660,7 @@
    "fichier": "scene_landes_liaison_chemin_creux_b_f.png",
    "hash": "6be4e76f",
    "taille": 11299,
-   "recent": true,
+   "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -7671,7 +7671,7 @@
    "fichier": "scene_landes_liaison_sud_d_h.png",
    "hash": "fede2150",
    "taille": 13178,
-   "recent": true,
+   "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -8026,7 +8026,7 @@
    "fichier": "monstre_bete_chemins_creux_b_a.png",
    "hash": "91cd6381",
    "taille": 5661,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "bete_chemins_creux"
   },
@@ -8458,7 +8458,7 @@
    "fichier": "scene_champ_tombe_manquante_a_d_f.png",
    "hash": "77ec0243",
    "taille": 23086,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "champ_tombe_manquante_a_d_f"
   },
@@ -9228,7 +9228,8 @@
       "mare-aux-regards",
       "verger-noir"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Entre deux rangs du verger, une petite silhouette immobile. Tu la fixes ; elle attend que tu l'aies bien vue, puis reprend sa marche entre les arbres, du pas de quelqu'un qui rentre chez lui. Les fruits de cendre ne bougent pas sur son passage.",
@@ -9238,7 +9239,8 @@
       "mare-aux-regards",
       "verger-noir"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Assise sur un muret, à contre-jour, les jambes trop courtes pour toucher terre. Elle te regarde venir de loin, sans se cacher et sans se lever, puis descend de l'autre côté de la pierre au moment exact où tu arrives à sa hauteur. De ton côté du mur, il n'y a plus personne. De l'autre non plus.",
@@ -9248,7 +9250,8 @@
       "mare-aux-regards",
       "verger-noir"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Elle croise ta route sans ralentir, à trois pas, comme on croise quelqu'un dans un couloir. « Bois pas à la mare basse. Ils y jettent ce qu'ils veulent pas enterrer. » Elle est déjà loin quand tu penses à répondre.",
@@ -9258,7 +9261,8 @@
       "mare-aux-regards",
       "verger-noir"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Elle passe, et elle parle sans tourner la tête. « Tu marches comme les gens qui comptent les jours. » Un temps, sa voix déjà derrière toi — une voix d'enfant, sur le ton de quelqu'un qui a fini d'apprendre : « Moi j'ai arrêté au troisième. » Quand tu te retournes, la bruyère se referme sur rien.",
@@ -9268,7 +9272,8 @@
       "mare-aux-regards",
       "verger-noir"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "« Trois corbeaux sur ton toit ce matin. » Elle le dit du ton dont un enfant récite la règle d'un jeu, sans s'arrêter. « Quatre, faut partir. » Tu mets le reste du trajet à décider si c'était un avertissement ou une politesse.",
@@ -9278,7 +9283,8 @@
       "mare-aux-regards",
       "verger-noir"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Tu redescends de la colline avec les cordes dans le dos. Longtemps, leur grincement te suit — pas parce qu'il porte loin. Parce qu'il a trouvé ton rythme de marche.",
@@ -9286,7 +9292,8 @@
      "from": [
       "colline-aux-gibets"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Les rangées de poteaux s'espacent, puis renoncent. Tu comptes tes pas pour ne pas compter les écriteaux. La lande reprend, vide — enfin, vide comme avant : surveillée.",
@@ -9294,7 +9301,8 @@
      "from": [
       "champ-des-fixes"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Le grincement du Bailli s'éteint derrière le revers de la colline. Son jugement, lui, marche avec toi — tu l'entends peser chaque choix qui vient.",
@@ -9302,7 +9310,8 @@
      "from": [
       "pendu-qui-parle"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Le moulin rapetisse derrière toi. Le sommeil t'a rendu des forces et pris autre chose — au réveil, la bruyère autour de ton lit était foulée en cercle.",
@@ -9310,7 +9319,8 @@
      "from": [
       "campement"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Le froid du tribunal met du temps à sortir des os. Dehors, chaque visage croisé a l'air d'un banc : assis, patient, en train de juger.",
@@ -9318,7 +9328,8 @@
      "from": [
       "petit-tribunal"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Les cordes clouées continuent de bouger dans ton dos, tu le sais sans te retourner. Une relique, ça garde le geste. La lande, elle, garde le tien.",
@@ -9326,7 +9337,8 @@
      "from": [
       "chapelle-des-cordes"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Les murets du hameau te lâchent un à un. Ce que tu as laissé — ou refusé de laisser — pèse exactement le poids annoncé. La Doyenne avait raison sur ce point.",
@@ -9334,7 +9346,8 @@
      "from": [
       "serment-hameau"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Le silence du marché te colle aux semelles. Tu mets du temps à t'autoriser un bruit — et quand tu tousses enfin, la lande entière semble le noter.",
@@ -9342,7 +9355,8 @@
      "from": [
       "marche-muet"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Trois coups, une pause. Le rythme du puits te suit bien après qu'il est devenu inaudible. Tu marches dessus, maintenant : trois pas, une pause. Tu t'arrêtes net. Tu reprends autrement.",
@@ -9350,7 +9364,8 @@
      "from": [
       "puits-condamne"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Tu laisses le combat derrière toi, mais pas tout : la lande a bu ce qui a coulé, et elle sait maintenant quel goût tu as. Tu marches plus léger, et moins tranquille.",
@@ -9361,28 +9376,32 @@
       "pendu-mal-fixe",
       "chien-du-bailli"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Un berger sans troupeau te croise au détour d'un talus. Il te salue — du menton, pas de la voix — et presse le pas une fois passé. Tu l'entends s'arrêter, plus loin, pour te regarder partir.",
     "conditions": {
      "minSoupcon": 1.0,
      "maxSoupcon": 2.0
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Deux silhouettes réparent un muret à distance. Leurs mains ne s'arrêtent pas quand tu passes. Leurs têtes, si.",
     "conditions": {
      "minSoupcon": 1.0,
      "maxSoupcon": 2.0
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Sur une pierre du chemin, une croix à la craie — vieille, à moitié lavée. Pas la tienne. Quelqu'un d'autre, avant toi, a entendu quelque chose. Tu ne sauras pas où il pend.",
     "conditions": {
      "minSoupcon": 1.0,
      "maxSoupcon": 3.0
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Le chemin longe une maison basse. Un volet se ferme — pas vite, pas peureusement. Posément. On ne se cache pas de toi : on te retire la maison, c'est différent.",
@@ -9392,7 +9411,8 @@
      ],
      "minSoupcon": 2.0,
      "maxSoupcon": 3.0
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Tu repasses par une ruelle que tu as déjà prise. La porte qui bâillait sur une cuisine est fermée, et la barre est mise — de l'intérieur, en plein jour. Personne ne barre sa porte en plein jour, sauf quand on a décidé quelque chose.",
@@ -9402,91 +9422,105 @@
      ],
      "minSoupcon": 3.0,
      "maxSoupcon": 5.0
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Un mot t'arrive porté par le vent, un seul, distinct : ton nom. Personne à l'horizon. Le vent des Landes ment, tu le sais. Mais il ment avec ce qu'on lui donne.",
     "conditions": {
      "minSoupcon": 2.0,
      "maxSoupcon": 4.0
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Il y a des traces fraîches sur ton chemin — devant toi. Quelqu'un fait ta route avant toi, dans le même sens, à petite distance. Tu ne le rattrapes jamais.",
     "conditions": {
      "minSoupcon": 3.0,
      "maxSoupcon": 4.0
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Un enfant t'observe depuis un talus, immobile. Quand tu lèves la main, il ne fuit pas : il trace quelque chose dans la terre du bout d'un bâton, sans te quitter des yeux, puis s'en va sans courir.",
     "conditions": {
      "minSoupcon": 3.0,
      "maxSoupcon": 4.0
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "On ne croise plus personne. C'est pire que d'être suivi : tout s'est vidé sur ton passage, comme une rue avant une arrestation.",
     "conditions": {
      "minSoupcon": 4.0,
      "maxSoupcon": 5.0
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Au loin, une cloche muette sonne quand même — trois coups mats, du bois sur du bois. Tu comprends que ça compte tes passages. Quelqu'un, quelque part, tient le total.",
     "conditions": {
      "minSoupcon": 4.0,
      "maxSoupcon": 5.0
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Trois hommes marchent à la limite du regard, sans jamais réduire la distance. Quand tu t'arrêtes, ils s'arrêtent. Quand tu repars, ils attendent un peu — par politesse, dirait-on. L'aube n'est pas pressée.",
     "conditions": {
      "minSoupcon": 5.0,
      "maxSoupcon": 5.0
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Chaque montée coûte. Tu comptes tes forces comme une bourse trop plate — et le chemin le voit, qui te tend ses pentes comme on tend un bras à un vieillard. Tu refuses. Pour l'instant.",
     "conditions": {
      "maxHealth": 0.5
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Tu t'arrêtes deux fois pour souffler. La deuxième, la pierre où tu poses la main reste marquée de rouge. Le Domaine te goûte déjà.",
     "conditions": {
      "maxHealth": 0.3
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "La blessure donne le rythme, plus toi. Tu marches au pas de ce qui fait mal — c'est une laisse comme une autre.",
     "conditions": {
      "maxHealth": 0.5
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Au détour d'un talus, tu crois voir une silhouette mince, tête nue, disparaître derrière un pli du terrain. Le temps d'y être : personne. Un lit d'herbe couchée, encore tiède.",
     "conditions": {
      "chapter": "la-fille"
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Où que le chemin tourne, la couronne de la colline reste en vue — et le grand gibet dépasse, patient. Tu commences à comprendre : ce n'est pas toi qui le regardes.",
     "conditions": {
      "chapter": "le-gibet-vide"
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Dans ta besace, l'écharde du gibet est tiède — pas de ta chaleur. Elle tire doucement vers la colline, comme une aiguille vers son nord à elle.",
     "conditions": {
      "carrying": "Écharde"
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "La lanterne du Veilleur bat contre ta hanche. Sa flamme penche toujours du même côté, quel que soit le vent — tu as fini par vérifier : elle penche vers le sud. Vers la Descente.",
     "conditions": {
      "carrying": "Lanterne"
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Tu longes les murets d'une ruelle à l'autre. Pas de lande ici : des murs à hauteur d'épaule, des portes closes, et le bruit de tes pas qui revient de trop près.",
@@ -9494,7 +9528,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Par une porte entrouverte, une odeur de soupe aux herbes. Quelqu'un racle une marmite ; quelqu'un d'autre proteste qu'il en reste. C'est tout. C'est exactement tout.",
@@ -9502,7 +9537,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Deux Renonçants discutent d'une gouttière à refaire, en se passant les mots comme des outils. Aucun des deux ne te regarde passer. La gouttière fuit vraiment.",
@@ -9510,7 +9546,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Un homme affûte une faux sur le pas de sa porte, au rythme lent de qui a tout son temps. Il chantonne faux. La lame est pour l'herbe, le chant pour lui.",
@@ -9518,7 +9555,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Une femme étend du linge encore fumant. Elle jure à mi-voix contre une pince qui saute, la ramasse, recommence. Le drap claque une fois, comme partout ailleurs au monde.",
@@ -9526,7 +9564,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Deux vieux jouent à un jeu de pions sur un banc, avec des cailloux et des fèves. L'un triche. L'autre le sait, et le laisse faire parce que c'est son tour de tricher demain.",
@@ -9534,7 +9573,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Un gamin fait rouler un cerceau de tonneau le long d'un muret, le rattrape, recommence. Il compte ses réussites à voix haute. Il en est à onze, et il est content.",
@@ -9542,7 +9582,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Ça sent le pain. Quelqu'un a ouvert un four quelque part, et pendant dix pas entiers, la rue ne sent que ça.",
@@ -9550,7 +9591,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Le village se traverse en quelques dizaines de pas, et pourtant chaque rue semble tourner pour te faire repasser devant les mêmes fenêtres. Derrière les volets, on compte tes passages.",
@@ -9558,7 +9600,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Une ruelle, une cour, une autre ruelle. Le hameau ne t'empêche pas de circuler — il te laisse faire, et note l'itinéraire.",
@@ -9566,7 +9609,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Une femme lave une porte à grande eau, à genoux, en frottant le bas du bois là où il n'y a rien. Elle recommence quand tu passes. Elle recommencera encore après.",
@@ -9574,7 +9618,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Dans une cour, deux hommes réparent un mur qui tient très bien. Ils posent des pierres, les retirent, les reposent — pour avoir les mains occupées quand quelqu'un traverse.",
@@ -9582,7 +9627,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Du linge sèche en travers de la ruelle : des chemises d'hommes, toutes de la même taille, toutes reprisées au même endroit — l'épaule gauche. Tu passes dessous en te baissant.",
@@ -9590,7 +9636,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Un vieux est assis sur une marche, un couteau dans une main, un bout de bois dans l'autre. Il ne taille rien : il enlève de la matière, régulièrement, jusqu'à ce qu'il n'y ait plus de bout de bois. Il en a une pile à côté de lui.",
@@ -9598,7 +9645,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Quelque part derrière un mur, une femme chante à une enfant. La chanson n'a pas de refrain : c'est une liste de choses qu'on ne fait pas. Elle chante bien.",
@@ -9606,7 +9654,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Une porte s'ouvre devant toi, une main jette un fond de seau sur les pavés, la porte se referme. Tu n'as vu que la main. L'eau fume un peu sur la pierre froide.",
@@ -9614,7 +9663,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Trois enfants jouent au bout de la ruelle : l'un compte, face au mur, les autres se cachent. Quand tu approches, celui qui compte s'arrête net — et les cachés ne sortent pas.",
@@ -9622,7 +9672,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Une charrette à bras est appuyée contre une façade, chargée, sanglée, prête depuis assez longtemps pour que la poussière ait pris sur la bâche. Ils sont plusieurs à en avoir une.",
@@ -9630,7 +9681,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Sur un seuil, une écuelle pleine que personne ne vient manger. Elle est là pour un chien, et il n'y a pas de chien dans ce village. On continue à la remplir.",
@@ -9638,7 +9690,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Un homme cloue un volet. Depuis l'intérieur. Tu l'entends s'y reprendre à trois fois sur le même clou, puis s'arrêter longtemps, puis recommencer ailleurs.",
@@ -9646,7 +9699,8 @@
      "from": [
       "HAMEAU_INTERIOR"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Tu changes de ruelle, et une conversation s'éteint à ton entrée, exactement comme on souffle une lampe. Trois pas plus loin, elle reprend derrière toi — pas la même, plus basse, plus courte.",
@@ -9655,7 +9709,8 @@
       "HAMEAU_INTERIOR"
      ],
      "minSoupcon": 3.0
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Un gamin marche à ta hauteur, de l'autre côté du muret, sans te regarder. Il s'arrête quand tu t'arrêtes. À l'angle, il tourne avant toi et va dire quelque chose à quelqu'un que tu ne vois pas.",
@@ -9664,7 +9719,8 @@
       "HAMEAU_INTERIOR"
      ],
      "minSoupcon": 4.0
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Une femme te croise et rectifie sa trajectoire — pas pour t'éviter : pour passer du bon côté, celui où l'on passe quand on a juré. Elle ne dit rien. Elle n'a pas eu à réfléchir.",
@@ -9675,7 +9731,8 @@
      "serment": [
       "jure"
      ]
-    }
+    },
+    "illustration": null
    },
    {
     "texte": "Devant toi, une porte se ferme. Puis la suivante, avant même que tu arrives à sa hauteur. Ce n'est pas de la peur : c'est de l'ordre. Le mot est passé plus vite que tes pas.",
@@ -9687,7 +9744,8 @@
       "refuse",
       "faux"
      ]
-    }
+    },
+    "illustration": null
    }
   ],
   "bifurcations": [

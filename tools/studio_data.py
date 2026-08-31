@@ -587,7 +587,15 @@ def lire_transitions() -> dict:
                 v = texte_de(c, champ)
                 if v:
                     cond[champ] = v
-            variantes.append({"texte": texte_de(c, "text") or "", "conditions": cond})
+            # L'image PROPRE de cette marche, si Patrick lui en a donné une
+            # (31/08). Sans ce champ, une transition illustrée continuerait
+            # d'apparaître « sans image » dans le graphe alors qu'elle en sert
+            # une en jeu — le genre d'écart qui fait rejuger un écran déjà réglé.
+            variantes.append({
+                "texte": texte_de(c, "text") or "",
+                "conditions": cond,
+                "illustration": texte_de(c, "illustration") or None,
+            })
     bif = []
     b = bloc_apres(src, r"const BIFURCATIONS: string\[\] =")
     if b:

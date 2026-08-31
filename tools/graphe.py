@@ -207,8 +207,13 @@ def construire() -> dict:
             if k == "from":
                 continue
             etiq.append(f"{k} {val if not isinstance(val, list) else ' / '.join(map(str, val))}")
+        # Une transition peut porter SON image (31/08). Sans ça le graphe la
+        # dirait « sans image » alors qu'elle en sert une en jeu.
+        ill = v.get("illustration")
+        f = ill.split("/")[-1] if ill else None
         noeuds.append({"id": nid, "nom": court(v.get("texte", "")), "cat": "transition",
-                       "image": None, "desc": [v.get("texte", "")],
+                       "image": ({"f": f, "h": "", "ok": True} if f else None),
+                       "desc": [v.get("texte", "")],
                        "meta": ["marche · variante"] + etiq})
 
     # -------------------------- LES VUES DE MARCHE --------------------------

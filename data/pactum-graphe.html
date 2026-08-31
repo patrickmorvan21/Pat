@@ -87,6 +87,13 @@ input[type=range]::-moz-range-thumb{width:9px;height:9px;border:0;background:var
   display:none;flex-direction:column;
 }
 #fiche.ouverte{display:flex}
+/* LA FICHE DOUBLE DE LARGEUR quand une galerie d'images est ouverte (demande
+   Patrick 31/08 : « je veux que la barre latérale soit 2× plus large afin que
+   les visuels soient plus gros à l'œil nu »). On ne l'élargit QUE là : le
+   reste du temps la fiche est du texte, et 784 px de texte se lisent mal.
+   Bornée à la fenêtre — sur un écran étroit, deux fois trop large ne montre
+   rien de plus, ça pousse juste le graphe dehors. */
+#fiche.large{width:min(784px,calc(100vw - 300px))}
 #fermer{
   position:absolute;top:9px;right:9px;width:26px;height:26px;background:var(--charbon);
   border:1px solid var(--blanc-20);cursor:pointer;padding:0;z-index:2;
@@ -148,6 +155,10 @@ input[type=range]::-moz-range-thumb{width:9px;height:9px;border:0;background:var
 .g.res:hover{opacity:1;filter:none}
 .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:4px;
   max-height:228px;overflow-y:auto;padding:4px;border:1px solid var(--blanc-20);background:#151310}
+/* Élargir le panneau ne sert à rien si les vignettes gardent leur taille :
+   c'est le VISUEL qu'on vient regarder. */
+#fiche.large .gal{grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:6px;max-height:56vh}
+#fiche.large .aa2{gap:12px}
 .gal .g{aspect-ratio:1/1;background:#000 center/cover;border:1px solid transparent;cursor:pointer;
   image-rendering:pixelated}
 .gal .g:hover{border-color:var(--blanc-50)}
@@ -770,8 +781,29 @@ function viser(n) {
 
 /* ------------------------------ la fiche --------------------------- */
 const fiche = document.getElementById("fiche");
-function fermer() { fiche.classList.remove("ouverte"); choisi = null; }
+function fermer() {
+  fiche.classList.remove("ouverte");
+  fiche.classList.remove("large");
+  panneauOuvert = null;
+  choisi = null;
+}
 document.getElementById("fermer").onclick = fermer;
+/* Cliquer À CÔTÉ ferme la fiche (demande Patrick 31/08). En capture sur le
+   document : le canvas gère ses propres pointeurs, et un simple écouteur sur
+   le canvas raterait les clics tombés sur le panneau de gauche ou le pied de
+   page. On ne ferme QUE sur un vrai clic hors de la fiche — jamais pendant un
+   déplacement de la carte, sinon glisser le graphe la fermerait à chaque
+   fois. */
+let clicDepart = null;
+addEventListener("pointerdown", e => { clicDepart = { x: e.clientX, y: e.clientY }; }, true);
+addEventListener("pointerup", e => {
+  const d = clicDepart; clicDepart = null;
+  if (!fiche.classList.contains("ouverte") || !d) return;
+  if (Math.hypot(e.clientX - d.x, e.clientY - d.y) > 6) return;   // c'était un glissement
+  if (fiche.contains(e.target)) return;                            // dans la fiche
+  if (e.target.closest("#gauche")) return;                         // le panneau de gauche a ses propres actions
+  fermer();
+}, true);
 addEventListener("keydown", e => {
   if (e.target.tagName === "INPUT") return;
   if (e.key === "Escape") fermer();
@@ -920,16 +952,29 @@ function galerie(choisiNom) {
 
 function majImgAct(n) {
   const z = document.getElementById("fimgact");
+  // La fiche s'élargit avec le panneau d'images, et seulement avec lui.
+  // Posé ICI plutôt qu'à chaque appelant : les six endroits qui changent
+  // `panneauOuvert` passent tous par cette fonction, donc la classe ne peut
+  // pas diverger de l'état qu'elle décrit.
+  fiche.classList.toggle("large", panneauOuvert !== null);
   if (!z) return;
-  if (n.cat === "lieu" || !n.image || !n.image.f) { z.innerHTML = ""; return; }
-  const actuel = n.image.f, dR = remplacer[n.id], dP = reprendre[n.id];
+  /* UN ÉCRAN SANS IMAGE PEUT EN DEMANDER UNE (demande Patrick 31/08 :
+     « j'aimerais pouvoir mettre des images sur des transitions si j'en ai
+     envie »). Les transitions n'en ont jamais eu — elles servent une vue de
+     marche générique — donc le panneau se fermait sur « aucune image » sans
+     offrir la moindre action. Un lieu reste exclu : il n'a pas d'image à lui,
+     il en emprunte une à sa scène d'arrivée. */
+  if (n.cat === "lieu") { z.innerHTML = ""; return; }
+  const actuel = (n.image && n.image.f) || "", dR = remplacer[n.id], dP = reprendre[n.id];
 
   if (panneauOuvert === "rempl") {
     const u = (apercuLocal && apercuLocal.id === n.id) ? apercuLocal.url : null;
     z.innerHTML = `<div class="repbloc">
       <label>La nouvelle image</label>
       <div class="aa2">
-        <div><span>Aujourd'hui</span><div class="vig" style="background-image:url('${urlAsset(actuel)}')"></div></div>
+        <div><span>Aujourd'hui</span>${actuel
+          ? `<div class="vig" style="background-image:url('${urlAsset(actuel)}')"></div>`
+          : `<div class="vig rien">aucune image propre</div>`}</div>
         <div><span>Deviendrait</span>${u
           ? `<div class="vig neuve" style="background-image:url('${u}')"></div>`
           : `<div class="vig rien">aucun fichier</div>`}</div>
@@ -952,7 +997,9 @@ function majImgAct(n) {
         placeholder="filtre par nom — ex. meute" value="${esc(filtreGal)}">
       ${galerie(pris)}
       <div class="aa2">
-        <div><span>Aujourd'hui</span><div class="vig" style="background-image:url('${urlAsset(actuel)}')"></div></div>
+        <div><span>Aujourd'hui</span>${actuel
+          ? `<div class="vig" style="background-image:url('${urlAsset(actuel)}')"></div>`
+          : `<div class="vig rien">aucune image propre</div>`}</div>
         <div><span>Reprendrait</span>${pris
           ? `<div class="vig neuve" style="background-image:url('${urlAsset(pris)}')"></div>`
           : `<div class="vig rien">aucune image choisie</div>`}</div>
@@ -963,8 +1010,11 @@ function majImgAct(n) {
       </div>
     </div>`;
   } else {
+    // Le libellé dit la vérité de l'écran : on ne « remplace » pas une image
+    // qui n'existe pas, on en DONNE une.
+    const verbe = actuel ? "Remplacer cette image" : "Donner une image à cet écran";
     z.innerHTML =
-      `<button id="bRempl" class="${dR ? "actif" : ""}">⟳ ${dR ? "Remplacement noté — modifier" : "Remplacer cette image"}</button>
+      `<button id="bRempl" class="${dR ? "actif" : ""}">⟳ ${dR ? "Fichier noté — modifier" : verbe}</button>
        <button id="bRepr"  class="${dP ? "actif" : ""}">≡ ${dP ? "Reprend « " + esc(dP.reprend) + " »" : "Utiliser une image déjà faite"}</button>`;
   }
   brancherImgAct(n);
@@ -1074,7 +1124,8 @@ document.getElementById("bClaude").onclick = () => {
     aX.forEach((id, i) => {
       const d = remplacer[id];
       t += (i + 1) + ". " + d.nom + "  [" + id + "]\n";
-      t += "   remplace : " + d.actuel + "\n";
+      t += d.actuel ? "   remplace : " + d.actuel + "\n"
+                    : "   aucune image aujourd'hui (cet écran sert une vue générique)\n";
       t += "   fichier joint : " + (d.fichier || "(à envoyer)") + "\n";
       if (d.note) t += "   pourquoi : " + d.note + "\n";
       t += "\n";
@@ -1085,7 +1136,7 @@ document.getElementById("bClaude").onclick = () => {
     aP.forEach((id, i) => {
       const d = reprendre[id];
       t += (i + 1) + ". " + d.nom + "  [" + id + "]\n";
-      t += "   " + d.actuel + "  →  " + d.reprend + "\n\n";
+      t += "   " + (d.actuel || "(aucune)") + "  →  " + d.reprend + "\n\n";
     });
   }
   t += "\nPour « à refaire » : réécris le prompt de chacune en tenant compte de la "
