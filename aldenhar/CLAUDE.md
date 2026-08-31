@@ -1333,3 +1333,11 @@ Demande Patrick : les transitions censées se passer dans le hameau des Renonça
 - **Mesuré, pas jugé à l'œil** : 30 dans le cercle, 46 dehors, **0 intrus**, disposition inchangée (boîte 899×880, zoom 1.06 — identiques à avant), lieux à 85 px les uns des autres, rien ne se chevauche (11 px d'air au plus serré). Fiches vérifiées dans les deux sens, recherche intacte, 0 erreur JS. Huit gardes verts.
 - ⚠️ Piège de banc : les `let` de tête de script ne sont **pas** sur `window` — un `waitForFunction` sur `window.N` expire sur une page parfaitement chargée. Tester `typeof N !== "undefined"`.
 - **Aucun code de jeu touché : pas de bump.** Publié par le workflow (gh-pages `8ee4cfb`).
+
+#### Le Graphe : ENREGISTRER ne marchait sur aucune transition (31/08)
+Retour Patrick, capture à l'appui. **Défaut réel, et de moi.**
+- **La cause** : les deux boutons d'enregistrement du panneau d'image lisaient **`n.image.f` sans garde**. Or `n.image` est **NUL** sur tout écran sans image propre — donc presque toutes les transitions, c'est-à-dire exactement celles à qui on vient DONNER une image. Le clic levait une TypeError et **le gestionnaire mourait en silence** : bouton inerte, rien à l'écran pour le dire.
+- **⚠️ Ce que ça dit du test du 31/08** : le rapport savait DÉJÀ écrire « aucune image aujourd'hui ». J'avais donc vérifié la **rédaction** du rapport, jamais le **geste**. Règle : quand on ajoute une action à un état particulier (ici « écran sans image »), le test doit **cliquer** dans cet état — vérifier la sortie ne prouve pas que le chemin s'exécute.
+- **Correctifs** : `n.image && n.image.f` aux deux points d'écriture ; et les quatre actions du panneau passent par `action()`, qui **transforme une exception en toast**. Un bouton qui échoue doit le dire — sans ça la panne suivante sera aussi invisible.
+- **Prouvé sur son mode d'échec** (comme un garde) : `n.image.f` remis dans une copie → le test tombe sur « la reprise n'est pas enregistrée », le symptôme exact de Patrick ; garde rétablie → vert. Puis les DEUX boutons cliqués pour de vrai sur une transition sans image : reprise et remplacement écrits, `actuel` vide, rapport correct, compteur à 2, 0 erreur JS. Le tri du Hameau ne bouge pas (30 dedans, 0 intrus).
+- Aucun code de jeu touché : pas de bump. Publié (gh-pages `01ac3f0`).
