@@ -31,14 +31,11 @@ version précédente est gardée à côté.
 
 from __future__ import annotations
 
-import base64
 import json
 import os
 import re
-import subprocess
 import sys
 import tempfile
-from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 RACINE = Path(__file__).resolve().parent.parent
@@ -256,194 +253,14 @@ def ecrire_octets(chemin: Path, data: bytes) -> None:
     os.replace(tmp, chemin)
 
 
-# ────────────────────────────────── serveur ──────────────────────────────────
-class Atelier(BaseHTTPRequestHandler):
-    def log_message(self, *a):  # silence : le récapitulatif suffit
-        pass
-
-    def _envoyer(self, code: int, corps: bytes, mime: str) -> None:
-        self.send_response(code)
-        self.send_header("Content-Type", mime)
-        self.send_header("Content-Length", str(len(corps)))
-        self.send_header("Cache-Control", "no-store")
-        self.end_headers()
-        self.wfile.write(corps)
-
-    def _json(self, code: int, obj) -> None:
-        self._envoyer(code, json.dumps(obj, ensure_ascii=False).encode("utf-8"), "application/json; charset=utf-8")
-
-    def do_GET(self):
-        chemin = self.path.split("?")[0]
-        if chemin in ("/", "/atelier", "/index.html"):
-            if not PAGE.exists():
-                return self._envoyer(404, b"data/atelier.html introuvable", "text/plain; charset=utf-8")
-            return self._envoyer(200, PAGE.read_bytes(), "text/html; charset=utf-8")
-
-        if chemin == "/api/zones":
-            return self._json(200, {"zones": sorted(p.stem for p in ZONES.glob("*.json"))})
-
-        if chemin.startswith("/api/zone/"):
-            try:
-                _, zone = charger_zone(chemin.rsplit("/", 1)[1])
-            except FileNotFoundError as e:
-                return self._json(404, {"erreur": str(e)})
-            # La réserve : tout asset présent sur disque et rattaché à rien.
-            utilisees = {s.get("illustration") for s in zone.get("scenes", [])}
-            utilisees |= {l.get("illustration") for l in zone.get("lieux", [])}
-            tous = sorted(p.name for p in ASSETS.glob("*.png"))
-            zone["_assets"] = tous
-            zone["_reserve"] = [a for a in tous if a not in utilisees]
-            return self._json(200, zone)
-
-        if chemin.startswith("/assets/"):
-            f = ASSETS / Path(chemin).name
-            if f.exists():
-                return self._envoyer(200, f.read_bytes(), "image/png")
-            return self._envoyer(404, b"", "text/plain")
-
-        return self._envoyer(404, b"", "text/plain")
-
-    def do_POST(self):
-        taille = int(self.headers.get("Content-Length") or 0)
-        try:
-            req = json.loads(self.rfile.read(taille) or b"{}")
-        except json.JSONDecodeError:
-            return self._json(400, {"erreur": "JSON illisible"})
-
-        try:
-            if self.path == "/api/champ":
-                return self._json(200, self.ecrire_champ(req))
-            if self.path == "/api/image":
-                return self._json(200, self.deposer_image(req))
-            if self.path == "/api/lieu":
-                return self._json(200, self.deplacer_lieu(req))
-        except Exception as e:  # renvoyé à l'écran : l'atelier ne ment pas
-            return self._json(500, {"erreur": f"{type(e).__name__}: {e}"})
-
-        return self._json(404, {"erreur": "route inconnue"})
-
-    # ---- écriture d'un champ ------------------------------------------------
-    def ecrire_champ(self, req: dict) -> dict:
-        zone_nom = req["zone"]
-        sid = req["id"]
-        champ = req["champ"]
-        valeur = req.get("valeur")
-        if champ not in CHAMPS_TEXTE and champ not in ("mene_a", "parent", "lieu", "type"):
-            raise ValueError(f"champ non éditable : {champ}")
-
-        chemin, zone = charger_zone(zone_nom)
-        scenes = zone.setdefault("scenes", [])
-        scene = next((s for s in scenes if s.get("id") == sid), None)
-        if scene is None:
-            raise KeyError(f"scène inconnue : {sid}")
-
-        scene[champ] = valeur
-        sauver_zone(chemin, zone)
-        compte_rendu = reporter_dans_ts(sid, champ, valeur)
-        return {"ok": True, "id": sid, "champ": champ, "journal": compte_rendu}
-
-    # ---- position d'un lieu sur la carte ------------------------------------
-    def deplacer_lieu(self, req: dict) -> dict:
-        """Range x/y sur un LIEU. Rien à reporter dans le .ts : la carte est un
-        outil de production, le jeu n'a aucune notion de coordonnées."""
-        chemin, zone = charger_zone(req["zone"])
-        lid = req["id"]
-        lieu = next((l for l in zone.get("lieux", []) if l.get("id") == lid), None)
-        if lieu is None:
-            raise KeyError(f"lieu inconnu : {lid}")
-        lieu["x"], lieu["y"] = int(req["x"]), int(req["y"])
-        sauver_zone(chemin, zone)
-        return {"ok": True, "id": lid, "journal": f"posé en {lieu['x']},{lieu['y']}"}
-
-    # ---- dépôt d'une image --------------------------------------------------
-    def deposer_image(self, req: dict) -> dict:
-        zone_nom = req["zone"]
-        sid = req["id"]
-        octets = base64.b64decode(req["data"].split(",")[-1])
-        fichier, note = importer_image(req.get("nom") or f"{sid}.png", octets)
-
-        chemin, zone = charger_zone(zone_nom)
-        scene = next((s for s in zone.get("scenes", []) if s.get("id") == sid), None)
-        if scene is None:
-            raise KeyError(f"scène inconnue : {sid}")
-        scene["illustration"] = fichier
-        sauver_zone(chemin, zone)
-        compte_rendu = reporter_dans_ts(sid, "illustration", fichier)
-        return {"ok": True, "id": sid, "fichier": fichier, "journal": f"{note} · {compte_rendu}"}
-
-
-def payload_zone(nom: str) -> dict:
-    """Le JSON tel que la page l'attend — même contenu que /api/zone/<nom>.
-
-    Sorti de la route HTTP pour être réutilisable par le mode --web : la page
-    publiée doit voir EXACTEMENT ce que voit la page locale, sinon les deux
-    outils raconteraient deux vérités différentes.
-    """
-    _, zone = charger_zone(nom)
-    utilisees = {s.get("illustration") for s in zone.get("scenes", [])}
-    utilisees |= {l.get("illustration") for l in zone.get("lieux", [])}
-    tous = sorted(f.name for f in ASSETS.glob("*.png"))
-    zone["_assets"] = tous
-    zone["_reserve"] = [a for a in tous if a not in utilisees]
-    return zone
-
-
-def ecrire_web(dest: Path, zone: str = "landes") -> None:
-    """Publie l'atelier en page autonome, données CUITES dedans.
-
-    Pourquoi : Patrick n'a pas de terminal ouvert quand il travaille, et un
-    fichier HTML rangé dans ses Téléchargements ne se met jamais à jour — on
-    a perdu trois échanges là-dessus. Une page déployée à côté du jeu, elle,
-    est régénérée à chaque déploiement, donc elle DIT la vérité.
-
-    Les images ne sont pas embarquées : elles sont déjà publiques sous
-    `assets/`, servies par le jeu. La page les référence en relatif, donc elle
-    reste légère et montre les PNG d'origine, pas des vignettes.
-    """
-    if not PAGE.exists():
-        raise SystemExit("data/atelier.html introuvable")
-    donnees = payload_zone(zone)
-    html = PAGE.read_text(encoding="utf-8")
-    injection = (
-        "<script>window.__ZONE_DATA__="
-        + json.dumps(donnees, ensure_ascii=False)
-        + ";</script>\n</head>"
-    )
-    if "</head>" not in html:
-        raise SystemExit("atelier.html : pas de </head> où injecter les données")
-    html = html.replace("</head>", injection, 1)
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.write_text(html, encoding="utf-8")
-    n_lieux = len(donnees.get("lieux", []))
-    n_scenes = len(donnees.get("scenes", []))
-    print(
-        f"{dest} écrit — {len(html)//1024} Ko · {n_lieux} lieux · {n_scenes} scènes "
-        "(images servies depuis assets/, non embarquées)"
-    )
-
-
-def main() -> int:
-    if "--web" in sys.argv:
-        i = sys.argv.index("--web")
-        dest = Path(sys.argv[i + 1]) if len(sys.argv) > i + 1 else Path("data/atelier_web.html")
-        zone = sys.argv[sys.argv.index("--zone") + 1] if "--zone" in sys.argv else "landes"
-        ecrire_web(dest, zone)
-        return 0
-
-    port = 8770
-    if "--port" in sys.argv:
-        port = int(sys.argv[sys.argv.index("--port") + 1])
-    srv = ThreadingHTTPServer(("127.0.0.1", port), Atelier)
-    print(f"L'Atelier — http://localhost:{port}")
-    print(f"  zone(s)  : {', '.join(sorted(p.stem for p in ZONES.glob('*.json'))) or '(aucune)'}")
-    print(f"  écrit    : data/zones/*.json  +  aldenhar/lib/scene-data.ts")
-    print("  Ctrl+C pour arrêter.")
-    try:
-        srv.serve_forever()
-    except KeyboardInterrupt:
-        print("\nArrêté.")
-    return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
+# ─────────────────────────────────────────────────────────────────────────────
+# LA PAGE DE L'ATELIER A ÉTÉ SUPPRIMÉE (31/08, décision Patrick) — le Graphe
+# la remplace.
+#
+# ⚠️ Ce qui reste est une BIBLIOTHÈQUE d'ÉCRITURE : `reporter_dans_ts()` sait
+# poser un champ dans `lib/scene-data.ts` en visant le bloc d'une scène ou d'un
+# point d'intérêt, sans toucher au reste du fichier. `cabler_landes.py` s'en
+# sert pour appliquer un manifeste de lot d'images — c'est le chemin par lequel
+# passent tous les câblages depuis le 28/07.
+#
+# Sont partis avec la page : le serveur, la carte, le rendu et l'export `--web`.

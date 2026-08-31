@@ -5,13 +5,14 @@
 # l'export du jeu et dépose la page + ses données sur gh-pages, à côté
 # du jeu :  https://patrickmorvan21.github.io/Pat/aldenhar/graphe.html
 #
-# ⚠️ Il ne touche QUE ces deux fichiers dans gh-pages. Le jeu, la
-# couverture, l'atelier et le Studio ne sont jamais réécrits ici — ils
-# partent par le déploiement manuel, qui a son propre rituel.
+# ⚠️ Il ne touche QUE ces deux fichiers dans gh-pages. Le jeu part par
+# le déploiement manuel, qui a son propre rituel.
 #
 # ⚠️ En revanche, ce déploiement manuel REMPLACE le dossier aldenhar/ :
-# il doit donc recopier graphe.html et graphe-data.json, comme il le
-# fait déjà pour couverture.html et atelier.html.
+# il doit donc recopier graphe.html et graphe-data.json. Ce sont les
+# DEUX SEULS fichiers à recopier depuis le 31/08 — la couverture et
+# l'atelier ont été supprimés (le Studio l'avait été le 30/08), et le
+# Graphe les remplace tous les trois.
 # =====================================================================
 name: Le graphe
 
