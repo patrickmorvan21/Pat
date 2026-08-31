@@ -151,8 +151,13 @@ input[type=range]::-moz-range-thumb{width:9px;height:9px;border:0;background:var
 .aa2 .vig.rien{display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--blanc-20)}
 /* La galerie : on choisit à l'ŒIL. Un champ qui ne liste que des NOMS oblige
    à connaître le fichier avant de voir l'image — l'inverse du besoin. */
-.g.res{opacity:.45;filter:saturate(.6)}
-.g.res:hover{opacity:1;filter:none}
+/* Les images SERVIES par un écran portent un point orange dans le coin. La
+   liste n'est plus coupée en deux (31/08) : la marque suffit à dire ce qui est
+   en jeu sans repousser la réserve en bas de page. Un point, pas un cadre :
+   un cadre entrerait en collision avec la sélection, qui est déjà un cadre. */
+.g.enjeu::after{content:"";position:absolute;top:4px;right:4px;width:6px;height:6px;
+  background:var(--orange)}
+.gal .g{position:relative}
 .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:4px;
   max-height:228px;overflow-y:auto;padding:4px;border:1px solid var(--blanc-20);background:#151310}
 /* Élargir le panneau ne sert à rien si les vignettes gardent leur taille :
@@ -330,8 +335,17 @@ let apercuLocal = null;     // {id, url} — l'image que tu viens de choisir sur
    d'échec on retombe sur les images des nœuds : la galerie est plus courte,
    mais elle marche, au lieu de rester vide sans explication. */
 let ASSETS = new Set();
+/* Date d'ENTRÉE de chaque image dans le projet, pour trier la galerie du plus
+   récent au plus ancien (demande Patrick 31/08). C'est `ajoute` du manifeste,
+   pas la date du fichier : le 31/08, 131 anciennes images ont été restaurées
+   de l'historique git, donc leur date de FICHIER est « aujourd'hui » alors
+   qu'elles datent de juillet. Trier là-dessus les aurait toutes remontées en
+   tête — l'inverse de ce qu'on veut. */
+let DATES = {};
 fetch("assets/manifest.json").then(r => r.ok ? r.json() : null).then(m => {
-  if (m && m.fichiers) Object.keys(m.fichiers).forEach(f => ASSETS.add(f));
+  if (m && m.fichiers) Object.keys(m.fichiers).forEach(f => {
+    ASSETS.add(f); DATES[f] = m.fichiers[f].ajoute || "";
+  });
   if (choisi) majImgAct(choisi);
 }).catch(() => {});
 function assetsConnus() {
@@ -930,24 +944,31 @@ function enJeu() {
 }
 
 function galerie(choisiNom) {
-  const tous = [...assetsConnus()].filter(n => /\.(png|jpe?g)$/i.test(n)).sort();
+  const jeu = enJeu();
+  /* UNE SEULE LISTE, DU PLUS RÉCENT AU PLUS ANCIEN (demande Patrick 31/08 :
+     « les images actuelles et aussi les anciennes ensemble »). La séparation
+     en deux blocs du 31/08 matin est annulée : chercher une ancienne image
+     obligeait à faire défiler tout ce qui est en jeu d'abord.
+     Ce qui est SERVI par un écran garde sa marque — un liseré orange et un
+     point sur la vignette — donc l'information reste, elle ne coupe plus la
+     liste en deux. Une image sans date git (déposée à l'instant, pas encore
+     commitée) passe en tête : elle est bien la plus récente. */
+  const tous = [...assetsConnus()].filter(n => /\.(png|jpe?g)$/i.test(n))
+    .sort((a, b) => {
+      const da = DATES[a] || "9", db = DATES[b] || "9";
+      return da === db ? a.localeCompare(b) : (da < db ? 1 : -1);
+    });
   const saisi = String(filtreGal || "").trim().replace(/^assets\//, "");
   const q = (saisi && assetsConnus().has(saisi)) ? "" : saisi.toLowerCase();
   const vus = q ? tous.filter(n => n.toLowerCase().includes(q)) : tous;
   if (!vus.length) return `<div class="galcpt">aucune image ne contient « ${esc(q)} »</div>`;
-  const jeu = enJeu();
-  const actifs  = vus.filter(n => jeu.has(n));
-  const reserve = vus.filter(n => !jeu.has(n));
-  const bloc = (liste, cls) => `<div class="gal">` + liste.map(n =>
-    `<div class="g${cls}${n===choisiNom?" actif":""}" data-pick="${esc(n)}" title="${esc(n)}"
-      style="background-image:url('${urlAsset(n)}')"></div>`).join("") + `</div>`;
-  let h = "";
-  if (actifs.length)
-    h += `<div class="galcpt">${actifs.length} en jeu${q?" (filtré)":""}</div>` + bloc(actifs, "");
-  if (reserve.length)
-    h += `<div class="galcpt">${reserve.length} en réserve — téléchargées, plus servies par aucun écran</div>`
-       + bloc(reserve, " res");
-  return h;
+  const ent = q ? `${vus.length} sur ${tous.length} contiennent « ${esc(q)} »`
+                : `${tous.length} images, de la plus récente à la plus ancienne`;
+  return `<div class="galcpt">${ent} — le point orange marque celles servies par un écran</div>`
+    + `<div class="gal">` + vus.map(n =>
+      `<div class="g${jeu.has(n) ? " enjeu" : ""}${n === choisiNom ? " actif" : ""}"
+        data-pick="${esc(n)}" title="${esc(n)}${DATES[n] ? " — " + DATES[n].slice(0, 10) : ""}"
+        style="background-image:url('${urlAsset(n)}')"></div>`).join("") + `</div>`;
 }
 
 function majImgAct(n) {
@@ -994,7 +1015,7 @@ function majImgAct(n) {
     z.innerHTML = `<div class="repbloc">
       <label>L'image à reprendre</label>
       <input type="text" id="galFiltre" spellcheck="false"
-        placeholder="filtre par nom — ex. meute" value="${esc(filtreGal)}">
+        placeholder="chercher un mot-clé — ex. meute, moulin, corde" value="${esc(filtreGal)}">
       ${galerie(pris)}
       <div class="aa2">
         <div><span>Aujourd'hui</span>${actuel
