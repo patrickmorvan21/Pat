@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-30T20:18:47Z",
- "commit": "dcf4079",
+ "genere": "2026-08-31T06:38:46Z",
+ "commit": "0c2a9b8",
  "zones": [
   {
    "id": "landes",
@@ -513,10 +513,10 @@
       "toScene": "hesitant-1"
      },
      "image": {
-      "fichier": "monstre_hesitant_b.png",
-      "hash": "79ff7f45",
-      "taille": 14688,
-      "recent": false,
+      "fichier": "monstre_hesitant_c_b.png",
+      "hash": "6b252b72",
+      "taille": 10881,
+      "recent": true,
       "existe": true,
       "statut": "heritee",
       "herite": "hesitant-1"
@@ -600,10 +600,10 @@
    "lieu": "borne_frontiere",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_hesitant_b.png",
-    "hash": "79ff7f45",
-    "taille": 14688,
-    "recent": false,
+    "fichier": "monstre_hesitant_c_b.png",
+    "hash": "6b252b72",
+    "taille": 10881,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -773,10 +773,10 @@
       "toScene": "marcheur-1"
      },
      "image": {
-      "fichier": "monstre_marcheur_rebours_v2_a.png",
-      "hash": "ba1a5091",
-      "taille": 20815,
-      "recent": false,
+      "fichier": "monstre_marcheur_rebours_v2_b_a.png",
+      "hash": "f5303d24",
+      "taille": 9333,
+      "recent": true,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -912,10 +912,10 @@
    "lieu": "chemin_creux",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_marcheur_1_b.png",
-    "hash": "a352d5cd",
-    "taille": 6372,
-    "recent": false,
+    "fichier": "monstre_marcheur_1_c_b.png",
+    "hash": "5f90d3b4",
+    "taille": 10569,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -1123,9 +1123,9 @@
    "lieu": "chemin_creux",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "monstre_bete_chemins_creux_b_a.png",
-    "hash": "91cd6381",
-    "taille": 5661,
+    "fichier": "monstre_bete_chemins_creux_a.png",
+    "hash": "4348084a",
+    "taille": 23757,
     "recent": true,
     "existe": true,
     "statut": "dediee",
@@ -1363,10 +1363,10 @@
    "lieu": "colline_aux_gibets",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "monstre_pendu_qui_parle_a.png",
-    "hash": "26043560",
-    "taille": 33787,
-    "recent": false,
+    "fichier": "monstre_pendu_qui_parle_b_a.png",
+    "hash": "201f52dd",
+    "taille": 16708,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -1465,10 +1465,10 @@
    "lieu": "colline_aux_gibets",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_pendu_qui_parle_2_a.png",
-    "hash": "2b1bc9da",
-    "taille": 9886,
-    "recent": false,
+    "fichier": "monstre_pendu_qui_parle_2_b_a.png",
+    "hash": "e7c46278",
+    "taille": 7419,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -1606,10 +1606,10 @@
     }
    },
    "image": {
-    "fichier": "monstre_fossoyeur_trou_1_c.png",
-    "hash": "66f02057",
-    "taille": 14405,
-    "recent": false,
+    "fichier": "monstre_fossoyeur_trou_1_d_a.png",
+    "hash": "4db851f1",
+    "taille": 20060,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -1709,10 +1709,10 @@
     "« Non. » Il n’a pas attendu que tu redemandes. « Y a des trous que je creuse et des trous que je creuse pas, et le mien est déjà commencé quelque part. Va-t’en. »"
    ],
    "image": {
-    "fichier": "monstre_fossoyeur_trou_3_a.png",
-    "hash": "acf3368c",
-    "taille": 17126,
-    "recent": false,
+    "fichier": "monstre_fossoyeur_trou_3_b_b.png",
+    "hash": "06eae8d5",
+    "taille": 15689,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -1924,10 +1924,10 @@
    "lieu": "champ_des_fixes",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "monstre_pendu_mal_fixe_v2_c.png",
-    "hash": "39952ee0",
-    "taille": 11667,
-    "recent": false,
+    "fichier": "monstre_pendu_mal_fixe_v2_d_b.png",
+    "hash": "375ebdc8",
+    "taille": 21234,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -2481,10 +2481,10 @@
    "pointsInteret": [],
    "suite": "gamin-murets-2",
    "image": {
-    "fichier": "monstre_gamin_murets_a.png",
-    "hash": "020cdcd3",
-    "taille": 28618,
-    "recent": false,
+    "fichier": "monstre_gamin_murets_b_b.png",
+    "hash": "de1e1c4d",
+    "taille": 9201,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -2640,10 +2640,10 @@
    ],
    "suite": "hameau-entree-3",
    "image": {
-    "fichier": "monstre_gamin_depart_c.png",
-    "hash": "d8680ae4",
-    "taille": 10514,
-    "recent": false,
+    "fichier": "monstre_gamin_depart_d_a.png",
+    "hash": "4301750b",
+    "taille": 9897,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -2773,10 +2773,10 @@
    "lieu": "seuil_du_hameau",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_hameau_entree_3_v2_a.png",
-    "hash": "84ac4512",
-    "taille": 25419,
-    "recent": false,
+    "fichier": "monstre_hameau_entree_3_v2_b_c.png",
+    "hash": "60946dc1",
+    "taille": 18597,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -2853,7 +2853,7 @@
     "fichier": "scene_hameau_accueil_volet_e_b.png",
     "hash": "d7e03fe9",
     "taille": 22160,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -3295,10 +3295,10 @@
    "lieu": "seuil_du_hameau",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "monstre_hameau_entree_4_c.png",
-    "hash": "5349dd7f",
-    "taille": 5063,
-    "recent": false,
+    "fichier": "monstre_hameau_entree_4_d_b.png",
+    "hash": "84e8808f",
+    "taille": 9392,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -3884,9 +3884,9 @@
    },
    "hameauHalte": true,
    "image": {
-    "fichier": "monstre_temoin_ruelle_v6_b.png",
-    "hash": "6e0b95d8",
-    "taille": 15619,
+    "fichier": "monstre_temoin_ruelle_v5_d.png",
+    "hash": "b3324887",
+    "taille": 119808,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -4030,9 +4030,9 @@
    "donneDecouverte": "d.bete_couloir",
    "combat": true,
    "image": {
-    "fichier": "monstre_bete_chemins_creux_b_a.png",
-    "hash": "91cd6381",
-    "taille": 5661,
+    "fichier": "monstre_bete_chemins_creux_a.png",
+    "hash": "4348084a",
+    "taille": 23757,
     "recent": true,
     "existe": true,
     "statut": "heritee",
@@ -4062,10 +4062,10 @@
      "donneDecouverte": "d.troupeau_compte",
      "troupeau": true,
      "image": {
-      "fichier": "monstre_troupeau_compte_b.png",
-      "hash": "9eb350eb",
-      "taille": 20556,
-      "recent": false,
+      "fichier": "monstre_troupeau_compte_c_b.png",
+      "hash": "d36901a9",
+      "taille": 16220,
+      "recent": true,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -4307,10 +4307,10 @@
    "lieu": "tour_de_guet_effondree",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_guetteur_tour_c.png",
-    "hash": "e43e23f5",
-    "taille": 6029,
-    "recent": false,
+    "fichier": "monstre_guetteur_tour_d_a.png",
+    "hash": "ff461529",
+    "taille": 11627,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -4732,7 +4732,7 @@
     "fichier": "monstre_fille_moulin_dos_v2_c_a.png",
     "hash": "3b83041b",
     "taille": 18064,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -4793,7 +4793,7 @@
     "fichier": "monstre_la_fille_moulin_v2_c_b.png",
     "hash": "63f8a6f2",
     "taille": 9100,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -4847,7 +4847,7 @@
     "fichier": "monstre_la_fille_moulin_v2_c_b.png",
     "hash": "63f8a6f2",
     "taille": 9100,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -4900,7 +4900,7 @@
     "fichier": "monstre_fille_moulin_ouvrage_e_b.png",
     "hash": "5a3ad301",
     "taille": 8755,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -4957,10 +4957,10 @@
     }
    },
    "image": {
-    "fichier": "monstre_veuve_cordes_v2_a.png",
-    "hash": "0dd638cf",
-    "taille": 19967,
-    "recent": false,
+    "fichier": "monstre_veuve_cordes_v2_b_d.png",
+    "hash": "bcc8f770",
+    "taille": 5800,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -5013,10 +5013,10 @@
    "suite": "veuve-cordes-sait-3",
    "donneDecouverte": "d.fixation_ratee",
    "image": {
-    "fichier": "monstre_veuve_cordes_v2_a.png",
-    "hash": "0dd638cf",
-    "taille": 19967,
-    "recent": false,
+    "fichier": "monstre_veuve_cordes_v2_b_d.png",
+    "hash": "bcc8f770",
+    "taille": 5800,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -5058,10 +5058,10 @@
    ],
    "pointsInteret": [],
    "image": {
-    "fichier": "monstre_veuve_cordes_v2_a.png",
-    "hash": "0dd638cf",
-    "taille": 19967,
-    "recent": false,
+    "fichier": "monstre_veuve_cordes_v2_b_d.png",
+    "hash": "bcc8f770",
+    "taille": 5800,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -5278,10 +5278,10 @@
    "lieu": "chapelle_des_cordes",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_veuve_cordes_v2_a.png",
-    "hash": "0dd638cf",
-    "taille": 19967,
-    "recent": false,
+    "fichier": "monstre_veuve_cordes_v2_b_d.png",
+    "hash": "bcc8f770",
+    "taille": 5800,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -5438,10 +5438,10 @@
    "lieu": "puits_condamne",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_mains_du_puits_a.png",
-    "hash": "e53cc406",
-    "taille": 21734,
-    "recent": false,
+    "fichier": "monstre_mains_du_puits_b_b.png",
+    "hash": "a07302f6",
+    "taille": 16329,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -5678,7 +5678,7 @@
     "fichier": "scene_maison_bailli_dedans_b.png",
     "hash": "f5e0f930",
     "taille": 17212,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7011,10 +7011,10 @@
    "lieu": "palissade_sud",
    "typeScene": "moment",
    "image": {
-    "fichier": "monstre_palissade_sud_2_c.png",
-    "hash": "e6c5355d",
-    "taille": 4463,
-    "recent": false,
+    "fichier": "monstre_palissade_sud_2_d_b.png",
+    "hash": "143bda4f",
+    "taille": 12886,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7262,7 +7262,7 @@
     "fichier": "scene_hameau_maison_muree_combles_v4_b.png",
     "hash": "881d7a46",
     "taille": 21848,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7516,7 +7516,7 @@
     "fichier": "scene_la_descente_a_a.png",
     "hash": "095542f3",
     "taille": 24986,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -7562,7 +7562,7 @@
    "fichier": "scene_hameau_dense_d_v2_a.png",
    "hash": "8f0e34c8",
    "taille": 29093,
-   "recent": false,
+   "recent": true,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -7573,7 +7573,7 @@
    "fichier": "scene_hameau_dense_e_v2_b.png",
    "hash": "48d1b693",
    "taille": 19884,
-   "recent": false,
+   "recent": true,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -8024,6 +8024,14 @@
    "racine": "fleche_retour"
   },
   {
+   "fichier": "monstre_bete_chemins_creux_b_a.png",
+   "hash": "91cd6381",
+   "taille": 5661,
+   "recent": true,
+   "groupe": "brancher",
+   "racine": "bete_chemins_creux"
+  },
+  {
    "fichier": "monstre_corde_vive_c.png",
    "hash": "29b70991",
    "taille": 26099,
@@ -8086,6 +8094,14 @@
    "recent": false,
    "groupe": "autre",
    "racine": "fixe_confident"
+  },
+  {
+   "fichier": "monstre_gamin_caillou_d_b.png",
+   "hash": "9a9553f3",
+   "taille": 8676,
+   "recent": true,
+   "groupe": "brancher",
+   "racine": "gamin_caillou"
   },
   {
    "fichier": "monstre_geryon.png",
@@ -8246,6 +8262,30 @@
    "recent": false,
    "groupe": "attend",
    "racine": "sonneur_sans_cloche"
+  },
+  {
+   "fichier": "monstre_temoin_proces_v2b_b.png",
+   "hash": "53b7c083",
+   "taille": 22140,
+   "recent": true,
+   "groupe": "autre",
+   "racine": "temoin_proces_v2b"
+  },
+  {
+   "fichier": "monstre_temoin_ruelle_v6_b.png",
+   "hash": "6e0b95d8",
+   "taille": 15619,
+   "recent": false,
+   "groupe": "doublon",
+   "racine": "temoin_ruelle"
+  },
+  {
+   "fichier": "monstre_temoin_ruelle_v6_c_b.png",
+   "hash": "1c6ecf0d",
+   "taille": 23564,
+   "recent": true,
+   "groupe": "doublon",
+   "racine": "temoin_ruelle"
   },
   {
    "fichier": "monstre_veilleur_a.png",
@@ -8499,7 +8539,7 @@
    "fichier": "scene_hameau_maison_muree_combles_v5_b.png",
    "hash": "c24d5c09",
    "taille": 18970,
-   "recent": false,
+   "recent": true,
    "groupe": "doublon",
    "racine": "hameau_maison_muree_combles"
   },
@@ -8507,7 +8547,7 @@
    "fichier": "scene_hameau_maison_muree_combles_v6_a.png",
    "hash": "0964899b",
    "taille": 24128,
-   "recent": false,
+   "recent": true,
    "groupe": "doublon",
    "racine": "hameau_maison_muree_combles"
   },
@@ -9934,10 +9974,10 @@
   "scenes": 102,
   "pointsInteret": 0,
   "choix": 294,
-  "illustrations": 293,
+  "illustrations": 298,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 92,
+  "reserve": 97,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

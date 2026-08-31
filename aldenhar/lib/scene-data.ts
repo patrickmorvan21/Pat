@@ -1188,7 +1188,7 @@ export const SCENES: Scene[] = [
         label: "Marcher vers l'homme immobile",
         // Le plan rapproché EST le personnage : c'est la même image que la
         // rencontre qui suit, donc l'approche et l'échange raccordent seuls.
-        illustration: "assets/monstre_hesitant_b.png",
+        illustration: "assets/monstre_hesitant_c_b.png",
         sortie: { toScene: "hesitant-1" },
         passive: {
           consequence:
@@ -1212,7 +1212,7 @@ export const SCENES: Scene[] = [
     /* L'HÉSITANT — Borne Frontière · rare. Le chaînon entre Renonçant et
        Appelé : il n'a pas encore choisi, et il te demande de choisir pour lui. */
     id: "hesitant-1",
-    illustration: "assets/monstre_hesitant_b.png",
+    illustration: "assets/monstre_hesitant_c_b.png",
     chainNext: "hesitant-2",
     narration: [
       "Il ne se retourne pas. Il t'a entendu, pourtant — ses épaules l'ont dit.",
@@ -1406,7 +1406,7 @@ export const SCENES: Scene[] = [
       {
         id: "marcheur-rebours",
         label: "Laisser venir l'homme à reculons",
-        illustration: "assets/monstre_marcheur_rebours_v2_a.png",
+        illustration: "assets/monstre_marcheur_rebours_v2_b_a.png",
         sortie: { toScene: "marcheur-1" },
         passive: {
           consequence:
@@ -1493,7 +1493,7 @@ export const SCENES: Scene[] = [
     /* LE MARCHEUR À REBOURS — Chemin Creux · rare. Trente ans qu'il ne montre
        son dos à rien. Sa récompense est un SAVOIR, pas un objet. */
     id: "marcheur-1",
-    illustration: "assets/monstre_marcheur_1_b.png",
+    illustration: "assets/monstre_marcheur_1_c_b.png",
     chainNext: "marcheur-2",
     // Sa première réplique DIT le versant : l'écouter vaut avoir lu les traces.
     savoir: "savoir_bete_crete_nord",
@@ -1603,7 +1603,7 @@ export const SCENES: Scene[] = [
     // Première rencontre volontairement précoce (3e scène) — anecdotique,
     // une seule scène (amende §6 : durée par poids narratif).
     id: "bete-chemins-creux",
-    illustration: "assets/monstre_bete_chemins_creux_b_a.png",
+    illustration: "assets/monstre_bete_chemins_creux_a.png",
     illustrationArrivee: "assets/scene_chemin_creux_d_a.png",
     combat: true,
     // L'embuscade enchaîne sur SON lieu : on descendait vers le Chemin Creux,
@@ -1964,7 +1964,7 @@ export const SCENES: Scene[] = [
     // Balafré → Rompu — la mémoire inter-runs viendra avec le système ; la
     // scène pose l'identité). Pas un combat : le Bailli pendu JUGE.
     id: "pendu-qui-parle",
-    illustration: "assets/monstre_pendu_qui_parle_a.png",
+    illustration: "assets/monstre_pendu_qui_parle_b_a.png",
     illustrationArrivee: "assets/scene_colline_aux_gibets_d_d.png",
     chainNext: "pendu-qui-parle-2",
     // Démo : prose courte + TOUCHE 1 du Grand Témoin (le corbeau de travers
@@ -2014,7 +2014,7 @@ export const SCENES: Scene[] = [
   {
     id: "pendu-qui-parle-2",
     sejour: true,
-    illustration: "assets/monstre_pendu_qui_parle_2_a.png",
+    illustration: "assets/monstre_pendu_qui_parle_2_b_a.png",
     foe: "bailli-pendu",
     narration: [
       "« Approche », dit-il, et la corde grince sur chaque syllabe. « Tout " +
@@ -2183,7 +2183,7 @@ export const SCENES: Scene[] = [
   {
     id: "fossoyeur-trou-1",
     remplace: { scene: "champ-des-fixes-2", si: { has: "d.emplacement_vide" } },
-    illustration: "assets/monstre_fossoyeur_trou_1_c.png",
+    illustration: "assets/monstre_fossoyeur_trou_1_d_a.png",
     chainNext: "fossoyeur-trou-2",
     narration: [
       "Il taille un écriteau sur ses genoux, au bout d\u2019une rangée. Le nom " +
@@ -2280,7 +2280,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "fossoyeur-trou-3",
-    illustration: "assets/monstre_fossoyeur_trou_3_a.png",
+    illustration: "assets/monstre_fossoyeur_trou_3_b_b.png",
     narration: [
       "Il pose l\u2019écriteau fini contre sa jambe, face contre terre, pour " +
         "qu\u2019on n\u2019en lise pas le nom.",
@@ -2436,7 +2436,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "pendu-mal-fixe",
-    illustration: "assets/monstre_pendu_mal_fixe_v2_c.png",
+    illustration: "assets/monstre_pendu_mal_fixe_v2_d_b.png",
     illustrationArrivee: "assets/scene_champ_des_fixes_c_a.png",
     combat: true,
     foe: "pendu-mal-fixe",
@@ -2945,7 +2945,7 @@ export const SCENES: Scene[] = [
      voit partir avec un des siens). Voir l'état ACCOMPAGNÉ dans lib/etats.ts. */
   {
     id: "gamin-murets-1",
-    illustration: "assets/monstre_gamin_murets_a.png",
+    illustration: "assets/monstre_gamin_murets_b_b.png",
     narration: [
       "Il aligne des cailloux par taille. Le premier habitant qui ne se " +
         "méfie pas. « T\u2019es le nouveau. T\u2019as combien de corbeaux ? »",
@@ -3108,7 +3108,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "gamin-murets-4",
-    illustration: "assets/monstre_gamin_depart_c.png",
+    illustration: "assets/monstre_gamin_depart_d_a.png",
     chainNext: "hameau-entree-3",
     narration: [
       "« Ma mère dit que j\u2019invente. Le rebouteux dit que j\u2019invente. Tout " +
@@ -3179,7 +3179,7 @@ export const SCENES: Scene[] = [
   {
     /* Beat 3 — Le barrage. Trois Renonçants : leur PEUR, jamais leur menace. */
     id: "hameau-entree-3",
-    illustration: "assets/monstre_hameau_entree_3_v2_a.png",
+    illustration: "assets/monstre_hameau_entree_3_v2_b_c.png",
     chainNext: "hameau-entree-4",
     narration: [
       "Ils sont trois au milieu de la rue. Pas armés — un bâton de marche, " +
@@ -3632,7 +3632,7 @@ export const SCENES: Scene[] = [
        un homme qui a fait ce discours cent fois. L'écran retombe à ses trois
        serments seuls, donc dans la règle des 3 décisions. */
     id: "hameau-entree-4",
-    illustration: "assets/monstre_hameau_entree_4_c.png",
+    illustration: "assets/monstre_hameau_entree_4_d_b.png",
     chainNext: "hameau-entree-5",
     narration: [
       // ⚠️ Ce beat s'ouvre APRÈS un accueil tiré au sort (6/08) : il ne peut
@@ -4153,7 +4153,7 @@ export const SCENES: Scene[] = [
   {
     id: "temoin-ruelle",
     remplace: { scene: "hameau-halte-dehors", si: { has: "d.temoin_entendu" } },
-    illustration: "assets/monstre_temoin_ruelle_v6_b.png",
+    illustration: "assets/monstre_temoin_ruelle_v5_d.png",
     hameauHalte: true,
     decouverte: "d.temoin_entrevu",
     narration: [
@@ -4288,7 +4288,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "menace-retour-bete",
-    illustration: "assets/monstre_bete_chemins_creux_b_a.png",
+    illustration: "assets/monstre_bete_chemins_creux_a.png",
     combat: true,
     foe: "bete-chemins-creux",
     foeName: "La Bête des Chemins Creux",
@@ -4372,7 +4372,7 @@ export const SCENES: Scene[] = [
       {
         id: "compter-troupeau",
         label: "Lire les marques d\u2019oreille",
-        illustration: "assets/monstre_troupeau_compte_b.png",
+        illustration: "assets/monstre_troupeau_compte_c_b.png",
         observe: true,
         troupeau: true,
         decouverte: "d.troupeau_compte",
@@ -4539,7 +4539,7 @@ export const SCENES: Scene[] = [
     // portail générique, en plein Hameau. Le portrait du Guetteur
     // (`monstre_guetteur_tour`) reste à produire — il est listé dans
     // data/images-a-produire.md.
-    illustration: "assets/monstre_guetteur_tour_c.png",
+    illustration: "assets/monstre_guetteur_tour_d_a.png",
     foe: "guetteur-tour",
     foeName: "le Guetteur sans tour",
     narration: [
@@ -5204,7 +5204,7 @@ export const SCENES: Scene[] = [
   {
     id: "veuve-cordes-sait-1",
     remplace: { scene: "chapelle-des-cordes-2", si: { has: "d.fille_apercue" } },
-    illustration: "assets/monstre_veuve_cordes_v2_a.png",
+    illustration: "assets/monstre_veuve_cordes_v2_b_d.png",
     chainNext: "veuve-cordes-sait-2",
     narration: [
       "Elle tresse sous le mur des cordes. Ses mains vont toutes seules — " +
@@ -5246,7 +5246,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "veuve-cordes-sait-2",
-    illustration: "assets/monstre_veuve_cordes_v2_a.png",
+    illustration: "assets/monstre_veuve_cordes_v2_b_d.png",
     chainNext: "veuve-cordes-sait-3",
     decouverte: "d.fixation_ratee",
     narration: [
@@ -5312,7 +5312,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "veuve-cordes-sait-3",
-    illustration: "assets/monstre_veuve_cordes_v2_a.png",
+    illustration: "assets/monstre_veuve_cordes_v2_b_d.png",
     narration: [
       "Elle reprend son ouvrage, et le mur reprend son bruit — ce " +
         "froissement continu de chanvre qu\u2019on croirait fait par le vent.",
@@ -5443,7 +5443,7 @@ export const SCENES: Scene[] = [
     /* Événement du lieu (script Notion) : la Veuve tresse sans te regarder. */
     id: "chapelle-des-cordes-2",
     sejour: true,
-    illustration: "assets/monstre_veuve_cordes_v2_a.png",
+    illustration: "assets/monstre_veuve_cordes_v2_b_d.png",
     narration: [
       "Elle était là depuis le début. Une femme en noir, assise à la chaise, " +
         "qui refait sans fin le même nœud sans lever les yeux sur toi.",
@@ -5685,7 +5685,7 @@ export const SCENES: Scene[] = [
   {
     id: "puits-condamne-2",
     sejour: true,
-    illustration: "assets/monstre_mains_du_puits_a.png",
+    illustration: "assets/monstre_mains_du_puits_b_b.png",
     narration: [
       "À ton approche, le rythme change. Plus vite, plus fort — plus " +
         "personne de poli. Le cadenas saute sur son anneau à chaque série, " +
@@ -7245,7 +7245,7 @@ export const SCENES: Scene[] = [
     // son `sejour` qui retient le héros au lieu de l'aspirer : questionner,
     // regarder, puis franchir. Seul « Franchir la Descente » s'en va.
     sejour: true,
-    illustration: "assets/monstre_palissade_sud_2_c.png",
+    illustration: "assets/monstre_palissade_sud_2_d_b.png",
     narration: [
       "Sur le chemin de ronde, un vieux soldat regarde vers le sud. Et en " +
         "contrebas, déjà loin de l'autre côté, un homme descend le chemin " +

@@ -203,7 +203,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Marcheur à rebours",
     corps:
       "Il parcourt le Chemin Creux à reculons, d'un pas sûr, le visage tourné vers ce qu'il laisse. Il compte ses pas par multiples de onze et sait où la Bête n'est pas — « c'est déjà la moitié d'une carte ». Personne ne l'a jamais vu faire demi-tour.",
-    illustration: "assets/monstre_marcheur_1_b.png",
+    illustration: "assets/monstre_marcheur_1_c_b.png",
   },
   {
     id: "renc:hesitant",
@@ -212,7 +212,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "L'Hésitant",
     corps:
       "Immobile près de la Borne, ni entrant ni sortant, depuis plus longtemps qu'il ne veut le dire. Il ne fixe pas le sud. Ce qu'il attend n'a pas de nom — et quand on essaie de le ramener, c'est lui qui sait le chemin.",
-    illustration: "assets/monstre_hesitant_b.png",
+    illustration: "assets/monstre_hesitant_c_b.png",
   },
   {
     id: "renc:femme-seuil",
@@ -230,7 +230,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Gamin des Murets",
     corps:
       "Il court les murets qui ne mènent nulle part, un caillou de rivière en poche — dans un pays sans rivière. Il connaît les raccourcis et compte les corbeaux mieux que personne. Il suit qui il a décidé de suivre, jusqu'où il l'a décidé.",
-    illustration: "assets/monstre_gamin_murets_a.png",
+    illustration: "assets/monstre_gamin_murets_b_b.png",
   },
   {
     id: "renc:epoux",
@@ -257,7 +257,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Guetteur sans tour",
     corps:
       "Sa tour s'est couchée, et lui est resté debout à côté, à guetter ce qu'elle guettait. Il retourne les pierres du pied comme si l'une d'elles allait rendre la vue d'en haut. Ce qu'il surveillait n'a pas cessé d'exister parce que la tour est tombée.",
-    illustration: "assets/monstre_guetteur_tour_c.png",
+    illustration: "assets/monstre_guetteur_tour_d_a.png",
   },
   {
     id: "renc:colporteur",
@@ -275,7 +275,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Rebouteux",
     corps:
       "Il soigne le soir, à l'écart des bâches, et recule d'un pas devant certaines fièvres. Ce qu'il ne peut pas refermer, il l'envoie à la Mare — « ça se soigne pas ici ». Ses mains savent avant lui ce qu'elles refusent de toucher.",
-    illustration: "assets/monstre_rebouteux_a.png",
+    illustration: "assets/monstre_rebouteux_b_b.png",
   },
   {
     id: "renc:fossoyeur",
@@ -293,7 +293,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "La Veuve des Cordes",
     corps:
       "C'est elle qui a tressé la première corde de la Chapelle, et elle refait depuis trente ans celle que quelqu'un défait. Elle connaît chaque nom par le poids de son chanvre. Elle ne demande jamais pourquoi on regarde le mur — elle sait lequel on cherche.",
-    illustration: "assets/monstre_veuve_cordes_v2_a.png",
+    illustration: "assets/monstre_veuve_cordes_v2_b_d.png",
   },
   {
     id: "renc:ecrivain",
@@ -311,7 +311,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Pendu qui parle",
     corps:
       "Le Bailli pend à la plus haute potence de la colline, à hauteur de regard, et il parle encore. Il a signé trois cents noms ; le trois cent unième était le sien, de sa propre main. Le village ne prononce plus son nom — mais il applique toujours sa loi.",
-    illustration: "assets/monstre_pendu_qui_parle_2_a.png",
+    illustration: "assets/monstre_pendu_qui_parle_2_b_a.png",
   },
   {
     id: "renc:chien",
@@ -329,7 +329,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "La Bête des Chemins Creux",
     corps:
       "Elle ne creuse pas ses couloirs : elle les choisit — et parfois elle les creuse sur ta route, dans la nuit. Elle travaille dans l'axe, jamais sur les bords, et ne suit que ce qui fuit. On ne la sème pas. On ne sème pas ce qui compte les pas.",
-    illustration: "assets/monstre_bete_chemins_creux_b_a.png",
+    illustration: "assets/monstre_bete_chemins_creux_a.png",
   },
   {
     id: "renc:meute",
@@ -347,7 +347,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Pendu Mal Fixé",
     corps:
       "Une Fixation bâclée : les signes de l'Ordonnance mal tracés, et ce qui devait tenir ne tient pas. Il erre autour du Champ avec sa corde, et il cherche quelqu'un pour finir le travail — dans un sens ou dans l'autre.",
-    illustration: "assets/monstre_pendu_mal_fixe_v2_c.png",
+    illustration: "assets/monstre_pendu_mal_fixe_v2_d_b.png",
   },
   {
     id: "renc:troupeau",
@@ -365,7 +365,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "La Petite Fixée",
     corps:
       "Ni morte, ni partie, pas grandie — sa Fixation a raté, et la reconnaître serait admettre que trois cents noms sont morts pour rien. Alors le village la voit, et refuse de la voir. Le hameau lui donne un nom d'écriteau plutôt que le sien. Elle a huit ans. Elle les a depuis quarante ans.",
-    illustration: "assets/monstre_la_fille_moulin_v2_a.png",
+    illustration: "assets/monstre_la_fille_moulin_v2_c_b.png",
   },
 
   // ─── ARCS ─────────────────────────────────────────────────────────────

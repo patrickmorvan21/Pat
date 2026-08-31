@@ -1,6 +1,6 @@
 {
   "_note": "Sujets d'image indexés par NOM DE FICHIER — l'unité que manipule le carnet de commande. Couvre les écrans portés par un choix et les vues de marche, que scene-meta.json (indexé par scène) ne peut pas atteindre. `cadre` : scene | pres | large | portrait | geste — la clause de style est ajoutée par tools/style_image.py, ne jamais la recopier ici.",
-  "monstre_la_fille_moulin_v2_a": [
+  "monstre_la_fille_moulin_v2_c_b": [
     "large",
     "a small child of about eight standing alone in the open doorway of a disused mill, seen from across the room at a distance, reduced to a black silhouette against the blazing doorway light behind her, an oversized shawl hanging to her ankles, perfectly still and unafraid, no facial features visible, nothing around her neck"
   ],
@@ -12,7 +12,7 @@
     "pres",
     "close on two small child hands on cold stone, setting a flat grey river pebble at the end of a neat row of pebbles, a rag and straw doll lying just outside the row, unhurried, head and body entirely out of frame"
   ],
-  "monstre_gamin_murets_a": [
+  "monstre_gamin_murets_b_b": [
     "portrait",
     "a small boy sitting on a low drystone wall, sorting pebbles by size into a row beside him, looking up at the viewer without any wariness at all"
   ],
@@ -20,23 +20,23 @@
     "geste",
     "a child's hand held out flat, offering a smooth grey river pebble, the palm dirty, head and face out of frame"
   ],
-  "monstre_gamin_depart_c": [
+  "monstre_gamin_depart_d_a": [
     "geste",
     "a small boy seen from behind climbing down off a low wall, gathering his pebbles into a fist as he goes, walking away along the wall line"
   ],
-  "monstre_fossoyeur_trou_1_c": [
+  "monstre_fossoyeur_trou_1_d_a": [
     "geste",
     "close on a gravedigger's hands carving a wooden grave marker across his knees, a name cut into it with no date yet, and beneath the name a small feather-shaped mark scratched absently, head out of frame"
   ],
-  "monstre_fossoyeur_trou_3_a": [
+  "monstre_fossoyeur_trou_3_b_b": [
     "geste",
     "a finished wooden grave marker propped face-down against a man's leg so its name cannot be read, a spade upright in the turned earth behind, head out of frame"
   ],
-  "monstre_marcheur_rebours_v2_a": [
+  "monstre_marcheur_rebours_v2_b_a": [
     "portrait",
     "a lean man walking backwards along a sunken track between high banks, facing the way he came, watching the path behind him, perfectly steady on his feet"
   ],
-  "monstre_rebouteux_a": [
+  "monstre_rebouteux_b_b": [
     "portrait",
     "a rural bonesetter standing at a market stall of splints, bindings and small clay pots, sleeves pushed up, hands held slightly away from his body as if reluctant to touch anything"
   ],
@@ -44,7 +44,7 @@
     "portrait",
     "a night watchman standing at the door of a narrow plank sentry box against a log palisade, a lit lantern hanging beside him, a tally register under his arm"
   ],
-  "monstre_temoin_ruelle_v6_b": [
+  "monstre_temoin_ruelle_v5_d": [
     "large",
     "a narrow village lane at night seen down its length, and at the far end a shape crossing the gap in complete silence, cloaked and unreadable, roughly the outline of a large bird but far too tall for one, no face, no limbs, nothing beneath the cloak, gone before the eye settles"
   ],
@@ -52,7 +52,7 @@
     "large",
     "a whole flock of sheep grazing dead heather in a shallow valley with no shepherd and no dog anywhere, several heads lifted toward the viewer, entirely unbothered"
   ],
-  "monstre_troupeau_compte_b": [
+  "monstre_troupeau_compte_c_b": [
     "pres",
     "extreme close on a sheep's ear, an old owner's notch cut into its edge and a second, fresher notch cut across the first"
   ],

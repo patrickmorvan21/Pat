@@ -350,7 +350,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_pendu_qui_parle_a.png",
+      "illustration": "assets/monstre_pendu_qui_parle_b_a.png",
       "portrait_requis": false
     },
     {
@@ -471,7 +471,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_rebouteux_a.png",
+      "illustration": "assets/monstre_rebouteux_b_b.png",
       "portrait_requis": false
     },
     {
@@ -576,7 +576,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_hesitant_b.png",
+      "illustration": "assets/monstre_hesitant_c_b.png",
       "portrait_requis": false
     },
     {
@@ -713,7 +713,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_mains_du_puits_a.png",
+      "illustration": "assets/monstre_mains_du_puits_b_b.png",
       "portrait_requis": false
     },
     {
@@ -728,7 +728,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_bete_chemins_creux_b_a.png",
+      "illustration": "assets/monstre_bete_chemins_creux_a.png",
       "portrait_requis": true
     },
     {
@@ -1152,7 +1152,7 @@
       ],
       "description": null,
       "prompt_image": "man standing alone facing south on open moor, back to the viewer, not turning round though he has heard the footsteps. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "monstre_hesitant_b.png"
+      "illustration": "monstre_hesitant_c_b.png"
     },
     {
       "id": "hesitant-1",
@@ -1169,7 +1169,7 @@
       ],
       "description": "Un homme immobile face au sud, dos au hameau, planté depuis si longtemps que l'herbe s'est couchée sous lui. La borne dressée à côté de lui.",
       "prompt_image": "man standing alone facing south on open moor, back to the viewer, not turning round though he has heard the footsteps. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "monstre_hesitant_b.png"
+      "illustration": "monstre_hesitant_c_b.png"
     },
     {
       "id": "hesitant-2",
@@ -1294,7 +1294,7 @@
       ],
       "description": "Le Marcheur à rebours avance en marche arrière dans le chemin creux, le regard fixé derrière lui : trente ans qu'il ne montre son dos à rien.",
       "prompt_image": "man walking backwards along a sunken lane with a sure step, heels finding the ground like eyes, body turned away from his direction of travel. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_marcheur_1_b.png"
+      "illustration": "monstre_marcheur_1_c_b.png"
     },
     {
       "id": "marcheur-2",
@@ -1342,7 +1342,7 @@
       ],
       "description": "Combat, une scène. La Bête des Chemins Creux, qui longe la crête nord au même pas que ce qui marche en bas. On ne la voit qu'en silhouette, au-dessus.",
       "prompt_image": "long low beast built to run between two earth walls, no visible jaw, only a forward mass of matted hide, half detached from the bank of a sunken lane. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "monstre_bete_chemins_creux_b_a.png"
+      "illustration": "monstre_bete_chemins_creux_a.png"
     },
     {
       "id": "colline-aux-gibets",
@@ -1446,7 +1446,7 @@
       ],
       "description": "Arrivée au gardien de zone : le Bailli pendu, qui parle encore. Vu de loin, une silhouette au bout d'une corde, sur un gibet isolé.",
       "prompt_image": "hanged magistrate on a low gallows at head height, chain of office at his neck under the rope, a seal ring on his fist, eyes open and alive. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "monstre_pendu_qui_parle_a.png"
+      "illustration": "monstre_pendu_qui_parle_b_a.png"
     },
     {
       "id": "pendu-qui-parle-2",
@@ -1460,7 +1460,7 @@
       ],
       "description": "Le gardien, à hauteur d'homme. Non-combat : il juge. Son visage de pendu qui parle, le sceau à sa ceinture.",
       "prompt_image": "a rope creaking taut on its beam, close on the knot and the chain of office beneath it, the head out of frame. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "monstre_pendu_qui_parle_2_a.png"
+      "illustration": "monstre_pendu_qui_parle_2_b_a.png"
     },
     {
       "id": "champ-des-fixes",
@@ -1548,7 +1548,7 @@
       ],
       "description": "Combat, une scène. Le Pendu Mal Fixé : un bras tendu figé en plein geste d'agrippement, la corde trop longue qui laisse les pieds toucher le sol.",
       "prompt_image": "hanged man standing upright on his own feet, his rope still knotted at his neck and trailing behind him, a snapped stake on the ground beside him. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_pendu_mal_fixe_v2_c.png"
+      "illustration": "monstre_pendu_mal_fixe_v2_d_b.png"
     },
     {
       "id": "serment-hameau",
@@ -1689,7 +1689,7 @@
       ],
       "description": "Trois hommes en travers de la rue, pas armés : un bâton de marche à la main, une fourche posée contre le mur, à portée sans être brandie.",
       "prompt_image": "three villagers standing across a lane, unarmed — a walking staff, a pitchfork leaning on a wall within reach — the eldest at the centre doing the talking. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_hameau_entree_3_v2_a.png"
+      "illustration": "monstre_hameau_entree_3_v2_b_c.png"
     },
     {
       "id": "hameau-accueil-volet",
@@ -1791,7 +1791,7 @@
       ],
       "description": "La paume ouverte et vide du vieux, tendue à hauteur de poitrine pour qu'on la regarde — on jure sur rien.",
       "prompt_image": "an old open palm held out flat and empty, offered to be looked at rather than shaken. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_hameau_entree_4_c.png"
+      "illustration": "monstre_hameau_entree_4_d_b.png"
     },
     {
       "id": "pourquoi-trois-aubes",
@@ -2010,7 +2010,7 @@
       ],
       "description": "Événement de la Tour : le Guetteur sans tour, assis de dos sur le tas de pierres, en manteau de guet, une corne au côté, il regarde le sud. CHANGE : c'est un portrait de l'homme, plus le plan large de la tour.",
       "prompt_image": "old watchman seen from behind, seated on a pile of stones, heavy worn sentry cloak, a signal horn hanging at his side, head turned to scan the horizon, never facing the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "monstre_guetteur_tour_c.png"
+      "illustration": "monstre_guetteur_tour_d_a.png"
     },
     {
       "id": "marche-muet",
@@ -2187,7 +2187,7 @@
       ],
       "description": "Événement de la Chapelle : la Veuve aux Cordes, assise, qui refait sans fin le même nœud. Derrière elle, sous verre, la corde coupée sans nom.",
       "prompt_image": "a woman's hands endlessly retying the same knot in her lap, black sleeves, the rope worn shiny at that one spot. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_veuve_cordes_v2_a.png"
+      "illustration": "monstre_veuve_cordes_v2_b_d.png"
     },
     {
       "id": "puits-condamne",
@@ -2218,7 +2218,7 @@
       ],
       "description": "Événement du Puits (scène chronométrée) : les Mains du Puits, qui sortent entre les planches.",
       "prompt_image": "hands forcing up from under the nailed planks of a sealed well, fingers through the gap, a padlock jumping on its ring. tight crop on the gesture only — hands, arms, or the back of the figure — the head out of frame, the face never visible, so nothing has to match another image, one single light source raking across the gesture, everything behind it falling away to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "monstre_mains_du_puits_a.png"
+      "illustration": "monstre_mains_du_puits_b_b.png"
     },
     {
       "id": "chien-du-bailli",
@@ -2684,7 +2684,7 @@
       ],
       "description": "Événement de la Palissade : l'Appelé, toujours vu de dos, qui marche vers la Descente sans se retourner.",
       "prompt_image": "man walking away down a road, seen from behind, no baggage, never turning round, an even unhurried step. pitch-black background, subject emerging from darkness, one single light source, this is the reference image of this character, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
-      "illustration": "monstre_palissade_sud_2_c.png"
+      "illustration": "monstre_palissade_sud_2_d_b.png"
     },
     {
       "id": "proces-du-heros",
