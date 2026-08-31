@@ -761,14 +761,22 @@ def lire_choix(bloc: str) -> list[dict]:
             v = constante_de(c, champ, CONSTANTES_CONNUES)
             if v:
                 ch[cle] = v
-        # 24/08 — MODE DÉMO : un mini-jeu tactile posé sur le choix (segments
-        # 1-3 du script de démo). Hors démo le champ est INERTE, et la réplique
-        # joue le jeu complet — rien à simuler côté pactum.py. Mais le Studio
-        # doit le MONTRER : sans cet export, la Borne et la Bête mentiraient
-        # sur ce qu'elles font en démo (règle des deux listes blanches).
+        # 24/08 — un mini-jeu tactile posé sur le choix (segments 1-3 du script
+        # de démo). Par défaut il ne se joue QU'EN DÉMO. ⚠️ 01/09 : `horsDemo`
+        # l'ouvre au jeu complet choix par choix — le geste REMPLACE alors le
+        # dé, donc la réplique doit le simuler (voir pactum.py) au lieu de
+        # lancer un jet qui n'existe plus. Sans cet export, la Borne et la Bête
+        # mentiraient sur ce qu'elles font (règle des deux listes blanches).
         mj = texte_de(c, "engine")
         if mj and "minigame:" in c:
             ch["miniJeuDemo"] = mj
+            if "horsDemo: true" in c:
+                ch["miniJeuHorsDemo"] = True
+            ech = texte_de(c, "echec")
+            if ech:
+                ch["miniJeuEchec"] = ech
+            if "echecBlesse: true" in c:
+                ch["miniJeuEchecBlesse"] = True
         # Le repos de la nuit démo (complet/partiel/mauvais) — segment 7.
         rp = texte_de(c, "repos")
         if rp:

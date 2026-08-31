@@ -347,7 +347,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Pendu Mal Fixé",
     corps:
       "Une Fixation bâclée : les signes de l'Ordonnance mal tracés, et ce qui devait tenir ne tient pas. Il erre autour du Champ avec sa corde, et il cherche quelqu'un pour finir le travail — dans un sens ou dans l'autre.",
-    illustration: "assets/monstre_pendu_mal_fixe_v2_d_b.png",
+    illustration: "assets/monstre_pendu_mal_fixe_v3_b.png",
   },
   {
     id: "renc:troupeau",

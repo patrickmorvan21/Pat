@@ -488,8 +488,16 @@ export type Choice = {
   minigame?: {
     /** rub = frotter · hold = retenir son souffle · trace = suivre un tracé ·
         pick = crochetage (curseur oscillant) · swipe = le geste lent de la
-        cérémonie (INSENSIBLE à l'échec : trop vite = rien, on recommence). */
-    engine: "rub" | "hold" | "trace" | "pick" | "swipe";
+        cérémonie (INSENSIBLE à l'échec : trop vite = rien, on recommence) ·
+        cut = trancher net d'un geste qui TRAVERSE la corde. */
+    engine: "rub" | "hold" | "trace" | "pick" | "swipe" | "cut";
+    /**
+     * ⚠️ Par défaut un geste ne se joue QU'EN DÉMO (le champ est inerte dans
+     * le jeu complet, qui résout le choix par sa voie écrite). `horsDemo`
+     * l'ouvre à la partie normale, choix par choix — jamais en bloc : c'est
+     * ce qui permet d'en essayer un sans faire du jeu entier un jeu d'adresse.
+     */
+    horsDemo?: boolean;
     /** Inscription révélée (rub) — courte, en capitales. */
     label?: string;
     echec?: string;
@@ -2050,6 +2058,34 @@ export const SCENES: Scene[] = [
         nature: "physique",
         label: "Trancher sa corde",
         soupcon: 1, // toucher à une Fixation, sous les yeux de la colline
+        /**
+         * LE GESTE DE TRANCHER (31/08) — premier mini-jeu du JEU COMPLET.
+         *
+         * Il ne crée aucune scène : le geste était déjà écrit ici depuis le
+         * 20/07 (« Ta lame tranche net », « Ta lame entame la corde — qui se
+         * resserre »), et le moteur demande exactement ça — un trait unique,
+         * rapide et droit, où hésiter aggrave. C'est la seule raison de le
+         * poser ici plutôt qu'ailleurs : la fiction existait avant l'outil.
+         *
+         * ⚠️ Ce n'est PAS une amputation. Le membre tranché exigerait un état
+         * de corps persistant, et l'élagage de la Phase A a retiré les cinq
+         * états génériques (BOITEUX n'a plus aucune source depuis le 11/08).
+         * On coupe une corde : le prix d'un raté tient dans ce qui existe.
+         *
+         * Le geste REMPLACE le dé (même grammaire que le Tracé de la
+         * Chapelle) : réussir sert l'issue écrite de réussite, rater sert
+         * celle d'échec. Les deux naturels deviennent inatteignables ici —
+         * c'est le prix assumé de rendre la main au doigt.
+         */
+        minigame: {
+          engine: "cut",
+          horsDemo: true,
+          echec:
+            "Ta lame entame la corde — qui se resserre, vivante, et te fouette " +
+            "le visage. Le Bailli rit à s'étrangler, ce qui ne lui coûte rien : " +
+            "« On ne défait pas une Fixation, petit juge. On la subit. »",
+          echecBlesse: true,
+        },
         risky: {
           stat: "COURAGE",
           threshold: 14,
@@ -2437,7 +2473,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "pendu-mal-fixe",
-    illustration: "assets/monstre_pendu_mal_fixe_v2_d_b.png",
+    illustration: "assets/monstre_pendu_mal_fixe_v3_b.png",
     illustrationArrivee: "assets/scene_champ_des_fixes_c.png",
     combat: true,
     foe: "pendu-mal-fixe",
@@ -9111,7 +9147,7 @@ export function phraseArrivee(seed: number, vues: string[] = []): string {
 export const LANDES_GENERIC = [
   "assets/scene_lande_generique_1_b_d.png",
   "assets/scene_lande_generique_2_b_b.png",
-  "assets/scene_lande_generique_3_b_e.png",
+  "assets/scene_lande_generique_3_b_f_a.png",
   "assets/scene_lande_generique_4_b_f.png",
 ];
 
@@ -9119,8 +9155,8 @@ export const LANDES_GENERIC = [
     des images faites pour la liaison, pas pour un lieu. Elles s'ajoutent aux
     4 génériques dans le tirage par défaut. */
 const LANDES_WALK = [
-  "assets/scene_landes_liaison_plateau_e_a.png",
-  "assets/scene_landes_liaison_fourche_b_d.png",
+  "assets/scene_landes_liaison_plateau_e_b_a.png",
+  "assets/scene_landes_liaison_fourche_b_e_a.png",
   "assets/scene_lande_arbres_morts_d_d.png",
   ...LANDES_GENERIC,
 ];

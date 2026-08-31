@@ -96,6 +96,7 @@ import HoldSteady from "@/components/minigames/engines/HoldSteady";
 import GlyphTrace from "@/components/minigames/engines/GlyphTrace";
 import TimingTap from "@/components/minigames/engines/TimingTap";
 import SlowSwipe from "@/components/minigames/engines/SlowSwipe";
+import StraightSwipe from "@/components/minigames/engines/StraightSwipe";
 import { forcerPiste, playMusic } from "@/lib/audio";
 import { loadSettings } from "@/lib/settings";
 import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomSoinMineur, recompenseDestinQuiTient, usageEnMots, LANDES_OBJETS, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
@@ -4024,7 +4025,7 @@ export default function Scene() {
        voie écrite (le jeu répond, il ne fait pas répéter). */
     if (
       choice.minigame &&
-      demoActive() &&
+      (demoActive() || choice.minigame.horsDemo) &&
       !minigamesJoues.current.includes(choice.id) &&
       !gesteDejaVecu(choice.minigame.rejouable === false ? choice.id : null)
     ) {
@@ -4061,6 +4062,18 @@ export default function Scene() {
           windowWidth: ruse >= 4 ? 0.26 : ruse >= 3 ? 0.21 : 0.17,
           maxAttempts: 3,
           goupilles: 3,
+        });
+      } else if (eng === "cut") {
+        // Trancher net : le COURAGE élargit la tolérance de courbure. C'est
+        // la main qui ne tremble pas, pas la lame qui coupe mieux.
+        const cou = statDe(runRef.current?.stats, "COURAGE");
+        setMinigameConfig({
+          minLength: 90,
+          maxDurationMs: 500,
+          // Plus large que l'amputation de la galerie : traverser une corde
+          // au doigt dévie plus qu'un trait libre sur toute la largeur.
+          maxDeviation: cou >= 4 ? 34 : cou >= 3 ? 22 : 14,
+          skin: "corde",
         });
       } else if (eng === "swipe") {
         // La cérémonie : cinq paliers, vers le BAS, lentement. Trop vite ne
@@ -5458,6 +5471,19 @@ export default function Scene() {
                       windowWidth: number;
                       speed?: number;
                       maxAttempts?: number;
+                    }
+                  }
+                  onResult={finirMinigame}
+                />
+              ) : minigameChoice.minigame.engine === "cut" ? (
+                <StraightSwipe
+                  seed={`${scene.id}-${minigameRetry}`}
+                  config={
+                    (minigameConfig ?? {
+                      minLength: 90, maxDurationMs: 500, maxDeviation: 22, skin: "corde",
+                    }) as {
+                      minLength: number; maxDurationMs: number; maxDeviation: number;
+                      skin?: "corde";
                     }
                   }
                   onResult={finirMinigame}

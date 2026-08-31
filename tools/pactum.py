@@ -993,7 +993,43 @@ class Partie:
             out.append("bailli")
         return out[:3]
 
+    def resoudre_geste(self, c: dict) -> None:
+        """Miroir de `finirMinigame` (Scene.tsx) pour un geste `horsDemo`.
+
+        Aucun dé n'est tiré : le geste décide. La réussite sert l'issue écrite
+        de RÉUSSITE (le jeu la rejoue en conséquence passive) ; l'échec sert le
+        texte d'échec dédié, et `echecBlesse` fait payer le corps exactement
+        comme en jeu (−0,12 planché à 0,08, ENTAILLÉ persistant).
+        """
+        stat = (c.get("stat") or "COURAGE").lower()
+        val = (self.d.get("stats") or {}).get(stat, 3)
+        # Le taux suit la stat comme la tolérance de courbure en jeu : une main
+        # sûre tranche net. Bornes lâches — ce n'est pas un jet déguisé.
+        taux = min(0.85, max(0.40, 0.45 + 0.12 * (val - 2)))
+        ok = self.rng(c["id"] + "|geste").random() < taux
+        self.dit("geste " + ("net" if ok else "manqué"), "de")
+        if ok:
+            texte = (c.get("issues") or {}).get("reussite") or ""
+            texte = texte.split(" ♦")[0].strip()
+            self.dit(texte, "narration")
+        else:
+            self.dit(c.get("miniJeuEchec") or "Le geste manque.", "narration")
+            if c.get("miniJeuEchecBlesse"):
+                self.d["sante"] = max(0.08, round(self.d["sante"] - 0.12, 3))
+                self.d["etats"]["entaille"] = 999
+        # Tenter au doigt reste TENTER : le lieu compte comme engagé.
+        self.d["engageIci"] = True
+
     def resoudre(self, c: dict) -> None:
+        # ⚠️ 01/09 — LE GESTE REMPLACE LE DÉ (`horsDemo`). Sur ces choix-là le
+        # jeu ne lance rien : le doigt tranche ou rate. Lancer un dé ici ferait
+        # juger au relecteur une mécanique qui n'existe plus (le biais mesuré
+        # six fois depuis le 9/08). On simule donc le geste — pas de suspense
+        # jouable en texte, mais le MODÈLE est fidèle : réussite = l'issue
+        # écrite de réussite, échec = le texte d'échec dédié + son prix.
+        # Le taux suit la stat, comme la tolérance de courbure en jeu.
+        if c.get("miniJeuHorsDemo"):
+            return self.resoudre_geste(c)
         seuil = int(c.get("seuil") or 11)
         sc = self.k["scenes"].get(self.d.get("scene") or "", {})
         if sc.get("procesFixation"):
