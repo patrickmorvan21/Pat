@@ -3632,7 +3632,7 @@ export const SCENES: Scene[] = [
        un homme qui a fait ce discours cent fois. L'écran retombe à ses trois
        serments seuls, donc dans la règle des 3 décisions. */
     id: "hameau-entree-4",
-    illustration: "assets/monstre_hameau_entree_4_d_b.png",
+    illustration: "assets/scene_hameau_trois_aubes_v2_c.png",
     chainNext: "hameau-entree-5",
     narration: [
       // ⚠️ Ce beat s'ouvre APRÈS un accueil tiré au sort (6/08) : il ne peut

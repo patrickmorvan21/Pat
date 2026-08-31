@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-08-31T07:17:50Z",
- "commit": "56fa9d1",
+ "genere": "2026-08-31T07:37:30Z",
+ "commit": "6768b75",
  "zones": [
   {
    "id": "landes",
@@ -1177,7 +1177,7 @@
       "fichier": "monstre_corbeaux_du_compte_d.png",
       "hash": "688228de",
       "taille": 27822,
-      "recent": false,
+      "recent": true,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -3295,10 +3295,10 @@
    "lieu": "seuil_du_hameau",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "monstre_hameau_entree_4_d_b.png",
-    "hash": "84e8808f",
-    "taille": 9392,
-    "recent": true,
+    "fichier": "scene_hameau_trois_aubes_v2_c.png",
+    "hash": "d313c2f7",
+    "taille": 28783,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8136,6 +8136,14 @@
    "racine": "hameau_entree_3"
   },
   {
+   "fichier": "monstre_hameau_entree_4_d_b.png",
+   "hash": "84e8808f",
+   "taille": 9392,
+   "recent": true,
+   "groupe": "autre",
+   "racine": "hameau_entree_4"
+  },
+  {
    "fichier": "monstre_hameau_halte_4_b.png",
    "hash": "0d3c0338",
    "taille": 3813,
@@ -8550,14 +8558,6 @@
    "recent": true,
    "groupe": "doublon",
    "racine": "hameau_maison_muree_combles"
-  },
-  {
-   "fichier": "scene_hameau_trois_aubes_v2_c.png",
-   "hash": "d313c2f7",
-   "taille": 28783,
-   "recent": false,
-   "groupe": "autre",
-   "racine": "hameau_trois_aubes"
   },
   {
    "fichier": "scene_landes_hameau_croix_craie_a.png",
