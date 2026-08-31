@@ -1068,13 +1068,16 @@ function brancherImgAct(n) {
     majImgAct(n);
   };
   if (q("rNote")) q("rNote").oninput = () => {};   // lu à l'enregistrement
-  if (q("bNoterRempl")) q("bNoterRempl").onclick = () => {
+  if (q("bNoterRempl")) q("bNoterRempl").onclick = action(() => {
     const note = (q("rNote") || {}).value || "";
-    remplacer[n.id] = { nom: n.nom, actuel: n.image.f,
+    // ⚠️ `n.image` est NUL sur tout écran sans image propre — c'est le cas de
+    // presque toutes les transitions, et ce sont justement celles à qui on
+    // vient DONNER une image. Le rapport sait déjà dire « aucune aujourd'hui ».
+    remplacer[n.id] = { nom: n.nom, actuel: (n.image && n.image.f) || "",
       fichier: apercuLocal && apercuLocal.id === n.id ? apercuLocal.nom : "", note: note.trim() };
     localStorage.setItem(CLE_REMPL, JSON.stringify(remplacer));
     panneauOuvert = null; rouvrir(); toast("remplacement noté");
-  };
+  });
   // Choisir à l'ŒIL : la vignette écrit le nom, la comparaison se met à jour.
   document.querySelectorAll("#fimgact [data-pick]").forEach(g => g.onclick = () => {
     filtreGal = g.dataset.pick; majImgAct(n);
@@ -1085,12 +1088,23 @@ function brancherImgAct(n) {
       const i = document.getElementById("galFiltre");
       if (i) { i.focus(); i.setSelectionRange(i.value.length, i.value.length); } };
   }
-  if (q("bNoterRepr")) q("bNoterRepr").onclick = () => {
+  if (q("bNoterRepr")) q("bNoterRepr").onclick = action(() => {
     const pris = String(filtreGal || "").trim();
     if (!assetsConnus().has(pris)) return toast("choisis une image dans la galerie");
-    reprendre[n.id] = { nom: n.nom, actuel: n.image.f, reprend: pris };
+    reprendre[n.id] = { nom: n.nom, actuel: (n.image && n.image.f) || "", reprend: pris };
     localStorage.setItem(CLE_REPR, JSON.stringify(reprendre));
     panneauOuvert = null; rouvrir(); toast("reprise notée");
+  });
+}
+
+/* ⚠️ Un gestionnaire de clic qui LÈVE meurt en silence : le bouton paraît
+   inerte, et rien à l'écran ne dit pourquoi (c'est ce qui a caché le
+   `n.image.f` non gardé ci-dessous pendant tout un déploiement). Toute action
+   du panneau passe donc par ici : une panne se voit. */
+function action(fn) {
+  return (...a) => {
+    try { return fn(...a); }
+    catch (e) { console.error(e); toast("échec : " + (e && e.message ? e.message : e)); }
   };
 }
 
@@ -1112,7 +1126,7 @@ document.getElementById("bCopie").onclick = () => {
   copier(document.getElementById("fprompt").textContent);
   toast("prompt copié");
 };
-document.getElementById("bRefaire").onclick = () => {
+document.getElementById("bRefaire").onclick = action(() => {
   if (!choisi) return;
   if (panier[choisi.id]) delete panier[choisi.id];
   else {
@@ -1122,7 +1136,7 @@ document.getElementById("bRefaire").onclick = () => {
   }
   localStorage.setItem(CLE_PANIER, JSON.stringify(panier));
   majNote(choisi); majPanier();
-};
+});
 
 function majPanier() {
   const n = Object.keys(panier).length + Object.keys(remplacer).length + Object.keys(reprendre).length;
