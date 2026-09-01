@@ -1,6 +1,6 @@
 {
- "genere": "2026-09-01T10:36:49Z",
- "commit": "87729e8",
+ "genere": "2026-09-01T17:55:46Z",
+ "commit": "0c64298",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -1963,6 +1963,20 @@
    "recent": false,
    "ajoute": "2026-08-30T21:11:20+02:00"
   },
+  "scene_chemin_du_sud_a_b.png": {
+   "taille": 28773,
+   "modifie": "2026-09-01T17:37:26Z",
+   "hash": "e49d458f",
+   "recent": true,
+   "ajoute": "2026-09-01T17:51:42+00:00"
+  },
+  "scene_chemin_sud_manteau_a_d.png": {
+   "taille": 27290,
+   "modifie": "2026-09-01T17:37:26Z",
+   "hash": "cba77ca1",
+   "recent": true,
+   "ajoute": "2026-09-01T17:51:42+00:00"
+  },
   "scene_chemin_talus_a_c.png": {
    "taille": 9840,
    "modifie": "2026-08-31T18:55:06Z",
@@ -2278,6 +2292,13 @@
    "recent": false,
    "ajoute": "2026-08-07T09:59:29+00:00"
   },
+  "scene_hameau_maison_aube_a_c.png": {
+   "taille": 13735,
+   "modifie": "2026-09-01T17:37:26Z",
+   "hash": "2a167f88",
+   "recent": true,
+   "ajoute": "2026-09-01T17:51:42+00:00"
+  },
   "scene_hameau_maison_muree_combles_v4_b.png": {
    "taille": 21848,
    "modifie": "2026-08-30T20:10:17Z",
@@ -2298,6 +2319,20 @@
    "hash": "0964899b",
    "recent": false,
    "ajoute": "2026-08-30T20:26:19+00:00"
+  },
+  "scene_hameau_maison_sans_fumee_a_b.png": {
+   "taille": 106344,
+   "modifie": "2026-09-01T17:37:32Z",
+   "hash": "0342d83e",
+   "recent": true,
+   "ajoute": "2026-09-01T17:51:42+00:00"
+  },
+  "scene_hameau_maison_table_a_a.png": {
+   "taille": 26457,
+   "modifie": "2026-09-01T17:37:26Z",
+   "hash": "42969ed5",
+   "recent": true,
+   "ajoute": "2026-09-01T17:51:42+00:00"
   },
   "scene_hameau_nuit_dehors_v2_c.png": {
    "taille": 19147,
