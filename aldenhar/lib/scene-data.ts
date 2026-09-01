@@ -1147,6 +1147,7 @@ const CHOIX_CHEMIN_DU_SUD: Choice[] = [
   {
     id: "manteau-plie",
     label: "Ouvrir le manteau plié",
+    illustration: "assets/scene_chemin_sud_manteau_a_d.png",
     // « Explorer prépare » (10/08) : ce qu'on regarde ici ouvre l'Anneau du
     // jet suivant — celui du Veilleur, deux écrans plus loin.
     observe: true,
@@ -4359,10 +4360,7 @@ export const SCENES: Scene[] = [
   {
     id: "hameau-maison-1",
     sejour: true,
-    // ⚠️ VISUEL PROVISOIRE : `scene_hameau_maison_sans_fumee_a` est à produire
-    // (la façade, la cheminée froide, la croix de craie frottée aux trois
-    // quarts). En attendant, la ruelle du village.
-    illustration: "assets/scene_landes_hameau_ruelle_c_b.png",
+    illustration: "assets/scene_hameau_maison_sans_fumee_a_b.png",
     narration: [
       "La porte est basse, le bois gris. Sur le montant, une croix de craie " +
         "qu'on a frottée aux trois quarts : quelqu'un a commencé à l'effacer " +
@@ -4434,7 +4432,7 @@ export const SCENES: Scene[] = [
     id: "hameau-maison-2",
     nuit: true,
     chainNext: "hameau-maison-3",
-    illustration: "assets/scene_hameau_maison_muree_combles_v6_a.png",
+    illustration: "assets/scene_hameau_maison_table_a_a.png",
     narration: [
       "La table est mise pour deux et n'a jamais été desservie. La poussière " +
         "est régulière sur tout — sur les écuelles, sur le pain devenu " +
@@ -4503,7 +4501,7 @@ export const SCENES: Scene[] = [
        qui en fait une vraie récompense : elle ouvre au Petit Tribunal une
        question que personne d'autre ne peut poser, et une fiche du Codex. */
     decouverte: "d.rouel_ouvert",
-    illustration: "assets/scene_hameau_halte_5_v2_c.png",
+    illustration: "assets/scene_hameau_maison_aube_a_c.png",
     narration: [
       // LE COMPTE SOUS LA TABLE (arbitrage Patrick, 01/09). C'est le paiement
       // de la nuit — pas d'une action précise : on ne le voit qu'en se
@@ -7355,12 +7353,7 @@ export const SCENES: Scene[] = [
   {
     id: "chemin-du-sud",
     sejour: true,
-    // ⚠️ VISUEL PROVISOIRE : `scene_chemin_du_sud_a` est à produire (le chemin
-    // et les affaires posées, PAS encore le bord). En attendant, la vue du
-    // sud — libre : la branche de `pickWalkImage` qui la servait comme vue de
-    // marche est morte depuis que la Palissade est hors du pool (elle ne peut
-    // plus être « offerte » à une Croisée).
-    illustration: "assets/scene_landes_liaison_sud_d_h.png",
+    illustration: "assets/scene_chemin_du_sud_a_b.png",
     narration: [
       "Le plateau cesse d'être un pays. Plus de murets, plus de poteaux, " +
         "plus rien qui dise qu'on a vécu ici. Le vent vient du sud, " +
@@ -7381,7 +7374,7 @@ export const SCENES: Scene[] = [
     id: "chemin-du-sud-revenu",
     remplace: { scene: "chemin-du-sud", si: { id: SCEAU_LANDES, gte: 1 } },
     sejour: true,
-    illustration: "assets/scene_landes_liaison_sud_d_h.png",
+    illustration: "assets/scene_chemin_du_sud_a_b.png",
     narration: [
       "Le plateau cesse d'être un pays, une seconde fois. Les choses posées " +
         "le long du chemin n'ont pas bougé — sauf qu'il y en a une de plus, " +

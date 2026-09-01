@@ -1471,3 +1471,31 @@ Patrick avait jugé « bof » ma première proposition (une question au Petit Tr
 - `APP_VERSION` 1.119.0 → **1.120.0**, `CACHE_VERSION` v186 → **pactum-v187**.
 
 ⚠️ **Toujours dû** : le chemin d'ÉCHEC du Crochetage n'est pas vérifié en jeu (le raccourci `?testeur=1` résout un geste en trois taps, donc il mesure la trappe de secours, pas la dextérité). À rejouer à la main au prochain playtest. Et les **six images** de `data/images-a-produire-2026-09-01.md` restent à produire : les six écrans tournent sur des visuels d'emprunt.
+
+#### Le lot Drive du 01/09 : les cinq images validées, câblées (v1.121.0)
+Patrick a trié le lot de 30 fichiers Leonardo (5 variantes × 6 noms) déposé le 01/09 sur le Drive
+(`01_En attente_Environnement` / `03_Validé_Environnement`) : cinq images validées sur six.
+- **5/6 câblées** : `scene_chemin_du_sud_a_b` (le lieu), `scene_chemin_sud_manteau_a_d` (élément
+  observé « Ouvrir le manteau plié »), `scene_hameau_maison_sans_fumee_a_b` (`hameau-maison-1`, la
+  porte), `scene_hameau_maison_table_a_a` (`hameau-maison-2`, l'intérieur), `scene_hameau_maison_aube_a_c`
+  (`hameau-maison-3`, le vieux à l'aube). Les 5 fichiers **VALIDÉS** identifiés en croisant le
+  `parentId` Drive (`03_Validé_Environnement` vs `01_En attente_Environnement`), pas par supposition.
+  **`scene_chemin_sud_borne_a` (« Lire la dernière borne ») n'a AUCUNE variante validée** — ses 5
+  candidats sont encore dans `01_En attente` ; le point d'intérêt reste sans image dédiée.
+- **Technique de transfert inchangée, un détail à retenir** : 4 des 5 fichiers sont arrivés en
+  ligne dans le résultat de l'outil ; le 5ᵉ (106 Ko) a dépassé la limite et le harnais l'a déchargé
+  dans un fichier de tool-results — extrait directement en Python depuis ce JSON, zéro coût de
+  contexte, sans repasser par le `.jsonl` de session.
+- **Les cinq PNG regardés avant câblage** (règle du moulin ailé) : le chemin qui s'arrête sur les
+  affaires posées, le manteau plié en gros plan, la ruelle nocturne fermée, l'intérieur de la
+  grange à la table dressée, la silhouette assise dans l'embrasure au petit jour — tous cohérents
+  avec leur texte. 1000×1000, exactement 2 couleurs (`#1c1a16`/`#e0632a`) chacun.
+- Retirés les commentaires « VISUEL PROVISOIRE » qui accompagnaient les placeholders sur les trois
+  scènes du Hameau et sur `chemin-du-sud` — ils décrivaient une attente désormais close.
+  `chemin-du-sud-revenu` (la variante du Sceau) reprend la même image que l'écran d'origine.
+- Vérifié en jeu (Playwright, écrans réellement rendus, pagination gérée) : les 5 écrans servent
+  chacun son fichier, le bandeau « Dormir jusqu'à l'aube » enchaîne bien sur l'image de l'aube,
+  l'élément observé du manteau bascule pendant sa conséquence. 0 erreur JS. Huit gardes verts,
+  lint et typecheck propres.
+- **Reste ouvert** : `scene_chemin_sud_borne_a` (aucune variante validée par Patrick pour l'instant).
+- `APP_VERSION` 1.120.0 → **1.121.0**, `CACHE_VERSION` v187 → **pactum-v188**.

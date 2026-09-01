@@ -51,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-09-01T10:36:49Z",
- "commit": "87729e8",
+ "genere": "2026-09-01T17:41:00Z",
+ "commit": "1b1354f",
  "zones": [
   {
    "id": "landes",
@@ -3882,9 +3882,9 @@
    "pointsInteret": [],
    "sejour": true,
    "image": {
-    "fichier": "scene_landes_hameau_ruelle_c_b.png",
-    "hash": "818ce9ba",
-    "taille": 24488,
+    "fichier": "scene_hameau_maison_sans_fumee_a_b.png",
+    "hash": "0342d83e",
+    "taille": 106344,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -3942,9 +3942,9 @@
    "donneDecouverte": "d.combles_cloues",
    "nuit": true,
    "image": {
-    "fichier": "scene_hameau_maison_muree_combles_v6_a.png",
-    "hash": "0964899b",
-    "taille": 24128,
+    "fichier": "scene_hameau_maison_table_a_a.png",
+    "hash": "42969ed5",
+    "taille": 26457,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -3986,13 +3986,13 @@
    "suite": "hameau-halte-5",
    "donneDecouverte": "d.rouel_ouvert",
    "image": {
-    "fichier": "scene_hameau_halte_5_v2_c.png",
-    "hash": "6c540a40",
-    "taille": 21413,
+    "fichier": "scene_hameau_maison_aube_a_c.png",
+    "hash": "2a167f88",
+    "taille": 13735,
     "recent": false,
     "existe": true,
-    "statut": "heritee",
-    "herite": "hameau-halte-5"
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -6821,7 +6821,14 @@
      "id": "manteau-plie",
      "label": "Ouvrir le manteau plié",
      "type": "passif",
-     "consequence": "Plié en quatre, coutures alignées, comme on range une chose qu'on compte reprendre. Les poches sont vides — vidées, puis retournées à l'endroit. Celui qui l'a posé là avait le temps : personne ne le poursuivait. Il a rangé ses affaires, et il est parti sans."
+     "consequence": "Plié en quatre, coutures alignées, comme on range une chose qu'on compte reprendre. Les poches sont vides — vidées, puis retournées à l'endroit. Celui qui l'a posé là avait le temps : personne ne le poursuivait. Il a rangé ses affaires, et il est parti sans.",
+     "image": {
+      "fichier": "scene_chemin_sud_manteau_a_d.png",
+      "hash": "cba77ca1",
+      "taille": 27290,
+      "recent": false,
+      "existe": true
+     }
     },
     {
      "id": "derniere-borne",
@@ -6857,12 +6864,12 @@
    "pointsInteret": [],
    "sejour": true,
    "image": {
-    "fichier": "scene_landes_liaison_sud_d_h.png",
-    "hash": "fede2150",
-    "taille": 13178,
+    "fichier": "scene_chemin_du_sud_a_b.png",
+    "hash": "e49d458f",
+    "taille": 28773,
     "recent": false,
     "existe": true,
-    "statut": "fallback",
+    "statut": "dediee",
     "herite": ""
    },
    "description": "",
@@ -6887,7 +6894,14 @@
      "id": "manteau-plie",
      "label": "Ouvrir le manteau plié",
      "type": "passif",
-     "consequence": "Plié en quatre, coutures alignées, comme on range une chose qu'on compte reprendre. Les poches sont vides — vidées, puis retournées à l'endroit. Celui qui l'a posé là avait le temps : personne ne le poursuivait. Il a rangé ses affaires, et il est parti sans."
+     "consequence": "Plié en quatre, coutures alignées, comme on range une chose qu'on compte reprendre. Les poches sont vides — vidées, puis retournées à l'endroit. Celui qui l'a posé là avait le temps : personne ne le poursuivait. Il a rangé ses affaires, et il est parti sans.",
+     "image": {
+      "fichier": "scene_chemin_sud_manteau_a_d.png",
+      "hash": "cba77ca1",
+      "taille": 27290,
+      "recent": false,
+      "existe": true
+     }
     },
     {
      "id": "derniere-borne",
@@ -6931,13 +6945,13 @@
    },
    "sejour": true,
    "image": {
-    "fichier": "scene_landes_liaison_sud_d_h.png",
-    "hash": "fede2150",
-    "taille": 13178,
+    "fichier": "scene_chemin_du_sud_a_b.png",
+    "hash": "e49d458f",
+    "taille": 28773,
     "recent": false,
     "existe": true,
-    "statut": "fallback",
-    "herite": ""
+    "statut": "heritee",
+    "herite": "chemin-du-sud"
    },
    "description": "",
    "promptImage": "",
@@ -9564,7 +9578,15 @@
    "hash": "c24d5c09",
    "taille": 18970,
    "recent": false,
-   "groupe": "brancher",
+   "groupe": "doublon",
+   "racine": "hameau_maison_muree_combles"
+  },
+  {
+   "fichier": "scene_hameau_maison_muree_combles_v6_a.png",
+   "hash": "0964899b",
+   "taille": 24128,
+   "recent": false,
+   "groupe": "doublon",
    "racine": "hameau_maison_muree_combles"
   },
   {
@@ -11359,10 +11381,10 @@
   "scenes": 107,
   "pointsInteret": 0,
   "choix": 314,
-  "illustrations": 436,
+  "illustrations": 441,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 210,
+  "reserve": 211,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
@@ -11371,7 +11393,7 @@
   "besoins": 0,
   "transitions": 64,
   "ecransDeMarche": 13,
-  "interactions": 32,
+  "interactions": 34,
   "aRefaire": 18,
   "familiarite": 34
  }
