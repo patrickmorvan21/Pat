@@ -1,6 +1,12 @@
 "use client";
 
-import { REFERENCE_GAMES, CATALOGUE_GAMES, type MiniGameEntry } from "@/lib/minigames-data";
+import {
+  JEU_GAMES,
+  A_HABILLER_GAMES,
+  REFERENCE_GAMES,
+  CATALOGUE_GAMES,
+  type MiniGameEntry,
+} from "@/lib/minigames-data";
 import { SURPRISES } from "@/lib/surprises-data";
 import MiniGamePlayer from "./MiniGamePlayer";
 import SurprisePreview from "@/components/surprises/SurprisePreview";
@@ -18,14 +24,33 @@ export default function MiniGamesGallery() {
       <header className="minijeux-header">
         <h1>PACTUM — Mini-jeux &amp; Surprises</h1>
         <p>
-          Galerie de revue (11/07/2026). Chaque carte est indépendante et rejouable — bascule le palier de
-          stat pour voir « la stat module la difficulté » en action. Réfère-toi au numéro de catalogue
-          (#01…#21, réf. pour les 4 fondateurs) dans tes retours.
+          Galerie de revue. Trois groupes : ce qui est <strong>validé et en jeu</strong> (les réglages
+          exacts servis par le jeu), ce qui est <strong>validé mais reste à habiller</strong>, puis les
+          autres essais du catalogue (#01…#21 et les 4 versions procédurales d&apos;origine). Chaque
+          carte est rejouable — bascule le palier de stat pour voir « la stat module la difficulté ».
         </p>
       </header>
 
       <section className="minijeux-section">
-        <h2>Les 4 références validées</h2>
+        <h2>Validés — en jeu ({JEU_GAMES.length})</h2>
+        <div className="minijeux-grid">
+          {JEU_GAMES.map((entry) => (
+            <MiniGamePlayer key={entry.id} entry={entry} />
+          ))}
+        </div>
+      </section>
+
+      <section className="minijeux-section">
+        <h2>Validés — habillage à créer ({A_HABILLER_GAMES.length})</h2>
+        <div className="minijeux-grid">
+          {A_HABILLER_GAMES.map((entry) => (
+            <MiniGamePlayer key={entry.id} entry={entry} />
+          ))}
+        </div>
+      </section>
+
+      <section className="minijeux-section">
+        <h2>Autres essais — les 4 références, versions procédurales d&apos;origine</h2>
         <div className="minijeux-grid">
           {REFERENCE_GAMES.map((entry) => (
             <MiniGamePlayer key={entry.id} entry={entry} />
@@ -38,7 +63,7 @@ export default function MiniGamesGallery() {
         if (items.length === 0) return null;
         return (
           <section className="minijeux-section" key={cat}>
-            <h2>{cat}</h2>
+            <h2>Autres essais — {cat}</h2>
             <div className="minijeux-grid">
               {items.map((entry) => (
                 <MiniGamePlayer key={entry.id} entry={entry} />

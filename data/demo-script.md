@@ -49,6 +49,13 @@ complet avec son tirage continue d'exister à côté (flag « mode démo »).
 | 9 | 19:00–21:30 | **LA MEUTE GRISE** — pic physique final | Le combat 2 beats existant (hurler → savoir_meute_voix → le front des cinq). Répond à « aucun chien n'aboie » : les chiens du pays sont dehors, en meute. Mort possible aux portes de la sortie — assumé. |
 | 10 | 21:30–23:30 | **LA FALAISE AUX CORDES** — le lieu final (nouveau) | Voir ci-dessous. Puis la cérémonie, la Descente (Sceau, Registre, « L'Acte II attend ») — ou la mort, l'autre finale. |
 
+> ⚠️ **01/09 — le Souffle (segment 3) est mis en attente** (Patrick : « on la garde
+> pour plus tard, pour le moment on laisse le timer pour prendre une action vite »).
+> Le pic de la Bête se joue au **compte à rebours de 4 s** de la scène tant que le
+> mini-jeu n'a pas son habillage réaliste (sprite de la Bête de profil + fond
+> d'ornière). Le moteur `hold` reste en place, débranché sur le choix « Se plaquer,
+> immobile » (`lib/scene-data.ts`, bloc commenté).
+
 ## Le lieu final : LA FALAISE AUX CORDES (validé 24/08 — remplace la Palissade en démo)
 
 Le sol cesse. En face, la paroi — et sur toute sa largeur, des centaines de

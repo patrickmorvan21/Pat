@@ -99,6 +99,23 @@ export default function TimingTap({
        la trace du crochet qui a ripé. Le joueur voit ce qu'il a dépensé sans
        qu'aucun compteur ne soit affiché. */
     const eraflures: { x: number; y: number; dx: number; dy: number }[] = [];
+    /* LE MÉCANISME SE CASSE (retour Patrick 01/09 : « si jamais on se rate,
+       il faut qu'on voie le mécanisme se casser »). Chaque raté arrache un
+       bout du crochet — un fragment qui tombe dans le barillet et y reste —
+       et fend le fer d'une fissure qui ne se referme pas. Au troisième, la
+       tige elle-même casse en deux. Rien n'est un compteur : c'est le
+       crochet qu'on voit raccourcir.
+       Et LES ÉTAPES se lisent EN BAS, en carrés pleins — la grammaire des
+       points de l'intro et des cinq carrés du Seuil, jamais une barre, jamais
+       un chiffre. Le flash blanc plein-écran de la goupille qui cède est
+       retiré : c'est le carré qui s'allume. */
+    const fragments: { x: number; y: number; vx: number; vy: number; w: number }[] = [];
+    const fissures: { x: number; y: number }[][] = [];
+    let becCasse = 0; // 0 = bec entier · 1 = ébréché · 2+ = plus de bec
+    let tigeCassee = false;
+    /* La fin est DIFFÉRÉE de quelques frames pour qu'on voie le dernier carré
+       s'allumer, ou le crochet se casser, avant que l'écran ne change. */
+    let finAt: { ok: boolean; frames: number } | null = null;
 
     // Géométrie de la platine (mode "track" seulement).
     const PW = 286,
@@ -122,13 +139,14 @@ export default function TimingTap({
     }
 
     function onDown(e: PointerEvent) {
-      if (finished) return;
+      if (finished || finAt) return;
       if (config.mode === "track") {
         const p = trackPos();
+        const ex = x0 + p * (x1 - x0);
         if (Math.abs(p - windowCenter) < config.windowWidth / 2) {
           tombees += 1;
-          eclat = 9;
-          if (tombees >= goupilles) finish(true);
+          eclat = 6;
+          if (tombees >= goupilles) finAt = { ok: true, frames: 22 };
           else {
             windowCenter = 0.5 + (rnd() - 0.5) * 0.44;
             vitesse *= 1.12;
@@ -136,14 +154,39 @@ export default function TimingTap({
         } else {
           attemptsLeft--;
           secousse = 7;
-          const ex = x0 + p * (x1 - x0);
           eraflures.push({
             x: ex,
             y: trackY - 6 + (rnd() - 0.5) * 10,
             dx: (rnd() - 0.5) * 26,
             dy: (rnd() - 0.5) * 8,
           });
-          if (attemptsLeft <= 0) finish(false);
+          // le bec du crochet s'arrache et tombe dans le barillet
+          becCasse += 1;
+          const sens = ((t * vitesse) % 2) <= 1 ? 1 : -1;
+          fragments.push({ x: ex + 2, y: trackY - 22, vx: sens * 1.4 + (rnd() - 0.5), vy: -1.8, w: 3 });
+          // et le fer se fend sous la piste, jusqu'au bas de la platine
+          const fis: { x: number; y: number }[] = [];
+          let fx = ex;
+          for (let fy = trackY + 24; fy < PY + PH - 6; fy += 5) {
+            fx += (rnd() - 0.5) * 7;
+            fis.push({ x: Math.round(fx), y: fy });
+          }
+          fissures.push(fis);
+          if (attemptsLeft <= 0) {
+            // LA TIGE CASSE : le haut du crochet part en morceaux, et on
+            // laisse le temps de le voir avant que le pêne claque.
+            tigeCassee = true;
+            for (let i = 0; i < 4; i++) {
+              fragments.push({
+                x: ex - 6 + i * 4,
+                y: trackY - 10 - i * 5,
+                vx: (rnd() - 0.5) * 3,
+                vy: -2.4 + rnd() * 1.2,
+                w: i % 2 ? 2 : 3,
+              });
+            }
+            finAt = { ok: false, frames: 55 };
+          }
         }
       } else if (config.mode === "release") {
         holding = true;
@@ -375,16 +418,48 @@ export default function TimingTap({
       const pas2 = Math.max(1, Math.abs(px - kx0));
       for (let s = 0; s <= pas2; s++) {
         const u = s / pas2;
+        // tige cassée : il n'en reste que le bas, qui sort du trou de serrure
+        if (tigeCassee && u > 0.55) break;
         const lx = Math.round(kx0 + (px - kx0) * u);
         const ly = Math.round(ky0 - (ky0 - (ty + 14)) * u);
         ctx.fillRect(lx, ly + (u > 0.7 ? trem : 0), 2, 2);
       }
-      // le col du crochet, puis la pointe CROCHUE qui va chercher la goupille
-      bayerFill(ctx, px - 2, ty - 14, 4, 30 + trem, 1, CREME, null, 1);
-      ctx.fillStyle = CREME;
-      ctx.fillRect(px - 1, ty - 20, 2, 7);
-      ctx.fillRect(px - 1, ty - 22, 4, 2); // le bec, tourné vers la droite
-      ctx.fillRect(px + 2, ty - 24, 2, 3);
+      if (!tigeCassee) {
+        // le col du crochet, puis la pointe CROCHUE qui va chercher la goupille
+        bayerFill(ctx, px - 2, ty - 14, 4, 30 + trem, 1, CREME, null, 1);
+        ctx.fillStyle = CREME;
+        if (becCasse === 0) {
+          ctx.fillRect(px - 1, ty - 20, 2, 7);
+          ctx.fillRect(px - 1, ty - 22, 4, 2); // le bec, tourné vers la droite
+          ctx.fillRect(px + 2, ty - 24, 2, 3);
+        } else if (becCasse === 1) {
+          // ébréché : le bec a perdu sa pointe, il reste un moignon
+          ctx.fillRect(px - 1, ty - 20, 2, 7);
+          ctx.fillRect(px - 1, ty - 21, 3, 1);
+        } else {
+          // plus de bec du tout : une tige émoussée, en dents de scie
+          ctx.fillRect(px - 1, ty - 18, 2, 5);
+          ctx.fillRect(px, ty - 19, 1, 1);
+        }
+      }
+
+      /* LES FRAGMENTS arrachés : ils tombent dans le barillet et y restent —
+         le fer garde ce qu'on a cassé. Gravité simple, jamais un fondu. */
+      const solBarillet = bt + bh - 4;
+      for (const f of fragments) {
+        if (f.y < solBarillet) {
+          f.x += f.vx;
+          f.y += f.vy;
+          f.vy += 0.42;
+          if (f.y >= solBarillet) {
+            f.y = solBarillet;
+            f.vx = 0;
+            f.vy = 0;
+          }
+        }
+        ctx.fillStyle = CREME;
+        ctx.fillRect(Math.round(f.x) + ox, Math.round(f.y) + oy, f.w, f.w);
+      }
 
       /* LES ÉRAFLURES accumulées par les ratés. */
       ctx.strokeStyle = "rgba(255,255,255,0.22)";
@@ -394,6 +469,20 @@ export default function TimingTap({
         ctx.moveTo(e.x + ox, e.y + oy);
         ctx.lineTo(e.x + e.dx + ox, e.y + e.dy + oy);
         ctx.stroke();
+      }
+      /* LES FISSURES du fer : une file de pixels qui descend en zigzag depuis
+         la piste jusqu'au bas de la platine, une par raté, permanente. */
+      ctx.fillStyle = "rgba(255,255,255,0.42)";
+      for (const fis of fissures) {
+        for (let i = 0; i < fis.length; i++) {
+          const a = fis[i];
+          const b = fis[i + 1] ?? a;
+          const n = Math.max(Math.abs(b.x - a.x), Math.abs(b.y - a.y), 1);
+          for (let s = 0; s < n; s++) {
+            const u = s / n;
+            ctx.fillRect(Math.round(a.x + (b.x - a.x) * u) + ox, Math.round(a.y + (b.y - a.y) * u) + oy, 1, 1);
+          }
+        }
       }
 
       /* LE TROU DE SERRURE, sous le mécanisme : c'est par là que le crochet
@@ -411,11 +500,36 @@ export default function TimingTap({
         ctx.fillRect(Math.round(kx + Math.cos(ang) * 8), Math.round(ky + Math.sin(ang) * 8), 1, 1);
       }
 
-      /* La goupille qui cède : un éclat bref, en paliers (jamais un fondu). */
+      /* La goupille qui cède : un éclat bref SUR ELLE (sa tête clignote en
+         paliers), plus jamais un flash de toute la platine — Patrick lisait
+         ça comme un « écran blanc ». */
       if (eclat > 0) {
         eclat -= 1;
-        if (eclat % 3 !== 1) {
-          bayerFill(ctx, PX, PY, PW, PH, 0.3, CREME, null, 2);
+        const k = tombees - 1;
+        if (k >= 0 && eclat % 2 === 0) {
+          const gx = Math.round(bx + k * pas) + ox;
+          ctx.fillStyle = CREME;
+          ctx.fillRect(gx - 8, PY + oy + 20, 16, 4);
+        }
+      }
+
+      /* LES ÉTAPES, en bas de l'écran : un carré plein par goupille — orange
+         quand elle a cédé, blanc éteint tant qu'elle tient. C'est le langage
+         des points de l'intro (carrés de 5 px, jamais une barre). On voit
+         combien il reste à faire sans qu'aucun chiffre ne s'affiche. */
+      const SQ = 7,
+        GAP = 7;
+      const totalW = goupilles * SQ + (goupilles - 1) * GAP;
+      const sx0 = Math.round((TW - totalW) / 2);
+      const sy = TH - 44;
+      for (let k = 0; k < goupilles; k++) {
+        const done = k < tombees;
+        ctx.fillStyle = done ? ORANGE : "rgba(255,255,255,0.28)";
+        ctx.fillRect(sx0 + k * (SQ + GAP), sy, SQ, SQ);
+        // le carré qui vient de s'allumer clignote avec la goupille
+        if (done && k === tombees - 1 && eclat > 0 && eclat % 2 === 0) {
+          ctx.fillStyle = CREME;
+          ctx.fillRect(sx0 + k * (SQ + GAP), sy, SQ, SQ);
         }
       }
     }
@@ -425,6 +539,15 @@ export default function TimingTap({
       t += 0.016;
       ctx.fillStyle = CHARBON;
       ctx.fillRect(0, 0, w, h);
+      // fin différée : on laisse voir le dernier carré ou la casse
+      if (finAt) {
+        finAt.frames -= 1;
+        if (finAt.frames <= 0) {
+          const ok = finAt.ok;
+          finAt = null;
+          finish(ok);
+        }
+      }
 
       if (config.mode === "track") {
         dessineTrack();

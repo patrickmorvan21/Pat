@@ -1041,6 +1041,18 @@ body {
   line-height: 1.45;
   opacity: 0.75;
 }
+/* Où le geste se joue (galerie, tri du 01/09) : en orange, une ligne. */
+.mg-lieu {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--color-accent);
+}
+/* Ce qui reste à faire : blanc-50, comme un hint. */
+.mg-note {
+  font-size: 11px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.5);
+}
 .mg-tiers {
   display: flex;
   gap: 6px;

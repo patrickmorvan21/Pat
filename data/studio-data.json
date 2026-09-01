@@ -51,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-09-01T17:41:00Z",
- "commit": "1b1354f",
+ "genere": "2026-09-01T18:26:08Z",
+ "commit": "f2ef8f1",
  "zones": [
   {
    "id": "landes",
@@ -3885,7 +3885,7 @@
     "fichier": "scene_hameau_maison_sans_fumee_a_b.png",
     "hash": "0342d83e",
     "taille": 106344,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -3945,7 +3945,7 @@
     "fichier": "scene_hameau_maison_table_a_a.png",
     "hash": "42969ed5",
     "taille": 26457,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -3989,7 +3989,7 @@
     "fichier": "scene_hameau_maison_aube_a_c.png",
     "hash": "2a167f88",
     "taille": 13735,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -6826,7 +6826,7 @@
       "fichier": "scene_chemin_sud_manteau_a_d.png",
       "hash": "cba77ca1",
       "taille": 27290,
-      "recent": false,
+      "recent": true,
       "existe": true
      }
     },
@@ -6867,7 +6867,7 @@
     "fichier": "scene_chemin_du_sud_a_b.png",
     "hash": "e49d458f",
     "taille": 28773,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -6899,7 +6899,7 @@
       "fichier": "scene_chemin_sud_manteau_a_d.png",
       "hash": "cba77ca1",
       "taille": 27290,
-      "recent": false,
+      "recent": true,
       "existe": true
      }
     },
@@ -6948,7 +6948,7 @@
     "fichier": "scene_chemin_du_sud_a_b.png",
     "hash": "e49d458f",
     "taille": 28773,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "heritee",
     "herite": "chemin-du-sud"

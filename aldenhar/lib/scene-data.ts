@@ -1868,11 +1868,14 @@ export const SCENES: Scene[] = [
         // est une vraie réponse (§19). Mais elle t'a SENTI passer (17/08 §2) :
         // se dérober à un combat ne l'efface pas du monde, elle peut suivre.
         laisseMenace: "bete",
-        // Démo, segment 3 : RETENIR SON SOUFFLE pendant que la masse passe —
-        // le premier moment de peur se joue au corps, pas au dé. L'échec ne
-        // tue pas : elle te trouve, te marque, et repart (le prix, jamais le
-        // mur). La menace reste armée dans les deux issues — se dérober ne
-        // l'efface pas du monde, réussi ou pas.
+        /* ⚠️ LE SOUFFLE EST MIS EN ATTENTE (Patrick, 01/09) — « on la garde
+           pour plus tard, pour le moment on laisse le timer pour prendre une
+           action vite ». Le pic de la Bête se joue donc au COMPTE À REBOURS de
+           4 s de la scène (choisir vite, le dé tranche), pas au geste tenu. Le
+           moteur `hold` et la config par Instinct (Scene.tsx) restent en
+           place : le jour où le mini-jeu a son habillage réaliste (la Bête de
+           profil en sprite + un fond d'ornière), il suffit de rétablir le bloc
+           ci-dessous tel quel.
         minigame: {
           engine: "hold",
           echecBlesse: true,
@@ -1884,6 +1887,7 @@ export const SCENES: Scene[] = [
             "une chose sans intérêt. Le creux te laisse te relever. Pas " +
             "indemne.",
         },
+        */
         passive: {
           consequence:
             "Tu te coules dans l'ornière, face contre terre. La masse passe " +

@@ -58,6 +58,8 @@ export default function MiniGamePlayer({ entry }: { entry: MiniGameEntry }) {
         <h3>{entry.title}</h3>
         <span className="mg-stat">{entry.stat}</span>
       </div>
+      {entry.lieu && <p className="mg-lieu">{entry.lieu}</p>}
+      {entry.note && <p className="mg-note">{entry.note}</p>}
       <p className="mg-desc">{entry.description}</p>
       <div className="mg-tiers">
         {TIERS.map((t) => (

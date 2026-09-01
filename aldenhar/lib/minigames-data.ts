@@ -7,6 +7,8 @@
  * conséquence narrative jamais un game over sec.
  */
 
+import { assetSrc } from "./assets";
+
 export type Tier = "bas" | "moyen" | "haut";
 export type MiniGameEngine =
   | "rub"
@@ -34,7 +36,145 @@ export type MiniGameEntry = {
   configFor: (tier: Tier) => Record<string, unknown>;
   successText: string;
   failText: string;
+  /** Où le geste se joue dans le jeu (affiché sous le titre). */
+  lieu?: string;
+  /** Ce qui reste à faire pour qu'il soit fini (habillage, image…). */
+  note?: string;
 };
+
+/**
+ * TRI DE LA GALERIE (demande Patrick, 01/09) : d'abord ce qui est VALIDÉ ET
+ * EN JEU avec la configuration réelle servie par `Scene.tsx` (mêmes chiffres,
+ * mêmes skins — on revoit ce que le joueur touche, pas une approximation),
+ * puis ce qui est validé mais encore à habiller, puis les autres essais.
+ *
+ * ⚠️ Les configs ci-dessous DOUBLENT celles de `Scene.tsx` (onSelect) : si
+ * l'une change, changer l'autre — la galerie ne sert à rien si elle montre un
+ * réglage que le jeu ne sert pas.
+ */
+export const JEU_GAMES: MiniGameEntry[] = [
+  {
+    id: "jeu-frottage-borne",
+    number: 0,
+    title: "Frotter la mousse de la Borne",
+    category: "Référence",
+    stat: "MIXTE",
+    lieu: "La Borne Frontière — « Faire le tour de la pierre » (démo et jeu complet, une fois par compte)",
+    description:
+      "Gratter la mousse de Patrick (maquette Figma) jusqu'au seuil ; passé le seuil toute la mousse s'envole par vagues et la pierre aux trois marques se lit. Aucun échec possible : c'est le tutoriel tactile.",
+    engine: "rub",
+    configFor: () => ({
+      label: "CÔTÉ SUD",
+      threshold: 0.45,
+      preEclaircie: 0.12,
+      imageFond: assetSrc("assets/minijeu_borne_pierre.png"),
+      imageMousse: assetSrc("assets/minijeu_borne_mousse.png"),
+    }),
+    successText: "Les trois marques du sud apparaissent sous la mousse.",
+    failText: "",
+  },
+  {
+    id: "jeu-crochetage",
+    number: 0,
+    title: "Crochetage — la serrure d'une maison",
+    category: "Référence",
+    stat: "RUSE",
+    lieu: "La nuit au Hameau (démo) et la Maison sans Fumée (jeu complet)",
+    description:
+      "Trois goupilles à faire céder : tape quand le crochet est dans la gorge. La Ruse élargit la gorge ; trois ratés en tout et le pêne claque. Les étapes se lisent en bas, en carrés — jamais un chiffre.",
+    engine: "timing",
+    configFor: (tier) => ({
+      mode: "track",
+      windowWidth: tier === "haut" ? 0.26 : tier === "moyen" ? 0.21 : 0.17,
+      maxAttempts: 3,
+      goupilles: 3,
+    }),
+    successText: "Le pêne glisse sans un bruit. La porte s'ouvre sur un noir tiède.",
+    failText: "Le crochet ripe et le pêne claque, fort. En face, un volet s'entrouvre.",
+  },
+  {
+    id: "jeu-corde-pendu",
+    number: 0,
+    title: "Trancher la corde du Pendu",
+    category: "Référence",
+    stat: "COURAGE",
+    lieu: "Le Pendu qui parle — « Trancher sa corde » (jeu complet)",
+    description:
+      "Un seul geste, net et rapide, qui TRAVERSE la corde. Le Courage élargit la tolérance de courbure — la main qui ne tremble pas, pas la lame qui coupe mieux. Rater entame la corde… et le corps.",
+    engine: "straightSwipe",
+    configFor: (tier) => ({
+      minLength: 90,
+      maxDurationMs: 500,
+      maxDeviation: tier === "haut" ? 34 : tier === "moyen" ? 22 : 14,
+      skin: "corde",
+    }),
+    successText: "Ta lame tranche net.",
+    failText: "Ta lame entame la corde — qui se resserre.",
+  },
+  {
+    id: "jeu-falaise",
+    number: 0,
+    title: "Laisser filer la corde — la Falaise",
+    category: "Référence",
+    stat: "MIXTE",
+    lieu: "La Falaise aux Cordes — la cérémonie de la Descente (démo)",
+    description:
+      "Glisser vers le bas, lentement, cinq paliers. Insensible à l'échec : trop vite, la corde ne file pas, la paume chauffe, et on reprend. Jamais un test d'adresse devant la Descente.",
+    engine: "slowSwipe",
+    configFor: () => ({
+      pagesNeeded: 5,
+      maxSpeed: 9,
+      label: "paliers",
+      axis: "y",
+      skin: "corde",
+      step: 30,
+      forgiving: true,
+    }),
+    successText: "La corde s'arrête. En bas, quelqu'un saura qu'on peut descendre plus loin.",
+    failText: "",
+  },
+];
+
+/** Validés dans le jeu, mais leur habillage réaliste n'est pas fait. */
+export const A_HABILLER_GAMES: MiniGameEntry[] = [
+  {
+    id: "jeu-trace-chapelle",
+    number: 0,
+    title: "Le tracé du tressage — la Chapelle",
+    category: "Référence",
+    stat: "RUSE",
+    lieu: "La Chapelle des Cordes — « Prendre la corde coupée » (démo)",
+    note: "En jeu avec le rendu procédural (disque gravé). Habillage à créer : gros plan du nœud de la Veuve sous verre, les points du tracé posés SUR le tressage réel.",
+    description:
+      "Suivre du doigt le nœud de la Veuve, point après point, sans lâcher ni s'écarter trop longtemps. La Ruse simplifie le nœud. Rater ne perd pas la corde : la vitrine sonne sur la dalle et la Veuve t'a vu.",
+    engine: "glyph",
+    configFor: (tier) => ({
+      points: tier === "haut" ? 5 : tier === "moyen" ? 6 : 7,
+      tolerance: tier === "haut" ? 26 : tier === "moyen" ? 22 : 19,
+    }),
+    successText: "Le verre pivote sans bruit. La corde coupée s'enroule à ton poignet.",
+    failText: "Ton doigt perd le fil — la vitrine se décroche et sonne sur la dalle.",
+  },
+  {
+    id: "jeu-souffle-bete",
+    number: 0,
+    title: "Retenir son souffle — la Bête",
+    category: "Référence",
+    stat: "INSTINCT",
+    lieu: "La Bête des Chemins Creux — « Se plaquer, immobile »",
+    note: "MIS EN ATTENTE le 01/09 : la scène se joue au timer de 4 s tant que l'habillage n'existe pas (sprite de la Bête de profil + fond d'ornière).",
+    description:
+      "Appui tenu pendant que la masse passe au-dessus de toi. L'Instinct raccourcit la durée à tenir et rend lisibles les indices de fin. Rater : elle te trouve, te marque, et repart.",
+    engine: "hold",
+    configFor: (tier) => ({
+      durationMs: tier === "haut" ? 2200 : tier === "moyen" ? 3000 : 3800,
+      clearCue: tier !== "bas",
+      grazeCount: tier === "bas" ? 6 : 3,
+    }),
+    successText: "La masse passe. Tu recraches de la terre et tu marches.",
+    failText: "Ton souffle te lâche sur un rien. Le museau descend, te trouve.",
+  },
+];
 
 export const REFERENCE_GAMES: MiniGameEntry[] = [
   {
@@ -410,4 +550,9 @@ export const CATALOGUE_GAMES: MiniGameEntry[] = [
   },
 ];
 
-export const ALL_MINIGAMES: MiniGameEntry[] = [...REFERENCE_GAMES, ...CATALOGUE_GAMES];
+export const ALL_MINIGAMES: MiniGameEntry[] = [
+  ...JEU_GAMES,
+  ...A_HABILLER_GAMES,
+  ...REFERENCE_GAMES,
+  ...CATALOGUE_GAMES,
+];
