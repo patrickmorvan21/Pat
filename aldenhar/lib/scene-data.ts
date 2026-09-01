@@ -114,6 +114,14 @@ export type Choice = {
    * À porter sur un choix `sortie` SANS `toScene` (la traversée reprend son
    * cours normal). Se combine avec `uneFoisParVie` pour ne pas ouvrir un
    * tourniquet infini.
+   *
+   * ⚠️ DÉCISION DE PATRICK POUR LA SUITE (01/09), à ne pas re-trancher :
+   * rallonger la MÊME zone est le comportement PROVISOIRE, valable tant que
+   * les Landes sont seules. Dès qu'une deuxième zone existe, faire demi-tour
+   * enverra dans une AUTRE zone, et l'on redescendra par la Descente de
+   * celle-ci — le demi-tour devient donc un aiguillage entre zones, pas une
+   * rallonge locale. Ce qu'il faudra alors : une destination de zone au lieu
+   * d'un nombre de lieux, et la Descente d'origine gardée en mémoire.
    */
   demiTour?: { lieux: number };
   /**
@@ -3980,6 +3988,29 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        /* LE GESTE DES ROUEL (arbitrage Patrick, 01/09) — la seconde moitié
+           de ce que paie la nuit chez eux. Il PREND LA PLACE de « Veiller » :
+           veiller, c'est passer la nuit à apprendre ce que fait la ronde ;
+           qui a lu le compte sous leur table le sait déjà, et peut donc AGIR
+           dessus. C'est « explorer prépare » dans sa forme exacte — l'option
+           aveugle cède à l'option informée, le budget ne bouge pas.
+           L'examen de la grange reste offert : il garde sa découverte. */
+        id: "caler-trappe-grange",
+        label: "Caler la trappe des combles",
+        requiresDecouverte: "d.rouel_ouvert",
+        prendLaPlaceDe: "veiller",
+        grantsSavoir: "savoir_trappe_calee",
+        passive: {
+          consequence:
+            "Tu montes à l'échelle avec la lampe soufflée, à tâtons, comme " +
+            "quelqu'un qui a déjà fait ça. La trappe de la grange n'est pas " +
+            "clouée — personne ne cloue chez les autres.\n\nTu la cales : le " +
+            "manche de la fourche en travers, le pied contre la panne, et ton " +
+            "poids dessus jusqu'à ce que le bois se plaigne. En redescendant " +
+            "tu comptes, sans le vouloir, par paquets de quatre.",
+        },
+      },
+      {
         id: "veiller",
         nature: "surnaturel",
         label: "Veiller",
@@ -4102,6 +4133,25 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        /* LE PAIEMENT DU GESTE. La nuit ne se subit plus : elle se joue.
+           ⚠️ Ça ne fait pas partir la chose — rien ne la fait partir. Ça
+           change ce qu'on lui oppose, et c'est tout ce que le jeu promet. */
+        id: "toit-cale",
+        label: "Attendre sous la trappe calée",
+        requiresSavoir: "savoir_trappe_calee",
+        prendLaPlaceDe: ["toit-ne-rien-lui-donner", "toit-regarder"],
+        passive: {
+          consequence:
+            "Le poids remonte le faîtage et s'arrête, non pas au-dessus de la " +
+            "porte, mais au-dessus de la trappe. Il sait où elle est.\n\n" +
+            "Puis il appuie. Le manche travaille, la panne grince, et le bois " +
+            "tient. Ça appuie encore, plus longtemps, de tout ce que ça pèse. " +
+            "Le bois tient.\n\nÇa cesse d'appuyer. Ça ne s'en va pas — ça " +
+            "s'installe, et ça attend le matin avec toi. Les Rouel avaient " +
+            "raison quatre nuits de suite.",
+        },
+      },
+      {
         id: "toit-ne-pas-bouger",
         label: "Ne pas bouger",
         passive: {
@@ -4147,6 +4197,29 @@ export const SCENES: Scene[] = [
         "plus une découverte : c\u2019est un horaire.",
     ],
     choices: [
+      {
+        /* LE PAIEMENT DU GESTE, VERSION HABITUÉE. ⚠️ Sans lui, la récompense
+           du 01/09 ne se serait presque jamais payée : `d.rouel_ouvert` est
+           une découverte de COMPTE, donc qui connaît le geste a le plus
+           souvent déjà dormi dans la grange une fois — et cette variante-ci
+           est alors servie à sa place. Le drapeau aurait été posé, appris,
+           et jamais consommé (le défaut exact que le §12 interdit).
+           Il PREND LA PLACE d'« Attendre que ça passe » : s'habituer, c'est
+           ce qu'on fait quand on ne peut rien faire. */
+        id: "toit-cale-connu",
+        label: "Caler, puis attendre",
+        requiresSavoir: "savoir_trappe_calee",
+        prendLaPlaceDe: "toit-attendre-connu",
+        passive: {
+          consequence:
+            "Tu as calé avant, cette fois, sans y penser — le manche en " +
+            "travers, le pied contre la panne. Le geste s'est fait tout seul, " +
+            "à l'heure où il fallait le faire.\n\nLe poids s'arrête au-dessus " +
+            "de la trappe, appuie, et le bois tient. Tu comptes quand même. " +
+            "Ce qui a changé, ce n'est pas la nuit : c'est que tu as quelque " +
+            "chose à faire dedans.",
+        },
+      },
       {
         id: "toit-attendre-connu",
         label: "Attendre que ça passe",
@@ -4432,12 +4505,19 @@ export const SCENES: Scene[] = [
     decouverte: "d.rouel_ouvert",
     illustration: "assets/scene_hameau_halte_5_v2_c.png",
     narration: [
-      "Quand tu ouvres, le vieux est assis sur la marche d'en face, les " +
-        "mains sur les genoux. Il ne s'est pas levé pour te surprendre : il a " +
-        "attendu que tu sortes.",
-      "— « C'était la maison des Rouel. » Il se lève sans hâte. « Personne " +
-        "n'y dort. » Il ne dit pas : personne n'a le droit. Il dit : personne " +
-        "n'y dort.",
+      // LE COMPTE SOUS LA TABLE (arbitrage Patrick, 01/09). C'est le paiement
+      // de la nuit — pas d'une action précise : on ne le voit qu'en se
+      // relevant de par terre, donc seul quelqu'un qui a dormi là le trouve.
+      // Il PAIE deux choses déjà plantées ailleurs (les encoches de la grange,
+      // « au matin, ils ont ouvert ») au lieu d'en redire une troisième.
+      "En te relevant, tu vois le dessous de la table. Quelqu'un s'est couché " +
+        "là-dessous pour écrire à la craie, à l'envers : des bâtons, par " +
+        "paquets de quatre. Quatre. Quatre. Quatre.",
+      "La dernière ligne en compte cinq. Ils ont dû croire que c'était fini.",
+      "Quand tu ouvres, le vieux est assis sur la marche d'en face. Il ne " +
+        "s'est pas levé pour te surprendre : il a attendu que tu sortes. " +
+        "— « C'était la maison des Rouel. Personne n'y dort. » Il ne dit pas : " +
+        "personne n'a le droit.",
     ],
     choices: [
       {
@@ -6538,32 +6618,6 @@ export const SCENES: Scene[] = [
             "l'Écrivain en refermant, « il en manque un. Le registre ne " +
             "juge pas. Il équilibre. » Il te regarde enfin. « Vous croyez " +
             "tous que vous rentrez. Personne ne rentre. On échange. »",
-        },
-      },
-      {
-        /* CE QUE LA NUIT CHEZ LES ROUEL A PAYÉ (01/09). Personne d'autre ne
-           peut poser cette question : il faut avoir ouvert cette porte sans
-           bruit et y avoir dormi seul. La réponse dit la loi de substitution
-           sans jamais la nommer — c'est le prix du Domaine, énoncé par un
-           greffier qui croit parler comptabilité. */
-        id: "tribunal-rouel",
-        prendLaPlaceDe: [
-          "tribunal-carnet",
-          "dire-poteau-grave",
-          "registre-ment",
-          "ecrivain-defenses",
-        ],
-        label: "Demander qui a pris la place des Rouel",
-        requiresDecouverte: "d.rouel_ouvert",
-        passive: {
-          consequence:
-            "La plume s'arrête. Il ne demande pas comment tu sais — il " +
-            "remonte trois pages en arrière, du bout de l'ongle, et tourne le " +
-            "cahier vers toi sans le lâcher.\n\nLes Rouel sont là, quatre " +
-            "noms, rayés d'un seul trait. En face, dans la marge, quatre " +
-            "autres noms — vivants, ceux-là, et tu en as croisé deux ce " +
-            "matin. « Le registre ne juge pas », dit-il très bas. « Il " +
-            "équilibre. » Puis il referme, et il recommence à copier.",
         },
       },
       {

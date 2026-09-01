@@ -51,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-09-01T10:04:13Z",
- "commit": "397dde4",
+ "genere": "2026-09-01T10:27:22Z",
+ "commit": "87729e8",
  "zones": [
   {
    "id": "landes",
@@ -3457,6 +3457,17 @@
      }
     },
     {
+     "id": "caler-trappe-grange",
+     "label": "Caler la trappe des combles",
+     "type": "passif",
+     "consequence": "Tu montes à l'échelle avec la lampe soufflée, à tâtons, comme quelqu'un qui a déjà fait ça. La trappe de la grange n'est pas clouée — personne ne cloue chez les autres.\n\nTu la cales : le manche de la fourche en travers, le pied contre la panne, et ton poids dessus jusqu'à ce que le bois se plaigne. En redescendant tu comptes, sans le vouloir, par paquets de quatre.",
+     "donneSavoir": "savoir_trappe_calee",
+     "exigeDecouverte": "d.rouel_ouvert",
+     "prendLaPlaceDe": [
+      "veiller"
+     ]
+    },
+    {
      "id": "veiller",
      "label": "Veiller",
      "type": "risque",
@@ -3589,6 +3600,17 @@
      "exigeDecouverte": "d.temoin_nomme"
     },
     {
+     "id": "toit-cale",
+     "label": "Attendre sous la trappe calée",
+     "type": "passif",
+     "consequence": "Le poids remonte le faîtage et s'arrête, non pas au-dessus de la porte, mais au-dessus de la trappe. Il sait où elle est.\n\nPuis il appuie. Le manche travaille, la panne grince, et le bois tient. Ça appuie encore, plus longtemps, de tout ce que ça pèse. Le bois tient.\n\nÇa cesse d'appuyer. Ça ne s'en va pas — ça s'installe, et ça attend le matin avec toi. Les Rouel avaient raison quatre nuits de suite.",
+     "exigeSavoir": "savoir_trappe_calee",
+     "prendLaPlaceDe": [
+      "toit-ne-rien-lui-donner",
+      "toit-regarder"
+     ]
+    },
+    {
      "id": "toit-ne-pas-bouger",
      "label": "Ne pas bouger",
      "type": "passif",
@@ -3645,6 +3667,16 @@
     "La poutre plie à la même heure, au même endroit. Le poids remonte le faîtage, s’arrête au-dessus de la porte, et reste. Ce n’est plus une découverte : c’est un horaire."
    ],
    "choix": [
+    {
+     "id": "toit-cale-connu",
+     "label": "Caler, puis attendre",
+     "type": "passif",
+     "consequence": "Tu as calé avant, cette fois, sans y penser — le manche en travers, le pied contre la panne. Le geste s'est fait tout seul, à l'heure où il fallait le faire.\n\nLe poids s'arrête au-dessus de la trappe, appuie, et le bois tient. Tu comptes quand même. Ce qui a changé, ce n'est pas la nuit : c'est que tu as quelque chose à faire dedans.",
+     "exigeSavoir": "savoir_trappe_calee",
+     "prendLaPlaceDe": [
+      "toit-attendre-connu"
+     ]
+    },
     {
      "id": "toit-attendre-connu",
      "label": "Attendre que ça passe",
@@ -3932,8 +3964,9 @@
   {
    "id": "hameau-maison-3",
    "narration": [
-    "Quand tu ouvres, le vieux est assis sur la marche d'en face, les mains sur les genoux. Il ne s'est pas levé pour te surprendre : il a attendu que tu sortes.",
-    "— « C'était la maison des Rouel. » Il se lève sans hâte. « Personne n'y dort. » Il ne dit pas : personne n'a le droit. Il dit : personne n'y dort."
+    "En te relevant, tu vois le dessous de la table. Quelqu'un s'est couché là-dessous pour écrire à la craie, à l'envers : des bâtons, par paquets de quatre. Quatre. Quatre. Quatre.",
+    "La dernière ligne en compte cinq. Ils ont dû croire que c'était fini.",
+    "Quand tu ouvres, le vieux est assis sur la marche d'en face. Il ne s'est pas levé pour te surprendre : il a attendu que tu sortes. — « C'était la maison des Rouel. Personne n'y dort. » Il ne dit pas : personne n'a le droit."
    ],
    "choix": [
     {
@@ -5985,19 +6018,6 @@
      ]
     },
     {
-     "id": "tribunal-rouel",
-     "label": "Demander qui a pris la place des Rouel",
-     "type": "passif",
-     "consequence": "La plume s'arrête. Il ne demande pas comment tu sais — il remonte trois pages en arrière, du bout de l'ongle, et tourne le cahier vers toi sans le lâcher.\n\nLes Rouel sont là, quatre noms, rayés d'un seul trait. En face, dans la marge, quatre autres noms — vivants, ceux-là, et tu en as croisé deux ce matin. « Le registre ne juge pas », dit-il très bas. « Il équilibre. » Puis il referme, et il recommence à copier.",
-     "exigeDecouverte": "d.rouel_ouvert",
-     "prendLaPlaceDe": [
-      "tribunal-carnet",
-      "dire-poteau-grave",
-      "registre-ment",
-      "ecrivain-defenses"
-     ]
-    },
-    {
      "id": "tribunal-carnet",
      "label": "Confronter le carnet au Registre",
      "type": "passif",
@@ -7697,7 +7717,7 @@
     "fichier": "scene_falaise_fond_d_a.png",
     "hash": "d04e7f68",
     "taille": 15850,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7733,7 +7753,7 @@
     "fichier": "scene_falaise_bord_c_a.png",
     "hash": "e2abb0bf",
     "taille": 15153,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -11338,7 +11358,7 @@
  "totaux": {
   "scenes": 107,
   "pointsInteret": 0,
-  "choix": 312,
+  "choix": 314,
   "illustrations": 436,
   "sansImage": 0,
   "imagesIntrouvables": 0,
