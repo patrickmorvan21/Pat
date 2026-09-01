@@ -66,7 +66,35 @@ def blocs_de_scene(src: str) -> list[tuple[str, str]]:
     return out
 
 
-def choix_du_bloc(corps: str) -> list[str]:
+def tableau_nomme(src: str, nom: str) -> str:
+    """Le corps d'un `const NOM: Choice[] = [ ... ]` de premier niveau.
+
+    ⚠️ Une scène peut PARTAGER son tableau de choix avec sa variante (le
+    Chemin du Sud, 01/09) : `choices: CHOIX_CHEMIN_DU_SUD`. Sans cette
+    résolution, le garde lisait « aucun choix » — c'est-à-dire qu'il aurait
+    déclaré enfermé un séjour parfaitement sortable, ou pire, laissé passer un
+    vrai enfermement. Même classe que le champ renseigné par une constante
+    attrapé le 14/08 : ce qu'un extracteur ne résout pas, il l'invente.
+    """
+    m = re.search(r"\bconst\s+" + re.escape(nom) + r"\s*:[^=]*=\s*\[", src)
+    if not m:
+        return ""
+    # ⚠️ PAS `src.index("[", m.start())` : le TYPE `Choice[]` contient déjà des
+    # crochets, donc on tomberait sur le `[` de l'annotation et le tableau
+    # rendu ferait deux caractères. Le motif se termine sur le vrai `[`.
+    debut = m.end() - 1
+    prof = 0
+    for k in range(debut, len(src)):
+        if src[k] == "[":
+            prof += 1
+        elif src[k] == "]":
+            prof -= 1
+            if prof == 0:
+                return src[debut : k + 1]
+    return ""
+
+
+def choix_du_bloc(corps: str, src: str = "") -> list[str]:
     """Les choix de premier niveau. On repart des `id:` situés dans `choices`
     plutôt que d'un découpage récursif : les issues du dé contiennent des
     accolades et des apostrophes en pagaille, et c'est exactement le genre de
@@ -74,6 +102,15 @@ def choix_du_bloc(corps: str) -> list[str]:
     i = corps.find("choices:")
     if i < 0:
         return []
+    # `choices: NOM_DE_CONSTANTE,` — tableau partagé : on va le chercher.
+    ref = re.match(r"choices:\s*([A-Z_][A-Z0-9_]*)\s*,", corps[i:])
+    if ref:
+        bloc = tableau_nomme(src, ref.group(1))
+        if not bloc:
+            return []
+        bornes = [m.start() for m in re.finditer(r'\bid:\s*"[a-z0-9\-]+"', bloc)]
+        return [bloc[a : (bornes[n + 1] if n + 1 < len(bornes) else len(bloc))]
+                for n, a in enumerate(bornes)]
     prof, debut = 0, corps.index("[", i)
     fin = len(corps)
     for k in range(debut, len(corps)):
@@ -103,7 +140,7 @@ def main() -> int:
         sejours += 1
         if re.search(r"\n    chainNext:", corps):
             soucis.append(f"{sid} : porte `sejour` ET `chainNext` — l'un retient, l'autre enchaîne")
-        sorties = [c for c in choix_du_bloc(corps) if "sortie:" in c]
+        sorties = [c for c in choix_du_bloc(corps, src) if "sortie:" in c]
         if not sorties:
             soucis.append(f"{sid} : scène `sejour` sans AUCUN choix `sortie` — le joueur y reste enfermé")
             continue

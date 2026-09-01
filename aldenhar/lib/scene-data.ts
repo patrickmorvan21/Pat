@@ -1104,6 +1104,55 @@ export function sceneEffective(id: string, f: Faits): Scene | undefined {
   return variante ?? sceneById(id);
 }
 
+/**
+ * LES TROIS ACTIONS DU CHEMIN DU SUD, partagées par la scène et sa variante.
+ * Un tableau unique plutôt que deux copies : deux listes décrivant le même
+ * endroit divergeraient au premier correctif.
+ */
+const CHOIX_CHEMIN_DU_SUD: Choice[] = [
+  {
+    id: "manteau-plie",
+    label: "Ouvrir le manteau plié",
+    // « Explorer prépare » (10/08) : ce qu'on regarde ici ouvre l'Anneau du
+    // jet suivant — celui du Veilleur, deux écrans plus loin.
+    observe: true,
+    passive: {
+      consequence:
+        "Plié en quatre, coutures alignées, comme on range une chose qu'on " +
+        "compte reprendre. Les poches sont vides — vidées, puis retournées à " +
+        "l'endroit. Celui qui l'a posé là avait le temps : personne ne le " +
+        "poursuivait. Il a rangé ses affaires, et il est parti sans.",
+    },
+  },
+  {
+    id: "derniere-borne",
+    label: "Lire la dernière borne",
+    observe: true,
+    passive: {
+      consequence:
+        "Une pierre basse, la dernière avant le bord. Sa face nord est " +
+        "couverte de noms gravés, serrés, de mains différentes — on a gravé " +
+        "jusqu'à ne plus trouver de place. Sa face sud n'est pas vierge : " +
+        "elle est lisse, creusée en son milieu, usée par des paumes. On vient " +
+        "toucher celle-là. On ne l'écrit pas.",
+    },
+  },
+  {
+    /* LE SEUL CHOIX QUI S'EN VA. Tant qu'il n'est pas pris, tout reste à
+       portée : c'est la règle de la Palissade, appliquée un écran plus tôt. */
+    id: "continuer-sud",
+    label: "Continuer vers le sud",
+    tags: ["citable"],
+    sortie: { toScene: "palissade-sud" },
+    passive: {
+      consequence:
+        "Tu enjambes la dernière chose posée sans la déplacer. Personne ne " +
+        "te regarde partir : c'est la première chose que les Landes te " +
+        "laissent faire seul.",
+    },
+  },
+];
+
 export const SCENES: Scene[] = [
   {
     // Scène 0 — l'entrée de zone. Le crépuscule éternel et le bruit écrit
@@ -3812,6 +3861,23 @@ export const SCENES: Scene[] = [
             "vers le bout de la rue, jusqu'à ce que tu avances.",
         },
       },
+      {
+        /* LA TROISIÈME PORTE (demande Patrick 01/09 : « le Crochetage dans le
+           jeu, au Hameau, avec la possibilité de dormir dans une maison »).
+           Le vieux vient de dire « la grange, ou les Landes » — il n'y a donc
+           que deux portes OFFERTES. Celle-ci, on la prend. C'est le seul
+           endroit du village où l'on peut refuser ce que le Serment a payé. */
+        id: "maison-sans-fumee",
+        label: "T'écarter vers la maison sans fumée",
+        sortie: { toScene: "hameau-maison-1" },
+        passive: {
+          consequence:
+            "Tu laisses le vieux prendre trois pas d'avance et tu t'arrêtes. " +
+            "Il ne se retourne pas — ici on ne se retourne jamais, on sait. À " +
+            "dix maisons de là, un pignon sans fumée : la seule cheminée " +
+            "froide de la rue.",
+        },
+      },
       { id: "suivre-vieux", label: "Le suivre" },
     ],
     jailerLine: "Ils t'offrent un toit. Regarde bien de quel côté est la porte, ensuite.",
@@ -4145,6 +4211,193 @@ export const SCENES: Scene[] = [
     choices: [{ id: "fin-renoncant", label: "Laisser le nom au Registre" }],
     jailerLine:
       "Reste. Je ne perds jamais personne — je change de porte, c'est tout.",
+  },
+  /* ═══════════ LA MAISON SANS FUMÉE — la nuit qu'on ne t'a pas offerte ═══
+     (demande Patrick 01/09.) Le Crochetage sort du mode démo et s'implante
+     là où il pèse : le village qui te surveille, la nuit qui suit le Serment.
+
+     TROIS ÉCRANS, la grammaire de la Halte : la porte (le geste), le dedans
+     (la nuit), l'aube (ce qu'on te dit).
+
+     ⚠️ L'ÉCHEC EST UN PRIX, JAMAIS UN MUR (doctrine des mini-jeux) : rater le
+     crochetage coûte du Soupçon et consomme l'option — la grange reste
+     ouverte sur le même écran. On ne perd jamais sa nuit.
+
+     ⚠️ Le Serment n'interdit PAS de crocheter (ses trois clauses sont les
+     pendus, le sud, la troisième aube). C'est plus intéressant ainsi : le
+     village ne te l'interdit pas, il le CONSTATE — « qui juge ? personne, on
+     constate ». */
+  {
+    id: "hameau-maison-1",
+    sejour: true,
+    // ⚠️ VISUEL PROVISOIRE : `scene_hameau_maison_sans_fumee_a` est à produire
+    // (la façade, la cheminée froide, la croix de craie frottée aux trois
+    // quarts). En attendant, la ruelle du village.
+    illustration: "assets/scene_landes_hameau_ruelle_c_b.png",
+    narration: [
+      "La porte est basse, le bois gris. Sur le montant, une croix de craie " +
+        "qu'on a frottée aux trois quarts : quelqu'un a commencé à l'effacer " +
+        "et personne n'a osé finir.",
+      "Les volets sont cloués. Pas barrés — cloués, de l'intérieur, et les " +
+        "têtes de clou sont tordues. La serrure, elle, est vieille et simple : " +
+        "trois goupilles, du fer qui a beaucoup servi.",
+    ],
+    choices: [
+      {
+        id: "crocheter-maison-hameau",
+        nature: "exploration",
+        label: "Crocheter la serrure",
+        // LE GESTE, ouvert au jeu complet choix par choix (14/08).
+        minigame: {
+          engine: "pick",
+          horsDemo: true,
+          echec:
+            "Le crochet ripe et le pêne claque, fort, deux fois. En face, un " +
+            "volet s'entrouvre et se referme sans un mot — on ne crie pas, " +
+            "ici, on note. La porte, elle, ne cède pas.",
+          echecSoupcon: 2,
+        },
+        // Prendre un toit qu'on ne t'a pas donné est un ACTE, pas un regard :
+        // il se paie, même réussi (doctrine du Soupçon, 8/08). Le village
+        // l'apprendra à l'aube — c'est le vieux qui le dira, jamais un chiffre.
+        soupcon: 1,
+        sortie: { toScene: "hameau-maison-2" },
+        passive: {
+          consequence:
+            "Le pêne glisse sans un bruit. La porte s'ouvre sur un noir " +
+            "tiède, et c'est le tiède qui te retient un instant sur le seuil : " +
+            "une maison vide depuis des années ne devrait pas être tiède.",
+        },
+      },
+      {
+        id: "ecouter-porte",
+        label: "Écouter à la porte",
+        observe: true,
+        passive: {
+          consequence:
+            "Tu poses l'oreille contre le bois. Rien au rez-de-chaussée : " +
+            "pas un meuble qui travaille, pas une souris. Le silence d'une " +
+            "maison finie. Puis, très haut, au-dessus du plafond, une planche " +
+            "qui reprend sa place — un poids qui vient de se déplacer, " +
+            "lentement, dans des combles où personne ne monte.",
+        },
+      },
+      {
+        id: "renoncer-maison",
+        label: "Rejoindre la grange",
+        sortie: { toScene: "hameau-halte-2" },
+        passive: {
+          consequence:
+            "Tu remontes la rue. Le vieux tient la porte de la grange " +
+            "ouverte, exactement comme s'il ne l'avait pas lâchée. « C'est " +
+            "long, dix maisons », dit-il. C'est tout ce qu'il dira.",
+        },
+      },
+    ],
+    jailerLine: "Une porte fermée, dans un village qui n'a rien à voler. Réfléchis.",
+  },
+  {
+    /* Dedans. La nuit se passe ici quoi qu'on fasse (`nuit`), et les trois
+       actions sont celles de la grange : regarder, veiller, dormir. */
+    id: "hameau-maison-2",
+    nuit: true,
+    chainNext: "hameau-maison-3",
+    illustration: "assets/scene_hameau_maison_muree_combles_v6_a.png",
+    narration: [
+      "La table est mise pour deux et n'a jamais été desservie. La poussière " +
+        "est régulière sur tout — sur les écuelles, sur le pain devenu " +
+        "pierre, sur les deux tabourets tirés du même côté.",
+      "Aux patères, deux manteaux. Personne n'est parti d'ici en emportant " +
+        "quoi que ce soit.",
+    ],
+    choices: [
+      {
+        /* Deuxième source de `d.combles_cloues` — son lecteur existe depuis
+           le 12/08 (« Compter les combles clouées », à l'aube de la Halte). */
+        id: "monter-combles-maison",
+        label: "Monter voir les combles",
+        observe: true,
+        decouverte: "d.combles_cloues",
+        passive: {
+          consequence:
+            "L'échelle tient encore. La trappe, non : elle est clouée. De " +
+            "l'intérieur du toit, par quelqu'un qui se dépêchait — les clous " +
+            "sont tordus, plantés en biais, et il y en a trois fois trop. En " +
+            "redescendant tu regardes les portes du bas : aucune n'est " +
+            "clouée. Cette maison ne se protégeait pas de ce qui entre par " +
+            "les portes.",
+        },
+      },
+      {
+        id: "veiller-maison",
+        nature: "surnaturel",
+        label: "Veiller derrière les volets",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu veilles sans lampe, assis contre le mur froid. La ronde passe quatre fois — quatre, comme les encoches de la grange. À la quatrième, l'homme s'arrête devant cette porte-ci, pose la main dessus, et ne la pousse pas. Il vérifiait qu'elle était fermée. Elle l'était, quand il est arrivé.",
+            "Tu tiens jusqu'au cœur de la nuit, l'œil au joint du volet. Des pas dans la rue, réguliers, et jamais deux fois la même voix. Ils ne cherchent pas : ils comptent.",
+            "Le sommeil te prend d'un coup, sans transition. Tu te réveilles le dos raide au gris de l'aube, sans savoir ce qui est passé dans la rue ni combien de fois.",
+            "1 naturel. Tu veilles. Et vers le milieu de la nuit, au-dessus de toi, la planche des combles reprend sa place une seconde fois. Rien n'est descendu. Rien n'a essayé. C'est pire. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "dormir-maison-hameau",
+        label: "Dormir jusqu'à l'aube",
+        rest: true,
+        repos: "complet",
+        passive: {
+          consequence:
+            "Tu prends le lit du fond, celui qui n'a pas servi. Le sommeil " +
+            "vient d'un bloc, sans rêve — et ton corps répond entier au " +
+            "matin, pour la première fois depuis la Borne.",
+        },
+      },
+    ],
+    jailerLine: "Deux couverts, deux manteaux, personne. Fais l'addition, toi.",
+  },
+  {
+    /* L'aube. On ne te reproche rien : c'est ça, le hameau. Rejoint la
+       séquence de la Halte à son dernier beat (l'escorte au portillon), qui
+       porte `hameauHalte` — la sortie de zone reste la même pour tous. */
+    id: "hameau-maison-3",
+    chainNext: "hameau-halte-5",
+    illustration: "assets/scene_hameau_halte_5_v2_c.png",
+    narration: [
+      "Quand tu ouvres, le vieux est assis sur la marche d'en face, les " +
+        "mains sur les genoux. Il ne s'est pas levé pour te surprendre : il a " +
+        "attendu que tu sortes.",
+      "— « C'était la maison des Rouel. » Il se lève sans hâte. « Personne " +
+        "n'y dort. » Il ne dit pas : personne n'a le droit. Il dit : personne " +
+        "n'y dort.",
+    ],
+    choices: [
+      {
+        id: "demander-rouel",
+        label: "Demander ce qui leur est arrivé",
+        passive: {
+          consequence:
+            "— « Ils ont juré comme tout le monde. Et une nuit ils ont cloué " +
+            "leurs combles, comme tout le monde. » Il regarde le pignon, très " +
+            "longtemps. « Sauf qu'eux, au matin, ils ont ouvert. » Il " +
+            "n'ajoute rien. Il n'y a rien à ajouter : la maison est là, et " +
+            "elle est vide.",
+        },
+      },
+      {
+        id: "ne-rien-dire-rouel",
+        label: "Ne rien dire",
+        passive: {
+          consequence:
+            "Tu ne dis rien, il ne demande rien. Vous remontez la rue " +
+            "ensemble, au même pas. Au bout, deux hommes t'attendent déjà — " +
+            "ils étaient prévenus avant que tu sois réveillé.",
+        },
+      },
+    ],
+    jailerLine: "Il t'a attendu toute la nuit sur une marche. Ça, c'est de l'hospitalité.",
   },
   {
     /* Beat 6 — variante « nuit dehors » (Serment refusé). Remplace les beats
@@ -6931,6 +7184,68 @@ export const SCENES: Scene[] = [
     choices: [{ id: "epoux-quitter", label: "Remonter les rangs" }],
     jailerLine: "Écoute-le compter. Quarante mille. Je compte avec lui.",
   },
+  /* ══ AVANT LA DESCENTE — le dernier écran où l'on peut encore ne pas y
+     aller (demande Patrick, 01/09 : « il faut une scène avant qu'on voit la
+     descente de loin, la première fois il doit y avoir plein d'éléments qui
+     nous poussent à ne pas y aller »).
+
+     LE CHOIX DE CONCEPTION : c'est un SÉJOUR, comme la Palissade juste après
+     (9/08, « descendre est un acte, pas la conséquence d'avoir posé une
+     question »). Le monde dit non de plusieurs façons, et RIEN ne s'en va
+     tant que le joueur n'a pas appuyé lui-même sur « Continuer vers le sud ».
+     La pression est réelle parce qu'elle est JOUÉE : chaque chose qu'on
+     regarde ajoute une raison de faire demi-tour, et le bouton ne change pas.
+
+     ⚠️ PREMIÈRE FOIS SEULEMENT pour la version dense : la variante
+     `chemin-du-sud-revenu` prend sa place dès que le compte porte le Sceau
+     des Landes — à qui est déjà sorti, on ne refait pas la leçon.
+
+     ⚠️ Aucune de ces choses posées ne présuppose ce que le joueur a fait (lot
+     « faux souvenirs » du 24/08) : elles ont été laissées par D'AUTRES.
+
+     ⚠️ JEU COMPLET SEULEMENT. En démo la sortie est la Falaise, qui a déjà
+     son entrée théâtrale et sa ligne d'approche — y ajouter un écran de
+     lecture irait contre le grief « beaucoup de lecture » du 24/08. */
+  {
+    id: "chemin-du-sud",
+    sejour: true,
+    // ⚠️ VISUEL PROVISOIRE : `scene_chemin_du_sud_a` est à produire (le chemin
+    // et les affaires posées, PAS encore le bord). En attendant, la vue du
+    // sud — libre : la branche de `pickWalkImage` qui la servait comme vue de
+    // marche est morte depuis que la Palissade est hors du pool (elle ne peut
+    // plus être « offerte » à une Croisée).
+    illustration: "assets/scene_landes_liaison_sud_d_h.png",
+    narration: [
+      "Le plateau cesse d'être un pays. Plus de murets, plus de poteaux, " +
+        "plus rien qui dise qu'on a vécu ici. Le vent vient du sud, " +
+        "régulier, et il n'a plus le goût de la bruyère.",
+      "Sur les derniers cent pas, des choses posées à intervalles réguliers. " +
+        "Un sac. Un manteau plié en quatre. Une paire de bottes rangées côte " +
+        "à côte, les pointes vers le sud. Rien n'a été jeté ici : tout a été " +
+        "posé.",
+      "Devant, le chemin continue jusqu'à un bord que tu ne vois pas encore. " +
+        "Le silence n'est pas celui de la lande : c'est celui d'après.",
+    ],
+    choices: CHOIX_CHEMIN_DU_SUD,
+    jailerLine: "Ils ont tous posé leurs affaires ici. Aucun n'est revenu les chercher.",
+  },
+  {
+    /* La version de celui qui est DÉJÀ sorti une fois. Une seule chose a
+       changé le long du chemin, et elle suffit. */
+    id: "chemin-du-sud-revenu",
+    remplace: { scene: "chemin-du-sud", si: { id: SCEAU_LANDES, gte: 1 } },
+    sejour: true,
+    illustration: "assets/scene_landes_liaison_sud_d_h.png",
+    narration: [
+      "Le plateau cesse d'être un pays, une seconde fois. Les choses posées " +
+        "le long du chemin n'ont pas bougé — sauf qu'il y en a une de plus, " +
+        "et celle-là est encore sèche.",
+      "Tu sais ce qu'il y a au bout. Ça ne rend pas les cent derniers pas " +
+        "plus courts.",
+    ],
+    choices: CHOIX_CHEMIN_DU_SUD,
+    jailerLine: "Tu connais le chemin. C'est ça que je trouve intéressant.",
+  },
   {
     // Dernière scène de la rotation : la sortie de zone (La Descente) se
     // montre mais reste verrouillée — l'Acte II n'existe pas encore.
@@ -8182,11 +8497,13 @@ let LIEUX_RADICAUX: Set<string> | null = null;
 const FAMILLES_DE_LIEU = ["hameau-accueil", "hameau-halte", "hameau-entree"];
 const LIEUX_HORS_POOL = [
   "borne-frontiere",
+  "chemin-du-sud",
   "bete-chemins-creux",
   "serment-hameau",
   "hameau-entree",
   "hameau-accueil",
   "hameau-halte",
+  "hameau-maison",
   "proces-du-heros",
   "palissade-sud",
   "la-descente",
@@ -8229,7 +8546,14 @@ const APPROACH: Record<string, string> = {
  * le jeu annonce « la Descente n'est plus loin » puis rend le joueur à la
  * rotation, ce qui revient à lui retirer l'objectif qu'il vient d'atteindre.
  */
-export const SORTIE_DE_ZONE = "palissade-sud";
+/**
+ * ⚠️ LA SORTIE DE ZONE COMMENCE UN ÉCRAN PLUS TÔT (01/09) : `chemin-du-sud`
+ * précède la Palissade, et c'est LUI qu'on rejoint au bout de la traversée.
+ * Il en sort par son seul choix `sortie` (« Continuer vers le sud »), qui
+ * mène à `palissade-sud` — la chaîne complète reste Chemin → Palissade →
+ * Veilleur → la Descente.
+ */
+export const SORTIE_DE_ZONE = "chemin-du-sud";
 /**
  * LE PORTILLON (24/08, 3e signalement Patrick : « je me téléporte du Puits au
  * Pendu Mal Fixé, puis je vois le chemin creux depuis le hameau »). La sortie
@@ -8282,6 +8606,7 @@ const LIEU_NOM: Record<string, string> = {
      hameau des Renonçants, il y a le hameau des Renonçants »). Le refus du
      Serment, lui, se passe dehors contre un mur du village. */
   "hameau-halte": "La Grange des Renonçants",
+  "hameau-maison": "La Maison sans Fumée",
   "hameau-halte-dehors": "Le Hameau des Renonçants",
   "marche-muet": "Le Marché Muet",
   "tour-de-guet": "La Tour de Guet effondrée",
@@ -8295,6 +8620,7 @@ const LIEU_NOM: Record<string, string> = {
   "verger-noir": "Le Verger Noir",
   epoux: "Le Verger Noir",
   "meute-grise": "La Lande",
+  "chemin-du-sud": "Le Chemin du Sud",
   "palissade-sud": "La Palissade Sud",
   veilleur: "La Palissade Sud",
   hesitant: "La Borne Frontière",

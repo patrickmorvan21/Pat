@@ -48,10 +48,11 @@
   "petit-tribunal",
   "mare-aux-regards",
   "verger-noir",
-  "meute-grise-1"
+  "meute-grise-1",
+  "palissade-sud"
  ],
- "genere": "2026-08-31T21:18:39Z",
- "commit": "2728ff3",
+ "genere": "2026-09-01T08:01:15Z",
+ "commit": "da9187b",
  "zones": [
   {
    "id": "landes",
@@ -451,7 +452,7 @@
      "roles": [
       "sortie"
      ],
-     "dansPool": false,
+     "dansPool": true,
      "alertes": [
       "orpheline"
      ],
@@ -668,7 +669,7 @@
     "fichier": "monstre_hesitant_b.png",
     "hash": "79ff7f45",
     "taille": 14688,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -799,7 +800,7 @@
     "fichier": "scene_chemin_creux_coude_b.png",
     "hash": "261f995a",
     "taille": 29636,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -1304,7 +1305,7 @@
     "fichier": "scene_colline_aux_gibets_c.png",
     "hash": "38dc9e32",
     "taille": 34788,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -1718,7 +1719,7 @@
     "fichier": "monstre_fossoyeur_poteaux_a.png",
     "hash": "69a5f9b1",
     "taille": 23540,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -1933,7 +1934,7 @@
     "fichier": "monstre_pendu_mal_fixe_v3_b.png",
     "hash": "7b4e1107",
     "taille": 22448,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -1994,7 +1995,7 @@
     "fichier": "scene_hameau_dense2_b.png",
     "hash": "4ee39a67",
     "taille": 29932,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -2092,7 +2093,7 @@
     "fichier": "scene_hameau_dense2_b.png",
     "hash": "4ee39a67",
     "taille": 29932,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -3391,6 +3392,15 @@
      "consequence": "— « La grange, ou les Landes. » Le vieux ne discute même pas. « Les Landes, la nuit, c'est non. » Il attend, la main tendue vers le bout de la rue, jusqu'à ce que tu avances."
     },
     {
+     "id": "maison-sans-fumee",
+     "label": "T'écarter vers la maison sans fumée",
+     "type": "passif",
+     "consequence": "Tu laisses le vieux prendre trois pas d'avance et tu t'arrêtes. Il ne se retourne pas — ici on ne se retourne jamais, on sait. À dix maisons de là, un pignon sans fumée : la seule cheminée froide de la rue.",
+     "sortie": {
+      "toScene": "hameau-maison-1"
+     }
+    },
+    {
      "id": "suivre-vieux",
      "label": "Le suivre",
      "type": "suite"
@@ -3760,7 +3770,8 @@
    "promptImage": "",
    "mèneVers": [],
    "mèneIci": [
-    "hameau-halte-4"
+    "hameau-halte-4",
+    "hameau-maison-3"
    ],
    "roles": [],
    "acces": "lien",
@@ -3798,6 +3809,168 @@
    "mèneIci": [],
    "roles": [],
    "acces": "portillon de la Halte (Serment tenu)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "hameau-maison-1",
+   "narration": [
+    "La porte est basse, le bois gris. Sur le montant, une croix de craie qu'on a frottée aux trois quarts : quelqu'un a commencé à l'effacer et personne n'a osé finir.",
+    "Les volets sont cloués. Pas barrés — cloués, de l'intérieur, et les têtes de clou sont tordues. La serrure, elle, est vieille et simple : trois goupilles, du fer qui a beaucoup servi."
+   ],
+   "choix": [
+    {
+     "id": "crocheter-maison-hameau",
+     "label": "Crocheter la serrure",
+     "type": "passif",
+     "consequence": "Le pêne glisse sans un bruit. La porte s'ouvre sur un noir tiède, et c'est le tiède qui te retient un instant sur le seuil : une maison vide depuis des années ne devrait pas être tiède.",
+     "sortie": {
+      "toScene": "hameau-maison-2"
+     },
+     "miniJeuDemo": "pick",
+     "miniJeuHorsDemo": true,
+     "miniJeuEchec": "Le crochet ripe et le pêne claque, fort, deux fois. En face, un volet s'entrouvre et se referme sans un mot — on ne crie pas, ici, on note. La porte, elle, ne cède pas.",
+     "soupcon": 1
+    },
+    {
+     "id": "ecouter-porte",
+     "label": "Écouter à la porte",
+     "type": "passif",
+     "consequence": "Tu poses l'oreille contre le bois. Rien au rez-de-chaussée : pas un meuble qui travaille, pas une souris. Le silence d'une maison finie. Puis, très haut, au-dessus du plafond, une planche qui reprend sa place — un poids qui vient de se déplacer, lentement, dans des combles où personne ne monte."
+    },
+    {
+     "id": "renoncer-maison",
+     "label": "Rejoindre la grange",
+     "type": "passif",
+     "consequence": "Tu remontes la rue. Le vieux tient la porte de la grange ouverte, exactement comme s'il ne l'avait pas lâchée. « C'est long, dix maisons », dit-il. C'est tout ce qu'il dira.",
+     "sortie": {
+      "toScene": "hameau-halte-2"
+     }
+    }
+   ],
+   "pointsInteret": [],
+   "sejour": true,
+   "image": {
+    "fichier": "scene_landes_hameau_ruelle_c_b.png",
+    "hash": "818ce9ba",
+    "taille": 24488,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "séquence du Hameau",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "hameau-maison-2",
+   "narration": [
+    "La table est mise pour deux et n'a jamais été desservie. La poussière est régulière sur tout — sur les écuelles, sur le pain devenu pierre, sur les deux tabourets tirés du même côté.",
+    "Aux patères, deux manteaux. Personne n'est parti d'ici en emportant quoi que ce soit."
+   ],
+   "choix": [
+    {
+     "id": "monter-combles-maison",
+     "label": "Monter voir les combles",
+     "type": "passif",
+     "consequence": "L'échelle tient encore. La trappe, non : elle est clouée. De l'intérieur du toit, par quelqu'un qui se dépêchait — les clous sont tordus, plantés en biais, et il y en a trois fois trop. En redescendant tu regardes les portes du bas : aucune n'est clouée. Cette maison ne se protégeait pas de ce qui entre par les portes.",
+     "donneDecouverte": "d.combles_cloues"
+    },
+    {
+     "id": "veiller-maison",
+     "label": "Veiller derrière les volets",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu veilles sans lampe, assis contre le mur froid. La ronde passe quatre fois — quatre, comme les encoches de la grange. À la quatrième, l'homme s'arrête devant cette porte-ci, pose la main dessus, et ne la pousse pas. Il vérifiait qu'elle était fermée. Elle l'était, quand il est arrivé.",
+      "reussite": "Tu tiens jusqu'au cœur de la nuit, l'œil au joint du volet. Des pas dans la rue, réguliers, et jamais deux fois la même voix. Ils ne cherchent pas : ils comptent.",
+      "echec": "Le sommeil te prend d'un coup, sans transition. Tu te réveilles le dos raide au gris de l'aube, sans savoir ce qui est passé dans la rue ni combien de fois.",
+      "funeste": "1 naturel. Tu veilles. Et vers le milieu de la nuit, au-dessus de toi, la planche des combles reprend sa place une seconde fois. Rien n'est descendu. Rien n'a essayé. C'est pire. ♦ −2"
+     },
+     "nature": "surnaturel"
+    },
+    {
+     "id": "dormir-maison-hameau",
+     "label": "Dormir jusqu'à l'aube",
+     "type": "passif",
+     "consequence": "Tu prends le lit du fond, celui qui n'a pas servi. Le sommeil vient d'un bloc, sans rêve — et ton corps répond entier au matin, pour la première fois depuis la Borne.",
+     "reposDemo": "complet",
+     "repos": true
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hameau-maison-3",
+   "donneDecouverte": "d.combles_cloues",
+   "nuit": true,
+   "image": {
+    "fichier": "scene_hameau_maison_muree_combles_v6_a.png",
+    "hash": "0964899b",
+    "taille": 24128,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "hameau-maison-3"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "séquence du Hameau",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "hameau-maison-3",
+   "narration": [
+    "Quand tu ouvres, le vieux est assis sur la marche d'en face, les mains sur les genoux. Il ne s'est pas levé pour te surprendre : il a attendu que tu sortes.",
+    "— « C'était la maison des Rouel. » Il se lève sans hâte. « Personne n'y dort. » Il ne dit pas : personne n'a le droit. Il dit : personne n'y dort."
+   ],
+   "choix": [
+    {
+     "id": "demander-rouel",
+     "label": "Demander ce qui leur est arrivé",
+     "type": "passif",
+     "consequence": "— « Ils ont juré comme tout le monde. Et une nuit ils ont cloué leurs combles, comme tout le monde. » Il regarde le pignon, très longtemps. « Sauf qu'eux, au matin, ils ont ouvert. » Il n'ajoute rien. Il n'y a rien à ajouter : la maison est là, et elle est vide."
+    },
+    {
+     "id": "ne-rien-dire-rouel",
+     "label": "Ne rien dire",
+     "type": "passif",
+     "consequence": "Tu ne dis rien, il ne demande rien. Vous remontez la rue ensemble, au même pas. Au bout, deux hommes t'attendent déjà — ils étaient prévenus avant que tu sois réveillé."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "hameau-halte-5",
+   "image": {
+    "fichier": "scene_hameau_halte_5_v2_c.png",
+    "hash": "6c540a40",
+    "taille": 21413,
+    "recent": false,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "hameau-halte-5"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "hameau-halte-5"
+   ],
+   "mèneIci": [
+    "hameau-maison-2"
+   ],
+   "roles": [],
+   "acces": "lien",
    "etat": "valide",
    "alertes": []
   },
@@ -4380,7 +4553,7 @@
     "fichier": "scene_marche_muet_c.png",
     "hash": "311a7b1c",
     "taille": 28666,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -4688,7 +4861,7 @@
     "fichier": "scene_moulin_interieur_a_d.png",
     "hash": "372f7583",
     "taille": 11846,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -6180,7 +6353,7 @@
     "fichier": "scene_mare_aux_regards_a.png",
     "hash": "2552346e",
     "taille": 17038,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -6604,6 +6777,71 @@
    "alertes": []
   },
   {
+   "id": "chemin-du-sud",
+   "narration": [
+    "Le plateau cesse d'être un pays. Plus de murets, plus de poteaux, plus rien qui dise qu'on a vécu ici. Le vent vient du sud, régulier, et il n'a plus le goût de la bruyère.",
+    "Sur les derniers cent pas, des choses posées à intervalles réguliers. Un sac. Un manteau plié en quatre. Une paire de bottes rangées côte à côte, les pointes vers le sud. Rien n'a été jeté ici : tout a été posé.",
+    "Devant, le chemin continue jusqu'à un bord que tu ne vois pas encore. Le silence n'est pas celui de la lande : c'est celui d'après."
+   ],
+   "choix": [],
+   "pointsInteret": [],
+   "sejour": true,
+   "image": {
+    "fichier": "scene_landes_liaison_sud_d_h.png",
+    "hash": "fede2150",
+    "taille": 13178,
+    "recent": false,
+    "existe": true,
+    "statut": "fallback",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "chemin-du-sud-revenu",
+   "narration": [
+    "Le plateau cesse d'être un pays, une seconde fois. Les choses posées le long du chemin n'ont pas bougé — sauf qu'il y en a une de plus, et celle-là est encore sèche.",
+    "Tu sais ce qu'il y a au bout. Ça ne rend pas les cent derniers pas plus courts."
+   ],
+   "choix": [],
+   "pointsInteret": [],
+   "remplace": {
+    "scene": "chemin-du-sud",
+    "condition": "SCEAU_LANDES ≥ 1",
+    "si": {
+     "id": "SCEAU_LANDES",
+     "gte": 1
+    }
+   },
+   "sejour": true,
+   "image": {
+    "fichier": "scene_landes_liaison_sud_d_h.png",
+    "hash": "fede2150",
+    "taille": 13178,
+    "recent": false,
+    "existe": true,
+    "statut": "fallback",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "variante conditionnelle",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
    "id": "palissade-sud",
    "narration": [
     "La Palissade barre le plateau d'un trait noir : des rondins plantés serrés, hauts de deux hommes. Un portillon, une guérite, une lanterne allumée sous un ciel encore clair.",
@@ -6700,11 +6938,9 @@
    ],
    "mèneIci": [],
    "roles": [],
-   "acces": "aucun",
+   "acces": "traversée",
    "etat": "valide",
-   "alertes": [
-    "orpheline"
-   ]
+   "alertes": []
   },
   {
    "id": "veilleur-1-note",
@@ -7558,7 +7794,7 @@
    "fichier": "scene_hameau_dense_c.png",
    "hash": "c3a695ff",
    "taille": 30005,
-   "recent": true,
+   "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -7624,7 +7860,7 @@
    "fichier": "scene_lande_generique_3_b_f_a.png",
    "hash": "8c31ff3d",
    "taille": 22674,
-   "recent": false,
+   "recent": true,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -7646,7 +7882,7 @@
    "fichier": "scene_landes_liaison_fourche_b_e_a.png",
    "hash": "e97725f3",
    "taille": 29134,
-   "recent": false,
+   "recent": true,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -7657,7 +7893,7 @@
    "fichier": "scene_landes_liaison_plateau_e_b_a.png",
    "hash": "6dc92a0e",
    "taille": 20931,
-   "recent": false,
+   "recent": true,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -7879,6 +8115,16 @@
    "type": "principal"
   },
   {
+   "de": "hameau-maison-2",
+   "vers": "hameau-maison-3",
+   "type": "principal"
+  },
+  {
+   "de": "hameau-maison-3",
+   "vers": "hameau-halte-5",
+   "type": "principal"
+  },
+  {
    "de": "troupeau-sans-berger",
    "vers": "troupeau-sans-berger-2",
    "type": "principal"
@@ -8034,7 +8280,7 @@
    "fichier": "monstre_appele_descente.png",
    "hash": "fb4ce0fd",
    "taille": 30568,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "appele_descente"
   },
@@ -8050,7 +8296,7 @@
    "fichier": "monstre_colporteur_b.png",
    "hash": "d50790a0",
    "taille": 28370,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "colporteur"
   },
@@ -8058,7 +8304,7 @@
    "fichier": "monstre_corbeaux_du_compte_b.png",
    "hash": "03b469b0",
    "taille": 28966,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "corbeaux_du_compte"
   },
@@ -8066,7 +8312,7 @@
    "fichier": "monstre_corbeaux_du_compte_c_b.png",
    "hash": "5c17aa5b",
    "taille": 7836,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "corbeaux_du_compte"
   },
@@ -8098,7 +8344,7 @@
    "fichier": "monstre_ecrivain_public_d.png",
    "hash": "13d5604d",
    "taille": 12534,
-   "recent": true,
+   "recent": false,
    "groupe": "attend",
    "racine": "ecrivain_public"
   },
@@ -8114,7 +8360,7 @@
    "fichier": "monstre_epoux_verger_a.png",
    "hash": "78546dfe",
    "taille": 32443,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "epoux_verger"
   },
@@ -8154,7 +8400,7 @@
    "fichier": "monstre_fille_moulin_dos_v2_a.png",
    "hash": "acfc2093",
    "taille": 20117,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "fille_moulin_dos"
   },
@@ -8162,7 +8408,7 @@
    "fichier": "monstre_fille_moulin_dos_v2_b_b.png",
    "hash": "649165b3",
    "taille": 9805,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "fille_moulin_dos"
   },
@@ -8170,7 +8416,7 @@
    "fichier": "monstre_fille_moulin_ouvrage_c.png",
    "hash": "03e7eb7d",
    "taille": 10442,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "fille_moulin_ouvrage"
   },
@@ -8178,7 +8424,7 @@
    "fichier": "monstre_fille_moulin_ouvrage_d_b.png",
    "hash": "afcd9877",
    "taille": 11741,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "fille_moulin_ouvrage"
   },
@@ -8194,7 +8440,7 @@
    "fichier": "monstre_fossoyeur_trou_1_c.png",
    "hash": "66f02057",
    "taille": 14405,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "fossoyeur_trou_1"
   },
@@ -8202,7 +8448,7 @@
    "fichier": "monstre_fossoyeur_trou_3_a.png",
    "hash": "acf3368c",
    "taille": 17126,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "fossoyeur_trou_3"
   },
@@ -8226,7 +8472,7 @@
    "fichier": "monstre_gamin_depart_c.png",
    "hash": "d8680ae4",
    "taille": 10514,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "gamin_depart"
   },
@@ -8234,7 +8480,7 @@
    "fichier": "monstre_gamin_murets_a.png",
    "hash": "020cdcd3",
    "taille": 28618,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "gamin_murets"
   },
@@ -8266,7 +8512,7 @@
    "fichier": "monstre_guetteur_tour_c.png",
    "hash": "e43e23f5",
    "taille": 6029,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "guetteur_tour"
   },
@@ -8282,7 +8528,7 @@
    "fichier": "monstre_hameau_entree_3_v2_a.png",
    "hash": "84ac4512",
    "taille": 25419,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "hameau_entree_3"
   },
@@ -8290,7 +8536,7 @@
    "fichier": "monstre_hameau_entree_4_c.png",
    "hash": "5349dd7f",
    "taille": 5063,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "hameau_entree_4"
   },
@@ -8354,7 +8600,7 @@
    "fichier": "monstre_la_fille_moulin_v2_a.png",
    "hash": "51147c07",
    "taille": 12150,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "la_fille_moulin"
   },
@@ -8362,7 +8608,7 @@
    "fichier": "monstre_la_fille_moulin_v2_b_d.png",
    "hash": "e3cb8555",
    "taille": 13355,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "la_fille_moulin"
   },
@@ -8378,7 +8624,7 @@
    "fichier": "monstre_mains_du_puits_a.png",
    "hash": "e53cc406",
    "taille": 21734,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "mains_du_puits"
   },
@@ -8386,7 +8632,7 @@
    "fichier": "monstre_marcheur_1_b.png",
    "hash": "a352d5cd",
    "taille": 6372,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "marcheur_1"
   },
@@ -8426,7 +8672,7 @@
    "fichier": "monstre_marcheur_rebours_v2_a.png",
    "hash": "ba1a5091",
    "taille": 20815,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "marcheur_rebours"
   },
@@ -8442,7 +8688,7 @@
    "fichier": "monstre_palissade_sud_2_c.png",
    "hash": "e6c5355d",
    "taille": 4463,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "palissade_sud_2"
   },
@@ -8466,7 +8712,7 @@
    "fichier": "monstre_pendu_mal_fixe_v2_c.png",
    "hash": "39952ee0",
    "taille": 11667,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "pendu_mal_fixe"
   },
@@ -8482,7 +8728,7 @@
    "fichier": "monstre_pendu_qui_parle_2_a.png",
    "hash": "2b1bc9da",
    "taille": 9886,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "pendu_qui_parle_2"
   },
@@ -8490,7 +8736,7 @@
    "fichier": "monstre_pendu_qui_parle_a.png",
    "hash": "26043560",
    "taille": 33787,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "pendu_qui_parle"
   },
@@ -8498,7 +8744,7 @@
    "fichier": "monstre_rebouteux_a.png",
    "hash": "5db43f82",
    "taille": 21275,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "rebouteux"
   },
@@ -8538,7 +8784,7 @@
    "fichier": "monstre_temoin_ruelle_v5_c.png",
    "hash": "f98166ea",
    "taille": 15948,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "temoin_ruelle"
   },
@@ -8562,7 +8808,7 @@
    "fichier": "monstre_troupeau_compte_b.png",
    "hash": "9eb350eb",
    "taille": 20556,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "troupeau_compte"
   },
@@ -8602,7 +8848,7 @@
    "fichier": "monstre_veuve_cordes_v2_a.png",
    "hash": "0dd638cf",
    "taille": 19967,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "veuve_cordes"
   },
@@ -8626,7 +8872,7 @@
    "fichier": "objet_brin_chanvre_beni_b.png",
    "hash": "520a2a06",
    "taille": 12610,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "brin_chanvre_beni"
   },
@@ -8634,7 +8880,7 @@
    "fichier": "objet_carnet_fossoyeur_d.png",
    "hash": "1843d0df",
    "taille": 21124,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "carnet_fossoyeur"
   },
@@ -8642,7 +8888,7 @@
    "fichier": "objet_cle_maison_muree_a.png",
    "hash": "b432c6c4",
    "taille": 10839,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "cle_maison_muree"
   },
@@ -8650,7 +8896,7 @@
    "fichier": "objet_cle_rouillee.png",
    "hash": "793c65ac",
    "taille": 6063,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "cle_rouillee"
   },
@@ -8658,7 +8904,7 @@
    "fichier": "objet_corde_coupee_fille_a.png",
    "hash": "24212843",
    "taille": 21072,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "corde_coupee_fille"
   },
@@ -8666,7 +8912,7 @@
    "fichier": "objet_craie_condamne_a.png",
    "hash": "485174ef",
    "taille": 10502,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "craie_condamne"
   },
@@ -8690,7 +8936,7 @@
    "fichier": "objet_dague_cendres_c.png",
    "hash": "e45fbc83",
    "taille": 26661,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "dague_cendres"
   },
@@ -8698,7 +8944,7 @@
    "fichier": "objet_de_vingt_c.png",
    "hash": "dffe1859",
    "taille": 28005,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "de_vingt"
   },
@@ -8714,7 +8960,7 @@
    "fichier": "objet_dent_meute_d.png",
    "hash": "7841d397",
    "taille": 13039,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "dent_meute"
   },
@@ -8722,7 +8968,7 @@
    "fichier": "objet_echarde_grand_gibet_b.png",
    "hash": "0e95a608",
    "taille": 15715,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "echarde_grand_gibet"
   },
@@ -8730,7 +8976,7 @@
    "fichier": "objet_fruit_cendre_a.png",
    "hash": "c530deeb",
    "taille": 11858,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "fruit_cendre"
   },
@@ -8738,7 +8984,7 @@
    "fichier": "objet_grelot_charretier_a.png",
    "hash": "551a61ed",
    "taille": 10863,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "grelot_charretier"
   },
@@ -8746,7 +8992,7 @@
    "fichier": "objet_jouet_petite_fixee_a.png",
    "hash": "42be4985",
    "taille": 13926,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "jouet_petite_fixee"
   },
@@ -8754,7 +9000,7 @@
    "fichier": "objet_lanterne_rouillee.png",
    "hash": "545834ba",
    "taille": 3682,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "lanterne_rouillee"
   },
@@ -8762,7 +9008,7 @@
    "fichier": "objet_lanterne_rouillee_guerite.png",
    "hash": "4c4705fd",
    "taille": 29263,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "lanterne_rouillee_guerite"
   },
@@ -8770,7 +9016,7 @@
    "fichier": "objet_lanterne_veilleur_2_b.png",
    "hash": "2f7722d1",
    "taille": 7402,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "lanterne_veilleur_2"
   },
@@ -8778,7 +9024,7 @@
    "fichier": "objet_lanterne_veilleur_3_c.png",
    "hash": "94b09b71",
    "taille": 9679,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "lanterne_veilleur_3"
   },
@@ -8786,7 +9032,7 @@
    "fichier": "objet_lunette_guetteur_b.png",
    "hash": "21f5fabb",
    "taille": 6646,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "lunette_guetteur"
   },
@@ -8802,7 +9048,7 @@
    "fichier": "objet_miroir_ame_a.png",
    "hash": "2456cd89",
    "taille": 10880,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "miroir_ame"
   },
@@ -8810,7 +9056,7 @@
    "fichier": "objet_miroir_poche_fele_c.png",
    "hash": "681fd21d",
    "taille": 9981,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "miroir_poche_fele"
   },
@@ -8818,7 +9064,7 @@
    "fichier": "objet_offrandes_borne_c.png",
    "hash": "d8ddcd63",
    "taille": 23970,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "offrandes_borne"
   },
@@ -8882,7 +9128,7 @@
    "fichier": "scene_borne_gravures_a_d.png",
    "hash": "e4dd0628",
    "taille": 12652,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "borne_gravures"
   },
@@ -8890,7 +9136,7 @@
    "fichier": "scene_champ_des_fixes_b.png",
    "hash": "ac1408d0",
    "taille": 30830,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "champ_des_fixes"
   },
@@ -8906,7 +9152,7 @@
    "fichier": "scene_champ_poteau_retire_c.png",
    "hash": "51a62089",
    "taille": 14995,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "champ_poteau_retire"
   },
@@ -8922,7 +9168,7 @@
    "fichier": "scene_champ_poteaux_vierges_b.png",
    "hash": "0ffc6d78",
    "taille": 10052,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "champ_poteaux_vierges"
   },
@@ -8938,7 +9184,7 @@
    "fichier": "scene_champ_tombe_manquante_a_c.png",
    "hash": "e11aa5ad",
    "taille": 14607,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "champ_tombe_manquante"
   },
@@ -8954,7 +9200,7 @@
    "fichier": "scene_chapelle_cloche_sans_battant_b.png",
    "hash": "b7b2ae8c",
    "taille": 21366,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "chapelle_cloche_sans_battant"
   },
@@ -8962,7 +9208,7 @@
    "fichier": "scene_chapelle_des_cordes_d.png",
    "hash": "334043b0",
    "taille": 22532,
-   "recent": true,
+   "recent": false,
    "groupe": "attend",
    "racine": "chapelle_des_cordes"
   },
@@ -8978,7 +9224,7 @@
    "fichier": "scene_chapelle_mur_cordes_v3_c.png",
    "hash": "c50f4a0f",
    "taille": 10553,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "chapelle_mur_cordes"
   },
@@ -8994,7 +9240,7 @@
    "fichier": "scene_chemin_charrette_a_c.png",
    "hash": "0b772c65",
    "taille": 10947,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "chemin_charrette"
   },
@@ -9002,7 +9248,7 @@
    "fichier": "scene_chemin_creux_c.png",
    "hash": "29c27c48",
    "taille": 22199,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "chemin_creux"
   },
@@ -9018,7 +9264,7 @@
    "fichier": "scene_chemin_talus_a_c.png",
    "hash": "df0a1dec",
    "taille": 9840,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "chemin_talus"
   },
@@ -9026,7 +9272,7 @@
    "fichier": "scene_colline_gibet_vide_a_b.png",
    "hash": "83c68692",
    "taille": 21563,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "colline_gibet_vide"
   },
@@ -9042,7 +9288,7 @@
    "fichier": "scene_colline_pied_grand_gibet_b.png",
    "hash": "2559c3f3",
    "taille": 15296,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "colline_pied_grand_gibet"
   },
@@ -9066,7 +9312,7 @@
    "fichier": "scene_hameau_accueil_cloche_b.png",
    "hash": "eeba581e",
    "taille": 18951,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "hameau_accueil_cloche"
   },
@@ -9074,7 +9320,7 @@
    "fichier": "scene_hameau_accueil_cloche_c.png",
    "hash": "22f05ad0",
    "taille": 21661,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "hameau_accueil_cloche"
   },
@@ -9082,7 +9328,7 @@
    "fichier": "scene_hameau_accueil_depart_a.png",
    "hash": "9b4ee237",
    "taille": 14249,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "hameau_accueil_depart"
   },
@@ -9090,7 +9336,7 @@
    "fichier": "scene_hameau_accueil_enfant_c.png",
    "hash": "83d9cfac",
    "taille": 16876,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "hameau_accueil_enfant"
   },
@@ -9098,7 +9344,7 @@
    "fichier": "scene_hameau_accueil_mur_a.png",
    "hash": "f7874599",
    "taille": 16632,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "hameau_accueil_mur"
   },
@@ -9106,7 +9352,7 @@
    "fichier": "scene_hameau_accueil_mur_c.png",
    "hash": "acd7f96f",
    "taille": 19016,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "hameau_accueil_mur"
   },
@@ -9114,7 +9360,7 @@
    "fichier": "scene_hameau_accueil_table_a.png",
    "hash": "dff69101",
    "taille": 14598,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "hameau_accueil_table"
   },
@@ -9122,7 +9368,7 @@
    "fichier": "scene_hameau_accueil_volet_c.png",
    "hash": "05db5d2a",
    "taille": 15638,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "hameau_accueil_volet"
   },
@@ -9154,7 +9400,7 @@
    "fichier": "scene_hameau_dense_b.png",
    "hash": "bcb014f6",
    "taille": 29962,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "hameau_dense"
   },
@@ -9162,7 +9408,7 @@
    "fichier": "scene_hameau_dense_d.png",
    "hash": "8bdf36f0",
    "taille": 24764,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "hameau_dense"
   },
@@ -9211,15 +9457,7 @@
    "hash": "c24d5c09",
    "taille": 18970,
    "recent": false,
-   "groupe": "doublon",
-   "racine": "hameau_maison_muree_combles"
-  },
-  {
-   "fichier": "scene_hameau_maison_muree_combles_v6_a.png",
-   "hash": "0964899b",
-   "taille": 24128,
-   "recent": false,
-   "groupe": "doublon",
+   "groupe": "brancher",
    "racine": "hameau_maison_muree_combles"
   },
   {
@@ -9234,7 +9472,7 @@
    "fichier": "scene_lande_arbres_morts_c.png",
    "hash": "f272f58d",
    "taille": 12824,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "lande_arbres_morts"
   },
@@ -9242,7 +9480,7 @@
    "fichier": "scene_lande_generique_1.png",
    "hash": "2c4e2337",
    "taille": 20781,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "lande_generique_1"
   },
@@ -9250,7 +9488,7 @@
    "fichier": "scene_lande_generique_2.png",
    "hash": "85750f19",
    "taille": 32814,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "lande_generique_2"
   },
@@ -9258,7 +9496,7 @@
    "fichier": "scene_lande_generique_3.png",
    "hash": "9aa596fa",
    "taille": 24607,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "lande_generique_3"
   },
@@ -9274,7 +9512,7 @@
    "fichier": "scene_lande_generique_4.png",
    "hash": "152922e2",
    "taille": 21865,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "lande_generique_4"
   },
@@ -9290,7 +9528,7 @@
    "fichier": "scene_landes_hameau_grange_a.png",
    "hash": "2faebe69",
    "taille": 16543,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "landes_hameau_grange"
   },
@@ -9306,7 +9544,7 @@
    "fichier": "scene_landes_hameau_ruelle_b.png",
    "hash": "9a56edb6",
    "taille": 26939,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "landes_hameau_ruelle"
   },
@@ -9314,7 +9552,7 @@
    "fichier": "scene_landes_liaison_chemin_creux_a.png",
    "hash": "a0b0f0d4",
    "taille": 32596,
-   "recent": true,
+   "recent": false,
    "groupe": "attend",
    "racine": "landes_liaison_chemin_creux"
   },
@@ -9322,7 +9560,7 @@
    "fichier": "scene_landes_liaison_fourche_a.png",
    "hash": "a21db23f",
    "taille": 30387,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "landes_liaison_fourche"
   },
@@ -9338,7 +9576,7 @@
    "fichier": "scene_landes_liaison_plateau_d.png",
    "hash": "4d03ba9f",
    "taille": 28299,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "landes_liaison_plateau"
   },
@@ -9354,7 +9592,7 @@
    "fichier": "scene_landes_liaison_sud_c.png",
    "hash": "e4a31bad",
    "taille": 14946,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "landes_liaison_sud"
   },
@@ -9386,7 +9624,7 @@
    "fichier": "scene_mare_aux_regards_2_b.png",
    "hash": "1ffbe56a",
    "taille": 16280,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "mare_aux_regards_2"
   },
@@ -9410,7 +9648,7 @@
    "fichier": "scene_mare_creux_doubles_v2_b.png",
    "hash": "9c15e27d",
    "taille": 25530,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "mare_creux_doubles"
   },
@@ -9442,7 +9680,7 @@
    "fichier": "scene_moulin_campement_2_a.png",
    "hash": "2d91a0f3",
    "taille": 22254,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "moulin_campement_2"
   },
@@ -9490,7 +9728,7 @@
    "fichier": "scene_palissade_portillon_a_b.png",
    "hash": "49b71ad8",
    "taille": 5981,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "palissade_portillon"
   },
@@ -9498,7 +9736,7 @@
    "fichier": "scene_palissade_rondins_a_c.png",
    "hash": "a092f571",
    "taille": 13377,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "palissade_rondins"
   },
@@ -9506,7 +9744,7 @@
    "fichier": "scene_palissade_sud_a_a.png",
    "hash": "aaa66925",
    "taille": 14518,
-   "recent": true,
+   "recent": false,
    "groupe": "attend",
    "racine": "palissade_sud"
   },
@@ -9514,7 +9752,7 @@
    "fichier": "scene_petit_tribunal_a.png",
    "hash": "0342cdc2",
    "taille": 31898,
-   "recent": true,
+   "recent": false,
    "groupe": "attend",
    "racine": "petit_tribunal"
   },
@@ -9530,7 +9768,7 @@
    "fichier": "scene_proces_du_heros_v4_c.png",
    "hash": "9b4d24d9",
    "taille": 23824,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "proces_du_heros"
   },
@@ -9554,7 +9792,7 @@
    "fichier": "scene_puits_condamne_v2_a.png",
    "hash": "d7dd21eb",
    "taille": 29529,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "puits_condamne"
   },
@@ -9562,7 +9800,7 @@
    "fichier": "scene_renoncer_v2_b.png",
    "hash": "c20a5b31",
    "taille": 19691,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "renoncer"
   },
@@ -9570,7 +9808,7 @@
    "fichier": "scene_tour_escalier_vers_rien_b.png",
    "hash": "e404f4e6",
    "taille": 8038,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "tour_escalier_vers_rien"
   },
@@ -9578,7 +9816,7 @@
    "fichier": "scene_tour_meurtriere_sud_a.png",
    "hash": "d5008af2",
    "taille": 19670,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "tour_meurtriere_sud"
   },
@@ -9586,7 +9824,7 @@
    "fichier": "scene_tour_pierres_rangees_a.png",
    "hash": "a11ecafb",
    "taille": 20594,
-   "recent": true,
+   "recent": false,
    "groupe": "brancher",
    "racine": "tour_pierres_rangees"
   },
@@ -9634,7 +9872,7 @@
    "fichier": "scene_tribunal_bancs_a_c.png",
    "hash": "2edb5367",
    "taille": 19376,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "tribunal_bancs"
   },
@@ -9642,7 +9880,7 @@
    "fichier": "scene_tribunal_chaire_a_c.png",
    "hash": "c48ed902",
    "taille": 9462,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "tribunal_chaire"
   },
@@ -9650,7 +9888,7 @@
    "fichier": "scene_tribunal_ordonnance_a_c.png",
    "hash": "76417e2b",
    "taille": 16420,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "tribunal_ordonnance"
   },
@@ -9682,7 +9920,7 @@
    "fichier": "scene_verger_noir_d.png",
    "hash": "250c0753",
    "taille": 28850,
-   "recent": true,
+   "recent": false,
    "groupe": "attend",
    "racine": "verger_noir"
   },
@@ -11011,13 +11249,13 @@
   }
  ],
  "totaux": {
-  "scenes": 102,
+  "scenes": 107,
   "pointsInteret": 0,
-  "choix": 294,
-  "illustrations": 435,
+  "choix": 303,
+  "illustrations": 436,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 211,
+  "reserve": 210,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

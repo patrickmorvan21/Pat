@@ -2438,7 +2438,10 @@ export default function Scene() {
         // repartir tourner dans la lande. L'objectif atteint était repris.
         // Désormais elle n'est plus tirable, et c'est ELLE qu'on rejoint au
         // bout de la traversée : Palissade → Veilleur → la Descente.
-        nextScene = resoudre("palissade-sud", runRef.current) ?? DESCENTE_SCENE;
+        // ⚠️ SOURCE UNIQUE (01/09) : la sortie de zone passe désormais par le
+        // Chemin du Sud, qui mène lui-même à la Palissade. Écrire l'id en dur
+        // ici faisait sauter le nouvel écran sur CE chemin-là seulement.
+        nextScene = resoudre(SORTIE_DE_ZONE, runRef.current) ?? DESCENTE_SCENE;
         trav.done = true;
         trav.phase = "scene";
         trav.current = nextScene.id;
