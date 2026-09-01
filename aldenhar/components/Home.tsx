@@ -30,7 +30,7 @@ import Codex from "@/components/Codex";
  */
 
 export default function Home() {
-  const [phase, setPhase] = useState<"boot" | "home" | "intro" | "prologue" | "acte" | "game">(
+  const [phase, setPhase] = useState<"boot" | "home" | "reprise" | "intro" | "prologue" | "acte" | "game">(
     "boot",
   );
   const [saved, setSaved] = useState(false);
@@ -43,7 +43,6 @@ export default function Home() {
   const [citation, setCitation] = useState<string | null>(null);
   const [overlay, setOverlay] = useState<"reliques" | "registre" | "codex" | "options" | null>(null);
   const [aDuCodex, setADuCodex] = useState(false);
-  const [reprise, setReprise] = useState<string[] | null>(null);
 
   useEffect(() => {
     // Mode démo (script 24/08) : `?demo=1` dans l'URL pose le drapeau — un
@@ -62,24 +61,6 @@ export default function Home() {
     const m0 = loadMemory();
     setADuPasse(m0.relics.length > 0 || m0.fallen.length > 0);
     setADuCodex(Object.keys(m0.codex ?? {}).length > 0);
-    // Rappel de contexte sous « Reprendre » (spec 4/08 A1) : une vie en cours
-    // donne envie d'y retourner — un bouton nu est abstrait. Nom · Jour, puis
-    // Acte · lieu courant. En plein Seuil, on dit juste où on en est.
-    if (hasSavedRun()) {
-      const run = loadRun();
-      setReprise(
-        run.prologue && !run.prologue.done
-          ? ["Au Seuil — le pacte n'est pas signé"]
-          : [
-              `${run.heroName} · Jour ${run.day}`,
-              // « Les Landes » = la ZONE (toute la prose du jeu la nomme
-              // ainsi) ; « Les Lisières » reste le nom de l'ACTE sur son
-              // carton (Figma). Le rappel parle du lieu où l'on est, donc de
-              // la zone — mélanger les deux ici perdait le joueur (7/08).
-              `Les Landes · ${lieuNom(run.trav?.current)}`,
-            ]
-      );
-    }
     // La citation du Geôlier devient variable (30/07) : dès la première mort,
     // la tagline de l'accueil est SA voix — tirée du pool conditionné par le
     // contexte de la dernière mort, jamais deux fois la même de suite.
@@ -120,15 +101,20 @@ export default function Home() {
    * écran d'acte → zone. Une reprise saute droit au jeu, et une run neuve sur
    * un compte qui a déjà lu l'intro démarre au Seuil.
    */
-  function enterGame() {
+  function enterGame(reprend = false) {
     if (loadRun().prologue.done) {
-      setPhase("game");
+      // LE CARTON DE REPRISE (retour Patrick 01/09) : le rappel « Nom · Jour /
+      // Les Landes · Lieu » vivait sous le bouton, en 10 px gris — il alourdit
+      // l'accueil sans qu'on le lise. Il devient un écran plein, joué APRÈS le
+      // clic : c'est là qu'on a besoin de savoir où l'on était.
+      setPhase(reprend ? "reprise" : "game");
       return;
     }
     setPhase(shouldShowIntro() ? "intro" : "prologue");
   }
 
   if (phase === "game") return <Scene />;
+  if (phase === "reprise") return <CartonReprise onDone={() => setPhase("game")} />;
   if (phase === "intro") return <Intro onDone={() => setPhase("prologue")} />;
   // ⚠️ LE CARTON D'ACTE SE JOUE AUSSI EN DÉMO (retour Patrick, 25/08 : « on a
   // perdu l'introduction de l'acte 1 les Lisières, c'était beau »). Il avait
@@ -178,14 +164,7 @@ export default function Home() {
               <div className="mt-[28px] flex w-[298px] flex-col gap-[12px]">
                 {saved ? (
                   <>
-                    <HomeCta label="REPRENDRE" onClick={enterGame} />
-                    {reprise && (
-                      <div className="pointer-events-none -mt-[4px] text-center font-mono text-[10px] leading-[1.6] tracking-[1px] text-[var(--color-ink)] opacity-50">
-                        {reprise.map((l) => (
-                          <div key={l}>{l}</div>
-                        ))}
-                      </div>
-                    )}
+                    <HomeCta label="REPRENDRE" onClick={() => enterGame(true)} />
                     <HomeCta
                       secondary
                       label="RECOMMENCER"
@@ -340,4 +319,53 @@ function HomeOverlay({ kind, onClose }: { kind: "options"; onClose: () => void }
     assets pixel rendaient un glyphe illisible). Réutilisée partout. */
 export function CloseX({ onClose }: { onClose: () => void }) {
   return <BoutonNav icone="croix" onClick={onClose} label="Fermer" />;
+}
+
+/**
+ * LE CARTON DE REPRISE (retour Patrick 01/09).
+ *
+ * « Le texte en dessous de reprendre fait trop bêta » — deux lignes de 10 px
+ * grises sous le bouton, qui alourdissaient l'accueil sans qu'on les lise.
+ * Elles sont retirées, et ce qu'elles disaient est joué APRÈS le clic, en
+ * plein cadre : c'est au moment de retourner dans la partie qu'on a besoin de
+ * savoir où l'on en était.
+ *
+ * ⚠️ Ce n'est PAS un écran de plus à taper : il se retire tout seul (2,2 s).
+ * Le tap n'est qu'un raccourci — la cadence du 31/08 (« les taps morts ») ne
+ * tolère pas un tap obligatoire sur chaque reprise.
+ *
+ * Sans maquette Figma : langage du SKILL (Instrument Serif pour le nom,
+ * Roboto Mono pour le reste, trois couleurs, aucun dégradé).
+ */
+function CartonReprise({ onDone }: { onDone: () => void }) {
+  // Lu au montage plutôt que passé en prop : la run ne peut pas être périmée.
+  const [run] = useState(() => loadRun());
+  useEffect(() => {
+    const t = setTimeout(onDone, 2200);
+    return () => clearTimeout(t);
+  }, [onDone]);
+  return (
+    <main className="flex min-h-dvh items-center justify-center">
+      <div
+        className="phone-frame relative flex h-[800px] max-h-[100dvh] w-[390px] shrink-0 cursor-pointer flex-col items-center justify-center gap-[14px] overflow-clip bg-[var(--color-bg)] px-[30px]"
+        onClick={onDone}
+      >
+        <p className="font-mono text-[12px] uppercase tracking-[2.4px] text-[var(--color-ink)] opacity-50">
+          Tu reprends
+        </p>
+        <p className="text-center font-serif text-[36px] leading-none text-[var(--color-accent)]">
+          {run.heroName}
+        </p>
+        {/* « Les Landes » = la ZONE (toute la prose la nomme ainsi) ; « Les
+            Lisières » reste le nom de l'ACTE, sur son carton (décision 10/08).
+            Ce carton parle de l'endroit où l'on marche, donc de la zone. */}
+        <p className="text-center font-mono text-[13px] leading-[1.6] text-[var(--color-ink)]">
+          Jour {run.day} · Les Landes
+        </p>
+        <p className="text-center font-mono text-[13px] leading-[1.6] text-[var(--color-ink)] opacity-50">
+          {lieuNom(run.trav?.current)}
+        </p>
+      </div>
+    </main>
+  );
 }

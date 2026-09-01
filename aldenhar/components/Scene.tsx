@@ -2118,6 +2118,42 @@ export default function Scene() {
     setExpChoix(null);
     setExpRetire(null);
     let nextScene: SceneType;
+    /**
+     * ⚠️ ON N'ARRIVE PAS OÙ ON ALLAIT (correctif 01/09).
+     *
+     * Six branches ci-dessous DÉTOURNENT la traversée : le procès à Soupçon
+     * comble, le geste garanti de la Borne, la nuit de démo, la Falaise, le
+     * retour d'une menace laissée active, le Troupeau. Chacune remplace
+     * `nextScene` — mais `opts.toDest` reste posé sur la destination CHOISIE,
+     * donc sa couture de village, sa phrase d'approche et sa phrase d'arrivée
+     * continuaient de se jouer sur l'écran d'une AUTRE scène.
+     *
+     * Symptôme vu par Patrick (01/09) : la bannière « La Meute Grise » servie
+     * au-dessus de l'approche du Pendu Mal Fixé, sur la vue de marche.
+     *
+     * Le procès avait reçu sa garde le 8/08 (`!nextScene.fixationTrial`) —
+     * mais une garde par CAS se périme au déroutage suivant, et c'est
+     * exactement ce qui est arrivé aux cinq autres. Un seul drapeau, posé par
+     * la branche qui détourne : tout bloc qui décrit le VOYAGE vers `toDest`
+     * le teste. `fixationTrial` reste réservé à ce qui est propre au procès
+     * (narration silencieuse, dépositions, témoin).
+     */
+    let deroute = false;
+    /**
+     * ⚠️ ON N'ARRIVE PAS TOUJOURS OÙ LE BOUTON DISAIT (correctif 01/09, 2e cause).
+     *
+     * Deux substitutions vivent DANS la branche `opts.toDest` et ne sont pas
+     * des déroutages : l'embuscade de la Bête (`chemin-creux` →
+     * `bete-chemins-creux`) et la Meute en chemin (démo). Elles gardent
+     * volontairement `toDest` — c'est lui qui tient la comptabilité du lieu
+     * (visited, Jour de marche, couture du village). Mais la PROSE DU VOYAGE
+     * doit suivre le lieu réellement atteint, sinon l'écran sert la bannière
+     * d'une rencontre au-dessus de l'approche d'une autre.
+     *
+     * Symptôme vu par Patrick (01/09) : « La Meute Grise » servie au-dessus de
+     * « Un craquement rythme ta marche… » (l'approche du Pendu Mal Fixé).
+     */
+    let destReelle: string | undefined = opts?.toDest;
     // Armé plus bas si la Croisée qui vient a perdu une de ses deux routes
     // (échec dur au coup précédent, hors séjour).
     let routeFermeeIci = false;
@@ -2166,6 +2202,7 @@ export default function Scene() {
     ) {
       nextScene = sceneById("proces-du-heros")!;
       trav.phase = "scene";
+      deroute = true;
       trav.current = nextScene.id; // hors `visited` : ce n'est pas un lieu du pool
     } else if (opts?.toScene) {
       // Rencontre ouverte par un point d'intérêt : on reste « dans » le lieu du
@@ -2294,6 +2331,7 @@ export default function Scene() {
           if (r.menace?.id === "meute") r.menace = null;
         });
       trav.phase = "scene";
+      destReelle = cible;
       // Reprise fidèle : fermer l'app pendant l'embuscade doit rendre la
       // Bête, pas le lieu derrière elle.
       trav.current = cible;
@@ -2452,6 +2490,7 @@ export default function Scene() {
             : DEMO_BORNE_CADRAGES.defaut;
         nextScene = { ...base, narration: [cadrage, ...base.narration] };
         trav.phase = "scene";
+        deroute = true;
         trav.current = "demo-borne-geste";
         persist((r) => {
           r.vus = noter(r.vus, "demo|geste|borne-frontiere");
@@ -2470,6 +2509,7 @@ export default function Scene() {
            s'impose — trois portes, dont le Crochetage. */
         nextScene = resoudre("demo-nuit", runRef.current)!;
         trav.phase = "scene";
+        deroute = true;
         trav.current = "demo-nuit";
         persist((r) => {
           r.vus = noter(r.vus, "demo|nuit");
@@ -2485,6 +2525,7 @@ export default function Scene() {
         const base = resoudre("falaise-cordes", runRef.current)!;
         nextScene = { ...base, narration: [DEMO_FALAISE_APPROCHE, ...base.narration] };
         trav.phase = "scene";
+        deroute = true;
         trav.current = "falaise-cordes";
         persist((r) => {
           r.vus = noter(r.vus, "demo|falaise");
@@ -2502,6 +2543,7 @@ export default function Scene() {
       ) {
         nextScene = resoudre("menace-retour-" + men.id, runRef.current)!;
         trav.phase = "scene";
+        deroute = true;
         trav.current = nextScene.id; // hors `visited` : pas un lieu du pool
         persist((r) => {
           r.menace = null;
@@ -2509,6 +2551,7 @@ export default function Scene() {
       } else if (fromEst && !troupeauVu && !scene.liaison && chance(0.35)) {
         nextScene = resoudre("troupeau-sans-berger", runRef.current)!;
         trav.phase = "scene";
+        deroute = true;
         trav.current = nextScene.id; // hors `visited` : pas un lieu du pool
         persist((r) => {
           r.faits = {
@@ -2864,15 +2907,15 @@ export default function Scene() {
     // pas se jouer (transcript v3C du 8/08 : l'arrivée à la Mare — « Le vent
     // tombe d'un coup… tu as longé le talus » — collée à l'ouverture du
     // procès sur le même écran, deux lieux dans la même respiration).
-    if (opts?.toDest && !nextScene.fixationTrial) {
+    if (destReelle && !deroute) {
       const origine = trav.visited.length >= 2 ? trav.visited[trav.visited.length - 2] : undefined;
-      const entre = isHameauInterior(opts.toDest) && !isHameauInterior(origine);
+      const entre = isHameauInterior(destReelle) && !isHameauInterior(origine);
       // SORTIE : la séquence du Seuil (accueil, rue, muret) se joue DANS les
       // rues même si elle reste « dehors » pour le pool — la quitter vers la
       // lande mérite la ligne de sortie (playtest 7/08 : rue → crête du Pendu
       // sans couture). L'ENTRÉE, elle, garde le strict intérieur : la
       // narration du Seuil raconte déjà l'arrivée au village.
-      const sort = !isHameauInterior(opts.toDest) && !!origine &&
+      const sort = !isHameauInterior(destReelle) && !!origine &&
         (isHameauInterior(origine) || /^(serment-hameau|hameau-)/.test(origine)) &&
         // La sortie JOUÉE (le portillon, 24/08) a déjà dit le franchissement
         // sur son propre écran — on ne le redit pas à l'arrivée du premier
@@ -2909,14 +2952,14 @@ export default function Scene() {
        donc aucune. On garde ici l'id de l'approche pour fermer l'écran
        dessus — c'est la frontière du temps 1. */
     let idApproche: string | null = null;
-    if (opts?.toDest && !nextScene.fixationTrial && APPROACH_NARRATION[opts.toDest]) {
+    if (destReelle && !deroute && APPROACH_NARRATION[destReelle]) {
       idApproche = nextId();
-      entries.push({ id: idApproche, kind: "narration", text: APPROACH_NARRATION[opts.toDest] });
+      entries.push({ id: idApproche, kind: "narration", text: APPROACH_NARRATION[destReelle] });
     }
     // …et COMMENT on y arrive : une seule phrase, jamais un paragraphe.
     // ⚠️ VARIATION NARRATIVE, pas une décision (voir phraseArrivee) : le mode
     // ne dépend pas de la route choisie et n'a aucune conséquence mécanique.
-    const arriveePhrase = opts?.toDest && !nextScene.fixationTrial
+    const arriveePhrase = destReelle && !deroute
       ? phraseArrivee(nextStep, runRef.current?.arriveeVues ?? [])
       : null;
     // ⚠️ Chantier fluidité 12/08 : cette phrase est de la COULEUR PURE — le
@@ -5702,7 +5745,11 @@ function VoletEtat({ id, label, positive }: { id: string; label: string; positiv
   return (
     <div className="flex h-full flex-col gap-[10px] overflow-y-auto px-[20px] pb-[16px] pt-[14px]">
       <p className="etat-volet-eyebrow">État {positive ? "favorable" : "défavorable"}</p>
-      <p className="font-serif text-[24px] leading-none text-[var(--color-accent)]">
+      <p
+        className={`font-serif text-[24px] leading-none ${
+          positive ? "text-[var(--color-ink)]" : "text-[var(--color-accent)]"
+        }`}
+      >
         {fiche ? fiche.nom : label}
       </p>
       {fiche ? (
@@ -5848,7 +5895,15 @@ function FeedItem({
                 />
               )}
               <span className="flex min-w-0 flex-col gap-[4px] pt-[2px]">
-                <span className="font-mono text-[13px] leading-none text-[var(--color-accent)]">
+                {/* ⚠️ L'ORANGE DIT LA CONTRAINTE (retour Patrick 01/09). Un état
+                    FAVORABLE se nomme en blanc — c'est déjà la convention de la
+                    vignette depuis le 14/07 (négatif = orange tel quel, positif
+                    = désaturé en blanc) ; le titre la suit enfin. */}
+                <span
+                  className={`font-mono text-[13px] leading-none ${
+                    e.positive ? "text-[var(--color-ink)]" : "text-[var(--color-accent)]"
+                  }`}
+                >
                   {libelleEtat(e.label)}
                 </span>
                 <span className="font-mono text-[10px] leading-[1.5] text-[var(--color-ink)] opacity-50">
