@@ -51,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-09-01T08:01:15Z",
- "commit": "da9187b",
+ "genere": "2026-09-01T10:04:13Z",
+ "commit": "397dde4",
  "zones": [
   {
    "id": "landes",
@@ -3829,8 +3829,7 @@
      },
      "miniJeuDemo": "pick",
      "miniJeuHorsDemo": true,
-     "miniJeuEchec": "Le crochet ripe et le pêne claque, fort, deux fois. En face, un volet s'entrouvre et se referme sans un mot — on ne crie pas, ici, on note. La porte, elle, ne cède pas.",
-     "soupcon": 1
+     "miniJeuEchec": "Le crochet ripe et le pêne claque, fort, deux fois. En face, un volet s'entrouvre et se referme sans un mot — on ne crie pas, ici, on note. La porte, elle, ne cède pas."
     },
     {
      "id": "ecouter-porte",
@@ -3952,6 +3951,7 @@
    ],
    "pointsInteret": [],
    "suite": "hameau-halte-5",
+   "donneDecouverte": "d.rouel_ouvert",
    "image": {
     "fichier": "scene_hameau_halte_5_v2_c.png",
     "hash": "6c540a40",
@@ -5985,6 +5985,19 @@
      ]
     },
     {
+     "id": "tribunal-rouel",
+     "label": "Demander qui a pris la place des Rouel",
+     "type": "passif",
+     "consequence": "La plume s'arrête. Il ne demande pas comment tu sais — il remonte trois pages en arrière, du bout de l'ongle, et tourne le cahier vers toi sans le lâcher.\n\nLes Rouel sont là, quatre noms, rayés d'un seul trait. En face, dans la marge, quatre autres noms — vivants, ceux-là, et tu en as croisé deux ce matin. « Le registre ne juge pas », dit-il très bas. « Il équilibre. » Puis il referme, et il recommence à copier.",
+     "exigeDecouverte": "d.rouel_ouvert",
+     "prendLaPlaceDe": [
+      "tribunal-carnet",
+      "dire-poteau-grave",
+      "registre-ment",
+      "ecrivain-defenses"
+     ]
+    },
+    {
      "id": "tribunal-carnet",
      "label": "Confronter le carnet au Registre",
      "type": "passif",
@@ -6783,7 +6796,44 @@
     "Sur les derniers cent pas, des choses posées à intervalles réguliers. Un sac. Un manteau plié en quatre. Une paire de bottes rangées côte à côte, les pointes vers le sud. Rien n'a été jeté ici : tout a été posé.",
     "Devant, le chemin continue jusqu'à un bord que tu ne vois pas encore. Le silence n'est pas celui de la lande : c'est celui d'après."
    ],
-   "choix": [],
+   "choix": [
+    {
+     "id": "manteau-plie",
+     "label": "Ouvrir le manteau plié",
+     "type": "passif",
+     "consequence": "Plié en quatre, coutures alignées, comme on range une chose qu'on compte reprendre. Les poches sont vides — vidées, puis retournées à l'endroit. Celui qui l'a posé là avait le temps : personne ne le poursuivait. Il a rangé ses affaires, et il est parti sans."
+    },
+    {
+     "id": "derniere-borne",
+     "label": "Lire la dernière borne",
+     "type": "passif",
+     "consequence": "Une pierre basse, la dernière avant le bord. Sa face nord est couverte de noms gravés, serrés, de mains différentes — on a gravé jusqu'à ne plus trouver de place. Sa face sud n'est pas vierge : elle est lisse, creusée en son milieu, usée par des paumes. On vient toucher celle-là. On ne l'écrit pas."
+    },
+    {
+     "id": "demi-tour-sud",
+     "label": "Faire demi-tour",
+     "type": "passif",
+     "consequence": "Tu te retournes, et c'est le plus facile que tu aies fait depuis la Borne : le vent te pousse dans le dos, maintenant.\n\nDerrière toi le chemin reste ouvert, et les affaires posées restent posées. Personne ne les ramassera à ta place. La lande te reprend sans cérémonie — elle avait encore de quoi faire.",
+     "sortie": {},
+     "exigeChoixFait": [
+      "manteau-plie",
+      "derniere-borne"
+     ],
+     "demiTour": {
+      "lieux": 3
+     },
+     "uneFoisParVie": "demi-tour"
+    },
+    {
+     "id": "continuer-sud",
+     "label": "Continuer vers le sud",
+     "type": "passif",
+     "consequence": "Tu enjambes la dernière chose posée sans la déplacer. Personne ne te regarde partir : c'est la première chose que les Landes te laissent faire seul.",
+     "sortie": {
+      "toScene": "palissade-sud"
+     }
+    }
+   ],
    "pointsInteret": [],
    "sejour": true,
    "image": {
@@ -6812,7 +6862,44 @@
     "Le plateau cesse d'être un pays, une seconde fois. Les choses posées le long du chemin n'ont pas bougé — sauf qu'il y en a une de plus, et celle-là est encore sèche.",
     "Tu sais ce qu'il y a au bout. Ça ne rend pas les cent derniers pas plus courts."
    ],
-   "choix": [],
+   "choix": [
+    {
+     "id": "manteau-plie",
+     "label": "Ouvrir le manteau plié",
+     "type": "passif",
+     "consequence": "Plié en quatre, coutures alignées, comme on range une chose qu'on compte reprendre. Les poches sont vides — vidées, puis retournées à l'endroit. Celui qui l'a posé là avait le temps : personne ne le poursuivait. Il a rangé ses affaires, et il est parti sans."
+    },
+    {
+     "id": "derniere-borne",
+     "label": "Lire la dernière borne",
+     "type": "passif",
+     "consequence": "Une pierre basse, la dernière avant le bord. Sa face nord est couverte de noms gravés, serrés, de mains différentes — on a gravé jusqu'à ne plus trouver de place. Sa face sud n'est pas vierge : elle est lisse, creusée en son milieu, usée par des paumes. On vient toucher celle-là. On ne l'écrit pas."
+    },
+    {
+     "id": "demi-tour-sud",
+     "label": "Faire demi-tour",
+     "type": "passif",
+     "consequence": "Tu te retournes, et c'est le plus facile que tu aies fait depuis la Borne : le vent te pousse dans le dos, maintenant.\n\nDerrière toi le chemin reste ouvert, et les affaires posées restent posées. Personne ne les ramassera à ta place. La lande te reprend sans cérémonie — elle avait encore de quoi faire.",
+     "sortie": {},
+     "exigeChoixFait": [
+      "manteau-plie",
+      "derniere-borne"
+     ],
+     "demiTour": {
+      "lieux": 3
+     },
+     "uneFoisParVie": "demi-tour"
+    },
+    {
+     "id": "continuer-sud",
+     "label": "Continuer vers le sud",
+     "type": "passif",
+     "consequence": "Tu enjambes la dernière chose posée sans la déplacer. Personne ne te regarde partir : c'est la première chose que les Landes te laissent faire seul.",
+     "sortie": {
+      "toScene": "palissade-sud"
+     }
+    }
+   ],
    "pointsInteret": [],
    "remplace": {
     "scene": "chemin-du-sud",
@@ -11251,7 +11338,7 @@
  "totaux": {
   "scenes": 107,
   "pointsInteret": 0,
-  "choix": 303,
+  "choix": 312,
   "illustrations": 436,
   "sansImage": 0,
   "imagesIntrouvables": 0,

@@ -101,6 +101,29 @@ export type Choice = {
    */
   sortie?: { toScene?: string };
   /**
+   * LE DEMI-TOUR (arbitrage Patrick, 01/09 : « oui » à une vraie option de
+   * demi-tour avant la Descente).
+   *
+   * Rallonge la traversée de `lieux` destinations et rend la main au tirage :
+   * on repart dans les Landes au lieu de descendre. Le prix n'est PAS un
+   * Jour ni de la santé — ce serait une sanction, et le Jour est un SCORE
+   * (règle du 10/08). Le prix est le RISQUE : trois lieux de plus, dans le
+   * dernier tiers que le moteur durcit déjà d'un cran. C'est un pari, pas
+   * une punition : on mise la vie qu'on vient de sauver contre du temps.
+   *
+   * À porter sur un choix `sortie` SANS `toScene` (la traversée reprend son
+   * cours normal). Se combine avec `uneFoisParVie` pour ne pas ouvrir un
+   * tourniquet infini.
+   */
+  demiTour?: { lieux: number };
+  /**
+   * UN CHOIX QUI NE S'OFFRE QU'UNE FOIS PAR VIE. La clé est rangée dans le
+   * registre `RunState.vus` (lib/dejavu) au moment où le choix se résout ;
+   * le choix disparaît ensuite pour le reste de l'incarnation. Distinct de
+   * `choixFaits`, dont la portée est l'ÉCRAN (vidé en quittant le lieu).
+   */
+  uneFoisParVie?: string;
+  /**
    * ON NE S'ATTARDE PAS (relecture par agents, 10/08). `Scene.nuit` fait
    * passer l'aube qu'on ait dormi ou veillé — mais deux scènes de nuit
    * offrent une sortie qui n'est NI l'un NI l'autre (« Repartir sans
@@ -397,7 +420,10 @@ export type Choice = {
    * pendu avant de l'avoir entendu — l'écran offre donc la question, puis la
    * réponse à sa place, et jamais les deux à la fois.
    */
-  requiresChoixFait?: string;
+  /** Un id, ou plusieurs — dans ce cas il suffit qu'UN d'entre eux ait été
+      joué sur cet écran (le demi-tour du Chemin du Sud s'ouvre dès qu'on a
+      regardé l'une des deux choses posées, peu importe laquelle). */
+  requiresChoixFait?: string | string[];
   /**
    * CE GESTE ROMPT UNE CLAUSE DU SERMENT (correctif 14/08).
    *
@@ -1135,6 +1161,36 @@ const CHOIX_CHEMIN_DU_SUD: Choice[] = [
         "jusqu'à ne plus trouver de place. Sa face sud n'est pas vierge : " +
         "elle est lisse, creusée en son milieu, usée par des paumes. On vient " +
         "toucher celle-là. On ne l'écrit pas.",
+    },
+  },
+  {
+    /* FAIRE DEMI-TOUR (arbitrage Patrick, 01/09). L'avertissement n'en est un
+       que s'il existe une façon de l'écouter : sans ce choix, tout ce que le
+       chemin dit n'était que du décor.
+       Le prix n'est ni un Jour ni de la santé — ce serait une sanction, et le
+       Jour est le SCORE du Registre (règle du 10/08). Le prix est le RISQUE :
+       trois lieux de plus, dans le dernier tiers que le moteur durcit déjà.
+       On mise la vie qu'on vient de sauver contre du temps.
+       UNE SEULE FOIS PAR VIE : on peut revenir sur ses pas, pas tourner en
+       rond. Et la sortie n'a pas de `toScene` — la traversée reprend d'ellemême. */
+    id: "demi-tour-sud",
+    label: "Faire demi-tour",
+    /* ⚠️ IL NE S'OFFRE QU'À QUI A REGARDÉ. On ne rebrousse pas chemin sans
+       raison : c'est ce qu'on vient de voir qui la donne. Effet de bord
+       heureux — le budget de trois actions ne bouge jamais, puisque le choix
+       regardé vient d'être consommé par le séjour. */
+    requiresChoixFait: ["manteau-plie", "derniere-borne"],
+    tags: ["citable"],
+    sortie: {},
+    demiTour: { lieux: 3 },
+    uneFoisParVie: "demi-tour",
+    passive: {
+      consequence:
+        "Tu te retournes, et c'est le plus facile que tu aies fait depuis la " +
+        "Borne : le vent te pousse dans le dos, maintenant.\n\nDerrière toi " +
+        "le chemin reste ouvert, et les affaires posées restent posées. " +
+        "Personne ne les ramassera à ta place. La lande te reprend sans " +
+        "cérémonie — elle avait encore de quoi faire.",
     },
   },
   {
@@ -4257,10 +4313,13 @@ export const SCENES: Scene[] = [
             "ici, on note. La porte, elle, ne cède pas.",
           echecSoupcon: 2,
         },
-        // Prendre un toit qu'on ne t'a pas donné est un ACTE, pas un regard :
-        // il se paie, même réussi (doctrine du Soupçon, 8/08). Le village
-        // l'apprendra à l'aube — c'est le vieux qui le dira, jamais un chiffre.
-        soupcon: 1,
+        /* ⚠️ AUCUN SOUPÇON SUR LA RÉUSSITE (arbitrage Patrick, 01/09 :
+           « récompenser si on a réussi à crocheter sans éveiller de
+           soupçon »). Une réussite qui se paie quand même brouille le
+           message, et la prose dit déjà que personne n'a rien entendu. Le
+           coût du crochetage est le RISQUE : rater se paie +2 et la nuit
+           tombe au rabais dans la grange. Le vieux, lui, sait quand même —
+           il le dit à l'aube, et il ne le dit à personne d'autre. */
         sortie: { toScene: "hameau-maison-2" },
         passive: {
           consequence:
@@ -4364,6 +4423,13 @@ export const SCENES: Scene[] = [
        porte `hameauHalte` — la sortie de zone reste la même pour tous. */
     id: "hameau-maison-3",
     chainNext: "hameau-halte-5",
+    /* LA RÉCOMPENSE DU CROCHETAGE PROPRE (Patrick, 01/09 : « au moins sur le
+       lore »). Elle est portée par la SCÈNE et non par un choix : on ne peut
+       pas arriver ici sans avoir ouvert la porte sans bruit et passé la nuit
+       seul dedans. Découverte de COMPTE — elle survit à la mort, et c'est ce
+       qui en fait une vraie récompense : elle ouvre au Petit Tribunal une
+       question que personne d'autre ne peut poser, et une fiche du Codex. */
+    decouverte: "d.rouel_ouvert",
     illustration: "assets/scene_hameau_halte_5_v2_c.png",
     narration: [
       "Quand tu ouvres, le vieux est assis sur la marche d'en face, les " +
@@ -6472,6 +6538,32 @@ export const SCENES: Scene[] = [
             "l'Écrivain en refermant, « il en manque un. Le registre ne " +
             "juge pas. Il équilibre. » Il te regarde enfin. « Vous croyez " +
             "tous que vous rentrez. Personne ne rentre. On échange. »",
+        },
+      },
+      {
+        /* CE QUE LA NUIT CHEZ LES ROUEL A PAYÉ (01/09). Personne d'autre ne
+           peut poser cette question : il faut avoir ouvert cette porte sans
+           bruit et y avoir dormi seul. La réponse dit la loi de substitution
+           sans jamais la nommer — c'est le prix du Domaine, énoncé par un
+           greffier qui croit parler comptabilité. */
+        id: "tribunal-rouel",
+        prendLaPlaceDe: [
+          "tribunal-carnet",
+          "dire-poteau-grave",
+          "registre-ment",
+          "ecrivain-defenses",
+        ],
+        label: "Demander qui a pris la place des Rouel",
+        requiresDecouverte: "d.rouel_ouvert",
+        passive: {
+          consequence:
+            "La plume s'arrête. Il ne demande pas comment tu sais — il " +
+            "remonte trois pages en arrière, du bout de l'ongle, et tourne le " +
+            "cahier vers toi sans le lâcher.\n\nLes Rouel sont là, quatre " +
+            "noms, rayés d'un seul trait. En face, dans la marge, quatre " +
+            "autres noms — vivants, ceux-là, et tu en as croisé deux ce " +
+            "matin. « Le registre ne juge pas », dit-il très bas. « Il " +
+            "équilibre. » Puis il referme, et il recommence à copier.",
         },
       },
       {

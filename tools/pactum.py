@@ -774,11 +774,20 @@ class Partie:
             if es and (self.d.get("stats") or {}).get(es["stat"].lower(), 3) < es["min"]:
                 continue
             # SÉJOUR : ce qui a déjà été fait ici ne se refait pas.
+            # UNE FOIS PAR VIE (01/09) : le demi-tour ne se rejoue pas.
+            if c.get("uneFoisParVie") and c["uneFoisParVie"] in self.d.get("uneFois", []):
+                continue
             if s.get("sejour") and c["id"] in self.d.get("choixFaits", []):
                 continue
             # REMPLACER PAR SÉQUENCE (14/08) : on ne répond pas au jugement
             # d'un pendu avant de l'avoir entendu.
-            if c.get("exigeChoixFait") and c["exigeChoixFait"] not in faits:
+            # ⚠️ `exigeChoixFait` peut être un id OU une liste (01/09) — il
+            # suffit alors qu'UN d'entre eux ait été joué sur cet écran.
+            ecf = c.get("exigeChoixFait")
+            if isinstance(ecf, list):
+                if not any(x in faits for x in ecf):
+                    continue
+            elif ecf and ecf not in faits:
                 continue
             out.append({"kind": "choix", "c": c, "label": c["label"]})
         # UNE OPTION CONDITIONNELLE PREND LA PLACE DE L'AVEUGLE (verdict des
@@ -1182,6 +1191,14 @@ class Partie:
             if isinstance(ouvre, dict) and ouvre.get("toScene"):
                 self.entrer(ouvre["toScene"])
                 return
+        # LE DEMI-TOUR (01/09) : rallonge la traversée et rend la main au
+        # tirage au lieu de descendre. Posé avant la sortie du séjour — sans
+        # lui, la réplique redescendrait droit sur la sortie de zone et un
+        # relecteur conclurait que le demi-tour ne fait rien.
+        if choix is not None and choix.get("demiTour"):
+            self.d["cible"] = self.d.get("cible", 7) + int(choix["demiTour"].get("lieux", 3))
+        if choix is not None and choix.get("uneFoisParVie"):
+            self.d.setdefault("uneFois", []).append(choix["uneFoisParVie"])
         if s.get("sejour") and choix is not None:
             sortie = choix.get("sortie")
             self.d.setdefault("choixFaits", []).append(choix.get("id"))

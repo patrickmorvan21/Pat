@@ -564,7 +564,17 @@ function liaisonCtx(run: RunState, from: string | undefined): LiaisonCtx {
  * lieu/rencontre du pool. Pure : sert au rendu ET à la reprise de run.
  */
 function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
-  if (t.done) return DESCENTE_SCENE;
+  /**
+   * ⚠️ `trav.done` a longtemps porté DEUX sens : « la traversée est finie »
+   * (posé en rejoignant la sortie de zone) et « on est au nœud terminal ».
+   * Ici on ne lisait que le second — donc fermer l'app à la Palissade
+   * rouvrait sur la DESCENTE, en sautant la fin de zone. Le défaut était
+   * latent ; il devient bloquant avec le demi-tour (01/09), qui rend la
+   * main à la traversée depuis un écran où `done` est déjà vrai.
+   * On ne rend le terminal que si c'est LUI le nœud courant ; le repli
+   * couvre les sauvegardes d'avant, dont le `current` ne résout plus.
+   */
+  if (t.done && (t.current === "la-descente" || !sceneById(t.current))) return DESCENTE_SCENE;
   if (t.phase === "liaison" && t.liaisonOpts) {
     const base = makeLiaison(
       t.liaisonOpts[0],
@@ -1100,6 +1110,9 @@ export default function Scene() {
       à `Choice.requiresObjet` : ce qu'on porte ouvre une porte, sans le
       dépenser. */
   const [besaceMirror, setBesaceMirror] = useState<string[]>([]);
+  /* Miroir de rendu du registre `vus` de la RUN : `uneFoisParVie` se lit
+     pendant le rendu, et `runRef.current` y est interdit (React Compiler). */
+  const [vusMirror, setVusMirror] = useState<Record<string, number>>({});
   // Illustration rétrécie (retour 22/07) : passe à true UNIQUEMENT si le texte
   // fini déborde vraiment la zone — mesuré, adapté au device, une seule fois.
   const [compact, setCompact] = useState(false);
@@ -1210,7 +1223,13 @@ export default function Scene() {
     // qu'un autre ait été fait ICI. C'est ce qui permet à un écran de tenir
     // quatre intentions dans trois boutons sans en perdre aucune — on les
     // ordonne au lieu de les empiler.
-    if (c.requiresChoixFait && !choixFaits.includes(c.requiresChoixFait)) return false;
+    if (
+      c.requiresChoixFait &&
+      !(Array.isArray(c.requiresChoixFait) ? c.requiresChoixFait : [c.requiresChoixFait]).some(
+        (id) => choixFaits.includes(id)
+      )
+    )
+      return false;
     if (c.requiresSavoir && !savoirs.includes(c.requiresSavoir)) return false;
     // La DÉCOUVERTE (6/08) : même mécanique que le Savoir, mais la source est
     // le COMPTE. C'est ce qui permet à une option de n'exister qu'à partir de
@@ -1234,6 +1253,9 @@ export default function Scene() {
     // parce que tu portes la chose, et disparaît si tu ne la portes pas.
     // C'est le vrai « explorer prépare » : ce qu'on a trouvé trois lieux plus
     // tôt ouvre ici une option que le voisin n'a pas.
+    // UNE FOIS PAR VIE (01/09) : le demi-tour ne doit pas devenir un
+    // tourniquet — on peut revenir sur ses pas, pas boucler les Landes.
+    if (c.uneFoisParVie && vu(vusMirror, c.uneFoisParVie) > 0) return false;
     if (c.requiresObjet && !besaceMirror.includes(c.requiresObjet)) return false;
     // L'OBJET OUVRE / FERME (chantier 12/08 §2) : le jeton d'usage passe par
     // `choixFaits`, donc sa portée est l'ÉCRAN — vidé en quittant le lieu.
@@ -1855,6 +1877,7 @@ export default function Scene() {
     setBlesseMirror(run ? run.health < 0.75 || negNow : false);
     // Miroir de la Besace, exprimé en CLÉS de `LANDES_OBJETS` (les instances
     // portent un id unique — `pierre-retour-7` — donc on apparie par NOM).
+    setVusMirror(run?.vus ?? {});
     setBesaceMirror(
       run
         ? Object.keys(LANDES_OBJETS).filter((k) =>
@@ -4257,6 +4280,27 @@ export default function Scene() {
     // quatre voies de résolution (jet, repos, objet, passif/neutre).
     const reste = Boolean(scene.sejour && !choice.sortie);
     const sortieVers = choice.sortie?.toScene;
+
+    /* LE DEMI-TOUR (01/09) — on rend la main à la traversée au lieu de
+       descendre. Posé AVANT toute résolution : `advance()` lira la nouvelle
+       cible et repartira sur une Croisée au lieu de la sortie de zone.
+       ⚠️ `trav.done` est remis à FAUX : il avait été posé en rejoignant la
+       fin de zone, et il coupe le tirage. */
+    if (choice.demiTour) {
+      const lieux = choice.demiTour.lieux;
+      persist((run) => {
+        run.trav.target += lieux;
+        run.trav.done = false;
+      });
+    }
+    // UNE FOIS PAR VIE : la clé est notée au moment où le choix se résout.
+    if (choice.uneFoisParVie) {
+      const cle = choice.uneFoisParVie;
+      persist((run) => {
+        run.vus = noter(run.vus, cle);
+      });
+      setVusMirror((v) => ({ ...v, [cle]: (v[cle] ?? 0) + 1 }));
+    }
 
     // Choix d'orientation d'une liaison (traversée 21/07) : engage le
     // déplacement vers le lieu choisi — pas de dé, pas de conséquence propre.

@@ -658,8 +658,41 @@ def lire_loi() -> dict:
 
 TEMOINS = lire_temoins()
 
+def tableau_choix_nomme(nom: str) -> str:
+    """Le corps d'un `const NOM: Choice[] = [ ... ]` de `scene-data.ts`.
+
+    ⚠️ Une scène peut PARTAGER son tableau de choix avec sa variante (le
+    Chemin du Sud, 01/09) : `choices: CHOIX_CHEMIN_DU_SUD`. Sans cette
+    résolution, l'export rendait ZÉRO choix pour ces scènes — donc le Graphe
+    ne montrait rien, la réplique n'offrait rien, et quatre gardes qui lisent
+    `studio-data.json` auditaient un écran vide. C'est le troisième extracteur
+    du projet à tomber sur la même famille (constante non résolue).
+
+    ⚠️ PAS `index("[", …)` : le TYPE `Choice[]` porte déjà des crochets, on
+    tomberait sur celui de l'annotation. Le motif se termine sur le vrai.
+    """
+    src = TS.read_text(encoding="utf-8")
+    m = re.search(r"\bconst\s+" + re.escape(nom) + r"\s*:[^=]*=\s*\[", src)
+    if not m:
+        return ""
+    debut, prof = m.end() - 1, 0
+    for k in range(debut, len(src)):
+        if src[k] == "[":
+            prof += 1
+        elif src[k] == "]":
+            prof -= 1
+            if prof == 0:
+                return src[debut : k + 1]
+    return ""
+
+
 def lire_choix(bloc: str) -> list[dict]:
-    b = bloc_apres(bloc, r"\n {4}choices:\s*")
+    ref = re.search(r"\n {4}choices:\s*([A-Z_][A-Z0-9_]*)\s*,", bloc)
+    if ref:
+        corps = tableau_choix_nomme(ref.group(1))
+        b = (corps, 0) if corps else None
+    else:
+        b = bloc_apres(bloc, r"\n {4}choices:\s*")
     if not b:
         return []
     out = []
@@ -874,9 +907,21 @@ def lire_choix(bloc: str) -> list[dict]:
             cibles = re.findall(r'"([^"]+)"', mr.group(1))
             if cibles:
                 ch["prendLaPlaceDe"] = cibles
-        v = texte_de(c, "requiresChoixFait")
+        # ⚠️ `requiresChoixFait` accepte un id OU une liste (01/09) — un
+        # `texte_de` seul rendrait vide sur la liste, et la reprise du champ
+        # dans la replique offrirait le choix a tout le monde.
+        mcf = re.search(r'requiresChoixFait:\s*(\[[^\]]*\]|"[^"]*")', c)
+        if mcf:
+            ids = re.findall(r'"([^"]+)"', mcf.group(1))
+            if ids:
+                ch["exigeChoixFait"] = ids if len(ids) > 1 else ids[0]
+        # LE DEMI-TOUR (01/09) : il rallonge la traversee au lieu de descendre.
+        md = re.search(r"demiTour:\s*\{\s*lieux:\s*(\d+)", c)
+        if md:
+            ch["demiTour"] = {"lieux": int(md.group(1))}
+        v = texte_de(c, "uneFoisParVie")
         if v:
-            ch["exigeChoixFait"] = v
+            ch["uneFoisParVie"] = v
         ms = re.search(r'requiresStat:\s*\{\s*stat:\s*"([A-Z]+)",\s*min:\s*(\d+)', c)
         if ms:
             ch["exigeStat"] = {"stat": ms.group(1), "min": int(ms.group(2))}
