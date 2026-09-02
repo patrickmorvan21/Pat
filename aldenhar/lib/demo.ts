@@ -1,80 +1,63 @@
 /**
- * LE MODE DÉMO — « La Nuit du Serment » (script arbitré du 24/08,
+ * LA TRAVERSÉE GUIDÉE — « La Nuit du Serment » (script arbitré du 24/08,
  * `data/demo-script.md`).
  *
- * La démo est un CHEMIN dans le jeu, pas un fork : mêmes scènes, mêmes
- * mécaniques, même mort. Ce module ne porte que ce qui change :
- *  - le drapeau (activé par l'URL `?demo=1`, persisté ; `?demo=0` le retire) ;
- *  - la ROUTE scriptée qui remplace le tirage des Croisées — le rythme d'une
- *    démo est une courbe dessinée à la main, jamais un tirage (constat du
- *    24/08 : « un tirage produit de la variété, jamais une courbe ») ;
- *  - les souvenirs du Seuil réduits à deux (Courage, Instinct — les deux
- *    stats que la démo sollicite le plus).
+ * ⚠️ LE MODE DÉMO N'EXISTE PLUS (décision Patrick, 2/09) : « la première run
+ * est en fait la démo de Pactum ». La courbe scriptée du 24/08 n'est plus un
+ * mode qu'on active (drapeau, URL, interrupteur des Options — tous retirés) :
+ * c'est ce que joue TOUTE PREMIÈRE RUN d'un compte, pour montrer un maximum
+ * de fonctionnalités (mini-jeux, chronomètre, crochetage, Soupçon au hameau,
+ * la Meute, la Falaise, un élément-surprise) avec du rythme. Dès la deuxième
+ * incarnation, la traversée retombe sur le tirage normal.
  *
- * Ce qui lit ce drapeau ailleurs : `fresh()` (Seuil court), `Intro` (une
- * seule clause — la porte animée), `Home` (pas de carton d'acte), `Scene`
- * (route scriptée + mini-jeux posés sur des choix).
+ * La traversée guidée est un CHEMIN dans le jeu, pas un fork : mêmes scènes,
+ * mêmes mécaniques, même mort. Ce module ne porte que ce qui change :
+ *  - le prédicat (`traverseeGuidee`), DÉRIVÉ de la mémoire du compte — jamais
+ *    un drapeau posé à part, qui pourrait diverger de ce que le compte a
+ *    réellement joué (« Effacer la progression » redonne donc la première
+ *    run, comme on l'attend) ;
+ *  - la ROUTE scriptée qui remplace le tirage des Croisées — le rythme d'une
+ *    première partie est une courbe dessinée à la main, jamais un tirage
+ *    (constat du 24/08 : « un tirage produit de la variété, jamais une
+ *    courbe »).
+ *
+ * Ce qui lit ce prédicat ailleurs : `fresh()` (cible de traversée), `Scene`
+ * (route scriptée, déroutages de la courbe, mini-jeux posés sur des choix).
+ * L'intro et le Seuil ne sont PLUS raccourcis : un vrai premier joueur
+ * mérite le pacte entier et les quatre souvenirs — la compression du 24/08
+ * servait une borne de salon, pas une première partie.
+ *
+ * Les noms `DEMO_*` sont conservés : ils désignent la ROUTE du script, qui
+ * n'a pas changé — seul le moment où elle se joue a changé.
  */
 
-const KEY = "pactum-demo";
-let cache: boolean | null = null;
+import { loadMemory } from "@/lib/player-memory";
 
-/** Lit le drapeau (mis en cache — le mode ne change pas en pleine session). */
-export function demoActive(): boolean {
-  if (cache !== null) return cache;
+/**
+ * La première run du compte est-elle en cours (ou sur le point de commencer) ?
+ * `runsStarted` est incrémenté au seed de chaque run neuve (Scene, montage) :
+ * 0 = aucune run encore (l'intro, le Seuil), 1 = la première run. Au-delà,
+ * le tirage normal.
+ *
+ * Pas de cache : le passage 1 → 2 se fait après un rechargement complet
+ * (mort ou Descente), mais lire la mémoire coûte un `JSON.parse`, ce qui est
+ * négligeable au rythme d'un écran.
+ */
+export function traverseeGuidee(): boolean {
   if (typeof window === "undefined") return false;
   try {
-    cache = localStorage.getItem(KEY) === "1";
+    return loadMemory().runsStarted <= 1;
   } catch {
-    cache = false;
-  }
-  return cache;
-}
-
-/**
- * Pose ou retire le drapeau (interrupteur « Mode démo » des Options — ajouté
- * le 24/08 quand le `?demo=1` s'est avéré inaccessible depuis la PWA
- * installée : l'icône de l'écran d'accueil ne transmet aucun paramètre, et
- * son stockage est séparé de celui de Safari).
- */
-export function setDemo(on: boolean): void {
-  if (typeof window === "undefined") return;
-  try {
-    if (on) localStorage.setItem(KEY, "1");
-    else localStorage.removeItem(KEY);
-    cache = null;
-  } catch {
-    /* stockage bloqué */
+    return false;
   }
 }
-
-/**
- * À appeler UNE fois au montage de l'accueil : `?demo=1` (ou `?demo` nu)
- * pose le drapeau pour toutes les sessions suivantes — un testeur reçoit un
- * lien, pas une procédure. `?demo=0` le retire (retour au jeu complet).
- */
-export function initDemoFromUrl(): void {
-  if (typeof window === "undefined") return;
-  try {
-    const p = new URLSearchParams(window.location.search).get("demo");
-    if (p === "1" || p === "") localStorage.setItem(KEY, "1");
-    else if (p === "0") localStorage.removeItem(KEY);
-    cache = null; // relire au prochain demoActive()
-  } catch {
-    /* stockage bloqué : la démo restera inactive, le jeu complet joue */
-  }
-}
-
-/** Les deux souvenirs du Seuil court (l'ordre est celui du prologue). */
-export const DEMO_SOUVENIRS = ["courage", "instinct"] as const;
 
 /**
  * LA ROUTE — les destinations servies aux Croisées, dans l'ordre du script.
  * La Bête n'y figure pas : elle EMBUSQUE la première route vers le Chemin
  * Creux (mécanique existante du 7/08), c'est le pic n°1. Les segments
  * au-delà du Puits (la nuit au crochetage, la Meute garantie, la Falaise
- * aux Cordes) arrivent dans les vagues suivantes — route épuisée, la
- * traversée retombe sur le tirage normal en attendant.
+ * aux Cordes) sont des déroutages dans `Scene.tsx`, pas des destinations.
  */
 export const DEMO_ROUTE: string[] = [
   "chemin-creux", //          segment 3 — la Bête embusque cette route
@@ -107,12 +90,11 @@ export function demoRouteRestante(
   return DEMO_ROUTE.filter((id) => !dejaVisite(visited, id));
 }
 
-
 /**
  * LA PHASE DE LA COURBE (go du 24/08 — Accroche → Ouverture → Pression →
- * Climax). JAMAIS nommée à l'écran : elle pilote la musique, le resserrement
- * des marches et les RETOURS garantis (« pendant l'Ouverture je provoque le
- * monde ; pendant la Pression, le monde commence à me répondre »).
+ * Climax). JAMAIS nommée à l'écran : elle pilote le resserrement des marches
+ * et les RETOURS garantis (« pendant l'Ouverture je provoque le monde ;
+ * pendant la Pression, le monde commence à me répondre »).
  *
  * Dérivée de l'état de la traversée, jamais persistée :
  *  - accroche  : la Borne (rien encore visité au-delà) ;
@@ -122,8 +104,8 @@ export function demoRouteRestante(
  *
  * ⚠️ La machinerie des RETOURS est une CATÉGORIE, pas un événement (verrou
  * n°2 de Patrick) : en Pression/Climax, au moins une chose PLANTÉE plus tôt
- * revient — la démo câble la Bête (si fuie) et la Meute comme cas d'école,
- * le jeu complet choisira parmi ce que la vie a réellement planté.
+ * revient — la première run câble la Bête (si fuie) et la Meute comme cas
+ * d'école, le jeu complet choisit parmi ce que la vie a réellement planté.
  */
 export type DemoPhase = "accroche" | "ouverture" | "pression" | "climax";
 

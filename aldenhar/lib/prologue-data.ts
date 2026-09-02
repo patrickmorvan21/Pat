@@ -69,68 +69,70 @@ export const PROLOGUE_AMORCE: string[] = [
  * héros n'ont pas de genre, aucun participe accordé nulle part).
  */
 const PORTRAIT_DOMINANTE: Record<StatKey, string> = {
-  courage: "Tu avances avant de comprendre. Le danger t'a toujours moins arrêté que le doute.",
-  ruse: "Tu regardes les serrures avant les portes. Il y a toujours un autre chemin, et tu le sais.",
-  instinct: "Tu sens les choses avant de les voir. Ton corps décide souvent avant toi — et il se trompe peu.",
-  empathie: "Tu protèges les autres, rarement toi-même. Les gens te parlent, même quand ils ne veulent pas.",
+  courage: "Tu avances avant de comprendre.",
+  ruse: "Tu regardes les serrures avant les portes.",
+  instinct: "Ton corps décide avant toi, et il se trompe peu.",
+  empathie: "Les gens te parlent, même quand ils ne veulent pas.",
 };
 
 const PORTRAIT_FRAGILE: Record<StatKey, string> = {
-  courage: "Mais devant l'irrémédiable, ta main hésite. Tu le savais déjà.",
-  ruse: "Mais les détours t'ennuient. Tu forces ce qui devrait se contourner.",
-  instinct: "Mais tu n'écoutes pas ce qui murmure en toi. Tu veux des preuves, et elles arrivent tard.",
-  empathie: "Mais les autres restent pour toi un bruit de fond. Ça t'a coûté. Ça te coûtera encore.",
+  courage: "Devant l'irrémédiable, ta main hésite.",
+  ruse: "Les détours t'ennuient : tu forces.",
+  instinct: "Tu veux des preuves. Elles arrivent tard.",
+  empathie: "Les autres restent un bruit de fond. Ça te coûtera.",
 };
 
 /**
- * LE PROFIL PLAT A DROIT À SON PORTRAIT (panel 10/08).
+ * LE PORTRAIT NOMME LE SOUVENIR (retour Patrick, 2/09 : « le texte est
+ * générique — le réduire de moitié et qu'il soit à chaque fois personnalisé
+ * au résultat »).
  *
- * Un héros qui s'est dérobé aux quatre souvenirs s'entendait dire « Tu
- * avances avant de comprendre. Le danger t'a toujours moins arrêté que le
- * doute. » — l'inverse exact de ce qu'il venait de jouer. Cause : la
- * dominante était initialisée sur la PREMIÈRE stat de l'ordre (Courage) et
- * ne bougeait que sur un `>` strict, donc un profil sans relief laissait
- * toujours Courage en tête. C'est le moment le plus identitaire du jeu.
+ * Deux moitiés : la longueur, et la personnalisation. Quinze portraits
+ * possibles (4 dominantes × 4 fragiles, moins la diagonale, plus trois
+ * profils plats) sonnaient tous pareil parce qu'aucun ne citait CE que le
+ * joueur venait de faire. Écrire une clause par option (120 souvenirs × 3 =
+ * 360 textes) avait été refusé le 2/09 — autant d'occasions de mentir sur
+ * l'acte joué. Ce qui est déjà écrit et ne ment jamais, c'est le TITRE du
+ * souvenir : le Geôlier dit donc où il l'a vu. « Tu avances avant de
+ * comprendre. C'est la falaise qui me l'a appris. »
  *
- * Deux réparations. (1) Quand rien ne dépasse — écart max de 1 sur les
- * quatre — le portrait ne DÉSIGNE plus de dominante : il dit le profil plat,
- * qui est un caractère à part entière, et le Geôlier n'a aucune raison de
- * flatter. (2) Sinon les ex-æquo se départagent sur les CHOIX réels du Seuil
- * (l'engagement A/B/C avant le jet silencieux) : c'est ce que le joueur a
- * fait qui tranche, jamais l'ordre de déclaration des stats.
+ * Longueur : ~20 mots au lieu de ~45. Aucun chiffre, aucune stat nommée —
+ * le radar au-dessus porte la forme, la phrase porte le caractère.
  */
+function minusculeInitiale(titre: string): string {
+  // « La falaise » → « la falaise » ; « L'alibi » → « l'alibi ». On ne touche
+  // qu'à l'article, jamais au nom (« Le juge corrompu » → « le juge corrompu »).
+  return titre.charAt(0).toLowerCase() + titre.slice(1);
+}
+
+function portraitAvecSouvenir(
+  dominante: StatKey,
+  fragile: StatKey,
+  memories?: { stat: StatKey; title: string }[]
+): string {
+  const souvenir = memories?.find((m) => m.stat === dominante)?.title;
+  const ou = souvenir ? ` C'est ${minusculeInitiale(souvenir)} qui me l'a appris.` : "";
+  return `${PORTRAIT_DOMINANTE[dominante]}${ou}\n${PORTRAIT_FRAGILE[fragile]}`;
+}
+
 /**
- * ⚠️ UN PROFIL PLAT N'EST PAS FORCÉMENT UN PROFIL FAIBLE (2/09).
- *
- * Le correctif du 10/08 ne traitait qu'une moitié du problème. « Rien ne
- * dépasse » se déclenche sur un ÉCART faible entre les quatre stats — donc
- * aussi bien pour qui s'est dérobé quatre fois que pour qui s'est jeté
- * quatre fois. Le second s'entendait dire qu'il avait « gardé les mains dans
- * les poches », l'exact contraire de ce qu'il venait de jouer.
- *
- * Trouvé en regardant le nouvel écran du verdict, qui rend la faute visible :
- * le radar montre un losange RÉGULIER et LARGE pendant que le texte parle de
- * quelqu'un qui n'a rien tenté. Le texte doit dire ce que l'œil voit.
- *
- * On tranche donc sur l'ENGAGEMENT moyen réellement joué (3 = direct,
- * 2 = mesuré, 1 = retrait), pas sur les stats — le jet silencieux ne doit pas
- * pouvoir transformer un héros téméraire en héros tiède.
+ * LE PROFIL PLAT A DROIT À SON PORTRAIT (panel 10/08) — et un profil plat
+ * n'est PAS forcément un profil faible (2/09) : « rien ne dépasse » se
+ * déclenche sur un ÉCART faible entre les quatre stats, donc aussi bien pour
+ * qui s'est dérobé quatre fois que pour qui s'est jeté quatre fois. On
+ * tranche sur l'ENGAGEMENT moyen réellement joué (3 = direct, 2 = mesuré,
+ * 1 = retrait), jamais sur les stats — le jet silencieux ne doit pas pouvoir
+ * transformer un héros téméraire en héros tiède. Raccourcis de moitié le
+ * 2/09 avec le reste du portrait.
  */
 const PORTRAIT_PLAT_HAUT =
-  "Tu y es allé les quatre fois. Rien ne dépasse chez toi parce que rien ne " +
-  "manque — et ça se voit de loin.\nLe dé n'aura pas grand-chose à corriger. " +
-  "Il n'aura pas grand-chose à rattraper non plus.";
+  "Tu y es allé les quatre fois. Rien ne dépasse chez toi parce que rien ne manque.\nLe dé n'aura pas grand-chose à rattraper.";
 
 const PORTRAIT_PLAT_MESURE =
-  "Tu as fait ce qu'il fallait, à chaque fois. Ni plus. C'est la manière la " +
-  "plus sûre de traverser une vie sans que personne s'en souvienne.\nRien ne " +
-  "dépasse chez toi. Le dé fera le reste — il fait toujours le reste.";
+  "Tu as fait ce qu'il fallait, à chaque fois. Ni plus.\nRien ne dépasse chez toi. Le dé fera le reste.";
 
 const PORTRAIT_PLAT_BAS =
-  "Rien ne dépasse chez toi. Ni élan, ni ruse, ni flair, ni chaleur — tu as " +
-  "traversé ta vie d'avant en gardant les mains dans les poches.\nCe n'est " +
-  "pas un défaut. C'est juste que le dé n'aura rien à corriger, et rien à " +
-  "aider non plus.";
+  "Rien ne dépasse chez toi : tu as traversé ta vie d'avant les mains dans les poches.\nLe dé n'aura rien à corriger, et rien à aider.";
 
 /** Engagement moyen réellement joué : 3 = direct, 2 = mesuré, 1 = retrait. */
 function portraitPlat(engagement?: Partial<Record<StatKey, number>>): string {
@@ -146,7 +148,10 @@ export function portraitDuSeuil(
   stats: RunStats,
   /** Engagement réel au Seuil : bonus 3/2/1 par stat, avant le jet silencieux.
       Départage les ex-æquo. Absent (vieilles sauvegardes) → ordre du Seuil. */
-  engagement?: Partial<Record<StatKey, number>>
+  engagement?: Partial<Record<StatKey, number>>,
+  /** Les souvenirs joués (titre + stat) : le portrait cite celui de la
+      dominante. Absent → la phrase se passe de lieu. */
+  memories?: { stat: StatKey; title: string }[]
 ): string {
   const vals = PROLOGUE_STAT_ORDER.map((k) => stats[k]);
   if (Math.max(...vals) - Math.min(...vals) <= 1) return portraitPlat(engagement);
@@ -160,7 +165,7 @@ export function portraitDuSeuil(
   if (fragile === dominante) {
     fragile = PROLOGUE_STAT_ORDER.find((k) => k !== dominante) ?? fragile;
   }
-  return `${PORTRAIT_DOMINANTE[dominante]}\n${PORTRAIT_FRAGILE[fragile]}`;
+  return portraitAvecSouvenir(dominante, fragile, memories);
 }
 
 /** L'engagement brut du Seuil (3 = direct, 2 = mesuré, 1 = retrait). */

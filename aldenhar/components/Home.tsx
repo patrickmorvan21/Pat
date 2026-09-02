@@ -12,7 +12,6 @@ import { hasSavedRun, loadRun, resetRun } from "@/lib/state";
 import { lieuNom } from "@/lib/scene-data";
 import { APP_VERSION } from "@/lib/version";
 import { applySettingsToDom } from "@/lib/settings";
-import { demoActive, initDemoFromUrl } from "@/lib/demo";
 import { armAudio, playMusic } from "@/lib/audio";
 import { OptionsTab } from "@/components/GameMenu";
 import { BoutonNav } from "@/components/NavIcons";
@@ -34,9 +33,6 @@ export default function Home() {
     "boot",
   );
   const [saved, setSaved] = useState(false);
-  /** Le mode démo se VOIT (« v1.94.1 · démo ») — sans ce marqueur, impossible
-      de savoir depuis l'accueil si le drapeau a pris (constat Patrick 24/08). */
-  const [demoOn, setDemoOn] = useState(false);
   // Le compte a-t-il un passé (reliques forgées ou héros tombés) ? Distinct
   // de `saved` : une run peut ne plus exister alors que le passé, lui, reste.
   const [aDuPasse, setADuPasse] = useState(false);
@@ -45,11 +41,6 @@ export default function Home() {
   const [aDuCodex, setADuCodex] = useState(false);
 
   useEffect(() => {
-    // Mode démo (script 24/08) : `?demo=1` dans l'URL pose le drapeau — un
-    // testeur reçoit un LIEN, pas une procédure. Lu avant tout le reste.
-    initDemoFromUrl();
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- miroir du drapeau localStorage, une seule fois au montage (illisible au rendu SSR)
-    setDemoOn(demoActive());
     // Réglages (Options 21/07) : applique taille de texte + animations réduites
     // au <html> dès le démarrage de l'app (persiste à travers accueil/jeu).
     applySettingsToDom();
@@ -57,6 +48,7 @@ export default function Home() {
     // geste (politique d'autoplay), silencieux si les mp3 manquent.
     armAudio();
     playMusic("intro");
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- miroir du localStorage, une seule fois au montage (illisible au rendu SSR)
     setSaved(hasSavedRun());
     const m0 = loadMemory();
     setADuPasse(m0.relics.length > 0 || m0.fallen.length > 0);
@@ -231,7 +223,6 @@ export default function Home() {
         {!overlay && (
           <span className="app-version" aria-hidden>
             v{APP_VERSION}
-            {demoOn ? " · démo" : ""}
           </span>
         )}
       </div>

@@ -51,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-09-02T13:56:52Z",
- "commit": "78364ed",
+ "genere": "2026-09-02T17:21:51Z",
+ "commit": "34e68fe",
  "zones": [
   {
    "id": "landes",
@@ -449,9 +449,7 @@
      "nbPois": 0,
      "entrees": [],
      "sorties": [],
-     "roles": [
-      "sortie"
-     ],
+     "roles": [],
      "dansPool": true,
      "alertes": [
       "orpheline"
@@ -466,23 +464,22 @@
   {
    "id": "borne-frontiere",
    "narration": [
-    "La lande s'ouvre sous un crépuscule qui ne tombe pas. La lumière reste prise entre chien et loup, comme un souffle retenu. Quelque part, une corde grince.",
-    "La pierre est seule au milieu du plateau, dressée là où tous les murets renoncent. Plus haute qu'un homme, grise comme le reste — et pourtant l'œil ne voit qu'elle. À son pied, un tas d'offrandes. Au-delà, le sud, nu. Et à trois pas de la borne, un homme immobile, face au sud."
+    "La lande s'ouvre sous un crépuscule qui ne tombe pas. Une pierre seule au milieu du plateau, plus haute qu'un homme. À son pied, un tas d'offrandes. À trois pas, un homme immobile, face au sud. Quelque part, une corde grince.",
+    "Au pied du tas, un mot gravé de frais, la rainure encore claire : « Hier, le pendu de la colline a répondu. »"
    ],
    "choix": [
     {
      "id": "tour-de-pierre",
      "label": "Faire le tour de la pierre",
      "type": "passif",
-     "consequence": "Le granit est froid d'une froideur qui ne vient pas du vent. Des marques sur toutes les faces, de toutes les mains : des noms, des dates, des traits de comptage. Le côté nord est saturé — les adieux de ceux qui partaient. Le côté sud est presque vierge. Trois marques. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?\n\nAu ras du sol, un angle manque. La cassure est nette, faite au burin, patiemment — et l'éclat est encore là, à demi enterré. Celui qui voulait emporter un morceau de la limite ne l'a pas pris. Sous le vent, pendant que tu te relèves, il y a des voix : basses, à ras de bruyère, qui se passent le mot de ton arrivée. Elles ne te menacent pas. Elles préviennent quelqu'un.",
+     "consequence": "Des marques sur toutes les faces : des noms, des dates. Le côté nord est saturé — les adieux de ceux qui partaient. Le côté sud : trois marques. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?\n\nAu ras du sol, un éclat descellé, à demi enterré.",
      "donneObjet": "pierre-retour",
      "miniJeuDemo": "rub",
-     "consequenceDemo": "Des marques sur toutes les faces — des noms, des dates, des traits de comptage. Le côté nord est saturé : les adieux de ceux qui partaient. Le côté sud : trois marques. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?\n\nAu ras du sol, un éclat descellé, à demi enterré. Quelqu'un a voulu emporter un morceau de la limite — et ne l'a pas pris.",
      "borneSud": true,
      "image": {
-      "fichier": "scene_borne_gravures_a_e_d.png",
-      "hash": "0f26c58e",
-      "taille": 21464,
+      "fichier": "scene_borne_gravures_a_d.png",
+      "hash": "e4dd0628",
+      "taille": 12652,
       "recent": false,
       "existe": true,
       "statut": "heritee",
@@ -525,10 +522,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "La lande s'ouvre sous un crépuscule qui ne tombe pas. Une pierre seule au milieu du plateau, plus haute qu'un homme. À son pied, un tas d'offrandes. À trois pas, un homme immobile, face au sud. Quelque part, une corde grince.",
-    "Au pied du tas, un mot gravé de frais, la rainure encore claire : « Hier, le pendu de la colline a répondu. »"
-   ],
    "nom": "La Borne Frontière",
    "lieu": "borne_frontiere",
    "typeScene": "arrivee",
@@ -727,8 +720,7 @@
   {
    "id": "chemin-creux",
    "narration": [
-    "Le chemin s'enfonce entre deux talus plus hauts que toi ; le ciel devient un ruban. C'est le plus court chemin des Landes, et le seul où l'on ne voit pas venir.",
-    "Une charrette penche au premier coude. Les talus, au-dessus, sont meubles. Plus loin, le chemin tourne et la terre mange la vue. Et dans le creux, quelqu'un vient vers toi — de dos."
+    "Le chemin s'enfonce entre deux talus ; le ciel devient un ruban. Une charrette penche au premier coude — et dans le creux, quelqu'un vient vers toi. De dos."
    ],
    "choix": [
     {
@@ -751,10 +743,9 @@
      "id": "talus-empreintes",
      "label": "Monter voir le haut des talus",
      "type": "passif",
-     "consequence": "Tu montes de trois pas dans la pente, juste assez pour voir la crête sans t'exposer entièrement. Des empreintes, parallèles au chemin, sur toute sa longueur — mais sur la crête NORD seulement : l'autre versant est intact, pas une marque. Quelque chose marche là-haut quand quelqu'un marche en bas, à la même vitesse, du même pas, et toujours du même côté. Tu redescends sans te presser, parce que se presser serait une information.",
+     "consequence": "Des empreintes sur la crête nord — parallèles au chemin, sur toute sa longueur. L'autre versant est intact. Quelque chose marche là-haut quand quelqu'un marche en bas, du même pas, toujours du même côté. Tu redescends sans te presser : se presser serait une information.",
      "donneSavoir": "savoir_bete_crete_nord",
      "donneDecouverte": "d.bete_couloir",
-     "consequenceDemo": "Des empreintes sur la crête nord — parallèles au chemin, sur toute sa longueur. L'autre versant est intact. Quelque chose marche là-haut quand quelqu'un marche en bas, du même pas, toujours du même côté. Tu redescends sans te presser : se presser serait une information.",
      "image": {
       "fichier": "scene_chemin_talus_a_d_c.png",
       "hash": "f1f303b3",
@@ -785,9 +776,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "Le chemin s'enfonce entre deux talus ; le ciel devient un ruban. Une charrette penche au premier coude — et dans le creux, quelqu'un vient vers toi. De dos."
-   ],
    "suite": "chemin-creux-2",
    "donneDecouverte": "d.bete_couloir",
    "tags": [
@@ -823,8 +811,7 @@
   {
    "id": "chemin-creux-2",
    "narration": [
-    "Le chemin tourne, et le talus mange la vue d'un coup. Passé le coude : rien. C'est-à-dire l'endroit exact où il devrait y avoir quelque chose, et il n'y a rien.",
-    "Le silence y est plus épais d'un cran, comme après un bruit que tu aurais raté d'une seconde."
+    "Passé le coude : rien. L'endroit exact où il devrait y avoir quelque chose, et il n'y a rien. Le silence y est plus épais d'un cran."
    ],
    "choix": [
     {
@@ -858,9 +845,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "Passé le coude : rien. L'endroit exact où il devrait y avoir quelque chose, et il n'y a rien. Le silence y est plus épais d'un cran."
-   ],
    "nom": "Le Chemin Creux — beat 2",
    "lieu": "chemin_creux",
    "typeScene": "moment",
@@ -1040,8 +1024,7 @@
   {
    "id": "bete-chemins-creux",
    "narration": [
-    "Le creux tourne — et l'odeur arrive avant la chose : suint, terre retournée, vieux cuir. Une masse se décolle du talus, longue, basse, taillée pour courir exactement entre deux murs de terre.",
-    "Pas de gueule visible. Juste une avancée du corps qui s'ouvre. La Bête ne chasse que dans le creux — c'est son couloir, son terrier, sa table. Et tu es dessus."
+    "L'odeur arrive avant la chose : suint, terre retournée. Une masse se décolle du talus, longue, basse, taillée pour courir entre deux murs de terre. Le creux est son couloir — et tu es dessus."
    ],
    "choix": [
     {
@@ -1049,7 +1032,7 @@
      "label": "Frapper la bête",
      "type": "risque",
      "stat": "COURAGE",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Ta lame entre là où le corps s'ouvrait — la Bête se referme sur son propre cri. Elle reflue dans le talus comme une eau sale, et le creux est à toi.",
@@ -1064,7 +1047,7 @@
      "label": "Reculer sur le talus, sans courir",
      "type": "risque",
      "stat": "INSTINCT",
-     "seuil": 11,
+     "seuil": 12,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu montes à reculons, sans quitter la masse des yeux, et tu t'arrêtes exactement où l'ombre s'arrête. Elle vient jusque-là. Elle s'arrête aussi. Vous restez face à face de part et d'autre d'une ligne que tu es le seul des deux à avoir choisie — puis elle se retourne, et c'est elle qui s'en va.",
@@ -1084,7 +1067,7 @@
      "label": "Bondir hors du creux",
      "type": "risque",
      "stat": "INSTINCT",
-     "seuil": 11,
+     "seuil": 12,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu es sur le talus avant qu'elle n'ait fini son élan. Hors du creux, elle n'existe plus : la masse freine pile à la limite de l'ombre, comme au bout d'une chaîne. Tu marches au-dessus d'elle, tranquillement.",
@@ -1113,9 +1096,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "L'odeur arrive avant la chose : suint, terre retournée. Une masse se décolle du talus, longue, basse, taillée pour courir entre deux murs de terre. Le creux est son couloir — et tu es dessus."
-   ],
    "suite": "chemin-creux",
    "adversaire": "bete-chemins-creux",
    "adversaireNom": "La Bête des Chemins Creux",
@@ -1150,8 +1130,7 @@
   {
    "id": "colline-aux-gibets",
    "narration": [
-    "La pente est douce et n'en finit pas — la Colline se mérite à pas comptés. Sur la crête, les potences se suivent, plantées de loin en loin comme des bornes, chacune avec son nom et sa date : la crête entière est un calendrier planté. Elles grandissent à mesure qu'on monte, et la dernière dépasse toutes les autres. Sa corde est la seule chose neuve à dix lieues.",
-    "En contrebas, un poteau isolé porte encore son occupant. Sur la traverse du grand gibet, des oiseaux noirs attendent sans bouger."
+    "Sur la crête, les potences se suivent comme des bornes, chacune avec son nom et sa date. La dernière dépasse toutes les autres — sa corde est la seule chose neuve à dix lieues. En contrebas, un poteau porte encore son occupant."
    ],
    "choix": [
     {
@@ -1203,9 +1182,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "Sur la crête, les potences se suivent comme des bornes, chacune avec son nom et sa date. La dernière dépasse toutes les autres — sa corde est la seule chose neuve à dix lieues. En contrebas, un poteau porte encore son occupant."
-   ],
    "suite": "colline-aux-gibets-2",
    "donneDecouverte": "d.nom_gratte",
    "tags": [
@@ -1238,8 +1214,7 @@
   {
    "id": "colline-aux-gibets-2",
    "narration": [
-    "Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme plat, toutes les cordes de la crête se mettent à bouger. Pas au hasard : ensemble. Un balancement lent, réglé, qui va et vient sur le même temps.",
-    "Ça grince en mesure. Toutes ces cordes, un seul rythme. Tu comprends, avec un retard qui te coûte, que ce rythme ne t'est pas indifférent — tu pourrais le compter."
+    "Le vent tombe d'un coup. Et dans ce calme plat, toutes les cordes de la crête se mettent à bouger — ensemble. Un balancement lent, réglé. Tu pourrais le compter."
    ],
    "choix": [
     {
@@ -1293,9 +1268,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "Le vent tombe d'un coup. Et dans ce calme plat, toutes les cordes de la crête se mettent à bouger — ensemble. Un balancement lent, réglé. Tu pourrais le compter."
-   ],
    "poseFlag": "echarde-gibet-prelevee",
    "sejour": true,
    "nom": "La Colline aux Gibets — beat 2",
@@ -1326,7 +1298,8 @@
   {
    "id": "pendu-qui-parle",
    "narration": [
-    "Au revers de la colline, un gibet dont la corde est si longue que le pendu t'arrive à hauteur de regard. Le pendu qui s'y balance ouvre les yeux à ton approche. Chaîne de fonction au cou, sous la corde. Un sceau au poing. Le Bailli des Landes — pendu le dernier, à la place d'honneur."
+    "Au revers de la colline, un gibet à corde longue : le pendu t'arrive à hauteur de regard. Chaîne de fonction au cou, un sceau au poing. À ton approche, il ouvre les yeux.",
+    "Sur la traverse, une rangée de corbeaux regarde le nord. Un seul est de travers. Celui-là te regarde, toi."
    ],
    "choix": [
     {
@@ -1357,10 +1330,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "Au revers de la colline, un gibet à corde longue : le pendu t'arrive à hauteur de regard. Chaîne de fonction au cou, un sceau au poing. À ton approche, il ouvre les yeux.",
-    "Sur la traverse, une rangée de corbeaux regarde le nord. Un seul est de travers. Celui-là te regarde, toi."
-   ],
    "suite": "pendu-qui-parle-2",
    "nom": "Le Pendu qui parle",
    "lieu": "colline_aux_gibets",
@@ -1858,7 +1827,7 @@
      "label": "Le repousser au poteau",
      "type": "risque",
      "stat": "COURAGE",
-     "seuil": 13,
+     "seuil": 14,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu l'empoignes par sa propre corde et le ramènes au poteau brisé — où il se rependt de lui-même, docile soudain, presque soulagé qu'on décide pour lui. Le champ entier expire. Le Fossoyeur, au loin, te salue du chapeau.",
@@ -1873,7 +1842,7 @@
      "label": "Esquiver la corde",
      "type": "risque",
      "stat": "INSTINCT",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu lis la corde comme un fouet : elle frappe où il regarde, une seconde après. Tu n'es jamais là. Épuisé d'avoir raté, le Pendu s'effondre en tas de ficelles — la Fixation ne paie pas les heures supplémentaires.",
@@ -1891,7 +1860,7 @@
      "label": "Lui réciter l'ordonnance",
      "type": "risque",
      "stat": "RUSE",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu récites la liste des signes, dans l'ordre, avec les mots du Bailli. Au troisième, il s'arrête. Au cinquième, il recule d'un pas vers le poteau cassé. À la fin, il se tient droit à l'endroit exact où il a passé des années — attendant qu'on l'attache, parce que c'est ce que la phrase dit qu'il faut faire.",
@@ -1908,7 +1877,7 @@
      "label": "L'emmêler dans sa corde",
      "type": "risque",
      "stat": "RUSE",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu tournes autour de lui comme un fuseau — deux passes, un nœud, et le Pendu se retrouve fixé à lui-même, bras au corps. La plus propre Fixation du champ. Le Fossoyeur en parlera longtemps.",
@@ -1951,8 +1920,7 @@
   {
    "id": "serment-hameau",
    "narration": [
-    "Les toits apparaissent au creux du plateau — de l'ardoise affaissée, des murs qui tiennent par habitude. Une seule cheminée fume, sur une vingtaine.",
-    "Tu es encore loin quand tu comprends ce qui cloche : aucun chien n'aboie."
+    "Des toits au creux du plateau, une seule cheminée qui fume sur vingt. Tu es encore loin quand tu comprends ce qui cloche : aucun chien n'aboie."
    ],
    "choix": [
     {
@@ -1984,9 +1952,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "Des toits au creux du plateau, une seule cheminée qui fume sur vingt. Tu es encore loin quand tu comprends ce qui cloche : aucun chien n'aboie."
-   ],
    "suite": "hameau-entree-2",
    "nom": "Serment hameau",
    "lieu": "seuil_du_hameau",
@@ -2016,8 +1981,8 @@
   {
    "id": "hameau-entree-2",
    "narration": [
-    "La rue est en terre battue, bordée de murets bas. Sur le premier linteau, une croix à la craie, tracée haut. Sur le suivant aussi. Toutes à la même hauteur, toutes de la même main.",
-    "Une femme se tient sur un seuil, immobile. Elle ne regarde pas la route : elle regarde une fenêtre, en face."
+    "Une rue en terre battue, des murets. Sur chaque linteau, une croix à la craie — même hauteur, même main. Sur un seuil, une femme immobile regarde une fenêtre, en face.",
+    "Au bout de la rue, entre deux toits : une silhouette. La forme d'un corbeau. Pas la taille d'un corbeau. Le temps de regarder mieux, le bout de la rue est vide."
    ],
    "choix": [
     {
@@ -2080,10 +2045,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "Une rue en terre battue, des murets. Sur chaque linteau, une croix à la craie — même hauteur, même main. Sur un seuil, une femme immobile regarde une fenêtre, en face.",
-    "Au bout de la rue, entre deux toits : une silhouette. La forme d'un corbeau. Pas la taille d'un corbeau. Le temps de regarder mieux, le bout de la rue est vide."
-   ],
    "suite": "hameau-entree-3",
    "donneDecouverte": "d.combles_cloues",
    "nom": "Hameau entree 2 — beat 2",
@@ -2715,9 +2676,7 @@
   {
    "id": "hameau-entree-3",
    "narration": [
-    "Ils sont trois au milieu de la rue. Pas armés — un bâton de marche, une fourche contre un mur, à portée sans être brandie.",
-    "Celui du centre est vieux et large d'épaules. Sa voix ne tremble pas. Ses mains, si.",
-    "— « On ne te chasse pas. Mais tu descends. Ça se voit à ton pas. Et ceux qui descendent... » Il ne finit pas. Derrière lui, une femme tire un enfant à l'intérieur."
+    "Ils sont trois au milieu de la rue. Pas armés — une fourche à portée, sans être brandie. Le vieux du centre : « On ne te chasse pas. Mais tu descends, ça se voit à ton pas. » Derrière lui, on rentre un enfant."
    ],
    "choix": [
     {
@@ -2772,9 +2731,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "Ils sont trois au milieu de la rue. Pas armés — une fourche à portée, sans être brandie. Le vieux du centre : « On ne te chasse pas. Mais tu descends, ça se voit à ton pas. » Derrière lui, on rentre un enfant."
-   ],
    "suite": "hameau-entree-4",
    "nom": "Hameau entree 3 — beat 3",
    "lieu": "seuil_du_hameau",
@@ -3242,18 +3198,15 @@
   {
    "id": "hameau-entree-4",
    "narration": [
-    "Au bout de la rue, un muret bas. Le vieux y est assis, coudes sur les genoux — il t'attendait. Il tend la main, paume ouverte : pas pour serrer la tienne, pour que tu la regardes. Elle est vide. Ici on jure sur rien, parce qu'il ne reste rien.",
-    "— « Trois choses, et tu dors sous un toit. Tu ne parles pas aux pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et à la troisième aube, tu choisis. »",
-    "Il n'attend pas la question. « Qui juge ? Personne. On constate. »"
+    "Le vieux t'attend sur un muret, paume ouverte — vide. Ici on jure sur rien. « Trois choses, et tu dors sous un toit : tu ne parles pas aux pendus, tu ne regardes pas le sud plus qu'il ne faut, et à la troisième aube, tu choisis. »"
    ],
    "choix": [
     {
      "id": "jurer-serment",
      "label": "Jurer",
      "type": "passif",
-     "consequence": "Tu poses ta main au-dessus de la sienne, sans la toucher — c'est ainsi qu'on fait, tu l'as compris à leurs regards. Tu jures les trois choses. Le vieux hoche la tête une fois, et toute la rue se dénoue d'un coup dans ton dos, comme une corde qu'on lâche. « Tenu jusqu'à la sortie », rappelle-t-il. Le hameau entier a entendu. Et plus haut que le hameau, quelqu'un d'autre.",
+     "consequence": "Tu poses ta main au-dessus de la sienne, sans la toucher, et tu jures les trois choses. Toute la rue se dénoue d'un coup dans ton dos. « Tenu jusqu'à la sortie », rappelle le vieux. Le hameau entier a entendu. Et plus haut que le hameau, quelqu'un d'autre.",
      "serment": "jure",
-     "consequenceDemo": "Tu poses ta main au-dessus de la sienne, sans la toucher, et tu jures les trois choses. Toute la rue se dénoue d'un coup dans ton dos. « Tenu jusqu'à la sortie », rappelle le vieux. Le hameau entier a entendu. Et plus haut que le hameau, quelqu'un d'autre.",
      "soupcon": -1
     },
     {
@@ -3294,9 +3247,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "Le vieux t'attend sur un muret, paume ouverte — vide. Ici on jure sur rien. « Trois choses, et tu dors sous un toit : tu ne parles pas aux pendus, tu ne regardes pas le sud plus qu'il ne faut, et à la troisième aube, tu choisis. »"
-   ],
    "suite": "hameau-entree-5",
    "nom": "Hameau entree 4 — beat 4",
    "lieu": "seuil_du_hameau",
@@ -3332,7 +3282,7 @@
   {
    "id": "hameau-entree-5",
    "narration": [
-    "Ils s'écartent juste assez pour que tu passes sans toucher personne, et tu comprends que c'est calculé. Devant toi, des volets se ferment un par un, un peu en avance sur ton pas. Personne ne t'a souhaité la bienvenue, et pourtant tous savaient que tu venais."
+    "Ils s'écartent juste assez pour que tu passes sans toucher personne — c'est calculé. Devant toi, les volets se ferment un peu en avance sur ton pas."
    ],
    "choix": [
     {
@@ -3350,9 +3300,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "Ils s'écartent juste assez pour que tu passes sans toucher personne — c'est calculé. Devant toi, les volets se ferment un peu en avance sur ton pas."
-   ],
    "hameauEntree": true,
    "nom": "Hameau entree 5 — beat 5",
    "lieu": "seuil_du_hameau",
@@ -4125,7 +4072,7 @@
      "label": "Tenir le premier assaut",
      "type": "risque",
      "stat": "COURAGE",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu ne recules pas d'un pouce, et c'est la seule chose qu'elles n'avaient pas marchée d'avance. Le premier assaut se brise sur ta lame ; la meneuse rappelle les autres d'un souffle. Elles ont leur réponse : celui-là coûte plus qu'il ne rapporte. La lande se referme derrière leur départ, et le compte est soldé.",
@@ -4143,7 +4090,7 @@
      "label": "Faire tinter la clochette",
      "type": "risque",
      "stat": "RUSE",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Un seul tintement, sec, posé au milieu de leur silence. Les cinq têtes se lèvent ENSEMBLE — et le front s'ouvre en deux, comme une porte qu'on tient à un supérieur. Tu passes entre elles au pas, sans hâte, et aucune ne tourne la tête. On ne suit pas ce qu'on escorte.",
@@ -4197,7 +4144,7 @@
      "label": "Forcer le passage",
      "type": "risque",
      "stat": "COURAGE",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu ne ralentis pas — tu accélères, droit dans l'axe, là où rien de ce qui la fuit ne va jamais. La masse hésite un souffle de trop : le creux est à toi avant qu'elle ne retombe. Derrière, le silence se referme, vexé, et ne te suit pas. Elle ne suit que ce qui fuit.",
@@ -4216,7 +4163,7 @@
      "label": "Refuser le couloir",
      "type": "risque",
      "stat": "INSTINCT",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu sais ce qu'elle est : un couloir avec un appétit. Alors tu refuses le couloir — tu obliques AVANT les talus, en travers, là où sa charge n'a rien à suivre. La masse freine au bord de son propre piège et n'en sort pas. Tu passes au large, à découvert, et le creux chasse tout seul, pour personne.",
@@ -4541,7 +4488,7 @@
   {
    "id": "marche-muet",
    "narration": [
-    "Au cœur du hameau, un marché sans un cri. Des étals de trois fois rien — clous, laine, racines — et des marchands qui négocient par gestes, paumes et hochements. Renoncer à la parole est le renoncement le plus courant. Le moins cher."
+    "Un marché sans un cri : des étals de trois fois rien, des marchands qui négocient par gestes. Renoncer à la parole est le renoncement le moins cher."
    ],
    "choix": [
     {
@@ -4572,9 +4519,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "Un marché sans un cri : des étals de trois fois rien, des marchands qui négocient par gestes. Renoncer à la parole est le renoncement le moins cher."
-   ],
    "suite": "marche-muet-2",
    "tags": [
     "food_available"
@@ -4607,8 +4551,7 @@
   {
    "id": "marche-muet-2",
    "narration": [
-    "Au bout de la rangée, un étal différent : des objets qui n'ont rien à faire dans une lande. Le Colporteur te regarde venir de loin — et te reconnaît. C'est impossible. Il te fait signe quand même. Sur l'étal, aucun fruit. « Ceux du Verger, personne n'en prend. »",
-    "À l'étal voisin, un vieil homme écrase des feuilles dans un mortier, des fioles bouchées de cire devant lui. Le Rebouteux. Il ne lève pas la tête — mais son tabouret libre est tourné vers toi."
+    "Au bout de la rangée, le Colporteur te regarde venir — et te reconnaît. C'est impossible. Il te fait signe quand même. À l'étal voisin, le Rebouteux écrase des feuilles sans lever la tête ; son tabouret libre est tourné vers toi."
    ],
    "choix": [
     {
@@ -4664,9 +4607,8 @@
      "id": "colporteur-sans-bouche",
      "label": "Lui demander où il a entendu ça",
      "type": "passif",
-     "consequence": "Il est en train de dire à un autre, sans baisser la voix, que la jeune du moulin est toujours là. Tu lui demandes d'où il le tient. « D'où je le tiens ? » Il rit. « De partout. C'est le genre de chose qu'on sait. » Il reprend son étal en main. « Personne me l'a dit, si c'est ta question. On me dit jamais rien, à moi. J'écoute, c'est tout. »",
+     "consequence": "Il est en train de dire, sans baisser la voix, que la jeune du moulin est toujours là. D'où il le tient ? Il rit. « De partout. Personne me dit rien, à moi. J'écoute, c'est tout. »",
      "exigeDecouverte": "d.temoin_oculaire",
-     "consequenceDemo": "Il est en train de dire, sans baisser la voix, que la jeune du moulin est toujours là. D'où il le tient ? Il rit. « De partout. Personne me dit rien, à moi. J'écoute, c'est tout. »",
      "prendLaPlaceDe": [
       "troc-colporteur"
      ]
@@ -4721,9 +4663,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "Au bout de la rangée, le Colporteur te regarde venir — et te reconnaît. C'est impossible. Il te fait signe quand même. À l'étal voisin, le Rebouteux écrase des feuilles sans lever la tête ; son tabouret libre est tourné vers toi."
-   ],
    "sejour": true,
    "nom": "Le Marché Muet — beat 2",
    "lieu": "marche_muet",
@@ -5292,8 +5231,7 @@
   {
    "id": "chapelle-des-cordes",
    "narration": [
-    "La chapelle est petite et n'a plus de dieu — les niches sont vides, l'autel dépouillé. Mais elle est TENUE : balayée, entretenue, occupée par sa nouvelle religion.",
-    "Les cordes pendent des deux murs, du plafond jusqu'au sol, sur toute la longueur. Au fond, sous la fenêtre, l'autel est resté debout — seul, et bien plus propre que le reste. Près de l'entrée, une chaise et un ouvrage de tressage : quelqu'un vit ici."
+    "La chapelle n'a plus de dieu, mais elle est tenue. Des cordes pendent des deux murs, du plafond au sol. Au fond, l'autel est resté debout, plus propre que le reste. Près de l'entrée, un ouvrage de tressage : quelqu'un vit ici."
    ],
    "choix": [
     {
@@ -5315,10 +5253,9 @@
      "id": "mur-cordes",
      "label": "Remonter le mur des cordes",
      "type": "passif",
-     "consequence": "L'odeur de chanvre vieux prend à la gorge à mesure — grasse, presque animale, rien d'une odeur d'église. Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom à l'encre pâle. Ce ne sont pas des trophées : ce sont des reliques, chacune « a tenu » quelqu'un. L'une bouge quand tu ne la regardes pas — la troisième du rang bas, sans étiquette, plus claire que les autres. Tu notes où elle est. Plus bas, trois cordes portent la même date : celle du Bailli, un prénom de fille, et un troisième nom arraché avec l'étiquette.",
+     "consequence": "Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom — des reliques : chacune « a tenu » quelqu'un. La troisième du rang bas n'a pas d'étiquette, et bouge quand tu ne la regardes pas. Plus bas, trois cordes portent la même date : celle du Bailli, un prénom de fille, et un nom arraché.",
      "donneSavoir": "savoir_corde_vive",
      "donneDecouverte": "d.trois_cordes",
-     "consequenceDemo": "Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom — des reliques : chacune « a tenu » quelqu'un. La troisième du rang bas n'a pas d'étiquette, et bouge quand tu ne la regardes pas. Plus bas, trois cordes portent la même date : celle du Bailli, un prénom de fille, et un nom arraché.",
      "image": {
       "fichier": "scene_chapelle_mur_cordes_v3_d_a.png",
       "hash": "889beb50",
@@ -5352,9 +5289,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "La chapelle n'a plus de dieu, mais elle est tenue. Des cordes pendent des deux murs, du plafond au sol. Au fond, l'autel est resté debout, plus propre que le reste. Près de l'entrée, un ouvrage de tressage : quelqu'un vit ici."
-   ],
    "suite": "chapelle-des-cordes-2",
    "butin": "brin-chanvre",
    "donneDecouverte": "d.trois_cordes",
@@ -5384,8 +5318,7 @@
   {
    "id": "chapelle-des-cordes-2",
    "narration": [
-    "Elle était là depuis le début. Une femme en noir, assise à la chaise, qui refait sans fin le même nœud sans lever les yeux sur toi.",
-    "— « Choisis ton brin. » Sa voix est plate, professionnelle. « Tout le monde finit par en avoir besoin. » Derrière elle, dans une niche à part, sous verre : une corde coupée net, sans nom. La seule de toute la chapelle qui n'a pas tenu."
+    "Elle était là depuis le début — une femme en noir qui refait sans fin le même nœud. « Choisis ton brin. Tout le monde finit par en avoir besoin. » Derrière elle, sous verre : une corde coupée net. La seule qui n'a pas tenu."
    ],
    "choix": [
     {
@@ -5466,10 +5399,9 @@
      "id": "chapelle-ressortir",
      "label": "Ressortir par le côté",
      "type": "passif",
-     "consequence": "Tu recules jusqu'au seuil sans quitter les cordes des yeux, ce qui est exactement la mauvaise façon de traverser une nef : on ne voit pas ce qu'on laisse derrière. Aucune ne bouge. Dehors, l'air a le goût de dehors.\n\nLe clocheton n'est pas haut, et la corde d'appel pend jusqu'à hauteur de main, propre, entretenue. Tu tires par curiosité. La cloche bascule, revient, bascule encore — et ne sonne pas : elle n'a plus de battant. L'attache est intacte. On ne l'a pas cassée : on l'a dévissée.",
+     "consequence": "Tu recules jusqu'au seuil sans quitter les cordes des yeux. Aucune ne bouge. Dehors, la corde d'appel du clocheton pend à hauteur de main. Tu tires : la cloche bascule et ne sonne pas — plus de battant. On ne l'a pas cassé : on l'a dévissé.",
      "sortie": {},
      "donneDecouverte": "d.cloche_sans_battant",
-     "consequenceDemo": "Tu recules jusqu'au seuil sans quitter les cordes des yeux. Aucune ne bouge. Dehors, la corde d'appel du clocheton pend à hauteur de main. Tu tires : la cloche bascule et ne sonne pas — plus de battant. On ne l'a pas cassé : on l'a dévissé.",
      "image": {
       "fichier": "scene_chapelle_cloche_sans_battant_c_a.png",
       "hash": "3918817f",
@@ -5482,9 +5414,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "Elle était là depuis le début — une femme en noir qui refait sans fin le même nœud. « Choisis ton brin. Tout le monde finit par en avoir besoin. » Derrière elle, sous verre : une corde coupée net. La seule qui n'a pas tenu."
-   ],
    "donneDecouverte": "d.cloche_sans_battant",
    "sejour": true,
    "nom": "La Chapelle des Cordes — beat 2",
@@ -5515,8 +5444,7 @@
   {
    "id": "puits-condamne",
    "narration": [
-    "Sur la place arrière du hameau, un puits — condamné de frais : planches neuves, chaînes croisées, cadenas encore gras. Tout le reste du hameau tombe en ruine douce, mais ça, on l'entretient. Par-dessus les planches, on a empilé des pierres — pas des moellons de mur : des blocs de meule, que deux hommes ne soulèveraient pas.",
-    "Et dessous, ça cogne. Trois coups, une pause. Trois coups. Poli, presque — comme on frappe à une porte dont on sait qu'on va vous ouvrir."
+    "Un puits condamné de frais : planches neuves, chaînes, blocs de meule empilés. Tout le hameau tombe en ruine — ça, on l'entretient. Et dessous, ça cogne. Trois coups, une pause. Trois coups. Poli, comme on frappe à une porte qu'on va vous ouvrir."
    ],
    "choix": [
     {
@@ -5571,9 +5499,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "Un puits condamné de frais : planches neuves, chaînes, blocs de meule empilés. Tout le hameau tombe en ruine — ça, on l'entretient. Et dessous, ça cogne. Trois coups, une pause. Trois coups. Poli, comme on frappe à une porte qu'on va vous ouvrir."
-   ],
    "suite": "puits-condamne-2",
    "usageObjet": {
     "objet": "corde-coupee",
@@ -5743,7 +5668,7 @@
      "label": "Forcer le passage",
      "type": "risque",
      "stat": "COURAGE",
-     "seuil": 13,
+     "seuil": 14,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu marches droit, sans lever la main. Le chien te jauge — et s'écarte au dernier pas, parce qu'un ordre ancien vient d'en croiser un plus vieux : on ne mord pas ce qui n'a pas peur. Il t'escorte jusqu'au seuil, tête basse, presque soulagé.",
@@ -5758,7 +5683,7 @@
      "label": "S'accroupir, lui parler",
      "type": "risque",
      "stat": "EMPATHIE",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu t'accroupis, tu lui parles de son maître — celui qui pend là-haut et qui juge encore. Le chien écoute, oreilles couchées, puis vient poser son front contre le tien. L'ordre est levé : tu es le premier à lui avoir dit que c'était fini.",
@@ -5777,7 +5702,7 @@
      "label": "Lui dire que son maître s'est jugé",
      "type": "risque",
      "stat": "EMPATHIE",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu t'accroupis à sa hauteur et tu le lui dis comme on rend une nouvelle à un vieux serviteur : le nom qui l'a posté est écrit sur le registre, en dernier, de sa propre main. Le chien te regarde longtemps. Puis il se lève, quitte le seuil, et va se coucher trois pas plus loin — dehors, comme un chien sans maison. Il ne t'accompagne pas. Il ne t'arrête plus.",
@@ -5794,7 +5719,7 @@
      "label": "Contourner par la cour",
      "type": "risque",
      "stat": "RUSE",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu fais le tour par les appentis — et tu trouves mieux que la porte : le trou par lequel le chien entre et sort, taillé à sa mesure dans la pierre murée. Assez large pour toi. La seule ouverture que le Bailli n'a jamais murée : il faut bien nourrir la garde.",
@@ -6120,7 +6045,7 @@
      "label": "Charger la plus grande",
      "type": "risque",
      "stat": "COURAGE",
-     "seuil": 13,
+     "seuil": 14,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu charges la meneuse au milieu de son tour — l'impensable, au centre du cercle qui ne se défend jamais. Elle roule sous toi, se relève boiteuse, et le cercle entier perd le pas. Une meute sans cadence n'est qu'un tas de bêtes maigres.",
@@ -6135,7 +6060,7 @@
      "label": "Gagner le muret",
      "type": "risque",
      "stat": "INSTINCT",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu perces le cercle à l'endroit exact où deux bêtes échangeaient leurs postes — le seul battement du mécanisme. Dos à la pierre sèche, tu n'offres plus de centre. Une meute sans cercle tourne à vide ; la meneuse te le reproche du regard, longuement.",
@@ -6153,7 +6078,7 @@
      "label": "Faire tinter la clochette",
      "type": "risque",
      "stat": "RUSE",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu sors la clochette et tu la fais sonner une fois, sèchement, comme on rappelle un troupeau. Les cinq têtes se tournent ENSEMBLE, du même côté, à la même hauteur — et le front se défait. Ils cherchent le berger derrière toi. Tu passes pendant qu'ils cherchent, et le son continue de les tenir longtemps après.",
@@ -6170,7 +6095,7 @@
      "label": "Hurler le premier",
      "type": "risque",
      "stat": "RUSE",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu renverses la tête et tu hurles — pas de peur : un vrai hurlement de meute, appris tu ne sais où, peut-être du fond de la lande elle-même. Le cercle se fige. La meneuse répond. Vous vous êtes dit quelque chose, et le cercle s'ouvre : on ne chasse pas ce qui chante.",
@@ -6227,7 +6152,7 @@
      "label": "Répondre par l'acier",
      "type": "risque",
      "stat": "COURAGE",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu réponds d'un seul coup, net, définitif. La meneuse tombe sans un bruit — et la meute ne venge pas : elle constate, se choisit une autre tête d'un simple flottement, et reflue dans la bruyère. Les questions, dans la lande, n'ont pas de rancune.",
@@ -6242,7 +6167,7 @@
      "label": "Reculer, sans ciller",
      "type": "risque",
      "stat": "INSTINCT",
-     "seuil": 13,
+     "seuil": 14,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu recules pas à pas, les yeux dans les siens, sans un frisson. La meneuse te suit — puis s'arrête à la frontière exacte d'un territoire que toi, tu ne vois pas. Elle s'assoit. Te voilà dehors de leur carte : la meute te regarde partir comme on regarde la pluie quitter un champ.",
@@ -6257,7 +6182,7 @@
      "label": "Lui répondre à la voix",
      "type": "risque",
      "stat": "RUSE",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu refais le son de tout à l'heure, plus bas, plus court — une réponse, pas un défi. La meneuse incline la tête, exactement comme un chien à qui l'on parle. Puis elle se détourne et le croissant se défait derrière elle, sans un bruit, comme une phrase qu'on finit.",
@@ -6274,7 +6199,7 @@
      "label": "Leur jeter ton manteau",
      "type": "risque",
      "stat": "RUSE",
-     "seuil": 12,
+     "seuil": 13,
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu fais glisser ton manteau et tu le lances de biais, loin sur le côté, là où le vent portera ton odeur. Il tombe en gardant ta forme. La meute entière se détourne pour le juger, méthodique, et la meneuse te laisse filer avec un regard entendu : elle sait qu'elle est achetée, elle accepte le prix. Marché de vieux routiers.",
@@ -6965,8 +6890,7 @@
   {
    "id": "palissade-sud",
    "narration": [
-    "La Palissade barre le plateau d'un trait noir : des rondins plantés serrés, hauts de deux hommes. Un portillon, une guérite, une lanterne allumée sous un ciel encore clair.",
-    "Derrière, un chemin qui descend. On le sent plus qu'on ne le voit : l'air y coule comme une eau froide. La Descente. Et dans la guérite, un homme qui t'a vu depuis longtemps."
+    "La Palissade barre le plateau : des rondins hauts de deux hommes, un portillon, une guérite éclairée. Derrière, un chemin descend — l'air y coule comme une eau froide. La Descente. Dans la guérite, un homme t'a vu depuis longtemps."
    ],
    "choix": [
     {
@@ -6998,9 +6922,8 @@
      "id": "portillon-verrou",
      "label": "Examiner le portillon",
      "type": "passif",
-     "consequence": "Le bois du portillon est tiède, ce qui n'a aucun sens sous ce crépuscule. Un verrou, côté nord. Un seul. Le bois autour est griffé — pas par des bêtes : à hauteur de mains. Des mains qui voulaient passer, une nuit, et qu'on n'a pas laissées. Ou qu'on a laissées trop tard. Dans la gâche, une clé rouillée est restée, oubliée par quelqu'un qui comptait revenir.",
+     "consequence": "Le bois du portillon est tiède — aucun sens sous ce crépuscule. Autour du verrou, des griffures à hauteur de mains : des mains qui voulaient passer, une nuit, et qu'on n'a pas laissées. Dans la gâche, une clé rouillée, oubliée par quelqu'un qui comptait revenir.",
      "donneObjet": "cle-portillon",
-     "consequenceDemo": "Le bois du portillon est tiède — aucun sens sous ce crépuscule. Autour du verrou, des griffures à hauteur de mains : des mains qui voulaient passer, une nuit, et qu'on n'a pas laissées. Dans la gâche, une clé rouillée, oubliée par quelqu'un qui comptait revenir.",
      "image": {
       "fichier": "scene_palissade_portillon_a_c_f.png",
       "hash": "43e40b32",
@@ -7031,9 +6954,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "La Palissade barre le plateau : des rondins hauts de deux hommes, un portillon, une guérite éclairée. Derrière, un chemin descend — l'air y coule comme une eau froide. La Descente. Dans la guérite, un homme t'a vu depuis longtemps."
-   ],
    "suite": "palissade-sud-2",
    "tags": [
     "climb"
@@ -7329,7 +7249,7 @@
   {
    "id": "palissade-sud-2",
    "narration": [
-    "Sur le chemin de ronde, un vieux soldat regarde vers le sud. Et en contrebas, par-dessus le bord, un homme descend au bout d'une corde, d'un rythme égal, sans bagage, sans lever la tête. Le Veilleur ne le quitte pas des yeux. « Encore un Appelé », dit-il sans se retourner. « On ne les rattrape pas. On les compte. »"
+    "Le Veilleur regarde vers le sud. Devant lui, quelqu'un passe le portillon — d'un pas égal, sans bagage, sans se retourner — et s'éloigne dans la bruyère. « Encore un Appelé », dit le Veilleur. « On ne les rattrape pas. On les compte. »"
    ],
    "choix": [
     {
@@ -7351,15 +7271,15 @@
      "id": "regarder-appele",
      "label": "Regarder l'Appelé",
      "type": "passif",
-     "consequence": "Il descend sans jamais presser ni ralentir le pas — quelqu'un qui n'obéit pas à ses jambes. Juste avant le tournant, il s'arrête une seconde, comme si quelque chose se débattait encore. Puis le chemin le prend. Tu espères ne jamais reconnaître ce pas dans un reflet."
+     "consequence": "Il marche sans jamais presser ni ralentir le pas — quelqu'un qui n'obéit pas à ses jambes. Une fois, il s'arrête, comme si quelque chose se débattait encore. Puis la lande le prend. Tu espères ne jamais reconnaître ce pas dans un reflet."
     },
     {
      "id": "franchir-descente",
-     "label": "Franchir la Descente",
+     "label": "Passer le portillon",
      "type": "passif",
      "consequence": "Le Veilleur ne t'arrête pas. Il pousse le portillon et se range, comme on s'écarte d'un convoi. Derrière toi, la guérite reste ouverte — pour le suivant.",
      "sortie": {
-      "toScene": "la-descente"
+      "toScene": "falaise-cordes"
      },
      "tags": [
       "citable"
@@ -7367,9 +7287,6 @@
     }
    ],
    "pointsInteret": [],
-   "narrationDemo": [
-    "Par-dessus le bord, un homme descend au bout d'une corde, d'un rythme égal, sans bagage, sans lever la tête. « Encore un Appelé », dit le Veilleur. « On ne les rattrape pas. On les compte. »"
-   ],
    "sejour": true,
    "nom": "La Palissade Sud — beat 2",
    "lieu": "palissade_sud",
@@ -7390,9 +7307,7 @@
     "palissade-sud",
     "veilleur-3"
    ],
-   "roles": [
-    "sortie"
-   ],
+   "roles": [],
    "acces": "lien",
    "etat": "valide",
    "alertes": []
@@ -7533,9 +7448,9 @@
    ],
    "pointsInteret": [],
    "image": {
-    "fichier": "scene_borne_gravures_a_e_d.png",
-    "hash": "0f26c58e",
-    "taille": 21464,
+    "fichier": "scene_borne_gravures_a_d.png",
+    "hash": "e4dd0628",
+    "taille": 12652,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -7849,7 +7764,7 @@
     "fichier": "scene_falaise_appele_d_d.png",
     "hash": "2f189ac1",
     "taille": 72079,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7866,8 +7781,8 @@
   {
    "id": "la-descente",
    "narration": [
-    "Passé le portillon, le sol ne descend pas : il cesse. La lande s'arrête net et la paroi tombe plus bas que le regard ne porte. L'air qui monte de là est plus froid, et plus vieux.",
-    "Sur toute la largeur du bord, des cordes. Nouées aux pieux, elles pendent dans le noir et bougent ensemble. Tu as traversé les Landes vivant — peu le font. Tu en prends une, et le sol te lâche."
+    "La corde s'arrête. Sous tes pieds, quelque chose de plat, de taillé — et très haut au-dessus, le jour par où tu es passé s'est refermé sur lui-même.",
+    "Tu as traversé les Landes vivant. Peu le font. Devant, le noir n'a pas encore de nom."
    ],
    "choix": [
     {
@@ -7879,10 +7794,10 @@
    "pointsInteret": [],
    "terminal": true,
    "image": {
-    "fichier": "monstre_appele_descente_b_b.png",
-    "hash": "f91221f1",
-    "taille": 10532,
-    "recent": false,
+    "fichier": "scene_falaise_appele_d_d.png",
+    "hash": "2f189ac1",
+    "taille": 72079,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8020,28 +7935,6 @@
    "herite": "",
    "id": "marche:scene_landes_liaison_plateau_e_b_a",
    "regle": "en pleine lande, entre deux lieux extérieurs — tirée par la graine du pas : ni la provenance ni la destination ne la choisissent"
-  },
-  {
-   "fichier": "scene_landes_liaison_chemin_creux_b_f.png",
-   "hash": "6be4e76f",
-   "taille": 11299,
-   "recent": false,
-   "existe": true,
-   "statut": "fallback",
-   "herite": "",
-   "id": "marche:scene_landes_liaison_chemin_creux_b_f",
-   "regle": "quand une des deux directions offertes est « Vers le chemin creux » — on marche déjà vers ce lieu-là"
-  },
-  {
-   "fichier": "scene_landes_liaison_sud_d_h.png",
-   "hash": "fede2150",
-   "taille": 13178,
-   "recent": false,
-   "existe": true,
-   "statut": "fallback",
-   "herite": "",
-   "id": "marche:scene_landes_liaison_sud_d_h",
-   "regle": "quand une des deux directions offertes est « Vers une palissade au sud » — on marche déjà vers ce lieu-là"
   }
  ],
  "liens": [
@@ -8418,7 +8311,15 @@
    "hash": "fb4ce0fd",
    "taille": 30568,
    "recent": false,
-   "groupe": "brancher",
+   "groupe": "doublon",
+   "racine": "appele_descente"
+  },
+  {
+   "fichier": "monstre_appele_descente_b_b.png",
+   "hash": "f91221f1",
+   "taille": 10532,
+   "recent": false,
+   "groupe": "doublon",
    "racine": "appele_descente"
   },
   {
@@ -9241,7 +9142,7 @@
    "fichier": "sceau_landes_1.png",
    "hash": "b435d124",
    "taille": 13805,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "sceau_landes_1"
   },
@@ -9249,7 +9150,7 @@
    "fichier": "sceau_landes_2.png",
    "hash": "67c5d495",
    "taille": 18845,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "sceau_landes_2"
   },
@@ -9257,7 +9158,7 @@
    "fichier": "sceau_landes_3.png",
    "hash": "fef90234",
    "taille": 19868,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "sceau_landes_3"
   },
@@ -9286,12 +9187,12 @@
    "racine": "borne_frontiere"
   },
   {
-   "fichier": "scene_borne_gravures_a_d.png",
-   "hash": "e4dd0628",
-   "taille": 12652,
+   "fichier": "scene_borne_gravures_a_e_d.png",
+   "hash": "0f26c58e",
+   "taille": 21464,
    "recent": false,
    "groupe": "autre",
-   "racine": "borne_gravures"
+   "racine": "borne_gravures_a_e"
   },
   {
    "fichier": "scene_champ_des_fixes_b.png",
@@ -9724,6 +9625,14 @@
    "recent": false,
    "groupe": "attend",
    "racine": "landes_liaison_chemin_creux"
+  },
+  {
+   "fichier": "scene_landes_liaison_chemin_creux_b_f.png",
+   "hash": "6be4e76f",
+   "taille": 11299,
+   "recent": false,
+   "groupe": "attend",
+   "racine": "landes_liaison_chemin_creux_b_f"
   },
   {
    "fichier": "scene_landes_liaison_fourche_a.png",
@@ -11424,7 +11333,7 @@
   "illustrations": 437,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 216,
+  "reserve": 218,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
@@ -11432,7 +11341,7 @@
   "etats": 2,
   "besoins": 0,
   "transitions": 64,
-  "ecransDeMarche": 13,
+  "ecransDeMarche": 11,
   "interactions": 34,
   "aRefaire": 18,
   "familiarite": 34

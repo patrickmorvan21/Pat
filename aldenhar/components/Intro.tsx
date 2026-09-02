@@ -19,11 +19,11 @@
  *   · titre y=427 · corps y=479 (x=15, largeur 360) · pied y=768.
  */
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import TypedText from "@/components/TypedText";
 import { animReduced } from "@/lib/settings";
 import { markIntroSeen } from "@/lib/player-memory";
-import { demoActive } from "@/lib/demo";
+import { HeroGeolier } from "@/components/HeroGeolier";
 import TouchHint from "@/components/TouchHint";
 import { assetCss, assetUrl } from "@/lib/assets";
 
@@ -33,6 +33,16 @@ type Clause = {
   title: string;
   body: string[];
   image: string;
+  /**
+   * LE HÉROS DE L'ACCUEIL à la place de l'image (retour Patrick, 2/09 :
+   * « reprendre l'illu du démon de l'accueil, elle m'a l'air pixellisée ici »).
+   * `intro_demon.png` était un export Figma en 390 px, à ~92 couleurs
+   * d'anticrénelage — le seul visuel du jeu qui n'était pas une vraie trame.
+   * Le composant de l'accueil (image HD détourée, fumée, respiration par
+   * paliers) est le même objet : l'ouverture devient un seul lieu, au lieu
+   * d'un diaporama suivi d'une scène.
+   */
+  hero?: boolean;
   /**
    * Sprite d'animation (16 frames 390×390 empilées) qui REMPLACE l'image
    * fixe — utilisé par la clause « Une seule vie » (vidéo de la porte, 7/08).
@@ -75,8 +85,9 @@ const CLAUSES: Clause[] = [
       "D'être entré, je veux dire. Personne ne s'en souvient. Tu es mort. Il y a peu.",
       "Ce qui suit est une proposition. Personne ne l'a jamais refusée.",
     ],
-    // Le visage du Geôlier — le même que la clôture du Seuil, c'est lui qui parle.
+    // Le visage du Geôlier — celui de l'accueil, c'est lui qui parle.
     image: "assets/intro_demon.png",
+    hero: true,
     geste: "refus",
   },
   {
@@ -96,7 +107,7 @@ const CLAUSES: Clause[] = [
 
 /** Sa réponse au refus — la seule chose qu'il dit en direct sur cet écran,
     d'où la frappe à 42 ms quand le reste du pacte est posé d'un bloc. */
-const REPONSE_AU_REFUS = "Non.\n\nTu as déjà signé en mourant. Je te laisse juste le lire.";
+const REPONSE_AU_REFUS = "Tu as déjà signé en mourant. Je te laisse juste le lire.";
 
 /** Ce que la porte répond quand on l'a poussée jusqu'au bout. */
 const PORTE_SCELLEE = "Pas celle-là. Pas encore.";
@@ -107,6 +118,7 @@ const PORTE_FRAMES = 16;
 /** Cadre partagé : illustration en haut, bande de dissolution, contenu dessous. */
 function IntroFrame({
   image,
+  hero,
   animSprite,
   /** Frame imposée au sprite (0..15). Absent → le sprite garde son animation
       CSS. La clause de la Porte s'en sert pour suivre le doigt. */
@@ -119,6 +131,7 @@ function IntroFrame({
   hint,
 }: {
   image: string;
+  hero?: boolean;
   animSprite?: string;
   porteFrame?: number;
   onTap?: () => void;
@@ -142,7 +155,15 @@ function IntroFrame({
         style={onPressStart ? { touchAction: "none" } : undefined}
       >
         <div className="relative h-[390px] w-[390px] shrink-0">
-          {animSprite ? (
+          {hero ? (
+            /* Le Geôlier de l'accueil, dans son cadre de 390 : la bande de
+               dissolution est posée par-dessus pour rejoindre le charbon du
+               texte sans frontière nette. */
+            <>
+              <HeroGeolier height={390} />
+              <div className="dissolve-bottom" aria-hidden />
+            </>
+          ) : animSprite ? (
             /* Sprite animé (frames tramées). Quand `porteFrame` est fourni,
                l'animation CSS est coupée et la frame suit le geste. */
             <>
@@ -240,12 +261,11 @@ function IntroBouton({
  * frappe rendrait le procédé décoratif et coûterait ~6 s sur le tout premier
  * écran du jeu.
  *
- * Mode démo (script 24/08, segment 0) : une SEULE clause — la Porte. Le pacte
- * complet reste au jeu entier ; une démo doit mettre le premier geste dans
- * les mains avant la minute 1, et la Porte EST un geste.
+ * (Le pacte se lit entier, toujours : la clause unique du mode démo est
+ * partie avec lui le 2/09.)
  */
 export default function Intro({ onDone }: { onDone: () => void }) {
-  const clauses = demoActive() ? CLAUSES.filter((c) => c.animSprite) : CLAUSES;
+  const clauses = CLAUSES;
   const [i, setI] = useState(0);
   const last = i >= clauses.length - 1;
   const c = clauses[i];
@@ -261,6 +281,13 @@ export default function Intro({ onDone }: { onDone: () => void }) {
       avançait dans le même geste et « Pas celle-là. Pas encore. » — le seul
       point de la clause — n'était jamais vu. Trouvé au banc. */
   const [porteLue, setPorteLue] = useState(false);
+  /** ⚠️ Instant du DERNIER relâchement de la poussée. Le `pointerup` qui
+      termine la poussée déclenche aussi un `click` sur le cadre : si la
+      réplique est déjà lue à cet instant (Apparition « instantanée »), le
+      verrou `porteLue` ne protège rien et l'écran avance sans qu'on ait pu
+      lire « Pas celle-là ». Un tap qui suit un relâchement de moins d'une
+      demi-seconde est donc la queue du geste, jamais une décision. */
+  const finPousseeRef = useRef(0);
 
   const advance = useCallback(() => {
     if (last) {
@@ -338,17 +365,33 @@ export default function Intro({ onDone }: { onDone: () => void }) {
     return () => clearTimeout(id);
   }, [porteOuverte, porteLue]);
 
+  const finPoussee = () => {
+    // Daté SEULEMENT si un appui était en cours : le `pointerup` d'un simple
+    // tap passe aussi par ici, et le dater ferait ignorer tous les taps.
+    if (pousse) finPousseeRef.current = Date.now();
+    setPousse(false);
+  };
+  const tapCadre = () => {
+    if (Date.now() - finPousseeRef.current < 500) return;
+    advance();
+  };
+
   return (
     <IntroFrame
       image={c.image}
+      hero={c.hero}
       animSprite={c.animSprite}
       porteFrame={c.geste === "porte" && !sansGeste ? frame : undefined}
       // La clause du refus n'avance que par ses boutons ; la Porte avance au
       // tap une fois poussée. Sinon le cadre ne capte rien : un tap perdu sur
       // un écran qui attend un geste précis se lit comme une panne.
-      onTap={porteLue ? advance : undefined}
+      onTap={porteLue ? tapCadre : undefined}
       onPressStart={c.geste === "porte" && !porteOuverte ? () => setPousse(true) : undefined}
-      onPressEnd={c.geste === "porte" && !porteOuverte ? () => setPousse(false) : undefined}
+      // ⚠️ TOUJOURS branché sur la clause de la Porte, porte ouverte ou non :
+      // c'est le relâchement qui SUIT l'ouverture qu'il faut dater — celui
+      // dont le `click` avancerait l'écran. Le brancher seulement « tant que
+      // la porte n'est pas ouverte » laissait passer exactement ce clic-là.
+      onPressEnd={c.geste === "porte" ? finPoussee : undefined}
       hint={
         c.geste === "porte" ? (
           <TouchHint

@@ -190,10 +190,20 @@ function fadeOutAndStop(then?: () => void): void {
  * Demande la musique d'un contexte : accueil/prologue = "intro", jeu =
  * "landes". Idempotent (même contexte = ne redémarre pas la piste).
  */
+/**
+ * ⚠️ LA MUSIQUE EST MASQUÉE (décision Patrick, 2/09 : « masquer pour le
+ * moment la musique, que je mettrai plus tard »). Les quatre mp3 restent en
+ * place et le moteur aussi — remettre `true` suffit à tout rebrancher. Tant
+ * que c'est `false`, aucune piste ne démarre et l'option n'est plus rendue
+ * dans les réglages (GameMenu).
+ */
+export const MUSIQUE_ACTIVE = false;
+
 export function playMusic(kind: MusicKind): void {
   if (typeof window === "undefined") return;
   const s = loadSettings();
   current = kind;
+  if (!MUSIQUE_ACTIVE) return;
   if (!s.music) return; // coupée : on retient juste le contexte demandé
   const list = TRACKS[kind];
   const audio = ensureEl();

@@ -116,9 +116,14 @@ export const SURPRISES: Record<SurpriseId, { nom: string; contexte: string; gard
  */
 function lotDecouverte(mem: PlayerMemory): SurpriseId | null {
   switch (mem.runsStarted) {
-    case 1: return "vol-nocturne";
-    case 2: return mem.lastDeath?.lieu ? "retour" : "vol-nocturne";
-    case 3: return "choix-expire";
+    // Vie 1 = LA TRAVERSÉE GUIDÉE (2/09) : la route scriptée ne passe par
+    // aucun campement, donc le vol nocturne n'aurait jamais eu son contexte
+    // et la première vie serait restée sans surprise. Le choix qui expire,
+    // lui, tombe dès le Chemin Creux (la charrette) — et c'est le seul qui
+    // montre le temps qui presse, ce que la première run doit faire voir.
+    case 1: return "choix-expire";
+    case 2: return "vol-nocturne";
+    case 3: return mem.lastDeath?.lieu ? "retour" : "vol-nocturne";
     case 4: return "citation";
     default: return null;
   }

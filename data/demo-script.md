@@ -1,9 +1,22 @@
 # LA DÉMO — « La Nuit du Serment » (script arbitré avec Patrick, 24/08/2026)
 
+> ⚠️ **2/09 — LE MODE DÉMO N'EXISTE PLUS : cette courbe est désormais LA PREMIÈRE
+> RUN de tout compte.** Décision Patrick : « la première run est en fait la démo
+> de Pactum ». Plus de drapeau, plus d'URL `?demo=1`, plus d'interrupteur dans
+> les Options — la route scriptée se joue quand `runsStarted ≤ 1`
+> (`traverseeGuidee()` dans `lib/demo.ts`), puis le tirage reprend dès la
+> deuxième incarnation. Ce qui a changé par rapport au script ci-dessous :
+> l'entrée n'est plus compressée (le pacte entier, les quatre souvenirs, le
+> carton d'acte — un vrai premier joueur les mérite), la cible de traversée est
+> fixée à 8 pour que la nuit scriptée ne se double pas d'une Halte, l'élément-
+> surprise de la vie 1 est LE CHOIX QUI EXPIRE (la charrette du Chemin Creux),
+> les textes courts écrits pour la démo sont devenus les textes tout court, et
+> **la Falaise aux Cordes est aussi la sortie du jeu complet** (Palissade →
+> portillon → Falaise → Descente). Les mini-jeux se jouent dans toutes les vies.
+
 Traversée scriptée de ~23 minutes, construite sur l'existant. Deux mouvements :
 **la lande** (la peur du corps) puis **le village** (la peur sociale et l'obscur),
-épilogue à la Falaise. La démo est un CHEMIN dans le jeu, pas un fork — le jeu
-complet avec son tirage continue d'exister à côté (flag « mode démo »).
+épilogue à la Falaise. La démo est un CHEMIN dans le jeu, pas un fork.
 
 ## Les quatre critères (Phase 0)
 

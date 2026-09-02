@@ -29,6 +29,7 @@ import { pickJailerQuote, reactionJours } from "@/lib/jailer-quotes";
 import { ditherFadeMaskDataUrl } from "@/lib/dither";
 import { animReduced } from "@/lib/settings";
 import type { RunState } from "@/lib/state";
+import TagRarete from "@/components/TagRarete";
 import { assetUrl, assetExiste } from "@/lib/assets";
 import { reliqueIllustration } from "@/lib/reliques";
 import CarteDeMort from "@/components/CarteDeMort";
@@ -545,7 +546,7 @@ export default function DeathScreen({
                 />
               </div>
             </div>
-            <TagRarete rarity={relic.rarity} className="mt-[20px] max-[799px]:mt-[12px]" />
+            <TagRarete rarity={relic.rarity} prefixe="relique" className="mt-[20px] max-[799px]:mt-[12px]" />
             <h3
               className="mt-[12px] text-center text-[36px] leading-none text-[var(--color-accent)] max-[799px]:mt-[8px] max-[799px]:text-[28px]"
               style={{ fontFamily: "var(--font-title)" }}
@@ -935,25 +936,6 @@ function CendresRevelation() {
       style={{ imageRendering: "pixelated" }}
       aria-hidden
     />
-  );
-}
-
-/**
- * Tag de rareté (maquette 2333-7011, qui fait foi — AUCUNE couleur neuve, la
- * palette reste Charbon/Orange/Blanc) : commune = contour blanc, rare = fond
- * blanc texte charbon, légendaire = fond orange texte charbon.
- */
-function TagRarete({ rarity, className }: { rarity: Relic["rarity"]; className?: string }) {
-  const base =
-    "inline-block p-[4px] font-mono text-[12px] font-medium uppercase tracking-[0.6px] leading-[1.2]";
-  if (rarity === "legendaire")
-    return <span className={`${base} bg-[var(--color-accent)] text-[var(--color-bg)] ${className ?? ""}`}>relique légendaire</span>;
-  if (rarity === "rare")
-    return <span className={`${base} bg-[var(--color-ink)] text-[var(--color-bg)] ${className ?? ""}`}>relique rare</span>;
-  return (
-    <span className={`${base} border border-solid border-[var(--color-ink)] text-[var(--color-ink)] ${className ?? ""}`}>
-      relique commune
-    </span>
   );
 }
 

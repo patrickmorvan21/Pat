@@ -5,10 +5,9 @@ import { CloseX } from "@/components/Home";
 import { forgetIntro, forgeRelic, loadMemory, reliquesPortees, type Relic } from "@/lib/player-memory";
 import { loadRun, type NarrativeEffect, type RunState } from "@/lib/state";
 import RadarEssence from "@/components/RadarEssence";
-import { besaceBySlot, normalizeItem, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
+import { besaceBySlot, normalizeItem, type BesaceItem } from "@/lib/besace";
+import TagRarete from "@/components/TagRarete";
 import { loadSettings, mutateSettings, reinitialiserAides, type Settings } from "@/lib/settings";
-import { demoActive, setDemo } from "@/lib/demo";
-import { syncMusicSettings } from "@/lib/audio";
 import DeathScreen, { bilanDeMort, type Bilan } from "@/components/DeathScreen";
 import { assetUrl, assetExiste } from "@/lib/assets";
 import { reliqueIllustration } from "@/lib/reliques";
@@ -312,7 +311,11 @@ function InventaireTab({
     : relic
       ? `Relique ${relic.rarity} — forgée de la mort de ${relic.heroName}, jour ${relic.days}.`
       : "";
-  const detailTag = item ? RARITY_LABEL[item.rarity as BesaceRarity] : relic ? relic.rarity : null;
+  // La rareté se lit dans le TAG DA (retour Patrick 2/09 : « Passif tu peux
+  // l'enlever, et commun le mettre avec notre DA comme les reliques »). Le
+  // mot « Passif/Actif » ne s'affiche plus : le groupe où l'objet est rangé
+  // le dit déjà, et « Utiliser » n'apparaît que sur un actif.
+  const detailRarity = item ? item.rarity : relic ? relic.rarity : null;
   const canUse = Boolean(item && item.slot === "actif" && (item.heal || item.cure));
 
   function useSelected() {
@@ -366,9 +369,9 @@ function InventaireTab({
           style={{ fontFamily: '"Instrument Serif", serif' }}
         >
           {detailName}
-          {detailTag && (
-            <span className="ml-[10px] align-middle font-mono text-[10px] uppercase tracking-[1.5px] text-[var(--color-ink)] opacity-60">
-              {item ? (item.slot === "actif" ? "Actif" : "Passif") + " · " + detailTag : detailTag}
+          {detailRarity && (
+            <span className="ml-[10px] inline-block align-middle">
+              <TagRarete rarity={detailRarity} />
             </span>
           )}
         </p>
@@ -526,7 +529,6 @@ function buildPreviewMort(): PreviewMort {
 
 export function OptionsTab() {
   const [s, setS] = useState<Settings>(() => loadSettings());
-  const [demoOn] = useState(() => demoActive());
   const [eraseArmed, setEraseArmed] = useState(false);
   const [aidesReset, setAidesReset] = useState(false);
   const [preview, setPreview] = useState<PreviewMort | null>(null);
@@ -557,74 +559,10 @@ export function OptionsTab() {
   return (
     <>
     <div className="px-[15px] pt-[8px]">
-      {/* Musique — ACTIVE (lot 24/07) : interrupteur à glissière de la maquette
-          (rail + pavé carré, position = état) + curseur de volume. Chaque
-          changement est appliqué immédiatement à la piste en cours. */}
-      <div>
-        <OptLabel>Musique</OptLabel>
-        <button
-          type="button"
-          aria-label={s.music ? "Couper la musique" : "Activer la musique"}
-          onClick={() => {
-            set("music", !s.music);
-            syncMusicSettings();
-          }}
-          className="mt-[18px] relative block h-[16px] w-full cursor-pointer"
-        >
-          <span className="absolute top-1/2 right-0 left-0 h-px -translate-y-1/2 bg-white" aria-hidden />
-          <span
-            className={`absolute top-0 size-[16px] border border-solid border-white ${
-              s.music ? "right-0 bg-[var(--color-accent)]" : "left-0 bg-[var(--color-bg)]"
-            }`}
-            aria-hidden
-          />
-        </button>
-        {/* Volume : rail à crans (8 pas), jamais un dégradé lisse. */}
-        <div className={`mt-[18px] ${s.music ? "" : "pointer-events-none opacity-50"}`}>
-          <p className="font-mono text-[11px] tracking-[2px] text-[var(--color-ink)] uppercase opacity-70">Volume</p>
-          <div className="mt-[10px] flex gap-[6px]">
-            {Array.from({ length: 8 }, (_, i) => {
-              const v = (i + 1) / 8;
-              const on = s.musicVolume >= v - 0.01;
-              return (
-                <button
-                  key={i}
-                  type="button"
-                  aria-label={`Volume ${i + 1} sur 8`}
-                  onClick={() => {
-                    set("musicVolume", v);
-                    syncMusicSettings();
-                  }}
-                  className={`h-[14px] flex-1 cursor-pointer border border-solid border-white ${
-                    on ? "bg-[var(--color-accent)]" : "bg-[var(--color-bg)]"
-                  }`}
-                />
-              );
-            })}
-          </div>
-        </div>
-        <OptHelp>Le jeu se joue entièrement sans le son : aucune information n&apos;est portée par l&apos;audio seul.</OptHelp>
-      </div>
-
-      <OptDivider />
-
-      {/* Lecture à haute voix + Vitesse — INERTES (synthèse vocale pas encore là) */}
-      <div className="opacity-50">
-        <OptLabel>Lecture à haute voix</OptLabel>
-        <SegControl options={[{ v: "non", label: "non" }, { v: "oui", label: "oui" }]} value="non" disabled />
-        <div className="mt-[24px]">
-          <OptLabel>Vitesse de lecture</OptLabel>
-          <SegControl
-            options={[{ v: "lente", label: "lente" }, { v: "normale", label: "normale" }, { v: "vive", label: "vive" }]}
-            value="normale"
-            disabled
-          />
-        </div>
-        <OptHelp>Utilise la voix du système. Fonctionne hors connexion.</OptHelp>
-      </div>
-
-      <OptDivider />
-
+      {/* Musique, lecture à haute voix, vitesse de lecture : RETIRÉS des
+          réglages (Patrick, 2/09). La musique est masquée dans lib/audio.ts
+          (`MUSIQUE_ACTIVE`) en attendant les vraies pistes ; la synthèse
+          vocale n'a jamais existé. */}
       {/* Texte — ACTIF */}
       <OptLabel>Apparition</OptLabel>
       <SegControl
@@ -650,23 +588,9 @@ export function OptionsTab() {
         value={s.animations}
         onChange={(v) => set("animations", v)}
       />
-      <div className="mt-[24px]">
-        <OptLabel>Vibrations</OptLabel>
-        <SegControl
-          options={[{ v: "non", label: "non" }, { v: "oui", label: "oui" }]}
-          value={s.vibrations ? "oui" : "non"}
-          onChange={(v) => set("vibrations", v === "oui")}
-        />
-      </div>
-      <div className="mt-[24px]">
-        <OptLabel>Chronomètres</OptLabel>
-        <SegControl
-          options={[{ v: "actifs", label: "actifs" }, { v: "off", label: "désactivés" }]}
-          value={s.chronosOff ? "off" : "actifs"}
-          onChange={(v) => set("chronosOff", v === "off")}
-        />
-        <OptHelp>Désactivés : aucune scène ni option ne se joue contre la montre — être interrompu ne coûte jamais rien.</OptHelp>
-      </div>
+      {/* Vibrations et Chronomètres : MASQUÉS (Patrick, 2/09). Les deux
+          réglages vivent toujours dans le store (`vibrations`, `chronosOff`)
+          avec leur défaut — seul l'affichage est retiré. */}
       <div className="mt-[24px]">
         <button type="button" onClick={reafficherAides} className="font-mono text-[13px] text-[var(--color-ink)] underline">
           Réafficher les aides
@@ -683,27 +607,6 @@ export function OptionsTab() {
       <button type="button" disabled className="mt-[20px] block cursor-default font-mono text-[13px] text-[var(--color-ink)] opacity-50 underline">
         Restaurer mes achats
       </button>
-      {/* MODE DÉMO (script 24/08) : l'interrupteur en clair, parce que le
-          `?demo=1` d'URL est HORS DE PORTÉE d'une PWA installée (l'icône ne
-          transmet aucun paramètre, et son stockage est séparé de Safari —
-          constaté par Patrick le jour même). L'URL reste le canal des
-          testeurs ; cet interrupteur est celui du poste de travail. */}
-      <div className="mt-[24px]">
-        <OptLabel>Mode démo</OptLabel>
-        <SegControl
-          options={[{ v: "non", label: "non" }, { v: "oui", label: "oui" }]}
-          value={demoOn ? "oui" : "non"}
-          onChange={(v) => {
-            setDemo(v === "oui");
-            window.location.reload();
-          }}
-        />
-        <OptHelp>
-          La traversée scriptée de la démo (entrée courte, mini-jeux). Se joue
-          sur une partie NEUVE — recommence après l&apos;avoir activé.
-        </OptHelp>
-      </div>
-
       {/* Revoir l'intro SANS rien détruire — c'est ce qu'on veut quand on
           cherche juste à retester les clauses, alors qu'effacer la progression
           coûterait les reliques et le Registre. */}

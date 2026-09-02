@@ -114,7 +114,12 @@ def main() -> int:
     # Prouvable : la santé n'a qu'UNE source de coût, `coutSante`, et elle
     # rend 0 pour toute nature autre que physique. Si quelqu'un ajoutait un
     # barème par nature, la garde saute ici avant le playtest.
-    m = re.search(r'export function coutSante\([\s\S]{0,1400}?\n\}', sd)
+    # ⚠️ Fenêtre large : `sans_commentaires` PRÉSERVE les index (les
+    # commentaires deviennent des blancs), donc un commentaire ajouté dans la
+    # fonction compte dans la fenêtre. À 1400 le garde a tiré deux fois sur un
+    # simple commentaire de plus (14/08, 2/09) — un garde ne doit pas dépendre
+    # de la longueur de ce qu'on écrit au-dessus du code qu'il contrôle.
+    m = re.search(r'export function coutSante\([\s\S]{0,3000}?\n\}', sd)
     if not m:
         manques.append("A1 — `coutSante` introuvable : le barème de santé n'a plus de source unique.")
     elif 'if (nature !== "physique") return 0;' not in m.group(0):

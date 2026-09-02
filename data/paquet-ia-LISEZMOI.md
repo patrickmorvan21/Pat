@@ -14,14 +14,14 @@ Ce paquet contient **deux objets**, et il ne faut surtout pas les confondre.
 
 | | où | ce que c'est |
 |---|---|---|
-| **LA DÉMO** — *« La Nuit du Serment »* | `transcripts/v198-demo-*.md` | Une **tranche verticale** d'environ 20 minutes, ORCHESTRÉE en quatre mouvements (accroche → ouverture → pression → climax, jamais nommés à l'écran) : entrée compressée, gestes tactiles garantis, la nuit au village, les décisions du début qui reviennent à la fin, la Falaise aux Cordes en dernier lieu. **C'est elle qu'on veut faire juger — et d'abord sa COURBE.** |
-| **LE JEU COMPLET** | `jouer/` (la table Python) + `transcripts/v198-vie-*.md` | Le jeu tel qu'il est aujourd'hui : entrée longue, parcours tiré au sort, prose entière. Utile en **comparaison**, pas comme sujet. |
+| **LA PREMIÈRE RUN** — *« La Nuit du Serment »* (ex-démo) | `transcripts/v198-demo-*.md` | Ce que joue TOUTE PREMIÈRE VIE d'un compte depuis le 2/09 (le mode démo n'existe plus) : une **tranche verticale** d'environ 20 minutes, ORCHESTRÉE en quatre mouvements (accroche → ouverture → pression → climax, jamais nommés à l'écran) : gestes tactiles garantis, la nuit au village, les décisions du début qui reviennent à la fin, la Falaise aux Cordes en dernier lieu. **C'est elle qu'on veut faire juger — et d'abord sa COURBE.** |
+| **LES VIES SUIVANTES** | `jouer/` (la table Python) + `transcripts/v198-vie-*.md` | Le jeu à partir de la deuxième incarnation : parcours tiré au sort. La Falaise aux Cordes y est désormais aussi la sortie de zone. Utile en **comparaison**, pas comme sujet. |
 
-**⚠️ `pactum.py` NE JOUE PAS LA DÉMO.** La table Python rejoue le jeu
-complet : sa prose est la longue, son parcours est tiré au sort, et ses
-mini-jeux n'existent pas. Si tu la joues en croyant tester la démo, tu
-jugeras exactement ce que la démo corrige. **La démo se juge sur ses deux
-transcripts**, écran par écran.
+**⚠️ `pactum.py` NE JOUE PAS LA PREMIÈRE RUN.** La table Python rejoue les
+vies suivantes : son parcours est tiré au sort, et ses mini-jeux sont
+simulés (un taux qui suit la stat, pas un geste). Si tu la joues en croyant
+tester la première run, tu jugeras un autre objet. **La première run se
+juge sur ses deux transcripts**, écran par écran.
 
 ### Ce qui se juge sur un transcript de démo… et ce qui ne s'y juge pas
 
@@ -43,10 +43,10 @@ le son, et la sensation de lancer le dé à la main.
 
 ---
 
-## 1. Lance une partie — **du jeu complet** (pas de la démo)
+## 1. Lance une partie — **des vies suivantes** (pas de la première run)
 
-⚠️ Rappel de la section 0 : cette table rejoue **le jeu complet**, pas la
-démo. Joue-la pour comparer, ou si on t'a demandé un avis sur le jeu entier.
+⚠️ Rappel de la section 0 : cette table rejoue **les vies suivantes**, pas la
+première run. Joue-la pour comparer, ou si on t'a demandé un avis sur le jeu entier.
 
 Une commande = un écran. La partie se garde toute seule entre deux commandes.
 

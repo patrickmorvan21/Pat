@@ -288,7 +288,8 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
     setCloture({
       portrait: portraitDuSeuil(
         r0.stats,
-        engagementDuSeuil(r0.prologue.memories, r0.prologue.choices)
+        engagementDuSeuil(r0.prologue.memories, r0.prologue.choices),
+        r0.prologue.memories
       ),
       // Copiés en état : le rendu ne lit jamais `runRef.current` (React Compiler).
       stats: r0.stats,

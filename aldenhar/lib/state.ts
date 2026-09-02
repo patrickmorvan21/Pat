@@ -6,7 +6,7 @@
 
 import { normalizeItem, startingBesace, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { drawMemories } from "@/lib/prologue-data";
-import { demoActive, DEMO_SOUVENIRS } from "@/lib/demo";
+import { traverseeGuidee } from "@/lib/demo";
 import { ENTRY_SCENE, sceneAt } from "@/lib/scene-data";
 import type { Temoin } from "@/lib/temoins";
 import { sacDepuis, type SacFaits } from "@/lib/faits";
@@ -194,7 +194,12 @@ function freshTraversal(current = ENTRY_SCENE): TraversalState {
     // traversée interminable en jeu réel (partie de découverte 8/08 : 86
     // écrans, Jour 3, toujours pas au bout) — et le durcissement du dernier
     // tiers tombe maintenant assez tôt pour se sentir.
-    target: 7 + Math.floor(Math.random() * 2), // 7 ou 8 lieux
+    // ⚠️ PREMIÈRE RUN (la traversée guidée, 2/09) : cible FIXE à 8. La route
+    // scriptée compte 6 lieux + la Borne = 7 ; à 7 la Halte se déclenchait
+    // avant la sortie du village et faisait dormir DEUX fois (la nuit
+    // scriptée, puis la grange) — un tirage sur deux, en silence. À 8, le
+    // village se quitte par le portillon, la Meute et la Falaise suivent.
+    target: traverseeGuidee() ? 8 : 7 + Math.floor(Math.random() * 2), // 7 ou 8 lieux
     liaisonOpts: null,
     seed: 0,
     done: false,
@@ -595,9 +600,11 @@ function fresh(): RunState {
     encounters: 0,
     stats: randomStats(),
     // Tirage du prologue : 1 souvenir par stat, fixé pour toute la run.
-    // Mode démo (script 24/08) : Seuil COURT — deux souvenirs seulement.
+    // (Le Seuil court de la démo — deux souvenirs — est retiré le 2/09 : un
+    // vrai premier joueur mérite les quatre, et le verdict au radar en a
+    // besoin pour dessiner une forme.)
     prologue: {
-      memories: drawMemories(demoActive() ? DEMO_SOUVENIRS : undefined).map(
+      memories: drawMemories().map(
         ({ stat, entry }) => ({ stat, ...entry })
       ),
       beat: 0,

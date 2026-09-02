@@ -90,7 +90,7 @@ import {
   JAILER_METALEPTIQUE, JAILER_DE_IMPOSSIBLE, type SurpriseId,
 } from "@/lib/surprises";
 import { chapterById, drawChapter, LANDES_LORE_FRAGMENTS } from "@/lib/chapters-data";
-import { demoActive, demoPhase, demoRouteRestante } from "@/lib/demo";
+import { traverseeGuidee, demoPhase, demoRouteRestante } from "@/lib/demo";
 import RubReveal from "@/components/minigames/engines/RubReveal";
 import HoldSteady from "@/components/minigames/engines/HoldSteady";
 import GlyphTrace from "@/components/minigames/engines/GlyphTrace";
@@ -645,7 +645,7 @@ function makeSortieHameau(
     pair[(seed + 1) % 2] = "colline-aux-gibets";
   }
   // MODE DÉMO : la route scriptée reprend DEHORS, sur cet écran même.
-  if (demoActive()) {
+  if (traverseeGuidee()) {
     const reste = demoRouteRestante(trav.visited, lieuDejaVisite).filter(
       (id) => !isHameauInterior(id)
     );
@@ -1703,7 +1703,7 @@ export default function Scene() {
         mutateMemory((m) => { m.surprises = { derniereRun: m.runsStarted }; });
       }
       restored.push(
-        ...narrationAffichee(cur, demoActive()).map(
+        ...narrationAffichee(cur).map(
           (text): FeedEntry => ({ id: nextId(), kind: "narration", text })
         )
       );
@@ -1746,7 +1746,7 @@ export default function Scene() {
       lastSceneIlloRef.current = illo;
       setImage(illo);
       setImageKind("scene");
-      const openingNarration = [...narrationAffichee(opening, demoActive())];
+      const openingNarration = [...narrationAffichee(opening)];
       // LA TRACE DE L'INCARNATION PRÉCÉDENTE (mémo IA externe 8/08, niv. 1-2 :
       // « dans les 30 à 90 premières secondes, le joueur doit savoir que cette
       // nouvelle vie n'est pas un recommencement identique »). La CAUSE de la
@@ -1990,7 +1990,7 @@ export default function Scene() {
      (fondu). Hors démo : rotation normale (forcerPiste(null)). Lu à chaque
      changement d'écran ; lire runRef dans un effet est permis. */
   useEffect(() => {
-    if (!demoActive()) {
+    if (!traverseeGuidee()) {
       forcerPiste(null);
       return;
     }
@@ -2256,7 +2256,7 @@ export default function Scene() {
          cordes, ce que CETTE vie a fait revient — le tressage déjà vu si la
          Chapelle a été traversée, la corde qu'on transporte si on l'a prise.
          Jamais récité : le joueur reconnaît, ou ne reconnaît pas. */
-      if (demoActive() && nextScene.id === "falaise-cordes-2") {
+      if (nextScene.id === "falaise-cordes-2") {
         const lectures: string[] = [];
         if (lieuDejaVisite(trav.visited, "chapelle-des-cordes"))
           lectures.push(DEMO_FALAISE_LECTURES.tressage);
@@ -2324,7 +2324,7 @@ export default function Scene() {
          (`hameau.sorti`, posé par le portillon) : on sort, on marche, et on
          tombe dessus. Même grammaire que l'embuscade de la Bête. */
       const meuteDemo =
-        demoActive() &&
+        traverseeGuidee() &&
         Boolean(runRef.current?.hameau?.sorti) &&
         vu(runRef.current?.vus, "demo|meute") === 0 &&
         opts.toDest !== HAMEAU_SORTIE;
@@ -2502,7 +2502,7 @@ export default function Scene() {
       const dernierLieu = trav.visited[trav.visited.length - 1] ?? "";
       const enLande =
         !isHameauInterior(dernierLieu) && !/^(serment-hameau|hameau-)/.test(dernierLieu);
-      const demoOn = demoActive();
+      const demoOn = traverseeGuidee();
       /* ═══ LA COURBE DE LA DÉMO (go 24/08) — trois déroutages scriptés,
          AVANT le tirage. Chacun se joue une fois (marqué dans `vus`, donc
          fidèle à la reprise), aucun n'entre dans `visited`. */
@@ -2696,7 +2696,7 @@ export default function Scene() {
       // direction (l'étape d'après, ou un lieu du tirage) pour que
       // l'agentivité se sente. Route épuisée → le tirage normal reprend
       // (les segments au-delà du Puits arrivent aux vagues suivantes).
-      if (demoActive()) {
+      if (traverseeGuidee()) {
         // ⚠️ L'ENCLAVE VAUT AUSSI POUR LA ROUTE SCRIPTÉE (retours Patrick
         // 24/08, deux fois). La 1re version écrasait la paire sans la porte
         // du village ; la 2e respectait la porte mais servait ENCORE la lande
@@ -3030,7 +3030,7 @@ export default function Scene() {
     const narrationDeScene =
       opts?.fail && nextScene.narrationEchec?.length
         ? nextScene.narrationEchec
-        : narrationAffichee(nextScene, demoActive());
+        : narrationAffichee(nextScene);
     // ── LA STRATE DE FAMILIARITÉ, calculée AVANT la narration ─────────────
     // Elle peut REMPLACER un paragraphe (`remplace`) au lieu de s'y ajouter :
     // une ligne de mémoire écrite comme un remplacement et injectée comme un
@@ -4139,7 +4139,6 @@ export default function Scene() {
        voie écrite (le jeu répond, il ne fait pas répéter). */
     if (
       choice.minigame &&
-      (demoActive() || choice.minigame.horsDemo) &&
       !minigamesJoues.current.includes(choice.id) &&
       !gesteDejaVecu(choice.minigame.rejouable === false ? choice.id : null)
     ) {
@@ -4235,13 +4234,13 @@ export default function Scene() {
        seul soin complet de la démo), la grange soigne à moitié, le muret
        presque rien. Jamais un chiffre à l'écran : l'érosion du cadre dit le
        reste. */
-    if (choice.repos && demoActive()) {
+    if (choice.repos) {
       persist((run) => {
         if (choice.repos === "complet") {
           run.health = 1;
           run.effects = run.effects.filter((e) => e.delta >= 0);
         } else if (choice.repos === "partiel") {
-          run.health = Math.min(1, run.health + 0.35);
+          run.health = Math.min(1, run.health + 0.25);
         } else {
           run.health = Math.min(1, run.health + 0.15);
         }
@@ -4811,7 +4810,9 @@ export default function Scene() {
         // Même clé que la branche « nuit » d'advance : la nuit ne se compte
         // qu'une fois, qu'on l'ait dormie ou veillée.
         if (scene.nuit) run.vus = noter(run.vus, "nuit|" + scene.id);
-        run.health = Math.max(0.08, Math.min(1, run.health + 0.35 - usure));
+        // 0,35 → 0,25 le 2/09 (« encore trop facile ») : une nuit rattrape un
+        // échec ordinaire, plus un échec dur.
+        run.health = Math.max(0.08, Math.min(1, run.health + 0.25 - usure));
         // BESOINS (spec §3) : dormir est satisfait ici. Les besoins se comptent
         // en JOURS, jamais en scènes — garde-fou n°2 : un joueur qui traverse
         // vite n'aura presque jamais faim.
@@ -4944,7 +4945,7 @@ export default function Scene() {
       // « Le Registre ment » (5/08) : la conséquence écrite est le CADRE, ce
       // que le héros dit vient de la contradiction qu'il tient réellement —
       // deux versions du même fait, lues dans deux vies différentes.
-      let consequencePassive = consequenceAffichee(choice, demoActive());
+      let consequencePassive = consequenceAffichee(choice);
       if (choice.requiresContradiction) {
         const tenues = contradictionsConnues(loadMemory());
         // Avec le don « lecture » et aucune contradiction vécue, on prend le

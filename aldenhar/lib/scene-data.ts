@@ -559,15 +559,6 @@ export type Choice = {
    * démo — le jeu complet dort au campement, avec ses règles à lui.
    */
   repos?: "complet" | "partiel" | "mauvais";
-  /**
-   * VERSION COURTE DÉMO de la conséquence d'un choix passif (arbitrage
-   * Patrick 24/08 : « les changements uniquement sur la démo, c'est elle qui
-   * nous sert de base »). Servie à la place de `passive.consequence` quand le
-   * mode démo est actif ; le jeu complet garde sa prose intacte. Réservée aux
-   * conséquences les plus lourdes de la route démo — pas une réécriture
-   * générale.
-   */
-  consequenceDemo?: string;
 };
 
 /**
@@ -675,14 +666,6 @@ export type Scene = {
   id: string;
   /** Plusieurs paragraphes courts (2-4 phrases chacun), pas des pavés — chacun type séparément dans le fil. */
   narration: string[];
-  /**
-   * VERSION COURTE DÉMO (arbitrage Patrick 24/08 : « les changements
-   * uniquement sur la démo, c'est elle qui nous sert de base »). Servie à la
-   * place de `narration` quand le mode démo est actif — UN paragraphe serré
-   * (~25-45 mots) qui garde l'accroche et tout ce que les choix référencent.
-   * Le jeu complet garde sa prose. Réservée aux écrans de la route démo.
-   */
-  narrationDemo?: string[];
   /** Asset tramé de la scène (public/assets/…). Défaut : portail. Temps 2 : varier par contexte. */
   illustration?: string;
   /**
@@ -1042,15 +1025,20 @@ export function coutSante(
   // pouvait tuer sans annoncer MORT) et `horsDePortee` ne le couvrait pas
   // (trouvé par le test du lot 3, sur « Lui réciter l'ordonnance »). Il passe
   // ici, comme tout ce qui prend de la santé.
+  // ⚠️ BARÈME DURCI le 2/09 (Patrick, après une traversée sans mourir :
+  // « c'est encore trop facile ») : +25 % sur le physique, +20 % sur le
+  // surnaturel. Trois échecs durs tuent désormais (0,32 × 3 > 0,95), là où
+  // il en fallait quatre. Le levier est le BARÈME PHYSIQUE, pas un retour
+  // du coût générique (doctrine du 9/08). Miroir dans tools/pactum.py.
   if (nature === "surnaturel")
-    return tier === "malediction" ? 0.16
-      : tier === "critique" || tier === "echec" ? 0.1
+    return tier === "malediction" ? 0.2
+      : tier === "critique" || tier === "echec" ? 0.12
       : 0;
   if (nature !== "physique") return 0;
-  return tier === "malediction" ? 0.3
-    : tier === "critique" ? 0.26
-    : tier === "echec" ? 0.16
-    : tier === "justesse" ? 0.08
+  return tier === "malediction" ? 0.38
+    : tier === "critique" ? 0.32
+    : tier === "echec" ? 0.2
+    : tier === "justesse" ? 0.1
     : 0;
 }
 
@@ -1227,20 +1215,6 @@ export const SCENES: Scene[] = [
     // était une vue de transition, aussi tirée dans le pool des marches.
     illustration: "assets/scene_borne_frontiere_v2_a.png",
     narration: [
-      "La lande s'ouvre sous un crépuscule qui ne tombe pas. La lumière " +
-        "reste prise entre chien et loup, comme un souffle retenu. Quelque " +
-        "part, une corde grince.",
-      // ⚠️ TEXTE ALIGNÉ SUR L'IMAGE (relecture par agents, 10/08) : les trois
-      // vues validées de la borne s'accordent sur un monolithe qui dépasse
-      // largement l'homme — sur `hesitant-1`, la seule où une silhouette
-      // donne l'échelle, la pierre fait le double. « Haute comme un homme »
-      // était la seule ligne à dire le contraire, sur le tout premier écran.
-      "La pierre est seule au milieu du plateau, dressée là où tous les murets " +
-        "renoncent. Plus haute qu'un homme, grise comme le reste — et pourtant " +
-        "l'œil ne voit qu'elle. À son pied, un tas d'offrandes. Au-delà, le " +
-        "sud, nu. Et à trois pas de la borne, un homme immobile, face au sud.",
-    ],
-    narrationDemo: [
       "La lande s'ouvre sous un crépuscule qui ne tombe pas. Une pierre seule au milieu du plateau, plus haute qu'un homme. À son pied, un tas d'offrandes. À trois pas, un homme immobile, face au sud. Quelque part, une corde grince.",
       // LA GRAINE (go 24/08 : « une seule bonne phrase très tôt, sans
       // objectif ni marqueur ») — payée à la Colline par le Pendu qui parle.
@@ -1258,11 +1232,9 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "tour-de-pierre",
-        consequenceDemo:
-          "Des marques sur toutes les faces — des noms, des dates, des traits de comptage. Le côté nord est saturé : les adieux de ceux qui partaient. Le côté sud : trois marques. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?\n\nAu ras du sol, un éclat descellé, à demi enterré. Quelqu'un a voulu emporter un morceau de la limite — et ne l'a pas pris.",
         label: "Faire le tour de la pierre",
         observe: true,
-        illustration: "assets/scene_borne_gravures_a_e_d.png",
+        illustration: "assets/scene_borne_gravures_a_d.png",
         // La question que pose l'examen — « qui a gravé côté sud ? » — trouve
         // sa réponse dans la vie d'avant, et seulement là.
         borneSud: true,
@@ -1274,18 +1246,7 @@ export const SCENES: Scene[] = [
         grantsLoot: "pierre-retour",
         passive: {
           consequence:
-            "Le granit est froid d'une froideur qui ne vient pas du vent. Des " +
-            "marques sur toutes les faces, de toutes les mains : des noms, des " +
-            "dates, des traits de comptage. Le côté nord est saturé — les " +
-            "adieux de ceux qui partaient. Le côté sud est presque vierge. " +
-            "Trois marques. On ne grave pas au retour quand personne ne " +
-            "revient. Alors qui a gravé côté sud ?\n\n" +
-            "Au ras du sol, un angle manque. La cassure est nette, faite au " +
-            "burin, patiemment — et l'éclat est encore là, à demi enterré. " +
-            "Celui qui voulait emporter un morceau de la limite ne l'a pas " +
-            "pris. Sous le vent, pendant que tu te relèves, il y a des voix : " +
-            "basses, à ras de bruyère, qui se passent le mot de ton arrivée. " +
-            "Elles ne te menacent pas. Elles préviennent quelqu'un.",
+            "Des marques sur toutes les faces : des noms, des dates. Le côté nord est saturé — les adieux de ceux qui partaient. Le côté sud : trois marques. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?\n\nAu ras du sol, un éclat descellé, à demi enterré.",
         },
       },
       {
@@ -1473,14 +1434,6 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_chemin_creux_coude_b.png",
     chainNext: "chemin-creux-2",
     narration: [
-      "Le chemin s'enfonce entre deux talus plus hauts que toi ; le ciel " +
-        "devient un ruban. C'est le plus court chemin des Landes, et le seul " +
-        "où l'on ne voit pas venir.",
-      "Une charrette penche au premier coude. Les talus, au-dessus, sont " +
-        "meubles. Plus loin, le chemin tourne et la terre mange la vue. Et " +
-        "dans le creux, quelqu'un vient vers toi — de dos.",
-    ],
-    narrationDemo: [
       "Le chemin s'enfonce entre deux talus ; le ciel devient un ruban. Une charrette penche au premier coude — et dans le creux, quelqu'un vient vers toi. De dos.",
     ],
     /* Conversion des points d'intérêt (13/08). Trois actions exclusives : ce
@@ -1505,8 +1458,6 @@ export const SCENES: Scene[] = [
       },
       {
         id: "talus-empreintes",
-        consequenceDemo:
-          "Des empreintes sur la crête nord — parallèles au chemin, sur toute sa longueur. L'autre versant est intact. Quelque chose marche là-haut quand quelqu'un marche en bas, du même pas, toujours du même côté. Tu redescends sans te presser : se presser serait une information.",
         label: "Monter voir le haut des talus",
         illustration: "assets/scene_chemin_talus_a_d_c.png",
         observe: true,
@@ -1517,13 +1468,7 @@ export const SCENES: Scene[] = [
         decouverte: "d.bete_couloir",
         passive: {
           consequence:
-            "Tu montes de trois pas dans la pente, juste assez pour voir la " +
-            "crête sans t'exposer entièrement. Des empreintes, parallèles au " +
-            "chemin, sur toute sa longueur — mais sur la crête NORD seulement : " +
-            "l'autre versant est intact, pas une marque. Quelque chose marche " +
-            "là-haut quand quelqu'un marche en bas, à la même vitesse, du même " +
-            "pas, et toujours du même côté. Tu redescends sans te presser, " +
-            "parce que se presser serait une information.",
+            "Des empreintes sur la crête nord — parallèles au chemin, sur toute sa longueur. L'autre versant est intact. Quelque chose marche là-haut quand quelqu'un marche en bas, du même pas, toujours du même côté. Tu redescends sans te presser : se presser serait une information.",
         },
       },
       {
@@ -1548,13 +1493,6 @@ export const SCENES: Scene[] = [
     id: "chemin-creux-2",
     illustration: "assets/scene_chemin_creux_coude_c_c.png",
     narration: [
-      "Le chemin tourne, et le talus mange la vue d'un coup. Passé le coude : " +
-        "rien. C'est-à-dire l'endroit exact où il devrait y avoir quelque " +
-        "chose, et il n'y a rien.",
-      "Le silence y est plus épais d'un cran, comme après un bruit que tu " +
-        "aurais raté d'une seconde.",
-    ],
-    narrationDemo: [
       "Passé le coude : rien. L'endroit exact où il devrait y avoir quelque chose, et il n'y a rien. Le silence y est plus épais d'un cran.",
     ],
     choices: [
@@ -1735,14 +1673,6 @@ export const SCENES: Scene[] = [
     foe: "bete-chemins-creux",
     foeName: "La Bête des Chemins Creux",
     narration: [
-      "Le creux tourne — et l'odeur arrive avant la chose : suint, terre " +
-        "retournée, vieux cuir. Une masse se décolle du talus, longue, basse, " +
-        "taillée pour courir exactement entre deux murs de terre.",
-      "Pas de gueule visible. Juste une avancée du corps qui s'ouvre. La " +
-        "Bête ne chasse que dans le creux — c'est son couloir, son terrier, " +
-        "sa table. Et tu es dessus.",
-    ],
-    narrationDemo: [
       "L'odeur arrive avant la chose : suint, terre retournée. Une masse se décolle du talus, longue, basse, taillée pour courir entre deux murs de terre. Le creux est son couloir — et tu es dessus.",
     ],
     /**
@@ -1772,7 +1702,7 @@ export const SCENES: Scene[] = [
           label: "Frapper depuis le sol",
           risky: {
             stat: "COURAGE",
-            threshold: 13,
+            threshold: 14,
             outcomes: outcomes(
               "20 naturel. Couché, tu as l'angle qu'on n'a jamais debout : par en dessous, là où le corps n'est plus qu'une peau tendue. La Bête s'ouvre en deux sur toute sa longueur et t'enjambe encore trois mètres avant de comprendre qu'elle est morte.",
               "Tu frappes de bas en haut, mal, mais assez. Elle recule d'un bond sec, se retourne dans le creux — un demi-tour de bête qui ne fait jamais demi-tour — et s'en va par où elle est venue.",
@@ -1803,7 +1733,7 @@ export const SCENES: Scene[] = [
         label: "Frapper la bête",
         risky: {
           stat: "COURAGE",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Ta lame entre là où le corps s'ouvrait — la Bête se referme sur son propre cri. Elle reflue dans le talus comme une eau sale, et le creux est à toi.",
             "Le coup porte. La Bête se plie, surprise qu'on morde en premier, et s'enterre à mi-corps dans le talus. Tu passes. Elle ne suit pas — pas blessée à ce point, mais vexée, oui.",
@@ -1831,7 +1761,7 @@ export const SCENES: Scene[] = [
         horsDePortee: true,
         risky: {
           stat: "INSTINCT",
-          threshold: 11,
+          threshold: 12,
           outcomes: outcomes(
             "20 naturel. Tu montes à reculons, sans quitter la masse des yeux, et tu t'arrêtes exactement où l'ombre s'arrête. Elle vient jusque-là. Elle s'arrête aussi. Vous restez face à face de part et d'autre d'une ligne que tu es le seul des deux à avoir choisie — puis elle se retourne, et c'est elle qui s'en va.",
             "Tu prends le talus de biais, sans te presser, parce que courir n'a jamais servi. Les griffures sur la paroi s'arrêtent toutes à la même hauteur — tu montes jusque-là, et un peu plus haut. La Bête t'accompagne le long du creux, à hauteur, puis freine d'elle-même sur cette ligne-là. Tu passes au-dessus d'elle.",
@@ -1852,7 +1782,7 @@ export const SCENES: Scene[] = [
         label: "Bondir hors du creux",
         risky: {
           stat: "INSTINCT",
-          threshold: 11,
+          threshold: 12,
           outcomes: outcomes(
             "20 naturel. Tu es sur le talus avant qu'elle n'ait fini son élan. Hors du creux, elle n'existe plus : la masse freine pile à la limite de l'ombre, comme au bout d'une chaîne. Tu marches au-dessus d'elle, tranquillement.",
             "Tes mains trouvent les racines, tes pieds la terre ferme. La Bête passe en dessous, longue à n'en plus finir — mais elle ne monte pas. Elle ne monte jamais.",
@@ -1927,18 +1857,6 @@ export const SCENES: Scene[] = [
        rendait que du lore — son idée (la file est un calendrier planté) tient
        maintenant en une clause de la narration, et le détail part au Codex. */
     narration: [
-      // ⚠️ TEXTE ALIGNÉ SUR L'IMAGE (panel 10/08) : une FILE le long de la
-      // crête, pas un cercle. La file lue de bas en haut est une chronologie.
-      "La pente est douce et n'en finit pas — la Colline se mérite à pas " +
-        "comptés. Sur la crête, les potences se suivent, plantées de loin en " +
-        "loin comme des bornes, chacune avec son nom et sa date : la crête " +
-        "entière est un calendrier planté. Elles grandissent à mesure qu'on " +
-        "monte, et la dernière dépasse toutes les autres. Sa corde est la " +
-        "seule chose neuve à dix lieues.",
-      "En contrebas, un poteau isolé porte encore son occupant. Sur la " +
-        "traverse du grand gibet, des oiseaux noirs attendent sans bouger.",
-    ],
-    narrationDemo: [
       "Sur la crête, les potences se suivent comme des bornes, chacune avec son nom et sa date. La dernière dépasse toutes les autres — sa corde est la seule chose neuve à dix lieues. En contrebas, un poteau porte encore son occupant.",
     ],
     choices: [
@@ -1999,17 +1917,6 @@ export const SCENES: Scene[] = [
     sejour: true,
     illustration: "assets/scene_colline_aux_gibets_c.png",
     narration: [
-      "Le vent tombe d'un coup, comme on ferme une porte. Et dans ce calme " +
-        "plat, toutes les cordes de la crête se mettent à bouger. Pas au hasard : " +
-        "ensemble. Un balancement lent, réglé, qui va et vient sur le même temps.",
-      // « Neuf cordes » n'avait pas suivi la réconciliation du cercle→crête
-      // (l'image en montre une quinzaine). Le nombre exact n'est porté par
-      // aucune mécanique : c'est l'unisson qui compte.
-      "Ça grince en mesure. Toutes ces cordes, un seul rythme. Tu comprends, avec " +
-        "un retard qui te coûte, que ce rythme ne t'est pas indifférent — " +
-        "tu pourrais le compter.",
-    ],
-    narrationDemo: [
       "Le vent tombe d'un coup. Et dans ce calme plat, toutes les cordes de la crête se mettent à bouger — ensemble. Un balancement lent, réglé. Tu pourrais le compter.",
     ],
     choices: [
@@ -2096,16 +2003,9 @@ export const SCENES: Scene[] = [
     chainNext: "pendu-qui-parle-2",
     // Démo : prose courte + TOUCHE 1 du Grand Témoin (le corbeau de travers
     // qui te regarde, toi) — une trace, jamais une explication (règle lot 2).
-    narrationDemo: [
+    narration: [
       "Au revers de la colline, un gibet à corde longue : le pendu t'arrive à hauteur de regard. Chaîne de fonction au cou, un sceau au poing. À ton approche, il ouvre les yeux.",
       "Sur la traverse, une rangée de corbeaux regarde le nord. Un seul est de travers. Celui-là te regarde, toi.",
-    ],
-    narration: [
-      "Au revers de la colline, un gibet dont la corde est si longue que le " +
-      "pendu t'arrive à hauteur de regard. Le pendu " +
-        "qui s'y balance ouvre les yeux à ton approche. Chaîne de fonction " +
-        "au cou, sous la corde. Un sceau au poing. Le Bailli des Landes — " +
-        "pendu le dernier, à la place d'honneur.",
     ],
     choices: [
       {
@@ -2613,7 +2513,7 @@ export const SCENES: Scene[] = [
         label: "Le repousser au poteau",
         risky: {
           stat: "COURAGE",
-          threshold: 13,
+          threshold: 14,
           outcomes: outcomes(
             "20 naturel. Tu l'empoignes par sa propre corde et le ramènes au poteau brisé — où il se rependt de lui-même, docile soudain, presque soulagé qu'on décide pour lui. Le champ entier expire. Le Fossoyeur, au loin, te salue du chapeau.",
             "Tu le repousses, pas à pas, jusqu'aux rangs. Au contact du bois cassé, ses jambes cèdent : la Fixation le reprend à moitié. Assez pour qu'il ne te suive plus. Il te regarde partir avec une envie terrible.",
@@ -2630,7 +2530,7 @@ export const SCENES: Scene[] = [
         label: "Esquiver la corde",
         risky: {
           stat: "INSTINCT",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu lis la corde comme un fouet : elle frappe où il regarde, une seconde après. Tu n'es jamais là. Épuisé d'avoir raté, le Pendu s'effondre en tas de ficelles — la Fixation ne paie pas les heures supplémentaires.",
             "La corde siffle, tu plies, elle passe. Deux fois, trois fois. À la quatrième, il s'emmêle dedans tout seul — et tu t'éloignes pendant qu'il se défait, jurant dans une langue de gorge broyée.",
@@ -2654,7 +2554,7 @@ export const SCENES: Scene[] = [
         horsDePortee: true,
         risky: {
           stat: "RUSE",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu récites la liste des signes, dans l'ordre, avec les mots du Bailli. Au troisième, il s'arrête. Au cinquième, il recule d'un pas vers le poteau cassé. À la fin, il se tient droit à l'endroit exact où il a passé des années — attendant qu'on l'attache, parce que c'est ce que la phrase dit qu'il faut faire.",
             "Tu dis les quatre signes à voix haute, dans l'ordre où ils étaient cloués. Ce n'est pas toi qu'il entend : c'est la formule, et la formule a autorité sur lui. Il te contourne sans te toucher, retourne à son rang, et se remet à attendre.",
@@ -2672,7 +2572,7 @@ export const SCENES: Scene[] = [
         label: "L'emmêler dans sa corde",
         risky: {
           stat: "RUSE",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu tournes autour de lui comme un fuseau — deux passes, un nœud, et le Pendu se retrouve fixé à lui-même, bras au corps. La plus propre Fixation du champ. Le Fossoyeur en parlera longtemps.",
             "Tu attrapes le bout traînant et le fais passer sous ses jambes au bon moment. Il trébuche, s'entrave, tombe — et chaque geste pour se relever le ligote un peu plus. Tu pars sans te presser.",
@@ -2697,13 +2597,6 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_hameau_dense2_b.png",
     chainNext: "hameau-entree-2",
     narration: [
-      "Les toits apparaissent au creux du plateau — de l'ardoise affaissée, " +
-        "des murs qui tiennent par habitude. Une seule cheminée fume, sur une " +
-        "vingtaine.",
-      "Tu es encore loin quand tu comprends ce qui cloche : aucun chien " +
-        "n'aboie.",
-    ],
-    narrationDemo: [
       "Des toits au creux du plateau, une seule cheminée qui fume sur vingt. Tu es encore loin quand tu comprends ce qui cloche : aucun chien n'aboie.",
     ],
     choices: [
@@ -2755,13 +2648,6 @@ export const SCENES: Scene[] = [
        formes selon la stat DOMINANTE, jamais deux à la fois. Un héros sans
        profil marqué ne le croise pas — et ne sait pas ce qu'il a manqué. */
     narration: [
-      "La rue est en terre battue, bordée de murets bas. Sur le premier " +
-        "linteau, une croix à la craie, tracée haut. Sur le suivant aussi. " +
-        "Toutes à la même hauteur, toutes de la même main.",
-      "Une femme se tient sur un seuil, immobile. Elle ne regarde pas la " +
-        "route : elle regarde une fenêtre, en face.",
-    ],
-    narrationDemo: [
       "Une rue en terre battue, des murets. Sur chaque linteau, une croix à la craie — même hauteur, même main. Sur un seuil, une femme immobile regarde une fenêtre, en face.",
       // TOUCHE 2 du Grand Témoin (script 24/08, segment 5).
       "Au bout de la rue, entre deux toits : une silhouette. La forme d'un corbeau. Pas la taille d'un corbeau. Le temps de regarder mieux, le bout de la rue est vide.",
@@ -3337,15 +3223,6 @@ export const SCENES: Scene[] = [
     illustration: "assets/monstre_hameau_entree_3_v2_b_c.png",
     chainNext: "hameau-entree-4",
     narration: [
-      "Ils sont trois au milieu de la rue. Pas armés — un bâton de marche, " +
-        "une fourche contre un mur, à portée sans être brandie.",
-      "Celui du centre est vieux et large d'épaules. Sa voix ne tremble " +
-        "pas. Ses mains, si.",
-      "— « On ne te chasse pas. Mais tu descends. Ça se voit à ton pas. Et " +
-        "ceux qui descendent... » Il ne finit pas. Derrière lui, une femme " +
-        "tire un enfant à l'intérieur.",
-    ],
-    narrationDemo: [
       "Ils sont trois au milieu de la rue. Pas armés — une fourche à portée, sans être brandie. Le vieux du centre : « On ne te chasse pas. Mais tu descends, ça se voit à ton pas. » Derrière lui, on rentre un enfant.",
     ],
     choices: [
@@ -3790,40 +3667,17 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_hameau_trois_aubes_v2_c.png",
     chainNext: "hameau-entree-5",
     narration: [
-      // ⚠️ Ce beat s'ouvre APRÈS un accueil tiré au sort (6/08) : il ne peut
-      // plus supposer le barrage des trois hommes. D'où le raccord par le
-      // lieu — quel que soit l'accueil, tout finit au muret, devant le vieux.
-      // Chantier du 11/08 : 125 mots faisaient DEUX écrans pour une seule
-      // décision — et c'est la décision la plus lourde de la zone. Les trois
-      // clauses du serment sont intouchables ; c'est l'installation qui cède.
-      "Au bout de la rue, un muret bas. Le vieux y est assis, coudes sur les " +
-        "genoux — il t'attendait. Il tend la main, paume ouverte : pas pour " +
-        "serrer la tienne, pour que tu la regardes. Elle est vide. Ici on jure " +
-        "sur rien, parce qu'il ne reste rien.",
-      "— « Trois choses, et tu dors sous un toit. Tu ne parles pas aux " +
-        "pendus. Tu ne regardes pas le sud plus qu'il ne faut. Et à la " +
-        "troisième aube, tu choisis. »",
-      "Il n'attend pas la question. « Qui juge ? Personne. On constate. »",
-    ],
-    narrationDemo: [
       "Le vieux t'attend sur un muret, paume ouverte — vide. Ici on jure sur rien. « Trois choses, et tu dors sous un toit : tu ne parles pas aux pendus, tu ne regardes pas le sud plus qu'il ne faut, et à la troisième aube, tu choisis. »",
     ],
     choices: [
       {
         id: "jurer-serment",
-        consequenceDemo:
-          "Tu poses ta main au-dessus de la sienne, sans la toucher, et tu jures les trois choses. Toute la rue se dénoue d'un coup dans ton dos. « Tenu jusqu'à la sortie », rappelle le vieux. Le hameau entier a entendu. Et plus haut que le hameau, quelqu'un d'autre.",
         serment: "jure",
         label: "Jurer",
         soupcon: -1,
         passive: {
           consequence:
-            "Tu poses ta main au-dessus de la sienne, sans la toucher — c'est " +
-            "ainsi qu'on fait, tu l'as compris à leurs regards. Tu jures les " +
-            "trois choses. Le vieux hoche la tête une fois, et toute la rue " +
-            "se dénoue d'un coup dans ton dos, comme une corde qu'on lâche. " +
-            "« Tenu jusqu'à la sortie », rappelle-t-il. Le hameau entier a " +
-            "entendu. Et plus haut que le hameau, quelqu'un d'autre.",
+            "Tu poses ta main au-dessus de la sienne, sans la toucher, et tu jures les trois choses. Toute la rue se dénoue d'un coup dans ton dos. « Tenu jusqu'à la sortie », rappelle le vieux. Le hameau entier a entendu. Et plus haut que le hameau, quelqu'un d'autre.",
         },
       },
       {
@@ -3875,14 +3729,6 @@ export const SCENES: Scene[] = [
     hameauEntree: true,
     illustration: "assets/scene_hameau_entree_5_v2_a.png",
     narration: [
-      // Chantier du 11/08 : trois paragraphes pour un beat de sortie, c'était
-      // deux écrans de lecture pour une seule décision. Resserré en un.
-      "Ils s'écartent juste assez pour que tu passes sans toucher personne, " +
-        "et tu comprends que c'est calculé. Devant toi, des volets se ferment " +
-        "un par un, un peu en avance sur ton pas. Personne ne t'a souhaité la " +
-        "bienvenue, et pourtant tous savaient que tu venais.",
-    ],
-    narrationDemo: [
       "Ils s'écartent juste assez pour que tu passes sans toucher personne — c'est calculé. Devant toi, les volets se ferment un peu en avance sur ton pas.",
     ],
     choices: [
@@ -4676,7 +4522,7 @@ export const SCENES: Scene[] = [
         masqueSi: { objet: "clochette-meneuse" },
         risky: {
           stat: "COURAGE",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu ne recules pas d'un pouce, et c'est la seule chose qu'elles n'avaient pas marchée d'avance. Le premier assaut se brise sur ta lame ; la meneuse rappelle les autres d'un souffle. Elles ont leur réponse : celui-là coûte plus qu'il ne rapporte. La lande se referme derrière leur départ, et le compte est soldé.",
             "Le premier assaut te teste, le second te jauge — ta lame répond aux deux. La meneuse te regarde longuement, puis détourne la tête, et le front entier se défait dans la bruyère. Elles ne te suivront plus : ce qu'elles voulaient savoir, elles le savent.",
@@ -4697,7 +4543,7 @@ export const SCENES: Scene[] = [
         horsDePortee: true,
         risky: {
           stat: "RUSE",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Un seul tintement, sec, posé au milieu de leur silence. Les cinq têtes se lèvent ENSEMBLE — et le front s'ouvre en deux, comme une porte qu'on tient à un supérieur. Tu passes entre elles au pas, sans hâte, et aucune ne tourne la tête. On ne suit pas ce qu'on escorte.",
             "Le battant claque, et la poursuite meurt sur place : on ne traque pas ce qui porte la clochette. La meneuse s'assoit — s'assoit — et attend que tu sois passé. Ce qu'elles étaient venues régler ne se règle pas avec un berger.",
@@ -4746,7 +4592,7 @@ export const SCENES: Scene[] = [
         masqueSi: { decouverte: "d.bete_couloir" },
         risky: {
           stat: "COURAGE",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu ne ralentis pas — tu accélères, droit dans l'axe, là où rien de ce qui la fuit ne va jamais. La masse hésite un souffle de trop : le creux est à toi avant qu'elle ne retombe. Derrière, le silence se referme, vexé, et ne te suit pas. Elle ne suit que ce qui fuit.",
             "Tu passes en force, l'épaule au talus, ta lame fendant l'ombre au jugé. Quelque chose cède au-dessus — un poids qui se retire, pas un cri. Le creux se rouvre sur la lande, et cette fois le souffle ne t'accompagne pas : elle a son compte, et toi ton passage.",
@@ -4766,7 +4612,7 @@ export const SCENES: Scene[] = [
         horsDePortee: true,
         risky: {
           stat: "INSTINCT",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu sais ce qu'elle est : un couloir avec un appétit. Alors tu refuses le couloir — tu obliques AVANT les talus, en travers, là où sa charge n'a rien à suivre. La masse freine au bord de son propre piège et n'en sort pas. Tu passes au large, à découvert, et le creux chasse tout seul, pour personne.",
             "Tu quittes l'axe avant qu'elle ne l'ait refermé — deux pas de biais, pas plus, mais les deux pas qu'elle ne sait pas chasser. Le souffle te cherche dans le couloir où tu n'es plus. Tu contournes le creux par le plat, sans presser, et il ne te suit pas : hors de ses murs, elle n'existe pas.",
@@ -5047,12 +4893,6 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_marche_muet_c.png",
     chainNext: "marche-muet-2",
     narration: [
-      "Au cœur du hameau, un marché sans un cri. Des étals de trois fois " +
-        "rien — clous, laine, racines — et des marchands qui négocient par " +
-        "gestes, paumes et hochements. Renoncer à la parole est le " +
-        "renoncement le plus courant. Le moins cher.",
-    ],
-    narrationDemo: [
       "Un marché sans un cri : des étals de trois fois rien, des marchands qui négocient par gestes. Renoncer à la parole est le renoncement le moins cher.",
     ],
     choices: [
@@ -5091,13 +4931,6 @@ export const SCENES: Scene[] = [
     sejour: true,
     illustration: "assets/monstre_colporteur_c_c.png",
     narration: [
-      "Au bout de la rangée, un étal différent : des objets qui n'ont rien à faire dans une lande. Le Colporteur te regarde venir de loin — et te reconnaît. C'est impossible. Il te fait signe quand même. Sur l'étal, aucun fruit. « Ceux du Verger, personne n'en prend. »",
-      // Le Rebouteux est INTRODUIT avant que ses choix n'apparaissent
-      // (rapport IA externe 8/08 : « le Rebouteux apparaît dans la
-      // conséquence sans avoir été introduit »).
-      "À l'étal voisin, un vieil homme écrase des feuilles dans un mortier, des fioles bouchées de cire devant lui. Le Rebouteux. Il ne lève pas la tête — mais son tabouret libre est tourné vers toi.",
-    ],
-    narrationDemo: [
       "Au bout de la rangée, le Colporteur te regarde venir — et te reconnaît. C'est impossible. Il te fait signe quand même. À l'étal voisin, le Rebouteux écrase des feuilles sans lever la tête ; son tabouret libre est tourné vers toi.",
     ],
     choices: [
@@ -5192,19 +5025,12 @@ export const SCENES: Scene[] = [
            qu'il ne l'a dit qu'à une personne, dans une ruelle, à voix basse.
            ⚠️ Prend la place du troc : trois actions, comme avant. */
         id: "colporteur-sans-bouche",
-        consequenceDemo:
-          "Il est en train de dire, sans baisser la voix, que la jeune du moulin est toujours là. D'où il le tient ? Il rit. « De partout. Personne me dit rien, à moi. J'écoute, c'est tout. »",
         label: "Lui demander où il a entendu ça",
         requiresDecouverte: "d.temoin_oculaire",
         prendLaPlaceDe: "troc-colporteur",
         passive: {
           consequence:
-            "Il est en train de dire à un autre, sans baisser la voix, que " +
-            "la jeune du moulin est toujours là. Tu lui demandes d'où il le " +
-            "tient. « D'où je le tiens ? » Il rit. « De partout. C'est le " +
-            "genre de chose qu'on sait. » Il reprend son étal en main. " +
-            "« Personne me l'a dit, si c'est ta question. On me dit jamais " +
-            "rien, à moi. J'écoute, c'est tout. »",
+            "Il est en train de dire, sans baisser la voix, que la jeune du moulin est toujours là. D'où il le tient ? Il rit. « De partout. Personne me dit rien, à moi. J'écoute, c'est tout. »",
         },
       },
       {
@@ -5780,20 +5606,6 @@ export const SCENES: Scene[] = [
     loot: "brin-chanvre",
     chainNext: "chapelle-des-cordes-2",
     narration: [
-      "La chapelle est petite et n'a plus de dieu — les niches sont vides, " +
-        "l'autel dépouillé. Mais elle est TENUE : balayée, entretenue, occupée " +
-        "par sa nouvelle religion.",
-      // ⚠️ DISPOSITION ALIGNÉE SUR L'IMAGE (repasse du 10/08) : elle met les
-      // cordes sur les deux parois LATÉRALES et un bloc debout AU FOND, sous
-      // la fenêtre. Le texte disait exactement l'inverse (cordes au fond,
-      // autel couché sur le côté) — et l'image est très forte, c'est elle
-      // qu'on garde.
-      "Les cordes pendent des deux murs, du plafond jusqu'au sol, sur toute " +
-        "la longueur. Au fond, sous la fenêtre, l'autel est resté debout — " +
-        "seul, et bien plus propre que le reste. Près de l'entrée, une chaise " +
-        "et un ouvrage de tressage : quelqu'un vit ici.",
-    ],
-    narrationDemo: [
       "La chapelle n'a plus de dieu, mais elle est tenue. Des cordes pendent des deux murs, du plafond au sol. Au fond, l'autel est resté debout, plus propre que le reste. Près de l'entrée, un ouvrage de tressage : quelqu'un vit ici.",
     ],
     /* Conversion des points d'intérêt (13/08) : six entrées pour un lieu qui
@@ -5833,8 +5645,6 @@ export const SCENES: Scene[] = [
       },
       {
         id: "mur-cordes",
-        consequenceDemo:
-          "Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom — des reliques : chacune « a tenu » quelqu'un. La troisième du rang bas n'a pas d'étiquette, et bouge quand tu ne la regardes pas. Plus bas, trois cordes portent la même date : celle du Bailli, un prénom de fille, et un nom arraché.",
         label: "Remonter le mur des cordes",
         illustration: "assets/scene_chapelle_mur_cordes_v3_d_a.png",
         observe: true,
@@ -5845,15 +5655,7 @@ export const SCENES: Scene[] = [
         decouverte: "d.trois_cordes",
         passive: {
           consequence:
-            "L'odeur de chanvre vieux prend à la gorge à mesure — grasse, " +
-            "presque animale, rien d'une odeur d'église. Des dizaines de " +
-            "cordes coupées, clouées en rangs, chacune étiquetée d'un nom à " +
-            "l'encre pâle. Ce ne sont pas des trophées : ce sont des " +
-            "reliques, chacune « a tenu » quelqu'un. L'une bouge quand tu ne " +
-            "la regardes pas — la troisième du rang bas, sans étiquette, plus " +
-            "claire que les autres. Tu notes où elle est. Plus bas, trois " +
-            "cordes portent la même date : celle du Bailli, un prénom de " +
-            "fille, et un troisième nom arraché avec l'étiquette.",
+            "Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom — des reliques : chacune « a tenu » quelqu'un. La troisième du rang bas n'a pas d'étiquette, et bouge quand tu ne la regardes pas. Plus bas, trois cordes portent la même date : celle du Bailli, un prénom de fille, et un nom arraché.",
         },
       },
       {
@@ -5883,14 +5685,6 @@ export const SCENES: Scene[] = [
     sejour: true,
     illustration: "assets/monstre_veuve_cordes_v2_b_d.png",
     narration: [
-      "Elle était là depuis le début. Une femme en noir, assise à la chaise, " +
-        "qui refait sans fin le même nœud sans lever les yeux sur toi.",
-      "— « Choisis ton brin. » Sa voix est plate, professionnelle. « Tout le " +
-        "monde finit par en avoir besoin. » Derrière elle, dans une niche à " +
-        "part, sous verre : une corde coupée net, sans nom. La seule de toute " +
-        "la chapelle qui n'a pas tenu.",
-    ],
-    narrationDemo: [
       "Elle était là depuis le début — une femme en noir qui refait sans fin le même nœud. « Choisis ton brin. Tout le monde finit par en avoir besoin. » Derrière elle, sous verre : une corde coupée net. La seule qui n'a pas tenu.",
     ],
     choices: [
@@ -5997,8 +5791,6 @@ export const SCENES: Scene[] = [
            `sejour` ici enfermait donc tout héros qui ne l'avait pas. Trouvé par
            le garde de build, pas à la relecture. */
         id: "chapelle-ressortir",
-        consequenceDemo:
-          "Tu recules jusqu'au seuil sans quitter les cordes des yeux. Aucune ne bouge. Dehors, la corde d'appel du clocheton pend à hauteur de main. Tu tires : la cloche bascule et ne sonne pas — plus de battant. On ne l'a pas cassé : on l'a dévissé.",
         label: "Ressortir par le côté",
         sortie: {},
         /* LE CLOCHETON (ex-point d'intérêt `cloche-sans-battant`, 13/08) : il
@@ -6010,15 +5802,7 @@ export const SCENES: Scene[] = [
         illustration: "assets/scene_chapelle_cloche_sans_battant_c_a.png",
         passive: {
           consequence:
-            "Tu recules jusqu'au seuil sans quitter les cordes des yeux, ce " +
-            "qui est exactement la mauvaise façon de traverser une nef : on " +
-            "ne voit pas ce qu'on laisse derrière. Aucune ne bouge. Dehors, " +
-            "l'air a le goût de dehors.\n\n" +
-            "Le clocheton n'est pas haut, et la corde d'appel pend jusqu'à " +
-            "hauteur de main, propre, entretenue. Tu tires par curiosité. La " +
-            "cloche bascule, revient, bascule encore — et ne sonne pas : elle " +
-            "n'a plus de battant. L'attache est intacte. On ne l'a pas " +
-            "cassée : on l'a dévissée.",
+            "Tu recules jusqu'au seuil sans quitter les cordes des yeux. Aucune ne bouge. Dehors, la corde d'appel du clocheton pend à hauteur de main. Tu tires : la cloche bascule et ne sonne pas — plus de battant. On ne l'a pas cassé : on l'a dévissé.",
         },
       },
     ],
@@ -6045,16 +5829,6 @@ export const SCENES: Scene[] = [
         "tendue. Quelque chose l'a amarrée de l'autre bout. On t'invite.",
     },
     narration: [
-      "Sur la place arrière du hameau, un puits — condamné de frais : " +
-        "planches neuves, chaînes croisées, cadenas encore gras. Tout le " +
-        "reste du hameau tombe en ruine douce, mais ça, on l'entretient. " +
-        "Par-dessus les planches, on a empilé des pierres — pas des moellons " +
-        "de mur : des blocs de meule, que deux hommes ne soulèveraient pas.",
-      "Et dessous, ça cogne. Trois coups, une pause. Trois coups. Poli, " +
-        "presque — comme on frappe à une porte dont on sait qu'on va vous " +
-        "ouvrir.",
-    ],
-    narrationDemo: [
       "Un puits condamné de frais : planches neuves, chaînes, blocs de meule empilés. Tout le hameau tombe en ruine — ça, on l'entretient. Et dessous, ça cogne. Trois coups, une pause. Trois coups. Poli, comme on frappe à une porte qu'on va vous ouvrir.",
     ],
     choices: [
@@ -6281,7 +6055,7 @@ export const SCENES: Scene[] = [
         label: "Forcer le passage",
         risky: {
           stat: "COURAGE",
-          threshold: 13,
+          threshold: 14,
           outcomes: outcomes(
             "20 naturel. Tu marches droit, sans lever la main. Le chien te jauge — et s'écarte au dernier pas, parce qu'un ordre ancien vient d'en croiser un plus vieux : on ne mord pas ce qui n'a pas peur. Il t'escorte jusqu'au seuil, tête basse, presque soulagé.",
             "Il charge, tu tiens la ligne. L'impact vous couche tous les deux — mais c'est toi qui te relèves entre lui et la porte, et ça, pour un chien de garde, c'est la fin du débat. Il recule en grondant sa dignité.",
@@ -6302,7 +6076,7 @@ export const SCENES: Scene[] = [
         label: "S'accroupir, lui parler",
         risky: {
           stat: "EMPATHIE",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu t'accroupis, tu lui parles de son maître — celui qui pend là-haut et qui juge encore. Le chien écoute, oreilles couchées, puis vient poser son front contre le tien. L'ordre est levé : tu es le premier à lui avoir dit que c'était fini.",
             "Tu lui laisses le dos de ta main, sans bouger. Il la flaire longtemps — la lande, le gibet, peut-être une trace de son maître dessus. Il ne s'écarte pas, mais il s'assoit : ce n'est plus une garde, c'est une visite. Tu peux longer le mur.",
@@ -6324,7 +6098,7 @@ export const SCENES: Scene[] = [
         horsDePortee: true,
         risky: {
           stat: "EMPATHIE",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu t'accroupis à sa hauteur et tu le lui dis comme on rend une nouvelle à un vieux serviteur : le nom qui l'a posté est écrit sur le registre, en dernier, de sa propre main. Le chien te regarde longtemps. Puis il se lève, quitte le seuil, et va se coucher trois pas plus loin — dehors, comme un chien sans maison. Il ne t'accompagne pas. Il ne t'arrête plus.",
             "Tu parles doucement, depuis le seuil, et tu dis le nom que le pendu a fini par lâcher — celui du Bailli. L'animal dresse une oreille, puis la baisse. Il ne s'écarte pas franchement : il se décale, ce qui suffit.",
@@ -6339,7 +6113,7 @@ export const SCENES: Scene[] = [
         label: "Contourner par la cour",
         risky: {
           stat: "RUSE",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu fais le tour par les appentis — et tu trouves mieux que la porte : le trou par lequel le chien entre et sort, taillé à sa mesure dans la pierre murée. Assez large pour toi. La seule ouverture que le Bailli n'a jamais murée : il faut bien nourrir la garde.",
             "Tu passes par la cour aux orties, sous le vent, hors de vue. Le chien tourne autour de la maison à ta recherche — méthodique, aux aguets — mais la routine de sa ronde a trente ans, et tu marches entre ses horaires.",
@@ -6744,7 +6518,7 @@ export const SCENES: Scene[] = [
         label: "Charger la plus grande",
         risky: {
           stat: "COURAGE",
-          threshold: 13,
+          threshold: 14,
           outcomes: outcomes(
             "20 naturel. Tu charges la meneuse au milieu de son tour — l'impensable, au centre du cercle qui ne se défend jamais. Elle roule sous toi, se relève boiteuse, et le cercle entier perd le pas. Une meute sans cadence n'est qu'un tas de bêtes maigres.",
             "Ta charge la surprend à contre-pied. Ta lame la marque au flanc et le front s'arrête net — toutes les têtes tournées vers la meneuse, en attente d'un ordre qu'elle met trop longtemps à donner. Tu as gagné le désordre, et c'est déjà beaucoup.",
@@ -6761,7 +6535,7 @@ export const SCENES: Scene[] = [
         label: "Gagner le muret",
         risky: {
           stat: "INSTINCT",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu perces le cercle à l'endroit exact où deux bêtes échangeaient leurs postes — le seul battement du mécanisme. Dos à la pierre sèche, tu n'offres plus de centre. Une meute sans cercle tourne à vide ; la meneuse te le reproche du regard, longuement.",
             "Tu atteins le muret de justesse, une lanière de manteau en moins. Adossé à la pierre, tu ne peux plus être encerclé — juste attaqué de face, et ça, visiblement, ce n'est pas leur école. Le cercle se refait plus loin, faute de mieux.",
@@ -6784,7 +6558,7 @@ export const SCENES: Scene[] = [
         horsDePortee: true,
         risky: {
           stat: "RUSE",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu sors la clochette et tu la fais sonner une fois, sèchement, comme on rappelle un troupeau. Les cinq têtes se tournent ENSEMBLE, du même côté, à la même hauteur — et le front se défait. Ils cherchent le berger derrière toi. Tu passes pendant qu'ils cherchent, et le son continue de les tenir longtemps après.",
             "Le battant claque — celui que tu as pris au cou de la meneuse du troupeau. La grande s'arrête net, une patte en l'air, et le silence dure assez pour que tu recules de trois pas sans qu'aucune ne bouge. Ils te laissent partir en te regardant faire : tu sens qu'ils t'ont classé quelque part.",
@@ -6805,7 +6579,7 @@ export const SCENES: Scene[] = [
         label: "Hurler le premier",
         risky: {
           stat: "RUSE",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu renverses la tête et tu hurles — pas de peur : un vrai hurlement de meute, appris tu ne sais où, peut-être du fond de la lande elle-même. Le cercle se fige. La meneuse répond. Vous vous êtes dit quelque chose, et le cercle s'ouvre : on ne chasse pas ce qui chante.",
             "Ton hurlement les déroute — c'est la proie qui crie, jamais le centre. Deux bêtes rompent le tour pour interroger la meneuse du regard, et le cercle flotte, désaccordé. Tu as gagné du temps et semé le doute, leurs deux seules faiblesses.",
@@ -6850,7 +6624,7 @@ export const SCENES: Scene[] = [
         label: "Répondre par l'acier",
         risky: {
           stat: "COURAGE",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu réponds d'un seul coup, net, définitif. La meneuse tombe sans un bruit — et la meute ne venge pas : elle constate, se choisit une autre tête d'un simple flottement, et reflue dans la bruyère. Les questions, dans la lande, n'ont pas de rancune.",
             "Ta lame répond pour toi. La meneuse esquive l'essentiel, encaisse le reste, et rompt — le croissant entier reflue avec elle, réglé sur sa retraite. Ils reviendront peut-être. Pas aujourd'hui, et pas pour toi.",
@@ -6865,7 +6639,7 @@ export const SCENES: Scene[] = [
         label: "Reculer, sans ciller",
         risky: {
           stat: "INSTINCT",
-          threshold: 13,
+          threshold: 14,
           outcomes: outcomes(
             "20 naturel. Tu recules pas à pas, les yeux dans les siens, sans un frisson. La meneuse te suit — puis s'arrête à la frontière exacte d'un territoire que toi, tu ne vois pas. Elle s'assoit. Te voilà dehors de leur carte : la meute te regarde partir comme on regarde la pluie quitter un champ.",
             "Chaque pas en arrière est un mot de la négociation. Tu la tiens du regard jusqu'au chemin, et le croissant s'effiloche à mesure — une bête qui décroche, puis deux. À la fin, il ne reste que la meneuse, qui te concède la lande d'un battement de paupières.",
@@ -6887,7 +6661,7 @@ export const SCENES: Scene[] = [
         horsDePortee: true,
         risky: {
           stat: "RUSE",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu refais le son de tout à l'heure, plus bas, plus court — une réponse, pas un défi. La meneuse incline la tête, exactement comme un chien à qui l'on parle. Puis elle se détourne et le croissant se défait derrière elle, sans un bruit, comme une phrase qu'on finit.",
             "Tu réponds — le même son qu'elles t'ont lancé tout à l'heure, plus bas. Ce n'est pas beau, mais c'est dans la bonne langue. La meneuse recule d'un pas — le premier qu'aucune d'elles n'avait fait — et le reste suit son pas.",
@@ -6912,7 +6686,7 @@ export const SCENES: Scene[] = [
         label: "Leur jeter ton manteau",
         risky: {
           stat: "RUSE",
-          threshold: 12,
+          threshold: 13,
           outcomes: outcomes(
             "20 naturel. Tu fais glisser ton manteau et tu le lances de biais, loin sur le côté, là où le vent portera ton odeur. Il tombe en gardant ta forme. La meute entière se détourne pour le juger, méthodique, et la meneuse te laisse filer avec un regard entendu : elle sait qu'elle est achetée, elle accepte le prix. Marché de vieux routiers.",
             "Le manteau tombe entre vous, encore tiède de toi. La meneuse le flaire longuement, le juge honnête — et le croissant se referme dessus au lieu de toi. Tu pars les épaules nues et la peau entière. Dans la lande, c'est un excellent taux de change.",
@@ -7404,12 +7178,6 @@ export const SCENES: Scene[] = [
     // (veilleur-2), ce qui est aussi la bonne leçon : explorer prépare.
     chainNext: "palissade-sud-2",
     narration: [
-      "La Palissade barre le plateau d'un trait noir : des rondins plantés serrés, hauts de deux hommes. Un portillon, une guérite, une lanterne allumée sous un ciel encore clair.",
-      "Derrière, un chemin qui descend. On le sent plus qu'on ne le voit : " +
-        "l'air y coule comme une eau froide. La Descente. Et dans la guérite, " +
-        "un homme qui t'a vu depuis longtemps.",
-    ],
-    narrationDemo: [
       "La Palissade barre le plateau : des rondins hauts de deux hommes, un portillon, une guérite éclairée. Derrière, un chemin descend — l'air y coule comme une eau froide. La Descente. Dans la guérite, un homme t'a vu depuis longtemps.",
     ],
     /* Conversion des points d'intérêt (13/08). Six entrées disaient trois
@@ -7439,20 +7207,13 @@ export const SCENES: Scene[] = [
       },
       {
         id: "portillon-verrou",
-        consequenceDemo:
-          "Le bois du portillon est tiède — aucun sens sous ce crépuscule. Autour du verrou, des griffures à hauteur de mains : des mains qui voulaient passer, une nuit, et qu'on n'a pas laissées. Dans la gâche, une clé rouillée, oubliée par quelqu'un qui comptait revenir.",
         label: "Examiner le portillon",
         illustration: "assets/scene_palissade_portillon_a_c_f.png",
         observe: true,
         grantsLoot: "cle-portillon",
         passive: {
           consequence:
-            "Le bois du portillon est tiède, ce qui n'a aucun sens sous ce " +
-            "crépuscule. Un verrou, côté nord. Un seul. Le bois autour est " +
-            "griffé — pas par des bêtes : à hauteur de mains. Des mains qui " +
-            "voulaient passer, une nuit, et qu'on n'a pas laissées. Ou qu'on a " +
-            "laissées trop tard. Dans la gâche, une clé rouillée est restée, " +
-            "oubliée par quelqu'un qui comptait revenir.",
+            "Le bois du portillon est tiède — aucun sens sous ce crépuscule. Autour du verrou, des griffures à hauteur de mains : des mains qui voulaient passer, une nuit, et qu'on n'a pas laissées. Dans la gâche, une clé rouillée, oubliée par quelqu'un qui comptait revenir.",
         },
       },
       {
@@ -7736,20 +7497,20 @@ export const SCENES: Scene[] = [
     id: "palissade-sud-2",
     // FIN DE ZONE, mais on ne descend que si on le DÉCIDE (panel du 9/08,
     // 7 voix sur 10 : finir une vie en posant une question au Veilleur était
-    // le pire moment du jeu). La Palissade reste le passage obligé — c'est
+    // le pire moment du jeu). La Palissade est le passage obligé — c'est
     // son `sejour` qui retient le héros au lieu de l'aspirer : questionner,
-    // regarder, puis franchir. Seul « Franchir la Descente » s'en va.
+    // regarder, puis franchir. Seul « Passer le portillon » s'en va.
+    // ⚠️ 2/09 : le portillon ne donne plus sur la Descente mais sur LA
+    // FALAISE AUX CORDES (trois écrans : les cordes venues du ciel, le bord
+    // et le vide, l'Appelé qui en prend une). Elle n'était jouée qu'en démo
+    // — Patrick a fini une traversée sans voir les images qu'il avait
+    // générées pour elle. L'Appelé ne DESCEND donc plus ici : il passe le
+    // portillon et s'éloigne vers le sud (c'est aussi ce que montre
+    // l'image) ; c'est lui qu'on retrouve au bout du surplomb.
     sejour: true,
     illustration: "assets/monstre_palissade_sud_2_d_b.png",
     narration: [
-      "Sur le chemin de ronde, un vieux soldat regarde vers le sud. Et en " +
-        "contrebas, par-dessus le bord, un homme descend au bout d'une corde, " +
-        "d'un rythme égal, sans bagage, sans lever la tête. Le Veilleur ne le " +
-        "quitte pas des yeux. « Encore un Appelé », dit-il sans se " +
-        "retourner. « On ne les rattrape pas. On les compte. »",
-    ],
-    narrationDemo: [
-      "Par-dessus le bord, un homme descend au bout d'une corde, d'un rythme égal, sans bagage, sans lever la tête. « Encore un Appelé », dit le Veilleur. « On ne les rattrape pas. On les compte. »",
+      "Le Veilleur regarde vers le sud. Devant lui, quelqu'un passe le portillon — d'un pas égal, sans bagage, sans se retourner — et s'éloigne dans la bruyère. « Encore un Appelé », dit le Veilleur. « On ne les rattrape pas. On les compte. »",
     ],
     choices: [
       {
@@ -7772,7 +7533,7 @@ export const SCENES: Scene[] = [
         label: "Regarder l'Appelé",
         passive: {
           consequence:
-            "Il descend sans jamais presser ni ralentir le pas — quelqu'un qui n'obéit pas à ses jambes. Juste avant le tournant, il s'arrête une seconde, comme si quelque chose se débattait encore. Puis le chemin le prend. Tu espères ne jamais reconnaître ce pas dans un reflet.",
+            "Il marche sans jamais presser ni ralentir le pas — quelqu'un qui n'obéit pas à ses jambes. Une fois, il s'arrête, comme si quelque chose se débattait encore. Puis la lande le prend. Tu espères ne jamais reconnaître ce pas dans un reflet.",
         },
       },
       {
@@ -7780,12 +7541,13 @@ export const SCENES: Scene[] = [
            Palissade est la fin de zone, on la franchit. C'est l'écran de la
            Descente qui dit maintenant que la suite n'est pas bâtie. */
         id: "franchir-descente",
-        label: "Franchir la Descente",
+        label: "Passer le portillon",
         tags: ["citable"],
         // LE seul choix qui quitte la Palissade. Tant qu'il n'est pas pris,
-        // le Veilleur et l'Appelé restent à portée : descendre est un acte,
-        // pas la conséquence d'avoir posé une question.
-        sortie: { toScene: "la-descente" },
+        // le Veilleur et l'Appelé restent à portée : partir est un acte,
+        // pas la conséquence d'avoir posé une question. Il mène à la
+        // Falaise (2/09), qui mène seule à la Descente.
+        sortie: { toScene: "falaise-cordes" },
         passive: {
           consequence:
             "Le Veilleur ne t'arrête pas. Il pousse le portillon et se range, comme on s'écarte d'un convoi. Derrière toi, la guérite reste ouverte — pour le suivant.",
@@ -7941,7 +7703,7 @@ export const SCENES: Scene[] = [
        même interaction — le cadrage et l'inscription varient selon le
        premier acte, injectés par le déroutage). */
     id: "demo-borne-geste",
-    illustration: "assets/scene_borne_gravures_a_e_d.png",
+    illustration: "assets/scene_borne_gravures_a_d.png",
     narration: [
       "La Borne te retient un pas de plus. Sur la face sud, sous la mousse, quelque chose est écrit — et la mousse s'écarte sous les doigts.",
     ],
@@ -8456,19 +8218,18 @@ export function sceneById(id: string): Scene | undefined {
 }
 
 /**
- * La narration à AFFICHER pour une scène. En mode démo, la version courte si
- * la scène en a une (`narrationDemo`) ; sinon — et toujours hors démo — la
- * prose complète. Point unique : tout affichage de narration passe par ici,
- * sinon un écran de la route servirait la longue pendant qu'un autre sert la
- * courte.
+ * La narration à AFFICHER pour une scène. Point unique conservé (tout
+ * affichage de narration passe par ici) — mais depuis le 2/09 il n'y a plus
+ * qu'UNE version : les textes courts écrits pour la démo sont devenus les
+ * textes tout court (« il faut que ce soit court sur l'ensemble des pages »).
  */
-export function narrationAffichee(s: Scene, demo: boolean): string[] {
-  return demo && s.narrationDemo?.length ? s.narrationDemo : s.narration;
+export function narrationAffichee(s: Scene): string[] {
+  return s.narration;
 }
 
 /** Même règle pour la conséquence d'un choix passif. */
-export function consequenceAffichee(c: Choice, demo: boolean): string {
-  return (demo && c.consequenceDemo) || c.passive?.consequence || "";
+export function consequenceAffichee(c: Choice): string {
+  return c.passive?.consequence || "";
 }
 
 /**
@@ -9623,10 +9384,18 @@ export const LANDES_GENERIC = [
 /** Vues de MARCHE des Landes (lot Drive 25/07) : chemins, plateaux, fourches —
     des images faites pour la liaison, pas pour un lieu. Elles s'ajoutent aux
     4 génériques dans le tirage par défaut. */
+/* ⚠️ AUCUNE SILHOUETTE dans une vue de marche (retour Patrick 2/09 : « je suis
+   tombé sur une transition où il y avait 3 silhouettes d'hommes alors que
+   la description disait que j'étais seul »). C'était `scene_lande_generique_1`
+   (trois marcheurs à l'horizon) ; `_2` et `_4` portent chacune une figure,
+   et les deux vues contextuelles (le Chemin Creux, le Sud) aussi. Toutes
+   écartées du pool : une transition ne montre que le terrain. Les fichiers
+   restent en réserve. Ouverts avant de trancher (planche-contact). */
 const LANDES_WALK = [
   "assets/scene_landes_liaison_plateau_e_b_a.png",
   "assets/scene_landes_liaison_fourche_b_e_a.png",
   "assets/scene_lande_arbres_morts_d_d.png",
+  "assets/scene_lande_generique_3_b_f_a.png",
   ...LANDES_GENERIC,
 ];
 
@@ -9658,8 +9427,8 @@ function pickWalkImage(optA: string, optB: string, seed: number, from?: string):
   ) {
     return HAMEAU_WALK[Math.floor(seeded(seed + 11) * HAMEAU_WALK.length)];
   }
-  if (offered.includes("chemin-creux")) return "assets/scene_landes_liaison_chemin_creux_b_f.png";
-  if (offered.includes("palissade-sud")) return "assets/scene_landes_liaison_sud_d_h.png";
+  // (Les vues « vers le Chemin Creux » et « vers le Sud » portaient une
+  // silhouette chacune — retirées le 2/09, voir LANDES_WALK.)
   return LANDES_WALK[Math.floor(seeded(seed + 11) * LANDES_WALK.length)];
 }
 
@@ -10266,25 +10035,18 @@ export function traceDeSortie(ctx: {
 
 export const DESCENTE_SCENE: Scene = {
   id: "la-descente",
-  // ⚠️ L'ESCALIER EST SUPPRIMÉ (décision Patrick, 31/08). On ne descend
-  // des Landes que par les CORDES — l'image emblématique de la sortie de
-  // zone. L'escalier n'était affirmé que dans UNE phrase de tout le jeu,
-  // alors que les cordes portent un lieu entier (la Falaise), un objet qui
-  // s'y noue et le motif du tranchage par en dessous ; c'est donc lui qui
-  // cède, comme le cercle de la Colline a cédé à la crête.
-  // L'image montre enfin ce que le texte dit (choix Patrick, 31/08) : une
-  // silhouette au bord, la corde en main, qui passe la lèvre. La vue neutre
-  // du sud n'était qu'un pis-aller en attendant `scene_la_descente`.
-  illustration: "assets/monstre_appele_descente_b_b.png",
+  // ⚠️ L'ESCALIER EST SUPPRIMÉ (décision Patrick, 31/08) : on ne descend des
+  // Landes que par les CORDES de la Falaise — et depuis le 2/09 la Falaise est
+  // sur TOUS les chemins de sortie (jeu complet comme première run), donc cet
+  // écran arrive toujours APRÈS la descente jouée au geste lent. Il ne la
+  // redemande pas : il la referme. (Le texte long d'avant, qui refaisait
+  // le bord et la prise d'une corde, est parti avec l'ancien routage.)
+  // Image : l'Appelé au milieu des cordes — recâblage demandé par Patrick
+  // depuis le Graphe (2/09), le fichier d'avant (`monstre_appele_descente_b_b`)
+  // reste en réserve.
+  illustration: "assets/scene_falaise_appele_d_d.png",
   terminal: true,
   narration: [
-    "Passé le portillon, le sol ne descend pas : il cesse. La lande s'arrête net et la paroi tombe plus bas que le regard ne porte. L'air qui monte de là est plus froid, et plus vieux.",
-    "Sur toute la largeur du bord, des cordes. Nouées aux pieux, elles pendent dans le noir et bougent ensemble. Tu as traversé les Landes vivant — peu le font. Tu en prends une, et le sol te lâche.",
-  ],
-  // En DÉMO on arrive de la Falaise : la descente vient d'être JOUÉE (le
-  // geste lent, palier par palier). L'écran ne peut donc pas la redemander —
-  // il la referme. C'est exactement ce que `narrationDemo` sert à faire.
-  narrationDemo: [
     "La corde s'arrête. Sous tes pieds, quelque chose de plat, de taillé — et très haut au-dessus, le jour par où tu es passé s'est refermé sur lui-même.",
     "Tu as traversé les Landes vivant. Peu le font. Devant, le noir n'a pas encore de nom.",
   ],

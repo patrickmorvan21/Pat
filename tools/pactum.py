@@ -97,7 +97,8 @@ LARGEUR = 74
 # la santé. Un échec social coûte du Soupçon, un échec d'exploration coûte un
 # rien de plus (le texte porte la perte), un échec surnaturel laisse un état. On ne meurt donc que d'un danger
 # physique — la mort doit être compréhensible dans la fiction.
-COUT = {"malediction": 0.30, "critique": 0.26, "echec": 0.16, "justesse": 0.08}
+# Barème DURCI le 2/09 (miroir de `coutSante`, scene-data) : +25 % physique.
+COUT = {"malediction": 0.38, "critique": 0.32, "echec": 0.2, "justesse": 0.1}
 MOTS = {
     "destin": "DESTIN", "eclatante": "RÉUSSITE ÉCLATANTE", "reussite": "RÉUSSITE",
     "justesse": "DE JUSTESSE", "echec": "ÉCHEC", "critique": "FUNESTE",
@@ -946,7 +947,7 @@ class Partie:
                 # dans le jeu réel. Un agent qui mesurait sur la réplique
                 # concluait donc « le passif gagne », l'inverse de la vérité.
                 # Le repos SOIGNE ; c'est la nuit qui fait le jour.
-                self.d["sante"] = min(1.0, self.d["sante"] + 0.35)
+                self.d["sante"] = min(1.0, self.d["sante"] + 0.25)  # 0,35 → 0,25 (2/09)
             self.suite(c)
 
     def gagner(self, oid: str) -> None:
@@ -1037,7 +1038,10 @@ class Partie:
         # jouable en texte, mais le MODÈLE est fidèle : réussite = l'issue
         # écrite de réussite, échec = le texte d'échec dédié + son prix.
         # Le taux suit la stat, comme la tolérance de courbure en jeu.
-        if c.get("miniJeuHorsDemo"):
+        # 2/09 : plus de mode démo — un geste posé sur un choix se joue dans
+        # TOUTES les vies (le jeu ne gate plus les mini-jeux). Le kit garde
+        # `miniJeuHorsDemo` pour les anciens paquets, il n'est plus décisif.
+        if c.get("miniJeuDemo"):
             return self.resoudre_geste(c)
         seuil = int(c.get("seuil") or 11)
         sc = self.k["scenes"].get(self.d.get("scene") or "", {})
@@ -1089,7 +1093,7 @@ class Partie:
         elif nature == "physique":
             cout = COUT.get(palier, 0.0)
         elif nature == "surnaturel" and palier in ("echec", "critique", "malediction"):
-            cout = 0.16 if palier == "malediction" else 0.10
+            cout = 0.2 if palier == "malediction" else 0.12  # +20 % (2/09)
             # L'EFFROI NE TUE PAS (verdict panel 17/08, restaure la règle du
             # 9/08 « on ne meurt que d'un échec physique ou du procès ») : le
             # surnaturel use le corps mais laisse AU SEUIL — miroir exact de

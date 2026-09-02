@@ -174,7 +174,6 @@ def construire() -> dict:
             # LA DESCRIPTION EXACTE : la narration telle que le joueur la lit.
             "desc": list(s.get("narration") or []),
             "descEchec": list(s.get("narrationEchec") or []),
-            "descDemo": list(s.get("narrationDemo") or []),
             "resume": s.get("description") or "",
             "prompt": s.get("promptImage") or "",
             "meta": meta,
@@ -212,7 +211,6 @@ def construire() -> dict:
                           "ok": bool(fiche.get("existe"))},
                 # Ce que le joueur LIT sur cet écran, mot pour mot.
                 "desc": [c.get("consequence")] if c.get("consequence") else [],
-                "descDemo": [c.get("consequenceDemo")] if c.get("consequenceDemo") else [],
                 "meta": ["action · " + (s.get("nom") or sid)],
             }
             if fiche.get("statut") == "heritee" and fiche.get("herite"):

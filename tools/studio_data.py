@@ -794,12 +794,11 @@ def lire_choix(bloc: str) -> list[dict]:
             v = constante_de(c, champ, CONSTANTES_CONNUES)
             if v:
                 ch[cle] = v
-        # 24/08 — un mini-jeu tactile posé sur le choix (segments 1-3 du script
-        # de démo). Par défaut il ne se joue QU'EN DÉMO. ⚠️ 01/09 : `horsDemo`
-        # l'ouvre au jeu complet choix par choix — le geste REMPLACE alors le
-        # dé, donc la réplique doit le simuler (voir pactum.py) au lieu de
-        # lancer un jet qui n'existe plus. Sans cet export, la Borne et la Bête
-        # mentiraient sur ce qu'elles font (règle des deux listes blanches).
+        # 24/08 — un mini-jeu tactile posé sur le choix. ⚠️ 2/09 : plus de mode
+        # démo, un geste posé se joue dans TOUTES les vies et REMPLACE le dé —
+        # la réplique doit donc le simuler (voir pactum.py) au lieu de lancer
+        # un jet qui n'existe plus. `miniJeuHorsDemo` reste exporté pour les
+        # anciens paquets, il n'est plus décisif.
         mj = texte_de(c, "engine")
         if mj and "minigame:" in c:
             ch["miniJeuDemo"] = mj
@@ -814,11 +813,6 @@ def lire_choix(bloc: str) -> list[dict]:
         rp = texte_de(c, "repos")
         if rp:
             ch["reposDemo"] = rp
-        # 24/08 — la conséquence COURTE servie en démo (même règle que
-        # `narrationDemo` : les deux textes doivent être visibles au Studio).
-        cd = texte_de(c, "consequenceDemo")
-        if cd:
-            ch["consequenceDemo"] = cd
         tb = bloc_apres(c, r"\n        tags:\s*")
         if tb:
             t = chaines_de_tableau(tb[0])
@@ -1027,15 +1021,8 @@ def lire_scenes() -> list[dict]:
         ne = bloc_apres(bloc, r"\n    narrationEchec:\s*")
         if ne:
             s["narrationEchec"] = paragraphes(ne[0])
-        # 24/08 — VERSION COURTE DÉMO (arbitrage Patrick : les coupes ne
-        # touchent que la démo, le jeu complet garde sa prose). Exportée pour
-        # que le Studio montre LES DEUX textes d'un écran de la route — sans
-        # ça, Patrick relirait la longue en croyant relire ce que la démo sert.
-        # NB : le motif `narration:` ne matche pas `narrationDemo:` (le deux-
-        # points suit directement), pas de collision d'extraction.
-        ndemo = bloc_apres(bloc, r"\n    narrationDemo:\s*")
-        if ndemo:
-            s["narrationDemo"] = paragraphes(ndemo[0])
+        # (Les versions courtes « démo » n'existent plus : promues en textes
+        # uniques le 2/09.)
         for champ, cle in (
             ("chainNext", "suite"),
             ("foe", "adversaire"),

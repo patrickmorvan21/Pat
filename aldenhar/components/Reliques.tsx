@@ -52,29 +52,8 @@ import {
 import { reliqueIllustration } from "@/lib/reliques";
 import { assetUrl, assetExiste } from "@/lib/assets";
 import { BoutonNav } from "@/components/NavIcons";
+import TagRarete from "@/components/TagRarete";
 
-const RARETE_LABEL: Record<Relic["rarity"], string> = {
-  commune: "RELIQUE COMMUNE",
-  rare: "RELIQUE RARE",
-  legendaire: "RELIQUE LÉGENDAIRE",
-};
-
-/** Les trois traitements de rareté de la maquette 2333-7011 (palette à trois
-    couleurs, aucune teinte neuve) : commune = contour blanc, rare = fond
-    blanc texte charbon, légendaire = fond orange texte charbon. */
-function TagRarete({ rarity }: { rarity: Relic["rarity"] }) {
-  const cls =
-    rarity === "legendaire"
-      ? "bg-[var(--color-accent)] text-[var(--color-bg)]"
-      : rarity === "rare"
-        ? "bg-[var(--color-ink)] text-[var(--color-bg)]"
-        : "border border-solid border-[var(--color-ink)] text-[var(--color-ink)]";
-  return (
-    <span className={`inline-block px-[8px] py-[3px] font-mono text-[11px] tracking-[1.5px] ${cls}`}>
-      {RARETE_LABEL[rarity]}
-    </span>
-  );
-}
 
 function imgDe(r: Relic): string {
   return (
@@ -320,7 +299,7 @@ export default function Reliques({
               {relicSel.name}
             </h2>
             <div className="mt-[10px]">
-              <TagRarete rarity={relicSel.rarity} />
+              <TagRarete rarity={relicSel.rarity} prefixe="relique" />
             </div>
             {/* Bloc description à HAUTEUR FIXE : 3 lignes réservées à 13 px,
                 texte aligné en haut — le vide sous un effet court est voulu. */}
