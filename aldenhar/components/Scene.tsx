@@ -1061,7 +1061,7 @@ export default function Scene() {
   // Incrémenté à chaque tap dans la zone de texte : termine la frappe en cours.
   const [skip, setSkip] = useState(0);
   // Écran de mort : non-null dès que la santé tombe à zéro sur un jet raté.
-  const [death, setDeath] = useState<{ epitaph: string; day: number; bilan: Bilan; relic: Relic; heroName: string; cause: string; firstDeath: boolean; image: string } | null>(null);
+  const [death, setDeath] = useState<{ epitaph: string; day: number; bilan: Bilan; relic: Relic; heroName: string; cause: string; firstDeath: boolean } | null>(null);
   // Scène chronométrée (§18) : true une fois le délai écoulé sans choix.
   const [timedExpired, setTimedExpired] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -5462,7 +5462,7 @@ export default function Scene() {
                 fixation: true,
               });
               const dead = { epitaph, day: run.day, bilan: bilanDeMort(run, porteeNom), relic,
-                heroName: run.heroName, cause: "le Hameau des Renonçants", firstDeath, image };
+                heroName: run.heroName, cause: "le Hameau des Renonçants", firstDeath };
               resetRun();
               setDeath(dead);
               return;
@@ -5489,7 +5489,7 @@ export default function Scene() {
                 killer: scene.foe ? { entity: scene.foe, label: scene.foeName ?? scene.foe } : undefined,
               });
               const dead = { epitaph, day: run.day, bilan: bilanDeMort(run, porteeNom), relic,
-                heroName: run.heroName, cause, firstDeath, image };
+                heroName: run.heroName, cause, firstDeath };
               resetRun();
               setDeath(dead);
               return;
@@ -5721,7 +5721,6 @@ export default function Scene() {
         {/* Écran de mort (13/07). */}
         {death && (
           <DeathScreen
-            image={death.image}
             epitaph={death.epitaph}
             day={death.day}
             bilan={death.bilan}

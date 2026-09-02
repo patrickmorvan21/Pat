@@ -627,7 +627,6 @@ type PreviewMort = {
   heroName: string;
   cause: string;
   firstDeath: boolean;
-  image: string;
 };
 
 const EPITAPH_APERCU = "Le sol se dérobe, et rien ne le retient.";
@@ -649,7 +648,6 @@ function buildPreviewMort(): PreviewMort {
     cause: "les Landes",
     firstDeath,
     // L'aperçu n'a pas de lieu de mort : la Colline aux Gibets fait office.
-    image: "assets/scene_colline_aux_gibets_c.png",
   };
 }
 
@@ -890,7 +888,6 @@ export function OptionsTab() {
           heroName={preview.heroName}
           cause={preview.cause}
           firstDeath={preview.firstDeath}
-          image={preview.image}
           // Aperçu : on referme, on ne recharge jamais la page (rien n'a été
           // détruit — la vraie mort, elle, `reload()` après `resetRun()`).
           onRestart={() => setPreview(null)}

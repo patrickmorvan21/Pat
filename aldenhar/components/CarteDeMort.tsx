@@ -10,9 +10,9 @@
  *
  *   • UN SEUL CANVAS DE MATIÈRE, en 150×225 pixels LOGIQUES affichés en
  *     300×450 (`image-rendering: pixelated`) — un pixel logique = 2 px écran.
- *     C'est ce gros pixel assumé qui fait le style, l'illustration comprise :
- *     elle est ré-échantillonnée dans cette grille au plus proche voisin, elle
- *     n'est PAS un <img> net posé par-dessus.
+ *     C'est ce gros pixel assumé qui fait le style, LA SCÈNE COMPRISE : le ciel,
+ *     la colline et les deux potences sont DESSINÉS dans cette grille, comme
+ *     dans le prototype — pas une photo posée par-dessus.
  *   • LE TEXTE EST DU DOM, dans le flux flex exact du prototype (padding 14,
  *     bandeau 16, portrait 146, nom 34, épitaphe 10/1.5, chiffres poussés en
  *     bas par `margin-top:auto`, pied). Le dessiner sur le canvas le
@@ -39,7 +39,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Relic } from "@/lib/player-memory";
 import type { Bilan } from "@/components/DeathScreen";
-import { assetSrc } from "@/lib/assets";
 import { seededRandom } from "@/lib/dither";
 import { animReduced, haptic } from "@/lib/settings";
 
@@ -53,13 +52,9 @@ const CW = 300,
 /** La grille du prototype : 1 pixel logique = 2 pixels d'écran. */
 const LW = 150,
   LH = 225;
-/** La bordure : épaisse et à gros radius, en pixels LOGIQUES. */
-const EP = 2,
+/** La bordure : UN pixel logique (retour Patrick 02/09), gros radius. */
+const EP = 1,
   RAY = 13;
-/** La bande d'illustration, en pixels logiques (sous le bandeau d'en-tête). */
-const IMG_Y0 = 17,
-  IMG_Y1 = 100;
-
 const BAYER = [
   [0, 8, 2, 10],
   [12, 4, 14, 6],
@@ -84,18 +79,9 @@ export type CarteDeMortProps = {
   relic: Relic;
   /** Rang dans Les Cent, ou null si le nom n'entre pas au livre. */
   rang: number | null;
-  /** L'illustration du lieu de la mort (chemin `assets/…`). */
-  image?: string;
   /** Index d'acte (0 = Acte I). */
   acte?: number;
 };
-
-function romain(n: number): string {
-  const t: [number, string][] = [[1000, "M"], [900, "CM"], [500, "D"], [400, "CD"], [100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
-  let r = "";
-  for (const [v, s] of t) while (n >= v) { r += s; n -= v; }
-  return r || "I";
-}
 
 function ordinal(n: number): string {
   return n === 1 ? "1ʳᵉ" : `${n}ᵉ`;
@@ -110,7 +96,6 @@ function contenuCarte(p: CarteDeMortProps) {
     acte: prof.acte,
     nom: p.heroName,
     epitaphe: p.epitaph,
-    pied: ["Pactum", `Jour ${romain(p.day)} du Domaine`] as const,
     relique: p.relic.name,
     stats: [
       ["Jours tenus", String(p.bilan.jours)],
@@ -154,32 +139,38 @@ function formePixel(
   }
 }
 
-/** Le test « ce pixel logique est-il dans la carte ? » — sert au clip du shine. */
-function dedansForme(px: number, py: number, r = RAY): boolean {
+/**
+ * « Ce pixel logique est-il dans la carte ? » — avec une MARGE optionnelle qui
+ * donne la forme INTÉRIEURE (sous la bordure).
+ * ⚠️ Tout ce qui peint du charbon (colline, dissolution, érosion) doit passer
+ * par la forme intérieure : sinon il efface le trait orange. Le défaut ne se
+ * voyait pas tant que la bordure faisait 2 px ; à 1 px elle partait en pointillé.
+ */
+function dedansForme(px: number, py: number, r = RAY, marge = 0): boolean {
+  const w = LW - 2 * marge,
+    h = LH - 2 * marge;
+  const x = px - marge,
+    y = py - marge;
+  if (y < 0 || y >= h || x < 0) return false;
   let inset = 0;
-  if (py < r) {
-    const dy = r - py - 0.5;
+  if (y < r) {
+    const dy = r - y - 0.5;
     inset = r - Math.sqrt(Math.max(0, r * r - dy * dy));
-  } else if (py >= LH - r) {
-    const dy = py - (LH - r) + 0.5;
+  } else if (y >= h - r) {
+    const dy = y - (h - r) + 0.5;
     inset = r - Math.sqrt(Math.max(0, r * r - dy * dy));
   }
   inset = Math.round(inset);
-  return px >= inset && px < LW - inset;
+  return x >= inset && x < w - inset;
 }
 
 /**
- * LA MATIÈRE — tout ce qui n'est pas du texte, en 150×225 pixels logiques.
- * L'illustration du lieu de la mort est ré-échantillonnée DANS cette grille :
- * c'est elle, la « très pixellisée » que Patrick garde, et c'est aussi ce qui
- * fait qu'elle se dissout en pixels dans le fond au lieu d'avoir un bord net.
+ * LA MATIÈRE — tout ce qui n'est pas du texte, en 150×225 pixels logiques :
+ * la forme et sa bordure, le semis, puis LA SCÈNE dessinée à la main (ciel en
+ * densité, colline, deux potences), qui se dissout en pixels dans le fond au
+ * lieu d'avoir un bord net.
  */
-function dessinerTexture(
-  ctx: CanvasRenderingContext2D,
-  p: CarteDeMortProps,
-  illu: HTMLImageElement | null,
-  rnd: () => number,
-) {
+function dessinerTexture(ctx: CanvasRenderingContext2D, p: CarteDeMortProps, rnd: () => number) {
   const { prof } = contenuCarte(p);
   const e = prof.cadre;
   ctx.imageSmoothingEnabled = false;
@@ -194,73 +185,91 @@ function dessinerTexture(
   for (let i = 0; i < 170; i++) {
     const x = Math.floor(rnd() * LW),
       y = Math.floor(rnd() * LH);
-    if (dedansForme(x, y) && x > e + 1 && x < LW - e - 2 && y > e + 1 && y < LH - e - 2) ctx.fillRect(x, y, 1, 1);
+    if (dedansForme(x, y, Math.max(1, RAY - e), e)) ctx.fillRect(x, y, 1, 1);
   }
 
-  /* L'ILLUSTRATION, RÉ-TRAMÉE DANS LA GRILLE DE LA CARTE.
-     ⚠️ Surtout PAS un `drawImage` au plus proche voisin : nos assets sont déjà
-     tramés en 1000×1000, et prendre un pixel sur sept dans une trame détruit la
-     trame — le ciel ressort en aplat plein et le sol en bruit. On réduit donc
-     d'abord en MOYENNE (le navigateur filtre), ce qui rend la densité LOCALE,
-     puis on re-trame en Bayer sur la grille logique. C'est la recette du fond
-     de pierre du 02/09, appliquée à l'exécution. */
-  if (illu && illu.naturalWidth) {
-    const x0 = e,
-      x1 = LW - e;
-    const bw = x1 - x0,
-      bh = IMG_Y1 - IMG_Y0;
-    const off = document.createElement("canvas");
-    off.width = bw;
-    off.height = bh;
-    const octx = off.getContext("2d")!;
-    octx.imageSmoothingEnabled = true;
-    const sw = illu.naturalWidth,
-      sh = illu.naturalHeight;
-    const ratio = bw / bh;
-    let cw = sw,
-      ch = sw / ratio;
-    if (ch > sh) {
-      ch = sh;
-      cw = sh * ratio;
+  /* LA SCÈNE, DESSINÉE À LA MAIN DANS LA GRILLE — le portage verbatim du
+     prototype (retour Patrick 02/09 : « reprends la même image qu'il y a dans
+     le html, la trame est plus jolie »).
+     ⚠️ Elle ne dépend PAS du lieu de la mort : la carte ne montre plus où l'on
+     est tombé, elle montre la Colline aux Gibets, signature de la zone. C'est
+     un choix de design assumé — une photo du lieu, ré-échantillonnée dans une
+     grille de 150×225, perd sa trame et ressort en bruit ; un dessin fait POUR
+     cette grille garde son ciel en dégradé de densité et ses silhouettes nettes.
+     Le seul aléa passe par `rnd()` (seedé par le héros et le jour) : la carte
+     d'une mort donnée est toujours la même, elle ne scintille pas au re-rendu. */
+  const rInt = Math.max(1, RAY - e);
+  const px1 = (x: number, y: number, col: string) => {
+    if (!dedansForme(x, y, rInt, e)) return;
+    ctx.fillStyle = col;
+    ctx.fillRect(x | 0, y | 0, 1, 1);
+  };
+  const y0 = 18,
+    y1 = 104;
+  /* le ciel : orange dense près de l'horizon, clairsemé en haut — DENSITÉ, jamais un dégradé */
+  for (let py = y0; py < y1; py++) {
+    const t = (py - y0) / (y1 - y0),
+      pr = 0.3 + 0.68 * Math.pow(t, 1.25);
+    for (let px = 0; px < LW; px++) if (BAYER[py & 3][px & 3] / 16 < pr) px1(px, py, ORANGE);
+  }
+  const crest = (px: number) =>
+    y1 - 14 - Math.round(26 * Math.exp(-Math.pow((px - 84) / 42, 2)) + 9 * Math.exp(-Math.pow((px - 26) / 22, 2)));
+  /* la colline : silhouette charbon, bord rongé */
+  for (let px = 0; px < LW; px++) {
+    const hy = crest(px);
+    for (let py = hy; py < y1 + 3; py++) {
+      if (py - hy < 3 && rnd() < 0.3) continue;
+      px1(px, py, CHARBON);
     }
-    octx.drawImage(illu, (sw - cw) / 2, (sh - ch) / 2, cw, ch, 0, 0, bw, bh);
-    const d = octx.getImageData(0, 0, bw, bh).data;
-    ctx.fillStyle = ORANGE;
-    for (let py = 0; py < bh; py++) {
-      for (let px = 0; px < bw; px++) {
-        const cy = IMG_Y0 + py,
-          cx = x0 + px;
-        // jamais sous la bordure : l'image s'arrête à la forme intérieure
-        if (!dedansForme(cx, cy, RAY)) continue;
-        const i = (py * bw + px) * 4;
-        const lum = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
-        // charbon ≈ 26, orange ≈ 121 en luminance : on en déduit la densité
-        const t = Math.max(0, Math.min(1, (lum - 26) / (121 - 26)));
-        if (BAYER[cy & 3][cx & 3] / 16 < t) ctx.fillRect(cx, cy, 1, 1);
-      }
+    if (rnd() < 0.16) px1(px, hy - 1 - Math.floor(rnd() * 2), CHARBON);
+  }
+  /* deux potences : une occupée (le Bailli), une vide et démesurée */
+  const gibet = (bx: number, by: number, h: number, arm: number, occupied: boolean) => {
+    const top = by - h;
+    for (let py = top; py < by; py++) {
+      px1(bx, py, CHARBON);
+      if (rnd() < 0.85) px1(bx + 1, py, CHARBON);
     }
-
-    /* dissolution pixel du bas de l'image (prototype : densité, jamais un alpha) */
-    ctx.fillStyle = CHARBON;
-    const d0 = IMG_Y1 - 16;
-    for (let py = d0; py < IMG_Y1 + 8; py++) {
-      const t = (py - d0) / 24;
-      for (let px = x0; px < x1; px++) if (rnd() < t * 0.95 && dedansForme(px, py, RAY)) ctx.fillRect(px, py, 1, 1);
+    for (let px = bx; px < bx + arm; px++) {
+      px1(px, top, CHARBON);
+      if (rnd() < 0.85) px1(px, top + 1, CHARBON);
     }
+    /* la contrefiche : le triangle de renfort, c'est lui qui fait LIRE une potence */
+    for (let k = 0; k < 6; k++) px1(bx + 1 + k, top + 1 + k, CHARBON);
+    const cx = bx + arm - 2,
+      rope = occupied ? 5 : 8;
+    for (let py = top + 2; py < top + 2 + rope; py++) px1(cx, py, CHARBON);
+    if (occupied) {
+      for (let py = top + 2 + rope; py < top + 2 + rope + 7; py++)
+        for (let dx = -1; dx <= 1; dx++) if (rnd() < 0.9) px1(cx + dx, py, CHARBON);
+      for (let dx = -2; dx <= 2; dx++) if (rnd() < 0.7) px1(cx + dx, top + 2 + rope + 7, CHARBON);
+    }
+  };
+  gibet(58, crest(58) + 2, 30, 11, true);
+  gibet(84, crest(84) + 2, 44, 15, false);
+  for (const px of [26, 32, 38]) {
+    px1(px, crest(px) - 4, CHARBON);
+    px1(px + 1, crest(px) - 4, CHARBON);
+  }
+  /* dissolution pixel du bas de l'image */
+  for (let py = y1 - 16; py < y1 + 8; py++) {
+    const t = (py - (y1 - 16)) / 24;
+    for (let px = 0; px < LW; px++) if (rnd() < t * 0.95) px1(px, py, CHARBON);
   }
 
   /* érosion des quatre bords, À L'INTÉRIEUR de la bordure : le grain du
-     prototype, sans jamais ronger le trait orange qui définit la forme */
+     prototype, sans jamais ronger le trait orange qui définit la forme. Elle
+     démarre à `e + 1` — collée au trait, elle le ferait lire en pointillé. */
   ctx.fillStyle = "#000";
   for (let i = 0; i < 900; i++) {
     const bord = Math.floor(rnd() * 4),
-      d = Math.pow(rnd(), 2.2) * 6;
+      d = 1 + Math.pow(rnd(), 2.2) * 6;
     let px: number, py: number;
     if (bord === 0) { px = Math.floor(rnd() * LW); py = Math.round(e + d); }
     else if (bord === 1) { px = Math.floor(rnd() * LW); py = Math.round(LH - 1 - e - d); }
     else if (bord === 2) { px = Math.round(e + d); py = Math.floor(rnd() * LH); }
     else { px = Math.round(LW - 1 - e - d); py = Math.floor(rnd() * LH); }
-    if (px > e && px < LW - e - 1 && py > e && py < LH - e - 1 && dedansForme(px, py, RAY + 2)) ctx.fillRect(px, py, 1, 1);
+    if (dedansForme(px, py, rInt, e)) ctx.fillRect(px, py, 1, 1);
   }
 
   if (prof.coins) {
@@ -409,33 +418,17 @@ export default function CarteDeMort(props: CarteDeMortProps) {
   const [hint, setHint] = useState("Incline la carte avec ton doigt");
   const [prete, setPrete] = useState(false);
   const plat = animReduced();
-  const { heroName, day, epitaph, bilan, relic, rang, image, acte } = props;
+  const { heroName, day, epitaph, bilan, relic, rang, acte } = props;
   const c = contenuCarte(props);
 
-  /* ─── la matière : redessinée quand l'illustration est chargée ───────── */
+  /* ─── la matière : une passe, dès le montage ─────────────────────────── */
   useEffect(() => {
     const cv = texRef.current;
     if (!cv) return;
-    let vivant = true;
-    const p: CarteDeMortProps = { heroName, day, epitaph, bilan, relic, rang, image, acte };
-    const peindre = (im: HTMLImageElement | null) => {
-      if (!vivant) return;
-      const ctx = cv.getContext("2d")!;
-      dessinerTexture(ctx, p, im, seededRandom(`carte|${heroName}|${day}`));
-      setPrete(true);
-    };
-    if (!image) {
-      peindre(null);
-      return;
-    }
-    const im = new Image();
-    im.onload = () => peindre(im);
-    im.onerror = () => peindre(null);
-    im.src = assetSrc(image);
-    return () => {
-      vivant = false;
-    };
-  }, [heroName, day, epitaph, bilan, relic, rang, image, acte]);
+    const p: CarteDeMortProps = { heroName, day, epitaph, bilan, relic, rang, acte };
+    dessinerTexture(cv.getContext("2d")!, p, seededRandom(`carte|${heroName}|${day}`));
+    setPrete(true);
+  }, [heroName, day, epitaph, bilan, relic, rang, acte]);
 
   /* ─── l'inclinaison, quantifiée ──────────────────────────────────────── */
   useEffect(() => {
@@ -587,7 +580,7 @@ export default function CarteDeMort(props: CarteDeMortProps) {
               </span>
             </div>
 
-            {/* la place de l'illustration : elle est peinte SOUS, dans la trame */}
+            {/* la place de la scène : elle est peinte SOUS, dans la trame */}
             <div className="h-[146px] shrink-0 grow-0 basis-[146px]" aria-hidden />
 
             <NomAjuste nom={c.nom} />
@@ -618,12 +611,6 @@ export default function CarteDeMort(props: CarteDeMortProps) {
               </div>
             </div>
 
-            <div className="mt-[9px] flex justify-between font-mono text-[8.5px] uppercase tracking-[1.4px]">
-              <span data-txt style={{ color: "rgba(255,255,255,.2)" }}>{c.pied[0]}</span>
-              <span data-txt className="text-right" style={{ color: "rgba(255,255,255,.2)" }}>
-                {c.pied[1]}
-              </span>
-            </div>
           </div>
 
           {/* LA BRILLANCE, par-dessus tout */}

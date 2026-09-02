@@ -83,7 +83,7 @@ const HINT_BAS = 200;
 
 /** La carte de mort ne colle pas au haut du cadre (retour Patrick 02/09).
     Sert AUSSI au calcul de réduction : les deux ne peuvent pas diverger. */
-const PAD_CARTE = 46;
+const PAD_CARTE = 74;
 
 /**
  * Le fragment du Geôlier : une chose de plus sur cet endroit, à chaque mort.
@@ -173,7 +173,6 @@ export default function DeathScreen({
   heroName,
   cause,
   firstDeath,
-  image,
   onRestart,
 }: {
   epitaph: string;
@@ -187,7 +186,6 @@ export default function DeathScreen({
   firstDeath?: boolean;
   /** L'illustration à l'écran au moment du jet fatal — le LIEU de la mort,
       porté par la carte (01/09). Sans elle, la carte sert un ciel tramé. */
-  image?: string;
   onRestart: () => void;
 }) {
   const [ecran, setEcran] = useState<Ecran>("fatal");
@@ -429,7 +427,6 @@ export default function DeathScreen({
               bilan={bilan}
               relic={relic}
               rang={rang}
-              image={image}
               acte={0}
             />
           </CarteReduite>
