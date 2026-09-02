@@ -92,13 +92,17 @@ function contenuCarte(p: CarteDeMortProps) {
   const prof = PROFONDEURS[Math.min(PROFONDEURS.length - 1, p.acte ?? 0)];
   return {
     prof,
-    rang: p.rang ? ordinal(p.rang) : "hors des Cent",
     acte: prof.acte,
     nom: p.heroName,
     epitaphe: p.epitaph,
     relique: p.relic.name,
     stats: [
       ["Jours tenus", String(p.bilan.jours)],
+      // Le Registre est une ligne de chiffres comme les autres (retour Patrick
+      // 02/09) — même label, même valeur blanche : c'est un résultat, pas un
+      // en-tête. Sa place, juste après les jours, est celle qui a du sens :
+      // c'est le nombre de jours qui décide du rang.
+      ["Registre", p.rang ? ordinal(p.rang) : "Hors des Cent"],
       ["Plus loin descendue", prof.zone || p.bilan.plusLoin],
       ["Lieux traversés", String(p.bilan.lieux)],
       ["Combats traversés", String(p.bilan.rencontres)],
@@ -188,6 +192,32 @@ function dessinerTexture(ctx: CanvasRenderingContext2D, p: CarteDeMortProps, rnd
     if (dedansForme(x, y, Math.max(1, RAY - e), e)) ctx.fillRect(x, y, 1, 1);
   }
 
+  const rInt = Math.max(1, RAY - e);
+  /* LE GRAIN DES BORDS — posé AVANT la scène (retour Patrick 02/09 : « je
+     veux que l'illu en haut soit par-dessus les bords noirs »). Il reste donc
+     visible partout où il n'y a pas d'image, et l'illustration le recouvre. — accentué le 02/09 (« il y a un dégradé noir sur les
+     bords, j'adore, accentue-le »). Il ne se voit vraiment que sur l'orange du
+     ciel : c'est du noir semé PAR DENSITÉ décroissante vers le centre, jamais
+     une ombre ni un dégradé. La puissance 2,6 garde la masse collée au bord ;
+     c'est elle qui fait la vignette, pas le nombre de points.
+     ⚠️ Deux garde-fous : elle démarre à `e + 1` (collée au trait, elle le
+     ferait lire en pointillé — la bordure ne fait qu'un pixel), et sa
+     PROFONDEUR est bornée à 14 px logiques. À 22 elle mangeait les potences,
+     c'est-à-dire le sujet même de l'image : une vignette qui efface la scène
+     n'est plus une vignette. */
+  ctx.fillStyle = "#000";
+  for (let i = 0; i < 2600; i++) {
+    const bord = Math.floor(rnd() * 4),
+      d = 1 + Math.pow(rnd(), 2.6) * 14;
+    let px: number, py: number;
+    if (bord === 0) { px = Math.floor(rnd() * LW); py = Math.round(e + d); }
+    else if (bord === 1) { px = Math.floor(rnd() * LW); py = Math.round(LH - 1 - e - d); }
+    else if (bord === 2) { px = Math.round(e + d); py = Math.floor(rnd() * LH); }
+    else { px = Math.round(LW - 1 - e - d); py = Math.floor(rnd() * LH); }
+    if (dedansForme(px, py, rInt, e)) ctx.fillRect(px, py, 1, 1);
+  }
+
+
   /* LA SCÈNE, DESSINÉE À LA MAIN DANS LA GRILLE — le portage verbatim du
      prototype (retour Patrick 02/09 : « reprends la même image qu'il y a dans
      le html, la trame est plus jolie »).
@@ -198,7 +228,6 @@ function dessinerTexture(ctx: CanvasRenderingContext2D, p: CarteDeMortProps, rnd
      cette grille garde son ciel en dégradé de densité et ses silhouettes nettes.
      Le seul aléa passe par `rnd()` (seedé par le héros et le jour) : la carte
      d'une mort donnée est toujours la même, elle ne scintille pas au re-rendu. */
-  const rInt = Math.max(1, RAY - e);
   const px1 = (x: number, y: number, col: string) => {
     if (!dedansForme(x, y, rInt, e)) return;
     ctx.fillStyle = col;
@@ -259,28 +288,6 @@ function dessinerTexture(ctx: CanvasRenderingContext2D, p: CarteDeMortProps, rnd
   for (let py = y1 - 16; py < y1 + 8; py++) {
     const t = (py - (y1 - 16)) / 24;
     for (let px = 0; px < LW; px++) if (rnd() < t * 0.95) px1(px, py, CHARBON);
-  }
-
-  /* LE GRAIN DES BORDS — accentué le 02/09 (« il y a un dégradé noir sur les
-     bords, j'adore, accentue-le »). Il ne se voit vraiment que sur l'orange du
-     ciel : c'est du noir semé PAR DENSITÉ décroissante vers le centre, jamais
-     une ombre ni un dégradé. La puissance 2,6 garde la masse collée au bord ;
-     c'est elle qui fait la vignette, pas le nombre de points.
-     ⚠️ Deux garde-fous : elle démarre à `e + 1` (collée au trait, elle le
-     ferait lire en pointillé — la bordure ne fait qu'un pixel), et sa
-     PROFONDEUR est bornée à 14 px logiques. À 22 elle mangeait les potences,
-     c'est-à-dire le sujet même de l'image : une vignette qui efface la scène
-     n'est plus une vignette. */
-  ctx.fillStyle = "#000";
-  for (let i = 0; i < 2600; i++) {
-    const bord = Math.floor(rnd() * 4),
-      d = 1 + Math.pow(rnd(), 2.6) * 14;
-    let px: number, py: number;
-    if (bord === 0) { px = Math.floor(rnd() * LW); py = Math.round(e + d); }
-    else if (bord === 1) { px = Math.floor(rnd() * LW); py = Math.round(LH - 1 - e - d); }
-    else if (bord === 2) { px = Math.round(e + d); py = Math.floor(rnd() * LH); }
-    else { px = Math.round(LW - 1 - e - d); py = Math.floor(rnd() * LH); }
-    if (dedansForme(px, py, rInt, e)) ctx.fillRect(px, py, 1, 1);
   }
 
   if (prof.coins) {
@@ -609,21 +616,14 @@ export default function CarteDeMort(props: CarteDeMortProps) {
               </div>
             </div>
 
-            <div className="mt-[9px] flex items-baseline justify-between">
-              <span
-                data-txt
-                className="font-mono text-[9.5px] font-medium uppercase tracking-[1.8px]"
-                style={{ color: "rgba(255,255,255,.5)" }}
-              >
-                Registre · <b className="font-medium text-[var(--color-accent)]">{c.rang}</b>
-              </span>
-              <span
-                data-txt
-                className="text-right font-mono text-[9.5px] font-medium uppercase tracking-[1.8px]"
-                style={{ color: "rgba(255,255,255,.5)" }}
-              >
-                {c.acte}
-              </span>
+            {/* le pied : la marque d'édition, rien d'autre. Le rang est passé
+                dans les chiffres ; l'acte se lit aussi à l'épaisseur du cadre. */}
+            <div
+              data-txt
+              className="mt-[9px] font-mono text-[8.5px] font-medium uppercase tracking-[1.4px]"
+              style={{ color: "rgba(255,255,255,.2)" }}
+            >
+              {c.acte}
             </div>
           </div>
 
@@ -639,25 +639,37 @@ export default function CarteDeMort(props: CarteDeMortProps) {
         </div>
       </div>
 
-      <p className="mt-[12px] min-h-[1.3em] px-[20px] text-center font-mono text-[12px] text-[var(--color-ink)] opacity-50">
+      <p className="mt-[12px] min-h-[1.3em] shrink-0 px-[20px] text-center font-mono text-[12px] text-[var(--color-ink)] opacity-50">
         {hint}
       </p>
 
+      {/* LE CTA — même grammaire que les boutons d'accueil (HomeCta), au pixel :
+          46 px de haut, 14 px espacés de 2,8, fond ET bordure orange posés en
+          calques inset-0, entailles de coin 2×2 charbon au ras du coin.
+          ⚠️ `shrink-0` obligatoire : c'est un item flex d'un conteneur à hauteur
+          imposée (CarteReduite), et sans lui il se comprime à 43 px — le bouton
+          ne fait alors plus la même taille que celui de l'accueil.
+          ⚠️ Jamais une bordure CSS sur le bouton lui-même : les entailles se
+          positionnent alors dans la boîte de padding et se décalent d'un pixel
+          (piège récurrent, cf. ChoiceButton). Aucun état hover/actif. */}
       <button
         type="button"
-        className="relative mt-[8px] h-[34px] w-[298px] bg-[var(--color-accent)] font-mono text-[12px] font-medium uppercase tracking-[2.4px] text-[var(--color-bg)]"
+        className="group relative mt-[10px] h-[46px] w-[300px] shrink-0 cursor-pointer border-none bg-transparent font-mono text-[14px] font-medium uppercase tracking-[2.8px] text-[var(--color-bg)]"
         data-partager
         onClick={(e) => {
           e.stopPropagation();
           void partager();
         }}
       >
-        {/* entailles de coin : la grammaire des CTA, jamais un arrondi CSS */}
-        <span className="absolute left-0 top-0 h-[6px] w-[2px] bg-[var(--color-bg)]" aria-hidden />
-        <span className="absolute right-0 top-0 h-[2px] w-[6px] bg-[var(--color-bg)]" aria-hidden />
-        <span className="absolute bottom-0 right-0 h-[6px] w-[2px] bg-[var(--color-bg)]" aria-hidden />
-        <span className="absolute bottom-0 left-0 h-[2px] w-[6px] bg-[var(--color-bg)]" aria-hidden />
-        Partager
+        <span
+          className="absolute inset-0 border border-solid border-[var(--color-accent)] bg-[var(--color-accent)]"
+          aria-hidden
+        />
+        <span className="pointer-events-none absolute left-0 top-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
+        <span className="pointer-events-none absolute bottom-0 left-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
+        <span className="pointer-events-none absolute right-0 top-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
+        <span className="pointer-events-none absolute bottom-0 right-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
+        <span className="relative">Partager</span>
       </button>
     </div>
   );

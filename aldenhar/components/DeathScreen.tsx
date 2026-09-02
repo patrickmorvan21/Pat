@@ -85,6 +85,18 @@ const HINT_BAS = 200;
     Sert AUSSI au calcul de réduction : les deux ne peuvent pas diverger. */
 const PAD_CARTE = 74;
 
+/** L'écran de la carte a son propre ancrage de « Touche pour continuer » : le
+    CTA Partager descend plus bas que les autres écrans, et à 200 px du bord le
+    lien lui collait. Mesuré : les braises ne montent pas au-dessus de ~100 px
+    du bas, donc 140 laisse ~55 px de marge au feu et ~95 px au CTA. */
+const HINT_BAS_CARTE = 140;
+
+/** Ce que la carte traîne SOUS elle : 12 de marge + ~16 de phrase d'aide + 10
+    de marge + 46 de CTA. Une seule constante, lue par le budget de réduction
+    ET par la hauteur réservée — deux chiffres séparés divergeraient, et le
+    bouton se ferait comprimer sans qu'on comprenne pourquoi. */
+const SOUS_CARTE = 12 + 16 + 10 + 46;
+
 /**
  * Le fragment du Geôlier : une chose de plus sur cet endroit, à chaque mort.
  * Arc GARANTI aux morts 1, 2, 3, puis 5, 8, 12, 17 — entre les jalons, la
@@ -430,7 +442,7 @@ export default function DeathScreen({
               acte={0}
             />
           </CarteReduite>
-          <TouchHint bottom={HINT_BAS} />
+          <TouchHint bottom={HINT_BAS_CARTE} />
         </div>
       )}
 
@@ -955,8 +967,8 @@ function CarteReduite({ children }: { children: React.ReactNode }) {
     const mesure = () => {
       const cadre = el.closest("[data-ecran]") as HTMLElement | null;
       const h = cadre?.clientHeight ?? window.innerHeight;
-      // PAD_CARTE en haut + carte + 12 hint + 34 CTA + marge, au-dessus de HINT_BAS
-      const dispo = h - HINT_BAS - PAD_CARTE - 24 - 34 - 8 - 12;
+      // PAD_CARTE en haut + la carte + SOUS_CARTE (hint et CTA) + une marge
+      const dispo = h - HINT_BAS_CARTE - PAD_CARTE - SOUS_CARTE - 8;
       setEchelle(Math.max(0.6, Math.min(1, dispo / 450)));
     };
     mesure();
@@ -972,7 +984,7 @@ function CarteReduite({ children }: { children: React.ReactNode }) {
         transformOrigin: "top center",
         // le conteneur garde la place RÉELLE occupée, pour ne pas laisser
         // un trou sous une carte réduite
-        height: Math.round((450 + 12 + 34 + 24) * echelle),
+        height: Math.round((450 + SOUS_CARTE) * echelle),
       }}
     >
       {children}
