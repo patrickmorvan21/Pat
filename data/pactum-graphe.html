@@ -295,6 +295,11 @@ const CAT = {
   arrivee:    { nom:"Arrivées",     c:"#e0632a", a:.62, r:4.6, ordre:1 },
   rencontre:  { nom:"Rencontres",   c:"#ffffff", a:1,   r:4.8, ordre:2 },
   scene:      { nom:"Scènes",       c:"#ffffff", a:.62, r:3.6, ordre:3 },
+  // Une ACTION est un écran INTERNE à une scène (les points d'intérêt
+  // devenus des choix le 13/08). Plus petite et plus discrète que la
+  // scène qui la porte : la NATURE se lit à la taille, jamais à une
+  // couleur inventée.
+  action:     { nom:"Actions",      c:"#ffffff", a:.45, r:2.9, ordre:3.5 },
   terminal:   { nom:"Sorties",      c:"#e0632a", a:1,   r:6.2, ordre:4 },
   marche:     { nom:"Vues de marche",c:"#ffffff",a:.3,  r:3.4, ordre:5 },
   transition: { nom:"Transitions",  c:"#ffffff", a:.22, r:2.6, ordre:6 },
@@ -362,7 +367,7 @@ try { panier = JSON.parse(localStorage.getItem(CLE_PANIER) || "{}"); } catch (e)
 // derniers ; chaque fiche porte son propre « où ».
 const NUAGE = { transition:"Les textes de marche — sans lieu fixe",
                 marche:"Les vues de marche", scene:"Hors traversée" };
-const on = { lieu:1, arrivee:1, rencontre:1, scene:1, terminal:1, marche:1, transition:1 };
+const on = { lieu:1, arrivee:1, rencontre:1, scene:1, action:1, terminal:1, marche:1, transition:1 };
 const opt = { noms:1, images:0, liensFaibles:1 };
 const F = { repulsion:1, longueur:1, gravite:1 };
 
@@ -425,6 +430,7 @@ function demarrer(g) {
     g.totaux.scenes + " scènes · " + g.totaux.transitions + " transitions";
   document.getElementById("pied").innerHTML =
     "<b>" + g.totaux.scenes + "</b> scènes &nbsp;·&nbsp; <b>" + g.totaux.lieux + "</b> lieux &nbsp;·&nbsp; <b>"
+    + (g.totaux.actions || 0) + "</b> actions &nbsp;·&nbsp; <b>"
     + g.totaux.transitions + "</b> transitions &nbsp;·&nbsp; <b>" + g.totaux.marches + "</b> vues de marche"
     + "<br>export du " + g.genere + (g.commit ? " · " + g.commit : "")
     + "<br>molette ou pincement pour zoomer &nbsp;·&nbsp; + &minus; 0 au clavier &nbsp;·&nbsp; double-clic pour recadrer";

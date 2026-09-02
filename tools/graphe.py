@@ -184,6 +184,42 @@ def construire() -> dict:
             ],
         })
 
+    # ---------------------------- LES ACTIONS -------------------------------
+    # Depuis le 13/08 les points d'intérêt sont devenus des CHOIX, et leur
+    # image a migré de `PointInteret.illustration` vers `Choice.illustration`.
+    # L'extracteur ne lisait que les scènes : ces écrans-là — le plan
+    # rapproché de la Borne, la corde de la Chapelle, le manteau du Chemin du
+    # Sud — avaient donc disparu du graphe SANS UN MOT, et rien ne permettait
+    # de les juger ni de leur demander une image.
+    # On ne prend que les actions qui PORTENT une image : les autres gardent
+    # volontairement l'image de leur lieu (une scène = une image), et les
+    # lister toutes tripleraient le nombre de nœuds pour rien.
+    for sid, s in scenes.items():
+        lid = lieu_de.get(sid) or deduit.get(sid) or (s.get("lieu") or "")
+        for c in s.get("choix", []):
+            fiche = c.get("image")
+            if not fiche:
+                continue
+            nid = f"act:{sid}:{c.get('id', '')}"
+            vus.add(nid)
+            n = {
+                "id": nid,
+                "nom": c.get("label") or c.get("id") or "",
+                "cat": "action",
+                "lieu": lid,
+                "region": region_de.get(lid, ""),
+                "image": {"f": fiche["fichier"], "h": fiche.get("hash") or "",
+                          "ok": bool(fiche.get("existe"))},
+                # Ce que le joueur LIT sur cet écran, mot pour mot.
+                "desc": [c.get("consequence")] if c.get("consequence") else [],
+                "descDemo": [c.get("consequenceDemo")] if c.get("consequenceDemo") else [],
+                "meta": ["action · " + (s.get("nom") or sid)],
+            }
+            if fiche.get("statut") == "heritee" and fiche.get("herite"):
+                n["meta"].append("image partagée avec " + fiche["herite"])
+            noeuds.append(n)
+            lien(sid, nid, "appartient")
+
     # --------------------------- LES TRANSITIONS ----------------------------
     # Elles n'existent nulle part comme scènes : une liaison est fabriquée à
     # l'exécution. Ce sont pourtant les écrans les plus VUS d'une vie.
@@ -323,6 +359,7 @@ def construire() -> dict:
             "transitions": (len(T.get("fond", [])) + len(T.get("fondLande", []))
                             + len(T.get("variantes", [])) + len(T.get("bifurcations", []))),
             "marches": len(d.get("ecransDeMarche", [])),
+            "actions": sum(1 for n in noeuds if n["cat"] == "action"),
             "liens": len(liens),
         },
     }
@@ -338,6 +375,7 @@ def main() -> int:
     SORTIE_HTML.write_text(gabarit.read_text(encoding="utf-8"), encoding="utf-8")
     t = g["totaux"]
     print(f"data/graphe-data.json   — {t['scenes']} scènes · {t['lieux']} lieux · "
+          f"{t['actions']} actions illustrées · "
           f"{t['transitions']} transitions · {t['marches']} vues de marche · {t['liens']} liens "
           f"({t['scenesRattachees']} scènes rattachées à leur lieu par déduction) "
           f"({SORTIE_JSON.stat().st_size // 1024} Ko)")

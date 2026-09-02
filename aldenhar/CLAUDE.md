@@ -1645,3 +1645,67 @@ Deux retours du 2/09.
 - Vérifié en jeu, **9/9** sur trois comptes : neuf (la carte accompagne l'objet) · déjà-vu (le symptôme de Patrick reproduit à l'identique) · après remise à zéro (la carte revient au premier objet suivant). Plus l'amorce raccourcie. Bancs précédents rejoués : 24/24, 18/18, 5/5, 11/11.
 - ⚠️ **Deux pièges de banc, tous deux du SETUP, tous deux déjà connus** : (1) pendant la frappe les boutons de choix EXISTENT mais leur barre est en `display:none` — les cliquer ne fait rien et le test croit que le jeu ne répond pas ; attendre que `.choices-bar` soit réellement affichée. (2) `innerText.includes("…")` sur le milieu d'une phrase tapée rend la main AVANT la fin : le tap suivant ne fait qu'accélérer la frappe. Attendre `.touch-hint`, qui ne paraît qu'une fois le beat entièrement écrit. Et la conséquence de « Faire le tour de la pierre » **pagine** : le bandeau « Obtenu » tombe sur un écran suivant, il faut taper comme un joueur pour l'atteindre.
 - `APP_VERSION` **1.127.2**, `CACHE_VERSION` **pactum-v199**.
+
+#### Le Graphe montre enfin les ACTIONS + l'Appelé du Drive (v1.127.3)
+Trois questions de Patrick d'un coup : mettre à jour les images du Drive, « il en
+manque aussi dans graphe.html — pour la borne dès qu'on arrive je suis censé voir
+une image de la borne de plus près, or je ne la vois pas », et « pourquoi ce n'est
+pas synchronisé avec GitHub ? ».
+- **⚠️ LA PAGE ÉTAIT PARFAITEMENT SYNCHRONISÉE — la synchro n'était pas le sujet.**
+  Vérifié plutôt que supposé : `git show origin/gh-pages:aldenhar/graphe-data.json`
+  contre une régénération locale donne **212 nœuds des deux côtés, 103 images des
+  deux côtés, longueur d'octets identique** ; seuls les champs `genere`/`commit` de
+  l'en-tête diffèrent. Le workflow fait son travail. **Ce qui manquait manquait
+  aussi en local** : c'est le générateur qui ne voyait pas ces écrans.
+- **LE VRAI DÉFAUT — 34 écrans n'existaient nulle part dans l'outillage.** Le 13/08
+  les points d'intérêt sont devenus des CHOIX, et leur image a migré de
+  `PointInteret.illustration` vers `Choice.illustration`. `graphe.py` ne lisait que
+  les scènes : le plan rapproché de la Borne, la corde de la Chapelle, le manteau du
+  Chemin du Sud, **les 34 actions illustrées** avaient donc disparu du graphe **sans
+  un mot**, et rien ne permettait de les juger ni de leur demander une image. La
+  Borne de plus près n'y apparaissait que par ricochet, via la scène de démo
+  `demo-borne-geste` qui partage son fichier. **Cinquième fois qu'un pool qu'aucun
+  extracteur ne lit disparaît en silence** (les transitions le 6/08, les 29
+  interactions le 15/08, `LIAISON_AMBIANCES_LANDE` le 31/08, la loi du Domaine le
+  10/08). Le réflexe tient toujours : **compter ce qu'un extracteur rend et le
+  comparer à la source.**
+- **Nouvelle catégorie `action`** : un nœud par choix qui PORTE une image, rattaché
+  à sa scène par un lien `appartient` (physique courte, il reste collé à elle), donc
+  rangé dans la bonne grappe et dans le cercle du Hameau quand c'est le cas. Il
+  porte son image, sa **conséquence mot pour mot** (ce que le joueur lit sur cet
+  écran) et dit d'où il vient (« action · La Borne Frontière »), plus « image
+  partagée avec X » quand le fichier sert ailleurs. Les deux raccourcis d'image et
+  « À refaire » y fonctionnent — vérifié en CLIQUANT, pas en lisant le rapport
+  (leçon du 31/08 : vérifier la sortie ne prouve pas que le chemin s'exécute).
+- **⚠️ Les 146 actions SANS image ne deviennent PAS des nœuds** : elles gardent
+  volontairement l'image de leur lieu (une scène = une image), et les lister
+  tripleraient le nombre de nœuds — 203 → 383 — pour détruire la lisibilité que le
+  correctif de disposition du 30/08 vient d'obtenir. Décision inscrite dans le code.
+- **La disposition tient** : 246 nœuds (contre 212), boîte 966×939, zoom 0,94, les
+  deux lieux les plus proches à 71 px, **0 intrus dans le cercle du Hameau**.
+- **Le lot Drive : UN seul fichier réellement nouveau.** Les quatre dossiers
+  `03_Validé` comparés par nom ET taille exacte contre `public/assets` — tout le
+  reste est déjà sur disque. `scene_falaise_appele_d_d.png` (72 079 o, déposé le
+  01/09 à 18h03, six minutes après le déploiement de la v1.121.0) est la réponse au
+  prompt refait le 01/09 : **regardé avant câblage** — l'Appelé n'est plus au bord
+  d'une falaise, la main levée sur une corde, et **les autres cordes descendent tout
+  autour de lui**, ce que le vide seul ne disait pas. Il est sur un tertre de
+  pierres plutôt qu'à plat strict : écart mineur, dit plutôt que maquillé.
+  Câblé sur **`falaise-cordes-3`, sa vraie scène** ; `la-descente` garde l'ancienne
+  (une silhouette au bord qui prend une corde, ce qu'elle décrit) — les deux beats
+  servaient le MÊME fichier depuis le 31/08, ils ont maintenant chacun le leur.
+  ⚠️ Fichier à 130 couleurs et non 2 : ~3 800 pixels d'anticrénelage sur un million,
+  invisible à l'affichage, mais c'est le premier du lot dans ce cas.
+- ⚠️ **Le transfert n'a rien coûté au contexte** : le fichier dépassait la limite de
+  tokens, donc le harnais l'a déchargé dans `tool-results/*.txt` — extrait
+  directement en Python depuis ce JSON, sans repasser par le `.jsonl` de session.
+  **C'est le meilleur chemin pour tout fichier volumineux.**
+- ⚠️ Pièges de banc : `window.prompt` non géré est **auto-refusé** par Playwright, donc
+  « À refaire » sortait sans rien écrire et paraissait cassé (`page.once("dialog")`) ;
+  et 3 actions n'ont légitimement pas de lieu (le Troupeau est une errante, le Chemin
+  du Sud est hors pool) — une assertion à 34/34 accusait le code à tort.
+- Vérifié : **Graphe 18/18** (34 actions, chacune avec son image réellement chargée
+  en 1000×1000, la légende, la fiche, les deux raccourcis, « À refaire » qui retient),
+  **jeu 4/4** (la Falaise sert le nouveau fichier), 0 erreur JS, 0 requête en échec.
+  Huit gardes verts, lint 0 erreur, typecheck et `build:pages` propres.
+- `APP_VERSION` 1.127.2 → **1.127.3**, `CACHE_VERSION` v199 → **pactum-v200**.

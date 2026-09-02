@@ -8150,7 +8150,7 @@ export const SCENES: Scene[] = [
        Descente (doctrine du script). */
     id: "falaise-cordes-3",
     sejour: true,
-    illustration: "assets/monstre_appele_descente_b_b.png",
+    illustration: "assets/scene_falaise_appele_d_d.png",
     narration: [
       "Au bout du surplomb, quelqu'un. Il ne regarde pas les cordes : il en prend une, sans choisir, comme on prend la rampe d'un escalier qu'on connaît. Il passe le bord. Il descend. Le vent rabat un pan de son manteau — puis plus rien. La corde tremble encore un moment, toute seule.",
     ],

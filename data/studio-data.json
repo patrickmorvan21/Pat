@@ -51,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-09-02T06:07:24Z",
- "commit": "7a8cbd6",
+ "genere": "2026-09-02T13:56:52Z",
+ "commit": "78364ed",
  "zones": [
   {
    "id": "landes",
@@ -1934,7 +1934,7 @@
     "fichier": "monstre_pendu_mal_fixe_v3_b.png",
     "hash": "7b4e1107",
     "taille": 22448,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -3885,7 +3885,7 @@
     "fichier": "scene_hameau_maison_sans_fumee_a_b.png",
     "hash": "0342d83e",
     "taille": 106344,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -3945,7 +3945,7 @@
     "fichier": "scene_hameau_maison_table_a_a.png",
     "hash": "42969ed5",
     "taille": 26457,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -3989,7 +3989,7 @@
     "fichier": "scene_hameau_maison_aube_a_c.png",
     "hash": "2a167f88",
     "taille": 13735,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -6826,7 +6826,7 @@
       "fichier": "scene_chemin_sud_manteau_a_d.png",
       "hash": "cba77ca1",
       "taille": 27290,
-      "recent": true,
+      "recent": false,
       "existe": true
      }
     },
@@ -6867,7 +6867,7 @@
     "fichier": "scene_chemin_du_sud_a_b.png",
     "hash": "e49d458f",
     "taille": 28773,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -6899,7 +6899,7 @@
       "fichier": "scene_chemin_sud_manteau_a_d.png",
       "hash": "cba77ca1",
       "taille": 27290,
-      "recent": true,
+      "recent": false,
       "existe": true
      }
     },
@@ -6948,7 +6948,7 @@
     "fichier": "scene_chemin_du_sud_a_b.png",
     "hash": "e49d458f",
     "taille": 28773,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "heritee",
     "herite": "chemin-du-sud"
@@ -7846,9 +7846,9 @@
    "pointsInteret": [],
    "sejour": true,
    "image": {
-    "fichier": "monstre_appele_descente_b_b.png",
-    "hash": "f91221f1",
-    "taille": 10532,
+    "fichier": "scene_falaise_appele_d_d.png",
+    "hash": "2f189ac1",
+    "taille": 72079,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -7981,7 +7981,7 @@
    "fichier": "scene_lande_generique_3_b_f_a.png",
    "hash": "8c31ff3d",
    "taille": 22674,
-   "recent": true,
+   "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -8003,7 +8003,7 @@
    "fichier": "scene_landes_liaison_fourche_b_e_a.png",
    "hash": "e97725f3",
    "taille": 29134,
-   "recent": true,
+   "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -8014,7 +8014,7 @@
    "fichier": "scene_landes_liaison_plateau_e_b_a.png",
    "hash": "6dc92a0e",
    "taille": 20931,
-   "recent": true,
+   "recent": false,
    "existe": true,
    "statut": "fallback",
    "herite": "",
@@ -8396,6 +8396,22 @@
    "recent": false,
    "groupe": "autre",
    "racine": "fleche_retour"
+  },
+  {
+   "fichier": "intro_de.png",
+   "hash": "e099726d",
+   "taille": 144377,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "intro_de"
+  },
+  {
+   "fichier": "intro_epee.png",
+   "hash": "3852fffe",
+   "taille": 136560,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "intro_epee"
   },
   {
    "fichier": "monstre_appele_descente.png",
@@ -9225,7 +9241,7 @@
    "fichier": "sceau_landes_1.png",
    "hash": "b435d124",
    "taille": 13805,
-   "recent": false,
+   "recent": true,
    "groupe": "autre",
    "racine": "sceau_landes_1"
   },
@@ -9233,7 +9249,7 @@
    "fichier": "sceau_landes_2.png",
    "hash": "67c5d495",
    "taille": 18845,
-   "recent": false,
+   "recent": true,
    "groupe": "autre",
    "racine": "sceau_landes_2"
   },
@@ -9241,7 +9257,7 @@
    "fichier": "sceau_landes_3.png",
    "hash": "fef90234",
    "taille": 19868,
-   "recent": false,
+   "recent": true,
    "groupe": "autre",
    "racine": "sceau_landes_3"
   },
@@ -11405,10 +11421,10 @@
   "scenes": 107,
   "pointsInteret": 0,
   "choix": 314,
-  "illustrations": 436,
+  "illustrations": 437,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 214,
+  "reserve": 216,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
