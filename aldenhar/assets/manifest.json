@@ -1,6 +1,6 @@
 {
- "genere": "2026-09-02T06:15:36Z",
- "commit": "7a8cbd6",
+ "genere": "2026-09-02T07:16:51Z",
+ "commit": "cae1c65",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -297,17 +297,17 @@
    "recent": false,
    "ajoute": "2026-08-25T21:12:49+00:00"
   },
-  "minijeu_chapelle_pierre.png": {
-   "taille": 19348,
-   "modifie": "2026-09-01T18:57:23Z",
-   "hash": "3ebb741a",
+  "minijeu_chapelle_pierre_b.png": {
+   "taille": 30246,
+   "modifie": "2026-09-02T07:00:51Z",
+   "hash": "9ab94454",
    "recent": false,
    "ajoute": ""
   },
-  "minijeu_corde_tile.png": {
-   "taille": 2996,
-   "modifie": "2026-09-01T18:56:33Z",
-   "hash": "7996ac64",
+  "minijeu_corde_tile_b.png": {
+   "taille": 5626,
+   "modifie": "2026-09-02T07:01:34Z",
+   "hash": "35db0dab",
    "recent": false,
    "ajoute": ""
   },
@@ -945,7 +945,7 @@
    "taille": 22448,
    "modifie": "2026-08-31T21:05:21Z",
    "hash": "7b4e1107",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-08-31T21:20:48+00:00"
   },
   "monstre_pendu_qui_parle_2_a.png": {
@@ -1673,22 +1673,22 @@
    "taille": 13805,
    "modifie": "2026-09-01T19:03:33Z",
    "hash": "b435d124",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-02T06:16:56+00:00"
   },
   "sceau_landes_2.png": {
    "taille": 18845,
    "modifie": "2026-09-01T19:03:33Z",
    "hash": "67c5d495",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-02T06:16:56+00:00"
   },
   "sceau_landes_3.png": {
    "taille": 19868,
    "modifie": "2026-09-01T19:03:33Z",
    "hash": "fef90234",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-02T06:16:56+00:00"
   },
   "scene_borne_eclat_a_b.png": {
    "taille": 11742,
@@ -2380,7 +2380,7 @@
    "taille": 22674,
    "modifie": "2026-08-31T21:08:21Z",
    "hash": "8c31ff3d",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-08-31T21:20:48+00:00"
   },
   "scene_lande_generique_4.png": {
@@ -2492,7 +2492,7 @@
    "taille": 29134,
    "modifie": "2026-08-31T21:08:21Z",
    "hash": "e97725f3",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-08-31T21:20:48+00:00"
   },
   "scene_landes_liaison_plateau_d.png": {
@@ -2513,7 +2513,7 @@
    "taille": 20931,
    "modifie": "2026-08-31T21:08:21Z",
    "hash": "6dc92a0e",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-08-31T21:20:48+00:00"
   },
   "scene_landes_liaison_sud_c.png": {
