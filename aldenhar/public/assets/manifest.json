@@ -1,6 +1,6 @@
 {
- "genere": "2026-09-02T17:34:10Z",
- "commit": "34e68fe",
+ "genere": "2026-09-02T17:59:07Z",
+ "commit": "437e4c7",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -301,14 +301,14 @@
    "taille": 30246,
    "modifie": "2026-09-02T07:00:51Z",
    "hash": "9ab94454",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-02T07:17:21+00:00"
   },
   "minijeu_corde_tile_b.png": {
    "taille": 5626,
    "modifie": "2026-09-02T07:01:34Z",
    "hash": "35db0dab",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-02T07:17:21+00:00"
   },
   "minijeu_serrure_fond.png": {

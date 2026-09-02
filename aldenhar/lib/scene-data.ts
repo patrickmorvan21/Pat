@@ -1246,7 +1246,7 @@ export const SCENES: Scene[] = [
         grantsLoot: "pierre-retour",
         passive: {
           consequence:
-            "Des marques sur toutes les faces : des noms, des dates. Le côté nord est saturé — les adieux de ceux qui partaient. Le côté sud : trois marques. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?\n\nAu ras du sol, un éclat descellé, à demi enterré.",
+            "Des noms, des dates. Au nord, les adieux de ceux qui partaient. Au sud : trois marques. On ne grave pas au retour quand personne ne revient. Alors qui a gravé côté sud ?\n\nDessous, un éclat descellé.",
         },
       },
       {
@@ -1325,10 +1325,7 @@ export const SCENES: Scene[] = [
         locked: { stat: "INSTINCT", min: 4 },
         passive: {
           consequence:
-            "Tu te places dans son axe exact, et tu comprends qu'il ne " +
-            "regarde pas le sud : il regarde un point, à trois cents pas, où " +
-            "l'herbe est couchée en rond. Quelqu'un s'est tenu là avant lui. " +
-            "Longtemps. Il attend son tour à un endroit qui a déjà servi.",
+            "Dans son axe exact : il ne regarde pas le sud. Il regarde un point où l'herbe est couchée en rond. Quelqu'un s'est tenu là avant lui. Il attend son tour à un endroit qui a déjà servi.",
         },
       },
       {
@@ -1340,7 +1337,7 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu le dis avec l'ennui exact de quelqu'un qui ne comprend pas la question. Il te croit — et quelque chose se relâche dans ses épaules, une espérance idiote : si un autre n'entend rien, alors ça se peut. Tu viens de lui donner trois semaines de plus. En mentant.",
+            "20 naturel. Tu le dis avec l'ennui de qui ne comprend pas la question. Il te croit : si un autre n'entend rien, ça se peut. Tu viens de lui donner trois semaines. En mentant.",
             "Tu hausses les épaules. Il te regarde de biais, longtemps, puis renonce à trancher. « Tant mieux pour toi », dit-il, et ça sonne presque sincère.",
             "Tu le dis trop vite, ou trop fort. Il rit — doucement, terriblement. « Tous ceux qui descendent disent ça. C'est même à ça qu'on vous reconnaît. »",
             "1 naturel. « Je n'entends rien », dis-tu. Et au même instant, dans le creux de ton crâne, quelque chose répond quelque chose. Ton visage le raconte à ta place. ♦ −2"
@@ -1377,7 +1374,7 @@ export const SCENES: Scene[] = [
           stat: "EMPATHIE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu ne lui prends pas le bras — tu te mets simplement à marcher vers le nord, à son rythme, comme si c'était déjà décidé. Il suit. Les cent premiers pas, il marche à reculons, le sud toujours en face. Puis il pivote, et c'est fini : il rentre. Ce que tu viens de sauver tiendra trois semaines ou trente ans. Ici, ça s'appelle une victoire.",
+            "20 naturel. Tu ne lui prends pas le bras : tu marches vers le nord, à son rythme. Il suit — à reculons d'abord, le sud en face. Puis il pivote. Il rentre. Ici, ça s'appelle une victoire.",
             "Il te suit, à contrecœur, en s'arrêtant deux fois. Au deuxième arrêt il ne dit rien et repart quand même. C'est peut-être le maximum qu'on puisse obtenir d'un homme dans cet état.",
             "Il ne bouge pas. Il s'assied au pied de la borne, dos à la pierre, face au sud — et c'est pire que tout, parce que maintenant il est confortable.",
             "1 naturel. Tu lui parles de sa femme. Il tourne enfin la tête vers toi, et son visage est celui de quelqu'un qui vient de comprendre qu'il ne se souvient plus de son nom à elle. ♦ −2"
@@ -1449,11 +1446,7 @@ export const SCENES: Scene[] = [
         grantsLoot: "grelot-charretier",
         passive: {
           consequence:
-            "Elle penche dans l'ornière depuis si longtemps que le bois a pris " +
-            "racine — des pousses sortent du moyeu. Le chargement a disparu. Le " +
-            "cheval aussi : le harnais pend, coupé net, pas dénoué. Sous le " +
-            "siège, accroché à un clou, un grelot de cuivre vert-de-grisé. Il " +
-            "ne sonne pas quand tu le décroches. Il sonnera quand il faudra.",
+            "Elle penche dans l'ornière depuis si longtemps que le bois a pris racine. Le harnais pend, coupé net. Sous le siège, un grelot de cuivre verdi. Il ne sonne pas. Il sonnera quand il faudra.",
         },
       },
       {
@@ -1508,7 +1501,7 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu presses le pas aux bons moments et tu t'arrêtes aux autres — sans savoir pourquoi, exactement quand il faut. Derrière toi, au-dessus, quelque chose s'arrête aussi, et repart trop tard. Le creux est traversé. Tu as pris un pas d'avance sur ce qui compte les pas.",
+            "20 naturel. Tu presses le pas aux bons moments, tu t'arrêtes aux autres — sans savoir pourquoi. Derrière, quelque chose s'arrête aussi, et repart trop tard. Tu as un pas d'avance sur ce qui compte les pas.",
             "Tu passes le coude d'une traite, l'épaule au talus nord. Rien ne tombe, rien ne sort. Le chemin se rouvre sur la lande et tu ressors du couloir de terre entier.",
             "Tu passes trop lentement. Rien n'attaque — mais quelque chose t'accompagne sur la crête jusqu'au bout du creux, à ta hauteur, réglant son pas sur le tien, et ne s'arrête que là où le talus s'abaisse.",
             "1 naturel. Au milieu du coude, tu comprends que le silence n'était pas vide : il était retenu. Quelque chose, tout près, avait cessé de respirer pour t'écouter passer. ♦ −2"
@@ -1540,11 +1533,7 @@ export const SCENES: Scene[] = [
         requiresSavoir: "savoir_bete_crete_nord",
         passive: {
           consequence:
-            "Tu passes le coude épaule contre le talus SUD, du côté vierge " +
-            "d'empreintes, et tu marches sans accélérer. Au-dessus, à droite, " +
-            "sur la crête nord, quelque chose t'accompagne un moment — puis " +
-            "s'arrête, parce que le versant s'interrompt et qu'elle ne " +
-            "traverse pas. Tu ressors du creux entier, et sans avoir couru.",
+            "Tu passes le coude contre le talus SUD, côté vierge d'empreintes, sans accélérer. Sur la crête nord, quelque chose t'accompagne — puis s'arrête : elle ne traverse pas. Tu ressors entier, sans avoir couru.",
         },
       },
     ],
@@ -1611,7 +1600,7 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu pivotes et tu marches. Deux paires de talons dans le silence du creux, réglées l'une sur l'autre. Il commente à voix basse chaque chose que tu ne peux pas voir — l'ornière, la racine, l'endroit où le talus s'abaisse. Tu ressortiras d'ici en sachant lire un chemin creux. Ça ne s'oublie pas.",
+            "20 naturel. Tu pivotes et tu marches. Deux paires de talons réglées l'une sur l'autre. Il commente ce que tu ne peux pas voir — l'ornière, la racine. Tu ressortiras en sachant lire un chemin creux.",
             "Tu recules avec lui. C'est atroce les vingt premiers pas, puis le corps comprend. Ses indications s'impriment : la crête nord, les vieilles empreintes, le coude. Tu sauras.",
             "Tu trébuches dans l'ornière au cinquième pas et tu t'étales. Son rire sec est le premier rire des Landes — et il ne s'arrête pas pour t'aider. Il ne s'arrête pas, c'est tout.",
             "1 naturel. Tu recules, les yeux au nord — et pendant une seconde entière, tu vois exactement ce qu'il regarde depuis trente ans. Tu comprends pourquoi il ne se retourne pas. ♦ −2"
@@ -1626,11 +1615,7 @@ export const SCENES: Scene[] = [
         locked: { stat: "RUSE", min: 4 },
         passive: {
           consequence:
-            "Tu ne discutes pas sa règle : tu la mesures. Il fait onze pas, " +
-            "s'arrête une demi-seconde, repart. Toujours onze. Le coude est " +
-            "à quatre-vingt-huit pas — huit fois onze. Ce n'est pas la marche " +
-            "à reculons qui protège : c'est de ne jamais poser le pied au " +
-            "douzième. Tu ne lui dis pas que tu as compris.",
+            "Tu ne discutes pas sa règle : tu la mesures. Onze pas, un arrêt, onze pas. Le coude est à quatre-vingt-huit — huit fois onze. Ce n'est pas reculer qui protège : c'est ne jamais poser le douzième.",
         },
       },
       {
@@ -1763,9 +1748,9 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu montes à reculons, sans quitter la masse des yeux, et tu t'arrêtes exactement où l'ombre s'arrête. Elle vient jusque-là. Elle s'arrête aussi. Vous restez face à face de part et d'autre d'une ligne que tu es le seul des deux à avoir choisie — puis elle se retourne, et c'est elle qui s'en va.",
-            "Tu prends le talus de biais, sans te presser, parce que courir n'a jamais servi. Les griffures sur la paroi s'arrêtent toutes à la même hauteur — tu montes jusque-là, et un peu plus haut. La Bête t'accompagne le long du creux, à hauteur, puis freine d'elle-même sur cette ligne-là. Tu passes au-dessus d'elle.",
-            "La terre part sous ton talon et tu redescends d'un pas — d'un seul, parce que tu savais où était la ligne et que tu t'y es rattrapé. Elle arrive au bas du talus, s'arrête net, souffle une fois. Tu as perdu ta montée. Pas ton bras.",
+            "20 naturel. Tu montes à reculons et tu t'arrêtes où l'ombre s'arrête. Elle vient jusque-là. Elle s'arrête aussi. Face à face, sur une ligne que toi seul as choisie — puis elle se retourne. C'est elle qui s'en va.",
+            "Tu prends le talus de biais, sans te presser. Les griffures sur la paroi s'arrêtent toutes à la même hauteur — tu montes un peu plus haut. Elle t'accompagne, puis freine sur cette ligne. Tu passes au-dessus d'elle.",
+            "La terre part sous ton talon et tu redescends d'un pas — un seul : tu savais où était la ligne. Elle arrive au bas du talus, souffle une fois. Tu as perdu ta montée. Pas ton bras.",
             "1 naturel. Tu recules trop tôt, avant qu'elle ne soit engagée — et elle ne s'engage pas. Elle attend, dans son couloir, que la nuit t'y ramène. ♦ −2"
           ),
         },
@@ -1820,11 +1805,7 @@ export const SCENES: Scene[] = [
         */
         passive: {
           consequence:
-            "Tu te coules dans l'ornière, face contre terre. La masse passe " +
-            "au-dessus de toi — un pont de cuir et de suint, interminable. " +
-            "Elle cherche ce qui court, pas ce qui gît : la lande est pleine " +
-            "de gisants, elle a l'habitude. Quand le silence revient, tu " +
-            "recraches de la terre et tu marches.",
+            "Tu te coules dans l'ornière, face contre terre. La masse passe au-dessus — un pont de cuir et de suint, interminable. Elle cherche ce qui court, pas ce qui gît. Quand le silence revient, tu marches.",
         },
       },
     ],
@@ -1872,11 +1853,7 @@ export const SCENES: Scene[] = [
         decouverte: "d.nom_gratte",
         passive: {
           consequence:
-            "Au pied du mât, dans le bois, un nom a été gravé profond, à la " +
-            "gouge, par quelqu\u2019un qui prenait son temps. Il est illisible — " +
-            "pas effacé par la pluie : GRATTÉ, en travers, par quelque chose " +
-            "qui a mordu le bois plus fort que l\u2019outil. Dessous, une date " +
-            "est restée entière. Elle est vieille de trente ans.",
+            "Au pied du mât, un nom gravé profond, par quelqu'un qui prenait son temps. Illisible — pas effacé : GRATTÉ, par quelque chose qui a mordu le bois plus fort que l'outil. Dessous, une date. Trente ans.",
         },
       },
       {
@@ -1930,12 +1907,7 @@ export const SCENES: Scene[] = [
         requiresObjet: "lunette-guet",
         passive: {
           consequence:
-            "Tu cales le cuivre contre l'ar\u00eate du m\u00e2t et tu balaies le nord. " +
-            "La Tour de Guet saute dans le verre d'un coup, tr\u00e8s nette, \u00e0 " +
-            "hauteur d'\u0153il : sa meurtri\u00e8re du sud te regarde en plein. Ce " +
-            "n'est pas une co\u00efncidence de terrain \u2014 quelqu'un a choisi les " +
-            "deux emplacements le m\u00eame jour, avec la m\u00eame corde \u00e0 mesurer. " +
-            "Le grand gibet et la tour ont \u00e9t\u00e9 plant\u00e9s l'un pour l'autre.",
+            "Tu cales le cuivre contre le mât. La Tour de Guet saute dans le verre : sa meurtrière du sud te regarde en plein. Les deux ont été plantés avec la même corde à mesurer. L'un pour l'autre.",
         },
       },
       {
@@ -1955,10 +1927,10 @@ export const SCENES: Scene[] = [
           stat: "COURAGE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu montes par les entretoises, sans te presser, et tu t'assois sur la traverse du Grand Gibet comme sur une branche. De là, tout tient dans un seul regard : le hameau, la crête, la ligne pâle de la Descente au sud. Et une chose que personne au sol ne peut voir — les potences ne sont pas plantées au hasard. Elles dessinent une flèche, et la flèche montre le Moulin.",
+            "20 naturel. Tu montes jusqu'à la traverse. Tout tient dans un regard : le hameau, la crête, le sud. Et une chose qu'on ne voit pas du sol — les potences dessinent une flèche. La flèche montre le Moulin.",
             "Le bois est vieux mais franc. Tu montes assez haut pour voir par-dessus la crête : le hameau est plus près que tu ne croyais, et la Descente plus loin. Tu redescends avec la carte dans la tête, les paumes brûlées de résine noire.",
             "À mi-hauteur, l'entretoise cède sans un bruit — le bois était mangé de l'intérieur. Tu tombes de la hauteur d'un homme et demi, sur la caillasse. Rien de cassé. Rien d'entier non plus.",
-            "1 naturel. Tu montes. Le montant tient parfaitement — c'est la traverse qui pivote, comme elle a été faite pour le faire. Tu te retrouves suspendu par les bras au-dessus du vide, et pendant une seconde très longue, le Grand Gibet fait exactement ce pour quoi on l'a bâti. ♦ −2"
+            "1 naturel. Le montant tient — c'est la traverse qui pivote, comme elle a été faite pour ça. Suspendu au-dessus du vide, une seconde très longue, le Grand Gibet fait ce pour quoi on l'a bâti. ♦ −2"
           ),
         },
       },
@@ -2013,10 +1985,7 @@ export const SCENES: Scene[] = [
         label: "Détailler le sceau à son poing",
         passive: {
           consequence:
-            "Le sceau est serré dans sa main comme une charge qu'on n'a pas " +
-            "rendue. Le motif t'arrête : tu l'as déjà vu. Partout, en fait — " +
-            "gravé discret dans la pierre de la borne, le bois des poteaux, " +
-            "le fer du puits. Les Landes entières sont timbrées à sa marque.",
+            "Le sceau est serré dans sa main comme une charge qu'on n'a pas rendue. Le motif t'arrête : tu l'as déjà vu — sur la borne, les poteaux, le fer du puits. Les Landes entières sont timbrées à sa marque.",
         },
       },
       {
@@ -2140,12 +2109,7 @@ export const SCENES: Scene[] = [
         decouverte: "d.bailli_condamne",
         passive: {
           consequence:
-            "La corde s'immobilise. Pour la première fois depuis que tu es " +
-            "là, il ne joue plus au juge. « J'ai signé trois cents noms. » " +
-            "Un temps très long, à hauteur de gibet. « Le trois cent " +
-            "unième était le sien. C'est celui-là qui m'a paru injuste. » " +
-            "Puis, plus bas, comme un point de procédure : « Alors j'ai " +
-            "inscrit le mien en dessous. »",
+            "La corde s'immobilise. Il ne joue plus au juge. « J'ai signé trois cents noms. Le trois cent unième était le sien. C'est celui-là qui m'a paru injuste. » Plus bas : « Alors j'ai inscrit le mien en dessous. »",
         },
       },
     ],
@@ -2181,12 +2145,7 @@ export const SCENES: Scene[] = [
         chapterFragment: true,
         passive: {
           consequence:
-            "Le sol entre deux rangs est tassé par des allées et venues " +
-            "régulières — on entretient ce champ comme un jardin, et c'est ça " +
-            "qui serre le ventre. Les noms des premières rangées sont presque " +
-            "effacés, les dernières sont fraîches. Entre les deux, une rangée " +
-            "entière porte la même date : un seul jour, neuf fixations. Il y a " +
-            "une histoire là-dedans que personne ne raconte.",
+            "Le sol entre les rangs est tassé : on entretient ce champ comme un jardin, et c'est ça qui serre le ventre. Une rangée entière porte la même date : un seul jour, neuf fixations.",
         },
       },
       {
@@ -2198,13 +2157,7 @@ export const SCENES: Scene[] = [
         grantsSavoir: "savoir_poteau_a_mon_nom",
         passive: {
           consequence:
-            "Il faut traverser tout le champ pour les atteindre. Tu comptes les " +
-            "poteaux vides en marchant — puis tu t'arrêtes de compter, parce " +
-            "que le compte monte plus vite que tes pas. Trois portent déjà des " +
-            "noms, sans date : le Fossoyeur grave d'avance « ceux dont c'est " +
-            "sûr ». Le troisième est récent, l'entaille claire, le bois pas " +
-            "encore grisé. Tu le lis, et tu le relis, et il ne change pas : " +
-            "c'est le tien.",
+            "Tu comptes les poteaux vides, puis tu arrêtes : le compte monte plus vite que tes pas. Trois portent déjà un nom, sans date — « ceux dont c'est sûr ». Le troisième est frais. Tu le relis. C'est le tien.",
         },
       },
       {
@@ -2217,14 +2170,7 @@ export const SCENES: Scene[] = [
         decouverte: "d.emplacement_vide",
         passive: {
           consequence:
-            "Tu l'avais repéré de loin sans savoir quoi : un défaut " +
-            "d'alignement, un rythme cassé. Il manque un poteau au milieu " +
-            "d'une rangée pleine, comme une dent tombée. La terre y est " +
-            "ancienne, tassée. On l'a retiré — pas arraché : descellé " +
-            "proprement, puis rebouché. Quelqu'un a voulu que ce nom-là cesse " +
-            "d'exister sans que le champ s'en aperçoive. Au fond de la fosse " +
-            "comblée, à moitié enfoui, un moignon de craie grasse — celle qui " +
-            "sert à marquer les portes.",
+            "Il manque un poteau au milieu d'une rangée pleine. Pas arraché : descellé proprement, rebouché. Quelqu'un a voulu que ce nom cesse d'exister sans que le champ s'en aperçoive. Dans la terre, un moignon de craie grasse.",
         },
       },
     ],
@@ -2311,7 +2257,7 @@ export const SCENES: Scene[] = [
           stat: "EMPATHIE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu ne lui demandes pas de se souvenir : tu lui demandes qui était là ce matin-là. Il répond sans réfléchir — « tout le monde » — puis s\u2019entend le dire, et pose son couteau. Le hameau entier a retiré ce poteau. Il n\u2019était que la paire de bras.",
+            "20 naturel. Tu ne lui demandes pas de se souvenir : tu lui demandes qui était là ce matin-là. « Tout le monde » — puis il s'entend, et pose son couteau. Le hameau entier a retiré ce poteau.",
             "Il ferme les yeux, sincèrement. Il essaie. « Y avait du gel. J\u2019avais les mains qui collaient au bois. » Puis plus rien, et sa voix se creuse : « Après ça, c\u2019est comme une page arrachée. Et pourtant j\u2019ai tout le reste. »",
             "« J\u2019ai essayé. » Il reprend son couteau. « Pendant des années. On arrête, à un moment. » Le copeau qui tombe est plus épais que les autres.",
             "1 naturel. Il te regarde longuement. « Toi aussi tu vas me demander de compter les corbeaux sur MA maison ? » Il ramasse ses outils et s\u2019en va au bout de la rangée. ♦ −2"
@@ -2405,12 +2351,7 @@ export const SCENES: Scene[] = [
         requiresObjet: "jouet-fixee",
         passive: {
           consequence:
-            "Tu sors la poup\u00e9e de chiffon et tu la poses sur le rebord de " +
-            "sa brouette. Le Fossoyeur arr\u00eate sa b\u00eache. Il ne la prend pas \u2014 " +
-            "il la regarde longtemps, comme on regarde une addition qui ne " +
-            "tombe pas juste. \u00ab Celle-l\u00e0, j'ai jamais eu de poteau \u00e0 tailler " +
-            "pour elle. \u00bb Il se remet au travail plus vite qu'avant. " +
-            "\u00ab Faudrait pas croire que j'oublie. \u00bb",
+            "Tu poses la poupée sur sa brouette. Le Fossoyeur arrête sa bêche. Il ne la prend pas — il la regarde comme une addition qui ne tombe pas juste. « Celle-là, j'ai jamais eu de poteau à tailler pour elle. »",
         },
       },
       {
@@ -2424,7 +2365,7 @@ export const SCENES: Scene[] = [
           stat: "EMPATHIE",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. À deux, le poteau se dresse droit. Le Fossoyeur te toise, longuement : « T'es le premier qui aide sans qu'on le fixe. » Il te glisse une page arrachée de son carnet — un plan des rangs, et une croix là où il ne faut jamais passer.",
+            "20 naturel. À deux, le poteau se dresse droit. « T'es le premier qui aide sans qu'on le fixe. » Il te glisse une page de son carnet — un plan des rangs, et une croix là où il ne faut jamais passer.",
             "Le poteau retrouve son aplomb. Le pendu là-haut soupire — de confort, dirait-on. « Ils dorment mal quand ça penche », dit le Fossoyeur. Il te fait signe de passer par son rang : le sien est sûr.",
             "Le poteau t'échappe et le pendu chasse au bout de sa corde, dans un grand désordre de chanvre. Tout le rang se met à osciller de proche en proche. Le Fossoyeur te chasse à gestes secs : tu as réveillé le dortoir.",
             "1 naturel. Le poteau tombe. Le pendu, lui, reste debout. ♦ −2"
@@ -2454,10 +2395,7 @@ export const SCENES: Scene[] = [
         requiresEtat: "fixe",
         passive: {
           consequence:
-            "Le Fossoyeur ne te parle pas comme aux autres. Il parle comme " +
-            "on parle à quelqu'un qui a déjà son poteau quelque part. " +
-            "« Le troisième rang, on le plante jamais. C'est pas de la " +
-            "place perdue : c'est de la place gardée. » Il ne dit pas pour qui.",
+            "Le Fossoyeur te parle comme à quelqu'un qui a déjà son poteau quelque part. « Le troisième rang, on le plante jamais. C'est pas de la place perdue : c'est de la place gardée. » Il ne dit pas pour qui.",
         },
       },
       {
@@ -2471,10 +2409,7 @@ export const SCENES: Scene[] = [
         decouverte: "d.temoin_entendu",
         passive: {
           consequence:
-            "Un homme au bout du rang redresse la tête. Il porte la même " +
-            "croix de craie que toi. « Tu l'as vu ? » Il ne baisse même pas " +
-            "la voix — on ne se cache plus, quand on est déjà compté. « Il " +
-            "vient pas pour nous. Il vient pour eux. Pour qu'ils osent. »",
+            "Un homme au bout du rang redresse la tête. La même croix de craie que toi. « Tu l'as vu ? » On ne se cache plus, quand on est compté. « Il vient pas pour nous. Il vient pour eux. Pour qu'ils osent. »",
         },
       },
       {
@@ -2556,9 +2491,9 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu récites la liste des signes, dans l'ordre, avec les mots du Bailli. Au troisième, il s'arrête. Au cinquième, il recule d'un pas vers le poteau cassé. À la fin, il se tient droit à l'endroit exact où il a passé des années — attendant qu'on l'attache, parce que c'est ce que la phrase dit qu'il faut faire.",
+            "20 naturel. Tu récites la liste des signes, avec les mots du Bailli. Au troisième, il s'arrête. Au cinquième, il recule vers le poteau cassé. À la fin, il se tient droit, attendant qu'on l'attache — parce que la phrase le dit.",
             "Tu dis les quatre signes à voix haute, dans l'ordre où ils étaient cloués. Ce n'est pas toi qu'il entend : c'est la formule, et la formule a autorité sur lui. Il te contourne sans te toucher, retourne à son rang, et se remet à attendre.",
-            "Tu écorches un mot au milieu. La liste se casse, et lui avec : il s'élance sans plus obéir à rien — et sa corde le reprend en pleine course, à deux pas de toi. Elle tient. C'est pour ça que tu es resté du côté du poteau.",
+            "Tu écorches un mot. La liste se casse, et lui avec : il s'élance — et sa corde le reprend en pleine course, à deux pas de toi. Elle tient. C'est pour ça que tu es resté du côté du poteau.",
             "1 naturel. Tu récites bien. Trop bien. Il t'écoute jusqu'au bout, penche ce qui lui reste de tête — et se demande visiblement si la liste te désigne, toi. ♦ −2"
           ),
         },
@@ -2618,7 +2553,7 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu te couches dans la bruyère et tu attends. Un quart d'heure, et le hameau se trahit : des silhouettes postées aux fenêtres, une par maison habitée, immobiles. Ils guettent la crête. Tu les as vus avant qu'ils te voient — et ça, ça vaut plus qu'une arme ici.",
+            "20 naturel. Tu te couches dans la bruyère et tu attends. Le hameau se trahit : une silhouette à chaque fenêtre habitée, immobile. Ils guettent la crête. Tu les as vus avant qu'ils te voient.",
             "À couvert derrière un muret, tu prends la mesure du village : des seuils balayés, du linge tendu — des maisons vivantes, et pas un mouvement dehors. Ce n'est pas un hameau qui dort. C'est un hameau qui attend.",
             "Tu restes trop longtemps immobile face au village. Quand tu te redresses enfin, une silhouette se détache d'une porte, en bas, et rentre vite. Quelqu'un t'a vu observer — et observer, ici, n'est pas une chose innocente.",
             "1 naturel. Tu observes, à plat ventre, concentré. Derrière toi, une voix polie : « On peut vous aider ? » Ils sont trois. Ils sont montés pendant que tu regardais en bas. ♦ −2"
@@ -2707,10 +2642,7 @@ export const SCENES: Scene[] = [
         requiresDominante: "COURAGE",
         passive: {
           consequence:
-            "Ils te regardent passer, et aucun ne baisse les yeux quand tu " +
-            "les surprends. Ce n'est pas de la menace : c'est de la " +
-            "comptabilité. Sur le muret, un gamin te suit du regard aussi, " +
-            "mais lui détourne la tête — le seul du village à le faire.",
+            "Ils te regardent passer, et aucun ne baisse les yeux. Ce n'est pas de la menace : c'est de la comptabilité. Sur le muret, un gamin te suit du regard aussi — mais lui détourne la tête. Le seul.",
         },
       },
     ],
@@ -2784,7 +2716,7 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu mens si bien que tu t\u2019en veux. Elle te croit, hoche la tête, et te remercie — parce que dans ce village quelqu\u2019un qui ne sait rien est quelqu\u2019un qui ne risque rien, et elle en est arrivée à protéger les gens de leur propre savoir.",
+            "20 naturel. Tu mens si bien que tu t'en veux. Elle te croit, et te remercie — parce qu'ici, qui ne sait rien ne risque rien. Elle en est venue à protéger les gens de leur propre savoir.",
             "Tu tiens le mensonge. Elle relâche ta manche et regarde ailleurs. « Bien sûr. Bien sûr que non. » Le pire, c\u2019est qu\u2019elle a l\u2019air soulagée pour toi.",
             "Ta phrase sonne creux, et vous l\u2019entendez tous les deux. Elle sourit très légèrement, sans joie : « Oui. C\u2019est ce qu\u2019on répond. » Et elle te lâche.",
             "1 naturel. « Ne me fais pas ça. » Sa voix monte — la seule voix qui monte de tout le hameau — et trois volets s\u2019entrouvrent dans la rue. ♦ −2"
@@ -2868,7 +2800,7 @@ export const SCENES: Scene[] = [
           stat: "EMPATHIE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu ne lui prends rien. Tu lui dis, simplement, et de telle façon qu'elle puisse le poser au lieu de le porter. Elle ne pleure pas — elle s'assied sur son seuil, pour la première fois depuis deux hivers, et te remercie d'une phrase qui n'a rien à voir : « Vous avez faim ? »",
+            "20 naturel. Tu le lui dis, de telle façon qu'elle puisse le poser au lieu de le porter. Elle ne pleure pas — elle s'assied sur son seuil, pour la première fois depuis deux hivers. « Vous avez faim ? »",
             "Tu le dis. Elle ne répond pas tout de suite. Puis : « Je sais. » Et après un silence : « Mais si j'arrête de regarder, alors c'est moi qui l'aurai laissé partir. » Elle reprend sa faction. Vous avez été honnêtes tous les deux.",
             "Les mots sortent trop droits. Son visage se ferme comme une porte de grange, et derrière ce bois-là il n'y a plus personne à qui parler. Dans la rue, deux volets bougent : on t'a vu faire pleurer une mère.",
             "1 naturel. Tu lui dis qu'il ne reviendra pas. Elle te regarde enfin — vraiment — et demande, très calme : « Et toi ? Tu reviendras ? » ♦ −2"
@@ -2882,7 +2814,7 @@ export const SCENES: Scene[] = [
         soupcon: 1, // deux personnes qui fixent le sud, ça se voit de loin
         passive: {
           consequence:
-            "Tu te places dans le même axe et tu regardes le bout de la rue. Le silence ne pèse rien. Puis : « Vous l'entendez aussi. » Ce n'est pas une question. Tu n'as pas répondu — mais derrière une fenêtre, quelqu'un a compté deux dos tournés vers le sud.",
+            "Tu te places dans le même axe et tu regardes le bout de la rue. Puis : « Vous l'entendez aussi. » Ce n'est pas une question. Derrière une fenêtre, quelqu'un a compté deux dos tournés vers le sud.",
         },
       },
     ],
@@ -2936,7 +2868,7 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu poses la question de façon qu'elle sonne comme un service qu'on lui rend — accepter de recevoir. Elle disparaît un instant et revient avec du pain, du vrai, et une information qui vaut plus : qui, dans ce hameau, ouvre encore sa porte la nuit.",
+            "20 naturel. Tu poses la question comme un service qu'on lui rend — accepter de recevoir. Elle revient avec du pain, du vrai, et une information qui vaut plus : qui, ici, ouvre encore sa porte la nuit.",
             "Elle te regarde autrement, sans reproche : ici, on marchande tout, même les morts. Elle donne du pain et une phrase utile sur la Palissade. Le marché est équitable et vous le savez tous les deux.",
             "La question tombe mal. Elle ne se fâche pas — elle range la mèche, c'est tout, et ça vaut toutes les insultes. Dans son dos, la porte se ferme d'elle-même, comme si la maison avait tranché.",
             "1 naturel. « En échange ? » Elle répète les mots lentement, puis les rend au silence. Quelque part dans la rue, quelqu'un les répète aussi. ♦ −2"
@@ -2963,9 +2895,9 @@ export const SCENES: Scene[] = [
           stat: "EMPATHIE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu le dis simplement, et tu ajoutes le détail qui ne s'invente pas : le reflet en retard. Elle ferme les yeux. Quand elle les rouvre, elle ne te regarde plus comme un étranger qui descend — elle te regarde comme on regarde quelqu'un de la famille qu'on n'attendait plus. Elle te donne la mèche, le nom, et une chose que personne n'a offerte à personne ici depuis des années : sa porte, ouverte, si tu remontes.",
+            "20 naturel. Tu le dis, avec le détail qui ne s'invente pas : le reflet en retard. Elle te regarde comme quelqu'un de la famille qu'on n'attendait plus. Elle te donne la mèche, le nom — et sa porte, si tu remontes.",
             "Elle te laisse finir, sans reculer. « Je sais », dit-elle. « Ta figure le dit depuis le début. » Elle te met la mèche dans la main, referme tes doigts, et pour la première fois quelqu'un du hameau te touche sans hésiter.",
-            "Tu le dis, et elle recule. Pas de dégoût : de la panique — pour toi. « Ne le dis à personne d'autre. » Elle regarde à droite, à gauche, les volets. « À personne, tu m'entends. » Elle rentre, et tu restes là, dans la rue, avec un aveu qui traîne dans l'air.",
+            "Tu le dis, et elle recule. Pas de dégoût : de la panique — pour toi. « Ne le dis à personne d'autre. À personne, tu m'entends. » Elle rentre, et tu restes dans la rue, avec un aveu qui traîne dans l'air.",
             "1 naturel. Tu le dis trop fort, ou pas assez seul. Un volet claque quelque part. Elle a pâli — pas de ce que tu es : de ce que ça fait de toi, ici. « Va-t'en. Maintenant. » ♦ −2"
           ),
         },
@@ -3006,7 +2938,7 @@ export const SCENES: Scene[] = [
           stat: "EMPATHIE",
           threshold: 10,
           outcomes: outcomes(
-            "20 naturel. Il saute du muret avant même que tu finisses ta phrase. « Deux murets. Après c\u2019est plus chez moi. » Il te tend la main pour que tu l\u2019aides à passer un trou dans la pierre — et c\u2019est TOI qu\u2019il fait passer devant, à l\u2019endroit précis où le mur tient encore.",
+            "20 naturel. Il saute du muret avant la fin de ta phrase. « Deux murets. Après c'est plus chez moi. » Il te tend la main — et c'est TOI qu'il fait passer devant, là où le mur tient encore.",
             "Il te jauge un moment, puis hausse une épaule. « Deux murets. Après, c\u2019est plus chez moi. » Il descend, se met trois pas devant, et attend que tu suives — pas l\u2019inverse.",
             "Il secoue la tête. « Ma mère dit que ceux qui entrent, faut pas les suivre dehors. » Il reste sur son muret. Mais il ne s\u2019en va pas non plus, et il te regarde partir longtemps.",
             "1 naturel. « Toi t\u2019as déjà un poteau quelque part. » Il le dit sans méchanceté, comme on annonce la pluie, et il s\u2019en va par l\u2019autre côté du muret. ♦ −2"
@@ -3106,12 +3038,7 @@ export const SCENES: Scene[] = [
         grantsLoot: "caillou-gamin",
         passive: {
           consequence:
-            "« Ben, la petite. » Il hausse les épaules, comme si tu demandais " +
-            "de quelle couleur est le ciel. « Elle a mon âge. Elle a un " +
-            "châle trop grand. Elle marche du côté du moulin, là où " +
-            "l\u2019herbe est couchée. » Il repose un caillou dans la rangée, " +
-            "très exactement à sa place. « C\u2019est elle qui m\u2019a montré " +
-            "comment on range. »",
+            "« Ben, la petite. Elle a mon âge. Elle a un châle trop grand. Elle marche du côté du moulin, là où l'herbe est couchée. » Il repose un caillou, exactement à sa place. « C'est elle qui m'a montré comment on range. »",
         },
       },
       {
@@ -3176,10 +3103,7 @@ export const SCENES: Scene[] = [
         label: "Le lui promettre",
         passive: {
           consequence:
-            "Il hoche la tête, satisfait, et ne vérifie pas. À dix ans, on " +
-            "croit encore qu\u2019une promesse et une chose faite sont la même " +
-            "chose. Tu redescends la ruelle avec un caillou de rivière dans " +
-            "la main, dans un pays qui n\u2019a pas de rivière.",
+            "Il hoche la tête, satisfait, et ne vérifie pas. À cet âge, une promesse et une chose faite, c'est pareil. Tu redescends avec un caillou de rivière dans la main, dans un pays qui n'a pas de rivière.",
         },
       },
       {
@@ -3234,7 +3158,7 @@ export const SCENES: Scene[] = [
           stat: "EMPATHIE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu poses la question sans défi, comme on demande le chemin. Le vieux baisse la voix, et tout le barrage se penche avec lui : « Il y a ceux qui écoutent le vent. Et il y a ceux que le vent écoute. » Il te regarde droit. « On sait pas encore lequel tu es. Nous non plus, on veut pas le savoir. »",
+            "20 naturel. Tu poses la question sans défi. Le vieux baisse la voix : « Il y a ceux qui écoutent le vent. Et ceux que le vent écoute. On sait pas encore lequel tu es. On veut pas le savoir. »",
             "Le vieux mâche sa réponse longtemps. « Ce qu'on craint ? » Il montre le sud du menton — pas de la main, jamais de la main. « Ce qui appelle. Et ceux qui répondent. » C'est tout ce qu'il donnera aujourd'hui.",
             "« Ça ne se demande pas. » Le vieux se ferme d'un coup, et les deux autres avancent d'un demi-pas. Ta question, dans leur grammaire, est déjà un aveu : seuls ceux qui entendent s'intéressent à ce qu'on entend.",
             "1 naturel. Tu demandes ce qu'ils craignent. Le silence qui suit dure trop. Puis, très bas, le vieux : « Toi. » Il n'a pas l'air content de sa propre réponse. ♦ −2"
@@ -3250,7 +3174,7 @@ export const SCENES: Scene[] = [
           stat: "COURAGE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu marches droit sur eux sans changer d'allure. À trois pas, ils s'écartent — pas par peur : par une politesse ancienne qu'ils n'ont pas eu le temps de décider. Le vieux te suit des yeux, et tu sais que le Serment t'attend quand même. Mais tu as passé le barrage debout.",
+            "20 naturel. Tu marches droit sur eux. À trois pas, ils s'écartent — pas par peur : par une politesse ancienne. Le vieux te suit des yeux ; le Serment t'attend quand même. Mais tu as passé le barrage debout.",
             "Tu ne ralentis pas. Ils s'écartent, à contrecœur, en se serrant. « On te reverra au muret », dit le vieux dans ton dos. Le Serment n'est pas évité. Il est ajourné.",
             "Tu avances — et la fourche change de main. Pas levée : tenue. Le message est clair, et tu t'arrêtes de toi-même. Passer en force ne marche pas chez des gens qui ont déjà décidé d'avoir peur.",
             "1 naturel. Tu passes sans t'arrêter. Le vieux te laisse faire, et lance à la cantonade, calmement : « Notez l'heure. » Quelqu'un, quelque part, note l'heure. ♦ −2"
@@ -3273,11 +3197,7 @@ export const SCENES: Scene[] = [
         soupcon: -1,
         passive: {
           consequence:
-            "Tu ne réponds pas tout de suite. Tu tournes les épaules au sud, " +
-            "comme eux. Tu regardes le sol quand le vieux parle, tu ne fixes " +
-            "rien plus longtemps qu'il ne faut, et quand un souffle passe " +
-            "entre les murs, tu ne lèves pas la tête. Quatre signes qu'ils " +
-            "guettent, quatre signes que tu ne donnes pas.",
+            "Tu tournes les épaules au sud, comme eux. Tu regardes le sol quand le vieux parle, et quand un souffle passe entre les murs, tu ne lèves pas la tête. Quatre signes qu'ils guettent, quatre que tu ne donnes pas.",
         },
       },
     ],
@@ -3318,7 +3238,7 @@ export const SCENES: Scene[] = [
           stat: "EMPATHIE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu ne demandes rien tout de suite : tu t'approches du volet et tu attends, à hauteur d'oreille, sans regarder à l'intérieur. Ça la décide. « Mon frère est descendu il y a deux ans. Personne ne l'a prévenu. » Un silence. « Voilà. Maintenant va. » Elle t'a donné plus qu'un conseil : elle t'a donné une raison de la croire.",
+            "20 naturel. Tu t'approches du volet et tu attends, sans regarder dedans. Ça la décide. « Mon frère est descendu il y a deux ans. Personne ne l'a prévenu. Voilà. Maintenant va. » Elle t'a donné une raison de la croire.",
             "« Parce que ça ne coûte rien de parler à travers un volet », dit-elle. Puis, plus bas, comme si elle se corrigeait : « Et parce que ça coûte trop cher de se taire deux fois. » Le volet se ferme, cette fois.",
             "Tu poses la question trop fort. Le volet claque avant la fin de ta phrase, et tu entends la barre tomber derrière. Dans la rue, deux autres volets se ferment aussitôt — le tien a fait le tour du village en trois secondes.",
             "1 naturel. « Pourquoi vous m'aidez ? » Le silence derrière le bois dure trop longtemps. Puis : « Qui a dit que je t'aidais ? » Le volet se referme doucement, ce qui est pire qu'un claquement. ♦ −2"
@@ -3334,7 +3254,7 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu ne poses aucune question — tu répètes ses trois consignes à voix haute, dans le désordre, en te trompant exprès sur la dernière. Elle corrige. Puis elle explique pourquoi. Puis elle en ajoute une quatrième qu'elle n'avait pas prévu de donner : « Et ne dors pas dos à la fenêtre. »",
+            "20 naturel. Tu répètes ses trois consignes à voix haute, en te trompant exprès sur la dernière. Elle corrige. Puis elle en ajoute une quatrième qu'elle n'avait pas prévue : « Et ne dors pas dos à la fenêtre. »",
             "Tu prends l'air de ne pas comprendre, et elle recommence, plus lentement — en ajoutant les raisons cette fois, parce qu'expliquer va plus vite que répéter. Tu apprends deux choses qu'elle ne voulait pas dire.",
             "Ta ruse est trop visible. « Tu me fais parler », constate-t-elle, sans colère, presque avec pitié. « C'est exactement ce que fait l'autre. » Le volet se ferme, et tu ne sauras pas de quel autre elle parlait.",
             "1 naturel. Tu la relances une fois de trop. Elle se tait net, puis appelle vers l'intérieur, assez fort pour être entendue de la rue : « Il pose des questions ! » Trois volets s'ouvrent d'un coup. ♦ −2"
@@ -3347,11 +3267,7 @@ export const SCENES: Scene[] = [
         soupcon: -1,
         passive: {
           consequence:
-            "Tu hoches la tête vers le volet — une fois, à peine — et tu " +
-            "prends la rue vers le bout, sans toucher un mur, sans regarder " +
-            "une porte. Derrière toi, le bois se referme sans bruit. Trois " +
-            "maisons plus loin, un autre volet s'entrouvre puis se referme " +
-            "aussitôt : on s'est passé le mot que tu obéissais.",
+            "Tu hoches la tête vers le volet et tu prends la rue sans toucher un mur, sans regarder une porte. Trois maisons plus loin, un autre volet s'entrouvre puis se referme : on s'est passé le mot que tu obéissais.",
         },
       },
     ],
@@ -3379,11 +3295,7 @@ export const SCENES: Scene[] = [
         label: "Lire jusqu'au bout",
         passive: {
           consequence:
-            "Tu remontes les deux colonnes jusqu'en haut. Ce ne sont pas des " +
-            "morts : les dates sont des dates de PASSAGE. Le hameau note qui " +
-            "descend et quand. Et les sept croix du bas ne veulent pas dire " +
-            "« mort » — elles veulent dire « n'est pas remonté ». " +
-            "Ils ne comptent pas leurs pertes. Ils comptent les nôtres.",
+            "Ce ne sont pas des morts : les dates sont des dates de PASSAGE. Le hameau note qui descend. Et les sept croix du bas ne disent pas « mort » — elles disent « n'est pas remonté ». Ils comptent les nôtres.",
         },
       },
       {
@@ -3396,7 +3308,7 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu inclines la tête jusqu'à prendre la lumière rasante, et le mur te rend ce qu'on lui a repris : sous la couche fraîche, d'autres colonnes, plus anciennes, effacées à la paume. Des dizaines. Et une ligne, seule, en travers de toutes les autres, tracée si fort que la pierre l'a gardée : « CELUI QUI COMPTE EST DESCENDU AUSSI ».",
+            "20 naturel. Sous la craie fraîche, en lumière rasante, d'autres colonnes, effacées à la paume. Des dizaines. Et une ligne en travers de toutes, tracée si fort que la pierre l'a gardée : « CELUI QUI COMPTE EST DESCENDU AUSSI ».",
             "Sous la craie neuve, on devine les fantômes d'une liste plus vieille — effacée, pas nettoyée. Le mur sert depuis longtemps, et il a été vidé plusieurs fois. Quelqu'un tient ce registre depuis avant les gens qui l'écrivent aujourd'hui.",
             "Tu frottes pour voir dessous, et tu emportes la craie fraîche avec. Trois lignes récentes disparaissent sous ta paume. Derrière toi, très calme, une voix d'enfant : « Faut pas. » Il n'est pas parti si loin que ça.",
             "1 naturel. Tu grattes la couche du dessous, et la craie te reste sur les doigts, blanche, bien visible. Tu ne t'en apercevras qu'au muret, en tendant la main. ♦ −2"
@@ -3412,7 +3324,7 @@ export const SCENES: Scene[] = [
           stat: "COURAGE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu passes la manche sur la dernière ligne, lentement, jusqu'à ce qu'il n'en reste rien — et tu écris à la place, de la même craie, la date du jour. Sans nom. Le hameau saura que quelqu'un est passé. Il ne saura pas que c'est descendu.",
+            "20 naturel. Tu passes la manche sur la dernière ligne jusqu'à ce qu'il n'en reste rien — et tu écris à la place la date du jour. Sans nom. Le hameau saura que quelqu'un est passé. Pas que c'est descendu.",
             "Tu effaces « un qui descend » d'un revers de manche. Le mur garde une trace pâle, mais la phrase n'y est plus. Ce n'est pas grand-chose — sauf que le gamin, lui, l'avait écrite, et qu'il te regardait faire.",
             "Ta manche accroche la ligne du dessus en même temps. Deux noms partent avec le tien. Effacer un nom, ici, ce n'est pas nier un passage : c'est nier quelqu'un, et cette faute-là se voit de loin.",
             "1 naturel. Tu effaces ta ligne. Le gamin, à dix pas, la réécrit de mémoire, plus grand, en te regardant. Puis il ajoute un mot devant. Tu ne le lis pas d'ici, et tu n'as plus envie de t'approcher. ♦ −2"
@@ -3443,8 +3355,8 @@ export const SCENES: Scene[] = [
           stat: "EMPATHIE",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu t'accroupis à sa hauteur et tu réponds pour de vrai, aux trois, sans rien arranger. Il t'écoute avec un sérieux terrible, puis il oublie sa leçon : « Moi non plus je dors pas. » Derrière les volets, personne ne dit rien — mais quand tu te relèves, deux d'entre eux se sont ouverts en grand.",
-            "Tu réponds simplement, en le regardant lui. Il hoche la tête à chaque réponse comme s'il cochait, puis se retourne vers la maison la plus proche et crie : « Il a dit non ! » Le mot passe de porte en porte. Ce n'est pas un acquittement, mais ce n'est pas une condamnation.",
+            "20 naturel. Tu t'accroupis et tu réponds pour de vrai, aux trois, sans rien arranger. Il t'écoute avec un sérieux terrible, puis oublie sa leçon : « Moi non plus je dors pas. » Deux volets s'ouvrent en grand.",
+            "Tu réponds simplement, en le regardant lui. Il hoche la tête à chaque réponse, puis crie vers la maison la plus proche : « Il a dit non ! » Le mot passe de porte en porte. Ni acquittement, ni condamnation.",
             "Tu réponds à l'enfant, gentiment — et tu oublies les vingt personnes qui écoutent. Ta deuxième réponse est trop longue, trop précise. Un adulte sort avant la fin et le tire par le bras à l'intérieur.",
             "1 naturel. Tu réponds « oui » à la deuxième question sans réfléchir. *Est-ce que tu as compté quelque chose aujourd'hui.* Le gamin répète ton oui à la cantonade, fier de sa mission. Le silence qui suit n'est pas celui d'avant. ♦ −2"
           ),
@@ -3459,7 +3371,7 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu ne baisses pas les yeux vers l'enfant : tu parles à la rue, fort, en tournant lentement sur toi-même, et tu réponds aux trois questions par trois autres. « Est-ce que VOUS dormez la nuit ? » Personne ne répond. Mais quand tu arrives au muret, le vieux t'attend en sachant déjà qu'il ne t'aura pas au bluff.",
+            "20 naturel. Tu ne baisses pas les yeux vers l'enfant : tu parles à la rue, et tu réponds par trois autres questions. « Est-ce que VOUS dormez la nuit ? » Au muret, le vieux sait qu'il ne t'aura pas au bluff.",
             "Tu réponds par-dessus la tête du gamin, à voix haute, pour ceux qui écoutent. Tes phrases sont propres, calibrées, impossibles à retourner. Le gosse te regarde sans comprendre pourquoi tu ne lui parles pas à lui.",
             "Tu joues pour la galerie, et la galerie n'aime pas ça. « Il parle aux murs », dit une voix de femme, sans se cacher. Chez des gens qui ont peur d'être écoutés, parler aux murs n'est pas une image.",
             "1 naturel. Tu réponds à la rue au lieu de répondre à l'enfant — et l'enfant, vexé, ajoute la seule chose qu'on ne lui avait pas apprise : « Il regarde le sud tout le temps. » ♦ −2"
@@ -3472,7 +3384,7 @@ export const SCENES: Scene[] = [
         soupcon: 1,
         passive: {
           consequence:
-            "Tu passes sans un mot. Il ne répète pas sa question : on lui a appris ce cas-là aussi. Il se tourne vers la maison la plus proche et dit, très clairement : « Il a pas répondu. »\n\nLes volets se ferment dans l'ordre de la rue, jusqu'au muret où quelqu'un attend.",
+            "Tu passes sans un mot. Il ne répète pas sa question : on lui a appris ce cas-là aussi. « Il a pas répondu. »\n\nLes volets se ferment dans l'ordre de la rue, jusqu'au muret où quelqu'un attend.",
         },
       },
     ],
@@ -3500,7 +3412,7 @@ export const SCENES: Scene[] = [
         soupcon: -1,
         passive: {
           consequence:
-            "C'est chaud, et ton corps te trahit en te disant à quel point tu en avais besoin. À la troisième cuillère, des portes s'ouvrent dans ton dos. Ils attendaient ça.\n\nLe vieux est déjà assis sur le muret. Le Serment ne se demandera pas : il a commencé au premier bol.",
+            "C'est chaud, et ton corps te dit à quel point tu en avais besoin. À la troisième cuillère, des portes s'ouvrent dans ton dos.\n\nLe vieux est déjà sur le muret. Le Serment a commencé au premier bol.",
         },
       },
       {
@@ -3512,7 +3424,7 @@ export const SCENES: Scene[] = [
           stat: "COURAGE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu repousses le bol de deux doigts, sans le renverser, et tu restes debout à côté de la table — assez longtemps pour que ce soit un message et pas une fuite. Une porte s'ouvre. Le vieux sort, regarde le bol intact, et hoche la tête : « Bien. » Tu ne sauras jamais ce qui serait arrivé si tu avais mangé.",
+            "20 naturel. Tu repousses le bol de deux doigts et tu restes debout à côté — un message, pas une fuite. Le vieux sort, regarde le bol intact : « Bien. » Tu ne sauras jamais ce que manger aurait coûté.",
             "Tu repousses le bol et tu passes. Ça se remarque — mais ça se respecte : chez des gens qui ont renoncé à tout, refuser quelque chose est encore un métier qu'ils comprennent.",
             "Tu repousses le bol un peu trop fort. Il tourne, il tient, mais la cuillère tombe et sonne sur la pierre. Le bruit fait le tour de la rue. Refuser, ici, doit se faire sans bruit — sinon c'est du mépris.",
             "1 naturel. Tu repousses le bol, il verse. La soupe coule entre les pavés, et personne ne sort la ramasser. Ils la laisseront là jusqu'à ce que tu repasses. ♦ −2"
@@ -3527,7 +3439,7 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu prends le quignon posé à côté du bol, tu le casses en deux, tu en manges une moitié debout et tu laisses l'autre sur la table. Ni accepté, ni refusé : partagé. C'est exactement la faille de leur règle, et le vieux, au muret, mettra un moment à décider s'il doit t'en vouloir.",
+            "20 naturel. Tu casses le quignon en deux, tu en manges une moitié debout et tu laisses l'autre sur la table. Ni accepté, ni refusé : partagé. Le vieux mettra un moment à décider s'il doit t'en vouloir.",
             "Tu prends le pain sans t'asseoir, et tu continues en mâchant. Techniquement tu n'as pas mangé à leur table. Techniquement. Deux ou trois d'entre eux comprendront la nuance ; les autres retiendront juste que tu as pris.",
             "Tu emportes le pain debout, et la nuance t'échappe à toi aussi : dans une rue qui n'a pas mangé de blanc depuis deux hivers, prendre sans s'asseoir ne s'appelle pas de la prudence.",
             "1 naturel. Tu prends le pain. Une voix, derrière un volet, énonce le mot exact, sans passion : « Voleur. » Et le mot va plus vite que toi jusqu'au bout de la rue. ♦ −2"
@@ -3558,7 +3470,7 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu ne demandes pas « ce » qui répondrait. Tu demandes « qui ». La vieille lève enfin les yeux, et c'est à elle que tu as parlé juste. « La dernière fois qu'on a sonné, on comptait quarante-deux. » Elle regarde la rue. « Le lendemain, trente-neuf. Personne n'est parti. » Sa main n'a pas quitté la corde.",
+            "20 naturel. Tu ne demandes pas « ce » qui répondrait. Tu demandes « qui ». La vieille lève enfin les yeux. « La dernière fois qu'on a sonné, on comptait quarante-deux. Le lendemain, trente-neuf. Personne n'est parti. »",
             "« Ça ne répond pas avec des mots », dit la vieille. Elle ne lâche pas la corde pour autant. « Ça répond en venant. » L'homme qui courait s'est assis contre le mur, et il ne dit rien du tout.",
             "Tu demandes trop vite. La vieille resserre la main sur la corde et te regarde comme on regarde quelqu'un qui a demandé le prix d'une chose qui ne se vend pas. « On ne parle pas de ça dehors. »",
             "1 naturel. Tu poses la question à voix haute, dans la rue, devant les seuils. Une femme rentre son enfant. Un homme fait le geste de compter sur ses doigts, s'arrête, et cache sa main. ♦ −2"
@@ -3571,7 +3483,7 @@ export const SCENES: Scene[] = [
         soupcon: -1,
         passive: {
           consequence:
-            "Tu dis que tu es désolé — pas d'être là : d'être arrivé à ce moment-là. La nuance les atteint. La vieille lâche la corde. Les seuils se vident.\n\nElle reste, et montre le bout de la rue du menton : « Il t'attend au muret. Va, tant qu'il fait jour. »",
+            "Tu dis que tu es désolé — pas d'être là : d'être arrivé à ce moment-là. La nuance les atteint. La vieille lâche la corde. Les seuils se vident. « Il t'attend au muret. Va, tant qu'il fait jour. »",
         },
       },
       {
@@ -3585,9 +3497,9 @@ export const SCENES: Scene[] = [
           threshold: 14,
           highStakes: true,
           outcomes: outcomes(
-            "20 naturel. Tu écartes la vieille — doucement — et tu tires. Une fois. Le son part beaucoup plus loin qu'une cloche de village ne devrait porter, et la rue entière se fige dans la position où elle était. Puis rien. Rien du tout. Et c'est ce rien qui les terrifie : quelque chose a entendu, et a choisi de ne pas venir aujourd'hui.",
+            "20 naturel. Tu écartes la vieille et tu tires. Une fois. Le son porte bien plus loin qu'il ne devrait. Puis rien. C'est ce rien qui les terrifie : quelque chose a entendu, et a choisi de ne pas venir.",
             "Tu tires. La cloche sonne un coup, mat, comme si le bronze était plein. Personne ne bouge, personne ne crie ; ils comptent. Tu ne sauras jamais jusqu'où, parce qu'à quatorze ils s'arrêtent tous en même temps et rentrent.",
-            "Tu attrapes la corde, la vieille ne lâche pas, et vous tirez tous les deux à contretemps : le battant touche le bronze sans le faire sonner. Un bruit sourd, humiliant. Elle te regarde, et pour la première fois quelqu'un ici a l'air d'avoir pitié de toi.",
+            "La vieille ne lâche pas, et vous tirez à contretemps : le battant touche le bronze sans le faire sonner. Un bruit sourd, humiliant. Pour la première fois, quelqu'un ici a l'air d'avoir pitié de toi.",
             "1 naturel. Tu tires, et le son sort trop long, trop plein, comme s'il ne venait pas de cette cloche-là. Loin, au sud, quelque chose de très grand change de position. Tu le sens sous tes pieds. ♦ −2"
           ),
         },
@@ -3622,7 +3534,7 @@ export const SCENES: Scene[] = [
           stat: "EMPATHIE",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu prends l'autre bout de la malle sans demander, et vous la montez ensemble. Personne ne te remercie, mais quelque chose se débloque dans la rue : deux hommes viennent aider à leur tour, honteux d'avoir attendu qu'un étranger commence. Le départ se fait vite, à la fin, et presque bien.",
+            "20 naturel. Tu prends l'autre bout de la malle sans demander. Personne ne te remercie, mais deux hommes viennent aider à leur tour, honteux d'avoir attendu qu'un étranger commence. Le départ se fait vite, et presque bien.",
             "Tu aides à sangler. L'homme accepte sans un mot, ce qui est ici la forme la plus haute du merci. Sa femme, elle, te regarde tout le temps du chargement — pas avec méfiance : comme on regarde quelqu'un qu'on essaie de reconnaître.",
             "Tu tends les mains vers le coffre et l'homme le retire. « Non. » Il ne s'explique pas. Sur les seuils, personne n'a bougé, et tu comprends trop tard que dans ce village, aider un partant, c'est prendre parti.",
             "1 naturel. Tu attrapes la porte pour la caler et elle glisse, tombe à plat, sonne sur les pavés. Toute la rue sursaute. La femme se met à pleurer, enfin — et c'est ta faute, et ce n'est pas la porte. ♦ −2"
@@ -3637,7 +3549,7 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu ne demandes pas à celui qui charge : tu demandes à celle qui regarde, sur le seuil d'en face. Elle répond d'une traite, comme quelqu'un qui attendait qu'on le lui demande. « Parce que le dernier qui a juré au muret a menti, et que depuis, ça vient jusqu'ici la nuit. » Elle te regarde. « Vous jurez tous. »",
+            "20 naturel. Tu demandes à celle qui regarde, sur le seuil d'en face. Elle répond d'une traite : « Parce que le dernier qui a juré au muret a menti, et que depuis, ça vient jusqu'ici la nuit. Vous jurez tous. »",
             "« Parce qu'on a compté trois fois ce mois-ci », dit l'homme sans lever la tête. « Et que trois fois, ça faisait pas pareil. » Il tire la sangle d'un coup sec. « Y a rien d'autre à comprendre. »",
             "Tu demandes, et il te répond par une autre question : « Vous êtes lequel ? » Comme tu ne comprends pas, il précise : « Y en a un qui est passé avant vous et qui a juré. Vous êtes lequel des deux ? » Tu n'as pas de réponse à ça.",
             "1 naturel. « Pourquoi maintenant ? » L'homme s'arrête enfin, se retourne, te regarde longuement. « Parce que vous êtes revenu. » Il n'a pas l'air de savoir lui-même pourquoi il a dit ça au passé. ♦ −2"
@@ -3649,7 +3561,7 @@ export const SCENES: Scene[] = [
         label: "Les regarder partir",
         passive: {
           consequence:
-            "La charrette prend la rue vers le nord, et tout le village la regarde jusqu'au bout — pas un adieu : une vérification.\n\nQuand elle passe la crête, les seuils se vident d'un coup. Sauf un vieux, au bout de la rue, qui ne l'a pas regardée une seule fois.",
+            "La charrette prend la rue vers le nord, et le village la regarde jusqu'au bout — pas un adieu : une vérification.\n\nQuand elle passe la crête, les seuils se vident. Sauf un vieux, qui ne l'a pas regardée une seule fois.",
         },
       },
     ],
@@ -3677,7 +3589,7 @@ export const SCENES: Scene[] = [
         soupcon: -1,
         passive: {
           consequence:
-            "Tu poses ta main au-dessus de la sienne, sans la toucher, et tu jures les trois choses. Toute la rue se dénoue d'un coup dans ton dos. « Tenu jusqu'à la sortie », rappelle le vieux. Le hameau entier a entendu. Et plus haut que le hameau, quelqu'un d'autre.",
+            "Tu poses ta main au-dessus de la sienne, sans la toucher, et tu jures les trois choses. « Tenu jusqu'à la sortie. » Le hameau a entendu. Et plus haut que le hameau, quelqu'un d'autre.",
         },
       },
       {
@@ -3699,10 +3611,7 @@ export const SCENES: Scene[] = [
         },
         passive: {
           consequence:
-            "Tu jures. Les mots sortent dans le bon ordre, à la bonne " +
-            "vitesse, et ne pèsent rien. Le vieux les accepte — il n'a pas " +
-            "le choix, c'est la règle. Mais il te regarde une seconde de " +
-            "trop, et tu comprends qu'il a entendu le vide dedans.",
+            "Tu jures. Les mots sortent dans le bon ordre et ne pèsent rien. Le vieux les accepte — c'est la règle. Mais il te regarde une seconde de trop, et tu comprends qu'il a entendu le vide dedans.",
         },
       },
       {
@@ -3713,11 +3622,7 @@ export const SCENES: Scene[] = [
         soupcon: 2,
         passive: {
           consequence:
-            "Tu refuses. Personne ne crie. Le vieux referme lentement sa " +
-            "paume vide, et c'est tout. « Personne n'est chassé », répète-t-il " +
-            "— et cette fois tu entends ce que ça veut dire vraiment : on ne " +
-            "te chassera pas, on te laissera dehors. Aucune porte ne " +
-            "s'ouvrira. Aucun toit. Et le hameau te regardera vivre.",
+            "Tu refuses. Personne ne crie. Le vieux referme sa paume vide. « Personne n'est chassé » — et tu entends ce que ça veut dire : on ne te chassera pas, on te laissera dehors. Et le hameau te regardera vivre.",
         },
       },
     ],
@@ -3826,16 +3731,7 @@ export const SCENES: Scene[] = [
         grantsSavoir: "savoir_grange_comptee",
         passive: {
           consequence:
-            "Tu prends la lampe et tu fais le tour, lentement, en te tenant " +
-            "loin des murs — le vieux réflexe de qui ne veut pas être une " +
-            "silhouette derrière des planches. Des marques sur les poutres, à " +
-            "hauteur d'homme : des bâtons de comptage, des séries de nuits. La " +
-            "dernière s'arrête à deux. Et sous chaque bâton, une encoche plus " +
-            "petite, régulière : quatre par nuit, toujours quatre. Ce ne sont " +
-            "pas les nuits qu'on compte ici, ce sont les passages de la ronde. " +
-            "En te rasseyant, tu passes la main sur la barre : le bois est " +
-            "lisse dedans et usé jusqu'au fil dehors, comme si l'on s'y " +
-            "appuyait du dehors, souvent, longtemps.",
+            "Sur les poutres, des bâtons de comptage — des nuits. Sous chaque bâton, quatre encoches. On ne compte pas les nuits, ici : on compte les passages de la ronde.\n\nLa barre, sous ta main : lisse dedans, usée jusqu'au fil dehors.",
         },
       },
       {
@@ -3853,12 +3749,7 @@ export const SCENES: Scene[] = [
         grantsSavoir: "savoir_trappe_calee",
         passive: {
           consequence:
-            "Tu montes à l'échelle avec la lampe soufflée, à tâtons, comme " +
-            "quelqu'un qui a déjà fait ça. La trappe de la grange n'est pas " +
-            "clouée — personne ne cloue chez les autres.\n\nTu la cales : le " +
-            "manche de la fourche en travers, le pied contre la panne, et ton " +
-            "poids dessus jusqu'à ce que le bois se plaigne. En redescendant " +
-            "tu comptes, sans le vouloir, par paquets de quatre.",
+            "Tu montes à l'échelle, lampe soufflée. La trappe n'est pas clouée — personne ne cloue chez les autres.\n\nTu la cales, le manche de la fourche en travers, ton poids dessus jusqu'à ce que le bois se plaigne.",
         },
       },
       {
@@ -3931,7 +3822,7 @@ export const SCENES: Scene[] = [
         requiresSavoir: "savoir_grange_comptee",
         passive: {
           consequence:
-            "Quatre passages par nuit, disaient les encoches. Tu attends le deuxième et tu écoutes. Les voix tombent entières dans le creux : un nom qui n'est pas le tien, le mot « demain », et le Petit Tribunal cité comme on cite une heure. Tu es rentré avant le troisième.",
+            "Quatre passages par nuit, disaient les encoches. Tu attends le deuxième et tu écoutes. Les voix tombent dans le creux : un nom qui n'est pas le tien, le mot « demain », et le Petit Tribunal cité comme une heure.",
         },
       },
     ],
@@ -3975,12 +3866,7 @@ export const SCENES: Scene[] = [
         requiresDecouverte: "d.temoin_nomme",
         passive: {
           consequence:
-            "Tu sais ce que ça attend. Alors tu ne fais rien : ni te cacher, " +
-            "ni chercher la fente, ni prier. Assis dans la paille, les mains " +
-            "ouvertes sur les genoux, tu le laisses attendre aussi.\n\n" +
-            "Le poids ne s'en va pas. Il se déplace de quelques pouces, et se " +
-            "réinstalle — une chose qui change de position parce qu'elle a " +
-            "compris que ce sera long.",
+            "Alors tu ne fais rien. Assis dans la paille, les mains ouvertes, tu le laisses attendre aussi.\n\nLe poids se déplace de quelques pouces et se réinstalle — il a compris que ce sera long.",
         },
       },
       {
@@ -3993,13 +3879,7 @@ export const SCENES: Scene[] = [
         prendLaPlaceDe: ["toit-ne-rien-lui-donner", "toit-regarder"],
         passive: {
           consequence:
-            "Le poids remonte le faîtage et s'arrête, non pas au-dessus de la " +
-            "porte, mais au-dessus de la trappe. Il sait où elle est.\n\n" +
-            "Puis il appuie. Le manche travaille, la panne grince, et le bois " +
-            "tient. Ça appuie encore, plus longtemps, de tout ce que ça pèse. " +
-            "Le bois tient.\n\nÇa cesse d'appuyer. Ça ne s'en va pas — ça " +
-            "s'installe, et ça attend le matin avec toi. Les Rouel avaient " +
-            "raison quatre nuits de suite.",
+            "Le poids s'arrête au-dessus de la trappe.\n\nIl appuie. Le bois tient. Il appuie encore, de tout ce que ça pèse. Le bois tient.\n\nÇa attend le matin avec toi. Les Rouel avaient raison quatre nuits de suite.",
         },
       },
       {
@@ -4007,10 +3887,7 @@ export const SCENES: Scene[] = [
         label: "Ne pas bouger",
         passive: {
           consequence:
-            "Tu ne bouges pas. Tu ne respires presque plus. Au bout d\u2019un " +
-            "temps que tu serais incapable de mesurer, le poids se déplace " +
-            "vers l\u2019autre pignon, sans un bruit de pas — comme si le toit " +
-            "seul savait qu\u2019il y avait quelque chose dessus.",
+            "Tu ne bouges pas. Au bout d'un temps impossible à mesurer, le poids se déplace vers l'autre pignon, sans un bruit de pas — comme si le toit seul savait qu'il y avait quelque chose dessus.",
         },
       },
       {
@@ -4023,7 +3900,7 @@ export const SCENES: Scene[] = [
           threshold: 13,
           highStakes: true,
           outcomes: outcomes(
-            "20 naturel. Tu trouves la fente et tu colles l\u2019œil. Il n\u2019y a rien à voir : du ciel, la ligne du faîtage, et une portion de nuit un peu plus dense que le reste, qui NE BOUGE PAS avec le vent. Tu la regardes assez longtemps pour être certain que ce n\u2019est pas une illusion — et pour comprendre qu\u2019elle t\u2019a laissé faire.",
+            "20 naturel. Tu colles l'œil à la fente. Rien à voir : du ciel, le faîtage, et une portion de nuit plus dense que le reste, qui NE BOUGE PAS avec le vent. Tu la regardes assez pour comprendre qu'elle t'a laissé faire.",
             "Tu trouves une fente entre deux planches. Le ciel est là, gris sale, avec une bande plus noire au bord du champ de vision. Quand tu bouges la tête pour la cadrer, elle n\u2019est plus dans le cadre. Quand tu reviens, elle y est.",
             "Tu te lèves trop vite et la paille crisse. Au-dessus, le poids s\u2019arrête net — puis se déplace, lentement, exactement au-dessus de l\u2019endroit où tu te tiens. Tu passes le reste de la nuit assis, dos au mur, à écouter un plancher de ciel.",
             "1 naturel. Tu approches l\u2019œil de la fente, et quelque chose, de l\u2019autre côté, fait exactement le même geste. ♦ −2"
@@ -4063,12 +3940,7 @@ export const SCENES: Scene[] = [
         prendLaPlaceDe: "toit-attendre-connu",
         passive: {
           consequence:
-            "Tu as calé avant, cette fois, sans y penser — le manche en " +
-            "travers, le pied contre la panne. Le geste s'est fait tout seul, " +
-            "à l'heure où il fallait le faire.\n\nLe poids s'arrête au-dessus " +
-            "de la trappe, appuie, et le bois tient. Tu comptes quand même. " +
-            "Ce qui a changé, ce n'est pas la nuit : c'est que tu as quelque " +
-            "chose à faire dedans.",
+            "Tu as calé avant, sans y penser. Le geste s'est fait tout seul.\n\nLe poids s'arrête au-dessus de la trappe, appuie, et le bois tient. Ce qui a changé : tu as quelque chose à faire dans la nuit.",
         },
       },
       {
@@ -4115,12 +3987,7 @@ export const SCENES: Scene[] = [
         requiresDecouverte: "d.combles_cloues",
         passive: {
           consequence:
-            "Au gris du matin, les planches ressortent noires sur le torchis. " +
-            "Tu comptes, et tu t'arrêtes avant la fin : c'est presque toutes " +
-            "les maisons. Trois pignons ont gardé leurs combles ouvertes — " +
-            "les trois plus proches du Petit Tribunal.\n\n" +
-            "Le vieux te regarde faire. « C'était la même nuit. » Il ne " +
-            "précise pas laquelle.",
+            "Les planches ressortent noires sur le torchis. Presque toutes les maisons. Trois pignons ont gardé leurs combles ouvertes — les trois plus proches du Petit Tribunal.\n\nLe vieux te regarde faire. « C'était la même nuit. » Il ne dit pas laquelle.",
         },
       },
       {
@@ -4129,11 +3996,7 @@ export const SCENES: Scene[] = [
         soupcon: -1,
         passive: {
           consequence:
-            "Tu manges debout, tu rends le linge, tu sors. Sur le seuil, le " +
-            "vieux ajoute, à voix basse et sans te regarder : « Tu as juré, " +
-            "tu as tenu. Ça se saura. » C'est la seule chose aimable qu'on " +
-            "t'aura dite dans ces Landes, et elle sonne comme un service " +
-            "rendu.",
+            "Tu manges debout, tu sors. Sur le seuil, le vieux ajoute, sans te regarder : « Tu as juré, tu as tenu. Ça se saura. » La seule chose aimable qu'on t'aura dite ici, et elle sonne comme un service rendu.",
         },
       },
     ],
@@ -4255,11 +4118,7 @@ export const SCENES: Scene[] = [
         observe: true,
         passive: {
           consequence:
-            "Tu poses l'oreille contre le bois. Rien au rez-de-chaussée : " +
-            "pas un meuble qui travaille, pas une souris. Le silence d'une " +
-            "maison finie. Puis, très haut, au-dessus du plafond, une planche " +
-            "qui reprend sa place — un poids qui vient de se déplacer, " +
-            "lentement, dans des combles où personne ne monte.",
+            "Tu poses l'oreille contre le bois. Rien au rez-de-chaussée. Puis, très haut, au-dessus du plafond, une planche qui reprend sa place — un poids qui vient de se déplacer, là où personne ne monte.",
         },
       },
       {
@@ -4300,12 +4159,7 @@ export const SCENES: Scene[] = [
         decouverte: "d.combles_cloues",
         passive: {
           consequence:
-            "L'échelle tient encore. La trappe, non : elle est clouée. De " +
-            "l'intérieur du toit, par quelqu'un qui se dépêchait — les clous " +
-            "sont tordus, plantés en biais, et il y en a trois fois trop. En " +
-            "redescendant tu regardes les portes du bas : aucune n'est " +
-            "clouée. Cette maison ne se protégeait pas de ce qui entre par " +
-            "les portes.",
+            "L'échelle tient. La trappe, non : clouée de l'intérieur, par quelqu'un qui se dépêchait — les clous sont tordus, trois fois trop nombreux. En bas, aucune porte n'est clouée. Cette maison ne se protégeait pas de ce qui entre par les portes.",
         },
       },
       {
@@ -4316,7 +4170,7 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu veilles sans lampe, assis contre le mur froid. La ronde passe quatre fois — quatre, comme les encoches de la grange. À la quatrième, l'homme s'arrête devant cette porte-ci, pose la main dessus, et ne la pousse pas. Il vérifiait qu'elle était fermée. Elle l'était, quand il est arrivé.",
+            "20 naturel. Tu veilles sans lampe. La ronde passe quatre fois. À la quatrième, l'homme s'arrête devant cette porte, pose la main dessus, et ne la pousse pas. Il vérifiait qu'elle était fermée. Elle l'était, quand il est arrivé.",
             "Tu tiens jusqu'au cœur de la nuit, l'œil au joint du volet. Des pas dans la rue, réguliers, et jamais deux fois la même voix. Ils ne cherchent pas : ils comptent.",
             "Le sommeil te prend d'un coup, sans transition. Tu te réveilles le dos raide au gris de l'aube, sans savoir ce qui est passé dans la rue ni combien de fois.",
             "1 naturel. Tu veilles. Et vers le milieu de la nuit, au-dessus de toi, la planche des combles reprend sa place une seconde fois. Rien n'est descendu. Rien n'a essayé. C'est pire. ♦ −2"
@@ -4373,11 +4227,7 @@ export const SCENES: Scene[] = [
         label: "Demander ce qui leur est arrivé",
         passive: {
           consequence:
-            "— « Ils ont juré comme tout le monde. Et une nuit ils ont cloué " +
-            "leurs combles, comme tout le monde. » Il regarde le pignon, très " +
-            "longtemps. « Sauf qu'eux, au matin, ils ont ouvert. » Il " +
-            "n'ajoute rien. Il n'y a rien à ajouter : la maison est là, et " +
-            "elle est vide.",
+            "« Ils ont juré comme tout le monde. Et une nuit ils ont cloué leurs combles, comme tout le monde. » Il regarde le pignon, longtemps. « Sauf qu'eux, au matin, ils ont ouvert. » La maison est là, et elle est vide.",
         },
       },
       {
@@ -4414,11 +4264,7 @@ export const SCENES: Scene[] = [
         soupcon: 1,
         passive: {
           consequence:
-            "Tu te lèves raide, les os pleins de froid. En quittant le " +
-            "muret, tu vois ce que la nuit a laissé : des traces de pas " +
-            "autour de l'endroit où tu dormais, un cercle complet, à trois " +
-            "mètres. Personne ne s'est approché plus près. Personne n'est " +
-            "reparti sans avoir regardé.",
+            "Tu te lèves raide, les os pleins de froid. La nuit a laissé des traces de pas en cercle autour de l'endroit où tu dormais, à trois mètres. Personne ne s'est approché plus près. Personne n'est reparti sans avoir regardé.",
         },
       },
     ],
@@ -4452,11 +4298,7 @@ export const SCENES: Scene[] = [
         soupcon: 1,
         passive: {
           consequence:
-            "Tu restes contre ton muret jusqu\u2019au gris. Tu ne dors pas. " +
-            "Au matin, des traces de pas font un cercle complet autour de " +
-            "l\u2019endroit où tu étais couché, à trois mètres — personne ne " +
-            "s\u2019est approché plus près, et personne n\u2019est reparti sans " +
-            "avoir regardé.",
+            "Tu restes contre ton muret jusqu'au gris. Tu ne dors pas. Au matin, des traces de pas font un cercle autour de l'endroit où tu étais couché, à trois mètres — personne plus près, personne reparti sans regarder.",
         },
       },
       {
@@ -4469,7 +4311,7 @@ export const SCENES: Scene[] = [
           threshold: 14,
           highStakes: true,
           outcomes: outcomes(
-            "20 naturel. Tu marches jusqu\u2019au coin. Le passage est vide, et le sol y est sec alors qu\u2019il a plu — sur toute la largeur, une bande où l\u2019humidité n\u2019a pas pris. Tu la suis des yeux : elle va d\u2019un linteau à l\u2019autre, d\u2019une porte à l\u2019autre, et elle s\u2019arrête à chacune. Il fait sa tournée.",
+            "20 naturel. Le passage est vide, et le sol y est sec alors qu'il a plu — une bande où l'humidité n'a pas pris. Elle va d'un linteau à l'autre, d'une porte à l'autre, et s'arrête à chacune. Il fait sa tournée.",
             "Tu vas jusqu\u2019au coin, le cœur en désordre. Rien. Une ruelle, des volets clos, et sur le linteau de la maison d\u2019en face, à hauteur d\u2019homme, une entaille fraîche dans le bois. La même que sur toutes les autres portes du hameau.",
             "Tu fais trois pas et tu t\u2019arrêtes, parce que les corbeaux se sont tous tournés en même temps. Pas vers le passage. Vers toi. Tu regagnes ton muret sans donner le dos à la rue.",
             "1 naturel. Tu arrives au coin au moment où il revient. Tu ne vois toujours pas de visage. Tu vois qu\u2019il s\u2019arrête, et qu\u2019il attend — comme on attend que quelqu\u2019un ait fini de comprendre. ♦ −2"
@@ -4524,7 +4366,7 @@ export const SCENES: Scene[] = [
           stat: "COURAGE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu ne recules pas d'un pouce, et c'est la seule chose qu'elles n'avaient pas marchée d'avance. Le premier assaut se brise sur ta lame ; la meneuse rappelle les autres d'un souffle. Elles ont leur réponse : celui-là coûte plus qu'il ne rapporte. La lande se referme derrière leur départ, et le compte est soldé.",
+            "20 naturel. Tu ne recules pas d'un pouce — la seule chose qu'elles n'avaient pas marchée d'avance. Le premier assaut se brise sur ta lame ; la meneuse rappelle les autres d'un souffle. Celui-là coûte plus qu'il ne rapporte. Le compte est soldé.",
             "Le premier assaut te teste, le second te jauge — ta lame répond aux deux. La meneuse te regarde longuement, puis détourne la tête, et le front entier se défait dans la bruyère. Elles ne te suivront plus : ce qu'elles voulaient savoir, elles le savent.",
             "Elles te prennent en trois passes réglées, précises, économes — le tribut de la route esquivée, ni plus ni moins. Puis elles décrochent d'un coup, comme à un signal, et disparaissent dans l'herbe haute. La dette est réglée ; il ne reste que l'entaille.",
             "1 naturel. Tu tiens le premier assaut. C'était le seul prévu pour être tenu. ♦ −2"
@@ -4545,9 +4387,9 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Un seul tintement, sec, posé au milieu de leur silence. Les cinq têtes se lèvent ENSEMBLE — et le front s'ouvre en deux, comme une porte qu'on tient à un supérieur. Tu passes entre elles au pas, sans hâte, et aucune ne tourne la tête. On ne suit pas ce qu'on escorte.",
+            "20 naturel. Un seul tintement, sec, au milieu de leur silence. Les cinq têtes se lèvent ENSEMBLE — et le front s'ouvre en deux, comme une porte qu'on tient à un supérieur. Tu passes au pas. On ne suit pas ce qu'on escorte.",
             "Le battant claque, et la poursuite meurt sur place : on ne traque pas ce qui porte la clochette. La meneuse s'assoit — s'assoit — et attend que tu sois passé. Ce qu'elles étaient venues régler ne se règle pas avec un berger.",
-            "Tu sonnes trop tard, ou trop faible : le son se perd dans le vent. Elles ne bougent pas — la clochette les retient, mais elle ne les renvoie pas. Vous restez là, figés de part et d'autre du tintement, jusqu'à ce que la meneuse choisisse pour tout le monde : elles refluent, sans te quitter des yeux. Tu n'as rien réglé, mais rien payé.",
+            "Tu sonnes trop tard : le son se perd dans le vent. Elles ne bougent pas — la clochette les retient, elle ne les renvoie pas. Puis la meneuse choisit : elles refluent, sans te quitter des yeux. Rien réglé, rien payé.",
             "1 naturel. La clochette sonne — et répond, loin derrière elles, à un autre battant que le tien. Elles partent vers lui. Tu ne sauras jamais qui a sonné. ♦ −2"
           ),
         },
@@ -4561,11 +4403,7 @@ export const SCENES: Scene[] = [
         fermeLaRoute: true,
         passive: {
           consequence:
-            "Tu quittes la route sans leur tourner le dos, un pas de côté " +
-            "après l'autre, jusqu'à ce que la bruyère te prenne aux genoux. " +
-            "Elles ne te suivent pas : elles voulaient le chemin, pas toi. " +
-            "Le tien, maintenant, fait le grand tour — c'est le prix, et tu " +
-            "le connais au moment où tu le paies.",
+            "Tu quittes la route sans leur tourner le dos, jusqu'à la bruyère. Elles voulaient le chemin, pas toi. Le tien fait maintenant le grand tour — c'est le prix, et tu le sais en le payant.",
         },
       },
     ],
@@ -4594,9 +4432,9 @@ export const SCENES: Scene[] = [
           stat: "COURAGE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu ne ralentis pas — tu accélères, droit dans l'axe, là où rien de ce qui la fuit ne va jamais. La masse hésite un souffle de trop : le creux est à toi avant qu'elle ne retombe. Derrière, le silence se referme, vexé, et ne te suit pas. Elle ne suit que ce qui fuit.",
-            "Tu passes en force, l'épaule au talus, ta lame fendant l'ombre au jugé. Quelque chose cède au-dessus — un poids qui se retire, pas un cri. Le creux se rouvre sur la lande, et cette fois le souffle ne t'accompagne pas : elle a son compte, et toi ton passage.",
-            "La masse te prend à mi-course et te roule contre le talus — une seule passe, lourde, qui te laisse la jambe en feu et le souffle court. Puis elle remonte dans son ombre, sans insister : le creux voulait son péage, il l'a pris. Le chemin est à toi, au prix affiché.",
+            "20 naturel. Tu ne ralentis pas — tu accélères, droit dans l'axe, là où rien de ce qui la fuit ne va jamais. La masse hésite un souffle de trop : le creux est à toi. Elle ne suit que ce qui fuit.",
+            "Tu passes en force, l'épaule au talus, ta lame fendant l'ombre au jugé. Quelque chose cède au-dessus — un poids qui se retire, pas un cri. Le creux se rouvre : elle a son compte, et toi ton passage.",
+            "La masse te prend à mi-course et te roule contre le talus — une seule passe, lourde, qui te laisse la jambe en feu. Puis elle remonte dans son ombre : le creux voulait son péage, il l'a pris.",
             "1 naturel. Tu forces le passage. Le passage était son dos. ♦ −2"
           ),
         },
@@ -4614,9 +4452,9 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu sais ce qu'elle est : un couloir avec un appétit. Alors tu refuses le couloir — tu obliques AVANT les talus, en travers, là où sa charge n'a rien à suivre. La masse freine au bord de son propre piège et n'en sort pas. Tu passes au large, à découvert, et le creux chasse tout seul, pour personne.",
-            "Tu quittes l'axe avant qu'elle ne l'ait refermé — deux pas de biais, pas plus, mais les deux pas qu'elle ne sait pas chasser. Le souffle te cherche dans le couloir où tu n'es plus. Tu contournes le creux par le plat, sans presser, et il ne te suit pas : hors de ses murs, elle n'existe pas.",
-            "Tu obliques trop tôt : elle le voit, et déplace son couloir — la nuit lui a appris ta route, pas ta ruse. Vous tournez l'un autour de l'autre un long moment, chacun refusant le terrain de l'autre, jusqu'à ce qu'elle renonce la première. Tu repars par le plat, entier. Le détour t'a coûté la matinée, pas la jambe.",
+            "20 naturel. Un couloir avec un appétit — alors tu refuses le couloir : tu obliques AVANT les talus, là où sa charge n'a rien à suivre. Elle freine au bord de son propre piège. Le creux chasse pour personne.",
+            "Tu quittes l'axe avant qu'elle ne l'ait refermé — deux pas de biais, ceux qu'elle ne sait pas chasser. Le souffle te cherche dans le couloir où tu n'es plus. Hors de ses murs, elle n'existe pas.",
+            "Tu obliques trop tôt : elle le voit, et déplace son couloir — la nuit lui a appris ta route, pas ta ruse. Vous tournez l'un autour de l'autre jusqu'à ce qu'elle renonce. Le détour t'a coûté la matinée, pas la jambe.",
             "1 naturel. Tu refuses le couloir. Elle en a creusé deux. ♦ −2"
           ),
         },
@@ -4627,11 +4465,7 @@ export const SCENES: Scene[] = [
         fermeLaRoute: true,
         passive: {
           consequence:
-            "Tu montes au premier tas de pierres venu et tu t'assois, bien " +
-            "visible, hors de tout couloir. En bas, le creux patiente — " +
-            "longtemps. Puis le souffle se retire, déçu, chercher un chemin " +
-            "qui marche. Quand tu redescends, la route directe est à elle : " +
-            "la tienne fera le tour, et tu le sais en la prenant.",
+            "Tu montes au premier tas de pierres et tu t'assois, hors de tout couloir. Le creux patiente. Puis le souffle se retire, chercher un chemin qui marche. La route directe est à elle : la tienne fera le tour.",
         },
       },
     ],
@@ -4721,11 +4555,7 @@ export const SCENES: Scene[] = [
         label: "Continuer ton chemin",
         passive: {
           consequence:
-            "Tu t\u2019éloignes, et le troupeau se referme derrière toi " +
-            "comme de l\u2019eau. Dans ton dos, une clochette. Une seule, " +
-            "quelque part au milieu des bêtes — celle qu\u2019on met au cou " +
-            "de la meneuse, pour que le berger sache où est son troupeau " +
-            "dans le brouillard. Elle sonne toute seule, pour personne.",
+            "Le troupeau se referme derrière toi comme de l'eau. Dans ton dos, une clochette. Une seule — celle qu'on met au cou de la meneuse, pour que le berger sache où est son troupeau dans le brouillard. Elle sonne pour personne.",
         },
       },
     ],
@@ -4769,7 +4599,7 @@ export const SCENES: Scene[] = [
           stat: "COURAGE",
           threshold: 11,
           outcomes: outcomes(
-            "Tu montes jusqu'à la dernière marche et tu restes debout dessus, dans le vide. À la rupture, la pierre est propre : pas d'usure, pas de suie — la tour n'est pas tombée, on l'a ouverte. Et d'ici, une seule chose tient l'horizon : la Colline aux Gibets, exactement dans l'axe. La tour ne surveillait pas les Landes. Elle surveillait le grand gibet.",
+            "À la rupture, la pierre est propre : pas d'usure, pas de suie — la tour n'est pas tombée, on l'a ouverte. D'ici, une seule chose tient l'horizon : la Colline aux Gibets, dans l'axe. La tour surveillait le grand gibet.",
             "Tu montes les trois volées qui tiennent — les marches sont creusées en leur milieu, usées par des passages quotidiens. En haut, le vent te prend de face. D'ici on voit tout le hameau, et la Colline aux Gibets se pose pile dans l'axe de l'ouverture.",
             "Une marche cède sous ton poids. Tu te rattrapes au mur, la paume ouverte sur l'arête.",
             "La volée entière lâche. Tu tombes sur le tas de pierres rangées, et elles se rangent autour de toi comme si elles t'attendaient.",
@@ -4805,11 +4635,7 @@ export const SCENES: Scene[] = [
         grantsLoot: "lunette-guet",
         passive: {
           consequence:
-            "Une seule ouverture reste intacte, au sud, à hauteur de poitrine, " +
-            "le rebord poli comme une rampe. Des encoches dans l'embrasure, " +
-            "groupées par cinq. Des centaines. Et calée dans une fente, une " +
-            "lunette de cuivre à un seul verre, posée là comme on repose un " +
-            "outil qu'on reprendra demain.",
+            "Une seule ouverture intacte, au sud, le rebord poli comme une rampe. Des encoches dans l'embrasure, par cinq. Des centaines. Et calée dans une fente, une lunette de cuivre, posée là comme un outil qu'on reprendra demain.",
         },
       },
     ],
@@ -4955,12 +4781,7 @@ export const SCENES: Scene[] = [
         requiresObjet: "caillou-gamin",
         passive: {
           consequence:
-            "Tu poses le galet plat dans sa paume. Le Colporteur le fait " +
-            "rouler du pouce, le soup\u00e8se, le rend. \u00ab \u00c7a, c'est de l'eau " +
-            "courante. \u00bb Il regarde autour de lui sans bouger la t\u00eate. " +
-            "\u00ab Y'a pas d'eau courante \u00e0 trois jours d'ici, et j'ai fait tous " +
-            "les chemins. \u00bb Un temps. \u00ab Le petit te l'a donn\u00e9 ? Range-le " +
-            "avant qu'un autre te demande la m\u00eame chose. \u00bb",
+            "Le Colporteur fait rouler le galet du pouce, le soupèse, le rend. « Ça, c'est de l'eau courante. Y'a pas d'eau courante à trois jours d'ici. Le petit te l'a donné ? Range-le avant qu'un autre te demande la même chose. »",
         },
       },
       {
@@ -4974,15 +4795,7 @@ export const SCENES: Scene[] = [
         requiresSceau: SCEAU_LANDES,
         passive: {
           consequence:
-            "Tu ouvres la main, paume en l'air, comme on montre qu'on n'a " +
-            "rien. Le Colporteur regarde le creux, et son sourire de " +
-            "marchand tombe d'un coup — pas de peur : de fatigue.\n\n" +
-            "— « Trois. » Il replie la toile sur son étal, alors que tu n'as " +
-            "rien demandé. « J'en ai vu trois comme ça, en vingt ans de " +
-            "chemins. Et les trois, je les ai vus deux fois. » Il te tend " +
-            "l'écuelle du repas qu'il s'était gardé, refuse ta main quand tu " +
-            "cherches de quoi payer. « Toi, tu me dois rien. C'est même " +
-            "l'inverse, et j'aime pas ça. »",
+            "Tu ouvres la main. Le sourire du Colporteur tombe — pas de peur : de fatigue.\n\n— « Trois. J'en ai vu trois comme ça, en vingt ans. Et les trois, je les ai vus deux fois. Toi, tu me dois rien. C'est l'inverse. »",
         },
       },
       {
@@ -4996,11 +4809,7 @@ export const SCENES: Scene[] = [
         requiresDecouverte: "d.cloche_sans_battant",
         passive: {
           consequence:
-            "Un homme sans marchandise se tient au bout de la rangée, les " +
-            "mains vides et l\u2019air de quelqu\u2019un qui a eu un métier. " +
-            "« J\u2019ai sonné, une nuit. Pour prévenir. » Il regarde ses " +
-            "paumes. « Le lendemain, plus de battant. Personne n\u2019a rien " +
-            "dit. C\u2019était juste plus là. »",
+            "Un homme sans marchandise, les mains vides, l'air de quelqu'un qui a eu un métier. « J'ai sonné, une nuit. Pour prévenir. » Il regarde ses paumes. « Le lendemain, plus de battant. Personne n'a rien dit. C'était juste plus là. »",
         },
       },
       {
@@ -5011,7 +4820,7 @@ export const SCENES: Scene[] = [
         label: "Demander s\u2019il soigne le soir",
         passive: {
           consequence:
-            "Il hausse les épaules sans lever les yeux de son baume. « Je soigne pas la nuit. C\u2019est pas une règle. C\u2019est juste que personne demande. » Puis, comme on jette un os : « Si c\u2019est l\u2019eau de la Mare que tu as bue, garde ta monnaie. »",
+            "Il hausse les épaules sans lever les yeux. « Je soigne pas la nuit. C'est pas une règle. C'est juste que personne demande. » Puis, comme on jette un os : « Si c'est l'eau de la Mare, garde ta monnaie. »",
         },
       },
       {
@@ -5139,13 +4948,7 @@ export const SCENES: Scene[] = [
         sortie: { toScene: "campement-2" },
         passive: {
           consequence:
-            "Entre toi et la porte, dans la bruyère, quelqu\u2019un est debout " +
-            "au milieu des troncs morts. Une enfant. Elle ne se cache pas et " +
-            "ne recule pas : elle attend que tu l\u2019aies bien vue.\n\n" +
-            "Puis elle s\u2019écarte de deux pas et te laisse passer. Dedans, " +
-            "sous la lucarne, un lit de bruyère garde une forme courte, et " +
-            "contre le mur, à hauteur d\u2019enfant, des jours comptés par " +
-            "paquets de cinq.",
+            "Entre toi et la porte, une enfant. Elle ne se cache pas : elle attend que tu l'aies bien vue.\n\nDedans, un lit de bruyère trop court ; au mur, à hauteur d'enfant, des jours comptés par cinq.",
         },
       },
       {
@@ -5175,7 +4978,7 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu remontes la ligne du faîtage jusqu'à l'endroit où elle s'arrête, et tu comprends d'un coup qu'elle ne s'arrête pas : elle a été DÉFAITE, tuile par tuile, proprement, par quelqu'un qui ne voulait pas qu'on puisse aller plus loin par les toits. Le travail est vieux de trente ans et il a été fait de l'intérieur.",
+            "20 naturel. La ligne du faîtage ne s'arrête pas : elle a été DÉFAITE, tuile par tuile, par quelqu'un qui ne voulait pas qu'on aille plus loin par les toits. Le travail a trente ans. Il a été fait de l'intérieur.",
             "Le chemin de faîtage s'interrompt à cinquante pas. Pas effondré : interrompu. Les tuiles manquantes sont empilées à côté, en ordre.",
             "Tu perds la trace dans la bruyère, et quand tu la retrouves elle ne va plus dans le même sens. Tu renonces avant de savoir laquelle des deux était la bonne.",
             "1 naturel. Tu suis, et la trace te ramène exactement à ton point de départ. Elle est fraîche. C'est la tienne. ♦ −2"
@@ -5215,10 +5018,10 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu dors d'un œil — et cet œil la voit : une petite silhouette entre sans bruit, une corde coupée au cou, s'assoit près de la meule et te veille, toi. À ton réveil, une marque de main dans la poussière — une main d'enfant : merci pour la place.",
+            "20 naturel. Tu dors d'un œil — et cet œil la voit : une petite silhouette entre sans bruit, une corde coupée au cou, et te veille, toi. À ton réveil, une marque de main d'enfant dans la poussière. Merci pour la place.",
             "Ton demi-sommeil filtre les bruits de la lande. Rien n'entre. Le repos est mince, mais il est à toi — et le creux du lit de bruyère, au matin, n'a pas changé de forme.",
             "Tu sombres sans le décider. Au réveil, la porte est ouverte — tu l'avais calée — et sur la meule, quelqu'un a posé une fleur de bruyère. Tu n'es pas sûr que ce soit un cadeau.",
-            "1 naturel. Tu rêves qu'on te veille. Tu te réveilles : c'est vrai. Elle est penchée sur toi, si petite qu'elle n'a pas eu à se pencher beaucoup, sa corde coupée pendant à ton front — puis plus rien, la porte battante, et ton cœur qui compte tout seul. ♦ −2"
+            "1 naturel. Tu te réveilles : elle est penchée sur toi, si petite qu'elle n'a pas eu à se pencher beaucoup, sa corde coupée contre ton front — puis plus rien, et ton cœur qui compte tout seul. ♦ −2"
           ),
         },
       },
@@ -5317,11 +5120,7 @@ export const SCENES: Scene[] = [
         label: "« Pourquoi tu restes ici ? »",
         passive: {
           consequence:
-            "« Pour aller où ? » Elle repose le caillou qu\u2019elle tenait. " +
-            "« Au sud il y a la Descente. La Descente elle prend que les " +
-            "vivants ou les morts. » Elle compte deux doigts et s\u2019arrête. " +
-            "« Moi je suis pas dans les deux. » Un temps. « Et puis si je " +
-            "pars, personne se rappelle. »",
+            "« Pour aller où ? Au sud il y a la Descente. Elle prend que les vivants ou les morts. » Elle compte deux doigts et s'arrête. « Moi je suis pas dans les deux. Et puis si je pars, personne se rappelle. »",
         },
       },
       {
@@ -5334,10 +5133,10 @@ export const SCENES: Scene[] = [
           threshold: 12,
           highStakes: true,
           outcomes: outcomes(
-            "20 naturel. Tu ne dis pas « il t\u2019attend ». Tu dis : « il a tressé la corde trois mois. » Elle s\u2019arrête net. Pour la première fois depuis quarante ans, quelqu\u2019un lui parle de son père comme d\u2019un homme et non comme d\u2019un pendu — et elle te raconte le reste sans que tu aies à demander.",
+            "20 naturel. Tu ne dis pas « il t'attend ». Tu dis : « il a tressé la corde trois mois. » Pour la première fois depuis quarante ans, quelqu'un lui parle de son père comme d'un homme — et elle te raconte le reste.",
             "Elle ne se fâche pas. Elle repose le caillou sur la pierre, très exactement à sa place, et regarde la lucarne. « Je sais. » Deux mots, et le silence qui suit dure assez longtemps pour que tu comprennes qu\u2019elle y pense tous les jours.",
             "« Faut pas dire ça. » Sa voix ne monte pas d\u2019un ton, ce qui est pire. « Tout le monde me dit ce que je devrais faire de mon père. Toi t\u2019es arrivé hier. »",
-            "1 naturel. Elle rit — un petit rire d\u2019enfant, à contretemps, qui ne va pas du tout avec ce qu\u2019elle vient de dire. « Il m\u2019attend, oui. Comme il attendait l\u2019autre. » Elle se remet à ranger ses cailloux et ne te répondra plus de la soirée. ♦ −2"
+            "1 naturel. Elle rit — un petit rire d'enfant, à contretemps. « Il m'attend, oui. Comme il attendait l'autre. » Elle se remet à ranger ses cailloux et ne te répondra plus de la soirée. ♦ −2"
           ),
         },
       },
@@ -5386,13 +5185,7 @@ export const SCENES: Scene[] = [
         decouverte: "d.temoin_nomme",
         passive: {
           consequence:
-            "Elle te regarde un long moment, et tu comprends qu\u2019elle " +
-            "décide si tu es prêt à l\u2019entendre ou juste curieux. " +
-            "« Celle qui regarde. Elle fait rien. Elle attend que vous, vous " +
-            "fassiez — et pendant qu\u2019elle regarde, vous osez. » Elle " +
-            "répète la phrase sans en changer un mot : ce n\u2019est pas " +
-            "d\u2019elle. « Mon père il l\u2019a citée à comparaître. Il était " +
-            "très sérieux. »",
+            "« Celle qui regarde. Elle fait rien. Elle attend que vous, vous fassiez — et pendant qu'elle regarde, vous osez. » Ce n'est pas d'elle. « Mon père il l'a citée à comparaître. »",
         },
       },
       {
@@ -5431,12 +5224,7 @@ export const SCENES: Scene[] = [
         repondBesoin: "dormir",
         passive: {
           consequence:
-            "Vous ne parlez plus. Elle range ses cailloux par tailles, tu " +
-            "regardes la lucarne, et rien ne vient — ni bruit sur le toit, " +
-            "ni ombre à la porte, ni " +
-            "corbeau sur la crête. Tu ne dors pas et pourtant tu te lèves " +
-            "reposé, ce qui ne t\u2019était pas arrivé depuis la Borne. Le " +
-            "seul endroit du pays où l\u2019on ne te compte pas.",
+            "Elle range ses cailloux, tu regardes la lucarne, et rien ne vient — ni bruit sur le toit, ni ombre à la porte. Tu te lèves reposé. Le seul endroit où l'on ne te compte pas.",
         },
       },
       {
@@ -5553,11 +5341,7 @@ export const SCENES: Scene[] = [
         locked: { stat: "EMPATHIE", min: 4 },
         passive: {
           consequence:
-            "Elle repose la corde. C'est la seule fois où elle la repose. " +
-            "« Parce que c'est moi qui l'ai tressée la première fois. » Un " +
-            "temps. « On m'avait dit : fais-en une bonne, on n'aura à la " +
-            "faire qu'une fois. J'en ai fait une excellente. » Elle reprend " +
-            "l'ouvrage, et ses mains tremblent, pour la première fois.",
+            "Elle repose la corde. La seule fois. « Parce que c'est moi qui l'ai tressée la première fois. On m'avait dit : fais-en une bonne, on n'aura à la faire qu'une fois. J'en ai fait une excellente. » Ses mains tremblent.",
         },
       },
       {
@@ -5636,7 +5420,7 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu choisis sans réfléchir, et la corde te répond comme une main. En haut, les points d'attache sont taillés dans la poutre et numérotés au charbon — et la numérotation continue bien après la dernière corde pendue. Les places sont faites avant qu'on en ait besoin. Tu redescends avec ça, et ça ne se dira jamais tout haut en bas.",
+            "20 naturel. Tu choisis sans réfléchir, et la corde te répond comme une main. En haut, les points d'attache sont numérotés — et la numérotation continue bien après la dernière corde pendue. Les places sont faites avant qu'on en ait besoin.",
             "La corde tient. À la poutre, tous les nœuds sont le même nœud, et tous sont récents : elle les défait et les refait un par un, sans fin. Cette chapelle n'est pas un souvenir. C'est un entretien.",
             "Tu as pris une des vieilles. Elle lâche à la poutre, d'un coup net, et tu descends toute la longueur en une seule fois. Les dalles ne pardonnent pas la paille qu'elles n'ont pas.",
             "1 naturel. Tu poses ton poids sur la poutre. Tout le rang de cordes de ce mur se tend ensemble, puis relâche ensemble, et tu redescends dedans. Tu te relèves en te dépliant d'un nœud que tu n'as pas fait. ♦ −2"
@@ -5655,7 +5439,7 @@ export const SCENES: Scene[] = [
         decouverte: "d.trois_cordes",
         passive: {
           consequence:
-            "Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom — des reliques : chacune « a tenu » quelqu'un. La troisième du rang bas n'a pas d'étiquette, et bouge quand tu ne la regardes pas. Plus bas, trois cordes portent la même date : celle du Bailli, un prénom de fille, et un nom arraché.",
+            "Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom : chacune « a tenu » quelqu'un. La troisième du rang bas n'a pas d'étiquette, et bouge quand tu ne la regardes pas. Trois cordes portent la même date.",
         },
       },
       {
@@ -5733,7 +5517,7 @@ export const SCENES: Scene[] = [
           stat: "EMPATHIE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu t'agenouilles et tu refais son nœud avec elle, geste pour geste. À la dernière boucle, ses mains s'arrêtent — finies, après tant d'années. Elle te regarde, et te donne le seul secret qui vaille ici : le nom que la corde coupée refusait de porter.",
+            "20 naturel. Tu refais son nœud avec elle, geste pour geste. À la dernière boucle, ses mains s'arrêtent — finies, après tant d'années. Elle te donne le seul secret qui vaille ici : le nom que la corde coupée refusait de porter.",
             "Tu prends le bout de corde qu'elle te tend et tu suis. Le nœud qu'elle t'apprend n'attache rien — il retient quelqu'un de partir dans sa tête. Elle te tapote la main : tu sauras le refaire, quand tu en auras besoin. Tu espères que non.",
             "Tu t'agenouilles trop près. Ses mains ne s'arrêtent pas, mais son nœud change — et tu reconnais la forme, maintenant : c'est un nœud coulant à ta taille de cou. Tu te relèves sans brusquerie. Elle sourit au mur.",
             "1 naturel. Tu pries avec elle. Elle prie pour toi. Au mur, un clou libre attend déjà, sous un espace sans nom — plus pour longtemps, dit son nœud. ♦ −2"
@@ -5748,12 +5532,7 @@ export const SCENES: Scene[] = [
         soupcon: 1,
         passive: {
           consequence:
-            "La troisi\u00e8me du rang bas n'a pas d'\u00e9tiquette. Tu \u00e9cris dessus, \u00e0 " +
-            "la craie grasse, le premier nom qui te vient \u2014 le tien. La corde " +
-            "s'immobilise net. Toutes les autres continuent de bouger " +
-            "imperceptiblement dans le courant d'air ; celle-l\u00e0, plus du " +
-            "tout. La Veuve l\u00e8ve les yeux. \u00ab On ne nomme pas ce qui n'est pas " +
-            "encore \u00e0 nous. \u00bb Elle ne dit pas de l'effacer.",
+            "La troisième du rang bas n'a pas d'étiquette. Tu y écris ton nom, à la craie. La corde s'immobilise. « On ne nomme pas ce qui n'est pas encore à nous. » Elle ne dit pas de l'effacer.",
         },
       },
       {
@@ -5782,7 +5561,7 @@ export const SCENES: Scene[] = [
         requiresSavoir: "savoir_corde_vive",
         passive: {
           consequence:
-            "Tu connais son rang et sa place. Tu longes l'autre mur, à une largeur de bras de trop pour elle. Dans ton dos, elle se détend puis se retend à vide — une chose qui avait prévu autre chose. La Veuve lève les yeux pour la première fois. Elle a l'air de noter.",
+            "Tu longes l'autre mur, à une largeur de bras de trop pour elle. Dans ton dos, elle se détend puis se retend à vide — une chose qui avait prévu autre chose. La Veuve note.",
         },
       },
       {
@@ -5883,10 +5662,10 @@ export const SCENES: Scene[] = [
           threshold: 13,
           highStakes: true,
           outcomes: outcomes(
-            "20 naturel. Tu descends dans le noir jusqu'à ce que le noir cesse d'être en bas. Au fond, il n'y a pas d'eau : il y a une place de hameau, la même, à l'envers, et un puits au milieu d'où monte une corde. Des mains grises la tiennent pour toi, avec une politesse d'employés. Tu ne restes pas. Mais tu remontes en sachant que ce village a un dessous, et que le dessous t'a laissé partir — ce qui veut dire qu'il te compte parmi ses connaissances.",
-            "Tu descends main sur main, les pieds au mur. La paroi est sèche : ce puits n'a jamais eu d'eau. À dix brasses, la corde s'arrête sur un palier de planches — un plancher, pas un fond — et dessus, rangées, des dizaines de paires de chaussures, propres, par tailles. Tu ne descends pas plus bas. Tu remontes vite, et personne ne te retient.",
-            "Tu descends trop vite et la corde te brûle les paumes jusqu'au sang. À mi-hauteur, une main sort de la paroi et se referme sur la corde au-dessus de toi — pas sur toi : sur la corde, comme on tient une porte. Tu remontes en t'arrachant les mains, et elle te laisse faire. Elle voulait juste que tu saches qui décide.",
-            "1 naturel. Tu descends. La corde se détend d'un coup — on l'a lâchée en bas, exprès, au moment où tu ne pouvais plus remonter à la force des bras. Ce qui te rattrape ensuite le fait doucement, et te repose sur la margelle avec un soin qui est bien pire que la chute. Il te manque quelque chose et tu ne sais pas encore quoi. ♦ −2"
+            "20 naturel. Tu descends jusqu'à ce que le noir cesse d'être en bas. Au fond, pas d'eau : une place de hameau, à l'envers, et un puits d'où monte une corde. Des mains grises la tiennent pour toi. Le dessous t'a laissé partir.",
+            "La paroi est sèche : ce puits n'a jamais eu d'eau. À dix brasses, la corde s'arrête sur un plancher — pas un fond — et dessus, rangées par tailles, des dizaines de paires de chaussures, propres. Tu remontes vite.",
+            "Tu descends trop vite. À mi-hauteur, une main sort de la paroi et se referme sur la corde — comme on tient une porte. Elle te laisse remonter. Elle voulait que tu saches qui décide.",
+            "1 naturel. La corde se détend d'un coup — lâchée en bas, exprès, au moment où tu ne pouvais plus remonter. Ce qui te rattrape le fait doucement, et te repose sur la margelle avec un soin bien pire que la chute. ♦ −2"
           ),
         },
       },
@@ -5966,13 +5745,7 @@ export const SCENES: Scene[] = [
         requiresObjet: "grelot-charretier",
         passive: {
           consequence:
-            "Tu glisses le grelot de cuivre entre deux planches et tu " +
-            "\u00e9coutes. Il ne touche pas le fond. Il tinte une fois, loin, " +
-            "puis une deuxi\u00e8me fois plus loin encore, puis plus rien pendant " +
-            "le temps qu'il faut pour compter jusqu'\u00e0 vingt.\n\n" +
-            "Alors il tinte une troisi\u00e8me fois \u2014 juste sous les planches. " +
-            "On te le remonte. Les coups reprennent, et ils ont chang\u00e9 de " +
-            "rythme : ils sont polis, maintenant. On te remercie.",
+            "Tu glisses le grelot entre deux planches. Il tinte une fois, loin, une deuxième plus loin, puis rien.\n\nAlors il tinte une troisième fois — juste sous les planches. On te le remonte. Les coups reprennent, polis, maintenant.",
         },
       },
       {
@@ -6008,11 +5781,7 @@ export const SCENES: Scene[] = [
         label: "Longer les fenêtres murées",
         passive: {
           consequence:
-            "Les pierres sont posées de l'intérieur, oui — mais pas " +
-            "n'importe comment : en quinconce serré, du travail soigné, " +
-            "fait sans hâte. Il ne s'est pas barricadé dans la panique. Il " +
-            "a pris le temps de bien s'enfermer. Contre quoi, une maison ne " +
-            "le dit pas. Contre qui, parfois.",
+            "Les pierres sont posées de l'intérieur — en quinconce serré, sans hâte. Il a pris le temps de bien s'enfermer. Contre quoi, une maison ne le dit pas. Contre qui, parfois.",
         },
       },
       {
@@ -6100,9 +5869,9 @@ export const SCENES: Scene[] = [
           stat: "EMPATHIE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu t'accroupis à sa hauteur et tu le lui dis comme on rend une nouvelle à un vieux serviteur : le nom qui l'a posté est écrit sur le registre, en dernier, de sa propre main. Le chien te regarde longtemps. Puis il se lève, quitte le seuil, et va se coucher trois pas plus loin — dehors, comme un chien sans maison. Il ne t'accompagne pas. Il ne t'arrête plus.",
+            "20 naturel. Tu le lui dis : le nom qui l'a posté est écrit au registre, de sa propre main. Le chien quitte le seuil et va se coucher trois pas plus loin — comme un chien sans maison.",
             "Tu parles doucement, depuis le seuil, et tu dis le nom que le pendu a fini par lâcher — celui du Bailli. L'animal dresse une oreille, puis la baisse. Il ne s'écarte pas franchement : il se décale, ce qui suffit.",
-            "Ta voix tremble sur le nom, et c'est ce tremblement qu'il entend. Il se jette — et la chaîne le reprend à un pas de tes bottes, dans un bruit sec. Tu as parlé depuis le bon côté du seuil : il n'y a que ça entre lui et toi.",
+            "Ta voix tremble sur le nom, et c'est ce tremblement qu'il entend. Il se jette — et la chaîne le reprend à un pas de tes bottes. Il n'y a que ça entre lui et toi.",
             "1 naturel. Tu lui annonces que son maître est mort. Il le savait. C'est pour ça qu'il ne quitte plus ce seuil, et pour ça qu'il n'a plus rien à perdre. ♦ −2"
           ),
         },
@@ -6115,7 +5884,7 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu fais le tour par les appentis — et tu trouves mieux que la porte : le trou par lequel le chien entre et sort, taillé à sa mesure dans la pierre murée. Assez large pour toi. La seule ouverture que le Bailli n'a jamais murée : il faut bien nourrir la garde.",
+            "20 naturel. Par les appentis, tu trouves mieux que la porte : le trou du chien, taillé à sa mesure dans la pierre murée. Assez large pour toi. La seule ouverture jamais murée : il faut bien nourrir la garde.",
             "Tu passes par la cour aux orties, sous le vent, hors de vue. Le chien tourne autour de la maison à ta recherche — méthodique, aux aguets — mais la routine de sa ronde a trente ans, et tu marches entre ses horaires.",
             "La cour est un piège à bruit : ardoises brisées, seaux morts, orties jusqu'au coude. Le chien t'y cueille à mi-chemin, sans surprise aucune — sa ronde passait par là, évidemment. Tu ressors piqué, mordu et bredouille.",
             "1 naturel. Dans la cour arrière, tu découvres pourquoi la ronde du chien l'évite : quelque chose y est enterré, et ça n'aime pas les pas au-dessus. ♦ −2"
@@ -6192,11 +5961,7 @@ export const SCENES: Scene[] = [
         chapterFragment: true,
         passive: {
           consequence:
-            "Elles courent tout le long du mur nord, par paquets de cinq, " +
-            "creusées au couteau. Elles commencent à hauteur d'homme et " +
-            "descendent — il s'est assis pour continuer, puis il a compté " +
-            "sans se relever.\n\nLa dernière série s'arrête à hauteur " +
-            "d'enfant. Elle n'est pas finie : le cinquième trait manque.",
+            "Elles courent le long du mur, par paquets de cinq. Elles commencent à hauteur d'homme et descendent — il s'est assis pour continuer.\n\nLa dernière série s'arrête à hauteur d'enfant. Elle n'est pas finie : le cinquième trait manque.",
         },
       },
       {
@@ -6209,12 +5974,7 @@ export const SCENES: Scene[] = [
         tags: ["citable"],
         passive: {
           consequence:
-            "Tu t'assieds. Tes pieds tombent dans les deux ronds sans que " +
-            "tu aies à chercher.\n\nDe cette place, et de cette place " +
-            "seulement, la fenêtre non murée cadre le moulin. Pas la lande, " +
-            "pas la crête, pas la route du hameau : le moulin, entier, au " +
-            "milieu du carré de jour. Il n'a pas gardé une fenêtre. Il a " +
-            "gardé celle-là.",
+            "Tu t'assieds. Tes pieds tombent dans les deux ronds sans chercher.\n\nDe cette place, et de cette place seulement, la fenêtre non murée cadre le moulin. Entier. Il n'a pas gardé une fenêtre. Il a gardé celle-là.",
         },
       },
       {
@@ -6231,14 +5991,7 @@ export const SCENES: Scene[] = [
         decouverte: "d.porte_clouee",
         passive: {
           consequence:
-            "Les clous sont plantés de l\u2019intérieur, et pas droit : en " +
-            "biais, croisés, chacun mordant sur le suivant. Un homme seul, " +
-            "dans le noir, qui reclouait par-dessus son propre travail à " +
-            "chaque fois qu\u2019il entendait quelque chose. Tu comptes les " +
-            "couches en les défaisant. Il y en a onze.\n\nEt le chambranle " +
-            "est marqué de l\u2019intérieur lui aussi — des raclures basses, " +
-            "régulières, à hauteur de genou. Tu ressors par où lui n\u2019est " +
-            "jamais ressorti.",
+            "Les clous sont plantés de l'intérieur, en biais, croisés — recloués chaque fois qu'il entendait quelque chose. Onze couches.\n\nLe chambranle porte des raclures basses, à hauteur de genou. Tu ressors par où lui n'est jamais ressorti.",
         },
       },
     ],
@@ -6282,13 +6035,7 @@ export const SCENES: Scene[] = [
         decouverte: "d.ordonnance_lue",
         passive: {
           consequence:
-            "Du papier épais, jauni, cloué aux quatre coins par quelqu'un qui " +
-            "ne voulait pas qu'on le décroche : la liste des signes, de la " +
-            "main du Bailli. « Parler seul face au sud. Fixer les Profondeurs " +
-            "plus qu'il ne faut. Cesser de dormir. Répondre à ce qui n'a pas " +
-            "parlé. » Tu la lis trois fois. La deuxième, tu comptes ceux qui " +
-            "te concernent déjà. La troisième, tu les apprends — parce que " +
-            "c'est exactement ce qu'ils guettent chez toi. " +
+            "La liste des signes, de la main du Bailli. « Parler seul face au sud. Fixer les Profondeurs plus qu'il ne faut. Cesser de dormir. Répondre à ce qui n'a pas parlé. » C'est ce qu'ils guettent chez toi." +
             /* TRACE DU GRAND TÉMOIN (14/08) — la 2e occurrence du signe en
                forme de plume, sur la propre liste du Bailli, et dans la marge
                du seul signe qui parle de « ce qui n'a pas parlé ».
@@ -6316,15 +6063,7 @@ export const SCENES: Scene[] = [
         fait: "fait-bailli",
         passive: {
           consequence:
-            "Il faut lever les yeux vers elle, et c'est le but. Tu montes la " +
-            "marche unique que le Bailli montait chaque fois qu'il allait dire " +
-            "la même phrase. Le Registre des Pendaisons y est ouvert — pas par " +
-            "négligence : ici, la loi se montre. Des colonnes de noms, de " +
-            "dates, de signes, une écriture appliquée qui se dégrade au fil " +
-            "des pages. Un nom sur deux est barré : pas raturé, barré d'un " +
-            "trait droit, à l'encre plus récente que le nom. Et au bord de la " +
-            "page, à côté de certains noms seulement, un petit signe en forme " +
-            "de plume. Rien ne l'explique.",
+            "Le Registre des Pendaisons, ouvert sur la chaire. Un nom sur deux est barré d'un trait droit. Au bord de la page, à côté de certains noms seulement, un petit signe en forme de plume. Rien ne l'explique.",
         },
       },
       {
@@ -6335,12 +6074,7 @@ export const SCENES: Scene[] = [
         chapterFragment: true,
         passive: {
           consequence:
-            "Trois rangs de bois brut, et cette disposition que tu reconnais " +
-            "sans l'avoir apprise : les accusés devant, les témoins de côté, " +
-            "le hameau derrière. Le bois du banc des accusés est poli au " +
-            "milieu, rongé aux bords — des mains qui serrent. Sur le banc des " +
-            "témoins, des entailles de comptage : quelqu'un venait souvent. " +
-            "Témoigner était son habitude.",
+            "Les accusés devant, les témoins de côté, le hameau derrière — tu reconnais l'ordre sans l'avoir appris. Le banc des accusés est rongé aux bords : des mains qui serrent. Sur celui des témoins, des entailles de comptage : quelqu'un venait souvent.",
         },
       },
     ],
@@ -6384,16 +6118,7 @@ export const SCENES: Scene[] = [
         requiresSceau: SCEAU_LANDES,
         passive: {
           consequence:
-            "Tu poses la question sans montrer ta main. Il ne demande pas " +
-            "pourquoi. Il feuillette en arrière, très loin, jusqu'à un " +
-            "cahier plus ancien que lui — et l'ouvre à une page qu'il n'a " +
-            "pas eu besoin de chercher.\n\n" +
-            "Une colonne de noms, courte. Chacun rayé d'un trait, et en " +
-            "face de chaque trait, un second nom, celui de quelqu'un du " +
-            "hameau, avec une date. « Quand il en revient un », dit " +
-            "l'Écrivain en refermant, « il en manque un. Le registre ne " +
-            "juge pas. Il équilibre. » Il te regarde enfin. « Vous croyez " +
-            "tous que vous rentrez. Personne ne rentre. On échange. »",
+            "Il feuillette en arrière. Une colonne de noms rayés — et en face de chaque trait, un nom du hameau. « Quand il en revient un, il en manque un. Le registre ne juge pas. Il équilibre. »",
         },
       },
       {
@@ -6403,13 +6128,7 @@ export const SCENES: Scene[] = [
         requiresObjet: "carnet-fossoyeur",
         passive: {
           consequence:
-            "Tu poses le carnet du Fossoyeur \u00e0 plat contre la page ouverte, " +
-            "et tu remontes les deux colonnes du doigt. Elles s'accordent " +
-            "jusqu'\u00e0 un tiers. Apr\u00e8s, le Registre continue de compter des " +
-            "pendus que le carnet n'a jamais eu \u00e0 mettre en terre. Personne " +
-            "n'a menti : le livre dit ce qui a \u00e9t\u00e9 prononc\u00e9, le carnet dit " +
-            "ce qui a \u00e9t\u00e9 enterr\u00e9. Il manque une trentaine de corps entre " +
-            "les deux.",
+            "Tu poses le carnet du Fossoyeur contre la page ouverte. Les deux colonnes s'accordent jusqu'à un tiers. Après, le Registre compte des pendus que le carnet n'a jamais mis en terre. Il manque une trentaine de corps entre les deux.",
         },
       },
       { id: "lire-registre", label: "Lire le Registre" },
@@ -6451,11 +6170,7 @@ export const SCENES: Scene[] = [
         sortie: {},
         passive: {
           consequence:
-            "Tu tournes le dos à la chaire. La plume de l'Écrivain continue " +
-            "de gratter — elle écrit ta sortie, en ce moment même, dans une " +
-            "colonne que tu ne verras pas. Certains comptes, on préfère ne " +
-            "pas savoir où ils s'arrêtent. La porte du tribunal se referme " +
-            "sans bruit : on sait que tu reviendras. Tout le monde revient.",
+            "Tu tournes le dos à la chaire. La plume de l'Écrivain continue de gratter — elle écrit ta sortie, dans une colonne que tu ne verras pas. Certains comptes, on préfère ne pas savoir où ils s'arrêtent. Tout le monde revient.",
         },
       },
       {
@@ -6473,8 +6188,8 @@ export const SCENES: Scene[] = [
           threshold: 13,
           highStakes: true,
           outcomes: outcomes(
-            "20 naturel. Tu l'annonces comme un fait administratif, sans trembler : ton nom est gravé au fond du champ, l'entaille est fraîche, le bois n'a pas grisé. Puis tu ajoutes la seule question qui compte : « Qui a donné mon nom au Fossoyeur, et sur quel jugement ? » La plume s'arrête. L'Écrivain feuillette en arrière, pâlit, et tourne le cahier vers toi. La ligne existe. Elle est signée d'une main morte depuis des années. Tu ne sais pas encore ce que ça veut dire — mais lui non plus, et ça le terrifie davantage.",
-            "Tu le dis, et tu regardes l'Écrivain plutôt que le sol. Sa plume hésite. « Une erreur de greffe », finit-il par dire, et il gratte la ligne devant toi. Le bois du poteau, lui, restera taillé — mais le cahier ne te réclame plus. Ici, c'est le cahier qui décide.",
+            "20 naturel. Tu l'annonces sans trembler : ton nom est gravé au fond du champ. « Qui l'a donné au Fossoyeur, et sur quel jugement ? » L'Écrivain feuillette, pâlit. La ligne existe, signée d'une main morte depuis des années. Lui non plus ne comprend pas.",
+            "Tu le dis en regardant l'Écrivain. Sa plume hésite. « Une erreur de greffe », dit-il, et il gratte la ligne devant toi. Le cahier ne te réclame plus. Ici, c'est le cahier qui décide.",
             "Tu le dis, et le silence qui suit te apprend ton erreur. L'Écrivain ne lève pas les yeux : il écrit. Longuement. Tu viens de fournir toi-même le motif qui manquait à ta ligne, et il a l'élégance de ne pas te remercier.",
             "1 naturel. Tu parles trop, et tu parles bien : tu expliques exactement où est le poteau, à quelle rangée, comment l'entaille est faite. L'Écrivain note tout. « Merci », dit-il enfin — le seul mot qu'il t'aura adressé. « On cherchait encore lequel c'était. » ♦ −2"
           ),
@@ -6560,9 +6275,9 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu sors la clochette et tu la fais sonner une fois, sèchement, comme on rappelle un troupeau. Les cinq têtes se tournent ENSEMBLE, du même côté, à la même hauteur — et le front se défait. Ils cherchent le berger derrière toi. Tu passes pendant qu'ils cherchent, et le son continue de les tenir longtemps après.",
-            "Le battant claque — celui que tu as pris au cou de la meneuse du troupeau. La grande s'arrête net, une patte en l'air, et le silence dure assez pour que tu recules de trois pas sans qu'aucune ne bouge. Ils te laissent partir en te regardant faire : tu sens qu'ils t'ont classé quelque part.",
-            "Tu agites la clochette. Le son sort mou, faux, pas celui d'une bête qui marche. Ils comprennent que le berger, c'est toi qui l'as pris — et ils ne bougent pas pour autant : on ne mord pas quelqu'un qui porte la clochette. Ils se contentent de refermer le demi-cercle d'un pas.",
+            "20 naturel. Tu fais sonner la clochette une fois, sèchement, comme on rappelle un troupeau. Les cinq têtes se tournent ENSEMBLE — et le front se défait. Ils cherchent le berger derrière toi. Tu passes pendant qu'ils cherchent.",
+            "Le battant claque — celui pris au cou de la meneuse du troupeau. La grande s'arrête net, une patte en l'air, et le silence dure assez pour reculer de trois pas. Ils te laissent partir : ils t'ont classé quelque part.",
+            "Tu agites la clochette. Le son sort mou, faux. Ils comprennent que le berger, c'est toi qui l'as pris — mais on ne mord pas qui porte la clochette. Le demi-cercle se referme d'un pas.",
             "1 naturel. La clochette sonne juste. Trop juste. Ils arrivent au son — c'est exactement ce qu'on leur a appris à faire. ♦ −2"
           ),
         },
@@ -6581,7 +6296,7 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu renverses la tête et tu hurles — pas de peur : un vrai hurlement de meute, appris tu ne sais où, peut-être du fond de la lande elle-même. Le cercle se fige. La meneuse répond. Vous vous êtes dit quelque chose, et le cercle s'ouvre : on ne chasse pas ce qui chante.",
+            "20 naturel. Tu renverses la tête et tu hurles — pas de peur : un vrai hurlement de meute, appris tu ne sais où. Le cercle se fige. La meneuse répond. Le cercle s'ouvre : on ne chasse pas ce qui chante.",
             "Ton hurlement les déroute — c'est la proie qui crie, jamais le centre. Deux bêtes rompent le tour pour interroger la meneuse du regard, et le cercle flotte, désaccordé. Tu as gagné du temps et semé le doute, leurs deux seules faiblesses.",
             "Ton hurlement sonne faux — un cri de gorge d'homme, rien d'autre. Le cercle ne ralentit même pas. Pire : au loin, quelque chose d'autre a répondu, et la meneuse presse le pas. Ils veulent finir avant l'arrivée de ce que tu as appelé.",
             "1 naturel. Tu hurles. Toute la lande répond — tout ce qu'elle contient, d'un seul chœur. La meute, elle, s'assoit poliment : on ne coupe pas la parole à ce qui arrive. ♦ −2"
@@ -6628,8 +6343,8 @@ export const SCENES: Scene[] = [
           outcomes: outcomes(
             "20 naturel. Tu réponds d'un seul coup, net, définitif. La meneuse tombe sans un bruit — et la meute ne venge pas : elle constate, se choisit une autre tête d'un simple flottement, et reflue dans la bruyère. Les questions, dans la lande, n'ont pas de rancune.",
             "Ta lame répond pour toi. La meneuse esquive l'essentiel, encaisse le reste, et rompt — le croissant entier reflue avec elle, réglé sur sa retraite. Ils reviendront peut-être. Pas aujourd'hui, et pas pour toi.",
-            "Elle attendait l'acier — c'est la réponse qu'ils comprennent le mieux et esquivent le mieux. Le croissant fond sur toi, prend son tribut de chair en trois passes réglées, puis décroche d'un coup, comme à un signal. La lande se referme sur eux. Le compte est bon, pour eux.",
-            "1 naturel. Tu frappes. Ta lame se prend dans la bruyère — la lande a choisi son camp. La meute te passe dessus en une seule vague, sans s'attarder : ce qu'elle voulait savoir, elle le sait, et te laisse au sol, moins lourd de ce qu'elle emporte. ♦ −2"
+            "Elle attendait l'acier — la réponse qu'ils comprennent le mieux et esquivent le mieux. Le croissant fond sur toi, prend son tribut de chair en trois passes, puis décroche d'un coup, comme à un signal. Le compte est bon, pour eux.",
+            "1 naturel. Ta lame se prend dans la bruyère — la lande a choisi son camp. La meute te passe dessus en une seule vague : ce qu'elle voulait savoir, elle le sait. Elle te laisse au sol, moins lourd de ce qu'elle emporte. ♦ −2"
           ),
         },
       },
@@ -6641,9 +6356,9 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 14,
           outcomes: outcomes(
-            "20 naturel. Tu recules pas à pas, les yeux dans les siens, sans un frisson. La meneuse te suit — puis s'arrête à la frontière exacte d'un territoire que toi, tu ne vois pas. Elle s'assoit. Te voilà dehors de leur carte : la meute te regarde partir comme on regarde la pluie quitter un champ.",
-            "Chaque pas en arrière est un mot de la négociation. Tu la tiens du regard jusqu'au chemin, et le croissant s'effiloche à mesure — une bête qui décroche, puis deux. À la fin, il ne reste que la meneuse, qui te concède la lande d'un battement de paupières.",
-            "Ton talon accroche une racine — un quart de seconde de regard perdu. Il ne leur en faut pas plus : la charge t'arrive dessus pendant que tu te rattrapes, te roule, te coûte — puis s'arrête net, croissant reformé, et la meute s'en va. L'épreuve est finie ; tu n'as pas brillé, mais tu es debout.",
+            "20 naturel. Tu recules pas à pas, les yeux dans les siens. La meneuse te suit — puis s'arrête à la frontière d'un territoire que toi, tu ne vois pas. Elle s'assoit. Ils te regardent partir comme la pluie quitte un champ.",
+            "Chaque pas en arrière est un mot de la négociation. Tu la tiens du regard, et le croissant s'effiloche — une bête qui décroche, puis deux. Il ne reste que la meneuse, qui te concède la lande d'un battement de paupières.",
+            "Ton talon accroche une racine — un quart de seconde de regard perdu. Il ne leur en faut pas plus : la charge te roule pendant que tu te rattrapes, puis s'arrête net. Tu n'as pas brillé, mais tu es debout.",
             "1 naturel. Tu recules sans baisser les yeux. Eux non plus. Tu recules encore. Eux avancent. Le mur de pierre sèche dans ton dos met fin à la négociation — à leurs conditions. Ils prélèvent, et te laissent contre le muret, vivant par désintérêt. ♦ −2"
           ),
         },
@@ -6663,9 +6378,9 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu refais le son de tout à l'heure, plus bas, plus court — une réponse, pas un défi. La meneuse incline la tête, exactement comme un chien à qui l'on parle. Puis elle se détourne et le croissant se défait derrière elle, sans un bruit, comme une phrase qu'on finit.",
+            "20 naturel. Tu refais le son, plus bas, plus court — une réponse, pas un défi. La meneuse incline la tête, comme un chien à qui l'on parle. Puis le croissant se défait derrière elle, comme une phrase qu'on finit.",
             "Tu réponds — le même son qu'elles t'ont lancé tout à l'heure, plus bas. Ce n'est pas beau, mais c'est dans la bonne langue. La meneuse recule d'un pas — le premier qu'aucune d'elles n'avait fait — et le reste suit son pas.",
-            "Tu réponds trop fort. Ce qui devait être un accord sonne comme une revendication — et ce n'est pas à toi qu'on la règle : deux d'entre eux se retournent l'un contre l'autre dans un bruit atroce, et le demi-cercle se défait autour de la querelle. Tu passes pendant qu'ils règlent ça entre eux. Aucun ne t'a répondu.",
+            "Tu réponds trop fort. Un accord qui sonne comme une revendication — et ce n'est pas à toi qu'on la règle : deux d'entre eux se retournent l'un contre l'autre. Tu passes pendant qu'ils règlent ça. Aucun ne t'a répondu.",
             "1 naturel. Tu leur réponds dans leur langue. Ils te répondent dans la leur, et la leur n'a qu'une phrase. ♦ −2"
           ),
         },
@@ -6688,10 +6403,10 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu fais glisser ton manteau et tu le lances de biais, loin sur le côté, là où le vent portera ton odeur. Il tombe en gardant ta forme. La meute entière se détourne pour le juger, méthodique, et la meneuse te laisse filer avec un regard entendu : elle sait qu'elle est achetée, elle accepte le prix. Marché de vieux routiers.",
+            "20 naturel. Tu lances ton manteau de biais, là où le vent porte ton odeur. Il tombe en gardant ta forme. La meute se détourne pour le juger, et la meneuse te laisse filer d'un regard entendu : elle sait qu'elle est achetée.",
             "Le manteau tombe entre vous, encore tiède de toi. La meneuse le flaire longuement, le juge honnête — et le croissant se referme dessus au lieu de toi. Tu pars les épaules nues et la peau entière. Dans la lande, c'est un excellent taux de change.",
-            "Tu le jettes trop vite, trop près de toi. La meute prend le manteau ET la leçon : ce qui se déshabille tremble. La meneuse te bouscule au passage, sans mordre, juste pour l'inventaire — puis ils s'en vont, servis. Tu restes debout, sans manteau, jaugé au plus juste.",
-            "1 naturel. Tu jettes ton manteau. Ils n'y touchent pas. Ce n'était pas une chasse au gibier — c'était une pesée, et ton offrande vient de te faire passer dans la mauvaise colonne. Ils prélèvent la différence sur toi, exacts comme un percepteur, puis rendent la lande au silence. ♦ −2"
+            "Tu le jettes trop vite, trop près. La meute prend le manteau ET la leçon : ce qui se déshabille tremble. La meneuse te bouscule au passage, sans mordre, pour l'inventaire — puis ils s'en vont, servis. Tu restes debout, sans manteau.",
+            "1 naturel. Ils n'y touchent pas. Ce n'était pas une chasse — c'était une pesée, et ton offrande vient de te faire passer dans la mauvaise colonne. Ils prélèvent la différence sur toi, exacts comme un percepteur. ♦ −2"
           ),
         },
       },
@@ -6729,17 +6444,7 @@ export const SCENES: Scene[] = [
         grantsLoot: "miroir-poche",
         passive: {
           consequence:
-            "La terre est tassée, luisante, usée jusqu\u2019à la pierre : on " +
-            "s\u2019agenouille ici depuis longtemps. Et les creux de genoux " +
-            "sont DOUBLES. Une paire devant, au ras de l\u2019eau. Une autre " +
-            "juste derrière, plus large, plus profonde, orientée dans le même " +
-            "sens. Quelqu\u2019un se tenait toujours au-dessus de celui qui se " +
-            "penchait. Ce n\u2019est pas un endroit où l\u2019on vient voir " +
-            "son reflet : c\u2019est un endroit où on l\u2019amène.\n\n" +
-            "Dans les roseaux, à un pas des creux, un éclat de métal : un " +
-            "petit miroir de poche, fêlé en travers. Perdu — ou jeté par " +
-            "quelqu\u2019un qui n\u2019a pas aimé ce qu\u2019il y a vu. La " +
-            "fêlure passe exactement où serait un visage.",
+            "Les creux de genoux sont DOUBLES : quelqu'un se tenait au-dessus de celui qui se penchait. On ne vient pas voir son reflet ici. On l'y amène.\n\nDans les roseaux, un miroir de poche, fêlé où serait un visage.",
         },
       },
       {
@@ -6750,13 +6455,7 @@ export const SCENES: Scene[] = [
         grantsSavoir: "savoir_reflet",
         passive: {
           consequence:
-            "Les creux sont à ta taille, évidemment. La croyance dit : le " +
-            "reflet de qui entend la voix est en retard. Tu te penches. Ton " +
-            "reflet se penche. Et il lève les yeux vers toi une demi-seconde " +
-            "après toi. Tu le savais déjà — tu entends la voix depuis le " +
-            "premier jour. Mais le savoir et le voir sont deux choses " +
-            "différentes. À partir de maintenant, tu ne pourras plus prétendre " +
-            "le contraire, même à quelqu\u2019un qui te ressemble.",
+            "Le reflet de qui entend la voix est en retard, dit la croyance. Tu te penches. Ton reflet se penche. Et il lève les yeux vers toi une demi-seconde après toi. Savoir et voir sont deux choses.",
         },
       },
       {
@@ -6769,7 +6468,7 @@ export const SCENES: Scene[] = [
           stat: "COURAGE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. L'eau est glacée et propre, sans un goût. Tu bois longuement, et quand tu relèves la tête tu te sens plus léger d'une chose que tu ne saurais pas nommer — comme si la mare avait pris quelque chose à ta place. Elle avait le choix. Elle a bien choisi.",
+            "20 naturel. L'eau est glacée et propre. Tu bois longuement, et tu te relèves plus léger d'une chose que tu ne saurais pas nommer. La mare avait le choix. Elle a bien choisi.",
             "Tu bois dans le creux de ta main. C'est de l'eau, rien d'autre. Ça n'a l'air de rien mais dans les Landes, ça compte.",
             "Tu bois — et l'eau reste au bord des lèvres, sans descendre, une seconde de trop. Quand elle passe enfin, tu as l'impression très nette d'avoir avalé quelque chose qui a accepté de se laisser avaler.",
             "1 naturel. Tu bois. Sous la surface, à trois doigts de ton visage, ton reflet continue de boire quand tu t'arrêtes. \u2666 \u22122"
@@ -6799,7 +6498,7 @@ export const SCENES: Scene[] = [
           stat: "EMPATHIE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu ne lui demandes rien — tu lui dis simplement que tu as vu la même chose. Il te regarde comme on regarde une rive. Puis il parle, longtemps, et tu apprends comment on vit avec : en ne se regardant plus jamais dans rien, et en occupant ses yeux à autre chose. Ça s'appelle bêcher, ici. Ou compter.",
+            "20 naturel. Tu lui dis que tu as vu la même chose. Puis il parle, et tu apprends comment on vit avec : en ne se regardant plus jamais dans rien. Ça s'appelle bêcher, ici.",
             "Il sursaute, puis se laisse aborder. « C'était pas en retard, avant », dit-il seulement. « Y a deux ans, c'était pas en retard. » Il repart vers le hameau sans attendre de réponse.",
             "Il te voit — et le fait que tu l'aies vu, lui, est la pire chose qui pouvait lui arriver aujourd'hui. Il part très vite, sans un mot, et tu sais qu'il racontera cette rencontre autrement que toi.",
             "1 naturel. Tu l'abordes. Il te regarde, regarde l'eau, te regarde encore. Puis il demande, d'une voix blanche : « Le vôtre aussi ? » ♦ −2"
@@ -6814,11 +6513,7 @@ export const SCENES: Scene[] = [
         locked: { stat: "INSTINCT", min: 4 },
         passive: {
           consequence:
-            "Tu regardes l'ordre exact des gestes, et un seul compte : le " +
-            "second ne se penche jamais. Il est là pour voir si le premier " +
-            "se relève. Ce n'est pas un examen à deux — c'est un examen et un " +
-            "témoin. Plus personne ici ne fait confiance à ce qu'on raconte " +
-            "de son propre reflet.",
+            "Un seul geste compte : le second ne se penche jamais. Il est là pour voir si le premier se relève. Ce n'est pas un examen à deux — c'est un examen et un témoin.",
         },
       },
       {
@@ -6869,7 +6564,7 @@ export const SCENES: Scene[] = [
           stat: "COURAGE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Ronds, lourds, gris mat : la peau est parfaite et le poids ment. Tu mords. C'est de la cendre — puis ce n'est plus de la cendre : c'est un verger, le vrai, au soleil, avec des enfants dedans et une femme qui appelle. Tu vois ce que ce lieu était. Tu comprends d'un coup POURQUOI ils continuent, et ça vaut mieux qu'un objet.",
+            "20 naturel. La peau est parfaite et le poids ment. Tu mords. C'est de la cendre — puis c'est un verger, le vrai, au soleil. Tu vois ce que ce lieu était. Tu comprends POURQUOI ils continuent.",
             "Tu en décroches deux. La chair du premier est sèche, sans goût, et se défait en poudre. Rien ne t'arrive — sauf la certitude, désormais physique, que rien ne pousse ici.",
             "La cendre te reste dans la gorge et n'en sort plus. Tu tousses longtemps, plié en deux entre deux rangs, et l'homme au fond du verger cesse une seconde de bêcher pour te regarder faire.",
             "1 naturel. Tu mords. Et quelque chose, dans le fruit, mord en retour. \u2666 \u22122"
@@ -6883,11 +6578,7 @@ export const SCENES: Scene[] = [
         sortie: { toScene: "epoux-1" },
         passive: {
           consequence:
-            "Tu remontes les rangs vers eux. Ils se relaient sur la même bêche " +
-            "sans se parler, du geste réglé des gens qui font la même chose " +
-            "ensemble depuis toujours. Ils plantent. Dans cette terre. Un " +
-            "trou, un plant, la terre refermée du talon — et le trou suivant, " +
-            "deux pas plus loin.",
+            "Ils se relaient sur la même bêche sans se parler, du geste réglé des gens qui font la même chose depuis toujours. Ils plantent. Dans cette terre. Un trou, un plant, la terre refermée du talon.",
         },
       },
       /* PHASE D — le second jet physique hors combat (voir la Chapelle). Le
@@ -6902,7 +6593,7 @@ export const SCENES: Scene[] = [
           stat: "COURAGE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. D'en haut, les rangs cessent d'être des rangs. Ils sont onze, et les intervalles ne sont pas égaux : ils s'élargissent en s'éloignant de la souche, exactement comme une chose plantée un rang par an. Au fond, derrière le couple, un douzième rang commencé et laissé. Tu vois l'année où ils ont arrêté de croire que ça repartirait.",
+            "20 naturel. D'en haut, les rangs sont onze, et les intervalles s'élargissent en s'éloignant de la souche — une chose plantée un rang par an. Au fond, un douzième rang commencé et laissé. L'année où ils ont arrêté de croire que ça repartirait.",
             "La fourche tient. De là, tout le verger se lit d'un coup : les rangs convergent vers la souche — tout est parti de cet arbre-là. Et la terre autour des deux silhouettes est retournée cent fois, sans que rien n'y soit jamais planté.",
             "La branche est comme les fruits : parfaite à regarder, de la cendre à tenir. Elle cède sans un bruit. Tu tombes à plat entre deux rangs, le souffle coupé, les yeux dans des feuilles noires qui ne bougent pas.",
             "1 naturel. Tu montes haut, et l'arbre te porte. C'est à la descente que le pied passe dans une fourche, et que le bois se referme sur la cheville comme s'il avait attendu le poids. ♦ −2"
@@ -6946,7 +6637,7 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu sors des rangs par le bon côté — celui d'où l'on voit encore le hameau. Derrière toi, dans l'ordre parfait des arbres, tu remarques ce que tu n'avais pas vu en entrant : les rangs ne sont pas droits. Ils s'incurvent, très légèrement, tous, vers le sud.",
+            "20 naturel. Tu sors des rangs par le bon côté — celui d'où l'on voit encore le hameau. Derrière toi, tu remarques ce que tu n'avais pas vu en entrant : les rangs ne sont pas droits. Ils s'incurvent, tous, vers le sud.",
             "Tu retrouves la sortie du premier coup. Les rangs se referment derrière toi et le verger redevient une tache noire sur la lande.",
             "Tu tournes deux fois dans les mêmes rangs avant de retrouver la lisière. Onze rangs, ce n'est pas un labyrinthe. Ça n'aurait pas dû prendre si longtemps.",
             "1 naturel. Tu sors des rangs. Le compte à voix basse, derrière toi, s'est arrêté au moment exact où tu as passé la porte. ♦ −2"
@@ -7012,7 +6703,7 @@ export const SCENES: Scene[] = [
           stat: "EMPATHIE",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu bêches. Personne ne dit merci, personne ne dit rien — mais au bout d'un moment l'homme reprend son compte à voix haute pour que tu puisses le suivre, et vous finissez le rang à trois, au même rythme. C'est la seule chose qui ressemble à de la paix dans toutes les Landes.",
+            "20 naturel. Tu bêches. Personne ne dit rien — mais l'homme reprend son compte à voix haute pour que tu puisses le suivre, et vous finissez le rang à trois. La seule chose qui ressemble à de la paix dans toutes les Landes.",
             "Tu creuses deux trous. La terre est lourde, morte, et cède mal. La femme corrige ton geste d'un mot. C'est peu. C'est déjà énorme.",
             "Tu prends la bêche et l'homme la reprend aussitôt, sans brutalité, comme on retire un outil des mains d'un enfant. Le compte a repris exactement où il s'était arrêté.",
             "1 naturel. Tu enfonces la bêche. Elle bute sur quelque chose à trois doigts sous la surface — quelque chose de long, et qui a été mis là avec soin. Vous vous regardez tous les trois, et personne ne creuse. ♦ −2"
@@ -7057,7 +6748,7 @@ export const SCENES: Scene[] = [
           stat: "EMPATHIE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu le dis de façon à ce que ça ne tue pas l'espoir : tu n'as rien, mais tu leur décris quelque chose — un arbre précis, chez toi, avec son écorce et son odeur. Ils écoutent à deux. À la fin, la femme dit : « Bon. Alors on plante celui-là. » Et l'homme se remet à creuser.",
+            "20 naturel. Tu n'as rien, mais tu leur décris un arbre précis, chez toi, avec son écorce et son odeur. Ils écoutent. À la fin, la femme dit : « Bon. Alors on plante celui-là. » Et l'homme se remet à creuser.",
             "Tu le dis simplement. Elle hoche la tête, sans surprise. « C'est ce que disent tous ceux qui viennent. » Elle retourne à son rang. Ça n'a rien cassé.",
             "Tu le dis mal — trop court, trop net. L'homme cesse de compter ses coups de bêche. Le silence qui suit est le pire son des Landes, et il dure jusqu'à ce que tu sois sorti du rang.",
             "1 naturel. « Je n'ai rien. » La femme te regarde les mains, longtemps, puis le visage. « Non », dit-elle enfin, très doucement. « Toi non plus, tu ne viens pas du dehors. » ♦ −2"
@@ -7072,7 +6763,7 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu promets si bien que tu y crois toi-même une seconde. Ils te croient tout à fait — et la femme te donne, en avance, ce qu'elle donnera en échange : où trouver de l'eau propre entre ici et la Palissade, et laquelle des deux routes se referme la nuit.",
+            "20 naturel. Tu promets si bien que tu y crois une seconde. Ils te croient — et la femme te donne d'avance ce qu'elle donnera en échange : où trouver de l'eau propre, et laquelle des deux routes se referme la nuit.",
             "Le mensonge passe sans effort : ils veulent y croire. « Au prochain passage », répète-t-elle, et elle range ça quelque part où ça ne s'abîmera pas.",
             "Tu promets, et elle t'écoute promettre avec un demi-sourire qui ne juge rien. « Bien sûr. » Elle retourne à son rang deux mots trop tôt.",
             "1 naturel. Tu promets pour la prochaine fois. L'homme, sans lever la tête, dit son premier mot : « Laquelle ? » ♦ −2"
@@ -7086,7 +6777,7 @@ export const SCENES: Scene[] = [
         label: "Chercher dans ta besace",
         passive: {
           consequence:
-            "Tu fouilles longuement, pour de vrai. Tout ce que tu portes, tu l'as ramassé ici — chaque chose sent la lande, la corde ou la cendre. Rien qui ait poussé sous un vrai soleil. Tu leur montres tes mains ouvertes, et ils regardent dedans quand même, tous les deux, comme on regarde un puits.",
+            "Tout ce que tu portes, tu l'as ramassé ici — chaque chose sent la lande, la corde ou la cendre. Rien qui ait poussé sous un vrai soleil. Ils regardent tes mains ouvertes quand même.",
         },
       },
     ],
@@ -7198,8 +6889,8 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Chaque rondin est appointé, et les pointes sont tournées vers l'INTÉRIEUR — vers les Landes. À cent pas de la porte, tu trouves ce que le mur cache : une brèche ancienne, recousue de chaînes, et de l'autre côté des maillons du tissu pris, arraché dans le sens de la SORTIE. Des gens ont voulu remonter de la Descente. La palissade a voté contre.",
-            "Tronc après tronc, tu longes, la tête levée. Les pointes taillées sont tournées vers les Landes, pas vers le sud — ce mur n'a jamais protégé le village de ce qui monte : il retient ce qui veut descendre. Et les étais sont plantés du même côté, arc-boutés contre les rondins, comme on retient un mur pour qu'il ne parte pas.",
+            "20 naturel. Les pointes sont tournées vers l'INTÉRIEUR — vers les Landes. À cent pas, une brèche recousue de chaînes, et aux maillons du tissu arraché dans le sens de la SORTIE. Des gens ont voulu remonter. La palissade a voté contre.",
+            "Les pointes sont tournées vers les Landes, pas vers le sud — ce mur n'a jamais protégé le village de ce qui monte : il retient ce qui veut descendre. Et les étais sont arc-boutés du même côté.",
             "Tu longes trop près. Une sentinelle de bois que tu prenais pour un étai pivote en grinçant — un épouvantail de garnison, monté sur gonds, qui fait face à quiconque marche le long du mur. Tu es exactement le genre de passage qu'il annonce.",
             "1 naturel. Au pied d'un tronc, un paquet de toile. Dedans, un bagage complet — gourde, couverture, lettres. Quelqu'un a marché jusqu'ici, a posé son sac, et a continué SANS. Tu sais maintenant à quoi ressemble l'appel, vu de l'extérieur. \u2666 \u22122"
           ),
@@ -7223,11 +6914,7 @@ export const SCENES: Scene[] = [
         sortie: { toScene: "veilleur-1" },
         passive: {
           consequence:
-            "Il est sorti de sa niche avant que tu aies décidé d'y aller. Tu " +
-            "marches vers lui parce qu'il n'y a plus vraiment le choix. La " +
-            "guérite est une niche de planches contre les rondins, juste assez " +
-            "grande pour un homme et sa lanterne. Il te regarde venir depuis " +
-            "si longtemps qu'il a eu le temps de préparer sa première phrase.",
+            "Il est sorti de sa niche avant que tu aies décidé d'y aller. Il te regarde venir depuis si longtemps qu'il a préparé sa première phrase.",
         },
       },
     ],
@@ -7277,13 +6964,7 @@ export const SCENES: Scene[] = [
         prendLaPlaceDe: "veilleur-note-quoi",
         passive: {
           consequence:
-            "Il regarde où tu montres, et il met un temps à comprendre que " +
-            "tu parles de ça. « Ça ? Ça vient avec le registre. » Il hausse " +
-            "les épaules. « Chaque fois qu'on m'en donne un neuf, c'est déjà " +
-            "dessus. Le hameau dit que c'est la marque du Bailli. » Il " +
-            "retourne le cahier vers lui et regarde le signe comme s'il le " +
-            "voyait pour la première fois. « Sauf que le Bailli, il pend " +
-            "depuis avant mon père. Et le registre, il est neuf. »",
+            "« Ça ? Ça vient avec le registre. Le hameau dit que c'est la marque du Bailli. » Un temps. « Sauf que le Bailli, il pend depuis avant mon père. Et le registre, il est neuf. »",
         },
       },
       {
@@ -7291,14 +6972,7 @@ export const SCENES: Scene[] = [
         label: "« Qu'est-ce que tu écris ? »",
         passive: {
           consequence:
-            "Il tourne le registre vers toi, une seconde, sans le lâcher. " +
-            "Deux colonnes : ceux qui montent, ceux qui descendent. Ton nom " +
-            "n'est dans ni l'une ni l'autre — il est en bas, à part, sous " +
-            "un trait. « Celle-là, c'est pas moi qui l'ai commencée. On me " +
-            "dit quoi y mettre. » " +
-            // TRACE (14/08) — 3e occurrence du signe, sur la colonne dont le
-            // Veilleur dit lui-même qu'elle n'est pas de lui. Sans condition.
-            "En tête de cette colonne-là, un petit signe en forme de plume.",
+            "Deux colonnes : ceux qui montent, ceux qui descendent. Ton nom est en bas, sous un trait. « Celle-là, c'est pas moi qui l'ai commencée. On me dit quoi y mettre. » En tête, un petit signe en forme de plume.",
         },
       },
       {
@@ -7309,7 +6983,7 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. « Personne. » Il le dit trop vite, puis se reprend, parce qu'il est seul depuis trois jours et qu'un homme seul finit toujours par parler. « Le gamin apporte la soupe et un mot. Le mot vient du hameau. Mais le hameau… » Il s'arrête net et referme le registre. « Le hameau savait avant que le hameau se réunisse. Tu veux descendre ? Descends. »",
+            "20 naturel. « Personne. » Trop vite. Puis il se reprend — un homme seul finit toujours par parler. « Le gamin apporte la soupe et un mot. Le mot vient du hameau. Mais le hameau… Le hameau savait avant que le hameau se réunisse. »",
             "« Le gamin. » Il hausse une épaule. « Le gamin porte ce qu'on lui donne. » Il ne dira pas d'où ça vient — peut-être qu'il ne le sait pas.",
             "Il referme le registre d'un coup sec. « Les questions, c'est mon métier, pas le tien. » Il te tourne le dos et se remet à guetter le sud, ostensiblement.",
             "1 naturel. « Pourquoi ? » Il te regarde autrement, d'un coup. « Pourquoi tu veux savoir qui parle de toi ? » Et il rouvre son registre pour ajouter cette question-là. ♦ −2"
@@ -7397,11 +7071,7 @@ export const SCENES: Scene[] = [
         grantsLoot: "lanterne-veilleur",
         passive: {
           consequence:
-            "Tu racontes. Le récit ne s'écrit nulle part — il reste entre lui " +
-            "et toi, et c'est très bien ainsi. Il écoute comme on boit, sans " +
-            "un mot, sans un hochement. À la fin, il regarde le nord — le " +
-            "dehors — pendant une longue minute. Puis il te met la lanterne " +
-            "dans les mains sans rien ajouter.",
+            "Tu racontes. Le récit ne s'écrit nulle part — il reste entre lui et toi. Il écoute comme on boit. À la fin, il regarde le nord — le dehors — une longue minute. Puis il te met la lanterne dans les mains.",
         },
       },
       {
@@ -7412,7 +7082,7 @@ export const SCENES: Scene[] = [
           stat: "RUSE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu lui donnes un dehors : une odeur de pluie sur des pierres chaudes, le bruit précis d'une rue à midi. Il rit, il redemande un détail, il rit encore. La lanterne est à toi avant la fin — et tu comprends que le mensonge était peut-être la vraie marchandise.",
+            "20 naturel. Tu lui donnes un dehors : une odeur de pluie sur des pierres chaudes, le bruit d'une rue à midi. Il rit, redemande un détail, rit encore. La lanterne est à toi — le mensonge était peut-être la vraie marchandise.",
             "Ton histoire tient debout et il la prend. Elle est belle, elle est fausse, elle fait le même effet. La lanterne change de main.",
             "« J'écoute des menteurs depuis trente ans à ce portillon. » Il remet la lanterne au clou, sans colère. Pas de rancune non plus — juste la déception patiente des solitaires.",
             "1 naturel. Tu inventes. Et au milieu de ton histoire inventée, tu tombes par accident sur un détail vrai — le tien. Ta voix s'arrête toute seule. Il l'a entendu, ce trou-là. ♦ −2"
@@ -7477,16 +7147,7 @@ export const SCENES: Scene[] = [
         requiresSceau: SCEAU_LANDES,
         passive: {
           consequence:
-            "Tu poses le doigt tout en haut de la planche, sur la marque " +
-            "qu'il ne regarde jamais. Il se penche. Il approche la lanterne. " +
-            "Il compare — la marque, puis ta paume ouverte, puis la marque " +
-            "encore.\n\n" +
-            "— « C'est pas mon écriture. » Sa voix ne tremble pas, c'est " +
-            "pire : elle devient administrative. « Et c'est pas une " +
-            "écriture. C'est un creux. » Il repose la lanterne, prend son " +
-            "couteau, et raye la ligne qu'il vient d'écrire sur toi. « Je " +
-            "note ceux qui descendent. Toi, t'es dans l'autre colonne, et " +
-            "l'autre colonne, j'ai pas le droit de la tenir. »",
+            "— « C'est pas mon écriture. C'est pas une écriture : c'est un creux. » Il raye la ligne qu'il vient d'écrire sur toi. « Toi, t'es dans l'autre colonne. Celle-là, j'ai pas le droit de la tenir. »",
         },
       },
       { id: "veilleur-passer", label: "Passer le portillon" },
@@ -7522,8 +7183,8 @@ export const SCENES: Scene[] = [
           threshold: 12,
           outcomes: outcomes(
             "20 naturel. Le vieux soldat te regarde enfin. « Trente ans que je guette la relève. » Il te raconte tout : la voix qui appelle, les battants qu'on graisse, et pourquoi la porte s'ouvre toujours de l'intérieur. Quand tu descendras, tu sauras.",
-            "Il parle sans quitter le sud des yeux. La Descente mène au deuxième cercle des terres du Geôlier — « plus profond, plus vieux, moins poli ». Il te jauge du coin de l'œil : « Pas encore prêt, toi. Ça se voit aux épaules. » Ce n'est pas une insulte. C'est une mesure.",
-            "À ta troisième question, il se ferme comme une porte de garnison : « On ne parle pas de la Descente à ceux qui remontent. » Tu ne sauras pas ce que tes questions ont révélé de toi — mais il a resserré sa capote, et il s'est éloigné de deux pas. De toi, pas du froid.",
+            "Il parle sans quitter le sud des yeux. La Descente mène au deuxième cercle — « plus profond, plus vieux, moins poli ». Il te jauge : « Pas encore prêt, toi. Ça se voit aux épaules. » Pas une insulte. Une mesure.",
+            "À ta troisième question, il se ferme : « On ne parle pas de la Descente à ceux qui remontent. » Il s'est éloigné de deux pas. De toi, pas du froid.",
             "1 naturel. Tu le questionnes. Il répond par une question : « Et toi, tu l'entends depuis quand, la voix ? » Tu ouvres la bouche pour dire jamais. Rien ne sort. ♦ −2"
           ),
         },
@@ -7602,9 +7263,9 @@ export const SCENES: Scene[] = [
           threshold: 12,
           highStakes: true,
           outcomes: outcomes(
-            "20 naturel. Tu ne plaides pas : tu récites. Le nombre, le rang, et ce qu'il a écrit en dessous du trois cent unième nom. Le tribunal se lève d'un bloc — pas contre toi : parce qu'on se lève quand on entend ça. La Doyenne referme le cahier de l'Écrivain et le pousse loin d'elle. « Qui t'a dit ça ne peut plus parler. » Un temps. « Alors c'est vrai. » On te rend la route, et le hameau ne te regarde plus comme un passant.",
+            "20 naturel. Tu ne plaides pas : tu récites ce qu'il a écrit sous le trois cent unième nom. Le tribunal se lève d'un bloc. La Doyenne referme le cahier. « Qui t'a dit ça ne peut plus parler. Alors c'est vrai. »",
             "Tu dis le nombre. Trois cents noms, et le trois cent unième. Dans les bancs, quelqu'un se met à pleurer sans bruit, et ça décide tout : on ne pend pas devant quelqu'un qui pleure. La Doyenne prononce la relaxe comme on referme une porte.",
-            "Tu dis le nombre — et la Doyenne te laisse finir, ce qui est mauvais signe. « Il a signé trois cents fois. » Elle attend. « Et une fois de trop, oui. C'est bien pour ça qu'on ne le laisse plus signer. » Elle rouvre le cahier. Tu viens de leur rappeler pourquoi ils tiennent tant à leur règle.",
+            "La Doyenne te laisse finir. « Il a signé trois cents fois. Et une fois de trop, oui. C'est pour ça qu'on ne le laisse plus signer. » Tu leur as rappelé pourquoi ils tiennent à leur règle.",
             "1 naturel. Tu invoques le Bailli devant ceux qui l'ont pendu, et tu emploies son mot à lui : « injuste ». Le silence qui suit n'est pas de la gêne. C'est celui qu'on fait quand on a fini de discuter. ♦ −2"
           ),
         },
@@ -7657,8 +7318,8 @@ export const SCENES: Scene[] = [
           threshold: 13,
           highStakes: true,
           outcomes: outcomes(
-            "20 naturel. Tu reprends chaque déposition et tu dis oui à chacune, sans un mot d'excuse — puis tu demandes, très calmement, lequel d'entre eux voudrait qu'on lise la sienne à voix haute. Personne ne se rassoit tout à fait pareil. La Doyenne te rend le seuil sans commentaire.",
-            "Tu ne nies rien. Tu tiens debout pendant qu'on énumère, et tu regardes celui qui parle jusqu'à ce qu'il s'arrête. Il n'y a rien à retourner contre quelqu'un qui n'a rien caché. On te laisse repartir — mal à l'aise, ce qui est déjà une victoire ici.",
+            "20 naturel. Tu dis oui à chaque déposition, sans un mot d'excuse — puis tu demandes, calmement, lequel d'entre eux voudrait qu'on lise la sienne à voix haute. Personne ne se rassoit tout à fait pareil. On te rend le seuil.",
+            "Tu ne nies rien. Tu tiens debout pendant qu'on énumère. Il n'y a rien à retourner contre qui n'a rien caché. On te laisse repartir — mal à l'aise, ce qui est déjà une victoire ici.",
             "Tu reconnais tout, et ils entendent une confession. Le hameau n'a jamais eu besoin de plus. On te remercie presque de leur avoir épargné le doute, et le Champ des Fixés prépare ta place avant même le lever.",
             "1 naturel. Tu reconnais plus que ce qu'ils avaient. Une chose qu'aucun témoin n'avait vue sort de ta bouche, et le silence qui suit a le goût d'une porte qui se ferme. Double nœud, comme pour les honnêtes. ♦ −2"
           ),
@@ -7678,10 +7339,10 @@ export const SCENES: Scene[] = [
           threshold: 11,
           highStakes: true,
           outcomes: outcomes(
-            "20 naturel. Tu poses le document sur le banc des témoins, ouvert à la bonne page, et tu te tais. L'Écrivain se penche malgré lui — puis se redresse très vite. Ce que ce papier dit du hameau vaut infiniment plus cher que ce que le hameau dit de toi. On te raccompagne, et on ne te demande pas de le rendre.",
+            "20 naturel. Tu poses le document sur le banc des témoins, et tu te tais. L'Écrivain se penche. Ce que ce papier dit du hameau vaut plus cher que ce que le hameau dit de toi.",
             "Tu produis le papier. Il ne t'innocente pas : il rappelle simplement qui tient les comptes, et depuis quand. La Doyenne le lit deux fois, referme, et dit qu'on verra plus tard. Plus tard, ici, veut dire jamais — et jamais, aujourd'hui, veut dire libre.",
-            "Tu produis le papier, et la salle décide aussitôt d'où il vient : un document du hameau, dans une main du dehors, ne peut qu'avoir été pris. On ne te juge plus pour la voix — on te juge pour ce qu'on te croit avoir volé. C'est un motif plus propre, et il tient aussi bien une corde.",
-            "1 naturel. Le papier passe de main en main et s'arrête sur une ligne que tu n'avais pas lue. Ton nom y est déjà, dans une écriture qui n'est pas la tienne, avec une date qui n'est pas encore arrivée. Le tribunal n'a plus qu'à respecter le calendrier. ♦ −2"
+            "La salle décide d'où vient le papier : un document du hameau, dans une main du dehors, ne peut qu'avoir été pris. On ne te juge plus pour la voix — pour ce qu'on te croit avoir volé. Ça tient aussi bien une corde.",
+            "1 naturel. Le papier s'arrête sur une ligne que tu n'avais pas lue. Ton nom y est déjà, d'une écriture qui n'est pas la tienne, avec une date qui n'est pas encore arrivée. Le tribunal n'a plus qu'à respecter le calendrier. ♦ −2"
           ),
         },
       },
@@ -7943,14 +7604,7 @@ export const SCENES: Scene[] = [
         minigame: { engine: "swipe" },
         passive: {
           consequence:
-            "Tu choisis une corde tranchée en bas de sa course et tu noues " +
-            "la tienne au moignon — celle de la chapelle, coupée net, par en " +
-            "dessous, comme celles-là. Le nœud prend du premier coup : le " +
-            "chanvre se reconnaît. Tu descends, palier par palier, et au " +
-            "point du raccord ta paume passe sur ton propre nœud. Plus bas " +
-            "que toutes les autres cordes, plus bas que le regard ne " +
-            "portait. Elle reste nouée là-haut. Tu ne la reverras pas — " +
-            "quelqu'un, en bas, saura qu'on peut descendre plus loin.",
+            "Tu noues ta corde à un moignon tranché — celle de la chapelle, coupée net, comme celles-là. Tu descends plus bas que toutes les autres. Elle reste nouée là-haut : quelqu'un saura qu'on peut descendre plus loin.",
         },
         sortie: { toScene: "la-descente" },
       },
@@ -7965,13 +7619,7 @@ export const SCENES: Scene[] = [
         minigame: { engine: "swipe" },
         passive: {
           consequence:
-            "Tu longes les pieux en lisant les entailles, et tu la trouves : " +
-            "un pieu marqué d'une chaîne de fonction, gravée maigre. La " +
-            "corde du trois cent unième — celui qui a signé son propre nom " +
-            "sous le dernier de sa liste. Elle est grise, plus usée que les " +
-            "autres : on descend souvent par celle-là. Tu la prends, palier " +
-            "par palier, et le chanvre file doux, comme s'il avait " +
-            "l'habitude de porter ceux qui savent.",
+            "Un pieu marqué d'une chaîne de fonction : la corde du trois cent unième. Grise, plus usée que les autres : on descend souvent par celle-là. Le chanvre file doux, comme s'il avait l'habitude de porter ceux qui savent.",
         },
         sortie: { toScene: "la-descente" },
       },
