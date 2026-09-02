@@ -5,10 +5,10 @@ import FitLabel from "@/components/FitLabel";
 import { HeroGeolier } from "@/components/HeroGeolier";
 import TouchHint from "@/components/TouchHint";
 import TypedText from "@/components/TypedText";
-import { computeVerdict, engagementDuSeuil, portraitDuSeuil, PROLOGUE_AMORCE, PROLOGUE_CLOTURE } from "@/lib/prologue-data";
-import { loadRun, saveRun, type PrologueMemory, type RunState } from "@/lib/state";
+import VerdictDuSeuil from "@/components/VerdictDuSeuil";
+import { computeVerdict, engagementDuSeuil, portraitDuSeuil, PROLOGUE_AMORCE } from "@/lib/prologue-data";
+import { loadRun, saveRun, type PrologueMemory, type RunState, type RunStats } from "@/lib/state";
 import { playMusic } from "@/lib/audio";
-import { assetUrl } from "@/lib/assets";
 
 /**
  * Prologue « Le Seuil » (Notion 16/07 + écrans Figma, complété 24/07) : le
@@ -198,6 +198,10 @@ const AUTO_NAMES = [
   "La Passée",
 ];
 
+/** Longueur de l'amorce — lue, jamais codée en dur : la clause « Le dé
+ *  tranche » y a été fondue le 2/09 et l'amorce est passée de 2 beats à 1. */
+const AMORCE_N = PROLOGUE_AMORCE.length;
+
 export default function Prologue({ onDone }: { onDone: () => void }) {
   const runRef = useRef<RunState | null>(null);
   const [beat, setBeat] = useState<number | null>(null);
@@ -224,8 +228,20 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
     saveRun(run);
     // Musique (24/07) : le Seuil garde le thème d'intro (continuité accueil).
     playMusic("intro");
+    // RESTAURATION AUTO-RÉPARANTE (2/09) : dans la plage des souvenirs, le
+    // beat se DÉDUIT du nombre de réponses données, il n'est pas cru sur
+    // parole. Une sauvegarde d'avant la fusion de l'amorce (2 beats → 1)
+    // pointerait sinon un souvenir d'avance, et le joueur répondrait à une
+    // question qu'il n'a pas lue.
+    const amorce = PROLOGUE_AMORCE.length;
+    const nb = run.prologue.memories.length;
+    const brut = run.prologue.beat;
+    const cale =
+      brut > amorce - 1 && brut < amorce + nb
+        ? Math.min(amorce + run.prologue.choices.length, amorce + nb)
+        : brut;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- restauration unique du beat sauvegardé, post-hydratation
-    setBeat(run.prologue.beat);
+    setBeat(cale);
     setMemories(run.prologue.memories);
     setChoicesMade(run.prologue.choices.length);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -238,19 +254,23 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
     saveRun(run);
   }
 
-  const nameBeat = 2 + memories.length;
-  const isAmorce = beat !== null && beat < 2;
-  const isMemory = beat !== null && beat >= 2 && beat < nameBeat;
+  const nameBeat = AMORCE_N + memories.length;
+  const isAmorce = beat !== null && beat < AMORCE_N;
+  const isMemory = beat !== null && beat >= AMORCE_N && beat < nameBeat;
   const isName = beat === nameBeat;
   const isCloture = beat !== null && beat > nameBeat;
-  const memory = isMemory ? memories[beat! - 2] : null;
+  const memory = isMemory ? memories[beat! - AMORCE_N] : null;
 
   /** PORTRAIT DE CLÔTURE (spec 4/08 A2) : le verdict tombe à l'ENTRÉE de la
       clôture — pas au timer de sortie. computeVerdict tire un jet silencieux :
       recalculé plus tard, il décrirait un AUTRE héros que celui du portrait.
       `verdictRendu` garde la reprise sûre : rouvrir l'app en pleine clôture
       réaffiche le même portrait depuis les stats déjà persistées. */
-  const [portrait, setPortrait] = useState<string | null>(null);
+  const [cloture, setCloture] = useState<{
+    portrait: string;
+    stats: RunStats;
+    choices: number[];
+  } | null>(null);
   useEffect(() => {
     if (!isCloture) return;
     // React Compiler : jamais de mutation directe dans le corps de l'effet —
@@ -265,9 +285,15 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
     // l'ordre de déclaration des stats (panel 10/08 : « courageux » servi à
     // qui s'était dérobé quatre fois).
     const r0 = runRef.current ?? loadRun();
-    setPortrait(
-      portraitDuSeuil(r0.stats, engagementDuSeuil(r0.prologue.memories, r0.prologue.choices))
-    );
+    setCloture({
+      portrait: portraitDuSeuil(
+        r0.stats,
+        engagementDuSeuil(r0.prologue.memories, r0.prologue.choices)
+      ),
+      // Copiés en état : le rendu ne lit jamais `runRef.current` (React Compiler).
+      stats: r0.stats,
+      choices: [...r0.prologue.choices],
+    });
   }, [isCloture]);
 
   /** Clôture → « Touche pour commencer » (retour Patrick 7/08, maquette
@@ -282,6 +308,22 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
 
   if (beat === null || memories.length === 0) return <main className="flex min-h-dvh items-center justify-center" />;
 
+  // LE VERDICT (2/09) a sa propre grammaire — le radar y remplace
+  // l'illustration, parce que ce qu'on regarde ici, c'est le héros et non
+  // plus celui qui le juge. Il tient donc son cadre à lui.
+  if (isCloture) {
+    if (!cloture) return <main className="flex min-h-dvh items-center justify-center" />;
+    return (
+      <VerdictDuSeuil
+        memories={memories}
+        choices={cloture.choices}
+        stats={cloture.stats}
+        portrait={cloture.portrait}
+        onFinish={finishSeuil}
+      />
+    );
+  }
+
   // Texte du beat courant — amorce, prompt du Nom et clôture sont la voix du
   // Geôlier (cadence 42ms), les souvenirs sont de la narration (15ms).
   const beatText = isAmorce
@@ -290,9 +332,7 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
       ? memory!.narration
       : isName
         ? NAME_PROMPT
-        : portrait
-          ? `${portrait}\n\n${PROLOGUE_CLOTURE}`
-          : "";
+        : "";
   const isJailerVoice = !isMemory;
 
   function advanceBeat() {
@@ -347,20 +387,7 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
         className="phone-frame relative flex h-[800px] max-h-[100dvh] w-[390px] shrink-0 cursor-pointer flex-col overflow-clip bg-[var(--color-bg)]"
         onPointerDown={onTap}
       >
-        {/* Clôture (maquette 1997:619, 7/08) : le buste STATIQUE du Geôlier —
-            le même que la 1ʳᵉ clause de l'intro, c'est lui qui vient de
-            juger — remplace le héros animé. Ailleurs, l'animation du 16/07. */}
-        {isCloture ? (
-          // eslint-disable-next-line @next/next/no-img-element -- rendu pixelated, jamais optimisé par next/image
-          <img
-            src={assetUrl("assets/intro_demon.png")}
-            alt=""
-            className="block h-[390px] w-[390px] shrink-0 object-cover"
-            style={{ imageRendering: "pixelated" }}
-          />
-        ) : (
-          <HeroGeolier density={density} bstep={bstep} />
-        )}
+        <HeroGeolier density={density} bstep={bstep} />
 
         <div className="flex flex-1 flex-col px-[15px] pt-[40px]">
           {/* key=beat : chaque beat repart d'une frappe neuve.
@@ -369,11 +396,11 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
               les souvenirs = texte à gauche, pleine largeur. */}
           <p
             className={`font-mono text-[13px] leading-[1.7] whitespace-pre-line text-[var(--color-ink)] ${
-              isAmorce || isCloture ? "mx-auto max-w-[300px] text-center" : "text-left"
+              isAmorce ? "mx-auto max-w-[300px] text-center" : "text-left"
             }`}
           >
             <TypedText
-              key={isCloture ? `${beat}-${portrait ? 1 : 0}` : beat}
+              key={beat}
               text={beatText}
               typed={!typedDone}
               skip={skip}
@@ -398,7 +425,7 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
           {(isMemory || isName) && (
             <div className="mt-[22px] flex items-center justify-center gap-[5px]" aria-hidden>
               {Array.from({ length: memories.length + 1 }, (_, i) => {
-                const idx = isName ? memories.length : beat! - 2;
+                const idx = isName ? memories.length : beat! - AMORCE_N;
                 return (
                   <span
                     key={i}
@@ -460,9 +487,6 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
             au composant partagé le 26/07 : position et clignotement saccadé
             sont désormais une règle globale, plus un réglage par écran. */}
         {isAmorce && typedDone && <TouchHint />}
-        {/* Clôture : le jeu ne démarre plus tout seul — « Touche pour
-            commencer » (maquette 1997:619, hint 2440:13427). */}
-        {isCloture && typedDone && <TouchHint first />}
       </div>
     </main>
   );

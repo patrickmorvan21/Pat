@@ -30,10 +30,21 @@ export const PROLOGUE_STAT_LABEL: Record<StatKey, string> = {
   empathie: "EMPATHIE",
 };
 
-/** Amorce (2 beats, pas de choix) puis clôture — textes verrouillés 16/07. */
+/**
+ * Amorce du Seuil — UN SEUL beat depuis le 2/09.
+ *
+ * La 3ᵉ clause de l'intro (« Le dé tranche — ce que tu vaux vient de ce que tu
+ * étais de ton vivant ») a été déplacée ici et FONDUE dans l'amorce : les deux
+ * disaient déjà la même chose à deux écrans d'intervalle. La clause ne
+ * s'ajoute donc pas, elle remplace — trois écrans deviennent un, et la règle
+ * est énoncée juste avant la chose qu'elle décrit au lieu de l'être dans le
+ * vide.
+ *
+ * Les quatre stats ne sont plus NOMMÉES ici : le radar du verdict les montre
+ * et les nomme à la fin, quand elles veulent enfin dire quelque chose.
+ */
 export const PROLOGUE_AMORCE: string[] = [
-  "Avant que tu passes, je veux voir qui tu étais.",
-  "Ne réfléchis pas. Ce n'est plus toi qui choisis, ici — c'est ce que tu as déjà fait.",
+  "Avant que tu passes, je veux voir qui tu étais. Ce que tu vaux ici vient de ta vie d'avant.\nNe réfléchis pas. Ce n'est plus toi qui choisis : c'est ce que tu as déjà fait.",
 ];
 
 export const PROLOGUE_CLOTURE = "Je sais qui tu es. Le dé, lui, décidera qui tu deviens.";
@@ -82,11 +93,48 @@ const PORTRAIT_FRAGILE: Record<StatKey, string> = {
  * (l'engagement A/B/C avant le jet silencieux) : c'est ce que le joueur a
  * fait qui tranche, jamais l'ordre de déclaration des stats.
  */
-const PORTRAIT_PLAT =
+/**
+ * ⚠️ UN PROFIL PLAT N'EST PAS FORCÉMENT UN PROFIL FAIBLE (2/09).
+ *
+ * Le correctif du 10/08 ne traitait qu'une moitié du problème. « Rien ne
+ * dépasse » se déclenche sur un ÉCART faible entre les quatre stats — donc
+ * aussi bien pour qui s'est dérobé quatre fois que pour qui s'est jeté
+ * quatre fois. Le second s'entendait dire qu'il avait « gardé les mains dans
+ * les poches », l'exact contraire de ce qu'il venait de jouer.
+ *
+ * Trouvé en regardant le nouvel écran du verdict, qui rend la faute visible :
+ * le radar montre un losange RÉGULIER et LARGE pendant que le texte parle de
+ * quelqu'un qui n'a rien tenté. Le texte doit dire ce que l'œil voit.
+ *
+ * On tranche donc sur l'ENGAGEMENT moyen réellement joué (3 = direct,
+ * 2 = mesuré, 1 = retrait), pas sur les stats — le jet silencieux ne doit pas
+ * pouvoir transformer un héros téméraire en héros tiède.
+ */
+const PORTRAIT_PLAT_HAUT =
+  "Tu y es allé les quatre fois. Rien ne dépasse chez toi parce que rien ne " +
+  "manque — et ça se voit de loin.\nLe dé n'aura pas grand-chose à corriger. " +
+  "Il n'aura pas grand-chose à rattraper non plus.";
+
+const PORTRAIT_PLAT_MESURE =
+  "Tu as fait ce qu'il fallait, à chaque fois. Ni plus. C'est la manière la " +
+  "plus sûre de traverser une vie sans que personne s'en souvienne.\nRien ne " +
+  "dépasse chez toi. Le dé fera le reste — il fait toujours le reste.";
+
+const PORTRAIT_PLAT_BAS =
   "Rien ne dépasse chez toi. Ni élan, ni ruse, ni flair, ni chaleur — tu as " +
   "traversé ta vie d'avant en gardant les mains dans les poches.\nCe n'est " +
   "pas un défaut. C'est juste que le dé n'aura rien à corriger, et rien à " +
   "aider non plus.";
+
+/** Engagement moyen réellement joué : 3 = direct, 2 = mesuré, 1 = retrait. */
+function portraitPlat(engagement?: Partial<Record<StatKey, number>>): string {
+  const vals = engagement ? Object.values(engagement).filter((v): v is number => v != null) : [];
+  if (!vals.length) return PORTRAIT_PLAT_MESURE; // vieille sauvegarde : le milieu, jamais une accusation
+  const moy = vals.reduce((a, b) => a + b, 0) / vals.length;
+  if (moy >= 2.5) return PORTRAIT_PLAT_HAUT;
+  if (moy <= 1.5) return PORTRAIT_PLAT_BAS;
+  return PORTRAIT_PLAT_MESURE;
+}
 
 export function portraitDuSeuil(
   stats: RunStats,
@@ -95,7 +143,7 @@ export function portraitDuSeuil(
   engagement?: Partial<Record<StatKey, number>>
 ): string {
   const vals = PROLOGUE_STAT_ORDER.map((k) => stats[k]);
-  if (Math.max(...vals) - Math.min(...vals) <= 1) return PORTRAIT_PLAT;
+  if (Math.max(...vals) - Math.min(...vals) <= 1) return portraitPlat(engagement);
   const poids = (k: StatKey) => stats[k] * 10 + (engagement?.[k] ?? 0);
   let dominante: StatKey = PROLOGUE_STAT_ORDER[0];
   let fragile: StatKey = PROLOGUE_STAT_ORDER[0];
@@ -739,10 +787,20 @@ export const MEMORY_POOL: Record<StatKey, MemoryEntry[]> = {
 export function drawMemories(
   stats: readonly StatKey[] = PROLOGUE_STAT_ORDER
 ): { stat: StatKey; entry: MemoryEntry }[] {
-  return stats.map((stat) => {
+  const tires = stats.map((stat) => {
     const pool = MEMORY_POOL[stat];
     return { stat, entry: pool[Math.floor(Math.random() * pool.length)] };
   });
+  // ORDRE MÉLANGÉ (2/09) : l'ordre fixe Courage→Ruse→Instinct→Empathie était
+  // un tell — en deux parties, on savait que la 3ᵉ question portait sur
+  // l'Instinct. Même correction que sur les choix de scène, pour la même
+  // raison. Le tirage est persisté dans la run, donc la reprise retombe sur
+  // le même ordre.
+  for (let i = tires.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [tires[i], tires[j]] = [tires[j], tires[i]];
+  }
+  return tires;
 }
 
 /**

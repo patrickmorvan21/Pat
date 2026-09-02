@@ -106,7 +106,11 @@ const SOUS_CARTE = 12 + 16 + 10 + 46;
  */
 const JALONS = [1, 2, 3, 5, 8, 12, 17];
 const FRAGMENTS = [
-  "Ta première. Ils la passent tous ; peu la comprennent.\n\nCe que tu viens de perdre n'était pas ta vie. Tu l'avais déjà perdue avant d'arriver. Ce que tu viens de perdre, c'est une tentative.",
+  // La 4ᵉ clause du pacte (« Ta mort me sert ») a été déplacée ici le 2/09 :
+  // elle s'énonçait à l'intro, avant que le joueur ait rien perdu. Sa thèse
+  // — on ne progresse pas en survivant — atterrit à la première mort, et
+  // l'écran SUIVANT forge justement la relique dont elle parle.
+  "Ta première. Ils la passent tous ; peu la comprennent.\n\nCe que tu viens de perdre n'était pas ta vie. Tu l'avais déjà perdue avant d'arriver. Ce que tu viens de perdre, c'est une tentative.\n\nOn ne progresse pas ici en survivant. En tombant mieux.",
   "Le Hameau n'a pas toujours été des Renonçants. Il portait un autre nom, avant qu'ils ne décident de ne plus rien vouloir.\n\nDemande-leur. Ils diront qu'ils ont oublié.",
   "Les corbeaux de la Colline ne mangent pas. Ils comptent.\n\nUn par mort. Le jour où tu en verras beaucoup, ce sera de toi qu'ils parleront.",
   "Le Bailli a été pendu par ceux qu'il avait fait pendre. Il trouve ça équitable. C'est ce qui me plaît chez lui.",

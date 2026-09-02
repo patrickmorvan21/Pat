@@ -118,9 +118,9 @@ function randomStats(): RunStats {
 }
 
 /**
- * Prologue « Le Seuil » (spec 16/07) : le Geôlier feuillette la vie d'avant
- * du héros — 2 beats d'amorce, 4 souvenirs (un par stat, ordre fixe), une
- * clôture. Persisté dans la run : fermer l'app en plein prologue reprend
+ * Prologue « Le Seuil » (spec 16/07, remanié 2/09) : le Geôlier feuillette la
+ * vie d'avant du héros — 1 beat d'amorce, 4 souvenirs (un par stat, ordre
+ * MÉLANGÉ), puis le verdict. Persisté dans la run : fermer l'app en plein prologue reprend
  * exactement au même beat (§9, jamais une mort technique). Rejoué à chaque
  * nouvelle run avec un tirage différent.
  */
@@ -132,9 +132,9 @@ export type PrologueMemory = {
 };
 
 export type PrologueState = {
-  /** Les 4 souvenirs tirés pour cette run (ordre Courage→Ruse→Instinct→Empathie). */
+  /** Les 4 souvenirs tirés pour cette run, dans un ordre mélangé (2/09). */
   memories: PrologueMemory[];
-  /** Beat courant : 0-1 = amorce, 2-5 = souvenirs, 6 = clôture. */
+  /** Beat courant : 0 = amorce, 1-4 = souvenirs, 5 = le Nom, 6 = le verdict. */
   beat: number;
   /** Index (0=A, 1=B, 2=C) du choix retenu pour chaque souvenir joué. */
   choices: number[];

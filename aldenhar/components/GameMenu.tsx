@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { CloseX } from "@/components/Home";
 import { forgetIntro, forgeRelic, loadMemory, reliquesPortees, type Relic } from "@/lib/player-memory";
 import { loadRun, type NarrativeEffect, type RunState } from "@/lib/state";
+import RadarEssence from "@/components/RadarEssence";
 import { besaceBySlot, normalizeItem, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { loadSettings, mutateSettings, type Settings } from "@/lib/settings";
 import { demoActive, setDemo } from "@/lib/demo";
@@ -202,139 +203,11 @@ function SectionHead({ label, inset }: { label: string; inset?: boolean }) {
 
 /* ---------------------------------------------------------------- ESSENCE */
 
-const AXES = [
-  { key: "instinct", label: "INSTINCT", dx: 0, dy: -1 },
-  { key: "courage", label: "COURAGE", dx: 1, dy: 0 },
-  { key: "ruse", label: "RUSE", dx: 0, dy: 1 },
-  { key: "empathie", label: "EMPATHIE", dx: -1, dy: 0 },
-] as const;
-
-/**
- * Radar 4 axes (géométrie maquette : centre du cadre, rayon 101, guides en
- * losanges tiretés 202/126/46). Le remplissage reste un NUAGE DE PIXELS
- * tramés (référence image de Patrick, 14/07 — la maquette Figma montre un
- * aplat faute de pouvoir tramer, la référence collée prime pour le fill) :
- * dense au centre, qui s'effrite vers les bords. Jamais un dégradé CSS.
- */
-function RadarCanvas({ run }: { run: RunState }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const W = 390;
-    const H = 264;
-    canvas.width = W;
-    canvas.height = H;
-    const ctx = canvas.getContext("2d")!;
-    const cx = W / 2;
-    const cy = H / 2;
-    const R = 101;
-    ctx.clearRect(0, 0, W, H);
-
-    // Croix des axes — légèrement plus longue que le grand losange (maquette)
-    ctx.strokeStyle = "rgba(245, 240, 225, 0.30)";
-    ctx.lineWidth = 1;
-    ctx.setLineDash([]);
-    ctx.beginPath();
-    ctx.moveTo(cx + 0.5, cy - R - 4);
-    ctx.lineTo(cx + 0.5, cy + R + 4);
-    ctx.moveTo(cx - R - 4, cy + 0.5);
-    ctx.lineTo(cx + R + 4, cy + 0.5);
-    ctx.stroke();
-
-    // Losanges-guides en tirets (3 niveaux : 202/126/46 → ratios maquette)
-    ctx.setLineDash([3, 3]);
-    for (const f of [1, 0.624, 0.228]) {
-      const r = R * f;
-      ctx.beginPath();
-      ctx.moveTo(cx, cy - r);
-      ctx.lineTo(cx + r, cy);
-      ctx.lineTo(cx, cy + r);
-      ctx.lineTo(cx - r, cy);
-      ctx.closePath();
-      ctx.stroke();
-    }
-    ctx.setLineDash([]);
-
-    // Polygone des stats (échelle 1..5 du prologue) — sommets sur chaque axe
-    const pts = AXES.map((a) => {
-      const v = Math.max(0.05, Math.min(1, run.stats[a.key] / 5));
-      return { x: cx + a.dx * v * R, y: cy + a.dy * v * R };
-    });
-
-    const inside = (x: number, y: number) => {
-      let ok = true;
-      for (let i = 0; i < pts.length; i++) {
-        const a = pts[i];
-        const b = pts[(i + 1) % pts.length];
-        const cross = (b.x - a.x) * (y - a.y) - (b.y - a.y) * (x - a.x);
-        if (cross < 0) ok = false;
-      }
-      return ok;
-    };
-    let seed = (run.stats.courage * 131 + run.stats.ruse * 37 + run.stats.instinct * 17 + run.stats.empathie) >>> 0;
-    const rnd = () => {
-      seed = (seed * 1664525 + 1013904223) >>> 0;
-      return seed / 4294967296;
-    };
-    // Distance normalisée au bord dans la direction du point (bissection) :
-    // sert au fondu de densité (dense au centre → effrité au bord).
-    const edgeT = (x: number, y: number) => {
-      const dx = x - cx;
-      const dy = y - cy;
-      const len = Math.hypot(dx, dy);
-      if (len < 1) return 0;
-      let lo = 0;
-      let hi = R * 1.2;
-      for (let i = 0; i < 18; i++) {
-        const mid = (lo + hi) / 2;
-        if (inside(cx + (dx / len) * mid, cy + (dy / len) * mid)) lo = mid;
-        else hi = mid;
-      }
-      return lo > 0 ? len / lo : 1;
-    };
-    ctx.fillStyle = "#e0632a";
-    let placed = 0;
-    let guard = 0;
-    while (placed < 2200 && guard < 30000) {
-      guard++;
-      const x = cx + (rnd() * 2 - 1) * R;
-      const y = cy + (rnd() * 2 - 1) * R;
-      if (!inside(x, y)) continue;
-      const t = edgeT(x, y);
-      const keep = Math.pow(Math.max(0, 1 - t), 0.55) * 0.92 + 0.05;
-      if (rnd() > keep) continue;
-      const s = rnd() < 0.85 ? 1 : 2;
-      ctx.fillRect(Math.floor(x), Math.floor(y), s, s);
-      placed++;
-    }
-  }, [run.stats]);
-
-  return (
-    <div className="relative mt-[24px] w-full">
-      <span className="pointer-events-none absolute left-1/2 top-[-20px] -translate-x-1/2 font-mono text-[12px] font-bold uppercase tracking-[1px] text-[var(--color-ink)]">
-        INSTINCT
-      </span>
-      <span className="pointer-events-none absolute right-[14px] top-1/2 -translate-y-1/2 font-mono text-[12px] font-bold uppercase tracking-[1px] text-[var(--color-ink)]">
-        COURAGE
-      </span>
-      <span className="pointer-events-none absolute bottom-[-20px] left-1/2 -translate-x-1/2 font-mono text-[12px] font-bold uppercase tracking-[1px] text-[var(--color-ink)]">
-        RUSE
-      </span>
-      <span className="pointer-events-none absolute left-[14px] top-1/2 -translate-y-1/2 font-mono text-[12px] font-bold uppercase tracking-[1px] text-[var(--color-ink)]">
-        EMPATHIE
-      </span>
-      <canvas ref={canvasRef} className="radar-canvas block h-[264px] w-full" style={{ imageRendering: "pixelated" }} />
-    </div>
-  );
-}
-
 function EssenceTab({ run }: { run: RunState }) {
   const fiches = fichesEtats(run);
   return (
     <div className="pt-[24px]">
-      <RadarCanvas run={run} />
+      <RadarEssence stats={run.stats} className="mt-[24px]" />
 
       <div className="mt-[44px]">
         <SectionHead label="États" />
