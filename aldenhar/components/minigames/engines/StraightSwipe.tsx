@@ -19,7 +19,7 @@ import { CHARBON, CREME, ORANGE } from "@/lib/dither";
  *     « prendre la corde en PJ comme image et ajouter des pixels blancs pour
  *     montrer le tracé à couper »). Canvas 360×499 — la zone de jeu native
  *     (format du Frottage et du Crochetage) — la corde tramée de Patrick
- *     (`minijeu_corde_tile.png`, 120×466, raccord vertical cuit dans le
+ *     (`minijeu_corde_tile_b.png`, 120×466, raccord vertical cuit dans le
  *     fichier) empilée au centre, et LE TRACÉ À COUPER en tirets de pixels
  *     blancs qui clignotent par paliers tant que rien n'est tracé. Le geste
  *     doit TRAVERSER la corde, à hauteur du tracé : un swipe le LONG de la

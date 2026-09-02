@@ -17,7 +17,7 @@ import { bayerFillClipped, CHARBON, CREME, ORANGE, seededRandom } from "@/lib/di
  *   - `skin: "pierre"` + `imageFond` (01/09, Patrick : « faire plus
  *     réaliste, imaginer un fond comme le crochetage, de la pierre, et faire
  *     le tracé dessus ») : canvas 360×499 (la zone de jeu native), le mur de
- *     pierre tramé en fond (`minijeu_chapelle_pierre.png`), et le motif POSÉ
+ *     pierre tramé en fond (`minijeu_chapelle_pierre_b.png`), et le motif POSÉ
  *     DESSUS — points en croix CISELÉES (blanc sur ombre charbon, comme un
  *     trait gravé qui accroche la lumière), guide en pointillé blanc-30, et le
  *     tracé du doigt en BLANC (la convention du jeu : blanc = ce qui se

@@ -4163,7 +4163,7 @@ export default function Scene() {
               ? { points: 6, tolerance: 22 }
               : { points: 7, tolerance: 19 }),
           skin: "pierre",
-          imageFond: assetSrc("assets/minijeu_chapelle_pierre.png"),
+          imageFond: assetSrc("assets/minijeu_chapelle_pierre_b.png"),
         });
       } else if (eng === "pick") {
         /* Le Crochetage (la nuit) : la Ruse élargit la gorge. TROIS goupilles
@@ -4191,7 +4191,7 @@ export default function Scene() {
           maxDeviation: cou >= 4 ? 34 : cou >= 3 ? 22 : 14,
           skin: "corde",
           // 01/09 : la corde de Patrick en image, le tracé à couper en blanc.
-          imageCorde: assetSrc("assets/minijeu_corde_tile.png"),
+          imageCorde: assetSrc("assets/minijeu_corde_tile_b.png"),
         });
       } else if (eng === "swipe") {
         // La cérémonie : cinq paliers, vers le BAS, lentement. Trop vite ne
@@ -4204,7 +4204,7 @@ export default function Scene() {
           pagesNeeded: 5, maxSpeed: 9, label: "paliers",
           axis: "y", skin: "corde", step: 30, forgiving: true,
           // 01/09 : la corde continue en image, la lumière qui s'éteint.
-          imageCorde: assetSrc("assets/minijeu_corde_tile.png"),
+          imageCorde: assetSrc("assets/minijeu_corde_tile_b.png"),
         });
       } else {
         /* rub — SKIN IMAGE (maquettes Figma 2544:10906 / 2558:23211, 25/08) :

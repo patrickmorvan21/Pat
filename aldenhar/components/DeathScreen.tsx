@@ -81,6 +81,10 @@ type Ecran = "fatal" | "mort" | "fragment" | "registre" | "relique";
     flammes les mangent. Seule exception à la règle globale des 50 px. */
 const HINT_BAS = 200;
 
+/** La carte de mort ne colle pas au haut du cadre (retour Patrick 02/09).
+    Sert AUSSI au calcul de réduction : les deux ne peuvent pas diverger. */
+const PAD_CARTE = 46;
+
 /**
  * Le fragment du Geôlier : une chose de plus sur cet endroit, à chaque mort.
  * Arc GARANTI aux morts 1, 2, 3, puis 5, 8, 12, 17 — entre les jalons, la
@@ -408,15 +412,15 @@ export default function DeathScreen({
            chiffres, mais portés par un objet qu'on incline et qu'on partage.
            « Touche pour continuer » reste le lien du bas ; la carte et le CTA
            Partager n'avancent jamais l'écran. La carte se réduit sur les
-           écrans courts pour laisser le lien AU-DESSUS des braises. */
-        <div className="flex flex-1 flex-col items-center pt-[20px]" data-t="carte">
-          <div className="flex items-center justify-center gap-[8px]">
-            <span className="size-[3px] rotate-45 bg-[var(--color-accent)]" aria-hidden />
-            <span className="font-mono text-[12px] font-medium uppercase tracking-[0.6px] text-[var(--color-accent)]">
-              {`${ordinalVie(morts)} vie s'arrête`}
-            </span>
-            <span className="size-[3px] rotate-45 bg-[var(--color-accent)]" aria-hidden />
-          </div>
+           écrans courts pour laisser le lien AU-DESSUS des braises.
+           Pas de titre au-dessus (retour Patrick 02/09) : la carte porte
+           déjà son en-tête, et elle descend de PAD_CARTE pour ne pas
+           toucher le haut du cadre. */
+        <div
+          className="flex flex-1 flex-col items-center"
+          style={{ paddingTop: PAD_CARTE }}
+          data-t="carte"
+        >
           <CarteReduite>
             <CarteDeMort
               heroName={heroName}
@@ -940,14 +944,6 @@ function TagRarete({ rarity, className }: { rarity: Relic["rarity"]; className?:
   );
 }
 
-/** « ta douzième vie s'arrête » — `morts` est déjà incrémenté par recordDeath. */
-function ordinalVie(n: number): string {
-  const f = ["", "Ta première", "Ta deuxième", "Ta troisième", "Ta quatrième", "Ta cinquième",
-    "Ta sixième", "Ta septième", "Ta huitième", "Ta neuvième", "Ta dixième", "Ta onzième", "Ta douzième"];
-  if (n >= 1 && n < f.length) return f[n];
-  return n > 0 ? `Ta ${n}ᵉ` : "Ta";
-}
-
 /**
  * Réduit la carte quand le cadre est court : tout (eyebrow, carte, hint,
  * CTA) doit tenir AU-DESSUS du lien « Touche pour continuer » (HINT_BAS) et
@@ -962,8 +958,8 @@ function CarteReduite({ children }: { children: React.ReactNode }) {
     const mesure = () => {
       const cadre = el.closest("[data-ecran]") as HTMLElement | null;
       const h = cadre?.clientHeight ?? window.innerHeight;
-      // 20 haut + 28 eyebrow + carte + 12 hint + 34 CTA + marge, au-dessus de HINT_BAS
-      const dispo = h - HINT_BAS - 20 - 28 - 24 - 34 - 8 - 12;
+      // PAD_CARTE en haut + carte + 12 hint + 34 CTA + marge, au-dessus de HINT_BAS
+      const dispo = h - HINT_BAS - PAD_CARTE - 24 - 34 - 8 - 12;
       setEchelle(Math.max(0.6, Math.min(1, dispo / 450)));
     };
     mesure();

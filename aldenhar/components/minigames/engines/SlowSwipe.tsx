@@ -21,7 +21,7 @@ import { CHARBON, CREME, ORANGE } from "@/lib/dither";
  * fur et à mesure qu'on descend celle-ci s'assombrit — on finit par ne plus
  * voir de lumière que la corde : ça montre qu'on arrive à l'acte 2 »).
  *   - canvas 360×499 (la zone de jeu native) ;
- *   - la corde = la tuile tramée de Patrick (`minijeu_corde_tile.png`,
+ *   - la corde = la tuile tramée de Patrick (`minijeu_corde_tile_b.png`,
  *     120×466, raccord vertical cuit dans le fichier) empilée et DÉFILÉE
  *     vers le haut par `defile` : l'image continue tant qu'on descend ;
  *   - la LUMIÈRE = un champ de pixels orange en haut du cadre dont la
@@ -100,14 +100,19 @@ function rendreLumiere(W: number, H: number, niveau: number): HTMLCanvasElement 
   const c = cv.getContext("2d")!;
   const k = 1 - niveau / NIVEAUX_LUMIERE; // 1 = pleine lumière, 0 = nuit
   if (k <= 0) return cv;
-  const portee = H * (0.22 + 0.5 * k); // jusqu'où la lumière descend
+  // ⚠️ Densité de DÉPART revue le 02/09 (retour Patrick : « rendre le bg moins
+  // dense au début »). À 0,96 le haut du champ était un APLAT orange plein :
+  // la corde s'y noyait, et la trame ne se lisait plus comme une trame. À 0,62
+  // on voit la lumière ET ce qu'elle éclaire. Mesuré côte à côte avant de
+  // trancher — 0,45 rendait la lumière trop timide pour qu'elle manque ensuite.
+  const portee = H * (0.18 + 0.48 * k); // jusqu'où la lumière descend
   const gain = Math.pow(k, 0.8);
   const img = c.createImageData(W, H);
   const d = img.data;
   const CELL = 2;
   for (let y = 0; y < H; y += CELL) {
     const t = Math.max(0, 1 - y / portee);
-    const dens = Math.pow(t, 1.35) * 0.96 * gain;
+    const dens = Math.pow(t, 1.5) * 0.62 * gain;
     if (dens <= 0) break;
     for (let x = 0; x < W; x += CELL) {
       const seuil = (BAYER8[(y / CELL) & 7][(x / CELL) & 7] + 0.5) / 64;
