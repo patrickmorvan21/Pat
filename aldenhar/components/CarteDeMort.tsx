@@ -3,54 +3,63 @@
 /**
  * LA CARTE DE MORT — l'écran « La mort » est une carte à collectionner.
  *
- * ⚠️ REFONTE DU 02/09 (retour Patrick : « je préférais la carte de la version 1
- * faite avec opus »). La v1 est le prototype `carte_de_mort.html`, et ce qui la
- * rendait meilleure est STRUCTUREL, pas décoratif : **son texte est du DOM.**
- * Ma première version dessinait tout — texte compris — sur un canvas 600×900
- * affiché en 300×450 avec `image-rendering: pixelated` : une réduction 2:1 en
- * mode pixelated prend un pixel sur quatre, donc les lettres ressortaient
- * crénelées et sales. Ici le canvas ne porte plus que la MATIÈRE (forme, bord,
- * semis) et le texte est rendu par le navigateur, net à toute densité d'écran.
+ * ⚠️ REFONTE DU 02/09, DEUXIÈME PASSE (retour Patrick : « je préfère toujours
+ * la V1 en terme de design — reprends la card à l'identique, même l'image très
+ * pixellisée donne un style »). Ce fichier est donc un PORT FIDÈLE du prototype
+ * `carte_de_mort.html`, et non plus une carte de mon cru :
  *
- * Les trois corrections demandées avec la refonte :
- *   1. une BORDURE ORANGE À RADIUS, en pixel art — l'arrondi est fait de
- *      marches de `PAS` pixels (jamais un `border-radius` lisse) ;
- *   2. aucun titre au-dessus de la carte (l'eyebrow est retiré, côté écran) ;
- *   3. la carte descend un peu (marge du haut, côté écran).
+ *   • UN SEUL CANVAS DE MATIÈRE, en 150×225 pixels LOGIQUES affichés en
+ *     300×450 (`image-rendering: pixelated`) — un pixel logique = 2 px écran.
+ *     C'est ce gros pixel assumé qui fait le style, l'illustration comprise :
+ *     elle est ré-échantillonnée dans cette grille au plus proche voisin, elle
+ *     n'est PAS un <img> net posé par-dessus.
+ *   • LE TEXTE EST DU DOM, dans le flux flex exact du prototype (padding 14,
+ *     bandeau 16, portrait 146, nom 34, épitaphe 10/1.5, chiffres poussés en
+ *     bas par `margin-top:auto`, pied). Le dessiner sur le canvas le
+ *     crénelait — c'était le vrai défaut de ma première version.
  *
- * Ce qu'elle porte : le rang au Registre (ou « hors des Cent »), l'acte,
- * l'ILLUSTRATION DU LIEU DE LA MORT (l'image qui était à l'écran au jet fatal),
- * le nom, l'épitaphe, les seuls chiffres bruts du jeu, et la relique forgée.
+ * LA SEULE CHOSE AJOUTÉE AU PROTOTYPE (demande explicite) : ses quatre segments
+ * de cadre décalés sont remplacés par une VRAIE BORDURE ORANGE ÉPAISSE À GROS
+ * RADIUS, dessinée en marches de pixels logiques — jamais un `border-radius`
+ * lisse, qui trahirait la grille. La carte est donc transparente hors de cette
+ * forme : c'est le charbon de l'écran qui fait le fond, et l'arrondi se lit.
  *
- * ⚠️ DEUX RENDUS, UNE SEULE SOURCE DE DONNÉES. L'affichage est du DOM ; l'export
- * PNG (« Partager ») doit produire un FICHIER, donc il repasse par le canvas. Le
- * contenu vient d'une fabrique unique (`contenuCarte`) et la géométrie d'une
- * table unique (`G`) : seul le moteur de rendu diffère. Toute ligne ajoutée à
- * l'un se voit dans l'autre sans y penser.
+ * ⚠️ L'EXPORT PNG (« Partager ») NE DUPLIQUE PLUS AUCUNE GÉOMÉTRIE. Il agrandit
+ * le canvas de matière, puis relit les positions, polices et couleurs
+ * DIRECTEMENT dans le DOM affiché. Une table de coordonnées parallèle aurait
+ * divergé à la première retouche de mise en page ; ici l'écran est la source,
+ * le fichier n'en est que la transcription.
  *
- * Le reste est conservé du 01/09 : rareté = PROFONDEUR atteinte (le cadre
- * s'épaissit avec l'acte, jamais un tirage), brillance en trame Bayer qui suit
- * l'inclinaison (paliers de 3°, retour en trois crans, `animReduced()` →
- * carte plate), et la carte ne fait JAMAIS avancer l'écran (`stopPropagation`).
+ * Conservé du 01/09 : rareté = PROFONDEUR atteinte (le cadre s'épaissit avec
+ * l'acte, jamais un tirage), brillance en trame Bayer qui suit l'inclinaison
+ * (paliers de 3°, retour en trois crans, `animReduced()` → carte plate), et la
+ * carte ne fait JAMAIS avancer l'écran de mort (`stopPropagation`).
  */
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import type { Relic } from "@/lib/player-memory";
 import type { Bilan } from "@/components/DeathScreen";
-import { assetSrc, assetUrl } from "@/lib/assets";
+import { assetSrc } from "@/lib/assets";
 import { seededRandom } from "@/lib/dither";
 import { animReduced, haptic } from "@/lib/settings";
 
 const CHARBON = "#1c1a16";
 const ORANGE = "#e0632a";
 const BLANC = "#ffffff";
-/** Dimensions de la carte, en pixels d'écran. */
+
+/** La carte à l'écran. */
 const CW = 300,
   CH = 450;
-/** Le gros pixel : les marches de l'arrondi et le semis en font `PAS`. */
-const PAS = 2;
-/** Rayon de l'arrondi, en pixels d'écran (6 gros pixels). */
-const RAYON = 12;
+/** La grille du prototype : 1 pixel logique = 2 pixels d'écran. */
+const LW = 150,
+  LH = 225;
+/** La bordure : épaisse et à gros radius, en pixels LOGIQUES. */
+const EP = 2,
+  RAY = 13;
+/** La bande d'illustration, en pixels logiques (sous le bandeau d'en-tête). */
+const IMG_Y0 = 17,
+  IMG_Y1 = 100;
+
 const BAYER = [
   [0, 8, 2, 10],
   [12, 4, 14, 6],
@@ -60,32 +69,11 @@ const BAYER = [
 const STEP = 3,
   MAX = 12;
 
-/**
- * LA GÉOMÉTRIE, en pixels d'écran — partagée par le DOM et par l'export.
- * Le DOM place ses blocs en absolu sur ces valeurs : une carte a une taille
- * fixe, le flux n'apporterait qu'une occasion de diverger.
- */
-const G = {
-  marge: 14,
-  entete: 27, // ligne de base de l'en-tête
-  illuY: 34,
-  illuH: 150,
-  nomY: 222, // ligne de base du nom
-  epiY: 238, // ligne de base de la 1re ligne d'épitaphe
-  epiLH: 15,
-  piedY: CH - 16, // ligne de base du pied
-  reliqueY: CH - 30,
-  filetY: CH - 41,
-  statsY: CH - 50, // ligne de base de la DERNIÈRE ligne de stats
-  statsLH: 15,
-};
-const LARG = CW - 2 * G.marge;
-
 /** La profondeur = la rareté. Le cadre s'épaissit, les coins se marquent. */
 const PROFONDEURS = [
-  { acte: "Acte I", zone: "Les Landes", cadre: PAS, coins: false },
-  { acte: "Acte II", zone: "", cadre: PAS * 2, coins: false },
-  { acte: "Acte III", zone: "", cadre: PAS * 3, coins: true },
+  { acte: "Acte I", zone: "Les Landes", cadre: EP, coins: false },
+  { acte: "Acte II", zone: "", cadre: EP + 1, coins: false },
+  { acte: "Acte III", zone: "", cadre: EP + 2, coins: true },
 ];
 
 export type CarteDeMortProps = {
@@ -113,34 +101,34 @@ function ordinal(n: number): string {
   return n === 1 ? "1ʳᵉ" : `${n}ᵉ`;
 }
 
-/** LE CONTENU — une seule fabrique, lue par le DOM et par l'export. */
+/** LE CONTENU — une seule fabrique. Le DOM la lit ; l'export lit le DOM. */
 function contenuCarte(p: CarteDeMortProps) {
   const prof = PROFONDEURS[Math.min(PROFONDEURS.length - 1, p.acte ?? 0)];
   return {
     prof,
-    rang: p.rang ? ordinal(p.rang) : "HORS DES CENT",
-    acte: prof.acte.toUpperCase(),
+    rang: p.rang ? ordinal(p.rang) : "hors des Cent",
+    acte: prof.acte,
     nom: p.heroName,
     epitaphe: p.epitaph,
-    pied: [`PACTUM`, `JOUR ${romain(p.day)}`] as const,
+    pied: ["Pactum", `Jour ${romain(p.day)} du Domaine`] as const,
     relique: p.relic.name,
     stats: [
-      ["JOURS TENUS", String(p.bilan.jours)],
-      ["POINT LE PLUS PROFOND", prof.zone || p.bilan.plusLoin],
-      ["LIEUX TRAVERSÉS", String(p.bilan.lieux)],
-      ["COMBATS TRAVERSÉS", String(p.bilan.rencontres)],
-      ["DÉS LANCÉS", `${p.bilan.des} · ${p.bilan.desTenus} tenus`],
-      ["DESTINS · MALÉDICTIONS", `${p.bilan.destins} · ${p.bilan.maledictions}`],
+      ["Jours tenus", String(p.bilan.jours)],
+      ["Plus loin descendue", prof.zone || p.bilan.plusLoin],
+      ["Lieux traversés", String(p.bilan.lieux)],
+      ["Combats traversés", String(p.bilan.rencontres)],
+      ["Dés lancés", `${p.bilan.des} · ${p.bilan.desTenus} tenus`],
+      ["Destins · Malédictions", `${p.bilan.destins} · ${p.bilan.maledictions}`],
     ] as [string, string][],
   };
 }
 
 /**
- * LA FORME À COINS ARRONDIS, EN MARCHES DE PIXELS.
- * Remplie ligne par ligne : le retrait horizontal d'une ligne suit un quart de
- * cercle ARRONDI AU GROS PIXEL, ce qui donne l'escalier voulu. Une bordure se
- * fait en peignant la forme pleine en orange puis la même forme rétrécie de
- * `e` en charbon — l'épaisseur suit l'arrondi sans jamais s'en écarter.
+ * LA FORME À COINS ARRONDIS, EN MARCHES DE PIXELS LOGIQUES.
+ * Remplie ligne par ligne : le retrait horizontal suit un quart de cercle
+ * arrondi à l'entier, ce qui donne l'escalier. La bordure se fait en peignant
+ * la forme pleine en orange puis la même forme rentrée de `e` en charbon —
+ * l'épaisseur suit l'arrondi sans jamais s'en écarter.
  */
 function formePixel(
   ctx: CanvasRenderingContext2D,
@@ -152,192 +140,147 @@ function formePixel(
   couleur: string,
 ) {
   ctx.fillStyle = couleur;
-  for (let py = 0; py < h; py += PAS) {
+  for (let py = 0; py < h; py++) {
     let inset = 0;
     if (py < r) {
-      const dy = r - PAS - py;
+      const dy = r - py - 0.5;
       inset = r - Math.sqrt(Math.max(0, r * r - dy * dy));
     } else if (py >= h - r) {
-      const dy = py - (h - r);
+      const dy = py - (h - r) + 0.5;
       inset = r - Math.sqrt(Math.max(0, r * r - dy * dy));
     }
-    inset = Math.round(inset / PAS) * PAS;
-    ctx.fillRect(x + inset, y + py, w - 2 * inset, PAS);
+    inset = Math.round(inset);
+    ctx.fillRect(x + inset, y + py, w - 2 * inset, 1);
   }
+}
+
+/** Le test « ce pixel logique est-il dans la carte ? » — sert au clip du shine. */
+function dedansForme(px: number, py: number, r = RAY): boolean {
+  let inset = 0;
+  if (py < r) {
+    const dy = r - py - 0.5;
+    inset = r - Math.sqrt(Math.max(0, r * r - dy * dy));
+  } else if (py >= LH - r) {
+    const dy = py - (LH - r) + 0.5;
+    inset = r - Math.sqrt(Math.max(0, r * r - dy * dy));
+  }
+  inset = Math.round(inset);
+  return px >= inset && px < LW - inset;
 }
 
 /**
- * LE FOND : la forme arrondie en charbon, sa bordure orange, le semis.
- * Dessiné en coordonnées d'écran ; l'export met simplement le contexte à
- * l'échelle, donc les marches restent proportionnelles.
+ * LA MATIÈRE — tout ce qui n'est pas du texte, en 150×225 pixels logiques.
+ * L'illustration du lieu de la mort est ré-échantillonnée DANS cette grille :
+ * c'est elle, la « très pixellisée » que Patrick garde, et c'est aussi ce qui
+ * fait qu'elle se dissout en pixels dans le fond au lieu d'avoir un bord net.
  */
-function dessinerFond(ctx: CanvasRenderingContext2D, p: CarteDeMortProps, rnd: () => number) {
-  const { prof } = contenuCarte(p);
-  const e = prof.cadre;
-  ctx.clearRect(0, 0, CW, CH);
-  // la bordure d'abord, l'intérieur ensuite : l'épaisseur suit l'arrondi
-  formePixel(ctx, 0, 0, CW, CH, RAYON, ORANGE);
-  formePixel(ctx, e, e, CW - 2 * e, CH - 2 * e, Math.max(0, RAYON - e), CHARBON);
-  // le semis du fond : blanc-20 très clairsemé, seedé, en gros pixels
-  ctx.fillStyle = "rgba(255,255,255,0.2)";
-  for (let i = 0; i < 210; i++) {
-    const x = Math.floor((rnd() * (CW - 2 * RAYON) + RAYON) / PAS) * PAS;
-    const y = Math.floor((rnd() * (CH - 2 * RAYON) + RAYON) / PAS) * PAS;
-    ctx.fillRect(x, y, PAS, PAS);
-  }
-  if (prof.coins) {
-    // Acte III : quatre encoches blanches, la marque la plus profonde
-    ctx.fillStyle = BLANC;
-    ctx.fillRect(RAYON, e, 9, PAS);
-    ctx.fillRect(e, RAYON, PAS, 9);
-    ctx.fillRect(CW - RAYON - 9, CH - e - PAS, 9, PAS);
-    ctx.fillRect(CW - e - PAS, CH - RAYON - 9, PAS, 9);
-  }
-}
-
-/** Coupe un texte en lignes qui tiennent dans `max` px (police courante). */
-function lignes(ctx: CanvasRenderingContext2D, texte: string, max: number, maxLignes: number): string[] {
-  const mots = texte.replace(/\s+/g, " ").trim().split(" ");
-  const out: string[] = [];
-  let cur = "";
-  for (const m of mots) {
-    const essai = cur ? `${cur} ${m}` : m;
-    if (ctx.measureText(essai).width <= max) cur = essai;
-    else {
-      if (cur) out.push(cur);
-      cur = m;
-    }
-  }
-  if (cur) out.push(cur);
-  if (out.length > maxLignes) {
-    const g = out.slice(0, maxLignes);
-    g[maxLignes - 1] = g[maxLignes - 1].replace(/[\s,;:.]+$/, "") + "…";
-    return g;
-  }
-  return out;
-}
-
-/**
- * L'EXPORT — la même carte, texte compris, sur un canvas à `ech` fois la
- * taille d'écran. Sert UNIQUEMENT au fichier PNG de « Partager » : ce qu'on
- * regarde à l'écran, c'est le DOM.
- */
-function dessinerExport(
+function dessinerTexture(
   ctx: CanvasRenderingContext2D,
   p: CarteDeMortProps,
   illu: HTMLImageElement | null,
-  ech: number,
+  rnd: () => number,
 ) {
-  const c = contenuCarte(p);
-  const rnd = seededRandom(`carte|${p.heroName}|${p.day}|${p.bilan.des}`);
-  ctx.setTransform(ech, 0, 0, ech, 0, 0);
+  const { prof } = contenuCarte(p);
+  const e = prof.cadre;
   ctx.imageSmoothingEnabled = false;
-  dessinerFond(ctx, p, rnd);
+  ctx.clearRect(0, 0, LW, LH);
 
-  /* ─── l'illustration du lieu, dissoute en bas ───────────────────────── */
-  if (illu) {
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(G.marge, G.illuY, LARG, G.illuH);
-    ctx.clip();
+  /* la bordure orange épaisse, puis l'intérieur : l'épaisseur suit l'arrondi */
+  formePixel(ctx, 0, 0, LW, LH, RAY, ORANGE);
+  formePixel(ctx, e, e, LW - 2 * e, LH - 2 * e, Math.max(1, RAY - e), CHARBON);
+
+  /* le semis du fond : blanc-20 très clairsemé (prototype : 170 points) */
+  ctx.fillStyle = "rgba(255,255,255,.2)";
+  for (let i = 0; i < 170; i++) {
+    const x = Math.floor(rnd() * LW),
+      y = Math.floor(rnd() * LH);
+    if (dedansForme(x, y) && x > e + 1 && x < LW - e - 2 && y > e + 1 && y < LH - e - 2) ctx.fillRect(x, y, 1, 1);
+  }
+
+  /* L'ILLUSTRATION, RÉ-TRAMÉE DANS LA GRILLE DE LA CARTE.
+     ⚠️ Surtout PAS un `drawImage` au plus proche voisin : nos assets sont déjà
+     tramés en 1000×1000, et prendre un pixel sur sept dans une trame détruit la
+     trame — le ciel ressort en aplat plein et le sol en bruit. On réduit donc
+     d'abord en MOYENNE (le navigateur filtre), ce qui rend la densité LOCALE,
+     puis on re-trame en Bayer sur la grille logique. C'est la recette du fond
+     de pierre du 02/09, appliquée à l'exécution. */
+  if (illu && illu.naturalWidth) {
+    const x0 = e,
+      x1 = LW - e;
+    const bw = x1 - x0,
+      bh = IMG_Y1 - IMG_Y0;
+    const off = document.createElement("canvas");
+    off.width = bw;
+    off.height = bh;
+    const octx = off.getContext("2d")!;
+    octx.imageSmoothingEnabled = true;
     const sw = illu.naturalWidth,
       sh = illu.naturalHeight;
-    const ratio = LARG / G.illuH;
+    const ratio = bw / bh;
     let cw = sw,
       ch = sw / ratio;
     if (ch > sh) {
       ch = sh;
       cw = sh * ratio;
     }
-    ctx.drawImage(illu, (sw - cw) / 2, (sh - ch) / 2, cw, ch, G.marge, G.illuY, LARG, G.illuH);
-    ctx.restore();
-    // dissolution : densité de charbon croissante vers le bas (jamais un alpha)
+    octx.drawImage(illu, (sw - cw) / 2, (sh - ch) / 2, cw, ch, 0, 0, bw, bh);
+    const d = octx.getImageData(0, 0, bw, bh).data;
+    ctx.fillStyle = ORANGE;
+    for (let py = 0; py < bh; py++) {
+      for (let px = 0; px < bw; px++) {
+        const cy = IMG_Y0 + py,
+          cx = x0 + px;
+        // jamais sous la bordure : l'image s'arrête à la forme intérieure
+        if (!dedansForme(cx, cy, RAY)) continue;
+        const i = (py * bw + px) * 4;
+        const lum = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+        // charbon ≈ 26, orange ≈ 121 en luminance : on en déduit la densité
+        const t = Math.max(0, Math.min(1, (lum - 26) / (121 - 26)));
+        if (BAYER[cy & 3][cx & 3] / 16 < t) ctx.fillRect(cx, cy, 1, 1);
+      }
+    }
+
+    /* dissolution pixel du bas de l'image (prototype : densité, jamais un alpha) */
     ctx.fillStyle = CHARBON;
-    for (let y = G.illuY + G.illuH - 42; y < G.illuY + G.illuH; y++) {
-      const t = (y - (G.illuY + G.illuH - 42)) / 42;
-      for (let x = G.marge; x < G.marge + LARG; x++) if (rnd() < t * t * 1.1) ctx.fillRect(x, y, 1, 1);
+    const d0 = IMG_Y1 - 16;
+    for (let py = d0; py < IMG_Y1 + 8; py++) {
+      const t = (py - d0) / 24;
+      for (let px = x0; px < x1; px++) if (rnd() < t * 0.95 && dedansForme(px, py, RAY)) ctx.fillRect(px, py, 1, 1);
     }
   }
 
-  /* ─── en-tête ───────────────────────────────────────────────────────── */
-  ctx.textBaseline = "alphabetic";
-  ctx.font = "500 9.5px 'Roboto Mono', monospace";
-  ctx.letterSpacing = "1.8px";
-  ctx.textAlign = "left";
-  ctx.fillStyle = "rgba(255,255,255,0.5)";
-  const prefixe = "REGISTRE · ";
-  ctx.fillText(prefixe, G.marge, G.entete);
-  ctx.fillStyle = ORANGE;
-  ctx.fillText(c.rang, G.marge + ctx.measureText(prefixe).width, G.entete);
-  ctx.textAlign = "right";
-  ctx.fillStyle = "rgba(255,255,255,0.5)";
-  ctx.fillText(c.acte, CW - G.marge, G.entete);
-  ctx.letterSpacing = "0px";
-
-  /* ─── nom, épitaphe ─────────────────────────────────────────────────── */
-  ctx.textAlign = "left";
-  ctx.fillStyle = ORANGE;
-  let taille = 34;
-  ctx.font = `${taille}px 'Instrument Serif', serif`;
-  while (ctx.measureText(c.nom).width > LARG && taille > 18) {
-    taille -= 1;
-    ctx.font = `${taille}px 'Instrument Serif', serif`;
+  /* érosion des quatre bords, À L'INTÉRIEUR de la bordure : le grain du
+     prototype, sans jamais ronger le trait orange qui définit la forme */
+  ctx.fillStyle = "#000";
+  for (let i = 0; i < 900; i++) {
+    const bord = Math.floor(rnd() * 4),
+      d = Math.pow(rnd(), 2.2) * 6;
+    let px: number, py: number;
+    if (bord === 0) { px = Math.floor(rnd() * LW); py = Math.round(e + d); }
+    else if (bord === 1) { px = Math.floor(rnd() * LW); py = Math.round(LH - 1 - e - d); }
+    else if (bord === 2) { px = Math.round(e + d); py = Math.floor(rnd() * LH); }
+    else { px = Math.round(LW - 1 - e - d); py = Math.floor(rnd() * LH); }
+    if (px > e && px < LW - e - 1 && py > e && py < LH - e - 1 && dedansForme(px, py, RAY + 2)) ctx.fillRect(px, py, 1, 1);
   }
-  ctx.fillText(c.nom, G.marge, G.nomY);
-  ctx.fillStyle = BLANC;
-  ctx.font = "10px 'Roboto Mono', monospace";
-  lignes(ctx, c.epitaphe, LARG, 4).forEach((l, i) => ctx.fillText(l, G.marge, G.epiY + i * G.epiLH));
 
-  /* ─── pied, relique, chiffres ───────────────────────────────────────── */
-  ctx.font = "500 8.5px 'Roboto Mono', monospace";
-  ctx.letterSpacing = "1.4px";
-  ctx.fillStyle = "rgba(255,255,255,0.2)";
-  ctx.fillText(c.pied[0], G.marge, G.piedY);
-  ctx.textAlign = "right";
-  ctx.fillText(c.pied[1], CW - G.marge, G.piedY);
-  ctx.letterSpacing = "0px";
-
-  ctx.textAlign = "left";
-  ctx.font = "500 9px 'Roboto Mono', monospace";
-  ctx.letterSpacing = "1.3px";
-  ctx.fillStyle = "rgba(255,255,255,0.5)";
-  ctx.fillText("RELIQUE FORGÉE", G.marge, G.reliqueY);
-  ctx.letterSpacing = "0px";
-  ctx.textAlign = "right";
-  ctx.font = "11.5px 'Roboto Mono', monospace";
-  ctx.fillStyle = ORANGE;
-  ctx.fillText(c.relique, CW - G.marge, G.reliqueY);
-
-  ctx.fillStyle = "rgba(255,255,255,0.2)";
-  for (let x = G.marge; x < CW - G.marge; x += 3) ctx.fillRect(x, G.filetY, 2, 1);
-
-  c.stats.forEach(([k, v], i) => {
-    const y = G.statsY - (c.stats.length - 1 - i) * G.statsLH;
-    ctx.textAlign = "left";
-    ctx.font = "500 9px 'Roboto Mono', monospace";
-    ctx.letterSpacing = "1.3px";
-    ctx.fillStyle = "rgba(255,255,255,0.5)";
-    ctx.fillText(k, G.marge, y);
-    ctx.letterSpacing = "0px";
-    ctx.textAlign = "right";
-    ctx.font = "11.5px 'Roboto Mono', monospace";
+  if (prof.coins) {
+    /* Acte III : quatre encoches blanches, la marque la plus profonde */
     ctx.fillStyle = BLANC;
-    ctx.fillText(v, CW - G.marge, y);
-  });
-  ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.fillRect(RAY, e, 5, 1);
+    ctx.fillRect(e, RAY, 1, 5);
+    ctx.fillRect(LW - RAY - 5, LH - e - 1, 5, 1);
+    ctx.fillRect(LW - e - 1, LH - RAY - 5, 1, 5);
+  }
 }
 
 /**
  * LA BRILLANCE — une bande diagonale qui suit l'inclinaison, en quatre paliers
- * de densité Bayer, blanc sur le palier le plus dense. Dessinée à demi-
- * résolution et agrandie en pixels francs. Bornée à la forme arrondie : sans
- * ça, en `mix-blend: screen`, elle allumerait les coins hors de la carte.
+ * de densité Bayer, blanc sur le palier le plus dense (prototype tel quel).
+ * Bornée à la forme : en `mix-blend: screen`, elle allumerait sinon les coins
+ * hors de la carte.
  */
 function dessinerBrillance(ctx: CanvasRenderingContext2D, rx: number, ry: number, rnd: () => number) {
-  const W = CW / 2,
-    H = CH / 2,
-    R = RAYON / 2;
-  ctx.clearRect(0, 0, W, H);
+  ctx.clearRect(0, 0, LW, LH);
   const amp = Math.min(1, Math.hypot(rx, ry) / MAX);
   if (!isFinite(amp) || amp <= 0.02) return;
   const ang = -0.62,
@@ -345,22 +288,11 @@ function dessinerBrillance(ctx: CanvasRenderingContext2D, rx: number, ry: number
     sa = Math.sin(ang);
   const off = (ry / MAX) * 0.62 + (rx / MAX) * 0.18,
     bandW = 0.24;
-  const dedans = (px: number, py: number) => {
-    let inset = 0;
-    if (py < R) {
-      const dy = R - 1 - py;
-      inset = R - Math.sqrt(Math.max(0, R * R - dy * dy));
-    } else if (py >= H - R) {
-      const dy = py - (H - R);
-      inset = R - Math.sqrt(Math.max(0, R * R - dy * dy));
-    }
-    return px >= inset && px < W - inset;
-  };
-  for (let py = 0; py < H; py++) {
-    for (let px = 0; px < W; px++) {
-      if (!dedans(px, py)) continue;
-      const u = px / W - 0.5,
-        v = py / H - 0.5,
+  for (let py = 0; py < LH; py++) {
+    for (let px = 0; px < LW; px++) {
+      if (!dedansForme(px, py)) continue;
+      const u = px / LW - 0.5,
+        v = py / LH - 0.5,
         d = u * ca + v * sa - off;
       let t = Math.max(0, 1 - Math.abs(d) / bandW);
       const t2 = Math.max(0, 1 - Math.abs(d + 0.34) / (bandW * 0.5)) * 0.55;
@@ -375,17 +307,75 @@ function dessinerBrillance(ctx: CanvasRenderingContext2D, rx: number, ry: number
     }
   }
   for (let i = 0; i < 12 * amp; i++) {
-    const py = Math.floor(rnd() * H),
-      v = py / H - 0.5;
+    const py = Math.floor(rnd() * LH),
+      v = py / LH - 0.5;
     const u = (off - v * sa) / ca + (rnd() - 0.5) * 0.16,
-      px = Math.floor((u + 0.5) * W);
-    if (!dedans(px, py)) continue;
+      px = Math.floor((u + 0.5) * LW);
+    if (!dedansForme(px, py)) continue;
     ctx.fillStyle = BLANC;
     ctx.fillRect(px, py, 1, 1);
   }
 }
 
-/** Le nom du héros : réduit par demi-points jusqu'à tenir, jamais tronqué. */
+/** Coupe un texte en lignes qui tiennent dans `max` px (police courante). */
+function lignes(ctx: CanvasRenderingContext2D, texte: string, max: number): string[] {
+  const mots = texte.replace(/\s+/g, " ").trim().split(" ");
+  const out: string[] = [];
+  let cur = "";
+  for (const m of mots) {
+    const essai = cur ? `${cur} ${m}` : m;
+    if (ctx.measureText(essai).width <= max) cur = essai;
+    else {
+      if (cur) out.push(cur);
+      cur = m;
+    }
+  }
+  if (cur) out.push(cur);
+  return out;
+}
+
+/**
+ * L'EXPORT — la matière agrandie, puis le texte RELU DANS LE DOM AFFICHÉ.
+ * Chaque feuille de texte de la carte porte `data-txt` ; on lit sa boîte, sa
+ * police, sa couleur et son alignement, et on la transcrit. Aucune coordonnée
+ * n'est réécrite ici : le fichier ne peut pas s'écarter de l'écran.
+ */
+function dessinerExportDepuisDom(
+  ctx: CanvasRenderingContext2D,
+  carte: HTMLElement,
+  texture: HTMLCanvasElement,
+  ech: number,
+) {
+  ctx.imageSmoothingEnabled = false;
+  ctx.clearRect(0, 0, CW * ech, CH * ech);
+  ctx.drawImage(texture, 0, 0, CW * ech, CH * ech);
+
+  const base = carte.getBoundingClientRect();
+  ctx.setTransform(ech, 0, 0, ech, 0, 0);
+  ctx.textBaseline = "middle";
+  for (const el of Array.from(carte.querySelectorAll<HTMLElement>("[data-txt]"))) {
+    const texte = (el.textContent || "").trim();
+    if (!texte) continue;
+    const r = el.getBoundingClientRect();
+    const s = getComputedStyle(el);
+    const fs = parseFloat(s.fontSize) || 10;
+    const lh = parseFloat(s.lineHeight) || fs * 1.3;
+    ctx.font = `${s.fontStyle} ${s.fontWeight} ${fs}px ${s.fontFamily}`;
+    ctx.fillStyle = s.color;
+    ctx.letterSpacing = s.letterSpacing === "normal" ? "0px" : s.letterSpacing;
+    const droite = s.textAlign === "right";
+    ctx.textAlign = droite ? "right" : "left";
+    const x = droite ? r.right - base.left : r.left - base.left;
+    const y0 = r.top - base.top;
+    // une ligne dans la plupart des cas ; l'épitaphe se replie sur sa largeur
+    const ls = r.height > lh * 1.4 ? lignes(ctx, texte, r.width) : [texte];
+    ls.forEach((l, i) => ctx.fillText(l, x, y0 + lh * (i + 0.5)));
+  }
+  ctx.letterSpacing = "0px";
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+}
+
+/** Le nom du héros : réduit par points entiers jusqu'à tenir, jamais tronqué. */
 function NomAjuste({ nom }: { nom: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const [taille, setTaille] = useState(34);
@@ -394,7 +384,7 @@ function NomAjuste({ nom }: { nom: string }) {
     if (!el) return;
     let t = 34;
     el.style.fontSize = `${t}px`;
-    while (el.scrollWidth > LARG && t > 18) {
+    while (el.scrollWidth > el.clientWidth && t > 18) {
       t -= 1;
       el.style.fontSize = `${t}px`;
     }
@@ -403,7 +393,8 @@ function NomAjuste({ nom }: { nom: string }) {
   return (
     <div
       ref={ref}
-      className="whitespace-nowrap leading-none text-[var(--color-accent)]"
+      data-txt
+      className="w-full overflow-hidden whitespace-nowrap leading-none text-[var(--color-accent)]"
       style={{ fontFamily: "var(--font-title)", fontSize: taille }}
     >
       {nom}
@@ -413,7 +404,7 @@ function NomAjuste({ nom }: { nom: string }) {
 
 export default function CarteDeMort(props: CarteDeMortProps) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const fondRef = useRef<HTMLCanvasElement>(null);
+  const texRef = useRef<HTMLCanvasElement>(null);
   const shineRef = useRef<HTMLCanvasElement>(null);
   const [hint, setHint] = useState("Incline la carte avec ton doigt");
   const [prete, setPrete] = useState(false);
@@ -421,14 +412,29 @@ export default function CarteDeMort(props: CarteDeMortProps) {
   const { heroName, day, epitaph, bilan, relic, rang, image, acte } = props;
   const c = contenuCarte(props);
 
-  /* ─── le fond : une passe, dès le montage ────────────────────────────── */
+  /* ─── la matière : redessinée quand l'illustration est chargée ───────── */
   useEffect(() => {
-    const cv = fondRef.current;
+    const cv = texRef.current;
     if (!cv) return;
-    const ctx = cv.getContext("2d")!;
-    ctx.imageSmoothingEnabled = false;
-    dessinerFond(ctx, { heroName, day, epitaph, bilan, relic, rang, image, acte }, seededRandom(`fond|${heroName}|${day}`));
-    setPrete(true);
+    let vivant = true;
+    const p: CarteDeMortProps = { heroName, day, epitaph, bilan, relic, rang, image, acte };
+    const peindre = (im: HTMLImageElement | null) => {
+      if (!vivant) return;
+      const ctx = cv.getContext("2d")!;
+      dessinerTexture(ctx, p, im, seededRandom(`carte|${heroName}|${day}`));
+      setPrete(true);
+    };
+    if (!image) {
+      peindre(null);
+      return;
+    }
+    const im = new Image();
+    im.onload = () => peindre(im);
+    im.onerror = () => peindre(null);
+    im.src = assetSrc(image);
+    return () => {
+      vivant = false;
+    };
   }, [heroName, day, epitaph, bilan, relic, rang, image, acte]);
 
   /* ─── l'inclinaison, quantifiée ──────────────────────────────────────── */
@@ -495,22 +501,16 @@ export default function CarteDeMort(props: CarteDeMortProps) {
     };
   }, [plat, heroName]);
 
-  /* ─── partager : la carte redessinée en fichier ──────────────────────── */
+  /* ─── partager : la carte transcrite en fichier ──────────────────────── */
   async function partager() {
+    const carte = cardRef.current,
+      tex = texRef.current;
+    if (!carte || !tex) return;
     const ech = 2;
     const cv = document.createElement("canvas");
     cv.width = CW * ech;
     cv.height = CH * ech;
-    const ctx = cv.getContext("2d")!;
-    const p: CarteDeMortProps = { heroName, day, epitaph, bilan, relic, rang, image, acte };
-    const im = await new Promise<HTMLImageElement | null>((res) => {
-      if (!image) return res(null);
-      const i = new Image();
-      i.onload = () => res(i);
-      i.onerror = () => res(null);
-      i.src = assetSrc(image);
-    });
-    dessinerExport(ctx, p, im, ech);
+    dessinerExportDepuisDom(cv.getContext("2d")!, carte, tex, ech);
     const blob: Blob | null = await new Promise((res) => cv.toBlob(res, "image/png"));
     if (!blob) {
       setHint("Impossible d'exporter la carte ici");
@@ -539,7 +539,10 @@ export default function CarteDeMort(props: CarteDeMortProps) {
     setHint("Carte enregistrée en image");
   }
 
-  const labelStyle = "font-mono text-[9px] font-medium uppercase tracking-[1.3px] text-[var(--color-ink)] opacity-50";
+  /* Les classes du prototype, à l'identique. `.k` et `.v` gardent leurs
+     tailles : c'est ce rapport 9/11,5 qui fait lire les chiffres. */
+  const kCls = "font-mono text-[9px] tracking-[1.3px] text-[var(--color-ink)] opacity-50";
+  const vCls = "font-mono text-[11.5px] text-[var(--color-ink)]";
 
   return (
     <div
@@ -555,115 +558,100 @@ export default function CarteDeMort(props: CarteDeMortProps) {
           data-carte-mort
           data-prete={prete ? "1" : "0"}
         >
-          {/* LE FOND : forme arrondie, bordure orange en marches, semis */}
+          {/* LA MATIÈRE : forme, bordure, semis, illustration, dissolution */}
           <canvas
-            ref={fondRef}
-            width={CW}
-            height={CH}
-            className="absolute inset-0"
-            style={{ imageRendering: "pixelated" }}
+            ref={texRef}
+            width={LW}
+            height={LH}
+            className="absolute inset-0 h-full w-full"
+            style={{ imageRendering: "pixelated", zIndex: 1 }}
             aria-hidden
           />
 
-          {/* L'ILLUSTRATION du lieu de la mort, dissoute en bas */}
-          {image && (
-            <div
-              className="absolute overflow-hidden"
-              style={{ left: G.marge, top: G.illuY, width: LARG, height: G.illuH }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                alt=""
-                src={assetUrl(image)}
-                className="h-full w-full select-none object-cover"
-                draggable={false}
-              />
-              <div className="dissolve-bottom" aria-hidden />
-            </div>
-          )}
-
-          {/* LE TEXTE — en DOM, donc net : c'est tout l'objet de la refonte */}
-          <div className="absolute inset-0" style={{ zIndex: 2 }}>
-            <div
-              className="absolute flex items-baseline justify-between"
-              style={{ left: G.marge, right: G.marge, top: G.entete - 10 }}
-            >
-              <span className="font-mono text-[9.5px] font-medium uppercase tracking-[1.8px] text-[var(--color-ink)] opacity-50">
-                Registre&nbsp;·&nbsp;<b className="font-medium text-[var(--color-accent)] opacity-100">{c.rang}</b>
+          {/* LE CONTENU : le flux flex du prototype, texte en DOM donc net */}
+          <div className="absolute inset-0 flex flex-col p-[14px]" style={{ zIndex: 2 }}>
+            <div className="flex h-[16px] items-start justify-between">
+              <span
+                data-txt
+                className="font-mono text-[9.5px] font-medium uppercase tracking-[1.8px]"
+                style={{ color: "rgba(255,255,255,.5)" }}
+              >
+                Registre · <b className="font-medium text-[var(--color-accent)]">{c.rang}</b>
               </span>
-              <span className="font-mono text-[9.5px] font-medium uppercase tracking-[1.8px] text-[var(--color-ink)] opacity-50">
+              <span
+                data-txt
+                className="text-right font-mono text-[9.5px] font-medium uppercase tracking-[1.8px]"
+                style={{ color: "rgba(255,255,255,.5)" }}
+              >
                 {c.acte}
               </span>
             </div>
 
-            <div className="absolute" style={{ left: G.marge, right: G.marge, top: G.nomY - 26 }}>
-              <NomAjuste nom={c.nom} />
-              <p className="mt-[7px] font-mono text-[10px] leading-[1.5] text-[var(--color-ink)]">{c.epitaphe}</p>
+            {/* la place de l'illustration : elle est peinte SOUS, dans la trame */}
+            <div className="h-[146px] shrink-0 grow-0 basis-[146px]" aria-hidden />
+
+            <NomAjuste nom={c.nom} />
+            <div
+              data-txt
+              className="mt-[7px] font-mono text-[10px] leading-[1.5] text-[var(--color-ink)]"
+            >
+              {c.epitaphe}
             </div>
 
-            <div className="absolute" style={{ left: G.marge, right: G.marge, top: G.statsY - 5 * G.statsLH - 9 }}>
+            <div className="mt-auto">
               {c.stats.map(([k, v]) => (
-                <div key={k} className="flex items-baseline justify-between" style={{ height: G.statsLH }}>
-                  <span className={labelStyle}>{k}</span>
-                  <span className="font-mono text-[11.5px] text-[var(--color-ink)]">{v}</span>
+                <div key={k} className="flex items-baseline justify-between py-[1.5px]">
+                  <span data-txt className={kCls}>{k}</span>
+                  <span data-txt className={`${vCls} text-right`}>{v}</span>
                 </div>
               ))}
+              <div
+                className="my-[6px] mb-[4px] h-px"
+                style={{ background: "rgba(255,255,255,.2)" }}
+                aria-hidden
+              />
+              <div className="flex items-baseline justify-between py-[1.5px]">
+                <span data-txt className={kCls}>Relique forgée</span>
+                <span data-txt className="text-right font-mono text-[11.5px] text-[var(--color-accent)]">
+                  {c.relique}
+                </span>
+              </div>
             </div>
 
-            {/* le filet : des pixels espacés, jamais un trait plein */}
-            <div
-              className="absolute h-px"
-              style={{
-                left: G.marge,
-                right: G.marge,
-                top: G.filetY,
-                backgroundImage: "repeating-linear-gradient(90deg, rgba(255,255,255,0.2) 0 2px, transparent 2px 3px)",
-              }}
-              aria-hidden
-            />
-
-            <div
-              className="absolute flex items-baseline justify-between"
-              style={{ left: G.marge, right: G.marge, top: G.reliqueY - 9 }}
-            >
-              <span className={labelStyle}>Relique forgée</span>
-              <span className="font-mono text-[11.5px] text-[var(--color-accent)]">{c.relique}</span>
-            </div>
-
-            <div
-              className="absolute flex justify-between font-mono text-[8.5px] font-medium uppercase tracking-[1.4px] text-[var(--color-ink)] opacity-20"
-              style={{ left: G.marge, right: G.marge, top: G.piedY - 8 }}
-            >
-              <span>{c.pied[0]}</span>
-              <span>{c.pied[1]}</span>
+            <div className="mt-[9px] flex justify-between font-mono text-[8.5px] uppercase tracking-[1.4px]">
+              <span data-txt style={{ color: "rgba(255,255,255,.2)" }}>{c.pied[0]}</span>
+              <span data-txt className="text-right" style={{ color: "rgba(255,255,255,.2)" }}>
+                {c.pied[1]}
+              </span>
             </div>
           </div>
 
           {/* LA BRILLANCE, par-dessus tout */}
           <canvas
             ref={shineRef}
-            width={CW / 2}
-            height={CH / 2}
+            width={LW}
+            height={LH}
             className="pointer-events-none absolute inset-0 h-full w-full"
             style={{ imageRendering: "pixelated", mixBlendMode: "screen", opacity: 0, zIndex: 3 }}
             aria-hidden
           />
         </div>
       </div>
+
       <p className="mt-[12px] min-h-[1.3em] px-[20px] text-center font-mono text-[12px] text-[var(--color-ink)] opacity-50">
-        {plat ? "" : hint}
+        {hint}
       </p>
+
       <button
         type="button"
+        className="relative mt-[8px] h-[34px] w-[298px] bg-[var(--color-accent)] font-mono text-[12px] font-medium uppercase tracking-[2.4px] text-[var(--color-bg)]"
+        data-partager
         onClick={(e) => {
           e.stopPropagation();
           void partager();
         }}
-        className="relative mt-[8px] h-[34px] w-[298px] bg-[var(--color-accent)] font-mono text-[12px] font-medium uppercase tracking-[2.4px] text-[var(--color-bg)]"
-        data-partager
       >
-        {/* entailles de coins charbon : le cadre reste un calque, jamais une
-            bordure sur le bouton (piège du 16/07) */}
+        {/* entailles de coin : la grammaire des CTA, jamais un arrondi CSS */}
         <span className="absolute left-0 top-0 h-[6px] w-[2px] bg-[var(--color-bg)]" aria-hidden />
         <span className="absolute right-0 top-0 h-[2px] w-[6px] bg-[var(--color-bg)]" aria-hidden />
         <span className="absolute bottom-0 right-0 h-[6px] w-[2px] bg-[var(--color-bg)]" aria-hidden />

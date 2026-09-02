@@ -203,7 +203,7 @@ export default function StraightSwipe({
         ctx.font = "12px 'Roboto Mono', monospace";
         ctx.textAlign = "center";
         ctx.fillText(
-          corde ? "Traverse la corde sur le tracé, d'un geste net" : "Un seul geste, net et rapide",
+          corde ? "Tranche la corde d'un geste net" : "Un seul geste, net et rapide",
           W / 2,
           H - 16
         );
