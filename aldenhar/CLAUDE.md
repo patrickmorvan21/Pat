@@ -1558,3 +1558,13 @@ Trois retouches de Patrick sur la v1.125.0, plus une quatrième en cours de rout
 - **La carte descend encore** : `PAD_CARTE` 46 → **74**.
 - Vérifié en jeu **23/23** (build servi, gestes réels) : scène dessinée (35 % d'orange), trait continu de 1 px, gros radius en marches, pied absent, carte à 74 px du bord, texte en DOM, tilt et Partager. Capture ouverte. Huit gardes verts, lint 0 erreur, typecheck et `build:pages` propres.
 - `APP_VERSION` 1.125.0 → **1.125.1**, `CACHE_VERSION` v192 → **pactum-v193**.
+
+#### La carte : image ferrée en haut, radius réduit, vignette accentuée (v1.125.2)
+Trois retouches de Patrick.
+- **L'IMAGE EST FERRÉE EN HAUT** (« que ce soit plus immersif ») : le bandeau **Registre · rang / Acte** descend en PIED de carte, avec les autres chiffres, et la scène démarre juste sous la bordure (`y0 = e + 1`, `y1 = 88` — tout le décor remonté de 16 px logiques). Le contenu passe en `pt-0` ; le réservé d'image fait 176 px d'écran = 88 logiques, soit exactement le bas de la dissolution. Rien ne précède plus l'image : on entre dedans avant de lire.
+- **Radius réduit** : `RAY` 13 → **9** (retraits mesurés 6,4,3,2,1,1,0 — toujours un escalier, jamais un arc lisse).
+- **LA VIGNETTE DES BORDS ACCENTUÉE** (« il y a un dégradé noir sur les bords, j'adore, accentue-le ») : le semis de noir passe de 900 points sur 6 px de profondeur à **2 600 sur 14**, exposant 2,6 — c'est la puissance qui fait la vignette, pas le nombre : elle garde la masse collée au bord et la laisse mourir vers le centre. Mesuré : **325 px de noir pur contre le bord, 0 au milieu**. Densité décroissante, jamais une ombre ni un dégradé.
+  - ⚠️ **Premier réglage à 3 400 / 22 : REFUSÉ après l'avoir regardé.** Il mangeait les deux potences, c'est-à-dire le sujet même de l'image que Patrick venait de demander de restaurer. Une vignette qui efface la scène n'est plus une vignette — la profondeur est bornée à 14 px logiques, et la raison est écrite au-dessus de la boucle.
+- ⚠️ **Piège de mesure, deux fois de suite** : le grain est du **noir PUR** (#000) et le fond est du charbon (#1c1a16) — tout seuil approximatif de « noirceur » compte le fond et rend deux zones égales. Et le mesurer en « orange retiré » ne marche pas non plus : la silhouette de la colline fausse la comparaison entre une colonne de bord et une colonne centrale. Il faut compter le noir strict (`< 10`) sur les mêmes rangées.
+- Vérifié en jeu **24/24** : image ferrée, pied Registre/Acte, radius réduit en marches, trait de 1 px sans trou, vignette mesurée, texte en DOM, tilt, Partager. Captures ouvertes à chaque réglage. Huit gardes verts, lint 0 erreur, typecheck et `build:pages` propres.
+- `APP_VERSION` 1.125.1 → **1.125.2**, `CACHE_VERSION` v193 → **pactum-v194**.

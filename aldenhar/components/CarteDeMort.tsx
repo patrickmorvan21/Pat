@@ -54,7 +54,7 @@ const LW = 150,
   LH = 225;
 /** La bordure : UN pixel logique (retour Patrick 02/09), gros radius. */
 const EP = 1,
-  RAY = 13;
+  RAY = 9;
 const BAYER = [
   [0, 8, 2, 10],
   [12, 4, 14, 6],
@@ -204,8 +204,12 @@ function dessinerTexture(ctx: CanvasRenderingContext2D, p: CarteDeMortProps, rnd
     ctx.fillStyle = col;
     ctx.fillRect(x | 0, y | 0, 1, 1);
   };
-  const y0 = 18,
-    y1 = 104;
+  /* FERRÉE EN HAUT (retour Patrick 02/09) : la scène démarre juste sous la
+     bordure — plus de bandeau au-dessus d'elle, le regard entre dans l'image
+     avant de lire quoi que ce soit. Le bandeau Registre/Acte est descendu en
+     pied de carte, avec les autres chiffres. */
+  const y0 = e + 1,
+    y1 = 88;
   /* le ciel : orange dense près de l'horizon, clairsemé en haut — DENSITÉ, jamais un dégradé */
   for (let py = y0; py < y1; py++) {
     const t = (py - y0) / (y1 - y0),
@@ -257,13 +261,20 @@ function dessinerTexture(ctx: CanvasRenderingContext2D, p: CarteDeMortProps, rnd
     for (let px = 0; px < LW; px++) if (rnd() < t * 0.95) px1(px, py, CHARBON);
   }
 
-  /* érosion des quatre bords, À L'INTÉRIEUR de la bordure : le grain du
-     prototype, sans jamais ronger le trait orange qui définit la forme. Elle
-     démarre à `e + 1` — collée au trait, elle le ferait lire en pointillé. */
+  /* LE GRAIN DES BORDS — accentué le 02/09 (« il y a un dégradé noir sur les
+     bords, j'adore, accentue-le »). Il ne se voit vraiment que sur l'orange du
+     ciel : c'est du noir semé PAR DENSITÉ décroissante vers le centre, jamais
+     une ombre ni un dégradé. La puissance 2,6 garde la masse collée au bord ;
+     c'est elle qui fait la vignette, pas le nombre de points.
+     ⚠️ Deux garde-fous : elle démarre à `e + 1` (collée au trait, elle le
+     ferait lire en pointillé — la bordure ne fait qu'un pixel), et sa
+     PROFONDEUR est bornée à 14 px logiques. À 22 elle mangeait les potences,
+     c'est-à-dire le sujet même de l'image : une vignette qui efface la scène
+     n'est plus une vignette. */
   ctx.fillStyle = "#000";
-  for (let i = 0; i < 900; i++) {
+  for (let i = 0; i < 2600; i++) {
     const bord = Math.floor(rnd() * 4),
-      d = 1 + Math.pow(rnd(), 2.2) * 6;
+      d = 1 + Math.pow(rnd(), 2.6) * 14;
     let px: number, py: number;
     if (bord === 0) { px = Math.floor(rnd() * LW); py = Math.round(e + d); }
     else if (bord === 1) { px = Math.floor(rnd() * LW); py = Math.round(LH - 1 - e - d); }
@@ -561,27 +572,14 @@ export default function CarteDeMort(props: CarteDeMortProps) {
             aria-hidden
           />
 
-          {/* LE CONTENU : le flux flex du prototype, texte en DOM donc net */}
-          <div className="absolute inset-0 flex flex-col p-[14px]" style={{ zIndex: 2 }}>
-            <div className="flex h-[16px] items-start justify-between">
-              <span
-                data-txt
-                className="font-mono text-[9.5px] font-medium uppercase tracking-[1.8px]"
-                style={{ color: "rgba(255,255,255,.5)" }}
-              >
-                Registre · <b className="font-medium text-[var(--color-accent)]">{c.rang}</b>
-              </span>
-              <span
-                data-txt
-                className="text-right font-mono text-[9.5px] font-medium uppercase tracking-[1.8px]"
-                style={{ color: "rgba(255,255,255,.5)" }}
-              >
-                {c.acte}
-              </span>
-            </div>
-
-            {/* la place de la scène : elle est peinte SOUS, dans la trame */}
-            <div className="h-[146px] shrink-0 grow-0 basis-[146px]" aria-hidden />
+          {/* LE CONTENU : le flux flex du prototype, texte en DOM donc net.
+              ⚠️ `pt-0` : l'image est FERRÉE en haut de la carte, donc rien ne
+              la précède. Le bandeau Registre/Acte est descendu en pied, avec
+              les autres chiffres — c'est ce qui rend l'entrée immersive. */}
+          <div className="absolute inset-0 flex flex-col px-[14px] pb-[14px] pt-0" style={{ zIndex: 2 }}>
+            {/* la place de la scène : elle est peinte SOUS, dans la trame.
+                176 px d'écran = 88 px logiques = le bas de la dissolution. */}
+            <div className="h-[176px] shrink-0 grow-0 basis-[176px]" aria-hidden />
 
             <NomAjuste nom={c.nom} />
             <div
@@ -611,6 +609,22 @@ export default function CarteDeMort(props: CarteDeMortProps) {
               </div>
             </div>
 
+            <div className="mt-[9px] flex items-baseline justify-between">
+              <span
+                data-txt
+                className="font-mono text-[9.5px] font-medium uppercase tracking-[1.8px]"
+                style={{ color: "rgba(255,255,255,.5)" }}
+              >
+                Registre · <b className="font-medium text-[var(--color-accent)]">{c.rang}</b>
+              </span>
+              <span
+                data-txt
+                className="text-right font-mono text-[9.5px] font-medium uppercase tracking-[1.8px]"
+                style={{ color: "rgba(255,255,255,.5)" }}
+              >
+                {c.acte}
+              </span>
+            </div>
           </div>
 
           {/* LA BRILLANCE, par-dessus tout */}
