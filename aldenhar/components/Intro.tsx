@@ -104,24 +104,6 @@ const PORTE_SCELLEE = "Pas celle-là. Pas encore.";
 /** Nombre de frames du sprite de la porte (390×6240). */
 const PORTE_FRAMES = 16;
 
-/** Points de progression — carrés pleins, jamais une barre (pas de jauge). */
-function Dots({ index, total }: { index: number; total: number }) {
-  return (
-    <div className="flex items-center justify-center gap-[5px]">
-      {Array.from({ length: total }, (_, i) => (
-        <span
-          key={i}
-          className="block size-[5px]"
-          style={{
-            background: i <= index ? "var(--color-accent)" : "var(--color-ink)",
-            opacity: i <= index ? 1 : 0.25,
-          }}
-        />
-      ))}
-    </div>
-  );
-}
-
 /** Cadre partagé : illustration en haut, bande de dissolution, contenu dessous. */
 function IntroFrame({
   image,
@@ -192,6 +174,9 @@ function IntroFrame({
 
         <div className="flex flex-1 flex-col px-[15px] pt-[16px]">{children}</div>
 
+        {/* Pied : les carrés d'étapes sont RETIRÉS de l'intro (2/09) — deux
+            clauses n'ont pas besoin d'une jauge. La hauteur reste réservée
+            pour que le texte ne descende pas sur l'affordance. */}
         <div className="shrink-0 px-[46px] pb-[76px]">{footer}</div>
         {hint}
       </div>
@@ -207,11 +192,13 @@ function IntroFrame({
  */
 function IntroBouton({
   label,
-  secondary,
+  /** Le REFUS : contour et texte BLANCS (retour Patrick, 2/09). L'orange
+      plein reste au seul geste que le pacte attend de toi. */
+  refus,
   onClick,
 }: {
   label: string;
-  secondary?: boolean;
+  refus?: boolean;
   onClick: () => void;
 }) {
   return (
@@ -222,13 +209,15 @@ function IntroBouton({
         onClick();
       }}
       onPointerDown={(e) => e.stopPropagation()}
-      className={`relative h-[46px] flex-1 cursor-pointer border-none bg-transparent font-mono text-[13px] font-medium tracking-[2.4px] uppercase ${
-        secondary ? "text-[var(--color-accent)]" : "text-[var(--color-bg)]"
+      className={`relative h-[46px] w-full cursor-pointer border-none bg-transparent font-mono text-[13px] font-medium tracking-[2.4px] uppercase ${
+        refus ? "text-[var(--color-ink)]" : "text-[var(--color-bg)]"
       }`}
     >
       <span
-        className={`absolute inset-0 border border-solid border-[var(--color-accent)] ${
-          secondary ? "bg-transparent" : "bg-[var(--color-accent)]"
+        className={`absolute inset-0 border border-solid ${
+          refus
+            ? "border-[var(--color-ink)] bg-transparent"
+            : "border-[var(--color-accent)] bg-[var(--color-accent)]"
         }`}
         aria-hidden
       />
@@ -373,7 +362,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
           />
         ) : null
       }
-      footer={<Dots index={i} total={clauses.length} />}
+      footer={null}
     >
       {c.eyebrow && (
         <p className="text-center font-mono text-[9px] tracking-[2.5px] text-[var(--color-accent)]">
@@ -381,7 +370,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
         </p>
       )}
       <h1
-        className="mt-[10px] text-center text-[27px] leading-[1] text-[var(--color-accent)]"
+        className="mt-[10px] text-center text-[34px] leading-[1.05] text-[var(--color-accent)]"
         style={{ fontFamily: "var(--font-title)" }}
       >
         {c.title}
@@ -391,7 +380,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
         {c.body.map((p, n) => (
           <p
             key={n}
-            className="text-center font-mono text-[11px] leading-[1.55] text-[var(--color-ink)] opacity-90"
+            className="text-center font-mono text-[13px] leading-[1.55] text-[var(--color-ink)] opacity-90"
           >
             {p}
           </p>
@@ -406,13 +395,15 @@ export default function Intro({ onDone }: { onDone: () => void }) {
       {c.geste === "refus" && (
         <>
           {refus && (
-            <p className="mt-[22px] text-center font-mono text-[11px] leading-[1.55] whitespace-pre-line text-[var(--color-accent)]">
+            <p className="mt-[22px] text-center font-mono text-[13px] leading-[1.55] whitespace-pre-line text-[var(--color-accent)]">
               <TypedText text={REPONSE_AU_REFUS} typed skip={0} msPerChar={42} />
             </p>
           )}
-          <div className="mt-[26px] flex gap-[10px]">
+          {/* EMPILÉS, pleine largeur, Accepter en premier (maquette 2/09) :
+              l'ordre dit déjà ce que le pacte attend. */}
+          <div className="mt-[26px] flex flex-col gap-[10px]">
             <IntroBouton label="Accepter" onClick={advance} />
-            {!refus && <IntroBouton label="Refuser" secondary onClick={() => setRefus(true)} />}
+            {!refus && <IntroBouton label="Refuser" refus onClick={() => setRefus(true)} />}
           </div>
         </>
       )}
@@ -420,7 +411,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
       {/* La Porte poussée à fond ne s'ouvre pas : elle est SCELLÉE, et c'est
           la Descente qu'on arme ici, des heures avant qu'elle arrive. */}
       {porteOuverte && (
-        <p className="mt-[26px] text-center font-mono text-[11px] leading-[1.55] text-[var(--color-accent)]">
+        <p className="mt-[26px] text-center font-mono text-[13px] leading-[1.55] text-[var(--color-accent)]">
           <TypedText
             text={PORTE_SCELLEE}
             typed={!porteLue}

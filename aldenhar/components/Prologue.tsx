@@ -316,7 +316,6 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
     return (
       <VerdictDuSeuil
         memories={memories}
-        choices={cloture.choices}
         stats={cloture.stats}
         portrait={cloture.portrait}
         onFinish={finishSeuil}
@@ -419,27 +418,6 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
             </div>
           )}
 
-          {/* Étapes du Seuil (retour Patrick 7/08 : « la première fois on ne
-              sait pas combien de temps ça dure ») — carrés pleins comme les
-              points de l'intro, JAMAIS une barre : les souvenirs + le Nom. */}
-          {(isMemory || isName) && (
-            <div className="mt-[22px] flex items-center justify-center gap-[5px]" aria-hidden>
-              {Array.from({ length: memories.length + 1 }, (_, i) => {
-                const idx = isName ? memories.length : beat! - AMORCE_N;
-                return (
-                  <span
-                    key={i}
-                    className="block size-[5px]"
-                    style={{
-                      background: i <= idx ? "var(--color-accent)" : "var(--color-ink)",
-                      opacity: i <= idx ? 1 : 0.25,
-                    }}
-                  />
-                );
-              })}
-            </div>
-          )}
-
           {/* ——— Écran du Nom (maquette Figma 2167:203, reproduite fidèlement) :
               champ bordé simple « Ton Nom » (mono, aligné à gauche), bouton
               plein SCELLER LE PACTE, lien centré souligné. Le champ n'apparaît
@@ -482,6 +460,31 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
             </div>
           )}
         </div>
+
+        {/* Étapes du Seuil (retour Patrick 7/08 : « la première fois on ne sait
+            pas combien de temps ça dure ») — carrés pleins, JAMAIS une barre.
+            FERRÉS EN BAS du cadre depuis le 2/09 : dans le flux, ils suivaient
+            la hauteur du texte et sautaient d'un souvenir à l'autre. */}
+        {(isMemory || isName) && (
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-[22px] flex items-center justify-center gap-[5px]"
+            aria-hidden
+          >
+            {Array.from({ length: memories.length + 1 }, (_, i) => {
+              const idx = isName ? memories.length : beat! - AMORCE_N;
+              return (
+                <span
+                  key={i}
+                  className="block size-[5px]"
+                  style={{
+                    background: i <= idx ? "var(--color-accent)" : "var(--color-ink)",
+                    opacity: i <= idx ? 1 : 0.25,
+                  }}
+                />
+              );
+            })}
+          </div>
+        )}
 
         {/* Affordance sur les écrans d'amorce (narration sans bouton). Passée
             au composant partagé le 26/07 : position et clignotement saccadé

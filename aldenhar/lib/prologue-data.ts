@@ -47,7 +47,8 @@ export const PROLOGUE_AMORCE: string[] = [
   "Avant que tu passes, je veux voir qui tu étais. Ce que tu vaux ici vient de ta vie d'avant.\nNe réfléchis pas. Ce n'est plus toi qui choisis : c'est ce que tu as déjà fait.",
 ];
 
-export const PROLOGUE_CLOTURE = "Je sais qui tu es. Le dé, lui, décidera qui tu deviens.";
+/* La clôture « Je sais qui tu es… » est RETIRÉE de l'écran du verdict le
+   2/09 (retour Patrick : gagner de la place). Le portrait finit l'écran. */
 
 /**
  * PORTRAIT DE CLÔTURE (spec 4/08, point A2 — « la meilleure idée du lot »).
