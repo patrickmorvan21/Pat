@@ -18,11 +18,12 @@
  *     bas par `margin-top:auto`, pied). Le dessiner sur le canvas le
  *     crénelait — c'était le vrai défaut de ma première version.
  *
- * LA SEULE CHOSE AJOUTÉE AU PROTOTYPE (demande explicite) : ses quatre segments
- * de cadre décalés sont remplacés par une VRAIE BORDURE ORANGE ÉPAISSE À GROS
- * RADIUS, dessinée en marches de pixels logiques — jamais un `border-radius`
- * lisse, qui trahirait la grille. La carte est donc transparente hors de cette
- * forme : c'est le charbon de l'écran qui fait le fond, et l'arrondi se lit.
+ * LE CADRE : les quatre segments décalés du prototype sont remplacés par une
+ * silhouette à coins arrondis dessinée en marches de pixels logiques (jamais un
+ * `border-radius` lisse, qui trahirait la grille), et **sans trait orange**
+ * (V2 retenue le 02/09). Ce qui dessine alors la carte, c'est le CIEL de
+ * l'illustration en haut et le GRAIN NOIR sur les côtés — d'où la remontée du
+ * grain le long des flancs, qui va rejoindre l'orange.
  *
  * ⚠️ L'EXPORT PNG (« Partager ») NE DUPLIQUE PLUS AUCUNE GÉOMÉTRIE. Il agrandit
  * le canvas de matière, puis relit les positions, polices et couleurs
@@ -52,8 +53,14 @@ const CW = 300,
 /** La grille du prototype : 1 pixel logique = 2 pixels d'écran. */
 const LW = 150,
   LH = 225;
-/** La bordure : UN pixel logique (retour Patrick 02/09), gros radius. */
-const EP = 1,
+/**
+ * PAS DE CONTOUR (V2 retenue par Patrick le 02/09). `EP = 0` : la carte n'a
+ * plus de trait orange, seulement sa silhouette arrondie — qui reste visible
+ * parce que le CIEL de l'illustration la remplit jusqu'au bord haut, et que le
+ * grain noir en dessine les côtés. Les actes suivants gardent un cran de
+ * cadre : c'est le seul signal de rareté qui ne coûte pas un chiffre.
+ */
+const EP = 0,
   RAY = 9;
 const BAYER = [
   [0, 8, 2, 10],
@@ -180,8 +187,10 @@ function dessinerTexture(ctx: CanvasRenderingContext2D, p: CarteDeMortProps, rnd
   ctx.imageSmoothingEnabled = false;
   ctx.clearRect(0, 0, LW, LH);
 
-  /* la bordure orange épaisse, puis l'intérieur : l'épaisseur suit l'arrondi */
-  formePixel(ctx, 0, 0, LW, LH, RAY, ORANGE);
+  /* la forme : le cadre orange (s'il y en a un), puis l'intérieur charbon.
+     À `e === 0` on ne peint que le charbon — un calque orange intégralement
+     recouvert ne coûterait que du temps. */
+  if (e > 0) formePixel(ctx, 0, 0, LW, LH, RAY, ORANGE);
   formePixel(ctx, e, e, LW - 2 * e, LH - 2 * e, Math.max(1, RAY - e), CHARBON);
 
   /* le semis du fond : blanc-20 très clairsemé (prototype : 170 points) */
@@ -193,30 +202,34 @@ function dessinerTexture(ctx: CanvasRenderingContext2D, p: CarteDeMortProps, rnd
   }
 
   const rInt = Math.max(1, RAY - e);
-  /* LE GRAIN DES BORDS — posé AVANT la scène (retour Patrick 02/09 : « je
-     veux que l'illu en haut soit par-dessus les bords noirs »). Il reste donc
-     visible partout où il n'y a pas d'image, et l'illustration le recouvre. — accentué le 02/09 (« il y a un dégradé noir sur les
-     bords, j'adore, accentue-le »). Il ne se voit vraiment que sur l'orange du
-     ciel : c'est du noir semé PAR DENSITÉ décroissante vers le centre, jamais
-     une ombre ni un dégradé. La puissance 2,6 garde la masse collée au bord ;
-     c'est elle qui fait la vignette, pas le nombre de points.
-     ⚠️ Deux garde-fous : elle démarre à `e + 1` (collée au trait, elle le
-     ferait lire en pointillé — la bordure ne fait qu'un pixel), et sa
-     PROFONDEUR est bornée à 14 px logiques. À 22 elle mangeait les potences,
-     c'est-à-dire le sujet même de l'image : une vignette qui efface la scène
-     n'est plus une vignette. */
-  ctx.fillStyle = "#000";
-  for (let i = 0; i < 2600; i++) {
-    const bord = Math.floor(rnd() * 4),
-      d = 1 + Math.pow(rnd(), 2.6) * 14;
-    let px: number, py: number;
-    if (bord === 0) { px = Math.floor(rnd() * LW); py = Math.round(e + d); }
-    else if (bord === 1) { px = Math.floor(rnd() * LW); py = Math.round(LH - 1 - e - d); }
-    else if (bord === 2) { px = Math.round(e + d); py = Math.floor(rnd() * LH); }
-    else { px = Math.round(LW - 1 - e - d); py = Math.floor(rnd() * LH); }
-    if (dedansForme(px, py, rInt, e)) ctx.fillRect(px, py, 1, 1);
-  }
-
+  /* LE GRAIN DES BORDS — du noir semé PAR DENSITÉ décroissante vers le centre,
+     jamais une ombre ni un dégradé. C'est la PUISSANCE qui fait la vignette,
+     pas le nombre de points : elle garde la masse collée au bord.
+     Deux passes, et la seconde est tout l'objet du réglage du 02/09 :
+       • une passe PROFONDE, posée AVANT la scène — l'illustration la recouvre,
+         donc la vignette ne mange jamais le sujet (les potences) ;
+       • une passe RASANTE, posée APRÈS la scène sur les seuls FLANCS et le bas
+         — c'est elle qui fait « remonter un tout petit peu » le noir le long
+         des côtés jusqu'à rejoindre l'orange du ciel en haut. Sans elle, la
+         carte n'ayant plus de trait, le grain s'arrêtait net sous l'image et
+         le cadre restait ouvert.
+     ⚠️ Elles démarrent à `e + 1` : collées au trait (quand il y en a un), elles
+     le feraient lire en pointillé. Et la profondeur est bornée à 14 — à 22 la
+     première passe mangeait les potences, c'est-à-dire le sujet de l'image. */
+  const grain = (points: number, prof: number, puiss: number, bords: number[]) => {
+    ctx.fillStyle = "#000";
+    for (let i = 0; i < points; i++) {
+      const bord = bords[Math.floor(rnd() * bords.length)],
+        d = 1 + Math.pow(rnd(), puiss) * prof;
+      let px: number, py: number;
+      if (bord === 0) { px = Math.floor(rnd() * LW); py = Math.round(e + d); }
+      else if (bord === 1) { px = Math.floor(rnd() * LW); py = Math.round(LH - 1 - e - d); }
+      else if (bord === 2) { px = Math.round(e + d); py = Math.floor(rnd() * LH); }
+      else { px = Math.round(LW - 1 - e - d); py = Math.floor(rnd() * LH); }
+      if (dedansForme(px, py, rInt, e)) ctx.fillRect(px, py, 1, 1);
+    }
+  };
+  grain(2600, 14, 2.6, [0, 1, 2, 3]);
 
   /* LA SCÈNE, DESSINÉE À LA MAIN DANS LA GRILLE — le portage verbatim du
      prototype (retour Patrick 02/09 : « reprends la même image qu'il y a dans
@@ -289,6 +302,11 @@ function dessinerTexture(ctx: CanvasRenderingContext2D, p: CarteDeMortProps, rnd
     const t = (py - (y1 - 16)) / 24;
     for (let px = 0; px < LW; px++) if (rnd() < t * 0.95) px1(px, py, CHARBON);
   }
+
+  /* la passe RASANTE : les flancs et le bas, PAR-DESSUS l'image, pour que le
+     noir remonte jusqu'à l'orange. Peu profonde (6) et très collée au bord
+     (puissance 3,2) : elle borde, elle ne mange pas. */
+  grain(1500, 6, 3.2, [1, 2, 3]);
 
   if (prof.coins) {
     /* Acte III : quatre encoches blanches, la marque la plus profonde */
