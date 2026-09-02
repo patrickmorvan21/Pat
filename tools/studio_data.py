@@ -565,7 +565,9 @@ def ou_se_joue(cond: dict, hameau: list[str]) -> str:
     """
     src = cond.get("from") or []
     if not src:
-        return "partout"
+        # `dehors: true` (02/09) : sans provenance nommée mais jamais servie
+        # depuis une rue — c'est de la lande.
+        return "lande" if cond.get("dehors") else "partout"
     dedans = all(
         f == "HAMEAU_INTERIOR" or f in hameau or f.startswith("hameau-")
         for f in src
@@ -620,6 +622,8 @@ def lire_transitions() -> dict:
                 v = nombre_de(c, champ)
                 if v is not None:
                     cond[champ] = v
+            if re.search(r"\bdehors:\s*true", c):
+                cond["dehors"] = True
             for champ in ("chapter", "carrying"):
                 v = texte_de(c, champ)
                 if v:

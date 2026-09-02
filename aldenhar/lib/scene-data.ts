@@ -7518,7 +7518,7 @@ export const SCENES: Scene[] = [
        qu'au bord (écran 2), où il devient un désenchantement — ce qui
        semblait tomber du ciel part d'ici. */
     id: "falaise-cordes",
-    illustration: "assets/scene_falaise_fond_d_a.png",
+    illustration: "assets/scene_falaise_bord_c_a.png",
     narration: [
       "Tu montes une dernière ondulation de bruyère, et la lande s'ouvre.",
       "Devant toi, un trou. Large comme un village, et sans fond visible. Du ciel, des cordes descendent dedans — des centaines, venues de si haut qu'on ne voit pas à quoi elles tiennent. Elles entrent toutes ensemble dans le noir et bougent du même côté, lentement, comme une seule chose qui respire.",
@@ -7541,7 +7541,7 @@ export const SCENES: Scene[] = [
        lignes qui LISENT la traversée (le tressage déjà vu, la corde qu'on
        porte) sont injectées par le déroutage — voir DEMO_FALAISE_LECTURES. */
     id: "falaise-cordes-2",
-    illustration: "assets/scene_falaise_bord_c_a.png",
+    illustration: "assets/scene_falaise_fond_d_a.png",
     narration: [
       "Au ras de la lèvre, les pieux : une rangée qui suit tout le pourtour. De près, les cordes ne tombent plus du ciel — elles partent d'ici. On ne gâche pas le chanvre, dans les Landes : chaque corde qui a pendu quelqu'un sert une seconde fois.",
       "Tu te penches. Elles descendent jusqu'à ce que la lumière les abandonne, et elles continuent. Des vieilles, grises, raides de sel. Des neuves, encore blondes. Et trois ou quatre qui s'arrêtent en plein vide, tranchées net — à la lame. Par en dessous.",
@@ -8368,6 +8368,16 @@ type LiaisonVariant = {
   /** Minimum de découvertes sur la Fille (refonte 6/08). */
   minFille?: number;
   /**
+   * PLEINE LANDE SEULEMENT (retour Patrick 02/09, capture 1 : « je suis censé
+   * être dans le hameau, sauf que là je vois un berger sans troupeau »).
+   * Une variante SANS `from` joue partout — y compris sur une Croisée de rue.
+   * Celles dont le texte ou l'image posent un talus, un horizon, la lande
+   * sous les pieds portent ce drapeau : elles ne sont jamais servies quand
+   * on part de l'intérieur du village. (`from: HAMEAU_INTERIOR` est le
+   * miroir : village seulement.)
+   */
+  dehors?: boolean;
+  /**
    * L'IMAGE DE CETTE MARCHE-LÀ (demande Patrick 31/08 : « j'aimerais pouvoir
    * mettre des images sur des transitions si j'en ai envie »).
    *
@@ -8471,6 +8481,7 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
   },
   // ——— Soupçon (10) ———
   {
+    dehors: true,
     minSoupcon: 1, maxSoupcon: 2,
     text: "Un berger sans troupeau te croise au détour d'un talus. Il te salue — du menton, pas de la voix — et presse le pas une fois passé. Tu l'entends s'arrêter, plus loin, pour te regarder partir.",
   },
@@ -8503,6 +8514,7 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
     text: "Tu repasses par une ruelle que tu as déjà prise. La porte qui bâillait sur une cuisine est fermée, et la barre est mise — de l'intérieur, en plein jour. Personne ne barre sa porte en plein jour, sauf quand on a décidé quelque chose.",
   },
   {
+    dehors: true,
     minSoupcon: 2, maxSoupcon: 4,
     text: "Un mot t'arrive porté par le vent, un seul, distinct : ton nom. Personne à l'horizon. Le vent des Landes ment, tu le sais. Mais il ment avec ce qu'on lui donne.",
   },
@@ -8511,6 +8523,7 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
     text: "Il y a des traces fraîches sur ton chemin — devant toi. Quelqu'un fait ta route avant toi, dans le même sens, à petite distance. Tu ne le rattrapes jamais.",
   },
   {
+    dehors: true,
     minSoupcon: 3, maxSoupcon: 4,
     text: "Un enfant t'observe depuis un talus, immobile. Quand tu lèves la main, il ne fuit pas : il trace quelque chose dans la terre du bout d'un bâton, sans te quitter des yeux, puis s'en va sans courir.",
   },
@@ -8523,6 +8536,7 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
     text: "Au loin, une cloche muette sonne quand même — trois coups mats, du bois sur du bois. Tu comprends que ça compte tes passages. Quelqu'un, quelque part, tient le total.",
   },
   {
+    dehors: true,
     minSoupcon: 5, maxSoupcon: 5,
     /* ⚠️ Ne présuppose PLUS la scène des trois hommes (elle disait « sont
        TOUJOURS là »). Le palier 5 ne se montre qu'au village ; hors village
@@ -8549,10 +8563,12 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
   },
   // ——— Chapitre en cours (2) ———
   {
+    dehors: true,
     chapter: "la-fille",
     text: "Au détour d'un talus, tu crois voir une silhouette mince, tête nue, disparaître derrière un pli du terrain. Le temps d'y être : personne. Un lit d'herbe couchée, encore tiède.",
   },
   {
+    dehors: true,
     chapter: "le-gibet-vide",
     text: "Où que le chemin tourne, la couronne de la colline reste en vue — et le grand gibet dépasse, patient. Tu commences à comprendre : ce n'est pas toi qui le regardes.",
   },
@@ -8710,7 +8726,16 @@ function pickLiaisonAmbiance(ctx: LiaisonCtx | undefined, seed: number): string 
     const eligible = LIAISON_VARIANTS.filter(
       (v) =>
         neuve(v.text) &&
-        (!v.from || (ctx.from !== undefined && v.from.includes(ctx.from))) &&
+        // `from: HAMEAU_INTERIOR` veut dire « on part de DEDANS », pas « on
+        // part d'un de ces cinq lieux » : la Croisée qui suit la séquence
+        // d'entrée part de `hameau-entree-5`, qui n'est dans aucune liste —
+        // les vignettes de ruelle ne lui étaient jamais servies, et seules
+        // les variantes sans provenance (le berger, le talus) restaient
+        // éligibles. Capture Patrick du 02/09.
+        (!v.from ||
+          (ctx.from !== undefined &&
+            (v.from === HAMEAU_INTERIOR ? isHameauInterior(ctx.from) : v.from.includes(ctx.from)))) &&
+        (!v.dehors || !isHameauInterior(ctx.from)) &&
         (!v.to || (ctx.toOptions !== undefined && v.to.some((t) => ctx.toOptions!.includes(t)))) &&
         (v.minSoupcon === undefined || soup >= v.minSoupcon) &&
         (v.maxSoupcon === undefined || soup <= v.maxSoupcon) &&
@@ -8957,7 +8982,13 @@ export function makeLiaison(
     // annonce toutes les deux) et n'en offre qu'une — celle de `optA`, que
     // l'appelant a déjà tirée. Sans ce raccord, le texte parlerait d'un
     // embranchement dont un seul bras est cliquable.
-    choices: fermee
+    // ⚠️ DEUX IDS POUR UN MÊME LIEU = DEUX BOUTONS IDENTIQUES (capture
+    // Patrick 02/09 : « Vers un gibet qui parle » deux fois). Deux choix de
+    // même id partagent leur clé React, et React laisse alors un nœud DOM
+    // périmé qui survit à tous les écrans suivants — le « bouton fantôme au
+    // double contour qui ne fait rien ». Le tirage évite ce cas ; si un
+    // repli l'atteint quand même, on n'offre qu'UNE direction.
+    choices: fermee || lieuDejaVisite([optA], optB)
       ? [{ id: `orient-${optA}`, label: APPROACH[optA] ?? "Continuer", orient: { dest: optA } }]
       : [
           { id: `orient-${optA}`, label: APPROACH[optA] ?? "Continuer", orient: { dest: optA } },

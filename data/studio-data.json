@@ -7643,9 +7643,9 @@
    ],
    "pointsInteret": [],
    "image": {
-    "fichier": "scene_falaise_fond_d_a.png",
-    "hash": "d04e7f68",
-    "taille": 15850,
+    "fichier": "scene_falaise_bord_c_a.png",
+    "hash": "e2abb0bf",
+    "taille": 15153,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -7679,9 +7679,9 @@
    ],
    "pointsInteret": [],
    "image": {
-    "fichier": "scene_falaise_bord_c_a.png",
-    "hash": "e2abb0bf",
-    "taille": 15153,
+    "fichier": "scene_falaise_fond_d_a.png",
+    "hash": "d04e7f68",
+    "taille": 15850,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -10632,9 +10632,10 @@
     "texte": "Un berger sans troupeau te croise au détour d'un talus. Il te salue — du menton, pas de la voix — et presse le pas une fois passé. Tu l'entends s'arrêter, plus loin, pour te regarder partir.",
     "conditions": {
      "minSoupcon": 1.0,
-     "maxSoupcon": 2.0
+     "maxSoupcon": 2.0,
+     "dehors": true
     },
-    "ou": "partout",
+    "ou": "lande",
     "illustration": null
    },
    {
@@ -10683,9 +10684,10 @@
     "texte": "Un mot t'arrive porté par le vent, un seul, distinct : ton nom. Personne à l'horizon. Le vent des Landes ment, tu le sais. Mais il ment avec ce qu'on lui donne.",
     "conditions": {
      "minSoupcon": 2.0,
-     "maxSoupcon": 4.0
+     "maxSoupcon": 4.0,
+     "dehors": true
     },
-    "ou": "partout",
+    "ou": "lande",
     "illustration": null
    },
    {
@@ -10701,9 +10703,10 @@
     "texte": "Un enfant t'observe depuis un talus, immobile. Quand tu lèves la main, il ne fuit pas : il trace quelque chose dans la terre du bout d'un bâton, sans te quitter des yeux, puis s'en va sans courir.",
     "conditions": {
      "minSoupcon": 3.0,
-     "maxSoupcon": 4.0
+     "maxSoupcon": 4.0,
+     "dehors": true
     },
-    "ou": "partout",
+    "ou": "lande",
     "illustration": null
    },
    {
@@ -10728,9 +10731,10 @@
     "texte": "Trois hommes marchent à la limite du regard, sans jamais réduire la distance. Quand tu t'arrêtes, ils s'arrêtent. Quand tu repars, ils attendent un peu — par politesse, dirait-on. L'aube n'est pas pressée.",
     "conditions": {
      "minSoupcon": 5.0,
-     "maxSoupcon": 5.0
+     "maxSoupcon": 5.0,
+     "dehors": true
     },
-    "ou": "partout",
+    "ou": "lande",
     "illustration": "assets/scene_transition_hommes_suivent_b.png"
    },
    {
@@ -10760,17 +10764,19 @@
    {
     "texte": "Au détour d'un talus, tu crois voir une silhouette mince, tête nue, disparaître derrière un pli du terrain. Le temps d'y être : personne. Un lit d'herbe couchée, encore tiède.",
     "conditions": {
+     "dehors": true,
      "chapter": "la-fille"
     },
-    "ou": "partout",
+    "ou": "lande",
     "illustration": null
    },
    {
     "texte": "Où que le chemin tourne, la couronne de la colline reste en vue — et le grand gibet dépasse, patient. Tu commences à comprendre : ce n'est pas toi qui le regardes.",
     "conditions": {
+     "dehors": true,
      "chapter": "le-gibet-vide"
     },
-    "ou": "partout",
+    "ou": "lande",
     "illustration": null
    },
    {

@@ -543,6 +543,10 @@ def pools() -> list[dict]:
         texte = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', tm.group(1))).replace('\\"', '"')
         if re.search(r"from:\s*HAMEAU_INTERIOR", o):
             garde = {"village", "gens"}
+        elif re.search(r"dehors:\s*true", o):
+            # `dehors: true` (02/09) : jamais servie depuis l'intérieur du
+            # village — elle a donc le droit de poser la lande.
+            garde = {"lande", "gens"}
         else:
             fm = re.search(r"from:\s*\[([^\]]*)\]", o)
             froms = re.findall(r'"([a-z-]+)"', fm.group(1)) if fm else []

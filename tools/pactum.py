@@ -311,6 +311,9 @@ class Partie:
                     # écarte toute variante à provenance nommée.
                     if not origine or origine not in frm:
                         continue
+            # `dehors` (02/09) : pleine lande seulement, jamais depuis une rue.
+            if c.get("dehors") and dans_village:
+                continue
             if "minSoupcon" in c and soup < c["minSoupcon"]:
                 continue
             if "maxSoupcon" in c and soup > c["maxSoupcon"]:

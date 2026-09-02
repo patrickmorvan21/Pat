@@ -638,9 +638,12 @@ function makeSortieHameau(
   const pair = pickLiaisonOptions(trav.visited, seed, true, false, true);
   // La signature de la zone reste garantie (chantier 6 du 23/07) : cette
   // Croisée-ci est une Croisée de lande comme les autres.
+  // ⚠️ PAR LIEU, pas par id (capture Patrick 02/09) : `pendu-qui-parle` EST
+  // la Colline. Le tirage pouvait l'offrir, la garantie ne le voyait pas et
+  // posait `colline-aux-gibets` à côté — deux « Vers un gibet qui parle ».
   if (
     !lieuDejaVisite(trav.visited, "colline-aux-gibets") &&
-    !pair.includes("colline-aux-gibets")
+    !pair.some((p) => lieuDejaVisite(["colline-aux-gibets"], p))
   ) {
     pair[(seed + 1) % 2] = "colline-aux-gibets";
   }
@@ -650,9 +653,19 @@ function makeSortieHameau(
       (id) => !isHameauInterior(id)
     );
     if (reste.length) {
+      // Le second bouton ne doit JAMAIS retomber sur le lieu du premier :
+      // on cherche d'abord dans la paire tirée, puis dans tout le pool
+      // extérieur non visité. Le doublon `reste[0]` était le repli d'avant
+      // — et il fabriquait deux boutons identiques (capture 02/09).
       const second =
         reste[1] ??
         pair.find((p) => !lieuDejaVisite([reste[0]], p) && !isHameauInterior(p)) ??
+        TRAVERSAL_POOL.find(
+          (p) =>
+            !lieuDejaVisite([...trav.visited, reste[0]], p) &&
+            !isHameauInterior(p) &&
+            p !== HAMEAU_SORTIE
+        ) ??
         reste[0];
       pair[0] = reste[0];
       pair[1] = second;
@@ -1412,7 +1425,7 @@ export default function Scene() {
   // 4e choix contextuel (spec 21/07 point 4) : un objet ACTIF pertinent ajouté
   // en bas des choix (calculé hors rendu dans un effet — lit la Besace/santé).
   const withPois = poiOpen ? poiGroup : [...poiGroup, ...acts];
-  const avecActif = activeChoice && !poiOpen ? [...withPois, activeChoice] : withPois;
+  const avecActifBrut = activeChoice && !poiOpen ? [...withPois, activeChoice] : withPois;
   /**
    * LE FILET, jamais la méthode. La règle des trois actions se tient dans le
    * CONTENU (`Choice.remplace`) et le garde de build `A-trois` le vérifie
@@ -1425,6 +1438,10 @@ export default function Scene() {
    * toutes et on laisse le garde de build faire son travail.
    */
   const renderedChoices = (() => {
+    // Un id par bouton, toujours : la clé React en dépend, et une clé
+    // dupliquée laisse un nœud périmé à l'écran (capture 02/09).
+    const vusIds = new Set<string>();
+    const avecActif = avecActifBrut.filter((c) => !vusIds.has(c.id) && vusIds.add(c.id));
     if (avecActif.length <= SLOTS || poiOpen) return avecActif;
     const sort = (c: Choice) => Boolean(c.sortie || c.orient || c.renonce);
     const sorties = avecActif.filter(sort);
@@ -2191,6 +2208,11 @@ export default function Scene() {
     // Armé plus bas si la Croisée qui vient a perdu une de ses deux routes
     // (échec dur au coup précédent, hors séjour).
     let routeFermeeIci = false;
+    // La Croisée qui vient part-elle de l'INTÉRIEUR du village ? Posé par la
+    // branche « nouvelle liaison » — lu par la manifestation du Soupçon, qui
+    // ne peut pas le déduire d'un id de liaison (capture Patrick 02/09 : la
+    // craie sur un muret, servie entre deux maisons).
+    let liaisonDedans = false;
     // Le guide a-t-il absorbé la fermeture de route ? (voir plus bas)
     let guideAbsorbe = false;
     // Le Jour de marche (arbitrage Patrick 7/08) : posé dans la branche
@@ -2610,6 +2632,7 @@ export default function Scene() {
         entered &&
         !runRef.current?.hameau?.sorti &&
         (isHameauInterior(dernier) || /^(serment-hameau|hameau-)/.test(dernier));
+      liaisonDedans = dedans;
       // UN ÉCHEC DUR A DÉPENSÉ QUELQUE CHOSE : hors séjour il n'y avait pas
       // d'option à retirer, alors c'est le MONDE qui se resserre — cette
       // Croisée-ci n'offre plus qu'une direction.
@@ -2682,10 +2705,12 @@ export default function Scene() {
       // à l'autre on ne part pas pour une colline à deux lieues. La signature
       // de la zone attend qu'on soit ressorti — elle est garantie à chaque
       // Croisée de lande, elle ne perd donc rien.
+      // ⚠️ PAR LIEU (02/09) : `pendu-qui-parle` est la Colline — voir
+      // `makeSortieHameau`, même correctif.
       if (
         !dedans &&
         !lieuDejaVisite(trav.visited, "colline-aux-gibets") &&
-        !pair.includes("colline-aux-gibets")
+        !pair.some((p) => lieuDejaVisite(["colline-aux-gibets"], p))
       ) {
         pair[(seed + 1) % 2] = "colline-aux-gibets";
       }
@@ -2723,6 +2748,13 @@ export default function Scene() {
               pair.find(
                 (p) =>
                   !lieuDejaVisite([reste[0]], p) &&
+                  !isHameauInterior(p) &&
+                  p !== HAMEAU_SORTIE
+              ) ??
+              // Jamais le lieu du premier bouton (02/09, voir makeSortieHameau).
+              TRAVERSAL_POOL.find(
+                (p) =>
+                  !lieuDejaVisite([...trav.visited, reste[0]], p) &&
                   !isHameauInterior(p) &&
                   p !== HAMEAU_SORTIE
               ) ??
@@ -2800,7 +2832,7 @@ export default function Scene() {
       !nextScene.fixationTrial && soupAfter > soupSeen && palierAServir <= 5;
     const soupManifest = !soupCroise
       ? null
-      : dansLeVillage(nextScene.id)
+      : (nextScene.liaison ? liaisonDedans : dansLeVillage(nextScene.id))
         ? (SOUPCON_PALIERS[palierAServir] ?? null)
         : (SOUPCON_CRAIE[palierAServir] ?? null);
     // Et le Geôlier met un mot sur ce qui n'a pas de chiffre.
