@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { resolveTier, TIER_WORDS, tierIsFail, type Outcome, type Outcomes, type ResolutionTier } from "@/lib/scene-data";
-import { animReduced, haptic } from "@/lib/settings";
+import { animReduced, haptic, CLES_AIDES } from "@/lib/settings";
 
 /**
  * Dé d20 tactile — moteur repris de reference/REFERENCE_de_3d_tactile.html
@@ -60,7 +60,9 @@ type Props = {
  * une fois la première réussite ET le premier échec vécus. (Réactivation
  * prévue via Options « Réafficher les aides » — écran pas encore construit.)
  */
-const HELP_KEY = "aldenhar-aide-de";
+/** Clé partagée : la liste vit dans `lib/settings` (CLES_AIDES) pour que
+    la remise à zéro des aides n'en oublie jamais une. */
+const HELP_KEY = CLES_AIDES[0];
 type DieHelpPref = { off: boolean; ok: boolean; ko: boolean };
 function loadHelpPref(): DieHelpPref {
   try {

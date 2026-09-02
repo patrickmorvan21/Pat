@@ -6,7 +6,7 @@ import { forgetIntro, forgeRelic, loadMemory, reliquesPortees, type Relic } from
 import { loadRun, type NarrativeEffect, type RunState } from "@/lib/state";
 import RadarEssence from "@/components/RadarEssence";
 import { besaceBySlot, normalizeItem, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
-import { loadSettings, mutateSettings, type Settings } from "@/lib/settings";
+import { loadSettings, mutateSettings, reinitialiserAides, type Settings } from "@/lib/settings";
 import { demoActive, setDemo } from "@/lib/demo";
 import { syncMusicSettings } from "@/lib/audio";
 import DeathScreen, { bilanDeMort, type Bilan } from "@/components/DeathScreen";
@@ -536,9 +536,7 @@ export function OptionsTab() {
   }
 
   function reafficherAides() {
-    try {
-      window.localStorage.removeItem("aldenhar-aide-de");
-    } catch {}
+    reinitialiserAides();
     setAidesReset(true);
   }
 
@@ -550,8 +548,9 @@ export function OptionsTab() {
     try {
       window.localStorage.removeItem("aldenhar-run");
       window.localStorage.removeItem("aldenhar-player");
-      window.localStorage.removeItem("aldenhar-aide-de");
     } catch {}
+    // Une ardoise propre l'est aussi pour les aides (correctif 2/09).
+    reinitialiserAides();
     window.location.reload();
   }
 
@@ -672,7 +671,7 @@ export function OptionsTab() {
         <button type="button" onClick={reafficherAides} className="font-mono text-[13px] text-[var(--color-ink)] underline">
           Réafficher les aides
         </button>
-        <OptHelp>{aidesReset ? "C'est fait — les aides du dé réapparaîtront." : "Les conseils déjà masqués (comme l'aide du dé) reviendront."}</OptHelp>
+        <OptHelp>{aidesReset ? "C'est fait — les aides réapparaîtront une fois chacune." : "Les conseils déjà masqués (l'aide du dé, les cartes « rangé dans le menu ») reviendront."}</OptHelp>
       </div>
 
       <OptDivider />

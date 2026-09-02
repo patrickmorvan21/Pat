@@ -98,7 +98,7 @@ import TimingTap from "@/components/minigames/engines/TimingTap";
 import SlowSwipe from "@/components/minigames/engines/SlowSwipe";
 import StraightSwipe from "@/components/minigames/engines/StraightSwipe";
 import { forcerPiste, playMusic } from "@/lib/audio";
-import { loadSettings } from "@/lib/settings";
+import { loadSettings, CLES_AIDES } from "@/lib/settings";
 import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomSoinMineur, recompenseDestinQuiTient, usageEnMots, LANDES_OBJETS, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { assetUrl, assetSrc, assetCss, assetExiste } from "@/lib/assets";
 import {
@@ -438,7 +438,9 @@ function proseDuJet(text: string): string {
 
 /** Préférence du popup « rangé dans le menu » (7/08) — compte, pas run :
     une fois compris, le rappeler à chaque héros serait du bruit. */
-const AIDE_MENU_KEY = "aldenhar-aide-menu";
+/** Clé partagée : la liste vit dans `lib/settings` (CLES_AIDES) pour que la
+    remise à zéro des aides n'en oublie jamais une — celle-ci l'était. */
+const AIDE_MENU_KEY = CLES_AIDES[1];
 type AideMenuPref = { off?: boolean; etat?: boolean; objet?: boolean };
 function lireAideMenu(): AideMenuPref {
   try {

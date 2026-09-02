@@ -126,3 +126,32 @@ export function haptic(pattern: number | number[]): void {
 export function animReduced(): boolean {
   return loadSettings().animations === "reduites";
 }
+
+/**
+ * LES CLÉS D'AIDE — une seule liste, parce qu'elles se sont déjà perdues.
+ *
+ * Chaque aide « une fois par compte » range son drapeau sous sa propre clé :
+ * `aldenhar-aide-de` (l'aide de l'Anneau, `Die3D`) et `aldenhar-aide-menu`
+ * (la carte « rangé dans le menu », `Scene`). Les deux points qui doivent les
+ * remettre à zéro — « Réafficher les aides » et « Effacer la progression » —
+ * les listaient à la main et n'en connaissaient QU'UNE.
+ *
+ * ⚠️ Défaut réel trouvé le 2/09 (« quand j'obtiens un objet il manque le petit
+ * tuto ») : sur un compte qui a déjà vu la carte objet une fois, elle ne
+ * pouvait plus jamais revenir — ni en réaffichant les aides, ni en effaçant
+ * la progression, qui laissait donc une ardoise pas si propre. Toute nouvelle
+ * aide « une fois par compte » s'ajoute ICI, jamais dans un `removeItem`
+ * recopié ailleurs.
+ */
+export const CLES_AIDES = ["aldenhar-aide-de", "aldenhar-aide-menu"] as const;
+
+/** Remet toutes les aides à zéro : elles se remontreront une fois chacune. */
+export function reinitialiserAides() {
+  for (const k of CLES_AIDES) {
+    try {
+      window.localStorage.removeItem(k);
+    } catch {
+      /* stockage indisponible : l'aide se remontrera de toute façon */
+    }
+  }
+}

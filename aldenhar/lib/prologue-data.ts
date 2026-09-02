@@ -42,9 +42,14 @@ export const PROLOGUE_STAT_LABEL: Record<StatKey, string> = {
  *
  * Les quatre stats ne sont plus NOMMÉES ici : le radar du verdict les montre
  * et les nomme à la fin, quand elles veulent enfin dire quelque chose.
+ *
+ * ⚠️ La consigne « Ne réfléchis pas. Ce n'est plus toi qui choisis : c'est ce
+ * que tu as déjà fait. » est RETIRÉE le 2/09 (retour Patrick). Elle expliquait
+ * la règle au lieu de la laisser se sentir — et les souvenirs, qui portent
+ * tous sur un passé révolu, la disent déjà d'eux-mêmes.
  */
 export const PROLOGUE_AMORCE: string[] = [
-  "Avant que tu passes, je veux voir qui tu étais. Ce que tu vaux ici vient de ta vie d'avant.\nNe réfléchis pas. Ce n'est plus toi qui choisis : c'est ce que tu as déjà fait.",
+  "Avant que tu passes, je veux voir qui tu étais. Ce que tu vaux ici vient de ta vie d'avant.",
 ];
 
 /* La clôture « Je sais qui tu es… » est RETIRÉE de l'écran du verdict le
