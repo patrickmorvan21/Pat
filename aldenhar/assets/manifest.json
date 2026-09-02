@@ -1,6 +1,6 @@
 {
- "genere": "2026-09-01T18:26:08Z",
- "commit": "f2ef8f1",
+ "genere": "2026-09-02T06:15:36Z",
+ "commit": "7a8cbd6",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -296,6 +296,20 @@
    "hash": "01640b33",
    "recent": false,
    "ajoute": "2026-08-25T21:12:49+00:00"
+  },
+  "minijeu_chapelle_pierre.png": {
+   "taille": 19348,
+   "modifie": "2026-09-01T18:57:23Z",
+   "hash": "3ebb741a",
+   "recent": false,
+   "ajoute": ""
+  },
+  "minijeu_corde_tile.png": {
+   "taille": 2996,
+   "modifie": "2026-09-01T18:56:33Z",
+   "hash": "7996ac64",
+   "recent": false,
+   "ajoute": ""
   },
   "minijeu_serrure_fond.png": {
    "taille": 7270,
@@ -1585,26 +1599,12 @@
    "recent": false,
    "ajoute": "2026-08-06T09:37:35+00:00"
   },
-  "relique_anneau_de_suie_b_a.png": {
-   "taille": 6433,
-   "modifie": "2026-08-31T18:55:06Z",
-   "hash": "6a52bdd4",
-   "recent": false,
-   "ajoute": "2026-08-30T21:11:20+02:00"
-  },
   "relique_clou_du_silence.png": {
    "taille": 4121,
    "modifie": "2026-08-30T19:12:06Z",
    "hash": "bdb3df19",
    "recent": false,
    "ajoute": "2026-08-06T09:37:35+00:00"
-  },
-  "relique_clou_du_silence_b_b.png": {
-   "taille": 4121,
-   "modifie": "2026-08-31T18:55:06Z",
-   "hash": "bdb3df19",
-   "recent": false,
-   "ajoute": "2026-08-30T21:11:20+02:00"
   },
   "relique_corde_seche.png": {
    "taille": 9619,
@@ -1613,26 +1613,12 @@
    "recent": false,
    "ajoute": "2026-08-07T12:02:18+00:00"
   },
-  "relique_corde_seche_b_b.png": {
-   "taille": 9619,
-   "modifie": "2026-08-31T18:55:06Z",
-   "hash": "5eade32c",
-   "recent": false,
-   "ajoute": "2026-08-30T21:11:20+02:00"
-  },
   "relique_dent_du_decompte.png": {
    "taille": 5477,
    "modifie": "2026-08-30T19:12:06Z",
    "hash": "b0162a6b",
    "recent": false,
    "ajoute": "2026-08-06T09:37:35+00:00"
-  },
-  "relique_dent_du_decompte_b_d.png": {
-   "taille": 5477,
-   "modifie": "2026-08-31T18:55:06Z",
-   "hash": "b0162a6b",
-   "recent": false,
-   "ajoute": "2026-08-30T21:11:20+02:00"
   },
   "relique_eclat_de_de_fele.png": {
    "taille": 5745,
@@ -1641,26 +1627,12 @@
    "recent": false,
    "ajoute": "2026-08-06T09:39:46+00:00"
   },
-  "relique_eclat_de_de_fele_b_d.png": {
-   "taille": 5745,
-   "modifie": "2026-08-31T18:55:06Z",
-   "hash": "9f266c5c",
-   "recent": false,
-   "ajoute": "2026-08-30T21:11:20+02:00"
-  },
   "relique_miroir_noye.png": {
    "taille": 7959,
    "modifie": "2026-08-30T19:12:06Z",
    "hash": "a9e29284",
    "recent": false,
    "ajoute": "2026-08-06T09:37:35+00:00"
-  },
-  "relique_miroir_noye_b_d.png": {
-   "taille": 7959,
-   "modifie": "2026-08-31T18:55:06Z",
-   "hash": "a9e29284",
-   "recent": false,
-   "ajoute": "2026-08-30T21:11:20+02:00"
   },
   "relique_nom_que_echo_a_garde.png": {
    "taille": 3618,
@@ -1669,26 +1641,12 @@
    "recent": false,
    "ajoute": "2026-08-06T09:39:46+00:00"
   },
-  "relique_nom_que_echo_a_garde_b_b.png": {
-   "taille": 3618,
-   "modifie": "2026-08-31T18:55:06Z",
-   "hash": "95119428",
-   "recent": false,
-   "ajoute": "2026-08-30T21:11:20+02:00"
-  },
   "relique_oeil_lanterne_verte.png": {
    "taille": 4206,
    "modifie": "2026-08-30T19:12:06Z",
    "hash": "c873f9c3",
    "recent": false,
    "ajoute": "2026-08-06T09:37:35+00:00"
-  },
-  "relique_oeil_lanterne_verte_b_b.png": {
-   "taille": 4206,
-   "modifie": "2026-08-31T18:55:06Z",
-   "hash": "c873f9c3",
-   "recent": false,
-   "ajoute": "2026-08-30T21:11:20+02:00"
   },
   "relique_sablier_sans_sable.png": {
    "taille": 7411,
@@ -1697,13 +1655,6 @@
    "recent": false,
    "ajoute": "2026-08-06T09:37:35+00:00"
   },
-  "relique_sablier_sans_sable_b_b.png": {
-   "taille": 7411,
-   "modifie": "2026-08-31T18:55:06Z",
-   "hash": "d83a27bc",
-   "recent": false,
-   "ajoute": "2026-08-30T21:11:20+02:00"
-  },
   "relique_vertebre_gravee.png": {
    "taille": 10855,
    "modifie": "2026-08-30T19:12:06Z",
@@ -1711,19 +1662,33 @@
    "recent": false,
    "ajoute": "2026-08-07T12:02:18+00:00"
   },
-  "relique_vertebre_gravee_b_a.png": {
-   "taille": 10855,
-   "modifie": "2026-08-31T18:55:06Z",
-   "hash": "775cc5c2",
-   "recent": false,
-   "ajoute": "2026-08-30T21:11:20+02:00"
-  },
   "retour.svg": {
    "taille": 565,
    "modifie": "2026-08-21T15:59:05Z",
    "hash": "3fb4fc41",
    "recent": false,
    "ajoute": "2026-08-21T16:05:09+00:00"
+  },
+  "sceau_landes_1.png": {
+   "taille": 13805,
+   "modifie": "2026-09-01T19:03:33Z",
+   "hash": "b435d124",
+   "recent": false,
+   "ajoute": ""
+  },
+  "sceau_landes_2.png": {
+   "taille": 18845,
+   "modifie": "2026-09-01T19:03:33Z",
+   "hash": "67c5d495",
+   "recent": false,
+   "ajoute": ""
+  },
+  "sceau_landes_3.png": {
+   "taille": 19868,
+   "modifie": "2026-09-01T19:03:33Z",
+   "hash": "fef90234",
+   "recent": false,
+   "ajoute": ""
   },
   "scene_borne_eclat_a_b.png": {
    "taille": 11742,
