@@ -107,6 +107,7 @@ export const JEU_GAMES: MiniGameEntry[] = [
       maxDurationMs: 500,
       maxDeviation: tier === "haut" ? 34 : tier === "moyen" ? 22 : 14,
       skin: "corde",
+      imageCorde: assetSrc("assets/minijeu_corde_tile.png"),
     }),
     successText: "Ta lame tranche net.",
     failText: "Ta lame entame la corde — qui se resserre.",
@@ -129,14 +130,11 @@ export const JEU_GAMES: MiniGameEntry[] = [
       skin: "corde",
       step: 30,
       forgiving: true,
+      imageCorde: assetSrc("assets/minijeu_corde_tile.png"),
     }),
     successText: "La corde s'arrête. En bas, quelqu'un saura qu'on peut descendre plus loin.",
     failText: "",
   },
-];
-
-/** Validés dans le jeu, mais leur habillage réaliste n'est pas fait. */
-export const A_HABILLER_GAMES: MiniGameEntry[] = [
   {
     id: "jeu-trace-chapelle",
     number: 0,
@@ -144,17 +142,22 @@ export const A_HABILLER_GAMES: MiniGameEntry[] = [
     category: "Référence",
     stat: "RUSE",
     lieu: "La Chapelle des Cordes — « Prendre la corde coupée » (démo)",
-    note: "En jeu avec le rendu procédural (disque gravé). Habillage à créer : gros plan du nœud de la Veuve sous verre, les points du tracé posés SUR le tressage réel.",
     description:
-      "Suivre du doigt le nœud de la Veuve, point après point, sans lâcher ni s'écarter trop longtemps. La Ruse simplifie le nœud. Rater ne perd pas la corde : la vitrine sonne sur la dalle et la Veuve t'a vu.",
+      "Suivre du doigt le nœud de la Veuve, point après point, sans lâcher ni s'écarter trop longtemps — sur la pierre de la Chapelle, les points ciselés dedans. La Ruse simplifie le nœud. Rater ne perd pas la corde : la vitrine sonne sur la dalle et la Veuve t'a vu.",
     engine: "glyph",
     configFor: (tier) => ({
       points: tier === "haut" ? 5 : tier === "moyen" ? 6 : 7,
       tolerance: tier === "haut" ? 26 : tier === "moyen" ? 22 : 19,
+      skin: "pierre",
+      imageFond: assetSrc("assets/minijeu_chapelle_pierre.png"),
     }),
     successText: "Le verre pivote sans bruit. La corde coupée s'enroule à ton poignet.",
     failText: "Ton doigt perd le fil — la vitrine se décroche et sonne sur la dalle.",
   },
+];
+
+/** Validés dans le jeu, mais leur habillage réaliste n'est pas fait. */
+export const A_HABILLER_GAMES: MiniGameEntry[] = [
   {
     id: "jeu-souffle-bete",
     number: 0,

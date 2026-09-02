@@ -16,8 +16,11 @@
  *
  * Règle d'illustration (verrouillée par la spec) : un Lieu ou une Rencontre
  * a son image propre (bandeau haut, hauteur pleine) ; un ARC est transverse,
- * il porte l'image de l'ACTE entier, en bandeau court — un Arc n'a JAMAIS
+ * il porte l'image de l'ACTE entier, en bandeau court — un Arc n'a pas
  * d'illustration dédiée, on ne génère pas d'image pour une idée.
+ * ⚠️ UNE exception, décidée par Patrick le 01/09 : « La marque de la paume »
+ * (arc:sceau) — le Sceau est une CHOSE qu'on voit dans la main, pas une idée ;
+ * sa fiche montre `imageSceau(niveau du compte)` (voir Codex.tsx).
  *
  * ⚠️ Les états archivés (`data/archive-etats.md`) N'ENTRENT PAS ici —
  * décision Patrick du 20/08. Ils restent sans destination, à reloger un jour.

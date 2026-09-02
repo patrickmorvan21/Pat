@@ -51,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-09-01T18:26:08Z",
- "commit": "f2ef8f1",
+ "genere": "2026-09-02T06:07:24Z",
+ "commit": "7a8cbd6",
  "zones": [
   {
    "id": "landes",
@@ -9222,6 +9222,30 @@
    "racine": "retour.svg"
   },
   {
+   "fichier": "sceau_landes_1.png",
+   "hash": "b435d124",
+   "taille": 13805,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "sceau_landes_1"
+  },
+  {
+   "fichier": "sceau_landes_2.png",
+   "hash": "67c5d495",
+   "taille": 18845,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "sceau_landes_2"
+  },
+  {
+   "fichier": "sceau_landes_3.png",
+   "hash": "fef90234",
+   "taille": 19868,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "sceau_landes_3"
+  },
+  {
    "fichier": "scene_borne_eclat_a_b.png",
    "hash": "39fc719f",
    "taille": 11742,
@@ -11381,10 +11405,10 @@
   "scenes": 107,
   "pointsInteret": 0,
   "choix": 314,
-  "illustrations": 441,
+  "illustrations": 436,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 211,
+  "reserve": 214,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

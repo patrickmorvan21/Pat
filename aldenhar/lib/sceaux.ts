@@ -47,6 +47,23 @@ export function niveauSceau(f: Faits, id: string = SCEAU_LANDES): number {
 }
 
 /**
+ * L'IMAGE DE LA MARQUE (demande Patrick 01/09 : « il faudrait faire l'image
+ * non ? »). Trois images pour les trois états de la paume, calquées sur les
+ * textes : 1 = un rond (l'entaille en creux) · 2 = un second rond collé au
+ * premier (la main de quelqu'un qui tient un compte) · 3 = un trait qui coupe
+ * les deux (les entailles se rejoignent, ça ressemble à un mot). Au-delà de
+ * trois passages la marque NE BOUGE PLUS (règle de croissance du 14/08) —
+ * donc la même image.
+ *
+ * Générées procéduralement (scratchpad `gen_sceau.py`) : 1000×1000, charbon
+ * et orange seulement, bords rongés par bruit — jamais un trait net.
+ */
+export function imageSceau(passages: number): string {
+  const n = Math.max(1, Math.min(3, passages));
+  return `assets/sceau_landes_${n}.png`;
+}
+
+/**
  * LE MOMENT OÙ IL SE PREND — dernier écran de la traversée, juste après la
  * trace de sortie et avant le Registre.
  *

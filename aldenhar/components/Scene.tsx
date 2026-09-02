@@ -124,6 +124,7 @@ import {
 } from "@/lib/player-memory";
 import {
   niveauSceau,
+  imageSceau,
   ligneSceauOuverture,
   ligneSceauBorne,
   ligneSceauSortie,
@@ -981,10 +982,15 @@ export default function Scene() {
    * — le loin, puis le lieu, puis la rencontre — donc on empile : une bascule
    * consommée par frontière, dans l'ordre où elles ont été posées.
    */
-  const imagesDifferees = useRef<string[]>([]);
+  /* Une bascule par frontière d'écran, consommée dans l'ordre. `null` = cette
+     frontière ne change rien (sert à viser une frontière plus loin). */
+  const imagesDifferees = useRef<(string | null)[]>([]);
   /* Combien d'écrans le découpage vient de produire. Sert à décider QUAND
      poser une bascule d'image différée : jamais au milieu d'un écran. */
   const nbEcransRef = useRef(1);
+  /** Le DERNIER id de chaque écran du découpage courant — pour viser une
+      frontière PRÉCISE avec une bascule d'image (le Sceau, 01/09). */
+  const groupesFinsRef = useRef<string[]>([]);
   // File de révélation séquentielle : les blocs de texte (narration/Geôlier)
   // tapent l'un après l'autre, jamais tous en même temps.
   const [activeTypingId, setActiveTypingIdState] = useState<string | null>(null);
@@ -1055,7 +1061,7 @@ export default function Scene() {
   // Incrémenté à chaque tap dans la zone de texte : termine la frappe en cours.
   const [skip, setSkip] = useState(0);
   // Écran de mort : non-null dès que la santé tombe à zéro sur un jet raté.
-  const [death, setDeath] = useState<{ epitaph: string; day: number; bilan: Bilan; relic: Relic; heroName: string; cause: string; firstDeath: boolean } | null>(null);
+  const [death, setDeath] = useState<{ epitaph: string; day: number; bilan: Bilan; relic: Relic; heroName: string; cause: string; firstDeath: boolean; image: string } | null>(null);
   // Scène chronométrée (§18) : true une fois le délai écoulé sans choix.
   const [timedExpired, setTimedExpired] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -1551,6 +1557,7 @@ export default function Scene() {
     }
     const groupes = decouperEnEcrans(entries, coupures);
     nbEcransRef.current = groupes.length;
+    groupesFinsRef.current = groupes.map((g) => g[g.length - 1]?.id ?? "");
     // ⚠️ LA CARTE D'ÉTAT NE SE MONTRE QU'UNE FOIS (playtest du 12/08).
     // Elle était re-posée en tête de CHAQUE écran de la séquence (règle du
     // 7/08, « elle reste le temps de la scène ») — mesuré en jeu : trois
@@ -1602,8 +1609,10 @@ export default function Scene() {
     if (imagesDifferees.current.length) {
       const [suivante, ...reste] = imagesDifferees.current;
       imagesDifferees.current = reste;
-      setImage(suivante);
-      setImageKind("scene");
+      if (suivante) {
+        setImage(suivante);
+        setImageKind("scene");
+      }
     }
     setBeatsSuite(reste);
     revealedIdsRef.current = new Set();
@@ -3483,6 +3492,10 @@ export default function Scene() {
     // Soin générique de secours — désormais RARE (spec 23/07 : « peu de soins
     // disponibles », l'usure vient de la rareté du soin). Hors combat, et
     // seulement si aucun objet placé n'a été ramassé sur cette scène.
+    // 01/09 (retour playtest « les objets de soin sont trop faciles à
+    // trouver ») : 12 % → 5 %. Arbitré avec la moitié des soins TROUVÉS
+    // (besace.ts, SOINS_MINEURS) ; les soins GAGNÉS par un choix (Offrandes,
+    // Chanvre, Miroir, Fruit) gardent leur valeur — on les a mérités.
     if (
       !dropped &&
       !nextScene.combat &&
@@ -3490,7 +3503,7 @@ export default function Scene() {
       !nextScene.liaison &&
       !nextScene.id.startsWith("campement") &&
       hasBesaceRoom(besace, "actif") &&
-      chance(0.12)
+      chance(0.05)
     ) {
       const dejaServis = [
         ...besace.map((b) => b.name),
@@ -3512,6 +3525,12 @@ export default function Scene() {
     // SOUS SES YEUX. `recordTraversee` ne tombe qu'au dernier tap, donc le
     // joueur ne voyait jamais son nom entrer dans le livre : c'est le défaut
     // de LIVRAISON que le panel décrit, pas un défaut de mémoire.
+    /* LA MARQUE SE VOIT (01/09) : à l'écran où la paume chauffe, l'image
+       devient le Sceau lui-même — un rond, deux ronds collés, le trait qui
+       coupe les deux. Frontière d'écran imposée APRÈS la trace de sortie
+       (l'image ne change jamais au milieu d'un texte, règle du 31/08) ; la
+       bascule est posée plus bas, une fois `coupures`/`differees` déclarés. */
+    let sceauDiffere: { apres: string; img: string } | null = null;
     if (nextScene.terminal && !nextScene.renoncement) {
       const r = runRef.current ?? loadRun();
       const m = loadMemory();
@@ -3529,10 +3548,13 @@ export default function Scene() {
       // d'être gagné, celui-ci compris : `niveau + 1`. Placé après la trace
       // de sortie et avant le Registre : d'abord ce que cette vie a été,
       // puis ce qu'elle rapporte, puis le livre.
+      const passages = niveauSceau({ run: {}, perm: m.faits ?? {} }) + 1;
+      const derniereTrace = entries[entries.length - 1];
+      if (derniereTrace) sceauDiffere = { apres: derniereTrace.id, img: imageSceau(passages) };
       entries.push({
         id: nextId(),
         kind: "narration",
-        text: ligneSceauSortie(niveauSceau({ run: {}, perm: m.faits ?? {} }) + 1),
+        text: ligneSceauSortie(passages),
       });
       entries.push({
         id: nextId(),
@@ -3661,6 +3683,13 @@ export default function Scene() {
          ne bouge pas. `ImageKind: "object"` reste dans le type pour les
          sauvegardes en cours ; plus rien ne le pose. */
       img = { src: lastSceneIlloRef.current, kind: "scene" };
+    }
+    if (sceauDiffere) {
+      // La sortie de zone : trace de cette vie → [frontière] → la marque, sur
+      // SON image, puis le Registre collé dessous (poids 0). L'image est
+      // posée sur CETTE frontière-là (voir la fin d'advance), pas sur la
+      // première venue : la Descente a d'autres frontières avant elle.
+      coupures.add(sceauDiffere.apres);
     }
     // L'ÉLÉMENT OBSERVÉ passe devant tout le reste (conversion des points
     // d'intérêt, 13/08) : on vient de s'approcher de quelque chose, c'est ÇA
@@ -3883,17 +3912,31 @@ export default function Scene() {
     setTimedExpired(false);
     showScreen(entries, img, coupures);
     // Les bascules différées survivent à showScreen (qui purge celles d'avant).
-    if (differees.length) {
+    if (differees.length || sceauDiffere) {
       // Une bascule par FRONTIÈRE d'écran (correctif Patrick 31/08 : l'image
       // ne doit jamais changer au milieu d'un texte). S'il y a moins de
       // frontières que de bascules, celles qui n'en ont pas s'appliquent tout
       // de suite — les poser plus tard les ferait changer sous les yeux.
       const frontieres = Math.max(0, nbEcransRef.current - 1);
-      const differables = differees.slice(0, frontieres);
+      const differables: (string | null)[] = differees.slice(0, frontieres);
       const immediates = differees.slice(frontieres);
       if (immediates.length) {
         setImage(immediates[immediates.length - 1]);
         setImageKind("scene");
+      }
+      if (sceauDiffere) {
+        // ⚠️ Vue au test (01/09) : consommée « à la prochaine frontière », la
+        // marque arrivait sur l'écran de la Descente, trois taps avant sa
+        // ligne. On vise la frontière qui FERME l'écran de la trace de sortie ;
+        // les frontières d'avant reçoivent `null` (rien ne change).
+        const k = groupesFinsRef.current.indexOf(sceauDiffere.apres);
+        if (k >= 0 && k < frontieres) {
+          while (differables.length <= k) differables.push(null);
+          differables[k] = sceauDiffere.img;
+        } else {
+          setImage(sceauDiffere.img);
+          setImageKind("scene");
+        }
       }
       imagesDifferees.current = differables;
     }
@@ -4111,13 +4154,17 @@ export default function Scene() {
       } else if (eng === "trace") {
         // Le Tracé (la Chapelle) : la Ruse simplifie le nœud à suivre.
         const ruse = statDe(runRef.current?.stats, "RUSE");
-        setMinigameConfig(
-          ruse >= 4
+        // 01/09 : le tracé se joue SUR LA PIERRE (fond tramé, comme la porte
+        // du Crochetage) — l'habillage réaliste demandé par Patrick.
+        setMinigameConfig({
+          ...(ruse >= 4
             ? { points: 5, tolerance: 26 }
             : ruse >= 3
               ? { points: 6, tolerance: 22 }
-              : { points: 7, tolerance: 19 }
-        );
+              : { points: 7, tolerance: 19 }),
+          skin: "pierre",
+          imageFond: assetSrc("assets/minijeu_chapelle_pierre.png"),
+        });
       } else if (eng === "pick") {
         /* Le Crochetage (la nuit) : la Ruse élargit la gorge. TROIS goupilles
            à faire tomber (29/08) — une serrure ne cède pas sur un seul geste,
@@ -4143,6 +4190,8 @@ export default function Scene() {
           // au doigt dévie plus qu'un trait libre sur toute la largeur.
           maxDeviation: cou >= 4 ? 34 : cou >= 3 ? 22 : 14,
           skin: "corde",
+          // 01/09 : la corde de Patrick en image, le tracé à couper en blanc.
+          imageCorde: assetSrc("assets/minijeu_corde_tile.png"),
         });
       } else if (eng === "swipe") {
         // La cérémonie : cinq paliers, vers le BAS, lentement. Trop vite ne
@@ -4154,6 +4203,8 @@ export default function Scene() {
         setMinigameConfig({
           pagesNeeded: 5, maxSpeed: 9, label: "paliers",
           axis: "y", skin: "corde", step: 30, forgiving: true,
+          // 01/09 : la corde continue en image, la lumière qui s'éteint.
+          imageCorde: assetSrc("assets/minijeu_corde_tile.png"),
         });
       } else {
         /* rub — SKIN IMAGE (maquettes Figma 2544:10906 / 2558:23211, 25/08) :
@@ -5411,7 +5462,7 @@ export default function Scene() {
                 fixation: true,
               });
               const dead = { epitaph, day: run.day, bilan: bilanDeMort(run, porteeNom), relic,
-                heroName: run.heroName, cause: "le Hameau des Renonçants", firstDeath };
+                heroName: run.heroName, cause: "le Hameau des Renonçants", firstDeath, image };
               resetRun();
               setDeath(dead);
               return;
@@ -5438,7 +5489,7 @@ export default function Scene() {
                 killer: scene.foe ? { entity: scene.foe, label: scene.foeName ?? scene.foe } : undefined,
               });
               const dead = { epitaph, day: run.day, bilan: bilanDeMort(run, porteeNom), relic,
-                heroName: run.heroName, cause, firstDeath };
+                heroName: run.heroName, cause, firstDeath, image };
               resetRun();
               setDeath(dead);
               return;
@@ -5670,6 +5721,7 @@ export default function Scene() {
         {/* Écran de mort (13/07). */}
         {death && (
           <DeathScreen
+            image={death.image}
             epitaph={death.epitaph}
             day={death.day}
             bilan={death.bilan}

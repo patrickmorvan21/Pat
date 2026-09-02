@@ -31,6 +31,7 @@ import { animReduced } from "@/lib/settings";
 import type { RunState } from "@/lib/state";
 import { assetUrl, assetExiste } from "@/lib/assets";
 import { reliqueIllustration } from "@/lib/reliques";
+import CarteDeMort from "@/components/CarteDeMort";
 
 const CHARBON = "#1c1a16";
 const ORANGE = "#e0632a";
@@ -168,6 +169,7 @@ export default function DeathScreen({
   heroName,
   cause,
   firstDeath,
+  image,
   onRestart,
 }: {
   epitaph: string;
@@ -179,6 +181,9 @@ export default function DeathScreen({
   /** Jalon de première fois : la relique est un fragment fort (déjà garanti
       côté forge) et la ligne de fonction accueille au lieu de railler. */
   firstDeath?: boolean;
+  /** L'illustration à l'écran au moment du jet fatal — le LIEU de la mort,
+      porté par la carte (01/09). Sans elle, la carte sert un ciel tramé. */
+  image?: string;
   onRestart: () => void;
 }) {
   const [ecran, setEcran] = useState<Ecran>("fatal");
@@ -223,6 +228,11 @@ export default function DeathScreen({
     () => lesCent.some((r) => r.isPlayer && r.name === heroName && r.days === day),
     [lesCent, heroName, day]
   );
+  // Le rang porté par la carte : sa place dans Les Cent, ou rien.
+  const rang = useMemo(() => {
+    const i = lesCent.findIndex((r) => r.isPlayer && r.name === heroName && r.days === day);
+    return i >= 0 ? i + 1 : null;
+  }, [lesCent, heroName, day]);
 
   /* ─── écran 1 : la combustion — les pixels TOMBENT et nourrissent le lit ── */
   useEffect(() => {
@@ -394,38 +404,31 @@ export default function DeathScreen({
       onClick={suivant}
     >
       {ecran === "mort" && (
-        <div className="flex flex-1 flex-col px-[15px] pt-[64px]">
-          {/* Maquette 2295-653 : le nom en Instrument Serif 48 orange, la puce
-              JOUR, l'épitaphe entre deux filets, puis le bilan — les seuls
-              chiffres bruts autorisés du jeu (un registre, pas un score). */}
-          <h2
-            className="text-center text-[48px] leading-none text-[var(--color-accent)]"
-            style={{ fontFamily: "var(--font-title)" }}
-          >
-            {heroName}
-          </h2>
-          <div className="mt-[18px] flex items-center justify-center gap-[8px]">
+        /* LA CARTE DE MORT (01/09) remplace la fiche de bilan : mêmes
+           chiffres, mais portés par un objet qu'on incline et qu'on partage.
+           « Touche pour continuer » reste le lien du bas ; la carte et le CTA
+           Partager n'avancent jamais l'écran. La carte se réduit sur les
+           écrans courts pour laisser le lien AU-DESSUS des braises. */
+        <div className="flex flex-1 flex-col items-center pt-[20px]" data-t="carte">
+          <div className="flex items-center justify-center gap-[8px]">
             <span className="size-[3px] rotate-45 bg-[var(--color-accent)]" aria-hidden />
             <span className="font-mono text-[12px] font-medium uppercase tracking-[0.6px] text-[var(--color-accent)]">
-              Jour {day}
+              {`${ordinalVie(morts)} vie s'arrête`}
             </span>
             <span className="size-[3px] rotate-45 bg-[var(--color-accent)]" aria-hidden />
           </div>
-          <div className="mt-[30px] border-t border-[var(--color-ink)]/20 pt-[22px]">
-            <p className="mx-auto w-[350px] text-center font-mono text-[13px] leading-[1.3] text-[var(--color-ink)]">
-              {epitaph}
-            </p>
-          </div>
-          <div className="mt-[22px] border-t border-[var(--color-ink)]/20" />
-          <div className="mt-[28px] flex flex-col gap-[16px]">
-            <LigneBilan label="Jours tenus" valeur={String(bilan.jours)} />
-            <LigneBilan label="Point le plus profond" valeur={bilan.plusLoin} />
-            <LigneBilan label="Lieux traversés" valeur={String(bilan.lieux)} />
-            <LigneBilan label="Combats traversés" valeur={String(bilan.rencontres)} />
-            <LigneBilan label="Dés lancés" valeur={`${bilan.des} · ${bilan.desTenus} tenus`} />
-            <LigneBilan label="Destins • Malédictions" valeur={`${bilan.destins} • ${bilan.maledictions}`} />
-            <LigneBilan label="Relique portée" valeur={bilan.reliquePortee ?? "aucune"} />
-          </div>
+          <CarteReduite>
+            <CarteDeMort
+              heroName={heroName}
+              day={day}
+              epitaph={epitaph}
+              bilan={bilan}
+              relic={relic}
+              rang={rang}
+              image={image}
+              acte={0}
+            />
+          </CarteReduite>
           <TouchHint bottom={HINT_BAS} />
         </div>
       )}
@@ -572,39 +575,6 @@ export default function DeathScreen({
   );
 }
 
-/**
- * Tag de rareté (maquette 2333-7011, qui fait foi — AUCUNE couleur neuve, la
- * palette reste Charbon/Orange/Blanc) : commune = contour blanc, rare = fond
- * blanc texte charbon, légendaire = fond orange texte charbon.
- */
-function TagRarete({ rarity, className }: { rarity: Relic["rarity"]; className?: string }) {
-  const base =
-    "inline-block p-[4px] font-mono text-[12px] font-medium uppercase tracking-[0.6px] leading-[1.2]";
-  if (rarity === "legendaire")
-    return <span className={`${base} bg-[var(--color-accent)] text-[var(--color-bg)] ${className ?? ""}`}>relique légendaire</span>;
-  if (rarity === "rare")
-    return <span className={`${base} bg-[var(--color-ink)] text-[var(--color-bg)] ${className ?? ""}`}>relique rare</span>;
-  return (
-    <span className={`${base} border border-solid border-[var(--color-ink)] text-[var(--color-ink)] ${className ?? ""}`}>
-      relique commune
-    </span>
-  );
-}
-
-function LigneBilan({ label, valeur }: { label: string; valeur: string }) {
-  // Maquette 2295-653 : libellé blanc-50 à gauche, valeur BLANCHE à droite,
-  // tout en 13px mono capitales — plus d'accent orange sur les valeurs.
-  return (
-    <div className="flex items-baseline justify-between gap-[10px]">
-      <span className="font-mono text-[13px] uppercase leading-[1.3] text-[var(--color-ink)] opacity-50">
-        {label}
-      </span>
-      <span className="text-right font-mono text-[13px] uppercase leading-[1.3] text-[var(--color-ink)]">
-        {valeur}
-      </span>
-    </div>
-  );
-}
 
 /**
  * L'écran du Registre (maquette 2331-675) : le livre en haut, deux onglets
@@ -948,5 +918,71 @@ function CendresRevelation() {
       style={{ imageRendering: "pixelated" }}
       aria-hidden
     />
+  );
+}
+
+/**
+ * Tag de rareté (maquette 2333-7011, qui fait foi — AUCUNE couleur neuve, la
+ * palette reste Charbon/Orange/Blanc) : commune = contour blanc, rare = fond
+ * blanc texte charbon, légendaire = fond orange texte charbon.
+ */
+function TagRarete({ rarity, className }: { rarity: Relic["rarity"]; className?: string }) {
+  const base =
+    "inline-block p-[4px] font-mono text-[12px] font-medium uppercase tracking-[0.6px] leading-[1.2]";
+  if (rarity === "legendaire")
+    return <span className={`${base} bg-[var(--color-accent)] text-[var(--color-bg)] ${className ?? ""}`}>relique légendaire</span>;
+  if (rarity === "rare")
+    return <span className={`${base} bg-[var(--color-ink)] text-[var(--color-bg)] ${className ?? ""}`}>relique rare</span>;
+  return (
+    <span className={`${base} border border-solid border-[var(--color-ink)] text-[var(--color-ink)] ${className ?? ""}`}>
+      relique commune
+    </span>
+  );
+}
+
+/** « ta douzième vie s'arrête » — `morts` est déjà incrémenté par recordDeath. */
+function ordinalVie(n: number): string {
+  const f = ["", "Ta première", "Ta deuxième", "Ta troisième", "Ta quatrième", "Ta cinquième",
+    "Ta sixième", "Ta septième", "Ta huitième", "Ta neuvième", "Ta dixième", "Ta onzième", "Ta douzième"];
+  if (n >= 1 && n < f.length) return f[n];
+  return n > 0 ? `Ta ${n}ᵉ` : "Ta";
+}
+
+/**
+ * Réduit la carte quand le cadre est court : tout (eyebrow, carte, hint,
+ * CTA) doit tenir AU-DESSUS du lien « Touche pour continuer » (HINT_BAS) et
+ * des braises. Mesuré sur le cadre, jamais sur la fenêtre.
+ */
+function CarteReduite({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [echelle, setEchelle] = useState(1);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const mesure = () => {
+      const cadre = el.closest("[data-ecran]") as HTMLElement | null;
+      const h = cadre?.clientHeight ?? window.innerHeight;
+      // 20 haut + 28 eyebrow + carte + 12 hint + 34 CTA + marge, au-dessus de HINT_BAS
+      const dispo = h - HINT_BAS - 20 - 28 - 24 - 34 - 8 - 12;
+      setEchelle(Math.max(0.6, Math.min(1, dispo / 450)));
+    };
+    mesure();
+    window.addEventListener("resize", mesure);
+    return () => window.removeEventListener("resize", mesure);
+  }, []);
+  return (
+    <div
+      ref={ref}
+      className="flex justify-center"
+      style={{
+        transform: `scale(${echelle})`,
+        transformOrigin: "top center",
+        // le conteneur garde la place RÉELLE occupée, pour ne pas laisser
+        // un trou sous une carte réduite
+        height: Math.round((450 + 12 + 34 + 24) * echelle),
+      }}
+    >
+      {children}
+    </div>
   );
 }

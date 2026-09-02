@@ -111,20 +111,23 @@ export function normalizeItem(i: BesaceItem): BesaceItem {
   return { ...i, slot: "passif", passiveMod: i.passiveMod ?? 1, passiveScope: i.passiveScope ?? scope };
 }
 
-/** Soins mineurs trouvables en exploration — ACTIFS à usage unique (~1 scène sur 5). */
+/** Soins mineurs trouvables en exploration — ACTIFS à usage unique.
+    01/09 : drop à 5 % (Scene.tsx) ET valeurs divisées par deux (0.30/0.25/
+    0.20/0.30 → 0.15/0.12/0.10/0.15) — un soin RAMASSÉ referme un peu, un
+    soin GAGNÉ (LANDES_OBJETS, RECOMPENSES_DESTIN) referme pour de bon. */
 const SOINS_MINEURS: Omit<BesaceItem, "id">[] = [
   { name: "Baume de mousse noire",
     usageTexte:
-      "Tu racles le fond du pot et tu tasses la mousse noire à même la plaie, sans regarder. Ça mord d'abord, puis ça tient — la chair se referme autour, comme si elle avait décidé d'y croire.", rarity: "commun", kind: "soin", slot: "actif", heal: 0.3, cure: true, flavor: "Ça sent la cave. Ça referme les plaies." },
+      "Tu racles le fond du pot et tu tasses la mousse noire à même la plaie, sans regarder. Ça mord d'abord, puis ça tient — la chair se referme autour, comme si elle avait décidé d'y croire.", rarity: "commun", kind: "soin", slot: "actif", heal: 0.15, cure: true, flavor: "Ça sent la cave. Ça referme les plaies." },
   { name: "Fiole d'eau de gouttière",
     usageTexte:
-      "Tu bois l'eau de gouttière au goulot, debout, en trois gorgées qui ont le goût de l'ardoise. Ce n'est pas bon. C'est de l'eau, et ton corps ne fait pas le difficile.", illustration: "assets/objet_fiole_baume_b_b.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.25, cure: false, flavor: "Trouble, tiède — mais elle apaise." },
+      "Tu bois l'eau de gouttière au goulot, debout, en trois gorgées qui ont le goût de l'ardoise. Ce n'est pas bon. C'est de l'eau, et ton corps ne fait pas le difficile.", illustration: "assets/objet_fiole_baume_b_b.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.12, cure: false, flavor: "Trouble, tiède — mais elle apaise." },
   { name: "Bandage d'un autre",
     usageTexte:
-      "Tu défais le bandage de quelqu'un d'autre et tu l'enroules sur ton propre bras. Il a déjà servi — la tache est ancienne, brune, à l'endroit exact où tu saignes. Tu serres le nœud sans y penser.", illustration: "assets/objet_brin_chanvre_beni_c_b.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.2, cure: true, flavor: "Son premier propriétaire n'en aura plus besoin." },
+      "Tu défais le bandage de quelqu'un d'autre et tu l'enroules sur ton propre bras. Il a déjà servi — la tache est ancienne, brune, à l'endroit exact où tu saignes. Tu serres le nœud sans y penser.", illustration: "assets/objet_brin_chanvre_beni_c_b.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.1, cure: true, flavor: "Son premier propriétaire n'en aura plus besoin." },
   { name: "Onguent gris",
     usageTexte:
-      "Tu étales l'onguent gris du plat du pouce, en couche mince. Ça sent la cendre et le suif. La douleur ne part pas : elle recule d'un pas et te laisse la place.", rarity: "commun", kind: "soin", slot: "actif", heal: 0.3, cure: false, flavor: "L'étiquette est illisible. L'odeur, convaincante." },
+      "Tu étales l'onguent gris du plat du pouce, en couche mince. Ça sent la cendre et le suif. La douleur ne part pas : elle recule d'un pas et te laisse la place.", rarity: "commun", kind: "soin", slot: "actif", heal: 0.15, cure: false, flavor: "L'étiquette est illisible. L'odeur, convaincante." },
 ];
 
 /** Récompenses du Destin (nat 20) : rare à légendaire, JAMAIS une Relique. Un
