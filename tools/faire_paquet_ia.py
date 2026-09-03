@@ -8,12 +8,17 @@ Contenu :
   transcripts/  des parties réelles enregistrées sur le build publié — la
                 référence sans dérive (le vrai moteur, les vraies images).
   sources/      le contenu et les règles, pour vérifier une intuition.
+  assets/       LES ILLUSTRATIONS elles-mêmes, plus `sources/IMAGES.md` qui
+                apparie chaque écran à son fichier — sans quoi un audit
+                image ↔ texte est impossible depuis le zip (réserve de
+                l'audit du 03/09 : « les PNG ne sont pas inclus »).
 
 Usage : python3 tools/faire_paquet_ia.py [transcripts…]
 """
 
 from __future__ import annotations
 
+import json
 import re
 import shutil
 import subprocess
@@ -119,6 +124,71 @@ def main(argv: list[str]) -> int:
         brief.replace("{VERSION}", version), encoding="utf-8"
     )
 
+    # ─── LES IMAGES (03/09) ───────────────────────────────────────────────
+    # Un relecteur sans navigateur ne peut pas vérifier qu'une image dit la
+    # même chose que son texte : le zip n'embarquait que la prose. On livre
+    # donc les fichiers ET l'index qui les apparie — les PNG seuls ne servent
+    # à rien, puisque ni les transcripts ni la table ne nomment l'image d'un
+    # écran. La vidéo du Geôlier est écartée (rien à auditer sur un mp4 dans
+    # un zip, et c'est le plus gros fichier du dossier).
+    src_assets = APP / "public" / "assets"
+    (pack / "assets").mkdir()
+    n_img = 0
+    for f in sorted(src_assets.iterdir()):
+        if f.is_file() and f.suffix.lower() in {".png", ".jpg", ".svg"}:
+            shutil.copy(f, pack / "assets" / f.name)
+            n_img += 1
+
+    LIB_STATUT = {
+        "dediee": "dédiée",
+        "heritee": "héritée",
+        "fallback": "vue générique",
+        "manquante": "aucune image dédiée",
+    }
+    sys.path.insert(0, str(RACINE / "tools"))
+    import coverage  # noqa: E402  (dépend du chemin posé juste au-dessus)
+
+    items, _stats, _orph = coverage.build_items()
+    kit = json.loads((RACINE / "data" / "run-kit.json").read_text(encoding="utf-8"))
+    scenes_kit = kit.get("scenes", {})
+    lignes = [
+        "# Les images, écran par écran",
+        "",
+        f"{n_img} fichiers dans `assets/`. Chaque entrée ci-dessous donne "
+        "l'écran, le fichier affiché, et le texte qu'il accompagne : c'est "
+        "l'appariement à auditer.",
+        "",
+        "Statuts : **dédiée** = image propre à cet écran · **héritée** = "
+        "reprise d'un autre écran (le parent est nommé) · **vue générique** = "
+        "image de marche ou de secours, pas écrite pour cet écran.",
+        "",
+    ]
+    par_lieu: dict[str, list] = {}
+    for it in items:
+        par_lieu.setdefault(it.lieu or it.zone, []).append(it)
+    for lieu in sorted(par_lieu):
+        lignes.append(f"## {lieu}")
+        lignes.append("")
+        for it in par_lieu[lieu]:
+            lignes.append(f"### `{it.id}`")
+            img = (it.image or "").split("/")[-1] or "— aucune —"
+            det = f"- Image : `{img}` — {LIB_STATUT.get(it.statut, it.statut)}"
+            if it.parent:
+                det += f" (de `{it.parent}`)"
+            lignes.append(det)
+            if it.description:
+                lignes.append(f"- Ce que l'écran montre : {it.description}")
+            sc = scenes_kit.get(it.id)
+            if sc and sc.get("narration"):
+                lignes.append("- Texte :")
+                for para in sc["narration"]:
+                    lignes.append(f"  > {para}")
+            if it.verdict == "a_remplacer":
+                note = f" — {it.verdict_note}" if it.verdict_note else ""
+                lignes.append(f"- ⚠️ Déjà marquée « à remplacer » par Patrick{note}")
+            lignes.append("")
+    (pack / "sources" / "IMAGES.md").write_text("\n".join(lignes), encoding="utf-8")
+
     lisez = (RACINE / "data" / "paquet-ia-LISEZMOI.md").read_text(encoding="utf-8")
     lisez = lisez.replace("{VERSION}", version).replace("{NTRANS}", str(n_trans))
     (pack / "LISEZMOI.md").write_text(lisez, encoding="utf-8")
@@ -129,7 +199,10 @@ def main(argv: list[str]) -> int:
             if f.is_file():
                 z.write(f, f.relative_to(SCRATCH))
     ko = SORTIE.stat().st_size // 1024
-    print(f"{SORTIE.relative_to(RACINE)} — v{version} · {n_trans} transcript(s) · {ko} Ko")
+    print(
+        f"{SORTIE.relative_to(RACINE)} — v{version} · {n_trans} transcript(s) · "
+        f"{n_img} images · {ko} Ko"
+    )
     return 0
 
 

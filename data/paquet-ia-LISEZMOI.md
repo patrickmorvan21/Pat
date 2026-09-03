@@ -14,8 +14,8 @@ Ce paquet contient **deux objets**, et il ne faut surtout pas les confondre.
 
 | | où | ce que c'est |
 |---|---|---|
-| **LA PREMIÈRE RUN** — *« La Nuit du Serment »* (ex-démo) | `transcripts/v198-demo-*.md` | Ce que joue TOUTE PREMIÈRE VIE d'un compte depuis le 2/09 (le mode démo n'existe plus) : une **tranche verticale** d'environ 20 minutes, ORCHESTRÉE en quatre mouvements (accroche → ouverture → pression → climax, jamais nommés à l'écran) : gestes tactiles garantis, la nuit au village, les décisions du début qui reviennent à la fin, la Falaise aux Cordes en dernier lieu. **C'est elle qu'on veut faire juger — et d'abord sa COURBE.** |
-| **LES VIES SUIVANTES** | `jouer/` (la table Python) + `transcripts/v198-vie-*.md` | Le jeu à partir de la deuxième incarnation : parcours tiré au sort. La Falaise aux Cordes y est désormais aussi la sortie de zone. Utile en **comparaison**, pas comme sujet. |
+| **LA PREMIÈRE RUN** — *« La Nuit du Serment »* (ex-démo) | `transcripts/v{VERSION}-premiere-run-*.md` | Ce que joue TOUTE PREMIÈRE VIE d'un compte depuis le 2/09 (le mode démo n'existe plus) : une **tranche verticale** d'environ 20 minutes, ORCHESTRÉE en quatre mouvements (accroche → ouverture → pression → climax, jamais nommés à l'écran) : gestes tactiles garantis, la nuit au village, les décisions du début qui reviennent à la fin, la Falaise aux Cordes en dernier lieu. **C'est elle qu'on veut faire juger — et d'abord sa COURBE.** |
+| **LES VIES SUIVANTES** | `jouer/` (la table Python) + `transcripts/v{VERSION}-vie-*.md` | Le jeu à partir de la deuxième incarnation : parcours tiré au sort. La Falaise aux Cordes y est désormais aussi la sortie de zone. Utile en **comparaison**, pas comme sujet. |
 
 **⚠️ `pactum.py` NE JOUE PAS LA PREMIÈRE RUN.** La table Python rejoue les
 vies suivantes : son parcours est tiré au sort, et ses mini-jeux sont
@@ -172,7 +172,7 @@ que le joueur a vu, les images affichées, les choix offerts, l'action prise.
 C'est la **référence sans dérive** — tout y est citable mot pour mot, et c'est
 là que se jugent la mise en scène et le rythme réel.
 
-**Les deux parties de DÉMO** (`v198-demo-*.md`) sont le sujet principal —
+**Les deux parties de DÉMO** (`v{VERSION}-premiere-run-*.md`) sont le sujet principal —
 voir la section 0. L'une **explore** (76 écrans : trois gestes tactiles, le
 retour de ce qu'elle a semé, la Falaise et la Descente) ; l'autre **lance le
 dé dès qu'elle peut** — et croise QUAND MÊME deux gestes : le geste de la
@@ -242,7 +242,24 @@ la personne qui organise le test.
 **Si tu es un des agents du panel, ne l'ouvre pas** — il te dirait quoi penser
 avant que tu aies joué, et ton rapport ne vaudrait plus rien.
 
-## 4. Les sources — `sources/`
+## 4. Les images — `assets/` et `sources/IMAGES.md`
+
+Les illustrations sont dans le zip, aux dimensions du jeu. Elles ne sont pas
+là pour être admirées : **il faut qu'une image dise la même chose que le
+texte de son écran.**
+
+`sources/IMAGES.md` fait l'appariement, écran par écran, groupé par lieu :
+l'identifiant, le fichier affiché, ce que l'écran est censé montrer, et le
+texte lui-même. Ouvre le PNG à côté du paragraphe et vérifie la scène : le
+nombre de figures, leur posture, l'heure du jour, l'architecture, ce qu'on
+peut voir depuis là. Une image peut aussi être **héritée** (reprise d'un
+autre écran) ou **générique** (une vue de marche) — c'est indiqué, et c'est
+une contradiction moins grave qu'une image dédiée qui ment.
+
+Certaines portent déjà « à remplacer » : le défaut est connu, inutile de le
+signaler à nouveau — sauf si tu vois autre chose que ce qui est noté.
+
+## 5. Les sources — `sources/`
 
 `lib/` : le contenu et les règles (`scene-data.ts` = toutes les scènes, choix
 et issues ; `etats.ts`, `temoins.ts`, `reliques.ts`,

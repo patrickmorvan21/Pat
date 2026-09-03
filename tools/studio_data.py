@@ -813,6 +813,17 @@ def lire_choix(bloc: str) -> list[dict]:
                 ch["miniJeuEchec"] = ech
             if "echecBlesse: true" in c:
                 ch["miniJeuEchecBlesse"] = True
+            # ⚠️ 03/09 — CES DEUX-LÀ NE VOYAGEAIENT PAS, et sans eux la
+            # réplique jouait un autre jeu : un geste raté qui GARDE le butin
+            # (« tu as la corde : elle s'est enroulée à ton poignet dans la
+            # chute ») rendait le joueur les mains vides, et le prix du bruit
+            # (+1 Soupçon) n'était jamais facturé. La doctrine « l'échec est un
+            # prix, jamais une perte » devenait donc illisible dans le paquet.
+            if "echecGardeLoot: true" in c:
+                ch["miniJeuEchecGardeLoot"] = True
+            es = re.search(r"echecSoupcon:\s*(\d+)", c)
+            if es:
+                ch["miniJeuEchecSoupcon"] = int(es.group(1))
         # Le repos de la nuit démo (complet/partiel/mauvais) — segment 7.
         rp = texte_de(c, "repos")
         if rp:

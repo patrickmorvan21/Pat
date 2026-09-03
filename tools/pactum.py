@@ -1020,18 +1020,40 @@ class Partie:
         # sûre tranche net. Bornes lâches — ce n'est pas un jet déguisé.
         taux = min(0.85, max(0.40, 0.45 + 0.12 * (val - 2)))
         ok = self.rng(c["id"] + "|geste").random() < taux
-        self.dit("geste " + ("net" if ok else "manqué"), "de")
+        # ⚠️ 03/09 — STYLE DÉDIÉ, ET C'ÉTAIT UN PLANTAGE. Cette ligne partait
+        # sous le style « de », dont le rendu fait `t.split("|")` en trois :
+        # une ligne sans barre verticale levait un ValueError et TUAIT la
+        # partie au premier geste tactile — le climax de la Falaise et la
+        # corde de la Chapelle étaient injouables dans le paquet.
+        self.dit("geste " + ("net" if ok else "manqué"), "geste")
         if ok:
             texte = (c.get("issues") or {}).get("reussite") or ""
             texte = texte.split(" ♦")[0].strip()
             self.dit(texte, "narration")
+            if c.get("donneObjet"):
+                self.gagner(c["donneObjet"])
         else:
             self.dit(c.get("miniJeuEchec") or "Le geste manque.", "narration")
+            # L'ÉCHEC EST UN PRIX, JAMAIS UNE PERTE : quand la prose dit que
+            # l'objet reste au poignet, il entre bien en besace — et ce qui se
+            # paie, c'est le bruit (le Soupçon) et parfois la chair.
+            if c.get("miniJeuEchecGardeLoot") and c.get("donneObjet"):
+                self.gagner(c["donneObjet"])
+            if c.get("miniJeuEchecSoupcon"):
+                self.d["soupcon"] = min(6, self.d["soupcon"] + int(c["miniJeuEchecSoupcon"]))
+                self.soupconSeLit()
             if c.get("miniJeuEchecBlesse"):
                 self.d["sante"] = max(0.08, round(self.d["sante"] - 0.12, 3))
                 self.d["etats"]["entaille"] = 999
         # Tenter au doigt reste TENTER : le lieu compte comme engagé.
         self.d["engageIci"] = True
+        self.d["dernierRate"] = not ok
+        # ⚠️ ET SURTOUT : RENDRE LA MAIN. `resoudre()` finit toujours par
+        # `suite()` — le raccourci du geste sortait avant, donc le choix
+        # n'était jamais consommé (`choixFaits`) et la scène le reproposait
+        # indéfiniment. C'est la boucle « Prendre la corde coupée » signalée
+        # le 03/09 : un lieu dont on ne pouvait plus sortir.
+        self.suite(c)
 
     def resoudre(self, c: dict) -> None:
         # ⚠️ 01/09 — LE GESTE REMPLACE LE DÉ (`horsDemo`). Sur ces choix-là le
@@ -1366,7 +1388,14 @@ class Partie:
                 out += [f"  {t}", ""]
             elif st == "action":
                 out += [f"  › {t}", ""]
+            elif st == "geste":
+                out += [f"  {t}", ""]
             elif st == "de":
+                # Filet : un jour où une ligne sans barre repasserait par ici,
+                # elle s'affiche au lieu de tuer la partie.
+                if "|" not in t:
+                    out += [f"  {t}", ""]
+                    continue
                 an, face, mot = t.split("|")
                 out += ["  " + an.replace("anneau ", "")]
                 if len(self.d["des"]) <= 1:

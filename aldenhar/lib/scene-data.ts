@@ -7162,7 +7162,7 @@ export const SCENES: Scene[] = [
     // son `sejour` qui retient le héros au lieu de l'aspirer : questionner,
     // regarder, puis franchir. Seul « Passer le portillon » s'en va.
     // ⚠️ 2/09 : le portillon ne donne plus sur la Descente mais sur LA
-    // FALAISE AUX CORDES (trois écrans : les cordes venues du ciel, le bord
+    // FALAISE AUX CORDES (trois écrans : les cordes qui viennent du ciel, le bord
     // et le vide, l'Appelé qui en prend une). Elle n'était jouée qu'en démo
     // — Patrick a fini une traversée sans voir les images qu'il avait
     // générées pour elle. L'Appelé ne DESCEND donc plus ici : il passe le
@@ -7512,16 +7512,24 @@ export const SCENES: Scene[] = [
        lieu sont à produire (prompts dans le script) — le climax doit tenir
        par sa structure d'abord (verrou n°2 du go). */
     /* Écran 1 — L'ENTRÉE THÉÂTRALE (décision Patrick, 31/08). On voit
-       d'abord les cordes DE LOIN, tombant du ciel dans le trou : à cette
-       distance rien ne dit à quoi elles tiennent, et c'est l'image
-       emblématique de la sortie de zone. L'ancrage aux pieux n'est révélé
-       qu'au bord (écran 2), où il devient un désenchantement — ce qui
-       semblait tomber du ciel part d'ici. */
+       d'abord les cordes DE LOIN, venues du ciel dans le trou : rien ne dit
+       à quoi elles tiennent, et c'est l'image emblématique de la sortie de
+       zone.
+       ⚠️ 3/09 — RÈGLE DE LA FALAISE, posée par Patrick : les cordes NE
+       TOMBENT PAS et ne cessent jamais de venir du ciel. Elles sont
+       STATIQUES : aucun balancement, aucune chute, aucune fin de course en
+       haut. Le twist du 31/08 (« de près elles ne tombent plus du ciel,
+       elles partent d'ici ») est ANNULÉ — l'écran 2 ne débunke plus
+       l'origine, il constate au contraire que les pieux ne les tiennent
+       pas. Ne jamais réintroduire un ancrage haut, ni un mouvement de
+       corde : la seule corde qui bouge dans toute la zone est celle du
+       grimpeur (FALAISE_REMONTE), et c'est exactement ce qui la rend
+       terrible. */
     id: "falaise-cordes",
     illustration: "assets/scene_falaise_bord_c_a.png",
     narration: [
       "Tu montes une dernière ondulation de bruyère, et la lande s'ouvre.",
-      "Devant toi, un trou. Large comme un village, et sans fond visible. Du ciel, des cordes descendent dedans — des centaines, venues de si haut qu'on ne voit pas à quoi elles tiennent. Elles entrent toutes ensemble dans le noir et bougent du même côté, lentement, comme une seule chose qui respire.",
+      "Devant toi, un trou. Large comme un village, et sans fond visible. Du ciel, des cordes descendent dedans — des centaines, venues de si haut qu'on ne voit pas à quoi elles tiennent. Aucune ne bouge. Le vent passe dessus sans les prendre : elles entrent dans le noir droites et immobiles, comme plantées là depuis toujours.",
     ],
     choices: [
       {
@@ -7538,12 +7546,15 @@ export const SCENES: Scene[] = [
   {
     /* Écran 2 — LE BORD. On se penche, et les cordes plongent jusque dans
        les ténèbres : c'est la profondeur qui se joue ici, pas un tri. Les
+       pieux sont là, mais AUCUNE corde n'y est nouée (règle du 3/09) : de
+       près, l'origine haute reste entière — c'est le bas qui donne le
+       signe (les cordes tranchées par en dessous). Les
        lignes qui LISENT la traversée (le tressage déjà vu, la corde qu'on
        porte) sont injectées par le déroutage — voir DEMO_FALAISE_LECTURES. */
     id: "falaise-cordes-2",
     illustration: "assets/scene_falaise_fond_d_a.png",
     narration: [
-      "Au ras de la lèvre, les pieux : une rangée qui suit tout le pourtour. De près, les cordes ne tombent plus du ciel — elles partent d'ici. On ne gâche pas le chanvre, dans les Landes : chaque corde qui a pendu quelqu'un sert une seconde fois.",
+      "Au ras de la lèvre, les pieux : une rangée qui suit tout le pourtour, un tous les trois pas. Aucune corde n'y est nouée. Elles passent au-dessus sans les toucher et remontent, toujours, vers un ciel où l'œil ne trouve rien à quoi les rattacher. Le chanvre, lui, tu le reconnais : dans les Landes on ne le gâche pas, et chaque corde qui a pendu quelqu'un sert une seconde fois.",
       "Tu te penches. Elles descendent jusqu'à ce que la lumière les abandonne, et elles continuent. Des vieilles, grises, raides de sel. Des neuves, encore blondes. Et trois ou quatre qui s'arrêtent en plein vide, tranchées net — à la lame. Par en dessous.",
     ],
     choices: [
@@ -7619,7 +7630,7 @@ export const SCENES: Scene[] = [
         minigame: { engine: "swipe" },
         passive: {
           consequence:
-            "Un pieu marqué d'une chaîne de fonction : la corde du trois cent unième. Grise, plus usée que les autres : on descend souvent par celle-là. Le chanvre file doux, comme s'il avait l'habitude de porter ceux qui savent.",
+            "Un pieu marqué d'une chaîne de fonction, et au-dessus de lui la corde qu'il désigne — les pieux ne tiennent rien, ils nomment. Celle du trois cent unième : grise, plus usée que les autres. On descend souvent par celle-là. Le chanvre file doux, comme s'il avait l'habitude de porter ceux qui savent.",
         },
         sortie: { toScene: "la-descente" },
       },
@@ -9251,7 +9262,7 @@ export const DEMO_FALAISE_APPROCHE =
  *  pas la même Falaise. On n'explique jamais ce qu'il a vu en bas — c'est le
  *  seul endroit du jeu où le vide a le dernier mot. */
 export const FALAISE_REMONTE: string[] = [
-  "Une des cordes est tendue. Pas balancée par le vent \u2014 tendue, et elle bouge par à-coups. Quelqu\u2019un remonte.",
+  "Une des cordes bouge. C\u2019est la première depuis que tu es là : elle monte par à-coups, courts, réguliers. Quelqu\u2019un remonte.",
   "Une main passe le bord, puis un visage. Il a vu quelque chose en bas et il n\u2019arrive pas à dire quoi : il ouvre la bouche, la referme, recommence.",
   "Puis la corde se met à trembler sous lui, de plus en plus vite. Tu tends la main. Il te regarde la tendre \u2014 et il tombe, devant toi, sans un cri. La corde remonte, molle, allégée. On ne remonte pas, ici. C\u2019est tout ce que ça voulait dire.",
 ];

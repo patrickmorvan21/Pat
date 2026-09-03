@@ -51,8 +51,8 @@
   "meute-grise-1",
   "palissade-sud"
  ],
- "genere": "2026-09-02T17:59:07Z",
- "commit": "437e4c7",
+ "genere": "2026-09-03T08:09:29Z",
+ "commit": "4d954d7",
  "zones": [
   {
    "id": "landes",
@@ -3808,7 +3808,8 @@
      },
      "miniJeuDemo": "pick",
      "miniJeuHorsDemo": true,
-     "miniJeuEchec": "Le crochet ripe et le pêne claque, fort, deux fois. En face, un volet s'entrouvre et se referme sans un mot — on ne crie pas, ici, on note. La porte, elle, ne cède pas."
+     "miniJeuEchec": "Le crochet ripe et le pêne claque, fort, deux fois. En face, un volet s'entrouvre et se referme sans un mot — on ne crie pas, ici, on note. La porte, elle, ne cède pas.",
+     "miniJeuEchecSoupcon": 2
     },
     {
      "id": "ecouter-porte",
@@ -5338,7 +5339,9 @@
      "vuSiEchec": true,
      "donneObjet": "corde-coupee",
      "miniJeuDemo": "trace",
-     "miniJeuEchec": "Ton doigt perd le fil du tressage — la vitrine se décroche et sonne sur la dalle. La Veuve est sur toi en trois pas, sans courir. Tu as la corde : elle s'est enroulée à ton poignet dans la chute. Mais la chapelle entière connaît ton visage, maintenant."
+     "miniJeuEchec": "Ton doigt perd le fil du tressage — la vitrine se décroche et sonne sur la dalle. La Veuve est sur toi en trois pas, sans courir. Tu as la corde : elle s'est enroulée à ton poignet dans la chute. Mais la chapelle entière connaît ton visage, maintenant.",
+     "miniJeuEchecGardeLoot": true,
+     "miniJeuEchecSoupcon": 1
     },
     {
      "id": "prier-veuve",
@@ -7480,7 +7483,8 @@
       "toScene": "demo-nuit-maison"
      },
      "miniJeuDemo": "pick",
-     "miniJeuEchec": "Le crochet ripe et le pêne claque, fort. En face, un volet s'entrouvre — le temps de te fondre dans l'ombre, on t'a vu la main sur une serrure. La porte, elle, ne cède pas."
+     "miniJeuEchec": "Le crochet ripe et le pêne claque, fort. En face, un volet s'entrouvre — le temps de te fondre dans l'ombre, on t'a vu la main sur une serrure. La porte, elle, ne cède pas.",
+     "miniJeuEchecSoupcon": 1
     },
     {
      "id": "nuit-grange",
@@ -7628,7 +7632,7 @@
    "id": "falaise-cordes",
    "narration": [
     "Tu montes une dernière ondulation de bruyère, et la lande s'ouvre.",
-    "Devant toi, un trou. Large comme un village, et sans fond visible. Du ciel, des cordes descendent dedans — des centaines, venues de si haut qu'on ne voit pas à quoi elles tiennent. Elles entrent toutes ensemble dans le noir et bougent du même côté, lentement, comme une seule chose qui respire."
+    "Devant toi, un trou. Large comme un village, et sans fond visible. Du ciel, des cordes descendent dedans — des centaines, venues de si haut qu'on ne voit pas à quoi elles tiennent. Aucune ne bouge. Le vent passe dessus sans les prendre : elles entrent dans le noir droites et immobiles, comme plantées là depuis toujours."
    ],
    "choix": [
     {
@@ -7663,7 +7667,7 @@
   {
    "id": "falaise-cordes-2",
    "narration": [
-    "Au ras de la lèvre, les pieux : une rangée qui suit tout le pourtour. De près, les cordes ne tombent plus du ciel — elles partent d'ici. On ne gâche pas le chanvre, dans les Landes : chaque corde qui a pendu quelqu'un sert une seconde fois.",
+    "Au ras de la lèvre, les pieux : une rangée qui suit tout le pourtour, un tous les trois pas. Aucune corde n'y est nouée. Elles passent au-dessus sans les toucher et remontent, toujours, vers un ciel où l'œil ne trouve rien à quoi les rattacher. Le chanvre, lui, tu le reconnais : dans les Landes on ne le gâche pas, et chaque corde qui a pendu quelqu'un sert une seconde fois.",
     "Tu te penches. Elles descendent jusqu'à ce que la lumière les abandonne, et elles continuent. Des vieilles, grises, raides de sel. Des neuves, encore blondes. Et trois ou quatre qui s'arrêtent en plein vide, tranchées net — à la lame. Par en dessous."
    ],
    "choix": [
@@ -7725,7 +7729,7 @@
      "id": "corde-du-bailli",
      "label": "Descendre",
      "type": "passif",
-     "consequence": "Un pieu marqué d'une chaîne de fonction : la corde du trois cent unième. Grise, plus usée que les autres : on descend souvent par celle-là. Le chanvre file doux, comme s'il avait l'habitude de porter ceux qui savent.",
+     "consequence": "Un pieu marqué d'une chaîne de fonction, et au-dessus de lui la corde qu'il désigne — les pieux ne tiennent rien, ils nomment. Celle du trois cent unième : grise, plus usée que les autres. On descend souvent par celle-là. Le chanvre file doux, comme s'il avait l'habitude de porter ceux qui savent.",
      "sortie": {
       "toScene": "la-descente"
      },
