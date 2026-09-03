@@ -2978,12 +2978,21 @@ export default function Scene() {
     // procès sur le même écran, deux lieux dans la même respiration).
     if (destReelle && !deroute) {
       const origine = trav.visited.length >= 2 ? trav.visited[trav.visited.length - 2] : undefined;
-      const entre = isHameauInterior(destReelle) && !isHameauInterior(origine);
+      // ENTRÉE : on ne dit « le village se referme autour de toi » qu'à qui
+      // vient VRAIMENT de la lande. ⚠️ 3/09 — l'origine était testée sur le
+      // strict intérieur (`isHameauInterior`), or la séquence du Seuil
+      // (`serment-hameau` → rue → muret) n'en fait pas partie : après trente
+      // écrans dans les rues, le serment et parfois le procès, aller à la
+      // Chapelle rejouait « Tu repasses la limite du village » — sur LES DEUX
+      // transcripts de la première run, puisque le Seuil y est garanti. C'est
+      // la classe de défaut du 2/09 (texte écrit pour un contexte, servi
+      // dans un autre), à la couture cette fois. Le Seuil raconte déjà
+      // l'arrivée : il compte donc comme « dedans » pour l'entrée aussi.
+      const entre = isHameauInterior(destReelle) && !!origine && !dansLeVillage(origine);
       // SORTIE : la séquence du Seuil (accueil, rue, muret) se joue DANS les
       // rues même si elle reste « dehors » pour le pool — la quitter vers la
       // lande mérite la ligne de sortie (playtest 7/08 : rue → crête du Pendu
-      // sans couture). L'ENTRÉE, elle, garde le strict intérieur : la
-      // narration du Seuil raconte déjà l'arrivée au village.
+      // sans couture).
       const sort = !isHameauInterior(destReelle) && !!origine &&
         (isHameauInterior(origine) || /^(serment-hameau|hameau-)/.test(origine)) &&
         // La sortie JOUÉE (le portillon, 24/08) a déjà dit le franchissement
@@ -3593,7 +3602,10 @@ export default function Scene() {
       entries.push({
         id: nextId(),
         kind: "registre",
-        rows: buildRegistre(m, r.heroName, r.day),
+        // ⚠️ 3/09 : le survivant lisait « — en cours — » sur sa propre ligne
+        // au moment même où il franchit — la cause de traversée est celle
+        // que `recordTraversee` inscrira au tap suivant.
+        rows: buildRegistre(m, r.heroName, r.day, "a franchi la Descente"),
       });
     }
     // Le Grand Registre (§19) : classement inline, ligne du joueur marquée.

@@ -687,7 +687,10 @@ const REGISTRE_BASE: { name: string; days: number; cause: string }[] = [
 export function buildRegistre(
   mem: PlayerMemory,
   playerName: string,
-  playerDays: number
+  playerDays: number,
+  /** La cause de la ligne du joueur — « en cours » par défaut ; à la
+      Descente, la traversée qu'on est en train d'inscrire. */
+  playerCause = "— en cours —"
 ): RegistreRow[] {
   const rows: { name: string; days: number; cause: string; isPlayer?: boolean; destin?: Destin }[] = [
     ...REGISTRE_BASE.map((r) => ({ ...r })),
@@ -695,7 +698,10 @@ export function buildRegistre(
       name: f.name, days: f.days, cause: f.cause, isPlayer: true,
       destin: f.destin ?? destinDepuisCause(f.cause),
     })),
-    { name: playerName, days: playerDays, cause: "— en cours —", isPlayer: true },
+    {
+      name: playerName, days: playerDays, cause: playerCause, isPlayer: true,
+      destin: playerCause === "— en cours —" ? undefined : destinDepuisCause(playerCause),
+    },
   ];
   rows.sort((a, b) => b.days - a.days);
   return rows.map((r, i) => ({ rank: i + 1, ...r }));
