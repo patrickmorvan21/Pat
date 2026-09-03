@@ -270,6 +270,9 @@ export type RunState = {
    * Posé à la résolution d'un jet, remis à faux en arrivant dans un lieu neuf.
    */
   engageIci?: boolean;
+  /** L'engagement du lieu qu'on vient de QUITTER, gardé au moment où
+      `engageIci` est remis à zéro en entrant dans la liaison (03/09). */
+  engageAvantReset?: boolean;
   /**
    * LIEUX RÉELLEMENT VÉCUS — le compteur qui fait avancer le Jour.
    *
@@ -707,6 +710,7 @@ export function loadRun(): RunState {
             routeFermeeEnAttente: p.routeFermeeEnAttente === true,
             menace: p.menace && typeof p.menace === "object" ? p.menace : null,
             engageIci: p.engageIci === true,
+            engageAvantReset: p.engageAvantReset === true,
             lieuxEngages: typeof p.lieuxEngages === "number" ? p.lieuxEngages : 0,
             horloge: typeof p.horloge === "number" ? p.horloge : (typeof p.day === "number" ? p.day : 1),
             poiIci: typeof p.poiIci === "number" ? p.poiIci : 0,

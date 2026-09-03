@@ -858,6 +858,14 @@ def lire_choix(bloc: str) -> list[dict]:
         # et un relecteur conclurait que le Serment n'engage à rien.
         if booleen_de(c, "rompLeSerment"):
             ch["rompLeSerment"] = True
+        # 03/09 — l'arrivée ratée et le Serment vu par le village.
+        if booleen_de(c, "requiresEchecArrivee"):
+            ch["exigeEchecArrivee"] = True
+        if booleen_de(c, "masqueSiEchecArrivee"):
+            ch["masqueSiEchecArrivee"] = True
+        rs = texte_de(c, "requiresSerment")
+        if rs:
+            ch["exigeSerment"] = rs
         # 17/08 : LA MENACE LAISSÉE ACTIVE. Sans ce champ, la réplique
         # laisserait un contournement effacer la menace du monde — le défaut
         # exact que le chantier corrige, rejoué dans l'outil de test.
@@ -1048,7 +1056,16 @@ def lire_scenes() -> list[dict]:
             ("decouverte", "donneDecouverte"),
             ("setsEnvFlag", "poseFlag"),
         ):
-            v = texte_de(bloc, champ)
+            # ⚠️ 03/09 — `savoir`/`decouverte` DE SCÈNE se lisent à l'indentation
+            # de la scène (4 espaces) : `texte_de` attrapait le `savoir:` d'un
+            # `masqueSi: { savoir: … }` de choix, et la réplique croyait que
+            # `pendu-mal-fixe` ENSEIGNAIT l'ordonnance à l'arrivée — elle
+            # servait donc l'option informée ET l'aveugle (panel, A6).
+            if champ in ("savoir", "decouverte"):
+                m4 = re.search(rf'\n    {champ}:\s*"([^"]+)"', bloc)
+                v = m4.group(1) if m4 else None
+            else:
+                v = texte_de(bloc, champ)
             if v:
                 s[cle] = v
         # SCÈNE-VARIANTE (refonte du lore 6/08) : elle se joue À LA PLACE
@@ -1502,6 +1519,13 @@ def main() -> int:
     m_portillon = re.search(r'export const HAMEAU_SORTIE = "([^"]+)"', src_ts)
     if m_portillon:
         pool = [x for x in pool if x != m_portillon.group(1)]
+    # 03/09 — et TOUT littéral exclu par le filtre du moteur lui-même : une
+    # troisième copie de la règle avait laissé la Palissade dans le kit (un
+    # testeur a fini la zone en dix écrans). On lit le filtre, on ne le récrit pas.
+    m_pool = re.search(r"export const TRAVERSAL_POOL = Object\.keys\(APPROACH\)\.filter\((.*?)\);", src_ts, re.S)
+    if m_pool:
+        for lit in re.findall(r'id !== "([^"]+)"', m_pool.group(1)):
+            pool = [x for x in pool if x != lit]
 
     ids = {s["id"] for s in scenes}
     via_poi = {l["vers"] for l in liens if l["type"] == "secondaire"}

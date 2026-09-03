@@ -52,6 +52,8 @@ import {
   HAMEAU_SORTIE,
   TRAVERSAL_POOL,
   JAILER_SANS_RISQUE,
+  HALTE_DEPUIS_LA_LANDE,
+  ROUTE_FERMEE,
   traceDeSortie,
   NUIT_CORPS,
   NUIT_OUVERTURE,
@@ -1134,6 +1136,8 @@ export default function Scene() {
   /* Miroir de rendu du registre `vus` de la RUN : `uneFoisParVie` se lit
      pendant le rendu, et `runRef.current` y est interdit (React Compiler). */
   const [vusMirror, setVusMirror] = useState<Record<string, number>>({});
+  /** Le Serment vu par le village : tenu / rompu / aucun (03/09). */
+  const [sermentMirror, setSermentMirror] = useState<"tenu" | "rompu" | "aucun">("aucun");
   // Illustration rétrécie (retour 22/07) : passe à true UNIQUEMENT si le texte
   // fini déborde vraiment la zone — mesuré, adapté au device, une seule fois.
   const [compact, setCompact] = useState(false);
@@ -1282,6 +1286,13 @@ export default function Scene() {
     // `choixFaits`, donc sa portée est l'ÉCRAN — vidé en quittant le lieu.
     if (c.requiresUsage && !choixFaits.includes(`usage:${c.requiresUsage}`)) return false;
     if (c.masqueSiUsage && choixFaits.includes(`usage:${c.masqueSiUsage}`)) return false;
+    // L'ARRIVÉE RATÉE (03/09) : on n'offre pas la chaise d'une pièce où l'on
+    // n'est pas entré.
+    if (c.requiresEchecArrivee && !choixFaits.includes("arrivee:echec")) return false;
+    if (c.masqueSiEchecArrivee && choixFaits.includes("arrivee:echec")) return false;
+    // LE SERMENT, tel que le village l'a vu (03/09).
+    if (c.requiresSerment === "tenu" && sermentMirror !== "tenu") return false;
+    if (c.requiresSerment === "rompu" && sermentMirror !== "rompu") return false;
     // Un état n'ouvre un choix QUE si l'état correspondant l'autorise vraiment
     // (FIXÉ → `ouvreConfidences`) : sans ce garde, `requiresEtat` deviendrait
     // un flag libre et l'état ne serait plus la raison de l'ouverture.
@@ -1906,6 +1917,9 @@ export default function Scene() {
     // Miroir de la Besace, exprimé en CLÉS de `LANDES_OBJETS` (les instances
     // portent un id unique — `pierre-retour-7` — donc on apparie par NOM).
     setVusMirror(run?.vus ?? {});
+    setSermentMirror(
+      !run?.hameau?.serment ? "aucun" : run.hameau.sermentRompu ? "rompu" : "tenu"
+    );
     setBesaceMirror(
       run
         ? Object.keys(LANDES_OBJETS).filter((k) =>
@@ -2336,7 +2350,9 @@ export default function Scene() {
       // non, il ne compte pas — le temps ne se dépose pas sur une traversée
       // où rien n'est arrivé. Jamais un jour AJOUTÉ en punition : le Jour est
       // le score du Registre.
-      engageDansLeLieu = runRef.current?.engageIci ?? false;
+      engageDansLeLieu = Boolean(
+        runRef.current?.engageIci || (scene.liaison && runRef.current?.engageAvantReset)
+      );
       const embuscade = opts.toDest === "chemin-creux" && !trav.visited.includes("chemin-creux");
       /* LA MEUTE SE RENCONTRE EN CHEMIN (correctif Patrick 31/08). Elle était
          posée SUR le portillon : choisir « vers le portillon » depuis une
@@ -2485,6 +2501,11 @@ export default function Scene() {
           ham?.serment === "refuse" || exclu ? "hameau-halte-dehors" : "hameau-halte-1",
           runRef.current
         )!;
+        // 03/09 — depuis la lande, une ligne de retour AVANT « Le vieux te
+        // trouve » : on ne passe pas des rangs du Verger à la grange sans
+        // avoir marché.
+        if (!dansLeVillage(scene.id))
+          nextScene = { ...nextScene, narration: [HALTE_DEPUIS_LA_LANDE, ...nextScene.narration] };
         trav.phase = "scene";
         trav.current = nextScene.id; // hors `visited` : ce n'est pas un lieu du pool
       } else {
@@ -2836,7 +2857,17 @@ export default function Scene() {
         ? (SOUPCON_PALIERS[palierAServir] ?? null)
         : (SOUPCON_CRAIE[palierAServir] ?? null);
     // Et le Geôlier met un mot sur ce qui n'a pas de chiffre.
-    const soupJailer = soupManifest ? (SOUPCON_GEOLIER[palierAServir] ?? null) : null;
+    // 03/09 — une ligne par palier ET PAR VIE : après une relaxe le Soupçon
+    // remonte, le palier se rejoue, mais « Ils ont sorti une chaise » ne se
+    // redit pas mot pour mot.
+    const soupJailer =
+      soupManifest && vu(runRef.current?.vus, "soupgeo|" + palierAServir) === 0
+        ? (SOUPCON_GEOLIER[palierAServir] ?? null)
+        : null;
+    if (soupJailer)
+      persist((r) => {
+        r.vus = noter(r.vus, "soupgeo|" + palierAServir);
+      });
 
     // Savoir énoncé par la narration de la scène d'arrivée (25/07), s'il est neuf.
     const knownNow = runRef.current?.savoirs ?? [];
@@ -2927,7 +2958,9 @@ export default function Scene() {
       entries.push({ id: nextId(), kind: "narration", text: d.text });
     }
     // Rencontre de combat (spec §6) : annonce AVANT le texte (ordre Figma).
-    if (nextScene.combat && nextScene.foeName) {
+    // 03/09 — pas de seconde bannière sur le 2e beat d'un même adversaire
+    // (la Meute l'affichait deux fois).
+    if (nextScene.combat && nextScene.foeName && scene.foe !== nextScene.foe) {
       entries.push({ id: nextId(), kind: "combat", foe: nextScene.foeName });
     }
     // Dette de sang (§19) : l'adversaire qui a déjà tué un des tiens te reconnaît.
@@ -2953,7 +2986,11 @@ export default function Scene() {
     let chapterBefore: string[] = [];
     let newChapterStage: 1 | 2 | 3 | null = null;
     if (chap && chapSt) {
-      if (nextScene.terminal) {
+      // 03/09 — la résolution ne se sert qu'à qui a VÉCU le développement
+      // (stage ≥ 2). Quatre testeurs sur six ont reçu le secret de la Fille
+      // à la Descente sans l'avoir approchée : « on me dit tu sais, et je ne
+      // sais pas ». Un chapitre non développé se rejoue à la vie suivante.
+      if (nextScene.terminal && chapSt.stage >= 2) {
         chapterBefore = chap.resolution;
         newChapterStage = 3;
       } else if (nextScene.id === chap.lieuId && chapSt.stage < 2) {
@@ -3072,6 +3109,9 @@ export default function Scene() {
       opts?.fail && nextScene.narrationEchec?.length
         ? nextScene.narrationEchec
         : narrationAffichee(nextScene);
+    // L'ARRIVÉE RATÉE se dit aussi aux CHOIX (03/09) : le jeton passe par
+    // `choixFaits`, portée écran — voir `Choice.requiresEchecArrivee`.
+    const echecArrivee = Boolean(opts?.fail && nextScene.narrationEchec?.length);
     // ── LA STRATE DE FAMILIARITÉ, calculée AVANT la narration ─────────────
     // Elle peut REMPLACER un paragraphe (`remplace`) au lieu de s'y ajouter :
     // une ligne de mémoire écrite comme un remplacement et injectée comme un
@@ -3769,7 +3809,7 @@ export default function Scene() {
     // On quitte l'écran : les points d'intérêt du lieu précédent sont oubliés
     // et l'image repasse en plan large (spec 24/07 suite §1).
     setPoiSeen([]);
-    setChoixFaits([]);
+    setChoixFaits(echecArrivee ? ["arrivee:echec"] : []);
     persist((run) => {
       run.step = nextStep;
       run.lastChoiceId = null;
@@ -3777,7 +3817,7 @@ export default function Scene() {
       // Un lieu qu'on quitte oublie ce qu'on y a décidé — comme ses points
       // d'intérêt. Sans ça, revenir au même id (variante, rencontre chaînée)
       // arriverait avec des choix déjà grisés sans raison lisible.
-      run.choixFaits = [];
+      run.choixFaits = echecArrivee ? ["arrivee:echec"] : [];
       run.trav = trav;
       // Le Jour de marche : tous les trois lieux OÙ L'ON A TENTÉ quelque
       // chose (7/08, recentré sur l'engagement le 10/08).
@@ -3814,6 +3854,11 @@ export default function Scene() {
       // franchit aucune porte : on repart de zéro dès que le LIEU change.
       if (radical(nextScene.id) !== radical(scene.id)) {
         run.poiIci = 0;
+        // 03/09 — on garde ce qu'on efface : la branche toDest lit
+        // l'engagement du lieu QUITTÉ, or la remise à zéro tombait déjà en
+        // entrant dans la LIAISON. Le Geôlier disait « tu ne risques rien »
+        // à qui venait de faire une malédiction (deux testeurs).
+        run.engageAvantReset = run.engageIci;
         run.engageIci = false;
       }
       // Une intruse servie ne se redira jamais dans cette vie.
@@ -4406,8 +4451,11 @@ export default function Scene() {
       // la quitte — pas avant, pour que sa reprise reste déterministe.
       if (scene.liaison && scene.narration[0]) {
         const amb = scene.narration[0];
+        const rf = scene.narration[1];
         persist((r) => {
           if (!(r.liaisonVues ?? []).includes(amb)) r.liaisonVues = [...(r.liaisonVues ?? []), amb];
+          if (rf && ROUTE_FERMEE.includes(rf) && !(r.liaisonVues ?? []).includes(rf))
+            r.liaisonVues = [...(r.liaisonVues ?? []), rf];
         });
       }
       advanceTimer.current = setTimeout(() => advance({ toDest: dest }), 320);

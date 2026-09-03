@@ -48,11 +48,10 @@
   "petit-tribunal",
   "mare-aux-regards",
   "verger-noir",
-  "meute-grise-1",
-  "palissade-sud"
+  "meute-grise-1"
  ],
- "genere": "2026-09-03T08:21:18Z",
- "commit": "a7fcfcf",
+ "genere": "2026-09-03T19:00:46Z",
+ "commit": "f46bf4b",
  "zones": [
   {
    "id": "landes",
@@ -450,7 +449,7 @@
      "entrees": [],
      "sorties": [],
      "roles": [],
-     "dansPool": true,
+     "dansPool": false,
      "alertes": [
       "orpheline"
      ],
@@ -777,7 +776,6 @@
    ],
    "pointsInteret": [],
    "suite": "chemin-creux-2",
-   "donneDecouverte": "d.bete_couloir",
    "tags": [
     "rough_path"
    ],
@@ -811,7 +809,7 @@
   {
    "id": "chemin-creux-2",
    "narration": [
-    "Passé le coude : rien. L'endroit exact où il devrait y avoir quelque chose, et il n'y a rien. Le silence y est plus épais d'un cran."
+    "Au coude : rien. L'endroit exact où il devrait y avoir quelque chose, et il n'y a rien. Le silence y est plus épais d'un cran."
    ],
    "choix": [
     {
@@ -1099,7 +1097,6 @@
    "suite": "chemin-creux",
    "adversaire": "bete-chemins-creux",
    "adversaireNom": "La Bête des Chemins Creux",
-   "donneDecouverte": "d.bete_couloir",
    "combat": true,
    "chronometree": 4000,
    "nom": "Bete chemins creux",
@@ -1183,7 +1180,6 @@
    ],
    "pointsInteret": [],
    "suite": "colline-aux-gibets-2",
-   "donneDecouverte": "d.nom_gratte",
    "tags": [
     "climb"
    ],
@@ -1435,7 +1431,6 @@
    ],
    "pointsInteret": [],
    "adversaire": "bailli-pendu",
-   "donneDecouverte": "d.bailli_condamne",
    "sejour": true,
    "nom": "Le Pendu qui parle — beat 2",
    "lieu": "colline_aux_gibets",
@@ -1519,7 +1514,6 @@
    ],
    "pointsInteret": [],
    "suite": "champ-des-fixes-2",
-   "donneDecouverte": "d.emplacement_vide",
    "nom": "Le Champ des Fixés",
    "lieu": "champ_des_fixes",
    "typeScene": "arrivee",
@@ -1786,7 +1780,6 @@
     }
    ],
    "pointsInteret": [],
-   "donneDecouverte": "d.temoin_entendu",
    "sejour": true,
    "nom": "Le Champ des Fixés — beat 2",
    "lieu": "champ_des_fixes",
@@ -1894,7 +1887,6 @@
    "pointsInteret": [],
    "adversaire": "pendu-mal-fixe",
    "adversaireNom": "Le Pendu Mal Fixé",
-   "savoir": "savoir_ordonnance",
    "combat": true,
    "nom": "Le Pendu Mal Fixé",
    "lieu": "champ_des_fixes",
@@ -1982,7 +1974,8 @@
    "id": "hameau-entree-2",
    "narration": [
     "Une rue en terre battue, des murets. Sur chaque linteau, une croix à la craie — même hauteur, même main. Sur un seuil, une femme immobile regarde une fenêtre, en face.",
-    "Au bout de la rue, entre deux toits : une silhouette. La forme d'un corbeau. Pas la taille d'un corbeau. Le temps de regarder mieux, le bout de la rue est vide."
+    "Au bout de la rue, entre deux toits : une silhouette. La forme d'un corbeau. Pas la taille d'un corbeau. Le temps de regarder mieux, le bout de la rue est vide.",
+    "Sur un muret, un gamin te suit des yeux sans bouger. Plus haut dans la rue, trois hommes ne font pas semblant de faire autre chose."
    ],
    "choix": [
     {
@@ -2046,7 +2039,6 @@
    ],
    "pointsInteret": [],
    "suite": "hameau-entree-3",
-   "donneDecouverte": "d.combles_cloues",
    "nom": "Hameau entree 2 — beat 2",
    "lieu": "seuil_du_hameau",
    "typeScene": "arrivee",
@@ -2157,7 +2149,6 @@
    ],
    "pointsInteret": [],
    "suite": "femme-savoir-3",
-   "donneDecouverte": "d.temoin_oculaire",
    "image": {
     "fichier": "monstre_femme_seuil_2_c.png",
     "hash": "63108985",
@@ -2557,7 +2548,6 @@
    ],
    "pointsInteret": [],
    "suite": "gamin-murets-4",
-   "donneDecouverte": "d.fille_apercue",
    "image": {
     "fichier": "monstre_gamin_caillou_c.png",
     "hash": "4f6c8a7a",
@@ -3438,7 +3428,6 @@
    ],
    "pointsInteret": [],
    "suite": "hameau-halte-3",
-   "donneDecouverte": "d.barre_usee",
    "nuit": true,
    "nom": "Hameau halte 2 — beat 2",
    "lieu": "grange_des_renoncants",
@@ -3493,7 +3482,7 @@
      "id": "dormir-vraiment",
      "label": "Dormir vraiment",
      "type": "passif",
-     "consequence": "Tu décides de ne rien écouter. C'est un travail, de ne pas écouter — tu comptes tes propres respirations pour couvrir le reste. Au matin tu ne sauras pas ce qui s'est dit devant ta porte, et c'est exactement ce que tu voulais."
+     "consequence": "Tu décides de ne rien écouter. C'est un travail, de ne pas écouter — tu comptes tes propres respirations pour couvrir le reste. Au matin tu ne sauras pas ce qui s'est DIT devant ta porte. Ce qui a marché dessus, tu l'entendras quand même — ça, personne ne choisit de ne pas l'entendre."
     },
     {
      "id": "compter-les-passages",
@@ -3676,11 +3665,22 @@
      "exigeDecouverte": "d.combles_cloues"
     },
     {
+     "id": "partir-aube-rompu",
+     "label": "Partir pendant que c'est vrai",
+     "type": "passif",
+     "consequence": "Tu manges debout, tu sors. Sur le seuil, le vieux ne dit rien. Il regarde ta bouche — celle qui a parlé là où on ne parle pas — puis il rentre et tire la porte. Ça se saura aussi.",
+     "exigeSerment": "rompu",
+     "prendLaPlaceDe": [
+      "partir-aube"
+     ]
+    },
+    {
      "id": "partir-aube",
      "label": "Partir pendant que c'est vrai",
      "type": "passif",
      "consequence": "Tu manges debout, tu sors. Sur le seuil, le vieux ajoute, sans te regarder : « Tu as juré, tu as tenu. Ça se saura. » La seule chose aimable qu'on t'aura dite ici, et elle sonne comme un service rendu.",
-     "soupcon": -1
+     "soupcon": -1,
+     "exigeSerment": "tenu"
     }
    ],
    "pointsInteret": [],
@@ -3887,7 +3887,6 @@
    ],
    "pointsInteret": [],
    "suite": "hameau-maison-3",
-   "donneDecouverte": "d.combles_cloues",
    "nuit": true,
    "image": {
     "fichier": "scene_hameau_maison_table_a_a.png",
@@ -4187,7 +4186,6 @@
    "pointsInteret": [],
    "adversaire": "bete-chemins-creux",
    "adversaireNom": "La Bête des Chemins Creux",
-   "donneDecouverte": "d.bete_couloir",
    "combat": true,
    "image": {
     "fichier": "monstre_bete_chemins_creux_a.png",
@@ -4240,7 +4238,6 @@
    ],
    "pointsInteret": [],
    "suite": "troupeau-sans-berger-2",
-   "donneDecouverte": "d.troupeau_compte",
    "image": {
     "fichier": "monstre_troupeau_sans_berger_a.png",
     "hash": "8e186904",
@@ -4699,7 +4696,7 @@
      "id": "entrer-moulin-elle",
      "label": "Entrer",
      "type": "passif",
-     "consequence": "Entre toi et la porte, une enfant. Elle ne se cache pas : elle attend que tu l'aies bien vue.\n\nDedans, un lit de bruyère trop court ; au mur, à hauteur d'enfant, des jours comptés par cinq.",
+     "consequence": "Entre toi et la porte, une enfant. Elle ne se cache pas : elle attend que tu l'aies bien vue. Puis elle s'écarte — du lit, pas de la porte : c'est toi qu'elle laisse passer.\n\nDedans, un lit de bruyère trop court ; au mur, à hauteur d'enfant, des jours comptés par cinq.",
      "sortie": {
       "toScene": "campement-2"
      },
@@ -4765,7 +4762,6 @@
     }
    ],
    "pointsInteret": [],
-   "donneDecouverte": "d.fille_vue",
    "nom": "Campement",
    "lieu": "moulin_sans_ailes",
    "typeScene": "arrivee",
@@ -4994,7 +4990,6 @@
     "« Maintenant tu sais, et tu reviens plus. Les autres non plus ils revenaient plus, après. »"
    ],
    "suite": "fille-moulin-4",
-   "donneDecouverte": "d.temoin_nomme",
    "image": {
     "fichier": "monstre_la_fille_moulin_v2_c_b.png",
     "hash": "63f8a6f2",
@@ -5254,7 +5249,7 @@
      "id": "mur-cordes",
      "label": "Remonter le mur des cordes",
      "type": "passif",
-     "consequence": "Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom : chacune « a tenu » quelqu'un. La troisième du rang bas n'a pas d'étiquette, et bouge quand tu ne la regardes pas. Trois cordes portent la même date.",
+     "consequence": "Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom : chacune « a tenu » quelqu'un. Une seule, à hauteur d'œil, au centre du mur, n'a pas d'étiquette — et elle bouge quand tu ne la regardes pas. Trois cordes portent la même date.",
      "donneSavoir": "savoir_corde_vive",
      "donneDecouverte": "d.trois_cordes",
      "image": {
@@ -5292,7 +5287,6 @@
    "pointsInteret": [],
    "suite": "chapelle-des-cordes-2",
    "butin": "brin-chanvre",
-   "donneDecouverte": "d.trois_cordes",
    "nom": "La Chapelle des Cordes",
    "lieu": "chapelle_des_cordes",
    "typeScene": "arrivee",
@@ -5417,7 +5411,6 @@
     }
    ],
    "pointsInteret": [],
-   "donneDecouverte": "d.cloche_sans_battant",
    "sejour": true,
    "nom": "La Chapelle des Cordes — beat 2",
    "lieu": "chapelle_des_cordes",
@@ -5737,7 +5730,6 @@
    "suite": "bailli-dedans",
    "adversaire": "chien-du-bailli",
    "adversaireNom": "Le Chien du Bailli",
-   "donneDecouverte": "d.bailli_condamne",
    "combat": true,
    "nom": "Le Chien du Bailli — beat 2",
    "lieu": "maison_du_bailli",
@@ -5767,7 +5759,7 @@
   {
    "id": "bailli-dedans",
    "narration": [
-    "Dedans, il fait le noir des caves alors qu'il est midi dehors. L'odeur n'est pas celle d'un abandon : c'est celle d'un homme qui a vécu longtemps dans une pièce fermée.",
+    "Dedans, il fait le noir des caves alors que dehors le jour n'a jamais fini de tomber. L'odeur n'est pas celle d'un abandon : c'est celle d'un homme qui a vécu longtemps dans une pièce fermée.",
     "Une seule chaise, au milieu. Tournée vers la porte. Il ne s'asseyait pas pour regarder le feu ni pour manger : il s'asseyait pour surveiller ce qui entrerait, et il l'a fait assez d'années pour creuser deux ronds dans la terre battue sous les pieds avant.",
     "Et sur le mur ouest, une fenêtre. La seule qu'il n'a pas murée. Elle donne sur la lande, la crête, et la croix noire d'un moulin qui ne tourne pas."
    ],
@@ -5777,7 +5769,8 @@
      "label": "Suivre les marques du mur",
      "type": "passif",
      "consequence": "Elles courent le long du mur, par paquets de cinq. Elles commencent à hauteur d'homme et descendent — il s'est assis pour continuer.\n\nLa dernière série s'arrête à hauteur d'enfant. Elle n'est pas finie : le cinquième trait manque.",
-     "donneDecouverte": "d.bailli_comptait"
+     "donneDecouverte": "d.bailli_comptait",
+     "masqueSiEchecArrivee": true
     },
     {
      "id": "bailli-fenetre",
@@ -5788,6 +5781,7 @@
      "tags": [
       "citable"
      ],
+     "masqueSiEchecArrivee": true,
      "image": {
       "fichier": "scene_moulin_sans_ailes_d_d.png",
       "hash": "a916da10",
@@ -5804,7 +5798,16 @@
      "type": "passif",
      "consequence": "Les clous sont plantés de l'intérieur, en biais, croisés — recloués chaque fois qu'il entendait quelque chose. Onze couches.\n\nLe chambranle porte des raclures basses, à hauteur de genou. Tu ressors par où lui n'est jamais ressorti.",
      "sortie": {},
-     "donneDecouverte": "d.porte_clouee"
+     "donneDecouverte": "d.porte_clouee",
+     "masqueSiEchecArrivee": true
+    },
+    {
+     "id": "bailli-repartir",
+     "label": "Repartir",
+     "type": "passif",
+     "consequence": "Tu recules du trou. Le chien ne bouge plus : il n'a pas besoin. Tu repars avec ce que l'ouverture a laissé voir — deux ronds sous une chaise, et une fenêtre qu'un homme a gardée.",
+     "sortie": {},
+     "exigeEchecArrivee": true
     }
    ],
    "pointsInteret": [],
@@ -5813,7 +5816,6 @@
     "Deux ronds creusés dans la terre battue, au milieu, sous les pieds avant d'une chaise tournée vers la porte. Et au fond, sur le mur ouest, un carré de jour : une fenêtre qu'il n'a pas murée.",
     "Le chien se recouche entre toi et l'ouverture. Ce sera pour une autre fois, ou pour personne."
    ],
-   "donneDecouverte": "d.bailli_comptait",
    "sejour": true,
    "image": {
     "fichier": "scene_maison_bailli_dedans_b.png",
@@ -5893,7 +5895,6 @@
    ],
    "pointsInteret": [],
    "suite": "petit-tribunal-2",
-   "donneDecouverte": "d.ordonnance_lue",
    "nom": "Le Petit Tribunal",
    "lieu": "petit_tribunal",
    "typeScene": "arrivee",
@@ -6223,7 +6224,6 @@
    ],
    "adversaire": "meute-grise",
    "adversaireNom": "La Meute Grise",
-   "savoir": "savoir_meute_voix",
    "combat": true,
    "nom": "La Meute Grise — beat 2",
    "lieu": "horslieu",
@@ -6306,7 +6306,6 @@
    ],
    "pointsInteret": [],
    "suite": "mare-aux-regards-2",
-   "donneDecouverte": "d.mare_depistage",
    "nom": "La Mare aux Regards",
    "lieu": "mare_aux_regards",
    "typeScene": "arrivee",
@@ -6335,7 +6334,7 @@
    "narration": [
     "Ils arrivent à deux. Le premier s'agenouille dans les creux, se penche, et reste penché beaucoup trop longtemps. Le second reste debout derrière lui et ne regarde pas l'eau : il regarde la nuque de l'autre.",
     "Personne ne parle. Ce n'est pas une prière — c'est un examen, et il a manifestement une procédure.",
-    "Quand le premier se relève, il a le visage de quelqu'un qui va rentrer chez lui et fermer ses volets pour toujours. Le second lui met une main sur l'épaule et le raccompagne."
+    "Quand le premier se relève, il a le visage de quelqu'un qui va rentrer chez lui et fermer ses volets pour toujours. Le second lui met une main sur l'épaule. Ils ne sont pas encore partis."
    ],
    "choix": [
     {
@@ -6404,7 +6403,7 @@
    "id": "verger-noir",
    "narration": [
     "Des arbres fruitiers plantés en rangs — le seul ordre volontaire des Landes hors du hameau. Ils ont poussé, ils ont des branches, des feuilles noires, et des fruits. C'est pire que s'ils étaient morts.",
-    "Les rangs et leurs fruits. La souche du premier arbre, au bout. Et deux silhouettes immobiles, tout au fond, tournées vers toi."
+    "Les rangs et leurs fruits. La souche du premier arbre, au bout. Et deux silhouettes penchées, tout au fond, qui bêchent sans lever la tête."
    ],
    "choix": [
     {
@@ -6552,9 +6551,9 @@
   {
    "id": "epoux-1",
    "narration": [
-    "La femme se redresse la première. Elle ne sursaute pas — plus rien ne les surprend, ici.",
+    "La femme lève la tête la première, sans lâcher sa bêche. Elle ne sursaute pas — plus rien ne les surprend, ici.",
     "— « C'est le onzième verger. » Elle le dit avant toute autre chose, comme on donne son nom. « Les dix premiers ont donné des fruits de cendre. Celui-là aussi. Le douzième, on verra. »",
-    "L'homme s'est redressé aussi, la bêche encore en main. Il n'a pas cessé de compter à voix basse pour autant, et il ne te regarde pas."
+    "L'homme, lui, ne se redresse pas. Il n'a pas cessé de compter à voix basse pour autant, et il ne te regarde pas."
    ],
    "choix": [
     {
@@ -6671,7 +6670,6 @@
    ],
    "pointsInteret": [],
    "suite": "epoux-3",
-   "donneDecouverte": "d.fille_apercue",
    "nom": "Epoux 2 — beat 2",
    "lieu": "verger_noir",
    "typeScene": "moment",
@@ -6893,7 +6891,7 @@
   {
    "id": "palissade-sud",
    "narration": [
-    "La Palissade barre le plateau : des rondins hauts de deux hommes, un portillon, une guérite éclairée. Derrière, un chemin descend — l'air y coule comme une eau froide. La Descente. Dans la guérite, un homme t'a vu depuis longtemps."
+    "La Palissade barre le plateau : des rondins hauts de deux hommes, un portillon, une guérite éclairée. Derrière, le sol manque — l'air y coule comme une eau froide, remontée d'un trou qu'on ne voit pas d'ici. La Descente. Dans la guérite, un homme t'a vu depuis longtemps."
    ],
    "choix": [
     {
@@ -6941,7 +6939,7 @@
      "id": "homme-guerite",
      "label": "Aller vers l'homme de la guérite",
      "type": "passif",
-     "consequence": "Il est sorti de sa niche avant que tu aies décidé d'y aller. Il te regarde venir depuis si longtemps qu'il a préparé sa première phrase.",
+     "consequence": "Il t'a vu venir depuis si longtemps qu'il a préparé sa première phrase — sans quitter sa niche.",
      "sortie": {
       "toScene": "veilleur-1"
      },
@@ -6982,16 +6980,18 @@
    ],
    "mèneIci": [],
    "roles": [],
-   "acces": "traversée",
+   "acces": "aucun",
    "etat": "valide",
-   "alertes": []
+   "alertes": [
+    "orpheline"
+   ]
   },
   {
    "id": "veilleur-1-note",
    "narration": [
     "Il ne sort pas de sa niche. Il t'a vu venir de loin — il a eu le temps de poser sa soupe, d'ouvrir son registre et de tremper sa plume. Il attend que tu sois à dix pas pour écrire.",
     "Pas de bonjour. Pas de « tu descends ». Il écrit trois mots, souffle dessus, et seulement là il lève les yeux.",
-    "— « Le gamin est passé avant toi. » Un temps. « Il a couru. »"
+    "— « Un gamin est passé avant toi. » Un temps. « Il a couru. »"
    ],
    "choix": [
     {
@@ -10394,7 +10394,7 @@
   },
   "echec-empathie": {
    "nom": "L'Écrivain public",
-   "deposition": "Il a essayé de se faire comprendre. Ce qui est sorti n'était pas de chez nous.",
+   "deposition": "On me l'a répété. Il a essayé de se faire comprendre, et ce qui est sorti n'était pas de chez nous.",
    "lieu": "au Hameau des Renonçants"
   },
   "echec-exploration": {
@@ -11339,7 +11339,7 @@
  "totaux": {
   "scenes": 107,
   "pointsInteret": 0,
-  "choix": 314,
+  "choix": 316,
   "illustrations": 437,
   "sansImage": 0,
   "imagesIntrouvables": 0,

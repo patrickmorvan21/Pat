@@ -152,7 +152,7 @@ export const TEMOINS: Record<string, Omit<Temoin, "id">> = {
   },
   "echec-empathie": {
     nom: "L'Écrivain public",
-    deposition: "Il a essayé de se faire comprendre. Ce qui est sorti n'était pas de chez nous.",
+    deposition: "On me l'a répété. Il a essayé de se faire comprendre, et ce qui est sorti n'était pas de chez nous.",
     lieu: "au Hameau des Renonçants",
   },
   /**

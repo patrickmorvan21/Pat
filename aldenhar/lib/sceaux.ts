@@ -145,7 +145,7 @@ export function ligneSceauBorne(passages: number): string | null {
   if (passages <= 0) return null;
   if (passages <= 2)
     return (
-      "Une des trois marques du sud est un coin, creusé dans le granit. Tu y " +
+      "La troisième marque du sud n'est pas une lettre : un coin, creusé dans le granit. Tu y " +
         "poses la paume sans y penser, et ça entre — au millimètre, comme une " +
         "clé dans sa gâche. Tu retires ta main très vite. Personne ne t'a vu " +
         "faire, sauf le sud."

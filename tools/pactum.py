@@ -430,6 +430,8 @@ class Partie:
                 self.d.setdefault("famVus", []).append(lieu)
         remplace = fam.get("remplace") if (fam and ligne) else None
         paras = list(s.get("narrationEchec") if rate and s.get("narrationEchec") else s.get("narration", []))
+        # 03/09 — l'arrivée ratée se dit aux choix aussi (voir `exigeEchecArrivee`).
+        self.d["arriveeRatee"] = bool(rate and s.get("narrationEchec"))
         # CE QU'ON APPORTE AU PROCÈS SE DIT (comme dans le jeu, après le premier
         # paragraphe). ⚠️ La réplique baissait le seuil en silence : elle
         # récompensait la préparation sans jamais la RACONTER, donc le procès
@@ -451,11 +453,10 @@ class Partie:
         # le choix risqué sur l'écran même qui pose la question.
         # `sansNuit` : le choix pris à l'écran précédent disait qu'on ne
         # s'attardait pas — aucune nuit ne passe (voir `Choice.sansNuit`).
-        if s.get("nuit") and not self.d.pop("sansNuit", False) \
-                and sid not in self.d.get("nuitsVues", []):
-            self.d.setdefault("nuitsVues", []).append(sid)
-            self.d["jour"] += 1
-            self.dit(f"JOUR {self.d['jour']}", "jour")
+        # ⚠️ 03/09 — le Jour de la nuit se prend en QUITTANT la scène de
+        # nuit (comme dans le jeu), plus à l'arrivée : « — JOUR 3 — » tombait
+        # en bas de l'écran d'entrée du Moulin, AVANT qu'on propose de dormir
+        # (trois testeurs). Voir le haut de `entrer`.
         if s.get("registre"):
             self.dit(
                 "[Le Grand Registre défile : cent noms classés par jours de "
@@ -756,6 +757,16 @@ class Partie:
             # « Descendre par la corde » à qui n'avait pas amarré de corde
             # (playtest 14/08).
             faits = self.d.get("choixFaits", [])
+            # 03/09 — l'arrivée ratée et le Serment vu par le village.
+            if c.get("exigeEchecArrivee") and not self.d.get("arriveeRatee"):
+                continue
+            if c.get("masqueSiEchecArrivee") and self.d.get("arriveeRatee"):
+                continue
+            es = c.get("exigeSerment")
+            if es == "tenu" and self.d.get("sermentRompu"):
+                continue
+            if es == "rompu" and not self.d.get("sermentRompu"):
+                continue
             if c.get("exigeUsage") and f"usage:{c['exigeUsage']}" not in faits:
                 continue
             if c.get("masqueSiUsage") and f"usage:{c['masqueSiUsage']}" in faits:
@@ -910,9 +921,14 @@ class Partie:
                 ecrire_compte(cp)
         if c.get("soupcon"):
             self.d["soupcon"] = min(6, self.d["soupcon"] + c["soupcon"])
-            self.soupconSeLit()
+            # 03/09 — sur un jet, la marque se LIT après le dé (comme dans le
+            # jeu, à l'arrivée suivante) : la conséquence tombait avant l'acte.
+            if c["type"] != "risque":
+                self.soupconSeLit()
         if c["type"] == "risque":
             self.resoudre(c)
+            if not self.d.get("sortie"):
+                self.soupconSeLit()
         else:
             if c.get("sansNuit"):
                 self.d["sansNuit"] = True
@@ -943,6 +959,9 @@ class Partie:
             if c.get("laisseObjet") and c["laisseObjet"] in self.d.get("besace", []):
                 self.d["besace"].remove(c["laisseObjet"])
             if c.get("repos"):
+                # 03/09 — la nuit se raconte (trois testeurs : « Dormir » ne
+                # fait rien lire).
+                self.dit("Tu dors d'un bloc. L'aube est grise au ras des volets, et ton corps répond un peu mieux qu'hier.", "narration")
                 # ⚠️ LE JOUR DE LA NUIT EST DÉJÀ PRIS À L'AFFICHAGE de la
                 # scène `nuit` (voir plus haut) — le rajouter ici donnait
                 # DEUX jours au dormeur contre un au veilleur, soit
@@ -1183,7 +1202,9 @@ class Partie:
         # de la Besace, donc l'objet est nommé génériquement ; ce qui compte
         # est que le moment le plus rare du jeu ne se solde pas par rien.
         if palier == "destin":
-            self.dit("OBTENU — une trouvaille rare (Destin)", "obtenu")
+            # 03/09 — un objet RÉEL en besace (un testeur a vu « OBTENU » puis
+            # `besace —` à l'écran `etat`).
+            self.gagner("trouvaille-rare")
         if s.get("procesFixation") and rate:
             self.mourir(texte or "Le hameau a jugé.")
             return
@@ -1204,6 +1225,16 @@ class Partie:
 
     def suite(self, choix: dict | None = None) -> None:
         s = self.scene()
+        # L'AUBE VIENT QU'ON AIT DORMI OU VEILLÉ (10/08, déplacé le 03/09) :
+        # le Jour d'une scène de nuit se prend au moment où l'on en SORT (ou
+        # qu'on y a veillé), jamais à l'arrivée — « — JOUR 3 — » tombait en bas
+        # de l'écran d'entrée du Moulin avant qu'on ait proposé de dormir.
+        sid_nuit = self.d.get("scene") or ""
+        if s.get("nuit") and not self.d.pop("sansNuit", False) \
+                and sid_nuit not in self.d.get("nuitsVues", []):
+            self.d.setdefault("nuitsVues", []).append(sid_nuit)
+            self.d["jour"] += 1
+            self.dit(f"JOUR {self.d['jour']}", "jour")
         # SÉJOUR (9/08) : un lieu qui retient ne se quitte que par un choix
         # portant `sortie`. Le choix résolu est consommé et disparaît ; on
         # redonne la main sur ce qui reste, sans rejouer l'arrivée.

@@ -322,6 +322,9 @@ def pools() -> list[dict]:
     if cad:
         for i, t in enumerate(chaines_de_tableau(cad.group(1))):
             out.append({"pool": f"borne cadrage {i + 1}", "garde": {"lande", "gens"}, "textes": [t]})
+    hal = re.search(r"HALTE_DEPUIS_LA_LANDE\s*=\s*\n?\s*\"((?:[^\"\\]|\\.)*)\"", scene_src)
+    if hal:
+        out.append({"pool": "halte depuis la lande", "garde": {"village", "gens"}, "textes": [hal.group(1)]})
     app = re.search(r"DEMO_FALAISE_APPROCHE\s*=\s*((?:\s*\"(?:[^\"\\]|\\.)*\"\s*\+?)+)", scene_src)
     if app:
         out.append({

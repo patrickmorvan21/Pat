@@ -503,6 +503,23 @@ export type Choice = {
   laisseObjet?: string;
   requiresUsage?: string;
   /**
+   * L'ARRIVÉE RATÉE (03/09). Une scène qui sert `narrationEchec` raconte
+   * qu'on n'est PAS entré — ses choix doivent le dire aussi. Le jeton
+   * « arrivee:echec » passe par `choixFaits` (portée ÉCRAN, vidé en quittant
+   * le lieu). Trois testeurs du panel se sont retrouvés assis dans une
+   * maison que le chien venait de leur refuser.
+   */
+  requiresEchecArrivee?: true;
+  masqueSiEchecArrivee?: true;
+  /**
+   * LE SERMENT, tel que le village le voit (03/09) : « tenu » = juré et
+   * aucun geste qui le rompt n'a été vu ; « rompu » = un geste l'a rompu.
+   * Le vieux disait « Tu as juré, tu as tenu » à qui venait de parler au
+   * pendu — la phrase la plus aimable du hameau, servie à qui la mérite le
+   * moins.
+   */
+  requiresSerment?: "tenu" | "rompu";
+  /**
    * L'inverse : ce choix DISPARAÎT une fois l'objet employé. Sert à garder
    * l'écran à trois actes — une fois la corde amarrée au-dessus d'un puits
    * qui cogne, coller l'oreille aux planches n'est plus la question.
@@ -1486,7 +1503,7 @@ export const SCENES: Scene[] = [
     id: "chemin-creux-2",
     illustration: "assets/scene_chemin_creux_coude_c_c.png",
     narration: [
-      "Passé le coude : rien. L'endroit exact où il devrait y avoir quelque chose, et il n'y a rien. Le silence y est plus épais d'un cran.",
+      "Au coude : rien. L'endroit exact où il devrait y avoir quelque chose, et il n'y a rien. Le silence y est plus épais d'un cran.",
     ],
     choices: [
       {
@@ -2586,6 +2603,10 @@ export const SCENES: Scene[] = [
       "Une rue en terre battue, des murets. Sur chaque linteau, une croix à la craie — même hauteur, même main. Sur un seuil, une femme immobile regarde une fenêtre, en face.",
       // TOUCHE 2 du Grand Témoin (script 24/08, segment 5).
       "Au bout de la rue, entre deux toits : une silhouette. La forme d'un corbeau. Pas la taille d'un corbeau. Le temps de regarder mieux, le bout de la rue est vide.",
+      // 03/09 — quatre testeurs sur six : « Soutenir le regard des trois
+      // hommes » / « Voir où le gamin veut te mener » offerts sans qu'un
+      // gamin ni trois hommes existent dans le texte. Ils existent ici.
+      "Sur un muret, un gamin te suit des yeux sans bouger. Plus haut dans la rue, trois hommes ne font pas semblant de faire autre chose.",
     ],
     choices: [
       {
@@ -3804,7 +3825,7 @@ export const SCENES: Scene[] = [
         label: "Dormir vraiment",
         passive: {
           consequence:
-            "Tu décides de ne rien écouter. C'est un travail, de ne pas écouter — tu comptes tes propres respirations pour couvrir le reste. Au matin tu ne sauras pas ce qui s'est dit devant ta porte, et c'est exactement ce que tu voulais.",
+            "Tu décides de ne rien écouter. C'est un travail, de ne pas écouter — tu comptes tes propres respirations pour couvrir le reste. Au matin tu ne sauras pas ce qui s'est DIT devant ta porte. Ce qui a marché dessus, tu l'entendras quand même — ça, personne ne choisit de ne pas l'entendre.",
         },
       },
       {
@@ -3991,8 +4012,19 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        id: "partir-aube-rompu",
+        label: "Partir pendant que c'est vrai",
+        requiresSerment: "rompu",
+        prendLaPlaceDe: "partir-aube",
+        passive: {
+          consequence:
+            "Tu manges debout, tu sors. Sur le seuil, le vieux ne dit rien. Il regarde ta bouche — celle qui a parlé là où on ne parle pas — puis il rentre et tire la porte. Ça se saura aussi.",
+        },
+      },
+      {
         id: "partir-aube",
         label: "Partir pendant que c'est vrai",
+        requiresSerment: "tenu",
         soupcon: -1,
         passive: {
           consequence:
@@ -4948,7 +4980,7 @@ export const SCENES: Scene[] = [
         sortie: { toScene: "campement-2" },
         passive: {
           consequence:
-            "Entre toi et la porte, une enfant. Elle ne se cache pas : elle attend que tu l'aies bien vue.\n\nDedans, un lit de bruyère trop court ; au mur, à hauteur d'enfant, des jours comptés par cinq.",
+            "Entre toi et la porte, une enfant. Elle ne se cache pas : elle attend que tu l'aies bien vue. Puis elle s'écarte — du lit, pas de la porte : c'est toi qu'elle laisse passer.\n\nDedans, un lit de bruyère trop court ; au mur, à hauteur d'enfant, des jours comptés par cinq.",
         },
       },
       {
@@ -5439,7 +5471,7 @@ export const SCENES: Scene[] = [
         decouverte: "d.trois_cordes",
         passive: {
           consequence:
-            "Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom : chacune « a tenu » quelqu'un. La troisième du rang bas n'a pas d'étiquette, et bouge quand tu ne la regardes pas. Trois cordes portent la même date.",
+            "Des dizaines de cordes coupées, clouées en rangs, chacune étiquetée d'un nom : chacune « a tenu » quelqu'un. Une seule, à hauteur d'œil, au centre du mur, n'a pas d'étiquette — et elle bouge quand tu ne la regardes pas. Trois cordes portent la même date.",
         },
       },
       {
@@ -5928,7 +5960,7 @@ export const SCENES: Scene[] = [
     // endroit, donc ce n'est pas une image qui contredit son texte, mais
     // c'est bien une image à produire.
     narration: [
-      "Dedans, il fait le noir des caves alors qu'il est midi dehors. " +
+      "Dedans, il fait le noir des caves alors que dehors le jour n'a jamais fini de tomber. " +
         "L'odeur n'est pas celle d'un abandon : c'est celle d'un homme qui " +
         "a vécu longtemps dans une pièce fermée.",
       "Une seule chaise, au milieu. Tournée vers la porte. Il ne s'asseyait " +
@@ -5956,6 +5988,7 @@ export const SCENES: Scene[] = [
            que celles-ci lit juste un homme qui comptait. */
         id: "bailli-comptage",
         label: "Suivre les marques du mur",
+        masqueSiEchecArrivee: true,
         observe: true,
         decouverte: "d.bailli_comptait",
         chapterFragment: true,
@@ -5969,6 +6002,7 @@ export const SCENES: Scene[] = [
            jet — s'asseoir n'est pas un risque, c'est une compréhension. */
         id: "bailli-fenetre",
         label: "S'asseoir sur la chaise",
+        masqueSiEchecArrivee: true,
         illustration: "assets/scene_moulin_sans_ailes_d_d.png",
         decouverte: "d.fenetre_ouest",
         tags: ["citable"],
@@ -5987,11 +6021,26 @@ export const SCENES: Scene[] = [
            Pas de jet : ce n'est pas un risque, c'est une constatation. */
         id: "bailli-porte",
         label: "Défaire la porte et sortir",
+        masqueSiEchecArrivee: true,
         sortie: {},
         decouverte: "d.porte_clouee",
         passive: {
           consequence:
             "Les clous sont plantés de l'intérieur, en biais, croisés — recloués chaque fois qu'il entendait quelque chose. Onze couches.\n\nLe chambranle porte des raclures basses, à hauteur de genou. Tu ressors par où lui n'est jamais ressorti.",
+        },
+      },
+      {
+        /* 03/09 — SUR ÉCHEC D'ARRIVÉE : les trois gestes de l'intérieur sont
+           masqués (`masqueSiEchecArrivee`) et celui-ci prend l'écran. Trois
+           testeurs s'asseyaient sur une chaise dans une pièce que le chien
+           venait de leur refuser. On repart avec ce que le trou a laissé voir. */
+        id: "bailli-repartir",
+        label: "Repartir",
+        requiresEchecArrivee: true,
+        sortie: {},
+        passive: {
+          consequence:
+            "Tu recules du trou. Le chien ne bouge plus : il n'a pas besoin. Tu repars avec ce que l'ouverture a laissé voir — deux ronds sous une chaise, et une fenêtre qu'un homme a gardée.",
         },
       },
     ],
@@ -6486,7 +6535,7 @@ export const SCENES: Scene[] = [
       "Ils arrivent à deux. Le premier s'agenouille dans les creux, se penche, et reste penché beaucoup trop longtemps. Le second reste debout derrière lui et ne regarde pas l'eau : il regarde la nuque de l'autre.",
       "Personne ne parle. Ce n'est pas une prière — c'est un examen, et il " +
         "a manifestement une procédure.",
-      "Quand le premier se relève, il a le visage de quelqu'un qui va rentrer chez lui et fermer ses volets pour toujours. Le second lui met une main sur l'épaule et le raccompagne.",
+      "Quand le premier se relève, il a le visage de quelqu'un qui va rentrer chez lui et fermer ses volets pour toujours. Le second lui met une main sur l'épaule. Ils ne sont pas encore partis.",
     ],
     choices: [
       {
@@ -6544,9 +6593,11 @@ export const SCENES: Scene[] = [
       "Des arbres fruitiers plantés en rangs — le seul ordre volontaire des " +
         "Landes hors du hameau. Ils ont poussé, ils ont des branches, des " +
         "feuilles noires, et des fruits. C'est pire que s'ils étaient morts.",
-      // « qui bêchent » : l'image montre le couple ARRÊTÉ (repasse du 10/08).
+      // 03/09 — l'image de la refonte (`monstre_epoux_verger_b_b`, ouverte)
+      // montre le couple PENCHÉ, bêche en terre. La repasse du 10/08 parlait
+      // d'une autre image. Le texte suit celle qui est servie.
       "Les rangs et leurs fruits. La souche du premier arbre, au bout. Et deux " +
-        "silhouettes immobiles, tout au fond, tournées vers toi.",
+        "silhouettes penchées, tout au fond, qui bêchent sans lever la tête.",
     ],
     /* Conversion des points d'intérêt (13/08). Trois actes : monter pour voir,
        goûter pour savoir, remonter vers les deux du fond. `fruits-cendre`
@@ -6654,16 +6705,17 @@ export const SCENES: Scene[] = [
     illustration: "assets/monstre_epoux_verger_b_b.png",
     chainNext: "epoux-2",
     narration: [
-      "La femme se redresse la première. Elle ne sursaute pas — plus rien ne " +
+      "La femme lève la tête la première, sans lâcher sa bêche. Elle ne sursaute pas — plus rien ne " +
         "les surprend, ici.",
       "— « C'est le onzième verger. » Elle le dit avant toute autre chose, " +
         "comme on donne son nom. « Les dix premiers ont donné des fruits de " +
         "cendre. Celui-là aussi. Le douzième, on verra. »",
-      // ⚠️ ALIGNÉ SUR L'IMAGE (10/08) : elle montre les DEUX debout, tournés
-      // vers toi, personne ne bêche. Le comptage — qui porte le lore (onze
-      // prénoms, pas onze coups) — passe en son entendu.
-      "L'homme s'est redressé aussi, la bêche encore en main. Il n'a pas " +
-        "cessé de compter à voix basse pour autant, et il ne te regarde pas.",
+      // ⚠️ ALIGNÉ SUR L'IMAGE SERVIE (03/09, `monstre_epoux_verger_b_b`
+      // ouverte) : les DEUX sont penchés, bêche en terre. La repasse du 10/08
+      // visait une autre image. Le comptage — qui porte le lore (onze prénoms,
+      // pas onze coups) — reste en son entendu.
+      "L'homme, lui, ne se redresse pas. Il n'a pas cessé de compter à voix " +
+        "basse pour autant, et il ne te regarde pas.",
     ],
     choices: [
       {
@@ -6869,7 +6921,7 @@ export const SCENES: Scene[] = [
     // (veilleur-2), ce qui est aussi la bonne leçon : explorer prépare.
     chainNext: "palissade-sud-2",
     narration: [
-      "La Palissade barre le plateau : des rondins hauts de deux hommes, un portillon, une guérite éclairée. Derrière, un chemin descend — l'air y coule comme une eau froide. La Descente. Dans la guérite, un homme t'a vu depuis longtemps.",
+      "La Palissade barre le plateau : des rondins hauts de deux hommes, un portillon, une guérite éclairée. Derrière, le sol manque — l'air y coule comme une eau froide, remontée d'un trou qu'on ne voit pas d'ici. La Descente. Dans la guérite, un homme t'a vu depuis longtemps.",
     ],
     /* Conversion des points d'intérêt (13/08). Six entrées disaient trois
        choses, dont deux la MÊME : `rondins-pointes` (les pointes tournées
@@ -6914,7 +6966,7 @@ export const SCENES: Scene[] = [
         sortie: { toScene: "veilleur-1" },
         passive: {
           consequence:
-            "Il est sorti de sa niche avant que tu aies décidé d'y aller. Il te regarde venir depuis si longtemps qu'il a préparé sa première phrase.",
+            "Il t'a vu venir depuis si longtemps qu'il a préparé sa première phrase — sans quitter sa niche.",
         },
       },
     ],
@@ -6944,7 +6996,7 @@ export const SCENES: Scene[] = [
         "plume. Il attend que tu sois à dix pas pour écrire.",
       "Pas de bonjour. Pas de « tu descends ». Il écrit trois mots, souffle " +
         "dessus, et seulement là il lève les yeux.",
-      "— « Le gamin est passé avant toi. » Un temps. « Il a couru. »",
+      "— « Un gamin est passé avant toi. » Un temps. « Il a couru. »",
     ],
     choices: [
       {
@@ -8126,8 +8178,15 @@ export const SORTIE_DE_ZONE = "chemin-du-sud";
  * lande). Sentinelle : jamais un lieu, jamais dans `visited`, hors du pool.
  */
 export const HAMEAU_SORTIE = "sortie-hameau";
+// ⚠️ 03/09 — `palissade-sud` RESTE dans APPROACH (la Croisée a besoin de son
+// libellé) mais elle N'EST PAS tirable : le filtre du 01/09 n'excluait que
+// `chemin-du-sud`, et la Palissade, elle, était revenue dans le pool sans
+// qu'on s'en aperçoive. Résultat mesuré par le panel (A3) : « Vers une
+// palissade au sud » offert à la PREMIÈRE Croisée → Veilleur → portillon →
+// Falaise → Descente en dix écrans, Sceau compris, traversée 1/7. La sortie
+// de zone ne s'atteint qu'au bout de la traversée, par le Chemin du Sud.
 export const TRAVERSAL_POOL = Object.keys(APPROACH).filter(
-  (id) => id !== SORTIE_DE_ZONE && id !== HAMEAU_SORTIE
+  (id) => id !== SORTIE_DE_ZONE && id !== HAMEAU_SORTIE && id !== "palissade-sud"
 );
 
 /**
@@ -8942,7 +9001,7 @@ function phraseBifurcation(liaisonsJouees: number, seed: number): string {
  * panel du 9/08 avait explicitement écarté le re-durcissement du barème de
  * santé, qui ne se lit nulle part.
  */
-const ROUTE_FERMEE = [
+export const ROUTE_FERMEE = [
   "L'autre direction n'en est plus une : le sol s'est affaissé sur toute la " +
     "largeur du passage, et ce qui reste ne porterait pas un chien. Ce n'est " +
     "pas récent. Ça l'était il y a un instant.",
@@ -8986,7 +9045,18 @@ export function makeLiaison(
     liaison: true,
     illustration: walkImg,
     narration: fermee
-      ? [amb, ROUTE_FERMEE[Math.floor(seeded(seed + 13) * ROUTE_FERMEE.length)]]
+      ? [
+          amb,
+          // 03/09 — la ligne de route fermée était tirée par la graine seule :
+          // un testeur l'a lue quatre fois mot pour mot dans une vie. Même
+          // mémoire que les ambiances (`dejaVues`), la moins vue d'abord.
+          (() => {
+            const vues = ctx?.dejaVues ?? [];
+            const frais = ROUTE_FERMEE.filter((t) => !vues.includes(t));
+            const pool = frais.length ? frais : ROUTE_FERMEE;
+            return pool[Math.floor(seeded(seed + 13) * pool.length)];
+          })(),
+        ]
       : [amb, croisee(optA, optB, ctx?.liaisonsJouees ?? 0, seed)],
     jailerLine: jl,
     // Route fermée : la Croisée ne décrit plus deux routes (`croisee` les
@@ -9135,6 +9205,12 @@ export const FRANCHIT_ENTREE: string[] = [
   "Le chemin redescend vers les toits gris. Tu repasses la limite du village sans t'en apercevoir tout à fait : un muret, un seuil, et le bruit de la lande qui s'arrête net derrière toi.",
   "Un muret, puis un autre, puis les premiers toits — le village se referme autour de toi sans un bruit, comme une main qu'on a laissée ouverte exprès.",
 ];
+
+/** 03/09 — la Halte déclenchée depuis la LANDE (fin de traversée au Verger,
+ *  au Champ…) : une ligne de retour avant « Le vieux te trouve ». Trois
+ *  testeurs sont passés des rangs à la grange sans avoir marché. */
+export const HALTE_DEPUIS_LA_LANDE =
+  "Les murets réapparaissent avant que tu aies décidé de revenir. Dans les Landes, tous les chemins finissent par repasser devant le hameau — et le hameau le sait.";
 
 export const FRANCHIT_SORTIE: string[] = [
   "Tu repasses le muret d'enceinte, et le village te lâche d'un coup — plus de toits, plus de volets, plus de regards. La lande reprend, immense, et le vent te retrouve comme s'il t'avait attendu.",
