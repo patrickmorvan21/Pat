@@ -52,11 +52,11 @@ const SORTIE = String(arg("sortie", "/tmp/vie-pactum.md"));
 const MAX = Number(arg("ecrans", 140));
 const VIERGE = Boolean(arg("vierge", false));
 /**
- * MODE DÉMO (24/08) — « La Nuit du Serment », la tranche verticale.
- * Il change TROIS choses qu'un transcript doit montrer : l'entrée compressée
- * (une seule clause, deux souvenirs, pas de carton d'acte), la ROUTE scriptée
- * aux Croisées, et la prose courte. Il implique donc un compte VIERGE : une
- * démo se juge depuis le premier écran, pas au milieu d'une vie de vétéran.
+ * ⚠️ LE MODE DÉMO N'EXISTE PLUS (v1.128.0, 02/09) : la PREMIÈRE RUN d'un
+ * compte EST la démo — route scriptée, mini-jeux, prose courte, le tout
+ * dérivé de `runsStarted <= 1`. Le drapeau `pactum-demo` n'est plus lu par
+ * personne. `--demo` reste accepté comme ALIAS de `--vierge` pour ne pas
+ * casser une ligne de commande existante ; il ne fait plus rien de plus.
  */
 const DEMO = Boolean(arg("demo", false));
 const NEUF = VIERGE || DEMO;
@@ -114,8 +114,9 @@ await page.addInitScript(([mem, vierge, demo]) => {
   localStorage.setItem("aldenhar-aide-de", JSON.stringify({ off: true, ok: true, ko: true }));
   localStorage.setItem("aldenhar-aide-menu", JSON.stringify({ off: true }));
   localStorage.setItem("pactum-de-geste", "1");
-  if (demo) localStorage.setItem("pactum-demo", "1");
-  else localStorage.removeItem("pactum-demo");
+  // ⚠️ `pactum-demo` est mort (v1.128.0) : on le PURGE au cas où un compte de
+  // test l'aurait encore, mais rien ne le lit plus.
+  localStorage.removeItem("pactum-demo");
   if (!vierge) localStorage.setItem("aldenhar-player", JSON.stringify(mem));
 }, [MEMOIRE_VETERAN, NEUF, DEMO]);
 
@@ -180,6 +181,53 @@ async function attendreFinDeFrappe(max = 26) {
 }
 
 /**
+ * L'INTRODUCTION (deux clauses, refonte du 02/09) — elle ne se joue que sur un
+ * compte VIERGE, et elle demande LA MAIN, pas des taps :
+ *   • clause 1 « Tu ne te souviens pas » : ACCEPTER / REFUSER. On refuse
+ *     d'abord (le refus qu'on t'enlève est un beat écrit, il mérite d'être
+ *     dans le transcript), puis on accepte.
+ *   • clause 2 « Une seule vie » : un APPUI MAINTENU pousse la porte. Sans ce
+ *     geste l'auto-joueur reste devant l'écran et le transcript s'arrête au
+ *     premier écran du jeu — c'est ce qui est arrivé au premier enregistrement
+ *     sur v1.128.2 (1 écran).
+ * ⚠️ Le `pointerup` de la poussée produit aussi un `click` sur le cadre : le
+ * jeu s'en garde 500 ms (`finPousseeRef`), donc on attend avant de taper.
+ */
+async function jouerLIntro() {
+  let refusFait = false;
+  for (let tour = 0; tour < 24; tour++) {
+    if (await page.locator(".choices-bar").count()) return;
+    const t = await page.evaluate(() => document.body.innerText || "");
+    if (/ta vie d'avant|Ton nom/i.test(t)) return; // le Seuil prend le relais
+    if (/Maintiens pour pousser/i.test(t)) {
+      await page.mouse.move(195, 195);
+      await page.mouse.down();
+      await page.waitForTimeout(2400);
+      await page.mouse.up();
+      await page.waitForTimeout(1200);
+      await page.mouse.click(195, 700);
+      await page.waitForTimeout(900);
+      continue;
+    }
+    const libelles = await page.evaluate(() =>
+      [...document.querySelectorAll("button")]
+        .map((b) => (b.innerText || "").replace(/\s+/g, " ").trim())
+        .filter(Boolean));
+    const cible = !refusFait && libelles.some((l) => /refuser/i.test(l))
+      ? /refuser/i
+      : libelles.some((l) => /accepter/i.test(l)) ? /accepter/i : null;
+    if (cible) {
+      if (/refuser/i.test(String(cible))) refusFait = true;
+      await page.locator("button", { hasText: cible }).first().click();
+      await page.waitForTimeout(1100);
+      continue;
+    }
+    await page.mouse.click(195, 700);
+    await page.waitForTimeout(700);
+  }
+}
+
+/**
  * LE SEUIL (prologue). Ses boutons n'ont aucune classe propre : on prend les
  * `button` de la colonne, en excluant l'icône de menu (aria-label) et le lien
  * « Qu'il choisisse pour moi » — ⚠️ ce dernier ne fait que REMPLIR le champ,
@@ -234,9 +282,9 @@ function choisir(bs) {
 }
 
 /**
- * LE GESTE DU MINI-JEU (mode démo seulement).
+ * LE GESTE DU MINI-JEU.
  *
- * En démo, certains choix ouvrent un overlay tactile AU LIEU de se résoudre :
+ * Certains choix ouvrent un overlay tactile AU LIEU de se résoudre :
  * sans ce geste, l'auto-joueur reste bloqué devant un canvas et le transcript
  * s'arrête au 3e écran. On joue le geste RÉEL (frottage en serpentin, appui
  * tenu) — jamais un raccourci de code : c'est justement ce que la démo veut
@@ -249,15 +297,23 @@ async function peutEtreJouerLeGeste() {
   if (!b) return null;
   const consigne = await page.evaluate(() => {
     const ps = [...document.querySelectorAll("p")];
-    // ⚠️ Chaque nouveau moteur ajoute SA consigne ici — sinon le driver
-    // retombe sur « appui tenu » et laisse l'overlay ouvert (vécu le 24/08).
-    const c = ps.find((x) => /frotte|maintiens|trac|crochet|filer/i.test(x.innerText || ""));
+    /* ⚠️ ON APPARIE LES CONSIGNES RÉELLES, mot pour mot (03/09). Le détecteur
+       cherchait « frotte » — or la peau image du Frottage dit « GRATTE la
+       mousse » depuis le 25/08 : il ne trouvait rien, retombait sur l'appui
+       tenu, et l'overlay restait ouvert au premier écran de la première run.
+       Deux autres étaient faux sans qu'on le voie : « Fais glisser vers le
+       bas » ne contenait aucun des motifs, et « TRANCHE la corde » tombait
+       dans la branche `corde` — donc un geste LENT là où la coupe exige de la
+       vitesse. Les six libellés vivent dans les moteurs : les voici. */
+    const c = ps.find((x) =>
+      /gratte|frotte|maintiens|trac|tape quand|glisser vers le bas|tranche/i.test(x.innerText || ""));
     return (c?.innerText || "").replace(/\s+/g, " ").trim();
   });
-  const frottage = /frotte/i.test(consigne);
+  const frottage = /gratte|frotte/i.test(consigne);
   const trace = /trac/i.test(consigne);
-  const crochet = /crochet/i.test(consigne);
-  const corde = /corde|filer/i.test(consigne);
+  const crochet = /tape quand|crochet/i.test(consigne);
+  const corde = /glisser vers le bas/i.test(consigne);
+  const coupe = /tranche/i.test(consigne);
   const parti = async () => !(await page.locator(".minigame-canvas").count());
   if (trace) {
     // Le Tracé exige de VOIR les points — infaisable pour un automate.
@@ -272,27 +328,43 @@ async function peutEtreJouerLeGeste() {
   if (crochet) {
     // Le Crochetage se joue au TAP : trois essais réels sur le curseur
     // oscillant — l'un tombe dans la gorge ou pas, les deux issues avancent.
-    for (let i = 0; i < 3 && !(await parti()); i++) {
+    for (let i = 0; i < 6 && !(await parti()); i++) {
       await page.mouse.click(b.x + b.width / 2, b.y + b.height / 2);
       await page.waitForTimeout(650);
     }
     await page.waitForTimeout(600);
     return `[ geste tactile : crochetage — ${consigne} ]`;
   }
-  if (corde) {
-    // La cérémonie : des glissements LENTS, paliers par paliers. Trop vite,
-    // la corde ne file pas — le moteur se représente, on recommence calmement.
+  if (coupe) {
+    /* TRANCHER LA CORDE : un geste RAPIDE et DROIT qui TRAVERSE la corde
+       (verticale, au centre) vers 56 % de la hauteur — le moteur refuse
+       au-delà de 500 ms, et un glissement le LONG de la corde ne coupe rien. */
     for (let essai = 0; essai < 4 && !(await parti()); essai++) {
-      await page.mouse.move(b.x + 20, b.y + b.height / 2);
+      const y = b.y + b.height * 0.56;
+      await page.mouse.move(b.x + 20, y);
       await page.mouse.down();
-      for (let k = 0; k < 8 && !(await parti()); k++) {
-        for (let m = 0; m < 6; m++) {
-          await page.mouse.move(b.x + 20 + k * 34 + m * 6, b.y + b.height / 2);
-          await page.waitForTimeout(70);
-        }
+      for (let k = 1; k <= 3; k++) await page.mouse.move(b.x + 20 + (k * (b.width - 40)) / 3, y);
+      await page.mouse.up();
+      await page.waitForTimeout(500);
+    }
+    await page.waitForTimeout(600);
+    return `[ geste tactile : la corde cède — ${consigne} ]`;
+  }
+  if (corde) {
+    /* LA CÉRÉMONIE DE LA FALAISE : on laisse filer la corde VERS LE BAS, et
+       lentement (axe « y » depuis le 01/09 — l'ancien geste horizontal ne
+       faisait rien filer du tout). Trop vite, le moteur freine et se
+       représente : on recommence calmement, il est insensible à l'échec. */
+    for (let essai = 0; essai < 6 && !(await parti()); essai++) {
+      const x = b.x + b.width / 2;
+      await page.mouse.move(x, b.y + 40);
+      await page.mouse.down();
+      for (let y = 40; y < b.height - 30 && !(await parti()); y += 14) {
+        await page.mouse.move(x, b.y + y);
+        await page.waitForTimeout(60);
       }
       await page.mouse.up();
-      await page.waitForTimeout(400);
+      await page.waitForTimeout(300);
     }
     await page.waitForTimeout(600);
     return `[ geste tactile : la corde file entre les mains — ${consigne} ]`;
@@ -325,9 +397,16 @@ async function peutEtreJouerLeGeste() {
     for (let i = 0; i < 60 && !(await parti()); i++) await page.waitForTimeout(120);
     await page.mouse.up();
   }
+  /* ⚠️ FILET : si l'overlay est TOUJOURS là, le geste n'a pas été compris —
+     on prend l'échappement testeur plutôt que de bloquer la vie entière. */
+  for (let i = 0; i < 3 && !(await parti()); i++) {
+    await page.mouse.click(b.x + b.width / 2, b.y + b.height / 2);
+    await page.waitForTimeout(400);
+  }
   await page.waitForTimeout(900);
   return `[ geste tactile : ${frottage ? "frottage" : "appui tenu"} — ${consigne} ]`;
 }
+
 
 /** Lance le dé s'il est armé, et rend le verdict lu à l'écran. */
 async function peutEtreLancerLeDe() {
@@ -360,8 +439,14 @@ async function peutEtreLancerLeDe() {
 }
 
 // Le Seuil ne se joue qu'en partie neuve ; sinon REPRENDRE tombe droit en jeu.
+if (!(await page.locator(".choices-bar").count())) await jouerLIntro();
 if (!(await page.locator(".choices-bar").count())) await jouerLeSeuil();
 
+/* ⚠️ TOUT CE QUI SUIT EST SOUS FILET. Le magnétophone n'a de valeur que s'il
+   RESTITUE : une exception au milieu (clic hors délai, page qui bouge sous le
+   curseur) faisait perdre cent écrans déjà joués. On note l'incident dans le
+   journal, et on écrit quand même. */
+try {
 while (n < MAX) {
   // avancer la frappe / les micro-beats jusqu'aux choix
   let tours = 0;
@@ -407,12 +492,39 @@ while (n < MAX) {
   });
   dernierTexte = t;
 
-  await page.locator(".choices-bar button.choice-btn").nth(pick.i).click();
+  /* ⚠️ ATTENDRE LA VISIBILITÉ, PAS L'EXISTENCE (03/09). Les boutons vivent
+     dans le DOM pendant que `.choices-bar` est en `display:none` (frappe en
+     cours, écran paginé) : `click()` attendait alors 30 s puis JETAIT une
+     exception — et comme l'écriture du transcript vit APRÈS la boucle, toute
+     la vie enregistrée partait avec. On attend brièvement, et si la barre ne
+     revient pas on s'arrête proprement : un transcript court vaut infiniment
+     mieux qu'aucun transcript. */
+  try {
+    await page.locator(".choices-bar").first().waitFor({ state: "visible", timeout: 8000 });
+  } catch {
+    journal.push({ n: ++n, texte: "— la barre de choix ne revient pas : enregistrement interrompu —", boutons: [], action: "" });
+    break;
+  }
+  await page.locator(".choices-bar button.choice-btn").nth(pick.i).click({ timeout: 8000 });
   await page.waitForTimeout(900);
-  const geste = DEMO ? await peutEtreJouerLeGeste() : null;
+  // ⚠️ TOUJOURS, plus seulement « en démo » : depuis v1.128.0 les mini-jeux se
+  // jouent dans TOUTES les vies (et la première run en enchaîne plusieurs).
+  // Gaté sur DEMO, le driver restait planté devant le canvas du Frottage à la
+  // Borne et le transcript s'arrêtait au premier écran — vécu le 03/09.
+  // La fonction rend null s'il n'y a pas d'overlay : l'appeler ne coûte rien.
+  const geste = await peutEtreJouerLeGeste();
   if (geste) journal.push({ n: ++n, texte: geste, boutons: [], action: "" });
   const verdict = await peutEtreLancerLeDe();
   if (verdict) journal.push({ n: ++n, texte: `[ dé lancé → ${verdict} ]`, boutons: [], action: "" });
+}
+
+} catch (e) {
+  journal.push({
+    n: ++n,
+    texte: `— enregistrement interrompu : ${String(e).split("\n")[0]} —`,
+    boutons: [],
+    action: "",
+  });
 }
 
 /* ─── l'état final, pour situer la vie ─── */

@@ -67,12 +67,28 @@ def main(argv: list[str]) -> int:
     # une vie d'avant le démontage des états conclut que des systèmes ont
     # disparu. C'est arrivé le 9/08, sur des transcripts de dix-sept versions
     # en arrière. On prend le préfixe de build le plus récent, et lui seul.
+    # ⚠️ ON COMPARE DES VERSIONS, PAS DES CHAÎNES (03/09). Le tri prenait le
+    # max LEXICOGRAPHIQUE du préfixe : « v198 » (1.98.0) bat « v1282 », donc
+    # dès que la version a passé 1.99 le paquet ré-embarquait en SILENCE les
+    # vies périmées — précisément ce que ce bloc existe pour empêcher. On lit
+    # les chiffres du préfixe et on les compare comme des nombres.
+    # Le nom d'un transcript commence par sa version POINTÉE : `v1.128.2-…`.
+    # ⚠️ L'ancien nommage collé (`v198` pour 1.98.0) est intrinsèquement
+    # ambigu — « 198 » se compare à « 1 » et gagne. Les fichiers d'alors ont
+    # été renommés ; un nom qui ne porte pas de point est donc un reliquat, et
+    # il passe en DERNIER plutôt que de rafler la sélection en silence.
+    def version_du(nom: str) -> tuple[int, ...]:
+        prefixe = nom.split("-")[0].lstrip("v")
+        if "." not in prefixe:
+            return (-1,)
+        return tuple(int(m) for m in re.findall(r"\d+", prefixe)) or (-1,)
+
     trans = [Path(a) for a in argv[1:]]
     if not trans:
-        tous = sorted((RACINE / "data" / "transcripts").glob("v1[0-9]*.md"))
+        tous = sorted((RACINE / "data" / "transcripts").glob("v*.md"))
         if tous:
-            dernier = max(f.name.split("-")[0] for f in tous)
-            trans = [f for f in tous if f.name.startswith(dernier + "-")]
+            plus_recent = max(version_du(f.name) for f in tous)
+            trans = [f for f in tous if version_du(f.name) == plus_recent]
     for t in trans:
         if t.exists():
             shutil.copy(t, pack / "transcripts" / t.name)
