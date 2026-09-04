@@ -32,16 +32,18 @@ import { assetSrc } from "@/lib/assets";
  * rend le trait fin sans changer une seule règle de DA. Les deux autres modes
  * gardent 300×160 tant qu'on ne les a pas repensés.
  */
+import { ZONE_W, ZONE_H, dissoudreBords } from "@/components/minigames/zone";
+
 const W = 300,
   H = 160;
 /* Zone de jeu pleine, comme RubReveal en peau image. C'est cette résolution
    qui donne au mécanisme la place d'être DÉTAILLÉ. */
-const TW = 360,
-  TH = 499;
+const TW = ZONE_W,
+  TH = ZONE_H;
 /** La porte : le crochetage se joue toujours sur la même, le moteur résout
     donc son chemin lui-même. Deux appelants (le jeu, la galerie) qui le
     passeraient chacun pourraient diverger. */
-const FOND_PORTE = "assets/minijeu_serrure_fond.png";
+const FOND_PORTE = "assets/minijeu_serrure_fond_b.png";
 
 export default function TimingTap({
   seed,
@@ -222,19 +224,9 @@ export default function TimingTap({
         ne scintille pas d'une frame à l'autre. */
     function porte() {
       if (fond) ctx.drawImage(fond, 0, 0, TW, TH);
-      const BANDE = 96;
-      ctx.fillStyle = CHARBON;
-      for (let y = 0; y < TH; y++) {
-        let k: number;
-        if (y < BANDE) k = 1 - y / BANDE;
-        else if (y > TH - BANDE) k = 1 - (TH - y) / BANDE;
-        else continue;
-        const p = k * k * 1.05; // dense au ras du bord, clairsemé au milieu
-        for (let x = 0; x < TW; x += 1) {
-          const n = ((x * 2654435761 + y * 40503) >>> 0) / 4294967296;
-          if (n < p) ctx.fillRect(x, y, 1, 1);
-        }
-      }
+      // La dissolution des bords vit dans `zone.ts` depuis le 04/09 : elle est
+      // partagée par les cinq moteurs habillés, une seule définition.
+      dissoudreBords(ctx, TW, TH);
     }
 
     /** La platine de fer clouée sur le bois : fond charbon dense, grain de

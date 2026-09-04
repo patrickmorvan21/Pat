@@ -27,11 +27,13 @@ import { CHARBON, CREME, ORANGE } from "@/lib/dither";
  *     coupe rien. Si l'image ne charge pas, la corde procédurale d'avant
  *     reprend (jamais un rectangle noir).
  */
+import { ZONE_W, ZONE_H, dissoudreBords } from "@/components/minigames/zone";
+
 const W0 = 300,
   H0 = 200;
 /** Zone de jeu native des mini-jeux habillés (Frottage 25/08, Crochetage 30/08). */
-const WC = 360,
-  HC = 499;
+const WC = ZONE_W,
+  HC = ZONE_H;
 /** La tuile de corde : 120 px de large, 466 px de période. */
 const TILE_W = 120,
   TILE_H = 466;
@@ -197,18 +199,9 @@ export default function StraightSwipe({
       ctx.beginPath();
       points.forEach((p, i) => (i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y)));
       ctx.stroke();
-      if (!finished) {
-        ctx.fillStyle = CREME;
-        ctx.globalAlpha = 0.5;
-        ctx.font = "12px 'Roboto Mono', monospace";
-        ctx.textAlign = "center";
-        ctx.fillText(
-          corde ? "Tranche la corde d'un geste net" : "Un seul geste, net et rapide",
-          W / 2,
-          H - 16
-        );
-        ctx.globalAlpha = 1;
-      }
+      // ⚠️ La consigne N'EST PLUS dessinée ici (04/09) : l'overlay la porte,
+      // tout en bas de l'écran, et une seule fois.
+      if (corde) dissoudreBords(ctx, W, H);
     }
     draw();
     return () => {

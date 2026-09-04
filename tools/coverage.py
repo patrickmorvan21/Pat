@@ -366,9 +366,9 @@ REGLE_MARCHE = {
         "en pleine lande, entre deux lieux extérieurs — tirée par la graine "
         "du pas : ni la provenance ni la destination ne la choisissent"
     ),
-    "LANDES_GENERIC": (
-        "en pleine lande, entre deux lieux extérieurs — tirée par la graine "
-        "du pas : ni la provenance ni la destination ne la choisissent"
+    "LANDES_GENERIC_RESERVE": (
+        "EN RÉSERVE, plus jamais tirée : chacune porte une figure à l'horizon, "
+        "servie pendant qu'on lit qu'on est seul (correctif 04/09)"
     ),
 }
 
@@ -387,7 +387,7 @@ MARCHE_HORS_POOL = {
 def read_transitions(src: str) -> list[dict]:
     """Les images des écrans de marche, chacune avec la règle qui la sert."""
     out: dict[str, str] = {}
-    for nom in ("HAMEAU_WALK", "LANDES_WALK", "LANDES_GENERIC"):
+    for nom in ("HAMEAU_WALK", "LANDES_WALK", "LANDES_GENERIC_RESERVE"):
         m = re.search(nom + r"\s*[:=][^=]*?\[(.*?)\]", src, re.S)
         if not m:
             continue

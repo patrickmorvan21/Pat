@@ -31,3 +31,29 @@ elles disent qu'il n'est ni le premier ni le dernier, ce que le vide seul ne dis
 ```
 scene_falaise_appele_b=a lone cloaked figure standing on FLAT open heather ground, seen small and from behind against a bright empty sky, level horizon, no cliff and no overhang in the frame, one hand closed on a hanging hemp rope without looking at it, many other ropes hanging straight down all around and behind him, receding into the distance, the mouth of the pit reading only as a low flat band of solid black across the bottom of the frame, the cloak lifted sideways by the wind, no face, no eye contact; medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
+
+## Les deux vues LOINTAINES de la Descente (04/09)
+
+Quand la traversée ne passe pas par la Palissade Sud (c'est le cas de la première run,
+où la Falaise est un déroutage direct après la Meute), on tombait sur le gouffre à
+quelques mètres, en un seul tap. Deux beats préparent maintenant le regard — la ligne à
+l'horizon, puis l'entaille qui s'ouvre — et chacun attend SON image.
+
+⚠️ Ces deux-là ne doivent JAMAIS montrer la bouche du trou ni les cordes lisibles : elles
+vendraient l'écran suivant. C'est la distance qui est le sujet.
+
+En attendant, chaque beat retombe sur une vue de lande neutre (le plateau, puis le chemin
+de pierres vers le sud). Déposer les fichiers sous ces noms exacts suffit : aucun code à
+changer, le repli est gardé par `assetExiste`.
+
+### `scene_descente_au_loin_a.png`
+
+```
+scene_descente_au_loin_a=an extremely wide establishing view of an empty rolling moor seen from a low rise, the land stretching away flat and featureless under a huge bright empty sky, and far away on the horizon a single thin dark horizontal line cutting the whole country in two from edge to edge, barely thicker than a thread, no detail in it at all, no pit mouth visible and no ropes visible at this distance, the scale enormous and the line tiny, no figure, no building, no path; medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `scene_descente_approche_a.png`
+
+```
+scene_descente_approche_a=the same empty moor seen much closer to the end of a long walk, low evening light raking across the heather, and the dark line on the horizon now opened into a long black gash across the middle distance, still far away, with a faint comb of thin vertical threads hanging in the air above it, too far to read as ropes, the sky bright and completely empty of birds, no figure, no building; medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```

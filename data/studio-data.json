@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-04T08:28:56Z",
- "commit": "f03534a",
+ "genere": "2026-09-04T17:41:10Z",
+ "commit": "b6f2d47",
  "zones": [
   {
    "id": "landes",
@@ -7833,6 +7833,39 @@
    "regle": "AU SORTIR DU HAMEAU : le muret d'enceinte vient d'être franchi, le village est dans le dos, et deux routes de lande s'ouvrent devant"
   },
   {
+   "fichier": "scene_lande_generique_1_b_d.png",
+   "hash": "ffb2140b",
+   "taille": 12326,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_lande_generique_1_b_d",
+   "regle": "EN RÉSERVE, plus jamais tirée : chacune porte une figure à l'horizon, servie pendant qu'on lit qu'on est seul (correctif 04/09)"
+  },
+  {
+   "fichier": "scene_lande_generique_2_b_b.png",
+   "hash": "1d702fde",
+   "taille": 10733,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_lande_generique_2_b_b",
+   "regle": "EN RÉSERVE, plus jamais tirée : chacune porte une figure à l'horizon, servie pendant qu'on lit qu'on est seul (correctif 04/09)"
+  },
+  {
+   "fichier": "scene_lande_generique_4_b_f.png",
+   "hash": "9a17ad44",
+   "taille": 6734,
+   "recent": false,
+   "existe": true,
+   "statut": "fallback",
+   "herite": "",
+   "id": "marche:scene_lande_generique_4_b_f",
+   "regle": "EN RÉSERVE, plus jamais tirée : chacune porte une figure à l'horizon, servie pendant qu'on lit qu'on est seul (correctif 04/09)"
+  },
+  {
    "fichier": "scene_hameau_dense_c.png",
    "hash": "c3a695ff",
    "taille": 30005,
@@ -7877,28 +7910,6 @@
    "regle": "en pleine lande, entre deux lieux extérieurs — tirée par la graine du pas : ni la provenance ni la destination ne la choisissent"
   },
   {
-   "fichier": "scene_lande_generique_1_b_d.png",
-   "hash": "ffb2140b",
-   "taille": 12326,
-   "recent": false,
-   "existe": true,
-   "statut": "fallback",
-   "herite": "",
-   "id": "marche:scene_lande_generique_1_b_d",
-   "regle": "en pleine lande, entre deux lieux extérieurs — tirée par la graine du pas : ni la provenance ni la destination ne la choisissent"
-  },
-  {
-   "fichier": "scene_lande_generique_2_b_b.png",
-   "hash": "1d702fde",
-   "taille": 10733,
-   "recent": false,
-   "existe": true,
-   "statut": "fallback",
-   "herite": "",
-   "id": "marche:scene_lande_generique_2_b_b",
-   "regle": "en pleine lande, entre deux lieux extérieurs — tirée par la graine du pas : ni la provenance ni la destination ne la choisissent"
-  },
-  {
    "fichier": "scene_lande_generique_3_b_f_a.png",
    "hash": "8c31ff3d",
    "taille": 22674,
@@ -7907,17 +7918,6 @@
    "statut": "fallback",
    "herite": "",
    "id": "marche:scene_lande_generique_3_b_f_a",
-   "regle": "en pleine lande, entre deux lieux extérieurs — tirée par la graine du pas : ni la provenance ni la destination ne la choisissent"
-  },
-  {
-   "fichier": "scene_lande_generique_4_b_f.png",
-   "hash": "9a17ad44",
-   "taille": 6734,
-   "recent": false,
-   "existe": true,
-   "statut": "fallback",
-   "herite": "",
-   "id": "marche:scene_lande_generique_4_b_f",
    "regle": "en pleine lande, entre deux lieux extérieurs — tirée par la graine du pas : ni la provenance ni la destination ne la choisissent"
   },
   {

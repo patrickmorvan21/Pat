@@ -29,6 +29,8 @@ import { bayerFill, CHARBON, CREME, erodedRectPath, noiseSpecks, ORANGE, seededR
  * couvre jamais 100 % d'une pierre, on devine ce qu'il y a dessous. Réglable
  * par `config.preEclaircie` (part de surface déjà mangée, défaut ~0.12).
  */
+import { ZONE_W, ZONE_H, dissoudreBords } from "@/components/minigames/zone";
+
 const W = 300,
   H = 180,
   COLS = 30,
@@ -62,8 +64,8 @@ export default function RubReveal({
   const done = useRef(false);
   const imageSkin = Boolean(config.imageFond && config.imageMousse);
   // Dimensions de la maquette Figma (zone de jeu 360×499 à y=174).
-  const CW = imageSkin ? 360 : W;
-  const CH = imageSkin ? 499 : H;
+  const CW = imageSkin ? ZONE_W : W;
+  const CH = imageSkin ? ZONE_H : H;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -284,6 +286,9 @@ export default function RubReveal({
           ctx.arc(cursor.x, cursor.y, 11, 0, Math.PI * 2);
           ctx.stroke();
         }
+        // Les bords se dissolvent en pixels — en DERNIER, pour manger aussi
+        // l'anneau du curseur qui déborderait.
+        dissoudreBords(ctx, CW, CH);
         if (phase === "gratte") {
           let cleared = 0;
           for (let i = 0; i < GC * GR; i++) cleared += 1 - dens[i];

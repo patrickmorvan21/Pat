@@ -362,6 +362,22 @@ export type Choice = {
    * lieu supprimait silencieusement l'économie « explorer prépare ».
    */
   illustration?: string;
+  /**
+   * LA CRÉATURE N'EST PLUS DANS LE CADRE (retour Patrick 04/09 : « j'ai la
+   * bête en image mais le texte ne correspond pas »).
+   *
+   * Par défaut, la conséquence d'un choix dont la suite est une liaison se lit
+   * sur l'image de la scène qu'on quitte — règle du 7/08, et elle est juste
+   * tant que la créature est encore le sujet de la phrase (« la meneuse
+   * recule », « le croissant reflue »). Elle devient fausse quand le texte a
+   * DÉPLACÉ le héros : « tu montes au premier tas de pierres, hors de tout
+   * couloir… la route directe est à elle » se lisait sur la bête tapie dans
+   * son creux, qu'on venait précisément de quitter.
+   *
+   * Ce drapeau rend l'écran à l'endroit où l'on est ENSUITE. Il se pose au
+   * cas par cas ; `tools/image_texte.py` liste les candidats.
+   */
+  consequenceAilleurs?: true;
   observe?: boolean;
   /** Ce choix n'existe que si le COMPTE tient cette découverte. */
   requiresDecouverte?: string;
@@ -4438,6 +4454,9 @@ export const SCENES: Scene[] = [
         // parfaitement sûr, et le prix est dit — le grand tour qu'elles
         // t'imposent (la Croisée suivante n'offre qu'une direction).
         id: "retour-ceder",
+        // Le texte DÉPLACE le héros (il monte, il quitte la route) : la
+        // conséquence se lit sur le chemin qui s'ouvre, plus sur la créature.
+        consequenceAilleurs: true,
         label: "Leur céder le chemin",
         fermeLaRoute: "meute",
         passive: {
@@ -4483,6 +4502,9 @@ export const SCENES: Scene[] = [
            ne travaille qu'en couloir, dans l'axe, jamais sur les bords.
            L'échec rate la manœuvre, pas le corps (`horsDePortee`). */
         id: "retour-couloir",
+        // Les quatre issues sortent le héros de l'axe : la Bête reste dans
+        // son couloir, lui n'y est plus. L'écran suit le héros.
+        consequenceAilleurs: true,
         nature: "physique",
         label: "Refuser le couloir",
         requiresDecouverte: "d.bete_couloir",
@@ -4500,6 +4522,9 @@ export const SCENES: Scene[] = [
       },
       {
         id: "retour-hauteur",
+        // Le texte DÉPLACE le héros (il monte, il quitte la route) : la
+        // conséquence se lit sur le chemin qui s'ouvre, plus sur la créature.
+        consequenceAilleurs: true,
         label: "Prendre la hauteur et attendre",
         fermeLaRoute: "bete",
         passive: {
@@ -9161,11 +9186,23 @@ export function phraseArrivee(seed: number, vues: string[] = []): string {
 /** Les 4 vues génériques des Landes (fournies par Patrick, 24/07) : utilisées
     pour la MARCHE (liaisons) et comme secours quand un lieu n'a pas d'asset
     propre. Donnent au visuel de quoi bouger scène après scène. */
-export const LANDES_GENERIC = [
-  "assets/scene_lande_generique_1_b_d.png",
-  "assets/scene_lande_generique_2_b_b.png",
-  "assets/scene_lande_generique_3_b_f_a.png",
-  "assets/scene_lande_generique_4_b_f.png",
+/**
+ * ⚠️ RÉSERVE — CES QUATRE-LÀ NE SONT PLUS TIRÉES POUR UNE MARCHE (04/09).
+ *
+ * Trois d'entre elles portent une FIGURE à l'horizon (`_1` en porte quatre,
+ * `_2` et `_4` une chacune) : servies pendant qu'on lit qu'on est seul, elles
+ * disent le contraire du texte. Le correctif du 2/09 les avait écartées de
+ * `LANDES_WALK`… puis les y ramenait toutes par un `...LANDES_GENERIC` trois
+ * lignes plus bas — le commentaire disait l'exclusion, le code la défaisait,
+ * et `_1` est restée la vue de marche la plus fréquente du jeu.
+ *
+ * La seule sans personne, `_3_b_f_a`, est listée EN CLAIR dans le pool. Cette
+ * table n'est plus qu'un inventaire : ne jamais la re-répandre dans un pool.
+ */
+export const LANDES_GENERIC_RESERVE = [
+  "assets/scene_lande_generique_1_b_d.png", // quatre marcheurs à l'horizon
+  "assets/scene_lande_generique_2_b_b.png", // une silhouette sur la crête
+  "assets/scene_lande_generique_4_b_f.png", // une silhouette à droite
 ];
 
 /** Vues de MARCHE des Landes (lot Drive 25/07) : chemins, plateaux, fourches —
@@ -9183,7 +9220,6 @@ const LANDES_WALK = [
   "assets/scene_landes_liaison_fourche_b_e_a.png",
   "assets/scene_lande_arbres_morts_d_d.png",
   "assets/scene_lande_generique_3_b_f_a.png",
-  ...LANDES_GENERIC,
 ];
 
 /** Les 3 vues d'ensemble du hameau que Patrick veut « varier entre des
@@ -9354,9 +9390,55 @@ export const DEMO_BORNE_CADRAGES: Record<string, string> = {
 };
 
 /** L'arrivée à la Falaise (déroutage — hors table APPROACH, hors pool). */
-export const DEMO_FALAISE_APPROCHE =
-  "Passé les silhouettes grises, la lande descend sans prévenir, et le vent " +
-  "change de goût : plus de bruyère. Du vide.";
+/**
+ * ON VOIT LA DESCENTE DE TRÈS LOIN AVANT D'ÊTRE AU BORD (retour Patrick 04/09).
+ *
+ * ⚠️ Le défaut : quand la traversée ne passe PAS par la Palissade Sud — c'est
+ * le cas de la première run, où la Falaise est un déroutage direct après la
+ * Meute — on passait de la meute au plan du gouffre en un seul tap. Une seule
+ * phrase d'approche, et l'écran suivant nous mettait à quelques mètres du trou :
+ * « ça casse l'immersion ». Le chemin de sortie normal, lui, prépare le
+ * regard (le Chemin du Sud, puis la Palissade, puis la Falaise).
+ *
+ * Deux beats, chacun sur SON image, séparés par une vraie frontière d'écran :
+ * la ligne sombre à l'horizon, puis l'entaille qui s'ouvre — et seulement
+ * ensuite la dernière ondulation de bruyère de `falaise-cordes`.
+ *
+ * Les deux visuels dédiés sont à produire (Patrick s'en charge) : en attendant,
+ * chaque beat retombe sur une vue de lande NEUTRE — jamais l'image du gouffre,
+ * qui vendrait la mèche deux écrans trop tôt. Déposer les fichiers sous les
+ * noms ci-dessous suffira, il n'y a aucun code à changer.
+ */
+/** Le fichier voulu s'il est déjà sur le disque, sinon un repli neutre — la
+    règle « neutre vaut mieux que contradictoire » (31/08). */
+function imageOuDefaut(voulu: string, repli: string): string {
+  return assetExiste(voulu) ? voulu : repli;
+}
+
+export const DESCENTE_AU_LOIN: { texte: string; image: string }[] = [
+  {
+    texte:
+      "Passé les silhouettes grises, la lande descend sans prévenir, et le " +
+      "vent change de goût : plus de bruyère. Du vide. Loin devant — si loin " +
+      "que ce pourrait être un banc de brume — une ligne sombre coupe le pays " +
+      "d'un bord à l'autre. Elle ne bouge pas. Rien ne la traverse.",
+    image: imageOuDefaut(
+      "assets/scene_descente_au_loin_a.png",
+      "assets/scene_landes_liaison_plateau_e_b_a.png"
+    ),
+  },
+  {
+    texte:
+      "Tu marches dessus jusqu'à ce que le soleil descende, et la ligne ne " +
+      "grandit pas : elle s'ouvre. De cette distance, on distingue déjà des " +
+      "fils verticaux au-dessus d'elle, serrés, immobiles. Il n'y a pas " +
+      "d'oiseaux.",
+    image: imageOuDefaut(
+      "assets/scene_descente_approche_a.png",
+      "assets/scene_murets_vers_sud_c.png"
+    ),
+  },
+];
 
 /** LE GRIMPEUR QUI REMONTE (retour Patrick 25/08) — la Falaise dit sa règle
  *  en la faisant échouer sous les yeux du joueur : personne ne remonte. UNE

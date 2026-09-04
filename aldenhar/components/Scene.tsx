@@ -59,7 +59,7 @@ import {
   NUIT_OUVERTURE,
   SECOND_PROCES,
   DEMO_BORNE_CADRAGES,
-  DEMO_FALAISE_APPROCHE,
+  DESCENTE_AU_LOIN,
   DEMO_FALAISE_LECTURES,
   FALAISE_REMONTE,
   DEMO_MEUTE_COUTURE,
@@ -2130,6 +2130,9 @@ export default function Scene() {
     result?: number;
     fail?: boolean;
     consequence?: string;
+    /** La conséquence a DÉPLACÉ le héros : elle se lit là où il est ensuite,
+        pas sur la créature qu'il vient de quitter (voir `consequenceAilleurs`). */
+    consequenceAilleurs?: boolean;
     /** Récompense Besace d'un Destin (13/07) — annoncée dans l'écran. */
     destinItem?: BesaceItem | null;
     /** Objet réel gagné par la réussite d'un choix `grantsLoot` (23/07). */
@@ -2208,6 +2211,10 @@ export default function Scene() {
      * (narration silencieuse, dépositions, témoin).
      */
     let deroute = false;
+    /* L'APPROCHE ÉTAGÉE (04/09) : des beats préfixés à la narration d'une
+       scène, chacun sur son image et fermé par une frontière d'écran. Sert la
+       vue lointaine de la Descente quand on n'arrive pas par la Palissade. */
+    let etagesApproche: { texte: string; image: string }[] = [];
     /**
      * ⚠️ ON N'ARRIVE PAS TOUJOURS OÙ LE BOUTON DISAIT (correctif 01/09, 2e cause).
      *
@@ -2617,9 +2624,19 @@ export default function Scene() {
       ) {
         /* LA FALAISE (segment 10) : passé la Meute, le sol descend vers le
            bord du monde. Déroutage direct — la Falaise n'est pas un lieu du
-           pool, c'est le dernier beat de la courbe. */
+           pool, c'est le dernier beat de la courbe.
+
+           ⚠️ ON LA VOIT DE TRÈS LOIN D'ABORD (04/09) : ce chemin-là ne passe
+           pas par la Palissade Sud, donc rien ne préparait le regard — on
+           tombait sur le gouffre à quelques mètres, en un tap. Les deux beats
+           de `DESCENTE_AU_LOIN` sont préfixés à la narration, et le bloc
+           d'images leur pose une frontière d'écran chacun. */
         const base = resoudre("falaise-cordes", runRef.current)!;
-        nextScene = { ...base, narration: [DEMO_FALAISE_APPROCHE, ...base.narration] };
+        etagesApproche = DESCENTE_AU_LOIN;
+        nextScene = {
+          ...base,
+          narration: [...DESCENTE_AU_LOIN.map((e) => e.texte), ...base.narration],
+        };
         trav.phase = "scene";
         deroute = true;
         trav.current = "falaise-cordes";
@@ -2974,12 +2991,20 @@ export default function Scene() {
     for (const d of dueDebts) {
       entries.push({ id: nextId(), kind: "narration", text: d.text });
     }
-    // Rencontre de combat (spec §6) : annonce AVANT le texte (ordre Figma).
-    // 03/09 — pas de seconde bannière sur le 2e beat d'un même adversaire
-    // (la Meute l'affichait deux fois).
-    if (nextScene.combat && nextScene.foeName && scene.foe !== nextScene.foe) {
-      entries.push({ id: nextId(), kind: "combat", foe: nextScene.foeName });
-    }
+    /* LA BANNIÈRE ANNONCE LA CRÉATURE SUR L'ÉCRAN OÙ ON LA VOIT (retour
+       Patrick 04/09 : « le titre devrait se trouver sur cet écran-ci et non
+       avant »). Elle était poussée ICI, donc en tête du tout premier écran —
+       c'est-à-dire par-dessus la VUE DE MARCHE, pendant qu'on lit la phrase
+       d'approche : « • RENCONTRE • / La Meute Grise » s'affichait sur un
+       paysage vide, et la meute arrivait à l'écran suivant, sans titre.
+       On la met donc de côté, et on l'insère plus bas — une fois les
+       frontières d'écran connues — juste devant le paragraphe qui ouvre
+       l'écran de la créature. 03/09 : jamais deux fois pour un même
+       adversaire (la Meute l'affichait sur ses deux beats). */
+    const banniereCombat: FeedEntry | null =
+      nextScene.combat && nextScene.foeName && scene.foe !== nextScene.foe
+        ? { id: nextId(), kind: "combat", foe: nextScene.foeName }
+        : null;
     // Dette de sang (§19) : l'adversaire qui a déjà tué un des tiens te reconnaît.
     if (nextScene.foe) {
       const debt = bloodDebtFor(loadMemory(), nextScene.foe);
@@ -3206,6 +3231,15 @@ export default function Scene() {
     // créature. Utilisé plus bas, et seulement si une rencontre a bien une
     // image de lieu distincte de la sienne.
     const idPremiereNarration = entreesNarration[0]?.id ?? null;
+    /* Où s'ancre la bannière de rencontre : le paragraphe qui OUVRE l'écran de
+       la créature. Par défaut le premier (arrivée en deux temps, chaîne,
+       substitution) ; le bloc d'images le repousse au second quand l'arrivée
+       se joue en trois temps (loin → lieu → créature). */
+    let idAncreRencontre = idPremiereNarration;
+    /* Ce qui précède la narration (la conséquence du jet qui vient de se
+       résoudre, un bandeau…) occupe le PREMIER écran. L'approche étagée doit
+       donc lui laisser sa place et son image, et commencer au suivant. */
+    const idAvantNarration = entries[entries.length - 1]?.id ?? null;
     entries.push(...entreesNarration);
     // L'écho d'un objet-promesse (voir ECHOS_OBJET) : ce que tu portes te
     // rattrape là où ça compte, une fois par scène et par objet.
@@ -3735,7 +3769,31 @@ export default function Scene() {
     /* Les frontières d'écran IMPOSÉES par la grammaire d'arrivée (31/08).
        Vide partout ailleurs : le budget de mots continue de décider seul. */
     const coupures = new Set<string>();
-    if (contextChanged) {
+    if (etagesApproche.length && entreesNarration.length > etagesApproche.length) {
+      /* L'APPROCHE ÉTAGÉE : un beat = un écran = une image. On part de la vue
+         la plus lointaine, et chaque frontière rapproche d'un cran ; la
+         dernière rend l'écran à l'illustration de la scène elle-même. */
+      const avant = lastSceneIlloRef.current;
+      lastSceneIlloRef.current = nextIllustration;
+      if (idAvantNarration) {
+        // ⚠️ Trouvé au test : sans cette frontière, les images glissaient d'un
+        // cran — la vue lointaine tombait sur la conséquence du combat, et le
+        // gouffre arrivait sur le beat « plus près », c'est-à-dire deux écrans
+        // trop tôt. L'écran de la conséquence garde SON image (celle du
+        // combat, règle du 7/08) et la marche commence au suivant.
+        img = { src: avant, kind: "scene" };
+        coupures.add(idAvantNarration);
+        differees.push(etagesApproche[0].image);
+      } else {
+        img = { src: etagesApproche[0].image, kind: "scene" };
+      }
+      etagesApproche.forEach((e, i) => {
+        const id = entreesNarration[i]?.id;
+        if (!id) return;
+        coupures.add(id);
+        differees.push(etagesApproche[i + 1]?.image ?? nextIllustration);
+      });
+    } else if (contextChanged) {
       const ancienne = lastSceneIlloRef.current;
       lastSceneIlloRef.current = nextIllustration;
       img = { src: nextIllustration, kind: "scene" };
@@ -3750,7 +3808,7 @@ export default function Scene() {
       // est une LIAISON, on lisait « ta lame répond… » par-dessus la vue de
       // marche. L'image du lieu quitté TIENT le temps du 1er écran de la
       // séquence ; la vue de marche prend le relais au tap suivant.
-      if (opts?.consequence && nextScene.liaison) {
+      if (opts?.consequence && nextScene.liaison && !opts?.consequenceAilleurs) {
         img = { src: ancienne, kind: "scene" };
         // ⚠️ posée APRÈS showScreen (qui purge les bascules différées d'un
         // écran précédent) — voir la fin d'advance().
@@ -3792,6 +3850,9 @@ export default function Scene() {
           if (lieuArrivee !== nextIllustration && idPremiereNarration) {
             coupures.add(idPremiereNarration);
             differees.push(nextIllustration);
+            // temps 3 : la créature paraît avec le paragraphe suivant — c'est
+            // là que sa bannière doit tomber, pas sur l'écran du lieu.
+            idAncreRencontre = entreesNarration[1]?.id ?? idPremiereNarration;
           }
         }
       } else if (lieuArrivee !== nextIllustration) {
@@ -4043,6 +4104,15 @@ export default function Scene() {
     setSelectedId(null);
     setRoll(null);
     setTimedExpired(false);
+    /* La bannière rejoint le flux À SA PLACE : juste devant le paragraphe qui
+       ouvre l'écran de la créature. Une entrée non-textuelle pèse 0 dans le
+       découpage et reste collée au bloc qui la suit — elle ne peut donc pas
+       glisser sur l'écran d'avant. */
+    if (banniereCombat) {
+      const i = idAncreRencontre ? entries.findIndex((e) => e.id === idAncreRencontre) : -1;
+      if (i >= 0) entries.splice(i, 0, banniereCombat);
+      else entries.push(banniereCombat);
+    }
     showScreen(entries, img, coupures);
     // Les bascules différées survivent à showScreen (qui purge celles d'avant).
     if (differees.length || sceauDiffere) {
@@ -4295,7 +4365,7 @@ export default function Scene() {
               ? { points: 6, tolerance: 22 }
               : { points: 7, tolerance: 19 }),
           skin: "pierre",
-          imageFond: assetSrc("assets/minijeu_chapelle_pierre_b.png"),
+          imageFond: assetSrc("assets/minijeu_chapelle_pierre_c.png"),
         });
       } else if (eng === "pick") {
         /* Le Crochetage (la nuit) : la Ruse élargit la gorge. TROIS goupilles
@@ -4349,8 +4419,8 @@ export default function Scene() {
           label: choice.minigame.label ?? "CÔTÉ SUD",
           threshold: 0.45,
           preEclaircie: 0.12,
-          imageFond: assetSrc("assets/minijeu_borne_pierre.png"),
-          imageMousse: assetSrc("assets/minijeu_borne_mousse.png"),
+          imageFond: assetSrc("assets/minijeu_borne_pierre_b.png"),
+          imageMousse: assetSrc("assets/minijeu_borne_mousse_b.png"),
         });
       }
       testeurTaps.current = 0;
@@ -5100,6 +5170,7 @@ export default function Scene() {
                 consequence: consequencePassive, grantedItem: granted,
                 toScene: sortieVers, append: supplementsBeats,
                 imageElement: choice.illustration,
+                consequenceAilleurs: choice.consequenceAilleurs,
               }),
         320
       );
@@ -5685,6 +5756,7 @@ export default function Scene() {
               destinItem,
               grantedItem,
               toScene: chosen?.sortie?.toScene,
+              consequenceAilleurs: chosen?.consequenceAilleurs,
             });
           }}
         />
@@ -5698,8 +5770,13 @@ export default function Scene() {
             temps 2 (décision Patrick 24/08). */}
         {minigameChoice && minigameChoice.minigame && (
           <div
-            className="absolute inset-0 z-[45] flex flex-col items-center justify-center px-[24px]"
-            style={{ backgroundColor: "rgba(28, 26, 22, 0.94)" }}
+            className="absolute inset-0 z-[45] flex flex-col items-center justify-center"
+            /* ⚠️ FOND PLEINEMENT OPAQUE (retour Patrick 04/09 : « pas de fond
+               où on voit l'interface derrière »). À 94 %, les trois boutons de
+               choix et la narration transparaissaient sous le geste — on lisait
+               quatre textes concurrents au moment où il n'en faut qu'un. Et
+               plus de marge horizontale : la zone prend toute la largeur. */
+            style={{ backgroundColor: "var(--color-bg)" }}
             onPointerDown={() => {
               // Mode testeur (`?testeur=1`) : trois taps résolvent le geste —
               // une IA sans geste réel (ou l'auto-joueur) n'est jamais murée
@@ -5712,18 +5789,11 @@ export default function Scene() {
               }
             }}
           >
-            {!(minigameConfig as { imageFond?: string } | null)?.imageFond && (
-              <p className="mb-[14px] max-w-[320px] text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]/85">
-                {minigameChoice.label}
-              </p>
-            )}
-            <div
-              className={
-                (minigameConfig as { imageFond?: string } | null)?.imageFond
-                  ? "flex w-full justify-center"
-                  : "w-[320px]"
-              }
-            >
+            {/* ⚠️ LE LIBELLÉ DU CHOIX N'EST PLUS RÉPÉTÉ EN TÊTE (04/09). On
+                venait de le toucher : le redire au-dessus du canvas faisait une
+                deuxième information là où le geste doit être seul. Il ne reste
+                que la consigne, tout en bas. */}
+            <div className="flex w-full justify-center">
               {minigameChoice.minigame.engine === "rub" ? (
                 <RubReveal
                   seed={`demo-${scene.id}`}
@@ -5809,8 +5879,16 @@ export default function Scene() {
                 comme « Touche pour continuer » (classe `touch-hint` = la même
                 respiration pulse steps(2), demande Patrick 25/08). Pendant
                 l'envol il se tait : la mousse qui part est le message. */}
+            {/* LA SEULE INFORMATION DE L'ÉCRAN : la consigne du geste, ancrée
+                TOUT EN BAS (retour Patrick 04/09 : « met juste tout en bas
+                “tranche la corde d'un geste net”, c'est tout »). Même ancrage
+                que « Touche pour continuer » — 50 px du bord, la règle globale
+                des affordances. Elle clignote par paliers (`touch-hint`).
+                ⚠️ Le cas `cut` MANQUAIT : « Trancher la corde » retombait sur
+                le libellé du Souffle (« Maintiens l'appui — tiens bon »), donc
+                l'écran donnait une consigne fausse pour son propre geste. */}
             <p
-              className={`touch-hint mt-[14px] text-center font-mono text-[11px] uppercase tracking-[2px] text-[var(--color-ink)]/50 ${
+              className={`touch-hint absolute inset-x-0 bottom-[50px] text-center font-mono text-[11px] uppercase tracking-[2px] text-[var(--color-ink)]/50 ${
                 minigamePhase === "envol" &&
                 (minigameConfig as { imageFond?: string } | null)?.imageFond
                   ? "invisible"
@@ -5825,12 +5903,14 @@ export default function Scene() {
                 : minigameChoice.minigame.engine === "rub"
                 ? "Frotte la pierre"
                 : minigameChoice.minigame.engine === "trace"
-                  ? "Suis le tracé du tressage, point après point"
+                  ? "Suis le tressage, point après point"
                   : minigameChoice.minigame.engine === "pick"
                     ? "Tape quand le crochet est dans la gorge"
-                    : minigameChoice.minigame.engine === "swipe"
-                      ? "Fais glisser vers le bas — lentement"
-                      : "Maintiens l'appui — tiens bon"}
+                    : minigameChoice.minigame.engine === "cut"
+                      ? "Tranche la corde d'un geste net"
+                      : minigameChoice.minigame.engine === "swipe"
+                        ? "Fais glisser vers le bas — lentement"
+                        : "Maintiens l'appui — tiens bon"}
             </p>
           </div>
         )}

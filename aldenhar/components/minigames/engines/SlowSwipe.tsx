@@ -41,10 +41,12 @@ import { CHARBON, CREME, ORANGE } from "@/lib/dither";
  * montre : les chevrons sous la main disent la direction tant que rien n'a
  * bougé.
  */
+import { ZONE_W, ZONE_H, dissoudreBords } from "@/components/minigames/zone";
+
 const W0 = 300,
   H0 = 200;
-const WC = 360,
-  HC = 499;
+const WC = ZONE_W,
+  HC = ZONE_H;
 const TILE_W = 120,
   TILE_H = 466;
 /** Paliers d'extinction de la lumière — quantifiés, jamais continus. */
@@ -373,11 +375,19 @@ export default function SlowSwipe({
       ctx.fillStyle = CHARBON;
       ctx.fillRect(0, 0, W, H);
       ctx.textAlign = "center";
-      if (corde) dessinerCorde(t);
-      else dessinerPage();
-      ctx.fillStyle = CREME;
-      ctx.font = "12px 'Roboto Mono', monospace";
-      ctx.fillText(`${config.label ?? "pages"} : ${paliers}/${config.pagesNeeded}`, W / 2, H - 14);
+      if (corde) {
+        dessinerCorde(t);
+        // ⚠️ Le compteur chiffré (« paliers : 3/5 ») NE S'AFFICHE PLUS sur la
+        // corde (04/09) : les encoches disent déjà la progression, et PACTUM
+        // n'affiche pas de chiffre de mécanique. Il reste sur le grimoire de
+        // la galerie, où rien d'autre ne le dit.
+        dissoudreBords(ctx, W, H);
+      } else {
+        dessinerPage();
+        ctx.fillStyle = CREME;
+        ctx.font = "12px 'Roboto Mono', monospace";
+        ctx.fillText(`${config.label ?? "pages"} : ${paliers}/${config.pagesNeeded}`, W / 2, H - 14);
+      }
     }
     draw();
     return () => {

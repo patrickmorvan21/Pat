@@ -25,10 +25,12 @@ import { bayerFillClipped, CHARBON, CREME, ORANGE, seededRandom } from "@/lib/di
  *     motif de 68 serait un timbre-poste. Si l'image ne charge pas, la
  *     pierre retombe sur le charbon nu — le motif reste jouable.
  */
+import { ZONE_W, ZONE_H, dissoudreBords } from "@/components/minigames/zone";
+
 const W0 = 300,
   H0 = 200;
-const WC = 360,
-  HC = 499;
+const WC = ZONE_W,
+  HC = ZONE_H;
 
 type Config = {
   points: number;
@@ -294,14 +296,10 @@ export default function GlyphTrace({
         ctx.arc(cursor.x, cursor.y, pierre ? 9 : 6, 0, Math.PI * 2);
         ctx.stroke();
       }
-      if (pierre && !finished) {
-        ctx.fillStyle = CREME;
-        ctx.globalAlpha = 0.5;
-        ctx.font = "12px 'Roboto Mono', monospace";
-        ctx.textAlign = "center";
-        ctx.fillText("Suis le tressage du doigt, point après point", W / 2, H - 16);
-        ctx.globalAlpha = 1;
-      }
+      // ⚠️ La consigne N'EST PLUS dessinée ici (04/09) : elle doublait celle
+      // de l'overlay, et PACTUM tient à une seule information par écran.
+      // Les bords se dissolvent en pixels, en dernier.
+      if (pierre) dissoudreBords(ctx, W, H);
     }
     draw();
     return () => {
