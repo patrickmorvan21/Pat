@@ -2223,6 +2223,16 @@ export default function Scene() {
      * « Un craquement rythme ta marche… » (l'approche du Pendu Mal Fixé).
      */
     let destReelle: string | undefined = opts?.toDest;
+    /* UNE EMBUSCADE N'EST PAS UNE ARRIVÉE (panel compréhension 03/09).
+       Quand une substitution intercepte la route (la Bête dans son creux, la
+       Meute au sortir du village), on n'arrive nulle part : on est cueilli en
+       chemin. Deux blocs de la grammaire d'arrivée n'ont alors plus de sens —
+       la phrase de mode (« à couvert » / « à découvert »), qui décrit un
+       cheminement tranquille, et l'image du LIEU interposée avant la créature.
+       Mesuré sur le transcript du 03/09 : « Rien ne s'est retourné, et tu n'as
+       regardé que tes pieds » servie deux lignes après « Une masse se décolle
+       du talus […] et tu es dessus ». */
+    let substitue = false;
     // Armé plus bas si la Croisée qui vient a perdu une de ses deux routes
     // (échec dur au coup précédent, hors séjour).
     let routeFermeeIci = false;
@@ -2409,6 +2419,7 @@ export default function Scene() {
         });
       trav.phase = "scene";
       destReelle = cible;
+      substitue = cible !== opts.toDest;
       // Reprise fidèle : fermer l'app pendant l'embuscade doit rendre la
       // Bête, pas le lieu derrière elle.
       trav.current = cible;
@@ -3092,7 +3103,7 @@ export default function Scene() {
     // …et COMMENT on y arrive : une seule phrase, jamais un paragraphe.
     // ⚠️ VARIATION NARRATIVE, pas une décision (voir phraseArrivee) : le mode
     // ne dépend pas de la route choisie et n'a aucune conséquence mécanique.
-    const arriveePhrase = destReelle && !deroute
+    const arriveePhrase = destReelle && !deroute && !substitue
       ? phraseArrivee(nextStep, runRef.current?.arriveeVues ?? [])
       : null;
     // ⚠️ Chantier fluidité 12/08 : cette phrase est de la COULEUR PURE — le
@@ -3768,10 +3779,20 @@ export default function Scene() {
            prix demandé pour que le déplacement se voie. */
         img = { src: image, kind: "scene" };
         coupures.add(idApproche);
-        differees.push(lieuArrivee);
-        if (lieuArrivee !== nextIllustration && idPremiereNarration) {
-          coupures.add(idPremiereNarration);
+        if (substitue) {
+          /* DEUX TEMPS, PAS TROIS. Le temps 2 (« le lieu ») n'a rien à dire
+             ici : la narration EST la créature, et l'image du lieu s'y
+             affichait pendant qu'on lisait la bête sortir du talus — puis la
+             bête arrivait sur la phrase d'arrivée, qui vient de partir. On
+             garde donc : on la sent (vue de marche + approche), on la voit
+             (son image + sa narration). */
           differees.push(nextIllustration);
+        } else {
+          differees.push(lieuArrivee);
+          if (lieuArrivee !== nextIllustration && idPremiereNarration) {
+            coupures.add(idPremiereNarration);
+            differees.push(nextIllustration);
+          }
         }
       } else if (lieuArrivee !== nextIllustration) {
         // Arrivée sans phrase d'approche (chaîne, déroutage) : on garde la
