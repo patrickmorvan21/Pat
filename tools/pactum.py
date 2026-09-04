@@ -459,8 +459,8 @@ class Partie:
         # (trois testeurs). Voir le haut de `entrer`.
         if s.get("registre"):
             self.dit(
-                "[Le Grand Registre défile : cent noms classés par jours de "
-                "survie, la première ligne grattée jusqu'à la pierre. Ta ligne "
+                "[Le Grand Registre défile : cent noms classés par lieux "
+                "franchis, la première ligne grattée jusqu'à la pierre. Ta ligne "
                 "s'y inscrit, quelque part dans le bas du livre.]",
                 "narration",
             )
@@ -949,7 +949,7 @@ class Partie:
                 # s'affiche. Sans cette ligne, la réplique rendait un écran
                 # vide, lu comme un blocage par un testeur.
                 self.dit(
-                    "[Tu lis. Cent noms classés par jours de survie, la "
+                    "[Tu lis. Cent noms classés par lieux franchis, la "
                     "première ligne grattée jusqu'à la pierre. Ta ligne est "
                     "quelque part dans le bas du livre.]",
                     "narration",

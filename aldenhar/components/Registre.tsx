@@ -13,13 +13,13 @@
  *
  * Colonne JOURS à droite (en-tête x=337, valeurs alignées à droite) : elle est
  * arrivée dans la maquette le 26/07, après une première passe où elle manquait.
- * La ligne verrouillée n'en a pas — ses onze mille jours sont dans son
+ * La ligne verrouillée n'en a pas — elle est INCOMPTABLE, hors de son
  * sous-titre, précisément parce qu'ils ne se comparent à rien.
  */
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { loadMemory } from "@/lib/player-memory";
-import { buildLesCent, mesMorts, type RegistreEntry } from "@/lib/registre-data";
+import { buildLesCent, mesMorts, PREMIER_VALEUR, type RegistreEntry } from "@/lib/registre-data";
 import { assetUrl } from "@/lib/assets";
 import { BoutonNav } from "@/components/NavIcons";
 
@@ -154,23 +154,28 @@ function Ligne({ e }: { e: RegistreEntry }) {
               accent ? "text-[var(--color-accent)]" : "text-[var(--color-ink)] opacity-50"
             }`}
           >
-            {e.locked ? `${e.days.toLocaleString("fr-FR")} ${e.cause}` : e.cause}
+            {e.cause}
           </span>
         </span>
-        {/* La ligne verrouillée n'a pas de valeur ici : ses jours sont dans son
-            sous-titre, parce qu'ils ne se comparent à rien. */}
-        {/* LE STATUT DU SURVIVANT (14/08). Les Cent classent par jours
-            survécus : le nombre EST le sujet, donc c'est lui qui porte le
-            statut. Un héros revenu vivant a ses jours en accent — pas de
+        {/* LA PREMIÈRE PLACE EST HORS MESURE (04/09) : pas un plus gros
+            nombre, pas de nombre du tout. Un chiffre à quatre chiffres
+            laissait croire qu'on pouvait le viser. */}
+        {/* LE STATUT DU SURVIVANT (14/08). Les Cent classent par lieux
+            franchis : le nombre EST le sujet, donc c'est lui qui porte le
+            statut. Un héros revenu vivant a son score en accent — pas de
             badge, pas de couleur neuve, et ça se lit dans une liste où tout
             le reste est un mort. */}
-        {!e.locked && (
+        {e.locked ? (
+          <span className="shrink-0 font-mono text-[11px] tracking-[1.5px] text-[var(--color-ink)] opacity-50">
+            {PREMIER_VALEUR}
+          </span>
+        ) : (
           <span
             className={`w-[42px] shrink-0 text-right font-mono text-[15px] font-medium ${
               e.destin === "traversee" ? "text-[var(--color-accent)]" : "text-[var(--color-ink)]"
             }`}
           >
-            {e.days}
+            {e.franchis}
           </span>
         )}
       </div>
@@ -180,11 +185,11 @@ function Ligne({ e }: { e: RegistreEntry }) {
 
 export default function Registre({
   heroName,
-  playerDays,
+  playerFranchis,
   onClose,
 }: {
   heroName: string;
-  playerDays: number;
+  playerFranchis: number;
   onClose: () => void;
 }) {
   const [onglet, setOnglet] = useState<"cent" | "morts">("cent");
@@ -192,8 +197,8 @@ export default function Registre({
 
   const mem = useMemo(() => loadMemory(), []);
   const cent = useMemo(
-    () => buildLesCent(mem, heroName, playerDays),
-    [mem, heroName, playerDays]
+    () => buildLesCent(mem, heroName, playerFranchis),
+    [mem, heroName, playerFranchis]
   );
   const morts = useMemo(() => mesMorts(mem), [mem]);
 
@@ -247,7 +252,7 @@ export default function Registre({
           <div className="flex font-mono text-[9px] uppercase tracking-[1.5px] text-[var(--color-ink)] opacity-50">
             <span className="w-[64px] shrink-0">rang</span>
             <span className="flex-1">nom</span>
-            <span>jours</span>
+            <span>franchis</span>
           </div>
           <div className="mt-[22px] flex flex-col gap-[25px]">
             {listeCent.map((e) => (
@@ -285,7 +290,7 @@ export default function Registre({
                   />
                   <div className="flex items-start">
                     <span className="w-[64px] shrink-0 font-mono text-[15px] font-medium tracking-[3px] text-[var(--color-accent)]">
-                      J{m.days}
+                      {m.franchis}
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block font-mono text-[13px] uppercase text-[var(--color-ink)]">

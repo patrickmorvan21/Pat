@@ -34,11 +34,14 @@ export type NarrativeEffect = {
  * de la run, jamais rien ne se décharge. Persisté intégralement pour que la
  * reprise de run restaure le scrollback exact, pas seulement la position.
  */
-/** Une ligne du Grand Registre (§19) : un héros classé par jours de survie. */
+/** Une ligne du Grand Registre (§19) : un héros classé par LIEUX FRANCHIS
+    (04/09 — le classement ne se fait plus sur les jours). */
 export type RegistreRow = {
   rank: number;
   name: string;
-  days: number;
+  /** LIEUX FRANCHIS — l'unité du classement depuis le 04/09 (voir
+      `lieuxEngages`). Le Jour reste dans la fiction, il ne classe plus. */
+  franchis: number;
   cause: string;
   /** La ligne du joueur (run en cours ou héros tombé), visuellement distincte. */
   isPlayer?: boolean;
@@ -281,10 +284,13 @@ export type RunState = {
    *
    * ⚠️ CORRECTION IMPORTANTE (retour Patrick, 10/08). J'avais fait PAYER un
    * Jour au joueur qui quitte un lieu sans avoir rien risqué. C'était à
-   * l'envers : le Jour est le SCORE du Grand Registre (on est classé par
-   * jours survécus), donc ma « punition » donnait des points au joueur le
-   * plus passif. Une punition qui améliore le classement n'est pas une
-   * punition.
+   * l'envers : ce compteur EST le score du Grand Registre, donc ma
+   * « punition » donnait des points au joueur le plus passif. Une punition
+   * qui améliore le classement n'est pas une punition.
+   *
+   * ⚠️ 04/09 : le Registre classe désormais sur CE compteur tel quel (les
+   * lieux franchis), plus sur le Jour qui en dérive. Le Jour reste le repère
+   * de fiction ; il ne classe plus.
    *
    * Le sens est donc inversé : **le Jour ne se perd pas, il se GAGNE**. Il
    * avance tous les trois lieux où le héros a réellement tenté quelque
@@ -301,6 +307,19 @@ export type RunState = {
    * RÈGLE GÉNÉRALE À TENIR : aucune mécanique ne doit jamais ajouter un Jour
    * à titre de sanction. Le Jour est un score et une pression (les Besoins
    * se comptent en jours) ; il se mérite, il ne se facture pas.
+   */
+  /**
+   * ⚠️ C'EST LE SCORE DU GRAND REGISTRE depuis le 04/09, tel quel — plus
+   * divisé par trois ni rebaptisé « Jour ». Un lieu compte UNE fois, quand le
+   * héros y a engagé quelque chose et en est ressorti vivant (mourir sur
+   * place termine la run avant le crédit, donc la condition est structurelle).
+   *
+   * Pourquoi le changement : le Jour n'a aucune fiction dans un pays où le
+   * crépuscule ne tombe jamais. On avait donc inventé « un jour tous les trois
+   * lieux engagés » — une règle que personne ne pouvait deviner (0 testeur sur
+   * 5 l'a comprise, 2 l'ont comprise à l'envers), et qui écrasait l'amplitude
+   * de quinze à cinq. Le classement lit maintenant le compteur directement :
+   * « 8 lieux franchis » se comprend sans explication.
    */
   lieuxEngages?: number;
   /**

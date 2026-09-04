@@ -2,7 +2,7 @@
  * LE GRAND REGISTRE — les cent places (journal Notion 26/07, §1).
  *
  * « Douze mille avant toi ont poussé cette porte. Cent tiennent encore dans ce
- * livre. » Le Registre est un classement par jours de survie, tous héros de
+ * livre. » Le Registre est un classement par LIEUX FRANCHIS, tous héros de
  * tous les joueurs confondus.
  *
  * ⚠️ Il n'y a PAS encore d'endpoint agrégé (même besoin d'infra que « le
@@ -13,10 +13,9 @@
  * aléatoire d'une session à l'autre : le fond doit être le même livre à chaque
  * ouverture, sinon il ne ressemble plus à un registre.
  *
- * LA PREMIÈRE PLACE est verrouillée (§1) : nom illisible, jours au-delà de
- * onze mille, et le compte AUGMENTE entre les sessions. Aucune explication,
- * jamais — c'est le seul endroit du jeu qui laisse deviner ce qu'est vraiment
- * le Geôlier.
+ * LA PREMIÈRE PLACE est verrouillée (§1) : nom illisible, et depuis le 04/09
+ * AUCUN NOMBRE — elle est hors mesure. Aucune explication, jamais : c'est le
+ * seul endroit du jeu qui laisse deviner ce qu'est vraiment le Geôlier.
  */
 
 import { destinDepuisCause, type Destin, type PlayerMemory } from "@/lib/player-memory";
@@ -24,12 +23,14 @@ import { destinDepuisCause, type Destin, type PlayerMemory } from "@/lib/player-
 export type RegistreEntry = {
   rank: number;
   name: string;
-  days: number;
+  /** LIEUX FRANCHIS — l'unite du classement (04/09). La ligne verrouillee
+      n'en a pas : elle est hors mesure. */
+  franchis?: number;
   cause: string;
   /** Ligne du joueur (héros tombé ou run en cours) → liseré orange. */
   isPlayer?: boolean;
   /**
-   * LE DESTIN DE CE HÉROS. Les Cent classent par jours survécus, donc un
+   * LE DESTIN DE CE HÉROS. Les Cent classent par lieux franchis, donc un
    * survivant y a toute sa place — mais il doit s'y lire comme un survivant,
    * pas comme un mort de plus (verdict des panels, 14/08).
    */
@@ -40,57 +41,69 @@ export type RegistreEntry = {
   running?: boolean;
 };
 
-/** Les jours du premier, au 26/07/2026. Le compte ne redescend jamais. */
-const PREMIER_BASE = 11_248;
-const PREMIER_EPOCH = Date.UTC(2026, 6, 26);
-/** Un jour de plus tous les trois jours réels : lent, mais visible d'un mois
-    sur l'autre — « et le compte continue » doit être vérifiable. */
-const PREMIER_PAS_MS = 3 * 24 * 3600 * 1000;
+/**
+ * LA PREMIÈRE PLACE N'A PLUS DE NOMBRE (04/09).
+ *
+ * Elle portait « 11 248 jours, et le compte continue ». Un nombre à quatre
+ * chiffres laisse croire qu'il existe un système capable d'en produire des
+ * milliers : le joueur se met à viser 11 249, et on recrée l'écart d'échelle
+ * qu'on vient de supprimer. Hors mesure est plus inquiétant qu'énorme, et ça
+ * pose la vraie question : qui a vécu assez pour que le livre renonce à
+ * compter ?
+ */
+export const PREMIER_VALEUR = "INCOMPTABLE";
+const PREMIER_CAUSE = "celui-là, je ne le compte plus";
 
-export function joursDuPremier(now = Date.now()): number {
-  const ecoule = Math.max(0, now - PREMIER_EPOCH);
-  return PREMIER_BASE + Math.floor(ecoule / PREMIER_PAS_MS);
-}
-
-/** Le fond du livre, écrit à la main : ce sont eux qu'on lit vraiment. */
+/**
+ * Le fond du livre, écrit à la main : ce sont eux qu'on lit vraiment.
+ *
+ * ⚠️ REBASÉ LE 04/09 SUR CE QUE LE JEU PRODUIT. Il courait de 41 à 1 quand
+ * l'unité était le jour, alors qu'une vie n'en produit que 1 à 6 : le joueur
+ * qui traversait entier atterrissait au bas d'un tableau dont le haut était
+ * inatteignable. En lieux franchis, une traversée complète en vaut 8 ou 9 —
+ * le fond culmine donc à 14 (des héros allés au-delà de ce qui est bâti
+ * aujourd'hui) et une belle vie se lit dans les dix premières places.
+ * À rebaser quand les actes suivants existeront.
+ */
 const FOND: [string, number, string][] = [
-  ["Anselme le Patient", 41, "n'est pas mort — a disparu"],
-  ["Brigga aux Deux Lames", 39, "le pont d'os, au retour"],
-  ["Vespre", 37, "tombée au Seuil, la Porte en vue"],
-  ["L'Onzième", 36, "brûlée dans les fosses"],
-  ["Sévrin", 34, "a compté un crâne de trop"],
-  ["Harn", 33, "rendu à la Marge"],
-  ["La Veuve Koll", 31, "n'a pas rendu ce qu'elle avait pris"],
-  ["Otho", 30, "la porte blanche, de l'intérieur"],
-  ["Maerith", 28, "l'écho a gardé son nom"],
-  ["Dorn le Sourd", 27, "n'a pas entendu la meute"],
-  ["Sanne", 26, "a juré, puis a menti"],
-  ["Le Tardif", 25, "compté par l'Ossuaire"],
-  ["Ysolde", 24, "un 1, au pire moment"],
-  ["Corvin", 23, "la main morte s'est refermée"],
-  ["Guenne", 22, "s'est retournée dans le Chemin Creux"],
-  ["Vael", 21, "l'anneau était un appât"],
-  ["Ombric", 20, "fixé au Champ, poteau gravé la veille"],
-  ["La Petite Aude", 19, "a bu à la Mare"],
-  ["Rhodan", 18, "le Bailli a lu son nom deux fois"],
-  ["Sombre-Ivrig", 17, "n'a jamais atteint la Palissade"],
-  ["Fenne", 16, "a ouvert au Chien"],
-  ["Le Boiteux d'Orre", 15, "la Meute Grise, à découvert"],
-  ["Tassin", 14, "pendu mal fixé, deux fois"],
-  ["Ilva", 13, "a regardé son reflet trop longtemps"],
-  ["Grelot", 12, "a rendu le grelot au charretier"],
-  ["Marne", 11, "les Mains du Puits l'ont eue au troisième battement"],
-  ["Le Muet de Kern", 10, "n'a pas pu jurer"],
-  ["Sizelle", 9, "a suivi la Fille jusqu'au moulin"],
-  ["Barde-sans-Corde", 8, "la Chapelle avait déjà son nœud"],
-  ["Ormel", 7, "s'est assis à la chaire"],
-  ["Nive", 6, "a mangé un fruit de cendre"],
-  ["Le Dernier Kaleb", 5, "a franchi la Descente sans rien savoir"],
-  ["Toque", 4, "a frappé le premier"],
-  ["Wenn", 3, "a compté les corbeaux"],
-  ["Suie", 2, "prise par les Geôles"],
+  ["Anselme le Patient", 14, "n'est pas mort — a disparu"],
+  ["Brigga aux Deux Lames", 12, "le pont d'os, au retour"],
+  ["Vespre", 11, "tombée au Seuil, la Porte en vue"],
+  ["L'Onzième", 10, "brûlée dans les fosses"],
+  ["Sévrin", 9, "a compté un crâne de trop"],
+  ["Harn", 9, "rendu à la Marge"],
+  ["La Veuve Koll", 8, "n'a pas rendu ce qu'elle avait pris"],
+  ["Otho", 8, "la porte blanche, de l'intérieur"],
+  ["Maerith", 7, "l'écho a gardé son nom"],
+  ["Dorn le Sourd", 7, "n'a pas entendu la meute"],
+  ["Sanne", 7, "a juré, puis a menti"],
+  ["Le Tardif", 6, "compté par l'Ossuaire"],
+  ["Ysolde", 6, "un 1, au pire moment"],
+  ["Corvin", 6, "la main morte s'est refermée"],
+  ["Guenne", 6, "s'est retournée dans le Chemin Creux"],
+  ["Vael", 5, "l'anneau était un appât"],
+  ["Ombric", 5, "fixé au Champ, poteau gravé la veille"],
+  ["La Petite Aude", 5, "a bu à la Mare"],
+  ["Rhodan", 5, "le Bailli a lu son nom deux fois"],
+  ["Sombre-Ivrig", 4, "n'a jamais atteint la Palissade"],
+  ["Fenne", 4, "a ouvert au Chien"],
+  ["Le Boiteux d'Orre", 4, "la Meute Grise, à découvert"],
+  ["Tassin", 4, "pendu mal fixé, deux fois"],
+  ["Ilva", 3, "a regardé son reflet trop longtemps"],
+  ["Grelot", 3, "a rendu le grelot au charretier"],
+  ["Marne", 3, "les Mains du Puits l'ont eue au troisième battement"],
+  ["Le Muet de Kern", 3, "n'a pas pu jurer"],
+  ["Sizelle", 2, "a suivi la Fille jusqu'au moulin"],
+  ["Barde-sans-Corde", 2, "la Chapelle avait déjà son nœud"],
+  ["Ormel", 2, "s'est assis à la chaire"],
+  ["Nive", 2, "a mangé un fruit de cendre"],
+  ["Le Dernier Kaleb", 2, "a franchi la Descente sans rien savoir"],
+  ["Toque", 1, "a frappé le premier"],
+  ["Wenn", 1, "a compté les corbeaux"],
+  ["Suie", 1, "prise par les Geôles"],
   ["Le Premier Jour d'Iven", 1, "n'a pas passé la Borne"],
 ];
+
 
 /**
  * La réserve : de quoi remplir les cent places sans écrire cent lignes à la
@@ -127,31 +140,34 @@ const CAUSES_RESERVE = [
 ];
 
 /**
- * Le classement complet. `playerDays` = la run en cours (0 si aucune) ;
- * `playerName` la nomme. Les rangs sont attribués en compétition : à jours
- * égaux, même rang — c'est ce que montre la maquette (deux fois « 2 »).
+ * Le classement complet. `playerFranchis` = la run en cours (0 si aucune) ;
+ * `playerName` la nomme. Les rangs sont attribués en compétition : à score
+ * égal, même rang — c'est ce que montre la maquette (deux fois « 2 »).
  */
 export function buildLesCent(
   mem: PlayerMemory,
   playerName: string,
-  playerDays: number,
-  now = Date.now()
+  playerFranchis: number
 ): RegistreEntry[] {
   const brut: Omit<RegistreEntry, "rank">[] = [
-    ...FOND.map(([name, days, cause]) => ({ name, days, cause })),
+    ...FOND.map(([name, franchis, cause]) => ({ name, franchis, cause })),
     ...mem.fallen.map((f) => ({
       name: f.name,
-      days: f.days,
+      // ⚠️ Les héros tombés AVANT le 04/09 n'ont que leurs jours. Il n'existe
+      // pas de conversion honnête vers les lieux franchis : on lit la valeur
+      // qu'ils portent — les ordres de grandeur sont voisins, et ce sont des
+      // lignes d'archive, pas un classement à rejouer.
+      franchis: f.franchis ?? f.days,
       cause: f.cause,
       isPlayer: true,
       destin: f.destin ?? destinDepuisCause(f.cause),
     })),
   ];
   // Une run en cours figure au livre sans y être encore inscrite.
-  if (playerDays > 0) {
+  if (playerFranchis > 0) {
     brut.push({
       name: playerName,
-      days: playerDays,
+      franchis: playerFranchis,
       cause: "— en cours —",
       isPlayer: true,
       running: true,
@@ -159,19 +175,19 @@ export function buildLesCent(
   }
   // Remplissage jusqu'aux 99 places prenables. La réserve tient le BAS du
   // livre : une courbe quadratique concentre les anonymes sur les premiers
-  // jours (la plupart meurent tout de suite), au lieu de les étaler
-  // uniformément — sinon quarante inconnus à dix-neuf jours enterrent le
+  // lieux (la plupart meurent tout de suite), au lieu de les étaler
+  // uniformément — sinon quarante inconnus au même score enterrent le
   // joueur sous des noms qui ne racontent rien.
   const manque = Math.max(0, 99 - brut.length);
   for (let i = 0; i < manque; i++) {
     const t = manque > 1 ? i / (manque - 1) : 1;
     brut.push({
       name: NOMS_RESERVE[i % NOMS_RESERVE.length],
-      days: Math.max(1, Math.round(12 * (1 - t) ** 2)),
+      franchis: Math.max(1, Math.round(4 * (1 - t) ** 2)),
       cause: CAUSES_RESERVE[i % CAUSES_RESERVE.length],
     });
   }
-  brut.sort((a, b) => b.days - a.days || a.name.localeCompare(b.name));
+  brut.sort((a, b) => (b.franchis ?? 0) - (a.franchis ?? 0) || a.name.localeCompare(b.name));
 
   const out: RegistreEntry[] = [
     {
@@ -179,17 +195,16 @@ export function buildLesCent(
       // Le nom est rendu ILLISIBLE à l'affichage (semis de pixels) : ce
       // libellé n'est là que pour les lecteurs d'écran et le débogage.
       name: "———",
-      days: joursDuPremier(now),
-      cause: "jours, et le compte continue",
+      cause: PREMIER_CAUSE,
       locked: true,
     },
   ];
   let rang = 1;
-  let joursPrec = Infinity;
+  let prec = Infinity;
   brut.forEach((r, i) => {
-    if (r.days !== joursPrec) {
+    if (r.franchis !== prec) {
       rang = i + 2; // +1 pour la place verrouillée, +1 pour passer en base 1
-      joursPrec = r.days;
+      prec = r.franchis ?? 0;
     }
     out.push({ ...r, rank: rang });
   });
@@ -199,7 +214,10 @@ export function buildLesCent(
 /** L'onglet « Tes morts » : les héros DU JOUEUR, classés ou non. */
 export type MortJoueur = {
   name: string;
+  /** Jours — conservés pour retrouver la relique (couple nom+jours). */
   days: number;
+  /** Lieux franchis : l'unité du classement (04/09). */
+  franchis: number;
   cause: string;
   /** Relique forgée de cette mort, si elle a été retrouvée. */
   relic?: string;
@@ -213,7 +231,7 @@ export type MortJoueur = {
  * guise de cause de décès. C'est la contradiction la plus directe avec la
  * promesse centrale du jeu : on y lisait sa victoire comme une défaite.
  * Les survivants et les renonçants restent dans LES 100, où ils sont
- * classés par jours et marqués par leur destin.
+ * classés par lieux franchis et marqués par leur destin.
  */
 export function mesMorts(mem: PlayerMemory): MortJoueur[] {
   return mem.fallen
@@ -221,6 +239,7 @@ export function mesMorts(mem: PlayerMemory): MortJoueur[] {
     .map((f) => ({
     name: f.name,
     days: f.days,
+    franchis: f.franchis ?? f.days,
     cause: f.cause,
     // Une relique est forgée à chaque mort : on la retrouve par le nom du
     // héros et son nombre de jours (couple stable, posé par recordDeath).

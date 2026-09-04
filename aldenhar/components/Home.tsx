@@ -198,7 +198,7 @@ export default function Home() {
             {overlay === "registre" ? (
               <Registre
                 heroName={loadRun().heroName}
-                playerDays={loadRun().day}
+                playerFranchis={loadRun().lieuxEngages ?? 0}
                 onClose={() => setOverlay(null)}
               />
             ) : overlay === "codex" ? (

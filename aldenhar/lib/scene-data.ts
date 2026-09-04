@@ -827,7 +827,7 @@ export type Scene = {
   };
   /**
    * Le Grand Registre (§19) : cette scène n'est pas un choix mais un lieu
-   * traversable — un classement des héros par jours de survie, défilé une
+   * traversable — un classement des héros par lieux franchis, défilé une
    * fois. La ligne du joueur s'y insère, visuellement distincte.
    */
   registre?: boolean;

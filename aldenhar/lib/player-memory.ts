@@ -58,6 +58,10 @@ export type Destin = "mort" | "traversee" | "renoncement";
 export type FallenHero = {
   name: string;
   days: number;
+  /** LIEUX FRANCHIS — l'unité du Grand Registre depuis le 04/09. Absent des
+      héros tombés avant : le Registre lit alors leurs jours (aucune
+      conversion honnête n'existe, et les ordres de grandeur sont voisins). */
+  franchis?: number;
   cause: string;
   destin?: Destin;
   /** Lieu de mort (id de scène) — sert à « Le retour » (recroiser le cadavre). */
@@ -199,6 +203,10 @@ export type PlayerMemory = {
   deaths: number;
   /** Plus grand « Jour X » atteint, toutes runs confondues. */
   bestDays: number;
+  /** Meilleur score du compte en LIEUX FRANCHIS (04/09) — c'est lui que le
+      Geôlier compare quand il parle de « meilleur score ». `bestDays` reste :
+      il nourrit sa posture, qui mesure une carrière, pas un classement. */
+  bestFranchis?: number;
   /** Somme des jours survécus (pour la moyenne, sans stocker chaque run). */
   totalDays: number;
   /** Reliques rares/légendaires obtenues (les communes ne comptent pas pour le ton). */
@@ -327,6 +335,7 @@ function fresh(): PlayerMemory {
     runsStarted: 0,
     deaths: 0,
     bestDays: 0,
+    bestFranchis: 0,
     totalDays: 0,
     relicsRare: 0,
     relics: [],
@@ -368,14 +377,16 @@ export function noterFait(faitId: string, versionId: string): void {
  * en est sorti). `deaths` n'est PAS incrémenté : la courbe d'entrée et les
  * jalons de mort ne doivent pas se croire avancés.
  */
-export function recordRenoncement(args: { heroName: string; days: number; place: string }): void {
+export function recordRenoncement(args: { heroName: string; days: number; franchis: number; place: string }): void {
   mutateMemory((m) => {
     m.renoncements = (m.renoncements ?? 0) + 1;
     m.totalDays += args.days;
     m.bestDays = Math.max(m.bestDays, args.days);
+    m.bestFranchis = Math.max(m.bestFranchis ?? 0, args.franchis);
     m.fallen.unshift({
       name: args.heroName,
       days: args.days,
+      franchis: args.franchis,
       cause: "resté au Hameau",
       place: args.place,
       destin: "renoncement",
@@ -392,7 +403,7 @@ export function recordRenoncement(args: { heroName: string; days: number; place:
  * incrémenté (la courbe d'entrée et les jalons de mort ne doivent pas se
  * croire avancés), et aucune relique n'est forgée.
  */
-export function recordTraversee(args: { heroName: string; days: number }): void {
+export function recordTraversee(args: { heroName: string; days: number; franchis: number }): void {
   mutateMemory((m) => {
     m.zonesCleared = (m.zonesCleared ?? 0) + 1;
     // LE SCEAU DES LANDES (arbitrage 10/08) : ce qu'on rapporte en revenant.
@@ -411,9 +422,11 @@ export function recordTraversee(args: { heroName: string; days: number }): void 
     m.faits = sac;
     m.totalDays += args.days;
     m.bestDays = Math.max(m.bestDays, args.days);
+    m.bestFranchis = Math.max(m.bestFranchis ?? 0, args.franchis);
     m.fallen.unshift({
       name: args.heroName,
       days: args.days,
+      franchis: args.franchis,
       cause: "a franchi la Descente",
       place: "la-descente",
       destin: "traversee",
@@ -470,6 +483,7 @@ export function loadMemory(): PlayerMemory {
           runsStarted: typeof p.runsStarted === "number" ? p.runsStarted : 0,
           deaths: typeof p.deaths === "number" ? p.deaths : 0,
           bestDays: typeof p.bestDays === "number" ? p.bestDays : 0,
+          bestFranchis: typeof p.bestFranchis === "number" ? p.bestFranchis : 0,
           totalDays: typeof p.totalDays === "number" ? p.totalDays : 0,
           relicsRare: typeof p.relicsRare === "number" ? p.relicsRare : 0,
           relics: Array.isArray(p.relics) ? p.relics : [],
@@ -609,6 +623,8 @@ export function forgeRelic(heroName: string, days: number, floorRare = false, ca
 export function recordDeath(args: {
   heroName: string;
   days: number;
+  /** Lieux franchis — le score du Registre (04/09). */
+  franchis: number;
   cause: string;
   place: string;
   killer?: { entity: string; label: string };
@@ -624,13 +640,14 @@ export function recordDeath(args: {
   // qui sert au « meilleur score » du contexte de citations (30/07).
   const memBefore = loadMemory();
   const firstDeath = memBefore.deaths === 0;
-  const bestBefore = memBefore.bestDays;
+  const bestBefore = memBefore.bestFranchis ?? 0;
   const relic = forgeRelic(args.heroName, args.days, firstDeath, args.cause);
   mutateMemory((m) => {
     m.deaths += 1;
     m.totalDays += args.days;
     m.bestDays = Math.max(m.bestDays, args.days);
-    m.fallen.unshift({ name: args.heroName, days: args.days, cause: args.cause, place: args.place, destin: "mort" });
+    m.bestFranchis = Math.max(m.bestFranchis ?? 0, args.franchis);
+    m.fallen.unshift({ name: args.heroName, days: args.days, franchis: args.franchis, cause: args.cause, place: args.place, destin: "mort" });
     m.relics.push(relic);
     if (relic.rarity !== "commune") m.relicsRare += 1;
     if (args.killer && !m.bloodDebts.some((d) => d.entity === args.killer!.entity)) {
@@ -644,8 +661,8 @@ export function recordDeath(args: {
     // Contexte de la dernière mort (30/07) — ce que le pool de citations du
     // Geôlier lira au retour à l'accueil. `classed` se calcule sur la mémoire
     // DÉJÀ mise à jour (le héros vient d'entrer dans `fallen`).
-    const classed = buildLesCent(m, args.heroName, 0).some(
-      (r) => r.isPlayer && !r.running && r.name === args.heroName && r.days === args.days
+    const classed = buildLesCent(m, args.heroName, args.franchis).some(
+      (r) => r.isPlayer && !r.running && r.name === args.heroName && r.franchis === args.franchis
     );
     m.lastDeath = {
       day: args.days,
@@ -653,7 +670,7 @@ export function recordDeath(args: {
       rarity: relic.rarity,
       classed,
       acte: args.acte ?? 1,
-      meilleurScore: args.days > bestBefore,
+      meilleurScore: args.franchis > bestBefore,
       lieu: args.lieu,
     };
     // La dernière fin de run est une MORT — l'accueil du Geôlier ne doit plus
@@ -665,45 +682,47 @@ export function recordDeath(args: {
 }
 
 /**
- * Le Grand Registre (§19) : classement des héros par jours de survie. En
+ * Le Grand Registre (§19) : classement des héros par LIEUX FRANCHIS. En
  * attendant l'endpoint agrégé réel (même besoin d'infra que « le fantôme de
  * passage »), on compose un classement local — quelques héros de fond figés +
  * les héros tombés DU JOUEUR (mémoire) + sa ligne de run en cours, insérée et
- * marquée. Trié par jours décroissant, rangs attribués ensuite.
+ * marquée. Trié par lieux franchis décroissants, rangs attribués ensuite.
  */
-const REGISTRE_BASE: { name: string; days: number; cause: string }[] = [
-  { name: "Anselme le Patient", days: 41, cause: "n'est pas mort — a disparu" },
-  { name: "Brigga aux Deux Lames", days: 34, cause: "le pont d'os, au retour" },
-  { name: "Sévrin", days: 29, cause: "a compté un crâne de trop" },
-  { name: "La Veuve Koll", days: 24, cause: "Geryon, tête du milieu" },
-  { name: "Otho", days: 19, cause: "la porte blanche, de l'intérieur" },
-  { name: "Maerith", days: 16, cause: "l'écho a gardé son nom" },
-  { name: "Dorn le Sourd", days: 13, cause: "n'a pas entendu la meute" },
-  { name: "Ysolde", days: 11, cause: "un 1, au pire moment" },
-  { name: "Corvin", days: 9, cause: "la main morte s'est refermée" },
-  { name: "Vael", days: 6, cause: "l'anneau était un appât" },
+/** Le fond de l'écran de Registre joué EN SCÈNE. Même unité et même échelle
+    que les Cent (rebasé le 04/09) : des lieux franchis, pas des jours. */
+const REGISTRE_BASE: { name: string; franchis: number; cause: string }[] = [
+  { name: "Anselme le Patient", franchis: 14, cause: "n'est pas mort — a disparu" },
+  { name: "Brigga aux Deux Lames", franchis: 12, cause: "le pont d'os, au retour" },
+  { name: "Sévrin", franchis: 10, cause: "a compté un crâne de trop" },
+  { name: "La Veuve Koll", franchis: 9, cause: "n'a pas rendu ce qu'elle avait pris" },
+  { name: "Otho", franchis: 8, cause: "la porte blanche, de l'intérieur" },
+  { name: "Maerith", franchis: 7, cause: "l'écho a gardé son nom" },
+  { name: "Dorn le Sourd", franchis: 6, cause: "n'a pas entendu la meute" },
+  { name: "Ysolde", franchis: 4, cause: "un 1, au pire moment" },
+  { name: "Corvin", franchis: 3, cause: "la main morte s'est refermée" },
+  { name: "Vael", franchis: 2, cause: "l'anneau était un appât" },
 ];
 
 export function buildRegistre(
   mem: PlayerMemory,
   playerName: string,
-  playerDays: number,
+  playerFranchis: number,
   /** La cause de la ligne du joueur — « en cours » par défaut ; à la
       Descente, la traversée qu'on est en train d'inscrire. */
   playerCause = "— en cours —"
 ): RegistreRow[] {
-  const rows: { name: string; days: number; cause: string; isPlayer?: boolean; destin?: Destin }[] = [
+  const rows: { name: string; franchis: number; cause: string; isPlayer?: boolean; destin?: Destin }[] = [
     ...REGISTRE_BASE.map((r) => ({ ...r })),
     ...mem.fallen.map((f) => ({
-      name: f.name, days: f.days, cause: f.cause, isPlayer: true,
+      name: f.name, franchis: f.franchis ?? f.days, cause: f.cause, isPlayer: true,
       destin: f.destin ?? destinDepuisCause(f.cause),
     })),
     {
-      name: playerName, days: playerDays, cause: playerCause, isPlayer: true,
+      name: playerName, franchis: playerFranchis, cause: playerCause, isPlayer: true,
       destin: playerCause === "— en cours —" ? undefined : destinDepuisCause(playerCause),
     },
   ];
-  rows.sort((a, b) => b.days - a.days);
+  rows.sort((a, b) => b.franchis - a.franchis);
   return rows.map((r, i) => ({ rank: i + 1, ...r }));
 }
 

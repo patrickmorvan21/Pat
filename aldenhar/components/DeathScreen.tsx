@@ -23,7 +23,7 @@ import type { Destin, Relic } from "@/lib/player-memory";
 import TouchHint from "@/components/TouchHint";
 import FondBraises from "@/components/FondBraises";
 import { NomGratte } from "@/components/Registre";
-import { buildLesCent, type RegistreEntry } from "@/lib/registre-data";
+import { buildLesCent, PREMIER_VALEUR, type RegistreEntry } from "@/lib/registre-data";
 import { destinDepuisCause, loadMemory, relicEffect, relicFiche, RELIC_FONCTION } from "@/lib/player-memory";
 import { pickJailerQuote, reactionJours } from "@/lib/jailer-quotes";
 import { ditherFadeMaskDataUrl } from "@/lib/dither";
@@ -39,9 +39,11 @@ const ORANGE = "#e0632a";
 
 export type Bilan = {
   jours: number;
+  /** Le SCORE du Grand Registre depuis le 04/09 : les lieux franchis — ceux
+      où le héros a engagé quelque chose et dont il est ressorti vivant. */
+  franchis: number;
   /** Le point le plus loin atteint, en NOM DE RÉGION — jamais « Acte I ». */
   plusLoin: string;
-  lieux: number;
   rencontres: number;
   des: number;
   desTenus: number;
@@ -64,8 +66,8 @@ export function bilanDeMort(run: RunState, reliquePortee: string | null = null):
   const rolls = run.rolls ?? [];
   return {
     jours: run.day,
+    franchis: run.lieuxEngages ?? 0,
     plusLoin: "Les Landes",
-    lieux: (run.trav?.visited ?? []).length,
     rencontres: run.encounters,
     des: rolls.length,
     desTenus: rolls.filter((r) => r.ok).length,
@@ -242,16 +244,17 @@ export default function DeathScreen({
 
   // Le classement, pour l'écran du Registre : la ligne du héros doit
   // réellement entrer aux Cent — sinon le livre perd sa valeur.
-  const lesCent = useMemo(() => buildLesCent(mem, heroName, 0), [mem, heroName]);
+  const franchis = bilan.franchis;
+  const lesCent = useMemo(() => buildLesCent(mem, heroName, franchis), [mem, heroName, franchis]);
   const classe = useMemo(
-    () => lesCent.some((r) => r.isPlayer && r.name === heroName && r.days === day),
-    [lesCent, heroName, day]
+    () => lesCent.some((r) => r.isPlayer && r.name === heroName && r.franchis === franchis),
+    [lesCent, heroName, franchis]
   );
   // Le rang porté par la carte : sa place dans Les Cent, ou rien.
   const rang = useMemo(() => {
-    const i = lesCent.findIndex((r) => r.isPlayer && r.name === heroName && r.days === day);
+    const i = lesCent.findIndex((r) => r.isPlayer && r.name === heroName && r.franchis === franchis);
     return i >= 0 ? i + 1 : null;
-  }, [lesCent, heroName, day]);
+  }, [lesCent, heroName, franchis]);
 
   /* ─── écran 1 : la combustion — les pixels TOMBENT et nourrissent le lit ── */
   useEffect(() => {
@@ -473,7 +476,7 @@ export default function DeathScreen({
 
       {ecran === "registre" &&
         (classe ? (
-          <RegistreMort lesCent={lesCent} fallen={mem.fallen} heroName={heroName} day={day} cause={cause} />
+          <RegistreMort lesCent={lesCent} fallen={mem.fallen} heroName={heroName} franchis={franchis} cause={cause} />
         ) : (
           <div className="flex flex-1 flex-col justify-center px-[26px]">
             {/* Sans quoi le Registre perd sa valeur : on n'entre pas au livre
@@ -603,13 +606,14 @@ function RegistreMort({
   lesCent,
   fallen,
   heroName,
-  day,
+  franchis,
   cause,
 }: {
   lesCent: RegistreEntry[];
-  fallen: { name: string; days: number; cause: string; destin?: Destin }[];
+  fallen: { name: string; days: number; franchis?: number; cause: string; destin?: Destin }[];
   heroName: string;
-  day: number;
+  /** Le score du héros qui vient de tomber : les LIEUX FRANCHIS (04/09). */
+  franchis: number;
   cause: string;
 }) {
   const [onglet, setOnglet] = useState<"morts" | "cent">("morts");
@@ -618,11 +622,14 @@ function RegistreMort({
     // Une traversée réussie n'a rien à faire sous cet onglet (14/08).
     const rows = fallen
       .filter((f) => (f.destin ?? destinDepuisCause(f.cause)) === "mort")
-      .sort((a, b) => b.days - a.days);
+      // Les héros d'avant le 04/09 n'ont pas de `franchis` : il n'existe pas de
+      // conversion honnête depuis les jours, on retombe donc sur eux.
+      .map((f) => ({ ...f, franchis: f.franchis ?? f.days }))
+      .sort((a, b) => b.franchis - a.franchis);
     return rows.map((r, i) => ({ rank: i + 1, ...r }));
   }, [fallen]);
   // La ligne du héros qui vient de tomber : première occurrence exacte.
-  const moiIdx = tesMorts.findIndex((r) => r.name === heroName && r.days === day && r.cause === cause);
+  const moiIdx = tesMorts.findIndex((r) => r.name === heroName && r.franchis === franchis && r.cause === cause);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -653,7 +660,7 @@ function RegistreMort({
       <div className="mt-[12px] flex items-baseline px-[15px] font-mono text-[10px] uppercase tracking-[1px] text-[var(--color-ink)] opacity-50">
         <span className="w-[44px]">Rang</span>
         <span className="flex-1">Nom</span>
-        <span>Jours</span>
+        <span>Franchis</span>
       </div>
       <div className="mt-[4px] min-h-0 flex-1 overflow-y-auto pb-[70px]">
         {onglet === "morts"
@@ -663,7 +670,7 @@ function RegistreMort({
                 rank={r.rank}
                 name={r.name}
                 sub={r.cause}
-                days={r.days}
+                franchis={r.franchis}
                 moi={i === moiIdx}
               />
             ))
@@ -672,9 +679,9 @@ function RegistreMort({
                 key={`${r.rank}-${r.name}`}
                 rank={r.rank}
                 name={r.name}
-                sub={r.locked ? `${r.days.toLocaleString("fr-FR")} ${r.cause}` : r.cause}
-                days={r.days}
-                moi={Boolean(r.isPlayer && r.name === heroName && r.days === day)}
+                sub={r.cause}
+                franchis={r.franchis ?? 0}
+                moi={Boolean(r.isPlayer && r.name === heroName && r.franchis === franchis)}
                 locked={r.locked}
               />
             ))}
@@ -709,14 +716,15 @@ function LigneRegistreMort({
   rank,
   name,
   sub,
-  days,
+  franchis,
   moi,
   locked,
 }: {
   rank: number;
   name: string;
   sub: string;
-  days: number;
+  /** Les lieux franchis — le score du Registre depuis le 04/09. */
+  franchis: number;
   moi?: boolean;
   /** La première place, verrouillée : le NOM GRATTÉ du record (le Geôlier) —
       même traitement que le Registre plein cadre : rature de pixels, rang en
@@ -755,13 +763,19 @@ function LigneRegistreMort({
           {sub}
         </span>
       </span>
-      {!locked && (
+      {/* La première place est HORS MESURE (04/09) : le mot, jamais un
+          nombre — même traitement que le Registre plein cadre. */}
+      {locked ? (
+        <span className="shrink-0 font-mono text-[10px] tracking-[1.5px] text-[var(--color-ink)] opacity-50">
+          {PREMIER_VALEUR}
+        </span>
+      ) : (
         <span
           className={`shrink-0 text-right font-mono text-[13px] ${
             moi ? "text-[var(--color-accent)]" : "text-[var(--color-ink)]"
           }`}
         >
-          {days}
+          {franchis}
         </span>
       )}
     </div>

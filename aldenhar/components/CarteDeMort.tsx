@@ -107,11 +107,11 @@ function contenuCarte(p: CarteDeMortProps) {
       ["Jours tenus", String(p.bilan.jours)],
       // Le Registre est une ligne de chiffres comme les autres (retour Patrick
       // 02/09) — même label, même valeur blanche : c'est un résultat, pas un
-      // en-tête. Sa place, juste après les jours, est celle qui a du sens :
-      // c'est le nombre de jours qui décide du rang.
+      // en-tête. Sa place, juste sous le score qui le décide (les lieux
+      // FRANCHIS depuis le 04/09), est celle qui a du sens.
+      ["Lieux franchis", String(p.bilan.franchis)],
       ["Registre", p.rang ? ordinal(p.rang) : "Hors des Cent"],
       ["Plus loin descendue", prof.zone || p.bilan.plusLoin],
-      ["Lieux traversés", String(p.bilan.lieux)],
       ["Combats traversés", String(p.bilan.rencontres)],
       ["Dés lancés", `${p.bilan.des} · ${p.bilan.desTenus} tenus`],
       ["Destins · Malédictions", `${p.bilan.destins} · ${p.bilan.maledictions}`],

@@ -3674,13 +3674,13 @@ export default function Scene() {
         // ⚠️ 3/09 : le survivant lisait « — en cours — » sur sa propre ligne
         // au moment même où il franchit — la cause de traversée est celle
         // que `recordTraversee` inscrira au tap suivant.
-        rows: buildRegistre(m, r.heroName, r.day, "a franchi la Descente"),
+        rows: buildRegistre(m, r.heroName, r.lieuxEngages ?? 0, "a franchi la Descente"),
       });
     }
     // Le Grand Registre (§19) : classement inline, ligne du joueur marquée.
     if (nextScene.registre) {
       const run = runRef.current;
-      const rows = buildRegistre(loadMemory(), run?.heroName ?? "toi", run?.day ?? 1);
+      const rows = buildRegistre(loadMemory(), run?.heroName ?? "toi", run?.lieuxEngages ?? 0);
       entries.push({ id: nextId(), kind: "registre", rows });
     }
     // LA LOI DU DOMAINE (5/08) : « rien n'est libéré, quelqu'un prend toujours
@@ -4436,14 +4436,14 @@ export default function Scene() {
       // comme recordDeath : fermer l'app ici ne ressuscite pas la traversée.
       if (scene.renoncement) {
         const run = runRef.current ?? loadRun();
-        recordRenoncement({ heroName: run.heroName, days: run.day, place: scene.id });
+        recordRenoncement({ heroName: run.heroName, days: run.day, franchis: run.lieuxEngages ?? 0, place: scene.id });
       } else {
         // LA TRACE DU SURVIVANT (arbitrage Patrick 7/08) : franchir la
         // Descente vivant n'est plus un reset sec — le nom entre au Registre
         // (« a franchi la Descente »), le compte s'en souvient, et le Geôlier
         // accueille la run suivante en conséquence. Aucune relique.
         const run = runRef.current ?? loadRun();
-        recordTraversee({ heroName: run.heroName, days: run.day });
+        recordTraversee({ heroName: run.heroName, days: run.day, franchis: run.lieuxEngages ?? 0 });
         // Codex : la première traversée révèle l'arc du Sceau — la marque
         // vient d'apparaître dans la paume.
         debloquerCodex("arc:sceau", run.heroName, run.day);
@@ -5595,6 +5595,7 @@ export default function Scene() {
               const relic = recordDeath({
                 heroName: run.heroName,
                 days: run.day,
+                franchis: run.lieuxEngages ?? 0,
                 cause: "le Hameau des Renonçants",
                 place: scene.id,
                 killer: { entity: "hameau-renoncants", label: "le Hameau des Renonçants" },
@@ -5621,6 +5622,7 @@ export default function Scene() {
               const relic = recordDeath({
                 heroName: run.heroName,
                 days: run.day,
+                franchis: run.lieuxEngages ?? 0,
                 cause,
                 place: scene.id,
                 // La surprise « le retour » (6/08) : le lieu EXACT, en radical.
@@ -6204,7 +6206,7 @@ function FeedItem({
               <div key={`${r.rank}-${r.name}`} className={`registre-row ${r.isPlayer ? "is-player" : ""}`}>
                 <span className="registre-rank">{r.rank}</span>
                 <span className="registre-name">{r.name}</span>
-                <span className="registre-days">J{r.days}</span>
+                <span className="registre-days">{r.franchis}</span>
                 <span className={`registre-cause${r.destin === "traversee" ? " registre-revenu" : ""}`}>{r.cause}</span>
               </div>
             ))}
