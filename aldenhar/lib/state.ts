@@ -168,6 +168,9 @@ export type TraversalState = {
   /** Cette Croisée-ci n'offre qu'une direction (échec dur au coup d'avant).
       Porté par `trav` — donc reconstruit à l'identique à la reprise. */
   routeFermee?: boolean;
+  /** Pourquoi (03/09) — la Croisée fermée nomme l'acte qui l'a fermée, à la
+      reprise aussi. */
+  routeFermeeCause?: "echec" | "meute" | "bete";
   /** La liaison courante est la SORTIE du village (24/08) : couture
       FRANCHIT_SORTIE en tête + Croisée de lande. Porté par `trav` pour que la
       reprise rebâtisse le MÊME écran (texte de sortie, image de lande) — sans
@@ -344,6 +347,8 @@ export type RunState = {
    * a explicitement écarté le re-durcissement du barème.
    */
   routeFermeeEnAttente?: boolean;
+  /** La cause qui accompagne le drapeau ci-dessus (03/09). */
+  routeFermeeCause?: "echec" | "meute" | "bete";
   /**
    * LA MENACE LAISSÉE ACTIVE (compte rendu 17/08, §2 : « une menace évitée
    * peut rester dans le monde »). Contourner la Meute à la Croisée ou se
@@ -708,6 +713,8 @@ export function loadRun(): RunState {
             echosObjet: Array.isArray(p.echosObjet) ? p.echosObjet : [],
             vus: p.vus && typeof p.vus === "object" ? p.vus : {},
             routeFermeeEnAttente: p.routeFermeeEnAttente === true,
+            routeFermeeCause:
+              p.routeFermeeCause === "meute" || p.routeFermeeCause === "bete" ? p.routeFermeeCause : p.routeFermeeCause === "echec" ? "echec" : undefined,
             menace: p.menace && typeof p.menace === "object" ? p.menace : null,
             engageIci: p.engageIci === true,
             engageAvantReset: p.engageAvantReset === true,

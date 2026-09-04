@@ -145,8 +145,39 @@ async function texteEcran() {
     if (mort && mort.getAttribute("data-ecran") !== "mort-fatal") return mort.innerText || "";
     const z = document.querySelector(".scene-text-zone") || document.querySelector(".feed");
     if (!z) return document.body.innerText || "";
-    return z.innerText || "";
+    // ⚠️ LE BANDEAU DU GEÔLIER EST ÉTIQUETÉ (panel compréhension 03/09) : à
+    // l'écran c'est un bloc orange avec portrait, dans un transcript en texte
+    // nu il se lisait comme de la narration — cinq testeurs sur cinq n'ont
+    // jamais su « qui parle ». On marque ce que l'œil voit, sans inventer
+    // un nom que le jeu n'affiche pas.
+    const clone = z.cloneNode(true);
+    clone.querySelectorAll(".jailer-banner").forEach((b) => {
+      const t = (b.innerText || "").replace(/\s+/g, " ").trim();
+      const m = document.createElement("p");
+      m.textContent = "[bandeau orange, portrait du démon] " + t;
+      b.replaceWith(m);
+    });
+    document.body.appendChild(clone);
+    const out = clone.innerText || "";
+    clone.remove();
+    return out;
   });
+}
+
+/**
+ * ENREGISTRER UN ÉCRAN HORS JEU (intro, Seuil, carton d'acte). Les
+ * transcripts de « première run » commençaient à l'écran de jeu : l'intro
+ * (« Tu es mort. Il y a peu. ») et le Seuil (le nom, « Le dé fera le reste »)
+ * n'y étaient pas, et un panel entier a jugé QUI = 3,8/10 pour des raisons
+ * que le jeu ne mérite qu'à moitié (03/09). Un écran = son texte visible.
+ */
+async function noterEcranHorsJeu(action) {
+  const t = nettoie(await page.evaluate(() => (document.body.innerText || "")));
+  if (t && t !== dernierTexte) {
+    n += 1;
+    journal.push({ n, texte: t, boutons: [], action });
+    dernierTexte = t;
+  }
 }
 
 async function boutons() {
@@ -199,6 +230,7 @@ async function jouerLIntro() {
     if (await page.locator(".choices-bar").count()) return;
     const t = await page.evaluate(() => document.body.innerText || "");
     if (/ta vie d'avant|Ton nom/i.test(t)) return; // le Seuil prend le relais
+    await noterEcranHorsJeu(/Maintiens pour pousser/i.test(t) ? "(appui maintenu sur la porte)" : "(intro)");
     if (/Maintiens pour pousser/i.test(t)) {
       await page.mouse.move(195, 195);
       await page.mouse.down();
@@ -237,6 +269,7 @@ async function jouerLeSeuil() {
   for (let tour = 0; tour < 40; tour++) {
     if (await page.locator(".choices-bar").count()) return true; // on est en jeu
     await attendreFinDeFrappe();
+    await noterEcranHorsJeu("(Seuil)");
     // l'écran du Nom
     const champ = page.locator('input[type="text"]');
     if (await champ.count()) {

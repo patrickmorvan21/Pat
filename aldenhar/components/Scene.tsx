@@ -53,7 +53,7 @@ import {
   TRAVERSAL_POOL,
   JAILER_SANS_RISQUE,
   HALTE_DEPUIS_LA_LANDE,
-  ROUTE_FERMEE,
+  ROUTE_FERMEE_TOUS,
   traceDeSortie,
   NUIT_CORPS,
   NUIT_OUVERTURE,
@@ -80,7 +80,7 @@ import { perceptionDe } from "@/lib/perception";
 import { acteAccusation, defensesDisponibles, temoinPour, temoinsUniques } from "@/lib/temoins";
 import type { RelicDon } from "@/lib/reliques";
 import {
-  applique, noterVisite, parType, purger, radical, type Effet, type Faits,
+  applique, noterVisite, parType, purger, radical, valeur, type Effet, type Faits,
 } from "@/lib/faits";
 import {
   etat, etatsActifs, poserEtat,
@@ -560,6 +560,9 @@ function liaisonCtx(run: RunState, from: string | undefined): LiaisonCtx {
     // est celle d'AVANT — la reconstruction retombe sur le même texte.
     liaisonsJouees: Math.max(0, (run.trav?.visited.length ?? 1) - 1),
     dejaVues: run.liaisonVues ?? [],
+    // La Croisée fermée nomme sa cause (03/09) — celle de la liaison courante
+    // à la reprise, sinon celle qui attend d'être encaissée.
+    routeFermeeCause: run.trav?.routeFermeeCause ?? run.routeFermeeCause,
   };
 }
 
@@ -1859,7 +1862,8 @@ export default function Scene() {
       ];
       // Première apparition du dé = entrée du Jour I (spec prologue 16/07).
       if (run.prologue.done && run.prologue.memories.length > 0) {
-        seeded.push({ id: nextId(), kind: "jailer", text: "À partir de maintenant, il décide avec moi." });
+        seeded.push({ id: nextId(), kind: "jailer", // 03/09 : « il » se lisait comme l'homme immobile (5/5) — le sujet est le dé.
+        text: "À partir de maintenant, le dé décide avec moi." });
       }
       // LA TRANSFORMATION DU 3e PASSAGE : le Geôlier constate, une seule fois,
       // qu'il n'a plus rien à compter. Poussé APRÈS la ligne du dé pour ne pas
@@ -2334,6 +2338,7 @@ export default function Scene() {
       trav.phase = "liaison";
       trav.liaisonOpts = sortie.pair;
       trav.routeFermee = routeFermeeIci;
+      trav.routeFermeeCause = routeFermeeIci ? runRef.current?.routeFermeeCause : undefined;
       trav.seed = seed;
       trav.sortieHameau = true;
       persist((r) => {
@@ -2821,6 +2826,7 @@ export default function Scene() {
       }
       trav.phase = "liaison";
       trav.routeFermee = routeFermeeIci;
+      trav.routeFermeeCause = routeFermeeIci ? runRef.current?.routeFermeeCause : undefined;
       trav.seed = seed;
       }
     }
@@ -2990,9 +2996,21 @@ export default function Scene() {
       // (stage ≥ 2). Quatre testeurs sur six ont reçu le secret de la Fille
       // à la Descente sans l'avoir approchée : « on me dit tu sais, et je ne
       // sais pas ». Un chapitre non développé se rejoue à la vie suivante.
-      if (nextScene.terminal && chapSt.stage >= 2) {
-        chapterBefore = chap.resolution;
-        newChapterStage = 3;
+      if (nextScene.terminal && chapSt.stage >= 1) {
+        // 03/09 (suite) — LA SORTIE NE RESTITUE QUE CE QUE CETTE VIE A COMPRIS.
+        // Un chapitre qui déclare `resolutionRequiert` ne livre sa conclusion
+        // qu'à qui l'a réunie ; sinon une ligne partielle (indices si le
+        // développement a été vu, amorce sinon), et le chapitre reste ouvert.
+        const req = chap.resolutionRequiert;
+        const reuni = !req || valeur(faitsDe(runRef.current), req.id) >= req.gte;
+        if (chapSt.stage >= 2 && reuni) {
+          chapterBefore = chap.resolution;
+          newChapterStage = 3;
+        } else if (chapSt.stage >= 2 && chap.resolutionIndices) {
+          chapterBefore = chap.resolutionIndices;
+        } else if (chapSt.stage === 1 && chap.resolutionAmorce) {
+          chapterBefore = chap.resolutionAmorce;
+        }
       } else if (nextScene.id === chap.lieuId && chapSt.stage < 2) {
         chapterAfter = chap.developpement;
         newChapterStage = 2;
@@ -3900,7 +3918,10 @@ export default function Scene() {
       // deux Croisées plus tard, une fois l'enfant reparti, pour un échec que
       // le joueur ne reliait plus à rien. Un bénéfice qui n'est qu'un report
       // n'est pas un bénéfice.
-      if (routeFermeeIci || guideAbsorbe) run.routeFermeeEnAttente = false;
+      if (routeFermeeIci || guideAbsorbe) {
+        run.routeFermeeEnAttente = false;
+        run.routeFermeeCause = undefined;
+      }
       if (nextScene.fixationTrial) run.soupconSeen = 6;
       // Un Soupçon d'arrivée qui monte a un TÉMOIN : quelqu'un t'a vu monter
       // là-haut. Le compteur devient quelqu'un (5/08).
@@ -4454,7 +4475,7 @@ export default function Scene() {
         const rf = scene.narration[1];
         persist((r) => {
           if (!(r.liaisonVues ?? []).includes(amb)) r.liaisonVues = [...(r.liaisonVues ?? []), amb];
-          if (rf && ROUTE_FERMEE.includes(rf) && !(r.liaisonVues ?? []).includes(rf))
+          if (rf && ROUTE_FERMEE_TOUS.includes(rf) && !(r.liaisonVues ?? []).includes(rf))
             r.liaisonVues = [...(r.liaisonVues ?? []), rf];
         });
       }
@@ -4639,8 +4660,10 @@ export default function Scene() {
     // CHOIX CERTAIN = PRIX CERTAIN (17/08 §2) : cette sortie sûre referme la
     // prochaine Croisée — même canal, même lecture que l'échec dur.
     if (choice.fermeLaRoute) {
+      const cause = choice.fermeLaRoute;
       persist((run) => {
         run.routeFermeeEnAttente = true;
+        run.routeFermeeCause = cause;
       });
     }
     // Le Serment des Renonçants (spec 24/07 suite §3) : engage la traversée —
@@ -5628,6 +5651,7 @@ export default function Scene() {
             ) {
               persist((r) => {
                 r.routeFermeeEnAttente = true;
+                r.routeFermeeCause = "echec";
               });
             }
             advance({

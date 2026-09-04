@@ -28,6 +28,20 @@ export type Chapter = {
   /** Résolution partielle — insérée avant la narration de la Descente. */
   resolution: string[];
   /**
+   * LA SORTIE NE RESTITUE QUE CE QUE CETTE VIE A PERMIS DE COMPRENDRE (audit
+   * ChatGPT + panel compréhension, 03/09). Sans ces champs, la règle du 03/09
+   * matin tient (rien avant le développement). Avec :
+   * - `resolutionAmorce` : servie si seule l'amorce a été jouée (stage 1) ;
+   * - `resolutionIndices` : servie si le développement a été vu (stage 2)
+   *   mais que `resolutionRequiert` n'est pas atteint ;
+   * - `resolutionRequiert` : la condition (un fait de compte, valeur ≥) qui
+   *   seule autorise `resolution`. Ni l'une ni l'autre des lignes partielles
+   *   ne clôt le chapitre : il se rejoue à la vie suivante.
+   */
+  resolutionAmorce?: string[];
+  resolutionIndices?: string[];
+  resolutionRequiert?: { id: string; gte: number };
+  /**
    * Fragments de lore optionnels (règle de dosage du 25/07, 4e monnaie).
    * Servis UN PAR UN par les points d'intérêt marqués `chapterFragment` : le
    * joueur qui fouille recolle l'histoire du Bailli plus vite que celui qui
@@ -103,6 +117,16 @@ export const LANDES_CHAPTERS: Chapter[] = [
     developpement: [
       "Le lit de bruyère du moulin est tassé, refait de frais, et court — bien trop court pour un adulte. Sur la pierre du mur, à hauteur d'enfant, des marques : des jours comptés par paquets de cinq, sur des années.",
       "Et dans un creux du mur, serré dans un chiffon : un bout de corde. Court. Trop court pour un cou d'homme. On ne garde pas ça par hasard — on garde ça comme on garde la chose qui aurait dû nous tuer, pour vérifier de temps en temps qu'elle n'a pas grandi non plus.",
+    ],
+    // Preuves → compréhension, jamais amorce → conclusion : la révélation
+    // n'est servie qu'à qui l'a réunie (trois découvertes sur la Fille = on
+    // l'a rencontrée). Un lit trop court ne suffit pas à « elle a huit ans ».
+    resolutionRequiert: { id: "c.fille", gte: 3 },
+    resolutionAmorce: [
+      "Tu quittes les Landes avec une phrase que tu n'as pas comprise : au Moulin, quelqu'un dort encore dans un lit de bruyère. Il sert encore.",
+    ],
+    resolutionIndices: [
+      "Tu quittes les Landes avec un lit trop court et un bout de corde trop court. Quelqu'un a été pendu — quelqu'un de petit. Et la corde n'a peut-être pas fait ce qu'on attendait d'elle.",
     ],
     resolution: [
       "En sortant des Landes, tu sais une chose que le hameau tait : une pendue s'est relevée, et elle marche encore. Elle a huit ans, et le village a préféré ne pas la voir plutôt que d'admettre que la Fixation peut rater. C'est ça, le secret — pas un coupable : une lâcheté que trois cents noms couvrent.",

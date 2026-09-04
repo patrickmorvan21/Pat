@@ -57,6 +57,19 @@ def apports_proces(src: str) -> dict[str, str]:
     return {c: recoller(v) for c, v in paires}
 
 
+def route_fermee(src: str) -> dict[str, list[str]]:
+    """Les lignes de Croisée fermée, PAR CAUSE (03/09 : la fermeture nomme
+    l'acte qui l'a fermée). Même découpage que `traces_menace` : le segment du
+    Record, puis un sous-tableau par clé. Compte contrôlé."""
+    i = src.find("export const ROUTE_FERMEE")
+    if i < 0:
+        return {}
+    seg = src[i : src.find("};", i)]
+    out = {cle: chaines_de_tableau(bloc_tableau(seg, cle + ":")) for cle in ("echec", "meute", "bete")}
+    assert all(out.values()), f"ROUTE_FERMEE : une cause sans texte ({out})"
+    return out
+
+
 def traces_menace(src: str) -> dict[str, list[str]]:
     """Les traces de `TRACES_MENACE` (Record clé → tableau de chaînes).
 
@@ -317,7 +330,9 @@ def main() -> int:
         "soupconPaliers": record(src, "export const SOUPCON_PALIERS: Record<number, string>"),
         "soupconCraie": record(src, "export const SOUPCON_CRAIE: Record<number, string>"),
         "soupconGeolier": record(src, "export const SOUPCON_GEOLIER: Record<number, string>"),
-        "routeFermee": chaines_de_tableau(bloc_tableau(src, "const ROUTE_FERMEE")),
+        # 03/09 — la fermeture nomme sa cause : un tableau par cause
+        # (echec / meute / bete), lu sur les sous-tableaux du Record.
+        "routeFermee": route_fermee(src),
         # LA SORTIE DU VILLAGE JOUÉE (24/08) : la couture du franchissement
         # ouvre l'écran de sortie (portillon). Sans elle, la réplique ferait
         # « sortir » le joueur d'un tap muet — exactement la téléportation que

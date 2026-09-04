@@ -350,8 +350,17 @@ def pools() -> list[dict]:
 
     # — la route fermée par un échec dur : jouée sur une liaison, où qu'elle
     #   soit (une ruelle du hameau est une liaison comme une autre).
-    for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, "const ROUTE_FERMEE"))):
-        out.append({"pool": f"route fermée {i}", "garde": {"partout"}, "textes": [t]})
+    #   03/09 : un tableau par CAUSE. L'échec dur peut fermer une ruelle
+    #   (garde « partout ») ; la Meute et la Bête ne se rencontrent qu'en
+    #   lande, leurs lignes ont le droit à la bruyère.
+    irf = scene_src.find("export const ROUTE_FERMEE")
+    seg_rf = scene_src[irf : scene_src.find("};", irf)] if irf >= 0 else ""
+    n_rf = 0
+    for cause, garde in (("echec", {"partout"}), ("meute", {"lande"}), ("bete", {"lande"})):
+        for i, t in enumerate(chaines_de_tableau(bloc_tableau(seg_rf, cause + ":"))):
+            out.append({"pool": f"route fermée {cause} {i}", "garde": garde, "textes": [t]})
+            n_rf += 1
+    assert n_rf >= 6, f"ROUTE_FERMEE : {n_rf} textes extraits (attendu ≥ 6)"
 
     # — ambiances de liaison (fond) : servies sur TOUTE liaison, village
     #   compris quand les variantes de village sont épuisées (anti-répétition).

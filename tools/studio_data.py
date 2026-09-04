@@ -874,8 +874,9 @@ def lire_choix(bloc: str) -> list[dict]:
             ch["laisseMenace"] = v
         # 17/08 : CHOIX CERTAIN = PRIX CERTAIN — la sortie sûre referme la
         # Croisée suivante. Même canal que l'échec dur.
-        if booleen_de(c, "fermeLaRoute"):
-            ch["fermeLaRoute"] = True
+        cause_ferme = texte_de(c, "fermeLaRoute")
+        if cause_ferme:
+            ch["fermeLaRoute"] = cause_ferme  # 03/09 : la cause ("meute" / "bete")
         # LOT 3 « EXPLORER PRÉPARE » (14/08) : ce que paie une préparation est
         # STRUCTUREL — sur l'option préparée, l'échec est hors de portée (aucun
         # coût au corps, aucune blessure de combat). Sans ce champ, la réplique

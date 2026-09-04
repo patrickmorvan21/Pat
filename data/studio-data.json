@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-03T19:00:46Z",
- "commit": "f46bf4b",
+ "genere": "2026-09-04T06:59:18Z",
+ "commit": "c82a34f",
  "zones": [
   {
    "id": "landes",
@@ -1127,7 +1127,8 @@
   {
    "id": "colline-aux-gibets",
    "narration": [
-    "Sur la crête, les potences se suivent comme des bornes, chacune avec son nom et sa date. La dernière dépasse toutes les autres — sa corde est la seule chose neuve à dix lieues. En contrebas, un poteau porte encore son occupant."
+    "Sur la crête, les potences se suivent comme des bornes, chacune avec son nom et sa date. La dernière dépasse toutes les autres — sa corde est la seule chose neuve à dix lieues. En contrebas, un poteau porte encore son occupant.",
+    "Sur sa poitrine, un écriteau cloué : un nom, une date de ce mois, et au-dessus, plus gros, un seul mot — FIXÉ. On ne l'a pas pendu pour le tuer. On l'a pendu pour qu'il tienne."
    ],
    "choix": [
     {
@@ -1295,7 +1296,8 @@
    "id": "pendu-qui-parle",
    "narration": [
     "Au revers de la colline, un gibet à corde longue : le pendu t'arrive à hauteur de regard. Chaîne de fonction au cou, un sceau au poing. À ton approche, il ouvre les yeux.",
-    "Sur la traverse, une rangée de corbeaux regarde le nord. Un seul est de travers. Celui-là te regarde, toi."
+    "Sur la traverse, une rangée de corbeaux regarde le nord. Un seul est de travers. Celui-là te regarde, toi.",
+    "Plus bas, un poteau plus court porte un corps de ce mois, un écriteau cloué sur la poitrine : un nom, une date, et au-dessus, plus gros, un seul mot — FIXÉ. On ne l'a pas pendu pour le tuer. On l'a pendu pour qu'il tienne."
    ],
    "choix": [
     {
@@ -4107,7 +4109,7 @@
      "label": "Leur céder le chemin",
      "type": "passif",
      "consequence": "Tu quittes la route sans leur tourner le dos, jusqu'à la bruyère. Elles voulaient le chemin, pas toi. Le tien fait maintenant le grand tour — c'est le prix, et tu le sais en le payant.",
-     "fermeLaRoute": true
+     "fermeLaRoute": "meute"
     }
    ],
    "pointsInteret": [],
@@ -4180,7 +4182,7 @@
      "label": "Prendre la hauteur et attendre",
      "type": "passif",
      "consequence": "Tu montes au premier tas de pierres et tu t'assois, hors de tout couloir. Le creux patiente. Puis le souffle se retire, chercher un chemin qui marche. La route directe est à elle : la tienne fera le tour.",
-     "fermeLaRoute": true
+     "fermeLaRoute": "bete"
     }
    ],
    "pointsInteret": [],

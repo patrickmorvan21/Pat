@@ -532,7 +532,10 @@ class Partie:
         self.dit(cout[self.d["pas"] % len(cout)] if cout else
                  "Tu repasses la limite du village. La lande reprend.", "narration")
         if ferme and self.k.get("routeFermee"):
-            self.dit(r.choice(self.k["routeFermee"]), "narration")
+            pool = self.k["routeFermee"]
+            if isinstance(pool, dict):  # 03/09 : un tableau par cause
+                pool = pool.get(self.d.get("routeFermeeCause") or "echec") or sum(pool.values(), [])
+            self.dit(r.choice(pool), "narration")
         else:
             ia = self.k["indiceRoute"].get(opts[0], "")
             ib = self.k["indiceRoute"].get(opts[1], "") if len(opts) > 1 else ""
@@ -669,7 +672,10 @@ class Partie:
             self.dit(traces[men["traces"]], "narration")
             men["traces"] += 1
         if ferme and self.k.get("routeFermee"):
-            self.dit(r.choice(self.k["routeFermee"]), "narration")
+            pool = self.k["routeFermee"]
+            if isinstance(pool, dict):  # 03/09 : un tableau par cause
+                pool = pool.get(self.d.get("routeFermeeCause") or "echec") or sum(pool.values(), [])
+            self.dit(r.choice(pool), "narration")
         else:
             # LA CROISÉE FIDÈLE (17/08). La réplique tirait ici une
             # bifurcation AU HASARD à chaque Croisée — or le vrai jeu sert
@@ -910,6 +916,9 @@ class Partie:
                                 "poseeA": len(self.d["visites"]), "traces": 0}
         if c.get("fermeLaRoute"):
             self.d["routeAFermer"] = True
+            # 03/09 : la Croisée fermée nomme sa cause (meute / bete ; l'échec
+            # dur laisse la valeur par défaut « echec »).
+            self.d["routeFermeeCause"] = c["fermeLaRoute"] if isinstance(c["fermeLaRoute"], str) else "echec"
         # Ce qu'un choix ENSEIGNE se pose à la sélection (comme le Soupçon) :
         # poser la question vaut lire une trace.
         if c.get("donneSavoir"):
@@ -1221,6 +1230,7 @@ class Partie:
         # déjà le choix tenté — on n'y ajoute pas un second coût.
         if dur and not s.get("sejour"):
             self.d["routeAFermer"] = True
+            self.d["routeFermeeCause"] = "echec"
         self.suite(c)
 
     def suite(self, choix: dict | None = None) -> None:

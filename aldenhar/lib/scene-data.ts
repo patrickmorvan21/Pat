@@ -463,7 +463,10 @@ export type Choice = {
    * même langage, même lecture. À poser SEULEMENT quand la fiction le dit
    * (céder le passage, faire le grand tour), jamais en taxe générique.
    */
-  fermeLaRoute?: true;
+  /** La CAUSE voyage avec le prix (panel compréhension 03/09 : 5/5 perdus
+      devant une Croisée fermée « au hasard ») : la ligne servie à la Croisée
+      suivante nomme l'acte qui l'a fermée. */
+  fermeLaRoute?: "meute" | "bete";
   /**
    * LE SCEAU OUVRE UNE PORTE (arbitrage 10/08, livré le 14/08). Ce choix
    * n'existe que pour un compte qui a franchi la Descente vivant — id du
@@ -1856,6 +1859,7 @@ export const SCENES: Scene[] = [
        maintenant en une clause de la narration, et le détail part au Codex. */
     narration: [
       "Sur la crête, les potences se suivent comme des bornes, chacune avec son nom et sa date. La dernière dépasse toutes les autres — sa corde est la seule chose neuve à dix lieues. En contrebas, un poteau porte encore son occupant.",
+      "Sur sa poitrine, un écriteau cloué : un nom, une date de ce mois, et au-dessus, plus gros, un seul mot — FIXÉ. On ne l'a pas pendu pour le tuer. On l'a pendu pour qu'il tienne.",
     ],
     choices: [
       {
@@ -1995,6 +1999,9 @@ export const SCENES: Scene[] = [
     narration: [
       "Au revers de la colline, un gibet à corde longue : le pendu t'arrive à hauteur de regard. Chaîne de fonction au cou, un sceau au poing. À ton approche, il ouvre les yeux.",
       "Sur la traverse, une rangée de corbeaux regarde le nord. Un seul est de travers. Celui-là te regarde, toi.",
+      // UNE FIXATION VUE AVANT D'EN CONDAMNER (panel compréhension 03/09) :
+      // le mot arrivait au procès, et tuait. Ici il est un ACTE, pas une règle.
+      "Plus bas, un poteau plus court porte un corps de ce mois, un écriteau cloué sur la poitrine : un nom, une date, et au-dessus, plus gros, un seul mot — FIXÉ. On ne l'a pas pendu pour le tuer. On l'a pendu pour qu'il tienne.",
     ],
     choices: [
       {
@@ -4432,7 +4439,7 @@ export const SCENES: Scene[] = [
         // t'imposent (la Croisée suivante n'offre qu'une direction).
         id: "retour-ceder",
         label: "Leur céder le chemin",
-        fermeLaRoute: true,
+        fermeLaRoute: "meute",
         passive: {
           consequence:
             "Tu quittes la route sans leur tourner le dos, jusqu'à la bruyère. Elles voulaient le chemin, pas toi. Le tien fait maintenant le grand tour — c'est le prix, et tu le sais en le payant.",
@@ -4494,7 +4501,7 @@ export const SCENES: Scene[] = [
       {
         id: "retour-hauteur",
         label: "Prendre la hauteur et attendre",
-        fermeLaRoute: true,
+        fermeLaRoute: "bete",
         passive: {
           consequence:
             "Tu montes au premier tas de pierres et tu t'assois, hors de tout couloir. Le creux patiente. Puis le souffle se retire, chercher un chemin qui marche. La route directe est à elle : la tienne fera le tour.",
@@ -8420,6 +8427,8 @@ export type LiaisonCtx = {
       texte verbatim dans une même vie (retour test 4/08 : « je voyais le
       paquet de cartes sous les Landes »). */
   dejaVues?: string[];
+  /** Pourquoi la Croisée n'offre qu'une direction (voir `ROUTE_FERMEE`). */
+  routeFermeeCause?: RouteFermeeCause;
 };
 
 type LiaisonVariant = {
@@ -9001,17 +9010,34 @@ function phraseBifurcation(liaisonsJouees: number, seed: number): string {
  * panel du 9/08 avait explicitement écarté le re-durcissement du barème de
  * santé, qui ne se lit nulle part.
  */
-export const ROUTE_FERMEE = [
-  "L'autre direction n'en est plus une : le sol s'est affaissé sur toute la " +
-    "largeur du passage, et ce qui reste ne porterait pas un chien. Ce n'est " +
-    "pas récent. Ça l'était il y a un instant.",
-  "Tu cherches la seconde route et tu ne la trouves pas. Elle était là — les " +
-    "traces y vont, s'arrêtent, et ne reviennent pas. Il ne reste qu'un " +
-    "chemin, et il ne t'a pas attendu pour être choisi.",
-  "Une seule direction s'ouvre. L'autre est barrée par quelque chose que tu " +
-    "préfères ne pas identifier de plus près, et qui n'y était pas quand tu " +
-    "as pris ta décision.",
-];
+export type RouteFermeeCause = "echec" | "meute" | "bete";
+
+/**
+ * LA FERMETURE NOMME SA CAUSE (panel compréhension 03/09). Les trois anciens
+ * textes décrivaient une géologie soudaine (« le sol s'est affaissé ») sans
+ * jamais dire POURQUOI : cinq testeurs sur cinq, tous profils, ont lu « un
+ * bug », « un hasard méchant », « une boucle ». Le prix était annoncé à
+ * l'acte (« la tienne fera le tour ») et jamais reconnu à la Croisée qui
+ * l'encaisse. Chaque cause a ses lignes ; la Croisée sert la moins vue.
+ * Règle d'écriture : la ligne tient l'ACTE (rater, céder, se mettre à
+ * l'abri), pas une règle ; en pleine lande, aucun bâti.
+ */
+export const ROUTE_FERMEE: Record<RouteFermeeCause, string[]> = {
+  echec: [
+    "Tu cherches la seconde route et tu ne la trouves pas. Les traces y vont, s'arrêtent, et reviennent — les tiennes, d'avant. Ce que tu as raté là-bas a fait le chemin avant toi : il ne reste qu'une direction.",
+    "L'autre direction n'en est plus une. Le sol s'y est affaissé sur toute la largeur, comme sous un poids qu'on a laissé tomber tout à l'heure. On ne rate pas sans que le pays le sache.",
+  ],
+  meute: [
+    "Tu leur as cédé le chemin : il est à elles. Le passage direct porte leurs empreintes, fraîches, dans les deux sens, et une odeur qui ne s'écarte pas. Le tien fait le grand tour, comme convenu.",
+    "La seconde route est celle des chiens, maintenant. Tu la leur as laissée. Il ne t'en reste qu'une, plus longue — le prix que tu as accepté en te rangeant dans la bruyère.",
+  ],
+  bete: [
+    "La route directe est restée à la Bête. Le creux qu'elle a pris continue par là, et rien ne te fera y redescendre. La tienne fait le tour, comme tu l'avais décidé sur ton tas de pierres.",
+    "Une seule direction s'ouvre : l'autre est le couloir qu'elle s'est creusé pendant que tu attendais en hauteur. Tu as gardé ta peau ; elle a gardé le chemin.",
+  ],
+};
+/** Tous les textes de fermeture, toutes causes confondues (mémoire `liaisonVues`). */
+export const ROUTE_FERMEE_TOUS: string[] = Object.values(ROUTE_FERMEE).flat();
 
 /**
  * L'image propre à une ambiance de marche, si elle en a une ET si le fichier
@@ -9052,8 +9078,9 @@ export function makeLiaison(
           // mémoire que les ambiances (`dejaVues`), la moins vue d'abord.
           (() => {
             const vues = ctx?.dejaVues ?? [];
-            const frais = ROUTE_FERMEE.filter((t) => !vues.includes(t));
-            const pool = frais.length ? frais : ROUTE_FERMEE;
+            const parCause = ROUTE_FERMEE[ctx?.routeFermeeCause ?? "echec"];
+            const frais = parCause.filter((t) => !vues.includes(t));
+            const pool = frais.length ? frais : parCause;
             return pool[Math.floor(seeded(seed + 13) * pool.length)];
           })(),
         ]
