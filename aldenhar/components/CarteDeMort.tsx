@@ -657,7 +657,11 @@ export default function CarteDeMort(props: CarteDeMortProps) {
         </div>
       </div>
 
-      <p className="mt-[12px] min-h-[1.3em] shrink-0 px-[20px] text-center font-mono text-[12px] text-[var(--color-ink)] opacity-50">
+      {/* ⚠️ 46 px et non 12 : l'air ajouté le 5/09 (« descendre plus le CTA
+          Partager et le texte Incline »). Il est compté dans `SOUS_CARTE`
+          côté DeathScreen — les deux chiffres doivent bouger ensemble, sinon
+          la carte se réduit sans que le bloc descende. */}
+      <p className="mt-[46px] min-h-[1.3em] shrink-0 px-[20px] text-center font-mono text-[12px] text-[var(--color-ink)] opacity-50">
         {hint}
       </p>
 

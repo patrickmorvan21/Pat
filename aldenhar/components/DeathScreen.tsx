@@ -98,7 +98,11 @@ const HINT_BAS_CARTE = 140;
     de marge + 46 de CTA. Une seule constante, lue par le budget de réduction
     ET par la hauteur réservée — deux chiffres séparés divergeraient, et le
     bouton se ferait comprimer sans qu'on comprenne pourquoi. */
-const SOUS_CARTE = 12 + 16 + 10 + 46;
+/* Hint + CTA sous la carte. ⚠️ Le +34 est l'AIR AJOUTÉ le 5/09 (« descendre
+   plus le CTA Partager et le texte Incline ») : il descend le bloc entier
+   sans toucher à la carte, qui garde sa taille. */
+const AIR_SOUS_CARTE = 34;
+const SOUS_CARTE = AIR_SOUS_CARTE + 12 + 16 + 10 + 46;
 
 /**
  * Le fragment du Geôlier : une chose de plus sur cet endroit, à chaque mort.
@@ -484,7 +488,7 @@ export default function DeathScreen({
         (!coffreOuvert ? (
           /* Phase A — le coffre (maquette 2333-10146) : plein cadre, voile de
              lisibilité TRAMÉ en bas, le tap déclenche la révélation. */
-          <div className="flex flex-1 flex-col items-center justify-center">
+          <div className="flex flex-1 flex-col items-center">
             {/* Le coffre est l'IMAGE de Patrick rendue en grille de pixels ;
                 son bas se dissout en pixels épars pour que la consigne se pose
                 sur du charbon propre — les flammes qui la rendaient illisible
@@ -559,7 +563,11 @@ export default function DeathScreen({
           encore, jusqu'au retour à l'accueil. Foyer triplé (48 → 144 px,
           retour Patrick 30/07) : les flammes montent, le bas de l'écran
           n'est plus une bande noire sous un lit mince. */}
-      <FondBraises height={144} />
+      {/* ⚠️ PAS SUR L'ÉCRAN DU COFFRE (retour Patrick 5/09 : « enlève les
+          flammes sur cet écran »). Le coffre est ferré en haut et descend
+          jusqu'au texte : des braises par-dessus lui volaient dans l'image au
+          lieu de couver sous elle. */}
+      {!(ecran === "relique" && !coffreOuvert) && <FondBraises height={144} />}
     </div>
   );
 }

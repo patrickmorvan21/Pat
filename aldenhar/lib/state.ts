@@ -586,7 +586,11 @@ export type RunState = {
   fragmentsLus: number[];
 };
 
-const KEY = "aldenhar-run";
+/** Clé de la run en cours. Exportée pour l'APERÇU DU PROLOGUE (Options), qui
+    doit sauvegarder puis restaurer la run telle quelle, octet pour octet —
+    une seconde copie de ce littéral ailleurs finirait par diverger. */
+export const RUN_KEY = "aldenhar-run";
+const KEY = RUN_KEY;
 
 const HERO_NAMES = [
   "Corvin", "Vael", "Ysolde", "Brannoc", "Maerith", "Dorn", "Sélène",

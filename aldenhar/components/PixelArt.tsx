@@ -15,6 +15,13 @@
  *
  * Les deux images sont déjà tramées en deux couleurs : leur trame EST le
  * dégradé, il n'y a jamais à en ajouter un.
+ *
+ * ⚠️ ELLES SONT SERVIES EN 3× (`_b`), retiré du retour Patrick du 5/09
+ * (« l'image du démon fait trop image, rends-la plus nette »). Les exports
+ * d'origine étaient à la TAILLE D'AFFICHAGE : sur un écran Retina, chaque
+ * cellule de trame devenait un pâté de 3 px. Leurs demi-teintes ont été
+ * relues comme une carte de densité, agrandies, puis re-tramées fin — le
+ * grain fait maintenant un pixel d'écran, comme le démon de l'accueil.
  */
 
 import { useEffect, useState } from "react";
@@ -33,7 +40,7 @@ const SOUFFLE = [0, -1, -2, -3, -3, -3, -2, -1, 0, 0, 0];
 export function TeteGeolier() {
   return (
     <ImagePixels
-      src="assets/mort_geolier_tete.png"
+      src="assets/mort_geolier_tete_b.png"
       width={390}
       height={276}
       breathe={SOUFFLE}
@@ -68,9 +75,9 @@ export function Coffre() {
 
   return (
     <ImagePixels
-      src="assets/mort_coffre.png"
+      src="assets/mort_coffre_b.png"
       width={390}
-      height={560}
+      height={620}
       className="shrink-0"
       style={
         masque

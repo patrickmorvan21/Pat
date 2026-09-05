@@ -1,9 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CloseX } from "@/components/Home";
 import { forgetIntro, forgeRelic, loadMemory, reliquesPortees, type Relic } from "@/lib/player-memory";
-import { loadRun, type NarrativeEffect, type RunState } from "@/lib/state";
+import { loadRun, resetRun, RUN_KEY, type NarrativeEffect, type RunState } from "@/lib/state";
+import Prologue from "@/components/Prologue";
+import Credo from "@/components/Credo";
+import { ActeScreen } from "@/components/Intro";
 import RadarEssence from "@/components/RadarEssence";
 import { besaceBySlot, normalizeItem, type BesaceItem } from "@/lib/besace";
 import TagRarete from "@/components/TagRarete";
@@ -527,11 +530,76 @@ function buildPreviewMort(): PreviewMort {
   };
 }
 
+/**
+ * APERÇU DU PROLOGUE (demande Patrick 5/09 : « mets un aperçu du prologue pour
+ * que je puisse le rejouer afin de voir les bugs »). Même philosophie que
+ * l'aperçu de l'écran de mort : on rejoue la VRAIE séquence, et on ne laisse
+ * aucune trace.
+ *
+ * Il couvre l'ouverture entière qui suit le pacte — le Seuil, le credo, le
+ * carton d'acte — puis rend la main aux Options sans jamais entrer en jeu.
+ * (Les quatre écrans du pacte, eux, se rejouent par « Revoir l'introduction ».)
+ *
+ * ⚠️ La différence avec l'aperçu de la mort, et tout le soin qu'il demande :
+ * le Seuil PERSISTE à chaque beat. On sauvegarde donc la run en octets avant
+ * d'ouvrir, et on la remet telle quelle à la fermeture — jamais un « à peu
+ * près » reconstruit, qui perdrait un champ au passage.
+ */
+type EtapeApercu = "seuil" | "credo" | "acte" | null;
+
+function restaurerRun(sauve: string | null): void {
+  try {
+    if (sauve === null) window.localStorage.removeItem(RUN_KEY);
+    else window.localStorage.setItem(RUN_KEY, sauve);
+  } catch {
+    /* stockage indisponible : rien à restaurer, rien à casser */
+  }
+}
+
 export function OptionsTab() {
   const [s, setS] = useState<Settings>(() => loadSettings());
   const [eraseArmed, setEraseArmed] = useState(false);
   const [aidesReset, setAidesReset] = useState(false);
   const [preview, setPreview] = useState<PreviewMort | null>(null);
+  /** Aperçu du prologue : l'ouverture rejouée d'un bout à l'autre. */
+  const [apercu, setApercu] = useState<EtapeApercu>(null);
+  /** La run telle qu'elle était AVANT l'aperçu, en octets. `null` = il n'y en
+      avait aucune ; le ref n'est jamais écrit pendant un rendu (React
+      Compiler) mais seulement dans un gestionnaire ou un effet. */
+  const runSauve = useRef<string | null>(null);
+  const apercuOuvert = apercu !== null;
+
+  /** ⚠️ FILET DE SÉCURITÉ — le Seuil ÉCRIT dans la run à chaque beat (il doit
+      pouvoir reprendre là où on l'a laissé). Si l'app est fermée en plein
+      aperçu, la partie du joueur serait donc remplacée par celle de l'aperçu.
+      On restaure aussi sur `pagehide`, qui part au moment où la page s'en va
+      (fermeture, rechargement, mise en arrière-plan iOS). La restauration est
+      idempotente : la fermeture normale la refait sans dommage. */
+  useEffect(() => {
+    if (!apercuOuvert) return;
+    const restaurer = () => restaurerRun(runSauve.current);
+    window.addEventListener("pagehide", restaurer);
+    return () => window.removeEventListener("pagehide", restaurer);
+  }, [apercuOuvert]);
+
+  function ouvrirApercu() {
+    try {
+      runSauve.current = window.localStorage.getItem(RUN_KEY);
+    } catch {
+      runSauve.current = null;
+    }
+    // Une run NEUVE, donc un Seuil neuf : nouveaux souvenirs, nouveau nom.
+    // `resetRun` n'est utilisé ici que pour sa mécanique (écrire une run
+    // fraîche) — rien n'est perdu, la précédente est restaurée à la fermeture.
+    resetRun();
+    setApercu("seuil");
+  }
+
+  function fermerApercu() {
+    restaurerRun(runSauve.current);
+    runSauve.current = null;
+    setApercu(null);
+  }
 
   function set<K extends keyof Settings>(k: K, v: Settings[K]) {
     setS(mutateSettings((d) => { d[k] = v; }));
@@ -624,6 +692,23 @@ export function OptionsTab() {
         <OptHelp>Les quatre clauses du pacte se rejoueront à la prochaine partie. Ta progression est conservée.</OptHelp>
       </div>
 
+      {/* Aperçu du prologue — l'ouverture rejouée, la run en cours mise de
+          côté puis remise telle quelle. */}
+      <div className="mt-[20px]">
+        <button
+          type="button"
+          onClick={ouvrirApercu}
+          className="font-mono text-[13px] text-[var(--color-ink)] underline"
+        >
+          Aperçu du prologue
+        </button>
+        <OptHelp>
+          Rejoue le Seuil, le credo et le carton d&apos;acte, avec de nouveaux souvenirs. Ta
+          partie en cours est mise de côté et remise à l&apos;identique — la croix, en haut à
+          droite, referme à tout moment.
+        </OptHelp>
+      </div>
+
       {/* Aperçu de l'écran de mort — outil de vérification, aucune trace
           laissée (ni relique, ni entrée au Registre, ni mort comptée). */}
       <div className="mt-[20px]">
@@ -653,6 +738,22 @@ export function OptionsTab() {
         ))}
       </div>
     </div>
+    {apercu && (
+      <div className="absolute inset-0 z-[50]" data-apercu-prologue>
+        {apercu === "seuil" && <Prologue onDone={() => setApercu("credo")} />}
+        {apercu === "credo" && <Credo onDone={() => setApercu("acte")} />}
+        {apercu === "acte" && <ActeScreen onDone={fermerApercu} />}
+        {/* La croix du menu, à sa position habituelle : c'est déjà le geste
+            « refermer un plein cadre » partout ailleurs, et elle évite de
+            rester coincé au milieu d'une séquence qu'on ne veut pas finir. */}
+        <div
+          data-fermer-apercu
+          className="absolute top-[calc(env(safe-area-inset-top,0px)+11px)] right-[10px] z-[60]"
+        >
+          <CloseX onClose={fermerApercu} />
+        </div>
+      </div>
+    )}
     {preview && (
       <div className="absolute inset-0 z-[50]">
         <DeathScreen

@@ -28,6 +28,10 @@ type Props = {
   /** Décalage vertical par palier, appliqué à l'image entière (la respiration). */
   breathe?: number[];
   breatheMs?: number;
+  /** « cover » : l'image REMPLIT la boîte et déborde, centrée — pour un fond
+      qui doit tenir toute la hauteur du device quelle qu'elle soit. Défaut
+      « nature » : l'image garde sa taille, une cellule source par pixel. */
+  ajuste?: "nature" | "cover";
   className?: string;
   style?: React.CSSProperties;
 };
@@ -41,6 +45,7 @@ export default function ImagePixels({
   swayBand = 26,
   breathe,
   breatheMs = 380,
+  ajuste = "nature",
   className,
   style,
 }: Props) {
@@ -66,14 +71,21 @@ export default function ImagePixels({
       const iw = img.naturalWidth || width;
       const ih = img.naturalHeight || height;
       // Échelle entière quand c'est possible : une cellule source = n pixels écran.
-      const ech = (width * dpr) / iw;
+      const ech =
+        ajuste === "cover"
+          ? Math.max(cv.width / iw, cv.height / ih)
+          : (width * dpr) / iw;
+      // En « cover », l'image déborde : on la centre plutôt que de la coller
+      // en haut à gauche, sinon on ne perdrait que d'un côté.
+      const ox = ajuste === "cover" ? Math.round((cv.width - iw * ech) / 2) : 0;
+      const oy = ajuste === "cover" ? Math.round((cv.height - ih * ech) / 2) : 0;
       ctx.clearRect(0, 0, cv.width, cv.height);
 
       const dy = breathe && !fige ? breathe[Math.floor(t / breatheMs) % breathe.length] : 0;
       const dx = sway && !fige ? sway[Math.floor(t / swayMs) % sway.length] : 0;
 
       if (!sway || fige) {
-        ctx.drawImage(img, 0, Math.round(dy * ech), Math.round(iw * ech), Math.round(ih * ech));
+        ctx.drawImage(img, ox, oy + Math.round(dy * ech), Math.round(iw * ech), Math.round(ih * ech));
         return;
       }
       // Bandes : le bas porte un peu plus que le haut, mais TOUTE l'image
@@ -94,8 +106,8 @@ export default function ImagePixels({
           sy,
           iw,
           sh,
-          Math.round(off),
-          Math.round((sy + dy) * ech),
+          ox + Math.round(off),
+          oy + Math.round((sy + dy) * ech),
           Math.round(iw * ech),
           Math.round(sh * ech),
         );
@@ -118,7 +130,7 @@ export default function ImagePixels({
       vivant = false;
       cancelAnimationFrame(raf);
     };
-  }, [src, width, height, sway, swayMs, swayBand, breathe, breatheMs]);
+  }, [src, width, height, sway, swayMs, swayBand, breathe, breatheMs, ajuste]);
 
   return (
     <canvas

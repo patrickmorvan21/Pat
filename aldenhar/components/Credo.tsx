@@ -27,12 +27,19 @@ import ImagePixels from "@/components/ImagePixels";
 import TouchHint from "@/components/TouchHint";
 import { animReduced } from "@/lib/settings";
 
-/** Les trois phrases, à leur position exacte dans le cadre de 848. */
-const LIGNES: { texte: string[]; top: number }[] = [
-  { texte: ["Une vie."], top: 282 },
-  { texte: ["Un dé."], top: 357 },
-  { texte: ["Le Domaine", "se souvient."], top: 432 },
+/**
+ * Les trois phrases. ⚠️ Elles ne sont plus posées sur la grille de 848 : le
+ * cadre fait la hauteur du device sous 768 px, donc un `top` figé décalait
+ * tout. Le bloc est CENTRÉ dans le cadre, et l'écart entre les phrases est
+ * généreux (retour Patrick 5/09 : « espacer l'interlignage aussi »).
+ */
+const LIGNES: { texte: string[] }[] = [
+  { texte: ["Une vie."] },
+  { texte: ["Un dé."] },
+  { texte: ["Le Domaine", "se souvient."] },
 ];
+/** Écart entre deux phrases, en px. */
+const ECART = 46;
 
 /** Paliers de matérialisation, et temps de lecture avant la phrase suivante. */
 const PAS = 9;
@@ -67,6 +74,20 @@ export default function Credo({ onDone }: { onDone: () => void }) {
   const [masques, setMasques] = useState<(string | null)[]>([null, null, null]);
   const seuils = useRef<Float32Array[] | null>(null);
   const fige = useRef(false);
+  /** Hauteur réelle du cadre : elle vaut 848 en preview desktop et la hauteur
+      du device sur mobile (`height:100dvh` sous 768 px). Lue au montage, jamais
+      supposée. */
+  const cadreRef = useRef<HTMLDivElement | null>(null);
+  const [hauteur, setHauteur] = useState(848);
+  useEffect(() => {
+    const maj = () => {
+      const h = cadreRef.current?.getBoundingClientRect().height;
+      if (h) setHauteur(Math.round(h));
+    };
+    maj();
+    window.addEventListener("resize", maj);
+    return () => window.removeEventListener("resize", maj);
+  }, []);
 
   useEffect(() => {
     fige.current = animReduced();
@@ -78,7 +99,7 @@ export default function Credo({ onDone }: { onDone: () => void }) {
     if (!seuils.current) {
       seuils.current = LIGNES.map((l) => {
         const w = 195;
-        const h = Math.ceil((l.texte.length * 56 + 8) / 2);
+        const h = Math.ceil((l.texte.length * 62 + 8) / 2);
         const a = new Float32Array(w * h);
         for (let k = 0; k < a.length; k++) a[k] = Math.random();
         return a;
@@ -103,7 +124,7 @@ export default function Credo({ onDone }: { onDone: () => void }) {
     if (n >= LIGNES.length) return;
     let pas = 0;
     const w = 195;
-    const h = Math.ceil((LIGNES[n].texte.length * 56 + 8) / 2);
+    const h = Math.ceil((LIGNES[n].texte.length * 62 + 8) / 2);
     const s = seuilsDe(n);
     const id = setInterval(() => {
       pas += 1;
@@ -130,30 +151,40 @@ export default function Credo({ onDone }: { onDone: () => void }) {
     <main className="flex min-h-dvh items-center justify-center">
       <div
         onClick={() => (fini ? onDone() : tout())}
-        className="phone-frame relative h-[848px] max-h-[100dvh] w-[390px] shrink-0 cursor-pointer overflow-clip bg-[var(--color-bg)]"
+        ref={cadreRef}
+        className="phone-frame relative flex h-[848px] max-h-[100dvh] w-[390px] shrink-0 cursor-pointer flex-col items-center justify-center overflow-clip bg-[var(--color-bg)]"
       >
         {/* LES CHAÎNES — l'image de la maquette, rendue en grille de pixels et
             balancée par bandes : elles sont accrochées en haut, donc le bas
             porte le mouvement. */}
+        {/* LES CHAÎNES prennent TOUTE la hauteur du device (retour Patrick
+            5/09 : « l'image est coupée en bas »). L'image de la maquette est
+            calibrée sur 848 ; en « cover » elle est mise à l'échelle du cadre
+            réel et CENTRÉE, donc les deux coins de chaîne restent entiers
+            quelle que soit la taille de l'écran. */}
         <ImagePixels
           src="assets/credo_chaines.png"
           width={390}
-          height={848}
+          height={hauteur}
+          ajuste="cover"
           sway={BALANCE}
           swayMs={520}
           swayBand={40}
           className="pointer-events-none absolute inset-0"
         />
 
+        <div
+          className="relative flex flex-col items-center"
+          style={{ gap: ECART }}
+        >
         {LIGNES.map((l, i) => {
           const visible = i < n || (i === n && p > 0);
           const m = masques[i];
           return (
             <div
               key={i}
-              className="absolute inset-x-0 text-center leading-[56px] text-[48px] text-[var(--color-ink)]"
+              className="w-full text-center leading-[62px] text-[48px] text-[var(--color-ink)]"
               style={{
-                top: l.top,
                 fontFamily: "var(--font-title)",
                 visibility: visible ? "visible" : "hidden",
                 ...(m
@@ -172,6 +203,7 @@ export default function Credo({ onDone }: { onDone: () => void }) {
             </div>
           );
         })}
+        </div>
 
         {fini && <TouchHint />}
       </div>

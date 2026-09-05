@@ -24,12 +24,28 @@ export function HeroGeolier({
   density = 2,
   bstep = 380,
   height = 368,
+  src = "assets/geolier_detoure.png",
+  marge = 40,
+  sol = true,
 }: {
   density?: number;
   bstep?: number;
   /** Hauteur du bloc héros (px). L'écran du Nom (24/07) le réduit pour que
       la signature et le CTA restent visibles quand le clavier s'ouvre. */
   height?: number;
+  /** Image du héros. L'INTRO sert le démon de ses maquettes
+      (`intro_demon_detoure.png`) plutôt que celui de l'accueil, mais avec la
+      MÊME animation — c'est la demande de Patrick (5/09 : « démon, reprendre
+      l'animation de l'accueil »). ⚠️ Elle doit être DÉTOURÉE (champ orange
+      transparent) : sur une image opaque, les cendres passent derrière et ne
+      se voient jamais. */
+  src?: string;
+  /** Air au-dessus de l'image, en px (l'accueil en laisse 40 au-dessus des
+      cornes ; l'intro pose son démon au ras du bloc). */
+  marge?: number;
+  /** Le liseré charbon du bas — le « sol » de l'accueil. L'intro n'en a pas :
+      sa nappe charbon vient juste après, dans le cadre. */
+  sol?: boolean;
 }) {
   const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -165,12 +181,12 @@ export function HeroGeolier({
       <img
         ref={imgRef}
         alt=""
-        src={assetUrl("assets/geolier_detoure.png")}
-        className="relative z-[2] mt-[40px] block w-full select-none"
-        style={{ imageRendering: "pixelated", transform: "translateY(0)" }}
+        src={assetUrl(src)}
+        className="relative z-[2] block w-full select-none"
+        style={{ imageRendering: "pixelated", transform: "translateY(0)", marginTop: marge }}
       />
       {/* sol charbon : couvre la bande révélée sous l'image quand elle monte */}
-      <div className="absolute inset-x-0 bottom-0 z-[1] h-[4px] bg-[var(--color-bg)]" aria-hidden />
+      {sol && <div className="absolute inset-x-0 bottom-0 z-[1] h-[4px] bg-[var(--color-bg)]" aria-hidden />}
     </div>
   );
 }

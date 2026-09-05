@@ -37,9 +37,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import TypedText from "@/components/TypedText";
 import ImagePixels from "@/components/ImagePixels";
+import { HeroGeolier } from "@/components/HeroGeolier";
 import { markIntroSeen } from "@/lib/player-memory";
 import TouchHint from "@/components/TouchHint";
-import VoilePixels, { useVoile } from "@/components/VoilePixels";
 import { assetUrl } from "@/lib/assets";
 import { haptic } from "@/lib/settings";
 
@@ -177,16 +177,14 @@ function SignaturePad({ onMarque }: { onMarque: (m: Marque | null) => void }) {
   const encre = useCallback((px: number, py: number) => {
     const x = ref.current?.getContext("2d");
     if (!x) return;
-    // L'encre baye : sept pixels autour du point, une pincée de blanc.
-    for (let i = 0; i < 7; i++) {
+    // L'encre baye autour du point. ⚠️ ORANGE SEUL et trait FIN (retour
+    // Patrick 5/09) : la pincée de blanc et le halo grisé sont retirés, et le
+    // rayon passe de 1,8 à 1,0 — quatre pixels au lieu de sept.
+    x.fillStyle = "#e0632a";
+    for (let i = 0; i < 4; i++) {
       const a = Math.random() * Math.PI * 2;
-      const r = Math.random() * 1.8;
-      x.fillStyle = Math.random() < 0.82 ? "#e0632a" : "#ffffff";
+      const r = Math.random() * 1.0;
       x.fillRect((px + Math.cos(a) * r) | 0, (py + Math.sin(a) * r) | 0, 1, 1);
-    }
-    if (Math.random() < 0.2) {
-      x.fillStyle = "rgba(255,255,255,.2)";
-      x.fillRect((px + (Math.random() * 7 - 3)) | 0, (py + (Math.random() * 7 - 3)) | 0, 1, 1);
     }
   }, []);
 
@@ -354,14 +352,10 @@ type Etape = "voix" | "qui" | "pacte" | "verdict";
 function Cadre({
   onTap,
   children,
-  voile,
-  onVoileFini,
   orange,
 }: {
   onTap?: () => void;
   children: React.ReactNode;
-  voile: ReturnType<typeof useVoile>["etat"];
-  onVoileFini: () => void;
   /** Les écrans du Geôlier ont le fond ORANGE (maquettes 3450:3977 / 4033). */
   orange?: boolean;
 }) {
@@ -374,7 +368,6 @@ function Cadre({
         } ${onTap ? "cursor-pointer" : ""}`}
       >
         {children}
-        <VoilePixels etat={voile} onFini={onVoileFini} />
       </div>
     </main>
   );
@@ -403,12 +396,22 @@ function EcranGeolier({
 }) {
   return (
     <>
-      <ImagePixels
-        src="assets/intro_demon.png"
-        width={390}
-        height={390}
-        className="absolute top-[74px] left-0"
-      />
+      {/* Le démon a L'ANIMATION DE L'ACCUEIL (retour Patrick 5/09) : la même
+          respiration par paliers entiers et les mêmes cendres qui montent,
+          mais sur le démon des maquettes, détouré pour que les cendres
+          passent derrière lui. */}
+      {/* ⚠️ `isolate` OBLIGATOIRE : l'image du héros porte un `z-[2]` interne
+          (pour passer devant les cendres), et sans contexte d'empilement il
+          s'échappe et recouvre TOUT ce qui suit — le socle charbon et la
+          première ligne de la réplique disparaissaient dessous. */}
+      <div className="absolute top-[74px] left-0 isolate h-[390px] w-[390px]">
+        <HeroGeolier
+          height={390}
+          src="assets/intro_demon_detoure.png"
+          marge={0}
+          sol={false}
+        />
+      </div>
       {/* ⚠️ LES DEUX NAPPES CHARBON SE POSENT PAR-DESSUS L'IMAGE, jamais
           derrière : c'est le socle 201×96 qui efface le sceau de poitrine du
           démon et ne laisse que ses épaules à l'orange, exactement comme la
@@ -435,19 +438,16 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   /** A-t-il demandé qui il était ? Le verdict s'en sert. */
   const [demande, setDemande] = useState(false);
   const [marque, setMarque] = useState<Marque | null>(null);
-  const { etat: voile, transiter, onFini: voileFini } = useVoile();
-
-  /** Change d'écran DERRIÈRE le voile de pixels. */
-  const aller = useCallback(
-    (suite: Etape) => {
-      transiter(() => {
-        setEtape(suite);
-        setLu(false);
-        setSkip(0);
-      });
-    },
-    [transiter]
-  );
+  /** Change d'écran. ⚠️ SANS AUCUN VOILE (retour Patrick 5/09 : « pas de
+      transition quand on fait commencer et qu'on passe sur le prologue, pas de
+      transition entre les répliques du démon »). Toute l'intro est la même
+      scène : il parle, on lit le contrat, il juge. Un fondu de pixels entre
+      deux de ses phrases faisait ressembler un dialogue à un diaporama. */
+  const aller = useCallback((suite: Etape) => {
+    setEtape(suite);
+    setLu(false);
+    setSkip(0);
+  }, []);
 
   const terminer = useCallback(() => {
     markIntroSeen();
@@ -457,32 +457,28 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   /* --------------------------------------------------------------- LA VOIX */
   if (etape === "voix") {
     return (
-      <Cadre
-        orange
-        voile={voile}
-        onVoileFini={voileFini}
-        onTap={lu ? undefined : () => setSkip((k) => k + 1)}
-      >
+      <Cadre orange onTap={lu ? undefined : () => setSkip((k) => k + 1)}>
         <EcranGeolier cle="voix" texte={VOIX} skip={skip} onFini={() => setLu(true)} />
         {/* Les deux boutons n'apparaissent qu'une fois la phrase lue : on ne
             propose pas de signer un texte qui s'écrit encore. Positions de la
             maquette — 360×46 à x=15, y=733 et y=787. */}
         {lu && (
-          <>
-            <div className="absolute top-[733px] left-[15px] w-[360px]">
-              <IntroBouton
-                label="Qui es-tu ?"
-                onClick={() => {
-                  setDemande(true);
-                  setN(0);
-                  aller("qui");
-                }}
-              />
-            </div>
-            <div className="absolute top-[787px] left-[15px] w-[360px]">
-              <IntroBouton label="Signer." onClick={() => aller("pacte")} />
-            </div>
-          </>
+          /* ⚠️ ANCRÉS EN BAS, jamais posés sur la grille de 848 : sur un
+             iPhone le cadre fait la hauteur du device (`height:100dvh` sous
+             768 px), et le second bouton se retrouvait coupé. Les 15 px du
+             bas et les 8 px d'écart sont ceux de la maquette — c'est la même
+             mise en page, mesurée depuis l'autre bord. */
+          <div className="absolute inset-x-[15px] bottom-[calc(env(safe-area-inset-bottom,0px)+15px)] flex flex-col gap-[8px]">
+            <IntroBouton
+              label="Qui es-tu ?"
+              onClick={() => {
+                setDemande(true);
+                setN(0);
+                aller("qui");
+              }}
+            />
+            <IntroBouton label="Signer." onClick={() => aller("pacte")} />
+          </div>
         )}
         {!lu && <TouchHint libelle="Touche pour tout afficher" />}
       </Cadre>
@@ -507,7 +503,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
       aller("pacte");
     };
     return (
-      <Cadre orange voile={voile} onVoileFini={voileFini} onTap={suivant}>
+      <Cadre orange onTap={suivant}>
         <EcranGeolier cle={n} texte={QUI[n]} skip={skip} onFini={() => setLu(true)} />
         <TouchHint libelle={lu ? "Touche pour continuer" : "Touche pour tout afficher"} />
       </Cadre>
@@ -517,13 +513,13 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   /* --------------------------------------------------------------- LE PACTE */
   if (etape === "pacte") {
     return (
-      <Cadre voile={voile} onVoileFini={voileFini}>
+      <Cadre>
         {/* LA PLUME, en filigrane derrière le contrat. Elle est découpée aux
             coordonnées EXACTES de la maquette (y=233, pleine largeur du cadre),
             donc elle se pose sans réglage — et elle est déjà tramée : sa
             densité EST le dégradé, il n'y a aucun masque à ajouter. */}
         <ImagePixels
-          src="assets/pacte_plume.png"
+          src="assets/pacte_plume_b.png"
           width={390}
           height={446}
           className="pointer-events-none absolute top-[233px] left-0 z-10"
@@ -574,12 +570,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
 
   /* ------------------------------------------------------------- LE VERDICT */
   return (
-    <Cadre
-      orange
-      voile={voile}
-      onVoileFini={voileFini}
-      onTap={() => (lu ? terminer() : setSkip((k) => k + 1))}
-    >
+    <Cadre orange onTap={() => (lu ? terminer() : setSkip((k) => k + 1))}>
       <EcranGeolier
         cle="verdict"
         texte={verdict(marque ? { ...marque, demande } : null)}
