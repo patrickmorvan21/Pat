@@ -1,83 +1,80 @@
 "use client";
 
 /**
- * L'INTRODUCTION — LE PACTE, en quatre temps (refonte 05/09).
+ * L'INTRODUCTION — LE PACTE, en quatre temps.
  *
- * Écrans Figma : 3450:3977 (la voix) · 3450:4033 (qui es-tu) · 3450:4066
- * (le Pacte et sa signature) · plus l'ÉCRAN D'ACTE 2245:13747, joué après le
- * Seuil. Grammaire reprise du prototype `prologue_pactum_v3.html` fourni par
- * Patrick : c'est de LUI que viennent la signature jugée et les répliques.
+ * ⚠️ LES MAQUETTES FONT FOI, PAS LE PROTOTYPE. Cette version est relevée au
+ * pixel sur les écrans Figma 3450:3977 (la voix) · 3450:4033 (qui es-tu) ·
+ * 3450:4066 (le Pacte). Le prototype `prologue_pactum_v3.html` de Claude Chat
+ * n'apporte plus que la MÉCANIQUE de la signature jugée ; tout ce qui se voit
+ * (fond orange, position du démon, style des boutons, texte du contrat) vient
+ * des maquettes. Ne pas réintroduire ce que le prototype ajoutait et que les
+ * maquettes ne montrent pas — en-tête « Par-devant le geôlier », affordance
+ * « Signe du doigt », emphases orange dans les clauses, boutons en capitales.
  *
- *   1. LA VOIX     — il parle, et il offre deux façons d'entrer :
- *                    lui demander qui il est, ou signer tout de suite.
- *   2. QUI ES-TU   — trois répliques, s'il l'a demandé. Aucun voile entre
- *                    elles : c'est la même scène qui continue de parler.
- *   3. LE PACTE    — le texte du contrat, puis « Appose ta marque » : on
- *                    SIGNE au doigt, dans le cadre.
+ *   1. LA VOIX     — il parle sur fond ORANGE, et il offre deux façons
+ *                    d'entrer : lui demander qui il est, ou signer.
+ *   2. QUI ES-TU   — trois répliques. Aucun voile entre elles : c'est la même
+ *                    scène qui continue de parler.
+ *   3. LE PACTE    — le contrat sur fond charbon, la plume en filigrane, puis
+ *                    « Appose ta marque » : on SIGNE au doigt.
  *   4. LE VERDICT  — il commente la marque qu'on vient de tracer.
  *
  * ⚠️ LA SIGNATURE EST UN GESTE, PAS UNE SAISIE. Le pilier « aucune saisie de
  * texte libre » tient : on trace, on n'écrit pas. Et ce qu'on trace est
  * réellement MESURÉ (durée, tracés, longueur, arrêts, taille, vitesse) — la
- * réplique qui suit est déduite de la main, jamais tirée au hasard. C'est ce
- * qui fait que le pacte est signé par le joueur et pas par le personnage.
+ * réplique qui suit est déduite de la main, jamais tirée au hasard.
  *
- * ⚠️ LES DEUX CLAUSES D'AVANT (« Tu ne te souviens pas », « Une seule vie »
- * et son geste de la porte) sont RETIRÉES de l'intro par cette refonte. Rien
- * n'est perdu de ce qu'elles disaient : le texte du Pacte porte la vie unique
- * et la Porte Scellée, en toutes lettres et sous forme écrite — ce qui est la
- * forme juste pour un contrat. Le sprite `intro_porte_anim.png` et son geste
- * de poussée restent dans le dépôt (git), à rebrancher en une clause si
- * Patrick les regrette.
+ * ⚠️ LES DEUX CLAUSES D'AVANT (« Tu ne te souviens pas », « Une seule vie » et
+ * son geste de la porte) sont RETIRÉES. Rien n'est perdu de ce qu'elles
+ * disaient : le texte du Pacte porte la vie unique et la Porte Scellée, en
+ * toutes lettres. Le sprite `intro_porte_anim.png` reste dans le dépôt.
  *
- * Quand ça se joue : au tout PREMIER lancement du compte seulement (drapeau
- * `introSeen`) — le pacte énonce les règles du JEU, pas celles d'une partie.
+ * Quand ça se joue : au tout PREMIER lancement du compte (drapeau `introSeen`)
+ * — le pacte énonce les règles du JEU, pas celles d'une partie.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import TypedText from "@/components/TypedText";
+import ImagePixels from "@/components/ImagePixels";
 import { markIntroSeen } from "@/lib/player-memory";
-import { HeroGeolier } from "@/components/HeroGeolier";
 import TouchHint from "@/components/TouchHint";
 import VoilePixels, { useVoile } from "@/components/VoilePixels";
 import { assetUrl } from "@/lib/assets";
-import { ditherFadeMaskDataUrl } from "@/lib/dither";
 import { haptic } from "@/lib/settings";
 
 /* ------------------------------------------------------------------ TEXTES */
 
 /**
- * ⚠️ Textes repris VERBATIM de la maquette et du prototype de Patrick — c'est
- * de la voix du Geôlier, pas de la copie d'interface : ne pas réécrire sans
- * qu'il le redemande.
+ * ⚠️ Textes relevés VERBATIM sur les maquettes — c'est de la voix du Geôlier,
+ * pas de la copie d'interface.
  *
- * Le nombre est écrit en CHIFFRES parce que la maquette l'écrit ainsi (Figma
- * fait foi pour les écrans reproduits). C'est une statistique agrégée servie
- * comme dialogue, ce que la doctrine autorise expressément — jamais un chiffre
- * de mécanique dans l'interface.
+ * Le nombre est écrit en CHIFFRES parce que la maquette l'écrit ainsi. C'est
+ * une statistique agrégée servie comme dialogue, ce que la doctrine autorise
+ * — jamais un chiffre de mécanique dans l'interface.
  */
+/* ⚠️ La maquette écrit « on poussé » — c'est une faute de frappe, pas une
+   intention : on garde « ont ». Seul écart assumé avec la lettre de la
+   maquette, signalé plutôt que reproduit. */
 const VOIX = "12 000 avant toi ont poussé cette porte. Aucun n'a lu ce qu'il signait.";
 
-/** Ce qu'il répond à « Qui es-tu ? » — trois répliques, une par tap. */
+/** Ce qu'il répond à « Qui es-tu ? » — une réplique par tap. La première est
+    celle de la maquette 3450:4033 ; les deux suivantes prolongent sa voix. */
 const QUI = [
   "Personne ne pose cette question en premier. Tu progresses.",
   "Je tiens le registre. Je n'ouvre rien, je ne sauve personne. Je compte.",
   "Ce qui m'intéresse, c'est jusqu'où tu descends. Descends bien.",
 ];
 
-/** L'en-tête du contrat, sous le titre. */
-const PACTE_ENTETE =
-  "Par-devant le geôlier, qui tient le registre du Domaine et n'en ouvre pas les portes.";
-
 /**
- * Les clauses. Le gras porte les quatre mots qui engagent : ce sont eux qu'on
- * relira à la Descente, des heures plus tard.
+ * Les quatre clauses, telles que la maquette les affiche : mono 13px, BLANC,
+ * sans un mot en gras ni en orange, séparées par une ligne vide.
  */
-const PACTE_CLAUSES: { avant: string; fort?: string; apres?: string }[] = [
-  { avant: "Il te sera prêté une vie. ", fort: "Une seule." },
-  { avant: "Tu entreprendras ", fort: "la Descente", apres: " : trois actes, du seuil jusqu'à la Porte Scellée." },
-  { avant: "Ce que tu comprendras en mourant, tu le légueras." },
-  { avant: "Ce que tu perdras, tu le perdras ", fort: "vraiment", apres: "." },
+const PACTE_CLAUSES = [
+  "Il te sera prêté une vie. Une seule.",
+  "Tu entreprendras la Descente : trois actes, du seuil jusqu'à la Porte Scellée.",
+  "Ce que tu comprendras en mourant, tu le légueras.",
+  "Ce que tu perdras, tu le perdras vraiment.",
 ];
 
 /** Mesures de la marque tracée — c'est la MAIN qui décide de la réplique. */
@@ -119,17 +116,16 @@ const SIG_CW = Math.round(SIG_W / 2);
 const SIG_CH = Math.round(SIG_H / 2);
 
 /**
- * LE CADRE DE SIGNATURE. Bordure en TIRETS DE PIXELS dessinée dans le canvas
- * (jamais un `border: dashed` du navigateur, qui rendrait un trait lisse), un
- * fond piqueté, une ligne d'écriture et sa croix — la page d'un registre.
+ * LE CADRE DE SIGNATURE (maquette : 363×140, bordure blanche en tirets à 50 %).
+ * Les tirets sont DESSINÉS dans le canvas plutôt que posés en `border: dashed`
+ * — même lecture à l'écran, mais en pixels entiers comme tout le reste du jeu.
  *
- * ⚠️ Les événements de pointeur vivent sur `window` et non sur le canvas :
- * sur iOS, un doigt qui sort du cadre pendant le tracé emporte les
- * événements avec lui, et la signature se coupe en plein milieu.
+ * ⚠️ Les événements de pointeur vivent sur `window` et non sur le canvas : sur
+ * iOS, un doigt qui sort du cadre pendant le tracé emporte les événements avec
+ * lui, et la signature se coupe en plein milieu.
  */
 function SignaturePad({ onMarque }: { onMarque: (m: Marque | null) => void }) {
   const ref = useRef<HTMLCanvasElement>(null);
-  const [traceQuelqueChose, setTrace] = useState(false);
 
   // Tout ce qui se mesure vit dans un ref : rien de ça ne se rend.
   const st = useRef({
@@ -156,9 +152,10 @@ function SignaturePad({ onMarque }: { onMarque: (m: Marque | null) => void }) {
     x.fillRect(0, 0, SIG_CW, SIG_CH);
     // Piqueté de fond — jamais un aplat propre.
     x.fillStyle = "rgba(255,255,255,.2)";
-    for (let i = 0; i < 90; i++)
+    for (let i = 0; i < 42; i++)
       x.fillRect((Math.random() * SIG_CW) | 0, (Math.random() * SIG_CH) | 0, 1, 1);
-    // Bordure en tirets de pixels.
+    // Bordure en tirets, à la densité de la maquette (blanc à 50 %).
+    x.fillStyle = "rgba(255,255,255,.5)";
     for (let px = 0; px < SIG_CW; px++) {
       if (px % 4 < 2) {
         x.fillRect(px, 0, 1, 1);
@@ -170,15 +167,6 @@ function SignaturePad({ onMarque }: { onMarque: (m: Marque | null) => void }) {
         x.fillRect(0, py, 1, 1);
         x.fillRect(SIG_CW - 1, py, 1, 1);
       }
-    }
-    // La ligne d'écriture et la croix qui dit où signer.
-    const y = SIG_CH - 16;
-    for (let px = 10; px < SIG_CW - 10; px++)
-      if (Math.random() < 0.6) x.fillRect(px, y + ((Math.random() * 2) | 0), 1, 1);
-    x.fillStyle = "rgba(255,255,255,.5)";
-    for (let k = -3; k <= 3; k++) {
-      x.fillRect(14 + k, y - 6 + k, 1, 1);
-      x.fillRect(14 + k, y - 6 - k, 1, 1);
     }
   }, []);
 
@@ -239,7 +227,6 @@ function SignaturePad({ onMarque }: { onMarque: (m: Marque | null) => void }) {
       vitesse: s.longueur / duree,
       demande: false, // posé par l'appelant, qui seul sait s'il a demandé
     });
-    setTrace(true);
   }, [onMarque]);
 
   useEffect(() => {
@@ -274,56 +261,55 @@ function SignaturePad({ onMarque }: { onMarque: (m: Marque | null) => void }) {
   }, [coord, encre, borner, publier]);
 
   return (
-    <div className="relative">
-      <canvas
-        ref={ref}
-        width={SIG_CW}
-        height={SIG_CH}
-        onPointerDown={(e) => {
-          const s = st.current;
-          s.dessine = true;
-          s.traces += 1;
-          const now = performance.now();
-          if (!s.debut) s.debut = now;
-          else if (now - s.dernierLever > 420) s.arrets += 1;
-          const p = coord(e);
-          s.prec = p;
-          encre(p[0], p[1]);
-          borner(p);
-          e.preventDefault();
-          e.stopPropagation();
-        }}
-        className="block w-full"
-        style={{ height: SIG_H, imageRendering: "pixelated", touchAction: "none" }}
-      />
-      {!traceQuelqueChose && (
-        <p className="pointer-events-none absolute inset-x-0 bottom-[10px] text-center font-mono text-[10px] tracking-[1.6px] text-[var(--color-ink)] opacity-40">
-          Signe du doigt
-        </p>
-      )}
-    </div>
+    <canvas
+      ref={ref}
+      width={SIG_CW}
+      height={SIG_CH}
+      onPointerDown={(e) => {
+        const s = st.current;
+        s.dessine = true;
+        s.traces += 1;
+        const now = performance.now();
+        if (!s.debut) s.debut = now;
+        else if (now - s.dernierLever > 420) s.arrets += 1;
+        const p = coord(e);
+        s.prec = p;
+        encre(p[0], p[1]);
+        borner(p);
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      className="block w-full"
+      style={{ height: SIG_H, imageRendering: "pixelated", touchAction: "none" }}
+    />
   );
 }
 
 /* ------------------------------------------------------------- LE BOUTON */
 
 /**
- * Bouton du pacte — même grammaire que les CTA de l'accueil (`HomeCta`) :
- * fond et bordure en calques inset-0, entailles de coin 2×2 posées PAR-DESSUS
- * au ras du coin. Jamais une bordure CSS sur le bouton lui-même, qui
- * décalerait les entailles d'un pixel.
+ * Les boutons du pacte, dans les DEUX formes que montrent les maquettes.
+ *
+ *  · « ligne » (écrans du Geôlier) — fond transparent, filet BLANC 1px, texte
+ *    blanc 14px medium ALIGNÉ À GAUCHE, en casse de phrase. Pas de capitales,
+ *    pas d'orange : ces deux boutons se ressemblent parce que le Geôlier ne
+ *    recommande ni l'un ni l'autre.
+ *  · « plein » (sceller le pacte) — orange plein, texte charbon en capitales
+ *    espacées, centré.
+ *
+ * Dans les deux cas les entailles de coin 2×2 sont posées PAR-DESSUS, au ras
+ * du coin, et la bordure vit dans un calque `inset-0` — jamais sur le bouton
+ * lui-même, dont la boîte de padding décalerait les entailles d'un pixel
+ * (piège récurrent, vu au zoom par Patrick le 16/07).
  */
 function IntroBouton({
   label,
-  /** Le SECONDAIRE : contour et texte BLANCS (retour Patrick, 2/09). L'orange
-      plein reste au seul geste que le pacte attend de toi. */
-  refus,
-  /** Inerte tant que la condition n'est pas remplie (le pacte non signé). */
+  plein,
   disabled,
   onClick,
 }: {
   label: string;
-  refus?: boolean;
+  plein?: boolean;
   disabled?: boolean;
   onClick: () => void;
 }) {
@@ -337,15 +323,17 @@ function IntroBouton({
         onClick();
       }}
       onPointerDown={(e) => e.stopPropagation()}
-      className={`relative h-[46px] w-full border-none bg-transparent font-mono text-[13px] font-medium tracking-[2.4px] uppercase ${
-        refus ? "text-[var(--color-ink)]" : "text-[var(--color-bg)]"
+      className={`relative h-[46px] w-full border-none bg-transparent font-mono text-[14px] font-medium ${
+        plein
+          ? "tracking-[2.8px] text-center uppercase text-[var(--color-bg)]"
+          : "text-left text-[var(--color-ink)]"
       } ${disabled ? "cursor-default opacity-40" : "cursor-pointer"}`}
     >
       <span
         className={`absolute inset-0 border border-solid ${
-          refus
-            ? "border-[var(--color-ink)] bg-transparent"
-            : "border-[var(--color-accent)] bg-[var(--color-accent)]"
+          plein
+            ? "border-[var(--color-accent)] bg-[var(--color-accent)]"
+            : "border-[var(--color-ink)] bg-transparent"
         }`}
         aria-hidden
       />
@@ -353,7 +341,7 @@ function IntroBouton({
       <span className="pointer-events-none absolute bottom-0 left-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
       <span className="pointer-events-none absolute top-0 right-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
       <span className="pointer-events-none absolute bottom-0 right-0 size-[2px] bg-[var(--color-bg)]" aria-hidden />
-      <span className="relative">{label}</span>
+      <span className={`relative ${plein ? "" : "pl-[18px]"}`}>{label}</span>
     </button>
   );
 }
@@ -362,25 +350,28 @@ function IntroBouton({
 
 type Etape = "voix" | "qui" | "pacte" | "verdict";
 
-/** Le cadre commun : 390×848, charbon, tout en absolu comme la maquette. */
+/** Le cadre commun : 390×848, tout en absolu comme les maquettes. */
 function Cadre({
   onTap,
   children,
   voile,
   onVoileFini,
+  orange,
 }: {
   onTap?: () => void;
   children: React.ReactNode;
   voile: ReturnType<typeof useVoile>["etat"];
   onVoileFini: () => void;
+  /** Les écrans du Geôlier ont le fond ORANGE (maquettes 3450:3977 / 4033). */
+  orange?: boolean;
 }) {
   return (
     <main className="flex min-h-dvh items-center justify-center">
       <div
         onClick={onTap}
-        className={`phone-frame relative flex h-[848px] max-h-[100dvh] w-[390px] shrink-0 flex-col overflow-clip bg-[var(--color-bg)] ${
-          onTap ? "cursor-pointer" : ""
-        }`}
+        className={`phone-frame relative h-[848px] max-h-[100dvh] w-[390px] shrink-0 overflow-clip ${
+          orange ? "bg-[var(--color-accent)]" : "bg-[var(--color-bg)]"
+        } ${onTap ? "cursor-pointer" : ""}`}
       >
         {children}
         <VoilePixels etat={voile} onFini={onVoileFini} />
@@ -389,27 +380,44 @@ function Cadre({
   );
 }
 
-/** Le Geôlier en haut (390×390) + sa bande de dissolution, puis sa réplique
-    au format de la maquette (x=42, y=444, largeur 306). */
-function Demon({
+/**
+ * L'ÉCRAN DU GEÔLIER (maquettes 3450:3977 et 3450:4033), au pixel :
+ * fond orange, l'image du démon 390×390 posée à y=74, le socle charbon
+ * 201×96 à (90,368) et la nappe charbon qui prend tout à partir de y=464.
+ * Sa réplique est centrée, large de 306, à y=444.
+ *
+ * ⚠️ L'image est rendue en GRILLE DE PIXELS (`ImagePixels`) et non en <img> :
+ * c'est la demande de Patrick — ses images redeviennent de la matière, avec
+ * des cellules assez fines pour qu'on ne distingue pas l'original.
+ */
+function EcranGeolier({
   texte,
-  tape,
   onFini,
   skip,
+  cle,
 }: {
   texte: string;
-  tape: boolean;
   onFini?: () => void;
   skip: number;
+  cle: string | number;
 }) {
   return (
     <>
-      <div className="relative h-[390px] w-[390px] shrink-0">
-        <HeroGeolier height={390} />
-        <div className="dissolve-bottom" aria-hidden />
-      </div>
-      <p className="mt-[54px] w-[306px] self-center text-center font-mono text-[13px] leading-[1.55] text-[var(--color-ink)]">
-        <TypedText text={texte} typed={tape} skip={skip} msPerChar={42} onDone={onFini} />
+      <ImagePixels
+        src="assets/intro_demon.png"
+        width={390}
+        height={390}
+        className="absolute top-[74px] left-0"
+      />
+      {/* ⚠️ LES DEUX NAPPES CHARBON SE POSENT PAR-DESSUS L'IMAGE, jamais
+          derrière : c'est le socle 201×96 qui efface le sceau de poitrine du
+          démon et ne laisse que ses épaules à l'orange, exactement comme la
+          maquette. Passées dessous, le sceau réapparaît et vient se mettre
+          derrière la réplique. */}
+      <div className="absolute top-[368px] left-[90px] h-[96px] w-[201px] bg-[var(--color-bg)]" aria-hidden />
+      <div className="absolute inset-x-0 top-[464px] bottom-0 bg-[var(--color-bg)]" aria-hidden />
+      <p className="absolute top-[444px] left-[42px] w-[306px] text-center font-mono text-[13px] leading-[1.3] text-[var(--color-ink)]">
+        <TypedText key={cle} text={texte} typed skip={skip} msPerChar={42} onDone={onFini} />
       </p>
     </>
   );
@@ -427,27 +435,7 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   /** A-t-il demandé qui il était ? Le verdict s'en sert. */
   const [demande, setDemande] = useState(false);
   const [marque, setMarque] = useState<Marque | null>(null);
-
   const { etat: voile, transiter, onFini: voileFini } = useVoile();
-
-  /** LE MASQUE DE LA PLUME. Elle est posée en filigrane derrière le contrat
-      (maquette : x=51, y=348) et courrait donc jusque sur le cadre de
-      signature et le CTA. Elle s'y dissout en PIXELS plutôt que d'être coupée
-      net — et sa densité est portée par le masque, jamais par une opacité CSS
-      (règle DA : ce qui s'atténue s'atténue en trame). */
-  const [masquePlume, setMasquePlume] = useState<string | null>(null);
-  useEffect(() => {
-    const id = setTimeout(() => {
-      setMasquePlume(
-        ditherFadeMaskDataUrl(72, 144, (_nx, ny) => {
-          // Pleine densité en haut, éteinte avant la zone de signature.
-          const vivant = ny < 0.3 ? 1 : Math.max(0, 1 - (ny - 0.3) / 0.22);
-          return 1 - 0.62 * vivant;
-        })
-      );
-    }, 0);
-    return () => clearTimeout(id);
-  }, []);
 
   /** Change d'écran DERRIÈRE le voile de pixels. */
   const aller = useCallback(
@@ -469,25 +457,32 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   /* --------------------------------------------------------------- LA VOIX */
   if (etape === "voix") {
     return (
-      <Cadre voile={voile} onVoileFini={voileFini} onTap={lu ? undefined : () => setSkip((k) => k + 1)}>
-        <Demon texte={VOIX} tape skip={skip} onFini={() => setLu(true)} />
-        <div className="flex-1" />
-        {/* Les deux CTA n'apparaissent qu'une fois la phrase lue : on ne
-            propose pas de signer un texte qui est encore en train de s'écrire.
-            Positions de la maquette (y=733 et y=787 dans un cadre de 848). */}
+      <Cadre
+        orange
+        voile={voile}
+        onVoileFini={voileFini}
+        onTap={lu ? undefined : () => setSkip((k) => k + 1)}
+      >
+        <EcranGeolier cle="voix" texte={VOIX} skip={skip} onFini={() => setLu(true)} />
+        {/* Les deux boutons n'apparaissent qu'une fois la phrase lue : on ne
+            propose pas de signer un texte qui s'écrit encore. Positions de la
+            maquette — 360×46 à x=15, y=733 et y=787. */}
         {lu && (
-          <div className="mb-[15px] flex flex-col gap-[8px] px-[15px]">
-            <IntroBouton
-              label="Qui es-tu ?"
-              refus
-              onClick={() => {
-                setDemande(true);
-                setN(0);
-                aller("qui");
-              }}
-            />
-            <IntroBouton label="Signer." onClick={() => aller("pacte")} />
-          </div>
+          <>
+            <div className="absolute top-[733px] left-[15px] w-[360px]">
+              <IntroBouton
+                label="Qui es-tu ?"
+                onClick={() => {
+                  setDemande(true);
+                  setN(0);
+                  aller("qui");
+                }}
+              />
+            </div>
+            <div className="absolute top-[787px] left-[15px] w-[360px]">
+              <IntroBouton label="Signer." onClick={() => aller("pacte")} />
+            </div>
+          </>
         )}
         {!lu && <TouchHint libelle="Touche pour tout afficher" />}
       </Cadre>
@@ -496,9 +491,9 @@ export default function Intro({ onDone }: { onDone: () => void }) {
 
   /* ------------------------------------------------------------- QUI ES-TU */
   if (etape === "qui") {
-    // ⚠️ AUCUN VOILE ENTRE CES TROIS RÉPLIQUES : l'écran ne change pas, c'est
-    // la même scène qui continue de parler. C'est l'exception que Patrick a
-    // posée en demandant la transition générale.
+    // ⚠️ AUCUN VOILE ENTRE CES RÉPLIQUES : l'écran ne change pas, c'est la même
+    // scène qui continue de parler. C'est l'exception que Patrick a posée en
+    // demandant la transition générale.
     const suivant = () => {
       if (!lu) {
         setSkip((k) => k + 1);
@@ -512,15 +507,8 @@ export default function Intro({ onDone }: { onDone: () => void }) {
       aller("pacte");
     };
     return (
-      <Cadre voile={voile} onVoileFini={voileFini} onTap={suivant}>
-        <Demon
-          key={n}
-          texte={QUI[n]}
-          tape
-          skip={skip}
-          onFini={() => setLu(true)}
-        />
-        <div className="flex-1" />
+      <Cadre orange voile={voile} onVoileFini={voileFini} onTap={suivant}>
+        <EcranGeolier cle={n} texte={QUI[n]} skip={skip} onFini={() => setLu(true)} />
         <TouchHint libelle={lu ? "Touche pour continuer" : "Touche pour tout afficher"} />
       </Cadre>
     );
@@ -530,73 +518,55 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   if (etape === "pacte") {
     return (
       <Cadre voile={voile} onVoileFini={voileFini}>
-        {/* LA PLUME, en filigrane derrière le contrat (maquette : posée à
-            x=51, elle court sous la zone de signature). Elle est déjà tramée :
-            rien à dégrader, elle se pose telle quelle. */}
-        {/* eslint-disable-next-line @next/next/no-img-element -- rendu pixelated, jamais optimisé par next/image */}
-        <img
-          src={assetUrl("assets/intro_plume.png")}
-          alt=""
-          aria-hidden
-          className="pointer-events-none absolute top-[348px] left-[51px] w-[288px]"
-          style={{
-            imageRendering: "pixelated",
-            ...(masquePlume
-              ? {
-                  WebkitMaskImage: `url(${masquePlume})`,
-                  maskImage: `url(${masquePlume})`,
-                  WebkitMaskSize: "100% 100%",
-                  maskSize: "100% 100%",
-                }
-              : { visibility: "hidden" as const }),
-          }}
+        {/* LA PLUME, en filigrane derrière le contrat. Elle est découpée aux
+            coordonnées EXACTES de la maquette (y=233, pleine largeur du cadre),
+            donc elle se pose sans réglage — et elle est déjà tramée : sa
+            densité EST le dégradé, il n'y a aucun masque à ajouter. */}
+        <ImagePixels
+          src="assets/pacte_plume.png"
+          width={390}
+          height={446}
+          className="pointer-events-none absolute top-[233px] left-0 z-10"
         />
 
         <h1
-          className="relative mt-[104px] text-center text-[30px] leading-[1] text-[var(--color-accent)]"
+          className="absolute inset-x-0 top-[104px] text-center text-[40px] leading-[1] text-[var(--color-accent)]"
           style={{ fontFamily: "var(--font-title)" }}
         >
           Le Pacte
         </h1>
-        {/* Le filet du contrat — un semis de pixels, jamais un trait plein. */}
-        <div className="relative mx-[16px] mt-[31px] h-px w-[358px] self-center" style={{
-          backgroundImage:
-            "repeating-linear-gradient(to right, var(--color-ink) 0 1px, transparent 1px 3px)",
-          opacity: 0.35,
-        }} aria-hidden />
+        {/* Le filet du contrat, orange, largeur 358 (maquette y=164,5). */}
+        <div
+          className="absolute top-[164px] left-[16px] h-px w-[358px] bg-[var(--color-accent)]"
+          aria-hidden
+        />
 
-        <p className="relative mx-[16px] mt-[38px] font-mono text-[10px] leading-[1.5] tracking-[0.4px] text-[var(--color-ink)] opacity-50">
-          {PACTE_ENTETE}
-        </p>
-        <div className="relative mx-[16px] mt-[14px] flex flex-col gap-[9px]">
+        {/* Le corps : mono 13px BLANC, aucune emphase, une ligne vide entre
+            chaque clause (maquette : x=16, y=214, largeur 360). */}
+        <div className="absolute top-[214px] left-[16px] flex w-[360px] flex-col gap-[17px]">
           {PACTE_CLAUSES.map((c, i) => (
-            <p key={i} className="font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]">
-              {c.avant}
-              {c.fort && <span className="font-bold text-[var(--color-accent)]">{c.fort}</span>}
-              {c.apres}
+            <p key={i} className="font-mono text-[13px] leading-[1.3] text-[var(--color-ink)]">
+              {c}
             </p>
           ))}
         </div>
 
-        <div className="flex-1" />
-
-        {/* LA MARQUE — « Appose ta marque » y=606, cadre y=631 (363×140),
-            CTA y=787 (363×46), le tout à x=13 dans un cadre de 848. */}
-        <div className="relative mx-[13px] mb-[15px] w-[363px]">
-          <p className="mb-[10px] font-mono text-[10px] tracking-[1.6px] text-[var(--color-ink)] opacity-50">
+        {/* LA MARQUE — pied de maquette : x=13, bas 15, largeur 363, 16px de
+            gouttière entre le libellé, le cadre de signature et le CTA. */}
+        <div className="absolute bottom-[15px] left-[13px] flex w-[363px] flex-col items-center gap-[16px]">
+          <p className="w-full font-mono text-[13px] text-[var(--color-ink)] opacity-50">
             Appose ta marque
           </p>
           <SignaturePad onMarque={setMarque} />
-          <div className="mt-[16px]">
-            <IntroBouton
-              label="Sceller le pacte"
-              disabled={!marque}
-              onClick={() => {
-                haptic(14);
-                aller("verdict");
-              }}
-            />
-          </div>
+          <IntroBouton
+            plein
+            label="Sceller le pacte"
+            disabled={!marque}
+            onClick={() => {
+              haptic(14);
+              aller("verdict");
+            }}
+          />
         </div>
       </Cadre>
     );
@@ -605,17 +575,17 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   /* ------------------------------------------------------------- LE VERDICT */
   return (
     <Cadre
+      orange
       voile={voile}
       onVoileFini={voileFini}
       onTap={() => (lu ? terminer() : setSkip((k) => k + 1))}
     >
-      <Demon
+      <EcranGeolier
+        cle="verdict"
         texte={verdict(marque ? { ...marque, demande } : null)}
-        tape
         skip={skip}
         onFini={() => setLu(true)}
       />
-      <div className="flex-1" />
       <TouchHint libelle={lu ? "Touche pour continuer" : "Touche pour tout afficher"} />
     </Cadre>
   );

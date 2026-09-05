@@ -447,10 +447,10 @@ export default function DeathScreen({
           {/* Maquette 2320-4447 : la tête du Geôlier émerge du noir en haut,
               sa voix au centre — réaction aux jours, puis fragment d'arc ou
               citation contextuelle. Frappe 42 ms, la cadence du Geôlier. */}
-          {/* La tête est DESSINÉE (05/09) et non plus servie en image :
-              `mort_geolier_tete.png` était un extrait Figma à la taille
-              d'affichage (390×276), sans réserve de définition. Elle respire
-              par paliers entiers, comme le démon de l'accueil. */}
+          {/* La tête est l'IMAGE de Patrick rendue en grille de pixels
+              (`ImagePixels`) : dessinée cellule par cellule, sans lissage à
+              aucune densité d'écran, et elle respire par paliers entiers
+              comme le démon de l'accueil. */}
           <TeteGeolier />
           <p className="mx-auto mt-[14px] w-[350px] whitespace-pre-line text-center font-mono text-[13px] leading-[1.55] text-[var(--color-ink)]">
             {fragTexte}
@@ -485,9 +485,10 @@ export default function DeathScreen({
           /* Phase A — le coffre (maquette 2333-10146) : plein cadre, voile de
              lisibilité TRAMÉ en bas, le tap déclenche la révélation. */
           <div className="flex flex-1 flex-col items-center justify-center">
-            {/* Le coffre est DESSINÉ (05/09) : il se dissout de lui-même dans
-                le charbon par le bas, donc le voile tramé qui rattrapait la
-                lisibilité de l'ancien plein-cadre n'a plus lieu d'être. */}
+            {/* Le coffre est l'IMAGE de Patrick rendue en grille de pixels ;
+                son bas se dissout en pixels épars pour que la consigne se pose
+                sur du charbon propre — les flammes qui la rendaient illisible
+                sont retirées et rien ne les remplace. */}
             <Coffre />
             <p className="mt-[26px] text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]">
               Touche le coffre pour

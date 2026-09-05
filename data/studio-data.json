@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-05T08:52:01Z",
- "commit": "4a54505",
+ "genere": "2026-09-05T12:55:02Z",
+ "commit": "c7d0920",
  "zones": [
   {
    "id": "landes",
@@ -8305,20 +8305,20 @@
    "racine": "intro_de"
   },
   {
-   "fichier": "intro_demon.png",
-   "hash": "39326e30",
-   "taille": 42022,
-   "recent": false,
-   "groupe": "autre",
-   "racine": "intro_demon"
-  },
-  {
    "fichier": "intro_epee.png",
    "hash": "3852fffe",
    "taille": 136560,
    "recent": false,
    "groupe": "autre",
    "racine": "intro_epee"
+  },
+  {
+   "fichier": "intro_plume.png",
+   "hash": "1baf97c8",
+   "taille": 5615,
+   "recent": true,
+   "groupe": "autre",
+   "racine": "intro_plume"
   },
   {
    "fichier": "intro_porte.png",
@@ -11366,7 +11366,7 @@
   "scenes": 107,
   "pointsInteret": 0,
   "choix": 316,
-  "illustrations": 438,
+  "illustrations": 440,
   "sansImage": 0,
   "imagesIntrouvables": 0,
   "reserve": 221,
