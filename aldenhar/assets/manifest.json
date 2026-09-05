@@ -1,6 +1,6 @@
 {
- "genere": "2026-09-05T13:20:13Z",
- "commit": "d825fd7",
+ "genere": "2026-09-05T14:07:24Z",
+ "commit": "a5583ec",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -268,6 +268,13 @@
    "hash": "39326e30",
    "recent": false,
    "ajoute": "2026-08-07T09:09:59+00:00"
+  },
+  "intro_demon_detoure.png": {
+   "taille": 43088,
+   "modifie": "2026-09-05T13:33:18Z",
+   "hash": "b993ff54",
+   "recent": false,
+   "ajoute": ""
   },
   "intro_epee.png": {
    "taille": 136560,
@@ -1158,12 +1165,26 @@
    "recent": false,
    "ajoute": "2026-07-30T11:40:55+00:00"
   },
+  "mort_coffre_b.png": {
+   "taille": 361771,
+   "modifie": "2026-09-05T13:37:24Z",
+   "hash": "71e45097",
+   "recent": false,
+   "ajoute": ""
+  },
   "mort_geolier_tete.png": {
    "taille": 13410,
    "modifie": "2026-09-03T06:04:44Z",
    "hash": "9b333389",
    "recent": false,
    "ajoute": "2026-07-30T11:40:55+00:00"
+  },
+  "mort_geolier_tete_b.png": {
+   "taille": 46902,
+   "modifie": "2026-09-05T13:37:23Z",
+   "hash": "296bb5e9",
+   "recent": false,
+   "ajoute": ""
   },
   "objet_battant_cloche_c.png": {
    "taille": 14273,
@@ -1605,6 +1626,13 @@
    "hash": "d69b5f8c",
    "recent": true,
    "ajoute": "2026-09-05T13:01:19+00:00"
+  },
+  "pacte_plume_b.png": {
+   "taille": 74024,
+   "modifie": "2026-09-05T13:34:20Z",
+   "hash": "6a9a4a53",
+   "recent": false,
+   "ajoute": ""
   },
   "pactum_logo.png": {
    "taille": 19043,
