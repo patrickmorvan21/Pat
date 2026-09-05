@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import FitLabel from "@/components/FitLabel";
 import { HeroGeolier } from "@/components/HeroGeolier";
+import VoilePixels, { useVoile } from "@/components/VoilePixels";
 import TouchHint from "@/components/TouchHint";
 import TypedText from "@/components/TypedText";
 import VerdictDuSeuil from "@/components/VerdictDuSeuil";
@@ -205,6 +206,12 @@ const AMORCE_N = PROLOGUE_AMORCE.length;
 export default function Prologue({ onDone }: { onDone: () => void }) {
   const runRef = useRef<RunState | null>(null);
   const [beat, setBeat] = useState<number | null>(null);
+  /** LE VOILE DE PIXELS entre deux beats (05/09). Chaque beat du Seuil est un
+      ÉCRAN différent — une autre question, un autre décor mental — donc il se
+      dissout. L'exception que Patrick a posée (« sauf quand c'est le démon qui
+      parle d'une phrase à l'autre ») ne s'applique pas ici : l'amorce ne fait
+      plus qu'un seul beat depuis le 2/09, et les souvenirs ne sont pas sa voix. */
+  const { etat: voile, transiter, onFini: voileFini } = useVoile();
   // Copie de rendu des souvenirs tirés (la source de vérité reste la run
   // persistée — un ref n'est pas lisible pendant le rendu).
   const [memories, setMemories] = useState<PrologueMemory[]>([]);
@@ -337,10 +344,15 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
 
   function advanceBeat() {
     const next = beat! + 1;
-    setTypedDone(false);
-    setBeat(next);
+    // ⚠️ La sauvegarde est posée TOUT DE SUITE, le changement d'écran seulement
+    // au milieu du voile : fermer l'app pendant la transition ne doit pas
+    // rejouer le beat qu'on vient de quitter.
     persist((r) => {
       r.prologue.beat = next;
+    });
+    transiter(() => {
+      setTypedDone(false);
+      setBeat(next);
     });
   }
 
@@ -364,7 +376,7 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
     advanceBeat();
   }
 
-  /** SCELLER LE PACTE : le nom signé devient le héros de la run. */
+  /** INSCRIRE CE NOM : le nom signé devient le héros de la run. */
   function sealName() {
     const clean = name.trim().slice(0, 16);
     if (clean.length < 2) return;
@@ -491,15 +503,22 @@ export default function Prologue({ onDone }: { onDone: () => void }) {
             au composant partagé le 26/07 : position et clignotement saccadé
             sont désormais une règle globale, plus un réglage par écran. */}
         {isAmorce && typedDone && <TouchHint />}
+        {/* Posé EN DERNIER : le voile couvre tout, y compris l'affordance. */}
+        <VoilePixels etat={voile} onFini={voileFini} />
       </div>
     </main>
   );
 }
 
 /**
- * CTA « SCELLER LE PACTE » (maquette Figma 2167:203) : rectangle plein orange,
- * pleine largeur, texte charbon espacé — pas de segments décalés (la maquette
- * fait foi). Inerte tant que la signature fait moins de 2 caractères.
+ * CTA du NOM (maquette Figma 2167:203) : rectangle plein orange, pleine
+ * largeur, texte charbon espacé — pas de segments décalés (la maquette fait
+ * foi). Inerte tant que le nom fait moins de 2 caractères.
+ *
+ * ⚠️ Il s'appelait « SCELLER LE PACTE » jusqu'au 05/09. Le pacte se signe
+ * désormais à l'intro, au doigt, sur son propre écran : garder le même libellé
+ * ici ferait croire qu'on re-signe, et le second geste deviendrait illisible.
+ * C'est un NOM qu'on inscrit au registre, rien d'autre.
  */
 function SealCta({ disabled, onSeal }: { disabled: boolean; onSeal: () => void }) {
   return (
@@ -511,7 +530,7 @@ function SealCta({ disabled, onSeal }: { disabled: boolean; onSeal: () => void }
         disabled ? "cursor-default opacity-50" : "cursor-pointer"
       }`}
     >
-      Sceller le pacte
+      Inscrire ce nom
     </button>
   );
 }

@@ -1,6 +1,6 @@
 {
- "genere": "2026-09-04T18:18:03Z",
- "commit": "b6f2d47",
+ "genere": "2026-09-05T08:53:11Z",
+ "commit": "4a54505",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -269,6 +269,13 @@
    "recent": false,
    "ajoute": "2026-08-07T09:09:59+00:00"
   },
+  "intro_plume.png": {
+   "taille": 5615,
+   "modifie": "2026-09-05T08:08:03Z",
+   "hash": "1baf97c8",
+   "recent": false,
+   "ajoute": ""
+  },
   "intro_porte.png": {
    "taille": 131741,
    "modifie": "2026-09-03T06:04:44Z",
@@ -287,22 +294,22 @@
    "taille": 49010,
    "modifie": "2026-09-04T17:16:20Z",
    "hash": "68c8dd0e",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-04T18:18:47+00:00"
   },
   "minijeu_borne_pierre_b.png": {
    "taille": 22809,
    "modifie": "2026-09-04T17:16:20Z",
    "hash": "32322a0e",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-04T18:18:47+00:00"
   },
   "minijeu_chapelle_pierre_c.png": {
    "taille": 31849,
    "modifie": "2026-09-04T17:16:20Z",
    "hash": "aadc6ff2",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-04T18:18:47+00:00"
   },
   "minijeu_corde_tile_b.png": {
    "taille": 5626,
@@ -315,8 +322,8 @@
    "taille": 20717,
    "modifie": "2026-09-04T17:16:20Z",
    "hash": "e2fb86a0",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-04T18:18:47+00:00"
   },
   "monstre_appele_descente.png": {
    "taille": 30568,

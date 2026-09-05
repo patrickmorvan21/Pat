@@ -26,10 +26,10 @@ import { NomGratte } from "@/components/Registre";
 import { buildLesCent, PREMIER_VALEUR, type RegistreEntry } from "@/lib/registre-data";
 import { destinDepuisCause, loadMemory, relicEffect, relicFiche, RELIC_FONCTION } from "@/lib/player-memory";
 import { pickJailerQuote, reactionJours } from "@/lib/jailer-quotes";
-import { ditherFadeMaskDataUrl } from "@/lib/dither";
 import { animReduced } from "@/lib/settings";
 import type { RunState } from "@/lib/state";
 import TagRarete from "@/components/TagRarete";
+import { Coffre, TeteGeolier } from "@/components/PixelArt";
 import { assetUrl, assetExiste } from "@/lib/assets";
 import { reliqueIllustration } from "@/lib/reliques";
 import CarteDeMort from "@/components/CarteDeMort";
@@ -172,17 +172,6 @@ function useTyped(texte: string, actif: boolean) {
   return { visible: texte.slice(0, n), fini, tout };
 }
 
-/** Voile de lisibilité du coffre : trame de pixels charbon à densité
-    croissante vers le bas — jamais un dégradé CSS (règle DA). Masque généré
-    une fois, caché au niveau module. */
-let veilCache: string | null = null;
-function getVeilMask(): string | null {
-  if (typeof document === "undefined") return null;
-  // Généré à la taille d'affichage exacte (390×170) : étirer une trame Bayer
-  // déforme ses cellules — la leçon de la bande de dissolution (25/07).
-  if (!veilCache) veilCache = ditherFadeMaskDataUrl(390, 170, (_nx, ny) => 1 - ny);
-  return veilCache;
-}
 
 export default function DeathScreen({
   epitaph,
@@ -216,7 +205,6 @@ export default function DeathScreen({
   // Descente jamais gérée (spec 20/08) → la relique fraîche sera portée par
   // défaut ; Descente explicite → elle rejoint le Reliquaire, et la ligne de
   // forge doit dire lequel des deux est vrai.
-  const porteeParDefaut = !Array.isArray(mem.descente);
 
   // Le texte du fragment : réaction aux jours tenus, puis fragment d'arc au
   // jalon — sinon une citation contextuelle du pool. Tiré dans un EFFET, pas
@@ -459,13 +447,11 @@ export default function DeathScreen({
           {/* Maquette 2320-4447 : la tête du Geôlier émerge du noir en haut,
               sa voix au centre — réaction aux jours, puis fragment d'arc ou
               citation contextuelle. Frappe 42 ms, la cadence du Geôlier. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            alt=""
-            src={assetUrl("assets/mort_geolier_tete.png")}
-            className="block w-full select-none"
-            style={{ imageRendering: "pixelated" }}
-          />
+          {/* La tête est DESSINÉE (05/09) et non plus servie en image :
+              `mort_geolier_tete.png` était un extrait Figma à la taille
+              d'affichage (390×276), sans réserve de définition. Elle respire
+              par paliers entiers, comme le démon de l'accueil. */}
+          <TeteGeolier />
           <p className="mx-auto mt-[14px] w-[350px] whitespace-pre-line text-center font-mono text-[13px] leading-[1.55] text-[var(--color-ink)]">
             {fragTexte}
             {!fragFini && <span className="type-cursor">▌</span>}
@@ -498,25 +484,12 @@ export default function DeathScreen({
         (!coffreOuvert ? (
           /* Phase A — le coffre (maquette 2333-10146) : plein cadre, voile de
              lisibilité TRAMÉ en bas, le tap déclenche la révélation. */
-          <div className="absolute inset-0">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              alt=""
-              src={assetUrl("assets/mort_coffre.png")}
-              className="absolute inset-0 h-full w-full object-cover select-none"
-              style={{ imageRendering: "pixelated" }}
-            />
-            <div
-              className="absolute inset-x-0 bottom-0 h-[170px] bg-[var(--color-bg)]"
-              style={{
-                maskImage: getVeilMask() ? `url(${getVeilMask()})` : undefined,
-                WebkitMaskImage: getVeilMask() ? `url(${getVeilMask()})` : undefined,
-                maskSize: "100% 100%",
-                WebkitMaskSize: "100% 100%",
-              }}
-              aria-hidden
-            />
-            <p className="absolute inset-x-0 bottom-[42px] text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]">
+          <div className="flex flex-1 flex-col items-center justify-center">
+            {/* Le coffre est DESSINÉ (05/09) : il se dissout de lui-même dans
+                le charbon par le bas, donc le voile tramé qui rattrapait la
+                lisibilité de l'ancien plein-cadre n'a plus lieu d'être. */}
+            <Coffre />
+            <p className="mt-[26px] text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]">
               Touche le coffre pour
               <br />
               découvrir ta relique
@@ -530,7 +503,13 @@ export default function DeathScreen({
              844 px de haut. En dur, la fonction et le coût de la relique
              tombaient DANS les flammes. Le haut et le cadre se resserrent donc
              en dessous de 800 px, sans rien changer sur un grand écran. */
-          <div className="flex flex-1 flex-col items-center px-[27px] pt-[6vh] max-[799px]:pt-[3vh]">
+          /* Le bloc est CENTRÉ dans la hauteur restante (retour Patrick
+             05/09 : « descendre plus le bloc, qu'il ne touche pas le haut »).
+             Centré plutôt que poussé d'un `pt` fixe : la fiche a maintenant
+             trois éléments au lieu de six, sa hauteur varie avec la longueur
+             de l'effet, et un padding en dur laisserait un grand vide sous le
+             texte sur les reliques courtes. */
+          <div className="flex flex-1 flex-col items-center justify-center px-[27px] pb-[8vh]">
             <div className="relative">
               <CendresRevelation />
               <div className="relative size-[336px] max-[799px]:size-[224px] overflow-hidden border-2 border-solid border-[var(--color-accent)]">
@@ -556,32 +535,20 @@ export default function DeathScreen({
             >
               {relic.name}
             </h3>
-            <p className="mt-[24px] w-[336px] max-w-full text-center font-mono text-[13px] leading-[1.3] text-[var(--color-ink)] max-[799px]:mt-[12px]">
-              {firstDeath
-                ? "De cette première mort, il reste plus que d'ordinaire."
-                : porteeParDefaut
-                  ? "Celui qui te suivra la portera."
-                  : "Elle rejoint le Reliquaire. À toi de dire qui la portera."}
-            </p>
-            {/* La FONCTION en mots (promesse n°3 du 4/08) : la relique n'est
-                plus un nom sec — elle annonce ce qu'elle fera de la prochaine
-                vie. Jamais un chiffre. */}
-            <p className="mt-[10px] w-[336px] max-w-full text-center font-mono text-[12px] leading-[1.5] text-[var(--color-ink)] opacity-60 max-[799px]:mt-[6px]">
+            {/* SON EFFET, EN BLANC, ET RIEN D'AUTRE (retour Patrick 05/09 :
+                « trop de textes, trop de couleurs différentes — juste mettre
+                son effet en blanc comme sur la maquette »).
+                ⚠️ Le COÛT n'est pas perdu : une relique aide ET prend (5/08),
+                et le prix doit être connu AVANT de recommencer. Il rejoint la
+                même phrase, dans la même couleur — c'est un seul effet à deux
+                faces, pas deux informations. Ce qui part vraiment : la ligne
+                de service (« Celui qui te suivra la portera ») et le murmure
+                en orange italique, qui étaient de la couleur en plus. */}
+            <p className="mt-[24px] w-[336px] max-w-full text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)] max-[799px]:mt-[14px]">
+              {firstDeath ? "De cette première mort, il reste plus que d'ordinaire. " : ""}
               {relicFiche(relic)?.fonction ?? RELIC_FONCTION[relicEffect(relic)]}
+              {relicFiche(relic)?.cout ? ` ${relicFiche(relic)!.cout}` : ""}
             </p>
-            {/* LE COÛT (5/08) : une relique aide ET prend. Le prix est annoncé
-                ici, à la forge, dans les mêmes mots que le don — le joueur sait
-                ce qu'il emporte avant de recommencer. Jamais un chiffre. */}
-            {relicFiche(relic)?.cout && (
-              <p className="mt-[8px] w-[336px] max-w-full text-center font-mono text-[12px] leading-[1.5] text-[var(--color-accent)] opacity-80 max-[799px]:mt-[6px]">
-                {relicFiche(relic)!.cout}
-              </p>
-            )}
-            {relic.rarity !== "commune" && (
-              <p className="mt-[14px] text-center font-mono text-[13px] italic leading-[1.5] text-[var(--color-accent)] max-[799px]:mt-[8px] max-[799px]:hidden">
-                «&nbsp;{relicFiche(relic)?.murmure ?? cause}&nbsp;»
-              </p>
-            )}
             <TouchHint bottom={HINT_BAS} />
           </div>
         ))}
@@ -637,7 +604,16 @@ function RegistreMort({
       <img
         alt=""
         src={assetUrl("assets/objet_grand_registre_e_b.png")}
-        className="block h-[128px] w-full object-cover object-[center_38%] select-none"
+        /* LE LIVRE ENTIER (retour Patrick 05/09). Il était rogné à 128 px de
+           haut, cadré à 38 % : on n'en voyait qu'une bande.
+           ⚠️ `object-contain` le montrerait entier mais DEUX FOIS PLUS PETIT
+           (un carré de 1000 tenu dans 390×218 ne fait plus que 218 de large).
+           Le livre n'occupe en réalité que la bande y 354→733 du fichier, soit
+           38 % de sa hauteur, centrée à 54 % : en `cover` sur 200 px cadrés à
+           58 %, la fenêtre visible va de 110 à 310 sur une image mise à 390 —
+           elle contient donc le livre en entier (138→286) avec de la marge, et
+           à pleine largeur. Mesuré, pas estimé. */
+        className="block h-[200px] w-full object-cover object-[center_58%] select-none"
         style={{ imageRendering: "pixelated" }}
       />
       <div className="mt-[10px] flex items-center justify-center gap-[8px]">

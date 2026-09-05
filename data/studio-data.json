@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-04T17:41:10Z",
- "commit": "b6f2d47",
+ "genere": "2026-09-05T08:52:01Z",
+ "commit": "4a54505",
  "zones": [
   {
    "id": "landes",
@@ -8305,12 +8305,36 @@
    "racine": "intro_de"
   },
   {
+   "fichier": "intro_demon.png",
+   "hash": "39326e30",
+   "taille": 42022,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "intro_demon"
+  },
+  {
    "fichier": "intro_epee.png",
    "hash": "3852fffe",
    "taille": 136560,
    "recent": false,
    "groupe": "autre",
    "racine": "intro_epee"
+  },
+  {
+   "fichier": "intro_porte.png",
+   "hash": "cce3bae5",
+   "taille": 131741,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "intro_porte"
+  },
+  {
+   "fichier": "intro_porte_anim.png",
+   "hash": "f2b6251d",
+   "taille": 168232,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "intro_porte_anim"
   },
   {
    "fichier": "monstre_appele_descente.png",
@@ -11342,10 +11366,10 @@
   "scenes": 107,
   "pointsInteret": 0,
   "choix": 316,
-  "illustrations": 437,
+  "illustrations": 438,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 218,
+  "reserve": 221,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

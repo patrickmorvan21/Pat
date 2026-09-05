@@ -5,6 +5,7 @@ import Scene from "@/components/Scene";
 import { HeroGeolier } from "@/components/HeroGeolier";
 import Prologue from "@/components/Prologue";
 import Intro, { ActeScreen } from "@/components/Intro";
+import Credo from "@/components/Credo";
 import Registre from "@/components/Registre";
 import { loadMemory, mutateMemory, shouldShowIntro } from "@/lib/player-memory";
 import { pickJailerQuote } from "@/lib/jailer-quotes";
@@ -29,7 +30,7 @@ import Codex from "@/components/Codex";
  */
 
 export default function Home() {
-  const [phase, setPhase] = useState<"boot" | "home" | "reprise" | "intro" | "prologue" | "acte" | "game">(
+  const [phase, setPhase] = useState<"boot" | "home" | "reprise" | "intro" | "prologue" | "credo" | "acte" | "game">(
     "boot",
   );
   const [saved, setSaved] = useState(false);
@@ -114,7 +115,11 @@ export default function Home() {
   // NOMME le monde, et il coûte un tap. La compression se paie ailleurs.
   // débouche droit sur la Borne, le premier geste avant la minute 2.
   if (phase === "prologue")
-    return <Prologue onDone={() => setPhase("acte")} />;
+    return <Prologue onDone={() => setPhase("credo")} />;
+  // LE CREDO (05/09, maquette 3388:889) : le rappel des trois règles, juste
+  // avant que le monde se nomme. Il vient APRÈS le Seuil parce qu'il ne se
+  // comprend qu'une fois qu'on a un héros à perdre.
+  if (phase === "credo") return <Credo onDone={() => setPhase("acte")} />;
   // Nommer l'acte juste après le scellement du pacte, avant la première scène.
   if (phase === "acte") return <ActeScreen onDone={() => setPhase("game")} />;
 
