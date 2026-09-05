@@ -1,6 +1,6 @@
 {
- "genere": "2026-09-05T08:53:11Z",
- "commit": "4a54505",
+ "genere": "2026-09-05T12:59:44Z",
+ "commit": "c7d0920",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -51,6 +51,13 @@
    "hash": "d525af7c",
    "recent": false,
    "ajoute": "2026-08-21T08:35:20+00:00"
+  },
+  "credo_chaines.png": {
+   "taille": 7057,
+   "modifie": "2026-09-05T12:27:00Z",
+   "hash": "335dfa24",
+   "recent": false,
+   "ajoute": ""
   },
   "croix_menu.png": {
    "taille": 325,
@@ -257,7 +264,7 @@
   },
   "intro_demon.png": {
    "taille": 42022,
-   "modifie": "2026-09-03T06:04:44Z",
+   "modifie": "2026-09-05T12:45:14Z",
    "hash": "39326e30",
    "recent": false,
    "ajoute": "2026-08-07T09:09:59+00:00"
@@ -273,8 +280,8 @@
    "taille": 5615,
    "modifie": "2026-09-05T08:08:03Z",
    "hash": "1baf97c8",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-05T08:58:11+00:00"
   },
   "intro_porte.png": {
    "taille": 131741,
@@ -1591,6 +1598,13 @@
    "hash": "f95ac07d",
    "recent": false,
    "ajoute": "2026-07-24T09:27:44+00:00"
+  },
+  "pacte_plume.png": {
+   "taille": 31995,
+   "modifie": "2026-09-05T12:47:02Z",
+   "hash": "d69b5f8c",
+   "recent": false,
+   "ajoute": ""
   },
   "pactum_logo.png": {
    "taille": 19043,

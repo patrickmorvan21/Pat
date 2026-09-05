@@ -1,3 +1,3 @@
-:HL["/Pat/aldenhar/_next/static/chunks/0dn-8hm_8k112.css","style"]
+:HL["/Pat/aldenhar/_next/static/chunks/167b5_1dc8v-y.css","style"]
 :HL["https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Inter:wght@600&family=Instrument+Serif:ital@0;1&display=swap","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"minijeux","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"xUxpqbbd02twOvcNnT3yC"}
+0:{"tree":{"name":"","param":null,"prefetchHints":16,"slots":{"children":{"name":"minijeux","param":null,"prefetchHints":0,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":0,"slots":null}}}}},"staleTime":300,"buildId":"FEbSus1Cz5-SZcZbo-d4J"}
