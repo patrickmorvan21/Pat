@@ -13,7 +13,7 @@
    dur. `cache.add("./")` → la racine servie, `cache.add("assets/x.png")`
    → <base>/assets/x.png, etc. */
 
-const CACHE_VERSION = "pactum-v212";
+const CACHE_VERSION = "pactum-v213";
 
 /* Coquille précachée à l'installation : les pages navigables + les
    assets à nom STABLE affichés tôt (logo, Geôlier, cadre). On NE code

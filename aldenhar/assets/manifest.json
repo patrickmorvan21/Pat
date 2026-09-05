@@ -1,6 +1,6 @@
 {
- "genere": "2026-09-05T12:59:44Z",
- "commit": "c7d0920",
+ "genere": "2026-09-05T13:20:13Z",
+ "commit": "d825fd7",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -56,8 +56,8 @@
    "taille": 7057,
    "modifie": "2026-09-05T12:27:00Z",
    "hash": "335dfa24",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-05T13:01:19+00:00"
   },
   "croix_menu.png": {
    "taille": 325,
@@ -1603,8 +1603,8 @@
    "taille": 31995,
    "modifie": "2026-09-05T12:47:02Z",
    "hash": "d69b5f8c",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-05T13:01:19+00:00"
   },
   "pactum_logo.png": {
    "taille": 19043,
