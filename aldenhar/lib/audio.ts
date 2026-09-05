@@ -24,6 +24,24 @@ import { loadSettings } from "@/lib/settings";
 
 export type MusicKind = "intro" | "landes";
 
+/**
+ * ⚠️ INTERRUPTEUR GÉNÉRAL — LA MUSIQUE EST COUPÉE (décision Patrick, 2/09
+ * puis 5/09 : « enlève la musique pour le moment dans tout le jeu »). Les
+ * quatre mp3 restent en place et le moteur entier aussi : remettre `true`
+ * suffit à tout rebrancher, sans toucher à une ligne d'appelant.
+ *
+ * ⚠️ IL DOIT GARDER **TOUS** LES POINTS QUI DÉMARRENT UN SON, pas seulement
+ * `playMusic`. La version du 2/09 ne gardait que celui-là — or `armAudio()`
+ * est appelé DIRECTEMENT par l'accueil et relance la piste du contexte au
+ * premier geste, et `forcerPiste()` bascule la piste de la phase : la musique
+ * repartait donc au premier toucher, malgré le drapeau. Le garde vit
+ * désormais aussi dans `startTrack`, qui est le seul endroit où un son
+ * commence réellement (rotation `ended` comprise) — c'est le filet qui rend
+ * la coupure vraie quel que soit le chemin.
+ */
+export const MUSIQUE_ACTIVE = false;
+
+
 const TRACKS: Record<MusicKind, string[]> = {
   intro: ["audio/intro.mp3"],
   landes: ["audio/landes_1.mp3", "audio/landes_2.mp3", "audio/landes_3.mp3"],
@@ -44,6 +62,7 @@ let pisteForcee: number | "off" | null = null;
 export function forcerPiste(p: number | "off" | null): void {
   if (p === pisteForcee) return;
   pisteForcee = p;
+  if (!MUSIQUE_ACTIVE) return; // la phase reste notée, elle ne joue rien
   if (typeof window === "undefined") return;
   if (p === "off") {
     stopMusic();
@@ -149,6 +168,7 @@ function ensureEl(): HTMLAudioElement | null {
 }
 
 function startTrack(src: string): void {
+  if (!MUSIQUE_ACTIVE) return; // interrupteur général — le seul point où un son commence
   const audio = ensureEl();
   if (!audio || missing.has(src)) return;
   const s = loadSettings();
@@ -190,15 +210,6 @@ function fadeOutAndStop(then?: () => void): void {
  * Demande la musique d'un contexte : accueil/prologue = "intro", jeu =
  * "landes". Idempotent (même contexte = ne redémarre pas la piste).
  */
-/**
- * ⚠️ LA MUSIQUE EST MASQUÉE (décision Patrick, 2/09 : « masquer pour le
- * moment la musique, que je mettrai plus tard »). Les quatre mp3 restent en
- * place et le moteur aussi — remettre `true` suffit à tout rebrancher. Tant
- * que c'est `false`, aucune piste ne démarre et l'option n'est plus rendue
- * dans les réglages (GameMenu).
- */
-export const MUSIQUE_ACTIVE = false;
-
 export function playMusic(kind: MusicKind): void {
   if (typeof window === "undefined") return;
   const s = loadSettings();
@@ -241,6 +252,7 @@ export function stopMusic(): void {
  * marche/arrêt à la piste en cours — et relance le contexte si on rallume.
  */
 export function syncMusicSettings(): void {
+  if (!MUSIQUE_ACTIVE) return;
   const s = loadSettings();
   const audio = el;
   if (!s.music) {
@@ -281,6 +293,7 @@ function detachGestures(): void {
 }
 
 export function armAudio(): void {
+  if (!MUSIQUE_ACTIVE) return;
   if (typeof document === "undefined" || unlocked) return;
   detachGestures();
   const onFirst = () => {
