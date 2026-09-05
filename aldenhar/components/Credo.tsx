@@ -163,7 +163,7 @@ export default function Credo({ onDone }: { onDone: () => void }) {
             réel et CENTRÉE, donc les deux coins de chaîne restent entiers
             quelle que soit la taille de l'écran. */}
         <ImagePixels
-          src="assets/credo_chaines.png"
+          src="assets/credo_chaines_b.png"
           width={390}
           height={hauteur}
           ajuste="cover"

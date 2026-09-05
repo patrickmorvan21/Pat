@@ -405,12 +405,13 @@ function EcranGeolier({
           s'échappe et recouvre TOUT ce qui suit — le socle charbon et la
           première ligne de la réplique disparaissaient dessous. */}
       <div className="absolute top-[74px] left-0 isolate h-[390px] w-[390px]">
-        <HeroGeolier
-          height={390}
-          src="assets/intro_demon_detoure.png"
-          marge={0}
-          sol={false}
-        />
+        {/* ⚠️ C'EST L'IMAGE DE L'ACCUEIL, la HD (1560×1720), et pas l'export
+            390×390 des maquettes (retour Patrick 5/09 : « sur cet écran le
+            démon est net, reprends celle-ci à chaque fois qu'on voit le
+            démon »). C'est le même personnage : seule la résolution change —
+            quatre fois la taille d'affichage, donc une trame qui reste fine
+            sur un écran Retina. Rien d'autre ne rend une image nette. */}
+        <HeroGeolier height={390} marge={0} sol={false} />
       </div>
       {/* ⚠️ LES DEUX NAPPES CHARBON SE POSENT PAR-DESSUS L'IMAGE, jamais
           derrière : c'est le socle 201×96 qui efface le sceau de poitrine du

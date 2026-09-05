@@ -1,6 +1,6 @@
 {
- "genere": "2026-09-05T14:07:24Z",
- "commit": "a5583ec",
+ "genere": "2026-09-05T15:26:42Z",
+ "commit": "2c68b82",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -58,6 +58,13 @@
    "hash": "335dfa24",
    "recent": true,
    "ajoute": "2026-09-05T13:01:19+00:00"
+  },
+  "credo_chaines_b.png": {
+   "taille": 37982,
+   "modifie": "2026-09-05T15:18:29Z",
+   "hash": "c42b8c51",
+   "recent": false,
+   "ajoute": ""
   },
   "croix_menu.png": {
    "taille": 325,
@@ -268,13 +275,6 @@
    "hash": "39326e30",
    "recent": false,
    "ajoute": "2026-08-07T09:09:59+00:00"
-  },
-  "intro_demon_detoure.png": {
-   "taille": 43088,
-   "modifie": "2026-09-05T13:33:18Z",
-   "hash": "b993ff54",
-   "recent": false,
-   "ajoute": ""
   },
   "intro_epee.png": {
    "taille": 136560,
@@ -1169,8 +1169,8 @@
    "taille": 361771,
    "modifie": "2026-09-05T13:37:24Z",
    "hash": "71e45097",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-05T14:07:56+00:00"
   },
   "mort_geolier_tete.png": {
    "taille": 13410,
@@ -1183,8 +1183,8 @@
    "taille": 46902,
    "modifie": "2026-09-05T13:37:23Z",
    "hash": "296bb5e9",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-05T14:07:56+00:00"
   },
   "objet_battant_cloche_c.png": {
    "taille": 14273,
@@ -1631,8 +1631,8 @@
    "taille": 74024,
    "modifie": "2026-09-05T13:34:20Z",
    "hash": "6a9a4a53",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-05T14:07:56+00:00"
   },
   "pactum_logo.png": {
    "taille": 19043,

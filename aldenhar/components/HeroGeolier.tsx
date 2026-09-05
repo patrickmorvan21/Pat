@@ -33,12 +33,14 @@ export function HeroGeolier({
   /** Hauteur du bloc héros (px). L'écran du Nom (24/07) le réduit pour que
       la signature et le CTA restent visibles quand le clavier s'ouvre. */
   height?: number;
-  /** Image du héros. L'INTRO sert le démon de ses maquettes
-      (`intro_demon_detoure.png`) plutôt que celui de l'accueil, mais avec la
-      MÊME animation — c'est la demande de Patrick (5/09 : « démon, reprendre
-      l'animation de l'accueil »). ⚠️ Elle doit être DÉTOURÉE (champ orange
-      transparent) : sur une image opaque, les cendres passent derrière et ne
-      se voient jamais. */
+  /** Image du héros. ⚠️ TOUS LES ÉCRANS OÙ L'ON VOIT LE DÉMON SERVENT LA
+      MÊME (le défaut, `geolier_detoure.png`, 1560×1720) — décision Patrick du
+      5/09 : « sur cet écran le démon est net, reprends celle-ci à chaque fois
+      qu'on voit le démon ». C'est le même personnage que l'export 390×390 des
+      maquettes, à quatre fois la taille d'affichage : c'est LA résolution qui
+      fait la netteté, rien d'autre. Une image servie ici doit être DÉTOURÉE
+      (champ orange transparent), sinon les cendres passent derrière une image
+      opaque et ne se voient jamais. */
   src?: string;
   /** Air au-dessus de l'image, en px (l'accueil en laisse 40 au-dessus des
       cornes ; l'intro pose son démon au ras du bloc). */

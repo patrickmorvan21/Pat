@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-05T14:00:53Z",
- "commit": "a5583ec",
+ "genere": "2026-09-05T15:21:31Z",
+ "commit": "2c68b82",
  "zones": [
   {
    "id": "landes",
@@ -8281,6 +8281,14 @@
    "racine": "codex_lisieres_basse"
   },
   {
+   "fichier": "credo_chaines.png",
+   "hash": "335dfa24",
+   "taille": 7057,
+   "recent": true,
+   "groupe": "brancher",
+   "racine": "credo_chaines"
+  },
+  {
    "fichier": "fermer.svg",
    "hash": "81984d4a",
    "taille": 870,
@@ -11385,7 +11393,7 @@
   "illustrations": 444,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 223,
+  "reserve": 224,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
