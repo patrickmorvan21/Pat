@@ -20,7 +20,11 @@
  *
  * ⚠️ Ce voile ne se joue PAS entre deux répliques du Geôlier : là, l'écran ne
  * change pas, c'est la même scène qui continue de parler. Les appelants en
- * décident (voir `Prologue`), le composant ne devine rien.
+ * décident, le composant ne devine rien.
+ *
+ * ⚠️ SANS APPELANT depuis le 05/09 (retour iPhone : plus aucune transition
+ * dans l'intro ni au Seuil). Gardé pour une vraie rupture de LIEU, qui est ce
+ * pour quoi il a été écrit.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";

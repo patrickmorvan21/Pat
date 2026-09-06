@@ -58,23 +58,32 @@ import { haptic } from "@/lib/settings";
    maquette, signalé plutôt que reproduit. */
 const VOIX = "12 000 avant toi ont poussé cette porte. Aucun n'a lu ce qu'il signait.";
 
-/** Ce qu'il répond à « Qui es-tu ? » — une réplique par tap. La première est
-    celle de la maquette 3450:4033 ; les deux suivantes prolongent sa voix. */
+/**
+ * Ce qu'il répond à « Qui es-tu ? » — une réplique par tap.
+ *
+ * ⚠️ DEUX RÉPLIQUES, PAS TROIS (brief V2 du 06/09) : cette branche ne doit pas
+ * devenir de l'exposition. La première est celle de la maquette 3450:4033 et
+ * caractérise le personnage ; la seconde plante le Registre et la Descente, et
+ * s'arrête là — il n'explique jamais son rôle complet. Qui choisit « Signer. »
+ * court-circuite les deux, c'est voulu.
+ */
 const QUI = [
   "Personne ne pose cette question en premier. Tu progresses.",
-  "Je tiens le registre. Je n'ouvre rien, je ne sauve personne. Je compte.",
-  "Ce qui m'intéresse, c'est jusqu'où tu descends. Descends bien.",
+  "Je tiens le Registre. Je compte ceux qui descendent. Ce qui m'intéresse, c'est jusqu'où tu iras.",
 ];
 
 /**
  * Les quatre clauses, telles que la maquette les affiche : mono 13px, BLANC,
  * sans un mot en gras ni en orange, séparées par une ligne vide.
  */
+/* ⚠️ TROIS CLAUSES (brief V2 du 06/09) : les deux dernières de la maquette
+   disaient la même chose en deux temps — elles n'en font plus qu'une, ce qui
+   resserre le contrat sans lui retirer un mot de sens. Le libellé de la
+   Descente reste celui de la maquette (« trois actes »), qui est le canon. */
 const PACTE_CLAUSES = [
   "Il te sera prêté une vie. Une seule.",
   "Tu entreprendras la Descente : trois actes, du seuil jusqu'à la Porte Scellée.",
-  "Ce que tu comprendras en mourant, tu le légueras.",
-  "Ce que tu perdras, tu le perdras vraiment.",
+  "Ce que tu comprendras en mourant, tu le légueras. Ce que tu perdras, tu le perdras vraiment.",
 ];
 
 /** Mesures de la marque tracée — c'est la MAIN qui décide de la réplique. */
@@ -427,7 +436,16 @@ function EcranGeolier({
   );
 }
 
-export default function Intro({ onDone }: { onDone: () => void }) {
+export default function Intro({
+  onDone,
+  /** APERÇU (Options) : on rejoue le pacte sans rien marquer au compte —
+      sinon prévisualiser sur un compte neuf priverait le joueur de sa
+      vraie première fois. */
+  apercu = false,
+}: {
+  onDone: () => void;
+  apercu?: boolean;
+}) {
   const [etape, setEtape] = useState<Etape>("voix");
   /** Réplique lue jusqu'au bout ? C'est elle qui débloque l'issue de l'écran. */
   const [lu, setLu] = useState(false);
@@ -451,9 +469,9 @@ export default function Intro({ onDone }: { onDone: () => void }) {
   }, []);
 
   const terminer = useCallback(() => {
-    markIntroSeen();
+    if (!apercu) markIntroSeen();
     onDone();
-  }, [onDone]);
+  }, [onDone, apercu]);
 
   /* --------------------------------------------------------------- LA VOIX */
   if (etape === "voix") {

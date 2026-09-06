@@ -5,9 +5,9 @@
  */
 
 import { normalizeItem, startingBesace, type BesaceItem, type BesaceRarity } from "@/lib/besace";
-import { drawMemories } from "@/lib/prologue-data";
 import { traverseeGuidee } from "@/lib/demo";
 import { ENTRY_SCENE, sceneAt } from "@/lib/scene-data";
+import { profilDepuis, profilNeuf, type ProfilRun } from "@/lib/profil";
 import type { Temoin } from "@/lib/temoins";
 import { sacDepuis, type SacFaits } from "@/lib/faits";
 
@@ -97,58 +97,22 @@ export type PendingDebt = {
 };
 
 /**
- * Stats de personnalité de la run (Courage/Ruse/Instinct/Empathie, sur 1..5 —
- * échelle du prologue « Le Seuil », 16/07). Fixées par le VERDICT du prologue
- * (base 1 + choix A/B/C + jet silencieux ±1) — jamais un écran de répartition
- * de points, jamais un chiffre affiché. Pour l'instant AFFICHAGE SEUL (radar
- * de l'écran Essence) : les jets continuent d'utiliser seuil + états.
+ * Stats de personnalité de la run (Courage/Ruse/Instinct/Empathie, sur 1..5).
+ *
+ * ⚠️ ELLES N'EXISTENT PAS AU DÉPART (V2 du prologue, 06/09) : `RunState.stats`
+ * vaut `undefined` tant que le Geôlier n'a pas assez vu pour les dessiner.
+ * Ce n'est pas la même chose que « quatre valeurs neutres » — `statDe()` rend
+ * 3 pour une stat absente, donc le modificateur de dé vaut 0 et les verrous à
+ * seuil restent fermés, sans qu'aucun appelant ait à connaître cet état.
+ * Elles apparaissent à la RÉVÉLATION, puis continuent de suivre en silence ce
+ * que le héros fait (voir `lib/profil.ts`). Jamais un chiffre affiché : le
+ * radar de l'écran Essence est leur seule forme visible.
  */
 export type RunStats = {
   courage: number;
   ruse: number;
   instinct: number;
   empathie: number;
-};
-
-/** Profil de repli (runs héritées d'avant le prologue) — échelle 1..5. */
-function randomStats(): RunStats {
-  const values = [4, 3, 2, 2].map((v) => Math.max(1, Math.min(5, v + (Math.floor(Math.random() * 3) - 1))));
-  for (let i = values.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [values[i], values[j]] = [values[j], values[i]];
-  }
-  return { courage: values[0], ruse: values[1], instinct: values[2], empathie: values[3] };
-}
-
-/**
- * Prologue « Le Seuil » (spec 16/07, remanié 2/09) : le Geôlier feuillette la
- * vie d'avant du héros — 1 beat d'amorce, 4 souvenirs (un par stat, ordre
- * MÉLANGÉ), puis le verdict. Persisté dans la run : fermer l'app en plein prologue reprend
- * exactement au même beat (§9, jamais une mort technique). Rejoué à chaque
- * nouvelle run avec un tirage différent.
- */
-export type PrologueMemory = {
-  stat: keyof RunStats;
-  title: string;
-  narration: string;
-  options: [string, string, string];
-};
-
-export type PrologueState = {
-  /** Les 4 souvenirs tirés pour cette run, dans un ordre mélangé (2/09). */
-  memories: PrologueMemory[];
-  /** Beat courant : 0 = amorce, 1-4 = souvenirs, 5 = le Nom, 6 = le verdict. */
-  beat: number;
-  /** Index (0=A, 1=B, 2=C) du choix retenu pour chaque souvenir joué. */
-  choices: number[];
-  /** true une fois le verdict rendu (stats calculées) — on entre au Jour I. */
-  done: boolean;
-  /** Le verdict a été calculé à l'ENTRÉE de la clôture (portrait 4/08).
-      ⚠️ Nécessaire parce que computeVerdict tire un jet silencieux : le
-      recalculer au timer de sortie donnerait un AUTRE héros que celui que le
-      portrait vient de décrire. Optionnel — les sauvegardes d'avant n'ont pas
-      le champ, et undefined vaut « pas encore rendu ». */
-  verdictRendu?: boolean;
 };
 
 /**
@@ -495,9 +459,19 @@ export type RunState = {
   /** Rencontres (scènes de combat) traversées vivant — pour l'écran de mort. */
   encounters: number;
   /** Stats de la run (affichage Essence seulement pour l'instant). */
-  stats: RunStats;
-  /** Prologue « Le Seuil » — présent tant que la run existe (spec 16/07). */
-  prologue: PrologueState;
+  /**
+   * LE PROFIL DE CETTE VIE — **undefined tant que le Geôlier n'a pas dessiné**
+   * (V2 du 06/09). Ce n'est pas un détail de typage : c'est la différence
+   * entre « personne ne sait encore qui est cette incarnation » et « voici
+   * ton build de départ ». `statDe()` rend 3 pour une stat absente, donc un
+   * héros indéterminé n'a ni bonus de dé, ni verrou à seuil ouvert, ni
+   * variante de dominante — sans qu'aucun appelant ait à le savoir.
+   */
+  stats?: RunStats;
+  /** Ce que ses décisions ont appris de lui, et s'il a déjà été dessiné. */
+  profil: ProfilRun;
+  /** L'ouverture de cette vie (pacte à la 1re, retour aux suivantes) est jouée. */
+  ouverture: boolean;
   /** Traversée de la zone (spec 21/07) : liaisons + choix d'orientation. */
   trav: TraversalState;
   /**
@@ -602,9 +576,15 @@ export function randomHeroName(): string {
   return HERO_NAMES[Math.floor(Math.random() * HERO_NAMES.length)];
 }
 
-/** Anciennes sauvegardes : stats sur 10 → ramenées à l'échelle 1..5 du prologue. */
+/**
+ * Anciennes sauvegardes : stats sur 10 → ramenées à l'échelle 1..5.
+ * ⚠️ On n'INVENTE plus de profil au repli (le tirage aléatoire d'avant le
+ * 06/09 est retiré) : une sauvegarde dont l'objet est malformé retombe sur le
+ * neutre, qui est ce que `statDe` rend déjà pour une stat absente. Inventer
+ * une identité à quelqu'un qui en avait une serait pire que ne rien dire.
+ */
 function migrateStats(p: Partial<RunStats> | undefined): RunStats {
-  if (!p || typeof p.courage !== "number") return randomStats();
+  if (!p || typeof p.courage !== "number") return { courage: 3, ruse: 3, instinct: 3, empathie: 3 };
   const fix = (v: number) => Math.max(1, Math.min(5, v > 5 ? Math.round(v / 2) : v));
   return {
     courage: fix(p.courage),
@@ -629,19 +609,11 @@ function fresh(): RunState {
     besace: startingBesace(),
     looted: [],
     encounters: 0,
-    stats: randomStats(),
-    // Tirage du prologue : 1 souvenir par stat, fixé pour toute la run.
-    // (Le Seuil court de la démo — deux souvenirs — est retiré le 2/09 : un
-    // vrai premier joueur mérite les quatre, et le verdict au radar en a
-    // besoin pour dessiner une forme.)
-    prologue: {
-      memories: drawMemories().map(
-        ({ stat, entry }) => ({ stat, ...entry })
-      ),
-      beat: 0,
-      choices: [],
-      done: false,
-    },
+    // ⚠️ AUCUNE STAT AU DÉPART, et aucun souvenir tiré : le questionnaire du
+    // Seuil est retiré du chemin (V2 du 06/09). Le héros n'est encore
+    // personne ; ce sont ses décisions qui le dessineront.
+    profil: profilNeuf(),
+    ouverture: false,
     trav: freshTraversal(),
     chapter: null,
     soupcon: 0,
@@ -693,13 +665,19 @@ export function loadRun(): RunState {
             besace: Array.isArray(p.besace) ? p.besace.map(normalizeItem) : startingBesace(),
             looted: Array.isArray(p.looted) ? p.looted : [],
             encounters: typeof p.encounters === "number" ? p.encounters : 0,
-            stats: migrateStats(p.stats),
-            // Runs d'avant le prologue : considérées comme un prologue déjà
-            // rendu — elles reprennent directement au Jour courant.
-            prologue:
-              p.prologue && Array.isArray(p.prologue.memories)
-                ? p.prologue
-                : { memories: [], beat: 6, choices: [], done: true },
+            // ⚠️ Une sauvegarde d'AVANT le 06/09 a des stats rendues par le
+            // Seuil : on les garde telles quelles et son profil est déjà
+            // « révélé » — on ne va pas redessiner un héros en cours de vie.
+            stats: p.stats ? migrateStats(p.stats) : undefined,
+            profil: p.profil
+              ? profilDepuis(p.profil)
+              : { ...profilNeuf(), revele: Boolean(p.stats) },
+            // `prologue.done` d'avant portait « le Seuil est passé » : c'est
+            // exactement ce que dit `ouverture` aujourd'hui.
+            ouverture:
+              typeof p.ouverture === "boolean"
+                ? p.ouverture
+                : Boolean((p as { prologue?: { done?: boolean } }).prologue?.done),
             // Traversée : reprise si présente ; sinon, run d'avant le 21/07 →
             // on amorce une traversée à partir de sa scène linéaire courante.
             trav:
@@ -784,13 +762,24 @@ export function hasSavedRun(): boolean {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return false;
     const p = JSON.parse(raw) as Partial<RunState>;
-    // Un prologue entamé compte comme une run en cours : fermer l'app en
-    // plein Seuil doit proposer REPRENDRE et reprendre au même beat (§9).
-    const prologueStarted = Boolean(p.prologue && !p.prologue.done && (p.prologue.beat ?? 0) > 0);
-    return (Array.isArray(p.feed) && p.feed.length > 0) || (typeof p.step === "number" && p.step > 0) || prologueStarted;
+    return (Array.isArray(p.feed) && p.feed.length > 0) || (typeof p.step === "number" && p.step > 0);
   } catch {
     return false;
   }
+}
+
+/**
+ * L'ouverture de cette vie est jouée — on n'y revient plus.
+ *
+ * Posé à l'ENTRÉE EN JEU, par les deux chemins (carton d'acte à la première
+ * vie, écran de retour aux suivantes) : fermer l'app juste après ne doit ni
+ * refaire signer, ni rejouer le carton.
+ */
+export function marquerOuverture(): void {
+  const r = loadRun();
+  if (r.ouverture) return;
+  r.ouverture = true;
+  saveRun(r);
 }
 
 export function saveRun(state: RunState): void {

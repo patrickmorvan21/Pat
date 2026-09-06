@@ -907,6 +907,18 @@ def lire_choix(bloc: str) -> list[dict]:
             v = texte_de(c, champ)
             if v:
                 ch[cle] = v
+        # LE POIDS ÉCRIT À LA MAIN (V2 du prologue, 06/09) : `tendances` est le
+        # cas d'auteur, posé là où la lecture par défaut d'un geste serait
+        # fausse ou trop pauvre. Aucun choix n'en porte aujourd'hui — mais sans
+        # lui dans la liste blanche, le premier qui en portera un ne le verrait
+        # ni au Graphe ni dans la réplique, et le Geôlier y lirait autre chose
+        # que dans le jeu. C'est le point de fuite habituel.
+        mt = re.search(r'tendances:\s*\{([^}]*)\}', c)
+        if mt:
+            poids = {k: int(v) for k, v in
+                     re.findall(r'(courage|ruse|instinct|empathie):\s*(-?\d+)', mt.group(1))}
+            if poids:
+                ch["tendances"] = poids
         # EXPLORER PRÉPARE (14/08) : l'option aveugle s'efface quand l'option
         # informée existe. Sans ce champ dans la liste blanche, la réplique
         # afficherait les DEUX — donc quatre actions, et la substitution qui

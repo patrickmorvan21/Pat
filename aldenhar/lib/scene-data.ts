@@ -378,6 +378,20 @@ export type Choice = {
    * cas par cas ; `tools/image_texte.py` liste les candidats.
    */
   consequenceAilleurs?: true;
+  /**
+   * CE QUE CE GESTE APPREND SUR CELUI QUI LE FAIT (V2 du prologue, 06/09).
+   *
+   * Poids signés sur les quatre axes, lus par `lib/profil.ts` à la SÉLECTION.
+   * Optionnel, et il doit le rester : la lecture par DÉFAUT dérive déjà du jet
+   * engagé, de sa nature, du serment, de la fuite, de l'observation — annoter
+   * les 316 choix à la main serait un travail sans fin et ferait diverger deux
+   * descriptions du même geste. On ne pose ce champ que là où la lecture par
+   * défaut serait fausse ou trop pauvre.
+   *
+   * ⚠️ Jamais un seul axe positif : une décision qui ne coûte rien nulle part
+   * laisserait le joueur monter ses quatre tendances en enchaînant les jets.
+   */
+  tendances?: { courage?: number; ruse?: number; instinct?: number; empathie?: number };
   observe?: boolean;
   /** Ce choix n'existe que si le COMPTE tient cette découverte. */
   requiresDecouverte?: string;

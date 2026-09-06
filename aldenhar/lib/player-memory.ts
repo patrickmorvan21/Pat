@@ -323,6 +323,15 @@ export type PlayerMemory = {
    * qu'on n'a pas perdue. (Le Sceau qui modifie la zone = temps 2.)
    */
   zonesCleared?: number;
+  /**
+   * LES PROFILS DÉJÀ DESSINÉS, dans l'ordre des vies (V2 du 06/09).
+   *
+   * C'est ce qui permet au Geôlier de COMPARER : « les mêmes réflexes »,
+   * « tu n'es pas comme le précédent », « toujours pareil, peu importe le
+   * visage ». Sans cette liste, il redécouvrirait le joueur à chaque
+   * incarnation — ce qui ferait mentir sa mémoire, qui est le sujet du jeu.
+   */
+  profils?: { courage: number; ruse: number; instinct: number; empathie: number }[];
   /** La DERNIÈRE fin de run était une traversée réussie — consommé par
       l'accueil du Geôlier, remis à false par la mort suivante. */
   derniereFinTraversee?: boolean;
@@ -348,6 +357,7 @@ function fresh(): PlayerMemory {
     faitsVus: {},
     renoncements: 0,
     zonesCleared: 0,
+    profils: [],
     derniereFinTraversee: false,
     faits: {},
   };
@@ -403,6 +413,13 @@ export function recordRenoncement(args: { heroName: string; days: number; franch
  * incrémenté (la courbe d'entrée et les jalons de mort ne doivent pas se
  * croire avancés), et aucune relique n'est forgée.
  */
+/** Le Geôlier vient de dessiner cette incarnation : il s'en souviendra. */
+export function noterProfil(stats: { courage: number; ruse: number; instinct: number; empathie: number }): void {
+  mutateMemory((m) => {
+    m.profils = [...(m.profils ?? []), stats];
+  });
+}
+
 export function recordTraversee(args: { heroName: string; days: number; franchis: number }): void {
   mutateMemory((m) => {
     m.zonesCleared = (m.zonesCleared ?? 0) + 1;
@@ -524,6 +541,7 @@ export function loadMemory(): PlayerMemory {
           faitsVus: p.faitsVus && typeof p.faitsVus === "object" ? p.faitsVus : {},
           renoncements: typeof p.renoncements === "number" ? p.renoncements : 0,
           zonesCleared: typeof p.zonesCleared === "number" ? p.zonesCleared : 0,
+          profils: Array.isArray(p.profils) ? p.profils : [],
           derniereFinTraversee: Boolean(p.derniereFinTraversee),
           faits: sacDepuis(p.faits),
         };

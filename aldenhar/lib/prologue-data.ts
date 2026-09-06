@@ -1,4 +1,17 @@
 /**
+ * ⚠️ CE FICHIER EST EN GRANDE PARTIE EN RÉSERVE DEPUIS LE 06/09.
+ *
+ * La V2 du prologue supprime le questionnaire du Seuil : on ne demande plus
+ * au joueur qui il est, on le regarde agir (voir `lib/profil.ts`). Sont donc
+ * SANS APPELANT — conservés, jamais supprimés, parce que ce sont 120 textes
+ * de Patrick exportés de Notion : `MEMORY_POOL`, `drawMemories`,
+ * `computeVerdict`, `engagementDuSeuil`, `PROLOGUE_AMORCE`,
+ * `PROLOGUE_STAT_LABEL`.
+ *
+ * SEUL `portraitDuSeuil` (et ses aides internes) est encore joué : c'est lui
+ * qui met des mots sur la forme que le Geôlier vient de dessiner, à la
+ * révélation. `PROLOGUE_STAT_ORDER` le sert.
+ *
  * Prologue « Le Seuil » — pool de souvenirs (Notion 16/07/2026).
  * SOURCE DE VÉRITÉ ÉDITORIALE : la base Notion « 🎲 Prologue — Pool de
  * souvenirs » (collection 593e12ca-ef11-4a14-9c85-954166925963). Ce fichier
@@ -125,14 +138,19 @@ function portraitAvecSouvenir(
  * transformer un héros téméraire en héros tiède. Raccourcis de moitié le
  * 2/09 avec le reste du portrait.
  */
+/* ⚠️ RÉÉCRITS LE 06/09 : les trois disaient « tu y es allé les quatre fois »
+   et « ta vie d'avant » — ils décrivaient le questionnaire du Seuil, qui
+   n'existe plus. Un profil plat s'entendait donc raconter quatre souvenirs
+   qu'il n'a jamais joués. Ils parlent maintenant de ce que le Geôlier vient
+   de voir EN JEU, au présent, ce qui est la seule chose dont il dispose. */
 const PORTRAIT_PLAT_HAUT =
-  "Tu y es allé les quatre fois. Rien ne dépasse chez toi parce que rien ne manque.\nLe dé n'aura pas grand-chose à rattraper.";
+  "Tu t'engages à chaque fois. Rien ne dépasse chez toi parce que rien ne manque.\nLe dé n'aura pas grand-chose à rattraper.";
 
 const PORTRAIT_PLAT_MESURE =
-  "Tu as fait ce qu'il fallait, à chaque fois. Ni plus.\nRien ne dépasse chez toi. Le dé fera le reste.";
+  "Tu fais ce qu'il faut, à chaque fois. Ni plus.\nRien ne dépasse chez toi. Le dé fera le reste.";
 
 const PORTRAIT_PLAT_BAS =
-  "Rien ne dépasse chez toi : tu as traversé ta vie d'avant les mains dans les poches.\nLe dé n'aura rien à corriger, et rien à aider.";
+  "Rien ne dépasse chez toi : tu traverses les mains dans les poches.\nLe dé n'aura rien à corriger, et rien à aider.";
 
 /** Engagement moyen réellement joué : 3 = direct, 2 = mesuré, 1 = retrait. */
 function portraitPlat(engagement?: Partial<Record<StatKey, number>>): string {

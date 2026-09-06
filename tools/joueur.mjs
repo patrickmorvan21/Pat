@@ -143,6 +143,12 @@ async function texteEcran() {
     // transcript. Le repère `data-ecran` est posé pour ça (DeathScreen.tsx).
     const mort = document.querySelector('[data-ecran^="mort-"]');
     if (mort && mort.getAttribute("data-ecran") !== "mort-fatal") return mort.innerText || "";
+    // ⚠️ MÊME PIÈGE, MÊME REMÈDE (06/09) : la RÉVÉLATION (« Ça y est. Je
+    // commence à te voir. ») se monte par-dessus le jeu, donc on relisait le
+    // texte de la scène en dessous — le moment le plus important de la V2 du
+    // prologue se JOUAIT dans les transcripts sans jamais y être écrit.
+    const rev = document.querySelector("[data-revelation]");
+    if (rev) return rev.innerText || "";
     const z = document.querySelector(".scene-text-zone") || document.querySelector(".feed");
     if (!z) return document.body.innerText || "";
     // ⚠️ LE BANDEAU DU GEÔLIER EST ÉTIQUETÉ (panel compréhension 03/09) : à
@@ -165,9 +171,9 @@ async function texteEcran() {
 }
 
 /**
- * ENREGISTRER UN ÉCRAN HORS JEU (intro, Seuil, carton d'acte). Les
+ * ENREGISTRER UN ÉCRAN HORS JEU (intro, retour, carton d'acte). Les
  * transcripts de « première run » commençaient à l'écran de jeu : l'intro
- * (« Tu es mort. Il y a peu. ») et le Seuil (le nom, « Le dé fera le reste »)
+ * (« Tu es mort. Il y a peu. ») et l'ouverture qui suit
  * n'y étaient pas, et un panel entier a jugé QUI = 3,8/10 pour des raisons
  * que le jeu ne mérite qu'à moitié (03/09). Un écran = son texte visible.
  */
@@ -218,7 +224,7 @@ async function attendreFinDeFrappe(max = 26) {
  *     sont du texte écrit, elles méritent d'être dans le transcript.
  *   • le Pacte : on SIGNE au doigt dans le cadre, sinon le CTA reste inerte
  *     et l'auto-joueur tourne en rond jusqu'à la fin de son budget.
- *   • le verdict : un tap, et le Seuil prend le relais.
+ *   • le verdict : un tap, et l'ouverture prend le relais.
  * ⚠️ Les gestes passent par la souris : le jeu écoute `pointerdown`, qu'un
  * `element.click()` scripté ne déclenche pas.
  */
@@ -228,7 +234,6 @@ async function jouerLIntro() {
   for (let tour = 0; tour < 40; tour++) {
     if (await page.locator(".choices-bar").count()) return;
     const t = await page.evaluate(() => document.body.innerText || "");
-    if (/ta vie d'avant|Ton nom/i.test(t)) return; // le Seuil prend le relais
     await attendreFinDeFrappe();
     await noterEcranHorsJeu(/Appose ta marque/i.test(t) ? "(le Pacte)" : "(intro)");
 
@@ -288,26 +293,24 @@ async function jouerLIntro() {
  * « Qu'il choisisse pour moi » — ⚠️ ce dernier ne fait que REMPLIR le champ,
  * le cliquer en boucle bloque le script indéfiniment (piège du 26/07).
  */
-async function jouerLeSeuil() {
+/**
+ * L'OUVERTURE : ce qui sépare le pacte de la première scène.
+ *
+ * ⚠️ IL N'Y A PLUS DE SEUIL depuis le 06/09 — ni souvenirs, ni champ de nom,
+ * ni verdict avant d'avoir joué. Ne restent que le RETOUR du Geôlier (vies 2+)
+ * et le carton d'acte, tous deux à un tap. La fonction s'appelait
+ * `jouerLeSeuil` et cherchait un champ de texte qui n'existe plus : elle
+ * fonctionnait par accident, en tapant jusqu'à voir les choix.
+ */
+async function jouerLOuverture() {
   for (let tour = 0; tour < 40; tour++) {
     if (await page.locator(".choices-bar").count()) return true; // on est en jeu
     await attendreFinDeFrappe();
-    await noterEcranHorsJeu("(Seuil)");
-    // l'écran du Nom
-    const champ = page.locator('input[type="text"]');
-    if (await champ.count()) {
-      await champ.first().fill("Cendre");
-      const sceller = page.locator("button", { hasText: /INSCRIRE|SCELLER/i });
-      if (await sceller.count()) {
-        await sceller.first().click();
-        await page.waitForTimeout(1200);
-        continue;
-      }
-    }
+    await noterEcranHorsJeu("(ouverture)");
     const choix = await page.evaluate(() =>
       [...document.querySelectorAll("button")]
         .map((b, i) => ({ i, t: (b.innerText || "").replace(/\s+/g, " ").trim(), aria: b.getAttribute("aria-label") || "" }))
-        .filter((b) => b.t && !b.aria && !/choisisse pour moi|INSCRIRE|SCELLER/i.test(b.t)));
+        .filter((b) => b.t && !b.aria));
     if (choix.length) {
       await page.locator("button").nth(choix[0].i).click();
       await page.waitForTimeout(900);
@@ -494,9 +497,10 @@ async function peutEtreLancerLeDe() {
   return verdict || null;
 }
 
-// Le Seuil ne se joue qu'en partie neuve ; sinon REPRENDRE tombe droit en jeu.
+// L'intro ne se joue qu'au tout premier lancement ; sinon REPRENDRE tombe
+// droit en jeu, et l'ouverture se réduit au carton d'acte (ou au Retour).
 if (!(await page.locator(".choices-bar").count())) await jouerLIntro();
-if (!(await page.locator(".choices-bar").count())) await jouerLeSeuil();
+if (!(await page.locator(".choices-bar").count())) await jouerLOuverture();
 
 /* ⚠️ TOUT CE QUI SUIT EST SOUS FILET. Le magnétophone n'a de valeur que s'il
    RESTITUE : une exception au milieu (clic hors délai, page qui bouge sous le

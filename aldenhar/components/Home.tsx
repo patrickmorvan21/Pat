@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import Scene from "@/components/Scene";
 import { HeroGeolier } from "@/components/HeroGeolier";
-import Prologue from "@/components/Prologue";
+import Retour from "@/components/Retour";
 import Intro, { ActeScreen } from "@/components/Intro";
 import Credo from "@/components/Credo";
 import Registre from "@/components/Registre";
 import { loadMemory, mutateMemory, shouldShowIntro } from "@/lib/player-memory";
 import { pickJailerQuote } from "@/lib/jailer-quotes";
-import { hasSavedRun, loadRun, resetRun } from "@/lib/state";
+import { hasSavedRun, loadRun, resetRun, marquerOuverture } from "@/lib/state";
 import { lieuNom } from "@/lib/scene-data";
 import { APP_VERSION } from "@/lib/version";
 import { applySettingsToDom } from "@/lib/settings";
@@ -30,7 +30,7 @@ import Codex from "@/components/Codex";
  */
 
 export default function Home() {
-  const [phase, setPhase] = useState<"boot" | "home" | "reprise" | "intro" | "prologue" | "credo" | "acte" | "game">(
+  const [phase, setPhase] = useState<"boot" | "home" | "reprise" | "intro" | "retour" | "credo" | "acte" | "game">(
     "boot",
   );
   const [saved, setSaved] = useState(false);
@@ -87,15 +87,19 @@ export default function Home() {
   }, []);
 
   /**
-   * Toute entrée en partie passe par le Seuil tant qu'il n'est pas rendu —
-   * y compris une reprise en plein prologue (§9, reprise exacte).
+   * TROIS OUVERTURES, ET ELLES RACCOURCISSENT (brief V2 du 06/09).
    *
-   * L'ordre complet d'une PREMIÈRE partie : intro (les 4 clauses) → Seuil →
-   * écran d'acte → zone. Une reprise saute droit au jeu, et une run neuve sur
-   * un compte qui a déjà lu l'intro démarre au Seuil.
+   *   • toute première partie — le Geôlier, « Qui es-tu ? / Signer », le
+   *     Pacte, la MARQUE, le credo, puis l'acte. ~30 à 60 secondes, et la
+   *     signature est le dernier geste : plus aucun questionnaire derrière.
+   *   • réincarnation — deux phrases, pas de contrat, pas de marque : le
+   *     Pacte n'est signé qu'une fois, sinon il cesse d'être irréversible.
+   *   • vies suivantes — un mot, puis le monde.
+   *
+   * Une reprise, elle, saute droit au jeu (par le carton de reprise).
    */
   function enterGame(reprend = false) {
-    if (loadRun().prologue.done) {
+    if (loadRun().ouverture) {
       // LE CARTON DE REPRISE (retour Patrick 01/09) : le rappel « Nom · Jour /
       // Les Landes · Lieu » vivait sous le bouton, en 10 px gris — il alourdit
       // l'accueil sans qu'on le lise. Il devient un écran plein, joué APRÈS le
@@ -103,25 +107,24 @@ export default function Home() {
       setPhase(reprend ? "reprise" : "game");
       return;
     }
-    setPhase(shouldShowIntro() ? "intro" : "prologue");
+    setPhase(shouldShowIntro() ? "intro" : "retour");
   }
 
   if (phase === "game") return <Scene />;
   if (phase === "reprise") return <CartonReprise onDone={() => setPhase("game")} />;
-  if (phase === "intro") return <Intro onDone={() => setPhase("prologue")} />;
+  if (phase === "intro") return <Intro onDone={() => setPhase("credo")} />;
   // ⚠️ LE CARTON D'ACTE SE JOUE AUSSI EN DÉMO (retour Patrick, 25/08 : « on a
   // perdu l'introduction de l'acte 1 les Lisières, c'était beau »). Il avait
   // été sauté le 24/08 pour compresser l'entrée — mais c'est le seul écran qui
   // NOMME le monde, et il coûte un tap. La compression se paie ailleurs.
   // débouche droit sur la Borne, le premier geste avant la minute 2.
-  if (phase === "prologue")
-    return <Prologue onDone={() => setPhase("credo")} />;
-  // LE CREDO (05/09, maquette 3388:889) : le rappel des trois règles, juste
-  // avant que le monde se nomme. Il vient APRÈS le Seuil parce qu'il ne se
-  // comprend qu'une fois qu'on a un héros à perdre.
+  /* ⚠️ LE RETOUR VA DROIT AU JEU. Ni credo ni carton d'acte : ils énoncent
+     les règles et NOMMENT le monde, ce qui ne se refait pas à chaque mort —
+     et c'est ce qui fait tenir les cinq à dix secondes visées. */
+  if (phase === "retour") return <Retour onDone={() => { marquerOuverture(); setPhase("game"); }} />;
   if (phase === "credo") return <Credo onDone={() => setPhase("acte")} />;
   // Nommer l'acte juste après le scellement du pacte, avant la première scène.
-  if (phase === "acte") return <ActeScreen onDone={() => setPhase("game")} />;
+  if (phase === "acte") return <ActeScreen onDone={() => { marquerOuverture(); setPhase("game"); }} />;
 
   return (
     <main className="flex min-h-dvh items-center justify-center">

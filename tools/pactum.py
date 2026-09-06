@@ -53,19 +53,117 @@ SAUVE = ICI / "partie.json"
 COMPTE = ICI / "compte.json"
 
 
-def profil_de_heros(rng) -> dict:
-    """Quatre stats de 1 à 5, une dominante et une faiblesse — comme le Seuil.
+AXES = ("courage", "ruse", "instinct", "empathie")
 
-    Le jeu les fixe par les souvenirs du prologue ; le kit ne joue pas le
-    prologue, donc il les tire. Ce qui compte pour le playtest est qu'elles
-    EXISTENT et qu'une seule domine.
+# LA TABLE DE LECTURE DES JETS — portage verbatim de `lib/profil.ts`.
+# ⚠️ Sans elle, la réplique tirait quatre stats au hasard à la création du
+# héros : un relecteur mesurait donc un dé influencé dès le premier jet, alors
+# que le jeu réel a un modificateur de ZÉRO tant que le Geôlier n'a pas
+# dessiné. C'est le biais corrigé six fois depuis le 09/08.
+LECTURE_DU_JET = {
+    "COURAGE": {"physique": {"courage": 3, "instinct": -1},
+                "social": {"courage": 3, "ruse": -1},
+                "exploration": {"courage": 2, "instinct": 1},
+                "surnaturel": {"courage": 3, "ruse": -1}},
+    "RUSE": {"physique": {"ruse": 3, "courage": -1},
+             "social": {"ruse": 3, "empathie": -1},
+             "exploration": {"ruse": 2, "instinct": 1},
+             "surnaturel": {"ruse": 2, "instinct": 1}},
+    "INSTINCT": {"physique": {"instinct": 3, "ruse": 1},
+                 "social": {"instinct": 2, "empathie": 1},
+                 "exploration": {"instinct": 3, "ruse": 1},
+                 "surnaturel": {"instinct": 3, "courage": -1}},
+    "EMPATHIE": {"physique": {"empathie": 3, "courage": 1},
+                 "social": {"empathie": 3, "ruse": -1},
+                 "exploration": {"empathie": 2, "instinct": 1},
+                 "surnaturel": {"empathie": 2, "courage": 1}},
+}
+
+DECISIONS_MINIMUM = 3
+SEUIL_EVIDENCE = 15
+
+# Le portrait de clôture — portage de `lib/prologue-data.ts`. Sans lui, un
+# relecteur du kit verrait la révélation sans ce qu'elle DIT du héros.
+PORTRAIT_DOMINANTE = {
+    "courage": "Tu avances avant de comprendre.",
+    "ruse": "Tu regardes les serrures avant les portes.",
+    "instinct": "Ton corps décide avant toi, et il se trompe peu.",
+    "empathie": "Les gens te parlent, même quand ils ne veulent pas.",
+}
+PORTRAIT_FRAGILE = {
+    "courage": "Devant l'irrémédiable, ta main hésite.",
+    "ruse": "Les détours t'ennuient : tu forces.",
+    "instinct": "Tu veux des preuves. Elles arrivent tard.",
+    "empathie": "Les autres restent un bruit de fond. Ça te coûtera.",
+}
+PORTRAIT_PLAT = {
+    3: "Tu t'engages à chaque fois. Rien ne dépasse chez toi parce que rien ne manque.\nLe dé n'aura pas grand-chose à rattraper.",
+    2: "Tu fais ce qu'il faut, à chaque fois. Ni plus.\nRien ne dépasse chez toi. Le dé fera le reste.",
+    1: "Rien ne dépasse chez toi : tu traverses les mains dans les poches.\nLe dé n'aura rien à corriger, et rien à aider.",
+}
+
+
+def portrait(st: dict, p: dict) -> str:
+    vals = [st[a] for a in AXES]
+    if max(vals) - min(vals) <= 1:
+        moy = (sum(p["t"][a] for a in AXES) / p["n"]) if p["n"] else 0
+        return PORTRAIT_PLAT[3 if moy >= 2 else 1 if moy <= 0.5 else 2]
+    dom = max(AXES, key=lambda a: st[a])
+    frg = min(AXES, key=lambda a: st[a])
+    if frg == dom:
+        frg = next(a for a in AXES if a != dom)
+    return PORTRAIT_DOMINANTE[dom] + "\n" + PORTRAIT_FRAGILE[frg]
+
+
+def profil_neuf() -> dict:
+    return {"t": {a: 0 for a in AXES}, "n": 0, "revele": False}
+
+
+def lire_le_geste(c: dict, scene: dict) -> dict | None:
+    """Ce qu'un geste apprend sur celui qui l'a fait — ou None.
+
+    Rendre None est la moitié du travail : un « Continuer », une orientation
+    ne disent rien de personne, et les compter ferait tomber la révélation
+    sur du bruit.
     """
-    stats = {k: rng.choice([2, 3, 3, 4]) for k in ("courage", "ruse", "instinct", "empathie")}
-    cles = list(stats)
-    rng.shuffle(cles)
-    stats[cles[0]] = 5
-    stats[cles[1]] = min(stats[cles[1]], 2)
-    return stats
+    if c.get("tendances"):
+        return c["tendances"]
+    if c.get("stat"):
+        nature = c.get("nature") or ("physique" if scene.get("combat") else "social")
+        return LECTURE_DU_JET.get(c["stat"], {}).get(nature)
+    if c.get("serment") == "jure":
+        return {"empathie": 2, "courage": 1, "ruse": -1}
+    if c.get("serment") == "faux":
+        return {"ruse": 3, "empathie": -2}
+    if c.get("serment") == "refuse":
+        return {"courage": 3, "ruse": -1, "empathie": -1}
+    if c.get("observe"):
+        return {"instinct": 2, "ruse": 1}
+    if "fuite" in (c.get("tags") or []):
+        return {"instinct": 2, "courage": -1}
+    if (c.get("soupcon") or 0) > 0:
+        return {"courage": 1, "ruse": -1}
+    if c.get("demiTour"):
+        return {"instinct": 3, "courage": -2}
+    # EXAMINER EST UNE DÉCISION (voir le commentaire de `lib/profil.ts`) :
+    # sans elle, un joueur qui explore sans jamais engager le dé n'est lu par
+    # rien. Une sortie ou une orientation, elles, ne disent toujours rien.
+    if c.get("consequence") and not c.get("sortie") and not c.get("dest"):
+        return {"instinct": 1, "ruse": 1}
+    return None
+
+
+def evidence(p: dict) -> float:
+    axes = len([a for a in AXES if abs(p["t"][a]) >= 1])
+    total = sum(abs(p["t"][a]) for a in AXES)
+    return total * (0.6 + 0.2 * axes)
+
+
+def stats_depuis_tendances(p: dict) -> dict:
+    moy = sum(p["t"][a] for a in AXES) / len(AXES)
+    ecart = max(max(abs(p["t"][a] - moy) for a in AXES), 1)
+    amp = min(1.0, evidence(p) / (SEUIL_EVIDENCE * 1.5))
+    return {a: max(1, min(5, round(3 + ((p["t"][a] - moy) / ecart) * 2 * amp))) for a in AXES}
 
 
 def lire_compte() -> dict:
@@ -164,12 +262,10 @@ class Partie:
     def __init__(self, d: dict):
         self.d = d
         self.k = kit()
-        # Une partie commencée AVANT que la réplique ne connaisse les stats
-        # n'en a pas : on lui en donne, dérivées de sa graine, plutôt que de
-        # la faire jouer avec un profil vide (elle verrait alors toujours la
-        # même variante de choix). Rien d'autre de sa sauvegarde ne bouge.
-        if not self.d.get("stats"):
-            self.d["stats"] = profil_de_heros(random.Random(self.d.get("graine", 0)))
+        # Une partie d'avant le 06/09 n'a pas de profil : elle en prend un
+        # neuf. ⚠️ On n'INVENTE plus de stats — pas de stats veut dire « le
+        # Geôlier n'a pas encore assez vu », et c'est un état légitime.
+        self.d.setdefault("profil", profil_neuf())
 
     # -- création
     @classmethod
@@ -188,12 +284,13 @@ class Partie:
             "soupconVu": 0, "routeAFermer": False, "menace": None,
             "des": [], "journal": [], "sortie": None, "hameauEntree": False,
             "hameauSorti": False, "procesVu": False, "savoirs": [],
-            # LES STATS DU HÉROS (verdict du Seuil dans le jeu, tirage ici).
-            # Elles pèsent sur le dé (`stat − 3`, promesse n°1 du 4/08) et
-            # décident quelle VARIANTE de choix existe (`exigeDominante`).
-            # Sans elles, la réplique offrait les quatre variantes du gamin
-            # d'un coup — six CTA dans la ruelle, relevé au playtest du 14/08.
-            "stats": profil_de_heros(rng),
+            # ⚠️ AUCUNE STAT AU DÉPART (V2 du prologue, 06/09). Elles pèsent
+            # sur le dé (`stat − 3`) et décident quelle VARIANTE de choix
+            # existe (`exigeDominante`) — mais elles n'existent qu'à partir de
+            # la RÉVÉLATION. Avant : modificateur 0, aucune variante de
+            # dominante, exactement comme le jeu.
+            "stats": None,
+            "profil": profil_neuf(),
         }
         p = cls(d)
         p.entrer(k["entree"], premier=True)
@@ -543,7 +640,42 @@ class Partie:
                 self.dit(f"D'un côté, {ia}. De l'autre, {ib}.", "narration")
 
     # -- liaison
+    def revelation(self) -> None:
+        """« ÇA Y EST. JE COMMENCE À TE VOIR. »
+
+        ⚠️ Le déclencheur n'est PAS un compteur (§7 du brief) : il croise assez
+        de décisions révélatrices, assez d'évidence — qui pèse la DIVERSITÉ
+        autant que la quantité — et un moment sûr. Le moment sûr est la
+        MARCHE : la seule transition sans adversaire ni décision suspendue.
+        """
+        p = self.d.setdefault("profil", profil_neuf())
+        if p["revele"] or p["n"] < DECISIONS_MINIMUM or evidence(p) < SEUIL_EVIDENCE:
+            return
+        st = stats_depuis_tendances(p)
+        self.dit("Attends.", "geolier")
+        m = lire_compte()
+        passes = m.get("profils", [])
+        if not passes:
+            self.dit("Ça y est. Je commence à te voir.", "geolier")
+        else:
+            d = sum(abs(st[a] - passes[-1].get(a, 3)) for a in AXES)
+            if len(passes) == 1:
+                self.dit("Les mêmes réflexes. Intéressant." if d <= 3
+                         else "Non. Tu n'es pas comme le précédent.", "geolier")
+            elif all(sum(abs(st[a] - q.get(a, 3)) for a in AXES) <= 4 for q in passes):
+                self.dit("Toujours pareil. Peu importe le visage.", "geolier")
+            else:
+                self.dit(f"{len(passes) + 1} vies. Et tu changes encore.", "geolier")
+        for ligne in portrait(st, p).split("\n"):
+            self.dit(ligne, "narration")
+        self.dit("Continue. J'ai peut-être tort.", "geolier")
+        self.d["stats"] = st
+        p["revele"] = True
+        m.setdefault("profils", []).append(st)
+        ecrire_compte(m)
+
     def liaison(self) -> None:
+        self.revelation()
         # LE PROCÈS (comme le vrai moteur) : Soupçon au comble → la traversée
         # est DÉROUTÉE, on vient te chercher. Sans ça, la réplique laissait le
         # Soupçon monter sans conséquence et faussait tout jugement du coût
@@ -898,6 +1030,20 @@ class Partie:
             return
 
         c = o["c"]
+        # IL TE REGARDE FAIRE (V2 du prologue, 06/09) : le geste est lu à la
+        # SÉLECTION, comme le Soupçon — ce qui dit quelque chose de quelqu'un,
+        # c'est ce qu'il a DÉCIDÉ, pas ce que le dé en fait ensuite. Silencieux
+        # sans exception : rien ne s'affiche.
+        geste = lire_le_geste(c, self.k["scenes"].get(self.d["scene"], {}))
+        if geste:
+            pr = self.d.setdefault("profil", profil_neuf())
+            for a in AXES:
+                pr["t"][a] += geste.get(a, 0)
+            pr["n"] += 1
+            # §6 : après la révélation, la forme continue de bouger — sans
+            # qu'aucun écran ne le signale.
+            if pr["revele"]:
+                self.d["stats"] = stats_depuis_tendances(pr)
         if c.get("serment"):
             self.d["serment"] = c["serment"]
         # LE SERMENT SE ROMPT PAR UN GESTE (14/08). Sans ça, la réplique
@@ -987,9 +1133,12 @@ class Partie:
         nom = self.k.get("objets", {}).get(oid) or oid.replace("-", " ")
         self.dit("OBTENU — " + nom, "obtenu")
 
-    def dominante(self) -> str:
+    def dominante(self) -> str | None:
+        """⚠️ None tant que le Geôlier n'a pas dessiné : aucune variante de
+        profil ne s'affiche alors, exactement comme en jeu (`dominanteMirror`
+        est nul et le filtre écarte la variante)."""
         st = self.d.get("stats") or {}
-        return max(st, key=lambda k: st[k]).upper() if st else "COURAGE"
+        return max(st, key=lambda k: st[k]).upper() if st else None
 
     def modificateur(self, stat: str | None = None) -> int:
         m = 0

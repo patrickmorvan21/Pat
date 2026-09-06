@@ -8,6 +8,7 @@ import TouchHint from "@/components/TouchHint";
 import TypedText from "@/components/TypedText";
 import DeathScreen, { bilanDeMort, type Bilan } from "@/components/DeathScreen";
 import GameMenu from "@/components/GameMenu";
+import Revelation from "@/components/Revelation";
 import {
   type Stat,
   DESCENTE_SCENE,
@@ -93,6 +94,7 @@ import {
 } from "@/lib/surprises";
 import { chapterById, drawChapter, LANDES_LORE_FRAGMENTS } from "@/lib/chapters-data";
 import { traverseeGuidee, demoPhase, demoRouteRestante } from "@/lib/demo";
+import { lireLeGeste, nourrir, peutSeDessiner, statsDepuisTendances, type ProfilRun } from "@/lib/profil";
 import RubReveal from "@/components/minigames/engines/RubReveal";
 import HoldSteady from "@/components/minigames/engines/HoldSteady";
 import GlyphTrace from "@/components/minigames/engines/GlyphTrace";
@@ -118,6 +120,7 @@ import {
   loadMemory,
   mutateMemory,
   noterFait,
+  noterProfil,
   recordDeath,
   recordRenoncement,
   recordTraversee,
@@ -1106,6 +1109,12 @@ export default function Scene() {
       `minigamesJoues` empêche de rejouer le geste sur le même choix (la
       ré-entrée d'`onSelect` après le résultat passe alors par la voie
       écrite normale du choix). */
+  /**
+   * LA RÉVÉLATION (V2 du prologue, 06/09) — le Geôlier interrompt la partie
+   * quand il a assez vu. Overlay plein cadre PAR-DESSUS le jeu, comme l'écran
+   * de mort : la scène dessous est intacte, on y revient au tap.
+   */
+  const [revelation, setRevelation] = useState<ProfilRun | null>(null);
   const [minigameChoice, setMinigameChoice] = useState<Choice | null>(null);
   const [minigameConfig, setMinigameConfig] = useState<Record<string, unknown> | null>(null);
   /* Phase du frottage à skin image : le hint du bas suit — « Gratte la
@@ -1860,8 +1869,11 @@ export default function Scene() {
         { id: nextId(), kind: "day", day: run.day },
         ...openingNarration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })),
       ];
-      // Première apparition du dé = entrée du Jour I (spec prologue 16/07).
-      if (run.prologue.done && run.prologue.memories.length > 0) {
+      // PREMIÈRE APPARITION DU DÉ. Elle se disait « si le Seuil a été
+      // traversé » — le Seuil n'existe plus (V2 du 06/09). Elle se dit
+      // désormais à la toute première vie, juste après le pacte signé :
+      // c'est le seul moment où le dé n'a encore rien décidé de personne.
+      if (traverseeGuidee()) {
         seeded.push({ id: nextId(), kind: "jailer", // 03/09 : « il » se lisait comme l'homme immobile (5/5) — le sujet est le dé.
         text: "À partir de maintenant, le dé décide avec moi." });
       }
@@ -3905,6 +3917,14 @@ export default function Scene() {
       if (eScene) debloquerCodex(eScene, par, jour);
     }
     setScene(nextScene);
+    /* ⚠️ IL DÉCIDE, CE N'EST PAS UN COMPTEUR QUI ARRIVE À QUATRE. `peutSeDessiner`
+       croise l'évidence, sa DIVERSITÉ et un moment sûr (une marche entre deux
+       lieux) — donc selon la route jouée ça tombe après quatre décisions ou
+       après sept, et jamais au milieu d'un combat ou d'un geste. */
+    {
+      const p = runRef.current?.profil;
+      if (p && peutSeDessiner(p, nextScene)) setRevelation(p);
+    }
     setVisitedMirror(trav.visited);
     // On quitte l'écran : les points d'intérêt du lieu précédent sont oubliés
     // et l'image repasse en plan large (spec 24/07 suite §1).
@@ -4776,6 +4796,25 @@ export default function Scene() {
           m.envFlags = { ...m.envFlags, [FLAG_SERMENT_TRAHI]: true };
         });
     }
+
+    /* IL TE REGARDE FAIRE (V2 du prologue, 06/09). Le geste est lu à la
+       SÉLECTION, comme le Soupçon : ce qui dit quelque chose de quelqu'un,
+       c'est ce qu'il a DÉCIDÉ, pas ce que le dé en a fait ensuite. Un héros
+       qui charge et rate a montré qu'il chargeait.
+       ⚠️ Silencieux, sans exception : aucun bandeau, aucune vignette, aucun
+       « + COURAGE ». Le seul retour que le joueur aura jamais est la
+       révélation, quand le Geôlier décidera qu'il en a assez vu. */
+    const geste = lireLeGeste(choice, scene);
+    if (geste)
+      persist((run) => {
+        run.profil = nourrir(run.profil, geste);
+        /* §6 : le profil n'est pas FIGÉ par la révélation. Une fois dessiné,
+           il continue de suivre ce que le héros fait — mais plus discrètement
+           que jamais : la forme du radar bouge dans le menu, et rien d'autre
+           ne le dit. Avant la révélation, `run.stats` reste `undefined` :
+           c'est ce qui laisse le dé neutre et les verrous fermés. */
+        if (run.profil.revele) run.stats = statsDepuisTendances(run.profil);
+      });
 
     // Le Soupçon (chantier 3) : l'ACTE compte, pas son issue — le delta d'un
     // choix s'applique dès qu'il est pris. Silencieux, clampé 0..6.
@@ -5951,6 +5990,30 @@ export default function Scene() {
             cause={death.cause}
             firstDeath={death.firstDeath}
             onRestart={() => window.location.reload()}
+          />
+        )}
+
+        {/* « ÇA Y EST. JE COMMENCE À TE VOIR. » (V2 du prologue, 06/09).
+            Le Geôlier interrompt la partie parce qu'il a assez vu. C'est ici
+            que les quatre tendances deviennent des stats — donc que le dé
+            cesse d'être neutre et que les verrous à seuil peuvent s'ouvrir.
+            ⚠️ Les stats retenues sont CELLES QUE LE JOUEUR VIENT DE VOIR se
+            dessiner, pas un recalcul : le composant les a figées à son
+            montage, les recalculer ici pourrait décrire une autre forme. */}
+        {revelation && (
+          <Revelation
+            profil={revelation}
+            onDone={(stats) => {
+              persist((run) => {
+                run.stats = stats;
+                run.profil = { ...run.profil, revele: true };
+              });
+              // Ce que le Geôlier retiendra de cette incarnation : c'est ce
+              // qui lui permettra de COMPARER à la prochaine (§9 du brief).
+              noterProfil(stats);
+              setHeroStats(stats);
+              setRevelation(null);
+            }}
           />
         )}
 
