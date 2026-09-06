@@ -424,30 +424,26 @@
       <div class="section">
         <div class="section-head"><span class="n">02</span><span class="t">Palette</span></div>
         <div class="swatches" id="swatches">
-          <div class="swatch active" data-a="#211e33" data-b="#d8a25f" title="Nuit / Sable">
-            <div class="a" style="background:#211e33"></div><div class="b" style="background:#d8a25f"></div>
-          </div>
-          <div class="swatch" data-a="#211e33" data-b="#ac2e26" title="Nuit / Brique">
-            <div class="a" style="background:#211e33"></div><div class="b" style="background:#ac2e26"></div>
-          </div>
-          <div class="swatch" data-a="#ac2e26" data-b="#d8a25f" title="Brique / Sable">
-            <div class="a" style="background:#ac2e26"></div><div class="b" style="background:#d8a25f"></div>
+          <!-- ⚠️ Charbon / Orange est la palette du jeu, et c'est le DÉFAUT. Les
+               trois anciennes (Nuit #211e33, Sable #d8a25f, Brique #ac2e26) sont
+               retirées : obsolètes depuis le changement de DA, et un outil qui
+               produit les assets du jeu ne doit pas pouvoir les servir. -->
+          <div class="swatch active" data-a="#1c1a16" data-b="#e0632a" title="Charbon / Orange">
+            <div class="a" style="background:#1c1a16"></div><div class="b" style="background:#e0632a"></div>
           </div>
           <div class="swatch" data-a="#0a0a0a" data-b="#f2f2f2" title="Noir / Blanc">
             <div class="a" style="background:#0a0a0a"></div><div class="b" style="background:#f2f2f2"></div>
           </div>
-          <div class="swatch" data-a="#1c1a16" data-b="#e0632a" title="Charbon / Orange">
-            <div class="a" style="background:#1c1a16"></div><div class="b" style="background:#e0632a"></div>
-          </div>
+        </div>
         </div>
         <div class="custom-colors">
           <div>
             <label>Fond</label>
-            <input type="color" id="colorA" value="#211e33">
+            <input type="color" id="colorA" value="#1c1a16">
           </div>
           <div>
             <label>Trait</label>
-            <input type="color" id="colorB" value="#d8a25f">
+            <input type="color" id="colorB" value="#e0632a">
           </div>
         </div>
       </div>
@@ -490,11 +486,18 @@
 
       <div class="section">
         <div class="section-head"><span class="n">04</span><span class="t">Export</span></div>
+        <div class="field">
+          <label>Format</label>
+          <select id="exportFormat">
+            <option value="png" selected>PNG — image de pixels</option>
+            <option value="svg">SVG — grille vectorielle</option>
+          </select>
+        </div>
         <div class="btn-row">
           <button class="btn secondary" id="resetBtn">Réinitialiser</button>
           <button class="btn" id="downloadBtn" disabled>Télécharger</button>
         </div>
-        <p class="hint">Export en pleine résolution. Traitement 100% local — ton image ne quitte jamais le navigateur.</p>
+        <p class="hint" id="exportHint">Export en pleine résolution. Traitement 100% local — ton image ne quitte jamais le navigateur.</p>
       </div>
 
     </div>
@@ -548,6 +551,10 @@
   const ctx = canvas.getContext('2d');
   const emptyMsg = document.getElementById('emptyMsg');
   const downloadBtn = document.getElementById('downloadBtn');
+  /** Dernière grille rendue — {bits, lowW, lowH, px}. Null tant qu'aucune image. */
+  let grille = null;
+  const exportFormat = document.getElementById('exportFormat');
+  const exportHint = document.getElementById('exportHint');
   const resetBtn = document.getElementById('resetBtn');
 
   const pixelSize = document.getElementById('pixelSize');
@@ -563,7 +570,8 @@
 
   const DEFAULTS = {
     pixelSize: 4, threshold: 128, contrast: 110, invert: false,
-    ditherStyle: 'bayer4', colorA: '#211e33', colorB: '#d8a25f', swatchIndex: 0
+    ditherStyle: 'bayer4', colorA: '#1c1a16', colorB: '#e0632a', swatchIndex: 0,
+    exportFormat: 'png'
   };
 
   const BAYER2 = [[0,2],[3,1]];
@@ -611,6 +619,10 @@
     ctx.imageSmoothingEnabled = false;
 
     const bits = new Uint8Array(lowW * lowH);
+    // ⚠️ La grille de CELLULES survit au rendu : c'est elle que lit l'export
+    // SVG. Le canvas, lui, ne porte que des pixels déjà agrandis — en repartir
+    // donnerait un rect par pixel d'écran au lieu d'un par cellule.
+    grille = { bits, lowW, lowH, px };
 
     if (style === 'floyd') {
       const buf = Float32Array.from(gray);
@@ -666,6 +678,7 @@
     canvas.classList.add('show');
     emptyMsg.style.display = 'none';
     downloadBtn.disabled = false;
+    majHint();
   }
 
   function loadFile(file) {
@@ -703,11 +716,83 @@
     });
   });
 
+  /**
+   * L'EXPORT SVG — une grille vectorielle, pas une image de pixels.
+   *
+   * Le repère du SVG est la grille de CELLULES (viewBox 0 0 lowW lowH), pas les
+   * pixels de sortie : les coordonnées restent des petits entiers, et l'image
+   * se redimensionne ensuite sans jamais se réinterpoler. `width`/`height`
+   * portent la taille d'affichage.
+   *
+   * ⚠️ TOUTES les cellules allumées tiennent dans UN SEUL <path> : chaque run
+   * horizontal y coûte ~12 caractères, contre ~40 pour un <rect> à part. C'est
+   * ce qui rend l'export utilisable — un rect par cellule triplerait le poids.
+   *
+   * ⚠️ `shape-rendering="crispEdges"` est obligatoire : sans lui, un bord de
+   * cellule qui tombe sur une frontière de demi-pixel est ANTIALIASÉ, et la
+   * trame se met à baver exactement là où elle doit rester franche.
+   */
+  function buildSVG() {
+    if (!grille) return '';
+    const { bits, lowW, lowH, px } = grille;
+    let d = '';
+    for (let y = 0; y < lowH; y++) {
+      let x = 0;
+      while (x < lowW) {
+        if (!bits[y * lowW + x]) { x++; continue; }
+        const x0 = x;
+        while (x < lowW && bits[y * lowW + x]) x++;
+        const n = x - x0;
+        d += 'M' + x0 + ' ' + y + 'h' + n + 'v1h-' + n + 'z';
+      }
+    }
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="' + (lowW * px) + '" height="' + (lowH * px) + '"'
+      + ' viewBox="0 0 ' + lowW + ' ' + lowH + '" shape-rendering="crispEdges">'
+      + '<rect width="' + lowW + '" height="' + lowH + '" fill="' + colorA.value + '"/>'
+      + (d ? '<path fill="' + colorB.value + '" d="' + d + '"/>' : '')
+      + '</svg>';
+  }
+
+  const poids = (o) => o > 1048576 ? (o / 1048576).toFixed(1) + ' Mo' : Math.round(o / 1024) + ' Ko';
+
+  /**
+   * Le poids est annoncé AVANT le téléchargement, parce que l'arbitrage se joue
+   * là : une trame est un semis de pixels isolés, donc un SVG y est d'autant
+   * plus lourd que le grain est fin. À taille de pixel 4 il reste léger ; à 1,
+   * il peut dépasser le PNG d'un facteur cent.
+   */
+  function majHint() {
+    if (!grille) {
+      exportHint.textContent = 'Export en pleine résolution. Traitement 100% local — ton image ne quitte jamais le navigateur.';
+      return;
+    }
+    const octetsPng = Math.round((canvas.toDataURL('image/png').length - 22) * 0.75);
+    if (exportFormat.value === 'svg') {
+      const o = new Blob([buildSVG()]).size;
+      exportHint.textContent = 'SVG ≈ ' + poids(o) + ' (PNG ≈ ' + poids(octetsPng) + '). '
+        + 'Grille vectorielle : elle s\'agrandit sans se réinterpoler. '
+        + 'Une trame fine la rend lourde — monte la taille de pixel pour l\'alléger.';
+    } else {
+      exportHint.textContent = 'PNG ≈ ' + poids(octetsPng) + '. Image de pixels, pleine résolution. '
+        + 'Traitement 100% local — ton image ne quitte jamais le navigateur.';
+    }
+  }
+
+  exportFormat.addEventListener('change', majHint);
+
   downloadBtn.addEventListener('click', () => {
     const a = document.createElement('a');
-    a.download = 'dithering-aldenhar.png';
-    a.href = canvas.toDataURL('image/png');
-    a.click();
+    if (exportFormat.value === 'svg') {
+      const url = URL.createObjectURL(new Blob([buildSVG()], { type: 'image/svg+xml' }));
+      a.download = 'dithering-aldenhar.svg';
+      a.href = url;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+    } else {
+      a.download = 'dithering-aldenhar.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    }
   });
 
   resetBtn.addEventListener('click', () => {
@@ -718,6 +803,7 @@
     ditherStyle.value = DEFAULTS.ditherStyle;
     colorA.value = DEFAULTS.colorA;
     colorB.value = DEFAULTS.colorB;
+    exportFormat.value = DEFAULTS.exportFormat;
 
     document.getElementById('pixelVal').textContent = DEFAULTS.pixelSize;
     document.getElementById('thresholdVal').textContent = DEFAULTS.threshold;
