@@ -212,49 +212,72 @@ async function attendreFinDeFrappe(max = 26) {
 }
 
 /**
- * L'INTRODUCTION (deux clauses, refonte du 02/09) — elle ne se joue que sur un
- * compte VIERGE, et elle demande LA MAIN, pas des taps :
- *   • clause 1 « Tu ne te souviens pas » : ACCEPTER / REFUSER. On refuse
- *     d'abord (le refus qu'on t'enlève est un beat écrit, il mérite d'être
- *     dans le transcript), puis on accepte.
- *   • clause 2 « Une seule vie » : un APPUI MAINTENU pousse la porte. Sans ce
- *     geste l'auto-joueur reste devant l'écran et le transcript s'arrête au
- *     premier écran du jeu — c'est ce qui est arrivé au premier enregistrement
- *     sur v1.128.2 (1 écran).
- * ⚠️ Le `pointerup` de la poussée produit aussi un `click` sur le cadre : le
- * jeu s'en garde 500 ms (`finPousseeRef`), donc on attend avant de taper.
+ * L'INTRODUCTION — LE PACTE (refonte du 05/09), sur compte VIERGE seulement.
+ * Quatre temps, et elle demande LA MAIN, pas des taps :
+ *   • la voix : deux boutons. On prend « Qui es-tu ? » — ses trois répliques
+ *     sont du texte écrit, elles méritent d'être dans le transcript.
+ *   • le Pacte : on SIGNE au doigt dans le cadre, sinon le CTA reste inerte
+ *     et l'auto-joueur tourne en rond jusqu'à la fin de son budget.
+ *   • le verdict : un tap, et le Seuil prend le relais.
+ * ⚠️ Les gestes passent par la souris : le jeu écoute `pointerdown`, qu'un
+ * `element.click()` scripté ne déclenche pas.
  */
 async function jouerLIntro() {
-  let refusFait = false;
-  for (let tour = 0; tour < 24; tour++) {
+  let demandeFaite = false;
+  let signe = false;
+  for (let tour = 0; tour < 40; tour++) {
     if (await page.locator(".choices-bar").count()) return;
     const t = await page.evaluate(() => document.body.innerText || "");
     if (/ta vie d'avant|Ton nom/i.test(t)) return; // le Seuil prend le relais
-    await noterEcranHorsJeu(/Maintiens pour pousser/i.test(t) ? "(appui maintenu sur la porte)" : "(intro)");
-    if (/Maintiens pour pousser/i.test(t)) {
-      await page.mouse.move(195, 195);
-      await page.mouse.down();
-      await page.waitForTimeout(2400);
-      await page.mouse.up();
-      await page.waitForTimeout(1200);
-      await page.mouse.click(195, 700);
-      await page.waitForTimeout(900);
-      continue;
+    await attendreFinDeFrappe();
+    await noterEcranHorsJeu(/Appose ta marque/i.test(t) ? "(le Pacte)" : "(intro)");
+
+    // LE PACTE : on trace une marque, puis on scelle.
+    if (/Appose ta marque/i.test(t)) {
+      if (!signe) {
+        const c = await page.evaluate(() => {
+          const cv = [...document.querySelectorAll("canvas")]
+            .find((x) => Math.round(x.getBoundingClientRect().height) === 140);
+          if (!cv) return null;
+          const r = cv.getBoundingClientRect();
+          return { x: r.left, y: r.top, w: r.width, h: r.height };
+        });
+        if (c) {
+          await page.mouse.move(c.x + 40, c.y + c.h * 0.6);
+          await page.mouse.down();
+          for (let i = 1; i <= 20; i++)
+            await page.mouse.move(c.x + 40 + i * (c.w - 80) / 20,
+                                  c.y + c.h * 0.6 - Math.sin(i / 2) * 22);
+          await page.mouse.up();
+          await page.waitForTimeout(300);
+          signe = true;
+        }
+      }
+      const scel = page.locator("button", { hasText: /sceller le pacte/i });
+      if (await scel.count()) {
+        await scel.first().click();
+        await page.waitForTimeout(1100);
+        continue;
+      }
     }
+
+    // LA VOIX : on demande d'abord qui il est.
     const libelles = await page.evaluate(() =>
       [...document.querySelectorAll("button")]
         .map((b) => (b.innerText || "").replace(/\s+/g, " ").trim())
         .filter(Boolean));
-    const cible = !refusFait && libelles.some((l) => /refuser/i.test(l))
-      ? /refuser/i
-      : libelles.some((l) => /accepter/i.test(l)) ? /accepter/i : null;
-    if (cible) {
-      if (/refuser/i.test(String(cible))) refusFait = true;
-      await page.locator("button", { hasText: cible }).first().click();
-      await page.waitForTimeout(1100);
+    if (!demandeFaite && libelles.some((l) => /qui es-tu/i.test(l))) {
+      demandeFaite = true;
+      await page.locator("button", { hasText: /qui es-tu/i }).first().click();
+      await page.waitForTimeout(1000);
       continue;
     }
-    await page.mouse.click(195, 700);
+    if (libelles.some((l) => /^signer/i.test(l))) {
+      await page.locator("button", { hasText: /^signer/i }).first().click();
+      await page.waitForTimeout(1000);
+      continue;
+    }
+    await page.mouse.click(195, 620);
     await page.waitForTimeout(700);
   }
 }
@@ -274,7 +297,7 @@ async function jouerLeSeuil() {
     const champ = page.locator('input[type="text"]');
     if (await champ.count()) {
       await champ.first().fill("Cendre");
-      const sceller = page.locator("button", { hasText: /SCELLER/i });
+      const sceller = page.locator("button", { hasText: /INSCRIRE|SCELLER/i });
       if (await sceller.count()) {
         await sceller.first().click();
         await page.waitForTimeout(1200);
@@ -284,7 +307,7 @@ async function jouerLeSeuil() {
     const choix = await page.evaluate(() =>
       [...document.querySelectorAll("button")]
         .map((b, i) => ({ i, t: (b.innerText || "").replace(/\s+/g, " ").trim(), aria: b.getAttribute("aria-label") || "" }))
-        .filter((b) => b.t && !b.aria && !/choisisse pour moi|SCELLER/i.test(b.t)));
+        .filter((b) => b.t && !b.aria && !/choisisse pour moi|INSCRIRE|SCELLER/i.test(b.t)));
     if (choix.length) {
       await page.locator("button").nth(choix[0].i).click();
       await page.waitForTimeout(900);
