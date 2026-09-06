@@ -31,10 +31,19 @@
  *     ondulant, suivent le vent, et se raréfient par PROBABILITÉ DE DESSIN.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { animReduced } from "@/lib/settings";
 
 const ORANGE = "#e0632a";
+
+/* Abonnement inerte : `useSyncExternalStore` ne sert ici qu'a distinguer le
+   rendu serveur du rendu client (false au prerendu, true une fois hydrate).
+   C'est le pattern sans etat — `setState` dans un effet est refuse par le
+   compilateur React, et un `typeof document` nu produirait un ecart
+   d'hydratation. Declare au niveau module : une fonction recreee a chaque
+   rendu ferait se reabonner le store en boucle. */
+const SANS_ABONNEMENT = () => () => {};
 
 const BAYER = [
   [0, 8, 2, 10],
@@ -107,6 +116,13 @@ export default function FondBraises({
   /* Clé de re-mesure : elle change quand le cadre change de taille en
      CELLULES, et rien d'autre. */
   const [taille, setTaille] = useState(0);
+  /* Le calque vit dans un PORTAIL vers <body> (cf. le rendu, plus bas), qui
+     n'existe qu'apres le premier rendu cote client. Les deux effets ci-dessous
+     dependent donc de `monte` : sans lui ils s'executaient une seule fois,
+     avec `ref.current` encore null, et ne se rejouaient jamais — le canvas
+     etait bien en place mais RIEN n'y etait peint (defaut attrape par une
+     mesure de pixels, invisible au DOM). */
+  const monte = useSyncExternalStore(SANS_ABONNEMENT, () => true, () => false);
 
   /* ⚠️ LE BITMAP DOIT SUIVRE LE CADRE. Sa taille était fixée une seule fois au
      montage ; or la hauteur visible bouge sur un téléphone dès que la barre
@@ -129,7 +145,7 @@ export default function FondBraises({
     });
     ro.observe(boite);
     return () => ro.disconnect();
-  }, []);
+  }, [monte]);
 
   useEffect(() => {
     const cv = ref.current;
@@ -380,11 +396,30 @@ export default function FondBraises({
     }
     raf = requestAnimationFrame(boucle);
     return () => cancelAnimationFrame(raf);
-  }, [height, taille]);
+  }, [height, taille, monte]);
 
-  return (
-    <div className={`pointer-events-none absolute inset-0 ${className ?? ""}`} aria-hidden>
+  /* ⚠️ LE LIT DE BRAISES SORT DU CADRE — troisième correctif du même symptôme
+     (« les flammes ne sont pas ferrées en bas »), et cette fois on retire la
+     CAUSE au lieu de corriger la mesure.
+     Les deux tentatives précédentes calculaient la hauteur visible en JS
+     (`100dvh`, puis `--app-h` depuis `visualViewport`), donc le feu dépendait
+     de la justesse d'une mesure : chaque contexte non prévu (barre d'outils
+     qui se rétracte, PWA installée sous la barre d'état) rouvrait le trou.
+     Ici il n'y a plus rien à mesurer : `position: fixed; bottom: 0` est la
+     primitive que le navigateur garantit lui-même collée au bas visible.
+     Le PORTAIL vers <body> n'est pas décoratif — il est obligatoire : à la
+     mort la santé vaut 0, donc `.erosion-3.phone-frame` porte une animation
+     `transform` PERMANENTE, et tout descendant `fixed` d'un ancêtre transformé
+     est ancré à cet ancêtre au lieu du viewport. Rendu dans le cadre, le
+     `fixed` aurait donc été silencieusement neutralisé.
+     Bénéfice de bord : le feu ne tremble plus avec l'interface pendant les
+     secousses — ce qui est aussi plus juste. */
+  if (!monte) return null;
+
+  return createPortal(
+    <div className={`braises-plein pointer-events-none ${className ?? ""}`} aria-hidden>
       <canvas ref={ref} className="block h-full w-full" style={{ imageRendering: "pixelated" }} />
-    </div>
+    </div>,
+    document.body
   );
 }

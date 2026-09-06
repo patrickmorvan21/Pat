@@ -79,6 +79,31 @@ body {
   .phone-frame { height: 100%; max-height: 100%; }
 }
 
+/* LE LIT DE BRAISES EST ANCRÉ AU VIEWPORT, jamais au cadre (06/09, 3e passe).
+   `position: fixed; bottom: 0` est la seule façon de garantir « collé au bas
+   visible » sans mesurer quoi que ce soit : c'est le navigateur qui s'en
+   charge, y compris quand une barre d'outils se rétracte ou qu'une PWA
+   installée démarre sous la barre d'état. Les deux tentatives précédentes
+   calculaient cette hauteur en JS et rouvraient le trou à chaque contexte non
+   prévu.
+   Le composant se rend dans un PORTAIL vers <body> — obligatoire, cf. le
+   commentaire de FondBraises : le cadre porte une animation `transform`
+   permanente quand la santé est au plus bas, ce qui capturerait le `fixed`.
+   Largeur bornée au cadre et centrée, pour qu'un écran plus large que 390 px
+   ne mette pas de feu sur les côtés. Sur desktop la hauteur est bornée à celle
+   d'un cadre de maquette et centrée : le foyer reste sous l'écran de jeu au
+   lieu de partir du bas de la fenêtre. */
+.braises-plein {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  max-width: 390px;
+  margin-inline: auto;
+}
+@media (min-width: 768px) {
+  .braises-plein { max-height: 848px; margin-block: auto; }
+}
+
 /* Numéro de version — accueil, bas à droite, blanc 50 % (demande Patrick 20/07) */
 .app-version {
   position: absolute;

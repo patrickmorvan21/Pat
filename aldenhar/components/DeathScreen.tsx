@@ -510,21 +510,26 @@ export default function DeathScreen({
                 tombe du bord haut. Sa dissolution est DANS le dessin : plus de
                 masque tramé par dessus, il mangerait le socle. */}
             <Coffre />
-            {/* ⚠️ ANCRÉE AU BAS DU CADRE, plus posée sous l'image. À pleine
-                largeur l'image fait 689 px de haut : en flux, elle poussait la
-                consigne hors de l'écran dès que le cadre descendait sous
-                ~830 px. Ancrée, elle tombe au même endroit qu'avant sur un
-                grand téléphone (713 px contre 711) et reste toujours lue.
-                Même grammaire que « Touche pour continuer », qui est ancré de
-                la même façon partout dans la séquence. */}
-            <p
-              className="absolute inset-x-0 text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]"
-              style={{ bottom: CONSIGNE_COFFRE_BAS }}
-            >
-              Touche le coffre pour
-              <br />
-              découvrir ta relique
-            </p>
+            {/* ⚠️ C'EST LE COMPOSANT `TouchHint`, pas un `<p>` maison (retour
+                Patrick 06/09 : « même graisse et même animation que Touche
+                pour continuer »). La copie inline avait la bonne taille et la
+                bonne couleur mais PAS la respiration `pulse` par paliers, et
+                un interligne différent — exactement la dérive que la spec
+                verrouillée du composant existe pour empêcher.
+                Seul l'ancrage est propre à cet écran : la consigne est posée
+                au bas du CADRE et non sous l'image, parce qu'à pleine largeur
+                le coffre fait 689 px de haut et poussait la consigne hors de
+                l'écran sur un cadre court. */}
+            <TouchHint
+              bottom={CONSIGNE_COFFRE_BAS}
+              libelle={
+                <>
+                  Touche le coffre pour
+                  <br />
+                  découvrir ta relique
+                </>
+              }
+            />
           </div>
         ) : (
           /* Phase B — la révélation (maquette 2332-6998) : un nuage de cendres

@@ -25,8 +25,13 @@ export default function TouchHint({
   /** TROISIÈME libellé, pendant la FRAPPE : là, le geste n'avance pas, il
       ACCÉLÈRE — d'où « Touche pour tout afficher ». Ajouté au composant plutôt
       que forké inline (relecture du 10/08 : une copie inline échappe à la spec
-      verrouillée et diverge au premier correctif). */
-  libelle?: string;
+      verrouillée et diverge au premier correctif).
+      ⚠️ ReactNode et non string : la consigne du coffre tient sur deux lignes
+      (`<br />`). C'est ce qui permet de la faire passer PAR ICI plutôt que de
+      recopier la graisse et l'animation dans un `<p>` inline — la copie
+      inline avait justement fini par diverger (retour Patrick 06/09 : « même
+      graisse et même animation que Touche pour continuer »). */
+  libelle?: React.ReactNode;
   /** Remontée en px depuis le bas. Le défaut est 50 px : c'est LA règle, et
       elle vaut pour tous les écrans pleins (intro, acte, prologue).
       ⚠️ La consigne « UNIQUEMENT pour la séquence de mort » qui figurait ici
