@@ -88,6 +88,13 @@ const HINT_BAS = 200;
     Sert AUSSI au calcul de réduction : les deux ne peuvent pas diverger. */
 const PAD_CARTE = 74;
 
+/** « Touche le coffre… », ancrée au bas du cadre plutôt que posée sous
+    l'image. Depuis que le coffre est pleine largeur (06/09) il fait 689 px de
+    haut et pousserait la consigne hors de l'écran sur un cadre court. Valeur
+    choisie pour retomber là où elle était : 844 − 92 − 39 = 713 px du haut,
+    contre 711 auparavant. */
+const CONSIGNE_COFFRE_BAS = 92;
+
 /** L'écran de la carte a son propre ancrage de « Touche pour continuer » : le
     CTA Partager descend plus bas que les autres écrans, et à 200 px du bord le
     lien lui collait. Mesuré : les braises ne montent pas au-dessus de ~100 px
@@ -488,13 +495,29 @@ export default function DeathScreen({
         (!coffreOuvert ? (
           /* Phase A — le coffre (maquette 2333-10146) : plein cadre, voile de
              lisibilité TRAMÉ en bas, le tap déclenche la révélation. */
-          <div className="flex flex-1 flex-col items-center">
-            {/* Le coffre est le SVG de Patrick (06/09), ferré en haut et
-                pleine largeur comme la maquette « Le Relique V1 ». Sa
-                dissolution est DANS le dessin : plus de masque tramé par
-                dessus, il mangerait le socle. */}
+          /* `min-h-0 overflow-hidden` : le conteneur fait EXACTEMENT la
+             hauteur disponible. Sans ça il s'étirait à la hauteur de l'image
+             (689 px) et débordait du cadre sur un écran court — l'ancrage de
+             la consigne se décalait alors d'autant (mesuré : 67 px du bas au
+             lieu de 92). Le rognage visible ne change pas : le cadre est déjà
+             en `overflow-clip`. */
+          <div className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
+            {/* Le coffre est le SVG de Patrick, PLEINE LARGEUR et FERRÉ EN
+                HAUT (retour 06/09) : c'est un plan à fond perdu, le faisceau
+                tombe du bord haut. Sa dissolution est DANS le dessin : plus de
+                masque tramé par dessus, il mangerait le socle. */}
             <Coffre />
-            <p className="mt-[26px] text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]">
+            {/* ⚠️ ANCRÉE AU BAS DU CADRE, plus posée sous l'image. À pleine
+                largeur l'image fait 689 px de haut : en flux, elle poussait la
+                consigne hors de l'écran dès que le cadre descendait sous
+                ~830 px. Ancrée, elle tombe au même endroit qu'avant sur un
+                grand téléphone (713 px contre 711) et reste toujours lue.
+                Même grammaire que « Touche pour continuer », qui est ancré de
+                la même façon partout dans la séquence. */}
+            <p
+              className="absolute inset-x-0 text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]"
+              style={{ bottom: CONSIGNE_COFFRE_BAS }}
+            >
               Touche le coffre pour
               <br />
               découvrir ta relique

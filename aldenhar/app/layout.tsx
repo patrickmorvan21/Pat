@@ -56,6 +56,38 @@ if ("serviceWorker" in navigator) {
   });
 }`;
 
+  // LA HAUTEUR RÉELLEMENT VISIBLE, mesurée et republiée en `--app-h`.
+  //
+  // ⚠️ `100dvh` NE SUFFIT PAS sur un téléphone, et c'est ce qui décollait le
+  // lit de braises du bas de l'écran (retour Patrick 06/09 : « des fois je
+  // dois scroller pour qu'elles se remettent bien en bas »). La barre d'outils
+  // du navigateur se rétracte au défilement ; entre deux états, `dvh` peut
+  // valoir la GRANDE hauteur pendant que la barre occupe encore le bas. Le
+  // cadre est alors plus haut que ce qu'on voit, la page devient scrollable,
+  // et son bord bas — donc les flammes — passe sous la barre. On scrolle, la
+  // barre se rétracte, tout se remet en place : exactement le symptôme.
+  //
+  // `visualViewport.height` est la seule mesure qui décrit ce que l'œil voit.
+  // Aucun risque de rétrécissement parasite ici : le jeu n'a plus AUCUN champ
+  // de saisie (donc jamais de clavier) et le zoom est désactivé (viewport
+  // maximumScale 1). Le repli reste `100dvh` : avant que ce script tourne, ou
+  // sur un moteur sans l'API, le comportement est celui d'aujourd'hui.
+  const hauteurVisible = `
+(function () {
+  var d = document.documentElement;
+  function poser() {
+    var v = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+    if (v) d.style.setProperty("--app-h", Math.round(v) + "px");
+  }
+  poser();
+  addEventListener("resize", poser);
+  addEventListener("orientationchange", poser);
+  if (window.visualViewport) {
+    visualViewport.addEventListener("resize", poser);
+    visualViewport.addEventListener("scroll", poser);
+  }
+})();`;
+
   return (
     <html lang="fr">
       <head>
@@ -64,6 +96,9 @@ if ("serviceWorker" in navigator) {
             `mobile-web-app-capable` standard via appleWebApp — on ajoute
             l'ancienne à la main pour couvrir tous les iPhone. */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
+        {/* Dans le <head> : `--app-h` est posée AVANT la première peinture,
+            donc le cadre n'est jamais dimensionné une fois puis recalé. */}
+        <script dangerouslySetInnerHTML={{ __html: hauteurVisible }} />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"

@@ -32,6 +32,17 @@ body {
   font-family: var(--font-body);
 }
 
+/* AUCUN REBOND ÉLASTIQUE. Sur un téléphone, tirer sur une page qui ne défile
+   pas la décolle quand même : le fond de page apparaît sous le cadre, et le
+   lit de braises quitte le bas de l'écran le temps du geste. C'est la seconde
+   moitié du « des fois je dois scroller » du 06/09 — l'autre étant la barre
+   d'outils, traitée par `--app-h`. Coupe aussi le tirer-pour-recharger, qu'on
+   ne veut pas au milieu d'une vie. */
+html,
+body {
+  overscroll-behavior: none;
+}
+
 /* Fil scrollable (spec §16) : scrollbar masquée, cohérent avec l'esthétique du proto */
 .phone-frame ::-webkit-scrollbar { display: none; }
 .phone-frame * { scrollbar-width: none; }
@@ -44,9 +55,28 @@ body {
    On ne touche pas la LARGEUR : 390 px reste la largeur de référence de toutes
    les maquettes Figma, et les mises en page sont en flex-1/dvh, donc les
    quelques dizaines de pixels gagnés en hauteur se répartissent d'elles-mêmes.
-   Au-delà (desktop, prévisualisation), le cadre garde sa hauteur de maquette. */
+   Au-delà (desktop, prévisualisation), le cadre garde sa hauteur de maquette.
+
+   ⚠️ LA MESURE EST `--app-h`, PAS `100dvh` (06/09). `dvh` suit la barre
+   d'outils du navigateur avec un temps de retard : entre deux états, le cadre
+   pouvait être plus haut que la zone réellement visible, la page devenait
+   scrollable, et son bord bas — le lit de braises — passait sous la barre.
+   `--app-h` est posée par le script du <head> depuis `visualViewport.height`,
+   qui décrit ce que l'œil voit. Le repli `100dvh` garde le comportement
+   d'avant si le script n'a pas encore tourné.
+
+   Le sélecteur vise `main.min-h-dvh` — les sept écrans du jeu, et JAMAIS la
+   galerie des mini-jeux (`.minijeux-page`), qui est une vraie page qui défile
+   et qu'il ne faut surtout pas enfermer dans la hauteur du device. */
 @media (max-width: 767px) {
-  .phone-frame { height: 100dvh; }
+  main.min-h-dvh {
+    min-height: var(--app-h, 100dvh);
+    height: var(--app-h, 100dvh);
+  }
+  /* 100 % de `main`, donc de la hauteur visible. Le `max-height` neutralise le
+     `max-h-[100dvh]` que portent les cadres : sans lui, un `dvh` plus petit
+     que la mesure réelle rognerait le bas qu'on vient de raccrocher. */
+  .phone-frame { height: 100%; max-height: 100%; }
 }
 
 /* Numéro de version — accueil, bas à droite, blanc 50 % (demande Patrick 20/07) */

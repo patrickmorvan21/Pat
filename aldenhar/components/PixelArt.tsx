@@ -74,18 +74,23 @@ export function TeteGeolier() {
 }
 
 /**
- * LE COFFRE, ferré en HAUT et pleine largeur — la maquette le pose à x=1, y=0
- * en 388×685 dans un cadre de 390×844.
+ * LE COFFRE — PLEINE LARGEUR ET FERRÉ EN HAUT (retour Patrick 06/09).
+ *
+ * L'image est un plan d'ambiance à fond perdu : le faisceau tombe du haut du
+ * cadre, la flaque de lumière touche le bas. Elle ne se cadre donc pas, elle
+ * remplit — d'où `w-full` et plus aucun resserrement conditionnel.
+ *
+ * ⚠️ L'IMAGE NE SE RÉTRÉCIT PLUS SUR UN PETIT ÉCRAN. Elle mesure 390 × 689 :
+ * sur un cadre plus court que ~830 px, son bas est simplement rogné par le
+ * cadre. C'est le prix de « pleine largeur, ferré en haut » — un
+ * rétrécissement décollerait l'image du bord et laisserait une marge, ce qui
+ * est exactement ce qu'on retire. La consigne, elle, est ancrée au bas du
+ * cadre par `DeathScreen` : elle reste lisible quelle que soit la hauteur.
  *
  * ⚠️ PLUS AUCUN MASQUE DE DISSOLUTION. L'ancienne version en posait un pour
  * que la consigne « Touche le coffre » se lise sur du charbon propre ; ce SVG
- * porte sa dissolution DANS le dessin (fond charbon plein, bords qui
- * s'effacent d'eux-mêmes vers le bas). En rajouter un mangerait le socle.
- *
- * Sous 800 px de haut, l'image se resserre : la maquette est dessinée pour 844,
- * et 685 + la consigne déborderaient d'un petit écran. Le SVG se redimensionne
- * sans se réinterpoler, donc ce resserrement ne coûte aucune netteté — c'est
- * l'autre chose que le vectoriel apporte ici.
+ * porte sa dissolution DANS le dessin — mesuré, ses 35 dernières rangées ne
+ * portent que 2,5 % d'orange. En rajouter un mangerait le socle.
  */
 export function Coffre() {
   return (
@@ -95,12 +100,7 @@ export function Coffre() {
       src={assetUrl("assets/mort_coffre.svg")}
       width={388}
       height={685}
-      /* ⚠️ La requête est sur la HAUTEUR, pas la largeur. Un `max-[799px]:`
-         de Tailwind est un max-WIDTH — sur un téléphone de 390 px il serait
-         vrai en permanence, et le coffre serait toujours rapetissé (mesuré :
-         300×530 au lieu de 388×685). C'est la hauteur qui manque sur un petit
-         écran, donc c'est elle qu'on interroge. */
-      className="w-[388px] max-w-full shrink-0 select-none [@media(max-height:799px)]:w-[300px]"
+      className="w-full shrink-0 select-none"
       style={{ height: "auto" }}
     />
   );

@@ -31,7 +31,7 @@
  *     ondulant, suivent le vent, et se raréfient par PROBABILITÉ DE DESSIN.
  */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { animReduced } from "@/lib/settings";
 
 const ORANGE = "#e0632a";
@@ -104,6 +104,32 @@ export default function FondBraises({
   className?: string;
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
+  /* Clé de re-mesure : elle change quand le cadre change de taille en
+     CELLULES, et rien d'autre. */
+  const [taille, setTaille] = useState(0);
+
+  /* ⚠️ LE BITMAP DOIT SUIVRE LE CADRE. Sa taille était fixée une seule fois au
+     montage ; or la hauteur visible bouge sur un téléphone dès que la barre
+     d'outils se rétracte (cf. `--app-h`, 06/09). Le canvas est en `h-full
+     w-full` : sa BOÎTE suivait, son bitmap non — le lit se faisait donc
+     étirer, et le grain de la trame avec lui. On rejoue la simulation à la
+     nouvelle taille plutôt que de laisser une image déformée.
+     Le filtre par cellules évite de tout relancer sur un pixel de jitter :
+     seule une vraie différence de grille compte. */
+  useEffect(() => {
+    const boite = ref.current?.parentElement;
+    if (!boite || typeof ResizeObserver === "undefined") return;
+    const cle = () => Math.round(boite.clientWidth / GRAIN) + "×" + Math.round(boite.clientHeight / GRAIN);
+    let dernier = cle();
+    const ro = new ResizeObserver(() => {
+      const k = cle();
+      if (k === dernier) return;
+      dernier = k;
+      setTaille((n) => n + 1);
+    });
+    ro.observe(boite);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     const cv = ref.current;
@@ -354,7 +380,7 @@ export default function FondBraises({
     }
     raf = requestAnimationFrame(boucle);
     return () => cancelAnimationFrame(raf);
-  }, [height]);
+  }, [height, taille]);
 
   return (
     <div className={`pointer-events-none absolute inset-0 ${className ?? ""}`} aria-hidden>
