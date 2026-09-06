@@ -1,6 +1,6 @@
 {
- "genere": "2026-09-06T17:13:08Z",
- "commit": "c221cf3",
+ "genere": "2026-09-06T18:17:22Z",
+ "commit": "0a2562b",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -56,7 +56,7 @@
    "taille": 7057,
    "modifie": "2026-09-05T12:27:00Z",
    "hash": "335dfa24",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-05T13:01:19+00:00"
   },
   "credo_chaines_b.png": {
@@ -1165,6 +1165,13 @@
    "recent": false,
    "ajoute": "2026-07-30T11:40:55+00:00"
   },
+  "mort_coffre.svg": {
+   "taille": 630342,
+   "modifie": "2026-09-06T18:09:55Z",
+   "hash": "f0344881",
+   "recent": false,
+   "ajoute": ""
+  },
   "mort_coffre_b.png": {
    "taille": 361771,
    "modifie": "2026-09-05T13:37:24Z",
@@ -1178,6 +1185,13 @@
    "hash": "9b333389",
    "recent": false,
    "ajoute": "2026-07-30T11:40:55+00:00"
+  },
+  "mort_geolier_tete.svg": {
+   "taille": 84647,
+   "modifie": "2026-09-06T18:09:55Z",
+   "hash": "33749afe",
+   "recent": false,
+   "ajoute": ""
   },
   "mort_geolier_tete_b.png": {
    "taille": 46902,
@@ -1624,7 +1638,7 @@
    "taille": 31995,
    "modifie": "2026-09-05T12:47:02Z",
    "hash": "d69b5f8c",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-05T13:01:19+00:00"
   },
   "pacte_plume_b.png": {
