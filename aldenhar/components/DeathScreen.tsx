@@ -451,10 +451,10 @@ export default function DeathScreen({
           {/* Maquette 2320-4447 : la tête du Geôlier émerge du noir en haut,
               sa voix au centre — réaction aux jours, puis fragment d'arc ou
               citation contextuelle. Frappe 42 ms, la cadence du Geôlier. */}
-          {/* La tête est l'IMAGE de Patrick rendue en grille de pixels
-              (`ImagePixels`) : dessinée cellule par cellule, sans lissage à
-              aucune densité d'écran, et elle respire par paliers entiers
-              comme le démon de l'accueil. */}
+          {/* La tête est le SVG de Patrick (06/09) : le navigateur le rend à
+              la densité réelle de l'écran, donc net à dpr 1, 2 et 3 — ce
+              qu'un rendu en grille de pixels ne pouvait pas tenir hors dpr 3.
+              Elle respire par paliers entiers, comme le démon de l'accueil. */}
           <TeteGeolier />
           <p className="mx-auto mt-[14px] w-[350px] whitespace-pre-line text-center font-mono text-[13px] leading-[1.55] text-[var(--color-ink)]">
             {fragTexte}
@@ -489,10 +489,10 @@ export default function DeathScreen({
           /* Phase A — le coffre (maquette 2333-10146) : plein cadre, voile de
              lisibilité TRAMÉ en bas, le tap déclenche la révélation. */
           <div className="flex flex-1 flex-col items-center">
-            {/* Le coffre est l'IMAGE de Patrick rendue en grille de pixels ;
-                son bas se dissout en pixels épars pour que la consigne se pose
-                sur du charbon propre — les flammes qui la rendaient illisible
-                sont retirées et rien ne les remplace. */}
+            {/* Le coffre est le SVG de Patrick (06/09), ferré en haut et
+                pleine largeur comme la maquette « Le Relique V1 ». Sa
+                dissolution est DANS le dessin : plus de masque tramé par
+                dessus, il mangerait le socle. */}
             <Coffre />
             <p className="mt-[26px] text-center font-mono text-[13px] leading-[1.5] text-[var(--color-ink)]">
               Touche le coffre pour
