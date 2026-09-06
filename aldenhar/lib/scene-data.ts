@@ -7291,8 +7291,10 @@ export const SCENES: Scene[] = [
         // LE seul choix qui quitte la Palissade. Tant qu'il n'est pas pris,
         // le Veilleur et l'Appelé restent à portée : partir est un acte,
         // pas la conséquence d'avoir posé une question. Il mène à la
-        // Falaise (2/09), qui mène seule à la Descente.
-        sortie: { toScene: "falaise-cordes" },
+        // Falaise (2/09), qui mène seule à la Descente. Depuis le 06/09 il
+        // entre par les DEUX écrans d'approche : on voit la nappe de fils de
+        // très loin avant d'être au bord.
+        sortie: { toScene: "falaise-cordes-loin" },
         passive: {
           consequence:
             "Le Veilleur ne t'arrête pas. Il pousse le portillon et se range, comme on s'écarte d'un convoi. Derrière toi, la guérite reste ouverte — pour le suivant.",
@@ -7592,6 +7594,60 @@ export const SCENES: Scene[] = [
 
   /* ──────────────── LA FALAISE AUX CORDES (segment 10) ─────────────────── */
   {
+    /* APPROCHE 1 — ON LA VOIT DE TRÈS LOIN (retour Patrick 06/09 : « ça évite
+       qu'on popup à 1 m de celle-ci »). Le chemin de la Palissade déposait
+       droit au bord du trou : la sortie de zone n'avait aucun déplacement
+       joué, alors que la route de la première run, elle, avait déjà ses deux
+       beats étagés (DESCENTE_AU_LOIN, 04/09). Les deux chemins ont désormais
+       leur approche — et deux textes DISTINCTS, parce qu'on n'arrive pas du
+       même endroit : ici par le portillon du sud, là par la Meute.
+       ⚠️ De cette distance on ne voit PAS le trou : la nappe de fils semble
+       poser sur la terre. C'est le désenchantement de l'écran suivant (ils
+       passent DERRIÈRE la ligne d'horizon) qui apprend qu'il y a un vide.
+       Ne jamais nommer le gouffre ici, ça vendrait l'écran d'après. */
+    id: "falaise-cordes-loin",
+    illustration: "assets/scene_falaise_au_loin_a.png",
+    narration: [
+      "Passé le portillon, le sentier meurt. La bruyère se raréfie, la pierre cassée prend toute la place, et le pays descend d'un seul tenant vers le sud.",
+      "Loin devant, quelque chose de vertical tient le ciel. Trop étroit pour une tour, trop haut pour un arbre : une nappe de fils serrés, qui descend des nuages et s'arrête au ras de la terre. Rien ne bouge dedans. Il n'y a pas d'oiseaux.",
+    ],
+    choices: [
+      {
+        id: "marcher-vers-les-fils",
+        label: "Marcher droit dessus",
+        passive: {
+          consequence:
+            "Tu marches jusqu'à ce que le soleil descende. Ça ne grandit pas comme devrait grandir une chose vers laquelle on avance.",
+        },
+        sortie: { toScene: "falaise-cordes-marche" },
+      },
+    ],
+  },
+  {
+    /* APPROCHE 2 — L'ÉCHELLE SE CORRIGE. Même image que l'écran précédent, à
+       dessein : « ça ne grandit pas » se dit mieux en NE CHANGEANT PAS le
+       plan (règle du moteur : l'image ne bouge que si le contexte bouge). Ce
+       qui change est ce qu'on comprend — ce n'est pas un tronc, c'est une
+       nappe ; et elle ne s'arrête pas au sol. */
+    id: "falaise-cordes-marche",
+    illustration: "assets/scene_falaise_au_loin_a.png",
+    narration: [
+      "Ce que tu prenais pour un tronc est une nappe. Des centaines de fils côte à côte, sur toute la largeur du regard, qui descendent d'un ciel où l'œil ne trouve rien à quoi les rattacher.",
+      "Et ils ne s'arrêtent pas à la terre. Ils continuent derrière la ligne d'horizon, là où le pays devrait remonter — et ne remonte pas.",
+    ],
+    choices: [
+      {
+        id: "avancer-jusqu-a-la-crete",
+        label: "Avancer encore",
+        passive: {
+          consequence:
+            "Les derniers pas montent. Le vent te pousse dans le dos, puis, d'un coup, ne te pousse plus.",
+        },
+        sortie: { toScene: "falaise-cordes" },
+      },
+    ],
+  },
+  {
     /* Écran 1 — le bord. Visuel PROVISOIRE (vue du sud) : les deux images du
        lieu sont à produire (prompts dans le script) — le climax doit tenir
        par sa structure d'abord (verrou n°2 du go). */
@@ -7612,7 +7668,7 @@ export const SCENES: Scene[] = [
     id: "falaise-cordes",
     illustration: "assets/scene_falaise_bord_c_a.png",
     narration: [
-      "Tu montes une dernière ondulation de bruyère, et la lande s'ouvre.",
+      "Tu montes une dernière ondulation de pierre, et la lande s'ouvre.",
       "Devant toi, un trou. Large comme un village, et sans fond visible. Du ciel, des cordes descendent dedans — des centaines, venues de si haut qu'on ne voit pas à quoi elles tiennent. Aucune ne bouge. Le vent passe dessus sans les prendre : elles entrent dans le noir droites et immobiles, comme plantées là depuis toujours.",
     ],
     choices: [
@@ -8236,6 +8292,8 @@ const LIEU_NOM: Record<string, string> = {
   "colline-aux-gibets": "La Colline aux Gibets",
   "pendu-qui-parle": "La Colline aux Gibets",
   "falaise-cordes": "La Falaise aux Cordes",
+  "falaise-cordes-loin": "La Falaise aux Cordes",
+  "falaise-cordes-marche": "La Falaise aux Cordes",
   "demo-nuit": "Le Hameau des Renonçants",
   "demo-nuit-maison": "Le Hameau des Renonçants",
   "demo-nuit-grange": "La Grange des Renonçants",
@@ -9402,7 +9460,7 @@ export const DEMO_BORNE_CADRAGES: Record<string, string> = {
  *
  * Deux beats, chacun sur SON image, séparés par une vraie frontière d'écran :
  * la ligne sombre à l'horizon, puis l'entaille qui s'ouvre — et seulement
- * ensuite la dernière ondulation de bruyère de `falaise-cordes`.
+ * ensuite la dernière ondulation de pierre de `falaise-cordes`.
  *
  * Les deux visuels dédiés sont à produire (Patrick s'en charge) : en attendant,
  * chaque beat retombe sur une vue de lande NEUTRE — jamais l'image du gouffre,
@@ -9433,10 +9491,13 @@ export const DESCENTE_AU_LOIN: { texte: string; image: string }[] = [
       "grandit pas : elle s'ouvre. De cette distance, on distingue déjà des " +
       "fils verticaux au-dessus d'elle, serrés, immobiles. Il n'y a pas " +
       "d'oiseaux.",
-    image: imageOuDefaut(
-      "assets/scene_descente_approche_a.png",
-      "assets/scene_murets_vers_sud_c.png"
-    ),
+    /* ⚠️ Ce beat dit EXACTEMENT ce que montre la vue de loin de Patrick
+       (06/09) : la nappe de fils verticaux, serrés, immobiles, posée sur
+       l'horizon d'un pays de pierre. Les deux chemins d'approche partagent
+       donc cette image ; seuls leurs TEXTES diffèrent, parce qu'on n'arrive
+       pas du même endroit. Le beat 1, lui, garde une vue de plateau : à
+       cette distance-là il n'y a qu'une ligne sombre, pas encore des fils. */
+    image: "assets/scene_falaise_au_loin_a.png",
   },
 ];
 
