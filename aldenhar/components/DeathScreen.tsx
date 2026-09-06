@@ -90,10 +90,13 @@ const PAD_CARTE = 74;
 
 /** « Touche le coffre… », ancrée au bas du cadre plutôt que posée sous
     l'image. Depuis que le coffre est pleine largeur (06/09) il fait 689 px de
-    haut et pousserait la consigne hors de l'écran sur un cadre court. Valeur
-    choisie pour retomber là où elle était : 844 − 92 − 39 = 713 px du haut,
-    contre 711 auparavant. */
-const CONSIGNE_COFFRE_BAS = 92;
+    haut et pousserait la consigne hors de l'écran sur un cadre court.
+    ⚠️ Valeur CENTRÉE dans la bande de charbon sous l'image, pas un décalage
+    au jugé (« descendre un peu plus le texte », 06/09) : image finie à 689,
+    cadre 844, donc bande de 155 px pour un texte de 29 → 62 px d'air au-dessus
+    et 64 en dessous. Collée à 92, elle restait accrochée à l'image (28 px
+    au-dessus, 98 en dessous) et l'écran paraissait lourd du haut. */
+const CONSIGNE_COFFRE_BAS = 64;
 
 /** L'écran de la carte a son propre ancrage de « Touche pour continuer » : le
     CTA Partager descend plus bas que les autres écrans, et à 200 px du bord le

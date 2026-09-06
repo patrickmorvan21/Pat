@@ -67,16 +67,40 @@ if ("serviceWorker" in navigator) {
   // et son bord bas — donc les flammes — passe sous la barre. On scrolle, la
   // barre se rétracte, tout se remet en place : exactement le symptôme.
   //
-  // `visualViewport.height` est la seule mesure qui décrit ce que l'œil voit.
-  // Aucun risque de rétrécissement parasite ici : le jeu n'a plus AUCUN champ
-  // de saisie (donc jamais de clavier) et le zoom est désactivé (viewport
-  // maximumScale 1). Le repli reste `100dvh` : avant que ce script tourne, ou
-  // sur un moteur sans l'API, le comportement est celui d'aujourd'hui.
+  // ⚠️ ET LA MESURE DÉPEND DU CONTEXTE — `visualViewport` N'EST JUSTE QUE DANS
+  // UN NAVIGATEUR. Mesuré sur une capture de Patrick (iPhone 12/13/14, PWA
+  // installée) : le cadre faisait 797 px au lieu de 844, et il restait
+  // exactement 47 px de charbon sous le lit de braises. 47, c'est l'inset haut
+  // de ce téléphone. En mode autonome, `viewport-fit=cover` fait démarrer la
+  // page à y=0, SOUS la barre d'état — mais `visualViewport.height` compte à
+  // partir du bas de cette barre. On retranchait donc l'encoche en haut pour
+  // la rendre en trou en bas. Le premier jet de ce script réparait Safari et
+  // cassait la PWA.
+  //
+  //   • autonome (PWA) : aucune barre d'outils, la page couvre l'écran →
+  //     `innerHeight` est la bonne mesure. C'est ce que valait déjà `100dvh`,
+  //     et c'est ce qui marchait avant (correctif du 30/07).
+  //   • navigateur : `visualViewport.height` suit la barre d'outils, ce que
+  //     `dvh` ne fait qu'avec un temps de retard — d'où le « je dois scroller
+  //     pour que les flammes se remettent en bas ».
+  //
+  // Aucun risque de rétrécissement parasite : le jeu n'a plus AUCUN champ de
+  // saisie (donc jamais de clavier) et le zoom est désactivé (maximumScale 1).
+  // Repli `100dvh` : avant que ce script tourne, ou sans l'API, le
+  // comportement est celui d'avant.
   const hauteurVisible = `
 (function () {
   var d = document.documentElement;
+  function autonome() {
+    try {
+      if (navigator.standalone === true) return true;
+      return matchMedia("(display-mode: standalone)").matches
+          || matchMedia("(display-mode: fullscreen)").matches;
+    } catch (e) { return false; }
+  }
   function poser() {
-    var v = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+    var vv = window.visualViewport;
+    var v = (!vv || autonome()) ? window.innerHeight : vv.height;
     if (v) d.style.setProperty("--app-h", Math.round(v) + "px");
   }
   poser();
