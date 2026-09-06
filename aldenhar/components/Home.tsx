@@ -5,7 +5,6 @@ import Scene from "@/components/Scene";
 import { HeroGeolier } from "@/components/HeroGeolier";
 import Retour from "@/components/Retour";
 import Intro, { ActeScreen } from "@/components/Intro";
-import Credo from "@/components/Credo";
 import Registre from "@/components/Registre";
 import { loadMemory, mutateMemory, shouldShowIntro } from "@/lib/player-memory";
 import { pickJailerQuote } from "@/lib/jailer-quotes";
@@ -30,7 +29,7 @@ import Codex from "@/components/Codex";
  */
 
 export default function Home() {
-  const [phase, setPhase] = useState<"boot" | "home" | "reprise" | "intro" | "retour" | "credo" | "acte" | "game">(
+  const [phase, setPhase] = useState<"boot" | "home" | "reprise" | "intro" | "retour" | "acte" | "game">(
     "boot",
   );
   const [saved, setSaved] = useState(false);
@@ -90,8 +89,8 @@ export default function Home() {
    * TROIS OUVERTURES, ET ELLES RACCOURCISSENT (brief V2 du 06/09).
    *
    *   • toute première partie — le Geôlier, « Qui es-tu ? / Signer », le
-   *     Pacte, la MARQUE, le credo, puis l'acte. ~30 à 60 secondes, et la
-   *     signature est le dernier geste : plus aucun questionnaire derrière.
+   *     Pacte, la MARQUE, puis l'acte. ~30 à 60 secondes, et la signature est
+   *     le dernier geste : plus aucun questionnaire derrière.
    *   • réincarnation — deux phrases, pas de contrat, pas de marque : le
    *     Pacte n'est signé qu'une fois, sinon il cesse d'être irréversible.
    *   • vies suivantes — un mot, puis le monde.
@@ -112,17 +111,15 @@ export default function Home() {
 
   if (phase === "game") return <Scene />;
   if (phase === "reprise") return <CartonReprise onDone={() => setPhase("game")} />;
-  if (phase === "intro") return <Intro onDone={() => setPhase("credo")} />;
+  if (phase === "intro") return <Intro onDone={() => setPhase("acte")} />;
   // ⚠️ LE CARTON D'ACTE SE JOUE AUSSI EN DÉMO (retour Patrick, 25/08 : « on a
   // perdu l'introduction de l'acte 1 les Lisières, c'était beau »). Il avait
   // été sauté le 24/08 pour compresser l'entrée — mais c'est le seul écran qui
   // NOMME le monde, et il coûte un tap. La compression se paie ailleurs.
-  // débouche droit sur la Borne, le premier geste avant la minute 2.
-  /* ⚠️ LE RETOUR VA DROIT AU JEU. Ni credo ni carton d'acte : ils énoncent
-     les règles et NOMMENT le monde, ce qui ne se refait pas à chaque mort —
-     et c'est ce qui fait tenir les cinq à dix secondes visées. */
+  /* ⚠️ LE RETOUR VA DROIT AU JEU. Pas de carton d'acte : il NOMME le monde,
+     ce qui ne se refait pas à chaque mort — et c'est ce qui fait tenir les
+     cinq à dix secondes visées. */
   if (phase === "retour") return <Retour onDone={() => { marquerOuverture(); setPhase("game"); }} />;
-  if (phase === "credo") return <Credo onDone={() => setPhase("acte")} />;
   // Nommer l'acte juste après le scellement du pacte, avant la première scène.
   if (phase === "acte") return <ActeScreen onDone={() => { marquerOuverture(); setPhase("game"); }} />;
 

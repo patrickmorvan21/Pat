@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import { CloseX } from "@/components/Home";
 import { forgetIntro, forgeRelic, loadMemory, reliquesPortees, type Relic } from "@/lib/player-memory";
 import { loadRun, type NarrativeEffect, type RunState } from "@/lib/state";
-import Credo from "@/components/Credo";
 import Intro, { ActeScreen } from "@/components/Intro";
 import RadarEssence from "@/components/RadarEssence";
 import { besaceBySlot, normalizeItem, type BesaceItem } from "@/lib/besace";
@@ -545,18 +544,17 @@ function buildPreviewMort(): PreviewMort {
  * l'aperçu de l'écran de mort : on rejoue la VRAIE séquence, et on ne laisse
  * aucune trace.
  *
- * Il couvre l'ouverture entière qui suit le pacte — le Seuil, le credo, le
- * carton d'acte — puis rend la main aux Options sans jamais entrer en jeu.
- * (Les quatre écrans du pacte, eux, se rejouent par « Revoir l'introduction ».)
+ * Il couvre toute l'ouverture — le pacte, la signature, puis le carton
+ * d'acte — et rend la main aux Options sans jamais entrer en jeu.
  *
  * ⚠️ IL NE TOUCHE PLUS À LA RUN DU TOUT (V2 du 06/09). L'ancien aperçu devait
  * sauvegarder la partie en octets et la restaurer sur `pagehide`, parce que le
- * Seuil ÉCRIVAIT dans la run à chaque beat. Le Seuil n'existe plus : le pacte,
- * le credo et le carton d'acte ne persistent rien, donc l'aperçu est
+ * Seuil ÉCRIVAIT dans la run à chaque beat. Le Seuil n'existe plus, et le
+ * pacte comme le carton d'acte ne persistent rien : l'aperçu est
  * non-destructif par construction — plus de filet à tenir, plus de fenêtre où
  * une fermeture d'app coûterait une partie.
  */
-type EtapeApercu = "intro" | "credo" | "acte" | null;
+type EtapeApercu = "intro" | "acte" | null;
 
 export function OptionsTab() {
   const [s, setS] = useState<Settings>(() => loadSettings());
@@ -672,7 +670,7 @@ export function OptionsTab() {
           Aperçu du prologue
         </button>
         <OptHelp>
-          Rejoue le pacte, la signature, le credo et le carton d&apos;acte. Ta partie en cours
+          Rejoue le pacte, la signature et le carton d&apos;acte. Ta partie en cours
           n&apos;est pas touchée — la croix, en haut à droite, referme à tout moment.
         </OptHelp>
       </div>
@@ -708,8 +706,7 @@ export function OptionsTab() {
     </div>
     {apercu && (
       <div className="absolute inset-0 z-[50]" data-apercu-prologue>
-        {apercu === "intro" && <Intro apercu onDone={() => setApercu("credo")} />}
-        {apercu === "credo" && <Credo onDone={() => setApercu("acte")} />}
+        {apercu === "intro" && <Intro apercu onDone={() => setApercu("acte")} />}
         {apercu === "acte" && <ActeScreen onDone={() => setApercu(null)} />}
         {/* La croix du menu, à sa position habituelle : c'est déjà le geste
             « refermer un plein cadre » partout ailleurs, et elle évite de
