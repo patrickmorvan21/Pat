@@ -1,6 +1,6 @@
 {
- "genere": "2026-09-06T19:46:35Z",
- "commit": "d9a948a",
+ "genere": "2026-09-07T19:32:52Z",
+ "commit": "cadf4ad",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -63,7 +63,7 @@
    "taille": 37982,
    "modifie": "2026-09-05T15:18:29Z",
    "hash": "c42b8c51",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-05T15:27:08+00:00"
   },
   "croix_menu.png": {
@@ -1634,6 +1634,13 @@
    "recent": false,
    "ajoute": "2026-07-24T09:27:44+00:00"
   },
+  "pacte_parchemin_a.svg": {
+   "taille": 115582,
+   "modifie": "2026-09-07T18:58:48Z",
+   "hash": "8b38d4b0",
+   "recent": false,
+   "ajoute": ""
+  },
   "pacte_plume.png": {
    "taille": 31995,
    "modifie": "2026-09-05T12:47:02Z",
@@ -1647,6 +1654,13 @@
    "hash": "6a9a4a53",
    "recent": false,
    "ajoute": "2026-09-05T14:07:56+00:00"
+  },
+  "pacte_plume_c.png": {
+   "taille": 2206,
+   "modifie": "2026-09-07T19:14:35Z",
+   "hash": "b4e09ac2",
+   "recent": false,
+   "ajoute": ""
   },
   "pactum_logo.png": {
    "taille": 19043,
