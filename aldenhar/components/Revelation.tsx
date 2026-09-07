@@ -19,8 +19,8 @@
  *   2. LE DÉMON  — il parle, sur SON écran : fond orange, l'image animée de
  *      l'accueil, exactement la même grammaire qu'au pacte. Quand le Geôlier
  *      s'adresse au joueur en plein cadre, c'est toujours cet écran-là.
- *   3. LE VOILE, puis LA FORME — le radar se dessine devant le joueur, et un
- *      lien rend la main (« Continuer le chemin »).
+ *   3. LE VOILE, puis LA FORME — le radar se dessine devant le joueur, puis
+ *      son portrait tombe et un toucher rend la main.
  *
  * ⚠️ LA FORME SE DESSINE DEVANT LE JOUEUR, elle n'apparaît jamais terminée.
  * Les quatre axes se tendent l'un après l'autre, dans l'ordre de ce qu'il a
@@ -142,6 +142,13 @@ export default function Revelation({
   /** Le tap pendant qu'il parle : finir la frappe, sinon passer au beat
       suivant, sinon basculer sur la forme (par le voile). */
   const suivant = useCallback(() => {
+    if (phase === "forme") {
+      // La forme est finie : le toucher rend la main. Tant qu'elle se dessine,
+      // il ne fait rien — on ne saute pas le seul moment où le Geôlier montre
+      // ce qu'il a compris.
+      if (fini) onDone(stats);
+      return;
+    }
     if (phase !== "demon") return;
     if (!lu) {
       setSkip((k) => k + 1);
@@ -153,7 +160,7 @@ export default function Revelation({
       return;
     }
     voile.transiter(() => setPhase("forme"));
-  }, [phase, lu, n, beats.length, voile]);
+  }, [phase, fini, onDone, stats, lu, n, beats.length, voile]);
 
   return (
     /* ⚠️ OVERLAY dans le cadre du jeu, jamais un second `<main>` : ce
@@ -207,27 +214,27 @@ export default function Revelation({
             <RadarEssence stats={stats} fill={fill} />
             {fini && (
               <>
-                <p className="mx-auto mt-[26px] w-[306px] text-center font-mono text-[13px] leading-[1.6] text-[var(--color-ink)] opacity-80">
+                {/* ⚠️ TOUT LE TEXTE EN BLANC (retour Patrick 07/09). La clôture
+                    était en orange : sur cet écran l'orange est déjà la
+                    couleur de la FORME, et le mettre aussi sur une phrase la
+                    faisait lire comme une deuxième donnée. Le blanc est la
+                    voix, l'orange est la mesure. */}
+                <p className="mx-auto mt-[26px] w-[306px] text-center font-mono text-[13px] leading-[1.6] text-[var(--color-ink)]">
                   {portraitDuSeuil(stats, engagementDepuisTendances(profil))}
                 </p>
-                <p className="mx-auto mt-[18px] w-[306px] text-center font-mono text-[13px] leading-[1.6] text-[var(--color-accent)]">
+                <p className="mx-auto mt-[18px] w-[306px] text-center font-mono text-[13px] leading-[1.6] text-[var(--color-ink)]">
                   {CLOTURE}
                 </p>
-                <button
-                  type="button"
-                  data-continuer
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDone(stats);
-                  }}
-                  className="absolute inset-x-0 bottom-[50px] cursor-pointer border-none bg-transparent text-center font-mono text-[13px] text-[var(--color-ink)]/50 underline"
-                >
-                  Continuer le chemin
-                </button>
               </>
             )}
           </>
         )}
+
+      {/* ⚠️ L'AFFORDANCE STANDARD, pas un lien souligné (retour Patrick
+          07/09 : « même animation que sur les autres écrans et même style »).
+          Le lien du 07/09 matin est retiré : un écran de PACTUM se quitte
+          d'un toucher, partout, et cet écran-là ne fait pas exception. */}
+      {phase === "forme" && fini && <TouchHint />}
 
       <VoilePixels etat={voile.etat} onFini={voile.onFini} />
     </div>

@@ -38,7 +38,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import TypedText from "@/components/TypedText";
-import ImagePixels from "@/components/ImagePixels";
 import { HeroGeolier } from "@/components/HeroGeolier";
 import { markIntroSeen } from "@/lib/player-memory";
 import TouchHint from "@/components/TouchHint";
@@ -537,62 +536,96 @@ export default function Intro({
             l'installation : sans lui, chaque bord de cellule tombant sur une
             frontière de demi-pixel est antialiasé (mesuré le 06/09 sur le
             coffre : 222 couleurs sans, 2 avec). */}
-        {/* eslint-disable-next-line @next/next/no-img-element -- SVG de trame, jamais optimisé */}
-        <img
-          src={assetUrl("assets/pacte_parchemin_a.svg")}
-          alt=""
-          aria-hidden
-          className="pointer-events-none absolute top-[84px] left-[1px] h-[540px] w-[388px]"
-        />
-
-        {/* LA PLUME, ferrée EN BAS de l'écran (demande Patrick 07/09 : « la
-            plume doit être toujours ferrée en bas »). C'est la bande de 230 px
-            de la maquette — donc elle tient le bas du cadre quelle que soit la
-            hauteur du device, là où une position calée sur la grille de 848
-            sortirait de l'écran sur un iPhone. */}
-        <ImagePixels
-          src="assets/pacte_plume_c.png"
-          width={389}
-          height={230}
-          className="pointer-events-none absolute bottom-0 left-0"
-        />
-
-        {/* Titre et clauses en CHARBON : ils sont posés SUR le parchemin. */}
-        <h1
-          className="absolute inset-x-0 top-[152px] text-center text-[30px] leading-[1] text-[var(--color-bg)]"
-          style={{ fontFamily: "var(--font-title)" }}
-        >
-          Le Pacte
-        </h1>
-
-        <div className="absolute top-[210px] left-[60px] flex w-[272px] flex-col gap-[18px]">
-          {PACTE_CLAUSES.map((c, i) => (
-            <p
-              key={i}
-              className="text-center font-mono text-[13px] leading-[1.3] text-[var(--color-bg)]"
-            >
-              {c}
-            </p>
-          ))}
+        {/* LA PLUME — DERRIÈRE le parchemin et ferrée au bas de l'écran (retour
+            Patrick 07/09 : « la plume doit être derrière le parchemin et ferrée
+            tout en bas, car on voit encore du noir en bas »).
+            ⚠️ ELLE GARDE SA TAILLE NATIVE, 389×230, collée au bord bas — c'est
+            la maquette au pixel (frame 3716:930, posée à y=618 sur un cadre de
+            848, donc jusqu'au bord). L'étirer, comme je l'avais fait, RAJOUTE
+            du noir au lieu d'en enlever : le tiers haut de l'image est vide par
+            construction (le calame part du coin haut-gauche en diagonale), donc
+            un `cover` sur une boîte deux fois plus haute descend ces rangées
+            vides de 76 à 154 px — c'était ça, la lame de charbon.
+            ⚠️ Elle est POSÉE AVANT le parchemin dans le DOM : c'est l'ordre
+            qui la met derrière (le parchemin porte son propre fond charbon
+            opaque, donc rien ne transparaît). Aucun z-index nulle part sur cet
+            écran — l'ordre du DOM suffit, et deux z-index concurrents
+            finiraient par diverger. */}
+        {/* ⚠️ L'image vit dans une BOÎTE, pas directement en absolu : le
+            preflight de Tailwind impose `height: auto` à toute image, ce qui
+            écrase la hauteur qu'on croit fixer avec `top` + `bottom` — la
+            plume se décollait alors du bas de 93 px, mesurés. */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[230px] overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element -- trame, jamais optimisée */}
+          <img
+            src={assetUrl("assets/pacte_plume_c.png")}
+            alt=""
+            aria-hidden
+            className="h-full w-full object-cover object-bottom"
+            style={{ imageRendering: "pixelated" }}
+          />
         </div>
 
-        {/* LA MARQUE (maquette : 299×115 à (45,459)).
-            ⚠️ LES TIRETS TOURNENT EN BOUCLE (demande Patrick 07/09). Ils sont
-            en CSS et non dessinés dans le canvas, parce que le canvas est
-            repeint par l'encre à chaque point : les quatre bords défilent en
-            `steps()` (un pixel par pas, jamais une interpolation) et le sens
-            de chacun fait tourner la ronde dans le sens horaire. */}
-        <div className="absolute top-[459px] left-[45px] h-[115px] w-[299px]">
-          <SignaturePad onMarque={setMarque} onDebut={() => setTrace(true)} />
-          {!trace && (
-            <p className="pointer-events-none absolute inset-x-0 top-[48px] text-center font-mono text-[10px] text-[var(--color-bg)] opacity-50">
-              Appose ta marque
-            </p>
-          )}
-          <span className="pacte-tirets pacte-tirets-h pointer-events-none absolute inset-x-0 top-0" aria-hidden />
-          <span className="pacte-tirets pacte-tirets-h-inv pointer-events-none absolute inset-x-0 bottom-0" aria-hidden />
-          <span className="pacte-tirets pacte-tirets-v-inv pointer-events-none absolute inset-y-0 left-0" aria-hidden />
-          <span className="pacte-tirets pacte-tirets-v pointer-events-none absolute inset-y-0 right-0" aria-hidden />
+        {/* LE BLOC DU PACTE EST COLLÉ AU BAS, PAS AU HAUT.
+            La maquette est dessinée pour un cadre de 848 : le parchemin y finit
+            à 624 et la plume commence à 618, ils se touchent. Sur un iPhone le
+            cadre fait la hauteur du device (926 chez Patrick), et les 78 px de
+            rab tombaient ENTRE les deux, puisque tout était posé depuis le
+            haut. Le bloc garde donc ses 848 px et une marge automatique le
+            pousse vers le bas : le rab passe au-dessus du parchemin, là où la
+            maquette a déjà du vide.
+            ⚠️ La marge AUTO est aussi le garde-fou des petits écrans : quand la
+            place manque, une marge auto vaut 0 — le bloc revient donc en haut
+            et c'est le BAS qui se rogne, jamais le titre. */}
+        <div className="absolute inset-0 flex flex-col">
+          <div className="relative mt-auto h-[848px] w-full shrink-0">
+            {/* eslint-disable-next-line @next/next/no-img-element -- SVG de trame, jamais optimisé */}
+            <img
+              src={assetUrl("assets/pacte_parchemin_a.svg")}
+              alt=""
+              aria-hidden
+              className="pointer-events-none absolute top-[84px] left-[1px] h-[540px] w-[388px]"
+            />
+
+            {/* Titre et clauses en CHARBON : ils sont posés SUR le parchemin. */}
+            <h1
+              className="absolute inset-x-0 top-[152px] text-center text-[30px] leading-[1] text-[var(--color-bg)]"
+              style={{ fontFamily: "var(--font-title)" }}
+            >
+              Le Pacte
+            </h1>
+
+            <div className="absolute top-[210px] left-[60px] flex w-[272px] flex-col gap-[18px]">
+              {PACTE_CLAUSES.map((c, i) => (
+                <p
+                  key={i}
+                  className="text-center font-mono text-[13px] leading-[1.3] text-[var(--color-bg)]"
+                >
+                  {c}
+                </p>
+              ))}
+            </div>
+
+            {/* LA MARQUE (maquette : 299×115 à (45,459)).
+                ⚠️ LES TIRETS TOURNENT EN BOUCLE (demande Patrick 07/09). Ils
+                sont en CSS et non dessinés dans le canvas, parce que le canvas
+                est repeint par l'encre à chaque point : les quatre bords
+                défilent en `steps()` (un pixel par pas, jamais une
+                interpolation) et le sens de chacun fait tourner la ronde dans
+                le sens horaire. */}
+            <div className="absolute top-[459px] left-[45px] h-[115px] w-[299px]">
+              <SignaturePad onMarque={setMarque} onDebut={() => setTrace(true)} />
+              {!trace && (
+                <p className="pointer-events-none absolute inset-x-0 top-[48px] text-center font-mono text-[10px] text-[var(--color-bg)] opacity-50">
+                  Appose ta marque
+                </p>
+              )}
+              <span className="pacte-tirets pacte-tirets-h pointer-events-none absolute inset-x-0 top-0" aria-hidden />
+              <span className="pacte-tirets pacte-tirets-h-inv pointer-events-none absolute inset-x-0 bottom-0" aria-hidden />
+              <span className="pacte-tirets pacte-tirets-v-inv pointer-events-none absolute inset-y-0 left-0" aria-hidden />
+              <span className="pacte-tirets pacte-tirets-v pointer-events-none absolute inset-y-0 right-0" aria-hidden />
+            </div>
+          </div>
         </div>
 
         {/* LE CTA n'existe QUE si la marque est tracée (maquette 3706:906 : il
