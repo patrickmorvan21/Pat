@@ -133,9 +133,12 @@ const SIG_CH = Math.round(SIG_H / 2);
  *
  * ⚠️ LE CANVAS EST TRANSPARENT ET L'ENCRE EST CHARBON. Le fond de ce cadre
  * n'est plus un rectangle sombre : c'est LE PARCHEMIN, qui passe derrière —
- * on signe sur le contrat, pas dans une boîte posée dessus. Le piqueté et les
- * tirets dessinés dans le canvas (version d'avant le 07/09) sont retirés : la
- * bordure vit maintenant en CSS pour pouvoir TOURNER (`.pacte-tirets`).
+ * on signe sur le contrat, pas dans une boîte posée dessus.
+ *
+ * ⚠️ ET IL N'A PLUS AUCUNE BORDURE (retour Patrick 07/09) : ni le piqueté
+ * dessiné dans le canvas, ni les tirets tournants en CSS qui l'avaient
+ * remplacé le matin même. Ce qui dit « signe ici » est le LIBELLÉ qui
+ * clignote, posé par l'appelant.
  *
  * ⚠️ Les événements de pointeur vivent sur `window` et non sur le canvas : sur
  * iOS, un doigt qui sort du cadre pendant le tracé emporte les événements avec
@@ -146,7 +149,7 @@ function SignaturePad({
   onDebut,
 }: {
   onMarque: (m: Marque | null) => void;
-  /** Premier contact : le libellé « Appose ta marque » s'efface aussitôt,
+  /** Premier contact : le libellé « Signer le pacte » s'efface aussitôt,
       sans attendre qu'on relève le doigt. */
   onDebut: () => void;
 }) {
