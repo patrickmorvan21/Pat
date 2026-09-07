@@ -15,12 +15,16 @@
  *
  *   1. LA VOIX     — il parle sur fond ORANGE, et il offre deux façons
  *                    d'entrer : lui demander qui il est, ou signer.
- *   2. QUI ES-TU   — trois répliques. Aucun voile entre elles : c'est la même
+ *   2. QUI ES-TU   — deux répliques. Aucun voile entre elles : c'est la même
  *                    scène qui continue de parler.
  *   3. LE PACTE    — le contrat sur un PARCHEMIN orange (maquettes 3700:863
- *                    et 3706:906), la plume ferrée en bas de l'écran, et un
- *                    cadre à tirets QUI TOURNENT : on SIGNE au doigt dedans.
+ *                    et 3706:906), la plume ferrée en bas de l'écran, et la
+ *                    zone de signature : on SIGNE au doigt dedans.
  *   4. LE VERDICT  — il commente la marque qu'on vient de tracer.
+ *
+ * ⚠️ LE VOILE DE PIXELS NE SE JOUE QU'AUX DEUX RUPTURES DE SUPPORT (07/09) :
+ * démon → contrat, et contrat → démon. Entre deux de ses répliques, jamais —
+ * l'écran ne change pas, c'est la même scène qui continue.
  *
  * ⚠️ LA SIGNATURE EST UN GESTE, PAS UNE SAISIE. Le pilier « aucune saisie de
  * texte libre » tient : on trace, on n'écrit pas. Et ce qu'on trace est
@@ -43,6 +47,7 @@ import { markIntroSeen } from "@/lib/player-memory";
 import TouchHint from "@/components/TouchHint";
 import { assetUrl } from "@/lib/assets";
 import { haptic } from "@/lib/settings";
+import VoilePixels, { useVoile, type EtatVoile } from "@/components/VoilePixels";
 
 /* ------------------------------------------------------------------ TEXTES */
 
@@ -123,7 +128,16 @@ function verdict(m: Marque | null): string {
 /* -------------------------------------------------------------- LA MARQUE */
 
 const SIG_W = 299;
-const SIG_H = 115;
+/** ⚠️ 150 et non les 115 de la maquette (retour Patrick 07/09 : « peut-on
+    agrandir la hauteur de l'espace de la signature ? »). La place a été prise
+    SUR LE PARCHEMIN, mesuré : ses clauses finissent à 416 et sa surface pleine
+    descend jusqu'à 594 — la zone tient donc à l'aise de 434 à 584, avec 18 px
+    d'air sous les clauses et 10 au-dessus du bord rongé. Signer plus bas
+    déborderait sur la dentelle du parchemin. */
+const SIG_H = 150;
+/** Le haut de la zone dans la grille de 848 (maquette : 459 pour 115 de haut).
+    Posé ici pour que le cadre et son libellé ne puissent pas diverger. */
+const SIG_TOP = 434;
 /** Demi-résolution, comme tout ce qui est tramé : 1 px de tracé = 2 px écran. */
 const SIG_CW = Math.round(SIG_W / 2);
 const SIG_CH = Math.round(SIG_H / 2);
@@ -358,21 +372,36 @@ function Cadre({
   onTap,
   children,
   orange,
+  voile,
+  onVoileFini,
 }: {
   onTap?: () => void;
   children: React.ReactNode;
   /** Les écrans du Geôlier ont le fond ORANGE (maquettes 3450:3977 / 4033). */
   orange?: boolean;
+  voile?: EtatVoile;
+  onVoileFini?: () => void;
 }) {
+  // Un tap pendant la transition ne fait rien : l'écran est en train de
+  // changer, tout geste tomberait sur celui qu'on quitte ou sur celui qu'on
+  // n'a pas encore vu.
+  const tap = voile ? undefined : onTap;
   return (
     <main className="flex min-h-dvh items-center justify-center">
       <div
-        onClick={onTap}
+        onClick={tap}
         className={`phone-frame relative h-[848px] max-h-[100dvh] w-[390px] shrink-0 overflow-clip ${
           orange ? "bg-[var(--color-accent)]" : "bg-[var(--color-bg)]"
-        } ${onTap ? "cursor-pointer" : ""}`}
+        } ${tap ? "cursor-pointer" : ""}`}
       >
         {children}
+        {/* ⚠️ LE VOILE VIT ICI, jamais dans les écrans. `Cadre` est le seul
+            élément que l'intro rend à toutes ses étapes : posé dedans, il
+            garde la même position dans l'arbre d'un écran à l'autre et n'est
+            donc jamais démonté au milieu du geste — or l'écran change
+            précisément au milieu. Placé dans les branches, il changerait
+            d'index et React le remonterait, canvas vide compris. */}
+        <VoilePixels etat={voile ?? null} onFini={onVoileFini} />
       </div>
     </main>
   );
@@ -409,21 +438,37 @@ function EcranGeolier({
           (pour passer devant les cendres), et sans contexte d'empilement il
           s'échappe et recouvre TOUT ce qui suit — le socle charbon et la
           première ligne de la réplique disparaissaient dessous. */}
-      <div className="absolute top-[74px] left-0 isolate h-[390px] w-[390px]">
+      {/* ⚠️ LE DÉMON EST POSÉ EXACTEMENT COMME À L'ACCUEIL (retour Patrick
+          07/09 : « quand on clique sur commencer, la position du démon bouge
+          légèrement — il peut garder la même place qu'à l'accueil »). Mesuré :
+          l'accueil pose son image à y=40 (bloc au ras du cadre, `marge` 40),
+          l'intro la posait à y=74 — 34 px de saut au premier tap du jeu.
+          C'est donc `marge={40}` au ras du cadre, et le bloc descend jusqu'à
+          464 pour que les épaules continuent de déborder sur l'orange comme
+          dans la maquette. ÉCART ASSUMÉ avec la maquette 3450:3977, qui pose
+          le démon à 74 : la continuité avec l'écran d'avant prime ici, parce
+          que c'est le seul endroit du jeu où deux écrans montrent le même
+          personnage à la suite. */}
+      <div className="absolute top-0 left-0 isolate h-[464px] w-[390px]">
         {/* ⚠️ C'EST L'IMAGE DE L'ACCUEIL, la HD (1560×1720), et pas l'export
             390×390 des maquettes (retour Patrick 5/09 : « sur cet écran le
             démon est net, reprends celle-ci à chaque fois qu'on voit le
             démon »). C'est le même personnage : seule la résolution change —
             quatre fois la taille d'affichage, donc une trame qui reste fine
             sur un écran Retina. Rien d'autre ne rend une image nette. */}
-        <HeroGeolier height={390} marge={0} sol={false} />
+        <HeroGeolier height={464} marge={40} sol={false} />
       </div>
       {/* ⚠️ LES DEUX NAPPES CHARBON SE POSENT PAR-DESSUS L'IMAGE, jamais
           derrière : c'est le socle 201×96 qui efface le sceau de poitrine du
           démon et ne laisse que ses épaules à l'orange, exactement comme la
           maquette. Passées dessous, le sceau réapparaît et vient se mettre
           derrière la réplique. */}
-      <div className="absolute top-[368px] left-[90px] h-[96px] w-[201px] bg-[var(--color-bg)]" aria-hidden />
+      {/* ⚠️ LE SOCLE SUIT LE DÉMON, PAS LE CADRE : il existe pour effacer le
+          sceau de poitrine, donc il monte des mêmes 34 px que l'image (334 au
+          lieu de 368) et descend jusqu'à la nappe — il couvre ainsi au moins
+          tout ce qu'il couvrait avant. Le laisser à 368 aurait découvert le
+          haut du sceau, qui serait réapparu derrière la réplique. */}
+      <div className="absolute top-[334px] left-[90px] h-[130px] w-[201px] bg-[var(--color-bg)]" aria-hidden />
       <div className="absolute inset-x-0 top-[464px] bottom-0 bg-[var(--color-bg)]" aria-hidden />
       <p className="absolute top-[444px] left-[42px] w-[306px] text-center font-mono text-[13px] leading-[1.3] text-[var(--color-ink)]">
         <TypedText key={cle} text={texte} typed skip={skip} msPerChar={42} onDone={onFini} />
@@ -457,16 +502,30 @@ export default function Intro({
       pas au relèvement — sinon il reste sous le trait qu'on est en train de
       faire). */
   const [trace, setTrace] = useState(false);
-  /** Change d'écran. ⚠️ SANS AUCUN VOILE (retour Patrick 5/09 : « pas de
-      transition quand on fait commencer et qu'on passe sur le prologue, pas de
-      transition entre les répliques du démon »). Toute l'intro est la même
-      scène : il parle, on lit le contrat, il juge. Un fondu de pixels entre
-      deux de ses phrases faisait ressembler un dialogue à un diaporama. */
+  const { etat: voile, transiter, onFini: voileFini } = useVoile();
+
+  /** Change d'écran, SANS transition. La règle du 5/09 tient : « pas de
+      transition quand on fait commencer, pas de transition entre les répliques
+      du démon » — tant qu'on reste face au Geôlier, c'est la même scène qui
+      continue de parler, et un fondu de pixels entre deux de ses phrases
+      faisait ressembler un dialogue à un diaporama. */
   const aller = useCallback((suite: Etape) => {
     setEtape(suite);
     setLu(false);
     setSkip(0);
   }, []);
+
+  /** Change d'écran EN DISSOLVANT LES PIXELS (retour Patrick 07/09 : « mettre
+      une transition de pixels noirs quand on passe du démon à la signature du
+      pacte, ainsi qu'après, quand on passe du pacte au démon »).
+      ⚠️ RÉSERVÉ AUX DEUX SEULES RUPTURES DE SUPPORT de l'intro : le démon qui
+      te fait face → le contrat que tu tiens dans les mains, et retour. Tout le
+      reste passe par `aller`. Le voile dit qu'on change d'objet, pas qu'on
+      tourne une page. */
+  const traverser = useCallback(
+    (suite: Etape) => transiter(() => aller(suite)),
+    [transiter, aller],
+  );
 
   const terminer = useCallback(() => {
     if (!apercu) markIntroSeen();
@@ -476,7 +535,7 @@ export default function Intro({
   /* --------------------------------------------------------------- LA VOIX */
   if (etape === "voix") {
     return (
-      <Cadre orange onTap={lu ? undefined : () => setSkip((k) => k + 1)}>
+      <Cadre orange voile={voile} onVoileFini={voileFini} onTap={lu ? undefined : () => setSkip((k) => k + 1)}>
         <EcranGeolier cle="voix" texte={VOIX} skip={skip} onFini={() => setLu(true)} />
         {/* Les deux boutons n'apparaissent qu'une fois la phrase lue : on ne
             propose pas de signer un texte qui s'écrit encore. Positions de la
@@ -496,7 +555,7 @@ export default function Intro({
                 aller("qui");
               }}
             />
-            <IntroBouton label="Signer." onClick={() => aller("pacte")} />
+            <IntroBouton label="Signer." onClick={() => traverser("pacte")} />
           </div>
         )}
         {!lu && <TouchHint libelle="Touche pour tout afficher" />}
@@ -519,10 +578,10 @@ export default function Intro({
         setLu(false);
         return;
       }
-      aller("pacte");
+      traverser("pacte");
     };
     return (
-      <Cadre orange onTap={suivant}>
+      <Cadre orange voile={voile} onVoileFini={voileFini} onTap={suivant}>
         <EcranGeolier cle={n} texte={QUI[n]} skip={skip} onFini={() => setLu(true)} />
         <TouchHint libelle={lu ? "Touche pour continuer" : "Touche pour tout afficher"} />
       </Cadre>
@@ -532,7 +591,7 @@ export default function Intro({
   /* --------------------------------------------------------------- LE PACTE */
   if (etape === "pacte") {
     return (
-      <Cadre>
+      <Cadre voile={voile} onVoileFini={voileFini}>
         {/* LE PARCHEMIN — export Figma de la trame, 388×540 à (1,84). Il porte
             SON PROPRE FOND CHARBON, donc rien ne transparaît derrière lui.
             ⚠️ `shape-rendering="crispEdges"` est injecté dans le SVG à
@@ -609,7 +668,9 @@ export default function Intro({
               ))}
             </div>
 
-            {/* LA MARQUE (maquette : 299×115 à (45,459)).
+            {/* LA MARQUE (maquette : 299×115 à (45,459) — AGRANDIE à 299×150 à
+                (45,434), cf. SIG_H). La géométrie vient des constantes : le
+                canvas, le cadre et le libellé sont un seul objet.
                 ⚠️ AUCUN CADRE (retour Patrick 07/09, qui ANNULE les tirets
                 tournants du matin même — le CSS est parti avec). Ce qui dit
                 « signe ici » est le LIBELLÉ, qui clignote comme toutes les
@@ -617,10 +678,15 @@ export default function Intro({
                 `steps(2)`, et rien d'autre — la couleur reste CHARBON, parce
                 qu'on est sur le parchemin orange et que le blanc du composant
                 standard y serait illisible. */}
-            <div className="absolute top-[459px] left-[45px] h-[115px] w-[299px]">
+            <div
+              className="absolute left-[45px]"
+              style={{ top: SIG_TOP, width: SIG_W, height: SIG_H }}
+            >
               <SignaturePad onMarque={setMarque} onDebut={() => setTrace(true)} />
               {!trace && (
-                <p className="touch-hint pointer-events-none absolute inset-x-0 top-[49px] text-center font-mono text-[13px] leading-[1.3] text-[var(--color-bg)]">
+                /* Centré par le FLUX, jamais par un `top` calculé : la zone a
+                   changé de hauteur une fois, elle rechangera. */
+                <p className="touch-hint pointer-events-none absolute inset-0 flex items-center justify-center text-center font-mono text-[13px] leading-[1.3] text-[var(--color-bg)]">
                   Signer le pacte
                 </p>
               )}
@@ -640,7 +706,7 @@ export default function Intro({
               label="Sceller le pacte"
               onClick={() => {
                 haptic(14);
-                aller("verdict");
+                traverser("verdict");
               }}
             />
           </div>
@@ -651,7 +717,7 @@ export default function Intro({
 
   /* ------------------------------------------------------------- LE VERDICT */
   return (
-    <Cadre orange onTap={() => (lu ? terminer() : setSkip((k) => k + 1))}>
+    <Cadre orange voile={voile} onVoileFini={voileFini} onTap={() => (lu ? terminer() : setSkip((k) => k + 1))}>
       <EcranGeolier
         cle="verdict"
         texte={verdict(marque ? { ...marque, demande } : null)}

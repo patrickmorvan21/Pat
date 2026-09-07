@@ -22,9 +22,11 @@
  * change pas, c'est la même scène qui continue de parler. Les appelants en
  * décident, le composant ne devine rien.
  *
- * ⚠️ SANS APPELANT depuis le 05/09 (retour iPhone : plus aucune transition
- * dans l'intro ni au Seuil). Gardé pour une vraie rupture de LIEU, qui est ce
- * pour quoi il a été écrit.
+ * ⚠️ IL NE SE JOUE QUE SUR UNE RUPTURE DE SUPPORT, jamais entre deux écrans
+ * de la même scène. Retiré partout le 05/09 (retour iPhone), il est rendu le
+ * 07/09 aux DEUX seules transitions qui en sont une : le démon → le contrat
+ * qu'on tient dans les mains, et le contrat → le démon. Le Seuil et les
+ * répliques du Geôlier n'en ont toujours aucune.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -43,6 +45,21 @@ const MS = 28;
 
 export type EtatVoile = "ferme" | "ouvre" | null;
 
+/** Le seuil de chaque pixel, tiré une seule fois pour toute la session.
+    ⚠️ AU NIVEAU DU MODULE, pas dans un ref : les deux moitiés du geste doivent
+    partager le même grain (ce qui part en premier revient en dernier — le
+    voile se « déchire » au même endroit), or le composant peut être démonté
+    entre les deux moitiés, puisque l'écran change au milieu. Un ref aurait
+    retiré un nouveau grain à la réouverture. */
+let SEUILS: Float32Array | null = null;
+function seuils(): Float32Array {
+  if (!SEUILS) {
+    SEUILS = new Float32Array(W * H);
+    for (let i = 0; i < SEUILS.length; i++) SEUILS[i] = Math.random();
+  }
+  return SEUILS;
+}
+
 /**
  * `etat` : "ferme" (l'écran se dissout), "ouvre" (il se reconstitue), null
  * (rien à l'écran). `onFini` est appelé à la fin du geste demandé.
@@ -55,7 +72,6 @@ export default function VoilePixels({
   onFini?: () => void;
 }) {
   const ref = useRef<HTMLCanvasElement>(null);
-  const seuils = useRef<Float32Array | null>(null);
   const finRef = useRef(onFini);
   // ⚠️ Synchronisé dans un effet, jamais au rendu : le compilateur React
   // refuse d'écrire dans un ref pendant le rendu. Déclaré AVANT l'effet
@@ -71,15 +87,17 @@ export default function VoilePixels({
     const ctx = cv.getContext("2d");
     if (!ctx) return;
 
-    // Le seuil de chaque pixel, tiré une seule fois pour toute la session :
-    // les deux moitiés du geste partagent le même grain, donc ce qui part en
-    // premier revient en dernier — le voile se « déchire » au même endroit.
-    if (!seuils.current) {
-      const s = new Float32Array(W * H);
-      for (let i = 0; i < s.length; i++) s[i] = Math.random();
-      seuils.current = s;
+    const S = seuils();
+
+    // ⚠️ PEINDRE TOUT DE SUITE l'état de DÉPART. Sans ça, un montage en
+    // « ouvre » (le composant a été démonté pendant le changement d'écran)
+    // laisse une image de canvas vide : le nouvel écran apparaît en clair
+    // pendant une frame avant que le voile ne se remplisse — un clignotement,
+    // exactement ce que la transition existe pour éviter.
+    if (etat === "ouvre") {
+      ctx.fillStyle = "#1c1a16";
+      ctx.fillRect(0, 0, W, H);
     }
-    const S = seuils.current;
 
     // Animations réduites : pas de geste, on couvre ou on découvre d'un coup.
     if (animReduced()) {
