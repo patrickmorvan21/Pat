@@ -1075,21 +1075,50 @@ export function coutSante(
   // pouvait tuer sans annoncer MORT) et `horsDePortee` ne le couvrait pas
   // (trouvé par le test du lot 3, sur « Lui réciter l'ordonnance »). Il passe
   // ici, comme tout ce qui prend de la santé.
-  // ⚠️ BARÈME DURCI le 2/09 (Patrick, après une traversée sans mourir :
-  // « c'est encore trop facile ») : +25 % sur le physique, +20 % sur le
-  // surnaturel. Trois échecs durs tuent désormais (0,32 × 3 > 0,95), là où
-  // il en fallait quatre. Le levier est le BARÈME PHYSIQUE, pas un retour
-  // du coût générique (doctrine du 9/08). Miroir dans tools/pactum.py.
+  // ⚠️ BARÈME DURCI le 2/09 puis le 7/09 (Patrick : « c'est toujours facile,
+  // je ne meurs jamais sauf à cause des soupçons »). Le levier est le BARÈME
+  // PHYSIQUE, jamais un retour du coût générique (doctrine du 9/08) ni un
+  // Jour de sanction (règle du 10/08). Mesuré sur la réplique avant/après :
+  // le joueur qui LANCE meurt franchement, celui qui ne lance pas ne meurt
+  // toujours pas — c'est structurel (voir `tensionTraversee`). Miroir dans
+  // tools/pactum.py.
   if (nature === "surnaturel")
-    return tier === "malediction" ? 0.2
-      : tier === "critique" || tier === "echec" ? 0.12
+    return tier === "malediction" ? 0.22
+      : tier === "critique" || tier === "echec" ? 0.14
       : 0;
   if (nature !== "physique") return 0;
-  return tier === "malediction" ? 0.38
-    : tier === "critique" ? 0.32
-    : tier === "echec" ? 0.2
-    : tier === "justesse" ? 0.1
+  return tier === "malediction" ? 0.42
+    : tier === "critique" ? 0.36
+    : tier === "echec" ? 0.24
+    : tier === "justesse" ? 0.12
     : 0;
+}
+
+/**
+ * LA COURBE DE DIFFICULTÉ DE LA TRAVERSÉE — de zéro à deux crans de seuil.
+ *
+ * Retour Patrick du 07/09 : « courbe difficulté à augmenter, c'est toujours
+ * facile ». Elle existait, mais elle ne durcissait QUE le dernier lieu
+ * (`visited >= target - 1`) : un cran sur huit lieux, autant dire rien. Elle
+ * monte maintenant par PALIERS, comme tout dans ce jeu — rien au départ (on
+ * apprend la zone), un cran passé les deux tiers, deux crans sur le dernier
+ * lieu avant la sortie.
+ *
+ * ⚠️ Rien n'est affiché, jamais. L'Anneau est calculé sur ce seuil : il
+ * montre simplement un peu moins d'encoches pleines à mesure qu'on approche
+ * de la Descente. C'est la seule forme de courbe que la doctrine autorise —
+ * ni jauge, ni chiffre, ni annonce.
+ *
+ * ⚠️ Elle contre partiellement la courbe d'ENTRÉE (`entrySoftening`, qui
+ * abaisse le seuil des premières morts d'un compte) : les deux se
+ * compensent au début et se séparent à la fin, ce qui est exactement voulu —
+ * on accueille un débutant, on ne le laisse pas sortir sans rien risquer.
+ */
+export function tensionTraversee(visites: number, cible: number): number {
+  if (cible <= 0) return 0;
+  if (visites >= cible - 1) return 2;
+  if (visites >= Math.ceil((cible * 2) / 3)) return 1;
+  return 0;
 }
 
 /**

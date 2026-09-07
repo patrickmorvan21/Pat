@@ -196,7 +196,30 @@ LARGEUR = 74
 # rien de plus (le texte porte la perte), un échec surnaturel laisse un état. On ne meurt donc que d'un danger
 # physique — la mort doit être compréhensible dans la fiction.
 # Barème DURCI le 2/09 (miroir de `coutSante`, scene-data) : +25 % physique.
-COUT = {"malediction": 0.38, "critique": 0.32, "echec": 0.2, "justesse": 0.1}
+COUT = {"malediction": 0.42, "critique": 0.36, "echec": 0.24, "justesse": 0.12}
+
+
+def tension_traversee(visites: int, cible: int) -> int:
+    """Miroir de `tensionTraversee` (scene-data) — la courbe de difficulté de
+    la traversée, en crans de seuil. Rien ne s'affiche : c'est l'Anneau qui
+    montre moins d'encoches pleines à l'approche de la Descente."""
+    if cible <= 0:
+        return 0
+    if visites >= cible - 1:
+        return 2
+    if visites >= -(-cible * 2 // 3):
+        return 1
+    return 0
+
+
+def entree_douce(morts: int) -> int:
+    """Miroir d'`entrySoftening` (player-memory) : le seuil est abaissé les
+    toutes premières morts d'un compte, sans aucun affichage."""
+    if morts <= 0:
+        return 2
+    if morts <= 2:
+        return 1
+    return 0
 MOTS = {
     "destin": "DESTIN", "eclatante": "RÉUSSITE ÉCLATANTE", "reussite": "RÉUSSITE",
     "justesse": "DE JUSTESSE", "echec": "ÉCHEC", "critique": "FUNESTE",
@@ -1249,6 +1272,15 @@ class Partie:
         sc = self.k["scenes"].get(self.d.get("scene") or "", {})
         if sc.get("procesFixation"):
             seuil = max(2, seuil - len(self.apports_proces()))
+        # ⚠️ LES DEUX COURBES INVISIBLES, absentes de la réplique jusqu'au
+        # 07/09 : sans elles, une mesure de létalité jugeait une fin de
+        # traversée plus molle que le jeu, et un début plus dur.
+        seuil = max(
+            2,
+            seuil
+            - entree_douce(lire_compte().get("morts", 0))
+            + tension_traversee(len(self.d.get("visites", [])), self.d.get("cible", 0)),
+        )
         mod = self.modificateur(c.get("stat"))
         r = self.rng(c["id"])
         naturel = r.randrange(1, 21)
@@ -1295,7 +1327,7 @@ class Partie:
         elif nature == "physique":
             cout = COUT.get(palier, 0.0)
         elif nature == "surnaturel" and palier in ("echec", "critique", "malediction"):
-            cout = 0.2 if palier == "malediction" else 0.12  # +20 % (2/09)
+            cout = 0.22 if palier == "malediction" else 0.14  # 2/09 puis 7/09
             # L'EFFROI NE TUE PAS (verdict panel 17/08, restaure la règle du
             # 9/08 « on ne meurt que d'un échec physique ou du procès ») : le
             # surnaturel use le corps mais laisse AU SEUIL — miroir exact de

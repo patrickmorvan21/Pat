@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-06T19:46:35Z",
- "commit": "d9a948a",
+ "genere": "2026-09-07T19:24:55Z",
+ "commit": "cadf4ad",
  "zones": [
   {
    "id": "landes",
@@ -8364,7 +8364,7 @@
    "fichier": "credo_chaines_b.png",
    "hash": "c42b8c51",
    "taille": 37982,
-   "recent": true,
+   "recent": false,
    "groupe": "doublon",
    "racine": "credo_chaines"
   },
@@ -9261,7 +9261,15 @@
    "hash": "d69b5f8c",
    "taille": 31995,
    "recent": false,
-   "groupe": "brancher",
+   "groupe": "doublon",
+   "racine": "pacte_plume"
+  },
+  {
+   "fichier": "pacte_plume_b.png",
+   "hash": "6a9a4a53",
+   "taille": 74024,
+   "recent": false,
+   "groupe": "doublon",
    "racine": "pacte_plume"
   },
   {
@@ -11470,10 +11478,10 @@
   "scenes": 109,
   "pointsInteret": 0,
   "choix": 318,
-  "illustrations": 447,
+  "illustrations": 449,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 225,
+  "reserve": 226,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

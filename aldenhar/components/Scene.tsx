@@ -29,6 +29,7 @@ import {
   tierIsFail,
   SORTIE_DE_ZONE,
   coutSanteBorne,
+  tensionTraversee,
   type NatureJet,
   type Choice,
   type PointInteret,
@@ -102,7 +103,7 @@ import TimingTap from "@/components/minigames/engines/TimingTap";
 import SlowSwipe from "@/components/minigames/engines/SlowSwipe";
 import StraightSwipe from "@/components/minigames/engines/StraightSwipe";
 import { forcerPiste, playMusic } from "@/lib/audio";
-import { loadSettings, CLES_AIDES } from "@/lib/settings";
+import { loadSettings, CLES_AIDES, haptic } from "@/lib/settings";
 import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomSoinMineur, recompenseDestinQuiTient, usageEnMots, LANDES_OBJETS, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { assetUrl, assetSrc, assetCss, assetExiste } from "@/lib/assets";
 import {
@@ -1125,6 +1126,25 @@ export default function Scene() {
   /* La CÉRÉMONIE (swipe) est insensible à l'échec : trop vite, la corde ne
      file pas et le geste se représente — ce compteur remonte le moteur. */
   const [minigameRetry, setMinigameRetry] = useState(0);
+  /**
+   * LE VERDICT DU GESTE (retour Patrick 07/09 : « après le mini-jeu de
+   * crochetage, quand on réussit, on passe tout de suite à l'écran suivant —
+   * on ne sait pas si on a réussi ou pas »).
+   *
+   * Le geste ne se résout plus dans la foulée : le mot tombe sous le canvas
+   * qu'on vient de jouer (la serrure ouverte est encore à l'écran), puis on
+   * rend la main comme partout ailleurs. `null` = pas de verdict en cours.
+   *
+   * ⚠️ DEUX MOTEURS EN SONT EXEMPTÉS, et pour des raisons opposées :
+   *  · `swipe` — la Descente est une CÉRÉMONIE, pas une épreuve : son échec
+   *    n'existe pas (le geste se représente), donc y écrire « SUCCÈS »
+   *    inventerait un test là où la doctrine du script interdit d'en mettre.
+   *  · `rub` à image — son écran de lecture EST déjà le verdict : la mousse
+   *    part, l'inscription se lit, et il porte son propre « Touche pour
+   *    continuer » depuis le 25/08. Un second écran ferait deux taps pour
+   *    dire une seule chose.
+   */
+  const [minigameVerdict, setMinigameVerdict] = useState<boolean | null>(null);
   /* Mode testeur (`?testeur=1`) : trois taps sur l'overlay résolvent le geste
      en réussite — les IA sans geste tactile réel (et l'auto-joueur) passent. */
   const testeurTaps = useRef(0);
@@ -3714,14 +3734,18 @@ export default function Scene() {
         kind: "narration",
         text: ligneSceauSortie(passages),
       });
-      entries.push({
-        id: nextId(),
-        kind: "registre",
-        // ⚠️ 3/09 : le survivant lisait « — en cours — » sur sa propre ligne
-        // au moment même où il franchit — la cause de traversée est celle
-        // que `recordTraversee` inscrira au tap suivant.
-        rows: buildRegistre(m, r.heroName, r.lieuxEngages ?? 0, "a franchi la Descente"),
-      });
+      /* ⚠️ LE REGISTRE NE S'AFFICHE PLUS ICI (retour Patrick 07/09 : « pour le
+         moment enlever le registre une fois descendu à la corde »). La ligne
+         du héros continue d'être INSCRITE — `recordTraversee` la pose au
+         dernier tap, elle se lit dans le Grand Registre depuis l'accueil et à
+         la mort. Ce qui part, c'est le tableau de cent lignes servi juste
+         après le Sceau : à cet endroit-là il coupe la sortie du Domaine en y
+         posant un classement, alors que les deux blocs qui précèdent (la
+         trace de cette vie, puis la marque dans la paume) sont ce que la
+         traversée a produit. Rien n'est perdu, seul l'affichage recule.
+         Le classement à la sortie datait du panel 10/08 (« deux traversées
+         réussies, fin identique au mot près, aucune trace ») — la trace, elle,
+         reste : c'est `traceDeSortie` + le Sceau juste au-dessus. */
     }
     // Le Grand Registre (§19) : classement inline, ligne du joueur marquée.
     if (nextScene.registre) {
@@ -4267,6 +4291,20 @@ export default function Scene() {
    * (ENTAILLÉ + santé — jamais la mort sèche sur un geste d'adresse), et le
    * gain éventuel du choix ne se donne pas (on ne récompense pas un raté).
    */
+  /** Ce geste-là a-t-il droit à un mot de verdict ? (voir `minigameVerdict`) */
+  function verdictAffichable(c: Choice): boolean {
+    const eng = c.minigame?.engine;
+    if (!eng || eng === "swipe") return false;
+    if (eng === "rub" && (minigameConfig as { imageFond?: string } | null)?.imageFond) return false;
+    return true;
+  }
+
+  /**
+   * Le moteur a rendu son résultat. On ne résout PAS tout de suite : on pose
+   * le verdict sous le canvas et on attend le tap (règle globale — un écran,
+   * une information, puis on rend la main). Les deux moteurs exemptés (voir
+   * `minigameVerdict`) filent droit à la résolution.
+   */
   function finirMinigame(ok: boolean) {
     const c = minigameChoice;
     if (!c || !c.minigame) return;
@@ -4277,6 +4315,19 @@ export default function Scene() {
       setMinigameRetry((n) => n + 1);
       return;
     }
+    if (verdictAffichable(c)) {
+      setMinigameVerdict(ok);
+      haptic(ok ? 12 : 20);
+      return;
+    }
+    resoudreMinigame(ok);
+  }
+
+  /** Le geste est lu, le verdict est passé : la scène reprend son cours. */
+  function resoudreMinigame(ok: boolean) {
+    const c = minigameChoice;
+    if (!c || !c.minigame) return;
+    setMinigameVerdict(null);
     setMinigameChoice(null);
     minigamesJoues.current = [...minigamesJoues.current, c.id];
     // Un geste par SITUATION et par vie (le beat garanti de la Borne lit ce
@@ -4446,6 +4497,7 @@ export default function Scene() {
       testeurTaps.current = 0;
       setMinigameRetry(0);
       setMinigamePhase("gratte");
+      setMinigameVerdict(null);
       setMinigameChoice(choice);
       return;
     }
@@ -4977,12 +5029,12 @@ export default function Scene() {
       // 2-3 premières morts, sans aucun affichage. L'Anneau, calculé sur ce
       // même seuil, montrera juste un peu plus d'encoches pleines — cohérent.
       const soft = entrySoftening(loadMemory());
-      // Tension dans le dernier tiers de la zone (chantier 1 du 23/07) : les
-      // derniers lieux avant la Descente durcissent d'un cran — invisible, mais
-      // l'Anneau montre un peu moins d'encoches pleines. Contre partiellement la
-      // courbe d'entrée : la fin d'une traversée ne doit jamais rester molle.
+      // LA COURBE DE DIFFICULTÉ (chantier 1 du 23/07, élargie le 7/09) : le
+      // seuil monte par paliers à mesure qu'on approche de la Descente. Une
+      // source unique (`tensionTraversee`) pour que la réplique et le jeu ne
+      // puissent pas diverger.
       const trav = runRef.current?.trav;
-      const tension = trav && trav.visited.length >= trav.target - 1 ? 1 : 0;
+      const tension = trav ? tensionTraversee(trav.visited.length, trav.target) : 0;
       // Fiévreux relève le seuil des QUATRE stats d'un cran — pas un malus au
       // jet : une difficulté du monde entier, qui se lit dans l'Anneau.
       // ⚠️ Phase A : plus de décalage de seuil par état. `seuilTous` n'était
@@ -5817,6 +5869,11 @@ export default function Scene() {
                plus de marge horizontale : la zone prend toute la largeur. */
             style={{ backgroundColor: "var(--color-bg)" }}
             onPointerDown={() => {
+              // Le verdict est posé : le tap ne joue plus, il continue.
+              if (minigameVerdict !== null) {
+                resoudreMinigame(minigameVerdict);
+                return;
+              }
               // Mode testeur (`?testeur=1`) : trois taps résolvent le geste —
               // une IA sans geste réel (ou l'auto-joueur) n'est jamais murée
               // devant un canvas. Hors testeur : inerte.
@@ -5832,7 +5889,14 @@ export default function Scene() {
                 venait de le toucher : le redire au-dessus du canvas faisait une
                 deuxième information là où le geste doit être seul. Il ne reste
                 que la consigne, tout en bas. */}
-            <div className="flex w-full justify-center">
+            {/* Le verdict posé, le moteur ne capte plus rien : le canvas reste
+                à l'écran (on voit la serrure ouverte, la corde tranchée) mais
+                le seul geste qui compte est le tap qui continue. */}
+            <div
+              className={`flex w-full justify-center ${
+                minigameVerdict !== null ? "pointer-events-none" : ""
+              }`}
+            >
               {minigameChoice.minigame.engine === "rub" ? (
                 <RubReveal
                   seed={`demo-${scene.id}`}
@@ -5926,6 +5990,22 @@ export default function Scene() {
                 ⚠️ Le cas `cut` MANQUAIT : « Trancher la corde » retombait sur
                 le libellé du Souffle (« Maintiens l'appui — tiens bon »), donc
                 l'écran donnait une consigne fausse pour son propre geste. */}
+            {/* LE VERDICT DU GESTE — le mot juste au-dessus de l'affordance,
+                dans la grammaire du dé : mono capitales espacées, l'accent
+                pour ce qui a tenu, le blanc pour ce qui a manqué (plus aucun
+                rouge dans le jeu depuis le 14/07). */}
+            {minigameVerdict !== null && (
+              <p
+                className="absolute inset-x-0 bottom-[78px] text-center font-mono text-[14px] uppercase tracking-[3px]"
+                style={{
+                  color: minigameVerdict
+                    ? "var(--color-accent)"
+                    : "var(--color-ink)",
+                }}
+              >
+                {minigameVerdict ? "Réussi" : "Manqué"}
+              </p>
+            )}
             <p
               className={`touch-hint absolute inset-x-0 bottom-[50px] text-center font-mono text-[11px] uppercase tracking-[2px] text-[var(--color-ink)]/50 ${
                 minigamePhase === "envol" &&
@@ -5934,7 +6014,9 @@ export default function Scene() {
                   : ""
               }`}
             >
-              {minigameChoice.minigame.engine === "rub" &&
+              {minigameVerdict !== null
+                ? "Touche pour continuer"
+                : minigameChoice.minigame.engine === "rub" &&
               (minigameConfig as { imageFond?: string } | null)?.imageFond
                 ? minigamePhase === "lu"
                   ? "Touche pour continuer"

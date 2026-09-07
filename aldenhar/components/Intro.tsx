@@ -5,7 +5,8 @@
  *
  * ⚠️ LES MAQUETTES FONT FOI, PAS LE PROTOTYPE. Cette version est relevée au
  * pixel sur les écrans Figma 3450:3977 (la voix) · 3450:4033 (qui es-tu) ·
- * 3450:4066 (le Pacte). Le prototype `prologue_pactum_v3.html` de Claude Chat
+ * 3700:863 et 3706:906 (le Pacte, avant et après signature — ils REMPLACENT
+ * 3450:4066 depuis le 07/09). Le prototype `prologue_pactum_v3.html` de Claude Chat
  * n'apporte plus que la MÉCANIQUE de la signature jugée ; tout ce qui se voit
  * (fond orange, position du démon, style des boutons, texte du contrat) vient
  * des maquettes. Ne pas réintroduire ce que le prototype ajoutait et que les
@@ -16,8 +17,9 @@
  *                    d'entrer : lui demander qui il est, ou signer.
  *   2. QUI ES-TU   — trois répliques. Aucun voile entre elles : c'est la même
  *                    scène qui continue de parler.
- *   3. LE PACTE    — le contrat sur fond charbon, la plume en filigrane, puis
- *                    « Appose ta marque » : on SIGNE au doigt.
+ *   3. LE PACTE    — le contrat sur un PARCHEMIN orange (maquettes 3700:863
+ *                    et 3706:906), la plume ferrée en bas de l'écran, et un
+ *                    cadre à tirets QUI TOURNENT : on SIGNE au doigt dedans.
  *   4. LE VERDICT  — il commente la marque qu'on vient de tracer.
  *
  * ⚠️ LA SIGNATURE EST UN GESTE, PAS UNE SAISIE. Le pilier « aucune saisie de
@@ -73,17 +75,20 @@ const QUI = [
 ];
 
 /**
- * Les quatre clauses, telles que la maquette les affiche : mono 13px, BLANC,
- * sans un mot en gras ni en orange, séparées par une ligne vide.
+ * Le contrat, tel que les maquettes 3700:863 / 3706:906 l'affichent : mono
+ * 13px CHARBON sur le parchemin orange, CENTRÉ, sans un mot en gras ni en
+ * orange, une ligne vide entre chaque clause.
+ *
+ * ⚠️ QUATRE PARAGRAPHES depuis le 07/09 : la maquette sépare « ce que tu
+ * comprendras » et « ce que tu perdras », que le brief V2 du 06/09 avait
+ * fusionnés. Aucun mot ne change — c'est de la typographie, et la maquette
+ * fait foi pour un écran reproduit.
  */
-/* ⚠️ TROIS CLAUSES (brief V2 du 06/09) : les deux dernières de la maquette
-   disaient la même chose en deux temps — elles n'en font plus qu'une, ce qui
-   resserre le contrat sans lui retirer un mot de sens. Le libellé de la
-   Descente reste celui de la maquette (« trois actes »), qui est le canon. */
 const PACTE_CLAUSES = [
   "Il te sera prêté une vie. Une seule.",
   "Tu entreprendras la Descente : trois actes, du seuil jusqu'à la Porte Scellée.",
-  "Ce que tu comprendras en mourant, tu le légueras. Ce que tu perdras, tu le perdras vraiment.",
+  "Ce que tu comprendras en mourant, tu le légueras.",
+  "Ce que tu perdras, tu le perdras vraiment.",
 ];
 
 /** Mesures de la marque tracée — c'est la MAIN qui décide de la réplique. */
@@ -118,22 +123,34 @@ function verdict(m: Marque | null): string {
 
 /* -------------------------------------------------------------- LA MARQUE */
 
-const SIG_W = 363;
-const SIG_H = 140;
+const SIG_W = 299;
+const SIG_H = 115;
 /** Demi-résolution, comme tout ce qui est tramé : 1 px de tracé = 2 px écran. */
 const SIG_CW = Math.round(SIG_W / 2);
 const SIG_CH = Math.round(SIG_H / 2);
 
 /**
- * LE CADRE DE SIGNATURE (maquette : 363×140, bordure blanche en tirets à 50 %).
- * Les tirets sont DESSINÉS dans le canvas plutôt que posés en `border: dashed`
- * — même lecture à l'écran, mais en pixels entiers comme tout le reste du jeu.
+ * LE CADRE DE SIGNATURE (maquettes 3700:863 / 3706:906 : 299×115 à (45,459)).
+ *
+ * ⚠️ LE CANVAS EST TRANSPARENT ET L'ENCRE EST CHARBON. Le fond de ce cadre
+ * n'est plus un rectangle sombre : c'est LE PARCHEMIN, qui passe derrière —
+ * on signe sur le contrat, pas dans une boîte posée dessus. Le piqueté et les
+ * tirets dessinés dans le canvas (version d'avant le 07/09) sont retirés : la
+ * bordure vit maintenant en CSS pour pouvoir TOURNER (`.pacte-tirets`).
  *
  * ⚠️ Les événements de pointeur vivent sur `window` et non sur le canvas : sur
  * iOS, un doigt qui sort du cadre pendant le tracé emporte les événements avec
  * lui, et la signature se coupe en plein milieu.
  */
-function SignaturePad({ onMarque }: { onMarque: (m: Marque | null) => void }) {
+function SignaturePad({
+  onMarque,
+  onDebut,
+}: {
+  onMarque: (m: Marque | null) => void;
+  /** Premier contact : le libellé « Appose ta marque » s'efface aussitôt,
+      sans attendre qu'on relève le doigt. */
+  onDebut: () => void;
+}) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   // Tout ce qui se mesure vit dans un ref : rien de ça ne se rend.
@@ -152,44 +169,12 @@ function SignaturePad({ onMarque }: { onMarque: (m: Marque | null) => void }) {
     maxY: -1e9,
   });
 
-  const fond = useCallback(() => {
-    const cv = ref.current;
-    if (!cv) return;
-    const x = cv.getContext("2d");
-    if (!x) return;
-    x.fillStyle = "#1c1a16";
-    x.fillRect(0, 0, SIG_CW, SIG_CH);
-    // Piqueté de fond — jamais un aplat propre.
-    x.fillStyle = "rgba(255,255,255,.2)";
-    for (let i = 0; i < 42; i++)
-      x.fillRect((Math.random() * SIG_CW) | 0, (Math.random() * SIG_CH) | 0, 1, 1);
-    // Bordure en tirets, à la densité de la maquette (blanc à 50 %).
-    x.fillStyle = "rgba(255,255,255,.5)";
-    for (let px = 0; px < SIG_CW; px++) {
-      if (px % 4 < 2) {
-        x.fillRect(px, 0, 1, 1);
-        x.fillRect(px, SIG_CH - 1, 1, 1);
-      }
-    }
-    for (let py = 0; py < SIG_CH; py++) {
-      if (py % 4 < 2) {
-        x.fillRect(0, py, 1, 1);
-        x.fillRect(SIG_CW - 1, py, 1, 1);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    fond();
-  }, [fond]);
-
   const encre = useCallback((px: number, py: number) => {
     const x = ref.current?.getContext("2d");
     if (!x) return;
-    // L'encre baye autour du point. ⚠️ ORANGE SEUL et trait FIN (retour
-    // Patrick 5/09) : la pincée de blanc et le halo grisé sont retirés, et le
-    // rayon passe de 1,8 à 1,0 — quatre pixels au lieu de sept.
-    x.fillStyle = "#e0632a";
+    // L'encre baye autour du point. Trait FIN (rayon 1,0 depuis le 5/09) — et
+    // CHARBON depuis le 07/09 : on écrit à l'encre sur un parchemin orange.
+    x.fillStyle = "#1c1a16";
     for (let i = 0; i < 4; i++) {
       const a = Math.random() * Math.PI * 2;
       const r = Math.random() * 1.0;
@@ -270,10 +255,12 @@ function SignaturePad({ onMarque }: { onMarque: (m: Marque | null) => void }) {
   return (
     <canvas
       ref={ref}
+      data-signature
       width={SIG_CW}
       height={SIG_CH}
       onPointerDown={(e) => {
         const s = st.current;
+        if (!s.dessine && s.traces === 0) onDebut();
         s.dessine = true;
         s.traces += 1;
         const now = performance.now();
@@ -286,8 +273,8 @@ function SignaturePad({ onMarque }: { onMarque: (m: Marque | null) => void }) {
         e.preventDefault();
         e.stopPropagation();
       }}
-      className="block w-full"
-      style={{ height: SIG_H, imageRendering: "pixelated", touchAction: "none" }}
+      className="block h-full w-full"
+      style={{ imageRendering: "pixelated", touchAction: "none" }}
     />
   );
 }
@@ -301,8 +288,10 @@ function SignaturePad({ onMarque }: { onMarque: (m: Marque | null) => void }) {
  *    blanc 14px medium ALIGNÉ À GAUCHE, en casse de phrase. Pas de capitales,
  *    pas d'orange : ces deux boutons se ressemblent parce que le Geôlier ne
  *    recommande ni l'un ni l'autre.
- *  · « plein » (sceller le pacte) — orange plein, texte charbon en capitales
- *    espacées, centré.
+ *  · « plein » — un aplat, texte charbon en capitales espacées, centré. Sa
+ *    couleur suit l'écran : ORANGE sur charbon (le CTA du Nom), BLANC sur le
+ *    parchemin (« sceller le pacte », maquette 3706:906 — l'orange y serait
+ *    invisible, le parchemin est déjà orange).
  *
  * Dans les deux cas les entailles de coin 2×2 sont posées PAR-DESSUS, au ras
  * du coin, et la bordure vit dans un calque `inset-0` — jamais sur le bouton
@@ -312,11 +301,14 @@ function SignaturePad({ onMarque }: { onMarque: (m: Marque | null) => void }) {
 function IntroBouton({
   label,
   plein,
+  blanc,
   disabled,
   onClick,
 }: {
   label: string;
   plein?: boolean;
+  /** Aplat BLANC au lieu d'orange (sur le parchemin). Sans effet hors `plein`. */
+  blanc?: boolean;
   disabled?: boolean;
   onClick: () => void;
 }) {
@@ -339,7 +331,9 @@ function IntroBouton({
       <span
         className={`absolute inset-0 border border-solid ${
           plein
-            ? "border-[var(--color-accent)] bg-[var(--color-accent)]"
+            ? blanc
+              ? "border-[var(--color-ink)] bg-[var(--color-ink)]"
+              : "border-[var(--color-accent)] bg-[var(--color-accent)]"
             : "border-[var(--color-ink)] bg-transparent"
         }`}
         aria-hidden
@@ -457,6 +451,10 @@ export default function Intro({
   /** A-t-il demandé qui il était ? Le verdict s'en sert. */
   const [demande, setDemande] = useState(false);
   const [marque, setMarque] = useState<Marque | null>(null);
+  /** Le doigt a-t-il touché le cadre ? (le libellé s'efface au premier contact,
+      pas au relèvement — sinon il reste sous le trait qu'on est en train de
+      faire). */
+  const [trace, setTrace] = useState(false);
   /** Change d'écran. ⚠️ SANS AUCUN VOILE (retour Patrick 5/09 : « pas de
       transition quand on fait commencer et qu'on passe sur le prologue, pas de
       transition entre les répliques du démon »). Toute l'intro est la même
@@ -533,56 +531,87 @@ export default function Intro({
   if (etape === "pacte") {
     return (
       <Cadre>
-        {/* LA PLUME, en filigrane derrière le contrat. Elle est découpée aux
-            coordonnées EXACTES de la maquette (y=233, pleine largeur du cadre),
-            donc elle se pose sans réglage — et elle est déjà tramée : sa
-            densité EST le dégradé, il n'y a aucun masque à ajouter. */}
-        <ImagePixels
-          src="assets/pacte_plume_b.png"
-          width={390}
-          height={446}
-          className="pointer-events-none absolute top-[233px] left-0 z-10"
+        {/* LE PARCHEMIN — export Figma de la trame, 388×540 à (1,84). Il porte
+            SON PROPRE FOND CHARBON, donc rien ne transparaît derrière lui.
+            ⚠️ `shape-rendering="crispEdges"` est injecté dans le SVG à
+            l'installation : sans lui, chaque bord de cellule tombant sur une
+            frontière de demi-pixel est antialiasé (mesuré le 06/09 sur le
+            coffre : 222 couleurs sans, 2 avec). */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- SVG de trame, jamais optimisé */}
+        <img
+          src={assetUrl("assets/pacte_parchemin_a.svg")}
+          alt=""
+          aria-hidden
+          className="pointer-events-none absolute top-[84px] left-[1px] h-[540px] w-[388px]"
         />
 
+        {/* LA PLUME, ferrée EN BAS de l'écran (demande Patrick 07/09 : « la
+            plume doit être toujours ferrée en bas »). C'est la bande de 230 px
+            de la maquette — donc elle tient le bas du cadre quelle que soit la
+            hauteur du device, là où une position calée sur la grille de 848
+            sortirait de l'écran sur un iPhone. */}
+        <ImagePixels
+          src="assets/pacte_plume_c.png"
+          width={389}
+          height={230}
+          className="pointer-events-none absolute bottom-0 left-0"
+        />
+
+        {/* Titre et clauses en CHARBON : ils sont posés SUR le parchemin. */}
         <h1
-          className="absolute inset-x-0 top-[104px] text-center text-[40px] leading-[1] text-[var(--color-accent)]"
+          className="absolute inset-x-0 top-[152px] text-center text-[30px] leading-[1] text-[var(--color-bg)]"
           style={{ fontFamily: "var(--font-title)" }}
         >
           Le Pacte
         </h1>
-        {/* Le filet du contrat, orange, largeur 358 (maquette y=164,5). */}
-        <div
-          className="absolute top-[164px] left-[16px] h-px w-[358px] bg-[var(--color-accent)]"
-          aria-hidden
-        />
 
-        {/* Le corps : mono 13px BLANC, aucune emphase, une ligne vide entre
-            chaque clause (maquette : x=16, y=214, largeur 360). */}
-        <div className="absolute top-[214px] left-[16px] flex w-[360px] flex-col gap-[17px]">
+        <div className="absolute top-[210px] left-[60px] flex w-[272px] flex-col gap-[18px]">
           {PACTE_CLAUSES.map((c, i) => (
-            <p key={i} className="font-mono text-[13px] leading-[1.3] text-[var(--color-ink)]">
+            <p
+              key={i}
+              className="text-center font-mono text-[13px] leading-[1.3] text-[var(--color-bg)]"
+            >
               {c}
             </p>
           ))}
         </div>
 
-        {/* LA MARQUE — pied de maquette : x=13, bas 15, largeur 363, 16px de
-            gouttière entre le libellé, le cadre de signature et le CTA. */}
-        <div className="absolute bottom-[15px] left-[13px] flex w-[363px] flex-col items-center gap-[16px]">
-          <p className="w-full font-mono text-[13px] text-[var(--color-ink)] opacity-50">
-            Appose ta marque
-          </p>
-          <SignaturePad onMarque={setMarque} />
-          <IntroBouton
-            plein
-            label="Sceller le pacte"
-            disabled={!marque}
-            onClick={() => {
-              haptic(14);
-              aller("verdict");
-            }}
-          />
+        {/* LA MARQUE (maquette : 299×115 à (45,459)).
+            ⚠️ LES TIRETS TOURNENT EN BOUCLE (demande Patrick 07/09). Ils sont
+            en CSS et non dessinés dans le canvas, parce que le canvas est
+            repeint par l'encre à chaque point : les quatre bords défilent en
+            `steps()` (un pixel par pas, jamais une interpolation) et le sens
+            de chacun fait tourner la ronde dans le sens horaire. */}
+        <div className="absolute top-[459px] left-[45px] h-[115px] w-[299px]">
+          <SignaturePad onMarque={setMarque} onDebut={() => setTrace(true)} />
+          {!trace && (
+            <p className="pointer-events-none absolute inset-x-0 top-[48px] text-center font-mono text-[10px] text-[var(--color-bg)] opacity-50">
+              Appose ta marque
+            </p>
+          )}
+          <span className="pacte-tirets pacte-tirets-h pointer-events-none absolute inset-x-0 top-0" aria-hidden />
+          <span className="pacte-tirets pacte-tirets-h-inv pointer-events-none absolute inset-x-0 bottom-0" aria-hidden />
+          <span className="pacte-tirets pacte-tirets-v-inv pointer-events-none absolute inset-y-0 left-0" aria-hidden />
+          <span className="pacte-tirets pacte-tirets-v pointer-events-none absolute inset-y-0 right-0" aria-hidden />
         </div>
+
+        {/* LE CTA n'existe QUE si la marque est tracée (maquette 3706:906 : il
+            est absent de l'écran d'avant signature). Un bouton grisé dirait
+            « il te manque quelque chose » ; son absence dit « signe d'abord ».
+            Aplat BLANC : l'orange serait invisible sur le parchemin. */}
+        {marque && (
+          <div className="absolute bottom-[32px] left-[45px] w-[299px]">
+            <IntroBouton
+              plein
+              blanc
+              label="Sceller le pacte"
+              onClick={() => {
+                haptic(14);
+                aller("verdict");
+              }}
+            />
+          </div>
+        )}
       </Cadre>
     );
   }

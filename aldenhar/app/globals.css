@@ -356,6 +356,84 @@ body {
 }
 .die-hint.hidden { display: none; }
 
+/* ─── LE CADRE DE SIGNATURE DU PACTE — des tirets qui TOURNENT (demande
+   Patrick 07/09 : « je veux que les contours avec les tirets où on signe
+   tournent en boucle »).
+
+   Quatre bords d'un pixel, chacun rempli d'un motif de tirets répété, dont on
+   décale la position. Le sens de chaque bord fait tourner la ronde dans le
+   sens horaire : haut → droite → bas → gauche.
+
+   ⚠️ `steps(PERIODE)` : le motif avance d'UN PIXEL par pas, jamais en
+   glissant — aucune interpolation nulle part dans ce jeu. Et le
+   `repeating-linear-gradient` est à arrêts FRANCS (0/100 %), donc il ne
+   produit aucun dégradé : c'est la même technique que la bande de
+   dissolution.
+   ⚠️ Les tirets sont CHARBON : ils sont posés sur le parchemin orange. */
+.pacte-tirets {
+  --pacte-tiret: 8px;
+  --pacte-vide: 5px;
+  --pacte-periode: 13px;
+  display: block;
+  /* Le NOM de l'animation vient de la classe de bord (ci-dessous) : c'est lui
+     qui donne le sens de la ronde. */
+  animation-duration: 1.4s;
+  animation-timing-function: steps(13);
+  animation-iteration-count: infinite;
+}
+.pacte-tirets-h,
+.pacte-tirets-h-inv {
+  height: 1px;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--color-bg) 0,
+    var(--color-bg) var(--pacte-tiret),
+    transparent var(--pacte-tiret),
+    transparent var(--pacte-periode)
+  );
+  background-size: var(--pacte-periode) 1px;
+}
+.pacte-tirets-v,
+.pacte-tirets-v-inv {
+  width: 1px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--color-bg) 0,
+    var(--color-bg) var(--pacte-tiret),
+    transparent var(--pacte-tiret),
+    transparent var(--pacte-periode)
+  );
+  background-size: 1px var(--pacte-periode);
+}
+/* Haut : vers la droite. Droite : vers le bas. Bas : vers la gauche.
+   Gauche : vers le haut. */
+.pacte-tirets-h { animation-name: pacte-ronde-x; }
+.pacte-tirets-h-inv { animation-name: pacte-ronde-x-inv; }
+.pacte-tirets-v { animation-name: pacte-ronde-y; }
+.pacte-tirets-v-inv { animation-name: pacte-ronde-y-inv; }
+
+@keyframes pacte-ronde-x {
+  from { background-position: 0 0; }
+  to { background-position: var(--pacte-periode) 0; }
+}
+@keyframes pacte-ronde-x-inv {
+  from { background-position: 0 0; }
+  to { background-position: calc(var(--pacte-periode) * -1) 0; }
+}
+@keyframes pacte-ronde-y {
+  from { background-position: 0 0; }
+  to { background-position: 0 var(--pacte-periode); }
+}
+@keyframes pacte-ronde-y-inv {
+  from { background-position: 0 0; }
+  to { background-position: 0 calc(var(--pacte-periode) * -1); }
+}
+/* Mouvement réduit : les tirets restent, ils cessent de tourner. */
+.anim-reduced .pacte-tirets { animation: none; }
+@media (prefers-reduced-motion: reduce) {
+  .pacte-tirets { animation: none; }
+}
+
 /* LE GESTE MONTRÉ (panel 9/08) — trois carrés de pixels qui montent du dé,
    à l'intérieur de l'anneau, pour dire « ça se lance » sans un mot. Paliers
    stricts : chaque carré apparaît d'un coup et disparaît d'un coup, jamais
