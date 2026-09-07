@@ -607,23 +607,20 @@ export default function Intro({
             </div>
 
             {/* LA MARQUE (maquette : 299×115 à (45,459)).
-                ⚠️ LES TIRETS TOURNENT EN BOUCLE (demande Patrick 07/09). Ils
-                sont en CSS et non dessinés dans le canvas, parce que le canvas
-                est repeint par l'encre à chaque point : les quatre bords
-                défilent en `steps()` (un pixel par pas, jamais une
-                interpolation) et le sens de chacun fait tourner la ronde dans
-                le sens horaire. */}
+                ⚠️ AUCUN CADRE (retour Patrick 07/09, qui ANNULE les tirets
+                tournants du matin même — le CSS est parti avec). Ce qui dit
+                « signe ici » est le LIBELLÉ, qui clignote comme toutes les
+                affordances du jeu : la classe `touch-hint` porte le `pulse` en
+                `steps(2)`, et rien d'autre — la couleur reste CHARBON, parce
+                qu'on est sur le parchemin orange et que le blanc du composant
+                standard y serait illisible. */}
             <div className="absolute top-[459px] left-[45px] h-[115px] w-[299px]">
               <SignaturePad onMarque={setMarque} onDebut={() => setTrace(true)} />
               {!trace && (
-                <p className="pointer-events-none absolute inset-x-0 top-[48px] text-center font-mono text-[10px] text-[var(--color-bg)] opacity-50">
-                  Appose ta marque
+                <p className="touch-hint pointer-events-none absolute inset-x-0 top-[49px] text-center font-mono text-[13px] leading-[1.3] text-[var(--color-bg)]">
+                  Signer le pacte
                 </p>
               )}
-              <span className="pacte-tirets pacte-tirets-h pointer-events-none absolute inset-x-0 top-0" aria-hidden />
-              <span className="pacte-tirets pacte-tirets-h-inv pointer-events-none absolute inset-x-0 bottom-0" aria-hidden />
-              <span className="pacte-tirets pacte-tirets-v-inv pointer-events-none absolute inset-y-0 left-0" aria-hidden />
-              <span className="pacte-tirets pacte-tirets-v pointer-events-none absolute inset-y-0 right-0" aria-hidden />
             </div>
           </div>
         </div>
