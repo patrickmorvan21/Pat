@@ -447,7 +447,11 @@ function proseDuJet(text: string): string {
 /** Clé partagée : la liste vit dans `lib/settings` (CLES_AIDES) pour que la
     remise à zéro des aides n'en oublie jamais une — celle-ci l'était. */
 const AIDE_MENU_KEY = CLES_AIDES[1];
-type AideMenuPref = { off?: boolean; etat?: boolean; objet?: boolean };
+/** Les sujets de l'aide « rangé dans le menu ». Un seul type, lu par la
+    préférence, par l'état d'écran et par le rendu : trois listes séparées
+    finiraient par diverger, et un sujet posé sans texte n'afficherait rien. */
+type SujetAide = "etat" | "objet" | "stats";
+type AideMenuPref = { off?: boolean } & Partial<Record<SujetAide, boolean>>;
 function lireAideMenu(): AideMenuPref {
   try {
     return JSON.parse(localStorage.getItem(AIDE_MENU_KEY) ?? "{}") as AideMenuPref;
@@ -1097,8 +1101,8 @@ export default function Scene() {
   // d'état (ou le bandeau Obtenu) quitte l'interface, une carte en haut
   // d'écran dit UNE FOIS où la chose vit désormais. « Ne plus afficher »
   // coupe l'aide pour de bon ; sinon, une apparition par sujet et par compte.
-  const [aideMenu, setAideMenu] = useState<"etat" | "objet" | null>(null);
-  function maybeAideMenu(sujet: "etat" | "objet") {
+  const [aideMenu, setAideMenu] = useState<SujetAide | null>(null);
+  function maybeAideMenu(sujet: SujetAide) {
     const pref = lireAideMenu();
     if (pref.off || pref[sujet]) return;
     ecrireAideMenu({ ...pref, [sujet]: true });
@@ -6095,6 +6099,14 @@ export default function Scene() {
               noterProfil(stats);
               setHeroStats(stats);
               setRevelation(null);
+              // ⚠️ Et on dit OÙ ça vit maintenant (demande Patrick 07/09) —
+              // même carte que l'état et l'objet, une fois par compte. La
+              // Révélation vient de montrer une forme puis de la retirer : sans
+              // ça, le joueur n'a aucune raison de savoir qu'il peut la revoir.
+              // Posé APRÈS `setRevelation(null)`, donc sur l'écran de jeu
+              // retrouvé — le popup se pose en haut du cadre, pas par-dessus
+              // l'overlay qu'on quitte. Il vit un écran, comme les deux autres.
+              maybeAideMenu("stats");
             }}
           />
         )}
@@ -6138,6 +6150,12 @@ export default function Scene() {
               {aideMenu === "etat" ? (
                 <>
                   Ton état est rangé dans le menu.
+                  <br />
+                  Tu peux l&apos;y consulter à tout moment.
+                </>
+              ) : aideMenu === "stats" ? (
+                <>
+                  Ce qu&apos;il voit de toi est rangé dans le menu.
                   <br />
                   Tu peux l&apos;y consulter à tout moment.
                 </>
