@@ -27,6 +27,9 @@ import { buildLesCent, PREMIER_VALEUR, type RegistreEntry } from "@/lib/registre
 import { destinDepuisCause, loadMemory, relicEffect, relicFiche, RELIC_FONCTION } from "@/lib/player-memory";
 import { pickJailerQuote, reactionJours } from "@/lib/jailer-quotes";
 import { animReduced } from "@/lib/settings";
+import { track } from "@/lib/analytics";
+import { HomeCta } from "@/components/Home";
+import Avis, { avisDejaDonne } from "@/components/Avis";
 import type { RunState } from "@/lib/state";
 import TagRarete from "@/components/TagRarete";
 import { Coffre, TeteGeolier } from "@/components/PixelArt";
@@ -195,6 +198,7 @@ export default function DeathScreen({
   heroName,
   cause,
   firstDeath,
+  apercu = false,
   onRestart,
 }: {
   epitaph: string;
@@ -206,12 +210,19 @@ export default function DeathScreen({
   /** Jalon de première fois : la relique est un fragment fort (déjà garanti
       côté forge) et la ligne de fonction accueille au lieu de railler. */
   firstDeath?: boolean;
-  /** L'illustration à l'écran au moment du jet fatal — le LIEU de la mort,
-      porté par la carte (01/09). Sans elle, la carte sert un ciel tramé. */
+  /** L'aperçu des Options : la séquence se rejoue, mais l'invitation à donner
+      son avis (deuxième mort) ne se pose pas — elle est réservée au jeu réel. */
+  apercu?: boolean;
   onRestart: () => void;
 }) {
   const [ecran, setEcran] = useState<Ecran>("fatal");
   const [coffreOuvert, setCoffreOuvert] = useState(false);
+  // L'INVITATION DE LA DEUXIÈME MORT (Patrick, 10/09) : après la relique, une
+  // carte hors fiction propose le questionnaire. Deux vies, c'est le moment
+  // où le joueur en sait assez pour juger — et assez tôt pour qu'il soit
+  // encore là. Une fois par compte (`pactum-avis-invite`), jamais en aperçu,
+  // jamais si l'avis est déjà donné.
+  const [invitation, setInvitation] = useState<"non" | "carte" | "avis">("non");
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const mem = useMemo(() => loadMemory(), []);
@@ -401,6 +412,12 @@ export default function DeathScreen({
     if (ecran === "relique") {
       // Le coffre : le premier tap RÉVÈLE, il ne fait pas avancer (30/07).
       if (!coffreOuvert) return setCoffreOuvert(true);
+      if (invitation !== "non") return; // la carte a ses propres boutons
+      if (morts === 2 && !apercu && !avisDejaDonne() && !inviteDejaFaite()) {
+        marquerInvite();
+        track("avis_invitation", { mort_numero: morts });
+        return setInvitation("carte");
+      }
       return onRestart();
     }
   };
@@ -599,8 +616,54 @@ export default function DeathScreen({
           jusqu'au texte : des braises par-dessus lui volaient dans l'image au
           lieu de couver sous elle. */}
       {!(ecran === "relique" && !coffreOuvert) && <FondBraises height={144} />}
+
+      {invitation === "carte" && (
+        <div
+          className="absolute inset-0 z-[20] flex flex-col justify-end bg-[var(--color-bg)]/85 px-[30px] pb-[40px]"
+          data-avis-invitation
+          onClick={(e) => e.stopPropagation()}
+        >
+          <p className="font-mono text-[11px] uppercase tracking-[2px] text-[var(--color-ink)] opacity-50">Hors du jeu · 3 minutes</p>
+          <h3 className="mt-[12px] font-serif text-[30px] leading-[1.1] text-[var(--color-accent)]" style={{ textWrap: "balance" }}>
+            Deux vies. Tu en sais assez pour nous dire ce que tu en penses.
+          </h3>
+          <p className="mt-[12px] font-mono text-[13px] leading-[1.5] text-[var(--color-ink)] opacity-70">
+            Huit questions, pas une de plus. Ce que tu diras change le jeu que les suivants joueront.
+          </p>
+          <div className="mt-[24px] flex flex-col gap-[12px]">
+            <HomeCta label="Donner mon avis" onClick={() => setInvitation("avis")} />
+            <HomeCta
+              label="Plus tard"
+              secondary
+              onClick={() => {
+                track("avis_ferme", { source: "mort", question: "invitation" });
+                onRestart();
+              }}
+            />
+          </div>
+        </div>
+      )}
+      {invitation === "avis" && (
+        <div className="absolute inset-0 z-[20]" data-avis-overlay>
+          <Avis source="mort" onClose={onRestart} />
+        </div>
+      )}
     </div>
   );
+}
+
+const CLE_INVITE = "pactum-avis-invite";
+function inviteDejaFaite(): boolean {
+  try {
+    return !!window.localStorage.getItem(CLE_INVITE);
+  } catch {
+    return false;
+  }
+}
+function marquerInvite(): void {
+  try {
+    window.localStorage.setItem(CLE_INVITE, new Date().toISOString());
+  } catch {}
 }
 
 

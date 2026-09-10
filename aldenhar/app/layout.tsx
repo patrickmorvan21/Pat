@@ -112,9 +112,28 @@ if ("serviceWorker" in navigator) {
   }
 })();`;
 
+  // STATISTIQUES DE JEU — PostHog UE (Patrick, 10/09, pour la démo). Snippet
+  // OFFICIEL du SDK (pas de paquet npm : `posthog-js` n'était pas installable
+  // le 10/09, une sous-dépendance manquait sur le registre). La clé projet est
+  // PUBLIQUE par nature (elle ne sert qu'à écrire des événements). Tout ce qui
+  // est mesuré passe par `lib/analytics.ts` — rien ici n'est capturé tout seul :
+  //   • autocapture / pageview / pageleave OFF : une seule URL, des boutons
+  //     anonymes — seuls les événements NOMMÉS par le jeu ont un sens ;
+  //   • persistance localStorage, aucun cookie ;
+  //   • relecture de session avec champs masqués et SANS canvas (le dé,
+  //     l'Anneau, les braises et les mini-jeux apparaîtront vides dans les
+  //     replays — passer `recordCanvas: true` coûte cher en bande passante,
+  //     c'est un réglage à activer sciemment) ;
+  //   • `person_profiles: 'always'` : à l'échelle d'une démo, ça garantit
+  //     tous les tableaux (rétention, entonnoirs) sans distinction.
+  const posthog = `
+!function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey getNextSurveyStep identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException loadToolbar get_property getSessionProperty createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+posthog.init("phc_rmaxCtePTNfmMsjypNg9QxgMd4U4aXTfDZkjyrfGBZAX",{api_host:"https://eu.i.posthog.com",autocapture:false,capture_pageview:false,capture_pageleave:false,persistence:"localStorage",person_profiles:"always",session_recording:{maskAllInputs:true,recordCanvas:false}});`;
+
   return (
     <html lang="fr">
       <head>
+        <script dangerouslySetInnerHTML={{ __html: posthog }} />
         {/* iOS ancien (< 16.4) n'honore que cette balise historique pour
             lancer sans les barres Safari. Next n'émet que le
             `mobile-web-app-capable` standard via appleWebApp — on ajoute

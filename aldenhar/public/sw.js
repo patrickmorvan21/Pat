@@ -13,7 +13,7 @@
    dur. `cache.add("./")` → la racine servie, `cache.add("assets/x.png")`
    → <base>/assets/x.png, etc. */
 
-const CACHE_VERSION = "pactum-v227";
+const CACHE_VERSION = "pactum-v228";
 
 /* Coquille précachée à l'installation : les pages navigables + les
    assets à nom STABLE affichés tôt (logo, Geôlier, cadre). On NE code
@@ -96,6 +96,11 @@ self.addEventListener("activate", (event) => {
       frais pointe déjà vers les nouveaux noms. */
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
+  // Même origine seulement (10/09) : les requêtes vers un autre hôte (le SDK
+  // de statistiques, les polices Google) ne passent ni par le cache ni par la
+  // stratégie du jeu — on laisse le navigateur faire. Sans ce garde, le script
+  // du SDK aurait été figé en cache jusqu'au prochain bump de CACHE_VERSION.
+  if (new URL(event.request.url).origin !== self.location.origin) return;
 
   const isNavigation =
     event.request.mode === "navigate" ||

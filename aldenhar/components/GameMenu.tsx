@@ -13,6 +13,8 @@ import DeathScreen, { bilanDeMort, type Bilan } from "@/components/DeathScreen";
 import { assetUrl, assetExiste } from "@/lib/assets";
 import { reliqueIllustration } from "@/lib/reliques";
 import { etatsActifs } from "@/lib/etats";
+import { setStatsEnabled, track } from "@/lib/analytics";
+import Avis from "@/components/Avis";
 
 /**
  * Menu plein cadre (spec §8 + écrans Figma 1925:559 « Essence » et 1925:524
@@ -121,7 +123,11 @@ export default function GameMenu({
       run par le parent (Scene) pour garder l'état synchronisé. */
   onUse?: (item: BesaceItem) => void;
 }) {
-  const [tab, setTab] = useState<Tab>("stats");
+  const [tab, setTabState] = useState<Tab>("stats");
+  function setTab(t: Tab) {
+    setTabState(t);
+    track("menu_ouvert", { onglet: t });
+  }
   const memory = useMemo(() => loadMemory(), []);
 
   return (
@@ -309,6 +315,7 @@ function InventaireTab({
   const [besace, setBesace] = useState<BesaceItem[]>(() => run.besace.map(normalizeItem));
   const passifs = besaceBySlot(besace, "passif");
   const actifs = besaceBySlot(besace, "actif");
+  const [avis, setAvis] = useState(false);
   const [selected, setSelected] = useState<Selected>(() =>
     besace[0] ? { type: "besace", id: besace[0].id } : { type: "relic", index: 0 }
   );
@@ -444,6 +451,24 @@ function InventaireTab({
           )}
         </div>
       </div>
+
+      {/* DONNER SON AVIS (10/09) — accessible aussi depuis l'Inventaire, pour
+          qu'un joueur en pleine partie y ait toujours accès quelque part. */}
+      <div className="mt-[28px] px-[15px]">
+        <button
+          type="button"
+          onClick={() => setAvis(true)}
+          data-donner-avis
+          className="font-mono text-[12px] text-[var(--color-ink)] opacity-70 underline"
+        >
+          Donner son avis sur le jeu
+        </button>
+      </div>
+      {avis && (
+        <div className="absolute inset-0 z-[50]" data-avis-overlay>
+          <Avis source="inventaire" onClose={() => setAvis(false)} />
+        </div>
+      )}
     </div>
   );
 }
@@ -563,6 +588,7 @@ export function OptionsTab() {
   const [preview, setPreview] = useState<PreviewMort | null>(null);
   /** Aperçu du prologue : l'ouverture rejouée d'un bout à l'autre. */
   const [apercu, setApercu] = useState<EtapeApercu>(null);
+  const [avis, setAvis] = useState(false);
 
   function ouvrirApercu() {
     setApercu("intro");
@@ -570,6 +596,9 @@ export function OptionsTab() {
 
   function set<K extends keyof Settings>(k: K, v: Settings[K]) {
     setS(mutateSettings((d) => { d[k] = v; }));
+    // Instantané pour `stats` : l'événement part AVANT que l'opt-out ne coupe
+    // la file — le refus lui-même est un chiffre utile (combien refusent ?).
+    track("reglage_change", { reglage: k, valeur: String(v) }, { instant: k === "stats" });
   }
 
   function reafficherAides() {
@@ -626,6 +655,20 @@ export function OptionsTab() {
       {/* Vibrations et Chronomètres : MASQUÉS (Patrick, 2/09). Les deux
           réglages vivent toujours dans le store (`vibrations`, `chronosOff`)
           avec leur défaut — seul l'affichage est retiré. */}
+      {/* Statistiques anonymes (10/09) : l'opt-out de la mesure PostHog. */}
+      <div className="mt-[24px]" data-reglage-stats>
+        <OptLabel>Statistiques anonymes</OptLabel>
+        <SegControl
+          options={[{ v: "oui", label: "oui" }, { v: "non", label: "non" }]}
+          value={s.stats ? "oui" : "non"}
+          onChange={(v) => {
+            const on = v === "oui";
+            set("stats", on); // envoie `reglage_change` avant la coupure
+            setStatsEnabled(on);
+          }}
+        />
+        <OptHelp>Ce que tu joues aide à régler le jeu : quels écrans, quels dés, où l&apos;on s&apos;arrête. Jamais ton nom, jamais ton adresse.</OptHelp>
+      </div>
       <div className="mt-[24px]">
         <button type="button" onClick={reafficherAides} className="font-mono text-[13px] text-[var(--color-ink)] underline">
           Réafficher les aides
@@ -697,13 +740,34 @@ export function OptionsTab() {
 
       <OptDivider />
 
+      {/* DONNER SON AVIS (10/09) — le questionnaire de trois minutes. C'est
+          le seul lien de pied ACTIF ; « Envoyer un retour » (inerte) devient
+          celui-ci. Il s'ouvre en plein cadre par-dessus les Options, comme
+          les deux aperçus. */}
+      <div className="pb-[4px]">
+        <button
+          type="button"
+          onClick={() => setAvis(true)}
+          data-donner-avis
+          className="font-mono text-[13px] text-[var(--color-ink)] underline"
+        >
+          Donner son avis
+        </button>
+        <OptHelp>Trois minutes, huit questions. Ce que tu en penses compte plus que ce que tu as réussi.</OptHelp>
+      </div>
+
       {/* Liens de pied — INERTES */}
-      <div className="flex flex-col gap-[14px] pb-[10px] opacity-50">
-        {["Crédits", "Confidentialité & conditions", "Envoyer un retour"].map((l) => (
+      <div className="mt-[14px] flex flex-col gap-[14px] pb-[10px] opacity-50">
+        {["Crédits", "Confidentialité & conditions"].map((l) => (
           <span key={l} className="font-mono text-[13px] text-[var(--color-ink)]">{l}</span>
         ))}
       </div>
     </div>
+    {avis && (
+      <div className="absolute inset-0 z-[50]" data-avis-overlay>
+        <Avis source="options" onClose={() => setAvis(false)} />
+      </div>
+    )}
     {apercu && (
       <div className="absolute inset-0 z-[50]" data-apercu-prologue>
         {apercu === "intro" && <Intro apercu onDone={() => setApercu("acte")} />}
@@ -729,6 +793,7 @@ export function OptionsTab() {
           heroName={preview.heroName}
           cause={preview.cause}
           firstDeath={preview.firstDeath}
+          apercu
           // Aperçu : on referme, on ne recharge jamais la page (rien n'a été
           // détruit — la vraie mort, elle, `reload()` après `resetRun()`).
           onRestart={() => setPreview(null)}

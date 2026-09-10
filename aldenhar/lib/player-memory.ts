@@ -17,6 +17,7 @@
  * modulent le ton et le décor, jamais un score exposé (piliers du projet).
  */
 
+import { track } from "./analytics";
 import type { RegistreRow } from "@/lib/state";
 import { sacDepuis, type SacFaits } from "@/lib/faits";
 import { SCEAU_LANDES } from "@/lib/sceaux";
@@ -388,6 +389,7 @@ export function noterFait(faitId: string, versionId: string): void {
  * jalons de mort ne doivent pas se croire avancés.
  */
 export function recordRenoncement(args: { heroName: string; days: number; franchis: number; place: string }): void {
+  track("renoncement", { jour: args.days, franchis: args.franchis, lieu: args.place, morts: loadMemory().deaths }, { instant: true });
   mutateMemory((m) => {
     m.renoncements = (m.renoncements ?? 0) + 1;
     m.totalDays += args.days;
@@ -421,6 +423,7 @@ export function noterProfil(stats: { courage: number; ruse: number; instinct: nu
 }
 
 export function recordTraversee(args: { heroName: string; days: number; franchis: number }): void {
+  track("descente_franchie", { jour: args.days, franchis: args.franchis, morts: loadMemory().deaths, traversees: loadMemory().zonesCleared ?? 0 }, { instant: true });
   mutateMemory((m) => {
     m.zonesCleared = (m.zonesCleared ?? 0) + 1;
     // LE SCEAU DES LANDES (arbitrage 10/08) : ce qu'on rapporte en revenant.
@@ -660,6 +663,14 @@ export function recordDeath(args: {
   const firstDeath = memBefore.deaths === 0;
   const bestBefore = memBefore.bestFranchis ?? 0;
   const relic = forgeRelic(args.heroName, args.days, firstDeath, args.cause);
+  // STATISTIQUES (10/09) : la mort est l'événement central de la démo. Posée
+  // ICI, au point de passage obligé, jamais dans un écran — l'aperçu des
+  // Options ne passe pas par cette fonction, donc il ne compte jamais.
+  track(
+    "mort",
+    { cause: args.cause, lieu: args.lieu ?? args.place, jour: args.days, franchis: args.franchis, mort_numero: memBefore.deaths + 1, fixation: args.fixation ?? false, rarete: relic.rarity },
+    { instant: true }
+  );
   mutateMemory((m) => {
     m.deaths += 1;
     m.totalDays += args.days;

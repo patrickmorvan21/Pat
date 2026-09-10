@@ -11,7 +11,8 @@ import { pickJailerQuote } from "@/lib/jailer-quotes";
 import { hasSavedRun, loadRun, resetRun, marquerOuverture } from "@/lib/state";
 import { lieuNom } from "@/lib/scene-data";
 import { APP_VERSION } from "@/lib/version";
-import { applySettingsToDom } from "@/lib/settings";
+import { applySettingsToDom, loadSettings } from "@/lib/settings";
+import { initAnalytics, track } from "@/lib/analytics";
 import { armAudio, playMusic } from "@/lib/audio";
 import { OptionsTab } from "@/components/GameMenu";
 import { BoutonNav } from "@/components/NavIcons";
@@ -44,6 +45,10 @@ export default function Home() {
     // Réglages (Options 21/07) : applique taille de texte + animations réduites
     // au <html> dès le démarrage de l'app (persiste à travers accueil/jeu).
     applySettingsToDom();
+    // STATISTIQUES (10/09) : une seule initialisation, à la racine — pose les
+    // super-propriétés (version, source du lien, PWA), applique l'opt-out du
+    // réglage, arme la carte d'abandon (`app_masquee`).
+    initAnalytics({ stats: loadSettings().stats });
     // Musique (24/07) : thème d'intro sur l'accueil — armé sur le premier
     // geste (politique d'autoplay), silencieux si les mp3 manquent.
     armAudio();
@@ -51,6 +56,13 @@ export default function Home() {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- miroir du localStorage, une seule fois au montage (illisible au rendu SSR)
     setSaved(hasSavedRun());
     const m0 = loadMemory();
+    track("accueil_vu", {
+      premiere_partie: m0.runsStarted === 0,
+      runs: m0.runsStarted,
+      morts: m0.deaths,
+      traversees: m0.zonesCleared ?? 0,
+      partie_en_cours: hasSavedRun(),
+    });
     setADuPasse(m0.relics.length > 0 || m0.fallen.length > 0);
     setADuCodex(Object.keys(m0.codex ?? {}).length > 0);
     // La citation du Geôlier devient variable (30/07) : dès la première mort,
@@ -98,6 +110,9 @@ export default function Home() {
    * Une reprise, elle, saute droit au jeu (par le carton de reprise).
    */
   function enterGame(reprend = false) {
+    // ⚠️ `reprend` peut être l'ÉVÉNEMENT de clic (COMMENCER passe `enterGame`
+    // tel quel) : seule la valeur `true` veut dire « reprise ».
+    track("partie_commencee", { mode: reprend === true ? "reprise" : loadRun().ouverture ? "recommencer" : "nouvelle" });
     if (loadRun().ouverture) {
       // LE CARTON DE REPRISE (retour Patrick 01/09) : le rappel « Nom · Jour /
       // Les Landes · Lieu » vivait sous le bouton, en 10 px gris — il alourdit
@@ -242,7 +257,7 @@ export default function Home() {
  * bloc orange plein texte charbon ; secondaire = contour orange, texte
  * orange, fond transparent. Pas de segments décalés ici — la maquette prime.
  */
-function HomeCta({ label, secondary, onClick }: { label: string; secondary?: boolean; onClick: () => void }) {
+export function HomeCta({ label, secondary, onClick }: { label: string; secondary?: boolean; onClick: () => void }) {
   // Structure = calques du composant Figma (et de ChoiceButton en jeu) :
   // fond + bordure en calques enfants inset-0, puis les carrés de coin 2×2
   // charbon posés PAR-DESSUS, au ras exact du coin (0,0) — jamais une

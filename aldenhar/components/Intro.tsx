@@ -42,6 +42,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import TypedText from "@/components/TypedText";
+import { track } from "@/lib/analytics";
 import { HeroGeolier } from "@/components/HeroGeolier";
 import { markIntroSeen } from "@/lib/player-memory";
 import TouchHint from "@/components/TouchHint";
@@ -706,6 +707,13 @@ export default function Intro({
               label="Sceller le pacte"
               onClick={() => {
                 haptic(14);
+                track("pacte_signe", {
+                  duree_ms: Math.round(marque.duree * 1000),
+                  traces: marque.traces,
+                  arrets: marque.arrets,
+                  demande: marque.demande,
+                  apercu,
+                });
                 traverser("verdict");
               }}
             />

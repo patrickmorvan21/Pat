@@ -32,6 +32,12 @@ export type Settings = {
   /** Musique (lot 24/07) : marche/arrêt + volume 0..1. */
   music: boolean;
   musicVolume: number;
+  /**
+   * Statistiques anonymes de jeu (PostHog, 10/09) : le joueur peut couper la
+   * mesure. Actif par défaut — rien d'identifiant n'est envoyé (voir
+   * `lib/analytics.ts`), et une démo sans mesure ne sert à rien.
+   */
+  stats: boolean;
 };
 
 const KEY = "aldenhar-settings";
@@ -44,6 +50,7 @@ const DEFAULTS: Settings = {
   chronosOff: false,
   music: true,
   musicVolume: 0.7,
+  stats: true,
 };
 
 // Cache module : lu par `haptic()` (appelé souvent par le dé) sans toucher le
@@ -65,6 +72,7 @@ export function loadSettings(): Settings {
         chronosOff: typeof p.chronosOff === "boolean" ? p.chronosOff : DEFAULTS.chronosOff,
         music: typeof p.music === "boolean" ? p.music : DEFAULTS.music,
         musicVolume: typeof p.musicVolume === "number" ? p.musicVolume : DEFAULTS.musicVolume,
+        stats: typeof p.stats === "boolean" ? p.stats : DEFAULTS.stats,
       };
       return cached;
     }

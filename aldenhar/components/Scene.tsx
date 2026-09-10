@@ -104,6 +104,7 @@ import SlowSwipe from "@/components/minigames/engines/SlowSwipe";
 import StraightSwipe from "@/components/minigames/engines/StraightSwipe";
 import { forcerPiste, playMusic } from "@/lib/audio";
 import { loadSettings, CLES_AIDES, haptic } from "@/lib/settings";
+import { track, registerEcran, registerGeste } from "@/lib/analytics";
 import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomSoinMineur, recompenseDestinQuiTient, usageEnMots, LANDES_OBJETS, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { assetUrl, assetSrc, assetCss, assetExiste } from "@/lib/assets";
 import {
@@ -1695,6 +1696,24 @@ export default function Scene() {
     aideSiObjet(tete);
   }
 
+  // STATISTIQUES (10/09) : chaque scène affichée est un événement, et son id
+  // devient une super-propriété jointe à tout ce qui suit (choix, dé, geste,
+  // abandon). C'est ce qui permet de lire OÙ les joueurs lâchent.
+  useEffect(() => {
+    registerEcran(scene.id);
+    track("ecran_vu", {
+      scene: scene.id,
+      liaison: Boolean(scene.liaison),
+      combat: Boolean(scene.combat),
+      terminal: Boolean(scene.terminal),
+      jour: runRef.current?.day ?? 1,
+      sante: Math.round((runRef.current?.health ?? 1) * 100) / 100,
+    });
+  }, [scene.id, scene.liaison, scene.combat, scene.terminal]);
+  useEffect(() => {
+    registerGeste(minigameChoice?.minigame?.engine ?? null);
+  }, [minigameChoice]);
+
   // Reprise de run : fermer l'app ne compte jamais comme une mort. On restaure
   // l'écran COURANT (scène, jour, santé, états) — pas un scrollback complet.
   useEffect(() => {
@@ -2495,6 +2514,7 @@ export default function Scene() {
       if (!trav.visited.includes(opts.toDest)) {
         trav.visited = [...trav.visited, opts.toDest];
         noterVisiteLieu(radical(opts.toDest));
+        track("lieu_atteint", { lieu: radical(opts.toDest), visites: trav.visited.length, cible: trav.target });
         // LE JOUR AVANCE EN VIVANT (arbitrage 7/08, corrigé le 10/08) : tous
         // les trois lieux OÙ L'ON A TENTÉ QUELQUE CHOSE, un jour passe. La
         // version d'avant comptait les lieux traversés, quoi qu'on y fasse —
@@ -4312,6 +4332,7 @@ export default function Scene() {
   function finirMinigame(ok: boolean) {
     const c = minigameChoice;
     if (!c || !c.minigame) return;
+    track("geste_joue", { moteur: c.minigame.engine, reussi: ok, scene: scene.id, choix: c.id, essai: minigameRetry + 1 });
     // LA CÉRÉMONIE (swipe) : l'échec n'existe pas — trop vite, la corde ne
     // file pas, tout s'attend, et le geste se représente. Jamais un test
     // d'adresse devant la Descente (doctrine du script, verrouillée).
@@ -4401,6 +4422,26 @@ export default function Scene() {
 
   function onSelect(choice: Choice) {
     if (rolling || selectedId) return;
+    track("choix", {
+      scene: scene.id,
+      choix: choice.id,
+      type: choice.locked
+        ? "verrou"
+        : choice.risky
+          ? "risque"
+          : choice.orient
+            ? "orientation"
+            : choice.useItem
+              ? "objet"
+              : choice.sortie
+                ? "sortie"
+                : choice.passive
+                  ? "passif"
+                  : "continuer",
+      stat: choice.risky?.stat,
+      seuil: choice.risky?.threshold,
+      geste: choice.minigame?.engine,
+    });
     // MODE DÉMO : un choix qui porte un mini-jeu l'ouvre AVANT de se résoudre
     // — le geste décide, puis la résolution normale reprend (finirMinigame).
     // La config se calcule ICI (lecture de runRef interdite au rendu) : la
@@ -4594,6 +4635,7 @@ export default function Scene() {
         // vient d'apparaître dans la paume.
         debloquerCodex("arc:sceau", run.heroName, run.day);
       }
+      track("relance", { apres: scene.renoncement ? "renoncement" : "descente" }, { instant: true });
       resetRun();
       window.location.reload();
       return;
@@ -5188,6 +5230,7 @@ export default function Scene() {
       // là-dedans. Un objet ne fait plus passer le temps : il transforme
       // l'endroit où on est.
       const itemId = choice.useItem.itemId;
+      track("objet_utilise", { objet: itemId, scene: scene.id, depuis: "choix" });
       const item = (runRef.current?.besace ?? []).map(normalizeItem).find((i) => i.id === itemId);
       let consequence =
         choice.useItem.consequence ??
@@ -5363,8 +5406,10 @@ export default function Scene() {
           onPointerDown={() => {
             // Frappe en cours → la finir ; écran fini + séquence en attente →
             // écran suivant. Le même geste sert les deux, dans cet ordre.
-            if (activeTypingIdRef.current) setSkip((s) => s + 1);
-            else if (beatsSuiteRef.current.length) nextChunk();
+            if (activeTypingIdRef.current) {
+              track("texte_saute", { scene: scene.id });
+              setSkip((s) => s + 1);
+            } else if (beatsSuiteRef.current.length) nextChunk();
             else setSkip((s) => s + 1);
           }}
           className={`scene-text-zone relative min-h-0 flex-1 overflow-y-auto px-[17px] pt-[16px] ${rolling ? "pointer-events-none" : ""}`}
@@ -5475,6 +5520,18 @@ export default function Scene() {
             const natureJet: NatureJet =
               scene.choices.find((c) => c.id === selectedId)?.nature ??
               (scene.combat ? "physique" : "social");
+            track("de_lance", {
+              scene: scene.id,
+              choix: selectedId,
+              stat: roll?.stat,
+              seuil: roll?.threshold,
+              modificateur: roll?.modifier,
+              resultat: result,
+              palier: tier,
+              reussi: !tierIsFail(tier),
+              nature: natureJet,
+              combat: Boolean(scene.combat),
+            });
             // Un guide connaît les raccourcis : l'échec dur ne coûte plus le
             // JOUR qu'il coûte d'habitude. Bénéfice réel, jamais chiffré — il
             // se lit au fait que la puce « Jour » ne bouge pas.
@@ -6054,6 +6111,7 @@ export default function Scene() {
               setMenuOpen(false);
             }}
             onUse={(item) => {
+              track("objet_utilise", { objet: item.id, scene: scene.id, depuis: "menu" });
               // Consomme l'actif côté run (spec 21/07 point 4) : soin + cure.
               persist((run) => {
                 run.besace = run.besace.filter((i) => i.id !== item.id);
@@ -6075,7 +6133,12 @@ export default function Scene() {
             heroName={death.heroName}
             cause={death.cause}
             firstDeath={death.firstDeath}
-            onRestart={() => window.location.reload()}
+            onRestart={() => {
+              // La relance après une VRAIE mort — pas dans DeathScreen, que
+              // l'aperçu des Options monte aussi. Instantané : la page part.
+              track("relance", { apres: "mort", mort_numero: loadMemory().deaths }, { instant: true });
+              window.location.reload();
+            }}
           />
         )}
 
@@ -6097,6 +6160,7 @@ export default function Scene() {
               // Ce que le Geôlier retiendra de cette incarnation : c'est ce
               // qui lui permettra de COMPARER à la prochaine (§9 du brief).
               noterProfil(stats);
+              track("revelation", { scene: scene.id, ...stats });
               setHeroStats(stats);
               setRevelation(null);
               // ⚠️ Et on dit OÙ ça vit maintenant (demande Patrick 07/09) —
