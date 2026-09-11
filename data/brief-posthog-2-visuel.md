@@ -138,32 +138,71 @@ Affichage **Number**. Exemples utiles :
 | `Mort · lieux franchis moyens` | `mort` | `franchis` |
 | `Avis · durée moyenne` | `avis_envoye` | `duree_s` |
 
-### 6.2 Avec SQL — le tableau de bord des moyennes
+### 6.2 Avec SQL — les moyennes exactes par partie
 
-Nom : `Moyennes par partie`. Une seule ligne, tout le nécessaire.
+Depuis la **v1.141.1**, chaque événement joué à l'intérieur d'une partie porte
+une super-propriété **`run_id`**. Une partie = un `run_id`. Il est posé à
+l'ouverture (`partie_commencee`), survit au rechargement et à la fermeture de
+l'app (reprendre une sauvegarde continue la MÊME partie), et il est retiré
+quand la partie se termine : les événements d'entre-deux (accueil, avis,
+relance) n'en portent aucun, donc ils ne gonflent aucun compte.
 
-⚠️ Une partie n'a pas d'identifiant dans les événements : les moyennes sont
-donc des totaux divisés par le nombre de parties LANCÉES, et `mode = 'reprise'`
-est exclu (reprendre une sauvegarde n'est pas une partie de plus).
+Deux tuiles à créer.
+
+**`Parties · une ligne par partie`**
+
+```sql
+SELECT properties.run_id AS partie,
+  min(timestamp) AS debut,
+  dateDiff('minute', min(timestamp), max(timestamp)) AS minutes,
+  countIf(event = 'ecran_vu')     AS ecrans,
+  countIf(event = 'choix')        AS choix,
+  countIf(event = 'de_lance')     AS des,
+  countIf(event = 'lieu_atteint') AS lieux,
+  anyIf(properties.cause, event = 'mort') AS mort_de,
+  if(countIf(event = 'descente_franchie') > 0, 'sortie', if(countIf(event = 'mort') > 0, 'mort', 'en cours')) AS fin
+FROM events
+WHERE properties.run_id IS NOT NULL
+GROUP BY partie
+ORDER BY debut DESC
+```
+
+**`Moyennes par partie`**
 
 ```sql
 SELECT
-  countIf(event = 'partie_commencee' AND properties.mode != 'reprise') AS parties,
-  countIf(event = 'mort')              AS morts,
-  countIf(event = 'descente_franchie') AS traversees,
-  round(countIf(event = 'ecran_vu')     / nullif(countIf(event = 'partie_commencee' AND properties.mode != 'reprise'), 0), 1) AS ecrans_par_partie,
-  round(countIf(event = 'choix')        / nullif(countIf(event = 'partie_commencee' AND properties.mode != 'reprise'), 0), 1) AS choix_par_partie,
-  round(countIf(event = 'de_lance')     / nullif(countIf(event = 'partie_commencee' AND properties.mode != 'reprise'), 0), 1) AS des_par_partie,
-  round(countIf(event = 'lieu_atteint') / nullif(countIf(event = 'partie_commencee' AND properties.mode != 'reprise'), 0), 1) AS lieux_par_partie,
-  round(100 * countIf(event = 'de_lance' AND properties.reussi = true) / nullif(countIf(event = 'de_lance'), 0), 1) AS pct_des_tenus,
-  round(avgIf(toFloat(properties.resultat), event = 'de_lance'), 1) AS de_moyen,
-  round(avgIf(toFloat(properties.jour), event = 'mort'), 1)         AS jour_moyen_a_la_mort,
-  round(avgIf(toFloat(properties.franchis), event = 'mort'), 1)     AS franchis_moyens_a_la_mort
-FROM events
+  count()                               AS parties,
+  round(avg(ecrans), 1)                 AS ecrans_par_partie,
+  round(avg(choix), 1)                  AS choix_par_partie,
+  round(avg(des), 1)                    AS des_par_partie,
+  round(avg(lieux), 1)                  AS lieux_par_partie,
+  round(avg(minutes), 1)                AS minutes_par_partie,
+  round(100 * sum(morte) / count(), 0)  AS pct_parties_mortelles,
+  round(100 * sum(sortie) / count(), 0) AS pct_traversees
+FROM (
+  SELECT properties.run_id AS rid,
+    countIf(event = 'ecran_vu')     AS ecrans,
+    countIf(event = 'choix')        AS choix,
+    countIf(event = 'de_lance')     AS des,
+    countIf(event = 'lieu_atteint') AS lieux,
+    dateDiff('minute', min(timestamp), max(timestamp)) AS minutes,
+    if(countIf(event = 'mort') > 0, 1, 0)              AS morte,
+    if(countIf(event = 'descente_franchie') > 0, 1, 0) AS sortie
+  FROM events
+  WHERE properties.run_id IS NOT NULL
+  GROUP BY rid
+)
 ```
 
-Si `avgIf` est refusé, le remplacer par
-`avg(if(event = 'mort', toFloat(properties.jour), null))`.
+Les moyennes du dé restent plus justes hors de ce regroupement, parce qu'elles
+portent sur des JETS et non sur des parties :
+
+```sql
+SELECT count() AS jets,
+  round(avg(toFloat(properties.resultat)), 1) AS de_moyen,
+  round(100 * countIf(properties.reussi = true) / count(), 0) AS pct_tenus
+FROM events WHERE event = 'de_lance'
+```
 
 ### 6.3 Une ligne par joueur
 

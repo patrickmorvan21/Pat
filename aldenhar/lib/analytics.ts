@@ -28,6 +28,8 @@
  *   source    — d'où vient le lien (`?src=discord`, `?src=itch`…), persisté :
  *               un testeur venu par un canal garde son étiquette toute la démo.
  *   pwa       — l'app est-elle installée (mode autonome) ?
+ *   run_id    — l'identifiant de la partie en cours (voir plus bas). Absent
+ *               entre deux parties : ces événements n'appartiennent à aucune.
  *   ecran     — l'id de la scène affichée (posé par `registerEcran`), pour
  *               que chaque événement sache où il est tombé.
  *   geste     — le moteur de mini-jeu ouvert, s'il y en a un.
@@ -138,6 +140,70 @@ function sourceDuLien(): string {
   }
 }
 
+const RUN_KEY = "pactum-run-id";
+
+/**
+ * L'IDENTIFIANT DE PARTIE (11/09, demande de Patrick : « des moyennes exactes
+ * par partie »). Sans lui, une moyenne « par partie » se calcule en divisant
+ * des totaux par le nombre de `partie_commencee` — une approximation qui se
+ * décale dès qu'un joueur lâche en cours de route sans jamais revenir. Avec
+ * lui, un `GROUP BY run_id` rend une ligne par partie réellement jouée.
+ *
+ * PORTÉE — il vit en localStorage, donc il survit à un rechargement et à la
+ * fermeture de l'app : reprendre une sauvegarde continue la MÊME partie, ce
+ * qui est la règle du jeu (permadeath — fermer l'app ne tue jamais). Il est
+ * RETIRÉ quand la partie se termine (mort, Descente, renoncement) : les
+ * événements d'entre-deux (accueil, avis, relance) n'en portent donc aucun,
+ * et ne gonflent aucun compte de partie.
+ *
+ * Rien d'identifiant : c'est un tirage aléatoire, sans lien avec la personne
+ * ni avec le nom du héros, qui n'est jamais envoyé.
+ */
+function idDePartie(): string {
+  try {
+    const c = window.crypto;
+    if (c && typeof c.randomUUID === "function") return c.randomUUID();
+  } catch {}
+  return `r${Date.now().toString(36)}${Math.random().toString(36).slice(2, 10)}`;
+}
+
+/**
+ * Une partie s'ouvre. `reprise` continue celle qui est en cours ; une
+ * sauvegarde antérieure au 11/09 n'a pas encore d'identifiant, on lui en pose
+ * un plutôt que de la laisser hors des comptes.
+ */
+export function ouvrirRun(reprise: boolean): void {
+  if (typeof window === "undefined") return;
+  let id: string | null = null;
+  try {
+    if (reprise) id = window.localStorage.getItem(RUN_KEY);
+    if (!id) {
+      id = idDePartie();
+      window.localStorage.setItem(RUN_KEY, id);
+    }
+  } catch {
+    id = id ?? idDePartie();
+  }
+  registerProps({ run_id: id });
+}
+
+/**
+ * La partie est finie. Appelé par `recordDeath` / `recordTraversee` /
+ * `recordRenoncement`, APRÈS leur propre événement — celui-ci doit encore
+ * porter l'identifiant, c'est la dernière ligne de la partie.
+ */
+export function finDeRun(): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(RUN_KEY);
+  } catch {}
+  const p = sdk();
+  if (!p) return;
+  try {
+    p.unregister("run_id");
+  } catch {}
+}
+
 let initialise = false;
 
 /**
@@ -154,6 +220,12 @@ export function initAnalytics(opts: { stats: boolean }): void {
     source: sourceDuLien(),
     pwa: estAutonome(),
   });
+  // Une partie en cours survit à un rechargement (et à la fermeture de l'app) :
+  // on remet son identifiant AVANT tout autre événement.
+  try {
+    const enCours = window.localStorage.getItem(RUN_KEY);
+    if (enCours) registerProps({ run_id: enCours });
+  } catch {}
   document.addEventListener("visibilitychange", () => {
     if (document.visibilityState === "hidden") {
       track("app_masquee", {}, { instant: true });

@@ -17,7 +17,7 @@
  * modulent le ton et le décor, jamais un score exposé (piliers du projet).
  */
 
-import { track } from "./analytics";
+import { track, finDeRun } from "./analytics";
 import type { RegistreRow } from "@/lib/state";
 import { sacDepuis, type SacFaits } from "@/lib/faits";
 import { SCEAU_LANDES } from "@/lib/sceaux";
@@ -390,6 +390,7 @@ export function noterFait(faitId: string, versionId: string): void {
  */
 export function recordRenoncement(args: { heroName: string; days: number; franchis: number; place: string }): void {
   track("renoncement", { jour: args.days, franchis: args.franchis, lieu: args.place, morts: loadMemory().deaths }, { instant: true });
+  finDeRun(); // la partie s'arrête ici : plus aucun événement ne lui appartient.
   mutateMemory((m) => {
     m.renoncements = (m.renoncements ?? 0) + 1;
     m.totalDays += args.days;
@@ -424,6 +425,7 @@ export function noterProfil(stats: { courage: number; ruse: number; instinct: nu
 
 export function recordTraversee(args: { heroName: string; days: number; franchis: number }): void {
   track("descente_franchie", { jour: args.days, franchis: args.franchis, morts: loadMemory().deaths, traversees: loadMemory().zonesCleared ?? 0 }, { instant: true });
+  finDeRun(); // la partie s'arrête ici : plus aucun événement ne lui appartient.
   mutateMemory((m) => {
     m.zonesCleared = (m.zonesCleared ?? 0) + 1;
     // LE SCEAU DES LANDES (arbitrage 10/08) : ce qu'on rapporte en revenant.
@@ -671,6 +673,7 @@ export function recordDeath(args: {
     { cause: args.cause, lieu: args.lieu ?? args.place, jour: args.days, franchis: args.franchis, mort_numero: memBefore.deaths + 1, fixation: args.fixation ?? false, rarete: relic.rarity },
     { instant: true }
   );
+  finDeRun(); // la partie s'arrête ici : plus aucun événement ne lui appartient.
   mutateMemory((m) => {
     m.deaths += 1;
     m.totalDays += args.days;

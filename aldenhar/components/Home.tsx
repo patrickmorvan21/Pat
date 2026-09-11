@@ -12,7 +12,7 @@ import { hasSavedRun, loadRun, resetRun, marquerOuverture } from "@/lib/state";
 import { lieuNom } from "@/lib/scene-data";
 import { APP_VERSION } from "@/lib/version";
 import { applySettingsToDom, loadSettings } from "@/lib/settings";
-import { initAnalytics, track } from "@/lib/analytics";
+import { initAnalytics, ouvrirRun, track } from "@/lib/analytics";
 import { armAudio, playMusic } from "@/lib/audio";
 import { OptionsTab } from "@/components/GameMenu";
 import { BoutonNav } from "@/components/NavIcons";
@@ -112,7 +112,12 @@ export default function Home() {
   function enterGame(reprend = false) {
     // ⚠️ `reprend` peut être l'ÉVÉNEMENT de clic (COMMENCER passe `enterGame`
     // tel quel) : seule la valeur `true` veut dire « reprise ».
-    track("partie_commencee", { mode: reprend === true ? "reprise" : loadRun().ouverture ? "recommencer" : "nouvelle" });
+    const mode = reprend === true ? "reprise" : loadRun().ouverture ? "recommencer" : "nouvelle";
+    // L'identifiant de partie est posé AVANT l'événement, pour que
+    // `partie_commencee` le porte lui aussi : c'est la première ligne de la
+    // partie, elle doit se retrouver dans son groupe.
+    ouvrirRun(mode === "reprise");
+    track("partie_commencee", { mode });
     if (loadRun().ouverture) {
       // LE CARTON DE REPRISE (retour Patrick 01/09) : le rappel « Nom · Jour /
       // Les Landes · Lieu » vivait sous le bouton, en 10 px gris — il alourdit
