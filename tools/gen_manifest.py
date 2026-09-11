@@ -26,7 +26,10 @@ Deux sorties, un seul calcul (jamais de dérive entre les deux) :
   • aldenhar/lib/assets-manifest.json  — minimal (nom → hash), IMPORTÉ par le
     jeu au build : il faut que `assetUrl()` soit synchrone, donc pas de fetch ;
   • aldenhar/public/assets/manifest.json — complet (taille, date, hash, récent)
-    + en-tête de fraîcheur, FETCHÉ par l'atelier et la page de couverture.
+    + en-tête de fraîcheur, FETCHÉ par le Graphe (`graphe.html`), qui s'en sert
+    pour dater les vignettes et trier les images de la plus récente à la plus
+    ancienne. L'atelier et la page de couverture, anciens consommateurs, ont
+    été supprimés le 31/08.
 
 Lancé automatiquement avant chaque build (`prebuild` de package.json).
 """

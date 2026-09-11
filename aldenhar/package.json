@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "atelier": "python3 ../tools/atelier.py",
     "gen:manifest": "python3 ../tools/gen_manifest.py",
     "prebuild": "npm run check:coherence && npm run gen:manifest && python3 ../tools/immersion.py --strict && python3 ../tools/sejour.py --strict && python3 ../tools/aiguillage.py --strict && python3 ../tools/strates.py --strict && python3 ../tools/acceptation.py --strict && python3 ../tools/densite.py --strict && python3 ../tools/image_texte.py --strict",
     "check:coherence": "python3 ../tools/check_coherence.py",

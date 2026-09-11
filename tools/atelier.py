@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
 """
-L'ATELIER — éditer les scènes de PACTUM, et que ça compte vraiment.
+L'ATELIER — BIBLIOTHÈQUE D'ÉCRITURE (plus aucune page, plus aucun serveur).
 
-    npm run atelier        (depuis aldenhar/)
-    python3 tools/atelier.py [--port 8770]
+⚠️ Ce fichier ne se LANCE PAS. La carte de l'atelier (`data/atelier.html`) a
+été supprimée le 31/08, confirmé par Patrick le 11/09 : le Graphe la remplace.
+Il n'a plus de `__main__` — l'appeler en ligne de commande ne produit rien, et
+ce silence est l'état voulu.
 
-Ce que ça sert : `data/atelier.html`, alimenté par `data/zones/*.json`.
+Ce qui reste : `reporter_dans_ts()`, qui sait poser un champ dans
+`lib/scene-data.ts` en visant le bloc d'une scène ou d'un point d'intérêt sans
+toucher au reste du fichier. `cabler_landes.py` s'en sert pour appliquer un
+manifeste de lot d'images — c'est le chemin de tous les câblages depuis le
+28/07.
 
-═══ La règle qui gouverne tout ce fichier ═══
+═══ La règle qui gouverne ces écritures ═══
 
 Le jeu ne lit PAS les JSON de zone : il lit `aldenhar/lib/scene-data.ts`.
 Un atelier qui n'écrirait que dans le JSON donnerait l'illusion d'éditer le
@@ -20,7 +26,7 @@ Donc chaque écriture va à DEUX endroits, dans cet ordre :
      (`narration` et `illustration`). Sans cette seconde écriture, rien
      n'apparaît en jeu.
 
-Si la seconde échoue, la première est conservée et l'atelier le DIT. On ne
+Si la seconde échoue, la première est conservée et l'appelant le DIT. On ne
 perd jamais un texte, et on ne ment jamais sur ce qui est arrivé en jeu.
 
 Les écritures sont ATOMIQUES : fichier temporaire dans le même dossier, puis

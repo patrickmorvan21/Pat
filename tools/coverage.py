@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
-"""Outil de couverture visuelle PACTUM — rapport + édition.
+"""Couverture visuelle PACTUM — BIBLIOTHÈQUE (plus aucune page, plus aucun outil).
 
-Journal Notion 25/07 « Outil de couverture visuelle » : voir d'un coup d'œil
-quelle image est attachée à quelle scène, repérer les manques et les remplacer.
+⚠️ Ce fichier ne se LANCE PAS. Sa page (`data/couverture_visuelle.html`) et son
+serveur d'édition ont été supprimés le 31/08, confirmé par Patrick le 11/09 :
+le Graphe les remplace. Il n'a plus de `__main__`, donc l'appeler en ligne de
+commande ne produit rien — ni erreur, ni fichier. Ne pas « réparer » ce
+silence : c'est l'état voulu.
 
-    python3 tools/coverage.py              # écrit data/couverture_visuelle.html
-    python3 tools/coverage.py --serve      # + serveur d'édition sur :8765
+Ce qui reste : `build_items()`, le seul endroit du projet qui sache dire d'une
+image si elle est DÉDIÉE, HÉRITÉE, servie par une vue générique ou MANQUANTE.
+`studio_data.py` l'importe pour poser ce statut dans `studio-data.json`, que le
+Graphe lit ; `faire_paquet_ia.py` s'en sert aussi. Le réécrire ailleurs ferait
+diverger deux définitions du même mot.
 
-Le rapport est GÉNÉRÉ, jamais écrit à la main : il croise
+Ce statut est GÉNÉRÉ, jamais écrit à la main : il croise
 
   • aldenhar/lib/scene-data.ts   → l'image RÉELLEMENT affichée en jeu
   • data/zones/*.json           → la matière de production (lieu_attache)
