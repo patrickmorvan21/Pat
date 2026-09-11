@@ -77,5 +77,17 @@ jobs:
             echo "Le graphe est déjà à jour — rien à publier."
           else
             git commit -m "Le graphe suit ${GITHUB_SHA:0:7}"
+            # ⚠️ COURSE AU PUSH : un déploiement manuel du jeu pousse sur la
+            # MÊME branche, souvent dans la même minute (il part du même
+            # commit de la branche de travail). Le push était alors rejeté en
+            # « fetch first » et le workflow passait au rouge sans que rien ne
+            # soit cassé. On rejoue donc sur la tête distante : nos deux
+            # fichiers ne sont touchés par personne d'autre, un rebase ne peut
+            # pas produire de conflit de contenu.
+            for essai in 1 2 3; do
+              if git push origin gh-pages; then exit 0; fi
+              echo "Push rejeté (essai $essai) — quelqu'un a poussé entre-temps, on rejoue."
+              git pull --rebase origin gh-pages
+            done
             git push origin gh-pages
           fi
