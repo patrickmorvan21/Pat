@@ -6,7 +6,7 @@
 
 import { normalizeItem, startingBesace, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { traverseeGuidee } from "@/lib/demo";
-import { ENTRY_SCENE, sceneAt } from "@/lib/scene-data";
+import { ENTRY_SCENE, sceneAt, type MenaceId, type RouteFermeeCause } from "@/lib/scene-data";
 import { profilDepuis, profilNeuf, type ProfilRun } from "@/lib/profil";
 import type { Temoin } from "@/lib/temoins";
 import { sacDepuis, type SacFaits } from "@/lib/faits";
@@ -137,7 +137,7 @@ export type TraversalState = {
   routeFermee?: boolean;
   /** Pourquoi (03/09) — la Croisée fermée nomme l'acte qui l'a fermée, à la
       reprise aussi. */
-  routeFermeeCause?: "echec" | "meute" | "bete";
+  routeFermeeCause?: RouteFermeeCause;
   /** La liaison courante est la SORTIE du village (24/08) : couture
       FRANCHIT_SORTIE en tête + Croisée de lande. Porté par `trav` pour que la
       reprise rebâtisse le MÊME écran (texte de sortie, image de lande) — sans
@@ -330,7 +330,7 @@ export type RunState = {
    */
   routeFermeeEnAttente?: boolean;
   /** La cause qui accompagne le drapeau ci-dessus (03/09). */
-  routeFermeeCause?: "echec" | "meute" | "bete";
+  routeFermeeCause?: RouteFermeeCause;
   /**
    * LA MENACE LAISSÉE ACTIVE (compte rendu 17/08, §2 : « une menace évitée
    * peut rester dans le monde »). Contourner la Meute à la Croisée ou se
@@ -344,7 +344,28 @@ export type RunState = {
    * peut tomber qu'à ≥ 2 lieux de là) ; `traces` = combien de traces déjà
    * servies (au moins une AVANT tout retour, par construction).
    */
-  menace?: { id: "meute" | "bete"; poseeA: number; traces: number } | null;
+  menace?: { id: MenaceId; poseeA: number; traces: number } | null;
+  /**
+   * LE KARMA DU PRUDENT (retour Patrick 11/09 : « le joueur prudent qui évite
+   * toujours de choisir le dé doit être plus confronté à des monstres »).
+   *
+   * Ce n'est PAS une jauge cachée de prudence (refusée le 17/08) : c'est la
+   * comptabilité que les Landes tiennent déjà. Le compteur suit les lieux
+   * QUITTÉS SANS RIEN Y ENGAGER, d'affilée — le miroir exact de
+   * `lieuxEngages`, qui compte ceux où l'on a tenté quelque chose. Engager
+   * n'importe où le remet à zéro : on n'accumule pas une dette, on laisse une
+   * ligne ouverte, et elle se solde dès qu'on paie.
+   *
+   * À trois lignes ouvertes, le créneau `menace` s'arme sur le Recousu — donc
+   * traces en liaison AVANT tout retour, et jamais plus d'une menace à la
+   * fois : le garde-fou du 17/08 vaut aussi pour celle-ci.
+   *
+   * ⚠️ LE COMPTE NE SE TIENT QU'EN PLEINE LANDE, et c'est voulu : les traces
+   * du Recousu (comme son retour) sont gardées « lande », donc un compte
+   * ouvert pendant qu'on est dans le Hameau ne se lit ni ne se solde là-bas.
+   * Dans le village, c'est le village qui tient les comptes — le Soupçon.
+   */
+  lignesOuvertes?: number;
   /**
    * LES TÉMOINS (5/08) : le Soupçon cesse d'être un compteur, il devient des
    * gens. Chaque acte qui fait monter le Soupçon inscrit QUI a vu QUOI, dans
@@ -716,6 +737,7 @@ export function loadRun(): RunState {
             routeFermeeCause:
               p.routeFermeeCause === "meute" || p.routeFermeeCause === "bete" ? p.routeFermeeCause : p.routeFermeeCause === "echec" ? "echec" : undefined,
             menace: p.menace && typeof p.menace === "object" ? p.menace : null,
+      lignesOuvertes: Number(p.lignesOuvertes) || 0,
             engageIci: p.engageIci === true,
             engageAvantReset: p.engageAvantReset === true,
             lieuxEngages: typeof p.lieuxEngages === "number" ? p.lieuxEngages : 0,

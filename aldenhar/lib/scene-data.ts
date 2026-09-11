@@ -496,7 +496,7 @@ export type Choice = {
   /** La CAUSE voyage avec le prix (panel compréhension 03/09 : 5/5 perdus
       devant une Croisée fermée « au hasard ») : la ligne servie à la Croisée
       suivante nomme l'acte qui l'a fermée. */
-  fermeLaRoute?: "meute" | "bete";
+  fermeLaRoute?: Exclude<RouteFermeeCause, "echec">;
   /**
    * LE SCEAU OUVRE UNE PORTE (arbitrage 10/08, livré le 14/08). Ce choix
    * n'existe que pour un compte qui a franchi la Descente vivant — id du
@@ -4585,6 +4585,94 @@ export const SCENES: Scene[] = [
         passive: {
           consequence:
             "Tu montes au premier tas de pierres et tu t'assois, hors de tout couloir. Le creux patiente. Puis le souffle se retire, chercher un chemin qui marche. La route directe est à elle : la tienne fera le tour.",
+        },
+      },
+    ],
+  },
+  /* ═══ LE RECOUSU — le retour de la COMPTABILITÉ (retour Patrick 11/09) ═══
+     « Le joueur prudent qui évite toujours de choisir le dé doit être plus
+     confronté à des monstres, le karma. »
+
+     Ce n'est ni un spawn punitif ni une jauge cachée de prudence (les deux
+     refusés le 17/08) : c'est la loi du Domaine appliquée à la lettre — « rien
+     n'est libéré, quelqu'un prend toujours la place de quelqu'un d'autre ».
+     Traverser trois lieux d'affilée sans rien y engager laisse trois lignes
+     ouvertes ; le Domaine équilibre, et il envoie celui qui a déjà été
+     démonté pour payer à la place d'un autre (voir `RunState.lignesOuvertes`).
+
+     Il n'est PAS un adversaire qu'on a esquivé : personne ne l'a contourné, il
+     vient de lui-même. D'où sa propre table de traces (un compte tenu à jour,
+     jamais une poursuite) et ses propres textes — réutiliser ceux de la Meute
+     ferait dire au jeu « la route que tu n'as pas prise t'a suivi », ce qui
+     serait faux ici, et `immersion.py` existe pour attraper exactement ça. */
+  {
+    id: "menace-retour-recousu",
+    illustration: "assets/monstre_recousu_c.png",
+    combat: true,
+    foe: "recousu",
+    foeName: "Le Recousu",
+    narration: [
+      "Il est debout dans l'herbe haute, en travers du chemin, à " +
+        "contre-jour sur un soleil bas. Les bras le long du corps. Il ne " +
+        "s'est pas placé là : il y était.",
+      "Les coutures ne s'arrêtent pas au torse. Elles font le tour des " +
+        "bras, des cuisses, du cou — des points serrés, réguliers, qui ne " +
+        "se sont jamais refermés. Il ne dit rien. Il attend, comme on " +
+        "attend quelqu'un dont on a le nom sur une liste.",
+    ],
+    choices: [
+      {
+        id: "recousu-passer",
+        nature: "physique",
+        label: "Passer en force",
+        masqueSi: { decouverte: "d.bailli_condamne" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Tu marches droit sur lui sans ralentir, et c'est LUI qui s'écarte — d'un pas, poliment, comme on s'écarte devant quelqu'un dont le compte est en règle. Derrière toi, il reprend sa place au milieu du chemin. Pour le suivant.",
+            "Tu forces l'épaule et tu passes. Il ne retient rien, il ne frappe pas : il te laisse filer avec la lenteur de quelqu'un qui sait où tu vas. Le chemin se rouvre. Tu ne te retournes pas, et il n'est plus là.",
+            "Il ne bouge pas quand tu arrives dessus, et c'est ça qui te coûte : tu le percutes comme un mur de terre, et quelque chose cède dans ton flanc. Puis il s'écarte, sans rien prendre de plus. Tu passes ; le chemin est vide derrière toi.",
+            "1 naturel. Tu passes en force. Il t'a laissé passer. ♦ −2"
+          ),
+        },
+      },
+      {
+        /* EXPLORER PRÉPARE : `d.bailli_condamne` — la confession du Pendu qui
+           parle (« j'ai signé trois cents noms, le trois cent unième était le
+           sien, alors j'ai inscrit le mien en dessous »). C'est le seul homme
+           des Landes qui ait réglé son compte lui-même au lieu de le laisser
+           payer par un autre : le dire au Recousu, c'est parler sa langue.
+           `horsDePortee` (lot 3 du 14/08) : l'échec rate ce qu'il vise, il ne
+           prend pas le corps. */
+        id: "recousu-nommer",
+        nature: "social",
+        label: "Lui nommer le trois cent unième",
+        requiresDecouverte: "d.bailli_condamne",
+        horsDePortee: true,
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Tu dis le nombre, rien d'autre. Sa main monte à la couture de son torse, l'effleure, redescend. Il s'écarte, et pour la première fois ses bras ne pendent plus tout à fait pareil. Quelqu'un, une fois, a payé pour lui-même. Ça se savait.",
+            "Tu racontes l'homme qui a inscrit son propre nom sous les trois cents autres. Le Recousu écoute jusqu'au bout, puis fait trois pas de côté et te regarde passer. Il ne t'a pas absous — il a simplement reconnu la référence.",
+            "Tu parles trop vite, et le nombre sonne comme une excuse. Il ne s'écarte pas. Il te faut contourner par la bruyère, sous son regard, jusqu'à ce que le chemin le cache. Il n'a pas bougé d'un pouce ; il n'en avait pas besoin.",
+            "1 naturel. Tu lui dis qu'un homme a payé pour lui-même. Il tourne la tête vers le sud, longuement, et tu comprends que ce n'est pas de son compte qu'il s'agit. ♦ −2"
+          ),
+        },
+      },
+      {
+        /* CHOIX CERTAIN = PRIX CERTAIN (17/08 §2). Lui laisser le chemin ne
+           coûte rien au corps — ça coûte le détour, dit dans la prose au
+           moment où on le paie. Le texte DÉPLACE le héros : l'écran suivant
+           lit le chemin, plus la créature. */
+        id: "recousu-laisser",
+        consequenceAilleurs: true,
+        label: "Lui laisser le chemin",
+        fermeLaRoute: "recousu",
+        passive: {
+          consequence:
+            "Tu descends dans la bruyère et tu attends qu'il reparte. Il met longtemps, et il ne se retourne pas une fois. Quand la route est libre, elle ne va plus là où tu allais — c'est le prix, et tu l'as accepté en t'écartant.",
         },
       },
     ],
@@ -9100,7 +9188,7 @@ function croisee(optA: string, optB: string, liaisonsJouees: number, seed: numbe
  * menace, pas plus — au-delà, l'avertissement deviendrait du harcèlement.
  * Contrainte d'immersion : pleine lande, aucun bâti, aucune personne.
  */
-export const TRACES_MENACE: Record<"meute" | "bete", string[]> = {
+export const TRACES_MENACE: Record<MenaceId, string[]> = {
   meute: [
     "Des empreintes croisent le chemin — plusieurs bêtes, du même pas, dans " +
       "le même sens que toi. Elles ne chassaient pas quand elles sont " +
@@ -9118,6 +9206,17 @@ export const TRACES_MENACE: Record<"meute" | "bete", string[]> = {
       "d'en bas. Sur le tien.",
     "Un souffle, quelque part au ras du sol, derrière. Pas le vent : le " +
       "vent ne s'arrête pas quand tu t'arrêtes.",
+  ],
+  /* LE RECOUSU (11/09) — la menace ne vient d'aucun contournement joué : elle
+     vient de la COMPTABILITÉ. Les traces ne montrent donc ni bête ni poursuite,
+     elles montrent un compte tenu à jour par quelqu'un qui marche devant. */
+  recousu: [
+    "Un bâton court est planté dans la tourbe, au bord du chemin, entaillé " +
+      "de frais. Tu comptes les entailles sans y penser. Le compte tombe " +
+      "juste, et c'est ça qui te reste en travers.",
+    "Le même bâton, plus loin sur la route. Une entaille de plus, et elle " +
+      "n'est pas sèche. Ce n'est pas toi qui l'as taillée, et pourtant elle " +
+      "est à jour.",
   ],
 };
 
@@ -9148,7 +9247,14 @@ function phraseBifurcation(liaisonsJouees: number, seed: number): string {
  * panel du 9/08 avait explicitement écarté le re-durcissement du barème de
  * santé, qui ne se lit nulle part.
  */
-export type RouteFermeeCause = "echec" | "meute" | "bete";
+/**
+ * Les menaces qui peuvent rester actives dans le monde. « meute » et « bete »
+ * viennent d'un contournement JOUÉ (17/08) ; « recousu » vient de la
+ * comptabilité du Domaine (11/09, voir `RunState.lignesOuvertes`).
+ */
+export type MenaceId = "meute" | "bete" | "recousu";
+
+export type RouteFermeeCause = "echec" | "meute" | "bete" | "recousu";
 
 /**
  * LA FERMETURE NOMME SA CAUSE (panel compréhension 03/09). Les trois anciens
@@ -9168,6 +9274,10 @@ export const ROUTE_FERMEE: Record<RouteFermeeCause, string[]> = {
   meute: [
     "Tu leur as cédé le chemin : il est à elles. Le passage direct porte leurs empreintes, fraîches, dans les deux sens, et une odeur qui ne s'écarte pas. Le tien fait le grand tour, comme convenu.",
     "La seconde route est celle des chiens, maintenant. Tu la leur as laissée. Il ne t'en reste qu'une, plus longue — le prix que tu as accepté en te rangeant dans la bruyère.",
+  ],
+  recousu: [
+    "Tu lui as laissé le chemin, et il l'a pris. Il n'est plus là, mais le passage direct porte une ligne d'herbe couchée qui va tout droit, sans un écart, jusqu'à l'horizon. Le tien fait le tour.",
+    "Une seule direction reste ouverte. L'autre est celle par où il est reparti, du même pas régulier, et rien en toi n'a envie de marcher dans ces traces-là.",
   ],
   bete: [
     "La route directe est restée à la Bête. Le creux qu'elle a pris continue par là, et rien ne te fera y redescendre. La tienne fait le tour, comme tu l'avais décidé sur ton tas de pierres.",

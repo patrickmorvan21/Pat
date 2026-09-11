@@ -199,6 +199,18 @@ function porteuseDisponible(don: RelicDon, run: RunState | null): ReliquePortee 
   );
 }
 
+/**
+ * LE KARMA DU PRUDENT (11/09) — combien de lieux d'affilée on peut quitter
+ * sans rien y engager avant que le Domaine vienne solder le compte.
+ *
+ * Mesuré sur la réplique avant d'être fixé : sur des vies entières, le joueur
+ * prudent atteint 8 lignes ouvertes consécutives, le curieux 3, le téméraire
+ * ne dépasse jamais 1. Trois vise donc le comportement — et se remet à zéro
+ * dès qu'on paie quelque part, ce qui est le point : ce n'est pas une taxe sur
+ * la traversée, c'est une réaction à la manière de la traverser.
+ */
+const LIGNES_AVANT_RECOUSU = 3;
+
 function chance(p: number): boolean {
   return Math.random() < p;
 }
@@ -2534,6 +2546,34 @@ export default function Scene() {
         // l'estomac ; c'est le Jour qui récompense, pas la faim.
         if (trav.visited.length % 3 === 0) horlogeApres = (runRef.current?.horloge ?? 1) + 1;
       }
+    } else if (
+      /* ═══ LE RECOUSU T'ATTEND AU BOUT (11/09) ════════════════════════════
+         Sans cette branche, le mécanisme promettait sans jamais tenir :
+         mesuré sur 24 vies prudentes, il s'armait 20 fois et ne venait que 4.
+         La cause est la FORME de la traversée — passé la cible, il n'y a plus
+         une seule Croisée (halte du village, puis Palissade → Falaise →
+         Descente s'enchaînent), donc un compte ouvert tard n'avait plus nulle
+         part où se solder. Un monde qui pose des traces et n'envoie personne
+         est pire qu'un monde qui se tait.
+
+         Et c'est son meilleur emplacement : il se tient sur la route qui sort
+         des Landes, au moment exact où l'on s'en irait sans avoir payé.
+         Volontairement SANS garde de village (à la différence du déroutage de
+         marche) — on ne le croise pas dans une ruelle, on le croise dehors, en
+         partant. Il ne ferme rien : la sortie de zone reprend juste après. */
+      runRef.current?.menace?.id === "recousu" &&
+      (runRef.current.menace.traces ?? 0) >= 1 &&
+      !scene.chainNext &&
+      (scene.hameauHalte || trav.visited.length >= trav.target)
+    ) {
+      nextScene = resoudre("menace-retour-recousu", runRef.current)!;
+      trav.phase = "scene";
+      deroute = true;
+      trav.current = nextScene.id; // hors `visited` : pas un lieu du pool
+      persist((r) => {
+        r.menace = null;
+        r.lignesOuvertes = 0;
+      });
     } else if (scene.hameauHalte) {
       // La nuit est passée : la traversée reprend vers la sortie de zone.
       // ⚠️ Elle passe par la PALISSADE comme l'autre chemin (9/08) — cette
@@ -2706,9 +2746,22 @@ export default function Scene() {
         // n°1 : « si j'ai esquivé la Bête, je dois reconnaître que c'est
         // elle qui me rattrape ») — le 45 % du jeu complet rendait la
         // phase Pression invisible une partie sur deux.
-        trav.visited.length - men.poseeA >= (demoOn ? 1 : 2) &&
+        // ⚠️ LE RECOUSU N'A PAS BESOIN DES DEUX LIEUX DE DISTANCE — mesuré
+        // sur 24 vies avant de trancher : avec la même distance que les deux
+        // autres, il s'armait 20 fois sur 24 chez le prudent et ne venait
+        // qu'UNE. Son armement a déjà pris trois lieux, l'attente est donc
+        // dans le mécanisme même ; en exiger deux de plus faisait promettre au
+        // monde quelque chose qui n'arrivait jamais — pire que rien.
+        trav.visited.length - men.poseeA >= (men.id === "recousu" || demoOn ? 1 : 2) &&
         !scene.liaison &&
-        (demoOn ? men.traces >= 1 : chance(0.45))
+        // LE RECOUSU EST CERTAIN dès que sa première trace est lue (11/09) :
+        // il n'est pas une malchance qu'on peut éviter, c'est un compte qui se
+        // solde — et la causalité reste lisible AVANT la conséquence, ce que
+        // le document du 17/08 exige. Sa seconde trace sert quand le retour
+        // est retardé (le village, où il ne vient pas). Les deux autres
+        // gardent leur tirage : on les a contournées, elles peuvent manquer
+        // leur retour.
+        (men.id === "recousu" ? men.traces >= 1 : demoOn ? men.traces >= 1 : chance(0.45))
       ) {
         nextScene = resoudre("menace-retour-" + men.id, runRef.current)!;
         trav.phase = "scene";
@@ -2716,6 +2769,10 @@ export default function Scene() {
         trav.current = nextScene.id; // hors `visited` : pas un lieu du pool
         persist((r) => {
           r.menace = null;
+          // Le compte est soldé par la rencontre elle-même : sans cette remise
+          // à zéro, un prudent verrait le Recousu se réarmer à la Croisée
+          // suivante — l'avertissement deviendrait du harcèlement.
+          r.lignesOuvertes = 0;
         });
       } else if (fromEst && !troupeauVu && !scene.liaison && chance(0.35)) {
         nextScene = resoudre("troupeau-sans-berger", runRef.current)!;
@@ -2994,6 +3051,29 @@ export default function Scene() {
       trav.credites = [...(trav.credites ?? []), radicalQuitte];
       lieuxEngagesApres = (runRef.current?.lieuxEngages ?? 0) + 1;
       if (lieuxEngagesApres % 3 === 0) jourDeMarche = true;
+    }
+
+    /* ═══ LES LIGNES OUVERTES — le karma du prudent (11/09) ═══════════════
+       Le miroir du bloc ci-dessus : il compte les lieux qu'on QUITTE sans y
+       avoir rien engagé, d'affilée. Ce n'est pas une jauge de prudence
+       (refusée le 17/08), c'est la comptabilité que les Landes tiennent déjà
+       — et elle se solde dès qu'on paie quelque part.
+
+       ⚠️ Le compte se prend au départ vers une LIAISON, jamais au changement
+       de radical comme le crédit. Un lieu à rencontre optionnelle (verger-noir
+       → epoux → verger-noir-2 → liaison) change trois fois de radical : le
+       compter au premier changement marquerait « non payé » un lieu où le
+       joueur est sur le point d'engager. Partir vers la Croisée, c'est le seul
+       moment où le lieu est définitivement derrière soi. */
+    let lignesApres: number | null = null;
+    if (lieuxEngagesApres !== null) {
+      lignesApres = 0; // payé ici : l'ardoise repart de zéro
+    } else if (
+      nextScene.liaison &&
+      estUnLieu(radicalQuitte) &&
+      !(trav.credites ?? []).includes(radicalQuitte)
+    ) {
+      lignesApres = (runRef.current?.lignesOuvertes ?? 0) + 1;
     }
 
     const nextIllustration = nextScene.illustration ?? PORTAL;
@@ -3975,6 +4055,32 @@ export default function Scene() {
       // a tourné » ne se dit pas deux fois. Le petit rabais est assumé.
       if (jourDeMarche || nuitPassee) run.day += 1;
       if (lieuxEngagesApres !== null) run.lieuxEngages = lieuxEngagesApres;
+      /* LE KARMA DU PRUDENT (11/09) : on écrit le compteur, et à trois lignes
+         ouvertes le Domaine envoie quelqu'un les solder. L'armement passe par
+         le créneau `menace` EXISTANT — donc traces en liaison avant tout
+         retour, une seule menace à la fois, et la préparation transforme le
+         retour comme pour les deux autres. Si un contournement joué occupe
+         déjà le créneau, le compte continue de monter sans rien armer : c'est
+         le garde-fou du 17/08 (« ne pas transformer la run en liste invisible
+         de dettes »), et il vaut aussi dans ce sens-là. */
+      if (lignesApres !== null) {
+        run.lignesOuvertes = lignesApres;
+        /* ⚠️ LA COMPTABILITÉ PASSE DEVANT UN CONTOURNEMENT — trouvé par la
+           mesure, pas à la lecture. Le créneau unique du 17/08 est monopolisé
+           par `laisseMenace` : or se dérober à la Bête est un choix SÛR, donc
+           c'est exactement ce que fait le joueur prudent. Mesuré sur 24 vies :
+           le créneau était pris par la Bête dans la quasi-totalité des vies
+           prudentes, et le Recousu ne s'armait jamais — le mécanisme visait
+           tout le monde sauf sa cible.
+
+           Le garde-fou tient quand même : AU PLUS UNE menace à la fois, donc
+           jamais une liste invisible de dettes. Ce qui change est laquelle des
+           deux occupe le créneau — et le Domaine passe avant une bête qu'on a
+           semée, parce que lui, on ne le sème pas. */
+        if (lignesApres >= LIGNES_AVANT_RECOUSU && run.menace?.id !== "recousu") {
+          run.menace = { id: "recousu", poseeA: run.trav?.visited.length ?? 0, traces: 0 };
+        }
+      }
       // ⚠️ L'HORLOGE DU CORPS EST ADDITIVE, ET LA MARCHE PASSE AVANT LA NUIT
       // (relecture par agents, 10/08) : `horlogeApres` est calculé tout en
       // haut d'`advance()`, donc à partir d'une horloge d'AVANT la nuit. Posé

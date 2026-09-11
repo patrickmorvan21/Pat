@@ -356,11 +356,17 @@ def pools() -> list[dict]:
     irf = scene_src.find("export const ROUTE_FERMEE")
     seg_rf = scene_src[irf : scene_src.find("};", irf)] if irf >= 0 else ""
     n_rf = 0
-    for cause, garde in (("echec", {"partout"}), ("meute", {"lande"}), ("bete", {"lande"})):
+    for cause, garde in (
+        ("echec", {"partout"}),
+        ("meute", {"lande"}),
+        ("bete", {"lande"}),
+        # Le Recousu ne revient qu'en pleine lande (déroutage de marche).
+        ("recousu", {"lande"}),
+    ):
         for i, t in enumerate(chaines_de_tableau(bloc_tableau(seg_rf, cause + ":"))):
             out.append({"pool": f"route fermée {cause} {i}", "garde": garde, "textes": [t]})
             n_rf += 1
-    assert n_rf >= 6, f"ROUTE_FERMEE : {n_rf} textes extraits (attendu ≥ 6)"
+    assert n_rf >= 8, f"ROUTE_FERMEE : {n_rf} textes extraits (attendu ≥ 8)"
 
     # — ambiances de liaison (fond) : servies sur TOUTE liaison, village
     #   compris quand les variantes de village sont épuisées (anti-répétition).
@@ -455,7 +461,7 @@ def pools() -> list[dict]:
     # jouerait en pleine lande.
     tm = re.search(r"export const TRACES_MENACE[^=]*=\s*\{(.*?)\n\};", scene_src, re.S)
     if tm:
-        for cle in ("meute", "bete"):
+        for cle in ("meute", "bete", "recousu"):
             bloc = bloc_tableau(tm.group(1), cle + ":")
             out.append({
                 "pool": f"TRACES_MENACE {cle}",

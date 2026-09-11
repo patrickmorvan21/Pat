@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-11T07:06:59Z",
- "commit": "add977c",
+ "genere": "2026-09-11T08:05:06Z",
+ "commit": "a54326e",
  "zones": [
   {
    "id": "landes",
@@ -4204,6 +4204,79 @@
    "mèneIci": [],
    "roles": [],
    "acces": "retour d'une menace contournée (17/08)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "menace-retour-recousu",
+   "narration": [
+    "Il est debout dans l'herbe haute, en travers du chemin, à contre-jour sur un soleil bas. Les bras le long du corps. Il ne s'est pas placé là : il y était.",
+    "Les coutures ne s'arrêtent pas au torse. Elles font le tour des bras, des cuisses, du cou — des points serrés, réguliers, qui ne se sont jamais refermés. Il ne dit rien. Il attend, comme on attend quelqu'un dont on a le nom sur une liste."
+   ],
+   "choix": [
+    {
+     "id": "recousu-passer",
+     "label": "Passer en force",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 13,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu marches droit sur lui sans ralentir, et c'est LUI qui s'écarte — d'un pas, poliment, comme on s'écarte devant quelqu'un dont le compte est en règle. Derrière toi, il reprend sa place au milieu du chemin. Pour le suivant.",
+      "reussite": "Tu forces l'épaule et tu passes. Il ne retient rien, il ne frappe pas : il te laisse filer avec la lenteur de quelqu'un qui sait où tu vas. Le chemin se rouvre. Tu ne te retournes pas, et il n'est plus là.",
+      "echec": "Il ne bouge pas quand tu arrives dessus, et c'est ça qui te coûte : tu le percutes comme un mur de terre, et quelque chose cède dans ton flanc. Puis il s'écarte, sans rien prendre de plus. Tu passes ; le chemin est vide derrière toi.",
+      "funeste": "1 naturel. Tu passes en force. Il t'a laissé passer. ♦ −2"
+     },
+     "nature": "physique",
+     "donneDecouverte": "d.bailli_condamne",
+     "masqueSi": {
+      "decouverte": "d.bailli_condamne"
+     }
+    },
+    {
+     "id": "recousu-nommer",
+     "label": "Lui nommer le trois cent unième",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 13,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu dis le nombre, rien d'autre. Sa main monte à la couture de son torse, l'effleure, redescend. Il s'écarte, et pour la première fois ses bras ne pendent plus tout à fait pareil. Quelqu'un, une fois, a payé pour lui-même. Ça se savait.",
+      "reussite": "Tu racontes l'homme qui a inscrit son propre nom sous les trois cents autres. Le Recousu écoute jusqu'au bout, puis fait trois pas de côté et te regarde passer. Il ne t'a pas absous — il a simplement reconnu la référence.",
+      "echec": "Tu parles trop vite, et le nombre sonne comme une excuse. Il ne s'écarte pas. Il te faut contourner par la bruyère, sous son regard, jusqu'à ce que le chemin le cache. Il n'a pas bougé d'un pouce ; il n'en avait pas besoin.",
+      "funeste": "1 naturel. Tu lui dis qu'un homme a payé pour lui-même. Il tourne la tête vers le sud, longuement, et tu comprends que ce n'est pas de son compte qu'il s'agit. ♦ −2"
+     },
+     "nature": "social",
+     "exigeDecouverte": "d.bailli_condamne",
+     "horsDePortee": true
+    },
+    {
+     "id": "recousu-laisser",
+     "label": "Lui laisser le chemin",
+     "type": "passif",
+     "consequence": "Tu descends dans la bruyère et tu attends qu'il reparte. Il met longtemps, et il ne se retourne pas une fois. Quand la route est libre, elle ne va plus là où tu allais — c'est le prix, et tu l'as accepté en t'écartant.",
+     "fermeLaRoute": "recousu"
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "recousu",
+   "adversaireNom": "Le Recousu",
+   "combat": true,
+   "image": {
+    "fichier": "monstre_recousu_c.png",
+    "hash": "04f590d1",
+    "taille": 27948,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "comptabilité du Domaine (lieux quittés sans rien engager)",
    "etat": "valide",
    "alertes": []
   },
@@ -8913,14 +8986,6 @@
    "racine": "rebouteux"
   },
   {
-   "fichier": "monstre_recousu_c.png",
-   "hash": "04f590d1",
-   "taille": 27948,
-   "recent": false,
-   "groupe": "attend",
-   "racine": "recousu"
-  },
-  {
    "fichier": "monstre_rodeur.png",
    "hash": "76c37df5",
    "taille": 147768,
@@ -11475,13 +11540,13 @@
   }
  ],
  "totaux": {
-  "scenes": 109,
+  "scenes": 110,
   "pointsInteret": 0,
-  "choix": 318,
+  "choix": 321,
   "illustrations": 449,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 226,
+  "reserve": 225,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

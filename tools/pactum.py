@@ -199,6 +199,10 @@ LARGEUR = 74
 # scene-data). Repère : QUATRE échecs ordinaires tuent, TROIS laissent au
 # seuil. Avant le 11/09 il en fallait cinq.
 COUT = {"malediction": 0.55, "critique": 0.46, "echec": 0.32, "justesse": 0.14}
+# LE KARMA DU PRUDENT (11/09) — miroir de `LIGNES_AVANT_RECOUSU` dans
+# components/Scene.tsx : combien de lieux d'affilée on peut quitter sans rien
+# y engager avant que le Domaine envoie solder le compte.
+LIGNES_AVANT_RECOUSU = 3
 
 
 def tension_traversee(visites: int, cible: int) -> int:
@@ -309,6 +313,7 @@ class Partie:
             "etats": {}, "besace": [], "poiVus": [], "geolierVus": [],
             "ambiancesVues": [], "poiOuvert": False, "morte": False, "famVus": [],
             "soupconVu": 0, "routeAFermer": False, "menace": None,
+            "lignesOuvertes": 0,
             "des": [], "journal": [], "sortie": None, "hameauEntree": False,
             "hameauSorti": False, "procesVu": False, "savoirs": [],
             # ⚠️ AUCUNE STAT AU DÉPART (V2 du prologue, 06/09). Elles pèsent
@@ -503,6 +508,23 @@ class Partie:
                 if self.d["lieuxEngages"] % 3 == 0:
                     self.d["jour"] += 1
                     self.dit(f"JOUR {self.d['jour']}", "jour")
+                # Payé quelque part : l'ardoise repart de zéro.
+                self.d["lignesOuvertes"] = 0
+            else:
+                # ═══ LE KARMA DU PRUDENT (11/09) — miroir de `lieuxEngages`.
+                # Quitter un lieu sans y avoir rien engagé laisse une ligne
+                # ouverte ; à trois d'affilée, le Domaine envoie le Recousu
+                # solder le compte. Sans ce bloc, un relecteur du kit mesurerait
+                # un prudent que rien ne vient jamais chercher — le biais
+                # corrigé huit fois depuis le 9/08.
+                self.d["lignesOuvertes"] = self.d.get("lignesOuvertes", 0) + 1
+                # La comptabilité PASSE DEVANT un contournement (voir le
+                # commentaire du même bloc dans Scene.tsx) : sinon le créneau
+                # est pris par la Bête dans presque toutes les vies prudentes.
+                if (self.d["lignesOuvertes"] >= LIGNES_AVANT_RECOUSU
+                        and (self.d.get("menace") or {}).get("id") != "recousu"):
+                    self.d["menace"] = {"id": "recousu",
+                                        "poseeA": len(self.d["visites"]), "traces": 0}
             self.d["engageIci"] = False
             self.d["poiIci"] = 0
             if sid in self.k["hameauInterieur"] or sid.startswith("hameau-") or sid == "serment-hameau":
@@ -637,6 +659,19 @@ class Partie:
         r = self.rng()
         libres = [x for x in self.k["pool"] if x not in self.d["visites"]
                   and x != "serment-hameau" and x not in self.k["hameauInterieur"]]
+        # LE RECOUSU T'ATTEND AU BOUT (11/09) — miroir du jeu : passé la
+        # cible il n'y a plus de Croisée, donc un compte ouvert tard n'avait
+        # plus nulle part où se solder. Il se tient sur la route qui sort.
+        m0 = self.d.get("menace") or {}
+        if (len(self.d["visites"]) >= self.d["cible"] and m0.get("id") == "recousu"
+                and m0.get("traces", 0) >= 1
+                and "menace-retour-recousu" in self.k["scenes"]):
+            self.d["menace"] = None
+            self.d["lignesOuvertes"] = 0
+            self.d["options"] = None
+            self.d["phase"] = "scene"
+            self.entrer("menace-retour-recousu")
+            return
         if len(libres) < 2 or len(self.d["visites"]) >= self.d["cible"]:
             self.d["phase"] = "scene"
             if "palissade-sud" in self.k["scenes"] and "palissade-sud" not in self.d["visites"]:
@@ -730,6 +765,19 @@ class Partie:
                       and x not in self.k["hameauInterieur"]]
         else:
             libres = [x for x in libres if x != "serment-hameau"]
+        # LE RECOUSU T'ATTEND AU BOUT (11/09) — miroir du jeu : passé la
+        # cible il n'y a plus de Croisée, donc un compte ouvert tard n'avait
+        # plus nulle part où se solder. Il se tient sur la route qui sort.
+        m0 = self.d.get("menace") or {}
+        if (len(self.d["visites"]) >= self.d["cible"] and m0.get("id") == "recousu"
+                and m0.get("traces", 0) >= 1
+                and "menace-retour-recousu" in self.k["scenes"]):
+            self.d["menace"] = None
+            self.d["lignesOuvertes"] = 0
+            self.d["options"] = None
+            self.d["phase"] = "scene"
+            self.entrer("menace-retour-recousu")
+            return
         if len(libres) < 2 or len(self.d["visites"]) >= self.d["cible"]:
             # Fin de traversée : par la PALISSADE, jamais direct à la Descente
             # (le raccourci « coupait la scène » — grief unanime du panel 9/08,
@@ -788,10 +836,20 @@ class Partie:
             or rad0.startswith("hameau-")
             or rad0 in ("serment-hameau", "femme-seuil", "gamin-murets")
         )
-        if (men and en_lande and len(self.d["visites"]) - men["poseeA"] >= 2
-                and r.random() < 0.45
+        # LE RECOUSU EST CERTAIN une fois ses deux traces lues (11/09) : ce
+        # n'est pas une malchance évitable, c'est un compte qui se solde.
+        est_recousu = (men or {}).get("id") == "recousu"
+        # Une trace lue suffit (la causalité se lit avant la conséquence) et un
+        # seul lieu de distance : son armement a déjà pris trois lieux.
+        assez = (men["traces"] >= 1) if (men and est_recousu) else (r.random() < 0.45)
+        if (men and en_lande
+                and len(self.d["visites"]) - men["poseeA"] >= (1 if est_recousu else 2)
+                and assez
                 and "menace-retour-" + men["id"] in self.k["scenes"]):
             self.d["menace"] = None
+            # Le compte est soldé par la rencontre : sans ça, il se réarmerait
+            # à la Croisée suivante et l'avertissement deviendrait du harcèlement.
+            self.d["lignesOuvertes"] = 0
             self.d["options"] = None
             self.entrer("menace-retour-" + men["id"])
             return

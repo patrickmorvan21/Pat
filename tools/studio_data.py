@@ -1588,6 +1588,11 @@ def main() -> int:
             s["acces"] = "portillon de la Halte (Serment tenu)"
         elif s["id"] == "troupeau-sans-berger":
             s["acces"] = "déroutage en marchant (boucle est)"
+        elif s["id"] == "menace-retour-recousu":
+            # Personne ne l'a contourné : il vient de la comptabilité du
+            # Domaine (11/09). Le dire ici, sinon le Graphe affirme un
+            # contournement qui n'a pas eu lieu.
+            s["acces"] = "comptabilité du Domaine (lieux quittés sans rien engager)"
         elif s["id"].startswith("menace-retour-"):
             s["acces"] = "retour d'une menace contournée (17/08)"
         elif s["id"].startswith("demo-") or s["id"].startswith("falaise-cordes"):

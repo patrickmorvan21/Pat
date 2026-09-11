@@ -94,7 +94,10 @@ def route_fermee(src: str) -> dict[str, list[str]]:
     if i < 0:
         return {}
     seg = src[i : src.find("};", i)]
-    out = {cle: chaines_de_tableau(bloc_tableau(seg, cle + ":")) for cle in ("echec", "meute", "bete")}
+    out = {
+        cle: chaines_de_tableau(bloc_tableau(seg, cle + ":"))
+        for cle in ("echec", "meute", "bete", "recousu")
+    }
     assert all(out.values()), f"ROUTE_FERMEE : une cause sans texte ({out})"
     return out
 
@@ -109,7 +112,10 @@ def traces_menace(src: str) -> dict[str, list[str]]:
     if i < 0:
         return {}
     seg = src[i : src.find("};", i)]
-    return {cle: chaines_de_tableau(bloc_tableau(seg, cle + ":")) for cle in ("meute", "bete")}
+    return {
+        cle: chaines_de_tableau(bloc_tableau(seg, cle + ":"))
+        for cle in ("meute", "bete", "recousu")
+    }
 
 
 def record(src: str, ancre: str) -> dict[str, str]:
@@ -428,7 +434,7 @@ def main() -> int:
                             "franchitSortie") if not kit[c]]
     # Les traces de menace : chaque clé doit rendre ses textes (extracteur muet
     # = la Meute reviendrait sans avertissement dans la réplique).
-    manquant += [f"tracesMenace.{k}" for k in ("meute", "bete")
+    manquant += [f"tracesMenace.{k}" for k in ("meute", "bete", "recousu")
                  if not kit["tracesMenace"].get(k)]
     if manquant:
         print("⚠️ extraction VIDE pour :", ", ".join(manquant))
