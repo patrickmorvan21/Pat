@@ -40,7 +40,7 @@ import { APP_VERSION } from "@/lib/version";
  * répondre à nouveau (une seconde vie change parfois l'avis).
  */
 
-export type SourceAvis = "options" | "inventaire" | "mort";
+export type SourceAvis = "options" | "inventaire" | "mort" | "accueil";
 
 const CLE = "pactum-avis";
 

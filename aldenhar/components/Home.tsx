@@ -19,6 +19,7 @@ import { BoutonNav } from "@/components/NavIcons";
 import { assetUrl } from "@/lib/assets";
 import Reliques from "@/components/Reliques";
 import Codex from "@/components/Codex";
+import Avis from "@/components/Avis";
 
 /**
  * Écrans d'accueil (Figma 1963:370 « Première partie » / 1970:458 « Reprendre
@@ -40,6 +41,10 @@ export default function Home() {
   const [citation, setCitation] = useState<string | null>(null);
   const [overlay, setOverlay] = useState<"reliques" | "registre" | "codex" | "options" | null>(null);
   const [aDuCodex, setADuCodex] = useState(false);
+  // DONNER SON AVIS (11/09) — quatrième accès au questionnaire, et le
+  // plus voyant : la démo se joue en ligne, le retour doit se trouver
+  // sans ouvrir le menu. Overlay plein cadre, comme les autres écrans.
+  const [avis, setAvis] = useState(false);
 
   useEffect(() => {
     // Réglages (Options 21/07) : applique taille de texte + animations réduites
@@ -214,6 +219,15 @@ export default function Home() {
                     pas de la première vie). */}
                 {aDuCodex && <FooterLink label="CODEX" onClick={() => setOverlay("codex")} />}
                 <FooterLink label="OPTIONS" onClick={() => setOverlay("options")} />
+                {/* ⚠️ En ORANGE, et seul lien de pied à l'être : c'est le
+                    signal d'accent de la DA, donc ce qui tranche sur quatre
+                    libellés blancs identiques (demande « bien visible »).
+                    Affiché seulement si le joueur a quelque chose à dire —
+                    une partie en cours ou un passé de compte : avant d'avoir
+                    joué, le questionnaire porterait sur rien. */}
+                {(saved || aDuPasse) && (
+                  <FooterLink accent label="DONNER SON AVIS" onClick={() => setAvis(true)} />
+                )}
               </div>
             </div>
 
@@ -237,6 +251,11 @@ export default function Home() {
             ) : (
               overlay && <HomeOverlay kind={overlay} onClose={() => setOverlay(null)} />
             )}
+            {avis && (
+              <div className="absolute inset-0 z-[50]" data-avis-overlay>
+                <Avis source="accueil" onClose={() => setAvis(false)} />
+              </div>
+            )}
           </>
         )}
 
@@ -245,7 +264,7 @@ export default function Home() {
             lib/version.ts, bumpée selon la grandeur du changement.
             Masqué dès qu'un écran plein cadre est ouvert : il se posait par
             dessus le Registre (vu au test du 26/07). */}
-        {!overlay && (
+        {!overlay && !avis && (
           <span className="app-version" aria-hidden>
             v{APP_VERSION}
           </span>
@@ -293,16 +312,27 @@ export function HomeCta({ label, secondary, onClick }: { label: string; secondar
   );
 }
 
-function FooterLink({ label, onClick, disabled }: { label: string; onClick?: () => void; disabled?: boolean }) {
+function FooterLink({
+  label,
+  onClick,
+  disabled,
+  accent,
+}: {
+  label: string;
+  onClick?: () => void;
+  disabled?: boolean;
+  accent?: boolean;
+}) {
   // Maquette 2333-7029 : mono 13, blanc plein, espacement 2.6px.
   return (
     <button
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className={`font-mono text-[13px] uppercase tracking-[2.6px] text-[var(--color-ink)] ${
-        disabled ? "cursor-not-allowed opacity-45" : "cursor-pointer"
-      }`}
+      data-avis-accueil={accent ? "" : undefined}
+      className={`font-mono text-[13px] uppercase tracking-[2.6px] ${
+        accent ? "text-[var(--color-accent)]" : "text-[var(--color-ink)]"
+      } ${disabled ? "cursor-not-allowed opacity-45" : "cursor-pointer"}`}
     >
       {label}
     </button>
