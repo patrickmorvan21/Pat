@@ -120,3 +120,53 @@ Court : la liste des tuiles remplacées, celles qui rendent un graphique et
 celles qui restent vides, ce que montre `Avis · toutes les réponses` (la ligne
 de Patrick doit y être avec ses huit valeurs et « Test 1 »), et si
 l'entonnoir s'affiche enfin.
+
+## 6. Les MOYENNES de partie (demande Patrick, 11/09)
+
+Deux chemins, l'un sans SQL, l'autre avec.
+
+### 6.1 Sans SQL — une moyenne = un grand chiffre
+
+**New insight → Trends**, série sur l'événement, puis dans le sélecteur
+d'agrégation choisir **Average of property value** et la propriété voulue.
+Affichage **Number**. Exemples utiles :
+
+| Nom | événement | moyenne de |
+|---|---|---|
+| `Dé · résultat moyen` | `de_lance` | `resultat` |
+| `Mort · jour moyen` | `mort` | `jour` |
+| `Mort · lieux franchis moyens` | `mort` | `franchis` |
+| `Avis · durée moyenne` | `avis_envoye` | `duree_s` |
+
+### 6.2 Avec SQL — le tableau de bord des moyennes
+
+Nom : `Moyennes par partie`. Une seule ligne, tout le nécessaire.
+
+⚠️ Une partie n'a pas d'identifiant dans les événements : les moyennes sont
+donc des totaux divisés par le nombre de parties LANCÉES, et `mode = 'reprise'`
+est exclu (reprendre une sauvegarde n'est pas une partie de plus).
+
+```sql
+SELECT
+  countIf(event = 'partie_commencee' AND properties.mode != 'reprise') AS parties,
+  countIf(event = 'mort')              AS morts,
+  countIf(event = 'descente_franchie') AS traversees,
+  round(countIf(event = 'ecran_vu')     / nullif(countIf(event = 'partie_commencee' AND properties.mode != 'reprise'), 0), 1) AS ecrans_par_partie,
+  round(countIf(event = 'choix')        / nullif(countIf(event = 'partie_commencee' AND properties.mode != 'reprise'), 0), 1) AS choix_par_partie,
+  round(countIf(event = 'de_lance')     / nullif(countIf(event = 'partie_commencee' AND properties.mode != 'reprise'), 0), 1) AS des_par_partie,
+  round(countIf(event = 'lieu_atteint') / nullif(countIf(event = 'partie_commencee' AND properties.mode != 'reprise'), 0), 1) AS lieux_par_partie,
+  round(100 * countIf(event = 'de_lance' AND properties.reussi = true) / nullif(countIf(event = 'de_lance'), 0), 1) AS pct_des_tenus,
+  round(avgIf(toFloat(properties.resultat), event = 'de_lance'), 1) AS de_moyen,
+  round(avgIf(toFloat(properties.jour), event = 'mort'), 1)         AS jour_moyen_a_la_mort,
+  round(avgIf(toFloat(properties.franchis), event = 'mort'), 1)     AS franchis_moyens_a_la_mort
+FROM events
+```
+
+Si `avgIf` est refusé, le remplacer par
+`avg(if(event = 'mort', toFloat(properties.jour), null))`.
+
+### 6.3 Une ligne par joueur
+
+`Joueurs — résumé par personne` du premier brief donne déjà ça : parties,
+écrans, dés, lieux, morts, descentes, avis, source, version. La garder en SQL,
+c'est une table par nature.
