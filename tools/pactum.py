@@ -195,8 +195,10 @@ LARGEUR = 74
 # la santé. Un échec social coûte du Soupçon, un échec d'exploration coûte un
 # rien de plus (le texte porte la perte), un échec surnaturel laisse un état. On ne meurt donc que d'un danger
 # physique — la mort doit être compréhensible dans la fiction.
-# Barème DURCI le 2/09 (miroir de `coutSante`, scene-data) : +25 % physique.
-COUT = {"malediction": 0.42, "critique": 0.36, "echec": 0.24, "justesse": 0.12}
+# Barème DURCI le 2/09, le 7/09, puis le 11/09 (miroir de `coutSante`,
+# scene-data). Repère : QUATRE échecs ordinaires tuent, TROIS laissent au
+# seuil. Avant le 11/09 il en fallait cinq.
+COUT = {"malediction": 0.55, "critique": 0.46, "echec": 0.32, "justesse": 0.14}
 
 
 def tension_traversee(visites: int, cible: int) -> int:
@@ -206,8 +208,10 @@ def tension_traversee(visites: int, cible: int) -> int:
     if cible <= 0:
         return 0
     if visites >= cible - 1:
-        return 2
+        return 3
     if visites >= -(-cible * 2 // 3):
+        return 2
+    if visites >= -(-cible // 3):
         return 1
     return 0
 
@@ -1147,7 +1151,17 @@ class Partie:
                 # dans le jeu réel. Un agent qui mesurait sur la réplique
                 # concluait donc « le passif gagne », l'inverse de la vérité.
                 # Le repos SOIGNE ; c'est la nuit qui fait le jour.
-                self.d["sante"] = min(1.0, self.d["sante"] + 0.25)  # 0,35 → 0,25 (2/09)
+                # ⚠️ Les TROIS qualités de repos, comme le jeu (11/09) : la
+                # réplique servait un +0,15 plat, donc la maison crochetée —
+                # le seul soin complet de la démo, et le seul qui se GAGNE sur
+                # un jet — ne valait pas plus qu'un muret.
+                if c["repos"] == "complet":
+                    self.d["sante"] = 1.0
+                    self.d["etats"].pop("entaille", None)
+                elif c["repos"] == "partiel":
+                    self.d["sante"] = min(1.0, self.d["sante"] + 0.15)
+                else:
+                    self.d["sante"] = min(1.0, self.d["sante"] + 0.08)
             self.suite(c)
 
     def gagner(self, oid: str) -> None:
@@ -1178,7 +1192,29 @@ class Partie:
         # l'Anneau, d'un cran par point d'intérêt, au plus deux. C'est le seul
         # levier par lequel ce que le joueur TENTE change ses chances.
         m += min(2, self.d.get("poiIci", 0))
+        # ⚠️ LES OBJETS PORTÉS, absents de la réplique jusqu'au 11/09 — le trou
+        # le plus coûteux de tous : quinze passifs sur dix-huit donnent un
+        # cran, et un explorateur en porte deux. Toute mesure de létalité
+        # jugeait donc un jeu où ramasser ne change rien. Miroir exact de
+        # `passiveMod` (besace.ts) : le MEILLEUR applicable, jamais la somme
+        # (changé le 11/09 — l'addition rendait la fin de traversée gratuite).
+        m += self.mod_passif(combat=bool(
+            self.k["scenes"].get(self.d.get("scene") or "", {}).get("combat")))
         return m
+
+    def mod_passif(self, combat: bool) -> int:
+        """Le meilleur bonus applicable des objets PORTÉS."""
+        table = self.k.get("objetsPassifs", {})
+        # La dague de départ est dans TOUTE vie (besace.ts) et vit hors de la
+        # table des Landes : la réplique l'a en main comme le jeu.
+        best = 1 if combat else 0
+        for oid in self.d.get("besace", []):
+            o = table.get(oid)
+            if not o or not o.get("mod"):
+                continue
+            if o.get("scope") == "all" or (o.get("scope") == "combat" and combat):
+                best = max(best, int(o["mod"]))
+        return best
 
     def apports_proces(self) -> list[str]:
         """Ce qu'on APPORTE au procès, miroir d'`apportsProces` (scene-data).
@@ -1327,7 +1363,7 @@ class Partie:
         elif nature == "physique":
             cout = COUT.get(palier, 0.0)
         elif nature == "surnaturel" and palier in ("echec", "critique", "malediction"):
-            cout = 0.22 if palier == "malediction" else 0.14  # 2/09 puis 7/09
+            cout = 0.28 if palier == "malediction" else 0.18  # 2/09, 7/09, 11/09
             # L'EFFROI NE TUE PAS (verdict panel 17/08, restaure la règle du
             # 9/08 « on ne meurt que d'un échec physique ou du procès ») : le
             # surnaturel use le corps mais laisse AU SEUIL — miroir exact de

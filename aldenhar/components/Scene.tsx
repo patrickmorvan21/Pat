@@ -105,7 +105,7 @@ import StraightSwipe from "@/components/minigames/engines/StraightSwipe";
 import { forcerPiste, playMusic } from "@/lib/audio";
 import { loadSettings, CLES_AIDES, haptic } from "@/lib/settings";
 import { track, registerEcran, registerGeste } from "@/lib/analytics";
-import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, randomSoinMineur, recompenseDestinQuiTient, usageEnMots, LANDES_OBJETS, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
+import { hasBesaceRoom, landesLoot, landesLootSlot, normalizeItem, passiveMod, recompenseDestinQuiTient, usageEnMots, LANDES_OBJETS, RARITY_LABEL, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { assetUrl, assetSrc, assetCss, assetExiste } from "@/lib/assets";
 import {
   bloodDebtFor,
@@ -3697,31 +3697,7 @@ export default function Scene() {
     // 01/09 (retour playtest « les objets de soin sont trop faciles à
     // trouver ») : 12 % → 5 %. Arbitré avec la moitié des soins TROUVÉS
     // (besace.ts, SOINS_MINEURS) ; les soins GAGNÉS par un choix (Offrandes,
-    // Chanvre, Miroir, Fruit) gardent leur valeur — on les a mérités.
-    if (
-      !dropped &&
-      !nextScene.combat &&
-      !nextScene.registre &&
-      !nextScene.liaison &&
-      !nextScene.id.startsWith("campement") &&
-      hasBesaceRoom(besace, "actif") &&
-      chance(0.05)
-    ) {
-      const dejaServis = [
-        ...besace.map((b) => b.name),
-        ...(runRef.current?.dropsServis ?? []),
-      ];
-      const found = randomSoinMineur(dejaServis);
-      if (found) {
-        obtainedItem = found;
-        persist((run) => {
-          run.besace = [...run.besace, found];
-          run.dropsServis = [...(run.dropsServis ?? []), found.name];
-        });
-        entries.push(entreeObtenu(nextId(), found));
-      }
-    }
-    // LA SORTIE DE ZONE SE SOUVIENT (panel 10/08 : « deux traversées
+    // Chanvre, Miroir, Fruit) gardent leur valeur — on les a mérités.    // LA SORTIE DE ZONE SE SOUVIENT (panel 10/08 : « deux traversées
     // réussies, fin identique au mot près, aucune trace »). Deux lignes
     // tirées de cette vie-ci, puis le Registre où la ligne du héros s'inscrit
     // SOUS SES YEUX. `recordTraversee` ne tombe qu'au dernier tap, donc le
@@ -4558,9 +4534,13 @@ export default function Scene() {
           run.health = 1;
           run.effects = run.effects.filter((e) => e.delta >= 0);
         } else if (choice.repos === "partiel") {
-          run.health = Math.min(1, run.health + 0.25);
-        } else {
+          // 0,25 → 0,15 le 11/09 : une grange te fait passer la nuit, elle ne
+          // te répare pas. Seule la maison crochetée referme tout — et elle se
+          // gagne sur un jet, ce qui est la différence entre un abri trouvé et
+          // un abri pris.
           run.health = Math.min(1, run.health + 0.15);
+        } else {
+          run.health = Math.min(1, run.health + 0.08);
         }
       });
       setHealth(runRef.current?.health ?? health);
@@ -5153,9 +5133,11 @@ export default function Scene() {
         // Même clé que la branche « nuit » d'advance : la nuit ne se compte
         // qu'une fois, qu'on l'ait dormie ou veillée.
         if (scene.nuit) run.vus = noter(run.vus, "nuit|" + scene.id);
-        // 0,35 → 0,25 le 2/09 (« encore trop facile ») : une nuit rattrape un
-        // échec ordinaire, plus un échec dur.
-        run.health = Math.max(0.08, Math.min(1, run.health + 0.25 - usure));
+        // 0,35 → 0,25 le 2/09, → 0,15 le 11/09 (« monte drastiquement la
+        // difficulté »). Avec le barème du 11/09, une nuit ne rattrape même
+        // plus un échec ordinaire (0,32) : elle en efface la moitié. Dormir
+        // reste utile, dormir ne remet plus à neuf.
+        run.health = Math.max(0.08, Math.min(1, run.health + 0.15 - usure));
         // BESOINS (spec §3) : dormir est satisfait ici. Les besoins se comptent
         // en JOURS, jamais en scènes — garde-fou n°2 : un joueur qui traverse
         // vite n'aura presque jamais faim.

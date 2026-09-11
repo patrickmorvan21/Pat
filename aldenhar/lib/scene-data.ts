@@ -1075,22 +1075,27 @@ export function coutSante(
   // pouvait tuer sans annoncer MORT) et `horsDePortee` ne le couvrait pas
   // (trouvé par le test du lot 3, sur « Lui réciter l'ordonnance »). Il passe
   // ici, comme tout ce qui prend de la santé.
-  // ⚠️ BARÈME DURCI le 2/09 puis le 7/09 (Patrick : « c'est toujours facile,
-  // je ne meurs jamais sauf à cause des soupçons »). Le levier est le BARÈME
+  // ⚠️ BARÈME DURCI le 2/09, le 7/09, puis le 11/09 (« monte drastiquement la
+  // difficulté »). Repère à garder en tête, c'est lui qui donne l'échelle :
+  // QUATRE échecs ordinaires tuent, TROIS laissent au seuil (0,96) ; deux
+  // critiques coûtent 0,92 ; une malédiction suivie d'un critique tue. Avant
+  // le 11/09 il fallait cinq échecs, ce qui rendait un corps intact presque
+  // impossible à perdre. (Patrick : « c'est toujours facile,
+  // je ne meurs jamais sauf à cause des soupçons ».) Le levier est le BARÈME
   // PHYSIQUE, jamais un retour du coût générique (doctrine du 9/08) ni un
   // Jour de sanction (règle du 10/08). Mesuré sur la réplique avant/après :
   // le joueur qui LANCE meurt franchement, celui qui ne lance pas ne meurt
   // toujours pas — c'est structurel (voir `tensionTraversee`). Miroir dans
   // tools/pactum.py.
   if (nature === "surnaturel")
-    return tier === "malediction" ? 0.22
-      : tier === "critique" || tier === "echec" ? 0.14
+    return tier === "malediction" ? 0.28
+      : tier === "critique" || tier === "echec" ? 0.18
       : 0;
   if (nature !== "physique") return 0;
-  return tier === "malediction" ? 0.42
-    : tier === "critique" ? 0.36
-    : tier === "echec" ? 0.24
-    : tier === "justesse" ? 0.12
+  return tier === "malediction" ? 0.55
+    : tier === "critique" ? 0.46
+    : tier === "echec" ? 0.32
+    : tier === "justesse" ? 0.14
     : 0;
 }
 
@@ -1100,9 +1105,15 @@ export function coutSante(
  * Retour Patrick du 07/09 : « courbe difficulté à augmenter, c'est toujours
  * facile ». Elle existait, mais elle ne durcissait QUE le dernier lieu
  * (`visited >= target - 1`) : un cran sur huit lieux, autant dire rien. Elle
- * monte maintenant par PALIERS, comme tout dans ce jeu — rien au départ (on
- * apprend la zone), un cran passé les deux tiers, deux crans sur le dernier
- * lieu avant la sortie.
+ * monte par PALIERS, comme tout dans ce jeu — rien au départ (on apprend la
+ * zone), puis un cran, deux, trois à mesure qu'on approche de la sortie.
+ *
+ * ⚠️ RELEVÉE le 11/09 (« monte drastiquement la difficulté ») : les paliers
+ * commençaient aux deux tiers et plafonnaient à deux crans, donc les deux
+ * premiers tiers d'une traversée se jouaient au seuil d'entrée. Ils montent
+ * désormais dès le premier tiers et vont jusqu'à trois. La fin d'une
+ * traversée est le moment où l'on a le plus à perdre : c'est là que le pays
+ * doit se refermer, pas au moment où l'on y entre.
  *
  * ⚠️ Rien n'est affiché, jamais. L'Anneau est calculé sur ce seuil : il
  * montre simplement un peu moins d'encoches pleines à mesure qu'on approche
@@ -1116,8 +1127,9 @@ export function coutSante(
  */
 export function tensionTraversee(visites: number, cible: number): number {
   if (cible <= 0) return 0;
-  if (visites >= cible - 1) return 2;
-  if (visites >= Math.ceil((cible * 2) / 3)) return 1;
+  if (visites >= cible - 1) return 3;
+  if (visites >= Math.ceil((cible * 2) / 3)) return 2;
+  if (visites >= Math.ceil(cible / 3)) return 1;
   return 0;
 }
 

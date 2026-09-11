@@ -30,6 +30,35 @@ sys.path.insert(0, str(RACINE / "tools"))
 from immersion import bloc_tableau, chaines_de_tableau  # noqa: E402
 
 
+
+def objets_passifs() -> dict:
+    """{id: {"mod": n, "scope": "all"|"combat"}} pour tout objet PASSIF.
+
+    ⚠️ Compter ce qu'on extrait avant de s'en servir (règle du 10/08) :
+    l'appelant vérifie qu'il en sort au moins dix, sinon le regex a cessé de
+    lire la source et la réplique mesurerait un jeu sans objets.
+    """
+    src = (LIB / "besace.ts").read_text(encoding="utf-8")
+    out = {}
+    for m in re.finditer(
+        r'"([a-z0-9\-]+)":\s*\{(.*?)\n  \},', src, re.S
+    ):
+        bloc = m.group(2)
+        if 'slot: "passif"' not in bloc:
+            continue
+        mod = re.search(r"passiveMod:\s*(\d+)", bloc)
+        scope = re.search(r'passiveScope:\s*"(\w+)"', bloc)
+        out[m.group(1)] = {
+            "mod": int(mod.group(1)) if mod else 0,
+            "scope": scope.group(1) if scope else "all",
+        }
+    if len(out) < 10:
+        raise SystemExit(
+            f"objets_passifs n'a lu que {len(out)} objets : le regex ne lit plus besace.ts."
+        )
+    return out
+
+
 def apports_proces(src: str) -> dict[str, str]:
     """Les quatre lignes que le procès DIT selon ce qu'on lui apporte.
 
@@ -355,6 +384,13 @@ def main() -> int:
                 re.S,
             )
         },
+        # ⚠️ LE BONUS PERMANENT DES OBJETS PORTÉS, ajouté le 11/09. Le kit ne
+        # portait que le NOM : la réplique ignorait donc `passiveMod`, et
+        # toute mesure de létalité jugeait un jeu où porter deux objets ne
+        # change rien — alors qu'un explorateur y gagnait jusqu'à deux crans
+        # de seuil sur CHAQUE jet. C'est ce trou qui expliquait l'écart entre
+        # « les chiffres disent que c'est dur » et « c'est toujours facile ».
+        "objetsPassifs": objets_passifs(),
         "lieux": {
             l["id"]: l["nom"]
             for l in json.loads((DATA / "zones" / "landes.json").read_text(encoding="utf-8")).get("lieux", [])

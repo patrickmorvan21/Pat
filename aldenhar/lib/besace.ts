@@ -85,12 +85,32 @@ export function besaceBySlot(besace: BesaceItem[], slot: BesaceSlot): BesaceItem
 }
 
 /** Somme des modificateurs passifs qui s'appliquent à un jet (combat ou non). */
+/**
+ * Le modificateur permanent des objets PORTÉS — le MEILLEUR applicable, jamais
+ * la somme.
+ *
+ * ⚠️ CHANGÉ le 11/09 (« monte drastiquement la difficulté »), et c'était la
+ * plus grosse facilité cachée du jeu : quinze des dix-huit passifs donnent +1,
+ * la Besace en porte deux, donc un joueur qui explore arrivait à **+2 sur
+ * CHAQUE jet**, en permanence, dès le deuxième lieu. C'est exactement la
+ * courbe de tension de fin de traversée, annulée — et gratuitement, puisque
+ * ramasser ne coûte rien.
+ *
+ * Le second objet n'AJOUTE donc plus, il ÉTEND : porter une arme de combat et
+ * une babiole « partout » te couvre dans les deux situations, au lieu de te
+ * doubler dans l'une. Le vrai arbitrage redevient « lequel des deux », pas
+ * « en avoir deux ».
+ *
+ * ⚠️ Aucun chiffre nulle part : c'est l'Anneau, calculé sur le seuil effectif,
+ * qui montre la différence en encoches pleines.
+ */
 export function passiveMod(besace: BesaceItem[], isCombat: boolean): number {
-  return besace.reduce((sum, raw) => {
+  return besace.reduce((best, raw) => {
     const i = normalizeItem(raw);
-    if (i.slot !== "passif" || !i.passiveMod) return sum;
-    if (i.passiveScope === "all" || (i.passiveScope === "combat" && isCombat)) return sum + i.passiveMod;
-    return sum;
+    if (i.slot !== "passif" || !i.passiveMod) return best;
+    if (i.passiveScope === "all" || (i.passiveScope === "combat" && isCombat))
+      return Math.max(best, i.passiveMod);
+    return best;
   }, 0);
 }
 
@@ -111,24 +131,23 @@ export function normalizeItem(i: BesaceItem): BesaceItem {
   return { ...i, slot: "passif", passiveMod: i.passiveMod ?? 1, passiveScope: i.passiveScope ?? scope };
 }
 
-/** Soins mineurs trouvables en exploration — ACTIFS à usage unique.
-    01/09 : drop à 5 % (Scene.tsx) ET valeurs divisées par deux (0.30/0.25/
-    0.20/0.30 → 0.15/0.12/0.10/0.15) — un soin RAMASSÉ referme un peu, un
-    soin GAGNÉ (LANDES_OBJETS, RECOMPENSES_DESTIN) referme pour de bon. */
-const SOINS_MINEURS: Omit<BesaceItem, "id">[] = [
-  { name: "Baume de mousse noire",
-    usageTexte:
-      "Tu racles le fond du pot et tu tasses la mousse noire à même la plaie, sans regarder. Ça mord d'abord, puis ça tient — la chair se referme autour, comme si elle avait décidé d'y croire.", rarity: "commun", kind: "soin", slot: "actif", heal: 0.15, cure: true, flavor: "Ça sent la cave. Ça referme les plaies." },
-  { name: "Fiole d'eau de gouttière",
-    usageTexte:
-      "Tu bois l'eau de gouttière au goulot, debout, en trois gorgées qui ont le goût de l'ardoise. Ce n'est pas bon. C'est de l'eau, et ton corps ne fait pas le difficile.", illustration: "assets/objet_fiole_baume_b_b.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.12, cure: false, flavor: "Trouble, tiède — mais elle apaise." },
-  { name: "Bandage d'un autre",
-    usageTexte:
-      "Tu défais le bandage de quelqu'un d'autre et tu l'enroules sur ton propre bras. Il a déjà servi — la tache est ancienne, brune, à l'endroit exact où tu saignes. Tu serres le nœud sans y penser.", illustration: "assets/objet_brin_chanvre_beni_c_b.png", rarity: "commun", kind: "soin", slot: "actif", heal: 0.1, cure: true, flavor: "Son premier propriétaire n'en aura plus besoin." },
-  { name: "Onguent gris",
-    usageTexte:
-      "Tu étales l'onguent gris du plat du pouce, en couche mince. Ça sent la cendre et le suif. La douleur ne part pas : elle recule d'un pas et te laisse la place.", rarity: "commun", kind: "soin", slot: "actif", heal: 0.15, cure: false, flavor: "L'étiquette est illisible. L'odeur, convaincante." },
-];
+/* ⚠️ LE DROP ALÉATOIRE DE SOINS EST SUPPRIMÉ (11/09, Patrick : « enlève des
+   objets qui augmentent la santé, on en a beaucoup trop »).
+
+   Il distribuait quatre remèdes (Baume de mousse noire, Fiole d'eau de
+   gouttière, Bandage d'un autre, Onguent gris) sur 5 % des écrans
+   d'exploration. Le taux avait déjà été baissé trois fois (22 % → 12 % → 5 %)
+   et les valeurs divisées par deux le 01/09 : le canal ne tenait plus que par
+   habitude. Il est retiré, pas encore rabaissé — c'est le seul soin du jeu qui
+   TOMBE DU CIEL, sans lieu, sans geste et sans prix. Un soin se gagne à un
+   endroit ou ne se gagne pas.
+
+   `randomSoinMineur` part avec le pool : plus aucun appelant, et garder une
+   fonction qui rend toujours `null` est exactement le drapeau mort que
+   l'audit du 12/08 a appris à couper. Une sauvegarde d'avant le 11/09 garde
+   en revanche les remèdes DÉJÀ ramassés — ce sont des objets complets dans
+   `run.besace`, pas des identifiants : ils se consomment normalement, on ne
+   vide la poche de personne. */
 
 /** Récompenses du Destin (nat 20) : rare à légendaire, JAMAIS une Relique. Un
     mélange d'actifs (soins puissants) et de passifs (babioles / armes). */
@@ -141,7 +160,7 @@ const RECOMPENSES_DESTIN: Omit<BesaceItem, "id">[] = [
   { name: "Lame de lanterne", illustration: "assets/objet_dague_cendres_d_a.png", rarity: "rare", kind: "arme", slot: "passif", passiveMod: 1, passiveScope: "combat", flavor: "Forgée dans le métal d'une lanterne verte. Elle ne vacille jamais." },
   { name: "Élixir du campement perdu",
     usageTexte:
-      "Tu descends l'élixir d'un trait. La chaleur part de l'estomac et gagne les mains, les jambes, la nuque — quelqu'un a distillé ça pour un homme qui ne comptait pas revenir.", rarity: "rare", kind: "soin", slot: "actif", heal: 0.5, cure: true, flavor: "Quelqu'un l'a brassé pour un repos qui n'est jamais venu." },
+      "Tu descends l'élixir d'un trait. La chaleur part de l'estomac et gagne les mains, les jambes, la nuque — quelqu'un a distillé ça pour un homme qui ne comptait pas revenir.", rarity: "rare", kind: "soin", slot: "actif", heal: 0.25, cure: true, flavor: "Quelqu'un l'a brassé pour un repos qui n'est jamais venu." },
   // ⚠️ SANS ICÔNE PROPRE, et volontairement laissée au repli : aucune des 30
   // icônes d'objet ne montre une larme, et le repli actuel (`objet_grimoire`)
   // est faux — mais forcer un mauvais appariement serait pire que le repli
@@ -157,14 +176,6 @@ function withId(base: Omit<BesaceItem, "id">): BesaceItem {
   return { ...base, id: `${base.name.toLowerCase().replace(/[^a-z]+/g, "-")}-${uid}` };
 }
 
-export function randomSoinMineur(exclure: string[] = []): BesaceItem | null {
-  // Jamais deux fois le même objet « trouvé » dans une vie (playtest 7/08 :
-  // deux « Fiole d'eau de gouttière » dans la même run cassent l'illusion
-  // d'objet trouvé). Pool épuisé → pas de drop, un bonus peut manquer.
-  const pool = SOINS_MINEURS.filter((s) => !exclure.includes(s.name));
-  if (!pool.length) return null;
-  return withId(pool[Math.floor(Math.random() * pool.length)]);
-}
 
 /**
  * Objets RÉELS des Landes (chantier n°1 du 23/07 — « cause principale du trop
@@ -192,7 +203,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     name: "Offrandes de la Borne",
     usageTexte:
       "Tu manges ce qu'on avait laissé au pied de la borne : du pain dur, une poignée de baies noires. C'était pour autre chose que toi. C'est toi qui le prends.", rarity: "commun", kind: "soin", slot: "actif",
-    heal: 0.25, cure: false, illustration: "assets/objet_offrandes_borne_d_b.png",
+    heal: 0.12, cure: false, illustration: "assets/objet_offrandes_borne_d_b.png",
     flavor: "Pain durci, rubans, clous tordus. On les a laissés pour entrer. Tu les prends pour tenir.",
   },
   "echarde-gibet": {
@@ -204,7 +215,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     name: "Brin de Chanvre Béni",
     usageTexte:
       "Tu noues le brin de chanvre au-dessus de la plaie, deux tours, comme on t'a dit sans te le dire. Le sang ralentit. Tu ne sais pas si c'est le nœud ou ce qu'on a récité dessus.", rarity: "commun", kind: "soin", slot: "actif",
-    heal: 0.2, cure: true, illustration: "assets/objet_brin_chanvre_beni_c_b.png",
+    heal: 0.12, cure: true, illustration: "assets/objet_brin_chanvre_beni_c_b.png",
     flavor: "Béni pour les pendus, dit-on. Noué sur une plaie, il la referme.",
   },
   "carnet-fossoyeur": {
@@ -249,11 +260,14 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     passiveMod: 0, passiveScope: "all", illustration: "assets/objet_clochette_meneuse_b.png",
     flavor: "On la met au cou de la meneuse pour que le berger sache où est son troupeau dans le brouillard. Maintenant c'est toi qu'elle annonce.",
   },
+  /* Le Miroir ne SOIGNE plus (11/09). Il refermait 0,15 à l'usage, ce qui
+     n'a jamais eu de sens : c'est un miroir, pas un onguent — et son propre
+     flavor dit qu'il remet en place ce que la lande a DÉPLACÉ, pas ce qu'elle
+     a ouvert. Il devient ce qu'il décrit : un passif qui te garde à ta place
+     tant que tu le portes. Sa phrase d'usage part avec sa consommation. */
   "miroir-poche": {
-    name: "Miroir de Poche Fêlé",
-    usageTexte:
-      "Tu ouvres le miroir fêlé et tu te regardes dedans, une fois, franchement. La fêlure te coupe le visage en deux — et quelque chose que la lande avait déplacé se remet à sa place. Tu refermes avant d'en voir plus.", rarity: "commun", kind: "babiole", slot: "actif",
-    heal: 0.15, cure: false, illustration: "assets/objet_miroir_poche_fele_d_a.png",
+    name: "Miroir de Poche Fêlé", rarity: "commun", kind: "babiole", slot: "passif",
+    passiveMod: 1, passiveScope: "all", illustration: "assets/objet_miroir_poche_fele_d_a.png",
     flavor: "Fêlé en travers, jeté dans les roseaux. Se regarder dedans remet en place ce que la lande a déplacé.",
   },
   // ——— Lot 25/07 : règle de dosage (« chaque point d'intérêt rend une monnaie »).
@@ -278,7 +292,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     name: "Fruit de Cendre",
     usageTexte:
       "Tu mords dans le fruit de cendre. La pulpe est tiède, farineuse, et le goût reste longtemps après. Ça nourrit. C'est déjà tout ce qu'on lui demande.", rarity: "commun", kind: "soin", slot: "actif",
-    heal: 0.3, cure: false, illustration: "assets/objet_fruit_cendre_b_b.png",
+    heal: 0.1, cure: false, illustration: "assets/objet_fruit_cendre_b_b.png",
     flavor: "La peau est parfaite et le poids ment. Le manger est un pari : une vision, ou pire.",
   },
   /* ═══ OBJET PILOTE n°1 — L'OUTIL (chantier feedback+fluidité §2, 12/08).

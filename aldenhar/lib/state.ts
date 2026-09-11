@@ -217,7 +217,6 @@ export type RunState = {
   echosObjet?: string[];
   /** Noms des soins génériques déjà trouvés cette run — un objet « trouvé »
       ne retombe jamais sous le même nom dans la même vie (playtest 7/08). */
-  dropsServis?: string[];
   /** Registre de déjà-vu, portée RUN (lib/dejavu.ts) — un compteur par clé,
       jamais un booléen : le texte peut dire « la deuxième fois ». */
   vus?: Record<string, number>;
@@ -722,7 +721,6 @@ export function loadRun(): RunState {
             lieuxEngages: typeof p.lieuxEngages === "number" ? p.lieuxEngages : 0,
             horloge: typeof p.horloge === "number" ? p.horloge : (typeof p.day === "number" ? p.day : 1),
             poiIci: typeof p.poiIci === "number" ? p.poiIci : 0,
-            dropsServis: Array.isArray(p.dropsServis) ? p.dropsServis : [],
             temoins: Array.isArray(p.temoins) ? p.temoins : [],
             temoinsCites: Array.isArray(p.temoinsCites) ? p.temoinsCites : [],
             procesGagnes: typeof p.procesGagnes === "number" ? p.procesGagnes : 0,
