@@ -89,7 +89,8 @@ import {
   etat, etatsActifs, poserEtat,
 } from "@/lib/etats";
 import { appliquerRepos, franchirZone, loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
-import { zoneSuivanteJouable } from "@/lib/zones";
+import { zoneDef, zoneSuivanteJouable } from "@/lib/zones";
+import { entrerLieu, prochainPas } from "@/lib/etages";
 import {
   armerSurprise, surprisePrete, jourProphetie, texteProphetie, texteFantome,
   texteCitation, texteRetour, texteVol, texteTemoinRecite, OBJET_DU_VOLEUR,
@@ -2361,6 +2362,26 @@ export default function Scene() {
     // procès le détourner referait exactement le défaut qu'on vient de
     // corriger — un bouton qui ne fait pas ce qu'il annonce. Conséquence
     // assumée : atteindre la Palissade à Soupçon comble est une échappée.
+    /* ═══ LA TRAVERSÉE À ÉTAGES (12/09, lib/etages.ts) ═══════════════════
+       Une zone qui déclare des environnements ne tire pas dans un pool plat :
+       en quittant un lieu, c'est `prochainPas` qui dit la suite. Un lieu
+       IMPOSÉ (l'entrée de l'étape suivante, un obligatoire de fin) est servi
+       comme une orientation à une seule direction — on le pose dans
+       `opts.toDest` et la branche d'orientation fait tout le reste (arrivée,
+       compte des lieux, Jour de marche). Une CROISÉE d'étape est bâtie plus
+       bas, avant la cascade des Landes, qui ne s'exécute jamais ici. Aucune
+       zone n'a d'environnements aujourd'hui (lib/zones.ts) : les Landes
+       ignorent ce bloc. */
+    const envsZone = zoneDef(runRef.current?.zone).environnements;
+    let etapePas: ReturnType<typeof prochainPas> | null = null;
+    if (
+      envsZone?.length && trav.etage && !opts?.toDest && !opts?.toScene &&
+      !scene.chainNext && !scene.terminal && !trav.done
+    ) {
+      etapePas = prochainPas(envsZone, trav.etage, trav.visited, nextStep * 31 + trav.visited.length);
+      trav.etage = etapePas.etage;
+      if (etapePas.pas.type === "lieu") opts = { ...(opts ?? {}), toDest: etapePas.pas.id };
+    }
     if (
       soupNow >= 6 && !scene.fixationTrial && !scene.chainNext && !scene.sejour &&
       !enSequenceHameau && !trav.done
@@ -2532,6 +2553,9 @@ export default function Scene() {
       }
       if (!trav.visited.includes(opts.toDest)) {
         trav.visited = [...trav.visited, opts.toDest];
+        // Traversée à étages : ce lieu compte dans son environnement (pool,
+        // entrée ou fin) — une rencontre hors étape ne compte pas.
+        if (envsZone?.length && trav.etage) trav.etage = entrerLieu(envsZone, trav.etage, opts.toDest);
         noterVisiteLieu(radical(opts.toDest));
         track("lieu_atteint", { lieu: radical(opts.toDest), visites: trav.visited.length, cible: trav.target });
         // LE JOUR AVANCE EN VIVANT (arbitrage 7/08, corrigé le 10/08) : tous
@@ -2602,6 +2626,34 @@ export default function Scene() {
           ? accueilDuJour(runRef.current ?? loadRun())
           : scene.chainNext;
       nextScene = resoudre(cible, runRef.current) ?? DESCENTE_SCENE;
+      trav.phase = "scene";
+      trav.current = nextScene.id;
+    } else if (etapePas && etapePas.pas.type === "croisee") {
+      // CROISÉE D'ÉTAPE : deux lieux du pool de l'environnement courant (un
+      // seul quand il n'en reste qu'un — la marche n'a alors qu'une direction,
+      // rendue comme une route fermée sans cause, pas comme une sanction).
+      const o = etapePas.pas.options;
+      const pair: [string, string] = o.length === 2 ? [o[0], o[1]] : [o[0], o[0]];
+      // Même graine que la Croisée des Landes : portée par `trav`, la reprise
+      // rebâtit la même marche (ambiance, image).
+      const seedEtape = (nextStep * 101 + trav.visited.length * 7) >>> 0;
+      trav.seed = seedEtape;
+      nextScene = makeLiaison(
+        pair[0],
+        pair[1],
+        seedEtape,
+        liaisonCtx(runRef.current ?? loadRun(), scene.liaison ? undefined : scene.id),
+        o.length === 1
+      );
+      trav.liaisonOpts = pair;
+      trav.routeFermee = o.length === 1;
+      trav.phase = "liaison";
+      trav.current = nextScene.id;
+    } else if (etapePas && etapePas.pas.type === "descente") {
+      // Repli : une zone à étages dont le dernier obligatoire n'est pas une
+      // scène terminale. Normalement la sortie EST le dernier `fin`.
+      nextScene = DESCENTE_SCENE;
+      trav.done = true;
       trav.phase = "scene";
       trav.current = nextScene.id;
     } else if (trav.visited.length >= trav.target) {

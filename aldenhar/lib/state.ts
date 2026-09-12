@@ -8,6 +8,7 @@ import { normalizeItem, startingBesace, type BesaceItem, type BesaceRarity } fro
 import { traverseeGuidee } from "@/lib/demo";
 import { ENTRY_SCENE, sceneAt, type MenaceId, type RouteFermeeCause } from "@/lib/scene-data";
 import { type ZoneDef, type ZoneId } from "@/lib/zones";
+import { cibleTotale, entrerLieu, ouvrirEtage, premierLieu, type EtageState } from "@/lib/etages";
 import { profilDepuis, profilNeuf, type ProfilRun } from "@/lib/profil";
 import type { Temoin } from "@/lib/temoins";
 import { sacDepuis, type SacFaits } from "@/lib/faits";
@@ -154,6 +155,13 @@ export type TraversalState = {
   seed: number;
   /** Descente atteinte : la traversée est finie (nœud terminal). */
   done: boolean;
+  /**
+   * TRAVERSÉE À ÉTAGES (12/09, lib/etages.ts) : où l'on en est dans la suite
+   * des environnements d'une zone qui en déclare. Absent pour les Landes
+   * (pool plat). Porté par `trav`, donc rechargé en bloc à la reprise — la
+   * Croisée d'étape se rebâtit à l'identique.
+   */
+  etage?: EtageState;
 };
 
 export function freshTraversal(current = ENTRY_SCENE): TraversalState {
@@ -867,12 +875,27 @@ export function appliquerRepos(run: RunState): void {
  * l'entrée serait une promesse sans consommateur.
  */
 export function franchirZone(run: RunState, vers: ZoneDef): void {
-  if (!vers.ecrite || !vers.entry) {
-    throw new Error(`franchirZone : la zone « ${vers.id} » n'est pas écrite (entry vide).`);
+  const envs = vers.environnements;
+  if (!vers.ecrite || (!vers.entry && !envs?.length)) {
+    throw new Error(`franchirZone : la zone « ${vers.id} » n'est pas écrite (ni entrée ni environnements).`);
   }
   run.zonesFranchies = [...(run.zonesFranchies ?? []), run.zone ?? "landes"];
   run.zone = vers.id;
-  run.trav = freshTraversal(vers.entry);
+  // Graine de la zone : déterministe par vie (la reprise rejoue le même
+  // tirage d'étape), différente d'une vie à l'autre.
+  const graine = (run.step + 1) * 7919 + run.day * 31;
+  if (envs?.length) {
+    // TRAVERSÉE À ÉTAGES : on entre par le premier environnement, et le
+    // compte d'étape démarre sur ce lieu-là. `target` = le maximum de lieux
+    // qu'une traversée peut compter — ce que lisent la courbe de tension et
+    // les statistiques, jamais ce qui décide de la fin (c'est `prochainPas`).
+    const entree = premierLieu(envs, graine);
+    run.trav = freshTraversal(entree);
+    run.trav.target = cibleTotale(envs);
+    run.trav.etage = entrerLieu(envs, ouvrirEtage(envs, 0, graine), entree);
+  } else {
+    run.trav = freshTraversal(vers.entry);
+  }
   appliquerRepos(run);
   run.soupcon = 0;
   run.soupconSeen = 0;

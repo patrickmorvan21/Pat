@@ -24,6 +24,7 @@
  */
 
 import { ENTRY_SCENE } from "@/lib/scene-data";
+import type { Environnement } from "@/lib/etages";
 
 export type ZoneId = "landes" | "salines";
 
@@ -37,6 +38,14 @@ export type ZoneDef = {
   entry: string;
   /** La zone existe-t-elle en jeu ? Faux = la Descente qui y mène est la fin de démo. */
   ecrite: boolean;
+  /**
+   * LA TRAVERSÉE À ÉTAGES (lib/etages.ts) — la grammaire des Salines : des
+   * environnements traversés dans l'ordre, chacun avec ses obligatoires et
+   * son pool. Absent = pool plat à la manière des Landes (`Scene.tsx` garde
+   * sa cascade). Présent = c'est `prochainPas` qui décide de la suite, et
+   * `entry` peut rester vide : l'entrée est celle du premier environnement.
+   */
+  environnements?: Environnement[];
 };
 
 export const ZONES: ZoneDef[] = [
@@ -59,5 +68,5 @@ export function zoneSuivante(id: ZoneId | undefined): ZoneDef | null {
 /** Une zone suivante existe ET se joue : la vie continue dedans. */
 export function zoneSuivanteJouable(id: ZoneId | undefined): ZoneDef | null {
   const n = zoneSuivante(id);
-  return n && n.ecrite && n.entry ? n : null;
+  return n && n.ecrite && (n.entry || n.environnements?.length) ? n : null;
 }
