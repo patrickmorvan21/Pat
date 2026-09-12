@@ -1268,6 +1268,12 @@ def main() -> int:
     zones_json = {}
     for zf in sorted(ZONES.glob("*.json")):
         z = json.loads(zf.read_text(encoding="utf-8"))
+        # Une zone EN CONCEPTION (salines.json depuis le 12/09) n'a ni scène
+        # jouable ni carte : l'exporter ferait apparaître ses lieux dans le
+        # Graphe des Landes, sans coordonnées et sans un seul écran derrière.
+        # Sa carte se génère à l'étape 3 (table de routage validée), pas avant.
+        if (z.get("zone") or {}).get("statut") == "conception":
+            continue
         zones_json[zf.stem] = z
         noms = {s["id"]: s for s in z.get("scenes", [])}
         lieux = z.get("lieux", [])

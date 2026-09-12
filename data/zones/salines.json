@@ -1,0 +1,1941 @@
+{
+  "zone": {
+    "id": "salines",
+    "nom": "Les Salines",
+    "acte": 1,
+    "statut": "conception",
+    "source": "Notion « 🧂 Zone 2 — Les Salines » (3d828e8daa58815dab1ff5aef56de171), bible du 11-12/09/2026 — transcrite le 12/09/2026",
+    "heure_figee": "plein jour blanc, sans ombre sur la Croûte (le sel garde la lumière)",
+    "particularites": [
+      "La règle du sel : ce qui s'arrête se couvre. Un jour d'immobilité fait une pellicule, dix une carapace, une saison une statue. On ne meurt pas de sel : on cesse, la bouche en dernier.",
+      "L'État Encroûté : chaque campement dans la zone ajoute un palier (I pixels blancs sur bordures et encoches · II ~15 % des lettres des choix couvertes, la Besace se soude · III 35–40 % des lettres + l'indice du dé, mort spéciale : ta statue apparaît sur la Croûte aux runs suivantes). La mort retire des pixels, le sel en ajoute. Survivre : bouger, se gratter (−1 palier, coûte de la peau), eau douce rare.",
+      "La Soif (Besoin de zone) : monte par scène, jamais en temps réel. Haute : un mot sur trois dans les choix est remplacé par un bloc de pixels blancs.",
+      "La tempête de sel : intrusion d'écran attachée à des scènes précises, jamais chronométrée ; pixels blancs en steps() sur toute l'interface ; on balaye au doigt (3–5 passages) ; un bouton non dégagé n'est pas cliquable. Camper juste après = une pellicule de plus. Sur certains lieux, balayer l'illustration révèle un détail absent avant.",
+      "Rythme cible : 5 à 7 affrontements physiques sur 9–11 lieux (Landes : 2–3 sur 16). Une action physique par lieu.",
+      "Vues à la première personne, le héros n'apparaît jamais dans une image. Image fixe tant que l'environnement ne change pas ; un réglage de ratio de trame par environnement."
+    ],
+    "phrase_cle": {
+      "texte": "Bouger attire le Ver, s'arrêter attire le sel.",
+      "trois_fois": [
+        "gravée sur un pieu de la Rive haute : « Bouge, il te mange. Reste, il te garde. »",
+        "dite entière et sincèrement par l'Encroûté de la Barge",
+        "reprise une fois par le Geôlier, retournée : « Douze mille avant toi ont entendu ça. Six mille ont bougé. »"
+      ]
+    },
+    "bruit_ecrit": "un cliquetis de plomb, quelque part sur la croûte",
+    "motif_cache": null,
+    "twist": {
+      "dit": "les Passeurs faisaient traverser ; les Encroûtés, leurs restes, t'aident encore (le Puits, le chemin le plus court, l'heure sûre).",
+      "verite": "le Ver était déjà dans le lac. Les Passeurs avaient un accord avec lui — un héros sur deux par-dessus bord, et la barge passe. Le lac s'est vidé, l'accord est resté. Chaque conseil d'Encroûté t'envoie sur la croûte à l'heure où le Ver chasse. Ils paient, comme ils ont toujours payé, et le Ver les épargne pour ça.",
+      "regle": "Jamais expliqué à l'écran. Reconstituable par les six fragments, ou par la mort (« dévoré sur le bon chemin »). L'ordre des fragments doit empêcher que la vérité soit lisible en une seule run — une run en lit deux ou trois.",
+      "secondaires": [
+        "Le Bœuf de sel est habité (le dernier Passeur).",
+        "Ta statue existe déjà (si tu campes deux fois, une statue de la Croûte porte le nom de ton héros actuel).",
+        "Ton ancien héros : des Cristallins portent des noms de ton Grand Registre."
+      ]
+    },
+    "sortie": {
+      "id": "tour_de_l_ecluse",
+      "nom": "La Tour de l'écluse",
+      "note": "dernier `fin` du dernier environnement — la porte de l'Acte II (mécanisme de fin de zone à décider : écluse seule)"
+    },
+    "carte": null,
+    "comptes_annonces": {
+      "lieux": 30,
+      "obligatoires": 7,
+      "creatures": 16,
+      "objets": 15,
+      "fragments": 6,
+      "environnements": 4
+    },
+    "a_decider": [
+      "le mécanisme de fin de zone (écluse seule ; « le Reste » non retenu)",
+      "graphe, campements, placement des six fragments, tri du pool de lieux (30 → ~20)",
+      "la lecture « image fixe par environnement » : une image d'établissement par environnement + trois invariants par image dédiée",
+      "prototypes Encroûté + tempête sur les CTA existants — Patrick choisit",
+      "Broyeuse : fusion avec la Forge ?"
+    ],
+    "ecarts_de_transcription": [
+      "la bible annonce « 30 lieux, 7 obligatoires » ; sa liste en compte 33 (8 + 9 + 8 + 8) dont 6 marqués obligatoires (Rive haute, Terrasses, Entrepôt, Fossé, Rues, Tour) — la 7e n'est pas marquée (le Quai de l'île ?), à trancher au tri",
+      "la bible annonce 15 objets ; sa liste en compte 14 (Roue et Manivelle comptés ensemble, « si le mécanisme est gardé »)",
+      "aucune carte Figma : pas de coordonnées x/y — la carte se génère à l'étape 3 (table de routage validée)"
+    ]
+  },
+  "environnements": [
+    {
+      "id": "croute",
+      "ordre": 1,
+      "nom": "La Croûte",
+      "sous_titre": "le fond du lac",
+      "jour": "Jour I — vite, pas de campement sûr",
+      "ratio_trame": "sol orange quasi plein, ciel charbon — image inversée par rapport au reste du jeu",
+      "plan": "très large, aucune ombre",
+      "invariants": [
+        "fissures convergentes vers le centre",
+        "pieux et rails sortant du sel",
+        "une chose lointaine qui n'est pas toi"
+      ],
+      "histoire": "C'est là que tout le monde attendait la barge, parfois des jours. Quand l'eau est partie, la file d'attente s'est mise à marcher sur le fond. Les premiers à traverser à pied ont tracé les sillages ; les premiers à s'arrêter sont devenus les premières statues. Le Ver était déjà là.",
+      "entree": "rive_haute",
+      "fin": [],
+      "tirages": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "bassins",
+      "ordre": 2,
+      "nom": "Les Bassins",
+      "sous_titre": "la sécheresse crue",
+      "jour": "Jour II — premier campement, coûteux",
+      "ratio_trame": "~50/50",
+      "plan": "moyen, lumière rasante, premières ombres",
+      "invariants": [
+        "murets en gradins",
+        "passerelles de bois",
+        "rangées de Cristallins couchés"
+      ],
+      "histoire": "Les Passeurs ont cru à un mauvais été. Ils ont creusé des bassins en terrasses pour récolter le sel et l'ont vendu aux descendants comme « le sel qui garde ». Une génération de commerce sur un malentendu. Les bassins sont descendus avec l'eau, un niveau par saison. Les derniers clients sont couchés dans les fonds.",
+      "entree": "terrasses",
+      "fin": [],
+      "tirages": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "salines",
+      "ordre": 3,
+      "nom": "Les Salines",
+      "sous_titre": "le chantier",
+      "jour": "Jour II–III — le creux, mini-boss",
+      "ratio_trame": "~25 % orange",
+      "plan": "serré, plus d'horizon",
+      "invariants": [
+        "sacs empilés",
+        "la balance",
+        "rails qui s'arrêtent net"
+      ],
+      "histoire": "Plus personne n'a acheté. Les Passeurs ont continué : gratter, peser, ensacher, empiler — le travail était la seule immobilité qui bouge. Morts à la tâche, chacun figé dans son geste. Les Sauniers, bêtes dressées à racler, ont hérité des gestes. Le chantier tourne encore, sans ouvrier.",
+      "entree": null,
+      "fin": [
+        "entrepot"
+      ],
+      "tirages": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "saulnes",
+      "ordre": 4,
+      "nom": "Saulnes",
+      "sous_titre": "le relais",
+      "jour": "Jour III–IV — abri réel, la tour",
+      "ratio_trame": "charbon dominant, lueur orange qui monte de l'intérieur de la tour — la seule lumière inversée du jeu",
+      "plan": "vue de loin comme une masse noire sur l'orange, la tour au sommet ; la ville penche vers sa tour",
+      "invariants": [
+        "le Fossé en gradins",
+        "la ville qui marche",
+        "la tour et sa lueur"
+      ],
+      "histoire": "L'île n'a jamais été une ville. Une auberge, des dortoirs, des entrepôts, la tour. On y arrivait par la barge, on dormait une nuit, on payait, on descendait. Les Passeurs y étaient chez eux comme un aubergiste : jamais à la table des clients. Ceux qui sont restés dedans ont trouvé la parade — marcher. Ils tournent dans les rues depuis des siècles, attendant qu'on leur paie le passage.",
+      "entree": "fosse",
+      "fin": [
+        "rues_qui_marchent",
+        "tour_de_l_ecluse"
+      ],
+      "tirages": [
+        1,
+        2
+      ]
+    }
+  ],
+  "lieux": [
+    {
+      "id": "rive_haute",
+      "nom": "La Rive haute",
+      "note": "l'ancien quai : pieux, cloche d'appel sans battant, la phrase gravée sur un pieu (« Bouge, il te mange. Reste, il te garde. »). Première tempête ; balayer découvre la ligne de rails (posée par les Passeurs pour tirer la barge à sec — le fil visuel rive → île, pas un raccourci). Scène : sonner la cloche ou pas (le son attire ce qui bouge sous la croûte).",
+      "environnement": "croute",
+      "role": "entree",
+      "statut": "obligatoire",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [
+        "balayage"
+      ],
+      "combats": [],
+      "rencontres": [
+        "le_percepteur"
+      ],
+      "objets": [
+        "battant_de_la_cloche"
+      ],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "file",
+      "nom": "La File",
+      "note": "pierres plates alignées vers le quai, Cristallins assis dessus dans l'ordre. Grattage → une phrase de la file. Piqueurs nichés sur les têtes (premier combat court). Objet possible sur un genou de statue.",
+      "environnement": "croute",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [
+        "grattage"
+      ],
+      "combats": [
+        "piqueurs"
+      ],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "champ_des_sillages",
+      "nom": "Le Champ des Sillages",
+      "note": "fissures convergeant vers Saulnes. Rencontre du Bœuf de sel sur ses rails : le suivre, le monter (jet — saute un lieu de la Croûte), le laisser. Le Ver se voit au loin pour la première fois, engloutissant une silhouette. Savoir : les fissures partent du fond.",
+      "environnement": "croute",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [],
+      "combats": [
+        "gisants"
+      ],
+      "rencontres": [
+        "boeuf_de_sel_sur_ses_rails"
+      ],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "barge_echouee",
+      "nom": "La Barge échouée",
+      "note": "coque prise dans le sel, perche dressée. L'Encroûté qui vend de l'eau salée et dit la phrase entière (histoire : a acheté de l'eau pour deux, son compagnon s'est assis « une heure » et n'est plus qu'une statue à côté). Crochetage du coffre → registre des traversées (fragment 1). La trappe dans la cale (fragment 4), visible seulement si on descend.",
+      "environnement": "croute",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [
+        "f1_registre_de_la_barge",
+        "f4_trappe_de_la_barge"
+      ],
+      "minijeux": [
+        "crochetage"
+      ],
+      "combats": [],
+      "rencontres": [
+        "encroute_de_la_barge"
+      ],
+      "objets": [
+        "perche_du_passeur",
+        "registre_des_traversees"
+      ],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "statue",
+      "nom": "La Statue",
+      "note": "un Cristallin seul, bras tendu vers l'île. Grattage : un visage, puis un nom du Grand Registre. Tempête : balayer révèle une seconde statue derrière, plus petite. Ici peut apparaître ta propre statue (twist secondaire).",
+      "environnement": "croute",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [
+        "f3_compris_dans_le_prix"
+      ],
+      "minijeux": [
+        "grattage",
+        "balayage"
+      ],
+      "combats": [],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "bouche",
+      "nom": "La Bouche",
+      "note": "un trou dans la croûte, bords rongés ; autour, ce que le Ver n'a pas digéré (boucles, lames, une lanterne). Le seul endroit de la Croûte où l'on ramasse, et le plus dangereux parce qu'on y reste. Trois beats : descendre chercher, entendre la croûte craquer, remonter ou tenter un second objet.",
+      "environnement": "croute",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [],
+      "combats": [],
+      "rencontres": [],
+      "objets": [
+        "dent_de_ver",
+        "lanterne_du_noye"
+      ],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "sonde",
+      "nom": "La Sonde",
+      "note": "forage des Passeurs, trépied de bois, corde qui descend dans le noir. Ce qui remonte n'est pas de l'eau. Souffle v2 en version courte.",
+      "environnement": "croute",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [
+        "souffle_v2"
+      ],
+      "combats": [],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "radeau",
+      "nom": "Le Radeau",
+      "note": "esquif de secours, loin de tout, second Encroûté : celui qui dit « vas-y maintenant » vers le Puits (le Héron s'envole juste après : fragment 2). La première fausse aide.",
+      "environnement": "croute",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [
+        "f2_le_heron_s_envole"
+      ],
+      "minijeux": [],
+      "combats": [],
+      "rencontres": [
+        "encroute_du_radeau"
+      ],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "terrasses",
+      "nom": "Les Terrasses",
+      "note": "trois niveaux à sec ; descendre d'un niveau est un choix ; Cristallins couchés et Grumeaux à chaque niveau. Objet : sel qui garde (actif : soigne un État négatif contre une pellicule ; jeté : détourne Sauniers et Grumeaux ; description qui change après le fragment 6). Premières ombres.",
+      "environnement": "bassins",
+      "role": "entree",
+      "statut": "obligatoire",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [],
+      "combats": [
+        "vermisseaux"
+      ],
+      "rencontres": [],
+      "objets": [
+        "sel_qui_garde"
+      ],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "passerelle_rompue",
+      "nom": "La Passerelle rompue",
+      "note": "mini-jeu d'équilibre. Tomber = Entaillé + scène du Souffle avec le Ver juste dessous. Réussir = traverser. La Perche ouvre un troisième choix : sonder avant.",
+      "environnement": "bassins",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [
+        "equilibre",
+        "souffle_v2"
+      ],
+      "combats": [],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "perchoir_du_heron",
+      "nom": "Le Perchoir du Héron",
+      "note": "le Héron sur une patte au milieu d'un bassin. Rencontre en observation : l'Instinct dit ce qu'il fait. Rester assez longtemps pour le voir s'envoler — et voir ce qui suit.",
+      "environnement": "bassins",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [],
+      "combats": [],
+      "rencontres": [
+        "le_heron_au_perchoir"
+      ],
+      "objets": [
+        "plume_du_heron"
+      ],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "bassin_des_lechards",
+      "nom": "Le Bassin des Léchards",
+      "note": "la harde : suivre, chasser, ignorer. Mène au Puits sans passer par un Encroûté (la route honnête, ouverte par l'Instinct).",
+      "environnement": "bassins",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [],
+      "combats": [],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "bassin_des_declares",
+      "nom": "Le Bassin des Déclarés",
+      "note": "image : silhouettes de sel figées dans un geste ; texte : tu reconnais celle qui fait le geste de ta dominante — celle que le Geôlier t'a révélée en te regardant jouer. Un seul choix risqué : la toucher (jusqu'à la fin de la zone, jets sur ta stat forte plus faciles, sur ta stat faible plus durs — la Fixation en mécanique) ou passer (libre, plus fragile). Rare dans le tirage. ⚠️ Exception NOMMÉE à la doctrine « jamais un bonus de jet » : le seul lieu du jeu qui modifie un seuil — assumé parce que c'est la Fixation elle-même, pas une récompense.",
+      "environnement": "bassins",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "rare",
+      "fragments": [],
+      "minijeux": [],
+      "combats": [],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "cuve_fendue",
+      "nom": "La Cuve fendue",
+      "note": "un bassin qui tient un fond de saumure. Boire (soulage la Soif, +pellicule), remplir la gourde, passer. Le lieu-piège de la Soif.",
+      "environnement": "bassins",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [],
+      "combats": [
+        "sauteurs_de_saumure"
+      ],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "guerite",
+      "nom": "La Guérite",
+      "note": "cabane de garde-bassin, un Encroûté qui « connaît le chemin » et propose un raccourci par la croûte (fragment 2 bis si le Héron est en vue).",
+      "environnement": "bassins",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [
+        "f2_le_heron_s_envole"
+      ],
+      "minijeux": [],
+      "combats": [],
+      "rencontres": [
+        "encroute_de_la_guerite"
+      ],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "bassin_comble",
+      "nom": "Le Bassin comble",
+      "note": "plein à ras bord de Grumeaux qui se tournent vers toi. On ne traverse pas, on contourne : la réponse est dans l'image (tempête à balayer, qui révèle la passerelle intacte).",
+      "environnement": "bassins",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [
+        "balayage"
+      ],
+      "combats": [],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "noria",
+      "nom": "La Noria",
+      "note": "la roue à godets figée. Crochetage ou COURAGE pour la libérer : ouvre un canal à sec, raccourci direct vers les Salines (saute un lieu). Prix : le grincement — le Ver arrive dans la scène suivante quoi qu'il arrive.",
+      "environnement": "bassins",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [
+        "crochetage"
+      ],
+      "combats": [
+        "sauteurs_de_saumure"
+      ],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "entrepot",
+      "nom": "L'Entrepôt",
+      "note": "obligatoire — mini-boss. Sacs empilés, allées, le Grand Saunier au fond. Quatre beats : entrer, comprendre qu'elle trie, être trié, lui donner autre chose. Fragment 6 : pas un Passeur dans ses piles.",
+      "environnement": "salines",
+      "role": "fin",
+      "statut": "obligatoire",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [
+        "f6_pas_un_passeur"
+      ],
+      "minijeux": [
+        "crochetage"
+      ],
+      "combats": [
+        "rats_de_saline"
+      ],
+      "rencontres": [
+        "le_grand_saunier"
+      ],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "pesee",
+      "nom": "La Pesée",
+      "note": "la grande balance, l'Encroûté au registre. Le seul « commerce » de la zone : on n'achète pas, on échange poids contre poids (laisser un objet pour en prendre un). Il note ce que tu prends (prépare le Quai). Pour qui a lu le registre de la Barge : « Demander où sont les autres » — réponse à moitié, fragment 1 éclairé.",
+      "environnement": "salines",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [
+        "f1_registre_de_la_barge"
+      ],
+      "minijeux": [],
+      "combats": [],
+      "rencontres": [
+        "encroute_de_la_pesee",
+        "le_percepteur"
+      ],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "puits",
+      "nom": "Le Puits",
+      "note": "l'eau douce. Mini-jeu puiser. Nid de Piqueurs au-dessus. Le seul lieu où l'Encroûté redescend d'un palier sans coût. Trois façons d'y arriver : par l'Encroûté (à son heure), par les Léchards, seul.",
+      "environnement": "salines",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [
+        "puiser"
+      ],
+      "combats": [
+        "piqueurs"
+      ],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "dortoir",
+      "nom": "Le Dortoir",
+      "note": "couchettes des sauniers, matelas de sel. Campement des Salines : une nuit = un palier (comme tout campement de la zone, pas la mort — la mort est au palier III). Le Geôlier y propose la seconde nuit : la seule fois où il invite à rester. Lettre de Passeur sous un matelas.",
+      "environnement": "salines",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [],
+      "combats": [
+        "rats_de_saline"
+      ],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "forge_a_grattoirs",
+      "nom": "La Forge à grattoirs",
+      "note": "l'atelier. Le Grattoir de saunier, l'objet de la zone. À finir par un tracé sur l'enclume, ou pris brut (coûte de la peau). Peut fusionner avec la Broyeuse.",
+      "environnement": "salines",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [
+        "trace"
+      ],
+      "combats": [],
+      "rencontres": [],
+      "objets": [
+        "grattoir_de_saunier"
+      ],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "cour_aux_rails",
+      "nom": "La Cour aux rails",
+      "note": "là où le Bœuf fait demi-tour (boucle Rive → Cour). Le wagon, ses bancs, les anneaux de fer (fragment 5). Le Bœuf peut être détourné vers l'Entrepôt d'ici (solution du Grand Saunier). Par la lucarne du wagon, quelque chose respire dedans (twist du Bœuf habité).",
+      "environnement": "salines",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [
+        "f5_anneaux_du_wagon"
+      ],
+      "minijeux": [],
+      "combats": [],
+      "rencontres": [
+        "le_dernier_passeur"
+      ],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "salle_des_gages",
+      "nom": "La Salle des Gages",
+      "note": "ceux qui ne pouvaient pas payer le passage laissaient un gage : bocaux de sel contenant une main, un œil, une mèche, un nom sur une languette. Laisser un gage à ton tour (État négatif pour la zone, ou Dette de sang) contre un objet du comptoir. Les meilleurs objets sont ici.",
+      "environnement": "salines",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [],
+      "combats": [],
+      "rencontres": [],
+      "objets": [
+        "gourde_double",
+        "oeil_de_cristallin",
+        "manteau_de_saunier",
+        "sandales_de_marche",
+        "sac_de_sel"
+      ],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "broyeuse",
+      "nom": "La Broyeuse",
+      "note": "le moulin qui réduisait les statues en poudre : c'est ça, le sel qui garde. Il tourne encore. Mini-jeu de timing façon crochetage : passer entre les pilons pour atteindre l'objet au centre. Grumeaux sortis des meules.",
+      "environnement": "salines",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [
+        "timing"
+      ],
+      "combats": [
+        "rats_de_saline"
+      ],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "a_creuser": "marqué « à creuser » dans la bible ; peut fusionner avec la Forge à grattoirs"
+    },
+    {
+      "id": "fosse",
+      "nom": "Le Fossé",
+      "note": "l'anneau de croûte effondrée en gradins. On descend, puis on remonte vers la ville. Dernier lieu du Ver : il vient au bord de la roche, pas plus loin. Tempête forte, qui révèle l'escalier taillé.",
+      "environnement": "saulnes",
+      "role": "entree",
+      "statut": "obligatoire",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [
+        "balayage"
+      ],
+      "combats": [],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "porte_de_l_ile",
+      "nom": "La Porte de l'île",
+      "note": "l'ancien péage : arche, guichet. Un Encroûté demande le prix d'autrefois, en nature. Payer, refuser, contourner par les quais.",
+      "environnement": "saulnes",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [],
+      "combats": [],
+      "rencontres": [
+        "encroute_de_la_porte",
+        "le_percepteur"
+      ],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "rues_qui_marchent",
+      "nom": "Les Rues qui marchent",
+      "note": "obligatoire. La ville qui tourne. Pour parler, on marche avec ; pour s'arrêter, on est seul. Deux ou trois Encroûtés, dont un qui propose d'ouvrir la tour « pour un prix ». Fragment 3 : un Cristallin immobile dans une ruelle parmi ceux qui bougent.",
+      "environnement": "saulnes",
+      "role": "fin",
+      "statut": "obligatoire",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [
+        "f3_compris_dans_le_prix"
+      ],
+      "minijeux": [],
+      "combats": [
+        "piqueurs"
+      ],
+      "rencontres": [
+        "encroutes_des_rues"
+      ],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "auberge_du_relais",
+      "nom": "L'Auberge du Relais",
+      "note": "la grande salle où les descendants attendaient. Campement sûr de Saulnes, et la proposition la plus douce de rester : un lit, une table, des gens qui parlent.",
+      "environnement": "saulnes",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [],
+      "combats": [],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "belvedere",
+      "nom": "Le Belvédère",
+      "note": "le haut de l'île, vue à la première personne sur toute la croûte : le chemin fait, les statues, le Ver au loin en train de manger. Aucune action ; la plus grande image de la zone. Savoir : rails, barge et entrepôt forment un seul dessin.",
+      "environnement": "saulnes",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [],
+      "combats": [],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "maison_du_grand_passeur",
+      "nom": "La Maison du Grand Passeur",
+      "note": "son bureau, le registre des accords. Le crochetage le plus dur de la zone. Ne dit jamais « Ver », mais donne le nombre de places à bord et le nombre à l'arrivée.",
+      "environnement": "saulnes",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": true,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [
+        "crochetage"
+      ],
+      "combats": [],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "quai_de_l_ile",
+      "nom": "Le Quai de l'île",
+      "note": "la scène où le twist se paye. Les Encroûtés proposent de t'emmener à la tour « par la barge, comme avant » ; la barge intacte est posée sur les rails, orientée vers la croûte, pas vers la tour. Monter = mort unique dans le Ver. Ne pas monter = trouver la tour seul. Deux fragments suffisent pour voir le piège ; aucun, et c'est une aide.",
+      "environnement": "saulnes",
+      "role": "pool",
+      "statut": "candidat",
+      "lieu_attache": null,
+      "histoire_bailli": true,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [],
+      "combats": [
+        "gisants"
+      ],
+      "rencontres": [
+        "encroutes_du_quai"
+      ],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "tour_de_l_ecluse",
+      "nom": "La Tour de l'écluse",
+      "note": "obligatoire — sortie. La spirale, les traits gravés, la roue au fond. Tracé des marques des Passeurs, crochetage du cadenas, COURAGE sur la roue. C'est ici que l'eau part devant toi.",
+      "environnement": "saulnes",
+      "role": "fin",
+      "statut": "obligatoire",
+      "lieu_attache": null,
+      "histoire_bailli": true,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [
+        "trace",
+        "crochetage"
+      ],
+      "combats": [],
+      "rencontres": [],
+      "objets": [
+        "roue_et_manivelle_de_l_ecluse"
+      ],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    }
+  ],
+  "rencontres": [
+    {
+      "id": "encroute_de_la_barge",
+      "nom": "L'Encroûté de la Barge",
+      "note": "vend de l'eau salée et dit la phrase entière, sincèrement. A acheté de l'eau pour deux ; son compagnon s'est assis « une heure » et n'est plus qu'une statue à côté.",
+      "lieu_attache": "barge_echouee",
+      "histoire_bailli": true,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "encroute_du_radeau",
+      "nom": "L'Encroûté du Radeau",
+      "note": "celui qui dit « vas-y maintenant » vers le Puits — le Héron s'envole juste après. La première fausse aide.",
+      "lieu_attache": "radeau",
+      "histoire_bailli": true,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "encroute_de_la_guerite",
+      "nom": "L'Encroûté de la Guérite",
+      "note": "« connaît le chemin » et propose un raccourci par la croûte (fragment 2 bis si le Héron est en vue).",
+      "lieu_attache": "guerite",
+      "histoire_bailli": true,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "encroute_de_la_pesee",
+      "nom": "L'Encroûté de la Pesée",
+      "note": "au registre de la balance : poids contre poids. Il note ce que tu prends (prépare le Quai). Pour qui a lu le registre de la Barge : « Demander où sont les autres » — réponse à moitié.",
+      "lieu_attache": "pesee",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "encroute_de_la_porte",
+      "nom": "L'Encroûté de la Porte",
+      "note": "demande le prix d'autrefois, en nature. Payer, refuser, contourner par les quais.",
+      "lieu_attache": "porte_de_l_ile",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "encroutes_des_rues",
+      "nom": "Les Encroûtés des Rues",
+      "note": "deux ou trois, qui tournent sans s'arrêter ; pour leur parler il faut marcher avec eux. L'un propose d'ouvrir la tour « pour un prix » — le joueur qui sait comprend ce que le prix est vraiment.",
+      "lieu_attache": "rues_qui_marchent",
+      "histoire_bailli": true,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "encroutes_du_quai",
+      "nom": "Les Encroûtés du Quai",
+      "note": "proposent de t'emmener à la tour « par la barge, comme avant ». La barge est orientée vers la croûte, pas vers la tour. Monter = mort unique dans le Ver.",
+      "lieu_attache": "quai_de_l_ile",
+      "histoire_bailli": true,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "le_percepteur",
+      "nom": "Le Percepteur",
+      "note": "gardien-jalon récurrent de la zone : le seul Passeur qui n'a jamais cessé de bouger. Suit depuis la Rive haute, réclame trois fois (Croûte, Salines, Porte de l'île) qu'on prenne le jeton vierge — un jeton pris est un jeton qu'il reprendra. Détail pour le twist, jamais dit : ses jetons sont ceux qu'il a repris — moitié moins que de traits dans la tour. Variable d'ajustement du rythme.",
+      "lieu_attache": null,
+      "histoire_bailli": true,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true,
+      "gardien": true,
+      "etats": [
+        "intact",
+        "balafre",
+        "rompu"
+      ],
+      "recurrent": true,
+      "memoire_de_gardien": {
+        "intact": "cliquette en cadence",
+        "balafre": "jetons manquants sur un flanc, boite",
+        "rompu": "ne cliquette plus"
+      }
+    },
+    {
+      "id": "le_heron_au_perchoir",
+      "nom": "Le Héron au Perchoir",
+      "note": "rencontre en observation : l'Instinct dit ce qu'il fait. Rester assez longtemps pour le voir s'envoler — et voir ce qui suit.",
+      "lieu_attache": "perchoir_du_heron",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "boeuf_de_sel_sur_ses_rails",
+      "nom": "Le Bœuf de sel sur ses rails",
+      "note": "rencontre ordinaire : le suivre, le monter (jet — saute un lieu de la Croûte), le laisser.",
+      "lieu_attache": "champ_des_sillages",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "le_dernier_passeur",
+      "nom": "Le Dernier Passeur (dans le Bœuf)",
+      "note": "twist de rencontre : le dernier Passeur est entré dans la bête pour continuer de faire passer les gens, à sec, sur les rails. Par la lucarne du wagon, quelque chose respire dedans.",
+      "lieu_attache": "cour_aux_rails",
+      "histoire_bailli": true,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "le_grand_saunier",
+      "nom": "Le Grand Saunier",
+      "note": "mini-boss de milieu de zone. Quatre beats : entrer, comprendre qu'elle trie, être trié, lui donner autre chose. On ne la bat pas, on l'occupe.",
+      "lieu_attache": "entrepot",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true
+    }
+  ],
+  "creatures": [
+    {
+      "id": "ver_de_croute",
+      "nom": "Le Ver de croûte",
+      "note": "façon Dune. Imposant, impossible à tuer, on ne fait que survivre. Chasse ce qui bouge sur la croûte (vibrations). Rencontré plusieurs fois, jamais pareil : au loin en train d'engloutir une silhouette qui n'est pas toi ; sous les pieds aux Bassins (mini-jeu du Souffle) ; absent du Fossé. N'a jamais besoin de sa propre image : « une chose lointaine qui n'est pas toi » EST le Ver.",
+      "lieu_attache": null,
+      "lieux": [
+        "champ_des_sillages",
+        "passerelle_rompue",
+        "sonde",
+        "belvedere"
+      ],
+      "hostile": false,
+      "histoire_bailli": true,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "grand_saunier",
+      "nom": "Le Grand Saunier",
+      "note": "mini-boss de milieu de zone (Entrepôt). La mère des Sauniers, grosse comme une grange, aveugle. Ne veut pas te tuer : veut te ranger. On ne la bat pas, on l'occupe (lui donner autre chose à racler).",
+      "lieu_attache": null,
+      "lieux": [
+        "entrepot"
+      ],
+      "hostile": false,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true
+    },
+    {
+      "id": "sauniers",
+      "nom": "Les Sauniers",
+      "note": "racleurs bas sur pattes, aveugles, à carapace. Ne t'attaquent pas ; te raclent si tu es immobile (−1 Encroûté, ou de la peau au dé).",
+      "lieu_attache": null,
+      "lieux": [
+        "entrepot",
+        "forge_a_grattoirs",
+        "dortoir"
+      ],
+      "hostile": false,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "lechards",
+      "nom": "Les Léchards",
+      "note": "herbivores maigres qui suivent le héros pour lécher le sel de sa sueur. Inoffensifs ; connaissent l'eau. Instinct haut : on les suit.",
+      "lieu_attache": null,
+      "lieux": [
+        "bassin_des_lechards",
+        "puits"
+      ],
+      "hostile": false,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "heron_de_sel",
+      "nom": "Le Héron de sel",
+      "note": "échassier immense, immobile sur une patte aux Bassins, pêche ce que le Ver laisse. Ignore le joueur — mais s'envole toujours juste avant que le Ver passe. L'alarme de la zone, pour qui a compris.",
+      "lieu_attache": null,
+      "lieux": [
+        "perchoir_du_heron",
+        "radeau",
+        "guerite"
+      ],
+      "hostile": false,
+      "histoire_bailli": true,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true
+    },
+    {
+      "id": "piqueurs",
+      "nom": "Les Piqueurs",
+      "note": "oiseaux blancs nichés sur les statues, picorent les yeux. Seuls hostiles francs. Combat : Croûte, Puits, Saulnes.",
+      "lieu_attache": null,
+      "lieux": [
+        "file",
+        "puits",
+        "rues_qui_marchent"
+      ],
+      "hostile": true,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "grumeaux",
+      "nom": "Les Grumeaux",
+      "note": "morceaux de Cristallins cassés, gros comme le poing, qui bougent encore et cherchent à se recoller à du vivant. Accélèrent l'Encroûté.",
+      "lieu_attache": null,
+      "lieux": [
+        "terrasses",
+        "bassin_comble",
+        "broyeuse"
+      ],
+      "hostile": false,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "cristallins",
+      "nom": "Les Cristallins",
+      "note": "les statues des héros passés. Immobiles (jamais de statue qui bouge). Gratter la bouche livre la dernière phrase du héros. Certains portent des noms de ton Grand Registre.",
+      "lieu_attache": null,
+      "lieux": [
+        "file",
+        "statue",
+        "terrasses",
+        "rues_qui_marchent"
+      ],
+      "hostile": false,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "encroutes",
+      "nom": "Les Encroûtés",
+      "note": "héros vivants au palier II, restés trop longtemps. Parlent, échangent, mentent, demandent qu'on reste. À Saulnes, ils marchent en rond sans jamais s'arrêter (la ville qui marche). Chaque conseil d'Encroûté t'envoie sur la croûte à l'heure où le Ver chasse : ils paient, comme ils ont toujours payé.",
+      "lieu_attache": null,
+      "lieux": [
+        "barge_echouee",
+        "radeau",
+        "guerite",
+        "pesee",
+        "porte_de_l_ile",
+        "rues_qui_marchent",
+        "quai_de_l_ile"
+      ],
+      "hostile": false,
+      "histoire_bailli": true,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true
+    },
+    {
+      "id": "boeuf_de_sel",
+      "nom": "Le Bœuf de sel",
+      "note": "la bête qui tirait les barges sur rails à sec, encore attelée, à moitié cristallisée, en marche sans fin. Rencontre ordinaire. Habité : le dernier Passeur est entré dedans.",
+      "lieu_attache": null,
+      "lieux": [
+        "champ_des_sillages",
+        "cour_aux_rails"
+      ],
+      "hostile": false,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true
+    },
+    {
+      "id": "gisants",
+      "nom": "Les Gisants",
+      "note": "gros lézards de la taille d'un chien, peau blanche de sel, absolument immobiles sur la croûte (assis, dressés, tête levée) : de loin, on les prend pour des Cristallins. Ils attendent qu'on passe à portée et mordent. Combat 1–2 écrans, rapide. Dans une image avec des statues, l'une n'en est pas une — l'Instinct la repère avant.",
+      "lieu_attache": null,
+      "lieux": [
+        "champ_des_sillages",
+        "quai_de_l_ile"
+      ],
+      "hostile": true,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true
+    },
+    {
+      "id": "vermisseaux",
+      "nom": "Les Vermisseaux",
+      "note": "les petits du Ver, longs comme un bras, sous la croûte des bassins. Rapides, tuables, en nombre.",
+      "lieu_attache": null,
+      "lieux": [
+        "terrasses"
+      ],
+      "hostile": true,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "sauteurs_de_saumure",
+      "nom": "Les Sauteurs de saumure",
+      "note": "crustacés hauts sur pattes nés dans les dernières cuves ; bondissent quand on approche pour boire. Gardent l'eau.",
+      "lieu_attache": null,
+      "lieux": [
+        "cuve_fendue",
+        "noria"
+      ],
+      "hostile": true,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "assoiffes",
+      "nom": "Les Assoiffés",
+      "note": "héros au palier III qui ne sont pas devenus statues : trop d'eau salée. Ne parlent plus, veulent ta gourde. Le seul ennemi humain — ta propre fin.",
+      "lieu_attache": null,
+      "lieux": [
+        "cuve_fendue",
+        "dortoir"
+      ],
+      "hostile": true,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true
+    },
+    {
+      "id": "rats_de_saline",
+      "nom": "Les Rats de saline",
+      "note": "rongent les statues pour ce qu'il y a dedans. Nuée : on ne tue pas, on disperse (Sac de sel, feu, bruit — et le bruit a son prix).",
+      "lieu_attache": null,
+      "lieux": [
+        "entrepot",
+        "broyeuse",
+        "dortoir"
+      ],
+      "hostile": true,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false
+    },
+    {
+      "id": "percepteur",
+      "nom": "Le Percepteur",
+      "note": "récurrent, toute la zone. Plus de peau visible — couvert de jetons de plomb pressés dans sa chair par le sel en écailles, du crâne aux mains ; ils cliquettent à chaque pas. Grand, penché sous le poids, piétine sur place quand il parle, tend une main plate avec un jeton vierge : le tien. Fiche de rencontre : `le_percepteur`.",
+      "lieu_attache": null,
+      "lieux": [
+        "rive_haute",
+        "pesee",
+        "porte_de_l_ile"
+      ],
+      "hostile": true,
+      "histoire_bailli": true,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true
+    }
+  ],
+  "objets": [
+    {
+      "id": "perche_du_passeur",
+      "nom": "La Perche du Passeur",
+      "note": "arme longue ; sonde la croûte (prévient avant une scène du Ver) ; troisième choix aux passerelles.",
+      "lieu_attache": "barge_echouee",
+      "type": "passif",
+      "descend": true,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "sert": [
+        "passerelle_rompue",
+        "champ_des_sillages"
+      ]
+    },
+    {
+      "id": "grattoir_de_saunier",
+      "nom": "Le Grattoir de saunier",
+      "note": "arme courte ; se gratter sans perdre de peau ; gratter une statue en une action ; choix face aux Grumeaux. L'objet de la zone.",
+      "lieu_attache": "forge_a_grattoirs",
+      "type": "passif",
+      "descend": true,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "sert": [
+        "statue",
+        "file",
+        "bassin_comble",
+        "terrasses"
+      ]
+    },
+    {
+      "id": "manteau_de_saunier",
+      "nom": "Le Manteau de saunier",
+      "note": "la tempête dépose moitié moins ; les Piqueurs t'ignorent. Coût : un jet de Ruse plus dur sur toute la zone.",
+      "lieu_attache": "salle_des_gages",
+      "type": "passif",
+      "descend": false,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "sert": [
+        "fosse",
+        "puits",
+        "rues_qui_marchent"
+      ]
+    },
+    {
+      "id": "sandales_de_marche",
+      "nom": "Les Sandales de marche",
+      "note": "un campement sans pellicule, une fois ; puis elles se soudent.",
+      "lieu_attache": "salle_des_gages",
+      "type": "passif",
+      "descend": false,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "sert": [
+        "dortoir",
+        "auberge_du_relais"
+      ]
+    },
+    {
+      "id": "gourde_double",
+      "nom": "La Gourde double",
+      "note": "la Soif monte deux fois moins vite. Salle des Gages uniquement.",
+      "lieu_attache": "salle_des_gages",
+      "type": "passif",
+      "descend": true,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "sert": [
+        "cuve_fendue",
+        "puits"
+      ]
+    },
+    {
+      "id": "oeil_de_cristallin",
+      "nom": "L'Œil de Cristallin",
+      "note": "révèle un détail caché de l'image dans chaque lieu (fragment, objet, passage). Coût : les Piqueurs te suivent.",
+      "lieu_attache": "salle_des_gages",
+      "type": "passif",
+      "descend": false,
+      "histoire_bailli": false,
+      "rarete": "rare",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "sert": [
+        "statue",
+        "bassin_comble",
+        "belvedere"
+      ]
+    },
+    {
+      "id": "plume_du_heron",
+      "nom": "La Plume du Héron",
+      "note": "frémit un écran avant le Ver (et à l'Acte II, devant autre chose).",
+      "lieu_attache": "perchoir_du_heron",
+      "type": "passif",
+      "descend": true,
+      "histoire_bailli": false,
+      "rarete": "rare",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "sert": [
+        "passerelle_rompue",
+        "noria",
+        "fosse"
+      ]
+    },
+    {
+      "id": "dent_de_ver",
+      "nom": "La Dent de Ver",
+      "note": "arme lourde ; une relance garantie sur un jet de COURAGE, une fois par zone (le dé se relance pour de vrai — jamais une face truquée). Coût : le Ver te sent, vient plus souvent. Candidate Relique.",
+      "lieu_attache": "bouche",
+      "type": "passif",
+      "descend": false,
+      "histoire_bailli": false,
+      "rarete": "rare",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "sert": [
+        "tour_de_l_ecluse",
+        "noria"
+      ]
+    },
+    {
+      "id": "battant_de_la_cloche",
+      "nom": "Le Battant de la cloche",
+      "note": "remis sur la cloche de la Rive haute : appelle le Ver ailleurs, une fuite garantie, une fois.",
+      "lieu_attache": "rive_haute",
+      "type": "passif",
+      "descend": false,
+      "histoire_bailli": false,
+      "rarete": "rare",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "sert": [
+        "rive_haute"
+      ]
+    },
+    {
+      "id": "lanterne_du_noye",
+      "nom": "La Lanterne du Noyé",
+      "note": "sortie du ventre du Ver, brûle encore. Inutile ici ; à l'Acte II, c'est la lumière (graine de la Mine). ⚠️ La seule promesse sans consommateur dans la zone.",
+      "lieu_attache": "bouche",
+      "type": "passif",
+      "descend": true,
+      "histoire_bailli": false,
+      "rarete": "rare",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "sert": []
+    },
+    {
+      "id": "sel_qui_garde",
+      "nom": "Le Sel qui garde",
+      "note": "actif : soigne un État négatif contre une pellicule ; jeté : détourne Sauniers et Grumeaux ; description qui change après le fragment 6.",
+      "lieu_attache": "terrasses",
+      "type": "actif",
+      "descend": false,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "sert": [
+        "entrepot",
+        "bassin_comble"
+      ]
+    },
+    {
+      "id": "sac_de_sel",
+      "nom": "Le Sac de sel",
+      "note": "aveugle Piqueurs et Assoiffés, disperse les Rats.",
+      "lieu_attache": "salle_des_gages",
+      "type": "actif",
+      "descend": false,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "sert": [
+        "file",
+        "puits",
+        "dortoir",
+        "entrepot"
+      ]
+    },
+    {
+      "id": "registre_des_traversees",
+      "nom": "Le Registre des traversées",
+      "note": "Savoir : deux colonnes, embarqués / débarqués, chiffres qui ne collent pas (fragment 1). Ouvre « Demander où sont les autres » à la Pesée.",
+      "lieu_attache": "barge_echouee",
+      "type": "actif",
+      "descend": false,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "sert": [
+        "pesee",
+        "quai_de_l_ile"
+      ]
+    },
+    {
+      "id": "roue_et_manivelle_de_l_ecluse",
+      "nom": "La Roue et la Manivelle de l'écluse",
+      "note": "si le mécanisme est gardé (mécanisme de fin de zone : À DÉCIDER).",
+      "lieu_attache": "tour_de_l_ecluse",
+      "type": "actif",
+      "descend": false,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "sert": [
+        "tour_de_l_ecluse"
+      ]
+    }
+  ],
+  "fragments": [
+    {
+      "id": "f1_registre_de_la_barge",
+      "ordre": 1,
+      "lieux": [
+        "barge_echouee"
+      ],
+      "eclaire_a": [
+        "pesee"
+      ],
+      "texte_bible": "Le registre de la Barge : deux colonnes, embarqués / débarqués, chiffres qui ne collent pas.",
+      "acces": "crochetage du coffre",
+      "garanti": false
+    },
+    {
+      "id": "f2_le_heron_s_envole",
+      "ordre": 2,
+      "lieux": [
+        "radeau",
+        "guerite"
+      ],
+      "eclaire_a": [],
+      "texte_bible": "Le Héron s'envole toujours juste après qu'un Encroûté t'a dit « vas-y maintenant ».",
+      "acces": "le Héron EN VUE et un Encroûté qui dit « vas-y » dans la même séquence",
+      "garanti": true,
+      "contrainte": "DOIT être garanti lisible par construction : si le graphe ne garantit pas le Héron visible depuis le Radeau et la Guérite, c'est un fragment illisible (le défaut de la défense du Serment au procès des Landes)."
+    },
+    {
+      "id": "f3_compris_dans_le_prix",
+      "ordre": 3,
+      "lieux": [
+        "statue",
+        "rues_qui_marchent"
+      ],
+      "eclaire_a": [],
+      "texte_bible": "Une statue de la Croûte : « il a dit que c'était compris dans le prix ».",
+      "acces": "grattage d'une bouche de Cristallin",
+      "garanti": false
+    },
+    {
+      "id": "f4_trappe_de_la_barge",
+      "ordre": 4,
+      "lieux": [
+        "barge_echouee"
+      ],
+      "eclaire_a": [],
+      "texte_bible": "La coque de la barge a une trappe dans le fond.",
+      "acces": "descendre dans la cale",
+      "garanti": false
+    },
+    {
+      "id": "f5_anneaux_du_wagon",
+      "ordre": 5,
+      "lieux": [
+        "cour_aux_rails"
+      ],
+      "eclaire_a": [],
+      "texte_bible": "Le wagon du Bœuf de sel a des anneaux de fer aux bancs.",
+      "acces": "observer le wagon",
+      "garanti": false
+    },
+    {
+      "id": "f6_pas_un_passeur",
+      "ordre": 6,
+      "lieux": [
+        "entrepot"
+      ],
+      "eclaire_a": [
+        "terrasses"
+      ],
+      "texte_bible": "Le Grand Saunier trie ses statues — et il n'y a pas un seul Passeur parmi elles.",
+      "acces": "le mini-boss (lieu obligatoire)",
+      "garanti": true
+    }
+  ],
+  "scenes": [],
+  "regions": []
+}

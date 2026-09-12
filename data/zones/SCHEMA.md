@@ -156,3 +156,35 @@ dans `aldenhar/lib/scene-data.ts` par l'atelier à chaque écriture ;
 `description` et `prompt_image` restent ici, le jeu n'en a pas l'usage.
 Regénérer la collection : `python3 tools/atelier_migrate.py` (idempotent —
 les champs déjà remplis ici gagnent sur ceux du `.ts`).
+
+---
+
+## Zone EN CONCEPTION — ajouté le 12/09 (Les Salines)
+
+Une zone dont `zone.statut` vaut `"conception"` est de la matière de production
+transcrite depuis sa bible Notion **avant** qu'une carte ou une scène n'existe.
+Les outils qui globbent `data/zones/*.json` la tolèrent (tous lisent avec des
+défauts) et **`studio_data.py` l'exclut de l'export** : ses lieux n'entrent ni
+dans le Graphe ni dans le kit tant qu'elle n'est pas gelée. Elle se contrôle
+avec `python3 tools/verifier_zone.py data/zones/<zone>.json` (références,
+doublons, forme des environnements).
+
+Champs qui n'existent pas dans `landes.json` :
+
+| Champ | Où | Contenu |
+|---|---|---|
+| `environnements[]` | racine | les étapes de la traversée à étages (`lib/etages.ts`) : `{ id, ordre, nom, sous_titre, jour, ratio_trame, plan, invariants[], histoire, entree, fin[], tirages:[min,max] }`. `entree` peut être `null` (on y débarque par le pool), `fin` liste les obligatoires joués APRÈS le pool, dans l'ordre |
+| `fragments[]` | racine | les fragments du twist : `{ id, ordre, lieux[], eclaire_a[], texte_bible, acces, garanti, contrainte? }`. Un fragment est aussi déclaré par chaque lieu qui le porte (`lieux[].fragments`) — le contrôle exige les deux sens |
+| `environnement` | lieu | l'id de l'étape qui le contient |
+| `role` | lieu | `entree` · `pool` · `fin` — c'est ce que `prochainPas` lit |
+| `statut` | lieu | `obligatoire` (entrée ou fin d'une étape) · `candidat` (dans le pool, avant le tri 30 → ~20) |
+| `fragments` / `minijeux` / `combats` / `rencontres` / `objets` | lieu | ce que le lieu porte, par id (créatures pour `combats`, qui doivent être `hostile`) |
+| `a_creuser` | lieu | la bible l'a marqué tel quel |
+| `lieux[]` + `hostile` | créature | où elle se joue (un errant peut en avoir plusieurs), et si elle se combat |
+| `type` · `descend` · `sert[]` | objet | `passif`/`actif` · descend à l'Acte II · lieux où il SERT (la bible : « se ramasse dans un lieu du pool et sert dans au moins deux autres ») |
+| `memoire_de_gardien` | rencontre | les trois aspects Intact/Balafré/Rompu en mots |
+| `zone.phrase_cle` · `zone.twist` · `zone.a_decider` · `zone.ecarts_de_transcription` | zone | la bible, telle quelle ; les écarts entre ses comptes annoncés et sa liste sont DITS là, jamais résolus en silence |
+
+`histoire_bailli` garde son nom hérité des Landes : il veut dire « ◆ porte la
+micro-histoire de la zone » (aux Salines : les Passeurs et l'accord avec le Ver).
+`x`/`y` sont absents tant qu'aucune carte n'existe.
