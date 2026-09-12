@@ -14,6 +14,7 @@ export type MiniGameEngine =
   | "rub"
   | "glyph"
   | "hold"
+  | "breath"
   | "timing"
   | "dial"
   | "rhythm"
@@ -158,6 +159,27 @@ export const JEU_GAMES: MiniGameEntry[] = [
 
 /** Validés dans le jeu, mais leur habillage réaliste n'est pas fait. */
 export const A_HABILLER_GAMES: MiniGameEntry[] = [
+  {
+    id: "jeu-souffle-v2",
+    number: 0,
+    title: "Le Souffle v2 — la ligne qui respire",
+    category: "Référence",
+    stat: "INSTINCT",
+    lieu: "Les Salines (zone 2, en conception) — la Passerelle rompue, le Ver juste dessous",
+    note: "Prototype du 12/09 (bible des Salines). Habillage à créer : une image de fond sous la ligne, la ligne elle-même reste le geste. Remplace le prototype 03 pour les Salines.",
+    description:
+      "Une seule ligne qui défile par paliers de 7 px. Segments épais = le Ver respire, se rapproche : appuie. Creux : relâche. L'appui s'écrit en pixels blancs sur la ligne ; une erreur fait une tache de charbon qui reste. Trois taches : repéré. Le motif se lit avant de poser le doigt — attention, pas vitesse. L'Instinct élargit la fenêtre autour de chaque transition.",
+    engine: "breath",
+    configFor: (tier) => ({
+      durationMs: 12000,
+      toleranceMs: tier === "haut" ? 340 : tier === "moyen" ? 220 : 120,
+      stepPx: 7,
+      stepMs: 60,
+      maxStains: 3,
+    }),
+    successText: "La ligne s'éteint. Ce qui respirait sous la croûte est passé sans te trouver.",
+    failText: "Trois fois, ton souffle a dit où tu étais. La croûte se soulève.",
+  },
   {
     id: "jeu-souffle-bete",
     number: 0,

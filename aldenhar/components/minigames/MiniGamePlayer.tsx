@@ -5,6 +5,7 @@ import type { MiniGameEntry, Tier } from "@/lib/minigames-data";
 import RubReveal from "./engines/RubReveal";
 import GlyphTrace from "./engines/GlyphTrace";
 import HoldSteady from "./engines/HoldSteady";
+import BreathLine from "./engines/BreathLine";
 import TimingTap from "./engines/TimingTap";
 import DialAlign from "./engines/DialAlign";
 import RhythmTap from "./engines/RhythmTap";
@@ -20,6 +21,7 @@ const ENGINES: Record<string, ComponentType<any>> = {
   rub: RubReveal,
   glyph: GlyphTrace,
   hold: HoldSteady,
+  breath: BreathLine,
   timing: TimingTap,
   dial: DialAlign,
   rhythm: RhythmTap,
