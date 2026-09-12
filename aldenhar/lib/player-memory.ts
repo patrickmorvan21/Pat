@@ -17,6 +17,7 @@
  * modulent le ton et le décor, jamais un score exposé (piliers du projet).
  */
 
+import type { ZoneId } from "@/lib/zones";
 import { track, finDeRun } from "./analytics";
 import type { RegistreRow } from "@/lib/state";
 import { sacDepuis, type SacFaits } from "@/lib/faits";
@@ -336,6 +337,15 @@ export type PlayerMemory = {
   /** La DERNIÈRE fin de run était une traversée réussie — consommé par
       l'accueil du Geôlier, remis à false par la mort suivante. */
   derniereFinTraversee?: boolean;
+  /**
+   * Le nom de la dernière incarnation sortie VIVANTE (fin de démo à la
+   * Descente). Depuis le 12/09 un survivant n'entre plus au Registre — « le
+   * Registre est le livre des morts, une vie s'y inscrit quand elle finit »
+   * (décision Patrick) — mais la Borne doit encore pouvoir relire « celui-là
+   * est revenu » : c'est ici qu'elle le trouve (`predecesseur`). Ne vaut que
+   * tant que `derniereFinTraversee` est vrai ; une mort le périme.
+   */
+  dernierSurvivant?: string;
 };
 
 const KEY = "aldenhar-player";
@@ -423,39 +433,75 @@ export function noterProfil(stats: { courage: number; ruse: number; instinct: nu
   });
 }
 
-export function recordTraversee(args: { heroName: string; days: number; franchis: number }): void {
-  track("descente_franchie", { jour: args.days, franchis: args.franchis, morts: loadMemory().deaths, traversees: loadMemory().zonesCleared ?? 0 }, { instant: true });
-  finDeRun(); // la partie s'arrête ici : plus aucun événement ne lui appartient.
+/** Le Sceau que pose le franchissement d'une zone — une zone sans Sceau n'en pose pas. */
+const SCEAU_PAR_ZONE: Partial<Record<ZoneId, string>> = { landes: SCEAU_LANDES };
+
+/**
+ * FRANCHIR UNE ZONE VIVANT (12/09 — remplace la moitié « zone » de l'ancien
+ * `recordTraversee`). Ce que le COMPTE retient d'un franchissement, que la
+ * vie continue en bas ou que la démo s'arrête là : le compte de zones, le
+ * Sceau de la zone (arbitrage 10/08 — il vit dans le sac de faits, nature
+ * `seal`, sa valeur compte les passages : une deuxième traversée ne donne pas
+ * un second sceau, elle creuse le même), le record de lieux franchis.
+ * ⚠️ AUCUNE ligne au Grand Registre : décision Patrick 12/09, « à la mort
+ * seulement ». Et aucun `finDeRun` : la partie n'est pas finie, elle descend.
+ */
+export function recordZoneFranchie(args: { zone: ZoneId; heroName: string; days: number; franchis: number }): void {
+  track(
+    "descente_franchie",
+    { zone: args.zone, jour: args.days, franchis: args.franchis, morts: loadMemory().deaths, traversees: loadMemory().zonesCleared ?? 0 },
+    { instant: true },
+  );
   mutateMemory((m) => {
     m.zonesCleared = (m.zonesCleared ?? 0) + 1;
-    // LE SCEAU DES LANDES (arbitrage 10/08) : ce qu'on rapporte en revenant.
-    // Il vit dans le sac de faits (nature `seal`, portée `zone_permanent`),
-    // donc il n'ajoute AUCUN champ à `loadMemory` — le sac y passe déjà en
-    // bloc. Sa valeur compte les passages : une deuxième traversée ne donne
-    // pas un second sceau, elle creuse le même (voir lib/sceaux.ts).
-    const sac: SacFaits = { ...(m.faits ?? {}) };
-    sac[SCEAU_LANDES] = {
-      id: SCEAU_LANDES,
-      kind: "seal",
-      scope: "zone_permanent",
-      value: (sac[SCEAU_LANDES]?.value ?? 0) + 1,
-      source: "la-descente",
-    };
-    m.faits = sac;
+    const sceau = SCEAU_PAR_ZONE[args.zone];
+    if (sceau) {
+      const sac: SacFaits = { ...(m.faits ?? {}) };
+      sac[sceau] = {
+        id: sceau,
+        kind: "seal",
+        scope: "zone_permanent",
+        value: (sac[sceau]?.value ?? 0) + 1,
+        source: "la-descente",
+      };
+      m.faits = sac;
+    }
+    m.bestFranchis = Math.max(m.bestFranchis ?? 0, args.franchis);
+    m.lastPlayedAt = Date.now();
+  });
+}
+
+/**
+ * LA FIN DE DÉMO : la vie s'arrête VIVANTE parce que la zone suivante n'est
+ * pas écrite (lib/zones.ts). Ce n'est ni une mort ni un renoncement — pas de
+ * relique, pas de ligne au Registre — mais c'est bien la fin d'une vie : ses
+ * jours entrent au total du compte, `finDeRun` clôt la partie côté
+ * statistiques, et le nom reste lisible par la Borne (`dernierSurvivant`).
+ * Disparaîtra avec la démo, quand toutes les zones seront écrites.
+ */
+export function recordSortieVivante(args: { heroName: string; days: number }): void {
+  finDeRun(); // la partie s'arrête ici : plus aucun événement ne lui appartient.
+  mutateMemory((m) => {
     m.totalDays += args.days;
     m.bestDays = Math.max(m.bestDays, args.days);
-    m.bestFranchis = Math.max(m.bestFranchis ?? 0, args.franchis);
-    m.fallen.unshift({
-      name: args.heroName,
-      days: args.days,
-      franchis: args.franchis,
-      cause: "a franchi la Descente",
-      place: "la-descente",
-      destin: "traversee",
-    });
+    m.dernierSurvivant = args.heroName;
     m.derniereFinTraversee = true;
     m.lastPlayedAt = Date.now();
   });
+}
+
+/**
+ * L'INCARNATION D'AVANT, telle que la Borne la relit (« qui a gravé côté
+ * sud ? »). Morte : la dernière ligne du Registre. Sortie vivante à la fin de
+ * la démo : le survivant, avec la cause que `ligneBorneSud` reconnaît — le
+ * texte « celui-là est revenu » dépend de cette distinction, et le Registre
+ * ne la porte plus depuis le 12/09.
+ */
+export function predecesseur(m: PlayerMemory): { name: string; cause: string } | undefined {
+  if (m.derniereFinTraversee && m.dernierSurvivant) {
+    return { name: m.dernierSurvivant, cause: "a franchi la Descente" };
+  }
+  return m.fallen[0];
 }
 
 /** L'intro doit-elle se jouer ? (tout premier lancement, ou redemandée.) */
@@ -548,6 +594,7 @@ export function loadMemory(): PlayerMemory {
           zonesCleared: typeof p.zonesCleared === "number" ? p.zonesCleared : 0,
           profils: Array.isArray(p.profils) ? p.profils : [],
           derniereFinTraversee: Boolean(p.derniereFinTraversee),
+          dernierSurvivant: typeof p.dernierSurvivant === "string" ? p.dernierSurvivant : undefined,
           faits: sacDepuis(p.faits),
         };
       }

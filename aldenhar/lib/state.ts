@@ -7,6 +7,7 @@
 import { normalizeItem, startingBesace, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { traverseeGuidee } from "@/lib/demo";
 import { ENTRY_SCENE, sceneAt, type MenaceId, type RouteFermeeCause } from "@/lib/scene-data";
+import { type ZoneDef, type ZoneId } from "@/lib/zones";
 import { profilDepuis, profilNeuf, type ProfilRun } from "@/lib/profil";
 import type { Temoin } from "@/lib/temoins";
 import { sacDepuis, type SacFaits } from "@/lib/faits";
@@ -155,7 +156,7 @@ export type TraversalState = {
   done: boolean;
 };
 
-function freshTraversal(current = ENTRY_SCENE): TraversalState {
+export function freshTraversal(current = ENTRY_SCENE): TraversalState {
   return {
     phase: "scene",
     current,
@@ -495,6 +496,16 @@ export type RunState = {
   /** Traversée de la zone (spec 21/07) : liaisons + choix d'orientation. */
   trav: TraversalState;
   /**
+   * LA VIE MULTI-ZONES (décision Patrick 12/09) — voir lib/zones.ts.
+   * `zone` est la zone que `trav` traverse ; `zonesFranchies` les zones déjà
+   * laissées derrière soi dans cette vie, dans l'ordre. Une vie s'ouvre aux
+   * Landes et descend ; la Besace, la santé, le Jour et les états la suivent
+   * d'une zone à l'autre (`franchirZone`). Absents d'une sauvegarde d'avant
+   * le 12/09 → « landes », rien de franchi : exactement ce qu'elle vivait.
+   */
+  zone?: ZoneId;
+  zonesFranchies?: ZoneId[];
+  /**
    * Chapitre garanti de la traversée (chantier 2 du 23/07) : id d'un chapitre
    * de `LANDES_CHAPTERS` + stade (0 = pas amorcé, 1 = amorcé, 2 = développé,
    * 3 = résolu). Tiré au début d'une run neuve (Scene, avec la mémoire du
@@ -635,6 +646,8 @@ function fresh(): RunState {
     profil: profilNeuf(),
     ouverture: false,
     trav: freshTraversal(),
+    zone: "landes",
+    zonesFranchies: [],
     chapter: null,
     soupcon: 0,
     soupconSeen: 0,
@@ -704,6 +717,10 @@ export function loadRun(): RunState {
               p.trav && typeof p.trav.current === "string" && Array.isArray(p.trav.visited)
                 ? p.trav
                 : freshTraversal(sceneAt(typeof p.step === "number" ? p.step : 0).id),
+            // Zone (12/09) : une sauvegarde d'avant n'en a pas — elle vivait
+            // aux Landes, et n'avait rien franchi (une vie = une zone alors).
+            zone: p.zone === "salines" || p.zone === "landes" ? p.zone : "landes",
+            zonesFranchies: Array.isArray(p.zonesFranchies) ? p.zonesFranchies : [],
             // Chapitre : null pour les runs d'avant le 24/07 — Scene en tire un
             // à la volée (l'amorce jouera à la prochaine liaison).
             chapter: p.chapter && typeof p.chapter.id === "string" ? p.chapter : null,
@@ -809,4 +826,61 @@ export function saveRun(state: RunState): void {
   } catch {
     // quota plein / navigation privée : on continue en mémoire
   }
+}
+
+/**
+ * UNE NUIT — ce que fait un campement, et rien d'autre (spec §7, précisée
+ * 13/07 ; barème du 11/09). Sorti de `Scene.tsx` le 12/09 parce que le
+ * FRANCHISSEMENT D'UNE ZONE soigne exactement comme une nuit (décision
+ * Patrick : « le passage soigne comme un campement ») — une seule
+ * définition, sinon les deux divergent au premier réglage du barème.
+ *   • le Jour et l'horloge avancent d'un cran ;
+ *   • +0,15 de santé, jamais au-dessus de 1 ni sous le plancher (une nuit
+ *     ne remet plus à neuf : elle efface la moitié d'un échec ordinaire) ;
+ *   • le besoin de dormir est daté de CETTE heure (pas +1 : l'horloge vient
+ *     d'être incrémentée — relecture du 10/08) ;
+ *   • les états négatifs passagers tombent, les blessures durables (≥ 900
+ *     scènes) sont ATTÉNUÉES à −1, jamais purgées : seul un soin les referme.
+ */
+export function appliquerRepos(run: RunState): void {
+  run.day += 1;
+  run.horloge = (run.horloge ?? run.day) + 1;
+  run.health = Math.max(0.08, Math.min(1, run.health + 0.15));
+  run.besoins = { ...(run.besoins ?? {}), dormir: run.horloge ?? run.day };
+  run.effects = run.effects
+    .filter((e) => e.delta > 0 || e.scenesLeft >= 900)
+    .map((e) => (e.scenesLeft >= 900 && e.delta < -1 ? { ...e, delta: -1 } : e));
+}
+
+/**
+ * FRANCHIR UNE ZONE (décision Patrick 12/09 : une seule vie sur les trois
+ * actes). La vie CONTINUE — rien de ce qui la définit n'est touché : le nom,
+ * la Besace, la santé (soignée d'une nuit, pas remise à neuf), le Jour, les
+ * états, le profil, les Savoirs, les faits. Ce qui se remet à zéro, c'est ce
+ * qui appartenait à la ZONE qu'on quitte :
+ *   • la traversée (`trav`) repart de l'entrée de la zone suivante ;
+ *   • les comptes que le monde d'avant tenait sur nous — le Soupçon (c'est
+ *     le village des Landes qui juge, pas le suivant), la menace en cours et
+ *     l'ardoise du prudent (« le compte ne se tient qu'en pleine lande »,
+ *     11/09), la séquence du Hameau, les points vus et les choix faits ICI.
+ * ⚠️ Refuse une zone sans scène d'entrée : passer `ecrite: true` sans écrire
+ * l'entrée serait une promesse sans consommateur.
+ */
+export function franchirZone(run: RunState, vers: ZoneDef): void {
+  if (!vers.ecrite || !vers.entry) {
+    throw new Error(`franchirZone : la zone « ${vers.id} » n'est pas écrite (entry vide).`);
+  }
+  run.zonesFranchies = [...(run.zonesFranchies ?? []), run.zone ?? "landes"];
+  run.zone = vers.id;
+  run.trav = freshTraversal(vers.entry);
+  appliquerRepos(run);
+  run.soupcon = 0;
+  run.soupconSeen = 0;
+  run.hameau = { entree: false, serment: null, halte: false };
+  run.menace = null;
+  run.lignesOuvertes = 0;
+  run.poiSeen = [];
+  run.choixFaits = [];
+  run.croiseesDepuisRoute = 0;
+  run.rencontresDues = [];
 }

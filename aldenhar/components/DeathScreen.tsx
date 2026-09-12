@@ -31,6 +31,7 @@ import { track } from "@/lib/analytics";
 import { HomeCta } from "@/components/Home";
 import Avis, { avisDejaDonne } from "@/components/Avis";
 import type { RunState } from "@/lib/state";
+import { zoneDef } from "@/lib/zones";
 import TagRarete from "@/components/TagRarete";
 import { Coffre, TeteGeolier } from "@/components/PixelArt";
 import { assetUrl, assetExiste } from "@/lib/assets";
@@ -70,7 +71,7 @@ export function bilanDeMort(run: RunState, reliquePortee: string | null = null):
   return {
     jours: run.day,
     franchis: run.lieuxEngages ?? 0,
-    plusLoin: "Les Landes",
+    plusLoin: zoneDef(run.zone).nom,
     rencontres: run.encounters,
     des: rolls.length,
     desTenus: rolls.filter((r) => r.ok).length,

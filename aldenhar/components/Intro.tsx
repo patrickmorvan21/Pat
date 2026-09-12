@@ -749,12 +749,45 @@ export default function Intro({
  * la table ci-dessous est là pour l'accueillir sans toucher au composant —
  * les visuels d'acte vivent dans le Drive sous `Assets/IMG/3 actes`.
  */
-const ACTES = [
+/** Un carton : eyebrow · titre · sous-ligne facultative · visuel facultatif. */
+export type Carton = { eyebrow: string; title: string; sous?: string; image?: string };
+
+const ACTES: Carton[] = [
   { eyebrow: "• LE DOMAINE •", title: "Les Lisières", image: "assets/scene_landes_frise_montagnes_pleine_b.png" },
 ];
 
-export function ActeScreen({ acte = 0, onDone }: { acte?: number; onDone: () => void }) {
-  const a = ACTES[Math.min(acte, ACTES.length - 1)];
+/**
+ * LE CARTON DE FIN DE DÉMO (décision Patrick 12/09). Depuis ce jour une vie
+ * traverse les zones (lib/zones.ts) ; tant que la zone suivante n'est pas
+ * écrite, la Descente des Landes s'arrête sur ce carton, puis la démo finit
+ * comme avant (accueil). Il dit qu'une suite existe — ce que la prose du
+ * monde n'a pas le droit de dire (playtest du 12/08), et que seul un carton,
+ * hors fiction, peut. Le visuel est celui de l'ACTE : les Salines sont dans
+ * l'Acte I, elles n'ont pas encore d'image à elles.
+ */
+export const CARTON_ZONE_A_VENIR: Carton = {
+  eyebrow: "• ACTE I · ZONE 2 •",
+  title: "Les Salines",
+  sous: "À venir.",
+};
+
+export function ActeScreen({
+  acte = 0,
+  carton,
+  inline,
+  onDone,
+}: {
+  acte?: number;
+  /** Remplace l'acte : un carton quelconque (fin de démo, zone suivante…). */
+  carton?: Carton;
+  /** Rendu en OVERLAY du cadre courant (depuis le jeu) au lieu d'un plein écran. */
+  inline?: boolean;
+  onDone: () => void;
+}) {
+  const acteDef = ACTES[Math.min(acte, ACTES.length - 1)];
+  const a = carton ?? acteDef;
+  // Un carton sans visuel emprunte celui de l'acte — c'est toujours l'acte.
+  const image = a.image ?? acteDef.image ?? ACTES[0].image!;
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
@@ -764,39 +797,49 @@ export function ActeScreen({ acte = 0, onDone }: { acte?: number; onDone: () => 
     return () => window.removeEventListener("keydown", onKey);
   }, [onDone]);
 
-  return (
-    <main className="flex min-h-dvh items-center justify-center">
-      <div
-        onClick={onDone}
-        className="phone-frame relative flex h-[841px] max-h-[100dvh] w-[390px] shrink-0 cursor-pointer flex-col overflow-clip"
-        style={{ background: "var(--color-accent)" }}
-      >
-        {/* Le titre est POSÉ SUR l'orange, en charbon — l'illustration démarre
-            à la même hauteur mais son ciel est orange, donc le texte porte. */}
-        <div className="absolute inset-x-0 top-[196px] z-[1] text-center">
-          <p className="font-mono text-[9px] font-bold tracking-[2.5px] text-[var(--color-bg)]">
-            {a.eyebrow}
+  const cadre = (
+    <div
+      onClick={onDone}
+      data-carton={carton ? "zone" : "acte"}
+      className={`phone-frame relative flex shrink-0 cursor-pointer flex-col overflow-clip ${
+        inline ? "h-full w-full" : "h-[841px] max-h-[100dvh] w-[390px]"
+      }`}
+      style={{ background: "var(--color-accent)" }}
+    >
+      {/* Le titre est POSÉ SUR l'orange, en charbon — l'illustration démarre
+          à la même hauteur mais son ciel est orange, donc le texte porte. */}
+      <div className="absolute inset-x-0 top-[196px] z-[1] text-center">
+        <p className="font-mono text-[9px] font-bold tracking-[2.5px] text-[var(--color-bg)]">
+          {a.eyebrow}
+        </p>
+        <h1
+          className="mt-[8px] text-[34px] leading-[1] text-[var(--color-bg)]"
+          style={{ fontFamily: "var(--font-title)" }}
+        >
+          {a.title}
+        </h1>
+        {a.sous && (
+          <p className="mt-[10px] font-mono text-[11px] uppercase tracking-[2px] text-[var(--color-bg)]">
+            {a.sous}
           </p>
-          <h1
-            className="mt-[8px] text-[34px] leading-[1] text-[var(--color-bg)]"
-            style={{ fontFamily: "var(--font-title)" }}
-          >
-            {a.title}
-          </h1>
-        </div>
-
-        {/* eslint-disable-next-line @next/next/no-img-element -- rendu pixelated, jamais optimisé par next/image */}
-        <img
-          src={assetUrl(a.image)}
-          alt=""
-          className="absolute inset-x-0 top-[224px] h-[390px] w-[390px] object-cover"
-          style={{ imageRendering: "pixelated" }}
-        />
-        {/* Sous la frise, le charbon reprend jusqu'en bas. */}
-        <div className="absolute inset-x-0 bottom-0 top-[610px] bg-[var(--color-bg)]" />
-
-        <TouchHint />
+        )}
       </div>
-    </main>
+
+      {/* eslint-disable-next-line @next/next/no-img-element -- rendu pixelated, jamais optimisé par next/image */}
+      <img
+        src={assetUrl(image)}
+        alt=""
+        className="absolute inset-x-0 top-[224px] h-[390px] w-[390px] object-cover"
+        style={{ imageRendering: "pixelated" }}
+      />
+      {/* Sous la frise, le charbon reprend jusqu'en bas. */}
+      <div className="absolute inset-x-0 bottom-0 top-[610px] bg-[var(--color-bg)]" />
+
+      <TouchHint />
+    </div>
   );
+
+  // En overlay : par-dessus le cadre du jeu, comme la Révélation ou la mort.
+  if (inline) return <div className="absolute inset-0 z-[60]">{cadre}</div>;
+  return <main className="flex min-h-dvh items-center justify-center">{cadre}</main>;
 }

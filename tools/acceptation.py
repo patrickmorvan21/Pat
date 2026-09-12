@@ -22,6 +22,7 @@ from pathlib import Path
 RACINE = Path(__file__).resolve().parent.parent
 SD = RACINE / "aldenhar/lib/scene-data.ts"
 SC = RACINE / "aldenhar/components/Scene.tsx"
+ST = RACINE / "aldenhar/lib/state.ts"  # la nuit (`appliquerRepos`) vit ici depuis le 12/09
 BESACE = RACINE / "aldenhar/lib/besace.ts"
 
 LIT = r'"(?:[^"\\]|\\.)*"(?:\s*\+\s*\n?\s*"(?:[^"\\]|\\.)*")*'
@@ -182,18 +183,35 @@ def main() -> int:
             "A2 — le champ `coutJour` est réapparu. Le Grand Registre classe par "
             "jours survécus : un Jour retiré en sanction récompense le passif."
         )
+    # Depuis le 12/09 (vie multi-zones), la NUIT vit dans `appliquerRepos`
+    # (lib/state.ts) : une seule définition, partagée par le campement et le
+    # franchissement d'une zone (« le passage soigne comme un campement »).
+    # Le jour n'a donc que DEUX sources, réparties sur deux fichiers :
+    #   • Scene.tsx : la marche engagée (`jourDeMarche`, dans advance) ;
+    #   • state.ts  : `appliquerRepos`, appelée par le repos (Scene) et par
+    #     `franchirZone` (state) — et par RIEN d'autre.
+    st = sans_commentaires(ST.read_text(encoding="utf8"))
     sites = [sc[max(0, m.start() - 260):m.start()] for m in re.finditer(r'run\.day \+= 1', sc)]
-    if len(sites) != 2:
+    sites_st = [st[max(0, m.start() - 260):m.start()] for m in re.finditer(r'run\.day \+= 1', st)]
+    if len(sites) != 1 or len(sites_st) != 1:
         manques.append(
-            f"A2 — {len(sites)} site(s) incrémentent `run.day` (2 attendus : la marche "
-            "engagée dans advance(), la nuit au campement). Tout nouveau site doit "
-            "être justifié ici avant d'être ajouté à la liste blanche."
+            f"A2 — {len(sites)} site(s) dans Scene.tsx et {len(sites_st)} dans state.ts "
+            "incrémentent `run.day` (1 + 1 attendus : la marche engagée dans advance(), "
+            "la nuit dans appliquerRepos). Tout nouveau site doit être justifié ici "
+            "avant d'être ajouté à la liste blanche."
         )
     else:
         if not any("jourDeMarche" in s for s in sites):
             manques.append("A2 — le Jour de MARCHE (advance) a disparu de ses sites connus.")
-        if not any("usure" in s or "horloge" in s for s in sites):
-            manques.append("A2 — le Jour de NUIT (campement) a disparu de ses sites connus.")
+        if not any("appliquerRepos" in s for s in sites_st):
+            manques.append("A2 — le Jour de NUIT (appliquerRepos) a disparu de ses sites connus.")
+        appels = len(re.findall(r'\bappliquerRepos\(', sc)) + len(re.findall(r'\bappliquerRepos\(run\)', st))
+        if appels != 2:
+            manques.append(
+                f"A2 — `appliquerRepos` est appelée {appels} fois (2 attendues : le "
+                "campement dans Scene.tsx, `franchirZone` dans state.ts). Un appel de "
+                "plus est un Jour qui passe sans nuit ni seuil de zone."
+            )
 
     # ─── A4. « Le joueur qui passe n'est pas secrètement puni. » ─────────
     # Le versant prouvable de la doctrine du 8/08 : le Soupçon naît d'un ACTE,

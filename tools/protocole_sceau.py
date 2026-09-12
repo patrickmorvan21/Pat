@@ -9,7 +9,8 @@ Ce garde joue vraiment deux traversées, l'une après l'autre, par les TROIS
 portes de sortie possibles, et vérifie à chaque fois que :
   1. le compte porte une traversée de plus ;
   2. la vie suivante s'ouvre AVEC la marque sur la main ;
-  3. la Borne relit le prédécesseur qui, lui, est revenu vivant ;
+  3. la Borne relit le prédécesseur qui, lui, est revenu vivant — gardé
+     à part du Registre (12/09), jamais inscrit comme une tombe ;
   4. la marque ne se compte jamais deux fois pour une seule traversée.
 
     python3 tools/protocole_sceau.py           # les trois portes
@@ -160,12 +161,16 @@ def main(argv: list[str]) -> int:
             t3.jouer("nouvelle", "--graine=1")
             apres = t3.compte.get("sceau", 0)
             verts &= controle("une traversée = un Sceau", apres == 1, f"sceau {apres}")
-            # La Borne doit relire un prédécesseur REVENU, pas un mort.
+            # La Borne doit relire un prédécesseur REVENU, pas un mort — et
+            # depuis le 12/09 il n'est PLUS au livre (le Registre est celui
+            # des morts) : il est gardé à part, sans une seule tombe de plus.
             tombes = t3.compte.get("tombes", [])
             verts &= controle(
-                "le prédécesseur est inscrit comme revenu",
-                bool(tombes) and "franchi" in (tombes[0].get("cause") or ""),
-                (tombes[0].get("cause") if tombes else "aucune tombe"),
+                "le survivant est gardé à part, hors du Registre",
+                bool(t3.compte.get("dernierSurvivant"))
+                and not any("franchi" in (t.get("cause") or "") for t in tombes),
+                f"survivant={t3.compte.get('dernierSurvivant')!r} · tombes franchi="
+                f"{sum(1 for t in tombes if 'franchi' in (t.get('cause') or ''))}",
             )
         else:
             verts = False

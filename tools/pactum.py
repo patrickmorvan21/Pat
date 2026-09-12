@@ -1598,11 +1598,11 @@ class Partie:
         self.d["traverseeClose"] = True
         c = lire_compte()
         c["sceau"] = c.get("sceau", 0) + 1
-        # Le nom entre au livre avec sa mention, comme `recordTraversee` le
-        # fait au Grand Registre — c'est ce que la Borne relira.
-        c.setdefault("tombes", []).insert(
-            0, {"nom": self.d["nom"], "cause": "a franchi la Descente"}
-        )
+        # ⚠️ 12/09 (vie multi-zones, décision Patrick) : un survivant n'entre
+        # PLUS au Registre — « le Registre est le livre des morts ». Le vrai
+        # jeu (`recordSortieVivante`) garde le nom À PART, pour que la Borne
+        # puisse encore relire « celui-là est revenu » ; `mourir` le périme.
+        c["dernierSurvivant"] = self.d["nom"]
         ecrire_compte(c)
         textes = self.k.get("sceau", {}).get("sortie", [])
         if textes:
@@ -1611,8 +1611,9 @@ class Partie:
     def borne_sud(self) -> list[str]:
         """Le côté sud de la Borne : le prédécesseur, puis le Sceau.
 
-        `tombes[0]` est l'incarnation d'avant — morte, ou revenue vivante
-        (le franchissement l'y inscrit comme le vrai jeu le fait au Registre).
+        L'incarnation d'avant est le survivant (`dernierSurvivant`, posé par
+        la clôture de traversée) s'il y en a un, sinon `tombes[0]` — depuis le
+        12/09 un survivant n'entre plus au Registre, le vrai jeu le garde à part.
         C'est cette distinction qui porte tout le sens : un nom gravé par
         quelqu'un qui EST revenu contredit la règle que l'examen vient
         d'énoncer.
@@ -1622,8 +1623,11 @@ class Partie:
         c = lire_compte()
         out: list[str] = []
         tombes, morts = c.get("tombes", []), c.get("morts", 0)
-        if cas and tombes:
-            p = tombes[0]
+        # Miroir de `predecesseur` (player-memory, 12/09) : l'incarnation
+        # d'avant est le survivant s'il y en a un, sinon la dernière tombe.
+        p = ({"nom": c["dernierSurvivant"], "cause": "a franchi la Descente"}
+             if c.get("dernierSurvivant") else (tombes[0] if tombes else None))
+        if cas and p:
             nom = p.get("nom", "").upper()
             if "franchi" in (p.get("cause") or ""):
                 out.append(cas[0].replace("{nom}", nom))
@@ -1649,6 +1653,7 @@ class Partie:
         phrase = (dernier or "").strip().split(".")[0].strip(" ,;—«»")
         cause = phrase if len(phrase) >= 8 else "les Landes"
         c["tombes"].insert(0, {"nom": self.d["nom"], "cause": cause[:70]})
+        c.pop("dernierSurvivant", None)  # une mort périme le survivant (12/09)
         ecrire_compte(c)
         tenus = sum(1 for x in self.d["des"] if x["palier"] in ("destin", "eclatante", "reussite", "justesse"))
         self.dit("MORT", "mort")

@@ -9,6 +9,7 @@ import TypedText from "@/components/TypedText";
 import DeathScreen, { bilanDeMort, type Bilan } from "@/components/DeathScreen";
 import GameMenu from "@/components/GameMenu";
 import Revelation from "@/components/Revelation";
+import { ActeScreen, CARTON_ZONE_A_VENIR } from "@/components/Intro";
 import {
   type Stat,
   DESCENTE_SCENE,
@@ -87,7 +88,8 @@ import {
 import {
   etat, etatsActifs, poserEtat,
 } from "@/lib/etats";
-import { loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
+import { appliquerRepos, franchirZone, loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
+import { zoneSuivanteJouable } from "@/lib/zones";
 import {
   armerSurprise, surprisePrete, jourProphetie, texteProphetie, texteFantome,
   texteCitation, texteRetour, texteVol, texteTemoinRecite, OBJET_DU_VOLEUR,
@@ -125,7 +127,9 @@ import {
   noterProfil,
   recordDeath,
   recordRenoncement,
-  recordTraversee,
+  recordZoneFranchie,
+  recordSortieVivante,
+  predecesseur,
   noterVisiteLieu,
   type Relic,
 } from "@/lib/player-memory";
@@ -1006,6 +1010,9 @@ export default function Scene() {
   // Sous-menu « Observer les alentours » ouvert ? (retour Patrick 25/07 : 3 CTA
   // max par écran — les descriptions passent derrière un seul bouton.)
   const [poiOpen, setPoiOpen] = useState(false);
+  // FIN DE DÉMO (12/09) : le carton « zone 2 à venir », servi quand la
+  // Descente ne mène à aucune zone écrite (lib/zones.ts).
+  const [cartonFin, setCartonFin] = useState(false);
   // Mode debug de couverture visuelle (journal 25/07) : triple tap sur l'icône
   // de menu. Volontairement NON persisté — c'est un outil d'inspection, pas un
   // réglage ; il s'éteint au rechargement.
@@ -4710,20 +4717,46 @@ export default function Scene() {
       if (scene.renoncement) {
         const run = runRef.current ?? loadRun();
         recordRenoncement({ heroName: run.heroName, days: run.day, franchis: run.lieuxEngages ?? 0, place: scene.id });
-      } else {
-        // LA TRACE DU SURVIVANT (arbitrage Patrick 7/08) : franchir la
-        // Descente vivant n'est plus un reset sec — le nom entre au Registre
-        // (« a franchi la Descente »), le compte s'en souvient, et le Geôlier
-        // accueille la run suivante en conséquence. Aucune relique.
-        const run = runRef.current ?? loadRun();
-        recordTraversee({ heroName: run.heroName, days: run.day, franchis: run.lieuxEngages ?? 0 });
-        // Codex : la première traversée révèle l'arc du Sceau — la marque
-        // vient d'apparaître dans la paume.
-        debloquerCodex("arc:sceau", run.heroName, run.day);
+        track("relance", { apres: "renoncement" }, { instant: true });
+        resetRun();
+        window.location.reload();
+        return;
       }
-      track("relance", { apres: scene.renoncement ? "renoncement" : "descente" }, { instant: true });
+      /* LA VIE MULTI-ZONES (décision Patrick 12/09 : « une seule vie sur les
+         trois actes »). Franchir la Descente n'est plus la fin d'une vie :
+         le compte retient la zone franchie et pose le Sceau
+         (`recordZoneFranchie`), puis — si la zone suivante est ÉCRITE — la
+         vie continue dedans (`franchirZone` : la Besace, la santé soignée
+         d'une nuit, le Jour, les états la suivent ; ce qui appartenait à la
+         zone quittée s'efface). Le Registre n'inscrit plus un survivant :
+         « le Registre est le livre des morts, une vie s'y inscrit quand elle
+         finit ». Aucune relique — on ne forge rien d'une vie qu'on n'a pas
+         perdue. */
+      const run = runRef.current ?? loadRun();
+      const zone = run.zone ?? "landes";
+      recordZoneFranchie({ zone, heroName: run.heroName, days: run.day, franchis: run.lieuxEngages ?? 0 });
+      // Codex : la première traversée révèle l'arc du Sceau — la marque
+      // vient d'apparaître dans la paume.
+      debloquerCodex("arc:sceau", run.heroName, run.day);
+      const suivante = zoneSuivanteJouable(zone);
+      if (suivante) {
+        persist((r) => franchirZone(r, suivante));
+        track("zone_franchie", { de: zone, vers: suivante.id, jour: runRef.current?.day ?? run.day });
+        // La reprise sert l'entrée de la zone suivante depuis `trav`, comme
+        // après toute fermeture d'app. ⚠️ Inatteignable tant qu'aucune zone
+        // suivante n'est `ecrite` (lib/zones.ts) — dit ici pour qu'aucune
+        // relecture ne conclue que le chemin est mort.
+        window.location.reload();
+        return;
+      }
+      // FIN DE DÉMO : la zone suivante n'est pas écrite. La vie s'arrête
+      // vivante (`recordSortieVivante` : jours au total, fin de partie côté
+      // statistiques, nom lisible par la Borne), la run est effacée AVANT le
+      // carton — fermer l'app dessus ne rejoue jamais la Descente —, puis le
+      // carton « zone 2 à venir » et l'accueil.
+      recordSortieVivante({ heroName: run.heroName, days: run.day });
       resetRun();
-      window.location.reload();
+      setCartonFin(true);
       return;
     }
     setSelectedId(choice.id);
@@ -4836,7 +4869,7 @@ export default function Scene() {
           ...(poi.borneSud
             ? (() => {
                 const m = loadMemory();
-                const l = ligneBorneSud(m.fallen[0], m.deaths);
+                const l = ligneBorneSud(predecesseur(m), m.deaths);
                 return l ? [{ id: nextId(), kind: "narration" as const, text: l }] : [];
               })()
             : []),
@@ -5059,7 +5092,7 @@ export default function Scene() {
       );
     if (choice.borneSud) {
       const m = loadMemory();
-      const l = ligneBorneSud(m.fallen[0], m.deaths);
+      const l = ligneBorneSud(predecesseur(m), m.deaths);
       if (l) supplements.push(l);
       // LA BORNE RÉPOND À SA PROPRE QUESTION (14/08). L'examen finit depuis
       // le 20/07 sur « alors qui a gravé côté sud ? ». Avec un Sceau, la
@@ -5230,32 +5263,15 @@ export default function Scene() {
       // Plus AUCUNE consommation automatique d'objet (spec 21/07 point 4 :
       // « rien d'automatique, jamais ») — le soin d'un actif est une décision
       // du joueur (menu → Utiliser, ou 4e choix contextuel).
-      // ⚠️ Phase A : plus d'usure du repos. Elle venait de FIÉVREUX, seul
-      // porteur de `usureParJour`, parti avec les Besoins qui le posaient.
-      const usure = 0;
       persist((run) => {
-        run.day += 1;
-        run.horloge = (run.horloge ?? run.day) + 1;
         // Même clé que la branche « nuit » d'advance : la nuit ne se compte
         // qu'une fois, qu'on l'ait dormie ou veillée.
         if (scene.nuit) run.vus = noter(run.vus, "nuit|" + scene.id);
-        // 0,35 → 0,25 le 2/09, → 0,15 le 11/09 (« monte drastiquement la
-        // difficulté »). Avec le barème du 11/09, une nuit ne rattrape même
-        // plus un échec ordinaire (0,32) : elle en efface la moitié. Dormir
-        // reste utile, dormir ne remet plus à neuf.
-        run.health = Math.max(0.08, Math.min(1, run.health + 0.15 - usure));
-        // BESOINS (spec §3) : dormir est satisfait ici. Les besoins se comptent
-        // en JOURS, jamais en scènes — garde-fou n°2 : un joueur qui traverse
-        // vite n'aura presque jamais faim.
-        // ⚠️ PAS de `+ 1` (relecture par agents, 10/08) : `run.horloge` vient
-        // d'être incrémentée par la nuit deux lignes plus haut. Le « +1 »
-        // datait le sommeil d'un cran dans le FUTUR — au réveil, `depuis`
-        // valait −1 et le besoin durait quatre crans au lieu de trois, sans
-        // s'accorder avec `repondreAuBesoin`, qui écrit l'heure telle quelle.
-        run.besoins = { ...(run.besoins ?? {}), dormir: run.horloge ?? run.day };
-        run.effects = run.effects
-          .filter((e) => e.delta > 0 || e.scenesLeft >= 900)
-          .map((e) => (e.scenesLeft >= 900 && e.delta < -1 ? { ...e, delta: -1 } : e));
+        // La nuit elle-même vit dans `appliquerRepos` (lib/state.ts, 12/09) :
+        // c'est la même que celle du franchissement d'une zone, et le barème
+        // (Jour +1, +0,15, blessures atténuées, besoin de dormir daté) n'a
+        // qu'une définition.
+        appliquerRepos(run);
       });
       const newDay = runRef.current?.day ?? day + 1;
       setDay(newDay);
@@ -6237,6 +6253,18 @@ export default function Scene() {
             ⚠️ Les stats retenues sont CELLES QUE LE JOUEUR VIENT DE VOIR se
             dessiner, pas un recalcul : le composant les a figées à son
             montage, les recalculer ici pourrait décrire une autre forme. */}
+        {/* FIN DE DÉMO (12/09) : le carton « Acte I · zone 2 — à venir »,
+            par-dessus la Descente, puis l'accueil. La run est déjà effacée. */}
+        {cartonFin && (
+          <ActeScreen
+            inline
+            carton={CARTON_ZONE_A_VENIR}
+            onDone={() => {
+              track("relance", { apres: "descente" }, { instant: true });
+              window.location.reload();
+            }}
+          />
+        )}
         {revelation && (
           <Revelation
             profil={revelation}
