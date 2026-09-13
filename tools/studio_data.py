@@ -48,9 +48,10 @@ TS_SCEAUX = RACINE / "aldenhar/lib/sceaux.ts"
 # `constante_de`) : cette table est ce qui rend la valeur réelle lisible.
 CONSTANTES_CONNUES: dict[str, str] = {
     m.group(1): m.group(2)
+    for fichier in (TS_SCEAUX, TS)
     for m in __import__("re").finditer(
         r'export const ([A-Z][A-Z0-9_]*)\s*=\s*"([^"]+)"',
-        TS_SCEAUX.read_text(encoding="utf-8"),
+        fichier.read_text(encoding="utf-8"),
     )
 }
 # Les ÉTATS et BESOINS (spec 5/08 « le Domaine se souvient ») : le Studio doit
@@ -1038,6 +1039,43 @@ def _const(nom: str) -> str:
     return _CONSTANTES.get(nom, nom)
 
 
+# ── À QUELLE ZONE APPARTIENT UNE SCÈNE ────────────────────────────────────────
+# ⚠️ UNE SEULE SOURCE, partagée avec le moteur : `zoneDeScene()` (scene-data)
+# dérive sa liste de `SALINES_ENVIRONNEMENTS` (zones-salines.ts). On lit donc
+# CE fichier-là, jamais une copie des ids — deux listes divergeraient au
+# premier lieu ajouté, et le graphe rangerait la moitié d'une zone chez la
+# voisine sans rien signaler.
+_SALINES_TS = RACINE / "aldenhar/lib/zones-salines.ts"
+
+
+def salines_lieux() -> set[str]:
+    """Les ids de lieu des Salines (entrée + pool + fins de chaque étape)."""
+    if not _SALINES_TS.exists():
+        return set()
+    src = _SALINES_TS.read_text(encoding="utf-8")
+    ids: set[str] = set()
+    for champ in ("entree", "fin", "pool"):
+        for m in re.finditer(rf"\b{champ}:\s*(\[[^\]]*\]|\"[^\"]*\")", src):
+            ids.update(re.findall(r'"([^"]+)"', m.group(1)))
+    # ⚠️ COMPTER ce qu'on extrait (règle du 10/08) : 29 lieux déclarés au
+    # 13/09. Un extracteur muet rangerait TOUTE la zone 2 dans les Landes.
+    assert len(ids) >= 20, f"zones-salines.ts : {len(ids)} lieux lus, ≥ 20 attendus"
+    return ids
+
+
+_SALINES = salines_lieux()
+# Le nœud terminal des Salines ne porte le nom d'aucun lieu : il se déclare.
+_SALINES_HORS_POOL = {"fin-etape-non-ecrite"}
+
+
+def zone_de_scene(sid: str) -> str:
+    """Miroir de `zoneDeScene()` (scene-data.ts) — radical = id sans son
+    suffixe de beat (`-2`, `-3`)."""
+    if sid in _SALINES_HORS_POOL:
+        return "salines"
+    return "salines" if re.sub(r"-\d+$", "", sid) in _SALINES else "landes"
+
+
 def lire_scenes() -> list[dict]:
     src = TS.read_text(encoding="utf-8")
     tete = src.index("export const SCENES: Scene[] = [")
@@ -1050,9 +1088,16 @@ def lire_scenes() -> list[dict]:
         narr = bloc_apres(bloc, r"\n {4}narration:\s*")
         s = {
             "id": sid,
-            "illustration": (re.search(r'\n    illustration: "([^"]+)"', bloc) or [None, None])[1]
-            if re.search(r'\n    illustration: "([^"]+)"', bloc)
-            else None,
+            # ⚠️ L'illustration peut être une CONSTANTE (`illustration: CROUTE_IMG`,
+            # les 16 écrans de la Croûte) : le motif littéral les rendait
+            # TOUTES sans image — le Graphe affichait « AUCUNE IMAGE » et la
+            # couverture les aurait comptées manquantes. Variante « identifiant »
+            # du piège d'extracteur muet, déjà payée le 14/08 sur requiresSceau.
+            # ⚠️ Le motif garde ses QUATRE espaces d'indentation : c'est lui
+            # qui distingue l'illustration de la SCÈNE de celle d'un de ses
+            # choix (indentée de 8) — sans quoi une scène hériterait de
+            # l'image d'une de ses actions.
+            "illustration": constante_de(bloc, r"\n    illustration", CONSTANTES_CONNUES),
             "narration": chaines(narr[0]) if narr else [],
             "choix": lire_choix(bloc),
             "pointsInteret": lire_pois(bloc),
@@ -1172,6 +1217,13 @@ def lire_scenes() -> list[dict]:
         sa = nombre_de(bloc, "soupconOnArrival")
         if sa is not None:
             s["soupconArrivee"] = int(sa)
+        # LA ZONE (13/09). Posée seulement hors des Landes, comme tous les
+        # champs de ce fichier : `graphe.py` lit `s.get("zone", "landes")`.
+        # Sans elle, les 16 scènes de la Croûte flottaient SANS LIEU au milieu
+        # de la carte des Landes — elles n'y ont jamais eu leur place.
+        z = zone_de_scene(s["id"])
+        if z != "landes":
+            s["zone"] = z
         scenes.append(s)
     # ── LA DESCENTE ────────────────────────────────────────────────────────
     # Le nœud terminal vit HORS de `SCENES[]` : aucun outil ne le voyait, alors

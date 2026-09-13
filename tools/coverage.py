@@ -285,9 +285,30 @@ class Item:
 # ─────────────────────────────────────────────────────────── parsing scene-data
 
 
+def _const_assets(src: str) -> dict[str, str]:
+    """Les constantes de chemin d'asset déclarées dans scene-data.ts.
+
+    ⚠️ Une scène peut écrire `illustration: CROUTE_IMG` au lieu d'un littéral
+    (les 16 écrans de la Croûte, 13/09). Le motif littéral les rendait toutes
+    SANS image, donc comptées « manquantes » alors que le fichier existe —
+    variante « identifiant » du piège d'extracteur muet du projet.
+    """
+    return dict(re.findall(r'export const ([A-Z][A-Z0-9_]*)\s*=\s*"(assets/[^"]+)"', src))
+
+
+def _illo(body: str, motif: str, consts: dict[str, str]) -> str | None:
+    """L'illustration d'un bloc : littéral OU constante connue."""
+    m = re.search(motif + r' "([^"]+)"', body)
+    if m:
+        return m.group(1)
+    m = re.search(motif + r" ([A-Z][A-Z0-9_]*)\s*,", body)
+    return consts.get(m.group(1)) if m else None
+
+
 def read_scenes(src: str) -> list[dict]:
     """Découpe SCENES[] en blocs de scène, chacun avec son id, son illustration
     et ses points d'intérêt."""
+    consts = _const_assets(src)
     start = src.index("export const SCENES")
     blk = src[start:]
     marks = [(m.start(), m.group(1)) for m in re.finditer(r'\n    id: "([^"]+)",\n', blk)]
@@ -296,7 +317,7 @@ def read_scenes(src: str) -> list[dict]:
     for i in range(len(marks) - 1):
         a, sid = marks[i]
         body = blk[a : marks[i + 1][0]]
-        illo = re.search(r'\n    illustration: "([^"]+)"', body)
+        illo_v = _illo(body, r"\n    illustration:", consts)
         pois = []
         if "pointsInteret:" in body:
             ps = body.index("pointsInteret:")
@@ -336,7 +357,7 @@ def read_scenes(src: str) -> list[dict]:
         scenes.append(
             {
                 "id": sid,
-                "illustration": illo.group(1) if illo else None,
+                "illustration": illo_v,
                 "pois": pois,
                 "interactions": inters,
             }
@@ -347,11 +368,11 @@ def read_scenes(src: str) -> list[dict]:
     # sort vivant de la zone, et que Patrick l'avait déjà marquée à remplacer.
     mterm = re.search(r"const DESCENTE_SCENE[^=]*=\s*\{([\s\S]*?)\n\};", src)
     if mterm and '\n  id: "la-descente"' in mterm.group(1):
-        timg = re.search(r'\n  illustration: "([^"]+)"', mterm.group(1))
+        timg_v = _illo(mterm.group(1), r"\n  illustration:", consts)
         scenes.append(
             {
                 "id": "la-descente",
-                "illustration": timg.group(1) if timg else None,
+                "illustration": timg_v,
                 "pois": [],
                 "interactions": [],
             }

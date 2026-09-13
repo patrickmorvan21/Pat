@@ -36,6 +36,7 @@ les Landes. La liste des zones disponibles voyage DANS chaque JSON
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 from collections import deque
@@ -72,9 +73,14 @@ def img(scene: dict) -> dict | None:
     return {"f": f, "h": im.get("hash") or "", "ok": bool(im.get("existe"))}
 
 
-def construire() -> dict:
+def construire(zone: str = "landes") -> dict:
     d = json.loads(STUDIO.read_text(encoding="utf-8"))
-    scenes = {s["id"]: s for s in d["scenes"]}
+    # ⚠️ UNE CARTE PAR ZONE. Les 16 scènes de la Croûte (Salines, 13/09)
+    # flottaient SANS LIEU au milieu des Landes — le champ `zone` de
+    # studio_data.py les range enfin. Filtré ICI, à la source : tout ce qui
+    # suit (liens, actions illustrées, déductions de lieu) en dérive, donc
+    # aucune scène d'une autre zone ne peut se glisser par une branche.
+    scenes = {s["id"]: s for s in d["scenes"] if s.get("zone", "landes") == zone}
     zones = d.get("zones", [])
     regions = d.get("regions", [])
 
@@ -463,6 +469,75 @@ def construire_routage(z: dict) -> dict:
         })
         lien(nid(l["fusionne_dans"]), nid(l["id"]), "appartient")
 
+    # ── LES SCÈNES DÉJÀ ÉCRITES (13/09) ──────────────────────────────────
+    # Une zone en routage n'a d'abord aucune scène : sa carte est un plan. Dès
+    # qu'un environnement est écrit (la Croûte), ses écrans existent pour de
+    # vrai — ils se montrent DANS leur lieu, avec leur texte, au lieu de rester
+    # invisibles ici et orphelins ailleurs.
+    # ⚠️ Les ids diffèrent d'une source à l'autre : la matière de production
+    # écrit `rive_haute`, le code `rive-haute`. La correspondance est `_`→`-`,
+    # et c'est la seule ; on ne devine jamais au-delà.
+    ecrites: dict[str, list[dict]] = {}
+    if STUDIO.exists():
+        sd = json.loads(STUDIO.read_text(encoding="utf-8"))
+        for sc in sd.get("scenes", []):
+            if sc.get("zone") != zz.get("id"):
+                continue
+            rad = re.sub(r"-\d+$", "", sc["id"])
+            ecrites.setdefault(rad.replace("-", "_"), []).append(sc)
+    # ⚠️ Un écran HORS POOL (le nœud terminal `fin-etape-non-ecrite`) n'a le
+    # nom d'aucun lieu : sans ce rattachement il tombait des DEUX cartes — le
+    # défaut même qu'on vient de corriger, sous une autre forme. Il se range
+    # sur la dernière étape écrite, qui est celle d'où on l'atteint.
+    orphelines = ecrites.pop("fin_etape_non_ecrite", [])
+    for sc in orphelines:
+        sid = "scene:" + sc["id"]
+        vus.add(sid)
+        noeuds.append({
+            "id": sid, "nom": sc.get("nom") or sc["id"], "cat": "terminal",
+            "groupe": envs[0]["id"], "lieu": envs[0]["id"],
+            "image": img(sc), "prompt": "",
+            "desc": sc.get("narration") or [],
+            "meta": ["fin de l'étape écrite — la suivante n'est pas écrite",
+                     *[("· " + c.get("label", "")) for c in sc.get("choix", [])]],
+        })
+    for lid, lst in ecrites.items():
+        if nid(lid) not in vus:
+            continue
+        for n in noeuds:
+            if n["id"] == nid(lid):
+                n["meta"].insert(1, f"ÉCRIT · {len(lst)} écran(s)")
+                break
+        for sc in lst:
+            sid = "scene:" + sc["id"]
+            vus.add(sid)
+            meta = []
+            if sc.get("combat"):
+                meta.append("combat")
+            if sc.get("sejour"):
+                meta.append("séjour — on y reste tant qu'on n'en sort pas")
+            if sc.get("tempete"):
+                meta.append("tempête de sel")
+            if sc.get("terminal"):
+                meta.append("nœud terminal")
+            for c in sc.get("choix", []):
+                r = c.get("risque")
+                meta.append(("◆ " if r else "· ") + c.get("label", c.get("id", ""))
+                            + (f"  [{r['stat']} {r['seuil']}]" if r else ""))
+            noeuds.append({
+                "id": sid, "nom": sc.get("nom") or sc["id"], "cat": "scene",
+                "groupe": L[lid]["environnement"] if lid in L else None,
+                "lieu": L[lid]["environnement"] if lid in L else None,
+                # ⚠️ La page lit `{f, h, ok}`, PAS la fiche brute de
+                # studio-data (`{fichier, hash, …}`) : passer la fiche telle
+                # quelle produisait un `assets/undefined` en 404 silencieux.
+                # `img()` est le seul convertisseur — on ne recopie pas sa forme.
+                "image": img(sc), "prompt": "",
+                "desc": sc.get("narration") or [],
+                "meta": meta,
+            })
+            lien(nid(lid), sid, "appartient")
+
     sorties_prec: list[str] = []
     for e in envs:
         pool = [l["id"] for l in z["lieux"] if l["environnement"] == e["id"] and l["role"] == "pool"]
@@ -511,7 +586,13 @@ def construire_routage(z: dict) -> dict:
         "totaux": {"scenes": 0, "lieux": nb_lieux, "etapes": len(envs),
                    "actions": sum(1 for n in noeuds if n["cat"] == "action"),
                    "transitions": 0, "marches": 0, "liens": len(liens), "scenesRattachees": 0,
-                   "retires": sum(1 for l in z["lieux"] if l["role"] == "retire")},
+                   "retires": sum(1 for l in z["lieux"] if l["role"] == "retire"),
+                   # les écrans réellement ÉCRITS de la zone : c'est ce qui
+                   # sépare un plan d'un environnement jouable, et le pied de
+                   # la page le dit. ⚠️ Calculé ICI, avec les autres totaux —
+                   # posé dans main() il tombait APRÈS l'écriture du fichier
+                   # et n'atteignait jamais la page.
+                   "ecrits": sum(1 for n in noeuds if n.get("cat") in ("scene", "terminal"))},
     }
 
 
@@ -548,7 +629,9 @@ def main() -> int:
         sortie = SORTIE_JSON.with_name(f"graphe-data-{stem}.json")
         sortie.write_text(json.dumps(gz, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         tz = gz["totaux"]
+        ecr = gz["totaux"].get("ecrits", 0)
         print(f"{sortie.relative_to(RACINE)} — {tz['lieux']} lieux · {tz['etapes']} environnements · "
+              f"{ecr} écran(s) écrit(s) · "
               f"{tz['actions']} fusionnés · {tz['retires']} retiré(s) · {tz['liens']} liens "
               f"({sortie.stat().st_size // 1024} Ko)")
     gabarit = Path(__file__).resolve().parent / "graphe_page.html"

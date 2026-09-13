@@ -50,7 +50,7 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-13T11:53:16Z",
+ "genere": "2026-09-13T11:59:05Z",
  "commit": "abb3ad8",
  "zones": [
   {
@@ -7967,7 +7967,16 @@
    "pointsInteret": [],
    "suite": "rive-haute-2",
    "butin": "battant-cloche",
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [
@@ -7976,10 +7985,9 @@
    "mèneIci": [],
    "roles": [],
    "acces": "aucun",
-   "etat": "acompleter",
+   "etat": "valide",
    "alertes": [
-    "orpheline",
-    "imageManquante"
+    "orpheline"
    ]
   },
   {
@@ -8038,7 +8046,16 @@
     "cle": "battant",
     "consequence": "Tu remets le battant et tu tires. Le son part droit sur la Croûte, sans écho, et ne s'arrête pas. Le Percepteur ferme les yeux. « Voilà. Maintenant il sait que tu es là. » Loin sur le sel, une masse blanche se met en marche vers la rive : un bœuf, seul, la tête basse."
    },
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [],
@@ -8047,10 +8064,8 @@
    ],
    "roles": [],
    "acces": "lien",
-   "etat": "acompleter",
-   "alertes": [
-    "imageManquante"
-   ]
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "file",
@@ -8090,7 +8105,16 @@
    ],
    "pointsInteret": [],
    "suite": "file-2",
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [
@@ -8099,10 +8123,9 @@
    "mèneIci": [],
    "roles": [],
    "acces": "aucun",
-   "etat": "acompleter",
+   "etat": "valide",
    "alertes": [
-    "orpheline",
-    "imageManquante"
+    "orpheline"
    ]
   },
   {
@@ -8169,7 +8192,16 @@
    "adversaire": "piqueurs",
    "adversaireNom": "Les Piqueurs",
    "combat": true,
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [],
@@ -8178,10 +8210,8 @@
    ],
    "roles": [],
    "acces": "lien",
-   "etat": "acompleter",
-   "alertes": [
-    "imageManquante"
-   ]
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "champ-des-sillages",
@@ -8221,7 +8251,16 @@
    ],
    "pointsInteret": [],
    "suite": "champ-des-sillages-2",
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [
@@ -8230,10 +8269,9 @@
    "mèneIci": [],
    "roles": [],
    "acces": "aucun",
-   "etat": "acompleter",
+   "etat": "valide",
    "alertes": [
-    "orpheline",
-    "imageManquante"
+    "orpheline"
    ]
   },
   {
@@ -8297,7 +8335,16 @@
    "adversaire": "gisants",
    "adversaireNom": "Les Gisants",
    "combat": true,
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [],
@@ -8306,10 +8353,8 @@
    ],
    "roles": [],
    "acces": "lien",
-   "etat": "acompleter",
-   "alertes": [
-    "imageManquante"
-   ]
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "barge-echouee",
@@ -8349,7 +8394,16 @@
    ],
    "pointsInteret": [],
    "suite": "barge-echouee-2",
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [
@@ -8358,10 +8412,9 @@
    "mèneIci": [],
    "roles": [],
    "acces": "aucun",
-   "etat": "acompleter",
+   "etat": "valide",
    "alertes": [
-    "orpheline",
-    "imageManquante"
+    "orpheline"
    ]
   },
   {
@@ -8412,7 +8465,16 @@
    ],
    "pointsInteret": [],
    "sejour": true,
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [],
@@ -8421,10 +8483,8 @@
    ],
    "roles": [],
    "acces": "lien",
-   "etat": "acompleter",
-   "alertes": [
-    "imageManquante"
-   ]
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "statue",
@@ -8456,7 +8516,16 @@
    ],
    "pointsInteret": [],
    "suite": "statue-2",
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [
@@ -8465,10 +8534,9 @@
    "mèneIci": [],
    "roles": [],
    "acces": "aucun",
-   "etat": "acompleter",
+   "etat": "valide",
    "alertes": [
-    "orpheline",
-    "imageManquante"
+    "orpheline"
    ]
   },
   {
@@ -8512,7 +8580,16 @@
    "tempete": {
     "apres": "Le sel retombe. À dix pas de la première, une seconde statue que la tempête cachait — plus petite, le même bras tendu, le même geste. À ses pieds le sel est frais, à peine pris. Elle n'était pas là hier."
    },
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [],
@@ -8521,10 +8598,8 @@
    ],
    "roles": [],
    "acces": "lien",
-   "etat": "acompleter",
-   "alertes": [
-    "imageManquante"
-   ]
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "bouche",
@@ -8562,7 +8637,16 @@
    ],
    "pointsInteret": [],
    "suite": "bouche-2",
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [
@@ -8571,10 +8655,9 @@
    "mèneIci": [],
    "roles": [],
    "acces": "aucun",
-   "etat": "acompleter",
+   "etat": "valide",
    "alertes": [
-    "orpheline",
-    "imageManquante"
+    "orpheline"
    ]
   },
   {
@@ -8609,7 +8692,16 @@
    ],
    "pointsInteret": [],
    "sejour": true,
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [],
@@ -8618,10 +8710,8 @@
    ],
    "roles": [],
    "acces": "lien",
-   "etat": "acompleter",
-   "alertes": [
-    "imageManquante"
-   ]
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "bouche-3",
@@ -8653,17 +8743,25 @@
     }
    ],
    "pointsInteret": [],
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [],
    "mèneIci": [],
    "roles": [],
    "acces": "aucun",
-   "etat": "acompleter",
+   "etat": "valide",
    "alertes": [
-    "orpheline",
-    "imageManquante"
+    "orpheline"
    ]
   },
   {
@@ -8702,7 +8800,16 @@
    ],
    "pointsInteret": [],
    "suite": "radeau-2",
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [
@@ -8711,10 +8818,9 @@
    "mèneIci": [],
    "roles": [],
    "acces": "aucun",
-   "etat": "acompleter",
+   "etat": "valide",
    "alertes": [
-    "orpheline",
-    "imageManquante"
+    "orpheline"
    ]
   },
   {
@@ -8754,7 +8860,16 @@
    ],
    "pointsInteret": [],
    "sejour": true,
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [],
@@ -8763,10 +8878,8 @@
    ],
    "roles": [],
    "acces": "lien",
-   "etat": "acompleter",
-   "alertes": [
-    "imageManquante"
-   ]
+   "etat": "valide",
+   "alertes": []
   },
   {
    "id": "fin-etape-non-ecrite",
@@ -8784,17 +8897,25 @@
    "pointsInteret": [],
    "terminal": true,
    "finDemo": true,
-   "image": null,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_croute_placeholder_a.png",
+    "hash": "8cd4091d",
+    "taille": 8623,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
    "description": "",
    "promptImage": "",
    "mèneVers": [],
    "mèneIci": [],
    "roles": [],
    "acces": "aucun",
-   "etat": "acompleter",
+   "etat": "valide",
    "alertes": [
-    "orpheline",
-    "imageManquante"
+    "orpheline"
    ]
   },
   {
@@ -12447,7 +12568,7 @@
   "pointsInteret": 0,
   "choix": 367,
   "illustrations": 450,
-  "sansImage": 16,
+  "sansImage": 0,
   "imagesIntrouvables": 0,
   "reserve": 225,
   "reliques": 10,
