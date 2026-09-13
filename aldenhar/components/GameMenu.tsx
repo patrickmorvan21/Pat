@@ -3,7 +3,8 @@
 import { useMemo, useState } from "react";
 import { CloseX } from "@/components/Home";
 import { forgetIntro, forgeRelic, loadMemory, reliquesPortees, type Relic } from "@/lib/player-memory";
-import { loadRun, type NarrativeEffect, type RunState } from "@/lib/state";
+import { loadRun, resetRun, saveRun, demarrerZone, type NarrativeEffect, type RunState } from "@/lib/state";
+import { zoneDef } from "@/lib/zones";
 import Intro, { ActeScreen } from "@/components/Intro";
 import RadarEssence from "@/components/RadarEssence";
 import { besaceBySlot, normalizeItem, type BesaceItem } from "@/lib/besace";
@@ -584,6 +585,7 @@ type EtapeApercu = "intro" | "acte" | null;
 export function OptionsTab() {
   const [s, setS] = useState<Settings>(() => loadSettings());
   const [eraseArmed, setEraseArmed] = useState(false);
+  const [salinesArmed, setSalinesArmed] = useState(false);
   const [aidesReset, setAidesReset] = useState(false);
   const [preview, setPreview] = useState<PreviewMort | null>(null);
   /** Aperçu du prologue : l'ouverture rejouée d'un bout à l'autre. */
@@ -604,6 +606,28 @@ export function OptionsTab() {
   function reafficherAides() {
     reinitialiserAides();
     setAidesReset(true);
+  }
+
+  /**
+   * LA PORTE DES SALINES (13/09). Le paramètre `?zone=salines` marche dans un
+   * navigateur — mais PAS depuis l'icône installée : une PWA ne reçoit aucun
+   * paramètre d'URL, et son stockage est séparé de celui du navigateur. C'est
+   * exactement ce qui avait bloqué le test du mode démo le 24/08, et le
+   * remède est le même : un accès DANS le jeu.
+   *
+   * ⚠️ Deux taps : ça abandonne la partie en cours (une zone se commence au
+   * premier lieu, on n'y téléporte pas un héros à mi-traversée). La mémoire du
+   * COMPTE — reliques, Registre, découvertes — n'est pas touchée.
+   */
+  function jouerLesSalines() {
+    if (!salinesArmed) {
+      setSalinesArmed(true);
+      return;
+    }
+    const run = resetRun();
+    demarrerZone(run, zoneDef("salines"));
+    saveRun(run);
+    window.location.reload();
   }
 
   function effacerProgression() {
@@ -729,6 +753,22 @@ export function OptionsTab() {
           Aperçu de l&apos;écran de mort
         </button>
         <OptHelp>Rejoue la séquence sans compter de mort — pour vérifier le rendu, pas pour tester tes réflexes.</OptHelp>
+      </div>
+
+      {/* Zone 2 — la Croûte, le temps du playtest. Se retire quand la
+          traversée des Landes y mènera d'elle-même. */}
+      <div className="mt-[20px]">
+        <button
+          type="button"
+          onClick={jouerLesSalines}
+          className="font-mono text-[13px] text-[var(--color-accent)] underline"
+        >
+          {salinesArmed ? "Abandonner la partie et descendre ?" : "Jouer les Salines (zone 2)"}
+        </button>
+        <OptHelp>
+          Commence une vie neuve dans la Croûte. Reliques et Grand Registre sont
+          conservés — seule la partie en cours est abandonnée.
+        </OptHelp>
       </div>
 
       <div className="mt-[20px]">
