@@ -3775,6 +3775,36 @@ export default function Scene() {
         });
       }
     }
+    // ── LE CORPS (13/09) ──────────────────────────────────────────────────
+    // Les effets HÉRITÉS (ENTAILLÉ, ÉBRANLÉ) n'ont pas de fiche dans
+    // `lib/etats.ts`, donc pas de « réactions du monde » : une blessure
+    // persistante ne se manifestait plus jamais après sa carte. Même dosage
+    // et même dédup que le bloc ci-dessus — 40 %, jamais en combat, jamais
+    // deux fois mot pour mot dans une vie, et le vivier est PARTAGÉ avec les
+    // réactions d'état (`reactionsVues`) : un seul budget de répétition pour
+    // tout ce qui parle du corps.
+    if (!nextScene.combat && chance(0.4)) {
+      const reacVues2 = runRef.current?.reactionsVues ?? [];
+      const porte = (runRef.current?.effects ?? [])
+        .filter((e) => RAPPELS_CORPS[e.id])
+        // Le plus lourd d'abord : une blessure passe avant un étourdissement.
+        .sort((a, b) => (a.delta ?? 0) - (b.delta ?? 0))[0];
+      const libres = porte
+        ? RAPPELS_CORPS[porte.id].filter((t) => !reacVues2.includes(t))
+        : [];
+      if (libres.length) {
+        const dite = libres[Math.floor(nextStep / 2) % libres.length];
+        rappels.push({
+          prio: 3,
+          text: dite,
+          commit: () => persist((r) => {
+            if (!(r.reactionsVues ?? []).includes(dite))
+              r.reactionsVues = [...(r.reactionsVues ?? []), dite];
+          }),
+        });
+      }
+    }
+
     // ⚠️ Phase A : les LIGNES INTRUSES sont parties avec HANTÉ. Une phrase
     // générique injectée au hasard dans une scène qui ne l'a pas écrite était
     // le contraire de la doctrine (« une mécanique ne doit jamais contredire
@@ -6656,12 +6686,58 @@ function libelleEtat(label: string): string {
  * manifestation de la fiche quand elle existe, sinon une phrase écrite pour
  * les effets hérités — jamais un chiffre.
  */
+/**
+ * LE CORPS SE RAPPELLE — un état ne s'annonce pas une fois, il se PORTE
+ * (décision Patrick, 13/09 : « si je suis blessé, même légèrement, ça peut
+ * être intéressant de le rappeler sur les scènes suivantes — un petit bout de
+ * texte, que vous avez du mal à marcher ou êtes encore étourdi »).
+ *
+ * Ce que ça répare : la carte d'état ne vit qu'UN écran, et la prose du jet
+ * qui blesse est excellente mais ne se dit qu'une fois. Entre les deux, une
+ * blessure PERSISTANTE (999 scènes, seul le camp l'atténue) ne se manifestait
+ * plus jamais — le joueur voyait l'Anneau se refermer sans savoir pourquoi.
+ *
+ * ⚠️ AUCUN de ces textes ne localise la blessure. La prose des jets, elle,
+ * la localise très bien — le mollet, la cheville, l'avant-bras, le flanc, la
+ * joue — et deux textes qui se contredisent valent moins qu'un seul qui se
+ * tait : « la douleur remonte jusqu'à la hanche » servi après une morsure à
+ * l'avant-bras, c'est exactement le défaut qu'on vient de corriger sur
+ * ENTAILLÉ. On dit donc la GÊNE, jamais l'endroit.
+ *
+ * ⚠️ Zéro tap de plus : ils passent par le collecteur de rappels (12/08), qui
+ * n'en sert qu'UN par arrivée — un rappel du corps PREND la place d'une ligne
+ * de perception ou de familiarité, il ne s'y ajoute jamais.
+ *
+ * ⚠️ AGUERRI n'en a pas, et c'est délibéré : sa pose est déjà racontée par
+ * l'issue de victoire, il ne dure que trois scènes, et un bien-être qu'on se
+ * re-signale sonne comme une vantardise. Le corps se rappelle quand il gêne.
+ */
+const RAPPELS_CORPS: Record<string, string[]> = {
+  entaille: [
+    "Tu changes de pied sans y penser, et tu recommences dix pas plus loin.",
+    "Ça ne fait plus mal en continu. Ça fait mal quand tu oublies.",
+    "Tu t'en aperçois en te baissant : quelque chose ne suit plus tout à fait.",
+    "La chose s'est refermée à sa manière, pas à la tienne. Elle tire dès que tu forces.",
+    "Tu prends appui de l'autre côté maintenant. Tu ne te souviens pas d'avoir décidé ça.",
+    "Le froid trouve la plaie avant de trouver le reste.",
+  ],
+  ebranle: [
+    "Ton cœur repart plus vite que ce que tu es en train de faire.",
+    "Tu regardes derrière toi. Il n'y a rien, et tu regardes quand même.",
+    "Tu as une seconde de retard sur tes propres gestes.",
+    "Quelque chose en toi n'a pas fini de reculer.",
+  ],
+};
+
 const DESC_EFFETS_HERITES: Record<string, string> = {
   // ⚠️ LOT 4 (14/08) : ces trois lignes NOMMAIENT l'effet et sa durée (« tes
   // gestes portent mieux, pour un temps »). Le corps le montre — l'érosion du
   // cadre, l'Anneau, la manière dont la scène suivante se passe. Ce qui reste
   // est ce que le héros SENT, jamais ce que le moteur calcule.
-  entaille: "Quand tu poses le pied, la douleur remonte jusqu'à la hanche.",
+  // ⚠️ NON LOCALISÉ (13/09) : « la douleur remonte jusqu'à la hanche »
+  // supposait une jambe, alors qu'on est aussi bien mordu à l'avant-bras ou
+  // marqué à la joue. La prose du jet dit l'endroit ; la carte dit la gêne.
+  entaille: "Ça s'est refermé à sa manière. Ça tire dès que tu forces.",
   aguerri: "Ta main ne tremble plus. Elle sait ce qu'elle vient de faire.",
   ebranle: "Tu sursautes à un bruit qui ne t'aurait rien fait.",
 };

@@ -609,6 +609,21 @@ class Partie:
         # nuit (comme dans le jeu), plus à l'arrivée : « — JOUR 3 — » tombait
         # en bas de l'écran d'entrée du Moulin, AVANT qu'on propose de dormir
         # (trois testeurs). Voir le haut de `entrer`.
+        # LE CORPS SE RAPPELLE (13/09) : un état hérité se PORTE, il ne
+        # s'annonce pas une seule fois. Même dosage que le jeu — 40 %, jamais
+        # en combat, jamais deux fois le même texte dans une vie, le plus
+        # lourd d'abord. Sans ça un relecteur du kit mesurerait une blessure
+        # persistante qui ne se manifeste plus jamais.
+        corps = self.k.get("rappelsCorps", {})
+        if corps and not s.get("combat") and r.random() < 0.4:
+            porte = [e for e in ("entaille", "ebranle")
+                     if self.d["etats"].get(e, 0) > 0 and corps.get(e)]
+            if porte:
+                vus = self.d.setdefault("corpsVus", [])
+                libres = [t for t in corps[porte[0]] if t not in vus]
+                if libres:
+                    self.dit(libres[0], "narration")
+                    vus.append(libres[0])
         if s.get("registre"):
             self.dit(
                 "[Le Grand Registre défile : cent noms classés par lieux "

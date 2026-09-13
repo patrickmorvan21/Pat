@@ -118,6 +118,17 @@ def traces_menace(src: str) -> dict[str, list[str]]:
     }
 
 
+def rappels_corps() -> dict[str, list[str]]:
+    """Les rappels d'ENTAILLÉ / ÉBRANLÉ, lus dans Scene.tsx (13/09)."""
+    src = (RACINE / "aldenhar" / "components" / "Scene.tsx").read_text(encoding="utf-8")
+    deb = src.find("const RAPPELS_CORPS")
+    if deb < 0:
+        return {}
+    bloc = src[deb : src.find("\n};", deb)]
+    out = {e: chaines_de_tableau(bloc_tableau(bloc, f"  {e}: [")) for e in ("entaille", "ebranle")}
+    return {k: v for k, v in out.items() if v}
+
+
 def record(src: str, ancre: str) -> dict[str, str]:
     """Un `Record<string, string> = { clef: "valeur", … }` en dict.
 
@@ -423,6 +434,10 @@ def main() -> int:
         # ne se souvient de personne — et c'est justement l'écran où le Sceau
         # répond à sa question.
         "borneSud": borne_sud_gabarits(),
+        # LE CORPS SE RAPPELLE (13/09) : les rappels d'un état hérité. Sans
+        # eux la réplique servirait une blessure persistante qui ne se
+        # manifeste plus jamais — le biais « le kit ment au relecteur ».
+        "rappelsCorps": rappels_corps(),
     }
     # la version : on ne garde que le numéro
     m = re.search(r'APP_VERSION = "([^"]+)"', kit["version"])
@@ -442,6 +457,8 @@ def main() -> int:
     # = la Meute reviendrait sans avertissement dans la réplique).
     manquant += [f"tracesMenace.{k}" for k in ("meute", "bete", "recousu")
                  if not kit["tracesMenace"].get(k)]
+    manquant += [f"rappelsCorps.{k}" for k in ("entaille", "ebranle")
+                 if not kit["rappelsCorps"].get(k)]
     if manquant:
         print("⚠️ extraction VIDE pour :", ", ".join(manquant))
         return 1

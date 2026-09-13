@@ -379,6 +379,19 @@ def pools() -> list[dict]:
     for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_tsx, "const PORTE_QUI_SE_FERME"))):
         out.append({"pool": f"porte qui se ferme {i}", "garde": {"partout"}, "textes": [t]})
 
+    # — LE CORPS (13/09) : les rappels d'un état hérité, servis par le
+    #   collecteur à N'IMPORTE QUELLE arrivée — pleine lande, ruelle, quai de
+    #   sel. Aucun ne peut présupposer un décor ni des gens, et aucun ne doit
+    #   localiser la blessure (la prose du jet s'en charge, elle).
+    n_corps = 0
+    for etat in ("entaille", "ebranle"):
+        for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_tsx, f"  {etat}: ["))):
+            out.append({"pool": f"corps {etat} {i}", "garde": {"partout"}, "textes": [t]})
+            n_corps += 1
+    # ⚠️ Contrôle de compte : un extracteur muet est le défaut le plus vicieux
+    # du projet (cinq fois). Moins de 10 rappels = la table a changé de forme.
+    assert n_corps >= 10, f"immersion : {n_corps} rappels du corps extraits, attendu >= 10"
+
     # — LE GEÔLIER. Deux pools, servis exactement là où le dé tombe et où la
     #   marche passe : c'est-à-dire N'IMPORTE OÙ (pleine lande, combat, ruelle
     #   du hameau). Aucune de ses phrases ne peut donc présupposer un décor.
