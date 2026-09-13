@@ -3728,7 +3728,30 @@ export default function Scene() {
      * ses réactions du village, son effet sur les Fixés et sur le procès.
      * Le joueur comprend qu'il est fixé parce qu'on le TRAITE autrement.
      */
-    const SANS_CARTE = ["fixe"];
+    /**
+     * ⚠️ ET LES TROIS EFFETS HÉRITÉS NON PLUS (décision Patrick, 13/09 :
+     * « on peut l'enlever alors, la carte d'état »).
+     *
+     * Le raisonnement est celui de FIXÉ, appliqué au corps : la carte est un
+     * COMPOSANT D'INTERFACE qui annonce ce que la fiction dit déjà mieux.
+     * Pour ENTAILLÉ et ÉBRANLÉ, la prose du jet raconte la blessure ET la
+     * localise (le mollet, l'avant-bras, la joue) ; pour AGUERRI, c'est
+     * l'issue de victoire. La carte arrivait donc en doublon deux cents
+     * pixels plus bas, avec un texte forcément plus générique que celui
+     * qu'elle répétait.
+     *
+     * Ce qui prend le relais, et qui n'existait pas avant ce lot : les
+     * RAPPELS DU CORPS (`RAPPELS_CORPS`), servis aux arrivées suivantes.
+     * Un état ne s'annonce plus une fois, il se PORTE — et une blessure
+     * persistante cesse d'être muette entre sa pose et le campement.
+     * Le détail reste consultable dans Essence (le menu fusionne les états à
+     * fiche et les effets hérités depuis le 5/08).
+     *
+     * ACCOMPAGNÉ garde sa carte : un compagnon qui se met à te suivre est un
+     * ÉVÉNEMENT que rien d'autre ne raconte, et il n'a pas de prose de jet
+     * derrière lui.
+     */
+    const SANS_CARTE = ["fixe", "entaille", "ebranle", "aguerri"];
     const bandeau = tousActifs
       .filter((e) => !SANS_CARTE.includes(e.effectId))
       .filter((e) => !dejaAnnonces.includes(e.effectId))
