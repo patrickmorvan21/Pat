@@ -36,7 +36,7 @@ h1{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:34px;m
 <div class="page">
   <div style="width:100%;max-width:750px">
     <h1>Encroûté &amp; Tempête</h1>
-    <p class="sous">Deux mécaniques des Salines, posées sur les CTA du jeu tels qu'ils existent. Le sel ne touche jamais la narration : c'est la capacité à décider qui se fige. Passe les paliers, déclenche une tempête, balaie-la au doigt. Deux rendus proposés pour chacune — tu choisis.</p>
+    <p class="sous">Deux mécaniques des Salines, posées sur les CTA du jeu tels qu'ils existent. Le sel ne touche jamais la narration : c'est la capacité à décider qui se fige. Passe les paliers, déclenche une tempête, balaie-la au doigt. Validé le 13/09 : grappes pour l'Encroûté, rafale de 8 s et 60 % balayés pour la tempête — les réglages restent sur la page pour mémoire.</p>
   </div>
 
   <div class="phone" id="phone">
@@ -78,10 +78,10 @@ h1{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:34px;m
         <button data-v="rafale" class="on">A · rafale</button><button data-v="voile">B · voile</button>
       </div>
       <div class="seg" id="duree">
-        <button data-d="4000">4 s</button><button data-d="6000" class="on">6 s</button><button data-d="8000">8 s</button>
+        <button data-d="4000">4 s</button><button data-d="6000">6 s</button><button data-d="8000" class="on">8 s</button>
       </div>
       <div class="seg" id="part">
-        <button data-p="0.6">60 %</button><button data-p="0.7" class="on">70 %</button><button data-p="0.8">80 %</button>
+        <button data-p="0.6" class="on">60 %</button><button data-p="0.7">70 %</button><button data-p="0.8">80 %</button>
       </div>
       <button class="act" id="declencher">Déclencher la tempête</button>
       <div class="lig"><span>Couverture</span><b id="couv">0 %</b></div>
@@ -265,7 +265,7 @@ let age=0, pic=0, balaye=0, finEnCours=false, rs=rng(3);
    PART_BALAYEE : quand la main a retiré cette part de ce qu'il y avait au
    plus fort, le reste s'en va tout seul — enlever les derniers pixels un par
    un serait juste pénible. FIN_SOUS : ou si presque plus rien ne reste. */
-let DUREE=6000, PART_BALAYEE=.7;
+let DUREE=8000, PART_BALAYEE=.6;
 const TICK=120, PLAFOND=.55, PIC_MIN=.18, FIN_SOUS=.07;
 const N=CW*CHH;
 function couvertureTotale(){ let n=0; for(let i=0;i<sel.length;i++) n+=sel[i]; return n/sel.length; }
@@ -279,7 +279,9 @@ function declencher(){
 function tic(){
   if(finEnCours){
     // ça part : à chaque pas, une part des points restants s'efface
-    let reste=0; for(let i=0;i<sel.length;i++){ if(sel[i] && rs()<.42) sel[i]=0; reste+=sel[i]; }
+    let reste=0; for(let i=0;i<sel.length;i++){ if(sel[i] && rs()<.5) sel[i]=0; reste+=sel[i]; }
+    // les tout derniers grains partent ensemble — pas un point isolé qui traîne
+    if(reste && reste<80){ sel.fill(0); reste=0; }
     drawStorm(); maj();
     if(!reste){ clearInterval(timer); timer=null; enTempete=false; storm.classList.add("off"); document.getElementById("declencher").disabled=false; document.getElementById("etat").textContent="La tempête est passée"; }
     return;

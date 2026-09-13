@@ -10,7 +10,7 @@
       "La règle du sel : ce qui s'arrête se couvre. Un jour d'immobilité fait une pellicule, dix une carapace, une saison une statue. On ne meurt pas de sel : on cesse, la bouche en dernier.",
       "L'État Encroûté : chaque campement dans la zone ajoute un palier (I pixels blancs sur bordures et encoches · II ~15 % des lettres des choix couvertes, la Besace se soude · III 35–40 % des lettres + l'indice du dé, mort spéciale : ta statue apparaît sur la Croûte aux runs suivantes). La mort retire des pixels, le sel en ajoute. Survivre : bouger, se gratter (−1 palier, coûte de la peau), eau douce rare.",
       "La Soif (Besoin de zone) : monte par scène, jamais en temps réel. Haute : un mot sur trois dans les choix est remplacé par un bloc de pixels blancs.",
-      "La tempête de sel : intrusion d'écran attachée à des scènes précises, jamais chronométrée ; pixels blancs en steps() sur toute l'interface ; on balaye au doigt (3–5 passages) ; un bouton non dégagé n'est pas cliquable. Camper juste après = une pellicule de plus. Sur certains lieux, balayer l'illustration révèle un détail absent avant.",
+      "La tempête de sel : intrusion d'écran attachée à des scènes précises. Une rafale de ~8 s — des points blancs naissent à droite et gagnent vers la gauche, de plus en plus vite — puis elle se tait, plus rien ne naît. On balaye au doigt ; un bouton non dégagé n'est pas cliquable. Dès que ~60 % de ce qu'il y avait au plus fort est balayé, le reste se dissout tout seul (jamais les derniers pixels un par un). Camper juste après = une pellicule de plus. Sur certains lieux, balayer l'illustration révèle un détail absent avant. Prototype validé le 13/09 : maquettes/encroute_tempete.html.",
       "Rythme cible : 5 à 7 affrontements physiques sur 9–11 lieux (Landes : 2–3 sur 16). Une action physique par lieu.",
       "Vues à la première personne, le héros n'apparaît jamais dans une image. Image fixe tant que l'environnement ne change pas ; un réglage de ratio de trame par environnement."
     ],
@@ -48,9 +48,7 @@
       "fragments": 6,
       "environnements": 4
     },
-    "a_decider": [
-      "prototypes Encroûté + tempête sur les CTA existants — Patrick choisit"
-    ],
+    "a_decider": [],
     "ecarts_de_transcription": [
       "aucune carte Figma : pas de coordonnées x/y — la carte se génère à l'étape 3 (table de routage validée)",
       "Les comptes de la bible (30 lieux, 7 obligatoires, 15 objets) sont REMPLACÉS par ceux du routage validé le 13/09 : 29 lieux joués (dont 6 obligatoires), 14 objets — la Roue et la Manivelle ne font qu'un."
@@ -68,11 +66,28 @@
         "la Lanterne du Noyé sert au Dortoir (lire la lettre la nuit même) et à la Tour (lire et compter les traits) — plus une promesse sans consommateur",
         "la Manivelle des Passeurs (ex Roue et Manivelle) se ramasse à la Noria, sert à la Cour aux rails (aiguillage sans jet) et à la Tour (la roue d'un seul geste)",
         "mécanisme de fin de zone = l'ÉCLUSE SEULE, en CÉRÉMONIE : ni crochetage ni jet sur la porte ; la roue se tourne d'un geste lent insensible à l'échec ; le crochetage est retiré de la Tour (il reste à la Barge, à l'Entrepôt, à la Noria, à la Maison du Grand Passeur)",
-        "image fixe par environnement = UNE image d'établissement par environnement servie par défaut + images dédiées seulement aux 6 obligatoires et aux rencontres nommées ; les trois invariants imposés à chaque image dédiée ; le ratio de trame par le PROMPT (style_image.CLAUSES_ENVIRONNEMENT), jamais par le seuil de dithering"
+        "image fixe par environnement = UNE image d'établissement par environnement servie par défaut + images dédiées seulement aux 6 obligatoires et aux rencontres nommées ; les trois invariants imposés à chaque image dédiée ; le ratio de trame par le PROMPT (style_image.CLAUSES_ENVIRONNEMENT), jamais par le seuil de dithering",
+        "prototypes VALIDÉS (maquettes/encroute_tempete.html) — Encroûté : rendu A « grappes » (paquets irréguliers le long du bord, comme la frange du Geôlier) ; le sel gagne les lettres par plages contiguës depuis la fin des mots ; la Soif sur le même renderer. Tempête : rendu A « rafale » (les points naissent à droite et gagnent vers la gauche), BORNÉE à 8 s puis plus rien ne naît, on efface au doigt (rayon 24 px), un bouton couvert n'est pas cliquable (> 15 % couvert), dès que 60 % de ce qu'il y avait au plus fort est balayé le reste se dissout tout seul"
       ]
     },
     "images": {
       "regle": "une image d'établissement par environnement (servie par défaut à tout beat sans image dédiée) + une image dédiée par lieu obligatoire et par rencontre nommée ; le Ver n'a jamais la sienne. Liste et prompts : data/salines-bible-visuelle.md"
+    },
+    "prototypes": {
+      "fichier": "maquettes/encroute_tempete.html",
+      "valide_le": "2026-09-13",
+      "encroute": {
+        "rendu": "grappes",
+        "lettres": "plages contiguës depuis la fin des mots, 2 lettres minimum"
+      },
+      "tempete": {
+        "rendu": "rafale",
+        "duree_ms": 8000,
+        "part_balayee": 0.6,
+        "rayon_doigt_px": 24,
+        "bouton_couvert_seuil": 0.15,
+        "plafond_couverture": 0.55
+      }
     }
   },
   "environnements": [
