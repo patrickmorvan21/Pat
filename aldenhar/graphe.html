@@ -72,6 +72,10 @@ label.ligne input{appearance:none;width:11px;height:11px;border:1px solid var(--
 label.ligne input:checked{background:var(--orange);border-color:var(--orange)}
 label.ligne .pastille{width:9px;height:9px;flex:0 0 auto;border-radius:50%}
 label.ligne .compte{margin-left:auto;color:var(--blanc-20);font-size:10px}
+a.ligne.zone{display:block;padding:4px 0;color:var(--blanc-50);text-decoration:none}
+a.ligne.zone:hover{color:var(--blanc)}
+a.ligne.zone.actif{color:var(--orange)}
+a.ligne.zone.actif::before{content:"◆ ";font-size:9px}
 
 .curseur{display:block;padding:6px 0 2px}
 .curseur span{display:flex;justify-content:space-between;font-size:10px;color:var(--blanc-50);letter-spacing:.6px}
@@ -228,6 +232,10 @@ input[type=range]::-moz-range-thumb{width:9px;height:9px;border:0;background:var
 <div class="volet" id="gauche">
   <div class="marque"><b>PACTUM</b><span id="soustitre">le graphe</span></div>
 
+  <details class="bloc" open><summary>Zone <i>◆</i></summary>
+    <div class="corps" id="zones"></div>
+  </details>
+
   <details class="bloc" open><summary>Recherche <i>◆</i></summary>
     <div class="corps">
       <input id="q" placeholder="une scène, un lieu, un mot…" autocomplete="off">
@@ -372,17 +380,24 @@ const opt = { noms:1, images:0, liensFaibles:1 };
 const F = { repulsion:1, longueur:1, gravite:1 };
 
 /* --------------------------- chargement ---------------------------- */
-const CHEMIN = new URL("graphe-data.json", location.href).href;
+/* ?zone=<id> : une zone dont le routage est validé sans qu'une scène soit
+   écrite a son propre JSON (graphe-data-<id>.json). Sans paramètre : les
+   Landes. La page ne connaît aucune zone par son nom — la liste voyage dans
+   le JSON (`zonesDisponibles`). */
+const ZONE = new URLSearchParams(location.search).get("zone") || "";
+const CHEMIN = new URL(ZONE ? "graphe-data-" + ZONE + ".json" : "graphe-data.json", location.href).href;
+let MODE = "scenes";   // "routage" pour une zone déclarée mais pas écrite
 fetch(CHEMIN + "?t=" + Date.now())
   .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
   .then(demarrer)
   .catch(e => {
-    document.getElementById("etat").textContent = "graphe-data.json introuvable (" + e.message + ")";
+    document.getElementById("etat").textContent = (ZONE ? "graphe-data-" + ZONE + ".json" : "graphe-data.json") + " introuvable (" + e.message + ")";
   });
 
 function demarrer(g) {
   document.getElementById("etat").style.display = "none";
   brut = g.brut || "";
+  MODE = g.mode || "scenes";
   groupes = g.groupes || [];
   clauseStyle = g.clauseStyle || "";
   N = g.noeuds; L = g.liens;
@@ -426,12 +441,17 @@ function demarrer(g) {
   recadrer();
   majPanier();
   setTimeout(() => { if (!vueTouchee) recadrer(); }, 1600);
-  document.getElementById("soustitre").textContent =
-    g.totaux.scenes + " scènes · " + g.totaux.transitions + " transitions";
-  document.getElementById("pied").innerHTML =
-    "<b>" + g.totaux.scenes + "</b> scènes &nbsp;·&nbsp; <b>" + g.totaux.lieux + "</b> lieux &nbsp;·&nbsp; <b>"
-    + (g.totaux.actions || 0) + "</b> actions &nbsp;·&nbsp; <b>"
-    + g.totaux.transitions + "</b> transitions &nbsp;·&nbsp; <b>" + g.totaux.marches + "</b> vues de marche"
+  const zn = (g.zone && g.zone.nom) || "Les Landes";
+  document.getElementById("soustitre").textContent = MODE === "routage"
+    ? zn + " · " + g.totaux.lieux + " lieux · " + g.totaux.etapes + " environnements"
+    : zn + " · " + g.totaux.scenes + " scènes · " + g.totaux.transitions + " transitions";
+  document.getElementById("pied").innerHTML = (MODE === "routage"
+    ? "<b>" + g.totaux.lieux + "</b> lieux &nbsp;·&nbsp; <b>" + g.totaux.etapes + "</b> environnements, traversés dans l'ordre &nbsp;·&nbsp; <b>"
+      + (g.totaux.actions || 0) + "</b> fusionnés &nbsp;·&nbsp; <b>" + (g.totaux.retires || 0) + "</b> retiré(s)"
+      + " &nbsp;·&nbsp; routage validé, aucune scène écrite"
+    : "<b>" + g.totaux.scenes + "</b> scènes &nbsp;·&nbsp; <b>" + g.totaux.lieux + "</b> lieux &nbsp;·&nbsp; <b>"
+      + (g.totaux.actions || 0) + "</b> actions &nbsp;·&nbsp; <b>"
+      + g.totaux.transitions + "</b> transitions &nbsp;·&nbsp; <b>" + g.totaux.marches + "</b> vues de marche")
     + "<br>export du " + g.genere + (g.commit ? " · " + g.commit : "")
     + "<br>molette ou pincement pour zoomer &nbsp;·&nbsp; + &minus; 0 au clavier &nbsp;·&nbsp; double-clic pour recadrer";
   redimensionner(); boucle();
@@ -439,6 +459,14 @@ function demarrer(g) {
 
 /* ------------------------------ panneaux --------------------------- */
 function batirPanneaux(g) {
+  const zs = document.getElementById("zones");
+  (g.zonesDisponibles || [{ id: "", nom: "Les Landes" }]).forEach(z => {
+    const a = document.createElement("a"); a.className = "ligne zone";
+    a.href = location.pathname + (z.id ? "?zone=" + encodeURIComponent(z.id) : "");
+    a.textContent = z.nom;
+    if (z.id === ZONE) a.classList.add("actif");
+    zs.appendChild(a);
+  });
   const cpt = {};
   N.forEach(n => cpt[n.cat] = (cpt[n.cat] || 0) + 1);
   const gr = document.getElementById("groupes");
@@ -551,8 +579,56 @@ function pas() {
     for (const n of gr.membres) { if (!on[n.cat]) continue; cx += n.x; cy += n.y; vus++; }
     if (!vus) { gr.rayon = 0; continue; }
     cx /= vus; cy /= vus;
-    // le groupe se tient au centre de la carte
-    cx *= .88; cy *= .88;
+    if (gr.ordre !== undefined) {
+      /* UNE ZONE À ÉTAGES SE LIT DE GAUCHE À DROITE : ses environnements se
+         traversent TOUJOURS dans le même ordre (lib/etages.ts), donc leur
+         place sur la carte est une donnée, pas une émergence de la
+         simulation. Chaque groupe est tiré vers sa colonne ; les nœuds se
+         posent librement dedans. */
+      const nb = groupes.filter(x => x.ordre !== undefined).length;
+      const rang = groupes.filter(x => x.ordre !== undefined).findIndex(x => x === gr);
+      cx = (rang - (nb - 1) / 2) * 430; cy = 0;
+      /* Et DANS le cercle, la place de chaque lieu est une donnée aussi :
+         l'entrée (ou le beat d'arrivée) à GAUCHE, les fins à DROITE dans leur
+         ordre, le pool réparti entre les deux — le sens de lecture est celui
+         de la traversée. Laisser la simulation tasser huit lieux au centre
+         rendait les noms illisibles (mesuré : tout dans 60 px). */
+      if (!gr.slots) {
+        gr.slots = new Map();
+        const R = 140, tetes = [], fins = [], pool = [];
+        for (const n of gr.membres) {
+          if (n.role === "entree" || n.role === "arrivee") tetes.push(n);
+          else if (n.role === "fin") fins.push(n);
+          else if (n.role === "pool") pool.push(n);
+        }
+        fins.sort((a, b) => (a.rang || 0) - (b.rang || 0));
+        tetes.forEach(n => gr.slots.set(n.id, [-R, 0]));
+        fins.forEach((n, i) => { const a = (i - (fins.length - 1) / 2) * .82; gr.slots.set(n.id, [Math.cos(a) * R, Math.sin(a) * R]); });
+        // le pool sur l'arc restant, en évitant la gauche si une tête l'occupe
+        // le pool commence APRÈS l'éventail des fins, sinon le dernier tiré
+        // et la dernière fin se touchent (mesuré : 44 px entre la Porte et la Tour)
+        const gauche = tetes.length ? .5 : 0, droite = fins.length ? ((fins.length - 1) / 2) * .82 + .5 : 0;
+        const a0 = droite, a1 = 2 * Math.PI - droite, m = pool.length;
+        pool.forEach((n, i) => {
+          let a = a0 + (i + .5) * (a1 - a0) / m;
+          if (gauche && Math.abs(a - Math.PI) < gauche) a += (a < Math.PI ? -gauche : gauche) * .9;
+          gr.slots.set(n.id, [Math.cos(a) * R, Math.sin(a) * R]);
+        });
+      }
+      /* La place est AUTORITAIRE : on remplace la vitesse au lieu de l'ajouter.
+         Ajoutée, elle se battait avec les liens (sept lieux tirés vers les six
+         de l'étape suivante) et deux voisins finissaient à 37 px — les noms
+         se recouvraient. Les fusionnés n'ont pas de place : ils suivent leur
+         lieu d'accueil par leur lien, comme partout ailleurs. */
+      for (const n of gr.membres) {
+        const sl = gr.slots.get(n.id);
+        if (!sl || !on[n.cat]) continue;
+        n.vx = (cx + sl[0] - n.x) * .35; n.vy = (cy + sl[1] - n.y) * .35;
+      }
+    } else {
+      // le groupe se tient au centre de la carte
+      cx *= .88; cy *= .88;
+    }
     let r = 0;
     for (const n of gr.membres) {
       if (!on[n.cat]) continue;
@@ -874,7 +950,7 @@ function ouvrir(n) {
   const titre = t => { const s = document.createElement("div"); s.className = "sstitre"; s.textContent = t; dd.appendChild(s); };
   if (n.desc && n.desc.length) n.desc.forEach(par);
   else if (n.resume) par(n.resume);
-  else if (n.cat === "lieu") par("Un lieu n'a pas de texte à lui : il n'existe que par les écrans qu'on y joue.");
+  else if (n.cat === "lieu") par(MODE === "routage" ? "Rien d'écrit encore pour ce lieu." : "Un lieu n'a pas de texte à lui : il n'existe que par les écrans qu'on y joue.");
   else par("—");
   if (n.descEchec && n.descEchec.length) { titre("Si l'on revient après un échec"); n.descEchec.forEach(par); }
   if (n.descDemo && n.descDemo.length) { titre("Version démo"); n.descDemo.forEach(par); }
@@ -891,7 +967,7 @@ function ouvrir(n) {
   if (sorties.length) {
     bloc.style.display = "block";
     document.getElementById("fsortiesTitre").textContent =
-      n.cat === "lieu" ? "Les écrans de ce lieu" : "Ce qui s'ouvre ici";
+      n.cat === "lieu" ? (MODE === "routage" ? "Relié dans la traversée" : "Les écrans de ce lieu") : "Ce qui s'ouvre ici";
     sorties.forEach(s => {
       const a = document.createElement("a");
       a.textContent = s.label;
