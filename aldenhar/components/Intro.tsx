@@ -765,6 +765,23 @@ const ACTES: Carton[] = [
  * hors fiction, peut. Le visuel est celui de l'ACTE : les Salines sont dans
  * l'Acte I, elles n'ont pas encore d'image à elles.
  */
+/**
+ * L'ENTRÉE DANS UNE ZONE SE NOMME (retour Patrick 13/09 : « les gens qui
+ * découvrent la zone ne savent pas ce qu'est la croûte ? »).
+ *
+ * Même grammaire que le carton d'acte : on annonce où l'on met les pieds
+ * avant le premier écran. La sous-ligne porte le sous-titre que la bible
+ * donne à l'environnement — « le fond du lac » —, c'est-à-dire la seule
+ * chose qui rend lisibles les quais, la barge échouée, le radeau sans eau
+ * et le héron. Le carton NOMME ; c'est la narration d'ouverture qui fait
+ * sentir (voir `rive-haute`).
+ */
+export const CARTON_SALINES: Carton = {
+  eyebrow: "• ACTE I · ZONE 2 •",
+  title: "Les Salines",
+  sous: "La Croûte — le fond du lac.",
+};
+
 export const CARTON_ZONE_A_VENIR: Carton = {
   eyebrow: "• ACTE I · ZONE 2 •",
   title: "Les Salines",

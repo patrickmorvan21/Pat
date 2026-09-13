@@ -28,6 +28,7 @@ import {
   FIN_ETAPE_NON_ECRITE,
   SALINES_ENCROUTE_GEOLIER,
   SALINES_ENCROUTE_LIGNES,
+  TEMPETE_MARCHE,
   estUnLieu,
   SOUPCON_PALIERS,
   SOUPCON_CRAIE,
@@ -93,7 +94,7 @@ import {
 import {
   etat, etatsActifs, poserEtat,
 } from "@/lib/etats";
-import { appliquerRepos, demarrerZone, franchirZone, loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
+import { appliquerRepos, franchirZone, loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
 import { zoneDef, zoneSuivanteJouable } from "@/lib/zones";
 import { entrerLieu, prochainPas } from "@/lib/etages";
 import {
@@ -649,7 +650,17 @@ function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
         : undefined,
       t.routeFermee === true
     );
-    return t.sortieHameau ? habillageSortie(base, t.seed) : base;
+    // LA TEMPÊTE DE MARCHE SURVIT À LA REPRISE (Salines) : elle est posée par
+    // `advance`, donc une liaison rebâtie ici la perdrait — fermer l'app en
+    // pleine rafale l'aurait annulée. Mêmes conditions qu'à l'aller : la
+    // première étape, et la clé pas encore balayée.
+    const avecTempete =
+      (run?.zone ?? "landes") === "salines" &&
+      t.etage?.index === 0 &&
+      !(run?.tempetesJouees ?? []).includes(TEMPETE_MARCHE.cle)
+        ? { ...base, tempete: TEMPETE_MARCHE }
+        : base;
+    return t.sortieHameau ? habillageSortie(avecTempete, t.seed) : avecTempete;
   }
   return resoudre(t.current, run) ?? sceneById(ENTRY_SCENE)!;
 }
@@ -1809,17 +1820,10 @@ export default function Scene() {
   useEffect(() => {
     const run = loadRun();
     runRef.current = run;
-    // ?zone=salines (13/09) : une vie NEUVE commence directement dans la
-    // Croûte — la porte des testeurs, tant que la Descente des Landes reste
-    // le seul chemin joué. Jamais sur une partie en cours.
-    if (
-      /[?&]zone=salines/.test(window.location.search) &&
-      (run.zone ?? "landes") !== "salines" &&
-      run.step === 0 && !(Array.isArray(run.feed) && run.feed.length > 0)
-    ) {
-      demarrerZone(run, zoneDef("salines"));
-      saveRun(run);
-    }
+    // ⚠️ `?zone=salines` est traité dans `Home` (13/09 soir), PAS ici : le
+    // carton qui nomme la zone se joue avant le premier écran, donc la zone
+    // doit être posée avant que Home décide quoi afficher. Fait au montage de
+    // Scene, il arrivait trop tard — le carton ne voyait qu'une run des Landes.
     const zoneLandes = (run.zone ?? "landes") === "landes";
     // eslint-disable-next-line react-hooks/set-state-in-effect -- restauration unique post-hydratation
     if (run.step > 0) setStep(run.step);
@@ -1894,7 +1898,9 @@ export default function Scene() {
           ...narrationAffichee(cur),
           // la tempête pas encore balayée se rejoue à la reprise : son
           // annonce (`avant`) aussi, sinon elle tomberait sans un mot
-          ...(cur.tempete?.avant && !(run.tempetesJouees ?? []).includes(cur.id) ? [cur.tempete.avant] : []),
+          ...(cur.tempete?.avant && !(run.tempetesJouees ?? []).includes(cur.tempete.cle ?? cur.id)
+            ? [cur.tempete.avant]
+            : []),
         ].map(
           (text): FeedEntry => ({ id: nextId(), kind: "narration", text })
         )
@@ -2135,13 +2141,13 @@ export default function Scene() {
     const run = runRef.current;
     if ((run?.zone ?? "landes") !== "salines" || !scene.tempete) return;
     if (choicesHidden || activeTypingId || beatsSuite.length || rolling || minigameChoice || tempete) return;
-    if (tempetesJouees.includes(scene.id)) return;
+    if (tempetesJouees.includes(scene.tempete.cle ?? scene.id)) return;
     // ELLE NE TOMBE PAS SUR LES CHOIX QU'ON VIENT DE LIRE (retour Patrick
     // 13/09 : « trop soudaine, ça arrive trop vite ») : le texte a annoncé le
     // vent (`tempete.avant`), les choix sont là — on laisse 2,5 s au joueur
     // pour les voir avant que le sel ne les couvre. Le minuteur est annulé
     // si l'écran bouge entre-temps (un jet, un geste, une suite).
-    const id = scene.id;
+    const id = scene.tempete.cle ?? scene.id;
     const timer = window.setTimeout(() => setTempete(id), 2500);
     return () => window.clearTimeout(timer);
   }, [scene, choicesHidden, activeTypingId, beatsSuite, rolling, minigameChoice, tempete, tempetesJouees]);
@@ -2775,6 +2781,17 @@ export default function Scene() {
         liaisonCtx(runRef.current ?? loadRun(), scene.liaison ? undefined : scene.id),
         o.length === 1
       );
+      // LA TEMPÊTE SE LÈVE EN MARCHE (retour Patrick 13/09) : sur la première
+      // Croisée de la Croûte, une fois la rive quittée — pas sur l'écran du
+      // Percepteur, où l'on n'a encore rien traversé. Mémorisée par sa CLÉ :
+      // l'id d'une liaison dépend des deux directions offertes, il change.
+      if (
+        (runRef.current?.zone ?? "landes") === "salines" &&
+        trav.etage?.index === 0 &&
+        !(runRef.current?.tempetesJouees ?? []).includes(TEMPETE_MARCHE.cle)
+      ) {
+        nextScene = { ...nextScene, tempete: TEMPETE_MARCHE };
+      }
       trav.liaisonOpts = pair;
       trav.routeFermee = o.length === 1;
       trav.phase = "liaison";
@@ -3500,7 +3517,8 @@ export default function Scene() {
       // LE VENT SE LÈVE DANS LE TEXTE avant que le sel ne tombe sur l'écran
       // (Salines, `tempete.avant`) — seulement la première fois qu'elle va se
       // jouer sur cet écran ; une tempête déjà balayée n'est plus annoncée.
-      ...(nextScene.tempete?.avant && !(runRef.current?.tempetesJouees ?? []).includes(nextScene.id)
+      ...(nextScene.tempete?.avant &&
+      !(runRef.current?.tempetesJouees ?? []).includes(nextScene.tempete.cle ?? nextScene.id)
         ? [nextScene.tempete.avant]
         : []),
     ];

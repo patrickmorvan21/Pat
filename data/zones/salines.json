@@ -108,10 +108,11 @@
       "entree": "rive_haute",
       "fin": [],
       "tirages": [
-        1,
-        2
+        2,
+        3
       ],
-      "image_etablissement_attendue": "scene_salines_croute_a"
+      "image_etablissement_attendue": "scene_salines_croute_a",
+      "note_tirages": "Porté de [1,2] à [2,3] le 13/09 au soir (retour de playtest : la Croûte allait trop vite — 2 à 3 lieux joués sur 7 écrits)."
     },
     {
       "id": "bassins",

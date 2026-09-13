@@ -518,7 +518,20 @@ def pools() -> list[dict]:
             out.append({"pool": f"{nom} palier {m.group(1)}", "garde": {"village", "gens"}, "textes": [m.group(2).replace('\\"', '"')]})
             n_rec += 1
         assert n_rec >= 3, f"{table} : {n_rec} paliers lus"
-    # Les tempêtes : `avant` (l'annonce) ET `apres` (ce qu'elle découvre).
+    # La tempête de MARCHE (13/09 soir) : elle n'est plus attachée à une
+    # scène mais posée sur la première Croisée de la Croûte — donc hors des
+    # blocs `tempete:` lus juste après.
+    tm = re.search(r"export const TEMPETE_MARCHE = \{(.*?)\n\};", scene_src, re.S)
+    assert tm, "TEMPETE_MARCHE introuvable dans scene-data.ts"
+    n_tm = 0
+    for champ in ("avant", "apres"):
+        m = re.search(rf'\n  {champ}:\s*\n?\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', tm.group(1))
+        if m:
+            t = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1)))
+            out.append({"pool": f"salines tempête de marche ({champ})", "garde": {"village", "gens"}, "textes": [t]})
+            n_tm += 1
+    assert n_tm == 2, f"TEMPETE_MARCHE : {n_tm} textes lus, 2 attendus"
+    # Les tempêtes de scène : `avant` (l'annonce) ET `apres` (ce qu'elle découvre).
     for m in re.finditer(r'tempete:\s*\{\s*(?:avant:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+),\s*)?apres:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', scene_src):
         if m.group(1):
             t = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1)))
@@ -527,9 +540,10 @@ def pools() -> list[dict]:
         out.append({"pool": f"salines tempête après ({empreinte(t)})", "garde": {"village", "gens"}, "textes": [t]})
     # ⚠️ COMPTER ce qu'on extrait (règle du 10/08) : 7 arrivées, 7 ambiances,
     # 12 lignes du Geôlier en liaison, 18 sur le dé, 1 + 3 d'Encroûté,
-    # 2 tempêtes × (avant + après) — 52 textes au 13/09 soir.
+    # la tempête de marche (2) + 1 tempête de scène × (avant + après) — 51
+    # textes au 13/09 soir (13 lignes de Geôlier en liaison depuis le fond du lac).
     n_sal = len(out) - n_avant
-    assert n_sal >= 52, f"pools des Salines : {n_sal} extraits, ≥ 52 attendus — l'extracteur ne lit plus scene-data.ts"
+    assert n_sal >= 51, f"pools des Salines : {n_sal} extraits, ≥ 51 attendus — l'extracteur ne lit plus scene-data.ts"
     for p_ in out[n_avant:]:
         p_["salines"] = True
 

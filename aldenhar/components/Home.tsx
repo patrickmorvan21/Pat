@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import Scene from "@/components/Scene";
 import { HeroGeolier } from "@/components/HeroGeolier";
 import Retour from "@/components/Retour";
-import Intro, { ActeScreen } from "@/components/Intro";
+import Intro, { ActeScreen, CARTON_SALINES } from "@/components/Intro";
 import Registre from "@/components/Registre";
 import { loadMemory, mutateMemory, shouldShowIntro } from "@/lib/player-memory";
 import { pickJailerQuote } from "@/lib/jailer-quotes";
-import { hasSavedRun, loadRun, resetRun, marquerOuverture } from "@/lib/state";
+import { hasSavedRun, loadRun, resetRun, saveRun, marquerOuverture, demarrerZone } from "@/lib/state";
 import { lieuNom } from "@/lib/scene-data";
+import { vu, noter } from "@/lib/dejavu";
+import { zoneDef } from "@/lib/zones";
 import { APP_VERSION } from "@/lib/version";
 import { applySettingsToDom, loadSettings } from "@/lib/settings";
 import { initAnalytics, ouvrirRun, track } from "@/lib/analytics";
@@ -31,7 +33,7 @@ import Avis from "@/components/Avis";
  */
 
 export default function Home() {
-  const [phase, setPhase] = useState<"boot" | "home" | "reprise" | "intro" | "retour" | "acte" | "game">(
+  const [phase, setPhase] = useState<"boot" | "home" | "reprise" | "intro" | "retour" | "acte" | "zone" | "game">(
     "boot",
   );
   const [saved, setSaved] = useState(false);
@@ -128,14 +130,50 @@ export default function Home() {
       // Les Landes · Lieu » vivait sous le bouton, en 10 px gris — il alourdit
       // l'accueil sans qu'on le lise. Il devient un écran plein, joué APRÈS le
       // clic : c'est là qu'on a besoin de savoir où l'on était.
-      setPhase(reprend ? "reprise" : "game");
+      if (reprend) setPhase("reprise");
+      else versLeJeu();
       return;
     }
     setPhase(shouldShowIntro() ? "intro" : "retour");
   }
 
+  /**
+   * LE CARTON QUI NOMME LA ZONE (retour Patrick 13/09 : « les gens qui
+   * découvrent la zone ne savent pas ce qu'est la croûte ? »).
+   *
+   * ⚠️ Il vit ICI et pas dans `Scene` — première tentative, mesurée : posé au
+   * montage de la scène, il s'affichait SOUS l'écran de Retour (« Te
+   * revoilà »), et le tap qui congédie le Retour le fermait sans qu'on l'ait
+   * vu. Le carton d'acte vit déjà dans cette machine à états, pour la même
+   * raison : ces écrans se jouent l'un APRÈS l'autre, jamais l'un sous
+   * l'autre. Une fois par vie (clé de run, elle meurt avec le héros : une
+   * nouvelle incarnation redécouvre l'endroit).
+   */
+  function versLeJeu() {
+    const run = loadRun();
+    // ?zone=salines : une vie NEUVE commence directement dans la Croûte — la
+    // porte des testeurs, tant que la Descente des Landes reste le seul
+    // chemin joué. Jamais sur une partie en cours.
+    if (
+      /[?&]zone=salines/.test(window.location.search) &&
+      (run.zone ?? "landes") !== "salines" &&
+      run.step === 0 && !(Array.isArray(run.feed) && run.feed.length > 0)
+    ) {
+      demarrerZone(run, zoneDef("salines"));
+      saveRun(run);
+    }
+    if ((run.zone ?? "landes") !== "landes" && vu(run.vus, "zone|" + run.zone) === 0) {
+      run.vus = noter(run.vus, "zone|" + run.zone);
+      saveRun(run);
+      setPhase("zone");
+      return;
+    }
+    setPhase("game");
+  }
+
   if (phase === "game") return <Scene />;
-  if (phase === "reprise") return <CartonReprise onDone={() => setPhase("game")} />;
+  if (phase === "zone") return <ActeScreen carton={CARTON_SALINES} onDone={() => setPhase("game")} />;
+  if (phase === "reprise") return <CartonReprise onDone={() => versLeJeu()} />;
   if (phase === "intro") return <Intro onDone={() => setPhase("acte")} />;
   // ⚠️ LE CARTON D'ACTE SE JOUE AUSSI EN DÉMO (retour Patrick, 25/08 : « on a
   // perdu l'introduction de l'acte 1 les Lisières, c'était beau »). Il avait
@@ -144,9 +182,9 @@ export default function Home() {
   /* ⚠️ LE RETOUR VA DROIT AU JEU. Pas de carton d'acte : il NOMME le monde,
      ce qui ne se refait pas à chaque mort — et c'est ce qui fait tenir les
      cinq à dix secondes visées. */
-  if (phase === "retour") return <Retour onDone={() => { marquerOuverture(); setPhase("game"); }} />;
+  if (phase === "retour") return <Retour onDone={() => { marquerOuverture(); versLeJeu(); }} />;
   // Nommer l'acte juste après le scellement du pacte, avant la première scène.
-  if (phase === "acte") return <ActeScreen onDone={() => { marquerOuverture(); setPhase("game"); }} />;
+  if (phase === "acte") return <ActeScreen onDone={() => { marquerOuverture(); versLeJeu(); }} />;
 
   return (
     <main className="flex min-h-dvh items-center justify-center">

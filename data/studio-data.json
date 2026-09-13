@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-13T17:08:07Z",
- "commit": "ccfa870",
+ "genere": "2026-09-13T17:22:08Z",
+ "commit": "5a3d1a5",
  "zones": [
   {
    "id": "landes",
@@ -7932,8 +7932,8 @@
   {
    "id": "rive-haute",
    "narration": [
-    "Le sel commence sans prévenir. Un pas, c'est encore de la terre ; le suivant sonne creux et blanc. Devant toi la Croûte s'étend jusqu'à une île posée au milieu, si loin qu'elle tremble. Plein jour, aucune ombre. Quelque part, un cliquetis de plomb.",
-    "Sur la rive, des pieux en rang portent une cloche sans battant. Dans le bois, gravé au clou : « Bouge, il te mange. Reste, il te garde. »"
+    "La rive descend en gradins jusqu'à une plaine blanche qui ne finit pas. Ce sont des quais : anneaux d'amarrage rouillés, marches qui s'enfoncent dans le sel, une cloche qu'on sonnait pour appeler la barge. Le lac est parti. Ce qu'il reste à traverser, c'est son fond.",
+    "Sous ta botte, le sel sonne creux. Plein jour, pas une ombre, et quelque part un cliquetis de plomb. Au loin, l'île tremble de chaleur — elle n'est plus une île. Sur le plus haut pieu, gravé au clou : « Bouge, il te mange. Reste, il te garde. »"
    ],
    "choix": [
     {
@@ -8037,10 +8037,6 @@
    ],
    "pointsInteret": [],
    "sejour": true,
-   "tempete": {
-    "apres": "Le sel retombe. Là où ta main a balayé, deux rails de fer courent sous la croûte, droits vers l'île, polis comme s'ils servaient encore. Le Percepteur n'a pas bougé. « Ceux-là vont là-bas. Toi aussi, je pense. »",
-    "avant": "Le Percepteur lève le nez. Loin sur la Croûte, vers l'île, le blanc se soulève en nappe et vient — pas un nuage : du sel, porté par un vent que tu n'entends pas encore. « Baisse la tête. Et balaie, si tu tiens à voir. »"
-   },
    "usageObjet": {
     "objet": "battant-cloche",
     "label": "Remettre le battant et sonner",

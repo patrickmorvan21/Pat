@@ -31,7 +31,13 @@ export const SALINES_ENVIRONNEMENTS: Environnement[] = [
     nom: "La Croûte",
     entree: "rive-haute",
     pool: ["file", "champ-des-sillages", "barge-echouee", "statue", "bouche", "radeau"],
-    tirages: [1, 2],
+    // ⚠️ [1, 2] au routage du 13/09, porté à [2, 3] le soir même (retour
+    // Patrick : « j'ai trouvé que l'environnement la Croûte allait un peu
+    // trop vite »). Mesuré : entrée + 1 ou 2 tirés = 2 à 3 lieux joués sur
+    // les 7 écrits, soit ~6 écrans pour le premier environnement de la zone
+    // — celui qui doit justement l'ENSEIGNER. À [2, 3] : 3 à 4 lieux, et
+    // deux traversées ne voient toujours pas le même tiers du pool.
+    tirages: [2, 3],
   },
   {
     id: "bassins",

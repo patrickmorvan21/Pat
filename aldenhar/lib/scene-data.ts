@@ -971,8 +971,12 @@ export type Scene = {
    * est le paragraphe qui l'ANNONCE, ajouté en queue de la narration de
    * l'écran la première fois qu'elle va se jouer : le vent se lève dans le
    * texte avant que le sel ne tombe sur l'écran.
+   * `cle` mémorise la tempête sous un nom STABLE au lieu de l'id de l'écran :
+   * une liaison s'appelle `liaison:a>b`, donc son id change avec les deux
+   * directions offertes — sans clé, la tempête de marche se rejouerait à
+   * chaque Croisée.
    */
-  tempete?: { avant?: string; apres: string };
+  tempete?: { avant?: string; apres: string; cle?: string };
   /**
    * Terminal PAR RENONCEMENT (5/08) : la run s'arrête sans mort. Le nom entre
    * au Registre avec la mention « resté au Hameau », aucune relique n'est
@@ -8021,8 +8025,13 @@ export const SCENES: Scene[] = [
     illustration: CROUTE_IMG,
     chainNext: "rive-haute-2",
     narration: [
-      "Le sel commence sans prévenir. Un pas, c'est encore de la terre ; le suivant sonne creux et blanc. Devant toi la Croûte s'étend jusqu'à une île posée au milieu, si loin qu'elle tremble. Plein jour, aucune ombre. Quelque part, un cliquetis de plomb.",
-      "Sur la rive, des pieux en rang portent une cloche sans battant. Dans le bois, gravé au clou : « Bouge, il te mange. Reste, il te garde. »",
+      // ⚠️ ON DIT CE QU'EST LA CROÛTE (retour Patrick 13/09 : « les gens qui
+      // découvrent la zone ne savent pas ce qu'est la croûte ? »). La bible
+      // la sous-titre « le fond du lac » — et sans ça, les quais, la barge
+      // échouée, le radeau sans eau et le héron ne veulent rien dire. Deux
+      // paragraphes, la même densité qu'avant : on remplace, on n'ajoute pas.
+      "La rive descend en gradins jusqu'à une plaine blanche qui ne finit pas. Ce sont des quais : anneaux d'amarrage rouillés, marches qui s'enfoncent dans le sel, une cloche qu'on sonnait pour appeler la barge. Le lac est parti. Ce qu'il reste à traverser, c'est son fond.",
+      "Sous ta botte, le sel sonne creux. Plein jour, pas une ombre, et quelque part un cliquetis de plomb. Au loin, l'île tremble de chaleur — elle n'est plus une île. Sur le plus haut pieu, gravé au clou : « Bouge, il te mange. Reste, il te garde. »",
     ],
     choices: [
       {
@@ -8068,17 +8077,13 @@ export const SCENES: Scene[] = [
        remis et sonné, le son appelle le Bœuf de sel, qui fait sauter un lieu
        — et prévient le Ver. Séjour : on choisit ce qu'on fait ICI, on ne
        part que par la croûte (ou sur le bœuf).
-       C'est aussi la PREMIÈRE TEMPÊTE de sel (bible : « balayer découvre
-       les rails ») : jouée à l'arrivée sur l'écran, avant les choix. */
+       ⚠️ La première tempête ne se joue PLUS ici (retour Patrick 13/09 :
+       « je m'attendais à l'avoir une fois en marche sur la croûte après les
+       quais, là on l'a tout de suite, ça va trop vite ») : elle est armée
+       sur la première MARCHE de la Croûte — voir `TEMPETE_MARCHE`. */
     id: "rive-haute-2",
     illustration: CROUTE_IMG,
     sejour: true,
-    tempete: {
-      avant:
-        "Le Percepteur lève le nez. Loin sur la Croûte, vers l'île, le blanc se soulève en nappe et vient — pas un nuage : du sel, porté par un vent que tu n'entends pas encore. « Baisse la tête. Et balaie, si tu tiens à voir. »",
-      apres:
-        "Le sel retombe. Là où ta main a balayé, deux rails de fer courent sous la croûte, droits vers l'île, polis comme s'ils servaient encore. Le Percepteur n'a pas bougé. « Ceux-là vont là-bas. Toi aussi, je pense. »",
-    },
     usageObjet: {
       objet: "battant-cloche",
       label: "Remettre le battant et sonner",
@@ -11264,6 +11269,7 @@ export const SALINES_JAILER: string[] = [
   "Un pas de plus. Là-dessous, on compte aussi.",
   "Tu marches sur ce qu'ils sont devenus. Ça tient bien, non ?",
   "Ici, personne ne meurt. On se fige. C'est plus long.",
+  "Tu marches au fond d'un lac. L'eau reviendra bien un jour.",
   "Pas d'ombre. Même moi, je te vois moins bien.",
   "Le Percepteur tient ses comptes. Je tiens les miens. Ils concordent.",
   "L'île ne s'approche pas. C'est toi qui t'uses.",
@@ -11346,6 +11352,26 @@ export const SALINES_ENCROUTE_GEOLIER =
  * Scene.tsx) : hors des Landes, le compteur ne bouge pas du tout.
  */
 
+
+/**
+ * LA PREMIÈRE TEMPÊTE SE LÈVE EN MARCHE (retour Patrick 13/09 : « je
+ * m'attendais à l'avoir une fois en marche sur la croûte après les quais »).
+ *
+ * Elle se jouait sur le deuxième écran du jeu, à la rive, à côté du
+ * Percepteur — donc avant d'avoir marché, et avant de savoir ce qu'on
+ * traverse. Elle est désormais armée sur la PREMIÈRE Croisée de la Croûte :
+ * le seul moment où l'on est vraiment au milieu, sans rive derrière ni lieu
+ * devant. Ce qu'elle découvre change avec l'endroit — plus les rails vus
+ * depuis le quai, mais les rails SOUS ses propres pieds : on marchait dessus
+ * sans le savoir, et ils vont là où l'on va.
+ */
+export const TEMPETE_MARCHE = {
+  cle: "croute-marche",
+  avant:
+    "Devant toi, vers l'île, le blanc se soulève en nappe et vient — pas un nuage : du sel, porté par un vent que tu n'entends pas encore. Il n'y a rien pour s'abriter. Il n'y a rien du tout.",
+  apres:
+    "Le sel retombe. Là où ta main a balayé, deux rails de fer courent sous la croûte, droits vers l'île, polis comme s'ils servaient encore. Tu marchais dessus depuis le début.",
+};
 
 /** Vue de marche de la Croûte : l'établissement provisoire (voir CROUTE_IMG). */
 const SALINES_WALK: string[] = [CROUTE_IMG];
