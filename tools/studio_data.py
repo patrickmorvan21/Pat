@@ -1193,6 +1193,9 @@ def lire_scenes() -> list[dict]:
         tp = bloc_apres(bloc, r"\n    tempete:\s*")
         if tp and texte_de(tp[0], "apres"):
             s["tempete"] = {"apres": texte_de(tp[0], "apres")}
+            avant = texte_de(tp[0], "avant")
+            if avant:
+                s["tempete"]["avant"] = avant
         # L'OBJET QUI TRANSFORME LA SCÈNE (12/08 §2). Sans lui, la réplique ne
         # peut pas amarrer la corde à la margelle du Puits — donc l'option
         # qu'elle ouvre y resterait injouable, et le Studio ne montrerait pas

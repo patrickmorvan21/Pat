@@ -967,8 +967,12 @@ export type Scene = {
    * au plus fort a été balayé). Jouée UNE fois par vie sur cet écran
    * (`RunState.tempetesJouees`), à l'arrivée, avant les choix ; `apres` est
    * la narration servie quand elle est passée — ce qu'elle a découvert.
+   * `avant` (retour Patrick 13/09 : « trop soudaine, pas assez de contexte »)
+   * est le paragraphe qui l'ANNONCE, ajouté en queue de la narration de
+   * l'écran la première fois qu'elle va se jouer : le vent se lève dans le
+   * texte avant que le sel ne tombe sur l'écran.
    */
-  tempete?: { apres: string };
+  tempete?: { avant?: string; apres: string };
   /**
    * Terminal PAR RENONCEMENT (5/08) : la run s'arrête sans mort. Le nom entre
    * au Registre avec la mention « resté au Hameau », aucune relique n'est
@@ -8008,12 +8012,14 @@ export const SCENES: Scene[] = [
      ═══════════════════════════════════════════════════════════════════════ */
   {
     /* LA RIVE HAUTE — l'entrée obligatoire. Les pieux, la cloche muette,
-       la phrase gravée. Le battant est à ses pieds : on le ramasse en
-       arrivant (`loot`), on le dépense à l'écran suivant (`usageObjet`). */
+       la phrase gravée. Le battant est au pied des pieux : on le TROUVE en
+       descendant vers la cloche (`grantsLoot` sur le choix — retour Patrick
+       13/09 : « dès le premier écran on obtient un objet, c'est trop
+       soudain » ; le loot d'arrivée est retiré), on le dépense à l'écran
+       suivant (`usageObjet`). */
     id: "rive-haute",
     illustration: CROUTE_IMG,
     chainNext: "rive-haute-2",
-    loot: "battant-cloche",
     narration: [
       "Le sel commence sans prévenir. Un pas, c'est encore de la terre ; le suivant sonne creux et blanc. Devant toi la Croûte s'étend jusqu'à une île posée au milieu, si loin qu'elle tremble. Plein jour, aucune ombre. Quelque part, un cliquetis de plomb.",
       "Sur la rive, des pieux en rang portent une cloche sans battant. Dans le bois, gravé au clou : « Bouge, il te mange. Reste, il te garde. »",
@@ -8047,9 +8053,10 @@ export const SCENES: Scene[] = [
       {
         id: "descendre-vers-la-cloche",
         label: "Descendre vers la cloche",
+        grantsLoot: "battant-cloche",
         passive: {
           consequence:
-            "Tu descends la rive jusqu'aux pieux. Le cliquetis de plomb est là, tout près — et il n'est pas seul.",
+            "Tu descends la rive jusqu'aux pieux. Au pied du plus haut, à demi pris dans le sel, un battant de fer — celui qui manque à la cloche. Tu le dégages. Le cliquetis de plomb est là, tout près, et il n'est pas seul.",
         },
       },
     ],
@@ -8067,6 +8074,8 @@ export const SCENES: Scene[] = [
     illustration: CROUTE_IMG,
     sejour: true,
     tempete: {
+      avant:
+        "Le Percepteur lève le nez. Loin sur la Croûte, vers l'île, le blanc se soulève en nappe et vient — pas un nuage : du sel, porté par un vent que tu n'entends pas encore. « Baisse la tête. Et balaie, si tu tiens à voir. »",
       apres:
         "Le sel retombe. Là où ta main a balayé, deux rails de fer courent sous la croûte, droits vers l'île, polis comme s'ils servaient encore. Le Percepteur n'a pas bougé. « Ceux-là vont là-bas. Toi aussi, je pense. »",
     },
@@ -8509,6 +8518,8 @@ export const SCENES: Scene[] = [
     illustration: CROUTE_IMG,
     sejour: true,
     tempete: {
+      avant:
+        "Derrière le socle, le vent se lève d'un coup, sec, et arrache le sel de la croûte en poudre. Elle monte, elle tourne autour de la statue — et elle te trouve.",
       apres:
         "Le sel retombe. À dix pas de la première, une seconde statue que la tempête cachait — plus petite, le même bras tendu, le même geste. À ses pieds le sel est frais, à peine pris. Elle n'était pas là hier.",
     },
@@ -8936,9 +8947,13 @@ export const JAILER_BY_POSTURE: Record<JailerPosture, JailerPools> = {
 export function jailerTaunt(
   result: number,
   posture: JailerPosture = "amuse",
-  vues: string[] = []
+  vues: string[] = [],
+  zone: string = "landes"
 ): { text: string; gabarit: string } {
-  const pools = JAILER_BY_POSTURE[posture];
+  // Les Salines ont leurs propres pools (voir SALINES_JAILER_DE) : ceux des
+  // Landes parlent de corbeaux et de Registre — un dé qui tombe sur la Croûte
+  // ne peut pas citer un pays qu'on a quitté.
+  const pools = zone === "salines" ? SALINES_JAILER_DE : JAILER_BY_POSTURE[posture];
   const pool = result === 1 ? pools.critFail : result === 20 ? pools.critSuccess : pools.fail;
   // Dédup intra-run (retour Patrick 8/08 : « il répète souvent les mêmes
   // phrases dans une même run »). Les pools ont été multipliés par cinq, mais
@@ -11238,17 +11253,108 @@ export const SALINES_AMBIANCES: string[] = [
   "L'île tremble à l'horizon, ni plus près ni plus loin qu'au premier pas. La Croûte ne se traverse pas : on l'use.",
 ];
 
-/** Le Geôlier en liaison, Salines (≤ 2 lignes de 37 colonnes, règle du 11/08). */
+/** Le Geôlier en liaison, Salines (≤ 2 lignes de 37 colonnes, règle du 11/08).
+    Retour Patrick du 13/09 (« les dialogues du démon ne sont pas à jour, en
+    créer de nouveaux ») : le pool passe de 4 à 12 — la liaison est l'écran
+    le plus fréquent d'une vie, quatre lignes se répétaient dès la deuxième
+    Croisée. Dédup par `dejaVues` comme aux Landes. */
 export const SALINES_JAILER: string[] = [
   "Le sel garde tout. Moi, je trie.",
   "Bouger ou rester. Ils ont tous choisi. Regarde-les.",
   "Un pas de plus. Là-dessous, on compte aussi.",
   "Tu marches sur ce qu'ils sont devenus. Ça tient bien, non ?",
+  "Ici, personne ne meurt. On se fige. C'est plus long.",
+  "Pas d'ombre. Même moi, je te vois moins bien.",
+  "Le Percepteur tient ses comptes. Je tiens les miens. Ils concordent.",
+  "L'île ne s'approche pas. C'est toi qui t'uses.",
+  "Chaque pas est une note. Quelque chose écoute la partition.",
+  "Le sel n'a pas de haine. C'est ce qui le rend patient.",
+  "Tu as vu les Gisants ? Ils avaient tous une bonne raison de s'arrêter.",
+  "Là-dessous, une charge qu'on tire. Ne compte pas les tours.",
 ];
+
+/**
+ * LE GEÔLIER SUR LE DÉ, SALINES — les critiques (20 / 1) et l'échec ordinaire
+ * ont ici leurs propres pools, quelle que soit la posture : les pools des
+ * Landes parlent de corbeaux, de Registre et de Domaine, et un dé qui tombe
+ * sur la Croûte ne peut pas faire référence à un pays qu'on a quitté.
+ * `{n}` est remplacé par le résultat. Choisis par `jailerTaunt(…, zone)`.
+ */
+export const SALINES_JAILER_DE: { fail: string[]; critFail: string[]; critSuccess: string[] } = {
+  fail: [
+    "Un {n}. Le sel l'a entendu tomber. Il aime les petits chiffres.",
+    "{n}. Le Percepteur vient d'ajouter une ligne. Pas la tienne — pas encore.",
+    "Un {n}, sur la Croûte. Chaque raté ici se paie en sel, pas en sang.",
+    "{n}. Tu t'es arrêté pour lancer. Il a remarqué que tu t'arrêtais.",
+    "Un {n}. Là-dessous, on a dû sourire. Si on sourit encore.",
+    "{n}. Le dé n'a pas d'ombre non plus. Vous vous ressemblez.",
+    "Un {n}. Les Gisants ont commencé par un chiffre comme celui-là.",
+    "{n}. Pas grave. Rien n'est grave ici : tout est lent.",
+  ],
+  critFail: [
+    "Un. Le sel vient de comprendre que tu resterais.",
+    "La pire face, sur la Croûte. On va te donner un jeton, va.",
+    "Un. Quelque part, une charge qu'on tire vient de changer de direction.",
+    "Un. Ne bouge pas. Non — bouge. Non. Tu vois le problème.",
+    "Un. Le Percepteur a levé les yeux. Il ne les lève jamais.",
+  ],
+  critSuccess: [
+    "Vingt. Le sel a reculé d'un pas. Il reviendra, mais il a reculé.",
+    "Un jet parfait, sans ombre. Personne ici n'en a vu depuis les Passeurs.",
+    "Vingt. Même le Ver a marqué un temps. C'est toi qu'il écoute, maintenant.",
+    "Vingt. Le Percepteur n'a rien écrit. C'est son plus grand compliment.",
+    "Le sommet du dé, et la Croûte n'a pas chanté. Profite du silence.",
+  ],
+};
+
+/**
+ * L'ENCROÛTÉ SE DIT (retour Patrick 13/09 : « on voit les croûtes sur les
+ * CTA mais c'est soudain sans explication au niveau de l'histoire »). Une
+ * ligne par palier, servie UNE fois par vie au moment où le palier est
+ * atteint, dans la conséquence de l'action qui vient de faire monter le sel
+ * — et toujours l'écho de la phrase des pieux : « Reste, il te garde. »
+ * Jamais un chiffre : le corps le sent, les CTA le montrent.
+ */
+export const SALINES_ENCROUTE_LIGNES: Record<number, string> = {
+  1: "Le sel a trouvé tes bottes. Une pellicule blanche sur les coutures, fine comme du givre : tu es resté juste assez longtemps pour qu'il commence.",
+  2: "Il monte. Tes manches craquent quand tu plies le bras, et il faut secouer la main pour lire ce qu'elle tient. Reste, il te garde — ce n'est pas une menace, c'est une méthode.",
+  3: "Tu bouges les doigts un par un pour vérifier qu'ils t'appartiennent encore. Le sel a pris les plis, les ourlets, le creux des paupières. Encore un moment ici et il n'aura plus besoin de toi pour finir.",
+};
 
 /** L'ENCROÛTÉ AU PALIER III — le Geôlier le constate, une fois par vie. */
 export const SALINES_ENCROUTE_GEOLIER =
   "Tu t'es arrêté trop longtemps. Le sel a commencé sans toi.";
+
+/**
+ * LE SOUPÇON DES SALINES — le COMPTE du Percepteur (retour Patrick 13/09 :
+ * « j'ai la craie qui revient ? problème de storytelling par rapport aux
+ * Landes »). Aux Landes, le Soupçon est le regard d'un village et se lit à
+ * la craie ; ici il n'y a ni village ni craie — il y a un homme assis sur un
+ * jeton de plomb qui tient les comptes, et une cliquette. Cinq paliers,
+ * servis un cran à la fois comme aux Landes (`soupconSeen`), n'importe où
+ * sur la Croûte (le Percepteur entend tout : « et moi j'entends les deux »).
+ * Aucun bâti des Landes, aucun villageois — la Croûte est un site de pieux
+ * et de rails, et ses gens sont des Encroûtés.
+ * ⚠️ Pas de procès ici : à 6, le compte est plein et rien ne se déroute
+ * encore — le PRIX du Percepteur (« là-bas, c'est plus cher ») s'écrira avec
+ * les Bassins. Dit dans `advance()`, pas maquillé.
+ */
+export const SALINES_SOUPCON: Record<number, string> = {
+  1: "Derrière toi, très loin, un claquement sec — une cliquette, une fois. Quand tu te retournes, la Croûte est vide. Le son est venu du côté de la rive.",
+  2: "Sur le sel, à l'endroit exact où tu viens de poser le pied, quelqu'un a laissé un jeton de plomb. Vierge. Il n'y était pas quand tu as regardé, un pas plus tôt.",
+  3: "Un Encroûté que tu croises tourne la tête vers toi — lentement, et il en tombe du sel. Il tient un jeton entre deux doigts. Il le fait tourner, et il te suit des yeux jusqu'à ce que tu sois passé.",
+  4: "Le jeton dans ta poche pèse plus qu'avant. Tu le sors : il porte une marque, gravée au clou, que tu n'as pas faite. Une seule. On a commencé à remplir.",
+  5: "Deux cliquettes, cette fois, de deux côtés. Devant toi, sur la croûte, un jeton de plomb gros comme une meule, posé à plat — et personne dessus. Il attend quelqu'un qui s'asseye.",
+};
+
+/** Le Geôlier sur le compte des Salines — une ligne par palier et par vie. */
+export const SALINES_SOUPCON_GEOLIER: Record<number, string> = {
+  1: "Il t'a compté. Ici, on ne juge pas : on facture.",
+  2: "Un jeton vierge. Ce n'est pas un cadeau, c'est une ligne ouverte.",
+  3: "Ils se passent le mot sans bouche. Le sel conduit bien.",
+  4: "Une marque. Le Percepteur écrit lentement. Il a tout le temps.",
+  5: "Le grand jeton est sorti. Chez toi, une chaise. Ici, un siège.",
+};
 
 /** Vue de marche de la Croûte : l'établissement provisoire (voir CROUTE_IMG). */
 const SALINES_WALK: string[] = [CROUTE_IMG];

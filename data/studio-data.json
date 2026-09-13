@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-13T11:59:05Z",
- "commit": "abb3ad8",
+ "genere": "2026-09-13T13:52:55Z",
+ "commit": "d85f15b",
  "zones": [
   {
    "id": "landes",
@@ -7961,18 +7961,18 @@
      "id": "descendre-vers-la-cloche",
      "label": "Descendre vers la cloche",
      "type": "passif",
-     "consequence": "Tu descends la rive jusqu'aux pieux. Le cliquetis de plomb est là, tout près — et il n'est pas seul."
+     "consequence": "Tu descends la rive jusqu'aux pieux. Au pied du plus haut, à demi pris dans le sel, un battant de fer — celui qui manque à la cloche. Tu le dégages. Le cliquetis de plomb est là, tout près, et il n'est pas seul.",
+     "donneObjet": "battant-cloche"
     }
    ],
    "pointsInteret": [],
    "suite": "rive-haute-2",
-   "butin": "battant-cloche",
    "zone": "salines",
    "image": {
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8038,7 +8038,8 @@
    "pointsInteret": [],
    "sejour": true,
    "tempete": {
-    "apres": "Le sel retombe. Là où ta main a balayé, deux rails de fer courent sous la croûte, droits vers l'île, polis comme s'ils servaient encore. Le Percepteur n'a pas bougé. « Ceux-là vont là-bas. Toi aussi, je pense. »"
+    "apres": "Le sel retombe. Là où ta main a balayé, deux rails de fer courent sous la croûte, droits vers l'île, polis comme s'ils servaient encore. Le Percepteur n'a pas bougé. « Ceux-là vont là-bas. Toi aussi, je pense. »",
+    "avant": "Le Percepteur lève le nez. Loin sur la Croûte, vers l'île, le blanc se soulève en nappe et vient — pas un nuage : du sel, porté par un vent que tu n'entends pas encore. « Baisse la tête. Et balaie, si tu tiens à voir. »"
    },
    "usageObjet": {
     "objet": "battant-cloche",
@@ -8051,7 +8052,7 @@
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8110,7 +8111,7 @@
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8197,7 +8198,7 @@
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8256,7 +8257,7 @@
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8340,7 +8341,7 @@
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8399,7 +8400,7 @@
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8470,7 +8471,7 @@
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8521,7 +8522,7 @@
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8578,14 +8579,15 @@
    "pointsInteret": [],
    "sejour": true,
    "tempete": {
-    "apres": "Le sel retombe. À dix pas de la première, une seconde statue que la tempête cachait — plus petite, le même bras tendu, le même geste. À ses pieds le sel est frais, à peine pris. Elle n'était pas là hier."
+    "apres": "Le sel retombe. À dix pas de la première, une seconde statue que la tempête cachait — plus petite, le même bras tendu, le même geste. À ses pieds le sel est frais, à peine pris. Elle n'était pas là hier.",
+    "avant": "Derrière le socle, le vent se lève d'un coup, sec, et arrache le sel de la croûte en poudre. Elle monte, elle tourne autour de la statue — et elle te trouve."
    },
    "zone": "salines",
    "image": {
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8642,7 +8644,7 @@
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8697,7 +8699,7 @@
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8748,7 +8750,7 @@
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8805,7 +8807,7 @@
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8865,7 +8867,7 @@
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8902,7 +8904,7 @@
     "fichier": "scene_salines_croute_placeholder_a.png",
     "hash": "8cd4091d",
     "taille": 8623,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""

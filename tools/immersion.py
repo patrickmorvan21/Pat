@@ -491,17 +491,46 @@ def pools() -> list[dict]:
     for table, nom in (("SALINES_AMBIANCES", "salines ambiance"), ("SALINES_JAILER", "salines geôlier")):
         for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, f"export const {table}"))):
             out.append({"pool": f"{nom} {i}", "garde": {"village", "gens"}, "textes": [t]})
+    # Le Geôlier sur le dé (13/09 soir) : trois pools propres aux Salines,
+    # servis à la place de ceux des Landes quand `zone === "salines"`.
+    jde = scene_src.find("export const SALINES_JAILER_DE")
+    jde_bloc = scene_src[jde : scene_src.find("\n};", jde)] if jde >= 0 else ""
+    n_de = 0
+    for cle in ("fail", "critFail", "critSuccess"):
+        for i, t in enumerate(chaines_de_tableau(bloc_tableau(jde_bloc, f"{cle}:"))):
+            out.append({"pool": f"salines geôlier dé·{cle} {i}", "garde": {"village", "gens"}, "textes": [t]})
+            n_de += 1
+    assert n_de >= 18, f"SALINES_JAILER_DE : {n_de} textes lus, ≥ 18 attendus"
     enc = re.search(r'export const SALINES_ENCROUTE_GEOLIER\s*=\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', scene_src)
     if enc:
         t = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', enc.group(1)))
         out.append({"pool": "salines encroûté geôlier", "garde": {"village", "gens"}, "textes": [t]})
-    for m in re.finditer(r'tempete:\s*\{\s*apres:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', scene_src):
-        t = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1)))
+    # Les lignes de l'Encroûté par palier et le compte du Percepteur (13/09
+    # soir) : trois `Record<number, string>`, lus comme les paliers des Landes.
+    for table, nom in (
+        ("SALINES_ENCROUTE_LIGNES", "salines encroûté"),
+        ("SALINES_SOUPCON", "salines soupçon"),
+        ("SALINES_SOUPCON_GEOLIER", "salines soupçon geôlier"),
+    ):
+        rec = re.search(rf"export const {table}: Record<number, string> = \{{(.*?)\n\}};", scene_src, re.S)
+        assert rec, f"{table} introuvable dans scene-data.ts"
+        n_rec = 0
+        for m in re.finditer(r'\n  (\d+):\s*"((?:[^"\\]|\\.)*)"', rec.group(1)):
+            out.append({"pool": f"{nom} palier {m.group(1)}", "garde": {"village", "gens"}, "textes": [m.group(2).replace('\\"', '"')]})
+            n_rec += 1
+        assert n_rec >= 3, f"{table} : {n_rec} paliers lus"
+    # Les tempêtes : `avant` (l'annonce) ET `apres` (ce qu'elle découvre).
+    for m in re.finditer(r'tempete:\s*\{\s*(?:avant:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+),\s*)?apres:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', scene_src):
+        if m.group(1):
+            t = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1)))
+            out.append({"pool": f"salines tempête avant ({empreinte(t)})", "garde": {"village", "gens"}, "textes": [t]})
+        t = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(2)))
         out.append({"pool": f"salines tempête après ({empreinte(t)})", "garde": {"village", "gens"}, "textes": [t]})
     # ⚠️ COMPTER ce qu'on extrait (règle du 10/08) : 7 arrivées, 7 ambiances,
-    # 4 lignes du Geôlier, 1 ligne d'Encroûté, 2 tempêtes — 21 textes au 13/09.
+    # 12 lignes du Geôlier en liaison, 18 sur le dé, 1 + 3 d'Encroûté,
+    # 5 + 5 de Soupçon, 2 tempêtes × (avant + après) — 62 textes au 13/09 soir.
     n_sal = len(out) - n_avant
-    assert n_sal >= 21, f"pools des Salines : {n_sal} extraits, ≥ 21 attendus — l'extracteur ne lit plus scene-data.ts"
+    assert n_sal >= 62, f"pools des Salines : {n_sal} extraits, ≥ 62 attendus — l'extracteur ne lit plus scene-data.ts"
     for p_ in out[n_avant:]:
         p_["salines"] = True
 

@@ -27,6 +27,9 @@ import {
   approcheNarration,
   FIN_ETAPE_NON_ECRITE,
   SALINES_ENCROUTE_GEOLIER,
+  SALINES_ENCROUTE_LIGNES,
+  SALINES_SOUPCON,
+  SALINES_SOUPCON_GEOLIER,
   estUnLieu,
   SOUPCON_PALIERS,
   SOUPCON_CRAIE,
@@ -947,6 +950,34 @@ function decouperEnEcrans(entries: FeedEntry[], coupures?: Set<string>): FeedEnt
   // chrome de 111 px repousserait le contenu sous la ligne de flottaison
   // (le débordement corrigé le 10/08). Les taps MÉRITÉS (mort, Sceau,
   // révélation) ne passent pas par ce découpage — ils ont leurs écrans.
+  // LA PAGE DES CHOIX PORTE TOUJOURS DU RÉCIT (retour Patrick 13/09, capture :
+  // « le choix n'est pas en rapport au texte : radeau et héron ? » — la page
+  // qui offrait les choix ne montrait que le bandeau du Geôlier, la
+  // narration du radeau était sur la page d'avant). Un dernier groupe SANS
+  // narration (un bandeau seul, une carte seule) ne peut pas porter les
+  // choix : on fait DESCENDRE le dernier paragraphe de la page précédente
+  // avec lui — la page des choix se lit alors comme « ce qui se passe, ce que
+  // le Geôlier en dit, ce qu'on décide ». On ne fait jamais MONTER le bandeau
+  // (son chrome de 111 px déborderait la page pleine, défaut du 10/08), et
+  // on ne franchit jamais une frontière imposée.
+  if (groupes.length >= 2) {
+    const dernier = groupes[groupes.length - 1];
+    const avant = groupes[groupes.length - 2];
+    const sansNarration = !dernier.some((e) => e.kind === "narration");
+    if (sansNarration && !coupures?.has(avant[avant.length - 1]?.id)) {
+      let k = avant.length - 1;
+      while (k >= 0 && avant[k].kind !== "narration") k--;
+      if (k > 0) {
+        // on emporte le paragraphe ET ce qui le suivait (cartes, bandeaux)
+        const emportes = avant.splice(k);
+        dernier.unshift(...emportes);
+      } else if (k === 0) {
+        // la page d'avant n'avait qu'un paragraphe : les deux pages n'en font
+        // plus qu'une
+        groupes.splice(groupes.length - 2, 2, [...avant, ...dernier]);
+      }
+    }
+  }
   if (groupes.length >= 2) {
     const poids = (g: FeedEntry[]) => g.reduce((n, e) => n + texte(e), 0);
     const dernier = groupes[groupes.length - 1];
@@ -1840,7 +1871,12 @@ export default function Scene() {
         mutateMemory((m) => { m.surprises = { derniereRun: m.runsStarted }; });
       }
       restored.push(
-        ...narrationAffichee(cur).map(
+        ...[
+          ...narrationAffichee(cur),
+          // la tempête pas encore balayée se rejoue à la reprise : son
+          // annonce (`avant`) aussi, sinon elle tomberait sans un mot
+          ...(cur.tempete?.avant && !(run.tempetesJouees ?? []).includes(cur.id) ? [cur.tempete.avant] : []),
+        ].map(
           (text): FeedEntry => ({ id: nextId(), kind: "narration", text })
         )
       );
@@ -1979,20 +2015,6 @@ export default function Scene() {
       // couper l'ouverture rituelle, et il ne reviendra jamais (`=== 3`).
       const geolierSceau = zoneLandes ? ligneSceauGeolier(niveauDuSceau) : null;
       if (geolierSceau) seeded.push({ id: nextId(), kind: "jailer", text: geolierSceau });
-      // LE LIEU D'OUVERTURE DONNE SON OBJET (Salines, 13/09). `Scene.loot`
-      // n'était honoré que dans `advance()` — or le premier lieu d'une zone
-      // n'est atteint par aucune orientation : le Battant de la Rive haute
-      // n'entrait jamais en Besace, et « Remettre le battant et sonner »
-      // (usageObjet) ne pouvait donc jamais s'offrir. Trouvé au banc, pas à
-      // la lecture. Aux Landes la Borne n'a pas de loot d'arrivée : rien ne
-      // change pour elle.
-      if (run.step === 0) {
-        const ouverture = sceneFromTrav(run.trav, run);
-        if (ouverture.loot) {
-          const item = grantLandesLoot(ouverture.loot);
-          if (item) seeded.push(entreeObtenu(nextId(), item));
-        }
-      }
       const groupes = decouperEnEcrans(seeded);
       setBeats(groupes[0]);
       setBeatsSuite(groupes.slice(1));
@@ -2095,8 +2117,14 @@ export default function Scene() {
     if ((run?.zone ?? "landes") !== "salines" || !scene.tempete) return;
     if (choicesHidden || activeTypingId || beatsSuite.length || rolling || minigameChoice || tempete) return;
     if (tempetesJouees.includes(scene.id)) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- déclenchement unique, gardé par `tempete` et `tempetesJouees`
-    setTempete(scene.id);
+    // ELLE NE TOMBE PAS SUR LES CHOIX QU'ON VIENT DE LIRE (retour Patrick
+    // 13/09 : « trop soudaine, ça arrive trop vite ») : le texte a annoncé le
+    // vent (`tempete.avant`), les choix sont là — on laisse 2,5 s au joueur
+    // pour les voir avant que le sel ne les couvre. Le minuteur est annulé
+    // si l'écran bouge entre-temps (un jet, un geste, une suite).
+    const id = scene.id;
+    const timer = window.setTimeout(() => setTempete(id), 2500);
+    return () => window.clearTimeout(timer);
   }, [scene, choicesHidden, activeTypingId, beatsSuite, rolling, minigameChoice, tempete, tempetesJouees]);
 
   // ═══ #1 LE CHOIX QUI EXPIRE (6/08) : quand la surprise est armée et que
@@ -2452,7 +2480,14 @@ export default function Scene() {
         else opts = { ...(opts ?? {}), toScene: FIN_ETAPE_NON_ECRITE };
       }
     }
+    // ⚠️ LE PROCÈS EST UNE SCÈNE DES LANDES (le Petit Tribunal, les témoins du
+    // hameau). Dans les Salines, le compte du Percepteur MONTE et se lit (voir
+    // SALINES_SOUPCON) mais rien ne se déroute encore à 6 : son prix
+    // (« là-bas, c'est plus cher ») s'écrira avec les Bassins. Dit ici, pas
+    // maquillé — sans cette garde, un héros de la Croûte était emmené au
+    // Petit Tribunal des Renonçants.
     if (
+      (runRef.current?.zone ?? "landes") === "landes" &&
       soupNow >= 6 && !scene.fixationTrial && !scene.chainNext && !scene.sejour &&
       !enSequenceHameau && !trav.done
     ) {
@@ -3133,18 +3168,24 @@ export default function Scene() {
     const palierAServir = soupSeen + 1;
     const soupCroise =
       !nextScene.fixationTrial && soupAfter > soupSeen && palierAServir <= 5;
+    // LES SALINES ONT LEUR PROPRE COMPTE (retour Patrick 13/09 : « j'ai la
+    // craie qui revient ? »). La craie et les villageois sont des Landes ;
+    // sur la Croûte, c'est le Percepteur qui compte, et ça se lit n'importe où.
+    const zoneSoupcon = runRef.current?.zone ?? "landes";
     const soupManifest = !soupCroise
       ? null
-      : (nextScene.liaison ? liaisonDedans : dansLeVillage(nextScene.id))
-        ? (SOUPCON_PALIERS[palierAServir] ?? null)
-        : (SOUPCON_CRAIE[palierAServir] ?? null);
+      : zoneSoupcon === "salines"
+        ? (SALINES_SOUPCON[palierAServir] ?? null)
+        : (nextScene.liaison ? liaisonDedans : dansLeVillage(nextScene.id))
+          ? (SOUPCON_PALIERS[palierAServir] ?? null)
+          : (SOUPCON_CRAIE[palierAServir] ?? null);
     // Et le Geôlier met un mot sur ce qui n'a pas de chiffre.
     // 03/09 — une ligne par palier ET PAR VIE : après une relaxe le Soupçon
     // remonte, le palier se rejoue, mais « Ils ont sorti une chaise » ne se
     // redit pas mot pour mot.
     const soupJailer =
       soupManifest && vu(runRef.current?.vus, "soupgeo|" + palierAServir) === 0
-        ? (SOUPCON_GEOLIER[palierAServir] ?? null)
+        ? ((zoneSoupcon === "salines" ? SALINES_SOUPCON_GEOLIER : SOUPCON_GEOLIER)[palierAServir] ?? null)
         : null;
     if (soupJailer)
       persist((r) => {
@@ -3433,10 +3474,17 @@ export default function Scene() {
     // L'AIGUILLAGE (panel 9/08) : la scène qui suit LIT le dé qui la précède.
     // Deux versions au plus — tenu / pas tenu. Sans version d'échec, la scène
     // se lit dans les deux cas (vérifié texte par texte, pas supposé).
-    const narrationDeScene =
-      opts?.fail && nextScene.narrationEchec?.length
+    const narrationDeScene = [
+      ...(opts?.fail && nextScene.narrationEchec?.length
         ? nextScene.narrationEchec
-        : narrationAffichee(nextScene);
+        : narrationAffichee(nextScene)),
+      // LE VENT SE LÈVE DANS LE TEXTE avant que le sel ne tombe sur l'écran
+      // (Salines, `tempete.avant`) — seulement la première fois qu'elle va se
+      // jouer sur cet écran ; une tempête déjà balayée n'est plus annoncée.
+      ...(nextScene.tempete?.avant && !(runRef.current?.tempetesJouees ?? []).includes(nextScene.id)
+        ? [nextScene.tempete.avant]
+        : []),
+    ];
     // L'ARRIVÉE RATÉE se dit aussi aux CHOIX (03/09) : le jeton passe par
     // `choixFaits`, portée écran — voir `Choice.requiresEchecArrivee`.
     const echecArrivee = Boolean(opts?.fail && nextScene.narrationEchec?.length);
@@ -4009,7 +4057,7 @@ export default function Scene() {
     if (result === 1 || result === 20) {
       if (elu === "geolier") {
         const posture = jailerPosture(loadMemory());
-        const { text, gabarit } = jailerTaunt(result, posture, jailerVues);
+        const { text, gabarit } = jailerTaunt(result, posture, jailerVues, runRef.current?.zone ?? "landes");
         jailerServi = gabarit;
         entries.push({ id: nextId(), kind: "jailer", text });
       }
@@ -4474,17 +4522,26 @@ export default function Scene() {
     // Un critique reste un critique : le Geôlier commente même quand on n'a
     // pas changé d'endroit. Même mémoire de gabarits qu'ailleurs.
     let jailerServi: string | null = null;
-    if (
-      (runRef.current?.zone ?? "landes") === "salines" &&
-      (runRef.current?.encroute ?? 0) >= 3 &&
-      vu(runRef.current?.vus, "encroute|3") === 0
-    ) {
-      entries.push({ id: nextId(), kind: "jailer", text: SALINES_ENCROUTE_GEOLIER });
-      persist((run) => { run.vus = noter(run.vus, "encroute|3"); });
+    // L'ENCROÛTÉ SE DIT (retour Patrick 13/09 : « c'est soudain sans
+    // explication au niveau de l'histoire ») : au palier qu'on vient
+    // d'atteindre, une ligne — une fois par vie et par palier — DANS la
+    // conséquence de l'action qui a fait monter le sel ; au III, le Geôlier
+    // ajoute son constat.
+    if ((runRef.current?.zone ?? "landes") === "salines") {
+      const palierEnc = Math.min(3, runRef.current?.encroute ?? 0);
+      if (palierEnc >= 1 && vu(runRef.current?.vus, "encroute|dit|" + palierEnc) === 0) {
+        const ligne = SALINES_ENCROUTE_LIGNES[palierEnc];
+        if (ligne) entries.push({ id: nextId(), kind: "narration", text: ligne });
+        persist((run) => { run.vus = noter(run.vus, "encroute|dit|" + palierEnc); });
+      }
+      if (palierEnc >= 3 && vu(runRef.current?.vus, "encroute|3") === 0) {
+        entries.push({ id: nextId(), kind: "jailer", text: SALINES_ENCROUTE_GEOLIER });
+        persist((run) => { run.vus = noter(run.vus, "encroute|3"); });
+      }
     }
     if (opts.result === 1 || opts.result === 20) {
       const vues = runRef.current?.jailerVues ?? [];
-      const { text, gabarit } = jailerTaunt(opts.result, jailerPosture(loadMemory()), vues);
+      const { text, gabarit } = jailerTaunt(opts.result, jailerPosture(loadMemory()), vues, runRef.current?.zone ?? "landes");
       jailerServi = gabarit;
       entries.push({ id: nextId(), kind: "jailer", text });
     }
