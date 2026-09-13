@@ -73,15 +73,21 @@ h1{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:34px;m
 
     <div class="bloc">
       <h2>La tempête de sel</h2>
-      <p>Attachée à une scène, déclenchée à l'entrée, jamais chronométrée. Des points blancs apparaissent, de plus en plus vite ; on n'a pas d'autre choix que d'effacer au doigt. Un bouton couvert n'est pas cliquable. Quand une bonne part est balayée, ça s'arrête et ça part. Sur certains lieux, effacer sur l'image révèle un détail absent avant.</p>
+      <p>Attachée à une scène, déclenchée à l'entrée. La rafale dure quelques secondes — des points blancs apparaissent, de plus en plus vite — puis elle se tait : plus rien ne naît. On efface au doigt ; un bouton couvert n'est pas cliquable. Dès qu'une bonne part est balayée, le reste s'en va tout seul. Sur certains lieux, effacer sur l'image révèle un détail absent avant.</p>
       <div class="seg" id="vent">
         <button data-v="rafale" class="on">A · rafale</button><button data-v="voile">B · voile</button>
+      </div>
+      <div class="seg" id="duree">
+        <button data-d="4000">4 s</button><button data-d="6000" class="on">6 s</button><button data-d="8000">8 s</button>
+      </div>
+      <div class="seg" id="part">
+        <button data-p="0.6">60 %</button><button data-p="0.7" class="on">70 %</button><button data-p="0.8">80 %</button>
       </div>
       <button class="act" id="declencher">Déclencher la tempête</button>
       <div class="lig"><span>Couverture</span><b id="couv">0 %</b></div>
       <div class="lig"><span>Passages</span><b id="pass">0</b></div>
       <div class="lig"><span>Boutons dégagés</span><b id="deg">3 / 3</b></div>
-      <div class="note">A : les points naissent surtout à droite et gagnent vers la gauche, comme poussés. B : ils tombent partout à la fois. Efface sur l'image aussi : une seconde statue est dessous.</div>
+      <div class="note">A : les points naissent surtout à droite et gagnent vers la gauche, comme poussés. B : ils tombent partout à la fois. Premier réglage : combien de temps la rafale souffle. Second : la part à balayer avant que le reste ne parte seul. Efface sur l'image aussi : une seconde statue est dessous.</div>
       <button class="act" id="reset" style="margin-top:10px;background:transparent;color:var(--or)">Tout remettre</button>
     </div>
   </div>
@@ -253,17 +259,21 @@ const CW=W/2, CHH=PH/2;
 const sel=new Uint8Array(CW*CHH);
 let vent="rafale", enTempete=false, passages=0, doigt=false, dernier=null, timer=null, messageJusqua=0;
 let age=0, pic=0, balaye=0, finEnCours=false, rs=rng(3);
-/* PLAFOND : au-delà, plus rien ne naît (l'écran reste lisible par places).
-   PART_BALAYEE : la « bonne partie » — quand la main a effacé cette part de ce
-   qu'il y avait au plus fort, ça s'arrête et ça part. FIN_SOUS : ou si presque
-   plus rien ne reste. */
-const TICK=120, PLAFOND=.55, PIC_MIN=.18, PART_BALAYEE=.6, FIN_SOUS=.07;
+/* DUREE : la rafale souffle ce temps-là, puis se tait — plus rien ne naît,
+   quoi qu'on fasse (retour Patrick 13/09 : « pas en continu »). PLAFOND :
+   au-delà, plus rien ne naît non plus (l'écran reste lisible par places).
+   PART_BALAYEE : quand la main a retiré cette part de ce qu'il y avait au
+   plus fort, le reste s'en va tout seul — enlever les derniers pixels un par
+   un serait juste pénible. FIN_SOUS : ou si presque plus rien ne reste. */
+let DUREE=6000, PART_BALAYEE=.7;
+const TICK=120, PLAFOND=.55, PIC_MIN=.18, FIN_SOUS=.07;
 const N=CW*CHH;
 function couvertureTotale(){ let n=0; for(let i=0;i<sel.length;i++) n+=sel[i]; return n/sel.length; }
 function declencher(){
   if(enTempete) return;
   sel.fill(0); passages=0; age=0; pic=0; balaye=0; finEnCours=false; enTempete=true; rs=rng(vent==="rafale"?31:57);
   storm.classList.remove("off"); document.getElementById("declencher").disabled=true;
+  document.getElementById("etat").textContent="La tempête souffle"; messageJusqua=0;
   timer=setInterval(tic,TICK);
 }
 function tic(){
@@ -277,10 +287,14 @@ function tic(){
   age++;
   const couv=couvertureTotale(); pic=Math.max(pic,couv);
   // de plus en plus de points, jusqu'à un plafond où l'écran n'est plus lisible
-  // ... et moins la main a de retard : plus on a balayé, moins il en naît —
-  // c'est ce qui fait que « ça s'arrête » au lieu de repartir sous les doigts
-  const part = pic>0 ? balaye/(pic*N*PART_BALAYEE) : 0;
-  const nb = couv>=PLAFOND ? 0 : Math.round(Math.min(110, 14+age*1.6)*Math.max(0,1-part));
+  // ... tant que la rafale souffle. Passé DUREE, elle se tait : plus un point
+  // ne naît, ce qu'on balaie reste balayé.
+  // La montée est calée sur DUREE (t = 0 → 1) : la rafale part douce et
+  // s'emballe en quadratique, pour atteindre le plafond juste avant de se
+  // taire — qu'elle dure 4 ou 8 s, elle dépose à peu près la même masse.
+  const t = age*TICK/DUREE, souffle = t <= 1;
+  const nb = (!souffle || couv>=PLAFOND) ? 0 : Math.round((30 + 700*t*t) * 6000/DUREE);
+  if(!souffle && age*TICK <= DUREE+TICK){ document.getElementById("etat").textContent="La tempête s'est tue — efface"; messageJusqua=Date.now()+2200; }
   for(let k=0;k<nb;k++){
     // rafale : les points naissent surtout à droite et gagnent vers la gauche ; voile : partout
     const cx = vent==="rafale" ? Math.floor(CW*(1-Math.pow(rs(),.45+Math.min(.5,age*.004)))) : Math.floor(rs()*CW);
@@ -291,6 +305,7 @@ function tic(){
     for(let q=0;q<paquet;q++){ const x=cx+Math.floor(rs()*5)-2, y=cy+Math.floor(rs()*5)-2; if(x>=0&&x<CW&&y>=0&&y<CHH) sel[y*CW+x]=1; }
   }
   // quand une bonne part est balayée, ça s'arrête
+  // une bonne part balayée : le reste s'en va tout seul
   if(pic>=PIC_MIN && (couv<FIN_SOUS || balaye>=pic*N*PART_BALAYEE)){ finEnCours=true; document.getElementById("etat").textContent="La tempête passe"; messageJusqua=Date.now()+3000; }
   drawStorm(); maj();
 }
@@ -320,7 +335,7 @@ function maj(){
   const deg=BOX.filter(b=>couverture({x:b.x,y:b.y+452,w:b.w,h:b.h})<.15).length;
   document.getElementById("deg").textContent=deg+" / 3";
   const el=document.getElementById("etat");
-  if(enTempete && !finEnCours && Date.now()>messageJusqua) el.textContent = "Tempête · efface au doigt";
+  if(enTempete && !finEnCours && Date.now()>messageJusqua) el.textContent = age*TICK<=DUREE ? "La tempête souffle · efface au doigt" : "Elle s'est tue · efface au doigt";
 }
 const pos=(e)=>{const r=storm.getBoundingClientRect();return [ (e.clientX-r.left)*W/r.width, (e.clientY-r.top)*PH/r.height ];};
 let bouge=false;
@@ -349,6 +364,8 @@ segment("palier","p",v=>{palier=+v;drawCTA();});
 segment("rendu","r",v=>{rendu=v;drawCTA();});
 segment("soif","s",v=>{soif=+v;drawCTA();});
 segment("vent","v",v=>{vent=v;});
+segment("duree","d",v=>{DUREE=+v;});
+segment("part","p",v=>{PART_BALAYEE=+v;});
 document.getElementById("declencher").onclick=declencher;
 document.getElementById("reset").onclick=reset;
 /* sur un petit écran, le cadre se réduit pour tenir dans la largeur */
