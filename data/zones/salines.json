@@ -66,7 +66,9 @@
         "la Barge est exclusive : coffre (F1) ou cale (F4)",
         "tri 33 → 29 : Sonde retirée, Broyeuse → Forge, Bassin comble → Passerelle",
         "le Battant : remis et sonné à la Rive haute (appelle le Bœuf, prévient le Ver), pas de branche « le garder »",
-        "la Guérite est le campement des Bassins"
+        "la Guérite est le campement des Bassins",
+        "la Lanterne du Noyé sert au Dortoir (lire la lettre la nuit même) et à la Tour (lire et compter les traits) — plus une promesse sans consommateur",
+        "la Manivelle des Passeurs (ex Roue et Manivelle) se ramasse à la Noria, sert à la Cour aux rails (aiguillage sans jet) et à la Tour (la roue d'un seul geste)"
       ]
     }
   },
@@ -604,7 +606,7 @@
     {
       "id": "noria",
       "nom": "La Noria",
-      "note": "la roue à godets figée. Crochetage ou COURAGE pour la libérer : ouvre un canal à sec, raccourci direct vers les Salines (saute un lieu). Prix : le grincement — le Ver arrive dans la scène suivante quoi qu'il arrive.",
+      "note": "la roue à godets figée. Crochetage ou COURAGE pour la libérer : ouvre un canal à sec, raccourci direct vers les Salines (saute un lieu). Prix : le grincement — le Ver arrive dans la scène suivante quoi qu'il arrive. Manivelle des Passeurs (13/09) : libérer la roue fait sortir sa manivelle de son logement — on l'emporte.",
       "environnement": "bassins",
       "role": "pool",
       "statut": "candidat",
@@ -619,7 +621,9 @@
         "sauteurs_de_saumure"
       ],
       "rencontres": [],
-      "objets": [],
+      "objets": [
+        "roue_et_manivelle_de_l_ecluse"
+      ],
       "textes": {
         "decouverte": null,
         "familiarite": null,
@@ -717,7 +721,7 @@
     {
       "id": "dortoir",
       "nom": "Le Dortoir",
-      "note": "couchettes des sauniers, matelas de sel. Campement des Salines : une nuit = un palier (comme tout campement de la zone, pas la mort — la mort est au palier III). Le Geôlier y propose la seconde nuit : la seule fois où il invite à rester. Lettre de Passeur sous un matelas.",
+      "note": "couchettes des sauniers, matelas de sel. Campement des Salines : une nuit = un palier (comme tout campement de la zone, pas la mort — la mort est au palier III). Le Geôlier y propose la seconde nuit : la seule fois où il invite à rester. Lettre de Passeur sous un matelas. Lanterne du Noyé (13/09) : la lettre de Passeur se lit la nuit même, à sa lumière.",
       "environnement": "salines",
       "role": "pool",
       "statut": "candidat",
@@ -738,7 +742,10 @@
       },
       "illustration": null,
       "portrait_requis": false,
-      "campement": true
+      "campement": true,
+      "objets_utiles": [
+        "lanterne_du_noye"
+      ]
     },
     {
       "id": "forge_a_grattoirs",
@@ -773,7 +780,7 @@
     {
       "id": "cour_aux_rails",
       "nom": "La Cour aux rails",
-      "note": "là où le Bœuf fait demi-tour (boucle Rive → Cour). Le wagon, ses bancs, les anneaux de fer (fragment 5). Le Bœuf peut être détourné vers l'Entrepôt d'ici (solution du Grand Saunier). Par la lucarne du wagon, quelque chose respire dedans (twist du Bœuf habité).",
+      "note": "là où le Bœuf fait demi-tour (boucle Rive → Cour). Le wagon, ses bancs, les anneaux de fer (fragment 5). Le Bœuf peut être détourné vers l'Entrepôt d'ici (solution du Grand Saunier). Par la lucarne du wagon, quelque chose respire dedans (twist du Bœuf habité). Manivelle des Passeurs (13/09) : l'aiguillage se manœuvre à la manivelle — le Bœuf part vers l'Entrepôt sans jet.",
       "environnement": "salines",
       "role": "pool",
       "statut": "candidat",
@@ -795,7 +802,10 @@
         "recontextualisation": null
       },
       "illustration": null,
-      "portrait_requis": false
+      "portrait_requis": false,
+      "objets_utiles": [
+        "roue_et_manivelle_de_l_ecluse"
+      ]
     },
     {
       "id": "salle_des_gages",
@@ -1039,7 +1049,7 @@
     {
       "id": "tour_de_l_ecluse",
       "nom": "La Tour de l'écluse",
-      "note": "obligatoire — sortie. La spirale, les traits gravés, la roue au fond. Tracé des marques des Passeurs, crochetage du cadenas, COURAGE sur la roue. C'est ici que l'eau part devant toi.",
+      "note": "obligatoire — sortie. La spirale, les traits gravés, la roue au fond. Tracé des marques des Passeurs, crochetage du cadenas, COURAGE sur la roue. C'est ici que l'eau part devant toi. Lanterne du Noyé (13/09) : la spirale se descend dans le noir — à sa lumière on lit et on compte les traits gravés. Manivelle des Passeurs (13/09) : la roue se tourne d'un geste au lieu de se tourner à mains nues.",
       "environnement": "saulnes",
       "role": "fin",
       "statut": "obligatoire",
@@ -1053,16 +1063,18 @@
       ],
       "combats": [],
       "rencontres": [],
-      "objets": [
-        "roue_et_manivelle_de_l_ecluse"
-      ],
+      "objets": [],
       "textes": {
         "decouverte": null,
         "familiarite": null,
         "recontextualisation": null
       },
       "illustration": null,
-      "portrait_requis": false
+      "portrait_requis": false,
+      "objets_utiles": [
+        "lanterne_du_noye",
+        "roue_et_manivelle_de_l_ecluse"
+      ]
     }
   ],
   "rencontres": [
@@ -1792,7 +1804,7 @@
     {
       "id": "lanterne_du_noye",
       "nom": "La Lanterne du Noyé",
-      "note": "sortie du ventre du Ver, brûle encore. Inutile ici ; à l'Acte II, c'est la lumière (graine de la Mine). ⚠️ La seule promesse sans consommateur dans la zone.",
+      "note": "la Bouche : sortie du ventre du Ver, brûle encore. Deux usages ici, tous deux pour LIRE dans le noir (13/09) : au Dortoir, la lettre de Passeur sous le matelas se lit la nuit même, avant la pellicule du campement — sans lanterne on la trouve et on la lit à l'aube, un palier plus tard ; à la Tour de l'écluse, la spirale se descend dans le noir et la lanterne fait lire les traits gravés — des milliers, un par palier d'eau, de plus en plus serrés vers le bas : on peut les COMPTER, et le compte ne colle pas avec les jetons du Percepteur. Descend à l'Acte II : c'est la lumière (graine de la Mine).",
       "lieu_attache": "bouche",
       "type": "passif",
       "descend": true,
@@ -1805,7 +1817,10 @@
       },
       "illustration": null,
       "portrait_requis": false,
-      "sert": []
+      "sert": [
+        "dortoir",
+        "tour_de_l_ecluse"
+      ]
     },
     {
       "id": "sel_qui_garde",
@@ -1874,10 +1889,10 @@
     },
     {
       "id": "roue_et_manivelle_de_l_ecluse",
-      "nom": "La Roue et la Manivelle de l'écluse",
-      "note": "si le mécanisme est gardé (mécanisme de fin de zone : À DÉCIDER).",
-      "lieu_attache": "tour_de_l_ecluse",
-      "type": "actif",
+      "nom": "La Manivelle des Passeurs",
+      "note": "la Noria (13/09) : quand la roue à godets se libère, sa manivelle sort de son logement — le même carré de fer que sur tous les mécanismes des Passeurs. Sert à la Cour aux rails (l'aiguillage à manivelle : détourner le Bœuf vers l'Entrepôt d'un seul geste, sans jet) et à la Tour de l'écluse (la roue de pierre se tourne d'un seul geste au lieu de se tourner à mains nues — la cérémonie est plus courte, elle n'est jamais plus sûre : on ne rate pas la Descente). Ancien nom « Roue et Manivelle de l'écluse » : la roue reste à la tour, c'est la manivelle qu'on porte.",
+      "lieu_attache": "noria",
+      "type": "passif",
       "descend": false,
       "histoire_bailli": false,
       "rarete": "commune",
@@ -1889,8 +1904,10 @@
       "illustration": null,
       "portrait_requis": false,
       "sert": [
+        "cour_aux_rails",
         "tour_de_l_ecluse"
-      ]
+      ],
+      "ancien_nom": "La Roue et la Manivelle de l'écluse"
     }
   ],
   "fragments": [
