@@ -448,7 +448,9 @@ function demarrer(g) {
   document.getElementById("pied").innerHTML = (MODE === "routage"
     ? "<b>" + g.totaux.lieux + "</b> lieux &nbsp;·&nbsp; <b>" + g.totaux.etapes + "</b> environnements, traversés dans l'ordre &nbsp;·&nbsp; <b>"
       + (g.totaux.actions || 0) + "</b> fusionnés &nbsp;·&nbsp; <b>" + (g.totaux.retires || 0) + "</b> retiré(s)"
-      + " &nbsp;·&nbsp; routage validé, aucune scène écrite"
+      + " &nbsp;·&nbsp; " + ((g.totaux.ecrits || 0)
+        ? "<b>" + g.totaux.ecrits + "</b> écran(s) écrit(s) — le reste est un plan"
+        : "routage validé, aucune scène écrite")
     : "<b>" + g.totaux.scenes + "</b> scènes &nbsp;·&nbsp; <b>" + g.totaux.lieux + "</b> lieux &nbsp;·&nbsp; <b>"
       + (g.totaux.actions || 0) + "</b> actions &nbsp;·&nbsp; <b>"
       + g.totaux.transitions + "</b> transitions &nbsp;·&nbsp; <b>" + g.totaux.marches + "</b> vues de marche")
@@ -604,6 +606,21 @@ function pas() {
         fins.sort((a, b) => (a.rang || 0) - (b.rang || 0));
         tetes.forEach(n => gr.slots.set(n.id, [-R, 0]));
         fins.forEach((n, i) => { const a = (i - (fins.length - 1) / 2) * .82; gr.slots.set(n.id, [Math.cos(a) * R, Math.sin(a) * R]); });
+        // ⚠️ UN ÉCRAN ÉCRIT SUIT SON LIEU, il ne tombe pas au centre. Les slots
+        // ci-dessus ne connaissent que les RÔLES d'un lieu (entrée/pool/fin) ;
+        // une scène n'en a aucun, donc seule la cohésion l'attirait — mesuré :
+        // deux écrans de la Rive haute à 24 px l'un de l'autre, au milieu du
+        // cercle, illisibles. Ils se posent donc en éventail JUSTE AU-DELÀ de
+        // leur lieu, sur le même rayon : on lit le lieu, puis ses écrans.
+        var ecrans = new Map();
+        for (const l of L) {
+          if (l.t !== "appartient") continue;
+          const a = parId.get(l.a), b = parId.get(l.b);
+          if (!a || !b || b.cat !== "scene" && b.cat !== "terminal") continue;
+          if (!gr.membres.includes(b)) continue;
+          if (!ecrans.has(l.a)) ecrans.set(l.a, []);
+          ecrans.get(l.a).push(b);
+        }
         // le pool sur l'arc restant, en évitant la gauche si une tête l'occupe
         // le pool commence APRÈS l'éventail des fins, sinon le dernier tiré
         // et la dernière fin se touchent (mesuré : 44 px entre la Porte et la Tour)
@@ -614,6 +631,23 @@ function pas() {
           if (gauche && Math.abs(a - Math.PI) < gauche) a += (a < Math.PI ? -gauche : gauche) * .9;
           gr.slots.set(n.id, [Math.cos(a) * R, Math.sin(a) * R]);
         });
+        for (const [lid, lst] of ecrans) {
+          const sl = gr.slots.get(lid);
+          if (!sl) continue;
+          const ang = Math.atan2(sl[1], sl[0]);
+          lst.forEach((sc, i) => {
+            const d = (i - (lst.length - 1) / 2) * .30;   // éventail, en radians
+            gr.slots.set(sc.id, [Math.cos(ang + d) * (R + 78), Math.sin(ang + d) * (R + 78)]);
+          });
+        }
+        // un écran qu'aucun lieu ne porte (le nœud terminal) se range sous le
+        // cercle : il n'appartient à aucun lieu, et il ne doit pas s'empiler
+        // sur l'un d'eux.
+        let k = 0;
+        for (const n of gr.membres) {
+          if ((n.cat !== "scene" && n.cat !== "terminal") || gr.slots.has(n.id)) continue;
+          gr.slots.set(n.id, [(k++ - .5) * 120, R + 92]);
+        }
       }
       /* La place est AUTORITAIRE : on remplace la vitesse au lieu de l'ajouter.
          Ajoutée, elle se battait avec les liens (sept lieux tirés vers les six
