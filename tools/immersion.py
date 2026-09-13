@@ -505,12 +505,11 @@ def pools() -> list[dict]:
     if enc:
         t = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', enc.group(1)))
         out.append({"pool": "salines encroûté geôlier", "garde": {"village", "gens"}, "textes": [t]})
-    # Les lignes de l'Encroûté par palier et le compte du Percepteur (13/09
-    # soir) : trois `Record<number, string>`, lus comme les paliers des Landes.
+    # Les lignes de l'Encroûté par palier (13/09 soir). ⚠️ Pas de table de
+    # Soupçon ici : le Soupçon est un système des Landes et n'existe pas dans
+    # cette zone (décision Patrick du 13/09, voir `monteSoupcon`).
     for table, nom in (
         ("SALINES_ENCROUTE_LIGNES", "salines encroûté"),
-        ("SALINES_SOUPCON", "salines soupçon"),
-        ("SALINES_SOUPCON_GEOLIER", "salines soupçon geôlier"),
     ):
         rec = re.search(rf"export const {table}: Record<number, string> = \{{(.*?)\n\}};", scene_src, re.S)
         assert rec, f"{table} introuvable dans scene-data.ts"
@@ -528,9 +527,9 @@ def pools() -> list[dict]:
         out.append({"pool": f"salines tempête après ({empreinte(t)})", "garde": {"village", "gens"}, "textes": [t]})
     # ⚠️ COMPTER ce qu'on extrait (règle du 10/08) : 7 arrivées, 7 ambiances,
     # 12 lignes du Geôlier en liaison, 18 sur le dé, 1 + 3 d'Encroûté,
-    # 5 + 5 de Soupçon, 2 tempêtes × (avant + après) — 62 textes au 13/09 soir.
+    # 2 tempêtes × (avant + après) — 52 textes au 13/09 soir.
     n_sal = len(out) - n_avant
-    assert n_sal >= 62, f"pools des Salines : {n_sal} extraits, ≥ 62 attendus — l'extracteur ne lit plus scene-data.ts"
+    assert n_sal >= 52, f"pools des Salines : {n_sal} extraits, ≥ 52 attendus — l'extracteur ne lit plus scene-data.ts"
     for p_ in out[n_avant:]:
         p_["salines"] = True
 

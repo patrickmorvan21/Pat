@@ -28,8 +28,6 @@ import {
   FIN_ETAPE_NON_ECRITE,
   SALINES_ENCROUTE_GEOLIER,
   SALINES_ENCROUTE_LIGNES,
-  SALINES_SOUPCON,
-  SALINES_SOUPCON_GEOLIER,
   estUnLieu,
   SOUPCON_PALIERS,
   SOUPCON_CRAIE,
@@ -447,6 +445,27 @@ const PNJ_MEMOIRE: Record<string, { lieu?: string; text: string }> = {
       "« Le muret s'en souvient mieux que moi. »",
   },
 };
+
+/**
+ * LE SOUPÇON EST UN SYSTÈME DES LANDES, ET DE NULLE PART AILLEURS
+ * (décision Patrick, 13/09 : « pour moi la craie et les soupçons n'ont pas
+ * leur place sur cette zone, uniquement dans les Landes »).
+ *
+ * Ce n'est pas une jauge de culpabilité universelle : c'est le regard d'UN
+ * village sur quelqu'un qui traîne autour de ses pendus — des témoins qui
+ * déposent, une craie qui migre, un Petit Tribunal au bout. Rien de tout ça
+ * n'existe sur la Croûte, où il n'y a ni village, ni loi, ni voisins.
+ *
+ * ⚠️ La garde est posée ICI, au point d'écriture, et pas dans les textes :
+ * sinon un choix des Salines qui porterait `soupcon` ferait monter en
+ * silence un compteur que rien ne lit et que rien ne peut plus redescendre.
+ * Toute montée passe par cette fonction — un nouveau site qui l'oublierait
+ * réintroduirait le défaut, le commentaire est là pour ça.
+ */
+function monteSoupcon(run: RunState, delta: number): void {
+  if ((run.zone ?? "landes") !== "landes") return;
+  run.soupcon = Math.max(0, Math.min(6, (run.soupcon ?? 0) + delta));
+}
 
 function dansLeVillage(sceneId: string): boolean {
   return (
@@ -1910,7 +1929,7 @@ export default function Scene() {
       const dettesDepart = dettesPortees(mem);
       const nMarque = dettesDepart.filter((d) => d === "marque").length;
       const nUsure = dettesDepart.filter((d) => d === "usure").length;
-      if (nMarque > 0) run.soupcon = Math.min(6, (run.soupcon ?? 0) + nMarque);
+      if (nMarque > 0) monteSoupcon(run, nMarque);
       if (nUsure > 0) run.health = Math.min(run.health, 1 - 0.18 * nUsure);
       const opening = sceneFromTrav(run.trav); // = la Borne (ENTRY_SCENE)
       setScene(opening);
@@ -2481,11 +2500,11 @@ export default function Scene() {
       }
     }
     // ⚠️ LE PROCÈS EST UNE SCÈNE DES LANDES (le Petit Tribunal, les témoins du
-    // hameau). Dans les Salines, le compte du Percepteur MONTE et se lit (voir
-    // SALINES_SOUPCON) mais rien ne se déroute encore à 6 : son prix
-    // (« là-bas, c'est plus cher ») s'écrira avec les Bassins. Dit ici, pas
-    // maquillé — sans cette garde, un héros de la Croûte était emmené au
-    // Petit Tribunal des Renonçants.
+    // hameau) — comme tout le Soupçon (voir `monteSoupcon`). Hors des Landes
+    // le compteur ne bouge pas, donc ce déroutage ne peut pas se déclencher ;
+    // la garde de zone est explicite pour qu'une sauvegarde qui traverserait
+    // avec un compteur hérité n'emmène pas un héros de la Croûte au tribunal
+    // d'un village qu'il n'a jamais vu.
     if (
       (runRef.current?.zone ?? "landes") === "landes" &&
       soupNow >= 6 && !scene.fixationTrial && !scene.chainNext && !scene.sejour &&
@@ -3168,24 +3187,24 @@ export default function Scene() {
     const palierAServir = soupSeen + 1;
     const soupCroise =
       !nextScene.fixationTrial && soupAfter > soupSeen && palierAServir <= 5;
-    // LES SALINES ONT LEUR PROPRE COMPTE (retour Patrick 13/09 : « j'ai la
-    // craie qui revient ? »). La craie et les villageois sont des Landes ;
-    // sur la Croûte, c'est le Percepteur qui compte, et ça se lit n'importe où.
+    // ⚠️ RIEN NE SE MANIFESTE HORS DES LANDES (décision Patrick 13/09) : le
+    // Soupçon n'y monte pas (voir monteSoupcon), donc `soupCroise` est déjà
+    // faux — la garde de zone est là pour le dire en toutes lettres, et pour
+    // qu'un compteur hérité d'une sauvegarde ancienne ne réveille pas la
+    // craie sur la Croûte.
     const zoneSoupcon = runRef.current?.zone ?? "landes";
-    const soupManifest = !soupCroise
+    const soupManifest = !soupCroise || zoneSoupcon !== "landes"
       ? null
-      : zoneSoupcon === "salines"
-        ? (SALINES_SOUPCON[palierAServir] ?? null)
-        : (nextScene.liaison ? liaisonDedans : dansLeVillage(nextScene.id))
-          ? (SOUPCON_PALIERS[palierAServir] ?? null)
-          : (SOUPCON_CRAIE[palierAServir] ?? null);
+      : (nextScene.liaison ? liaisonDedans : dansLeVillage(nextScene.id))
+        ? (SOUPCON_PALIERS[palierAServir] ?? null)
+        : (SOUPCON_CRAIE[palierAServir] ?? null);
     // Et le Geôlier met un mot sur ce qui n'a pas de chiffre.
     // 03/09 — une ligne par palier ET PAR VIE : après une relaxe le Soupçon
     // remonte, le palier se rejoue, mais « Ils ont sorti une chaise » ne se
     // redit pas mot pour mot.
     const soupJailer =
       soupManifest && vu(runRef.current?.vus, "soupgeo|" + palierAServir) === 0
-        ? ((zoneSoupcon === "salines" ? SALINES_SOUPCON_GEOLIER : SOUPCON_GEOLIER)[palierAServir] ?? null)
+        ? (SOUPCON_GEOLIER[palierAServir] ?? null)
         : null;
     if (soupJailer)
       persist((r) => {
@@ -4323,8 +4342,9 @@ export default function Scene() {
       const chapitreJoue = chapterBefore.length > 0 || elu === "chapitre";
       if (newChapterStage && run.chapter && chapitreJoue)
         run.chapter = { ...run.chapter, stage: newChapterStage };
-      // Soupçon : montée d'arrivée + palier manifesté mémorisé.
-      run.soupcon = soupAfter;
+      // Soupçon : montée d'arrivée + palier manifesté mémorisé. Hors des
+      // Landes, `soupAfter` vaut le compteur inchangé (voir monteSoupcon).
+      if ((run.zone ?? "landes") === "landes") run.soupcon = soupAfter;
       // Un cran servi = un cran vu — jamais un saut (voir palierAServir).
       // ⚠️ Même règle : un palier écarté par le budget n'est PAS vu, donc il
       // se représente à la prochaine arrivée. Le compter ici le brûlerait en
@@ -4690,7 +4710,7 @@ export default function Scene() {
     const soup = c.minigame.echecSoupcon ?? 0;
     if (soup > 0) {
       persist((run) => {
-        run.soupcon = Math.min(6, (run.soupcon ?? 0) + soup);
+        monteSoupcon(run, soup);
       });
     }
     onSelect({
@@ -4882,7 +4902,7 @@ export default function Scene() {
         const idx = porteusePasse.idx;
         persist((r) => {
           r.reliquesUsees = [...(r.reliquesUsees ?? []), idx];
-          r.soupcon = Math.max(0, Math.min(6, (r.soupcon ?? 0) + 1));
+          monteSoupcon(r, 1);
           if (brise)
             r.effects = [
               { id: "ebranle", label: "ÉBRANLÉ", delta: -1, scenesLeft: 2 },
@@ -5151,7 +5171,7 @@ export default function Scene() {
           // joueur TENTE change ses chances, et il est gratuit.
           run.poiIci = (run.poiIci ?? 0) + 1;
           if (poi.soupcon) {
-            run.soupcon = Math.max(0, Math.min(6, (run.soupcon ?? 0) + poi.soupcon));
+            monteSoupcon(run, poi.soupcon);
             // Le geste a été VU par quelqu'un de nommé (5/08) — il déposera.
             const t = poi.soupcon > 0 ? temoinPour(poi.id) : null;
             if (t && !(run.temoins ?? []).some((x) => x.id === t.id))
@@ -5268,7 +5288,7 @@ export default function Scene() {
       // aurait entraîné les autres.
       const t = delta > 0 ? temoinPour(choice.id) : null;
       persist((run) => {
-        run.soupcon = Math.max(0, Math.min(6, (run.soupcon ?? 0) + delta));
+        monteSoupcon(run, delta);
         if (t && !(run.temoins ?? []).some((x) => x.id === t.id))
           run.temoins = [...(run.temoins ?? []), t];
       });
@@ -6023,7 +6043,7 @@ export default function Scene() {
                 // déjà payé, le ratage n'ajoute qu'un cran de plus.
                 const dejaPaye = (chosen.soupcon ?? 0) > 0;
                 const vu = tier === "malediction" ? (dejaPaye ? 2 : 3) : hardFail ? (dejaPaye ? 1 : 2) : 1;
-                run.soupcon = Math.min(6, (run.soupcon ?? 0) + vu);
+                monteSoupcon(run, vu);
                 // Un GESTE vu, pas une parole ratée : ces échecs sont tous
                 // d'exploration (10/08).
                 const t = temoinPour("echec-exploration");
@@ -6032,7 +6052,7 @@ export default function Scene() {
               }
               if (tierIsFail(tier) && natureJet === "social" && !scene.combat && !scene.fixationTrial) {
                 const vu = tier === "malediction" ? 3 : hardFail ? 2 : 1;
-                run.soupcon = Math.min(6, (run.soupcon ?? 0) + vu);
+                monteSoupcon(run, vu);
                 const t = temoinPour("echec-empathie");
                 if (t && !(run.temoins ?? []).some((x) => x.id === t.id))
                   run.temoins = [...(run.temoins ?? []), t];

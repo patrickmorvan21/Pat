@@ -11325,36 +11325,27 @@ export const SALINES_ENCROUTE_LIGNES: Record<number, string> = {
 export const SALINES_ENCROUTE_GEOLIER =
   "Tu t'es arrêté trop longtemps. Le sel a commencé sans toi.";
 
-/**
- * LE SOUPÇON DES SALINES — le COMPTE du Percepteur (retour Patrick 13/09 :
- * « j'ai la craie qui revient ? problème de storytelling par rapport aux
- * Landes »). Aux Landes, le Soupçon est le regard d'un village et se lit à
- * la craie ; ici il n'y a ni village ni craie — il y a un homme assis sur un
- * jeton de plomb qui tient les comptes, et une cliquette. Cinq paliers,
- * servis un cran à la fois comme aux Landes (`soupconSeen`), n'importe où
- * sur la Croûte (le Percepteur entend tout : « et moi j'entends les deux »).
- * Aucun bâti des Landes, aucun villageois — la Croûte est un site de pieux
- * et de rails, et ses gens sont des Encroûtés.
- * ⚠️ Pas de procès ici : à 6, le compte est plein et rien ne se déroute
- * encore — le PRIX du Percepteur (« là-bas, c'est plus cher ») s'écrira avec
- * les Bassins. Dit dans `advance()`, pas maquillé.
+/*
+ * PAS DE SOUPÇON DANS LES SALINES (décision Patrick, 13/09 : « pour moi la
+ * craie et les soupçons n'ont pas leur place sur cette zone, uniquement dans
+ * les Landes »).
+ *
+ * Une première version de ce lot avait donné à la zone son propre compteur —
+ * le compte du Percepteur, une cliquette, des jetons. Écarté : le Soupçon
+ * n'est pas une jauge de culpabilité universelle, c'est le regard d'UN
+ * village sur quelqu'un qui traîne autour de ses pendus, avec ses témoins,
+ * sa craie et son Petit Tribunal au bout. La Croûte n'a ni village, ni loi,
+ * ni voisins — lui prêter le même système en changeant les accessoires aurait
+ * fait d'une mécanique de lieu une mécanique de jeu.
+ *
+ * Le Percepteur tient bien des comptes, et il le dit (« On paie ici, ou on
+ * paie là-bas ») : ce sera un système à lui, écrit avec les Bassins, pas une
+ * copie repeinte de celui des Renonçants.
+ *
+ * Côté moteur, la garde est posée au point d'écriture (`monteSoupcon` dans
+ * Scene.tsx) : hors des Landes, le compteur ne bouge pas du tout.
  */
-export const SALINES_SOUPCON: Record<number, string> = {
-  1: "Derrière toi, très loin, un claquement sec — une cliquette, une fois. Quand tu te retournes, la Croûte est vide. Le son est venu du côté de la rive.",
-  2: "Sur le sel, à l'endroit exact où tu viens de poser le pied, quelqu'un a laissé un jeton de plomb. Vierge. Il n'y était pas quand tu as regardé, un pas plus tôt.",
-  3: "Un Encroûté que tu croises tourne la tête vers toi — lentement, et il en tombe du sel. Il tient un jeton entre deux doigts. Il le fait tourner, et il te suit des yeux jusqu'à ce que tu sois passé.",
-  4: "Le jeton dans ta poche pèse plus qu'avant. Tu le sors : il porte une marque, gravée au clou, que tu n'as pas faite. Une seule. On a commencé à remplir.",
-  5: "Deux cliquettes, cette fois, de deux côtés. Devant toi, sur la croûte, un jeton de plomb gros comme une meule, posé à plat — et personne dessus. Il attend quelqu'un qui s'asseye.",
-};
 
-/** Le Geôlier sur le compte des Salines — une ligne par palier et par vie. */
-export const SALINES_SOUPCON_GEOLIER: Record<number, string> = {
-  1: "Il t'a compté. Ici, on ne juge pas : on facture.",
-  2: "Un jeton vierge. Ce n'est pas un cadeau, c'est une ligne ouverte.",
-  3: "Ils se passent le mot sans bouche. Le sel conduit bien.",
-  4: "Une marque. Le Percepteur écrit lentement. Il a tout le temps.",
-  5: "Le grand jeton est sorti. Chez toi, une chaise. Ici, un siège.",
-};
 
 /** Vue de marche de la Croûte : l'établissement provisoire (voir CROUTE_IMG). */
 const SALINES_WALK: string[] = [CROUTE_IMG];
