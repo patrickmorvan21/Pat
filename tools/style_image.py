@@ -77,3 +77,31 @@ CLAUSE_OBJET = (
 def composer_objet(sujet: str) -> str:
     sujet = sujet.strip().rstrip(",; ").strip()
     return f"{sujet}, {CLAUSE_OBJET}" if sujet else CLAUSE_OBJET
+
+
+# ---------------------------------------------------------------------------
+# LE RATIO DE TRAME PAR ENVIRONNEMENT (Salines, décision Patrick 13/09) : il
+# s'obtient PAR LE PROMPT, jamais par un seuil de dithering — les réglages du
+# pipeline sont verrouillés (skill pactum-style), et c'est la SOURCE qui doit
+# porter l'aplat. Chaque clause dit la part d'orange, la valeur du ciel et du
+# sol, le plan et la lumière — les trois invariants viennent du sujet.
+# Règle de zone : vue à la première personne, le héros n'est jamais dans l'image.
+PREMIERE_PERSONNE = "first-person view from the ground, no protagonist in frame, what is far away is other people"
+
+CLAUSES_ENVIRONNEMENT = {
+    "croute": ("the VALUES ARE INVERTED compared to every other image: the ground is one huge uniform "
+               "very bright field filling the lower two thirds of the frame, the sky a flat pure black; "
+               "very wide shot, harsh white noon, no shadows at all"),
+    "bassins": ("roughly half bright and half black, medium shot, low raking light near the horizon, "
+                "the first long shadows"),
+    "salines": ("only about a quarter of the frame is bright, the rest deep black, tight cramped framing, "
+                "no horizon, one hard light"),
+    "saulnes": ("black dominant, the only light in the frame rises from INSIDE the tower and catches "
+                "the edges of the leaning town, an orange glow low against a black sky"),
+}
+
+
+def composer_environnement(sujet: str, env: str) -> str:
+    """Un sujet des Salines + le ratio de son environnement + la clause canonique."""
+    sujet = sujet.strip().rstrip(",; ").strip()
+    return f"{sujet}, {PREMIERE_PERSONNE}, {CLAUSES_ENVIRONNEMENT[env]}, {CLAUSE}"

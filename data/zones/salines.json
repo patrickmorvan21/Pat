@@ -37,7 +37,7 @@
     "sortie": {
       "id": "tour_de_l_ecluse",
       "nom": "La Tour de l'écluse",
-      "note": "dernier `fin` du dernier environnement — la porte de l'Acte II (mécanisme de fin de zone à décider : écluse seule)"
+      "note": "dernier `fin` du dernier environnement — la porte de l'Acte II. Mécanisme DÉCIDÉ (13/09) : l'écluse seule, en cérémonie (geste lent, aucun test)."
     },
     "carte": null,
     "comptes_annonces": {
@@ -49,8 +49,6 @@
       "environnements": 4
     },
     "a_decider": [
-      "le mécanisme de fin de zone (écluse seule ; « le Reste » non retenu)",
-      "la lecture « image fixe par environnement » : une image d'établissement par environnement + trois invariants par image dédiée",
       "prototypes Encroûté + tempête sur les CTA existants — Patrick choisit"
     ],
     "ecarts_de_transcription": [
@@ -68,8 +66,13 @@
         "le Battant : remis et sonné à la Rive haute (appelle le Bœuf, prévient le Ver), pas de branche « le garder »",
         "la Guérite est le campement des Bassins",
         "la Lanterne du Noyé sert au Dortoir (lire la lettre la nuit même) et à la Tour (lire et compter les traits) — plus une promesse sans consommateur",
-        "la Manivelle des Passeurs (ex Roue et Manivelle) se ramasse à la Noria, sert à la Cour aux rails (aiguillage sans jet) et à la Tour (la roue d'un seul geste)"
+        "la Manivelle des Passeurs (ex Roue et Manivelle) se ramasse à la Noria, sert à la Cour aux rails (aiguillage sans jet) et à la Tour (la roue d'un seul geste)",
+        "mécanisme de fin de zone = l'ÉCLUSE SEULE, en CÉRÉMONIE : ni crochetage ni jet sur la porte ; la roue se tourne d'un geste lent insensible à l'échec ; le crochetage est retiré de la Tour (il reste à la Barge, à l'Entrepôt, à la Noria, à la Maison du Grand Passeur)",
+        "image fixe par environnement = UNE image d'établissement par environnement servie par défaut + images dédiées seulement aux 6 obligatoires et aux rencontres nommées ; les trois invariants imposés à chaque image dédiée ; le ratio de trame par le PROMPT (style_image.CLAUSES_ENVIRONNEMENT), jamais par le seuil de dithering"
       ]
+    },
+    "images": {
+      "regle": "une image d'établissement par environnement (servie par défaut à tout beat sans image dédiée) + une image dédiée par lieu obligatoire et par rencontre nommée ; le Ver n'a jamais la sienne. Liste et prompts : data/salines-bible-visuelle.md"
     }
   },
   "environnements": [
@@ -92,7 +95,8 @@
       "tirages": [
         1,
         2
-      ]
+      ],
+      "image_etablissement_attendue": "scene_salines_croute_a"
     },
     {
       "id": "bassins",
@@ -113,7 +117,8 @@
       "tirages": [
         1,
         2
-      ]
+      ],
+      "image_etablissement_attendue": "scene_salines_bassins_a"
     },
     {
       "id": "salines",
@@ -136,7 +141,8 @@
       "tirages": [
         1,
         1
-      ]
+      ],
+      "image_etablissement_attendue": "scene_salines_salines_a"
     },
     {
       "id": "saulnes",
@@ -162,7 +168,8 @@
         0,
         1
       ],
-      "arrivee": "fosse"
+      "arrivee": "fosse",
+      "image_etablissement_attendue": "scene_salines_saulnes_a"
     }
   ],
   "lieux": [
@@ -1049,7 +1056,7 @@
     {
       "id": "tour_de_l_ecluse",
       "nom": "La Tour de l'écluse",
-      "note": "obligatoire — sortie. La spirale, les traits gravés, la roue au fond. Tracé des marques des Passeurs, crochetage du cadenas, COURAGE sur la roue. C'est ici que l'eau part devant toi. Lanterne du Noyé (13/09) : la spirale se descend dans le noir — à sa lumière on lit et on compte les traits gravés. Manivelle des Passeurs (13/09) : la roue se tourne d'un geste au lieu de se tourner à mains nues.",
+      "note": "obligatoire — sortie. La spirale, les traits gravés (des milliers, un par palier d'eau), la roue de pierre cerclée de fer au fond, dans une gorge, ce qu'il reste du lac à ses pieds. ÉCLUSE SEULE, CÉRÉMONIE (décision 13/09) : aucune épreuve sur la porte — ni crochetage, ni jet. La roue se tourne d'un geste lent en cercle, insensible à l'échec (règle du 24/08 : jamais de test d'adresse devant la Descente, comme la corde de la Falaise). Ce qu'on a fait avant change sa FORME, jamais son issue : à mains nues elle tourne lentement et le fer mord ; avec la Manivelle des Passeurs, d'un seul geste. Le tracé des marques est une LECTURE (préparation), pas un verrou. Puis l'eau part devant toi dans le noir, et tu descends derrière elle : trace de sortie, Sceau des Salines, l'Acte II commence mouillé. Lanterne du Noyé (13/09) : à sa lumière on lit et on compte les traits gravés. Manivelle des Passeurs (13/09) : la roue se tourne d'un geste au lieu de se tourner à mains nues.",
       "environnement": "saulnes",
       "role": "fin",
       "statut": "obligatoire",
@@ -1058,8 +1065,7 @@
       "rarete": "commune",
       "fragments": [],
       "minijeux": [
-        "trace",
-        "crochetage"
+        "trace"
       ],
       "combats": [],
       "rencontres": [],
@@ -1074,7 +1080,8 @@
       "objets_utiles": [
         "lanterne_du_noye",
         "roue_et_manivelle_de_l_ecluse"
-      ]
+      ],
+      "mecanisme_fin_de_zone": "ecluse_seule_ceremonie"
     }
   ],
   "rencontres": [
