@@ -1,6 +1,6 @@
 {
- "genere": "2026-09-13T06:17:31Z",
- "commit": "cee5735",
+ "genere": "2026-09-13T11:59:05Z",
+ "commit": "abb3ad8",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -2935,6 +2935,13 @@
    "hash": "da9dc036",
    "recent": false,
    "ajoute": "2026-08-30T21:11:20+02:00"
+  },
+  "scene_salines_croute_placeholder_a.png": {
+   "taille": 8623,
+   "modifie": "2026-09-13T07:51:11Z",
+   "hash": "8cd4091d",
+   "recent": false,
+   "ajoute": ""
   },
   "scene_temoin_grange_toit_v2_c.png": {
    "taille": 8074,
