@@ -25,6 +25,7 @@
 
 import { ENTRY_SCENE } from "@/lib/scene-data";
 import type { Environnement } from "@/lib/etages";
+import { SALINES_ENVIRONNEMENTS } from "@/lib/zones-salines";
 
 export type ZoneId = "landes" | "salines";
 
@@ -50,9 +51,11 @@ export type ZoneDef = {
 
 export const ZONES: ZoneDef[] = [
   { id: "landes", nom: "Les Landes", acte: 1, entry: ENTRY_SCENE, ecrite: true },
-  // Bible Notion « Zone 2 — Les Salines » (11-12/09). Entrée = la Rive haute,
-  // à écrire ; jusque-là la Descente des Landes reste la fin de la démo.
-  { id: "salines", nom: "Les Salines", acte: 1, entry: "", ecrite: false },
+  // Bible Notion « Zone 2 — Les Salines » (11-12/09), routage validé le 13/09 :
+  // la traversée à étages est DÉCLARÉE (`lib/zones-salines.ts`, gardée par
+  // `tools/verifier_etages.mjs`), mais aucune scène n'est écrite — `ecrite`
+  // reste faux, la Descente des Landes reste la fin de la démo.
+  { id: "salines", nom: "Les Salines", acte: 1, entry: "", ecrite: false, environnements: SALINES_ENVIRONNEMENTS },
 ];
 
 export function zoneDef(id: ZoneId | undefined): ZoneDef {

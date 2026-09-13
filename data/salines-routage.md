@@ -33,9 +33,20 @@ Et deux défauts de construction que seule la simulation montre :
   F4, plus Cour, plus Radeau ou Guérite). La bible interdit que la vérité soit
   lisible en une run.
 
-## 2. La proposition (configuration D de la simulation)
+## 2. La proposition (configuration D de la simulation) — ✅ VALIDÉE le 13/09/2026
 
-Cinq décisions, chacune avec sa raison — **c'est là que Patrick tranche** :
+> **Décisions de Patrick (13/09)** : les cinq points ci-dessous sont pris tels
+> quels. Deux arbitrages de plus, hors table : **le Battant** se trouve au pied
+> de la cloche de la Rive haute et n'a qu'un usage — **le remettre et sonner**
+> (le son appelle le Bœuf de sel, qu'on peut monter pour sauter un lieu de la
+> Croûte ; mais le Ver a entendu, il sait où tu es) — pas de branche « le
+> garder » ; et **la Guérite est le campement des Bassins** (dormir là coûte un
+> palier d'Encroûté, à l'aube l'Encroûté dit « vas-y maintenant »).
+> Appliqué dans `data/zones/salines.json` (statut `routage_valide`), déclaré
+> dans `aldenhar/lib/zones-salines.ts` (gardé par `tools/verifier_etages.mjs`),
+> dessiné dans le Graphe (`graphe.html?zone=salines`).
+
+Cinq décisions, chacune avec sa raison :
 
 1. **Le Fossé n'est plus un lieu : c'est le beat d'ARRIVÉE de Saulnes.** On y
    descend puis on remonte vers la ville — c'est une approche (comme le Chemin
@@ -101,9 +112,7 @@ Tirages 1–2 sur un pool de 6. Aucun campement.
 | pool | La Guérite | l'Encroûté « connaît le chemin » | — | F2 bis | — |
 | pool | La Noria | crochetage ou COURAGE · ouvre un canal (saute un lieu) · prix : le Ver à la scène suivante | **Sauteurs** | — | usage : Dent de Ver (relance) |
 
-Tirages 1–2 sur un pool de 7. **Campement** : aucun lieu dédié — proposer que la
-Guérite ou le Perchoir portent « dormir là » (un palier d'Encroûté, la nuit qui
-coûte). À trancher.
+Tirages 1–2 sur un pool de 7. **Campement : la Guérite** (décidé le 13/09) — le seul toit de l'environnement ; dormir là coûte un palier d'Encroûté, et à l'aube son Encroûté dit « vas-y maintenant » (fragment 2 bis).
 
 ### 3 · Les Salines — le chantier (Jour II–III, le creux, mini-boss)
 

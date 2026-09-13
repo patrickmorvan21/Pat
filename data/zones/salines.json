@@ -3,7 +3,7 @@
     "id": "salines",
     "nom": "Les Salines",
     "acte": 1,
-    "statut": "conception",
+    "statut": "routage_valide",
     "source": "Notion « 🧂 Zone 2 — Les Salines » (3d828e8daa58815dab1ff5aef56de171), bible du 11-12/09/2026 — transcrite le 12/09/2026",
     "heure_figee": "plein jour blanc, sans ombre sur la Croûte (le sel garde la lumière)",
     "particularites": [
@@ -41,25 +41,34 @@
     },
     "carte": null,
     "comptes_annonces": {
-      "lieux": 30,
-      "obligatoires": 7,
+      "lieux": 29,
+      "obligatoires": 6,
       "creatures": 16,
-      "objets": 15,
+      "objets": 14,
       "fragments": 6,
       "environnements": 4
     },
     "a_decider": [
       "le mécanisme de fin de zone (écluse seule ; « le Reste » non retenu)",
-      "graphe, campements, placement des six fragments, tri du pool de lieux (30 → ~20)",
       "la lecture « image fixe par environnement » : une image d'établissement par environnement + trois invariants par image dédiée",
-      "prototypes Encroûté + tempête sur les CTA existants — Patrick choisit",
-      "Broyeuse : fusion avec la Forge ?"
+      "prototypes Encroûté + tempête sur les CTA existants — Patrick choisit"
     ],
     "ecarts_de_transcription": [
-      "la bible annonce « 30 lieux, 7 obligatoires » ; sa liste en compte 33 (8 + 9 + 8 + 8) dont 6 marqués obligatoires (Rive haute, Terrasses, Entrepôt, Fossé, Rues, Tour) — la 7e n'est pas marquée (le Quai de l'île ?), à trancher au tri",
-      "la bible annonce 15 objets ; sa liste en compte 14 (Roue et Manivelle comptés ensemble, « si le mécanisme est gardé »)",
-      "aucune carte Figma : pas de coordonnées x/y — la carte se génère à l'étape 3 (table de routage validée)"
-    ]
+      "aucune carte Figma : pas de coordonnées x/y — la carte se génère à l'étape 3 (table de routage validée)",
+      "Les comptes de la bible (30 lieux, 7 obligatoires, 15 objets) sont REMPLACÉS par ceux du routage validé le 13/09 : 29 lieux joués (dont 6 obligatoires), 14 objets — la Roue et la Manivelle ne font qu'un."
+    ],
+    "decisions": {
+      "2026-09-13": [
+        "routage = configuration D de data/salines-routage.md (les 5 points)",
+        "le Fossé est le beat d'arrivée de Saulnes, pas un lieu",
+        "le Quai de l'île est obligatoire ; Saulnes finit Rues → Quai → Tour",
+        "F2 se lit aux Terrasses (garanti par construction)",
+        "la Barge est exclusive : coffre (F1) ou cale (F4)",
+        "tri 33 → 29 : Sonde retirée, Broyeuse → Forge, Bassin comble → Passerelle",
+        "le Battant : remis et sonné à la Rive haute (appelle le Bœuf, prévient le Ver), pas de branche « le garder »",
+        "la Guérite est le campement des Bassins"
+      ]
+    }
   },
   "environnements": [
     {
@@ -124,7 +133,7 @@
       ],
       "tirages": [
         1,
-        2
+        1
       ]
     },
     {
@@ -141,22 +150,24 @@
         "la tour et sa lueur"
       ],
       "histoire": "L'île n'a jamais été une ville. Une auberge, des dortoirs, des entrepôts, la tour. On y arrivait par la barge, on dormait une nuit, on payait, on descendait. Les Passeurs y étaient chez eux comme un aubergiste : jamais à la table des clients. Ceux qui sont restés dedans ont trouvé la parade — marcher. Ils tournent dans les rues depuis des siècles, attendant qu'on leur paie le passage.",
-      "entree": "fosse",
+      "entree": null,
       "fin": [
         "rues_qui_marchent",
+        "quai_de_l_ile",
         "tour_de_l_ecluse"
       ],
       "tirages": [
-        1,
-        2
-      ]
+        0,
+        1
+      ],
+      "arrivee": "fosse"
     }
   ],
   "lieux": [
     {
       "id": "rive_haute",
       "nom": "La Rive haute",
-      "note": "l'ancien quai : pieux, cloche d'appel sans battant, la phrase gravée sur un pieu (« Bouge, il te mange. Reste, il te garde. »). Première tempête ; balayer découvre la ligne de rails (posée par les Passeurs pour tirer la barge à sec — le fil visuel rive → île, pas un raccourci). Scène : sonner la cloche ou pas (le son attire ce qui bouge sous la croûte).",
+      "note": "l'ancien quai : pieux, cloche d'appel sans battant, la phrase gravée sur un pieu (« Bouge, il te mange. Reste, il te garde. »). Première tempête ; balayer découvre la ligne de rails (posée par les Passeurs pour tirer la barge à sec — le fil visuel rive → île, pas un raccourci). Scène : sonner la cloche ou pas (le son attire ce qui bouge sous la croûte). Le Battant (13/09) : au pied de la cloche ; le remettre et sonner appelle le Bœuf (monter = sauter un lieu) et prévient le Ver.",
       "environnement": "croute",
       "role": "entree",
       "statut": "obligatoire",
@@ -169,7 +180,8 @@
       ],
       "combats": [],
       "rencontres": [
-        "le_percepteur"
+        "le_percepteur",
+        "boeuf_de_sel_sur_ses_rails"
       ],
       "objets": [
         "battant_de_la_cloche"
@@ -239,7 +251,7 @@
     {
       "id": "barge_echouee",
       "nom": "La Barge échouée",
-      "note": "coque prise dans le sel, perche dressée. L'Encroûté qui vend de l'eau salée et dit la phrase entière (histoire : a acheté de l'eau pour deux, son compagnon s'est assis « une heure » et n'est plus qu'une statue à côté). Crochetage du coffre → registre des traversées (fragment 1). La trappe dans la cale (fragment 4), visible seulement si on descend.",
+      "note": "coque prise dans le sel, perche dressée. L'Encroûté qui vend de l'eau salée et dit la phrase entière (histoire : a acheté de l'eau pour deux, son compagnon s'est assis « une heure » et n'est plus qu'une statue à côté). Crochetage du coffre → registre des traversées (fragment 1). La trappe dans la cale (fragment 4), visible seulement si on descend. EXCLUSIF (13/09) : le coffre OU la cale, jamais les deux — l'Encroûté qui parle te retient le temps d'une seule chose.",
       "environnement": "croute",
       "role": "pool",
       "statut": "candidat",
@@ -267,7 +279,11 @@
         "recontextualisation": null
       },
       "illustration": null,
-      "portrait_requis": false
+      "portrait_requis": false,
+      "fragments_exclusifs": [
+        "f1_registre_de_la_barge",
+        "f4_trappe_de_la_barge"
+      ]
     },
     {
       "id": "statue",
@@ -328,8 +344,8 @@
       "nom": "La Sonde",
       "note": "forage des Passeurs, trépied de bois, corde qui descend dans le noir. Ce qui remonte n'est pas de l'eau. Souffle v2 en version courte.",
       "environnement": "croute",
-      "role": "pool",
-      "statut": "candidat",
+      "role": "retire",
+      "statut": "retire",
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
@@ -346,7 +362,8 @@
         "recontextualisation": null
       },
       "illustration": null,
-      "portrait_requis": false
+      "portrait_requis": false,
+      "raison": "son Souffle court double celui de la Passerelle rompue, sur la même menace (13/09)"
     },
     {
       "id": "radeau",
@@ -378,14 +395,16 @@
     {
       "id": "terrasses",
       "nom": "Les Terrasses",
-      "note": "trois niveaux à sec ; descendre d'un niveau est un choix ; Cristallins couchés et Grumeaux à chaque niveau. Objet : sel qui garde (actif : soigne un État négatif contre une pellicule ; jeté : détourne Sauniers et Grumeaux ; description qui change après le fragment 6). Premières ombres.",
+      "note": "trois niveaux à sec ; descendre d'un niveau est un choix ; Cristallins couchés et Grumeaux à chaque niveau. Objet : sel qui garde (actif : soigne un État négatif contre une pellicule ; jeté : détourne Sauniers et Grumeaux ; description qui change après le fragment 6). Premières ombres. F2 garanti (13/09) : l'Encroûté du haut dit « vas-y maintenant », le Héron décolle en bas.",
       "environnement": "bassins",
       "role": "entree",
       "statut": "obligatoire",
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
-      "fragments": [],
+      "fragments": [
+        "f2_le_heron_s_envole"
+      ],
       "minijeux": [],
       "combats": [
         "vermisseaux"
@@ -405,7 +424,7 @@
     {
       "id": "passerelle_rompue",
       "nom": "La Passerelle rompue",
-      "note": "mini-jeu d'équilibre. Tomber = Entaillé + scène du Souffle avec le Ver juste dessous. Réussir = traverser. La Perche ouvre un troisième choix : sonder avant.",
+      "note": "mini-jeu d'équilibre. Tomber = Entaillé + scène du Souffle avec le Ver juste dessous. Réussir = traverser. La Perche ouvre un troisième choix : sonder avant. Absorbe « Le Bassin comble » (13/09) : plein à ras bord de Grumeaux qui se tournent vers toi.",
       "environnement": "bassins",
       "role": "pool",
       "statut": "candidat",
@@ -415,7 +434,8 @@
       "fragments": [],
       "minijeux": [
         "equilibre",
-        "souffle_v2"
+        "souffle_v2",
+        "balayage"
       ],
       "combats": [],
       "rencontres": [],
@@ -529,7 +549,7 @@
     {
       "id": "guerite",
       "nom": "La Guérite",
-      "note": "cabane de garde-bassin, un Encroûté qui « connaît le chemin » et propose un raccourci par la croûte (fragment 2 bis si le Héron est en vue).",
+      "note": "cabane de garde-bassin, un Encroûté qui « connaît le chemin » et propose un raccourci par la croûte (fragment 2 bis si le Héron est en vue). CAMPEMENT des Bassins (13/09) : le seul toit de l'environnement ; dormir là coûte un palier d'Encroûté ; à l'aube l'Encroûté dit « vas-y maintenant » → fragment 2 bis.",
       "environnement": "bassins",
       "role": "pool",
       "statut": "candidat",
@@ -551,15 +571,16 @@
         "recontextualisation": null
       },
       "illustration": null,
-      "portrait_requis": false
+      "portrait_requis": false,
+      "campement": true
     },
     {
       "id": "bassin_comble",
       "nom": "Le Bassin comble",
       "note": "plein à ras bord de Grumeaux qui se tournent vers toi. On ne traverse pas, on contourne : la réponse est dans l'image (tempête à balayer, qui révèle la passerelle intacte).",
       "environnement": "bassins",
-      "role": "pool",
-      "statut": "candidat",
+      "role": "fusionne",
+      "statut": "fusionne",
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
@@ -576,7 +597,9 @@
         "recontextualisation": null
       },
       "illustration": null,
-      "portrait_requis": false
+      "portrait_requis": false,
+      "fusionne_dans": "passerelle_rompue",
+      "raison": "sa tempête qui révèle « la passerelle intacte » est exactement le troisième choix de la Passerelle"
     },
     {
       "id": "noria",
@@ -714,12 +737,13 @@
         "recontextualisation": null
       },
       "illustration": null,
-      "portrait_requis": false
+      "portrait_requis": false,
+      "campement": true
     },
     {
       "id": "forge_a_grattoirs",
       "nom": "La Forge à grattoirs",
-      "note": "l'atelier. Le Grattoir de saunier, l'objet de la zone. À finir par un tracé sur l'enclume, ou pris brut (coûte de la peau). Peut fusionner avec la Broyeuse.",
+      "note": "l'atelier. Le Grattoir de saunier, l'objet de la zone. À finir par un tracé sur l'enclume, ou pris brut (coûte de la peau). Peut fusionner avec la Broyeuse. Absorbe « La Broyeuse » (13/09) : le moulin qui réduisait les statues en poudre : c'est ça, le sel qui garde.",
       "environnement": "salines",
       "role": "pool",
       "statut": "candidat",
@@ -728,9 +752,12 @@
       "rarete": "commune",
       "fragments": [],
       "minijeux": [
-        "trace"
+        "trace",
+        "timing"
       ],
-      "combats": [],
+      "combats": [
+        "rats_de_saline"
+      ],
       "rencontres": [],
       "objets": [
         "grattoir_de_saunier"
@@ -804,8 +831,8 @@
       "nom": "La Broyeuse",
       "note": "le moulin qui réduisait les statues en poudre : c'est ça, le sel qui garde. Il tourne encore. Mini-jeu de timing façon crochetage : passer entre les pilons pour atteindre l'objet au centre. Grumeaux sortis des meules.",
       "environnement": "salines",
-      "role": "pool",
-      "statut": "candidat",
+      "role": "fusionne",
+      "statut": "fusionne",
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
@@ -825,15 +852,17 @@
       },
       "illustration": null,
       "portrait_requis": false,
-      "a_creuser": "marqué « à creuser » dans la bible ; peut fusionner avec la Forge à grattoirs"
+      "a_creuser": "marqué « à creuser » dans la bible ; peut fusionner avec la Forge à grattoirs",
+      "fusionne_dans": "forge_a_grattoirs",
+      "raison": "la bible le suggérait : les pilons deviennent le geste de timing de la Forge"
     },
     {
       "id": "fosse",
       "nom": "Le Fossé",
       "note": "l'anneau de croûte effondrée en gradins. On descend, puis on remonte vers la ville. Dernier lieu du Ver : il vient au bord de la roche, pas plus loin. Tempête forte, qui révèle l'escalier taillé.",
       "environnement": "saulnes",
-      "role": "entree",
-      "statut": "obligatoire",
+      "role": "arrivee",
+      "statut": "beat",
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
@@ -850,7 +879,8 @@
         "recontextualisation": null
       },
       "illustration": null,
-      "portrait_requis": false
+      "portrait_requis": false,
+      "raison": "on y descend puis on remonte vers la ville : une approche (comme le Chemin du Sud avant la Palissade), pas un endroit où l'on décide ; il garde sa tempête et son escalier, il ne crédite pas un lieu (13/09)"
     },
     {
       "id": "porte_de_l_ile",
@@ -928,7 +958,8 @@
         "recontextualisation": null
       },
       "illustration": null,
-      "portrait_requis": false
+      "portrait_requis": false,
+      "campement": true
     },
     {
       "id": "belvedere",
@@ -981,10 +1012,10 @@
     {
       "id": "quai_de_l_ile",
       "nom": "Le Quai de l'île",
-      "note": "la scène où le twist se paye. Les Encroûtés proposent de t'emmener à la tour « par la barge, comme avant » ; la barge intacte est posée sur les rails, orientée vers la croûte, pas vers la tour. Monter = mort unique dans le Ver. Ne pas monter = trouver la tour seul. Deux fragments suffisent pour voir le piège ; aucun, et c'est une aide.",
+      "note": "la scène où le twist se paye. Les Encroûtés proposent de t'emmener à la tour « par la barge, comme avant » ; la barge intacte est posée sur les rails, orientée vers la croûte, pas vers la tour. Monter = mort unique dans le Ver. Ne pas monter = trouver la tour seul. Deux fragments suffisent pour voir le piège ; aucun, et c'est une aide. Obligatoire (13/09) : la scène où le twist se paie ne se tire pas au sort.",
       "environnement": "saulnes",
-      "role": "pool",
-      "statut": "candidat",
+      "role": "fin",
+      "statut": "obligatoire",
       "lieu_attache": null,
       "histoire_bailli": true,
       "rarete": "commune",
@@ -1237,7 +1268,6 @@
       "lieux": [
         "champ_des_sillages",
         "passerelle_rompue",
-        "sonde",
         "belvedere"
       ],
       "hostile": false,
@@ -1427,6 +1457,7 @@
       "note": "la bête qui tirait les barges sur rails à sec, encore attelée, à moitié cristallisée, en marche sans fin. Rencontre ordinaire. Habité : le dernier Passeur est entré dedans.",
       "lieu_attache": null,
       "lieux": [
+        "rive_haute",
         "champ_des_sillages",
         "cour_aux_rails"
       ],
@@ -1740,9 +1771,9 @@
     {
       "id": "battant_de_la_cloche",
       "nom": "Le Battant de la cloche",
-      "note": "remis sur la cloche de la Rive haute : appelle le Ver ailleurs, une fuite garantie, une fois.",
+      "note": "trouvé au pied de la cloche d'appel sans battant, à la Rive haute. LE REMETTRE ET SONNER (décision 13/09) : le son appelle le Bœuf de sel, la bête des rails — on peut le monter et sauter un lieu de la Croûte. Mais le Ver a entendu aussi, et il sait maintenant où tu es. Le Battant est dépensé sur place. (La bible disait « appelle le Ver ailleurs, une fuite garantie » : incompatible avec une traversée qui ne revient jamais à la Rive haute — remplacé.)",
       "lieu_attache": "rive_haute",
-      "type": "passif",
+      "type": "actif",
       "descend": false,
       "histoire_bailli": false,
       "rarete": "rare",
@@ -1755,7 +1786,8 @@
       "portrait_requis": false,
       "sert": [
         "rive_haute"
-      ]
+      ],
+      "usage_sur_place": true
     },
     {
       "id": "lanterne_du_noye",
@@ -1873,20 +1905,23 @@
       ],
       "texte_bible": "Le registre de la Barge : deux colonnes, embarqués / débarqués, chiffres qui ne collent pas.",
       "acces": "crochetage du coffre",
-      "garanti": false
+      "garanti": false,
+      "exclusif_avec": "f4_trappe_de_la_barge"
     },
     {
       "id": "f2_le_heron_s_envole",
       "ordre": 2,
       "lieux": [
+        "terrasses",
         "radeau",
         "guerite"
       ],
       "eclaire_a": [],
       "texte_bible": "Le Héron s'envole toujours juste après qu'un Encroûté t'a dit « vas-y maintenant ».",
-      "acces": "le Héron EN VUE et un Encroûté qui dit « vas-y » dans la même séquence",
+      "acces": "aux Terrasses (entrée obligatoire des Bassins) : l'Encroûté du haut dit « vas-y maintenant » et le Héron décolle du bassin en contrebas — visible par construction, c'est un invariant d'image de l'environnement. Radeau et Guérite gardent le « 2 bis » (re-lecture).",
       "garanti": true,
-      "contrainte": "DOIT être garanti lisible par construction : si le graphe ne garantit pas le Héron visible depuis le Radeau et la Guérite, c'est un fragment illisible (le défaut de la défense du Serment au procès des Landes)."
+      "contrainte": "DOIT être garanti lisible par construction : si le graphe ne garantit pas le Héron visible depuis le Radeau et la Guérite, c'est un fragment illisible (le défaut de la défense du Serment au procès des Landes).",
+      "lieu_garanti": "terrasses"
     },
     {
       "id": "f3_compris_dans_le_prix",
@@ -1909,7 +1944,8 @@
       "eclaire_a": [],
       "texte_bible": "La coque de la barge a une trappe dans le fond.",
       "acces": "descendre dans la cale",
-      "garanti": false
+      "garanti": false,
+      "exclusif_avec": "f1_registre_de_la_barge"
     },
     {
       "id": "f5_anneaux_du_wagon",

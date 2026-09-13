@@ -75,7 +75,7 @@ colonne de droite énumère, qui n'existe nulle part ailleurs.
 | `id` | string | slug snake_case sans accents (`landes`) |
 | `nom` | string | nom d'affichage (`Les Landes`) |
 | `acte` | number | 1, 2 ou 3 |
-| `statut` | string | `"gelee"` (contenu et carte figés) ou `"conception"` |
+| `statut` | string | `"gelee"` (contenu et carte figés) · `"conception"` (bible transcrite, rien de tranché) · `"routage_valide"` (la table de routage est arbitrée, `lib/zones.ts` déclare ses environnements, le graphe se génère — mais aucune scène n'est écrite) |
 | `heure_figee` | string | l'heure éternelle de la zone (« crépuscule éternel ») |
 | `particularites` | string[] | règles de gameplay propres à la zone (ex. le Serment) |
 | `bruit_ecrit` | string | motif sonore rare, en italique dans le transcript |
@@ -176,8 +176,14 @@ Champs qui n'existent pas dans `landes.json` :
 | `environnements[]` | racine | les étapes de la traversée à étages (`lib/etages.ts`) : `{ id, ordre, nom, sous_titre, jour, ratio_trame, plan, invariants[], histoire, entree, fin[], tirages:[min,max] }`. `entree` peut être `null` (on y débarque par le pool), `fin` liste les obligatoires joués APRÈS le pool, dans l'ordre |
 | `fragments[]` | racine | les fragments du twist : `{ id, ordre, lieux[], eclaire_a[], texte_bible, acces, garanti, contrainte? }`. Un fragment est aussi déclaré par chaque lieu qui le porte (`lieux[].fragments`) — le contrôle exige les deux sens |
 | `environnement` | lieu | l'id de l'étape qui le contient |
-| `role` | lieu | `entree` · `pool` · `fin` — c'est ce que `prochainPas` lit |
-| `statut` | lieu | `obligatoire` (entrée ou fin d'une étape) · `candidat` (dans le pool, avant le tri 30 → ~20) |
+| `role` | lieu | `entree` · `pool` · `fin` — c'est ce que `prochainPas` lit. Depuis le tri du 13/09, trois rôles HORS traversée gardent la matière sans la jouer : `arrivee` (un beat d'arrivée d'environnement — le Fossé —, cité par `environnements[].arrivee`), `retire` (sorti du jeu), `fusionne` (absorbé par un autre lieu, `fusionne_dans`). Les trois portent une `raison` obligatoire, ne sont ni comptés ni tirables, et ne peuvent porter aucun fragment |
+| `statut` | lieu | `obligatoire` (entrée ou fin d'une étape) · `candidat` (dans le pool) · `beat` / `retire` / `fusionne` (miroir des rôles hors traversée) |
+| `campement` | lieu | `true` = on peut y dormir (la Guérite pour les Bassins, décision 13/09 ; le Dortoir ; l'Auberge) |
+| `fragments_exclusifs` | lieu | deux fragments portés par le même lieu dont on ne lit qu'UN par passage (la Barge : F1 ou F4) — miroir `exclusif_avec` sur les deux fragments |
+| `lieu_garanti` | fragment | le lieu obligatoire qui le rend lisible dans 100 % des parties (F2 aux Terrasses) |
+| `usage_sur_place` | objet | l'objet se dépense là où on le trouve (le Battant, remis et sonné à la Rive haute) : le contrôle ne le signale plus comme promesse sans usage |
+| `environnements[].arrivee` | racine | le lieu-beat joué en ENTRANT dans l'étape, avant le pool, sans crédit de lieu (`entree` reste `null`) |
+| `zone.decisions` | racine | les arbitrages de Patrick, datés — ce que `a_decider` ne contient plus |
 | `fragments` / `minijeux` / `combats` / `rencontres` / `objets` | lieu | ce que le lieu porte, par id (créatures pour `combats`, qui doivent être `hostile`) |
 | `a_creuser` | lieu | la bible l'a marqué tel quel |
 | `lieux[]` + `hostile` | créature | où elle se joue (un errant peut en avoir plusieurs), et si elle se combat |

@@ -1268,11 +1268,13 @@ def main() -> int:
     zones_json = {}
     for zf in sorted(ZONES.glob("*.json")):
         z = json.loads(zf.read_text(encoding="utf-8"))
-        # Une zone EN CONCEPTION (salines.json depuis le 12/09) n'a ni scène
-        # jouable ni carte : l'exporter ferait apparaître ses lieux dans le
-        # Graphe des Landes, sans coordonnées et sans un seul écran derrière.
-        # Sa carte se génère à l'étape 3 (table de routage validée), pas avant.
-        if (z.get("zone") or {}).get("statut") == "conception":
+        # Une zone SANS SCÈNE (salines.json : en conception le 12/09, routage
+        # validé le 13/09) n'a rien à exporter ici : ses lieux apparaîtraient
+        # dans le Graphe des Landes, sans coordonnées et sans un écran
+        # derrière. Son graphe à elle se bâtit depuis sa matière de production
+        # (`graphe.py`, `construire_routage`), pas depuis cet export. Le
+        # critère est l'ABSENCE de scènes, pas un statut : un statut se périme.
+        if not z.get("scenes"):
             continue
         zones_json[zf.stem] = z
         noms = {s["id"]: s for s in z.get("scenes", [])}

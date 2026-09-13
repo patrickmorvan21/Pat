@@ -5,14 +5,15 @@
 # l'export du jeu et dépose la page + ses données sur gh-pages, à côté
 # du jeu :  https://patrickmorvan21.github.io/Pat/aldenhar/graphe.html
 #
-# ⚠️ Il ne touche QUE ces deux fichiers dans gh-pages. Le jeu part par
-# le déploiement manuel, qui a son propre rituel.
+# ⚠️ Il ne touche QUE ces fichiers dans gh-pages : graphe.html,
+# graphe-data.json et les graphe-data-<zone>.json. Le jeu part par le
+# déploiement manuel, qui a son propre rituel.
 #
 # ⚠️ En revanche, ce déploiement manuel REMPLACE le dossier aldenhar/ :
-# il doit donc recopier graphe.html et graphe-data.json. Ce sont les
-# DEUX SEULS fichiers à recopier depuis le 31/08 — la couverture et
-# l'atelier ont été supprimés (le Studio l'avait été le 30/08), et le
-# Graphe les remplace tous les trois.
+# il doit donc recopier graphe.html et TOUS les graphe-data*.json (les
+# Landes + une zone par routage validé, les Salines depuis le 13/09). La
+# couverture et l'atelier ont été supprimés le 31/08 (le Studio le 30/08),
+# le Graphe les remplace tous les trois.
 # =====================================================================
 name: Le graphe
 
@@ -69,10 +70,13 @@ jobs:
           mkdir -p .pages/aldenhar
           cp data/pactum-graphe.html .pages/aldenhar/graphe.html
           cp data/graphe-data.json  .pages/aldenhar/graphe-data.json
+          # une zone au routage validé sans scène écrite (les Salines, 13/09) :
+          # son graphe est un JSON à part, lu par la même page via ?zone=
+          cp data/graphe-data-*.json .pages/aldenhar/ 2>/dev/null || true
           cd .pages
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add aldenhar/graphe.html aldenhar/graphe-data.json
+          git add aldenhar/graphe.html aldenhar/graphe-data.json aldenhar/graphe-data-*.json
           if git diff --cached --quiet; then
             echo "Le graphe est déjà à jour — rien à publier."
           else

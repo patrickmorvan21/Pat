@@ -63,9 +63,22 @@ def verifier(chemin: Path) -> int:
             if v not in cible:
                 erreurs.append(f"{ou} · {champ} = « {v} » : aucun {nom_cible} de cet id")
 
-    # ── lieux
+    # ── lieux. Depuis le tri du 13/09, un lieu peut être RETIRÉ, FUSIONNÉ dans
+    # un autre, ou n'être qu'un BEAT D'ARRIVÉE d'environnement (le Fossé) :
+    # il reste dans le fichier (la matière est gardée) mais il n'est plus
+    # un lieu de la traversée — ni compté, ni tirable.
+    ROLES_JOUES = ("entree", "pool", "fin")
+    joues = {L["id"] for L in z.get("lieux", []) if L.get("role") in ROLES_JOUES}
     for L in z.get("lieux", []):
         ou = f"lieu {L['id']}"
+        if L.get("role") not in ROLES_JOUES + ("arrivee", "retire", "fusionne"):
+            erreurs.append(f"{ou} : role « {L.get('role')} » inconnu")
+        if L.get("role") == "fusionne":
+            ref(ou, "fusionne_dans", L.get("fusionne_dans"), joues, "lieu joué")
+            if not L.get("fusionne_dans"):
+                erreurs.append(f"{ou} : fusionné sans `fusionne_dans`")
+        if L.get("role") in ("retire", "fusionne", "arrivee") and not L.get("raison"):
+            erreurs.append(f"{ou} : role={L['role']} sans `raison` (une décision se dit)")
         ref(ou, "environnement", L.get("environnement"), envs, "environnement")
         ref(ou, "lieu_attache", L.get("lieu_attache"), lieux, "lieu")
         ref(ou, "fragments", L.get("fragments", []), fragments, "fragment")
@@ -91,7 +104,9 @@ def verifier(chemin: Path) -> int:
         if not o.get("lieu_attache"):
             erreurs.append(f"{ou} : aucun lieu de ramassage")
         usages = [s for s in o.get("sert", []) if s != o.get("lieu_attache")]
-        if not usages:
+        if o.get("usage_sur_place"):
+            pass  # décision d'auteur : l'objet se dépense là où on le trouve (le Battant)
+        elif not usages:
             notes.append(f"{ou} : aucun lieu d'usage hors de son lieu de ramassage (promesse à écrire ou à assumer)")
         elif len(usages) < 2:
             notes.append(f"{ou} : un seul lieu d'usage — la bible en demande « au moins deux »")
@@ -104,6 +119,9 @@ def verifier(chemin: Path) -> int:
         # un fragment doit être PORTÉ par un lieu (le lieu le déclare aussi) —
         # sinon le graphe et le routage ne le verront pas
         porteurs = [L["id"] for L in z["lieux"] if f["id"] in L.get("fragments", [])]
+        for l in f.get("lieux", []):
+            if l in lieux and l not in joues:
+                erreurs.append(f"{ou} : porté par « {l} », qui n'est plus un lieu joué")
         for l in f.get("lieux", []):
             if l not in porteurs:
                 erreurs.append(f"{ou} : le lieu « {l} » ne le déclare pas dans ses `fragments`")
@@ -125,6 +143,11 @@ def verifier(chemin: Path) -> int:
             erreurs.append(f"étape {e['id']} : tirages min > max")
         if hi > len(pool):
             erreurs.append(f"étape {e['id']} : tirages max ({hi}) > pool ({len(pool)})")
+        if e.get("arrivee"):
+            ref(f"étape {e['id']}", "arrivee", e["arrivee"], lieux, "lieu")
+            A = next((x for x in z["lieux"] if x["id"] == e["arrivee"]), None)
+            if A and (A.get("role") != "arrivee" or A.get("environnement") != e["id"]):
+                erreurs.append(f"étape {e['id']} : « {e['arrivee']} » n'est pas déclaré role=arrivee de cette étape")
         if e.get("entree"):
             ref(f"étape {e['id']}", "entree", e["entree"], lieux, "lieu")
             note_env(e["entree"], f"{e['id']}/entree")
@@ -149,7 +172,7 @@ def verifier(chemin: Path) -> int:
 
     # ── comptes
     comptes = {
-        "lieux": len(lieux), "obligatoires": sum(1 for L in z["lieux"] if L.get("statut") == "obligatoire"),
+        "lieux": len(joues), "obligatoires": sum(1 for L in z["lieux"] if L.get("statut") == "obligatoire"),
         "rencontres": len(rencontres), "creatures": len(creatures), "objets": len(objets),
         "fragments": len(fragments), "environnements": len(envs),
     }

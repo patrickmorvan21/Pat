@@ -20,8 +20,17 @@ MISE À JOUR AUTOMATIQUE : la page ne contient AUCUNE donnée. Elle va chercher
 gh-pages — donc la page suit le jeu sans qu'on la reconstruise.
 
 Sorties :
-  data/graphe-data.json   — les nœuds, les liens, les textes
-  data/pactum-graphe.html — la coquille (statique, ne change presque jamais)
+  data/graphe-data.json          — les nœuds, les liens, les textes (les Landes)
+  data/graphe-data-<zone>.json   — une zone dont le ROUTAGE est validé mais
+                                   dont aucune scène n'est écrite (les Salines
+                                   depuis le 13/09) : ses lieux, ses
+                                   environnements en groupes ORDONNÉS, et les
+                                   liens VRAIS de la traversée à étages
+  data/pactum-graphe.html        — la coquille (statique, ne change presque jamais)
+
+La page lit `?zone=<id>` et va chercher le JSON correspondant ; sans paramètre,
+les Landes. La liste des zones disponibles voyage DANS chaque JSON
+(`zonesDisponibles`) — la coquille ne connaît aucune zone par son nom.
 """
 
 from __future__ import annotations
@@ -39,6 +48,7 @@ from style_image import CLAUSE  # noqa: E402  (la recette d'image, source unique
 RACINE = Path(__file__).resolve().parent.parent
 STUDIO = RACINE / "data/studio-data.json"
 SORTIE_JSON = RACINE / "data/graphe-data.json"
+ZONES_DIR = RACINE / "data/zones"
 SORTIE_HTML = RACINE / "data/pactum-graphe.html"
 
 # Le dépôt sert de filet quand une image n'est pas encore déployée sur gh-pages
@@ -363,12 +373,184 @@ def construire() -> dict:
     }
 
 
+def construire_routage(z: dict) -> dict:
+    """Le graphe d'une zone dont le ROUTAGE est validé mais dont aucune scène
+    n'est écrite. Il n'a rien à lire dans studio-data (qui ne connaît que les
+    scènes) : il se bâtit depuis la matière de production elle-même.
+
+    Ce qu'il dessine, et pourquoi c'est vrai — contrairement aux Landes, où
+    « aucun chemin n'existe entre les lieux » (la traversée tire au sort), une
+    zone à étages a un ORDRE : les environnements se traversent toujours dans
+    le même sens, l'entrée d'une étape se joue avant son pool, ses fins se
+    jouent après et dans l'ordre. Les liens tracés sont donc ceux du moteur
+    (`prochainPas`, lib/etages.ts) :
+      · entrée (ou beat d'arrivée) → chaque lieu du pool : un tirage possible
+      · chaque lieu du pool → la première fin (ou l'étape suivante)
+      · fin → fin suivante, dernière fin → entrée de l'étape suivante
+      · un pool vers un pool (étape sans entrée) : n'importe lequel vers
+        n'importe lequel — tracé en lien FAIBLE, sinon c'est une pelote.
+    """
+    zz = z["zone"]
+    L = {l["id"]: l for l in z["lieux"]}
+    envs = sorted(z["environnements"], key=lambda e: e["ordre"])
+    nom_r = {r["id"]: r["nom"] for r in z.get("rencontres", [])}
+    nom_c = {c["id"]: c["nom"] for c in z.get("creatures", [])}
+    nom_o = {o["id"]: o["nom"] for o in z.get("objets", [])}
+    frag = {f["id"]: f for f in z.get("fragments", [])}
+    env_nom = {e["id"]: e["nom"] for e in envs}
+    JOUES = ("entree", "pool", "fin")
+    e_fins = {e["id"]: list(e.get("fin") or []) for e in envs}
+    ROLE = {"entree": "entrée de l'étape", "pool": "tiré au sort", "fin": "obligatoire, en fin d'étape",
+            "arrivee": "beat d'arrivée — pas un lieu, ne crédite rien"}
+    noeuds: list[dict] = []
+    liens: list[dict] = []
+    vus: set[str] = set()
+    faits: set[tuple] = set()
+
+    def nid(i: str) -> str:
+        return "lieu:" + i
+
+    def lien(a: str, b: str, t: str):
+        if a == b or a not in vus or b not in vus or (a, b, t) in faits:
+            return
+        faits.add((a, b, t))
+        liens.append({"a": a, "b": b, "t": t})
+
+    for l in z["lieux"]:
+        if l["role"] not in JOUES + ("arrivee",):
+            continue
+        meta = [env_nom.get(l["environnement"], l["environnement"]), ROLE[l["role"]]]
+        if l.get("campement"):
+            meta.append("campement")
+        for c in l.get("combats", []):
+            meta.append("combat · " + nom_c.get(c, c))
+        for r in l.get("rencontres", []):
+            meta.append(nom_r.get(r, r))
+        for f in l.get("fragments", []):
+            g = frag.get(f, {})
+            meta.append(f"fragment {g.get('ordre', '?')}" + (" (garanti)" if g.get("lieu_garanti") == l["id"] else ""))
+        if l.get("fragments_exclusifs"):
+            meta.append("un seul des deux fragments par passage")
+        for o in l.get("objets", []):
+            meta.append("objet · " + nom_o.get(o, o))
+        for m in l.get("minijeux", []):
+            meta.append("geste · " + m)
+        vus.add(nid(l["id"]))
+        noeuds.append({
+            "id": nid(l["id"]), "nom": l["nom"],
+            "cat": "arrivee" if l["role"] == "arrivee" else "lieu",
+            # le RÔLE dans l'étape : c'est lui qui place le nœud sur l'anneau
+            # de son environnement (tête à gauche, fins à droite, pool entre)
+            "role": l["role"],
+            "rang": e_fins[l["environnement"]].index(l["id"]) if l["role"] == "fin" else None,
+            "groupe": l["environnement"], "lieu": l["environnement"],
+            "image": None, "prompt": "",
+            # LA NOTE DE LA BIBLE, telle quelle : c'est tout ce qui est écrit.
+            "desc": [l.get("note", "")],
+            "meta": meta,
+        })
+    # La matière ABSORBÉE par le tri (Broyeuse → Forge, Bassin comble →
+    # Passerelle) : montrée rattachée à son lieu d'accueil, jamais perdue.
+    for l in z["lieux"]:
+        if l["role"] != "fusionne":
+            continue
+        vus.add(nid(l["id"]))
+        noeuds.append({
+            "id": nid(l["id"]), "nom": l["nom"], "cat": "action",
+            "groupe": l["environnement"], "lieu": l["environnement"],
+            "image": None, "desc": [l.get("note", "")],
+            "meta": ["fusionné dans " + L[l["fusionne_dans"]]["nom"], l.get("raison", "")],
+        })
+        lien(nid(l["fusionne_dans"]), nid(l["id"]), "appartient")
+
+    sorties_prec: list[str] = []
+    for e in envs:
+        pool = [l["id"] for l in z["lieux"] if l["environnement"] == e["id"] and l["role"] == "pool"]
+        fins = list(e.get("fin") or [])
+        tete = e.get("arrivee") or e.get("entree")
+        entrees = [tete] if tete else pool
+        # d'une étape à la suivante
+        # un vers un = la suite obligée ; plusieurs vers un = une sortie ;
+        # plusieurs vers plusieurs = faible, sinon c'est une pelote
+        t_ = "suite" if (tete and len(sorties_prec) == 1) else ("sortie" if tete else "contexte")
+        for a in sorties_prec:
+            for b in entrees:
+                lien(nid(a), nid(b), t_)
+        apres_pool = fins[0] if fins else None
+        if tete:
+            for p_ in pool:
+                lien(nid(tete), nid(p_), "sortie")
+            if apres_pool and (e.get("tirages") or [1])[0] == 0:
+                lien(nid(tete), nid(apres_pool), "sortie")   # zéro tirage possible
+        if apres_pool:
+            for p_ in pool:
+                lien(nid(p_), nid(apres_pool), "sortie")
+        for a, b in zip(fins, fins[1:]):
+            lien(nid(a), nid(b), "suite")
+        sorties_prec = [fins[-1]] if fins else pool
+
+    degres = {n["id"]: 0 for n in noeuds}
+    for l in liens:
+        degres[l["a"]] += 1
+        degres[l["b"]] += 1
+    for n in noeuds:
+        n["deg"] = degres[n["id"]]
+
+    groupes = [{
+        "id": e["id"], "nom": e["nom"], "ordre": e["ordre"], "sous": e.get("sous_titre", ""),
+        "lieux": [nid(l["id"]) for l in z["lieux"]
+                  if l["environnement"] == e["id"] and l["role"] in JOUES + ("arrivee",)],
+    } for e in envs]
+    nb_lieux = sum(1 for n in noeuds if n["cat"] == "lieu")
+    return {
+        "mode": "routage",
+        "zone": {"id": zz["id"], "nom": zz["nom"], "statut": zz.get("statut", "")},
+        "groupes": groupes,
+        "brut": BRUT, "clauseStyle": CLAUSE,
+        "noeuds": noeuds, "liens": liens,
+        "totaux": {"scenes": 0, "lieux": nb_lieux, "etapes": len(envs),
+                   "actions": sum(1 for n in noeuds if n["cat"] == "action"),
+                   "transitions": 0, "marches": 0, "liens": len(liens), "scenesRattachees": 0,
+                   "retires": sum(1 for l in z["lieux"] if l["role"] == "retire")},
+    }
+
+
+def zones_en_routage() -> list[tuple[str, dict]]:
+    """Les zones dont le routage est validé sans qu'une scène soit écrite."""
+    out = []
+    for zf in sorted(ZONES_DIR.glob("*.json")):
+        z = json.loads(zf.read_text(encoding="utf-8"))
+        if (z.get("zone") or {}).get("statut") == "routage_valide" and not z.get("scenes"):
+            out.append((zf.stem, z))
+    return out
+
+
 def main() -> int:
     if not STUDIO.exists():
         print("data/studio-data.json manquant — lance d'abord tools/studio_data.py", file=sys.stderr)
         return 1
+    routage = zones_en_routage()
+    # la liste des zones voyage dans CHAQUE JSON : la coquille n'en connaît aucune
+    dispo = [{"id": "", "nom": "Les Landes"}] + [{"id": stem, "nom": z["zone"]["nom"]} for stem, z in routage]
+    commun = {"genere": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+              "zonesDisponibles": dispo}
+    try:
+        commun["commit"] = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=RACINE,
+                                          capture_output=True, text=True).stdout.strip()
+    except Exception:
+        commun["commit"] = ""
     g = construire()
+    g.update(commun)
     SORTIE_JSON.write_text(json.dumps(g, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    for stem, z in routage:
+        gz = construire_routage(z)
+        gz.update(commun)
+        sortie = SORTIE_JSON.with_name(f"graphe-data-{stem}.json")
+        sortie.write_text(json.dumps(gz, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        tz = gz["totaux"]
+        print(f"{sortie.relative_to(RACINE)} — {tz['lieux']} lieux · {tz['etapes']} environnements · "
+              f"{tz['actions']} fusionnés · {tz['retires']} retiré(s) · {tz['liens']} liens "
+              f"({sortie.stat().st_size // 1024} Ko)")
     gabarit = Path(__file__).resolve().parent / "graphe_page.html"
     SORTIE_HTML.write_text(gabarit.read_text(encoding="utf-8"), encoding="utf-8")
     t = g["totaux"]
