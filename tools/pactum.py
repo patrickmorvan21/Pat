@@ -17,6 +17,12 @@ CE QUI EST VRAI, CE QUI NE L'EST PAS — à lire avant d'écrire un rapport :
     répliqués : les images, le geste tactile du dé, les minutages, la
     mémoire inter-vies (Registre, reliques, saisons du Geôlier), les besoins,
     les témoins, les chapitres du Bailli, les surprises.
+  • ⚠️ LA ZONE 2 (LES SALINES, 13/09) N'EST PAS JOUÉE ICI : ses scènes
+    voyagent dans le kit (la Croûte : Rive haute, la file, le champ des
+    sillages, la barge, la statue, la bouche, le radeau) mais la réplique ne
+    connaît que la traversée des Landes (pool plat) — ni la traversée à
+    étages, ni l'Encroûté, ni la tempête de sel. Un relecteur qui veut juger
+    la Croûte le fait sur les transcripts, jamais sur cette table.
   ⇒ Juge le TEXTE et l'ENCHAÎNEMENT sur ce que tu lis ici. Pour tout ce qui
     touche à la mise en scène ou aux systèmes non répliqués, appuie-toi sur
     les parties enregistrées du dossier `transcripts/`.

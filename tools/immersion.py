@@ -469,6 +469,42 @@ def pools() -> list[dict]:
                 "textes": chaines_de_tableau(bloc),
             })
 
+    # — LES SALINES · LA CROÛTE (13/09) : phrases d'arrivée, ambiances de
+    #   marche, Geôlier de liaison, ligne de l'Encroûté, « après » des tempêtes.
+    #   GARDE `{village, gens}` pour tous, et c'est JUSTIFIÉ, pas un laxisme :
+    #   la Croûte est un SITE BÂTI (pieux, cloche, rails, barge, statue) et les
+    #   Encroûtés sont des GENS — le lexique VILLAGE (cloche, une porte,
+    #   maison…) et GENS y sont légitimes partout. Ce qu'on garde ici, c'est
+    #   l'inverse : aucun texte de Croûte ne doit présupposer la LANDE
+    #   (bruyère, le plateau, les Landes) — `lande_au_village` ne tire que sur
+    #   `partout`, donc on l'ajoute à la main plus bas (voir `SALINES_LANDE`).
+    n_avant = len(out)
+    sap = re.search(r"export const SALINES_APPROACH_NARRATION[^=]*=\s*\{(.*?)\n\};", scene_src, re.S)
+    if sap:
+        for m in re.finditer(
+            r'(?:"([a-z0-9\-]+)"|([a-zA-Z][a-zA-Z0-9\-]*))\s*:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)',
+            sap.group(1),
+        ):
+            dest = m.group(1) or m.group(2)
+            texte = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(3))).replace('\\"', '"')
+            out.append({"pool": f"salines arrivée {dest}", "garde": {"village", "gens"}, "textes": [texte]})
+    for table, nom in (("SALINES_AMBIANCES", "salines ambiance"), ("SALINES_JAILER", "salines geôlier")):
+        for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, f"export const {table}"))):
+            out.append({"pool": f"{nom} {i}", "garde": {"village", "gens"}, "textes": [t]})
+    enc = re.search(r'export const SALINES_ENCROUTE_GEOLIER\s*=\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', scene_src)
+    if enc:
+        t = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', enc.group(1)))
+        out.append({"pool": "salines encroûté geôlier", "garde": {"village", "gens"}, "textes": [t]})
+    for m in re.finditer(r'tempete:\s*\{\s*apres:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', scene_src):
+        t = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(1)))
+        out.append({"pool": f"salines tempête après ({empreinte(t)})", "garde": {"village", "gens"}, "textes": [t]})
+    # ⚠️ COMPTER ce qu'on extrait (règle du 10/08) : 7 arrivées, 7 ambiances,
+    # 4 lignes du Geôlier, 1 ligne d'Encroûté, 2 tempêtes — 21 textes au 13/09.
+    n_sal = len(out) - n_avant
+    assert n_sal >= 21, f"pools des Salines : {n_sal} extraits, ≥ 21 attendus — l'extracteur ne lit plus scene-data.ts"
+    for p_ in out[n_avant:]:
+        p_["salines"] = True
+
     # ⚠️ Les DEUX tables passent : `SCEAU_TRANSFORME` remplace la précédente
     # au-delà de deux traversées (15/08) — l'oublier laisserait trois textes
     # d'arrivée hors de l'audit, sans le moindre signalement.
@@ -652,7 +688,7 @@ def main() -> int:
             # un texte qui présuppose des gens/le village doit être gardé ainsi
             manque = {b for b in besoins if b in {"gens", "village"} and b not in garde}
             # un texte de LANDE servi dans un pool qui joue AUSSI au village
-            lande_au_village = "lande" in besoins and "partout" in garde
+            lande_au_village = "lande" in besoins and ("partout" in garde or p.get("salines"))
             if (manque or lande_au_village) and p["pool"] not in EXEMPT:
                 signalements.append((p["pool"], sorted(besoins), sorted(garde), t))
     print(f"AUDIT D'IMMERSION — {len(signalements)} signalement(s)\n")

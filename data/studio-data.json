@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-12T14:13:02Z",
- "commit": "73e55fc",
+ "genere": "2026-09-13T11:53:16Z",
+ "commit": "abb3ad8",
  "zones": [
   {
    "id": "landes",
@@ -7930,6 +7930,874 @@
    "alertes": []
   },
   {
+   "id": "rive-haute",
+   "narration": [
+    "Le sel commence sans prévenir. Un pas, c'est encore de la terre ; le suivant sonne creux et blanc. Devant toi la Croûte s'étend jusqu'à une île posée au milieu, si loin qu'elle tremble. Plein jour, aucune ombre. Quelque part, un cliquetis de plomb.",
+    "Sur la rive, des pieux en rang portent une cloche sans battant. Dans le bois, gravé au clou : « Bouge, il te mange. Reste, il te garde. »"
+   ],
+   "choix": [
+    {
+     "id": "lire-les-pieux",
+     "label": "Lire la phrase des pieux",
+     "type": "passif",
+     "consequence": "Les lettres sont creusées profond, repassées — gravées plusieurs fois, à des années d'écart, de la même main. Sous la dernière, un autre a ajouté, plus petit : « Les deux. »"
+    },
+    {
+     "id": "main-sur-la-croute",
+     "label": "Poser la main sur la croûte",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 10,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tiède, et sous ta paume, très loin, quelque chose se déplace — lentement, comme une charge qu'on tire. Ça ne vient pas vers toi. Ça tourne autour de l'île, et ça repasse toujours par le même point.",
+      "reussite": "Tiède. Sous ta paume, très loin, quelque chose se déplace lentement, comme une charge qu'on tire. Ça ne vient pas vers toi. Pas encore.",
+      "echec": "Rien qu'un froid sec. Quand tu retires la main, le sel garde l'empreinte de tes cinq doigts — et ne la referme pas.",
+      "funeste": "1 naturel. Le sel te prend la paume comme une bouche prend un fruit. Tu tires. Il rend ta main, mais garde un peu de peau. ♦ −2"
+     },
+     "nature": "exploration"
+    },
+    {
+     "id": "descendre-vers-la-cloche",
+     "label": "Descendre vers la cloche",
+     "type": "passif",
+     "consequence": "Tu descends la rive jusqu'aux pieux. Le cliquetis de plomb est là, tout près — et il n'est pas seul."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "rive-haute-2",
+   "butin": "battant-cloche",
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "rive-haute-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "acompleter",
+   "alertes": [
+    "orpheline",
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "rive-haute-2",
+   "narration": [
+    "Au pied des pieux, un homme est assis sur un jeton de plomb gros comme une meule. Sa peau est blanche de sel jusqu'aux yeux ; une cliquette pend à sa ceinture. Il t'en tend un autre, vierge, sans un mot de plus que : « Le Percepteur. On paie ici, ou on paie là-bas. Là-bas, c'est plus cher. »"
+   ],
+   "choix": [
+    {
+     "id": "demander-ce-qui-mange",
+     "label": "Prendre le jeton, lui demander",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu prends le jeton — il ne pèse rien, il n'a pas de nom dessus. Il te regarde vraiment, pour la première fois. « Le Ver entend les pas. Le sel entend les arrêts. Et moi j'entends les deux. » Il montre les sillages vers l'île. « Ne marche jamais entre deux Gisants. Et si tu passes… reviens me dire à quoi ça ressemble, là-bas. J'ai pas fini de payer. »",
+      "reussite": "Tu prends le jeton. Il ne pèse rien. « Je le remplirai quand tu passeras. Tout le monde passe. » Puis, sur les fissures qui filent vers l'île : « Le Ver entend les pas : un pas, il lève la tête ; dix, il vient. Et ceux qui restent, le sel les prend. Les Gisants. Ne marche jamais entre deux — ils attendent que ça bouge. »",
+      "echec": "Tu prends le jeton. « Le Ver, et le sel. Ne reste pas, ne marche pas entre les Gisants. » C'est tout ce qu'il te donne, et il détourne les yeux du jeton dans ta main.",
+      "funeste": "1 naturel. Tu prends le jeton. « Le Ver, et le sel, et les gens comme toi qui posent des questions au lieu de payer. Ne marche pas entre les Gisants. » Il fait claquer sa cliquette une fois : un compte s'ouvre quelque part. ♦ −2"
+     },
+     "nature": "social",
+     "donneSavoir": "savoir_gisants",
+     "tags": [
+      "citable"
+     ]
+    },
+    {
+     "id": "monter-sur-le-boeuf",
+     "label": "Monter sur le bœuf",
+     "type": "passif",
+     "consequence": "Le bœuf s'arrête au bord et s'agenouille, comme on s'agenouille pour être chargé. Tu montes. Il repart d'un pas égal, droit vers l'île, et la croûte ne chante pas sous lui. Derrière, très loin, une ondulation suit à distance. Quand il te dépose, tu as gagné une lieue de sel — et quelque chose sait laquelle.",
+     "sortie": {},
+     "sauteEtape": true,
+     "exigeUsage": "battant",
+     "prendLaPlaceDe": [
+      "prendre-la-croute"
+     ]
+    },
+    {
+     "id": "prendre-la-croute",
+     "label": "Prendre la croûte",
+     "type": "passif",
+     "consequence": "Tu poses le pied sur le sel. Il tient. Dans ton dos, la cliquette claque une fois, comme on marque un compte.",
+     "sortie": {}
+    }
+   ],
+   "pointsInteret": [],
+   "sejour": true,
+   "tempete": {
+    "apres": "Le sel retombe. Là où ta main a balayé, deux rails de fer courent sous la croûte, droits vers l'île, polis comme s'ils servaient encore. Le Percepteur n'a pas bougé. « Ceux-là vont là-bas. Toi aussi, je pense. »"
+   },
+   "usageObjet": {
+    "objet": "battant-cloche",
+    "label": "Remettre le battant et sonner",
+    "cle": "battant",
+    "consequence": "Tu remets le battant et tu tires. Le son part droit sur la Croûte, sans écho, et ne s'arrête pas. Le Percepteur ferme les yeux. « Voilà. Maintenant il sait que tu es là. » Loin sur le sel, une masse blanche se met en marche vers la rive : un bœuf, seul, la tête basse."
+   },
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "rive-haute"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "acompleter",
+   "alertes": [
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "file",
+   "narration": [
+    "Une file de pierres plates, posées à intervalles réguliers, traverse la croûte comme des pas qu'on aurait figés. Blanches d'un côté, grises de l'autre. Entre deux, le sel est plus fin, plus clair.",
+    "Le long de la file, des Cristallins : des silhouettes de sel prises en pleine enjambée, chacune tournée dans le sens des pierres. Aucune ne regarde en arrière."
+   ],
+   "choix": [
+    {
+     "id": "gratter-une-pierre",
+     "label": "Gratter le sel d'une pierre",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 10,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Un mot par pierre, dans l'ordre de la file : BOUGE — IL — TE — MANGE. Tu remontes la file à rebours : RESTE — IL — TE — GARDE. La file dit la phrase entière, dans les deux sens. Sur la dernière pierre, plus petit : LES DEUX.",
+      "reussite": "Sous le sel, un mot par pierre, dans l'ordre de la file : BOUGE — IL — TE — MANGE. La suivante est trop loin pour être lue d'ici.",
+      "echec": "Le sel ne cède pas : il s'effrite en poudre fine qui te reste sur les doigts, et sous la poudre il y a encore du sel. La pierre est prise trop profond.",
+      "funeste": "1 naturel. Le sel cède d'un coup, et ce n'est pas une pierre : c'est un pied, un pied de sel, et il t'appartient déjà un peu. Tu retires ta main trop tard pour ne pas l'avoir compris. ♦ −2"
+     },
+     "nature": "exploration"
+    },
+    {
+     "id": "marcher-dans-leurs-pas",
+     "label": "Marcher dans les pas des Cristallins",
+     "type": "passif",
+     "consequence": "Tu poses le pied où le sel est fin. Ça tient mieux — c'est là qu'ils ont marché, et là que la croûte a durci sous eux. Ils ne sont pas tombés en marchant. Ils se sont arrêtés.",
+     "donneSavoir": "savoir_pas_cristallins"
+    },
+    {
+     "id": "suivre-la-file",
+     "label": "Suivre la file",
+     "type": "passif",
+     "consequence": "Tu suis les pierres. Entre la troisième et la quatrième, le sel bouge."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "file-2",
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "file-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "acompleter",
+   "alertes": [
+    "orpheline",
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "file-2",
+   "narration": [
+    "Le sel entre deux pierres se soulève. Des Piqueurs — des bêtes plates à becs de verre, qui vivent sous la croûte et ne montent que pour ce qui s'arrête. Ils sont quatre. Ils ne courent pas : ils avancent par bonds courts, et chaque bond fait chanter le sel."
+   ],
+   "choix": [
+    {
+     "id": "frapper-au-bec",
+     "label": "Frapper au bec",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Le premier bec éclate sous ton coup comme un verre qu'on lâche. Les trois autres s'arrêtent net — et redescendent sous la croûte, l'un après l'autre, sans un bond. Le sel se referme dessus. Ils reviendront pour quelqu'un d'autre.",
+      "reussite": "Tu frappes le premier au bec, il se brise. Les autres reculent en bonds courts et replongent sous le sel. La croûte se referme derrière eux comme si rien n'était monté.",
+      "echec": "Le bec passe ta garde et te pique au mollet, profond, froid. Ils replongent aussitôt — ils n'ont pas besoin de plus. Ce qu'ils ont pris, la croûte le sait maintenant.",
+      "funeste": "1 naturel. Deux becs en même temps, aux deux jambes. Tu tombes à genoux sur le sel et le sel te prend les genoux. Tu t'arraches. Ils ont eu ce qu'ils voulaient : que tu t'arrêtes. ♦ −2"
+     },
+     "nature": "physique",
+     "masqueSi": {
+      "savoir": "savoir_pas_cristallins"
+     }
+    },
+    {
+     "id": "rester-dans-leurs-pas",
+     "label": "Rester dans les pas des Cristallins",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu sautes de pas en pas, sur la croûte durcie, et les becs de verre glissent dessus sans mordre. Le dernier Piqueur se retourne vers un Cristallin — et le pique, lui. Le sel s'ouvre. Ce n'est pas toi qu'ils voulaient. C'est ce qui s'arrête.",
+      "reussite": "Tu tiens la croûte dure, de pas en pas. Les becs frappent le sel fin autour et n'y trouvent que du sel. Ils replongent, l'un après l'autre. Tu n'as pas quitté la file.",
+      "echec": "Un bond te fait manquer un pas. Le bec claque dans le vide où tu étais — tu es déjà sur la pierre suivante, et ils sont déjà dessous. Tu as perdu la file des yeux un instant, pas plus.",
+      "funeste": "1 naturel. Tu glisses hors des pas, dans le sel fin, et pendant un souffle tu es exactement ce qu'ils attendent : quelqu'un qui s'est arrêté. Puis la pierre suivante est sous ton pied, et ils replongent, déçus. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeSavoir": "savoir_pas_cristallins",
+     "horsDePortee": true
+    },
+    {
+     "id": "courir-a-la-pierre",
+     "label": "Courir jusqu'à la pierre suivante",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu cours sans regarder où tu poses les pieds, et chaque pied tombe sur du dur. Derrière, les bonds s'espacent, puis cessent. Quand tu t'arrêtes sur la pierre, il n'y a plus rien entre les deux dernières — que le sel, lisse.",
+      "reussite": "Tu cours. Les bonds te suivent, puis prennent du retard : ils ne courent pas, ils se relancent. Sur la pierre, tu te retournes — le sel se referme sur leur dernière trace.",
+      "echec": "Ton pied crève la croûte fine et tu t'étales. Un bec te prend la cheville avant que tu te relèves. Puis ils replongent. Tu repars en boitant jusqu'à la pierre.",
+      "funeste": "1 naturel. La croûte s'ouvre sous ta course et tu tombes dedans jusqu'à la taille, dans un sel qui serre. Les becs te trouvent là, à leur hauteur. Tu t'arraches en laissant du sang dans le sel. ♦ −2"
+     },
+     "nature": "physique",
+     "tags": [
+      "fuite"
+     ]
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "piqueurs",
+   "adversaireNom": "Les Piqueurs",
+   "combat": true,
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "file"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "acompleter",
+   "alertes": [
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "champ-des-sillages",
+   "narration": [
+    "La croûte se fend en sillages : de longues fissures qui partent du même point et filent vers l'île, comme une main posée à plat dont on ne verrait que les doigts. Le sel y est plus sombre, humide.",
+    "Entre les sillages, des formes couchées. Des Gisants — des corps que le sel a pris à plat, bras le long, et qui ne sont pas tout à fait figés."
+   ],
+   "choix": [
+    {
+     "id": "suivre-un-sillage",
+     "label": "Suivre un sillage du regard",
+     "type": "passif",
+     "consequence": "Il ne part pas de l'île : il y arrive. Les fissures partent du fond. Quelque chose, loin dessous, tire vers le milieu, et la croûte cède au-dessus de son passage.",
+     "donneSavoir": "savoir_sillages"
+    },
+    {
+     "id": "regarder-l-ile",
+     "label": "Regarder l'île, au bout des sillages",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Une silhouette marche là-bas, seule, droit vers l'île. La croûte se soulève derrière elle en vague lente — et se referme. Plus de silhouette. La vague tourne, et tu vois qu'elle ne va nulle part : elle décrit un cercle autour de l'île, comme un chien autour d'une table.",
+      "reussite": "Une silhouette marche là-bas, seule, droit vers l'île. La croûte se soulève derrière elle en vague lente — et se referme. Il n'y a plus de silhouette. La vague continue, dans une autre direction.",
+      "echec": "Trop de blanc. Tu ne vois que le tremblement de l'île et, une fois, une ligne plus sombre qui passe dessous — ou c'est ton œil. Tu détournes le regard avant d'être sûr.",
+      "funeste": "1 naturel. La lumière te brûle les yeux jusqu'à ce que tout soit blanc, l'île comprise. Quand tu y vois de nouveau, un des Gisants a tourné la tête vers toi. ♦ −2"
+     },
+     "nature": "exploration"
+    },
+    {
+     "id": "traverser-le-champ",
+     "label": "Traverser le champ",
+     "type": "passif",
+     "consequence": "Tu choisis un passage entre les sillages. C'est aussi là que sont les Gisants."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "champ-des-sillages-2",
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "champ-des-sillages-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "acompleter",
+   "alertes": [
+    "orpheline",
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "champ-des-sillages-2",
+   "narration": [
+    "Tu passes entre deux Gisants. Le premier ouvre les yeux. Ils ne se lèvent pas — le sel les tient trop — mais leurs bras se détachent de la croûte avec un bruit d'os et cherchent tes chevilles. Ils ne veulent pas te retenir. Ils veulent que tu restes."
+   ],
+   "choix": [
+    {
+     "id": "passer-d-un-bond",
+     "label": "Passer entre eux d'un bond",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu bondis par-dessus les bras tendus. Derrière toi les mains se referment sur rien — puis l'une sur l'autre, et elles ne se lâchent plus. Deux Gisants qui se tiennent. Le sel les reprendra comme ça.",
+      "reussite": "Tu bondis. Une main te frôle le talon et rate. Les bras retombent à plat, un par un, et le sel les reprend avec un bruit de croûte qui refroidit.",
+      "echec": "Une main te prend la cheville et tu tombes à plat, la joue dans le sel humide. Le temps de te dégager, la croûte a commencé sur ta joue. Tu l'arraches. Ça laisse une marque.",
+      "funeste": "1 naturel. Deux mains, les deux chevilles, et le sel qui monte pendant que tu te débats — jusqu'aux genoux avant que tu casses la prise. Tu repars avec du sel jusque dans les os. ♦ −2"
+     },
+     "nature": "physique",
+     "masqueSi": {
+      "savoir": "savoir_gisants"
+     }
+    },
+    {
+     "id": "contourner-par-le-sillage",
+     "label": "Contourner par le sillage",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu prends la fissure, là où aucun Gisant ne couche. Les bras se tendent vers toi de chaque côté et s'arrêtent tous au bord du sillage, à la même distance — une haie de mains ouvertes. Aucune ne franchit la ligne. Le fond les tient plus que toi.",
+      "reussite": "Tu descends dans le sillage. Le sel y est mou, mais aucun bras ne vient : les Gisants couchent entre les fissures, jamais dedans. Tu passes au milieu de leurs mains tendues, hors de portée.",
+      "echec": "Le sillage s'étrécit et tu dois en sortir un pas trop tôt. Une main te touche l'épaule — te touche seulement. Tu es déjà de l'autre côté. Elle retombe.",
+      "funeste": "1 naturel. Le fond du sillage cède sous ton poids et tu glisses jusqu'à la taille dans un sel qui bouge. Les Gisants se tournent vers toi, tous, et attendent. Tu remontes seul. Ils n'ont pas eu à bouger. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeSavoir": "savoir_gisants",
+     "horsDePortee": true
+    },
+    {
+     "id": "parler-aux-gisants",
+     "label": "Leur parler",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. « Qui vous a couchés ? » Le premier répond, la bouche pleine de sel : « Nous. » Le second : « Le prix. » Le troisième ne dit rien, il te montre l'île. Les bras retombent. Ils t'ont répondu : on ne retient pas ceux à qui on parle.",
+      "reussite": "« Qui vous a couchés ? » Un seul mot, du premier, la bouche pleine de sel : « Nous. » Les bras se détendent d'un coup, comme si le mot leur avait coûté ce qu'il leur restait.",
+      "echec": "Tu parles. Ils écoutent — c'est pire : ils écoutent avec toute leur attention, et une attention pareille, ça pèse. Tu recules pendant qu'ils réfléchissent à ce que tu vaux.",
+      "funeste": "1 naturel. « Reste », dit le premier. « Reste », dit le second. Tu t'entends répondre « d'accord » avant de comprendre que c'est ta voix. Tu t'arraches à ta propre phrase. ♦ −2"
+     },
+     "nature": "social"
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "gisants",
+   "adversaireNom": "Les Gisants",
+   "combat": true,
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "champ-des-sillages"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "acompleter",
+   "alertes": [
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "barge-echouee",
+   "narration": [
+    "Une barge est posée sur le sel, loin de toute eau, la coque prise jusqu'au bordage, un mât couché. Sur le pont, un homme entier de sel, assis devant une écuelle : un Encroûté. Il ne bouge que les lèvres.",
+    "« De l'eau. Pas chère. » L'écuelle est pleine de saumure. « Bouge, il te mange. Reste, il te garde. Moi, j'ai choisi. »"
+   ],
+   "choix": [
+    {
+     "id": "prendre-la-perche",
+     "label": "Décrocher la perche du mât",
+     "type": "passif",
+     "consequence": "Une perche de saunier, liée au mât couché. Tu défais le nœud raide de sel et elle te vient dans la main, légère, le bout durci couleur d'os. L'Encroûté suit le geste des lèvres. « Celle-là, c'est pour la passerelle. Tu verras. »",
+     "donneObjet": "perche-sauniere"
+    },
+    {
+     "id": "boire-a-l-ecuelle",
+     "label": "Boire à l'écuelle",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 10,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu bois. C'est du sel, et sous le sel un goût que tu connais sans l'avoir jamais eu : celui de rester. Tu le recraches — et pendant un instant tu sais exactement ce qu'il a choisi, et pourquoi. Puis ça passe. Il sourit avec ce qui lui reste de bouche.",
+      "reussite": "Tu bois une gorgée. Du sel, rien d'autre — et pourtant la soif recule, comme si elle avait eu peur. « Pas chère », répète-t-il. Tu ne sais pas ce que tu as payé.",
+      "echec": "Tu bois, et la soif double. Ta langue est râpeuse comme la croûte. « Pas chère », dit-il, et cette fois ça sonne comme une plainte.",
+      "funeste": "1 naturel. Tu bois, et tu ne peux plus t'arrêter : trois gorgées avant que ta main lâche l'écuelle. Le sel te descend dans la gorge et s'y installe. Tu tousses blanc pendant un long moment. ♦ −2"
+     },
+     "nature": "surnaturel"
+    },
+    {
+     "id": "monter-a-bord",
+     "label": "Monter à bord",
+     "type": "passif",
+     "consequence": "Le bordage craque sous ta prise, mais tient. Le pont est plus haut que la croûte d'une hauteur d'homme, et de là-haut le sel a l'air d'une mer."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "barge-echouee-2",
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "barge-echouee-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "acompleter",
+   "alertes": [
+    "orpheline",
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "barge-echouee-2",
+   "narration": [
+    "Le pont est sûr. Dans le château arrière, un coffre à cadenas. Sous tes pieds, une trappe clouée. L'Encroûté te suit des lèvres. « Une seule. Le coffre, ou la cale. J'ai pas le temps pour les deux. » Il n'a que ça, du temps."
+   ],
+   "choix": [
+    {
+     "id": "crocheter-le-coffre",
+     "label": "Crocheter le coffre",
+     "type": "passif",
+     "consequence": "Le cadenas s'ouvre. Dedans, un registre à deux colonnes : à gauche des noms de passeurs, à droite, pour chacun, un autre nom — et un prix. La dernière ligne de gauche est vide. La droite ne l'est pas.",
+     "donneObjet": "registre-des-traversees",
+     "miniJeuDemo": "pick",
+     "miniJeuHorsDemo": true,
+     "miniJeuEchec": "Le cadenas ne cède pas et la pointe casse dedans. L'Encroûté ferme les yeux. « Ça fait un. » Il compte quelque chose que tu ne vois pas.",
+     "masqueSiChoixFait": [
+      "ouvrir-la-trappe"
+     ]
+    },
+    {
+     "id": "ouvrir-la-trappe",
+     "label": "Ouvrir la trappe de la cale",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Les clous sortent d'un coup. Dans la cale, pas de cargaison : des jetons de plomb, des centaines, chacun avec un nom. Au fond, à part, sur un pli de tissu, un seul jeton vierge. Tu comprends ce que le Percepteur remplit — et pour qui il garde une place.",
+      "reussite": "Tu arraches les clous un à un. Dans la cale, pas de cargaison : des jetons de plomb par centaines, chacun gravé d'un nom. On ne les a pas perdus. On les a rangés.",
+      "echec": "La trappe cède d'un coup et tu tombes dedans, sur un tas de plomb qui roule : des jetons, des centaines, tous gravés. Tu remontes avec l'un d'eux dans la main. Il porte un nom que tu ne connais pas, et une date d'hier.",
+      "funeste": "1 naturel. Le bois te lâche dans la cale et les jetons te reçoivent comme une grêle. Tu remontes ouvert au front, un nom imprimé à l'envers dans ta paume. Il ne s'efface pas en frottant. ♦ −2"
+     },
+     "nature": "exploration",
+     "donneDecouverte": "d.cale_jetons",
+     "masqueSiChoixFait": [
+      "crocheter-le-coffre"
+     ]
+    },
+    {
+     "id": "redescendre-sur-le-sel",
+     "label": "Redescendre sur le sel",
+     "type": "passif",
+     "consequence": "Tu sautes du bordage. L'Encroûté ne te regarde pas partir : il regarde l'écuelle. Elle est de nouveau pleine.",
+     "sortie": {}
+    }
+   ],
+   "pointsInteret": [],
+   "sejour": true,
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "barge-echouee"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "acompleter",
+   "alertes": [
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "statue",
+   "narration": [
+    "Une statue seule sur le sel, plus haute qu'un homme, un bras tendu vers l'île. Pas une statue : un Cristallin, mais ancien, épaissi de sel jusqu'à perdre ses traits. Sous le bras, là où il ne fait pas d'ombre, le sel est intact."
+   ],
+   "choix": [
+    {
+     "id": "gratter-le-visage",
+     "label": "Gratter le sel du visage",
+     "type": "passif",
+     "consequence": "Sous le sel, un visage — jeune, la bouche ouverte sur un mot qu'il n'a pas fini. Et sur le socle, un nom que tu as déjà lu quelque part, dans un livre qu'on ouvre entre deux vies : OTHO.",
+     "donneDecouverte": "d.statue_nom",
+     "miniJeuDemo": "rub",
+     "miniJeuHorsDemo": true
+    },
+    {
+     "id": "suivre-le-bras",
+     "label": "Suivre le bras tendu",
+     "type": "passif",
+     "consequence": "Il ne montre pas l'île. Il montre un point à gauche de l'île, où la croûte est plus sombre — un trou, peut-être. La direction est exacte au doigt près : on ne fige pas quelqu'un en train de montrer n'importe quoi."
+    },
+    {
+     "id": "contourner-le-socle",
+     "label": "Contourner le socle",
+     "type": "passif",
+     "consequence": "Tu fais le tour. Derrière, le sel est gravé — et le vent se lève d'un coup, chargé de blanc."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "statue-2",
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "statue-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "acompleter",
+   "alertes": [
+    "orpheline",
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "statue-2",
+   "narration": [
+    "Derrière le socle, gravé au clou dans le sel durci, une seule ligne : « Il a dit que c'était compris dans le prix. »"
+   ],
+   "choix": [
+    {
+     "id": "toucher-la-seconde",
+     "label": "Toucher la seconde statue",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Le sel est encore mou. Sous ta paume, un cœur bat — lent, un battement par respiration à toi. Elle a quelques jours de sel. Et le bras tendu, de près, ne montre pas l'île : il montre l'endroit exact où tu te tiens.",
+      "reussite": "Le sel est encore mou sous la paume. Dessous, quelque chose de tiède qui n'a pas fini de refroidir. Tu retires la main. La statue a ton âge de marche : quelques jours, pas plus.",
+      "echec": "Tu retires la main : la trace de tes doigts reste dans le sel, et ne se referme pas. Tu as laissé une empreinte sur quelque chose qui prend la forme de ce qui la touche.",
+      "funeste": "1 naturel. Tes doigts s'enfoncent et le sel se referme dessus, tiède, et tire. Tu t'arraches en laissant le bout des ongles. La statue a un peu plus de main qu'avant. ♦ −2"
+     },
+     "nature": "surnaturel"
+    },
+    {
+     "id": "lire-sous-le-bras",
+     "label": "Relire la ligne gravée",
+     "type": "passif",
+     "consequence": "« Compris dans le prix. » Le prix de quoi, le socle ne le dit pas. Mais le mot PRIX est gravé plus profond que les autres, repassé — comme la phrase des pieux. La même main.",
+     "donneDecouverte": "d.statue_prix"
+    },
+    {
+     "id": "quitter-la-statue",
+     "label": "Reprendre la marche",
+     "type": "passif",
+     "consequence": "Tu t'éloignes. Au bout de vingt pas tu te retournes : les deux bras tendus montrent la même chose, et ce n'est plus l'île.",
+     "sortie": {}
+    }
+   ],
+   "pointsInteret": [],
+   "sejour": true,
+   "tempete": {
+    "apres": "Le sel retombe. À dix pas de la première, une seconde statue que la tempête cachait — plus petite, le même bras tendu, le même geste. À ses pieds le sel est frais, à peine pris. Elle n'était pas là hier."
+   },
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "statue"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "acompleter",
+   "alertes": [
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "bouche",
+   "narration": [
+    "Un trou dans la croûte, large comme une charrette, aux bords lisses. Pas un effondrement : une ouverture, faite du dedans. Autour, posés en cercle, des objets — des boucles de ceinture, des lames, une lanterne — tous tournés vers le trou. Comme des offrandes. Ou comme ce qui a été recraché."
+   ],
+   "choix": [
+    {
+     "id": "faire-le-tour-des-objets",
+     "label": "Faire le tour des objets",
+     "type": "passif",
+     "consequence": "Rien n'est cassé. Les boucles sont fermées, les lames dans leur fourreau. Ce qui portait ces objets a été pris entier — et ce qui a rendu les objets n'en voulait pas. Il voulait le reste."
+    },
+    {
+     "id": "se-pencher-au-dessus",
+     "label": "Se pencher au-dessus du trou",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Noir, puis — très bas — une lueur qui bouge, régulière, comme une lanterne qu'on porte en marchant. Elle passe. Elle repasse. Ce qui marche là-dessous fait le tour de l'île, et il marche avec de la lumière.",
+      "reussite": "Noir. Un souffle qui monte, tiède, salé, régulier — pas du vent : une respiration, à une profondeur que tu ne sais pas estimer. Elle ne s'accélère pas quand tu te penches. Elle t'a déjà senti.",
+      "echec": "Le bord s'effrite sous tes mains et tu recules d'un coup. Une poignée de sel tombe dans le trou. Tu ne l'entends jamais toucher le fond.",
+      "funeste": "1 naturel. Le souffle monte d'un coup, tiède, et te prend le visage comme une main. Quand il redescend, tu as du sel jusque dans la gorge et l'envie, très nette, de te pencher davantage. ♦ −2"
+     },
+     "nature": "surnaturel"
+    },
+    {
+     "id": "approcher-du-bord",
+     "label": "S'approcher du bord",
+     "type": "passif",
+     "consequence": "Tu enjambes le cercle. Au bord, ce qui traîne est plus récent."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "bouche-2",
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "bouche-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "acompleter",
+   "alertes": [
+    "orpheline",
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "bouche-2",
+   "narration": [
+    "Au bord, une dent courbe, creuse, longue comme l'avant-bras, encore humide dedans. Une lanterne dont la flamme brûle sans huile. Le sel craque doucement autour de tes pieds, comme un pain qui refroidit — il prend. Tu le sens monter par les semelles."
+   ],
+   "choix": [
+    {
+     "id": "prendre-la-dent",
+     "label": "Prendre la dent",
+     "type": "passif",
+     "consequence": "Elle est plus lourde qu'elle en a l'air, et tiède. Au moment où tu la soulèves, très loin sous la croûte, quelque chose s'arrête de bouger — et se remet à bouger dans ta direction.",
+     "donneObjet": "dent-de-ver"
+    },
+    {
+     "id": "prendre-la-lanterne",
+     "label": "Prendre la lanterne",
+     "type": "passif",
+     "consequence": "La flamme ne vacille pas quand tu la soulèves. Elle n'éclaire rien autour de toi — mais sur ta manche, un mot que tu n'avais pas vu apparaît en clair, à l'encre de sel : RESTE.",
+     "donneObjet": "lanterne-du-noye"
+    },
+    {
+     "id": "s-eloigner-du-trou",
+     "label": "S'éloigner du trou",
+     "type": "passif",
+     "consequence": "Tu recules. Tes semelles se décollent du sel avec un bruit de tissu qu'on déchire.",
+     "sortie": {
+      "toScene": "bouche-3"
+     }
+    }
+   ],
+   "pointsInteret": [],
+   "sejour": true,
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "bouche"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "acompleter",
+   "alertes": [
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "bouche-3",
+   "narration": [
+    "Sous la croûte, quelque chose répond au poids que tu viens de déplacer : un long frottement qui tourne autour du trou, une fois, puis s'éloigne vers l'île. Les sillages, autour, se sont tous tournés dans ce sens-là."
+   ],
+   "choix": [
+    {
+     "id": "regarder-les-sillages",
+     "label": "Regarder les sillages",
+     "type": "passif",
+     "consequence": "Ils convergent vers le trou, tous. Ou ils en partent — d'ici, tu ne sais pas dans quel sens on lit une fissure."
+    },
+    {
+     "id": "suivre-la-fissure-du-fond",
+     "label": "Suivre la fissure qui part du fond",
+     "type": "passif",
+     "consequence": "Tu la suis sur vingt pas. Elle s'élargit vers l'île — elle n'en vient pas, elle y va. Ce qui est dessous rentre chez lui. Tu sais maintenant dans quel sens il est parti, et dans lequel il reviendra.",
+     "exigeSavoir": "savoir_sillages",
+     "prendLaPlaceDe": [
+      "regarder-les-sillages"
+     ]
+    },
+    {
+     "id": "reprendre-la-marche",
+     "label": "Reprendre la marche",
+     "type": "passif",
+     "consequence": "Tu tournes le dos au trou. Le cercle d'objets, derrière toi, compte un objet de moins."
+    }
+   ],
+   "pointsInteret": [],
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "acompleter",
+   "alertes": [
+    "orpheline",
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "radeau",
+   "narration": [
+    "Un radeau de planches posé à plat sur le sel, sans eau à des lieues, comme si la croûte allait fondre et qu'il fallait être prêt. Dessus, un Encroûté debout, une gaffe à la main, tourné vers un point précis : un puits, loin, au bord des Bassins. Un héron gris est posé au bout du radeau."
+   ],
+   "choix": [
+    {
+     "id": "regarder-ce-qu-il-regarde",
+     "label": "Regarder ce qu'il regarde",
+     "type": "passif",
+     "consequence": "Le puits. Une margelle blanche au bord des gradins, et un seau qui pend à une corde. La corde bouge. Personne ne la tire."
+    },
+    {
+     "id": "demander-ou-il-va",
+     "label": "Lui demander où il va",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 10,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. « Là où j'allais. » Il tourne la tête vers toi, et c'est un mouvement qui lui coûte du sel : il en tombe de son cou. « Le puits. J'ai attendu le soir, moi. Le soir, il chasse. Toi, t'as encore le jour. » Le héron le regarde comme on regarde quelqu'un qui ment.",
+      "reussite": "« Là où j'allais. » Il ne bouge pas la tête. « Le puits. Tout le monde passe par le puits. » La gaffe frémit dans sa main, une fois.",
+      "echec": "« Là où j'allais. » Rien de plus. Il a dit ça comme on répète une leçon dont on a oublié la question.",
+      "funeste": "1 naturel. « Là où tu vas. » Il l'a dit avec ta voix — ou c'est le sel qui rend les voix pareilles. Tu ne lui demandes rien d'autre. ♦ −2"
+     },
+     "nature": "social"
+    },
+    {
+     "id": "monter-sur-le-radeau",
+     "label": "Monter sur le radeau",
+     "type": "passif",
+     "consequence": "Les planches sonnent creux. Le héron ne bouge pas. L'Encroûté, si : ses lèvres."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "radeau-2",
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "radeau-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "acompleter",
+   "alertes": [
+    "orpheline",
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "radeau-2",
+   "narration": [
+    "« Vas-y maintenant. » Il ne t'a pas regardé. « Le puits. Maintenant, pas ce soir. Ce soir, il chasse. » La gaffe tremble un peu. « J'ai attendu ce soir, moi. » Le héron déplie une aile."
+   ],
+   "choix": [
+    {
+     "id": "demander-ce-qui-chasse",
+     "label": "Lui demander ce qui chasse",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. « Le Ver. » Un temps. « Il chasse quand on lui dit. » Tu demandes qui lui dit. Il ne répond pas — mais la gaffe, dans sa main, pointe une seconde vers le puits, et il la ramène contre lui comme on rattrape un geste. Le héron regarde ailleurs.",
+      "reussite": "« Le Ver. Le soir. » Il le dit comme une heure de marée. « Le jour il dort. Vas-y le jour. » La gaffe pointe le puits, puis retombe. Tu ne sais pas si c'était pour toi.",
+      "echec": "« Ce qui chasse. » Il répète tes mots, et c'est toute sa réponse. Le sel a pris ce qu'il savait, ou il ne l'a jamais su.",
+      "funeste": "1 naturel. « Toi. » Il sourit, et le sel de ses joues se fend. « Non. Pardon. Lui. Le Ver. Vas-y maintenant. » Tu ne sais plus lequel des deux il t'a dit en premier. ♦ −2"
+     },
+     "nature": "social"
+    },
+    {
+     "id": "toucher-le-heron",
+     "label": "Toucher le héron",
+     "type": "passif",
+     "consequence": "Il s'envole sans bruit et part droit vers les Bassins, bas sur le sel. Il ne se pose pas. Il n'a nulle part où se poser — sauf là où il va. L'Encroûté le suit des lèvres jusqu'à ce qu'il disparaisse."
+    },
+    {
+     "id": "descendre-du-radeau",
+     "label": "Descendre du radeau",
+     "type": "passif",
+     "consequence": "Tu redescends sur le sel. Derrière toi, la gaffe pointe toujours le puits. Elle ne pointait pas ça avant.",
+     "sortie": {}
+    }
+   ],
+   "pointsInteret": [],
+   "sejour": true,
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "radeau"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "acompleter",
+   "alertes": [
+    "imageManquante"
+   ]
+  },
+  {
+   "id": "fin-etape-non-ecrite",
+   "narration": [
+    "La Croûte s'arrête sur une marche de pierre. En contrebas, des terrasses en gradins, pleines d'une eau plate qui ne reflète rien. Les Bassins. Le sel y est plus doux, dit-on — et plus patient.",
+    "Tu as traversé la Croûte vivant. Derrière toi, le cliquetis de plomb s'est tu."
+   ],
+   "choix": [
+    {
+     "id": "descendre-aux-bassins",
+     "label": "Descendre vers les Bassins",
+     "type": "suite"
+    }
+   ],
+   "pointsInteret": [],
+   "terminal": true,
+   "finDemo": true,
+   "image": null,
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "acompleter",
+   "alertes": [
+    "orpheline",
+    "imageManquante"
+   ]
+  },
+  {
    "id": "la-descente",
    "narration": [
     "La corde s'arrête. Sous tes pieds, quelque chose de plat, de taillé — et très haut au-dessus, le jour par où tu es passé s'est refermé sur lui-même.",
@@ -8413,6 +9281,41 @@
   {
    "de": "veilleur-3",
    "vers": "palissade-sud-2",
+   "type": "principal"
+  },
+  {
+   "de": "rive-haute",
+   "vers": "rive-haute-2",
+   "type": "principal"
+  },
+  {
+   "de": "file",
+   "vers": "file-2",
+   "type": "principal"
+  },
+  {
+   "de": "champ-des-sillages",
+   "vers": "champ-des-sillages-2",
+   "type": "principal"
+  },
+  {
+   "de": "barge-echouee",
+   "vers": "barge-echouee-2",
+   "type": "principal"
+  },
+  {
+   "de": "statue",
+   "vers": "statue-2",
+   "type": "principal"
+  },
+  {
+   "de": "bouche",
+   "vers": "bouche-2",
+   "type": "principal"
+  },
+  {
+   "de": "radeau",
+   "vers": "radeau-2",
    "type": "principal"
   }
  ],
@@ -11540,11 +12443,11 @@
   }
  ],
  "totaux": {
-  "scenes": 110,
+  "scenes": 126,
   "pointsInteret": 0,
-  "choix": 321,
-  "illustrations": 449,
-  "sansImage": 0,
+  "choix": 367,
+  "illustrations": 450,
+  "sansImage": 16,
   "imagesIntrouvables": 0,
   "reserve": 225,
   "reliques": 10,

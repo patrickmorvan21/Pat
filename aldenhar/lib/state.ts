@@ -514,6 +514,16 @@ export type RunState = {
   zone?: ZoneId;
   zonesFranchies?: ZoneId[];
   /**
+   * L'ENCROÛTÉ (les Salines, 13/09) — « bouger attire le Ver, s'arrêter
+   * attire le sel ». Palier 0..3, monté à chaque action qui reste sur place
+   * dans la zone, redescendu d'un cran à chaque lieu atteint. Il ne modifie
+   * AUCUN jet : il se lit sur les CTA (le sel gagne les bordures, puis les
+   * lettres), et au palier III le Geôlier le constate. Jamais un chiffre.
+   */
+  encroute?: number;
+  /** Les scènes dont la tempête de sel a déjà été balayée cette vie. */
+  tempetesJouees?: string[];
+  /**
    * Chapitre garanti de la traversée (chantier 2 du 23/07) : id d'un chapitre
    * de `LANDES_CHAPTERS` + stade (0 = pas amorcé, 1 = amorcé, 2 = développé,
    * 3 = résolu). Tiré au début d'une run neuve (Scene, avec la mémoire du
@@ -656,6 +666,8 @@ function fresh(): RunState {
     trav: freshTraversal(),
     zone: "landes",
     zonesFranchies: [],
+    encroute: 0,
+    tempetesJouees: [],
     chapter: null,
     soupcon: 0,
     soupconSeen: 0,
@@ -729,6 +741,8 @@ export function loadRun(): RunState {
             // aux Landes, et n'avait rien franchi (une vie = une zone alors).
             zone: p.zone === "salines" || p.zone === "landes" ? p.zone : "landes",
             zonesFranchies: Array.isArray(p.zonesFranchies) ? p.zonesFranchies : [],
+            encroute: typeof p.encroute === "number" ? p.encroute : 0,
+            tempetesJouees: Array.isArray(p.tempetesJouees) ? p.tempetesJouees : [],
             // Chapitre : null pour les runs d'avant le 24/07 — Scene en tire un
             // à la volée (l'amorce jouera à la prochaine liaison).
             chapter: p.chapter && typeof p.chapter.id === "string" ? p.chapter : null,
@@ -875,12 +889,37 @@ export function appliquerRepos(run: RunState): void {
  * l'entrée serait une promesse sans consommateur.
  */
 export function franchirZone(run: RunState, vers: ZoneDef): void {
+  run.zonesFranchies = [...(run.zonesFranchies ?? []), run.zone ?? "landes"];
+  demarrerZone(run, vers);
+  appliquerRepos(run);
+  run.soupcon = 0;
+  run.soupconSeen = 0;
+  run.hameau = { entree: false, serment: null, halte: false };
+  run.menace = null;
+  run.lignesOuvertes = 0;
+  run.poiSeen = [];
+  run.choixFaits = [];
+  run.croiseesDepuisRoute = 0;
+  run.rencontresDues = [];
+}
+
+/**
+ * ENTRER DANS UNE ZONE sans en franchir une autre (13/09) : la traversée
+ * repart de son entrée, et ce qui appartient à la zone d'AVANT ne bouge pas.
+ * C'est le socle de `franchirZone`, et la porte de `?zone=salines` (un
+ * testeur commence une vie neuve directement dans la Croûte). Le chapitre
+ * du Bailli et le compte du sel appartiennent chacun à leur zone : remis à
+ * zéro ici, quel que soit le chemin d'entrée.
+ */
+export function demarrerZone(run: RunState, vers: ZoneDef): void {
   const envs = vers.environnements;
   if (!vers.ecrite || (!vers.entry && !envs?.length)) {
     throw new Error(`franchirZone : la zone « ${vers.id} » n'est pas écrite (ni entrée ni environnements).`);
   }
-  run.zonesFranchies = [...(run.zonesFranchies ?? []), run.zone ?? "landes"];
   run.zone = vers.id;
+  run.chapter = null;
+  run.encroute = 0;
+  run.tempetesJouees = [];
   // Graine de la zone : déterministe par vie (la reprise rejoue le même
   // tirage d'étape), différente d'une vie à l'autre.
   const graine = (run.step + 1) * 7919 + run.day * 31;
@@ -896,14 +935,4 @@ export function franchirZone(run: RunState, vers: ZoneDef): void {
   } else {
     run.trav = freshTraversal(vers.entry);
   }
-  appliquerRepos(run);
-  run.soupcon = 0;
-  run.soupconSeen = 0;
-  run.hameau = { entree: false, serment: null, halte: false };
-  run.menace = null;
-  run.lignesOuvertes = 0;
-  run.poiSeen = [];
-  run.choixFaits = [];
-  run.croiseesDepuisRoute = 0;
-  run.rencontresDues = [];
 }

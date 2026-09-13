@@ -893,9 +893,20 @@ def lire_choix(bloc: str) -> list[dict]:
         # souvient de rien. Même piège que `sansNuit`, une liste blanche plus
         # bas dans le même fichier.
         for champ, cle in (("borneSud", "borneSud"), ("corbeaux", "corbeaux"),
-                           ("troupeau", "troupeau"), ("poteau", "poteau")):
+                           ("troupeau", "troupeau"), ("poteau", "poteau"),
+                           # LA CROÛTE (13/09) : « Monter sur le bœuf » saute un
+                           # lieu de l'étape. Même piège que `sansNuit`.
+                           ("sauteEtape", "sauteEtape")):
             if booleen_de(c, champ):
                 ch[cle] = True
+        # EXCLUSIVITÉ D'ÉCRAN (13/09, la barge) : deux options qui s'excluent
+        # une fois l'une jouée — portée écran via `choixFaits`, comme
+        # `prendLaPlaceDe` dont il reprend la forme (string | string[]).
+        mc = re.search(r'masqueSiChoixFait:\s*(\[[^\]]*\]|"[^"]*")', c)
+        if mc:
+            cibles = re.findall(r'"([^"]+)"', mc.group(1))
+            if cibles:
+                ch["masqueSiChoixFait"] = cibles
         # LES QUATRE GARDES QUI MANQUAIENT À LA RÉPLIQUE (playtest 14/08).
         # Patrick a vu au Puits « Descendre par la corde » sans corde, et six
         # choix simultanés dans la ruelle. Le jeu, lui, filtre : ces champs
@@ -1125,9 +1136,18 @@ def lire_scenes() -> list[dict]:
                            ("terminal", "terminal"), ("liaison", "liaison"),
                            ("hameauEntree", "hameauEntree"), ("hameauHalte", "hameauHalte"),
                            ("fixationTrial", "procesFixation"), ("sejour", "sejour"),
-                           ("nuit", "nuit")):
+                           ("nuit", "nuit"),
+                           # FIN D'ÉTAPE NON ÉCRITE (Salines, 13/09) : le nœud
+                           # terminal de démo qui suit la Croûte.
+                           ("finDemo", "finDemo")):
             if booleen_de(bloc, champ):
                 s[cle] = True
+        # LA TEMPÊTE DE SEL (Salines, 13/09) : la scène qui la porte, et le
+        # texte servi une fois le sel balayé. Sans ce champ le Graphe ne
+        # montrerait ni l'événement ni sa prose.
+        tp = bloc_apres(bloc, r"\n    tempete:\s*")
+        if tp and texte_de(tp[0], "apres"):
+            s["tempete"] = {"apres": texte_de(tp[0], "apres")}
         # L'OBJET QUI TRANSFORME LA SCÈNE (12/08 §2). Sans lui, la réplique ne
         # peut pas amarrer la corde à la margelle du Puits — donc l'option
         # qu'elle ouvre y resterait injouable, et le Studio ne montrerait pas

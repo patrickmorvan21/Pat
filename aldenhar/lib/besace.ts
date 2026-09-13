@@ -186,6 +186,54 @@ function withId(base: Omit<BesaceItem, "id">): BesaceItem {
  * du Condamné, Dénonciation Vierge…) sont réservés au chantier n°3.
  */
 export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
+  /* ═══ LES SALINES — LA CROÛTE (13/09). Le catalogue s'appelle encore
+     LANDES_OBJETS : c'est le catalogue de TOUT ce que la Besace peut porter
+     (les gardes `A-usage` et `A-préparation` le lisent sous ce nom), pas
+     celui d'une zone. Le renommer casserait quatre outils pour un mot. Les
+     objets d'une zone qui descendent à la suivante sont une règle du
+     DOMAINE (12/09) : une clé, un objet, où qu'on l'ait pris. ═══════════ */
+  /* La cloche de la Rive haute a perdu son battant ; on le retrouve à ses
+     pieds. Il ne sert QU'ICI (bible : usage sur place — décision 13/09,
+     « le remettre et sonner ») : remis et sonné, le son appelle le Bœuf de
+     sel… et prévient le Ver. Actif sans soin : c'est `usageObjet` qui le
+     consomme, jamais le 4e choix de remède. */
+  "battant-cloche": {
+    name: "Battant de la cloche", rarity: "commun", kind: "babiole", slot: "actif",
+    heal: 0, cure: false,
+    usage: "Remis dans sa cloche, il sonne. Tout ce qui écoute la Croûte l'entendra.",
+    usageTexte: "Tu remets le battant dans sa cloche et tu tires. Le son part loin sur le sel, sans écho.",
+    flavor: "Une masse de plomb au bout d'une lanière raidie de sel. Quelqu'un l'a décrochée pour que la cloche se taise.",
+  },
+  /* La perche du saunier — une arme longue qui tient l'adversaire à distance.
+     Prise à la Barge échouée, elle sert à la File (les Piqueurs) et, plus
+     tard, à la Passerelle rompue. */
+  "perche-sauniere": {
+    name: "Perche de saunier", rarity: "commun", kind: "arme", slot: "passif",
+    passiveMod: 1, passiveScope: "combat",
+    flavor: "Deux fois ta taille, le bout durci au sel. Elle te garde ce que tu frappes à une longueur de bras de plus.",
+  },
+  /* Ramassée dans la Bouche : rare, et le Ver te sent mieux depuis (dit dans
+     la fiction — la « relance garantie » de la bible est reportée : aucune
+     mécanique de relance n'existe encore dans le dé). */
+  "dent-de-ver": {
+    name: "Dent de Ver", rarity: "rare", kind: "arme", slot: "passif",
+    passiveMod: 1, passiveScope: "all",
+    flavor: "Une lame courbe, creuse, encore humide dedans. Depuis que tu la portes, quelque chose sous la croûte sait où tu marches.",
+  },
+  /* La lanterne du Noyé : sa flamme brûle sans huile et n'éclaire que ce qui
+     est écrit. Ramassée dans la Bouche ; sert au Dortoir et à la Tour. */
+  "lanterne-du-noye": {
+    name: "Lanterne du Noyé", rarity: "rare", kind: "babiole", slot: "passif",
+    passiveMod: 1, passiveScope: "all",
+    flavor: "Sa flamme brûle sans huile et sans chaleur. Elle n'éclaire pas la route : elle éclaire ce qui est écrit.",
+  },
+  /* Le registre de la Barge (fragment 1) : deux colonnes, les passeurs et
+     ce qu'ils ont coûté. Un objet qu'on lit — le Savoir vient avec. */
+  "registre-des-traversees": {
+    name: "Registre des traversées", rarity: "rare", kind: "babiole", slot: "passif",
+    passiveMod: 0, passiveScope: "all",
+    flavor: "Deux colonnes. À gauche des noms de passeurs. À droite, pour chacun, un autre nom — et un prix.",
+  },
   /* Tour de Guet — l'outil d'un homme qui a passé sa vie à regarder au sud. */
   "lunette-guet": {
     name: "Lunette du guetteur",

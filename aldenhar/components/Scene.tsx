@@ -9,7 +9,9 @@ import TypedText from "@/components/TypedText";
 import DeathScreen, { bilanDeMort, type Bilan } from "@/components/DeathScreen";
 import GameMenu from "@/components/GameMenu";
 import Revelation from "@/components/Revelation";
-import { ActeScreen, CARTON_ZONE_A_VENIR } from "@/components/Intro";
+import { ActeScreen, CARTON_ZONE_A_VENIR, type Carton } from "@/components/Intro";
+import EncrouteCTA from "@/components/EncrouteCTA";
+import TempeteSel from "@/components/TempeteSel";
 import {
   type Stat,
   DESCENTE_SCENE,
@@ -22,8 +24,10 @@ import {
   pickAccueil,
   HAMEAU_ACCUEIL_SLOT,
   sceneById,
+  approcheNarration,
+  FIN_ETAPE_NON_ECRITE,
+  SALINES_ENCROUTE_GEOLIER,
   estUnLieu,
-  APPROACH_NARRATION,
   SOUPCON_PALIERS,
   SOUPCON_CRAIE,
   SOUPCON_GEOLIER,
@@ -88,7 +92,7 @@ import {
 import {
   etat, etatsActifs, poserEtat,
 } from "@/lib/etats";
-import { appliquerRepos, franchirZone, loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
+import { appliquerRepos, demarrerZone, franchirZone, loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
 import { zoneDef, zoneSuivanteJouable } from "@/lib/zones";
 import { entrerLieu, prochainPas } from "@/lib/etages";
 import {
@@ -589,6 +593,8 @@ function liaisonCtx(run: RunState, from: string | undefined): LiaisonCtx {
     // La Croisée fermée nomme sa cause (03/09) — celle de la liaison courante
     // à la reprise, sinon celle qui attend d'être encaissée.
     routeFermeeCause: run.trav?.routeFermeeCause ?? run.routeFermeeCause,
+    // La zone (13/09) : les Salines ont leurs propres ambiances et vues.
+    zone: run.zone ?? "landes",
   };
 }
 
@@ -1013,7 +1019,13 @@ export default function Scene() {
   const [poiOpen, setPoiOpen] = useState(false);
   // FIN DE DÉMO (12/09) : le carton « zone 2 à venir », servi quand la
   // Descente ne mène à aucune zone écrite (lib/zones.ts).
-  const [cartonFin, setCartonFin] = useState(false);
+  const [cartonFin, setCartonFin] = useState<Carton | null>(null);
+  /** L'ENCROÛTÉ (Salines) : miroir de `run.encroute` pour le rendu. */
+  const [encrouteMirror, setEncrouteMirror] = useState(0);
+  /** Les tempêtes déjà balayées cette vie (miroir de `run.tempetesJouees`). */
+  const [tempetesJouees, setTempetesJouees] = useState<string[]>([]);
+  /** La tempête en cours (id de la scène), ou null. */
+  const [tempete, setTempete] = useState<string | null>(null);
   // Mode debug de couverture visuelle (journal 25/07) : triple tap sur l'icône
   // de menu. Volontairement NON persisté — c'est un outil d'inspection, pas un
   // réglage ; il s'éteint au rechargement.
@@ -1308,6 +1320,14 @@ export default function Scene() {
     if (
       c.requiresChoixFait &&
       !(Array.isArray(c.requiresChoixFait) ? c.requiresChoixFait : [c.requiresChoixFait]).some(
+        (id) => choixFaits.includes(id)
+      )
+    )
+      return false;
+    // L'EXCLUSIVITÉ D'ÉCRAN (la Barge, 13/09) : « le coffre OU la cale ».
+    if (
+      c.masqueSiChoixFait &&
+      (Array.isArray(c.masqueSiChoixFait) ? c.masqueSiChoixFait : [c.masqueSiChoixFait]).some(
         (id) => choixFaits.includes(id)
       )
     )
@@ -1739,10 +1759,24 @@ export default function Scene() {
   useEffect(() => {
     const run = loadRun();
     runRef.current = run;
+    // ?zone=salines (13/09) : une vie NEUVE commence directement dans la
+    // Croûte — la porte des testeurs, tant que la Descente des Landes reste
+    // le seul chemin joué. Jamais sur une partie en cours.
+    if (
+      /[?&]zone=salines/.test(window.location.search) &&
+      (run.zone ?? "landes") !== "salines" &&
+      run.step === 0 && !(Array.isArray(run.feed) && run.feed.length > 0)
+    ) {
+      demarrerZone(run, zoneDef("salines"));
+      saveRun(run);
+    }
+    const zoneLandes = (run.zone ?? "landes") === "landes";
     // eslint-disable-next-line react-hooks/set-state-in-effect -- restauration unique post-hydratation
     if (run.step > 0) setStep(run.step);
     setDay(run.day);
     setHealth(run.health);
+    setEncrouteMirror(run.encroute ?? 0);
+    setTempetesJouees(run.tempetesJouees ?? []);
     // Points d'intérêt déjà examinés dans le lieu courant : on ne les
     // re-propose pas à la reprise (spec 24/07 suite §1).
     setPoiSeen(run.poiSeen ?? []);
@@ -1771,7 +1805,7 @@ export default function Scene() {
     // Chapitre garanti (chantier 2 du 23/07) : chaque traversée en reçoit UN,
     // tiré avec la rotation du compte (jamais deux fois le même tant qu'il en
     // reste des neufs). Les runs d'avant en tirent un à la volée ici.
-    if (!run.chapter && !run.trav.done) {
+    if (zoneLandes && !run.chapter && !run.trav.done) {
       const ch = drawChapter(loadMemory().chaptersSeen);
       run.chapter = { id: ch.id, stage: 0 };
     }
@@ -1855,7 +1889,7 @@ export default function Scene() {
       // nouvelle vie n'est pas un recommencement identique »). La CAUSE de la
       // dernière mort marque la Borne — une ligne, jamais une explication.
       let traceDuPrecedent: string | null = null;
-      if (mem.deaths > 0 && mem.lastDeath && !mem.lastDeath.fixation) {
+      if (zoneLandes && mem.deaths > 0 && mem.lastDeath && !mem.lastDeath.fixation) {
         const lieuMort = mem.lastDeath.lieu ?? "";
         traceDuPrecedent = (
           lieuMort.includes("mare")
@@ -1880,7 +1914,7 @@ export default function Scene() {
       if (traceDuPrecedent) openingNarration.splice(1, 0, traceDuPrecedent);
       // Chaque vie commence à la Borne : on la compte ici (aucune
       // orientation n'y mène) — l'Hésitant peut ainsi se souvenir.
-      if (run.step === 0) {
+      if (zoneLandes && run.step === 0) {
         noterVisiteLieu("borne-frontiere");
         // Codex : la Borne est le seul lieu qu'aucune orientation n'atteint —
         // son entrée se débloque ici, au premier pas de chaque vie.
@@ -1891,11 +1925,11 @@ export default function Scene() {
       // incarnation »). Poussé en premier des traces permanentes : c'est le
       // signal le plus fort, il ne doit pas arriver après l'écharde.
       const niveauDuSceau = niveauSceau(faitsDe(run));
-      const ligneSceau = ligneSceauOuverture(niveauDuSceau);
+      const ligneSceau = zoneLandes ? ligneSceauOuverture(niveauDuSceau) : null;
       if (ligneSceau) openingNarration.push(ligneSceau);
       // Le hameau se souvient de la main qui lance le dé (chantier 3) : après
       // plusieurs fixations subies, l'accueil change dès l'entrée de zone.
-      if (mem.fixations >= 2) {
+      if (zoneLandes && mem.fixations >= 2) {
         openingNarration.push(
           "Au loin, avant même le premier muret, une silhouette s'écarte du " +
             "chemin et part en courant vers le hameau. Les Landes ne " +
@@ -1905,14 +1939,14 @@ export default function Scene() {
       }
       // La dette « marque » se VOIT : on ne porte pas ça sans être reconnu.
       // (Une ligne, même à deux marques — c'est le Soupçon qui cumule.)
-      if (nMarque > 0) {
+      if (zoneLandes && nMarque > 0) {
         openingNarration.push(
           "Ce que tu portes à même la peau tire le regard avant toi. Deux " +
             "gamins te croisent au premier muret, s'arrêtent net, et repartent " +
             "vers le hameau sans courir — ce qui est pire."
         );
       }
-      if (nUsure > 0) {
+      if (zoneLandes && nUsure > 0) {
         openingNarration.push(
           "Tu marches depuis peu et tes jambes le savent déjà. Ce que tu " +
             "portes ne pèse rien dans la main, et pourtant quelque chose en toi " +
@@ -1920,7 +1954,7 @@ export default function Scene() {
         );
       }
       // Persistance environnementale (§17) : trace des runs précédentes.
-      if (mem.envFlags["echarde-gibet-prelevee"]) {
+      if (zoneLandes && mem.envFlags["echarde-gibet-prelevee"]) {
         openingNarration.push(
           "Au loin, sur sa colline, le Gibet Vide découpe le crépuscule — " +
             "et son montant porte une entaille claire, là où quelqu'un a " +
@@ -1943,8 +1977,22 @@ export default function Scene() {
       // LA TRANSFORMATION DU 3e PASSAGE : le Geôlier constate, une seule fois,
       // qu'il n'a plus rien à compter. Poussé APRÈS la ligne du dé pour ne pas
       // couper l'ouverture rituelle, et il ne reviendra jamais (`=== 3`).
-      const geolierSceau = ligneSceauGeolier(niveauDuSceau);
+      const geolierSceau = zoneLandes ? ligneSceauGeolier(niveauDuSceau) : null;
       if (geolierSceau) seeded.push({ id: nextId(), kind: "jailer", text: geolierSceau });
+      // LE LIEU D'OUVERTURE DONNE SON OBJET (Salines, 13/09). `Scene.loot`
+      // n'était honoré que dans `advance()` — or le premier lieu d'une zone
+      // n'est atteint par aucune orientation : le Battant de la Rive haute
+      // n'entrait jamais en Besace, et « Remettre le battant et sonner »
+      // (usageObjet) ne pouvait donc jamais s'offrir. Trouvé au banc, pas à
+      // la lecture. Aux Landes la Borne n'a pas de loot d'arrivée : rien ne
+      // change pour elle.
+      if (run.step === 0) {
+        const ouverture = sceneFromTrav(run.trav, run);
+        if (ouverture.loot) {
+          const item = grantLandesLoot(ouverture.loot);
+          if (item) seeded.push(entreeObtenu(nextId(), item));
+        }
+      }
       const groupes = decouperEnEcrans(seeded);
       setBeats(groupes[0]);
       setBeatsSuite(groupes.slice(1));
@@ -2035,6 +2083,21 @@ export default function Scene() {
       useful ? { id: `use-${useful.id}`, label: `Utiliser — ${useful.name}`, useItem: { itemId: useful.id } } : null
     );
   }, [scene, step, health, beats, choixFaits]);
+
+  // ═══ LA TEMPÊTE DE SEL (Salines, 13/09) : une scène qui porte `tempete`
+  // déclenche son calque plein cadre UNE fois par vie, quand l'écran est au
+  // repos — texte fini, choix affichés, aucun dé, aucun geste, aucune suite
+  // paginée en attente. Elle ne tombe jamais pendant qu'on lit : on lit,
+  // PUIS le sel monte sur ce qu'on peut décider. Le « après » se joue par
+  // `resterSurPlace` à la fin du balayage (voir le rendu de <TempeteSel>).
+  useEffect(() => {
+    const run = runRef.current;
+    if ((run?.zone ?? "landes") !== "salines" || !scene.tempete) return;
+    if (choicesHidden || activeTypingId || beatsSuite.length || rolling || minigameChoice || tempete) return;
+    if (tempetesJouees.includes(scene.id)) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- déclenchement unique, gardé par `tempete` et `tempetesJouees`
+    setTempete(scene.id);
+  }, [scene, choicesHidden, activeTypingId, beatsSuite, rolling, minigameChoice, tempete, tempetesJouees]);
 
   // ═══ #1 LE CHOIX QUI EXPIRE (6/08) : quand la surprise est armée et que
   // l'écran offre une OPPORTUNITÉ écrite (un gain — objet, savoir,
@@ -2380,7 +2443,14 @@ export default function Scene() {
     ) {
       etapePas = prochainPas(envsZone, trav.etage, trav.visited, nextStep * 31 + trav.visited.length);
       trav.etage = etapePas.etage;
-      if (etapePas.pas.type === "lieu") opts = { ...(opts ?? {}), toDest: etapePas.pas.id };
+      if (etapePas.pas.type === "lieu") {
+        // L'ÉTAPE SUIVANTE N'EST PAS ÉCRITE (13/09) : la Croûte existe, les
+        // Terrasses non. Le lieu imposé n'a pas de scène → on sert la fin
+        // d'étape (terminale, `finDemo`) par la branche `toScene` — elle ne
+        // compte pas comme un lieu et se retrouve à la reprise.
+        if (sceneById(etapePas.pas.id)) opts = { ...(opts ?? {}), toDest: etapePas.pas.id };
+        else opts = { ...(opts ?? {}), toScene: FIN_ETAPE_NON_ECRITE };
+      }
     }
     if (
       soupNow >= 6 && !scene.fixationTrial && !scene.chainNext && !scene.sejour &&
@@ -2550,6 +2620,12 @@ export default function Scene() {
             },
           ];
         });
+      }
+      // L'ENCROÛTÉ redescend d'un cran à chaque lieu atteint (Salines, 13/09) :
+      // bouger fait tomber le sel — c'est le Ver qu'on attire alors.
+      if ((runRef.current?.encroute ?? 0) > 0) {
+        persist((r) => { r.encroute = Math.max(0, (r.encroute ?? 0) - 1); });
+        setEncrouteMirror(Math.max(0, (runRef.current?.encroute ?? 0)));
       }
       if (!trav.visited.includes(opts.toDest)) {
         trav.visited = [...trav.visited, opts.toDest];
@@ -3316,14 +3392,17 @@ export default function Scene() {
        donc aucune. On garde ici l'id de l'approche pour fermer l'écran
        dessus — c'est la frontière du temps 1. */
     let idApproche: string | null = null;
-    if (destReelle && !deroute && APPROACH_NARRATION[destReelle]) {
+    const approcheDest = destReelle && !deroute ? approcheNarration(destReelle) : undefined;
+    if (approcheDest) {
       idApproche = nextId();
-      entries.push({ id: idApproche, kind: "narration", text: APPROACH_NARRATION[destReelle] });
+      entries.push({ id: idApproche, kind: "narration", text: approcheDest });
     }
     // …et COMMENT on y arrive : une seule phrase, jamais un paragraphe.
     // ⚠️ VARIATION NARRATIVE, pas une décision (voir phraseArrivee) : le mode
     // ne dépend pas de la route choisie et n'a aucune conséquence mécanique.
-    const arriveePhrase = destReelle && !deroute && !substitue
+    // ⚠️ Landes seulement (13/09) : ces phrases parlent de talus et de
+    // fougères — sur le sel des Salines elles seraient fausses.
+    const arriveePhrase = destReelle && !deroute && !substitue && (runRef.current?.zone ?? "landes") === "landes"
       ? phraseArrivee(nextStep, runRef.current?.arriveeVues ?? [])
       : null;
     // ⚠️ Chantier fluidité 12/08 : cette phrase est de la COULEUR PURE — le
@@ -3679,7 +3758,8 @@ export default function Scene() {
           runRef.current?.soupcon ?? 0, nextStep, runRef.current?.vus ?? {})
       : null;
     const loiIci =
-      nextScene.liaison && (runRef.current?.loiVues ?? []).length === 0 && chance(0.22)
+      nextScene.liaison && (runRef.current?.zone ?? "landes") === "landes" &&
+      (runRef.current?.loiVues ?? []).length === 0 && chance(0.22)
         ? nextStep % 4
         : null;
     /* ⚠️ AU BORD DU MONDE, PLUS RIEN DU MONDE DERRIÈRE (retour Patrick
@@ -4394,6 +4474,14 @@ export default function Scene() {
     // Un critique reste un critique : le Geôlier commente même quand on n'a
     // pas changé d'endroit. Même mémoire de gabarits qu'ailleurs.
     let jailerServi: string | null = null;
+    if (
+      (runRef.current?.zone ?? "landes") === "salines" &&
+      (runRef.current?.encroute ?? 0) >= 3 &&
+      vu(runRef.current?.vus, "encroute|3") === 0
+    ) {
+      entries.push({ id: nextId(), kind: "jailer", text: SALINES_ENCROUTE_GEOLIER });
+      persist((run) => { run.vus = noter(run.vus, "encroute|3"); });
+    }
     if (opts.result === 1 || opts.result === 20) {
       const vues = runRef.current?.jailerVues ?? [];
       const { text, gabarit } = jailerTaunt(opts.result, jailerPosture(loadMemory()), vues);
@@ -4786,6 +4874,17 @@ export default function Scene() {
          perdue. */
       const run = runRef.current ?? loadRun();
       const zone = run.zone ?? "landes";
+      /* FIN D'ÉTAPE NON ÉCRITE (13/09) : on n'a PAS franchi la zone — ni
+         Sceau, ni compte de zones, ni ligne au Registre. La vie s'arrête
+         vivante (statistiques), la run est effacée AVANT le carton, et le
+         carton dit l'environnement qui vient. */
+      if (scene.finDemo) {
+        track("fin_etape", { zone, scene: scene.id, jour: run.day }, { instant: true });
+        recordSortieVivante({ heroName: run.heroName, days: run.day });
+        resetRun();
+        setCartonFin({ eyebrow: "• ACTE I · LES SALINES •", title: "Les Bassins", sous: "À venir." });
+        return;
+      }
       recordZoneFranchie({ zone, heroName: run.heroName, days: run.day, franchis: run.lieuxEngages ?? 0 });
       // Codex : la première traversée révèle l'arc du Sceau — la marque
       // vient d'apparaître dans la paume.
@@ -4808,7 +4907,7 @@ export default function Scene() {
       // carton « zone 2 à venir » et l'accueil.
       recordSortieVivante({ heroName: run.heroName, days: run.day });
       resetRun();
-      setCartonFin(true);
+      setCartonFin(CARTON_ZONE_A_VENIR);
       return;
     }
     setSelectedId(choice.id);
@@ -4834,6 +4933,20 @@ export default function Scene() {
         run.trav.target += lieux;
         run.trav.done = false;
       });
+    }
+    // LE BŒUF DE SEL (Salines, 13/09) : un lieu du pool en moins.
+    if (choice.sauteEtape) {
+      persist((run) => {
+        if (run.trav.etage) run.trav.etage = { ...run.trav.etage, tires: run.trav.etage.tires + 1 };
+      });
+    }
+    // L'ENCROÛTÉ MONTE quand on RESTE (Salines) : chaque action qui ne quitte
+    // pas le lieu prend un cran de sel — « s'arrêter attire le sel ». Jamais
+    // un chiffre : les CTA le montrent, le Geôlier le dit au palier III.
+    if (reste && (runRef.current?.zone ?? "landes") === "salines") {
+      const apres = Math.min(3, (runRef.current?.encroute ?? 0) + 1);
+      persist((run) => { run.encroute = apres; });
+      setEncrouteMirror(apres);
     }
     // UNE FOIS PAR VIE : la clé est notée au moment où le choix se résout.
     if (choice.uneFoisParVie) {
@@ -5636,6 +5749,7 @@ export default function Scene() {
               {verrouHint}
             </p>
           )}
+          {encrouteMirror > 0 && !rolling && <EncrouteCTA palier={encrouteMirror} cle={scene.id + step + choixFaits.length} />}
           {renderedChoices.map((choice) => (
             <ChoiceButton
               key={scene.id + choice.id + step}
@@ -6076,6 +6190,20 @@ export default function Scene() {
             tant qu'il est ouvert (garde dans l'effet du sablier). Le rendu
             des moteurs est celui de la galerie — le re-skin réaliste est le
             temps 2 (décision Patrick 24/08). */}
+        {tempete && (
+          <TempeteSel
+            onFin={() => {
+              const id = tempete;
+              setTempete(null);
+              persist((run) => {
+                run.tempetesJouees = [...(run.tempetesJouees ?? []), id];
+              });
+              setTempetesJouees((t) => [...t, id]);
+              const apres = scene.tempete?.apres;
+              if (apres) resterSurPlace(`tempete:${id}`, { consequence: apres });
+            }}
+          />
+        )}
         {minigameChoice && minigameChoice.minigame && (
           <div
             className="absolute inset-0 z-[45] flex flex-col items-center justify-center"
@@ -6310,7 +6438,7 @@ export default function Scene() {
         {cartonFin && (
           <ActeScreen
             inline
-            carton={CARTON_ZONE_A_VENIR}
+            carton={cartonFin}
             onDone={() => {
               track("relance", { apres: "descente" }, { instant: true });
               window.location.reload();

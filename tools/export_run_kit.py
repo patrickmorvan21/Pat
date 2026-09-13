@@ -299,6 +299,12 @@ def main() -> int:
                 # jamais au Moulin, la Veuve ne savait jamais. Sept scènes
                 # entières restaient invisibles au relecteur.
                 "remplace",
+                # LES SALINES (13/09) : la tempête de sel et la fin d'étape non
+                # écrite voyagent pour qu'un relecteur les voie — ⚠️ la
+                # RÉPLIQUE ne joue PAS la zone 2 (sa traversée est celle des
+                # Landes, à pool plat) : ces champs y sont des données, pas des
+                # mécaniques. Dit ici plutôt que découvert.
+                "tempete", "finDemo",
             )
             if k in s
         }
