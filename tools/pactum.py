@@ -1459,8 +1459,15 @@ class Partie:
         # pris plus haut, avec tous les autres.
         if s.get("combat"):
             if palier in ("echec", "critique", "malediction") and not hors:
-                self.d["etats"]["entaille"] = 999
-                self.dit("ÉTAT — Entaillé", "etat")
+                # La NATURE du jet décide, même en combat (correctif 13/09) :
+                # un échec SOCIAL en combat ne blesse pas — sa prose dit qu'on
+                # recule, personne n'a touché le héros. Miroir du vrai jeu.
+                if nature == "physique":
+                    self.d["etats"]["entaille"] = 999
+                    self.dit("ÉTAT — Entaillé", "etat")
+                else:
+                    self.d["etats"]["ebranle"] = 2
+                    self.dit("ÉTAT — Ébranlé", "etat")
             elif palier in ("destin", "eclatante", "reussite") and c.get("stat") in ("COURAGE", "INSTINCT"):
                 # Gagner sans se battre n'affûte pas les gestes de guerre
                 # (règle du vrai jeu — la réplique l'ignorait, panel 9/08).

@@ -5988,37 +5988,43 @@ export default function Scene() {
                   { id: "aguerri", label: "AGUERRI", delta: 2, scenesLeft: 3 },
                   ...run.effects.filter((e) => e.id !== "aguerri"),
                 ];
-              // LE PAIEMENT DE LA PRÉPARATION (lot 3) : qui savait où se
-              // placer n'est pas à portée quand il rate. Pas de blessure
-              // persistante, et `coutSante` ne prend rien (voir plus haut).
-              // C'est le seul paiement, il remplace le seuil abaissé d'un
-              // point qui était invisible.
+              // LA NATURE DU JET DÉCIDE DU CONTRECOUP, ici comme partout
+              // (retour Patrick 13/09 : « Entaillé ne marche pas ici, ils ne
+              // m'ont ni attaqué ni touché »). ⚠️ Cette branche-ci regardait
+              // `scene.combat` SEUL : un échec sur un jet SOCIAL en combat
+              // posait donc une plaie, alors que sa prose dit l'inverse
+              // (« Tu recules pendant qu'ils réfléchissent à ce que tu
+              // vaux »). C'est le jumeau exact des deux correctifs déjà
+              // faits sur AGUERRI (8/08) puis sur la malédiction (24/08) —
+              // troisième fois que cette famille mord, d'où l'invariant de
+              // build A-blessure (tools/acceptation.py).
+              // Physique → la chair, et en combat elle PERSISTE (999, le
+              // camp l'atténue). Tout le reste → ÉBRANLÉ, le choc.
+              // `horsDePortee` (lot 3 du 14/08) exempte les deux : qui
+              // savait où se placer ne ressort pas blessé d'un raté.
+              const natureDuJet =
+                chosen?.nature ?? (scene.combat ? "physique" : "social");
+              const estPhysique = natureDuJet === "physique";
               if (scene.combat && tierIsFail(tier) && !chosen?.horsDePortee)
-                run.effects = [
-                  { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 999 },
-                  ...run.effects.filter((e) => e.id !== "entaille"),
-                ];
+                run.effects = estPhysique
+                  ? [
+                      { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 999 },
+                      ...run.effects.filter((e) => e.id !== "entaille"),
+                    ]
+                  : [
+                      { id: "ebranle", label: "ÉBRANLÉ", delta: -1, scenesLeft: 2 },
+                      ...run.effects.filter((e) => e.id !== "ebranle"),
+                    ];
               else if (tier === "malediction" && !chosen?.horsDePortee) {
-                // Le contrecoup suit la NATURE du jet, pas sa stat (panel
-                // 24/08) : l'ancienne clé Courage/Instinct posait ENTAILLÉ —
-                // une plaie — sur un jet SOCIAL ou SURNATUREL porté par le
-                // Courage, sans blessure racontée (elle datait du 7/08 et
-                // n'avait jamais été alignée sur le modèle par nature de
-                // v1.58). Physique → la chair ; tout le reste → ÉBRANLÉ, le
-                // choc. Et `horsDePortee` (lot 3 du 14/08) vaut ici aussi :
-                // qui savait où se placer ne ressort pas blessé d'un raté.
-                const natureDuJet =
-                  chosen?.nature ?? (scene.combat ? "physique" : "social");
-                run.effects =
-                  natureDuJet === "physique"
-                    ? [
-                        { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 3 },
-                        ...run.effects.filter((e) => e.id !== "entaille"),
-                      ]
-                    : [
-                        { id: "ebranle", label: "ÉBRANLÉ", delta: -1, scenesLeft: 2 },
-                        ...run.effects.filter((e) => e.id !== "ebranle"),
-                      ];
+                run.effects = estPhysique
+                  ? [
+                      { id: "entaille", label: "ENTAILLÉ", delta: -2, scenesLeft: 3 },
+                      ...run.effects.filter((e) => e.id !== "entaille"),
+                    ]
+                  : [
+                      { id: "ebranle", label: "ÉBRANLÉ", delta: -1, scenesLeft: 2 },
+                      ...run.effects.filter((e) => e.id !== "ebranle"),
+                    ];
               }
               // Destin : le tirage n'a retenu que ce qui TIENT (10/08), donc
               // l'objet annoncé entre toujours réellement en Besace.

@@ -174,6 +174,46 @@ def main() -> int:
             "fatalCheck et la résolution doivent TOUS DEUX lire la borne."
         )
 
+    # ─── A-blessure. « Seul un échec PHYSIQUE laisse une plaie. » ───────
+    # Troisième fois que cette famille mord, d'où l'invariant : AGUERRI posé
+    # après avoir APAISÉ un chien (8/08), la MALÉDICTION sociale qui ouvrait
+    # une plaie (24/08), et l'échec SOCIAL en combat qui posait ENTAILLÉ
+    # (13/09 — « ils ne m'ont ni attaqué ni touché », alors que la prose du
+    # jet dit « tu recules pendant qu'ils réfléchissent »). Le drapeau
+    # `scene.combat` dit où l'on est, PAS ce qu'on vient de tenter : c'est la
+    # nature du jet qui décide du contrecoup, comme elle décide déjà du coût
+    # de santé depuis le 9/08.
+    # Deux poses légitimes seulement : la résolution du dé (gardée par
+    # `estPhysique`) et le raté d'un GESTE (gardé par `minigame.echecBlesse`,
+    # déclaré choix par choix — un geste manqué est physique par nature).
+    poses = [m.start() for m in re.finditer(r'\{ id: "entaille"', sc)]
+    if not poses:
+        manques.append(
+            "A-blessure — plus aucune pose d'ENTAILLÉ dans Scene.tsx : la "
+            "blessure de combat a disparu, ou l'extracteur ne lit plus la source."
+        )
+    # ⚠️ La fenêtre vise l'USAGE, jamais la déclaration : une première version
+    # cherchait « estPhysique » dans les 320 caractères précédents et trouvait
+    # le `const estPhysique = …` posé juste au-dessus — elle passait donc au
+    # vert sur son propre mode d'échec. On exige le TERNAIRE qui ouvre le
+    # tableau (`estPhysique ? [`), c'est-à-dire la garde réellement appliquée.
+    for i in poses:
+        avant = sc[max(0, i - 160):i]
+        garde = re.search(r"estPhysique\s*\?\s*\[\s*$", avant, re.S)
+        if not garde and "echecBlesse" not in avant:
+            ligne = sc[:i].count("\n") + 1
+            manques.append(
+                f"A-blessure — ENTAILLÉ est posé ligne ~{ligne} sans garde de "
+                "NATURE : un échec social ou surnaturel y ouvrirait une plaie "
+                "que sa prose ne raconte pas. Passer par `estPhysique` (ou "
+                "déclarer le geste `echecBlesse`)."
+            )
+    if "const estPhysique" not in sc or "const natureDuJet" not in sc:
+        manques.append(
+            "A-blessure — `natureDuJet`/`estPhysique` ont disparu de la "
+            "résolution : plus rien ne distingue une plaie d'un choc."
+        )
+
     # ─── A2. « Un échec ordinaire ne fait pas avancer le jour. » ─────────
     # Deux preuves : le champ `coutJour` n'existe plus (supprimé le 10/08 —
     # le Jour est un SCORE, jamais une sanction), et les sites qui touchent
@@ -468,6 +508,7 @@ def main() -> int:
     if not manques:
         print("  A1 un échec non physique ne peut pas coûter de santé  ✓")
         print("  A-effroi seul un échec physique (ou le procès) tue     ✓")
+        print("  A-blessure seul un échec physique laisse une plaie     ✓")
         print("  A2 aucun Jour n'est jamais retiré en sanction          ✓")
         print(f"  A4 seuls {len(ACTES)} gestes déclarés font monter le Soupçon  ✓")
         print("  A8 tous les libellés de choix se lisent d'un coup      ✓")
