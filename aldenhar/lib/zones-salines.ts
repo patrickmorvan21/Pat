@@ -31,13 +31,13 @@ export const SALINES_ENVIRONNEMENTS: Environnement[] = [
     nom: "La Croûte",
     entree: "rive-haute",
     pool: ["file", "champ-des-sillages", "barge-echouee", "statue", "bouche", "radeau"],
-    // ⚠️ [1, 2] au routage du 13/09, porté à [2, 3] le soir même (retour
-    // Patrick : « j'ai trouvé que l'environnement la Croûte allait un peu
-    // trop vite »). Mesuré : entrée + 1 ou 2 tirés = 2 à 3 lieux joués sur
-    // les 7 écrits, soit ~6 écrans pour le premier environnement de la zone
-    // — celui qui doit justement l'ENSEIGNER. À [2, 3] : 3 à 4 lieux, et
-    // deux traversées ne voient toujours pas le même tiers du pool.
-    tirages: [2, 3],
+    // ⚠️ Historique : [1, 2] au routage du 13/09, [2, 3] le soir même, puis
+    // [3, 4] (décision Patrick : « j'aimerais qu'on joue au minimum 4 lieux
+    // par environnement »). Le plancher est un INVARIANT DE BUILD —
+    // `lieuxGarantis` dans lib/etages.ts, vérifié par verifier_etages.mjs :
+    // entrée (1) + tirages min (3) + fins (0) = 4 au pire cas. Ne pas
+    // redescendre le minimum sans changer le plancher, le build refuserait.
+    tirages: [3, 4],
   },
   {
     id: "bassins",
@@ -52,14 +52,16 @@ export const SALINES_ENVIRONNEMENTS: Environnement[] = [
       "guerite",
       "noria",
     ],
-    tirages: [1, 2],
+    // entrée (1) + 3 tirés = 4 lieux garantis (plancher LIEUX_MIN_PAR_ETAPE)
+    tirages: [3, 4],
   },
   {
     id: "salines",
     nom: "Les Salines",
     // pas d'entrée : on débarque par le pool, l'Entrepôt ferme le chantier
     pool: ["pesee", "puits", "dortoir", "forge-a-grattoirs", "cour-aux-rails", "salle-des-gages"],
-    tirages: [1, 1],
+    // pas d'entrée : 3 tirés + l'Entrepôt = 4 lieux garantis
+    tirages: [3, 4],
     fin: ["entrepot"],
   },
   {
@@ -68,7 +70,8 @@ export const SALINES_ENVIRONNEMENTS: Environnement[] = [
     // pas d'entrée non plus : le Fossé est un beat d'arrivée, puis 0 ou 1 lieu
     // du relais, puis la fin dans l'ordre — les Rues, le Quai, la Tour.
     pool: ["porte-de-l-ile", "auberge-du-relais", "belvedere", "maison-du-grand-passeur"],
-    tirages: [0, 1],
+    // pas d'entrée : 1 tiré + les 3 fins = 4 lieux garantis
+    tirages: [1, 2],
     fin: ["rues-qui-marchent", "quai-de-l-ile", "tour-de-l-ecluse"],
   },
 ];

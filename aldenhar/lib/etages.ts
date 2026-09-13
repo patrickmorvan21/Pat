@@ -188,6 +188,23 @@ export function cibleTotale(envs: Environnement[]): number {
  * ne peut jamais être atteint, et un lieu présent dans deux étapes serait
  * offert deux fois. Rend la liste des défauts (vide = sain).
  */
+/**
+ * LE PLANCHER DE LIEUX PAR ÉTAPE (décision Patrick, 13/09 : « j'aimerais
+ * qu'on joue au minimum 4 lieux par environnement »).
+ *
+ * Un environnement doit GARANTIR ce nombre, pas l'atteindre parfois : ce qui
+ * compte est donc son PIRE cas — l'entrée (0 ou 1) + le minimum de tirages +
+ * toutes ses fins, qui sont imposées. C'est cette arithmétique-là que le
+ * garde de build vérifie (`tools/verifier_etages.mjs`), pour qu'une étape
+ * ajoutée plus tard ne puisse pas retomber sous le plancher en silence.
+ */
+export const LIEUX_MIN_PAR_ETAPE = 4;
+
+/** Le pire cas d'une étape : ce qu'elle joue à coup sûr. */
+export function lieuxGarantis(e: Environnement): number {
+  return (e.entree ? 1 : 0) + e.tirages[0] + (e.fin?.length ?? 0);
+}
+
 export function auditerEtages(envs: Environnement[]): string[] {
   const defauts: string[] = [];
   const vus = new Map<string, string>();
@@ -201,6 +218,12 @@ export function auditerEtages(envs: Environnement[]): string[] {
     if (e.tirages[0] > e.tirages[1]) defauts.push(`étape ${i} (${e.id}) : tirages min > max`);
     if (e.tirages[1] > e.pool.length)
       defauts.push(`étape ${i} (${e.id}) : tirages max (${e.tirages[1]}) > pool (${e.pool.length})`);
+    const garantis = lieuxGarantis(e);
+    if (garantis < LIEUX_MIN_PAR_ETAPE)
+      defauts.push(
+        `étape ${i} (${e.id}) : ${garantis} lieu(x) garanti(s) au pire cas, ` +
+          `${LIEUX_MIN_PAR_ETAPE} exigés (entrée ${e.entree ? 1 : 0} + tirages min ${e.tirages[0]} + fins ${e.fin?.length ?? 0})`
+      );
     if (e.entree) note(e.entree, `${e.id}/entree`);
     e.pool.forEach((id) => note(id, `${e.id}/pool`));
     (e.fin ?? []).forEach((id) => note(id, `${e.id}/fin`));
