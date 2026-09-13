@@ -1,0 +1,321 @@
+<title>Encroûté & Tempête</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Roboto+Mono:wght@400;500;700&display=swap">
+<style>
+:root{--ch:#1c1a16;--or:#e0632a;--bl:#fff;--b50:rgba(255,255,255,.5);--b20:rgba(255,255,255,.2);--b08:rgba(255,255,255,.08)}
+html,body{background:var(--ch);color:var(--bl);font-family:"Roboto Mono",ui-monospace,monospace;font-size:13px}
+body{margin:0;padding-block:24px;padding-inline:16px}
+.page{display:flex;flex-wrap:wrap;gap:28px;justify-content:center;align-items:flex-start;max-width:980px;margin:0 auto}
+h1{font-family:"Instrument Serif",Georgia,serif;font-weight:400;font-size:34px;margin:0 0 4px;color:var(--or)}
+.sous{color:var(--b50);font-size:12px;margin:0 0 18px;max-width:560px;line-height:1.5}
+/* le cadre du jeu */
+.phone{position:relative;width:390px;height:720px;background:var(--ch);overflow:hidden;flex:0 0 auto;box-shadow:0 0 0 1px var(--b20)}
+.phone canvas{position:absolute;left:0;image-rendering:pixelated;display:block}
+#illu{top:0}
+#texte{position:absolute;left:0;top:300px;width:390px;height:150px;box-sizing:border-box;padding:16px 24px 0;color:var(--bl);font-size:13px;line-height:1.55}
+#texte p{margin:0 0 10px}
+#cta{top:452px}
+#storm{top:0;touch-action:none;cursor:crosshair}
+#storm.off{pointer-events:none}
+#etat{position:absolute;left:0;right:0;bottom:8px;text-align:center;font-size:10px;letter-spacing:1px;color:var(--b50);text-transform:uppercase;pointer-events:none}
+/* le panneau */
+.panel{width:330px;flex:0 0 auto;display:flex;flex-direction:column;gap:18px}
+.bloc{border:1px solid var(--b20);padding:14px 14px 12px}
+.bloc h2{margin:0 0 6px;font-size:11px;letter-spacing:2.4px;text-transform:uppercase;color:var(--or);font-weight:500}
+.bloc p{margin:0 0 10px;color:var(--b50);font-size:11px;line-height:1.5}
+.seg{display:flex;gap:6px;margin:6px 0 4px;flex-wrap:wrap}
+.seg button,.act{font:inherit;font-size:11px;letter-spacing:1.6px;text-transform:uppercase;background:transparent;color:var(--bl);border:1px solid var(--b20);padding:7px 10px;cursor:pointer;min-width:52px}
+.seg button.on{border-color:var(--or);color:var(--or)}
+.act{border-color:var(--or);color:var(--ch);background:var(--or);width:100%;padding:11px;letter-spacing:2.8px}
+.act:disabled{opacity:.35;cursor:default}
+.lig{display:flex;justify-content:space-between;font-size:11px;color:var(--b50);margin-top:8px}
+.lig b{color:var(--bl);font-weight:500}
+.note{font-size:10px;color:var(--b20);margin-top:8px;line-height:1.5}
+@media (max-width:760px){.phone{transform-origin:top left}}
+</style>
+
+<div class="page">
+  <div style="width:100%;max-width:750px">
+    <h1>Encroûté &amp; Tempête</h1>
+    <p class="sous">Deux mécaniques des Salines, posées sur les CTA du jeu tels qu'ils existent. Le sel ne touche jamais la narration : c'est la capacité à décider qui se fige. Passe les paliers, déclenche une tempête, balaie-la au doigt. Deux rendus proposés pour chacune — tu choisis.</p>
+  </div>
+
+  <div class="phone" id="phone">
+    <canvas id="illu"></canvas>
+    <div id="texte">
+      <p>Le sel tient la lumière. Sur la croûte, rien ne fait d'ombre, pas même toi.</p>
+      <p>Au loin, quelque chose avance, et ce n'est pas toi.</p>
+    </div>
+    <canvas id="cta"></canvas>
+    <canvas id="storm" class="off"></canvas>
+    <div id="etat">Intact</div>
+  </div>
+
+  <div class="panel">
+    <div class="bloc">
+      <h2>L'État Encroûté</h2>
+      <p>Chaque campement ajoute un palier. I : pixels blancs sur bordures et encoches. II : ~15 % des lettres couvertes, fins de mots d'abord. III : 35–40 % des lettres, plus l'indice du dé, et un mot du Geôlier.</p>
+      <div class="seg" id="palier">
+        <button data-p="0" class="on">Intact</button><button data-p="1">I</button><button data-p="2">II</button><button data-p="3">III</button>
+      </div>
+      <div class="seg" id="rendu">
+        <button data-r="grappes" class="on">A · grappes</button><button data-r="givre">B · givre</button>
+      </div>
+      <div class="note">A : le sel s'accroche par paquets, comme la frange du Geôlier — irrégulier, par endroits épais. B : une pellicule fine et régulière sur tout le bord, quelques cristaux à l'intérieur.</div>
+    </div>
+
+    <div class="bloc">
+      <h2>La Soif</h2>
+      <p>Même renderer, même budget : haute, un mot sur trois des choix devient un bloc de pixels blancs. On lit encore, on lit mal.</p>
+      <div class="seg" id="soif">
+        <button data-s="0" class="on">Basse</button><button data-s="1">Haute</button>
+      </div>
+    </div>
+
+    <div class="bloc">
+      <h2>La tempête de sel</h2>
+      <p>Attachée à une scène, déclenchée à l'entrée, jamais chronométrée. L'interface se couvre par paliers ; on balaie au doigt, 3 à 5 passages. Un bouton non dégagé n'est pas cliquable. Sur certains lieux, balayer l'image révèle un détail absent avant.</p>
+      <div class="seg" id="vent">
+        <button data-v="rafale" class="on">A · rafale</button><button data-v="voile">B · voile</button>
+      </div>
+      <button class="act" id="declencher">Déclencher la tempête</button>
+      <div class="lig"><span>Couverture</span><b id="couv">0 %</b></div>
+      <div class="lig"><span>Passages</span><b id="pass">0</b></div>
+      <div class="lig"><span>Boutons dégagés</span><b id="deg">3 / 3</b></div>
+      <div class="note">A : le sel arrive par la droite, en bandes, comme poussé. B : il tombe partout à la fois, en voile. Balaie sur l'image aussi : une seconde statue est dessous.</div>
+      <button class="act" id="reset" style="margin-top:10px;background:transparent;color:var(--or)">Tout remettre</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+/* ─────────────────────────── constantes DA ─────────────────────────── */
+const CH="#1c1a16", OR="#e0632a", WH="#ffffff";
+const W=390, DPR=Math.min(2, devicePixelRatio||1);
+const rng=(seed)=>{let s=(seed>>>0)||1;return()=>{s=(s*1664525+1013904223)>>>0;return s/4294967296;};};
+const BAYER=[[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
+function prep(cv,h){cv.width=W*DPR;cv.height=h*DPR;cv.style.width=W+"px";cv.style.height=h+"px";const c=cv.getContext("2d");c.setTransform(DPR,0,0,DPR,0,0);c.imageSmoothingEnabled=false;return c;}
+
+/* ─────────────────────────── l'illustration ────────────────────────── */
+/* La Croûte, procédurale : sol orange quasi plein, ciel charbon — les
+   valeurs inversées de la zone. Une seconde statue dort dessous : elle
+   n'apparaît que là où la tempête a été balayée. */
+const ILH=300, illu=document.getElementById("illu"), ic=prep(illu,ILH);
+const revealed=new Uint8Array((W/2)*(ILH/2));
+function drawIllu(){
+  ic.fillStyle=CH; ic.fillRect(0,0,W,ILH);
+  const hz=118, r=rng(7);
+  // le sol : trame Bayer très dense, presque plein
+  for(let y=hz;y<ILH;y+=2)for(let x=0;x<W;x+=2){
+    const d=(y-hz)/(ILH-hz);
+    if(BAYER[(y>>1)&3][(x>>1)&3]/16 < .82+.18*d) { ic.fillStyle=OR; ic.fillRect(x,y,2,2); }
+  }
+  // fissures qui convergent vers un point de l'horizon
+  ic.fillStyle=CH;
+  for(let k=0;k<11;k++){let x=r()*W,y=ILH+4;const tx=255,ty=hz+6;for(let i=0;i<160;i++){const t=i/160;x+= (tx-x)*.03+(r()-.5)*3;y+=(ty-y)*.03;const w=Math.max(1,3*(1-t));ic.fillRect(Math.round(x/2)*2,Math.round(y/2)*2,2*Math.ceil(w/2),2);}}
+  // pieux et rails
+  for(let i=0;i<6;i++){const x=24+i*30, h=26-i*3; ic.fillRect(x, hz+14+i*6-h, 4, h+i*2);}
+  for(let i=0;i<70;i++){const t=i/70;ic.fillRect(Math.round((60+t*190)/2)*2,Math.round((ILH-6-t*150)/2)*2,2,2);ic.fillRect(Math.round((110+t*150)/2)*2,Math.round((ILH-6-t*150)/2)*2,2,2);}
+  // l'île au loin
+  for(let x=222;x<292;x+=2){const yy=hz-6-Math.round(Math.abs(Math.sin((x-222)/22))*10);ic.fillRect(x,yy,2,hz-yy);}
+  ic.fillRect(252,hz-30,6,26);
+  // une chose lointaine qui n'est pas toi
+  ic.fillRect(318,hz+22,6,4); ic.fillRect(320,hz+18,2,4);
+  // la seconde statue, révélée cellule par cellule
+  ic.fillStyle=CH;
+  for(let y=0;y<ILH;y+=2)for(let x=0;x<W;x+=2){ if(!revealed[(y>>1)*(W>>1)+(x>>1)]) continue; if(statue(x,y)) ic.fillRect(x,y,2,2); }
+}
+function statue(x,y){ // une silhouette assise, bras tendu vers l'île, à gauche du sol
+  const cx=92, base=232;
+  if(x>=cx-8&&x<cx+8&&y>=base-34&&y<base-22) return true;          // tête
+  if(x>=cx-12&&x<cx+12&&y>=base-22&&y<base) return true;           // buste
+  if(x>=cx+12&&x<cx+40&&y>=base-18&&y<base-12) return true;        // bras tendu
+  if(x>=cx-16&&x<cx+18&&y>=base&&y<base+8) return true;            // jambes repliées
+  return false;
+}
+drawIllu();
+
+/* ─────────────────────────── les CTA + le sel ──────────────────────── */
+const CTAH=268, cta=document.getElementById("cta"), cc=prep(cta,CTAH);
+const CHOIX=[["Sonner la cloche","COURAGE"],["Suivre les rails, sans bruit","INSTINCT"],["Balayer le sel du pieu",""]];
+const BOX=CHOIX.map((_,i)=>({x:24,y:12+i*58,w:342,h:46}));
+const HINT={x:0,y:12+3*58+10,w:W,h:18};
+let palier=0, rendu="grappes", soif=0;
+function drawCTA(){
+  cc.fillStyle=CH; cc.fillRect(0,0,W,CTAH);
+  cc.font="500 13px 'Roboto Mono', monospace"; cc.textBaseline="middle";
+  const r=rng(101+palier*7+(rendu==="givre"?1:0)+soif*13);
+  // quota de lettres à couvrir : II ≈ 15 %, III ≈ 38 %
+  const quota = palier>=3 ? .38 : palier===2 ? .15 : 0;
+  const soifs = soif? 1:0;
+  BOX.forEach((b,i)=>{
+    const [label,tag]=CHOIX[i];
+    // cadre : bordure blanche 1px, entailles de coin 2×2 charbon (ChoiceButton)
+    cc.fillStyle=WH; cc.fillRect(b.x,b.y,b.w,1); cc.fillRect(b.x,b.y+b.h-1,b.w,1); cc.fillRect(b.x,b.y,1,b.h); cc.fillRect(b.x+b.w-1,b.y,1,b.h);
+    cc.fillStyle=CH; [[b.x,b.y],[b.x+b.w-2,b.y],[b.x,b.y+b.h-2],[b.x+b.w-2,b.y+b.h-2]].forEach(([x,y])=>cc.fillRect(x,y,2,2));
+    // le libellé, lettre à lettre (la position de chaque lettre sert au sel)
+    cc.fillStyle=WH; let x=b.x+14; const cy=b.y+b.h/2; const cells=[];
+    const mots=label.split(" "); let idx=0;
+    mots.forEach((m,mi)=>{
+      const debut=x;
+      for(const ch of m){ const w=cc.measureText(ch).width; cells.push({x, y:cy-8, w, h:16, mot:mi, pos:idx++, ch}); cc.fillText(ch,x,cy); x+=w; }
+      cells.filter(c=>c.mot===mi).forEach(c=>{c.motX=debut;c.motW=x-debut;});
+      x+=cc.measureText(" ").width;
+    });
+    if(tag){ cc.fillStyle=OR; cc.font="500 11px 'Roboto Mono', monospace"; const tw=cc.measureText(tag).width; cc.fillText(tag,b.x+b.w-14-tw,cy); cc.font="500 13px 'Roboto Mono', monospace"; }
+    // ── la Soif : un mot sur trois devient un bloc blanc
+    if(soifs){ mots.forEach((m,mi)=>{ if((mi+i)%3!==1) return; const c=cells.find(k=>k.mot===mi); bloc(cc,c.motX-1,cy-9,c.motW+2,18,r,.92); }); }
+    // ── le sel sur le cadre (palier ≥ I)
+    if(palier>=1) selBordure(cc,b,r,palier);
+    // ── le sel sur les lettres (palier ≥ II) : fins de mots d'abord
+    if(quota>0){
+      const n=Math.round(cells.length*quota);
+      const ordre=[]; // dernière lettre de chaque mot, puis l'avant-dernière, etc.
+      const parMot={}; cells.forEach(c=>{(parMot[c.mot]=parMot[c.mot]||[]).push(c);});
+      for(let k=0;ordre.length<cells.length;k++) Object.values(parMot).forEach(l=>{ const c=l[l.length-1-k]; if(c) ordre.push(c); });
+      ordre.slice(0,n).forEach(c=>{ if(soifs && (c.mot+i)%3===1) return; bloc(cc,c.x-1,c.y-1,c.w+2,c.h+2,r,palier>=3?.88:.78); });
+    }
+  });
+  // l'indice du dé : intact jusqu'au III
+  cc.fillStyle=OR; cc.font="500 12px 'Roboto Mono', monospace"; cc.textAlign="center";
+  cc.fillText("Lancer le dé", W/2, HINT.y+9); cc.textAlign="left";
+  if(palier>=3){ const b={x:W/2-52,y:HINT.y-2,w:104,h:20}; selBordure(cc,b,r,3); bloc(cc,W/2+8,HINT.y,44,18,r,.7); }
+  if(palier>=3){ cc.fillStyle=OR; cc.font="700 11px 'Roboto Mono', monospace"; cc.fillText("Le sel te tient. Il ne demande rien.", 24, HINT.y+40); }
+  document.getElementById("etat").textContent = ["Intact","Encroûté · I","Encroûté · II","Encroûté · III"][palier] + (soif?" · Soif haute":"");
+}
+/* un bloc de sel : des cellules blanches de 2 px à densité forte au cœur,
+   rongé sur la frange — jamais un rectangle plein */
+function bloc(c,x,y,w,h,r,dens){
+  c.fillStyle=WH;
+  for(let yy=Math.floor(y/2)*2;yy<y+h;yy+=2)for(let xx=Math.floor(x/2)*2;xx<x+w;xx+=2){
+    const ex=Math.min(xx-x,x+w-xx)/w, ey=Math.min(yy-y,y+h-yy)/h, bord=Math.min(ex,ey);
+    const p = bord<.12 ? dens*.55 : dens;
+    if(r()<p) c.fillRect(xx,yy,2,2);
+  }
+  // les grains qui débordent
+  for(let k=0;k<Math.round((w+h)/6);k++){ const s=Math.floor(r()*4); const xx=x+r()*w, yy=y+r()*h; const ox=s===0?-3:s===1?w+1:r()*w, oy=s===2?-3:s===3?h+1:r()*h; if(r()<.6) c.fillRect(Math.floor((x+ (s<2?ox:0)+(s<2?0:r()*w))/2)*2,Math.floor((y+(s>=2?oy:0)+(s>=2?0:r()*h))/2)*2,2,2); }
+}
+/* le sel sur la bordure d'un bouton, deux rendus */
+function selBordure(c,b,r,p){
+  c.fillStyle=WH;
+  const per=2*(b.w+b.h); const grappe=rendu==="grappes";
+  const bruit=(t)=> (Math.sin(t*.13+p)+Math.sin(t*.041+1.7)+Math.sin(t*.31))/3; // grappes stables le long du bord
+  for(let t=0;t<per;t+=2){
+    let x,y;
+    if(t<b.w){x=b.x+t;y=b.y;}else if(t<b.w+b.h){x=b.x+b.w-2;y=b.y+t-b.w;}else if(t<2*b.w+b.h){x=b.x+b.w-(t-b.w-b.h)-2;y=b.y+b.h-2;}else{x=b.x;y=b.y+b.h-(t-2*b.w-b.h)-2;}
+    let prob, epais;
+    if(grappe){ const n=bruit(t); prob = n>.05? .95 : n>-.25? .28 : .04; epais = n>.25? 3 : n>.05? 2 : 1; }
+    else { prob = .55+.12*p; epais = 1; }
+    if(r()<prob){
+      // la pellicule monte VERS L'INTÉRIEUR du bouton, jamais dehors — c'est le bouton qui se couvre
+      const dx = t<b.w?0 : t<b.w+b.h? -1 : t<2*b.w+b.h? 0 : 1, dy = t<b.w?1 : t<b.w+b.h?0 : t<2*b.w+b.h? -1 : 0;
+      for(let k=0;k<epais;k++){ if(k===0||r()<.7) c.fillRect(x+dx*2*k,y+dy*2*k,2,2); }
+      if(!grappe && r()<.08+.06*p) c.fillRect(x+dx*2*(2+Math.floor(r()*3)),y+dy*2*(2+Math.floor(r()*3)),2,2); // cristaux épars
+    }
+  }
+  // les encoches se remplissent en premier
+  [[b.x,b.y],[b.x+b.w-2,b.y],[b.x,b.y+b.h-2],[b.x+b.w-2,b.y+b.h-2]].forEach(([x,y])=>{ if(r()<.8+.06*p) c.fillRect(x,y,2,2); });
+}
+drawCTA();
+
+/* ─────────────────────────── la tempête ────────────────────────────── */
+const PH=720, storm=document.getElementById("storm"), sc=prep(storm,PH);
+const CW=W/2, CHH=PH/2;                         // grille de cellules de 2 px
+const couche=new Uint8Array(CW*CHH);            // épaisseur restante (0..3)
+const seuil=new Float32Array(CW*CHH);           // ordre d'arrivée du sel
+let vent="rafale", enTempete=false, passages=0, doigt=false, dernier=null, timer=null, messageJusqua=0;
+function semer(){
+  const r=rng(vent==="rafale"?31:57);
+  for(let y=0;y<CHH;y++)for(let x=0;x<CW;x++){
+    const n=r();
+    // rafale : par bandes depuis la droite, avec un bruit qui casse la ligne ; voile : partout à la fois
+    seuil[y*CW+x] = vent==="rafale" ? (1-x/CW)*.75 + n*.25 + (Math.sin(y*.21)+1)*.06 : n;
+  }
+}
+function declencher(){
+  if(enTempete) return;
+  semer(); couche.fill(0); passages=0; enTempete=true; storm.classList.remove("off");
+  document.getElementById("declencher").disabled=true;
+  let etape=0; const ETAPES=5;
+  // le sel arrive PAR PALIERS : 5 pas de 320 ms, jamais une interpolation
+  timer=setInterval(()=>{
+    etape++;
+    const t=etape/ETAPES;
+    for(let i=0;i<couche.length;i++) if(seuil[i]<t || etape>=ETAPES) couche[i]=3;
+    drawStorm(); maj();
+    if(etape>=ETAPES){ clearInterval(timer); timer=null; }
+  },320);
+}
+function drawStorm(){
+  sc.clearRect(0,0,W,PH); sc.fillStyle=WH;
+  for(let y=0;y<CHH;y++)for(let x=0;x<CW;x++){
+    const e=couche[y*CW+x]; if(!e) continue;
+    // épaisseur 3 = sel dense (trame Bayer à 14/16 : l'interface reste devinable
+    // en dessous, jamais un mur blanc) ; 2 et 1 = de plus en plus troué, la main a passé
+    if(BAYER[y&3][x&3] < (e===3?14:e===2?9:4)) sc.fillRect(x*2,y*2,2,2);
+  }
+}
+/* balayer : chaque passage de la main retire UNE couche dans sa trace.
+   Trois couches, donc trois passages au minimum — cinq si l'on balaie vite. */
+function balayer(x,y,px,py){
+  const R=22, R2=R*R; let touche=false;
+  const x0=Math.max(0,Math.floor((Math.min(x,px)-R)/2)), x1=Math.min(CW-1,Math.ceil((Math.max(x,px)+R)/2));
+  const y0=Math.max(0,Math.floor((Math.min(y,py)-R)/2)), y1=Math.min(CHH-1,Math.ceil((Math.max(y,py)+R)/2));
+  for(let cy=y0;cy<=y1;cy++)for(let cx=x0;cx<=x1;cx++){
+    const i=cy*CW+cx; if(!couche[i]||couche[i]===9) continue;
+    // distance au segment (px,py)-(x,y)
+    const X=cx*2+1,Y=cy*2+1; const dx=x-px,dy=y-py; const L=dx*dx+dy*dy||1; let t=((X-px)*dx+(Y-py)*dy)/L; t=Math.max(0,Math.min(1,t));
+    const ex=px+t*dx-X, ey=py+t*dy-Y; if(ex*ex+ey*ey>R2) continue;
+    couche[i]--; couche[i]===0 && (couche[i]=9); touche=true;    // 9 = balayée pendant ce passage (ne se re-balaie pas dans le même geste)
+  }
+  return touche;
+}
+function finPassage(){
+  let vues=0;
+  for(let i=0;i<couche.length;i++) if(couche[i]===9){ couche[i]=0; vues++; if((i/CW|0)<ILH/2) revealed[i]=1; }
+  if(vues) { passages++; drawIllu(); }
+}
+function couverture(b){ // part des cellules encore couvertes dans une boîte
+  let n=0,t=0; for(let y=b.y>>1;y<(b.y+b.h)>>1;y++)for(let x=b.x>>1;x<(b.x+b.w)>>1;x++){t++; if(couche[y*CW+x]&&couche[y*CW+x]!==9) n++;} return n/t;
+}
+function maj(){
+  let n=0; for(let i=0;i<couche.length;i++) if(couche[i]&&couche[i]!==9) n++;
+  document.getElementById("couv").textContent=Math.round(100*n/couche.length)+" %";
+  document.getElementById("pass").textContent=passages;
+  const deg=BOX.filter(b=>couverture({x:b.x,y:b.y+452,w:b.w,h:b.h})<.15).length;
+  document.getElementById("deg").textContent=deg+" / 3";
+  const el=document.getElementById("etat");
+  if(enTempete && Date.now()>messageJusqua) el.textContent = n? "Tempête · balaie au doigt" : "Dégagé";
+}
+const pos=(e)=>{const r=storm.getBoundingClientRect();return [ (e.clientX-r.left)*W/r.width, (e.clientY-r.top)*PH/r.height ];};
+storm.addEventListener("pointerdown",e=>{ if(!enTempete) return; doigt=true; dernier=pos(e); storm.setPointerCapture(e.pointerId); tapBouton(dernier); });
+addEventListener("pointermove",e=>{ if(!doigt) return; const p=pos(e); if(balayer(p[0],p[1],dernier[0],dernier[1])) { drawStorm(); } dernier=p; });
+addEventListener("pointerup",()=>{ if(!doigt) return; doigt=false; finPassage(); drawStorm(); maj(); });
+addEventListener("pointercancel",()=>{ if(!doigt) return; doigt=false; finPassage(); drawStorm(); maj(); });
+/* un tap sur un bouton : il ne répond que dégagé */
+function tapBouton([x,y]){
+  const i=BOX.findIndex(b=> x>=b.x&&x<b.x+b.w&&y>=b.y+452&&y<b.y+452+b.h); if(i<0) return;
+  const b=BOX[i]; const el=document.getElementById("etat");
+  messageJusqua=Date.now()+1400;
+  if(couverture({x:b.x,y:b.y+452,w:b.w,h:b.h})>=.15){ el.textContent="Bouton couvert — balaie d'abord"; return; }
+  el.textContent="« "+CHOIX[i][0]+" » — choisi"; cc.save(); cc.fillStyle=OR; cc.fillRect(b.x+1,b.y+1,b.w-2,b.h-2); cc.fillStyle=CH; cc.font="500 13px 'Roboto Mono', monospace"; cc.textBaseline="middle"; cc.fillText(CHOIX[i][0],b.x+14,b.y+b.h/2); cc.restore();
+  setTimeout(drawCTA,420);
+}
+function reset(){
+  if(timer){clearInterval(timer);timer=null;} enTempete=false; couche.fill(0); revealed.fill(0); passages=0;
+  storm.classList.add("off"); sc.clearRect(0,0,W,PH); document.getElementById("declencher").disabled=false;
+  drawIllu(); drawCTA(); document.getElementById("couv").textContent="0 %"; document.getElementById("pass").textContent="0"; document.getElementById("deg").textContent="3 / 3";
+}
+
+/* ─────────────────────────── le panneau ────────────────────────────── */
+function segment(id,attr,cb){ const box=document.getElementById(id); box.querySelectorAll("button").forEach(bt=>bt.onclick=()=>{ box.querySelectorAll("button").forEach(x=>x.classList.remove("on")); bt.classList.add("on"); cb(bt.dataset[attr]); }); }
+segment("palier","p",v=>{palier=+v;drawCTA();});
+segment("rendu","r",v=>{rendu=v;drawCTA();});
+segment("soif","s",v=>{soif=+v;drawCTA();});
+segment("vent","v",v=>{vent=v;});
+document.getElementById("declencher").onclick=declencher;
+document.getElementById("reset").onclick=reset;
+/* sur un petit écran, le cadre se réduit pour tenir dans la largeur */
+function fit(){ const ph=document.getElementById("phone"); const k=Math.min(1,(innerWidth-32)/390); ph.style.transform="scale("+k+")"; ph.style.marginBottom=(-(1-k)*720)+"px"; }
+addEventListener("resize",fit); fit();
+</script>
