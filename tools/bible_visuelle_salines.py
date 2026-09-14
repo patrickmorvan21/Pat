@@ -21,8 +21,9 @@ from __future__ import annotations
 import json, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from style_image import (composer_environnement, composer_portrait, composer_cadre,  # noqa: E402
-                         CLAUSES_ENVIRONNEMENT, CADRAGE_DETAIL, CADRAGE_SUR_PLACE)
+from style_image import (composer_environnement, composer_cadre,  # noqa: E402
+                         CLAUSES_ENVIRONNEMENT, CADRAGE_DETAIL, CADRAGE_SUR_PLACE,
+                         CADRAGE_RENCONTRE)
 
 RACINE = Path(__file__).resolve().parent.parent
 Z = json.loads((RACINE / "data/zones/salines.json").read_text(encoding="utf-8"))
@@ -50,10 +51,9 @@ ETABLISSEMENT = {
 
 # ── LES SIX LIEUX OBLIGATOIRES (une image dédiée chacun)
 OBLIGATOIRES = {
-    "rive_haute": ("the old boat quay of a vanished lake: a row of tall weathered mooring posts standing in dry salt, "
-                   "a bronze call-bell hanging from a timber gallows with no clapper, a phrase carved into the nearest "
-                   "post, and two iron rails leaving the quay and running out across the flat white crust toward a "
-                   "distant black island"),
+    "rive_haute": ("the old boat quay of a vanished lake: a row of weathered mooring posts standing in dry salt, "
+                   "a bronze bell hanging from a timber gallows, and two iron rails running out across the white "
+                   "flat toward a distant black island"),
     "terrasses": ("three dry salt terraces descending in steps seen from the top one, low walls between the levels, "
                   "lying salt-crusted human figures and loose white clods on each level, a standing hooded figure "
                   "half crusted in salt at the top edge pointing down, and at the bottom, in the last basin, an "
@@ -89,41 +89,30 @@ OBLIGATOIRES = {
 # exactement les décalages image↔texte qu'on passe notre temps à réparer.
 LIEUX_JOUES = {
     "file": ("croute", "scene_salines_file_a",
-             "a line of flat paving stones laid at even intervals across a white salt flat, running away "
-             "toward the far horizon like footsteps that were frozen, each stone pale on one face and grey "
-             "on the other, the salt between them finer and lighter; standing all along the line, human "
-             "figures of salt caught in mid-stride, every one of them facing the way the stones run, not "
-             "one of them turned back"),
-    # ⚠️ « seen from above » a été RETIRÉ (14/09) : c'était une image de style
-    # pour dire la FORME, mais un modèle de diffusion la lit comme une
-    # instruction de CAMÉRA — elle se battait avec « first-person view from
-    # the ground » et « very wide shot » dans le même prompt. La main se dit
-    # sans mot de caméra : elle est SOUS le sel, on n'en voit que les doigts.
+             "a line of flat stepping stones set at even intervals across a white salt flat, low and level "
+             "with the ground, running away to the horizon; standing beside them, three human figures of "
+             "salt caught in mid-stride, all facing the same way"),
+    # ⚠️ Deux versions ont échoué avant celle-ci. La 1re disait « seen from
+    # above » (un mot de CAMÉRA pour décrire une forme) ; la 2e était juste
+    # mais demandait onze choses, et le modèle a rendu les corps en arbres
+    # morts. Ici : une seule chose dominante, un seul détail.
     "champ_des_sillages": ("croute", "scene_salines_champ_des_sillages_a",
-             "long dark furrows splitting the white salt crust, beginning together at one point near your "
-             "feet and running away across the flat, drawing closer together toward the distant black "
-             "island, evenly spaced like the fingers of an enormous hand lying flat just under the salt "
-             "with only its fingers breaking the surface, the salt inside the furrows darker and damp; "
-             "lying between the furrows, human bodies taken flat by the salt, arms straight down at their "
-             "sides, faces up"),
+             "long dark cracks in a white salt flat, spreading apart like the fingers of a hand buried "
+             "just beneath the surface; between them, two human bodies lying flat on their backs, half "
+             "swallowed by the salt"),
     "barge_echouee": ("croute", "scene_salines_barge_echouee_a",
-             "a flat-bottomed river barge sitting on dry salt far from any water, its hull gripped by the "
-             "crust right up to the gunwale, its mast fallen and lying along the deck; on the deck a man "
-             "made entirely of salt sits before a shallow bowl, only his lips free"),
+             "a river barge beached on a white salt flat far from any water, its hull sunk to the gunwale, "
+             "its mast fallen across the deck; a man of salt sits on the deck before a bowl"),
     "statue": ("croute", "scene_salines_statue_a",
-             "one weathered figure of salt standing alone on a white flat, taller than a man, one arm held "
-             "straight out toward the distant island, its face and hands thickened and lost under layers of "
-             "salt; under the outstretched arm, where it casts no shadow at all, the salt is smooth and "
-             "untouched"),
+             "one salt-crusted human figure standing alone on a white flat, taller than a man, one arm "
+             "held straight out toward the horizon, its face lost under thick salt"),
     "bouche": ("croute", "scene_salines_bouche_a",
-             "a hole in the white salt crust as wide as a cart, its rim smooth and rounded — not a collapse "
-             "but an opening made from below; laid around it in a circle, belt buckles, blades and a "
-             "lantern, every one of them turned to face the hole, like offerings, or like what was spat "
-             "back out"),
+             "a round hole in a white salt flat, as wide as a cart, its rim smooth and rounded; a ring of "
+             "small objects laid on the salt around it — buckles, blades, a lantern — all turned to face "
+             "the hole"),
     "radeau": ("croute", "scene_salines_radeau_a",
-             "a raft of planks lying flat on dry salt with no water for leagues, as if the crust might melt "
-             "and one had to be ready; a man crusted with salt stands on it holding a punt pole, turned "
-             "toward one precise far-off point; a grey heron is perched at the end of the raft"),
+             "a plank raft lying flat on dry white salt with no water anywhere, a man of salt standing on "
+             "it holding a long punt pole, a grey heron perched at its end"),
 }
 
 # ── LES ÉCRANS QUI NE REGARDENT PAS UN PAYSAGE
@@ -182,10 +171,15 @@ RENCONTRES = {
                  "four flat wide creatures rising out of a cracked white salt crust, each the size of a large dog, "
                  "bodies low and plated like a woodlouse, each with a single long tapering beak of clear glass, "
                  "caught mid-hop with the crust breaking open under them, salt dust in the air"),
+    # ⚠️ IDENTITÉ À TRANCHER (signalé à Patrick le 14/09) : la fiche de
+    # salines.json dit « gros lézards de la taille d'un chien », la SCÈNE
+    # ÉCRITE dit des corps humains couchés que le sel a pris à plat et dont
+    # les bras cherchent tes chevilles. Le sujet suit la SCÈNE — c'est elle
+    # que le joueur lit — mais la fiche reste à corriger, sinon la bible
+    # contredit son propre prompt sur la même page.
     "gisants": ("croute", "monstre_salines_gisants_a",
-                "two human figures lying full length in a white salt crust that has grown over them, only their faces "
-                "and forearms free, eyes open and looking up at the viewer, both arms lifted and reaching toward the "
-                "viewer's feet with the crust cracking off them, the rest of the body still fused to the ground"),
+                "two human bodies lying flat on their backs in a white salt crust that has grown over them, "
+                "only the faces free, their arms breaking up out of the salt and reaching forward"),
     "encroute_du_radeau": ("croute", "monstre_salines_encroute_radeau_a",
                         "a hooded man crusted with salt standing on a flat plank raft that rests directly on dry salt "
                         "with no water anywhere, holding a long punt pole upright, turned away from the viewer toward "
@@ -326,7 +320,9 @@ def main() -> int:
                "**Chaque lieu joué a la sienne** (amendement Patrick du 14/09 : « je veux des images en plus pour "
                "chacune des scènes »), plus les **rencontres nommées** et les écrans qui regardent autre chose "
                "qu'un paysage. Le Ver n'a jamais la sienne : « une chose lointaine qui n'est pas toi », c'est lui.")
-    out.append("2. **Les trois invariants** de l'environnement entrent dans chaque image dédiée.")
+    out.append("2. **Les trois invariants** vivent dans l'image d'**établissement** — c'est elle qui définit la zone. "
+               "Ils sont RETIRÉS des images de lieu (14/09) : mesuré, ils coûtaient ~25 mots par prompt et étaient "
+               "les premiers lâchés par le modèle. La cohésion tient par les valeurs et la trame, qui, elles, tiennent.")
     out.append("3. **Le ratio de trame par le prompt** (`style_image.CLAUSES_ENVIRONNEMENT`), jamais par le seuil du dithering. "
                "Règle de zone : vue à la première personne, le héros n'est jamais dans l'image.\n")
     # ⚠️ Compte CALCULÉ, jamais écrit en dur : la première version annonçait
@@ -361,7 +357,7 @@ def main() -> int:
             nom = f"scene_salines_{lid}_a"
             out.append(f"### {L['nom']} (obligatoire, {L['role']}) — `{nom}`\n")
             out.append(f"Ce que la bible dit : {L['note'].split('.')[0]}.\n")
-            out.append("```\n" + f"{nom}=" + composer_environnement(f"{sujet}, {invariants(eid)}", eid) + "\n```\n")
+            out.append("```\n" + f"{nom}=" + composer_environnement(sujet, eid) + "\n```\n")
             n += 1
             noms.append((nom, eid))
             sujets.append((nom, sujet))
@@ -371,7 +367,7 @@ def main() -> int:
             L = LIEUX[lid]
             out.append(f"### {L['nom']} (lieu joué, {L['role']}) — `{nom}`\n")
             out.append(f"Ce que la bible dit : {L['note'].split('.')[0]}.\n")
-            out.append("```\n" + f"{nom}=" + composer_environnement(f"{sujet}, {invariants(eid)}", eid) + "\n```\n")
+            out.append("```\n" + f"{nom}=" + composer_environnement(sujet, eid) + "\n```\n")
             n += 1
             noms.append((nom, eid))
             sujets.append((nom, sujet))
@@ -397,7 +393,7 @@ def main() -> int:
                 raise SystemExit(f"bible visuelle : « {cid} » n'est ni une créature ni une rencontre de salines.json")
             out.append(f"### {C['nom']} (rencontre) — `{nom}`\n")
             out.append(f"Ce que la bible dit : {C['note'].split('.')[0]}.\n")
-            out.append("```\n" + f"{nom}=" + composer_portrait(sujet) + "\n```\n")
+            out.append("```\n" + f"{nom}=" + composer_cadre(sujet, eid, CADRAGE_RENCONTRE) + "\n```\n")
             n += 1
             noms.append((nom, eid))
             sujets.append((nom, sujet))

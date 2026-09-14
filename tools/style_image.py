@@ -163,6 +163,17 @@ CLAUSES_ENVIRONNEMENT = {
 # Les cadrages nommés, pour un écran qui ne regarde pas un paysage.
 CADRAGE_DETAIL = "close-up, the subject filling the frame, nothing else in shot, no horizon"
 CADRAGE_SUR_PLACE = "medium shot from where you stand, the place close around you, no horizon"
+# ⚠️ UNE RENCONTRE N'EST PAS UN PORTRAIT SUR FOND NOIR (14/09, mesuré : 8 sur 8
+# des sujets de rencontre décrivaient un sol ou un décor — la croûte sous les
+# pattes, les rails, le bassin derrière — que « pitch-black background » efface).
+# Les Gisants en sont la preuve : des corps COUCHÉS dans le sel, servis sur un
+# fond noir où il n'y a pas de sel ; le modèle les a redressés à la verticale,
+# ce qui était la seule sortie possible.
+# Et sur la Croûte le fond noir est en plus l'exact contraire de la zone, dont
+# la signature est un sol ÉCLATANT. Une rencontre se cadre donc serré sur la
+# créature, dans les valeurs et la lumière de son environnement.
+CADRAGE_RENCONTRE = ("close on the creature, filling most of the frame, just enough ground under it "
+                     "to stand or lie on and a bare strip of horizon behind")
 
 
 def composer_portrait(sujet: str) -> str:
