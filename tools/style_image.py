@@ -101,6 +101,27 @@ CLAUSES_ENVIRONNEMENT = {
 }
 
 
+def composer_portrait(sujet: str) -> str:
+    """Un PORTRAIT de rencontre : fond noir, une source, le sujet émerge.
+
+    ⚠️ Un portrait ne prend PAS la clause de cadrage de son environnement
+    (`CLAUSES_ENVIRONNEMENT`) — trouvé le 14/09 en relisant les prompts
+    générés : les cinq portraits d'origine disaient à la fois « pitch-black
+    background, one single light source » ET « very wide shot, harsh white
+    noon, no shadows at all », c'est-à-dire l'exact contraire. Un modèle de
+    diffusion à qui l'on demande les deux rend n'importe laquelle des deux.
+    Le cadrage d'un environnement décrit un PAYSAGE ; un portrait a le sien.
+
+    Ce qui reste : le sujet ne montre jamais le héros, et la clause de style
+    canonique (aplat à deux valeurs, époque, gravure) — c'est elle qui fait
+    tenir le portrait à côté des paysages de la même zone.
+    """
+    sujet = sujet.strip().rstrip(",; ").strip()
+    return (f"{sujet}, pitch-black background, the subject emerging from darkness, "
+            f"one single low light source, this is the reference image of this character, "
+            f"no protagonist in frame, {CLAUSE}")
+
+
 def composer_environnement(sujet: str, env: str) -> str:
     """Un sujet des Salines + le ratio de son environnement + la clause canonique."""
     sujet = sujet.strip().rstrip(",; ").strip()

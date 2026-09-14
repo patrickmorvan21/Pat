@@ -21,7 +21,7 @@ from __future__ import annotations
 import json, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from style_image import composer_environnement, CLAUSES_ENVIRONNEMENT  # noqa: E402
+from style_image import composer_environnement, composer_portrait, CLAUSES_ENVIRONNEMENT  # noqa: E402
 
 RACINE = Path(__file__).resolve().parent.parent
 Z = json.loads((RACINE / "data/zones/salines.json").read_text(encoding="utf-8"))
@@ -75,8 +75,11 @@ OBLIGATOIRES = {
 }
 
 # ── LES RENCONTRES NOMMÉES (portrait de référence : fond noir, une source)
-PORTRAIT = ("pitch-black background, the subject emerging from darkness, one single light source, "
-            "this is the reference image of this character")
+# La recette du portrait vit dans style_image.composer_portrait — jamais
+# recopiée ici, et surtout SANS la clause de cadrage de l'environnement
+# (« very wide shot, harsh white noon, no shadows at all » contredisait
+# « pitch-black background, one single light source » dans les cinq prompts
+# d'origine).
 RENCONTRES = {
     "percepteur": ("croute", "monstre_salines_percepteur_a",
                    "a tall gaunt man bent under the weight of hundreds of flat lead tokens pressed into his flesh by "
@@ -90,10 +93,33 @@ RENCONTRES = {
                      "a huge draught ox still in its wooden yoke and iron traces, half turned to white salt crystal, "
                      "walking without end along a pair of iron rails across a flat salt crust, dragging a small "
                      "wooden wagon with a single shuttered window, seen from the side and slightly behind"),
-    "heron_de_sel": ("bassins", "monstre_salines_heron_a",
+    "heron_de_sel": ("croute", "monstre_salines_heron_a",
                      "an immense salt-white heron standing motionless on one leg in the middle of an empty stone "
                      "basin, neck folded, twice the height of a man, the low walls of the terraces behind it"),
-    "encroutes": ("bassins", "monstre_salines_encroute_a",
+    # ⚠️ AJOUT DU 14/09 (retour Patrick : « il manque les créatures dans les
+    # environnements »). Le tri d'origine — « les six obligatoires et les
+    # rencontres nommées » — a été fait le 13/09, AVANT que la Croûte ne soit
+    # écrite : il ne pouvait pas savoir lesquelles seraient réellement mises
+    # en scène. Les deux COMBATS de la Croûte n'avaient donc aucune image,
+    # ce qui contredit une règle du jeu (14/07 : « illustration systématique
+    # sur toute scène de combat »).
+    # Critère retenu, et à appliquer aux environnements suivants quand ils
+    # seront écrits : une créature a son image si le joueur la REGARDE EN
+    # FACE — un combat, ou une rencontre à qui il parle. Un phénomène de
+    # décor (Cristallins, Grumeaux, Léchards) reste dans l'image du lieu.
+    "piqueurs": ("croute", "monstre_salines_piqueurs_a",
+                 "four flat wide creatures rising out of a cracked white salt crust, each the size of a large dog, "
+                 "bodies low and plated like a woodlouse, each with a single long tapering beak of clear glass, "
+                 "caught mid-hop with the crust breaking open under them, salt dust in the air"),
+    "gisants": ("croute", "monstre_salines_gisants_a",
+                "two human figures lying full length in a white salt crust that has grown over them, only their faces "
+                "and forearms free, eyes open and looking up at the viewer, both arms lifted and reaching toward the "
+                "viewer's feet with the crust cracking off them, the rest of the body still fused to the ground"),
+    "encroute_du_radeau": ("croute", "monstre_salines_encroute_radeau_a",
+                        "a hooded man crusted with salt standing on a flat plank raft that rests directly on dry salt "
+                        "with no water anywhere, holding a long punt pole upright, turned away from the viewer toward "
+                        "a distant point on the horizon, and far behind him an immense pale wading bird unfolding one wing"),
+    "encroutes": ("croute", "monstre_salines_encroute_a",
                   "a standing hooded figure in coarse wool, the lower half of the body and one arm sealed in a thick "
                   "white crust of salt as if grown into the ground, the mouth and one hand still free, speaking, "
                   "leaning slightly toward the viewer"),
@@ -115,8 +141,15 @@ def main() -> int:
     out.append("2. **Les trois invariants** de l'environnement entrent dans chaque image dédiée.")
     out.append("3. **Le ratio de trame par le prompt** (`style_image.CLAUSES_ENVIRONNEMENT`), jamais par le seuil du dithering. "
                "Règle de zone : vue à la première personne, le héros n'est jamais dans l'image.\n")
-    out.append("**15 images** : 4 établissements · 6 obligatoires · 5 rencontres. Deux variantes par image, le pipeline "
+    # ⚠️ Compte CALCULÉ, jamais écrit en dur : la première version annonçait
+    # « 15 images » dans son en-tête, et ce chiffre serait devenu faux au
+    # premier ajout sans que rien ne le signale.
+    total = 1 + len(ETABLISSEMENT) - 1 + len(OBLIGATOIRES) + len(RENCONTRES)
+    out.append(f"**{len(ETABLISSEMENT) + len(OBLIGATOIRES) + len(RENCONTRES)} images** : "
+               f"{len(ETABLISSEMENT)} établissements · {len(OBLIGATOIRES)} obligatoires · "
+               f"{len(RENCONTRES)} rencontres. Deux variantes par image, le pipeline "
                "double le suffixe (`_a` → `_a_b`). Format `nom=prompt` pour `/leo-import`.\n")
+    del total
     n = 0
     for e in Z["environnements"]:
         eid = e["id"]
@@ -142,15 +175,27 @@ def main() -> int:
         for cid, (env, nom, sujet) in RENCONTRES.items():
             if env != eid:
                 continue
-            C = next(c for c in Z["creatures"] if c["id"] == cid)
+            # ⚠️ Une « rencontre nommée » est tantôt une CRÉATURE de la bible
+            # (les Piqueurs), tantôt une RENCONTRE (l'Encroûté du Radeau) :
+            # on cherche dans les deux listes, sinon l'ajout d'un personnage
+            # fait planter la génération sans dire pourquoi.
+            C = next((c for c in Z["creatures"] + Z["rencontres"] if c["id"] == cid), None)
+            if C is None:
+                raise SystemExit(f"bible visuelle : « {cid} » n'est ni une créature ni une rencontre de salines.json")
             out.append(f"### {C['nom']} (rencontre) — `{nom}`\n")
             out.append(f"Ce que la bible dit : {C['note'].split('.')[0]}.\n")
-            out.append("```\n" + f"{nom}=" + composer_environnement(f"{sujet}, {PORTRAIT}", eid) + "\n```\n")
+            out.append("```\n" + f"{nom}=" + composer_portrait(sujet) + "\n```\n")
             n += 1
     out.append("\n## Ce qui n'a PAS d'image, et pourquoi\n")
     out.append("- **Le Ver de croûte** : jamais. Il est « la chose lointaine qui n'est pas toi » de l'établissement de la Croûte, et sous les pieds au Souffle.")
     out.append("- **Les 23 lieux du pool** : l'établissement de leur environnement, jusqu'à ce que l'écriture en désigne un qui mérite la sienne (un lieu = une image, jamais une image = une interaction).")
     out.append("- **Le Fossé** (beat d'arrivée de Saulnes) : l'établissement de Saulnes est déjà la vue de loin qu'il décrit.")
+    out.append("- **Les créatures de DÉCOR** — Cristallins, Grumeaux, Léchards, Sauniers : on ne les regarde jamais en face, "
+               "elles appartiennent à l'image du lieu.")
+    out.append("- **Les créatures hostiles des environnements PAS ENCORE ÉCRITS** — Vermisseaux, Sauteurs de saumure, "
+               "Assoiffés, Rats de saline : on ne commande pas une image pour une scène qui n'existe pas. Elles "
+               "prendront la leur quand les Bassins, les Salines et Saulnes seront écrits, au même critère "
+               "(le joueur la regarde en face → elle a son image).")
     SORTIE.write_text("\n".join(out) + "\n", encoding="utf-8")
     print(f"{SORTIE.relative_to(RACINE)} — {n} images ({SORTIE.stat().st_size // 1024} Ko)")
     return 0
