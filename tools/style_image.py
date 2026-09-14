@@ -88,17 +88,75 @@ def composer_objet(sujet: str) -> str:
 # Règle de zone : vue à la première personne, le héros n'est jamais dans l'image.
 PREMIERE_PERSONNE = "first-person view from the ground, no protagonist in frame, what is far away is other people"
 
-CLAUSES_ENVIRONNEMENT = {
+# ⚠️ TROIS CHOSES SÉPARÉES, et il faut qu'elles le restent (14/09).
+# Elles vivaient dans une seule chaîne, donc un gros plan héritait forcément du
+# cadrage du paysage : un prompt de macro sur une inscription disait « very wide
+# shot ». C'est le défaut EXACT trouvé le matin même sur les portraits (fond
+# noir + plein soleil dans la même phrase) ; un modèle de diffusion à qui l'on
+# demande les deux rend n'importe laquelle des deux.
+#   — le RATIO dit les VALEURS. C'est lui qui fait tenir une zone ensemble :
+#     il entre dans TOUTES ses images, quel que soit le cadrage.
+#   — la LUMIÈRE est l'identité du lieu (la Croûte, c'est midi sans une ombre).
+#     Elle ne varie pas non plus : la changer pour un gros plan ferait sortir
+#     l'image de sa zone.
+#   — seul le CADRAGE varie, et c'est le seul paramètre de `composer_cadre`.
+RATIOS_ENVIRONNEMENT = {
     "croute": ("the VALUES ARE INVERTED compared to every other image: the ground is one huge uniform "
-               "very bright field filling the lower two thirds of the frame, the sky a flat pure black; "
-               "very wide shot, harsh white noon, no shadows at all"),
-    "bassins": ("roughly half bright and half black, medium shot, low raking light near the horizon, "
-                "the first long shadows"),
-    "salines": ("only about a quarter of the frame is bright, the rest deep black, tight cramped framing, "
-                "no horizon, one hard light"),
+               "very bright field filling the lower two thirds of the frame, the sky a flat pure black"),
+    "bassins": "roughly half bright and half black",
+    "salines": "only about a quarter of the frame is bright, the rest deep black",
     "saulnes": ("black dominant, the only light in the frame rises from INSIDE the tower and catches "
                 "the edges of the leaning town, an orange glow low against a black sky"),
 }
+
+# Le cadrage par DÉFAUT d'un environnement — celui d'un paysage. Un écran qui
+# regarde autre chose (le pont d'une barge, une inscription) passe le sien.
+CADRAGES_ENVIRONNEMENT = {
+    "croute": "very wide shot",
+    "bassins": "medium shot",
+    "salines": "tight cramped framing, no horizon",
+    # La bible dit : « vue de loin comme une masse noire sur l'orange, la tour au
+    # sommet ; la ville penche vers sa tour ». Ce cadrage n'existait pas dans
+    # l'ancienne chaîne (elle ne disait que la lumière) — il vient du JSON.
+    "saulnes": ("seen from far off, the island a black mass against the orange, the tower at its "
+                "summit, the whole town leaning toward that tower"),
+}
+
+# ⚠️ LE RATIO D'UN PAYSAGE PARLE DE SOL ET DE CIEL — et une macro n'a ni l'un
+# ni l'autre (trouvé en relisant les prompts générés, 14/09 : un gros plan
+# d'inscription se voyait demander « the ground fills the lower two thirds of
+# the frame, the sky a flat pure black »). Ce qui doit survivre hors paysage,
+# c'est le RAPPORT DE VALEURS seul — il est ce qui rattache l'image à sa zone.
+RATIOS_HORS_PAYSAGE = {
+    "croute": ("the VALUES ARE INVERTED compared to every other image: the salt fills the frame as one "
+               "huge uniform very bright field, and everything resting on it reads as deep pure black"),
+    "bassins": "roughly half bright and half black",
+    "salines": "only about a quarter of the frame is bright, the rest deep black",
+    "saulnes": "black dominant, one orange glow as the only light",
+}
+
+# Hors paysage, « ce qui est loin, ce sont d'autres gens » ne veut plus rien
+# dire : il n'y a plus de lointain. Seule la règle de zone survit — le héros
+# n'est jamais dans l'image.
+PREMIERE_PERSONNE_PROCHE = "first-person view, no protagonist in frame"
+
+LUMIERES_ENVIRONNEMENT = {
+    "croute": "harsh white noon, no shadows at all",
+    "bassins": "low raking light near the horizon, the first long shadows",
+    "salines": "one hard light",
+    "saulnes": "lit only from inside the tower",
+}
+
+# Conservée telle quelle : c'est ce que la bible visuelle imprime en clair sous
+# chaque environnement, et ce que `composer_environnement` assemble.
+CLAUSES_ENVIRONNEMENT = {
+    e: f"{RATIOS_ENVIRONNEMENT[e]}; {CADRAGES_ENVIRONNEMENT[e]}, {LUMIERES_ENVIRONNEMENT[e]}"
+    for e in RATIOS_ENVIRONNEMENT
+}
+
+# Les cadrages nommés, pour un écran qui ne regarde pas un paysage.
+CADRAGE_DETAIL = "close-up, the subject filling the frame, nothing else in shot, no horizon"
+CADRAGE_SUR_PLACE = "medium shot from where you stand, the place close around you, no horizon"
 
 
 def composer_portrait(sujet: str) -> str:
@@ -126,3 +184,17 @@ def composer_environnement(sujet: str, env: str) -> str:
     """Un sujet des Salines + le ratio de son environnement + la clause canonique."""
     sujet = sujet.strip().rstrip(",; ").strip()
     return f"{sujet}, {PREMIERE_PERSONNE}, {CLAUSES_ENVIRONNEMENT[env]}, {CLAUSE}"
+
+
+def composer_cadre(sujet: str, env: str, cadrage: str) -> str:
+    """Un écran qui ne regarde PAS un paysage : on ne change que le cadrage.
+
+    Le ratio de valeurs et la lumière de la zone restent — c'est ce qui fait
+    qu'un gros plan reste manifestement une image de cet environnement-là.
+    Et on ne force PAS les trois invariants : on ne met pas des rails qui
+    sortent du sel dans une macro d'une inscription (l'appelant les ajoute au
+    sujet quand ils ont un sens).
+    """
+    sujet = sujet.strip().rstrip(",; ").strip()
+    return (f"{sujet}, {cadrage}, {LUMIERES_ENVIRONNEMENT[env]}, {PREMIERE_PERSONNE_PROCHE}, "
+            f"{RATIOS_HORS_PAYSAGE[env]}, {CLAUSE}")
