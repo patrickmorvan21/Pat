@@ -105,8 +105,7 @@ RATIOS_ENVIRONNEMENT = {
                "very bright field filling the lower two thirds of the frame, the sky a flat pure black"),
     "bassins": "roughly half bright and half black",
     "salines": "only about a quarter of the frame is bright, the rest deep black",
-    "saulnes": ("black dominant, the only light in the frame rises from INSIDE the tower and catches "
-                "the edges of the leaning town, an orange glow low against a black sky"),
+    "saulnes": "black dominant",
 }
 
 # Le cadrage par DÉFAUT d'un environnement — celui d'un paysage. Un écran qui
@@ -115,11 +114,14 @@ CADRAGES_ENVIRONNEMENT = {
     "croute": "very wide shot",
     "bassins": "medium shot",
     "salines": "tight cramped framing, no horizon",
-    # La bible dit : « vue de loin comme une masse noire sur l'orange, la tour au
-    # sommet ; la ville penche vers sa tour ». Ce cadrage n'existait pas dans
-    # l'ancienne chaîne (elle ne disait que la lumière) — il vient du JSON.
-    "saulnes": ("seen from far off, the island a black mass against the orange, the tower at its "
-                "summit, the whole town leaning toward that tower"),
+    # ⚠️ SAULNES N'A PAS DE CADRAGE DE ZONE, et lui en donner un était une
+    # erreur de ma part (14/09). Le champ `plan` du JSON — « vue de loin comme
+    # une masse noire sur l'orange » — décrit la vue d'ÉTABLISSEMENT, pas une
+    # règle de la zone : trois de ses quatre images sont un intérieur de tour,
+    # une ruelle et un quai, que « vue de loin » contredit frontalement. Une
+    # chaîne vide = chaque sujet porte son propre cadrage, ce qui était le
+    # comportement d'origine.
+    "saulnes": "",
 }
 
 # ⚠️ LE RATIO D'UN PAYSAGE PARLE DE SOL ET DE CIEL — et une macro n'a ni l'un
@@ -144,13 +146,17 @@ LUMIERES_ENVIRONNEMENT = {
     "croute": "harsh white noon, no shadows at all",
     "bassins": "low raking light near the horizon, the first long shadows",
     "salines": "one hard light",
-    "saulnes": "lit only from inside the tower",
+    "saulnes": ("the only light in the frame rises from INSIDE the tower and catches the edges of "
+                "the leaning town, an orange glow low against a black sky"),
 }
 
 # Conservée telle quelle : c'est ce que la bible visuelle imprime en clair sous
 # chaque environnement, et ce que `composer_environnement` assemble.
 CLAUSES_ENVIRONNEMENT = {
-    e: f"{RATIOS_ENVIRONNEMENT[e]}; {CADRAGES_ENVIRONNEMENT[e]}, {LUMIERES_ENVIRONNEMENT[e]}"
+    e: "; ".join(x for x in (
+        RATIOS_ENVIRONNEMENT[e],
+        ", ".join(y for y in (CADRAGES_ENVIRONNEMENT[e], LUMIERES_ENVIRONNEMENT[e]) if y),
+    ) if x)
     for e in RATIOS_ENVIRONNEMENT
 }
 

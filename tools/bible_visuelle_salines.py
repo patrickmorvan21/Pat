@@ -69,10 +69,12 @@ OBLIGATOIRES = {
                       "rails, its bow turned OUT toward the empty salt crust and away from the town, a cluster of "
                       "hooded salt-crusted figures on the quay beckoning toward the barge with open hands, the "
                       "leaning tower behind them"),
-    "tour_de_l_ecluse": ("inside a stone tower descending in a spiral below the level of the old lake, seen from the "
-                         "stair looking down: thousands of small marks scored into the wall one above the other, "
-                         "growing denser toward the bottom, and at the bottom of the shaft an enormous stone wheel "
-                         "ringed with iron set in a rock gorge, a last shallow black water at its foot"),
+    # « seen from the stair looking down » retiré : le cadrage vient de
+    # composer_*, et le puits qui s'enfonce se dit sans mot de caméra.
+    "tour_de_l_ecluse": ("inside a stone tower, a spiral stair winding down a shaft that drops far below the level "
+                         "of the old lake, thousands of small marks scored into the curved wall one above the "
+                         "other and growing denser the deeper they go, and at the foot of the shaft an enormous "
+                         "stone wheel ringed with iron set in a rock gorge, a last shallow black water beneath it"),
 }
 
 # ── LES LIEUX DU POOL QUI ONT LEUR IMAGE (décision Patrick, 14/09)
@@ -92,11 +94,18 @@ LIEUX_JOUES = {
              "on the other, the salt between them finer and lighter; standing all along the line, human "
              "figures of salt caught in mid-stride, every one of them facing the way the stones run, not "
              "one of them turned back"),
+    # ⚠️ « seen from above » a été RETIRÉ (14/09) : c'était une image de style
+    # pour dire la FORME, mais un modèle de diffusion la lit comme une
+    # instruction de CAMÉRA — elle se battait avec « first-person view from
+    # the ground » et « very wide shot » dans le même prompt. La main se dit
+    # sans mot de caméra : elle est SOUS le sel, on n'en voit que les doigts.
     "champ_des_sillages": ("croute", "scene_salines_champ_des_sillages_a",
-             "long furrows splitting the white crust, all of them starting from one single point and "
-             "running away toward the distant island like the fingers of a flat hand seen from above, the "
-             "salt inside the furrows darker and damp; lying between the furrows, human bodies taken flat "
-             "by the salt, arms straight down at their sides"),
+             "long dark furrows splitting the white salt crust, beginning together at one point near your "
+             "feet and running away across the flat, drawing closer together toward the distant black "
+             "island, evenly spaced like the fingers of an enormous hand lying flat just under the salt "
+             "with only its fingers breaking the surface, the salt inside the furrows darker and damp; "
+             "lying between the furrows, human bodies taken flat by the salt, arms straight down at their "
+             "sides, faces up"),
     "barge_echouee": ("croute", "scene_salines_barge_echouee_a",
              "a flat-bottomed river barge sitting on dry salt far from any water, its hull gripped by the "
              "crust right up to the gunwale, its mast fallen and lying along the deck; on the deck a man "
@@ -250,6 +259,29 @@ HORS_CABLAGE = {
 }
 
 
+# ⚠️ UN SUJET NE DIT JAMAIS LA CAMÉRA (leçon du 14/09, payée le jour même).
+# J'avais écrit « like the fingers of a flat hand SEEN FROM ABOVE » pour dire
+# une FORME ; un modèle de diffusion le lit comme une instruction de cadrage,
+# et le prompt se retrouvait à demander une vue aérienne ET « first-person
+# view from the ground ». Le cadrage vient de `composer_*`, jamais du sujet —
+# une forme se décrit sans point de vue.
+# ⚠️ « bird » n'est PAS dans la liste : les hérons des Salines sont des
+# « wading bird », et un garde qui crie sur trois faux positifs finit ignoré.
+MOTS_DE_CAMERA = ("seen from above", "from above", "bird's eye", "aerial view", "top-down",
+                  "overhead shot", "seen from below", "looking down", "close-up", "wide shot",
+                  "medium shot", "seen from far off", "point of view", "camera")
+
+
+def controler_sujets(sujets: list[tuple[str, str]]) -> list[str]:
+    pb = []
+    for nom, sujet in sujets:
+        for mot in MOTS_DE_CAMERA:
+            if mot in sujet.lower():
+                pb.append(f"sujet : « {nom} » impose un cadrage (« {mot} ») — "
+                          f"le cadrage vient de composer_*, décris la forme sans point de vue")
+    return pb
+
+
 def controler_cablage(emises: list[tuple[str, str]]) -> list[str]:
     """Chaque écran écrit a-t-il une cible, et chaque image une place ?
 
@@ -307,6 +339,7 @@ def main() -> int:
                "double le suffixe (`_a` → `_a_b`). Format `nom=prompt` pour `/leo-import`.\n")
     n = 0
     noms: list[tuple[str, str]] = []  # (nom de fichier, environnement)
+    sujets: list[tuple[str, str]] = []  # (nom de fichier, sujet brut)
     for e in Z["environnements"]:
         eid = e["id"]
         out.append(f"\n## {e['ordre']}. {e['nom']} — {e.get('sous_titre','')}\n")
@@ -319,6 +352,7 @@ def main() -> int:
         out.append("Servie par défaut sur tout lieu de l'environnement sans image dédiée.\n")
         out.append("```\n" + f"{e['image_etablissement_attendue']}=" + composer_environnement(ETABLISSEMENT[eid], eid) + "\n```\n")
         noms.append((e["image_etablissement_attendue"], eid))
+        sujets.append((e["image_etablissement_attendue"], ETABLISSEMENT[eid]))
         n += 1
         for lid, sujet in OBLIGATOIRES.items():
             L = LIEUX[lid]
@@ -330,6 +364,7 @@ def main() -> int:
             out.append("```\n" + f"{nom}=" + composer_environnement(f"{sujet}, {invariants(eid)}", eid) + "\n```\n")
             n += 1
             noms.append((nom, eid))
+            sujets.append((nom, sujet))
         for lid, (env, nom, sujet) in LIEUX_JOUES.items():
             if env != eid:
                 continue
@@ -339,6 +374,7 @@ def main() -> int:
             out.append("```\n" + f"{nom}=" + composer_environnement(f"{sujet}, {invariants(eid)}", eid) + "\n```\n")
             n += 1
             noms.append((nom, eid))
+            sujets.append((nom, sujet))
         for sid, (env, nom, mode, sujet) in AUTRES_ECRANS.items():
             if env != eid:
                 continue
@@ -348,6 +384,7 @@ def main() -> int:
             out.append("```\n" + f"{nom}=" + composer_cadre(sujet, eid, cadrage) + "\n```\n")
             n += 1
             noms.append((nom, eid))
+            sujets.append((nom, sujet))
         for cid, (env, nom, sujet) in RENCONTRES.items():
             if env != eid:
                 continue
@@ -363,6 +400,7 @@ def main() -> int:
             out.append("```\n" + f"{nom}=" + composer_portrait(sujet) + "\n```\n")
             n += 1
             noms.append((nom, eid))
+            sujets.append((nom, sujet))
     out.append("\n## Ce qui n'a PAS d'image, et pourquoi\n")
     out.append("- **Le Ver de croûte** : jamais. Il est « la chose lointaine qui n'est pas toi » de l'établissement de la Croûte, et sous les pieds au Souffle.")
     out.append("- **Les lieux du pool des environnements PAS ENCORE ÉCRITS** : l'établissement de leur environnement, "
@@ -390,7 +428,7 @@ def main() -> int:
         out.append(f"- `{nom}` — {pourquoi}")
     out.append("")
 
-    pb = controler_cablage(noms)
+    pb = controler_sujets(sujets) + controler_cablage(noms)
     if pb:
         raise SystemExit("\n".join(pb))
 
