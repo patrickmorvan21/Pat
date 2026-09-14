@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-13T21:04:30Z",
- "commit": "35ede2b",
+ "genere": "2026-09-14T09:14:54Z",
+ "commit": "0798927",
  "zones": [
   {
    "id": "landes",
@@ -7969,10 +7969,10 @@
    "suite": "rive-haute-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "scene_salines_rive_haute_a_a.png",
+    "hash": "8ad7376d",
+    "taille": 25510,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8025,7 +8025,16 @@
      "exigeUsage": "battant",
      "prendLaPlaceDe": [
       "prendre-la-croute"
-     ]
+     ],
+     "image": {
+      "fichier": "monstre_salines_boeuf_de_sel_a_b.png",
+      "hash": "c6d36285",
+      "taille": 18249,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "prendre-la-croute",
@@ -8045,10 +8054,10 @@
    },
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "monstre_salines_percepteur_a_b.png",
+    "hash": "dae520ee",
+    "taille": 16072,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8104,10 +8113,10 @@
    "suite": "file-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "scene_salines_croute_a_b.png",
+    "hash": "6fac3625",
+    "taille": 25650,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8191,10 +8200,10 @@
    "combat": true,
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "monstre_salines_piqueurs_a_v2_b.png",
+    "hash": "fc230391",
+    "taille": 12695,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8250,10 +8259,10 @@
    "suite": "champ-des-sillages-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "scene_salines_croute_a_b.png",
+    "hash": "6fac3625",
+    "taille": 25650,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8334,10 +8343,10 @@
    "combat": true,
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "scene_salines_croute_a_b.png",
+    "hash": "6fac3625",
+    "taille": 25650,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8393,10 +8402,10 @@
    "suite": "barge-echouee-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "scene_salines_barge_echouee_a_b.png",
+    "hash": "7391d362",
+    "taille": 16458,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8464,10 +8473,10 @@
    "sejour": true,
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "scene_salines_croute_a_b.png",
+    "hash": "6fac3625",
+    "taille": 25650,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8515,10 +8524,10 @@
    "suite": "statue-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "scene_salines_croute_a_b.png",
+    "hash": "6fac3625",
+    "taille": 25650,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8580,10 +8589,10 @@
    },
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "scene_salines_statue_inscription_a_v4_c.png",
+    "hash": "681361b4",
+    "taille": 14494,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8637,10 +8646,10 @@
    "suite": "bouche-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "scene_salines_bouche_a_a.png",
+    "hash": "70cdc52f",
+    "taille": 29773,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8692,10 +8701,10 @@
    "sejour": true,
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "scene_salines_croute_a_b.png",
+    "hash": "6fac3625",
+    "taille": 25650,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8743,13 +8752,13 @@
    "pointsInteret": [],
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "scene_salines_bouche_a_a.png",
+    "hash": "70cdc52f",
+    "taille": 29773,
+    "recent": false,
     "existe": true,
-    "statut": "dediee",
-    "herite": ""
+    "statut": "heritee",
+    "herite": "bouche"
    },
    "description": "",
    "promptImage": "",
@@ -8800,10 +8809,10 @@
    "suite": "radeau-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "scene_salines_radeau_a_a.png",
+    "hash": "976b0bc8",
+    "taille": 25504,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8860,10 +8869,10 @@
    "sejour": true,
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "monstre_salines_encroute_radeau_a_a.png",
+    "hash": "0d42c1b4",
+    "taille": 17680,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8897,10 +8906,10 @@
    "finDemo": true,
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_placeholder_a.png",
-    "hash": "8cd4091d",
-    "taille": 8623,
-    "recent": true,
+    "fichier": "scene_salines_croute_a_b.png",
+    "hash": "6fac3625",
+    "taille": 25650,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10014,6 +10023,22 @@
    "recent": false,
    "groupe": "autre",
    "racine": "rodeur"
+  },
+  {
+   "fichier": "monstre_salines_encroute_a_a.png",
+   "hash": "e7adc0e9",
+   "taille": 11440,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "salines_encroute"
+  },
+  {
+   "fichier": "monstre_salines_heron_a_a.png",
+   "hash": "dd7bef03",
+   "taille": 10171,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "salines_heron"
   },
   {
    "fichier": "monstre_sonneur_sans_cloche_d.png",
@@ -12565,10 +12590,10 @@
   "scenes": 126,
   "pointsInteret": 0,
   "choix": 367,
-  "illustrations": 450,
+  "illustrations": 461,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 225,
+  "reserve": 227,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
@@ -12577,7 +12602,7 @@
   "besoins": 0,
   "transitions": 64,
   "ecransDeMarche": 11,
-  "interactions": 34,
+  "interactions": 35,
   "aRefaire": 18,
   "familiarite": 34
  }

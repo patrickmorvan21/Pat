@@ -296,3 +296,17 @@ Hors câblage :
 - `monstre_salines_heron_a` — il s'envole dans une issue de radeau-2
 - `monstre_salines_encroute_a` — l'Encroûté générique — barge et ailleurs, au palier II
 
+
+## Ce qu'il reste à produire
+
+6 image(s). En attendant, ces écrans servent l'image d'établissement de leur environnement.
+
+| image | écran | environnement |
+|---|---|---|
+| `scene_salines_file_a` | `file` | croute |
+| `scene_salines_champ_des_sillages_a` | `champ-des-sillages` | croute |
+| `scene_salines_statue_a` | `statue` | croute |
+| `scene_salines_barge_pont_a` | `barge-echouee-2` | croute |
+| `scene_salines_bouche_dent_a` | `bouche-2` | croute |
+| `monstre_salines_gisants_a` | `champ-des-sillages-2` | croute |
+

@@ -1335,11 +1335,15 @@ const CHOIX_CHEMIN_DU_SUD: Choice[] = [
   },
 ];
 
-/** L'image d'établissement PROVISOIRE de la Croûte (13/09) — un placeholder
-    procédural aux valeurs inversées (sol clair, ciel sombre), servi aux sept
-    lieux et aux marches de la zone en attendant les images de
-    `data/salines-bible-visuelle.md`. Déposer les fichiers puis repointer. */
-export const CROUTE_IMG = "assets/scene_salines_croute_placeholder_a.png";
+/** L'image d'ÉTABLISSEMENT de la Croûte (lot Leonardo validé, 14/09) : le fond
+    du lac vu depuis son ancienne rive, deux rails de fer sortant du sel et
+    filant vers l'île. Valeurs inversées (sol clair, ciel noir) — c'est
+    l'identité visuelle de cet environnement, et seulement de lui.
+    Deux rôles : la vue de MARCHE des liaisons, et le REPLI de tout écran de la
+    zone qui n'a pas encore son image dédiée (six aujourd'hui, cf.
+    `data/salines-bible-visuelle.md`). Un repli n'est pas un placeholder : il
+    montre le bon endroit, juste pas le bon détail. */
+export const CROUTE_IMG = "assets/scene_salines_croute_a_b.png";
 
 export const SCENES: Scene[] = [
   {
@@ -8022,7 +8026,7 @@ export const SCENES: Scene[] = [
        soudain » ; le loot d'arrivée est retiré), on le dépense à l'écran
        suivant (`usageObjet`). */
     id: "rive-haute",
-    illustration: CROUTE_IMG,
+    illustration: "assets/scene_salines_rive_haute_a_a.png",
     chainNext: "rive-haute-2",
     narration: [
       // ⚠️ ON DIT CE QU'EST LA CROÛTE (retour Patrick 13/09 : « les gens qui
@@ -8082,7 +8086,7 @@ export const SCENES: Scene[] = [
        quais, là on l'a tout de suite, ça va trop vite ») : elle est armée
        sur la première MARCHE de la Croûte — voir `TEMPETE_MARCHE`. */
     id: "rive-haute-2",
-    illustration: CROUTE_IMG,
+    illustration: "assets/monstre_salines_percepteur_a_b.png",
     sejour: true,
     usageObjet: {
       objet: "battant-cloche",
@@ -8129,6 +8133,7 @@ export const SCENES: Scene[] = [
         // jamais ailleurs : le Ver sait.
         id: "monter-sur-le-boeuf",
         label: "Monter sur le bœuf",
+        illustration: "assets/monstre_salines_boeuf_de_sel_a_b.png",
         requiresUsage: "battant",
         prendLaPlaceDe: "prendre-la-croute",
         sauteEtape: true,
@@ -8204,7 +8209,7 @@ export const SCENES: Scene[] = [
        pas — l'option informée prend la place de l'aveugle, même seuil, et
        l'échec est hors de portée (grammaire du lot 3, 14/08). */
     id: "file-2",
-    illustration: CROUTE_IMG,
+    illustration: "assets/monstre_salines_piqueurs_a_v2_b.png",
     combat: true,
     foe: "piqueurs",
     foeName: "Les Piqueurs",
@@ -8378,7 +8383,7 @@ export const SCENES: Scene[] = [
     /* LA BARGE ÉCHOUÉE — une coque sur le sel, un Encroûté qui vend de
        l'eau salée et dit la phrase entière. La perche se prend ici. */
     id: "barge-echouee",
-    illustration: CROUTE_IMG,
+    illustration: "assets/scene_salines_barge_echouee_a_b.png",
     chainNext: "barge-echouee-2",
     narration: [
       "Une barge est posée sur le sel, loin de toute eau, la coque prise jusqu'au bordage, un mât couché. Sur le pont, un homme entier de sel, assis devant une écuelle : un Encroûté. Il ne bouge que les lèvres.",
@@ -8520,7 +8525,7 @@ export const SCENES: Scene[] = [
        révèle la seconde statue (bible). Séjour : ce qu'on fait ici, on le
        fait sous le sel qui monte. */
     id: "statue-2",
-    illustration: CROUTE_IMG,
+    illustration: "assets/scene_salines_statue_inscription_a_v4_c.png",
     sejour: true,
     tempete: {
       avant:
@@ -8574,7 +8579,7 @@ export const SCENES: Scene[] = [
        le sel le sait), le retrait. Le seul lieu de la Croûte où l'on gagne
        quelque chose sans jet ; c'est le plus dangereux pour ça. */
     id: "bouche",
-    illustration: CROUTE_IMG,
+    illustration: "assets/scene_salines_bouche_a_a.png",
     chainNext: "bouche-2",
     narration: [
       "Un trou dans la croûte, large comme une charrette, aux bords lisses. Pas un effondrement : une ouverture, faite du dedans. Autour, posés en cercle, des objets — des boucles de ceinture, des lames, une lanterne — tous tournés vers le trou. Comme des offrandes. Ou comme ce qui a été recraché.",
@@ -8655,7 +8660,10 @@ export const SCENES: Scene[] = [
     /* Le retrait : ce qu'on a pris, le Ver l'a senti. Qui sait que les
        fissures partent du fond lit dans quel sens il est parti. */
     id: "bouche-3",
-    illustration: CROUTE_IMG,
+    // La MÊME image que l'écran d'avant, à dessein : rien de visible ne
+    // change au bord du trou — ce qui bouge passe SOUS la croûte, et c'est
+    // tout l'effet. (Le moteur ne rejoue pas le fondu à src identique.)
+    illustration: "assets/scene_salines_bouche_a_a.png",
     narration: [
       "Sous la croûte, quelque chose répond au poids que tu viens de déplacer : un long frottement qui tourne autour du trou, une fois, puis s'éloigne vers l'île. Les sillages, autour, se sont tous tournés dans ce sens-là.",
     ],
@@ -8695,7 +8703,7 @@ export const SCENES: Scene[] = [
        héron. « Vas-y maintenant. » C'est le conseil du twist : jamais
        expliqué, jamais démenti. */
     id: "radeau",
-    illustration: CROUTE_IMG,
+    illustration: "assets/scene_salines_radeau_a_a.png",
     chainNext: "radeau-2",
     narration: [
       "Un radeau de planches posé à plat sur le sel, sans eau à des lieues, comme si la croûte allait fondre et qu'il fallait être prêt. Dessus, un Encroûté debout, une gaffe à la main, tourné vers un point précis : un puits, loin, au bord des Bassins. Un héron gris est posé au bout du radeau.",
@@ -8737,7 +8745,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "radeau-2",
-    illustration: CROUTE_IMG,
+    illustration: "assets/monstre_salines_encroute_radeau_a_a.png",
     sejour: true,
     narration: [
       "« Vas-y maintenant. » Il ne t'a pas regardé. « Le puits. Maintenant, pas ce soir. Ce soir, il chasse. » La gaffe tremble un peu. « J'ai attendu ce soir, moi. » Le héron déplie une aile.",
@@ -11373,7 +11381,7 @@ export const TEMPETE_MARCHE = {
     "Le sel retombe. Là où ta main a balayé, deux rails de fer courent sous la croûte, droits vers l'île, polis comme s'ils servaient encore. Tu marchais dessus depuis le début.",
 };
 
-/** Vue de marche de la Croûte : l'établissement provisoire (voir CROUTE_IMG). */
+/** Vue de marche de la Croûte : son image d'établissement (voir CROUTE_IMG). */
 const SALINES_WALK: string[] = [CROUTE_IMG];
 
 /** LA FIN D'ÉTAPE NON ÉCRITE — la scène servie quand `prochainPas` impose

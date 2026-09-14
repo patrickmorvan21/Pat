@@ -299,7 +299,35 @@ def controler_cablage(emises: list[tuple[str, str]]) -> list[str]:
             if nom not in vises and nom not in HORS_CABLAGE:
                 pb.append(f"câblage : « {nom} » n'est posée sur aucun écran de {env} "
                           f"et n'est pas déclarée hors câblage")
+
+    # ⚠️ LE DÉFAUT QU'ON A VRAIMENT EU (14/09) : une image ARRIVE du pipeline,
+    # est déposée dans assets/, et personne ne la branche — l'écran continue de
+    # servir le repli d'environnement, en silence. Le contrôle ci-dessus ne
+    # pouvait pas l'attraper : il ne regarde que des NOMS, jamais le disque ni
+    # ce que le jeu sert réellement. Donc : toute image de la bible qui existe
+    # sur disque doit être citée par scene-data.ts (ou déclarée hors câblage).
+    assets = RACINE / "aldenhar/public/assets"
+    for nom, env in emises:
+        if env not in CABLAGE or nom in HORS_CABLAGE:
+            continue  # hors câblage : elle sert une ISSUE ou reste en réserve, pas un écran
+        fichiers = sorted(assets.glob(nom + "*.png"))
+        if not fichiers:
+            continue  # pas encore produite : l'écran est sur le repli, c'est dit plus bas
+        if not any(f.name in src for f in fichiers):
+            noms = " / ".join(f.name for f in fichiers)
+            pb.append(f"câblage : « {noms} » est sur le disque mais scene-data.ts "
+                      f"ne la sert nulle part — l'écran reste sur le repli de zone")
     return pb
+
+
+def manquantes(emises: list[tuple[str, str]]) -> list[tuple[str, str]]:
+    """Les images de la bible qui n'existent pas encore sur le disque.
+
+    Ce n'est pas une erreur : leur écran sert le repli d'environnement en
+    attendant. C'est la liste de ce qu'il reste à produire.
+    """
+    assets = RACINE / "aldenhar/public/assets"
+    return [(n, e) for n, e in emises if e in CABLAGE and not any(assets.glob(n + "*.png"))]
 
 
 def invariants(env: str) -> str:
@@ -423,6 +451,23 @@ def main() -> int:
     for nom, pourquoi in HORS_CABLAGE.items():
         out.append(f"- `{nom}` — {pourquoi}")
     out.append("")
+
+    # CE QU'IL RESTE À PRODUIRE — l'état du disque, pas une intention. Un écran
+    # sans son image sert le repli d'environnement : il montre le bon endroit,
+    # juste pas le bon détail.
+    reste = manquantes(noms)
+    out.append("\n## Ce qu'il reste à produire\n")
+    if not reste:
+        out.append("Rien : tous les écrans câblés ont leur image sur le disque.\n")
+    else:
+        ecran = {img: sid for table in CABLAGE.values() for sid, img in table.items() if img}
+        out.append(f"{len(reste)} image(s). En attendant, ces écrans servent "
+                   "l'image d'établissement de leur environnement.\n")
+        out.append("| image | écran | environnement |")
+        out.append("|---|---|---|")
+        for nom, env in reste:
+            out.append(f"| `{nom}` | `{ecran.get(nom, '—')}` | {env} |")
+        out.append("")
 
     pb = controler_sujets(sujets) + controler_cablage(noms)
     if pb:

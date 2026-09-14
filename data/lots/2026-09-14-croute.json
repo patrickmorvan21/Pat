@@ -1,0 +1,75 @@
+{
+  "lot": "2026-09-14 — Croûte (Salines, environnement 1)",
+  "source": "Drive PACTUM/Photos/03_Validé_{Environnement,Rencontres}",
+  "note": "Transfert par le connecteur Drive : `download_file_content` rend le base64 INLINE (~20-30 k tokens par PNG). Le modèle ne le retranscrit JAMAIS — un script lit le b64 par `title` dans le .jsonl de session, décode, et vérifie la signature PNG ET la taille exacte ci-dessous. C'est ce contrôle de taille qui rend le lot reprenable à n'importe quel point, pas la liste elle-même.",
+  "fichiers": [
+    {
+      "nom": "scene_salines_croute_a_b.png",
+      "octets": 25650,
+      "fileId": "1N8B0VMRPCAhOdBILGu3NdsjNofkunGXI"
+    },
+    {
+      "nom": "scene_salines_rive_haute_a_a.png",
+      "octets": 25510,
+      "fileId": "1DYNgh8UOcF4k_QIE_fCnAB7heWiuR0Or"
+    },
+    {
+      "nom": "scene_salines_bouche_a_a.png",
+      "octets": 29773,
+      "fileId": "1WQtrzL_Z1333QVoo-a-8YmiiRTFTljIq"
+    },
+    {
+      "nom": "scene_salines_radeau_a_a.png",
+      "octets": 25504,
+      "fileId": "1A5W1mP-s6M8ZrFRK8prkZ-I8yjY-Cxyf"
+    },
+    {
+      "nom": "scene_salines_barge_echouee_a_b.png",
+      "octets": 16458,
+      "fileId": "1lww89hZESKJ0-YXis0NUndjz-n8xu8XS"
+    },
+    {
+      "nom": "scene_salines_statue_inscription_a_v4_c.png",
+      "octets": 14494,
+      "fileId": "1J1ToNhiL9-UKlSlpMWyM4ThTXnVPPaP2"
+    },
+    {
+      "nom": "monstre_salines_percepteur_a_b.png",
+      "octets": 16072,
+      "fileId": "1utO1_sml6uqJGC528zf65FookxxJzyAo"
+    },
+    {
+      "nom": "monstre_salines_boeuf_de_sel_a_b.png",
+      "octets": 18249,
+      "fileId": "1qMORefWvDhJRxkFhF2-MWfEsdSQPCihG"
+    },
+    {
+      "nom": "monstre_salines_heron_a_a.png",
+      "octets": 10171,
+      "fileId": "1dvI-X7TaGTKQd_huRzfxtFYZGpavLoUv"
+    },
+    {
+      "nom": "monstre_salines_piqueurs_a_v2_b.png",
+      "octets": 12695,
+      "fileId": "1B9y9-FmZRjyISczyNVp0Nf26N9n1kdNK"
+    },
+    {
+      "nom": "monstre_salines_encroute_radeau_a_a.png",
+      "octets": 17680,
+      "fileId": "1nyR3kc52i8QWcdslzdJAkimdWtz3wAsU"
+    },
+    {
+      "nom": "monstre_salines_encroute_a_a.png",
+      "octets": 11440,
+      "fileId": "1jxsR7Bj4gJgcKRyltRUh9pqiCsiwnQCs"
+    }
+  ],
+  "restent_a_produire": [
+    "scene_salines_file_a",
+    "scene_salines_champ_des_sillages_a",
+    "scene_salines_statue_a",
+    "scene_salines_barge_pont_a",
+    "scene_salines_bouche_dent_a",
+    "monstre_salines_gisants_a"
+  ]
+}
