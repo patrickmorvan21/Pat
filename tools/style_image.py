@@ -30,10 +30,10 @@ CLAUSE = (
     "hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, "
     "no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, "
     "no sash windows, no lamp posts, no industrial chimneys; "
-    "extreme two-value contrast, large uniform very bright fields such as open sky or pools "
-    "of light, read against deep pure black silhouettes, almost no mid-greys, the subject "
-    "reading as a flat black shape on a flat bright ground; "
-    "vintage engraving feel, grainy etching texture, single low dramatic light source, "
+    "extreme two-value contrast, large uniform very bright fields read against deep pure "
+    "black silhouettes, almost no mid-greys, the subject reading as a flat black shape "
+    "on a flat bright ground; "
+    "vintage engraving feel, grainy etching texture, one dominant light source, "
     "dark vignette at the edges, monochrome, mystical and eerie atmosphere, "
     "no text, no lettering, no watermark"
 )
@@ -111,7 +111,7 @@ RATIOS_ENVIRONNEMENT = {
 # Le cadrage par DÉFAUT d'un environnement — celui d'un paysage. Un écran qui
 # regarde autre chose (le pont d'une barge, une inscription) passe le sien.
 CADRAGES_ENVIRONNEMENT = {
-    "croute": "very wide shot",
+    "croute": "very wide shot, the horizon line low so the eye sits at salt level",
     "bassins": "medium shot",
     "salines": "tight cramped framing, no horizon",
     # ⚠️ SAULNES N'A PAS DE CADRAGE DE ZONE, et lui en donner un était une
@@ -143,7 +143,9 @@ RATIOS_HORS_PAYSAGE = {
 PREMIERE_PERSONNE_PROCHE = "first-person view, no protagonist in frame"
 
 LUMIERES_ENVIRONNEMENT = {
-    "croute": "harsh white noon, no shadows at all",
+    "croute": ("blinding white noon, the sun a hard white disc punched into the black sky above the "
+               "horizon; the salt floor blazes so evenly that NOTHING casts a shadow — everything "
+               "standing on the crust is a flat black cut-out with no shadow under it at all"),
     "bassins": "low raking light near the horizon, the first long shadows",
     "salines": "one hard light",
     "saulnes": ("the only light in the frame rises from INSIDE the tower and catches the edges of "
@@ -159,6 +161,104 @@ CLAUSES_ENVIRONNEMENT = {
     ) if x)
     for e in RATIOS_ENVIRONNEMENT
 }
+
+# ⚠️ CE QUI FAIT LE « WOW » EST LA COMPOSITION, PAS LA MATIÈRE (15/09).
+# Mesuré sur les 20 images de la zone : le taux d'APLAT (pixels dont les quatre
+# voisins sont de la même couleur) classe exactement comme l'œil — 53-68 % sur
+# les cinq images qui lisent gris et plat, 85-90 % sur celles qui ont la
+# franchise des références de Patrick. Une image sous ~70 % est du grain, pas
+# un dessin à deux couleurs. `tools/aplat.py` mesure, avant même de regarder.
+#
+# Les références (rouge/noir) partagent toutes quatre traits, et AUCUN n'était
+# demandé : une figure géométrique qui porte le cadre · une source de lumière
+# VISIBLE où le regard se pose · tout ce qui est devant elle en aplat noir sans
+# détail · une échelle écrasante. Ce sont des règles, pas un goût.
+COMPOSITION = (
+    "poster composition: the whole shot built on ONE bold geometric figure filling the frame — "
+    "a circle, an arch, converging lines, a hard symmetry; the light source itself visible in "
+    "frame; everything in front of it a flat black cut-out with no interior detail; crushing "
+    "scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size"
+)
+
+# ⚠️ LE DÉGRADÉ EST CE QUE NOTRE PIPELINE TUE — vérifié en passant deux images
+# de synthèse dans le dithering canonique : un halo dégradé ressort en nuage de
+# points sale (78,8 % d'aplat, la silhouette s'y perd), les MÊMES cercles en
+# anneaux francs ressortent nets et spectaculaires (88,5 %). La beauté des
+# références tient donc à leur structure, jamais à leur atmosphère : on demande
+# des FORMES de lumière, pas de la brume.
+SANS_DEGRADE = (
+    "light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, "
+    "any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, "
+    "no smooth gradient anywhere"
+)
+
+# ⚠️ LA CONTRADICTION EST LE DÉFAUT QUI COÛTE UN LOT ENTIER, et il a été
+# trouvé À LA MAIN trois fois : le 30/08 (« bright fields such as open sky »
+# dans CLAUSE contre « the sky a flat pure black » du ratio de la Croûte), le
+# 14/09 (les portraits demandaient « pitch-black background » ET « harsh white
+# noon » dans la même phrase), le 15/09 (« one short hard shadow » contre une
+# prose qui dit « plein jour, pas une ombre », puis « no glow » contre la
+# lueur de tour de Saulnes). À chaque fois un modèle de diffusion à qui l'on
+# demande deux choses opposées en rend une au hasard, et tout le lot sort
+# décalé sans qu'aucun garde ne bronche.
+# Un prompt se compose de cinq sources (sujet, composition, ratio, lumière,
+# clause) écrites à des dates différentes : personne ne les relit ensemble.
+# Ce contrôle les relit. Il n'a pas d'avis sur le goût — il ne dit qu'une
+# chose : ces deux morceaux ne peuvent pas être vrais en même temps.
+CONTRADICTIONS: tuple[tuple[str, tuple[str, ...], tuple[str, ...]], ...] = (
+    ("ciel noir contre ciel clair",
+     ("sky a flat pure black", "black sky", "against a black sky"),
+     ("bright fields such as open sky", "bright sky", "luminous sky", "white sky")),
+    ("aucune ombre contre une ombre",
+     ("nothing casts a shadow", "no shadow", "without a shadow"),
+     ("cast shadow", "casts a long", "long shadow", "hard shadow", "shadow pooling",
+      "casting shadows", "shadows stretch")),
+    ("fond noir contre plein jour",
+     ("pitch-black background", "pitch black background"),
+     ("noon", "open sky", "to the horizon", "very wide shot", "bright field")),
+    ("vue du sol contre vue aérienne",
+     ("first-person view from the ground", "first-person view"),
+     ("seen from above", "aerial", "bird's eye", "top-down", "overhead")),
+    ("pas de dégradé contre de l'atmosphère",
+     ("no smooth gradient",),
+     ("soft halo", "hazy", "misty", "volumetric", "god rays", "soft gradient", "gentle gradient")),
+)
+
+
+# ⚠️ LA NÉGATION EST LE FAUX AMI DE CE GARDE, et il a tiré sur lui-même au
+# premier essai : la clause anti-dégradé DIT « no soft halo », donc chercher
+# « soft halo » en sous-chaîne la trouve dans sa propre interdiction. Même
+# famille que l'homonyme « porte » du 10/08. Un côté ne compte donc que s'il
+# est affirmé — jamais précédé d'un mot de négation.
+NEGATIONS = ("no ", "not ", "never ", "without ", "nothing ", "none ")
+
+
+def _affirme(bas: str, phrase: str) -> bool:
+    i = bas.find(phrase)
+    while i >= 0:
+        avant = bas[max(0, i - 24):i]
+        if not any(n in avant for n in NEGATIONS):
+            return True
+        i = bas.find(phrase, i + 1)
+    return False
+
+
+def contradictions(prompt: str) -> list[str]:
+    """Les couples de morceaux qui ne peuvent pas être vrais dans la même image.
+
+    Le côté GAUCHE est la règle (souvent une interdiction : « nothing casts a
+    shadow ») et se cherche telle quelle ; le côté DROIT est ce qui la viole,
+    et ne compte que s'il est AFFIRMÉ.
+    """
+    bas = prompt.lower()
+    trouve = []
+    for nom, gauche, droite in CONTRADICTIONS:
+        g = next((x for x in gauche if x in bas), None)
+        d = next((x for x in droite if _affirme(bas, x)), None)
+        if g and d:
+            trouve.append(f"{nom} — « {g} » et « {d} » dans le même prompt")
+    return trouve
+
 
 # Les cadrages nommés, pour un écran qui ne regarde pas un paysage.
 CADRAGE_DETAIL = "close-up, the subject filling the frame, nothing else in shot, no horizon"
@@ -176,31 +276,29 @@ CADRAGE_RENCONTRE = ("close on the creature, filling most of the frame, just eno
                      "to stand or lie on and a bare strip of horizon behind")
 
 
-def composer_portrait(sujet: str) -> str:
-    """Un PORTRAIT de rencontre : fond noir, une source, le sujet émerge.
-
-    ⚠️ Un portrait ne prend PAS la clause de cadrage de son environnement
-    (`CLAUSES_ENVIRONNEMENT`) — trouvé le 14/09 en relisant les prompts
-    générés : les cinq portraits d'origine disaient à la fois « pitch-black
-    background, one single light source » ET « very wide shot, harsh white
-    noon, no shadows at all », c'est-à-dire l'exact contraire. Un modèle de
-    diffusion à qui l'on demande les deux rend n'importe laquelle des deux.
-    Le cadrage d'un environnement décrit un PAYSAGE ; un portrait a le sien.
-
-    Ce qui reste : le sujet ne montre jamais le héros, et la clause de style
-    canonique (aplat à deux valeurs, époque, gravure) — c'est elle qui fait
-    tenir le portrait à côté des paysages de la même zone.
-    """
-    sujet = sujet.strip().rstrip(",; ").strip()
-    return (f"{sujet}, pitch-black background, the subject emerging from darkness, "
-            f"one single low light source, this is the reference image of this character, "
-            f"no protagonist in frame, {CLAUSE}")
-
+# ⚠️ IL N'Y A PAS DE RECETTE DE PORTRAIT ICI, et c'est voulu (15/09).
+# `composer_portrait` (fond noir, une source, « reference image of this
+# character ») a été supprimée : plus aucun appelant depuis le 14/09 — les
+# rencontres passent par `composer_cadre`, donc dans les VALEURS et la LUMIÈRE
+# de leur zone — et `contradictions()` la trouve en conflit avec sa propre
+# queue de style (« pitch-black background » contre « large uniform very
+# bright fields »). La garder, c'était laisser à portée de main la recette qui
+# a produit le défaut du 14/09. Une planche d'objet sur fond noir se fait avec
+# `composer_objet`, qui a sa propre clause cohérente.
 
 def composer_environnement(sujet: str, env: str) -> str:
-    """Un sujet des Salines + le ratio de son environnement + la clause canonique."""
+    """Un PAYSAGE des Salines : sujet + composition + valeurs de la zone + clause.
+
+    ⚠️ `COMPOSITION` n'entre QUE par ici (15/09). Elle demande une figure
+    géométrique qui remplit le cadre, trois plans de profondeur et une échelle
+    écrasante : ça n'a de sens que pour un plan large. La coller sur un gros
+    plan d'inscription ou sur une créature cadrée serré demanderait au modèle
+    deux images à la fois — le défaut exact des portraits du 14/09.
+    `SANS_DEGRADE`, lui, vaut pour tout ce que le dithering traverse.
+    """
     sujet = sujet.strip().rstrip(",; ").strip()
-    return f"{sujet}, {PREMIERE_PERSONNE}, {CLAUSES_ENVIRONNEMENT[env]}, {CLAUSE}"
+    return (f"{sujet}, {COMPOSITION}, {PREMIERE_PERSONNE}, {CLAUSES_ENVIRONNEMENT[env]}, "
+            f"{SANS_DEGRADE}, {CLAUSE}")
 
 
 def composer_cadre(sujet: str, env: str, cadrage: str) -> str:
@@ -214,4 +312,4 @@ def composer_cadre(sujet: str, env: str, cadrage: str) -> str:
     """
     sujet = sujet.strip().rstrip(",; ").strip()
     return (f"{sujet}, {cadrage}, {LUMIERES_ENVIRONNEMENT[env]}, {PREMIERE_PERSONNE_PROCHE}, "
-            f"{RATIOS_HORS_PAYSAGE[env]}, {CLAUSE}")
+            f"{RATIOS_HORS_PAYSAGE[env]}, {SANS_DEGRADE}, {CLAUSE}")

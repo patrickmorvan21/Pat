@@ -21,7 +21,7 @@ from __future__ import annotations
 import json, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from style_image import (composer_environnement, composer_cadre,  # noqa: E402
+from style_image import (composer_environnement, composer_cadre, contradictions,  # noqa: E402
                          CLAUSES_ENVIRONNEMENT, CADRAGE_DETAIL, CADRAGE_SUR_PLACE,
                          CADRAGE_RENCONTRE)
 
@@ -33,10 +33,11 @@ SORTIE = RACINE / "data/salines-bible-visuelle.md"
 
 # ── LES QUATRE ÉTABLISSEMENTS — le sujet dit le lieu ET pose les trois invariants
 ETABLISSEMENT = {
-    "croute": ("the floor of a vanished salt lake seen at eye level from its old shore: a vast flat white crust "
-               "to the horizon, deep cracks converging toward a distant black island with a leaning tower on it, "
-               "weathered wooden mooring posts and a pair of rusted iron rails emerging from the salt and running "
-               "straight toward the island, and very far off one small dark shape moving across the crust"),
+    "croute": ("the floor of a vanished salt lake: a blazing white crust to the horizon, its deep black cracks all "
+               "radiating out from one far point like a star, and on that point a black island carrying a leaning "
+               "tower; a hard white sun disc sits in the black sky right beside the tower, so the tower bites into "
+               "it; one huge weathered mooring post rises as a black shape in the very near ground, rusted iron "
+               "rails run away toward the island, and very far off one small dark shape moves across the crust"),
     "bassins": ("terraced salt evaporation basins descending in steps toward the horizon, low dry-stone walls in "
                 "tiers, narrow wooden footbridges spanning the empty basins, rows of lying human figures crusted in "
                 "salt on the basin floors like fallen statues, and far off one immense wading bird standing on one "
@@ -51,9 +52,11 @@ ETABLISSEMENT = {
 
 # ── LES SIX LIEUX OBLIGATOIRES (une image dédiée chacun)
 OBLIGATOIRES = {
-    "rive_haute": ("the old boat quay of a vanished lake: a row of weathered mooring posts standing in dry salt, "
-                   "a bronze bell hanging from a timber gallows, and two iron rails running out across the white "
-                   "flat toward a distant black island"),
+    "rive_haute": ("the old boat quay of a vanished lake: a heavy black timber gallows carrying a bronze bell the "
+                   "size of a man, standing over the salt like a doorway that frames the whole picture; through it, "
+                   "stone steps descend in tiers and sink into a blazing white flat running to a tiny black island, "
+                   "a hard white sun disc in the black sky beyond; a row of weathered mooring posts and rusted "
+                   "mooring rings dwindles along the old shore, two iron rails run out across the flat"),
     "terrasses": ("three dry salt terraces descending in steps seen from the top one, low walls between the levels, "
                   "lying salt-crusted human figures and loose white clods on each level, a standing hooded figure "
                   "half crusted in salt at the top edge pointing down, and at the bottom, in the last basin, an "
@@ -89,30 +92,41 @@ OBLIGATOIRES = {
 # exactement les décalages image↔texte qu'on passe notre temps à réparer.
 LIEUX_JOUES = {
     "file": ("croute", "scene_salines_file_a",
-             "a line of flat stepping stones set at even intervals across a white salt flat, low and level "
-             "with the ground, running away to the horizon; standing beside them, three human figures of "
-             "salt caught in mid-stride, all facing the same way"),
+             "three human figures of salt caught in mid-stride, all facing the same way, standing as tall "
+             "black cut-outs across the near ground; between and behind them a line of flat stepping stones "
+             "set at even intervals dwindles away across a blazing white flat to a single point on the "
+             "horizon, each stone pale on one side and dark on the other; a hard white sun disc in the "
+             "black sky on that point"),
     # ⚠️ Deux versions ont échoué avant celle-ci. La 1re disait « seen from
     # above » (un mot de CAMÉRA pour décrire une forme) ; la 2e était juste
     # mais demandait onze choses, et le modèle a rendu les corps en arbres
     # morts. Ici : une seule chose dominante, un seul détail.
     "champ_des_sillages": ("croute", "scene_salines_champ_des_sillages_a",
-             "long dark cracks in a white salt flat, spreading apart like the fingers of a hand buried "
-             "just beneath the surface; between them, two human bodies lying flat on their backs, half "
-             "swallowed by the salt"),
+             "long black cracks splitting a blazing white salt flat, all spreading apart from one single "
+             "point low in the picture like the fingers of a hand buried just beneath the surface, filling "
+             "the whole ground; between two of them, small and far apart, two human bodies lie flat on "
+             "their backs half swallowed by the salt, one arm of each broken free; a hard white sun disc "
+             "in the black sky on the point where the cracks meet"),
     "barge_echouee": ("croute", "scene_salines_barge_echouee_a",
-             "a river barge beached on a white salt flat far from any water, its hull sunk to the gunwale, "
-             "its mast fallen across the deck; a man of salt sits on the deck before a bowl"),
+             "a river barge beached on a blazing white salt flat far from any water, its black hull sunk to "
+             "the gunwale and its fallen mast lying across the deck, hull and mast crossing as one hard "
+             "black cross that fills the picture; a man of salt sits on the deck before a bowl; a hard "
+             "white sun disc in the black sky behind the wreck"),
     "statue": ("croute", "scene_salines_statue_a",
-             "one salt-crusted human figure standing alone on a white flat, taller than a man, one arm "
-             "held straight out toward the horizon, its face lost under thick salt"),
+             "one salt-crusted human figure standing alone on a blazing white flat, far taller than a man, "
+             "dead centre and perfectly symmetrical, one arm held straight out toward the horizon, its face "
+             "lost under thick salt; a hard white sun disc in the black sky directly behind its head; far "
+             "out on the flat beyond it, one tiny dark shape"),
     "bouche": ("croute", "scene_salines_bouche_a",
-             "a round hole in a white salt flat, as wide as a cart, its rim smooth and rounded; a ring of "
-             "small objects laid on the salt around it — buckles, blades, a lantern — all turned to face "
-             "the hole"),
+             "a perfectly round black hole in a blazing white salt flat, as wide as a cart, its rim smooth "
+             "and rounded, filling the lower half of the picture as one clean dark disc; laid on the salt "
+             "around it, an exact ring of small objects — buckles, blades, a lantern — every one of them "
+             "turned to face the hole; a hard white sun disc in the black sky above"),
     "radeau": ("croute", "scene_salines_radeau_a",
-             "a plank raft lying flat on dry white salt with no water anywhere, a man of salt standing on "
-             "it holding a long punt pole, a grey heron perched at its end"),
+             "a plank raft lying flat on dry blazing white salt with no water anywhere; on it a man of salt "
+             "stands holding a long punt pole straight upright, pole and raft crossing as one hard black "
+             "cross in the middle of the picture, a grey heron perched at the top of the pole; a hard white "
+             "sun disc in the black sky behind them"),
 }
 
 # ── LES ÉCRANS QUI NE REGARDENT PAS UN PAYSAGE
@@ -134,12 +148,14 @@ AUTRES_ECRANS = {
              "inside, and beside it a lantern whose flame burns with no oil"),
 }
 
-# ── LES RENCONTRES NOMMÉES (portrait de référence : fond noir, une source)
-# La recette du portrait vit dans style_image.composer_portrait — jamais
-# recopiée ici, et surtout SANS la clause de cadrage de l'environnement
-# (« very wide shot, harsh white noon, no shadows at all » contredisait
-# « pitch-black background, one single light source » dans les cinq prompts
-# d'origine).
+# ── LES RENCONTRES NOMMÉES
+# ⚠️ PAS un portrait sur fond noir — elles passent par `composer_cadre` avec
+# `CADRAGE_RENCONTRE`, donc dans les VALEURS et la LUMIÈRE de leur
+# environnement (voir le long ⚠️ au-dessus de CADRAGE_RENCONTRE). Sur la
+# Croûte, un fond noir serait l'exact contraire de la zone, dont la signature
+# est un sol éclatant. `composer_portrait` a d'ailleurs été SUPPRIMÉE de
+# style_image le 15/09 : sans appelant, et contradictoire avec sa propre queue
+# de style — le garde `contradictions()` l'a montré.
 RENCONTRES = {
     "percepteur": ("croute", "monstre_salines_percepteur_a",
                    "a tall gaunt man bent under the weight of hundreds of flat lead tokens pressed into his flesh by "
@@ -190,14 +206,16 @@ RENCONTRES = {
                   "leaning slightly toward the viewer"),
 }
 
-# ⚠️ LES INVARIANTS PARTAIENT EN FRANÇAIS DANS UN PROMPT ANGLAIS (défaut trouvé
-# le 14/09) : `invariants()` recopiait les chaînes du JSON telles quelles, donc
-# les six prompts de lieu obligatoire disaient « with these three things always
-# in the picture: fissures convergentes vers le centre · pieux et rails sortant
-# du sel · … ». Le JSON reste en français — c'est la matière de production, lue
-# par des humains et par le Graphe ; la version de PROMPT vit ici, et le garde
-# ci-dessous casse la génération si un invariant du JSON n'a pas sa traduction,
-# plutôt que de réémettre du français en silence.
+# LE VOCABULAIRE DES INVARIANTS, EN ANGLAIS — et rien de plus (rangé le 15/09).
+# ⚠️ Cette table n'entre PLUS dans aucun prompt : depuis « sujets courts,
+# invariants retirés », chaque sujet écrit ses invariants LUI-MÊME, au bon
+# endroit de la phrase (les pieux de la Croûte sont la masse noire du premier
+# plan, pas une liste ajoutée en queue). La fonction qui les collait vivait
+# encore ici sans appelant, avec un garde qui ne pouvait plus se déclencher :
+# supprimée. Ce qui reste sert à ÉCRIRE — c'est la formulation anglaise validée
+# des motifs récurrents, à reprendre telle quelle quand on écrira les sujets
+# des Bassins, des Salines et de Saulnes. Le JSON reste en français : c'est la
+# matière de production, lue par des humains et par le Graphe.
 INVARIANTS_EN = {
     "fissures convergentes vers le centre": "deep cracks in the crust converging toward the far island",
     "pieux et rails sortant du sel": "weathered mooring posts and rusted iron rails emerging from the salt",
@@ -266,6 +284,22 @@ MOTS_DE_CAMERA = ("seen from above", "from above", "bird's eye", "aerial view", 
                   "medium shot", "seen from far off", "point of view", "camera")
 
 
+def controler_contradictions(prompts: list[tuple[str, str]]) -> list[str]:
+    """Relit chaque prompt ASSEMBLÉ, pas seulement son sujet.
+
+    ⚠️ C'est le seul contrôle qui regarde le prompt FINAL. Les cinq morceaux
+    (sujet, composition, ratio, lumière, clause) sont écrits à des dates
+    différentes, dans deux fichiers : une contradiction ne se voit qu'une fois
+    collés. Les trois qu'on a eues ont toutes été trouvées à l'œil, après
+    coup, un lot d'images plus tard (voir le ⚠️ au-dessus de CONTRADICTIONS).
+    """
+    pb = []
+    for nom, prompt in prompts:
+        for c in contradictions(prompt):
+            pb.append(f"prompt : « {nom} » — {c}")
+    return pb
+
+
 def controler_sujets(sujets: list[tuple[str, str]]) -> list[str]:
     pb = []
     for nom, sujet in sujets:
@@ -330,19 +364,12 @@ def manquantes(emises: list[tuple[str, str]]) -> list[tuple[str, str]]:
     return [(n, e) for n, e in emises if e in CABLAGE and not any(assets.glob(n + "*.png"))]
 
 
-def invariants(env: str) -> str:
-    manquants = [i for i in ENVS[env]["invariants"] if i not in INVARIANTS_EN]
-    if manquants:
-        raise SystemExit("bible visuelle : invariant sans version de prompt — " + " · ".join(manquants))
-    return "with these three things always in the picture: " + ", ".join(
-        INVARIANTS_EN[i] for i in ENVS[env]["invariants"])
-
 def main() -> int:
     out = []
     out.append("# Les Salines — bible visuelle (validée le 13/09/2026)\n")
     out.append("Généré par `tools/bible_visuelle_salines.py` depuis `data/zones/salines.json` et `tools/style_image.py`. "
-               "**Ne pas éditer à la main** : modifier le sujet dans le script, le ratio dans `CLAUSES_ENVIRONNEMENT`, "
-               "les invariants dans le JSON.\n")
+               "**Ne pas éditer à la main** : modifier le sujet dans le script, le ratio, la lumière et les "
+               "clauses de composition dans `tools/style_image.py`.\n")
     out.append("## La règle (les trois oui de Patrick)\n")
     out.append("1. **Une image d'établissement par environnement**, qui sert de vue de marche et de fond de secours. "
                "**Chaque lieu joué a la sienne** (amendement Patrick du 14/09 : « je veux des images en plus pour "
@@ -352,7 +379,14 @@ def main() -> int:
                "Ils sont RETIRÉS des images de lieu (14/09) : mesuré, ils coûtaient ~25 mots par prompt et étaient "
                "les premiers lâchés par le modèle. La cohésion tient par les valeurs et la trame, qui, elles, tiennent.")
     out.append("3. **Le ratio de trame par le prompt** (`style_image.CLAUSES_ENVIRONNEMENT`), jamais par le seuil du dithering. "
-               "Règle de zone : vue à la première personne, le héros n'est jamais dans l'image.\n")
+               "Règle de zone : vue à la première personne, le héros n'est jamais dans l'image.\n"
+               "4. **La composition, ajoutée le 15/09** sur les références rouge/noir de Patrick. Trois traits "
+               "qu'aucun prompt ne demandait : **une figure géométrique** qui porte le cadre (un cercle, une arche, "
+               "des lignes qui convergent, une symétrie franche), **la source de lumière VISIBLE dans l'image**, et "
+               "une **échelle écrasante**. Et une règle de matière : la lumière est une FORME, jamais une atmosphère "
+               "— mesuré, un halo dégradé ressort du dithering en nuage de points sale (78,8 % d'aplat), les mêmes "
+               "cercles en anneaux francs ressortent nets (88,5 %). `python3 tools/aplat.py <png…>` mesure une "
+               "sortie Leonardo avant même de la regarder : sous 70 %, c'est du grain, pas un dessin.\n")
     # ⚠️ Compte CALCULÉ, jamais écrit en dur : la première version annonçait
     # « 15 images » dans son en-tête, et ce chiffre serait devenu faux au
     # premier ajout sans que rien ne le signale.
@@ -364,6 +398,17 @@ def main() -> int:
     n = 0
     noms: list[tuple[str, str]] = []  # (nom de fichier, environnement)
     sujets: list[tuple[str, str]] = []  # (nom de fichier, sujet brut)
+    prompts: list[tuple[str, str]] = []  # (nom de fichier, prompt ASSEMBLÉ)
+
+    def emettre(nom: str, prompt: str, env: str, sujet: str) -> None:
+        """Un seul endroit qui écrit un prompt — donc un seul endroit qui le
+        range pour les contrôles. Avant, chaque boucle recopiait la ligne, et
+        un ajout oubliait forcément une des trois listes."""
+        out.append("```\n" + f"{nom}=" + prompt + "\n```\n")
+        noms.append((nom, env))
+        sujets.append((nom, sujet))
+        prompts.append((nom, prompt))
+
     for e in Z["environnements"]:
         eid = e["id"]
         out.append(f"\n## {e['ordre']}. {e['nom']} — {e.get('sous_titre','')}\n")
@@ -374,9 +419,7 @@ def main() -> int:
         out.append(f"- **Clause de ratio (prompt)** : _{CLAUSES_ENVIRONNEMENT[eid]}_\n")
         out.append(f"### Établissement — `{e['image_etablissement_attendue']}`\n")
         out.append("Servie par défaut sur tout lieu de l'environnement sans image dédiée.\n")
-        out.append("```\n" + f"{e['image_etablissement_attendue']}=" + composer_environnement(ETABLISSEMENT[eid], eid) + "\n```\n")
-        noms.append((e["image_etablissement_attendue"], eid))
-        sujets.append((e["image_etablissement_attendue"], ETABLISSEMENT[eid]))
+        emettre(e["image_etablissement_attendue"], composer_environnement(ETABLISSEMENT[eid], eid), eid, ETABLISSEMENT[eid])
         n += 1
         for lid, sujet in OBLIGATOIRES.items():
             L = LIEUX[lid]
@@ -385,30 +428,24 @@ def main() -> int:
             nom = f"scene_salines_{lid}_a"
             out.append(f"### {L['nom']} (obligatoire, {L['role']}) — `{nom}`\n")
             out.append(f"Ce que la bible dit : {L['note'].split('.')[0]}.\n")
-            out.append("```\n" + f"{nom}=" + composer_environnement(sujet, eid) + "\n```\n")
+            emettre(nom, composer_environnement(sujet, eid), eid, sujet)
             n += 1
-            noms.append((nom, eid))
-            sujets.append((nom, sujet))
         for lid, (env, nom, sujet) in LIEUX_JOUES.items():
             if env != eid:
                 continue
             L = LIEUX[lid]
             out.append(f"### {L['nom']} (lieu joué, {L['role']}) — `{nom}`\n")
             out.append(f"Ce que la bible dit : {L['note'].split('.')[0]}.\n")
-            out.append("```\n" + f"{nom}=" + composer_environnement(sujet, eid) + "\n```\n")
+            emettre(nom, composer_environnement(sujet, eid), eid, sujet)
             n += 1
-            noms.append((nom, eid))
-            sujets.append((nom, sujet))
         for sid, (env, nom, mode, sujet) in AUTRES_ECRANS.items():
             if env != eid:
                 continue
             cadrage = CADRAGE_DETAIL if mode == "detail" else CADRAGE_SUR_PLACE
             quoi = "gros plan" if mode == "detail" else "sur place"
             out.append(f"### `{sid}` ({quoi}) — `{nom}`\n")
-            out.append("```\n" + f"{nom}=" + composer_cadre(sujet, eid, cadrage) + "\n```\n")
+            emettre(nom, composer_cadre(sujet, eid, cadrage), eid, sujet)
             n += 1
-            noms.append((nom, eid))
-            sujets.append((nom, sujet))
         for cid, (env, nom, sujet) in RENCONTRES.items():
             if env != eid:
                 continue
@@ -421,10 +458,8 @@ def main() -> int:
                 raise SystemExit(f"bible visuelle : « {cid} » n'est ni une créature ni une rencontre de salines.json")
             out.append(f"### {C['nom']} (rencontre) — `{nom}`\n")
             out.append(f"Ce que la bible dit : {C['note'].split('.')[0]}.\n")
-            out.append("```\n" + f"{nom}=" + composer_cadre(sujet, eid, CADRAGE_RENCONTRE) + "\n```\n")
+            emettre(nom, composer_cadre(sujet, eid, CADRAGE_RENCONTRE), eid, sujet)
             n += 1
-            noms.append((nom, eid))
-            sujets.append((nom, sujet))
     out.append("\n## Ce qui n'a PAS d'image, et pourquoi\n")
     out.append("- **Le Ver de croûte** : jamais. Il est « la chose lointaine qui n'est pas toi » de l'établissement de la Croûte, et sous les pieds au Souffle.")
     out.append("- **Les lieux du pool des environnements PAS ENCORE ÉCRITS** : l'établissement de leur environnement, "
@@ -469,7 +504,7 @@ def main() -> int:
             out.append(f"| `{nom}` | `{ecran.get(nom, '—')}` | {env} |")
         out.append("")
 
-    pb = controler_sujets(sujets) + controler_cablage(noms)
+    pb = controler_sujets(sujets) + controler_cablage(noms) + controler_contradictions(prompts)
     if pb:
         raise SystemExit("\n".join(pb))
 

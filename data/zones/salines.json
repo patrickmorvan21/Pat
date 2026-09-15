@@ -68,6 +68,13 @@
         "mécanisme de fin de zone = l'ÉCLUSE SEULE, en CÉRÉMONIE : ni crochetage ni jet sur la porte ; la roue se tourne d'un geste lent insensible à l'échec ; le crochetage est retiré de la Tour (il reste à la Barge, à l'Entrepôt, à la Noria, à la Maison du Grand Passeur)",
         "image fixe par environnement = UNE image d'établissement par environnement servie par défaut + images dédiées seulement aux 6 obligatoires et aux rencontres nommées ; les trois invariants imposés à chaque image dédiée ; le ratio de trame par le PROMPT (style_image.CLAUSES_ENVIRONNEMENT), jamais par le seuil de dithering",
         "prototypes VALIDÉS (maquettes/encroute_tempete.html) — Encroûté : rendu A « grappes » (paquets irréguliers le long du bord, comme la frange du Geôlier) ; le sel gagne les lettres par plages contiguës depuis la fin des mots ; la Soif sur le même renderer. Tempête : rendu A « rafale » (les points naissent à droite et gagnent vers la gauche), BORNÉE à 8 s puis plus rien ne naît, on efface au doigt (rayon 24 px), un bouton couvert n'est pas cliquable (> 15 % couvert), dès que 60 % de ce qu'il y avait au plus fort est balayé le reste se dissout tout seul"
+      ],
+      "2026-09-15": [
+        "recette d'image revue sur les références rouge/noir de Patrick : trois traits qu'aucun prompt ne demandait — une figure géométrique qui porte le cadre, la SOURCE de lumière visible dans l'image, une échelle écrasante (clause COMPOSITION, paysages seulement)",
+        "la lumière est une FORME, jamais une atmosphère (clause SANS_DEGRADE, partout) : mesuré, un halo dégradé ressort du dithering en nuage de points sale (78,8 % d'aplat), les mêmes cercles en anneaux francs ressortent nets (88,5 %)",
+        "le soleil de la Croûte est DANS le cadre, disque blanc franc dans le ciel noir — mais toujours AUCUNE ombre portée : « plein jour, pas une ombre » est dans la prose que le joueur lit (rive-haute, statue), l'image ne doit pas la contredire",
+        "les 8 sujets de paysage de la Croûte réécrits autour d'une figure : l'étoile de fissures (établissement, champ des sillages), la potence-porte de la cloche (rive haute), les trois Cristallins au premier plan (file), la croix coque-mât (barge) et gaffe-radeau (radeau), la symétrie frontale (statue), le disque et son cercle d'offrandes (bouche) — deux plans « rails qui fuient vers l'horizon » sur trois sont supprimés",
+        "les images ne se re-génèrent que sur décision de Patrick : les prompts sont livrés, la production reste chez lui (/leo-import)"
       ]
     },
     "images": {
