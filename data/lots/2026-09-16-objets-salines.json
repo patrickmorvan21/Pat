@@ -1,0 +1,12 @@
+{
+  "lot": "2026-09-16 objets des Salines",
+  "source": "Drive PACTUM/Photos/03_Validé_Objets (tri de Patrick, 07:39)",
+  "note": "Les 5 icones d'objet des Salines, generees depuis les prompts ecrits le 16/09 au matin. Le pipeline double le suffixe de variante : objet_salines_battant_cloche_a -> _a_a. La variante retenue differe par sujet, c'est le choix de Patrick.",
+  "fichiers": [
+    {"titre": "objet_salines_battant_cloche_a_a.png", "fileId": "16Qlv_3iWRQ5v-Cji-QUnHGUE6V3oAnsd", "taille": 6709, "objet": "battant-cloche"},
+    {"titre": "objet_salines_perche_sauniere_a_b.png", "fileId": "13DX10AWh126n-H5f4TItolyAZfjb1n1-", "taille": 4917, "objet": "perche-sauniere"},
+    {"titre": "objet_salines_dent_de_ver_a_a.png", "fileId": "1CS8sBIjSFCasCeUlVIZF78vy3iIgVa9f", "taille": 6451, "objet": "dent-de-ver"},
+    {"titre": "objet_salines_lanterne_du_noye_a_a.png", "fileId": "1a3WpWYyiFSTQhMZi3T1PgWipTCUiB7fO", "taille": 5962, "objet": "lanterne-du-noye"},
+    {"titre": "objet_salines_registre_traversees_a_c.png", "fileId": "1MRj7pKzlH6cDkCYi2v2f_Zr9rLAXSl1q", "taille": 15757, "objet": "registre-des-traversees"}
+  ]
+}

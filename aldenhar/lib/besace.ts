@@ -198,6 +198,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
      sel… et prévient le Ver. Actif sans soin : c'est `usageObjet` qui le
      consomme, jamais le 4e choix de remède. */
   "battant-cloche": {
+    illustration: "assets/objet_salines_battant_cloche_a_a.png",
     name: "Battant de la cloche", rarity: "commun", kind: "babiole", slot: "actif",
     heal: 0, cure: false,
     usage: "Remis dans sa cloche, il sonne. Tout ce qui écoute la Croûte l'entendra.",
@@ -208,6 +209,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
      Prise à la Barge échouée, elle sert à la File (les Piqueurs) et, plus
      tard, à la Passerelle rompue. */
   "perche-sauniere": {
+    illustration: "assets/objet_salines_perche_sauniere_a_b.png",
     name: "Perche de saunier", rarity: "commun", kind: "arme", slot: "passif",
     passiveMod: 1, passiveScope: "combat",
     flavor: "Deux fois ta taille, le bout durci au sel. Elle te garde ce que tu frappes à une longueur de bras de plus.",
@@ -216,6 +218,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
      la fiction — la « relance garantie » de la bible est reportée : aucune
      mécanique de relance n'existe encore dans le dé). */
   "dent-de-ver": {
+    illustration: "assets/objet_salines_dent_de_ver_a_a.png",
     name: "Dent de Ver", rarity: "rare", kind: "arme", slot: "passif",
     passiveMod: 1, passiveScope: "all",
     flavor: "Une lame courbe, creuse, encore humide dedans. Depuis que tu la portes, quelque chose sous la croûte sait où tu marches.",
@@ -223,6 +226,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
   /* La lanterne du Noyé : sa flamme brûle sans huile et n'éclaire que ce qui
      est écrit. Ramassée dans la Bouche ; sert au Dortoir et à la Tour. */
   "lanterne-du-noye": {
+    illustration: "assets/objet_salines_lanterne_du_noye_a_a.png",
     name: "Lanterne du Noyé", rarity: "rare", kind: "babiole", slot: "passif",
     passiveMod: 1, passiveScope: "all",
     flavor: "Sa flamme brûle sans huile et sans chaleur. Elle n'éclaire pas la route : elle éclaire ce qui est écrit.",
@@ -230,6 +234,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
   /* Le registre de la Barge (fragment 1) : deux colonnes, les passeurs et
      ce qu'ils ont coûté. Un objet qu'on lit — le Savoir vient avec. */
   "registre-des-traversees": {
+    illustration: "assets/objet_salines_registre_traversees_a_c.png",
     name: "Registre des traversées", rarity: "rare", kind: "babiole", slot: "passif",
     passiveMod: 0, passiveScope: "all",
     flavor: "Deux colonnes. À gauche des noms de passeurs. À droite, pour chacun, un autre nom — et un prix.",
