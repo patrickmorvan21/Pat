@@ -1394,10 +1394,10 @@ export const CROUTE_IMG = "assets/scene_salines_croute_a_b.png";
  * déposé, le texte se joue sur l'image du lieu — jamais une image cassée.
  */
 const VER_IMG = {
-  dos: "assets/monstre_salines_ver_dos_a.png",
-  sillage: "assets/monstre_salines_ver_sillage_a.png",
+  dos: "assets/monstre_salines_ver_dos_a_v2_b.png",
+  sillage: "assets/monstre_salines_ver_sillage_a_v2_d.png",
   gueule: "assets/monstre_salines_ver_gueule_a.png",
-  face: "assets/monstre_salines_ver_face_a.png",
+  face: "assets/monstre_salines_ver_face_a_v3_b.png",
 } as const;
 export function verImage(k: keyof typeof VER_IMG): string | undefined {
   const f = VER_IMG[k];
@@ -8903,14 +8903,10 @@ export const SCENES: Scene[] = [
        Marqué `combat` pour la bannière de rencontre et pour que la règle
        « explorer prépare » (garde A-préparation) s'applique ici aussi. */
     id: "passage-du-ver",
-    // ⚠️ À REPOINTER sur `assets/monstre_salines_ver_face_a.png` dès que
-    // l'image est déposée (le garde de câblage de la bible le réclamera —
-    // « sur le disque mais scene-data ne la sert nulle part »). L'image de
-    // la GUEULE du Champ (le Ver dressé de face, 16/09) convient aussi ici
-    // en attendant. Un chemin vers un fichier absent afficherait une image
-    // cassée ; une expression gardée serait invisible aux extracteurs du
-    // Graphe. Le repli d'environnement dit le bon endroit, pas le bon détail.
-    illustration: CROUTE_IMG,
+    // La colonne dressée entre toi et la marche (lot 16/09). ⚠️ Littéral et
+    // non `verImage("face")` : une expression gardée serait invisible aux
+    // extracteurs du Graphe et de la couverture (mesuré : `image: None`).
+    illustration: "assets/monstre_salines_ver_face_a_v3_b.png",
     combat: true,
     foe: "ver-de-croute",
     foeName: "Le Ver de croûte",

@@ -368,12 +368,5 @@ Hors câblage :
 
 ## Ce qu'il reste à produire
 
-4 image(s). En attendant, ces écrans servent l'image d'établissement de leur environnement.
-
-| image | écran | environnement |
-|---|---|---|
-| `monstre_salines_ver_dos_a` | `—` | croute |
-| `monstre_salines_ver_sillage_a` | `—` | croute |
-| `monstre_salines_ver_gueule_a` | `—` | croute |
-| `monstre_salines_ver_face_a` | `passage-du-ver` | croute |
+Rien : tous les écrans câblés ont leur image sur le disque.
 

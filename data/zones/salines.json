@@ -457,7 +457,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_salines_ver_face_a.png",
+      "illustration": "assets/monstre_salines_ver_face_a_v3_b.png",
       "portrait_requis": false
     },
     {
@@ -1358,13 +1358,13 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_salines_ver_face_a.png",
+      "illustration": "assets/monstre_salines_ver_face_a_v3_b.png",
       "portrait_requis": false,
       "illustrations": {
-        "dos": "assets/monstre_salines_ver_dos_a.png",
-        "sillage": "assets/monstre_salines_ver_sillage_a.png",
+        "dos": "assets/monstre_salines_ver_dos_a_v2_b.png",
+        "sillage": "assets/monstre_salines_ver_sillage_a_v2_d.png",
         "gueule": "assets/monstre_salines_ver_gueule_a.png",
-        "face": "assets/monstre_salines_ver_face_a.png"
+        "face": "assets/monstre_salines_ver_face_a_v3_b.png"
       }
     },
     {

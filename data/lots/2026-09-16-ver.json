@@ -1,0 +1,32 @@
+{
+  "date": "2026-09-16",
+  "note": "Le Ver de croûte — les 3 images validées par Patrick (03_Validé_Rencontres, 13h17-13h18). La GUEULE vient de sa pièce jointe (toutes ses variantes Drive sont dans 02_Refusé) : déjà tramée 900x900, 2 couleurs exactes, posée telle quelle.",
+  "fichiers": [
+    {
+      "titre": "monstre_salines_ver_dos_a_v2_b.png",
+      "fileId": "1weanzM7UJ7dTjeoSrP_Lwl7an1Xy6BhZ",
+      "taille": 7971,
+      "cible": "apparition Rive haute"
+    },
+    {
+      "titre": "monstre_salines_ver_sillage_a_v2_d.png",
+      "fileId": "1YS2DrFgXnFvMBOvG7WkMqlkYUhUaC_f4",
+      "taille": 21748,
+      "cible": "sillage sur la 2e Croisée"
+    },
+    {
+      "titre": "monstre_salines_ver_face_a_v3_b.png",
+      "fileId": "14YUdbGtRIymNz1iGy-Q_McWW9cle8b6V",
+      "taille": 19427,
+      "cible": "le Passage"
+    }
+  ],
+  "hors_drive": [
+    {
+      "titre": "monstre_salines_ver_gueule_a.png",
+      "origine": "PJ Patrick 16/09",
+      "taille": 81831,
+      "cible": "apparition Champ des Sillages"
+    }
+  ]
+}
