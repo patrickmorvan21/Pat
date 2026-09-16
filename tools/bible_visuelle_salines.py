@@ -231,11 +231,16 @@ VER = {
                 "through the foreground and out of frame, its walls of overturned wet salt standing up in broken slabs "
                 "taller than a door, the floor of the trench dark and glistening, one small overturned wooden crate at "
                 "its lip for scale, the sun a hard white disc in the black sky"),
+    # ⚠️ PRODUITE le 16/09 depuis l'image fournie par Patrick (l'engloutissement
+    # au loin ne se générait pas) : la scène s'est adaptée à l'image. Le sujet
+    # ci-dessous DÉCRIT cette image, pour qu'une regénération ne revienne pas
+    # au cercle lointain.
     "gueule": ("monstre_salines_ver_gueule_a",
-               "far across the flat white salt crust the surface has opened into one perfect circle as wide as a village, "
-               "a ring of long black teeth standing up around its whole rim, a single small human silhouette toppling "
-               "inward at the edge of the ring, slabs of salt sliding into the darkness at the centre, tiny black "
-               "mooring posts along the bottom edge for scale, the sun a hard white disc in the black sky"),
+               "the head of an enormous worm bursting up through the salt crust ten paces away and bending down, "
+               "its body armoured in overlapping grey plates, its round mouth gaping wide with three rings of long "
+               "teeth, two long wet tongues hanging out of the mouth down to the ground and touching the salt, "
+               "slabs of broken crust flying up around its base, one small wooden crate on the salt for scale, "
+               "the sun a hard white disc in the black sky"),
     "face": ("monstre_salines_ver_face_a",
              "the head of an enormous eyeless worm reared straight up out of the salt crust twenty paces away, "
              "a blunt ridged black column as wide as a tower towering above the crust and filling the frame from the "

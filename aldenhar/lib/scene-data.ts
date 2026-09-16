@@ -1415,10 +1415,15 @@ export const VER_MANIFESTATIONS = {
     texte:
       "La croûte s'ouvre en travers de ta route : une tranchée large comme un chemin, aux parois de sel retourné, encore humides. Ça ne s'est pas effondré. Ça a été creusé d'en dessous, en passant, par quelque chose qui n'avait pas besoin de faire attention. Tu la franchis en trois enjambées. Le sel, au fond, est tiède.",
   },
+  // LA GUEULE EST UNE ATTAQUE DE FRONT (Patrick, 16/09 : l'engloutissement au
+  // loin ne se générait pas ; il a fourni l'image — la tête dressée, la
+  // gueule ouverte, deux langues qui touchent le sol — et la scène s'adapte
+  // à l'image, pas l'inverse). Hors jet, garanti : il sort, il goûte, il
+  // vérifie, il rentre. On ne bouge pas parce qu'on n'a pas le temps de bouger.
   gueule: {
     cle: "ver|gueule",
     texte:
-      "Loin sur les sillages, une silhouette marche seule vers l'île. Devant elle, la croûte s'ouvre en cercle — large comme un hameau — et le bord se hérisse de dents. Elle ne court pas. Elle tombe dedans comme on descend une marche. La croûte se referme. Plus de cercle, plus de dents, plus de silhouette. Le sel est lisse jusqu'à l'île.",
+      "La croûte éclate à dix pas, en dalles, et il sort — pas un dos, cette fois : la tête. Une colonne de plaques grises qui se penche sur toi, et la gueule s'ouvre, ronde, hérissée de dents sur trois rangs. Deux langues en sortent, longues comme des cordes, et viennent toucher le sel devant tes bottes. Elles goûtent. Elles remontent, mouillées, et la tête rentre sous la croûte comme on referme une trappe. Il ne t'a pas pris. Il a vérifié.",
   },
 } as const;
 
@@ -8377,14 +8382,14 @@ export const SCENES: Scene[] = [
         },
       },
       {
-        // LE JET NE GATE QUE L'INFORMATION (16/09) : la silhouette engloutie
-        // est dans l'apparition, hors jet. Ce qu'on gagne ici, c'est de
+        // LE JET NE GATE QUE L'INFORMATION (16/09) : l'attaque de front est
+        // dans l'apparition, hors jet. Ce qu'on gagne ici, c'est de
         // comprendre où il va — il tourne, il garde l'île, il ne chasse pas
         // la rive. C'est le SAVOIR qui ouvre « Longer son cercle » au Passage.
         // Acquis à la sélection : les quatre issues le disent, avec plus ou
         // moins de certitude (même règle que le Percepteur).
         id: "regarder-l-ile",
-        label: "Suivre la vague du regard",
+        label: "Suivre sa vague du regard",
         nature: "exploration",
         observe: true,
         grantsSavoir: "savoir_ver_cercle",
@@ -8392,8 +8397,8 @@ export const SCENES: Scene[] = [
           stat: "INSTINCT",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Là où la silhouette a disparu, le sel bombe en vague lente, et la vague tourne. Elle décrit un cercle autour de l'île, toujours à la même distance, comme un chien autour d'une table. Il ne chasse pas la rive. Il garde l'île.",
-            "Là où elle a disparu, la croûte bombe encore, et la vague se déplace — pas vers toi, pas vers la rive. Elle tourne, à distance égale de l'île. Un cercle. Il garde quelque chose.",
+            "20 naturel. Là où il a replongé, le sel bombe en vague lente, et la vague s'éloigne — puis tourne. Elle décrit un cercle autour de l'île, toujours à la même distance, comme un chien autour d'une table. Il ne chasse pas la rive. Il garde l'île.",
+            "Là où il a replongé, la croûte bombe encore, et la vague se déplace — pas vers toi, pas vers la rive. Elle tourne, à distance égale de l'île. Un cercle. Il garde quelque chose.",
             "Tu cherches la vague. Trop de blanc. Une fois, une ligne plus sombre passe au large de l'île, de gauche à droite — puis de droite à gauche. Elle tourne, tu crois. Tu détournes les yeux avant d'être sûr.",
             "1 naturel. La lumière te brûle les yeux jusqu'à ce que tout soit blanc. Quand tu y vois de nouveau, la vague est bien là, qui tourne autour de l'île — et un des Gisants a tourné la tête vers toi. ♦ −2"
           ),
@@ -8900,9 +8905,10 @@ export const SCENES: Scene[] = [
     id: "passage-du-ver",
     // ⚠️ À REPOINTER sur `assets/monstre_salines_ver_face_a.png` dès que
     // l'image est déposée (le garde de câblage de la bible le réclamera —
-    // « sur le disque mais scene-data ne la sert nulle part »). Un chemin
-    // vers un fichier absent afficherait une image cassée ; une expression
-    // gardée (`verImage("face") ?? …`) serait invisible aux extracteurs du
+    // « sur le disque mais scene-data ne la sert nulle part »). L'image de
+    // la GUEULE du Champ (le Ver dressé de face, 16/09) convient aussi ici
+    // en attendant. Un chemin vers un fichier absent afficherait une image
+    // cassée ; une expression gardée serait invisible aux extracteurs du
     // Graphe. Le repli d'environnement dit le bon endroit, pas le bon détail.
     illustration: CROUTE_IMG,
     combat: true,

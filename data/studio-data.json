@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-16T12:40:27Z",
- "commit": "73d37de",
+ "genere": "2026-09-16T13:47:31Z",
+ "commit": "7ba839f",
  "zones": [
   {
    "id": "landes",
@@ -8240,14 +8240,14 @@
     },
     {
      "id": "regarder-l-ile",
-     "label": "Suivre la vague du regard",
+     "label": "Suivre sa vague du regard",
      "type": "risque",
      "stat": "INSTINCT",
      "seuil": 11,
      "hautEnjeu": false,
      "issues": {
-      "critique": "20 naturel. Là où la silhouette a disparu, le sel bombe en vague lente, et la vague tourne. Elle décrit un cercle autour de l'île, toujours à la même distance, comme un chien autour d'une table. Il ne chasse pas la rive. Il garde l'île.",
-      "reussite": "Là où elle a disparu, la croûte bombe encore, et la vague se déplace — pas vers toi, pas vers la rive. Elle tourne, à distance égale de l'île. Un cercle. Il garde quelque chose.",
+      "critique": "20 naturel. Là où il a replongé, le sel bombe en vague lente, et la vague s'éloigne — puis tourne. Elle décrit un cercle autour de l'île, toujours à la même distance, comme un chien autour d'une table. Il ne chasse pas la rive. Il garde l'île.",
+      "reussite": "Là où il a replongé, la croûte bombe encore, et la vague se déplace — pas vers toi, pas vers la rive. Elle tourne, à distance égale de l'île. Un cercle. Il garde quelque chose.",
       "echec": "Tu cherches la vague. Trop de blanc. Une fois, une ligne plus sombre passe au large de l'île, de gauche à droite — puis de droite à gauche. Elle tourne, tu crois. Tu détournes les yeux avant d'être sûr.",
       "funeste": "1 naturel. La lumière te brûle les yeux jusqu'à ce que tout soit blanc. Quand tu y vois de nouveau, la vague est bien là, qui tourne autour de l'île — et un des Gisants a tourné la tête vers toi. ♦ −2"
      },
@@ -8265,7 +8265,7 @@
    "suite": "champ-des-sillages-2",
    "apparition": {
     "cle": "ver|gueule",
-    "texte": "Loin sur les sillages, une silhouette marche seule vers l'île. Devant elle, la croûte s'ouvre en cercle — large comme un hameau — et le bord se hérisse de dents. Elle ne court pas. Elle tombe dedans comme on descend une marche. La croûte se referme. Plus de cercle, plus de dents, plus de silhouette. Le sel est lisse jusqu'à l'île.",
+    "texte": "La croûte éclate à dix pas, en dalles, et il sort — pas un dos, cette fois : la tête. Une colonne de plaques grises qui se penche sur toi, et la gueule s'ouvre, ronde, hérissée de dents sur trois rangs. Deux langues en sortent, longues comme des cordes, et viennent toucher le sel devant tes bottes. Elles goûtent. Elles remontent, mouillées, et la tête rentre sous la croûte comme on referme une trappe. Il ne t'a pas pris. Il a vérifié.",
     "illustration": "assets/monstre_salines_ver_gueule_a.png"
    },
    "zone": "salines",
@@ -12744,7 +12744,7 @@
   "scenes": 127,
   "pointsInteret": 0,
   "choix": 370,
-  "illustrations": 483,
+  "illustrations": 481,
   "sansImage": 0,
   "imagesIntrouvables": 0,
   "reserve": 235,
