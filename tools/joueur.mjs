@@ -233,16 +233,20 @@ async function jouerLIntro() {
   let signe = false;
   for (let tour = 0; tour < 40; tour++) {
     if (await page.locator(".choices-bar").count()) return;
-    const t = await page.evaluate(() => document.body.innerText || "");
     await attendreFinDeFrappe();
-    await noterEcranHorsJeu(/Appose ta marque/i.test(t) ? "(le Pacte)" : "(intro)");
+    // ⚠️ Le Pacte se reconnaît à son CANVAS DE SIGNATURE (`data-signature`),
+    // jamais à un libellé : « Appose ta marque » est devenu « Signer le pacte »
+    // le 07/09, et ce libellé S'EFFACE au premier trait — une détection par
+    // le texte fait donc rater l'écran soit avant, soit après la marque.
+    // Trouvé le 16/09 : deux « premières parties » enregistrées en 5 écrans.
+    const auPacte = (await page.locator("canvas[data-signature]").count()) > 0;
+    await noterEcranHorsJeu(auPacte ? "(le Pacte)" : "(intro)");
 
     // LE PACTE : on trace une marque, puis on scelle.
-    if (/Appose ta marque/i.test(t)) {
+    if (auPacte) {
       if (!signe) {
         const c = await page.evaluate(() => {
-          const cv = [...document.querySelectorAll("canvas")]
-            .find((x) => Math.round(x.getBoundingClientRect().height) === 140);
+          const cv = document.querySelector("canvas[data-signature]");
           if (!cv) return null;
           const r = cv.getBoundingClientRect();
           return { x: r.left, y: r.top, w: r.width, h: r.height };

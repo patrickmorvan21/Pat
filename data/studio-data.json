@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-16T07:16:07Z",
- "commit": "b86eb83",
+ "genere": "2026-09-16T07:49:33Z",
+ "commit": "056a665",
  "zones": [
   {
    "id": "landes",
@@ -7972,7 +7972,7 @@
     "fichier": "scene_salines_rive_haute_a_v6_c.png",
     "hash": "3c1205d4",
     "taille": 13719,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8116,7 +8116,7 @@
     "fichier": "scene_salines_file_a_v6_c.png",
     "hash": "e54e39e6",
     "taille": 10246,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8262,7 +8262,7 @@
     "fichier": "scene_salines_champ_des_sillages_a_v6_c.png",
     "hash": "235b4abc",
     "taille": 11605,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8346,7 +8346,7 @@
     "fichier": "monstre_salines_gisants_a_v6_a.png",
     "hash": "975d53da",
     "taille": 22404,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8405,7 +8405,7 @@
     "fichier": "scene_salines_barge_echouee_a_v6_c.png",
     "hash": "4ee23f40",
     "taille": 5707,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8476,7 +8476,7 @@
     "fichier": "scene_salines_barge_pont_a_v6_a.png",
     "hash": "7b08d901",
     "taille": 12499,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8527,7 +8527,7 @@
     "fichier": "scene_salines_statue_a_v6_a.png",
     "hash": "937458e9",
     "taille": 10441,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8704,7 +8704,7 @@
     "fichier": "scene_salines_bouche_dent_a_v5_a.png",
     "hash": "7873b465",
     "taille": 7118,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10044,7 +10044,7 @@
    "fichier": "monstre_salines_heron_a_v6_a.png",
    "hash": "f40578c2",
    "taille": 15995,
-   "recent": false,
+   "recent": true,
    "groupe": "autre",
    "racine": "salines_heron_a"
   },
@@ -12654,7 +12654,7 @@
   "scenes": 126,
   "pointsInteret": 0,
   "choix": 367,
-  "illustrations": 475,
+  "illustrations": 480,
   "sansImage": 0,
   "imagesIntrouvables": 0,
   "reserve": 235,
