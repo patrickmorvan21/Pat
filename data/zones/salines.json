@@ -227,7 +227,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/scene_salines_rive_haute_a_a.png",
+      "illustration": "assets/scene_salines_rive_haute_a_v6_c.png",
       "portrait_requis": false
     },
     {
@@ -254,7 +254,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_file_a_v6_c.png",
       "portrait_requis": false
     },
     {
@@ -281,7 +281,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_champ_des_sillages_a_v6_c.png",
       "portrait_requis": false
     },
     {
@@ -314,7 +314,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/scene_salines_barge_echouee_a_b.png",
+      "illustration": "assets/scene_salines_barge_echouee_a_v6_c.png",
       "portrait_requis": false,
       "fragments_exclusifs": [
         "f1_registre_de_la_barge",
@@ -346,7 +346,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_statue_a_v6_a.png",
       "portrait_requis": false
     },
     {
@@ -1256,7 +1256,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_salines_heron_a_a.png",
+      "illustration": "assets/monstre_salines_heron_a_v6_a.png",
       "portrait_requis": false
     },
     {
@@ -1405,7 +1405,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_salines_heron_a_a.png",
+      "illustration": "assets/monstre_salines_heron_a_v6_a.png",
       "portrait_requis": true
     },
     {
@@ -1535,7 +1535,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_salines_gisants_a_v6_a.png",
       "portrait_requis": true
     },
     {

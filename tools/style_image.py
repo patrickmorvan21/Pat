@@ -75,8 +75,16 @@ CLAUSE_OBJET = (
 
 
 def composer_objet(sujet: str) -> str:
+    """Une ICÔNE d'inventaire : l'objet est la zone claire, le fond l'aplat noir.
+
+    ⚠️ Elle ne prend JAMAIS le ratio ni la lumière d'une zone (`composer_environnement`).
+    Une icône se lit dans une case de 92 px, donc ses valeurs sont les mêmes
+    partout — même pour un objet des Salines, dont la zone a pourtant des
+    valeurs inversées. C'est la lisibilité qui commande ici, pas l'appartenance.
+    `SANS_DEGRADE` s'applique quand même : le dithering est le même pour tous.
+    """
     sujet = sujet.strip().rstrip(",; ").strip()
-    return f"{sujet}, {CLAUSE_OBJET}" if sujet else CLAUSE_OBJET
+    return f"{sujet}, {SANS_DEGRADE}, {CLAUSE_OBJET}" if sujet else CLAUSE_OBJET
 
 
 # ---------------------------------------------------------------------------
@@ -214,7 +222,7 @@ CONTRADICTIONS: tuple[tuple[str, tuple[str, ...], tuple[str, ...]], ...] = (
      ("cast shadow", "casts a long", "long shadow", "hard shadow", "shadow pooling",
       "casting shadows", "shadows stretch")),
     ("fond noir contre plein jour",
-     ("pitch-black background", "pitch black background"),
+     ("pitch-black background", "pitch black background", "pure black background"),
      ("noon", "open sky", "to the horizon", "very wide shot", "bright field")),
     ("vue du sol contre vue aérienne",
      ("first-person view from the ground", "first-person view"),

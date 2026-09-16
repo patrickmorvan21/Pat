@@ -1,0 +1,15 @@
+{
+  "lot": "2026-09-16 — Croûte : les 6 trous comblés + 3 remplacements",
+  "source": "Drive 03_Validé_Environnement + 03_Validé_Rencontres, déposés le 16/09 06:45-06:46",
+  "fichiers": [
+    {"titre": "scene_salines_file_a_v6_c.png",              "fileId": "12IEXfoUhgSExHvR4OThjjl2csC_akodV", "taille": 10246, "role": "trou",        "remplace": null},
+    {"titre": "scene_salines_barge_pont_a_v6_a.png",        "fileId": "13dPXRjPVhOfUz8H6x45d7iot5V5o52i7", "taille": 12499, "role": "trou",        "remplace": null},
+    {"titre": "scene_salines_statue_a_v6_a.png",            "fileId": "1C-bhoe55nekjnsw9oeKr6k4YiMVtphFh", "taille": 10441, "role": "trou",        "remplace": null},
+    {"titre": "scene_salines_bouche_dent_a_v5_a.png",       "fileId": "1dsGj5J09_oDx4o4699wzRQ0jWrPFN43-", "taille": 7118,  "role": "trou",        "remplace": null},
+    {"titre": "scene_salines_champ_des_sillages_a_v6_c.png","fileId": "1h4nLni44a0orn7xunRxloon2t87knRLa", "taille": 11605, "role": "trou",        "remplace": null},
+    {"titre": "monstre_salines_gisants_a_v6_a.png",         "fileId": "1zqWmivMWjD1o-M7kXBjyWxdM6jiDdaKO", "taille": 22404, "role": "trou",        "remplace": null},
+    {"titre": "scene_salines_rive_haute_a_v6_c.png",        "fileId": "10cJnBIJAjorE2PqlMRG6vooCzHobMruB", "taille": 13719, "role": "remplacement","remplace": "scene_salines_rive_haute_a_a.png"},
+    {"titre": "scene_salines_barge_echouee_a_v6_c.png",     "fileId": "1lidqe82dX5HIJT_D0nX6s1LKncmMLzcW", "taille": 5707,  "role": "remplacement","remplace": "scene_salines_barge_echouee_a_b.png"},
+    {"titre": "monstre_salines_heron_a_v6_a.png",           "fileId": "1XZXvP0wPQRKVQT5cA_XvZBRfKztwUBDE", "taille": 15995, "role": "remplacement","remplace": "monstre_salines_heron_a_a.png"}
+  ]
+}

@@ -258,6 +258,41 @@ scene_salines_tour_de_l_ecluse_a=inside a stone tower, a spiral stair winding do
 ```
 
 
+## Les icônes d'objet
+
+Servies dans la Besace et l'Inventaire, en 92 px. **Valeurs inverses de la Croûte** : l'objet est la zone claire, le fond l'aplat noir — c'est ce qui les rend lisibles en petit, et ça vaut pour toutes les zones du jeu. Un objet a son icône quand il est RÉELLEMENT ramassable ; les neuf autres objets de la zone attendent que leur environnement soit écrit.
+
+### `battant-cloche` — `objet_salines_battant_cloche_a`
+
+```
+objet_salines_battant_cloche_a=a heavy lead bell clapper, a blunt teardrop of metal, hanging from a short strap of leather gone stiff and white with dried salt, the strap's cut end frayed where it was pulled off its pin, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
+### `perche-sauniere` — `objet_salines_perche_sauniere_a`
+
+```
+objet_salines_perche_sauniere_a=a long wooden salt-worker's pole twice the height of a man, laid out at an angle, its working end swollen and whitened into a hard knob of crusted salt, the shaft worn smooth by hands, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
+### `dent-de-ver` — `objet_salines_dent_de_ver_a`
+
+```
+objet_salines_dent_de_ver_a=a single curved hollow tooth as long as a forearm, tapering to a point, open at the broad end like a horn, the inside still wet and glistening while the outside is dry and ridged, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
+### `lanterne-du-noye` — `objet_salines_lanterne_du_noye_a`
+
+```
+objet_salines_lanterne_du_noye_a=a small hand lantern of blackened iron and cracked horn panels, its flame burning inside with a hard flat edge and no smoke, no oil reservoir under it, the metal cold and beaded with salt, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
+### `registre-des-traversees` — `objet_salines_registre_traversees_a`
+
+```
+objet_salines_registre_traversees_a=a thick ledger open flat, its pages ruled into two columns of hand-written names, the left column of entries each answered by a single word on the right, the paper swollen and warped by damp, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
+
 ## Ce qui n'a PAS d'image, et pourquoi
 
 - **Le Ver de croûte** : jamais. Il est « la chose lointaine qui n'est pas toi » de l'établissement de la Croûte, et sous les pieds au Souffle.
@@ -300,14 +335,5 @@ Hors câblage :
 
 ## Ce qu'il reste à produire
 
-6 image(s). En attendant, ces écrans servent l'image d'établissement de leur environnement.
-
-| image | écran | environnement |
-|---|---|---|
-| `scene_salines_file_a` | `file` | croute |
-| `scene_salines_champ_des_sillages_a` | `champ-des-sillages` | croute |
-| `scene_salines_statue_a` | `statue` | croute |
-| `scene_salines_barge_pont_a` | `barge-echouee-2` | croute |
-| `scene_salines_bouche_dent_a` | `bouche-2` | croute |
-| `monstre_salines_gisants_a` | `champ-des-sillages-2` | croute |
+Rien : tous les écrans câblés ont leur image sur le disque.
 

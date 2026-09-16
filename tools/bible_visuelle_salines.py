@@ -18,10 +18,11 @@ data/zones/salines.json ; la queue de style de tools/style_image.py — jamais
 recopiée. Format de sortie : `nom=prompt`, consommable par /leo-import.
 """
 from __future__ import annotations
-import json, sys
+import json, re, sys
 from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from style_image import (composer_environnement, composer_cadre, contradictions,  # noqa: E402
+from style_image import (composer_environnement, composer_cadre, composer_objet,  # noqa: E402
+                         contradictions,
                          CLAUSES_ENVIRONNEMENT, CADRAGE_DETAIL, CADRAGE_SUR_PLACE,
                          CADRAGE_RENCONTRE)
 
@@ -232,6 +233,43 @@ INVARIANTS_EN = {
 }
 
 
+# ── LES ICÔNES D'OBJET (ajoutées le 16/09, sur retour de Patrick : « est-ce
+# qu'il ne manquerait pas les photos des objets ? » — il avait raison, aucun
+# des cinq objets ramassables de la Croûte n'avait la sienne, et aucun prompt
+# n'existait pour eux).
+#
+# ⚠️ CRITÈRE, le même que pour les rencontres (14/09) : un objet a son icône
+# quand il est RÉELLEMENT ramassable en jeu. Les neuf autres objets de
+# `salines.json` appartiennent aux trois environnements pas encore écrits —
+# on ne commande pas une image pour une scène qui n'existe pas.
+#
+# ⚠️ Les sujets sont pris MOT À MOT dans le `flavor` de `lib/besace.ts`, qui
+# est le texte que le joueur lit dans son inventaire. Une icône qui montrerait
+# autre chose que ce que la description annonce serait le défaut image↔texte
+# qu'on passe notre temps à réparer, en plus petit et plus souvent regardé.
+#
+# ⚠️ Une icône ne prend NI le ratio NI la lumière de sa zone : elle est claire
+# sur fond noir partout dans le jeu, parce qu'elle se lit dans une case de
+# 92 px (voir le docblock de `composer_objet`).
+OBJETS = {
+    "battant-cloche": ("objet_salines_battant_cloche_a",
+        "a heavy lead bell clapper, a blunt teardrop of metal, hanging from a short strap of leather "
+        "gone stiff and white with dried salt, the strap's cut end frayed where it was pulled off its pin"),
+    "perche-sauniere": ("objet_salines_perche_sauniere_a",
+        "a long wooden salt-worker's pole twice the height of a man, laid out at an angle, its working "
+        "end swollen and whitened into a hard knob of crusted salt, the shaft worn smooth by hands"),
+    "dent-de-ver": ("objet_salines_dent_de_ver_a",
+        "a single curved hollow tooth as long as a forearm, tapering to a point, open at the broad end "
+        "like a horn, the inside still wet and glistening while the outside is dry and ridged"),
+    "lanterne-du-noye": ("objet_salines_lanterne_du_noye_a",
+        "a small hand lantern of blackened iron and cracked horn panels, its flame burning inside with "
+        "a hard flat edge and no smoke, no oil reservoir under it, the metal cold and beaded with salt"),
+    "registre-des-traversees": ("objet_salines_registre_traversees_a",
+        "a thick ledger open flat, its pages ruled into two columns of hand-written names, the left "
+        "column of entries each answered by a single word on the right, the paper swollen and warped by damp"),
+}
+
+
 # ── LE CÂBLAGE : quel fichier sur quel écran
 # Sans cette table, rien ne dit que `monstre_salines_piqueurs_a` va sur
 # `file-2` — et le câblage se ferait à la devinette une fois les images
@@ -282,6 +320,43 @@ HORS_CABLAGE = {
 MOTS_DE_CAMERA = ("seen from above", "from above", "bird's eye", "aerial view", "top-down",
                   "overhead shot", "seen from below", "looking down", "close-up", "wide shot",
                   "medium shot", "seen from far off", "point of view", "camera")
+
+
+def controler_objets(emis: list[tuple[str, str]]) -> list[str]:
+    """Aucun objet ramassable sans icône, et aucune icône livrée sans câblage.
+
+    ⚠️ C'est le contrôle qui manquait le 16/09, et son absence a coûté cinq
+    objets muets : la Besace les servait avec l'icône GÉNÉRIQUE de leur type,
+    donc rien à l'écran ne disait qu'il manquait quelque chose. Un objet sans
+    `illustration` n'est un défaut que s'il n'a pas non plus de prompt — d'où
+    les deux moitiés du test.
+    """
+    besace = (RACINE / "aldenhar/lib/besace.ts").read_text()
+    i = besace.index("export const LANDES_OBJETS")
+    bloc = besace[i:besace.index("\n};", i)]
+    entrees = re.findall(r'\n  "([a-z0-9-]+)":\s*\{(.*?)\n  \},', bloc, re.S)
+    # ⚠️ Contrôle de comptage : moins de dix objets lus = le regex a cessé de
+    # lire le catalogue, et le garde passerait au vert en n'examinant rien.
+    if len(entrees) < 10:
+        return [f"objets : {len(entrees)} objets lus dans besace.ts — l'extracteur ne lit plus le catalogue"]
+
+    pb = []
+    avec_prompt = {cle for cle, _ in emis}
+    for cle, corps in entrees:
+        a_icone = 'illustration:' in corps
+        if not a_icone and cle not in avec_prompt:
+            nom = re.search(r'name:\s*"([^"]+)"', corps)
+            pb.append(f"objet : « {cle} » ({nom.group(1) if nom else '?'}) n'a ni icône ni prompt — "
+                      f"il est servi avec l'icône générique de son type, et rien ne le signale en jeu")
+
+    assets = RACINE / "aldenhar/public/assets"
+    for cle, nom in emis:
+        if not any(assets.glob(nom + "*.png")):
+            continue  # pas encore produite, c'est le cas normal
+        corps = next(c for k, c in entrees if k == cle)
+        if nom not in corps:
+            pb.append(f"objet : « {nom} » est sur le disque mais besace.ts ne la sert pas à « {cle} »")
+    return pb
 
 
 def controler_contradictions(prompts: list[tuple[str, str]]) -> list[str]:
@@ -399,6 +474,7 @@ def main() -> int:
     noms: list[tuple[str, str]] = []  # (nom de fichier, environnement)
     sujets: list[tuple[str, str]] = []  # (nom de fichier, sujet brut)
     prompts: list[tuple[str, str]] = []  # (nom de fichier, prompt ASSEMBLÉ)
+    objets_emis: list[tuple[str, str]] = []  # (clé d'objet, nom de fichier)
 
     def emettre(nom: str, prompt: str, env: str, sujet: str) -> None:
         """Un seul endroit qui écrit un prompt — donc un seul endroit qui le
@@ -460,6 +536,18 @@ def main() -> int:
             out.append(f"Ce que la bible dit : {C['note'].split('.')[0]}.\n")
             emettre(nom, composer_cadre(sujet, eid, CADRAGE_RENCONTRE), eid, sujet)
             n += 1
+    out.append("\n## Les icônes d'objet\n")
+    out.append("Servies dans la Besace et l'Inventaire, en 92 px. **Valeurs inverses de la Croûte** : "
+               "l'objet est la zone claire, le fond l'aplat noir — c'est ce qui les rend lisibles en petit, "
+               "et ça vaut pour toutes les zones du jeu. Un objet a son icône quand il est RÉELLEMENT "
+               "ramassable ; les neuf autres objets de la zone attendent que leur environnement soit écrit.\n")
+    for cle, (nom, sujet) in OBJETS.items():
+        out.append(f"### `{cle}` — `{nom}`\n")
+        out.append("```\n" + f"{nom}=" + composer_objet(sujet) + "\n```\n")
+        n += 1
+        prompts.append((nom, composer_objet(sujet)))
+        objets_emis.append((cle, nom))
+
     out.append("\n## Ce qui n'a PAS d'image, et pourquoi\n")
     out.append("- **Le Ver de croûte** : jamais. Il est « la chose lointaine qui n'est pas toi » de l'établissement de la Croûte, et sous les pieds au Souffle.")
     out.append("- **Les lieux du pool des environnements PAS ENCORE ÉCRITS** : l'établissement de leur environnement, "
@@ -504,7 +592,8 @@ def main() -> int:
             out.append(f"| `{nom}` | `{ecran.get(nom, '—')}` | {env} |")
         out.append("")
 
-    pb = controler_sujets(sujets) + controler_cablage(noms) + controler_contradictions(prompts)
+    pb = (controler_sujets(sujets) + controler_cablage(noms)
+          + controler_contradictions(prompts) + controler_objets(objets_emis))
     if pb:
         raise SystemExit("\n".join(pb))
 

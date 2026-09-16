@@ -8026,7 +8026,7 @@ export const SCENES: Scene[] = [
        soudain » ; le loot d'arrivée est retiré), on le dépense à l'écran
        suivant (`usageObjet`). */
     id: "rive-haute",
-    illustration: "assets/scene_salines_rive_haute_a_a.png",
+    illustration: "assets/scene_salines_rive_haute_a_v6_c.png",
     chainNext: "rive-haute-2",
     narration: [
       // ⚠️ ON DIT CE QU'EST LA CROÛTE (retour Patrick 13/09 : « les gens qui
@@ -8159,7 +8159,7 @@ export const SCENES: Scene[] = [
        pleine marche. Gratter une pierre rend la phrase ; marcher dans leurs
        pas apprend où la croûte tient (le SAVOIR qui prépare les Piqueurs). */
     id: "file",
-    illustration: CROUTE_IMG,
+    illustration: "assets/scene_salines_file_a_v6_c.png",
     chainNext: "file-2",
     narration: [
       "Une file de pierres plates, posées à intervalles réguliers, traverse la croûte comme des pas qu'on aurait figés. Blanches d'un côté, grises de l'autre. Entre deux, le sel est plus fin, plus clair.",
@@ -8273,7 +8273,7 @@ export const SCENES: Scene[] = [
        l'île. Les Gisants dorment entre. Voir le Ver de loin. Le SAVOIR des
        fissures (elles partent du fond) sert à la Bouche. */
     id: "champ-des-sillages",
-    illustration: CROUTE_IMG,
+    illustration: "assets/scene_salines_champ_des_sillages_a_v6_c.png",
     chainNext: "champ-des-sillages-2",
     narration: [
       "La croûte se fend en sillages : de longues fissures qui partent du même point et filent vers l'île, comme une main posée à plat dont on ne verrait que les doigts. Le sel y est plus sombre, humide.",
@@ -8321,7 +8321,7 @@ export const SCENES: Scene[] = [
        Préparation : le Percepteur a dit « ne marche jamais entre deux » —
        qui l'a entendu contourne par le sillage, où aucun Gisant ne couche. */
     id: "champ-des-sillages-2",
-    illustration: CROUTE_IMG,
+    illustration: "assets/monstre_salines_gisants_a_v6_a.png",
     combat: true,
     foe: "gisants",
     foeName: "Les Gisants",
@@ -8383,7 +8383,7 @@ export const SCENES: Scene[] = [
     /* LA BARGE ÉCHOUÉE — une coque sur le sel, un Encroûté qui vend de
        l'eau salée et dit la phrase entière. La perche se prend ici. */
     id: "barge-echouee",
-    illustration: "assets/scene_salines_barge_echouee_a_b.png",
+    illustration: "assets/scene_salines_barge_echouee_a_v6_c.png",
     chainNext: "barge-echouee-2",
     narration: [
       "Une barge est posée sur le sel, loin de toute eau, la coque prise jusqu'au bordage, un mât couché. Sur le pont, un homme entier de sel, assis devant une écuelle : un Encroûté. Il ne bouge que les lèvres.",
@@ -8430,7 +8430,7 @@ export const SCENES: Scene[] = [
        jetons, fragment 4). Choisir l'un ferme l'autre : `masqueSiChoixFait`,
        portée écran — c'est un séjour, on ne part que par le sel. */
     id: "barge-echouee-2",
-    illustration: CROUTE_IMG,
+    illustration: "assets/scene_salines_barge_pont_a_v6_a.png",
     sejour: true,
     narration: [
       "Le pont est sûr. Dans le château arrière, un coffre à cadenas. Sous tes pieds, une trappe clouée. L'Encroûté te suit des lèvres. « Une seule. Le coffre, ou la cale. J'ai pas le temps pour les deux. » Il n'a que ça, du temps.",
@@ -8484,7 +8484,7 @@ export const SCENES: Scene[] = [
        du visage se gratte (le geste des Landes, réemployé : c'est le même
        moteur) et rend un nom du Grand Registre. */
     id: "statue",
-    illustration: CROUTE_IMG,
+    illustration: "assets/scene_salines_statue_a_v6_a.png",
     chainNext: "statue-2",
     narration: [
       "Une statue seule sur le sel, plus haute qu'un homme, un bras tendu vers l'île. Pas une statue : un Cristallin, mais ancien, épaissi de sel jusqu'à perdre ses traits. Sous le bras, là où il ne fait pas d'ombre, le sel est intact.",
@@ -8621,7 +8621,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "bouche-2",
-    illustration: CROUTE_IMG,
+    illustration: "assets/scene_salines_bouche_dent_a_v5_a.png",
     sejour: true,
     narration: [
       "Au bord, une dent courbe, creuse, longue comme l'avant-bras, encore humide dedans. Une lanterne dont la flamme brûle sans huile. Le sel craque doucement autour de tes pieds, comme un pain qui refroidit — il prend. Tu le sens monter par les semelles.",
