@@ -4,12 +4,12 @@ Généré par `tools/bible_visuelle_salines.py` depuis `data/zones/salines.json`
 
 ## La règle (les trois oui de Patrick)
 
-1. **Une image d'établissement par environnement**, qui sert de vue de marche et de fond de secours. **Chaque lieu joué a la sienne** (amendement Patrick du 14/09 : « je veux des images en plus pour chacune des scènes »), plus les **rencontres nommées** et les écrans qui regardent autre chose qu'un paysage. Le Ver n'a jamais la sienne : « une chose lointaine qui n'est pas toi », c'est lui.
+1. **Une image d'établissement par environnement**, qui sert de vue de marche et de fond de secours. **Chaque lieu joué a la sienne** (amendement Patrick du 14/09 : « je veux des images en plus pour chacune des scènes »), plus les **rencontres nommées** et les écrans qui regardent autre chose qu'un paysage. **Le Ver a les siennes depuis le 16/09** (dos, sillage, gueule, face — jamais le corps entier).
 2. **Les trois invariants** vivent dans l'image d'**établissement** — c'est elle qui définit la zone. Ils sont RETIRÉS des images de lieu (14/09) : mesuré, ils coûtaient ~25 mots par prompt et étaient les premiers lâchés par le modèle. La cohésion tient par les valeurs et la trame, qui, elles, tiennent.
 3. **Le ratio de trame par le prompt** (`style_image.CLAUSES_ENVIRONNEMENT`), jamais par le seuil du dithering. Règle de zone : vue à la première personne, le héros n'est jamais dans l'image.
 4. **La composition, ajoutée le 15/09** sur les références rouge/noir de Patrick. Trois traits qu'aucun prompt ne demandait : **une figure géométrique** qui porte le cadre (un cercle, une arche, des lignes qui convergent, une symétrie franche), **la source de lumière VISIBLE dans l'image**, et une **échelle écrasante**. Et une règle de matière : la lumière est une FORME, jamais une atmosphère — mesuré, un halo dégradé ressort du dithering en nuage de points sale (78,8 % d'aplat), les mêmes cercles en anneaux francs ressortent nets (88,5 %). `python3 tools/aplat.py <png…>` mesure une sortie Leonardo avant même de la regarder : sous 70 %, c'est du grain, pas un dessin.
 
-**27 images** : 4 établissements · 6 lieux obligatoires · 6 lieux du pool · 3 autres écrans · 8 rencontres. Deux variantes par image, le pipeline double le suffixe (`_a` → `_a_b`). Format `nom=prompt` pour `/leo-import`.
+**31 images** : 4 établissements · 6 lieux obligatoires · 6 lieux du pool · 3 autres écrans · 8 rencontres · 4 vues du Ver. Deux variantes par image, le pipeline double le suffixe (`_a` → `_a_b`). Format `nom=prompt` pour `/leo-import`.
 
 
 ## 1. La Croûte — le fond du lac
@@ -159,6 +159,35 @@ monstre_salines_encroute_a=a standing hooded figure in coarse wool, the lower ha
 ```
 
 
+### Le Ver de croûte — quatre images, chacune plus près (16/09)
+
+Des PAYSAGES : le Ver est la masse noire qui porte le cadre, à l'échelle de la Croûte. Jamais le corps entier, jamais d'yeux. Dos (Rive haute) · sillage (une Croisée) · gueule (Champ des Sillages, hors jet) · face (le Passage, fin de la Croûte).
+
+#### `dos` — `monstre_salines_ver_dos_a`
+
+```
+monstre_salines_ver_dos_a=far out on the flat white salt crust, between the last mooring post and the distant island, a long ridged black back breaks up through the salt and travels along it like the spine of a whale, ten times longer than the posts it passes, the crust lifting into a slow white wave along its length and closing again behind it, the black mooring posts standing in the foreground as flat cut-outs for scale, the sun a hard white disc in the black sky, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, the VALUES ARE INVERTED compared to every other image: the ground is one huge uniform very bright field filling the lower two thirds of the frame, the sky a flat pure black; very wide shot, the horizon line low so the eye sits at salt level, blinding white noon, the sun a hard white disc punched into the black sky above the horizon; the salt floor blazes so evenly that NOTHING casts a shadow — everything standing on the crust is a flat black cut-out with no shadow under it at all, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+#### `sillage` — `monstre_salines_ver_sillage_a`
+
+```
+monstre_salines_ver_sillage_a=a fresh trench torn straight across the salt crust, as wide as a road, running from the far horizon through the foreground and out of frame, its walls of overturned wet salt standing up in broken slabs taller than a door, the floor of the trench dark and glistening, one small overturned wooden crate at its lip for scale, the sun a hard white disc in the black sky, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, the VALUES ARE INVERTED compared to every other image: the ground is one huge uniform very bright field filling the lower two thirds of the frame, the sky a flat pure black; very wide shot, the horizon line low so the eye sits at salt level, blinding white noon, the sun a hard white disc punched into the black sky above the horizon; the salt floor blazes so evenly that NOTHING casts a shadow — everything standing on the crust is a flat black cut-out with no shadow under it at all, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+#### `gueule` — `monstre_salines_ver_gueule_a`
+
+```
+monstre_salines_ver_gueule_a=far across the flat white salt crust the surface has opened into one perfect circle as wide as a village, a ring of long black teeth standing up around its whole rim, a single small human silhouette toppling inward at the edge of the ring, slabs of salt sliding into the darkness at the centre, tiny black mooring posts along the bottom edge for scale, the sun a hard white disc in the black sky, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, the VALUES ARE INVERTED compared to every other image: the ground is one huge uniform very bright field filling the lower two thirds of the frame, the sky a flat pure black; very wide shot, the horizon line low so the eye sits at salt level, blinding white noon, the sun a hard white disc punched into the black sky above the horizon; the salt floor blazes so evenly that NOTHING casts a shadow — everything standing on the crust is a flat black cut-out with no shadow under it at all, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+#### `face` — `monstre_salines_ver_face_a`
+
+```
+monstre_salines_ver_face_a=the head of an enormous eyeless worm reared straight up out of the salt crust twenty paces away, a blunt ridged black column as wide as a tower towering above the crust and filling the frame from the ground to the top edge, its mouth a dark circle ringed with long teeth, wet slabs of salt sliding off its flanks, the crust around its base cracked into a star, a low step of grey stone at the far right for scale, the sun a hard white disc in the black sky beside it, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, the VALUES ARE INVERTED compared to every other image: the ground is one huge uniform very bright field filling the lower two thirds of the frame, the sky a flat pure black; very wide shot, the horizon line low so the eye sits at salt level, blinding white noon, the sun a hard white disc punched into the black sky above the horizon; the salt floor blazes so evenly that NOTHING casts a shadow — everything standing on the crust is a flat black cut-out with no shadow under it at all, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+
 ## 2. Les Bassins — la sécheresse crue
 
 - **Jour** : Jour II — premier campement, coûteux
@@ -295,7 +324,7 @@ objet_salines_registre_traversees_a=a thick ledger open flat, its pages ruled in
 
 ## Ce qui n'a PAS d'image, et pourquoi
 
-- **Le Ver de croûte** : jamais. Il est « la chose lointaine qui n'est pas toi » de l'établissement de la Croûte, et sous les pieds au Souffle.
+- **Le Ver de croûte en entier** : jamais. Quatre images le montrent PAR MORCEAUX et à l'échelle (16/09) — le dos, le sillage, la gueule, la face dressée. Le corps complet et les yeux n'existent pas ; sous les pieds au Souffle, il n'a pas d'image non plus.
 - **Les lieux du pool des environnements PAS ENCORE ÉCRITS** : l'établissement de leur environnement, jusqu'à ce qu'ils soient écrits — un lieu prend son image quand son texte existe, sinon le prompt est une invention (règle du 14/09 : le sujet se prend dans la narration, mot à mot).
 - **`bouche-3`** : rien de visible n'y change — un frottement TOURNE sous la croûte, et le fait qu'on ne le voie pas est tout l'effet. L'écran garde l'image de la Bouche.
 - **Le Fossé** (beat d'arrivée de Saulnes) : l'établissement de Saulnes est déjà la vue de loin qu'il décrit.
@@ -323,6 +352,7 @@ objet_salines_registre_traversees_a=a thick ledger open flat, its pages ruled in
 | `bouche-3` | `scene_salines_bouche_a` |
 | `radeau` | `scene_salines_radeau_a` |
 | `radeau-2` | `monstre_salines_encroute_radeau_a` |
+| `passage-du-ver` | `monstre_salines_ver_face_a` |
 | `fin-etape-non-ecrite` | — (carton) |
 
 Hors câblage :
@@ -331,9 +361,19 @@ Hors câblage :
 - `monstre_salines_boeuf_de_sel_a` — issue de « remettre le battant et sonner », sur rive-haute-2
 - `monstre_salines_heron_a` — il s'envole dans une issue de radeau-2
 - `monstre_salines_encroute_a` — l'Encroûté générique — barge et ailleurs, au palier II
+- `monstre_salines_ver_dos_a` — apparition garantie à l'arrivée à la Rive haute (Scene.apparition)
+- `monstre_salines_ver_sillage_a` — la deuxième Croisée de la Croûte (habillageSillage, Scene.tsx)
+- `monstre_salines_ver_gueule_a` — apparition garantie à l'arrivée au Champ des Sillages (Scene.apparition)
 
 
 ## Ce qu'il reste à produire
 
-Rien : tous les écrans câblés ont leur image sur le disque.
+4 image(s). En attendant, ces écrans servent l'image d'établissement de leur environnement.
+
+| image | écran | environnement |
+|---|---|---|
+| `monstre_salines_ver_dos_a` | `—` | croute |
+| `monstre_salines_ver_sillage_a` | `—` | croute |
+| `monstre_salines_ver_gueule_a` | `—` | croute |
+| `monstre_salines_ver_face_a` | `passage-du-ver` | croute |
 

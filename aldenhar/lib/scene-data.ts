@@ -478,6 +478,21 @@ export type Choice = {
    */
   sauteEtape?: boolean;
   /**
+   * UN ÉCHEC TUE, QUELLE QUE SOIT LA SANTÉ (le Passage du Ver, 16/09). Même
+   * porte que la mort par fixation au procès : `fatalCheck` annonce MORT sur
+   * tout palier d'échec, et la résolution enregistre la mort sans passer par
+   * la santé. Réservé à ce qui ne se rate pas deux fois — une gueule, pas une
+   * corde. Ne se combine JAMAIS avec `horsDePortee` (l'un annule l'autre).
+   */
+  mortel?: true;
+  /**
+   * S'ARRÊTER DEVANT LUI (Salines, 16/09) : ce choix fait monter l'Encroûté
+   * d'un palier comme une action de séjour, même sur une scène qui n'en est
+   * pas une. « Reste, il te garde » — le prix de l'immobilité se voit sur
+   * les CTA de l'écran suivant, jamais en chiffre.
+   */
+  monteEncroute?: true;
+  /**
    * CE GESTE ROMPT UNE CLAUSE DU SERMENT (correctif 14/08).
    *
    * Le Serment énonce trois interdits au muret : « Tu ne parles pas aux
@@ -978,6 +993,17 @@ export type Scene = {
    */
   tempete?: { avant?: string; apres: string; cle?: string };
   /**
+   * UNE APPARITION GARANTIE (le Ver de croûte, 16/09) : un paragraphe servi
+   * APRÈS la narration du lieu, sur SON écran (frontière imposée) et avec
+   * SON image — une fois par vie (`cle` dans `RunState.vus`). C'est ce qui
+   * distingue « voir le Ver » d'un jet réussi une fois sur dix : on ne peut
+   * pas le manquer, et l'image est celle de ce qu'on regarde. Sans image
+   * déposée (`assetExiste`), le texte se joue quand même, sur l'image du lieu.
+   * ⚠️ Transitoire comme une conséquence : fermer l'app avant de l'avoir lue
+   * ne la rejoue pas à la reprise (la clé est notée à la pose).
+   */
+  apparition?: { cle: string; texte: string; illustration?: string };
+  /**
    * Terminal PAR RENONCEMENT (5/08) : la run s'arrête sans mort. Le nom entre
    * au Registre avec la mention « resté au Hameau », aucune relique n'est
    * forgée — on ne forge rien avec une vie qu'on n'a pas perdue.
@@ -1344,6 +1370,57 @@ const CHOIX_CHEMIN_DU_SUD: Choice[] = [
     `data/salines-bible-visuelle.md`). Un repli n'est pas un placeholder : il
     montre le bon endroit, juste pas le bon détail. */
 export const CROUTE_IMG = "assets/scene_salines_croute_a_b.png";
+
+/**
+ * LE VER DE CROÛTE SE VOIT (décision Patrick, 16/09 — « c'est encore trop peu
+ * pour le Ver, j'aimerais des images où on le voit vraiment »).
+ *
+ * Jusque-là il n'existait qu'en paroles (le Percepteur, l'Encroûté du radeau)
+ * et dans UNE issue de jet du Champ des Sillages : trois portes à franchir,
+ * ~1 chance sur 10 de le voir, et aucune image — la bible du 14/09 disait
+ * « une chose lointaine qui n'est pas toi EST le Ver ». Décision renversée :
+ * quatre images, chacune plus près, et une vraie scène pour la dernière.
+ *
+ *   dos      — la Rive haute (garanti, premier écran) : un dos qui perce la
+ *              croûte au loin, les pieux pour échelle ;
+ *   sillage  — une Croisée de la Croûte (la deuxième) : la tranchée fraîche
+ *              qu'il a laissée en travers de la route ;
+ *   gueule   — le Champ des Sillages, HORS jet : la croûte qui s'ouvre en
+ *              cercle et la silhouette qui tombe dedans (le jet d'INSTINCT
+ *              ne gate plus que l'INFORMATION : il tourne, il garde l'île) ;
+ *   face     — le Passage, à la sortie de la Croûte : dressé à vingt pas.
+ *
+ * Les images sont gardées par `assetExiste` : tant qu'un fichier n'est pas
+ * déposé, le texte se joue sur l'image du lieu — jamais une image cassée.
+ */
+const VER_IMG = {
+  dos: "assets/monstre_salines_ver_dos_a.png",
+  sillage: "assets/monstre_salines_ver_sillage_a.png",
+  gueule: "assets/monstre_salines_ver_gueule_a.png",
+  face: "assets/monstre_salines_ver_face_a.png",
+} as const;
+export function verImage(k: keyof typeof VER_IMG): string | undefined {
+  const f = VER_IMG[k];
+  return assetExiste(f) ? f : undefined;
+}
+/** Les trois manifestations du Ver avant le Passage (audit `immersion.py`). */
+export const VER_MANIFESTATIONS = {
+  dos: {
+    cle: "ver|dos",
+    texte:
+      "Et là-bas, entre le dernier pieu et l'île, la croûte se soulève. Une ligne grise perce le sel, longue comme dix barges, et avance sans se presser — un dos. Le blanc se referme derrière lui, et la Croûte reprend son silence, comme si rien n'avait jamais été dessous.",
+  },
+  sillage: {
+    cle: "ver|sillage",
+    texte:
+      "La croûte s'ouvre en travers de ta route : une tranchée large comme un chemin, aux parois de sel retourné, encore humides. Ça ne s'est pas effondré. Ça a été creusé d'en dessous, en passant, par quelque chose qui n'avait pas besoin de faire attention. Tu la franchis en trois enjambées. Le sel, au fond, est tiède.",
+  },
+  gueule: {
+    cle: "ver|gueule",
+    texte:
+      "Loin sur les sillages, une silhouette marche seule vers l'île. Devant elle, la croûte s'ouvre en cercle — large comme un hameau — et le bord se hérisse de dents. Elle ne court pas. Elle tombe dedans comme on descend une marche. La croûte se referme. Plus de cercle, plus de dents, plus de silhouette. Le sel est lisse jusqu'à l'île.",
+  },
+} as const;
 
 export const SCENES: Scene[] = [
   {
@@ -8037,6 +8114,10 @@ export const SCENES: Scene[] = [
       "La rive descend en gradins jusqu'à une plaine blanche qui ne finit pas. Ce sont des quais : anneaux d'amarrage rouillés, marches qui s'enfoncent dans le sel, une cloche qu'on sonnait pour appeler la barge. Le lac est parti. Ce qu'il reste à traverser, c'est son fond.",
       "Sous ta botte, le sel sonne creux. Plein jour, pas une ombre, et quelque part un cliquetis de plomb. Au loin, l'île tremble de chaleur — elle n'est plus une île. Sur le plus haut pieu, gravé au clou : « Bouge, il te mange. Reste, il te garde. »",
     ],
+    // LE DOS, garanti dès le premier écran de la zone (16/09) : on ne
+    // découvre pas le Ver par ouï-dire, on le voit passer avant d'avoir
+    // fait un pas sur la croûte. Sur son écran, avec son image.
+    apparition: { cle: VER_MANIFESTATIONS.dos.cle, texte: VER_MANIFESTATIONS.dos.texte, illustration: verImage("dos") },
     choices: [
       {
         id: "lire-les-pieux",
@@ -8279,6 +8360,11 @@ export const SCENES: Scene[] = [
       "La croûte se fend en sillages : de longues fissures qui partent du même point et filent vers l'île, comme une main posée à plat dont on ne verrait que les doigts. Le sel y est plus sombre, humide.",
       "Entre les sillages, des formes couchées. Des Gisants — des corps que le sel a pris à plat, bras le long, et qui ne sont pas tout à fait figés.",
     ],
+    // LA GUEULE, hors jet (16/09) : l'engloutissement d'une silhouette était
+    // enfermé derrière un jet d'INSTINCT réussi — un joueur sur dix le
+    // voyait. Il se joue maintenant à l'arrivée, sur son écran ; le jet
+    // d'en dessous ne gate plus que ce qu'on COMPREND de la vague.
+    apparition: { cle: VER_MANIFESTATIONS.gueule.cle, texte: VER_MANIFESTATIONS.gueule.texte, illustration: verImage("gueule") },
     choices: [
       {
         id: "suivre-un-sillage",
@@ -8291,18 +8377,25 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        // LE JET NE GATE QUE L'INFORMATION (16/09) : la silhouette engloutie
+        // est dans l'apparition, hors jet. Ce qu'on gagne ici, c'est de
+        // comprendre où il va — il tourne, il garde l'île, il ne chasse pas
+        // la rive. C'est le SAVOIR qui ouvre « Longer son cercle » au Passage.
+        // Acquis à la sélection : les quatre issues le disent, avec plus ou
+        // moins de certitude (même règle que le Percepteur).
         id: "regarder-l-ile",
-        label: "Regarder l'île, au bout des sillages",
+        label: "Suivre la vague du regard",
         nature: "exploration",
         observe: true,
+        grantsSavoir: "savoir_ver_cercle",
         risky: {
           stat: "INSTINCT",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Une silhouette marche là-bas, seule, droit vers l'île. La croûte se soulève derrière elle en vague lente — et se referme. Plus de silhouette. La vague tourne, et tu vois qu'elle ne va nulle part : elle décrit un cercle autour de l'île, comme un chien autour d'une table.",
-            "Une silhouette marche là-bas, seule, droit vers l'île. La croûte se soulève derrière elle en vague lente — et se referme. Il n'y a plus de silhouette. La vague continue, dans une autre direction.",
-            "Trop de blanc. Tu ne vois que le tremblement de l'île et, une fois, une ligne plus sombre qui passe dessous — ou c'est ton œil. Tu détournes le regard avant d'être sûr.",
-            "1 naturel. La lumière te brûle les yeux jusqu'à ce que tout soit blanc, l'île comprise. Quand tu y vois de nouveau, un des Gisants a tourné la tête vers toi. ♦ −2"
+            "20 naturel. Là où la silhouette a disparu, le sel bombe en vague lente, et la vague tourne. Elle décrit un cercle autour de l'île, toujours à la même distance, comme un chien autour d'une table. Il ne chasse pas la rive. Il garde l'île.",
+            "Là où elle a disparu, la croûte bombe encore, et la vague se déplace — pas vers toi, pas vers la rive. Elle tourne, à distance égale de l'île. Un cercle. Il garde quelque chose.",
+            "Tu cherches la vague. Trop de blanc. Une fois, une ligne plus sombre passe au large de l'île, de gauche à droite — puis de droite à gauche. Elle tourne, tu crois. Tu détournes les yeux avant d'être sûr.",
+            "1 naturel. La lumière te brûle les yeux jusqu'à ce que tout soit blanc. Quand tu y vois de nouveau, la vague est bien là, qui tourne autour de l'île — et un des Gisants a tourné la tête vers toi. ♦ −2"
           ),
         },
       },
@@ -8787,6 +8880,88 @@ export const SCENES: Scene[] = [
     ],
   },
   {
+    /* LE PASSAGE DU VER (16/09, validé par Patrick) — la FIN obligatoire de la
+       Croûte (`fin: ["passage-du-ver"]` dans lib/zones-salines.ts), donc
+       jouée quel que soit le tirage, avant les Bassins qu'ils soient écrits
+       ou non. C'est la quatrième image du Ver, la plus proche : dressé à
+       vingt pas, entre toi et la marche de pierre.
+       Un combat SANS combat (bible : « impossible à tuer, on ne fait que
+       survivre ») — aucun PV, une seule décision : « Bouge, il te mange.
+       Reste, il te garde. »
+         · Rester immobile — sûr, sans dé, le sel monte d'un palier ;
+         · Courir — COURAGE, et l'échec est la MORT (`mortel`), la première
+           mort hors combat de la zone : « dévoré sur le bon chemin » ;
+         · Longer son cercle — pour qui a compris au Champ des Sillages qu'il
+           garde l'île (`savoir_ver_cercle`) : même seuil, et l'échec est
+           hors de portée — la préparation change ce qu'on risque, jamais
+           les chances (lot 3 du 14/08). Elle PREND LA PLACE de Courir.
+       Marqué `combat` pour la bannière de rencontre et pour que la règle
+       « explorer prépare » (garde A-préparation) s'applique ici aussi. */
+    id: "passage-du-ver",
+    // ⚠️ À REPOINTER sur `assets/monstre_salines_ver_face_a.png` dès que
+    // l'image est déposée (le garde de câblage de la bible le réclamera —
+    // « sur le disque mais scene-data ne la sert nulle part »). Un chemin
+    // vers un fichier absent afficherait une image cassée ; une expression
+    // gardée (`verImage("face") ?? …`) serait invisible aux extracteurs du
+    // Graphe. Le repli d'environnement dit le bon endroit, pas le bon détail.
+    illustration: CROUTE_IMG,
+    combat: true,
+    foe: "ver-de-croute",
+    foeName: "Le Ver de croûte",
+    narration: [
+      "La Croûte finit sur une marche de pierre. Tu la vois — les gradins, l'eau plate des Bassins en contrebas — quand le sel, à vingt pas, se lève. Pas une vague : une colonne. Blanche de sel jusqu'à mi-hauteur, noire au-dessus, et qui monte encore.",
+      "Elle se penche vers toi. La gueule s'ouvre en cercle, et le cercle a des dents. Aucun œil. Il n'en a pas besoin : il t'écoute. Entre toi et la marche, il n'y a que lui.",
+    ],
+    choices: [
+      {
+        id: "rester-immobile",
+        label: "Rester immobile",
+        tags: ["citable"],
+        monteEncroute: true,
+        passive: {
+          consequence:
+            "Tu ne bouges pas. Pas même pour respirer autrement. La colonne se penche jusqu'à ce que son haleine de sel te couvre — puis elle attend. Longtemps. Le sel monte sur tes bottes pendant qu'il écoute ton silence. Il redescend enfin, lentement, sous la croûte : il n'a rien entendu. Tu repars quand le sel de tes manches craque.",
+        },
+      },
+      {
+        id: "courir",
+        label: "Courir vers la marche",
+        nature: "physique",
+        mortel: true,
+        masqueSi: { savoir: "savoir_ver_cercle" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Tu cours. Il plonge derrière toi et la croûte se soulève sous tes pieds, mais tu as déjà la marche — tu la franchis en l'air, et la vague s'écrase contre la pierre. Derrière, le sel se referme sur rien. Tu l'as battu à la course. Personne ne l'avait fait.",
+            "Tu cours. Le sel chante sous chaque pas et la colonne plonge — la croûte se soulève dans ton dos, te pousse, te jette sur la marche de pierre. Tu roules. Derrière toi, la vague s'arrête net au bord du sel, et redescend.",
+            "Tu cours. Le sel s'ouvre sous ton pied avant que tu aies fini ton troisième pas. Tu n'as pas mal. C'est ce que tu retiens : il ne fait pas mal. Il ferme.",
+            "1 naturel. Tu cours, et il n'a même pas à plonger : la croûte se dérobe et tu tombes vers la gueule qui t'attendait là, en bas. Le dernier bruit est celui de tes pas, qui continuent sans toi. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "longer-le-cercle",
+        label: "Longer son cercle",
+        nature: "physique",
+        requiresSavoir: "savoir_ver_cercle",
+        horsDePortee: true,
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          highStakes: true,
+          outcomes: outcomes(
+            "20 naturel. Il tourne autour de l'île. Tu ne vas pas vers l'île. Tu marches au pas, le long de son cercle, vers la marche — et la colonne te suit du haut, sans plonger. Elle redescend quand ton pied touche la pierre. Il t'a laissé passer : il ne laisse passer que ceux qui ne vont pas chez lui.",
+            "Tu marches — sans courir, sans t'arrêter — le long du cercle qu'il garde, jamais dedans. La colonne se penche, te suit, ne plonge pas. À la marche de pierre, tu sens la croûte trembler une dernière fois derrière toi. Puis rien.",
+            "Tu longes le cercle, mais tu le longes trop près : la croûte cède au bord et tu finis les vingt pas à quatre pattes, le sel jusqu'aux coudes. La colonne t'a regardé ramper jusqu'à la pierre. Elle n'a pas plongé. Tu ne sauras jamais pourquoi.",
+            "1 naturel. Tu longes — et il te suit si près que son haleine couche le sel devant toi. À la marche, tu te retournes : il est encore là, dressé, et il ne redescend pas. Il te regarde partir. Sans yeux. ♦ −2"
+          ),
+        },
+      },
+    ],
+  },
+  {
     /* FIN D'ÉTAPE NON ÉCRITE (13/09). Quand `prochainPas` impose l'entrée
        d'un environnement dont aucune scène n'existe (les Terrasses, pour
        l'instant), advance() sert cette scène TERMINALE à la place : la fin
@@ -8799,8 +8974,8 @@ export const SCENES: Scene[] = [
     terminal: true,
     finDemo: true,
     narration: [
-      "La Croûte s'arrête sur une marche de pierre. En contrebas, des terrasses en gradins, pleines d'une eau plate qui ne reflète rien. Les Bassins. Le sel y est plus doux, dit-on — et plus patient.",
-      "Tu as traversé la Croûte vivant. Derrière toi, le cliquetis de plomb s'est tu.",
+      "Tu descends la marche de pierre. En contrebas, des terrasses en gradins, pleines d'une eau plate qui ne reflète rien. Les Bassins. Le sel y est plus doux, dit-on — et plus patient.",
+      "Tu as traversé la Croûte vivant. Derrière toi, la croûte a cessé de bouger, et le cliquetis de plomb s'est tu.",
     ],
     choices: [{ id: "descendre-aux-bassins", label: "Descendre vers les Bassins" }],
   },
@@ -9353,6 +9528,7 @@ const LIEU_NOM: Record<string, string> = {
   descente: "La Descente",
   // ── Les Salines, la Croûte (13/09)
   "rive-haute": "La Rive haute",
+  "passage-du-ver": "Le Passage",
   file: "La File",
   "champ-des-sillages": "Le Champ des Sillages",
   "barge-echouee": "La Barge échouée",
@@ -11219,6 +11395,7 @@ const SALINES_APPROACH: Record<string, string> = {
   statue: "Vers un bras tendu",
   bouche: "Vers un trou dans la croûte",
   radeau: "Vers un radeau sans eau",
+  "passage-du-ver": "Vers la marche de pierre",
   terrasses: "Vers les gradins d'eau",
 };
 export function libelleOrientation(id: string): string {
@@ -11247,6 +11424,7 @@ export const SALINES_APPROACH_NARRATION: Record<string, string> = {
   statue: "Une forme blanche se détache sur le blanc, et son bras ne bouge pas quand tu approches.",
   bouche: "Le sel se creuse en pente douce vers un point sombre, et les objets posés autour grandissent.",
   radeau: "Un carré de planches à plat sur le sel, et une forme grise qui ne bouge pas dessus.",
+  "passage-du-ver": "La croûte remonte en pente douce, et au bout de la pente, une ligne de pierre grise : la fin du sel.",
   terrasses: "Le sel descend par marches. En bas, une eau plate qui ne reflète rien.",
 };
 export function approcheNarration(id: string): string | undefined {

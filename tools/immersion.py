@@ -551,6 +551,20 @@ def pools() -> list[dict]:
             out.append({"pool": f"salines tempête avant ({empreinte(t)})", "garde": {"village", "gens"}, "textes": [t]})
         t = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(2)))
         out.append({"pool": f"salines tempête après ({empreinte(t)})", "garde": {"village", "gens"}, "textes": [t]})
+    # LE VER DE CROÛTE (16/09) : les trois manifestations avant le Passage
+    # (dos à la Rive haute, sillage sur une Croisée, gueule au Champ). Garde
+    # `{village, gens}` comme le reste de la Croûte (les pieux, la barge) ;
+    # ce qu'on tient, c'est qu'aucune ne présuppose la lande — et qu'aucune
+    # ne montre un ŒIL ni le corps entier (règle d'écriture, vérifiée ici).
+    vm = re.search(r"export const VER_MANIFESTATIONS = \{(.*?)\n\} as const;", scene_src, re.S)
+    assert vm, "VER_MANIFESTATIONS introuvable dans scene-data.ts"
+    n_ver = 0
+    for m in re.finditer(r'\n  (\w+): \{\s*cle: "[^"]+",\s*texte:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', vm.group(1)):
+        t = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(2))).replace('\\"', '"')
+        assert not re.search(r"\b(œil|yeux)\b", t), f"VER_MANIFESTATIONS.{m.group(1)} montre un œil — jamais (règle du 16/09)"
+        out.append({"pool": f"salines ver {m.group(1)}", "garde": {"village", "gens"}, "textes": [t]})
+        n_ver += 1
+    assert n_ver == 3, f"VER_MANIFESTATIONS : {n_ver} textes lus, 3 attendus"
     # ⚠️ COMPTER ce qu'on extrait (règle du 10/08) : 7 arrivées, 7 ambiances,
     # 12 lignes du Geôlier en liaison, 18 sur le dé, 1 + 3 d'Encroûté,
     # la tempête de marche (2) + 1 tempête de scène × (avant + après) — 51

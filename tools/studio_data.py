@@ -897,7 +897,12 @@ def lire_choix(bloc: str) -> list[dict]:
                            ("troupeau", "troupeau"), ("poteau", "poteau"),
                            # LA CROÛTE (13/09) : « Monter sur le bœuf » saute un
                            # lieu de l'étape. Même piège que `sansNuit`.
-                           ("sauteEtape", "sauteEtape")):
+                           ("sauteEtape", "sauteEtape"),
+                           # LE PASSAGE DU VER (16/09) : un échec qui TUE quelle
+                           # que soit la santé, et l'immobilité qui fait monter
+                           # l'Encroûté — sans ces deux champs le Graphe montre
+                           # une fuite ordinaire et un choix sans prix.
+                           ("mortel", "mortel"), ("monteEncroute", "monteEncroute")):
             if booleen_de(c, champ):
                 ch[cle] = True
         # EXCLUSIVITÉ D'ÉCRAN (13/09, la barge) : deux options qui s'excluent
@@ -1187,6 +1192,17 @@ def lire_scenes() -> list[dict]:
                            ("finDemo", "finDemo")):
             if booleen_de(bloc, champ):
                 s[cle] = True
+        # L'APPARITION GARANTIE (le Ver, 16/09) : un paragraphe sur son écran,
+        # avec son image, servi à l'arrivée. Sans lui la fiche du Graphe
+        # cacherait le moment où l'on voit le Ver — c'est-à-dire le sujet.
+        ap = re.search(r"\n    apparition:\s*\{\s*cle:\s*VER_MANIFESTATIONS\.(\w+)\.cle", bloc)
+        if ap:
+            vm = re.search(r"export const VER_MANIFESTATIONS = \{(.*?)\n\} as const;", src, re.S)
+            mt = vm and re.search(rf'\n  {ap.group(1)}: \{{\s*cle: "([^"]+)",\s*texte:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', vm.group(1))
+            if mt:
+                s["apparition"] = {"cle": mt.group(1),
+                                   "texte": "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', mt.group(2))).replace('\\"', '"'),
+                                   "illustration": f"assets/monstre_salines_ver_{ap.group(1)}_a.png"}
         # LA TEMPÊTE DE SEL (Salines, 13/09) : la scène qui la porte, et le
         # texte servi une fois le sel balayé. Sans ce champ le Graphe ne
         # montrerait ni l'événement ni sa prose.

@@ -207,6 +207,43 @@ RENCONTRES = {
                   "leaning slightly toward the viewer"),
 }
 
+# ── LE VER DE CROÛTE (16/09 — décision Patrick : « c'est encore trop peu pour
+# le Ver, j'aimerais des images où on le voit vraiment »). Quatre images,
+# chacune plus près, et une vraie scène pour la dernière. Ça RENVERSE la
+# décision du 14/09 (« une chose lointaine qui n'est pas toi EST le Ver ») —
+# elle était de moi, et Patrick a raison : trois portes à franchir et une
+# chance sur dix de le voir, sans image, ce n'est pas un monstre, c'est une
+# rumeur. Ce qui reste de la règle : JAMAIS le corps entier, JAMAIS d'yeux.
+# Ce sont des PAYSAGES (composer_environnement) : le Ver y est la masse noire
+# qui porte le cadre, à l'échelle de la Croûte — pieux, barges ou marche de
+# pierre pour dire sa taille. Un portrait cadré serré en ferait un animal.
+# ⚠️ Aucun mot de caméra (garde MOTS_DE_CAMERA) : « towering above the crust »
+# dit la taille, pas le point de vue.
+VER = {
+    "dos": ("monstre_salines_ver_dos_a",
+            "far out on the flat white salt crust, between the last mooring post and the distant island, "
+            "a long ridged black back breaks up through the salt and travels along it like the spine of a whale, "
+            "ten times longer than the posts it passes, the crust lifting into a slow white wave along its length "
+            "and closing again behind it, the black mooring posts standing in the foreground as flat cut-outs for scale, "
+            "the sun a hard white disc in the black sky"),
+    "sillage": ("monstre_salines_ver_sillage_a",
+                "a fresh trench torn straight across the salt crust, as wide as a road, running from the far horizon "
+                "through the foreground and out of frame, its walls of overturned wet salt standing up in broken slabs "
+                "taller than a door, the floor of the trench dark and glistening, one small overturned wooden crate at "
+                "its lip for scale, the sun a hard white disc in the black sky"),
+    "gueule": ("monstre_salines_ver_gueule_a",
+               "far across the flat white salt crust the surface has opened into one perfect circle as wide as a village, "
+               "a ring of long black teeth standing up around its whole rim, a single small human silhouette toppling "
+               "inward at the edge of the ring, slabs of salt sliding into the darkness at the centre, tiny black "
+               "mooring posts along the bottom edge for scale, the sun a hard white disc in the black sky"),
+    "face": ("monstre_salines_ver_face_a",
+             "the head of an enormous eyeless worm reared straight up out of the salt crust twenty paces away, "
+             "a blunt ridged black column as wide as a tower towering above the crust and filling the frame from the "
+             "ground to the top edge, its mouth a dark circle ringed with long teeth, wet slabs of salt sliding off its "
+             "flanks, the crust around its base cracked into a star, a low step of grey stone at the far right for scale, "
+             "the sun a hard white disc in the black sky beside it"),
+}
+
 # LE VOCABULAIRE DES INVARIANTS, EN ANGLAIS — et rien de plus (rangé le 15/09).
 # ⚠️ Cette table n'entre PLUS dans aucun prompt : depuis « sujets courts,
 # invariants retirés », chaque sujet écrit ses invariants LUI-MÊME, au bon
@@ -295,6 +332,9 @@ CABLAGE = {
         "bouche-3": "scene_salines_bouche_a",
         "radeau": "scene_salines_radeau_a",
         "radeau-2": "monstre_salines_encroute_radeau_a",
+        # LE PASSAGE DU VER (16/09) : la fin obligatoire de la Croûte, sur la
+        # quatrième image du Ver, la plus proche.
+        "passage-du-ver": "monstre_salines_ver_face_a",
         # Le carton de fin d'étape n'est pas une scène illustrée.
         "fin-etape-non-ecrite": None,
     },
@@ -306,6 +346,12 @@ HORS_CABLAGE = {
     "monstre_salines_boeuf_de_sel_a": "issue de « remettre le battant et sonner », sur rive-haute-2",
     "monstre_salines_heron_a": "il s'envole dans une issue de radeau-2",
     "monstre_salines_encroute_a": "l'Encroûté générique — barge et ailleurs, au palier II",
+    # Les trois APPARITIONS du Ver (16/09) : servies sur leur propre écran par
+    # `Scene.apparition` (Rive haute, Champ des Sillages) et par le sillage
+    # d'une Croisée — pas l'image fixe d'une scène, donc hors de CABLAGE.
+    "monstre_salines_ver_dos_a": "apparition garantie à l'arrivée à la Rive haute (Scene.apparition)",
+    "monstre_salines_ver_sillage_a": "la deuxième Croisée de la Croûte (habillageSillage, Scene.tsx)",
+    "monstre_salines_ver_gueule_a": "apparition garantie à l'arrivée au Champ des Sillages (Scene.apparition)",
 }
 
 
@@ -449,7 +495,7 @@ def main() -> int:
     out.append("1. **Une image d'établissement par environnement**, qui sert de vue de marche et de fond de secours. "
                "**Chaque lieu joué a la sienne** (amendement Patrick du 14/09 : « je veux des images en plus pour "
                "chacune des scènes »), plus les **rencontres nommées** et les écrans qui regardent autre chose "
-               "qu'un paysage. Le Ver n'a jamais la sienne : « une chose lointaine qui n'est pas toi », c'est lui.")
+               "qu'un paysage. **Le Ver a les siennes depuis le 16/09** (dos, sillage, gueule, face — jamais le corps entier).")
     out.append("2. **Les trois invariants** vivent dans l'image d'**établissement** — c'est elle qui définit la zone. "
                "Ils sont RETIRÉS des images de lieu (14/09) : mesuré, ils coûtaient ~25 mots par prompt et étaient "
                "les premiers lâchés par le modèle. La cohésion tient par les valeurs et la trame, qui, elles, tiennent.")
@@ -465,10 +511,10 @@ def main() -> int:
     # ⚠️ Compte CALCULÉ, jamais écrit en dur : la première version annonçait
     # « 15 images » dans son en-tête, et ce chiffre serait devenu faux au
     # premier ajout sans que rien ne le signale.
-    out.append(f"**{len(ETABLISSEMENT) + len(OBLIGATOIRES) + len(LIEUX_JOUES) + len(AUTRES_ECRANS) + len(RENCONTRES)} images** : "
+    out.append(f"**{len(ETABLISSEMENT) + len(OBLIGATOIRES) + len(LIEUX_JOUES) + len(AUTRES_ECRANS) + len(RENCONTRES) + len(VER)} images** : "
                f"{len(ETABLISSEMENT)} établissements · {len(OBLIGATOIRES)} lieux obligatoires · "
                f"{len(LIEUX_JOUES)} lieux du pool · {len(AUTRES_ECRANS)} autres écrans · "
-               f"{len(RENCONTRES)} rencontres. Deux variantes par image, le pipeline "
+               f"{len(RENCONTRES)} rencontres · {len(VER)} vues du Ver. Deux variantes par image, le pipeline "
                "double le suffixe (`_a` → `_a_b`). Format `nom=prompt` pour `/leo-import`.\n")
     n = 0
     noms: list[tuple[str, str]] = []  # (nom de fichier, environnement)
@@ -536,6 +582,15 @@ def main() -> int:
             out.append(f"Ce que la bible dit : {C['note'].split('.')[0]}.\n")
             emettre(nom, composer_cadre(sujet, eid, CADRAGE_RENCONTRE), eid, sujet)
             n += 1
+        if eid == "croute":
+            out.append("\n### Le Ver de croûte — quatre images, chacune plus près (16/09)\n")
+            out.append("Des PAYSAGES : le Ver est la masse noire qui porte le cadre, à l'échelle de la Croûte. "
+                       "Jamais le corps entier, jamais d'yeux. Dos (Rive haute) · sillage (une Croisée) · gueule "
+                       "(Champ des Sillages, hors jet) · face (le Passage, fin de la Croûte).\n")
+            for k, (nom, sujet) in VER.items():
+                out.append(f"#### `{k}` — `{nom}`\n")
+                emettre(nom, composer_environnement(sujet, eid), eid, sujet)
+                n += 1
     out.append("\n## Les icônes d'objet\n")
     out.append("Servies dans la Besace et l'Inventaire, en 92 px. **Valeurs inverses de la Croûte** : "
                "l'objet est la zone claire, le fond l'aplat noir — c'est ce qui les rend lisibles en petit, "
@@ -549,7 +604,7 @@ def main() -> int:
         objets_emis.append((cle, nom))
 
     out.append("\n## Ce qui n'a PAS d'image, et pourquoi\n")
-    out.append("- **Le Ver de croûte** : jamais. Il est « la chose lointaine qui n'est pas toi » de l'établissement de la Croûte, et sous les pieds au Souffle.")
+    out.append("- **Le Ver de croûte en entier** : jamais. Quatre images le montrent PAR MORCEAUX et à l'échelle (16/09) — le dos, le sillage, la gueule, la face dressée. Le corps complet et les yeux n'existent pas ; sous les pieds au Souffle, il n'a pas d'image non plus.")
     out.append("- **Les lieux du pool des environnements PAS ENCORE ÉCRITS** : l'établissement de leur environnement, "
                "jusqu'à ce qu'ils soient écrits — un lieu prend son image quand son texte existe, sinon le prompt "
                "est une invention (règle du 14/09 : le sujet se prend dans la narration, mot à mot).")

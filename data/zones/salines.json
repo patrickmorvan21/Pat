@@ -41,8 +41,8 @@
     },
     "carte": null,
     "comptes_annonces": {
-      "lieux": 29,
-      "obligatoires": 6,
+      "lieux": 30,
+      "obligatoires": 7,
       "creatures": 16,
       "objets": 14,
       "fragments": 6,
@@ -75,6 +75,11 @@
         "le soleil de la Croûte est DANS le cadre, disque blanc franc dans le ciel noir — mais toujours AUCUNE ombre portée : « plein jour, pas une ombre » est dans la prose que le joueur lit (rive-haute, statue), l'image ne doit pas la contredire",
         "les 8 sujets de paysage de la Croûte réécrits autour d'une figure : l'étoile de fissures (établissement, champ des sillages), la potence-porte de la cloche (rive haute), les trois Cristallins au premier plan (file), la croix coque-mât (barge) et gaffe-radeau (radeau), la symétrie frontale (statue), le disque et son cercle d'offrandes (bouche) — deux plans « rails qui fuient vers l'horizon » sur trois sont supprimés",
         "les images ne se re-génèrent que sur décision de Patrick : les prompts sont livrés, la production reste chez lui (/leo-import)"
+      ],
+      "2026-09-16": [
+        "Le Ver de croûte SE VOIT : quatre images (dos / sillage / gueule / face), chacune plus près, et une vraie scène — le Passage — en fin obligatoire de la Croûte. Renverse « une chose lointaine qui n'est pas toi EST le Ver » (14/09).",
+        "Le jet d'INSTINCT du Champ des Sillages ne gate plus l'engloutissement (hors jet, garanti à l'arrivée) mais l'INFORMATION : il tourne, il garde l'île — le savoir qui ouvre « Longer son cercle » au Passage.",
+        "Au Passage : rester immobile = sûr, le sel monte d'un palier ; courir = l'échec est la mort (« dévoré sur le bon chemin »), première mort hors combat de la zone ; longer son cercle = même seuil, échec hors de portée."
       ]
     },
     "images": {
@@ -114,13 +119,15 @@
       ],
       "histoire": "C'est là que tout le monde attendait la barge, parfois des jours. Quand l'eau est partie, la file d'attente s'est mise à marcher sur le fond. Les premiers à traverser à pied ont tracé les sillages ; les premiers à s'arrêter sont devenus les premières statues. Le Ver était déjà là.",
       "entree": "rive_haute",
-      "fin": [],
+      "fin": [
+        "passage_du_ver"
+      ],
       "tirages": [
         3,
         4
       ],
       "image_etablissement_attendue": "scene_salines_croute_a",
-      "note_tirages": "Plancher de 4 lieux garantis par environnement (décision Patrick du 13/09, devenue un invariant de build : lieuxGarantis() dans lib/etages.ts). Pire cas = entrée + tirages min + fins."
+      "note_tirages": "Plancher de 4 lieux garantis par environnement (décision Patrick du 13/09, devenue un invariant de build : lieuxGarantis() dans lib/etages.ts). Pire cas = entrée + tirages min + fins. Fin obligatoire depuis le 16/09 : le Passage du Ver (entrée + 3 tirés + 1 fin = 5 au pire cas)."
     },
     {
       "id": "bassins",
@@ -426,6 +433,31 @@
         "recontextualisation": null
       },
       "illustration": "assets/scene_salines_radeau_a_a.png",
+      "portrait_requis": false
+    },
+    {
+      "id": "passage_du_ver",
+      "nom": "Le Passage",
+      "note": "fin obligatoire de la Croûte (décision Patrick 16/09) : la marche de pierre qui descend vers les Bassins, et le Ver dressé à vingt pas entre toi et elle. Une seule décision — « Bouge, il te mange. Reste, il te garde. » : rester immobile (le sel monte d'un palier), courir (l'échec est la mort, « dévoré sur le bon chemin »), ou longer son cercle pour qui a compris au Champ des Sillages qu'il garde l'île (échec hors de portée). Aucun PV : on ne le combat pas, on lui survit. Quatrième et dernière image du Ver, la plus proche.",
+      "environnement": "croute",
+      "role": "fin",
+      "statut": "obligatoire",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "fragments": [],
+      "minijeux": [],
+      "combats": [
+        "ver_de_croute"
+      ],
+      "rencontres": [],
+      "objets": [],
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": "assets/monstre_salines_ver_face_a.png",
       "portrait_requis": false
     },
     {
@@ -1309,14 +1341,16 @@
     {
       "id": "ver_de_croute",
       "nom": "Le Ver de croûte",
-      "note": "façon Dune. Imposant, impossible à tuer, on ne fait que survivre. Chasse ce qui bouge sur la croûte (vibrations). Rencontré plusieurs fois, jamais pareil : au loin en train d'engloutir une silhouette qui n'est pas toi ; sous les pieds aux Bassins (mini-jeu du Souffle) ; absent du Fossé. N'a jamais besoin de sa propre image : « une chose lointaine qui n'est pas toi » EST le Ver.",
+      "note": "façon Dune. Imposant, impossible à tuer, on ne fait que survivre. Chasse ce qui bouge sur la croûte (vibrations). Rencontré plusieurs fois, jamais pareil, et VU (décision Patrick 16/09, qui renverse le « n'a jamais besoin de sa propre image » du 14/09) : son dos qui perce la croûte au loin dès la Rive haute ; la tranchée fraîche de son sillage sur une Croisée ; sa gueule qui s'ouvre en cercle et engloutit une silhouette au Champ des Sillages (hors jet) ; dressé à vingt pas au Passage, la sortie de la Croûte. Sous les pieds aux Bassins (mini-jeu du Souffle) ; absent du Fossé. Quatre images, chacune plus près — jamais le corps entier, jamais d'yeux.",
       "lieu_attache": null,
       "lieux": [
+        "rive_haute",
         "champ_des_sillages",
         "passerelle_rompue",
-        "belvedere"
+        "belvedere",
+        "passage_du_ver"
       ],
-      "hostile": false,
+      "hostile": true,
       "histoire_bailli": true,
       "rarete": "commune",
       "textes": {
@@ -1324,8 +1358,14 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
-      "portrait_requis": false
+      "illustration": "assets/monstre_salines_ver_face_a.png",
+      "portrait_requis": false,
+      "illustrations": {
+        "dos": "assets/monstre_salines_ver_dos_a.png",
+        "sillage": "assets/monstre_salines_ver_sillage_a.png",
+        "gueule": "assets/monstre_salines_ver_gueule_a.png",
+        "face": "assets/monstre_salines_ver_face_a.png"
+      }
     },
     {
       "id": "grand_saunier",

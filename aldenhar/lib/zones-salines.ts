@@ -35,9 +35,14 @@ export const SALINES_ENVIRONNEMENTS: Environnement[] = [
     // [3, 4] (décision Patrick : « j'aimerais qu'on joue au minimum 4 lieux
     // par environnement »). Le plancher est un INVARIANT DE BUILD —
     // `lieuxGarantis` dans lib/etages.ts, vérifié par verifier_etages.mjs :
-    // entrée (1) + tirages min (3) + fins (0) = 4 au pire cas. Ne pas
+    // entrée (1) + tirages min (3) + fins (1) = 5 au pire cas. Ne pas
     // redescendre le minimum sans changer le plancher, le build refuserait.
     tirages: [3, 4],
+    // LE PASSAGE DU VER (16/09, validé par Patrick) : la sortie de la Croûte
+    // est une SCÈNE imposée — le Ver dressé entre toi et les Bassins —,
+    // jouée quel que soit le tirage, et avant l'étape suivante qu'elle soit
+    // écrite ou non. Le carton « à venir » n'arrive qu'après.
+    fin: ["passage-du-ver"],
   },
   {
     id: "bassins",

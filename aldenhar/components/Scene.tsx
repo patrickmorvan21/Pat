@@ -29,6 +29,8 @@ import {
   SALINES_ENCROUTE_GEOLIER,
   SALINES_ENCROUTE_LIGNES,
   TEMPETE_MARCHE,
+  VER_MANIFESTATIONS,
+  verImage,
   estUnLieu,
   SOUPCON_PALIERS,
   SOUPCON_CRAIE,
@@ -626,6 +628,18 @@ function liaisonCtx(run: RunState, from: string | undefined): LiaisonCtx {
  * (terminal), une scène de liaison (reconstruite depuis ses 2 options), ou un
  * lieu/rencontre du pool. Pure : sert au rendu ET à la reprise de run.
  */
+/** LE SILLAGE DU VER (16/09) : la tranchée fraîche PREND LA PLACE de
+    l'ambiance de la Croisée (jamais en plus — le budget d'un écran de marche
+    ne bouge pas), et la liaison porte son image si elle est déposée. Appelée
+    à l'aller (advance) et à la reprise (sceneFromTrav) : le même écran. */
+function habillageSillage(s: SceneType): SceneType {
+  return {
+    ...s,
+    narration: [VER_MANIFESTATIONS.sillage.texte, ...s.narration.slice(1)],
+    illustration: verImage("sillage") ?? s.illustration,
+  };
+}
+
 function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
   /**
    * ⚠️ `trav.done` a longtemps porté DEUX sens : « la traversée est finie »
@@ -660,7 +674,8 @@ function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
       !(run?.tempetesJouees ?? []).includes(TEMPETE_MARCHE.cle)
         ? { ...base, tempete: TEMPETE_MARCHE }
         : base;
-    return t.sortieHameau ? habillageSortie(avecTempete, t.seed) : avecTempete;
+    const avecSillage = t.verSillage ? habillageSillage(avecTempete) : avecTempete;
+    return t.sortieHameau ? habillageSortie(avecSillage, t.seed) : avecSillage;
   }
   return resoudre(t.current, run) ?? sceneById(ENTRY_SCENE)!;
 }
@@ -2027,6 +2042,17 @@ export default function Scene() {
         { id: nextId(), kind: "day", day: run.day },
         ...openingNarration.map((text): FeedEntry => ({ id: nextId(), kind: "narration", text })),
       ];
+      /* L'APPARITION GARANTIE du lieu d'ouverture (le dos du Ver à la Rive
+         haute, 16/09) : sur SON écran (frontière imposée après le dernier
+         paragraphe), avec SON image — visée par frontière comme le Sceau,
+         jamais « à la prochaine venue ». Une fois par vie. */
+      let apparitionOuverture: { apres: string; img?: string } | null = null;
+      if (opening.apparition && vu(run.vus, opening.apparition.cle) === 0) {
+        const avant = seeded[seeded.length - 1];
+        seeded.push({ id: nextId(), kind: "narration", text: opening.apparition.texte });
+        run.vus = noter(run.vus, opening.apparition.cle);
+        apparitionOuverture = { apres: avant.id, img: opening.apparition.illustration };
+      }
       // PREMIÈRE APPARITION DU DÉ. Elle se disait « si le Seuil a été
       // traversé » — le Seuil n'existe plus (V2 du 06/09). Elle se dit
       // désormais à la toute première vie, juste après le pacte signé :
@@ -2040,7 +2066,20 @@ export default function Scene() {
       // couper l'ouverture rituelle, et il ne reviendra jamais (`=== 3`).
       const geolierSceau = zoneLandes ? ligneSceauGeolier(niveauDuSceau) : null;
       if (geolierSceau) seeded.push({ id: nextId(), kind: "jailer", text: geolierSceau });
-      const groupes = decouperEnEcrans(seeded);
+      const groupes = decouperEnEcrans(
+        seeded,
+        apparitionOuverture ? new Set([apparitionOuverture.apres]) : undefined
+      );
+      if (apparitionOuverture?.img) {
+        const fins = groupes.map((g) => g[g.length - 1]?.id ?? "");
+        const k = fins.indexOf(apparitionOuverture.apres);
+        if (k >= 0 && k < groupes.length - 1) {
+          const d: (string | null)[] = [];
+          while (d.length <= k) d.push(null);
+          d[k] = apparitionOuverture.img;
+          imagesDifferees.current = d;
+        }
+      }
       setBeats(groupes[0]);
       setBeatsSuite(groupes.slice(1));
       revealQueueRef.current = groupes[0]
@@ -2359,6 +2398,7 @@ export default function Scene() {
     // Le drapeau décrit la liaison COURANTE : tout nouvel écran le recalcule
     // (les deux branches de sortie le reposent à true).
     trav.sortieHameau = false;
+    trav.verSillage = false;
     // Une transition qui QUITTE une liaison ne fait pas vieillir les états.
     const leavingLiaison = Boolean(scene.liaison);
     // ═══ L'ÉLÉMENT-SURPRISE (catalogue 6/08) : armé UNE fois par run, au
@@ -2791,6 +2831,20 @@ export default function Scene() {
         !(runRef.current?.tempetesJouees ?? []).includes(TEMPETE_MARCHE.cle)
       ) {
         nextScene = { ...nextScene, tempete: TEMPETE_MARCHE };
+      }
+      // LE SILLAGE DU VER (16/09) : sur une Croisée de la Croûte qui n'est
+      // plus la première (`tires >= 1` — un lieu du pool déjà tiré), la
+      // tranchée fraîche remplace l'ambiance, avec son image. Une fois par
+      // vie ; porté par `trav` pour la reprise.
+      if (
+        (runRef.current?.zone ?? "landes") === "salines" &&
+        trav.etage?.index === 0 &&
+        (trav.etage?.tires ?? 0) >= 1 &&
+        vu(runRef.current?.vus, VER_MANIFESTATIONS.sillage.cle) === 0
+      ) {
+        nextScene = habillageSillage(nextScene);
+        trav.verSillage = true;
+        persist((run) => { run.vus = noter(run.vus, VER_MANIFESTATIONS.sillage.cle); });
       }
       trav.liaisonOpts = pair;
       trav.routeFermee = o.length === 1;
@@ -3600,6 +3654,23 @@ export default function Scene() {
        donc lui laisser sa place et son image, et commencer au suivant. */
     const idAvantNarration = entries[entries.length - 1]?.id ?? null;
     entries.push(...entreesNarration);
+    /* L'APPARITION GARANTIE (la gueule du Ver au Champ des Sillages, 16/09) :
+       juste après la narration du lieu, sur SON écran — frontière imposée
+       après le dernier paragraphe, image visée par frontière (comme le
+       Sceau). Ce qui vient ensuite (rappels, échos) se lit sur cet écran-là.
+       Une fois par vie : la clé est notée à la pose. */
+    let apparitionCoupure: string | null = null;
+    let apparitionDiffere: { apres: string; img: string } | null = null;
+    if (nextScene.apparition && vu(runRef.current?.vus, nextScene.apparition.cle) === 0) {
+      const app = nextScene.apparition;
+      const avant = entries[entries.length - 1];
+      entries.push({ id: nextId(), kind: "narration", text: app.texte });
+      persist((run) => { run.vus = noter(run.vus, app.cle); });
+      if (avant) {
+        apparitionCoupure = avant.id;
+        if (app.illustration) apparitionDiffere = { apres: avant.id, img: app.illustration };
+      }
+    }
     // L'écho d'un objet-promesse (voir ECHOS_OBJET) : ce que tu portes te
     // rattrape là où ça compte, une fois par scène et par objet.
     for (const e of ECHOS_OBJET[nextScene.id] ?? []) {
@@ -4270,6 +4341,7 @@ export default function Scene() {
       // première venue : la Descente a d'autres frontières avant elle.
       coupures.add(sceauDiffere.apres);
     }
+    if (apparitionCoupure) coupures.add(apparitionCoupure);
     // L'ÉLÉMENT OBSERVÉ passe devant tout le reste (conversion des points
     // d'intérêt, 13/08) : on vient de s'approcher de quelque chose, c'est ÇA
     // qu'on regarde pendant qu'on lit ce qu'on y trouve. L'image du lieu (ou
@@ -4543,7 +4615,7 @@ export default function Scene() {
     }
     showScreen(entries, img, coupures);
     // Les bascules différées survivent à showScreen (qui purge celles d'avant).
-    if (differees.length || sceauDiffere) {
+    if (differees.length || sceauDiffere || apparitionDiffere) {
       // Une bascule par FRONTIÈRE d'écran (correctif Patrick 31/08 : l'image
       // ne doit jamais changer au milieu d'un texte). S'il y a moins de
       // frontières que de bascules, celles qui n'en ont pas s'appliquent tout
@@ -4566,6 +4638,18 @@ export default function Scene() {
           differables[k] = sceauDiffere.img;
         } else {
           setImage(sceauDiffere.img);
+          setImageKind("scene");
+        }
+      }
+      if (apparitionDiffere) {
+        // Même visée par frontière que le Sceau : l'image du Ver tombe sur
+        // l'écran de son paragraphe, jamais un tap plus tôt.
+        const k = groupesFinsRef.current.indexOf(apparitionDiffere.apres);
+        if (k >= 0 && k < frontieres) {
+          while (differables.length <= k) differables.push(null);
+          differables[k] = apparitionDiffere.img;
+        } else {
+          setImage(apparitionDiffere.img);
           setImageKind("scene");
         }
       }
@@ -5091,7 +5175,7 @@ export default function Scene() {
     // L'ENCROÛTÉ MONTE quand on RESTE (Salines) : chaque action qui ne quitte
     // pas le lieu prend un cran de sel — « s'arrêter attire le sel ». Jamais
     // un chiffre : les CTA le montrent, le Geôlier le dit au palier III.
-    if (reste && (runRef.current?.zone ?? "landes") === "salines") {
+    if ((reste || choice.monteEncroute) && (runRef.current?.zone ?? "landes") === "salines") {
       const apres = Math.min(3, (runRef.current?.encroute ?? 0) + 1);
       persist((run) => { run.encroute = apres; });
       setEncrouteMirror(apres);
@@ -5562,7 +5646,9 @@ export default function Scene() {
         highStakes: choice.risky.highStakes,
         fatalCheck: (tier) => {
           if (!tierIsFail(tier)) return false;
-          if (isTrial) return true;
+          // Le procès et le Passage du Ver (`mortel`) tuent sur tout échec,
+          // quelle que soit la santé : le dé doit l'annoncer.
+          if (isTrial || choice.mortel) return true;
           // Même source de vérité que la résolution : un échec social ou
           // d'exploration ne coûte pas de santé, donc il ne peut pas tuer —
           // et le dé ne doit surtout pas annoncer MORT dans ce cas. La borne
@@ -6229,6 +6315,31 @@ export default function Scene() {
             // sans aucun combat, purement sociale, traitée comme toutes les
             // autres (relique + fragment + épitaphe). Le hameau s'en souvient
             // par-delà les runs (fixations).
+            // LA MORT PAR LE VER (16/09) : `Choice.mortel` — un échec tue,
+            // quelle que soit la santé, comme la fixation. Cause au Registre :
+            // « dévoré sur le bon chemin » (la bible des Salines). Même porte
+            // que les autres morts : relique, fragment, épitaphe = la prose.
+            if (chosen?.mortel && tierIsFail(tier)) {
+              const epitaph = proseDuJet(outcome.text);
+              const cause = "dévoré sur le bon chemin";
+              const firstDeath = loadMemory().deaths === 0;
+              const porteeNom =
+                reliquesPortees(loadMemory()).map((p) => p.relic.name).join(" \u00b7 ") || null;
+              const relic = recordDeath({
+                heroName: run.heroName,
+                days: run.day,
+                franchis: run.lieuxEngages ?? 0,
+                cause,
+                place: scene.id,
+                lieu: scene.id.replace(/-\d+$/, ""),
+                killer: { entity: scene.foe ?? "ver-de-croute", label: scene.foeName ?? "le Ver de croûte" },
+              });
+              const dead = { epitaph, day: run.day, bilan: bilanDeMort(run, porteeNom), relic,
+                heroName: run.heroName, cause, firstDeath };
+              resetRun();
+              setDeath(dead);
+              return;
+            }
             if (scene.fixationTrial && tierIsFail(tier)) {
               const epitaph = proseDuJet(outcome.text);
               const firstDeath = loadMemory().deaths === 0;

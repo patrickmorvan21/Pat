@@ -147,6 +147,11 @@ export type TraversalState = {
       rechargé en bloc par `loadRun` (pas champ par champ), un optionnel neuf
       survit sans migration. */
   sortieHameau?: boolean;
+  /** LE SILLAGE DU VER (Salines, 16/09) : la liaison courante porte la
+      tranchée fraîche à la place de son ambiance, avec son image. Porté par
+      `trav` pour que la reprise rebâtisse le MÊME écran ; remis à faux à
+      chaque nouvel écran, comme `sortieHameau`. */
+  verSillage?: boolean;
   /** Radicaux de lieu déjà crédités dans `lieuxEngages` cette traversée.
       Empêche un lieu à rencontre optionnelle de compter trois fois — voir
       le docblock de `RunState.lieuxEngages`. */
