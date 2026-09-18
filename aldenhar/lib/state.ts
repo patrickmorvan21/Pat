@@ -152,6 +152,13 @@ export type TraversalState = {
       `trav` pour que la reprise rebâtisse le MÊME écran ; remis à faux à
       chaque nouvel écran, comme `sortieHameau`. */
   verSillage?: boolean;
+  /** LE VER SOUS LES PIEDS (les Bassins, 16/09) : `verAppele` est posé par
+      un choix qui appelle le Ver (le grincement de la Noria, le raccourci
+      de la Guérite) ; la Croisée suivante le consomme et pose `verDessous`,
+      qui habille CETTE liaison — la croûte qui bombe — et se rebâtit à la
+      reprise comme `verSillage`. Jamais les deux à la fois. */
+  verAppele?: boolean;
+  verDessous?: boolean;
   /** Radicaux de lieu déjà crédités dans `lieuxEngages` cette traversée.
       Empêche un lieu à rencontre optionnelle de compter trois fois — voir
       le docblock de `RunState.lieuxEngages`. */
@@ -529,6 +536,30 @@ export type RunState = {
   /** Les scènes dont la tempête de sel a déjà été balayée cette vie. */
   tempetesJouees?: string[];
   /**
+   * LA SOIF (les Bassins, 16/09) — le Besoin de zone de la bible : « monte
+   * par scène, jamais en temps réel. Haute : un mot sur trois dans les choix
+   * est remplacé par un bloc de pixels blancs. » Palier 0..3, monté d'un cran
+   * tous les DEUX lieux atteints à partir des Bassins (`soifPas` compte les
+   * lieux entre deux crans ; la Gourde double, quand elle existera, doublera
+   * la cadence). Elle ne modifie AUCUN jet et ne tue jamais : elle se LIT sur
+   * les CTA (les mots qui blanchissent), elle se dit une fois par palier, et
+   * au palier III le corps paie un peu à chaque lieu. Se soulage en buvant
+   * (`Choice.soif` négatif). Remise à zéro en entrant dans une zone.
+   */
+  soif?: number;
+  soifPas?: number;
+  /**
+   * LA FIXATION DES DÉCLARÉS (le Bassin des Déclarés, 16/09) — l'exception
+   * NOMMÉE à la doctrine « jamais un bonus de jet » : toucher la silhouette
+   * qui fait le geste de ta dominante fixe le héros dans ce geste jusqu'à la
+   * fin de la zone. Les jets sur la stat forte sont plus faciles d'un cran,
+   * ceux sur la stat faible plus durs d'un cran. C'est la Fixation elle-même
+   * (celle que le village des Landes pratique à la corde), pas une
+   * récompense — et c'est pourquoi c'est le seul lieu du jeu qui touche un
+   * seuil. Remise à null en entrant dans une zone.
+   */
+  fixationDeclaree?: { forte: string; faible: string } | null;
+  /**
    * Chapitre garanti de la traversée (chantier 2 du 23/07) : id d'un chapitre
    * de `LANDES_CHAPTERS` + stade (0 = pas amorcé, 1 = amorcé, 2 = développé,
    * 3 = résolu). Tiré au début d'une run neuve (Scene, avec la mémoire du
@@ -673,6 +704,9 @@ function fresh(): RunState {
     zonesFranchies: [],
     encroute: 0,
     tempetesJouees: [],
+    soif: 0,
+    soifPas: 0,
+    fixationDeclaree: null,
     chapter: null,
     soupcon: 0,
     soupconSeen: 0,
@@ -748,6 +782,16 @@ export function loadRun(): RunState {
             zonesFranchies: Array.isArray(p.zonesFranchies) ? p.zonesFranchies : [],
             encroute: typeof p.encroute === "number" ? p.encroute : 0,
             tempetesJouees: Array.isArray(p.tempetesJouees) ? p.tempetesJouees : [],
+            // La Soif et la Fixation des Déclarés (16/09) : une sauvegarde
+            // d'avant n'en a pas — ajoutés DANS LE MÊME GESTE que le type
+            // (la règle de la reconstruction champ par champ).
+            soif: typeof p.soif === "number" ? p.soif : 0,
+            soifPas: typeof p.soifPas === "number" ? p.soifPas : 0,
+            fixationDeclaree:
+              p.fixationDeclaree && typeof p.fixationDeclaree === "object" &&
+              typeof p.fixationDeclaree.forte === "string" && typeof p.fixationDeclaree.faible === "string"
+                ? { forte: p.fixationDeclaree.forte, faible: p.fixationDeclaree.faible }
+                : null,
             // Chapitre : null pour les runs d'avant le 24/07 — Scene en tire un
             // à la volée (l'amorce jouera à la prochaine liaison).
             chapter: p.chapter && typeof p.chapter.id === "string" ? p.chapter : null,
@@ -925,6 +969,9 @@ export function demarrerZone(run: RunState, vers: ZoneDef): void {
   run.chapter = null;
   run.encroute = 0;
   run.tempetesJouees = [];
+  run.soif = 0;
+  run.soifPas = 0;
+  run.fixationDeclaree = null;
   // Graine de la zone : déterministe par vie (la reprise rejoue le même
   // tirage d'étape), différente d'une vie à l'autre.
   const graine = (run.step + 1) * 7919 + run.day * 31;

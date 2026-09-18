@@ -53,6 +53,16 @@ ETABLISSEMENT = {
 
 # ── LES SIX LIEUX OBLIGATOIRES (une image dédiée chacun)
 OBLIGATOIRES = {
+    # LES BASSINS (16/09) — l'entrée obligatoire. F2 y est garanti PAR
+    # L'IMAGE : le héron décolle du bassin d'en bas, l'Encroûté du haut lève
+    # la main. L'image d'établissement des Bassins la sert en attendant.
+    "terrasses": ("three dry salt-evaporation terraces descending in steps toward the horizon, each held by a "
+                  "low dry-stone wall, the nearest wall cutting across the near ground as a hard black band; rows "
+                  "of lying human figures crusted in salt along the foot of each wall like fallen statues, a few "
+                  "fist-sized lumps of salt scattered between them; in the lowest basin, far off, one immense "
+                  "wading bird lifting off with wings spread, and on the top terrace under a plank awning a "
+                  "hooded seated figure raising one white hand; the first long shadows of the zone stretch "
+                  "behind the walls, a hard white sun disc low in the black sky"),
     "rive_haute": ("the old boat quay of a vanished lake: a heavy black timber gallows carrying a bronze bell the "
                    "size of a man, standing over the salt like a doorway that frames the whole picture; through it, "
                    "stone steps descend in tiers and sink into a blazing white flat running to a tiny black island, "
@@ -92,6 +102,50 @@ OBLIGATOIRES = {
 # lib/scene-data.ts : un prompt écrit sans le texte sous les yeux produit
 # exactement les décalages image↔texte qu'on passe notre temps à réparer.
 LIEUX_JOUES = {
+    # LES BASSINS (16/09) — chaque lieu a son établissement ; en attendant,
+    # tous servent la vue des terrasses (`BASSINS_IMG`), signalé sur place.
+    "passerelle_rompue": ("bassins", "scene_salines_passerelle_a",
+             "a narrow wooden footbridge on tall pilings crossing an empty salt basin, the planks stopping "
+             "dead a third of the way across and the next ones hanging broken into the void, and below the gap "
+             "a fresh trench torn through the basin floor with its walls of overturned salt; to the left a "
+             "second basin filled to the brim with fist-sized lumps of salt packed like eggs; the pilings and "
+             "planks as hard black shapes against the blazing white, a hard white sun disc in the black sky"),
+    "perchoir_du_heron": ("bassins", "scene_salines_perchoir_heron_a",
+             "a round salt basin deeper than the others, dry to a single puddle of brine at its centre, and "
+             "standing in the puddle on one leg an immense wading bird taller than a man, white, motionless, "
+             "its long beak pointed at the salt beside it; around the rim of the basin lying human figures "
+             "crusted in salt, all their heads turned toward the bird; the bird and the rim walls as hard "
+             "black cut-outs, a hard white sun disc in the black sky"),
+    "bassin_des_lechards": ("bassins", "scene_salines_lechards_a",
+             "a wide flat salt basin, and a small herd of gaunt long-legged beasts with short grey coats "
+             "standing in it, all their heads raised at once toward the viewer, the nearest one stretching "
+             "its neck forward; low dry-stone walls in tiers behind them, one dark damp patch of salt at "
+             "the basin floor where they have scraped; the beasts as hard black shapes, a hard white sun "
+             "disc in the black sky"),
+    "bassin_des_declares": ("bassins", "scene_salines_declares_a",
+             "a salt basin where the crusted human statues are STANDING, a ring of them, each frozen in a "
+             "gesture — one with a fist raised, one with a finger on its lips, one with its head bent to the "
+             "salt, one holding out an open palm — seen from just outside the ring so the nearest two frame "
+             "the picture as black cut-outs, the basin walls in tiers behind, a hard white sun disc low in "
+             "the black sky throwing long shadows from each figure"),
+    "cuve_fendue": ("bassins", "scene_salines_cuve_fendue_a",
+             "a great stone vat as tall as a man standing at the floor of a salt basin, split from top to "
+             "bottom by a crack, its body made of a score of broken shards held together by crusted salt, a "
+             "thin glint of brine visible at the bottom through the crack; the salt around it trampled flat, "
+             "and lying along its base several crusted human figures with their faces turned to the crack; "
+             "the vat as a hard black mass, a hard white sun disc in the black sky"),
+    "guerite": ("bassins", "scene_salines_guerite_a",
+             "a small plank hut at the edge of a salt basin, the only thing standing for miles that is not "
+             "salt, with a real roof and a door; on its threshold a seated hooded figure crusted white to the "
+             "neck, watching the viewer approach; terraced basin walls descending behind, and in the lowest "
+             "basin far below a wading bird standing on one leg; the hut and the figure as hard black shapes, "
+             "a hard white sun disc low in the black sky"),
+    "noria": ("bassins", "scene_salines_noria_a",
+             "a great bucket wheel taller than three men standing at the edge of a dry canal, frozen solid in "
+             "crusted salt up to its axle, a square socket on the axle with an iron crank still seated in it; "
+             "the dry canal running dead straight between two low stone walls toward the horizon, cutting "
+             "across every basin; the wheel as a hard black disc against the blazing white, a hard white sun "
+             "disc in the black sky"),
     "file": ("croute", "scene_salines_file_a",
              "three human figures of salt caught in mid-stride, all facing the same way, standing as tall "
              "black cut-outs across the near ground; between and behind them a line of flat stepping stones "
@@ -137,6 +191,14 @@ LIEUX_JOUES = {
 # et n'ajoute PAS les trois invariants : des rails qui sortent du sel dans une
 # macro d'inscription, ça n'a pas de sens.
 AUTRES_ECRANS = {
+    # LE FOND DU PUZZLE (Bassins, 16/09) : le moteur `assemble` découpe cette
+    # image en tessons. Servie par Scene.tsx (`minijeu_cuve_fendue_a`), pas
+    # par une scène — voir HORS_CABLAGE.
+    "cuve-fendue-3": ("bassins", "minijeu_cuve_fendue_a", "detail",
+             "the split stone vat filling the whole frame, seen straight on from a step away: its body a "
+             "score of broken shards of grey stone held together by crusted white salt in the joints, the "
+             "central crack running top to bottom, a thin glint of brine at the very bottom, every shard "
+             "edge sharp and readable"),
     "barge-echouee-2": ("croute", "scene_salines_barge_pont_a", "sur_place",
              "standing on the deck of a beached barge: a small aft cabin with a padlocked chest inside it, "
              "and at your feet a hatch in the deck planks nailed shut, the salt-crusted man sitting to one "
@@ -158,6 +220,19 @@ AUTRES_ECRANS = {
 # style_image le 15/09 : sans appelant, et contradictoire avec sa propre queue
 # de style — le garde `contradictions()` l'a montré.
 RENCONTRES = {
+    # LES BASSINS (16/09)
+    "vermisseaux": ("bassins", "monstre_salines_vermisseaux_a",
+                    "dozens of pale blind worms as long as a forearm rising out of the salt crust of a basin "
+                    "floor in coils, mouths open and eyeless, the nearest ones rearing toward the viewer, the salt "
+                    "heaving in low ridges where more are coming up, the terrace wall as a black band behind"),
+    "sauteurs_de_saumure": ("bassins", "monstre_salines_sauteurs_a",
+                    "a pack of long-legged crustaceans the size of dogs with salt-white carapaces and eyes on "
+                    "stalks, crouched in a half-ring in front of a split stone vat, two of them caught mid-leap "
+                    "toward the viewer with claws open, the salt around them pocked with round burrows"),
+    "lechards": ("bassins", "monstre_salines_lechards_a",
+                 "a gaunt long-legged beast with a short grey coat and a long neck, stretching its head "
+                 "toward the viewer to lick an outstretched wrist, its ribs showing, three more of the herd "
+                 "standing just behind with their heads up, on a wide flat salt basin"),
     "percepteur": ("croute", "monstre_salines_percepteur_a",
                    "a tall gaunt man bent under the weight of hundreds of flat lead tokens pressed into his flesh by "
                    "salt scales from skull to hands so that no skin shows, hooded in coarse wool, treading in place, "
@@ -220,6 +295,13 @@ RENCONTRES = {
 # ⚠️ Aucun mot de caméra (garde MOTS_DE_CAMERA) : « towering above the crust »
 # dit la taille, pas le point de vue.
 VER = {
+    # LES BASSINS (16/09) — DESSOUS : il passe sous la marche de qui l'a appelé.
+    "dessous": ("monstre_salines_ver_dessous_a",
+                "seen from the walker's own feet on the floor of a terraced salt basin: the crust directly ahead "
+                "heaving up into a long low ridge that runs away from the viewer along the line of the path, "
+                "salt slabs tilting up along its spine and sliding back, a dry-stone terrace wall to one side "
+                "as a black band, one small overturned wooden bucket in the near ground for scale, a hard white "
+                "sun disc low in the black sky and the ridge's shadow lying long across the salt"),
     "dos": ("monstre_salines_ver_dos_a",
             "far out on the flat white salt crust, between the last mooring post and the distant island, "
             "a long ridged black back breaks up through the salt and travels along it like the spine of a whale, "
@@ -294,6 +376,16 @@ INVARIANTS_EN = {
 # sur fond noir partout dans le jeu, parce qu'elle se lit dans une case de
 # 92 px (voir le docblock de `composer_objet`).
 OBJETS = {
+    # LES BASSINS (16/09)
+    "sel-qui-garde": ("objet_salines_sel_qui_garde_a",
+        "a single hard white lump of crusted salt the size of a fist, dense and smooth, one corner bitten "
+        "off and showing tooth marks, a faint damp sheen on the broken face"),
+    "plume-du-heron": ("objet_salines_plume_heron_a",
+        "a single enormous wading-bird feather longer than a forearm, stiff and white as if made of salt, "
+        "its barbs fused together, the quill end darkened"),
+    "manivelle-passeurs": ("objet_salines_manivelle_passeurs_a",
+        "an iron hand crank with a square head, the bar bent at a right angle, its wooden grip worn hollow "
+        "by hands that always turned it the same way, salt crusted in the square socket end"),
     "battant-cloche": ("objet_salines_battant_cloche_a",
         "a heavy lead bell clapper, a blunt teardrop of metal, hanging from a short strap of leather "
         "gone stiff and white with dried salt, the strap's cut end frayed where it was pulled off its pin"),
@@ -343,6 +435,28 @@ CABLAGE = {
         # Le carton de fin d'étape n'est pas une scène illustrée.
         "fin-etape-non-ecrite": None,
     },
+    # LES BASSINS (16/09) — ce que chaque écran DOIT servir une fois l'image
+    # déposée. Tant qu'elle ne l'est pas, l'écran sert `BASSINS_IMG` (les
+    # terrasses) et le garde ci-dessous le tolère ; dès que le fichier est
+    # sur le disque, il réclame le repointage.
+    "bassins": {
+        "terrasses": "scene_salines_terrasses_a",
+        "terrasses-2": "monstre_salines_vermisseaux_a",
+        "passerelle-rompue": "scene_salines_passerelle_a",
+        "passerelle-rompue-2": "monstre_salines_ver_dessous_a",
+        "perchoir-du-heron": "scene_salines_perchoir_heron_a",
+        "perchoir-du-heron-2": "scene_salines_perchoir_heron_a",
+        "bassin-des-lechards": "monstre_salines_lechards_a",
+        "bassin-des-lechards-2": "scene_salines_lechards_a",
+        "bassin-des-declares": "scene_salines_declares_a",
+        "cuve-fendue": "scene_salines_cuve_fendue_a",
+        "cuve-fendue-2": "monstre_salines_sauteurs_a",
+        "cuve-fendue-3": "scene_salines_cuve_fendue_a",
+        "noria": "scene_salines_noria_a",
+        "noria-2": "monstre_salines_sauteurs_a",
+        "guerite": "scene_salines_guerite_a",
+        "guerite-2": "scene_salines_guerite_a",
+    },
 }
 
 # Images de la zone qui n'ont pas d'écran fixe, et pourquoi.
@@ -357,6 +471,9 @@ HORS_CABLAGE = {
     "monstre_salines_ver_dos_a": "apparition garantie à l'arrivée à la Rive haute (Scene.apparition)",
     "monstre_salines_ver_sillage_a": "la deuxième Croisée de la Croûte (habillageSillage, Scene.tsx)",
     "monstre_salines_ver_gueule_a": "apparition garantie à l'arrivée au Champ des Sillages (Scene.apparition)",
+    # LES BASSINS (16/09)
+    "scene_salines_bassins_a": "vue de marche des Bassins et fond de secours (BASSINS_IMG sert les terrasses en attendant)",
+    "minijeu_cuve_fendue_a": "fond du puzzle « assemble » de la Cuve fendue (Scene.tsx, pas une scène)",
 }
 
 
@@ -587,12 +704,19 @@ def main() -> int:
             out.append(f"Ce que la bible dit : {C['note'].split('.')[0]}.\n")
             emettre(nom, composer_cadre(sujet, eid, CADRAGE_RENCONTRE), eid, sujet)
             n += 1
+        if eid == "bassins":
+            out.append("\n### Le Ver, DESSOUS — il passe sous la marche de qui l'a appelé (16/09)\n")
+            nom, sujet = VER["dessous"]
+            emettre(nom, composer_environnement(sujet, eid), eid, sujet)
+            n += 1
         if eid == "croute":
             out.append("\n### Le Ver de croûte — quatre images, chacune plus près (16/09)\n")
             out.append("Des PAYSAGES : le Ver est la masse noire qui porte le cadre, à l'échelle de la Croûte. "
                        "Jamais le corps entier, jamais d'yeux. Dos (Rive haute) · sillage (une Croisée) · gueule "
                        "(Champ des Sillages, hors jet) · face (le Passage, fin de la Croûte).\n")
             for k, (nom, sujet) in VER.items():
+                if k == "dessous":
+                    continue  # émis avec les Bassins, où il se joue
                 out.append(f"#### `{k}` — `{nom}`\n")
                 emettre(nom, composer_environnement(sujet, eid), eid, sujet)
                 n += 1

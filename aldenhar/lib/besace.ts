@@ -55,6 +55,10 @@ export type BesaceItem = {
    * Elle raconte le GESTE, pas le chiffre : ce qu'on fait, ce que ça
    * referme, et rien de plus. */
   usageTexte?: string;
+  /** SALINES — un remède au SEL, pas au corps : le consommer fait monter
+      l'Encroûté d'un palier (le sel qu'on avale reste dans la bouche). Lu par
+      les deux sites d'usage (4e choix contextuel et menu). */
+  encroute?: boolean;
 };
 
 /** Besace = 2 slots actifs + 2 slots passifs (spec 21/07, remplace les 4 génériques). */
@@ -238,6 +242,33 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     name: "Registre des traversées", rarity: "rare", kind: "babiole", slot: "passif",
     passiveMod: 0, passiveScope: "all",
     flavor: "Deux colonnes. À gauche des noms de passeurs. À droite, pour chacun, un autre nom — et un prix.",
+  },
+  /* ——— LES BASSINS (16/09) ——— */
+  /* Une motte de sel des Terrasses. Ce n'est pas un soin : c'est ce que les
+     sauniers mâchaient pour ne pas boire. Il referme, il coupe la soif — et
+     il monte d'un palier l'Encroûté, puisqu'il reste dans la bouche. */
+  "sel-qui-garde": {
+    name: "Sel qui garde", rarity: "commun", kind: "soin", slot: "actif",
+    heal: 0.10, cure: true, encroute: true,
+    usage: "Se mâche. Ça referme ce qui saigne et ça coupe la soif — le sel, lui, reste.",
+    usageTexte: "Tu mâches la motte blanche. Ça brûle, puis plus rien ne brûle : la plaie se ferme comme si on l'avait salée pour la garder. Le goût ne part pas. Il ne partira pas.",
+    flavor: "Une motte blanche, dure, ramassée sur les Terrasses. Les sauniers en mâchaient pour tenir sans boire. Ceux qui en ont trop mâché sont encore là.",
+  },
+  /* La plume du Héron de sel — elle ne pèse rien, elle frémit quand le Ver
+     passe dessous. Aucun modificateur : ce qu'elle donne, c'est une ligne. */
+  "plume-du-heron": {
+    name: "Plume du Héron", rarity: "rare", kind: "babiole", slot: "passif",
+    passiveMod: 0, passiveScope: "all",
+    usage: "Elle frémit avant que le sol ne bouge. Elle ne dit pas où — elle dit quand.",
+    flavor: "Blanche, raide comme du sel, tombée quand il s'est envolé. Elle vibre parfois toute seule, un peu avant que la croûte ne bombe.",
+  },
+  /* La Manivelle des Passeurs — sortie de son logement à la Noria. Elle sert
+     à la Cour aux rails et à la Tour : un outil, pas une arme. */
+  "manivelle-passeurs": {
+    name: "Manivelle des Passeurs", rarity: "rare", kind: "babiole", slot: "passif",
+    passiveMod: 0, passiveScope: "all",
+    usage: "Elle entre dans les logements carrés des mécanismes des passeurs. Ce qu'elle fait tourner dépend de l'endroit.",
+    flavor: "Une barre de fer coudée, à tête carrée, le manche usé en creux par des mains qui tournaient toujours dans le même sens.",
   },
   /* Tour de Guet — l'outil d'un homme qui a passé sa vie à regarder au sud. */
   "lunette-guet": {

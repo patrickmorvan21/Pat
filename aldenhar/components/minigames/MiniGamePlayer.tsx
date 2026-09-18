@@ -15,9 +15,11 @@ import SequenceExecute from "./engines/SequenceExecute";
 import StraightSwipe from "./engines/StraightSwipe";
 import SteadyCaress from "./engines/SteadyCaress";
 import SingleGesture from "./engines/SingleGesture";
+import Assemble from "./engines/Assemble";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ENGINES: Record<string, ComponentType<any>> = {
+  assemble: Assemble,
   rub: RubReveal,
   glyph: GlyphTrace,
   hold: HoldSteady,

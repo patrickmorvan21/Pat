@@ -21,8 +21,11 @@ CE QUI EST VRAI, CE QUI NE L'EST PAS — à lire avant d'écrire un rapport :
     voyagent dans le kit (la Croûte : Rive haute, la file, le champ des
     sillages, la barge, la statue, la bouche, le radeau) mais la réplique ne
     connaît que la traversée des Landes (pool plat) — ni la traversée à
-    étages, ni l'Encroûté, ni la tempête de sel. Un relecteur qui veut juger
-    la Croûte le fait sur les transcripts, jamais sur cette table.
+    étages, ni l'Encroûté, ni la tempête de sel, ni (Bassins, 17/09) la Soif,
+    le puzzle de la Cuve, la fixation des Déclarés ou l'appel du Ver : les
+    champs `soif` / `fixation` / `appelleVer` voyagent comme des DONNÉES et
+    restent inertes ici. Un relecteur qui veut juger la Croûte ou les Bassins
+    le fait sur les transcripts, jamais sur cette table.
   ⇒ Juge le TEXTE et l'ENCHAÎNEMENT sur ce que tu lis ici. Pour tout ce qui
     touche à la mise en scène ou aux systèmes non répliqués, appuie-toi sur
     les parties enregistrées du dossier `transcripts/`.

@@ -493,6 +493,31 @@ export type Choice = {
    */
   monteEncroute?: true;
   /**
+   * LA SOIF (Bassins, 16/09) — le Besoin de zone. Négatif = ce choix
+   * DÉSALTÈRE (boire avec la harde −1, remonter la cuve −3) ; positif = il
+   * assoiffe. Un choix RISQUÉ ne l'applique qu'à la réussite (on ne boit
+   * pas ce qu'on a raté), un passif à la sélection. Jamais un chiffre : la
+   * Soif se lit sur les CTA (mots blancs) et dans une ligne par palier.
+   */
+  soif?: number;
+  /**
+   * LA FIXATION DES DÉCLARÉS (Bassins, 16/09) — l'EXCEPTION NOMMÉE à la
+   * doctrine « jamais un bonus de jet » : toucher la statue qui fait ton
+   * geste fixe ta forme jusqu'à la fin de la zone — ta stat forte est plus
+   * sûre, ta faible plus dure. Assumé parce que c'est la Fixation elle-même
+   * (ce que le village des Landes faisait aux corps, le sel le fait à la
+   * silhouette), pas une récompense. Posé à la sélection : toucher suffit.
+   */
+  fixation?: true;
+  /**
+   * CE GESTE APPELLE LE VER (Bassins, 16/09) : le grincement de la Noria,
+   * le raccourci de l'Encroûté. La marche qui suit se joue avec lui
+   * DESSOUS (`VER_MANIFESTATIONS.dessous`). Un passif l'applique à la
+   * sélection, un risqué à la réussite (la roue qui ne tourne pas ne
+   * grince pas).
+   */
+  appelleVer?: true;
+  /**
    * CE GESTE ROMPT UNE CLAUSE DU SERMENT (correctif 14/08).
    *
    * Le Serment énonce trois interdits au muret : « Tu ne parles pas aux
@@ -604,7 +629,7 @@ export type Choice = {
         pick = crochetage (curseur oscillant) · swipe = le geste lent de la
         cérémonie (INSENSIBLE à l'échec : trop vite = rien, on recommence) ·
         cut = trancher net d'un geste qui TRAVERSE la corde. */
-    engine: "rub" | "hold" | "trace" | "pick" | "swipe" | "cut";
+    engine: "rub" | "hold" | "trace" | "pick" | "swipe" | "cut" | "breath" | "assemble";
     /**
      * ⚠️ Par défaut un geste ne se joue QU'EN DÉMO (le champ est inerte dans
      * le jeu complet, qui résout le choix par sa voie écrite). `horsDemo`
@@ -1227,6 +1252,17 @@ export function coutSanteBorne(
   return Math.min(brut, Math.max(0, sante - PLANCHER_EFFROI));
 }
 
+/** Les quatre issues du geste des Déclarés (Bassins) : la statue change,
+    la Fixation est la même. `geste` = ce que fait la statue touchée. */
+function declareOutcomes(geste: string): Outcomes {
+  return outcomes(
+    `20 naturel. Ta main sur la statue qui ${geste}, et le sel entre dans la tienne — pas la peau : le geste. Tu le fais sans l'avoir voulu. Ça restera : ce que tu es se fera plus sûrement, et ce que tu n'es pas, moins. Elle t'a déclaré.`,
+    `Tu poses la main sur celle qui ${geste}. Le sel est tiède. Quelque chose passe — un pli, une certitude. Ce que tu es, tu le seras plus ; ce que tu n'es pas, tu le seras moins. C'est fait.`,
+    `Tu poses la main sur celle qui ${geste}, et le sel te prend les doigts avant de rien te rendre. Tu tires. Il te rend ta main, et le geste avec — un peu de travers. Ça restera aussi.`,
+    `1 naturel. Tu touches celle qui ${geste}, et elle bouge. Un Cristallin ne bouge jamais — le geste se referme sur ta main. Tu t'arraches. Il est à toi, maintenant, et tu ne sais plus lequel de vous deux a commencé. ♦ −2`
+  );
+}
+
 function outcomes(
   crit: string,
   success: string,
@@ -1370,6 +1406,12 @@ const CHOIX_CHEMIN_DU_SUD: Choice[] = [
     `data/salines-bible-visuelle.md`). Un repli n'est pas un placeholder : il
     montre le bon endroit, juste pas le bon détail. */
 export const CROUTE_IMG = "assets/scene_salines_croute_a_b.png";
+/** Vue d'établissement des BASSINS (16/09) — les trois terrasses à sec, le
+    héron dans le dernier bassin. Vue de marche de l'étape ET repli de tout
+    écran des Bassins sans image dédiée (⚠️ chaque repli est signalé sur
+    place ; la bible visuelle réclame le repointage à l'import). Déclarée
+    ici, AVANT `SCENES` (TDZ), comme CROUTE_IMG. */
+export const BASSINS_IMG = "assets/scene_salines_terrasses_a_v4_c.png";
 
 /**
  * LE VER DE CROÛTE SE VOIT (décision Patrick, 16/09 — « c'est encore trop peu
@@ -1398,6 +1440,8 @@ const VER_IMG = {
   sillage: "assets/monstre_salines_ver_sillage_a_v2_d.png",
   gueule: "assets/monstre_salines_ver_gueule_a.png",
   face: "assets/monstre_salines_ver_face_a_v3_b.png",
+  // Aux Bassins (16/09) : la croûte qui bombe sous les pieds, en marche.
+  dessous: "assets/monstre_salines_ver_dessous_a.png",
 } as const;
 export function verImage(k: keyof typeof VER_IMG): string | undefined {
   const f = VER_IMG[k];
@@ -1420,6 +1464,14 @@ export const VER_MANIFESTATIONS = {
   // gueule ouverte, deux langues qui touchent le sol — et la scène s'adapte
   // à l'image, pas l'inverse). Hors jet, garanti : il sort, il goûte, il
   // vérifie, il rentre. On ne bouge pas parce qu'on n'a pas le temps de bouger.
+  // DESSOUS (Bassins, 16/09) — il ne se montre plus : il passe SOUS la
+  // marche de qui l'a appelé (le grincement de la Noria, le raccourci de
+  // l'Encroûté). Servi à la place de l'ambiance de la Croisée suivante.
+  dessous: {
+    cle: "ver|dessous",
+    texte:
+      "À mi-chemin, le sel bombe sous tes pieds — une bosse longue qui remonte le bassin dans le sens de ta marche, et te dépasse. La croûte se soulève, retombe. Il est passé dessous sans s'arrêter. Il sait où tu vas : il y va aussi.",
+  },
   gueule: {
     cle: "ver|gueule",
     texte:
@@ -8963,24 +9015,938 @@ export const SCENES: Scene[] = [
       },
     ],
   },
+  /* ═══════════════════ LES BASSINS — la sécheresse crue (16/09) ═══════════════════
+     Deuxième environnement des Salines. Les Passeurs ont cru à un mauvais été :
+     ils ont creusé des bassins en terrasses pour récolter le sel et l'ont vendu
+     aux descendants comme « le sel qui garde ». Les bassins sont descendus avec
+     l'eau, un niveau par saison. Les derniers clients sont couchés dans les
+     fonds. Ici on ne meurt pas de sel : on a SOIF — le Besoin de zone
+     (`run.soif`, monte en marchant, se lit sur les CTA, voir Scene.tsx).
+     Grammaire : arrivée (le lieu, ses examens) → écran-événement « -2 » (la
+     rencontre ou le piège). ⚠️ `BASSINS_IMG` (les terrasses) sert de REPLI
+     aux écrans sans image dédiée — chacun est signalé sur place, la bible
+     visuelle (`tools/bible_visuelle_salines.py`) réclame le repointage. */
   {
-    /* FIN D'ÉTAPE NON ÉCRITE (13/09). Quand `prochainPas` impose l'entrée
-       d'un environnement dont aucune scène n'existe (les Terrasses, pour
-       l'instant), advance() sert cette scène TERMINALE à la place : la fin
-       de démo, sans mort, sans Sceau (on n'a pas franchi la zone), sans
+    /* LES TERRASSES — l'entrée obligatoire des Bassins. F2 est garanti PAR
+       CONSTRUCTION (bible 13/09) : l'Encroûté du haut dit « vas-y maintenant »
+       et le héron décolle du bassin d'en bas — visible sur l'image même
+       de l'environnement, sans jet ni condition. Le sel qui garde se
+       ramasse ici : c'est lui qui prépare les Vermisseaux, deux pas plus loin. */
+    id: "terrasses",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    chainNext: "terrasses-2",
+    decouverte: "d.heron_envole",
+    narration: [
+      "Le sel descend par marches : trois terrasses à sec, murets en gradins, et dans chacune, le long des bords, des Cristallins — couchés, cette fois, comme on se couche pour attendre. Entre eux roulent des grumeaux de sel gros comme le poing, qui ne sont pas tout à fait immobiles.",
+      "En haut, sous un auvent de planches, un Encroûté te regarde venir. Il lève une main blanche vers les gradins et dit, la bouche à peine ouverte : « Vas-y maintenant. » En contrebas, dans le dernier bassin, un héron ouvre les ailes et s'envole. Derrière les murets, les premières ombres depuis la Croûte.",
+    ],
+    choices: [
+      {
+        id: "ramasser-une-motte",
+        label: "Ramasser une motte blanche",
+        observe: true,
+        grantsLoot: "sel-qui-garde",
+        passive: {
+          consequence:
+            "Le sel des terrasses se casse en mottes dures, blanches, sans grain. Tu en prends une. Elle est plus lourde qu'elle n'en a l'air — et elle sent l'eau. Une eau qu'il n'y a plus.",
+        },
+      },
+      {
+        id: "regarder-les-couches",
+        label: "Regarder les Cristallins couchés",
+        nature: "exploration",
+        observe: true,
+        risky: {
+          stat: "INSTINCT",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Ils ne sont pas tombés. Chacun s'est allongé de lui-même, les mains croisées, la bouche ouverte vers le fond du bassin — vers l'eau qu'ils attendaient. Et les grumeaux, à côté d'eux, sont des morceaux d'eux : la partie qui essayait encore de se relever.",
+            "Ils ne sont pas tombés : ils se sont couchés, la bouche tournée vers le fond du bassin, là où l'eau était. Les grumeaux sont des morceaux d'eux.",
+            "Tu regardes trop longtemps. Un grumeau roule contre ta botte et s'y colle. Tu le décroches à l'ongle. Il en reste un peu.",
+            "1 naturel. Tu te penches, et l'un des couchés a encore les yeux ouverts — secs, et ils te suivent. Tu recules trop vite, et le sel te retient la cheville le temps de te faire comprendre que tu as le choix. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "descendre-un-niveau",
+        label: "Descendre d'un niveau",
+        passive: {
+          consequence:
+            "Tu passes le muret. La terrasse d'en dessous est plus sombre, plus humide. Le sel y bouge — pas les grumeaux : quelque chose de plus long, dessous.",
+        },
+      },
+    ],
+  },
+  {
+    /* LES VERMISSEAUX — les petits du Ver, sous la croûte des bassins.
+       Préparation : le sel qui garde, ramassé à l'arrivée, les DÉTOURNE (bible :
+       « jeté : détourne Sauniers et Grumeaux ») — l'option informée prend la
+       place de l'aveugle, même seuil, l'échec hors de portée ; et l'objet est
+       LAISSÉ (`laisseObjet`) : le prix est dit dans la prose, pas en chiffre.
+       ⚠️ REPLI D'IMAGE : les terrasses, en attendant `monstre_salines_vermisseaux_a`. */
+    id: "terrasses-2",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    combat: true,
+    foe: "vermisseaux",
+    foeName: "Les Vermisseaux",
+    narration: [
+      "Le sel de la terrasse basse se soulève en boudins. Des Vermisseaux — les petits du Ver, longs comme un bras, blancs, sans yeux, qui sortent par dizaines de sous la croûte des bassins. Rapides. Ils vont vers ce qui est mouillé : ta bouche, tes yeux, le creux de tes mains.",
+    ],
+    choices: [
+      {
+        id: "les-ecraser",
+        label: "Les écraser",
+        nature: "physique",
+        masqueSi: { objet: "sel-qui-garde" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu écrases le premier sous le talon, et les autres se figent — ils sentent. Trois, quatre : ils reculent en boudins sous la croûte. Le dernier laisse une trace humide qui file vers l'île. Ils ont appris d'où viennent les pieds.",
+            "Tu écrases ceux qui montent, un par un, et les autres replongent. Le sel se referme sur eux. Tes bottes sont trempées d'une eau qui n'existe plus.",
+            "L'un remonte le long de ta jambe pendant que tu en écrases un autre, et te mord au flanc — une morsure ronde et froide. Ils replongent tous ensemble, comme sur un ordre. Ce qu'ils ont pris était mouillé.",
+            "1 naturel. Ils te montent dessus par dizaines. Tu tombes sur le sel, et le sel te prend le dos pendant qu'ils prennent le reste. Tu t'arraches. Il y en a un dans ta manche, et tu ne le trouves pas. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "jeter-le-sel",
+        label: "Leur jeter le sel qui garde",
+        nature: "physique",
+        requiresObjet: "sel-qui-garde",
+        laisseObjet: "sel-qui-garde",
+        horsDePortee: true,
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu écrases la motte et tu la jettes en pluie. Ils se retournent tous vers elle — vers le sel qui garde, qui les appelle mieux que ta peau. Ils s'y roulent et s'y figent, l'un après l'autre. Le bassin se tait. La motte est finie.",
+            "Tu jettes la motte au milieu d'eux. Ils y vont, tous, et s'y collent : c'est du sel de chez eux, celui qui garde. Ils s'y figent. Tu passes derrière. La motte est finie.",
+            "La motte tombe trop loin. Une partie y va, l'autre continue vers toi. Tu recules sur le muret pendant qu'ils choisissent. Ils choisissent le sel. Il n'en reste rien.",
+            "1 naturel. Tu jettes, ils hésitent, puis ils y vont — lentement, en te regardant sans yeux. Tu grimpes le muret à quatre pattes. Tu les regardes finir la motte sans toi. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "remonter-au-muret",
+        label: "Remonter au muret",
+        tags: ["fuite"],
+        passive: {
+          consequence:
+            "Tu remontes le gradin d'un bond. Ils n'aiment pas la pierre : ils s'arrêtent au pied du muret, se tordent, et redescendent sous le sel. Tu contournes la terrasse par le haut, plus lentement, la bouche fermée.",
+        },
+      },
+    ],
+  },
+  {
+    /* LA PASSERELLE ROMPUE — séjour. Deux bassins, une passerelle cassée au
+       tiers, le Ver qui passe dessous. Absorbe le Bassin comble (13/09) : la
+       tempête, balayée, révèle la passerelle INTACTE qui le contourne — c'est
+       la récompense du balayage, et elle prend la place de l'engagement sur
+       les planches (`prendLaPlaceDe`). ⚠️ REPLI D'IMAGE (`scene_salines_passerelle_a`). */
+    id: "passerelle-rompue",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    sejour: true,
+    tempete: {
+      cle: "passerelle",
+      avant:
+        "Le vent se lève depuis l'île et soulève le sel des bassins en nappe. Il vient droit sur la passerelle. Il n'y a nulle part où se mettre.",
+      apres:
+        "Le sel retombe. Là où ta main a balayé, à droite : une deuxième passerelle — entière, basse, à demi prise dans le sel. Celle qu'on prenait avant. Elle contourne le bassin comble. Sans le vent, tu ne l'aurais jamais vue.",
+    },
+    narration: [
+      "Deux bassins, et entre les deux une passerelle de planches sur pilotis. Elle s'arrête au tiers : les planches suivantes pendent dans le vide, et le fond du bassin, dessous, est fendu d'une tranchée fraîche. Tout le monde ici a compris ce qui passe dessous.",
+      "À gauche, un bassin plein à ras bord — pas d'eau : des grumeaux, serrés comme des œufs, et quand tu approches ils se tournent vers toi, tous, d'un même mouvement.",
+    ],
+    choices: [
+      {
+        id: "sonder-perche",
+        label: "Sonder avec la perche",
+        observe: true,
+        requiresObjet: "perche-sauniere",
+        passive: {
+          consequence:
+            "Tu plantes la perche entre deux planches. Le sol rend creux — puis, plus loin, il ne rend rien : la perche s'enfonce sans toucher. Ce qui a creusé la tranchée ne l'a pas refermée. Il repasse.",
+        },
+      },
+      {
+        id: "regarder-bassin-comble",
+        label: "Regarder le bassin comble",
+        observe: true,
+        passive: {
+          consequence:
+            "Les grumeaux sont des morceaux de Cristallins — des mains, des doigts, un bout de mâchoire — cassés et roulés jusqu'à être ronds. Ils cherchent du vivant pour se recoller. Ils t'ont trouvé. Ils attendent que tu descendes.",
+        },
+      },
+      {
+        id: "s-engager",
+        label: "S'engager sur les planches",
+        sortie: { toScene: "passerelle-rompue-2" },
+        passive: {
+          consequence:
+            "Tu poses le pied sur la première planche. Elle tient. La deuxième aussi. Sous la troisième, le sel bouge.",
+        },
+      },
+      {
+        id: "passerelle-intacte",
+        label: "Prendre la passerelle intacte",
+        requiresChoixFait: "tempete:passerelle", // la clé de la tempête (`Scene.tempete.cle`), pas l’id de la scène
+        prendLaPlaceDe: "s-engager",
+        sortie: {},
+        passive: {
+          consequence:
+            "Tu prends la passerelle basse. Elle plie, elle tient, elle contourne le bassin comble par la droite. Les grumeaux te suivent des yeux qu'ils n'ont pas. Dessous, rien ne bouge : ce n'est pas par là qu'il passe.",
+        },
+      },
+    ],
+  },
+  {
+    /* LE SOUFFLE — le Ver passe SOUS la passerelle. C'est ici que le Souffle
+       v2 (`components/minigames/engines/BreathLine.tsx`, galerie du 12/09)
+       entre en jeu : on respire quand il respire. Préparation : la perche
+       plantée à côté des pilotis prend la vibration à ta place (l'option
+       informée, hors de portée, même seuil que la course aveugle).
+       ⚠️ REPLI D'IMAGE, en attendant `monstre_salines_ver_passerelle_a`. */
+    id: "passerelle-rompue-2",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    combat: true,
+    foe: "ver-de-croute",
+    foeName: "Le Ver, dessous",
+    narration: [
+      "Au milieu de la passerelle, le sel du bassin se met à respirer. Une longue bosse remonte la tranchée, droit vers les pilotis, et la croûte se soulève par vagues sous les planches. Il passe. Il ne t'a pas senti — pas encore. Ce qu'il entend, c'est ce qui bouge et ce qui respire.",
+    ],
+    choices: [
+      {
+        id: "retenir-souffle",
+        label: "Retenir ton souffle",
+        minigame: {
+          engine: "breath",
+          horsDemo: true,
+          echecBlesse: true,
+          echec:
+            "Tu respires trop tôt. La bosse s'arrête net sous les pilotis, et le bassin tout entier se soulève : une planche cède, tu passes à travers jusqu'à la cuisse, et le sel dessous est chaud comme une bête. Tu t'arraches avant qu'il ait fini de se retourner. Il repart. Il sait.",
+        },
+        passive: {
+          consequence:
+            "Tu retiens. Le sel monte, s'arrête, redescend — au rythme de quelque chose d'énorme qui respire sous toi. Tu respires quand il respire. Il passe sous les pilotis sans s'arrêter, et la bosse s'éloigne vers l'île. Les planches ont tenu. Toi aussi.",
+        },
+      },
+      {
+        id: "courir-planches",
+        label: "Courir sur les planches",
+        nature: "physique",
+        masqueSi: { objet: "perche-sauniere" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu cours, et les planches cèdent derrière toi, jamais devant. Tu sautes la dernière brèche pendant que la bosse arrive dessous, et tu retombes sur le muret. Il a plongé plus profond, comme on rate une bouchée.",
+            "Tu cours. Les planches chantent, il vient, tu sautes les deux dernières. Tu retombes sur le muret. Derrière toi la passerelle plie, se redresse, et la bosse passe.",
+            "Tu cours, une planche cède : tu passes à travers jusqu'à la cuisse, et le sel dessous est chaud. Tu t'arraches, tu rampes le reste. La bosse passe sous l'endroit où tu étais. Ta jambe saigne dans le sel, et le sel boit.",
+            "1 naturel. La passerelle s'effondre sous tes pieds en pleine course. Tu tombes sur la tranchée, et la tranchée se soulève. Tu remontes le muret sans savoir comment, la moitié du dos ouverte par le sel. Il n'a pas eu besoin de te prendre. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "planter-perche",
+        label: "Planter la perche et attendre",
+        nature: "physique",
+        requiresObjet: "perche-sauniere",
+        horsDePortee: true,
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu plantes la perche dans le sel du bassin, à côté des pilotis, et tu te fais immobile derrière elle. La bosse vient, ralentit — elle sent la perche vibrer, pas toi — et la contourne. Elle s'éloigne vers l'île. Tu as compris comment on faisait, avant.",
+            "Tu plantes la perche et tu ne bouges plus. La bosse vient, s'arrête sous elle, la fait vibrer, et repart. C'est la perche qu'il a sentie. Tu traverses quand le sel ne respire plus.",
+            "Tu plantes, tu attends. La bosse s'arrête sous la perche et la fait tourner dans ta main — puis lâche. Tu traverses pendant qu'il cherche encore ce qui vibrait. La perche est tordue. Elle tient.",
+            "1 naturel. Tu plantes trop tard. La bosse remonte sous la perche, la tord, et le sel jaillit jusqu'aux planches. Tu traverses à quatre pattes pendant qu'il se retourne. Il n'a pas senti toi : il a senti la perche. C'est ce qui t'a sauvé. ♦ −2"
+          ),
+        },
+      },
+    ],
+  },
+  {
+    /* LE PERCHOIR DU HÉRON — rencontre en observation. Il ne pêche pas : il
+       attend le passage, et il s'envole juste avant. L'Instinct lit l'heure
+       à son cou : `savoir_heure_du_ver`, que la Guérite consomme (attendre
+       que l'heure passe avant de prendre le raccourci de l'Encroûté).
+       ⚠️ REPLI D'IMAGE : les terrasses — le héron y est, dans le dernier
+       bassin — en attendant `scene_salines_perchoir_heron_a`. */
+    id: "perchoir-du-heron",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    chainNext: "perchoir-du-heron-2",
+    narration: [
+      "Un bassin rond, plus profond que les autres, à sec jusqu'à une flaque de saumure au centre. Debout dans la flaque, sur une patte, un héron — immense, blanc, plus haut que toi. Il ne bouge pas. Il ne te regarde pas. Il regarde le sel à côté de lui, comme on regarde une porte.",
+      "Autour du bassin, des Cristallins couchés, tous la tête tournée vers l'oiseau. Ils ont attendu qu'il bouge. Lui a attendu autre chose.",
+    ],
+    choices: [
+      {
+        id: "observer-ce-quil-attend",
+        label: "Observer ce qu'il attend",
+        nature: "exploration",
+        observe: true,
+        grantsSavoir: "savoir_heure_du_ver",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Il ne pêche pas. Il attend le passage — le Ver passe sous ce bassin à heure fixe, et le héron mange ce que la croûte retournée laisse en surface. Il ne s'envole pas de peur : il s'envole pour ne pas être dessus. Tu apprends à lire l'heure à son cou.",
+            "Il attend le Ver. Il passe sous ce bassin, régulier comme une marée, et le héron s'envole juste avant, pour manger ce qu'il retourne. Son cou se tend un peu avant : c'est l'heure qui approche.",
+            "Tu ne comprends pas ce qu'il attend. Mais tu le regardes assez longtemps pour que le sel te trouve les chevilles. Tu bouges. Il n'a pas bougé.",
+            "1 naturel. Tu le fixes, et il tourne la tête vers toi — la seule chose qu'il n'avait jamais faite. Puis il regarde de nouveau le sel. Tu n'es pas ce qu'il attend. Tu es entre lui et ça. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "approcher-pas-a-pas",
+        label: "Approcher pas à pas",
+        passive: {
+          consequence:
+            "Tu descends dans le bassin. Le sel craque sous toi, et le héron ne tourne pas la tête. À dix pas, tu vois ses yeux : ils ne clignent pas. À cinq, le sel entre vous se met à bomber.",
+        },
+      },
+      {
+        id: "attendre-quil-bouge",
+        label: "Attendre qu'il bouge",
+        monteEncroute: true,
+        passive: {
+          consequence:
+            "Tu t'assois sur le muret. Le temps passe comme il passe ici : en sel. Tes bottes blanchissent. Le héron ne bouge pas. Puis son cou se tend.",
+        },
+      },
+    ],
+  },
+  {
+    /* L'ENVOL — et ce qui suit : la croûte bombe là où il était. La plume
+       reste (« frémit un écran avant le Ver »). ⚠️ REPLI D'IMAGE. */
+    id: "perchoir-du-heron-2",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    narration: [
+      "Le héron déplie ses ailes — trois fois ta largeur — et s'envole sans un cri, à la verticale, lourd, blanc. Dessous, là où il était, la croûte bombe. Une bosse longue traverse le bassin sous la flaque ; la flaque se vide dans la fente et se referme. Tu n'as pas bougé.",
+      "Sur le sel, une plume, plus longue que ton bras, raide comme si elle était en sel elle aussi.",
+    ],
+    choices: [
+      {
+        id: "ramasser-plume",
+        label: "Ramasser la plume",
+        grantsLoot: "plume-du-heron",
+        passive: {
+          consequence:
+            "Tu la prends. Elle ne pèse rien, et elle vibre dans ta main — une seconde, puis plus rien. La bosse est déjà loin. Elle a vibré avant que tu la voies partir.",
+        },
+      },
+      {
+        id: "suivre-la-bosse",
+        label: "Suivre la bosse du regard",
+        nature: "exploration",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Elle va vers l'île — et elle tourne. Elle repasse par les bassins, un par un, dans un ordre : celui-ci, la passerelle, la cuve. Il fait sa ronde. Tu sais maintenant sous quels bassins il passe, et dans quel sens.",
+            "Elle traverse le bassin, passe sous le muret et repart vers l'île en s'enfonçant. Elle ne va pas droit : elle tourne. Il fait une ronde.",
+            "Tu la suis des yeux et tu la perds au premier muret. Quand tu baisses les yeux, le sel a monté sur tes bottes pendant que tu regardais ailleurs.",
+            "1 naturel. Tu la suis, et elle s'arrête. Sous toi. Le sel bombe entre tes pieds, et tu cesses de respirer sans l'avoir décidé. Elle repart. Tu as le goût du sel dans la bouche, et tu ne sais pas quand tu l'as avalé. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "repartir-perchoir",
+        label: "Repartir",
+        passive: {
+          consequence:
+            "Tu remontes le muret. Le bassin est vide maintenant — plus de héron, plus de flaque. Les Cristallins couchés ont toujours la tête tournée vers l'endroit où il était.",
+        },
+      },
+    ],
+  },
+  {
+    /* LE BASSIN DES LÉCHARDS — la harde connaît l'eau. La suivre apprend
+       leur CÔTÉ (`savoir_eau_lechards`), que la Cuve fendue consomme : on
+       approche l'eau gardée par où les bêtes l'approchent, dans l'ombre.
+       ⚠️ REPLI D'IMAGE (`monstre_salines_lechards_a`). */
+    id: "bassin-des-lechards",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    chainNext: "bassin-des-lechards-2",
+    narration: [
+      "Un bassin large, presque plat. Une harde de bêtes maigres, hautes sur pattes, au poil ras et gris — des Léchards. Elles lèvent la tête ensemble quand tu arrives, puis viennent. Pas pour mordre : la première tend le cou et te lèche le poignet. Le sel de ta sueur.",
+      "Elles connaissent l'eau, dit-on. Elles savent surtout où on l'a perdue.",
+    ],
+    choices: [
+      {
+        id: "suivre-la-harde",
+        label: "Suivre la harde",
+        nature: "exploration",
+        observe: true,
+        grantsSavoir: "savoir_eau_lechards",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Elles te lâchent le poignet et repartent en file, et tu les suis. Elles longent les murets par le côté de l'ombre, s'arrêtent où le sel est sombre, grattent. Dessous, l'eau affleure. Elles boivent. Tu sais où elles vont, maintenant — et par où on approche l'eau sans bruit : par leur côté.",
+            "Elles repartent en file et tu les suis. Elles longent l'ombre des murets, grattent là où le sel est sombre : l'eau affleure dessous. Elles boivent. Tu apprends leur côté.",
+            "Tu les suis, elles accélèrent. Au troisième muret tu les perds. Le sel est plus dur ici, et tu es plus loin de tout.",
+            "1 naturel. Tu les suis, et elles te mènent en rond, trois fois autour du même bassin, jusqu'à ce que le sel te prenne les semelles. Elles s'arrêtent enfin, et te lèchent. Elles t'ont amené où elles mangent. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "chasser-un-lechard",
+        label: "Chasser un léchard",
+        nature: "physique",
+        risky: {
+          stat: "COURAGE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu en attrapes un par le cou. Il ne se débat pas : il te lèche la main. La harde s'arrête, te regarde, et attend. Tu le lâches. Il retourne à sa place. Ils ont compris que tu ne mangeais pas.",
+            "Tu en attrapes un. Il est léger, plus léger qu'une bête, et il te lèche la main jusqu'à ce que tu le lâches. Ils ne fuient pas. Ils n'ont rien à perdre que le sel.",
+            "Tu cours, ils courent, et sur le sel ils vont plus vite que toi. Tu tombes sur un genou et le sel le mord. Ils reviennent te lécher le genou.",
+            "1 naturel. Tu en attrapes un et tu tombes avec, sur le sel, et le sel te prend le côté. La harde vient. Ils te lèchent — le visage, les mains, tout ce qui suinte. Ils sont patients. Tu te relèves blanc. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "laisser-lecher",
+        label: "Les laisser lécher",
+        monteEncroute: true,
+        passive: {
+          consequence:
+            "Tu tends les bras. Elles lèchent. Le sel part de ta peau — et revient, plus fin, là où leur langue est passée. Elles repartent quand tu n'as plus rien à donner. Tu les suis un moment, de loin.",
+        },
+      },
+    ],
+  },
+  {
+    /* L'EAU DES LÉCHARDS — là où elles grattent, elle affleure. La route
+       honnête de la Soif : on boit avec elles. ⚠️ REPLI D'IMAGE. */
+    id: "bassin-des-lechards-2",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    narration: [
+      "La harde s'arrête au fond du bassin, où le sel est gris et mou. Elles grattent des sabots, et sous le gris, l'eau affleure — une pellicule, pas plus, salée mais moins. Elles boivent à tour de rôle, sans se presser. Il y a de la place.",
+    ],
+    choices: [
+      {
+        id: "boire-avec-eux",
+        label: "Boire avec eux",
+        soif: -1,
+        passive: {
+          consequence:
+            "Tu t'agenouilles entre deux bêtes et tu bois ce qui affleure. Salé, tiède, à peine de l'eau. Ta gorge se desserre. Un léchard te lèche l'oreille pendant que tu bois. On partage.",
+        },
+      },
+      {
+        id: "creuser-plus-profond",
+        label: "Creuser plus profond",
+        nature: "exploration",
+        soif: -2,
+        risky: {
+          stat: "RUSE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu creuses avec les mains là où elles ont gratté, et à deux paumes l'eau monte — claire, froide. Tu bois jusqu'à ce que ça fasse mal. Les léchards attendent leur tour derrière toi. Tu leur laisses le trou.",
+            "Tu creuses avec les mains. À deux paumes, l'eau monte, moins salée. Tu bois long. La harde attend que tu finisses.",
+            "Tu creuses, et le trou se remplit de sel avant l'eau. Tes mains sont blanches jusqu'aux poignets. Les léchards te lèchent les doigts.",
+            "1 naturel. Tu creuses, et sous le gris ce n'est pas de l'eau : c'est la bouche d'un Cristallin couché, ouverte, pleine de saumure. Tu as bu avant de voir. Le goût ne part pas. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "remplir-tes-mains",
+        label: "Remplir tes mains et repartir",
+        passive: {
+          consequence:
+            "Tu prends ce que tes mains tiennent d'eau et tu repars. À vingt pas il n'en reste rien : le sel de tes paumes l'a bue. Tu lèches tes paumes. Les léchards font pareil.",
+        },
+      },
+    ],
+  },
+  {
+    /* LE BASSIN DES DÉCLARÉS — un seul écran, rare dans le tirage. Des
+       Cristallins DEBOUT, figés dans un geste : tu reconnais celui de ta
+       dominante — celle que le Geôlier a vue en toi. Toucher = la Fixation en
+       mécanique (`fixation`, l'exception nommée de la doctrine). Une variante
+       par dominante prend la place du geste générique (au plus une par
+       héros, budget de 3 tenu) ; un héros pas encore révélé n'a que la
+       plus proche. ⚠️ REPLI D'IMAGE (`scene_salines_declares_a`). */
+    id: "bassin-des-declares",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    narration: [
+      "Un bassin où les Cristallins ne sont pas couchés. Debout, en cercle, chacun figé dans un geste — un poing levé, un doigt sur la bouche, une tête penchée vers le sel, une paume tendue vers l'autre. Des Déclarés : ils ont dit ce qu'ils étaient avec le corps, avant de cesser.",
+      "Tu reconnais un geste. C'est celui que le Geôlier a vu en toi.",
+    ],
+    choices: [
+      {
+        id: "toucher-courage",
+        label: "Toucher celle qui lève le poing",
+        nature: "surnaturel",
+        requiresDominante: "COURAGE",
+        prendLaPlaceDe: "toucher-la-plus-proche",
+        fixation: true,
+        risky: { stat: "INSTINCT", threshold: 11, outcomes: declareOutcomes("lève le poing") },
+      },
+      {
+        id: "toucher-ruse",
+        label: "Toucher celle au doigt sur la bouche",
+        nature: "surnaturel",
+        requiresDominante: "RUSE",
+        prendLaPlaceDe: "toucher-la-plus-proche",
+        fixation: true,
+        risky: { stat: "INSTINCT", threshold: 11, outcomes: declareOutcomes("tient un doigt sur la bouche") },
+      },
+      {
+        id: "toucher-instinct",
+        label: "Toucher celle qui penche la tête",
+        nature: "surnaturel",
+        requiresDominante: "INSTINCT",
+        prendLaPlaceDe: "toucher-la-plus-proche",
+        fixation: true,
+        risky: { stat: "INSTINCT", threshold: 11, outcomes: declareOutcomes("penche la tête vers le sel") },
+      },
+      {
+        id: "toucher-empathie",
+        label: "Toucher celle qui tend la paume",
+        nature: "surnaturel",
+        requiresDominante: "EMPATHIE",
+        prendLaPlaceDe: "toucher-la-plus-proche",
+        fixation: true,
+        risky: { stat: "INSTINCT", threshold: 11, outcomes: declareOutcomes("tend la paume") },
+      },
+      {
+        id: "toucher-la-plus-proche",
+        label: "Toucher la plus proche",
+        nature: "surnaturel",
+        fixation: true,
+        risky: { stat: "INSTINCT", threshold: 11, outcomes: declareOutcomes("est la plus proche") },
+      },
+      {
+        id: "passer-entre-elles",
+        label: "Passer entre elles",
+        passive: {
+          consequence:
+            "Tu passes au milieu du cercle sans rien toucher. Les gestes ne te suivent pas : tu les traverses, et chacun te dit quelque chose que tu ne voulais pas entendre. Tu sors du cercle libre. Un peu plus fragile qu'en entrant, sans savoir de quoi.",
+        },
+      },
+      {
+        id: "lire-les-gestes",
+        label: "Lire les gestes",
+        observe: true,
+        passive: {
+          consequence:
+            "Le poing : celui-ci a tenu. Le doigt sur la bouche : celui-ci a menti pour tenir. La tête penchée : celui-ci a entendu venir. La paume : celui-ci a demandé. Ils ont tous cessé quand même. Le geste ne sauve pas — il dit ce qu'on a été en cessant.",
+        },
+      },
+    ],
+  },
+  {
+    /* LA CUVE FENDUE — le lieu-piège de la Soif. Une cuve en tessons qui
+       tient encore un fond de saumure, gardée par les Sauteurs. Arrivée →
+       les Sauteurs (-2) → la cuve elle-même (-3, séjour : le puzzle).
+       ⚠️ REPLI D'IMAGE (`scene_salines_cuve_fendue_a`). */
+    id: "cuve-fendue",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    chainNext: "cuve-fendue-2",
+    narration: [
+      "Une cuve de pierre au fond d'un bassin, haute comme un homme, fendue du haut en bas. Par la fente, on voit qu'elle tient encore un fond de saumure — un doigt, deux, qui luisent. Autour, le sel est piétiné : beaucoup sont venus boire ici. Certains sont encore là, couchés le long de la cuve, la bouche vers la fente.",
+    ],
+    choices: [
+      {
+        id: "regarder-la-fente",
+        label: "Regarder la fente",
+        observe: true,
+        passive: {
+          consequence:
+            "La fente n'est pas une cassure : la cuve est en tessons, une vingtaine, tenus par le sel qui les a soudés — mal. Ils s'emboîtaient. On a dû la casser pour la vider plus vite. La saumure fuit par le bas, goutte à goutte, depuis des saisons.",
+        },
+      },
+      {
+        id: "tourner-autour",
+        label: "Tourner autour de la cuve",
+        nature: "exploration",
+        observe: true,
+        risky: {
+          stat: "INSTINCT",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Derrière, à l'abri du vent, des trous ronds dans le sel, chacun de la taille d'un poing, en cercle autour de la cuve. Des terriers. Ce qui les a creusés vit dans la saumure et sort quand on approche. Tu sais par où ne pas venir.",
+            "Derrière la cuve, des trous ronds dans le sel, en cercle. Des terriers. Quelque chose garde l'eau et sort par là quand on s'approche.",
+            "Tu tournes, et tu marches sur quelque chose qui craque et se tord sous ta botte. Tu recules. Le sel se referme. Le tour n'est pas fini.",
+            "1 naturel. Tu tournes, et le sel se soulève sous ton pied — un dos rond, dur, et des pattes. Tu tombes en arrière contre la cuve. Ils sortent tous. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "approcher-pour-boire",
+        label: "Approcher pour boire",
+        passive: {
+          consequence:
+            "Tu t'approches de la fente. La saumure sent le métal et l'eau. À un pas, le sel devant la cuve se soulève — pas dessous : dessus.",
+        },
+      },
+    ],
+  },
+  {
+    /* LES SAUTEURS DE SAUMURE — ils gardent l'eau. Préparation : qui a suivi
+       la harde sait par où on approche l'eau sans bruit (le côté sombre) —
+       l'option informée prend la place du coup de front, même seuil, hors
+       de portée. ⚠️ REPLI D'IMAGE (`monstre_salines_sauteurs_a`). */
+    id: "cuve-fendue-2",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    combat: true,
+    foe: "sauteurs-de-saumure",
+    foeName: "Les Sauteurs de saumure",
+    chainNext: "cuve-fendue-3",
+    narration: [
+      "Ils sortent du sel autour de la cuve par bonds — des Sauteurs de saumure, des crustacés hauts sur pattes, gros comme des chiens, la carapace blanche de sel et les yeux sur tiges. Ils ne t'attaquent pas : ils se mettent entre toi et la fente, et bondissent sur tout ce qui approche. Ils gardent l'eau.",
+    ],
+    choices: [
+      {
+        id: "frapper-le-premier",
+        label: "Frapper le premier qui bondit",
+        nature: "physique",
+        masqueSi: { savoir: "savoir_eau_lechards" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu frappes le premier en plein bond, il retombe sur le dos, pattes en l'air, et les autres reculent devant lui. Tu passes. Ils bondissent derrière toi sur le sel vide. La cuve est à toi le temps d'un souffle.",
+            "Tu en frappes un en plein bond. Il retombe sur le dos et se débat. Les autres hésitent. Tu passes pendant qu'ils hésitent.",
+            "Tu frappes, tu rates, et l'un d'eux te retombe sur l'épaule, pinces ouvertes. Il te prend un morceau de peau avec le sel. Tu le décroches en criant, et ils se remettent entre toi et l'eau.",
+            "1 naturel. Deux te sautent dessus en même temps, et tu tombes sous eux, la carapace contre la joue. Les pinces cherchent ce qui est mouillé : les yeux, la bouche. Tu roules hors de portée le visage en sang. Ils gardent l'eau. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "approcher-cote-lechards",
+        label: "Approcher du côté des Léchards",
+        nature: "physique",
+        requiresSavoir: "savoir_eau_lechards",
+        horsDePortee: true,
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu contournes par l'ombre du muret, comme la harde, et tu viens à la cuve par le côté où le sel est sombre. Les Sauteurs regardent devant. Tu es derrière eux, à la fente, avant qu'ils aient tourné les yeux. Ils ne gardent que le devant.",
+            "Tu contournes par l'ombre, du côté sombre, comme les Léchards. Les Sauteurs surveillent le devant. Tu arrives à la fente par derrière.",
+            "Tu contournes, et l'un d'eux te voit. Ils se retournent tous, bondissent — et dans le sel sombre, ils s'enlisent. Tu recules avant qu'ils ne sortent. La fente est à trois pas, et trois carapaces devant.",
+            "1 naturel. Tu contournes, et le côté sombre est celui de leurs terriers. Ils sortent autour de toi. Tu remontes le muret à reculons sans qu'un seul t'ait touché : ils ne quittent pas l'eau. Tu la vois d'en haut. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "reculer-hors-portee",
+        label: "Reculer hors de leur portée",
+        tags: ["fuite"],
+        passive: {
+          consequence:
+            "Tu recules. Ils ne suivent pas : trois pas de la cuve, et ils s'arrêtent, yeux sur tiges tournés vers toi. Tu restes à trois pas. L'eau est de leur côté.",
+        },
+      },
+    ],
+  },
+  {
+    /* LA CUVE, DE PRÈS — séjour. Remonter les tessons (le puzzle
+       `assemble` : la saumure qui fuit EST le sablier, jamais un chiffre)
+       referme la cuve et rend toute l'eau ; boire à la fente en donne deux
+       gorgées et met le sel dans la bouche (+ Encroûté). Échouer au puzzle
+       est un prix, jamais un mur : il reste une pellicule à lécher. */
+    id: "cuve-fendue-3",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    sejour: true,
+    narration: [
+      "La cuve est devant toi, ouverte. Par la fente, la saumure luit au fond — un doigt d'eau, pas plus, et elle fuit par le bas. Autour, les tessons cassés tiennent debout par le sel qui les soude. On voit encore où chacun allait.",
+    ],
+    choices: [
+      {
+        id: "remonter-tessons",
+        label: "Remonter les tessons",
+        soif: -3,
+        minigame: {
+          engine: "assemble",
+          horsDemo: true,
+          echec:
+            "Les tessons ne trouvent pas leur place assez vite. La saumure fuit par le bas, et le fond de la cuve blanchit sous tes yeux. Il en reste une pellicule, que tu lèches sur la pierre. Le sel de la cuve te reste aux lèvres.",
+        },
+        passive: {
+          consequence:
+            "Le dernier tesson entre à sa place et la fente se ferme. La saumure cesse de fuir. Ce qui restait au fond monte d'un doigt, puis de deux — tout ce que la cuve gardait dans ses joints. Tu bois à deux mains, longtemps. Ta gorge se rouvre. Ta bouche a le goût du métal. Elle n'a plus le goût du sel.",
+        },
+      },
+      {
+        id: "boire-a-la-fente",
+        label: "Boire à même la fente",
+        soif: -1,
+        monteEncroute: true,
+        masqueSiChoixFait: "remonter-tessons",
+        passive: {
+          consequence:
+            "Tu passes la bouche par la fente et tu bois ce que tu peux atteindre : deux gorgées de saumure épaisse. Ta gorge se desserre. Le sel, lui, te reste sur les lèvres, dans la bouche, sur les dents. Il commence là.",
+        },
+      },
+      {
+        id: "laisser-la-cuve",
+        label: "Laisser la cuve",
+        sortie: {},
+        passive: {
+          consequence:
+            "Tu laisses la cuve. Derrière toi, la saumure fuit goutte à goutte pour ceux qui viendront après. Il y en aura.",
+        },
+      },
+    ],
+  },
+  {
+    /* LA NORIA — séjour. La roue à godets figée, sa manivelle prise dans le
+       logement. La libérer (crochetage ou COURAGE) rend la Manivelle des
+       Passeurs — et le GRINCEMENT appelle le Ver (`appelleVer`). Avec la
+       manivelle, le canal à sec s'ouvre : un raccourci qui saute un lieu et
+       prend la place de la sortie ordinaire. ⚠️ REPLI D'IMAGE (`scene_salines_noria_a`). */
+    id: "noria",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    sejour: true,
+    narration: [
+      "Une roue à godets, plus haute que trois hommes, plantée au bord d'un canal à sec qui file vers le sud entre deux murets. Elle est figée par le sel jusqu'à l'axe. Sur l'axe, un logement carré : la manivelle qui la tournait est encore dedans, prise dans le sel comme dans du plomb. Le canal est droit. Il coupe tous les bassins.",
+    ],
+    choices: [
+      {
+        id: "crocheter-logement",
+        label: "Crocheter le logement de l'axe",
+        grantsLoot: "manivelle-passeurs",
+        appelleVer: true,
+        masqueSiChoixFait: "forcer-la-roue",
+        minigame: {
+          engine: "pick",
+          horsDemo: true,
+          echec:
+            "Le sel ne cède pas — tu casses un ongle sur la tête carrée, et le logement reste plein. La roue n'a pas bougé. La manivelle non plus.",
+        },
+        passive: {
+          consequence:
+            "Le sel du logement cède par écailles, une par une, jusqu'à ce que la tête carrée bouge. Tu tires : la manivelle sort d'un coup, et la roue tourne d'un cran avec un grincement qui traverse tous les bassins. Tu l'as. Quelque chose l'a entendue aussi.",
+        },
+      },
+      {
+        id: "forcer-la-roue",
+        label: "Forcer la roue",
+        nature: "physique",
+        grantsLoot: "manivelle-passeurs",
+        appelleVer: true,
+        masqueSiChoixFait: "crocheter-logement",
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu prends la roue à deux mains et tu pèses. Le sel de l'axe éclate en plaques, la roue tourne d'un quart, et la manivelle saute de son logement sur le sel. Tu la ramasses. Le grincement s'est entendu jusqu'à l'île. Tant pis.",
+            "Tu pèses sur la roue de tout ton poids. Le sel éclate, elle tourne d'un cran, la manivelle sort de son logement. Tu la prends. Le grincement file jusqu'à l'île.",
+            "Tu pèses, le sel tient, et c'est ton épaule qui cède — un craquement dedans, chaud. La roue n'a pas bougé. Tu recules en tenant ton bras.",
+            "1 naturel. La roue bouge d'un coup, trop, et un godet te prend au passage et te jette sur le sel. Tu te relèves le dos râpé. La manivelle est toujours dans son logement, et la roue s'est refigée un cran plus loin. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "descendre-le-canal",
+        label: "Descendre le canal",
+        requiresObjet: "manivelle-passeurs",
+        prendLaPlaceDe: "laisser-la-roue",
+        sortie: { toScene: "noria-2" },
+        passive: {
+          consequence:
+            "Tu enfonces la manivelle dans le logement et tu tournes. La roue prend, godet après godet, et le sel du canal se fend sur toute sa longueur : il est creux dessous, et droit. Tu descends dedans. Il coupe tous les bassins. Le grincement t'accompagne.",
+        },
+      },
+      {
+        id: "laisser-la-roue",
+        label: "Laisser la roue",
+        sortie: {},
+        passive: {
+          consequence:
+            "Tu laisses la roue à son sel. Le canal reste fermé. Ce qui l'a entendue grincer, s'il y a eu quelque chose, se souviendra de l'endroit.",
+        },
+      },
+    ],
+  },
+  {
+    /* LE CANAL — la cuve des Sauteurs au tiers du chemin. Toutes les issues
+       SAUTENT un lieu (`sauteEtape`) : c'est le raccourci. Préparation : la
+       perche tient les carapaces à distance (hors de portée, même seuil).
+       ⚠️ REPLI D'IMAGE (`monstre_salines_sauteurs_a`). */
+    id: "noria-2",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    combat: true,
+    foe: "sauteurs-de-saumure",
+    foeName: "Les Sauteurs de saumure",
+    narration: [
+      "Le canal est un couloir de sel entre deux murets, droit, à l'ombre pour la première fois. Au tiers, il s'élargit en cuve, et la cuve est pleine de Sauteurs — les carapaces blanches serrées comme des pavés. Ils se tournent tous vers toi. Derrière eux, le canal continue. Il n'y a pas d'autre côté.",
+    ],
+    choices: [
+      {
+        id: "frapper-a-la-manivelle",
+        label: "Frapper à la manivelle",
+        nature: "physique",
+        sauteEtape: true,
+        masqueSi: { objet: "perche-sauniere" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. La manivelle est lourde et le fer sonne sur les carapaces. Tu en fends deux, et les autres s'écartent contre les murets, pinces levées, pour te laisser le milieu. Tu passes entre deux rangs qui te regardent. Le canal débouche au sud, un bassin plus loin.",
+            "Tu frappes à la manivelle. Le fer fend une carapace, une autre, et les Sauteurs s'écartent le long des murets. Tu passes au milieu. Le canal débouche au sud, un bassin plus loin.",
+            "Tu frappes, et une pince te prend l'avant-bras pendant que tu lèves la manivelle. Tu la dégages en arrachant. Tu passes en courant, le bras contre la poitrine. Le canal débouche au sud.",
+            "1 naturel. Ils bondissent tous en même temps, et tu tombes dans la cuve, sous les carapaces. Les pinces cherchent ce qui est mouillé. Tu te dégages à coups de manivelle, à l'aveugle, et tu sors du canal au sud le visage ouvert. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "tenir-au-bout-de-la-perche",
+        label: "Les tenir au bout de la perche",
+        nature: "physique",
+        sauteEtape: true,
+        requiresObjet: "perche-sauniere",
+        horsDePortee: true,
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu tiens la perche devant toi, pointe basse, et tu avances. Ils bondissent sur la pointe — pas sur toi. Chaque bond la fait plier, et tu avances d'un pas. Tu traverses la cuve sans qu'une pince t'ait touché. Le canal débouche au sud.",
+            "Tu tends la perche et tu avances. Ils bondissent dessus, pas sur toi. Tu traverses la cuve à petits pas, la perche qui plie. Le canal débouche au sud.",
+            "Tu tends la perche, ils bondissent dessus — et l'un d'eux la prend dans ses pinces et ne lâche pas. Tu tires, il vient avec. Tu le secoues au bout de la perche jusqu'à ce qu'il retombe dans la cuve. Tu passes pendant qu'il se retourne.",
+            "1 naturel. Tu tends la perche, et ils l'ignorent : ils bondissent au-dessus. Tu recules à reculons, la perche en travers, jusqu'à ce que les murets se resserrent et qu'ils ne passent plus. Tu débouches au sud sans qu'un seul t'ait touché. La perche est mâchée. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "courir-le-canal",
+        label: "Courir le canal",
+        tags: ["fuite"],
+        sauteEtape: true,
+        passive: {
+          consequence:
+            "Tu cours. Ils bondissent, tu passes entre deux carapaces, une pince te frôle la manche. Le canal se resserre derrière la cuve et ils ne suivent pas : ils gardent leur cuve. Tu débouches au sud, un bassin plus loin que tu ne l'aurais cru. Le grincement, derrière, s'est tu.",
+        },
+      },
+    ],
+  },
+  {
+    /* LA GUÉRITE — le CAMPEMENT des Bassins (13/09), le seul toit de
+       l'environnement. Dormir coûte un palier d'Encroûté (`monteEncroute`) —
+       et l'Encroûté du seuil « connaît le chemin ». Ce n'est PAS un séjour :
+       le repos enchaîne sur l'aube (-2), où il dit « vas-y maintenant ».
+       ⚠️ REPLI D'IMAGE (`scene_salines_guerite_a`). */
+    id: "guerite",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    chainNext: "guerite-2",
+    narration: [
+      "Une cabane de planches au bord d'un bassin, la seule chose debout à des lieues qui ne soit pas de sel. Sur le seuil, un garde-bassin — un Encroûté, blanc jusqu'au cou, les yeux vifs dedans. « Tu cherches la sortie des Bassins. Tout le monde. Je connais le chemin par la croûte. Court. »",
+      "Derrière lui, la cabane a un toit, un lit de planches, une porte qui ferme. Le seul toit de l'environnement. Il a le temps. Il l'a toujours eu.",
+    ],
+    choices: [
+      {
+        id: "ecouter-raccourci",
+        label: "Écouter son raccourci",
+        nature: "social",
+        grantsSavoir: "savoir_heure_du_ver",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Il parle lentement, et ce qu'il dit tient en une phrase : « Le Ver passe sous la croûte à heure fixe. Quand le héron s'envole, c'est qu'il vient. Après, tu as le temps de traverser. Pas avant. » Il te regarde. « Tout le monde part avant. »",
+            "« Le Ver passe à heure fixe. Le héron s'envole juste avant. Après, la croûte est libre — un moment. » Il regarde le bassin d'en bas. « Tout le monde part avant. Moi, j'attends. »",
+            "Il parle, mais le sel lui tient la mâchoire et la moitié des mots restent dedans. Tu comprends « croûte », « court », « maintenant ». Tu ne comprends pas quand.",
+            "1 naturel. Il parle, et ce qu'il dit est faux — tu le sais parce que le sel sur sa bouche bouge autrement que ses mots. Il veut que tu restes. Il n'a personne. Tu hoches la tête. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "dormir-guerite",
+        label: "Dormir dans la guérite",
+        rest: true,
+        monteEncroute: true,
+        tags: ["citable"],
+      },
+      {
+        id: "repartir-sans-dormir",
+        label: "Repartir sans dormir",
+        passive: {
+          consequence:
+            "Tu ne t'assois pas. Il hoche la tête comme si c'était la bonne réponse, ou la seule. « Alors écoute au moins ça. »",
+        },
+      },
+    ],
+  },
+  {
+    /* « VAS-Y MAINTENANT » — F2 bis. Le raccourci de l'Encroûté est la route
+       du Ver (`appelleVer`) ; qui sait lire l'heure (le Perchoir, ou lui-même)
+       attend que le passage soit fait avant d'y aller — l'option informée
+       prend la place de l'aveugle, et n'appelle rien. ⚠️ REPLI D'IMAGE. */
+    id: "guerite-2",
+    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    narration: [
+      "Le garde-bassin se lève — la première fois que tu le vois debout. Il regarde le bassin d'en bas. Le héron y est, sur une patte. Puis le héron déplie ses ailes et s'envole. « Vas-y maintenant », dit l'Encroûté. Il ne le dit pas comme un conseil. Il le dit comme on lit l'heure.",
+    ],
+    choices: [
+      {
+        id: "prendre-raccourci",
+        label: "Prendre son raccourci",
+        sauteEtape: true,
+        appelleVer: true,
+        passive: {
+          consequence:
+            "Tu prends par la croûte, droit, comme il l'a montré. Le sel chante sous chaque pas. Tu gagnes un bassin entier — et derrière toi, à distance, une ondulation suit. Il t'a envoyé sur la route du Ver. Tout le monde y va.",
+        },
+      },
+      {
+        id: "attendre-puis-raccourci",
+        label: "Attendre l'heure, puis prendre le raccourci",
+        requiresSavoir: "savoir_heure_du_ver",
+        prendLaPlaceDe: "prendre-raccourci",
+        sauteEtape: true,
+        passive: {
+          consequence:
+            "Tu ne bouges pas. Le sel du bassin d'en bas bombe, une bosse longue passe sous l'endroit où était le héron, et repart vers l'île. Alors tu y vas — droit, par la croûte, dans son sillage encore tiède. Rien ne suit. Tu gagnes un bassin entier, et personne ne le sait.",
+        },
+      },
+      {
+        id: "demander-pourquoi-maintenant",
+        label: "Lui demander pourquoi maintenant",
+        nature: "social",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. « Parce que le héron. » Il montre le bassin vide. « Il s'envole quand ça vient. Tout le monde croit qu'il s'envole de peur. Il s'envole pour manger après. Toi aussi, tu peux passer après. Mais tout le monde part avant. Moi je reste. » Il te regarde. « Reste. »",
+            "« Le héron. Il s'envole quand ça vient. Après, c'est libre. » Il se rassoit. « Tout le monde part avant. Je le dis, et tout le monde part avant. »",
+            "« Parce que. » Il se rassoit et ferme les yeux. Le sel se referme sur ses paupières. Il ne dira rien de plus aujourd'hui.",
+            "1 naturel. « Parce que je m'ennuie. » Il sourit, et le sel de sa joue se fend. « Ils partent tous quand je le dis. Toi aussi. » Tu comprends qu'il compte. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "reprendre-la-marche",
+        label: "Reprendre la marche",
+        passive: {
+          consequence:
+            "Tu prends par les bassins, le long chemin, muret après muret. Derrière toi, il reste assis. Il a le temps.",
+        },
+      },
+    ],
+  },
+  {
+    /* LA FIN D'ÉTAPE NON ÉCRITE — la scène servie quand la traversée arrive
+       à une étape qui n'existe pas encore (les Salines, troisième
+       environnement). Nœud terminal de la démo : la vie s'arrête ICI, sans
        ligne au Registre. Elle vit dans SCENES pour que la reprise la
        retrouve par `sceneById`. Aucune mention de prototype dans la prose
        (règle du 12/08) : c'est le carton qui dit « à venir ». */
     id: "fin-etape-non-ecrite",
-    illustration: CROUTE_IMG,
+    illustration: BASSINS_IMG,
     terminal: true,
     finDemo: true,
     narration: [
-      "Tu descends la marche de pierre. En contrebas, des terrasses en gradins, pleines d'une eau plate qui ne reflète rien. Les Bassins. Le sel y est plus doux, dit-on — et plus patient.",
-      "Tu as traversé la Croûte vivant. Derrière toi, la croûte a cessé de bouger, et le cliquetis de plomb s'est tu.",
+      "Les murets s'abaissent, les bassins se resserrent, et devant toi le sel se remet à monter en plaques — des tables de cristal, blanches, sur lesquelles on marche comme sur du verre. Les Salines.",
+      "Tu as traversé les Bassins vivant. Derrière toi, le dernier bassin garde un doigt d'eau que tu n'as pas bu.",
     ],
-    choices: [{ id: "descendre-aux-bassins", label: "Descendre vers les Bassins" }],
+    choices: [{ id: "monter-vers-les-salines", label: "Monter vers les Salines" }],
   },
+
 ];
 
 /**
@@ -9537,7 +10503,16 @@ const LIEU_NOM: Record<string, string> = {
   statue: "La Statue",
   bouche: "La Bouche",
   radeau: "Le Radeau",
-  "fin-etape-non-ecrite": "Les Terrasses",
+  // LES BASSINS (16/09)
+  terrasses: "Les Terrasses",
+  "passerelle-rompue": "La Passerelle rompue",
+  "perchoir-du-heron": "Le Perchoir du Héron",
+  "bassin-des-lechards": "Le Bassin des Léchards",
+  "bassin-des-declares": "Le Bassin des Déclarés",
+  "cuve-fendue": "La Cuve fendue",
+  guerite: "La Guérite",
+  noria: "La Noria",
+  "fin-etape-non-ecrite": "Les Salines",
 };
 
 export function lieuNom(sceneId: string | undefined): string {
@@ -9716,6 +10691,9 @@ export type LiaisonCtx = {
   /** La zone qu'on traverse (13/09) : les Salines ont leurs propres
       ambiances, indices, libellés et vue de marche — jamais la bruyère. */
   zone?: "landes" | "salines";
+  /** L'ÉTAPE d'une zone à étages (16/09) : les Bassins n'ont ni les
+      ambiances ni la vue de marche de la Croûte. 0 = premier environnement. */
+  etape?: number;
 };
 
 type LiaisonVariant = {
@@ -10082,8 +11060,9 @@ function pickLiaisonAmbiance(ctx: LiaisonCtx | undefined, seed: number): string 
   // LES SALINES (13/09) : un pool à part, même mémoire anti-répétition.
   if (ctx?.zone === "salines") {
     const deja = ctx.dejaVues ?? [];
-    const frais = SALINES_AMBIANCES.filter((t) => !deja.includes(t));
-    const pool = frais.length ? frais : SALINES_AMBIANCES;
+    const base = ctx.etape === 1 ? SALINES_AMBIANCES_BASSINS : SALINES_AMBIANCES;
+    const frais = base.filter((t) => !deja.includes(t));
+    const pool = frais.length ? frais : base;
     return pool[Math.floor(seeded(seed + 3) * pool.length)];
   }
   // Anti-répétition (retour test 4/08 §2) : un ÉVÉNEMENT de voyage ne revient
@@ -10383,8 +11362,9 @@ export function makeLiaison(
   // La marche a SON visuel (retour playtest 24/07 : « on passe d'une scène à
   // l'autre sans marcher »), tiré par la graine (stable à la reprise). Fini le
   // portail figé entre deux lieux.
+  const walkPool = SALINES_WALK_PAR_ETAPE[ctx?.etape ?? 0] ?? SALINES_WALK_PAR_ETAPE[0];
   const walkImg = salines
-    ? SALINES_WALK[Math.floor(seeded(seed + 11) * SALINES_WALK.length)]
+    ? walkPool[Math.floor(seeded(seed + 11) * walkPool.length)]
     : illustrationDeMarche(amb) ?? pickWalkImage(optA, optB, seed, ctx?.from);
   return {
     id: `liaison:${optA}>${optB}`,
@@ -11399,6 +12379,14 @@ const SALINES_APPROACH: Record<string, string> = {
   radeau: "Vers un radeau sans eau",
   "passage-du-ver": "Vers la marche de pierre",
   terrasses: "Vers les gradins d'eau",
+  // LES BASSINS (16/09)
+  "passerelle-rompue": "Vers des pilotis au-dessus du sel",
+  "perchoir-du-heron": "Vers un oiseau blanc, immobile",
+  "bassin-des-lechards": "Vers des bêtes maigres qui lèvent la tête",
+  "bassin-des-declares": "Vers un cercle de silhouettes debout",
+  "cuve-fendue": "Vers une cuve de pierre fendue",
+  guerite: "Vers un toit de planches",
+  noria: "Vers une roue plantée dans le sel",
 };
 export function libelleOrientation(id: string): string {
   return APPROACH[id] ?? SALINES_APPROACH[id] ?? "Continuer";
@@ -11412,6 +12400,14 @@ const SALINES_INDICE: Record<string, string> = {
   statue: "une silhouette blanche, un bras tendu",
   bouche: "un cercle d'objets autour d'un trou",
   radeau: "des planches posées à plat, et un oiseau dessus",
+  // LES BASSINS (16/09)
+  "passerelle-rompue": "des pilotis, et des planches qui pendent dans le vide",
+  "perchoir-du-heron": "un oiseau blanc, seul, sur une patte",
+  "bassin-des-lechards": "des bêtes maigres, groupées, qui lèvent la tête",
+  "bassin-des-declares": "un cercle de silhouettes debout, figées en plein geste",
+  "cuve-fendue": "une cuve de pierre au fond d'un bassin, fendue du haut en bas",
+  guerite: "un toit de planches — le seul toit à des lieues",
+  noria: "une roue à godets, haute, prise dans le sel",
 };
 function indiceDeRoute(id: string): string | undefined {
   return INDICE_ROUTE[id] ?? SALINES_INDICE[id];
@@ -11428,6 +12424,14 @@ export const SALINES_APPROACH_NARRATION: Record<string, string> = {
   radeau: "Un carré de planches à plat sur le sel, et une forme grise qui ne bouge pas dessus.",
   "passage-du-ver": "La croûte remonte en pente douce, et au bout de la pente, une ligne de pierre grise : la fin du sel.",
   terrasses: "Le sel descend par marches. En bas, une eau plate qui ne reflète rien.",
+  // LES BASSINS (16/09) — chaque approche s'arrête AU SEUIL.
+  "passerelle-rompue": "Les pilotis grandissent, et les planches qui pendent au bout ne pendent pas : elles sont cassées.",
+  "perchoir-du-heron": "L'oiseau blanc ne bouge pas quand tu descends le muret. Il est plus grand que toi.",
+  "bassin-des-lechards": "Les bêtes lèvent la tête ensemble, puis viennent vers toi, sans se presser.",
+  "bassin-des-declares": "Les silhouettes sont debout, en cercle, et chacune a gardé un geste.",
+  "cuve-fendue": "Le sel autour de la cuve est piétiné. Beaucoup sont venus ici, et pas pour repartir.",
+  guerite: "Une cabane, un seuil, et quelqu'un d'assis dessus qui te regarde venir.",
+  noria: "La roue est plus haute que trois hommes. Le canal à ses pieds file droit vers le sud.",
 };
 export function approcheNarration(id: string): string | undefined {
   return APPROACH_NARRATION[id] ?? SALINES_APPROACH_NARRATION[id];
@@ -11444,6 +12448,19 @@ export const SALINES_AMBIANCES: string[] = [
   "Un Cristallin, seul, à cinquante pas, figé en pleine enjambée. Tu passes sans t'approcher. Il ne regarde pas vers toi — il regarde dans ta direction.",
   "Le sel est plus humide ici, plus sombre. Tes pas y laissent une trace qui se referme derrière toi, lentement, comme une bouche.",
   "L'île tremble à l'horizon, ni plus près ni plus loin qu'au premier pas. La Croûte ne se traverse pas : on l'use.",
+];
+
+/** Ambiances de marche des BASSINS (16/09) — les murets en gradins, les
+    passerelles, les Cristallins couchés : les invariants de l'environnement.
+    Servies quand `ctx.etape === 1`, même mémoire anti-répétition. */
+export const SALINES_AMBIANCES_BASSINS: string[] = [
+  "Les murets descendent par gradins, et tu descends avec eux. À chaque niveau, le sel est plus sombre — plus humide, plus vieux. Les premières ombres s'allongent derrière les murets.",
+  "Le long du muret, des Cristallins couchés, tous dans le même sens, la tête vers le fond du bassin. Ils regardaient l'eau descendre. Elle est descendue.",
+  "Une passerelle de bois enjambe un bassin à sec. Tu la prends. Les planches sonnent creux, et sous le creux, rien ne répond.",
+  "Ta gorge est sèche. Tu avales, et il n'y a rien à avaler. Le sel sur tes lèvres a le goût de l'eau qu'il a prise.",
+  "Entre deux murets, un grumeau de sel roule tout seul sur trois pas, puis s'arrête. Tu ne t'arrêtes pas.",
+  "L'ombre d'un muret tombe sur le sel, et c'est la première ombre depuis la Croûte. Tu marches dedans le temps qu'elle dure.",
+  "Un bassin vide, un autre, un autre. Ils sont descendus avec l'eau, un niveau par saison. Tu descends la saison suivante.",
 ];
 
 /** Le Geôlier en liaison, Salines (≤ 2 lignes de 37 colonnes, règle du 11/08).
@@ -11561,8 +12578,25 @@ export const TEMPETE_MARCHE = {
     "Le sel retombe. Là où ta main a balayé, deux rails de fer courent sous la croûte, droits vers l'île, polis comme s'ils servaient encore. Tu marchais dessus depuis le début.",
 };
 
-/** Vue de marche de la Croûte : son image d'établissement (voir CROUTE_IMG). */
-const SALINES_WALK: string[] = [CROUTE_IMG];
+/** Vue de marche PAR ÉTAPE : l'image d'établissement de l'environnement
+    qu'on traverse. Indexée par `LiaisonCtx.etape` (0 = la Croûte). */
+const SALINES_WALK_PAR_ETAPE: string[][] = [[CROUTE_IMG], [BASSINS_IMG]];
+
+/**
+ * LA SOIF SE DIT (Bassins, 16/09) — une ligne par palier, servie UNE fois par
+ * vie à l'arrivée où le palier est atteint. Comme l'Encroûté : jamais un
+ * chiffre, le corps le sent, les CTA le montrent (des mots qui blanchissent).
+ */
+export const SALINES_SOIF_LIGNES: Record<number, string> = {
+  1: "Ta langue colle. Tu avales, et il n'y a rien à avaler — le sel a pris l'eau de ta bouche avant celle des bassins.",
+  2: "Les mots te viennent plus lentement. Tu lis deux fois la même chose avant de comprendre, et ta gorge fait un bruit sec quand tu respires. Il te faut de l'eau. Il n'y en a pas ici.",
+  3: "Tu ne salives plus. Tes lèvres se fendent quand tu les ouvres, et chaque pas te coûte ce que le pas d'avant a pris. Les Cristallins couchés ont fini comme ça : la bouche ouverte vers le fond, à attendre.",
+};
+/** LA SOIF AU PALIER III — le Geôlier le constate, une fois par vie. */
+export const SALINES_SOIF_GEOLIER = "Tu as soif. Eux aussi avaient soif. Regarde comme ils attendent.";
+/** LA PLUME FRÉMIT (Bassins, 16/09) — servie juste avant que le Ver passe
+    dessous, à qui la porte. Elle ne dit pas où : elle dit quand. */
+export const PLUME_FREMIT = "Dans ta besace, la plume du héron se met à vibrer — une seconde, deux. Elle s'arrête. Le sol ne s'est pas encore arrêté, lui.";
 
 /** LA FIN D'ÉTAPE NON ÉCRITE — la scène servie quand `prochainPas` impose
     un lieu qui n'existe pas encore (voir `fin-etape-non-ecrite`). */

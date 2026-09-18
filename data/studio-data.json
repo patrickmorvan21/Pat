@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-16T13:59:38Z",
- "commit": "5df7741",
+ "genere": "2026-09-18T06:56:04Z",
+ "commit": "ec8c15e",
  "zones": [
   {
    "id": "landes",
@@ -8962,7 +8962,7 @@
     "fichier": "monstre_salines_ver_face_a_v3_b.png",
     "hash": "ff78c814",
     "taille": 19427,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8979,15 +8979,1179 @@
    ]
   },
   {
-   "id": "fin-etape-non-ecrite",
+   "id": "terrasses",
    "narration": [
-    "Tu descends la marche de pierre. En contrebas, des terrasses en gradins, pleines d'une eau plate qui ne reflète rien. Les Bassins. Le sel y est plus doux, dit-on — et plus patient.",
-    "Tu as traversé la Croûte vivant. Derrière toi, la croûte a cessé de bouger, et le cliquetis de plomb s'est tu."
+    "Le sel descend par marches : trois terrasses à sec, murets en gradins, et dans chacune, le long des bords, des Cristallins — couchés, cette fois, comme on se couche pour attendre. Entre eux roulent des grumeaux de sel gros comme le poing, qui ne sont pas tout à fait immobiles.",
+    "En haut, sous un auvent de planches, un Encroûté te regarde venir. Il lève une main blanche vers les gradins et dit, la bouche à peine ouverte : « Vas-y maintenant. » En contrebas, dans le dernier bassin, un héron ouvre les ailes et s'envole. Derrière les murets, les premières ombres depuis la Croûte."
    ],
    "choix": [
     {
-     "id": "descendre-aux-bassins",
-     "label": "Descendre vers les Bassins",
+     "id": "ramasser-une-motte",
+     "label": "Ramasser une motte blanche",
+     "type": "passif",
+     "consequence": "Le sel des terrasses se casse en mottes dures, blanches, sans grain. Tu en prends une. Elle est plus lourde qu'elle n'en a l'air — et elle sent l'eau. Une eau qu'il n'y a plus.",
+     "donneObjet": "sel-qui-garde"
+    },
+    {
+     "id": "regarder-les-couches",
+     "label": "Regarder les Cristallins couchés",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 10,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Ils ne sont pas tombés. Chacun s'est allongé de lui-même, les mains croisées, la bouche ouverte vers le fond du bassin — vers l'eau qu'ils attendaient. Et les grumeaux, à côté d'eux, sont des morceaux d'eux : la partie qui essayait encore de se relever.",
+      "reussite": "Ils ne sont pas tombés : ils se sont couchés, la bouche tournée vers le fond du bassin, là où l'eau était. Les grumeaux sont des morceaux d'eux.",
+      "echec": "Tu regardes trop longtemps. Un grumeau roule contre ta botte et s'y colle. Tu le décroches à l'ongle. Il en reste un peu.",
+      "funeste": "1 naturel. Tu te penches, et l'un des couchés a encore les yeux ouverts — secs, et ils te suivent. Tu recules trop vite, et le sel te retient la cheville le temps de te faire comprendre que tu as le choix. ♦ −2"
+     },
+     "nature": "exploration"
+    },
+    {
+     "id": "descendre-un-niveau",
+     "label": "Descendre d'un niveau",
+     "type": "passif",
+     "consequence": "Tu passes le muret. La terrasse d'en dessous est plus sombre, plus humide. Le sel y bouge — pas les grumeaux : quelque chose de plus long, dessous."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "terrasses-2",
+   "donneDecouverte": "d.heron_envole",
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "terrasses-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "terrasses-2",
+   "narration": [
+    "Le sel de la terrasse basse se soulève en boudins. Des Vermisseaux — les petits du Ver, longs comme un bras, blancs, sans yeux, qui sortent par dizaines de sous la croûte des bassins. Rapides. Ils vont vers ce qui est mouillé : ta bouche, tes yeux, le creux de tes mains."
+   ],
+   "choix": [
+    {
+     "id": "les-ecraser",
+     "label": "Les écraser",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu écrases le premier sous le talon, et les autres se figent — ils sentent. Trois, quatre : ils reculent en boudins sous la croûte. Le dernier laisse une trace humide qui file vers l'île. Ils ont appris d'où viennent les pieds.",
+      "reussite": "Tu écrases ceux qui montent, un par un, et les autres replongent. Le sel se referme sur eux. Tes bottes sont trempées d'une eau qui n'existe plus.",
+      "echec": "L'un remonte le long de ta jambe pendant que tu en écrases un autre, et te mord au flanc — une morsure ronde et froide. Ils replongent tous ensemble, comme sur un ordre. Ce qu'ils ont pris était mouillé.",
+      "funeste": "1 naturel. Ils te montent dessus par dizaines. Tu tombes sur le sel, et le sel te prend le dos pendant qu'ils prennent le reste. Tu t'arraches. Il y en a un dans ta manche, et tu ne le trouves pas. ♦ −2"
+     },
+     "nature": "physique",
+     "masqueSi": {
+      "objet": "sel-qui-garde"
+     }
+    },
+    {
+     "id": "jeter-le-sel",
+     "label": "Leur jeter le sel qui garde",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu écrases la motte et tu la jettes en pluie. Ils se retournent tous vers elle — vers le sel qui garde, qui les appelle mieux que ta peau. Ils s'y roulent et s'y figent, l'un après l'autre. Le bassin se tait. La motte est finie.",
+      "reussite": "Tu jettes la motte au milieu d'eux. Ils y vont, tous, et s'y collent : c'est du sel de chez eux, celui qui garde. Ils s'y figent. Tu passes derrière. La motte est finie.",
+      "echec": "La motte tombe trop loin. Une partie y va, l'autre continue vers toi. Tu recules sur le muret pendant qu'ils choisissent. Ils choisissent le sel. Il n'en reste rien.",
+      "funeste": "1 naturel. Tu jettes, ils hésitent, puis ils y vont — lentement, en te regardant sans yeux. Tu grimpes le muret à quatre pattes. Tu les regardes finir la motte sans toi. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeObjet": "sel-qui-garde",
+     "laisseObjet": "sel-qui-garde",
+     "horsDePortee": true
+    },
+    {
+     "id": "remonter-au-muret",
+     "label": "Remonter au muret",
+     "type": "passif",
+     "consequence": "Tu remontes le gradin d'un bond. Ils n'aiment pas la pierre : ils s'arrêtent au pied du muret, se tordent, et redescendent sous le sel. Tu contournes la terrasse par le haut, plus lentement, la bouche fermée.",
+     "tags": [
+      "fuite"
+     ]
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "vermisseaux",
+   "adversaireNom": "Les Vermisseaux",
+   "combat": true,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "terrasses"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "terrasses"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "passerelle-rompue",
+   "narration": [
+    "Deux bassins, et entre les deux une passerelle de planches sur pilotis. Elle s'arrête au tiers : les planches suivantes pendent dans le vide, et le fond du bassin, dessous, est fendu d'une tranchée fraîche. Tout le monde ici a compris ce qui passe dessous.",
+    "À gauche, un bassin plein à ras bord — pas d'eau : des grumeaux, serrés comme des œufs, et quand tu approches ils se tournent vers toi, tous, d'un même mouvement."
+   ],
+   "choix": [
+    {
+     "id": "sonder-perche",
+     "label": "Sonder avec la perche",
+     "type": "passif",
+     "consequence": "Tu plantes la perche entre deux planches. Le sol rend creux — puis, plus loin, il ne rend rien : la perche s'enfonce sans toucher. Ce qui a creusé la tranchée ne l'a pas refermée. Il repasse.",
+     "exigeObjet": "perche-sauniere"
+    },
+    {
+     "id": "regarder-bassin-comble",
+     "label": "Regarder le bassin comble",
+     "type": "passif",
+     "consequence": "Les grumeaux sont des morceaux de Cristallins — des mains, des doigts, un bout de mâchoire — cassés et roulés jusqu'à être ronds. Ils cherchent du vivant pour se recoller. Ils t'ont trouvé. Ils attendent que tu descendes."
+    },
+    {
+     "id": "s-engager",
+     "label": "S'engager sur les planches",
+     "type": "passif",
+     "consequence": "Tu poses le pied sur la première planche. Elle tient. La deuxième aussi. Sous la troisième, le sel bouge.",
+     "sortie": {
+      "toScene": "passerelle-rompue-2"
+     }
+    },
+    {
+     "id": "passerelle-intacte",
+     "label": "Prendre la passerelle intacte",
+     "type": "passif",
+     "consequence": "Tu prends la passerelle basse. Elle plie, elle tient, elle contourne le bassin comble par la droite. Les grumeaux te suivent des yeux qu'ils n'ont pas. Dessous, rien ne bouge : ce n'est pas par là qu'il passe.",
+     "sortie": {},
+     "prendLaPlaceDe": [
+      "s-engager"
+     ],
+     "exigeChoixFait": "tempete:passerelle"
+    }
+   ],
+   "pointsInteret": [],
+   "sejour": true,
+   "tempete": {
+    "apres": "Le sel retombe. Là où ta main a balayé, à droite : une deuxième passerelle — entière, basse, à demi prise dans le sel. Celle qu'on prenait avant. Elle contourne le bassin comble. Sans le vent, tu ne l'aurais jamais vue.",
+    "avant": "Le vent se lève depuis l'île et soulève le sel des bassins en nappe. Il vient droit sur la passerelle. Il n'y a nulle part où se mettre."
+   },
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "terrasses"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "passerelle-rompue-2",
+   "narration": [
+    "Au milieu de la passerelle, le sel du bassin se met à respirer. Une longue bosse remonte la tranchée, droit vers les pilotis, et la croûte se soulève par vagues sous les planches. Il passe. Il ne t'a pas senti — pas encore. Ce qu'il entend, c'est ce qui bouge et ce qui respire."
+   ],
+   "choix": [
+    {
+     "id": "retenir-souffle",
+     "label": "Retenir ton souffle",
+     "type": "passif",
+     "consequence": "Tu retiens. Le sel monte, s'arrête, redescend — au rythme de quelque chose d'énorme qui respire sous toi. Tu respires quand il respire. Il passe sous les pilotis sans s'arrêter, et la bosse s'éloigne vers l'île. Les planches ont tenu. Toi aussi.",
+     "miniJeuDemo": "breath",
+     "miniJeuHorsDemo": true,
+     "miniJeuEchec": "Tu respires trop tôt. La bosse s'arrête net sous les pilotis, et le bassin tout entier se soulève : une planche cède, tu passes à travers jusqu'à la cuisse, et le sel dessous est chaud comme une bête. Tu t'arraches avant qu'il ait fini de se retourner. Il repart. Il sait.",
+     "miniJeuEchecBlesse": true
+    },
+    {
+     "id": "courir-planches",
+     "label": "Courir sur les planches",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu cours, et les planches cèdent derrière toi, jamais devant. Tu sautes la dernière brèche pendant que la bosse arrive dessous, et tu retombes sur le muret. Il a plongé plus profond, comme on rate une bouchée.",
+      "reussite": "Tu cours. Les planches chantent, il vient, tu sautes les deux dernières. Tu retombes sur le muret. Derrière toi la passerelle plie, se redresse, et la bosse passe.",
+      "echec": "Tu cours, une planche cède : tu passes à travers jusqu'à la cuisse, et le sel dessous est chaud. Tu t'arraches, tu rampes le reste. La bosse passe sous l'endroit où tu étais. Ta jambe saigne dans le sel, et le sel boit.",
+      "funeste": "1 naturel. La passerelle s'effondre sous tes pieds en pleine course. Tu tombes sur la tranchée, et la tranchée se soulève. Tu remontes le muret sans savoir comment, la moitié du dos ouverte par le sel. Il n'a pas eu besoin de te prendre. ♦ −2"
+     },
+     "nature": "physique",
+     "masqueSi": {
+      "objet": "perche-sauniere"
+     }
+    },
+    {
+     "id": "planter-perche",
+     "label": "Planter la perche et attendre",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu plantes la perche dans le sel du bassin, à côté des pilotis, et tu te fais immobile derrière elle. La bosse vient, ralentit — elle sent la perche vibrer, pas toi — et la contourne. Elle s'éloigne vers l'île. Tu as compris comment on faisait, avant.",
+      "reussite": "Tu plantes la perche et tu ne bouges plus. La bosse vient, s'arrête sous elle, la fait vibrer, et repart. C'est la perche qu'il a sentie. Tu traverses quand le sel ne respire plus.",
+      "echec": "Tu plantes, tu attends. La bosse s'arrête sous la perche et la fait tourner dans ta main — puis lâche. Tu traverses pendant qu'il cherche encore ce qui vibrait. La perche est tordue. Elle tient.",
+      "funeste": "1 naturel. Tu plantes trop tard. La bosse remonte sous la perche, la tord, et le sel jaillit jusqu'aux planches. Tu traverses à quatre pattes pendant qu'il se retourne. Il n'a pas senti toi : il a senti la perche. C'est ce qui t'a sauvé. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeObjet": "perche-sauniere",
+     "horsDePortee": true
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "ver-de-croute",
+   "adversaireNom": "Le Ver, dessous",
+   "combat": true,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "terrasses"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "perchoir-du-heron",
+   "narration": [
+    "Un bassin rond, plus profond que les autres, à sec jusqu'à une flaque de saumure au centre. Debout dans la flaque, sur une patte, un héron — immense, blanc, plus haut que toi. Il ne bouge pas. Il ne te regarde pas. Il regarde le sel à côté de lui, comme on regarde une porte.",
+    "Autour du bassin, des Cristallins couchés, tous la tête tournée vers l'oiseau. Ils ont attendu qu'il bouge. Lui a attendu autre chose."
+   ],
+   "choix": [
+    {
+     "id": "observer-ce-quil-attend",
+     "label": "Observer ce qu'il attend",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Il ne pêche pas. Il attend le passage — le Ver passe sous ce bassin à heure fixe, et le héron mange ce que la croûte retournée laisse en surface. Il ne s'envole pas de peur : il s'envole pour ne pas être dessus. Tu apprends à lire l'heure à son cou.",
+      "reussite": "Il attend le Ver. Il passe sous ce bassin, régulier comme une marée, et le héron s'envole juste avant, pour manger ce qu'il retourne. Son cou se tend un peu avant : c'est l'heure qui approche.",
+      "echec": "Tu ne comprends pas ce qu'il attend. Mais tu le regardes assez longtemps pour que le sel te trouve les chevilles. Tu bouges. Il n'a pas bougé.",
+      "funeste": "1 naturel. Tu le fixes, et il tourne la tête vers toi — la seule chose qu'il n'avait jamais faite. Puis il regarde de nouveau le sel. Tu n'es pas ce qu'il attend. Tu es entre lui et ça. ♦ −2"
+     },
+     "nature": "exploration",
+     "donneSavoir": "savoir_heure_du_ver"
+    },
+    {
+     "id": "approcher-pas-a-pas",
+     "label": "Approcher pas à pas",
+     "type": "passif",
+     "consequence": "Tu descends dans le bassin. Le sel craque sous toi, et le héron ne tourne pas la tête. À dix pas, tu vois ses yeux : ils ne clignent pas. À cinq, le sel entre vous se met à bomber."
+    },
+    {
+     "id": "attendre-quil-bouge",
+     "label": "Attendre qu'il bouge",
+     "type": "passif",
+     "consequence": "Tu t'assois sur le muret. Le temps passe comme il passe ici : en sel. Tes bottes blanchissent. Le héron ne bouge pas. Puis son cou se tend.",
+     "monteEncroute": true
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "perchoir-du-heron-2",
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "terrasses"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "perchoir-du-heron-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "perchoir-du-heron-2",
+   "narration": [
+    "Le héron déplie ses ailes — trois fois ta largeur — et s'envole sans un cri, à la verticale, lourd, blanc. Dessous, là où il était, la croûte bombe. Une bosse longue traverse le bassin sous la flaque ; la flaque se vide dans la fente et se referme. Tu n'as pas bougé.",
+    "Sur le sel, une plume, plus longue que ton bras, raide comme si elle était en sel elle aussi."
+   ],
+   "choix": [
+    {
+     "id": "ramasser-plume",
+     "label": "Ramasser la plume",
+     "type": "passif",
+     "consequence": "Tu la prends. Elle ne pèse rien, et elle vibre dans ta main — une seconde, puis plus rien. La bosse est déjà loin. Elle a vibré avant que tu la voies partir.",
+     "donneObjet": "plume-du-heron"
+    },
+    {
+     "id": "suivre-la-bosse",
+     "label": "Suivre la bosse du regard",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 10,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Elle va vers l'île — et elle tourne. Elle repasse par les bassins, un par un, dans un ordre : celui-ci, la passerelle, la cuve. Il fait sa ronde. Tu sais maintenant sous quels bassins il passe, et dans quel sens.",
+      "reussite": "Elle traverse le bassin, passe sous le muret et repart vers l'île en s'enfonçant. Elle ne va pas droit : elle tourne. Il fait une ronde.",
+      "echec": "Tu la suis des yeux et tu la perds au premier muret. Quand tu baisses les yeux, le sel a monté sur tes bottes pendant que tu regardais ailleurs.",
+      "funeste": "1 naturel. Tu la suis, et elle s'arrête. Sous toi. Le sel bombe entre tes pieds, et tu cesses de respirer sans l'avoir décidé. Elle repart. Tu as le goût du sel dans la bouche, et tu ne sais pas quand tu l'as avalé. ♦ −2"
+     },
+     "nature": "exploration"
+    },
+    {
+     "id": "repartir-perchoir",
+     "label": "Repartir",
+     "type": "passif",
+     "consequence": "Tu remontes le muret. Le bassin est vide maintenant — plus de héron, plus de flaque. Les Cristallins couchés ont toujours la tête tournée vers l'endroit où il était."
+    }
+   ],
+   "pointsInteret": [],
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "terrasses"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "perchoir-du-heron"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "bassin-des-lechards",
+   "narration": [
+    "Un bassin large, presque plat. Une harde de bêtes maigres, hautes sur pattes, au poil ras et gris — des Léchards. Elles lèvent la tête ensemble quand tu arrives, puis viennent. Pas pour mordre : la première tend le cou et te lèche le poignet. Le sel de ta sueur.",
+    "Elles connaissent l'eau, dit-on. Elles savent surtout où on l'a perdue."
+   ],
+   "choix": [
+    {
+     "id": "suivre-la-harde",
+     "label": "Suivre la harde",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Elles te lâchent le poignet et repartent en file, et tu les suis. Elles longent les murets par le côté de l'ombre, s'arrêtent où le sel est sombre, grattent. Dessous, l'eau affleure. Elles boivent. Tu sais où elles vont, maintenant — et par où on approche l'eau sans bruit : par leur côté.",
+      "reussite": "Elles repartent en file et tu les suis. Elles longent l'ombre des murets, grattent là où le sel est sombre : l'eau affleure dessous. Elles boivent. Tu apprends leur côté.",
+      "echec": "Tu les suis, elles accélèrent. Au troisième muret tu les perds. Le sel est plus dur ici, et tu es plus loin de tout.",
+      "funeste": "1 naturel. Tu les suis, et elles te mènent en rond, trois fois autour du même bassin, jusqu'à ce que le sel te prenne les semelles. Elles s'arrêtent enfin, et te lèchent. Elles t'ont amené où elles mangent. ♦ −2"
+     },
+     "nature": "exploration",
+     "donneSavoir": "savoir_eau_lechards"
+    },
+    {
+     "id": "chasser-un-lechard",
+     "label": "Chasser un léchard",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu en attrapes un par le cou. Il ne se débat pas : il te lèche la main. La harde s'arrête, te regarde, et attend. Tu le lâches. Il retourne à sa place. Ils ont compris que tu ne mangeais pas.",
+      "reussite": "Tu en attrapes un. Il est léger, plus léger qu'une bête, et il te lèche la main jusqu'à ce que tu le lâches. Ils ne fuient pas. Ils n'ont rien à perdre que le sel.",
+      "echec": "Tu cours, ils courent, et sur le sel ils vont plus vite que toi. Tu tombes sur un genou et le sel le mord. Ils reviennent te lécher le genou.",
+      "funeste": "1 naturel. Tu en attrapes un et tu tombes avec, sur le sel, et le sel te prend le côté. La harde vient. Ils te lèchent — le visage, les mains, tout ce qui suinte. Ils sont patients. Tu te relèves blanc. ♦ −2"
+     },
+     "nature": "physique"
+    },
+    {
+     "id": "laisser-lecher",
+     "label": "Les laisser lécher",
+     "type": "passif",
+     "consequence": "Tu tends les bras. Elles lèchent. Le sel part de ta peau — et revient, plus fin, là où leur langue est passée. Elles repartent quand tu n'as plus rien à donner. Tu les suis un moment, de loin.",
+     "monteEncroute": true
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "bassin-des-lechards-2",
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "terrasses"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "bassin-des-lechards-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "bassin-des-lechards-2",
+   "narration": [
+    "La harde s'arrête au fond du bassin, où le sel est gris et mou. Elles grattent des sabots, et sous le gris, l'eau affleure — une pellicule, pas plus, salée mais moins. Elles boivent à tour de rôle, sans se presser. Il y a de la place."
+   ],
+   "choix": [
+    {
+     "id": "boire-avec-eux",
+     "label": "Boire avec eux",
+     "type": "passif",
+     "consequence": "Tu t'agenouilles entre deux bêtes et tu bois ce qui affleure. Salé, tiède, à peine de l'eau. Ta gorge se desserre. Un léchard te lèche l'oreille pendant que tu bois. On partage.",
+     "soif": -1
+    },
+    {
+     "id": "creuser-plus-profond",
+     "label": "Creuser plus profond",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu creuses avec les mains là où elles ont gratté, et à deux paumes l'eau monte — claire, froide. Tu bois jusqu'à ce que ça fasse mal. Les léchards attendent leur tour derrière toi. Tu leur laisses le trou.",
+      "reussite": "Tu creuses avec les mains. À deux paumes, l'eau monte, moins salée. Tu bois long. La harde attend que tu finisses.",
+      "echec": "Tu creuses, et le trou se remplit de sel avant l'eau. Tes mains sont blanches jusqu'aux poignets. Les léchards te lèchent les doigts.",
+      "funeste": "1 naturel. Tu creuses, et sous le gris ce n'est pas de l'eau : c'est la bouche d'un Cristallin couché, ouverte, pleine de saumure. Tu as bu avant de voir. Le goût ne part pas. ♦ −2"
+     },
+     "nature": "exploration",
+     "soif": -2
+    },
+    {
+     "id": "remplir-tes-mains",
+     "label": "Remplir tes mains et repartir",
+     "type": "passif",
+     "consequence": "Tu prends ce que tes mains tiennent d'eau et tu repars. À vingt pas il n'en reste rien : le sel de tes paumes l'a bue. Tu lèches tes paumes. Les léchards font pareil."
+    }
+   ],
+   "pointsInteret": [],
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "terrasses"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "bassin-des-lechards"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "bassin-des-declares",
+   "narration": [
+    "Un bassin où les Cristallins ne sont pas couchés. Debout, en cercle, chacun figé dans un geste — un poing levé, un doigt sur la bouche, une tête penchée vers le sel, une paume tendue vers l'autre. Des Déclarés : ils ont dit ce qu'ils étaient avec le corps, avant de cesser.",
+    "Tu reconnais un geste. C'est celui que le Geôlier a vu en toi."
+   ],
+   "choix": [
+    {
+     "id": "toucher-courage",
+     "label": "Toucher celle qui lève le poing",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "toucher-courageToucher celle qui lève le poingsurnaturelCOURAGEtoucher-la-plus-procheINSTINCTlève le poing",
+      "reussite": "",
+      "echec": "",
+      "funeste": ""
+     },
+     "nature": "surnaturel",
+     "fixation": true,
+     "exigeDominante": "COURAGE",
+     "prendLaPlaceDe": [
+      "toucher-la-plus-proche"
+     ]
+    },
+    {
+     "id": "toucher-ruse",
+     "label": "Toucher celle au doigt sur la bouche",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "toucher-ruseToucher celle au doigt sur la bouchesurnaturelRUSEtoucher-la-plus-procheINSTINCTtient un doigt sur la bouche",
+      "reussite": "",
+      "echec": "",
+      "funeste": ""
+     },
+     "nature": "surnaturel",
+     "fixation": true,
+     "exigeDominante": "RUSE",
+     "prendLaPlaceDe": [
+      "toucher-la-plus-proche"
+     ]
+    },
+    {
+     "id": "toucher-instinct",
+     "label": "Toucher celle qui penche la tête",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "toucher-instinctToucher celle qui penche la têtesurnaturelINSTINCTtoucher-la-plus-procheINSTINCTpenche la tête vers le sel",
+      "reussite": "",
+      "echec": "",
+      "funeste": ""
+     },
+     "nature": "surnaturel",
+     "fixation": true,
+     "exigeDominante": "INSTINCT",
+     "prendLaPlaceDe": [
+      "toucher-la-plus-proche"
+     ]
+    },
+    {
+     "id": "toucher-empathie",
+     "label": "Toucher celle qui tend la paume",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "toucher-empathieToucher celle qui tend la paumesurnaturelEMPATHIEtoucher-la-plus-procheINSTINCTtend la paume",
+      "reussite": "",
+      "echec": "",
+      "funeste": ""
+     },
+     "nature": "surnaturel",
+     "fixation": true,
+     "exigeDominante": "EMPATHIE",
+     "prendLaPlaceDe": [
+      "toucher-la-plus-proche"
+     ]
+    },
+    {
+     "id": "toucher-la-plus-proche",
+     "label": "Toucher la plus proche",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "toucher-la-plus-procheToucher la plus prochesurnaturelINSTINCTest la plus proche",
+      "reussite": "",
+      "echec": "",
+      "funeste": ""
+     },
+     "nature": "surnaturel",
+     "fixation": true
+    },
+    {
+     "id": "passer-entre-elles",
+     "label": "Passer entre elles",
+     "type": "passif",
+     "consequence": "Tu passes au milieu du cercle sans rien toucher. Les gestes ne te suivent pas : tu les traverses, et chacun te dit quelque chose que tu ne voulais pas entendre. Tu sors du cercle libre. Un peu plus fragile qu'en entrant, sans savoir de quoi."
+    },
+    {
+     "id": "lire-les-gestes",
+     "label": "Lire les gestes",
+     "type": "passif",
+     "consequence": "Le poing : celui-ci a tenu. Le doigt sur la bouche : celui-ci a menti pour tenir. La tête penchée : celui-ci a entendu venir. La paume : celui-ci a demandé. Ils ont tous cessé quand même. Le geste ne sauve pas — il dit ce qu'on a été en cessant."
+    }
+   ],
+   "pointsInteret": [],
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "terrasses"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "cuve-fendue",
+   "narration": [
+    "Une cuve de pierre au fond d'un bassin, haute comme un homme, fendue du haut en bas. Par la fente, on voit qu'elle tient encore un fond de saumure — un doigt, deux, qui luisent. Autour, le sel est piétiné : beaucoup sont venus boire ici. Certains sont encore là, couchés le long de la cuve, la bouche vers la fente."
+   ],
+   "choix": [
+    {
+     "id": "regarder-la-fente",
+     "label": "Regarder la fente",
+     "type": "passif",
+     "consequence": "La fente n'est pas une cassure : la cuve est en tessons, une vingtaine, tenus par le sel qui les a soudés — mal. Ils s'emboîtaient. On a dû la casser pour la vider plus vite. La saumure fuit par le bas, goutte à goutte, depuis des saisons."
+    },
+    {
+     "id": "tourner-autour",
+     "label": "Tourner autour de la cuve",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 10,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Derrière, à l'abri du vent, des trous ronds dans le sel, chacun de la taille d'un poing, en cercle autour de la cuve. Des terriers. Ce qui les a creusés vit dans la saumure et sort quand on approche. Tu sais par où ne pas venir.",
+      "reussite": "Derrière la cuve, des trous ronds dans le sel, en cercle. Des terriers. Quelque chose garde l'eau et sort par là quand on s'approche.",
+      "echec": "Tu tournes, et tu marches sur quelque chose qui craque et se tord sous ta botte. Tu recules. Le sel se referme. Le tour n'est pas fini.",
+      "funeste": "1 naturel. Tu tournes, et le sel se soulève sous ton pied — un dos rond, dur, et des pattes. Tu tombes en arrière contre la cuve. Ils sortent tous. ♦ −2"
+     },
+     "nature": "exploration"
+    },
+    {
+     "id": "approcher-pour-boire",
+     "label": "Approcher pour boire",
+     "type": "passif",
+     "consequence": "Tu t'approches de la fente. La saumure sent le métal et l'eau. À un pas, le sel devant la cuve se soulève — pas dessous : dessus."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "cuve-fendue-2",
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "terrasses"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "cuve-fendue-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "cuve-fendue-2",
+   "narration": [
+    "Ils sortent du sel autour de la cuve par bonds — des Sauteurs de saumure, des crustacés hauts sur pattes, gros comme des chiens, la carapace blanche de sel et les yeux sur tiges. Ils ne t'attaquent pas : ils se mettent entre toi et la fente, et bondissent sur tout ce qui approche. Ils gardent l'eau."
+   ],
+   "choix": [
+    {
+     "id": "frapper-le-premier",
+     "label": "Frapper le premier qui bondit",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu frappes le premier en plein bond, il retombe sur le dos, pattes en l'air, et les autres reculent devant lui. Tu passes. Ils bondissent derrière toi sur le sel vide. La cuve est à toi le temps d'un souffle.",
+      "reussite": "Tu en frappes un en plein bond. Il retombe sur le dos et se débat. Les autres hésitent. Tu passes pendant qu'ils hésitent.",
+      "echec": "Tu frappes, tu rates, et l'un d'eux te retombe sur l'épaule, pinces ouvertes. Il te prend un morceau de peau avec le sel. Tu le décroches en criant, et ils se remettent entre toi et l'eau.",
+      "funeste": "1 naturel. Deux te sautent dessus en même temps, et tu tombes sous eux, la carapace contre la joue. Les pinces cherchent ce qui est mouillé : les yeux, la bouche. Tu roules hors de portée le visage en sang. Ils gardent l'eau. ♦ −2"
+     },
+     "nature": "physique",
+     "masqueSi": {
+      "savoir": "savoir_eau_lechards"
+     }
+    },
+    {
+     "id": "approcher-cote-lechards",
+     "label": "Approcher du côté des Léchards",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu contournes par l'ombre du muret, comme la harde, et tu viens à la cuve par le côté où le sel est sombre. Les Sauteurs regardent devant. Tu es derrière eux, à la fente, avant qu'ils aient tourné les yeux. Ils ne gardent que le devant.",
+      "reussite": "Tu contournes par l'ombre, du côté sombre, comme les Léchards. Les Sauteurs surveillent le devant. Tu arrives à la fente par derrière.",
+      "echec": "Tu contournes, et l'un d'eux te voit. Ils se retournent tous, bondissent — et dans le sel sombre, ils s'enlisent. Tu recules avant qu'ils ne sortent. La fente est à trois pas, et trois carapaces devant.",
+      "funeste": "1 naturel. Tu contournes, et le côté sombre est celui de leurs terriers. Ils sortent autour de toi. Tu remontes le muret à reculons sans qu'un seul t'ait touché : ils ne quittent pas l'eau. Tu la vois d'en haut. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeSavoir": "savoir_eau_lechards",
+     "horsDePortee": true
+    },
+    {
+     "id": "reculer-hors-portee",
+     "label": "Reculer hors de leur portée",
+     "type": "passif",
+     "consequence": "Tu recules. Ils ne suivent pas : trois pas de la cuve, et ils s'arrêtent, yeux sur tiges tournés vers toi. Tu restes à trois pas. L'eau est de leur côté.",
+     "tags": [
+      "fuite"
+     ]
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "cuve-fendue-3",
+   "adversaire": "sauteurs-de-saumure",
+   "adversaireNom": "Les Sauteurs de saumure",
+   "combat": true,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "terrasses"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "cuve-fendue-3"
+   ],
+   "mèneIci": [
+    "cuve-fendue"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "cuve-fendue-3",
+   "narration": [
+    "La cuve est devant toi, ouverte. Par la fente, la saumure luit au fond — un doigt d'eau, pas plus, et elle fuit par le bas. Autour, les tessons cassés tiennent debout par le sel qui les soude. On voit encore où chacun allait."
+   ],
+   "choix": [
+    {
+     "id": "remonter-tessons",
+     "label": "Remonter les tessons",
+     "type": "passif",
+     "consequence": "Le dernier tesson entre à sa place et la fente se ferme. La saumure cesse de fuir. Ce qui restait au fond monte d'un doigt, puis de deux — tout ce que la cuve gardait dans ses joints. Tu bois à deux mains, longtemps. Ta gorge se rouvre. Ta bouche a le goût du métal. Elle n'a plus le goût du sel.",
+     "miniJeuDemo": "assemble",
+     "miniJeuHorsDemo": true,
+     "miniJeuEchec": "Les tessons ne trouvent pas leur place assez vite. La saumure fuit par le bas, et le fond de la cuve blanchit sous tes yeux. Il en reste une pellicule, que tu lèches sur la pierre. Le sel de la cuve te reste aux lèvres.",
+     "soif": -3
+    },
+    {
+     "id": "boire-a-la-fente",
+     "label": "Boire à même la fente",
+     "type": "passif",
+     "consequence": "Tu passes la bouche par la fente et tu bois ce que tu peux atteindre : deux gorgées de saumure épaisse. Ta gorge se desserre. Le sel, lui, te reste sur les lèvres, dans la bouche, sur les dents. Il commence là.",
+     "soif": -1,
+     "monteEncroute": true,
+     "masqueSiChoixFait": [
+      "remonter-tessons"
+     ]
+    },
+    {
+     "id": "laisser-la-cuve",
+     "label": "Laisser la cuve",
+     "type": "passif",
+     "consequence": "Tu laisses la cuve. Derrière toi, la saumure fuit goutte à goutte pour ceux qui viendront après. Il y en aura.",
+     "sortie": {}
+    }
+   ],
+   "pointsInteret": [],
+   "sejour": true,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "terrasses"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "cuve-fendue-2"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "noria",
+   "narration": [
+    "Une roue à godets, plus haute que trois hommes, plantée au bord d'un canal à sec qui file vers le sud entre deux murets. Elle est figée par le sel jusqu'à l'axe. Sur l'axe, un logement carré : la manivelle qui la tournait est encore dedans, prise dans le sel comme dans du plomb. Le canal est droit. Il coupe tous les bassins."
+   ],
+   "choix": [
+    {
+     "id": "crocheter-logement",
+     "label": "Crocheter le logement de l'axe",
+     "type": "passif",
+     "consequence": "Le sel du logement cède par écailles, une par une, jusqu'à ce que la tête carrée bouge. Tu tires : la manivelle sort d'un coup, et la roue tourne d'un cran avec un grincement qui traverse tous les bassins. Tu l'as. Quelque chose l'a entendue aussi.",
+     "donneObjet": "manivelle-passeurs",
+     "miniJeuDemo": "pick",
+     "miniJeuHorsDemo": true,
+     "miniJeuEchec": "Le sel ne cède pas — tu casses un ongle sur la tête carrée, et le logement reste plein. La roue n'a pas bougé. La manivelle non plus.",
+     "appelleVer": true,
+     "masqueSiChoixFait": [
+      "forcer-la-roue"
+     ]
+    },
+    {
+     "id": "forcer-la-roue",
+     "label": "Forcer la roue",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu prends la roue à deux mains et tu pèses. Le sel de l'axe éclate en plaques, la roue tourne d'un quart, et la manivelle saute de son logement sur le sel. Tu la ramasses. Le grincement s'est entendu jusqu'à l'île. Tant pis.",
+      "reussite": "Tu pèses sur la roue de tout ton poids. Le sel éclate, elle tourne d'un cran, la manivelle sort de son logement. Tu la prends. Le grincement file jusqu'à l'île.",
+      "echec": "Tu pèses, le sel tient, et c'est ton épaule qui cède — un craquement dedans, chaud. La roue n'a pas bougé. Tu recules en tenant ton bras.",
+      "funeste": "1 naturel. La roue bouge d'un coup, trop, et un godet te prend au passage et te jette sur le sel. Tu te relèves le dos râpé. La manivelle est toujours dans son logement, et la roue s'est refigée un cran plus loin. ♦ −2"
+     },
+     "nature": "physique",
+     "donneObjet": "manivelle-passeurs",
+     "appelleVer": true,
+     "masqueSiChoixFait": [
+      "crocheter-logement"
+     ]
+    },
+    {
+     "id": "descendre-le-canal",
+     "label": "Descendre le canal",
+     "type": "passif",
+     "consequence": "Tu enfonces la manivelle dans le logement et tu tournes. La roue prend, godet après godet, et le sel du canal se fend sur toute sa longueur : il est creux dessous, et droit. Tu descends dedans. Il coupe tous les bassins. Le grincement t'accompagne.",
+     "sortie": {
+      "toScene": "noria-2"
+     },
+     "exigeObjet": "manivelle-passeurs",
+     "prendLaPlaceDe": [
+      "laisser-la-roue"
+     ]
+    },
+    {
+     "id": "laisser-la-roue",
+     "label": "Laisser la roue",
+     "type": "passif",
+     "consequence": "Tu laisses la roue à son sel. Le canal reste fermé. Ce qui l'a entendue grincer, s'il y a eu quelque chose, se souviendra de l'endroit.",
+     "sortie": {}
+    }
+   ],
+   "pointsInteret": [],
+   "sejour": true,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "terrasses"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "noria-2",
+   "narration": [
+    "Le canal est un couloir de sel entre deux murets, droit, à l'ombre pour la première fois. Au tiers, il s'élargit en cuve, et la cuve est pleine de Sauteurs — les carapaces blanches serrées comme des pavés. Ils se tournent tous vers toi. Derrière eux, le canal continue. Il n'y a pas d'autre côté."
+   ],
+   "choix": [
+    {
+     "id": "frapper-a-la-manivelle",
+     "label": "Frapper à la manivelle",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. La manivelle est lourde et le fer sonne sur les carapaces. Tu en fends deux, et les autres s'écartent contre les murets, pinces levées, pour te laisser le milieu. Tu passes entre deux rangs qui te regardent. Le canal débouche au sud, un bassin plus loin.",
+      "reussite": "Tu frappes à la manivelle. Le fer fend une carapace, une autre, et les Sauteurs s'écartent le long des murets. Tu passes au milieu. Le canal débouche au sud, un bassin plus loin.",
+      "echec": "Tu frappes, et une pince te prend l'avant-bras pendant que tu lèves la manivelle. Tu la dégages en arrachant. Tu passes en courant, le bras contre la poitrine. Le canal débouche au sud.",
+      "funeste": "1 naturel. Ils bondissent tous en même temps, et tu tombes dans la cuve, sous les carapaces. Les pinces cherchent ce qui est mouillé. Tu te dégages à coups de manivelle, à l'aveugle, et tu sors du canal au sud le visage ouvert. ♦ −2"
+     },
+     "nature": "physique",
+     "sauteEtape": true,
+     "masqueSi": {
+      "objet": "perche-sauniere"
+     }
+    },
+    {
+     "id": "tenir-au-bout-de-la-perche",
+     "label": "Les tenir au bout de la perche",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu tiens la perche devant toi, pointe basse, et tu avances. Ils bondissent sur la pointe — pas sur toi. Chaque bond la fait plier, et tu avances d'un pas. Tu traverses la cuve sans qu'une pince t'ait touché. Le canal débouche au sud.",
+      "reussite": "Tu tends la perche et tu avances. Ils bondissent dessus, pas sur toi. Tu traverses la cuve à petits pas, la perche qui plie. Le canal débouche au sud.",
+      "echec": "Tu tends la perche, ils bondissent dessus — et l'un d'eux la prend dans ses pinces et ne lâche pas. Tu tires, il vient avec. Tu le secoues au bout de la perche jusqu'à ce qu'il retombe dans la cuve. Tu passes pendant qu'il se retourne.",
+      "funeste": "1 naturel. Tu tends la perche, et ils l'ignorent : ils bondissent au-dessus. Tu recules à reculons, la perche en travers, jusqu'à ce que les murets se resserrent et qu'ils ne passent plus. Tu débouches au sud sans qu'un seul t'ait touché. La perche est mâchée. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeObjet": "perche-sauniere",
+     "horsDePortee": true,
+     "sauteEtape": true
+    },
+    {
+     "id": "courir-le-canal",
+     "label": "Courir le canal",
+     "type": "passif",
+     "consequence": "Tu cours. Ils bondissent, tu passes entre deux carapaces, une pince te frôle la manche. Le canal se resserre derrière la cuve et ils ne suivent pas : ils gardent leur cuve. Tu débouches au sud, un bassin plus loin que tu ne l'aurais cru. Le grincement, derrière, s'est tu.",
+     "tags": [
+      "fuite"
+     ],
+     "sauteEtape": true
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "sauteurs-de-saumure",
+   "adversaireNom": "Les Sauteurs de saumure",
+   "combat": true,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "terrasses"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "guerite",
+   "narration": [
+    "Une cabane de planches au bord d'un bassin, la seule chose debout à des lieues qui ne soit pas de sel. Sur le seuil, un garde-bassin — un Encroûté, blanc jusqu'au cou, les yeux vifs dedans. « Tu cherches la sortie des Bassins. Tout le monde. Je connais le chemin par la croûte. Court. »",
+    "Derrière lui, la cabane a un toit, un lit de planches, une porte qui ferme. Le seul toit de l'environnement. Il a le temps. Il l'a toujours eu."
+   ],
+   "choix": [
+    {
+     "id": "ecouter-raccourci",
+     "label": "Écouter son raccourci",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Il parle lentement, et ce qu'il dit tient en une phrase : « Le Ver passe sous la croûte à heure fixe. Quand le héron s'envole, c'est qu'il vient. Après, tu as le temps de traverser. Pas avant. » Il te regarde. « Tout le monde part avant. »",
+      "reussite": "« Le Ver passe à heure fixe. Le héron s'envole juste avant. Après, la croûte est libre — un moment. » Il regarde le bassin d'en bas. « Tout le monde part avant. Moi, j'attends. »",
+      "echec": "Il parle, mais le sel lui tient la mâchoire et la moitié des mots restent dedans. Tu comprends « croûte », « court », « maintenant ». Tu ne comprends pas quand.",
+      "funeste": "1 naturel. Il parle, et ce qu'il dit est faux — tu le sais parce que le sel sur sa bouche bouge autrement que ses mots. Il veut que tu restes. Il n'a personne. Tu hoches la tête. ♦ −2"
+     },
+     "nature": "social",
+     "donneSavoir": "savoir_heure_du_ver"
+    },
+    {
+     "id": "dormir-guerite",
+     "label": "Dormir dans la guérite",
+     "type": "repos",
+     "tags": [
+      "citable"
+     ],
+     "repos": true,
+     "monteEncroute": true
+    },
+    {
+     "id": "repartir-sans-dormir",
+     "label": "Repartir sans dormir",
+     "type": "passif",
+     "consequence": "Tu ne t'assois pas. Il hoche la tête comme si c'était la bonne réponse, ou la seule. « Alors écoute au moins ça. »"
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "guerite-2",
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "terrasses"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "guerite-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "guerite-2",
+   "narration": [
+    "Le garde-bassin se lève — la première fois que tu le vois debout. Il regarde le bassin d'en bas. Le héron y est, sur une patte. Puis le héron déplie ses ailes et s'envole. « Vas-y maintenant », dit l'Encroûté. Il ne le dit pas comme un conseil. Il le dit comme on lit l'heure."
+   ],
+   "choix": [
+    {
+     "id": "prendre-raccourci",
+     "label": "Prendre son raccourci",
+     "type": "passif",
+     "consequence": "Tu prends par la croûte, droit, comme il l'a montré. Le sel chante sous chaque pas. Tu gagnes un bassin entier — et derrière toi, à distance, une ondulation suit. Il t'a envoyé sur la route du Ver. Tout le monde y va.",
+     "sauteEtape": true,
+     "appelleVer": true
+    },
+    {
+     "id": "attendre-puis-raccourci",
+     "label": "Attendre l'heure, puis prendre le raccourci",
+     "type": "passif",
+     "consequence": "Tu ne bouges pas. Le sel du bassin d'en bas bombe, une bosse longue passe sous l'endroit où était le héron, et repart vers l'île. Alors tu y vas — droit, par la croûte, dans son sillage encore tiède. Rien ne suit. Tu gagnes un bassin entier, et personne ne le sait.",
+     "exigeSavoir": "savoir_heure_du_ver",
+     "sauteEtape": true,
+     "prendLaPlaceDe": [
+      "prendre-raccourci"
+     ]
+    },
+    {
+     "id": "demander-pourquoi-maintenant",
+     "label": "Lui demander pourquoi maintenant",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. « Parce que le héron. » Il montre le bassin vide. « Il s'envole quand ça vient. Tout le monde croit qu'il s'envole de peur. Il s'envole pour manger après. Toi aussi, tu peux passer après. Mais tout le monde part avant. Moi je reste. » Il te regarde. « Reste. »",
+      "reussite": "« Le héron. Il s'envole quand ça vient. Après, c'est libre. » Il se rassoit. « Tout le monde part avant. Je le dis, et tout le monde part avant. »",
+      "echec": "« Parce que. » Il se rassoit et ferme les yeux. Le sel se referme sur ses paupières. Il ne dira rien de plus aujourd'hui.",
+      "funeste": "1 naturel. « Parce que je m'ennuie. » Il sourit, et le sel de sa joue se fend. « Ils partent tous quand je le dis. Toi aussi. » Tu comprends qu'il compte. ♦ −2"
+     },
+     "nature": "social"
+    },
+    {
+     "id": "reprendre-la-marche",
+     "label": "Reprendre la marche",
+     "type": "passif",
+     "consequence": "Tu prends par les bassins, le long chemin, muret après muret. Derrière toi, il reste assis. Il a le temps."
+    }
+   ],
+   "pointsInteret": [],
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
+    "recent": true,
+    "existe": true,
+    "statut": "heritee",
+    "herite": "terrasses"
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "guerite"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "fin-etape-non-ecrite",
+   "narration": [
+    "Les murets s'abaissent, les bassins se resserrent, et devant toi le sel se remet à monter en plaques — des tables de cristal, blanches, sur lesquelles on marche comme sur du verre. Les Salines.",
+    "Tu as traversé les Bassins vivant. Derrière toi, le dernier bassin garde un doigt d'eau que tu n'as pas bu."
+   ],
+   "choix": [
+    {
+     "id": "monter-vers-les-salines",
+     "label": "Monter vers les Salines",
      "type": "suite"
     }
    ],
@@ -8996,9 +10160,9 @@
    "finDemo": true,
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_croute_a_b.png",
-    "hash": "6fac3625",
-    "taille": 25650,
+    "fichier": "scene_salines_terrasses_a_v4_c.png",
+    "hash": "9adc4d92",
+    "taille": 11848,
     "recent": true,
     "existe": true,
     "statut": "dediee",
@@ -9534,6 +10698,36 @@
   {
    "de": "radeau",
    "vers": "radeau-2",
+   "type": "principal"
+  },
+  {
+   "de": "terrasses",
+   "vers": "terrasses-2",
+   "type": "principal"
+  },
+  {
+   "de": "perchoir-du-heron",
+   "vers": "perchoir-du-heron-2",
+   "type": "principal"
+  },
+  {
+   "de": "bassin-des-lechards",
+   "vers": "bassin-des-lechards-2",
+   "type": "principal"
+  },
+  {
+   "de": "cuve-fendue",
+   "vers": "cuve-fendue-2",
+   "type": "principal"
+  },
+  {
+   "de": "cuve-fendue-2",
+   "vers": "cuve-fendue-3",
+   "type": "principal"
+  },
+  {
+   "de": "guerite",
+   "vers": "guerite-2",
    "type": "principal"
   }
  ],
@@ -11275,14 +12469,6 @@
    "racine": "salines_salines"
   },
   {
-   "fichier": "scene_salines_terrasses_a_v4_c.png",
-   "hash": "9adc4d92",
-   "taille": 11848,
-   "recent": true,
-   "groupe": "autre",
-   "racine": "salines_terrasses_a"
-  },
-  {
    "fichier": "scene_salines_tour_de_l_ecluse_a_a.png",
    "hash": "828057de",
    "taille": 19332,
@@ -12741,13 +13927,13 @@
   }
  ],
  "totaux": {
-  "scenes": 127,
+  "scenes": 143,
   "pointsInteret": 0,
-  "choix": 370,
+  "choix": 425,
   "illustrations": 484,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 235,
+  "reserve": 234,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

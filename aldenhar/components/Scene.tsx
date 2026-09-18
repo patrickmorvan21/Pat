@@ -28,6 +28,9 @@ import {
   FIN_ETAPE_NON_ECRITE,
   SALINES_ENCROUTE_GEOLIER,
   SALINES_ENCROUTE_LIGNES,
+  SALINES_SOIF_LIGNES,
+  SALINES_SOIF_GEOLIER,
+  PLUME_FREMIT,
   TEMPETE_MARCHE,
   VER_MANIFESTATIONS,
   verImage,
@@ -112,6 +115,8 @@ import HoldSteady from "@/components/minigames/engines/HoldSteady";
 import GlyphTrace from "@/components/minigames/engines/GlyphTrace";
 import TimingTap from "@/components/minigames/engines/TimingTap";
 import SlowSwipe from "@/components/minigames/engines/SlowSwipe";
+import Assemble from "@/components/minigames/engines/Assemble";
+import BreathLine from "@/components/minigames/engines/BreathLine";
 import StraightSwipe from "@/components/minigames/engines/StraightSwipe";
 import { forcerPiste, playMusic } from "@/lib/audio";
 import { loadSettings, CLES_AIDES, haptic } from "@/lib/settings";
@@ -620,6 +625,8 @@ function liaisonCtx(run: RunState, from: string | undefined): LiaisonCtx {
     routeFermeeCause: run.trav?.routeFermeeCause ?? run.routeFermeeCause,
     // La zone (13/09) : les Salines ont leurs propres ambiances et vues.
     zone: run.zone ?? "landes",
+    // L'étape (16/09) : les Bassins ont leurs ambiances et leur vue de marche.
+    etape: run.trav?.etage?.index ?? 0,
   };
 }
 
@@ -637,6 +644,19 @@ function habillageSillage(s: SceneType): SceneType {
     ...s,
     narration: [VER_MANIFESTATIONS.sillage.texte, ...s.narration.slice(1)],
     illustration: verImage("sillage") ?? s.illustration,
+  };
+}
+
+/** LE VER DESSOUS (Bassins, 16/09) : qui l'a appelé (le grincement de la
+    Noria, le raccourci de l'Encroûté) le retrouve SOUS sa marche — à la place
+    de l'ambiance, et, pour qui porte la plume du héron, précédé d'une ligne :
+    elle frémit avant. Aller (advance) et reprise (sceneFromTrav) : le même écran. */
+function habillageDessous(s: SceneType, run?: RunState): SceneType {
+  const plume = (run?.besace ?? []).some((i) => i.name.includes("Plume"));
+  return {
+    ...s,
+    narration: [...(plume ? [PLUME_FREMIT] : []), VER_MANIFESTATIONS.dessous.texte, ...s.narration.slice(1)],
+    illustration: verImage("dessous") ?? s.illustration,
   };
 }
 
@@ -675,7 +695,8 @@ function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
         ? { ...base, tempete: TEMPETE_MARCHE }
         : base;
     const avecSillage = t.verSillage ? habillageSillage(avecTempete) : avecTempete;
-    return t.sortieHameau ? habillageSortie(avecSillage, t.seed) : avecSillage;
+    const avecDessous = t.verDessous ? habillageDessous(avecSillage, run) : avecSillage;
+    return t.sortieHameau ? habillageSortie(avecDessous, t.seed) : avecDessous;
   }
   return resoudre(t.current, run) ?? sceneById(ENTRY_SCENE)!;
 }
@@ -1098,6 +1119,8 @@ export default function Scene() {
   const [cartonFin, setCartonFin] = useState<Carton | null>(null);
   /** L'ENCROÛTÉ (Salines) : miroir de `run.encroute` pour le rendu. */
   const [encrouteMirror, setEncrouteMirror] = useState(0);
+  /** LA SOIF (Bassins, 16/09) : miroir de `run.soif` pour le rendu des CTA. */
+  const [soifMirror, setSoifMirror] = useState(0);
   /** Les tempêtes déjà balayées cette vie (miroir de `run.tempetesJouees`). */
   const [tempetesJouees, setTempetesJouees] = useState<string[]>([]);
   /** La tempête en cours (id de la scène), ou null. */
@@ -1845,6 +1868,7 @@ export default function Scene() {
     setDay(run.day);
     setHealth(run.health);
     setEncrouteMirror(run.encroute ?? 0);
+    setSoifMirror(run.soif ?? 0);
     setTempetesJouees(run.tempetesJouees ?? []);
     // Points d'intérêt déjà examinés dans le lieu courant : on ne les
     // re-propose pas à la reprise (spec 24/07 suite §1).
@@ -2399,6 +2423,7 @@ export default function Scene() {
     // (les deux branches de sortie le reposent à true).
     trav.sortieHameau = false;
     trav.verSillage = false;
+    trav.verDessous = false;
     // Une transition qui QUITTE une liaison ne fait pas vieillir les états.
     const leavingLiaison = Boolean(scene.liaison);
     // ═══ L'ÉLÉMENT-SURPRISE (catalogue 6/08) : armé UNE fois par run, au
@@ -2543,6 +2568,13 @@ export default function Scene() {
         // compte pas comme un lieu et se retrouve à la reprise.
         if (sceneById(etapePas.pas.id)) opts = { ...(opts ?? {}), toDest: etapePas.pas.id };
         else opts = { ...(opts ?? {}), toScene: FIN_ETAPE_NON_ECRITE };
+      } else if (etapePas.pas.type === "croisee" && !etapePas.pas.options.some((id) => sceneById(id))) {
+        // Une étape SANS entrée (les Salines) commence par une Croisée de son
+        // pool : si aucune de ses directions n'a de scène, l'étape n'est pas
+        // écrite — même sortie que le lieu imposé absent. Sans ce cas, la
+        // Croisée se bâtissait sur deux ids inconnus (« Continuer | Continuer »,
+        // trouvé au banc des Bassins le 17/09).
+        opts = { ...(opts ?? {}), toScene: FIN_ETAPE_NON_ECRITE };
       }
     }
     // ⚠️ LE PROCÈS EST UNE SCÈNE DES LANDES (le Petit Tribunal, les témoins du
@@ -2734,6 +2766,20 @@ export default function Scene() {
         if (envsZone?.length && trav.etage) trav.etage = entrerLieu(envsZone, trav.etage, opts.toDest);
         noterVisiteLieu(radical(opts.toDest));
         track("lieu_atteint", { lieu: radical(opts.toDest), visites: trav.visited.length, cible: trav.target });
+        // LA SOIF MONTE EN MARCHANT (Bassins, 16/09) : à partir du deuxième
+        // environnement des Salines, un palier tous les deux lieux atteints —
+        // jamais en temps réel, jamais un chiffre (la bible : « monte par
+        // scène »). Plafond 3 ; au III elle USE le corps à chaque lieu, mais ne
+        // tue jamais seule : elle laisse au seuil, comme l'effroi.
+        if ((runRef.current?.zone ?? "landes") === "salines" && (trav.etage?.index ?? 0) >= 1) {
+          persist((r) => {
+            r.soifPas = (r.soifPas ?? 0) + 1;
+            if (r.soifPas % 2 === 0 && (r.soif ?? 0) < 3) r.soif = (r.soif ?? 0) + 1;
+            if ((r.soif ?? 0) >= 3) r.health = Math.max(0.05, r.health - 0.06);
+          });
+          setSoifMirror(runRef.current?.soif ?? 0);
+          setHealth(runRef.current?.health ?? health);
+        }
         // LE JOUR AVANCE EN VIVANT (arbitrage 7/08, corrigé le 10/08) : tous
         // les trois lieux OÙ L'ON A TENTÉ QUELQUE CHOSE, un jour passe. La
         // version d'avant comptait les lieux traversés, quoi qu'on y fasse —
@@ -2845,6 +2891,15 @@ export default function Scene() {
         nextScene = habillageSillage(nextScene);
         trav.verSillage = true;
         persist((run) => { run.vus = noter(run.vus, VER_MANIFESTATIONS.sillage.cle); });
+      }
+      // LE VER DESSOUS (Bassins, 16/09) : l'appel (`Choice.appelleVer`) se
+      // paie à la Croisée suivante — il passe sous la marche, à la place de
+      // l'ambiance. Consommé ici ; porté par `trav` pour la reprise.
+      if (trav.verAppele && (runRef.current?.zone ?? "landes") === "salines") {
+        nextScene = habillageDessous(nextScene, runRef.current ?? undefined);
+        trav.verDessous = true;
+        trav.verAppele = false;
+        persist((run) => { run.vus = noter(run.vus, VER_MANIFESTATIONS.dessous.cle); });
       }
       trav.liaisonOpts = pair;
       trav.routeFermee = o.length === 1;
@@ -3434,7 +3489,7 @@ export default function Scene() {
       // (stage ≥ 2). Quatre testeurs sur six ont reçu le secret de la Fille
       // à la Descente sans l'avoir approchée : « on me dit tu sais, et je ne
       // sais pas ». Un chapitre non développé se rejoue à la vie suivante.
-      if (nextScene.terminal && chapSt.stage >= 1) {
+      if (nextScene.terminal && !nextScene.finDemo && chapSt.stage >= 1) {
         // 03/09 (suite) — LA SORTIE NE RESTITUE QUE CE QUE CETTE VIE A COMPRIS.
         // Un chapitre qui déclare `resolutionRequiert` ne livre sa conclusion
         // qu'à qui l'a réunie ; sinon une ligne partielle (indices si le
@@ -3669,6 +3724,21 @@ export default function Scene() {
       if (avant) {
         apparitionCoupure = avant.id;
         if (app.illustration) apparitionDiffere = { apres: avant.id, img: app.illustration };
+      }
+    }
+    // LA SOIF SE DIT (Bassins, 16/09) : au palier qu'on vient d'atteindre, une
+    // ligne — une fois par vie et par palier ; au III, le Geôlier constate.
+    // Même grammaire que l'Encroûté : le corps le sent, les CTA le montrent.
+    if ((runRef.current?.zone ?? "landes") === "salines") {
+      const palierSoif = Math.min(3, runRef.current?.soif ?? 0);
+      if (palierSoif >= 1 && vu(runRef.current?.vus, "soif|dit|" + palierSoif) === 0) {
+        const ligne = SALINES_SOIF_LIGNES[palierSoif];
+        if (ligne) entries.push({ id: nextId(), kind: "narration", text: ligne });
+        persist((run) => { run.vus = noter(run.vus, "soif|dit|" + palierSoif); });
+      }
+      if (palierSoif >= 3 && vu(runRef.current?.vus, "soif|3") === 0) {
+        entries.push({ id: nextId(), kind: "jailer", text: SALINES_SOIF_GEOLIER });
+        persist((run) => { run.vus = noter(run.vus, "soif|3"); });
       }
     }
     // L'écho d'un objet-promesse (voir ECHOS_OBJET) : ce que tu portes te
@@ -4137,7 +4207,10 @@ export default function Scene() {
        (l'image ne change jamais au milieu d'un texte, règle du 31/08) ; la
        bascule est posée plus bas, une fois `coupures`/`differees` déclarés. */
     let sceauDiffere: { apres: string; img: string } | null = null;
-    if (nextScene.terminal && !nextScene.renoncement) {
+    // ⚠️ PAS SUR UNE FIN D'ÉTAPE NON ÉCRITE (`finDemo`) : on n'a franchi
+    // aucune zone, la paume ne chauffe pas — trouvé au banc des Bassins le
+    // 17/09 (la ligne du Sceau et son image servies au carton « à venir »).
+    if (nextScene.terminal && !nextScene.renoncement && !nextScene.finDemo) {
       const r = runRef.current ?? loadRun();
       const m = loadMemory();
       for (const t of traceDeSortie({
@@ -4877,8 +4950,40 @@ export default function Scene() {
       grantsLoot: c.minigame.echecGardeLoot ? c.grantsLoot : undefined,
       // Et il ne FRANCHIT pas la porte (le Crochetage raté n'ouvre rien).
       sortie: undefined,
+      // Ni ne désaltère, ni n'appelle (les Bassins) : ce qu'on n'a pas fait
+      // n'a pas d'effet.
+      soif: undefined,
+      appelleVer: undefined,
       passive: { consequence: c.minigame.echec },
     });
+  }
+
+  /** LES EFFETS DES BASSINS (16/09) — la Soif, la Fixation des Déclarés,
+      l'appel du Ver. Un passif les applique à la SÉLECTION ; un risqué attend
+      la RÉUSSITE (on ne boit pas ce qu'on a raté, une roue qui ne tourne pas
+      ne grince pas). Une seule fonction pour les deux moments. */
+  function appliquerEffetsBassins(choice: Choice) {
+    if (choice.soif) {
+      const delta = choice.soif;
+      persist((r) => {
+        r.soif = Math.max(0, Math.min(3, (r.soif ?? 0) + delta));
+        if (delta < 0) r.soifPas = 0; // boire remet l'horloge de la marche à zéro
+      });
+      setSoifMirror(runRef.current?.soif ?? 0);
+    }
+    if (choice.fixation) {
+      // La forte et la faible sont lues au moment du geste — un héros pas
+      // encore révélé (stats absentes) a quatre 3 : rien ne se fixe.
+      const cles = ["COURAGE", "RUSE", "INSTINCT", "EMPATHIE"] as const;
+      const val = cles.map((k) => statDe(runRef.current?.stats, k));
+      let fi = 0;
+      let fa = 0;
+      val.forEach((v, i) => { if (v > val[fi]) fi = i; if (v < val[fa]) fa = i; });
+      if (fi !== fa) persist((r) => { r.fixationDeclaree = { forte: cles[fi], faible: cles[fa] }; });
+    }
+    if (choice.appelleVer) {
+      persist((r) => { if (r.trav) r.trav = { ...r.trav, verAppele: true }; });
+    }
   }
 
   function onSelect(choice: Choice) {
@@ -4930,6 +5035,35 @@ export default function Scene() {
               ? { durationMs: 3000, clearCue: true, grazeCount: 3 }
               : { durationMs: 3800, clearCue: false, grazeCount: 6 }
         );
+      } else if (eng === "assemble") {
+        /* LES TESSONS DE LA CUVE (Bassins, 16/09) : la Ruse donne moins de
+           tessons et une aimantation plus large ; la saumure qui fuit est le
+           seul sablier — jamais un chiffre —, et « Chronomètres : désactivés »
+           la fige. L'image de la cuve n'existe pas encore : pierre
+           procédurale tant que `minijeu_cuve_fendue_a` n'est pas déposée. */
+        const ruse = statDe(runRef.current?.stats, "RUSE");
+        setMinigameConfig({
+          pieces: ruse >= 4 ? 5 : ruse >= 3 ? 6 : 7,
+          tolerance: ruse >= 4 ? 26 : ruse >= 3 ? 20 : 15,
+          fuiteMs: ruse >= 4 ? 26000 : ruse >= 3 ? 22000 : 18000,
+          chronosOff: Boolean(loadSettings().chronosOff),
+          imageFond: assetExiste("assets/minijeu_cuve_fendue_a.png")
+            ? assetSrc("assets/minijeu_cuve_fendue_a.png")
+            : undefined,
+        });
+      } else if (eng === "breath") {
+        // LE SOUFFLE v2 (galerie du 12/09, en jeu à la Passerelle rompue) :
+        // l'Instinct élargit la fenêtre autour de chaque transition. Mêmes
+        // valeurs que la galerie — deux tables qui divergeraient au premier
+        // réglage.
+        const inst = statDe(runRef.current?.stats, "INSTINCT");
+        setMinigameConfig({
+          durationMs: 12000,
+          toleranceMs: inst >= 4 ? 340 : inst >= 3 ? 220 : 120,
+          stepPx: 7,
+          stepMs: 60,
+          maxStains: 3,
+        });
       } else if (eng === "trace") {
         // Le Tracé (la Chapelle) : la Ruse simplifie le nœud à suivre.
         const ruse = statDe(runRef.current?.stats, "RUSE");
@@ -5114,7 +5248,12 @@ export default function Scene() {
         track("fin_etape", { zone, scene: scene.id, jour: run.day }, { instant: true });
         recordSortieVivante({ heroName: run.heroName, days: run.day });
         resetRun();
-        setCartonFin({ eyebrow: "• ACTE I · LES SALINES •", title: "Les Bassins", sous: "À venir." });
+        // Le carton nomme le premier environnement dont l'entrée n'a pas de
+        // scène — jamais un titre en dur, qui se périmerait à chaque étape
+        // écrite (la Croûte disait « Les Bassins » ; les Bassins disent la suite).
+        const envs = zoneDef(zone).environnements ?? [];
+        const suivante = envs.find((e) => !sceneById(e.entree ?? e.pool[0] ?? ""))?.nom ?? "La suite";
+        setCartonFin({ eyebrow: "• ACTE I · LES SALINES •", title: suivante, sous: "À venir." });
         return;
       }
       recordZoneFranchie({ zone, heroName: run.heroName, days: run.day, franchis: run.lieuxEngages ?? 0 });
@@ -5430,6 +5569,9 @@ export default function Scene() {
         if (run.profil.revele) run.stats = statsDepuisTendances(run.profil);
       });
 
+    // LES BASSINS (16/09) : un passif applique Soif / Fixation / appel du Ver
+    // dès la sélection ; un risqué attend la réussite (voir onComplete).
+    if (!choice.risky) appliquerEffetsBassins(choice);
     // Le Soupçon (chantier 3) : l'ACTE compte, pas son issue — le delta d'un
     // choix s'applique dès qu'il est pris. Silencieux, clampé 0..6.
     if (choice.soupcon) {
@@ -5584,9 +5726,16 @@ export default function Scene() {
       // là où le jeu fait mal, le pressé garde les chances brutes, et
       // l'observation reste gratuite (arbitrage du 8/08 préservé).
       const preparation = Math.min(2, runRef.current?.poiIci ?? 0);
+      // LA FIXATION DES DÉCLARÉS (Bassins, 16/09) — l'EXCEPTION NOMMÉE à la
+      // doctrine « jamais un bonus de jet » : jusqu'à la fin de la zone, la
+      // stat forte est plus sûre (+1), la faible plus dure (−1). Assumée
+      // parce que c'est la Fixation elle-même, pas une récompense ; jamais
+      // affichée — l'Anneau la montre. Effacée par `demarrerZone`/`franchirZone`.
+      const fx = runRef.current?.fixationDeclaree;
+      const fixation = fx ? (choice.risky.stat === fx.forte ? 1 : choice.risky.stat === fx.faible ? -1 : 0) : 0;
       const modifier = gele
         ? passives + statBonus
-        : effects.reduce((sum, e) => sum + e.delta, 0) + passives + statBonus + faveur + froideur + preparation;
+        : effects.reduce((sum, e) => sum + e.delta, 0) + passives + statBonus + faveur + froideur + preparation + fixation;
       // Courbe d'entrée invisible (spec 21/07) : seuil légèrement abaissé les
       // 2-3 premières morts, sans aucun affichage. L'Anneau, calculé sur ce
       // même seuil, montrera juste un peu plus d'encoches pleines — cohérent.
@@ -5743,8 +5892,11 @@ export default function Scene() {
           run.besace = run.besace.filter((i) => i.id !== itemId);
           if (item.heal) run.health = Math.min(1, run.health + item.heal);
           if (item.cure) run.effects = run.effects.filter((e) => e.delta > 0);
+          // Le sel qui garde (Bassins) : il referme, et il monte l'Encroûté.
+          if (item.encroute) run.encroute = Math.min(3, (run.encroute ?? 0) + 1);
         });
         setHealth(runRef.current?.health ?? health);
+        setEncrouteMirror(runRef.current?.encroute ?? 0);
         if (!choice.useItem.consequence) {
           // ⚠️ LE TEXTE DE L'OBJET D'ABORD (playtest du 12/08). La formule
           // générique donnait le MÊME paragraphe au Miroir de Poche Fêlé et à
@@ -5983,7 +6135,9 @@ export default function Scene() {
               {verrouHint}
             </p>
           )}
-          {encrouteMirror > 0 && !rolling && <EncrouteCTA palier={encrouteMirror} cle={scene.id + step + choixFaits.length} />}
+          {(encrouteMirror > 0 || soifMirror >= 2) && !rolling && (
+            <EncrouteCTA palier={encrouteMirror} soif={soifMirror} cle={scene.id + step + choixFaits.length + "|" + soifMirror} />
+          )}
           {renderedChoices.map((choice) => (
             <ChoiceButton
               key={scene.id + choice.id + step}
@@ -6066,6 +6220,9 @@ export default function Scene() {
                 grantedItem = landesLoot(lootId);
               }
             }
+            // LES BASSINS (16/09) : la Soif, la Fixation et l'appel du Ver d'un
+            // choix RISQUÉ se paient à la réussite seulement.
+            if (chosen && !tierIsFail(tier)) appliquerEffetsBassins(chosen);
             // Relique « coussin » (commune, portée depuis la dernière mort) :
             // le PREMIER coup dur de la run est amorti au coût d'un échec
             // simple — puis la relique est fendue pour cette vie. Le verdict
@@ -6554,6 +6711,28 @@ export default function Scene() {
                   }
                   onResult={finirMinigame}
                 />
+              ) : minigameChoice.minigame.engine === "assemble" ? (
+                <Assemble
+                  seed={`${scene.id}-${minigameRetry}`}
+                  config={
+                    (minigameConfig ?? { pieces: 6, tolerance: 20, fuiteMs: 22000 }) as {
+                      pieces: number; tolerance: number; fuiteMs: number;
+                      imageFond?: string; chronosOff?: boolean;
+                    }
+                  }
+                  onResult={finirMinigame}
+                />
+              ) : minigameChoice.minigame.engine === "breath" ? (
+                <BreathLine
+                  seed={`${scene.id}-${minigameRetry}`}
+                  config={
+                    (minigameConfig ?? { durationMs: 12000, toleranceMs: 220 }) as {
+                      durationMs: number; toleranceMs: number;
+                      stepPx?: number; stepMs?: number; maxStains?: number;
+                    }
+                  }
+                  onResult={finirMinigame}
+                />
               ) : minigameChoice.minigame.engine === "swipe" ? (
                 <SlowSwipe
                   seed={`demo-${scene.id}-${minigameRetry}`}
@@ -6641,7 +6820,11 @@ export default function Scene() {
                       ? "Tranche la corde d'un geste net"
                       : minigameChoice.minigame.engine === "swipe"
                         ? "Fais glisser vers le bas — lentement"
-                        : "Maintiens l'appui — tiens bon"}
+                        : minigameChoice.minigame.engine === "assemble"
+                          ? "Remonte les tessons avant que la saumure ne fuie"
+                          : minigameChoice.minigame.engine === "breath"
+                            ? "Appuie quand la ligne s'épaissit — relâche au creux"
+                            : "Maintiens l'appui — tiens bon"}
             </p>
           </div>
         )}
@@ -6666,8 +6849,10 @@ export default function Scene() {
                 run.besace = run.besace.filter((i) => i.id !== item.id);
                 if (item.heal) run.health = Math.min(1, run.health + item.heal);
                 if (item.cure) run.effects = run.effects.filter((e) => e.delta > 0);
+                if (item.encroute) run.encroute = Math.min(3, (run.encroute ?? 0) + 1);
               });
               setHealth(runRef.current?.health ?? health);
+              setEncrouteMirror(runRef.current?.encroute ?? 0);
             }}
           />
         )}

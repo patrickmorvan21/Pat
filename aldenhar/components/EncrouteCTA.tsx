@@ -164,7 +164,17 @@ function lettresParMot(b: HTMLButtonElement, origine: DOMRect): Boite[][] {
   return mots;
 }
 
-export default function EncrouteCTA({ palier, cle }: { palier: number; cle: string }) {
+/**
+ * LA SOIF (Bassins, 16/09) — le même calque, le même budget. La bible : « Haute :
+ * un mot sur trois dans les choix est remplacé par un bloc de pixels blancs. »
+ * Palier 2 = un mot sur trois, palier 3 = un mot sur deux, jamais TOUS (il
+ * reste toujours un mot lisible par bouton : on doit pouvoir décider). Les mots
+ * pris par la Soif sont exclus de la croûte de l'Encroûté — un seul budget de
+ * dégradation, jamais deux calques qui se marchent dessus (décision du 12/09).
+ */
+const QUOTA_SOIF: Record<number, number> = { 2: 0.34, 3: 0.5 };
+
+export default function EncrouteCTA({ palier, cle, soif = 0 }: { palier: number; cle: string; soif?: number }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -187,32 +197,57 @@ export default function EncrouteCTA({ palier, cle }: { palier: number; cle: stri
       if (!ctx) return;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.clearRect(0, 0, W, H);
-      const p = Math.min(3, Math.max(1, palier));
-      const r = rng(`${cle}|${p}`);
+      const p = Math.min(3, Math.max(0, palier));
+      const s = Math.min(3, Math.max(0, soif));
+      const r = rng(`${cle}|${p}|${s}`);
       const pr = parent.getBoundingClientRect();
       const quota = QUOTA[p] ?? 0;
+      const quotaSoif = QUOTA_SOIF[s] ?? 0;
       const boutons = Array.from(parent.querySelectorAll("button"));
       boutons.forEach((b) => {
         const rb = b.getBoundingClientRect();
         const boite: Boite = { x: rb.left - pr.left, y: rb.top - pr.top, w: rb.width, h: rb.height };
-        // ── le sel sur le cadre (palier ≥ I)
-        selBordure(ctx, boite, r, p);
-        // ── le sel sur les lettres (palier ≥ II) : par PLAGES CONTIGUËS, du
-        // bout d'un mot vers l'intérieur — une seule croûte irrégulière sur
-        // plusieurs lettres, jamais des lettres isolées
-        if (quota <= 0) return;
+        // ── le sel sur le cadre (Encroûté ≥ I)
+        if (p >= 1) selBordure(ctx, boite, r, p);
+        if (quota <= 0 && quotaSoif <= 0) return;
         const mots = lettresParMot(b, pr);
-        const total = mots.reduce((n, m) => n + m.length, 0);
+        // ── LA SOIF (≥ II) : des mots ENTIERS deviennent des blocs blancs —
+        // un sur trois, puis un sur deux — tirés par la graine (stables d'un
+        // rendu à l'autre), jamais tous : il reste un mot lisible par bouton.
+        const pris = new Set<number>();
+        if (quotaSoif > 0 && mots.length >= 2) {
+          const nb = Math.min(mots.length - 1, Math.max(1, Math.round(mots.length * quotaSoif)));
+          const idx = mots.map((_, i) => i);
+          for (let i = idx.length - 1; i > 0; i--) {
+            const j = Math.floor(r() * (i + 1));
+            [idx[i], idx[j]] = [idx[j], idx[i]];
+          }
+          for (const i of idx.slice(0, nb)) {
+            pris.add(i);
+            const l = mots[i];
+            const x0 = Math.min(...l.map((q) => q.x));
+            const x1 = Math.max(...l.map((q) => q.x + q.w));
+            const y0 = Math.min(...l.map((q) => q.y));
+            const y1 = Math.max(...l.map((q) => q.y + q.h));
+            bloc(ctx, x0 - 2, y0 - 1, x1 - x0 + 4, y1 - y0 + 2, r, 0.95);
+          }
+        }
+        // ── le sel sur les lettres (Encroûté ≥ II) : par PLAGES CONTIGUËS, du
+        // bout d'un mot vers l'intérieur — une seule croûte irrégulière sur
+        // plusieurs lettres, jamais des lettres isolées. Les mots pris par la
+        // Soif sont hors budget.
+        if (quota <= 0) return;
+        const libres = mots.filter((_, i) => !pris.has(i));
+        const total = libres.reduce((n, m) => n + m.length, 0);
         let reste = Math.round(total * quota);
-        for (let mi = mots.length - 1; mi >= 0 && reste > 0; mi--) {
-          const l = mots[mi];
+        for (let mi = libres.length - 1; mi >= 0 && reste > 0; mi--) {
+          const l = libres[mi];
           let k = Math.min(l.length, reste);
           if (k < 2 && l.length >= 2) k = 2; // une croûte fait au moins deux lettres
           croute(ctx, l.slice(l.length - k), r, p >= 3 ? 1 : 0.7);
           reste -= k;
         }
       });
-      void bloc; // gardé pour la Soif (un mot sur trois devient un bloc) — à brancher avec l'état
     };
     // FitLabel ajuste la police après le rendu et la barre revient d'un
     // display:none par un fondu : on mesure deux fois, puis on suit le resize.
@@ -228,12 +263,13 @@ export default function EncrouteCTA({ palier, cle }: { palier: number; cle: stri
       window.clearTimeout(timer);
       ro.disconnect();
     };
-  }, [palier, cle]);
+  }, [palier, cle, soif]);
 
   return (
     <canvas
       ref={ref}
       data-encroute={palier}
+      data-soif={soif}
       aria-hidden
       className="pointer-events-none absolute inset-0 z-[4]"
       style={{ imageRendering: "pixelated" }}

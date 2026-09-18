@@ -9,7 +9,7 @@ Généré par `tools/bible_visuelle_salines.py` depuis `data/zones/salines.json`
 3. **Le ratio de trame par le prompt** (`style_image.CLAUSES_ENVIRONNEMENT`), jamais par le seuil du dithering. Règle de zone : vue à la première personne, le héros n'est jamais dans l'image.
 4. **La composition, ajoutée le 15/09** sur les références rouge/noir de Patrick. Trois traits qu'aucun prompt ne demandait : **une figure géométrique** qui porte le cadre (un cercle, une arche, des lignes qui convergent, une symétrie franche), **la source de lumière VISIBLE dans l'image**, et une **échelle écrasante**. Et une règle de matière : la lumière est une FORME, jamais une atmosphère — mesuré, un halo dégradé ressort du dithering en nuage de points sale (78,8 % d'aplat), les mêmes cercles en anneaux francs ressortent nets (88,5 %). `python3 tools/aplat.py <png…>` mesure une sortie Leonardo avant même de la regarder : sous 70 %, c'est du grain, pas un dessin.
 
-**31 images** : 4 établissements · 6 lieux obligatoires · 6 lieux du pool · 3 autres écrans · 8 rencontres · 4 vues du Ver. Deux variantes par image, le pipeline double le suffixe (`_a` → `_a_b`). Format `nom=prompt` pour `/leo-import`.
+**43 images** : 4 établissements · 6 lieux obligatoires · 13 lieux du pool · 4 autres écrans · 11 rencontres · 5 vues du Ver. Deux variantes par image, le pipeline double le suffixe (`_a` → `_a_b`). Format `nom=prompt` pour `/leo-import`.
 
 
 ## 1. La Croûte — le fond du lac
@@ -212,6 +212,99 @@ Ce que la bible dit : trois niveaux à sec ; descendre d'un niveau est un choix 
 scene_salines_terrasses_a=three dry salt terraces descending in steps seen from the top one, low walls between the levels, lying salt-crusted human figures and loose white clods on each level, a standing hooded figure half crusted in salt at the top edge pointing down, and at the bottom, in the last basin, an immense wading bird on one leg about to take flight, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, roughly half bright and half black; medium shot, low raking light near the horizon, the first long shadows, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
+### La Passerelle rompue (lieu joué, pool) — `scene_salines_passerelle_a`
+
+Ce que la bible dit : mini-jeu d'équilibre.
+
+```
+scene_salines_passerelle_a=a narrow wooden footbridge on tall pilings crossing an empty salt basin, the planks stopping dead a third of the way across and the next ones hanging broken into the void, and below the gap a fresh trench torn through the basin floor with its walls of overturned salt; to the left a second basin filled to the brim with fist-sized lumps of salt packed like eggs; the pilings and planks as hard black shapes against the blazing white, a hard white sun disc in the black sky, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, roughly half bright and half black; medium shot, low raking light near the horizon, the first long shadows, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### Le Perchoir du Héron (lieu joué, pool) — `scene_salines_perchoir_heron_a`
+
+Ce que la bible dit : le Héron sur une patte au milieu d'un bassin.
+
+```
+scene_salines_perchoir_heron_a=a round salt basin deeper than the others, dry to a single puddle of brine at its centre, and standing in the puddle on one leg an immense wading bird taller than a man, white, motionless, its long beak pointed at the salt beside it; around the rim of the basin lying human figures crusted in salt, all their heads turned toward the bird; the bird and the rim walls as hard black cut-outs, a hard white sun disc in the black sky, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, roughly half bright and half black; medium shot, low raking light near the horizon, the first long shadows, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### Le Bassin des Léchards (lieu joué, pool) — `scene_salines_lechards_a`
+
+Ce que la bible dit : la harde : suivre, chasser, ignorer.
+
+```
+scene_salines_lechards_a=a wide flat salt basin, and a small herd of gaunt long-legged beasts with short grey coats standing in it, all their heads raised at once toward the viewer, the nearest one stretching its neck forward; low dry-stone walls in tiers behind them, one dark damp patch of salt at the basin floor where they have scraped; the beasts as hard black shapes, a hard white sun disc in the black sky, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, roughly half bright and half black; medium shot, low raking light near the horizon, the first long shadows, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### Le Bassin des Déclarés (lieu joué, pool) — `scene_salines_declares_a`
+
+Ce que la bible dit : image : silhouettes de sel figées dans un geste ; texte : tu reconnais celle qui fait le geste de ta dominante — celle que le Geôlier t'a révélée en te regardant jouer.
+
+```
+scene_salines_declares_a=a salt basin where the crusted human statues are STANDING, a ring of them, each frozen in a gesture — one with a fist raised, one with a finger on its lips, one with its head bent to the salt, one holding out an open palm — seen from just outside the ring so the nearest two frame the picture as black cut-outs, the basin walls in tiers behind, a hard white sun disc low in the black sky throwing long shadows from each figure, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, roughly half bright and half black; medium shot, low raking light near the horizon, the first long shadows, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### La Cuve fendue (lieu joué, pool) — `scene_salines_cuve_fendue_a`
+
+Ce que la bible dit : un bassin qui tient un fond de saumure.
+
+```
+scene_salines_cuve_fendue_a=a great stone vat as tall as a man standing at the floor of a salt basin, split from top to bottom by a crack, its body made of a score of broken shards held together by crusted salt, a thin glint of brine visible at the bottom through the crack; the salt around it trampled flat, and lying along its base several crusted human figures with their faces turned to the crack; the vat as a hard black mass, a hard white sun disc in the black sky, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, roughly half bright and half black; medium shot, low raking light near the horizon, the first long shadows, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### La Guérite (lieu joué, pool) — `scene_salines_guerite_a`
+
+Ce que la bible dit : cabane de garde-bassin, un Encroûté qui « connaît le chemin » et propose un raccourci par la croûte (fragment 2 bis si le Héron est en vue).
+
+```
+scene_salines_guerite_a=a small plank hut at the edge of a salt basin, the only thing standing for miles that is not salt, with a real roof and a door; on its threshold a seated hooded figure crusted white to the neck, watching the viewer approach; terraced basin walls descending behind, and in the lowest basin far below a wading bird standing on one leg; the hut and the figure as hard black shapes, a hard white sun disc low in the black sky, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, roughly half bright and half black; medium shot, low raking light near the horizon, the first long shadows, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### La Noria (lieu joué, pool) — `scene_salines_noria_a`
+
+Ce que la bible dit : la roue à godets figée.
+
+```
+scene_salines_noria_a=a great bucket wheel taller than three men standing at the edge of a dry canal, frozen solid in crusted salt up to its axle, a square socket on the axle with an iron crank still seated in it; the dry canal running dead straight between two low stone walls toward the horizon, cutting across every basin; the wheel as a hard black disc against the blazing white, a hard white sun disc in the black sky, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, roughly half bright and half black; medium shot, low raking light near the horizon, the first long shadows, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `cuve-fendue-3` (gros plan) — `minijeu_cuve_fendue_a`
+
+```
+minijeu_cuve_fendue_a=the split stone vat filling the whole frame, seen straight on from a step away: its body a score of broken shards of grey stone held together by crusted white salt in the joints, the central crack running top to bottom, a thin glint of brine at the very bottom, every shard edge sharp and readable, close-up, the subject filling the frame, nothing else in shot, no horizon, low raking light near the horizon, the first long shadows, first-person view, no protagonist in frame, roughly half bright and half black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### Les Vermisseaux (rencontre) — `monstre_salines_vermisseaux_a`
+
+Ce que la bible dit : les petits du Ver, longs comme un bras, sous la croûte des bassins.
+
+```
+monstre_salines_vermisseaux_a=dozens of pale blind worms as long as a forearm rising out of the salt crust of a basin floor in coils, mouths open and eyeless, the nearest ones rearing toward the viewer, the salt heaving in low ridges where more are coming up, the terrace wall as a black band behind, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, low raking light near the horizon, the first long shadows, first-person view, no protagonist in frame, roughly half bright and half black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### Les Sauteurs de saumure (rencontre) — `monstre_salines_sauteurs_a`
+
+Ce que la bible dit : crustacés hauts sur pattes nés dans les dernières cuves ; bondissent quand on approche pour boire.
+
+```
+monstre_salines_sauteurs_a=a pack of long-legged crustaceans the size of dogs with salt-white carapaces and eyes on stalks, crouched in a half-ring in front of a split stone vat, two of them caught mid-leap toward the viewer with claws open, the salt around them pocked with round burrows, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, low raking light near the horizon, the first long shadows, first-person view, no protagonist in frame, roughly half bright and half black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### Les Léchards (rencontre) — `monstre_salines_lechards_a`
+
+Ce que la bible dit : herbivores maigres qui suivent le héros pour lécher le sel de sa sueur.
+
+```
+monstre_salines_lechards_a=a gaunt long-legged beast with a short grey coat and a long neck, stretching its head toward the viewer to lick an outstretched wrist, its ribs showing, three more of the herd standing just behind with their heads up, on a wide flat salt basin, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, low raking light near the horizon, the first long shadows, first-person view, no protagonist in frame, roughly half bright and half black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+
+### Le Ver, DESSOUS — il passe sous la marche de qui l'a appelé (16/09)
+
+```
+monstre_salines_ver_dessous_a=seen from the walker's own feet on the floor of a terraced salt basin: the crust directly ahead heaving up into a long low ridge that runs away from the viewer along the line of the path, salt slabs tilting up along its spine and sliding back, a dry-stone terrace wall to one side as a black band, one small overturned wooden bucket in the near ground for scale, a hard white sun disc low in the black sky and the ridge's shadow lying long across the salt, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, roughly half bright and half black; medium shot, low raking light near the horizon, the first long shadows, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
 
 ## 3. Les Salines — le chantier
 
@@ -291,6 +384,24 @@ scene_salines_tour_de_l_ecluse_a=inside a stone tower, a spiral stair winding do
 
 Servies dans la Besace et l'Inventaire, en 92 px. **Valeurs inverses de la Croûte** : l'objet est la zone claire, le fond l'aplat noir — c'est ce qui les rend lisibles en petit, et ça vaut pour toutes les zones du jeu. Un objet a son icône quand il est RÉELLEMENT ramassable ; les neuf autres objets de la zone attendent que leur environnement soit écrit.
 
+### `sel-qui-garde` — `objet_salines_sel_qui_garde_a`
+
+```
+objet_salines_sel_qui_garde_a=a single hard white lump of crusted salt the size of a fist, dense and smooth, one corner bitten off and showing tooth marks, a faint damp sheen on the broken face, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
+### `plume-du-heron` — `objet_salines_plume_heron_a`
+
+```
+objet_salines_plume_heron_a=a single enormous wading-bird feather longer than a forearm, stiff and white as if made of salt, its barbs fused together, the quill end darkened, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
+### `manivelle-passeurs` — `objet_salines_manivelle_passeurs_a`
+
+```
+objet_salines_manivelle_passeurs_a=an iron hand crank with a square head, the bar bent at a right angle, its wooden grip worn hollow by hands that always turned it the same way, salt crusted in the square socket end, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
 ### `battant-cloche` — `objet_salines_battant_cloche_a`
 
 ```
@@ -354,6 +465,22 @@ objet_salines_registre_traversees_a=a thick ledger open flat, its pages ruled in
 | `radeau-2` | `monstre_salines_encroute_radeau_a` |
 | `passage-du-ver` | `monstre_salines_ver_face_a` |
 | `fin-etape-non-ecrite` | — (carton) |
+| `terrasses` | `scene_salines_terrasses_a` |
+| `terrasses-2` | `monstre_salines_vermisseaux_a` |
+| `passerelle-rompue` | `scene_salines_passerelle_a` |
+| `passerelle-rompue-2` | `monstre_salines_ver_dessous_a` |
+| `perchoir-du-heron` | `scene_salines_perchoir_heron_a` |
+| `perchoir-du-heron-2` | `scene_salines_perchoir_heron_a` |
+| `bassin-des-lechards` | `monstre_salines_lechards_a` |
+| `bassin-des-lechards-2` | `scene_salines_lechards_a` |
+| `bassin-des-declares` | `scene_salines_declares_a` |
+| `cuve-fendue` | `scene_salines_cuve_fendue_a` |
+| `cuve-fendue-2` | `monstre_salines_sauteurs_a` |
+| `cuve-fendue-3` | `scene_salines_cuve_fendue_a` |
+| `noria` | `scene_salines_noria_a` |
+| `noria-2` | `monstre_salines_sauteurs_a` |
+| `guerite` | `scene_salines_guerite_a` |
+| `guerite-2` | `scene_salines_guerite_a` |
 
 Hors câblage :
 
@@ -364,9 +491,27 @@ Hors câblage :
 - `monstre_salines_ver_dos_a` — apparition garantie à l'arrivée à la Rive haute (Scene.apparition)
 - `monstre_salines_ver_sillage_a` — la deuxième Croisée de la Croûte (habillageSillage, Scene.tsx)
 - `monstre_salines_ver_gueule_a` — apparition garantie à l'arrivée au Champ des Sillages (Scene.apparition)
+- `scene_salines_bassins_a` — vue de marche des Bassins et fond de secours (BASSINS_IMG sert les terrasses en attendant)
+- `minijeu_cuve_fendue_a` — fond du puzzle « assemble » de la Cuve fendue (Scene.tsx, pas une scène)
 
 
 ## Ce qu'il reste à produire
 
-Rien : tous les écrans câblés ont leur image sur le disque.
+13 image(s). En attendant, ces écrans servent l'image d'établissement de leur environnement.
+
+| image | écran | environnement |
+|---|---|---|
+| `scene_salines_bassins_a` | `—` | bassins |
+| `scene_salines_passerelle_a` | `passerelle-rompue` | bassins |
+| `scene_salines_perchoir_heron_a` | `perchoir-du-heron-2` | bassins |
+| `scene_salines_lechards_a` | `bassin-des-lechards-2` | bassins |
+| `scene_salines_declares_a` | `bassin-des-declares` | bassins |
+| `scene_salines_cuve_fendue_a` | `cuve-fendue-3` | bassins |
+| `scene_salines_guerite_a` | `guerite-2` | bassins |
+| `scene_salines_noria_a` | `noria` | bassins |
+| `minijeu_cuve_fendue_a` | `—` | bassins |
+| `monstre_salines_vermisseaux_a` | `terrasses-2` | bassins |
+| `monstre_salines_sauteurs_a` | `noria-2` | bassins |
+| `monstre_salines_lechards_a` | `bassin-des-lechards` | bassins |
+| `monstre_salines_ver_dessous_a` | `passerelle-rompue-2` | bassins |
 

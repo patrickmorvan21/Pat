@@ -23,7 +23,8 @@ export type MiniGameEngine =
   | "sequence"
   | "straightSwipe"
   | "caress"
-  | "singleGesture";
+  | "singleGesture"
+  | "assemble";
 
 export type MiniGameEntry = {
   id: string;
@@ -165,8 +166,8 @@ export const A_HABILLER_GAMES: MiniGameEntry[] = [
     title: "Le Souffle v2 — la ligne qui respire",
     category: "Référence",
     stat: "INSTINCT",
-    lieu: "Les Salines (zone 2, en conception) — la Passerelle rompue, le Ver juste dessous",
-    note: "Prototype du 12/09 (bible des Salines). Habillage à créer : une image de fond sous la ligne, la ligne elle-même reste le geste. Remplace le prototype 03 pour les Salines.",
+    lieu: "Les Bassins — la Passerelle rompue, « Retenir ton souffle » (jeu complet, depuis le 16/09)",
+    note: "Prototype du 12/09 (bible des Salines), en jeu depuis les Bassins. Habillage à créer : une image de fond sous la ligne, la ligne elle-même reste le geste. Remplace le prototype 03 pour les Salines.",
     description:
       "Une seule ligne qui défile par paliers de 7 px. Segments épais = le Ver respire, se rapproche : appuie. Creux : relâche. L'appui s'écrit en pixels blancs sur la ligne ; une erreur fait une tache de charbon qui reste. Trois taches : repéré. Le motif se lit avant de poser le doigt — attention, pas vitesse. L'Instinct élargit la fenêtre autour de chaque transition.",
     engine: "breath",
@@ -179,6 +180,25 @@ export const A_HABILLER_GAMES: MiniGameEntry[] = [
     }),
     successText: "La ligne s'éteint. Ce qui respirait sous la croûte est passé sans te trouver.",
     failText: "Trois fois, ton souffle a dit où tu étais. La croûte se soulève.",
+  },
+  {
+    id: "jeu-cuve-fendue",
+    number: 0,
+    title: "Remonter les tessons — la Cuve fendue",
+    category: "Référence",
+    stat: "RUSE",
+    lieu: "Les Bassins — la Cuve fendue, « Remonter les tessons » (jeu complet, depuis le 16/09)",
+    note: "Le puzzle apporté par Patrick le 16/09, adapté : le chrono est la SAUMURE qui fuit dans la cuve (douze crans, jamais un chiffre), les pièces sont des tessons de pierre à bords rongés qui s'aimantent à portée. Habillage à créer : l'image de la cuve (minijeu_cuve_fendue_a) — en attendant, une pierre procédurale.",
+    description:
+      "Glisser chaque tesson jusqu'à sa place dans le contour de la cuve avant que la saumure ne soit à sec. La Ruse donne moins de tessons et une aimantation plus large. Rater n'est pas un mur : il reste une pellicule à lécher — mais la Soif, elle, ne tombe pas.",
+    engine: "assemble",
+    configFor: (tier) => ({
+      pieces: tier === "haut" ? 5 : tier === "moyen" ? 6 : 7,
+      tolerance: tier === "haut" ? 26 : tier === "moyen" ? 20 : 15,
+      fuiteMs: tier === "haut" ? 26000 : tier === "moyen" ? 22000 : 18000,
+    }),
+    successText: "Le dernier tesson entre à sa place. La saumure cesse de fuir, et remonte.",
+    failText: "La cuve est à sec. Il reste une pellicule sur la pierre.",
   },
   {
     id: "jeu-souffle-bete",

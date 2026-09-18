@@ -80,6 +80,14 @@
         "Le Ver de croûte SE VOIT : quatre images (dos / sillage / gueule / face), chacune plus près, et une vraie scène — le Passage — en fin obligatoire de la Croûte. Renverse « une chose lointaine qui n'est pas toi EST le Ver » (14/09).",
         "Le jet d'INSTINCT du Champ des Sillages ne gate plus l'engloutissement (hors jet, garanti à l'arrivée) mais l'INFORMATION : il tourne, il garde l'île — le savoir qui ouvre « Longer son cercle » au Passage.",
         "Au Passage : rester immobile = sûr, le sel monte d'un palier ; courir = l'échec est la mort (« dévoré sur le bon chemin »), première mort hors combat de la zone ; longer son cercle = même seuil, échec hors de portée."
+      ],
+      "2026-09-17": [
+        "LES BASSINS SE JOUENT (étape 2) : 16 scènes dans scene-data.ts — Terrasses (entrée, les Vermisseaux), Passerelle rompue (tempête + Souffle v2, le Ver dessous), Perchoir du Héron, Bassin des Léchards, Bassin des Déclarés, Cuve fendue (puzzle des tessons), Noria (Manivelle), Guérite (campement). Toutes servent la vue d'établissement des Terrasses en REPLI tant que leurs images n'existent pas.",
+        "LA SOIF est un système de run : +1 palier tous les deux lieux atteints à partir des Bassins (plafond 3, au III elle use le corps sans jamais tuer seule), boire remet l'horloge à zéro ; au palier II les mots des CTA blanchissent (un seul budget avec l'Encroûté), une ligne par palier, le Geôlier au III. Jamais un chiffre.",
+        "LE PUZZLE DE LA CUVE (moteur « assemble ») : la saumure qui fuit EST le compte à rebours, sans chiffre ; l'échec est un prix (la soif ne descend pas), jamais un mur.",
+        "LE BASSIN DES DÉCLARÉS est l'EXCEPTION NOMMÉE qui touche aux seuils : toucher la statue de sa dominante déclare la forte (+1) et la faible (−1) pour le reste de la vie. Seul cas où un bonus de jet est accordé, et il vient avec son malus.",
+        "L'APPEL DU VER : forcer ou crocheter la Noria, prendre le raccourci de la Guérite, l'appellent — il passe SOUS les pieds à la Croisée suivante (la Plume frémit à qui la porte). Une manifestation, jamais un combat.",
+        "Le Soupçon reste ABSENT des Salines (décision du 13/09) : le Percepteur tient ses comptes, mais aucune jauge du village ne suit le héros ici."
       ]
     },
     "images": {
@@ -486,7 +494,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_terrasses_a_v4_c.png",
       "portrait_requis": false
     },
     {

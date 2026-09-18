@@ -838,6 +838,10 @@ def lire_choix(bloc: str) -> list[dict]:
             ch["exigeContradiction"] = True
         if booleen_de(c, "renonce"):
             ch["renonce"] = True
+        # LA SOIF (Bassins, 16/09) : négatif = désaltère, positif = assoiffe.
+        sf = nombre_de(c, "soif")
+        if sf is not None:
+            ch["soif"] = int(sf)
         s = nombre_de(c, "soupcon")
         if s is not None:
             ch["soupcon"] = int(s)
@@ -902,7 +906,11 @@ def lire_choix(bloc: str) -> list[dict]:
                            # que soit la santé, et l'immobilité qui fait monter
                            # l'Encroûté — sans ces deux champs le Graphe montre
                            # une fuite ordinaire et un choix sans prix.
-                           ("mortel", "mortel"), ("monteEncroute", "monteEncroute")):
+                           ("mortel", "mortel"), ("monteEncroute", "monteEncroute"),
+                           # LES BASSINS (16/09) : la Fixation des Déclarés et
+                           # l'appel du Ver — deux effets qu'un relecteur du
+                           # Graphe ou du kit ne verrait pas sans ça.
+                           ("fixation", "fixation"), ("appelleVer", "appelleVer")):
             if booleen_de(c, champ):
                 ch[cle] = True
         # EXCLUSIVITÉ D'ÉCRAN (13/09, la barge) : deux options qui s'excluent

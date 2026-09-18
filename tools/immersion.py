@@ -501,7 +501,9 @@ def pools() -> list[dict]:
             dest = m.group(1) or m.group(2)
             texte = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(3))).replace('\\"', '"')
             out.append({"pool": f"salines arrivée {dest}", "garde": {"village", "gens"}, "textes": [texte]})
-    for table, nom in (("SALINES_AMBIANCES", "salines ambiance"), ("SALINES_JAILER", "salines geôlier")):
+    # LES BASSINS (16/09) : leurs ambiances de marche ont leur propre table,
+    # servie par `pickLiaisonAmbiance` quand `ctx.etape === 1`.
+    for table, nom in (("SALINES_AMBIANCES", "salines ambiance"), ("SALINES_AMBIANCES_BASSINS", "bassins ambiance"), ("SALINES_JAILER", "salines geôlier")):
         for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, f"export const {table}"))):
             out.append({"pool": f"{nom} {i}", "garde": {"village", "gens"}, "textes": [t]})
     # Le Geôlier sur le dé (13/09 soir) : trois pools propres aux Salines,
@@ -514,15 +516,22 @@ def pools() -> list[dict]:
             out.append({"pool": f"salines geôlier dé·{cle} {i}", "garde": {"village", "gens"}, "textes": [t]})
             n_de += 1
     assert n_de >= 18, f"SALINES_JAILER_DE : {n_de} textes lus, ≥ 18 attendus"
-    enc = re.search(r'export const SALINES_ENCROUTE_GEOLIER\s*=\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', scene_src)
-    if enc:
+    # Le Geôlier sur l'Encroûté (13/09) et sur la Soif (16/09), la plume qui
+    # frémit avant le Ver (16/09) — trois exports d'une seule chaîne.
+    for const, nom in (("SALINES_ENCROUTE_GEOLIER", "salines encroûté geôlier"),
+                       ("SALINES_SOIF_GEOLIER", "bassins soif geôlier"),
+                       ("PLUME_FREMIT", "bassins plume")):
+        enc = re.search(rf'export const {const}\s*=\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)', scene_src)
+        assert enc, f"{const} introuvable dans scene-data.ts"
         t = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', enc.group(1)))
-        out.append({"pool": "salines encroûté geôlier", "garde": {"village", "gens"}, "textes": [t]})
+        out.append({"pool": nom, "garde": {"village", "gens"}, "textes": [t]})
     # Les lignes de l'Encroûté par palier (13/09 soir). ⚠️ Pas de table de
     # Soupçon ici : le Soupçon est un système des Landes et n'existe pas dans
     # cette zone (décision Patrick du 13/09, voir `monteSoupcon`).
     for table, nom in (
         ("SALINES_ENCROUTE_LIGNES", "salines encroûté"),
+        # LA SOIF (Bassins, 16/09) : une ligne par palier, même grammaire.
+        ("SALINES_SOIF_LIGNES", "bassins soif"),
     ):
         rec = re.search(rf"export const {table}: Record<number, string> = \{{(.*?)\n\}};", scene_src, re.S)
         assert rec, f"{table} introuvable dans scene-data.ts"
@@ -564,13 +573,17 @@ def pools() -> list[dict]:
         assert not re.search(r"\b(œil|yeux)\b", t), f"VER_MANIFESTATIONS.{m.group(1)} montre un œil — jamais (règle du 16/09)"
         out.append({"pool": f"salines ver {m.group(1)}", "garde": {"village", "gens"}, "textes": [t]})
         n_ver += 1
-    assert n_ver == 3, f"VER_MANIFESTATIONS : {n_ver} textes lus, 3 attendus"
+    # 4 depuis les Bassins (16/09) : le dos, le sillage, la gueule, et DESSOUS.
+    assert n_ver == 4, f"VER_MANIFESTATIONS : {n_ver} textes lus, 4 attendus"
     # ⚠️ COMPTER ce qu'on extrait (règle du 10/08) : 7 arrivées, 7 ambiances,
     # 12 lignes du Geôlier en liaison, 18 sur le dé, 1 + 3 d'Encroûté,
     # la tempête de marche (2) + 1 tempête de scène × (avant + après) — 51
     # textes au 13/09 soir (13 lignes de Geôlier en liaison depuis le fond du lac).
     n_sal = len(out) - n_avant
-    assert n_sal >= 51, f"pools des Salines : {n_sal} extraits, ≥ 51 attendus — l'extracteur ne lit plus scene-data.ts"
+    # + les Bassins (16/09) : 7 arrivées, 7 ambiances, 3 lignes de Soif, le
+    # Geôlier de la Soif, la plume, le Ver dessous, la tempête de la
+    # Passerelle (avant + après) — 73 au moins.
+    assert n_sal >= 73, f"pools des Salines : {n_sal} extraits, ≥ 73 attendus — l'extracteur ne lit plus scene-data.ts"
     for p_ in out[n_avant:]:
         p_["salines"] = True
 
