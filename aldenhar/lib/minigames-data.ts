@@ -156,6 +156,26 @@ export const JEU_GAMES: MiniGameEntry[] = [
     successText: "Le verre pivote sans bruit. La corde coupée s'enroule à ton poignet.",
     failText: "Ton doigt perd le fil — la vitrine se décroche et sonne sur la dalle.",
   },
+  {
+    id: "jeu-cuve-fendue",
+    number: 0,
+    title: "Remonter les tessons — la Cuve fendue",
+    category: "Référence",
+    stat: "RUSE",
+    lieu: "Les Bassins — la Cuve fendue, « Remonter les tessons » (jeu complet, depuis le 16/09)",
+    note: "Le puzzle apporté par Patrick le 16/09, adapté : le chrono est la SAUMURE qui fuit dans la cuve (douze crans, jamais un chiffre), les pièces sont des tessons de pierre à bords rongés qui s'aimantent à portée. Le fond est l'image de la cuve fendue, déposée le 18/09.",
+    description:
+      "Glisser chaque tesson jusqu'à sa place dans le contour de la cuve avant que la saumure ne soit à sec. La Ruse donne moins de tessons et une aimantation plus large. Rater n'est pas un mur : il reste une pellicule à lécher — mais la Soif, elle, ne tombe pas.",
+    engine: "assemble",
+    configFor: (tier) => ({
+      pieces: tier === "haut" ? 5 : tier === "moyen" ? 6 : 7,
+      tolerance: tier === "haut" ? 26 : tier === "moyen" ? 20 : 15,
+      fuiteMs: tier === "haut" ? 26000 : tier === "moyen" ? 22000 : 18000,
+      imageFond: assetSrc("assets/minijeu_cuve_fendue_a_c.png"),
+    }),
+    successText: "Le dernier tesson entre à sa place. La saumure cesse de fuir, et remonte.",
+    failText: "La cuve est à sec. Il reste une pellicule sur la pierre.",
+  },
 ];
 
 /** Validés dans le jeu, mais leur habillage réaliste n'est pas fait. */
@@ -180,25 +200,6 @@ export const A_HABILLER_GAMES: MiniGameEntry[] = [
     }),
     successText: "La ligne s'éteint. Ce qui respirait sous la croûte est passé sans te trouver.",
     failText: "Trois fois, ton souffle a dit où tu étais. La croûte se soulève.",
-  },
-  {
-    id: "jeu-cuve-fendue",
-    number: 0,
-    title: "Remonter les tessons — la Cuve fendue",
-    category: "Référence",
-    stat: "RUSE",
-    lieu: "Les Bassins — la Cuve fendue, « Remonter les tessons » (jeu complet, depuis le 16/09)",
-    note: "Le puzzle apporté par Patrick le 16/09, adapté : le chrono est la SAUMURE qui fuit dans la cuve (douze crans, jamais un chiffre), les pièces sont des tessons de pierre à bords rongés qui s'aimantent à portée. Habillage à créer : l'image de la cuve (minijeu_cuve_fendue_a) — en attendant, une pierre procédurale.",
-    description:
-      "Glisser chaque tesson jusqu'à sa place dans le contour de la cuve avant que la saumure ne soit à sec. La Ruse donne moins de tessons et une aimantation plus large. Rater n'est pas un mur : il reste une pellicule à lécher — mais la Soif, elle, ne tombe pas.",
-    engine: "assemble",
-    configFor: (tier) => ({
-      pieces: tier === "haut" ? 5 : tier === "moyen" ? 6 : 7,
-      tolerance: tier === "haut" ? 26 : tier === "moyen" ? 20 : 15,
-      fuiteMs: tier === "haut" ? 26000 : tier === "moyen" ? 22000 : 18000,
-    }),
-    successText: "Le dernier tesson entre à sa place. La saumure cesse de fuir, et remonte.",
-    failText: "La cuve est à sec. Il reste une pellicule sur la pierre.",
   },
   {
     id: "jeu-souffle-bete",

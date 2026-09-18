@@ -241,7 +241,7 @@ RENCONTRES = {
                       "an enormous blind beast the size of a barn, low and wide on many short legs, a ridged salt-white "
                       "carapace, a flat broad snout raking the floor, surrounded by rows of small salt-crusted human "
                       "statues it has sorted by size, inside a dark warehouse of stacked sacks"),
-    "boeuf_de_sel": ("croute", "monstre_salines_boeuf_de_sel_a",
+    "boeuf_de_sel": ("croute", "monstre_salines_boeuf_de_sel_encre",
                      "a huge draught ox still in its wooden yoke and iron traces, half turned to white salt crystal, "
                      "walking without end along a pair of iron rails across a flat salt crust, dragging a small "
                      "wooden wagon with a single shuttered window, seen from the side and slightly behind"),
@@ -272,7 +272,7 @@ RENCONTRES = {
     "gisants": ("croute", "monstre_salines_gisants_a",
                 "two human bodies lying flat on their backs in a white salt crust that has grown over them, "
                 "only the faces free, their arms breaking up out of the salt and reaching forward"),
-    "encroute_du_radeau": ("croute", "monstre_salines_encroute_radeau_a",
+    "encroute_du_radeau": ("croute", "monstre_salines_encroute_radeau_encre",
                         "a hooded man crusted with salt standing on a flat plank raft that rests directly on dry salt "
                         "with no water anywhere, holding a long punt pole upright, turned away from the viewer toward "
                         "a distant point on the horizon, and far behind him an immense pale wading bird unfolding one wing"),
@@ -428,7 +428,7 @@ CABLAGE = {
         # change (le frottement passe SOUS la croûte), et c'est tout l'effet.
         "bouche-3": "scene_salines_bouche_a",
         "radeau": "scene_salines_radeau_a",
-        "radeau-2": "monstre_salines_encroute_radeau_a",
+        "radeau-2": "monstre_salines_encroute_radeau_encre",
         # LE PASSAGE DU VER (16/09) : la fin obligatoire de la Croûte, sur la
         # quatrième image du Ver, la plus proche.
         "passage-du-ver": "monstre_salines_ver_face_a",
@@ -436,9 +436,9 @@ CABLAGE = {
         "fin-etape-non-ecrite": None,
     },
     # LES BASSINS (16/09) — ce que chaque écran DOIT servir une fois l'image
-    # déposée. Tant qu'elle ne l'est pas, l'écran sert `BASSINS_IMG` (les
-    # terrasses) et le garde ci-dessous le tolère ; dès que le fichier est
-    # sur le disque, il réclame le repointage.
+    # déposée. Tant qu'elle ne l'est pas, l'écran sert `BASSINS_IMG` (la vue
+    # d'établissement) et le garde ci-dessous le tolère ; dès que le fichier
+    # est sur le disque, il réclame le repointage.
     "bassins": {
         "terrasses": "scene_salines_terrasses_a",
         "terrasses-2": "monstre_salines_vermisseaux_a",
@@ -462,7 +462,7 @@ CABLAGE = {
 # Images de la zone qui n'ont pas d'écran fixe, et pourquoi.
 HORS_CABLAGE = {
     "scene_salines_croute_a": "vue de marche (liaisons) et fond de secours",
-    "monstre_salines_boeuf_de_sel_a": "issue de « remettre le battant et sonner », sur rive-haute-2",
+    "monstre_salines_boeuf_de_sel_encre": "issue de « remettre le battant et sonner », sur rive-haute-2",
     "monstre_salines_heron_a": "il s'envole dans une issue de radeau-2",
     "monstre_salines_encroute_a": "l'Encroûté générique — barge et ailleurs, au palier II",
     # Les trois APPARITIONS du Ver (16/09) : servies sur leur propre écran par
@@ -472,7 +472,7 @@ HORS_CABLAGE = {
     "monstre_salines_ver_sillage_a": "la deuxième Croisée de la Croûte (habillageSillage, Scene.tsx)",
     "monstre_salines_ver_gueule_a": "apparition garantie à l'arrivée au Champ des Sillages (Scene.apparition)",
     # LES BASSINS (16/09)
-    "scene_salines_bassins_a": "vue de marche des Bassins et fond de secours (BASSINS_IMG sert les terrasses en attendant)",
+    "scene_salines_bassins_a": "vue d'établissement : BASSINS_IMG (vue de marche des liaisons et fond de secours)",
     "minijeu_cuve_fendue_a": "fond du puzzle « assemble » de la Cuve fendue (Scene.tsx, pas une scène)",
 }
 

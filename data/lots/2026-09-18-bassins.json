@@ -1,0 +1,24 @@
+{
+  "lot": "2026-09-18 — les images des Bassins + deux remplacements de la Croûte",
+  "source": "Drive PACTUM/Photos/03_Validé_{Rencontres,Environnement,Objets}",
+  "fichiers": [
+    {"titre": "monstre_salines_boeuf_de_sel_encre_c.png", "id": "1Qn6W2KDGBt_i4YoI94AU0qWkIpKbhJCo", "taille": 12261, "remplace": "monstre_salines_boeuf_de_sel_a_b.png"},
+    {"titre": "monstre_salines_encroute_radeau_encre_c.png", "id": "1S1UqUzYUkFGN0kNhjuDUloaQEXPEVslW", "taille": 11671, "remplace": "monstre_salines_encroute_radeau_a_a.png"},
+    {"titre": "monstre_salines_ver_dessous_a_v2_c.png", "id": "1bNEWVgqViyBRhYM7RbT1SS8fLAu08dps", "taille": 17851, "remplace": null},
+    {"titre": "monstre_salines_vermisseaux_a_v2_d.png", "id": "1fGTF7hDTdNpy9UmNkF15NlTllt_Tz5JG", "taille": 18822, "remplace": null},
+    {"titre": "monstre_salines_lechards_a_b.png", "id": "1qjxgD3J2oQRVm32068edM2JCnHVvGsfK", "taille": 14812, "remplace": null},
+    {"titre": "monstre_salines_sauteurs_a_b.png", "id": "1OPVItUAnobv9xUbERC9L4ZLzcsw2NHuo", "taille": 27181, "remplace": null},
+    {"titre": "scene_salines_bassins_a_a.png", "id": "1dWbJg4xEmD6xrDH-5saA39Bs1BvSS-bX", "taille": 19848, "remplace": null},
+    {"titre": "scene_salines_passerelle_a_b.png", "id": "1TKmi1EDNmJ90FmhGVJsP-EnD70tCayeG", "taille": 20116, "remplace": null},
+    {"titre": "scene_salines_perchoir_heron_a_c.png", "id": "1zkn2OVkupZ9d6xtevU-pDRmHdCbj7DJA", "taille": 16407, "remplace": null},
+    {"titre": "scene_salines_lechards_a_d.png", "id": "19EXhG4XfVn-wL-4hPQMYTYgWHAmFnyvl", "taille": 21363, "remplace": null},
+    {"titre": "scene_salines_declares_a_b.png", "id": "11uY8QV80IDsURI48Bq5Gx2fbBIgKlZlV", "taille": 20476, "remplace": null},
+    {"titre": "scene_salines_cuve_fendue_a_d.png", "id": "1Maq8xTvxemJbjGmqvZBW5gAD5QkuyeH7", "taille": 21948, "remplace": null},
+    {"titre": "scene_salines_noria_a_d.png", "id": "1pMi_cGdsr9GOMCewCIWzCi3WV_HHGIdr", "taille": 17544, "remplace": null},
+    {"titre": "scene_salines_guerite_a_b.png", "id": "1bKz-FzHa56PU267yx1VzStneXS9F1qVn", "taille": 19186, "remplace": null},
+    {"titre": "minijeu_cuve_fendue_a_c.png", "id": "1MMeJfX6q-pWVtjZ3xpX6q1nrK2mXgrFy", "taille": 21672, "remplace": null},
+    {"titre": "objet_salines_sel_qui_garde_a_a.png", "id": "1BKRjd5KvjU0b1KkrXzH5sC1LGwmOS6xS", "taille": 10091, "remplace": null},
+    {"titre": "objet_salines_plume_heron_a_a.png", "id": "1OPtfWOYDWjRlHVw41ieQbFjPfJcfo8-R", "taille": 12979, "remplace": null},
+    {"titre": "objet_salines_manivelle_passeurs_a_a.png", "id": "10tDdVorcFMLQ-LHaU3WH1sPi5DNP3mj7", "taille": 4619, "remplace": null}
+  ]
+}

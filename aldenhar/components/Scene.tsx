@@ -5039,16 +5039,16 @@ export default function Scene() {
         /* LES TESSONS DE LA CUVE (Bassins, 16/09) : la Ruse donne moins de
            tessons et une aimantation plus large ; la saumure qui fuit est le
            seul sablier — jamais un chiffre —, et « Chronomètres : désactivés »
-           la fige. L'image de la cuve n'existe pas encore : pierre
-           procédurale tant que `minijeu_cuve_fendue_a` n'est pas déposée. */
+           la fige. Le fond est l'image de la cuve fendue (18/09) ; le garde
+           `assetExiste` laisse la pierre procédurale si le fichier manque. */
         const ruse = statDe(runRef.current?.stats, "RUSE");
         setMinigameConfig({
           pieces: ruse >= 4 ? 5 : ruse >= 3 ? 6 : 7,
           tolerance: ruse >= 4 ? 26 : ruse >= 3 ? 20 : 15,
           fuiteMs: ruse >= 4 ? 26000 : ruse >= 3 ? 22000 : 18000,
           chronosOff: Boolean(loadSettings().chronosOff),
-          imageFond: assetExiste("assets/minijeu_cuve_fendue_a.png")
-            ? assetSrc("assets/minijeu_cuve_fendue_a.png")
+          imageFond: assetExiste("assets/minijeu_cuve_fendue_a_c.png")
+            ? assetSrc("assets/minijeu_cuve_fendue_a_c.png")
             : undefined,
         });
       } else if (eng === "breath") {

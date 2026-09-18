@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-18T06:56:04Z",
- "commit": "ec8c15e",
+ "genere": "2026-09-18T09:18:06Z",
+ "commit": "240e0ab",
  "zones": [
   {
    "id": "landes",
@@ -8032,10 +8032,10 @@
       "prendre-la-croute"
      ],
      "image": {
-      "fichier": "monstre_salines_boeuf_de_sel_a_b.png",
-      "hash": "c6d36285",
-      "taille": 18249,
-      "recent": true,
+      "fichier": "monstre_salines_boeuf_de_sel_encre_c.png",
+      "hash": "c0d81139",
+      "taille": 12261,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -8062,7 +8062,7 @@
     "fichier": "monstre_salines_percepteur_a_b.png",
     "hash": "dae520ee",
     "taille": 16072,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8208,7 +8208,7 @@
     "fichier": "monstre_salines_piqueurs_a_v2_b.png",
     "hash": "fc230391",
     "taille": 12695,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8603,7 +8603,7 @@
     "fichier": "scene_salines_statue_inscription_a_v4_c.png",
     "hash": "681361b4",
     "taille": 14494,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8660,7 +8660,7 @@
     "fichier": "scene_salines_bouche_a_a.png",
     "hash": "70cdc52f",
     "taille": 29773,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8766,7 +8766,7 @@
     "fichier": "scene_salines_bouche_a_a.png",
     "hash": "70cdc52f",
     "taille": 29773,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "heritee",
     "herite": "bouche"
@@ -8823,7 +8823,7 @@
     "fichier": "scene_salines_radeau_a_a.png",
     "hash": "976b0bc8",
     "taille": 25504,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8880,10 +8880,10 @@
    "sejour": true,
    "zone": "salines",
    "image": {
-    "fichier": "monstre_salines_encroute_radeau_a_a.png",
-    "hash": "0d42c1b4",
-    "taille": 17680,
-    "recent": true,
+    "fichier": "monstre_salines_encroute_radeau_encre_c.png",
+    "hash": "93521057",
+    "taille": 11671,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9022,7 +9022,7 @@
     "fichier": "scene_salines_terrasses_a_v4_c.png",
     "hash": "9adc4d92",
     "taille": 11848,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9098,13 +9098,13 @@
    "combat": true,
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "monstre_salines_vermisseaux_a_v2_d.png",
+    "hash": "296a2f23",
+    "taille": 18822,
+    "recent": false,
     "existe": true,
-    "statut": "heritee",
-    "herite": "terrasses"
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -9166,13 +9166,13 @@
    },
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "scene_salines_passerelle_a_b.png",
+    "hash": "2f34bc31",
+    "taille": 20116,
+    "recent": false,
     "existe": true,
-    "statut": "heritee",
-    "herite": "terrasses"
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -9243,13 +9243,13 @@
    "combat": true,
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "monstre_salines_ver_dessous_a_v2_c.png",
+    "hash": "a3812471",
+    "taille": 17851,
+    "recent": false,
     "existe": true,
-    "statut": "heritee",
-    "herite": "terrasses"
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -9303,13 +9303,13 @@
    "suite": "perchoir-du-heron-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "scene_salines_perchoir_heron_a_c.png",
+    "hash": "4f32af91",
+    "taille": 16407,
+    "recent": false,
     "existe": true,
-    "statut": "heritee",
-    "herite": "terrasses"
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -9363,13 +9363,13 @@
    "pointsInteret": [],
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "scene_salines_perchoir_heron_a_c.png",
+    "hash": "4f32af91",
+    "taille": 16407,
+    "recent": false,
     "existe": true,
-    "statut": "heritee",
-    "herite": "terrasses"
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -9432,13 +9432,13 @@
    "suite": "bassin-des-lechards-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "monstre_salines_lechards_a_b.png",
+    "hash": "400b82c5",
+    "taille": 14812,
+    "recent": false,
     "existe": true,
-    "statut": "heritee",
-    "herite": "terrasses"
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -9492,13 +9492,13 @@
    "pointsInteret": [],
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "scene_salines_lechards_a_d.png",
+    "hash": "8e30d008",
+    "taille": 21363,
+    "recent": false,
     "existe": true,
-    "statut": "heritee",
-    "herite": "terrasses"
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -9630,13 +9630,13 @@
    "pointsInteret": [],
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "scene_salines_declares_a_b.png",
+    "hash": "d2cb42c6",
+    "taille": 20476,
+    "recent": false,
     "existe": true,
-    "statut": "heritee",
-    "herite": "terrasses"
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -9687,13 +9687,13 @@
    "suite": "cuve-fendue-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "scene_salines_cuve_fendue_a_d.png",
+    "hash": "bbb91e77",
+    "taille": 21948,
+    "recent": false,
     "existe": true,
-    "statut": "heritee",
-    "herite": "terrasses"
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -9766,13 +9766,13 @@
    "combat": true,
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "monstre_salines_sauteurs_a_b.png",
+    "hash": "15448cf8",
+    "taille": 27181,
+    "recent": false,
     "existe": true,
-    "statut": "heritee",
-    "herite": "terrasses"
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -9826,13 +9826,13 @@
    "sejour": true,
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "scene_salines_cuve_fendue_a_d.png",
+    "hash": "bbb91e77",
+    "taille": 21948,
+    "recent": false,
     "existe": true,
     "statut": "heritee",
-    "herite": "terrasses"
+    "herite": "cuve-fendue"
    },
    "description": "",
    "promptImage": "",
@@ -9910,13 +9910,13 @@
    "sejour": true,
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "scene_salines_noria_a_d.png",
+    "hash": "d7b30db8",
+    "taille": 17544,
+    "recent": false,
     "existe": true,
-    "statut": "heritee",
-    "herite": "terrasses"
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -9989,13 +9989,13 @@
    "combat": true,
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "monstre_salines_sauteurs_a_b.png",
+    "hash": "15448cf8",
+    "taille": 27181,
+    "recent": false,
     "existe": true,
-    "statut": "heritee",
-    "herite": "terrasses"
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -10052,13 +10052,13 @@
    "suite": "guerite-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "scene_salines_guerite_a_b.png",
+    "hash": "cc92c40e",
+    "taille": 19186,
+    "recent": false,
     "existe": true,
-    "statut": "heritee",
-    "herite": "terrasses"
+    "statut": "dediee",
+    "herite": ""
    },
    "description": "",
    "promptImage": "",
@@ -10123,13 +10123,13 @@
    "pointsInteret": [],
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "scene_salines_guerite_a_b.png",
+    "hash": "cc92c40e",
+    "taille": 19186,
+    "recent": false,
     "existe": true,
     "statut": "heritee",
-    "herite": "terrasses"
+    "herite": "guerite"
    },
    "description": "",
    "promptImage": "",
@@ -10160,10 +10160,10 @@
    "finDemo": true,
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_terrasses_a_v4_c.png",
-    "hash": "9adc4d92",
-    "taille": 11848,
-    "recent": true,
+    "fichier": "scene_salines_bassins_a_a.png",
+    "hash": "67d23bfb",
+    "taille": 19848,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -11312,7 +11312,7 @@
    "fichier": "monstre_salines_encroute_a_a.png",
    "hash": "e7adc0e9",
    "taille": 11440,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "salines_encroute"
   },
@@ -11320,7 +11320,7 @@
    "fichier": "monstre_salines_grand_saunier_a_b.png",
    "hash": "34060877",
    "taille": 21427,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "salines_grand_saunier"
   },
@@ -12432,7 +12432,7 @@
    "fichier": "scene_salines_entrepot_a_a.png",
    "hash": "962c35c0",
    "taille": 34045,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "salines_entrepot"
   },
@@ -12440,7 +12440,7 @@
    "fichier": "scene_salines_quai_de_l_ile_a_a.png",
    "hash": "ef3fa1b4",
    "taille": 23266,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "salines_quai_de_l_ile"
   },
@@ -12448,7 +12448,7 @@
    "fichier": "scene_salines_quai_de_l_ile_a_v3_c.png",
    "hash": "861f3321",
    "taille": 10754,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "salines_quai_de_l_ile_a"
   },
@@ -12456,7 +12456,7 @@
    "fichier": "scene_salines_rues_qui_marchent_a_b.png",
    "hash": "51c72d75",
    "taille": 19752,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "salines_rues_qui_marchent"
   },
@@ -12464,7 +12464,7 @@
    "fichier": "scene_salines_salines_a_b.png",
    "hash": "e65addb2",
    "taille": 20424,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "salines_salines"
   },
@@ -12472,7 +12472,7 @@
    "fichier": "scene_salines_tour_de_l_ecluse_a_a.png",
    "hash": "828057de",
    "taille": 19332,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "salines_tour_de_l_ecluse"
   },
@@ -13930,7 +13930,7 @@
   "scenes": 143,
   "pointsInteret": 0,
   "choix": 425,
-  "illustrations": 484,
+  "illustrations": 500,
   "sansImage": 0,
   "imagesIntrouvables": 0,
   "reserve": 234,

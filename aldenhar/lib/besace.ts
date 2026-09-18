@@ -248,6 +248,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
      sauniers mâchaient pour ne pas boire. Il referme, il coupe la soif — et
      il monte d'un palier l'Encroûté, puisqu'il reste dans la bouche. */
   "sel-qui-garde": {
+    illustration: "assets/objet_salines_sel_qui_garde_a_a.png",
     name: "Sel qui garde", rarity: "commun", kind: "soin", slot: "actif",
     heal: 0.10, cure: true, encroute: true,
     usage: "Se mâche. Ça referme ce qui saigne et ça coupe la soif — le sel, lui, reste.",
@@ -257,6 +258,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
   /* La plume du Héron de sel — elle ne pèse rien, elle frémit quand le Ver
      passe dessous. Aucun modificateur : ce qu'elle donne, c'est une ligne. */
   "plume-du-heron": {
+    illustration: "assets/objet_salines_plume_heron_a_a.png",
     name: "Plume du Héron", rarity: "rare", kind: "babiole", slot: "passif",
     passiveMod: 0, passiveScope: "all",
     usage: "Elle frémit avant que le sol ne bouge. Elle ne dit pas où — elle dit quand.",
@@ -265,6 +267,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
   /* La Manivelle des Passeurs — sortie de son logement à la Noria. Elle sert
      à la Cour aux rails et à la Tour : un outil, pas une arme. */
   "manivelle-passeurs": {
+    illustration: "assets/objet_salines_manivelle_passeurs_a_a.png",
     name: "Manivelle des Passeurs", rarity: "rare", kind: "babiole", slot: "passif",
     passiveMod: 0, passiveScope: "all",
     usage: "Elle entre dans les logements carrés des mécanismes des passeurs. Ce qu'elle fait tourner dépend de l'endroit.",

@@ -521,7 +521,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_passerelle_a_b.png",
       "portrait_requis": false
     },
     {
@@ -548,7 +548,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_perchoir_heron_a_c.png",
       "portrait_requis": false
     },
     {
@@ -571,7 +571,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_salines_lechards_a_b.png",
       "portrait_requis": false
     },
     {
@@ -594,7 +594,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_declares_a_b.png",
       "portrait_requis": false
     },
     {
@@ -619,7 +619,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_cuve_fendue_a_d.png",
       "portrait_requis": false
     },
     {
@@ -646,7 +646,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_guerite_a_b.png",
       "portrait_requis": false,
       "campement": true
     },
@@ -703,7 +703,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_noria_a_d.png",
       "portrait_requis": false
     },
     {
@@ -1179,7 +1179,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_salines_encroute_radeau_a_a.png",
+      "illustration": "assets/monstre_salines_encroute_radeau_encre_c.png",
       "portrait_requis": false
     },
     {
@@ -1311,7 +1311,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_salines_boeuf_de_sel_a_b.png",
+      "illustration": "assets/monstre_salines_boeuf_de_sel_encre_c.png",
       "portrait_requis": false
     },
     {
@@ -1563,7 +1563,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_salines_boeuf_de_sel_a_b.png",
+      "illustration": "assets/monstre_salines_boeuf_de_sel_encre_c.png",
       "portrait_requis": true
     },
     {

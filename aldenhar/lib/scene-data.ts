@@ -1411,7 +1411,7 @@ export const CROUTE_IMG = "assets/scene_salines_croute_a_b.png";
     écran des Bassins sans image dédiée (⚠️ chaque repli est signalé sur
     place ; la bible visuelle réclame le repointage à l'import). Déclarée
     ici, AVANT `SCENES` (TDZ), comme CROUTE_IMG. */
-export const BASSINS_IMG = "assets/scene_salines_terrasses_a_v4_c.png";
+export const BASSINS_IMG = "assets/scene_salines_bassins_a_a.png";
 
 /**
  * LE VER DE CROÛTE SE VOIT (décision Patrick, 16/09 — « c'est encore trop peu
@@ -8271,7 +8271,7 @@ export const SCENES: Scene[] = [
         // jamais ailleurs : le Ver sait.
         id: "monter-sur-le-boeuf",
         label: "Monter sur le bœuf",
-        illustration: "assets/monstre_salines_boeuf_de_sel_a_b.png",
+        illustration: "assets/monstre_salines_boeuf_de_sel_encre_c.png",
         requiresUsage: "battant",
         prendLaPlaceDe: "prendre-la-croute",
         sauteEtape: true,
@@ -8895,7 +8895,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "radeau-2",
-    illustration: "assets/monstre_salines_encroute_radeau_a_a.png",
+    illustration: "assets/monstre_salines_encroute_radeau_encre_c.png",
     sejour: true,
     narration: [
       "« Vas-y maintenant. » Il ne t'a pas regardé. « Le puits. Maintenant, pas ce soir. Ce soir, il chasse. » La gaffe tremble un peu. « J'ai attendu ce soir, moi. » Le héron déplie une aile.",
@@ -9085,7 +9085,7 @@ export const SCENES: Scene[] = [
        LAISSÉ (`laisseObjet`) : le prix est dit dans la prose, pas en chiffre.
        ⚠️ REPLI D'IMAGE : les terrasses, en attendant `monstre_salines_vermisseaux_a`. */
     id: "terrasses-2",
-    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    illustration: "assets/monstre_salines_vermisseaux_a_v2_d.png",
     combat: true,
     foe: "vermisseaux",
     foeName: "Les Vermisseaux",
@@ -9145,7 +9145,7 @@ export const SCENES: Scene[] = [
        la récompense du balayage, et elle prend la place de l'engagement sur
        les planches (`prendLaPlaceDe`). ⚠️ REPLI D'IMAGE (`scene_salines_passerelle_a`). */
     id: "passerelle-rompue",
-    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    illustration: "assets/scene_salines_passerelle_a_b.png",
     sejour: true,
     tempete: {
       cle: "passerelle",
@@ -9208,7 +9208,7 @@ export const SCENES: Scene[] = [
        informée, hors de portée, même seuil que la course aveugle).
        ⚠️ REPLI D'IMAGE, en attendant `monstre_salines_ver_passerelle_a`. */
     id: "passerelle-rompue-2",
-    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    illustration: "assets/monstre_salines_ver_dessous_a_v2_c.png",
     combat: true,
     foe: "ver-de-croute",
     foeName: "Le Ver, dessous",
@@ -9274,7 +9274,7 @@ export const SCENES: Scene[] = [
        ⚠️ REPLI D'IMAGE : les terrasses — le héron y est, dans le dernier
        bassin — en attendant `scene_salines_perchoir_heron_a`. */
     id: "perchoir-du-heron",
-    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    illustration: "assets/scene_salines_perchoir_heron_a_c.png",
     chainNext: "perchoir-du-heron-2",
     narration: [
       "Un bassin rond, plus profond que les autres, à sec jusqu'à une flaque de saumure au centre. Debout dans la flaque, sur une patte, un héron — immense, blanc, plus haut que toi. Il ne bouge pas. Il ne te regarde pas. Il regarde le sel à côté de lui, comme on regarde une porte.",
@@ -9321,7 +9321,7 @@ export const SCENES: Scene[] = [
     /* L'ENVOL — et ce qui suit : la croûte bombe là où il était. La plume
        reste (« frémit un écran avant le Ver »). ⚠️ REPLI D'IMAGE. */
     id: "perchoir-du-heron-2",
-    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    illustration: "assets/scene_salines_perchoir_heron_a_c.png",
     narration: [
       "Le héron déplie ses ailes — trois fois ta largeur — et s'envole sans un cri, à la verticale, lourd, blanc. Dessous, là où il était, la croûte bombe. Une bosse longue traverse le bassin sous la flaque ; la flaque se vide dans la fente et se referme. Tu n'as pas bougé.",
       "Sur le sel, une plume, plus longue que ton bras, raide comme si elle était en sel elle aussi.",
@@ -9367,7 +9367,7 @@ export const SCENES: Scene[] = [
        approche l'eau gardée par où les bêtes l'approchent, dans l'ombre.
        ⚠️ REPLI D'IMAGE (`monstre_salines_lechards_a`). */
     id: "bassin-des-lechards",
-    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    illustration: "assets/monstre_salines_lechards_a_b.png",
     chainNext: "bassin-des-lechards-2",
     narration: [
       "Un bassin large, presque plat. Une harde de bêtes maigres, hautes sur pattes, au poil ras et gris — des Léchards. Elles lèvent la tête ensemble quand tu arrives, puis viennent. Pas pour mordre : la première tend le cou et te lèche le poignet. Le sel de ta sueur.",
@@ -9421,7 +9421,7 @@ export const SCENES: Scene[] = [
     /* L'EAU DES LÉCHARDS — là où elles grattent, elle affleure. La route
        honnête de la Soif : on boit avec elles. ⚠️ REPLI D'IMAGE. */
     id: "bassin-des-lechards-2",
-    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    illustration: "assets/scene_salines_lechards_a_d.png",
     narration: [
       "La harde s'arrête au fond du bassin, où le sel est gris et mou. Elles grattent des sabots, et sous le gris, l'eau affleure — une pellicule, pas plus, salée mais moins. Elles boivent à tour de rôle, sans se presser. Il y a de la place.",
     ],
@@ -9470,7 +9470,7 @@ export const SCENES: Scene[] = [
        héros, budget de 3 tenu) ; un héros pas encore révélé n'a que la
        plus proche. ⚠️ REPLI D'IMAGE (`scene_salines_declares_a`). */
     id: "bassin-des-declares",
-    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    illustration: "assets/scene_salines_declares_a_b.png",
     narration: [
       "Un bassin où les Cristallins ne sont pas couchés. Debout, en cercle, chacun figé dans un geste — un poing levé, un doigt sur la bouche, une tête penchée vers le sel, une paume tendue vers l'autre. Des Déclarés : ils ont dit ce qu'ils étaient avec le corps, avant de cesser.",
       "Tu reconnais un geste. C'est celui que le Geôlier a vu en toi.",
@@ -9544,7 +9544,7 @@ export const SCENES: Scene[] = [
        les Sauteurs (-2) → la cuve elle-même (-3, séjour : le puzzle).
        ⚠️ REPLI D'IMAGE (`scene_salines_cuve_fendue_a`). */
     id: "cuve-fendue",
-    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    illustration: "assets/scene_salines_cuve_fendue_a_d.png",
     chainNext: "cuve-fendue-2",
     narration: [
       "Une cuve de pierre au fond d'un bassin, haute comme un homme, fendue du haut en bas. Par la fente, on voit qu'elle tient encore un fond de saumure — un doigt, deux, qui luisent. Autour, le sel est piétiné : beaucoup sont venus boire ici. Certains sont encore là, couchés le long de la cuve, la bouche vers la fente.",
@@ -9591,7 +9591,7 @@ export const SCENES: Scene[] = [
        l'option informée prend la place du coup de front, même seuil, hors
        de portée. ⚠️ REPLI D'IMAGE (`monstre_salines_sauteurs_a`). */
     id: "cuve-fendue-2",
-    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    illustration: "assets/monstre_salines_sauteurs_a_b.png",
     combat: true,
     foe: "sauteurs-de-saumure",
     foeName: "Les Sauteurs de saumure",
@@ -9651,7 +9651,7 @@ export const SCENES: Scene[] = [
        gorgées et met le sel dans la bouche (+ Encroûté). Échouer au puzzle
        est un prix, jamais un mur : il reste une pellicule à lécher. */
     id: "cuve-fendue-3",
-    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    illustration: "assets/scene_salines_cuve_fendue_a_d.png",
     sejour: true,
     narration: [
       "La cuve est devant toi, ouverte. Par la fente, la saumure luit au fond — un doigt d'eau, pas plus, et elle fuit par le bas. Autour, les tessons cassés tiennent debout par le sel qui les soude. On voit encore où chacun allait.",
@@ -9701,7 +9701,7 @@ export const SCENES: Scene[] = [
        manivelle, le canal à sec s'ouvre : un raccourci qui saute un lieu et
        prend la place de la sortie ordinaire. ⚠️ REPLI D'IMAGE (`scene_salines_noria_a`). */
     id: "noria",
-    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    illustration: "assets/scene_salines_noria_a_d.png",
     sejour: true,
     narration: [
       "Une roue à godets, plus haute que trois hommes, plantée au bord d'un canal à sec qui file vers le sud entre deux murets. Elle est figée par le sel jusqu'à l'axe. Sur l'axe, un logement carré : la manivelle qui la tournait est encore dedans, prise dans le sel comme dans du plomb. Le canal est droit. Il coupe tous les bassins.",
@@ -9770,7 +9770,7 @@ export const SCENES: Scene[] = [
        perche tient les carapaces à distance (hors de portée, même seuil).
        ⚠️ REPLI D'IMAGE (`monstre_salines_sauteurs_a`). */
     id: "noria-2",
-    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    illustration: "assets/monstre_salines_sauteurs_a_b.png",
     combat: true,
     foe: "sauteurs-de-saumure",
     foeName: "Les Sauteurs de saumure",
@@ -9832,7 +9832,7 @@ export const SCENES: Scene[] = [
        le repos enchaîne sur l'aube (-2), où il dit « vas-y maintenant ».
        ⚠️ REPLI D'IMAGE (`scene_salines_guerite_a`). */
     id: "guerite",
-    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    illustration: "assets/scene_salines_guerite_a_b.png",
     chainNext: "guerite-2",
     narration: [
       "Une cabane de planches au bord d'un bassin, la seule chose debout à des lieues qui ne soit pas de sel. Sur le seuil, un garde-bassin — un Encroûté, blanc jusqu'au cou, les yeux vifs dedans. « Tu cherches la sortie des Bassins. Tout le monde. Je connais le chemin par la croûte. Court. »",
@@ -9878,7 +9878,7 @@ export const SCENES: Scene[] = [
        attend que le passage soit fait avant d'y aller — l'option informée
        prend la place de l'aveugle, et n'appelle rien. ⚠️ REPLI D'IMAGE. */
     id: "guerite-2",
-    illustration: "assets/scene_salines_terrasses_a_v4_c.png",
+    illustration: "assets/scene_salines_guerite_a_b.png",
     narration: [
       "Le garde-bassin se lève — la première fois que tu le vois debout. Il regarde le bassin d'en bas. Le héron y est, sur une patte. Puis le héron déplie ses ailes et s'envole. « Vas-y maintenant », dit l'Encroûté. Il ne le dit pas comme un conseil. Il le dit comme on lit l'heure.",
     ],

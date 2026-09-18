@@ -110,12 +110,12 @@ Ce que la bible dit : récurrent, toute la zone.
 monstre_salines_percepteur_a=a tall gaunt man bent under the weight of hundreds of flat lead tokens pressed into his flesh by salt scales from skull to hands so that no skin shows, hooded in coarse wool, treading in place, holding out one flat palm with a single blank lead token on it, salt crust at his feet, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, blinding white noon, the sun a hard white disc punched into the black sky above the horizon; the salt floor blazes so evenly that NOTHING casts a shadow — everything standing on the crust is a flat black cut-out with no shadow under it at all, first-person view, no protagonist in frame, the VALUES ARE INVERTED compared to every other image: the salt fills the frame as one huge uniform very bright field, and everything resting on it reads as deep pure black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
-### Le Bœuf de sel (rencontre) — `monstre_salines_boeuf_de_sel_a`
+### Le Bœuf de sel (rencontre) — `monstre_salines_boeuf_de_sel_encre`
 
 Ce que la bible dit : la bête qui tirait les barges sur rails à sec, encore attelée, à moitié cristallisée, en marche sans fin.
 
 ```
-monstre_salines_boeuf_de_sel_a=a huge draught ox still in its wooden yoke and iron traces, half turned to white salt crystal, walking without end along a pair of iron rails across a flat salt crust, dragging a small wooden wagon with a single shuttered window, seen from the side and slightly behind, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, blinding white noon, the sun a hard white disc punched into the black sky above the horizon; the salt floor blazes so evenly that NOTHING casts a shadow — everything standing on the crust is a flat black cut-out with no shadow under it at all, first-person view, no protagonist in frame, the VALUES ARE INVERTED compared to every other image: the salt fills the frame as one huge uniform very bright field, and everything resting on it reads as deep pure black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+monstre_salines_boeuf_de_sel_encre=a huge draught ox still in its wooden yoke and iron traces, half turned to white salt crystal, walking without end along a pair of iron rails across a flat salt crust, dragging a small wooden wagon with a single shuttered window, seen from the side and slightly behind, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, blinding white noon, the sun a hard white disc punched into the black sky above the horizon; the salt floor blazes so evenly that NOTHING casts a shadow — everything standing on the crust is a flat black cut-out with no shadow under it at all, first-person view, no protagonist in frame, the VALUES ARE INVERTED compared to every other image: the salt fills the frame as one huge uniform very bright field, and everything resting on it reads as deep pure black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
 ### Le Héron de sel (rencontre) — `monstre_salines_heron_a`
@@ -142,12 +142,12 @@ Ce que la bible dit : gros lézards de la taille d'un chien, peau blanche de sel
 monstre_salines_gisants_a=two human bodies lying flat on their backs in a white salt crust that has grown over them, only the faces free, their arms breaking up out of the salt and reaching forward, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, blinding white noon, the sun a hard white disc punched into the black sky above the horizon; the salt floor blazes so evenly that NOTHING casts a shadow — everything standing on the crust is a flat black cut-out with no shadow under it at all, first-person view, no protagonist in frame, the VALUES ARE INVERTED compared to every other image: the salt fills the frame as one huge uniform very bright field, and everything resting on it reads as deep pure black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
-### L'Encroûté du Radeau (rencontre) — `monstre_salines_encroute_radeau_a`
+### L'Encroûté du Radeau (rencontre) — `monstre_salines_encroute_radeau_encre`
 
 Ce que la bible dit : celui qui dit « vas-y maintenant » vers le Puits — le Héron s'envole juste après.
 
 ```
-monstre_salines_encroute_radeau_a=a hooded man crusted with salt standing on a flat plank raft that rests directly on dry salt with no water anywhere, holding a long punt pole upright, turned away from the viewer toward a distant point on the horizon, and far behind him an immense pale wading bird unfolding one wing, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, blinding white noon, the sun a hard white disc punched into the black sky above the horizon; the salt floor blazes so evenly that NOTHING casts a shadow — everything standing on the crust is a flat black cut-out with no shadow under it at all, first-person view, no protagonist in frame, the VALUES ARE INVERTED compared to every other image: the salt fills the frame as one huge uniform very bright field, and everything resting on it reads as deep pure black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+monstre_salines_encroute_radeau_encre=a hooded man crusted with salt standing on a flat plank raft that rests directly on dry salt with no water anywhere, holding a long punt pole upright, turned away from the viewer toward a distant point on the horizon, and far behind him an immense pale wading bird unfolding one wing, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, blinding white noon, the sun a hard white disc punched into the black sky above the horizon; the salt floor blazes so evenly that NOTHING casts a shadow — everything standing on the crust is a flat black cut-out with no shadow under it at all, first-person view, no protagonist in frame, the VALUES ARE INVERTED compared to every other image: the salt fills the frame as one huge uniform very bright field, and everything resting on it reads as deep pure black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
 ### Les Encroûtés (rencontre) — `monstre_salines_encroute_a`
@@ -462,7 +462,7 @@ objet_salines_registre_traversees_a=a thick ledger open flat, its pages ruled in
 | `bouche-2` | `scene_salines_bouche_dent_a` |
 | `bouche-3` | `scene_salines_bouche_a` |
 | `radeau` | `scene_salines_radeau_a` |
-| `radeau-2` | `monstre_salines_encroute_radeau_a` |
+| `radeau-2` | `monstre_salines_encroute_radeau_encre` |
 | `passage-du-ver` | `monstre_salines_ver_face_a` |
 | `fin-etape-non-ecrite` | — (carton) |
 | `terrasses` | `scene_salines_terrasses_a` |
@@ -485,33 +485,17 @@ objet_salines_registre_traversees_a=a thick ledger open flat, its pages ruled in
 Hors câblage :
 
 - `scene_salines_croute_a` — vue de marche (liaisons) et fond de secours
-- `monstre_salines_boeuf_de_sel_a` — issue de « remettre le battant et sonner », sur rive-haute-2
+- `monstre_salines_boeuf_de_sel_encre` — issue de « remettre le battant et sonner », sur rive-haute-2
 - `monstre_salines_heron_a` — il s'envole dans une issue de radeau-2
 - `monstre_salines_encroute_a` — l'Encroûté générique — barge et ailleurs, au palier II
 - `monstre_salines_ver_dos_a` — apparition garantie à l'arrivée à la Rive haute (Scene.apparition)
 - `monstre_salines_ver_sillage_a` — la deuxième Croisée de la Croûte (habillageSillage, Scene.tsx)
 - `monstre_salines_ver_gueule_a` — apparition garantie à l'arrivée au Champ des Sillages (Scene.apparition)
-- `scene_salines_bassins_a` — vue de marche des Bassins et fond de secours (BASSINS_IMG sert les terrasses en attendant)
+- `scene_salines_bassins_a` — vue d'établissement : BASSINS_IMG (vue de marche des liaisons et fond de secours)
 - `minijeu_cuve_fendue_a` — fond du puzzle « assemble » de la Cuve fendue (Scene.tsx, pas une scène)
 
 
 ## Ce qu'il reste à produire
 
-13 image(s). En attendant, ces écrans servent l'image d'établissement de leur environnement.
-
-| image | écran | environnement |
-|---|---|---|
-| `scene_salines_bassins_a` | `—` | bassins |
-| `scene_salines_passerelle_a` | `passerelle-rompue` | bassins |
-| `scene_salines_perchoir_heron_a` | `perchoir-du-heron-2` | bassins |
-| `scene_salines_lechards_a` | `bassin-des-lechards-2` | bassins |
-| `scene_salines_declares_a` | `bassin-des-declares` | bassins |
-| `scene_salines_cuve_fendue_a` | `cuve-fendue-3` | bassins |
-| `scene_salines_guerite_a` | `guerite-2` | bassins |
-| `scene_salines_noria_a` | `noria` | bassins |
-| `minijeu_cuve_fendue_a` | `—` | bassins |
-| `monstre_salines_vermisseaux_a` | `terrasses-2` | bassins |
-| `monstre_salines_sauteurs_a` | `noria-2` | bassins |
-| `monstre_salines_lechards_a` | `bassin-des-lechards` | bassins |
-| `monstre_salines_ver_dessous_a` | `passerelle-rompue-2` | bassins |
+Rien : tous les écrans câblés ont leur image sur le disque.
 
