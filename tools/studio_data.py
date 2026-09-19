@@ -910,7 +910,11 @@ def lire_choix(bloc: str) -> list[dict]:
                            # LES BASSINS (16/09) : la Fixation des Déclarés et
                            # l'appel du Ver — deux effets qu'un relecteur du
                            # Graphe ou du kit ne verrait pas sans ça.
-                           ("fixation", "fixation"), ("appelleVer", "appelleVer")):
+                           ("fixation", "fixation"), ("appelleVer", "appelleVer"),
+                           # LES SALINES (19/09) : l'Encroûté qui REDESCEND (le
+                           # Puits, les Sauniers) — sans lui le Graphe ne
+                           # montrerait qu'un sel qui monte.
+                           ("baisseEncroute", "baisseEncroute")):
             if booleen_de(c, champ):
                 ch[cle] = True
         # EXCLUSIVITÉ D'ÉCRAN (13/09, la barge) : deux options qui s'excluent

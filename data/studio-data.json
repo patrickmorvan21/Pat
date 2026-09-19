@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-18T09:18:06Z",
- "commit": "240e0ab",
+ "genere": "2026-09-19T15:52:05Z",
+ "commit": "dffc9b1",
  "zones": [
   {
    "id": "landes",
@@ -8035,10 +8035,10 @@
       "fichier": "monstre_salines_boeuf_de_sel_encre_c.png",
       "hash": "c0d81139",
       "taille": 12261,
-      "recent": false,
+      "recent": true,
       "existe": true,
-      "statut": "dediee",
-      "herite": ""
+      "statut": "heritee",
+      "herite": "cour-aux-rails-2"
      }
     },
     {
@@ -8883,7 +8883,7 @@
     "fichier": "monstre_salines_encroute_radeau_encre_c.png",
     "hash": "93521057",
     "taille": 11671,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9101,7 +9101,7 @@
     "fichier": "monstre_salines_vermisseaux_a_v2_d.png",
     "hash": "296a2f23",
     "taille": 18822,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9169,7 +9169,7 @@
     "fichier": "scene_salines_passerelle_a_b.png",
     "hash": "2f34bc31",
     "taille": 20116,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9246,7 +9246,7 @@
     "fichier": "monstre_salines_ver_dessous_a_v2_c.png",
     "hash": "a3812471",
     "taille": 17851,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9306,7 +9306,7 @@
     "fichier": "scene_salines_perchoir_heron_a_c.png",
     "hash": "4f32af91",
     "taille": 16407,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9366,7 +9366,7 @@
     "fichier": "scene_salines_perchoir_heron_a_c.png",
     "hash": "4f32af91",
     "taille": 16407,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9435,7 +9435,7 @@
     "fichier": "monstre_salines_lechards_a_b.png",
     "hash": "400b82c5",
     "taille": 14812,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9495,7 +9495,7 @@
     "fichier": "scene_salines_lechards_a_d.png",
     "hash": "8e30d008",
     "taille": 21363,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9633,7 +9633,7 @@
     "fichier": "scene_salines_declares_a_b.png",
     "hash": "d2cb42c6",
     "taille": 20476,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9690,7 +9690,7 @@
     "fichier": "scene_salines_cuve_fendue_a_d.png",
     "hash": "bbb91e77",
     "taille": 21948,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9769,7 +9769,7 @@
     "fichier": "monstre_salines_sauteurs_a_b.png",
     "hash": "15448cf8",
     "taille": 27181,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9829,7 +9829,7 @@
     "fichier": "scene_salines_cuve_fendue_a_d.png",
     "hash": "bbb91e77",
     "taille": 21948,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "heritee",
     "herite": "cuve-fendue"
@@ -9913,7 +9913,7 @@
     "fichier": "scene_salines_noria_a_d.png",
     "hash": "d7b30db8",
     "taille": 17544,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9992,7 +9992,7 @@
     "fichier": "monstre_salines_sauteurs_a_b.png",
     "hash": "15448cf8",
     "taille": 27181,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10055,7 +10055,7 @@
     "fichier": "scene_salines_guerite_a_b.png",
     "hash": "cc92c40e",
     "taille": 19186,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10126,7 +10126,7 @@
     "fichier": "scene_salines_guerite_a_b.png",
     "hash": "cc92c40e",
     "taille": 19186,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "heritee",
     "herite": "guerite"
@@ -10143,15 +10143,1007 @@
    "alertes": []
   },
   {
-   "id": "fin-etape-non-ecrite",
+   "id": "pesee",
    "narration": [
-    "Les murets s'abaissent, les bassins se resserrent, et devant toi le sel se remet à monter en plaques — des tables de cristal, blanches, sur lesquelles on marche comme sur du verre. Les Salines.",
-    "Tu as traversé les Bassins vivant. Derrière toi, le dernier bassin garde un doigt d'eau que tu n'as pas bu."
+    "Une cour entre des murs de sacs, plus hauts qu'un homme. Au milieu, sous un portique de poutres, une balance de fer — deux plateaux larges comme des tables, l'un chargé de sacs, l'autre vide, et le fléau qui penche du côté plein sans jamais toucher terre.",
+    "Derrière la balance, un pupitre, et à ce pupitre un Encroûté qui écrit. Il ne lève pas la tête. Sur le sel, des traces de pas qui vont au plateau vide, et qui n'en reviennent pas toutes."
    ],
    "choix": [
     {
-     "id": "monter-vers-les-salines",
-     "label": "Monter vers les Salines",
+     "id": "regarder-la-balance",
+     "label": "Regarder la balance",
+     "type": "passif",
+     "consequence": "Le plateau chargé porte douze sacs. Le plateau vide porte des marques — des ronds de sel, à la taille d'un pied, là où des gens se sont tenus debout pour se faire peser. Le fléau n'a pas bougé depuis. Ils pesaient moins que douze sacs."
+    },
+    {
+     "id": "lire-le-registre-pesee",
+     "label": "Lire par-dessus son épaule",
+     "type": "passif",
+     "consequence": "Deux colonnes. À gauche, ce qu'on a posé : sacs, outils, une gourde, une main. À droite, ce qu'on a pris. La colonne de droite est plus courte. Il continue d'écrire pendant que tu lis, et ce qu'il écrit, c'est ton poids. Tu ne t'es pas encore approché du plateau."
+    },
+    {
+     "id": "avancer-vers-le-plateau",
+     "label": "Avancer vers le plateau vide",
+     "type": "passif",
+     "consequence": "Tu contournes la balance. Le sel craque. Quand tu arrives devant le plateau vide, quelqu'un est déjà là, de l'autre côté — venu par les sacs sans bruit."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "pesee-2",
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "pesee-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "pesee-2",
+   "narration": [
+    "Le Percepteur. La même capuche, la même écaille de jetons pressés dans la chair, et il piétine sur place de l'autre côté du fléau. Il tend la paume. Elle est vide. « On paie ici, ou on paie là-bas. Ici, c'est moins cher. »",
+    "Sur le plateau vide, à tes pieds, un sac de sel attend qu'on le prenne. Le fléau attend qu'on le rende."
+   ],
+   "choix": [
+    {
+     "id": "poser-le-jeton",
+     "label": "Poser le jeton sur le plateau",
+     "type": "passif",
+     "consequence": "Tu poses le jeton de plomb sur le plateau vide. Le fléau descend d'un doigt, s'arrête. Le Percepteur reprend le jeton entre deux écailles, sans le regarder, et le presse dans sa poitrine avec les autres. « Payé ici. » Tu prends le sac. Il ne t'a pas pesé.",
+     "donneObjet": "sac-de-sel",
+     "exigeSavoir": "savoir_gisants",
+     "tags": [
+      "citable"
+     ],
+     "prendLaPlaceDe": [
+      "prendre-un-sac"
+     ]
+    },
+    {
+     "id": "prendre-un-sac",
+     "label": "Prendre le sac sans rien poser",
+     "type": "passif",
+     "consequence": "Tu prends le sac. Le fléau remonte de ton côté, lentement, et le sel autour de tes bottes se met à peser à sa place — une pellicule qui monte, blanche, jusqu'aux chevilles. Le Percepteur écrit. « Là-bas, c'est plus cher. »",
+     "donneObjet": "sac-de-sel",
+     "monteEncroute": true
+    },
+    {
+     "id": "demander-ou-sont-les-autres",
+     "label": "Demander où sont les autres",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu ouvres le registre de la Barge sur le plateau. Embarqués, débarqués. Il regarde les deux colonnes longtemps. « Les autres ont payé en route. » Il touche une écaille sur sa poitrine, puis une autre. « Un sur deux. La barge passait. » Tu refermes le registre.",
+      "reussite": "Tu montres les deux colonnes. « Un sur deux », dit-il. « La barge passait à ce prix-là. » Il ne dit pas qui fixait le prix. Il touche sa poitrine.",
+      "echec": "Tu montres le registre. Il le referme d'une paume, et ses écailles cliquettent. « Ceux qui posent des questions paient là-bas. » Il n'a pas répondu, et tu as compris qu'il aurait pu.",
+      "funeste": "1 naturel. Il prend le registre, l'ouvre à la dernière page, et écrit ton nom dans la colonne de gauche. Il ne remplit pas la droite. Tu récupères le livre. La ligne reste. ♦ −2"
+     },
+     "nature": "social",
+     "donneDecouverte": "d.embarques_debarques",
+     "exigeObjet": "registre-des-traversees",
+     "prendLaPlaceDe": [
+      "demander-le-prix"
+     ]
+    },
+    {
+     "id": "demander-le-prix",
+     "label": "Lui demander le prix",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. « Ton poids. » Il montre le plateau. « Ici, en sacs. Là-bas, en toi. » Il piétine. « Tout le monde choisit là-bas. Ils croient que c'est loin. » Tu regardes les traces sur le sel qui ne reviennent pas.",
+      "reussite": "« Ton poids. Ici en sacs, là-bas en toi. » Il tend la paume vide. Il attend quelque chose que tu n'as pas, ou que tu n'as plus.",
+      "echec": "Il ne répond pas. Il te regarde, et le fléau grince sans que personne y touche. Tu recules d'un pas.",
+      "funeste": "1 naturel. « Le prix, tu l'as déjà pris. » Il tend la paume, et tu sens dans ta poche le poids d'un jeton que tu n'as pas. Tu recules. Le sel sous tes bottes pèse. ♦ −2"
+     },
+     "nature": "social"
+    },
+    {
+     "id": "passer-sans-rien-prendre",
+     "label": "Passer sans rien prendre",
+     "type": "passif",
+     "consequence": "Tu ne touches ni au sac ni au plateau. Le Percepteur écrit une ligne courte. « Là-bas, alors. » Tu passes entre les sacs, et la balance ne bouge pas."
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "percepteur",
+   "zone": "salines",
+   "image": {
+    "fichier": "monstre_salines_percepteur_a_b.png",
+    "hash": "dae520ee",
+    "taille": 16072,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "pesee"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "puits",
+   "narration": [
+    "Entre deux murs de sacs, une margelle de pierre ronde et, au-dessus, une potence avec sa corde et son seau. Le seul endroit de la zone qui sente autre chose que le sel : l'eau. Elle est loin, en bas — on l'entend, on ne la voit pas.",
+    "Sur la potence, un nid : des brindilles blanches de sel, et dedans, des oiseaux qui ne bougent pas encore."
+   ],
+   "choix": [
+    {
+     "id": "puiser",
+     "label": "Descendre le seau",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu laisses filer la corde sans à-coup, et le seau touche l'eau sans un bruit. Tu remontes. Tu bois, longtemps. Le sel sur tes manches se fend et tombe en plaques. Au-dessus, le nid n'a pas bougé.",
+      "reussite": "Le seau descend, touche, remonte lourd. Tu bois. L'eau est froide et ne goûte rien — la première chose depuis la Croûte qui ne goûte rien. Le sel de tes manches se craquelle.",
+      "echec": "La corde saute sur la poulie, le seau cogne la paroi et remonte à moitié vide. Tu bois ce qu'il y a. Au-dessus, dans le nid, quelque chose a levé la tête au bruit.",
+      "funeste": "1 naturel. Le seau accroche, tu tires, et la potence entière grince. Il remonte vide. Le nid, lui, est réveillé — et tu as les deux mains prises par la corde. ♦ −2"
+     },
+     "nature": "exploration",
+     "soif": -3,
+     "baisseEncroute": true
+    },
+    {
+     "id": "boire-ce-qui-suinte",
+     "label": "Lécher la margelle humide",
+     "type": "passif",
+     "consequence": "La pierre suinte, côté ombre. Tu y colles la bouche. Ça ne désaltère pas : ça rappelle ce que c'est. Les oiseaux du nid tournent la tête ensemble.",
+     "soif": -1
+    },
+    {
+     "id": "regarder-le-nid",
+     "label": "Regarder le nid",
+     "type": "passif",
+     "consequence": "Des Piqueurs. Une vingtaine, blancs, tassés dans le sel, les yeux ouverts. Ils ne dorment pas : ils attendent que quelqu'un se penche sur la margelle. Sous le nid, sur la pierre, des choses rondes et sèches que tu préfères ne pas compter."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "puits-2",
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "puits-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "puits-2",
+   "narration": [
+    "Le nid se vide d'un coup. Des Piqueurs — blancs, rapides, un bruit d'ailes comme du sel qu'on jette — et ils descendent en spirale autour de la potence, vers ce qui, chez toi, est encore mouillé : les yeux."
+   ],
+   "choix": [
+    {
+     "id": "chasser-les-piqueurs",
+     "label": "Les chasser à coups de bras",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu en attrapes un en plein vol et tu le casses. Les autres s'arrêtent en l'air — ils sentent — et remontent au nid d'un seul mouvement. Il en reste un dans ta main, sec, léger. Tu le lâches dans le puits.",
+      "reussite": "Tu frappes, ils s'écartent, tu frappes encore. Ils remontent au nid par vagues et s'y tassent. Tu as le visage entier. Tes bras, moins.",
+      "echec": "Ils passent entre tes bras. Un bec au front, un autre à la tempe, et le sang qui coule dans l'œil qu'ils visaient. Tu te plies sur la margelle, la tête dans les mains, jusqu'à ce qu'ils se lassent.",
+      "funeste": "1 naturel. Tu frappes le vide. Ils sont déjà sur toi — les paupières, l'arête du nez, le coin de la bouche. Tu tombes à genoux contre la margelle et tu tiens tes yeux à deux mains. Ils prennent le reste. ♦ −2"
+     },
+     "nature": "physique",
+     "masqueSi": {
+      "objet": "manteau-de-saunier"
+     }
+    },
+    {
+     "id": "rabattre-le-manteau",
+     "label": "Rabattre le manteau de saunier",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu rabats la capuche croûtée de sel et tu baisses la tête. Ils tournent autour, se posent sur tes épaules, sur ton crâne — et repartent. Tu es du sel. On ne pique pas le sel. Tu restes courbé le temps qu'ils remontent.",
+      "reussite": "Capuche rabattue, tête basse. Ils descendent, tournent, se posent sur le manteau et picorent la croûte. Rien dessous ne les intéresse. Ils remontent au nid.",
+      "echec": "Tu rabats la capuche trop tard : un bec te prend le lobe de l'oreille avant que le sel ne le couvre. Puis plus rien. Ils tournent, se lassent. Tu restes courbé, l'oreille chaude.",
+      "funeste": "1 naturel. Le manteau tient, mais tu as levé la tête pour voir — et l'un d'eux attendait ça. Une entaille sous l'œil, pas l'œil. Tu rabaisses la tête. Ils remontent. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeObjet": "manteau-de-saunier",
+     "horsDePortee": true
+    },
+    {
+     "id": "tete-sous-la-margelle",
+     "label": "La tête sous la margelle",
+     "type": "passif",
+     "consequence": "Tu passes les jambes par-dessus et tu te pends à la corde, la tête sous le niveau de la pierre. Ils tournent au-dessus, crient, ne descendent pas dans le noir. Quand ils remontent au nid, tu remontes aussi. Les bras te tremblent.",
+     "tags": [
+      "fuite"
+     ]
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "piqueurs",
+   "adversaireNom": "Les Piqueurs",
+   "combat": true,
+   "zone": "salines",
+   "image": {
+    "fichier": "monstre_salines_piqueurs_a_v2_b.png",
+    "hash": "fc230391",
+    "taille": 12695,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "puits"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "dortoir",
+   "narration": [
+    "Une salle longue, basse, deux rangées de couchettes de planches. Sur chacune, un matelas — pas de paille : du sel, tassé, moulé en creux à la forme de celui qui dormait là. Certains creux ont encore quelqu'un dedans.",
+    "Entre les rangées, des bêtes basses à carapace raclent le sol sans bruit, aveugles, et contournent tes bottes comme des pierres. Sous le matelas le plus proche, un coin de papier dépasse."
+   ],
+   "choix": [
+    {
+     "id": "dormir-dortoir",
+     "label": "Dormir sur le sel",
+     "type": "repos",
+     "tags": [
+      "citable"
+     ],
+     "repos": true,
+     "monteEncroute": true
+    },
+    {
+     "id": "dormir-sandales",
+     "label": "Dormir, les sandales aux pieds",
+     "type": "passif",
+     "consequence": "Tu te couches dans un creux qui n'est pas le tien, les sandales aux pieds. Le sel monte pendant la nuit — tu le sens venir — et il s'arrête aux lanières. Au matin, tu te lèves propre. Les sandales, elles, restent dans le creux, soudées au matelas : elles ont tenu une nuit, celle-ci.",
+     "exigeObjet": "sandales-de-marche",
+     "laisseObjet": "sandales-de-marche",
+     "repos": true,
+     "prendLaPlaceDe": [
+      "dormir-dortoir"
+     ]
+    },
+    {
+     "id": "lire-la-lettre-lanterne",
+     "label": "Lire la lettre à la lanterne",
+     "type": "passif",
+     "consequence": "Tu tires le papier et tu lèves la lanterne. Une main serrée, à l'encre pâle : « Ils croient qu'on les fait traverser. On les fait peser. Un sur deux, et la barge passe. Je n'irai plus. Je reste ici, sous le sel, où il ne me trouvera pas. » Pas de nom. Le creux du matelas est à la taille de quelqu'un de petit.",
+     "donneDecouverte": "d.lettre_passeur",
+     "exigeObjet": "lanterne-du-noye",
+     "prendLaPlaceDe": [
+      "chercher-sous-le-matelas"
+     ]
+    },
+    {
+     "id": "chercher-sous-le-matelas",
+     "label": "Tirer le papier du matelas",
+     "type": "passif",
+     "consequence": "Tu tires : une lettre, pliée en quatre, l'encre pâle. Il fait trop noir pour la lire, et le sel te tient déjà les doigts le temps que tu la déplies. Tu la gardes contre toi pour l'aube. Tu la liras. Le sel aura eu une nuit d'avance.",
+     "donneDecouverte": "d.lettre_passeur",
+     "monteEncroute": true
+    },
+    {
+     "id": "repartir-dortoir",
+     "label": "Ne pas se coucher ici",
+     "type": "passif",
+     "consequence": "Tu ne t'allonges pas. Les creux te regardent comme des bouches ouvertes. Tu traverses la salle jusqu'à la porte du fond, et les bêtes à carapace s'écartent devant tes pas."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "dortoir-2",
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "dortoir-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "dortoir-2",
+   "narration": [
+    "Un bruit de sel qu'on ronge. Dans la lumière grise, les couchettes bougent : des rats — blancs, gros comme des chats, par dizaines — sortent des creux où quelqu'un dormait encore et grimpent le long des planches, vers toi. Ils ne mangent pas le sel. Ils mangent ce qu'il y a dedans."
+   ],
+   "choix": [
+    {
+     "id": "faire-du-bruit",
+     "label": "Frapper les planches, hurler",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu arraches une planche et tu frappes la couchette d'à côté en hurlant. La nuée se fend en deux et file par les creux. Le silence revient. Sous tes pieds, très loin, quelque chose a entendu aussi.",
+      "reussite": "Tu frappes, tu cries. Ils reculent par vagues et disparaissent dans les matelas. Le bruit court dans le sol plus loin que la salle — plus loin que tu ne voulais.",
+      "echec": "Tu cries, et ils hésitent — pas assez. Deux te montent sur la jambe et mordent avant que les autres se dispersent. Tu les arraches. Le bruit, lui, continue sans toi, quelque part sous le sol.",
+      "funeste": "1 naturel. Tu frappes une planche qui casse, et ils sont sur toi le temps que tu relèves les mains. Tu les arraches un par un. Quand ils partent, ce n'est pas à cause de toi : c'est que le sol a bougé. ♦ −2"
+     },
+     "nature": "physique",
+     "appelleVer": true,
+     "masqueSi": {
+      "objet": "sac-de-sel"
+     }
+    },
+    {
+     "id": "vider-le-sac-de-sel",
+     "label": "Vider le sac de sel devant eux",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu fends le sac et tu le jettes en pluie devant les couchettes. Ils s'arrêtent net — un sel neuf, sans rien dedans, et ils ne comprennent pas. Ils reculent dans les creux, tous. Le sac est vide. Rien n'a entendu.",
+      "reussite": "Tu vides le sac en travers de l'allée. Ils s'arrêtent à la ligne blanche, la reniflent, et repartent dans les matelas. Le sac est vide.",
+      "echec": "Le sac se fend de travers ; la moitié tombe à tes pieds. Ils contournent la ligne, la reniflent, et repartent quand même — plus lentement. Le sac est fini.",
+      "funeste": "1 naturel. Tu jettes le sac entier, fermé. Il roule. Ils le suivent, l'ouvrent, s'y roulent. Tu sors de la salle pendant qu'ils sont occupés. Tu n'as plus de sel. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeObjet": "sac-de-sel",
+     "laisseObjet": "sac-de-sel",
+     "horsDePortee": true
+    },
+    {
+     "id": "rester-immobile-dortoir",
+     "label": "Rester immobile",
+     "type": "passif",
+     "consequence": "Tu ne bouges pas. Ils passent sur tes bottes, tes jambes, reniflent le sel des coutures et n'y trouvent rien à manger. Ils continuent vers les creux du fond. Quand tu bouges enfin, le sel a pris tes chevilles pendant que tu attendais.",
+     "monteEncroute": true
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "rats-de-saline",
+   "adversaireNom": "Les Rats de saline",
+   "combat": true,
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "dortoir"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "forge-a-grattoirs",
+   "narration": [
+    "Un atelier à ciel ouvert entre les sacs. Une enclume, un râtelier de lames courtes à manche court — des grattoirs, pour racler le sel des statues —, la plupart ébauchées, une seule finie. Sur l'enclume, un tracé au poinçon montre le fil à donner.",
+    "Au fond, sous un auvent, deux pilons de pierre montent et descendent tout seuls, sur rien. Entre eux, une poussière blanche, fine, qui sent la même chose que le sel des Terrasses."
+   ],
+   "choix": [
+    {
+     "id": "finir-un-grattoir",
+     "label": "Finir un grattoir sur l'enclume",
+     "type": "passif",
+     "consequence": "Tu suis le tracé, sans lever le poinçon. La lame prend son fil. Tu la lèves : un grattoir de saunier, court, lourd dans la main comme une chose qui sait ce qu'elle racle. Le râtelier a une place vide de plus.",
+     "donneObjet": "grattoir-saunier",
+     "miniJeuDemo": "trace",
+     "miniJeuHorsDemo": true,
+     "miniJeuEchec": "Le fil part de travers. Tu tires le grattoir de l'enclume tel quel — brut, la lame en dents — et il te prend la paume au premier geste. Tu le gardes quand même. Il coupe. Pas toujours de ton côté.",
+     "miniJeuEchecBlesse": true,
+     "miniJeuEchecGardeLoot": true
+    },
+    {
+     "id": "passer-entre-les-pilons",
+     "label": "Passer entre les pilons",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu comptes deux battements, tu passes entre les pilons dans le temps mort, et tu ressors de l'autre côté avec une poignée de poudre blanche serrée dans le poing. Elle est tiède. Elle a été quelqu'un.",
+      "reussite": "Tu passes dans le temps mort. Le pilon retombe derrière ton talon. Dans ta main, une motte de poudre pressée — du sel qui garde, tout frais.",
+      "echec": "Tu passes trop tôt. Le pilon te prend le bras contre le montant, un coup sourd qui fait craquer quelque chose. Tu ressors avec la motte et un bras qui ne se lève plus tout à fait.",
+      "funeste": "1 naturel. Tu passes, le pilon tombe, et il te prend l'épaule. Tu roules sous le second. Dans ta main, une motte de poudre ; dans l'épaule, le poids d'une pierre qui a broyé cent statues. ♦ −2"
+     },
+     "nature": "physique",
+     "donneObjet": "sel-qui-garde"
+    },
+    {
+     "id": "regarder-les-meules",
+     "label": "Regarder ce que broient les pilons",
+     "type": "passif",
+     "consequence": "Dans la poussière, des éclats : un doigt, la courbe d'une oreille, une paupière. Les pilons ne broient pas du sel. Ils broient des Cristallins — ceux qu'on a ramenés ici en sacs. Le sel qui garde, c'est eux. C'est ce qu'on mâchait pour tenir.",
+     "donneDecouverte": "d.sel_des_statues"
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "forge-a-grattoirs-2",
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "forge-a-grattoirs-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "forge-a-grattoirs-2",
+   "narration": [
+    "Ils sortent de sous le râtelier : des Sauniers, bas sur pattes, aveugles, la carapace grise, une lame de corne sous la tête. Ils ne viennent pas vers toi. Ils viennent vers ce qui ne bouge pas — et tu ne bouges pas. Le premier pose sa lame sur ta botte et commence à racler."
+   ],
+   "choix": [
+    {
+     "id": "se-laisser-racler",
+     "label": "Rester immobile, les laisser faire",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu ne bouges pas d'un poil. Ils te raclent des bottes aux épaules, sans presser, et le sel tombe en plaques autour de toi. Quand ils s'écartent, tu es propre. Ils n'ont pas touché la peau. Ils savent où elle est.",
+      "reussite": "Tu tiens. Les lames raclent les manches, le dos, le col — et le sel tombe. Ils s'écartent quand il n'y en a plus. Tu respires.",
+      "echec": "Tu tiens, puis un frémissement, et une lame prend la peau avec le sel — un long ruban sur l'avant-bras. Ils s'écartent, indifférents. Tu saignes dans une manche propre.",
+      "funeste": "1 naturel. Tu bouges. La lame qui raclait ta cheville entre dans la cheville. Tu cries, tu bouges encore, et ils raclent plus vite ce qui bouge. Tu t'arraches à quatre pattes. ♦ −2"
+     },
+     "nature": "physique",
+     "baisseEncroute": true
+    },
+    {
+     "id": "ecarter-au-grattoir",
+     "label": "Les écarter du grattoir",
+     "type": "passif",
+     "consequence": "Tu poses la lame du grattoir devant la leur. Ils s'arrêtent. Ils connaissent ce fil-là : c'est le leur. Ils reculent sous le râtelier, un par un, et tu passes.",
+     "exigeObjet": "grattoir-saunier",
+     "prendLaPlaceDe": [
+      "ecarter-du-pied"
+     ]
+    },
+    {
+     "id": "ecarter-du-pied",
+     "label": "Les écarter du pied",
+     "type": "passif",
+     "consequence": "Tu repousses le premier du pied. Il roule, se redresse, revient. Tu recules, il suit, lentement — et tu sors de l'atelier à reculons, en gardant les pieds en mouvement."
+    }
+   ],
+   "pointsInteret": [],
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "forge-a-grattoirs"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "cour-aux-rails",
+   "narration": [
+    "Deux rails entrent dans la cour entre les sacs et s'arrêtent net, sur un butoir de pierre. Le Bœuf de sel est là, attelé, la tête contre le butoir, et il pousse — il ne s'arrête pas, il attend que les rails repartent. Le wagon derrière lui grince à chaque poussée.",
+    "Avant le butoir, une aiguille de fer : un embranchement qui file entre deux murs de sacs, vers un bâtiment fermé, et le levier qui le commande, rouillé debout."
+   ],
+   "choix": [
+    {
+     "id": "regarder-par-la-lucarne",
+     "label": "Regarder par la lucarne du wagon",
+     "type": "passif",
+     "consequence": "Tu montes sur le marchepied. La lucarne est fermée d'un volet ; par la fente, du noir, et un souffle. Lent, régulier, qui bute contre le bois à chaque poussée du Bœuf. Quelqu'un respire là-dedans, à sec, depuis que la barge ne passe plus. Il fait encore traverser. Il n'y a plus personne à faire traverser.",
+     "donneDecouverte": "d.passeur_dans_le_boeuf"
+    },
+    {
+     "id": "compter-les-anneaux",
+     "label": "Compter les anneaux des bancs",
+     "type": "passif",
+     "consequence": "Les bancs du wagon ont des anneaux de fer scellés, un par place, à hauteur de poignet. Onze. On ne s'attache pas à un banc pour traverser un lac. On y attache quelqu'un. Un sur deux, et la barge passe : voilà où ils attendaient leur tour.",
+     "donneDecouverte": "d.anneaux_wagon"
+    },
+    {
+     "id": "aller-a-l-aiguillage",
+     "label": "Aller au levier",
+     "type": "passif",
+     "consequence": "Tu longes les rails jusqu'à l'aiguille. Le levier est pris dans le sel jusqu'au genou, et sa tête porte le même carré de fer que tous les mécanismes des Passeurs. L'embranchement file vers le bâtiment fermé. Les rails y entrent par une porte sans battant."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "cour-aux-rails-2",
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "cour-aux-rails-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "cour-aux-rails-2",
+   "narration": [
+    "Le Bœuf a fini sa poussée. Il recule sur les rails, lentement, pour recommencer — et chaque fois qu'il recule, il passe l'aiguille. Le levier attend. Si l'aiguille bascule, le Bœuf ne reviendra pas au butoir : il ira où mènent les autres rails."
+   ],
+   "choix": [
+    {
+     "id": "manoeuvrer-a-la-manivelle",
+     "label": "Engager la manivelle",
+     "type": "passif",
+     "consequence": "La manivelle entre dans le carré du levier comme dans sa maison. Un tour, et le sel craque ; deux, l'aiguille bascule. Le Bœuf recule, passe l'aiguille, repart en avant — et prend l'embranchement. Il entre dans le bâtiment fermé, le wagon derrière lui. Tu sais où il ira chaque fois maintenant.",
+     "donneSavoir": "savoir_boeuf_detourne",
+     "exigeObjet": "manivelle-passeurs",
+     "tags": [
+      "citable"
+     ],
+     "prendLaPlaceDe": [
+      "forcer-le-levier"
+     ]
+    },
+    {
+     "id": "forcer-le-levier",
+     "label": "Forcer le levier",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu prends le levier à deux mains et tu tires jusqu'à ce que le sel cède d'un bloc. L'aiguille bascule. Le Bœuf recule, repart, et prend l'embranchement vers le bâtiment. Tu sais où mènent ces rails. Tu peux l'y renvoyer.",
+      "reussite": "Le levier cède par à-coups. L'aiguille bascule à moitié, assez : le Bœuf prend l'embranchement au retour et disparaît entre les sacs. Tu sais où il va.",
+      "echec": "Tu tires. Le sel tient, le levier tord, et ton dos lâche avant lui. Tu restes plié. L'aiguille n'a pas bougé — mais tu as vu où elle mène. Tu sais.",
+      "funeste": "1 naturel. Le levier casse net dans tes mains et le moignon te prend dans les côtes. Tu tombes sur les rails. Le Bœuf recule vers toi. Tu roules. Tu sais où mène l'embranchement : tu n'as plus rien pour y envoyer quoi que ce soit. ♦ −2"
+     },
+     "nature": "physique",
+     "donneSavoir": "savoir_boeuf_detourne"
+    },
+    {
+     "id": "laisser-le-boeuf-tourner",
+     "label": "Le laisser tourner",
+     "type": "passif",
+     "consequence": "Tu ne touches pas au levier. Le Bœuf recule, repart, pousse le butoir. Encore. Tu sors de la cour au bruit du wagon qui grince, et du souffle, dedans, qui bute contre le bois."
+    }
+   ],
+   "pointsInteret": [],
+   "zone": "salines",
+   "image": {
+    "fichier": "monstre_salines_boeuf_de_sel_encre_c.png",
+    "hash": "c0d81139",
+    "taille": 12261,
+    "recent": true,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "cour-aux-rails"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "salle-des-gages",
+   "narration": [
+    "Une salle basse, un comptoir, et derrière le comptoir des étagères de bocaux pleins de sel. Dans le sel : une main. Un œil. Une mèche. Une languette de cuir avec un nom. Ceux qui ne pouvaient pas payer le passage laissaient quelque chose ici, et repassaient le chercher au retour.",
+    "Personne n'est repassé. Sur le comptoir, ce qu'on échangeait contre les gages : une gourde à deux gorges, un manteau croûté de sel, une paire de sandales à lanières."
+   ],
+   "choix": [
+    {
+     "id": "gage-gourde",
+     "label": "Laisser un gage pour la gourde",
+     "type": "passif",
+     "consequence": "Tu prends la gourde. Sur le comptoir, à la place, le sel se met à monter de lui-même en petit tas, et il prend la forme de ta main posée — il garde l'empreinte, et un peu plus que l'empreinte. Tu retires la main. Elle est plus blanche qu'avant.",
+     "donneObjet": "gourde-double",
+     "monteEncroute": true
+    },
+    {
+     "id": "gage-manteau",
+     "label": "Laisser un gage pour le manteau",
+     "type": "passif",
+     "consequence": "Tu passes le manteau. Il est lourd de sel, et le sel du manteau appelle celui du comptoir : un petit tas se forme là où tu t'appuyais, à la forme de ton coude. Il garde ça. Tu gardes le manteau.",
+     "donneObjet": "manteau-de-saunier",
+     "monteEncroute": true
+    },
+    {
+     "id": "gage-sandales",
+     "label": "Laisser un gage pour les sandales",
+     "type": "passif",
+     "consequence": "Tu prends les sandales. Sur le comptoir, le sel monte en deux tas, à la forme de tes pieds tels qu'ils étaient posés — et quand tu recules, tes bottes laissent un peu d'elles derrière. Le gage est pris.",
+     "donneObjet": "sandales-de-marche",
+     "monteEncroute": true
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "salle-des-gages-2",
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "salle-des-gages-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "salle-des-gages-2",
+   "narration": [
+    "Au fond, un rayon à part, un seul bocal. Dans le sel, un œil de Cristallin — blanc, entier, et il regarde. À côté du bocal, une languette de cuir vierge et un poinçon. Le prix de celui-là n'est pas une empreinte."
+   ],
+   "choix": [
+    {
+     "id": "gage-nom",
+     "label": "Écrire ton nom sur la languette",
+     "type": "passif",
+     "consequence": "Tu graves ton nom au poinçon et tu poses la languette dans le sel. Il la prend tout de suite. Tu sors l'œil du bocal : sec, léger, et il ne cesse pas de regarder. Dehors, sur le mur de sacs, un Piqueur s'est posé. Il te regarde aussi.",
+     "donneObjet": "oeil-de-cristallin",
+     "tags": [
+      "citable"
+     ],
+     "monteEncroute": true,
+     "uneFoisParVie": "gage|nom"
+    },
+    {
+     "id": "regarder-les-bocaux",
+     "label": "Lire les languettes",
+     "type": "passif",
+     "consequence": "Des noms, à l'encre ou au poinçon. Certains, tu les as lus ailleurs — sur des socles de statues, dans un registre à deux colonnes. Ils ont laissé un gage pour passer. Ils ont passé. Le gage est resté, et eux avec, ailleurs, en sel."
+    },
+    {
+     "id": "sortir-des-gages",
+     "label": "Sortir sans rien laisser",
+     "type": "passif",
+     "consequence": "Tu laisses l'œil dans son sel. Il te suit jusqu'à la porte. Dehors, l'air sent la poussière des sacs, et rien ne t'a noté."
+    }
+   ],
+   "pointsInteret": [],
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "salle-des-gages"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "entrepot",
+   "narration": [
+    "Un bâtiment sans porte, et dedans des allées entre des murs de sacs qui montent jusqu'aux poutres. Les rails y entrent par le milieu et s'enfoncent dans le noir. Il fait frais. Ça sent le sel mouillé, et au fond, un bruit régulier — quelque chose de large qui racle le sol et le repose.",
+    "Le long des allées, à intervalles réguliers, des statues de Cristallins debout, rangées par taille. Les petites d'abord."
+   ],
+   "choix": [
+    {
+     "id": "suivre-les-rails-entrepot",
+     "label": "Suivre les rails vers le fond",
+     "type": "passif",
+     "consequence": "Tu marches entre les rails. Les statues défilent de chaque côté, de plus en plus hautes, et le bruit de raclage grandit avec elles. Au bout de l'allée, le noir bouge."
+    },
+    {
+     "id": "regarder-une-pile",
+     "label": "Regarder une pile de sacs",
+     "type": "passif",
+     "consequence": "Les sacs sont cousus, pesés, marqués du même signe. Tu en soulèves un coin : du sel fin, blanc — et dedans, quelque chose de dur, rond, qui roule sous les doigts. Un œil. Tu reposes le sac. Ils sont tous du même poids, ceux-là."
+    },
+    {
+     "id": "ecouter-le-fond",
+     "label": "Écouter ce qui racle",
+     "type": "passif",
+     "consequence": "Racle, pose. Racle, pose. Entre les deux, un temps mort toujours égal, comme un pilon. Ce n'est pas un ouvrier. Ça ne s'arrête pas, et ça ne se presse pas non plus — ça a le temps qu'il faut pour tout ce qu'il y a ici."
+    }
+   ],
+   "pointsInteret": [],
+   "suite": "entrepot-2",
+   "zone": "salines",
+   "image": {
+    "fichier": "scene_salines_entrepot_a_a.png",
+    "hash": "962c35c0",
+    "taille": 34045,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [
+    "entrepot-2"
+   ],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "entrepot-2",
+   "narration": [
+    "Au fond, dans une clairière de sacs, elle. Le Grand Saunier : une bête dressée, haute comme une grange, la tête en sac côtelé de sel, deux bras lourds qui descendent jusqu'au sol — et sous les bras, à hauteur de genou, des rangées de statues. Elle en prend une, la pose dans une autre rangée. Elle trie. Par taille, par gestes, par ce qu'il reste de visage.",
+    "Il y a des centaines de statues. Des Cristallins, des Sauniers, des gens de partout. Pas un seul Passeur."
+   ],
+   "choix": [
+    {
+     "id": "regarder-avec-l-oeil",
+     "label": "Regarder les rangées à travers l'Œil",
+     "type": "passif",
+     "consequence": "Tu lèves l'œil de Cristallin devant le tien. Les rangées prennent des noms — chaque statue en porte un, gravé sous le sel, lisible seulement comme ça. Et dans la rangée des tailles moyennes, un espace vide, exactement large comme tes épaules. Elle ne l'a pas encore rempli. Elle a la place.",
+     "donneDecouverte": "d.ta_rangee",
+     "exigeObjet": "oeil-de-cristallin",
+     "prendLaPlaceDe": [
+      "regarder-les-rangees"
+     ]
+    },
+    {
+     "id": "regarder-les-rangees",
+     "label": "Regarder les rangées",
+     "type": "passif",
+     "consequence": "Les petites devant, les grandes derrière, et dans chaque rangée un espace laissé vide. Elle ne range pas ce qu'elle a. Elle range ce qui va venir."
+    },
+    {
+     "id": "chercher-un-passeur",
+     "label": "Chercher un Passeur parmi elles",
+     "type": "risque",
+     "stat": "RUSE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu passes les rangées une à une. Des vêtements de sauniers, de marcheurs, d'enfants. Pas une capuche de laine, pas une écaille de plomb. Elle ne trie pas ceux qui ont fait le lac. Elle trie ceux qu'ils lui ont donnés — et elle attend le reste.",
+      "reussite": "Tu cherches. Sauniers, marcheurs, enfants. Aucun Passeur. Ceux qui pesaient ne sont pas ici. Ils n'ont pas été pesés.",
+      "echec": "Tu regardes trop longtemps la même rangée, et elle s'arrête de racler. La tête se penche. Tu recules entre deux sacs avant de comprendre ce que tu cherchais.",
+      "funeste": "1 naturel. Tu te penches sur une statue pour lire son geste, et elle te prend pour l'une d'elles — un bras sous tes jambes, un mouvement de tri. Tu te dégages en laissant de la peau sur le sel. Elle te repose, à peu près à ta taille. ♦ −2"
+     },
+     "nature": "exploration"
+    },
+    {
+     "id": "avancer-dans-son-allee",
+     "label": "Avancer dans son allée",
+     "type": "passif",
+     "consequence": "Tu entres dans la clairière. Elle finit de poser une statue, et la tête côtelée se penche vers toi. Elle ne se presse pas."
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "grand-saunier",
+   "adversaireNom": "Le Grand Saunier",
+   "donneDecouverte": "d.pas_un_passeur",
+   "zone": "salines",
+   "image": {
+    "fichier": "monstre_salines_grand_saunier_a_b.png",
+    "hash": "34060877",
+    "taille": 21427,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [
+    "entrepot"
+   ],
+   "roles": [],
+   "acces": "lien",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "entrepot-3",
+   "narration": [
+    "Un bras descend te chercher au sol, large, tiède, et te soulève comme il soulève les statues — pour te mesurer. Elle te tient au-dessus des rangées, sous sa tête côtelée. Elle cherche ta place. Il y en a une."
+   ],
+   "choix": [
+    {
+     "id": "se-debattre",
+     "label": "Se débattre",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu te retournes dans le bras et tu enfonces le pied dans la seule chose molle : le pli du coude. Elle te lâche d'une secousse, tu tombes entre deux statues, et tu cours par les rails pendant qu'elle reprend son tri. Elle a le temps. Toi pas.",
+      "reussite": "Tu te débats, et le bras te lâche — pas parce que tu as gagné : parce que tu ne tiens pas en place, et qu'elle ne range pas ce qui bouge. Tu sors par les rails, plié en deux.",
+      "echec": "Tu te débats, et le bras serre le temps de comprendre que tu ne tiens pas. Il te repose dans une rangée, contre une statue, avec une côte en moins. Tu rampes vers les rails pendant qu'elle cherche un autre à ranger.",
+      "funeste": "1 naturel. Tu frappes, et elle te pose — à ta place, dans la rangée du milieu, entre deux qui te ressemblent. Le sel monte tout de suite. Tu t'arraches en laissant la moitié d'une manche et de ce qu'il y avait dedans. ♦ −2"
+     },
+     "nature": "physique",
+     "masqueSi": {
+      "savoir": "savoir_boeuf_detourne"
+     }
+    },
+    {
+     "id": "lui-envoyer-le-boeuf",
+     "label": "Lui envoyer le Bœuf",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu te tords hors du bras, tu tombes sur les rails, et tu cours à l'aiguille au bout de l'allée — un coup de pied dans le levier. Les rails claquent. Le Bœuf entre dans l'Entrepôt, le wagon derrière lui. Elle le prend. Elle le mesure. Elle le range. Tu passes derrière pendant qu'elle cherche sa rangée.",
+      "reussite": "Tu glisses du bras et tu cours à l'aiguille. Les rails claquent, le Bœuf entre en poussant son wagon, et elle se tourne vers lui : plus gros, plus urgent. Elle le trie. Tu sors par les sacs.",
+      "echec": "Tu tombes du bras et tu cours au levier — trop tôt. Les rails claquent à vide, et il faut attendre que le Bœuf recule pour qu'il prenne la voie. Elle te cherche pendant ce temps. Puis il entre, et elle le préfère à toi.",
+      "funeste": "1 naturel. Le levier est pris dans le sel, et tu tires en regardant derrière toi. Quand il cède, le Bœuf entre et elle le prend — pendant que tu es à quatre pattes entre les rails, à souffler. Tu sors le dernier. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeSavoir": "savoir_boeuf_detourne",
+     "horsDePortee": true
+    },
+    {
+     "id": "se-laisser-mesurer",
+     "label": "Rester immobile, se laisser mesurer",
+     "type": "passif",
+     "consequence": "Tu ne bouges pas. Elle te tourne, te mesure, te pose dans une rangée entre deux Cristallins de ta taille, et racle le sol pour te caler. Puis elle repart chercher la statue suivante. Le sel t'a pris jusqu'aux genoux. Tu sors de la rangée à pas lents, avant qu'il monte plus haut. Ta place reste vide.",
+     "monteEncroute": true
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "grand-saunier",
+   "combat": true,
+   "zone": "salines",
+   "image": {
+    "fichier": "monstre_salines_grand_saunier_a_b.png",
+    "hash": "34060877",
+    "taille": 21427,
+    "recent": false,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "aucun",
+   "etat": "valide",
+   "alertes": [
+    "orpheline"
+   ]
+  },
+  {
+   "id": "fin-etape-non-ecrite",
+   "narration": [
+    "Passé l'Entrepôt, les rails reprennent — et cette fois ils ne s'arrêtent pas. Ils descendent. Devant toi, la croûte s'effondre en gradins autour d'une île noire, et sur l'île, une tour penchée où quelque chose brille. Saulnes.",
+    "Tu as traversé les Salines vivant. Derrière toi, le chantier racle et pose, racle et pose, sans toi."
+   ],
+   "choix": [
+    {
+     "id": "descendre-vers-saulnes",
+     "label": "Descendre vers l'île",
      "type": "suite"
     }
    ],
@@ -10160,9 +11152,9 @@
    "finDemo": true,
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_bassins_a_a.png",
-    "hash": "67d23bfb",
-    "taille": 19848,
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -10728,6 +11720,41 @@
   {
    "de": "guerite",
    "vers": "guerite-2",
+   "type": "principal"
+  },
+  {
+   "de": "pesee",
+   "vers": "pesee-2",
+   "type": "principal"
+  },
+  {
+   "de": "puits",
+   "vers": "puits-2",
+   "type": "principal"
+  },
+  {
+   "de": "dortoir",
+   "vers": "dortoir-2",
+   "type": "principal"
+  },
+  {
+   "de": "forge-a-grattoirs",
+   "vers": "forge-a-grattoirs-2",
+   "type": "principal"
+  },
+  {
+   "de": "cour-aux-rails",
+   "vers": "cour-aux-rails-2",
+   "type": "principal"
+  },
+  {
+   "de": "salle-des-gages",
+   "vers": "salle-des-gages-2",
+   "type": "principal"
+  },
+  {
+   "de": "entrepot",
+   "vers": "entrepot-2",
    "type": "principal"
   }
  ],
@@ -11315,14 +12342,6 @@
    "recent": false,
    "groupe": "autre",
    "racine": "salines_encroute"
-  },
-  {
-   "fichier": "monstre_salines_grand_saunier_a_b.png",
-   "hash": "34060877",
-   "taille": 21427,
-   "recent": false,
-   "groupe": "autre",
-   "racine": "salines_grand_saunier"
   },
   {
    "fichier": "monstre_salines_heron_a_v6_a.png",
@@ -12427,14 +13446,6 @@
    "recent": false,
    "groupe": "autre",
    "racine": "renoncer"
-  },
-  {
-   "fichier": "scene_salines_entrepot_a_a.png",
-   "hash": "962c35c0",
-   "taille": 34045,
-   "recent": false,
-   "groupe": "autre",
-   "racine": "salines_entrepot"
   },
   {
    "fichier": "scene_salines_quai_de_l_ile_a_a.png",
@@ -13927,13 +14938,13 @@
   }
  ],
  "totaux": {
-  "scenes": 143,
+  "scenes": 158,
   "pointsInteret": 0,
-  "choix": 425,
-  "illustrations": 500,
+  "choix": 475,
+  "illustrations": 501,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 234,
+  "reserve": 232,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

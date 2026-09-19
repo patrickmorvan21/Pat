@@ -1,6 +1,6 @@
 {
- "genere": "2026-09-18T09:24:10Z",
- "commit": "240e0ab",
+ "genere": "2026-09-19T15:52:05Z",
+ "commit": "dffc9b1",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -336,8 +336,8 @@
    "taille": 21672,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "9c8fe631",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "minijeu_serrure_fond_b.png": {
    "taille": 20717,
@@ -1043,8 +1043,8 @@
    "taille": 12261,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "c0d81139",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "monstre_salines_encroute_a_a.png": {
    "taille": 11440,
@@ -1057,8 +1057,8 @@
    "taille": 11671,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "93521057",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "monstre_salines_gisants_a_v6_a.png": {
    "taille": 22404,
@@ -1085,8 +1085,8 @@
    "taille": 14812,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "400b82c5",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "monstre_salines_percepteur_a_b.png": {
    "taille": 16072,
@@ -1106,15 +1106,15 @@
    "taille": 27181,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "15448cf8",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "monstre_salines_ver_dessous_a_v2_c.png": {
    "taille": 17851,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "a3812471",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "monstre_salines_ver_dos_a_v2_b.png": {
    "taille": 7971,
@@ -1148,8 +1148,8 @@
    "taille": 18822,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "296a2f23",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "monstre_sonneur_sans_cloche_d.png": {
    "taille": 15774,
@@ -1771,8 +1771,8 @@
    "taille": 4619,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "b3098420",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "objet_salines_perche_sauniere_a_b.png": {
    "taille": 4917,
@@ -1785,8 +1785,8 @@
    "taille": 12979,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "18e21f2c",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "objet_salines_registre_traversees_a_c.png": {
    "taille": 15757,
@@ -1799,8 +1799,8 @@
    "taille": 10091,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "b4ed7c27",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "objet_sceau_bailli_c.png": {
    "taille": 12265,
@@ -3129,8 +3129,8 @@
    "taille": 19848,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "67d23bfb",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "scene_salines_bouche_a_a.png": {
    "taille": 29773,
@@ -3164,15 +3164,15 @@
    "taille": 21948,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "bbb91e77",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "scene_salines_declares_a_b.png": {
    "taille": 20476,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "d2cb42c6",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "scene_salines_entrepot_a_a.png": {
    "taille": 34045,
@@ -3192,36 +3192,36 @@
    "taille": 19186,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "cc92c40e",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "scene_salines_lechards_a_d.png": {
    "taille": 21363,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "8e30d008",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "scene_salines_noria_a_d.png": {
    "taille": 17544,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "d7b30db8",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "scene_salines_passerelle_a_b.png": {
    "taille": 20116,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "2f34bc31",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "scene_salines_perchoir_heron_a_c.png": {
    "taille": 16407,
    "modifie": "2026-09-18T09:12:01Z",
    "hash": "4f32af91",
-   "recent": false,
-   "ajoute": ""
+   "recent": true,
+   "ajoute": "2026-09-18T09:24:43+00:00"
   },
   "scene_salines_quai_de_l_ile_a_a.png": {
    "taille": 23266,
@@ -3264,6 +3264,13 @@
    "hash": "e65addb2",
    "recent": false,
    "ajoute": "2026-09-14T11:01:58+02:00"
+  },
+  "scene_salines_salines_placeholder_a.png": {
+   "taille": 95106,
+   "modifie": "2026-09-19T15:41:10Z",
+   "hash": "6aad2dbb",
+   "recent": false,
+   "ajoute": ""
   },
   "scene_salines_statue_a_v6_a.png": {
    "taille": 10441,

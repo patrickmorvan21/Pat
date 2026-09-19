@@ -503,7 +503,9 @@ def pools() -> list[dict]:
             out.append({"pool": f"salines arrivée {dest}", "garde": {"village", "gens"}, "textes": [texte]})
     # LES BASSINS (16/09) : leurs ambiances de marche ont leur propre table,
     # servie par `pickLiaisonAmbiance` quand `ctx.etape === 1`.
-    for table, nom in (("SALINES_AMBIANCES", "salines ambiance"), ("SALINES_AMBIANCES_BASSINS", "bassins ambiance"), ("SALINES_JAILER", "salines geôlier")):
+    # LES SALINES (19/09) : le chantier a aussi sa table (`ctx.etape === 2`).
+    for table, nom in (("SALINES_AMBIANCES", "salines ambiance"), ("SALINES_AMBIANCES_BASSINS", "bassins ambiance"),
+                       ("SALINES_AMBIANCES_SALINES", "chantier ambiance"), ("SALINES_JAILER", "salines geôlier")):
         for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, f"export const {table}"))):
             out.append({"pool": f"{nom} {i}", "garde": {"village", "gens"}, "textes": [t]})
     # Le Geôlier sur le dé (13/09 soir) : trois pools propres aux Salines,
@@ -583,7 +585,8 @@ def pools() -> list[dict]:
     # + les Bassins (16/09) : 7 arrivées, 7 ambiances, 3 lignes de Soif, le
     # Geôlier de la Soif, la plume, le Ver dessous, la tempête de la
     # Passerelle (avant + après) — 73 au moins.
-    assert n_sal >= 73, f"pools des Salines : {n_sal} extraits, ≥ 73 attendus — l'extracteur ne lit plus scene-data.ts"
+    # + le chantier (19/09) : 7 arrivées, 7 ambiances — 87 au moins.
+    assert n_sal >= 87, f"pools des Salines : {n_sal} extraits, ≥ 87 attendus — l'extracteur ne lit plus scene-data.ts"
     for p_ in out[n_avant:]:
         p_["salines"] = True
 

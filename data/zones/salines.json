@@ -88,6 +88,13 @@
         "LE BASSIN DES DÉCLARÉS est l'EXCEPTION NOMMÉE qui touche aux seuils : toucher la statue de sa dominante déclare la forte (+1) et la faible (−1) pour le reste de la vie. Seul cas où un bonus de jet est accordé, et il vient avec son malus.",
         "L'APPEL DU VER : forcer ou crocheter la Noria, prendre le raccourci de la Guérite, l'appellent — il passe SOUS les pieds à la Croisée suivante (la Plume frémit à qui la porte). Une manifestation, jamais un combat.",
         "Le Soupçon reste ABSENT des Salines (décision du 13/09) : le Percepteur tient ses comptes, mais aucune jauge du village ne suit le héros ici."
+      ],
+      "2026-09-19": [
+        "Les Salines (étape 3, le chantier) sont ÉCRITES : 16 scènes, 7 lieux (Pesée, Puits, Dortoir, Forge à grattoirs, Cour aux rails, Salle des Gages, Entrepôt en fin).",
+        "PAS de « système de comptes » pour le Percepteur (Patrick : « je veux autre chose ») : il tient UN JETON, un objet qui change de mains — rendu sur le plateau de la Pesée, le prix est réglé ; gardé, le sel fait le poids (Encroûté +1). Aucun compteur.",
+        "Le Sac de sel se prend à la Pesée (poids contre poids), pas à la Salle des Gages ; les quatre autres gages restent à la Salle (gourde, manteau, sandales ; l'Œil derrière ton nom).",
+        "Le mini-jeu « puiser » du Puits n'a pas de prototype validé : jet d'INSTINCT en attendant. Le tracé de la Forge reprend le moteur du Tracé de la Chapelle (fond `minijeu_forge_enclume_a` à produire).",
+        "Le Grand Saunier de l'image se DRESSE (tête en sac côtelé, deux bras) — la prose suit l'image, pas la fiche « bas, large, sur des pattes courtes »."
       ]
     },
     "images": {
@@ -1928,8 +1935,8 @@
     {
       "id": "sac_de_sel",
       "nom": "Le Sac de sel",
-      "note": "aveugle Piqueurs et Assoiffés, disperse les Rats.",
-      "lieu_attache": "salle_des_gages",
+      "note": "Se prend à la Pesée (poids contre poids : le jeton, ou le sel). Jeté : disperse les Rats, aveugle les Piqueurs. Se vide (une fois).",
+      "lieu_attache": "pesee",
       "type": "actif",
       "descend": false,
       "histoire_bailli": false,

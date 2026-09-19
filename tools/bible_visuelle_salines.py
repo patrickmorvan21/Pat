@@ -182,6 +182,35 @@ LIEUX_JOUES = {
              "stands holding a long punt pole straight upright, pole and raft crossing as one hard black "
              "cross in the middle of the picture, a grey heron perched at the top of the pole; a hard white "
              "sun disc in the black sky behind them"),
+    # LES SALINES — le chantier (19/09). Six lieux du pool ; tous servent le
+    # placeholder `SALINES_IMG` en attendant, signalé sur place.
+    "pesee": ("salines", "scene_salines_pesee_a",
+             "a yard walled in by stacked salt sacks higher than a man, and in its middle under a timber gantry "
+             "a great iron beam balance with two flat pans as wide as tables, one pan loaded with sacks, the "
+             "other empty, the beam tilted and hanging a hand above the ground; behind it a lectern with a "
+             "salt-crusted figure bent over a ledger; footprints in the salt dust leading to the empty pan"),
+    "puits": ("salines", "scene_salines_puits_a",
+             "between two walls of stacked sacks a round stone well curb, above it a timber gallows frame with "
+             "a rope and a bucket, and on the crossbeam a nest built of white salt-crusted twigs packed with "
+             "small white birds sitting motionless with open eyes, the well mouth a black disc"),
+    "dortoir": ("salines", "scene_salines_dortoir_a",
+             "a long low hall with two rows of plank bunks, each bunk holding a mattress of packed salt "
+             "moulded into the hollow of a sleeper, several hollows still occupied by white crusted bodies, "
+             "low blind armoured beasts scraping the floor between the rows, a corner of paper under one mattress"),
+    "forge_a_grattoirs": ("salines", "scene_salines_forge_a",
+             "an open-air workshop between sack walls: an anvil in the near ground with a line scored into "
+             "its face, a rack of short-handled scraping blades most of them half-finished, and at the back "
+             "under a lean-to two stone pestles rising and falling on their own over a heap of fine white "
+             "powder with fragments of stone limbs in it"),
+    "cour_aux_rails": ("salines", "scene_salines_cour_rails_a",
+             "a yard between sack walls where two iron rails run in and stop dead against a stone buffer; "
+             "a huge salt-crystallised draught ox in its yoke pushing its head against the buffer, a small "
+             "wooden wagon with a shuttered window behind it, and before the buffer a rusted switch lever "
+             "standing upright with a siding branching off between the sacks toward a closed building"),
+    "salle_des_gages": ("salines", "scene_salines_gages_a",
+             "a low room with a counter, and behind the counter shelves of glass jars packed with white salt, "
+             "each jar holding one thing in the salt: a hand, an eye, a lock of hair, a leather tag with a "
+             "name; on the counter a two-necked leather gourd, a salt-crusted wool cloak and a pair of sandals"),
 }
 
 # ── LES ÉCRANS QUI NE REGARDENT PAS UN PAYSAGE
@@ -209,6 +238,13 @@ AUTRES_ECRANS = {
     "bouche-2": ("croute", "scene_salines_bouche_dent_a", "detail",
              "a curved hollow tooth as long as a forearm lying on the salt at the rim of a hole, still wet "
              "inside, and beside it a lantern whose flame burns with no oil"),
+    # LES SALINES (19/09)
+    "cour-aux-rails-2": ("salines", "scene_salines_aiguillage_a", "detail",
+             "an iron railway switch lever sunk to the knee in hardened salt, its head a square iron socket, "
+             "the point rails beside it half turned toward a siding, salt crust cracked around the base"),
+    "salle-des-gages-2": ("salines", "scene_salines_gages_oeil_a", "detail",
+             "a single glass jar on a shelf of its own, packed with white salt, and in the salt one whole "
+             "pale eye with its lid gone, looking straight out; beside the jar a blank leather tag and an awl"),
 }
 
 # ── LES RENCONTRES NOMMÉES
@@ -280,6 +316,15 @@ RENCONTRES = {
                   "a standing hooded figure in coarse wool, the lower half of the body and one arm sealed in a thick "
                   "white crust of salt as if grown into the ground, the mouth and one hand still free, speaking, "
                   "leaning slightly toward the viewer"),
+    # LES SALINES (19/09) — les deux nuées du chantier, regardées en face.
+    "rats_de_saline": ("salines", "monstre_salines_rats_a",
+                    "a swarm of white rats the size of cats pouring out of the hollows of salt mattresses on "
+                    "plank bunks and climbing along the boards toward the viewer, their mouths crusted white, "
+                    "dozens of them in a low hall between two rows of bunks"),
+    "sauniers": ("salines", "monstre_salines_sauniers_a",
+                    "several low broad beasts on many short legs with grey ridged carapaces and a blade of "
+                    "horn under the head, blind, crawling out from under a rack of scraping blades toward a "
+                    "pair of boots, the nearest already pressing its blade against the leather"),
 }
 
 # ── LE VER DE CROÛTE (16/09 — décision Patrick : « c'est encore trop peu pour
@@ -401,6 +446,25 @@ OBJETS = {
     "registre-des-traversees": ("objet_salines_registre_traversees_a",
         "a thick ledger open flat, its pages ruled into two columns of hand-written names, the left "
         "column of entries each answered by a single word on the right, the paper swollen and warped by damp"),
+    # LES SALINES (19/09) — six icônes, sujets pris dans le `flavor` de besace.ts.
+    "grattoir-saunier": ("objet_salines_grattoir_saunier_a",
+        "a short heavy scraping blade three fingers wide with a stubby wooden handle, the edge worn bright, "
+        "salt crusted in the corner where blade meets handle"),
+    "sac-de-sel": ("objet_salines_sac_de_sel_a",
+        "a small sewn cloth sack bulging with fine white salt, tied at the neck, a single stamped mark on "
+        "its side, one seam slightly split and letting a trickle of salt out"),
+    "gourde-double": ("objet_salines_gourde_double_a",
+        "a leather gourd with two necks side by side, one stopped with a wax plug, the leather dark and "
+        "cracked, a carrying strap hanging loose"),
+    "manteau-de-saunier": ("objet_salines_manteau_saunier_a",
+        "a heavy wool cloak with a deep hood, folded, the wool gone stiff and white with salt at every "
+        "fold and along the hem, cracked like a shell"),
+    "sandales-de-marche": ("objet_salines_sandales_marche_a",
+        "a pair of wooden-soled sandals with greased leather straps, laid side by side, the soles worn "
+        "smooth, no salt anywhere on them"),
+    "oeil-de-cristallin": ("objet_salines_oeil_cristallin_a",
+        "a single whole human eye turned to white salt crystal, dry and faceted, the pupil a dark pit, "
+        "resting on its side with a few grains of salt around it"),
 }
 
 
@@ -457,6 +521,28 @@ CABLAGE = {
         "guerite": "scene_salines_guerite_a",
         "guerite-2": "scene_salines_guerite_a",
     },
+    # LES SALINES — le chantier (19/09). Tous les écrans servent
+    # `SALINES_IMG` (placeholder) en attendant ; le garde réclame le repointage
+    # dès qu'un fichier est sur le disque. `None` = l'écran REPREND une image
+    # d'un autre environnement (le Percepteur, les Piqueurs, le Bœuf de la
+    # Croûte — même homme, mêmes oiseaux, même bête), pas une image à produire.
+    "salines": {
+        "pesee": "scene_salines_pesee_a",
+        "pesee-2": None,
+        "puits": "scene_salines_puits_a",
+        "puits-2": None,
+        "dortoir": "scene_salines_dortoir_a",
+        "dortoir-2": "monstre_salines_rats_a",
+        "forge-a-grattoirs": "scene_salines_forge_a",
+        "forge-a-grattoirs-2": "monstre_salines_sauniers_a",
+        "cour-aux-rails": "scene_salines_cour_rails_a",
+        "cour-aux-rails-2": None,
+        "salle-des-gages": "scene_salines_gages_a",
+        "salle-des-gages-2": "scene_salines_gages_oeil_a",
+        "entrepot": "scene_salines_entrepot_a",
+        "entrepot-2": "monstre_salines_grand_saunier_a",
+        "entrepot-3": "monstre_salines_grand_saunier_a",
+    },
 }
 
 # Images de la zone qui n'ont pas d'écran fixe, et pourquoi.
@@ -474,6 +560,9 @@ HORS_CABLAGE = {
     # LES BASSINS (16/09)
     "scene_salines_bassins_a": "vue d'établissement : BASSINS_IMG (vue de marche des liaisons et fond de secours)",
     "minijeu_cuve_fendue_a": "fond du puzzle « assemble » de la Cuve fendue (Scene.tsx, pas une scène)",
+    # LES SALINES (19/09)
+    "scene_salines_salines_a": "vue d'établissement : SALINES_IMG (vue de marche des liaisons et fond de secours)",
+    "scene_salines_aiguillage_a": "élément observé « Aller au levier » (Choice.illustration, cour-aux-rails) — à câbler à l'import",
 }
 
 

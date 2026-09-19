@@ -273,6 +273,60 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
     usage: "Elle entre dans les logements carrés des mécanismes des passeurs. Ce qu'elle fait tourner dépend de l'endroit.",
     flavor: "Une barre de fer coudée, à tête carrée, le manche usé en creux par des mains qui tournaient toujours dans le même sens.",
   },
+  /* ——— LES SALINES (19/09) — le chantier ——— */
+  /* L'objet de la zone : une lame courte à manche court, forgée pour racler le
+     sel des statues. Finie au tracé sur l'enclume, ou prise brute (elle coupe
+     alors de ton côté aussi). Arme de combat ; les Sauniers connaissent son
+     fil et s'écartent devant. Elle descend à l'Acte II. */
+  "grattoir-saunier": {
+    name: "Grattoir de saunier", rarity: "commun", kind: "arme", slot: "passif",
+    passiveMod: 1, passiveScope: "combat",
+    usage: "Court, lourd, il racle le sel de ce qui en porte. Les bêtes du chantier reconnaissent son fil.",
+    flavor: "Une lame large comme trois doigts, un manche court, le tout usé par des mains qui raclaient des statues. Il ne sert pas à tuer. Il sert à découvrir ce qu'il y a dessous.",
+  },
+  /* Le sac de la Pesée — payé du jeton, ou du sel. Un sac neuf, sans rien
+     dedans : jeté, il disperse les Rats (ils ne comprennent pas un sel sans
+     personne à manger) et aveugle ce qui vole. Il se VIDE (`laisseObjet`). */
+  "sac-de-sel": {
+    name: "Sac de sel", rarity: "commun", kind: "babiole", slot: "passif",
+    passiveMod: 0, passiveScope: "all",
+    usage: "Se vide d'un geste. Une ligne de sel neuf, sans rien dedans : les bêtes du chantier s'y arrêtent.",
+    flavor: "Un sac cousu, pesé, marqué du signe de la Pesée. Du sel fin, propre, qui n'a jamais été personne. C'est ce qui le rend rare ici.",
+  },
+  /* La Salle des Gages — contre une empreinte dans le sel. La gourde à deux
+     gorges : la Soif monte deux fois moins vite tant qu'on la porte (lu dans
+     la montée de la Soif, Scene.tsx). */
+  "gourde-double": {
+    name: "Gourde double", rarity: "commun", kind: "babiole", slot: "passif",
+    passiveMod: 0, passiveScope: "all",
+    usage: "Deux gorges, une pour boire, une pour garder. La soif prend son temps avec elle.",
+    flavor: "Une gourde de cuir à deux goulots, l'un bouché de cire. Les sauniers buvaient à l'un et gardaient l'autre pour le retour. Aucun n'est revenu la vider.",
+  },
+  /* Le manteau croûté de sel : sous lui, on EST du sel — les Piqueurs
+     l'ignorent (l'option informée au Puits). */
+  "manteau-de-saunier": {
+    name: "Manteau de saunier", rarity: "commun", kind: "babiole", slot: "passif",
+    passiveMod: 0, passiveScope: "all",
+    usage: "Capuche rabattue, tu es du sel. Ce qui vole ne pique pas le sel.",
+    flavor: "Une laine épaisse devenue carapace, blanche aux plis, qui craque quand on la plie. Dessous, on ne sent plus le vent. Dessous, on ne sent plus grand-chose.",
+  },
+  /* Les sandales à lanières : UNE nuit sans pellicule au Dortoir, puis elles
+     se soudent au matelas (`laisseObjet`). */
+  "sandales-de-marche": {
+    name: "Sandales de marche", rarity: "commun", kind: "babiole", slot: "passif",
+    passiveMod: 0, passiveScope: "all",
+    usage: "Une nuit sur le sel sans que le sel monte. Une seule : après, elles restent.",
+    flavor: "Des semelles de bois, des lanières de cuir gras. Le sel n'y prend pas — c'est pour ça qu'on les laissait en gage, et pour ça qu'on ne les récupérait jamais.",
+  },
+  /* L'Œil de Cristallin — derrière le gage le plus lourd (ton nom). Il lit
+     ce qu'un œil de chair ne lit pas : les noms sous le sel, la rangée vide à
+     ta taille. Ce qui vole suit qui le porte (dit en prose). */
+  "oeil-de-cristallin": {
+    name: "Œil de Cristallin", rarity: "rare", kind: "babiole", slot: "passif",
+    passiveMod: 0, passiveScope: "all",
+    usage: "Levé devant le tien, il montre ce que le sel cache : des noms, des places. Il regarde aussi dans l'autre sens.",
+    flavor: "Un œil blanc, entier, sec, sorti d'un bocal de sel. Il ne se ferme pas. Depuis que tu l'as, quelque chose de blanc se pose toujours à portée de vue.",
+  },
   /* Tour de Guet — l'outil d'un homme qui a passé sa vie à regarder au sud. */
   "lunette-guet": {
     name: "Lunette du guetteur",

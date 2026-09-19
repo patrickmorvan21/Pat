@@ -2774,7 +2774,11 @@ export default function Scene() {
         if ((runRef.current?.zone ?? "landes") === "salines" && (trav.etage?.index ?? 0) >= 1) {
           persist((r) => {
             r.soifPas = (r.soifPas ?? 0) + 1;
-            if (r.soifPas % 2 === 0 && (r.soif ?? 0) < 3) r.soif = (r.soif ?? 0) + 1;
+            // LA GOURDE DOUBLE (Salle des Gages, 19/09) : la Soif monte deux
+            // fois moins vite tant qu'on la porte — un palier tous les QUATRE
+            // lieux au lieu de deux. Apparié par nom, comme `besaceMirror`.
+            const gourde = r.besace.some((i) => i.name === LANDES_OBJETS["gourde-double"]?.name);
+            if (r.soifPas % (gourde ? 4 : 2) === 0 && (r.soif ?? 0) < 3) r.soif = (r.soif ?? 0) + 1;
             if ((r.soif ?? 0) >= 3) r.health = Math.max(0.05, r.health - 0.06);
           });
           setSoifMirror(runRef.current?.soif ?? 0);
@@ -4962,6 +4966,21 @@ export default function Scene() {
       l'appel du Ver. Un passif les applique à la SÉLECTION ; un risqué attend
       la RÉUSSITE (on ne boit pas ce qu'on a raté, une roue qui ne tourne pas
       ne grince pas). Une seule fonction pour les deux moments. */
+  /** L'OBJET RESTE SUR PLACE (`laisseObjet`, Falaise 24/08) : une seule
+      instance quitte la Besace — le prix est raconté par la conséquence du
+      choix, jamais par un bandeau. ⚠️ 19/09 : il n'était appliqué QUE sur un
+      choix passif — un jet (« Leur jeter le sel qui garde », Bassins) ou une
+      nuit (« Dormir, les sandales aux pieds ») gardait l'objet en Besace
+      alors que sa prose le disait fini. Une seule fonction pour les trois. */
+  function laisserObjet(choice: Choice) {
+    if (!choice.laisseObjet) return;
+    const nomLaisse = LANDES_OBJETS[choice.laisseObjet]?.name;
+    persist((run) => {
+      const idx = run.besace.findIndex((i) => i.name === nomLaisse);
+      if (idx >= 0) run.besace = run.besace.filter((_, i) => i !== idx);
+    });
+  }
+
   function appliquerEffetsBassins(choice: Choice) {
     if (choice.soif) {
       const delta = choice.soif;
@@ -4983,6 +5002,14 @@ export default function Scene() {
     }
     if (choice.appelleVer) {
       persist((r) => { if (r.trav) r.trav = { ...r.trav, verAppele: true }; });
+    }
+    // L'ENCROÛTÉ REDESCEND (Salines, 19/09) : le Puits et les Sauniers qui
+    // raclent — le seul contrepoids du sel qui monte. Même moment que la Soif
+    // (sélection d'un passif, réussite d'un jet), jamais un chiffre.
+    if (choice.baisseEncroute) {
+      const apres = Math.max(0, (runRef.current?.encroute ?? 0) - 1);
+      persist((r) => { r.encroute = apres; });
+      setEncrouteMirror(apres);
     }
   }
 
@@ -5076,7 +5103,14 @@ export default function Scene() {
               ? { points: 6, tolerance: 22 }
               : { points: 7, tolerance: 19 }),
           skin: "pierre",
-          imageFond: assetSrc("assets/minijeu_chapelle_pierre_c.png"),
+          // 19/09 : un geste peut porter SON fond (`minigame.fond`, la Forge des
+          // Salines) — gardé par `assetExiste`, la pierre de la Chapelle sert
+          // tant que le fichier n'est pas déposé.
+          imageFond: assetSrc(
+            choice.minigame.fond && assetExiste(choice.minigame.fond)
+              ? choice.minigame.fond
+              : "assets/minijeu_chapelle_pierre_c.png"
+          ),
         });
       } else if (eng === "pick") {
         /* Le Crochetage (la nuit) : la Ruse élargit la gorge. TROIS goupilles
@@ -5807,6 +5841,8 @@ export default function Scene() {
         },
       });
     } else if (choice.rest) {
+      // Les sandales de marche (Salines, 19/09) : une nuit, puis elles restent.
+      laisserObjet(choice);
       // Campement (spec §7, précisé 13/07) : le jour avance, blessures atténuées.
       // Plus AUCUNE consommation automatique d'objet (spec 21/07 point 4 :
       // « rien d'automatique, jamais ») — le soin d'un actif est une décision
@@ -5839,6 +5875,11 @@ export default function Scene() {
         const frais = NUIT_OUVERTURE.filter((t) => vu(dejaVues, "nuit|" + t) === moins);
         const ouverture = frais[newDay % frais.length];
         prepend.push({ id: nextId(), kind: "narration", text: ouverture });
+        // Une nuit qui porte SA prose (les sandales de marche, 19/09) : elle
+        // se lit entre l'ouverture et la ligne du corps.
+        if (choice.passive?.consequence) {
+          prepend.push({ id: nextId(), kind: "narration", text: choice.passive.consequence });
+        }
         persist((r) => { r.vus = noter(r.vus, "nuit|" + ouverture); });
         // Les états sont lus APRÈS le repos : c'est bien ce qui reste au
         // matin que la ligne décrit, pas ce qu'on avait en se couchant.
@@ -5931,16 +5972,7 @@ export default function Scene() {
       // accepter la mèche, raconter sa mort au Veilleur) — l'objet se mérite
       // par la décision, pas par un jet, puisqu'il n'y a pas de jet ici.
       const granted = choice.grantsLoot ? grantLandesLoot(choice.grantsLoot) : null;
-      // L'OBJET RESTE SUR PLACE (`laisseObjet`, Falaise 24/08) : une seule
-      // instance quitte la Besace — le prix est raconté par la conséquence
-      // du choix, jamais par un bandeau. Persisté par le persist du flux.
-      if (choice.laisseObjet) {
-        const nomLaisse = LANDES_OBJETS[choice.laisseObjet]?.name;
-        persist((run) => {
-          const idx = run.besace.findIndex((i) => i.name === nomLaisse);
-          if (idx >= 0) run.besace = run.besace.filter((_, i) => i !== idx);
-        });
-      }
+      laisserObjet(choice);
       // « Le Registre ment » (5/08) : la conséquence écrite est le CADRE, ce
       // que le héros dit vient de la contradiction qu'il tient réellement —
       // deux versions du même fait, lues dans deux vies différentes.
@@ -6223,6 +6255,9 @@ export default function Scene() {
             // LES BASSINS (16/09) : la Soif, la Fixation et l'appel du Ver d'un
             // choix RISQUÉ se paient à la réussite seulement.
             if (chosen && !tierIsFail(tier)) appliquerEffetsBassins(chosen);
+            // Un objet JETÉ l'est quel que soit le dé (le sel qui garde, le sac
+            // de sel : les quatre issues le disent fini).
+            if (chosen) laisserObjet(chosen);
             // Relique « coussin » (commune, portée depuis la dernière mort) :
             // le PREMIER coup dur de la run est amorti au coût d'un échec
             // simple — puis la relique est fendue pour cette vie. Le verdict

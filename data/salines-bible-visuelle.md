@@ -9,7 +9,7 @@ Généré par `tools/bible_visuelle_salines.py` depuis `data/zones/salines.json`
 3. **Le ratio de trame par le prompt** (`style_image.CLAUSES_ENVIRONNEMENT`), jamais par le seuil du dithering. Règle de zone : vue à la première personne, le héros n'est jamais dans l'image.
 4. **La composition, ajoutée le 15/09** sur les références rouge/noir de Patrick. Trois traits qu'aucun prompt ne demandait : **une figure géométrique** qui porte le cadre (un cercle, une arche, des lignes qui convergent, une symétrie franche), **la source de lumière VISIBLE dans l'image**, et une **échelle écrasante**. Et une règle de matière : la lumière est une FORME, jamais une atmosphère — mesuré, un halo dégradé ressort du dithering en nuage de points sale (78,8 % d'aplat), les mêmes cercles en anneaux francs ressortent nets (88,5 %). `python3 tools/aplat.py <png…>` mesure une sortie Leonardo avant même de la regarder : sous 70 %, c'est du grain, pas un dessin.
 
-**43 images** : 4 établissements · 6 lieux obligatoires · 13 lieux du pool · 4 autres écrans · 11 rencontres · 5 vues du Ver. Deux variantes par image, le pipeline double le suffixe (`_a` → `_a_b`). Format `nom=prompt` pour `/leo-import`.
+**53 images** : 4 établissements · 6 lieux obligatoires · 19 lieux du pool · 6 autres écrans · 13 rencontres · 5 vues du Ver. Deux variantes par image, le pipeline double le suffixe (`_a` → `_a_b`). Format `nom=prompt` pour `/leo-import`.
 
 
 ## 1. La Croûte — le fond du lac
@@ -330,12 +330,88 @@ Ce que la bible dit : obligatoire — mini-boss.
 scene_salines_entrepot_a=inside a vast salt warehouse: long alleys between walls of stacked sacks receding into darkness, salt-crusted human statues stood in rows along the alleys sorted by size, and at the far end a huge low blind shape the size of a barn with a ridged carapace, raking the floor with a flat snout, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, only about a quarter of the frame is bright, the rest deep black; tight cramped framing, no horizon, one hard light, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
+### La Pesée (lieu joué, pool) — `scene_salines_pesee_a`
+
+Ce que la bible dit : la grande balance, l'Encroûté au registre.
+
+```
+scene_salines_pesee_a=a yard walled in by stacked salt sacks higher than a man, and in its middle under a timber gantry a great iron beam balance with two flat pans as wide as tables, one pan loaded with sacks, the other empty, the beam tilted and hanging a hand above the ground; behind it a lectern with a salt-crusted figure bent over a ledger; footprints in the salt dust leading to the empty pan, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, only about a quarter of the frame is bright, the rest deep black; tight cramped framing, no horizon, one hard light, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### Le Puits (lieu joué, pool) — `scene_salines_puits_a`
+
+Ce que la bible dit : l'eau douce.
+
+```
+scene_salines_puits_a=between two walls of stacked sacks a round stone well curb, above it a timber gallows frame with a rope and a bucket, and on the crossbeam a nest built of white salt-crusted twigs packed with small white birds sitting motionless with open eyes, the well mouth a black disc, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, only about a quarter of the frame is bright, the rest deep black; tight cramped framing, no horizon, one hard light, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### Le Dortoir (lieu joué, pool) — `scene_salines_dortoir_a`
+
+Ce que la bible dit : couchettes des sauniers, matelas de sel.
+
+```
+scene_salines_dortoir_a=a long low hall with two rows of plank bunks, each bunk holding a mattress of packed salt moulded into the hollow of a sleeper, several hollows still occupied by white crusted bodies, low blind armoured beasts scraping the floor between the rows, a corner of paper under one mattress, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, only about a quarter of the frame is bright, the rest deep black; tight cramped framing, no horizon, one hard light, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### La Forge à grattoirs (lieu joué, pool) — `scene_salines_forge_a`
+
+Ce que la bible dit : l'atelier.
+
+```
+scene_salines_forge_a=an open-air workshop between sack walls: an anvil in the near ground with a line scored into its face, a rack of short-handled scraping blades most of them half-finished, and at the back under a lean-to two stone pestles rising and falling on their own over a heap of fine white powder with fragments of stone limbs in it, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, only about a quarter of the frame is bright, the rest deep black; tight cramped framing, no horizon, one hard light, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### La Cour aux rails (lieu joué, pool) — `scene_salines_cour_rails_a`
+
+Ce que la bible dit : là où le Bœuf fait demi-tour (boucle Rive → Cour).
+
+```
+scene_salines_cour_rails_a=a yard between sack walls where two iron rails run in and stop dead against a stone buffer; a huge salt-crystallised draught ox in its yoke pushing its head against the buffer, a small wooden wagon with a shuttered window behind it, and before the buffer a rusted switch lever standing upright with a siding branching off between the sacks toward a closed building, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, only about a quarter of the frame is bright, the rest deep black; tight cramped framing, no horizon, one hard light, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### La Salle des Gages (lieu joué, pool) — `scene_salines_gages_a`
+
+Ce que la bible dit : ceux qui ne pouvaient pas payer le passage laissaient un gage : bocaux de sel contenant une main, un œil, une mèche, un nom sur une languette.
+
+```
+scene_salines_gages_a=a low room with a counter, and behind the counter shelves of glass jars packed with white salt, each jar holding one thing in the salt: a hand, an eye, a lock of hair, a leather tag with a name; on the counter a two-necked leather gourd, a salt-crusted wool cloak and a pair of sandals, poster composition: the whole shot built on ONE bold geometric figure filling the frame — a circle, an arch, converging lines, a hard symmetry; the light source itself visible in frame; everything in front of it a flat black cut-out with no interior detail; crushing scale, whatever gives scale tiny and low in the frame; it must read at thumbnail size, first-person view from the ground, no protagonist in frame, what is far away is other people, only about a quarter of the frame is bright, the rest deep black; tight cramped framing, no horizon, one hard light, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `cour-aux-rails-2` (gros plan) — `scene_salines_aiguillage_a`
+
+```
+scene_salines_aiguillage_a=an iron railway switch lever sunk to the knee in hardened salt, its head a square iron socket, the point rails beside it half turned toward a siding, salt crust cracked around the base, close-up, the subject filling the frame, nothing else in shot, no horizon, one hard light, first-person view, no protagonist in frame, only about a quarter of the frame is bright, the rest deep black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### `salle-des-gages-2` (gros plan) — `scene_salines_gages_oeil_a`
+
+```
+scene_salines_gages_oeil_a=a single glass jar on a shelf of its own, packed with white salt, and in the salt one whole pale eye with its lid gone, looking straight out; beside the jar a blank leather tag and an awl, close-up, the subject filling the frame, nothing else in shot, no horizon, one hard light, first-person view, no protagonist in frame, only about a quarter of the frame is bright, the rest deep black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
 ### Le Grand Saunier (rencontre) — `monstre_salines_grand_saunier_a`
 
 Ce que la bible dit : mini-boss de milieu de zone (Entrepôt).
 
 ```
 monstre_salines_grand_saunier_a=an enormous blind beast the size of a barn, low and wide on many short legs, a ridged salt-white carapace, a flat broad snout raking the floor, surrounded by rows of small salt-crusted human statues it has sorted by size, inside a dark warehouse of stacked sacks, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, one hard light, first-person view, no protagonist in frame, only about a quarter of the frame is bright, the rest deep black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### Les Rats de saline (rencontre) — `monstre_salines_rats_a`
+
+Ce que la bible dit : rongent les statues pour ce qu'il y a dedans.
+
+```
+monstre_salines_rats_a=a swarm of white rats the size of cats pouring out of the hollows of salt mattresses on plank bunks and climbing along the boards toward the viewer, their mouths crusted white, dozens of them in a low hall between two rows of bunks, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, one hard light, first-person view, no protagonist in frame, only about a quarter of the frame is bright, the rest deep black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### Les Sauniers (rencontre) — `monstre_salines_sauniers_a`
+
+Ce que la bible dit : racleurs bas sur pattes, aveugles, à carapace.
+
+```
+monstre_salines_sauniers_a=several low broad beasts on many short legs with grey ridged carapaces and a blade of horn under the head, blind, crawling out from under a rack of scraping blades toward a pair of boots, the nearest already pressing its blade against the leather, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, one hard light, first-person view, no protagonist in frame, only about a quarter of the frame is bright, the rest deep black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
 
@@ -432,6 +508,42 @@ objet_salines_lanterne_du_noye_a=a small hand lantern of blackened iron and crac
 objet_salines_registre_traversees_a=a thick ledger open flat, its pages ruled into two columns of hand-written names, the left column of entries each answered by a single word on the right, the paper swollen and warped by damp, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
 ```
 
+### `grattoir-saunier` — `objet_salines_grattoir_saunier_a`
+
+```
+objet_salines_grattoir_saunier_a=a short heavy scraping blade three fingers wide with a stubby wooden handle, the edge worn bright, salt crusted in the corner where blade meets handle, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
+### `sac-de-sel` — `objet_salines_sac_de_sel_a`
+
+```
+objet_salines_sac_de_sel_a=a small sewn cloth sack bulging with fine white salt, tied at the neck, a single stamped mark on its side, one seam slightly split and letting a trickle of salt out, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
+### `gourde-double` — `objet_salines_gourde_double_a`
+
+```
+objet_salines_gourde_double_a=a leather gourd with two necks side by side, one stopped with a wax plug, the leather dark and cracked, a carrying strap hanging loose, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
+### `manteau-de-saunier` — `objet_salines_manteau_saunier_a`
+
+```
+objet_salines_manteau_saunier_a=a heavy wool cloak with a deep hood, folded, the wool gone stiff and white with salt at every fold and along the hem, cracked like a shell, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
+### `sandales-de-marche` — `objet_salines_sandales_marche_a`
+
+```
+objet_salines_sandales_marche_a=a pair of wooden-soled sandals with greased leather straps, laid side by side, the soles worn smooth, no salt anywhere on them, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
+### `oeil-de-cristallin` — `objet_salines_oeil_cristallin_a`
+
+```
+objet_salines_oeil_cristallin_a=a single whole human eye turned to white salt crystal, dry and faceted, the pupil a dark pit, resting on its side with a few grains of salt around it, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
 
 ## Ce qui n'a PAS d'image, et pourquoi
 
@@ -481,6 +593,21 @@ objet_salines_registre_traversees_a=a thick ledger open flat, its pages ruled in
 | `noria-2` | `monstre_salines_sauteurs_a` |
 | `guerite` | `scene_salines_guerite_a` |
 | `guerite-2` | `scene_salines_guerite_a` |
+| `pesee` | `scene_salines_pesee_a` |
+| `pesee-2` | — (carton) |
+| `puits` | `scene_salines_puits_a` |
+| `puits-2` | — (carton) |
+| `dortoir` | `scene_salines_dortoir_a` |
+| `dortoir-2` | `monstre_salines_rats_a` |
+| `forge-a-grattoirs` | `scene_salines_forge_a` |
+| `forge-a-grattoirs-2` | `monstre_salines_sauniers_a` |
+| `cour-aux-rails` | `scene_salines_cour_rails_a` |
+| `cour-aux-rails-2` | — (carton) |
+| `salle-des-gages` | `scene_salines_gages_a` |
+| `salle-des-gages-2` | `scene_salines_gages_oeil_a` |
+| `entrepot` | `scene_salines_entrepot_a` |
+| `entrepot-2` | `monstre_salines_grand_saunier_a` |
+| `entrepot-3` | `monstre_salines_grand_saunier_a` |
 
 Hors câblage :
 
@@ -493,9 +620,24 @@ Hors câblage :
 - `monstre_salines_ver_gueule_a` — apparition garantie à l'arrivée au Champ des Sillages (Scene.apparition)
 - `scene_salines_bassins_a` — vue d'établissement : BASSINS_IMG (vue de marche des liaisons et fond de secours)
 - `minijeu_cuve_fendue_a` — fond du puzzle « assemble » de la Cuve fendue (Scene.tsx, pas une scène)
+- `scene_salines_salines_a` — vue d'établissement : SALINES_IMG (vue de marche des liaisons et fond de secours)
+- `scene_salines_aiguillage_a` — élément observé « Aller au levier » (Choice.illustration, cour-aux-rails) — à câbler à l'import
 
 
 ## Ce qu'il reste à produire
 
-Rien : tous les écrans câblés ont leur image sur le disque.
+10 image(s). En attendant, ces écrans servent l'image d'établissement de leur environnement.
+
+| image | écran | environnement |
+|---|---|---|
+| `scene_salines_pesee_a` | `pesee` | salines |
+| `scene_salines_puits_a` | `puits` | salines |
+| `scene_salines_dortoir_a` | `dortoir` | salines |
+| `scene_salines_forge_a` | `forge-a-grattoirs` | salines |
+| `scene_salines_cour_rails_a` | `cour-aux-rails` | salines |
+| `scene_salines_gages_a` | `salle-des-gages` | salines |
+| `scene_salines_aiguillage_a` | `—` | salines |
+| `scene_salines_gages_oeil_a` | `salle-des-gages-2` | salines |
+| `monstre_salines_rats_a` | `dortoir-2` | salines |
+| `monstre_salines_sauniers_a` | `forge-a-grattoirs-2` | salines |
 
