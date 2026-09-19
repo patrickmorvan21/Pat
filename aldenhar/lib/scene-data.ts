@@ -9982,7 +9982,7 @@ export const SCENES: Scene[] = [
        la Barge) s'éclaire ici — « Demander où sont les autres » n'existe que
        pour qui porte le Registre des traversées. */
     id: "pesee",
-    illustration: SALINES_IMG,
+    illustration: "assets/scene_salines_pesee_a_d.png",
     chainNext: "pesee-2",
     narration: [
       "Une cour entre des murs de sacs, plus hauts qu'un homme. Au milieu, sous un portique de poutres, une balance de fer — deux plateaux larges comme des tables, l'un chargé de sacs, l'autre vide, et le fléau qui penche du côté plein sans jamais toucher terre.",
@@ -10107,7 +10107,7 @@ export const SCENES: Scene[] = [
        (règle : un geste se porte, ne se réimplémente pas) — un jet d'INSTINCT
        en attendant, dit ici pour qu'aucune relecture ne le croie fait. */
     id: "puits",
-    illustration: SALINES_IMG,
+    illustration: "assets/scene_salines_puits_a_b.png",
     chainNext: "puits-2",
     narration: [
       "Entre deux murs de sacs, une margelle de pierre ronde et, au-dessus, une potence avec sa corde et son seau. Le seul endroit de la zone qui sente autre chose que le sel : l'eau. Elle est loin, en bas — on l'entend, on ne la voit pas.",
@@ -10231,7 +10231,7 @@ export const SCENES: Scene[] = [
        Lanterne du Noyé, elle se lit la nuit même ; sans lanterne on la trouve
        et on la lira à l'aube, un palier plus tard. */
     id: "dortoir",
-    illustration: SALINES_IMG,
+    illustration: "assets/scene_salines_dortoir_a_c.png",
     chainNext: "dortoir-2",
     narration: [
       "Une salle longue, basse, deux rangées de couchettes de planches. Sur chacune, un matelas — pas de paille : du sel, tassé, moulé en creux à la forme de celui qui dormait là. Certains creux ont encore quelqu'un dedans.",
@@ -10296,7 +10296,10 @@ export const SCENES: Scene[] = [
        l'option informée prend la place de l'aveugle, même seuil, l'échec hors
        de portée. Faire du BRUIT les disperse aussi, et le bruit a son prix :
        il appelle le Ver (`appelleVer`). Rester immobile les laisse passer, et
-       le sel prend son palier. ⚠️ REPLI D'IMAGE (`monstre_salines_rats_a`). */
+       le sel prend son palier. ⚠️ REPLI D'IMAGE : `monstre_salines_rats_a_c`
+       (lot du 19/09) REJETÉE — c'est une horde de silhouettes humanoïdes
+       encapuchonnées dans un couloir de couchettes, pas des rats blancs.
+       Ne pas câbler tel quel ; une régénération sur le bon sujet suffira. */
     id: "dortoir-2",
     illustration: SALINES_IMG,
     combat: true,
@@ -10359,7 +10362,7 @@ export const SCENES: Scene[] = [
        Broyeuse (13/09) : les pilons au fond réduisaient les statues en poudre
        — c'est ça, le sel qui garde. */
     id: "forge-a-grattoirs",
-    illustration: SALINES_IMG,
+    illustration: "assets/scene_salines_forge_a_b.png",
     chainNext: "forge-a-grattoirs-2",
     narration: [
       "Un atelier à ciel ouvert entre les sacs. Une enclume, un râtelier de lames courtes à manche court — des grattoirs, pour racler le sel des statues —, la plupart ébauchées, une seule finie. Sur l'enclume, un tracé au poinçon montre le fil à donner.",
@@ -10418,7 +10421,7 @@ export const SCENES: Scene[] = [
        la peau, si le dé rate. Pas un combat (bêtes non hostiles) ; le
        grattoir, s'il est porté, les tient à distance d'un geste. */
     id: "forge-a-grattoirs-2",
-    illustration: SALINES_IMG,
+    illustration: "assets/monstre_salines_sauniers_a_d.png",
     narration: [
       "Ils sortent de sous le râtelier : des Sauniers, bas sur pattes, aveugles, la carapace grise, une lame de corne sous la tête. Ils ne viennent pas vers toi. Ils viennent vers ce qui ne bouge pas — et tu ne bouges pas. Le premier pose sa lame sur ta botte et commence à racler.",
     ],
@@ -10466,7 +10469,7 @@ export const SCENES: Scene[] = [
        dans l'Entrepôt — c'est ce qui prépare le Grand Saunier
        (`savoir_boeuf_detourne`). */
     id: "cour-aux-rails",
-    illustration: SALINES_IMG,
+    illustration: "assets/scene_salines_cour_rails_a_a.png",
     chainNext: "cour-aux-rails-2",
     narration: [
       "Deux rails entrent dans la cour entre les sacs et s'arrêtent net, sur un butoir de pierre. Le Bœuf de sel est là, attelé, la tête contre le butoir, et il pousse — il ne s'arrête pas, il attend que les rails repartent. Le wagon derrière lui grince à chaque poussée.",
@@ -10496,6 +10499,7 @@ export const SCENES: Scene[] = [
       {
         id: "aller-a-l-aiguillage",
         label: "Aller au levier",
+        illustration: "assets/scene_salines_aiguillage_a_b.png",
         passive: {
           consequence:
             "Tu longes les rails jusqu'à l'aiguille. Le levier est pris dans le sel jusqu'au genou, et sa tête porte le même carré de fer que tous les mécanismes des Passeurs. L'embranchement file vers le bâtiment fermé. Les rails y entrent par une porte sans battant.",
@@ -10559,7 +10563,7 @@ export const SCENES: Scene[] = [
        la zone sont là ; le budget de trois actions tient parce qu'on ne
        laisse qu'UN gage par passage (chaîne vers le rayon du fond). */
     id: "salle-des-gages",
-    illustration: SALINES_IMG,
+    illustration: "assets/scene_salines_gages_a_d.png",
     chainNext: "salle-des-gages-2",
     narration: [
       "Une salle basse, un comptoir, et derrière le comptoir des étagères de bocaux pleins de sel. Dans le sel : une main. Un œil. Une mèche. Une languette de cuir avec un nom. Ceux qui ne pouvaient pas payer le passage laissaient quelque chose ici, et repassaient le chercher au retour.",
@@ -10603,7 +10607,7 @@ export const SCENES: Scene[] = [
        ton nom sur une languette (le sel te note ; les Piqueurs suivent qui
        porte l'Œil, dit la bible — la prose le dit, aucun compteur). */
     id: "salle-des-gages-2",
-    illustration: SALINES_IMG,
+    illustration: "assets/scene_salines_gages_oeil_a_b.png",
     narration: [
       "Au fond, un rayon à part, un seul bocal. Dans le sel, un œil de Cristallin — blanc, entier, et il regarde. À côté du bocal, une languette de cuir vierge et un poinçon. Le prix de celui-là n'est pas une empreinte.",
     ],
@@ -10666,6 +10670,7 @@ export const SCENES: Scene[] = [
            le compte devient faux « depuis le début » (`d.compte_faux`). */
         id: "aider-a-compter",
         label: "L'aider à compter",
+        illustration: "assets/monstre_salines_compteur_a_d.png",
         nature: "social",
         observe: true,
         risky: {
@@ -10682,6 +10687,7 @@ export const SCENES: Scene[] = [
       {
         id: "lui-dire-qui-manque",
         label: "Lui dire qui manque",
+        illustration: "assets/monstre_salines_compteur_a_d.png",
         requiresDecouverte: "d.lettre_passeur",
         prendLaPlaceDe: "aider-a-compter",
         observe: true,
@@ -10889,7 +10895,7 @@ export const SCENES: Scene[] = [
        du POIDS qu'il veut. Reculer est sûr et certain : l'allée reste à lui
        (`fermeLaRoute: "ensacheur"`, dit à la Croisée suivante). */
     id: "ensacheur",
-    illustration: SALINES_IMG,
+    illustration: "assets/monstre_salines_ensacheur_a_b.png",
     combat: true,
     foe: "ensacheur",
     foeName: "L'Ensacheur",
@@ -10951,7 +10957,7 @@ export const SCENES: Scene[] = [
        « on les fait peser, un sur deux » : qui sait de quel côté de la balance
        il est peut le lui dire (`horsDePortee`). */
     id: "contremaitre",
-    illustration: SALINES_IMG,
+    illustration: "assets/monstre_salines_contremaitre_a_c.png",
     combat: true,
     foe: "contremaitre",
     foeName: "Le Contremaître",
@@ -10971,6 +10977,10 @@ export const SCENES: Scene[] = [
       },
       {
         id: "refuser-le-sac",
+        // Les quatre issues font PASSER le héros au-delà du Contremaître
+        // (« tu passes », « tu sors de l'allée », « tu pars sans ») : la
+        // conséquence se lit sur ce qui s'ouvre, plus sur lui.
+        consequenceAilleurs: true,
         label: "Refuser le sac",
         nature: "physique",
         masqueSi: { decouverte: "d.lettre_passeur" },
@@ -11010,7 +11020,7 @@ export const SCENES: Scene[] = [
        est ouvert. Préparation : le Manteau de saunier (Salle des Gages),
        rabattu sur la plaie (`horsDePortee`). Courir est sûr et assoiffe. */
     id: "mouchee-blanche",
-    illustration: SALINES_IMG,
+    illustration: "assets/monstre_salines_mouchee_a_b.png",
     combat: true,
     foe: "mouchee-blanche",
     foeName: "La Mouchée blanche",
@@ -11070,7 +11080,7 @@ export const SCENES: Scene[] = [
        sous le sel, et le Dormeur en a un (`horsDePortee`). */
     id: "dortoir-dormeur",
     remplace: { scene: "dortoir-2", si: { has: "dormi:dortoir" } },
-    illustration: SALINES_IMG,
+    illustration: "assets/monstre_salines_dormeur_a_d.png",
     combat: true,
     foe: "dormeur",
     foeName: "Le Dormeur",
@@ -11127,7 +11137,7 @@ export const SCENES: Scene[] = [
        les sacs sans bouger les pieds. Se glisser dedans, c'est être passé
        comme un sac : un lieu de moins (`sauteEtape`, comme le Bœuf). */
     id: "chaine-des-bras",
-    illustration: SALINES_IMG,
+    illustration: "assets/monstre_salines_chaine_bras_a_d.png",
     narration: [
       "L'allée est barrée par une chaîne d'Encroûtés — une vingtaine, plantés à deux pas les uns des autres, qui se passent des sacs de main en main sans un mot et sans bouger les pieds. Les sacs vont vers les piles. Les bras reviennent vides. Ça ne s'arrête pas pour toi.",
     ],
@@ -11172,7 +11182,15 @@ export const SCENES: Scene[] = [
        avec un sac plus gros que lui et se met à ton pas. Le laisser suivre
        pose PORTEUR (lib/etats.ts) : il porte, et il boit ton eau — la Soif
        monte un cran plus vite. Le prix se paie ou se rend à l'Entrepôt
-       (« Lui donner le petit », entrepot-3). */
+       (« Lui donner le petit », entrepot-3).
+       ⚠️ REPLI D'IMAGE : `monstre_salines_petit_porteur_a_b` (lot du 19/09)
+       NON CÂBLÉE — la silhouette est de carrure adulte (chapeau conique
+       large, aucun sac visible à l'épaule), alors que la narration décrit
+       explicitement un enfant avec « un sac sur l'épaule plus gros que
+       lui ». Rappel de canon : la Petite Fixée (30/08) a huit ans et n'est
+       jamais montrée adulte — même prudence ici. À trancher par Patrick
+       avant câblage (regénérer sur un enfant, ou confirmer que l'échelle du
+       couloir suffit à lire un enfant). */
     id: "petit-porteur",
     illustration: SALINES_IMG,
     narration: [

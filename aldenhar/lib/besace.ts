@@ -281,6 +281,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
   "grattoir-saunier": {
     name: "Grattoir de saunier", rarity: "commun", kind: "arme", slot: "passif",
     passiveMod: 1, passiveScope: "combat",
+    illustration: "assets/objet_salines_grattoir_saunier_a_d.png",
     usage: "Court, lourd, il racle le sel de ce qui en porte. Les bêtes du chantier reconnaissent son fil.",
     flavor: "Une lame large comme trois doigts, un manche court, le tout usé par des mains qui raclaient des statues. Il ne sert pas à tuer. Il sert à découvrir ce qu'il y a dessous.",
   },
@@ -290,6 +291,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
   "sac-de-sel": {
     name: "Sac de sel", rarity: "commun", kind: "babiole", slot: "passif",
     passiveMod: 0, passiveScope: "all",
+    illustration: "assets/objet_salines_sac_de_sel_a_d.png",
     usage: "Se vide d'un geste. Une ligne de sel neuf, sans rien dedans : les bêtes du chantier s'y arrêtent.",
     flavor: "Un sac cousu, pesé, marqué du signe de la Pesée. Du sel fin, propre, qui n'a jamais été personne. C'est ce qui le rend rare ici.",
   },
@@ -299,6 +301,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
   "gourde-double": {
     name: "Gourde double", rarity: "commun", kind: "babiole", slot: "passif",
     passiveMod: 0, passiveScope: "all",
+    illustration: "assets/objet_salines_gourde_double_a_b.png",
     usage: "Deux gorges, une pour boire, une pour garder. La soif prend son temps avec elle.",
     flavor: "Une gourde de cuir à deux goulots, l'un bouché de cire. Les sauniers buvaient à l'un et gardaient l'autre pour le retour. Aucun n'est revenu la vider.",
   },
@@ -307,6 +310,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
   "manteau-de-saunier": {
     name: "Manteau de saunier", rarity: "commun", kind: "babiole", slot: "passif",
     passiveMod: 0, passiveScope: "all",
+    illustration: "assets/objet_salines_manteau_saunier_a_a.png",
     usage: "Capuche rabattue, tu es du sel. Ce qui vole ne pique pas le sel.",
     flavor: "Une laine épaisse devenue carapace, blanche aux plis, qui craque quand on la plie. Dessous, on ne sent plus le vent. Dessous, on ne sent plus grand-chose.",
   },
@@ -315,6 +319,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
   "sandales-de-marche": {
     name: "Sandales de marche", rarity: "commun", kind: "babiole", slot: "passif",
     passiveMod: 0, passiveScope: "all",
+    illustration: "assets/objet_salines_sandales_marche_a_b.png",
     usage: "Une nuit sur le sel sans que le sel monte. Une seule : après, elles restent.",
     flavor: "Des semelles de bois, des lanières de cuir gras. Le sel n'y prend pas — c'est pour ça qu'on les laissait en gage, et pour ça qu'on ne les récupérait jamais.",
   },
@@ -324,6 +329,7 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
   "oeil-de-cristallin": {
     name: "Œil de Cristallin", rarity: "rare", kind: "babiole", slot: "passif",
     passiveMod: 0, passiveScope: "all",
+    illustration: "assets/objet_salines_oeil_cristallin_a_a.png",
     usage: "Levé devant le tien, il montre ce que le sel cache : des noms, des places. Il regarde aussi dans l'autre sens.",
     flavor: "Un œil blanc, entier, sec, sorti d'un bocal de sel. Il ne se ferme pas. Depuis que tu l'as, quelque chose de blanc se pose toujours à portée de vue.",
   },

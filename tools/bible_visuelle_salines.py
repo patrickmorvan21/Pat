@@ -568,7 +568,9 @@ CABLAGE = {
         "puits": "scene_salines_puits_a",
         "puits-2": None,
         "dortoir": "scene_salines_dortoir_a",
-        "dortoir-2": "monstre_salines_rats_a",
+        # dortoir-2 (les Rats) : REJETÉE au lot du 19/09, voir HORS_CABLAGE —
+        # aucune cible tant qu'une regénération n'a pas corrigé le sujet.
+        "dortoir-2": None,
         "forge-a-grattoirs": "scene_salines_forge_a",
         "forge-a-grattoirs-2": "monstre_salines_sauniers_a",
         "cour-aux-rails": "scene_salines_cour_rails_a",
@@ -586,7 +588,11 @@ CABLAGE = {
         "mouchee-blanche": "monstre_salines_mouchee_a",
         "dortoir-dormeur": "monstre_salines_dormeur_a",
         "chaine-des-bras": "monstre_salines_chaine_bras_a",
-        "petit-porteur": "monstre_salines_petit_porteur_a",
+        # petit-porteur : REJETÉE au lot du 19/09, voir HORS_CABLAGE — la
+        # figure livrée est de carrure adulte, sans sac visible, alors que la
+        # scène décrit un enfant. Reste au repli tant que Patrick n'a pas
+        # tranché (regénérer sur un enfant, ou confirmer que ça passe).
+        "petit-porteur": None,
     },
 }
 
@@ -607,11 +613,21 @@ HORS_CABLAGE = {
     "minijeu_cuve_fendue_a": "fond du puzzle « assemble » de la Cuve fendue (Scene.tsx, pas une scène)",
     # LES SALINES (19/09)
     "scene_salines_salines_a": "vue d'établissement : SALINES_IMG (vue de marche des liaisons et fond de secours)",
-    "scene_salines_aiguillage_a": "élément observé « Aller au levier » (Choice.illustration, cour-aux-rails) — à câbler à l'import",
+    "scene_salines_aiguillage_a": "élément observé « Aller au levier » (Choice.illustration, cour-aux-rails)",
     # Le bestiaire du chantier (19/09) : deux rencontres vivent DANS un écran
     # existant et se posent sur le choix qui les joue.
-    "monstre_salines_compteur_a": "élément observé « L'aider à compter » (Choice.illustration, entrepot) — à câbler à l'import",
+    "monstre_salines_compteur_a": "élément observé « L'aider à compter » (Choice.illustration, entrepot)",
     "monstre_salines_saigneuse_a": "élément observé « Tendre les bras à la Saigneuse » (Choice.illustration, puits) — à câbler à l'import",
+    # LOT DU 19/09 (Drive → github) — deux images REGARDÉES et REJETÉES
+    # (règle du moulin ailé), gardées en réserve sur le disque plutôt que
+    # câblées à l'aveugle. Voir CLAUDE.md session 2026-09-20 pour le détail.
+    "monstre_salines_rats_a": "REJETÉE — c'est une horde de silhouettes humanoïdes "
+        "encapuchonnées dans un couloir de couchettes, pas des rats blancs "
+        "(dortoir-2 reste sur SALINES_IMG)",
+    "monstre_salines_petit_porteur_a": "NON TRANCHÉE — la figure livrée est de "
+        "carrure adulte, chapeau conique large, aucun sac à l'épaule visible, "
+        "alors que la narration décrit un enfant avec un sac plus gros que lui "
+        "(petit-porteur reste sur SALINES_IMG en attendant l'arbitrage de Patrick)",
 }
 
 

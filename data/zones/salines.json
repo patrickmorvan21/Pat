@@ -771,7 +771,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_pesee_a_d.png",
       "portrait_requis": false
     },
     {
@@ -798,7 +798,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_puits_a_b.png",
       "portrait_requis": false
     },
     {
@@ -823,7 +823,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_dortoir_a_c.png",
       "portrait_requis": false,
       "campement": true,
       "objets_utiles": [
@@ -857,7 +857,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_forge_a_b.png",
       "portrait_requis": false
     },
     {
@@ -884,7 +884,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_cour_rails_a_a.png",
       "portrait_requis": false,
       "objets_utiles": [
         "roue_et_manivelle_de_l_ecluse"
@@ -916,7 +916,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_salines_gages_a_d.png",
       "portrait_requis": false
     },
     {
@@ -1365,7 +1365,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_salines_contremaitre_a_c.png",
       "portrait_requis": true
     },
     {
@@ -1380,7 +1380,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_salines_chaine_bras_a_d.png",
       "portrait_requis": true
     },
     {
@@ -1410,7 +1410,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_salines_compteur_a_d.png",
       "portrait_requis": true
     }
   ],
@@ -1481,7 +1481,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_salines_sauniers_a_d.png",
       "portrait_requis": false
     },
     {
@@ -1768,7 +1768,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_salines_ensacheur_a_b.png",
       "portrait_requis": true
     },
     {
@@ -1783,7 +1783,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_salines_mouchee_a_b.png",
       "portrait_requis": true
     },
     {
@@ -1800,7 +1800,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/monstre_salines_dormeur_a_d.png",
       "portrait_requis": true
     },
     {
@@ -1857,7 +1857,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_salines_grattoir_saunier_a_d.png",
       "portrait_requis": false,
       "sert": [
         "statue",
@@ -1880,7 +1880,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_salines_manteau_saunier_a_a.png",
       "portrait_requis": false,
       "sert": [
         "fosse",
@@ -1902,7 +1902,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_salines_sandales_marche_a_b.png",
       "portrait_requis": false,
       "sert": [
         "dortoir",
@@ -1923,7 +1923,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_salines_gourde_double_a_b.png",
       "portrait_requis": false,
       "sert": [
         "cuve_fendue",
@@ -1944,7 +1944,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_salines_oeil_cristallin_a_a.png",
       "portrait_requis": false,
       "sert": [
         "statue",
@@ -2072,7 +2072,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/objet_salines_sac_de_sel_a_d.png",
       "portrait_requis": false,
       "sert": [
         "file",

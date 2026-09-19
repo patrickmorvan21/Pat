@@ -4368,6 +4368,12 @@ export default function Scene() {
     //  • sinon → on revient/reste sur l'illustration de scène (l'image ne bouge pas).
     let img: { src: string; kind: ImageKind };
     const differees: string[] = [];
+    /* La reprise d'un `Choice.illustration` (élément observé) — séparée de
+       `differees` : contrairement aux bascules d'approche (qui s'appliquent
+       « immédiatement » quand il manque une frontière, pour rester au plus
+       juste), celle-ci ne doit JAMAIS être immédiate. Sans écran à part où
+       la poser, elle est bonne à retirer (voir plus bas). */
+    let elementReprise: string | null = null;
     /* Les frontières d'écran IMPOSÉES par la grammaire d'arrivée (31/08).
        Vide partout ailleurs : le budget de mots continue de décider seul. */
     const coupures = new Set<string>();
@@ -4488,7 +4494,7 @@ export default function Scene() {
     if (opts?.imageElement) {
       const reprise = img.src;
       img = { src: opts.imageElement, kind: "scene" };
-      if (reprise !== opts.imageElement) differees.unshift(reprise);
+      if (reprise !== opts.imageElement) elementReprise = reprise;
     }
 
     setStep(nextStep);
@@ -4753,7 +4759,7 @@ export default function Scene() {
     }
     showScreen(entries, img, coupures);
     // Les bascules différées survivent à showScreen (qui purge celles d'avant).
-    if (differees.length || sceauDiffere || apparitionDiffere) {
+    if (differees.length || sceauDiffere || apparitionDiffere || elementReprise) {
       // Une bascule par FRONTIÈRE d'écran (correctif Patrick 31/08 : l'image
       // ne doit jamais changer au milieu d'un texte). S'il y a moins de
       // frontières que de bascules, celles qui n'en ont pas s'appliquent tout
@@ -4791,6 +4797,18 @@ export default function Scene() {
           setImageKind("scene");
         }
       }
+      // ⚠️ BUG TROUVÉ AU TEST (20/09) : traitée comme les autres bascules,
+      // la reprise d'un `Choice.illustration` se collapsait en « immédiate »
+      // dès que le texte combiné (consequence + narration de la scène
+      // suivante) tenait sur UN SEUL écran — cas fréquent pour un simple
+      // passif chaîné (`chainNext`, pas un séjour). `showScreen` venait de
+      // poser l'image de l'élément, et la ligne plus haut l'écrasait dans
+      // la même frame : l'élément n'était donc JAMAIS vu. Ici, faute de
+      // frontière où la poser, on la LAISSE TOMBER plutôt que de l'imposer
+      // tout de suite — l'image de l'élément tient tout l'écran unique
+      // (son propre texte y est déjà), et l'image normale reprendra
+      // naturellement à la vraie transition de scène suivante.
+      if (elementReprise && frontieres > 0) differables.unshift(elementReprise);
       imagesDifferees.current = differables;
     }
   }

@@ -662,7 +662,7 @@ objet_salines_oeil_cristallin_a=a single whole human eye turned to white salt cr
 | `puits` | `scene_salines_puits_a` |
 | `puits-2` | — (carton) |
 | `dortoir` | `scene_salines_dortoir_a` |
-| `dortoir-2` | `monstre_salines_rats_a` |
+| `dortoir-2` | — (carton) |
 | `forge-a-grattoirs` | `scene_salines_forge_a` |
 | `forge-a-grattoirs-2` | `monstre_salines_sauniers_a` |
 | `cour-aux-rails` | `scene_salines_cour_rails_a` |
@@ -677,7 +677,7 @@ objet_salines_oeil_cristallin_a=a single whole human eye turned to white salt cr
 | `mouchee-blanche` | `monstre_salines_mouchee_a` |
 | `dortoir-dormeur` | `monstre_salines_dormeur_a` |
 | `chaine-des-bras` | `monstre_salines_chaine_bras_a` |
-| `petit-porteur` | `monstre_salines_petit_porteur_a` |
+| `petit-porteur` | — (carton) |
 
 Hors câblage :
 
@@ -691,33 +691,18 @@ Hors câblage :
 - `scene_salines_bassins_a` — vue d'établissement : BASSINS_IMG (vue de marche des liaisons et fond de secours)
 - `minijeu_cuve_fendue_a` — fond du puzzle « assemble » de la Cuve fendue (Scene.tsx, pas une scène)
 - `scene_salines_salines_a` — vue d'établissement : SALINES_IMG (vue de marche des liaisons et fond de secours)
-- `scene_salines_aiguillage_a` — élément observé « Aller au levier » (Choice.illustration, cour-aux-rails) — à câbler à l'import
-- `monstre_salines_compteur_a` — élément observé « L'aider à compter » (Choice.illustration, entrepot) — à câbler à l'import
+- `scene_salines_aiguillage_a` — élément observé « Aller au levier » (Choice.illustration, cour-aux-rails)
+- `monstre_salines_compteur_a` — élément observé « L'aider à compter » (Choice.illustration, entrepot)
 - `monstre_salines_saigneuse_a` — élément observé « Tendre les bras à la Saigneuse » (Choice.illustration, puits) — à câbler à l'import
+- `monstre_salines_rats_a` — REJETÉE — c'est une horde de silhouettes humanoïdes encapuchonnées dans un couloir de couchettes, pas des rats blancs (dortoir-2 reste sur SALINES_IMG)
+- `monstre_salines_petit_porteur_a` — NON TRANCHÉE — la figure livrée est de carrure adulte, chapeau conique large, aucun sac à l'épaule visible, alors que la narration décrit un enfant avec un sac plus gros que lui (petit-porteur reste sur SALINES_IMG en attendant l'arbitrage de Patrick)
 
 
 ## Ce qu'il reste à produire
 
-18 image(s). En attendant, ces écrans servent l'image d'établissement de leur environnement.
+1 image(s). En attendant, ces écrans servent l'image d'établissement de leur environnement.
 
 | image | écran | environnement |
 |---|---|---|
-| `scene_salines_pesee_a` | `pesee` | salines |
-| `scene_salines_puits_a` | `puits` | salines |
-| `scene_salines_dortoir_a` | `dortoir` | salines |
-| `scene_salines_forge_a` | `forge-a-grattoirs` | salines |
-| `scene_salines_cour_rails_a` | `cour-aux-rails` | salines |
-| `scene_salines_gages_a` | `salle-des-gages` | salines |
-| `scene_salines_aiguillage_a` | `—` | salines |
-| `scene_salines_gages_oeil_a` | `salle-des-gages-2` | salines |
-| `monstre_salines_rats_a` | `dortoir-2` | salines |
-| `monstre_salines_sauniers_a` | `forge-a-grattoirs-2` | salines |
-| `monstre_salines_ensacheur_a` | `ensacheur` | salines |
-| `monstre_salines_contremaitre_a` | `contremaitre` | salines |
-| `monstre_salines_mouchee_a` | `mouchee-blanche` | salines |
-| `monstre_salines_dormeur_a` | `dortoir-dormeur` | salines |
-| `monstre_salines_chaine_bras_a` | `chaine-des-bras` | salines |
-| `monstre_salines_petit_porteur_a` | `petit-porteur` | salines |
-| `monstre_salines_compteur_a` | `—` | salines |
 | `monstre_salines_saigneuse_a` | `—` | salines |
 

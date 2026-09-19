@@ -1,6 +1,6 @@
 {
- "genere": "2026-09-19T21:01:46Z",
- "commit": "f9e9dc2",
+ "genere": "2026-09-19T23:29:06Z",
+ "commit": "de92c2b",
  "fenetreCommits": 10,
  "fichiers": {
   "accueil_demon.png": {
@@ -1046,6 +1046,34 @@
    "recent": true,
    "ajoute": "2026-09-18T09:24:43+00:00"
   },
+  "monstre_salines_chaine_bras_a_d.png": {
+   "taille": 15329,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "8d84987e",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
+  "monstre_salines_compteur_a_d.png": {
+   "taille": 25817,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "5cdd3a80",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
+  "monstre_salines_contremaitre_a_c.png": {
+   "taille": 27209,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "f30d9dc6",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
+  "monstre_salines_dormeur_a_d.png": {
+   "taille": 8397,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "cd289fde",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
   "monstre_salines_encroute_a_a.png": {
    "taille": 11440,
    "modifie": "2026-09-14T09:29:23Z",
@@ -1060,11 +1088,18 @@
    "recent": true,
    "ajoute": "2026-09-18T09:24:43+00:00"
   },
+  "monstre_salines_ensacheur_a_b.png": {
+   "taille": 32177,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "a3d3b08e",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
   "monstre_salines_gisants_a_v6_a.png": {
    "taille": 22404,
    "modifie": "2026-09-16T07:08:40Z",
    "hash": "975d53da",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-16T07:19:26+00:00"
   },
   "monstre_salines_grand_saunier_a_b.png": {
@@ -1078,7 +1113,7 @@
    "taille": 15995,
    "modifie": "2026-09-16T07:08:40Z",
    "hash": "f40578c2",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-16T07:19:26+00:00"
   },
   "monstre_salines_lechards_a_b.png": {
@@ -1088,6 +1123,13 @@
    "recent": true,
    "ajoute": "2026-09-18T09:24:43+00:00"
   },
+  "monstre_salines_mouchee_a_b.png": {
+   "taille": 20428,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "24f5d6d6",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
   "monstre_salines_percepteur_a_b.png": {
    "taille": 16072,
    "modifie": "2026-09-14T09:29:23Z",
@@ -1095,12 +1137,33 @@
    "recent": false,
    "ajoute": "2026-09-14T11:01:58+02:00"
   },
+  "monstre_salines_petit_porteur_a_b.png": {
+   "taille": 29176,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "83cedbcc",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
   "monstre_salines_piqueurs_a_v2_b.png": {
    "taille": 12695,
    "modifie": "2026-09-14T09:29:23Z",
    "hash": "fc230391",
    "recent": false,
    "ajoute": "2026-09-14T11:01:58+02:00"
+  },
+  "monstre_salines_rats_a_c.png": {
+   "taille": 28408,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "ac9bd97b",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
+  "monstre_salines_sauniers_a_d.png": {
+   "taille": 25347,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "e651c60e",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
   },
   "monstre_salines_sauteurs_a_b.png": {
    "taille": 27181,
@@ -1750,21 +1813,35 @@
    "taille": 6709,
    "modifie": "2026-09-16T07:48:23Z",
    "hash": "32dd601c",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-16T07:54:18+00:00"
   },
   "objet_salines_dent_de_ver_a_a.png": {
    "taille": 6451,
    "modifie": "2026-09-16T07:48:23Z",
    "hash": "b545b30e",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-16T07:54:18+00:00"
+  },
+  "objet_salines_gourde_double_a_b.png": {
+   "taille": 7263,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "9d03f69b",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
+  "objet_salines_grattoir_saunier_a_d.png": {
+   "taille": 5764,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "d84a01f6",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
   },
   "objet_salines_lanterne_du_noye_a_a.png": {
    "taille": 5962,
    "modifie": "2026-09-16T07:48:23Z",
    "hash": "015cd235",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-16T07:54:18+00:00"
   },
   "objet_salines_manivelle_passeurs_a_a.png": {
@@ -1774,11 +1851,25 @@
    "recent": true,
    "ajoute": "2026-09-18T09:24:43+00:00"
   },
+  "objet_salines_manteau_saunier_a_a.png": {
+   "taille": 9279,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "0829bb49",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
+  "objet_salines_oeil_cristallin_a_a.png": {
+   "taille": 9555,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "d900267b",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
   "objet_salines_perche_sauniere_a_b.png": {
    "taille": 4917,
    "modifie": "2026-09-16T07:48:23Z",
    "hash": "857d0245",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-16T07:54:18+00:00"
   },
   "objet_salines_plume_heron_a_a.png": {
@@ -1792,8 +1883,22 @@
    "taille": 15757,
    "modifie": "2026-09-16T07:48:23Z",
    "hash": "81d31b44",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-16T07:54:18+00:00"
+  },
+  "objet_salines_sac_de_sel_a_d.png": {
+   "taille": 11210,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "6ed68ba3",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
+  "objet_salines_sandales_marche_a_b.png": {
+   "taille": 8086,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "c7ad186b",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
   },
   "objet_salines_sel_qui_garde_a_a.png": {
    "taille": 10091,
@@ -3111,18 +3216,25 @@
    "recent": false,
    "ajoute": "2026-08-30T21:11:20+02:00"
   },
+  "scene_salines_aiguillage_a_b.png": {
+   "taille": 13898,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "9588be33",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
   "scene_salines_barge_echouee_a_v6_c.png": {
    "taille": 5707,
    "modifie": "2026-09-16T07:08:40Z",
    "hash": "4ee23f40",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-16T07:19:26+00:00"
   },
   "scene_salines_barge_pont_a_v6_a.png": {
    "taille": 12499,
    "modifie": "2026-09-16T07:08:40Z",
    "hash": "7b08d901",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-16T07:19:26+00:00"
   },
   "scene_salines_bassins_a_a.png": {
@@ -3143,15 +3255,22 @@
    "taille": 7118,
    "modifie": "2026-09-16T07:08:40Z",
    "hash": "7873b465",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-16T07:19:26+00:00"
   },
   "scene_salines_champ_des_sillages_a_v6_c.png": {
    "taille": 11605,
    "modifie": "2026-09-16T07:08:40Z",
    "hash": "235b4abc",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-16T07:19:26+00:00"
+  },
+  "scene_salines_cour_rails_a_a.png": {
+   "taille": 15732,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "ee1e2185",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
   },
   "scene_salines_croute_a_b.png": {
    "taille": 25650,
@@ -3174,6 +3293,13 @@
    "recent": true,
    "ajoute": "2026-09-18T09:24:43+00:00"
   },
+  "scene_salines_dortoir_a_c.png": {
+   "taille": 19276,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "dd69334b",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
   "scene_salines_entrepot_a_a.png": {
    "taille": 34045,
    "modifie": "2026-09-14T09:26:25Z",
@@ -3185,8 +3311,29 @@
    "taille": 10246,
    "modifie": "2026-09-16T07:08:40Z",
    "hash": "e54e39e6",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-16T07:19:26+00:00"
+  },
+  "scene_salines_forge_a_b.png": {
+   "taille": 22214,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "62e0de87",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
+  "scene_salines_gages_a_d.png": {
+   "taille": 19166,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "50481311",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
+  "scene_salines_gages_oeil_a_b.png": {
+   "taille": 7141,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "04054089",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
   },
   "scene_salines_guerite_a_b.png": {
    "taille": 19186,
@@ -3223,6 +3370,20 @@
    "recent": true,
    "ajoute": "2026-09-18T09:24:43+00:00"
   },
+  "scene_salines_pesee_a_d.png": {
+   "taille": 26172,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "6027e02d",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
+  "scene_salines_puits_a_b.png": {
+   "taille": 14594,
+   "modifie": "2026-09-19T22:52:53Z",
+   "hash": "42746cc9",
+   "recent": true,
+   "ajoute": "2026-09-20T00:51:33+02:00"
+  },
   "scene_salines_quai_de_l_ile_a_a.png": {
    "taille": 23266,
    "modifie": "2026-09-14T09:26:25Z",
@@ -3248,7 +3409,7 @@
    "taille": 13719,
    "modifie": "2026-09-16T07:08:40Z",
    "hash": "3c1205d4",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-16T07:19:26+00:00"
   },
   "scene_salines_rues_qui_marchent_a_b.png": {
@@ -3276,7 +3437,7 @@
    "taille": 10441,
    "modifie": "2026-09-16T07:08:40Z",
    "hash": "937458e9",
-   "recent": true,
+   "recent": false,
    "ajoute": "2026-09-16T07:19:26+00:00"
   },
   "scene_salines_statue_inscription_a_v4_c.png": {

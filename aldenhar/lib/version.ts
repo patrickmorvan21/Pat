@@ -233,5 +233,12 @@
  *           des familles si un Serment a déjà été trahi). Le Serment reste
  *           imposé : tout finit au muret. + 14 vignettes de vie du village
  *           sur les liaisons intérieures, dont deux qui dépendent du Serment.
+ *   1.157.0 — Lot Drive du 19/09 (23 fichiers, commit de92c2b) : bestiaire du
+ *           chantier des Salines câblé — 21 images regardées avant câblage
+ *           (règle du moulin ailé), 2 rejetées/signalées (les Rats, le Petit
+ *           Porteur) plutôt que câblées à l'aveugle. + correctif d'un bug
+ *           structurel dans l'affichage différé des images (`Choice.
+ *           illustration` ne s'affichait jamais quand la conséquence tenait
+ *           sur un seul écran combiné).
  */
-export const APP_VERSION = "1.156.0";
+export const APP_VERSION = "1.157.0";

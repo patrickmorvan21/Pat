@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-19T20:58:26Z",
- "commit": "f9e9dc2",
+ "genere": "2026-09-19T23:29:06Z",
+ "commit": "de92c2b",
  "zones": [
   {
    "id": "landes",
@@ -7977,7 +7977,7 @@
     "fichier": "scene_salines_rive_haute_a_v6_c.png",
     "hash": "3c1205d4",
     "taille": 13719,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8121,7 +8121,7 @@
     "fichier": "scene_salines_file_a_v6_c.png",
     "hash": "e54e39e6",
     "taille": 10246,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8273,7 +8273,7 @@
     "fichier": "scene_salines_champ_des_sillages_a_v6_c.png",
     "hash": "235b4abc",
     "taille": 11605,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8357,7 +8357,7 @@
     "fichier": "monstre_salines_gisants_a_v6_a.png",
     "hash": "975d53da",
     "taille": 22404,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8416,7 +8416,7 @@
     "fichier": "scene_salines_barge_echouee_a_v6_c.png",
     "hash": "4ee23f40",
     "taille": 5707,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8487,7 +8487,7 @@
     "fichier": "scene_salines_barge_pont_a_v6_a.png",
     "hash": "7b08d901",
     "taille": 12499,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8538,7 +8538,7 @@
     "fichier": "scene_salines_statue_a_v6_a.png",
     "hash": "937458e9",
     "taille": 10441,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -8715,7 +8715,7 @@
     "fichier": "scene_salines_bouche_dent_a_v5_a.png",
     "hash": "7873b465",
     "taille": 7118,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10172,9 +10172,9 @@
    "suite": "pesee-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_salines_placeholder_a.png",
-    "hash": "6aad2dbb",
-    "taille": 95106,
+    "fichier": "scene_salines_pesee_a_d.png",
+    "hash": "6027e02d",
+    "taille": 26172,
     "recent": true,
     "existe": true,
     "statut": "dediee",
@@ -10338,9 +10338,9 @@
    "suite": "puits-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_salines_placeholder_a.png",
-    "hash": "6aad2dbb",
-    "taille": 95106,
+    "fichier": "scene_salines_puits_a_b.png",
+    "hash": "42746cc9",
+    "taille": 14594,
     "recent": true,
     "existe": true,
     "statut": "dediee",
@@ -10496,9 +10496,9 @@
    "suite": "dortoir-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_salines_placeholder_a.png",
-    "hash": "6aad2dbb",
-    "taille": 95106,
+    "fichier": "scene_salines_dortoir_a_c.png",
+    "hash": "dd69334b",
+    "taille": 19276,
     "recent": true,
     "existe": true,
     "statut": "dediee",
@@ -10640,9 +10640,9 @@
    "suite": "forge-a-grattoirs-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_salines_placeholder_a.png",
-    "hash": "6aad2dbb",
-    "taille": 95106,
+    "fichier": "scene_salines_forge_a_b.png",
+    "hash": "62e0de87",
+    "taille": 22214,
     "recent": true,
     "existe": true,
     "statut": "dediee",
@@ -10702,9 +10702,9 @@
    "pointsInteret": [],
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_salines_placeholder_a.png",
-    "hash": "6aad2dbb",
-    "taille": 95106,
+    "fichier": "monstre_salines_sauniers_a_d.png",
+    "hash": "e651c60e",
+    "taille": 25347,
     "recent": true,
     "existe": true,
     "statut": "dediee",
@@ -10746,16 +10746,25 @@
      "id": "aller-a-l-aiguillage",
      "label": "Aller au levier",
      "type": "passif",
-     "consequence": "Tu longes les rails jusqu'à l'aiguille. Le levier est pris dans le sel jusqu'au genou, et sa tête porte le même carré de fer que tous les mécanismes des Passeurs. L'embranchement file vers le bâtiment fermé. Les rails y entrent par une porte sans battant."
+     "consequence": "Tu longes les rails jusqu'à l'aiguille. Le levier est pris dans le sel jusqu'au genou, et sa tête porte le même carré de fer que tous les mécanismes des Passeurs. L'embranchement file vers le bâtiment fermé. Les rails y entrent par une porte sans battant.",
+     "image": {
+      "fichier": "scene_salines_aiguillage_a_b.png",
+      "hash": "9588be33",
+      "taille": 13898,
+      "recent": true,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     }
    ],
    "pointsInteret": [],
    "suite": "cour-aux-rails-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_salines_placeholder_a.png",
-    "hash": "6aad2dbb",
-    "taille": 95106,
+    "fichier": "scene_salines_cour_rails_a_a.png",
+    "hash": "ee1e2185",
+    "taille": 15732,
     "recent": true,
     "existe": true,
     "statut": "dediee",
@@ -10875,9 +10884,9 @@
    "suite": "salle-des-gages-2",
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_salines_placeholder_a.png",
-    "hash": "6aad2dbb",
-    "taille": 95106,
+    "fichier": "scene_salines_gages_a_d.png",
+    "hash": "50481311",
+    "taille": 19166,
     "recent": true,
     "existe": true,
     "statut": "dediee",
@@ -10930,9 +10939,9 @@
    "pointsInteret": [],
    "zone": "salines",
    "image": {
-    "fichier": "scene_salines_salines_placeholder_a.png",
-    "hash": "6aad2dbb",
-    "taille": 95106,
+    "fichier": "scene_salines_gages_oeil_a_b.png",
+    "hash": "04054089",
+    "taille": 7141,
     "recent": true,
     "existe": true,
     "statut": "dediee",
@@ -10975,7 +10984,16 @@
       "echec": "Tu comptes trop fort, il perd le fil. La craie casse. Il te regarde comme on regarde un sac qu'on n'a pas pesé, et recommence depuis le premier — à voix plus basse, en te tournant le dos.",
       "funeste": "1 naturel. Tu comptes avec lui, et arrivé à la fin, il te compte aussi. Un trait de craie sur ta manche. « Trois cent deux. » Il recommence, et cette fois tu es dans le compte. ♦ −2"
      },
-     "nature": "social"
+     "nature": "social",
+     "image": {
+      "fichier": "monstre_salines_compteur_a_d.png",
+      "hash": "5cdd3a80",
+      "taille": 25817,
+      "recent": true,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "lui-dire-qui-manque",
@@ -10986,7 +11004,16 @@
      "exigeDecouverte": "d.lettre_passeur",
      "prendLaPlaceDe": [
       "aider-a-compter"
-     ]
+     ],
+     "image": {
+      "fichier": "monstre_salines_compteur_a_d.png",
+      "hash": "5cdd3a80",
+      "taille": 25817,
+      "recent": true,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "ecouter-le-fond",
@@ -11254,9 +11281,9 @@
    "adversaireNom": "L'Ensacheur",
    "combat": true,
    "image": {
-    "fichier": "scene_salines_salines_placeholder_a.png",
-    "hash": "6aad2dbb",
-    "taille": 95106,
+    "fichier": "monstre_salines_ensacheur_a_b.png",
+    "hash": "a3d3b08e",
+    "taille": 32177,
     "recent": true,
     "existe": true,
     "statut": "dediee",
@@ -11327,9 +11354,9 @@
    "adversaireNom": "Le Contremaître",
    "combat": true,
    "image": {
-    "fichier": "scene_salines_salines_placeholder_a.png",
-    "hash": "6aad2dbb",
-    "taille": 95106,
+    "fichier": "monstre_salines_contremaitre_a_c.png",
+    "hash": "f30d9dc6",
+    "taille": 27209,
     "recent": true,
     "existe": true,
     "statut": "dediee",
@@ -11398,9 +11425,9 @@
    "adversaireNom": "La Mouchée blanche",
    "combat": true,
    "image": {
-    "fichier": "scene_salines_salines_placeholder_a.png",
-    "hash": "6aad2dbb",
-    "taille": 95106,
+    "fichier": "monstre_salines_mouchee_a_b.png",
+    "hash": "24f5d6d6",
+    "taille": 20428,
     "recent": true,
     "existe": true,
     "statut": "dediee",
@@ -11476,9 +11503,9 @@
    },
    "combat": true,
    "image": {
-    "fichier": "scene_salines_salines_placeholder_a.png",
-    "hash": "6aad2dbb",
-    "taille": 95106,
+    "fichier": "monstre_salines_dormeur_a_d.png",
+    "hash": "cd289fde",
+    "taille": 8397,
     "recent": true,
     "existe": true,
     "statut": "dediee",
@@ -11531,9 +11558,9 @@
    ],
    "pointsInteret": [],
    "image": {
-    "fichier": "scene_salines_salines_placeholder_a.png",
-    "hash": "6aad2dbb",
-    "taille": 95106,
+    "fichier": "monstre_salines_chaine_bras_a_d.png",
+    "hash": "8d84987e",
+    "taille": 15329,
     "recent": true,
     "existe": true,
     "statut": "dediee",
@@ -12815,9 +12842,25 @@
    "fichier": "monstre_salines_heron_a_v6_a.png",
    "hash": "f40578c2",
    "taille": 15995,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "salines_heron_a"
+  },
+  {
+   "fichier": "monstre_salines_petit_porteur_a_b.png",
+   "hash": "83cedbcc",
+   "taille": 29176,
+   "recent": true,
+   "groupe": "autre",
+   "racine": "salines_petit_porteur"
+  },
+  {
+   "fichier": "monstre_salines_rats_a_c.png",
+   "hash": "ac9bd97b",
+   "taille": 28408,
+   "recent": true,
+   "groupe": "autre",
+   "racine": "salines_rats"
   },
   {
    "fichier": "monstre_sonneur_sans_cloche_d.png",
@@ -15428,10 +15471,10 @@
   "scenes": 164,
   "pointsInteret": 0,
   "choix": 496,
-  "illustrations": 501,
+  "illustrations": 524,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 232,
+  "reserve": 234,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,
@@ -15440,7 +15483,7 @@
   "besoins": 0,
   "transitions": 64,
   "ecransDeMarche": 11,
-  "interactions": 35,
+  "interactions": 38,
   "aRefaire": 18,
   "familiarite": 34
  }
