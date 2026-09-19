@@ -43,7 +43,7 @@
     "comptes_annonces": {
       "lieux": 30,
       "obligatoires": 7,
-      "creatures": 16,
+      "creatures": 20,
       "objets": 14,
       "fragments": 6,
       "environnements": 4
@@ -94,7 +94,9 @@
         "PAS de « système de comptes » pour le Percepteur (Patrick : « je veux autre chose ») : il tient UN JETON, un objet qui change de mains — rendu sur le plateau de la Pesée, le prix est réglé ; gardé, le sel fait le poids (Encroûté +1). Aucun compteur.",
         "Le Sac de sel se prend à la Pesée (poids contre poids), pas à la Salle des Gages ; les quatre autres gages restent à la Salle (gourde, manteau, sandales ; l'Œil derrière ton nom).",
         "Le mini-jeu « puiser » du Puits n'a pas de prototype validé : jet d'INSTINCT en attendant. Le tracé de la Forge reprend le moteur du Tracé de la Chapelle (fond `minijeu_forge_enclume_a` à produire).",
-        "Le Grand Saunier de l'image se DRESSE (tête en sac côtelé, deux bras) — la prose suit l'image, pas la fiche « bas, large, sur des pattes courtes »."
+        "Le Grand Saunier de l'image se DRESSE (tête en sac côtelé, deux bras) — la prose suit l'image, pas la fiche « bas, large, sur des pattes courtes ».",
+        "LE BESTIAIRE DU CHANTIER (validé Patrick : « ça manque de bestiaires et de rencontres dans cette zone ») : huit rencontres — l'Ensacheur, le Contremaître, la Mouchée blanche (hostiles, déroutage d'une Croisée du chantier, une fois par vie, au plus une entre deux lieux ; la Mouchée ne vient qu'à qui est blessé), la Chaîne des bras et le Petit Porteur (non hostiles, première Croisée), le Dormeur (variante du Dortoir quand on a dormi), le Compteur (Entrepôt) et la Saigneuse (Puits). Tous les combats portent leur option préparée ; aucun écran ne dépasse trois actions.",
+        "Le Petit Porteur pose un ÉTAT (PORTEUR) : il boit ton eau (Soif un cran plus vite) et se paie à l'Entrepôt — « Lui donner le petit » prend la place de « Se débattre » face au Grand Saunier. La loi de substitution, jouée."
       ]
     },
     "images": {
@@ -1350,6 +1352,66 @@
       },
       "illustration": null,
       "portrait_requis": true
+    },
+    {
+      "id": "contremaitre",
+      "nom": "Le Contremaître",
+      "note": "un Encroûté planté au milieu d'une allée, une cliquette de bois : il assigne un sac et tient un compte dans lequel tu es. Porter le sac (sûr, +1 sel) apprend comment ELLE range — lu à l'Entrepôt. Qui a lu la lettre du Passeur peut lui dire de quel côté de la balance il compte. Déroutage d'une Croisée du chantier (Scene.tsx), une fois par vie.",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true
+    },
+    {
+      "id": "chaine_des_bras",
+      "nom": "La Chaîne des bras",
+      "note": "une vingtaine d'Encroûtés à deux pas les uns des autres, qui se passent les sacs de main en main sans bouger les pieds. Se glisser dedans = être passé comme un sac (un lieu de moins, `sauteEtape`) ; un sac se prend au vol ; on passe sous les bras. Non hostile. Déroutage de la première Croisée du chantier.",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true
+    },
+    {
+      "id": "petit_porteur",
+      "nom": "Le Petit Porteur",
+      "note": "un enfant du chantier, un sac plus gros que lui, qui se met à ton pas parce que s'il s'arrête il reste. Le laisser suivre pose PORTEUR (lib/etats.ts) : il porte, et il boit ton eau (la Soif monte un cran plus vite). Le prix se paie à l'Entrepôt : « Lui donner le petit » — la loi de substitution à hauteur d'enfant. Déroutage de la première Croisée du chantier.",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true
+    },
+    {
+      "id": "compteur",
+      "nom": "Le Compteur",
+      "note": "assis devant la première pile de l'Entrepôt, il compte les sacs à la craie et recommence, parce qu'il en manque toujours un. Qui a lu la lettre du Passeur sait LEQUEL (« celui qui manque est un Passeur ») : le compte est faux depuis le début (d.compte_faux). Vit dans l'écran `entrepot`, sur un choix.",
+      "lieu_attache": "entrepot",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true
     }
   ],
   "creatures": [
@@ -1692,6 +1754,70 @@
         "recontextualisation": null
       },
       "illustration": "assets/monstre_salines_percepteur_a_b.png",
+      "portrait_requis": true
+    },
+    {
+      "id": "ensacheur",
+      "nom": "L'Ensacheur",
+      "note": "une forme de sacs cousus qui ensache ce qui passe dans son allée — pour le peser. Préparation : lui tendre le Sac de sel (il veut du poids, `laisseObjet`). Reculer est sûr et certain : l'allée reste à lui (route fermée « ensacheur » à la Croisée suivante). Déroutage d'une Croisée du chantier, une fois par vie.",
+      "lieux": [],
+      "hostile": true,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true
+    },
+    {
+      "id": "mouchee_blanche",
+      "nom": "La Mouchée blanche",
+      "note": "une mouche de sel grosse comme le pouce qui pond dans ce qui est ouvert — elle ne vient qu'à qui est BLESSÉ (ENTAILLÉ). Préparation : rabattre le Manteau de saunier. Courir est sûr et assoiffe. Déroutage prioritaire d'une Croisée du chantier.",
+      "lieux": [],
+      "hostile": true,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true
+    },
+    {
+      "id": "dormeur",
+      "nom": "Le Dormeur",
+      "note": "quand on a dormi au Dortoir, on ne se réveille pas avec les Rats : on se réveille avec quelqu'un dans son creux — un homme de sel lové contre ton dos, qui dort. Préparation : l'Œil de Cristallin lit son nom sous le sel. Lui laisser le creux : +1 sel. Variante de `dortoir-2` (remplace, fait `dormi:dortoir`).",
+      "lieux": [
+        "dortoir"
+      ],
+      "hostile": true,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true
+    },
+    {
+      "id": "saigneuse",
+      "nom": "La Saigneuse",
+      "note": "accroupie sur la margelle du Puits, une lame courbe : elle ôte le sel des gens et boit ce qu'elle en tire. Tendre les bras : DEUX paliers d'Encroûté d'un coup sur la réussite — le seul remède de cette taille dans la zone ; raté, c'est la peau qui vient, pas la croûte. Vit dans l'écran `puits`, sur un choix.",
+      "lieux": [
+        "puits"
+      ],
+      "hostile": true,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
       "portrait_requis": true
     }
   ],

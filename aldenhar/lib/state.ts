@@ -159,6 +159,11 @@ export type TraversalState = {
       reprise comme `verSillage`. Jamais les deux à la fois. */
   verAppele?: boolean;
   verDessous?: boolean;
+  /** LE BESTIAIRE DU CHANTIER (19/09) : nombre de lieux visités au moment
+      du dernier déroutage d'une Croisée des Salines — au plus UNE rencontre
+      entre deux lieux, sinon la Croisée qui suit la rencontre en tirerait
+      une autre. Comparé à `visited.length`, jamais persisté ailleurs. */
+  derouteA?: number;
   /** Radicaux de lieu déjà crédités dans `lieuxEngages` cette traversée.
       Empêche un lieu à rencontre optionnelle de compter trois fois — voir
       le docblock de `RunState.lieuxEngages`. */
@@ -822,8 +827,14 @@ export function loadRun(): RunState {
             echosObjet: Array.isArray(p.echosObjet) ? p.echosObjet : [],
             vus: p.vus && typeof p.vus === "object" ? p.vus : {},
             routeFermeeEnAttente: p.routeFermeeEnAttente === true,
+            // ⚠️ Liste ALIGNÉE sur `RouteFermeeCause` (19/09) : « recousu »
+            // n'y était pas — sa cause se perdait au rechargement et la
+            // Croisée servait la ligne de l'échec dur à la place.
             routeFermeeCause:
-              p.routeFermeeCause === "meute" || p.routeFermeeCause === "bete" ? p.routeFermeeCause : p.routeFermeeCause === "echec" ? "echec" : undefined,
+              p.routeFermeeCause === "meute" || p.routeFermeeCause === "bete" ||
+              p.routeFermeeCause === "recousu" || p.routeFermeeCause === "ensacheur"
+                ? p.routeFermeeCause
+                : p.routeFermeeCause === "echec" ? "echec" : undefined,
             menace: p.menace && typeof p.menace === "object" ? p.menace : null,
       lignesOuvertes: Number(p.lignesOuvertes) || 0,
             engageIci: p.engageIci === true,

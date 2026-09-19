@@ -174,7 +174,10 @@ def pools() -> list[dict]:
                 # jet gardée par dansLeVillage + pose différée à l'arrivée,
                 # Scene.tsx) : sa manifestation est couverte par ce garde-là.
                 # Les autres états se posent n'importe où.
-                "garde": {"village", "gens"} if eid == "fixe" else {"partout"},
+                # Le PORTEUR (19/09) ne se pose qu'au chantier des Salines
+                # (déroutage de Croisée, étape 2) : site bâti, gens — même
+                # garde que la zone. Ses réactions n'ont pas de `reactionsPartout`.
+                "garde": {"village", "gens"} if eid in ("fixe", "porteur") else {"partout"},
                 "textes": ["".join(re.findall(r'"((?:[^"\\]|\\.)*)"', mm.group(1)))],
             })
         reactions = chaines_de_tableau(bloc_tableau(bloc, "reactions:"))
@@ -362,6 +365,9 @@ def pools() -> list[dict]:
         ("bete", {"lande"}),
         # Le Recousu ne revient qu'en pleine lande (déroutage de marche).
         ("recousu", {"lande"}),
+        # L'Ensacheur (19/09) ne barre qu'une Croisée du chantier des Salines
+        # — un site bâti où l'on croise des gens : même garde que la zone.
+        ("ensacheur", {"village", "gens"}),
     ):
         for i, t in enumerate(chaines_de_tableau(bloc_tableau(seg_rf, cause + ":"))):
             out.append({"pool": f"route fermée {cause} {i}", "garde": garde, "textes": [t]})

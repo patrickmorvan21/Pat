@@ -981,6 +981,14 @@ def lire_choix(bloc: str) -> list[dict]:
         v = texte_de(c, "uneFoisParVie")
         if v:
             ch["uneFoisParVie"] = v
+        # LE BESTIAIRE DU CHANTIER (19/09) : une nuit qui pose un fait de run
+        # (lu par la variante du Dormeur) et l'acte qui lève un état (donner
+        # le Petit Porteur). Même piège que `sansNuit` : un champ absent d'ici
+        # n'atteint ni le Graphe ni la réplique.
+        for champ, cle in (("poseFait", "poseFait"), ("leveEtat", "leveEtat")):
+            v = texte_de(c, champ)
+            if v:
+                ch[cle] = v
         ms = re.search(r'requiresStat:\s*\{\s*stat:\s*"([A-Z]+)",\s*min:\s*(\d+)', c)
         if ms:
             ch["exigeStat"] = {"stat": ms.group(1), "min": int(ms.group(2))}
@@ -1699,6 +1707,12 @@ def main() -> int:
             s["acces"] = "portillon de la Halte (Serment tenu)"
         elif s["id"] == "troupeau-sans-berger":
             s["acces"] = "déroutage en marchant (boucle est)"
+        elif s["id"] in ("ensacheur", "contremaitre", "mouchee-blanche",
+                         "chaine-des-bras", "petit-porteur"):
+            # LE BESTIAIRE DU CHANTIER (19/09) : servis par déroutage d'une
+            # Croisée du troisième environnement des Salines (Scene.tsx,
+            # branche des étages) — jamais par le pool, jamais un lien.
+            s["acces"] = "déroutage d'une Croisée du chantier (Salines)"
         elif s["id"] == "menace-retour-recousu":
             # Personne ne l'a contourné : il vient de la comptabilité du
             # Domaine (11/09). Le dire ici, sinon le Graphe affirme un

@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-19T15:52:05Z",
- "commit": "dffc9b1",
+ "genere": "2026-09-19T20:58:26Z",
+ "commit": "f9e9dc2",
  "zones": [
   {
    "id": "landes",
@@ -10175,7 +10175,7 @@
     "fichier": "scene_salines_salines_placeholder_a.png",
     "hash": "6aad2dbb",
     "taille": 95106,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10291,7 +10291,8 @@
    "id": "puits",
    "narration": [
     "Entre deux murs de sacs, une margelle de pierre ronde et, au-dessus, une potence avec sa corde et son seau. Le seul endroit de la zone qui sente autre chose que le sel : l'eau. Elle est loin, en bas — on l'entend, on ne la voit pas.",
-    "Sur la potence, un nid : des brindilles blanches de sel, et dedans, des oiseaux qui ne bougent pas encore."
+    "Sur la potence, un nid : des brindilles blanches de sel, et dedans, des oiseaux qui ne bougent pas encore.",
+    "Sur la margelle, accroupie, une femme qui n'est plus qu'une peau et une lame courbe : la Saigneuse. Elle ôte le sel des gens, ici. Elle prend un peu de ce qu'il y a dessous."
    ],
    "choix": [
     {
@@ -10308,14 +10309,22 @@
       "funeste": "1 naturel. Le seau accroche, tu tires, et la potence entière grince. Il remonte vide. Le nid, lui, est réveillé — et tu as les deux mains prises par la corde. ♦ −2"
      },
      "nature": "exploration",
-     "soif": -3,
-     "baisseEncroute": true
+     "soif": -3
     },
     {
-     "id": "boire-ce-qui-suinte",
-     "label": "Lécher la margelle humide",
-     "type": "passif",
-     "consequence": "La pierre suinte, côté ombre. Tu y colles la bouche. Ça ne désaltère pas : ça rappelle ce que c'est. Les oiseaux du nid tournent la tête ensemble.",
+     "id": "tendre-les-bras-a-la-saigneuse",
+     "label": "Tendre les bras à la Saigneuse",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu tends les bras. La lame passe sous la croûte comme sous une écorce, et le sel tombe en deux plaques entières — les manches, les épaules, tout. Elle les ramasse, les lèche, et te tend un bol de ce qu'elle en a tiré. Tu bois. Salé. Vivant.",
+      "reussite": "Elle racle. Ça brûle, et le sel tombe en plaques. Elle en lèche une, te regarde, et te laisse boire à sa gourde. Tu es plus léger de la moitié.",
+      "echec": "Elle racle trop profond, et c'est la peau qui vient, pas la croûte. Elle lèche la lame, essuie, recommence plus bas — le sel tient. Tu retires les bras avant qu'elle insiste.",
+      "funeste": "1 naturel. La lame glisse et emporte une bande de peau avec le sel. Elle la regarde, la plie, et la range dans un pli de sa robe. « Celle-là est à moi. » Le sel, lui, est resté. ♦ −2"
+     },
+     "nature": "physique",
      "soif": -1
     },
     {
@@ -10332,7 +10341,7 @@
     "fichier": "scene_salines_salines_placeholder_a.png",
     "hash": "6aad2dbb",
     "taille": 95106,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10441,7 +10450,8 @@
       "citable"
      ],
      "repos": true,
-     "monteEncroute": true
+     "monteEncroute": true,
+     "poseFait": "dormi:dortoir"
     },
     {
      "id": "dormir-sandales",
@@ -10453,7 +10463,8 @@
      "repos": true,
      "prendLaPlaceDe": [
       "dormir-dortoir"
-     ]
+     ],
+     "poseFait": "dormi:dortoir"
     },
     {
      "id": "lire-la-lettre-lanterne",
@@ -10488,7 +10499,7 @@
     "fichier": "scene_salines_salines_placeholder_a.png",
     "hash": "6aad2dbb",
     "taille": 95106,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10566,7 +10577,7 @@
     "fichier": "scene_salines_salines_placeholder_a.png",
     "hash": "6aad2dbb",
     "taille": 95106,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10632,7 +10643,7 @@
     "fichier": "scene_salines_salines_placeholder_a.png",
     "hash": "6aad2dbb",
     "taille": 95106,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10669,8 +10680,7 @@
       "echec": "Tu tiens, puis un frémissement, et une lame prend la peau avec le sel — un long ruban sur l'avant-bras. Ils s'écartent, indifférents. Tu saignes dans une manche propre.",
       "funeste": "1 naturel. Tu bouges. La lame qui raclait ta cheville entre dans la cheville. Tu cries, tu bouges encore, et ils raclent plus vite ce qui bouge. Tu t'arraches à quatre pattes. ♦ −2"
      },
-     "nature": "physique",
-     "baisseEncroute": true
+     "nature": "physique"
     },
     {
      "id": "ecarter-au-grattoir",
@@ -10695,7 +10705,7 @@
     "fichier": "scene_salines_salines_placeholder_a.png",
     "hash": "6aad2dbb",
     "taille": 95106,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10746,7 +10756,7 @@
     "fichier": "scene_salines_salines_placeholder_a.png",
     "hash": "6aad2dbb",
     "taille": 95106,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10868,7 +10878,7 @@
     "fichier": "scene_salines_salines_placeholder_a.png",
     "hash": "6aad2dbb",
     "taille": 95106,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10923,7 +10933,7 @@
     "fichier": "scene_salines_salines_placeholder_a.png",
     "hash": "6aad2dbb",
     "taille": 95106,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10943,20 +10953,40 @@
    "id": "entrepot",
    "narration": [
     "Un bâtiment sans porte, et dedans des allées entre des murs de sacs qui montent jusqu'aux poutres. Les rails y entrent par le milieu et s'enfoncent dans le noir. Il fait frais. Ça sent le sel mouillé, et au fond, un bruit régulier — quelque chose de large qui racle le sol et le repose.",
-    "Le long des allées, à intervalles réguliers, des statues de Cristallins debout, rangées par taille. Les petites d'abord."
+    "Le long des allées, à intervalles réguliers, des statues de Cristallins debout, rangées par taille. Devant la première pile, un homme assis compte les sacs à voix basse, une craie à la main, et recommence."
    ],
    "choix": [
     {
      "id": "suivre-les-rails-entrepot",
      "label": "Suivre les rails vers le fond",
      "type": "passif",
-     "consequence": "Tu marches entre les rails. Les statues défilent de chaque côté, de plus en plus hautes, et le bruit de raclage grandit avec elles. Au bout de l'allée, le noir bouge."
+     "consequence": "Tu passes derrière l'homme qui compte, entre les rails. Les statues défilent de chaque côté, de plus en plus hautes, et le bruit de raclage grandit avec elles. Au bout de l'allée, le noir bouge."
     },
     {
-     "id": "regarder-une-pile",
-     "label": "Regarder une pile de sacs",
+     "id": "aider-a-compter",
+     "label": "L'aider à compter",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu comptes avec lui, à voix basse, sac par sac. Trois cents. Il pose la craie. « Trois cents sacs. Trois cent une statues. » Il te regarde. « Il y en a une qui est venue sans sac. » Il ne dit pas laquelle. Il recommence.",
+      "reussite": "Tu comptes avec lui. Ça va plus vite à deux. Au bout : « Il en manque toujours un. Toujours le même. » Il ne dit pas lequel. Il recommence.",
+      "echec": "Tu comptes trop fort, il perd le fil. La craie casse. Il te regarde comme on regarde un sac qu'on n'a pas pesé, et recommence depuis le premier — à voix plus basse, en te tournant le dos.",
+      "funeste": "1 naturel. Tu comptes avec lui, et arrivé à la fin, il te compte aussi. Un trait de craie sur ta manche. « Trois cent deux. » Il recommence, et cette fois tu es dans le compte. ♦ −2"
+     },
+     "nature": "social"
+    },
+    {
+     "id": "lui-dire-qui-manque",
+     "label": "Lui dire qui manque",
      "type": "passif",
-     "consequence": "Les sacs sont cousus, pesés, marqués du même signe. Tu en soulèves un coin : du sel fin, blanc — et dedans, quelque chose de dur, rond, qui roule sous les doigts. Un œil. Tu reposes le sac. Ils sont tous du même poids, ceux-là."
+     "consequence": "« Celui qui manque est un Passeur. Il est au Dortoir, sous un matelas, avec une lettre. » L'homme pose la craie. Il regarde la première pile, la deuxième, toutes. « Alors le compte est faux. Depuis le début. » Il ne recommence pas. C'est la première fois.",
+     "donneDecouverte": "d.compte_faux",
+     "exigeDecouverte": "d.lettre_passeur",
+     "prendLaPlaceDe": [
+      "aider-a-compter"
+     ]
     },
     {
      "id": "ecouter-le-fond",
@@ -11004,6 +11034,17 @@
      "consequence": "Tu lèves l'œil de Cristallin devant le tien. Les rangées prennent des noms — chaque statue en porte un, gravé sous le sel, lisible seulement comme ça. Et dans la rangée des tailles moyennes, un espace vide, exactement large comme tes épaules. Elle ne l'a pas encore rempli. Elle a la place.",
      "donneDecouverte": "d.ta_rangee",
      "exigeObjet": "oeil-de-cristallin",
+     "prendLaPlaceDe": [
+      "regarder-les-rangees",
+      "chercher-ta-rangee"
+     ]
+    },
+    {
+     "id": "chercher-ta-rangee",
+     "label": "Chercher la rangée qui t'attend",
+     "type": "passif",
+     "consequence": "Tu sais comment on range — tu l'as porté toi-même : par taille, une place vide par rangée. Tu vas droit à la rangée des tailles moyennes. La place vide est là, entre deux qui ont tes épaules. Elle n'a pas encore été raclée. Ça vient.",
+     "exigeSavoir": "savoir_rangement",
      "prendLaPlaceDe": [
       "regarder-les-rangees"
      ]
@@ -11103,6 +11144,30 @@
      "horsDePortee": true
     },
     {
+     "id": "lui-donner-le-petit",
+     "label": "Lui donner le petit",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu tends le bras vers le bas, et le petit lève le sien — il sait ce qu'on fait, ici. Elle le prend à ta place, le mesure, et le pose dans la rangée des petits, avec son sac. Elle te lâche. Tu sors par les rails. Il ne crie pas. Il n'a jamais crié.",
+      "reussite": "Tu tends la main vers lui. Elle le prend, le mesure, le range. Elle t'oublie. Tu sors. Le sac est resté à ses pieds, dans la rangée.",
+      "echec": "Tu tends la main, et elle prend le petit — et te garde quand même le temps de le ranger. Puis elle te pose, sans te mesurer : elle a eu ce qu'elle voulait. Tu sors. Il est dans la rangée des petits, debout, son sac contre lui.",
+      "funeste": "1 naturel. Tu tends la main. Elle prend le petit, et elle te range à côté de lui — dans la même rangée, parce que vous êtes arrivés ensemble. Tu t'arraches au sel avant qu'il prenne. Lui, non. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeEtat": "porteur",
+     "tags": [
+      "citable"
+     ],
+     "horsDePortee": true,
+     "prendLaPlaceDe": [
+      "se-debattre"
+     ],
+     "leveEtat": "porteur"
+    },
+    {
      "id": "se-laisser-mesurer",
      "label": "Rester immobile, se laisser mesurer",
      "type": "passif",
@@ -11135,6 +11200,409 @@
    ]
   },
   {
+   "id": "ensacheur",
+   "narration": [
+    "Un sac vide tombe du haut des piles et s'ouvre à tes pieds comme une bouche — de la toile épaisse, qui sent le sel. Derrière, quelqu'un tient la ficelle. Une forme haute, faite de sacs cousus les uns aux autres, avance dans l'allée sans bruit, une main de toile tendue. Elle ne te veut pas mort. Elle te veut pesé."
+   ],
+   "choix": [
+    {
+     "id": "s-arracher-de-la-toile",
+     "label": "S'arracher de la toile",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu bondis en arrière avant que la toile se referme, tu attrapes la ficelle et tu tires. Le sac se retourne sur lui — sur sa tête cousue. Il tâtonne. Tu passes entre ses jambes de toile pendant qu'il se dépouille.",
+      "reussite": "La toile monte aux genoux et tu la déchires du talon, deux fois. Il tire, le sac se vide de toi. Tu passes en courant. Derrière, il recoud déjà.",
+      "echec": "La toile se referme aux hanches et il tire. Tu tombes. Il te soulève, te pèse d'un balancement, et te repose : trop léger. Tu sors de la toile avec le sel de la toile dans les plaies.",
+      "funeste": "1 naturel. Le sac se ferme au cou. Il te porte jusqu'aux piles, te pèse, te marque d'une croix de sel sur le ventre, et te jette. Tu rampes hors de la toile. La croix ne part pas. ♦ −2"
+     },
+     "nature": "physique",
+     "masqueSi": {
+      "objet": "sac-de-sel"
+     }
+    },
+    {
+     "id": "tendre-le-sac-de-sel",
+     "label": "Lui tendre ton sac de sel",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu lui tends ton sac de sel, plein, à bout de bras. La forme s'arrête. Elle le pèse d'un balancement et l'enfile sur elle — un sac de plus dans la couture. Elle repart vers les piles sans te regarder. C'était du poids qu'elle voulait.",
+      "reussite": "Tu tends le sac. Elle le pèse, le garde, et se détourne. Tu n'as plus de sel : tu as le passage.",
+      "echec": "Tu tends le sac, elle le prend — et elle te pèse aussi, par habitude, sans te toucher. Puis elle repart avec ton sac cousu au sien. Tu es passé. Plus léger.",
+      "funeste": "1 naturel. Le sac t'échappe et crève au sol. Elle ramasse tout, grain par grain, dans sa toile — et t'oublie le temps qu'il faut. Tu passes pendant qu'elle compte. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeObjet": "sac-de-sel",
+     "laisseObjet": "sac-de-sel",
+     "horsDePortee": true
+    },
+    {
+     "id": "reculer-hors-de-portee",
+     "label": "Reculer hors de portée",
+     "type": "passif",
+     "consequence": "Tu recules jusqu'au mur de sacs, puis le long, jusqu'à ne plus voir la ficelle. Elle ne suit pas : elle garde l'allée. C'est la sienne, maintenant. Tu prendras l'autre.",
+     "fermeLaRoute": "ensacheur"
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "ensacheur",
+   "adversaireNom": "L'Ensacheur",
+   "combat": true,
+   "image": {
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
+    "recent": true,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "déroutage d'une Croisée du chantier (Salines)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "contremaitre",
+   "narration": [
+    "Un Encroûté planté au milieu de l'allée, le sel jusqu'à la poitrine, une cliquette de bois dans la seule main libre. Il la fait claquer une fois en te voyant, et désigne du menton un sac au pied du mur. « Celui-là. Aux piles. » Il ne demande pas. Il tient un compte, et tu es dedans."
+   ],
+   "choix": [
+    {
+     "id": "porter-le-sac",
+     "label": "Porter le sac jusqu'aux piles",
+     "type": "passif",
+     "consequence": "Tu le charges. Il pèse ce que pèse quelqu'un. Tu le portes jusqu'aux piles, et là tu vois comment on range : par taille, les petits devant, et dans chaque rangée une place laissée vide — pas pour ce qu'on a, pour ce qui vient. La cliquette claque une fois derrière toi. Compté. Le sel a pris tes épaules pendant que tu portais.",
+     "donneSavoir": "savoir_rangement",
+     "monteEncroute": true
+    },
+    {
+     "id": "refuser-le-sac",
+     "label": "Refuser le sac",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu passes devant lui sans toucher le sac. La cliquette claque, claque — et tu attrapes le manche et tu la casses sur ton genou. Il te regarde, les lèvres seules. Plus rien pour compter. Tu passes. Le sac reste au mur.",
+      "reussite": "Tu passes devant lui. La cliquette claque dans ton dos, deux fois, trois fois. Tu ne te retournes pas. Au bout de l'allée, elle s'arrête. Il a noté. Il n'a que ça.",
+      "echec": "Tu passes, et le manche de la cliquette te prend à la nuque, sec. Tu tombes. Il ne bouge pas — il ne peut pas — et il claque jusqu'à ce que tu te relèves. Tu sors de l'allée avec le crâne qui sonne.",
+      "funeste": "1 naturel. Tu passes, et deux formes de toile sortent des sacs derrière lui. Elles te couchent, te pèsent, et te posent au pied du mur, à côté du sac que tu n'as pas voulu. Tu le regardes longtemps. Puis tu pars sans. ♦ −2"
+     },
+     "nature": "physique",
+     "donneDecouverte": "d.lettre_passeur",
+     "masqueSi": {
+      "decouverte": "d.lettre_passeur"
+     }
+    },
+    {
+     "id": "lui-dire-ce-qu-il-pese",
+     "label": "Lui dire ce qu'il pèse",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. « Un sur deux. Ils font peser — ils ne font pas traverser. Tu comptes du mauvais côté. » La cliquette s'arrête à mi-course. Il baisse les yeux sur le sel qui lui tient les jambes, longtemps. Puis il tourne la tête vers l'allée d'en face, et tu passes par celle-ci.",
+      "reussite": "« Un sur deux. Tu le sais. » La cliquette ne claque pas. Il regarde le sac au mur comme s'il le voyait pour la première fois. Tu passes.",
+      "echec": "« Un sur deux. » Il te regarde sans comprendre — puis il comprend, et il claque plus vite, pour couvrir. Tu passes pendant qu'il compte à voix haute des chiffres qui n'existent pas.",
+      "funeste": "1 naturel. Tu le dis, et il le sait déjà. « Je sais. Aux piles. » Il claque une fois. Tu passes sans le sac, et sans avoir rien changé — pour lui, c'était déjà compté. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeDecouverte": "d.lettre_passeur",
+     "horsDePortee": true
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "contremaitre",
+   "adversaireNom": "Le Contremaître",
+   "combat": true,
+   "image": {
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
+    "recent": true,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "déroutage d'une Croisée du chantier (Salines)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "mouchee-blanche",
+   "narration": [
+    "Elle est sur la plaie avant que tu l'aies vue : une mouche de sel, blanche, grosse comme le pouce, posée sur ce qui est ouvert chez toi. Elle pond. Le sel de sa ponte prend tout de suite, tiède. D'autres arrivent du même blanc, par le haut des sacs, en file."
+   ],
+   "choix": [
+    {
+     "id": "ecraser-la-plaie",
+     "label": "Écraser la plaie sous la paume",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu écrases la première sous la paume, et la ponte avec — tu la sens crever, froide. Les autres tournent autour de ta main fermée, ne trouvent rien d'ouvert, et repartent vers les sacs. Tu gardes la paume dessus jusqu'à ce que le blanc s'éloigne.",
+      "reussite": "Tu écrases. Ça crève sous la main, et tu tiens la plaie fermée pendant que les autres cherchent. Elles ne trouvent rien. Elles repartent.",
+      "echec": "Tu écrases trop tard : la ponte a pris. Tu arraches le sel avec l'ongle, et la plaie rouvre en dessous, plus large. Les autres sentent ça. Tu pars en courant avec la main dessus.",
+      "funeste": "1 naturel. Tu écrases la mouche et tu enfonces la ponte dans la plaie. Le sel y prend racine. Tu l'arraches en plaque, et avec la plaque, ce qu'il y avait dessous. Les autres se posent où c'est rouge. ♦ −2"
+     },
+     "nature": "physique",
+     "masqueSi": {
+      "objet": "manteau-de-saunier"
+     }
+    },
+    {
+     "id": "rabattre-le-manteau",
+     "label": "Rabattre le manteau sur la plaie",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu rabats le manteau d'un geste, et la première est dedans, écrasée dans la laine. Les autres se posent sur le tissu, cherchent, ne trouvent rien qui saigne. Elles repartent en file vers les sacs. Le manteau est fait pour ça.",
+      "reussite": "Tu rabats le manteau. Elles se posent dessus, cherchent le rouge sous la laine, et ne le trouvent pas. Elles repartent.",
+      "echec": "Tu rabats le manteau trop lentement : la première a pondu. Le sel prend sous la laine, mais la laine le tient contre toi et il ne va pas plus loin. Les autres passent.",
+      "funeste": "1 naturel. Tu te prends les bras dans le manteau. Le temps de le rabattre, deux ont pondu. La laine les couvre, elles restent dessous, et tu marches avec, jusqu'à ce que le sel les tienne immobiles. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeObjet": "manteau-de-saunier",
+     "horsDePortee": true
+    },
+    {
+     "id": "courir-mouchee",
+     "label": "Courir",
+     "type": "passif",
+     "consequence": "Tu cours. Elles suivent le temps d'une allée, puis d'une autre, puis le blanc s'éloigne — elles ne suivent pas ce qui va vite. Tu t'arrêtes quand tu n'y vois plus. La bouche sèche comme du sel. Il faudra boire.",
+     "soif": 1
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "mouchee-blanche",
+   "adversaireNom": "La Mouchée blanche",
+   "combat": true,
+   "image": {
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
+    "recent": true,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "déroutage d'une Croisée du chantier (Salines)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "dortoir-dormeur",
+   "narration": [
+    "Tu te réveilles avec quelqu'un dans ton creux. Un homme, ou ce qu'il en reste : le sel l'a pris à la forme du matelas — et le matelas, cette nuit, c'était toi. Il se love contre ton dos, les bras autour, sans peser, et il dort. Le sel de son sommeil descend sur tes épaules, tiède."
+   ],
+   "choix": [
+    {
+     "id": "repousser-le-dormeur",
+     "label": "Le repousser",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu te retournes d'un bloc et tu le pousses des deux mains. Il se détache — le sel de ses bras casse net — et il roule dans le creux d'à côté, où il reprend la forme du matelas sans se réveiller. Tu te lèves. Tu es propre.",
+      "reussite": "Tu pousses. Ses bras cassent au coude, en sel, et il retombe dans le creux. Tu te lèves avec un peu de lui sur les épaules, qui tombe en marchant.",
+      "echec": "Tu pousses, et il serre. Il ne se réveille pas : il tient, comme on tient un oreiller. Tu t'arraches morceau par morceau, et le sel prend la peau avec. Tu te lèves saignant.",
+      "funeste": "1 naturel. Tu pousses, et c'est toi qui bouges : il est plus lourd que le creux. Tu passes une heure à te défaire de lui bras par bras. Quand tu te lèves, tu as sa forme sur le dos, en sel, et elle ne part pas. ♦ −2"
+     },
+     "nature": "physique",
+     "masqueSi": {
+      "objet": "oeil-de-cristallin"
+     }
+    },
+    {
+     "id": "montrer-l-oeil-au-dormeur",
+     "label": "Lui montrer l'Œil de Cristallin",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 12,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu lèves l'Œil devant son visage de sel. Un nom apparaît dessous, gravé — et il l'entend, on dirait, parce qu'il ouvre les yeux. Il te regarde. Il regarde ses bras autour de toi. Il les retire, un par un, et se recouche dans son creux, du bon côté. Tu te lèves.",
+      "reussite": "Tu lui montres l'Œil. Le nom sous le sel se lit, et ses bras se desserrent d'eux-mêmes. Il se retourne. Tu te lèves.",
+      "echec": "Tu lui montres l'Œil, et il ouvre les yeux — mais pas sur toi : sur le nom. Il le lit longtemps. Tu te dégages pendant ce temps, doucement. Il ne te retient pas.",
+      "funeste": "1 naturel. Tu lèves l'Œil, et c'est TON nom qu'il lit dessous, en te regardant. Il sourit dans le sel. Puis il te lâche, parce que ce n'est pas encore l'heure. Tu te lèves plus vite que tu ne voulais. ♦ −2"
+     },
+     "nature": "physique",
+     "exigeObjet": "oeil-de-cristallin",
+     "horsDePortee": true
+    },
+    {
+     "id": "laisser-le-creux",
+     "label": "Lui laisser le creux",
+     "type": "passif",
+     "consequence": "Tu ne bouges pas. Tu attends qu'il desserre — il desserre — et tu glisses hors des bras comme on glisse hors d'un drap. Il reprend la forme du creux, ton creux, sans se réveiller. Le sel a pris tes épaules pendant que tu attendais. Quelqu'un dormira là à ta forme.",
+     "monteEncroute": true
+    }
+   ],
+   "pointsInteret": [],
+   "adversaire": "dormeur",
+   "adversaireNom": "Le Dormeur",
+   "remplace": {
+    "scene": "dortoir-2",
+    "condition": "dormi:dortoir",
+    "si": {
+     "has": "dormi:dortoir"
+    }
+   },
+   "combat": true,
+   "image": {
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
+    "recent": true,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "variante conditionnelle",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "chaine-des-bras",
+   "narration": [
+    "L'allée est barrée par une chaîne d'Encroûtés — une vingtaine, plantés à deux pas les uns des autres, qui se passent des sacs de main en main sans un mot et sans bouger les pieds. Les sacs vont vers les piles. Les bras reviennent vides. Ça ne s'arrête pas pour toi."
+   ],
+   "choix": [
+    {
+     "id": "se-glisser-dans-la-chaine",
+     "label": "Se glisser dans la chaîne",
+     "type": "risque",
+     "stat": "INSTINCT",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Tu te plies comme un sac et tu te laisses prendre. Les mains te passent — l'une après l'autre, sans te regarder, à la vitesse des sacs — et te posent au bout de la chaîne, debout, loin dans le chantier. Personne n'a compté un sac de plus.",
+      "reussite": "Tu te laisses prendre. Les mains te passent, tiède après tiède, et te posent au bout — plus loin que tu n'aurais marché. Tu repars de là.",
+      "echec": "Tu te laisses prendre, et une main te lâche au milieu. Tu tombes entre deux Encroûtés, sous les sacs qui continuent de passer. Tu rampes jusqu'au bout de la chaîne. Tu y es. Plié.",
+      "funeste": "1 naturel. Les mains te passent, te posent — puis te reprennent, parce que tu n'es pas un sac, et te renvoient dans l'autre sens. Tu te dégages au milieu, te jettes sous les bras, et sors au bout. Tu as fait le chemin deux fois. ♦ −2"
+     },
+     "nature": "exploration",
+     "sauteEtape": true
+    },
+    {
+     "id": "prendre-un-sac-au-passage",
+     "label": "Prendre un sac au passage",
+     "type": "passif",
+     "consequence": "Tu passes sous une paire de bras et tu prends le sac au vol, entre deux mains. Personne ne le remarque : la main suivante se referme sur rien et passe rien à la suivante. Tu sors de l'allée avec un sac de sel sur l'épaule, et derrière toi, la chaîne continue de se passer du vide.",
+     "donneObjet": "sac-de-sel"
+    },
+    {
+     "id": "passer-sous-les-bras",
+     "label": "Passer sous les bras",
+     "type": "passif",
+     "consequence": "Tu te baisses et tu passes sous la chaîne, entre deux paires de jambes prises dans le sel. Les sacs passent au-dessus de ta tête. Aucun regard ne descend. Tu ressors de l'autre côté, et l'allée est libre."
+    }
+   ],
+   "pointsInteret": [],
+   "image": {
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
+    "recent": true,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "déroutage d'une Croisée du chantier (Salines)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
+   "id": "petit-porteur",
+   "narration": [
+    "Un enfant te rattrape par derrière, un sac sur l'épaule plus gros que lui, et se met à ton pas sans rien demander. Il porte. Il a le sel jusqu'aux coudes, et il ne s'arrête pas — s'il s'arrête, il reste. Alors il marche. Avec toi, puisque tu vas par là."
+   ],
+   "choix": [
+    {
+     "id": "laisser-suivre-le-porteur",
+     "label": "Le laisser te suivre",
+     "type": "passif",
+     "consequence": "Tu ne dis rien, et il prend ça pour oui. Il marche à ta hauteur, le sac sur l'épaule, et quand tu bois, il tend la main sans regarder. Tu lui donnes. Il boit comme on respire. Le sac, il le garde : c'est le sien, il ne sait pas ce qu'il y a dedans.",
+     "poseEtat": "porteur"
+    },
+    {
+     "id": "demander-ce-qu-il-porte",
+     "label": "Lui demander ce qu'il porte",
+     "type": "risque",
+     "stat": "EMPATHIE",
+     "seuil": 11,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Il s'arrête — une seconde, pas plus, le sel le lui rappelle — et il ouvre le sac. Du sel, et dedans, une pierre plate avec un nom gravé. « C'est un des miens. On le porte aux piles, et après on a le droit de dormir. » Il referme. Il repart. Le nom, c'était le sien.",
+      "reussite": "« Un nom. » Il ne s'arrête pas. « On porte un nom aux piles, et après on dort. » Il serre le sac. Il n'a pas l'air d'avoir envie de dormir.",
+      "echec": "Il ne répond pas. Il marche plus vite, le sac contre lui, et tu comprends que la question était de trop : on ne demande pas ce qu'il y a dans le sac de quelqu'un, ici. Il te sème dans une allée.",
+      "funeste": "1 naturel. Il te regarde comme si tu venais de lui demander son nom — puis il ouvre la bouche, et il n'en sort que du sel. Il referme. Il part sans se retourner, et le sac cogne sur son dos à chaque pas. ♦ −2"
+     },
+     "nature": "social"
+    },
+    {
+     "id": "renvoyer-le-porteur",
+     "label": "Le renvoyer vers les piles",
+     "type": "passif",
+     "consequence": "Tu lui montres les piles, au loin. Il regarde, il regarde le sac, et il tourne — pas vite, pas lentement, au pas exact qu'il faut pour que le sel ne le rattrape pas. Il ne se retourne pas. Tu le regardes rapetisser entre les murs de sacs jusqu'à ce qu'il soit de la taille de ce qu'il porte."
+    }
+   ],
+   "pointsInteret": [],
+   "image": {
+    "fichier": "scene_salines_salines_placeholder_a.png",
+    "hash": "6aad2dbb",
+    "taille": 95106,
+    "recent": true,
+    "existe": true,
+    "statut": "dediee",
+    "herite": ""
+   },
+   "description": "",
+   "promptImage": "",
+   "mèneVers": [],
+   "mèneIci": [],
+   "roles": [],
+   "acces": "déroutage d'une Croisée du chantier (Salines)",
+   "etat": "valide",
+   "alertes": []
+  },
+  {
    "id": "fin-etape-non-ecrite",
    "narration": [
     "Passé l'Entrepôt, les rails reprennent — et cette fois ils ne s'arrêtent pas. Ils descendent. Devant toi, la croûte s'effondre en gradins autour d'une île noire, et sur l'île, une tour penchée où quelque chose brille. Saulnes.",
@@ -11155,7 +11623,7 @@
     "fichier": "scene_salines_salines_placeholder_a.png",
     "hash": "6aad2dbb",
     "taille": 95106,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -14006,6 +14474,25 @@
  },
  "etats": [
   {
+   "id": "porteur",
+   "nom": "PORTEUR",
+   "groupe": "faveur",
+   "source": "Le Petit Porteur du chantier s'est mis à ton pas.",
+   "manifestation": "Il marche à ta hauteur, le sac sur l'épaule, et il ne le pose jamais. Quand tu bois, sa main est déjà tendue. Tu lui donnes. Il boit comme on respire, et il repart avant toi.",
+   "reactions": [
+    "Un Encroûté te suit des yeux — pas toi : le petit, et le sac sur son épaule. Il compte quelque chose sur ses doigts pris dans le sel, et il n'arrive pas au bout.",
+    "Le petit s'arrête devant une pile de sacs et lit un signe dessus, les lèvres seules. Puis il regarde le sien. Puis il repart plus vite, et tu dois allonger le pas."
+   ],
+   "remede": "Il s'assoit sur son sac au bout de quelques lieux — ou on le donne aux piles.",
+   "guerison": "Il s'arrête, pose le sac, et s'assoit dessus. Il ne te regarde pas partir. Il a porté jusque-là ; le reste, c'est à toi.",
+   "hint": "Le petit porte, et il boit",
+   "jets": {},
+   "effets": [
+    "ceux qui portent la même croix te parlent"
+   ],
+   "lignesIntruses": []
+  },
+  {
    "id": "fixe",
    "nom": "FIXÉ",
    "groupe": "social",
@@ -14938,9 +15425,9 @@
   }
  ],
  "totaux": {
-  "scenes": 158,
+  "scenes": 164,
   "pointsInteret": 0,
-  "choix": 475,
+  "choix": 496,
   "illustrations": 501,
   "sansImage": 0,
   "imagesIntrouvables": 0,
@@ -14949,7 +15436,7 @@
   "faits": 3,
   "perceptions": 20,
   "temoins": 23,
-  "etats": 2,
+  "etats": 3,
   "besoins": 0,
   "transitions": 64,
   "ecransDeMarche": 11,

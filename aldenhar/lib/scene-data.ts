@@ -498,7 +498,22 @@ export type Choice = {
    * un jet, à la RÉUSSITE (comme `soif`). Jamais un chiffre : les CTA le
    * montrent, le sel qui tombe le dit.
    */
-  baisseEncroute?: true;
+  baisseEncroute?: number;
+  /**
+   * POSE UN FAIT DE RUN à la sélection (19/09) — une clé de `run.faits`
+   * (nature `knowledge`, portée `run`) qu'une scène-variante peut lire par
+   * `remplace.si`. C'est ce qui permet à une NUIT de changer l'écran qui la
+   * suit (le Dormeur remplace les Rats quand on a dormi au Dortoir) sans
+   * inventer un canal : le moteur de faits fait déjà ce travail-là.
+   */
+  poseFait?: string;
+  /**
+   * LÈVE UN ÉTAT à la sélection (19/09) — l'inverse de `poseEtat`, pour
+   * l'acte qui met fin à une compagnie : donner le Petit Porteur au Grand
+   * Saunier le retire des faits sans attendre son échéance. Le prix se dit
+   * dans la prose du choix, jamais par une carte.
+   */
+  leveEtat?: string;
   /**
    * LA SOIF (Bassins, 16/09) — le Besoin de zone. Négatif = ce choix
    * DÉSALTÈRE (boire avec la harde −1, remonter la cuve −3) ; positif = il
@@ -10097,6 +10112,7 @@ export const SCENES: Scene[] = [
     narration: [
       "Entre deux murs de sacs, une margelle de pierre ronde et, au-dessus, une potence avec sa corde et son seau. Le seul endroit de la zone qui sente autre chose que le sel : l'eau. Elle est loin, en bas — on l'entend, on ne la voit pas.",
       "Sur la potence, un nid : des brindilles blanches de sel, et dedans, des oiseaux qui ne bougent pas encore.",
+      "Sur la margelle, accroupie, une femme qui n'est plus qu'une peau et une lame courbe : la Saigneuse. Elle ôte le sel des gens, ici. Elle prend un peu de ce qu'il y a dessous.",
     ],
     choices: [
       {
@@ -10104,7 +10120,7 @@ export const SCENES: Scene[] = [
         label: "Descendre le seau",
         nature: "exploration",
         soif: -3,
-        baisseEncroute: true,
+        baisseEncroute: 1,
         risky: {
           stat: "INSTINCT",
           threshold: 11,
@@ -10117,12 +10133,25 @@ export const SCENES: Scene[] = [
         },
       },
       {
-        id: "boire-ce-qui-suinte",
-        label: "Lécher la margelle humide",
+        /* LA SAIGNEUSE (bestiaire 19/09) — elle racle le sel et boit ce
+           qu'elle en tire : DEUX paliers d'Encroûté d'un coup sur la réussite
+           (`baisseEncroute: 2`), le seul remède de cette taille dans la zone.
+           Raté, c'est la peau qui vient, pas la croûte — le prix est
+           physique, jamais le sel. */
+        id: "tendre-les-bras-a-la-saigneuse",
+        label: "Tendre les bras à la Saigneuse",
+        nature: "physique",
         soif: -1,
-        passive: {
-          consequence:
-            "La pierre suinte, côté ombre. Tu y colles la bouche. Ça ne désaltère pas : ça rappelle ce que c'est. Les oiseaux du nid tournent la tête ensemble.",
+        baisseEncroute: 2,
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu tends les bras. La lame passe sous la croûte comme sous une écorce, et le sel tombe en deux plaques entières — les manches, les épaules, tout. Elle les ramasse, les lèche, et te tend un bol de ce qu'elle en a tiré. Tu bois. Salé. Vivant.",
+            "Elle racle. Ça brûle, et le sel tombe en plaques. Elle en lèche une, te regarde, et te laisse boire à sa gourde. Tu es plus léger de la moitié.",
+            "Elle racle trop profond, et c'est la peau qui vient, pas la croûte. Elle lèche la lame, essuie, recommence plus bas — le sel tient. Tu retires les bras avant qu'elle insiste.",
+            "1 naturel. La lame glisse et emporte une bande de peau avec le sel. Elle la regarde, la plie, et la range dans un pli de sa robe. « Celle-là est à moi. » Le sel, lui, est resté. ♦ −2"
+          ),
         },
       },
       {
@@ -10213,6 +10242,7 @@ export const SCENES: Scene[] = [
         id: "dormir-dortoir",
         label: "Dormir sur le sel",
         rest: true,
+        poseFait: "dormi:dortoir",
         monteEncroute: true,
         tags: ["citable"],
       },
@@ -10223,6 +10253,7 @@ export const SCENES: Scene[] = [
         laisseObjet: "sandales-de-marche",
         prendLaPlaceDe: "dormir-dortoir",
         rest: true,
+        poseFait: "dormi:dortoir",
         passive: {
           consequence:
             "Tu te couches dans un creux qui n'est pas le tien, les sandales aux pieds. Le sel monte pendant la nuit — tu le sens venir — et il s'arrête aux lanières. Au matin, tu te lèves propre. Les sandales, elles, restent dans le creux, soudées au matelas : elles ont tenu une nuit, celle-ci.",
@@ -10396,7 +10427,7 @@ export const SCENES: Scene[] = [
         id: "se-laisser-racler",
         label: "Rester immobile, les laisser faire",
         nature: "physique",
-        baisseEncroute: true,
+        baisseEncroute: 1,
         risky: {
           stat: "INSTINCT",
           threshold: 11,
@@ -10617,7 +10648,7 @@ export const SCENES: Scene[] = [
     chainNext: "entrepot-2",
     narration: [
       "Un bâtiment sans porte, et dedans des allées entre des murs de sacs qui montent jusqu'aux poutres. Les rails y entrent par le milieu et s'enfoncent dans le noir. Il fait frais. Ça sent le sel mouillé, et au fond, un bruit régulier — quelque chose de large qui racle le sol et le repose.",
-      "Le long des allées, à intervalles réguliers, des statues de Cristallins debout, rangées par taille. Les petites d'abord.",
+      "Le long des allées, à intervalles réguliers, des statues de Cristallins debout, rangées par taille. Devant la première pile, un homme assis compte les sacs à voix basse, une craie à la main, et recommence.",
     ],
     choices: [
       {
@@ -10625,16 +10656,39 @@ export const SCENES: Scene[] = [
         label: "Suivre les rails vers le fond",
         passive: {
           consequence:
-            "Tu marches entre les rails. Les statues défilent de chaque côté, de plus en plus hautes, et le bruit de raclage grandit avec elles. Au bout de l'allée, le noir bouge.",
+            "Tu passes derrière l'homme qui compte, entre les rails. Les statues défilent de chaque côté, de plus en plus hautes, et le bruit de raclage grandit avec elles. Au bout de l'allée, le noir bouge.",
         },
       },
       {
-        id: "regarder-une-pile",
-        label: "Regarder une pile de sacs",
+        /* LE COMPTEUR (bestiaire 19/09) — il compte les sacs et recommence,
+           parce qu'il en manque toujours un. Qui a lu la lettre du Passeur
+           (Dortoir) sait LEQUEL : l'informée prend la place de l'aveugle, et
+           le compte devient faux « depuis le début » (`d.compte_faux`). */
+        id: "aider-a-compter",
+        label: "L'aider à compter",
+        nature: "social",
         observe: true,
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu comptes avec lui, à voix basse, sac par sac. Trois cents. Il pose la craie. « Trois cents sacs. Trois cent une statues. » Il te regarde. « Il y en a une qui est venue sans sac. » Il ne dit pas laquelle. Il recommence.",
+            "Tu comptes avec lui. Ça va plus vite à deux. Au bout : « Il en manque toujours un. Toujours le même. » Il ne dit pas lequel. Il recommence.",
+            "Tu comptes trop fort, il perd le fil. La craie casse. Il te regarde comme on regarde un sac qu'on n'a pas pesé, et recommence depuis le premier — à voix plus basse, en te tournant le dos.",
+            "1 naturel. Tu comptes avec lui, et arrivé à la fin, il te compte aussi. Un trait de craie sur ta manche. « Trois cent deux. » Il recommence, et cette fois tu es dans le compte. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "lui-dire-qui-manque",
+        label: "Lui dire qui manque",
+        requiresDecouverte: "d.lettre_passeur",
+        prendLaPlaceDe: "aider-a-compter",
+        observe: true,
+        decouverte: "d.compte_faux",
         passive: {
           consequence:
-            "Les sacs sont cousus, pesés, marqués du même signe. Tu en soulèves un coin : du sel fin, blanc — et dedans, quelque chose de dur, rond, qui roule sous les doigts. Un œil. Tu reposes le sac. Ils sont tous du même poids, ceux-là.",
+            "« Celui qui manque est un Passeur. Il est au Dortoir, sous un matelas, avec une lettre. » L'homme pose la craie. Il regarde la première pile, la deuxième, toutes. « Alors le compte est faux. Depuis le début. » Il ne recommence pas. C'est la première fois.",
         },
       },
       {
@@ -10670,12 +10724,27 @@ export const SCENES: Scene[] = [
         id: "regarder-avec-l-oeil",
         label: "Regarder les rangées à travers l'Œil",
         requiresObjet: "oeil-de-cristallin",
-        prendLaPlaceDe: "regarder-les-rangees",
+        // L'Œil gagne sur le savoir du Contremaître : déclaré en premier, il
+        // retire AUSSI l'option informée — sinon les deux se montreraient.
+        prendLaPlaceDe: ["regarder-les-rangees", "chercher-ta-rangee"],
         observe: true,
         decouverte: "d.ta_rangee",
         passive: {
           consequence:
             "Tu lèves l'œil de Cristallin devant le tien. Les rangées prennent des noms — chaque statue en porte un, gravé sous le sel, lisible seulement comme ça. Et dans la rangée des tailles moyennes, un espace vide, exactement large comme tes épaules. Elle ne l'a pas encore rempli. Elle a la place.",
+        },
+      },
+      {
+        /* CE QU'ON A PORTÉ SOI-MÊME (le Contremaître, bestiaire 19/09) :
+           qui sait comment on range va droit à la place qui l'attend. */
+        id: "chercher-ta-rangee",
+        label: "Chercher la rangée qui t'attend",
+        requiresSavoir: "savoir_rangement",
+        prendLaPlaceDe: "regarder-les-rangees",
+        observe: true,
+        passive: {
+          consequence:
+            "Tu sais comment on range — tu l'as porté toi-même : par taille, une place vide par rangée. Tu vas droit à la rangée des tailles moyennes. La place vide est là, entre deux qui ont tes épaules. Elle n'a pas encore été raclée. Ça vient.",
         },
       },
       {
@@ -10764,12 +10833,383 @@ export const SCENES: Scene[] = [
         },
       },
       {
+        /* LE PETIT PORTEUR (bestiaire 19/09) — la loi de substitution, jouée :
+           on ne se libère pas, on donne quelqu'un à sa place. L'option
+           informée prend celle de « Se débattre » ; le geste lève l'état
+           (`leveEtat`), l'échec est hors de portée — elle a eu ce qu'elle
+           voulait. Citable : cette phrase-là, répétée par un inconnu, doit
+           faire mal. */
+        id: "lui-donner-le-petit",
+        label: "Lui donner le petit",
+        nature: "physique",
+        requiresEtat: "porteur",
+        prendLaPlaceDe: "se-debattre",
+        leveEtat: "porteur",
+        horsDePortee: true,
+        tags: ["citable"],
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu tends le bras vers le bas, et le petit lève le sien — il sait ce qu'on fait, ici. Elle le prend à ta place, le mesure, et le pose dans la rangée des petits, avec son sac. Elle te lâche. Tu sors par les rails. Il ne crie pas. Il n'a jamais crié.",
+            "Tu tends la main vers lui. Elle le prend, le mesure, le range. Elle t'oublie. Tu sors. Le sac est resté à ses pieds, dans la rangée.",
+            "Tu tends la main, et elle prend le petit — et te garde quand même le temps de le ranger. Puis elle te pose, sans te mesurer : elle a eu ce qu'elle voulait. Tu sors. Il est dans la rangée des petits, debout, son sac contre lui.",
+            "1 naturel. Tu tends la main. Elle prend le petit, et elle te range à côté de lui — dans la même rangée, parce que vous êtes arrivés ensemble. Tu t'arraches au sel avant qu'il prenne. Lui, non. ♦ −2"
+          ),
+        },
+      },
+      {
         id: "se-laisser-mesurer",
         label: "Rester immobile, se laisser mesurer",
         monteEncroute: true,
         passive: {
           consequence:
             "Tu ne bouges pas. Elle te tourne, te mesure, te pose dans une rangée entre deux Cristallins de ta taille, et racle le sol pour te caler. Puis elle repart chercher la statue suivante. Le sel t'a pris jusqu'aux genoux. Tu sors de la rangée à pas lents, avant qu'il monte plus haut. Ta place reste vide.",
+        },
+      },
+    ],
+  },
+  /* ═══ LE BESTIAIRE DU CHANTIER (19/09, validé Patrick : « ça manque de
+     bestiaires et de rencontres dans cette zone ») ══════════════════════
+     Six scènes HORS POOL, servies par déroutage d'une Croisée du chantier
+     (Scene.tsx, branche des étages) — même grammaire que le Troupeau sans
+     Berger : jamais un lieu traversé, jamais dans `visited`, une fois par vie
+     chacune (`run.vus["deroute|<id>"]`), au plus une entre deux lieux. Deux
+     familles : les HOSTILES (l'Ensacheur, le Contremaître, la Mouchée
+     blanche) sur les Croisées suivantes, les autres (la Chaîne des bras, le
+     Petit Porteur) sur la première. Le Dormeur, lui, est une VARIANTE du
+     Dortoir : il remplace les Rats quand on a dormi. Les deux derniers du
+     lot (le Compteur, la Saigneuse) vivent DANS des scènes existantes
+     (l'Entrepôt, le Puits). Tous les combats portent leur option préparée
+     (A-préparation) ; aucun ne dépasse trois actions. */
+  {
+    /* L'ENSACHEUR — hostile. Une forme de sacs cousus qui ensache ce qui
+       passe dans son allée pour le peser. Préparation : le Sac de sel (la
+       Pesée), tendu à la place de soi (`laisseObjet`, `horsDePortee`) — c'est
+       du POIDS qu'il veut. Reculer est sûr et certain : l'allée reste à lui
+       (`fermeLaRoute: "ensacheur"`, dit à la Croisée suivante). */
+    id: "ensacheur",
+    illustration: SALINES_IMG,
+    combat: true,
+    foe: "ensacheur",
+    foeName: "L'Ensacheur",
+    narration: [
+      "Un sac vide tombe du haut des piles et s'ouvre à tes pieds comme une bouche — de la toile épaisse, qui sent le sel. Derrière, quelqu'un tient la ficelle. Une forme haute, faite de sacs cousus les uns aux autres, avance dans l'allée sans bruit, une main de toile tendue. Elle ne te veut pas mort. Elle te veut pesé.",
+    ],
+    choices: [
+      {
+        id: "s-arracher-de-la-toile",
+        label: "S'arracher de la toile",
+        nature: "physique",
+        masqueSi: { objet: "sac-de-sel" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu bondis en arrière avant que la toile se referme, tu attrapes la ficelle et tu tires. Le sac se retourne sur lui — sur sa tête cousue. Il tâtonne. Tu passes entre ses jambes de toile pendant qu'il se dépouille.",
+            "La toile monte aux genoux et tu la déchires du talon, deux fois. Il tire, le sac se vide de toi. Tu passes en courant. Derrière, il recoud déjà.",
+            "La toile se referme aux hanches et il tire. Tu tombes. Il te soulève, te pèse d'un balancement, et te repose : trop léger. Tu sors de la toile avec le sel de la toile dans les plaies.",
+            "1 naturel. Le sac se ferme au cou. Il te porte jusqu'aux piles, te pèse, te marque d'une croix de sel sur le ventre, et te jette. Tu rampes hors de la toile. La croix ne part pas. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "tendre-le-sac-de-sel",
+        label: "Lui tendre ton sac de sel",
+        nature: "physique",
+        requiresObjet: "sac-de-sel",
+        laisseObjet: "sac-de-sel",
+        horsDePortee: true,
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu lui tends ton sac de sel, plein, à bout de bras. La forme s'arrête. Elle le pèse d'un balancement et l'enfile sur elle — un sac de plus dans la couture. Elle repart vers les piles sans te regarder. C'était du poids qu'elle voulait.",
+            "Tu tends le sac. Elle le pèse, le garde, et se détourne. Tu n'as plus de sel : tu as le passage.",
+            "Tu tends le sac, elle le prend — et elle te pèse aussi, par habitude, sans te toucher. Puis elle repart avec ton sac cousu au sien. Tu es passé. Plus léger.",
+            "1 naturel. Le sac t'échappe et crève au sol. Elle ramasse tout, grain par grain, dans sa toile — et t'oublie le temps qu'il faut. Tu passes pendant qu'elle compte. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "reculer-hors-de-portee",
+        label: "Reculer hors de portée",
+        fermeLaRoute: "ensacheur",
+        passive: {
+          consequence:
+            "Tu recules jusqu'au mur de sacs, puis le long, jusqu'à ne plus voir la ficelle. Elle ne suit pas : elle garde l'allée. C'est la sienne, maintenant. Tu prendras l'autre.",
+        },
+      },
+    ],
+  },
+  {
+    /* LE CONTREMAÎTRE — hostile. Un Encroûté planté au milieu de l'allée,
+       une cliquette de bois : il assigne un sac, et il tient un compte dans
+       lequel tu es. Porter le sac est sûr et coûte un palier de sel — et on
+       apprend comment ELLE range (`savoir_rangement`, lu à l'Entrepôt).
+       Préparation : la lettre du Passeur (Dortoir, découverte de COMPTE) —
+       « on les fait peser, un sur deux » : qui sait de quel côté de la balance
+       il est peut le lui dire (`horsDePortee`). */
+    id: "contremaitre",
+    illustration: SALINES_IMG,
+    combat: true,
+    foe: "contremaitre",
+    foeName: "Le Contremaître",
+    narration: [
+      "Un Encroûté planté au milieu de l'allée, le sel jusqu'à la poitrine, une cliquette de bois dans la seule main libre. Il la fait claquer une fois en te voyant, et désigne du menton un sac au pied du mur. « Celui-là. Aux piles. » Il ne demande pas. Il tient un compte, et tu es dedans.",
+    ],
+    choices: [
+      {
+        id: "porter-le-sac",
+        label: "Porter le sac jusqu'aux piles",
+        monteEncroute: true,
+        grantsSavoir: "savoir_rangement",
+        passive: {
+          consequence:
+            "Tu le charges. Il pèse ce que pèse quelqu'un. Tu le portes jusqu'aux piles, et là tu vois comment on range : par taille, les petits devant, et dans chaque rangée une place laissée vide — pas pour ce qu'on a, pour ce qui vient. La cliquette claque une fois derrière toi. Compté. Le sel a pris tes épaules pendant que tu portais.",
+        },
+      },
+      {
+        id: "refuser-le-sac",
+        label: "Refuser le sac",
+        nature: "physique",
+        masqueSi: { decouverte: "d.lettre_passeur" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu passes devant lui sans toucher le sac. La cliquette claque, claque — et tu attrapes le manche et tu la casses sur ton genou. Il te regarde, les lèvres seules. Plus rien pour compter. Tu passes. Le sac reste au mur.",
+            "Tu passes devant lui. La cliquette claque dans ton dos, deux fois, trois fois. Tu ne te retournes pas. Au bout de l'allée, elle s'arrête. Il a noté. Il n'a que ça.",
+            "Tu passes, et le manche de la cliquette te prend à la nuque, sec. Tu tombes. Il ne bouge pas — il ne peut pas — et il claque jusqu'à ce que tu te relèves. Tu sors de l'allée avec le crâne qui sonne.",
+            "1 naturel. Tu passes, et deux formes de toile sortent des sacs derrière lui. Elles te couchent, te pèsent, et te posent au pied du mur, à côté du sac que tu n'as pas voulu. Tu le regardes longtemps. Puis tu pars sans. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "lui-dire-ce-qu-il-pese",
+        label: "Lui dire ce qu'il pèse",
+        nature: "physique",
+        requiresDecouverte: "d.lettre_passeur",
+        horsDePortee: true,
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. « Un sur deux. Ils font peser — ils ne font pas traverser. Tu comptes du mauvais côté. » La cliquette s'arrête à mi-course. Il baisse les yeux sur le sel qui lui tient les jambes, longtemps. Puis il tourne la tête vers l'allée d'en face, et tu passes par celle-ci.",
+            "« Un sur deux. Tu le sais. » La cliquette ne claque pas. Il regarde le sac au mur comme s'il le voyait pour la première fois. Tu passes.",
+            "« Un sur deux. » Il te regarde sans comprendre — puis il comprend, et il claque plus vite, pour couvrir. Tu passes pendant qu'il compte à voix haute des chiffres qui n'existent pas.",
+            "1 naturel. Tu le dis, et il le sait déjà. « Je sais. Aux piles. » Il claque une fois. Tu passes sans le sac, et sans avoir rien changé — pour lui, c'était déjà compté. ♦ −2"
+          ),
+        },
+      },
+    ],
+  },
+  {
+    /* LA MOUCHÉE BLANCHE — hostile, ne vient qu'à qui est BLESSÉ (déroutage
+       gardé sur ENTAILLÉ, Scene.tsx). Une mouche de sel qui pond dans ce qui
+       est ouvert. Préparation : le Manteau de saunier (Salle des Gages),
+       rabattu sur la plaie (`horsDePortee`). Courir est sûr et assoiffe. */
+    id: "mouchee-blanche",
+    illustration: SALINES_IMG,
+    combat: true,
+    foe: "mouchee-blanche",
+    foeName: "La Mouchée blanche",
+    narration: [
+      "Elle est sur la plaie avant que tu l'aies vue : une mouche de sel, blanche, grosse comme le pouce, posée sur ce qui est ouvert chez toi. Elle pond. Le sel de sa ponte prend tout de suite, tiède. D'autres arrivent du même blanc, par le haut des sacs, en file.",
+    ],
+    choices: [
+      {
+        id: "ecraser-la-plaie",
+        label: "Écraser la plaie sous la paume",
+        nature: "physique",
+        masqueSi: { objet: "manteau-de-saunier" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu écrases la première sous la paume, et la ponte avec — tu la sens crever, froide. Les autres tournent autour de ta main fermée, ne trouvent rien d'ouvert, et repartent vers les sacs. Tu gardes la paume dessus jusqu'à ce que le blanc s'éloigne.",
+            "Tu écrases. Ça crève sous la main, et tu tiens la plaie fermée pendant que les autres cherchent. Elles ne trouvent rien. Elles repartent.",
+            "Tu écrases trop tard : la ponte a pris. Tu arraches le sel avec l'ongle, et la plaie rouvre en dessous, plus large. Les autres sentent ça. Tu pars en courant avec la main dessus.",
+            "1 naturel. Tu écrases la mouche et tu enfonces la ponte dans la plaie. Le sel y prend racine. Tu l'arraches en plaque, et avec la plaque, ce qu'il y avait dessous. Les autres se posent où c'est rouge. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "rabattre-le-manteau",
+        label: "Rabattre le manteau sur la plaie",
+        nature: "physique",
+        requiresObjet: "manteau-de-saunier",
+        horsDePortee: true,
+        risky: {
+          stat: "COURAGE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu rabats le manteau d'un geste, et la première est dedans, écrasée dans la laine. Les autres se posent sur le tissu, cherchent, ne trouvent rien qui saigne. Elles repartent en file vers les sacs. Le manteau est fait pour ça.",
+            "Tu rabats le manteau. Elles se posent dessus, cherchent le rouge sous la laine, et ne le trouvent pas. Elles repartent.",
+            "Tu rabats le manteau trop lentement : la première a pondu. Le sel prend sous la laine, mais la laine le tient contre toi et il ne va pas plus loin. Les autres passent.",
+            "1 naturel. Tu te prends les bras dans le manteau. Le temps de le rabattre, deux ont pondu. La laine les couvre, elles restent dessous, et tu marches avec, jusqu'à ce que le sel les tienne immobiles. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "courir-mouchee",
+        label: "Courir",
+        soif: 1,
+        passive: {
+          consequence:
+            "Tu cours. Elles suivent le temps d'une allée, puis d'une autre, puis le blanc s'éloigne — elles ne suivent pas ce qui va vite. Tu t'arrêtes quand tu n'y vois plus. La bouche sèche comme du sel. Il faudra boire.",
+        },
+      },
+    ],
+  },
+  {
+    /* LE DORMEUR — variante du Dortoir à l'aube (`remplace: dortoir-2`), quand
+       on a DORMI (`dormi:dortoir`, posé par les deux nuits). On ne se réveille
+       pas avec les Rats : on se réveille avec quelqu'un dans son creux.
+       Préparation : l'Œil de Cristallin (Salle des Gages) — il lit les noms
+       sous le sel, et le Dormeur en a un (`horsDePortee`). */
+    id: "dortoir-dormeur",
+    remplace: { scene: "dortoir-2", si: { has: "dormi:dortoir" } },
+    illustration: SALINES_IMG,
+    combat: true,
+    foe: "dormeur",
+    foeName: "Le Dormeur",
+    narration: [
+      "Tu te réveilles avec quelqu'un dans ton creux. Un homme, ou ce qu'il en reste : le sel l'a pris à la forme du matelas — et le matelas, cette nuit, c'était toi. Il se love contre ton dos, les bras autour, sans peser, et il dort. Le sel de son sommeil descend sur tes épaules, tiède.",
+    ],
+    choices: [
+      {
+        id: "repousser-le-dormeur",
+        label: "Le repousser",
+        nature: "physique",
+        masqueSi: { objet: "oeil-de-cristallin" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu te retournes d'un bloc et tu le pousses des deux mains. Il se détache — le sel de ses bras casse net — et il roule dans le creux d'à côté, où il reprend la forme du matelas sans se réveiller. Tu te lèves. Tu es propre.",
+            "Tu pousses. Ses bras cassent au coude, en sel, et il retombe dans le creux. Tu te lèves avec un peu de lui sur les épaules, qui tombe en marchant.",
+            "Tu pousses, et il serre. Il ne se réveille pas : il tient, comme on tient un oreiller. Tu t'arraches morceau par morceau, et le sel prend la peau avec. Tu te lèves saignant.",
+            "1 naturel. Tu pousses, et c'est toi qui bouges : il est plus lourd que le creux. Tu passes une heure à te défaire de lui bras par bras. Quand tu te lèves, tu as sa forme sur le dos, en sel, et elle ne part pas. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "montrer-l-oeil-au-dormeur",
+        label: "Lui montrer l'Œil de Cristallin",
+        nature: "physique",
+        requiresObjet: "oeil-de-cristallin",
+        horsDePortee: true,
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu lèves l'Œil devant son visage de sel. Un nom apparaît dessous, gravé — et il l'entend, on dirait, parce qu'il ouvre les yeux. Il te regarde. Il regarde ses bras autour de toi. Il les retire, un par un, et se recouche dans son creux, du bon côté. Tu te lèves.",
+            "Tu lui montres l'Œil. Le nom sous le sel se lit, et ses bras se desserrent d'eux-mêmes. Il se retourne. Tu te lèves.",
+            "Tu lui montres l'Œil, et il ouvre les yeux — mais pas sur toi : sur le nom. Il le lit longtemps. Tu te dégages pendant ce temps, doucement. Il ne te retient pas.",
+            "1 naturel. Tu lèves l'Œil, et c'est TON nom qu'il lit dessous, en te regardant. Il sourit dans le sel. Puis il te lâche, parce que ce n'est pas encore l'heure. Tu te lèves plus vite que tu ne voulais. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "laisser-le-creux",
+        label: "Lui laisser le creux",
+        monteEncroute: true,
+        passive: {
+          consequence:
+            "Tu ne bouges pas. Tu attends qu'il desserre — il desserre — et tu glisses hors des bras comme on glisse hors d'un drap. Il reprend la forme du creux, ton creux, sans se réveiller. Le sel a pris tes épaules pendant que tu attendais. Quelqu'un dormira là à ta forme.",
+        },
+      },
+    ],
+  },
+  {
+    /* LA CHAÎNE DES BRAS — non hostile. Une file d'Encroûtés qui se passent
+       les sacs sans bouger les pieds. Se glisser dedans, c'est être passé
+       comme un sac : un lieu de moins (`sauteEtape`, comme le Bœuf). */
+    id: "chaine-des-bras",
+    illustration: SALINES_IMG,
+    narration: [
+      "L'allée est barrée par une chaîne d'Encroûtés — une vingtaine, plantés à deux pas les uns des autres, qui se passent des sacs de main en main sans un mot et sans bouger les pieds. Les sacs vont vers les piles. Les bras reviennent vides. Ça ne s'arrête pas pour toi.",
+    ],
+    choices: [
+      {
+        id: "se-glisser-dans-la-chaine",
+        label: "Se glisser dans la chaîne",
+        nature: "exploration",
+        sauteEtape: true,
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu te plies comme un sac et tu te laisses prendre. Les mains te passent — l'une après l'autre, sans te regarder, à la vitesse des sacs — et te posent au bout de la chaîne, debout, loin dans le chantier. Personne n'a compté un sac de plus.",
+            "Tu te laisses prendre. Les mains te passent, tiède après tiède, et te posent au bout — plus loin que tu n'aurais marché. Tu repars de là.",
+            "Tu te laisses prendre, et une main te lâche au milieu. Tu tombes entre deux Encroûtés, sous les sacs qui continuent de passer. Tu rampes jusqu'au bout de la chaîne. Tu y es. Plié.",
+            "1 naturel. Les mains te passent, te posent — puis te reprennent, parce que tu n'es pas un sac, et te renvoient dans l'autre sens. Tu te dégages au milieu, te jettes sous les bras, et sors au bout. Tu as fait le chemin deux fois. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "prendre-un-sac-au-passage",
+        label: "Prendre un sac au passage",
+        grantsLoot: "sac-de-sel",
+        passive: {
+          consequence:
+            "Tu passes sous une paire de bras et tu prends le sac au vol, entre deux mains. Personne ne le remarque : la main suivante se referme sur rien et passe rien à la suivante. Tu sors de l'allée avec un sac de sel sur l'épaule, et derrière toi, la chaîne continue de se passer du vide.",
+        },
+      },
+      {
+        id: "passer-sous-les-bras",
+        label: "Passer sous les bras",
+        passive: {
+          consequence:
+            "Tu te baisses et tu passes sous la chaîne, entre deux paires de jambes prises dans le sel. Les sacs passent au-dessus de ta tête. Aucun regard ne descend. Tu ressors de l'autre côté, et l'allée est libre.",
+        },
+      },
+    ],
+  },
+  {
+    /* LE PETIT PORTEUR — non hostile. Un enfant du chantier qui te rattrape
+       avec un sac plus gros que lui et se met à ton pas. Le laisser suivre
+       pose PORTEUR (lib/etats.ts) : il porte, et il boit ton eau — la Soif
+       monte un cran plus vite. Le prix se paie ou se rend à l'Entrepôt
+       (« Lui donner le petit », entrepot-3). */
+    id: "petit-porteur",
+    illustration: SALINES_IMG,
+    narration: [
+      "Un enfant te rattrape par derrière, un sac sur l'épaule plus gros que lui, et se met à ton pas sans rien demander. Il porte. Il a le sel jusqu'aux coudes, et il ne s'arrête pas — s'il s'arrête, il reste. Alors il marche. Avec toi, puisque tu vas par là.",
+    ],
+    choices: [
+      {
+        id: "laisser-suivre-le-porteur",
+        label: "Le laisser te suivre",
+        poseEtat: "porteur",
+        poseEtatDuree: 14,
+        passive: {
+          consequence:
+            "Tu ne dis rien, et il prend ça pour oui. Il marche à ta hauteur, le sac sur l'épaule, et quand tu bois, il tend la main sans regarder. Tu lui donnes. Il boit comme on respire. Le sac, il le garde : c'est le sien, il ne sait pas ce qu'il y a dedans.",
+        },
+      },
+      {
+        id: "demander-ce-qu-il-porte",
+        label: "Lui demander ce qu'il porte",
+        nature: "social",
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Il s'arrête — une seconde, pas plus, le sel le lui rappelle — et il ouvre le sac. Du sel, et dedans, une pierre plate avec un nom gravé. « C'est un des miens. On le porte aux piles, et après on a le droit de dormir. » Il referme. Il repart. Le nom, c'était le sien.",
+            "« Un nom. » Il ne s'arrête pas. « On porte un nom aux piles, et après on dort. » Il serre le sac. Il n'a pas l'air d'avoir envie de dormir.",
+            "Il ne répond pas. Il marche plus vite, le sac contre lui, et tu comprends que la question était de trop : on ne demande pas ce qu'il y a dans le sac de quelqu'un, ici. Il te sème dans une allée.",
+            "1 naturel. Il te regarde comme si tu venais de lui demander son nom — puis il ouvre la bouche, et il n'en sort que du sel. Il referme. Il part sans se retourner, et le sac cogne sur son dos à chaque pas. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "renvoyer-le-porteur",
+        label: "Le renvoyer vers les piles",
+        passive: {
+          consequence:
+            "Tu lui montres les piles, au loin. Il regarde, il regarde le sac, et il tourne — pas vite, pas lentement, au pas exact qu'il faut pour que le sel ne le rattrape pas. Il ne se retourne pas. Tu le regardes rapetisser entre les murs de sacs jusqu'à ce qu'il soit de la taille de ce qu'il porte.",
         },
       },
     ],
@@ -11361,6 +11801,14 @@ const LIEU_NOM: Record<string, string> = {
   pesee: "La Pesée",
   puits: "Le Puits",
   dortoir: "Le Dortoir",
+  // Le bestiaire du chantier (19/09) — des rencontres, pas des lieux : le
+  // rappel sous REPRENDRE dit qui l'on a en face.
+  ensacheur: "L'Ensacheur",
+  contremaitre: "Le Contremaître",
+  "mouchee-blanche": "La Mouchée blanche",
+  "dortoir-dormeur": "Le Dortoir",
+  "chaine-des-bras": "La Chaîne des bras",
+  "petit-porteur": "Le Petit Porteur",
   "forge-a-grattoirs": "La Forge à grattoirs",
   "cour-aux-rails": "La Cour aux rails",
   "salle-des-gages": "La Salle des Gages",
@@ -12155,7 +12603,7 @@ function phraseBifurcation(liaisonsJouees: number, seed: number): string {
  */
 export type MenaceId = "meute" | "bete" | "recousu";
 
-export type RouteFermeeCause = "echec" | "meute" | "bete" | "recousu";
+export type RouteFermeeCause = "echec" | "meute" | "bete" | "recousu" | "ensacheur";
 
 /**
  * LA FERMETURE NOMME SA CAUSE (panel compréhension 03/09). Les trois anciens
@@ -12179,6 +12627,12 @@ export const ROUTE_FERMEE: Record<RouteFermeeCause, string[]> = {
   recousu: [
     "Tu lui as laissé le chemin, et il l'a pris. Il n'est plus là, mais le passage direct porte une ligne d'herbe couchée qui va tout droit, sans un écart, jusqu'à l'horizon. Le tien fait le tour.",
     "Une seule direction reste ouverte. L'autre est celle par où il est reparti, du même pas régulier, et rien en toi n'a envie de marcher dans ces traces-là.",
+  ],
+  // L'ENSACHEUR (chantier des Salines, 19/09) : on a reculé, l'allée est
+  // restée à lui. Site bâti — les sacs et les piles ont droit de cité.
+  ensacheur: [
+    "L'allée directe est à l'Ensacheur : tu la lui as laissée. Au bout, entre les murs de sacs, la ficelle pend encore, et le sac ouvert attend au sol comme une bouche. On ne repasse pas devant une bouche qu'on a nourrie de rien. L'autre allée fait le tour des piles.",
+    "Une seule allée s'ouvre. L'autre est celle où il pèse — et de loin on l'entend charger, poser, charger, sans se presser. Tu as reculé une fois ; le chantier l'a noté. Le tour sera long, et il sera à toi.",
   ],
   bete: [
     "La route directe est restée à la Bête. Le creux qu'elle a pris continue par là, et rien ne te fera y redescendre. La tienne fait le tour, comme tu l'avais décidé sur ton tas de pierres.",

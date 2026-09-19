@@ -96,7 +96,7 @@ def route_fermee(src: str) -> dict[str, list[str]]:
     seg = src[i : src.find("};", i)]
     out = {
         cle: chaines_de_tableau(bloc_tableau(seg, cle + ":"))
-        for cle in ("echec", "meute", "bete", "recousu")
+        for cle in ("echec", "meute", "bete", "recousu", "ensacheur")
     }
     assert all(out.values()), f"ROUTE_FERMEE : une cause sans texte ({out})"
     return out

@@ -9,7 +9,7 @@ Généré par `tools/bible_visuelle_salines.py` depuis `data/zones/salines.json`
 3. **Le ratio de trame par le prompt** (`style_image.CLAUSES_ENVIRONNEMENT`), jamais par le seuil du dithering. Règle de zone : vue à la première personne, le héros n'est jamais dans l'image.
 4. **La composition, ajoutée le 15/09** sur les références rouge/noir de Patrick. Trois traits qu'aucun prompt ne demandait : **une figure géométrique** qui porte le cadre (un cercle, une arche, des lignes qui convergent, une symétrie franche), **la source de lumière VISIBLE dans l'image**, et une **échelle écrasante**. Et une règle de matière : la lumière est une FORME, jamais une atmosphère — mesuré, un halo dégradé ressort du dithering en nuage de points sale (78,8 % d'aplat), les mêmes cercles en anneaux francs ressortent nets (88,5 %). `python3 tools/aplat.py <png…>` mesure une sortie Leonardo avant même de la regarder : sous 70 %, c'est du grain, pas un dessin.
 
-**53 images** : 4 établissements · 6 lieux obligatoires · 19 lieux du pool · 6 autres écrans · 13 rencontres · 5 vues du Ver. Deux variantes par image, le pipeline double le suffixe (`_a` → `_a_b`). Format `nom=prompt` pour `/leo-import`.
+**61 images** : 4 établissements · 6 lieux obligatoires · 19 lieux du pool · 6 autres écrans · 21 rencontres · 5 vues du Ver. Deux variantes par image, le pipeline double le suffixe (`_a` → `_a_b`). Format `nom=prompt` pour `/leo-import`.
 
 
 ## 1. La Croûte — le fond du lac
@@ -414,6 +414,70 @@ Ce que la bible dit : racleurs bas sur pattes, aveugles, à carapace.
 monstre_salines_sauniers_a=several low broad beasts on many short legs with grey ridged carapaces and a blade of horn under the head, blind, crawling out from under a rack of scraping blades toward a pair of boots, the nearest already pressing its blade against the leather, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, one hard light, first-person view, no protagonist in frame, only about a quarter of the frame is bright, the rest deep black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
 ```
 
+### L'Ensacheur (rencontre) — `monstre_salines_ensacheur_a`
+
+Ce que la bible dit : une forme de sacs cousus qui ensache ce qui passe dans son allée — pour le peser.
+
+```
+monstre_salines_ensacheur_a=a tall shape made entirely of coarse salt sacks sewn one onto another, standing in a narrow aisle between two walls of stacked sacks, one sack-hand held out, a drawstring trailing from it to an open empty sack lying on the ground like a mouth, the pile tops as a black band above, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, one hard light, first-person view, no protagonist in frame, only about a quarter of the frame is bright, the rest deep black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### Le Contremaître (rencontre) — `monstre_salines_contremaitre_a`
+
+Ce que la bible dit : un Encroûté planté au milieu d'une allée, une cliquette de bois : il assigne un sac et tient un compte dans lequel tu es.
+
+```
+monstre_salines_contremaitre_a=a hooded man planted in the middle of a sack-lined aisle, sealed in white salt crust up to the chest, his one free hand raising a wooden clapper, his chin pointing at a single full sack at the foot of the wall beside him, the aisle running on behind him into black, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, one hard light, first-person view, no protagonist in frame, only about a quarter of the frame is bright, the rest deep black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### La Mouchée blanche (rencontre) — `monstre_salines_mouchee_a`
+
+Ce que la bible dit : une mouche de sel grosse comme le pouce qui pond dans ce qui est ouvert — elle ne vient qu'à qui est BLESSÉ (ENTAILLÉ).
+
+```
+monstre_salines_mouchee_a=a fat white salt-crusted fly the size of a thumb settled on a bare wounded forearm held up close to the viewer, its abdomen curled down into the open cut, three more of the same white flies descending in a line from the top edge of a sack wall behind, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, one hard light, first-person view, no protagonist in frame, only about a quarter of the frame is bright, the rest deep black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### Le Dormeur (rencontre) — `monstre_salines_dormeur_a`
+
+Ce que la bible dit : quand on a dormi au Dortoir, on ne se réveille pas avec les Rats : on se réveille avec quelqu'un dans son creux — un homme de sel lové contre ton dos, qui dort.
+
+```
+monstre_salines_dormeur_a=a low plank bunk in a long dim hall, a man made entirely of salt lying curled on his side in the hollow of a salt mattress with both arms wrapped around the empty space where a sleeper just was, eyes shut, his outline exactly moulded to the bunk, the next bunks fading into black, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, one hard light, first-person view, no protagonist in frame, only about a quarter of the frame is bright, the rest deep black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### La Chaîne des bras (rencontre) — `monstre_salines_chaine_bras_a`
+
+Ce que la bible dit : une vingtaine d'Encroûtés à deux pas les uns des autres, qui se passent les sacs de main en main sans bouger les pieds.
+
+```
+monstre_salines_chaine_bras_a=a line of twenty hooded figures standing two paces apart across a sack-lined aisle, feet sealed in salt, passing a heavy sack from hand to hand toward the viewer, arms raised in a single frozen wave, no face turned, the aisle vanishing into black behind them, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, one hard light, first-person view, no protagonist in frame, only about a quarter of the frame is bright, the rest deep black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### Le Petit Porteur (rencontre) — `monstre_salines_petit_porteur_a`
+
+Ce que la bible dit : un enfant du chantier, un sac plus gros que lui, qui se met à ton pas parce que s'il s'arrête il reste.
+
+```
+monstre_salines_petit_porteur_a=a small child walking away along a sack-lined aisle, a salt sack on the shoulder bigger than the child, salt crust up both arms to the elbows, one hand held out sideways as if for a cup, the walls of sacks towering on both sides, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, one hard light, first-person view, no protagonist in frame, only about a quarter of the frame is bright, the rest deep black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### Le Compteur (rencontre) — `monstre_salines_compteur_a`
+
+Ce que la bible dit : assis devant la première pile de l'Entrepôt, il compte les sacs à la craie et recommence, parce qu'il en manque toujours un.
+
+```
+monstre_salines_compteur_a=a gaunt man sitting on the ground in front of a wall of salt sacks that fills the frame, a stub of chalk in his hand, rows of tally marks chalked on the lowest sacks beside him, his head bent, one finger pointing at a sack as if counting it, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, one hard light, first-person view, no protagonist in frame, only about a quarter of the frame is bright, the rest deep black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
+### La Saigneuse (rencontre) — `monstre_salines_saigneuse_a`
+
+Ce que la bible dit : accroupie sur la margelle du Puits, une lame courbe : elle ôte le sel des gens et boit ce qu'elle en tire.
+
+```
+monstre_salines_saigneuse_a=a woman crouched on the stone rim of a well, thin as skin over bone, holding a small curved blade, both her forearms and the blade crusted white, licking salt from a flat plate of crust she has just peeled off, the well rope and bucket hanging behind her, close on the creature, filling most of the frame, just enough ground under it to stand or lie on and a bare strip of horizon behind, one hard light, first-person view, no protagonist in frame, only about a quarter of the frame is bright, the rest deep black, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
+```
+
 
 ## 4. Saulnes — le relais
 
@@ -608,6 +672,12 @@ objet_salines_oeil_cristallin_a=a single whole human eye turned to white salt cr
 | `entrepot` | `scene_salines_entrepot_a` |
 | `entrepot-2` | `monstre_salines_grand_saunier_a` |
 | `entrepot-3` | `monstre_salines_grand_saunier_a` |
+| `ensacheur` | `monstre_salines_ensacheur_a` |
+| `contremaitre` | `monstre_salines_contremaitre_a` |
+| `mouchee-blanche` | `monstre_salines_mouchee_a` |
+| `dortoir-dormeur` | `monstre_salines_dormeur_a` |
+| `chaine-des-bras` | `monstre_salines_chaine_bras_a` |
+| `petit-porteur` | `monstre_salines_petit_porteur_a` |
 
 Hors câblage :
 
@@ -622,11 +692,13 @@ Hors câblage :
 - `minijeu_cuve_fendue_a` — fond du puzzle « assemble » de la Cuve fendue (Scene.tsx, pas une scène)
 - `scene_salines_salines_a` — vue d'établissement : SALINES_IMG (vue de marche des liaisons et fond de secours)
 - `scene_salines_aiguillage_a` — élément observé « Aller au levier » (Choice.illustration, cour-aux-rails) — à câbler à l'import
+- `monstre_salines_compteur_a` — élément observé « L'aider à compter » (Choice.illustration, entrepot) — à câbler à l'import
+- `monstre_salines_saigneuse_a` — élément observé « Tendre les bras à la Saigneuse » (Choice.illustration, puits) — à câbler à l'import
 
 
 ## Ce qu'il reste à produire
 
-10 image(s). En attendant, ces écrans servent l'image d'établissement de leur environnement.
+18 image(s). En attendant, ces écrans servent l'image d'établissement de leur environnement.
 
 | image | écran | environnement |
 |---|---|---|
@@ -640,4 +712,12 @@ Hors câblage :
 | `scene_salines_gages_oeil_a` | `salle-des-gages-2` | salines |
 | `monstre_salines_rats_a` | `dortoir-2` | salines |
 | `monstre_salines_sauniers_a` | `forge-a-grattoirs-2` | salines |
+| `monstre_salines_ensacheur_a` | `ensacheur` | salines |
+| `monstre_salines_contremaitre_a` | `contremaitre` | salines |
+| `monstre_salines_mouchee_a` | `mouchee-blanche` | salines |
+| `monstre_salines_dormeur_a` | `dortoir-dormeur` | salines |
+| `monstre_salines_chaine_bras_a` | `chaine-des-bras` | salines |
+| `monstre_salines_petit_porteur_a` | `petit-porteur` | salines |
+| `monstre_salines_compteur_a` | `—` | salines |
+| `monstre_salines_saigneuse_a` | `—` | salines |
 

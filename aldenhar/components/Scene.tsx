@@ -2365,6 +2365,18 @@ export default function Scene() {
     return true;
   }
 
+  /** L'inverse de `poserEtatRun` : retire l'état des faits, sans texte de
+      guérison — c'est la prose du choix qui dit ce qui s'est passé. */
+  function leverEtatRun(id: string) {
+    const f = faitsDe(runRef.current);
+    if (!idsEtats(f).includes(id)) return;
+    applique([{ clear: id }], f, step);
+    persist((run) => {
+      run.faits = f.run;
+    });
+    setEtatsIds(idsEtats(f));
+  }
+
   /**
    * ⚠️ Phase A : les BESOINS n'existent plus comme système. Ils ne se
    * manifestaient QUE par l'état qu'ils finissaient par poser (fièvre, faim,
@@ -2778,7 +2790,10 @@ export default function Scene() {
             // fois moins vite tant qu'on la porte — un palier tous les QUATRE
             // lieux au lieu de deux. Apparié par nom, comme `besaceMirror`.
             const gourde = r.besace.some((i) => i.name === LANDES_OBJETS["gourde-double"]?.name);
-            if (r.soifPas % (gourde ? 4 : 2) === 0 && (r.soif ?? 0) < 3) r.soif = (r.soif ?? 0) + 1;
+            // LE PETIT PORTEUR boit ton eau (19/09) : un palier à CHAQUE
+            // lieu tant qu'il suit. La gourde ne compense pas un enfant.
+            const porteur = idsEtats(faitsDe(r)).includes("porteur");
+            if (r.soifPas % (porteur ? 1 : gourde ? 4 : 2) === 0 && (r.soif ?? 0) < 3) r.soif = (r.soif ?? 0) + 1;
             if ((r.soif ?? 0) >= 3) r.health = Math.max(0.05, r.health - 0.06);
           });
           setSoifMirror(runRef.current?.soif ?? 0);
@@ -2854,6 +2869,44 @@ export default function Scene() {
       nextScene = resoudre(cible, runRef.current) ?? DESCENTE_SCENE;
       trav.phase = "scene";
       trav.current = nextScene.id;
+    } else if (etapePas && etapePas.pas.type === "croisee" && (() => {
+      /* ═══ LE BESTIAIRE DU CHANTIER (19/09, validé Patrick) ══════════════
+         La Croisée du troisième environnement des Salines est parfois
+         BARRÉE par une rencontre — même grammaire que le Troupeau sans
+         Berger : hors pool, hors `visited`, une fois par vie chacune, et au
+         plus UNE entre deux lieux (`trav.derouteA`). La Mouchée blanche a
+         priorité et ne vient qu'à qui est BLESSÉ (ENTAILLÉ) ; sur la
+         première Croisée de l'étape on croise ceux qui travaillent (la
+         Chaîne, le Petit Porteur), sur les suivantes ceux qui pèsent
+         (l'Ensacheur, le Contremaître). `prochainPas` ne consomme rien : la
+         Croisée revient telle quelle après la rencontre. */
+      const runS = runRef.current;
+      if (!runS || (runS.zone ?? "landes") !== "salines" || trav.etage?.index !== 2) return false;
+      if ((trav.derouteA ?? -1) === trav.visited.length) return false;
+      const jamais = (id: string) => vu(runS.vus, "deroute|" + id) === 0;
+      const blesse = (runS.effects ?? []).some((e) => e.id === "entaille");
+      let vers: string | null = null;
+      if (blesse && jamais("mouchee-blanche")) vers = "mouchee-blanche";
+      else if ((trav.etage?.tires ?? 0) === 0) {
+        const b = ["chaine-des-bras", "petit-porteur"].filter(jamais);
+        if (b.length && chance(0.6)) vers = b.length === 1 || chance(0.5) ? b[0] : b[1];
+      } else {
+        const a = ["ensacheur", "contremaitre"].filter(jamais);
+        if (a.length && chance(0.5)) vers = a.length === 1 || chance(0.5) ? a[0] : a[1];
+      }
+      if (!vers) return false;
+      const cible = vers;
+      trav.phase = "scene";
+      deroute = true;
+      trav.current = cible; // hors `visited` : pas un lieu du pool
+      trav.derouteA = trav.visited.length;
+      persist((r) => { r.vus = noter(r.vus, "deroute|" + cible); });
+      return true;
+    })()) {
+      // La garde a posé `trav.current` : la rencontre est l'écran. (Affecté
+      // ICI et non dans la garde — l'analyse de flux de TypeScript ne voit
+      // pas une affectation faite dans une fonction immédiate.)
+      nextScene = resoudre(trav.current, runRef.current)!;
     } else if (etapePas && etapePas.pas.type === "croisee") {
       // CROISÉE D'ÉTAPE : deux lieux du pool de l'environnement courant (un
       // seul quand il n'en reste qu'un — la marche n'a alors qu'une direction,
@@ -2864,12 +2917,20 @@ export default function Scene() {
       // rebâtit la même marche (ambiance, image).
       const seedEtape = (nextStep * 101 + trav.visited.length * 7) >>> 0;
       trav.seed = seedEtape;
+      // UNE ROUTE FERMÉE EN ATTENTE (19/09) : l'échec dur et « Reculer hors de
+      // portée » (l'Ensacheur) posaient `routeFermeeEnAttente`, que seule la
+      // Croisée des LANDES lisait — dans une zone à étages le prix n'était
+      // jamais encaissé, trouvé au banc du bestiaire. Même canal, même
+      // consommation (le bloc de persist plus bas) ; la cause voyage par
+      // `trav` pour que la reprise rebâtisse la même ligne.
+      routeFermeeIci = runRef.current?.routeFermeeEnAttente === true;
+      trav.routeFermeeCause = routeFermeeIci ? runRef.current?.routeFermeeCause : undefined;
       nextScene = makeLiaison(
         pair[0],
         pair[1],
         seedEtape,
         liaisonCtx(runRef.current ?? loadRun(), scene.liaison ? undefined : scene.id),
-        o.length === 1
+        o.length === 1 || routeFermeeIci
       );
       // LA TEMPÊTE SE LÈVE EN MARCHE (retour Patrick 13/09) : sur la première
       // Croisée de la Croûte, une fois la rive quittée — pas sur l'écran du
@@ -2906,7 +2967,7 @@ export default function Scene() {
         persist((run) => { run.vus = noter(run.vus, VER_MANIFESTATIONS.dessous.cle); });
       }
       trav.liaisonOpts = pair;
-      trav.routeFermee = o.length === 1;
+      trav.routeFermee = o.length === 1 || routeFermeeIci;
       trav.phase = "liaison";
       trav.current = nextScene.id;
     } else if (etapePas && etapePas.pas.type === "descente") {
@@ -5007,7 +5068,7 @@ export default function Scene() {
     // raclent — le seul contrepoids du sel qui monte. Même moment que la Soif
     // (sélection d'un passif, réussite d'un jet), jamais un chiffre.
     if (choice.baisseEncroute) {
-      const apres = Math.max(0, (runRef.current?.encroute ?? 0) - 1);
+      const apres = Math.max(0, (runRef.current?.encroute ?? 0) - choice.baisseEncroute);
       persist((r) => { r.encroute = apres; });
       setEncrouteMirror(apres);
     }
@@ -5353,6 +5414,17 @@ export default function Scene() {
       persist((run) => { run.encroute = apres; });
       setEncrouteMirror(apres);
     }
+    // POSE UN FAIT DE RUN (19/09) : ce que la nuit du Dortoir laisse derrière
+    // elle, et que la scène-variante du Dormeur lit par `remplace.si`.
+    if (choice.poseFait) {
+      const id = choice.poseFait;
+      persist((run) => {
+        run.faits = { ...(run.faits ?? {}), [id]: { id, kind: "knowledge", scope: "run", value: 1 } };
+      });
+    }
+    // LÈVE UN ÉTAT (19/09) : donner le Petit Porteur — l'acte met fin à la
+    // compagnie, quelle que soit l'issue du jet qui suit.
+    if (choice.leveEtat) leverEtatRun(choice.leveEtat);
     // UNE FOIS PAR VIE : la clé est notée au moment où le choix se résout.
     if (choice.uneFoisParVie) {
       const cle = choice.uneFoisParVie;

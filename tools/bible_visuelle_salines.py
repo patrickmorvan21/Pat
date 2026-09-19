@@ -325,6 +325,42 @@ RENCONTRES = {
                     "several low broad beasts on many short legs with grey ridged carapaces and a blade of "
                     "horn under the head, blind, crawling out from under a rack of scraping blades toward a "
                     "pair of boots, the nearest already pressing its blade against the leather"),
+    # LE BESTIAIRE DU CHANTIER (19/09, validé Patrick) — huit rencontres,
+    # regardées en face. Les six premières ont leur écran (déroutage d'une
+    # Croisée, ou la variante du Dormeur) ; les deux dernières vivent dans
+    # un écran existant (l'Entrepôt, le Puits) et se posent sur un CHOIX.
+    "ensacheur": ("salines", "monstre_salines_ensacheur_a",
+                  "a tall shape made entirely of coarse salt sacks sewn one onto another, standing in a narrow "
+                  "aisle between two walls of stacked sacks, one sack-hand held out, a drawstring trailing from "
+                  "it to an open empty sack lying on the ground like a mouth, the pile tops as a black band above"),
+    "contremaitre": ("salines", "monstre_salines_contremaitre_a",
+                     "a hooded man planted in the middle of a sack-lined aisle, sealed in white salt crust up to "
+                     "the chest, his one free hand raising a wooden clapper, his chin pointing at a single full "
+                     "sack at the foot of the wall beside him, the aisle running on behind him into black"),
+    "mouchee_blanche": ("salines", "monstre_salines_mouchee_a",
+                        "a fat white salt-crusted fly the size of a thumb settled on a bare wounded forearm held "
+                        "up close to the viewer, its abdomen curled down into the open cut, three more of the same "
+                        "white flies descending in a line from the top edge of a sack wall behind"),
+    "dormeur": ("salines", "monstre_salines_dormeur_a",
+                "a low plank bunk in a long dim hall, a man made entirely of salt lying curled on his side in the "
+                "hollow of a salt mattress with both arms wrapped around the empty space where a sleeper just "
+                "was, eyes shut, his outline exactly moulded to the bunk, the next bunks fading into black"),
+    "chaine_des_bras": ("salines", "monstre_salines_chaine_bras_a",
+                        "a line of twenty hooded figures standing two paces apart across a sack-lined aisle, feet "
+                        "sealed in salt, passing a heavy sack from hand to hand toward the viewer, arms raised in a "
+                        "single frozen wave, no face turned, the aisle vanishing into black behind them"),
+    "petit_porteur": ("salines", "monstre_salines_petit_porteur_a",
+                      "a small child walking away along a sack-lined aisle, a salt sack on the "
+                      "shoulder bigger than the child, salt crust up both arms to the elbows, one hand held out "
+                      "sideways as if for a cup, the walls of sacks towering on both sides"),
+    "compteur": ("salines", "monstre_salines_compteur_a",
+                 "a gaunt man sitting on the ground in front of a wall of salt sacks that fills the frame, a "
+                 "stub of chalk in his hand, rows of tally marks chalked on the lowest sacks beside him, his head "
+                 "bent, one finger pointing at a sack as if counting it"),
+    "saigneuse": ("salines", "monstre_salines_saigneuse_a",
+                  "a woman crouched on the stone rim of a well, thin as skin over bone, holding a small curved "
+                  "blade, both her forearms and the blade crusted white, licking salt from a flat plate of crust "
+                  "she has just peeled off, the well rope and bucket hanging behind her"),
 }
 
 # ── LE VER DE CROÛTE (16/09 — décision Patrick : « c'est encore trop peu pour
@@ -542,6 +578,15 @@ CABLAGE = {
         "entrepot": "scene_salines_entrepot_a",
         "entrepot-2": "monstre_salines_grand_saunier_a",
         "entrepot-3": "monstre_salines_grand_saunier_a",
+        # Le bestiaire du chantier (19/09) : `SALINES_IMG` en attendant, à
+        # repointer à l'import — le garde le réclamera dès qu'un fichier est
+        # sur le disque.
+        "ensacheur": "monstre_salines_ensacheur_a",
+        "contremaitre": "monstre_salines_contremaitre_a",
+        "mouchee-blanche": "monstre_salines_mouchee_a",
+        "dortoir-dormeur": "monstre_salines_dormeur_a",
+        "chaine-des-bras": "monstre_salines_chaine_bras_a",
+        "petit-porteur": "monstre_salines_petit_porteur_a",
     },
 }
 
@@ -563,6 +608,10 @@ HORS_CABLAGE = {
     # LES SALINES (19/09)
     "scene_salines_salines_a": "vue d'établissement : SALINES_IMG (vue de marche des liaisons et fond de secours)",
     "scene_salines_aiguillage_a": "élément observé « Aller au levier » (Choice.illustration, cour-aux-rails) — à câbler à l'import",
+    # Le bestiaire du chantier (19/09) : deux rencontres vivent DANS un écran
+    # existant et se posent sur le choix qui les joue.
+    "monstre_salines_compteur_a": "élément observé « L'aider à compter » (Choice.illustration, entrepot) — à câbler à l'import",
+    "monstre_salines_saigneuse_a": "élément observé « Tendre les bras à la Saigneuse » (Choice.illustration, puits) — à câbler à l'import",
 }
 
 

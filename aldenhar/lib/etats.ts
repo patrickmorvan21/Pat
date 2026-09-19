@@ -91,6 +91,47 @@ export type Etat = {
  */
 export const ETATS: Etat[] = [
   {
+    /**
+     * PORTEUR — le Petit Porteur du chantier des Salines (bestiaire 19/09).
+     * Un enfant qui porte un sac plus gros que lui et se met à ton pas ;
+     * s'il s'arrête, le sel le garde, alors il marche. Le laisser suivre :
+     *  • QUEL BÉNÉFICE — il porte, et ce qu'il porte se paie à l'Entrepôt :
+     *    « Lui donner le petit » (entrepot-3) prend la place de « Se
+     *    débattre » — la loi de substitution jouée à hauteur d'enfant.
+     *  • CE QUE ÇA COÛTE — il boit ton eau : la Soif monte un cran plus
+     *    vite tant qu'il suit (Scene.tsx, montée de la Soif).
+     *  • JUSQU'OÙ — il tient quelques lieux (`poseEtatDuree`), puis il
+     *    s'assoit sur son sac. Ou on le donne.
+     * `ouvreConfidences` : c'est l'état qui AUTORISE l'option de
+     * l'Entrepôt (garde `requiresEtat`, Scene.tsx) — porter le petit est la
+     * raison même pour laquelle on peut le donner.
+     * Groupe `faveur`, comme le Gamin des Murets : aucun état de corps ne le
+     * fait partir. Ne fuit pas le combat — il n'a nulle part où aller.
+     */
+    id: "porteur",
+    nom: "PORTEUR",
+    groupe: "faveur",
+    source: "Le Petit Porteur du chantier s'est mis à ton pas.",
+    remede: "Il s'assoit sur son sac au bout de quelques lieux — ou on le donne aux piles.",
+    manifestation:
+      "Il marche à ta hauteur, le sac sur l'épaule, et il ne le pose jamais. " +
+      "Quand tu bois, sa main est déjà tendue. Tu lui donnes. Il boit comme " +
+      "on respire, et il repart avant toi.",
+    reactions: [
+      "Un Encroûté te suit des yeux — pas toi : le petit, et le sac sur son " +
+        "épaule. Il compte quelque chose sur ses doigts pris dans le sel, et " +
+        "il n'arrive pas au bout.",
+      "Le petit s'arrête devant une pile de sacs et lit un signe dessus, les " +
+        "lèvres seules. Puis il regarde le sien. Puis il repart plus vite, " +
+        "et tu dois allonger le pas.",
+    ],
+    guerison:
+      "Il s'arrête, pose le sac, et s'assoit dessus. Il ne te regarde pas " +
+      "partir. Il a porté jusque-là ; le reste, c'est à toi.",
+    hint: "Le petit porte, et il boit",
+    ouvreConfidences: true,
+  },
+  {
     id: "fixe",
     nom: "FIXÉ",
     groupe: "social",
