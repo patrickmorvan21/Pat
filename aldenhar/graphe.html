@@ -311,6 +311,10 @@ const CAT = {
   terminal:   { nom:"Sorties",      c:"#e0632a", a:1,   r:6.2, ordre:4 },
   marche:     { nom:"Vues de marche",c:"#ffffff",a:.3,  r:3.4, ordre:5 },
   transition: { nom:"Transitions",  c:"#ffffff", a:.22, r:2.6, ordre:6 },
+  // Ce qui n'est PAS encore dans le jeu (Landes v2, 24/09) : dessiné en
+  // CREUX, jamais plein — la carte ne doit pas faire passer une proposition
+  // pour un écran qu'on peut jouer. Une case suffit à les masquer.
+  propose:    { nom:"Proposés — pas encore en jeu", c:"#e0632a", a:.85, r:4.2, ordre:7, creux:1 },
 };
 const LIENS = { appartient:.055, contexte:.045, suite:.16, sortie:.13, variante:.10 };
 
@@ -321,6 +325,7 @@ let vue = { x:0, y:0, k:1 }, alpha = 1, brut = "";
 let survol = null, choisi = null, tire = null, souris = { x:0, y:0 }, vueTouchee = false;
 let nuages = {};
 let groupes = [], clauseStyle = "";
+let ETIQ = [];   // les noms posés à la dernière image (et leur boîte) — lus par les bancs
 /* LE PANIER — ce que la page peut faire et ce qu'elle ne peut pas.
    Une page web ne peut pas écrire dans le dépôt : elle range les demandes en
    local, et sort un texte que Patrick me recolle. Même modèle que « Copier ma
@@ -375,7 +380,7 @@ try { panier = JSON.parse(localStorage.getItem(CLE_PANIER) || "{}"); } catch (e)
 // derniers ; chaque fiche porte son propre « où ».
 const NUAGE = { transition:"Les textes de marche — sans lieu fixe",
                 marche:"Les vues de marche", scene:"Hors traversée" };
-const on = { lieu:1, arrivee:1, rencontre:1, scene:1, action:1, terminal:1, marche:1, transition:1 };
+const on = { lieu:1, arrivee:1, rencontre:1, scene:1, action:1, terminal:1, marche:1, transition:1, propose:1 };
 const opt = { noms:1, images:0, liensFaibles:1 };
 const F = { repulsion:1, longueur:1, gravite:1 };
 
@@ -394,6 +399,194 @@ fetch(CHEMIN + "?t=" + Date.now())
     document.getElementById("etat").textContent = (ZONE ? "graphe-data-" + ZONE + ".json" : "graphe-data.json") + " introuvable (" + e.message + ")";
   });
 
+/* ---------------------- LES GRAPPES (Landes v2, 24/09) ----------------------
+   Une zone déclarée en ENVIRONNEMENTS se lit comme les Salines : un cercle par
+   environnement, de gauche à droite dans l'ordre de la traversée. Mais un lieu
+   des Landes porte parfois vingt écrans (le Seuil du Hameau) : l'éventail des
+   Salines (trois écrans par lieu) ne tient plus. D'où la GRAPPE — chaque lieu
+   posé sur l'anneau de son environnement, ses écrans groupés juste derrière
+   lui, les actions en satellites de leur écran, les rencontres de PASSAGE au
+   centre (elles se jouent entre deux lieux), et les marches du village en
+   spirale au cœur du Hameau.
+   ⚠️ Toutes les places sont CALCULÉES une fois, ici, et la simulation ne fait
+   que les rejoindre : une disposition laissée à la physique tasse vingt écrans
+   au même endroit (mesuré sur la carte des Salines le 13/09). */
+let ANCRES = null;   // où se posent les nuages sans ancre, sous la rangée
+function batirGrappes() {
+  const G = groupes.filter(g => g.disposition === "grappes").sort((a, b) => a.ordre - b.ordre);
+  if (!G.length) return;
+  const OR = Math.PI * (3 - Math.sqrt(5));
+  const enfants = new Map();
+  L.forEach(l => {
+    if (l.t !== "appartient") return;
+    if (!enfants.has(l.a)) enfants.set(l.a, []);
+    enfants.get(l.a).push(l.b);
+  });
+  const estLieuDeGroupe = n => n.role === "entree" || n.role === "pool" || n.role === "fin" || n.role === "arrivee";
+  const pris = new Set();   // un écran n'appartient qu'à UNE grappe
+  const descendants = id => {
+    const out = [], st = [id], vus = new Set([id]);
+    while (st.length) {
+      const x = st.pop();
+      for (const y of enfants.get(x) || []) {
+        if (vus.has(y)) continue;
+        vus.add(y);
+        const n = parId.get(y);
+        if (!n || estLieuDeGroupe(n)) continue;
+        out.push(n); st.push(y);
+      }
+    }
+    return out;
+  };
+  // premier niveau d'un nœud : ses enfants directs ; le reste (les actions de
+  // ses écrans) tourne autour de chacun en satellites.
+  const premierNiveau = id => (enfants.get(id) || []).map(y => parId.get(y))
+    .filter(n => n && !estLieuDeGroupe(n) && !pris.has(n.id));
+  const ORDRE_CAT = { arrivee: 0, rencontre: 1, scene: 2, terminal: 3, propose: 4, action: 5 };
+  // l'écart d'une grappe : plus large quand ses écrans portent des actions
+  // (leurs satellites), sinon un satellite touche l'écran voisin.
+  const PAS_NU = 14, PAS_SAT = 20, SAT = 14;
+  const orbite = (p, x) => p.r + x.r + 3.5;   // un satellite ne touche jamais son écran
+
+  const places = [];
+  for (const gr of G) {
+    const slots = new Map();
+    const lieux = gr.membres.filter(estLieuDeGroupe);
+    // la tête : l'entrée, ou le beat d'arrivée d'une étape qui n'en a pas
+    const tete = lieux.filter(n => n.role === "entree" || n.role === "arrivee");
+    const fins = lieux.filter(n => n.role === "fin").sort((a, b) => (a.rang || 0) - (b.rang || 0));
+    const pool = lieux.filter(n => n.role === "pool");
+    // l'ordre de lecture autour de l'anneau : l'entrée à gauche, la moitié du
+    // pool par le haut, les fins à droite, le reste du pool par le bas.
+    const haut = pool.filter((n, i) => i % 2 === 0), bas = pool.filter((n, i) => i % 2 === 1);
+    const tour = [...tete, ...haut, ...fins, ...bas.reverse()];
+    const n = tour.length || 1, delta = 2 * Math.PI / n;
+
+    // les grappes : premier niveau + satellites
+    const grappes = new Map();
+    for (const l of tour) {
+      const premiers = premierNiveau(l.id).sort((a, b) => (ORDRE_CAT[a.cat] ?? 9) - (ORDRE_CAT[b.cat] ?? 9));
+      premiers.forEach(p => pris.add(p.id));
+      const sats = new Map();
+      let total = premiers.length;
+      for (const p of premiers) {
+        const s = descendants(p.id).filter(x => !pris.has(x.id));
+        s.forEach(x => pris.add(x.id));
+        sats.set(p.id, s); total += s.length;
+      }
+      const pas = total > premiers.length ? PAS_SAT : PAS_NU;
+      const rho = premiers.length ? pas * Math.sqrt(premiers.length) + (total > premiers.length ? SAT + 4 : 6) : 0;
+      grappes.set(l.id, { premiers, sats, rho, pas });
+    }
+
+    // le centre : les rencontres de passage (et leurs satellites), et au cœur
+    // du Hameau les marches qui ne se jouent que dans le village.
+    // au centre : les rencontres de PASSAGE, et tout membre qui n'a ni lieu
+    // ni grappe (le carton de fin d'étape non écrite) — il appartient à
+    // l'environnement, pas à un de ses lieux.
+    const passages = gr.membres.filter(x => x.role === "passage"
+      || (!estLieuDeGroupe(x) && !pris.has(x.id) && x.cat !== "transition"));
+    const marches = gr.membres.filter(x => x.cat === "transition" && !pris.has(x.id));
+    const rT = marches.length ? 8.5 * Math.sqrt(marches.length) : 0;
+    const np = passages.length;
+    const rP = !np ? 0 : (np === 1 && !marches.length) ? 0
+             : Math.max(marches.length ? rT + 26 : 34, np * 48 / (2 * Math.PI));
+    const interieur = Math.max(rT, rP + (np ? 16 : 0));
+
+    // le rayon de l'anneau : assez pour que deux lieux voisins ne se touchent
+    // pas (leurs noms se lisent), et pour que deux grappes voisines non plus.
+    let rl = Math.max(interieur + 50, 62 / Math.sin(Math.PI / Math.max(n, 3)), 70);
+    const angle = i => Math.PI + i * delta;
+    const centre = (i, r) => {
+      const g = grappes.get(tour[i].id), rc = r + 20 + g.rho;
+      return [Math.cos(angle(i)) * rc, Math.sin(angle(i)) * rc, g.rho];
+    };
+    for (let essai = 0; essai < 60 && n > 1; essai++) {
+      let ok = true;
+      for (let i = 0; i < n; i++) {
+        const a = centre(i, rl), b = centre((i + 1) % n, rl);
+        if (Math.hypot(a[0] - b[0], a[1] - b[1]) < a[2] + b[2] + 18) { ok = false; break; }
+      }
+      if (ok) break;
+      rl += 8;
+    }
+
+    let rOut = rl + 30;
+    tour.forEach((l, i) => {
+      const a = angle(i);
+      slots.set(l.id, [Math.cos(a) * rl, Math.sin(a) * rl]);
+      // le nom d'un lieu se pose du côté de l'intérieur de l'anneau : dehors,
+      // c'est sa grappe qui prend la place.
+      l.etiqHaut = Math.sin(a) > .3;
+      const g = grappes.get(l.id);
+      const [gx, gy] = centre(i, rl);
+      g.premiers.forEach((p, j) => {
+        const aa = a + j * OR, d = g.premiers.length === 1 ? 0 : g.pas * Math.sqrt(j + .5);
+        const px = gx + Math.cos(aa) * d, py = gy + Math.sin(aa) * d;
+        slots.set(p.id, [px, py]);
+        const s = g.sats.get(p.id) || [];
+        s.forEach((x, k) => {
+          const as = Math.atan2(py - gy, px - gx) + (k - (s.length - 1) / 2) * 1.0, o = orbite(p, x);
+          slots.set(x.id, [px + Math.cos(as) * o, py + Math.sin(as) * o]);
+        });
+      });
+      rOut = Math.max(rOut, Math.hypot(gx, gy) + g.rho + 18);
+    });
+    passages.forEach((p, i) => {
+      const a = -Math.PI / 2 + i * 2 * Math.PI / Math.max(np, 1);
+      const px = Math.cos(a) * rP, py = Math.sin(a) * rP;
+      slots.set(p.id, [px, py]);
+      const s = descendants(p.id).filter(x => !pris.has(x.id));
+      s.forEach((x, k) => {
+        pris.add(x.id);
+        const as = (rP ? a : 0) + (k - (s.length - 1) / 2) * 1.0, o = orbite(p, x);
+        slots.set(x.id, [px + Math.cos(as) * o, py + Math.sin(as) * o]);
+      });
+    });
+    marches.forEach((x, i) => {
+      const a = i * OR, d = 8.5 * Math.sqrt(i + .5);
+      slots.set(x.id, [Math.cos(a) * d, Math.sin(a) * d]);
+    });
+
+    // les membres, recalculés : tout ce qui a une place ici
+    gr.membres = [...slots.keys()].map(id => parId.get(id)).filter(Boolean);
+    gr.membres.forEach(x => x.groupe = gr.id);
+    gr.slots = slots; gr.rOut = rOut;
+    places.push(gr);
+  }
+
+  // LES COLONNES : de gauche à droite dans l'ordre, chacune à la largeur de
+  // son cercle — et chaque environnement un peu plus bas que le précédent :
+  // on descend.
+  const ECART = 70, MARCHE = 60;
+  let x = 0;
+  places.forEach((gr, i) => {
+    if (i) x += places[i - 1].rOut + ECART + gr.rOut;
+    gr.ox = x; gr.oy = i * MARCHE;
+  });
+  const mx = (places[0].ox + places[places.length - 1].ox) / 2, my = (places.length - 1) * MARCHE / 2;
+  places.forEach(gr => { gr.ox -= mx; gr.oy -= my; });
+  // les nuages sans ancre se posent SOUS la rangée, jamais entre deux cercles
+  let bas = -1e9, gauche = 1e9, droite = -1e9;
+  places.forEach(gr => { bas = Math.max(bas, gr.oy + gr.rOut); gauche = Math.min(gauche, gr.ox - gr.rOut); droite = Math.max(droite, gr.ox + gr.rOut); });
+  ANCRES = {
+    transition: { x: gauche + (droite - gauche) * .38, y: bas + 190 },
+    marche:     { x: gauche + (droite - gauche) * .72, y: bas + 150 },
+    scene:      { x: gauche + (droite - gauche) * .88, y: bas + 150 },
+    action:     { x: gauche + (droite - gauche) * .88, y: bas + 150 },
+  };
+  // on part de la place finale : rien à démêler
+  places.forEach(gr => gr.membres.forEach(n => {
+    const sl = gr.slots.get(n.id);
+    if (sl) { n.x = gr.ox + sl[0]; n.y = gr.oy + sl[1]; }
+  }));
+  N.forEach(n => {
+    if (n.groupe || !ANCRES[n.cat]) return;
+    const a = ANCRES[n.cat];
+    n.x = a.x + (n.x % 97); n.y = a.y + (n.y % 61);
+  });
+}
+
 function demarrer(g) {
   document.getElementById("etat").style.display = "none";
   brut = g.brut || "";
@@ -409,6 +602,7 @@ function demarrer(g) {
     const a = i * OR, d = R * Math.sqrt((i + .5) / N.length);
     n.x = Math.cos(a) * d; n.y = Math.sin(a) * d; n.vx = 0; n.vy = 0;
     n.r = (CAT[n.cat] || CAT.scene).r * (1 + Math.min(n.deg, 14) * .045);
+    if (n.cat === "propose" && n.id.startsWith("lieu:")) n.r = CAT.lieu.r;
     let h = 0; for (let c = 0; c < n.id.length; c++) h = (h * 31 + n.id.charCodeAt(c)) % 997;
     n.coh = .004 + (h / 997) * .016;
     parId.set(n.id, n);
@@ -429,6 +623,7 @@ function demarrer(g) {
     gr.membres = [...m].map(id => parId.get(id)).filter(Boolean);
     gr.membres.forEach(n => n.groupe = gr.id);
   });
+  batirGrappes();
   N.forEach(n => voisins.set(n.id, new Set()));
   L.forEach(l => { voisins.get(l.a).add(l.b); voisins.get(l.b).add(l.a); });
 
@@ -444,7 +639,8 @@ function demarrer(g) {
   const zn = (g.zone && g.zone.nom) || "Les Landes";
   document.getElementById("soustitre").textContent = MODE === "routage"
     ? zn + " · " + g.totaux.lieux + " lieux · " + g.totaux.etapes + " environnements"
-    : zn + " · " + g.totaux.scenes + " scènes · " + g.totaux.transitions + " transitions";
+    : zn + " · " + g.totaux.scenes + " scènes · " + g.totaux.transitions + " transitions"
+      + (g.totaux.environnements ? " · " + g.totaux.environnements + " environnements" : "");
   document.getElementById("pied").innerHTML = (MODE === "routage"
     ? "<b>" + g.totaux.lieux + "</b> lieux &nbsp;·&nbsp; <b>" + g.totaux.etapes + "</b> environnements, traversés dans l'ordre &nbsp;·&nbsp; <b>"
       + (g.totaux.actions || 0) + "</b> fusionnés &nbsp;·&nbsp; <b>" + (g.totaux.retires || 0) + "</b> retiré(s)"
@@ -453,7 +649,9 @@ function demarrer(g) {
         : "routage validé, aucune scène écrite")
     : "<b>" + g.totaux.scenes + "</b> scènes &nbsp;·&nbsp; <b>" + g.totaux.lieux + "</b> lieux &nbsp;·&nbsp; <b>"
       + (g.totaux.actions || 0) + "</b> actions &nbsp;·&nbsp; <b>"
-      + g.totaux.transitions + "</b> transitions &nbsp;·&nbsp; <b>" + g.totaux.marches + "</b> vues de marche")
+      + g.totaux.transitions + "</b> transitions &nbsp;·&nbsp; <b>" + g.totaux.marches + "</b> vues de marche"
+      + (g.totaux.proposes ? " &nbsp;·&nbsp; <b>" + g.totaux.proposes + "</b> proposés, en creux" : "")
+      + (g.envStatut ? "<br>" + esc(g.envStatut) : ""))
     + "<br>export du " + g.genere + (g.commit ? " · " + g.commit : "")
     + "<br>molette ou pincement pour zoomer &nbsp;·&nbsp; + &minus; 0 au clavier &nbsp;·&nbsp; double-clic pour recadrer";
   redimensionner(); boucle();
@@ -544,6 +742,11 @@ function pas() {
   }
   for (const l of L) {
     const a = l.na, b = l.nb;
+    // En grappes, un texte de marche sans ancre peut être relié à des écrans
+    // de TROIS environnements (« Tu laisses le combat… ») : ses ressorts le
+    // tiraient au milieu d'un cercle qui n'est pas le sien. Le lien se dessine,
+    // il ne tire plus — la place d'un nuage est sous la rangée.
+    if (ANCRES && !a.groupe !== !b.groupe) continue;
     const cible = lon * (l.t === "appartient" ? .78 : l.t === "contexte" ? 2.1 : 1.45);
     const raideur = l.t === "appartient" ? .085 : l.t === "contexte" ? .012 : .038;
     let dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy) || .01;
@@ -556,16 +759,20 @@ function pas() {
   for (const n of N) {
     // `n.groupe` : membre d'une enclave — il a déjà sa place, et la cohésion du
     // nuage tirerait dans l'autre sens. Son étiquette mentirait aussi.
-    if (n.deg || n.groupe) continue;
+    if ((n.deg && !ANCRES) || n.groupe) continue;
     const c = centres[n.cat] || (centres[n.cat] = { x: 0, y: 0, n: 0 });
     c.x += n.x; c.y += n.y; c.n++;
   }
   for (const k in centres) { centres[k].x /= centres[k].n; centres[k].y /= centres[k].n; }
   nuages = centres;
   for (const n of N) {
-    if (!n.deg && !n.groupe) {
+    if ((!n.deg || ANCRES) && !n.groupe) {
       const c = centres[n.cat];
       n.vx += (c.x - n.x) * n.coh; n.vy += (c.y - n.y) * n.coh;
+    }
+    // en grappes, les nuages sans ancre se posent SOUS la rangée des cercles
+    if (ANCRES && !n.groupe && ANCRES[n.cat]) {
+      n.vx += (ANCRES[n.cat].x - n.x) * .012; n.vy += (ANCRES[n.cat].y - n.y) * .012;
     }
   }
 
@@ -581,6 +788,25 @@ function pas() {
     for (const n of gr.membres) { if (!on[n.cat]) continue; cx += n.x; cy += n.y; vus++; }
     if (!vus) { gr.rayon = 0; continue; }
     cx /= vus; cy /= vus;
+    if (gr.disposition === "grappes") {
+      /* LA PLACE EST UNE DONNÉE (batirGrappes) : on la rejoint, rien ne la
+         tire vers le centre. Le rayon du cercle se lit sur les places des
+         membres visibles, pas sur leur position du moment. */
+      let r = 0;
+      for (const n of gr.membres) {
+        const sl = gr.slots.get(n.id);
+        if (!sl || !on[n.cat]) continue;
+        n.vx = (gr.ox + sl[0] - n.x) * .35; n.vy = (gr.oy + sl[1] - n.y) * .35;
+        r = Math.max(r, Math.hypot(sl[0], sl[1]) + n.r);
+      }
+      gr.cx = gr.ox; gr.cy = gr.oy; gr.rayon = r ? r + 22 : 0;
+      for (const n of N) {
+        if (n.groupe === gr.id || !on[n.cat] || !gr.rayon) continue;
+        const dx = n.x - gr.cx, dy = n.y - gr.cy, d = Math.hypot(dx, dy) || .01;
+        if (d < gr.rayon) { const f = (gr.rayon - d) / d * .06; n.vx += dx * f; n.vy += dy * f; }
+      }
+      continue;
+    }
     if (gr.ordre !== undefined) {
       /* UNE ZONE À ÉTAGES SE LIT DE GAUCHE À DROITE : ses environnements se
          traversent TOUJOURS dans le même ordre (lib/etages.ts), donc leur
@@ -605,6 +831,13 @@ function pas() {
         }
         fins.sort((a, b) => (a.rang || 0) - (b.rang || 0));
         tetes.forEach(n => gr.slots.set(n.id, [-R, 0]));
+        // les rencontres de PASSAGE (le chantier, 19/09) barrent une Croisée :
+        // elles n'appartiennent à aucun lieu, elles se tiennent au milieu.
+        const passages = gr.membres.filter(n => n.role === "passage");
+        passages.forEach((n, i) => {
+          const a = -Math.PI / 2 + i * 2 * Math.PI / passages.length, rp = passages.length > 1 ? 50 : 0;
+          gr.slots.set(n.id, [Math.cos(a) * rp, Math.sin(a) * rp]);
+        });
         fins.forEach((n, i) => { const a = (i - (fins.length - 1) / 2) * .82; gr.slots.set(n.id, [Math.cos(a) * R, Math.sin(a) * R]); });
         // ⚠️ UN ÉCRAN ÉCRIT SUIT SON LIEU, il ne tombe pas au centre. Les slots
         // ci-dessus ne connaissent que les RÔLES d'un lieu (entrée/pool/fin) ;
@@ -735,13 +968,16 @@ function dessiner() {
     ctx.globalAlpha = .55; ctx.fillStyle = "#ffffff";
     ctx.textAlign = "center"; ctx.textBaseline = "bottom";
     ctx.font = "400 " + 11 / vue.k + "px " + getComputedStyle(document.body).fontFamily;
-    ctx.fillText(gr.nom, gr.cx, gr.cy - gr.rayon - 9 / vue.k);
+    ctx.fillText(gr.nom + (gr.sous ? "  ·  " + gr.sous : ""), gr.cx, gr.cy - gr.rayon - 9 / vue.k);
     ctx.globalAlpha = 1;
   }
 
   // les liens d'abord, toujours sous les points
   for (const l of L) {
     if (!visible(l.na) || !visible(l.nb)) continue;
+    // en grappes, le fil d'un texte de marche vers ses écrans traverse toute
+    // la carte : il ne se montre qu'au survol de l'un des deux bouts.
+    if (ANCRES && !l.na.groupe !== !l.nb.groupe && !(focus && (l.a === focus.id || l.b === focus.id))) continue;
     const faible = l.t === "appartient" || l.t === "contexte";
     if (faible && !opt.liensFaibles) continue;
     let o = LIENS[l.t] || .1;
@@ -771,8 +1007,15 @@ function dessiner() {
       }
     }
 
-    ctx.globalAlpha = a; ctx.fillStyle = d.c;
-    ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, 6.284); ctx.fill();
+    ctx.globalAlpha = a;
+    if (d.creux) {
+      // un anneau, pas un disque : ce point n'est pas un écran du jeu
+      ctx.strokeStyle = d.c; ctx.lineWidth = 1.3 / vue.k;
+      ctx.beginPath(); ctx.arc(n.x, n.y, Math.max(n.r - .6, 1.5), 0, 6.284); ctx.stroke();
+    } else {
+      ctx.fillStyle = d.c;
+      ctx.beginPath(); ctx.arc(n.x, n.y, n.r, 0, 6.284); ctx.fill();
+    }
     if (n === choisi) {
       ctx.strokeStyle = "#e0632a"; ctx.lineWidth = 1.6 / vue.k;
       ctx.beginPath(); ctx.arc(n.x, n.y, n.r + 4.5 / vue.k, 0, 6.284); ctx.stroke();
@@ -780,29 +1023,58 @@ function dessiner() {
     ctx.globalAlpha = 1;
   }
 
-  // les noms : les lieux d'abord, le reste seulement quand on est près
-  ctx.textAlign = "center"; ctx.textBaseline = "top";
+  /* LES NOMS — aucun ne recouvre un autre. Ils sont posés par priorité (ce
+     qu'on regarde, puis les entrées, les fins, les lieux, les rencontres, le
+     reste) et un nom qui toucherait un nom déjà posé attend qu'on s'approche.
+     C'est ce qui rend la vue d'ensemble lisible : vingt noms de 130 px dans
+     quatre cercles de 280 px se recouvraient tous au centre. */
+  ctx.textAlign = "center";
+  const fam = getComputedStyle(document.body).fontFamily;
+  const RANG = { entree: 0, arrivee: 1, fin: 2, pool: 3 };
+  const cand = [];
   for (const n of N) {
     if (!visible(n)) continue;
-    const estLieu = n.cat === "lieu" || n.cat === "terminal";
+    const lieuPropose = n.cat === "propose" && n.id.startsWith("lieu:");
+    // en grappes, une sortie (la Descente, le Renoncement) ne se nomme qu'en
+    // s'approchant : dans la vue d'ensemble elle prenait la place du nom du
+    // lieu qui la porte (la Falaise), et le cercle semblait finir ailleurs.
+    const estLieu = n.cat === "lieu" || lieuPropose || (n.cat === "terminal" && (!ANCRES || vue.k > .9));
     const proche = focus && proches.has(n.id);
+    const bete = n.cat === "rencontre" || (n.cat === "propose" && !lieuPropose);
     const montre = (opt.noms && estLieu && vue.k > .38) || (vue.k > 2.4 && n.cat !== "transition")
-                || n === focus || (proche && vue.k > .8);
+                || (bete && vue.k > 1.05) || n === focus || (proche && vue.k > .8);
     if (!montre) continue;
-    let a = focus ? (n === focus ? 1 : (proches.has(n.id) ? .7 : .12)) : (estLieu ? .78 : .42);
+    const prio = n === focus ? -3 : proche ? -2
+               : estLieu ? (n.cat === "terminal" ? 6 : lieuPropose ? 5 : (RANG[n.role] ?? 4)) : bete ? 7 : 9;
+    cand.push({ n, prio, estLieu, lieuPropose, bete, proche });
+  }
+  cand.sort((a, b) => a.prio - b.prio);
+  const poses = [];
+  for (const c of cand) {
+    const n = c.n, taille = (c.estLieu ? 12 : 10.5) / vue.k;
+    ctx.font = (c.estLieu ? "500 " : "400 ") + taille + "px " + fam;
+    const w = ctx.measureText(n.nom).width, h = taille * 1.15, m = 3 / vue.k;
+    const haut = !!n.etiqHaut;
+    const y0 = haut ? n.y - n.r - 5 / vue.k - h : n.y + n.r + 5 / vue.k;
+    const bx = [n.x - w / 2 - m, y0 - m, n.x + w / 2 + m, y0 + h + m];
+    const heurte = poses.some(q => bx[0] < q[2] && bx[2] > q[0] && bx[1] < q[3] && bx[3] > q[1]);
+    if (heurte && c.prio > -2) continue;   // ce qu'on regarde se nomme toujours
+    poses.push(bx); bx.id = n.id;
+    let a = focus ? (n === focus ? 1 : (c.proche ? .7 : .12)) : (c.lieuPropose ? .5 : c.estLieu ? .78 : c.bete ? .55 : .42);
     ctx.globalAlpha = a;
-    ctx.fillStyle = estLieu ? "#e0632a" : "#ffffff";
-    ctx.font = (estLieu ? "500 " : "400 ") + (estLieu ? 12 : 10.5) / vue.k + "px " + getComputedStyle(document.body).fontFamily;
-    ctx.fillText(n.nom, n.x, n.y + n.r + 5 / vue.k);
+    ctx.fillStyle = c.estLieu || (n.cat === "propose") ? "#e0632a" : "#ffffff";
+    ctx.textBaseline = "top";
+    ctx.fillText(n.nom, n.x, y0);
     ctx.globalAlpha = 1;
   }
+  ETIQ = poses;
   // le nom du nuage, sous les points qui n'ont pas d'ancre
   if (!focus && vue.k > .28) {
     ctx.textAlign = "center"; ctx.textBaseline = "top";
     for (const k in nuages) {
       if (!on[k] || nuages[k].n < 4 || !NUAGE[k]) continue;
       let bas = -1e9;
-      for (const n of N) if (!n.deg && !n.groupe && n.cat === k && on[k]) bas = Math.max(bas, n.y);
+      for (const n of N) if ((!n.deg || ANCRES) && !n.groupe && n.cat === k && on[k]) bas = Math.max(bas, n.y);
       ctx.globalAlpha = .5; ctx.fillStyle = "#ffffff";
       ctx.font = "400 " + 11 / vue.k + "px " + getComputedStyle(document.body).fontFamily;
       ctx.fillText(NUAGE[k] + "  (" + nuages[k].n + ")", nuages[k].x, bas + 22 / vue.k);
@@ -965,7 +1237,9 @@ function zoomAuCentre(f) {
 function ouvrir(n) {
   choisi = n;
   const d = CAT[n.cat] || CAT.scene;
-  document.getElementById("fcat").textContent = d.nom.replace(/s$/, "");
+  document.getElementById("fcat").textContent = n.propose
+    ? (n.id.startsWith("lieu:") ? "Lieu proposé · pas encore en jeu" : "Rencontre proposée · pas encore en jeu")
+    : d.nom.replace(/s$/, "");
   document.getElementById("fnom").textContent = n.nom;
   document.getElementById("fmeta").textContent = (n.meta || []).join("  ·  ");
   // « (rattachée) » : le lieu n'est pas dans les données de zone, il est
@@ -988,6 +1262,9 @@ function ouvrir(n) {
   else par("—");
   if (n.descEchec && n.descEchec.length) { titre("Si l'on revient après un échec"); n.descEchec.forEach(par); }
   if (n.descDemo && n.descDemo.length) { titre("Version démo"); n.descDemo.forEach(par); }
+  if (n.regle) { titre("Ce qu'elle impose"); par(n.regle); }
+  if (n.preparation) { titre("Ce qui la prépare"); par(n.preparation); }
+  if (n.propose && n.imageStatut) { titre("L'image"); par(n.imageStatut); }
   if (n.desc && n.desc.length && n.resume) { titre("Ce que l'écran montre"); par(n.resume); }
 
   const bloc = document.getElementById("fsortiesBloc"), so = document.getElementById("fsorties");
@@ -1018,7 +1295,8 @@ function ouvrir(n) {
   const pr = n.prompt || (n.resume ? composerPrompt(n.resume) : "");
   const bloc2 = document.getElementById("fpromptTitre"), champ = document.getElementById("fprompt");
   const acts = document.querySelector(".actions");
-  const montrable = n.cat !== "lieu";
+  // une proposition n'a pas encore d'écran : ni prompt ni raccourci d'image
+  const montrable = n.cat !== "lieu" && !n.propose;
   bloc2.style.display = champ.style.display = acts.style.display = montrable ? "" : "none";
   if (montrable) {
     champ.textContent = pr || "— aucun prompt écrit pour cet écran —";
