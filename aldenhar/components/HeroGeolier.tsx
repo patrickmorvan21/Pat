@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type React from "react";
 import { animReduced } from "@/lib/settings";
 import { assetUrl } from "@/lib/assets";
 
@@ -20,6 +21,32 @@ type Wisp = { x: number; y: number; v: number; sway: number; f: number; seed: nu
  * (cendres 2→5 à chaque choix, respiration 380→520ms au dernier — 16/07) ;
  * l'accueil garde les valeurs du prototype (2 / 380).
  */
+/** Largeur d'affichage du démon : toute la largeur du bloc, jamais moins que
+    la maquette. Partagée avec les caches de sceau (Intro, Révélation), qui
+    doivent suivre exactement la même échelle. */
+export const DEMON_L = "max(100%, 390px)";
+
+/**
+ * LE CACHE DU SCEAU DE POITRINE, à la même échelle que le démon.
+ *
+ * Maquette (à 390) : 201 de large, posé à x=90 et à 294 px sous le haut de
+ * l'image, jusqu'à la nappe charbon de y=464. Tout est exprimé en proportion
+ * de `DEMON_L` : la marge du haut est une marge en %, qui se calcule sur la
+ * LARGEUR du conteneur — c'est ce qui permet de suivre l'image sans rien
+ * mesurer. À 390 on retombe au pixel sur les valeurs de la maquette.
+ */
+export function cacheSceau(hautImage: number, nappe = 464): React.CSSProperties {
+  return {
+    position: "absolute",
+    top: hautImage,
+    marginTop: `calc(${(294 / 390).toFixed(6)} * ${DEMON_L})`,
+    bottom: `calc(100% - ${nappe}px)`,
+    left: `calc(50% - ${(105 / 390).toFixed(6)} * ${DEMON_L})`,
+    width: `calc(${(201 / 390).toFixed(6)} * ${DEMON_L})`,
+    background: "var(--color-bg)",
+  };
+}
+
 export function HeroGeolier({
   density = 2,
   bstep = 380,
@@ -96,7 +123,13 @@ export function HeroGeolier({
     const fit = () => {
       const r = img.getBoundingClientRect();
       if (!r.width) return;
-      W = Math.round(r.width / 3);
+      /* ⚠️ LA LARGEUR VIENT DU CANVAS, PAS DE L'IMAGE (24/09). L'image garde
+         sa largeur de maquette (390) et se centre ; le bloc, lui, va d'un bord
+         à l'autre d'un écran plus large. Mesurée sur l'image, la colonne de
+         cendres serait étirée sur toute la largeur et ses « pixels » ne
+         feraient plus 3 px. La hauteur reste celle de l'image, comme avant. */
+      const rc = cv.getBoundingClientRect();
+      W = Math.round((rc.width || r.width) / 3);
       H = Math.round(r.height / 3);
       cv.width = W;
       cv.height = H;
@@ -107,6 +140,7 @@ export function HeroGeolier({
     };
     const ro = new ResizeObserver(fit);
     ro.observe(img);
+    ro.observe(cv);
     if (img.decode) img.decode().then(fit).catch(fit);
     else img.addEventListener("load", fit);
 
@@ -184,8 +218,26 @@ export function HeroGeolier({
         ref={imgRef}
         alt=""
         src={assetUrl(src)}
-        className="relative z-[2] block w-full select-none"
-        style={{ imageRendering: "pixelated", transform: "translateY(0)", marginTop: marge }}
+        className="relative z-[2] block max-w-none select-none"
+        /* ⚠️ TOUTE LA LARGEUR, JAMAIS MOINS DE 390 (24/09, iPhone 18 Pro).
+           Sur un écran plus large que la maquette, le démon remplit le bloc au
+           lieu de rester à 390 au milieu d'un champ orange : ses épaules
+           doivent toucher les bords, sinon on lit un cadre autour de lui — le
+           défaut même qu'on corrige. La source fait 1560 px : l'afficher à 402
+           ou 440 n'est qu'un autre facteur de réduction.
+           Sur un écran plus ÉTROIT il ne rétrécit pas : il garde 390 et se
+           rogne également des deux côtés, comme le faisait tout le cadre
+           avant. Rétréci, son bas remontait au-dessus de la nappe charbon de
+           l'intro et laissait une bande orange derrière la réplique (mesuré à
+           375 px). Les écrans qui posent un cache sur son sceau de poitrine
+           (intro, Révélation) le calent sur la MÊME largeur : `DEMON_L`. */
+        style={{
+          imageRendering: "pixelated",
+          transform: "translateY(0)",
+          marginTop: marge,
+          width: DEMON_L,
+          marginLeft: `calc((100% - ${DEMON_L}) / 2)`,
+        }}
       />
       {/* sol charbon : couvre la bande révélée sous l'image quand elle monte */}
       {sol && <div className="absolute inset-x-0 bottom-0 z-[1] h-[4px] bg-[var(--color-bg)]" aria-hidden />}

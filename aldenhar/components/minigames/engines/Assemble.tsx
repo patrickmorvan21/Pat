@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { seededRandom, CHARBON, ORANGE, CREME } from "@/lib/dither";
-import { ZONE_W, ZONE_H, dissoudreBords } from "../zone";
+import { ZONE_W, ZONE_H, ZONE_LARGEUR_CSS, dissoudreBords } from "../zone";
 
 /**
  * LES TESSONS DE LA CUVE — le puzzle des Bassins (16/09).
@@ -356,7 +356,7 @@ export default function Assemble({
       ref={canvasRef}
       className="minigame-canvas"
       data-assemble="1"
-      style={{ width: ZONE_W, height: ZONE_H, touchAction: "none", imageRendering: "pixelated" }}
+      style={{ width: ZONE_LARGEUR_CSS, height: "auto", touchAction: "none", imageRendering: "pixelated" }}
     />
   );
 }

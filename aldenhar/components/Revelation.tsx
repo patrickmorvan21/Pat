@@ -42,7 +42,7 @@ import TypedText from "@/components/TypedText";
 import TouchHint from "@/components/TouchHint";
 import RadarEssence from "@/components/RadarEssence";
 import VoilePixels, { useVoile } from "@/components/VoilePixels";
-import { HeroGeolier } from "@/components/HeroGeolier";
+import { HeroGeolier, cacheSceau } from "@/components/HeroGeolier";
 import { portraitDuSeuil } from "@/lib/prologue-data";
 import {
   distance,
@@ -184,15 +184,14 @@ export default function Revelation({
             interne et s'échapperait par-dessus les nappes. */}
         {phase === "demon" && (
           <>
-            <div className="absolute top-[74px] left-0 isolate h-[390px] w-[390px]">
+            <div className="absolute inset-x-0 top-[74px] isolate h-[390px]">
               <HeroGeolier height={390} marge={0} sol={false} />
             </div>
-            <div
-              className="absolute top-[368px] left-[90px] h-[96px] w-[201px] bg-[var(--color-bg)]"
-              aria-hidden
-            />
+            {/* Le cache du sceau suit l'échelle du démon : même règle qu'à
+                l'intro (positions en proportion de la largeur, cf. Intro). */}
+            <div style={cacheSceau(74)} aria-hidden />
             <div className="absolute inset-x-0 top-[464px] bottom-0 bg-[var(--color-bg)]" aria-hidden />
-            <p className="absolute top-[444px] left-[42px] w-[306px] text-center font-mono text-[13px] leading-[1.3] text-[var(--color-ink)]">
+            <p className="absolute top-[444px] left-[calc(50%-153px)] w-[306px] text-center font-mono text-[13px] leading-[1.3] text-[var(--color-ink)]">
               <TypedText
                 key={n}
                 text={beats[n]}

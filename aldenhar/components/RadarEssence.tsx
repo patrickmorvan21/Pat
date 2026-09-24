@@ -130,7 +130,15 @@ export default function RadarEssence({
   }, [courants]);
 
   return (
-    <div className={`relative w-full ${className}`}>
+    /* ⚠️ 390 PX, CENTRÉ (24/09). Le canvas est tracé au pixel sur une grille
+       de 390 : étiré en `w-full` sur un écran plus large, ses marches se
+       dédoublaient une colonne sur trente. `marginLeft` et non `mx-auto`,
+       pour que le centrage tienne aussi sur un écran plus ÉTROIT (des marges
+       auto y valent 0, et la forme partirait à droite). */
+    <div
+      className={`relative w-[390px] max-w-none shrink-0 ${className}`}
+      style={{ marginLeft: "calc(50% - 195px)" }}
+    >
       <span className="pointer-events-none absolute top-[-20px] left-1/2 -translate-x-1/2 font-mono text-[12px] font-bold tracking-[1px] uppercase text-[var(--color-ink)]">
         INSTINCT
       </span>

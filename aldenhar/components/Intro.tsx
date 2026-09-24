@@ -43,7 +43,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import TypedText from "@/components/TypedText";
 import { track } from "@/lib/analytics";
-import { HeroGeolier } from "@/components/HeroGeolier";
+import { HeroGeolier, cacheSceau } from "@/components/HeroGeolier";
 import { markIntroSeen } from "@/lib/player-memory";
 import TouchHint from "@/components/TouchHint";
 import { assetUrl } from "@/lib/assets";
@@ -450,7 +450,7 @@ function EcranGeolier({
           le démon à 74 : la continuité avec l'écran d'avant prime ici, parce
           que c'est le seul endroit du jeu où deux écrans montrent le même
           personnage à la suite. */}
-      <div className="absolute top-0 left-0 isolate h-[464px] w-[390px]">
+      <div className="absolute inset-x-0 top-0 isolate h-[464px]">
         {/* ⚠️ C'EST L'IMAGE DE L'ACCUEIL, la HD (1560×1720), et pas l'export
             390×390 des maquettes (retour Patrick 5/09 : « sur cet écran le
             démon est net, reprends celle-ci à chaque fois qu'on voit le
@@ -469,9 +469,16 @@ function EcranGeolier({
           lieu de 368) et descend jusqu'à la nappe — il couvre ainsi au moins
           tout ce qu'il couvrait avant. Le laisser à 368 aurait découvert le
           haut du sceau, qui serait réapparu derrière la réplique. */}
-      <div className="absolute top-[334px] left-[90px] h-[130px] w-[201px] bg-[var(--color-bg)]" aria-hidden />
+      {/* ⚠️ LE CACHE SUIT L'ÉCHELLE DU DÉMON (24/09). Sur un écran plus large
+          que la maquette le démon remplit la largeur, donc son sceau grandit et
+          descend avec lui. Les positions sont celles de la maquette (x 90,
+          y 334, 201 de large jusqu'à la nappe de 464) exprimées en PROPORTION
+          de la largeur : une marge verticale en % se calcule sur la LARGEUR du
+          conteneur — c'est ce qui permet de suivre l'image sans rien mesurer.
+          Sur un écran de 390, elles retombent au pixel sur les valeurs d'avant. */}
+      <div style={cacheSceau(40)} aria-hidden />
       <div className="absolute inset-x-0 top-[464px] bottom-0 bg-[var(--color-bg)]" aria-hidden />
-      <p className="absolute top-[444px] left-[42px] w-[306px] text-center font-mono text-[13px] leading-[1.3] text-[var(--color-ink)]">
+      <p className="absolute top-[444px] left-[calc(50%-153px)] w-[306px] text-center font-mono text-[13px] leading-[1.3] text-[var(--color-ink)]">
         <TypedText key={cle} text={texte} typed skip={skip} msPerChar={42} onDone={onFini} />
       </p>
     </>
@@ -618,13 +625,17 @@ export default function Intro({
             preflight de Tailwind impose `height: auto` à toute image, ce qui
             écrase la hauteur qu'on croit fixer avec `top` + `bottom` — la
             plume se décollait alors du bas de 93 px, mesurés. */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[230px] overflow-hidden">
+        {/* ⚠️ TAILLE NATIVE, CENTRÉE (24/09) : sur un écran plus large que la
+            maquette, `object-cover` l'agrandissait d'un facteur non entier, et
+            une trame agrandie de 3 % dédouble une rangée de pixels sur trente.
+            Le fond de l'écran est charbon : les côtés n'ont rien à combler. */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex h-[230px] justify-center overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element -- trame, jamais optimisée */}
           <img
             src={assetUrl("assets/pacte_plume_c.png")}
             alt=""
             aria-hidden
-            className="h-full w-full object-cover object-bottom"
+            className="h-[230px] w-[389px] max-w-none shrink-0 object-cover object-bottom"
             style={{ imageRendering: "pixelated" }}
           />
         </div>
@@ -641,7 +652,9 @@ export default function Intro({
             place manque, une marge auto vaut 0 — le bloc revient donc en haut
             et c'est le BAS qui se rogne, jamais le titre. */}
         <div className="absolute inset-0 flex flex-col">
-          <div className="relative mt-auto h-[848px] w-full shrink-0">
+          {/* 390 de large, centré : le parchemin, les clauses et la zone de
+              signature sont posés au pixel sur la grille de la maquette. */}
+          <div className="relative mt-auto h-[848px] w-[390px] shrink-0 self-center">
             {/* eslint-disable-next-line @next/next/no-img-element -- SVG de trame, jamais optimisé */}
             <img
               src={assetUrl("assets/pacte_parchemin_a.svg")}
@@ -700,7 +713,7 @@ export default function Intro({
             « il te manque quelque chose » ; son absence dit « signe d'abord ».
             Aplat BLANC : l'orange serait invisible sur le parchemin. */}
         {marque && (
-          <div className="absolute bottom-[32px] left-[45px] w-[299px]">
+          <div className="absolute bottom-[32px] left-[calc(50%-150px)] w-[299px]">
             <IntroBouton
               plein
               blanc
@@ -846,7 +859,11 @@ export function ActeScreen({
       <img
         src={assetUrl(image)}
         alt=""
-        className="absolute inset-x-0 top-[224px] h-[390px] w-[390px] object-cover"
+        /* Toute la largeur (24/09) : la frise est une source de 1000 px, la
+           servir à 402 ou à 390 n'est qu'un autre facteur de réduction. Figée
+           à 390 et posée à gauche, elle laissait une bande orange à droite,
+           sur ses montagnes charbon. */
+        className="absolute inset-x-0 top-[224px] h-[390px] w-full object-cover"
         style={{ imageRendering: "pixelated" }}
       />
       {/* Sous la frise, le charbon reprend jusqu'en bas. */}

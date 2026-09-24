@@ -221,7 +221,7 @@ export default function Registre({
         <img
           src={assetUrl("assets/objet_grand_registre_e_b.png")}
           alt=""
-          className="block h-[390px] w-[390px] object-cover"
+          className="block h-[390px] w-full object-cover"
           style={{ imageRendering: "pixelated" }}
         />
         <div aria-hidden className="dissolve-bottom" />

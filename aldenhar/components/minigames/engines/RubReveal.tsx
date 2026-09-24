@@ -29,7 +29,7 @@ import { bayerFill, CHARBON, CREME, erodedRectPath, noiseSpecks, ORANGE, seededR
  * couvre jamais 100 % d'une pierre, on devine ce qu'il y a dessous. Réglable
  * par `config.preEclaircie` (part de surface déjà mangée, défaut ~0.12).
  */
-import { ZONE_W, ZONE_H, dissoudreBords } from "@/components/minigames/zone";
+import { ZONE_W, ZONE_H, ZONE_LARGEUR_CSS, dissoudreBords } from "@/components/minigames/zone";
 
 const W = 300,
   H = 180,
@@ -444,10 +444,8 @@ export default function RubReveal({
               // La maquette est 360×499 : plein cadre sur mobile, ratio tenu
               // par l'aspect intrinsèque du canvas ; sur écran court, la
               // hauteur plafonne et la largeur suit.
-              width: "auto",
+              width: ZONE_LARGEUR_CSS,
               height: "auto",
-              maxWidth: "100%",
-              maxHeight: "calc(100dvh - 210px)",
               imageRendering: "pixelated",
             }
           : { touchAction: "none" }

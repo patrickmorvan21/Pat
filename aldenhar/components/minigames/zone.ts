@@ -17,6 +17,19 @@
 export const ZONE_W = 390;
 export const ZONE_H = 499;
 
+/**
+ * LARGEUR D'AFFICHAGE d'une zone de jeu (24/09, iPhone 18 Pro).
+ *
+ * Le canvas garde sa grille de 390 × 499 (c'est elle qui fixe la taille des
+ * cellules de trame), mais il s'AFFICHE sur toute la largeur du cadre : figé à
+ * 390 px, il restait au milieu d'un écran plus large, avec une bande charbon
+ * de chaque côté de son fond — exactement le « rogné sur les côtés » signalé.
+ * Sur un écran court, la hauteur plafonne et la largeur suit : le rapport
+ * 390/499 est tenu par l'aspect intrinsèque du canvas (`height: auto`), donc
+ * rien ne se déforme. Sur un écran de 390, on retombe au pixel sur l'avant.
+ */
+export const ZONE_LARGEUR_CSS = `min(100%, calc((100dvh - 210px) * ${(ZONE_W / ZONE_H).toFixed(4)}))`;
+
 const CHARBON = "#1c1a16";
 
 /**

@@ -240,5 +240,11 @@
  *           structurel dans l'affichage différé des images (`Choice.
  *           illustration` ne s'affichait jamais quand la conséquence tenait
  *           sur un seul écran combiné).
+ *   1.157.1 — iPhone 18 Pro : plus de bandes sur les côtés. Le cadre était
+ *           figé à 390 px (la largeur des maquettes) et centré ; il prend
+ *           désormais toute la largeur d'un téléphone. Fonds, illustrations,
+ *           braises et mini-jeux vont d'un bord à l'autre ; ce qui est posé au
+ *           pixel sur la grille de 390 (pacte, clauses, cadre de signature) se
+ *           centre ; le démon remplit la largeur et son cache de sceau suit.
  */
-export const APP_VERSION = "1.157.0";
+export const APP_VERSION = "1.157.1";

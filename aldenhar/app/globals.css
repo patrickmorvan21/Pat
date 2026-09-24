@@ -75,8 +75,31 @@ body {
   }
   /* 100 % de `main`, donc de la hauteur visible. Le `max-height` neutralise le
      `max-h-[100dvh]` que portent les cadres : sans lui, un `dvh` plus petit
-     que la mesure réelle rognerait le bas qu'on vient de raccrocher. */
-  .phone-frame { height: 100%; max-height: 100%; }
+     que la mesure réelle rognerait le bas qu'on vient de raccrocher.
+
+     ⚠️ ET TOUTE LA LARGEUR (24/09, iPhone 18 Pro). Le cadre était figé à
+     390 px — la largeur des maquettes — et centré : sur un téléphone plus
+     large (402 px et au-delà), le fond de page restait visible en bande de
+     charbon de chaque côté, « comme s'il y avait du noir à gauche et à
+     droite ». Le cadre prend donc toute la largeur ; ce qui est dessiné au
+     pixel sur 390 (l'intro, le carton d'acte, le Registre, la mort) se pose
+     dans une SCÈNE de 390 centrée (`.maquette-390`), pendant que les fonds
+     et les nappes, eux, vont d'un bord à l'autre. */
+  .phone-frame { height: 100%; max-height: 100%; width: 100%; }
+}
+
+/* LA SCÈNE DE MAQUETTE : 390 px de large, centrée dans le cadre, toute sa
+   hauteur. Les écrans dessinés en absolu sur la grille Figma y posent leurs
+   éléments exactement comme avant ; seuls les FONDS et les NAPPES qui doivent
+   toucher les bords restent enfants directs du cadre. Sur un écran de 390 px,
+   elle coïncide au pixel avec le cadre — rien ne bouge. */
+.maquette-390 {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 390px;
+  margin-left: -195px;
 }
 
 /* LE LIT DE BRAISES EST ANCRÉ AU VIEWPORT, jamais au cadre (06/09, 3e passe).
@@ -89,19 +112,19 @@ body {
    Le composant se rend dans un PORTAIL vers <body> — obligatoire, cf. le
    commentaire de FondBraises : le cadre porte une animation `transform`
    permanente quand la santé est au plus bas, ce qui capturerait le `fixed`.
-   Largeur bornée au cadre et centrée, pour qu'un écran plus large que 390 px
-   ne mette pas de feu sur les côtés. Sur desktop la hauteur est bornée à celle
-   d'un cadre de maquette et centrée : le foyer reste sous l'écran de jeu au
-   lieu de partir du bas de la fenêtre. */
+   Sur un téléphone il prend toute la largeur, comme le cadre (24/09). Sur
+   desktop, largeur ET hauteur sont bornées à celles d'un cadre de maquette et
+   centrées : le foyer reste sous l'écran de jeu au lieu de partir du bas de la
+   fenêtre, et ne met pas de feu à côté du cadre. */
 .braises-plein {
   position: fixed;
   inset: 0;
   z-index: 60;
-  max-width: 390px;
-  margin-inline: auto;
 }
+/* Sur un téléphone le cadre prend toute la largeur (24/09) : le feu aussi.
+   Sur desktop, il reste borné au cadre de maquette et centré sous lui. */
 @media (min-width: 768px) {
-  .braises-plein { max-height: 848px; margin-block: auto; }
+  .braises-plein { max-width: 390px; margin-inline: auto; max-height: 848px; margin-block: auto; }
 }
 
 /* Numéro de version — accueil, bas à droite, blanc 50 % (demande Patrick 20/07) */
