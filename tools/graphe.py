@@ -174,6 +174,14 @@ def construire(zone: str = "landes") -> dict:
             "meta": ([f"{L.get('nbScenes', 0)} scènes"] + ([L["note"]] if L.get("note") else []))
                     if not propose else [],
         }
+        # Les quatre couches d'histoire (24/09) : proposées, pas encore jouées.
+        # Elles vivent dans le JSON de zone (matière de production), jamais
+        # dans scene-data.ts — la fiche le dit, pour ne pas les faire passer
+        # pour du texte que le joueur lit aujourd'hui.
+        if isinstance(z_.get("couches"), list) and len(z_["couches"]) == 4:
+            n["couches"] = z_["couches"]
+            if z_.get("couches_note"):
+                n["couchesNote"] = z_["couches_note"]
         if envs and z_.get("environnement") in env_nom and z_.get("role") in ROLE_TXT:
             n["groupe"] = z_["environnement"]
             n["role"] = z_["role"]

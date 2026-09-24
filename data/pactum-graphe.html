@@ -122,6 +122,14 @@ input[type=range]::-moz-range-thumb{width:9px;height:9px;border:0;background:var
 #fmeta{font-size:10px;color:var(--blanc-50);letter-spacing:.5px;margin-bottom:16px;line-height:1.7}
 #fdesc p{margin:0 0 13px;line-height:1.75;font-size:12.5px;color:var(--blanc-70)}
 #fdesc p:last-child{margin-bottom:0}
+/* Les quatre couches d'un lieu : un libellé de couche au-dessus de chaque
+   texte, le premier en blanc (le seul qu'une première vie voit), les autres
+   atténués. Le statut « pas encore en jeu » est dit en orange, une fois. */
+#fdesc .couche-statut{font-size:10.5px;line-height:1.6;color:var(--orange);margin:0 0 14px}
+#fdesc .couche-lab{display:block;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--blanc-50);margin:0 0 4px}
+#fdesc .couche{margin:0 0 14px}
+#fdesc .couche p{margin:0}
+#fdesc .couche.premiere p{color:var(--blanc)}
 .sstitre{
   font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--blanc-20);
   margin:22px 0 10px;padding-top:12px;border-top:1px solid var(--blanc-08);
@@ -1258,8 +1266,26 @@ function ouvrir(n) {
   const titre = t => { const s = document.createElement("div"); s.className = "sstitre"; s.textContent = t; dd.appendChild(s); };
   if (n.desc && n.desc.length) n.desc.forEach(par);
   else if (n.resume) par(n.resume);
+  else if (n.cat === "lieu" && n.couches) { /* son histoire tient lieu de texte, juste dessous */ }
   else if (n.cat === "lieu") par(MODE === "routage" ? "Rien d'écrit encore pour ce lieu." : "Un lieu n'a pas de texte à lui : il n'existe que par les écrans qu'on y joue.");
   else par("—");
+  // L'HISTOIRE DU LIEU, en quatre couches (24/09) — proposée, pas encore jouée.
+  // Une couche de plus à chaque passage du compte : la première vie ne voit
+  // que la première.
+  if (n.couches && n.couches.length === 4) {
+    titre("L'histoire du lieu, en quatre couches");
+    const st = document.createElement("p"); st.className = "couche-statut";
+    st.textContent = "Proposée le 24/09 · pas encore dans le jeu. Une couche de plus à chaque passage du compte : une première vie ne voit que la première."
+      + (n.couchesNote ? " " + n.couchesNote : "");
+    dd.appendChild(st);
+    const LAB = ["1 · Ce qu'on voit", "2 · Ce qui s'est passé", "3 · Qui", "4 · Le fil"];
+    n.couches.forEach((t, i) => {
+      const c = document.createElement("div"); c.className = "couche" + (i === 0 ? " premiere" : "");
+      const l = document.createElement("span"); l.className = "couche-lab"; l.textContent = LAB[i];
+      const q = document.createElement("p"); q.textContent = t;
+      c.appendChild(l); c.appendChild(q); dd.appendChild(c);
+    });
+  }
   if (n.descEchec && n.descEchec.length) { titre("Si l'on revient après un échec"); n.descEchec.forEach(par); }
   if (n.descDemo && n.descDemo.length) { titre("Version démo"); n.descDemo.forEach(par); }
   if (n.regle) { titre("Ce qu'elle impose"); par(n.regle); }

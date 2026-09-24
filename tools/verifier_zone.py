@@ -19,7 +19,12 @@ Ce qu'il vérifie — et pourquoi chacun compte :
     SIGNALÉ, pas refusé : la Lanterne du Noyé est une promesse assumée pour
     l'Acte II ;
   • les comptes annoncés par la bible, s'ils sont déclarés dans
-    `zone.comptes_annonces`, sont comparés aux comptes réels et l'écart est DIT.
+    `zone.comptes_annonces`, sont comparés aux comptes réels et l'écart est DIT ;
+  • les `couches` d'un lieu (l'histoire qui se creuse de vie en vie) : exactement
+    quatre textes non vides, 70 mots au plus chacun, et JAMAIS le héros qui se
+    souvient (« tu te souviens », « tu reconnais ») — il vient de naître, c'est le
+    monde qui en montre plus. Si la zone déclare `couches_statut`, un lieu joué
+    sans couches est SIGNALÉ (pas refusé : on écrit lieu par lieu).
 
 Code de sortie 1 sur une référence morte ou un doublon ; les signalements
 « mous » (objet sans usage, compte différent de l'annonce) n'échouent pas.
@@ -187,12 +192,40 @@ def verifier(chemin: Path) -> int:
             if not cite:
                 erreurs.append(f"lieu {L['id']} : role={L['role']} mais son environnement ne le cite pas")
 
+    # ── les quatre couches d'histoire d'un lieu
+    import re
+    SOUVENIR = re.compile(r"\b(tu te souviens|te souviens|souviens-toi|tu te rappelles|te rappelles|tu reconnais)\b", re.I)
+    avec_couches = 0
+    for L in z.get("lieux", []):
+        ou = f"lieu {L.get('id')}"
+        c = L.get("couches")
+        if c is None:
+            if (z.get("zone") or {}).get("couches_statut") and L.get("statut") != "propose" \
+                    and not L.get("region") and L.get("role") in ("entree", "pool", "fin"):
+                notes.append(f"{ou} : pas encore de couches")
+            continue
+        avec_couches += 1
+        if not isinstance(c, list) or len(c) != 4:
+            erreurs.append(f"{ou} : `couches` doit porter exactement 4 textes (il en porte {len(c) if isinstance(c, list) else '?'})")
+            continue
+        for i, t in enumerate(c, 1):
+            if not isinstance(t, str) or not t.strip():
+                erreurs.append(f"{ou} · couche {i} : texte vide")
+                continue
+            n = len(re.findall(r"[\wÀ-ÿ]+", t))
+            if n > 70:
+                erreurs.append(f"{ou} · couche {i} : {n} mots (70 au plus — une couche remplace un paragraphe, elle n'en ajoute pas trois)")
+            if SOUVENIR.search(t):
+                erreurs.append(f"{ou} · couche {i} : le héros se souvient (« {SOUVENIR.search(t).group(0)} ») — il vient de naître, c'est le monde qui montre")
+
     # ── comptes
     comptes = {
         "lieux": len(joues), "obligatoires": sum(1 for L in z["lieux"] if L.get("statut") == "obligatoire"),
         "rencontres": len(rencontres), "creatures": len(creatures), "objets": len(objets),
         "fragments": len(fragments), "environnements": len(envs),
     }
+    if avec_couches:
+        comptes["couches"] = avec_couches
     annonce = (z.get("zone") or {}).get("comptes_annonces") or {}
     for k, v in annonce.items():
         if comptes.get(k) != v:

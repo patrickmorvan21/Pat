@@ -112,6 +112,25 @@ Système anti-répétition (fiche zone + spec) : `decouverte` = première visite
 relecture après un jalon (révélation, gardien vaincu…). L'écriture vient
 après le gel — le JSON structure d'abord.
 
+### Les quatre couches d'un lieu (`couches`) — ajouté le 24/09
+
+L'histoire d'un lieu se creuse de vie en vie : on en découvre une couche de
+plus à chaque passage du COMPTE (le compteur `PlayerMemory.visitesLieux`
+existe). Proposé dans `data/landes-v2.md` §3, **pas encore joué par le
+moteur** (lot E).
+
+| champ | où | sens |
+|---|---|---|
+| `couches` | lieu | exactement **4** textes : 1 ce qu'on voit (le seul montré en première vie) · 2 ce qui s'est passé · 3 qui · 4 le fil (le Témoin, l'Appel, la Descente, la première expédition, la Petite Fixée, la Fixation, ceux qui sont revenus) |
+| `couches_note` | lieu | facultatif — où se jouent les couches quand ce n'est pas l'écran d'arrivée (« les couches 3 et 4 se lisent de l'intérieur ») |
+| `couches_statut` | `zone` | ce qui est écrit, ce qui est validé, et le rappel que le moteur ne les lit pas encore |
+
+Règles d'écriture, contrôlées par `tools/verifier_zone.py` : chaque couche
+ajoute UN fait, jamais une explication (seule la 4ᵉ nomme son fil) ; 70 mots
+au plus (une couche REMPLACE un paragraphe, elle n'en ajoute pas trois) ; le
+héros ne se souvient JAMAIS (« tu te souviens », « tu reconnais » sont
+refusés) — il vient de naître, c'est le monde qui en montre plus.
+
 ## Notes d'interprétation (Les Landes, à réappliquer aux zones suivantes)
 
 - **Région englobante** : « Le Hameau des Renonçants » est un cadre pointillé

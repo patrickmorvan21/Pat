@@ -1,6 +1,6 @@
 # Les Landes v2 — proposition du 24/09
 
-Réponse aux quatre retours de Patrick du 24/09, **mise à jour le soir même** après sa deuxième lecture : le but du *jeu* (et non plus seulement des Landes), le bestiaire élargi à 49 rencontres, et le Graphe qui montre les Landes en quatre environnements. **Rien n'est codé dans le jeu** : ce document attend ses arbitrages (section 7). Tout ce qui est marqué *existant* est déjà écrit dans le jeu ; tout ce qui est marqué *neuf* est à écrire.
+Réponse aux quatre retours de Patrick du 24/09, **mise à jour le soir même** après sa deuxième lecture : le but du *jeu* (et non plus seulement des Landes), le bestiaire élargi à 49 rencontres, et le Graphe qui montre les Landes en quatre environnements. **Mise à jour du même jour : les quatre couches d'histoire des dix-huit lieux sont écrites** (section 3), sur le ton que tu as validé. **Rien n'est codé dans le jeu** : ce document attend ses arbitrages (section 7). Tout ce qui est marqué *existant* est déjà écrit dans le jeu ; tout ce qui est marqué *neuf* est à écrire.
 
 Le découpage et le bestiaire proposés sont **écrits dans `data/zones/landes.json`** (marqués « proposé ») et se voient dans le Graphe : quatre cercles de gauche à droite, les propositions en creux.
 
@@ -124,6 +124,12 @@ Deux textes contredisent déjà la Falaise. L'escalier de la Descente a été su
 
 Dès que l'objectif nomme les cordes, ces trois textes enverraient le joueur chercher un escalier.
 
+En écrivant les couches, trois autres fiches du Codex se sont révélées fausses par rapport au jeu :
+
+- *Le Puits Condamné* : « l'eau, en bas, bouge ». Or le jeu dit, quand on y descend, que **ce puits n'a jamais eu d'eau**.
+- *La Tour de Guet* : « elle s'est couchée d'un bloc ». Or le Guetteur dit que **ce sont les villageois qui l'ont couchée**.
+- *Le Verger Noir* : les deux silhouettes sont « redressées ». Or l'image, et le texte depuis le 03/09, les montrent **penchées sur la bêche**.
+
 Et la carte Figma 2112:325 place la Borne près du bord **sud**, alors que les textes la mettent au **nord** (« le côté nord porte les marques de ceux qui entrent »). Le jeu n'utilise pas ces coordonnées, mais le Graphe si. Les textes font foi : la carte est à réaligner.
 
 ---
@@ -246,60 +252,208 @@ Une règle reste inchangée : le héros ne se souvient de rien. Ce n'est pas lui
 ### Comment ça se voit
 
 - **À l'arrivée**, un paragraphe du lieu est remplacé par celui de la nouvelle couche. Même nombre d'écrans.
+- **Une couche peut se jouer ailleurs que sur l'écran d'arrivée**, quand c'est là qu'elle se voit : les couches 3 et 4 de la Maison du Bailli se lisent de l'intérieur, celles de la Grange au fil de la nuit. Le moteur sait déjà le faire (une strate de familiarité peut viser un autre écran du lieu et y remplacer un paragraphe).
 - **Parfois, une action nouvelle** n'existe qu'à partir d'une couche (poser la question à la personne qu'on vient de découvrir).
 - **Dans le Codex**, la fiche du lieu se remplit : « Le Champ des Fixés — 2/4 », chaque couche avec son « Découvert par Braise — Jour II ». On voit ce qu'il reste à trouver.
 
-### Trois lieux écrits en entier
+### Les dix-huit lieux, écrits
 
-**La Mare aux Regards** (I)
+*Ton validé par Patrick le 24/09 ; les quinze autres lieux ont été écrits le même jour. Les trois exemples (la Mare, la Colline, la Chapelle) n'ont pas bougé. Les mêmes textes sont rangés dans `data/zones/landes.json` (champ `couches`) et se lisent dans le Graphe, sur la fiche de chaque lieu.*
+
+#### I. La Lande
+
+**La Borne Frontière**
+
+1. Une pierre seule au milieu du plateau, plus haute qu'un homme. À son pied, un tas d'offrandes. À trois pas, un homme immobile, face au sud. Tout au sud, sur l'horizon, un trait fin descend du ciel et ne bouge pas.
+2. Les offrandes ne sont pas pour la pierre. Chacun laisse ici une chose à lui en entrant, la plus petite possible : un clou, un ruban, une croûte de pain. Personne ne les reprend. Pourtant le tas ne grossit pas : chaque matin, il en manque une.
+3. Les plus vieilles marques du côté nord sont tout en bas, presque effacées : une liste de noms taillés au même outil, le même jour. En dessous, d'autres noms, plus courts, sans rien après. Des noms de chiens. Ceux-là partaient ensemble, avec leurs bêtes.
+4. Côté sud, trois marques seulement. On ne grave pas au retour quand personne ne revient : ces trois-là, quelqu'un est revenu les faire. Elles ne sont pas gravées, elles sont enfoncées, comme si on avait appuyé sur la pierre à pleine paume jusqu'à ce qu'elle cède.
+
+**Le Chemin Creux**
+
+1. Le chemin s'enfonce entre deux talus plus hauts que la tête, et le ciel devient un ruban. Une charrette penche au premier coude, depuis si longtemps que la bruyère l'a prise. Dans le creux, quelqu'un vient vers toi, de dos.
+2. Sous la bâche pourrie, la charrette est chargée de pieux, tous taillés à la même longueur et marqués au fer. Elle allait vers le sud. Le harnais pend, coupé net à la lame.
+3. Sous le siège, un grelot de cuivre verdi, celui d'un attelage. L'homme qui marche à reculons contourne la charrette sans jamais la regarder. C'était lui, le cocher. Il a coupé le harnais un jour, et depuis trente ans il marche à reculons.
+4. La bête qui tirait la charrette n'est jamais partie. Elle ne dépasse jamais le coude où la charrette s'est couchée, et elle n'attaque que ce qui lui tourne le dos : ce que son cocher a fait, le jour où il a coupé le harnais.
+
+**La Mare aux Regards**
 
 1. Une eau noire où les roseaux ne bougent pas. Tu te penches : ton reflet se penche aussi, une demi-seconde après toi. Il finit par te rattraper.
 2. La berge est usée à un seul endroit, à la largeur de deux genoux. Des gens viennent s'y agenouiller, toujours au même. Ils ne boivent pas. Ils vérifient quelque chose dans l'eau et repartent vite.
 3. Ce matin, la place est prise. Une vieille femme à genoux, le nez au-dessus de l'eau. « Le mien est en retard depuis vingt ans. Je viens voir s'il a pris de l'avance. » La Doyenne se relève et s'en va sans t'avoir regardé.
 4. Le retard, c'est l'Appel qui commence. Le jour où le reflet ne rattrape plus, on vient te chercher avec une corde. La Doyenne tient depuis vingt ans, et personne au village ne le sait.
 
-**La Colline aux Gibets** (II)
+**Le Verger Noir**
+
+1. Des arbres fruitiers plantés en rangs, le seul ordre voulu de la lande. Ils ont des branches, des feuilles noires, et des fruits qui mûrissent en cendre. C'est pire que s'ils étaient morts. Au fond, deux silhouettes penchées sur la même bêche.
+2. Les rangs sont onze, et leurs écarts s'élargissent en s'éloignant de la souche du bout : un rang par an. Tout est parti de ce premier arbre, dont il ne reste que la souche. Au fond, un douzième rang est creusé, et vide.
+3. L'homme ne compte pas ses coups de bêche. Il récite onze prénoms, toujours dans le même ordre : les enfants du hameau partis vers le sud, un par an. Chaque rang en porte un. Le premier prénom est celui de leur fils.
+4. Le douzième rang, c'est lui qui l'a commencé, et c'est elle qui l'a arrêté. Depuis, elle bêche à côté de lui et ne le laisse jamais lever la tête. Elle sait quel prénom irait dans ce rang : le sien à lui. Il l'entend déjà.
+
+#### II. Les Gibets
+
+**La Colline aux Gibets**
 
 1. Sur la crête, les potences se suivent comme des bornes. En contrebas, un corps de ce mois, un écriteau cloué sur la poitrine : un nom, une date, et au-dessus un seul mot, FIXÉ. On ne l'a pas pendu pour le tuer. On l'a pendu pour qu'il tienne.
 2. La file se lit de bas en haut, comme une chronologie. Les plus vieilles potences n'ont plus de corde ; les plus récentes n'en ont jamais manqué. On pend plus souvent qu'avant.
 3. Le nom du Grand Gibet a été gratté au couteau. À la lunette, depuis la Tour, on lit ce qu'il en reste : ce n'est pas un nom. C'est une date.
 4. C'est le jour où les corbeaux sont arrivés. Avant, le village jugeait seul. Depuis, quand il juge, quelque chose regarde, et l'ombre du Grand Gibet porte quelqu'un qui n'y a jamais été pendu.
 
-**La Chapelle des Cordes** (III)
+**Le Champ des Fixés**
+
+1. Il y a eu un cimetière ici : des stèles penchées dont plus personne ne lit les noms. Entre elles, on a planté des poteaux, en rangées, un nom sur chaque, tous face au nord. Même morts, surtout morts, on ne les laisse pas regarder le sud.
+2. Au fond, des poteaux attendent, déjà plantés, sans nom. Le Fossoyeur les taille d'avance. Pour savoir qui viendra, il regarde les toits du hameau : « Six corbeaux sur la même maison, je taille. Je me trompe jamais. »
+3. Au milieu d'une rangée pleine, il manque un poteau. Pas arraché : descellé proprement, et le trou rebouché. Le Fossoyeur sait lequel sans lever la tête. C'est le seul qu'on ait jamais retiré, et personne ne lui a demandé d'en tailler un autre.
+4. Parmi les poteaux vierges, l'un porte ton nom, gravé de frais. Dessous, une date pour chaque vie tombée avant la tienne, et la place pour d'autres. On a prévu large.
+
+**La Maison du Bailli**
+
+1. Une maison seule à l'ouest du hameau, haute, sans voisine. Chaque fenêtre est murée de l'intérieur, en rangs serrés, par quelqu'un qui prenait son temps. Contre le seuil, une masse grise, immobile, sauf les oreilles, qui te suivent depuis ton premier pas.
+2. C'est un chien, trop grand, le poil usé aux endroits d'un harnais qu'il ne porte plus. Son maître pend à la colline. Personne n'a jamais levé l'ordre qu'il lui avait donné, et le chien fait encore sa ronde aux mêmes heures, autour d'une porte que personne n'essaie plus d'ouvrir.
+3. Dedans, une seule chaise, au milieu, tournée vers la porte. Sous ses pieds avant, deux ronds creusés dans la terre battue. Une seule fenêtre n'est pas murée, sur le mur ouest. De la chaise, et de la chaise seulement, elle cadre le moulin.
+4. Sur le mur, des marques par cinq. Elles commencent à hauteur d'homme et descendent : il s'est assis pour continuer. La dernière série s'arrête à hauteur d'enfant, sans son cinquième trait. Il comptait des jours, et ce n'étaient pas les siens.
+
+*Les couches 3 et 4 se lisent de l'intérieur, ou par le trou du chien.*
+
+**Le Moulin Arrêté**
+
+1. Le moulin a gardé ses quatre ailes, ouvertes en croix sur le couchant. Le vent couche la bruyère jusqu'à son pied, et elles ne bougent pas. Leur ombre non plus. La porte est entrouverte, entretenue. Dedans, on dort d'un vrai sommeil.
+2. Quelqu'un vit ici. Un lit de bruyère refait de frais, bien trop court pour un adulte. À hauteur d'enfant, des jours comptés par cinq, sur des années. Sur la marche, du pain dur et de l'eau, déposés par quelqu'un du hameau qui ne veut pas qu'on le voie.
+3. Elle a huit ans, et elle les a depuis quarante ans. Elle aligne des cailloux sur la pierre de la meule. « Ils m'ont pendue un mardi. Ça n'a pas pris. » Sur la poutre, le meunier a noté le jour où les ailes se sont arrêtées : un mardi.
+4. Rien ne se pose jamais sur le toit du moulin : pas un corbeau, pas un poids la nuit. Sur ceux du hameau, si. Elle parle de ce qui s'y pose comme d'une voisine qu'elle n'a jamais croisée : « Celle qui regarde. Elle m'a jamais vue. »
+
+#### III. Le Hameau
+
+**Le Seuil du Hameau**
+
+1. Des toits au creux du plateau, une seule cheminée qui fume sur vingt, et aucun chien n'aboie. La barrière n'a pas de garde. Sur chaque linteau, une croix à la craie, même hauteur, même main. Sur un seuil, une femme regarde une fenêtre, en face.
+2. À la troisième aube, on ne chasse personne : on te demande si tu restes. Tous les vieux du hameau ont répondu oui, un matin, après avoir juré au même muret. Ils avaient ton pas, avant.
+3. La femme du seuil ne parle à personne, et personne ne lui parle. Elle regarde la même fenêtre depuis quarante ans. Depuis trois hivers, elle regarde aussi le sud, par où son fils est parti. Quand on lui demande, elle dit « deux ».
+4. Elle avait huit ans le jour où la corde n'a pas pris. Quand les grands sont partis manger, on l'a oubliée là, et elle a vu la petite défaire le nœud toute seule. Le lendemain, tout le hameau lui a dit qu'elle n'avait rien vu. Elle attend depuis qu'on la croie.
+
+**La Chapelle des Cordes**
 
 1. Des cordes pendent du plafond le long des deux murs, chacune tressée pour un nom. Au fond, l'autel debout. Une femme tresse, assise, et ne lève pas la tête.
 2. Les cordes neuves n'ont pas encore de nom. La Veuve tresse d'avance, comme le Fossoyeur taille d'avance. Ici, on prépare les places avant d'avoir les gens.
 3. Une seule corde est défaite chaque matin, au même nœud. La Veuve la refait depuis trente ans sans demander qui. « Je la refais. C'est tout ce qu'on m'a demandé. »
 4. Les marques sur le nœud ne sont pas des coups de lame. Ce sont des doigts, petits. Quelqu'un le défait chaque nuit, avec soin, comme on défait ses lacets. Et le seul enfant des Landes qui ne grandit plus vit à l'ouest.
 
+**Le Marché Muet**
+
+1. Un marché sans un cri. Des étals de trois fois rien sous des bâches tendues, des marchands qui négocient par gestes. Paumes ouvertes, on passe ; les mains cachées, on se fait regarder. Le premier mot dit à voix haute fait tourner toutes les têtes.
+2. Au bout de la rangée, un étal vide, le bois gratté. Il appartenait à un homme qui criait ses prix. Un matin, il a crié seul, face au sud, avant l'arrivée des autres. On l'a fixé le soir même. Depuis, on vend sans parler.
+3. Le Colporteur n'est pas du hameau. Il est le seul à passer la barrière sans avoir juré, dans un sens comme dans l'autre. Ce qu'il vend a appartenu à quelqu'un. Il ne dit jamais à qui, et personne ne demande : chacun a peur d'y retrouver quelque chose.
+4. Il ne regarde jamais un visage, il regarde le pas. En vingt ans, trois pas sont revenus du sud, et il a vu chacun passer deux fois. La deuxième fois, ils allaient de nouveau vers le sud.
+
+**Le Petit Tribunal**
+
+1. Une salle basse de pierre, plantée de travers par rapport à la rue. Trois bancs face à une chaire, et la chaire face à la porte : ici, même l'entrée est un interrogatoire. Au mur, une feuille clouée, la liste des signes.
+2. Personne ne vote. Ceux qui restent assis signent la sentence, ceux qui sortent la refusent. Au fond, un banc est resté de biais, comme si quelqu'un s'était levé le dernier et était parti vite. Depuis, plus personne ne sort.
+3. C'était le Déserteur, le seul juré qui soit jamais sorti. Ici, celui qui dit non passe en jugement à la place de l'accusé. Il n'est jamais revenu s'asseoir. Sa place est la seule où la poussière est intacte : on la lui garde.
+4. Au Registre des Pendaisons, le petit signe en forme de plume n'est posé qu'à côté des sentences que tous les bancs ont signées. Le Déserteur le dit à sa façon : « Quand tout le monde est d'accord, elle vient. »
+
+**Le Puits Condamné**
+
+1. Un puits condamné de frais : planches neuves, chaînes, blocs de meule empilés. Tout le hameau tombe en ruine, et ça, on l'entretient. Dessous, ça cogne. Trois coups, une pause. Trois coups. Poli, comme on frappe à une porte qu'on va vous ouvrir.
+2. On n'y puise plus : on y descend. Ce puits n'a jamais eu d'eau. À dix brasses, la corde s'arrête sur un plancher, et dessus, rangées par tailles, des paires de chaussures propres. Une paire par Fixé.
+3. Ce qui cogne tient un registre : trois coups par nom, une pause entre les noms. Ceux qui sont descendus parlent tous d'une main, en bas, qui tient la corde pour toi, comme on tient une porte. Elle ne tire pas. Elle attend que tu passes.
+4. On ne l'a pas condamné à cause des coups. On l'a condamné parce qu'on y entendait l'Appel mieux qu'ailleurs, et que le premier Fixé s'était penché dessus pour répondre. Le dernier signe de l'Ordonnance vient d'ici : « répondre à ce qui n'a pas parlé ».
+
+**La Tour de Guet**
+
+1. La tour n'a plus de sommet. Elle s'arrête net à mi-hauteur, et le reste s'est répandu autour de son pied. Quelques blocs posés les uns sur les autres font un siège, usé par-dessus. Par son ouverture, la Colline aux Gibets tombe pile dans l'axe.
+2. Elle n'est pas tombée : on l'a couchée. Les pierres ne sont pas éboulées, elles sont rangées, en tas réguliers, par taille. Sur le tas, un homme en manteau de guet se tient debout, dos à toi, et regarde le sud par-dessus le hameau.
+3. Dans la meurtrière du sud, des encoches par cinq, des centaines. Le Guetteur sonnait pour chaque silhouette qui marchait vers le sud, et le hameau courait la ramener. Chaque encoche en est une. Sa corne est bouchée à la cire, de l'intérieur.
+4. Le dernier soir, il a sonné pour personne : rien ne marchait vers le sud. Ce qu'il avait vu était sur les toits, et regardait le hameau. Voir venir ne servait plus à rien. On a couché la tour, et depuis vingt ans on entend ça : rien.
+
+**La Grange des Renonçants (la nuit)**
+
+1. Au bout du hameau, une grange dont le linteau n'a pas de croix à la craie. De la paille propre, une lampe à la mèche courte, calculée pour s'éteindre seule. La porte se ferme, et tu entends une barre qu'on pose. Dehors.
+2. Sur les poutres, des bâtons de comptage, et sous chaque bâton, quatre encoches. On ne compte pas les nuits, ici : on compte les passages de la ronde. Quatre par nuit. Des hommes avec une lanterne, qui ne cherchent pas. Ils comptent.
+3. Au cœur de la nuit, le toit travaille. Une poutre plie sous un poids qui remonte le faîtage et s'arrête au-dessus de la porte. Aucun bruit de pas : seulement le bois qui porte quelque chose. Dehors, les corbeaux ne s'envolent pas.
+4. La barre ne t'enferme pas et ne te protège pas : elle indique que la grange est occupée. Les nuits où elle est posée, la poutre plie. Les nuits où la grange est vide, jamais. Ce qui monte sur le toit sait lire une barre.
+
+*Les couches se jouent au fil de la nuit, sur les écrans de la grange.*
+
+#### IV. Le Sud
+
+**Le Chemin du Sud**
+
+1. Le plateau cesse d'être un pays : plus de murets, plus de poteaux. Le vent vient du sud et n'a plus le goût de la bruyère. Sur les cent derniers pas, des choses posées à intervalles réguliers : un sac, un manteau plié, des bottes, les pointes vers le sud.
+2. Rien n'a été jeté, tout a été posé. Le manteau est plié en quatre, coutures alignées, les poches vidées puis remises à l'endroit. Celui qui l'a laissé là avait le temps. Personne ne le poursuivait.
+3. Ce sont les affaires de ceux qui partent sans bagage, d'un pas égal. La dernière borne avant le bord porte leurs noms au nord, serrés jusqu'à ne plus trouver de place. Sa face sud est lisse, creusée au milieu, usée par des paumes. On vient toucher celle-là.
+4. Les bottes rangées côte à côte sont à ta pointure. Même longueur que les tiennes, même usure au talon, et le lacet gauche refait deux fois, comme le tien. Elles sont encore sèches. Quelqu'un les a enlevées ici, et il est parti pieds nus.
+
+**La Palissade Sud**
+
+1. Des rondins hauts de deux hommes barrent le plateau, avec un portillon et une guérite éclairée. Les pointes sont tournées vers les Landes, pas vers le sud. Derrière, le sol manque, et l'air y coule comme une eau froide.
+2. Ce mur n'a jamais protégé le hameau de ce qui monte : il retient ce qui veut descendre. Autour du verrou du portillon, des griffures à hauteur de mains. Des mains qui voulaient passer, une nuit, et qu'on n'a pas laissées.
+3. Le Veilleur note tout le monde : les départs dans une colonne, les retours dans une autre, vide depuis trente ans. « Ceux qui montent, on les laisse monter. C'est descendre qui est interdit. » Il ouvre à ceux qui partent proprement. Les autres, il les note.
+4. Il n'a pas commencé la colonne des départs. On la lui a remise déjà ouverte, et on lui dit quoi y mettre. En tête, un petit signe en forme de plume, le même qu'en marge du Registre des Pendaisons. Quelque chose tient ce compte depuis plus longtemps que lui.
+
+**La Falaise aux Cordes**
+
+1. Tu montes une dernière ondulation de pierre, et la lande s'ouvre sur un trou large comme un village, sans fond visible. Du ciel, des cordes descendent dedans, des centaines, venues de si haut qu'on ne voit pas à quoi elles tiennent. Aucune ne bouge.
+2. Au ras du bord, des pieux, un tous les trois pas, plus vieux que les cordes. Aucune n'y est nouée. Le bois porte la même marque au fer que les pieux de la charrette du Chemin Creux. Ceux-là sont arrivés jusqu'ici.
+3. Trois ou quatre cordes s'arrêtent en plein vide, tranchées net à la lame, par en dessous. Les coupes sont toutes à la même hauteur sous le bord. On ne remonte pas, ici : quelqu'un, en bas, y veille.
+4. Parmi les pieux, il y en a un plus haut que les autres, et plus sombre. Il n'était pas là quand tu es arrivé au bord. Il ne te suit pas. Il ne descend pas. Il regarde ceux qui descendent, comme il a regardé tous les autres.
+
 ### Le fil de chaque lieu
 
-Les couches se répondent d'un lieu à l'autre. Cinq fils traversent la zone : **la première expédition**, **l'Appel**, **la Fixation**, **la Petite Fixée** et **le Témoin**.
+Les couches se répondent d'un lieu à l'autre. Cinq fils traversent la zone : **la première expédition**, **l'Appel**, **la Fixation**, **la Petite Fixée** et **le Témoin**, plus un sixième, plus mince : **ceux qui sont revenus**.
 
 | lieu | 1. ce qu'on voit | 2. ce qui s'est passé | 3. qui | 4. le fil |
 |---|---|---|---|---|
 | **I. La Lande** | | | | |
-| Borne Frontière | la pierre, l'homme immobile, la colonne au sud | les offrandes : les affaires de ceux qui ne sont jamais arrivés au village | les plus vieilles marques du nord : celles des premières expéditions, dont les chiens sont restés (la Meute) | les trois marques du sud : ceux qui sont revenus *(existant, le Sceau)* |
-| Chemin Creux | les talus, la charrette au coude | la charrette des premières expéditions, chargée de pieux | le Marcheur en était le cocher. Il a fui, et depuis il recule | la Bête ne garde pas le chemin contre ceux qui entrent, mais contre ceux qui repartent |
-| Mare aux Regards | *(voir plus haut)* | | | |
-| Verger Noir | les fruits de cendre, les Époux | onze rangs, un par an | chaque rang porte le prénom d'un enfant parti vers le sud | le douzième attend un prénom qu'ils refusent d'écrire |
+| La Borne Frontière | la pierre, les offrandes, l'homme immobile, le trait au sud | les offrandes : chacun en laisse une en entrant, et chaque matin il en manque une | les plus vieilles marques du nord : une liste gravée le même jour, et des noms de chiens | les trois marques du sud : ceux qui sont revenus |
+| Le Chemin Creux | les talus, la charrette au coude, l'homme de dos | la charrette : des pieux marqués au fer, le harnais coupé | le Marcheur en était le cocher | la Bête tirait la charrette : elle ne dépasse pas le coude et n'attaque que les dos tournés |
+| La Mare aux Regards | le reflet en retard | la berge usée à deux genoux | la Doyenne | le retard, c'est l'Appel |
+| Le Verger Noir | les fruits de cendre, les Époux | onze rangs, un par an, et un douzième vide | onze prénoms, les enfants partis au sud ; le premier était leur fils | le douzième prénom est celui du mari, et il l'entend déjà |
 | **II. Les Gibets** | | | | |
-| Colline aux Gibets | *(voir plus haut)* | | | |
-| Champ des Fixés | les poteaux entre les stèles | les poteaux vierges, taillés d'avance | l'Emplacement Vide : le seul poteau qu'on ait retiré *(existant)* | le poteau à ton nom, qui prend une date à chaque mort *(existant)* |
-| Maison du Bailli | les fenêtres murées, le Chien | l'ordre de garder, jamais levé | dedans : la chaise tournée vers la porte, la fenêtre sur le moulin *(existant)* | les marques à hauteur d'enfant : il comptait les jours de quelqu'un *(existant)* |
-| Moulin Arrêté | les ailes immobiles, le vrai sommeil | quelqu'un y vit, que le village ne voit pas | la Petite Fixée, huit ans depuis quarante ans *(existant)* | pourquoi le Moulin est sûr : on ne condamne pas qui on refuse de voir *(existant)* |
+| La Colline aux Gibets | le corps FIXÉ | la file comme chronologie | le nom gratté est une date | le jour où les corbeaux sont arrivés |
+| Le Champ des Fixés | les poteaux entre les stèles, face au nord | les poteaux vierges, au compte des corbeaux | l'Emplacement Vide, le seul poteau retiré | le poteau à ton nom, une date par vie tombée |
+| La Maison du Bailli | les fenêtres murées, la masse grise sur le seuil | le chien, et l'ordre jamais levé | la chaise tournée vers la porte, la fenêtre sur le moulin | les marques qui descendent jusqu'à hauteur d'enfant |
+| Le Moulin Arrêté | les ailes et leur ombre immobiles, le vrai sommeil | le lit trop court, le pain déposé | la Petite Fixée ; les ailes arrêtées un mardi | rien ne se pose sur son toit : celle qui regarde ne l'a jamais vue |
 | **III. Le Hameau** | | | | |
-| Seuil du Hameau | la barrière sans garde, le silence | le Serment, et ce que veut dire chaque clause | la Femme au Seuil, quarante ans de silence | elle avait huit ans le jour de la Fixation ratée. Elle a vu *(existant)* |
-| Chapelle des Cordes | *(voir plus haut)* | | | |
-| Marché Muet | on y négocie par gestes | un mot dit à voix haute peut être un aveu | le Colporteur revend les affaires posées au Chemin du Sud | il reconnaît les visages de ceux qui reviennent *(existant)* |
-| Petit Tribunal | la salle de travers, l'Ordonnance | on y juge à l'unanimité | le Déserteur, le seul juré qui a dit non | quand tout le monde est d'accord, elle vient : le signe en marge du registre |
-| Puits Condamné | les planches clouées, l'eau qui bouge | on y descend des choses | les Mains du Puits | on l'a condamné parce qu'on y entendait l'Appel mieux qu'ailleurs |
-| Tour de Guet | couchée dans l'axe du Grand Gibet | le Guetteur, resté debout à côté | ce qu'elle guettait : les cordes | elle est tombée le soir où quelque chose est venu les regarder aussi |
-| La nuit (grange) | la barre dehors, les combles cloués | la ronde et ses quatre passages | le poids sur le toit *(existant)* | la barre dehors n'enferme pas : elle signale une grange occupée *(existant)* |
+| Le Seuil du Hameau | la barrière sans garde, les croix, la femme sur le seuil | à la troisième aube, les vieux ont dit oui : ils avaient ton pas | la Femme au Seuil, quarante ans devant la même fenêtre | elle a vu la petite défaire le nœud, et on lui a dit qu'elle n'avait rien vu |
+| La Chapelle des Cordes | les cordes tressées pour un nom | on tresse d'avance | une corde défaite chaque matin | des doigts petits : l'enfant de l'ouest |
+| Le Marché Muet | on négocie par gestes | l'étal de l'homme fixé pour avoir crié seul face au sud | le Colporteur, seul à passer la barrière sans jurer | trois pas revenus du sud, et repartis vers le sud |
+| Le Petit Tribunal | la salle de travers, la chaire face à la porte | rester assis, c'est signer ; un banc de biais | le Déserteur, sa place gardée | le signe en plume n'est posé que sur les sentences unanimes |
+| Le Puits Condamné | les planches neuves, les trois coups polis | un plancher, des chaussures rangées par tailles | la main qui tient la corde comme une porte | on y entendait l'Appel : le quatrième signe de l'Ordonnance vient d'ici |
+| La Tour de Guet | la tour sans sommet, dans l'axe de la Colline | on l'a couchée ; le Guetteur debout | les encoches : il sonnait pour chaque silhouette partie au sud | le dernier soir, ce qu'il a vu était sur les toits |
+| La Grange des Renonçants (la nuit) | le linteau sans croix à la craie, la barre posée dehors | la ronde et ses quatre passages | le poids sur le toit | la poutre ne plie que les nuits où la barre est posée |
 | **IV. Le Sud** | | | | |
-| Chemin du Sud | les affaires posées, pointes vers le sud | ceux qui les ont posées ne fuyaient pas | le manteau plié : poches vidées, puis remises *(existant)* | les bottes rangées côte à côte sont à ta pointure |
-| Palissade Sud | les pointes tournées vers l'intérieur | le Veilleur compte les départs | la colonne des retours, vide, et un signe en tête | ce signe est le même qu'en marge du registre du Tribunal : le Témoin compte aussi |
-| Falaise aux Cordes | les cordes du ciel, le vide | les pieux vierges : ceux des premières expéditions | les cordes tranchées par en dessous *(existant)* | au bord, il reste. Il ne descend pas : il regarde ceux qui descendent |
+| Le Chemin du Sud | les affaires posées, pointes vers le sud | tout a été posé, rien jeté | les Appelés, et la dernière borne usée par des paumes | les bottes à ta pointure, enlevées ici |
+| La Palissade Sud | les pointes tournées vers l'intérieur | les griffures autour du verrou | le Veilleur et ses deux colonnes | la colonne des départs, déjà ouverte, signée d'une plume |
+| La Falaise aux Cordes | les cordes du ciel, immobiles, le trou | les pieux, marqués comme ceux de la charrette | les cordes tranchées par en dessous | un pieu de plus, qui regarde ceux qui descendent |
+
+### Comment les fils se répartissent
+
+| fil | où il affleure (couche) |
+|---|---|
+| la première expédition | la Borne (3), le Chemin Creux (2, 3, 4), la Falaise (2) |
+| l'Appel | la Mare (4), le Verger (4), le Seuil (2), la Tour (3), le Puits (4), le Chemin du Sud (3, 4) |
+| la Fixation | la Colline (1), le Champ (2, 4), le Marché (2), le Petit Tribunal (2, 3), le Puits (4) |
+| la Petite Fixée | la Maison du Bailli (4), le Moulin (2, 3, 4), le Seuil (4), la Chapelle (4) |
+| le Témoin | la Colline (4), le Petit Tribunal (4), la Tour (4), la Grange (3, 4), la Palissade (4), la Falaise (4) |
+| ceux qui sont revenus | la Borne (4), le Marché (4) |
+
+Aucun lieu n'explique son fil : chacun en montre un morceau, et c'est en passant de l'un à l'autre, de vie en vie, qu'on les relie. Les trois marques du sud de la Borne et les trois pas revenus du Colporteur, par exemple, ne sont jamais rapprochés par le jeu.
+
+### Ce qui a changé par rapport au premier plan
+
+En écrivant, j'ai aligné six lieux sur ce que le jeu dit déjà :
+
+- **La Borne.** Les offrandes ne sont pas « les affaires de ceux qui ne sont jamais arrivés » : l'objet qu'on y ramasse dit déjà qu'« on les a laissés pour entrer ». La couche 2 le garde, et ajoute qu'il en manque une chaque matin.
+- **Le Chemin Creux.** La Bête ne garde pas le chemin « contre ceux qui repartent » : c'est la bête qui tirait la charrette. C'est ce qui explique deux choses déjà écrites, « après le coude, elle suit plus » et « elle attaque ce qui lui tourne le dos ».
+- **La Tour de Guet.** Elle n'est pas tombée : le Guetteur dit déjà « Nous » quand on lui demande qui l'a couchée. La couche 4 raconte le soir où ils l'ont décidé.
+- **Le Puits.** Il n'a jamais eu d'eau : le jeu le dit quand on y descend. Le Codex, lui, dit que « l'eau bouge » ; c'est à corriger avec le lot A.
+- **Le Marché.** Le Colporteur ne revend pas les affaires du Chemin du Sud : le jeu dit que personne n'y touche. Ce qu'il vend a appartenu à quelqu'un, et on ne sait pas à qui.
+- **La Palissade.** Le signe en plume est en tête de la colonne des **départs**, comme dans le jeu, pas des retours.
+
+Les trois lieux proposés (la Tourbière, la Chènevière, le Camp des Premières Expéditions) n'ont **pas encore de couches** : j'attends que tu les gardes avant de les écrire.
+
+Un fait neuf, et c'est le plus lourd : **les vieux du hameau ont été des marcheurs**, qui ont dit oui à la troisième aube (le Seuil, couche 2). C'est ce que veut dire leur nom, les Renonçants, et c'est ce qui donne son poids à la question qu'on te pose le troisième matin.
 
 ---
 
@@ -345,7 +499,7 @@ Environ trente minutes et quinze jets par traversée. Ces budgets peuvent deveni
 | **B. Les quatre environnements** | les Landes passent au modèle des Salines, cartons d'environnement | gros : c'est le plus vieux code du jeu |
 | **C. Le bestiaire** | les vingt-deux nouvelles rencontres, les trois lieux, le tirage des rencontres de passage | gros : à livrer environnement par environnement |
 | **D. Le Témoin en quatre temps** | l'Ombre, les deux répliques, le face-à-face | petit |
-| **E. L'histoire par lieu** | les couches 2 à 4 des dix-huit lieux, le Codex en « 2/4 » | gros : c'est surtout de l'écriture |
+| **E. L'histoire par lieu** | brancher les couches 2 à 4 des dix-huit lieux (déjà écrites, section 3), le Codex en « 2/4 » | moyen : l'écriture est faite, reste à la ranger dans le moteur et dans le Codex |
 
 Je propose de commencer par **A** : il répond au joueur perdu tout de suite, même avant que les environnements existent. Puis B, qui porte le reste. Puis C et D, puis E.
 
@@ -360,6 +514,6 @@ Images à produire : trois vues de marche avec la colonne, puis les dix-huit du 
    - *Que gagne-t-on à la passer ?* **On sort du Domaine, et cette vie est à toi** *(recommandé)* : c'est la suite logique de la première clause du Pacte (« il te sera prêté une vie »), et venant d'un Geôlier qui aime nos échecs, on peut en douter. Les autres pistes restent possibles : te rendre ta mémoire, ou te rayer de son Registre.
 2. **Le plancher de lieux.** La règle des Salines impose quatre lieux par environnement. Appliquée aux Landes, la traversée passerait de 13 à 16 lieux. Je recommande **trois lieux par environnement pour les Landes**, qui restent la zone d'apprentissage.
 3. **Le bestiaire.** Les vingt-deux nouvelles rencontres et les trois lieux te vont-ils ? Lesquelles écarter ou remplacer ? En particulier : le Rabatteur (le seul qui peut faire reculer d'un lieu), les Voix Basses (qui choisissent une Croisée à ta place) et le Condamné du lendemain (qui peut te faire porter sa croix).
-4. **Les quatre couches par lieu.** Le principe, et les trois lieux écrits en exemple : est-ce le ton et la profondeur que tu veux ? Si oui, j'écris les quinze autres.
+4. ~~**Les quatre couches par lieu.**~~ **Tranché le 24/09 : le ton te va.** Les quinze autres lieux sont écrits (section 3). Reste à relire, et à dire s'il faut écrire les couches des trois lieux proposés (Tourbière, Chènevière, Camp des Premières Expéditions).
 5. **Le Grand Registre classe-t-il par profondeur ?** Proposé : d'abord l'acte, puis la zone atteinte, puis les lieux franchis. Le but du jeu devient le score.
 6. **L'ordre des lots.** A d'abord (le but, dit), puis B (les quatre environnements), puis C (le bestiaire) ?

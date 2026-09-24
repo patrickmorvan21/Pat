@@ -23,7 +23,8 @@
         "h": 1900
       }
     },
-    "environnements_statut": "Découpage en quatre environnements accepté par Patrick le 24/09. Tirages et plancher proposés (trois lieux par environnement, à trancher : data/landes-v2.md §7). PAS ENCORE JOUÉ PAR LE MOTEUR : la traversée des Landes tire toujours à plat, avec l'enclave du Hameau."
+    "environnements_statut": "Découpage en quatre environnements accepté par Patrick le 24/09. Tirages et plancher proposés (trois lieux par environnement, à trancher : data/landes-v2.md §7). PAS ENCORE JOUÉ PAR LE MOTEUR : la traversée des Landes tire toujours à plat, avec l'enclave du Hameau.",
+    "couches_statut": "Histoire en quatre couches par lieu (1 au premier passage du compte, 2 au deuxième, 3 au troisième, 4 au quatrième). Ton validé par Patrick le 24/09, les dix-huit lieux écrits le même jour. Pas encore joué par le moteur : c'est le lot E de data/landes-v2.md."
   },
   "lieux": [
     {
@@ -43,7 +44,13 @@
       "x": 1080,
       "y": 170,
       "environnement": "gibets",
-      "role": "entree"
+      "role": "entree",
+      "couches": [
+        "Sur la crête, les potences se suivent comme des bornes. En contrebas, un corps de ce mois, un écriteau cloué sur la poitrine : un nom, une date, et au-dessus un seul mot, FIXÉ. On ne l'a pas pendu pour le tuer. On l'a pendu pour qu'il tienne.",
+        "La file se lit de bas en haut, comme une chronologie. Les plus vieilles potences n'ont plus de corde ; les plus récentes n'en ont jamais manqué. On pend plus souvent qu'avant.",
+        "Le nom du Grand Gibet a été gratté au couteau. À la lunette, depuis la Tour, on lit ce qu'il en reste : ce n'est pas un nom. C'est une date.",
+        "C'est le jour où les corbeaux sont arrivés. Avant, le village jugeait seul. Depuis, quand il juge, quelque chose regarde, et l'ombre du Grand Gibet porte quelqu'un qui n'y a jamais été pendu."
+      ]
     },
     {
       "id": "champ_des_fixes",
@@ -62,7 +69,13 @@
       "x": 1620,
       "y": 240,
       "environnement": "gibets",
-      "role": "pool"
+      "role": "pool",
+      "couches": [
+        "Il y a eu un cimetière ici : des stèles penchées dont plus personne ne lit les noms. Entre elles, on a planté des poteaux, en rangées, un nom sur chaque, tous face au nord. Même morts, surtout morts, on ne les laisse pas regarder le sud.",
+        "Au fond, des poteaux attendent, déjà plantés, sans nom. Le Fossoyeur les taille d'avance. Pour savoir qui viendra, il regarde les toits du hameau : « Six corbeaux sur la même maison, je taille. Je me trompe jamais. »",
+        "Au milieu d'une rangée pleine, il manque un poteau. Pas arraché : descellé proprement, et le trou rebouché. Le Fossoyeur sait lequel sans lever la tête. C'est le seul qu'on ait jamais retiré, et personne ne lui a demandé d'en tailler un autre.",
+        "Parmi les poteaux vierges, l'un porte ton nom, gravé de frais. Dessous, une date pour chaque vie tombée avant la tienne, et la place pour d'autres. On a prévu large."
+      ]
     },
     {
       "id": "moulin_sans_ailes",
@@ -81,7 +94,13 @@
       "x": 300,
       "y": 260,
       "environnement": "gibets",
-      "role": "pool"
+      "role": "pool",
+      "couches": [
+        "Le moulin a gardé ses quatre ailes, ouvertes en croix sur le couchant. Le vent couche la bruyère jusqu'à son pied, et elles ne bougent pas. Leur ombre non plus. La porte est entrouverte, entretenue. Dedans, on dort d'un vrai sommeil.",
+        "Quelqu'un vit ici. Un lit de bruyère refait de frais, bien trop court pour un adulte. À hauteur d'enfant, des jours comptés par cinq, sur des années. Sur la marche, du pain dur et de l'eau, déposés par quelqu'un du hameau qui ne veut pas qu'on le voie.",
+        "Elle a huit ans, et elle les a depuis quarante ans. Elle aligne des cailloux sur la pierre de la meule. « Ils m'ont pendue un mardi. Ça n'a pas pris. » Sur la poutre, le meunier a noté le jour où les ailes se sont arrêtées : un mardi.",
+        "Rien ne se pose jamais sur le toit du moulin : pas un corbeau, pas un poids la nuit. Sur ceux du hameau, si. Elle parle de ce qui s'y pose comme d'une voisine qu'elle n'a jamais croisée : « Celle qui regarde. Elle m'a jamais vue. »"
+      ]
     },
     {
       "id": "mare_aux_regards",
@@ -100,7 +119,13 @@
       "x": 640,
       "y": 420,
       "environnement": "lande",
-      "role": "pool"
+      "role": "pool",
+      "couches": [
+        "Une eau noire où les roseaux ne bougent pas. Tu te penches : ton reflet se penche aussi, une demi-seconde après toi. Il finit par te rattraper.",
+        "La berge est usée à un seul endroit, à la largeur de deux genoux. Des gens viennent s'y agenouiller, toujours au même. Ils ne boivent pas. Ils vérifient quelque chose dans l'eau et repartent vite.",
+        "Ce matin, la place est prise. Une vieille femme à genoux, le nez au-dessus de l'eau. « Le mien est en retard depuis vingt ans. Je viens voir s'il a pris de l'avance. » La Doyenne se relève et s'en va sans t'avoir regardé.",
+        "Le retard, c'est l'Appel qui commence. Le jour où le reflet ne rattrape plus, on vient te chercher avec une corde. La Doyenne tient depuis vingt ans, et personne au village ne le sait."
+      ]
     },
     {
       "id": "hameau_des_renoncants",
@@ -147,7 +172,13 @@
       "x": 810,
       "y": 1024,
       "environnement": "hameau",
-      "role": "entree"
+      "role": "entree",
+      "couches": [
+        "Des toits au creux du plateau, une seule cheminée qui fume sur vingt, et aucun chien n'aboie. La barrière n'a pas de garde. Sur chaque linteau, une croix à la craie, même hauteur, même main. Sur un seuil, une femme regarde une fenêtre, en face.",
+        "À la troisième aube, on ne chasse personne : on te demande si tu restes. Tous les vieux du hameau ont répondu oui, un matin, après avoir juré au même muret. Ils avaient ton pas, avant.",
+        "La femme du seuil ne parle à personne, et personne ne lui parle. Elle regarde la même fenêtre depuis quarante ans. Depuis trois hivers, elle regarde aussi le sud, par où son fils est parti. Quand on lui demande, elle dit « deux ».",
+        "Elle avait huit ans le jour où la corde n'a pas pris. Quand les grands sont partis manger, on l'a oubliée là, et elle a vu la petite défaire le nœud toute seule. Le lendemain, tout le hameau lui a dit qu'elle n'avait rien vu. Elle attend depuis qu'on la croie."
+      ]
     },
     {
       "id": "grange_des_renoncants",
@@ -166,7 +197,14 @@
       "x": 930,
       "y": 1104,
       "environnement": "hameau",
-      "role": "fin"
+      "role": "fin",
+      "couches": [
+        "Au bout du hameau, une grange dont le linteau n'a pas de croix à la craie. De la paille propre, une lampe à la mèche courte, calculée pour s'éteindre seule. La porte se ferme, et tu entends une barre qu'on pose. Dehors.",
+        "Sur les poutres, des bâtons de comptage, et sous chaque bâton, quatre encoches. On ne compte pas les nuits, ici : on compte les passages de la ronde. Quatre par nuit. Des hommes avec une lanterne, qui ne cherchent pas. Ils comptent.",
+        "Au cœur de la nuit, le toit travaille. Une poutre plie sous un poids qui remonte le faîtage et s'arrête au-dessus de la porte. Aucun bruit de pas : seulement le bois qui porte quelque chose. Dehors, les corbeaux ne s'envolent pas.",
+        "La barre ne t'enferme pas et ne te protège pas : elle indique que la grange est occupée. Les nuits où elle est posée, la poutre plie. Les nuits où la grange est vide, jamais. Ce qui monte sur le toit sait lire une barre."
+      ],
+      "couches_note": "Les couches se jouent au fil de la nuit, sur les écrans de la grange."
     },
     {
       "id": "chapelle_des_cordes",
@@ -186,7 +224,13 @@
       "x": 870,
       "y": 680,
       "environnement": "hameau",
-      "role": "pool"
+      "role": "pool",
+      "couches": [
+        "Des cordes pendent du plafond le long des deux murs, chacune tressée pour un nom. Au fond, l'autel debout. Une femme tresse, assise, et ne lève pas la tête.",
+        "Les cordes neuves n'ont pas encore de nom. La Veuve tresse d'avance, comme le Fossoyeur taille d'avance. Ici, on prépare les places avant d'avoir les gens.",
+        "Une seule corde est défaite chaque matin, au même nœud. La Veuve la refait depuis trente ans sans demander qui. « Je la refais. C'est tout ce qu'on m'a demandé. »",
+        "Les marques sur le nœud ne sont pas des coups de lame. Ce sont des doigts, petits. Quelqu'un le défait chaque nuit, avec soin, comme on défait ses lacets. Et le seul enfant des Landes qui ne grandit plus vit à l'ouest."
+      ]
     },
     {
       "id": "maison_du_bailli",
@@ -205,7 +249,14 @@
       "x": 500,
       "y": 640,
       "environnement": "gibets",
-      "role": "pool"
+      "role": "pool",
+      "couches": [
+        "Une maison seule à l'ouest du hameau, haute, sans voisine. Chaque fenêtre est murée de l'intérieur, en rangs serrés, par quelqu'un qui prenait son temps. Contre le seuil, une masse grise, immobile, sauf les oreilles, qui te suivent depuis ton premier pas.",
+        "C'est un chien, trop grand, le poil usé aux endroits d'un harnais qu'il ne porte plus. Son maître pend à la colline. Personne n'a jamais levé l'ordre qu'il lui avait donné, et le chien fait encore sa ronde aux mêmes heures, autour d'une porte que personne n'essaie plus d'ouvrir.",
+        "Dedans, une seule chaise, au milieu, tournée vers la porte. Sous ses pieds avant, deux ronds creusés dans la terre battue. Une seule fenêtre n'est pas murée, sur le mur ouest. De la chaise, et de la chaise seulement, elle cadre le moulin.",
+        "Sur le mur, des marques par cinq. Elles commencent à hauteur d'homme et descendent : il s'est assis pour continuer. La dernière série s'arrête à hauteur d'enfant, sans son cinquième trait. Il comptait des jours, et ce n'étaient pas les siens."
+      ],
+      "couches_note": "Les couches 3 et 4 se lisent de l'intérieur, ou par le trou du chien."
     },
     {
       "id": "petit_tribunal",
@@ -225,7 +276,13 @@
       "x": 1470,
       "y": 680,
       "environnement": "hameau",
-      "role": "pool"
+      "role": "pool",
+      "couches": [
+        "Une salle basse de pierre, plantée de travers par rapport à la rue. Trois bancs face à une chaire, et la chaire face à la porte : ici, même l'entrée est un interrogatoire. Au mur, une feuille clouée, la liste des signes.",
+        "Personne ne vote. Ceux qui restent assis signent la sentence, ceux qui sortent la refusent. Au fond, un banc est resté de biais, comme si quelqu'un s'était levé le dernier et était parti vite. Depuis, plus personne ne sort.",
+        "C'était le Déserteur, le seul juré qui soit jamais sorti. Ici, celui qui dit non passe en jugement à la place de l'accusé. Il n'est jamais revenu s'asseoir. Sa place est la seule où la poussière est intacte : on la lui garde.",
+        "Au Registre des Pendaisons, le petit signe en forme de plume n'est posé qu'à côté des sentences que tous les bancs ont signées. Le Déserteur le dit à sa façon : « Quand tout le monde est d'accord, elle vient. »"
+      ]
     },
     {
       "id": "puits_condamne",
@@ -245,7 +302,13 @@
       "x": 950,
       "y": 900,
       "environnement": "hameau",
-      "role": "pool"
+      "role": "pool",
+      "couches": [
+        "Un puits condamné de frais : planches neuves, chaînes, blocs de meule empilés. Tout le hameau tombe en ruine, et ça, on l'entretient. Dessous, ça cogne. Trois coups, une pause. Trois coups. Poli, comme on frappe à une porte qu'on va vous ouvrir.",
+        "On n'y puise plus : on y descend. Ce puits n'a jamais eu d'eau. À dix brasses, la corde s'arrête sur un plancher, et dessus, rangées par tailles, des paires de chaussures propres. Une paire par Fixé.",
+        "Ce qui cogne tient un registre : trois coups par nom, une pause entre les noms. Ceux qui sont descendus parlent tous d'une main, en bas, qui tient la corde pour toi, comme on tient une porte. Elle ne tire pas. Elle attend que tu passes.",
+        "On ne l'a pas condamné à cause des coups. On l'a condamné parce qu'on y entendait l'Appel mieux qu'ailleurs, et que le premier Fixé s'était penché dessus pour répondre. Le dernier signe de l'Ordonnance vient d'ici : « répondre à ce qui n'a pas parlé »."
+      ]
     },
     {
       "id": "marche_muet",
@@ -265,7 +328,13 @@
       "x": 1250,
       "y": 900,
       "environnement": "hameau",
-      "role": "pool"
+      "role": "pool",
+      "couches": [
+        "Un marché sans un cri. Des étals de trois fois rien sous des bâches tendues, des marchands qui négocient par gestes. Paumes ouvertes, on passe ; les mains cachées, on se fait regarder. Le premier mot dit à voix haute fait tourner toutes les têtes.",
+        "Au bout de la rangée, un étal vide, le bois gratté. Il appartenait à un homme qui criait ses prix. Un matin, il a crié seul, face au sud, avant l'arrivée des autres. On l'a fixé le soir même. Depuis, on vend sans parler.",
+        "Le Colporteur n'est pas du hameau. Il est le seul à passer la barrière sans avoir juré, dans un sens comme dans l'autre. Ce qu'il vend a appartenu à quelqu'un. Il ne dit jamais à qui, et personne ne demande : chacun a peur d'y retrouver quelque chose.",
+        "Il ne regarde jamais un visage, il regarde le pas. En vingt ans, trois pas sont revenus du sud, et il a vu chacun passer deux fois. La deuxième fois, ils allaient de nouveau vers le sud."
+      ]
     },
     {
       "id": "tour_de_guet_effondree",
@@ -285,7 +354,13 @@
       "x": 1463,
       "y": 1064,
       "environnement": "hameau",
-      "role": "pool"
+      "role": "pool",
+      "couches": [
+        "La tour n'a plus de sommet. Elle s'arrête net à mi-hauteur, et le reste s'est répandu autour de son pied. Quelques blocs posés les uns sur les autres font un siège, usé par-dessus. Par son ouverture, la Colline aux Gibets tombe pile dans l'axe.",
+        "Elle n'est pas tombée : on l'a couchée. Les pierres ne sont pas éboulées, elles sont rangées, en tas réguliers, par taille. Sur le tas, un homme en manteau de guet se tient debout, dos à toi, et regarde le sud par-dessus le hameau.",
+        "Dans la meurtrière du sud, des encoches par cinq, des centaines. Le Guetteur sonnait pour chaque silhouette qui marchait vers le sud, et le hameau courait la ramener. Chaque encoche en est une. Sa corne est bouchée à la cire, de l'intérieur.",
+        "Le dernier soir, il a sonné pour personne : rien ne marchait vers le sud. Ce qu'il avait vu était sur les toits, et regardait le hameau. Voir venir ne servait plus à rien. On a couché la tour, et depuis vingt ans on entend ça : rien."
+      ]
     },
     {
       "id": "verger_noir",
@@ -304,7 +379,13 @@
       "x": 300,
       "y": 860,
       "environnement": "lande",
-      "role": "pool"
+      "role": "pool",
+      "couches": [
+        "Des arbres fruitiers plantés en rangs, le seul ordre voulu de la lande. Ils ont des branches, des feuilles noires, et des fruits qui mûrissent en cendre. C'est pire que s'ils étaient morts. Au fond, deux silhouettes penchées sur la même bêche.",
+        "Les rangs sont onze, et leurs écarts s'élargissent en s'éloignant de la souche du bout : un rang par an. Tout est parti de ce premier arbre, dont il ne reste que la souche. Au fond, un douzième rang est creusé, et vide.",
+        "L'homme ne compte pas ses coups de bêche. Il récite onze prénoms, toujours dans le même ordre : les enfants du hameau partis vers le sud, un par an. Chaque rang en porte un. Le premier prénom est celui de leur fils.",
+        "Le douzième rang, c'est lui qui l'a commencé, et c'est elle qui l'a arrêté. Depuis, elle bêche à côté de lui et ne le laisse jamais lever la tête. Elle sait quel prénom irait dans ce rang : le sien à lui. Il l'entend déjà."
+      ]
     },
     {
       "id": "chemin_creux",
@@ -323,7 +404,13 @@
       "x": 520,
       "y": 1300,
       "environnement": "lande",
-      "role": "pool"
+      "role": "pool",
+      "couches": [
+        "Le chemin s'enfonce entre deux talus plus hauts que la tête, et le ciel devient un ruban. Une charrette penche au premier coude, depuis si longtemps que la bruyère l'a prise. Dans le creux, quelqu'un vient vers toi, de dos.",
+        "Sous la bâche pourrie, la charrette est chargée de pieux, tous taillés à la même longueur et marqués au fer. Elle allait vers le sud. Le harnais pend, coupé net à la lame.",
+        "Sous le siège, un grelot de cuivre verdi, celui d'un attelage. L'homme qui marche à reculons contourne la charrette sans jamais la regarder. C'était lui, le cocher. Il a coupé le harnais un jour, et depuis trente ans il marche à reculons.",
+        "La bête qui tirait la charrette n'est jamais partie. Elle ne dépasse jamais le coude où la charrette s'est couchée, et elle n'attaque que ce qui lui tourne le dos : ce que son cocher a fait, le jour où il a coupé le harnais."
+      ]
     },
     {
       "id": "borne_frontiere",
@@ -342,7 +429,13 @@
       "x": 1620,
       "y": 1420,
       "environnement": "lande",
-      "role": "entree"
+      "role": "entree",
+      "couches": [
+        "Une pierre seule au milieu du plateau, plus haute qu'un homme. À son pied, un tas d'offrandes. À trois pas, un homme immobile, face au sud. Tout au sud, sur l'horizon, un trait fin descend du ciel et ne bouge pas.",
+        "Les offrandes ne sont pas pour la pierre. Chacun laisse ici une chose à lui en entrant, la plus petite possible : un clou, un ruban, une croûte de pain. Personne ne les reprend. Pourtant le tas ne grossit pas : chaque matin, il en manque une.",
+        "Les plus vieilles marques du côté nord sont tout en bas, presque effacées : une liste de noms taillés au même outil, le même jour. En dessous, d'autres noms, plus courts, sans rien après. Des noms de chiens. Ceux-là partaient ensemble, avec leurs bêtes.",
+        "Côté sud, trois marques seulement. On ne grave pas au retour quand personne ne revient : ces trois-là, quelqu'un est revenu les faire. Elles ne sont pas gravées, elles sont enfoncées, comme si on avait appuyé sur la pierre à pleine paume jusqu'à ce qu'elle cède."
+      ]
     },
     {
       "id": "palissade_sud",
@@ -361,7 +454,13 @@
       "x": 1000,
       "y": 1580,
       "environnement": "sud",
-      "role": "pool"
+      "role": "pool",
+      "couches": [
+        "Des rondins hauts de deux hommes barrent le plateau, avec un portillon et une guérite éclairée. Les pointes sont tournées vers les Landes, pas vers le sud. Derrière, le sol manque, et l'air y coule comme une eau froide.",
+        "Ce mur n'a jamais protégé le hameau de ce qui monte : il retient ce qui veut descendre. Autour du verrou du portillon, des griffures à hauteur de mains. Des mains qui voulaient passer, une nuit, et qu'on n'a pas laissées.",
+        "Le Veilleur note tout le monde : les départs dans une colonne, les retours dans une autre, vide depuis trente ans. « Ceux qui montent, on les laisse monter. C'est descendre qui est interdit. » Il ouvre à ceux qui partent proprement. Les autres, il les note.",
+        "Il n'a pas commencé la colonne des départs. On la lui a remise déjà ouverte, et on lui dit quoi y mettre. En tête, un petit signe en forme de plume, le même qu'en marge du Registre des Pendaisons. Quelque chose tient ce compte depuis plus longtemps que lui."
+      ]
     },
     {
       "id": "chemin_du_sud",
@@ -380,7 +479,13 @@
       "x": 1000,
       "y": 1700,
       "environnement": "sud",
-      "role": "entree"
+      "role": "entree",
+      "couches": [
+        "Le plateau cesse d'être un pays : plus de murets, plus de poteaux. Le vent vient du sud et n'a plus le goût de la bruyère. Sur les cent derniers pas, des choses posées à intervalles réguliers : un sac, un manteau plié, des bottes, les pointes vers le sud.",
+        "Rien n'a été jeté, tout a été posé. Le manteau est plié en quatre, coutures alignées, les poches vidées puis remises à l'endroit. Celui qui l'a laissé là avait le temps. Personne ne le poursuivait.",
+        "Ce sont les affaires de ceux qui partent sans bagage, d'un pas égal. La dernière borne avant le bord porte leurs noms au nord, serrés jusqu'à ne plus trouver de place. Sa face sud est lisse, creusée au milieu, usée par des paumes. On vient toucher celle-là.",
+        "Les bottes rangées côte à côte sont à ta pointure. Même longueur que les tiennes, même usure au talon, et le lacet gauche refait deux fois, comme le tien. Elles sont encore sèches. Quelqu'un les a enlevées ici, et il est parti pieds nus."
+      ]
     },
     {
       "id": "falaise_aux_cordes",
@@ -399,7 +504,13 @@
       "x": 1000,
       "y": 1880,
       "environnement": "sud",
-      "role": "fin"
+      "role": "fin",
+      "couches": [
+        "Tu montes une dernière ondulation de pierre, et la lande s'ouvre sur un trou large comme un village, sans fond visible. Du ciel, des cordes descendent dedans, des centaines, venues de si haut qu'on ne voit pas à quoi elles tiennent. Aucune ne bouge.",
+        "Au ras du bord, des pieux, un tous les trois pas, plus vieux que les cordes. Aucune n'y est nouée. Le bois porte la même marque au fer que les pieux de la charrette du Chemin Creux. Ceux-là sont arrivés jusqu'ici.",
+        "Trois ou quatre cordes s'arrêtent en plein vide, tranchées net à la lame, par en dessous. Les coupes sont toutes à la même hauteur sous le bord. On ne remonte pas, ici : quelqu'un, en bas, y veille.",
+        "Parmi les pieux, il y en a un plus haut que les autres, et plus sombre. Il n'était pas là quand tu es arrivé au bord. Il ne te suit pas. Il ne descend pas. Il regarde ceux qui descendent, comme il a regardé tous les autres."
+      ]
     },
     {
       "id": "tourbiere",
