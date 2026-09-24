@@ -71,6 +71,10 @@ def verifier(chemin: Path) -> int:
     joues = {L["id"] for L in z.get("lieux", []) if L.get("role") in ROLES_JOUES}
     for L in z.get("lieux", []):
         ou = f"lieu {L['id']}"
+        # Une RÉGION (le Hameau des Renonçants, landes.json) est un cadre qui
+        # contient des lieux, pas un lieu : elle n'a pas de rôle dans l'étape.
+        if L.get("region"):
+            continue
         if L.get("role") not in ROLES_JOUES + ("arrivee", "retire", "fusionne"):
             erreurs.append(f"{ou} : role « {L.get('role')} » inconnu")
         if L.get("role") == "fusionne":
@@ -91,17 +95,30 @@ def verifier(chemin: Path) -> int:
                 erreurs.append(f"{ou} · combats : « {c} » n'est pas déclarée hostile")
 
     # ── rencontres / créatures / objets
+    for coll in ("rencontres", "creatures"):
+        for r in z.get(coll, []):
+            ou = f"{coll[:-1]} {r['id']}"
+            ref(ou, "environnement", r.get("environnement"), envs, "environnement")
+            ref(ou, "aussi", r.get("aussi", []), envs, "environnement")
+            if r.get("passage") and r.get("lieu_attache"):
+                erreurs.append(f"{ou} : `passage` ET `lieu_attache` — une rencontre de passage n'a pas de lieu")
+            if r.get("statut") == "propose" and not (r.get("environnement") or r.get("lieu_attache")):
+                erreurs.append(f"{ou} : proposée sans environnement ni lieu (le graphe ne saurait où la montrer)")
     for r in z.get("rencontres", []):
         ref(f"rencontre {r['id']}", "lieu_attache", r.get("lieu_attache"), lieux, "lieu")
         if r.get("gardien") and not r.get("etats"):
             erreurs.append(f"rencontre {r['id']} : gardien sans `etats`")
     for c in z.get("creatures", []):
         ref(f"créature {c['id']}", "lieux", c.get("lieux", []), lieux, "lieu")
+        ref(f"créature {c['id']}", "lieu_attache", c.get("lieu_attache"), lieux, "lieu")
     for o in z.get("objets", []):
         ou = f"objet {o['id']}"
         ref(ou, "lieu_attache", o.get("lieu_attache"), lieux, "lieu")
         ref(ou, "sert", o.get("sert", []), lieux, "lieu")
-        if not o.get("lieu_attache"):
+        # Un objet peut se gagner sur une RENCONTRE de passage plutôt que dans
+        # un lieu (la Dent de la Meute : la Meute n'a pas de lieu).
+        ref(ou, "source_rencontre", o.get("source_rencontre"), creatures | rencontres, "rencontre ou créature")
+        if not o.get("lieu_attache") and not o.get("source_rencontre"):
             erreurs.append(f"{ou} : aucun lieu de ramassage")
         usages = [s for s in o.get("sert", []) if s != o.get("lieu_attache")]
         if o.get("usage_sur_place"):

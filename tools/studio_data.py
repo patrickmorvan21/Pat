@@ -1093,10 +1093,32 @@ _SALINES = salines_lieux()
 _SALINES_HORS_POOL = {"fin-etape-non-ecrite"}
 
 
+def salines_scenes_de_passage() -> set[str]:
+    """Les écrans des rencontres de PASSAGE du chantier (l'Ensacheur, la
+    Mouchée, le Contremaître…) et du Dormeur. Ce ne sont pas des lieux : leur
+    radical ne dit rien de leur zone. C'est leur fiche dans salines.json qui
+    le dit (`scenes`), et c'est elle qu'on lit — jamais une liste recopiée ici.
+
+    ⚠️ Sans ça, ces six écrans tombaient dans le Graphe des LANDES (zone par
+    défaut), sans lieu, et manquaient à celui des Salines (vu le 24/09)."""
+    f = RACINE / "data/zones/salines.json"
+    if not f.exists():
+        return set()
+    z = json.loads(f.read_text(encoding="utf-8"))
+    return {sc for c in ("rencontres", "creatures") for e in z.get(c, []) for sc in e.get("scenes", [])}
+
+
+_SALINES_PASSAGE = salines_scenes_de_passage()
+
+
 def zone_de_scene(sid: str) -> str:
-    """Miroir de `zoneDeScene()` (scene-data.ts) — radical = id sans son
-    suffixe de beat (`-2`, `-3`)."""
-    if sid in _SALINES_HORS_POOL:
+    """La zone d'un écran — radical = id sans son suffixe de beat (`-2`, `-3`).
+
+    Suit `zoneDeScene()` (scene-data.ts) pour les lieux, et va plus loin pour
+    les écrans de passage des Salines, que le radical ne situe pas. NB : la
+    fonction du jeu n'est appelée nulle part au runtime (le moteur lit
+    `run.zone`) ; seul cet export s'en sert pour ranger les écrans par carte."""
+    if sid in _SALINES_HORS_POOL or sid in _SALINES_PASSAGE:
         return "salines"
     return "salines" if re.sub(r"-\d+$", "", sid) in _SALINES else "landes"
 

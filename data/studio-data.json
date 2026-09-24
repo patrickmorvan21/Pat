@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-19T23:29:06Z",
- "commit": "de92c2b",
+ "genere": "2026-09-24T17:09:07Z",
+ "commit": "ee12c9f",
  "zones": [
   {
    "id": "landes",
@@ -200,9 +200,15 @@
       "hameau-halte-3",
       "hameau-halte-4",
       "hameau-halte-5",
-      "hameau-halte-dehors"
+      "renoncer",
+      "hameau-maison-1",
+      "hameau-halte-dehors",
+      "demo-nuit",
+      "demo-nuit-maison",
+      "demo-nuit-grange",
+      "demo-nuit-dehors"
      ],
-     "nbScenes": 6,
+     "nbScenes": 12,
      "nbRencontres": 0,
      "nbPois": 0,
      "entrees": [],
@@ -412,9 +418,10 @@
       "borne-frontiere",
       "hesitant-1",
       "hesitant-2",
-      "hesitant-3"
+      "hesitant-3",
+      "demo-borne-geste"
      ],
-     "nbScenes": 4,
+     "nbScenes": 5,
      "nbRencontres": 0,
      "nbPois": 0,
      "entrees": [],
@@ -455,6 +462,112 @@
      ],
      "aCompleter": 0,
      "scenePrincipale": "palissade-sud"
+    },
+    {
+     "id": "chemin_du_sud",
+     "nom": "Le Chemin du Sud",
+     "illustration": "scene_chemin_du_sud_a_b.png",
+     "x": 1000,
+     "y": 1700,
+     "note": "le dernier écran où l'on peut encore ne pas y aller — des affaires posées, toutes tournées vers le sud",
+     "scenes": [
+      "chemin-du-sud",
+      "chemin-du-sud-revenu"
+     ],
+     "nbScenes": 2,
+     "nbRencontres": 0,
+     "nbPois": 0,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": false,
+     "alertes": [
+      "orpheline"
+     ],
+     "aCompleter": 0,
+     "scenePrincipale": "chemin-du-sud"
+    },
+    {
+     "id": "falaise_aux_cordes",
+     "nom": "La Falaise aux Cordes",
+     "illustration": "scene_falaise_bord_c_a.png",
+     "x": 1000,
+     "y": 1880,
+     "note": "le bord du monde : des cordes qui viennent du ciel et plongent dans le vide. On y descend.",
+     "scenes": [
+      "falaise-cordes-loin",
+      "falaise-cordes-marche",
+      "falaise-cordes",
+      "falaise-cordes-2",
+      "falaise-cordes-3",
+      "la-descente"
+     ],
+     "nbScenes": 6,
+     "nbRencontres": 0,
+     "nbPois": 0,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": false,
+     "alertes": [
+      "orpheline"
+     ],
+     "aCompleter": 0,
+     "scenePrincipale": "falaise-cordes"
+    },
+    {
+     "id": "tourbiere",
+     "nom": "La Tourbière",
+     "illustration": null,
+     "x": 180,
+     "y": 1100,
+     "note": "Une étendue noire et spongieuse à l'ouest du plateau. Sous l'eau, des visages qui ne pourrissent pas : ceux qui ont voulu couper au sud par le marais. Le raccourci que tout le monde a essayé une fois.",
+     "scenes": [],
+     "nbScenes": 0,
+     "nbRencontres": 0,
+     "nbPois": 0,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": false,
+     "alertes": [],
+     "aCompleter": 0
+    },
+    {
+     "id": "cheneviere",
+     "nom": "La Chènevière",
+     "illustration": null,
+     "x": 1350,
+     "y": 420,
+     "note": "Le champ de chanvre d'où viennent toutes les cordes des Landes, et ses routoirs où le chanvre pourrit dans une eau noire. On y cultive les pendaisons avant qu'elles aient lieu.",
+     "scenes": [],
+     "nbScenes": 0,
+     "nbRencontres": 0,
+     "nbPois": 0,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": false,
+     "alertes": [],
+     "aCompleter": 0
+    },
+    {
+     "id": "camp_des_premieres_expeditions",
+     "nom": "Le Camp des Premières Expéditions",
+     "illustration": null,
+     "x": 1400,
+     "y": 1760,
+     "note": "Au sud du plateau, des tentes pourries autour d'un feu froid, des pieux alignés, des chaînes de chiens vides. C'est d'ici que les premiers sont partis pour les cordes — ou n'en sont jamais partis.",
+     "scenes": [],
+     "nbScenes": 0,
+     "nbRencontres": 0,
+     "nbPois": 0,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": false,
+     "alertes": [],
+     "aCompleter": 0
     }
    ]
   }
@@ -3775,6 +3888,9 @@
    ],
    "pointsInteret": [],
    "terminal": true,
+   "nom": "Le Renoncement",
+   "lieu": "grange_des_renoncants",
+   "typeScene": "moment",
    "image": {
     "fichier": "scene_renoncer_v2_c_f.png",
     "hash": "da9dc036",
@@ -3831,6 +3947,9 @@
    ],
    "pointsInteret": [],
    "sejour": true,
+   "nom": "La Maison sans Fumée",
+   "lieu": "grange_des_renoncants",
+   "typeScene": "moment",
    "image": {
     "fichier": "scene_hameau_maison_sans_fumee_a_b.png",
     "hash": "0342d83e",
@@ -6864,6 +6983,9 @@
    ],
    "pointsInteret": [],
    "sejour": true,
+   "nom": "Le Chemin du Sud",
+   "lieu": "chemin_du_sud",
+   "typeScene": "arrivee",
    "image": {
     "fichier": "scene_chemin_du_sud_a_b.png",
     "hash": "e49d458f",
@@ -6945,6 +7067,9 @@
     }
    },
    "sejour": true,
+   "nom": "Le Chemin du Sud — revenu",
+   "lieu": "chemin_du_sud",
+   "typeScene": "moment",
    "image": {
     "fichier": "scene_chemin_du_sud_a_b.png",
     "hash": "e49d458f",
@@ -7525,6 +7650,9 @@
     }
    ],
    "pointsInteret": [],
+   "nom": "La Borne — le geste (première vie)",
+   "lieu": "borne_frontiere",
+   "typeScene": "moment",
    "image": {
     "fichier": "scene_borne_gravures_a_d.png",
     "hash": "e4dd0628",
@@ -7582,6 +7710,9 @@
    ],
    "pointsInteret": [],
    "sejour": true,
+   "nom": "La nuit (première vie)",
+   "lieu": "grange_des_renoncants",
+   "typeScene": "moment",
    "image": {
     "fichier": "scene_hameau_entree_2_v2_a.png",
     "hash": "e180c1a7",
@@ -7617,6 +7748,9 @@
    ],
    "pointsInteret": [],
    "nuit": true,
+   "nom": "La nuit — la maison crochetée",
+   "lieu": "grange_des_renoncants",
+   "typeScene": "moment",
    "image": {
     "fichier": "scene_hameau_maison_muree_combles_v4_b.png",
     "hash": "881d7a46",
@@ -7651,6 +7785,9 @@
    ],
    "pointsInteret": [],
    "nuit": true,
+   "nom": "La nuit — la grange",
+   "lieu": "grange_des_renoncants",
+   "typeScene": "moment",
    "image": {
     "fichier": "scene_landes_hameau_grange_b_d.png",
     "hash": "ff6c17c4",
@@ -7685,6 +7822,9 @@
    ],
    "pointsInteret": [],
    "nuit": true,
+   "nom": "La nuit — dehors",
+   "lieu": "grange_des_renoncants",
+   "typeScene": "moment",
    "image": {
     "fichier": "scene_temoin_grange_toit_v2_c.png",
     "hash": "b8f53835",
@@ -7721,6 +7861,9 @@
     }
    ],
    "pointsInteret": [],
+   "nom": "La Falaise — de loin",
+   "lieu": "falaise_aux_cordes",
+   "typeScene": "moment",
    "image": {
     "fichier": "scene_falaise_au_loin_a.png",
     "hash": "721c0a55",
@@ -7757,6 +7900,9 @@
     }
    ],
    "pointsInteret": [],
+   "nom": "La Falaise — la marche",
+   "lieu": "falaise_aux_cordes",
+   "typeScene": "moment",
    "image": {
     "fichier": "scene_falaise_au_loin_a.png",
     "hash": "721c0a55",
@@ -7793,6 +7939,9 @@
     }
    ],
    "pointsInteret": [],
+   "nom": "La Falaise aux Cordes",
+   "lieu": "falaise_aux_cordes",
+   "typeScene": "arrivee",
    "image": {
     "fichier": "scene_falaise_bord_c_a.png",
     "hash": "e2abb0bf",
@@ -7829,6 +7978,9 @@
     }
    ],
    "pointsInteret": [],
+   "nom": "La Falaise — le bord",
+   "lieu": "falaise_aux_cordes",
+   "typeScene": "moment",
    "image": {
     "fichier": "scene_falaise_fond_d_a.png",
     "hash": "d04e7f68",
@@ -7911,6 +8063,9 @@
    ],
    "pointsInteret": [],
    "sejour": true,
+   "nom": "La Falaise — descendre",
+   "lieu": "falaise_aux_cordes",
+   "typeScene": "moment",
    "image": {
     "fichier": "scene_falaise_appele_d_d.png",
     "hash": "2f189ac1",
@@ -11280,6 +11435,7 @@
    "adversaire": "ensacheur",
    "adversaireNom": "L'Ensacheur",
    "combat": true,
+   "zone": "salines",
    "image": {
     "fichier": "monstre_salines_ensacheur_a_b.png",
     "hash": "a3d3b08e",
@@ -11353,6 +11509,7 @@
    "adversaire": "contremaitre",
    "adversaireNom": "Le Contremaître",
    "combat": true,
+   "zone": "salines",
    "image": {
     "fichier": "monstre_salines_contremaitre_a_c.png",
     "hash": "f30d9dc6",
@@ -11424,6 +11581,7 @@
    "adversaire": "mouchee-blanche",
    "adversaireNom": "La Mouchée blanche",
    "combat": true,
+   "zone": "salines",
    "image": {
     "fichier": "monstre_salines_mouchee_a_b.png",
     "hash": "24f5d6d6",
@@ -11502,6 +11660,7 @@
     }
    },
    "combat": true,
+   "zone": "salines",
    "image": {
     "fichier": "monstre_salines_dormeur_a_d.png",
     "hash": "cd289fde",
@@ -11557,6 +11716,7 @@
     }
    ],
    "pointsInteret": [],
+   "zone": "salines",
    "image": {
     "fichier": "monstre_salines_chaine_bras_a_d.png",
     "hash": "8d84987e",
@@ -11611,6 +11771,7 @@
     }
    ],
    "pointsInteret": [],
+   "zone": "salines",
    "image": {
     "fichier": "scene_salines_salines_placeholder_a.png",
     "hash": "6aad2dbb",
@@ -11681,6 +11842,9 @@
    ],
    "pointsInteret": [],
    "terminal": true,
+   "nom": "La Descente",
+   "lieu": "falaise_aux_cordes",
+   "typeScene": "moment",
    "image": {
     "fichier": "scene_falaise_appele_d_d.png",
     "hash": "2f189ac1",

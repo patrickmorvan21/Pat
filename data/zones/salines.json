@@ -1366,7 +1366,12 @@
         "recontextualisation": null
       },
       "illustration": "assets/monstre_salines_contremaitre_a_c.png",
-      "portrait_requis": true
+      "portrait_requis": true,
+      "environnement": "salines",
+      "passage": true,
+      "scenes": [
+        "contremaitre"
+      ]
     },
     {
       "id": "chaine_des_bras",
@@ -1381,7 +1386,12 @@
         "recontextualisation": null
       },
       "illustration": "assets/monstre_salines_chaine_bras_a_d.png",
-      "portrait_requis": true
+      "portrait_requis": true,
+      "environnement": "salines",
+      "passage": true,
+      "scenes": [
+        "chaine-des-bras"
+      ]
     },
     {
       "id": "petit_porteur",
@@ -1396,7 +1406,12 @@
         "recontextualisation": null
       },
       "illustration": null,
-      "portrait_requis": true
+      "portrait_requis": true,
+      "environnement": "salines",
+      "passage": true,
+      "scenes": [
+        "petit-porteur"
+      ]
     },
     {
       "id": "compteur",
@@ -1769,7 +1784,12 @@
         "recontextualisation": null
       },
       "illustration": "assets/monstre_salines_ensacheur_a_b.png",
-      "portrait_requis": true
+      "portrait_requis": true,
+      "environnement": "salines",
+      "passage": true,
+      "scenes": [
+        "ensacheur"
+      ]
     },
     {
       "id": "mouchee_blanche",
@@ -1784,7 +1804,12 @@
         "recontextualisation": null
       },
       "illustration": "assets/monstre_salines_mouchee_a_b.png",
-      "portrait_requis": true
+      "portrait_requis": true,
+      "environnement": "salines",
+      "passage": true,
+      "scenes": [
+        "mouchee-blanche"
+      ]
     },
     {
       "id": "dormeur",
@@ -1801,7 +1826,10 @@
         "recontextualisation": null
       },
       "illustration": "assets/monstre_salines_dormeur_a_d.png",
-      "portrait_requis": true
+      "portrait_requis": true,
+      "scenes": [
+        "dortoir-dormeur"
+      ]
     },
     {
       "id": "saigneuse",

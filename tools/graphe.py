@@ -84,6 +84,25 @@ def construire(zone: str = "landes") -> dict:
     zones = d.get("zones", [])
     regions = d.get("regions", [])
 
+    # ── LES ENVIRONNEMENTS (Landes v2, 24/09). Quand la fiche de zone les
+    # déclare, la carte se range comme celle des Salines : un cercle par
+    # environnement, de gauche à droite dans l'ordre de la traversée, chaque
+    # lieu à sa place (entrée à gauche, fins à droite). ⚠️ Le moteur ne les joue
+    # pas encore : la page le dit, elle n'affirme jamais le contraire.
+    fz = ZONES_DIR / f"{zone}.json"
+    zj = json.loads(fz.read_text(encoding="utf-8")) if fz.exists() else {}
+    envs = sorted(zj.get("environnements") or [], key=lambda e: e.get("ordre", 0))
+    lieu_z = {l["id"]: l for l in zj.get("lieux", [])}
+    env_nom = {e["id"]: e["nom"] for e in envs}
+    fins_env = {e["id"]: list(e.get("fin") or []) for e in envs}
+    ROLE_TXT = {"entree": "entrée de l'environnement", "pool": "tiré au sort",
+                "fin": "obligatoire, en fin d'environnement"}
+    # Le catalogue (rencontres + créatures) : c'est lui qui situe les écrans
+    # qu'aucun lieu ne porte (la Meute, le Troupeau, les retours de menace) et
+    # les rencontres PROPOSÉES, qui n'ont pas encore d'écran du tout.
+    catalogue = [e for c in ("rencontres", "creatures") for e in zj.get(c, [])]
+    fiche_de_scene = {sc: e for e in catalogue for sc in e.get("scenes", [])}
+
     # ---- de quel lieu relève chaque scène, et comment s'appelle ce lieu -----
     lieu_de = {}
     lieux_meta = {}
@@ -141,17 +160,31 @@ def construire(zone: str = "landes") -> dict:
     for lid, L in lieux_meta.items():
         nid = "lieu:" + lid
         vus.add(nid)
-        noeuds.append({
+        z_ = lieu_z.get(lid, {})
+        propose = z_.get("statut") == "propose"
+        n = {
             "id": nid,
             "nom": L.get("nom") or lid,
-            "cat": "lieu",
+            "cat": "propose" if propose else "lieu",
             "note": L.get("note") or "",
             "region": region_de.get(lid, ""),
             "image": {"f": L["illustration"], "h": "", "ok": True} if L.get("illustration") else None,
             "prompt": "",
-            "desc": [],
-            "meta": [f"{L.get('nbScenes', 0)} scènes"] + ([L["note"]] if L.get("note") else []),
-        })
+            "desc": [z_["note"]] if propose and z_.get("note") else [],
+            "meta": ([f"{L.get('nbScenes', 0)} scènes"] + ([L["note"]] if L.get("note") else []))
+                    if not propose else [],
+        }
+        if envs and z_.get("environnement") in env_nom and z_.get("role") in ROLE_TXT:
+            n["groupe"] = z_["environnement"]
+            n["role"] = z_["role"]
+            if z_["role"] == "fin":
+                n["rang"] = fins_env[z_["environnement"]].index(lid)
+            n["meta"].insert(0, env_nom[z_["environnement"]] + " · " + ROLE_TXT[z_["role"]])
+        if propose:
+            n["propose"] = True
+            n["meta"] += ["lieu proposé — Landes v2, pas encore dans le jeu"] + (
+                [f"image à produire : {z_['image_a_produire']}.png"] if z_.get("image_a_produire") else [])
+        noeuds.append(n)
 
     # ---------------------------- LES SCÈNES --------------------------------
     CAT = {"arrivee": "arrivee", "moment": "scene"}
@@ -166,6 +199,15 @@ def construire(zone: str = "landes") -> dict:
         meta = []
         lid = lieu_de.get(sid) or deduit.get(sid) or (s.get("lieu") or "")
         herite = sid not in lieu_de and sid in deduit
+        passage_env = ""
+        if lid not in lieux_meta and sid in fiche_de_scene:
+            # un écran qu'aucun lieu ne porte : sa fiche dit où il se joue
+            fc = fiche_de_scene[sid]
+            if fc.get("lieu_attache") in lieux_meta:
+                lid, herite = fc["lieu_attache"], True
+                deduit[sid] = lid
+            elif fc.get("environnement") in env_nom:
+                passage_env = fc["environnement"]
         if lid and lid in lieux_meta:
             meta.append(lieux_meta[lid]["nom"] + (" (rattachée)" if herite else ""))
         if s.get("adversaireNom"):
@@ -179,12 +221,24 @@ def construire(zone: str = "landes") -> dict:
         if s.get("acces") and s["acces"] not in ("lien",):
             meta.append(s["acces"])
 
+        if passage_env:
+            meta.insert(0, env_nom[passage_env] + " · entre deux lieux (rencontre de passage)")
+        nom = s.get("nom") or sid
+        if nom == sid and sid in fiche_de_scene:
+            # Un écran sans fiche de scène porte son id en guise de nom
+            # (« menace-retour-meute »). Sa fiche du catalogue sait comment
+            # s'appelle ce qu'on y rencontre ; le suffixe dit lequel de ses écrans.
+            base = fiche_de_scene[sid].get("nom") or sid
+            m_ = re.search(r"-(\d+)$", sid)
+            nom = (base + " — le retour") if sid.startswith("menace-retour") else \
+                  (base + f" — beat {m_.group(1)}" if m_ and m_.group(1) != "1" else base)
         noeuds.append({
             "id": sid,
-            "nom": s.get("nom") or sid,
+            "nom": nom,
             "cat": cat,
             "lieu": lid,
             "lieuHerite": herite,
+            **({"groupe": passage_env, "role": "passage"} if passage_env else {}),
             "region": region_de.get(lid, ""),
             "image": img(s),
             # LA DESCRIPTION EXACTE : la narration telle que le joueur la lit.
@@ -234,12 +288,61 @@ def construire(zone: str = "landes") -> dict:
             noeuds.append(n)
             lien(sid, nid, "appartient")
 
+    # ------------------------ LES RENCONTRES PROPOSÉES -----------------------
+    # Landes v2 (24/09) : ce qui n'est pas encore dans le jeu. Chaque fiche dit
+    # son environnement, son lieu (ou `passage` : entre deux lieux, une fois
+    # par vie), sa nature, sa règle et ce qui la prépare. Elles se dessinent en
+    # CREUX sur la carte et se masquent d'une case : le graphe ne les fait
+    # jamais passer pour des écrans du jeu.
+    NATURE = {"physique": "hostile · physique", "surnaturel": "hostile · surnaturel",
+              "social": "hostile · social", "amicale": "amicale", "phénomène": "phénomène"}
+    for e in catalogue:
+        if e.get("statut") != "propose":
+            continue
+        nid = "prop:" + e["id"]
+        vus.add(nid)
+        env = e.get("environnement") or (lieu_z.get(e.get("lieu_attache") or "", {}).get("environnement"))
+        n = {
+            "id": nid, "nom": e.get("nom") or e["id"], "cat": "propose", "propose": True,
+            "image": ({"f": e["illustration"].replace("assets/", ""), "h": "", "ok": True}
+                      if e.get("illustration") else None),
+            "prompt": "",
+            "desc": [e["note"]] if e.get("note") else [],
+            "meta": [x for x in (
+                env_nom.get(env, ""),
+                ("entre deux lieux (rencontre de passage)" if e.get("passage")
+                 else (lieu_z.get(e.get("lieu_attache"), {}).get("nom") or "")),
+                NATURE.get(e.get("nature", ""), e.get("nature", "")),
+                ("aussi : " + ", ".join(env_nom.get(a, a) for a in e["aussi"])) if e.get("aussi") else "",
+            ) if x],
+        }
+        if e.get("regle"):
+            n["regle"] = e["regle"]
+        if e.get("preparation"):
+            n["preparation"] = e["preparation"]
+        n["imageStatut"] = ("existante : " + e["illustration"].replace("assets/", "")) if e.get("illustration") \
+            else ("à produire : " + e["image_a_produire"] + ".png" if e.get("image_a_produire") else "")
+        if e.get("image_note"):
+            n["imageStatut"] += " — " + e["image_note"]
+        if e.get("passage") and env in env_nom:
+            n["groupe"], n["role"] = env, "passage"
+        noeuds.append(n)
+        if not e.get("passage") and e.get("lieu_attache"):
+            lien("lieu:" + e["lieu_attache"], nid, "appartient")
+
     # --------------------------- LES TRANSITIONS ----------------------------
     # Elles n'existent nulle part comme scènes : une liaison est fabriquée à
     # l'exécution. Ce sont pourtant les écrans les plus VUS d'une vie.
     # L'enclave du village : la seule région de la zone. Son id sert à ranger
     # DANS son cercle les textes de marche qui ne se jouent que dedans.
     groupe_enclave = next((r["id"] for r in regions if len(r.get("lieux", [])) > 1), "")
+    if envs and groupe_enclave:
+        # En environnements, le village EST un environnement (le Hameau) : ses
+        # marches rejoignent le cercle qui contient ses lieux. Que les deux ids
+        # se ressemblent aujourd'hui n'est qu'une coïncidence — on ne s'y fie pas.
+        reg = next(r for r in regions if r["id"] == groupe_enclave)
+        groupe_enclave = next((lieu_z[l]["environnement"] for l in reg.get("lieux", [])
+                               if lieu_z.get(l, {}).get("environnement") in env_nom), groupe_enclave)
 
     T = d.get("transitions", {})
     for i, txt in enumerate(T.get("fond", [])):
@@ -352,11 +455,23 @@ def construire(zone: str = "landes") -> dict:
     # adjacence (la traversée tire au sort). On l'exporte donc comme groupe pour
     # que la page puisse le rassembler et l'entourer — sans inventer de chemin.
     groupes = []
-    for r in regions:
-        membres = ["lieu:" + l for l in (r.get("lieux", []) + r.get("lieuxEnPlus", []))
-                   if l in lieux_meta]
-        if len(membres) > 1:
-            groupes.append({"id": r["id"], "nom": r["nom"], "lieux": membres})
+    if envs:
+        # UN CERCLE PAR ENVIRONNEMENT, dans l'ordre de la traversée. L'enclave
+        # du Hameau n'est plus un groupe à part : c'est l'environnement III, et
+        # ses textes de marche (groupe « hameau ») y entrent d'eux-mêmes.
+        for e in envs:
+            membres = ["lieu:" + l["id"] for l in zj["lieux"]
+                       if l.get("environnement") == e["id"] and l.get("role") in ROLE_TXT
+                       and l["id"] in lieux_meta]
+            groupes.append({"id": e["id"], "nom": e["nom"], "ordre": e["ordre"],
+                            "sous": e.get("sous_titre", ""), "disposition": "grappes",
+                            "lieux": membres})
+    else:
+        for r in regions:
+            membres = ["lieu:" + l for l in (r.get("lieux", []) + r.get("lieuxEnPlus", []))
+                       if l in lieux_meta]
+            if len(membres) > 1:
+                groupes.append({"id": r["id"], "nom": r["nom"], "lieux": membres})
 
     return {
         "groupes": groupes,
@@ -375,7 +490,10 @@ def construire(zone: str = "landes") -> dict:
             "marches": len(d.get("ecransDeMarche", [])),
             "actions": sum(1 for n in noeuds if n["cat"] == "action"),
             "liens": len(liens),
+            "proposes": sum(1 for n in noeuds if n["cat"] == "propose"),
+            "environnements": len(envs),
         },
+        "envStatut": (zj.get("zone") or {}).get("environnements_statut", ""),
     }
 
 
@@ -494,13 +612,53 @@ def construire_routage(z: dict) -> dict:
         sid = "scene:" + sc["id"]
         vus.add(sid)
         noeuds.append({
-            "id": sid, "nom": sc.get("nom") or sc["id"], "cat": "terminal",
+            "id": sid, "nom": sc.get("nom") or "Fin de l'étape écrite", "cat": "terminal",
             "groupe": envs[0]["id"], "lieu": envs[0]["id"],
             "image": img(sc), "prompt": "",
             "desc": sc.get("narration") or [],
             "meta": ["fin de l'étape écrite — la suivante n'est pas écrite",
                      *[("· " + c.get("label", "")) for c in sc.get("choix", [])]],
         })
+    # ⚠️ LES ÉCRANS DE PASSAGE (19/09) : les rencontres du chantier barrent une
+    # Croisée, elles ne portent le nom d'aucun lieu — leur radical ne
+    # correspond à rien et elles tombaient de la carte SANS UN MOT (le Dormeur,
+    # l'Ensacheur, le Contremaître…). C'est leur FICHE (`scenes` dans la zone)
+    # qui dit où elles se jouent : un lieu (`lieu_attache` / `lieux`) les range
+    # dans ce lieu ; `passage` les pose au centre de leur environnement.
+    fiche_de = {sc_id: e for c in ("rencontres", "creatures") for e in z.get(c, [])
+                for sc_id in e.get("scenes", [])}
+    passages: list[tuple[dict, dict]] = []
+    for rad in list(ecrites):
+        if nid(rad) in vus:
+            continue
+        for sc in list(ecrites[rad]):
+            e = fiche_de.get(sc["id"])
+            if not e:
+                continue
+            lieu_e = e.get("lieu_attache") or next(iter(e.get("lieux") or []), None)
+            if lieu_e and nid(lieu_e) in vus:
+                ecrites.setdefault(lieu_e, []).append(sc)
+                ecrites[rad].remove(sc)
+            elif e.get("passage") and e.get("environnement") in env_nom:
+                passages.append((sc, e))
+                ecrites[rad].remove(sc)
+    for sc, e in passages:
+        sid = "scene:" + sc["id"]
+        vus.add(sid)
+        meta = [env_nom[e["environnement"]] + " · entre deux lieux (rencontre de passage)"]
+        if sc.get("combat"):
+            meta.append("combat")
+        for c in sc.get("choix", []):
+            r = c.get("risque")
+            meta.append(("◆ " if r else "· ") + c.get("label", c.get("id", ""))
+                        + (f"  [{r['stat']} {r['seuil']}]" if r else ""))
+        noeuds.append({
+            "id": sid, "nom": e.get("nom") or sc.get("nom") or sc["id"], "cat": "rencontre",
+            "role": "passage", "groupe": e["environnement"], "lieu": e["environnement"],
+            "image": img(sc), "prompt": "",
+            "desc": sc.get("narration") or [], "meta": meta,
+        })
+
     for lid, lst in ecrites.items():
         if nid(lid) not in vus:
             continue
@@ -573,6 +731,10 @@ def construire_routage(z: dict) -> dict:
 
     groupes = [{
         "id": e["id"], "nom": e["nom"], "ordre": e["ordre"], "sous": e.get("sous_titre", ""),
+        # En grappes, comme les Landes (24/09) : depuis que les Bassins et le
+        # chantier sont écrits, l'éventail de trois écrans par lieu débordait
+        # sur la colonne voisine (mesuré : quatre écrans chez le voisin).
+        "disposition": "grappes",
         "lieux": [nid(l["id"]) for l in z["lieux"]
                   if l["environnement"] == e["id"] and l["role"] in JOUES + ("arrivee",)],
     } for e in envs]
@@ -592,7 +754,9 @@ def construire_routage(z: dict) -> dict:
                    # la page le dit. ⚠️ Calculé ICI, avec les autres totaux —
                    # posé dans main() il tombait APRÈS l'écriture du fichier
                    # et n'atteignait jamais la page.
-                   "ecrits": sum(1 for n in noeuds if n.get("cat") in ("scene", "terminal"))},
+                   # les rencontres de passage sont des écrans écrits aussi
+                   "ecrits": sum(1 for n in noeuds if n.get("cat") in ("scene", "terminal")
+                                 or n.get("role") == "passage")},
     }
 
 

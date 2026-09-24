@@ -22,7 +22,8 @@
         "w": 2600,
         "h": 1900
       }
-    }
+    },
+    "environnements_statut": "Découpage en quatre environnements accepté par Patrick le 24/09. Tirages et plancher proposés (trois lieux par environnement, à trancher : data/landes-v2.md §7). PAS ENCORE JOUÉ PAR LE MOTEUR : la traversée des Landes tire toujours à plat, avec l'enclave du Hameau."
   },
   "lieux": [
     {
@@ -40,7 +41,9 @@
       "illustration": "assets/scene_colline_aux_gibets_d_d.png",
       "portrait_requis": false,
       "x": 1080,
-      "y": 170
+      "y": 170,
+      "environnement": "gibets",
+      "role": "entree"
     },
     {
       "id": "champ_des_fixes",
@@ -57,7 +60,9 @@
       "illustration": "scene_champ_des_fixes_c.png",
       "portrait_requis": false,
       "x": 1620,
-      "y": 240
+      "y": 240,
+      "environnement": "gibets",
+      "role": "pool"
     },
     {
       "id": "moulin_sans_ailes",
@@ -74,7 +79,9 @@
       "illustration": "scene_moulin_campement_a.png",
       "portrait_requis": false,
       "x": 300,
-      "y": 260
+      "y": 260,
+      "environnement": "gibets",
+      "role": "pool"
     },
     {
       "id": "mare_aux_regards",
@@ -91,7 +98,9 @@
       "illustration": "scene_mare_aux_regards_a.png",
       "portrait_requis": false,
       "x": 640,
-      "y": 420
+      "y": 420,
+      "environnement": "lande",
+      "role": "pool"
     },
     {
       "id": "hameau_des_renoncants",
@@ -136,7 +145,9 @@
       "illustration": "scene_hameau_dense2_b.png",
       "portrait_requis": false,
       "x": 810,
-      "y": 1024
+      "y": 1024,
+      "environnement": "hameau",
+      "role": "entree"
     },
     {
       "id": "grange_des_renoncants",
@@ -153,7 +164,9 @@
       "illustration": "assets/scene_landes_hameau_grange_b_d.png",
       "portrait_requis": false,
       "x": 930,
-      "y": 1104
+      "y": 1104,
+      "environnement": "hameau",
+      "role": "fin"
     },
     {
       "id": "chapelle_des_cordes",
@@ -171,7 +184,9 @@
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
       "x": 870,
-      "y": 680
+      "y": 680,
+      "environnement": "hameau",
+      "role": "pool"
     },
     {
       "id": "maison_du_bailli",
@@ -188,7 +203,9 @@
       "illustration": "assets/scene_maison_du_bailli_c.png",
       "portrait_requis": false,
       "x": 500,
-      "y": 640
+      "y": 640,
+      "environnement": "gibets",
+      "role": "pool"
     },
     {
       "id": "petit_tribunal",
@@ -206,7 +223,9 @@
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
       "x": 1470,
-      "y": 680
+      "y": 680,
+      "environnement": "hameau",
+      "role": "pool"
     },
     {
       "id": "puits_condamne",
@@ -224,7 +243,9 @@
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
       "x": 950,
-      "y": 900
+      "y": 900,
+      "environnement": "hameau",
+      "role": "pool"
     },
     {
       "id": "marche_muet",
@@ -242,7 +263,9 @@
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
       "x": 1250,
-      "y": 900
+      "y": 900,
+      "environnement": "hameau",
+      "role": "pool"
     },
     {
       "id": "tour_de_guet_effondree",
@@ -260,7 +283,9 @@
       "portrait_requis": false,
       "dans": "hameau_des_renoncants",
       "x": 1463,
-      "y": 1064
+      "y": 1064,
+      "environnement": "hameau",
+      "role": "pool"
     },
     {
       "id": "verger_noir",
@@ -277,7 +302,9 @@
       "illustration": "assets/scene_verger_noir_e_f.png",
       "portrait_requis": false,
       "x": 300,
-      "y": 860
+      "y": 860,
+      "environnement": "lande",
+      "role": "pool"
     },
     {
       "id": "chemin_creux",
@@ -294,7 +321,9 @@
       "illustration": "scene_chemin_creux_coude_b.png",
       "portrait_requis": false,
       "x": 520,
-      "y": 1300
+      "y": 1300,
+      "environnement": "lande",
+      "role": "pool"
     },
     {
       "id": "borne_frontiere",
@@ -311,7 +340,9 @@
       "illustration": "scene_borne_frontiere_v2_a.png",
       "portrait_requis": false,
       "x": 1620,
-      "y": 1420
+      "y": 1420,
+      "environnement": "lande",
+      "role": "entree"
     },
     {
       "id": "palissade_sud",
@@ -328,7 +359,113 @@
       "illustration": "assets/scene_palissade_sud_a_b_a.png",
       "portrait_requis": false,
       "x": 1000,
-      "y": 1580
+      "y": 1580,
+      "environnement": "sud",
+      "role": "pool"
+    },
+    {
+      "id": "chemin_du_sud",
+      "nom": "Le Chemin du Sud",
+      "note": "le dernier écran où l'on peut encore ne pas y aller — des affaires posées, toutes tournées vers le sud",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": "assets/scene_chemin_du_sud_a_b.png",
+      "portrait_requis": false,
+      "x": 1000,
+      "y": 1700,
+      "environnement": "sud",
+      "role": "entree"
+    },
+    {
+      "id": "falaise_aux_cordes",
+      "nom": "La Falaise aux Cordes",
+      "note": "le bord du monde : des cordes qui viennent du ciel et plongent dans le vide. On y descend.",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": "assets/scene_falaise_bord_c_a.png",
+      "portrait_requis": false,
+      "x": 1000,
+      "y": 1880,
+      "environnement": "sud",
+      "role": "fin"
+    },
+    {
+      "id": "tourbiere",
+      "nom": "La Tourbière",
+      "note": "Une étendue noire et spongieuse à l'ouest du plateau. Sous l'eau, des visages qui ne pourrissent pas : ceux qui ont voulu couper au sud par le marais. Le raccourci que tout le monde a essayé une fois.",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "x": 180,
+      "y": 1100,
+      "environnement": "lande",
+      "role": "pool",
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "image_a_produire": "scene_landes_tourbiere_a"
+    },
+    {
+      "id": "cheneviere",
+      "nom": "La Chènevière",
+      "note": "Le champ de chanvre d'où viennent toutes les cordes des Landes, et ses routoirs où le chanvre pourrit dans une eau noire. On y cultive les pendaisons avant qu'elles aient lieu.",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "x": 1350,
+      "y": 420,
+      "environnement": "gibets",
+      "role": "pool",
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "image_a_produire": "scene_landes_cheneviere_a"
+    },
+    {
+      "id": "camp_des_premieres_expeditions",
+      "nom": "Le Camp des Premières Expéditions",
+      "note": "Au sud du plateau, des tentes pourries autour d'un feu froid, des pieux alignés, des chaînes de chiens vides. C'est d'ici que les premiers sont partis pour les cordes — ou n'en sont jamais partis.",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "x": 1400,
+      "y": 1760,
+      "environnement": "sud",
+      "role": "pool",
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "image_a_produire": "scene_landes_camp_expeditions_a"
     }
   ],
   "rencontres": [
@@ -416,7 +553,7 @@
     {
       "id": "deserteur_du_tribunal",
       "nom": "Le Déserteur du Tribunal",
-      "note": null,
+      "note": "Le seul juré qui a dit non. Il se cache depuis.",
       "lieu_attache": "petit_tribunal",
       "histoire_bailli": false,
       "rarete": "commune",
@@ -425,8 +562,14 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
-      "portrait_requis": false
+      "illustration": "assets/monstre_deserteur_tribunal_a.png",
+      "portrait_requis": false,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "hameau",
+      "hostile": false,
+      "nature": "amicale",
+      "regle": "Il explique le procès avant qu'on y soit : « Ici, on juge à l'unanimité. Si un seul dit non, c'est lui qu'on juge. Alors plus personne ne dit non. »"
     },
     {
       "id": "ecrivain_public",
@@ -593,14 +736,36 @@
       },
       "illustration": null,
       "portrait_requis": false
+    },
+    {
+      "id": "celui_qui_attend",
+      "nom": "Celui qui attend",
+      "note": "Un jeune homme assis au bord du chemin attend son père, parti vers le sud il y a trois ans. Il te tend une lettre « pour en bas ».",
+      "lieu_attache": "chemin_du_sud",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "sud",
+      "hostile": false,
+      "nature": "amicale",
+      "regle": "Un objet qui descend : la Lettre pour en bas. La poser au bord de la Falaise, ou la garder jusqu'aux Salines.",
+      "image_a_produire": "monstre_landes_celui_qui_attend_a"
     }
   ],
   "creatures": [
     {
       "id": "juge_de_cendre",
       "nom": "Le Juge de Cendre",
-      "note": null,
-      "lieu_attache": "colline_aux_gibets",
+      "note": "Derrière le Petit Tribunal, la salle du premier tribunal, brûlée. Il y siège encore, en capuche, et pose les questions de l'Ordonnance.",
+      "lieu_attache": "petit_tribunal",
       "histoire_bailli": false,
       "rarete": "evenement",
       "textes": {
@@ -609,12 +774,20 @@
         "recontextualisation": null
       },
       "illustration": "assets/monstre_juge_de_cendre_c.png",
-      "portrait_requis": true
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "hameau",
+      "hostile": true,
+      "nature": "social",
+      "regle": "Une mauvaise réponse, et il écrit ton nom : le lendemain, le village l'a lu.",
+      "preparation": "Qui a lu l'Ordonnance connaît les quatre questions avant qu'il les pose.",
+      "raison_du_lieu": "rangé au Hameau et non plus aux Gibets : son image montre un intérieur, pas une colline"
     },
     {
       "id": "fiancee_du_gibet",
       "nom": "La Fiancée du Gibet",
-      "note": null,
+      "note": "Chaque soir, en robe de noce, elle vient sous la potence de son fiancé.",
       "lieu_attache": "colline_aux_gibets",
       "histoire_bailli": false,
       "rarete": "evenement",
@@ -624,12 +797,18 @@
         "recontextualisation": null
       },
       "illustration": "assets/monstre_fiancee_du_gibet_b.png",
-      "portrait_requis": true
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "gibets",
+      "hostile": false,
+      "nature": "amicale",
+      "regle": "Elle dit la loi en clair : « Il a entendu l'Appel. On l'a fixé pour qu'il ne descende pas. Je viens pour qu'il ne tienne pas tout seul. »"
     },
     {
       "id": "ombre_du_grand_gibet",
       "nom": "L'Ombre du Grand Gibet",
-      "note": "phénomène — l'ombre du Gibet Vide, sans corps pour la porter",
+      "note": "Le Grand Gibet est vide, mais au coucher son ombre porte un pendu. Les corbeaux regardent l'ombre, pas la potence.",
       "lieu_attache": "colline_aux_gibets",
       "histoire_bailli": false,
       "rarete": "commune",
@@ -638,8 +817,14 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
-      "portrait_requis": false
+      "illustration": "assets/monstre_ombre_grand_gibet_a.png",
+      "portrait_requis": false,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "gibets",
+      "hostile": false,
+      "nature": "phénomène",
+      "regle": "La première trace du Témoin. On ne peut rien lui faire : seulement l'avoir vue."
     },
     {
       "id": "corbeaux_du_compte",
@@ -674,7 +859,7 @@
     {
       "id": "corde_vive",
       "nom": "La Corde Vive",
-      "note": null,
+      "note": "Aujourd'hui un choix verrouillé à la Chapelle. Elle devient une vraie rencontre : une corde qui se déroule d'elle-même vers ton cou.",
       "lieu_attache": "chapelle_des_cordes",
       "histoire_bailli": false,
       "rarete": "commune",
@@ -684,7 +869,14 @@
         "recontextualisation": null
       },
       "illustration": "assets/monstre_corde_vive_c.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "hameau",
+      "hostile": true,
+      "nature": "surnaturel",
+      "regle": "Couper, c'est la réveiller. Elle ne lâche que ce qui ne bouge plus.",
+      "preparation": "Qui a longé le mur des cordes sait laquelle n'a pas de nom."
     },
     {
       "id": "chien_du_bailli",
@@ -729,7 +921,12 @@
         "recontextualisation": null
       },
       "illustration": "assets/monstre_bete_chemins_creux_a.png",
-      "portrait_requis": true
+      "portrait_requis": true,
+      "environnement": "lande",
+      "scenes": [
+        "bete-chemins-creux",
+        "menace-retour-bete"
+      ]
     },
     {
       "id": "meute_grise",
@@ -744,7 +941,14 @@
         "recontextualisation": null
       },
       "illustration": "assets/monstre_meute_grise_c.png",
-      "portrait_requis": true
+      "portrait_requis": true,
+      "environnement": "sud",
+      "passage": true,
+      "scenes": [
+        "meute-grise-1",
+        "meute-grise-2",
+        "menace-retour-meute"
+      ]
     },
     {
       "id": "recousu",
@@ -759,12 +963,17 @@
         "recontextualisation": null
       },
       "illustration": "assets/monstre_recousu_c.png",
-      "portrait_requis": true
+      "portrait_requis": true,
+      "environnement": "sud",
+      "passage": true,
+      "scenes": [
+        "menace-retour-recousu"
+      ]
     },
     {
       "id": "epouvantail_tourne",
       "nom": "L'Épouvantail Tourné",
-      "note": "phénomène — il ne bouge jamais, mais il s'est tourné",
+      "note": "Un épouvantail au milieu de la bruyère, sans champ à garder. Il ne bouge jamais — mais chaque fois que tu regardes ailleurs, il s'est tourné vers toi.",
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
@@ -774,12 +983,21 @@
         "recontextualisation": null
       },
       "illustration": null,
-      "portrait_requis": false
+      "portrait_requis": false,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "lande",
+      "passage": true,
+      "hostile": true,
+      "nature": "surnaturel",
+      "regle": "Lui tourner le dos le fait avancer. On ne s'en éloigne qu'en le regardant.",
+      "preparation": "Qui a marché avec le Marcheur à rebours passe à reculons, les yeux sur lui.",
+      "image_a_produire": "monstre_landes_epouvantail_tourne_a"
     },
     {
       "id": "voix_basses",
       "nom": "Les Voix Basses",
-      "note": "phénomène (marqué tel quel sur la carte)",
+      "note": "Derrière les murets, au crépuscule, des voix parlent comme dans la maison d'à côté — c'est ce que l'Hésitant appelle l'Appel. Elles disent le nom que tu as signé.",
       "lieu_attache": null,
       "histoire_bailli": false,
       "rarete": "commune",
@@ -789,7 +1007,16 @@
         "recontextualisation": null
       },
       "illustration": null,
-      "portrait_requis": false
+      "portrait_requis": false,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "lande",
+      "passage": true,
+      "hostile": true,
+      "nature": "surnaturel",
+      "regle": "Y répondre, c'est faire un pas vers le sud sans l'avoir décidé : la Croisée suivante est choisie pour toi.",
+      "preparation": "L'Hésitant a dit de ne jamais répondre. Qui l'a écouté passe, les mâchoires serrées.",
+      "image_a_produire": "monstre_landes_voix_basses_a"
     },
     {
       "id": "troupeau_sans_berger",
@@ -804,7 +1031,13 @@
         "recontextualisation": null
       },
       "illustration": "assets/monstre_troupeau_sans_berger_a.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "environnement": "gibets",
+      "passage": true,
+      "scenes": [
+        "troupeau-sans-berger",
+        "troupeau-sans-berger-2"
+      ]
     },
     {
       "id": "appele",
@@ -820,6 +1053,335 @@
       },
       "illustration": null,
       "portrait_requis": false
+    },
+    {
+      "id": "vent_qui_ment",
+      "nom": "Le Vent qui ment",
+      "note": "Un ruban de vent traverse la lande et apporte l'odeur d'un lieu qui n'est pas là : la fumée d'un village au nord, l'eau vers l'est.",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": "assets/monstre_vent_qui_ment_b.png",
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "lande",
+      "passage": true,
+      "hostile": false,
+      "nature": "phénomène",
+      "regle": "À la Croisée qu'il traverse, l'un des deux indices ment.",
+      "preparation": "L'Instinct le sent. Le Marcheur à rebours le dit : « Le vent d'ici ment toujours dans le même sens. »"
+    },
+    {
+      "id": "enlises",
+      "nom": "Les Enlisés",
+      "note": "Entre les touffes de la tourbière, des mains remontent : ceux qui ont voulu couper au sud par le marais, et que la tourbe a gardés.",
+      "lieu_attache": "tourbiere",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "lande",
+      "hostile": true,
+      "nature": "physique",
+      "regle": "Ils ne tirent que ce qui s'arrête. Traverser, c'est ne jamais poser deux fois le pied au même endroit.",
+      "preparation": "Les piquets de passage plantés par ceux qui ont réussi : qui les a lus sait où poser le pied.",
+      "image_a_produire": "monstre_landes_enlises_a"
+    },
+    {
+      "id": "rabatteur",
+      "nom": "Le Rabatteur",
+      "note": "Un Renonçant à cheval qui bat la lande pour ramener ceux qui marchent vers le sud. Il ne demande qu'une chose : « Où tu vas ? »",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "lande",
+      "passage": true,
+      "aussi": [
+        "gibets",
+        "sud"
+      ],
+      "hostile": true,
+      "nature": "social",
+      "regle": "Mentir : il regarde ton pas. Fuir : il te rattrape à la marche suivante. Le suivre, c'est reculer d'un lieu.",
+      "preparation": "Marcher à rebours, comme le Marcheur : tu sembles venir du sud, et il te laisse passer.",
+      "image_a_produire": "monstre_landes_rabatteur_a"
+    },
+    {
+      "id": "fixeur",
+      "nom": "Le Fixeur",
+      "note": "Celui qui fixe. Pas un bourreau : il ne tue personne, il fait tenir. Il entretient les potences et essaie ses nœuds sur tout ce qui passe — sur toi aussi, « juste pour voir si tu tiens ».",
+      "lieu_attache": "colline_aux_gibets",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "gibets",
+      "hostile": true,
+      "nature": "physique",
+      "regle": "Le laisser faire, c'est qu'il te connaît désormais : ta corde est prête, et au procès on le saura. Refuser, c'est un jet.",
+      "preparation": "Qui a lu l'Ordonnance lui montre qu'il n'a aucun des quatre signes. Il range sa corde, déçu.",
+      "image_a_produire": "monstre_landes_fixeur_a"
+    },
+    {
+      "id": "mesureurs",
+      "nom": "Les Mesureurs",
+      "note": "Deux vieux au bord des routoirs prennent la mesure de chaque passant avec une ficelle à nœuds. « Pour la corde, on prend les mesures d'avance. »",
+      "lieu_attache": "cheneviere",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "gibets",
+      "hostile": true,
+      "nature": "social",
+      "regle": "Les laisser mesurer : une corde à ta taille existe maintenant. Tricher sur la mesure (plier les genoux, tendre le cou) : ta corde ne tiendra pas.",
+      "preparation": "Qui sait que la corde de la Petite Fixée était mal mesurée sait ce qu'une mauvaise mesure peut sauver.",
+      "image_a_produire": "monstre_landes_mesureurs_a"
+    },
+    {
+      "id": "rouissard",
+      "nom": "Le Rouissard",
+      "note": "Dans les routoirs de la chènevière, où le chanvre pourrit, vit quelque chose de long et de pâle qui se nourrit de ce qui trempe.",
+      "lieu_attache": "cheneviere",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "gibets",
+      "hostile": true,
+      "nature": "physique",
+      "regle": "Il sort quand on s'approche de l'eau et ne quitte jamais la vase : on lui échappe en s'éloignant du bord, jamais en le combattant.",
+      "preparation": "Les Mesureurs le disent : il sort quand on pose le chanvre. Une botte jetée à l'eau l'occupe le temps de passer.",
+      "image_a_produire": "monstre_landes_rouissard_a"
+    },
+    {
+      "id": "ronde",
+      "nom": "La Ronde",
+      "note": "Les quatre passages de la nuit, comptés en encoches dans la grange et jamais rencontrés. Des hommes avec une lanterne et une corde, qui vérifient que chacun dort où il doit.",
+      "lieu_attache": "grange_des_renoncants",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "hameau",
+      "hostile": true,
+      "nature": "social",
+      "regle": "Qui est dehors se cache, montre qu'il a juré, ou court.",
+      "preparation": "Qui a compté les encoches de la grange sait l'heure de chaque passage.",
+      "image_a_produire": "monstre_landes_ronde_a",
+      "image_note": "le Rôdeur en réserve (monstre_rodeur, une silhouette encapuchonnée à la lanterne) pourrait dépanner"
+    },
+    {
+      "id": "condamne_du_lendemain",
+      "nom": "Le Condamné du lendemain",
+      "note": "La croix de craie lui est montée jusqu'au visage : on le fixe à l'aube. Il t'attrape la main et essaie de te passer sa craie. « Elle ne s'efface pas. Elle se donne. »",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": "assets/monstre_fixe_confident_b.png",
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "hameau",
+      "passage": true,
+      "hostile": true,
+      "nature": "social",
+      "regle": "La loi de substitution en un seul geste : prendre sa croix le sauve et te charge. La refuser, c'est un jet.",
+      "preparation": "La Craie du Condamné : lui rendre la sienne. « C'est la mienne. Je la cherchais. » Il écrit son nom sur sa propre porte, et rentre."
+    },
+    {
+      "id": "pleureuses",
+      "nom": "Les Pleureuses",
+      "note": "Trois femmes répètent la complainte du prochain fixé. Elles chantent ton nom, celui que tu as signé.",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "hameau",
+      "passage": true,
+      "hostile": true,
+      "nature": "social",
+      "regle": "Si elles vont au bout, tout le village l'a entendu. Les interrompre, ou chanter avec elles en changeant le nom — mais c'est le nom de quelqu'un d'autre, et il l'entendra.",
+      "preparation": "L'Écrivain l'a dit : le registre équilibre. Donner un nom déjà rayé ne coûte à personne.",
+      "image_a_produire": "monstre_landes_pleureuses_a"
+    },
+    {
+      "id": "jeu_du_fixe",
+      "nom": "Le Jeu du Fixé",
+      "note": "Des enfants jouent au procès dans une ruelle. L'un fait le fixé, une croix de craie sur la joue. Ils t'invitent à faire le juge.",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "hameau",
+      "passage": true,
+      "hostile": false,
+      "nature": "phénomène",
+      "regle": "Le jeu suit les vraies règles — le vote à main levée, l'unanimité. On les apprend là, avant d'en avoir besoin.",
+      "image_a_produire": "monstre_landes_jeu_du_fixe_a",
+      "image_note": "de loin, en silhouettes ; aucune corde : la craie seulement"
+    },
+    {
+      "id": "attendants",
+      "nom": "Les Attendants",
+      "note": "Autour d'un feu froid, les hommes de la première expédition attendent encore l'ordre de partir. Depuis quarante ans. Ils te demandent si c'est l'heure.",
+      "lieu_attache": "camp_des_premieres_expeditions",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "sud",
+      "hostile": true,
+      "nature": "surnaturel",
+      "regle": "Répondre non, c'est t'asseoir avec eux, et perdre une heure que tu ne retrouves pas. Répondre oui ne les fait pas bouger : tu n'es pas leur chef.",
+      "preparation": "Qui a rencontré le Marcheur à rebours sait que c'était leur cocher, et qu'il n'a jamais donné l'ordre. Tu peux le donner à sa place : ils se lèvent et marchent vers les cordes.",
+      "image_a_produire": "monstre_landes_attendants_a"
+    },
+    {
+      "id": "meneur",
+      "nom": "Le Meneur",
+      "note": "Le plus vieux chien de la Meute, couché sur les chaînes du camp. Il porte encore son collier, gravé au nom du maître de l'expédition.",
+      "lieu_attache": "camp_des_premieres_expeditions",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "sud",
+      "hostile": true,
+      "nature": "physique",
+      "regle": "Le réveiller, c'est appeler les autres.",
+      "preparation": "La Clochette de meneuse : il se lève et te suit jusqu'au bord. Là, il s'arrête. Les chiens ne descendent pas.",
+      "image_a_produire": "monstre_landes_meneur_a"
+    },
+    {
+      "id": "harde_qui_descend",
+      "nom": "La Harde qui descend",
+      "note": "Au crépuscule, une harde traverse le chemin, toutes les bêtes tournées vers le sud, sans hâte. Elles passent la lèvre du gouffre l'une après l'autre, sans un bruit.",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "sud",
+      "passage": true,
+      "hostile": false,
+      "nature": "phénomène",
+      "regle": "Même les bêtes entendent l'Appel. Il n'y a rien à faire, qu'à les regarder.",
+      "image_a_produire": "monstre_landes_harde_a"
+    },
+    {
+      "id": "temoin_au_bord",
+      "nom": "Le Témoin au bord",
+      "note": "Au bord de la Falaise, debout parmi les pieux, quelque chose de haut. Il ne te suit pas. Il te regarde descendre.",
+      "lieu_attache": "falaise_aux_cordes",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": true,
+      "statut": "propose",
+      "propose_le": "2026-09-24",
+      "environnement": "sud",
+      "hostile": false,
+      "nature": "phénomène",
+      "regle": "Le quatrième temps du Témoin : son rôle est dit, sa nature jamais. Ni visage, ni membres.",
+      "image_a_produire": "monstre_landes_temoin_falaise_a"
     }
   ],
   "objets": [
@@ -1031,7 +1593,8 @@
         "recontextualisation": null
       },
       "illustration": "assets/objet_dent_meute_e_a.png",
-      "portrait_requis": false
+      "portrait_requis": false,
+      "source_rencontre": "meute_grise"
     },
     {
       "id": "grelot_du_charretier",
@@ -2700,6 +3263,233 @@
       "description": "Scène de déroutage au dernier palier de Soupçon : le hameau te juge. Les trois bancs pleins, tous les visages tournés vers toi, la chaire vide.",
       "prompt_image": "rustic courtroom seen from the defendant's place, three benches full of gaunt villagers all facing the viewer, the tall pulpit empty above them, dim light through plank gaps, dark fantasy vintage engraving style, grainy etching texture, very high contrast, pitch-black shadows, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
       "illustration": "scene_proces_du_heros_v4_d_b.png"
+    },
+    {
+      "id": "chemin-du-sud",
+      "type": "arrivee",
+      "nom": "Le Chemin du Sud",
+      "lieu": "chemin_du_sud",
+      "parent": null,
+      "mene_a": [
+        "palissade-sud"
+      ],
+      "texte": [
+        "Le plateau cesse d'être un pays. Plus de murets, plus de poteaux, plus rien qui dise qu'on a vécu ici. Le vent vient du sud, régulier, et il n'a plus le goût de la bruyère.",
+        "Sur les derniers cent pas, des choses posées à intervalles réguliers. Un sac. Un manteau plié en quatre. Une paire de bottes rangées côte à côte, les pointes vers le sud. Rien n'a été jeté ici : tout a été posé.",
+        "Devant, le chemin continue jusqu'à un bord que tu ne vois pas encore. Le silence n'est pas celui de la lande : c'est celui d'après."
+      ],
+      "description": "Le dernier écran où l'on peut encore ne pas y aller : le plateau qui cesse, les affaires posées vers le sud.",
+      "illustration": "scene_chemin_du_sud_a_b.png"
+    },
+    {
+      "id": "chemin-du-sud-revenu",
+      "type": "moment",
+      "nom": "Le Chemin du Sud — revenu",
+      "lieu": "chemin_du_sud",
+      "parent": null,
+      "mene_a": [
+        "palissade-sud"
+      ],
+      "texte": [
+        "Le plateau cesse d'être un pays, une seconde fois. Les choses posées le long du chemin n'ont pas bougé — sauf qu'il y en a une de plus, et celle-là est encore sèche.",
+        "Tu sais ce qu'il y a au bout. Ça ne rend pas les cent derniers pas plus courts."
+      ],
+      "description": "Variante du Chemin du Sud pour qui porte déjà le Sceau : une chose posée de plus, encore sèche.",
+      "illustration": "scene_chemin_du_sud_a_b.png"
+    },
+    {
+      "id": "falaise-cordes-loin",
+      "type": "moment",
+      "nom": "La Falaise — de loin",
+      "lieu": "falaise_aux_cordes",
+      "parent": null,
+      "mene_a": [
+        "falaise-cordes-marche"
+      ],
+      "texte": [
+        "Passé le portillon, le sentier meurt. La bruyère se raréfie, la pierre cassée prend toute la place, et le pays descend d'un seul tenant vers le sud.",
+        "Loin devant, quelque chose de vertical tient le ciel. Trop étroit pour une tour, trop haut pour un arbre : une nappe de fils serrés, qui descend des nuages et s'arrête au ras de la terre. Rien ne bouge dedans. Il n'y a pas d'oiseaux."
+      ],
+      "description": "La colonne de fils vue de très loin, avant qu'on comprenne qu'elle plonge.",
+      "illustration": "scene_falaise_au_loin_a.png"
+    },
+    {
+      "id": "falaise-cordes-marche",
+      "type": "moment",
+      "nom": "La Falaise — la marche",
+      "lieu": "falaise_aux_cordes",
+      "parent": null,
+      "mene_a": [
+        "falaise-cordes"
+      ],
+      "texte": [
+        "Ce que tu prenais pour un tronc est une nappe. Des centaines de fils côte à côte, sur toute la largeur du regard, qui descendent d'un ciel où l'œil ne trouve rien à quoi les rattacher.",
+        "Et ils ne s'arrêtent pas à la terre. Ils continuent derrière la ligne d'horizon, là où le pays devrait remonter — et ne remonte pas."
+      ],
+      "description": "La nappe de fils se précise : elle continue derrière l'horizon, là où le pays ne remonte pas.",
+      "illustration": "scene_falaise_au_loin_a.png"
+    },
+    {
+      "id": "falaise-cordes",
+      "type": "arrivee",
+      "nom": "La Falaise aux Cordes",
+      "lieu": "falaise_aux_cordes",
+      "parent": null,
+      "mene_a": [
+        "falaise-cordes-2"
+      ],
+      "texte": [
+        "Tu montes une dernière ondulation de pierre, et la lande s'ouvre.",
+        "Devant toi, un trou. Large comme un village, et sans fond visible. Du ciel, des cordes descendent dedans — des centaines, venues de si haut qu'on ne voit pas à quoi elles tiennent. Aucune ne bouge. Le vent passe dessus sans les prendre : elles entrent dans le noir droites et immobiles, comme plantées là depuis toujours."
+      ],
+      "description": "Le trou, large comme un village, et les cordes qui y descendent du ciel.",
+      "illustration": "scene_falaise_bord_c_a.png"
+    },
+    {
+      "id": "falaise-cordes-2",
+      "type": "moment",
+      "nom": "La Falaise — le bord",
+      "lieu": "falaise_aux_cordes",
+      "parent": null,
+      "mene_a": [
+        "falaise-cordes-3"
+      ],
+      "texte": [
+        "Au ras de la lèvre, les pieux : une rangée qui suit tout le pourtour, un tous les trois pas. Aucune corde n'y est nouée. Elles passent au-dessus sans les toucher et remontent, toujours, vers un ciel où l'œil ne trouve rien à quoi les rattacher. Le chanvre, lui, tu le reconnais : dans les Landes on ne le gâche pas, et chaque corde qui a pendu quelqu'un sert une seconde fois.",
+        "Tu te penches. Elles descendent jusqu'à ce que la lumière les abandonne, et elles continuent. Des vieilles, grises, raides de sel. Des neuves, encore blondes. Et trois ou quatre qui s'arrêtent en plein vide, tranchées net — à la lame. Par en dessous."
+      ],
+      "description": "Les pieux au ras de la lèvre, aucune corde nouée ; le regard qui plonge.",
+      "illustration": "scene_falaise_fond_d_a.png"
+    },
+    {
+      "id": "falaise-cordes-3",
+      "type": "moment",
+      "nom": "La Falaise — descendre",
+      "lieu": "falaise_aux_cordes",
+      "parent": null,
+      "mene_a": [
+        "la-descente"
+      ],
+      "texte": [
+        "Au bout du surplomb, quelqu'un. Il ne regarde pas les cordes : il en prend une, sans choisir, comme on prend la rampe d'un escalier qu'on connaît. Il passe le bord. Il descend. Le vent rabat un pan de son manteau — puis plus rien. La corde tremble encore un moment, toute seule."
+      ],
+      "description": "Au bout du surplomb, l'Appelé prend une corde sans choisir. Descendre.",
+      "illustration": "scene_falaise_appele_d_d.png"
+    },
+    {
+      "id": "la-descente",
+      "type": "moment",
+      "nom": "La Descente",
+      "lieu": "falaise_aux_cordes",
+      "parent": null,
+      "mene_a": [],
+      "texte": [
+        "La corde s'arrête. Sous tes pieds, quelque chose de plat, de taillé — et très haut au-dessus, le jour par où tu es passé s'est refermé sur lui-même.",
+        "Tu as traversé les Landes vivant. Peu le font. Devant, le noir n'a pas encore de nom."
+      ],
+      "description": "La corde s'arrête : la sortie des Landes, vivant.",
+      "illustration": "scene_falaise_appele_d_d.png"
+    },
+    {
+      "id": "renoncer",
+      "type": "moment",
+      "nom": "Le Renoncement",
+      "lieu": "grange_des_renoncants",
+      "parent": null,
+      "mene_a": [],
+      "texte": [
+        "Tu ne passes pas le portillon. Tu t'assieds sur la pierre du seuil, du côté du hameau.",
+        "Personne ne discute. Le vieux hoche la tête une fois. Le lendemain, on te donne une porte — une vraie, avec un loquet. Ce n'est pas rien, ici, une porte.",
+        "Puis tu cesses de compter les jours. Un matin, la croix de craie de la Femme au Seuil a disparu de son bois. Personne n'explique. Tu ne demandes pas."
+      ],
+      "description": "La seule fin qui n'est pas une mort : rester au Hameau, du côté du village.",
+      "illustration": "scene_renoncer_v2_c_f.png"
+    },
+    {
+      "id": "hameau-maison-1",
+      "type": "moment",
+      "nom": "La Maison sans Fumée",
+      "lieu": "grange_des_renoncants",
+      "parent": null,
+      "mene_a": [
+        "hameau-maison-2"
+      ],
+      "texte": [
+        "La porte est basse, le bois gris. Sur le montant, une croix de craie qu'on a frottée aux trois quarts : quelqu'un a commencé à l'effacer et personne n'a osé finir.",
+        "Les volets sont cloués. Pas barrés — cloués, de l'intérieur, et les têtes de clou sont tordues. La serrure, elle, est vieille et simple : trois goupilles, du fer qui a beaucoup servi."
+      ],
+      "description": "La troisième porte de la nuit, prise et non offerte : la serrure à crocheter.",
+      "illustration": "scene_hameau_maison_sans_fumee_a_b.png"
+    },
+    {
+      "id": "demo-borne-geste",
+      "type": "moment",
+      "nom": "La Borne — le geste (première vie)",
+      "lieu": "borne_frontiere",
+      "parent": null,
+      "mene_a": [],
+      "texte": [
+        "La Borne te retient un pas de plus. Sur la face sud, sous la mousse, quelque chose est écrit — et la mousse s'écarte sous les doigts."
+      ],
+      "description": "Première vie : la Borne retient le héros un pas de plus pour le frottage de la mousse.",
+      "illustration": "scene_borne_gravures_a_d.png"
+    },
+    {
+      "id": "demo-nuit",
+      "type": "moment",
+      "nom": "La nuit (première vie)",
+      "lieu": "grange_des_renoncants",
+      "parent": null,
+      "mene_a": [
+        "demo-nuit-maison",
+        "demo-nuit-grange",
+        "demo-nuit-dehors"
+      ],
+      "texte": [
+        "Le soir tombe d'un coup, comme une porte. Les volets se ferment sans se répondre — pas un chien, pas une voix. Il faut dormir quelque part. Reste à savoir derrière quelle porte."
+      ],
+      "description": "Première vie : il faut dormir quelque part — trois portes.",
+      "illustration": "scene_hameau_entree_2_v2_a.png"
+    },
+    {
+      "id": "demo-nuit-maison",
+      "type": "moment",
+      "nom": "La nuit — la maison crochetée",
+      "lieu": "grange_des_renoncants",
+      "parent": null,
+      "mene_a": [],
+      "texte": [
+        "Avant de fermer l'œil, tu montes voir les combles. Tu redescends plus lentement que tu n'es monté : la trappe est clouée. De l'intérieur du toit. Les clous sont tordus par quelqu'un qui se dépêchait — et le rez-de-chaussée, lui, n'est pas cloué du tout.",
+        "Cette maison ne se protégeait pas de ce qui entre par les portes."
+      ],
+      "description": "Les combles cloués de l'intérieur : la troisième touche du Témoin.",
+      "illustration": "scene_hameau_maison_muree_combles_v4_b.png"
+    },
+    {
+      "id": "demo-nuit-grange",
+      "type": "moment",
+      "nom": "La nuit — la grange",
+      "lieu": "grange_des_renoncants",
+      "parent": null,
+      "mene_a": [],
+      "texte": [
+        "La grange sent la paille et le suif. Le vieux te montre ton coin d'un geste, puis reste debout, la barre à la main. « La trappe des combles, chez nous, on la cloue de l'intérieur », dit-il sans que tu aies rien demandé. « Toutes les maisons. Depuis avant moi. » Il ne dit pas contre quoi."
+      ],
+      "description": "La grange, le vieux debout avec la barre.",
+      "illustration": "scene_landes_hameau_grange_b_d.png"
+    },
+    {
+      "id": "demo-nuit-dehors",
+      "type": "moment",
+      "nom": "La nuit — dehors",
+      "lieu": "grange_des_renoncants",
+      "parent": null,
+      "mene_a": [],
+      "texte": [
+        "Le muret coupe le vent, pas le froid. Vers le milieu de la nuit, un pas — au-dessus de toi. Sur un toit. Quelque chose marche sur les toits, lentement, comme on compte. Tu ne bouges plus jusqu'au gris."
+      ],
+      "description": "Contre un muret, et quelque chose qui marche sur les toits.",
+      "illustration": "scene_temoin_grange_toit_v2_c.png"
     }
   ],
   "regions": [
@@ -2722,6 +3512,72 @@
         "marche_muet",
         "tour_de_guet_effondree"
       ]
+    }
+  ],
+  "environnements": [
+    {
+      "id": "lande",
+      "ordre": 1,
+      "nom": "La Lande",
+      "sous_titre": "l'Appel",
+      "entree": "borne_frontiere",
+      "fin": [],
+      "tirages": [
+        2,
+        2
+      ],
+      "apprend": "le but, le dé, et l'Appel",
+      "colonne": "un trait sombre à l'horizon, qu'on pourrait prendre pour de la fumée",
+      "rappel": "l'Hésitant : « Tu descends. Vous avez tous le même pas, ceux qui descendent. »"
+    },
+    {
+      "id": "gibets",
+      "ordre": 2,
+      "nom": "Les Gibets",
+      "sous_titre": "la Fixation",
+      "entree": "colline_aux_gibets",
+      "fin": [],
+      "tirages": [
+        2,
+        2
+      ],
+      "apprend": "la Fixation : on pend ceux qui entendent l'Appel, pour qu'ils tiennent",
+      "colonne": "depuis la crête, une colonne : on distingue que ce sont des fils",
+      "rappel": "la Fiancée du Gibet : « Tu vas aux cordes. Ils t'arrêteront avant, au village. »"
+    },
+    {
+      "id": "hameau",
+      "ordre": 3,
+      "nom": "Le Hameau",
+      "sous_titre": "le Serment",
+      "entree": "seuil_du_hameau",
+      "fin": [
+        "grange_des_renoncants"
+      ],
+      "tirages": [
+        2,
+        2
+      ],
+      "apprend": "le Serment, le procès, le Témoin",
+      "colonne": "rien : les toits la cachent, et personne ici ne lève la tête vers le sud",
+      "rappel": "le vieux du Serment : « On ne te chasse pas. Mais tu descends, ça se voit à ton pas. »"
+    },
+    {
+      "id": "sud",
+      "ordre": 4,
+      "nom": "Le Sud",
+      "sous_titre": "la Descente",
+      "entree": "chemin_du_sud",
+      "fin": [
+        "falaise_aux_cordes"
+      ],
+      "tirages": [
+        1,
+        1
+      ],
+      "apprend": "la Descente",
+      "colonne": "elle occupe tout le ciel",
+      "rappel": "le Veilleur : « Tu descends. Évidemment que tu descends. »"
     }
   ]
 }
