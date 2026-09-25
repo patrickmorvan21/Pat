@@ -564,9 +564,11 @@ function batirGrappes() {
   }
 
   // LES COLONNES : de gauche à droite dans l'ordre, chacune à la largeur de
-  // son cercle — et chaque environnement un peu plus bas que le précédent :
-  // on descend.
-  const ECART = 70, MARCHE = 60;
+  // son cercle, TOUTES À LA MÊME HAUTEUR. Décision Patrick (25/09) : les
+  // environnements d'un même acte sont en surface, au même niveau — seul le
+  // passage d'un ACTE à l'autre descendra d'un cran. Ne pas réintroduire de
+  // marche entre deux environnements.
+  const ECART = 70, MARCHE = 0;
   let x = 0;
   places.forEach((gr, i) => {
     if (i) x += places[i - 1].rOut + ECART + gr.rOut;
