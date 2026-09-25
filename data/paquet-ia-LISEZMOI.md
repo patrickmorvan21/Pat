@@ -89,9 +89,11 @@ complète : c'est ce texte-là qu'il faut juger.
   héros y sont morts. C'est ce qui fait qu'un lieu **ne se lit pas pareil à
   ta deuxième vie**. Joue donc **plusieurs vies d'affilée sans effacer ce
   fichier** : l'effacer remet le monde à neuf et tu jugeras un jeu amnésique.
-- **Le Sceau des Landes est répliqué** (nouveau en v1.83.0) : la marque que
-  laisse une traversée réussie, ce qu'elle change à la vie suivante, et la
-  réponse qu'elle donne au côté sud de la Borne. Voir le protocole ci-dessous.
+- **Le Sceau des Landes est RETIRÉ** (25/09, décision de l'auteur) : une
+  traversée réussie ne laisse plus de marque dans la paume ni de
+  conversations réservées. Le compte retient seulement qu'il est déjà sorti
+  (le Chemin du Sud ne refait pas la leçon à qui connaît le chemin). Si tu
+  lis « Sceau » dans un ancien transcript, c'est l'état d'avant.
 - **L'échelle sociale du Soupçon est répliquée** (nouveau en v1.87.0) : les
   textes de marche changent selon ce que le village a décidé à ton sujet, et
   ils MONTENT — le monde sert le barreau que tu as atteint, pas un barreau au
@@ -102,7 +104,7 @@ complète : c'est ce texte-là qu'il faut juger.
   tu n'as pas prise **te retrouve**, à un moment qu'elle choisit. Et l'issue
   parfaitement sûre de ce face-à-face a un prix certain et dit : la Croisée
   suivante n'offre plus qu'une direction. C'est l'autre système à juger en
-  priorité dans cette version — voir la question en fin de section Sceau.
+  priorité dans cette version.
 - **Les scènes-variantes sont répliquées** (nouveau en v1.87.0) : sept scènes
   se jouent À LA PLACE d'une autre selon ce que tu as compris ou ce que le
   village pense de toi. Le Veilleur de la Palissade, par exemple, ne te parle
@@ -117,37 +119,13 @@ complète : c'est ce texte-là qu'il faut juger.
 Dans ton rapport, distingue toujours **ce que tu as joué** de **ce que tu as
 lu** dans un transcript ou déduit du code.
 
-### Le protocole du SCEAU (à faire dans cet ordre, sans effacer `compte.json`)
+### Le protocole de TRAVERSÉE
 
-Le Sceau est ce qu'on **rapporte** d'une traversée réussie — l'inverse d'une
-relique, qui est ce qu'on **laisse** en mourant. Il n'ajoute aucun bonus de
-jet : il ouvre des conversations et fait réagir le monde.
-
-1. **Traverse.** Il faut atteindre la Palissade Sud puis franchir la
-   Descente ; compte sept ou huit lieux. Si tu meurs, recommence — mais
-   n'efface pas `compte.json`.
-2. **Au moment de passer la ligne**, une ligne t'annonce ce que tu emportes.
-3. **`python3 pactum.py nouvelle`** — nouvelle incarnation. Regarde le tout
-   premier écran : le héros porte quelque chose qu'il n'a pas gagné.
-4. **À la Borne, prends « Faire le tour de la pierre »** : l'examen pose une
-   question, et deux lignes y répondent (l'une nomme ton héros précédent).
-5. **Traverse une deuxième fois** si tu en as le courage : l'annonce de
-   sortie et la marque d'ouverture ne sont pas les mêmes qu'au premier
-   passage.
-
-Si tu veux la version mécanique plutôt que la version vécue :
-**`python3 protocole_sceau.py`** (dans `jouer/`) joue trois traversées dans
-des tables isolées et contrôle qu'une traversée vaut exactement un Sceau par
-chacune des trois portes de sortie — l'arrivée à la Descente, le bouton
-terminal, et `nouvelle` lancée depuis cet écran. Il ne touche pas à ta
-partie. Ça ne remplace pas le jugement de la question ci-dessous : ça
-garantit seulement que ce que tu juges est bien ce que le jeu fait.
-
-Ce qu'on cherche à savoir : est-ce que ça produit « qu'est-ce que c'est que
-ça ? » ou « j'ai débloqué mon bonus » ? Est-ce qu'un porteur du Sceau se sent
-**reconnu par le monde**, ou **récompensé par le jeu** ? Et la deuxième
-traversée se distingue-t-elle vraiment de la première, ou n'est-ce qu'un
-compteur invisible qui s'incrémente ?
+**`python3 protocole_traversee.py`** (dans `jouer/`) joue trois traversées
+dans des tables isolées et contrôle qu'une traversée compte exactement une
+fois par chacune des trois portes de sortie — l'arrivée à la Descente, le
+bouton terminal, et `nouvelle` lancée depuis cet écran — et que la vie
+suivante ne porte aucune marque. Il ne touche pas à ta partie.
 
 ### La menace laissée active (à juger en jouant)
 
@@ -189,7 +167,7 @@ Les parties du **jeu complet** (`v196-vie-*.md`), pour comparaison : une
 **curieuse** (elle regarde tout et lance peu — c'est elle
 qui va au bout : elle **franchit la Descente**, et c'est le seul transcript
 où l'on voit la sortie de zone en entier, la marque du Sceau qui s'ouvre
-dans la paume comprise), une **pressée** (elle prend le premier bouton), et une
+dans la paume comprise — état d'avant le 25/09, le Sceau est retiré depuis), une **pressée** (elle prend le premier bouton), et une
 **téméraire** (elle lance le dé dès qu'elle le peut, quatorze jets). Aucune
 des deux ne meurt dans ce lot — c'est la variance réelle, pas un tri.
 

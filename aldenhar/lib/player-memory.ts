@@ -21,7 +21,7 @@ import type { ZoneId } from "@/lib/zones";
 import { track, finDeRun } from "./analytics";
 import type { RegistreRow } from "@/lib/state";
 import { sacDepuis, type SacFaits } from "@/lib/faits";
-import { SCEAU_LANDES } from "@/lib/sceaux";
+import { traverseeDe, migrerSceau } from "@/lib/traversees";
 import {
   forgerRelique,
   relique,
@@ -306,9 +306,9 @@ export type PlayerMemory = {
   faitsVus?: Record<string, string[]>;
   /**
    * LE MOTEUR DE FAITS (spec 4/08 §1) — scopes `zone_permanent` et
-   * `global_permanent` : compteurs de visite, Sceaux, DÉCOUVERTES. Ne meurent
-   * jamais. ⚠️ Les Découvertes conditionnent les Sceaux et l'arc du twist,
-   * jamais ce que sait le héros courant (voir lib/faits.ts).
+   * `global_permanent` : compteurs de visite, de traversées, DÉCOUVERTES. Ne
+   * meurent jamais. ⚠️ Les Découvertes conditionnent l'arc du twist, jamais ce
+   * que sait le héros courant (voir lib/faits.ts).
    */
   faits?: SacFaits;
   /**
@@ -322,7 +322,7 @@ export type PlayerMemory = {
    * la Descente franchie vivant. Le nom entre au Registre (« a franchi la
    * Descente »), le compte s'en souvient, le Geôlier accueille la run
    * suivante en conséquence. Aucune relique : on ne forge rien d'une vie
-   * qu'on n'a pas perdue. (Le Sceau qui modifie la zone = temps 2.)
+   * qu'on n'a pas perdue. (Le Sceau, livré le 14/08, est retiré le 25/09.)
    */
   zonesCleared?: number;
   /**
@@ -433,16 +433,13 @@ export function noterProfil(stats: { courage: number; ruse: number; instinct: nu
   });
 }
 
-/** Le Sceau que pose le franchissement d'une zone — une zone sans Sceau n'en pose pas. */
-const SCEAU_PAR_ZONE: Partial<Record<ZoneId, string>> = { landes: SCEAU_LANDES };
-
 /**
  * FRANCHIR UNE ZONE VIVANT (12/09 — remplace la moitié « zone » de l'ancien
  * `recordTraversee`). Ce que le COMPTE retient d'un franchissement, que la
  * vie continue en bas ou que la démo s'arrête là : le compte de zones, le
- * Sceau de la zone (arbitrage 10/08 — il vit dans le sac de faits, nature
- * `seal`, sa valeur compte les passages : une deuxième traversée ne donne pas
- * un second sceau, elle creuse le même), le record de lieux franchis.
+ * compteur de traversées de CETTE zone (`traversee:<zone>` — le Sceau qui
+ * l'a précédé est retiré depuis le 25/09, voir lib/traversees.ts), le record
+ * de lieux franchis.
  * ⚠️ AUCUNE ligne au Grand Registre : décision Patrick 12/09, « à la mort
  * seulement ». Et aucun `finDeRun` : la partie n'est pas finie, elle descend.
  */
@@ -454,18 +451,16 @@ export function recordZoneFranchie(args: { zone: ZoneId; heroName: string; days:
   );
   mutateMemory((m) => {
     m.zonesCleared = (m.zonesCleared ?? 0) + 1;
-    const sceau = SCEAU_PAR_ZONE[args.zone];
-    if (sceau) {
-      const sac: SacFaits = { ...(m.faits ?? {}) };
-      sac[sceau] = {
-        id: sceau,
-        kind: "seal",
-        scope: "zone_permanent",
-        value: (sac[sceau]?.value ?? 0) + 1,
-        source: "la-descente",
-      };
-      m.faits = sac;
-    }
+    const id = traverseeDe(args.zone);
+    const sac: SacFaits = { ...(m.faits ?? {}) };
+    sac[id] = {
+      id,
+      kind: "counter",
+      scope: "zone_permanent",
+      value: (sac[id]?.value ?? 0) + 1,
+      source: "la-descente",
+    };
+    m.faits = sac;
     m.bestFranchis = Math.max(m.bestFranchis ?? 0, args.franchis);
     m.lastPlayedAt = Date.now();
   });
@@ -595,7 +590,7 @@ export function loadMemory(): PlayerMemory {
           profils: Array.isArray(p.profils) ? p.profils : [],
           derniereFinTraversee: Boolean(p.derniereFinTraversee),
           dernierSurvivant: typeof p.dernierSurvivant === "string" ? p.dernierSurvivant : undefined,
-          faits: sacDepuis(p.faits),
+          faits: migrerSceau(sacDepuis(p.faits)),
         };
       }
     } catch {

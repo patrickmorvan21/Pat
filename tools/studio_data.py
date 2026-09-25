@@ -42,13 +42,13 @@ TS_RELIQUES = RACINE / "aldenhar/lib/reliques.ts"
 TS_FAITS = RACINE / "aldenhar/lib/contradictions.ts"
 TS_PERCEPTION = RACINE / "aldenhar/lib/perception.ts"
 TS_LOI = RACINE / "aldenhar/lib/loi-substitution.ts"
-TS_SCEAUX = RACINE / "aldenhar/lib/sceaux.ts"
+TS_TRAVERSEES = RACINE / "aldenhar/lib/traversees.ts"
 # Les CONSTANTES que le contenu utilise à la place d'un littéral. Un champ
 # renseigné par une constante ressortait VIDE de l'export (voir
 # `constante_de`) : cette table est ce qui rend la valeur réelle lisible.
 CONSTANTES_CONNUES: dict[str, str] = {
     m.group(1): m.group(2)
-    for fichier in (TS_SCEAUX, TS)
+    for fichier in (TS_TRAVERSEES, TS)
     for m in __import__("re").finditer(
         r'export const ([A-Z][A-Z0-9_]*)\s*=\s*"([^"]+)"',
         fichier.read_text(encoding="utf-8"),
@@ -200,7 +200,7 @@ def texte_de(txt: str, champ: str) -> str | None:
 
 
 def constante_de(txt: str, champ: str, connues: dict[str, str]) -> str | None:
-    """La valeur d'un champ écrit avec une CONSTANTE (`requiresSceau: SCEAU_LANDES`).
+    """La valeur d'un champ écrit avec une CONSTANTE (ex. `si: { id: TRAVERSEE_LANDES }`).
 
     ⚠️ `texte_de` ne voit que les littéraux : un champ renseigné par une
     constante importée en ressortait VIDE, sans le moindre avertissement — et
@@ -785,11 +785,6 @@ def lire_choix(bloc: str) -> list[dict]:
             # a trouvé l'objet — et un relecteur conclurait que l'exploration
             # ne prépare rien (le biais mesuré le 9/08, exactement).
             ("requiresObjet", "exigeObjet"),
-            # 14/08 : le SCEAU, ce qu'on rapporte d'une traversée réussie.
-            # Même raison qu'`exigeObjet` de le déclarer ici : sans ce champ,
-            # le Studio ne montrerait pas ces conversations et la réplique les
-            # offrirait à un compte qui n'a jamais survécu.
-            ("requiresSceau", "exigeSceau"),
             # 24/08 : l'objet RESTE SUR PLACE (payoff de la Falaise) — la
             # corde nouée là-haut ne redescend pas. Sans ce champ, la réplique
             # garderait l'objet et un relecteur conclurait que le payoff est
@@ -1047,6 +1042,7 @@ def lire_pois(bloc: str) -> list[dict]:
 _CONSTANTES = {
     "COMPTEUR_FILLE": "découvertes sur la Fille",
     "SEUIL_MOULIN": "3",
+    "TRAVERSEE_LANDES": "traversées réussies des Landes",
 }
 
 # La VALEUR réelle des mêmes constantes, pour la forme lisible par machine des
@@ -1056,6 +1052,7 @@ _CONSTANTES = {
 VALEURS_TS = {
     "COMPTEUR_FILLE": "c.fille",
     "SEUIL_MOULIN": "3",
+    "TRAVERSEE_LANDES": "traversee:landes",
 }
 
 

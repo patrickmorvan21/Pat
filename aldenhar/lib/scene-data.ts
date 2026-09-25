@@ -10,7 +10,7 @@
 
 import type { Condition, Faits } from "./faits";
 import { evalue, present, radical } from "./faits";
-import { SCEAU_LANDES } from "./sceaux";
+import { TRAVERSEE_LANDES } from "./traversees";
 import { assetExiste } from "./assets";
 import { SALINES_ENVIRONNEMENTS } from "./zones-salines";
 
@@ -438,7 +438,7 @@ export type Choice = {
    * survit au filtrage, les ids nommés ici disparaissent.
    *
    * ⚠️ C'est le mécanisme qui fait tenir la règle verrouillée des TROIS
-   * ACTIONS quand les systèmes s'additionnent (Sceau + objet + savoir +
+   * ACTIONS quand les systèmes s'additionnent (objet + savoir +
    * découverte + contradiction sur un même écran). La règle d'écriture qui
    * va avec : une option conditionnelle ne s'AJOUTE jamais, elle prend la
    * place de l'option aveugle du même geste. La substitution est elle-même
@@ -574,17 +574,6 @@ export type Choice = {
       devant une Croisée fermée « au hasard ») : la ligne servie à la Croisée
       suivante nomme l'acte qui l'a fermée. */
   fermeLaRoute?: Exclude<RouteFermeeCause, "echec">;
-  /**
-   * LE SCEAU OUVRE UNE PORTE (arbitrage 10/08, livré le 14/08). Ce choix
-   * n'existe que pour un compte qui a franchi la Descente vivant — id du
-   * sceau (`SCEAU_LANDES`), voir lib/sceaux.ts.
-   *
-   * ⚠️ C'est la SEULE forme que prend le Sceau côté mécanique : il n'entre
-   * jamais dans le modificateur, le seuil ni l'Anneau. Une récompense de
-   * survie qui rendrait les jets plus faciles se lirait comme un bonus de
-   * stat ; celle-ci se lit comme un monde qui te reconnaît.
-   */
-  requiresSceau?: string;
   /**
    * L'OBJET OUVRE UNE POSSIBILITÉ (chantier 12/08, §2). Ce choix n'existe
    * qu'une fois l'objet de la scène employé — clé de `Scene.usageObjet.cle`.
@@ -1022,7 +1011,7 @@ export type Scene = {
   terminal?: boolean;
   /**
    * FIN DE DÉMO (13/09) : un nœud terminal qui n'est PAS une sortie de zone —
-   * l'étape suivante n'est pas écrite. Ni Sceau, ni ligne au Registre :
+   * l'étape suivante n'est pas écrite. Ni compte de zones, ni ligne au Registre :
    * `recordSortieVivante`, puis le carton « à venir ».
    */
   finDemo?: boolean;
@@ -5205,20 +5194,6 @@ export const SCENES: Scene[] = [
         },
       },
       {
-        /* LE SCEAU (14/08). Le Colporteur « te reconnaît, c'est impossible »
-           depuis le 20/07 : la marque explique une partie de l'impossible,
-           sans la lever. Il ne vend rien ici — il refuse un troc, ce qui de
-           sa part est l'aveu le plus cher qu'il puisse faire. */
-        id: "colporteur-paume",
-        prendLaPlaceDe: ["marche-caillou", "colporteur-viande", "troc-colporteur"],
-        label: "Ouvrir la main devant le Colporteur",
-        requiresSceau: SCEAU_LANDES,
-        passive: {
-          consequence:
-            "Tu ouvres la main. Le sourire du Colporteur tombe — pas de peur : de fatigue.\n\n— « Trois. J'en ai vu trois comme ça, en vingt ans. Et les trois, je les ai vus deux fois. Toi, tu me dois rien. C'est l'inverse. »",
-        },
-      },
-      {
         /* LE SONNEUR SANS CLOCHE (§7) — il n'avait aucune scène. Son
            témoignage tient en trois phrases et dit tout du village : il a
            voulu prévenir, et on lui a retiré le moyen de prévenir sans un
@@ -6545,20 +6520,6 @@ export const SCENES: Scene[] = [
         },
       },
       {
-        /* LE SCEAU (14/08). L'Écrivain tient les écritures du hameau : c'est
-           lui qui sait s'il existe une page pour ceux qui reviennent. Sa
-           réponse dit la loi de substitution sans jamais la nommer — on ne
-           revient pas, on prend la place de. */
-        id: "tribunal-page-revenus",
-        prendLaPlaceDe: ["tribunal-carnet", "dire-poteau-grave", "registre-ment", "ecrivain-defenses"],
-        label: "Demander la page des revenus",
-        requiresSceau: SCEAU_LANDES,
-        passive: {
-          consequence:
-            "Il feuillette en arrière. Une colonne de noms rayés — et en face de chaque trait, un nom du hameau. « Quand il en revient un, il en manque un. Le registre ne juge pas. Il équilibre. »",
-        },
-      },
-      {
         id: "tribunal-carnet",
         prendLaPlaceDe: ["dire-poteau-grave", "registre-ment", "ecrivain-defenses"],
         label: "Confronter le carnet au Registre",
@@ -7250,8 +7211,9 @@ export const SCENES: Scene[] = [
      regarde ajoute une raison de faire demi-tour, et le bouton ne change pas.
 
      ⚠️ PREMIÈRE FOIS SEULEMENT pour la version dense : la variante
-     `chemin-du-sud-revenu` prend sa place dès que le compte porte le Sceau
-     des Landes — à qui est déjà sorti, on ne refait pas la leçon.
+     `chemin-du-sud-revenu` prend sa place dès que le compte a déjà franchi
+     la Descente (`TRAVERSEE_LANDES`, lib/traversees.ts — c'était le Sceau
+     jusqu'au 25/09) : à qui est déjà sorti, on ne refait pas la leçon.
 
      ⚠️ Aucune de ces choses posées ne présuppose ce que le joueur a fait (lot
      « faux souvenirs » du 24/08) : elles ont été laissées par D'AUTRES.
@@ -7281,7 +7243,7 @@ export const SCENES: Scene[] = [
     /* La version de celui qui est DÉJÀ sorti une fois. Une seule chose a
        changé le long du chemin, et elle suffit. */
     id: "chemin-du-sud-revenu",
-    remplace: { scene: "chemin-du-sud", si: { id: SCEAU_LANDES, gte: 1 } },
+    remplace: { scene: "chemin-du-sud", si: { id: TRAVERSEE_LANDES, gte: 1 } },
     sejour: true,
     illustration: "assets/scene_chemin_du_sud_a_b.png",
     narration: [
@@ -7577,19 +7539,6 @@ export const SCENES: Scene[] = [
         "qui disent vrai, je les note vite. »",
     ],
     choices: [
-      {
-        /* LE SCEAU (14/08) — la conversation que le lieu attendait. Depuis le
-           7/08, la narration pose une « colonne des retours » vide, avec une
-           marque en haut, d'une autre main, que le Veilleur ne voit pas. Ce
-           choix dit à qui elle est : à la vie d'avant du même joueur. */
-        id: "veilleur-colonne",
-        label: "Lui montrer le haut de sa planche",
-        requiresSceau: SCEAU_LANDES,
-        passive: {
-          consequence:
-            "— « C'est pas mon écriture. C'est pas une écriture : c'est un creux. » Il raye la ligne qu'il vient d'écrire sur toi. « Toi, t'es dans l'autre colonne. Celle-là, j'ai pas le droit de la tenir. »",
-        },
-      },
       { id: "veilleur-passer", label: "Passer le portillon" },
     ],
     jailerLine: "La colonne des retours. Vide depuis trente ans. J'adore les optimistes.",
@@ -11731,7 +11680,7 @@ export const HAMEAU_SORTIE = "sortie-hameau";
 // `chemin-du-sud`, et la Palissade, elle, était revenue dans le pool sans
 // qu'on s'en aperçoive. Résultat mesuré par le panel (A3) : « Vers une
 // palissade au sud » offert à la PREMIÈRE Croisée → Veilleur → portillon →
-// Falaise → Descente en dix écrans, Sceau compris, traversée 1/7. La sortie
+// Falaise → Descente en dix écrans, traversée 1/7. La sortie
 // de zone ne s'atteint qu'au bout de la traversée, par le Chemin du Sud.
 export const TRAVERSAL_POOL = Object.keys(APPROACH).filter(
   (id) => id !== SORTIE_DE_ZONE && id !== HAMEAU_SORTIE && id !== "palissade-sud"

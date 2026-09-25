@@ -246,5 +246,13 @@
  *           braises et mini-jeux vont d'un bord à l'autre ; ce qui est posé au
  *           pixel sur la grille de 390 (pacte, clauses, cadre de signature) se
  *           centre ; le démon remplit la largeur et son cache de sceau suit.
+ *   1.158.0 — Le Sceau des Landes est RETIRÉ (décision Patrick 25/09 : « ça
+ *           complexifie le jeu ») : plus de marque dans la paume, plus de
+ *           conversations qu'elle ouvrait, plus de réponse de la Borne ni de
+ *           reconnaissance à l'arrivée ; on passe à la suite par la seule
+ *           trace de sortie. Le compte garde un simple compteur de
+ *           traversées (le Chemin du Sud ne refait pas la leçon), et les
+ *           anciennes sauvegardes sont converties. + la réplique jouable
+ *           plantait dès la première scène depuis le 13/09 (variable `r`).
  */
-export const APP_VERSION = "1.157.1";
+export const APP_VERSION = "1.158.0";

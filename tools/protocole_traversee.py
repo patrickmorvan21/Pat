@@ -1,20 +1,22 @@
 #!/usr/bin/env python3
-"""LE PROTOCOLE SCEAU — la réplique enregistre-t-elle une traversée vivante ?
+"""LE PROTOCOLE TRAVERSÉE — la réplique enregistre-t-elle une traversée vivante ?
 
-Demandé par le verdict de playtest global du 15/08 (point A) : le Sceau était
-convaincant à la sortie mais son RETOUR n'avait jamais été éprouvé, parce que
-la commande `nouvelle` lancée depuis la Descente n'incrémentait pas le compte.
+Né « protocole Sceau » (verdict de playtest du 15/08, point A : la commande
+`nouvelle` lancée depuis la Descente n'incrémentait pas le compte). Le Sceau
+est retiré le 25/09 (décision Patrick) ; ce qui reste à garder, c'est que le
+compte retienne UNE traversée par traversée, par les trois portes de sortie,
+et que la vie suivante ne porte plus aucune marque.
 
 Ce garde joue vraiment deux traversées, l'une après l'autre, par les TROIS
 portes de sortie possibles, et vérifie à chaque fois que :
   1. le compte porte une traversée de plus ;
-  2. la vie suivante s'ouvre AVEC la marque sur la main ;
+  2. la vie suivante s'ouvre SANS marque dans la paume (Sceau retiré) ;
   3. la Borne relit le prédécesseur qui, lui, est revenu vivant — gardé
      à part du Registre (12/09), jamais inscrit comme une tombe ;
-  4. la marque ne se compte jamais deux fois pour une seule traversée.
+  4. une traversée ne se compte jamais deux fois.
 
-    python3 tools/protocole_sceau.py           # les trois portes
-    python3 tools/protocole_sceau.py --strict  # code de sortie 1 au moindre écart
+    python3 tools/protocole_traversee.py           # les trois portes
+    python3 tools/protocole_traversee.py --strict  # code de sortie 1 au moindre écart
 
 ⚠️ Il teste la RÉPLIQUE (`tools/pactum.py`), pas le jeu. Le jeu a sa propre
 vérification en Playwright — les deux ne se remplacent pas : c'est justement
@@ -118,24 +120,23 @@ def main(argv: list[str]) -> int:
         t = Table(base / "porte1")
         arrive, _ = traverser(t, [4242, 17, 555, 8081, 1234])
         if not controle("la traversée atteint la Descente", arrive):
-            print("     (impossible de juger le Sceau sans sortie vivante)")
+            print("     (impossible de juger la traversée sans sortie vivante)")
             return 1 if strict else 0
-        # ⚠️ Le Sceau se prend à l'ARRIVÉE (c'est là que la traversée est
-        # acquise, et c'est là que l'écran l'annonce) : mesurer juste avant
+        # ⚠️ La traversée se compte à l'ARRIVÉE (c'est là qu'elle est
+        # acquise) : mesurer juste avant
         # le geste de sortie donnerait toujours « 1 → 1 » et ferait passer le
         # correctif pour un échec. On mesure donc l'ACQUIS de la traversée,
         # puis on vérifie que le geste de sortie ne rajoute rien.
-        arrivee = t.compte.get("sceau", 0)
+        arrivee = t.compte.get("traversees", 0)
         verts &= controle("la traversée est enregistrée à l'arrivée", arrivee == 1,
-                          f"sceau {arrivee}")
+                          f"traversées {arrivee}")
         ouverture = t.jouer("nouvelle", "--graine=99")
-        apres = t.compte.get("sceau", 0)
+        apres = t.compte.get("traversees", 0)
         verts &= controle("ouvrir une vie neuve ne recompte pas", apres == arrivee,
-                          f"sceau {arrivee} → {apres}")
-        marque = t.jouer("").lower()
+                          f"traversées {arrivee} → {apres}")
         verts &= controle(
-            "la vie suivante s'ouvre avec la marque",
-            any(m in (ouverture + marque).lower() for m in ("paume", "entaille", "marque")),
+            "la vie suivante s'ouvre SANS marque dans la paume (Sceau retiré)",
+            "paume" not in ouverture.lower() and "entaille en creux" not in ouverture.lower(),
         )
 
         # ── PORTE 2 : le bouton « Repartir de la Borne ».
@@ -143,24 +144,24 @@ def main(argv: list[str]) -> int:
         t2 = Table(base / "porte2")
         arrive, ecran = traverser(t2, [777, 2026, 909, 4242, 33])
         if controle("la traversée atteint la Descente", arrive):
-            arrivee = t2.compte.get("sceau", 0)
-            verts &= controle("la traversée est enregistrée", arrivee == 1, f"sceau {arrivee}")
+            arrivee = t2.compte.get("traversees", 0)
+            verts &= controle("la traversée est enregistrée", arrivee == 1, f"traversées {arrivee}")
             t2.jouer("1")  # « Repartir de la Borne »
-            apres = t2.compte.get("sceau", 0)
+            apres = t2.compte.get("traversees", 0)
             verts &= controle("le bouton terminal ne recompte pas", apres == arrivee,
-                              f"sceau {arrivee} → {apres}")
+                              f"traversées {arrivee} → {apres}")
         else:
             verts = False
 
-        # ── PORTE 3 : la double clôture. Une traversée ne vaut qu'un Sceau.
+        # ── PORTE 3 : la double clôture. Une traversée ne compte qu'une fois.
         print("\nPORTE 3 — appuyer PUIS relancer ne compte pas deux fois")
         t3 = Table(base / "porte3")
         arrive, _ = traverser(t3, [31337, 88, 640, 777, 12])
         if controle("la traversée atteint la Descente", arrive):
             t3.jouer("1")
             t3.jouer("nouvelle", "--graine=1")
-            apres = t3.compte.get("sceau", 0)
-            verts &= controle("une traversée = un Sceau", apres == 1, f"sceau {apres}")
+            apres = t3.compte.get("traversees", 0)
+            verts &= controle("une traversée = un compte", apres == 1, f"traversées {apres}")
             # La Borne doit relire un prédécesseur REVENU, pas un mort — et
             # depuis le 12/09 il n'est PLUS au livre (le Registre est celui
             # des morts) : il est gardé à part, sans une seule tombe de plus.
@@ -175,8 +176,8 @@ def main(argv: list[str]) -> int:
         else:
             verts = False
 
-    print("\n" + ("PROTOCOLE SCEAU — vert." if verts
-                  else "PROTOCOLE SCEAU — au moins un écart."))
+    print("\n" + ("PROTOCOLE TRAVERSÉE — vert." if verts
+                  else "PROTOCOLE TRAVERSÉE — au moins un écart."))
     return 0 if verts or not strict else 1
 
 

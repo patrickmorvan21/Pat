@@ -37,7 +37,6 @@ import {
 } from "@/lib/codex-data";
 import { loadMemory, marquerCodexVu } from "@/lib/player-memory";
 import { assetUrl } from "@/lib/assets";
-import { imageSceau, niveauSceau } from "@/lib/sceaux";
 import { BoutonNav } from "@/components/NavIcons";
 
 type Niveau =
@@ -299,16 +298,10 @@ function EntreeFiche({
   prov?: { par: string; jour: number };
 }) {
   const arc = entree.type === "arc";
-  /* L'EXCEPTION DU SCEAU (01/09) : la marque de la paume EST un objet visuel
-     — un rond, deux ronds collés, le trait qui coupe. Son image suit le
-     niveau du COMPTE (la fiche montre la marque telle qu'elle est aujourd'hui).
-     Tout autre arc garde l'image de l'acte en bandeau court. */
-  const illuSceau =
-    entree.id === "arc:sceau"
-      ? imageSceau(Math.max(1, niveauSceau({ run: {}, perm: loadMemory().faits ?? {} })))
-      : null;
-  const illu = illuSceau ?? (arc ? IMAGE_ACTE_I : (entree.illustration ?? IMAGE_ACTE_I));
-  const court = arc && !illuSceau;
+  // Un arc porte l'image de l'acte en bandeau court ; un lieu ou une rencontre
+  // la sienne, en pleine hauteur.
+  const illu = arc ? IMAGE_ACTE_I : (entree.illustration ?? IMAGE_ACTE_I);
+  const court = arc;
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <div className="relative shrink-0">

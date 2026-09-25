@@ -50,8 +50,8 @@
   "verger-noir",
   "meute-grise-1"
  ],
- "genere": "2026-09-24T17:09:07Z",
- "commit": "ee12c9f",
+ "genere": "2026-09-25T17:56:36Z",
+ "commit": "47aa49d",
  "zones": [
   {
    "id": "landes",
@@ -4786,18 +4786,6 @@
      ]
     },
     {
-     "id": "colporteur-paume",
-     "label": "Ouvrir la main devant le Colporteur",
-     "type": "passif",
-     "consequence": "Tu ouvres la main. Le sourire du Colporteur tombe — pas de peur : de fatigue.\n\n— « Trois. J'en ai vu trois comme ça, en vingt ans. Et les trois, je les ai vus deux fois. Toi, tu me dois rien. C'est l'inverse. »",
-     "exigeSceau": "sceau:landes",
-     "prendLaPlaceDe": [
-      "marche-caillou",
-      "colporteur-viande",
-      "troc-colporteur"
-     ]
-    },
-    {
      "id": "sonneur-battant",
      "label": "Parler à l’homme sans étal",
      "type": "passif",
@@ -6146,19 +6134,6 @@
      "consequence": "« J'écris les dénonciations et les défenses. Les deux. » Il range sa plume avec un soin d'horloger. « Depuis quelques années, on ne me demande plus de défenses. » Il dit ça comme on constate une baisse de commandes."
     },
     {
-     "id": "tribunal-page-revenus",
-     "label": "Demander la page des revenus",
-     "type": "passif",
-     "consequence": "Il feuillette en arrière. Une colonne de noms rayés — et en face de chaque trait, un nom du hameau. « Quand il en revient un, il en manque un. Le registre ne juge pas. Il équilibre. »",
-     "exigeSceau": "sceau:landes",
-     "prendLaPlaceDe": [
-      "tribunal-carnet",
-      "dire-poteau-grave",
-      "registre-ment",
-      "ecrivain-defenses"
-     ]
-    },
-    {
      "id": "tribunal-carnet",
      "label": "Confronter le carnet au Registre",
      "type": "passif",
@@ -7078,9 +7053,9 @@
    "pointsInteret": [],
    "remplace": {
     "scene": "chemin-du-sud",
-    "condition": "SCEAU_LANDES ≥ 1",
+    "condition": "traversées réussies des Landes ≥ 1",
     "si": {
-     "id": "SCEAU_LANDES",
+     "id": "traversee:landes",
      "gte": 1
     }
    },
@@ -7422,13 +7397,6 @@
     "Elle ne l'est pas tout à fait. Tout en haut, une marque — une seule, d'une autre main. Il ne la voit pas : sa planche commence en bas."
    ],
    "choix": [
-    {
-     "id": "veilleur-colonne",
-     "label": "Lui montrer le haut de sa planche",
-     "type": "passif",
-     "consequence": "— « C'est pas mon écriture. C'est pas une écriture : c'est un creux. » Il raye la ligne qu'il vient d'écrire sur toi. « Toi, t'es dans l'autre colonne. Celle-là, j'ai pas le droit de la tenir. »",
-     "exigeSceau": "sceau:landes"
-    },
     {
      "id": "veilleur-passer",
      "label": "Passer le portillon",
@@ -13397,30 +13365,6 @@
    "racine": "retour.svg"
   },
   {
-   "fichier": "sceau_landes_1.png",
-   "hash": "b435d124",
-   "taille": 13805,
-   "recent": false,
-   "groupe": "autre",
-   "racine": "sceau_landes_1"
-  },
-  {
-   "fichier": "sceau_landes_2.png",
-   "hash": "67c5d495",
-   "taille": 18845,
-   "recent": false,
-   "groupe": "autre",
-   "racine": "sceau_landes_2"
-  },
-  {
-   "fichier": "sceau_landes_3.png",
-   "hash": "fef90234",
-   "taille": 19868,
-   "recent": false,
-   "groupe": "autre",
-   "racine": "sceau_landes_3"
-  },
-  {
    "fichier": "scene_borne_eclat_a_b.png",
    "hash": "39fc719f",
    "taille": 11742,
@@ -15652,11 +15596,11 @@
  "totaux": {
   "scenes": 164,
   "pointsInteret": 0,
-  "choix": 496,
-  "illustrations": 524,
+  "choix": 493,
+  "illustrations": 521,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 234,
+  "reserve": 231,
   "reliques": 10,
   "faits": 3,
   "perceptions": 20,

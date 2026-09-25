@@ -162,39 +162,6 @@ def record(src: str, ancre: str) -> dict[str, str]:
     return out
 
 
-def sceau_textes() -> dict:
-    """Les textes du Sceau (lib/sceaux.ts), pour que la réplique les joue.
-
-    Les trois lignes calculées sont des `return` successifs dans leur fonction,
-    du cas le plus faible au plus fort : l'ordre de lecture EST l'ordre des
-    passages, donc une liste suffit (index 0 = premier passage).
-    """
-    src = (LIB / "sceaux.ts").read_text(encoding="utf-8")
-
-    def lignes(fn: str) -> list[str]:
-        d = src.find(f"export function {fn}")
-        if d < 0:
-            return []
-        corps = src[d : src.find("\n}", d)]
-        return [
-            "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', bloc)).replace('\\"', '"').replace("\\'", "'")
-            for bloc in re.findall(r"return\s*\(?((?:\s*\"(?:[^\"\\]|\\.)*\"\s*\+?)+)", corps)
-        ]
-
-    return {
-        "ouverture": lignes("ligneSceauOuverture"),
-        "borne": lignes("ligneSceauBorne"),
-        "sortie": lignes("ligneSceauSortie"),
-        "reconnu": record(src, "export const SCEAU_RECONNU"),
-        # LA TRANSFORMATION DU 3e PASSAGE (15/08) : ces lignes REMPLACENT les
-        # reconnaissances au-delà de deux traversées, elles ne s'y ajoutent
-        # pas. Sans elles, la réplique ferait juger une croissance purement
-        # quantitative — exactement ce que la règle du 14/08 interdit.
-        "transforme": record(src, "export const SCEAU_TRANSFORME"),
-        "geolier": lignes("ligneSceauGeolier"),
-    }
-
-
 def borne_sud_gabarits() -> dict:
     """Les trois retours de `ligneBorneSud`, avec leurs interpolations.
 
@@ -422,17 +389,10 @@ def main() -> int:
         "hameauInterieur": re.findall(
             r'"([a-z\-]+)"', bloc_tableau(src, "export const HAMEAU_INTERIOR")
         ),
-        # LE SCEAU DES LANDES (14/08). Sans ces textes, la réplique ferait
-        # croire à un relecteur que survivre ne rapporte rien — exactement le
-        # biais mesuré le 9/08, où six griefs du panel venaient du kit et non
-        # du jeu. On exporte les trois lignes calculées ET les reconnaissances
-        # par lieu ; le gabarit d'index vaut le nombre de passages.
-        "sceau": sceau_textes(),
         # LE CÔTÉ SUD DE LA BORNE : la marque du prédécesseur. Trois gabarits
         # (revenu vivant / une seule vie perdue / plusieurs), avec `{nom}` et
         # `{compte}` à substituer. Sans eux, le kit fait croire que la Borne
-        # ne se souvient de personne — et c'est justement l'écran où le Sceau
-        # répond à sa question.
+        # ne se souvient de personne.
         "borneSud": borne_sud_gabarits(),
         # LE CORPS SE RAPPELLE (13/09) : les rappels d'un état hérité. Sans
         # eux la réplique servirait une blessure persistante qui ne se

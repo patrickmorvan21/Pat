@@ -32,7 +32,9 @@ export type FaitKind =
   | "knowledge"
   /** Ce qui se compte et ne s'oublie pas (visites d'un lieu). */
   | "counter"
-  /** Acquis au franchissement d'une zone — transforme le monde. */
+  /** Le Sceau (retiré le 25/09) : gardé dans le type pour les sauvegardes
+   *  anciennes, que `migrerSceau` (lib/traversees.ts) convertit au chargement.
+   *  Plus rien ne le pose. */
   | "seal"
   /** Ce que LE JOUEUR a compris, par-delà ses morts. */
   | "discovery";

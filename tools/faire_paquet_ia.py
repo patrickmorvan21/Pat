@@ -54,7 +54,7 @@ def main(argv: list[str]) -> int:
     # garde ne le vérifie pas : il en écrit un autre, et les deux peuvent
     # diverger. Il tourne tel quel depuis `jouer/` — il copie `pactum.py` et
     # `run-kit.json` dans des tables isolées, tous deux présents ici.
-    shutil.copy(RACINE / "tools" / "protocole_sceau.py", pack / "jouer" / "protocole_sceau.py")
+    shutil.copy(RACINE / "tools" / "protocole_traversee.py", pack / "jouer" / "protocole_traversee.py")
     for f in sorted((APP / "lib").glob("*.ts")):
         shutil.copy(f, pack / "sources" / "lib" / f.name)
     for f in sorted((APP / "components").glob("*.tsx")):

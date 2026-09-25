@@ -147,15 +147,6 @@ import {
   noterVisiteLieu,
   type Relic,
 } from "@/lib/player-memory";
-import {
-  niveauSceau,
-  imageSceau,
-  ligneSceauOuverture,
-  ligneSceauBorne,
-  ligneSceauSortie,
-  ligneSceauGeolier,
-  reconnaissanceSceau,
-} from "@/lib/sceaux";
 
 // Pixels morts ambiants de l'état KO (palier « Au seuil », retour Patrick
 // 14/07) : une nappe de pixels charbon épars + quelques braises orange qui
@@ -1095,11 +1086,6 @@ export default function Scene() {
   // `savoirs` — un miroir lisible au rendu — mais la source est la mémoire
   // permanente, pas la run : ce que le JOUEUR a compris survit à ses héros.
   const [decouvertes, setDecouvertes] = useState<string[]>([]);
-  // LE SCEAU DES LANDES (14/08) : combien de fois ce COMPTE a franchi la
-  // Descente vivant. Miroir de rendu, comme `decouvertes` — il ne bouge
-  // jamais en cours de vie (on ne franchit la Descente qu'une fois, et la run
-  // se termine dessus), donc il est posé au montage et n'est plus touché.
-  const [sceauNiveau, setSceauNiveau] = useState(0);
   // La prophétie datée (surprise #4) : le jour parié, miroir de rendu pour la
   // puce Jour — elle blanchit à l'approche de la date.
   const [prophetieJour, setProphetieJour] = useState<number | null>(null);
@@ -1436,10 +1422,6 @@ export default function Scene() {
     // le COMPTE. C'est ce qui permet à une option de n'exister qu'à partir de
     // la deuxième ou troisième vie, sans que le héros ait l'air de se souvenir.
     if (c.requiresDecouverte && !decouvertes.includes(c.requiresDecouverte)) return false;
-    // LE SCEAU (14/08) : ce que le compte a RAPPORTÉ d'une traversée réussie
-    // ouvre des conversations qui n'existaient pas. Même mécanique que la
-    // découverte — et surtout pas un bonus de jet (voir lib/sceaux.ts).
-    if (c.requiresSceau && sceauNiveau <= 0) return false;
     // EXPLORER PRÉPARE (14/08) : l'option aveugle s'efface quand l'option
     // informée existe. Le budget de trois actions ne bouge pas — c'est la
     // NATURE de ce qui est offert qui change, pas la quantité.
@@ -1880,7 +1862,6 @@ export default function Scene() {
     // reprise.
     setSavoirs(run.savoirs ?? []);
     setDecouvertes(idsDecouvertes(faitsDe(run)));
-    setSceauNiveau(niveauSceau(faitsDe(run)));
     setProphetieJour(run.prophetie ?? null);
     setHeroStats(run.stats);
     const memNow = loadMemory();
@@ -2020,13 +2001,6 @@ export default function Scene() {
         // son entrée se débloque ici, au premier pas de chaque vie.
         debloquerCodex("lieu:borne-frontiere", run.heroName, run.day);
       }
-      // LE SCEAU SE PORTE À MÊME LA MAIN (arbitrage 10/08 : « il doit
-      // produire quelque chose que je remarque dès ma prochaine
-      // incarnation »). Poussé en premier des traces permanentes : c'est le
-      // signal le plus fort, il ne doit pas arriver après l'écharde.
-      const niveauDuSceau = niveauSceau(faitsDe(run));
-      const ligneSceau = zoneLandes ? ligneSceauOuverture(niveauDuSceau) : null;
-      if (ligneSceau) openingNarration.push(ligneSceau);
       // Le hameau se souvient de la main qui lance le dé (chantier 3) : après
       // plusieurs fixations subies, l'accueil change dès l'entrée de zone.
       if (zoneLandes && mem.fixations >= 2) {
@@ -2085,11 +2059,6 @@ export default function Scene() {
         seeded.push({ id: nextId(), kind: "jailer", // 03/09 : « il » se lisait comme l'homme immobile (5/5) — le sujet est le dé.
         text: "À partir de maintenant, le dé décide avec moi." });
       }
-      // LA TRANSFORMATION DU 3e PASSAGE : le Geôlier constate, une seule fois,
-      // qu'il n'a plus rien à compter. Poussé APRÈS la ligne du dé pour ne pas
-      // couper l'ouverture rituelle, et il ne reviendra jamais (`=== 3`).
-      const geolierSceau = zoneLandes ? ligneSceauGeolier(niveauDuSceau) : null;
-      if (geolierSceau) seeded.push({ id: nextId(), kind: "jailer", text: geolierSceau });
       const groupes = decouperEnEcrans(
         seeded,
         apparitionOuverture ? new Set([apparitionOuverture.apres]) : undefined
@@ -4053,13 +4022,6 @@ export default function Scene() {
       runRef.current?.stats,
       donsPortes(loadMemory()).includes("regard")
     );
-    // LE MONDE RECONNAÎT LA MARQUE (14/08). Prioritaire sur tous les autres
-    // rappels : c'est la récompense d'une traversée réussie, elle ne doit pas
-    // se faire manger par une ligne de perception. Elle PREND la place du
-    // rappel de l'arrivée, elle ne s'y ajoute pas — le budget d'un seul bloc
-    // par arrivée (12/08) vaut pour elle comme pour les autres.
-    const reconnu = reconnaissanceSceau(lieuIci, sceauNiveau);
-    if (reconnu) rappels.push({ prio: 0, text: reconnu });
     if (perception) rappels.push({ prio: 4, text: perception });
     if (rappelArrivee) rappels.push({ prio: 5, text: rappelArrivee });
     /**
@@ -4266,15 +4228,11 @@ export default function Scene() {
     // SOUS SES YEUX. `recordTraversee` ne tombe qu'au dernier tap, donc le
     // joueur ne voyait jamais son nom entrer dans le livre : c'est le défaut
     // de LIVRAISON que le panel décrit, pas un défaut de mémoire.
-    /* LA MARQUE SE VOIT (01/09) : à l'écran où la paume chauffe, l'image
-       devient le Sceau lui-même — un rond, deux ronds collés, le trait qui
-       coupe les deux. Frontière d'écran imposée APRÈS la trace de sortie
-       (l'image ne change jamais au milieu d'un texte, règle du 31/08) ; la
-       bascule est posée plus bas, une fois `coupures`/`differees` déclarés. */
-    let sceauDiffere: { apres: string; img: string } | null = null;
-    // ⚠️ PAS SUR UNE FIN D'ÉTAPE NON ÉCRITE (`finDemo`) : on n'a franchi
-    // aucune zone, la paume ne chauffe pas — trouvé au banc des Bassins le
-    // 17/09 (la ligne du Sceau et son image servies au carton « à venir »).
+    /* ⚠️ LE SCEAU EST RETIRÉ (décision Patrick 25/09 : « ça complexifie le
+       jeu, on passe simplement à l'acte suivant par une transition »). Plus
+       de marque dans la paume, ni ici ni à l'ouverture de la vie suivante :
+       la sortie dit ce que cette vie a été (`traceDeSortie`), et c'est tout.
+       Pas sur une fin d'étape non écrite (`finDemo`) : aucune zone franchie. */
     if (nextScene.terminal && !nextScene.renoncement && !nextScene.finDemo) {
       const r = runRef.current ?? loadRun();
       const m = loadMemory();
@@ -4287,31 +4245,15 @@ export default function Scene() {
       })) {
         entries.push({ id: nextId(), kind: "narration", text: t });
       }
-      // LE SCEAU SE PREND ICI (arbitrage 10/08). Il n'est POSÉ qu'au dernier
-      // tap, par `recordTraversee` — donc on annonce le passage qui vient
-      // d'être gagné, celui-ci compris : `niveau + 1`. Placé après la trace
-      // de sortie et avant le Registre : d'abord ce que cette vie a été,
-      // puis ce qu'elle rapporte, puis le livre.
-      const passages = niveauSceau({ run: {}, perm: m.faits ?? {} }) + 1;
-      const derniereTrace = entries[entries.length - 1];
-      if (derniereTrace) sceauDiffere = { apres: derniereTrace.id, img: imageSceau(passages) };
-      entries.push({
-        id: nextId(),
-        kind: "narration",
-        text: ligneSceauSortie(passages),
-      });
       /* ⚠️ LE REGISTRE NE S'AFFICHE PLUS ICI (retour Patrick 07/09 : « pour le
          moment enlever le registre une fois descendu à la corde »). La ligne
          du héros continue d'être INSCRITE — `recordTraversee` la pose au
          dernier tap, elle se lit dans le Grand Registre depuis l'accueil et à
-         la mort. Ce qui part, c'est le tableau de cent lignes servi juste
-         après le Sceau : à cet endroit-là il coupe la sortie du Domaine en y
-         posant un classement, alors que les deux blocs qui précèdent (la
-         trace de cette vie, puis la marque dans la paume) sont ce que la
+         la mort. Ce qui part, c'est le tableau de cent lignes servi à la
+         sortie : à cet endroit-là il coupait la sortie du Domaine en y
+         posant un classement, alors que la trace de cette vie est ce que la
          traversée a produit. Rien n'est perdu, seul l'affichage recule.
-         Le classement à la sortie datait du panel 10/08 (« deux traversées
-         réussies, fin identique au mot près, aucune trace ») — la trace, elle,
-         reste : c'est `traceDeSortie` + le Sceau juste au-dessus. */
+         La trace reste : c'est `traceDeSortie` juste au-dessus. */
     }
     // Le Grand Registre (§19) : classement inline, ligne du joueur marquée.
     if (nextScene.registre) {
@@ -4477,13 +4419,6 @@ export default function Scene() {
          ne bouge pas. `ImageKind: "object"` reste dans le type pour les
          sauvegardes en cours ; plus rien ne le pose. */
       img = { src: lastSceneIlloRef.current, kind: "scene" };
-    }
-    if (sceauDiffere) {
-      // La sortie de zone : trace de cette vie → [frontière] → la marque, sur
-      // SON image, puis le Registre collé dessous (poids 0). L'image est
-      // posée sur CETTE frontière-là (voir la fin d'advance), pas sur la
-      // première venue : la Descente a d'autres frontières avant elle.
-      coupures.add(sceauDiffere.apres);
     }
     if (apparitionCoupure) coupures.add(apparitionCoupure);
     // L'ÉLÉMENT OBSERVÉ passe devant tout le reste (conversion des points
@@ -4759,7 +4694,7 @@ export default function Scene() {
     }
     showScreen(entries, img, coupures);
     // Les bascules différées survivent à showScreen (qui purge celles d'avant).
-    if (differees.length || sceauDiffere || apparitionDiffere || elementReprise) {
+    if (differees.length || apparitionDiffere || elementReprise) {
       // Une bascule par FRONTIÈRE d'écran (correctif Patrick 31/08 : l'image
       // ne doit jamais changer au milieu d'un texte). S'il y a moins de
       // frontières que de bascules, celles qui n'en ont pas s'appliquent tout
@@ -4771,23 +4706,10 @@ export default function Scene() {
         setImage(immediates[immediates.length - 1]);
         setImageKind("scene");
       }
-      if (sceauDiffere) {
-        // ⚠️ Vue au test (01/09) : consommée « à la prochaine frontière », la
-        // marque arrivait sur l'écran de la Descente, trois taps avant sa
-        // ligne. On vise la frontière qui FERME l'écran de la trace de sortie ;
-        // les frontières d'avant reçoivent `null` (rien ne change).
-        const k = groupesFinsRef.current.indexOf(sceauDiffere.apres);
-        if (k >= 0 && k < frontieres) {
-          while (differables.length <= k) differables.push(null);
-          differables[k] = sceauDiffere.img;
-        } else {
-          setImage(sceauDiffere.img);
-          setImageKind("scene");
-        }
-      }
       if (apparitionDiffere) {
-        // Même visée par frontière que le Sceau : l'image du Ver tombe sur
-        // l'écran de son paragraphe, jamais un tap plus tôt.
+        // Visée par FRONTIÈRE (01/09) : l'image du Ver tombe sur l'écran de son
+        // paragraphe, jamais un tap plus tôt ; les frontières d'avant reçoivent
+        // `null` (rien ne change).
         const k = groupesFinsRef.current.indexOf(apparitionDiffere.apres);
         if (k >= 0 && k < frontieres) {
           while (differables.length <= k) differables.push(null);
@@ -5343,8 +5265,8 @@ export default function Scene() {
       }
       /* LA VIE MULTI-ZONES (décision Patrick 12/09 : « une seule vie sur les
          trois actes »). Franchir la Descente n'est plus la fin d'une vie :
-         le compte retient la zone franchie et pose le Sceau
-         (`recordZoneFranchie`), puis — si la zone suivante est ÉCRITE — la
+         le compte retient la zone franchie (`recordZoneFranchie` — plus de
+         Sceau depuis le 25/09), puis — si la zone suivante est ÉCRITE — la
          vie continue dedans (`franchirZone` : la Besace, la santé soignée
          d'une nuit, le Jour, les états la suivent ; ce qui appartenait à la
          zone quittée s'efface). Le Registre n'inscrit plus un survivant :
@@ -5354,7 +5276,7 @@ export default function Scene() {
       const run = runRef.current ?? loadRun();
       const zone = run.zone ?? "landes";
       /* FIN D'ÉTAPE NON ÉCRITE (13/09) : on n'a PAS franchi la zone — ni
-         Sceau, ni compte de zones, ni ligne au Registre. La vie s'arrête
+         compte de zones, ni ligne au Registre. La vie s'arrête
          vivante (statistiques), la run est effacée AVANT le carton, et le
          carton dit l'environnement qui vient. */
       if (scene.finDemo) {
@@ -5370,9 +5292,6 @@ export default function Scene() {
         return;
       }
       recordZoneFranchie({ zone, heroName: run.heroName, days: run.day, franchis: run.lieuxEngages ?? 0 });
-      // Codex : la première traversée révèle l'arc du Sceau — la marque
-      // vient d'apparaître dans la paume.
-      debloquerCodex("arc:sceau", run.heroName, run.day);
       const suivante = zoneSuivanteJouable(zone);
       if (suivante) {
         persist((r) => franchirZone(r, suivante));
@@ -5757,12 +5676,6 @@ export default function Scene() {
       const m = loadMemory();
       const l = ligneBorneSud(predecesseur(m), m.deaths);
       if (l) supplements.push(l);
-      // LA BORNE RÉPOND À SA PROPRE QUESTION (14/08). L'examen finit depuis
-      // le 20/07 sur « alors qui a gravé côté sud ? ». Avec un Sceau, la
-      // réponse est dans la main du joueur — et elle vient EN DERNIER, après
-      // la marque du prédécesseur : c'est le geste qui conclut.
-      const ls = ligneSceauBorne(sceauNiveau);
-      if (ls) supplements.push(ls);
     }
     if (choice.poteau) {
       const l = lignePoteauNom(loadMemory().deaths);

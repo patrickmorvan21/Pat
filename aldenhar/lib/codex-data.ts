@@ -18,9 +18,9 @@
  * a son image propre (bandeau haut, hauteur pleine) ; un ARC est transverse,
  * il porte l'image de l'ACTE entier, en bandeau court — un Arc n'a pas
  * d'illustration dédiée, on ne génère pas d'image pour une idée.
- * ⚠️ UNE exception, décidée par Patrick le 01/09 : « La marque de la paume »
- * (arc:sceau) — le Sceau est une CHOSE qu'on voit dans la main, pas une idée ;
- * sa fiche montre `imageSceau(niveau du compte)` (voir Codex.tsx).
+ * (L'exception du 01/09, « La marque de la paume », est partie avec le Sceau
+ * le 25/09 : un compte qui l'avait débloquée ne la voit plus — les ids
+ * débloqués sont toujours filtrés par ce catalogue.)
  *
  * ⚠️ Les états archivés (`data/archive-etats.md`) N'ENTRENT PAS ici —
  * décision Patrick du 20/08. Ils restent sans destination, à reloger un jour.
@@ -411,14 +411,6 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Ce qui regarde depuis les toits",
     corps:
       "Il n'a pas inventé la Fixation — il est venu parce qu'elle existait. Un poids sur le toit de la grange, une silhouette au bout d'une ruelle, une place debout aux procès. Personne ne ment à son sujet : le village a oublié ensemble, et chacun garde un fragment en croyant que c'est tout.",
-  },
-  {
-    id: "arc:sceau",
-    type: "arc",
-    zone: "landes",
-    titre: "La marque de la paume",
-    corps:
-      "Ceux qui franchissent la Descente vivants reviennent avec une entaille en creux dans la paume — et personne ne se fait ça tout seul. Le monde la reconnaît avant celui qui la porte. Au troisième passage, les marques se rejoignent et cessent de compter : ça ne ressemble plus à une blessure. Ça ressemble à un mot.",
   },
 ];
 

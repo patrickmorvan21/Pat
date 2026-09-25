@@ -188,10 +188,12 @@ def lire_compte() -> dict:
     c.setdefault("morts", 0)
     c.setdefault("tombes", [])   # [{nom, cause}] — le plus récent en tête
     c.setdefault("visites", {})  # lieu -> nombre de passages du COMPTE
-    # LE SCEAU DES LANDES (14/08) : combien de fois ce compte a franchi la
-    # Descente vivant. C'est la seule chose que la SURVIE laisse au compte —
-    # la mort, elle, forge une relique.
-    c.setdefault("sceau", 0)
+    # Combien de fois ce compte a franchi la Descente vivant (miroir du fait
+    # `traversee:landes`, lib/traversees.ts). C'était le Sceau jusqu'au 25/09 :
+    # un compte ancien garde son nombre, la marque disparaît.
+    if "sceau" in c:
+        c["traversees"] = max(c.get("traversees", 0), c.pop("sceau"))
+    c.setdefault("traversees", 0)
     # Ce que le JOUEUR a compris, par-delà ses morts (`discovery`).
     c.setdefault("decouvertes", [])
     return c
@@ -337,18 +339,6 @@ class Partie:
         }
         p = cls(d)
         p.entrer(k["entree"], premier=True)
-        # LE SCEAU SE PORTE À MÊME LA MAIN : la marque rapportée de la vie
-        # d'avant se lit dès la Borne, avant tout choix.
-        n = lire_compte().get("sceau", 0)
-        ouv = k.get("sceau", {}).get("ouverture", [])
-        if n > 0 and ouv:
-            p.dit(ouv[min(n, len(ouv)) - 1], "narration")
-        # LA TRANSFORMATION DU 3e PASSAGE : le Geôlier constate, une seule fois,
-        # qu'il n'a plus rien à compter. Il est le seul à voir les chiffres —
-        # donc le seul à pouvoir dire qu'un chiffre a cessé d'en être un.
-        geo = k.get("sceau", {}).get("geolier", [])
-        if n == 3 and geo:
-            p.dit(geo[0], "geolier")
         return p
 
     # -- accès
@@ -379,6 +369,10 @@ class Partie:
         """Les compteurs qu'une condition de variante sait lire."""
         if nom == "soupcon":
             return int(self.d.get("soupcon", 0))
+        if nom == "traversee:landes":
+            # `chemin-du-sud-revenu` : à qui est déjà sorti, on ne refait pas
+            # la leçon (lib/traversees.ts).
+            return int(lire_compte().get("traversees", 0))
         if nom == "c.fille":
             # Le compteur dérivé des découvertes sur la Fille (jeu : tenu à la
             # source pour ne pas diverger de la liste).
@@ -540,18 +534,6 @@ class Partie:
             self.d["poiIci"] = 0
             if sid in self.k["hameauInterieur"] or sid.startswith("hameau-") or sid == "serment-hameau":
                 self.d["hameauEntree"] = True
-            # LE MONDE RECONNAÎT LA MARQUE : une ligne à l'arrivée, sur les
-            # lieux où quelqu'un est là pour la voir.
-            nSceau = lire_compte().get("sceau", 0)
-            if nSceau > 0:
-                sc = self.k.get("sceau", {})
-                # Au-delà de deux traversées, le monde ne regarde plus la main :
-                # ces lignes REMPLACENT la reconnaissance, elles ne s'ajoutent pas
-                # (le budget d'un seul rappel par arrivée vaut aussi pour elles).
-                rec = (sc.get("transforme", {}).get(radical) if nSceau >= 3 else None) \
-                    or sc.get("reconnu", {}).get(radical)
-                if rec:
-                    self.dit(rec, "narration")
         if sid == "la-descente":
             self.cloturer_traversee()
         if s.get("savoir") and s["savoir"] not in self.d.get("savoirs", []):
@@ -620,7 +602,9 @@ class Partie:
         # lourd d'abord. Sans ça un relecteur du kit mesurerait une blessure
         # persistante qui ne se manifeste plus jamais.
         corps = self.k.get("rappelsCorps", {})
-        if corps and not s.get("combat") and r.random() < 0.4:
+        # ⚠️ `r` n'existait pas dans `entrer` (13/09) : le bloc plantait dès
+        # que le kit portait des rappels — masqué tant que l'export était vide.
+        if corps and not s.get("combat") and self.rng("corps").random() < 0.4:
             porte = [e for e in ("entaille", "ebranle")
                      if self.d["etats"].get(e, 0) > 0 and corps.get(e)]
             if porte:
@@ -997,10 +981,6 @@ class Partie:
             # La Besace de la réplique stocke les CLÉS d'objet telles quelles.
             if c.get("exigeObjet") and c["exigeObjet"] not in self.d.get("besace", []):
                 continue
-            # LE SCEAU (14/08) : ces conversations n'existent que pour un
-            # compte qui a déjà franchi la Descente vivant.
-            if c.get("exigeSceau") and lire_compte().get("sceau", 0) <= 0:
-                continue
             # L'OBJET QUI TRANSFORME LA SCÈNE (12/08) : portée ÉCRAN, le jeton
             # vit dans `choixFaits`. Sans ce garde, la réplique proposait
             # « Descendre par la corde » à qui n'avait pas amarré de corde
@@ -1213,7 +1193,7 @@ class Partie:
                 )
             # LES LIGNES CALCULÉES DE LA BORNE, après la conséquence (l'ordre
             # compte : l'examen POSE la question « qui a gravé côté sud ? »,
-            # la marque du prédécesseur et le Sceau y RÉPONDENT).
+            # la marque du prédécesseur y RÉPOND).
             if c.get("borneSud"):
                 for ligne in self.borne_sud():
                     self.dit(ligne, "narration")
@@ -1630,19 +1610,17 @@ class Partie:
             return
         self.d["traverseeClose"] = True
         c = lire_compte()
-        c["sceau"] = c.get("sceau", 0) + 1
+        c["traversees"] = c.get("traversees", 0) + 1
         # ⚠️ 12/09 (vie multi-zones, décision Patrick) : un survivant n'entre
         # PLUS au Registre — « le Registre est le livre des morts ». Le vrai
         # jeu (`recordSortieVivante`) garde le nom À PART, pour que la Borne
         # puisse encore relire « celui-là est revenu » ; `mourir` le périme.
         c["dernierSurvivant"] = self.d["nom"]
         ecrire_compte(c)
-        textes = self.k.get("sceau", {}).get("sortie", [])
-        if textes:
-            self.dit(textes[min(c["sceau"], len(textes)) - 1], "narration")
 
     def borne_sud(self) -> list[str]:
-        """Le côté sud de la Borne : le prédécesseur, puis le Sceau.
+        """Le côté sud de la Borne : le prédécesseur (le Sceau qui y répondait
+        est retiré depuis le 25/09).
 
         L'incarnation d'avant est le survivant (`dernierSurvivant`, posé par
         la clôture de traversée) s'il y en a un, sinon `tombes[0]` — depuis le
@@ -1670,9 +1648,6 @@ class Partie:
                 compte = (f"tu les comptes : {mots[morts]}" if morts < len(mots)
                           else "tu renonces à les compter")
                 out.append(cas[2].replace("{nom}", nom).replace("{compte}", compte))
-        borne = self.k.get("sceau", {}).get("borne", [])
-        if c.get("sceau", 0) > 0 and borne:
-            out.append(borne[0])
         return out
 
     def mourir(self, dernier: str) -> None:

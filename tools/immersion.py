@@ -466,14 +466,7 @@ def pools() -> list[dict]:
                     "textes": [texte],
                 })
 
-    # — LE SCEAU DES LANDES (14/08). Deux familles de textes :
-    #   • SCEAU_RECONNU est indexé PAR LIEU et servi à l'arrivée, exactement
-    #     comme APPROACH_NARRATION — le garde se dérive donc de la
-    #     destination, ni plus ni moins.
-    #   • les trois lignes calculées (ouverture à la Borne, réponse du côté
-    #     sud, prise du Sceau à la Descente) sont servies à des endroits fixes
-    #     de PLEINE LANDE : aucune ne peut poser de bâti ni de foule.
-    sceaux_src = (LIB / "sceaux.ts").read_text(encoding="utf-8")
+    # (Le Sceau des Landes et ses pools sont retirés depuis le 25/09.)
     # LES TRACES DE LA MENACE (17/08) : servies en LIAISON, hors village —
     # garde lande stricte (aucun bâti, aucune personne : des empreintes, un
     # souffle). Un texte de trace qui nommerait un mur ou un villageois se
@@ -595,38 +588,6 @@ def pools() -> list[dict]:
     assert n_sal >= 87, f"pools des Salines : {n_sal} extraits, ≥ 87 attendus — l'extracteur ne lit plus scene-data.ts"
     for p_ in out[n_avant:]:
         p_["salines"] = True
-
-    # ⚠️ Les DEUX tables passent : `SCEAU_TRANSFORME` remplace la précédente
-    # au-delà de deux traversées (15/08) — l'oublier laisserait trois textes
-    # d'arrivée hors de l'audit, sans le moindre signalement.
-    for _table in ("SCEAU_RECONNU", "SCEAU_TRANSFORME"):
-      rec = re.search(rf"export const {_table}[^=]*=\s*\{{(.*?)\n\}};", sceaux_src, re.S)
-      if rec:
-        for m in re.finditer(
-            r'(?:"([a-z0-9\-]+)"|([a-zA-Z][a-zA-Z0-9\-]*))\s*:\s*((?:"(?:[^"\\]|\\.)*"\s*\+?\s*)+)',
-            rec.group(1),
-        ):
-            dest = m.group(1) or m.group(2)
-            texte = "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', m.group(3))).replace('\\"', '"')
-            out.append({
-                "pool": f"{_table} {dest}",
-                "garde": {"village", "gens"} if village_scene(dest) else {"lande", "gens"},
-                "textes": [texte],
-            })
-    for fn, garde in (
-        ("ligneSceauOuverture", {"lande", "gens"}),
-        ("ligneSceauBorne", {"lande"}),
-        ("ligneSceauSortie", {"lande"}),
-        # Le Geôlier parle à la Borne, en pleine lande, à l'ouverture d'une vie.
-        ("ligneSceauGeolier", {"lande"}),
-    ):
-        d = sceaux_src.find(f"export function {fn}")
-        corps = sceaux_src[d : sceaux_src.find("\n}", d)] if d >= 0 else ""
-        for i, t in enumerate(
-            "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', bloc))
-            for bloc in re.findall(r"return\s*\(?((?:\s*\"(?:[^\"\\]|\\.)*\"\s*\+?)+)", corps)
-        ):
-            out.append({"pool": f"{fn} {i}", "garde": garde, "textes": [t]})
 
     # — bifurcations : phrase de Croisée, partout.
     for i, t in enumerate(chaines_de_tableau(bloc_tableau(scene_src, "const BIFURCATIONS"))):
