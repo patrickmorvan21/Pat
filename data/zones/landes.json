@@ -577,6 +577,28 @@
       "statut": "propose",
       "propose_le": "2026-09-24",
       "image_a_produire": "scene_landes_camp_expeditions_a"
+    },
+    {
+      "id": "cercle_qui_descend",
+      "nom": "Le Cercle qui Descend",
+      "note": "Un cercle de pierres levées qui n'en est plus un : les menhirs ont glissé vers le sud, chacun a laissé un sillon dans la bruyère derrière lui. Même les pierres entendent l'Appel. Remplace la Mare aux Regards (décision Patrick, 25/09).",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "x": 700,
+      "y": 300,
+      "environnement": "lande",
+      "role": "pool",
+      "statut": "propose",
+      "propose_le": "2026-09-25",
+      "image_a_produire": "scene_landes_cercle_qui_descend_a"
     }
   ],
   "rencontres": [
@@ -1106,30 +1128,6 @@
       "image_a_produire": "monstre_landes_epouvantail_tourne_a"
     },
     {
-      "id": "voix_basses",
-      "nom": "Les Voix Basses",
-      "note": "Derrière les murets, au crépuscule, des voix parlent comme dans la maison d'à côté — c'est ce que l'Hésitant appelle l'Appel. Elles disent le nom que tu as signé.",
-      "lieu_attache": null,
-      "histoire_bailli": false,
-      "rarete": "commune",
-      "textes": {
-        "decouverte": "Sous le vent, des voix — basses, à ras de bruyère, qui se passent le mot des arrivées. Elles ne menacent pas. Elles préviennent quelqu'un.",
-        "familiarite": null,
-        "recontextualisation": null
-      },
-      "illustration": null,
-      "portrait_requis": false,
-      "statut": "propose",
-      "propose_le": "2026-09-24",
-      "environnement": "lande",
-      "passage": true,
-      "hostile": true,
-      "nature": "surnaturel",
-      "regle": "Y répondre, c'est faire un pas vers le sud sans l'avoir décidé : la Croisée suivante est choisie pour toi.",
-      "preparation": "L'Hésitant a dit de ne jamais répondre. Qui l'a écouté passe, les mâchoires serrées.",
-      "image_a_produire": "monstre_landes_voix_basses_a"
-    },
-    {
       "id": "troupeau_sans_berger",
       "nom": "Le Troupeau sans Berger",
       "note": "phénomène d'ambiance — il paît encore, personne ne le mène",
@@ -1164,29 +1162,6 @@
       },
       "illustration": null,
       "portrait_requis": false
-    },
-    {
-      "id": "vent_qui_ment",
-      "nom": "Le Vent qui ment",
-      "note": "Un ruban de vent traverse la lande et apporte l'odeur d'un lieu qui n'est pas là : la fumée d'un village au nord, l'eau vers l'est.",
-      "lieu_attache": null,
-      "histoire_bailli": false,
-      "rarete": "commune",
-      "textes": {
-        "decouverte": null,
-        "familiarite": null,
-        "recontextualisation": null
-      },
-      "illustration": "assets/monstre_vent_qui_ment_b.png",
-      "portrait_requis": true,
-      "statut": "propose",
-      "propose_le": "2026-09-24",
-      "environnement": "lande",
-      "passage": true,
-      "hostile": false,
-      "nature": "phénomène",
-      "regle": "À la Croisée qu'il traverse, l'un des deux indices ment.",
-      "preparation": "L'Instinct le sent. Le Marcheur à rebours le dit : « Le vent d'ici ment toujours dans le même sens. »"
     },
     {
       "id": "enlises",
@@ -3639,7 +3614,161 @@
       ],
       "apprend": "le but, le dé, et l'Appel",
       "colonne": "un trait sombre à l'horizon, qu'on pourrait prendre pour de la fumée",
-      "rappel": "l'Hésitant : « Tu descends. Vous avez tous le même pas, ceux qui descendent. »"
+      "rappel": "l'Hésitant : « Tu descends. Vous avez tous le même pas, ceux qui descendent. »",
+      "transitions": [
+        {
+          "id": "t_lande_colonne",
+          "type": "depart",
+          "nom": "Le premier horizon",
+          "de": "borne_frontiere",
+          "vers": null,
+          "lieu": "borne_frontiere",
+          "texte": "Tu tournes le dos à la pierre. Devant, la lande à perte de vue — et, tout au bout, un trait sombre qui monte du sol. On le prendrait pour une fumée, s'il bougeait.",
+          "image_montre": "La lande vue de dos à la Borne, immense, et sur l'horizon un mince trait vertical sombre : la colonne de cordes, minuscule. C'est l'image qui dit le but du jeu.",
+          "image_a_produire": "scene_lande_colonne_au_loin_a"
+        },
+        {
+          "id": "t_lande_hesitant",
+          "type": "rappel",
+          "nom": "L'Hésitant, derrière toi",
+          "de": "borne_frontiere",
+          "vers": null,
+          "lieu": "borne_frontiere",
+          "texte": "Derrière toi, l'homme immobile n'a pas bougé. « Tu descends. Vous avez tous le même pas, ceux qui descendent. »",
+          "image_montre": "L'Hésitant, debout près de la pierre.",
+          "image": "monstre_hesitant_b.png"
+        },
+        {
+          "id": "t_lande_croisee",
+          "type": "croisee",
+          "nom": "La croisée",
+          "de": null,
+          "vers": null,
+          "lieu": null,
+          "texte": "La lande se partage. Deux directions s'ouvrent ; tu n'en prendras qu'une.",
+          "image_montre": "Une vue de marche : plateau, fourche, bruyère. Tirée parmi les vues de marche existantes, jamais une image par paire de lieux.",
+          "image": "scene_landes_liaison_fourche_a.png",
+          "reutilise": [
+            "scene_lande_generique_1.png",
+            "scene_lande_generique_2.png",
+            "scene_lande_generique_3.png",
+            "scene_lande_generique_4.png",
+            "scene_landes_liaison_plateau_d.png",
+            "scene_landes_liaison_fourche_a.png"
+          ]
+        },
+        {
+          "id": "t_lande_vers_chemin_creux",
+          "type": "approche",
+          "nom": "Vers le Chemin Creux",
+          "de": null,
+          "vers": "chemin_creux",
+          "lieu": "chemin_creux",
+          "texte": "Le sol s'enfonce entre deux talus. Des racines sortent des parois comme des doigts.",
+          "image_montre": "Le chemin qui plonge entre deux talus couverts de racines.",
+          "image": "scene_landes_liaison_chemin_creux_a.png"
+        },
+        {
+          "id": "t_lande_vers_verger",
+          "type": "approche",
+          "nom": "Vers le Verger Noir",
+          "de": null,
+          "vers": "verger_noir",
+          "lieu": "verger_noir",
+          "texte": "Au loin, des rangées d'arbres noirs, trop droites pour une lande. Personne n'a planté ça pour manger.",
+          "image_montre": "Des rangées d'arbres noirs parfaitement alignées sur l'horizon, comme une troupe qui attend, sous un ciel bas.",
+          "image_a_produire": "scene_lande_approche_verger_a"
+        },
+        {
+          "id": "t_lande_vers_tourbiere",
+          "type": "approche",
+          "nom": "Vers la Tourbière",
+          "de": null,
+          "vers": "tourbiere",
+          "lieu": "tourbiere",
+          "texte": "Le sol devient mou sous tes pas. Une brume basse, à hauteur de genou, et dessous l'eau noire qui renvoie le ciel.",
+          "image_montre": "Une étendue plate et noire, des touffes de joncs, une nappe de brume au ras du sol.",
+          "image_a_produire": "scene_lande_approche_tourbiere_a"
+        },
+        {
+          "id": "t_lande_vers_cercle",
+          "type": "approche",
+          "nom": "Vers le Cercle qui Descend",
+          "de": null,
+          "vers": "cercle_qui_descend",
+          "lieu": "cercle_qui_descend",
+          "texte": "Des pierres levées, en file, toutes penchées vers le sud. Derrière chacune, un sillon dans la bruyère, comme si elles avaient marché.",
+          "image_montre": "Une file de menhirs penchés dans le même sens, chacun suivi d'un long sillon de terre retournée.",
+          "image_a_produire": "scene_lande_approche_cercle_a"
+        },
+        {
+          "id": "t_lande_bete",
+          "type": "rencontre_de_passage",
+          "nom": "La Bête, sur la route du creux",
+          "de": null,
+          "vers": "chemin_creux",
+          "lieu": "chemin_creux",
+          "texte": "Le chemin se resserre. Quelque chose attend au fond du creux, et ce n'est pas toi qu'il attendait — c'est n'importe qui.",
+          "image_montre": "La Bête des Chemins Creux (image du combat, déjà en jeu).",
+          "image": "monstre_bete_chemins_creux_a.png"
+        },
+        {
+          "id": "t_lande_vers_marcheur",
+          "type": "vers_rencontre",
+          "nom": "Vers le Marcheur à rebours",
+          "de": "chemin_creux",
+          "vers": null,
+          "lieu": "chemin_creux",
+          "texte": "Au fond du creux, quelqu'un marche vers toi — de dos.",
+          "image_montre": "Le Marcheur à rebours.",
+          "image": "monstre_marcheur_a_rebours_d.png"
+        },
+        {
+          "id": "t_lande_vers_epoux",
+          "type": "vers_rencontre",
+          "nom": "Vers les Époux",
+          "de": "verger_noir",
+          "vers": null,
+          "lieu": "verger_noir",
+          "texte": "Au pied du premier arbre, deux silhouettes. L'une bêche, l'autre regarde le sud.",
+          "image_montre": "Les Époux du Verger.",
+          "image": "monstre_epoux_verger_a.png"
+        },
+        {
+          "id": "t_lande_vers_epouvantail",
+          "type": "vers_rencontre",
+          "nom": "Vers l'Épouvantail",
+          "de": "verger_noir",
+          "vers": null,
+          "lieu": "verger_noir",
+          "texte": "Au bout de l'allée, entre deux rangs, une silhouette en croix. Sa tête pend sur le côté, comme s'il dormait.",
+          "image_montre": "Une allée entre deux rangs d'arbres noirs ; tout au bout, un épouvantail en croix, tête penchée, à contre-jour.",
+          "image_a_produire": "scene_lande_verger_epouvantail_loin_a"
+        },
+        {
+          "id": "t_lande_vers_enlises",
+          "type": "vers_rencontre",
+          "nom": "Vers les Enlisés",
+          "de": "tourbiere",
+          "vers": null,
+          "lieu": "tourbiere",
+          "texte": "La surface se ride sans un souffle de vent. Sous la pellicule noire, une main. Puis deux.",
+          "image_montre": "L'eau noire de la tourbière, lisse, et juste sous la surface des mains ouvertes, tournées vers le haut.",
+          "image_a_produire": "scene_lande_tourbiere_mains_a"
+        },
+        {
+          "id": "t_lande_sortie",
+          "type": "sortie",
+          "nom": "Vers les Gibets",
+          "de": null,
+          "vers": "colline_aux_gibets",
+          "lieu": null,
+          "texte": "La lande monte. Sur la crête, des potences se découpent contre le ciel. Le trait sombre, au sud, n'a pas bougé.",
+          "image_montre": "Une crête avec trois potences à contre-jour, un chemin qui y monte.",
+          "image": "scene_transition_crete_cordes_b.png"
+        }
+      ],
+      "transitions_note": "Proposées le 25/09, pas encore en jeu. Une image d'APPROCHE par lieu (réutilisée quelle que soit la provenance) plutôt qu'une image par paire de lieux ; la croisée tire parmi les vues de marche existantes."
     },
     {
       "id": "gibets",

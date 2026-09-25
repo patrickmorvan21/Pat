@@ -338,6 +338,47 @@ def construire(zone: str = "landes") -> dict:
         if not e.get("passage") and e.get("lieu_attache"):
             lien("lieu:" + e["lieu_attache"], nid, "appartient")
 
+    # ------------------- LES TRANSITIONS DE LIEU À LIEU (25/09) --------------
+    # Ce qui se voit ENTRE deux écrans de lieu : le départ, l'approche d'un
+    # lieu vu de loin, la croisée, le pas vers une rencontre, la sortie vers
+    # l'environnement suivant. Proposées, pas encore en jeu : elles existent
+    # pour que Patrick sache quelles IMAGES produire et combien. Une image
+    # d'approche par lieu, réutilisée quelle que soit la provenance — jamais
+    # une image par paire de lieux (la combinatoire exploserait).
+    TYPE_T = {"depart": "départ", "rappel": "rappel", "croisee": "croisée",
+              "approche": "approche (vu de loin)", "rencontre_de_passage": "rencontre de passage",
+              "vers_rencontre": "vers une rencontre", "sortie": "sortie de l'environnement"}
+    for env in envs:
+        for t in env.get("transitions") or []:
+            nid = "trajet:" + t["id"]
+            vus.add(nid)
+            timg = t.get("image")
+            n = {
+                "id": nid, "nom": t.get("nom") or t["id"], "cat": "trajet", "propose": True,
+                "image": {"f": timg, "h": "", "ok": True} if timg else None,
+                "prompt": "",
+                "desc": [x for x in (t.get("texte"),) if x],
+                "meta": [x for x in (
+                    env_nom.get(env["id"], ""),
+                    TYPE_T.get(t.get("type", ""), t.get("type", "")),
+                    ("vers " + (lieu_z.get(t["vers"], {}).get("nom") or t["vers"])) if t.get("vers") else "",
+                ) if x],
+                "groupe": env["id"],
+            }
+            if t.get("image_montre"):
+                n["imageMontre"] = t["image_montre"]
+            n["imageStatut"] = ("existante : " + timg + (" (déjà en jeu)" if t.get("type") in ("approche", "rencontre_de_passage", "vers_rencontre", "rappel", "sortie") else ""))\
+                if timg else ("à produire : " + t["image_a_produire"] + ".png" if t.get("image_a_produire") else "")
+            if t.get("reutilise"):
+                n["imageStatut"] = "existante : tirée parmi " + str(len(t["reutilise"])) + " vues de marche déjà produites"
+            if not t.get("lieu"):
+                n["role"] = "passage"
+            noeuds.append(n)
+            if t.get("lieu"):
+                lien("lieu:" + t["lieu"], nid, "appartient")
+            if t.get("vers") and t.get("vers") != t.get("lieu"):
+                lien(nid, "lieu:" + t["vers"], "suite")
+
     # --------------------------- LES TRANSITIONS ----------------------------
     # Elles n'existent nulle part comme scènes : une liaison est fabriquée à
     # l'exécution. Ce sont pourtant les écrans les plus VUS d'une vie.
@@ -499,6 +540,9 @@ def construire(zone: str = "landes") -> dict:
             "actions": sum(1 for n in noeuds if n["cat"] == "action"),
             "liens": len(liens),
             "proposes": sum(1 for n in noeuds if n["cat"] == "propose"),
+            "trajets": sum(1 for n in noeuds if n["cat"] == "trajet"),
+            "trajetsAProduire": sum(1 for n in noeuds if n["cat"] == "trajet"
+                                    and n.get("imageStatut", "").startswith("à produire")),
             "environnements": len(envs),
         },
         "envStatut": (zj.get("zone") or {}).get("environnements_statut", ""),

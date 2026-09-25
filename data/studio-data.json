@@ -568,6 +568,24 @@
      "dansPool": false,
      "alertes": [],
      "aCompleter": 0
+    },
+    {
+     "id": "cercle_qui_descend",
+     "nom": "Le Cercle qui Descend",
+     "illustration": null,
+     "x": 700,
+     "y": 300,
+     "note": "Un cercle de pierres levées qui n'en est plus un : les menhirs ont glissé vers le sud, chacun a laissé un sillon dans la bruyère derrière lui. Même les pierres entendent l'Appel. Remplace la Mare aux Regards (décision Patrick, 25/09).",
+     "scenes": [],
+     "nbScenes": 0,
+     "nbRencontres": 0,
+     "nbPois": 0,
+     "entrees": [],
+     "sorties": [],
+     "roles": [],
+     "dansPool": false,
+     "alertes": [],
+     "aCompleter": 0
     }
    ]
   }

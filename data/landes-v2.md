@@ -157,7 +157,7 @@ Retour du 24/09 : « ça manque de monstres, je veux découvrir de nouvelles ren
 
 | | hostiles | amicales | phénomènes | total |
 |---|---|---|---|---|
-| I. La Lande | la Bête · **l'Épouvantail Tourné** · **les Voix Basses** · **les Enlisés** · **le Rabatteur** | l'Hésitant · le Marcheur à rebours · les Époux du Verger | **le Vent qui ment** | 9 |
+| I. La Lande | la Bête · **l'Épouvantail Tourné** · **les Enlisés** · **le Rabatteur** | l'Hésitant · le Marcheur à rebours · les Époux du Verger | — | 7 |
 | II. Les Gibets | le Pendu Mal Fixé · le Chien du Bailli · **le Fixeur** · **les Mesureurs** · **le Rouissard** | le Pendu qui parle · le Fossoyeur · la Petite Fixée *(rare)* · **la Fiancée du Gibet** | les Corbeaux du Compte · l'Emplacement Vide · le Troupeau sans Berger · **l'Ombre du Grand Gibet** | 13 |
 | III. Le Hameau | les Mains du Puits · **la Ronde** · **la Corde Vive** · **le Juge de Cendre** · **le Condamné du lendemain** · **les Pleureuses** | la Femme au Seuil · le Gamin · la Doyenne · la Veuve · le Colporteur · le Rebouteux · l'Écrivain · le Sonneur · **le Déserteur du Tribunal** | le poids sur le toit · **le Jeu du Fixé** | 17 |
 | IV. Le Sud | la Meute Grise · le Recousu · **les Attendants** · **le Meneur** | le Veilleur · **Celui qui attend** | l'Appelé · le grimpeur · **la Harde qui descend** · **le Témoin au bord** | 10 |
@@ -183,10 +183,8 @@ Rangées par environnement. *Passage* veut dire qu'elle surgit entre deux lieux,
 **I. La Lande**
 
 - **L'Épouvantail Tourné** · passage · hostile, surnaturel · *image à produire.* Un épouvantail au milieu de la bruyère, sans champ à garder. Il ne bouge jamais, mais chaque fois que tu regardes ailleurs, il s'est tourné vers toi. Lui tourner le dos le fait avancer. Qui a marché avec le Marcheur à rebours passe à reculons, les yeux sur lui.
-- **Les Voix Basses** · passage · hostile, surnaturel · *à produire.* Derrière les murets, au crépuscule, des voix parlent comme dans la maison d'à côté : c'est l'Appel. Elles disent le nom que tu as signé. Y répondre, c'est faire un pas vers le sud sans l'avoir décidé : la Croisée suivante est choisie pour toi. L'Hésitant a dit de ne jamais répondre.
 - **Les Enlisés** · la Tourbière · hostile, physique · *à produire.* Des mains remontent entre les touffes : ceux qui ont voulu couper au sud par le marais. Ils ne tirent que ce qui s'arrête. Les piquets de ceux qui ont réussi montrent où poser le pied.
 - **Le Rabatteur** · passage, aussi aux Gibets et au Sud · hostile, social · *à produire.* Un Renonçant à cheval qui ramène ceux qui marchent vers le sud. « Où tu vas ? » Mentir, il regarde ton pas ; fuir, il te rattrape ; le suivre, c'est reculer d'un lieu. Marcher à rebours te fait passer pour quelqu'un qui revient.
-- **Le Vent qui ment** · passage · phénomène · *image existante* (`monstre_vent_qui_ment_b`). Un ruban de vent apporte l'odeur d'un lieu qui n'est pas là. À la Croisée qu'il traverse, l'un des deux indices ment. L'Instinct le sent.
 
 **II. Les Gibets**
 
@@ -482,7 +480,7 @@ Les durées validées le 24/09, complétées avec le nouveau bestiaire.
 
 | environnement | durée | lieux | jets | combats | rencontres amicales | phénomène |
 |---|---|---|---|---|---|---|
-| I. La Lande | 5 min | 3 | 3 | 1 (la Bête, l'Épouvantail, les Enlisés ou le Rabatteur) | 1 à 2 | le Vent qui ment |
+| I. La Lande | 5 min | 3 | 3 | 1 (la Bête, l'Épouvantail, les Enlisés ou le Rabatteur) | 1 à 2 | — |
 | II. Les Gibets | 8 min | 3 | 4 | 1 (le Pendu Mal Fixé, le Chien, le Fixeur ou le Rouissard) | 1 à 2 | les Corbeaux, l'Ombre, le Troupeau |
 | III. Le Hameau | 10 min | 4 | 4 | 1 (la Ronde, la Corde Vive, le Juge, le Condamné ou les Pleureuses) | 2 | le toit, le Jeu du Fixé |
 | IV. Le Sud | 7 min | 3 | 4 | 1 (la Meute, le Recousu, les Attendants ou le Meneur) | 1 | l'Appelé, la Harde |
@@ -506,6 +504,32 @@ Je propose de commencer par **A** : il répond au joueur perdu tout de suite, m�
 Images à produire : trois vues de marche avec la colonne, puis les dix-huit du bestiaire (quinze rencontres, trois lieux). Soit vingt et une images, commandées lot par lot au rythme du lot C.
 
 ---
+
+
+### Décisions du 25/09 sur La Lande (Patrick)
+
+- **Supprimés** : la Mare aux Regards (trop énigmatique), les Voix Basses, le Vent qui ment.
+- **Ajouté** : **le Cercle qui Descend** — des menhirs qui ont glissé vers le sud, un sillon derrière chacun. Même les pierres entendent l'Appel. Il prend la place de la Mare.
+- **Gardés** : les Enlisés (échec = les mains blessent, réussite = récompense), l'Épouvantail (geste à valider sur le prototype : le doigt suit l'épouvantail, qui change de place derrière les troncs), le minuteur de 4 secondes de la Bête.
+- **Le fruit de cendre** : un jet décide s'il est mangeable (réussite = dans la Besace, soin ; échec = santé perdue tout de suite). Le lien fruit → Époux est retiré.
+- ⚠️ Écrit dans `landes.json` et dans le Graphe seulement : **rien de tout ça n'est encore dans le jeu**.
+
+### Les transitions de La Lande
+
+Ce qui se voit ENTRE deux écrans de lieu. Treize transitions, détaillées dans `landes.json` (`environnements[lande].transitions`) et visibles dans le Graphe (cercles blancs en creux).
+
+| type | combien | images |
+|---|---|---|
+| départ de la Borne (la colonne au loin, le but du jeu) | 1 | à produire |
+| rappel de l'Hésitant | 1 | existante |
+| croisée (deux directions) | 1 | tirée parmi 6 vues de marche existantes |
+| approche d'un lieu vu de loin | 4 | Chemin Creux existante · Verger, Tourbière, Cercle à produire |
+| rencontre de passage (la Bête, sur la route du creux) | 1 | existante |
+| vers une rencontre, dans un lieu | 4 | Marcheur, Époux existantes · Épouvantail, Enlisés à produire |
+| sortie vers les Gibets (la crête des potences) | 1 | existante |
+| **total** | **13** | **6 à produire, 7 existantes** |
+
+Règle de production : **une image d'approche par lieu**, réutilisée d'où qu'on vienne. Jamais une image par paire de lieux : avec quatre lieux possibles, les paires feraient douze images pour un gain invisible (le joueur voit un lieu approcher, pas d'où il vient).
 
 ## 7. Ce qu'il faut trancher
 

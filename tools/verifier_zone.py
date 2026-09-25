@@ -218,6 +218,27 @@ def verifier(chemin: Path) -> int:
             if SOUVENIR.search(t):
                 erreurs.append(f"{ou} · couche {i} : le héros se souvient (« {SOUVENIR.search(t).group(0)} ») — il vient de naître, c'est le monde qui montre")
 
+    # ── transitions de lieu à lieu (25/09) : chaque bout résolu, et une image
+    #    dite « existante » existe vraiment sur le disque (sinon le compte
+    #    d'images à produire mentirait).
+    assets = Path(__file__).resolve().parent.parent / "aldenhar" / "public" / "assets"
+    ids_lieux = {l["id"] for l in z.get("lieux", [])}
+    nb_trajets = 0
+    for env in z.get("environnements", []):
+        for t in env.get("transitions") or []:
+            nb_trajets += 1
+            ou = f"transition {t.get('id')}"
+            for champ in ("de", "vers", "lieu"):
+                if t.get(champ) and t[champ] not in ids_lieux:
+                    erreurs.append(f"{ou} · {champ} = « {t[champ]} » : aucun lieu de cet id")
+            if t.get("image") and not (assets / t["image"]).exists():
+                erreurs.append(f"{ou} : image « {t['image']} » absente de public/assets")
+            if not t.get("image") and not t.get("image_a_produire"):
+                erreurs.append(f"{ou} : ni image existante ni image à produire")
+            for f in t.get("reutilise") or []:
+                if not (assets / f).exists():
+                    erreurs.append(f"{ou} : vue réutilisée « {f} » absente")
+
     # ── comptes
     comptes = {
         "lieux": len(joues), "obligatoires": sum(1 for L in z["lieux"] if L.get("statut") == "obligatoire"),
@@ -226,6 +247,8 @@ def verifier(chemin: Path) -> int:
     }
     if avec_couches:
         comptes["couches"] = avec_couches
+    if nb_trajets:
+        comptes["transitions"] = nb_trajets
     annonce = (z.get("zone") or {}).get("comptes_annonces") or {}
     for k, v in annonce.items():
         if comptes.get(k) != v:
