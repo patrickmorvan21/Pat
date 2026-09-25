@@ -196,7 +196,29 @@ def lire_compte() -> dict:
     c.setdefault("traversees", 0)
     # Ce que le JOUEUR a compris, par-delà ses morts (`discovery`).
     c.setdefault("decouvertes", [])
+    # MÉMOIRE DES RENCONTRES (25/09, miroir de `PlayerMemory.rencontres`) :
+    # clé -> {passages, dernier, historique}.
+    c.setdefault("rencontres", {})
     return c
+
+
+def remplit(cond: dict | None, cle_def: str | None, inst: dict) -> bool:
+    """Miroir exact de `remplit` (lib/memoire.ts)."""
+    if not cond:
+        return True
+    cle = cond.get("cle") or cle_def
+    if not cle:
+        return False
+    sv = inst.get(cle) or {"passages": 0}
+    if cond.get("jamais"):
+        return sv.get("passages", 0) == 0
+    if cond.get("passagesMin") is not None and sv.get("passages", 0) < cond["passagesMin"]:
+        return False
+    if cond.get("dernier") is not None:
+        liste = cond["dernier"] if isinstance(cond["dernier"], list) else [cond["dernier"]]
+        if sv.get("dernier") not in liste:
+            return False
+    return True
 
 
 def ecrire_compte(c: dict) -> None:
@@ -567,8 +589,14 @@ class Partie:
             ligne = fam.get("4") if n >= 4 and fam.get("4") else (fam.get("2") if n >= 2 else None)
             if ligne:
                 self.d.setdefault("famVus", []).append(lieu)
+        # MÉMOIRE DES RENCONTRES (25/09) : la photo se prend à l'entrée, et un
+        # retour REMPLACE la narration — la strate générique se tait alors.
+        retour = self.photographier(s)
+        if retour is not None:
+            ligne = None
         remplace = fam.get("remplace") if (fam and ligne) else None
-        paras = list(s.get("narrationEchec") if rate and s.get("narrationEchec") else s.get("narration", []))
+        paras = list(s.get("narrationEchec") if rate and s.get("narrationEchec")
+                     else retour["narration"] if retour is not None else s.get("narration", []))
         # 03/09 — l'arrivée ratée se dit aux choix aussi (voir `exigeEchecArrivee`).
         self.d["arriveeRatee"] = bool(rate and s.get("narrationEchec"))
         # CE QU'ON APPORTE AU PROCÈS SE DIT (comme dans le jeu, après le premier
@@ -626,6 +654,57 @@ class Partie:
         # Il reste événementiel — palier de Soupçon, jet critique, traversée
         # sans risque. La réplique doit dire la même chose que le jeu, sinon
         # une IA testeuse juge une version périmée.
+
+    def photographier(self, s: dict) -> dict | None:
+        """Miroir de `photographierMemoire` (Scene.tsx) : photo des clés à leur
+        première apparition dans la vie, un passage compté sur la clé propre
+        de la scène, puis le premier retour qui tient (ou None)."""
+        cles = []
+        if s.get("memoire"):
+            cles.append(s["memoire"])
+        for r in s.get("retours", []):
+            if r["si"].get("cle"):
+                cles.append(r["si"]["cle"])
+        for c in s.get("choix", []):
+            if c.get("laisseCle"):
+                cles.append(c["laisseCle"])
+            for k in ("siMemoire", "sansMemoire", "durcitSi"):
+                if (c.get(k) or {}).get("cle"):
+                    cles.append(c[k]["cle"])
+        vue = self.d.setdefault("memoireVue", {})
+        vus = self.d.setdefault("rencontresVues", [])
+        neuves = [k for k in dict.fromkeys(cles) if k not in vue]
+        passage = s.get("memoire") if s.get("memoire") and s["memoire"] not in vus else None
+        if neuves or passage:
+            cpt = lire_compte()
+            reg = cpt["rencontres"]
+            for k in neuves:
+                vue[k] = dict(reg.get(k) or {"passages": 0})
+            if passage:
+                sv = reg.setdefault(passage, {"passages": 0})
+                sv["passages"] = sv.get("passages", 0) + 1
+                vus.append(passage)
+            ecrire_compte(cpt)
+        for r in s.get("retours", []):
+            if remplit(r["si"], s.get("memoire"), vue):
+                return r
+        return None
+
+    def retenir(self, c: dict, reussi: bool, acte: str | None = None) -> None:
+        """Miroir de `retenirActe` / `retenirMort` : l'acte va au COMPTE, la
+        photo de la vie ne bouge pas."""
+        s = self.scene()
+        if acte is None:
+            l = c.get("laisse")
+            acte = l if isinstance(l, str) else ((l or {}).get("reussite" if reussi else "echec"))
+        cle = c.get("laisseCle") or s.get("memoire")
+        if not acte or not cle:
+            return
+        cpt = lire_compte()
+        sv = cpt["rencontres"].setdefault(cle, {"passages": 0})
+        sv["dernier"] = acte
+        sv["historique"] = (sv.get("historique", []) + [acte])[-4:]
+        ecrire_compte(cpt)
 
     def soupconSeLit(self) -> None:
         """Un palier franchi se voit TOUJOURS — dehors comme dedans (vague 5).
@@ -981,6 +1060,12 @@ class Partie:
             # La Besace de la réplique stocke les CLÉS d'objet telles quelles.
             if c.get("exigeObjet") and c["exigeObjet"] not in self.d.get("besace", []):
                 continue
+            # LES HOSTILES APPRENNENT (25/09) — lu sur la photo de la vie.
+            vue = self.d.get("memoireVue", {})
+            if c.get("siMemoire") and not remplit(c["siMemoire"], s.get("memoire"), vue):
+                continue
+            if c.get("sansMemoire") and remplit(c["sansMemoire"], s.get("memoire"), vue):
+                continue
             # L'OBJET QUI TRANSFORME LA SCÈNE (12/08) : portée ÉCRAN, le jeton
             # vit dans `choixFaits`. Sans ce garde, la réplique proposait
             # « Descendre par la corde » à qui n'avait pas amarré de corde
@@ -1176,6 +1261,7 @@ class Partie:
             if not self.d.get("sortie"):
                 self.soupconSeLit()
         else:
+            self.retenir(c, True)
             if c.get("sansNuit"):
                 self.d["sansNuit"] = True
             if c.get("consequence"):
@@ -1320,6 +1406,7 @@ class Partie:
         # sûre tranche net. Bornes lâches — ce n'est pas un jet déguisé.
         taux = min(0.85, max(0.40, 0.45 + 0.12 * (val - 2)))
         ok = self.rng(c["id"] + "|geste").random() < taux
+        self.retenir(c, ok)
         # ⚠️ 03/09 — STYLE DÉDIÉ, ET C'ÉTAIT UN PLANTAGE. Cette ligne partait
         # sous le style « de », dont le rendu fait `t.split("|")` en trois :
         # une ligne sans barre verticale levait un ValueError et TUAIT la
@@ -1381,6 +1468,9 @@ class Partie:
             - entree_douce(lire_compte().get("morts", 0))
             + tension_traversee(len(self.d.get("visites", [])), self.d.get("cible", 0)),
         )
+        # LES HOSTILES APPRENNENT (25/09) : la même option, plus dure.
+        if c.get("durcitSi") and remplit(c["durcitSi"], sc.get("memoire"), self.d.get("memoireVue", {})):
+            seuil += int(c["durcitSi"].get("de", 0))
         mod = self.modificateur(c.get("stat"))
         r = self.rng(c["id"])
         naturel = r.randrange(1, 21)
@@ -1413,6 +1503,7 @@ class Partie:
         nature = c.get("nature") or ("physique" if s.get("combat") else "social")
         dur = palier in ("critique", "malediction")
         rate = palier in ("echec", "critique", "malediction")
+        self.retenir(c, not rate)
         # LOT 3 (14/08) : sur l'option PRÉPARÉE d'un combat, l'échec est hors de
         # portée — la préparation ne rend pas le jet plus facile, elle change ce
         # qu'on risque. Aucun coût au corps, aucune blessure (miroir exact de
@@ -1651,6 +1742,8 @@ class Partie:
         return out
 
     def mourir(self, dernier: str) -> None:
+        # Mourir face à une rencontre laisse « tue » à sa clé (25/09).
+        self.retenir({}, False, acte="tue")
         self.d["morte"] = True
         self.d["sortie"] = "mort"
         c = lire_compte()

@@ -255,4 +255,4 @@
  *           anciennes sauvegardes sont converties. + la réplique jouable
  *           plantait dès la première scène depuis le 13/09 (variable `r`).
  */
-export const APP_VERSION = "1.158.0";
+export const APP_VERSION = "1.159.0";

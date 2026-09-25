@@ -32,6 +32,7 @@ import {
 // registre-data n'importe d'ici que des TYPES (import effacé au build) : ce
 // sens-ci peut donc porter la valeur `buildLesCent` sans cycle au runtime.
 import { buildLesCent } from "@/lib/registre-data";
+import { rencontresDepuis, type SouvenirRencontre } from "@/lib/memoire";
 
 /** Un tueur nommé garde une trace liée au compte, pas au héros mort (§19). */
 export type BloodDebt = {
@@ -256,6 +257,9 @@ export type PlayerMemory = {
   /** Registre de déjà-vu, portée COMPTE (lib/dejavu.ts). Le héros ne se
       souvient de rien ; c'est le monde qui tient le compte. */
   vus?: Record<string, number>;
+  /** Ce que chaque rencontre retient de ce que les vies lui ont FAIT
+      (lib/memoire.ts) — une clé par chose qui se souvient. */
+  rencontres?: Record<string, SouvenirRencontre>;
   /**
    * L'introduction (les 4 clauses du pacte, Figma 2238:1009) a déjà été lue.
    *
@@ -371,6 +375,7 @@ function fresh(): PlayerMemory {
     profils: [],
     derniereFinTraversee: false,
     faits: {},
+    rencontres: {},
   };
 }
 
@@ -591,6 +596,7 @@ export function loadMemory(): PlayerMemory {
           derniereFinTraversee: Boolean(p.derniereFinTraversee),
           dernierSurvivant: typeof p.dernierSurvivant === "string" ? p.dernierSurvivant : undefined,
           faits: migrerSceau(sacDepuis(p.faits)),
+          rencontres: rencontresDepuis(p.rencontres),
         };
       }
     } catch {

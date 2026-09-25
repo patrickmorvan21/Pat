@@ -12,6 +12,7 @@ import { cibleTotale, entrerLieu, ouvrirEtage, premierLieu, type EtageState } fr
 import { profilDepuis, profilNeuf, type ProfilRun } from "@/lib/profil";
 import type { Temoin } from "@/lib/temoins";
 import { sacDepuis, type SacFaits } from "@/lib/faits";
+import { rencontresDepuis, type Instantane } from "@/lib/memoire";
 
 export type RollRecord = {
   step: number;
@@ -246,6 +247,10 @@ export type RunState = {
   /** Registre de déjà-vu, portée RUN (lib/dejavu.ts) — un compteur par clé,
       jamais un booléen : le texte peut dire « la deuxième fois ». */
   vus?: Record<string, number>;
+  /** La PHOTO de la mémoire des rencontres, prise à la première entrée de
+      chaque clé dans cette vie (lib/memoire.ts). Toute la vie lit la photo :
+      la scène ne change pas sous les yeux, et la reprise sert le même texte. */
+  memoireVue?: Instantane;
   /**
    * A-T-ON ENGAGÉ QUELQUE CHOSE DANS CE LIEU ? (panel 10/08)
    *
@@ -731,6 +736,7 @@ function fresh(): RunState {
     besoins: {},
     croiseesDepuisRoute: 0,
     rencontresDues: [],
+    memoireVue: {},
   };
 }
 
@@ -826,6 +832,7 @@ export function loadRun(): RunState {
             reactionsVues: Array.isArray(p.reactionsVues) ? p.reactionsVues : [],
             echosObjet: Array.isArray(p.echosObjet) ? p.echosObjet : [],
             vus: p.vus && typeof p.vus === "object" ? p.vus : {},
+            memoireVue: rencontresDepuis(p.memoireVue),
             routeFermeeEnAttente: p.routeFermeeEnAttente === true,
             // ⚠️ Liste ALIGNÉE sur `RouteFermeeCause` (19/09) : « recousu »
             // n'y était pas — sa cause se perdait au rechargement et la

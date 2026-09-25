@@ -502,6 +502,92 @@ def main() -> int:
                 "option ne peut jamais s'ouvrir."
             )
 
+    # ─── A-mémoire. Tout souvenir LU a été ÉCRIT quelque part. ───────────
+    # Mémoire des rencontres (lib/memoire.ts, 25/09). Une scène qui se réécrit
+    # « si la Bête a été fuie » ne se jouera jamais si aucun choix ne laisse
+    # « fui » à la clé « bete » : c'est la promesse sans consommateur (§12),
+    # dans l'autre sens — un lecteur sans producteur. Et une clé lue qu'aucune
+    # scène ne porte (`Scene.memoire`) ne compte jamais de passage.
+    scenes_mem = [(m.start(), m.group(1)) for m in re.finditer(r'\n    id: "([a-z0-9-]+)"', sd)]
+    mem_de: dict[str, str] = {}
+    corps_de: dict[str, str] = {}
+    for i, (p, sid) in enumerate(scenes_mem):
+        fin = scenes_mem[i + 1][0] if i + 1 < len(scenes_mem) else len(sd)
+        corps = sd[p:fin]
+        corps_de[sid] = corps
+        mm = re.search(r'\n    memoire:\s*"([^"]+)"', corps)
+        if mm:
+            mem_de[sid] = mm.group(1)
+    cles_portees = set(mem_de.values())
+    produits: set[tuple[str, str]] = {(k, "tue") for k in cles_portees}
+    # ⚠️ PAS `choix_de` : il ne voit que les choix de premier niveau à id
+    # ASCII — il ratait les `timeoutChoices` et l'id « ornière », et le garde
+    # criait à un lecteur sans producteur alors que le producteur existait
+    # (trouvé au premier passage, 25/09). On remonte donc de chaque `laisse:`
+    # jusqu'à l'objet qui l'enveloppe, où qu'il soit imbriqué.
+    def objet_englobant(src: str, pos: int) -> str:
+        d = 0
+        for q in range(pos, -1, -1):
+            if src[q] == "}":
+                d += 1
+            elif src[q] == "{":
+                if d == 0:
+                    return bloc_depuis(src, q)
+                d -= 1
+        return ""
+    n_laisse = 0
+    for sid, corps in corps_de.items():
+        for ml in re.finditer(r'\blaisse:\s*("([^"]+)"|\{([^}]*)\})', corps):
+            n_laisse += 1
+            b = objet_englobant(corps, ml.start())
+            mi = re.search(r'\bid:\s*"([^"]+)"', b)
+            cid = mi.group(1) if mi else "?"
+            mk = re.search(r'\blaisseCle:\s*"([^"]+)"', b)
+            cle = mk.group(1) if mk else mem_de.get(sid)
+            if not cle:
+                manques.append(
+                    f"A-mémoire — le choix « {cid} » ({sid}) laisse un acte mais ni sa "
+                    "scène (`memoire`) ni lui (`laisseCle`) ne dit à QUI : l'acte se perd."
+                )
+                continue
+            actes = [ml.group(2)] if ml.group(2) else re.findall(r'"([^"]+)"', ml.group(3))
+            for a in actes:
+                produits.add((cle, a))
+    lectures: list[tuple[str, str, str | None, str]] = []  # (sid, clé, acte|None, champ)
+    for sid, corps in corps_de.items():
+        for mc in re.finditer(r'\b(siMemoire|sansMemoire|durcitSi|si):\s*\{([^}]*)\}', corps):
+            champ, cond = mc.group(1), mc.group(2)
+            if champ == "si" and "dernier" not in cond and "passagesMin" not in cond and "jamais" not in cond:
+                continue  # un `si:` qui n'est pas une condition de mémoire
+            mk = re.search(r'\bcle:\s*"([^"]+)"', cond)
+            cle = mk.group(1) if mk else mem_de.get(sid)
+            if not cle:
+                manques.append(
+                    f"A-mémoire — « {sid} » lit la mémoire (`{champ}`) sans clé : ni "
+                    "`cle` dans la condition, ni `memoire` sur la scène."
+                )
+                continue
+            md = re.search(r'\bdernier:\s*("([^"]+)"|\[([^\]]*)\])', cond)
+            if md:
+                for a in ([md.group(2)] if md.group(2) else re.findall(r'"([^"]+)"', md.group(3))):
+                    lectures.append((sid, cle, a, champ))
+            else:
+                lectures.append((sid, cle, None, champ))
+    for sid, cle, acte, champ in lectures:
+        if cle not in cles_portees:
+            manques.append(
+                f"A-mémoire — « {sid} » lit la clé « {cle} » (`{champ}`), qu'aucune scène "
+                "ne porte en `memoire` : elle ne comptera jamais un passage."
+            )
+        elif acte is not None and (cle, acte) not in produits:
+            manques.append(
+                f"A-mémoire — « {sid} » attend que « {cle} » se souvienne de « {acte} » "
+                f"(`{champ}`), mais aucun choix ne laisse cet acte : ce texte ne se "
+                "jouera jamais."
+            )
+    print(f"  (A-mémoire : {len(cles_portees)} clé(s) portée(s), {n_laisse} choix qui "
+          f"laissent un acte, {len(lectures)} lecture(s))")
+
     print(f"TESTS D'ACCEPTATION — {len(manques)} signalement(s)\n")
     for x in manques:
         print("  ⚠️ " + x)
@@ -514,6 +600,7 @@ def main() -> int:
         print("  A8 tous les libellés de choix se lisent d'un coup      ✓")
         print("  les cinq combats se souviennent de l'exploration       ✓")
         print("  chaque jet déclare la nature de son échec              ✓")
+        print("  A-mémoire tout souvenir lu a été écrit quelque part     ✓")
     print(
         "\n  Restent au PLAYTEST (non prouvables sur les sources) : le nombre de\n"
         "  jets par vie, ce que l'exploration prépare réellement, la lisibilité\n"

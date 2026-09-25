@@ -1169,7 +1169,15 @@
       "echec": "Ta lame racle du cuir sans entamer. L'avancée du corps te cueille à l'épaule et te plaque au talus — tu te dégages en y laissant du tien, et elle te laisse passer, servie.",
       "funeste": "1 naturel. Tu frappes dans l'ouverture. C'est exactement ce qu'elle voulait. ♦ −2"
      },
-     "nature": "physique"
+     "nature": "physique",
+     "laisse": {
+      "reussite": "blessee",
+      "echec": "a_goute"
+     },
+     "durcitSi": {
+      "dernier": "blessee",
+      "de": 1
+     }
     },
     {
      "id": "reculer-talus",
@@ -1189,7 +1197,8 @@
      "tags": [
       "fuite"
      ],
-     "horsDePortee": true
+     "horsDePortee": true,
+     "laisse": "talus"
     },
     {
      "id": "grimper-talus",
@@ -1211,6 +1220,14 @@
      ],
      "masqueSi": {
       "decouverte": "d.bete_couloir"
+     },
+     "laisse": {
+      "reussite": "talus",
+      "echec": "a_goute"
+     },
+     "durcitSi": {
+      "dernier": "talus",
+      "de": 2
      }
     },
     {
@@ -1221,7 +1238,33 @@
      "miniJeuDemo": "hold",
      "miniJeuEchec": "Ton souffle te lâche sur un rien — un gravier qui roule sous ta paume. La masse s'arrête au-dessus de toi. Le museau descend, te trouve, te retourne d'un coup de tête qui te laboure l'épaule — puis la Bête repart sans se presser, comme on repose une chose sans intérêt. Le creux te laisse te relever. Pas indemne.",
      "miniJeuEchecBlesse": true,
-     "laisseMenace": "bete"
+     "laisseMenace": "bete",
+     "laisse": "immobile",
+     "sansMemoire": {
+      "dernier": "immobile"
+     }
+    },
+    {
+     "id": "bete-laisser-venir",
+     "label": "La laisser venir, lame levée",
+     "type": "risque",
+     "stat": "COURAGE",
+     "seuil": 13,
+     "hautEnjeu": false,
+     "issues": {
+      "critique": "20 naturel. Elle s'arrête sur toi pour renifler, exactement comme elle l'a appris — et le museau descend sur la pointe. Elle recule d'un seul bond jusqu'au bout du creux, et ne revient pas.",
+      "reussite": "Elle vient, s'arrête, baisse la tête. Tu frappes par en dessous. Elle se cabre, repart en arrière dans un bruit de terre arrachée, et te laisse le coude.",
+      "echec": "Tu lèves la lame trop tôt. Elle voit l'éclat, pèse de tout son poids sur ton bras avant que tu frappes, et s'en va en te laissant l'épaule en feu.",
+      "funeste": "1 naturel. Tu attends trop. Elle s'est arrêtée sur toi, et elle a trouvé ce qu'elle cherchait. ♦ −2"
+     },
+     "nature": "physique",
+     "laisse": {
+      "reussite": "blessee",
+      "echec": "a_goute"
+     },
+     "siMemoire": {
+      "dernier": "immobile"
+     }
     }
    ],
    "pointsInteret": [],
@@ -1229,6 +1272,49 @@
    "adversaire": "bete-chemins-creux",
    "adversaireNom": "La Bête des Chemins Creux",
    "combat": true,
+   "memoire": "bete",
+   "retours": [
+    {
+     "si": {
+      "dernier": "tue"
+     },
+     "narration": [
+      "Elle ne jaillit pas du talus, cette fois. Elle est déjà dans le creux, couchée en travers, et elle attendait : le suint porte encore l'odeur du dernier qu'elle a fini ici. Elle se lève sans hâte, comme on se lève pour la suite d'un repas."
+     ]
+    },
+    {
+     "si": {
+      "dernier": "blessee"
+     },
+     "narration": [
+      "L'odeur arrive, la chose non. Elle marche DANS le talus, au-dessus de toi, à hauteur de tête — elle ne charge plus dans l'axe. Sur son flanc court une cicatrice pâle, longue comme un avant-bras. Quelqu'un lui a appris le côté. Elle tombe de biais."
+     ]
+    },
+    {
+     "si": {
+      "dernier": "talus"
+     },
+     "narration": [
+      "Suint, terre retournée. La masse se décolle du talus — pas du fond : du bord. Elle attend en haut désormais, à la limite de l'ombre, là où un autre est monté pour lui échapper. Le creux n'est plus une cage où tu entres. C'est une nasse dont elle garde la sortie."
+     ]
+    },
+    {
+     "si": {
+      "dernier": "immobile"
+     },
+     "narration": [
+      "L'odeur d'abord. Puis rien. Elle est là, à l'entrée du coude, immobile, et elle te regarde comme on regarde un tour déjà vu. Un autre s'est couché ici, un jour. Elle ne passe plus au-dessus de ce qui gît : elle s'arrête dessus."
+     ]
+    },
+    {
+     "si": {
+      "dernier": "a_goute"
+     },
+     "narration": [
+      "Suint, terre retournée — et du sang séché sur le talus, vieux, noir, à hauteur de jambe. La Bête se décolle du mur sans hâte. Elle sait déjà que ce qui descend ici se laisse prendre."
+     ]
+    }
+   ],
    "chronometree": 4000,
    "nom": "Bete chemins creux",
    "lieu": "chemin_creux",
@@ -15596,7 +15682,7 @@
  "totaux": {
   "scenes": 164,
   "pointsInteret": 0,
-  "choix": 493,
+  "choix": 494,
   "illustrations": 521,
   "sansImage": 0,
   "imagesIntrouvables": 0,

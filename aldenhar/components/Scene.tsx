@@ -3,6 +3,16 @@
 import { useEffect, useRef, useState } from "react";
 import Die3D, { type RollRequest } from "@/components/Die3D";
 import { noter, vu } from "@/lib/dejavu";
+import {
+  clesDeScene,
+  laisseDe,
+  retourApplicable,
+  noterActe,
+  noterPassage,
+  remplit,
+  souvenir,
+  type Instantane,
+} from "@/lib/memoire";
 import ChoiceButton from "@/components/ChoiceButton";
 import TouchHint from "@/components/TouchHint";
 import TypedText from "@/components/TypedText";
@@ -219,6 +229,52 @@ function porteuseDisponible(don: RelicDon, run: RunState | null): ReliquePortee 
  * la traversée, c'est une réaction à la manière de la traverser.
  */
 const LIGNES_AVANT_RECOUSU = 3;
+
+/**
+ * LA PHOTO DE LA MÉMOIRE DES RENCONTRES (lib/memoire.ts, 25/09). Appelée à
+ * chaque entrée de scène, AVANT de calculer sa narration :
+ * • chaque clé que la scène lit ou écrit est photographiée la PREMIÈRE fois
+ *   qu'elle apparaît dans la vie (idempotent ensuite — la reprise relit la
+ *   même photo, donc le même texte) ;
+ * • la clé PROPRE de la scène (`Scene.memoire`) compte un passage, une fois
+ *   par vie, APRÈS la photo : la scène lit ce que les vies d'avant ont laissé.
+ * Au niveau module parce qu'elle lit et écrit le stockage (React Compiler).
+ */
+function photographierMemoire(run: RunState, scene: SceneType): void {
+  const cles = clesDeScene(scene);
+  if (!cles.length) return;
+  const vue: Instantane = { ...(run.memoireVue ?? {}) };
+  const aPhotographier = cles.filter((k) => !(k in vue));
+  const passage = scene.memoire && vu(run.vus, `rencontre:${scene.memoire}`) === 0 ? scene.memoire : null;
+  if (!aPhotographier.length && !passage) return;
+  mutateMemory((m) => {
+    let reg = m.rencontres ?? {};
+    for (const k of aPhotographier) vue[k] = souvenir(reg, k);
+    if (passage) reg = noterPassage(reg, passage);
+    m.rencontres = reg;
+  });
+  run.memoireVue = vue;
+  if (passage) run.vus = noter(run.vus, `rencontre:${passage}`);
+}
+
+/**
+ * RETENIR CE QU'ON A FAIT (25/09) : écrit l'acte d'un choix dans la mémoire
+ * du COMPTE. La photo de la vie n'est jamais touchée — la scène ne change pas
+ * sous les yeux du joueur ; c'est la vie SUIVANTE qui lira l'acte.
+ */
+function retenirActe(scene: SceneType, choice: Choice, reussi: boolean): void {
+  const acte = laisseDe(choice, reussi);
+  const cle = choice.laisseCle ?? scene.memoire;
+  if (!acte || !cle) return;
+  mutateMemory((m) => { m.rencontres = noterActe(m.rencontres, cle, acte); });
+}
+
+/** Mourir face à une rencontre laisse « tue » à sa clé. */
+function retenirMort(scene: SceneType | null | undefined): void {
+  if (!scene?.memoire) return;
+  const cle = scene.memoire;
+  mutateMemory((m) => { m.rencontres = noterActe(m.rencontres, cle, "tue"); });
+}
 
 function chance(p: number): boolean {
   return Math.random() < p;
@@ -1290,6 +1346,9 @@ export default function Scene() {
   /* Miroir de rendu du registre `vus` de la RUN : `uneFoisParVie` se lit
      pendant le rendu, et `runRef.current` y est interdit (React Compiler). */
   const [vusMirror, setVusMirror] = useState<Record<string, number>>({});
+  /** La photo de la mémoire des rencontres de cette vie (lib/memoire.ts) —
+      miroir de rendu, lu par le filtre des choix (`siMemoire`/`sansMemoire`). */
+  const [memoireMirror, setMemoireMirror] = useState<Instantane>({});
   /** Le Serment vu par le village : tenu / rompu / aucun (03/09). */
   const [sermentMirror, setSermentMirror] = useState<"tenu" | "rompu" | "aucun">("aucun");
   // Illustration rétrécie (retour 22/07) : passe à true UNIQUEMENT si le texte
@@ -1439,6 +1498,12 @@ export default function Scene() {
     // UNE FOIS PAR VIE (01/09) : le demi-tour ne doit pas devenir un
     // tourniquet — on peut revenir sur ses pas, pas boucler les Landes.
     if (c.uneFoisParVie && vu(vusMirror, c.uneFoisParVie) > 0) return false;
+    // LES HOSTILES APPRENNENT (mémoire des rencontres, 25/09) : une option
+    // n'existe que pour qui revient avec tel passé, une autre disparaît parce
+    // qu'elle a déjà servi une fois. Lu sur la PHOTO de la vie, jamais en
+    // direct — l'écran ne change pas sous le doigt.
+    if (c.siMemoire && !remplit(c.siMemoire, scene.memoire, memoireMirror)) return false;
+    if (c.sansMemoire && remplit(c.sansMemoire, scene.memoire, memoireMirror)) return false;
     if (c.requiresObjet && !besaceMirror.includes(c.requiresObjet)) return false;
     // L'OBJET OUVRE / FERME (chantier 12/08 §2) : le jeton d'usage passe par
     // `choixFaits`, donc sa portée est l'ÉCRAN — vidé en quittant le lieu.
@@ -1913,9 +1978,10 @@ export default function Scene() {
         run.surprise = { id: "metaleptique", jouee: true };
         mutateMemory((m) => { m.surprises = { derniereRun: m.runsStarted }; });
       }
+      photographierMemoire(run, cur);
       restored.push(
         ...[
-          ...narrationAffichee(cur),
+          ...narrationAffichee(cur, run.memoireVue),
           // la tempête pas encore balayée se rejoue à la reprise : son
           // annonce (`avant`) aussi, sinon elle tomberait sans un mot
           ...(cur.tempete?.avant && !(run.tempetesJouees ?? []).includes(cur.tempete.cle ?? cur.id)
@@ -1964,7 +2030,8 @@ export default function Scene() {
       lastSceneIlloRef.current = illo;
       setImage(illo);
       setImageKind("scene");
-      const openingNarration = [...narrationAffichee(opening)];
+      photographierMemoire(run, opening);
+      const openingNarration = [...narrationAffichee(opening, run.memoireVue)];
       // LA TRACE DE L'INCARNATION PRÉCÉDENTE (mémo IA externe 8/08, niv. 1-2 :
       // « dans les 30 à 90 premières secondes, le joueur doit savoir que cette
       // nouvelle vie n'est pas un recommencement identique »). La CAUSE de la
@@ -2123,6 +2190,7 @@ export default function Scene() {
     // Miroir de la Besace, exprimé en CLÉS de `LANDES_OBJETS` (les instances
     // portent un id unique — `pierre-retour-7` — donc on apparie par NOM).
     setVusMirror(run?.vus ?? {});
+    setMemoireMirror(run?.memoireVue ?? {});
     setSermentMirror(
       !run?.hameau?.serment ? "aucun" : run.hameau.sermentRompu ? "rompu" : "tenu"
     );
@@ -3653,10 +3721,14 @@ export default function Scene() {
     // L'AIGUILLAGE (panel 9/08) : la scène qui suit LIT le dé qui la précède.
     // Deux versions au plus — tenu / pas tenu. Sans version d'échec, la scène
     // se lit dans les deux cas (vérifié texte par texte, pas supposé).
+    // MÉMOIRE DES RENCONTRES (25/09) : la photo se prend à l'entrée, avant
+    // la narration — un retour REMPLACE le texte de la scène.
+    if (runRef.current) photographierMemoire(runRef.current, nextScene);
+    const retourIci = retourApplicable(nextScene, runRef.current?.memoireVue);
     const narrationDeScene = [
       ...(opts?.fail && nextScene.narrationEchec?.length
         ? nextScene.narrationEchec
-        : narrationAffichee(nextScene)),
+        : narrationAffichee(nextScene, runRef.current?.memoireVue)),
       // LE VENT SE LÈVE DANS LE TEXTE avant que le sel ne tombe sur l'écran
       // (Salines, `tempete.avant`) — seulement la première fois qu'elle va se
       // jouer sur cet écran ; une tempête déjà balayée n'est plus annoncée.
@@ -3680,6 +3752,10 @@ export default function Scene() {
     const cleFam = "fam|" + lieuIci;
     const strate = (() => {
       if (!famIci) return null;
+      // Un RETOUR de mémoire a déjà réécrit la scène : la strate générique
+      // (un passage de plus) ne s'y superpose pas — elle dirait moins bien
+      // ce que le retour dit déjà (« ils t'ont vu », pas « tu repasses »).
+      if (retourIci) return null;
       // Portée RUN : deux beats du même lieu passent tous deux par ici.
       if (vu(runRef.current?.vus, cleFam) > 0) return null;
       const passages = (loadMemory().visitesLieux ?? {})[lieuIci] ?? 0;
@@ -3840,6 +3916,7 @@ export default function Scene() {
     const clePnj = "pnj|" + (memPnj?.lieu ?? lieuIci);
     if (
       memPnj &&
+      !retourIci &&
       ((loadMemory().visitesLieux ?? {})[memPnj.lieu ?? lieuIci] ?? 0) >= 2 &&
       vu(runRef.current?.vus, clePnj) === 0
     ) {
@@ -4893,6 +4970,9 @@ export default function Scene() {
     if (!c || !c.minigame) return;
     setMinigameVerdict(null);
     setMinigameChoice(null);
+    // Ce que la rencontre retiendra du geste — ici, une seule fois, avant que
+    // la résolution ne repasse par `onSelect` (qui l'ignore pour un geste).
+    retenirActe(scene, c, ok);
     minigamesJoues.current = [...minigamesJoues.current, c.id];
     // Un geste par SITUATION et par vie (le beat garanti de la Borne lit ce
     // marqueur) — persisté, donc fidèle à la reprise.
@@ -5036,6 +5116,11 @@ export default function Scene() {
       seuil: choice.risky?.threshold,
       geste: choice.minigame?.engine,
     });
+    // MÉMOIRE DES RENCONTRES (25/09) : un choix sans dé ni geste laisse son
+    // acte dès la sélection ; un jet l'écrit à son verdict (onComplete), un
+    // geste à sa résolution (resoudreMinigame).
+    if (!choice.risky && !choice.minigame && !minigamesJoues.current.includes(choice.id))
+      retenirActe(scene, choice, true);
     // MODE DÉMO : un choix qui porte un mini-jeu l'ouvre AVANT de se résoudre
     // — le geste décide, puis la résolution normale reprend (finirMinigame).
     // La config se calcule ICI (lecture de runRef interdite au rendu) : la
@@ -5796,7 +5881,14 @@ export default function Scene() {
       // qu'on apporte. Le plafond de 3 est dans `apportsProces` : même très
       // bien préparé, le jet reste serré.
       const prepare = scene.fixationTrial ? apportsProces(runRef.current ?? {}).length : 0;
-      const threshold = Math.max(2, choice.risky.threshold - soft + tension - prepare);
+      // LES HOSTILES APPRENNENT (25/09) : la même option, plus dure, pour qui
+      // revient avec tel passé. Lu sur la PHOTO de la vie. Jamais affiché —
+      // l'Anneau, calculé sur ce seuil, montre moins d'encoches pleines.
+      const durci =
+        choice.durcitSi && remplit(choice.durcitSi, scene.memoire, runRef.current?.memoireVue)
+          ? choice.durcitSi.de
+          : 0;
+      const threshold = Math.max(2, choice.risky.threshold - soft + tension - prepare + durci);
       // Beat fatal (30/07) : la scène sait AVANT le verdict si un palier
       // d'échec tue — santé − coût ≤ 0, ou procès de fixation raté. Le dé
       // s'en sert pour poser la face rongée et « MORT » au settle, à la
@@ -6225,6 +6317,10 @@ export default function Scene() {
               nature: natureJet,
               combat: Boolean(scene.combat),
             });
+            {
+              const pris = [...scene.choices, ...(scene.timed?.timeoutChoices ?? [])].find((c) => c.id === selectedId);
+              if (pris) retenirActe(scene, pris, !tierIsFail(tier));
+            }
             // Un guide connaît les raccourcis : l'échec dur ne coûte plus le
             // JOUR qu'il coûte d'habitude. Bénéfice réel, jamais chiffré — il
             // se lit au fait que la puce « Jour » ne bouge pas.
@@ -6520,6 +6616,7 @@ export default function Scene() {
               const firstDeath = loadMemory().deaths === 0;
               const porteeNom =
                 reliquesPortees(loadMemory()).map((p) => p.relic.name).join(" \u00b7 ") || null;
+              retenirMort(scene);
               const relic = recordDeath({
                 heroName: run.heroName,
                 days: run.day,
@@ -6545,6 +6642,7 @@ export default function Scene() {
               mutateMemory((m) => {
                 m.fixations += 1;
               });
+              retenirMort(scene);
               const relic = recordDeath({
                 heroName: run.heroName,
                 days: run.day,
@@ -6572,6 +6670,7 @@ export default function Scene() {
               // recordDeath, qui pousse celle que cette mort vient de forger.
               const porteeNom =
                 reliquesPortees(loadMemory()).map((p) => p.relic.name).join(" \u00b7 ") || null;
+              retenirMort(scene);
               const relic = recordDeath({
                 heroName: run.heroName,
                 days: run.day,

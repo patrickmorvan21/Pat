@@ -691,6 +691,28 @@ def tableau_choix_nomme(nom: str) -> str:
     return ""
 
 
+def cond_memoire(txt: str) -> dict:
+    """Une condition de mémoire (`lib/memoire.ts` MemoireCond, + `de` pour
+    `durcitSi`) lue depuis son objet littéral."""
+    out: dict = {}
+    mk = re.search(r'\bcle:\s*"([^"]+)"', txt)
+    if mk:
+        out["cle"] = mk.group(1)
+    md = re.search(r'\bdernier:\s*(\[[^\]]*\]|"[^"]*")', txt)
+    if md:
+        v = re.findall(r'"([^"]+)"', md.group(1))
+        out["dernier"] = v if md.group(1).startswith("[") else v[0]
+    mp = re.search(r'\bpassagesMin:\s*(\d+)', txt)
+    if mp:
+        out["passagesMin"] = int(mp.group(1))
+    if re.search(r'\bjamais:\s*true', txt):
+        out["jamais"] = True
+    mde = re.search(r'\bde:\s*(\d+)', txt)
+    if mde:
+        out["de"] = int(mde.group(1))
+    return out
+
+
 def lire_choix(bloc: str) -> list[dict]:
     ref = re.search(r"\n {4}choices:\s*([A-Z_][A-Z0-9_]*)\s*,", bloc)
     if ref:
@@ -969,6 +991,26 @@ def lire_choix(bloc: str) -> list[dict]:
             ids = re.findall(r'"([^"]+)"', mcf.group(1))
             if ids:
                 ch["exigeChoixFait"] = ids if len(ids) > 1 else ids[0]
+        # MÉMOIRE DES RENCONTRES (25/09, lib/memoire.ts). Même piège que
+        # `sansNuit` : un champ absent de cette liste blanche n'atteint ni le
+        # Graphe ni la réplique, et un relecteur conclurait que la Bête ne se
+        # souvient de rien — ou pire, la réplique offrirait les options
+        # « apprises » à une première vie.
+        ml = re.search(r'\blaisse:\s*("([^"]+)"|\{([^}]*)\})', c)
+        if ml:
+            if ml.group(2):
+                ch["laisse"] = ml.group(2)
+            else:
+                l = dict(re.findall(r'(reussite|echec):\s*"([^"]+)"', ml.group(3)))
+                if l:
+                    ch["laisse"] = l
+        mlc = re.search(r'\blaisseCle:\s*"([^"]+)"', c)
+        if mlc:
+            ch["laisseCle"] = mlc.group(1)
+        for champ in ("siMemoire", "sansMemoire", "durcitSi"):
+            mc = re.search(rf'\b{champ}:\s*\{{([^}}]*)\}}', c)
+            if mc:
+                ch[champ] = cond_memoire(mc.group(1))
         # LE DEMI-TOUR (01/09) : il rallonge la traversee au lieu de descendre.
         md = re.search(r"demiTour:\s*\{\s*lieux:\s*(\d+)", c)
         if md:
@@ -1270,6 +1312,21 @@ def lire_scenes() -> list[dict]:
             t = chaines_de_tableau(tb[0])
             if t:
                 s["tags"] = t
+        # MÉMOIRE DES RENCONTRES (25/09) : la clé de la scène, et ses retours
+        # (d'autres narrations pour qui revient). Sans eux, la réplique joue
+        # toujours la première fois.
+        mm = re.search(r'\n    memoire:\s*"([^"]+)"', bloc)
+        if mm:
+            s["memoire"] = mm.group(1)
+        rb = bloc_apres(bloc, r"\n    retours:\s*")
+        if rb:
+            retours = []
+            for mr in re.finditer(r'\{\s*si:\s*\{([^}]*)\},\s*narration:\s*\[', rb[0]):
+                nb = bloc_apres(rb[0][mr.start():], r"narration:\s*")
+                if nb:
+                    retours.append({"si": cond_memoire(mr.group(1)), "narration": paragraphes(nb[0])})
+            if retours:
+                s["retours"] = retours
         if "timed:" in bloc:
             s["chronometree"] = int(nombre_de(bloc, "ms") or 0)
         sa = nombre_de(bloc, "soupconOnArrival")

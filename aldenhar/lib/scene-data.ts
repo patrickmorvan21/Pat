@@ -13,6 +13,7 @@ import { evalue, present, radical } from "./faits";
 import { TRAVERSEE_LANDES } from "./traversees";
 import { assetExiste } from "./assets";
 import { SALINES_ENVIRONNEMENTS } from "./zones-salines";
+import { retourApplicable, type Instantane, type Laisse, type MemoireCond, type Retour } from "./memoire";
 
 export type Stat = "COURAGE" | "RUSE" | "INSTINCT" | "EMPATHIE";
 
@@ -450,6 +451,26 @@ export type Choice = {
    * est celui qui gagne.
    */
   prendLaPlaceDe?: string | string[];
+  /**
+   * MÉMOIRE DES RENCONTRES (lib/memoire.ts, vague 2 du 25/09). Ce que la clé
+   * de la scène (`Scene.memoire`, ou `laisseCle`) retiendra de ce choix pour
+   * les vies suivantes. Une chaîne = le même acte quelle que soit l'issue ;
+   * `{reussite, echec}` = selon le jet. Mourir face à elle laisse « tue »
+   * sans qu'aucun choix ait à le dire.
+   */
+  laisse?: Laisse;
+  /** La clé à qui `laisse` s'adresse, si ce n'est pas celle de la scène. */
+  laisseCle?: string;
+  /** Ce choix n'existe que si la mémoire tient cette condition (les hostiles
+      APPRENNENT). Il se combine avec `prendLaPlaceDe` : une option née de la
+      mémoire prend la place de celle qu'elle remplace, jamais un 4e bouton. */
+  siMemoire?: MemoireCond;
+  /** Ce choix disparaît si la mémoire tient cette condition (l'option qui t'a
+      sauvé une fois n'est plus là). */
+  sansMemoire?: MemoireCond;
+  /** La même option, plus dure, pour qui revient : `de` crans ajoutés au
+      seuil si la condition tient. Jamais affiché — l'Anneau le montre. */
+  durcitSi?: MemoireCond & { de: number };
   /**
    * REMPLACER PAR SÉQUENCE. Ce choix n'existe qu'une fois tel autre choix
    * FAIT dans ce lieu (`RunState.choixFaits`, vidé en quittant le lieu).
@@ -891,6 +912,18 @@ export type Scene = {
    * de parole à 100 %, ×1,7 même au taux d'avant.
    */
   jailerLine?: string;
+  /**
+   * La CLÉ de ce qui se souvient ici (lib/memoire.ts) : « bete », « epoux »,
+   * « lieu:verger »… Les beats d'une même rencontre partagent la leur.
+   */
+  memoire?: string;
+  /**
+   * D'autres versions de la scène pour qui revient. Le premier retour dont
+   * la condition tient REMPLACE la narration — le joueur ne relit pas la même
+   * scène avec une ligne de plus, il en lit une autre. Aucun ne tient → la
+   * narration d'origine (la première fois).
+   */
+  retours?: Retour[];
   /**
    * Rencontre de combat (spec §6) : pas de système séparé, pas de PV de
    * monstre — la même mécanique choix + dé, seuils de jet plus exigeants
@@ -1950,6 +1983,45 @@ export const SCENES: Scene[] = [
     chainNext: "chemin-creux",
     foe: "bete-chemins-creux",
     foeName: "La Bête des Chemins Creux",
+    /* MÉMOIRE DES RENCONTRES (lib/memoire.ts, 25/09) — la rencontre pilote.
+       La Bête retient ce que la vie d'avant lui a FAIT, et la vie suivante
+       lit une autre scène. Le héros, lui, ne reconnaît rien : c'est la bête
+       qui a appris (le talus gardé, la cicatrice, le ventre qu'on ne survole
+       plus). Le premier retour qui tient l'emporte — du plus lourd au plus
+       léger. */
+    memoire: "bete",
+    retours: [
+      {
+        si: { dernier: "tue" },
+        narration: [
+          "Elle ne jaillit pas du talus, cette fois. Elle est déjà dans le creux, couchée en travers, et elle attendait : le suint porte encore l'odeur du dernier qu'elle a fini ici. Elle se lève sans hâte, comme on se lève pour la suite d'un repas.",
+        ],
+      },
+      {
+        si: { dernier: "blessee" },
+        narration: [
+          "L'odeur arrive, la chose non. Elle marche DANS le talus, au-dessus de toi, à hauteur de tête — elle ne charge plus dans l'axe. Sur son flanc court une cicatrice pâle, longue comme un avant-bras. Quelqu'un lui a appris le côté. Elle tombe de biais.",
+        ],
+      },
+      {
+        si: { dernier: "talus" },
+        narration: [
+          "Suint, terre retournée. La masse se décolle du talus — pas du fond : du bord. Elle attend en haut désormais, à la limite de l'ombre, là où un autre est monté pour lui échapper. Le creux n'est plus une cage où tu entres. C'est une nasse dont elle garde la sortie.",
+        ],
+      },
+      {
+        si: { dernier: "immobile" },
+        narration: [
+          "L'odeur d'abord. Puis rien. Elle est là, à l'entrée du coude, immobile, et elle te regarde comme on regarde un tour déjà vu. Un autre s'est couché ici, un jour. Elle ne passe plus au-dessus de ce qui gît : elle s'arrête dessus.",
+        ],
+      },
+      {
+        si: { dernier: "a_goute" },
+        narration: [
+          "Suint, terre retournée — et du sang séché sur le talus, vieux, noir, à hauteur de jambe. La Bête se décolle du mur sans hâte. Elle sait déjà que ce qui descend ici se laisse prendre.",
+        ],
+      },
+    ],
     narration: [
       "L'odeur arrive avant la chose : suint, terre retournée. Une masse se décolle du talus, longue, basse, taillée pour courir entre deux murs de terre. Le creux est son couloir — et tu es dessus.",
     ],
@@ -1978,6 +2050,7 @@ export const SCENES: Scene[] = [
         {
           id: "bete-au-sol",
           label: "Frapper depuis le sol",
+          laisse: { reussite: "blessee", echec: "a_goute" },
           risky: {
             stat: "COURAGE",
             threshold: 14,
@@ -1992,6 +2065,7 @@ export const SCENES: Scene[] = [
         {
           id: "bete-faire-le-mort",
           label: "Ne plus bouger du tout",
+          laisse: "immobile",
           // L'immobilité est une vraie réponse (§19) : la Bête chasse le
           // mouvement dans l'axe du creux.
           passive: {
@@ -2009,6 +2083,10 @@ export const SCENES: Scene[] = [
         id: "frapper-bete",
         nature: "physique",
         label: "Frapper la bête",
+        laisse: { reussite: "blessee", echec: "a_goute" },
+        // Blessée une fois, elle ne charge plus dans l'axe : le même coup
+        // est plus dur à placer. Jamais affiché — l'Anneau le montre.
+        durcitSi: { dernier: "blessee", de: 1 },
         risky: {
           stat: "COURAGE",
           threshold: 13,
@@ -2035,6 +2113,7 @@ export const SCENES: Scene[] = [
         nature: "physique",
         tags: ["fuite"],
         label: "Reculer sur le talus, sans courir",
+        laisse: "talus",
         requiresDecouverte: "d.bete_couloir",
         horsDePortee: true,
         risky: {
@@ -2058,6 +2137,9 @@ export const SCENES: Scene[] = [
         tags: ["fuite"],
         masqueSi: { decouverte: "d.bete_couloir" },
         label: "Bondir hors du creux",
+        laisse: { reussite: "talus", echec: "a_goute" },
+        // Quelqu'un lui a échappé par le haut : elle garde le bord, désormais.
+        durcitSi: { dernier: "talus", de: 2 },
         risky: {
           stat: "INSTINCT",
           threshold: 12,
@@ -2072,6 +2154,10 @@ export const SCENES: Scene[] = [
       {
         id: "ornière",
         label: "Se plaquer, immobile",
+        laisse: "immobile",
+        // Elle a appris ce qui gît : l'ornière n'est plus une réponse, elle
+        // cède la place à « La laisser venir » (ci-dessous).
+        sansMemoire: { dernier: "immobile" },
         // La Bête chasse le mouvement dans l'axe du creux — l'immobilité
         // est une vraie réponse (§19). Mais elle t'a SENTI passer (17/08 §2) :
         // se dérober à un combat ne l'efface pas du monde, elle peut suivre.
@@ -2099,6 +2185,27 @@ export const SCENES: Scene[] = [
         passive: {
           consequence:
             "Tu te coules dans l'ornière, face contre terre. La masse passe au-dessus — un pont de cuir et de suint, interminable. Elle cherche ce qui court, pas ce qui gît. Quand le silence revient, tu marches.",
+        },
+      },
+      {
+        /* CE QU'ELLE A APPRIS SE RETOURNE CONTRE ELLE (25/09). Elle ne
+           survole plus ce qui gît : elle s'arrête DESSUS pour renifler. Qui
+           gît avec la lame levée la prend à ce moment-là. N'existe que pour
+           la vie qui suit un « immobile » — c'est l'ornière, transformée. */
+        id: "bete-laisser-venir",
+        nature: "physique",
+        label: "La laisser venir, lame levée",
+        siMemoire: { dernier: "immobile" },
+        laisse: { reussite: "blessee", echec: "a_goute" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 13,
+          outcomes: outcomes(
+            "20 naturel. Elle s'arrête sur toi pour renifler, exactement comme elle l'a appris — et le museau descend sur la pointe. Elle recule d'un seul bond jusqu'au bout du creux, et ne revient pas.",
+            "Elle vient, s'arrête, baisse la tête. Tu frappes par en dessous. Elle se cabre, repart en arrière dans un bruit de terre arrachée, et te laisse le coude.",
+            "Tu lèves la lame trop tôt. Elle voit l'éclat, pèse de tout son poids sur ton bras avant que tu frappes, et s'en va en te laissant l'épaule en feu.",
+            "1 naturel. Tu attends trop. Elle s'est arrêtée sur toi, et elle a trouvé ce qu'elle cherchait. ♦ −2"
+          ),
         },
       },
     ],
@@ -11426,8 +11533,9 @@ export function sceneById(id: string): Scene | undefined {
  * qu'UNE version : les textes courts écrits pour la démo sont devenus les
  * textes tout court (« il faut que ce soit court sur l'ensemble des pages »).
  */
-export function narrationAffichee(s: Scene): string[] {
-  return s.narration;
+export function narrationAffichee(s: Scene, memoire?: Instantane): string[] {
+  // Mémoire des rencontres (25/09) : un retour REMPLACE la narration.
+  return retourApplicable(s, memoire)?.narration ?? s.narration;
 }
 
 /** Même règle pour la conséquence d'un choix passif. */

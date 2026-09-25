@@ -271,6 +271,8 @@ def main() -> int:
                 # qu'il n'est pas nommé ici. `sejour` l'a appris à ses dépens —
                 # la réplique laissait quitter la Palissade au premier geste.
                 "sejour", "narrationEchec", "nuit",
+                # mémoire des rencontres (25/09)
+                "memoire", "retours",
                 # LA SCÈNE-VARIANTE (14/08) : elle se joue À LA PLACE d'une
                 # autre. Sans ce champ, la réplique jouait toujours l'originale
                 # — le Veilleur demandait au lieu de noter, la Fille n'était
