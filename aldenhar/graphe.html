@@ -323,6 +323,10 @@ const CAT = {
   // CREUX, jamais plein — la carte ne doit pas faire passer une proposition
   // pour un écran qu'on peut jouer. Une case suffit à les masquer.
   propose:    { nom:"Proposés — pas encore en jeu", c:"#e0632a", a:.85, r:4.2, ordre:7, creux:1 },
+  // Les transitions de lieu à lieu (25/09) : départ, approche vue de loin,
+  // croisée, pas vers une rencontre, sortie. Proposées, donc en CREUX ; en
+  // blanc pour ne pas se confondre avec un lieu ou une rencontre proposés.
+  trajet:     { nom:"Transitions de lieu (proposées)", c:"#ffffff", a:.9, r:3.9, ordre:6.5, creux:1 },
 };
 const LIENS = { appartient:.055, contexte:.045, suite:.16, sortie:.13, variante:.10 };
 
@@ -388,7 +392,9 @@ try { panier = JSON.parse(localStorage.getItem(CLE_PANIER) || "{}"); } catch (e)
 // derniers ; chaque fiche porte son propre « où ».
 const NUAGE = { transition:"Les textes de marche — sans lieu fixe",
                 marche:"Les vues de marche", scene:"Hors traversée" };
-const on = { lieu:1, arrivee:1, rencontre:1, scene:1, action:1, terminal:1, marche:1, transition:1, propose:1 };
+// une catégorie ajoutée à CAT est visible d'office : une liste tenue à la main
+// l'oubliait (les transitions de lieu du 25/09 étaient invisibles et hors du cercle)
+const on = Object.fromEntries(Object.keys(CAT).map(k => [k, 1]));
 const opt = { noms:1, images:0, liensFaibles:1 };
 const F = { repulsion:1, longueur:1, gravite:1 };
 
@@ -450,7 +456,7 @@ function batirGrappes() {
   // ses écrans) tourne autour de chacun en satellites.
   const premierNiveau = id => (enfants.get(id) || []).map(y => parId.get(y))
     .filter(n => n && !estLieuDeGroupe(n) && !pris.has(n.id));
-  const ORDRE_CAT = { arrivee: 0, rencontre: 1, scene: 2, terminal: 3, propose: 4, action: 5 };
+  const ORDRE_CAT = { trajet: -1, arrivee: 0, rencontre: 1, scene: 2, terminal: 3, propose: 4, action: 5 };
   // l'écart d'une grappe : plus large quand ses écrans portent des actions
   // (leurs satellites), sinon un satellite touche l'écran voisin.
   const PAS_NU = 14, PAS_SAT = 20, SAT = 14;
@@ -661,6 +667,8 @@ function demarrer(g) {
       + (g.totaux.actions || 0) + "</b> actions &nbsp;·&nbsp; <b>"
       + g.totaux.transitions + "</b> transitions &nbsp;·&nbsp; <b>" + g.totaux.marches + "</b> vues de marche"
       + (g.totaux.proposes ? " &nbsp;·&nbsp; <b>" + g.totaux.proposes + "</b> proposés, en creux" : "")
+      + (g.totaux.trajets ? " &nbsp;·&nbsp; <b>" + g.totaux.trajets + "</b> transitions de lieu, dont <b>"
+         + g.totaux.trajetsAProduire + "</b> images à produire" : "")
       + (g.envStatut ? "<br>" + esc(g.envStatut) : ""))
     + "<br>export du " + g.genere + (g.commit ? " · " + g.commit : "")
     + "<br>molette ou pincement pour zoomer &nbsp;·&nbsp; + &minus; 0 au clavier &nbsp;·&nbsp; double-clic pour recadrer";
@@ -1248,7 +1256,7 @@ function ouvrir(n) {
   choisi = n;
   const d = CAT[n.cat] || CAT.scene;
   document.getElementById("fcat").textContent = n.propose
-    ? (n.id.startsWith("lieu:") ? "Lieu proposé · pas encore en jeu" : "Rencontre proposée · pas encore en jeu")
+    ? (n.id.startsWith("lieu:") ? "Lieu proposé · pas encore en jeu" : n.cat === "trajet" ? "Transition proposée · pas encore en jeu" : "Rencontre proposée · pas encore en jeu")
     : d.nom.replace(/s$/, "");
   document.getElementById("fnom").textContent = n.nom;
   document.getElementById("fmeta").textContent = (n.meta || []).join("  ·  ");
@@ -1292,6 +1300,7 @@ function ouvrir(n) {
   if (n.descDemo && n.descDemo.length) { titre("Version démo"); n.descDemo.forEach(par); }
   if (n.regle) { titre("Ce qu'elle impose"); par(n.regle); }
   if (n.preparation) { titre("Ce qui la prépare"); par(n.preparation); }
+  if (n.imageMontre) { titre("Ce que l'image montre"); par(n.imageMontre); }
   if (n.propose && n.imageStatut) { titre("L'image"); par(n.imageStatut); }
   if (n.desc && n.desc.length && n.resume) { titre("Ce que l'écran montre"); par(n.resume); }
 
