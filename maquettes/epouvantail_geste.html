@@ -1,0 +1,361 @@
+<title>L'Épouvantail du Verger</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Roboto+Mono:wght@400;500;700&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --charbon:#1c1a16; --orange:#e0632a; --blanc:#ffffff;
+  --blanc-50:rgba(255,255,255,.5); --blanc-20:rgba(255,255,255,.2); --blanc-08:rgba(255,255,255,.08);
+  --mono:"Roboto Mono",ui-monospace,Menlo,monospace; --serif:"Instrument Serif",Georgia,serif;
+}
+html,body{background:var(--charbon);color:var(--blanc);}
+[hidden]{display:none!important}
+body{font-family:var(--mono);font-size:13px;padding-inline:16px;padding-block:20px 40px}
+.page{max-width:390px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.eyebrow{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--orange)}
+h1{font-family:var(--serif);font-weight:400;font-size:34px;line-height:1.05;margin:4px 0 6px;text-wrap:balance}
+.intro{color:var(--blanc-50);line-height:1.6;margin:0}
+
+/* le téléphone */
+.frame{position:relative;width:100%;background:var(--charbon);border:1px solid var(--blanc-20);
+  user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.jeu{position:relative;width:100%;aspect-ratio:130/166;touch-action:none;cursor:pointer}
+canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
+.tentation{position:absolute;left:0;right:0;bottom:56px;text-align:center;font-size:13px;color:var(--blanc);
+  padding-inline:24px;line-height:1.5;pointer-events:none}
+.consigne{position:absolute;left:0;right:0;bottom:22px;text-align:center;font-size:13px;color:var(--blanc);
+  letter-spacing:.5px;pointer-events:none;animation:pulse 2.4s steps(2) infinite}
+@keyframes pulse{50%{opacity:.35}}
+.verdict{position:absolute;inset:auto 0 18px 0;text-align:center;pointer-events:none;display:flex;flex-direction:column;gap:6px;padding-inline:24px}
+.verdict .mot{font-size:15px;letter-spacing:6px;font-weight:700}
+.verdict .mot.ok{color:var(--orange)} .verdict .mot.ko{color:var(--blanc)}
+.verdict .ligne{font-size:12.5px;line-height:1.55;color:var(--blanc)}
+.verdict .suite{font-size:12px;color:var(--blanc-50);animation:pulse 2.4s steps(2) infinite}
+
+.recit{padding:16px 18px 18px;display:flex;flex-direction:column;gap:14px}
+.recit p{margin:0;line-height:1.65;font-size:13px}
+.ctas{display:flex;flex-direction:column;gap:8px}
+.cta{position:relative;height:46px;display:flex;align-items:center;padding-inline:16px;font:inherit;font-size:13px;
+  color:var(--blanc);background:transparent;border:1px solid var(--blanc);cursor:pointer;text-align:left}
+.cta::before,.cta::after{content:"";position:absolute;width:2px;height:2px;background:var(--charbon)}
+.cta::before{top:-1px;left:-1px} .cta::after{bottom:-1px;right:-1px}
+.cta .tag{margin-left:auto;font-size:10px;letter-spacing:1.5px;color:var(--orange)}
+.cta:focus-visible,.seg button:focus-visible{outline:1px solid var(--orange);outline-offset:3px}
+
+/* réglages du prototype, hors du téléphone */
+.reglages{display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--blanc-08);padding-top:16px}
+.reglages h2{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--blanc-50);font-weight:400;margin:0}
+.ligne-r{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ligne-r > span{min-width:118px;color:var(--blanc-50);font-size:12px}
+.seg{display:flex;gap:6px}
+.seg button{font:inherit;font-size:12px;letter-spacing:1px;color:var(--blanc);background:transparent;border:1px solid var(--blanc-20);
+  padding:6px 10px;cursor:pointer;opacity:.55}
+.seg button[aria-pressed="true"]{opacity:1;border-color:var(--blanc)}
+.regles{margin:0;padding-left:18px;color:var(--blanc-50);line-height:1.7;font-size:12px}
+.regles b{color:var(--blanc);font-weight:500}
+@media (prefers-reduced-motion:reduce){.consigne,.verdict .suite{animation:none}}
+</style>
+
+<div class="page">
+  <div>
+    <div class="eyebrow">Prototype · La Lande · le Verger Noir</div>
+    <h1>L'Épouvantail</h1>
+    <p class="intro">Essai du geste avant de l'écrire dans le jeu. Garde le doigt (ou le clic) appuyé : c'est garder les yeux sur lui pendant que tu recules entre les rangs.</p>
+  </div>
+
+  <div class="frame" id="frame">
+    <div class="jeu" id="jeu">
+      <canvas id="c" width="130" height="166"></canvas>
+      <div class="tentation" id="tentation" hidden></div>
+      <div class="consigne" id="consigne" hidden>Garde les yeux sur lui — maintiens</div>
+      <div class="verdict" id="verdict" hidden>
+        <div class="mot" id="vMot"></div>
+        <div class="ligne" id="vLigne"></div>
+        <div class="suite">Touche pour recommencer</div>
+      </div>
+    </div>
+    <div class="recit" id="recit">
+      <p>Entre les rangs, un épouvantail. Il n'y a pas un oiseau à effrayer dans ce verger. Sa tête pend sur le côté, comme s'il dormait. Pour sortir, il faut passer devant lui.</p>
+      <div class="ctas">
+        <button class="cta" id="bTraverser">Traverser les rangs <span class="tag">INSTINCT</span></button>
+        <button class="cta" id="bMiroir" hidden>Le garder dans le miroir</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="reglages" aria-label="Réglages du prototype">
+    <h2>Réglages de l'essai</h2>
+    <div class="ligne-r"><span>Instinct du héros</span>
+      <div class="seg" id="segInstinct">
+        <button data-v="20" aria-pressed="false">bas</button>
+        <button data-v="16" aria-pressed="true">moyen</button>
+        <button data-v="12" aria-pressed="false">haut</button>
+      </div>
+    </div>
+    <div class="ligne-r"><span>Porte le Miroir fêlé</span>
+      <div class="seg" id="segMiroir">
+        <button data-v="0" aria-pressed="true">non</button>
+        <button data-v="1" aria-pressed="false">oui</button>
+      </div>
+    </div>
+    <h2>Les règles testées</h2>
+    <ul class="regles">
+      <li><b>Appuyé</b> : tu recules d'un pas à la fois, il rapetisse. Il ne bouge jamais sous ton regard.</li>
+      <li><b>Tu lâches</b> : l'image saute, il est plus près et sa tête s'est relevée vers toi.</li>
+      <li><b>Deuxième lâcher</b> (ou rester lâché plus d'une seconde) : il est sur toi. Blessure.</li>
+      <li><b>Des phrases</b> essaient de te faire regarder ailleurs. Rien ne t'oblige à lâcher.</li>
+      <li><b>L'Instinct</b> règle le temps à tenir : environ 6 s (bas), 5 s (moyen), 4 s (haut).</li>
+      <li><b>Avec le Miroir fêlé</b>, une option sans geste et sans risque apparaît.</li>
+    </ul>
+  </section>
+</div>
+
+<script>
+(() => {
+  const W = 130, H = 166, HOR = 112, VPX = 65, F = 58, CAMH = 0.3, L = 1.7;
+  const TICK = 320;                 // un pas = un palier, jamais une interpolation
+  const X_FIN = 11, X_DEPART = 3.0; // le bout des rangs, en rangs depuis l'épouvantail
+  const cv = document.getElementById("c"), g = cv.getContext("2d");
+  const $ = id => document.getElementById(id);
+  const reduit = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const ORANGE = "#e0632a", CHARBON = "#1c1a16", BLANC = "#ffffff";
+
+  let N = 16, miroir = false;
+  let phase, xp, xs, tete, lachers, tenu, pasAcc, lacheDepuis, secousse, tentations, tentationFin, ptsDernier;
+
+  // bruit stable (la matière ne scintille pas)
+  const hash = (a, b) => { let h = (a * 374761393 + b * 668265263) | 0; h = (h ^ (h >>> 13)) * 1274126177; return ((h ^ (h >>> 16)) >>> 0) / 4294967295; };
+  const B4 = [[0,8,2,10],[12,4,14,6],[3,11,1,9],[15,7,13,5]];
+  const bayer = (x, y) => (B4[y & 3][x & 3] + .5) / 16;
+  const px = (x, y, c) => { if (x < 0 || y < 0 || x >= W || y >= H) return; g.fillStyle = c; g.fillRect(x | 0, y | 0, 1, 1); };
+  const rect = (x, y, w, h, c) => { g.fillStyle = c; g.fillRect(Math.round(x), Math.round(y), Math.max(1, Math.round(w)), Math.max(1, Math.round(h))); };
+
+  function ligne(x0, y0, x1, y1, c) {
+    x0 = Math.round(x0); y0 = Math.round(y0); x1 = Math.round(x1); y1 = Math.round(y1);
+    const dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+    let e = dx + dy;
+    for (;;) { px(x0, y0, c); if (x0 === x1 && y0 === y1) break; const e2 = 2 * e; if (e2 >= dy) { e += dy; x0 += sx; } if (e2 <= dx) { e += dx; y0 += sy; } }
+  }
+
+  function fond() {
+    g.fillStyle = ORANGE; g.fillRect(0, 0, W, HOR);
+    g.fillStyle = CHARBON; g.fillRect(0, HOR, W, H - HOR);
+    // brume au ras de l'horizon : densité de charbon croissante, jamais un dégradé
+    for (let y = HOR - 10; y < HOR; y++) {
+      const d = Math.pow((y - (HOR - 10)) / 10, 2) * .5;
+      for (let x = 0; x < W; x++) if (bayer(x, y) < d && hash(x, y) < .8) px(x, y, CHARBON);
+    }
+    // la terre : quelques braises de lumière qui s'éteignent vers le bas
+    for (let y = HOR; y < H; y++) {
+      const d = .09 * Math.pow(1 - (y - HOR) / (H - HOR), 2.4);
+      for (let x = 0; x < W; x++) if (hash(x * 3, y * 7) < d * .6) px(x, y, ORANGE);
+    }
+  }
+
+  function arbre(i, cote) {
+    const d = xp - i;
+    if (d < 0.32) return;
+    const s = F / d, base = HOR + CAMH * s, sx = VPX + cote * L * s, h = 2.3 * s;
+    const tw = Math.max(1, .13 * s);
+    rect(sx - tw / 2, base - h * .62, tw, h * .62 + 1, CHARBON);
+    // branches tordues, graine stable par arbre
+    const nb = 4;
+    for (let k = 0; k < nb; k++) {
+      const a = -Math.PI / 2 + (hash(i * 7 + k, cote + 5) - .5) * 2.2;
+      const len = h * (.28 + hash(i, k * 3 + cote) * .22);
+      const y0 = base - h * (.5 + k * .08);
+      ligne(sx, y0, sx + Math.cos(a) * len, y0 + Math.sin(a) * len, CHARBON);
+    }
+    // feuillage noir, rongé : des trous laissent passer le ciel (les fruits de cendre)
+    const cy = base - h * .78, r = h * .34;
+    for (let y = Math.floor(cy - r); y <= cy + r; y++) for (let x = Math.floor(sx - r * 1.2); x <= sx + r * 1.2; x++) {
+      const nx = (x - sx) / (r * 1.2), ny = (y - cy) / r, q = nx * nx + ny * ny;
+      const bord = .72 + hash(x * 13 + i, y * 17) * .4;
+      if (q < bord && hash(x + i * 31, y + cote * 57) > .18) px(x, y, CHARBON);
+    }
+  }
+
+  function epouvantail() {
+    const d = Math.max(.55, xp - xs), s = F / d;
+    const base = HOR + CAMH * s, h = 2.7 * s, cx = VPX;
+    const haut = base - h, epaule = base - h * .74;
+    rect(cx - Math.max(1, .08 * s) / 2, haut + h * .18, Math.max(1, .08 * s), h * .82, CHARBON);          // le pieu
+    rect(cx - 1.25 * s, epaule, 2.5 * s, Math.max(1, .07 * s), CHARBON);                                  // la traverse
+    // le manteau : trapèze aux bords déchirés
+    const top = epaule, bas = base - h * .3;
+    for (let y = Math.floor(top); y <= bas; y++) {
+      const t = (y - top) / Math.max(1, bas - top);
+      const demi = (.42 + t * .18) * s;
+      for (let x = Math.floor(cx - demi); x <= cx + demi; x++) px(x, y, CHARBON);
+    }
+    // lambeaux qui pendent, longueur stable
+    for (let k = -5; k <= 5; k++) {
+      const x = cx + k * .11 * s, len = (.05 + hash(k + 20, 3) * .22) * h;
+      rect(x, bas, Math.max(1, .06 * s), len, CHARBON);
+    }
+    // manches effilochées au bout des bras
+    for (const c of [-1, 1]) {
+      const bx = cx + c * 1.2 * s;
+      for (let k = 0; k < 4; k++) rect(bx + c * k * .05 * s, epaule, Math.max(1, .05 * s), (.12 + hash(k, c + 9) * .2) * h, CHARBON);
+    }
+    // le miroir fêlé pendu à une ficelle, au bras droit
+    const mx = cx + .95 * s, my = epaule + .28 * h;
+    ligne(mx, epaule, mx, my, CHARBON);
+    const ms = Math.max(1, Math.round(.1 * s));
+    rect(mx - ms / 2, my, ms, ms, BLANC);
+    // la tête : un sac
+    const r = Math.max(2, .3 * s);
+    const hx = tete === 0 ? cx + .16 * s : cx, hy = tete === 0 ? haut + r * 1.1 : haut + r * .6;
+    for (let y = Math.floor(hy - r); y <= hy + r; y++) for (let x = Math.floor(hx - r); x <= hx + r; x++) {
+      const q = ((x - hx) ** 2 + (y - hy) ** 2) / (r * r);
+      if (q < .95 + hash(x, y) * .12) px(x, y, CHARBON);
+    }
+    // le chapeau
+    rect(hx - r * 1.35, hy - r * .9, r * 2.7, Math.max(1, .06 * s), CHARBON);
+    rect(hx - r * .7, hy - r * 1.6, r * 1.4, r * .75, CHARBON);
+    // les yeux : deux trous qui laissent passer le jour, quand il te regarde
+    if (tete >= 1) {
+      const e = Math.max(1, Math.round(r * .22)), ey = Math.round(hy - r * .05);
+      rect(hx - r * .45 - e / 2, ey, e, e, ORANGE);
+      rect(hx + r * .45 - e / 2, ey, e, e, ORANGE);
+    }
+    return { x0: cx - 1.3 * s, x1: cx + 1.3 * s, y0: hy - r * 1.7, y1: base };
+  }
+
+  function mire(b) {
+    // tes yeux sur lui : quatre coins de pixels blancs autour de sa silhouette
+    const x0 = Math.max(2, Math.round(b.x0) - 2), x1 = Math.min(W - 3, Math.round(b.x1) + 2);
+    const y0 = Math.max(2, Math.round(b.y0) - 2), y1 = Math.min(H - 3, Math.round(b.y1) + 1);
+    const l = 3;
+    for (const [x, y, sx, sy] of [[x0, y0, 1, 1], [x1, y0, -1, 1], [x0, y1, 1, -1], [x1, y1, -1, -1]]) {
+      for (let k = 0; k < l; k++) { px(x + sx * k, y, BLANC); px(x, y + sy * k, BLANC); }
+    }
+  }
+
+  function dessiner() {
+    g.save();
+    if (secousse > 0 && !reduit) g.translate(((secousse & 1) ? 2 : -2), ((secousse & 2) ? 1 : -1));
+    fond();
+    // de loin vers près : les rangs derrière lui, puis ceux entre lui et toi
+    const arbres = [];
+    for (let i = -8; i <= 9; i++) arbres.push(i);
+    arbres.sort((a, b) => a - b);
+    const loin = arbres.filter(i => i < xs), pres = arbres.filter(i => i >= xs);
+    for (const i of loin) { arbre(i, -1); arbre(i, 1); }
+    const b = epouvantail();
+    for (const i of pres) { arbre(i, -1); arbre(i, 1); }
+    if (phase === "tenue") mire(b);
+    g.restore();
+  }
+
+  const TENTATIONS = [
+    "Derrière toi, quelque chose craque.",
+    "Une main effleure ton épaule.",
+    "Quelqu'un dit ton nom, tout près.",
+    "À ta gauche, un fruit tombe. Puis un autre.",
+    "Le vent se lève dans ton dos.",
+  ];
+
+  function afficherTentation(t) {
+    const el = $("tentation");
+    el.textContent = t; el.hidden = false;
+    tentationFin = performance.now() + 1500;
+  }
+
+  function reset() {
+    phase = "arrivee"; xp = X_DEPART; xs = 0; tete = 0; lachers = 0; tenu = false;
+    pasAcc = 0; lacheDepuis = 0; secousse = 0; tentationFin = 0; ptsDernier = performance.now();
+    const pas = [];
+    for (let k = 3; k < N - 1; k++) pas.push(k);
+    for (let k = pas.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [pas[k], pas[j]] = [pas[j], pas[k]]; }
+    tentations = new Map(pas.slice(0, 3).map((p, i) => [p, TENTATIONS[(Math.floor(Math.random() * 5) + i) % 5]]));
+    $("recit").hidden = false; $("consigne").hidden = true; $("verdict").hidden = true; $("tentation").hidden = true;
+    $("bMiroir").hidden = !miroir;
+    dessiner();
+  }
+
+  function ouvrirGeste() {
+    phase = "attente"; $("recit").hidden = true; $("consigne").hidden = false; dessiner();
+  }
+
+  function finir(ok, ligneTxt) {
+    phase = ok ? "reussi" : "rate";
+    $("consigne").hidden = true; $("tentation").hidden = true;
+    $("vMot").textContent = ok ? "RÉUSSI" : "MANQUÉ";
+    $("vMot").className = "mot " + (ok ? "ok" : "ko");
+    $("vLigne").textContent = ligneTxt;
+    $("verdict").hidden = false;
+    dessiner();
+  }
+
+  function lacher() {
+    if (phase !== "tenue") return;
+    tenu = false; lachers++;
+    if (lachers >= 2) { attrape(); return; }
+    phase = "lache"; lacheDepuis = performance.now();
+    xs += (xp - xs) * .5; tete = 1; secousse = 6;
+    afficherTentation("Il s'est tourné.");
+    dessiner();
+  }
+
+  function attrape() {
+    xs = xp - .62; tete = 2; secousse = 10; phase = "rate";
+    dessiner();
+    setTimeout(() => finir(false, "Il est sur toi. Blessure : la santé baisse."), 520);
+  }
+
+  function appuyer(e) {
+    if (phase === "arrivee") return;
+    if (phase === "reussi" || phase === "rate") { if (phase === "rate" && secousse > 0) return; reset(); return; }
+    e.preventDefault();
+    tenu = true;
+    if (phase === "attente" || phase === "lache") { phase = "tenue"; pasAcc = 0; dessiner(); }
+  }
+
+  const jeu = $("jeu");
+  jeu.addEventListener("pointerdown", appuyer);
+  addEventListener("pointerup", lacher);
+  addEventListener("pointercancel", lacher);
+  jeu.addEventListener("contextmenu", e => e.preventDefault());
+
+  $("bTraverser").onclick = ouvrirGeste;
+  $("bMiroir").onclick = () => {
+    $("recit").hidden = true;
+    xp = X_FIN; tete = 0;
+    finir(true, "Tu avances en le gardant dans le miroir. Il ne bouge pas.");
+  };
+
+  function boucle(t) {
+    const dt = t - ptsDernier; ptsDernier = t;
+    if (tentationFin && t > tentationFin && phase !== "rate") { $("tentation").hidden = true; tentationFin = 0; }
+    if (secousse > 0) { secousse--; dessiner(); }
+    if (phase === "tenue") {
+      pasAcc += dt;
+      while (pasAcc >= TICK && phase === "tenue") {
+        pasAcc -= TICK;
+        xp += (X_FIN - X_DEPART) / N;
+        const pasN = Math.round((xp - X_DEPART) / ((X_FIN - X_DEPART) / N));
+        if (tentations.has(pasN)) afficherTentation(tentations.get(pasN));
+        if (xp >= X_FIN - 1e-6) { xp = X_FIN; finir(true, "Tu sors des rangs. Il n'a pas bougé."); break; }
+        dessiner();
+      }
+    } else if (phase === "lache" && t - lacheDepuis > 1000) {
+      attrape();
+    }
+    requestAnimationFrame(boucle);
+  }
+
+  function seg(id, fn) {
+    const el = $(id);
+    el.addEventListener("click", e => {
+      const b = e.target.closest("button"); if (!b) return;
+      el.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
+      fn(b.dataset.v); reset();
+    });
+  }
+  seg("segInstinct", v => { N = +v; });
+  seg("segMiroir", v => { miroir = v === "1"; });
+
+  reset();
+  requestAnimationFrame(boucle);
+})();
+</script>
