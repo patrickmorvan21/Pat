@@ -200,6 +200,10 @@ async function boutons() {
 
 async function pretAChoisir() {
   return page.evaluate(() => {
+    // ⚠️ La RÉVÉLATION (et tout overlay plein cadre) se monte PAR-DESSUS la
+    // scène, dont la barre de choix reste visible dessous : cliquer ses boutons
+    // tombe sur l'overlay et expire (25/09). Tant qu'il est là, on tape.
+    if (document.querySelector("[data-revelation]")) return false;
     const b = document.querySelector(".choices-bar");
     return Boolean(b) && getComputedStyle(b).display !== "none";
   });
