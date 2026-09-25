@@ -328,7 +328,7 @@ const CAT = {
   // blanc pour ne pas se confondre avec un lieu ou une rencontre proposés.
   trajet:     { nom:"Transitions de lieu (proposées)", c:"#ffffff", a:.9, r:3.9, ordre:6.5, creux:1 },
 };
-const LIENS = { appartient:.055, contexte:.045, suite:.16, sortie:.13, variante:.10 };
+const LIENS = { appartient:.055, contexte:.045, suite:.16, sortie:.13, variante:.10, trajet:.42 };
 
 const toile = document.getElementById("toile"), ctx = toile.getContext("2d");
 const bulle = document.getElementById("infobulle");
@@ -499,7 +499,7 @@ function batirGrappes() {
     // ni grappe (le carton de fin d'étape non écrite) — il appartient à
     // l'environnement, pas à un de ses lieux.
     const passages = gr.membres.filter(x => x.role === "passage"
-      || (!estLieuDeGroupe(x) && !pris.has(x.id) && x.cat !== "transition"));
+      || (!estLieuDeGroupe(x) && !pris.has(x.id) && x.cat !== "transition" && x.cat !== "trajet"));
     const marches = gr.membres.filter(x => x.cat === "transition" && !pris.has(x.id));
     const rT = marches.length ? 8.5 * Math.sqrt(marches.length) : 0;
     const np = passages.length;
@@ -561,6 +561,48 @@ function batirGrappes() {
       const a = i * OR, d = 8.5 * Math.sqrt(i + .5);
       slots.set(x.id, [Math.cos(a) * d, Math.sin(a) * d]);
     });
+
+    // LES TRANSITIONS DE LIEU (25/09) : posées SUR le chemin qu'elles
+    // représentent, pas en satellites d'un lieu — sinon on ne voit ni d'où
+    // elles viennent ni où elles mènent. Une place par TYPE, calculée depuis
+    // les lieux qu'elles relient.
+    const trajets = gr.membres.filter(x => x.cat === "trajet");
+    if (trajets.length) {
+      const liesA = (id, sens) => L.filter(l => l.t === "trajet" && (sens ? l.a === id : l.b === id))
+        .map(l => sens ? l.b : l.a);
+      const posLieu = id => slots.get(id);
+      const entree = tete[0] ? slots.get(tete[0].id) : [-rl, 0];
+      const croisee = [entree[0] * .32, entree[1] * .32];
+      const mi = (p, q, t) => [p[0] + (q[0] - p[0]) * t, p[1] + (q[1] - p[1]) * t];
+      const norme = p => { const d = Math.hypot(p[0], p[1]) || 1; return [p[0] / d, p[1] / d]; };
+      const place = new Map();
+      for (const t of trajets) {
+        const avant = liesA(t.id, false), apres = liesA(t.id, true);
+        const lieuAvant = avant.map(posLieu).find(Boolean), lieuApres = apres.map(posLieu).find(Boolean);
+        switch (t.trajetType) {
+          case "croisee": place.set(t.id, croisee); break;
+          case "depart":  place.set(t.id, mi(entree, croisee, .5)); break;
+          case "rappel":  { const p = mi(entree, croisee, .22); place.set(t.id, [p[0], p[1] - 26]); break; }
+          case "approche": if (lieuApres) place.set(t.id, mi(croisee, lieuApres, .55)); break;
+          // la sortie : au bord droit, vers l'environnement suivant, entre deux lieux
+          case "sortie":   place.set(t.id, [rl * .8, rl * .42]); break;
+          case "vers_rencontre": {
+            const r = apres.map(id => slots.get(id)).find(Boolean);
+            if (lieuAvant && r) place.set(t.id, mi(lieuAvant, r, .5));
+            else if (lieuAvant) { const u = norme(lieuAvant); place.set(t.id, [lieuAvant[0] + u[0] * 26, lieuAvant[1] + u[1] * 26]); }
+            break;
+          }
+        }
+      }
+      // ce qui dépend d'une autre transition (la Bête, entre l'approche et le lieu)
+      for (const t of trajets) {
+        if (place.has(t.id)) continue;
+        const bouts = [...liesA(t.id, false), ...liesA(t.id, true)].map(id => place.get(id) || slots.get(id)).filter(Boolean);
+        if (bouts.length >= 2) { const p = mi(bouts[0], bouts[1], .5), u = norme([-(bouts[1][1] - bouts[0][1]), bouts[1][0] - bouts[0][0]]); place.set(t.id, [p[0] + u[0] * 14, p[1] + u[1] * 14]); }
+        else place.set(t.id, croisee);
+      }
+      place.forEach((p, id) => slots.set(id, p));
+    }
 
     // les membres, recalculés : tout ce qui a une place ici
     gr.membres = [...slots.keys()].map(id => parId.get(id)).filter(Boolean);
@@ -997,12 +1039,23 @@ function dessiner() {
     // la carte : il ne se montre qu'au survol de l'un des deux bouts.
     if (ANCRES && !l.na.groupe !== !l.nb.groupe && !(focus && (l.a === focus.id || l.b === focus.id))) continue;
     const faible = l.t === "appartient" || l.t === "contexte";
+    const trajet = l.t === "trajet";
     if (faible && !opt.liensFaibles) continue;
     let o = LIENS[l.t] || .1;
     if (focus) o = (l.a === focus.id || l.b === focus.id) ? .55 : o * .22;
     ctx.strokeStyle = "rgba(255,255,255," + o + ")";
     ctx.lineWidth = (focus && (l.a === focus.id || l.b === focus.id)) ? 1.2 / vue.k : .8 / vue.k;
     ctx.beginPath(); ctx.moveTo(l.na.x, l.na.y); ctx.lineTo(l.nb.x, l.nb.y); ctx.stroke();
+    if (trajet) {
+      // une flèche au milieu du trait : le SENS de la marche se lit sans survol
+      const dx = l.nb.x - l.na.x, dy = l.nb.y - l.na.y, d = Math.hypot(dx, dy) || 1;
+      const ux = dx / d, uy = dy / d, mx = l.na.x + dx * .55, my = l.na.y + dy * .55, t = 4.5 / vue.k;
+      ctx.beginPath();
+      ctx.moveTo(mx + ux * t, my + uy * t);
+      ctx.lineTo(mx - ux * t - uy * t * .8, my - uy * t + ux * t * .8);
+      ctx.lineTo(mx - ux * t + uy * t * .8, my - uy * t - ux * t * .8);
+      ctx.closePath(); ctx.fillStyle = ctx.strokeStyle; ctx.fill();
+    }
   }
 
   for (const n of N) {
@@ -1060,6 +1113,7 @@ function dessiner() {
     const proche = focus && proches.has(n.id);
     const bete = n.cat === "rencontre" || (n.cat === "propose" && !lieuPropose);
     const montre = (opt.noms && estLieu && vue.k > .38) || (vue.k > 2.4 && n.cat !== "transition")
+                || (n.cat === "trajet" && vue.k > .75)
                 || (bete && vue.k > 1.05) || n === focus || (proche && vue.k > .8);
     if (!montre) continue;
     const prio = n === focus ? -3 : proche ? -2
