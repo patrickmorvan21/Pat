@@ -526,13 +526,12 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/scene_mare_aux_regards_a.png",
+      "illustration": "scene_landes_tourbiere_a_b.png",
       "portrait_requis": false,
       "x": 180,
       "y": 1100,
       "environnement": "lande",
       "role": "pool",
-      "image_a_produire": "scene_landes_tourbiere_a",
       "couches": [
         "Une eau noire sous une brume à hauteur de genou, et une file de piquets qui la traverse. Entre les piquets, rien ne tient. Sur les piquets, si.",
         "Les piquets ne sont pas tous du même bois. Les plus anciens sont noirs et lisses ; les derniers plantés portent encore leur écorce. Quelqu'un continue la file, vers le sud.",
@@ -597,13 +596,12 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/scene_landes_liaison_plateau_d.png",
+      "illustration": "scene_landes_cercle_qui_descend_a_b.png",
       "portrait_requis": false,
       "x": 700,
       "y": 300,
       "environnement": "lande",
       "role": "pool",
-      "image_a_produire": "scene_landes_cercle_qui_descend_a",
       "couches": [
         "Sur une butte pelée, la forme vide d'un cercle. Les pierres levées qui le faisaient sont parties vers le sud, chacune d'une dizaine de pas.",
         "Derrière chaque pierre, un sillon frais. Au pied de chacune, une motte collée côté sud. Elles ne glissent pas : elles avancent, un pouce par nuit.",
@@ -1127,14 +1125,13 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "monstre_landes_epouvantail_tourne_a_d.png",
       "portrait_requis": false,
       "environnement": "lande",
       "hostile": true,
       "nature": "surnaturel",
       "regle": "Lui tourner le dos le fait avancer. On ne s'en éloigne qu'en le regardant.",
       "preparation": "Qui a marché avec le Marcheur à rebours passe à reculons, les yeux sur lui.",
-      "image_a_produire": "monstre_landes_epouvantail_tourne_a",
       "note_25_09": "Vit dans le Verger Noir (décision Patrick, 25/09) — plus une rencontre de passage.",
       "en_jeu_le": "2026-09-25"
     },
@@ -1186,14 +1183,13 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "monstre_landes_enlises_a_c.png",
       "portrait_requis": true,
       "environnement": "lande",
       "hostile": true,
       "nature": "physique",
       "regle": "Ils ne tirent que ce qui s'arrête. Traverser, c'est ne jamais poser deux fois le pied au même endroit.",
       "preparation": "Les piquets de passage plantés par ceux qui ont réussi : qui les a lus sait où poser le pied.",
-      "image_a_produire": "monstre_landes_enlises_a",
       "en_jeu_le": "2026-09-25"
     },
     {
@@ -1764,9 +1760,8 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
-      "portrait_requis": false,
-      "image_a_produire": "objet_landes_serpe_epoux_a"
+      "illustration": "objet_landes_serpe_epoux_a_a.png",
+      "portrait_requis": false
     },
     {
       "id": "anneau_de_l_enlise",
@@ -1780,9 +1775,8 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
-      "portrait_requis": false,
-      "image_a_produire": "objet_landes_anneau_enlise_a"
+      "illustration": "objet_landes_anneau_enlise_a_d.png",
+      "portrait_requis": false
     }
   ],
   "scenes": [
@@ -3163,7 +3157,7 @@
       ],
       "description": "Événement du Verger : le fruit qui tombe encore chaud.",
       "prompt_image": "a single fallen fruit lying in the dirt of an orchard row, picked up in a bare hand, its skin ashen and still warm. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_verger_souche_a_c.png"
+      "illustration": "monstre_landes_epouvantail_tourne_a_d.png"
     },
     {
       "id": "epoux-1",
@@ -3597,7 +3591,7 @@
       "mene_a": [
         "tourbiere-2"
       ],
-      "illustration": "scene_mare_aux_regards_a.png",
+      "illustration": "scene_landes_tourbiere_a_b.png",
       "description": "Arrivée à la Tourbière : une eau noire sous la brume, une file de piquets qui la traverse."
     },
     {
@@ -3608,7 +3602,7 @@
       "nom": "Les Enlisés",
       "lieu": "tourbiere",
       "mene_a": [],
-      "illustration": "scene_mare_eau_reflet_v2_b.png",
+      "illustration": "monstre_landes_enlises_a_c.png",
       "description": "Les Enlisés : des mains sous la surface, qui tirent ce qui s'arrête."
     },
     {
@@ -3621,7 +3615,7 @@
       "mene_a": [
         "cercle-qui-descend-2"
       ],
-      "illustration": "scene_landes_liaison_plateau_d.png",
+      "illustration": "scene_landes_cercle_qui_descend_a_b.png",
       "description": "Arrivée au Cercle qui Descend : la forme vide d'un cercle, les pierres parties vers le sud."
     },
     {
@@ -3632,7 +3626,7 @@
       "nom": "Le Cercle qui Descend — la dalle",
       "lieu": "cercle_qui_descend",
       "mene_a": [],
-      "illustration": "scene_landes_liaison_plateau_d.png",
+      "illustration": "scene_landes_cercle_qui_descend_a_b.png",
       "description": "La dalle du centre, à nu, et ce qu'elle dit de l'endroit où le cercle se tenait."
     }
   ],
@@ -3686,7 +3680,7 @@
           ],
           "texte": "Tu tournes le dos à la pierre. Devant, la lande à perte de vue — et, tout au bout, un trait sombre qui monte du sol. On le prendrait pour une fumée, s'il bougeait.",
           "image_montre": "La lande vue de dos à la Borne, immense, et sur l'horizon un mince trait vertical sombre : la colonne de cordes, minuscule. C'est l'image qui dit le but du jeu.",
-          "image_a_produire": "scene_lande_colonne_au_loin_a"
+          "image": "scene_lande_colonne_au_loin_a_b.png"
         },
         {
           "id": "t_lande_hesitant",
@@ -3754,7 +3748,7 @@
           ],
           "texte": "Au loin, des rangées d'arbres noirs, trop droites pour une lande. Personne n'a planté ça pour manger.",
           "image_montre": "Des rangées d'arbres noirs parfaitement alignées sur l'horizon, comme une troupe qui attend, sous un ciel bas.",
-          "image_a_produire": "scene_lande_approche_verger_a"
+          "image": "scene_lande_approche_verger_a_d.png"
         },
         {
           "id": "t_lande_vers_tourbiere",
@@ -3768,7 +3762,7 @@
           ],
           "texte": "Le sol devient mou sous tes pas. Une brume basse, à hauteur de genou, et dessous l'eau noire qui renvoie le ciel.",
           "image_montre": "Une étendue plate et noire, des touffes de joncs, une nappe de brume au ras du sol.",
-          "image_a_produire": "scene_lande_approche_tourbiere_a"
+          "image": "scene_lande_approche_tourbiere_a_d.png"
         },
         {
           "id": "t_lande_vers_cercle",
@@ -3782,7 +3776,7 @@
           ],
           "texte": "Des pierres levées, en file, toutes penchées vers le sud. Derrière chacune, un sillon dans la bruyère, comme si elles avaient marché.",
           "image_montre": "Une file de menhirs penchés dans le même sens, chacun suivi d'un long sillon de terre retournée.",
-          "image_a_produire": "scene_lande_approche_cercle_a"
+          "image": "scene_lande_approche_cercle_a_d.png"
         },
         {
           "id": "t_lande_bete",

@@ -47,8 +47,8 @@
   "petit-tribunal",
   "meute-grise-1"
  ],
- "genere": "2026-09-25T19:02:52Z",
- "commit": "22e48e7",
+ "genere": "2026-09-25T20:38:51Z",
+ "commit": "6a66a58",
  "zones": [
   {
    "id": "landes",
@@ -511,7 +511,7 @@
     {
      "id": "tourbiere",
      "nom": "La Tourbière",
-     "illustration": "scene_mare_aux_regards_a.png",
+     "illustration": "scene_landes_tourbiere_a_b.png",
      "x": 180,
      "y": 1100,
      "note": "Une étendue noire et spongieuse à l'ouest du plateau. Sous l'eau, des visages qui ne pourrissent pas : ceux qui ont voulu couper au sud par le marais. Le raccourci que tout le monde a essayé une fois.",
@@ -571,7 +571,7 @@
     {
      "id": "cercle_qui_descend",
      "nom": "Le Cercle qui Descend",
-     "illustration": "scene_landes_liaison_plateau_d.png",
+     "illustration": "scene_landes_cercle_qui_descend_a_b.png",
      "x": 700,
      "y": 300,
      "note": "Un cercle de pierres levées qui n'en est plus un : les menhirs ont glissé vers le sud, chacun a laissé un sillon dans la bruyère derrière lui. Même les pierres entendent l'Appel. Remplace la Mare aux Regards (décision Patrick, 25/09).",
@@ -6844,9 +6844,9 @@
    "lieu": "verger_noir",
    "typeScene": "moment",
    "image": {
-    "fichier": "scene_verger_souche_a_c.png",
-    "hash": "b329283c",
-    "taille": 15733,
+    "fichier": "monstre_landes_epouvantail_tourne_a_d.png",
+    "hash": "f680148a",
+    "taille": 25819,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -7125,9 +7125,9 @@
    "lieu": "tourbiere",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_mare_aux_regards_a.png",
-    "hash": "2552346e",
-    "taille": 17038,
+    "fichier": "scene_landes_tourbiere_a_b.png",
+    "hash": "08be4eaf",
+    "taille": 10660,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -7260,9 +7260,9 @@
    "lieu": "tourbiere",
    "typeScene": "combat",
    "image": {
-    "fichier": "scene_mare_eau_reflet_v2_b.png",
-    "hash": "a3a22e02",
-    "taille": 14472,
+    "fichier": "monstre_landes_enlises_a_c.png",
+    "hash": "796e2cd6",
+    "taille": 20494,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -7355,9 +7355,9 @@
    "lieu": "cercle_qui_descend",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_landes_liaison_plateau_d.png",
-    "hash": "4d03ba9f",
-    "taille": 28299,
+    "fichier": "scene_landes_cercle_qui_descend_a_b.png",
+    "hash": "87d6143e",
+    "taille": 24909,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -7402,13 +7402,13 @@
    "lieu": "cercle_qui_descend",
    "typeScene": "evenement",
    "image": {
-    "fichier": "scene_landes_liaison_plateau_d.png",
-    "hash": "4d03ba9f",
-    "taille": 28299,
+    "fichier": "scene_landes_cercle_qui_descend_a_b.png",
+    "hash": "87d6143e",
+    "taille": 24909,
     "recent": false,
     "existe": true,
-    "statut": "dediee",
-    "herite": ""
+    "statut": "heritee",
+    "herite": "cercle-qui-descend"
    },
    "description": "",
    "promptImage": "",
@@ -8675,7 +8675,7 @@
       "fichier": "monstre_salines_boeuf_de_sel_encre_c.png",
       "hash": "c0d81139",
       "taille": 12261,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "heritee",
       "herite": "cour-aux-rails-2"
@@ -9523,7 +9523,7 @@
     "fichier": "monstre_salines_encroute_radeau_encre_c.png",
     "hash": "93521057",
     "taille": 11671,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9741,7 +9741,7 @@
     "fichier": "monstre_salines_vermisseaux_a_v2_d.png",
     "hash": "296a2f23",
     "taille": 18822,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9809,7 +9809,7 @@
     "fichier": "scene_salines_passerelle_a_b.png",
     "hash": "2f34bc31",
     "taille": 20116,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9886,7 +9886,7 @@
     "fichier": "monstre_salines_ver_dessous_a_v2_c.png",
     "hash": "a3812471",
     "taille": 17851,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -9946,7 +9946,7 @@
     "fichier": "scene_salines_perchoir_heron_a_c.png",
     "hash": "4f32af91",
     "taille": 16407,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10006,7 +10006,7 @@
     "fichier": "scene_salines_perchoir_heron_a_c.png",
     "hash": "4f32af91",
     "taille": 16407,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10075,7 +10075,7 @@
     "fichier": "monstre_salines_lechards_a_b.png",
     "hash": "400b82c5",
     "taille": 14812,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10135,7 +10135,7 @@
     "fichier": "scene_salines_lechards_a_d.png",
     "hash": "8e30d008",
     "taille": 21363,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10273,7 +10273,7 @@
     "fichier": "scene_salines_declares_a_b.png",
     "hash": "d2cb42c6",
     "taille": 20476,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10330,7 +10330,7 @@
     "fichier": "scene_salines_cuve_fendue_a_d.png",
     "hash": "bbb91e77",
     "taille": 21948,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10409,7 +10409,7 @@
     "fichier": "monstre_salines_sauteurs_a_b.png",
     "hash": "15448cf8",
     "taille": 27181,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10469,7 +10469,7 @@
     "fichier": "scene_salines_cuve_fendue_a_d.png",
     "hash": "bbb91e77",
     "taille": 21948,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "heritee",
     "herite": "cuve-fendue"
@@ -10553,7 +10553,7 @@
     "fichier": "scene_salines_noria_a_d.png",
     "hash": "d7b30db8",
     "taille": 17544,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10632,7 +10632,7 @@
     "fichier": "monstre_salines_sauteurs_a_b.png",
     "hash": "15448cf8",
     "taille": 27181,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10695,7 +10695,7 @@
     "fichier": "scene_salines_guerite_a_b.png",
     "hash": "cc92c40e",
     "taille": 19186,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -10766,7 +10766,7 @@
     "fichier": "scene_salines_guerite_a_b.png",
     "hash": "cc92c40e",
     "taille": 19186,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "heritee",
     "herite": "guerite"
@@ -10965,7 +10965,16 @@
       "funeste": "1 naturel. La lame glisse et emporte une bande de peau avec le sel. Elle la regarde, la plie, et la range dans un pli de sa robe. « Celle-là est à moi. » Le sel, lui, est resté. ♦ −2"
      },
      "nature": "physique",
-     "soif": -1
+     "soif": -1,
+     "image": {
+      "fichier": "monstre_salines_saigneuse_a_a.png",
+      "hash": "d3ac63fa",
+      "taille": 11932,
+      "recent": false,
+      "existe": true,
+      "statut": "dediee",
+      "herite": ""
+     }
     },
     {
      "id": "regarder-le-nid",
@@ -11217,7 +11226,7 @@
     "fichier": "scene_salines_salines_placeholder_a.png",
     "hash": "6aad2dbb",
     "taille": 95106,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -11472,7 +11481,7 @@
     "fichier": "monstre_salines_boeuf_de_sel_encre_c.png",
     "hash": "c0d81139",
     "taille": 12261,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -12261,7 +12270,7 @@
     "fichier": "scene_salines_salines_placeholder_a.png",
     "hash": "6aad2dbb",
     "taille": 95106,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -12296,7 +12305,7 @@
     "fichier": "scene_salines_salines_placeholder_a.png",
     "hash": "6aad2dbb",
     "taille": 95106,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -14441,7 +14450,15 @@
    "hash": "239daa3e",
    "taille": 2768,
    "recent": false,
-   "groupe": "brancher",
+   "groupe": "doublon",
+   "racine": "mare_eau_reflet"
+  },
+  {
+   "fichier": "scene_mare_eau_reflet_v2_b.png",
+   "hash": "a3a22e02",
+   "taille": 14472,
+   "recent": false,
+   "groupe": "doublon",
    "racine": "mare_eau_reflet"
   },
   {
@@ -14739,6 +14756,14 @@
    "recent": false,
    "groupe": "attend",
    "racine": "verger_noir"
+  },
+  {
+   "fichier": "scene_verger_souche_a_c.png",
+   "hash": "b329283c",
+   "taille": 15733,
+   "recent": false,
+   "groupe": "autre",
+   "racine": "verger_souche"
   }
  ],
  "reliques": [
@@ -16097,10 +16122,10 @@
   "scenes": 166,
   "pointsInteret": 0,
   "choix": 500,
-  "illustrations": 521,
+  "illustrations": 532,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 229,
+  "reserve": 231,
   "reliques": 10,
   "faits": 3,
   "perceptions": 21,
@@ -16109,7 +16134,7 @@
   "besoins": 0,
   "transitions": 64,
   "ecransDeMarche": 11,
-  "interactions": 38,
+  "interactions": 39,
   "aRefaire": 18,
   "familiarite": 36
  }

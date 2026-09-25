@@ -627,7 +627,7 @@ HORS_CABLAGE = {
     # Le bestiaire du chantier (19/09) : deux rencontres vivent DANS un écran
     # existant et se posent sur le choix qui les joue.
     "monstre_salines_compteur_a": "élément observé « L'aider à compter » (Choice.illustration, entrepot)",
-    "monstre_salines_saigneuse_a": "élément observé « Tendre les bras à la Saigneuse » (Choice.illustration, puits) — à câbler à l'import",
+    "monstre_salines_saigneuse_a": "élément observé « Tendre les bras à la Saigneuse » (Choice.illustration, puits-2) — câblée au lot du 25/09",
     # LOT DU 19/09 (Drive → github) — deux images REGARDÉES et REJETÉES
     # (règle du moulin ailé), gardées en réserve sur le disque plutôt que
     # câblées à l'aveugle. Voir CLAUDE.md session 2026-09-20 pour le détail.

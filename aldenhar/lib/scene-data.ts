@@ -7098,7 +7098,7 @@ export const SCENES: Scene[] = [
        ⚠️ Image à produire (`monstre_landes_epouvantail_tourne_a`) — l'allée
        du verger sert en attendant ; le geste, lui, le dessine. */
     id: "verger-noir-2",
-    illustration: "assets/scene_verger_souche_a_c.png",
+    illustration: "assets/monstre_landes_epouvantail_tourne_a_d.png",
     combat: true,
     foe: "epouvantail",
     foeName: "L'Épouvantail Tourné",
@@ -7343,7 +7343,7 @@ export const SCENES: Scene[] = [
        ⚠️ Image à produire (`scene_landes_tourbiere_a`) — l'eau noire de
        l'ancienne Mare sert en attendant : c'est la même matière. */
     id: "tourbiere",
-    illustration: "assets/scene_mare_aux_regards_a.png",
+    illustration: "assets/scene_landes_tourbiere_a_b.png",
     chainNext: "tourbiere-2",
     narration: [
       "Le sol cède à chaque pas, comme une couverture posée sur de l'eau. La tourbière s'étend jusqu'à l'horizon, lisse, piquée de touffes de joncs.",
@@ -7395,7 +7395,7 @@ export const SCENES: Scene[] = [
        blessent (décision Patrick 25/09).
        ⚠️ Image à produire (`monstre_landes_enlises_a`). */
     id: "tourbiere-2",
-    illustration: "assets/scene_mare_eau_reflet_v2_b.png",
+    illustration: "assets/monstre_landes_enlises_a_c.png",
     combat: true,
     foe: "enlises",
     foeName: "Les Enlisés",
@@ -7495,7 +7495,7 @@ export const SCENES: Scene[] = [
        ⚠️ Image à produire (`scene_landes_cercle_qui_descend_a`) — la butte
        aux pierres du plateau sert en attendant. */
     id: "cercle-qui-descend",
-    illustration: "assets/scene_landes_liaison_plateau_d.png",
+    illustration: "assets/scene_landes_cercle_qui_descend_a_b.png",
     chainNext: "cercle-qui-descend-2",
     memoire: "cercle",
     retours: [
@@ -7559,7 +7559,7 @@ export const SCENES: Scene[] = [
   },
   {
     id: "cercle-qui-descend-2",
-    illustration: "assets/scene_landes_liaison_plateau_d.png",
+    illustration: "assets/scene_landes_cercle_qui_descend_a_b.png",
     memoire: "cercle",
     narration: [
       "Le soleil ne bouge pas, mais les ombres des pierres, si. Elles glissent ensemble d'un pouce vers le sud, et reviennent. Comme une respiration.",
@@ -10476,6 +10476,7 @@ export const SCENES: Scene[] = [
            physique, jamais le sel. */
         id: "tendre-les-bras-a-la-saigneuse",
         label: "Tendre les bras à la Saigneuse",
+        illustration: "assets/monstre_salines_saigneuse_a_a.png",
         nature: "physique",
         soif: -1,
         baisseEncroute: 2,
@@ -13794,8 +13795,8 @@ export const LANDE_DEPART =
 export const LANDE_RAPPEL_HESITANT =
   "Derrière toi, l'homme immobile n'a pas bougé. « Tu descends », dit-il sans " +
   "se retourner. « Vous avez tous le même pas, ceux qui descendent. »";
-/** Image du départ — à produire ; la vue de marche sert en attendant. */
-export const LANDE_DEPART_IMAGE = "assets/scene_lande_colonne_au_loin_a.png";
+/** Image du départ (lot validé du 25/09). */
+export const LANDE_DEPART_IMAGE = "assets/scene_lande_colonne_au_loin_a_b.png";
 
 /**
  * LES APPROCHES VUES DE LOIN (transitions de la Lande, 25/09) : une image
@@ -13804,9 +13805,9 @@ export const LANDE_DEPART_IMAGE = "assets/scene_lande_colonne_au_loin_a.png";
  * de marche tant que le fichier n'est pas déposé).
  */
 export const APPROCHE_IMAGE: Record<string, string> = {
-  "verger-noir": "assets/scene_lande_approche_verger_a.png",
-  tourbiere: "assets/scene_lande_approche_tourbiere_a.png",
-  "cercle-qui-descend": "assets/scene_lande_approche_cercle_a.png",
+  "verger-noir": "assets/scene_lande_approche_verger_a_d.png",
+  tourbiere: "assets/scene_lande_approche_tourbiere_a_d.png",
+  "cercle-qui-descend": "assets/scene_lande_approche_cercle_a_d.png",
 };
 
 /**

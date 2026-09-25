@@ -608,6 +608,18 @@ objet_salines_sandales_marche_a=a pair of wooden-soled sandals with greased leat
 objet_salines_oeil_cristallin_a=a single whole human eye turned to white salt crystal, dry and faceted, the pupil a dark pit, resting on its side with a few grains of salt around it, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
 ```
 
+### `serpe-epoux` — `objet_landes_serpe_epoux_a`
+
+```
+objet_landes_serpe_epoux_a=a small curved orchard billhook with a hooked iron blade and a short wooden handle worn smooth and pale by a single hand, the edge freshly sharpened, a thin line of dark ash on the blade, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
+### `anneau-enlise` — `objet_landes_anneau_enlise_a`
+
+```
+objet_landes_anneau_enlise_a=a single plain ring of blackened iron, thick and slightly bent out of round, a crust of dried black peat still clinging to its inner side, resting flat, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
+```
+
 
 ## Ce qui n'a PAS d'image, et pourquoi
 
@@ -693,16 +705,12 @@ Hors câblage :
 - `scene_salines_salines_a` — vue d'établissement : SALINES_IMG (vue de marche des liaisons et fond de secours)
 - `scene_salines_aiguillage_a` — élément observé « Aller au levier » (Choice.illustration, cour-aux-rails)
 - `monstre_salines_compteur_a` — élément observé « L'aider à compter » (Choice.illustration, entrepot)
-- `monstre_salines_saigneuse_a` — élément observé « Tendre les bras à la Saigneuse » (Choice.illustration, puits) — à câbler à l'import
+- `monstre_salines_saigneuse_a` — élément observé « Tendre les bras à la Saigneuse » (Choice.illustration, puits-2) — câblée au lot du 25/09
 - `monstre_salines_rats_a` — REJETÉE — c'est une horde de silhouettes humanoïdes encapuchonnées dans un couloir de couchettes, pas des rats blancs (dortoir-2 reste sur SALINES_IMG)
 - `monstre_salines_petit_porteur_a` — NON TRANCHÉE — la figure livrée est de carrure adulte, chapeau conique large, aucun sac à l'épaule visible, alors que la narration décrit un enfant avec un sac plus gros que lui (petit-porteur reste sur SALINES_IMG en attendant l'arbitrage de Patrick)
 
 
 ## Ce qu'il reste à produire
 
-1 image(s). En attendant, ces écrans servent l'image d'établissement de leur environnement.
-
-| image | écran | environnement |
-|---|---|---|
-| `monstre_salines_saigneuse_a` | `—` | salines |
+Rien : tous les écrans câblés ont leur image sur le disque.
 

@@ -129,6 +129,13 @@ export function hasBesaceRoom(besace: BesaceItem[], slot: BesaceSlot): boolean {
  * soin → actif (heal+cure) ; arme/babiole → passif (petit mod permanent).
  */
 export function normalizeItem(i: BesaceItem): BesaceItem {
+  // Un objet ramassé AVANT que son icône n'existe garde l'icône générique de
+  // son type — la Besace stocke des objets complets, pas des identifiants.
+  // L'icône propre du catalogue lui est rendue au chargement (25/09 : serpe
+  // et anneau de la Lande, ramassés la veille de l'arrivée de leurs icônes).
+  if (!i.illustration && LANDES_OBJETS[i.id]?.illustration) {
+    i = { ...i, illustration: LANDES_OBJETS[i.id].illustration };
+  }
   if (i.slot === "actif" || i.slot === "passif") return i;
   if (i.kind === "soin") return { ...i, slot: "actif", heal: i.heal ?? 0.3, cure: i.cure ?? true };
   const scope = i.kind === "arme" ? "combat" : "all";
@@ -420,16 +427,14 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
   // ——— La Lande (vague 3, 25/09). Deux objets qui n'existaient pas : la
   // serpe que l'Époux laisse à qui le retient (elle sert au Verger, contre
   // l'Épouvantail — outil, pas arme : on ne se bat pas avec) et l'anneau
-  // qu'on arrache aux Enlisés. Icônes à produire (prompts dans
-  // data/images-a-produire-2026-09-25.md) ; l'icône générique de leur type
-  // sert en attendant, jamais une image cassée.
+  // qu'on arrache aux Enlisés. Icônes du lot validé du 25/09.
   "serpe-epoux": {
-    name: "Serpe de l'Époux", rarity: "commun", kind: "arme", slot: "passif",
+    name: "Serpe de l'Époux", illustration: "assets/objet_landes_serpe_epoux_a_a.png", rarity: "commun", kind: "arme", slot: "passif",
     passiveMod: 1, passiveScope: "combat",
     flavor: "Une serpe de verger au manche poli par une seule main. Il te l'a donnée pour que tu coupes ce qui regarde au bout de l'allée.",
   },
   "anneau-enlise": {
-    name: "Anneau de l'Enlisé", rarity: "rare", kind: "babiole", slot: "passif",
+    name: "Anneau de l'Enlisé", illustration: "assets/objet_landes_anneau_enlise_a_d.png", rarity: "rare", kind: "babiole", slot: "passif",
     passiveMod: 1, passiveScope: "all",
     flavor: "Un anneau de fer noirci, arraché à un doigt qui ne voulait pas le rendre. Il est froid, et il le reste.",
   },
