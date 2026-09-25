@@ -661,7 +661,7 @@ export type Choice = {
         pick = crochetage (curseur oscillant) · swipe = le geste lent de la
         cérémonie (INSENSIBLE à l'échec : trop vite = rien, on recommence) ·
         cut = trancher net d'un geste qui TRAVERSE la corde. */
-    engine: "rub" | "hold" | "trace" | "pick" | "swipe" | "cut" | "breath" | "assemble";
+    engine: "rub" | "hold" | "trace" | "pick" | "swipe" | "cut" | "breath" | "assemble" | "epouvantail";
     /**
      * ⚠️ Par défaut un geste ne se joue QU'EN DÉMO (le champ est inerte dans
      * le jeu complet, qui résout le choix par sa voie écrite). `horsDemo`
@@ -1624,6 +1624,53 @@ export const SCENES: Scene[] = [
     id: "hesitant-1",
     illustration: "assets/monstre_hesitant_c_b.png",
     chainNext: "hesitant-2",
+    /* SAVOIR (vague 3, 25/09) : il DÉCRIT l'Appel — des gens qui parlent de
+       toi dans la maison d'à côté. L'avoir entendu, c'est pouvoir le dire à
+       quelqu'un qui porte une croix à la craie (la Femme au Seuil). Il prend
+       le savoir de l'ancienne Mare (retirée) : le détail qui ne s'invente pas
+       n'est plus un reflet en retard, c'est cette voix-là. */
+    savoir: "savoir_appel",
+    /* MÉMOIRE (vague 3) : le monde se souvient de ce qu'on lui a dit. Le
+       héros, lui, ne le reconnaît pas — c'est l'Hésitant qui reconnaît un
+       pas. */
+    memoire: "hesitant",
+    retours: [
+      {
+        si: { dernier: "passe" },
+        narration: [
+          "Il est trois pas plus au sud qu'il ne devrait : l'herbe couchée derrière lui dit qu'il a avancé, puis qu'il s'est arrêté. Ses épaules se raidissent en t'entendant.",
+          "— « Le dernier qui est passé ici m'a dit de passer. Il avait ton pas. » Il ne se retourne pas. « J'ai fait trois pas. Et puis j'ai entendu ce que je laissais derrière. C'était plus fort que devant. »",
+        ],
+      },
+      {
+        si: { dernier: "ramene" },
+        narration: [
+          "Il se retourne dès qu'il t'entend — il t'attendait, et il n'a pas l'air d'un homme qui attend quelqu'un de nouveau.",
+          "— « Quelqu'un m'a ramené au hameau, une fois. Il avait ton pas. Ils m'ont regardé comme un revenant, là-bas. » Il désigne la pierre du menton. « Alors je suis revenu ici. C'est la moitié du chemin, dans les deux sens. »",
+        ],
+      },
+      {
+        si: { dernier: "reste" },
+        narration: [
+          "Il est assis au pied de la borne, dos à la pierre, face au sud. Il ne se relève pas en t'entendant.",
+          "— « Quelqu'un a essayé de me ramener. Il avait ton pas. » Il tapote la pierre à côté de lui. « Depuis je m'assieds. C'est moins fatigant d'hésiter assis. »",
+        ],
+      },
+      {
+        si: { dernier: "menti" },
+        narration: [
+          "Il ne se retourne pas. Il t'a entendu, pourtant — ses épaules l'ont dit, et quelque chose de plus dur que la dernière fois.",
+          "— « Le dernier m'a dit qu'il n'entendait rien. » Un rire bref, sans joie. « Il avait ta voix. Il est descendu quand même. Tu l'entends fort, toi ? Dis la vérité, cette fois. »",
+        ],
+      },
+      {
+        si: { dernier: "parti" },
+        narration: [
+          "Il ne se retourne pas, mais il parle avant que tu arrives à sa hauteur.",
+          "— « Tu vas encore partir sans répondre ? » Pas de reproche. « Le dernier a fait ça. Il avait ton pas. Merci quand même, je lui ai dit. Je te le redis. »",
+        ],
+      },
+    ],
     narration: [
       "Il ne se retourne pas. Il t'a entendu, pourtant — ses épaules l'ont dit.",
       "— « Tu l'entends fort, toi ? » Sa voix est calme, épuisée d'être calme. " +
@@ -1656,6 +1703,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "hesitant-mentir",
+        laisse: "menti",
         nature: "social",
         label: "Mentir : « Je n'entends rien. »",
         soupcon: 1,
@@ -1677,6 +1725,7 @@ export const SCENES: Scene[] = [
     id: "hesitant-2",
     illustration: "assets/monstre_hesitant_b.png",
     chainNext: "hesitant-3",
+    memoire: "hesitant",
     narration: [
       "— « Je calcule. » Il montre la borne du menton, sans la regarder. « Si " +
         "je rentre, ils me liront sur la figure et je finirai au bout d'une " +
@@ -1688,6 +1737,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "hesitant-raccompagner",
+        laisse: { reussite: "ramene", echec: "reste" },
         nature: "social",
         // ⚠️ Le libellé disait « Le raccompagner au hameau » (playtest v1.81) :
         // il promettait une escorte accomplie, alors que le jet peut échouer et
@@ -1709,6 +1759,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "hesitant-passe",
+        laisse: "passe",
         label: "« Passe. »",
         passive: {
           consequence:
@@ -1719,6 +1770,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "hesitant-partir",
+        laisse: "parti",
         label: "Ne pas répondre et partir",
         passive: {
           consequence:
@@ -1733,6 +1785,7 @@ export const SCENES: Scene[] = [
   {
     id: "hesitant-3",
     illustration: "assets/monstre_hesitant_3_v2_a.png",
+    memoire: "hesitant",
     /* ⚠️ CE TEXTE EST SERVI SOUS LES QUATRE BRANCHES de `hesitant-2` (escorte
        obtenue, « Passe. », silence, escorte ratée) : il ne doit donc RIEN
        affirmer de ce qu'il a fait. L'ancienne version le disait — « rien ne
@@ -1871,6 +1924,40 @@ export const SCENES: Scene[] = [
     id: "marcheur-1",
     illustration: "assets/monstre_marcheur_1_c_b.png",
     chainNext: "marcheur-2",
+    /* MÉMOIRE (vague 3, 25/09) : trente ans qu'il voit passer les mêmes pas.
+       Chaque retour redit le versant — c'est le savoir de la scène, il ne
+       doit jamais manquer à l'écran. */
+    memoire: "marcheur",
+    retours: [
+      {
+        si: { dernier: "imite" },
+        narration: [
+          "Il te voit arriver et, pour la première fois, il s'arrête. Deux talons plantés dans l'ornière.",
+          "— « Le dernier qui avait ce pas-là a reculé avec moi jusqu'au coude. » Il reprend sa marche à rebours. « Côté nord, elle longe. Toujours. Ton corps le sait déjà, même si toi non. »",
+        ],
+      },
+      {
+        si: { dernier: "tombe" },
+        narration: [
+          "Il contourne l'ornière d'un pas, sans la regarder, et ralentit à ta hauteur.",
+          "— « C'est là que le dernier s'est étalé. Elle est toujours là, l'ornière. » Un temps. « Marche pas côté nord du creux. Elle longe la crête nord. Les empreintes du sud, c'est les vieilles. »",
+        ],
+      },
+      {
+        si: { dernier: "face" },
+        narration: [
+          "Il ralentit à ta hauteur et te regarde de haut en bas — ton dos, surtout.",
+          "— « Encore un qui marche face au sud. Le dernier, je l'ai revu au coude. Enfin, ce qu'elle en avait laissé. » Il ne s'arrête pas. « Côté nord, elle longe. C'est tout ce que je dis deux fois. »",
+        ],
+      },
+      {
+        si: { dernier: "compte" },
+        narration: [
+          "Il compte à voix basse en approchant — onze pas, un arrêt — et il te regarde compter avec lui.",
+          "— « Quelqu'un a compté mes pas, une fois. Ça m'a fait du bien, qu'on compte avec moi. » Il ne s'arrête pas. « Côté nord, elle longe. Les empreintes du sud, c'est les vieilles. »",
+        ],
+      },
+    ],
     // Sa première réplique DIT le versant : l'écouter vaut avoir lu les traces.
     savoir: "savoir_bete_crete_nord",
     // …et ce qu'il t'apprend d'elle ne meurt pas avec toi (voir `d.bete_couloir`).
@@ -1912,6 +1999,7 @@ export const SCENES: Scene[] = [
     id: "marcheur-2",
     illustration: "assets/monstre_marcheur_2_v2_c.png",
     chainNext: "marcheur-3",
+    memoire: "marcheur",
     narration: [
       "— « Tu veux traverser entier ? » Il est déjà trois pas plus loin. " +
         "« Alors fais comme moi jusqu'au coude. Après le coude, elle suit " +
@@ -1920,6 +2008,7 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "marcheur-imiter",
+        laisse: { reussite: "imite", echec: "tombe" },
         nature: "physique",
         label: "Marcher à reculons avec lui",
         risky: {
@@ -1937,6 +2026,7 @@ export const SCENES: Scene[] = [
         // Verrou de RUSE : il énonce une règle et refuse de l'expliquer.
         // Un héros retors n'a pas besoin de son explication.
         id: "marcheur-compter-pas",
+        laisse: "compte",
         label: "Compter ses pas",
         locked: { stat: "RUSE", min: 4 },
         passive: {
@@ -1946,6 +2036,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "marcheur-continuer",
+        laisse: "face",
         label: "Continuer normalement",
         passive: {
           consequence:
@@ -1960,6 +2051,7 @@ export const SCENES: Scene[] = [
   {
     id: "marcheur-3",
     illustration: "assets/monstre_marcheur_3_v2_b.png",
+    memoire: "marcheur",
     chainNext: "chemin-creux-2",
     narration: [
       "Au coude, il pivote enfin — face au nord, dos au sud — et s'éloigne à " +
@@ -3285,25 +3377,21 @@ export const SCENES: Scene[] = [
         soupcon: 1,
       },
       {
-        /* SAVOIR (25/07) : avoir vu son reflet en retard dans la Mare, c'est
-           avoir la preuve qu'on entend. On ne peut plus le nier — mais on peut
-           le DIRE, à quelqu'un qui porte une croix à la craie sur sa porte.
-           ⚠️ ÉCART ASSUMÉ avec la table Notion, qui posait cette option sur
-           l'Hésitant beat 2 : l'Hésitant n'est joignable que depuis la Borne
-           Frontière, c'est-à-dire au PREMIER écran de la run, donc toujours
-           avant la Mare — l'option n'aurait jamais pu s'ouvrir. La Femme au
-           Seuil tient le même rôle (aveu réciproque, EMPATHIE forte) et elle
-           est, elle, atteignable après la Mare. */
+        /* SAVOIR (vague 3, 25/09) : l'Hésitant de la Borne décrit l'Appel —
+           « des gens qui parlent de nous dans la maison d'à côté ». L'avoir
+           entendu, c'est pouvoir le DIRE à quelqu'un qui porte une croix à la
+           craie sur sa porte. (Avant le 25/09 c'était le reflet en retard de
+           la Mare aux Regards, retirée ce jour-là.) */
         id: "femme-moi-aussi",
         prendLaPlaceDe: "femme-refuser",
         nature: "social",
         label: "« Moi aussi, j'entends. »",
-        requiresSavoir: "savoir_reflet",
+        requiresSavoir: "savoir_appel",
         risky: {
           stat: "EMPATHIE",
           threshold: 13,
           outcomes: outcomes(
-            "20 naturel. Tu le dis, avec le détail qui ne s'invente pas : le reflet en retard. Elle te regarde comme quelqu'un de la famille qu'on n'attendait plus. Elle te donne la mèche, le nom — et sa porte, si tu remontes.",
+            "20 naturel. Tu le dis, avec le détail qui ne s'invente pas : des gens qui parlent de toi dans la maison d'à côté. Elle te regarde comme quelqu'un de la famille qu'on n'attendait plus. Elle te donne la mèche, le nom — et sa porte, si tu remontes.",
             "Elle te laisse finir, sans reculer. « Je sais », dit-elle. « Ta figure le dit depuis le début. » Elle te met la mèche dans la main, referme tes doigts, et pour la première fois quelqu'un du hameau te touche sans hésiter.",
             "Tu le dis, et elle recule. Pas de dégoût : de la panique — pour toi. « Ne le dis à personne d'autre. À personne, tu m'entends. » Elle rentre, et tu restes dans la rue, avec un aveu qui traîne dans l'air.",
             "1 naturel. Tu le dis trop fort, ou pas assez seul. Un volet claque quelque part. Elle a pâli — pas de ce que tu es : de ce que ça fait de toi, ici. « Va-t'en. Maintenant. » ♦ −2"
@@ -5322,7 +5410,7 @@ export const SCENES: Scene[] = [
         label: "Demander s\u2019il soigne le soir",
         passive: {
           consequence:
-            "Il hausse les épaules sans lever les yeux. « Je soigne pas la nuit. C'est pas une règle. C'est juste que personne demande. » Puis, comme on jette un os : « Si c'est l'eau de la Mare, garde ta monnaie. »",
+            "Il hausse les épaules sans lever les yeux. « Je soigne pas la nuit. C'est pas une règle. C'est juste que personne demande. » Puis, comme on jette un os : « Si c'est l'eau de la tourbière, garde ta monnaie. »",
         },
       },
       {
@@ -6662,6 +6750,12 @@ export const SCENES: Scene[] = [
         // aucun indice de bénéfice) — et le village s'en souvient (flag compte).
         id: "denoncer-un-autre",
         label: "Donner un nom à la plume",
+        /* ⚠️ APRÈS avoir parlé à l'Écrivain (garde A-trois rétabli, 25/09) :
+           l'écran offrait quatre actions et le filet des trois slots en
+           masquait une au hasard. On ne tend pas un nom à la plume avant
+           d'avoir parlé à celui qui la tient — et le séjour a consommé la
+           question, donc l'écran retombe à trois. */
+        requiresChoixFait: ["ecrivain-defenses", "tribunal-carnet", "registre-ment", "dire-poteau-grave"],
         soupcon: -2,
         setsEnvFlag: "a-denonce",
         passive: {
@@ -6918,163 +7012,47 @@ export const SCENES: Scene[] = [
     ],
     jailerLine: "La Meute ne tue presque jamais. Elle évalue. Les chiffres me remontent.",
   },
-  {
-    /* LA MARE AUX REGARDS — le seul endroit des Landes que le vent évite. On
-       n'y vient pas puiser : on y vient vérifier. */
-    id: "mare-aux-regards",
-    illustration: "assets/scene_mare_aux_regards_a.png",
-    chainNext: "mare-aux-regards-2",
-    narration: [
-      "L'eau est noire et lente — le seul endroit des Landes que " +
-        "le vent évite.",
-      "La berge est piétinée en un seul point, tassée par des années de " +
-        "genoux. On ne vient pas ici puiser. On vient s'agenouiller. Le point " +
-        "de berge usé. L'eau. Et dans les roseaux, un reflet de métal.",
-    ],
-    /* Conversion des points d'intérêt (13/08). Trois gestes au bord de l'eau :
-       lire le sol, se regarder, boire. `reflet-metal` fusionne avec la berge
-       (les roseaux sont au même endroit, on ne fait qu'un déplacement) ;
-       « Te relever sans regarder » disparaît — ne rien faire n'était pas une
-       décision, c'était l'absence des trois autres. */
-    choices: [
-      {
-        /* RECONTEXTUALISATION MAJEURE (§7) : la Mare n'est pas une curiosité
-           inoffensive, c'est l'outil de dépistage du village. On y AMÈNE ceux
-           qu'on soupçonne — d'où le second creux, derrière le premier. */
-        id: "creux-doubles",
-        label: "Longer la berge usée",
-        illustration: "assets/scene_mare_creux_doubles_v2_c_b.png",
-        observe: true,
-        decouverte: "d.mare_depistage",
-        grantsLoot: "miroir-poche",
-        passive: {
-          consequence:
-            "Les creux de genoux sont DOUBLES : quelqu'un se tenait au-dessus de celui qui se penchait. On ne vient pas voir son reflet ici. On l'y amène.\n\nDans les roseaux, un miroir de poche, fêlé où serait un visage.",
-        },
-      },
-      {
-        id: "eau-reflet",
-        label: "T\u2019agenouiller et te pencher",
-        illustration: "assets/scene_mare_eau_reflet_v2_b.png",
-        observe: true,
-        grantsSavoir: "savoir_reflet",
-        passive: {
-          consequence:
-            "Le reflet de qui entend la voix est en retard, dit la croyance. Tu te penches. Ton reflet se penche. Et il lève les yeux vers toi une demi-seconde après toi. Savoir et voir sont deux choses.",
-        },
-      },
-      {
-        // « Eau de la Mare » — le pari est honnête : réussir, c'est boire
-        // sans rien attraper.
-        id: "boire-mare",
-        nature: "surnaturel",
-        label: "Boire à la mare",
-        risky: {
-          stat: "COURAGE",
-          threshold: 12,
-          outcomes: outcomes(
-            "20 naturel. L'eau est glacée et propre. Tu bois longuement, et tu te relèves plus léger d'une chose que tu ne saurais pas nommer. La mare avait le choix. Elle a bien choisi.",
-            "Tu bois dans le creux de ta main. C'est de l'eau, rien d'autre. Ça n'a l'air de rien mais dans les Landes, ça compte.",
-            "Tu bois — et l'eau reste au bord des lèvres, sans descendre, une seconde de trop. Quand elle passe enfin, tu as l'impression très nette d'avoir avalé quelque chose qui a accepté de se laisser avaler.",
-            "1 naturel. Tu bois. Sous la surface, à trois doigts de ton visage, ton reflet continue de boire quand tu t'arrêtes. \u2666 \u22122"
-          ),
-        },
-      },
-    ],
-    jailerLine: "Une mare qui dit la vérité. Et ils viennent quand même.",
-  },
-  {
-    id: "mare-aux-regards-2",
-    sejour: true,
-    illustration: "assets/scene_mare_aux_regards_2_c_d.png",
-    narration: [
-      "Ils arrivent à deux. Le premier s'agenouille dans les creux, se penche, et reste penché beaucoup trop longtemps. Le second reste debout derrière lui et ne regarde pas l'eau : il regarde la nuque de l'autre.",
-      "Personne ne parle. Ce n'est pas une prière — c'est un examen, et il " +
-        "a manifestement une procédure.",
-      "Quand le premier se relève, il a le visage de quelqu'un qui va rentrer chez lui et fermer ses volets pour toujours. Le second lui met une main sur l'épaule. Ils ne sont pas encore partis.",
-    ],
-    choices: [
-      {
-        id: "aborder-renoncant-mare",
-        nature: "social",
-        label: "Lui parler",
-        soupcon: 1,
-        risky: {
-          stat: "EMPATHIE",
-          threshold: 12,
-          outcomes: outcomes(
-            "20 naturel. Tu lui dis que tu as vu la même chose. Puis il parle, et tu apprends comment on vit avec : en ne se regardant plus jamais dans rien. Ça s'appelle bêcher, ici.",
-            "Il sursaute, puis se laisse aborder. « C'était pas en retard, avant », dit-il seulement. « Y a deux ans, c'était pas en retard. » Il repart vers le hameau sans attendre de réponse.",
-            "Il te voit — et le fait que tu l'aies vu, lui, est la pire chose qui pouvait lui arriver aujourd'hui. Il part très vite, sans un mot, et tu sais qu'il racontera cette rencontre autrement que toi.",
-            "1 naturel. Tu l'abordes. Il te regarde, regarde l'eau, te regarde encore. Puis il demande, d'une voix blanche : « Le vôtre aussi ? » ♦ −2"
-          ),
-        },
-      },
-      {
-        // Verrou d'INSTINCT : « ça a manifestement une procédure ».
-        // Encore faut-il savoir la lire.
-        id: "mare-lire-procedure",
-        label: "Lire leur procédure",
-        locked: { stat: "INSTINCT", min: 4 },
-        passive: {
-          consequence:
-            "Un seul geste compte : le second ne se penche jamais. Il est là pour voir si le premier se relève. Ce n'est pas un examen à deux — c'est un examen et un témoin.",
-        },
-      },
-      {
-        id: "laisser-renoncant",
-        label: "Le laisser à sa réponse",
-        sortie: {},
-        passive: {
-          consequence:
-            "Tu quittes la berge sans te retourner. Derrière toi, l'eau reprend son immobilité — elle garde ce qu'elle a vu, comme toujours.",
-        },
-      },
-    ],
-    jailerLine: "Il rentrera, fermera ses volets, tiendra deux hivers. J'ai sa page.",
-  },
+  /* ═══ LA LANDE — le premier environnement des Landes (vague 3, 25/09) ═══
+     Borne → DEUX lieux tirés parmi quatre (le Chemin Creux, le Verger Noir,
+     la Tourbière, le Cercle qui Descend) → la sortie vers les Gibets. Voir
+     `LANDE_LIEUX` et la branche « nouvelle liaison » d'advance().
+     La Mare aux Regards est RETIRÉE (décision Patrick 25/09 : « trop
+     énigmatique ») ; la Tourbière reprend son miroir, l'Hésitant son savoir. */
   {
     /* LE VERGER NOIR — le seul ordre volontaire des Landes hors du hameau.
        Les arbres poussent. C'est pire que s'ils étaient morts. */
     id: "verger-noir",
-    /* ⚠️ `food_available` RETIRÉ (13/08) : le tag injectait un quatrième CTA
-       (« Prendre sans demander ») sur un lieu dont tout le texte dit que les
-       fruits sont de la CENDRE. Voler de quoi manger là où rien ne nourrit
-       n'avait pas de sens, et ça faisait du Verger le seul lieu converti à
-       déborder de la règle des trois actions. Le vol reste au Marché Muet, où
-       de la viande salée pend vraiment sous l'étal. */
+    /* ⚠️ `food_available` RETIRÉ (13/08) : les fruits sont de la cendre, le
+       vol reste au Marché Muet. */
     illustration: "assets/scene_verger_noir_e_f.png",
     chainNext: "verger-noir-2",
     narration: [
       "Des arbres fruitiers plantés en rangs — le seul ordre volontaire des " +
         "Landes hors du hameau. Ils ont poussé, ils ont des branches, des " +
         "feuilles noires, et des fruits. C'est pire que s'ils étaient morts.",
-      // 03/09 — l'image de la refonte (`monstre_epoux_verger_b_b`, ouverte)
-      // montre le couple PENCHÉ, bêche en terre. La repasse du 10/08 parlait
-      // d'une autre image. Le texte suit celle qui est servie.
-      "Les rangs et leurs fruits. La souche du premier arbre, au bout. Et deux " +
-        "silhouettes penchées, tout au fond, qui bêchent sans lever la tête.",
+      "Deux silhouettes penchées, tout au fond, bêchent sans lever la tête. " +
+        "Et au bout de l'allée centrale, entre deux rangs, une silhouette en " +
+        "croix dont la tête pend sur le côté.",
     ],
-    /* Conversion des points d'intérêt (13/08). Trois actes : monter pour voir,
-       goûter pour savoir, remonter vers les deux du fond. `fruits-cendre`
-       fusionne avec « Goûter un fruit » (on en décroche deux : un qu'on mord,
-       un qu'on garde) et `compter-rangs` disparaît — le jet de la montée dit
-       déjà les onze rangs, et mieux. */
+    /* Trois actes exclusifs, et tous mènent à l'allée de l'épouvantail
+       (`verger-noir-2`) : on ne sort pas du verger sans passer devant lui.
+       ⚠️ LE FRUIT N'EST PLUS UN CADEAU POUR LES ÉPOUX (décision Patrick
+       25/09) : un jet décide seulement s'il se mange. */
     choices: [
       {
         id: "gouter-fruit",
-        nature: "surnaturel",
+        nature: "physique",
         label: "Décrocher un fruit et mordre",
         illustration: "assets/scene_verger_fruits_cendre_v2_c.png",
         grantsLoot: "fruit-cendre",
         risky: {
-          stat: "COURAGE",
-          threshold: 13,
+          stat: "INSTINCT",
+          threshold: 11,
           outcomes: outcomes(
-            "20 naturel. La peau est parfaite et le poids ment. Tu mords. C'est de la cendre — puis c'est un verger, le vrai, au soleil. Tu vois ce que ce lieu était. Tu comprends POURQUOI ils continuent.",
-            "Tu en décroches deux. La chair du premier est sèche, sans goût, et se défait en poudre. Rien ne t'arrive — sauf la certitude, désormais physique, que rien ne pousse ici.",
-            "La cendre te reste dans la gorge et n'en sort plus. Tu tousses longtemps, plié en deux entre deux rangs, et l'homme au fond du verger cesse une seconde de bêcher pour te regarder faire.",
-            "1 naturel. Tu mords. Et quelque chose, dans le fruit, mord en retour. \u2666 \u22122"
+            "20 naturel. Ta main va au seul fruit qui pèse juste. La peau cède sous la dent, et dessous c'est de la chair, tiède. Tu en décroches un second pour plus tard.",
+            "Le premier se défait en poudre sous la dent. Le second pèse autrement : sous la cendre, il y a de la pulpe. Tu le gardes pour quand il faudra.",
+            "La cendre te reste dans la gorge et n'en sort plus. Tu tousses longtemps, plié en deux entre deux rangs, jusqu'à ce que quelque chose se déchire dans ta poitrine.",
+            "1 naturel. Tu mords. Et quelque chose, dans le fruit, mord en retour. ♦ −2"
           ),
         },
       },
@@ -7088,10 +7066,8 @@ export const SCENES: Scene[] = [
             "Ils se relaient sur la même bêche sans se parler, du geste réglé des gens qui font la même chose depuis toujours. Ils plantent. Dans cette terre. Un trou, un plant, la terre refermée du talon.",
         },
       },
-      /* PHASE D — le second jet physique hors combat (voir la Chapelle). Le
-         verger a des arbres hauts et une souche au bout : la hauteur est déjà
-         dans le décor, et ce qu'on voit d'en haut est une vraie information de
-         carte, pas une récompense abstraite. */
+      /* PHASE D — le jet physique hors combat du lieu : la hauteur est dans
+         le décor, et ce qu'on voit d'en haut est une vraie information. */
       {
         id: "monter-vieil-arbre",
         nature: "physique",
@@ -7100,10 +7076,10 @@ export const SCENES: Scene[] = [
           stat: "COURAGE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. D'en haut, les rangs sont onze, et les intervalles s'élargissent en s'éloignant de la souche — une chose plantée un rang par an. Au fond, un douzième rang commencé et laissé. L'année où ils ont arrêté de croire que ça repartirait.",
-            "La fourche tient. De là, tout le verger se lit d'un coup : les rangs convergent vers la souche — tout est parti de cet arbre-là. Et la terre autour des deux silhouettes est retournée cent fois, sans que rien n'y soit jamais planté.",
-            "La branche est comme les fruits : parfaite à regarder, de la cendre à tenir. Elle cède sans un bruit. Tu tombes à plat entre deux rangs, le souffle coupé, les yeux dans des feuilles noires qui ne bougent pas.",
-            "1 naturel. Tu montes haut, et l'arbre te porte. C'est à la descente que le pied passe dans une fourche, et que le bois se referme sur la cheville comme s'il avait attendu le poids. ♦ −2"
+            "20 naturel. D'en haut, les rangs sont onze, et leurs intervalles s'élargissent en s'éloignant de la souche : un rang par an. Au fond, un douzième rang commencé et laissé.",
+            "La fourche tient. De là, le verger se lit d'un coup : les rangs convergent vers la souche. Et au bout de l'allée, l'épouvantail regarde le verger, pas la lande.",
+            "La branche est comme les fruits : parfaite à regarder, de la cendre à tenir. Elle cède sans un bruit. Tu tombes à plat entre deux rangs, le souffle coupé.",
+            "1 naturel. C'est à la descente que le pied passe dans une fourche, et que le bois se referme sur la cheville comme s'il avait attendu le poids. ♦ −2"
           ),
         },
       },
@@ -7111,67 +7087,136 @@ export const SCENES: Scene[] = [
     jailerLine: "Onze vergers. Eux disent obstination. Moi, matière première.",
   },
   {
+    /* L'ÉPOUVANTAIL DU VERGER — l'événement du lieu (décision Patrick 25/09 :
+       il vit dans le Verger, plus une rencontre de passage). Il ne bouge
+       jamais sous ton regard ; il avance quand tu regardes ailleurs. Le geste
+       est le prototype validé (`maquettes/epouvantail_geste.html`), porté
+       dans `components/minigames/engines/Epouvantail.tsx` : ton doigt est
+       ton regard.
+       Préparations : la SERPE des Époux le décroche (on coupe la paille, il
+       tombe) ; le MIROIR de la Tourbière montre où il va ressortir.
+       ⚠️ Image à produire (`monstre_landes_epouvantail_tourne_a`) — l'allée
+       du verger sert en attendant ; le geste, lui, le dessine. */
     id: "verger-noir-2",
-    sejour: true,
-    illustration: "assets/scene_verger_noir_2_v2_b.png",
+    illustration: "assets/scene_verger_souche_a_c.png",
+    combat: true,
+    foe: "epouvantail",
+    foeName: "L'Épouvantail Tourné",
+    memoire: "epouvantail",
+    retours: [
+      {
+        si: { dernier: "decroche" },
+        narration: [
+          "Au bout de l'allée, il est remonté sur sa croix. La paille est neuve, le manteau recousu au fil noir, et les liens tiennent triple. Quelqu'un tient à ce qu'il garde les rangs.",
+          "Sa tête ne pend plus sur le côté. Elle regarde l'entrée de l'allée — celle par où tu arrives.",
+        ],
+      },
+      {
+        si: { dernier: ["blesse", "tue"] },
+        narration: [
+          "Il n'est plus au bout de l'allée. Il est au milieu, à dix pas, et sa tête ne pend plus : droite, tournée vers toi. Sur la paille de sa manche, une tache sombre qui n'a pas séché.",
+          "Pour sortir des rangs, il faut toujours passer devant lui.",
+        ],
+      },
+      {
+        si: { dernier: "fui" },
+        narration: [
+          "Il n'est plus au bout de l'allée : il est planté à la lisière, du côté par où l'on sort en courant. La paille de ses bras est tournée vers toi.",
+          "Il ne reste qu'une façon de quitter les rangs : à reculons, les yeux sur lui.",
+        ],
+      },
+      {
+        si: { dernier: "traverse" },
+        narration: [
+          "Au bout de l'allée, il pend, tête sur le côté. Devant lui, le sol est piétiné en arc, à reculons, comme si quelqu'un était déjà passé en le regardant.",
+          "Il a changé de rang depuis. Il ne recommence jamais au même endroit.",
+        ],
+      },
+    ],
     narration: [
-      "Un fruit tombe, derrière toi. Sans vent, sans oiseau.",
-      "Quand tu le ramasses, il est encore chaud — comme une chose qui vient " +
-        "de cesser d'essayer.",
+      "Au bout de l'allée, l'épouvantail. Il n'y a pas un oiseau à effrayer dans ce verger. Sa tête pend sur le côté, comme s'il dormait.",
+      "Pour sortir des rangs, il faut passer devant lui. Quand tu détournes les yeux une seconde vers la lisière, et que tu reviens à lui, il a tourné la tête vers toi.",
     ],
     choices: [
       {
-        id: "reposer-fruit",
-        label: "Le reposer au pied de l'arbre",
+        id: "epouvantail-regarder",
+        label: "Reculer sans le quitter des yeux",
+        laisse: { reussite: "traverse", echec: "blesse" },
+        minigame: {
+          engine: "epouvantail",
+          horsDemo: true,
+          echecBlesse: true,
+          echec:
+            "Tu l'as perdu de vue une seconde de trop. Quand tu le retrouves, il n'est plus au bout de l'allée : il est sur toi, et la paille sent le fer. Tu sors des rangs à reculons, une main sur la plaie qu'il t'a laissée.",
+        },
         passive: {
           consequence:
-            "Tu le reposes exactement sous la branche d'où il vient, bien " +
-            "calé dans la terre, comme on remet quelque chose à sa place. Le " +
-            "geste ne sert à rien. Tu le fais quand même, et le verger entier " +
-            "te paraît une seconde moins hostile.",
+            "Tu recules pas à pas, les yeux sur lui, pendant que les troncs passent devant et qu'il change de rang derrière eux. Tu ne le lâches pas. À la lisière, il est redevenu une croix de paille au bout d'une allée. Tu sors des rangs.",
         },
       },
       {
-        id: "quitter-verger",
-        nature: "exploration",
-        // Sa prose D'ÉCHEC dit le temps, explicitement — « Tu tournes deux
-        // fois dans les mêmes rangs… Ça n'aurait pas dû prendre si
-        // longtemps. » C'est le seul échec de la zone qui le dise ; c'est donc
-        // le seul qui coûte un Jour.
-        label: "Sortir des rangs",
-        sortie: {},
+        /* EXPLORER PRÉPARE — la serpe des Époux. On ne joue pas à ne pas le
+           quitter des yeux : on s'approche en le regardant, et on coupe. */
+        id: "epouvantail-serpe",
+        label: "Le décrocher à la serpe",
+        requiresObjet: "serpe-epoux",
+        prendLaPlaceDe: "epouvantail-courir",
+        horsDePortee: true,
+        laisse: "decroche",
+        passive: {
+          consequence:
+            "Tu marches droit sur lui sans le quitter des yeux, et il ne bouge pas : il ne bouge jamais sous un regard. Trois coups de serpe dans les liens. Il tombe d'un bloc. Ce n'est qu'un sac de paille et un manteau. La tête roule entre les rangs et s'arrête face à toi.",
+        },
+      },
+      {
+        id: "epouvantail-courir",
+        nature: "physique",
+        tags: ["fuite"],
+        label: "Courir vers la lisière, dos à lui",
+        masqueSi: { objet: "serpe-epoux" },
+        sansMemoire: { dernier: "fui" },
+        laisse: { reussite: "fui", echec: "blesse" },
         risky: {
           stat: "INSTINCT",
-          threshold: 11,
+          threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu sors des rangs par le bon côté — celui d'où l'on voit encore le hameau. Derrière toi, tu remarques ce que tu n'avais pas vu en entrant : les rangs ne sont pas droits. Ils s'incurvent, tous, vers le sud.",
-            "Tu retrouves la sortie du premier coup. Les rangs se referment derrière toi et le verger redevient une tache noire sur la lande.",
-            "Tu tournes deux fois dans les mêmes rangs avant de retrouver la lisière. Onze rangs, ce n'est pas un labyrinthe. Ça n'aurait pas dû prendre si longtemps.",
-            "1 naturel. Tu sors des rangs. Le compte à voix basse, derrière toi, s'est arrêté au moment exact où tu as passé la porte. ♦ −2"
+            "20 naturel. Tu cours sans te retourner, et tu entends derrière toi la paille qui frotte, qui frotte — puis plus rien. À la lisière, tu te retournes : il est au milieu de l'allée, bras ouverts, arrêté net.",
+            "Tu cours. Derrière toi, la paille frotte à chaque pas que tu ne vois pas. Tu passes la lisière avant elle. Quand tu te retournes, il est planté trois rangs plus près.",
+            "Tu cours, et tu ne l'entends pas venir. Au dernier rang, une main de paille et de fer te prend l'épaule et te laboure le dos avant de lâcher.",
+            "1 naturel. Tu cours. Il était déjà devant toi, à la lisière. ♦ −2"
           ),
         },
       },
     ],
-    jailerLine: "Encore chaud. Comme tout ce qui vient de renoncer. Tu t'y feras.",
+    jailerLine: "Il ne bouge que quand tu ne regardes pas. Comme moi.",
   },
   {
-    /* LES ÉPOUX DU VERGER — ils plantent le douzième. Ce qu'ils demandent
-       n'est pas de l'aide : c'est une preuve que le dehors existe. */
+    /* LES ÉPOUX DU VERGER — l'Appel (décision Patrick 25/09 : « parler de
+       l'Appel », plus du fruit). Le douzième rang est pour LUI : il entend
+       déjà son prénom, et elle ne le laisse jamais lever la tête. */
     id: "epoux-1",
     illustration: "assets/monstre_epoux_verger_b_b.png",
     chainNext: "epoux-2",
+    memoire: "epoux",
+    retours: [
+      {
+        si: { dernier: "retenu" },
+        narration: [
+          "La femme te voit venir de loin et pose sa bêche. Elle ne dit pas d'où elle te connaît : elle dit seulement « Toi », comme on reconnaît un pas.",
+          "L'homme bêche tête basse, plus bas encore qu'avant. Au fond du verger, le douzième rang n'a pas avancé d'une pelletée.",
+        ],
+      },
+      {
+        si: { dernier: ["encourage", "laisse_filer"] },
+        narration: [
+          "Ils sont toujours deux. Mais l'homme bêche maintenant face au sud, et une corde court de la ceinture de la femme à la sienne, nouée serré.",
+          "Elle te voit venir et resserre le nœud d'un geste, sans te quitter des yeux.",
+        ],
+      },
+    ],
     narration: [
-      "La femme lève la tête la première, sans lâcher sa bêche. Elle ne sursaute pas — plus rien ne " +
-        "les surprend, ici.",
-      "— « C'est le onzième verger. » Elle le dit avant toute autre chose, " +
-        "comme on donne son nom. « Les dix premiers ont donné des fruits de " +
-        "cendre. Celui-là aussi. Le douzième, on verra. »",
-      // ⚠️ ALIGNÉ SUR L'IMAGE SERVIE (03/09, `monstre_epoux_verger_b_b`
-      // ouverte) : les DEUX sont penchés, bêche en terre. La repasse du 10/08
-      // visait une autre image. Le comptage — qui porte le lore (onze prénoms,
-      // pas onze coups) — reste en son entendu.
-      "L'homme, lui, ne se redresse pas. Il n'a pas cessé de compter à voix " +
-        "basse pour autant, et il ne te regarde pas.",
+      "La femme lève la tête la première, sans lâcher sa bêche. Elle ne sursaute pas — plus rien ne les surprend, ici. « C'est le onzième verger. Les dix premiers ont donné de la cendre. »",
+      "L'homme ne se redresse pas. Il récite à voix basse, et ce ne sont pas des chiffres.",
     ],
     choices: [
       {
@@ -7179,42 +7224,32 @@ export const SCENES: Scene[] = [
         label: "« Pourquoi continuer ? »",
         passive: {
           consequence:
-            "— « Parce qu'arrêter, c'est commencer à regarder le sud. » Elle " +
-            "essuie ses paumes contre sa jupe, un geste d'habitude. « Bêcher, " +
-            "ça occupe les yeux. » Derrière elle, le compte à voix basse " +
-            "n'a pas manqué un coup.",
+            "— « Parce qu'arrêter, c'est lever la tête. » Elle essuie ses paumes contre sa jupe. « Et ici, quand on lève la tête, c'est vers le sud qu'on regarde. » Derrière elle, la récitation n'a pas manqué un mot.",
         },
       },
       {
-        // Verrou d'EMPATHIE : il compte ses coups de bêche à voix basse.
-        // Il faut du cœur pour entendre ce que ça veut dire.
+        // Verrou d'EMPATHIE : il faut du cœur pour entendre ce qu'il récite.
         id: "epoux-ecouter-compte",
-        label: "Écouter ce qu'il compte",
+        label: "Écouter ce qu'il récite",
         locked: { stat: "EMPATHIE", min: 4 },
         passive: {
           consequence:
-            // ⚠️ Reposait sur des « coups de bêche » en cours ; l'image
-            // montre les deux redressés, bêche au repos (repasse du 10/08).
-            "Tu t'approches de l'homme et tu écoutes. Ce n'est pas un compte " +
-            "qu'il tient : il récite des prénoms, à voix presque nulle, toujours " +
-            "les mêmes, dans le même ordre. Il y en a onze. La femme te voit " +
-            "comprendre et détourne les yeux. « Il les plante. C'est sa " +
-            "façon. » Le douzième arbre portera un prénom qu'ils n'ont pas " +
-            "encore choisi.",
+            "Onze prénoms, toujours dans le même ordre : les enfants du hameau partis vers le sud, un par an. Chaque rang en porte un. La femme te voit comprendre et détourne les yeux. « Le premier, c'est le nôtre. »",
         },
       },
       {
         id: "epoux-aider",
         nature: "social",
         label: "Prendre la bêche un moment",
+        laisse: { reussite: "aide" },
         risky: {
           stat: "EMPATHIE",
           threshold: 11,
           outcomes: outcomes(
-            "20 naturel. Tu bêches. Personne ne dit rien — mais l'homme reprend son compte à voix haute pour que tu puisses le suivre, et vous finissez le rang à trois. La seule chose qui ressemble à de la paix dans toutes les Landes.",
+            "20 naturel. Tu bêches. L'homme reprend ses prénoms à voix haute pour que tu les suives, et vous finissez le rang à trois. La seule chose qui ressemble à de la paix dans toutes les Landes.",
             "Tu creuses deux trous. La terre est lourde, morte, et cède mal. La femme corrige ton geste d'un mot. C'est peu. C'est déjà énorme.",
-            "Tu prends la bêche et l'homme la reprend aussitôt, sans brutalité, comme on retire un outil des mains d'un enfant. Le compte a repris exactement où il s'était arrêté.",
-            "1 naturel. Tu enfonces la bêche. Elle bute sur quelque chose à trois doigts sous la surface — quelque chose de long, et qui a été mis là avec soin. Vous vous regardez tous les trois, et personne ne creuse. ♦ −2"
+            "Tu prends la bêche et l'homme la reprend aussitôt, sans brutalité, comme on retire un outil des mains d'un enfant. La récitation reprend où elle s'était arrêtée.",
+            "1 naturel. La bêche bute sur quelque chose à trois doigts sous la surface — de long, et mis là avec soin. Vous vous regardez tous les trois, et personne ne creuse. ♦ −2"
           ),
         },
       },
@@ -7225,85 +7260,330 @@ export const SCENES: Scene[] = [
     id: "epoux-2",
     illustration: "assets/monstre_epoux_2_c.png",
     chainNext: "epoux-3",
+    memoire: "epoux",
     narration: [
-      "— « Tu viens du dehors. » Ce n'est pas une question : c'est une prière " +
-        "déguisée en constat. « Il te reste forcément quelque chose du " +
-        "dehors. N'importe quoi. Une graine, un bout de vrai bois, une chose " +
-        "qui a poussé sous le vrai soleil. On le planterait. »",
-      "Rien de ce que tu portes n'a poussé sous un soleil, vrai ou faux. Tu arrives ici comme tout le monde y arrive — les mains vides et mort.",
+      "L'homme s'arrête au milieu d'un prénom. Il se redresse lentement, comme on se lève pour aller ouvrir à quelqu'un, et tourne la tête vers le sud. La femme lâche la bêche et lui prend le bras à deux mains. « Bêche. Ne regarde pas. »",
+      "— « Tu l'entends, toi ? » te demande-t-il sans quitter l'horizon. « Il dit mon prénom. Le douzième. »",
     ],
     choices: [
       {
-        /* Témoignage court §7 : les Époux la croisent tous les jours et la
-           saluent. Ils ne trouvent rien d'anormal — ils ont renoncé à
-           trouver quoi que ce soit d'anormal, c'est leur tâche absorbante. */
-        id: "epoux-la-dame",
-        label: "Demander qui passe par ici",
-        decouverte: "d.fille_apercue",
-        passive: {
-          consequence:
-            "« Personne. » L\u2019homme bêche. Puis, sans s\u2019arrêter : « La " +
-            "petite, des fois. Elle passe entre les rangs. On se dit " +
-            "bonjour. » Sa femme ne dit rien. Il bêche un peu plus vite " +
-            "qu\u2019avant.",
-        },
-      },
-      {
-        id: "epoux-rien",
+        /* La serpe est ce que la femme donne à qui l'a aidée à le tenir : de
+           quoi passer devant ce qui garde l'allée. Jamais un marchandage. */
+        id: "epoux-retenir",
         nature: "social",
-        label: "« Je n'ai rien. »",
+        label: "Te mettre entre lui et le sud",
+        laisse: { reussite: "retenu", echec: "laisse_filer" },
+        grantsLoot: "serpe-epoux",
         risky: {
           stat: "EMPATHIE",
           threshold: 12,
           outcomes: outcomes(
-            "20 naturel. Tu n'as rien, mais tu leur décris un arbre précis, chez toi, avec son écorce et son odeur. Ils écoutent. À la fin, la femme dit : « Bon. Alors on plante celui-là. » Et l'homme se remet à creuser.",
-            "Tu le dis simplement. Elle hoche la tête, sans surprise. « C'est ce que disent tous ceux qui viennent. » Elle retourne à son rang. Ça n'a rien cassé.",
-            "Tu le dis mal — trop court, trop net. L'homme cesse de compter ses coups de bêche. Le silence qui suit est le pire son des Landes, et il dure jusqu'à ce que tu sois sorti du rang.",
-            "1 naturel. « Je n'ai rien. » La femme te regarde les mains, longtemps, puis le visage. « Non », dit-elle enfin, très doucement. « Toi non plus, tu ne viens pas du dehors. » ♦ −2"
+            "20 naturel. Tu lui prends l'autre bras et tu lui parles de ses rangs, un par un. Il te regarde toi, plus le sud, et se penche de lui-même sur la bêche. La femme te met sa serpe dans la main : « Pour ce qui garde l'allée. Il n'aime pas le fer. »",
+            "Tu te plantes devant lui. Il te regarde longtemps, comme on regarde un mur qui vient de pousser, puis se remet à bêcher. La femme décroche une serpe de sa ceinture et te la tend : « Pour l'allée. »",
+            "Tu te mets devant lui. Il te contourne de deux pas, sans te voir, et la femme doit le tirer à terre de tout son poids. Elle ne te regarde plus.",
+            "1 naturel. Tu te mets entre lui et le sud — et il te sourit, comme on sourit à quelqu'un du même village. « Toi aussi, alors. » ♦ −2"
           ),
         },
       },
       {
-        id: "epoux-promettre",
-        nature: "social",
-        label: "Promettre pour la prochaine fois",
-        risky: {
-          stat: "RUSE",
-          threshold: 11,
-          outcomes: outcomes(
-            "20 naturel. Tu promets si bien que tu y crois une seconde. Ils te croient — et la femme te donne d'avance ce qu'elle donnera en échange : où trouver de l'eau propre, et laquelle des deux routes se referme la nuit.",
-            "Le mensonge passe sans effort : ils veulent y croire. « Au prochain passage », répète-t-elle, et elle range ça quelque part où ça ne s'abîmera pas.",
-            "Tu promets, et elle t'écoute promettre avec un demi-sourire qui ne juge rien. « Bien sûr. » Elle retourne à son rang deux mots trop tôt.",
-            "1 naturel. Tu promets pour la prochaine fois. L'homme, sans lever la tête, dit son premier mot : « Laquelle ? » ♦ −2"
-          ),
-        },
-      },
-      {
-        id: "epoux-donner",
-        requiresObjet: "fruit-cendre",
-        prendLaPlaceDe: "epoux-rien",
-        label: "Chercher dans ta besace",
+        id: "epoux-encourager",
+        label: "« Laisse-le y aller. »",
+        laisse: "encourage",
         passive: {
           consequence:
-            "Tout ce que tu portes, tu l'as ramassé ici — chaque chose sent la lande, la corde ou la cendre. Rien qui ait poussé sous un vrai soleil. Ils regardent tes mains ouvertes quand même.",
+            "La femme te regarde comme on regarde une corde. « Toi aussi, alors. » Elle le fait se rasseoir de force, les deux mains sur ses épaules, et ne dit plus un mot tant que tu es dans le verger.",
+        },
+      },
+      {
+        id: "epoux-detourner",
+        label: "Lui demander le premier prénom",
+        laisse: "retenu",
+        passive: {
+          consequence:
+            "Il le dit. Puis le deuxième, parce qu'on ne s'arrête pas au premier. Au quatrième, il a rebaissé la tête vers la terre. La femme ne te remercie pas. Elle reprend la bêche à côté de lui, un peu plus près qu'avant.",
         },
       },
     ],
-    jailerLine: "Une graine du dehors ? On n'arrive pas chez moi les poches pleines.",
+    jailerLine: "Il entend son prénom. Moi, je l'ai déjà écrit.",
   },
   {
     id: "epoux-3",
     illustration: "assets/monstre_epoux_verger_b_b.png",
     chainNext: "verger-noir-2",
+    memoire: "epoux",
     narration: [
-      "Ils se remettent au travail avant que tu sois sorti des rangs — le " +
-        "onzième verger n'attend pas.",
-      "Longtemps après, tu entends encore le compte à voix basse, régulier " +
-        "comme une corde qui grince : c'est le bruit que fait l'espoir quand " +
-        "il refuse de savoir.",
+      "Ils se remettent au travail avant que tu sois sorti des rangs. Au fond, le douzième rang est creusé jusqu'à la moitié, et vide.",
+      "Longtemps après, tu entends encore la récitation à voix basse, régulière comme une corde qui grince : le bruit que fait l'espoir quand il refuse de savoir.",
     ],
-    choices: [{ id: "epoux-quitter", label: "Remonter les rangs" }],
-    jailerLine: "Écoute-le compter. Quarante mille. Je compte avec lui.",
+    choices: [
+      {
+        /* Témoignage court §7 : les Époux la croisent tous les jours et la
+           saluent. Ils ne trouvent rien d'anormal — ils ont renoncé à trouver
+           quoi que ce soit d'anormal, c'est leur tâche absorbante. */
+        id: "epoux-la-dame",
+        label: "Demander qui passe par ici",
+        decouverte: "d.fille_apercue",
+        passive: {
+          consequence:
+            "« Personne. » L’homme bêche. Puis, sans s’arrêter : « La " +
+            "petite, des fois. Elle passe entre les rangs. On se dit " +
+            "bonjour. » Sa femme ne dit rien. Il bêche un peu plus vite " +
+            "qu’avant.",
+        },
+      },
+      { id: "epoux-quitter", label: "Descendre l'allée" },
+    ],
+    jailerLine: "Écoute-le réciter. Quarante mille fois. Je compte avec lui.",
+  },
+  {
+    /* LA TOURBIÈRE — l'ouest du plateau (décision Patrick 25/09). Le
+       raccourci que tout le monde a essayé une fois : sous l'eau, ceux qui
+       ont voulu couper au sud par le marais. Elle reprend le Miroir de
+       poche de l'ancienne Mare (il sert au Verger, contre l'Épouvantail).
+       ⚠️ Image à produire (`scene_landes_tourbiere_a`) — l'eau noire de
+       l'ancienne Mare sert en attendant : c'est la même matière. */
+    id: "tourbiere",
+    illustration: "assets/scene_mare_aux_regards_a.png",
+    chainNext: "tourbiere-2",
+    narration: [
+      "Le sol cède à chaque pas, comme une couverture posée sur de l'eau. La tourbière s'étend jusqu'à l'horizon, lisse, piquée de touffes de joncs.",
+      "Entre les touffes, une file de piquets penche vers le sud : ceux qui sont passés ont marqué où poser le pied. Plus loin, les piquets s'arrêtent.",
+    ],
+    choices: [
+      {
+        id: "suivre-piquets",
+        label: "Suivre la file des piquets",
+        observe: true,
+        grantsSavoir: "savoir_piquets",
+        passive: {
+          consequence:
+            "Les piquets ne vont pas droit : ils font des coudes, reviennent, zigzaguent entre les touffes. Ceux qui les ont plantés ne cherchaient pas le chemin le plus court. Ils cherchaient celui où l'on ne pose jamais deux fois le pied au même endroit.",
+        },
+      },
+      {
+        id: "plonger-bras",
+        nature: "physique",
+        label: "Plonger le bras sous une touffe",
+        illustration: "assets/scene_mare_miroir_a_b.png",
+        grantsLoot: "miroir-poche",
+        risky: {
+          stat: "COURAGE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tes doigts se referment sur un cercle de métal froid, et rien ne les retient. Un miroir de poche, fêlé en travers. Dans la fêlure, ton visage arrive avec un temps de retard.",
+            "La tourbe aspire jusqu'au coude, puis rend. Dans ta main, un miroir de poche fêlé, jeté là par quelqu'un qui ne voulait plus se voir.",
+            "Quelque chose, sous la tourbe, referme ta main sur la tienne et tire. Tu te dégages en y laissant la peau du poignet.",
+            "1 naturel. Tu plonges le bras. La tourbe se referme dessus comme une bouche, et ne le rend qu'à regret, marqué. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "entrer-tourbiere",
+        label: "Avancer dans la tourbière",
+        passive: {
+          consequence:
+            "Tu avances. L'eau monte à la cheville, puis se retire, puis revient. Chaque pas fait un bruit de succion, et chaque bruit t'annonce à ce qu'il y a dessous.",
+        },
+      },
+    ],
+    jailerLine: "Le raccourci. Tout le monde l'essaie une fois. J'aime les raccourcis.",
+  },
+  {
+    /* LES ENLISÉS — la rencontre de la Tourbière (hostile, physique). Ils
+       ne tirent que ce qui s'arrête. Réussir la traversée rapporte (une
+       main te donne ce qu'elle tenait) ; échouer, ce sont les mains qui
+       blessent (décision Patrick 25/09).
+       ⚠️ Image à produire (`monstre_landes_enlises_a`). */
+    id: "tourbiere-2",
+    illustration: "assets/scene_mare_eau_reflet_v2_b.png",
+    combat: true,
+    foe: "enlises",
+    foeName: "Les Enlisés",
+    memoire: "enlises",
+    retours: [
+      {
+        si: { dernier: "tue" },
+        narration: [
+          "Au milieu de l'eau, une main tient droite une botte, semelle vers le ciel. Elle la tient comme on tient une enseigne.",
+          "Autour, les autres attendent, doigts ouverts à fleur d'eau. Ils ne tirent que ce qui s'arrête.",
+        ],
+      },
+      {
+        si: { dernier: "blesse" },
+        narration: [
+          "Les mains sont déjà à la surface avant que tu t'arrêtes. Sur l'une, à l'index, un lambeau d'étoffe arraché — du même drap que ta manche.",
+          "Elles ont appris où les gens hésitent. Ils ne tirent que ce qui s'arrête.",
+        ],
+      },
+      {
+        si: { dernier: ["traverse", "piquets"] },
+        narration: [
+          "Les mains ne remontent pas au début. Elles attendent plus loin, là où les piquets s'arrêtent — comme si elles avaient appris qu'on ne s'arrête pas au bord.",
+          "Quelques-unes se sont même déplacées vers la file de piquets. Ils ne tirent que ce qui s'arrête.",
+        ],
+      },
+      {
+        si: { dernier: "recule" },
+        narration: [
+          "Au bord, là où quelqu'un s'est arrêté pour faire demi-tour, la tourbe a gardé l'empreinte de deux bottes, pleine d'eau noire. Des doigts en dépassent.",
+          "Ils ne tirent que ce qui s'arrête. Ils ont retenu où l'on s'arrête.",
+        ],
+      },
+    ],
+    narration: [
+      "À mi-chemin, la surface se ride sans un souffle. Sous la pellicule noire, une main. Puis deux. Puis des dizaines, ouvertes, tournées vers le haut, à fleur d'eau.",
+      "Ceux qui ont voulu couper au sud par le marais. Ils ne remontent pas. Ils attendent qu'on s'arrête.",
+    ],
+    choices: [
+      {
+        id: "enlises-traverser",
+        nature: "physique",
+        label: "Traverser sans jamais t'arrêter",
+        masqueSi: { savoir: "savoir_piquets" },
+        laisse: { reussite: "traverse", echec: "blesse" },
+        durcitSi: { dernier: ["traverse", "piquets"], de: 1 },
+        grantsLoot: "anneau-enlise",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu ne poses jamais deux fois le pied au même endroit. Au dernier pas, une main s'ouvre sous toi au lieu de se fermer, et y laisse un anneau de fer noirci. Un péage payé à l'envers.",
+            "Tu traverses d'une traite, sans t'arrêter une seule fois. Au bord, une main à fleur d'eau te tend un anneau de fer — celui qu'elle portait. Ils ne gardent pas ce qui passe.",
+            "Ton pied s'enfonce, une demi-seconde. C'est assez. Des doigts se referment sur ta cheville et te lacèrent jusqu'au genou avant que tu t'arraches.",
+            "1 naturel. Tu t'arrêtes net, sans savoir pourquoi. Toutes les mains se tournent vers toi en même temps. ♦ −2"
+          ),
+        },
+      },
+      {
+        /* EXPLORER PRÉPARE — la file des piquets, lue à l'arrivée. On ne
+           traverse plus au hasard : on marche où les autres ont marché. */
+        id: "enlises-piquets",
+        nature: "physique",
+        label: "Poser le pied où disent les piquets",
+        requiresSavoir: "savoir_piquets",
+        horsDePortee: true,
+        laisse: "piquets",
+        grantsLoot: "anneau-enlise",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Coude après coude, tu passes exactement où les autres sont passés. Au dernier piquet, une main sort de l'eau et y pend un anneau de fer, comme on laisse un pourboire.",
+            "Tu suis les piquets sans jamais t'arrêter. Les mains te regardent passer. Au bord, un anneau de fer est posé sur le dernier piquet, à l'attention du suivant.",
+            "Tu hésites au coude où la file se sépare. Les mains se lèvent — et retombent : tu étais du bon côté du piquet. Tu passes, sans rien gagner d'autre que la rive.",
+            "1 naturel. Le dernier piquet ne tient plus rien : il flotte. Tu passes quand même, les mains à un pouce de tes bottes, et tu ressors les poings serrés sur rien. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "enlises-reculer",
+        label: "Revenir au bord par où tu es venu",
+        laisse: "recule",
+        passive: {
+          consequence:
+            "Tu fais demi-tour sans t'arrêter, dans tes propres traces, qui se remplissent d'eau derrière toi. Les mains te suivent un moment sous la surface, puis se lassent. Tu contournes la tourbière par la bruyère. C'est plus long, et c'est tout.",
+        },
+      },
+    ],
+    jailerLine: "Ils ne tirent que ce qui s'arrête. Je fais pareil, en plus grand.",
+  },
+  {
+    /* LE CERCLE QUI DESCEND — remplace la Mare aux Regards (décision
+       Patrick 25/09). Un cercle de pierres levées qui n'en est plus un : les
+       menhirs ont glissé vers le sud, chacun a laissé un sillon derrière lui.
+       Même les pierres entendent l'Appel.
+       ⚠️ Image à produire (`scene_landes_cercle_qui_descend_a`) — la butte
+       aux pierres du plateau sert en attendant. */
+    id: "cercle-qui-descend",
+    illustration: "assets/scene_landes_liaison_plateau_d.png",
+    chainNext: "cercle-qui-descend-2",
+    memoire: "cercle",
+    retours: [
+      {
+        si: { dernier: "remise" },
+        narration: [
+          "Sur la butte pelée, la forme vide d'un cercle, et les pierres parties vers le sud. Une seule est revenue d'un pas vers le nord. Son sillon, à l'envers, est encore frais.",
+          "Personne ne remet les pierres à leur place. Quelqu'un l'a fait, et le cercle s'en souvient.",
+        ],
+      },
+    ],
+    narration: [
+      "Sur une butte pelée, la forme vide d'un cercle. Les pierres levées qui le faisaient sont toutes parties vers le sud, chacune d'une dizaine de pas.",
+      "La plus grande est allée le plus loin. Elle penche, la tête vers le sud, comme quelqu'un qui écoute.",
+    ],
+    choices: [
+      {
+        id: "suivre-sillon",
+        label: "Suivre un sillon jusqu'à sa pierre",
+        illustration: "assets/scene_mare_creux_doubles_v2_c_b.png",
+        observe: true,
+        passive: {
+          consequence:
+            "Le sillon est frais sous la bruyère, la terre retournée encore humide. Au bout, la pierre a avancé cette nuit : une motte est collée à sa base, côté sud. Elle ne glisse pas. Elle marche, un pouce par nuit.",
+        },
+      },
+      {
+        id: "oreille-menhir",
+        nature: "surnaturel",
+        label: "Poser l'oreille contre le grand menhir",
+        laisse: "ecoute",
+        risky: {
+          stat: "INSTINCT",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. La pierre est tiède. Dedans, très bas, très loin au sud, un bourdonnement — pas un son : une direction. Tu comprends ce qu'elle suit. Tu décolles l'oreille avant qu'elle t'apprenne à le suivre aussi.",
+            "Un bourdonnement, au fond de la pierre, qui vient du sud et n'en finit pas. Ce n'est pas du vent. Tu te redresses et tu t'aperçois que tu penchais, toi aussi.",
+            "Rien. Puis, quand tu t'écartes, ta tête continue de pencher vers le sud une seconde de trop, comme si l'écoute ne voulait pas finir.",
+            "1 naturel. Dans la pierre, quelqu'un dit ton prénom. Pas le tien d'avant : celui d'ici. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "remettre-pierre",
+        nature: "physique",
+        label: "Repousser une pierre vers le nord",
+        laisse: { reussite: "remise", echec: "echoue" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Épaule contre la pierre, tu pousses, et elle cède d'un pas entier vers le nord, dans son propre sillon. Elle reprendra sa route. Mais cette nuit, le cercle est un peu moins ouvert.",
+            "Elle cède d'une main vers le nord, puis se cale. Ce n'est rien. Tu restes un moment la paume à plat dessus, comme pour la retenir.",
+            "Elle ne bouge pas vers le nord. Elle bouge vers toi : un basculement lent, sur le pied, qui te coince la cheville contre la terre retournée.",
+            "1 naturel. Tu pousses. La pierre recule, et toi avec elle — d'un pas, vers le sud. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Même mes pierres descendent. Je ne les en empêche pas.",
+  },
+  {
+    id: "cercle-qui-descend-2",
+    illustration: "assets/scene_landes_liaison_plateau_d.png",
+    memoire: "cercle",
+    narration: [
+      "Le soleil ne bouge pas, mais les ombres des pierres, si. Elles glissent ensemble d'un pouce vers le sud, et reviennent. Comme une respiration.",
+      "Au centre du cercle vide, une dalle plate. Dessus, gravés à la main, des noms, et une date à côté de chacun — une date par pierre partie.",
+    ],
+    choices: [
+      {
+        id: "lire-dalle",
+        label: "Lire les noms de la dalle",
+        passive: {
+          consequence:
+            "Ce ne sont pas des noms de gens. Ce sont des noms de pierres : la Haute, la Veuve, les Deux Sœurs. Les dates, elles, sont les jours où chacune s'est mise en route. La dernière ligne n'a qu'une date, sans nom. Elle est d'hier.",
+        },
+      },
+      {
+        id: "quitter-cercle",
+        label: "Descendre de la butte",
+        passive: {
+          consequence:
+            "Tu descends de la butte sans te retourner. Derrière toi, tu entends une pierre se tasser d'un pouce dans la terre, du côté du sud.",
+        },
+      },
+    ],
+    jailerLine: "Une date par pierre. J'ai la même liste, avec plus de noms.",
   },
   /* ══ AVANT LA DESCENTE — le dernier écran où l'on peut encore ne pas y
      aller (demande Patrick, 01/09 : « il faut une scène avant qu'on voit la
@@ -11748,8 +12028,11 @@ const APPROACH: Record<string, string> = {
   "puits-condamne": "Vers des coups sourds",
   "chien-du-bailli": "Vers une maison murée",
   "petit-tribunal": "Vers une salle de juges",
-  "mare-aux-regards": "Vers une eau qui ne bouge pas",
   "verger-noir": "Vers des rangs d'arbres noirs",
+  // LA LANDE (vague 3, 25/09) : deux lieux neufs, tirés seulement pendant
+  // l'étape de la Lande (voir LANDE_LIEUX — ils ne sont pas dans le pool).
+  "tourbiere": "Vers une eau noire sous la brume",
+  "cercle-qui-descend": "Vers des pierres qui penchent",
   "meute-grise-1": "Vers des silhouettes grises",
   "palissade-sud": "Vers une palissade au sud",
   // ⚠️ SENTINELLE, pas un lieu (24/08) : le libellé du PORTILLON — l'unique
@@ -11790,8 +12073,24 @@ export const HAMEAU_SORTIE = "sortie-hameau";
 // palissade au sud » offert à la PREMIÈRE Croisée → Veilleur → portillon →
 // Falaise → Descente en dix écrans, traversée 1/7. La sortie
 // de zone ne s'atteint qu'au bout de la traversée, par le Chemin du Sud.
+/* ═══ LA LANDE — le premier environnement des Landes (vague 3, 25/09) ═══
+   Décision Patrick : la Lande est un vrai environnement. On part de la
+   Borne, on traverse DEUX lieux tirés parmi quatre, et une transition de
+   sortie mène aux Gibets. Tant que les deux lieux ne sont pas faits, les
+   Croisées n'offrent QUE des lieux de la Lande ; ensuite ils quittent le
+   tirage pour de bon (un environnement traversé ne revient pas).
+   ⚠️ Déclarés AVANT `TRAVERSAL_POOL`, qui les exclut : sinon TDZ. */
+export const LANDE_LIEUX = ["chemin-creux", "verger-noir", "tourbiere", "cercle-qui-descend"];
+export const LANDE_TIRAGES = 2;
+/** La transition de sortie (une scène, pas un lieu) : la crête des Gibets. */
+export const LANDE_SORTIE = "lande-sortie";
+
 export const TRAVERSAL_POOL = Object.keys(APPROACH).filter(
-  (id) => id !== SORTIE_DE_ZONE && id !== HAMEAU_SORTIE && id !== "palissade-sud"
+  (id) =>
+    id !== SORTIE_DE_ZONE &&
+    id !== HAMEAU_SORTIE &&
+    id !== "palissade-sud" &&
+    !LANDE_LIEUX.includes(id)
 );
 
 /**
@@ -11845,7 +12144,9 @@ const LIEU_NOM: Record<string, string> = {
   "chien-du-bailli": "La Maison du Bailli",
   "petit-tribunal": "Le Petit Tribunal",
   "proces-du-heros": "Le Petit Tribunal",
-  "mare-aux-regards": "La Mare aux Regards",
+  "tourbiere": "La Tourbière",
+  "cercle-qui-descend": "Le Cercle qui Descend",
+  "lande-sortie": "La Lande",
   "verger-noir": "Le Verger Noir",
   epoux: "Le Verger Noir",
   "meute-grise": "La Lande",
@@ -12130,29 +12431,29 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
      sait rien. `minFille` les rend plus spécifiques, donc prioritaires — une
      fois qu'on sait, la croiser sans un mot n'aurait plus de sens. */
   {
-    from: ["campement", "mare-aux-regards", "verger-noir"],
-    text: "À la berge de la mare basse, quelqu'un est accroupi — un enfant, un châle sombre bien trop grand, les mains dans l'eau noire. Elle se relève sans hâte en t'entendant, s'essuie aux hanches et s'éloigne vers l'ouest. Elle ne se retourne pas. Aucun enfant, dans ce pays, ne marche aussi tranquillement.",
+    from: ["campement", "tourbiere", "verger-noir"],
+    text: "Au bord de la tourbière, quelqu'un est accroupi — un enfant, un châle sombre bien trop grand, les mains dans l'eau noire. Elle se relève sans hâte en t'entendant, s'essuie aux hanches et s'éloigne vers l'ouest. Elle ne se retourne pas. Aucun enfant, dans ce pays, ne marche aussi tranquillement.",
   },
   {
-    from: ["campement", "mare-aux-regards", "verger-noir"],
+    from: ["campement", "tourbiere", "verger-noir"],
     text: "Entre deux rangs du verger, une petite silhouette immobile. Tu la fixes ; elle attend que tu l'aies bien vue, puis reprend sa marche entre les arbres, du pas de quelqu'un qui rentre chez lui. Les fruits de cendre ne bougent pas sur son passage.",
   },
   {
-    from: ["campement", "mare-aux-regards", "verger-noir"],
+    from: ["campement", "tourbiere", "verger-noir"],
     text: "Assise sur un muret, à contre-jour, les jambes trop courtes pour toucher terre. Elle te regarde venir de loin, sans se cacher et sans se lever, puis descend de l'autre côté de la pierre au moment exact où tu arrives à sa hauteur. De ton côté du mur, il n'y a plus personne. De l'autre non plus.",
   },
   {
-    from: ["campement", "mare-aux-regards", "verger-noir"],
+    from: ["campement", "tourbiere", "verger-noir"],
     minFille: 1,
-    text: "Elle croise ta route sans ralentir, à trois pas, comme on croise quelqu'un dans un couloir. « Bois pas à la mare basse. Ils y jettent ce qu'ils veulent pas enterrer. » Elle est déjà loin quand tu penses à répondre.",
+    text: "Elle croise ta route sans ralentir, à trois pas, comme on croise quelqu'un dans un couloir. « Bois pas à la tourbière. Ils y jettent ce qu'ils veulent pas enterrer. » Elle est déjà loin quand tu penses à répondre.",
   },
   {
-    from: ["campement", "mare-aux-regards", "verger-noir"],
+    from: ["campement", "tourbiere", "verger-noir"],
     minFille: 1,
     text: "Elle passe, et elle parle sans tourner la tête. « Tu marches comme les gens qui comptent les jours. » Un temps, sa voix déjà derrière toi — une voix d'enfant, sur le ton de quelqu'un qui a fini d'apprendre : « Moi j'ai arrêté au troisième. » Quand tu te retournes, la bruyère se referme sur rien.",
   },
   {
-    from: ["campement", "mare-aux-regards", "verger-noir"],
+    from: ["campement", "tourbiere", "verger-noir"],
     minFille: 1,
     text: "« Trois corbeaux sur ton toit ce matin. » Elle le dit du ton dont un enfant récite la règle d'un jeu, sans s'arrêter. « Quatre, faut partir. » Tu mets le reste du trajet à décider si c'était un avertissement ou une politesse.",
   },
@@ -12569,7 +12870,8 @@ const INDICE_ROUTE: Record<string, string> = {
   "puits-condamne": "des coups sourds sous des planches clouées",
   "chien-du-bailli": "une maison murée de l'intérieur",
   "petit-tribunal": "une porte basse et trois bancs qu'on devine",
-  "mare-aux-regards": "une eau noire où les roseaux ne bougent pas",
+  "tourbiere": "une brume basse, à hauteur de genou, sur une eau noire",
+  "cercle-qui-descend": "des pierres levées qui penchent toutes du même côté",
   "verger-noir": "des rangs d'arbres qui n'ont plus de feuilles",
   "meute-grise-1": "des silhouettes grises qui se déplacent ensemble",
   "palissade-sud": "une palissade qui coupe l'horizon, une lanterne allumée sous le ciel clair",
@@ -13149,7 +13451,10 @@ export const APPROACH_NARRATION: Record<string, string> = {
   // Même correction : « basse », « froid » et « porte » ouvrent le lieu deux
   // lignes plus loin. L'approche ne fait plus que mener au seuil.
   "petit-tribunal": "Le chemin bute sur une bâtisse sans fenêtre, plantée de travers par rapport à la rue. Tu entres au Petit Tribunal.",
-  "mare-aux-regards": "Le vent tombe d'un coup, comme coupé au couteau. Tes derniers pas ne font plus de bruit.",
+  // Vague 3 (25/09) — l'approche du Cercle ne nomme ni le cercle ni la
+  // butte : c'est le 1er ¶ du lieu qui les pose (pas de double arrivée).
+  "tourbiere": "Le sol devient mou sous tes pas. Une brume basse monte de l'herbe, et dessous, une eau qui renvoie le ciel.",
+  "cercle-qui-descend": "Sur l'horizon, des formes dressées se découpent, trop régulières pour des rochers. La bruyère qui y monte est rayée de longues traînées claires, comme tirées au râteau.",
   "verger-noir": "Des rangs réguliers montent de la bruyère. De loin, c'est presque rassurant.",
   "meute-grise-1": "La bruyère bouge sans vent, par plaques, autour de toi. Ce ne sont pas des ombres : ce sont des dos gris, bas sur pattes, qui resserrent un cercle patient.",
   "palissade-sud": "Au bout des Landes, une ligne de troncs noircis barre tout l'horizon. Derrière, l'air se fait froid et vieux — il monte d'en bas. La Descente n'est plus loin.",
@@ -13328,11 +13633,21 @@ export const FAMILIARITE: Record<string, Strate> = {
       "La poussière est intacte sur tous les bancs sauf une place. On n'y " +
       "va plus. On l'a laissée pour quelqu'un.",
   },
-  "mare-aux-regards": {
-    deux: "L'eau se ride avant que tu sois au bord. Elle a commencé sans toi.",
+  "tourbiere": {
+    deux:
+      "Il y a un piquet de plus dans la file, planté de frais, plus loin que " +
+      "les autres. Quelqu'un est allé jusque-là.",
     quatre:
-      "Le reflet est déjà en place quand tu arrives. Il ne t'imite plus : " +
-      "il t'attend.",
+      "Au bord de l'eau, une empreinte de botte remplie d'eau noire, tournée " +
+      "vers le sud. Elle ne va que dans un sens.",
+  },
+  "cercle-qui-descend": {
+    deux:
+      "Les pierres ont avancé. Pas beaucoup : un pied, peut-être. Les sillons " +
+      "sont plus longs que la bruyère ne le laisse croire.",
+    quatre:
+      "Il manque une pierre au cercle. Au sud, très loin sur l'horizon, une " +
+      "forme levée penche vers les cordes.",
   },
   "verger-noir": {
     deux:
@@ -13437,6 +13752,91 @@ export function pickLiaisonOptions(
     if (autre) second = autre;
   }
   return [arr[0], second];
+}
+
+/** Combien de lieux de la Lande ont été traversés dans cette vie. */
+export function landeVisitees(visited: string[]): number {
+  return LANDE_LIEUX.filter((id) => lieuDejaVisite(visited, id)).length;
+}
+
+/**
+ * LA CROISÉE DE LA LANDE — deux lieux de la Lande pas encore vus, mélangés
+ * par la graine (stable à la reprise). La première vie du compte (la
+ * traversée guidée) sert d'abord le Chemin Creux et le Verger Noir : la
+ * Bête (le premier pic) et l'Épouvantail (le premier geste neuf) — les deux
+ * choses que la Lande a de plus fort à montrer.
+ */
+export function pickLandePair(visited: string[], seed: number, guidee = false): [string, string] {
+  const restants = LANDE_LIEUX.filter((id) => !lieuDejaVisite(visited, id));
+  const arr = [...restants];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(seeded(seed * 37 + i) * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  if (guidee) {
+    const prio = ["chemin-creux", "verger-noir"].filter((id) => arr.includes(id));
+    const reste = arr.filter((id) => !prio.includes(id));
+    const ordre = [...prio, ...reste];
+    const pair: [string, string] = [ordre[0], ordre[1] ?? ordre[0]];
+    return seed % 2 ? [pair[1], pair[0]] : pair;
+  }
+  return [arr[0], arr[1] ?? arr[0]];
+}
+
+/** La première marche de la vie : on tourne le dos à la Borne, et le but du
+ *  jeu se voit (la colonne de cordes, au sud). Remplace l'ambiance de la
+ *  première Croisée de la Lande — même écran, pas un tap de plus. */
+export const LANDE_DEPART =
+  "Tu tournes le dos à la pierre. Devant, la lande à perte de vue — et, tout " +
+  "au bout, un trait sombre qui monte du sol. On le prendrait pour une " +
+  "fumée, s'il bougeait.";
+/** L'Hésitant, pour qui ne l'a pas abordé : on le voit en partant. */
+export const LANDE_RAPPEL_HESITANT =
+  "Derrière toi, l'homme immobile n'a pas bougé. « Tu descends », dit-il sans " +
+  "se retourner. « Vous avez tous le même pas, ceux qui descendent. »";
+/** Image du départ — à produire ; la vue de marche sert en attendant. */
+export const LANDE_DEPART_IMAGE = "assets/scene_lande_colonne_au_loin_a.png";
+
+/**
+ * LES APPROCHES VUES DE LOIN (transitions de la Lande, 25/09) : une image
+ * par LIEU, réutilisée d'où qu'on vienne — jamais une par paire. Toutes à
+ * produire ; gardées par `assetExiste` côté Scene.tsx (le loin garde la vue
+ * de marche tant que le fichier n'est pas déposé).
+ */
+export const APPROCHE_IMAGE: Record<string, string> = {
+  "verger-noir": "assets/scene_lande_approche_verger_a.png",
+  tourbiere: "assets/scene_lande_approche_tourbiere_a.png",
+  "cercle-qui-descend": "assets/scene_lande_approche_cercle_a.png",
+};
+
+/**
+ * LA SORTIE DE LA LANDE — une vraie scène de transition (vague 3, 25/09).
+ * La bruyère cède, la crête des Gibets se découpe, et le trait sombre au
+ * sud n'a pas bougé. Une seule direction : on monte. La première vie monte
+ * vers le gibet QUI PARLE (le paiement de la graine gravée à la Borne) ; les
+ * suivantes, vers la Colline elle-même — même lieu, deux portes.
+ * ⚠️ Hors de SCENES : `sceneFromTrav` la rebâtit par son id à la reprise.
+ */
+export function landeSortie(guidee: boolean): Scene {
+  return {
+    id: LANDE_SORTIE,
+    liaison: true,
+    illustration: "assets/scene_transition_crete_cordes_b.png",
+    narration: [
+      "La bruyère cède à une pente d'herbe rase. Loin devant, sur une crête, " +
+        "des silhouettes droites se découpent contre le ciel — trop droites " +
+        "pour des arbres.",
+      "Le trait sombre, au sud, n'a pas bougé. La Lande est derrière toi.",
+    ],
+    choices: [
+      {
+        id: "lande-monter-crete",
+        label: "Monter vers la crête",
+        orient: { dest: guidee ? "pendu-qui-parle" : "colline-aux-gibets" },
+      },
+    ],
+    jailerLine: "La Lande t'a laissé passer. Elle n'en fait pas une habitude.",
+  };
 }
 
 /**

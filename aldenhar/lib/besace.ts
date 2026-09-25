@@ -415,7 +415,23 @@ export const LANDES_OBJETS: Record<string, Omit<BesaceItem, "id">> = {
   "miroir-poche": {
     name: "Miroir de Poche Fêlé", rarity: "commun", kind: "babiole", slot: "passif",
     passiveMod: 1, passiveScope: "all", illustration: "assets/objet_miroir_poche_fele_d_a.png",
-    flavor: "Fêlé en travers, jeté dans les roseaux. Se regarder dedans remet en place ce que la lande a déplacé.",
+    flavor: "Fêlé en travers, remonté du fond de la tourbière. Se regarder dedans remet en place ce que la lande a déplacé.",
+  },
+  // ——— La Lande (vague 3, 25/09). Deux objets qui n'existaient pas : la
+  // serpe que l'Époux laisse à qui le retient (elle sert au Verger, contre
+  // l'Épouvantail — outil, pas arme : on ne se bat pas avec) et l'anneau
+  // qu'on arrache aux Enlisés. Icônes à produire (prompts dans
+  // data/images-a-produire-2026-09-25.md) ; l'icône générique de leur type
+  // sert en attendant, jamais une image cassée.
+  "serpe-epoux": {
+    name: "Serpe de l'Époux", rarity: "commun", kind: "arme", slot: "passif",
+    passiveMod: 1, passiveScope: "combat",
+    flavor: "Une serpe de verger au manche poli par une seule main. Il te l'a donnée pour que tu coupes ce qui regarde au bout de l'allée.",
+  },
+  "anneau-enlise": {
+    name: "Anneau de l'Enlisé", rarity: "rare", kind: "babiole", slot: "passif",
+    passiveMod: 1, passiveScope: "all",
+    flavor: "Un anneau de fer noirci, arraché à un doigt qui ne voulait pas le rendre. Il est froid, et il le reste.",
   },
   // ——— Lot 25/07 : règle de dosage (« chaque point d'intérêt rend une monnaie »).
   // Trois objets pour les points de fouille qui ne rendaient rien. Leurs icônes

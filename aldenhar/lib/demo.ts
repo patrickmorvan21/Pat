@@ -60,7 +60,9 @@ export function traverseeGuidee(): boolean {
  * aux Cordes) sont des déroutages dans `Scene.tsx`, pas des destinations.
  */
 export const DEMO_ROUTE: string[] = [
-  "chemin-creux", //          segment 3 — la Bête embusque cette route
+  // Segment 3 (la Bête) : servi par la CROISÉE DE LA LANDE (vague 3,
+  // 25/09), qui propose d'abord le Chemin Creux et le Verger à une première
+  // vie (`pickLandePair`, guidée). La Bête embusque toujours cette route.
   // Segment 4 — LA COLLINE, servie par la scène du PENDU QUI PARLE (même
   // lieu) : c'est le payoff de la graine plantée à la Borne (« le pendu de
   // la colline a parlé hier »). L'ancienne entrée colline-aux-gibets ne

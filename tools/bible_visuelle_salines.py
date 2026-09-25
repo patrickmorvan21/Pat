@@ -501,6 +501,16 @@ OBJETS = {
     "oeil-de-cristallin": ("objet_salines_oeil_cristallin_a",
         "a single whole human eye turned to white salt crystal, dry and faceted, the pupil a dark pit, "
         "resting on its side with a few grains of salt around it"),
+    # LA LANDE (25/09) — les deux objets de la vague 3. ⚠️ Rangés ICI parce que
+    # le garde des icônes vit dans ce fichier et lit TOUT le catalogue de
+    # besace.ts : une icône d'objet ne dépend pas de sa zone (claire sur fond
+    # noir partout). Sujets pris dans leur `flavor`.
+    "serpe-epoux": ("objet_landes_serpe_epoux_a",
+        "a small curved orchard billhook with a hooked iron blade and a short wooden handle worn smooth "
+        "and pale by a single hand, the edge freshly sharpened, a thin line of dark ash on the blade"),
+    "anneau-enlise": ("objet_landes_anneau_enlise_a",
+        "a single plain ring of blackened iron, thick and slightly bent out of round, a crust of dried "
+        "black peat still clinging to its inner side, resting flat"),
 }
 
 

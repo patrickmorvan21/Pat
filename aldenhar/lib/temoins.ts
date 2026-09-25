@@ -138,11 +138,6 @@ export const TEMOINS: Record<string, Omit<Temoin, "id">> = {
     deposition: "Il a fouillé sous l'autel. Ce qui est dessous n'est pas à nous non plus, mais on n'y touche pas.",
     lieu: "à la Chapelle des Cordes",
   },
-  "aborder-renoncant-mare": {
-    nom: "Le Renonçant de la Mare",
-    deposition: "Il m'a parlé au bord de l'eau. Il regardait mon reflet, pas moi.",
-    lieu: "à la Mare aux Regards",
-  },
   // Deux entrées SYNTHÉTIQUES (pas des ids de choix) : l'arrivée sur la Colline
   // (Scene.soupconOnArrival) et l'échec d'un jet d'Empathie hors combat.
   "colline-aux-gibets-arrivee": {

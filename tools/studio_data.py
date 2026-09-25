@@ -1734,6 +1734,15 @@ def main() -> int:
     if m_pool:
         for lit in re.findall(r'id !== "([^"]+)"', m_pool.group(1)):
             pool = [x for x in pool if x != lit]
+        # LA LANDE (vague 3, 25/09) : exclue du pool par un TABLEAU
+        # (`!LANDE_LIEUX.includes(id)`), pas par des littéraux — sans ce cas,
+        # le kit l'offrirait comme destination ordinaire après la sortie.
+        if "LANDE_LIEUX.includes(id)" in m_pool.group(1):
+            m_l = re.search(r"export const LANDE_LIEUX = \[(.*?)\];", src_ts, re.S)
+            lande = re.findall(r'"([^"]+)"', m_l.group(1)) if m_l else []
+            if len(lande) < 2:
+                raise SystemExit("studio_data : LANDE_LIEUX illisible — le pool mentirait")
+            pool = [x for x in pool if x not in lande]
 
     ids = {s["id"] for s in scenes}
     via_poi = {l["vers"] for l in liens if l["type"] == "secondaire"}

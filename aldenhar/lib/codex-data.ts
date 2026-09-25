@@ -162,13 +162,22 @@ export const CODEX_LANDES: CodexEntry[] = [
     illustration: "assets/scene_petit_tribunal_b_g.png",
   },
   {
-    id: "lieu:mare-aux-regards",
+    id: "lieu:tourbiere",
     type: "lieu",
     zone: "landes",
-    titre: "La Mare aux Regards",
+    titre: "La Tourbière",
     corps:
-      "Une eau noire où les roseaux ne bougent pas. Le reflet y est en retard d'une demi-seconde — il finit toujours par rattraper. La berge est usée à UN endroit précis, par des gens qui viennent vérifier quelque chose, toujours au même.",
+      "Une eau noire sous une brume à hauteur de genou. Une file de piquets la traverse, plantés par quelqu'un qui savait où le fond tient ; entre eux, les Enlisés attendent qu'on marche à côté. Ce qui tombe dans la tourbe ne remonte pas — sauf ce qu'une main va chercher.",
     illustration: "assets/scene_mare_aux_regards_a.png",
+  },
+  {
+    id: "lieu:cercle-qui-descend",
+    type: "lieu",
+    zone: "landes",
+    titre: "Le Cercle qui Descend",
+    corps:
+      "Des pierres levées en file, toutes penchées vers le sud, un sillon dans la bruyère derrière chacune. Elles ont été dressées en cercle. Elles ne le sont plus. Personne ne les a vues bouger ; tout le monde a vu qu'elles avaient bougé.",
+    illustration: "assets/scene_landes_liaison_plateau_d.png",
   },
   {
     id: "lieu:verger-noir",
@@ -176,7 +185,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     zone: "landes",
     titre: "Le Verger Noir",
     corps:
-      "Onze rangs plantés un par an, et les fruits mûrissent en cendre. Les arbres poussent — c'est pire que s'ils étaient morts. Deux silhouettes y travaillent encore, redressées entre les rangs, et récitent des prénoms au lieu de compter.",
+      "Onze rangs plantés un par an, et les fruits mûrissent en cendre. Les arbres poussent — c'est pire que s'ils étaient morts. Deux silhouettes y travaillent encore entre les rangs, et, au bout de l'allée centrale, une troisième se tient en croix, tournée du mauvais côté.",
     illustration: "assets/scene_verger_noir_e_f.png",
   },
   {
@@ -277,7 +286,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     zone: "landes",
     titre: "Le Rebouteux",
     corps:
-      "Il soigne le soir, à l'écart des bâches, et recule d'un pas devant certaines fièvres. Ce qu'il ne peut pas refermer, il l'envoie à la Mare — « ça se soigne pas ici ». Ses mains savent avant lui ce qu'elles refusent de toucher.",
+      "Il soigne le soir, à l'écart des bâches, et recule d'un pas devant certaines fièvres. Ce qu'il ne peut pas refermer, il l'envoie à la tourbière — « ça se soigne pas ici ». Ses mains savent avant lui ce qu'elles refusent de toucher.",
     illustration: "assets/monstre_rebouteux_b_b.png",
   },
   {
@@ -439,7 +448,8 @@ export const CODEX_PAR_LIEU: Record<string, string> = {
   "Le Puits Condamné": "lieu:puits-condamne",
   "La Maison du Bailli": "lieu:chien-du-bailli",
   "Le Petit Tribunal": "lieu:petit-tribunal",
-  "La Mare aux Regards": "lieu:mare-aux-regards",
+  "La Tourbière": "lieu:tourbiere",
+  "Le Cercle qui Descend": "lieu:cercle-qui-descend",
   "Le Verger Noir": "lieu:verger-noir",
   "La Palissade Sud": "lieu:palissade-sud",
   "La Descente": "lieu:la-descente",

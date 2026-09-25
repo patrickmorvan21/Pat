@@ -942,7 +942,28 @@ class Partie:
             self.d["options"] = None
             self.entrer("menace-retour-" + men["id"])
             return
-        opts = r.sample(libres, 2)
+        # ═══ LA LANDE (vague 3, 25/09) — miroir du jeu : tant que ses deux
+        # lieux ne sont pas faits, la Croisée n'offre QUE la Lande ; ensuite
+        # une sortie jouée (une seule direction) monte vers les Gibets.
+        lande = self.k.get("lande") or {}
+        lande_lieux = lande.get("lieux") or []
+        faits = [x for x in lande_lieux if x in self.d["visites"]]
+        colline_vue = any(x in self.d["visites"] for x in ("colline-aux-gibets", "pendu-qui-parle"))
+        if lande_lieux and not self.d.get("hameauEntree") and not colline_vue:
+            if len(faits) >= lande.get("tirages", 2):
+                so = lande["sortie"]
+                self.d["phase"] = "liaison"
+                self.d["options"] = [so["dest"]]
+                self.d["pas"] += 1
+                self.d["poiOuvert"] = False
+                for t in so["narration"]:
+                    self.dit(t, "narration")
+                return
+            restants = [x for x in lande_lieux if x not in self.d["visites"]]
+            if restants:
+                libres = restants
+        opts = r.sample(libres, min(2, len(libres)))
+        depart_lande = bool(lande_lieux) and len(self.d["visites"]) == 1 and opts[0] in lande_lieux
         # UN ÉCHEC DUR DÉPENSE QUELQUE CHOSE DU MONDE (vague 5) : hors séjour
         # il n'y avait pas d'option à retirer, alors la Croisée se resserre.
         ferme = self.d.pop("routeAFermer", False)
@@ -968,9 +989,16 @@ class Partie:
         # L'origine est le RADICAL du lieu qu'on quitte : `pickLiaisonAmbiance`
         # la reçoit normalisée dans le jeu (le suffixe -2 d'un écran-événement
         # n'est pas un autre lieu).
-        amb = self.ambiance_de_marche(r, dans_village, radical)
-        self.d["ambiancesVues"].append(amb)
-        self.dit(amb, "narration")
+        if depart_lande:
+            # LE DÉPART (vague 3) : la colonne de cordes au sud REMPLACE
+            # l'ambiance — et qui n'a pas abordé l'homme immobile l'entend.
+            self.dit(lande["depart"], "narration")
+            if "hesitant" not in (self.d.get("memoireVue") or {}):
+                self.dit(lande["rappelHesitant"], "narration")
+        else:
+            amb = self.ambiance_de_marche(r, dans_village, radical)
+            self.d["ambiancesVues"].append(amb)
+            self.dit(amb, "narration")
         # LES TRACES DE LA MENACE (17/08) : la première tombe TOUJOURS avant
         # tout retour possible — la causalité se lit avant la conséquence.
         traces = self.k.get("tracesMenace", {}).get((men or {}).get("id"), [])

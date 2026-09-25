@@ -16,6 +16,7 @@ import StraightSwipe from "./engines/StraightSwipe";
 import SteadyCaress from "./engines/SteadyCaress";
 import SingleGesture from "./engines/SingleGesture";
 import Assemble from "./engines/Assemble";
+import Epouvantail from "./engines/Epouvantail";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const ENGINES: Record<string, ComponentType<any>> = {
@@ -24,6 +25,7 @@ const ENGINES: Record<string, ComponentType<any>> = {
   glyph: GlyphTrace,
   hold: HoldSteady,
   breath: BreathLine,
+  epouvantail: Epouvantail,
   timing: TimingTap,
   dial: DialAlign,
   rhythm: RhythmTap,

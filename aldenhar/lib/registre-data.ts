@@ -83,7 +83,7 @@ const FOND: [string, number, string][] = [
   ["Guenne", 6, "s'est retournée dans le Chemin Creux"],
   ["Vael", 5, "l'anneau était un appât"],
   ["Ombric", 5, "fixé au Champ, poteau gravé la veille"],
-  ["La Petite Aude", 5, "a bu à la Mare"],
+  ["La Petite Aude", 5, "a bu à la tourbière"],
   ["Rhodan", 5, "le Bailli a lu son nom deux fois"],
   ["Sombre-Ivrig", 4, "n'a jamais atteint la Palissade"],
   ["Fenne", 4, "a ouvert au Chien"],

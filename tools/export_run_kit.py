@@ -129,6 +129,43 @@ def rappels_corps() -> dict[str, list[str]]:
     return {k: v for k, v in out.items() if v}
 
 
+def lire_lande(src: str) -> dict:
+    """LA LANDE (vague 3, 25/09) — le premier environnement des Landes.
+
+    La réplique doit la jouer comme le jeu : deux lieux tirés parmi quatre
+    avant toute autre destination, puis la sortie vers les Gibets. Sans ce
+    bloc, un relecteur verrait la Lande tirée au milieu du pool plat — le
+    biais « le kit ne montre pas » documenté le 9/08.
+    """
+    m = re.search(r"export const LANDE_LIEUX = \[(.*?)\];", src, re.S)
+    lieux = re.findall(r'"([^"]+)"', m.group(1)) if m else []
+    t = re.search(r"export const LANDE_TIRAGES = (\d+);", src)
+
+    def chaine(nom: str) -> str:
+        mm = re.search(rf"export const {nom} =\s*(.*?);\n", src, re.S)
+        return "".join(re.findall(r'"((?:[^"\\]|\\.)*)"', mm.group(1))) if mm else ""
+
+    i = src.index("export function landeSortie")
+    corps = src[i:src.index("\n}\n", i)]
+    sortie = {
+        "narration": chaines_de_tableau(bloc_tableau(corps, "narration:")),
+        "label": re.search(r'label: "([^"]+)"', corps).group(1),
+        "destGuidee": re.search(r'guidee \? "([^"]+)"', corps).group(1),
+        "dest": re.search(r'guidee \? "[^"]+" : "([^"]+)"', corps).group(1),
+    }
+    lande = {
+        "lieux": lieux,
+        "tirages": int(t.group(1)) if t else 2,
+        "depart": chaine("LANDE_DEPART"),
+        "rappelHesitant": chaine("LANDE_RAPPEL_HESITANT"),
+        "sortie": sortie,
+    }
+    # Contrôle de compte : un extracteur muet ne doit jamais passer au vert.
+    if len(lieux) < 3 or not lande["depart"] or len(sortie["narration"]) < 1:
+        raise SystemExit("export_run_kit : la Lande est illisible dans scene-data.ts")
+    return lande
+
+
 def record(src: str, ancre: str) -> dict[str, str]:
     """Un `Record<string, string> = { clef: "valeur", … }` en dict.
 
@@ -310,6 +347,7 @@ def main() -> int:
         "commit": d.get("commit"),
         "entree": d["entree"],
         "pool": d["pool"],
+        "lande": lire_lande(src),
         "scenes": scenes,
         "etats": d.get("etats", []),
         # LA STRATE DE FAMILIARITÉ (vague 4) : ce qu'un lieu dit de plus à qui

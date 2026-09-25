@@ -588,6 +588,92 @@ def main() -> int:
     print(f"  (A-mémoire : {len(cles_portees)} clé(s) portée(s), {n_laisse} choix qui "
           f"laissent un acte, {len(lectures)} lecture(s))")
 
+    # ─── A-trois. « Jamais plus de trois actions à l'écran. » ────────────
+    # RÉTABLI le 25/09 (il avait disparu d'ici à une date qu'on n'a pas
+    # retrouvée ; le moteur garde son FILET — `SLOTS = 3` dans Scene.tsx —
+    # mais un filet MASQUE une action au hasard, en silence). Le garde
+    # compte le PIRE CAS d'un écran : toutes les conditions vraies à la fois,
+    # moins ce qui ne peut PAS coexister — un choix et ceux dont il
+    # `prendLaPlaceDe`, une exigence et le `masqueSi` qui lui répond, les
+    # variantes de dominante (un héros n'en a qu'une), `siMemoire` contre
+    # `sansMemoire`, le serment tenu contre le rompu. Dans un SÉJOUR, un choix
+    # qui exige qu'un autre ait été fait compte avec lui (le séjour l'a
+    # consommé). Il lit l'export, régénéré s'il est plus vieux que la source.
+    import json as _json, subprocess as _sp, sys as _sys
+    exp = RACINE / "data" / "studio-data.json"
+    if not exp.exists() or SD.stat().st_mtime > exp.stat().st_mtime:
+        _sp.run([_sys.executable, str(RACINE / "tools" / "studio_data.py")], check=True,
+                stdout=_sp.DEVNULL)
+    donnees = _json.loads(exp.read_text(encoding="utf8"))
+
+    def pire_cas(scene: dict) -> int:
+        choix = scene.get("choix") or []
+        parent = {c["id"]: c["id"] for c in choix}
+
+        def f(x):
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        def u(a, b):
+            if a in parent and b in parent:
+                parent[f(a)] = f(b)
+
+        for c in choix:
+            t = c.get("prendLaPlaceDe")
+            for b in ([t] if isinstance(t, str) else (t or [])):
+                u(c["id"], b)
+
+        def paire(exige, masque, sous=None):
+            for a in choix:
+                v = a.get(exige)
+                if v is None:
+                    continue
+                for b in choix:
+                    m = b.get(masque)
+                    if m is None:
+                        continue
+                    mv = m.get(sous) if (sous and isinstance(m, dict)) else m
+                    vs = v if isinstance(v, list) else [v]
+                    ms = mv if isinstance(mv, list) else [mv]
+                    if set(map(str, vs)) & set(map(str, ms)):
+                        u(a["id"], b["id"])
+
+        paire("exigeObjet", "masqueSi", "objet")
+        paire("exigeSavoir", "masqueSi", "savoir")
+        paire("exigeDecouverte", "masqueSi", "decouverte")
+        paire("exigeChoixFait", "masqueSiChoixFait")
+        paire("exigeEchecArrivee", "masqueSiEchecArrivee")
+        paire("exigeUsage", "masqueSiUsage")
+        for champ in ("exigeDominante", "exigeSerment"):
+            ids_ = [c["id"] for c in choix if c.get(champ)]
+            for x in ids_[1:]:
+                u(ids_[0], x)
+        for a in choix:
+            for b in choix:
+                if a.get("siMemoire") and b.get("sansMemoire") and \
+                        _json.dumps(a["siMemoire"], sort_keys=True) == _json.dumps(b["sansMemoire"], sort_keys=True):
+                    u(a["id"], b["id"])
+        if scene.get("sejour"):
+            for c in choix:
+                req = c.get("exigeChoixFait")
+                for r in ([req] if isinstance(req, str) else (req or []))[:1]:
+                    u(c["id"], r)
+        return len({f(c["id"]) for c in choix})
+
+    scenes_ = donnees.get("scenes") or []
+    if len(scenes_) < 60:
+        manques.append(f"A-trois — {len(scenes_)} scènes lues dans l'export : l'extracteur ne lit plus la source.")
+    for sc_ in scenes_:
+        n = pire_cas(sc_)
+        if n > 3:
+            manques.append(
+                f"A-trois — « {sc_['id']} » peut offrir {n} actions à la fois "
+                f"({', '.join(c['id'] for c in sc_.get('choix') or [])}) : le filet en masquerait une au hasard."
+            )
+    print(f"  (A-trois : {len(scenes_)} écrans contrôlés)")
+
     print(f"TESTS D'ACCEPTATION — {len(manques)} signalement(s)\n")
     for x in manques:
         print("  ⚠️ " + x)
@@ -598,6 +684,7 @@ def main() -> int:
         print("  A2 aucun Jour n'est jamais retiré en sanction          ✓")
         print(f"  A4 seuls {len(ACTES)} gestes déclarés font monter le Soupçon  ✓")
         print("  A8 tous les libellés de choix se lisent d'un coup      ✓")
+        print("  A-trois jamais plus de trois actions à l'écran          ✓")
         print("  les cinq combats se souviennent de l'exploration       ✓")
         print("  chaque jet déclare la nature de son échec              ✓")
         print("  A-mémoire tout souvenir lu a été écrit quelque part     ✓")

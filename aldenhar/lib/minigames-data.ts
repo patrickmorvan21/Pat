@@ -15,6 +15,7 @@ export type MiniGameEngine =
   | "glyph"
   | "hold"
   | "breath"
+  | "epouvantail"
   | "timing"
   | "dial"
   | "rhythm"
@@ -55,6 +56,26 @@ export type MiniGameEntry = {
  * réglage que le jeu ne sert pas.
  */
 export const JEU_GAMES: MiniGameEntry[] = [
+  {
+    id: "jeu-epouvantail",
+    number: 0,
+    title: "L'Épouvantail du Verger",
+    category: "Référence",
+    stat: "INSTINCT",
+    lieu: "La Lande — le Verger Noir, « Reculer sans le quitter des yeux » (depuis le 25/09)",
+    note: "Port fidèle du prototype validé le 25/09 (maquettes/epouvantail_geste.html, v2). La galerie joue sans le Miroir fêlé ; en jeu, le porter montre où il ressort. ⚠️ Valeurs à tenir en synchro avec Scene.tsx (onSelect).",
+    description:
+      "Ton doigt, ce sont tes yeux : il doit rester SUR lui pendant que tu recules entre les rangs. Un tronc passe devant — il change de place, un peu plus près, et il faut aller le retrouver avant qu'il ne profite de ce que tu ne le vois plus. Des leurres tirent l'œil de l'autre côté. Deux fautes (perdu de vue, ou doigt levé) : il est sur toi. L'Instinct règle la marge autour de lui et le temps pour le retrouver.",
+    engine: "epouvantail",
+    configFor: (tier) =>
+      tier === "haut"
+        ? { tol: 13, grace: 850, n: 18, tous: [1900, 2900] }
+        : tier === "moyen"
+          ? { tol: 9, grace: 600, n: 20, tous: [1700, 2600] }
+          : { tol: 5, grace: 380, n: 22, tous: [1500, 2300] },
+    successText: "Tu sors des rangs. Tu ne l'as pas lâché des yeux.",
+    failText: "Il est sur toi. La paille, et dessous quelque chose de dur.",
+  },
   {
     id: "jeu-frottage-borne",
     number: 0,

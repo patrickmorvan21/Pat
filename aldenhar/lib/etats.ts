@@ -135,7 +135,7 @@ export const ETATS: Etat[] = [
     id: "fixe",
     nom: "FIXÉ",
     groupe: "social",
-    source: "Le village te croit marqué par le sud — Soupçon élevé, ou ton reflet dans la Mare vu par un témoin.",
+    source: "Le village te croit marqué par le sud — Soupçon élevé, ou un geste vers le sud vu par un témoin.",
     remede: "Aucun remède simple : seul le procès, ou la sortie de zone, y met fin.",
     manifestation:
       "On ne te parle plus tout à fait à toi. On parle devant toi, de toi, à " +

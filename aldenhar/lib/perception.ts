@@ -84,9 +84,13 @@ export const PERCEPTIONS: Record<string, Partial<Record<StatNom, string>>> = {
     instinct: "Les coups suivent un ordre. Ce n'est pas quelqu'un qui appelle : c'est quelqu'un qui compte.",
     ruse: "Les clous des planches sont plantés depuis l'extérieur. On a fermé, mais on a fermé APRÈS.",
   },
-  "mare-aux-regards": {
+  tourbiere: {
     instinct: "Aucun oiseau ne se pose sur cette eau. Les bêtes savent avant nous.",
-    empathie: "Les gens du hameau y viennent quand même. Ils cherchent quelqu'un, pas leur reflet.",
+    ruse: "Les piquets ne sont pas plantés droit : ils suivent quelque chose qu'on ne voit pas, sous la brume.",
+  },
+  "cercle-qui-descend": {
+    instinct: "Le sillon le plus frais est derrière la pierre la plus au sud. Elles ne bougent pas ensemble.",
+    empathie: "Quelqu'un a posé des cailloux au pied de chaque pierre, comme on cale une porte qu'on veut garder fermée.",
   },
   "verger-noir": {
     ruse: "Les arbres sont greffés. Quelqu'un a travaillé ce verger longtemps après qu'il ait cessé de nourrir.",

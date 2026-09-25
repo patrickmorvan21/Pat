@@ -30,6 +30,16 @@ import {
   makeLiaison,
   TRACES_MENACE,
   pickLiaisonOptions,
+  pickLandePair,
+  landeVisitees,
+  landeSortie,
+  LANDE_LIEUX,
+  LANDE_TIRAGES,
+  LANDE_SORTIE,
+  LANDE_DEPART,
+  LANDE_RAPPEL_HESITANT,
+  LANDE_DEPART_IMAGE,
+  APPROCHE_IMAGE,
   isHameauInterior,
   pickAccueil,
   HAMEAU_ACCUEIL_SLOT,
@@ -127,6 +137,7 @@ import TimingTap from "@/components/minigames/engines/TimingTap";
 import SlowSwipe from "@/components/minigames/engines/SlowSwipe";
 import Assemble from "@/components/minigames/engines/Assemble";
 import BreathLine from "@/components/minigames/engines/BreathLine";
+import Epouvantail from "@/components/minigames/engines/Epouvantail";
 import StraightSwipe from "@/components/minigames/engines/StraightSwipe";
 import { forcerPiste, playMusic } from "@/lib/audio";
 import { loadSettings, CLES_AIDES, haptic } from "@/lib/settings";
@@ -415,14 +426,14 @@ const ECHOS_OBJET: Record<string, { objet: string; text: string }[]> = {
         "jamais eu à vérifier.",
     },
   ],
-  // La Mare montre ce qu'on porte, pas ce qu'on est.
-  "mare-aux-regards-2": [
+  // La tourbière garde ce qu'on y laisse — et ce qu'on porte y pèse.
+  "tourbiere-2": [
     {
       objet: "Mèche",
       text:
-        "Dans l'eau, tu ne te vois pas seul : il y a la forme de ce que tu " +
-        "portes, un peu à côté de toi. La Mare ne compte pas les gens. Elle " +
-        "compte les promesses.",
+        "La mèche pèse dans ta poche plus que son poids. Ici, ce qui tombe " +
+        "ne remonte pas, et tu la tiens serrée sans y penser, comme une " +
+        "promesse qu'on refuse de laisser couler.",
     },
   ],
 };
@@ -719,6 +730,10 @@ function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
    * couvre les sauvegardes d'avant, dont le `current` ne résout plus.
    */
   if (t.done && (t.current === "la-descente" || !sceneById(t.current))) return DESCENTE_SCENE;
+  // LA SORTIE DE LA LANDE est hors de SCENES (fabriquée par `landeSortie`) :
+  // sans ce cas, la reprise retombait sur la Borne.
+  if (t.phase === "scene" && t.current === LANDE_SORTIE)
+    return landeSortie(traverseeGuidee());
   if (t.phase === "liaison" && t.liaisonOpts) {
     const base = makeLiaison(
       t.liaisonOpts[0],
@@ -743,7 +758,8 @@ function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
         : base;
     const avecSillage = t.verSillage ? habillageSillage(avecTempete) : avecTempete;
     const avecDessous = t.verDessous ? habillageDessous(avecSillage, run) : avecSillage;
-    return t.sortieHameau ? habillageSortie(avecDessous, t.seed) : avecDessous;
+    const avecDepart = t.landeDepart ? habillageDepart(avecDessous, run) : avecDessous;
+    return t.sortieHameau ? habillageSortie(avecDepart, t.seed) : avecDepart;
   }
   return resoudre(t.current, run) ?? sceneById(ENTRY_SCENE)!;
 }
@@ -767,6 +783,28 @@ function sceneFromTrav(t: TraversalState, run?: RunState): SceneType {
  *  le garde `assetExiste` retombe sur la vue de marche tant qu'il n'est pas
  *  déposé dans `public/assets/`. Aucun code à changer à sa réception. */
 const SORTIE_DEUX_CHEMINS = "assets/scene_transition_arrivee_hameau_b.png";
+
+/**
+ * LE DÉPART DE LA LANDE (vague 3, 25/09) : la toute première marche de la
+ * vie. On tourne le dos à la Borne et le but du jeu se VOIT — la colonne de
+ * cordes au sud, qu'on prendrait pour une fumée si elle bougeait. La phrase
+ * REMPLACE l'ambiance (narration[0]) : même écran, pas un tap de plus. Qui
+ * n'a pas abordé l'homme immobile l'entend dans son dos, en partant.
+ * L'image est à produire : gardée par `assetExiste`, la vue de marche sert
+ * en attendant.
+ */
+function habillageDepart(base: SceneType, run?: RunState | null): SceneType {
+  const hesitantVu = Boolean(run?.memoireVue && "hesitant" in run.memoireVue);
+  return {
+    ...base,
+    illustration: assetExiste(LANDE_DEPART_IMAGE) ? LANDE_DEPART_IMAGE : base.illustration,
+    narration: [
+      LANDE_DEPART,
+      ...(hesitantVu ? [] : [LANDE_RAPPEL_HESITANT]),
+      ...base.narration.slice(1),
+    ],
+  };
+}
 
 function habillageSortie(base: SceneType, seed: number): SceneType {
   return {
@@ -2040,7 +2078,7 @@ export default function Scene() {
       if (zoneLandes && mem.deaths > 0 && mem.lastDeath && !mem.lastDeath.fixation) {
         const lieuMort = mem.lastDeath.lieu ?? "";
         traceDuPrecedent = (
-          lieuMort.includes("mare")
+          lieuMort.includes("tourbiere") || lieuMort.includes("mare")
             ? "Au pied de la borne, une auréole sombre — de l'eau, séchée " +
                 "depuis peu, à un endroit où il n'a pas plu."
             : lieuMort.includes("colline") || lieuMort.includes("pendu")
@@ -2473,6 +2511,7 @@ export default function Scene() {
     trav.sortieHameau = false;
     trav.verSillage = false;
     trav.verDessous = false;
+    trav.landeDepart = false;
     // Une transition qui QUITTE une liaison ne fait pas vieillir les états.
     const leavingLiaison = Boolean(scene.liaison);
     // ═══ L'ÉLÉMENT-SURPRISE (catalogue 6/08) : armé UNE fois par run, au
@@ -3191,6 +3230,20 @@ export default function Scene() {
           // suivante — l'avertissement deviendrait du harcèlement.
           r.lignesOuvertes = 0;
         });
+      } else if (
+        (runRef.current?.zone ?? "landes") === "landes" &&
+        !scene.liaison &&
+        !Boolean(runRef.current?.hameau?.entree) &&
+        landeVisitees(trav.visited) >= LANDE_TIRAGES &&
+        !lieuDejaVisite(trav.visited, "colline-aux-gibets")
+      ) {
+        /* LA SORTIE DE LA LANDE (vague 3, 25/09) : les deux lieux de la Lande
+           sont faits — la bruyère cède, la crête des Gibets se découpe. Une
+           vraie scène de transition, une seule direction. Hors `visited` et
+           hors pool ; `sceneFromTrav` la rebâtit par son id à la reprise. */
+        nextScene = landeSortie(demoOn);
+        trav.phase = "scene";
+        trav.current = LANDE_SORTIE;
       } else if (fromEst && !troupeauVu && !scene.liaison && chance(0.35)) {
         nextScene = resoudre("troupeau-sans-berger", runRef.current)!;
         trav.phase = "scene";
@@ -3236,7 +3289,29 @@ export default function Scene() {
             (id) => isHameauInterior(id) && !lieuDejaVisite(trav.visited, id)
           )
         : [];
-      if (dedans && !ruesLibres.length) {
+      // ═══ LA LANDE (vague 3, 25/09) : tant que ses deux lieux ne sont pas
+      // faits, la Croisée n'offre QUE la Lande — ni chapitre, ni Colline
+      // garantie, ni route scriptée (la première vie est servie par
+      // `pickLandePair` elle-même). Un environnement, pas un pool.
+      const landeEnCours =
+        (runRef.current?.zone ?? "landes") === "landes" &&
+        !entered &&
+        landeVisitees(trav.visited) < LANDE_TIRAGES &&
+        LANDE_LIEUX.some((id) => !lieuDejaVisite(trav.visited, id));
+      if (landeEnCours) {
+        const pair = pickLandePair(trav.visited, seed, demoOn);
+        const base = makeLiaison(
+          pair[0],
+          pair[1],
+          seed,
+          liaisonCtx(runRef.current ?? loadRun(), scene.liaison ? undefined : scene.id),
+          routeFermeeIci
+        );
+        const depart = trav.visited.length === 1 && trav.visited[0] === ENTRY_SCENE;
+        nextScene = depart ? habillageDepart(base, runRef.current) : base;
+        trav.landeDepart = depart;
+        trav.liaisonOpts = pair;
+      } else if (dedans && !ruesLibres.length) {
         const sortie = makeSortieHameau(trav, seed, runRef.current, routeFermeeIci);
         nextScene = sortie.scene;
         trav.liaisonOpts = sortie.pair;
@@ -4462,7 +4537,12 @@ export default function Scene() {
            Coût honnête : un tap de plus par arrivée (l'approche fait 5-13
            mots, le budget ne l'aurait jamais séparée du reste). C'est le
            prix demandé pour que le déplacement se voie. */
-        img = { src: image, kind: "scene" };
+        /* LA LANDE VUE DE LOIN (vague 3, 25/09) : un lieu de la Lande a SON
+           image d'approche (une par lieu, jamais une par paire), qui prend la
+           place de la vue de marche au temps 1. Gardée par `assetExiste` :
+           tant qu'elle n'est pas produite, la marche continue de servir. */
+        const loin = opts?.toDest ? APPROCHE_IMAGE[opts.toDest] : undefined;
+        img = { src: loin && !substitue && assetExiste(loin) ? loin : image, kind: "scene" };
         coupures.add(idApproche);
         if (substitue) {
           /* DEUX TEMPS, PAS TROIS. Le temps 2 (« le lieu ») n'a rien à dire
@@ -5163,6 +5243,21 @@ export default function Scene() {
           imageFond: assetExiste("assets/minijeu_cuve_fendue_a_c.png")
             ? assetSrc("assets/minijeu_cuve_fendue_a_c.png")
             : undefined,
+        });
+      } else if (eng === "epouvantail") {
+        /* L'ÉPOUVANTAIL DU VERGER (vague 3, 25/09) : l'Instinct règle la marge
+           autour de lui et le temps pour le retrouver — mêmes trois niveaux
+           que le prototype validé (`maquettes/epouvantail_geste.html`). Le
+           Miroir fêlé porté montre où il ressort, et il bouge moins souvent. */
+        const inst = statDe(runRef.current?.stats, "INSTINCT");
+        const miroir = (runRef.current?.besace ?? []).some((b) => /miroir/i.test(b.name));
+        setMinigameConfig({
+          ...(inst >= 4
+            ? { tol: 13, grace: 850, n: 18, tous: [1900, 2900] }
+            : inst >= 3
+              ? { tol: 9, grace: 600, n: 20, tous: [1700, 2600] }
+              : { tol: 5, grace: 380, n: 22, tous: [1500, 2300] }),
+          miroir,
         });
       } else if (eng === "breath") {
         // LE SOUFFLE v2 (galerie du 12/09, en jeu à la Passerelle rompue) :
@@ -6859,6 +6954,16 @@ export default function Scene() {
                   }
                   onResult={finirMinigame}
                 />
+              ) : minigameChoice.minigame.engine === "epouvantail" ? (
+                <Epouvantail
+                  seed={`${scene.id}-${minigameRetry}`}
+                  config={
+                    (minigameConfig ?? { tol: 9, grace: 600, n: 20, tous: [1700, 2600] }) as {
+                      tol: number; grace: number; n: number; tous: [number, number]; miroir?: boolean;
+                    }
+                  }
+                  onResult={finirMinigame}
+                />
               ) : minigameChoice.minigame.engine === "breath" ? (
                 <BreathLine
                   seed={`${scene.id}-${minigameRetry}`}
@@ -6961,6 +7066,8 @@ export default function Scene() {
                           ? "Remonte les tessons avant que la saumure ne fuie"
                           : minigameChoice.minigame.engine === "breath"
                             ? "Appuie quand la ligne s'épaissit — relâche au creux"
+                            : minigameChoice.minigame.engine === "epouvantail"
+                              ? "Pose le doigt sur lui — ne le quitte pas"
                             : "Maintiens l'appui — tiens bon"}
             </p>
           </div>

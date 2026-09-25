@@ -119,13 +119,15 @@
       "x": 640,
       "y": 420,
       "environnement": "lande",
-      "role": "pool",
+      "role": "retire",
       "couches": [
         "Une eau noire où les roseaux ne bougent pas. Tu te penches : ton reflet se penche aussi, une demi-seconde après toi. Il finit par te rattraper.",
         "La berge est usée à un seul endroit, à la largeur de deux genoux. Des gens viennent s'y agenouiller, toujours au même. Ils ne boivent pas. Ils vérifient quelque chose dans l'eau et repartent vite.",
         "Ce matin, la place est prise. Une vieille femme à genoux, le nez au-dessus de l'eau. « Le mien est en retard depuis vingt ans. Je viens voir s'il a pris de l'avance. » La Doyenne se relève et s'en va sans t'avoir regardé.",
         "Le retard, c'est l'Appel qui commence. Le jour où le reflet ne rattrape plus, on vient te chercher avec une corde. La Doyenne tient depuis vingt ans, et personne au village ne le sait."
-      ]
+      ],
+      "statut": "retire",
+      "raison": "Retirée le 25/09 (décision Patrick, vague 3) : la Lande devient un vrai environnement à quatre lieux — Chemin Creux, Verger Noir, Tourbière, Cercle qui Descend. Le savoir de l'Appel passe à l'Hésitant, le Miroir de poche à la Tourbière. La matière reste ici."
     },
     {
       "id": "hameau_des_renoncants",
@@ -524,15 +526,20 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_mare_aux_regards_a.png",
       "portrait_requis": false,
       "x": 180,
       "y": 1100,
       "environnement": "lande",
       "role": "pool",
-      "statut": "propose",
-      "propose_le": "2026-09-24",
-      "image_a_produire": "scene_landes_tourbiere_a"
+      "image_a_produire": "scene_landes_tourbiere_a",
+      "couches": [
+        "Une eau noire sous une brume à hauteur de genou, et une file de piquets qui la traverse. Entre les piquets, rien ne tient. Sur les piquets, si.",
+        "Les piquets ne sont pas tous du même bois. Les plus anciens sont noirs et lisses ; les derniers plantés portent encore leur écorce. Quelqu'un continue la file, vers le sud.",
+        "Au pied du dernier piquet, une botte, vide, tournée vers le sud. La vase ne l'a pas prise. Elle a pris ce qui était dedans.",
+        "Les Enlisés n'ont pas coupé par le marais pour fuir le Hameau : ils allaient vers la colonne, au sud. Ce que tu prends pour des noyés, ce sont des gens qui ont suivi l'Appel par le chemin le plus court."
+      ],
+      "en_jeu_le": "2026-09-25"
     },
     {
       "id": "cheneviere",
@@ -590,15 +597,20 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": null,
+      "illustration": "assets/scene_landes_liaison_plateau_d.png",
       "portrait_requis": false,
       "x": 700,
       "y": 300,
       "environnement": "lande",
       "role": "pool",
-      "statut": "propose",
-      "propose_le": "2026-09-25",
-      "image_a_produire": "scene_landes_cercle_qui_descend_a"
+      "image_a_produire": "scene_landes_cercle_qui_descend_a",
+      "couches": [
+        "Sur une butte pelée, la forme vide d'un cercle. Les pierres levées qui le faisaient sont parties vers le sud, chacune d'une dizaine de pas.",
+        "Derrière chaque pierre, un sillon frais. Au pied de chacune, une motte collée côté sud. Elles ne glissent pas : elles avancent, un pouce par nuit.",
+        "Au pied de la plus grande, une rangée de cailloux posés à la main, comme on cale une porte qu'on veut garder fermée. Quelqu'un du Hameau vient les replacer.",
+        "Même les pierres entendent l'Appel. Le Hameau le sait : c'est pour ça qu'on pend les siens pour qu'ils tiennent — une pierre, au moins, on peut la caler."
+      ],
+      "en_jeu_le": "2026-09-25"
     }
   ],
   "rencontres": [
@@ -1117,15 +1129,14 @@
       },
       "illustration": null,
       "portrait_requis": false,
-      "statut": "propose",
-      "propose_le": "2026-09-24",
       "environnement": "lande",
       "hostile": true,
       "nature": "surnaturel",
       "regle": "Lui tourner le dos le fait avancer. On ne s'en éloigne qu'en le regardant.",
       "preparation": "Qui a marché avec le Marcheur à rebours passe à reculons, les yeux sur lui.",
       "image_a_produire": "monstre_landes_epouvantail_tourne_a",
-      "note_25_09": "Vit dans le Verger Noir (décision Patrick, 25/09) — plus une rencontre de passage."
+      "note_25_09": "Vit dans le Verger Noir (décision Patrick, 25/09) — plus une rencontre de passage.",
+      "en_jeu_le": "2026-09-25"
     },
     {
       "id": "troupeau_sans_berger",
@@ -1177,14 +1188,13 @@
       },
       "illustration": null,
       "portrait_requis": true,
-      "statut": "propose",
-      "propose_le": "2026-09-24",
       "environnement": "lande",
       "hostile": true,
       "nature": "physique",
       "regle": "Ils ne tirent que ce qui s'arrête. Traverser, c'est ne jamais poser deux fois le pied au même endroit.",
       "preparation": "Les piquets de passage plantés par ceux qui ont réussi : qui les a lus sait où poser le pied.",
-      "image_a_produire": "monstre_landes_enlises_a"
+      "image_a_produire": "monstre_landes_enlises_a",
+      "en_jeu_le": "2026-09-25"
     },
     {
       "id": "rabatteur",
@@ -1520,7 +1530,7 @@
       "id": "miroir_de_poche_fele",
       "nom": "Le Miroir de Poche Fêlé",
       "note": null,
-      "lieu_attache": "mare_aux_regards",
+      "lieu_attache": "tourbiere",
       "histoire_bailli": false,
       "rarete": "commune",
       "textes": {
@@ -1741,6 +1751,38 @@
       },
       "illustration": "assets/objet_lanterne_rouillee_b_a.png",
       "portrait_requis": false
+    },
+    {
+      "id": "serpe_de_l_epoux",
+      "nom": "La Serpe de l'Époux",
+      "note": "donnée par l'Époux à qui le retient ; elle décroche l'Épouvantail",
+      "lieu_attache": "verger_noir",
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "image_a_produire": "objet_landes_serpe_epoux_a"
+    },
+    {
+      "id": "anneau_de_l_enlise",
+      "nom": "L'Anneau de l'Enlisé",
+      "note": "arraché aux Enlisés en traversant la tourbière",
+      "lieu_attache": "tourbiere",
+      "histoire_bailli": false,
+      "rarete": "rare",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "illustration": null,
+      "portrait_requis": false,
+      "image_a_produire": "objet_landes_anneau_enlise_a"
     }
   ],
   "scenes": [
@@ -3006,23 +3048,6 @@
       "illustration": "monstre_meute_grise_c.png"
     },
     {
-      "id": "mare-aux-regards",
-      "type": "arrivee",
-      "nom": "La Mare aux Regards",
-      "lieu": "mare_aux_regards",
-      "parent": null,
-      "mene_a": [
-        "mare-aux-regards-2"
-      ],
-      "texte": [
-        "L'eau est noire et parfaitement plate — le seul endroit des Landes que le vent évite.",
-        "La berge est piétinée en un seul point, tassée par des années de genoux. On ne vient pas ici puiser. On vient s'agenouiller. Le point de berge usé. L'eau. Et dans les roseaux, un reflet de métal."
-      ],
-      "description": "Arrivée à la Mare aux Regards. Une eau noire parfaitement immobile, la berge piétinée avec deux creux de genoux, des roseaux, aucun vent.",
-      "prompt_image": "perfectly still black pond in dead moorland, trampled bank with two knee hollows, reeds, dark reflections, no wind, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_mare_aux_regards_a.png"
-    },
-    {
       "id": "berge-usee",
       "type": "observe",
       "nom": "Le point de berge usé",
@@ -3063,21 +3088,6 @@
       "description": null,
       "prompt_image": "cracked pocket mirror caught among black reeds at the water's edge, its backing tarnished, the reeds bending without breaking. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, dark fantasy illustration, deep crushed blacks, no fill light, high contrast, two-tone monochrome-friendly, strong readable shapes, matte painting, grim medieval rural, square composition, no text, no lettering, no watermark",
       "illustration": "scene_mare_reflet_metal_a.png"
-    },
-    {
-      "id": "mare-aux-regards-2",
-      "type": "moment",
-      "nom": "La Mare aux Regards — beat 2",
-      "lieu": "mare_aux_regards",
-      "parent": null,
-      "mene_a": [],
-      "texte": [
-        "Quelqu'un arrive — un Renonçant, qui ne te voit pas. Il s'agenouille dans les creux, se penche, et reste penché beaucoup trop longtemps.",
-        "Quand il se relève, il a le visage de quelqu'un qui va rentrer chez lui et fermer ses volets pour toujours."
-      ],
-      "description": "Événement de la Mare : un Renonçant qui vient vérifier son propre reflet, et te trouve là.",
-      "prompt_image": "kneeling villager bent over the edge of a black pond staring at his own reflection, hands flat on the trampled bank, head turning sharply toward the viewer, pitch-black background, subject emerging from darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_mare_aux_regards_2_c_d.png"
     },
     {
       "id": "verger-noir",
@@ -3153,7 +3163,7 @@
       ],
       "description": "Événement du Verger : le fruit qui tombe encore chaud.",
       "prompt_image": "a single fallen fruit lying in the dirt of an orchard row, picked up in a bare hand, its skin ashen and still warm. extreme close-up, the subject filling the frame, no horizon, no sky, no figure, no face, one single low raking light grazing the surface so the texture and the cut marks read, background falling to black, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields such as open sky or pools of light, read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, single low dramatic light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark",
-      "illustration": "scene_verger_noir_2_v2_b.png"
+      "illustration": "scene_verger_souche_a_c.png"
     },
     {
       "id": "epoux-1",
@@ -3576,6 +3586,54 @@
       ],
       "description": "Contre un muret, et quelque chose qui marche sur les toits.",
       "illustration": "scene_temoin_grange_toit_v2_c.png"
+    },
+    {
+      "parent": null,
+      "texte": [],
+      "id": "tourbiere",
+      "type": "arrivee",
+      "nom": "La Tourbière",
+      "lieu": "tourbiere",
+      "mene_a": [
+        "tourbiere-2"
+      ],
+      "illustration": "scene_mare_aux_regards_a.png",
+      "description": "Arrivée à la Tourbière : une eau noire sous la brume, une file de piquets qui la traverse."
+    },
+    {
+      "parent": null,
+      "texte": [],
+      "id": "tourbiere-2",
+      "type": "combat",
+      "nom": "Les Enlisés",
+      "lieu": "tourbiere",
+      "mene_a": [],
+      "illustration": "scene_mare_eau_reflet_v2_b.png",
+      "description": "Les Enlisés : des mains sous la surface, qui tirent ce qui s'arrête."
+    },
+    {
+      "parent": null,
+      "texte": [],
+      "id": "cercle-qui-descend",
+      "type": "arrivee",
+      "nom": "Le Cercle qui Descend",
+      "lieu": "cercle_qui_descend",
+      "mene_a": [
+        "cercle-qui-descend-2"
+      ],
+      "illustration": "scene_landes_liaison_plateau_d.png",
+      "description": "Arrivée au Cercle qui Descend : la forme vide d'un cercle, les pierres parties vers le sud."
+    },
+    {
+      "parent": null,
+      "texte": [],
+      "id": "cercle-qui-descend-2",
+      "type": "evenement",
+      "nom": "Le Cercle qui Descend — la dalle",
+      "lieu": "cercle_qui_descend",
+      "mene_a": [],
+      "illustration": "scene_landes_liaison_plateau_d.png",
+      "description": "La dalle du centre, à nu, et ce qu'elle dit de l'endroit où le cercle se tenait."
     }
   ],
   "regions": [
@@ -3811,7 +3869,13 @@
           "image": "scene_transition_crete_cordes_b.png"
         }
       ],
-      "transitions_note": "Proposées le 25/09, pas encore en jeu. `depuis`/`vers` : ids de lieux ou d'autres transitions (le chemin se lit dans le Graphe, en traits fléchés). `ouvre` : la rencontre où mène la transition (scène du jeu ou créature proposée). Une image d'APPROCHE par lieu (réutilisée d'où qu'on vienne), jamais une par paire ; la croisée tire parmi les vues de marche existantes."
+      "transitions_note": "En jeu depuis le 25/09 (vague 3). `depuis`/`vers` : ids de lieux ou d'autres transitions. Une image d'APPROCHE par lieu (réutilisée d'où qu'on vienne), jamais une par paire ; toutes à produire — la vue de marche sert en attendant (gardée par assetExiste).",
+      "pool": [
+        "chemin_creux",
+        "verger_noir",
+        "tourbiere",
+        "cercle_qui_descend"
+      ]
     },
     {
       "id": "gibets",

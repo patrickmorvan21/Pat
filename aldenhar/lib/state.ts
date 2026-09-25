@@ -153,6 +153,11 @@ export type TraversalState = {
       `trav` pour que la reprise rebâtisse le MÊME écran ; remis à faux à
       chaque nouvel écran, comme `sortieHameau`. */
   verSillage?: boolean;
+  /** LE DÉPART DE LA LANDE (vague 3, 25/09) : la liaison courante est la
+      toute première marche de la vie — on tourne le dos à la Borne et la
+      colonne de cordes se voit au sud. Porté par `trav` pour que la reprise
+      rebâtisse le MÊME écran ; remis à faux à chaque nouvel écran. */
+  landeDepart?: boolean;
   /** LE VER SOUS LES PIEDS (les Bassins, 16/09) : `verAppele` est posé par
       un choix qui appelle le Ver (le grincement de la Noria, le raccourci
       de la Guérite) ; la Croisée suivante le consomme et pose `verDessous`,
