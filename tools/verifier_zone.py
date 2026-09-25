@@ -224,13 +224,19 @@ def verifier(chemin: Path) -> int:
     assets = Path(__file__).resolve().parent.parent / "aldenhar" / "public" / "assets"
     ids_lieux = {l["id"] for l in z.get("lieux", [])}
     nb_trajets = 0
+    ids_trajets = {t["id"] for e in z.get("environnements", []) for t in (e.get("transitions") or [])}
     for env in z.get("environnements", []):
         for t in env.get("transitions") or []:
             nb_trajets += 1
             ou = f"transition {t.get('id')}"
-            for champ in ("de", "vers", "lieu"):
-                if t.get(champ) and t[champ] not in ids_lieux:
-                    erreurs.append(f"{ou} · {champ} = « {t[champ]} » : aucun lieu de cet id")
+            for champ in ("depuis", "vers"):
+                for ref in t.get(champ) or []:
+                    if ref not in ids_lieux and ref not in ids_trajets:
+                        erreurs.append(f"{ou} · {champ} « {ref} » : ni un lieu ni une transition")
+            if not t.get("depuis"):
+                erreurs.append(f"{ou} : `depuis` vide — une transition part toujours de quelque part")
+            if not t.get("vers") and not t.get("ouvre"):
+                erreurs.append(f"{ou} : ne mène nulle part (ni `vers` ni `ouvre`)")
             if t.get("image") and not (assets / t["image"]).exists():
                 erreurs.append(f"{ou} : image « {t['image']} » absente de public/assets")
             if not t.get("image") and not t.get("image_a_produire"):

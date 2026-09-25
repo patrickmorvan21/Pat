@@ -176,7 +176,7 @@ canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
 
   function epouvantail(COL = CHARBON) {
     const d = Math.max(.55, xp - xs), s = F / d;
-    const base = HOR + CAMH * s, h = 2.7 * s, cx = VPX + lat * s;
+    const base = HOR + CAMH * s, h = 3.1 * s, cx = VPX + lat * s;
     const haut = base - h, epaule = base - h * .74;
     rect(cx - Math.max(1, .08 * s) / 2, haut + h * .18, Math.max(1, .08 * s), h * .82, COL);
     rect(cx - 1.25 * s, epaule, 2.5 * s, Math.max(1, .07 * s), COL);
@@ -207,7 +207,7 @@ canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
   }
 
   function boiteDe(latX) {   // où il SERA, sans le dessiner (pour le reflet du Miroir)
-    const d = Math.max(.55, xp - xs), s = F / d, base = HOR + CAMH * s, h = 2.7 * s;
+    const d = Math.max(.55, xp - xs), s = F / d, base = HOR + CAMH * s, h = 3.1 * s;
     return { cx: VPX + latX * s, cy: base - h * .7 };
   }
 
@@ -234,15 +234,19 @@ canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
     fond();
     const rangs = []; for (let i = -8; i <= 9; i++) rangs.push(i);
     const COTES = [-3, -1, 1, 3];
-    for (const i of rangs.filter(i => i < xs)) for (const c of COTES) arbre(i, c);
+    // Tous les arbres d'abord : aucun arbre du verger ne le cache jamais — seul
+    // le tronc qui passe tout près le fait, et c'est la règle du jeu. (v2 :
+    // les rangs proches le mangeaient sur les côtés, on le cherchait au hasard.)
+    for (const i of rangs) for (const c of COTES) arbre(i, c);
     const cache = !!(tronc && tronc.cache);
     boite = null;
     if (!cache) {
-      // liseré de contre-jour : il reste lisible même devant un feuillage noir
-      for (const [dx, dy] of [[-1,0],[1,0],[0,-1],[0,1]]) { g.save(); g.translate(dx, dy); epouvantail(ORANGE); g.restore(); }
+      // liseré de contre-jour épais (2 px) : lisible devant un feuillage noir
+      for (const [dx, dy] of [[-2,0],[2,0],[0,-2],[0,2],[-1,-1],[1,-1],[-1,1],[1,1],[-1,0],[1,0],[0,-1],[0,1]]) {
+        g.save(); g.translate(dx, dy); epouvantail(ORANGE); g.restore();
+      }
       boite = epouvantail();
     }
-    for (const i of rangs.filter(i => i >= xs)) for (const c of COTES) arbre(i, c);
     if (cache && miroir) {   // le reflet : où il va ressortir
       const p = boiteDe(latSuiv);
       for (const [dx, dy] of [[0,0],[1,0],[0,1],[1,1],[-2,-3],[3,-2],[-3,2],[2,3]]) px(p.cx + dx, p.cy + dy, BLANC);
@@ -274,8 +278,11 @@ canvas{display:block;width:100%;height:100%;image-rendering:pixelated}
     const min = .7 + (niv.tol + 6) / s;
     const loin = l => Math.abs(l - depuis) >= min && (latPrec === null || Math.abs(l - latPrec) >= min);
     let l = null;
-    for (let k = 0; k < 80 && l === null; k++) { const c = alea(-2.6, 2.6); if (loin(c)) l = c; }
-    if (l === null) l = depuis > 0 ? -2.6 : 2.6;   // plus de place : l'autre bout du verger
+    // jamais collé au bord : sa silhouette reste entre 26 et 104 px de large
+    // d'écran (sur 130), quelle que soit sa distance
+    const lim = 39 / s;
+    for (let k = 0; k < 80 && l === null; k++) { const c = alea(-lim, lim); if (loin(c)) l = c; }
+    if (l === null) l = depuis > 0 ? -lim : lim;   // plus de place : l'autre bout du verger
     latPrec = depuis;
     return Math.round(l * 10) / 10;
   }

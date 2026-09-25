@@ -361,8 +361,8 @@ def construire(zone: str = "landes") -> dict:
                 "meta": [x for x in (
                     env_nom.get(env["id"], ""),
                     TYPE_T.get(t.get("type", ""), t.get("type", "")),
-                    ("vers " + (lieu_z.get(t["vers"], {}).get("nom") or t["vers"])) if t.get("vers") else "",
                 ) if x],
+                "trajetType": t.get("type", ""),
                 "groupe": env["id"],
             }
             if t.get("image_montre"):
@@ -371,13 +371,25 @@ def construire(zone: str = "landes") -> dict:
                 if timg else ("à produire : " + t["image_a_produire"] + ".png" if t.get("image_a_produire") else "")
             if t.get("reutilise"):
                 n["imageStatut"] = "existante : tirée parmi " + str(len(t["reutilise"])) + " vues de marche déjà produites"
-            if not t.get("lieu"):
-                n["role"] = "passage"
             noeuds.append(n)
-            if t.get("lieu"):
-                lien("lieu:" + t["lieu"], nid, "appartient")
-            if t.get("vers") and t.get("vers") != t.get("lieu"):
-                lien(nid, "lieu:" + t["vers"], "suite")
+    # Les liens après coup : une transition peut pointer vers une transition
+    # déclarée plus loin. Trait FLÉCHÉ (type « trajet ») : d'où elle vient,
+    # où elle mène — c'est la raison d'être de ces nœuds dans le Graphe.
+    ids_n = {n["id"] for n in noeuds}
+    def vers_noeud(ref: str) -> str:
+        for cand in ("trajet:" + ref, "lieu:" + ref, ref, "prop:" + ref):
+            if cand in ids_n:
+                return cand
+        return ""
+    for env in envs:
+        for t in env.get("transitions") or []:
+            nid = "trajet:" + t["id"]
+            for d_ in t.get("depuis") or []:
+                if vers_noeud(d_):
+                    lien(vers_noeud(d_), nid, "trajet")
+            for v_ in list(t.get("vers") or []) + ([t["ouvre"]] if t.get("ouvre") else []):
+                if vers_noeud(v_):
+                    lien(nid, vers_noeud(v_), "trajet")
 
     # --------------------------- LES TRANSITIONS ----------------------------
     # Elles n'existent nulle part comme scènes : une liaison est fabriquée à

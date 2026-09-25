@@ -1107,7 +1107,7 @@
       "id": "epouvantail_tourne",
       "nom": "L'Épouvantail Tourné",
       "note": "Un épouvantail au milieu de la bruyère, sans champ à garder. Il ne bouge jamais — mais chaque fois que tu regardes ailleurs, il s'est tourné vers toi.",
-      "lieu_attache": null,
+      "lieu_attache": "verger_noir",
       "histoire_bailli": false,
       "rarete": "commune",
       "textes": {
@@ -1120,12 +1120,12 @@
       "statut": "propose",
       "propose_le": "2026-09-24",
       "environnement": "lande",
-      "passage": true,
       "hostile": true,
       "nature": "surnaturel",
       "regle": "Lui tourner le dos le fait avancer. On ne s'en éloigne qu'en le regardant.",
       "preparation": "Qui a marché avec le Marcheur à rebours passe à reculons, les yeux sur lui.",
-      "image_a_produire": "monstre_landes_epouvantail_tourne_a"
+      "image_a_produire": "monstre_landes_epouvantail_tourne_a",
+      "note_25_09": "Vit dans le Verger Noir (décision Patrick, 25/09) — plus une rencontre de passage."
     },
     {
       "id": "troupeau_sans_berger",
@@ -3620,9 +3620,12 @@
           "id": "t_lande_colonne",
           "type": "depart",
           "nom": "Le premier horizon",
-          "de": "borne_frontiere",
-          "vers": null,
-          "lieu": "borne_frontiere",
+          "depuis": [
+            "borne_frontiere"
+          ],
+          "vers": [
+            "t_lande_croisee"
+          ],
           "texte": "Tu tournes le dos à la pierre. Devant, la lande à perte de vue — et, tout au bout, un trait sombre qui monte du sol. On le prendrait pour une fumée, s'il bougeait.",
           "image_montre": "La lande vue de dos à la Borne, immense, et sur l'horizon un mince trait vertical sombre : la colonne de cordes, minuscule. C'est l'image qui dit le but du jeu.",
           "image_a_produire": "scene_lande_colonne_au_loin_a"
@@ -3631,9 +3634,12 @@
           "id": "t_lande_hesitant",
           "type": "rappel",
           "nom": "L'Hésitant, derrière toi",
-          "de": "borne_frontiere",
-          "vers": null,
-          "lieu": "borne_frontiere",
+          "depuis": [
+            "borne_frontiere"
+          ],
+          "vers": [
+            "t_lande_colonne"
+          ],
           "texte": "Derrière toi, l'homme immobile n'a pas bougé. « Tu descends. Vous avez tous le même pas, ceux qui descendent. »",
           "image_montre": "L'Hésitant, debout près de la pierre.",
           "image": "monstre_hesitant_b.png"
@@ -3642,10 +3648,16 @@
           "id": "t_lande_croisee",
           "type": "croisee",
           "nom": "La croisée",
-          "de": null,
-          "vers": null,
-          "lieu": null,
-          "texte": "La lande se partage. Deux directions s'ouvrent ; tu n'en prendras qu'une.",
+          "depuis": [
+            "t_lande_colonne"
+          ],
+          "vers": [
+            "t_lande_vers_chemin_creux",
+            "t_lande_vers_verger",
+            "t_lande_vers_tourbiere",
+            "t_lande_vers_cercle"
+          ],
+          "texte": "La lande se partage. Deux directions s'ouvrent ; tu n'en prendras qu'une. (On y revient après chaque lieu, tant que la Lande n'est pas traversée.)",
           "image_montre": "Une vue de marche : plateau, fourche, bruyère. Tirée parmi les vues de marche existantes, jamais une image par paire de lieux.",
           "image": "scene_landes_liaison_fourche_a.png",
           "reutilise": [
@@ -3661,9 +3673,13 @@
           "id": "t_lande_vers_chemin_creux",
           "type": "approche",
           "nom": "Vers le Chemin Creux",
-          "de": null,
-          "vers": "chemin_creux",
-          "lieu": "chemin_creux",
+          "depuis": [
+            "t_lande_croisee"
+          ],
+          "vers": [
+            "t_lande_bete",
+            "chemin_creux"
+          ],
           "texte": "Le sol s'enfonce entre deux talus. Des racines sortent des parois comme des doigts.",
           "image_montre": "Le chemin qui plonge entre deux talus couverts de racines.",
           "image": "scene_landes_liaison_chemin_creux_a.png"
@@ -3672,9 +3688,12 @@
           "id": "t_lande_vers_verger",
           "type": "approche",
           "nom": "Vers le Verger Noir",
-          "de": null,
-          "vers": "verger_noir",
-          "lieu": "verger_noir",
+          "depuis": [
+            "t_lande_croisee"
+          ],
+          "vers": [
+            "verger_noir"
+          ],
           "texte": "Au loin, des rangées d'arbres noirs, trop droites pour une lande. Personne n'a planté ça pour manger.",
           "image_montre": "Des rangées d'arbres noirs parfaitement alignées sur l'horizon, comme une troupe qui attend, sous un ciel bas.",
           "image_a_produire": "scene_lande_approche_verger_a"
@@ -3683,9 +3702,12 @@
           "id": "t_lande_vers_tourbiere",
           "type": "approche",
           "nom": "Vers la Tourbière",
-          "de": null,
-          "vers": "tourbiere",
-          "lieu": "tourbiere",
+          "depuis": [
+            "t_lande_croisee"
+          ],
+          "vers": [
+            "tourbiere"
+          ],
           "texte": "Le sol devient mou sous tes pas. Une brume basse, à hauteur de genou, et dessous l'eau noire qui renvoie le ciel.",
           "image_montre": "Une étendue plate et noire, des touffes de joncs, une nappe de brume au ras du sol.",
           "image_a_produire": "scene_lande_approche_tourbiere_a"
@@ -3694,9 +3716,12 @@
           "id": "t_lande_vers_cercle",
           "type": "approche",
           "nom": "Vers le Cercle qui Descend",
-          "de": null,
-          "vers": "cercle_qui_descend",
-          "lieu": "cercle_qui_descend",
+          "depuis": [
+            "t_lande_croisee"
+          ],
+          "vers": [
+            "cercle_qui_descend"
+          ],
           "texte": "Des pierres levées, en file, toutes penchées vers le sud. Derrière chacune, un sillon dans la bruyère, comme si elles avaient marché.",
           "image_montre": "Une file de menhirs penchés dans le même sens, chacun suivi d'un long sillon de terre retournée.",
           "image_a_produire": "scene_lande_approche_cercle_a"
@@ -3705,9 +3730,13 @@
           "id": "t_lande_bete",
           "type": "rencontre_de_passage",
           "nom": "La Bête, sur la route du creux",
-          "de": null,
-          "vers": "chemin_creux",
-          "lieu": "chemin_creux",
+          "depuis": [
+            "t_lande_vers_chemin_creux"
+          ],
+          "vers": [
+            "chemin_creux"
+          ],
+          "ouvre": "bete-chemins-creux",
           "texte": "Le chemin se resserre. Quelque chose attend au fond du creux, et ce n'est pas toi qu'il attendait — c'est n'importe qui.",
           "image_montre": "La Bête des Chemins Creux (image du combat, déjà en jeu).",
           "image": "monstre_bete_chemins_creux_a.png"
@@ -3716,9 +3745,11 @@
           "id": "t_lande_vers_marcheur",
           "type": "vers_rencontre",
           "nom": "Vers le Marcheur à rebours",
-          "de": "chemin_creux",
-          "vers": null,
-          "lieu": "chemin_creux",
+          "depuis": [
+            "chemin_creux"
+          ],
+          "vers": [],
+          "ouvre": "marcheur-1",
           "texte": "Au fond du creux, quelqu'un marche vers toi — de dos.",
           "image_montre": "Le Marcheur à rebours.",
           "image": "monstre_marcheur_a_rebours_d.png"
@@ -3727,9 +3758,11 @@
           "id": "t_lande_vers_epoux",
           "type": "vers_rencontre",
           "nom": "Vers les Époux",
-          "de": "verger_noir",
-          "vers": null,
-          "lieu": "verger_noir",
+          "depuis": [
+            "verger_noir"
+          ],
+          "vers": [],
+          "ouvre": "epoux-1",
           "texte": "Au pied du premier arbre, deux silhouettes. L'une bêche, l'autre regarde le sud.",
           "image_montre": "Les Époux du Verger.",
           "image": "monstre_epoux_verger_a.png"
@@ -3738,9 +3771,11 @@
           "id": "t_lande_vers_epouvantail",
           "type": "vers_rencontre",
           "nom": "Vers l'Épouvantail",
-          "de": "verger_noir",
-          "vers": null,
-          "lieu": "verger_noir",
+          "depuis": [
+            "verger_noir"
+          ],
+          "vers": [],
+          "ouvre": "epouvantail_tourne",
           "texte": "Au bout de l'allée, entre deux rangs, une silhouette en croix. Sa tête pend sur le côté, comme s'il dormait.",
           "image_montre": "Une allée entre deux rangs d'arbres noirs ; tout au bout, un épouvantail en croix, tête penchée, à contre-jour.",
           "image_a_produire": "scene_lande_verger_epouvantail_loin_a"
@@ -3749,9 +3784,11 @@
           "id": "t_lande_vers_enlises",
           "type": "vers_rencontre",
           "nom": "Vers les Enlisés",
-          "de": "tourbiere",
-          "vers": null,
-          "lieu": "tourbiere",
+          "depuis": [
+            "tourbiere"
+          ],
+          "vers": [],
+          "ouvre": "enlises",
           "texte": "La surface se ride sans un souffle de vent. Sous la pellicule noire, une main. Puis deux.",
           "image_montre": "L'eau noire de la tourbière, lisse, et juste sous la surface des mains ouvertes, tournées vers le haut.",
           "image_a_produire": "scene_lande_tourbiere_mains_a"
@@ -3760,15 +3797,21 @@
           "id": "t_lande_sortie",
           "type": "sortie",
           "nom": "Vers les Gibets",
-          "de": null,
-          "vers": "colline_aux_gibets",
-          "lieu": null,
+          "depuis": [
+            "chemin_creux",
+            "verger_noir",
+            "tourbiere",
+            "cercle_qui_descend"
+          ],
+          "vers": [
+            "colline_aux_gibets"
+          ],
           "texte": "La lande monte. Sur la crête, des potences se découpent contre le ciel. Le trait sombre, au sud, n'a pas bougé.",
           "image_montre": "Une crête avec trois potences à contre-jour, un chemin qui y monte.",
           "image": "scene_transition_crete_cordes_b.png"
         }
       ],
-      "transitions_note": "Proposées le 25/09, pas encore en jeu. Une image d'APPROCHE par lieu (réutilisée quelle que soit la provenance) plutôt qu'une image par paire de lieux ; la croisée tire parmi les vues de marche existantes."
+      "transitions_note": "Proposées le 25/09, pas encore en jeu. `depuis`/`vers` : ids de lieux ou d'autres transitions (le chemin se lit dans le Graphe, en traits fléchés). `ouvre` : la rencontre où mène la transition (scène du jeu ou créature proposée). Une image d'APPROCHE par lieu (réutilisée d'où qu'on vienne), jamais une par paire ; la croisée tire parmi les vues de marche existantes."
     },
     {
       "id": "gibets",
