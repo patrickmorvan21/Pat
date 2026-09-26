@@ -114,15 +114,26 @@ PORTRAIT_PLAT = {
 }
 
 
-def portrait(st: dict, p: dict) -> str:
+def portrait(st: dict, p: dict, rang: int = 0) -> str:
+    """Les tournures viennent du KIT (prologue-data.ts) : une par Révélation
+    du compte, qui tourne (panel 26/09). Les tables ci-dessus ne servent plus
+    qu'à un vieux kit qui ne les porterait pas."""
+    pk = (kit().get("portraits") or {})
+    def tour(liste):
+        liste = [x.replace("\\n", "\n") for x in liste]
+        return liste[rang % len(liste)]
     vals = [st[a] for a in AXES]
     if max(vals) - min(vals) <= 1:
         moy = (sum(p["t"][a] for a in AXES) / p["n"]) if p["n"] else 0
-        return PORTRAIT_PLAT[3 if moy >= 2 else 1 if moy <= 0.5 else 2]
+        cle = 3 if moy >= 2 else 1 if moy <= 0.5 else 2
+        nom = {3: "PORTRAIT_PLAT_HAUT", 2: "PORTRAIT_PLAT_MESURE", 1: "PORTRAIT_PLAT_BAS"}[cle]
+        return tour(pk[nom]) if pk.get(nom) else PORTRAIT_PLAT[cle]
     dom = max(AXES, key=lambda a: st[a])
     frg = min(AXES, key=lambda a: st[a])
     if frg == dom:
         frg = next(a for a in AXES if a != dom)
+    if pk.get("PORTRAIT_DOMINANTE"):
+        return tour(pk["PORTRAIT_DOMINANTE"][dom]) + "\n" + tour(pk["PORTRAIT_FRAGILE"][frg])
     return PORTRAIT_DOMINANTE[dom] + "\n" + PORTRAIT_FRAGILE[frg]
 
 
@@ -365,6 +376,12 @@ class Partie:
             "stats": None,
             "profil": profil_neuf(),
         }
+        # Le numéro de la vie DANS LE COMPTE (miroir de `runsStarted`) : il
+        # choisit le mot gravé de la Borne (panel 26/09).
+        c = lire_compte()
+        c["vies"] = c.get("vies", 0) + 1
+        ecrire_compte(c)
+        d["vieNo"] = c["vies"]
         p = cls(d)
         p.entrer(k["entree"], premier=True)
         return p
@@ -610,6 +627,11 @@ class Partie:
         # récompensait la préparation sans jamais la RACONTER, donc le procès
         # paraissait subi alors que le jeu, lui, dit ce que ta trajectoire a
         # déposé dans la salle. Un bénéfice que rien ne raconte n'existe pas.
+        # LE MOT GRAVÉ DE LA BORNE change à chaque vie (miroir d'`avecMotGrave`).
+        mg = (self.k.get("lande") or {}).get("motsGraves") or []
+        if mg:
+            ici = mg[(self.d.get("vieNo", 1) - 1) % len(mg)]
+            paras = [ici if x == mg[0] else x for x in paras]
         if s.get("procesFixation"):
             lignes = self.k.get("apportsProces", {})
             paras[1:1] = [lignes[c] for c in self.apports_proces() if c in lignes]
@@ -836,7 +858,7 @@ class Partie:
                 self.dit("Toujours pareil. Peu importe le visage.", "geolier")
             else:
                 self.dit("Encore un autre. Tu changes à chaque fois.", "geolier")
-        for ligne in portrait(st, p).split("\n"):
+        for ligne in portrait(st, p, len(passes)).split("\n"):
             self.dit(ligne, "narration")
         self.dit("Continue. J'ai peut-être tort.", "geolier")
         self.d["stats"] = st

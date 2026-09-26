@@ -161,10 +161,13 @@ def lire_lande(src: str) -> dict:
         # La phrase qui dit au prudent qu'il est acculé (panel 26/09 : sans
         # elle, la réplique retirait ses options « sans explication »).
         "ligneAccule": chaine("LIGNE_ACCULE"),
+        # Le mot gravé de la Borne change à chaque vie (panel 26/09).
+        "motsGraves": chaines_de_tableau(bloc_tableau(src, "export const MOTS_GRAVES_BORNE")),
         "sortie": sortie,
     }
     # Contrôle de compte : un extracteur muet ne doit jamais passer au vert.
-    if len(lieux) < 3 or not lande["depart"] or not lande["ligneAccule"] or len(sortie["narration"]) < 1:
+    if (len(lieux) < 3 or not lande["depart"] or not lande["ligneAccule"]
+            or len(lande["motsGraves"]) < 4 or len(sortie["narration"]) < 1):
         raise SystemExit("export_run_kit : la Lande est illisible dans scene-data.ts")
     return lande
 
@@ -244,6 +247,26 @@ def borne_sud_gabarits() -> dict:
     if len(cas) != 3 or len(mots) < 5:
         print(f"   ⚠ borneSud : {len(cas)} cas / {len(mots)} mots — extracteur à revoir")
     return {"cas": cas, "mots": mots}
+
+
+def portraits() -> dict:
+    """Les tournures du portrait de la Révélation (prologue-data.ts), une liste
+    par clé. La réplique en avait sa propre copie, qui aurait divergé au
+    premier ajout — c'est ce qui a failli se produire le 26/09."""
+    src = (RACINE / "aldenhar" / "lib" / "prologue-data.ts").read_text(encoding="utf-8")
+    out: dict = {}
+    for nom in ("PORTRAIT_DOMINANTE", "PORTRAIT_FRAGILE"):
+        i = src.index(f"const {nom}")
+        corps = src[i:src.index("\n};\n", i)]
+        out[nom] = {k: chaines_de_tableau(bloc_tableau(corps, f"{k}:"))
+                    for k in ("courage", "ruse", "instinct", "empathie")}
+    for nom in ("PORTRAIT_PLAT_HAUT", "PORTRAIT_PLAT_MESURE", "PORTRAIT_PLAT_BAS"):
+        out[nom] = chaines_de_tableau(bloc_tableau(src, f"const {nom}"))
+    # Contrôle de compte : un extracteur muet ne passe jamais au vert.
+    if any(len(v) < 2 for d in (out["PORTRAIT_DOMINANTE"], out["PORTRAIT_FRAGILE"]) for v in d.values()) \
+            or any(len(out[n]) < 2 for n in ("PORTRAIT_PLAT_HAUT", "PORTRAIT_PLAT_MESURE", "PORTRAIT_PLAT_BAS")):
+        raise SystemExit("export_run_kit : portraits illisibles dans prologue-data.ts")
+    return out
 
 
 def main() -> int:
@@ -351,6 +374,7 @@ def main() -> int:
         "entree": d["entree"],
         "pool": d["pool"],
         "lande": lire_lande(src),
+        "portraits": portraits(),
         "scenes": scenes,
         "etats": d.get("etats", []),
         # LA STRATE DE FAMILIARITÉ (vague 4) : ce qu'un lieu dit de plus à qui

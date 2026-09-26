@@ -527,6 +527,22 @@ def main() -> int:
             f"la fuite un jet (raté = on passe, blessé) ou un geste qui blesse."
         )
 
+    # ─── A-mot-grave. La graine de la Borne est la vie 1 de la rotation. ───
+    # Panel 26/09 : le mot gravé change à chaque vie (`MOTS_GRAVES_BORNE`,
+    # remplacé par Scene.tsx s'il est ÉGAL à l'entrée 0). La scène l'écrit en
+    # clair (les extracteurs ne lisent que les littéraux) : si les deux textes
+    # divergent un jour, la rotation cesse EN SILENCE et la Borne redevient
+    # identique à chaque vie.
+    src_brut = SD.read_text(encoding="utf-8")
+    m_mg = re.search(r'export const MOTS_GRAVES_BORNE: string\[\] = \[\s*\n\s*("(?:[^"\\]|\\.)*")', src_brut)
+    i_b = src_brut.find('    id: "borne-frontiere",')
+    bloc_b = src_brut[i_b:i_b + 3000] if i_b >= 0 else ""
+    if not m_mg or m_mg.group(1) not in bloc_b:
+        manques.append(
+            "A-mot-grave — la narration de `borne-frontiere` ne contient plus, mot pour "
+            "mot, la première entrée de MOTS_GRAVES_BORNE : le mot gravé ne tournera plus."
+        )
+
     # ─── A-mémoire. Tout souvenir LU a été ÉCRIT quelque part. ───────────
     # Mémoire des rencontres (lib/memoire.ts, 25/09). Une scène qui se réécrit
     # « si la Bête a été fuie » ne se jouera jamais si aucun choix ne laisse
@@ -714,6 +730,7 @@ def main() -> int:
         print("  les cinq combats se souviennent de l'exploration       ✓")
         print("  chaque jet déclare la nature de son échec              ✓")
         print("  A-mémoire tout souvenir lu a été écrit quelque part     ✓")
+        print("  A-mot-grave le mot de la Borne tourne d'une vie à l'autre ✓")
     print(
         "\n  Restent au PLAYTEST (non prouvables sur les sources) : le nombre de\n"
         "  jets par vie, ce que l'exploration prépare réellement, la lisibilité\n"

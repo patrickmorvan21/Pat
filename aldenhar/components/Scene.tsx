@@ -37,6 +37,8 @@ import {
   LANDE_TIRAGES,
   LANDE_SORTIE,
   LANDE_DEPART,
+  MOTS_GRAVES_BORNE,
+  motGraveBorne,
   LANDE_RAPPEL_HESITANT,
   LANDE_DEPART_IMAGE,
   APPROCHE_IMAGE,
@@ -814,6 +816,14 @@ const SORTIE_DEUX_CHEMINS = "assets/scene_transition_arrivee_hameau_b.png";
  * L'image est à produire : gardée par `assetExiste`, la vue de marche sert
  * en attendant.
  */
+/** LE MOT GRAVÉ DE LA BORNE (panel 26/09) : la graine de la vie 1 est
+ *  remplacée par la nouvelle du jour de CETTE vie. Même calcul à l'ouverture
+ *  et à la reprise (`runsStarted` ne bouge pas pendant une vie) : fermer
+ *  l'app ne change pas ce qui est gravé. */
+function avecMotGrave(narr: string[], runsStarted: number): string[] {
+  return narr.map((t) => (t === MOTS_GRAVES_BORNE[0] ? motGraveBorne(runsStarted) : t));
+}
+
 function habillageDepart(base: SceneType, run?: RunState | null): SceneType {
   const hesitantVu = Boolean(run?.memoireVue && "hesitant" in run.memoireVue);
   return {
@@ -2052,7 +2062,9 @@ export default function Scene() {
       photographierMemoire(run, cur);
       restored.push(
         ...[
-          ...narrationAffichee(cur, run.memoireVue),
+          ...(cur.id === ENTRY_SCENE && zoneLandes
+            ? avecMotGrave(narrationAffichee(cur, run.memoireVue), loadMemory().runsStarted)
+            : narrationAffichee(cur, run.memoireVue)),
           // la tempête pas encore balayée se rejoue à la reprise : son
           // annonce (`avant`) aussi, sinon elle tomberait sans un mot
           ...(cur.tempete?.avant && !(run.tempetesJouees ?? []).includes(cur.tempete.cle ?? cur.id)
@@ -2102,7 +2114,9 @@ export default function Scene() {
       setImage(illo);
       setImageKind("scene");
       photographierMemoire(run, opening);
-      const openingNarration = [...narrationAffichee(opening, run.memoireVue)];
+      const openingNarration = zoneLandes
+        ? avecMotGrave(narrationAffichee(opening, run.memoireVue), mem.runsStarted)
+        : [...narrationAffichee(opening, run.memoireVue)];
       // LA TRACE DE L'INCARNATION PRÉCÉDENTE (mémo IA externe 8/08, niv. 1-2 :
       // « dans les 30 à 90 premières secondes, le joueur doit savoir que cette
       // nouvelle vie n'est pas un recommencement identique »). La CAUSE de la

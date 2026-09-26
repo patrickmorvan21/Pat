@@ -1571,6 +1571,34 @@ export const VER_MANIFESTATIONS = {
   },
 } as const;
 
+/**
+ * LE MOT GRAVÉ DE LA BORNE (panel du 26/09 : « l'ouverture de la Borne est
+ * strictement identique trois fois » — cinq testeurs sur cinq). Chaque vie
+ * du compte trouve au pied de la pierre une nouvelle fraîche, gravée de la
+ * veille : c'est le MONDE qui a bougé, jamais le héros qui se souvient (règle
+ * des strates). Index 0 = la graine de la première vie, payée à la Colline.
+ * Les autres sont des rumeurs de la Lande — vraies ou pas, elles ne se
+ * vérifient jamais d'elles-mêmes, et aucune ne nomme un lieu hors Lande.
+ * La liste tourne au-delà de sa longueur ; `runsStarted` est compté AVANT
+ * l'ouverture (1 = première vie).
+ */
+export const MOTS_GRAVES_BORNE: string[] = [
+  "Au pied du tas, un mot gravé de frais, la rainure encore claire : « Hier, le pendu de la colline a répondu. »",
+  "Au pied du tas, un mot gravé de frais, la rainure encore claire : « Hier, l'épouvantail du verger a tourné la tête. »",
+  "Au pied du tas, un mot gravé de frais, la rainure encore claire : « Hier, la tourbière a rendu une main. Elle tenait un anneau. »",
+  "Au pied du tas, un mot gravé de frais, la rainure encore claire : « Hier, une pierre du cercle est revenue d'un pas vers le nord. »",
+  "Au pied du tas, un mot gravé de frais, la rainure encore claire : « Hier, l'homme qui marche à reculons s'est arrêté. »",
+  "Au pied du tas, un mot gravé de frais, la rainure encore claire : « Hier, la bruyère s'est soulevée, et elle a respiré. »",
+  "Au pied du tas, un mot gravé de frais, la rainure encore claire : « Hier, quelqu'un est remonté du sud. Il n'a rien gravé. »",
+  "Au pied du tas, un mot gravé de frais, la rainure encore claire : « Hier, la corde a grincé toute la nuit. Ce matin, plus rien. »",
+];
+
+/** Le mot gravé de la vie n° `runsStarted` du compte (1 = la première). */
+export function motGraveBorne(runsStarted: number): string {
+  const n = MOTS_GRAVES_BORNE.length;
+  return MOTS_GRAVES_BORNE[(((runsStarted - 1) % n) + n) % n];
+}
+
 export const SCENES: Scene[] = [
   {
     // Scène 0 — l'entrée de zone. Le crépuscule éternel et le bruit écrit
@@ -1583,6 +1611,10 @@ export const SCENES: Scene[] = [
       "La lande s'ouvre sous un crépuscule qui ne tombe pas. Une pierre seule au milieu du plateau, plus haute qu'un homme. À son pied, un tas d'offrandes. À trois pas, un homme immobile, face au sud. Quelque part, une corde grince.",
       // LA GRAINE (go 24/08 : « une seule bonne phrase très tôt, sans
       // objectif ni marqueur ») — payée à la Colline par le Pendu qui parle.
+      // ⚠️ Le mot gravé CHANGE à chaque vie du compte (`motGraveBorne`,
+      // appliqué par Scene.tsx à l'ouverture) — celui-ci est celui de la vie 1.
+      // Écrit EN CLAIR (les extracteurs ne lisent que les littéraux) et
+      // identique à `MOTS_GRAVES_BORNE[0]` : garde A-mot-grave (acceptation.py).
       "Au pied du tas, un mot gravé de frais, la rainure encore claire : « Hier, le pendu de la colline a répondu. »",
     ],
     /* ─── CONVERSION DES POINTS D'INTÉRÊT (playtest v1.81, 13/08) ───────────

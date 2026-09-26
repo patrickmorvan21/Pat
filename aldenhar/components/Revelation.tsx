@@ -109,6 +109,9 @@ export default function Revelation({
 }) {
   const [stats] = useState<Stats>(() => statsDepuisTendances(profil));
   const [beats] = useState<string[]>(() => ouverture(stats));
+  /** Révélations déjà vues par le compte : choisit la tournure du portrait
+      (lu une fois, au montage — le profil est noté au compte en sortant). */
+  const [rang] = useState<number>(() => loadMemory().profils?.length ?? 0);
   const [phase, setPhase] = useState<Phase>("entree");
   /** Beat courant de la prise de parole. */
   const [n, setN] = useState(0);
@@ -229,7 +232,7 @@ export default function Revelation({
                     faisait lire comme une deuxième donnée. Le blanc est la
                     voix, l'orange est la mesure. */}
                 <p className="mx-auto mt-[26px] w-[306px] text-center font-mono text-[13px] leading-[1.6] text-[var(--color-ink)]">
-                  {portraitDuSeuil(stats, engagementDepuisTendances(profil))}
+                  {portraitDuSeuil(stats, engagementDepuisTendances(profil), undefined, rang)}
                 </p>
                 <p className="mx-auto mt-[18px] w-[306px] text-center font-mono text-[13px] leading-[1.6] text-[var(--color-ink)]">
                   {CLOTURE}

@@ -81,19 +81,63 @@ export const PROLOGUE_AMORCE: string[] = [
  * Écriture : voix du Geôlier, 2ᵉ personne, ÉPICÈNE (règle A3 — les noms de
  * héros n'ont pas de genre, aucun participe accordé nulle part).
  */
-const PORTRAIT_DOMINANTE: Record<StatKey, string> = {
-  courage: "Tu avances avant de comprendre.",
-  ruse: "Tu regardes les serrures avant les portes.",
-  instinct: "Ton corps décide avant toi, et il se trompe peu.",
-  empathie: "Les gens te parlent, même quand ils ne veulent pas.",
+/* TROIS TOURNURES PAR PHRASE (panel du 26/09 : « Devant l'irrémédiable, ta
+   main hésite » revenait mot pour mot aux trois vies d'un même profil — « dès
+   la 2ᵉ vie, le portrait sonne comme un gabarit »). Le Geôlier prend la
+   tournure suivante à chaque Révélation du compte (`rang` = nombre de
+   Révélations déjà vues) : même caractère, jamais la même phrase deux fois de
+   suite. L'index 0 est la tournure d'origine. Une chaîne par ligne : la
+   réplique texte (`tools/export_run_kit.py`) les lit telles quelles. */
+const PORTRAIT_DOMINANTE: Record<StatKey, string[]> = {
+  courage: [
+    "Tu avances avant de comprendre.",
+    "Tu entres d'abord. Tu regardes après.",
+    "Tu vas au-devant, même quand rien ne t'appelle.",
+  ],
+  ruse: [
+    "Tu regardes les serrures avant les portes.",
+    "Tu cherches toujours la deuxième sortie.",
+    "Tu comptes les issues avant les ennemis.",
+  ],
+  instinct: [
+    "Ton corps décide avant toi, et il se trompe peu.",
+    "Tu sens le mauvais pas avant de le poser.",
+    "Ta peau lit la lande mieux que tes yeux.",
+  ],
+  empathie: [
+    "Les gens te parlent, même quand ils ne veulent pas.",
+    "Tu entends ce que les autres taisent.",
+    "On te confie des choses. Tu ne demandes pourtant rien.",
+  ],
 };
 
-const PORTRAIT_FRAGILE: Record<StatKey, string> = {
-  courage: "Devant l'irrémédiable, ta main hésite.",
-  ruse: "Les détours t'ennuient : tu forces.",
-  instinct: "Tu veux des preuves. Elles arrivent tard.",
-  empathie: "Les autres restent un bruit de fond. Ça te coûtera.",
+const PORTRAIT_FRAGILE: Record<StatKey, string[]> = {
+  courage: [
+    "Devant l'irrémédiable, ta main hésite.",
+    "Au bord du pire, tu recules d'un pas de trop.",
+    "Quand il faut sauter, tu comptes. Toujours un peu trop longtemps.",
+  ],
+  ruse: [
+    "Les détours t'ennuient : tu forces.",
+    "Tu prends la porte qu'on te montre.",
+    "Tu ne soupçonnes jamais rien assez tôt.",
+  ],
+  instinct: [
+    "Tu veux des preuves. Elles arrivent tard.",
+    "Tu réfléchis quand il faudrait déjà fuir.",
+    "Ta nuque te prévient. Tu ne l'écoutes pas.",
+  ],
+  empathie: [
+    "Les autres restent un bruit de fond. Ça te coûtera.",
+    "Tu passes à côté des gens comme à côté des pierres.",
+    "Ce qu'on te dit, tu l'entends. Ce qu'on ne dit pas, jamais.",
+  ],
 };
+
+/** La tournure du rang donné — la liste tourne, elle ne s'épuise jamais. */
+function tournure(liste: string[], rang: number): string {
+  return liste[((rang % liste.length) + liste.length) % liste.length];
+}
 
 /**
  * LE PORTRAIT NOMME LE SOUVENIR (retour Patrick, 2/09 : « le texte est
@@ -121,11 +165,12 @@ function minusculeInitiale(titre: string): string {
 function portraitAvecSouvenir(
   dominante: StatKey,
   fragile: StatKey,
-  memories?: { stat: StatKey; title: string }[]
+  memories?: { stat: StatKey; title: string }[],
+  rang = 0
 ): string {
   const souvenir = memories?.find((m) => m.stat === dominante)?.title;
   const ou = souvenir ? ` C'est ${minusculeInitiale(souvenir)} qui me l'a appris.` : "";
-  return `${PORTRAIT_DOMINANTE[dominante]}${ou}\n${PORTRAIT_FRAGILE[fragile]}`;
+  return `${tournure(PORTRAIT_DOMINANTE[dominante], rang)}${ou}\n${tournure(PORTRAIT_FRAGILE[fragile], rang)}`;
 }
 
 /**
@@ -143,23 +188,29 @@ function portraitAvecSouvenir(
    n'existe plus. Un profil plat s'entendait donc raconter quatre souvenirs
    qu'il n'a jamais joués. Ils parlent maintenant de ce que le Geôlier vient
    de voir EN JEU, au présent, ce qui est la seule chose dont il dispose. */
-const PORTRAIT_PLAT_HAUT =
-  "Tu t'engages à chaque fois. Rien ne dépasse chez toi parce que rien ne manque.\nLe dé n'aura pas grand-chose à rattraper.";
+const PORTRAIT_PLAT_HAUT: string[] = [
+  "Tu t'engages à chaque fois. Rien ne dépasse chez toi parce que rien ne manque.\nLe dé n'aura pas grand-chose à rattraper.",
+  "Tu te jettes sur tout, et tout te rend quelque chose.\nOn ne voit pas ce qui te manque. Moi non plus, pour l'instant.",
+];
 
-const PORTRAIT_PLAT_MESURE =
-  "Tu fais ce qu'il faut, à chaque fois. Ni plus.\nRien ne dépasse chez toi. Le dé fera le reste.";
+const PORTRAIT_PLAT_MESURE: string[] = [
+  "Tu fais ce qu'il faut, à chaque fois. Ni plus.\nRien ne dépasse chez toi. Le dé fera le reste.",
+  "Tu donnes à chaque chose ce qu'elle demande. Pas un geste de trop.\nChez toi, rien ne penche. Le dé penchera pour toi.",
+];
 
-const PORTRAIT_PLAT_BAS =
-  "Rien ne dépasse chez toi : tu traverses les mains dans les poches.\nLe dé n'aura rien à corriger, et rien à aider.";
+const PORTRAIT_PLAT_BAS: string[] = [
+  "Rien ne dépasse chez toi : tu traverses les mains dans les poches.\nLe dé n'aura rien à corriger, et rien à aider.",
+  "Tu passes à côté de tout sans rien déranger.\nLe dé n'a encore rien eu à trancher chez toi.",
+];
 
 /** Engagement moyen réellement joué : 3 = direct, 2 = mesuré, 1 = retrait. */
-function portraitPlat(engagement?: Partial<Record<StatKey, number>>): string {
+function portraitPlat(engagement?: Partial<Record<StatKey, number>>, rang = 0): string {
   const vals = engagement ? Object.values(engagement).filter((v): v is number => v != null) : [];
-  if (!vals.length) return PORTRAIT_PLAT_MESURE; // vieille sauvegarde : le milieu, jamais une accusation
+  if (!vals.length) return tournure(PORTRAIT_PLAT_MESURE, rang); // vieille sauvegarde : le milieu, jamais une accusation
   const moy = vals.reduce((a, b) => a + b, 0) / vals.length;
-  if (moy >= 2.5) return PORTRAIT_PLAT_HAUT;
-  if (moy <= 1.5) return PORTRAIT_PLAT_BAS;
-  return PORTRAIT_PLAT_MESURE;
+  if (moy >= 2.5) return tournure(PORTRAIT_PLAT_HAUT, rang);
+  if (moy <= 1.5) return tournure(PORTRAIT_PLAT_BAS, rang);
+  return tournure(PORTRAIT_PLAT_MESURE, rang);
 }
 
 export function portraitDuSeuil(
@@ -169,10 +220,12 @@ export function portraitDuSeuil(
   engagement?: Partial<Record<StatKey, number>>,
   /** Les souvenirs joués (titre + stat) : le portrait cite celui de la
       dominante. Absent → la phrase se passe de lieu. */
-  memories?: { stat: StatKey; title: string }[]
+  memories?: { stat: StatKey; title: string }[],
+  /** Combien de Révélations le compte a déjà vues : choisit la tournure. */
+  rang = 0
 ): string {
   const vals = PROLOGUE_STAT_ORDER.map((k) => stats[k]);
-  if (Math.max(...vals) - Math.min(...vals) <= 1) return portraitPlat(engagement);
+  if (Math.max(...vals) - Math.min(...vals) <= 1) return portraitPlat(engagement, rang);
   const poids = (k: StatKey) => stats[k] * 10 + (engagement?.[k] ?? 0);
   let dominante: StatKey = PROLOGUE_STAT_ORDER[0];
   let fragile: StatKey = PROLOGUE_STAT_ORDER[0];
@@ -183,7 +236,7 @@ export function portraitDuSeuil(
   if (fragile === dominante) {
     fragile = PROLOGUE_STAT_ORDER.find((k) => k !== dominante) ?? fragile;
   }
-  return portraitAvecSouvenir(dominante, fragile, memories);
+  return portraitAvecSouvenir(dominante, fragile, memories, rang);
 }
 
 /** L'engagement brut du Seuil (3 = direct, 2 = mesuré, 1 = retrait). */
