@@ -1658,7 +1658,7 @@ export const SCENES: Scene[] = [
           threshold: 11,
           outcomes: outcomes(
             "20 naturel. Tes doigts trouvent le paquet le plus ancien, noué dans un linge raide : les offrandes du premier jour, celles que personne n'a jamais osé reprendre. Tu les prends — et la borne te laisse faire.",
-            "Tes doigts trient sans déranger. Un clou tordu, une mèche de cheveux — et le sens de tout ça : on n'offre pas par foi, ici. On offre par peur. Bon à savoir.",
+            "Tes doigts trient, et prennent ce qui se prend sans que le tas s'en aperçoive. Un clou tordu, une mèche de cheveux — et le sens de tout ça : on n'offre pas par foi, ici. On offre par peur. Bon à savoir.",
             "Un ruban glisse et tout l'édifice s'éboule. Le vent se lève d'un coup, bref, comme une inspiration — la lande a noté que tu prends sans donner.",
             "1 naturel. Sous les offrandes, une main à plat, paume ouverte. Elle attendait la tienne. ♦ −2"
           ),
@@ -1948,6 +1948,9 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_chemin_creux_coude_c_c.png",
     narration: [
       "Au coude : rien. L'endroit exact où il devrait y avoir quelque chose, et il n'y a rien. Le silence y est plus épais d'un cran.",
+      // Panel 26/09 (3 testeurs) : « quelqu'un vient vers toi » puis plus un
+      // mot — qu'on l'ait abordé ou non, le creux dit où il est passé.
+      "L'homme à reculons n'y est pas non plus. Passé, ou remonté par où il venait : le creux ne garde pas les pas, seulement l'ornière.",
     ],
     choices: [
       {
@@ -2138,8 +2141,8 @@ export const SCENES: Scene[] = [
     memoire: "marcheur",
     chainNext: "chemin-creux-2",
     narration: [
-      "Au coude, il s'arrête et reprend son sens à lui — face au sud, dos au " +
-        "nord — puis remonte le creux à reculons, vers là d'où tu viens.",
+      "Au coude, sans s'arrêter, il reprend son sens à lui — face au sud, dos " +
+        "au nord — et remonte le creux à reculons, vers là d'où tu viens.",
       "Juste avant que le talus ne le mange, il lève deux doigts vers toi. Pas " +
         "un adieu. Un décompte : deux yeux. Il te rappelle d'en garder autant " +
         "derrière la tête.",
@@ -5031,7 +5034,7 @@ export const SCENES: Scene[] = [
     narration: [
       "Le chemin s'enfonce entre deux talus que tu n'avais pas vus venir — " +
         "et tu comprends trop tard que ce n'est pas le chemin qui s'est " +
-        "creusé. C'est elle qui l'a creusé, cette nuit, sur ta route.",
+        "creusé. C'est elle qui l'a creusé, depuis ton dernier passage, sur ta route.",
       "Le souffle est déjà là, au-dessus, réglé sur ton pas depuis " +
         "longtemps. Tu ne l'avais pas semée. On ne sème pas ce qui compte " +
         "les pas.",
@@ -5072,7 +5075,7 @@ export const SCENES: Scene[] = [
             "20 naturel. Un couloir avec un appétit — alors tu refuses le couloir : tu obliques AVANT les talus, là où sa charge n'a rien à suivre. Elle freine au bord de son propre piège. Le creux chasse pour personne.",
             "Tu quittes l'axe avant qu'elle ne l'ait refermé — deux pas de biais, ceux qu'elle ne sait pas chasser. Le souffle te cherche dans le couloir où tu n'es plus. Hors de ses murs, elle n'existe pas.",
             "Tu obliques trop tôt : elle le voit, et déplace son couloir — la nuit lui a appris ta route, pas ta ruse. Vous tournez l'un autour de l'autre jusqu'à ce qu'elle renonce. Le détour t'a coûté la matinée, pas la jambe.",
-            "1 naturel. Tu refuses le couloir. Elle en a creusé deux. ♦ −2"
+            "1 naturel. Tu refuses le couloir. Elle en a creusé deux — et le second t'attendait. Tu recules dans le premier, le seul où elle n'est plus, et tu la laisses fouiller ses deux tranchées vides pendant que tu grimpes le talus. Tu passes sans une égratignure, et sans le sud : il faudra le retrouver. ♦ −2"
           ),
         },
       },
@@ -7152,7 +7155,7 @@ export const SCENES: Scene[] = [
      La Mare aux Regards est RETIRÉE (décision Patrick 25/09 : « trop
      énigmatique ») ; la Tourbière reprend son miroir, l'Hésitant son savoir. */
   {
-    /* LE VERGER NOIR — le seul ordre volontaire des Landes hors du hameau.
+    /* LE VERGER NOIR — le seul ordre volontaire de toute la lande.
        Les arbres poussent. C'est pire que s'ils étaient morts. */
     id: "verger-noir",
     /* ⚠️ `food_available` RETIRÉ (13/08) : les fruits sont de la cendre, le
@@ -7160,10 +7163,10 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_verger_noir_e_f.png",
     chainNext: "verger-noir-2",
     narration: [
-      "Des arbres fruitiers plantés en rangs — le seul ordre volontaire des " +
-        "Landes hors du hameau. Ils ont poussé, ils ont des branches, des " +
+      "Des arbres fruitiers plantés en rangs — le seul ordre volontaire de " +
+        "toute la lande. Ils ont poussé, ils ont des branches, des " +
         "feuilles noires, et des fruits. C'est pire que s'ils étaient morts.",
-      "Deux silhouettes penchées, tout au fond, bêchent sans lever la tête. " +
+      "Deux silhouettes penchées, tout au fond — l'une bêche, l'autre arrache — sans lever la tête. " +
         "Et au bout de l'allée centrale, entre deux rangs, une silhouette en " +
         "croix dont la tête pend sur le côté.",
     ],
@@ -7335,7 +7338,7 @@ export const SCENES: Scene[] = [
       {
         si: { dernier: "retenu" },
         narration: [
-          "La femme te voit venir de loin et pose sa bêche. Elle ne dit pas d'où elle te connaît : elle dit seulement « Toi », comme on reconnaît un pas.",
+          "La femme te voit venir de loin et lâche la poignée de racines qu'elle tenait. Elle ne dit pas d'où elle te connaît : elle dit seulement « Toi », comme on reconnaît un pas.",
           "L'homme bêche tête basse, plus bas encore qu'avant. Au fond du verger, le douzième rang n'a pas avancé d'une pelletée.",
         ],
       },
@@ -7348,7 +7351,7 @@ export const SCENES: Scene[] = [
       },
     ],
     narration: [
-      "La femme lève la tête la première, sans lâcher sa bêche. Elle ne sursaute pas — plus rien ne les surprend, ici. « C'est le onzième verger. Les dix premiers ont donné de la cendre. »",
+      "La femme lève la tête la première, les mains pleines de racines. Elle ne sursaute pas — plus rien ne les surprend, ici. « C'est le onzième verger. Les dix premiers ont donné de la cendre. »",
       "L'homme ne se redresse pas. Il récite à voix basse, et ce ne sont pas des chiffres.",
     ],
     choices: [
@@ -7395,7 +7398,7 @@ export const SCENES: Scene[] = [
     chainNext: "epoux-3",
     memoire: "epoux",
     narration: [
-      "L'homme s'arrête au milieu d'un prénom. Il se redresse lentement, comme on se lève pour aller ouvrir à quelqu'un, et tourne la tête vers le sud. La femme lâche la bêche et lui prend le bras à deux mains. « Bêche. Ne regarde pas. »",
+      "L'homme s'arrête au milieu d'un prénom. Il se redresse lentement, comme on se lève pour aller ouvrir à quelqu'un, et tourne la tête vers le sud. La femme lâche ses racines et lui prend le bras à deux mains. « Bêche. Ne regarde pas. »",
       "— « Tu l'entends, toi ? » te demande-t-il sans quitter l'horizon. « Il dit mon prénom. Le douzième. »",
     ],
     choices: [
@@ -7424,7 +7427,7 @@ export const SCENES: Scene[] = [
         laisse: "encourage",
         passive: {
           consequence:
-            "La femme te regarde comme on regarde une corde. « Toi aussi, alors. » Elle le fait se rasseoir de force, les deux mains sur ses épaules, et ne dit plus un mot tant que tu es dans le verger.",
+            "La femme te regarde comme on regarde une corde. « Toi aussi, alors. » Elle le tire en arrière de force, les deux mains sur ses épaules, jusqu'à ce qu'il rebaisse la tête vers la terre, et ne dit plus un mot tant que tu es dans le verger.",
         },
       },
       {
@@ -7433,7 +7436,7 @@ export const SCENES: Scene[] = [
         laisse: "retenu",
         passive: {
           consequence:
-            "Il le dit. Puis le deuxième, parce qu'on ne s'arrête pas au premier. Au quatrième, il a rebaissé la tête vers la terre. La femme ne te remercie pas. Elle reprend la bêche à côté de lui, un peu plus près qu'avant.",
+            "Il le dit. Puis le deuxième, parce qu'on ne s'arrête pas au premier. Au quatrième, il a rebaissé la tête vers la terre. La femme ne te remercie pas. Elle se remet aux racines à côté de lui, un peu plus près qu'avant.",
         },
       },
     ],
@@ -7516,7 +7519,7 @@ export const SCENES: Scene[] = [
           outcomes: outcomes(
             "20 naturel. Tes doigts se referment sur un cercle de métal froid, et rien ne les retient. Un miroir de poche, fêlé en travers. Dans la fêlure, ton visage arrive avec un temps de retard.",
             "La tourbe aspire jusqu'au coude, puis rend. Dans ta main, un miroir de poche fêlé, jeté là par quelqu'un qui ne voulait plus se voir.",
-            "Quelque chose, sous la tourbe, referme ta main sur la tienne et tire. Tu te dégages en y laissant la peau du poignet.",
+            "Quelque chose, sous la tourbe, referme sa main sur la tienne et tire. Tu te dégages en y laissant la peau du poignet.",
             "1 naturel. Tu plonges le bras. La tourbe se referme dessus comme une bouche, et ne le rend qu'à regret, marqué. ♦ −2"
           ),
         },
@@ -7549,28 +7552,28 @@ export const SCENES: Scene[] = [
         si: { dernier: "tue" },
         narration: [
           "Au milieu de l'eau, une main tient droite une botte, semelle vers le ciel. Elle la tient comme on tient une enseigne.",
-          "Autour, les autres attendent, doigts ouverts à fleur d'eau. Ils ne tirent que ce qui s'arrête.",
+          "Autour, les autres attendent, doigts ouverts à fleur d'eau. Elles ne tirent que ce qui s'arrête.",
         ],
       },
       {
         si: { dernier: "blesse" },
         narration: [
           "Les mains sont déjà à la surface avant que tu t'arrêtes. Sur l'une, à l'index, un lambeau d'étoffe arraché — du même drap que ta manche.",
-          "Elles ont appris où les gens hésitent. Ils ne tirent que ce qui s'arrête.",
+          "Elles ont appris où les gens hésitent. Elles ne tirent que ce qui s'arrête.",
         ],
       },
       {
         si: { dernier: ["traverse", "piquets"] },
         narration: [
           "Les mains ne remontent pas au début. Elles attendent plus loin, là où les piquets s'arrêtent — comme si elles avaient appris qu'on ne s'arrête pas au bord.",
-          "Quelques-unes se sont même déplacées vers la file de piquets. Ils ne tirent que ce qui s'arrête.",
+          "Quelques-unes se sont même déplacées vers la file de piquets. Elles ne tirent que ce qui s'arrête.",
         ],
       },
       {
         si: { dernier: "recule" },
         narration: [
           "Au bord, là où quelqu'un s'est arrêté pour faire demi-tour, la tourbe a gardé l'empreinte de deux bottes, pleine d'eau noire. Des doigts en dépassent.",
-          "Ils ne tirent que ce qui s'arrête. Ils ont retenu où l'on s'arrête.",
+          "Elles ne tirent que ce qui s'arrête. Elles ont retenu où l'on s'arrête.",
         ],
       },
     ],
@@ -7673,7 +7676,7 @@ export const SCENES: Scene[] = [
         observe: true,
         passive: {
           consequence:
-            "Le sillon est frais sous la bruyère, la terre retournée encore humide. Au bout, la pierre a avancé cette nuit : une motte est collée à sa base, côté sud. Elle ne glisse pas. Elle marche, un pouce par nuit.",
+            "Le sillon est frais sous la bruyère, la terre retournée encore humide. Au bout, la pierre a avancé il y a peu : une motte est collée à sa base, côté sud. Elle ne glisse pas. Elle marche, un pouce par nuit.",
         },
       },
       {
@@ -7728,7 +7731,7 @@ export const SCENES: Scene[] = [
         label: "Lire les noms de la dalle",
         passive: {
           consequence:
-            "Ce ne sont pas des noms de gens. Ce sont des noms de pierres : la Haute, la Veuve, les Deux Sœurs. Les dates, elles, sont les jours où chacune s'est mise en route. La dernière ligne n'a qu'une date, sans nom. Elle est d'hier.",
+            "Ce ne sont pas des noms de gens. Ce sont des noms de pierres : la Haute, la Veuve, les Deux Sœurs. Les dates, elles, sont les jours où chacune s'est mise en route. La dernière ligne n'a qu'une date, sans nom. Elle est d'hier.\n\nTu redescends de la butte avec ces noms, et tu ne regardes plus les pierres de la même façon.",
         },
       },
       {
@@ -7794,8 +7797,8 @@ export const SCENES: Scene[] = [
           outcomes: outcomes(
             "20 naturel. Tu cours sur la crête de son bras au rythme de son souffle, et tu redescends dans la bruyère au moment où il expire. Il n'a rien senti. Derrière toi, la lande se soulève, apaisée.",
             "Tu cours. Sous tes pieds, la bruyère monte comme une vague, et tu sautes au bas de son poignet juste avant qu'il roule sur le flanc. Il grogne dans son sommeil, un bruit de terre qui s'éboule. Tu es passé.",
-            "Il se retourne pendant que tu es sur son bras. Le sol se dérobe, tu roules sur une pente qui n'existait pas, et une pierre te déchire le flanc au passage. Il ne s'est pas réveillé. Toi, tu te relèves en te tenant les côtes.",
-            "1 naturel. Il se retourne, et sa main se referme sur la bruyère où tu es tombé. Il ne serre pas — il dort. Tu t'en dégages en rampant entre deux doigts de terre, la jambe prise sous le poids jusqu'au genou. ♦ −2"
+            "Il se retourne pendant que tu es sur son bras. Le sol se dérobe, tu roules sur une pente qui n'existait pas, et une pierre te déchire le flanc au passage. Il ne s'est pas réveillé. Toi, tu te relèves de l'autre côté de l'échine en te tenant les côtes.",
+            "1 naturel. Il se retourne, et sa main se referme sur la bruyère où tu es tombé. Il ne serre pas — il dort. Tu t'en dégages en rampant entre deux doigts de terre, la jambe prise sous le poids jusqu'au genou — et tu finis l'échine à plat ventre, de l'autre côté. ♦ −2"
           ),
         },
       },
@@ -7817,7 +7820,7 @@ export const SCENES: Scene[] = [
             "20 naturel. Tu marches quand il inspire, tu t'arrêtes quand il expire, comme les pierres du Cercle. Il ne sent rien passer. Au bout de sa main, tu te retournes : l'échine monte et descend, et le monde avec elle.",
             "Tu règles ton pas sur le souffle que tu as vu au Cercle : un pas quand il inspire, rien quand il expire. Tu traverses son bras comme on traverse un gué.",
             "Tu te trompes d'un souffle. La crête te soulève, et tu retombes dans la bruyère de l'autre côté — du bon côté. Il ne s'est même pas retourné.",
-            "1 naturel. Tu perds le compte, et le souffle avec. Tu restes planté sur son bras jusqu'au souffle suivant, et au suivant, sans oser bouger, avant de redescendre par où tu étais venu. ♦ −2"
+            "1 naturel. Tu perds le compte, et le souffle avec. Tu restes planté sur son bras jusqu'au souffle suivant, et au suivant, sans oser bouger — puis tu redescends de l'autre côté à la première inspiration, les jambes qui tremblent encore. ♦ −2"
           ),
         },
       },
@@ -7832,8 +7835,8 @@ export const SCENES: Scene[] = [
           outcomes: outcomes(
             "20 naturel. Tu te couches dans sa paume, et la main se referme sur toi comme sur un oiseau. Elle te garde un moment au chaud. Puis elle s'ouvre, de l'autre côté de la crête, et te pose dans la bruyère.",
             "Tu t'allonges dans le creux de sa paume, immobile. Les doigts se referment sans serrer, puis se rouvrent quand le souffle retombe. Tu te relèves de l'autre côté de sa main, et tu repars.",
-            "Les doigts se referment un peu trop. Tu sens une côte céder avant qu'ils se rouvrent. Il n'a rien voulu : il dort. Tu sors de sa main en respirant par petits bouts.",
-            "1 naturel. Il serre. Longtemps. Quand la main se rouvre enfin, tu ne sais plus combien de temps tu as tenu sans air. Tu repars à quatre pattes. ♦ −2"
+            "Les doigts se referment un peu trop. Tu sens une côte céder avant qu'ils se rouvrent. Il n'a rien voulu : il dort. Tu sors de sa main, de l'autre côté de la crête, en respirant par petits bouts.",
+            "1 naturel. Il serre. Longtemps. Quand la main se rouvre enfin, de l'autre côté de la crête, tu ne sais plus combien de temps tu as tenu sans air. Tu repars à quatre pattes. ♦ −2"
           ),
         },
       },
@@ -7848,8 +7851,8 @@ export const SCENES: Scene[] = [
           outcomes: outcomes(
             "20 naturel. Tu lui parles à l'oreille, une oreille grande comme une porte de grange, et tu lui dis qu'on l'a oublié en haut. Il soupire. Toute la lande soupire avec lui. Il ne se retournera plus de la journée.",
             "Tu t'approches de sa tête et tu lui parles tout bas, sans rien lui demander. Le souffle ralentit sous tes pieds. Tu passes pendant qu'il écoute.",
-            "Ta voix le tire à moitié du sommeil. La tête se soulève d'un pouce, et la bruyère qui la couvre te tombe dessus en une coulée de terre et de pierres. Tu t'en dégages, meurtri. Il s'est rendormi.",
-            "1 naturel. Il ouvre un œil, grand comme une porte, et vide. Il ne te voit pas : il cherche. Sa main balaie la bruyère, et elle te trouve en passant. ♦ −2"
+            "Ta voix le tire à moitié du sommeil. La tête se soulève d'un pouce, et la bruyère qui la couvre te tombe dessus en une coulée de terre et de pierres qui t'emporte au bas de l'échine — du bon côté. Tu t'en dégages, meurtri. Il s'est rendormi.",
+            "1 naturel. Il ouvre un œil, grand comme une porte, et vide. Il ne te voit pas : il cherche. Sa main balaie la bruyère, te trouve en passant, et te jette par-dessus la crête comme on chasse une mouche. Tu retombes de l'autre côté, sur ce qui reste de ton souffle. ♦ −2"
           ),
         },
       },
@@ -12921,12 +12924,13 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
      sait rien. `minFille` les rend plus spécifiques, donc prioritaires — une
      fois qu'on sait, la croiser sans un mot n'aurait plus de sens. */
   {
-    from: ["campement", "tourbiere", "verger-noir"],
-    text: "Au bord de la tourbière, quelqu'un est accroupi — un enfant, un châle sombre bien trop grand, les mains dans l'eau noire. Elle se relève sans hâte en t'entendant, s'essuie aux hanches et s'éloigne vers l'ouest. Elle ne se retourne pas. Aucun enfant, dans ce pays, ne marche aussi tranquillement.",
+    // Panel 26/09 : le décor de la ligne doit être celui qu'on QUITTE.
+    from: ["tourbiere"],
+    text: "Au bord de la tourbière, derrière toi, quelqu'un est accroupi — un enfant, un châle sombre bien trop grand, les mains dans l'eau noire. Elle se relève sans hâte en t'entendant, s'essuie aux hanches et s'éloigne vers l'ouest. Elle ne se retourne pas. Aucun enfant, dans ce pays, ne marche aussi tranquillement.",
   },
   {
-    from: ["campement", "tourbiere", "verger-noir"],
-    text: "Entre deux rangs du verger, une petite silhouette immobile. Tu la fixes ; elle attend que tu l'aies bien vue, puis reprend sa marche entre les arbres, du pas de quelqu'un qui rentre chez lui. Les fruits de cendre ne bougent pas sur son passage.",
+    from: ["verger-noir"],
+    text: "Entre les deux derniers rangs du verger, quand tu te retournes, une petite silhouette immobile. Tu la fixes ; elle attend que tu l'aies bien vue, puis reprend sa marche entre les arbres, du pas de quelqu'un qui rentre chez lui. Les fruits de cendre ne bougent pas sur son passage.",
   },
   {
     from: ["campement", "tourbiere", "verger-noir"],
@@ -12935,17 +12939,17 @@ const LIAISON_VARIANTS: LiaisonVariant[] = [
   {
     from: ["campement", "tourbiere", "verger-noir"],
     minFille: 1,
-    text: "Elle croise ta route sans ralentir, à trois pas, comme on croise quelqu'un dans un couloir. « Bois pas à la tourbière. Ils y jettent ce qu'ils veulent pas enterrer. » Elle est déjà loin quand tu penses à répondre.",
+    text: "Une petite fille, un châle sombre trop grand, croise ta route sans ralentir, à trois pas, comme on croise quelqu'un dans un couloir. « Bois pas à la tourbière. Ils y jettent ce qu'ils veulent pas enterrer. » Elle est déjà loin quand tu penses à répondre.",
   },
   {
     from: ["campement", "tourbiere", "verger-noir"],
     minFille: 1,
-    text: "Elle passe, et elle parle sans tourner la tête. « Tu marches comme les gens qui comptent les jours. » Un temps, sa voix déjà derrière toi — une voix d'enfant, sur le ton de quelqu'un qui a fini d'apprendre : « Moi j'ai arrêté au troisième. » Quand tu te retournes, la bruyère se referme sur rien.",
+    text: "Une petite fille au châle trop grand passe, et elle parle sans tourner la tête. « Tu marches comme les gens qui comptent les jours. » Un temps, sa voix déjà derrière toi — une voix d'enfant, sur le ton de quelqu'un qui a fini d'apprendre : « Moi j'ai arrêté au troisième. » Quand tu te retournes, la bruyère se referme sur rien.",
   },
   {
     from: ["campement", "tourbiere", "verger-noir"],
     minFille: 1,
-    text: "« Trois corbeaux sur ton toit ce matin. » Elle le dit du ton dont un enfant récite la règle d'un jeu, sans s'arrêter. « Quatre, faut partir. » Tu mets le reste du trajet à décider si c'était un avertissement ou une politesse.",
+    text: "« Trois corbeaux sur un toit, le matin, c'est trois. » Une petite fille au châle trop grand le dit en te croisant, du ton dont un enfant récite la règle d'un jeu, sans s'arrêter. « Quatre, faut partir. » Tu mets le reste du trajet à décider si c'était un avertissement ou une politesse.",
   },
   // ——— Provenance (10) ———
   {
@@ -14133,16 +14137,17 @@ export const FAMILIARITE: Record<string, Strate> = {
   },
   "cercle-qui-descend": {
     deux:
-      "Les pierres ont avancé. Pas beaucoup : un pied, peut-être. Les sillons " +
-      "sont plus longs que la bruyère ne le laisse croire.",
+      "Derrière chaque pierre, le sillon est plus long que la bruyère ne le " +
+      "laisse croire — et la terre y est fraîche sur le dernier pied. Elles " +
+      "ont marché il y a peu.",
     quatre:
       "Il manque une pierre au cercle. Au sud, très loin sur l'horizon, une " +
       "forme levée penche vers les cordes.",
   },
   "verger-noir": {
     deux:
-      "Un fruit manque à une branche basse, cueilli net, et la cassure est " +
-      "encore claire.",
+      "À une branche basse, un fruit manque. La cassure est claire, encore " +
+      "humide — et ici, personne ne cueille.",
     quatre:
       "Les branches basses sont vides sur toute la longueur du rang, à " +
       "hauteur de main. À ta hauteur de main.",
@@ -14277,7 +14282,7 @@ export function pickLandePair(visited: string[], seed: number, guidee = false): 
  *  jeu se voit (la colonne de cordes, au sud). Remplace l'ambiance de la
  *  première Croisée de la Lande — même écran, pas un tap de plus. */
 export const LANDE_DEPART =
-  "Tu tournes le dos à la pierre. Devant, la lande à perte de vue — et, tout " +
+  "Tu laisses la pierre derrière toi. Devant, la lande à perte de vue — et, tout " +
   "au bout, un trait sombre qui monte du sol. On le prendrait pour une " +
   "fumée, s'il bougeait.";
 /** L'Hésitant, pour qui ne l'a pas abordé : on le voit en partant. */
@@ -14384,6 +14389,25 @@ export const SOUPCON_CRAIE: Record<number, string> = {
   3: "La craie a changé de place : elle est sur ta manche, à l'épaule. Pour la tracer là, il a fallu être à portée de bras — et que tu ne t'en aperçoives pas.",
   4: "Deux marques maintenant, sur le même bras, à quelques doigts d'écart. La seconde recouvre à moitié la première, comme une signature qu'on confirme.",
   5: "Tu passes la main dans ton dos et tes doigts reviennent blancs. Tu ne peux pas voir ce qui y est tracé — tous les autres, si. Ce n'est plus une marque : c'est une convocation, et elle est déjà partie devant toi.",
+};
+
+/**
+ * LE REGARD (panel 26/09, tranché par Patrick) — la piste d'AVANT le village.
+ *
+ * La craie suppose que quelqu'un s'est approché assez pour marquer : avant
+ * d'être entré au Hameau, personne ne l'a fait. Tant que `hameau.entree` est
+ * faux, un palier franchi dehors se lit donc autrement — on est SURVEILLÉ,
+ * indirectement : une silhouette qui n'est plus là, un corbeau qui attend, des
+ * pas qui répondent aux tiens. Jamais un villageois, jamais un bâti, jamais
+ * quelqu'un de nommé ; c'est la lande elle-même qui compte.
+ * Une fois entré, la craie reprend (elle a maintenant une main derrière elle).
+ */
+export const SOUPCON_REGARD: Record<number, string> = {
+  1: "Sur la crête, à ta gauche, une silhouette debout. Quand tu relèves les yeux, la crête est vide — mais la bruyère, à l'endroit exact, est encore couchée.",
+  2: "Un corbeau se pose devant toi, à vingt pas. Tu avances : il s'envole, et se repose vingt pas plus loin. Il ne cherche rien au sol. Il attend que tu passes.",
+  3: "Derrière toi, dans la tourbe, des empreintes que tu n'as pas faites. Elles s'arrêtent là où tu t'es arrêté, et repartent où tu es reparti.",
+  4: "Le vent tombe, et dans le silence un second pas répond au tien. Pas un écho : il tombe un demi-temps après, et il se tait quand tu te retournes.",
+  5: "Trois corbeaux, sur trois pierres, tous tournés vers toi. Quand tu bouges, ils tournent la tête ensemble, du même mouvement. Ce n'est plus un regard : c'est un compte, et il est presque fait.",
 };
 
 /**

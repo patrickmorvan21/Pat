@@ -59,6 +59,54 @@ def objets_passifs() -> dict:
     return out
 
 
+def objets_actifs() -> dict:
+    """{id: {"nom", "heal", "cure"}} pour tout objet ACTIF de soin du catalogue
+    — la réplique n'offrait AUCUN « Utiliser — X » (panel du 26/09 : un testeur
+    blessé a fini sa vie avec un baume en poche qu'il ne pouvait pas sortir)."""
+    src = (LIB / "besace.ts").read_text(encoding="utf-8")
+    out = {}
+    for m in re.finditer(r'"([a-z0-9\-]+)":\s*\{(.*?)\n  \},', src, re.S):
+        bloc = m.group(2)
+        if 'slot: "actif"' not in bloc:
+            continue
+        heal = re.search(r"heal:\s*([0-9.]+)", bloc)
+        nom = re.search(r'name:\s*"([^"]+)"', bloc)
+        if not heal and "cure: true" not in bloc:
+            continue
+        out[m.group(1)] = {
+            "nom": nom.group(1) if nom else m.group(1),
+            "heal": float(heal.group(1)) if heal else 0.0,
+            "cure": "cure: true" in bloc,
+        }
+    if len(out) < 3:
+        raise SystemExit(f"objets_actifs n'a lu que {len(out)} objets : le regex ne lit plus besace.ts.")
+    return out
+
+
+def recompenses_destin() -> list:
+    """Les récompenses RÉELLES du Destin (RECOMPENSES_DESTIN, besace.ts) — la
+    réplique donnait une « trouvaille rare » sans nom (panel du 26/09)."""
+    src = (LIB / "besace.ts").read_text(encoding="utf-8")
+    bloc = re.search(r"const RECOMPENSES_DESTIN[^=]*=\s*\[(.*?)\n\];", src, re.S)
+    assert bloc, "RECOMPENSES_DESTIN introuvable"
+    out = []
+    for m in re.finditer(r'\{\s*name:\s*"([^"]+)"(.*?)\},', bloc.group(1), re.S):
+        corps = m.group(2)
+        heal = re.search(r"heal:\s*([0-9.]+)", corps)
+        out.append({
+            "nom": m.group(1),
+            "arme": 'kind: "arme"' in corps,
+            "actif": 'slot: "actif"' in corps,
+            "heal": float(heal.group(1)) if heal else 0.0,
+            "cure": "cure: true" in corps,
+            "mod": int(re.search(r"passiveMod:\s*(\d+)", corps).group(1)) if "passiveMod" in corps else 0,
+            "scope": (re.search(r'passiveScope:\s*"(\w+)"', corps) or [None, "all"])[1],
+        })
+    if len(out) < 4:
+        raise SystemExit(f"recompenses_destin n'a lu que {len(out)} entrées.")
+    return out
+
+
 def apports_proces(src: str) -> dict[str, str]:
     """Les quatre lignes que le procès DIT selon ce qu'on lui apporte.
 
@@ -415,6 +463,7 @@ def main() -> int:
         # le défaut que la vague corrige dans le jeu.
         "soupconPaliers": record(src, "export const SOUPCON_PALIERS: Record<number, string>"),
         "soupconCraie": record(src, "export const SOUPCON_CRAIE: Record<number, string>"),
+        "soupconRegard": record(src, "export const SOUPCON_REGARD: Record<number, string>"),
         "soupconGeolier": record(src, "export const SOUPCON_GEOLIER: Record<number, string>"),
         # 03/09 — la fermeture nomme sa cause : un tableau par cause
         # (echec / meute / bete), lu sur les sous-tableaux du Record.
@@ -448,6 +497,10 @@ def main() -> int:
         # de seuil sur CHAQUE jet. C'est ce trou qui expliquait l'écart entre
         # « les chiffres disent que c'est dur » et « c'est toujours facile ».
         "objetsPassifs": objets_passifs(),
+        # 26/09 (panel 2) : les soins ACTIFS (« Utiliser — X ») et les vrais
+        # objets du Destin, nommés.
+        "objetsActifs": objets_actifs(),
+        "recompensesDestin": recompenses_destin(),
         "lieux": {
             l["id"]: l["nom"]
             for l in json.loads((DATA / "zones" / "landes.json").read_text(encoding="utf-8")).get("lieux", [])

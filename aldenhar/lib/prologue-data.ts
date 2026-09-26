@@ -166,12 +166,21 @@ function portraitAvecSouvenir(
   dominante: StatKey,
   fragile: StatKey,
   memories?: { stat: StatKey; title: string }[],
-  rang = 0
+  rang = 0,
+  /** La valeur de la stat fragile : à 3 ou plus, elle n'est pas une faiblesse
+      — on ne la dit pas (panel 26/09 : « ta main hésite » à qui n'avait rien
+      d'hésitant, juste une stat un cran sous les autres). */
+  fragileVal = 1
 ): string {
   const souvenir = memories?.find((m) => m.stat === dominante)?.title;
   const ou = souvenir ? ` C'est ${minusculeInitiale(souvenir)} qui me l'a appris.` : "";
-  return `${tournure(PORTRAIT_DOMINANTE[dominante], rang)}${ou}\n${tournure(PORTRAIT_FRAGILE[fragile], rang)}`;
+  const tete = `${tournure(PORTRAIT_DOMINANTE[dominante], rang)}${ou}`;
+  if (fragileVal > SEUIL_FRAGILE) return tete;
+  return `${tete}\n${tournure(PORTRAIT_FRAGILE[fragile], rang)}`;
 }
+
+/** Au-dessus de cette valeur, la stat la plus basse n'est pas un défaut. */
+export const SEUIL_FRAGILE = 2;
 
 /**
  * LE PROFIL PLAT A DROIT À SON PORTRAIT (panel 10/08) — et un profil plat
@@ -236,7 +245,7 @@ export function portraitDuSeuil(
   if (fragile === dominante) {
     fragile = PROLOGUE_STAT_ORDER.find((k) => k !== dominante) ?? fragile;
   }
-  return portraitAvecSouvenir(dominante, fragile, memories, rang);
+  return portraitAvecSouvenir(dominante, fragile, memories, rang, stats[fragile]);
 }
 
 /** L'engagement brut du Seuil (3 = direct, 2 = mesuré, 1 = retrait). */

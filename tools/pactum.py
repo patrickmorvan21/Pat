@@ -132,9 +132,13 @@ def portrait(st: dict, p: dict, rang: int = 0) -> str:
     frg = min(AXES, key=lambda a: st[a])
     if frg == dom:
         frg = next(a for a in AXES if a != dom)
+    # 26/09 : la faiblesse ne se dit que si la stat est vraiment basse (≤ 2),
+    # miroir de SEUIL_FRAGILE (prologue-data.ts).
+    dire_frg = st[frg] <= 2
     if pk.get("PORTRAIT_DOMINANTE"):
-        return tour(pk["PORTRAIT_DOMINANTE"][dom]) + "\n" + tour(pk["PORTRAIT_FRAGILE"][frg])
-    return PORTRAIT_DOMINANTE[dom] + "\n" + PORTRAIT_FRAGILE[frg]
+        tete = tour(pk["PORTRAIT_DOMINANTE"][dom])
+        return tete + ("\n" + tour(pk["PORTRAIT_FRAGILE"][frg]) if dire_frg else "")
+    return PORTRAIT_DOMINANTE[dom] + ("\n" + PORTRAIT_FRAGILE[frg] if dire_frg else "")
 
 
 def profil_neuf() -> dict:
@@ -352,8 +356,13 @@ class Partie:
         rng = random.Random(g)
         noms = ["Cendre", "Le Muet", "Sans-Nom", "Corbeau", "Le Tardif", "Braise",
                 "L'Onzième", "Suie"]
+        # 26/09 : jamais le nom du prédécesseur (miroir de Scene.tsx).
+        cpt = lire_compte()
+        tombes = cpt.get("tombes") or []
+        pred = cpt.get("dernierSurvivant") or (tombes[0]["nom"] if tombes else None)
+        candidats = [n for n in noms if n != pred] or noms
         d = {
-            "graine": g, "nom": nom or rng.choice(noms), "jour": 1, "sante": 1.0,
+            "graine": g, "nom": nom or rng.choice(candidats), "jour": 1, "sante": 1.0,
             # ⚠️ La Borne COMPTE comme lieu visité, comme dans le jeu
             # (`freshTraversal` : visited = [ENTRY_SCENE]). Sans elle, le
             # départ de la Lande (« Tu tournes le dos à la pierre… l'homme
@@ -757,7 +766,14 @@ class Partie:
             return
         self.d["soupconVu"] = n
         dedans = self.d["scene"] in self.k["hameauInterieur"]
-        pool = self.k.get("soupconPaliers" if dedans else "soupconCraie", {})
+        # 26/09 : dehors AVANT d'être entré au village, la craie n'a pas de
+        # main derrière elle — c'est le REGARD (la lande qui compte).
+        if dedans:
+            pool = self.k.get("soupconPaliers", {})
+        elif self.d.get("hameauEntree"):
+            pool = self.k.get("soupconCraie", {})
+        else:
+            pool = self.k.get("soupconRegard", self.k.get("soupconCraie", {}))
         ligne = pool.get(str(n))
         if ligne:
             self.dit(ligne, "narration")
@@ -850,7 +866,10 @@ class Partie:
             # FORT et chiffres proches, jamais la distance seule ; aucun chiffre.
             ordre = ["instinct", "courage", "ruse", "empathie"]
             fort = lambda x: sorted(ordre, key=lambda a: -x.get(a, 3))[0]
-            pareil = lambda q: fort(st) == fort(q) and sum(abs(st[a] - q.get(a, 3)) for a in AXES) <= 2
+            faible = lambda x: sorted(ordre, key=lambda a: x.get(a, 3))[0]
+            # 26/09 (2e passe) : même dominante ET même faiblesse.
+            pareil = lambda q: (fort(st) == fort(q) and faible(st) == faible(q)
+                                and sum(abs(st[a] - q.get(a, 3)) for a in AXES) <= 2)
             if len(passes) == 1:
                 self.dit("Les mêmes réflexes. Intéressant." if pareil(passes[0])
                          else "Non. Tu n'es pas comme le précédent.", "geolier")
@@ -1212,6 +1231,18 @@ class Partie:
                    if not (o.get("kind") == "ouvrir"
                            or (o.get("kind") == "choix" and o["c"].get("type") == "passif"
                                and not any(x.startswith("miniJeu") for x in o["c"])))]
+        # LE 4e CHOIX DE SOIN (jeu : `activeChoice`, 21/07) — offert quand un
+        # remède est PERTINENT (santé < 0,75 ou blessure), jamais sur un écran
+        # qui porte un serment. La réplique ne l'offrait pas (panel 26/09).
+        if (not s.get("liaison") and not any(c.get("serment") for c in s.get("choix", []))
+                and (self.d["sante"] < 0.75 or self.d["etats"].get("entaille", 0) > 0)):
+            actifs = self.k.get("objetsActifs", {})
+            for oid in self.d.get("besace", []):
+                a = actifs.get(oid) or (self.d.get("destins", {}).get(oid) if self.d.get("destins", {}).get(oid, {}).get("actif") else None)
+                if a:
+                    out.append({"kind": "soin", "oid": oid, "a": a,
+                                "label": "Utiliser — " + (self.k.get("objets", {}).get(oid) or oid.split(":", 1)[-1])})
+                    break
         return out
 
     # -- jouer un choix
@@ -1240,6 +1271,19 @@ class Partie:
                 self.d["besace"].remove(u["objet"])
             if u.get("consequence"):
                 self.dit(u["consequence"], "narration")
+            return
+        if o["kind"] == "soin":
+            # Sortir un remède ne fait pas passer le temps (12/08 §2) : la
+            # plaie se referme, l'écran se recompose sur place.
+            a = o["a"]
+            if o["oid"] in self.d["besace"]:
+                self.d["besace"].remove(o["oid"])
+            self.d["sante"] = min(1.0, self.d["sante"] + float(a.get("heal") or 0))
+            if a.get("cure") and self.d["etats"].get("entaille"):
+                del self.d["etats"]["entaille"]
+                self.dit("Tu sors « " + o["label"][len("Utiliser — "):] + " » de la Besace. Ce qui restait ouvert se referme.", "narration")
+            else:
+                self.dit("Tu sors « " + o["label"][len("Utiliser — "):] + " » de la Besace. Ce que tu vas tenter maintenant, tu le tenteras avec ce corps-là.", "narration")
             return
         if o["kind"] == "fermer":
             self.d["poiOuvert"] = False
@@ -1416,8 +1460,34 @@ class Partie:
     def gagner(self, oid: str) -> None:
         """L'objet est nommé par son NOM, jamais par son identifiant."""
         self.d["besace"].append(oid)
-        nom = self.k.get("objets", {}).get(oid) or oid.replace("-", " ")
+        nom = (self.k.get("objets", {}).get(oid)
+               or (oid.split(":", 1)[1] if oid.startswith("destin:") else None)
+               or oid.replace("-", " "))
         self.dit("OBTENU — " + nom, "obtenu")
+
+    def gagner_destin(self, combat: bool, stat: str | None) -> None:
+        """Le Destin donne un objet RÉEL du catalogue (26/09) — une arme
+        seulement en combat sur un jet de COURAGE (règle du 14/07), sinon
+        soin ou babiole. L'entrée de besace est `destin:<nom>` : les tables
+        `objetsPassifs`/`objetsActifs` ne la connaissent pas, on porte donc
+        son effet dans `destins`."""
+        pool = [r for r in self.k.get("recompensesDestin", [])
+                if not r.get("arme") or (combat and stat == "COURAGE")] or None
+        if not pool:
+            self.gagner("trouvaille-rare")
+            return
+        r = self.rng("destin").choice(pool)
+        self.d.setdefault("destins", {})["destin:" + r["nom"]] = r
+        self.gagner("destin:" + r["nom"])
+
+    def poser_etat(self, e: str, tours: int) -> None:
+        """Un état déjà porté ne se ré-annonce pas (panel 26/09 : « ÉTAT —
+        Entaillé » servi trois fois à un héros déjà entaillé) — sa durée est
+        prolongée, c'est tout."""
+        deja = self.d["etats"].get(e, 0) > 0
+        self.d["etats"][e] = max(self.d["etats"].get(e, 0), tours)
+        if not deja:
+            self.dit("ÉTAT — " + {"entaille": "Entaillé", "ebranle": "Ébranlé", "aguerri": "Aguerri"}.get(e, e), "etat")
 
     def dominante(self) -> str | None:
         """⚠️ None tant que le Geôlier n'a pas dessiné : aucune variante de
@@ -1458,7 +1528,7 @@ class Partie:
         # table des Landes : la réplique l'a en main comme le jeu.
         best = 1 if combat else 0
         for oid in self.d.get("besace", []):
-            o = table.get(oid)
+            o = table.get(oid) or self.d.get("destins", {}).get(oid)
             if not o or not o.get("mod"):
                 continue
             if o.get("scope") == "all" or (o.get("scope") == "combat" and combat):
@@ -1655,26 +1725,21 @@ class Partie:
                 # un échec SOCIAL en combat ne blesse pas — sa prose dit qu'on
                 # recule, personne n'a touché le héros. Miroir du vrai jeu.
                 if nature == "physique":
-                    self.d["etats"]["entaille"] = 999
-                    self.dit("ÉTAT — Entaillé", "etat")
+                    self.poser_etat("entaille", 999)
                 else:
-                    self.d["etats"]["ebranle"] = 2
-                    self.dit("ÉTAT — Ébranlé", "etat")
+                    self.poser_etat("ebranle", 2)
             elif palier in ("destin", "eclatante", "reussite") and c.get("stat") in ("COURAGE", "INSTINCT"):
                 # Gagner sans se battre n'affûte pas les gestes de guerre
                 # (règle du vrai jeu — la réplique l'ignorait, panel 9/08).
-                self.d["etats"]["aguerri"] = 3
-                self.dit("ÉTAT — Aguerri", "etat")
+                self.poser_etat("aguerri", 3)
         elif palier == "malediction" and not hors:
             # Miroir du contrecoup de malédiction hors combat (corrigé 24/08 :
             # il suit la NATURE du jet, pas sa stat — une malédiction sociale
             # ne pose plus une plaie). Physique → Entaillé 3 ; sinon Ébranlé 2.
             if nature == "physique":
-                self.d["etats"]["entaille"] = 3
-                self.dit("ÉTAT — Entaillé", "etat")
+                self.poser_etat("entaille", 3)
             else:
-                self.d["etats"]["ebranle"] = 2
-                self.dit("ÉTAT — Ébranlé", "etat")
+                self.poser_etat("ebranle", 2)
         self.geolierSurJet(naturel)
 
         for e in list(self.d["etats"]):
@@ -1693,7 +1758,7 @@ class Partie:
         if palier == "destin":
             # 03/09 — un objet RÉEL en besace (un testeur a vu « OBTENU » puis
             # `besace —` à l'écran `etat`).
-            self.gagner("trouvaille-rare")
+            self.gagner_destin(bool(s.get("combat")), c.get("stat"))
         if s.get("procesFixation") and rate:
             self.mourir(texte or "Le hameau a jugé.")
             return
@@ -1868,8 +1933,15 @@ class Partie:
         # le plus solennel du jeu (relevé par un testeur du panel 10/08). Le
         # vrai jeu ne l'affiche qu'une fois — il masque la prose sur le dé
         # fatal et la garde pour l'épitaphe.
-        deja = [e["texte"] for e in self.d["journal"][-4:]]
-        if dernier not in deja:
+        # 26/09 : l'épitaphe est TOUJOURS servie (un testeur a cru mourir
+        # sans cause) — si la prose vient d'être affichée par la résolution,
+        # c'est cette entrée-là qui devient l'épitaphe, pour ne pas la lire
+        # deux fois d'affilée.
+        for e in reversed(self.d["journal"][-4:]):
+            if e["texte"] == dernier and e["style"] == "narration":
+                e["style"] = "epitaphe"
+                break
+        else:
             self.dit(dernier, "epitaphe")
         self.dit(
             f"Jour {self.d['jour']} · Les Landes · {len(self.d['visites'])} lieux traversés · "

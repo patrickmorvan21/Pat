@@ -75,7 +75,11 @@ function ouverture(stats: Stats): string[] {
      sur quatre axes de 1 à 5) laissait passer presque tout : deux jeux
      différents rendent souvent des chiffres voisins. On exige maintenant le
      même AXE FORT — celui qui ouvre le portrait — et des chiffres proches. */
-  const pareil = (p: Stats) => axeFort(stats) === axeFort(p) && distance(stats, p) <= 2;
+  // 26/09 (panel, 2e passe) : la même dominante ne suffit pas — deux héros
+  // qui foncent mais dont l'un a peur et l'autre ment n'ont pas « les mêmes
+  // réflexes ». On exige aussi la même FAIBLESSE.
+  const pareil = (p: Stats) =>
+    axeFort(stats) === axeFort(p) && axeFaible(stats) === axeFaible(p) && distance(stats, p) <= 2;
   if (passes.length === 1) {
     return pareil(passes[0])
       ? ["Attends.", "Les mêmes réflexes. Intéressant."]
@@ -90,6 +94,10 @@ function ouverture(stats: Stats): string[] {
 /** L'axe le plus haut ; à égalité, l'ordre fixe des axes tranche. */
 function axeFort(st: Stats): string {
   return [...ORDRE].sort((a, b) => st[b] - st[a])[0];
+}
+/** L'axe le plus bas, même départage. */
+function axeFaible(st: Stats): string {
+  return [...ORDRE].sort((a, b) => st[a] - st[b])[0];
 }
 
 /** La phrase qui referme — celle qui dit que rien n'est acquis. */

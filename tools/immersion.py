@@ -215,6 +215,16 @@ def pools() -> list[dict]:
         for i, t in enumerate(chaines_de_tableau(craie.group(1))):
             out.append({"pool": f"soupçon craie {i + 1}", "garde": {"lande", "gens"}, "textes": [t]})
 
+    # — LE REGARD (26/09) : la troisième piste, servie DEHORS et AVANT
+    #   d'être entré au Hameau (Scene.tsx : hameauDejaEntre ? CRAIE : REGARD).
+    #   Aucun bâti, aucune personne — c'est la lande qui compte.
+    regard = re.search(r"SOUPCON_REGARD[^=]*=\s*\{(.*?)\n\};", scene_src, re.S)
+    assert regard, "SOUPCON_REGARD introuvable dans scene-data.ts"
+    textes_regard = chaines_de_tableau(regard.group(1))
+    assert len(textes_regard) == 5, f"SOUPCON_REGARD : 5 textes attendus, {len(textes_regard)} lus"
+    for i, t in enumerate(textes_regard):
+        out.append({"pool": f"soupçon regard {i + 1}", "garde": {"lande", "gens"}, "textes": [t]})
+
     # — LA NUIT (10/08) : servie au campement, qui est le Moulin sans Ailes —
     #   un abri, donc un toit et des poutres sont acquis. En revanche aucun
     #   VILLAGE : le Moulin est en pleine lande.

@@ -59,6 +59,7 @@ import {
   estUnLieu,
   SOUPCON_PALIERS,
   SOUPCON_CRAIE,
+  SOUPCON_REGARD,
   SOUPCON_GEOLIER,
   tierIsFail,
   SORTIE_DE_ZONE,
@@ -125,7 +126,7 @@ import {
 import {
   etat, etatsActifs, poserEtat,
 } from "@/lib/etats";
-import { appliquerRepos, franchirZone, loadRun, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
+import { appliquerRepos, franchirZone, loadRun, randomHeroName, resetRun, saveRun, type FeedEntry, type RunState, type TraversalState } from "@/lib/state";
 import { zoneDef, zoneSuivanteJouable } from "@/lib/zones";
 import { entrerLieu, prochainPas } from "@/lib/etages";
 import {
@@ -2094,6 +2095,14 @@ export default function Scene() {
       const mem = mutateMemory((m) => {
         m.runsStarted += 1;
       });
+      // 26/09 (panel) : le nouveau héros ne porte jamais le nom du
+      // précédent — la Borne, le Registre et le Colporteur parlent de lui
+      // par son nom, et « Braise est mort ici » lu par un second Braise
+      // casse la mémoire inter-vies qu'on vient d'écrire.
+      {
+        const pred = predecesseur(mem);
+        if (pred && pred.name === run.heroName) run.heroName = randomHeroName(pred.name);
+      }
       // LA DETTE DE LA RELIQUE PORTÉE (5/08) : une relique aide ET coûte. Les
       // dettes qui pèsent dès le départ se posent ici, une seule fois, au seed
       // de la run neuve — jamais à la reprise (sinon elles s'empileraient à
@@ -3575,11 +3584,19 @@ export default function Scene() {
     // qu'un compteur hérité d'une sauvegarde ancienne ne réveille pas la
     // craie sur la Croûte.
     const zoneSoupcon = runRef.current?.zone ?? "landes";
+    // Trois pistes pour le même palier (26/09) : au village, les gens ; dehors
+    // APRÈS être entré, la craie (une main s'est approchée) ; dehors AVANT —
+    // personne ne t'a encore touché — le REGARD : la lande qui compte.
+    // `hameauEntree` de la scène courante compte aussi : le drapeau est posé
+    // après avoir été lu dans le même advance() (piège du 11/08).
+    const hameauDejaEntre = Boolean(runRef.current?.hameau?.entree) || Boolean(scene.hameauEntree);
     const soupManifest = !soupCroise || zoneSoupcon !== "landes"
       ? null
       : (nextScene.liaison ? liaisonDedans : dansLeVillage(nextScene.id))
         ? (SOUPCON_PALIERS[palierAServir] ?? null)
-        : (SOUPCON_CRAIE[palierAServir] ?? null);
+        : hameauDejaEntre
+          ? (SOUPCON_CRAIE[palierAServir] ?? null)
+          : (SOUPCON_REGARD[palierAServir] ?? null);
     // Et le Geôlier met un mot sur ce qui n'a pas de chiffre.
     // 03/09 — une ligne par palier ET PAR VIE : après une relaxe le Soupçon
     // remonte, le palier se rejoue, mais « Ils ont sorti une chaise » ne se
@@ -3929,7 +3946,11 @@ export default function Scene() {
       // Portée RUN : deux beats du même lieu passent tous deux par ici.
       if (vu(runRef.current?.vus, cleFam) > 0) return null;
       const passages = (loadMemory().visitesLieux ?? {})[lieuIci] ?? 0;
-      return passages >= 4 && famIci.quatre ? famIci.quatre : passages >= 2 ? famIci.deux : null;
+      // 26/09 (panel) : la strate « deux » ne se rejoue pas au 3e passage —
+      // un lieu qu'on refait une troisième fois se tait plutôt que de redire
+      // mot pour mot ce qu'il a dit au deuxième. Elle revient au quatrième
+      // sous une autre forme, ou pas du tout.
+      return passages >= 4 ? (famIci.quatre ?? null) : passages === 2 ? famIci.deux : null;
     })();
 
     const narrationLines = nextScene.fixationTrial

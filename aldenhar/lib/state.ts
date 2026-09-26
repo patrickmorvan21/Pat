@@ -682,8 +682,9 @@ const HERO_NAMES = [
 ];
 
 /** Nom de héros aléatoire (dette de sang / Registre — spec §19). */
-export function randomHeroName(): string {
-  return HERO_NAMES[Math.floor(Math.random() * HERO_NAMES.length)];
+export function randomHeroName(exclure?: string): string {
+  const pool = exclure ? HERO_NAMES.filter((n) => n !== exclure) : HERO_NAMES;
+  return pool[Math.floor(Math.random() * pool.length)];
 }
 
 /**
