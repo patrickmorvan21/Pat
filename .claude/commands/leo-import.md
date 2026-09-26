@@ -14,6 +14,7 @@ Arguments reçus : `$ARGUMENTS`
    - Avec arguments (chemins de fichiers, dossier, ou URLs `cdn.leonardo.ai`) : `python3 tools/dither_batch.py <arguments>`.
      - **Renommage avant traitement** : pour les URLs Leonardo (noms générés sans préfixe), TOUJOURS utiliser la syntaxe `nom_cible=URL` (ex. `monstre_marais_noyeur=https://cdn.leonardo.ai/...jpg`) — le tri par préfixe en dépend. Si l'utilisateur fournit une table « nom ← URL », construire ces paires.
      - Si un argument est un DOSSIER, passe-le via `--src <dossier>` sans autre entrée.
+     - **Images « affiche » à couleur dominante sombre** (rouge sang, comme la planche de références du 26/09) : ajouter `--canal max`. Le tramage reste le même ; seule la LECTURE de la source change (valeur la plus forte au lieu de la luminance standard), sinon un rouge sombre ressort en gris moucheté. Par défaut : `standard` (toutes les images déjà validées sortent identiques).
      - Les URLs Leonardo sont acceptées telles quelles : le script force lui-même la version HD (`?w=1875`) — ne jamais télécharger une miniature `?w=512` à la main.
 2. Le script fait tout le travail déterministe (ne pas le réimplémenter à la main) :
    - recadrage carré centré puis 1000×1000 max (jamais d'upscale) ;

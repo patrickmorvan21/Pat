@@ -27,6 +27,7 @@ Usage :
   python3 tools/dither_batch.py fichier.png URL ...  # entrées explicites
   Options : --src DIR (remplace ~/Downloads) · --dest DIR (remplace le Drive)
             --dry-run (traite mais ne range pas)
+            --canal max (source à une couleur dominante + noir, cf. LECTURES)
 """
 
 from __future__ import annotations
@@ -125,7 +126,26 @@ def prepare_for_dither(im: Image.Image, pixel_size: int) -> tuple[Image.Image, i
     return im, work
 
 
-def dither(im: Image.Image) -> Image.Image:
+# ⚠️ LA LECTURE DE LA SOURCE, PAS LE TRAMAGE (26/09). Le seuil, le contraste et
+# la diffusion ne bougent jamais. Ce qui change avec `--canal`, c'est COMMENT on
+# lit la luminosité d'une source À DEUX TEINTES (une couleur dominante + noir,
+# le style des références de Patrick) : la formule standard donne au rouge un
+# poids de 0,299, donc un rouge sang franc (180,20,20) sort à 14 % d'orange —
+# du gris moucheté. Lu sur sa valeur la plus forte (max R,G,B), le même rouge
+# redevient un aplat. Mesuré sur 5 de ses références : 1-18 % d'orange en
+# standard, 18-57 % en « max », avec la composition intacte.
+# « standard » reste le DÉFAUT : toutes les images déjà validées sortent
+# identiques.
+LECTURES = ("standard", "max")
+
+
+def luminance(r: int, g: int, b: int, lecture: str = "standard") -> float:
+    if lecture == "max":
+        return float(max(r, g, b))
+    return 0.299 * r + 0.587 * g + 0.114 * b
+
+
+def dither(im: Image.Image, lecture: str = "standard") -> Image.Image:
     """Floyd-Steinberg canonique — portage fidèle du JS, buffer non clampé."""
     w, h = im.size
     px = im.load()
@@ -135,7 +155,7 @@ def dither(im: Image.Image) -> Image.Image:
         row = y * w
         for x in range(w):
             r, g, b = px[x, y]
-            v = 0.299 * r + 0.587 * g + 0.114 * b
+            v = luminance(r, g, b, lecture)
             v = (v - 128.0) * CONTRAST + 128.0
             buf[row + x] = 255.0 if v > 255.0 else (0.0 if v < 0.0 else v)
 
@@ -173,6 +193,9 @@ def main() -> int:
     ap.add_argument("--src", default=str(Path.home() / "Downloads"), help="dossier d'entrée par défaut")
     ap.add_argument("--dest", default=str(DEST_DEFAULT), help="racine de rangement (Drive 01_En attente)")
     ap.add_argument("--dry-run", action="store_true", help="traite sans ranger dans le Drive")
+    ap.add_argument("--canal", choices=LECTURES, default="standard",
+                    help="lecture de la source : standard (défaut) ou max — pour une source "
+                         "à une couleur dominante + noir (rouge, ambre…)")
     ap.add_argument(
         "--pixel-size",
         type=int,
@@ -221,7 +244,7 @@ def main() -> int:
         try:
             small, side = prepare_for_dither(Image.open(srcfile), args.pixel_size)
             print(f"… {srcfile.name} → grille {side}×{side} (bloc ×{args.pixel_size}), dithering")
-            result = dither(small)
+            result = dither(small, args.canal)
             if args.pixel_size > 1:
                 final_side = side * args.pixel_size
                 result = result.resize((final_side, final_side), Image.NEAREST)

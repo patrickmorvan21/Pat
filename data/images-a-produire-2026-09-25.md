@@ -64,15 +64,3 @@ objet_landes_serpe_epoux_a=a small curved orchard billhook with a hooked iron bl
 objet_landes_anneau_enlise_a=a single plain ring of blackened iron, thick and slightly bent out of round, a crust of dried black peat still clinging to its inner side, resting flat, light is shaped, never atmospheric — hard-edged rings, bands and shafts with clean borders, any glow cut off sharply; no soft halo, no haze, no mist, no volumetric fog, no god rays, no smooth gradient anywhere, single isolated object centred on a pure black background, nothing else in frame, no ground, no horizon, no hands, no table; medieval dark fantasy, strictly 12th-15th century Europe, hand-made and worn, no 18th or 19th century manufacture, no machine finish, no printed labels; extreme two-value contrast, the object lit as a large uniform very bright shape against flat pure black, almost no mid-greys, crisp readable silhouette; vintage engraving feel, grainy etching texture, single hard raking light from the left, monochrome, museum plate composition, no text, no lettering, no watermark
 ```
 
----
-
-## Rencontres PROPOSÉES (pas encore écrites) — demandé le 26/09
-
-Ces images peuvent se produire d'avance : la rencontre n'a encore aucun écran,
-mais son portrait servira le jour où elle sera écrite.
-
-## `monstre_landes_rabatteur_a` — le Rabatteur (rencontre de passage de la Lande)
-
-```
-monstre_landes_rabatteur_a=a lone rider on a gaunt horse standing across a heather path on the open moor, the rider hooded and wrapped in a coarse wool cloak, one arm stretched out and pointing back the way the traveller came, the horse's head turned toward the viewer, a long crooked staff held upright like a shepherd's crook, the flat horizon behind them empty, medieval dark fantasy, strictly 12th-15th century Europe: coarse homespun wool, hooded cloaks, hand-forged iron, timber frames, rubble stone and thatch, no 18th or 19th century elements, no frock coats, no top hats, no brick townhouses, no sash windows, no lamp posts, no industrial chimneys; extreme two-value contrast, large uniform very bright fields read against deep pure black silhouettes, almost no mid-greys, the subject reading as a flat black shape on a flat bright ground; vintage engraving feel, grainy etching texture, one dominant light source, dark vignette at the edges, monochrome, mystical and eerie atmosphere, no text, no lettering, no watermark
-```

@@ -157,7 +157,7 @@ Retour du 24/09 : « ça manque de monstres, je veux découvrir de nouvelles ren
 
 | | hostiles | amicales | phénomènes | total |
 |---|---|---|---|---|
-| I. La Lande | la Bête · **l'Épouvantail Tourné** · **les Enlisés** · **le Rabatteur** | l'Hésitant · le Marcheur à rebours · les Époux du Verger | — | 7 |
+| I. La Lande | la Bête · **l'Épouvantail Tourné** · **les Enlisés** · *(le Rabatteur, retiré le 26/09 — remplaçant à choisir)* | l'Hésitant · le Marcheur à rebours · les Époux du Verger | — | 7 |
 | II. Les Gibets | le Pendu Mal Fixé · le Chien du Bailli · **le Fixeur** · **les Mesureurs** · **le Rouissard** | le Pendu qui parle · le Fossoyeur · la Petite Fixée *(rare)* · **la Fiancée du Gibet** | les Corbeaux du Compte · l'Emplacement Vide · le Troupeau sans Berger · **l'Ombre du Grand Gibet** | 13 |
 | III. Le Hameau | les Mains du Puits · **la Ronde** · **la Corde Vive** · **le Juge de Cendre** · **le Condamné du lendemain** · **les Pleureuses** | la Femme au Seuil · le Gamin · la Doyenne · la Veuve · le Colporteur · le Rebouteux · l'Écrivain · le Sonneur · **le Déserteur du Tribunal** | le poids sur le toit · **le Jeu du Fixé** | 17 |
 | IV. Le Sud | la Meute Grise · le Recousu · **les Attendants** · **le Meneur** | le Veilleur · **Celui qui attend** | l'Appelé · le grimpeur · **la Harde qui descend** · **le Témoin au bord** | 10 |
@@ -184,7 +184,7 @@ Rangées par environnement. *Passage* veut dire qu'elle surgit entre deux lieux,
 
 - **L'Épouvantail Tourné** · passage · hostile, surnaturel · *image à produire.* Un épouvantail au milieu de la bruyère, sans champ à garder. Il ne bouge jamais, mais chaque fois que tu regardes ailleurs, il s'est tourné vers toi. Lui tourner le dos le fait avancer. Qui a marché avec le Marcheur à rebours passe à reculons, les yeux sur lui.
 - **Les Enlisés** · la Tourbière · hostile, physique · *à produire.* Des mains remontent entre les touffes : ceux qui ont voulu couper au sud par le marais. Ils ne tirent que ce qui s'arrête. Les piquets de ceux qui ont réussi montrent où poser le pied.
-- **Le Rabatteur** · passage, aussi aux Gibets et au Sud · hostile, social · *à produire.* Un Renonçant à cheval qui ramène ceux qui marchent vers le sud. « Où tu vas ? » Mentir, il regarde ton pas ; fuir, il te rattrape ; le suivre, c'est reculer d'un lieu. Marcher à rebours te fait passer pour quelqu'un qui revient.
+- ~~**Le Rabatteur**~~ · **retiré par Patrick le 26/09** — à remplacer par un monstre de passage (5 propositions faites le même jour).
 
 **II. Les Gibets**
 
@@ -480,7 +480,7 @@ Les durées validées le 24/09, complétées avec le nouveau bestiaire.
 
 | environnement | durée | lieux | jets | combats | rencontres amicales | phénomène |
 |---|---|---|---|---|---|---|
-| I. La Lande | 5 min | 3 | 3 | 1 (la Bête, l'Épouvantail, les Enlisés ou le Rabatteur) | 1 à 2 | — |
+| I. La Lande | 5 min | 3 | 3 | 1 (la Bête, l'Épouvantail, les Enlisés ou le monstre de passage à choisir) | 1 à 2 | — |
 | II. Les Gibets | 8 min | 3 | 4 | 1 (le Pendu Mal Fixé, le Chien, le Fixeur ou le Rouissard) | 1 à 2 | les Corbeaux, l'Ombre, le Troupeau |
 | III. Le Hameau | 10 min | 4 | 4 | 1 (la Ronde, la Corde Vive, le Juge, le Condamné ou les Pleureuses) | 2 | le toit, le Jeu du Fixé |
 | IV. Le Sud | 7 min | 3 | 4 | 1 (la Meute, le Recousu, les Attendants ou le Meneur) | 1 | l'Appelé, la Harde |
@@ -537,7 +537,7 @@ Règle de production : **une image d'approche par lieu**, réutilisée d'où qu'
    - *La nommer ?* **Oui** *(recommandé)* : « la Porte Scellée », déjà dans le Pacte. Le mystère se met ailleurs : ce qu'il y a derrière, qui l'a scellée, si elle s'ouvre (section 0).
    - *Que gagne-t-on à la passer ?* **On sort du Domaine, et cette vie est à toi** *(recommandé)* : c'est la suite logique de la première clause du Pacte (« il te sera prêté une vie »), et venant d'un Geôlier qui aime nos échecs, on peut en douter. Les autres pistes restent possibles : te rendre ta mémoire, ou te rayer de son Registre.
 2. **Le plancher de lieux.** La règle des Salines impose quatre lieux par environnement. Appliquée aux Landes, la traversée passerait de 13 à 16 lieux. Je recommande **trois lieux par environnement pour les Landes**, qui restent la zone d'apprentissage.
-3. **Le bestiaire.** Les vingt-deux nouvelles rencontres et les trois lieux te vont-ils ? Lesquelles écarter ou remplacer ? En particulier : le Rabatteur (le seul qui peut faire reculer d'un lieu), les Voix Basses (qui choisissent une Croisée à ta place) et le Condamné du lendemain (qui peut te faire porter sa croix).
+3. **Le bestiaire.** Les vingt-deux nouvelles rencontres et les trois lieux te vont-ils ? Lesquelles écarter ou remplacer ? En particulier : les Voix Basses (qui choisissent une Croisée à ta place) et le Condamné du lendemain (qui peut te faire porter sa croix).
 4. ~~**Les quatre couches par lieu.**~~ **Tranché le 24/09 : le ton te va.** Les quinze autres lieux sont écrits (section 3). Reste à relire, et à dire s'il faut écrire les couches des trois lieux proposés (Tourbière, Chènevière, Camp des Premières Expéditions).
 5. **Le Grand Registre classe-t-il par profondeur ?** Proposé : d'abord l'acte, puis la zone atteinte, puis les lieux franchis. Le but du jeu devient le score.
 6. **L'ordre des lots.** A d'abord (le but, dit), puis B (les quatre environnements), puis C (le bestiaire) ?

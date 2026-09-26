@@ -321,3 +321,77 @@ def composer_cadre(sujet: str, env: str, cadrage: str) -> str:
     sujet = sujet.strip().rstrip(",; ").strip()
     return (f"{sujet}, {cadrage}, {LUMIERES_ENVIRONNEMENT[env]}, {PREMIERE_PERSONNE_PROCHE}, "
             f"{RATIOS_HORS_PAYSAGE[env]}, {SANS_DEGRADE}, {CLAUSE}")
+
+
+# ---------------------------------------------------------------------------
+# LA RECETTE « AFFICHE » (26/09, Landes) — sur la planche de références de
+# Patrick : « elles sont tellement belles qu'on pourrait les mettre en fond
+# d'écran… une couleur dominante et le noir ». Son grief sur les Landes : « trop
+# génériques, trop réalistes, ça se voit que ce sont des photos passées au
+# pixel ; on oublie le côté fantaisie ».
+#
+# Ce que CLAUSE demandait et qui fabriquait ce défaut : « vintage engraving
+# feel, grainy etching texture » — une matière de GRAVURE PHOTOGRAPHIQUE, dont
+# le grain devient du bruit une fois tramé. Les références n'ont aucun grain :
+# ce sont des AFFICHES — des formes plates, une teinte, du noir, une géométrie.
+#
+# Six traits relevés sur les seize références (tous absents des prompts des
+# Landes) : une teinte dominante lumineuse + noir, rien d'autre · une figure
+# géométrique qui porte le cadre (disque, arche, colonnes, anneaux, symétrie)
+# · la source de lumière DANS l'image · tout ce qui est devant en aplat noir
+# sans détail · une échelle écrasante · presque toujours UNE silhouette
+# minuscule, de dos, qui donne l'échelle et fait l'histoire. Et un septième,
+# le plus important pour « la fantaisie » : quelque chose d'IMPOSSIBLE — une
+# porte dans un monolithe au milieu d'un champ, une éclipse au-dessus d'une
+# forêt de colonnes. Ce trait-là, c'est le SUJET qui le porte, pas la clause.
+#
+# ⚠️ LA TEINTE DOIT ÊTRE LUMINEUSE, et ce n'est pas un goût : notre tramage
+# coupe à un seuil de luminosité. Un rouge sang franc (180,20,20) sort à 14 %
+# d'orange — du gris moucheté. Soit on demande une teinte CLAIRE (orange
+# ardent, presque or au plus chaud), soit on trame avec `--canal max`
+# (dither_batch.py), qui lit la source sur sa valeur la plus forte.
+# ⚠️ COMPACTE À DESSEIN : Leonardo coupe vers 1 500 caractères, et la queue de
+# style ne doit pas manger la place du SUJET, qui porte l'impossible. Chaque
+# morceau ci-dessous tient en une ligne ; `LIMITE_PROMPT` est contrôlée par le
+# générateur.
+LIMITE_PROMPT = 1400
+
+PALETTE_AFFICHE = ("only two tones: one bright blazing ember orange-red laid in large flat fields, "
+                   "and pure black; no third hue, no grey")
+
+COMPOSITION_AFFICHE = ("poster composition built on one bold geometric figure filling the frame, "
+                       "the light source visible in frame, everything in front of it a flat black "
+                       "cut-out, crushing scale")
+
+SANS_DEGRADE_AFFICHE = "light shaped in hard-edged bands and rings, no haze, no fog, no soft gradient"
+
+CLAUSE_AFFICHE = ("medieval dark fantasy, 12th-15th century Europe, bold graphic poster illustration, "
+                  "flat simplified shapes, mythic and surreal, not a photograph, no photorealism, "
+                  "no grain, no text, no watermark")
+
+# La silhouette d'échelle. Hors des Salines, le héros PEUT être dans l'image
+# — minuscule, de dos, jamais un visage — parce que c'est ce qui fait l'échelle
+# de TOUTES les références. (Les Salines gardent leur vue à la première
+# personne : `PREMIERE_PERSONNE`, décision du 13/09.)
+ECHELLE_AFFICHE = "one tiny hooded silhouette seen from behind for scale, no face"
+
+# Une RENCONTRE est une affiche aussi, mais c'est la créature qui est la figure.
+COMPOSITION_RENCONTRE = ("poster composition: the creature is the bold central shape, a flat black "
+                         "cut-out against one hard geometric field of light, crushing scale")
+
+
+def composer_affiche(sujet: str, echelle: bool = True) -> str:
+    """Un LIEU des Landes en affiche : sujet (qui porte l'impossible) +
+    composition + silhouette d'échelle + palette + sans dégradé + clause."""
+    sujet = sujet.strip().rstrip(",; ").strip()
+    morceaux = [sujet, COMPOSITION_AFFICHE]
+    if echelle:
+        morceaux.append(ECHELLE_AFFICHE)
+    morceaux += [PALETTE_AFFICHE, SANS_DEGRADE_AFFICHE, CLAUSE_AFFICHE]
+    return ", ".join(morceaux)
+
+
+def composer_affiche_rencontre(sujet: str) -> str:
+    """Une RENCONTRE des Landes en affiche : la créature est la figure."""
+    sujet = sujet.strip().rstrip(",; ").strip()
+    return ", ".join([sujet, COMPOSITION_RENCONTRE, PALETTE_AFFICHE, SANS_DEGRADE_AFFICHE, CLAUSE_AFFICHE])

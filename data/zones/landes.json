@@ -1193,34 +1193,6 @@
       "en_jeu_le": "2026-09-25"
     },
     {
-      "id": "rabatteur",
-      "nom": "Le Rabatteur",
-      "note": "Un Renonçant à cheval qui bat la lande pour ramener ceux qui marchent vers le sud. Il ne demande qu'une chose : « Où tu vas ? »",
-      "lieu_attache": null,
-      "histoire_bailli": false,
-      "rarete": "commune",
-      "textes": {
-        "decouverte": null,
-        "familiarite": null,
-        "recontextualisation": null
-      },
-      "illustration": null,
-      "portrait_requis": true,
-      "statut": "propose",
-      "propose_le": "2026-09-24",
-      "environnement": "lande",
-      "passage": true,
-      "aussi": [
-        "gibets",
-        "sud"
-      ],
-      "hostile": true,
-      "nature": "social",
-      "regle": "Mentir : il regarde ton pas. Fuir : il te rattrape à la marche suivante. Le suivre, c'est reculer d'un lieu.",
-      "preparation": "Marcher à rebours, comme le Marcheur : tu sembles venir du sud, et il te laisse passer.",
-      "image_a_produire": "monstre_landes_rabatteur_a"
-    },
-    {
       "id": "fixeur",
       "nom": "Le Fixeur",
       "note": "Celui qui fixe. Pas un bourreau : il ne tue personne, il fait tenir. Il entretient les potences et essaie ses nœuds sur tout ce qui passe — sur toi aussi, « juste pour voir si tu tiens ».",
