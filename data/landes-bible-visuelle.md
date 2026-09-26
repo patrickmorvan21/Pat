@@ -9,7 +9,7 @@ Retour du 26/09 : les images des Landes étaient « trop génériques, trop réa
 1. **La couleur dominante doit être lumineuse.** Notre tramage coupe à un seuil de luminosité : un rouge sang comme sur la planche ressort à ~14 % d'orange (du gris moucheté). Les prompts demandent donc un orange-rouge *ardent*. Si Leonardo rend quand même un rouge sombre, importer avec `--canal max` : `python3 tools/dither_batch.py --canal max …` lit l'image sur sa couleur dominante — mesuré sur cinq références : de 1-18 % d'orange à 18-57 %, la composition intacte (`data/references/trame_references.png`).
 2. **L'aplat orange, à la première personne.** Image-cible : les Enlisés (`monstre_landes_enlises_a_c`) — un grand aplat orange sans rien dedans, les silhouettes noires découpées contre lui. Le héros n'est jamais dans l'image. Et **aucun soleil clair** : un disque plus clair que l'aplat disparaît au tramage — contre l'aplat, seul le noir se lit.
 
-**20 lieux · 29 rencontres · 49 images.** Noms en `_affiche_a` : une image regénérée ne reprend jamais un nom existant.
+**21 lieux · 29 rencontres · 50 images.** Noms en `_affiche_a` : une image regénérée ne reprend jamais un nom existant.
 
 ## Les lieux
 
@@ -31,6 +31,17 @@ scene_landes_borne_frontiere_affiche_a=a single colossal black monolith standing
 
 ```
 scene_landes_chemin_creux_affiche_a=a sunken lane cut deep between two towering earth banks that lean inward like a closing throat, roots hanging from their lips, only a narrow slit of flat sky showing far above between their lips, poster composition: bold black silhouettes cut out against the flat orange field, one strong geometric figure (converging rows, an arch, a ring, hard symmetry), crushing scale, first-person view from where you stand, no protagonist in frame, only two tones: one flat uniform bright orange field — the sky, or a doorway, window or arch full of light — with no clouds, no sun and no gradient in it, and everything against it a pure black silhouette; no third hue, hard clean edges, no haze, no fog, no soft gradient, medieval dark fantasy, 12th-15th century Europe, bold graphic poster illustration, flat simplified shapes, mythic and surreal, not a photograph, no photorealism, no grain, no text, no watermark
+```
+
+**`scene_landes_chemin_creux_coude_affiche_a`** — chemin-creux-2 (le coude aveugle)
+
+- ⚠️ **Image VIDE, sans la moindre figure** : le texte de l'écran dit « Au coude : rien. L'endroit exact où il devrait y avoir quelque chose, et il n'y a rien. » Une seule personne, une ombre, un animal dans le chemin et l'image contredit la scène.
+- **Champ « Negative prompt » de Leonardo** (à remplir, jamais à recopier dans le prompt) : `person, man, woman, figure, traveller, hooded figure, silhouette of a person, creature, animal, footprints of a person, cart, arch, doorway, tunnel, sun`
+- **Ce qui distingue cette image de celle du Chemin Creux** (`scene_landes_chemin_creux_affiche_a_a`, déjà en jeu : un couloir droit qui fuit vers une arche au fond) : ici le chemin **TOURNE** et on ne voit pas la suite. Pas d'arche, pas de lumière au bout — un mur de terre là où le regard voudrait continuer.
+- **À rejeter sans hésiter** : toute image avec quelqu'un dedans, une arche ou un tunnel au fond, ou un chemin qui continue droit et visible.
+
+```
+scene_landes_chemin_creux_coude_affiche_a=the deepest point of a sunken lane where it turns hard to the left, the two towering earth banks closing into a sharp black wedge, the lane floor bare, smooth and empty all the way to the turn, the turn itself hidden behind a sheer wall of earth, the only light one narrow strip of flat sky above the bend, the eye led straight into the blind turn and finding only bare packed earth, poster composition: bold black silhouettes cut out against the flat orange field, one strong geometric figure (one sharp black wedge closing on the turn), crushing scale, first-person view from where you stand, no protagonist in frame, only two tones: one flat uniform bright orange field — the narrow strip of sky above the turn — with no clouds, no sun and no gradient in it, and everything against it a pure black silhouette; no third hue, hard clean edges, no haze, no fog, no soft gradient, medieval dark fantasy, 12th-15th century Europe, bold graphic poster illustration, flat simplified shapes, mythic and surreal, not a photograph, no photorealism, no grain, no text, no watermark
 ```
 
 **`scene_landes_verger_noir_affiche_a`** — verger-noir
@@ -245,7 +256,7 @@ monstre_landes_pendu_qui_parle_affiche_a=the old Bailli hanging from a tall gall
 monstre_landes_hesitant_affiche_a=a man standing perfectly still beside a colossal black monolith on the moor, facing south, one foot raised and frozen mid-step, against the flat sky, poster composition: the creature is the bold central shape, a flat black silhouette against the flat orange field, crushing scale, first-person view from where you stand, no protagonist in frame, only two tones: one flat uniform bright orange field — the sky, or a doorway, window or arch full of light — with no clouds, no sun and no gradient in it, and everything against it a pure black silhouette; no third hue, hard clean edges, no haze, no fog, no soft gradient, medieval dark fantasy, 12th-15th century Europe, bold graphic poster illustration, flat simplified shapes, mythic and surreal, not a photograph, no photorealism, no grain, no text, no watermark
 ```
 
-**`monstre_landes_marcheur_a_rebours_affiche_a`** — chemin-creux-2 (le Marcheur)
+**`monstre_landes_marcheur_a_rebours_affiche_a`** — choix « Laisser venir l'homme à reculons » (chemin-creux) — câblée le 26/09
 
 ```
 monstre_landes_marcheur_a_rebours_affiche_a=a hooded traveller walking backwards down a sunken lane, his face turned back the way he came, a heavy cart bell at his belt, a hard slit of light behind him, poster composition: the creature is the bold central shape, a flat black silhouette against the flat orange field, crushing scale, first-person view from where you stand, no protagonist in frame, only two tones: one flat uniform bright orange field — the sky, or a doorway, window or arch full of light — with no clouds, no sun and no gradient in it, and everything against it a pure black silhouette; no third hue, hard clean edges, no haze, no fog, no soft gradient, medieval dark fantasy, 12th-15th century Europe, bold graphic poster illustration, flat simplified shapes, mythic and surreal, not a photograph, no photorealism, no grain, no text, no watermark

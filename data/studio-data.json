@@ -47,8 +47,8 @@
   "petit-tribunal",
   "meute-grise-1"
  ],
- "genere": "2026-09-26T10:22:38Z",
- "commit": "aea7d72",
+ "genere": "2026-09-26T10:46:33Z",
+ "commit": "abb22ad",
  "zones": [
   {
    "id": "landes",
@@ -664,7 +664,7 @@
     "fichier": "scene_landes_borne_frontiere_affiche_b_a.png",
     "hash": "a617e074",
     "taille": 13634,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -961,7 +961,7 @@
       "fichier": "monstre_landes_marcheur_a_rebours_affiche_a_b.png",
       "hash": "5514c4a6",
       "taille": 4838,
-      "recent": false,
+      "recent": true,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -980,7 +980,7 @@
     "fichier": "scene_landes_chemin_creux_affiche_a_a.png",
     "hash": "e051b314",
     "taille": 8294,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": "",
@@ -4570,8 +4570,8 @@
   {
    "id": "menace-retour-recousu",
    "narration": [
-    "Il est debout dans l'herbe haute, en travers du chemin, à contre-jour sur un soleil bas. Les bras le long du corps. Il ne s'est pas placé là : il y était.",
-    "Les coutures ne s'arrêtent pas au torse. Elles font le tour des bras, des cuisses, du cou — des points serrés, réguliers, qui ne se sont jamais refermés. Il ne dit rien. Il attend, comme on attend quelqu'un dont on a le nom sur une liste."
+    "Il est debout dans l'herbe haute, en travers du chemin, à contre-jour sur le ciel. Les bras le long du corps. Il ne s'est pas placé là : il y était.",
+    "Puis il se penche vers toi, et ce que tu avais pris pour ses bras n'en était que le premier rang. D'autres se déplient de ses flancs, cousus à hauteur de côtes — des bras d'hommes différents, de longueurs différentes, toutes les mains ouvertes. Chaque couture fait le tour, en points serrés qui ne se sont jamais refermés. Il ne dit rien. Il attend, comme on attend quelqu'un dont on a le nom sur une liste."
    ],
    "choix": [
     {
@@ -4621,7 +4621,7 @@
       "critique": "20 naturel. Tu descends dans la bruyère au moment exact où il lève la tête. Il regarde la route vide, longtemps, et repart sans t'avoir vu. Quand la route est libre, elle ne va plus là où tu allais. Tu l'as payé sans qu'il le sache.",
       "reussite": "Tu descends dans la bruyère et tu attends qu'il reparte. Il met longtemps, et il ne se retourne pas une fois. Quand la route est libre, elle ne va plus là où tu allais — c'est le prix, et tu l'as accepté en t'écartant.",
       "echec": "Tu descends dans la bruyère, mais pas assez vite : il t'a vu. Il vient sans hâte, et d'un revers de ses mains cousues il t'ouvre la joue, comme on règle un compte d'un trait. Puis il reprend sa route. La tienne ne va plus là où tu allais.",
-      "funeste": "1 naturel. Il te trouve dans la bruyère et te tient longtemps, comme on mesure. Il tire un fil de sa propre couture et te le passe dans la peau du bras, un point, deux. Puis il te lâche. Tu repars avec sa marque. ♦ −2"
+      "funeste": "1 naturel. Il te trouve dans la bruyère et te tient de toutes ses mains à la fois, longtemps, comme on mesure. Il tire un fil de sa propre couture et te le passe dans la peau du bras, un point, deux. Puis il te lâche. Tu repars avec sa marque. ♦ −2"
      },
      "nature": "physique",
      "fermeLaRoute": "recousu"
@@ -4632,10 +4632,10 @@
    "adversaireNom": "Le Recousu",
    "combat": true,
    "image": {
-    "fichier": "monstre_landes_recousu_affiche_a_d.png",
-    "hash": "fac93bc5",
-    "taille": 12928,
-    "recent": false,
+    "fichier": "monstre_landes_recousu_affiche_b_d.png",
+    "hash": "06c9b489",
+    "taille": 15335,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7164,7 +7164,7 @@
     "fichier": "scene_landes_tourbiere_affiche_a_b.png",
     "hash": "1b32d203",
     "taille": 6650,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7593,7 +7593,7 @@
     "fichier": "monstre_landes_geant_couche_affiche_a_d.png",
     "hash": "cf776da2",
     "taille": 11893,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7731,7 +7731,7 @@
     "fichier": "monstre_landes_noeud_affiche_a_b.png",
     "hash": "0f3a09d9",
     "taille": 13438,
-    "recent": false,
+    "recent": true,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -13775,14 +13775,6 @@
    "racine": "la_fille_moulin"
   },
   {
-   "fichier": "monstre_landes_recousu_affiche_b_d.png",
-   "hash": "06c9b489",
-   "taille": 15335,
-   "recent": false,
-   "groupe": "brancher",
-   "racine": "landes_recousu_affiche"
-  },
-  {
    "fichier": "monstre_limiers.png",
    "hash": "ab9d3683",
    "taille": 121382,
@@ -16598,7 +16590,7 @@
   "illustrations": 540,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 237,
+  "reserve": 236,
   "reliques": 10,
   "faits": 3,
   "perceptions": 21,

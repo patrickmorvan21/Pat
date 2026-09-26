@@ -5075,18 +5075,27 @@ export const SCENES: Scene[] = [
      serait faux ici, et `immersion.py` existe pour attraper exactement ça. */
   {
     id: "menace-retour-recousu",
-    illustration: "assets/monstre_landes_recousu_affiche_a_d.png",
+    /* DEUX TEMPS (Patrick, 26/09 : « il peut avoir plein de bras, ça fait
+       plus peur ») : on le voit d'abord debout, immobile, deux bras — puis il
+       se penche et ce qu'on avait pris pour ses bras n'en était que le
+       premier rang. `illustrationArrivee` sert le 1er paragraphe, l'image de
+       la scène tombe avec le second. */
+    illustrationArrivee: "assets/monstre_landes_recousu_affiche_a_d.png",
+    illustration: "assets/monstre_landes_recousu_affiche_b_d.png",
     combat: true,
     foe: "recousu",
     foeName: "Le Recousu",
     narration: [
       "Il est debout dans l'herbe haute, en travers du chemin, à " +
-        "contre-jour sur un soleil bas. Les bras le long du corps. Il ne " +
+        "contre-jour sur le ciel. Les bras le long du corps. Il ne " +
         "s'est pas placé là : il y était.",
-      "Les coutures ne s'arrêtent pas au torse. Elles font le tour des " +
-        "bras, des cuisses, du cou — des points serrés, réguliers, qui ne " +
-        "se sont jamais refermés. Il ne dit rien. Il attend, comme on " +
-        "attend quelqu'un dont on a le nom sur une liste.",
+      "Puis il se penche vers toi, et ce que tu avais pris pour ses bras " +
+        "n'en était que le premier rang. D'autres se déplient de ses flancs, " +
+        "cousus à hauteur de côtes — des bras d'hommes différents, de " +
+        "longueurs différentes, toutes les mains ouvertes. Chaque couture " +
+        "fait le tour, en points serrés qui ne se sont jamais refermés. Il " +
+        "ne dit rien. Il attend, comme on attend quelqu'un dont on a le nom " +
+        "sur une liste.",
     ],
     choices: [
       {
@@ -5149,7 +5158,7 @@ export const SCENES: Scene[] = [
             "20 naturel. Tu descends dans la bruyère au moment exact où il lève la tête. Il regarde la route vide, longtemps, et repart sans t'avoir vu. Quand la route est libre, elle ne va plus là où tu allais. Tu l'as payé sans qu'il le sache.",
             "Tu descends dans la bruyère et tu attends qu'il reparte. Il met longtemps, et il ne se retourne pas une fois. Quand la route est libre, elle ne va plus là où tu allais — c'est le prix, et tu l'as accepté en t'écartant.",
             "Tu descends dans la bruyère, mais pas assez vite : il t'a vu. Il vient sans hâte, et d'un revers de ses mains cousues il t'ouvre la joue, comme on règle un compte d'un trait. Puis il reprend sa route. La tienne ne va plus là où tu allais.",
-            "1 naturel. Il te trouve dans la bruyère et te tient longtemps, comme on mesure. Il tire un fil de sa propre couture et te le passe dans la peau du bras, un point, deux. Puis il te lâche. Tu repars avec sa marque. ♦ −2"
+            "1 naturel. Il te trouve dans la bruyère et te tient de toutes ses mains à la fois, longtemps, comme on mesure. Il tire un fil de sa propre couture et te le passe dans la peau du bras, un point, deux. Puis il te lâche. Tu repars avec sa marque. ♦ −2"
           ),
         },
       },

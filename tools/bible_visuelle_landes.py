@@ -48,6 +48,36 @@ import style_image as S  # noqa: E402
 RACINE = ICI.parent
 SORTIE = RACINE / "data" / "landes-bible-visuelle.md"
 
+# Consignes qui accompagnent un prompt quand la bonne image est difficile à
+# obtenir : imprimées sous le titre, jamais dans le prompt lui-même.
+NOTES = {
+    "scene_landes_chemin_creux_coude_affiche_a": [
+        "⚠️ **Image VIDE, sans la moindre figure** : le texte de l'écran dit « Au coude : rien. "
+        "L'endroit exact où il devrait y avoir quelque chose, et il n'y a rien. » Une seule personne, "
+        "une ombre, un animal dans le chemin et l'image contredit la scène.",
+        "**Champ « Negative prompt » de Leonardo** (à remplir, jamais à recopier dans le prompt) : "
+        "`person, man, woman, figure, traveller, hooded figure, silhouette of a person, creature, "
+        "animal, footprints of a person, cart, arch, doorway, tunnel, sun`",
+        "**Ce qui distingue cette image de celle du Chemin Creux** (`scene_landes_chemin_creux_affiche_a_a`, "
+        "déjà en jeu : un couloir droit qui fuit vers une arche au fond) : ici le chemin **TOURNE** et "
+        "on ne voit pas la suite. Pas d'arche, pas de lumière au bout — un mur de terre là où le "
+        "regard voudrait continuer.",
+        "**À rejeter sans hésiter** : toute image avec quelqu'un dedans, une arche ou un tunnel au "
+        "fond, ou un chemin qui continue droit et visible.",
+    ],
+}
+
+# Remplacements dans la recette COMMUNE pour une image précise : la clause de
+# composition donne « an arch » et « a doorway » comme exemples de figure — ce
+# qui, pour le coude, appelle exactement l'arche qu'on refuse. Appliqués au
+# prompt assemblé ; le garde de contradictions passe ensuite dessus.
+SUBSTITUTIONS = {
+    "scene_landes_chemin_creux_coude_affiche_a": [
+        ("(converging rows, an arch, a ring, hard symmetry)", "(one sharp black wedge closing on the turn)"),
+        ("— the sky, or a doorway, window or arch full of light —", "— the narrow strip of sky above the turn —"),
+    ],
+}
+
 # (environnement, nom de fichier, écran(s) visé(s), sujet)
 LIEUX = [
     # ————— I. LA LANDE —————
@@ -62,6 +92,17 @@ LIEUX = [
      "a sunken lane cut deep between two towering earth banks that lean inward like a closing throat, "
      "roots hanging from their lips, only a narrow slit of flat sky showing "
      "far above between their lips"),
+    # LE COUDE AVEUGLE (26/09). La bible visait le Marcheur ici, à tort :
+    # l'écran dit « Au coude : rien. L'endroit exact où il devrait y avoir
+    # quelque chose, et il n'y a rien. » L'image doit être VIDE, et le sujet
+    # ne nomme JAMAIS une personne, même pour l'interdire — une consigne
+    # négative appelle ce qu'elle interdit (leçon du moulin ailé). L'absence
+    # se demande dans le champ NÉGATIF de Leonardo (voir NOTES).
+    ("La Lande", "scene_landes_chemin_creux_coude_affiche_a", "chemin-creux-2 (le coude aveugle)",
+     "the deepest point of a sunken lane where it turns hard to the left, the two towering earth banks "
+     "closing into a sharp black wedge, the lane floor bare, smooth and empty all the way to the turn, "
+     "the turn itself hidden behind a sheer wall of earth, the only light one narrow strip of flat sky "
+     "above the bend, the eye led straight into the blind turn and finding only bare packed earth"),
     ("La Lande", "scene_landes_verger_noir_affiche_a", "verger-noir",
      "an orchard of black leafless trees planted in perfect converging rows, their branches knotted "
      "high above into a pointed gothic vault, the flat sky showing only at the far end of the central "
@@ -181,7 +222,7 @@ RENCONTRES = [
     ("La Lande", "monstre_landes_hesitant_affiche_a", "hesitant-1..3",
      "a man standing perfectly still beside a colossal black monolith on the moor, facing south, one "
      "foot raised and frozen mid-step, against the flat sky"),
-    ("La Lande", "monstre_landes_marcheur_a_rebours_affiche_a", "chemin-creux-2 (le Marcheur)",
+    ("La Lande", "monstre_landes_marcheur_a_rebours_affiche_a", "choix « Laisser venir l'homme à reculons » (chemin-creux) — câblée le 26/09",
      "a hooded traveller walking backwards down a sunken lane, his face turned back the way he came, a "
      "heavy cart bell at his belt, a hard slit of light behind him"),
     ("La Lande", "monstre_landes_epoux_affiche_a", "epoux-1..3",
@@ -246,7 +287,11 @@ def controler(emis: list[tuple[str, str]]) -> list[str]:
             pb.append(f"{nom} : {c}")
         if len(prompt) > S.LIMITE_PROMPT:
             pb.append(f"{nom} : {len(prompt)} caractères, au-delà de {S.LIMITE_PROMPT} (Leonardo coupe)")
-        sujet = prompt.split(S.COMPOSITION_AFFICHE)[0].split(S.COMPOSITION_RENCONTRE)[0].lower()
+        # Le sujet s'arrête au marqueur de composition — PAS au texte entier de la
+        # clause, qu'une SUBSTITUTION peut avoir modifié (sinon tout le prompt
+        # passe pour du sujet, « no sun » compris).
+        assert "poster composition:" in prompt, nom
+        sujet = prompt.split("poster composition:")[0].lower()
         for mot, pourquoi in INTERDITS.items():
             if re.search(rf"\b{re.escape(mot)}\b", sujet):
                 pb.append(f"{nom} : « {mot} » dans le sujet — {pourquoi}")
@@ -293,9 +338,17 @@ def main() -> int:
                 L.append("")
                 env_courant = env
             p = composer(sujet)
+            for avant, apres in SUBSTITUTIONS.get(nom, []):
+                if avant not in p:
+                    raise SystemExit(f"SUBSTITUTION introuvable pour {nom} : la recette a changé → {avant!r}")
+                p = p.replace(avant, apres)
             emis.append((nom, p))
             L.append(f"**`{nom}`** — {ecran}")
             L.append("")
+            for n in NOTES.get(nom, []):
+                L.append(f"- {n}")
+            if nom in NOTES:
+                L.append("")
             L.append("```")
             L.append(f"{nom}={p}")
             L.append("```")
