@@ -158,9 +158,13 @@ def construire(zone: str = "landes") -> dict:
 
     # ---------------------------- LES LIEUX ---------------------------------
     for lid, L in lieux_meta.items():
+        z_ = lieu_z.get(lid, {})
+        # Un lieu RETIRÉ (la Mare aux Regards, vague 3 du 25/09) ne se dessine
+        # plus : il flottait seul entre deux environnements, sans un écran.
+        if z_.get("statut") == "retire" or z_.get("role") == "retire":
+            continue
         nid = "lieu:" + lid
         vus.add(nid)
-        z_ = lieu_z.get(lid, {})
         propose = z_.get("statut") == "propose"
         n = {
             "id": nid,
@@ -391,6 +395,26 @@ def construire(zone: str = "landes") -> dict:
                 if vers_noeud(v_):
                     lien(nid, vers_noeud(v_), "trajet")
 
+    # ⚠️ LES RENCONTRES DE PASSAGE FLOTTAIENT (retour Patrick 26/09,
+    # le Rabatteur « attaché à rien ») : une rencontre de passage n'a pas de
+    # lieu, elle surgit SUR LA MARCHE entre deux lieux de son environnement.
+    # Elle se rattache donc au chemin : à la Croisée de son environnement
+    # quand elle est dessinée (trait fléché, comme une approche), sinon à
+    # chaque lieu de l'environnement en trait faible — c'est entre eux
+    # qu'elle se joue. Vaut aussi pour les rencontres ÉCRITES qui n'ont aucun
+    # autre lien (les retours de menace du Sud : la Meute, le Recousu).
+    croisee_env = {env["id"]: "trajet:" + t["id"] for env in envs
+                   for t in env.get("transitions") or [] if t.get("type") == "croisee"}
+    relies = {l["a"] for l in liens} | {l["b"] for l in liens}
+    for n0 in [n for n in noeuds if n.get("role") == "passage" and n["id"] not in relies]:
+        nid, env_ = n0["id"], n0.get("groupe")
+        if croisee_env.get(env_) in ids_n:
+            lien(croisee_env[env_], nid, "trajet")
+        else:
+            for n_ in noeuds:
+                if n_.get("cat") == "lieu" and n_.get("groupe") == env_:
+                    lien(n_["id"], nid, "contexte")
+
     # --------------------------- LES TRANSITIONS ----------------------------
     # Elles n'existent nulle part comme scènes : une liaison est fabriquée à
     # l'exécution. Ce sont pourtant les écrans les plus VUS d'une vie.
@@ -545,7 +569,7 @@ def construire(zone: str = "landes") -> dict:
         "totaux": {
             "scenesRattachees": len(deduit),
             "scenes": len(scenes),
-            "lieux": len(lieux_meta),
+            "lieux": sum(1 for n in noeuds if n["id"].startswith("lieu:")),
             "transitions": (len(T.get("fond", [])) + len(T.get("fondLande", []))
                             + len(T.get("variantes", [])) + len(T.get("bifurcations", []))),
             "marches": len(d.get("ecransDeMarche", [])),
