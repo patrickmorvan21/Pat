@@ -51,7 +51,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "La Borne Frontière",
     corps:
       "Plus haute qu'un homme, plantée avant le premier chemin. Le côté nord porte les marques de ceux qui entrent ; le côté sud, trois marques que personne n'explique — on ne grave pas au retour quand personne ne revient. Les offrandes à son pied ne sont pas pour elle.",
-    illustration: "assets/scene_borne_frontiere_v2_a.png",
+    illustration: "assets/scene_landes_borne_frontiere_affiche_b_a.png",
   },
   {
     id: "lieu:chemin-creux",
@@ -60,7 +60,7 @@ export const CODEX_LANDES: CodexEntry[] = [
     titre: "Le Chemin Creux",
     corps:
       "Deux talus plus hauts que la tête, et une charrette qui penche au premier coude depuis assez longtemps pour que la bruyère l'ait prise. On y marche plus vite qu'ailleurs, sans se le dire. Le coude aveugle mange la vue — et ce qu'il y a derrière compte les pas.",
-    illustration: "assets/scene_chemin_creux_coude_b.png",
+    illustration: "assets/scene_landes_chemin_creux_affiche_a_a.png",
   },
   {
     id: "lieu:colline-aux-gibets",

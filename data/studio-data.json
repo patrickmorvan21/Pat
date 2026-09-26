@@ -47,8 +47,8 @@
   "petit-tribunal",
   "meute-grise-1"
  ],
- "genere": "2026-09-26T09:12:32Z",
- "commit": "1b8599f",
+ "genere": "2026-09-26T10:22:38Z",
+ "commit": "aea7d72",
  "zones": [
   {
    "id": "landes",
@@ -375,7 +375,7 @@
     {
      "id": "chemin_creux",
      "nom": "Le Chemin Creux",
-     "illustration": "scene_chemin_creux_coude_b.png",
+     "illustration": "scene_landes_chemin_creux_affiche_a_a.png",
      "x": 520,
      "y": 1300,
      "note": "vu sans voir",
@@ -403,7 +403,7 @@
     {
      "id": "borne_frontiere",
      "nom": "La Borne Frontière",
-     "illustration": "scene_borne_frontiere_v2_a.png",
+     "illustration": "scene_landes_borne_frontiere_affiche_b_a.png",
      "x": 1620,
      "y": 1420,
      "note": "limite des Renonçants",
@@ -511,7 +511,7 @@
     {
      "id": "tourbiere",
      "nom": "La Tourbière",
-     "illustration": "scene_landes_tourbiere_a_b.png",
+     "illustration": "scene_landes_tourbiere_affiche_a_b.png",
      "x": 180,
      "y": 1100,
      "note": "Une étendue noire et spongieuse à l'ouest du plateau. Sous l'eau, des visages qui ne pourrissent pas : ceux qui ont voulu couper au sud par le marais. Le raccourci que tout le monde a essayé une fois.",
@@ -661,9 +661,9 @@
    "lieu": "borne_frontiere",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_borne_frontiere_v2_a.png",
-    "hash": "6fdeb1bd",
-    "taille": 11903,
+    "fichier": "scene_landes_borne_frontiere_affiche_b_a.png",
+    "hash": "a617e074",
+    "taille": 13634,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -958,9 +958,9 @@
       "toScene": "marcheur-1"
      },
      "image": {
-      "fichier": "monstre_marcheur_rebours_v2_b_a.png",
-      "hash": "f5303d24",
-      "taille": 9333,
+      "fichier": "monstre_landes_marcheur_a_rebours_affiche_a_b.png",
+      "hash": "5514c4a6",
+      "taille": 4838,
       "recent": false,
       "existe": true,
       "statut": "dediee",
@@ -977,9 +977,9 @@
    "lieu": "chemin_creux",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_chemin_creux_coude_b.png",
-    "hash": "261f995a",
-    "taille": 29636,
+    "fichier": "scene_landes_chemin_creux_affiche_a_a.png",
+    "hash": "e051b314",
+    "taille": 8294,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -4632,9 +4632,9 @@
    "adversaireNom": "Le Recousu",
    "combat": true,
    "image": {
-    "fichier": "monstre_recousu_c.png",
-    "hash": "04f590d1",
-    "taille": 27948,
+    "fichier": "monstre_landes_recousu_affiche_a_d.png",
+    "hash": "fac93bc5",
+    "taille": 12928,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -7161,10 +7161,10 @@
    "lieu": "tourbiere",
    "typeScene": "arrivee",
    "image": {
-    "fichier": "scene_landes_tourbiere_a_b.png",
-    "hash": "08be4eaf",
-    "taille": 10660,
-    "recent": true,
+    "fichier": "scene_landes_tourbiere_affiche_a_b.png",
+    "hash": "1b32d203",
+    "taille": 6650,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -7590,9 +7590,9 @@
    "lieu": "",
    "typeScene": "combat",
    "image": {
-    "fichier": "scene_landes_liaison_plateau_d.png",
-    "hash": "4d03ba9f",
-    "taille": 28299,
+    "fichier": "monstre_landes_geant_couche_affiche_a_d.png",
+    "hash": "cf776da2",
+    "taille": 11893,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -7728,9 +7728,9 @@
    "lieu": "",
    "typeScene": "combat",
    "image": {
-    "fichier": "scene_transition_crete_cordes_b.png",
-    "hash": "ba9bee98",
-    "taille": 23613,
+    "fichier": "monstre_landes_noeud_affiche_a_b.png",
+    "hash": "0f3a09d9",
+    "taille": 13438,
     "recent": false,
     "existe": true,
     "statut": "dediee",
@@ -11177,7 +11177,7 @@
     "fichier": "scene_salines_pesee_a_d.png",
     "hash": "6027e02d",
     "taille": 26172,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -11352,7 +11352,7 @@
     "fichier": "scene_salines_puits_a_b.png",
     "hash": "42746cc9",
     "taille": 14594,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -11519,7 +11519,7 @@
     "fichier": "scene_salines_dortoir_a_c.png",
     "hash": "dd69334b",
     "taille": 19276,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -11672,7 +11672,7 @@
     "fichier": "scene_salines_forge_a_b.png",
     "hash": "62e0de87",
     "taille": 22214,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -11734,7 +11734,7 @@
     "fichier": "monstre_salines_sauniers_a_d.png",
     "hash": "e651c60e",
     "taille": 25347,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -11780,7 +11780,7 @@
       "fichier": "scene_salines_aiguillage_a_b.png",
       "hash": "9588be33",
       "taille": 13898,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -11794,7 +11794,7 @@
     "fichier": "scene_salines_cour_rails_a_a.png",
     "hash": "ee1e2185",
     "taille": 15732,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -11916,7 +11916,7 @@
     "fichier": "scene_salines_gages_a_d.png",
     "hash": "50481311",
     "taille": 19166,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -11971,7 +11971,7 @@
     "fichier": "scene_salines_gages_oeil_a_b.png",
     "hash": "04054089",
     "taille": 7141,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -12018,7 +12018,7 @@
       "fichier": "monstre_salines_compteur_a_d.png",
       "hash": "5cdd3a80",
       "taille": 25817,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -12038,7 +12038,7 @@
       "fichier": "monstre_salines_compteur_a_d.png",
       "hash": "5cdd3a80",
       "taille": 25817,
-      "recent": true,
+      "recent": false,
       "existe": true,
       "statut": "dediee",
       "herite": ""
@@ -12332,7 +12332,7 @@
     "fichier": "monstre_salines_ensacheur_a_b.png",
     "hash": "a3d3b08e",
     "taille": 32177,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -12415,7 +12415,7 @@
     "fichier": "monstre_salines_contremaitre_a_c.png",
     "hash": "f30d9dc6",
     "taille": 27209,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -12496,7 +12496,7 @@
     "fichier": "monstre_salines_mouchee_a_b.png",
     "hash": "24f5d6d6",
     "taille": 20428,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -12584,7 +12584,7 @@
     "fichier": "monstre_salines_dormeur_a_d.png",
     "hash": "cd289fde",
     "taille": 8397,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -12640,7 +12640,7 @@
     "fichier": "monstre_salines_chaine_bras_a_d.png",
     "hash": "8d84987e",
     "taille": 15329,
-    "recent": true,
+    "recent": false,
     "existe": true,
     "statut": "dediee",
     "herite": ""
@@ -13775,6 +13775,14 @@
    "racine": "la_fille_moulin"
   },
   {
+   "fichier": "monstre_landes_recousu_affiche_b_d.png",
+   "hash": "06c9b489",
+   "taille": 15335,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "landes_recousu_affiche"
+  },
+  {
    "fichier": "monstre_limiers.png",
    "hash": "ab9d3683",
    "taille": 121382,
@@ -13834,6 +13842,14 @@
    "fichier": "monstre_marcheur_rebours_v2_a.png",
    "hash": "ba1a5091",
    "taille": 20815,
+   "recent": false,
+   "groupe": "doublon",
+   "racine": "marcheur_rebours"
+  },
+  {
+   "fichier": "monstre_marcheur_rebours_v2_b_a.png",
+   "hash": "f5303d24",
+   "taille": 9333,
    "recent": false,
    "groupe": "doublon",
    "racine": "marcheur_rebours"
@@ -13911,6 +13927,14 @@
    "racine": "rebouteux"
   },
   {
+   "fichier": "monstre_recousu_c.png",
+   "hash": "04f590d1",
+   "taille": 27948,
+   "recent": false,
+   "groupe": "attend",
+   "racine": "recousu"
+  },
+  {
    "fichier": "monstre_rodeur.png",
    "hash": "76c37df5",
    "taille": 147768,
@@ -13938,7 +13962,7 @@
    "fichier": "monstre_salines_petit_porteur_a_b.png",
    "hash": "83cedbcc",
    "taille": 29176,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "salines_petit_porteur"
   },
@@ -13946,7 +13970,7 @@
    "fichier": "monstre_salines_rats_a_c.png",
    "hash": "ac9bd97b",
    "taille": 28408,
-   "recent": true,
+   "recent": false,
    "groupe": "autre",
    "racine": "salines_rats"
   },
@@ -14327,6 +14351,14 @@
    "racine": "borne_frontiere"
   },
   {
+   "fichier": "scene_borne_frontiere_v2_a.png",
+   "hash": "6fdeb1bd",
+   "taille": 11903,
+   "recent": false,
+   "groupe": "doublon",
+   "racine": "borne_frontiere"
+  },
+  {
    "fichier": "scene_borne_gravures_a_e_d.png",
    "hash": "0f26c58e",
    "taille": 21464,
@@ -14453,6 +14485,14 @@
    "recent": false,
    "groupe": "doublon",
    "racine": "chemin_creux"
+  },
+  {
+   "fichier": "scene_chemin_creux_coude_b.png",
+   "hash": "261f995a",
+   "taille": 29636,
+   "recent": false,
+   "groupe": "brancher",
+   "racine": "chemin_creux_coude"
   },
   {
    "fichier": "scene_chemin_creux_d_a.png",
@@ -14813,6 +14853,14 @@
    "recent": false,
    "groupe": "autre",
    "racine": "landes_poteau_pendu"
+  },
+  {
+   "fichier": "scene_landes_tourbiere_a_b.png",
+   "hash": "08be4eaf",
+   "taille": 10660,
+   "recent": true,
+   "groupe": "attend",
+   "racine": "landes_tourbiere"
   },
   {
    "fichier": "scene_landes_tribunal_b.png",
@@ -16547,10 +16595,10 @@
   "scenes": 168,
   "pointsInteret": 0,
   "choix": 508,
-  "illustrations": 532,
+  "illustrations": 540,
   "sansImage": 0,
   "imagesIntrouvables": 0,
-  "reserve": 231,
+  "reserve": 237,
   "reliques": 10,
   "faits": 3,
   "perceptions": 21,

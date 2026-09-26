@@ -401,7 +401,7 @@
         "familiarite": "Ta main s'est posée sur le talus sans que tu l'aies décidé, juste où la racine fait une prise.",
         "recontextualisation": "Tu descends sans regarder tes pieds. Le creux te reprend comme une manche qu'on renfile."
       },
-      "illustration": "scene_chemin_creux_coude_b.png",
+      "illustration": "scene_landes_chemin_creux_affiche_a_a.png",
       "portrait_requis": false,
       "x": 520,
       "y": 1300,
@@ -426,7 +426,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "scene_borne_frontiere_v2_a.png",
+      "illustration": "scene_landes_borne_frontiere_affiche_b_a.png",
       "portrait_requis": false,
       "x": 1620,
       "y": 1420,
@@ -526,7 +526,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "scene_landes_tourbiere_a_b.png",
+      "illustration": "scene_landes_tourbiere_affiche_a_b.png",
       "portrait_requis": false,
       "x": 180,
       "y": 1100,
@@ -847,7 +847,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_marcheur_a_rebours_d.png",
+      "illustration": "assets/monstre_landes_marcheur_a_rebours_affiche_a_b.png",
       "portrait_requis": false
     },
     {
@@ -1105,7 +1105,7 @@
         "familiarite": null,
         "recontextualisation": null
       },
-      "illustration": "assets/monstre_recousu_c.png",
+      "illustration": "assets/monstre_landes_recousu_affiche_a_d.png",
       "portrait_requis": true,
       "environnement": "sud",
       "passage": true,
@@ -1467,8 +1467,7 @@
       "note": "Le premier pendu du Bailli, trop grand pour qu'on le décroche : la lande a poussé sur lui. Il dort sous la bruyère et se retourne parfois — la crête qu'on longe est son bras.",
       "regle": "Il ne voit pas, il sent : on passe pendant son souffle, ou dans sa main, ou en lui parlant comme à un dormeur. Mal choisir le moment, c'est être pris sous son poids.",
       "preparation": "Les ombres du Cercle qui Descend glissent vers le sud et reviennent : c'est son souffle. Qui l'a vu sait quand marcher.",
-      "illustration": null,
-      "image_a_produire": "monstre_landes_geant_couche_affiche_a",
+      "illustration": "assets/monstre_landes_geant_couche_affiche_a_d.png",
       "scenes": [
         "geant-couche"
       ]
@@ -1493,8 +1492,7 @@
       "note": "Les cordes tombées des gibets roulent vers le sud pour rejoindre la colonne, en boule, et grossissent en chemin. Des mains dedans. Il ne chasse pas : il descend.",
       "regle": "On le saute, on s'écarte de sa pente, ou on se laisse prendre pour chercher le bout libre — un nœud de pendu se défait par le bas.",
       "preparation": "La serpe des Époux tranche la boucle qui vient.",
-      "illustration": null,
-      "image_a_produire": "monstre_landes_noeud_affiche_a",
+      "illustration": "assets/monstre_landes_noeud_affiche_a_b.png",
       "scenes": [
         "noeud"
       ]
@@ -1817,7 +1815,7 @@
       ],
       "description": "Entrée de zone, tout premier écran du jeu. La borne-frontière dressée seule sur le plateau, ses faces gravées, les offrandes à son pied, et le chemin qui s'enfonce au sud dans le noir.",
       "prompt_image": "single tall standing stone in the middle of an empty moor plateau, carved marks on its faces, small pile of humble offerings at its base, path vanishing south into darkness, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_borne_frontiere_v2_a.png"
+      "illustration": "scene_landes_borne_frontiere_affiche_b_a.png"
     },
     {
       "id": "gravures-borne",
@@ -1927,7 +1925,7 @@
       ],
       "description": "Arrivée au Chemin Creux. Une route encaissée entre deux hauts talus de terre, un ruban de ciel étroit au-dessus, des racines tordues qui sortent des parois.",
       "prompt_image": "sunken road between two high earthen banks, narrow ribbon of sky above, twisted roots protruding from the banks, deep shadows, dark fantasy vintage engraving style, grainy etching texture, very high contrast, dark vignette edges, dramatic single light source, high contrast chiaroscuro, no color, mystical and eerie atmosphere",
-      "illustration": "scene_chemin_creux_coude_b.png"
+      "illustration": "scene_landes_chemin_creux_affiche_a_a.png"
     },
     {
       "id": "charrette-embourbee",
@@ -3615,7 +3613,7 @@
       "mene_a": [
         "tourbiere-2"
       ],
-      "illustration": "scene_landes_tourbiere_a_b.png",
+      "illustration": "scene_landes_tourbiere_affiche_a_b.png",
       "description": "Arrivée à la Tourbière : une eau noire sous la brume, une file de piquets qui la traverse."
     },
     {
@@ -3661,7 +3659,7 @@
       "nom": "Le Géant Couché",
       "lieu": null,
       "mene_a": [],
-      "illustration": "scene_landes_liaison_plateau_d.png",
+      "illustration": "monstre_landes_geant_couche_affiche_a_d.png",
       "description": "Le Géant Couché : sur la marche, la crête de bruyère respire."
     },
     {
@@ -3672,7 +3670,7 @@
       "nom": "Le Nœud",
       "lieu": null,
       "mene_a": [],
-      "illustration": "scene_transition_crete_cordes_b.png",
+      "illustration": "monstre_landes_noeud_affiche_a_b.png",
       "description": "Le Nœud : une boule de cordes de gibet qui dévale vers le sud."
     }
   ],

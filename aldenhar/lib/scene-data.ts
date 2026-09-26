@@ -1580,7 +1580,7 @@ export const SCENES: Scene[] = [
     id: "borne-frontiere",
     // Vue DÉDIÉE du tout premier écran du jeu (lot 25/07) : l'ancienne image
     // était une vue de transition, aussi tirée dans le pool des marches.
-    illustration: "assets/scene_borne_frontiere_v2_a.png",
+    illustration: "assets/scene_landes_borne_frontiere_affiche_b_a.png",
     narration: [
       "La lande s'ouvre sous un crépuscule qui ne tombe pas. Une pierre seule au milieu du plateau, plus haute qu'un homme. À son pied, un tas d'offrandes. À trois pas, un homme immobile, face au sud. Quelque part, une corde grince.",
       // LA GRAINE (go 24/08 : « une seule bonne phrase très tôt, sans
@@ -1848,7 +1848,7 @@ export const SCENES: Scene[] = [
   {
     id: "chemin-creux",
     tags: ["rough_path"],
-    illustration: "assets/scene_chemin_creux_coude_b.png",
+    illustration: "assets/scene_landes_chemin_creux_affiche_a_a.png",
     chainNext: "chemin-creux-2",
     narration: [
       "Le chemin s'enfonce entre deux talus ; le ciel devient un ruban. Une charrette penche au premier coude — et dans le creux, quelqu'un vient vers toi. De dos.",
@@ -1887,7 +1887,7 @@ export const SCENES: Scene[] = [
       {
         id: "marcheur-rebours",
         label: "Laisser venir l'homme à reculons",
-        illustration: "assets/monstre_marcheur_rebours_v2_b_a.png",
+        illustration: "assets/monstre_landes_marcheur_a_rebours_affiche_a_b.png",
         sortie: { toScene: "marcheur-1" },
         passive: {
           consequence:
@@ -2109,7 +2109,7 @@ export const SCENES: Scene[] = [
     // une seule scène (amende §6 : durée par poids narratif).
     id: "bete-chemins-creux",
     illustration: "assets/monstre_bete_chemins_creux_a.png",
-    illustrationArrivee: "assets/scene_chemin_creux_coude_b.png",
+    illustrationArrivee: "assets/scene_landes_chemin_creux_affiche_a_a.png",
     combat: true,
     // L'embuscade enchaîne sur SON lieu : on descendait vers le Chemin Creux,
     // la Bête surgit au coude, et le creux continue après le combat.
@@ -5075,7 +5075,7 @@ export const SCENES: Scene[] = [
      serait faux ici, et `immersion.py` existe pour attraper exactement ça. */
   {
     id: "menace-retour-recousu",
-    illustration: "assets/monstre_recousu_c.png",
+    illustration: "assets/monstre_landes_recousu_affiche_a_d.png",
     combat: true,
     foe: "recousu",
     foeName: "Le Recousu",
@@ -7424,7 +7424,7 @@ export const SCENES: Scene[] = [
        ⚠️ Image à produire (`scene_landes_tourbiere_a`) — l'eau noire de
        l'ancienne Mare sert en attendant : c'est la même matière. */
     id: "tourbiere",
-    illustration: "assets/scene_landes_tourbiere_a_b.png",
+    illustration: "assets/scene_landes_tourbiere_affiche_a_b.png",
     chainNext: "tourbiere-2",
     narration: [
       "Le sol cède à chaque pas, comme une couverture posée sur de l'eau. La tourbière s'étend jusqu'à l'horizon, lisse, piquée de touffes de joncs.",
@@ -7692,7 +7692,7 @@ export const SCENES: Scene[] = [
        préparation (`d.geant_souffle`, posée par l'écran du Cercle).
        ⚠️ Image à produire (`monstre_landes_geant_couche_affiche_a`). */
     id: "geant-couche",
-    illustration: "assets/scene_landes_liaison_plateau_d.png",
+    illustration: "assets/monstre_landes_geant_couche_affiche_a_d.png",
     combat: true,
     passageLande: true,
     foe: "geant-couche",
@@ -7800,7 +7800,7 @@ export const SCENES: Scene[] = [
        Préparation : la serpe des Époux (Verger), qui tranche la boucle.
        ⚠️ Image à produire (`monstre_landes_noeud_affiche_a`). */
     id: "noeud",
-    illustration: "assets/scene_transition_crete_cordes_b.png",
+    illustration: "assets/monstre_landes_noeud_affiche_a_b.png",
     combat: true,
     passageLande: true,
     foe: "noeud",
