@@ -1298,10 +1298,8 @@ export function coutSante(
  * de la Descente. C'est la seule forme de courbe que la doctrine autorise —
  * ni jauge, ni chiffre, ni annonce.
  *
- * ⚠️ Elle contre partiellement la courbe d'ENTRÉE (`entrySoftening`, qui
- * abaisse le seuil des premières morts d'un compte) : les deux se
- * compensent au début et se séparent à la fin, ce qui est exactement voulu —
- * on accueille un débutant, on ne le laisse pas sortir sans rien risquer.
+ * (La courbe d'ENTRÉE qui abaissait le seuil des premières vies d'un compte,
+ * `entrySoftening`, est retirée le 26/09 : elle doublait le recalage du dé.)
  */
 export function tensionTraversee(visites: number, cible: number): number {
   if (cible <= 0) return 0;
@@ -1834,13 +1832,24 @@ export const SCENES: Scene[] = [
        où il rentrait avec toi (playtest v1.81). Ce qui est vrai partout : il
        ne t'a pas laissé le voir décider, et la trace s'arrête avant de dire
        quoi que ce soit. */
+    /* Panel du 26/09 (4 testeurs sur 5) : « Il te laisse partir le premier…
+       la borne est seule » suivait « Il te suit » — et un homme assis au pied
+       de la pierre. Le texte neutre ne dit plus où il est : il dit que TU ne
+       le sais pas. L'échec (il s'est assis) a sa version, par
+       `narrationEchec`. */
     narration: [
-      "Il te laisse partir le premier. C'est important pour lui : que tu ne le " +
+      "Vous vous séparez là où la bruyère se couche. Tu reprends le sud, et " +
+        "il ne te regarde pas partir : c'est important pour lui, que tu ne le " +
         "voies pas décider.",
-      "Au bout de vingt pas tu te retournes quand même. La borne est seule au " +
-        "milieu du plateau, et la bruyère couchée garde une trace qui s'efface " +
-        "à cent pas — juste avant l'endroit où elle aurait commencé à dire " +
-        "quelque chose.",
+      "Au bout de vingt pas tu te retournes quand même. La borne a déjà baissé " +
+        "d'une tête derrière le pli du plateau, et tu ne sais plus si ce qui " +
+        "se tient à côté d'elle est un homme, ou l'ombre de la pierre.",
+    ],
+    narrationEchec: [
+      "Il ne se relève pas pour te voir partir. Tu reprends le sud seul.",
+      "Au bout de vingt pas tu te retournes quand même. Il est toujours assis " +
+        "au pied de la borne, face à toi, face au sud — et d'ici, déjà, on ne " +
+        "distingue plus très bien l'homme de la pierre.",
     ],
     choices: [{ id: "hesitant-reprendre-route", label: "Reprendre la route" }],
     jailerLine: "Deux directions, pas une trace. Je note ça comme une sortie.",
@@ -1851,7 +1860,7 @@ export const SCENES: Scene[] = [
     illustration: "assets/scene_landes_chemin_creux_affiche_a_a.png",
     chainNext: "chemin-creux-2",
     narration: [
-      "Le chemin s'enfonce entre deux talus ; le ciel devient un ruban. Une charrette penche au premier coude — et dans le creux, quelqu'un vient vers toi. De dos.",
+      "Le chemin s'enfonce entre deux talus ; le ciel devient un ruban. Une charrette penche dans l'ornière, à mi-pente — et plus bas, dans le creux, quelqu'un vient vers toi. De dos.",
     ],
     /* Conversion des points d'intérêt (13/08). Trois actions exclusives : ce
        qu'on prend (le grelot), ce qu'on apprend (la crête nord, qui ouvrira
@@ -1922,7 +1931,7 @@ export const SCENES: Scene[] = [
           threshold: 12,
           outcomes: outcomes(
             "20 naturel. Tu presses le pas aux bons moments, tu t'arrêtes aux autres — sans savoir pourquoi. Derrière, quelque chose s'arrête aussi, et repart trop tard. Tu as un pas d'avance sur ce qui compte les pas.",
-            "Tu passes le coude d'une traite, l'épaule au talus nord. Rien ne tombe, rien ne sort. Le chemin se rouvre sur la lande et tu ressors du couloir de terre entier.",
+            "Tu passes le coude d'une traite, le dos rond, au milieu du creux. Rien ne tombe, rien ne sort. Le chemin se rouvre sur la lande et tu ressors du couloir de terre entier.",
             "Tu passes trop lentement. Rien n'attaque — mais quelque chose t'accompagne sur la crête jusqu'au bout du creux, à ta hauteur, réglant son pas sur le tien, et ne s'arrête que là où le talus s'abaisse.",
             "1 naturel. Au milieu du coude, tu comprends que le silence n'était pas vide : il était retenu. Quelque chose, tout près, avait cessé de respirer pour t'écouter passer. ♦ −2"
           ),
@@ -1953,7 +1962,7 @@ export const SCENES: Scene[] = [
         requiresSavoir: "savoir_bete_crete_nord",
         passive: {
           consequence:
-            "Tu passes le coude contre le talus SUD, côté vierge d'empreintes, sans accélérer. Sur la crête nord, quelque chose t'accompagne — puis s'arrête : elle ne traverse pas. Tu ressors entier, sans avoir couru.",
+            "Tu passes le coude contre le talus sud, celui où rien n'a jamais marché, sans accélérer. Sur la crête nord, quelque chose t'accompagne — puis s'arrête : elle ne traverse pas. Tu ressors entier, sans avoir couru.",
         },
       },
     ],
@@ -1981,7 +1990,7 @@ export const SCENES: Scene[] = [
         si: { dernier: "tombe" },
         narration: [
           "Il contourne l'ornière d'un pas, sans la regarder, et ralentit à ta hauteur.",
-          "— « C'est là que le dernier s'est étalé. Elle est toujours là, l'ornière. » Un temps. « Marche pas côté nord du creux. Elle longe la crête nord. Les empreintes du sud, c'est les vieilles. »",
+          "— « C'est là que le dernier s'est étalé. Elle est toujours là, l'ornière. » Un temps. « Marche pas côté nord du creux. Elle longe la crête nord. Le talus sud, elle y a jamais mis la patte. »",
         ],
       },
       {
@@ -1995,7 +2004,7 @@ export const SCENES: Scene[] = [
         si: { dernier: "compte" },
         narration: [
           "Il compte à voix basse en approchant — onze pas, un arrêt — et il te regarde compter avec lui.",
-          "— « Quelqu'un a compté mes pas, une fois. Ça m'a fait du bien, qu'on compte avec moi. » Il ne s'arrête pas. « Côté nord, elle longe. Les empreintes du sud, c'est les vieilles. »",
+          "— « Quelqu'un a compté mes pas, une fois. Ça m'a fait du bien, qu'on compte avec moi. » Il ne s'arrête pas. « Côté nord, elle longe. Le talus sud, elle y a jamais mis la patte. »",
         ],
       },
     ],
@@ -2005,10 +2014,10 @@ export const SCENES: Scene[] = [
     decouverte: "d.bete_couloir",
     narration: [
       "Il ne s'arrête pas à ta hauteur. Il ralentit, c'est tout — et te parle " +
-        "en te dépassant, le regard toujours fixé sur le chemin derrière toi.",
+        "en te dépassant, le regard toujours fixé sur le chemin d'où il vient, au sud.",
       "— « Marche pas côté nord du creux. » Pas de bonjour. Ici, les conseils " +
-        "sont les politesses. « Elle longe la crête nord. Toujours. Les " +
-        "empreintes du sud, c'est les vieilles. »",
+        "sont les politesses. « Elle longe la crête nord. Toujours. Le talus " +
+        "sud, elle y a jamais mis la patte. »",
     ],
     choices: [
       {
@@ -2042,9 +2051,11 @@ export const SCENES: Scene[] = [
     chainNext: "marcheur-3",
     memoire: "marcheur",
     narration: [
-      "— « Tu veux traverser entier ? » Il est déjà trois pas plus loin. " +
-        "« Alors fais comme moi jusqu'au coude. Après le coude, elle suit " +
-        "plus. Personne sait pourquoi. On va pas lui demander. »",
+      "— « Tu veux traverser entier ? » Il s'arrête, et pour la première fois " +
+        "il fait un pas dans l'autre sens — vers le coude, avec toi. « Alors " +
+        "fais comme moi : le dos au coude, les yeux sur d'où tu viens. Je " +
+        "redescends avec toi jusque-là. Après le coude, elle suit plus. " +
+        "Personne sait pourquoi. On va pas lui demander. »",
     ],
     choices: [
       {
@@ -2057,7 +2068,7 @@ export const SCENES: Scene[] = [
           threshold: 11,
           outcomes: outcomes(
             "20 naturel. Tu pivotes et tu marches. Deux paires de talons réglées l'une sur l'autre. Il commente ce que tu ne peux pas voir — l'ornière, la racine. Tu ressortiras en sachant lire un chemin creux.",
-            "Tu recules avec lui. C'est atroce les vingt premiers pas, puis le corps comprend. Ses indications s'impriment : la crête nord, les vieilles empreintes, le coude. Tu sauras.",
+            "Tu recules avec lui. C'est atroce les vingt premiers pas, puis le corps comprend. Ses indications s'impriment : la crête nord, le talus sud où rien ne marche, le coude. Tu sauras.",
             "Tu trébuches dans l'ornière au cinquième pas et tu t'étales. Son rire sec est le premier rire des Landes — et il ne s'arrête pas pour t'aider. Il ne s'arrête pas, c'est tout.",
             "1 naturel. Tu recules, les yeux au nord — et pendant une seconde entière, tu vois exactement ce qu'il regarde depuis trente ans. Tu comprends pourquoi il ne se retourne pas. ♦ −2"
           ),
@@ -2082,7 +2093,7 @@ export const SCENES: Scene[] = [
         passive: {
           consequence:
             "Tu restes face au sud, comme tout le monde. « Comme tu veux », " +
-            "dit-il en s'éloignant. « C'est ton dos. » Il n'y a pas de " +
+            "dit-il sans changer de pas. « C'est ton dos. » Il n'y a pas de " +
             "reproche dedans. Juste un constat de comptable.",
         },
       },
@@ -2095,8 +2106,8 @@ export const SCENES: Scene[] = [
     memoire: "marcheur",
     chainNext: "chemin-creux-2",
     narration: [
-      "Au coude, il pivote enfin — face au nord, dos au sud — et s'éloigne à " +
-        "reculons vers là d'où tu viens.",
+      "Au coude, il s'arrête et reprend son sens à lui — face au sud, dos au " +
+        "nord — puis remonte le creux à reculons, vers là d'où tu viens.",
       "Juste avant que le talus ne le mange, il lève deux doigts vers toi. Pas " +
         "un adieu. Un décompte : deux yeux. Il te rappelle d'en garder autant " +
         "derrière la tête.",
@@ -7271,7 +7282,7 @@ export const SCENES: Scene[] = [
           threshold: 12,
           outcomes: outcomes(
             "20 naturel. Tu cours sans te retourner, et tu entends derrière toi la paille qui frotte, qui frotte — puis plus rien. À la lisière, tu te retournes : il est au milieu de l'allée, bras ouverts, arrêté net.",
-            "Tu cours. Derrière toi, la paille frotte à chaque pas que tu ne vois pas. Tu passes la lisière avant elle. Quand tu te retournes, il est planté trois rangs plus près.",
+            "Tu cours. Derrière toi, la paille frotte à chaque pas que tu ne vois pas. Tu passes la lisière avant lui. Quand tu te retournes, il est planté trois rangs plus près.",
             "Tu cours, et tu ne l'entends pas venir. Au dernier rang, une main de paille et de fer te prend l'épaule et te laboure le dos avant de lâcher.",
             "1 naturel. Tu cours. Il était déjà devant toi, à la lisière. ♦ −2"
           ),
@@ -7402,8 +7413,11 @@ export const SCENES: Scene[] = [
     chainNext: "verger-noir-2",
     memoire: "epoux",
     narration: [
-      "Ils se remettent au travail avant que tu sois sorti des rangs. Au fond, le douzième rang est creusé jusqu'à la moitié, et vide.",
-      "Longtemps après, tu entends encore la récitation à voix basse, régulière comme une corde qui grince : le bruit que fait l'espoir quand il refuse de savoir.",
+      // Panel 26/09 : l'écran racontait déjà le départ (« avant que tu sois
+      // sorti des rangs… longtemps après ») puis proposait de leur parler.
+      // Le départ vit maintenant dans le choix qui part.
+      "Ils se remettent au travail. Au fond, le douzième rang est creusé jusqu'à la moitié, et vide.",
+      "La récitation reprend à voix basse, régulière comme une corde qui grince : le bruit que fait l'espoir quand il refuse de savoir.",
     ],
     choices: [
       {
@@ -7421,7 +7435,15 @@ export const SCENES: Scene[] = [
             "qu’avant.",
         },
       },
-      { id: "epoux-quitter", label: "Descendre l'allée" },
+      {
+        id: "epoux-quitter",
+        label: "Descendre l'allée",
+        passive: {
+          consequence:
+            "Tu les laisses à leur rang. Longtemps après, entre les troncs, tu " +
+            "entends encore la récitation.",
+        },
+      },
     ],
     jailerLine: "Écoute-le réciter. Quarante mille fois. Je compte avec lui.",
   },
@@ -7711,21 +7733,21 @@ export const SCENES: Scene[] = [
       {
         si: { dernier: "reveille" },
         narration: [
-          "La lande monte en une longue échine qui barre l'horizon. Mais la tête, au bout, n'est plus couchée : elle est tournée vers le chemin.",
+          "Avant l'endroit que tu vises, la lande monte en une longue échine qui barre le chemin. Mais la tête, au bout, n'est plus couchée : elle est tournée vers toi.",
           "Un œil est ouvert, grand comme une porte de grange. Il te suit depuis que tu as quitté la bruyère.",
         ],
       },
       {
         si: { dernier: ["berce", "souffle"] },
         narration: [
-          "L'échine de bruyère monte et descend, lente, en travers de l'horizon. Il dort.",
+          "Avant l'endroit que tu vises, l'échine de bruyère monte et descend, lente, en travers du chemin. Il dort.",
           "À l'endroit exact où quelqu'un est passé la dernière fois, la bruyère a gardé la forme d'un pas. Elle ne l'a pas refermée.",
         ],
       },
     ],
     narration: [
-      "La lande monte en une longue échine couverte de bruyère, qui barre tout l'horizon. Tu es déjà dessus quand tu comprends : elle se soulève. Lentement. Et redescend.",
-      "Plus loin, la crête finit en épaule, et l'épaule en une tête couchée dans la bruyère, grande comme un moulin. Le premier que le Bailli a pendu. On n'a jamais pu le descendre, alors la lande a poussé dessus. Il dort. Il se retourne, parfois.",
+      "Avant l'endroit que tu vises, la lande monte en une longue échine couverte de bruyère, qui barre tout le chemin : il faudra la passer. Tu es déjà dessus quand tu comprends : elle se soulève. Lentement. Et redescend.",
+      "Plus loin, la crête finit en épaule, et l'épaule en une tête couchée dans la bruyère, grande comme un moulin. Un homme, autrefois — le premier qu'on ait pendu dans les Landes, trop lourd pour sa potence. La corde a cédé, pas lui : il est tombé là, et la lande a poussé dessus. Il dort. Il se retourne, parfois.",
     ],
     choices: [
       {
@@ -7833,7 +7855,7 @@ export const SCENES: Scene[] = [
     ],
     narration: [
       "Il dévale la pente en travers de ta route : une boule de cordes plus haute qu'un homme, qui roule vers le sud et grossit à chaque tour. Des cordes de gibet, les nœuds encore serrés.",
-      "Dans l'écheveau, des mains. Elles ne se débattent pas. Il ne te poursuit pas : il descend. Tout ce qui est corde, ici, descend vers la colonne. Et tu es sur sa pente.",
+      "Dans l'écheveau, des mains. Elles ne se débattent pas. Il ne te poursuit pas : il descend. Tout ce qui est corde, ici, descend vers le trait sombre du sud. Et tu es sur sa pente.",
     ],
     choices: [
       {
@@ -12510,13 +12532,14 @@ export const HAMEAU_SORTIE = "sortie-hameau";
 // de zone ne s'atteint qu'au bout de la traversée, par le Chemin du Sud.
 /* ═══ LA LANDE — le premier environnement des Landes (vague 3, 25/09) ═══
    Décision Patrick : la Lande est un vrai environnement. On part de la
-   Borne, on traverse DEUX lieux tirés parmi quatre, et une transition de
+   Borne, on traverse TROIS lieux tirés parmi quatre (deux jusqu'au 26/09 :
+   « on me coupe au moment où je m'installe », cinq testeurs sur cinq), et une transition de
    sortie mène aux Gibets. Tant que les deux lieux ne sont pas faits, les
    Croisées n'offrent QUE des lieux de la Lande ; ensuite ils quittent le
    tirage pour de bon (un environnement traversé ne revient pas).
    ⚠️ Déclarés AVANT `TRAVERSAL_POOL`, qui les exclut : sinon TDZ. */
 export const LANDE_LIEUX = ["chemin-creux", "verger-noir", "tourbiere", "cercle-qui-descend"];
-export const LANDE_TIRAGES = 2;
+export const LANDE_TIRAGES = 3;
 /** La transition de sortie (une scène, pas un lieu) : la crête des Gibets. */
 export const LANDE_SORTIE = "lande-sortie";
 
@@ -13307,7 +13330,7 @@ const INDICE_ROUTE: Record<string, string> = {
   "petit-tribunal": "une porte basse et trois bancs qu'on devine",
   "tourbiere": "une brume basse, à hauteur de genou, sur une eau noire",
   "cercle-qui-descend": "des pierres levées qui penchent toutes du même côté",
-  "verger-noir": "des rangs d'arbres qui n'ont plus de feuilles",
+  "verger-noir": "des rangs d'arbres aux feuilles noires",
   "meute-grise-1": "des silhouettes grises qui se déplacent ensemble",
   "palissade-sud": "une palissade qui coupe l'horizon, une lanterne allumée sous le ciel clair",
   // Le PORTILLON (24/08) : cet indice ne se lit que sur une Croisée de RUE
@@ -13888,7 +13911,7 @@ export const APPROACH_NARRATION: Record<string, string> = {
   "petit-tribunal": "Le chemin bute sur une bâtisse sans fenêtre, plantée de travers par rapport à la rue. Tu entres au Petit Tribunal.",
   // Vague 3 (25/09) — l'approche du Cercle ne nomme ni le cercle ni la
   // butte : c'est le 1er ¶ du lieu qui les pose (pas de double arrivée).
-  "tourbiere": "Le sol devient mou sous tes pas. Une brume basse monte de l'herbe, et dessous, une eau qui renvoie le ciel.",
+  "tourbiere": "Une brume basse monte de l'herbe, loin devant, et dessous, une eau qui renvoie le ciel.",
   "cercle-qui-descend": "Sur l'horizon, des formes dressées se découpent, trop régulières pour des rochers. La bruyère qui y monte est rayée de longues traînées claires, comme tirées au râteau.",
   "verger-noir": "Des rangs réguliers montent de la bruyère. De loin, c'est presque rassurant.",
   "meute-grise-1": "La bruyère bouge sans vent, par plaques, autour de toi. Ce ne sont pas des ombres : ce sont des dos gris, bas sur pattes, qui resserrent un cercle patient.",
@@ -14324,7 +14347,7 @@ export const SOUPCON_PALIERS: Record<number, string> = {
  * doit toujours être découvert APRÈS coup — personne ne marque devant toi.
  */
 export const SOUPCON_CRAIE: Record<number, string> = {
-  1: "Sur un muret, à hauteur de genou, une marque fraîche à la craie. Tu ne la remarquerais pas si elle n'était pas exactement à l'endroit où tu es passé.",
+  1: "Sur la pierre la plus proche, à hauteur de genou, une marque fraîche à la craie. Tu ne la remarquerais pas si elle n'était pas exactement à l'endroit où tu es passé.",
   2: "Une croix à la craie sur ta besace, tracée bas, sur la face qui reste contre ton dos. Tu ne l'as pas vue se faire.",
   3: "La craie a changé de place : elle est sur ta manche, à l'épaule. Pour la tracer là, il a fallu être à portée de bras — et que tu ne t'en aperçoives pas.",
   4: "Deux marques maintenant, sur le même bras, à quelques doigts d'écart. La seconde recouvre à moitié la première, comme une signature qu'on confirme.",

@@ -153,7 +153,6 @@ import {
   buildRegistre,
   dettesPortees,
   donsPortes,
-  entrySoftening,
   relicDon,
   relicDette,
   reliquesPortees,
@@ -6035,10 +6034,10 @@ export default function Scene() {
       const modifier = gele
         ? passives + statBonus
         : effects.reduce((sum, e) => sum + e.delta, 0) + passives + statBonus + faveur + froideur + preparation + fixation;
-      // Courbe d'entrée invisible (spec 21/07) : seuil légèrement abaissé les
-      // 2-3 premières morts, sans aucun affichage. L'Anneau, calculé sur ce
-      // même seuil, montrera juste un peu plus d'encoches pleines — cohérent.
-      const soft = entrySoftening(loadMemory());
+      // ⚠️ La courbe d'entrée invisible (spec 21/07, −2/−1/−1 sur les trois
+      // premières vies) est RETIRÉE le 26/09 (Patrick, après le panel) : elle
+      // s'additionnait au recalage du dé (−2) et ramenait les seuils écrits à
+      // 11-12 autour de 7-8 — 16 vies de testeurs sans une seule mort.
       // LA COURBE DE DIFFICULTÉ (chantier 1 du 23/07, élargie le 7/09) : le
       // seuil monte par paliers à mesure qu'on approche de la Descente. Une
       // source unique (`tensionTraversee`) pour que la réplique et le jeu ne
@@ -6066,7 +6065,7 @@ export default function Scene() {
           ? choice.durcitSi.de
           : 0;
       // LE DÉ DEVIENT UN PARI (26/09) : `RECALAGE_DE` — voir scene-data.
-      const threshold = Math.max(2, choice.risky.threshold - RECALAGE_DE - soft + tension - prepare + durci);
+      const threshold = Math.max(2, choice.risky.threshold - RECALAGE_DE + tension - prepare + durci);
       // Beat fatal (30/07) : la scène sait AVANT le verdict si un palier
       // d'échec tue — santé − coût ≤ 0, ou procès de fixation raté. Le dé
       // s'en sert pour poser la face rongée et « MORT » au settle, à la

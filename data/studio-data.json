@@ -47,8 +47,8 @@
   "petit-tribunal",
   "meute-grise-1"
  ],
- "genere": "2026-09-26T10:47:23Z",
- "commit": "abb22ad",
+ "genere": "2026-09-26T15:45:24Z",
+ "commit": "4de9499",
  "zones": [
   {
    "id": "landes",
@@ -875,8 +875,8 @@
   {
    "id": "hesitant-3",
    "narration": [
-    "Il te laisse partir le premier. C'est important pour lui : que tu ne le voies pas décider.",
-    "Au bout de vingt pas tu te retournes quand même. La borne est seule au milieu du plateau, et la bruyère couchée garde une trace qui s'efface à cent pas — juste avant l'endroit où elle aurait commencé à dire quelque chose."
+    "Vous vous séparez là où la bruyère se couche. Tu reprends le sud, et il ne te regarde pas partir : c'est important pour lui, que tu ne le voies pas décider.",
+    "Au bout de vingt pas tu te retournes quand même. La borne a déjà baissé d'une tête derrière le pli du plateau, et tu ne sais plus si ce qui se tient à côté d'elle est un homme, ou l'ombre de la pierre."
    ],
    "choix": [
     {
@@ -886,6 +886,10 @@
     }
    ],
    "pointsInteret": [],
+   "narrationEchec": [
+    "Il ne se relève pas pour te voir partir. Tu reprends le sud seul.",
+    "Au bout de vingt pas tu te retournes quand même. Il est toujours assis au pied de la borne, face à toi, face au sud — et d'ici, déjà, on ne distingue plus très bien l'homme de la pierre."
+   ],
    "memoire": "hesitant",
    "nom": "L'Hésitant — beat 3",
    "lieu": "borne_frontiere",
@@ -913,7 +917,7 @@
   {
    "id": "chemin-creux",
    "narration": [
-    "Le chemin s'enfonce entre deux talus ; le ciel devient un ruban. Une charrette penche au premier coude — et dans le creux, quelqu'un vient vers toi. De dos."
+    "Le chemin s'enfonce entre deux talus ; le ciel devient un ruban. Une charrette penche dans l'ornière, à mi-pente — et plus bas, dans le creux, quelqu'un vient vers toi. De dos."
    ],
    "choix": [
     {
@@ -1015,7 +1019,7 @@
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu presses le pas aux bons moments, tu t'arrêtes aux autres — sans savoir pourquoi. Derrière, quelque chose s'arrête aussi, et repart trop tard. Tu as un pas d'avance sur ce qui compte les pas.",
-      "reussite": "Tu passes le coude d'une traite, l'épaule au talus nord. Rien ne tombe, rien ne sort. Le chemin se rouvre sur la lande et tu ressors du couloir de terre entier.",
+      "reussite": "Tu passes le coude d'une traite, le dos rond, au milieu du creux. Rien ne tombe, rien ne sort. Le chemin se rouvre sur la lande et tu ressors du couloir de terre entier.",
       "echec": "Tu passes trop lentement. Rien n'attaque — mais quelque chose t'accompagne sur la crête jusqu'au bout du creux, à ta hauteur, réglant son pas sur le tien, et ne s'arrête que là où le talus s'abaisse.",
       "funeste": "1 naturel. Au milieu du coude, tu comprends que le silence n'était pas vide : il était retenu. Quelque chose, tout près, avait cessé de respirer pour t'écouter passer. ♦ −2"
      },
@@ -1032,7 +1036,7 @@
      "id": "longer-cote-sud",
      "label": "Longer le côté sud",
      "type": "passif",
-     "consequence": "Tu passes le coude contre le talus SUD, côté vierge d'empreintes, sans accélérer. Sur la crête nord, quelque chose t'accompagne — puis s'arrête : elle ne traverse pas. Tu ressors entier, sans avoir couru.",
+     "consequence": "Tu passes le coude contre le talus sud, celui où rien n'a jamais marché, sans accélérer. Sur la crête nord, quelque chose t'accompagne — puis s'arrête : elle ne traverse pas. Tu ressors entier, sans avoir couru.",
      "exigeSavoir": "savoir_bete_crete_nord"
     }
    ],
@@ -1064,8 +1068,8 @@
   {
    "id": "marcheur-1",
    "narration": [
-    "Il ne s'arrête pas à ta hauteur. Il ralentit, c'est tout — et te parle en te dépassant, le regard toujours fixé sur le chemin derrière toi.",
-    "— « Marche pas côté nord du creux. » Pas de bonjour. Ici, les conseils sont les politesses. « Elle longe la crête nord. Toujours. Les empreintes du sud, c'est les vieilles. »"
+    "Il ne s'arrête pas à ta hauteur. Il ralentit, c'est tout — et te parle en te dépassant, le regard toujours fixé sur le chemin d'où il vient, au sud.",
+    "— « Marche pas côté nord du creux. » Pas de bonjour. Ici, les conseils sont les politesses. « Elle longe la crête nord. Toujours. Le talus sud, elle y a jamais mis la patte. »"
    ],
    "choix": [
     {
@@ -1102,7 +1106,7 @@
      },
      "narration": [
       "Il contourne l'ornière d'un pas, sans la regarder, et ralentit à ta hauteur.",
-      "— « C'est là que le dernier s'est étalé. Elle est toujours là, l'ornière. » Un temps. « Marche pas côté nord du creux. Elle longe la crête nord. Les empreintes du sud, c'est les vieilles. »"
+      "— « C'est là que le dernier s'est étalé. Elle est toujours là, l'ornière. » Un temps. « Marche pas côté nord du creux. Elle longe la crête nord. Le talus sud, elle y a jamais mis la patte. »"
      ]
     },
     {
@@ -1120,7 +1124,7 @@
      },
      "narration": [
       "Il compte à voix basse en approchant — onze pas, un arrêt — et il te regarde compter avec lui.",
-      "— « Quelqu'un a compté mes pas, une fois. Ça m'a fait du bien, qu'on compte avec moi. » Il ne s'arrête pas. « Côté nord, elle longe. Les empreintes du sud, c'est les vieilles. »"
+      "— « Quelqu'un a compté mes pas, une fois. Ça m'a fait du bien, qu'on compte avec moi. » Il ne s'arrête pas. « Côté nord, elle longe. Le talus sud, elle y a jamais mis la patte. »"
      ]
     }
    ],
@@ -1152,7 +1156,7 @@
   {
    "id": "marcheur-2",
    "narration": [
-    "— « Tu veux traverser entier ? » Il est déjà trois pas plus loin. « Alors fais comme moi jusqu'au coude. Après le coude, elle suit plus. Personne sait pourquoi. On va pas lui demander. »"
+    "— « Tu veux traverser entier ? » Il s'arrête, et pour la première fois il fait un pas dans l'autre sens — vers le coude, avec toi. « Alors fais comme moi : le dos au coude, les yeux sur d'où tu viens. Je redescends avec toi jusque-là. Après le coude, elle suit plus. Personne sait pourquoi. On va pas lui demander. »"
    ],
    "choix": [
     {
@@ -1164,7 +1168,7 @@
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu pivotes et tu marches. Deux paires de talons réglées l'une sur l'autre. Il commente ce que tu ne peux pas voir — l'ornière, la racine. Tu ressortiras en sachant lire un chemin creux.",
-      "reussite": "Tu recules avec lui. C'est atroce les vingt premiers pas, puis le corps comprend. Ses indications s'impriment : la crête nord, les vieilles empreintes, le coude. Tu sauras.",
+      "reussite": "Tu recules avec lui. C'est atroce les vingt premiers pas, puis le corps comprend. Ses indications s'impriment : la crête nord, le talus sud où rien ne marche, le coude. Tu sauras.",
       "echec": "Tu trébuches dans l'ornière au cinquième pas et tu t'étales. Son rire sec est le premier rire des Landes — et il ne s'arrête pas pour t'aider. Il ne s'arrête pas, c'est tout.",
       "funeste": "1 naturel. Tu recules, les yeux au nord — et pendant une seconde entière, tu vois exactement ce qu'il regarde depuis trente ans. Tu comprends pourquoi il ne se retourne pas. ♦ −2"
      },
@@ -1185,7 +1189,7 @@
      "id": "marcheur-continuer",
      "label": "Continuer normalement",
      "type": "passif",
-     "consequence": "Tu restes face au sud, comme tout le monde. « Comme tu veux », dit-il en s'éloignant. « C'est ton dos. » Il n'y a pas de reproche dedans. Juste un constat de comptable.",
+     "consequence": "Tu restes face au sud, comme tout le monde. « Comme tu veux », dit-il sans changer de pas. « C'est ton dos. » Il n'y a pas de reproche dedans. Juste un constat de comptable.",
      "laisse": "face"
     }
    ],
@@ -1222,7 +1226,7 @@
   {
    "id": "marcheur-3",
    "narration": [
-    "Au coude, il pivote enfin — face au nord, dos au sud — et s'éloigne à reculons vers là d'où tu viens.",
+    "Au coude, il s'arrête et reprend son sens à lui — face au sud, dos au nord — puis remonte le creux à reculons, vers là d'où tu viens.",
     "Juste avant que le talus ne le mange, il lève deux doigts vers toi. Pas un adieu. Un décompte : deux yeux. Il te rappelle d'en garder autant derrière la tête."
    ],
    "choix": [
@@ -6810,7 +6814,7 @@
      "hautEnjeu": false,
      "issues": {
       "critique": "20 naturel. Tu cours sans te retourner, et tu entends derrière toi la paille qui frotte, qui frotte — puis plus rien. À la lisière, tu te retournes : il est au milieu de l'allée, bras ouverts, arrêté net.",
-      "reussite": "Tu cours. Derrière toi, la paille frotte à chaque pas que tu ne vois pas. Tu passes la lisière avant elle. Quand tu te retournes, il est planté trois rangs plus près.",
+      "reussite": "Tu cours. Derrière toi, la paille frotte à chaque pas que tu ne vois pas. Tu passes la lisière avant lui. Quand tu te retournes, il est planté trois rangs plus près.",
       "echec": "Tu cours, et tu ne l'entends pas venir. Au dernier rang, une main de paille et de fer te prend l'épaule et te laboure le dos avant de lâcher.",
       "funeste": "1 naturel. Tu cours. Il était déjà devant toi, à la lisière. ♦ −2"
      },
@@ -7064,8 +7068,8 @@
   {
    "id": "epoux-3",
    "narration": [
-    "Ils se remettent au travail avant que tu sois sorti des rangs. Au fond, le douzième rang est creusé jusqu'à la moitié, et vide.",
-    "Longtemps après, tu entends encore la récitation à voix basse, régulière comme une corde qui grince : le bruit que fait l'espoir quand il refuse de savoir."
+    "Ils se remettent au travail. Au fond, le douzième rang est creusé jusqu'à la moitié, et vide.",
+    "La récitation reprend à voix basse, régulière comme une corde qui grince : le bruit que fait l'espoir quand il refuse de savoir."
    ],
    "choix": [
     {
@@ -7078,7 +7082,8 @@
     {
      "id": "epoux-quitter",
      "label": "Descendre l'allée",
-     "type": "suite"
+     "type": "passif",
+     "consequence": "Tu les laisses à leur rang. Longtemps après, entre les troncs, tu entends encore la récitation."
     }
    ],
    "pointsInteret": [],
@@ -7470,8 +7475,8 @@
   {
    "id": "geant-couche",
    "narration": [
-    "La lande monte en une longue échine couverte de bruyère, qui barre tout l'horizon. Tu es déjà dessus quand tu comprends : elle se soulève. Lentement. Et redescend.",
-    "Plus loin, la crête finit en épaule, et l'épaule en une tête couchée dans la bruyère, grande comme un moulin. Le premier que le Bailli a pendu. On n'a jamais pu le descendre, alors la lande a poussé dessus. Il dort. Il se retourne, parfois."
+    "Avant l'endroit que tu vises, la lande monte en une longue échine couverte de bruyère, qui barre tout le chemin : il faudra la passer. Tu es déjà dessus quand tu comprends : elle se soulève. Lentement. Et redescend.",
+    "Plus loin, la crête finit en épaule, et l'épaule en une tête couchée dans la bruyère, grande comme un moulin. Un homme, autrefois — le premier qu'on ait pendu dans les Landes, trop lourd pour sa potence. La corde a cédé, pas lui : il est tombé là, et la lande a poussé dessus. Il dort. Il se retourne, parfois."
    ],
    "choix": [
     {
@@ -7569,7 +7574,7 @@
       "dernier": "reveille"
      },
      "narration": [
-      "La lande monte en une longue échine qui barre l'horizon. Mais la tête, au bout, n'est plus couchée : elle est tournée vers le chemin.",
+      "Avant l'endroit que tu vises, la lande monte en une longue échine qui barre le chemin. Mais la tête, au bout, n'est plus couchée : elle est tournée vers toi.",
       "Un œil est ouvert, grand comme une porte de grange. Il te suit depuis que tu as quitté la bruyère."
      ]
     },
@@ -7581,7 +7586,7 @@
       ]
      },
      "narration": [
-      "L'échine de bruyère monte et descend, lente, en travers de l'horizon. Il dort.",
+      "Avant l'endroit que tu vises, l'échine de bruyère monte et descend, lente, en travers du chemin. Il dort.",
       "À l'endroit exact où quelqu'un est passé la dernière fois, la bruyère a gardé la forme d'un pas. Elle ne l'a pas refermée."
      ]
     }
@@ -7613,7 +7618,7 @@
    "id": "noeud",
    "narration": [
     "Il dévale la pente en travers de ta route : une boule de cordes plus haute qu'un homme, qui roule vers le sud et grossit à chaque tour. Des cordes de gibet, les nœuds encore serrés.",
-    "Dans l'écheveau, des mains. Elles ne se débattent pas. Il ne te poursuit pas : il descend. Tout ce qui est corde, ici, descend vers la colonne. Et tu es sur sa pente."
+    "Dans l'écheveau, des mains. Elles ne se débattent pas. Il ne te poursuit pas : il descend. Tout ce qui est corde, ici, descend vers le trait sombre du sud. Et tu es sur sa pente."
    ],
    "choix": [
     {

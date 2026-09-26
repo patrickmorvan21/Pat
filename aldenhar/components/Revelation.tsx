@@ -70,16 +70,26 @@ function ouverture(stats: Stats): string[] {
   const passes = m.profils ?? [];
   if (passes.length === 0) return ["Attends.", "Ça y est. Je commence à te voir."];
 
-  const d = distance(stats, passes[passes.length - 1]);
+  /* PANEL DU 26/09 : « Les mêmes réflexes » servi à qui avait joué autrement,
+     « Toujours pareil » à qui avait un autre portrait. La distance seule (≤ 3
+     sur quatre axes de 1 à 5) laissait passer presque tout : deux jeux
+     différents rendent souvent des chiffres voisins. On exige maintenant le
+     même AXE FORT — celui qui ouvre le portrait — et des chiffres proches. */
+  const pareil = (p: Stats) => axeFort(stats) === axeFort(p) && distance(stats, p) <= 2;
   if (passes.length === 1) {
-    return d <= 3
+    return pareil(passes[0])
       ? ["Attends.", "Les mêmes réflexes. Intéressant."]
       : ["Attends.", "Non. Tu n'es pas comme le précédent."];
   }
   // Trois vies ou plus : il regarde la série, pas le dernier.
-  const constant = passes.every((p) => distance(stats, p) <= 4);
-  if (constant) return ["Attends.", "Toujours pareil. Peu importe le visage."];
-  return ["Attends.", `${passes.length + 1} vies. Et tu changes encore.`];
+  if (passes.every(pareil)) return ["Attends.", "Toujours pareil. Peu importe le visage."];
+  // Jamais un chiffre (panel du 26/09 : le seul nombre de la séquence).
+  return ["Attends.", "Encore un autre. Tu changes à chaque fois."];
+}
+
+/** L'axe le plus haut ; à égalité, l'ordre fixe des axes tranche. */
+function axeFort(st: Stats): string {
+  return [...ORDRE].sort((a, b) => st[b] - st[a])[0];
 }
 
 /** La phrase qui referme — celle qui dit que rien n'est acquis. */

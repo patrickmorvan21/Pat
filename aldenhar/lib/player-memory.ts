@@ -643,18 +643,8 @@ export function bloodDebtFor(mem: PlayerMemory, entity: string): BloodDebt | und
   return mem.bloodDebts.find((d) => d.entity === entity);
 }
 
-/**
- * Courbe d'entrée invisible (spec 21/07, « à appliquer DÈS MAINTENANT ») :
- * les seuils sont légèrement adoucis durant les 2-3 premières morts du joueur,
- * puis l'aide s'estompe. Renvoie de combien ABAISSER le seuil d'un jet (0 =
- * plus d'aide). AUCUN affichage : le joueur sent juste que le jeu lui a laissé
- * le temps d'apprendre. Se lit sur `mem.deaths` (compteur central).
- */
-export function entrySoftening(mem: PlayerMemory): number {
-  const d = mem.deaths;
-  if (d >= 3) return 0; // le joueur a appris — plus aucun coup de pouce
-  return [2, 1, 1][d] ?? 0; // 1re run : −2 · après 1re mort : −1 · après 2e : −1
-}
+/* La courbe d'entrée invisible (`entrySoftening`, 21/07) est retirée le
+   26/09 (Patrick) : voir Scene.tsx, au calcul du seuil. */
 
 /**
  * Forge d'une Relique à la mort (spec §10) : commune / rare / légendaire.

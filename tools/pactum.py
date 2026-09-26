@@ -261,14 +261,8 @@ def tension_traversee(visites: int, cible: int) -> int:
     return 0
 
 
-def entree_douce(morts: int) -> int:
-    """Miroir d'`entrySoftening` (player-memory) : le seuil est abaissé les
-    toutes premières morts d'un compte, sans aucun affichage."""
-    if morts <= 0:
-        return 2
-    if morts <= 2:
-        return 1
-    return 0
+# `entree_douce` (miroir d'`entrySoftening`) retirée le 26/09 avec l'aide
+# invisible des premières vies (décision Patrick après le panel).
 MOTS = {
     "destin": "DESTIN", "eclatante": "RÉUSSITE ÉCLATANTE", "reussite": "RÉUSSITE",
     "justesse": "DE JUSTESSE", "echec": "ÉCHEC", "critique": "FUNESTE",
@@ -349,8 +343,14 @@ class Partie:
                 "L'Onzième", "Suie"]
         d = {
             "graine": g, "nom": nom or rng.choice(noms), "jour": 1, "sante": 1.0,
-            "pas": 0, "phase": "scene", "scene": k["entree"], "visites": [],
-            "cible": 7 + rng.randrange(2), "options": None, "soupcon": 0,
+            # ⚠️ La Borne COMPTE comme lieu visité, comme dans le jeu
+            # (`freshTraversal` : visited = [ENTRY_SCENE]). Sans elle, le
+            # départ de la Lande (« Tu tournes le dos à la pierre… l'homme
+            # immobile n'a pas bougé ») se déclenchait un lieu trop tard —
+            # 4 testeurs sur 5 au panel du 26/09. La cible suit le jeu.
+            "pas": 0, "phase": "scene", "scene": k["entree"], "visites": [k["entree"]],
+            "cible": 7 + rng.randrange(2) + ((k.get("lande") or {}).get("tirages", 2) - 2),
+            "options": None, "soupcon": 0,
             "etats": {}, "besace": [], "poiVus": [], "geolierVus": [],
             "ambiancesVues": [], "poiOuvert": False, "morte": False, "famVus": [],
             "soupconVu": 0, "routeAFermer": False, "menace": None,
@@ -620,6 +620,15 @@ class Partie:
             self.dit(p, "narration")
         if ligne:
             self.dit(ligne, "narration")
+        # LE PRUDENT ACCULÉ SE DIT (miroir de Scene.tsx) : l'écran qui ne
+        # garde que les dés l'annonce, sinon l'option retirée paraît un bug.
+        ch = s.get("choix", [])
+        if (self.d.get("lignesOuvertes", 0) >= LIGNES_ACCULE and not self.d.get("engageIci")
+                and not s.get("liaison")
+                and any(c.get("type") == "risque" for c in ch)
+                and any(c.get("type") == "passif" and not any(x.startswith("miniJeu") for x in c) for c in ch)
+                and (self.k.get("lande") or {}).get("ligneAccule")):
+            self.dit(self.k["lande"]["ligneAccule"], "narration")
         # L'AUBE VIENT QU'ON AIT DORMI OU VEILLÉ (10/08) : une scène de nuit
         # avance le Jour une fois, quel que soit le choix. Mesuré sur 64 vies :
         # « Dormir » donnait +1 Jour et « Veiller » rien — le choix sûr battait
@@ -815,14 +824,18 @@ class Partie:
         if not passes:
             self.dit("Ça y est. Je commence à te voir.", "geolier")
         else:
-            d = sum(abs(st[a] - passes[-1].get(a, 3)) for a in AXES)
+            # Miroir de `ouverture` (Revelation.tsx, panel 26/09) : même AXE
+            # FORT et chiffres proches, jamais la distance seule ; aucun chiffre.
+            ordre = ["instinct", "courage", "ruse", "empathie"]
+            fort = lambda x: sorted(ordre, key=lambda a: -x.get(a, 3))[0]
+            pareil = lambda q: fort(st) == fort(q) and sum(abs(st[a] - q.get(a, 3)) for a in AXES) <= 2
             if len(passes) == 1:
-                self.dit("Les mêmes réflexes. Intéressant." if d <= 3
+                self.dit("Les mêmes réflexes. Intéressant." if pareil(passes[0])
                          else "Non. Tu n'es pas comme le précédent.", "geolier")
-            elif all(sum(abs(st[a] - q.get(a, 3)) for a in AXES) <= 4 for q in passes):
+            elif all(pareil(q) for q in passes):
                 self.dit("Toujours pareil. Peu importe le visage.", "geolier")
             else:
-                self.dit(f"{len(passes) + 1} vies. Et tu changes encore.", "geolier")
+                self.dit("Encore un autre. Tu changes à chaque fois.", "geolier")
         for ligne in portrait(st, p).split("\n"):
             self.dit(ligne, "narration")
         self.dit("Continue. J'ai peut-être tort.", "geolier")
@@ -1175,7 +1188,8 @@ class Partie:
                 and any(o.get("kind") == "choix" and o["c"].get("type") == "risque" for o in out)):
             out = [o for o in out
                    if not (o.get("kind") == "ouvrir"
-                           or (o.get("kind") == "choix" and o["c"].get("type") == "passif"))]
+                           or (o.get("kind") == "choix" and o["c"].get("type") == "passif"
+                               and not any(x.startswith("miniJeu") for x in o["c"])))]
         return out
 
     # -- jouer un choix
@@ -1529,7 +1543,6 @@ class Partie:
         seuil = max(
             2,
             seuil
-            - entree_douce(lire_compte().get("morts", 0))
             + tension_traversee(len(self.d.get("visites", [])), self.d.get("cible", 0)),
         )
         # LES HOSTILES APPRENNENT (25/09) : la même option, plus dure.

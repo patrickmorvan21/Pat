@@ -1464,7 +1464,7 @@
       "hostile": true,
       "nature": "physique",
       "en_jeu_le": "2026-09-26",
-      "note": "Le premier pendu du Bailli, trop grand pour qu'on le décroche : la lande a poussé sur lui. Il dort sous la bruyère et se retourne parfois — la crête qu'on longe est son bras.",
+      "note": "Le premier pendu des Landes, trop lourd pour sa potence : la corde a cédé, il est tombé, et la lande a poussé sur lui. Il dort sous la bruyère et se retourne parfois — la crête qu'on longe est son bras.",
       "regle": "Il ne voit pas, il sent : on passe pendant son souffle, ou dans sa main, ou en lui parlant comme à un dormeur. Mal choisir le moment, c'est être pris sous son poids.",
       "preparation": "Les ombres du Cercle qui Descend glissent vers le sud et reviennent : c'est son souffle. Qui l'a vu sait quand marcher.",
       "illustration": "assets/monstre_landes_geant_couche_affiche_a_d.png",
@@ -3705,8 +3705,8 @@
       "entree": "borne_frontiere",
       "fin": [],
       "tirages": [
-        2,
-        2
+        3,
+        3
       ],
       "apprend": "le but, le dé, et l'Appel",
       "colonne": "un trait sombre à l'horizon, qu'on pourrait prendre pour de la fumée",

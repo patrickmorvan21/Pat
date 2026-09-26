@@ -6,7 +6,7 @@
 
 import { normalizeItem, startingBesace, type BesaceItem, type BesaceRarity } from "@/lib/besace";
 import { traverseeGuidee } from "@/lib/demo";
-import { ENTRY_SCENE, sceneAt, type MenaceId, type RouteFermeeCause } from "@/lib/scene-data";
+import { ENTRY_SCENE, LANDE_TIRAGES, sceneAt, type MenaceId, type RouteFermeeCause } from "@/lib/scene-data";
 import { type ZoneDef, type ZoneId } from "@/lib/zones";
 import { cibleTotale, entrerLieu, ouvrirEtage, premierLieu, type EtageState } from "@/lib/etages";
 import { profilDepuis, profilNeuf, type ProfilRun } from "@/lib/profil";
@@ -208,7 +208,10 @@ export function freshTraversal(current = ENTRY_SCENE): TraversalState {
     // avant la sortie du village et faisait dormir DEUX fois (la nuit
     // scriptée, puis la grange) — un tirage sur deux, en silence. À 8, le
     // village se quitte par le portillon, la Meute et la Falaise suivent.
-    target: traverseeGuidee() ? 8 : 7 + Math.floor(Math.random() * 2), // 7 ou 8 lieux
+    // ⚠️ La Lande passe de 2 à 3 lieux le 26/09 : la cible suit du même
+    // écart (sinon la Halte retombe avant la sortie du village, le bug
+    // ci-dessus), calculé depuis LANDE_TIRAGES et jamais recopié en dur.
+    target: (traverseeGuidee() ? 8 : 7 + Math.floor(Math.random() * 2)) + (LANDE_TIRAGES - 2),
     liaisonOpts: null,
     seed: 0,
     done: false,

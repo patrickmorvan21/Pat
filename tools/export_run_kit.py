@@ -158,10 +158,13 @@ def lire_lande(src: str) -> dict:
         "tirages": int(t.group(1)) if t else 2,
         "depart": chaine("LANDE_DEPART"),
         "rappelHesitant": chaine("LANDE_RAPPEL_HESITANT"),
+        # La phrase qui dit au prudent qu'il est acculé (panel 26/09 : sans
+        # elle, la réplique retirait ses options « sans explication »).
+        "ligneAccule": chaine("LIGNE_ACCULE"),
         "sortie": sortie,
     }
     # Contrôle de compte : un extracteur muet ne doit jamais passer au vert.
-    if len(lieux) < 3 or not lande["depart"] or len(sortie["narration"]) < 1:
+    if len(lieux) < 3 or not lande["depart"] or not lande["ligneAccule"] or len(sortie["narration"]) < 1:
         raise SystemExit("export_run_kit : la Lande est illisible dans scene-data.ts")
     return lande
 
