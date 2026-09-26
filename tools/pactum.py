@@ -233,6 +233,12 @@ LARGEUR = 74
 # Barème DURCI le 2/09, le 7/09, puis le 11/09 (miroir de `coutSante`,
 # scene-data). Repère : QUATRE échecs ordinaires tuent, TROIS laissent au
 # seuil. Avant le 11/09 il en fallait cinq.
+# LE DÉ DEVIENT UN PARI + LE PRUDENT ACCULÉ (26/09) — miroirs de scene-data.
+RECALAGE_DE = 2
+SEUIL_CRITIQUE = -8
+ELAN = {"destin": 0.25, "eclatante": 0.12, "reussite": 0.06}
+LIGNES_ACCULE = 2
+PASSAGES_LANDE = ["geant-couche", "noeud"]
 COUT = {"malediction": 0.55, "critique": 0.46, "echec": 0.32, "justesse": 0.14}
 # LE KARMA DU PRUDENT (11/09) — miroir de `LIGNES_AVANT_RECOUSU` dans
 # components/Scene.tsx : combien de lieux d'affilée on peut quitter sans rien
@@ -1161,6 +1167,15 @@ class Partie:
                 pris.add(cible)
         if pris:
             out = [o for o in out if o["c"]["id"] not in pris]
+        # LE PRUDENT ACCULÉ (26/09) — miroir de `estAccule` (Scene.tsx) : deux
+        # lieux quittés d'affilée sans rien engager, rien tenté ici, et un dé
+        # jouable → on retire ce qui se fait sans épreuve (observer, partir).
+        if (self.d.get("lignesOuvertes", 0) >= LIGNES_ACCULE and not self.d.get("engageIci")
+                and not s.get("liaison")
+                and any(o.get("kind") == "choix" and o["c"].get("type") == "risque" for o in out)):
+            out = [o for o in out
+                   if not (o.get("kind") == "ouvrir"
+                           or (o.get("kind") == "choix" and o["c"].get("type") == "passif"))]
         return out
 
     # -- jouer un choix
@@ -1230,7 +1245,27 @@ class Partie:
                 self.d["menace"] = None
             self.d["phase"] = "scene"
             self.d["options"] = None
-            self.entrer(o["dest"], orientation=True)
+            # LES RENCONTRES DE PASSAGE DE LA LANDE (26/09) — miroir de la
+            # branche toDest du jeu : sur la marche vers le SECOND lieu de la
+            # Lande, une fois par vie, jamais si la Bête a embusqué le Chemin
+            # Creux ; le compte préfère celle qu'il n'a jamais croisée.
+            dest = o["dest"]
+            ll = (self.k.get("lande") or {}).get("lieux") or []
+            if (not self.d.get("passageFait") and dest in ll and dest != "chemin-creux"
+                    and "chemin-creux" not in self.d["visites"]
+                    and any(x in self.d["visites"] for x in ll)):
+                c = lire_compte()
+                vus = c.get("passages", [])
+                pool = [x for x in PASSAGES_LANDE if x not in vus] or PASSAGES_LANDE
+                pid = pool[self.d.get("graine", 0) % len(pool)]
+                c["passages"] = vus + ([pid] if pid not in vus else [])
+                ecrire_compte(c)
+                self.d["passageFait"] = True
+                self.d["passageVers"] = dest
+                if pid in self.k["scenes"]:
+                    self.entrer(pid)
+                    return
+            self.entrer(dest, orientation=True)
             return
 
         c = o["c"]
@@ -1483,7 +1518,8 @@ class Partie:
         # `miniJeuHorsDemo` pour les anciens paquets, il n'est plus décisif.
         if c.get("miniJeuDemo"):
             return self.resoudre_geste(c)
-        seuil = int(c.get("seuil") or 11)
+        # LE DÉ DEVIENT UN PARI (26/09) — miroir de `RECALAGE_DE` (scene-data).
+        seuil = int(c.get("seuil") or 11) - RECALAGE_DE
         sc = self.k["scenes"].get(self.d.get("scene") or "", {})
         if sc.get("procesFixation"):
             seuil = max(2, seuil - len(self.apports_proces()))
@@ -1510,7 +1546,7 @@ class Partie:
         else:
             marge = effectif - seuil
             palier = ("eclatante" if marge >= 5 else "reussite" if marge >= 2
-                      else "justesse" if marge >= 0 else "echec" if marge > -5 else "critique")
+                      else "justesse" if marge >= 0 else "echec" if marge > SEUIL_CRITIQUE else "critique")
         self.d["des"].append({"pas": self.d["pas"], "stat": c.get("stat"), "seuil": seuil,
                               "naturel": naturel, "palier": palier})
         self.dit(f"anneau {anneau(seuil, mod)}|face {naturel}|{MOTS[palier]}", "de")
@@ -1558,6 +1594,8 @@ class Partie:
             cout = 0.0
         if cout:
             self.d["sante"] = max(0.0, round(self.d["sante"] - cout, 3))
+        # L'ÉLAN (26/09) — miroir de `elanSante` : une réussite rend du souffle.
+        self.d["sante"] = min(1.0, round(self.d["sante"] + ELAN.get(palier, 0.0), 3))
         # ON T'A VU (10/08) : un échec d'exploration dont la prose nomme un
         # témoin se paie comme un échec social.
         if rate and c.get("vuSiEchec") and nature != "social":
@@ -1642,6 +1680,10 @@ class Partie:
 
     def suite(self, choix: dict | None = None) -> None:
         s = self.scene()
+        # LA MARCHE REPREND après une rencontre de passage (26/09).
+        if s.get("passageLande") and self.d.get("passageVers"):
+            self.entrer(self.d.pop("passageVers"), orientation=True)
+            return
         # L'AUBE VIENT QU'ON AIT DORMI OU VEILLÉ (10/08, déplacé le 03/09) :
         # le Jour d'une scène de nuit se prend au moment où l'on en SORT (ou
         # qu'on y a veillé), jamais à l'arrivée — « — JOUR 3 — » tombait en bas

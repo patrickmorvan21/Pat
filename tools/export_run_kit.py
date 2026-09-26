@@ -295,7 +295,7 @@ def main() -> int:
             for k in (
                 "id", "nom", "lieu", "narration", "choix", "pointsInteret", "suite",
                 "combat", "adversaireNom", "terminal", "registre", "hameauEntree",
-                "hameauHalte", "chronometree", "procesFixation", "butin",
+                "hameauHalte", "chronometree", "procesFixation", "butin", "passageLande",
                 # L'OBJET QUI TRANSFORME LA SCÈNE (12/08) : sans lui, la
                 # réplique ne peut pas amarrer la corde, donc l'option qu'elle
                 # ouvre resterait à jamais injouable dans le kit.

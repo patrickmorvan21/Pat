@@ -1268,6 +1268,8 @@ def lire_scenes() -> list[dict]:
                            ("hameauEntree", "hameauEntree"), ("hameauHalte", "hameauHalte"),
                            ("fixationTrial", "procesFixation"), ("sejour", "sejour"),
                            ("nuit", "nuit"),
+                           # LES RENCONTRES DE PASSAGE DE LA LANDE (26/09).
+                           ("passageLande", "passageLande"),
                            # FIN D'ÉTAPE NON ÉCRITE (Salines, 13/09) : le nœud
                            # terminal de démo qui suit la Croûte.
                            ("finDemo", "finDemo")):

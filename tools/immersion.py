@@ -677,6 +677,12 @@ def pools() -> list[dict]:
             {"pool": f"liaison variante ({empreinte(texte)})", "garde": garde, "textes": [texte]}
         )
 
+    # — LE PRUDENT ACCULÉ (26/09) : servi sur n'importe quel écran qui offre
+    #   un dé (village, lande, Salines) — garde « partout ».
+    ma = re.search(r'export const LIGNE_ACCULE =\s*"((?:[^"\\]|\\.)*)"', scene_src)
+    if not ma:
+        raise SystemExit("immersion : LIGNE_ACCULE introuvable dans scene-data.ts — l'extracteur ne lit plus la source")
+    out.append({"pool": "prudent acculé", "garde": {"partout"}, "textes": [ma.group(1)]})
     return out
 
 

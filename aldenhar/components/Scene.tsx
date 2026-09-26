@@ -61,6 +61,10 @@ import {
   tierIsFail,
   SORTIE_DE_ZONE,
   coutSanteBorne,
+  RECALAGE_DE,
+  elanSante,
+  LIGNES_ACCULE,
+  LIGNE_ACCULE,
   tensionTraversee,
   type NatureJet,
   type Choice,
@@ -285,6 +289,24 @@ function retenirMort(scene: SceneType | null | undefined): void {
   if (!scene?.memoire) return;
   const cle = scene.memoire;
   mutateMemory((m) => { m.rencontres = noterActe(m.rencontres, cle, "tue"); });
+}
+
+/** LES RENCONTRES DE PASSAGE DE LA LANDE (26/09) : le compte préfère celle
+    qu'il n'a jamais croisée ; sinon le tirage (seedé par la traversée, donc
+    stable à la reprise). Lecture de mémoire : fonction de MODULE, jamais
+    appelée pendant le rendu. */
+const PASSAGES_LANDE = ["geant-couche", "noeud"];
+function choisirPassageLande(seed: number): string {
+  const vus = loadMemory().vus;
+  const jamais = PASSAGES_LANDE.filter((id) => vu(vus, "passage|" + id) === 0);
+  const pool = jamais.length ? jamais : PASSAGES_LANDE;
+  return pool[Math.abs(seed) % pool.length];
+}
+
+/** LE PRUDENT ACCULÉ (26/09) : deux lieux quittés d'affilée sans rien
+    engager, et rien encore tenté ici. Voir `LIGNES_ACCULE`. */
+function estAccule(run: RunState): boolean {
+  return (run.lignesOuvertes ?? 0) >= LIGNES_ACCULE && !run.engageIci;
 }
 
 function chance(p: number): boolean {
@@ -1201,6 +1223,8 @@ export default function Scene() {
   const [encrouteMirror, setEncrouteMirror] = useState(0);
   /** LA SOIF (Bassins, 16/09) : miroir de `run.soif` pour le rendu des CTA. */
   const [soifMirror, setSoifMirror] = useState(0);
+  // LE PRUDENT ACCULÉ (26/09) : lu au rendu, donc un miroir (jamais un ref).
+  const [acculeMirror, setAcculeMirror] = useState(false);
   /** Les tempêtes déjà balayées cette vie (miroir de `run.tempetesJouees`). */
   const [tempetesJouees, setTempetesJouees] = useState<string[]>([]);
   /** La tempête en cours (id de la scène), ou null. */
@@ -1594,7 +1618,15 @@ export default function Scene() {
     for (const cible of typeof c.prendLaPlaceDe === "string" ? [c.prendLaPlaceDe] : c.prendLaPlaceDe)
       remplaces.add(cible);
   }
-  const choixRetenus = remplaces.size ? baseChoices.filter((c) => !remplaces.has(c.id)) : baseChoices;
+  const choixRetenusBruts = remplaces.size ? baseChoices.filter((c) => !remplaces.has(c.id)) : baseChoices;
+  // LE PRUDENT ACCULÉ (26/09) : à force d'esquiver, l'écran qui offre un dé ne
+  // laisse plus que les dés. On ne retire que les choix SANS épreuve (passifs
+  // sans geste) — jamais un geste, un objet ni le repos — et seulement s'il
+  // reste un dé jouable, sinon on enfermerait le joueur.
+  const choixRetenus =
+    acculeMirror && !scene.liaison && choixRetenusBruts.some((c) => c.risky && !c.locked)
+      ? choixRetenusBruts.filter((c) => !(c.passive && !c.minigame))
+      : choixRetenusBruts;
   // Les choix d'orientation d'une liaison gardent leur ordre (gauche/droite
   // stable) ; ailleurs, Fisher-Yates seedé pour casser les patterns de slot.
   // Le vol est ajouté AVANT le mélange : il prend une position quelconque,
@@ -1726,6 +1758,7 @@ export default function Scene() {
     mutate(run);
     runRef.current = run;
     saveRun(run);
+    setAcculeMirror(estAccule(run));
   }
 
   /**
@@ -1954,6 +1987,7 @@ export default function Scene() {
     setHealth(run.health);
     setEncrouteMirror(run.encroute ?? 0);
     setSoifMirror(run.soif ?? 0);
+    setAcculeMirror(estAccule(run));
     setTempetesJouees(run.tempetesJouees ?? []);
     // Points d'intérêt déjà examinés dans le lieu courant : on ne les
     // re-propose pas à la reprise (spec 24/07 suite §1).
@@ -2512,6 +2546,15 @@ export default function Scene() {
     trav.verSillage = false;
     trav.verDessous = false;
     trav.landeDepart = false;
+    // LA MARCHE REPREND après une rencontre de passage de la Lande (26/09) :
+    // la destination choisie à la Croisée avait été mise en attente le temps
+    // du Géant Couché ou du Nœud. On la rejoue comme une orientation — la
+    // branche toDest fait tout (approche, arrivée), et ne recompte pas le
+    // lieu, déjà rangé dans `visited` au moment de la rencontre.
+    if (scene.passageLande && trav.passageVers && !opts?.toDest) {
+      opts = { ...(opts ?? {}), toDest: trav.passageVers };
+      trav.passageVers = undefined;
+    }
     // Une transition qui QUITTE une liaison ne fait pas vieillir les états.
     const leavingLiaison = Boolean(scene.liaison);
     // ═══ L'ÉLÉMENT-SURPRISE (catalogue 6/08) : armé UNE fois par run, au
@@ -2761,6 +2804,22 @@ export default function Scene() {
         runRef.current?.engageIci || (scene.liaison && runRef.current?.engageAvantReset)
       );
       const embuscade = opts.toDest === "chemin-creux" && !trav.visited.includes("chemin-creux");
+      /* LA RENCONTRE DE PASSAGE DE LA LANDE (26/09, remplace le Rabatteur) :
+         sur la marche vers le SECOND lieu de la Lande — jamais le premier,
+         pour que ce qu'on a vu avant puisse la préparer (le souffle du
+         Cercle, la serpe du Verger). Une seule rencontre sur la marche par
+         vie : si la Bête a déjà embusqué le Chemin Creux, rien d'autre. Le
+         compte préfère celle qu'on n'a jamais croisée. */
+      const passageLande =
+        !embuscade &&
+        (runRef.current?.zone ?? "landes") === "landes" &&
+        !trav.passageFait &&
+        LANDE_LIEUX.includes(opts.toDest) &&
+        opts.toDest !== "chemin-creux" &&
+        !trav.visited.includes("chemin-creux") &&
+        landeVisitees(trav.visited) >= 1
+          ? choisirPassageLande(trav.seed ?? 0)
+          : null;
       /* LA MEUTE SE RENCONTRE EN CHEMIN (correctif Patrick 31/08). Elle était
          posée SUR le portillon : choisir « vers le portillon » depuis une
          ruelle déposait droit devant les cinq chiens — donc on les voyait
@@ -2798,7 +2857,14 @@ export default function Scene() {
         ? "meute-grise-1"
         : embuscade
           ? "bete-chemins-creux"
-          : opts.toDest;
+          : passageLande ?? opts.toDest;
+      if (passageLande && !meuteDemo) {
+        trav.passageVers = opts.toDest;
+        trav.passageFait = true;
+        mutateMemory((mem) => {
+          mem.vus = noter(mem.vus, "passage|" + passageLande);
+        });
+      }
       const socle = resoudre(cible, runRef.current) ?? sceneById(ENTRY_SCENE)!;
       nextScene = meuteDemo
         ? { ...socle, narration: [DEMO_MEUTE_COUTURE, ...socle.narration] }
@@ -3574,6 +3640,22 @@ export default function Scene() {
       lignesApres = (runRef.current?.lignesOuvertes ?? 0) + 1;
     }
 
+    // LE PRUDENT ACCULÉ (26/09) : l'écran qui arrive ne laissera que les dés —
+    // on le DIT, sinon le joueur croit à un bouton disparu. Même condition que
+    // le filtre du rendu : deux lignes ouvertes, rien engagé ici, un dé
+    // jouable et au moins un choix sans épreuve à retirer.
+    {
+      const lignesFutur = lignesApres ?? runRef.current?.lignesOuvertes ?? 0;
+      const rienEngage = scene.liaison || !runRef.current?.engageIci;
+      if (
+        lignesFutur >= LIGNES_ACCULE &&
+        rienEngage &&
+        !nextScene.liaison &&
+        nextScene.choices.some((c) => c.risky && !c.locked) &&
+        nextScene.choices.some((c) => c.passive && !c.minigame)
+      )
+        nextScene = { ...nextScene, narration: [...nextScene.narration, LIGNE_ACCULE] };
+    }
     const nextIllustration = nextScene.illustration ?? PORTAL;
     const contextChanged = nextIllustration !== lastSceneIlloRef.current;
     const entries: FeedEntry[] = [];
@@ -5983,7 +6065,8 @@ export default function Scene() {
         choice.durcitSi && remplit(choice.durcitSi, scene.memoire, runRef.current?.memoireVue)
           ? choice.durcitSi.de
           : 0;
-      const threshold = Math.max(2, choice.risky.threshold - soft + tension - prepare + durci);
+      // LE DÉ DEVIENT UN PARI (26/09) : `RECALAGE_DE` — voir scene-data.
+      const threshold = Math.max(2, choice.risky.threshold - RECALAGE_DE - soft + tension - prepare + durci);
       // Beat fatal (30/07) : la scène sait AVANT le verdict si un palier
       // d'échec tue — santé − coût ≤ 0, ou procès de fixation raté. Le dé
       // s'en sert pour poser la face rongée et « MORT » au settle, à la
@@ -6497,6 +6580,9 @@ export default function Scene() {
               }
               // (miroir de rendu mis à jour après le persist, plus bas)
               run.health = Math.max(0, run.health - cost);
+              // L'ÉLAN (26/09) : une réussite rend du souffle — c'est ce qui
+              // laisse tenir celui qui enchaîne les dés. Jamais affiché.
+              run.health = Math.min(1, run.health + elanSante(tier));
               // AGUERRI seulement en COMBAT, et seulement quand la victoire
               // est PHYSIQUE (symétrique du correctif ENTAILLÉ/ÉBRANLÉ,
               // 8/08) : sa fiche dit « le combat t'a affûté » — un 20 naturel

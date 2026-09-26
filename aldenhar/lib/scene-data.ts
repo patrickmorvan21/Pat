@@ -995,6 +995,12 @@ export type Scene = {
    */
   chainNext?: string;
   /**
+   * RENCONTRE DE PASSAGE DE LA LANDE (26/09) : pas de lieu, elle surgit sur
+   * la marche vers le second lieu de la Lande, puis la marche reprend vers la
+   * destination choisie (`trav.passageVers`). Une seule par vie.
+   */
+  passageLande?: boolean;
+  /**
    * SÉJOUR — le lieu tient plusieurs décisions (panel du 9/08, 9 voix sur 10 :
    * « un lieu se referme sur un seul geste »). Résoudre un choix n'en fait
    * plus sortir : la conséquence s'affiche, le choix consommé disparaît, et
@@ -1124,6 +1130,41 @@ export const TIER_WORDS: Record<ResolutionTier, string> = {
   malediction: "MALÉDICTION",
 };
 
+/* ═══ LE DÉ DEVIENT UN PARI (26/09, feu vert Patrick) ═══════════════════════
+   Mesuré sur la réplique : un jet réussissait ~44 % du temps (seuil effectif
+   moyen ~12, modificateur ~0 avant la Révélation) et un échec coûtait 0,32 à
+   0,55 — l'espérance de santé d'un jet était d'environ −0,25. Lancer était
+   donc TOUJOURS perdant, et le joueur téméraire mourait 40 fois sur 40.
+   Trois leviers, mesurés ensemble (40 vies par style) : prudent 12 → 8 morts,
+   téméraire 40 → 33, curieux 26 → 17 — et surtout le téméraire tient
+   désormais PLUS de jours que le prudent (2,5 contre 2,1) : le risque paie.
+     · RECALAGE_DE : tous les seuils baissent de 2 (~55 % de réussite) ;
+     · SEUIL_CRITIQUE : l'échec critique est une vraie catastrophe (marge
+       ≤ −8), plus un échec sur trois ;
+     · `elanSante` : une réussite REND du souffle — c'est ce qui permet à qui
+       enchaîne les dés de tenir. Jamais affiché : l'érosion des boutons
+       recule, c'est tout.
+   Miroirs dans tools/pactum.py. */
+export const RECALAGE_DE = 2;
+export const SEUIL_CRITIQUE = -8;
+
+/** L'ÉLAN : ce qu'une réussite rend au corps. Rien sur un échec ni sur une
+    réussite « de justesse » (on passe, on ne gagne rien). */
+export function elanSante(tier: ResolutionTier): number {
+  return tier === "destin" ? 0.25 : tier === "eclatante" ? 0.12 : tier === "reussite" ? 0.06 : 0;
+}
+
+/* ═══ LE PRUDENT ACCULÉ (26/09, demande Patrick : « à un moment il faudrait le
+   punir, ne pas lui laisser de choix si à la longue il ne fait qu'esquiver »).
+   Même comptabilité que le karma du Recousu (`RunState.lignesOuvertes` : les
+   lieux quittés d'affilée sans y avoir rien engagé). À DEUX lignes ouvertes,
+   le prochain écran qui offre un dé ne laisse plus QUE les dés — plus
+   d'observation, plus de départ sans jet. Il suffit de lancer UNE fois pour
+   que le choix revienne (`engageIci`). Le Recousu reste, à trois. */
+export const LIGNES_ACCULE = 2;
+export const LIGNE_ACCULE =
+  "Cette fois, pas de détour. Ce qui est devant toi ne se contourne pas : il faudra le tenter.";
+
 export function resolveTier(natural: number, effective: number, threshold: number): ResolutionTier {
   if (natural === 20) return "destin";
   if (natural === 1) return "malediction";
@@ -1131,7 +1172,7 @@ export function resolveTier(natural: number, effective: number, threshold: numbe
   if (margin >= 5) return "eclatante";
   if (margin >= 2) return "reussite";
   if (margin >= 0) return "justesse";
-  if (margin > -5) return "echec";
+  if (margin > SEUIL_CRITIQUE) return "echec";
   return "critique";
 }
 
@@ -7610,6 +7651,9 @@ export const SCENES: Scene[] = [
   {
     id: "cercle-qui-descend-2",
     illustration: "assets/scene_landes_cercle_qui_descend_a_b.png",
+    // Les ombres qui « glissent et reviennent » sont le souffle du Géant
+    // Couché : les avoir vues prépare la rencontre (26/09).
+    decouverte: "d.geant_souffle",
     memoire: "cercle",
     narration: [
       "Le soleil ne bouge pas, mais les ombres des pierres, si. Elles glissent ensemble d'un pouce vers le sud, et reviennent. Comme une respiration.",
@@ -7634,6 +7678,227 @@ export const SCENES: Scene[] = [
       },
     ],
     jailerLine: "Une date par pierre. J'ai la même liste, avec plus de noms.",
+  },
+  /* ══ LES RENCONTRES DE PASSAGE DE LA LANDE (26/09, remplacent le Rabatteur).
+     Elles n'ont pas de lieu : elles surgissent sur la MARCHE vers le second
+     lieu de la Lande (`passageLande`, branche toDest d'advance()), une seule
+     par vie, puis la marche reprend vers la destination choisie. Tout y est
+     au dé — même fuir (règle du 26/09). */
+  {
+    /* LE GÉANT COUCHÉ — le premier pendu du Bailli, trop grand pour qu'on le
+       décroche ; la lande a poussé sur lui. Il dort, il se retourne. C'est lui
+       qui respire sous le Cercle qui Descend : les ombres des pierres qui
+       « glissent vers le sud et reviennent » sont son souffle — d'où la
+       préparation (`d.geant_souffle`, posée par l'écran du Cercle).
+       ⚠️ Image à produire (`monstre_landes_geant_couche_affiche_a`). */
+    id: "geant-couche",
+    illustration: "assets/scene_landes_liaison_plateau_d.png",
+    combat: true,
+    passageLande: true,
+    foe: "geant-couche",
+    foeName: "Le Géant Couché",
+    memoire: "geant",
+    retours: [
+      {
+        si: { dernier: "reveille" },
+        narration: [
+          "La lande monte en une longue échine qui barre l'horizon. Mais la tête, au bout, n'est plus couchée : elle est tournée vers le chemin.",
+          "Un œil est ouvert, grand comme une porte de grange. Il te suit depuis que tu as quitté la bruyère.",
+        ],
+      },
+      {
+        si: { dernier: ["berce", "souffle"] },
+        narration: [
+          "L'échine de bruyère monte et descend, lente, en travers de l'horizon. Il dort.",
+          "À l'endroit exact où quelqu'un est passé la dernière fois, la bruyère a gardé la forme d'un pas. Elle ne l'a pas refermée.",
+        ],
+      },
+    ],
+    narration: [
+      "La lande monte en une longue échine couverte de bruyère, qui barre tout l'horizon. Tu es déjà dessus quand tu comprends : elle se soulève. Lentement. Et redescend.",
+      "Plus loin, la crête finit en épaule, et l'épaule en une tête couchée dans la bruyère, grande comme un moulin. Le premier que le Bailli a pendu. On n'a jamais pu le descendre, alors la lande a poussé dessus. Il dort. Il se retourne, parfois.",
+    ],
+    choices: [
+      {
+        id: "geant-courir",
+        nature: "physique",
+        masqueSi: { decouverte: "d.geant_souffle" },
+        label: "Courir sur son bras avant qu'il roule",
+        laisse: { reussite: "passe", echec: "reveille" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu cours sur la crête de son bras au rythme de son souffle, et tu redescends dans la bruyère au moment où il expire. Il n'a rien senti. Derrière toi, la lande se soulève, apaisée.",
+            "Tu cours. Sous tes pieds, la bruyère monte comme une vague, et tu sautes au bas de son poignet juste avant qu'il roule sur le flanc. Il grogne dans son sommeil, un bruit de terre qui s'éboule. Tu es passé.",
+            "Il se retourne pendant que tu es sur son bras. Le sol se dérobe, tu roules sur une pente qui n'existait pas, et une pierre te déchire le flanc au passage. Il ne s'est pas réveillé. Toi, tu te relèves en te tenant les côtes.",
+            "1 naturel. Il se retourne, et sa main se referme sur la bruyère où tu es tombé. Il ne serre pas — il dort. Tu t'en dégages en rampant entre deux doigts de terre, la jambe prise sous le poids jusqu'au genou. ♦ −2"
+          ),
+        },
+      },
+      {
+        /* EXPLORER PRÉPARE — tu as vu les ombres du Cercle glisser et
+           revenir. Tu sais son rythme : un pas quand il inspire, rien quand
+           il expire. */
+        id: "geant-souffle",
+        nature: "physique",
+        label: "Passer au rythme de son souffle",
+        requiresDecouverte: "d.geant_souffle",
+        prendLaPlaceDe: "geant-courir",
+        horsDePortee: true,
+        laisse: "souffle",
+        risky: {
+          stat: "COURAGE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu marches quand il inspire, tu t'arrêtes quand il expire, comme les pierres du Cercle. Il ne sent rien passer. Au bout de sa main, tu te retournes : l'échine monte et descend, et le monde avec elle.",
+            "Tu règles ton pas sur le souffle que tu as vu au Cercle : un pas quand il inspire, rien quand il expire. Tu traverses son bras comme on traverse un gué.",
+            "Tu te trompes d'un souffle. La crête te soulève, et tu retombes dans la bruyère de l'autre côté — du bon côté. Il ne s'est même pas retourné.",
+            "1 naturel. Tu perds le compte, et le souffle avec. Tu restes planté sur son bras jusqu'au souffle suivant, et au suivant, sans oser bouger, avant de redescendre par où tu étais venu. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "geant-main",
+        nature: "physique",
+        label: "Te coucher dans le creux de sa main",
+        laisse: { reussite: "berce", echec: "blesse" },
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu te couches dans sa paume, et la main se referme sur toi comme sur un oiseau. Elle te garde un moment au chaud. Puis elle s'ouvre, de l'autre côté de la crête, et te pose dans la bruyère.",
+            "Tu t'allonges dans le creux de sa paume, immobile. Les doigts se referment sans serrer, puis se rouvrent quand le souffle retombe. Tu te relèves de l'autre côté de sa main, et tu repars.",
+            "Les doigts se referment un peu trop. Tu sens une côte céder avant qu'ils se rouvrent. Il n'a rien voulu : il dort. Tu sors de sa main en respirant par petits bouts.",
+            "1 naturel. Il serre. Longtemps. Quand la main se rouvre enfin, tu ne sais plus combien de temps tu as tenu sans air. Tu repars à quatre pattes. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "geant-parler",
+        nature: "physique",
+        label: "Lui parler tout bas, comme à un dormeur",
+        laisse: { reussite: "berce", echec: "reveille" },
+        risky: {
+          stat: "EMPATHIE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu lui parles à l'oreille, une oreille grande comme une porte de grange, et tu lui dis qu'on l'a oublié en haut. Il soupire. Toute la lande soupire avec lui. Il ne se retournera plus de la journée.",
+            "Tu t'approches de sa tête et tu lui parles tout bas, sans rien lui demander. Le souffle ralentit sous tes pieds. Tu passes pendant qu'il écoute.",
+            "Ta voix le tire à moitié du sommeil. La tête se soulève d'un pouce, et la bruyère qui la couvre te tombe dessus en une coulée de terre et de pierres. Tu t'en dégages, meurtri. Il s'est rendormi.",
+            "1 naturel. Il ouvre un œil, grand comme une porte, et vide. Il ne te voit pas : il cherche. Sa main balaie la bruyère, et elle te trouve en passant. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Le premier. On n'a jamais su où le mettre, alors on l'a laissé où il est tombé.",
+  },
+  {
+    /* LE NŒUD — les cordes tombées des gibets roulent vers le sud pour
+       rejoindre la colonne, en boule, et grossissent en chemin. Des mains
+       dedans. Il ne chasse pas : il DESCEND, et tu es sur sa pente.
+       Préparation : la serpe des Époux (Verger), qui tranche la boucle.
+       ⚠️ Image à produire (`monstre_landes_noeud_affiche_a`). */
+    id: "noeud",
+    illustration: "assets/scene_transition_crete_cordes_b.png",
+    combat: true,
+    passageLande: true,
+    foe: "noeud",
+    foeName: "Le Nœud",
+    memoire: "noeud",
+    retours: [
+      {
+        si: { dernier: "tranche" },
+        narration: [
+          "Il dévale la pente en travers de ta route, plus petit que dans ton souvenir. Derrière lui traîne une longue queue de cordes coupées net.",
+          "Les mains, dans l'écheveau, se sont toutes tournées de ton côté.",
+        ],
+      },
+      {
+        si: { dernier: "pris" },
+        narration: [
+          "Il dévale la pente en travers de ta route, une boule de cordes plus haute qu'un homme.",
+          "Une boucle pend à l'extérieur de l'écheveau, grande ouverte, à hauteur de cheville. Comme une place gardée.",
+        ],
+      },
+    ],
+    narration: [
+      "Il dévale la pente en travers de ta route : une boule de cordes plus haute qu'un homme, qui roule vers le sud et grossit à chaque tour. Des cordes de gibet, les nœuds encore serrés.",
+      "Dans l'écheveau, des mains. Elles ne se débattent pas. Il ne te poursuit pas : il descend. Tout ce qui est corde, ici, descend vers la colonne. Et tu es sur sa pente.",
+    ],
+    choices: [
+      {
+        id: "noeud-sauter",
+        nature: "physique",
+        masqueSi: { objet: "serpe-epoux" },
+        label: "Sauter par-dessus au dernier moment",
+        laisse: { reussite: "saute", echec: "pris" },
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Tu prends ton élan et tu passes par-dessus d'un seul bond. Une main, dedans, a tendu les doigts vers ta botte — sans la retenir. Comme pour te toucher en passant.",
+            "Tu attends qu'il soit sur toi et tu sautes. Tes bottes raclent le sommet de l'écheveau. Tu retombes derrière lui, et il continue sa descente sans ralentir.",
+            "Tu sautes trop tôt. Une boucle se referme sur ta cheville, et le Nœud t'emporte sur trois tours avant de te recracher dans la bruyère, la jambe écorchée jusqu'à l'os.",
+            "1 naturel. Il t'avale. Tu roules avec lui dans le noir du chanvre, avec les mains, longtemps. Quand il te rejette enfin sur une pierre, il te manque une botte, et de la peau un peu partout. ♦ −2"
+          ),
+        },
+      },
+      {
+        /* EXPLORER PRÉPARE — la serpe des Époux (Verger) : on ne saute plus
+           au jugé, on tranche la boucle qui vient. */
+        id: "noeud-trancher",
+        nature: "physique",
+        label: "Trancher la boucle qui vient",
+        requiresObjet: "serpe-epoux",
+        prendLaPlaceDe: "noeud-sauter",
+        horsDePortee: true,
+        laisse: "tranche",
+        risky: {
+          stat: "COURAGE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. La serpe entre dans l'écheveau comme dans du blé. Tu tranches, et tu tranches encore : le Nœud se défait en trois et roule à côté de toi en morceaux. Les mains, libérées, s'ouvrent dans l'herbe.",
+            "Tu attends la boucle qui vient sur toi et tu la tranches net. Il passe, amputé d'un tour, et continue de descendre sans toi.",
+            "La serpe se prend dans le chanvre au lieu de le trancher. Tu tires, elle revient — et il est déjà passé, à un doigt de toi. Il t'a manqué. Toi aussi.",
+            "1 naturel. La lame glisse sur le chanvre graissé et te tombe presque des mains. Il passe à un souffle de toi, et tu restes là, la serpe vide, à le regarder descendre. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "noeud-ecart",
+        nature: "physique",
+        label: "Lire sa pente et t'écarter",
+        laisse: { reussite: "ecarte", echec: "pris" },
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu lis la pente avant lui. Trois pas de côté, pas un de plus, et il passe à une longueur de bras sans dévier. Tu sens le vent de ses cordes.",
+            "Tu regardes où l'herbe est couchée et tu te mets à l'écart de la pente. Il passe si près que des bouts de corde te fouettent les jambes. Puis il s'éloigne vers le sud.",
+            "La pente tourne sous la bruyère. Il dévie vers toi au dernier moment et te heurte de plein fouet. Tu roules, la tête pleine d'étoiles, les bras brûlés par le chanvre.",
+            "1 naturel. Tu t'écartes du mauvais côté. Il te passe dessus. Tout entier. ♦ −2"
+          ),
+        },
+      },
+      {
+        id: "noeud-dedans",
+        nature: "physique",
+        label: "Te laisser prendre, chercher le bout libre",
+        laisse: { reussite: "defait", echec: "pris" },
+        risky: {
+          stat: "RUSE",
+          threshold: 12,
+          outcomes: outcomes(
+            "20 naturel. Il te prend, et tes mains trouvent tout de suite le bout libre : un nœud de pendu se défait par le bas. Tu tires. L'écheveau s'ouvre comme une fleur et te dépose dans l'herbe. Les mains, dedans, s'ouvrent aussi.",
+            "Tu te laisses prendre. Dans le chanvre, tu cherches à tâtons et tu trouves le bout libre. Tu tires : une boucle lâche, puis une autre, et tu glisses dehors pendant qu'il continue sans toi.",
+            "Tu cherches le bout libre et tu ne le trouves pas. Les cordes se serrent sur ta poitrine à chaque tour. Tu t'arraches enfin au troisième tour, les bras couverts de brûlures de chanvre.",
+            "1 naturel. Une main te prend le poignet, dedans, et ne le lâche pas. Tu fais toute la pente avec lui avant qu'elle desserre. ♦ −2"
+          ),
+        },
+      },
+    ],
+    jailerLine: "Toutes les cordes descendent. Certaines emportent de quoi tenir la route.",
   },
   /* ══ AVANT LA DESCENTE — le dernier écran où l'on peut encore ne pas y
      aller (demande Patrick, 01/09 : « il faut une scène avant qu'on voit la

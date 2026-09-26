@@ -1446,6 +1446,58 @@
       "nature": "phénomène",
       "regle": "Le quatrième temps du Témoin : son rôle est dit, sa nature jamais. Ni visage, ni membres.",
       "image_a_produire": "monstre_landes_temoin_falaise_a"
+    },
+    {
+      "id": "geant_couche",
+      "nom": "Le Géant Couché",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "portrait_requis": true,
+      "environnement": "lande",
+      "passage": true,
+      "hostile": true,
+      "nature": "physique",
+      "en_jeu_le": "2026-09-26",
+      "note": "Le premier pendu du Bailli, trop grand pour qu'on le décroche : la lande a poussé sur lui. Il dort sous la bruyère et se retourne parfois — la crête qu'on longe est son bras.",
+      "regle": "Il ne voit pas, il sent : on passe pendant son souffle, ou dans sa main, ou en lui parlant comme à un dormeur. Mal choisir le moment, c'est être pris sous son poids.",
+      "preparation": "Les ombres du Cercle qui Descend glissent vers le sud et reviennent : c'est son souffle. Qui l'a vu sait quand marcher.",
+      "illustration": null,
+      "image_a_produire": "monstre_landes_geant_couche_affiche_a",
+      "scenes": [
+        "geant-couche"
+      ]
+    },
+    {
+      "id": "noeud",
+      "nom": "Le Nœud",
+      "lieu_attache": null,
+      "histoire_bailli": false,
+      "rarete": "commune",
+      "textes": {
+        "decouverte": null,
+        "familiarite": null,
+        "recontextualisation": null
+      },
+      "portrait_requis": true,
+      "environnement": "lande",
+      "passage": true,
+      "hostile": true,
+      "nature": "physique",
+      "en_jeu_le": "2026-09-26",
+      "note": "Les cordes tombées des gibets roulent vers le sud pour rejoindre la colonne, en boule, et grossissent en chemin. Des mains dedans. Il ne chasse pas : il descend.",
+      "regle": "On le saute, on s'écarte de sa pente, ou on se laisse prendre pour chercher le bout libre — un nœud de pendu se défait par le bas.",
+      "preparation": "La serpe des Époux tranche la boucle qui vient.",
+      "illustration": null,
+      "image_a_produire": "monstre_landes_noeud_affiche_a",
+      "scenes": [
+        "noeud"
+      ]
     }
   ],
   "objets": [
@@ -3600,6 +3652,28 @@
       "mene_a": [],
       "illustration": "scene_landes_cercle_qui_descend_a_b.png",
       "description": "La dalle du centre, à nu, et ce qu'elle dit de l'endroit où le cercle se tenait."
+    },
+    {
+      "parent": null,
+      "texte": [],
+      "id": "geant-couche",
+      "type": "combat",
+      "nom": "Le Géant Couché",
+      "lieu": null,
+      "mene_a": [],
+      "illustration": "scene_landes_liaison_plateau_d.png",
+      "description": "Le Géant Couché : sur la marche, la crête de bruyère respire."
+    },
+    {
+      "parent": null,
+      "texte": [],
+      "id": "noeud",
+      "type": "combat",
+      "nom": "Le Nœud",
+      "lieu": null,
+      "mene_a": [],
+      "illustration": "scene_transition_crete_cordes_b.png",
+      "description": "Le Nœud : une boule de cordes de gibet qui dévale vers le sud."
     }
   ],
   "regions": [

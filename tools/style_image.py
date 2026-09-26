@@ -339,8 +339,8 @@ def composer_cadre(sujet: str, env: str, cadrage: str) -> str:
 # Landes) : une teinte dominante lumineuse + noir, rien d'autre · une figure
 # géométrique qui porte le cadre (disque, arche, colonnes, anneaux, symétrie)
 # · la source de lumière DANS l'image · tout ce qui est devant en aplat noir
-# sans détail · une échelle écrasante · presque toujours UNE silhouette
-# minuscule, de dos, qui donne l'échelle et fait l'histoire. Et un septième,
+# sans détail · une échelle écrasante · presque toujours une silhouette
+# minuscule, de dos (écartée en v2 : le héros n'est jamais dans l'image). Et un septième,
 # le plus important pour « la fantaisie » : quelque chose d'IMPOSSIBLE — une
 # porte dans un monolithe au milieu d'un champ, une éclipse au-dessus d'une
 # forêt de colonnes. Ce trait-là, c'est le SUJET qui le porte, pas la clause.
@@ -356,42 +356,46 @@ def composer_cadre(sujet: str, env: str, cadrage: str) -> str:
 # générateur.
 LIMITE_PROMPT = 1400
 
-PALETTE_AFFICHE = ("only two tones: one bright blazing ember orange-red laid in large flat fields, "
-                   "and pure black; no third hue, no grey")
+# ⚠️ V2 DU 26/09 (soir) — image-cible de Patrick : les Enlisés, un grand APLAT
+# orange sans rien dedans, les silhouettes noires découpées contre lui, le sol
+# en trame. « Je veux garder l'aplat de couleur orange… et ne pas mettre à
+# chaque fois de silhouettes, on n'est pas censé voir notre héros. On voit à la
+# première personne. » La silhouette d'échelle de la v1 est RETIRÉE, et plus
+# aucun soleil clair : un disque plus clair que l'aplat passe le seuil comme
+# lui et disparaît au tramage — contre l'aplat, seul le NOIR se lit.
+PALETTE_AFFICHE = ("only two tones: one flat uniform bright orange field — the sky, or a doorway, "
+                   "window or arch full of light — with no clouds, no sun and no gradient in it, and "
+                   "everything against it a pure black silhouette; no third hue")
 
-COMPOSITION_AFFICHE = ("poster composition built on one bold geometric figure filling the frame, "
-                       "the light source visible in frame, everything in front of it a flat black "
-                       "cut-out, crushing scale")
+COMPOSITION_AFFICHE = ("poster composition: bold black silhouettes cut out against the flat orange "
+                       "field, one strong geometric figure (converging rows, an arch, a ring, hard "
+                       "symmetry), crushing scale")
 
-SANS_DEGRADE_AFFICHE = "light shaped in hard-edged bands and rings, no haze, no fog, no soft gradient"
+SANS_DEGRADE_AFFICHE = "hard clean edges, no haze, no fog, no soft gradient"
 
 CLAUSE_AFFICHE = ("medieval dark fantasy, 12th-15th century Europe, bold graphic poster illustration, "
                   "flat simplified shapes, mythic and surreal, not a photograph, no photorealism, "
                   "no grain, no text, no watermark")
 
-# La silhouette d'échelle. Hors des Salines, le héros PEUT être dans l'image
-# — minuscule, de dos, jamais un visage — parce que c'est ce qui fait l'échelle
-# de TOUTES les références. (Les Salines gardent leur vue à la première
-# personne : `PREMIERE_PERSONNE`, décision du 13/09.)
-ECHELLE_AFFICHE = "one tiny hooded silhouette seen from behind for scale, no face"
+# La vue : à la première personne, le héros n'est JAMAIS dans l'image (règle
+# rappelée par Patrick le 26/09, la même que les Salines).
+VUE_AFFICHE = "first-person view from where you stand, no protagonist in frame"
 
 # Une RENCONTRE est une affiche aussi, mais c'est la créature qui est la figure.
 COMPOSITION_RENCONTRE = ("poster composition: the creature is the bold central shape, a flat black "
-                         "cut-out against one hard geometric field of light, crushing scale")
+                         "silhouette against the flat orange field, crushing scale")
 
 
-def composer_affiche(sujet: str, echelle: bool = True) -> str:
+def composer_affiche(sujet: str) -> str:
     """Un LIEU des Landes en affiche : sujet (qui porte l'impossible) +
-    composition + silhouette d'échelle + palette + sans dégradé + clause."""
+    composition + vue à la première personne + palette + sans dégradé + clause."""
     sujet = sujet.strip().rstrip(",; ").strip()
-    morceaux = [sujet, COMPOSITION_AFFICHE]
-    if echelle:
-        morceaux.append(ECHELLE_AFFICHE)
-    morceaux += [PALETTE_AFFICHE, SANS_DEGRADE_AFFICHE, CLAUSE_AFFICHE]
-    return ", ".join(morceaux)
+    return ", ".join([sujet, COMPOSITION_AFFICHE, VUE_AFFICHE, PALETTE_AFFICHE,
+                      SANS_DEGRADE_AFFICHE, CLAUSE_AFFICHE])
 
 
 def composer_affiche_rencontre(sujet: str) -> str:
     """Une RENCONTRE des Landes en affiche : la créature est la figure."""
     sujet = sujet.strip().rstrip(",; ").strip()
-    return ", ".join([sujet, COMPOSITION_RENCONTRE, PALETTE_AFFICHE, SANS_DEGRADE_AFFICHE, CLAUSE_AFFICHE])
+    return ", ".join([sujet, COMPOSITION_RENCONTRE, VUE_AFFICHE, PALETTE_AFFICHE,
+                      SANS_DEGRADE_AFFICHE, CLAUSE_AFFICHE])

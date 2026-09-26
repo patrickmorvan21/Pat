@@ -158,6 +158,13 @@ export type TraversalState = {
       colonne de cordes se voit au sud. Porté par `trav` pour que la reprise
       rebâtisse le MÊME écran ; remis à faux à chaque nouvel écran. */
   landeDepart?: boolean;
+  /** LA RENCONTRE DE PASSAGE DE LA LANDE (26/09) : la destination choisie à
+      la Croisée, mise en attente le temps du Géant Couché ou du Nœud ; la
+      marche la reprend quand la rencontre est résolue. `passageFait` : une
+      seule par vie (la Lande n'a que deux lieux). Portés par `trav` pour que
+      la reprise retombe sur la même rencontre, puis sur le même lieu. */
+  passageVers?: string;
+  passageFait?: boolean;
   /** LE VER SOUS LES PIEDS (les Bassins, 16/09) : `verAppele` est posé par
       un choix qui appelle le Ver (le grincement de la Noria, le raccourci
       de la Guérite) ; la Croisée suivante le consomme et pose `verDessous`,
