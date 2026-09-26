@@ -502,6 +502,31 @@ def main() -> int:
                 "option ne peut jamais s'ouvrir."
             )
 
+    # ─── A-fuite. « Même pour s'échapper, on lance le dé. » ───────────────
+    # Décision Patrick du 26/09 : sur un écran de combat, une échappatoire SANS
+    # dé laissait le héros prudent traverser sans jamais risquer sa peau. Toute
+    # action d'un combat passe donc par une épreuve : un jet (raté = on passe,
+    # blessé) ou un geste dont l'échec blesse (`minigame`). Seule exception :
+    # l'option PRÉPARÉE (`requiresObjet` / `useItem` / `horsDePortee`) — c'est
+    # ce que l'exploration a payé d'avance.
+    fuites_sures = []
+    for sid in combats:
+        b = blocs[sid]
+        debuts_c = [m.start() for m in re.finditer(r'\n      \{', b)]
+        for n_, d_ in enumerate(debuts_c):
+            c = b[d_:debuts_c[n_ + 1] if n_ + 1 < len(debuts_c) else len(b)]
+            idc = re.search(r'\n        id: "([^"]+)"', c)
+            if not idc or not re.search(r'\n        passive: \{', c):
+                continue
+            if re.search(r'\n        (risky|minigame|requiresObjet|useItem|horsDePortee)\b', c):
+                continue
+            fuites_sures.append(f"{idc.group(1)} ({sid})")
+    for f_ in fuites_sures:
+        manques.append(
+            f"A-fuite — « {f_} » : un combat offre une issue sans dé. Faire de "
+            f"la fuite un jet (raté = on passe, blessé) ou un geste qui blesse."
+        )
+
     # ─── A-mémoire. Tout souvenir LU a été ÉCRIT quelque part. ───────────
     # Mémoire des rencontres (lib/memoire.ts, 25/09). Une scène qui se réécrit
     # « si la Bête a été fuie » ne se jouera jamais si aucun choix ne laisse
@@ -685,6 +710,7 @@ def main() -> int:
         print(f"  A4 seuls {len(ACTES)} gestes déclarés font monter le Soupçon  ✓")
         print("  A8 tous les libellés de choix se lisent d'un coup      ✓")
         print("  A-trois jamais plus de trois actions à l'écran          ✓")
+        print("  A-fuite dans un combat, même fuir se joue au dé        ✓")
         print("  les cinq combats se souviennent de l'exploration       ✓")
         print("  chaque jet déclare la nature de son échec              ✓")
         print("  A-mémoire tout souvenir lu a été écrit quelque part     ✓")

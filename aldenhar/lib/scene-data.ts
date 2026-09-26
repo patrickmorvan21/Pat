@@ -2245,6 +2245,7 @@ export const SCENES: Scene[] = [
       },
       {
         id: "ornière",
+        nature: "physique",
         label: "Se plaquer, immobile",
         laisse: "immobile",
         // Elle a appris ce qui gît : l'ornière n'est plus une réponse, elle
@@ -2274,9 +2275,18 @@ export const SCENES: Scene[] = [
             "indemne.",
         },
         */
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "INSTINCT",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu te plaques au fond de l'ornière avant même d'y penser. La masse passe au-dessus, si près que tu sens la chaleur de son ventre — et continue sans ralentir. Elle n'a jamais su que tu étais là.",
             "Tu te coules dans l'ornière, face contre terre. La masse passe au-dessus — un pont de cuir et de suint, interminable. Elle cherche ce qui court, pas ce qui gît. Quand le silence revient, tu marches.",
+            "Tu te plaques une seconde trop tard. La masse passe, et une griffe t'ouvre le dos en travers sans même s'arrêter. Quand tu te relèves, le creux est vide. Le sang colle ta chemise.",
+            "1 naturel. Tu te jettes à plat, et elle s'arrête au-dessus de toi. Elle te retourne d'un coup de museau, te mord à l'épaule, te lâche — comme on goûte. Puis elle repart. Tu rampes hors du creux. ♦ −2"
+          ),
         },
       },
       {
@@ -4902,18 +4912,28 @@ export const SCENES: Scene[] = [
         },
       },
       {
-        // CHOIX CERTAIN = PRIX CERTAIN (17/08 §2) : céder le passage est
-        // parfaitement sûr, et le prix est dit — le grand tour qu'elles
-        // t'imposent (la Croisée suivante n'offre qu'une direction).
+        // Céder le passage a un prix dit — le grand tour qu'elles t'imposent
+        // (la Croisée suivante n'offre qu'une direction). Depuis le 26/09 il
+        // n'est plus sûr : on lance le dé, et raté, on passe blessé.
         id: "retour-ceder",
+        nature: "physique",
         // Le texte DÉPLACE le héros (il monte, il quitte la route) : la
         // conséquence se lit sur le chemin qui s'ouvre, plus sur la créature.
         consequenceAilleurs: true,
         label: "Leur céder le chemin",
         fermeLaRoute: "meute",
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "RUSE",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu quittes la route à reculons, et la meute te regarde faire sans bouger une oreille. La vieille chienne de tête te suit des yeux jusqu'à la bruyère — et s'assoit. Tu as cédé le chemin comme on le cède à quelqu'un de son rang. Le tien fera le grand tour.",
             "Tu quittes la route sans leur tourner le dos, jusqu'à la bruyère. Elles voulaient le chemin, pas toi. Le tien fait maintenant le grand tour — c'est le prix, et tu le sais en le payant.",
+            "Tu recules trop vite : la plus jeune prend ça pour une fuite et te rattrape au mollet avant que la vieille ne la rappelle d'un grondement. Tu gagnes la bruyère en boitant. La route est à elles ; la tienne fera le grand tour.",
+            "1 naturel. Tu leur tournes le dos une seconde. Il n'en faut pas plus : trois d'entre elles te couchent dans la bruyère et te marquent, le flanc, le bras, avant de retourner à leur route. Tu restes au sol longtemps. Le grand tour sera long. ♦ −2"
+          ),
         },
       },
     ],
@@ -4974,14 +4994,24 @@ export const SCENES: Scene[] = [
       },
       {
         id: "retour-hauteur",
+        nature: "physique",
         // Le texte DÉPLACE le héros (il monte, il quitte la route) : la
         // conséquence se lit sur le chemin qui s'ouvre, plus sur la créature.
         consequenceAilleurs: true,
         label: "Prendre la hauteur et attendre",
         fermeLaRoute: "bete",
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "COURAGE",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu grimpes au tas de pierres d'un seul élan et tu t'assois en haut, les jambes pendantes, comme si tu attendais quelqu'un. Le creux souffle, longtemps, puis se retire. La route directe est à elle ; la tienne fera le tour.",
             "Tu montes au premier tas de pierres et tu t'assois, hors de tout couloir. Le creux patiente. Puis le souffle se retire, chercher un chemin qui marche. La route directe est à elle : la tienne fera le tour.",
+            "Une pierre roule sous ta botte au moment de monter. Tu retombes d'un pas dans le couloir — assez pour qu'une griffe t'ouvre la cuisse avant que tu ne te hisses. En haut, tu serres la plaie des deux mains. Le creux patiente, puis se retire. Ta route fera le tour.",
+            "1 naturel. Le tas de pierres s'éboule sous toi et te rend au creux. Elle te trouve avant que tu te relèves. Tu t'en arraches à coups de talon et tu remontes, la jambe ouverte, jusqu'à ce qu'elle se lasse. ♦ −2"
+          ),
         },
       },
     ],
@@ -5059,17 +5089,27 @@ export const SCENES: Scene[] = [
         },
       },
       {
-        /* CHOIX CERTAIN = PRIX CERTAIN (17/08 §2). Lui laisser le chemin ne
-           coûte rien au corps — ça coûte le détour, dit dans la prose au
-           moment où on le paie. Le texte DÉPLACE le héros : l'écran suivant
-           lit le chemin, plus la créature. */
+        /* Lui laisser le chemin coûte le détour, dit dans la prose au moment
+           où on le paie — et depuis le 26/09 un jet : raté, on passe blessé.
+           Le texte DÉPLACE le héros : l'écran suivant lit le chemin, plus la
+           créature. */
         id: "recousu-laisser",
+        nature: "physique",
         consequenceAilleurs: true,
         label: "Lui laisser le chemin",
         fermeLaRoute: "recousu",
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "INSTINCT",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu descends dans la bruyère au moment exact où il lève la tête. Il regarde la route vide, longtemps, et repart sans t'avoir vu. Quand la route est libre, elle ne va plus là où tu allais. Tu l'as payé sans qu'il le sache.",
             "Tu descends dans la bruyère et tu attends qu'il reparte. Il met longtemps, et il ne se retourne pas une fois. Quand la route est libre, elle ne va plus là où tu allais — c'est le prix, et tu l'as accepté en t'écartant.",
+            "Tu descends dans la bruyère, mais pas assez vite : il t'a vu. Il vient sans hâte, et d'un revers de ses mains cousues il t'ouvre la joue, comme on règle un compte d'un trait. Puis il reprend sa route. La tienne ne va plus là où tu allais.",
+            "1 naturel. Il te trouve dans la bruyère et te tient longtemps, comme on mesure. Il tire un fil de sa propre couture et te le passe dans la peau du bras, un point, deux. Puis il te lâche. Tu repars avec sa marque. ♦ −2"
+          ),
         },
       },
     ],
@@ -7477,11 +7517,21 @@ export const SCENES: Scene[] = [
       },
       {
         id: "enlises-reculer",
+        nature: "physique",
         label: "Revenir au bord par où tu es venu",
         laisse: "recule",
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "INSTINCT",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu repars dans tes propres traces, pied pour pied, sans un faux pas. Les mains te cherchent là où tu n'es plus. Tu contournes la tourbière par la bruyère. C'est plus long, et c'est tout.",
             "Tu fais demi-tour sans t'arrêter, dans tes propres traces, qui se remplissent d'eau derrière toi. Les mains te suivent un moment sous la surface, puis se lassent. Tu contournes la tourbière par la bruyère. C'est plus long, et c'est tout.",
+            "Tu te trompes d'une trace. Le pied part dans le noir jusqu'au genou, et une main se referme sur ta cheville, froide et sûre. Tu t'arraches en y laissant de la peau. Tu contournes la tourbière en boitant.",
+            "1 naturel. Tu t'enfonces jusqu'à la taille, et elles sont plusieurs à te tenir. Tu t'arraches à la force des bras en t'agrippant aux piquets, et tu sors de l'eau noire la jambe entaillée, sans ta botte. ♦ −2"
+          ),
         },
       },
     ],
@@ -9336,12 +9386,22 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "rester-immobile",
+        nature: "physique",
         label: "Rester immobile",
         tags: ["citable"],
         monteEncroute: true,
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "INSTINCT",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu ne bouges pas, pas même le cœur. La colonne se penche, écoute, et se retire presque aussitôt : il n'y a rien là. Le sel n'a pas eu le temps de monter. Tu repars.",
             "Tu ne bouges pas. Pas même pour respirer autrement. La colonne se penche jusqu'à ce que son haleine de sel te couvre — puis elle attend. Longtemps. Le sel monte sur tes bottes pendant qu'il écoute ton silence. Il redescend enfin, lentement, sous la croûte : il n'a rien entendu. Tu repars quand le sel de tes manches craque.",
+            "Tu tiens — presque. Un souffle trop court, un craquement de sel sous ta botte. La colonne frappe à côté de toi : la croûte éclate, et les éclats t'ouvrent la jambe. Il redescend sans t'avoir trouvé. Tu repars en boitant, les manches déjà blanches.",
+            "1 naturel. Tu bouges. Une seule fois. La colonne s'abat, et tu roules juste assez pour qu'elle ne t'avale pas : elle t'emporte le flanc au passage. Il redescend. Tu restes à terre pendant que le sel te couvre. ♦ −2"
+          ),
         },
       },
       {
@@ -9496,11 +9556,21 @@ export const SCENES: Scene[] = [
       },
       {
         id: "remonter-au-muret",
+        nature: "physique",
         label: "Remonter au muret",
         tags: ["fuite"],
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "COURAGE",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu remontes le gradin d'un seul bond et tu retombes sur le muret à pieds joints. En bas, ils se tordent, se cherchent, redescendent sous le sel. Tu contournes la terrasse par le haut, bouche fermée, sans une égratignure.",
             "Tu remontes le gradin d'un bond. Ils n'aiment pas la pierre : ils s'arrêtent au pied du muret, se tordent, et redescendent sous le sel. Tu contournes la terrasse par le haut, plus lentement, la bouche fermée.",
+            "Ton pied glisse sur le sel du gradin. Tu retombes au pied du muret, et l'un d'eux se referme sur ton mollet avant que tu ne te hisses. Tu t'arraches, tu montes. En haut, ta jambe saigne. Tu contournes la terrasse en boitant.",
+            "1 naturel. Le gradin cède sous toi, et tu tombes au milieu d'eux. Tu remontes à la force des bras, et ils restent accrochés à tes jambes jusqu'en haut avant de lâcher sur la pierre. ♦ −2"
+          ),
         },
       },
     ],
@@ -10002,11 +10072,21 @@ export const SCENES: Scene[] = [
       },
       {
         id: "reculer-hors-portee",
+        nature: "physique",
         label: "Reculer hors de leur portée",
         tags: ["fuite"],
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "RUSE",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu recules en suivant exactement la limite de l'eau, et ils ne font même pas un pas. Tu restes à trois pas. L'eau est de leur côté, et ils le savent autant que toi.",
             "Tu recules. Ils ne suivent pas : trois pas de la cuve, et ils s'arrêtent, yeux sur tiges tournés vers toi. Tu restes à trois pas. L'eau est de leur côté.",
+            "Tu recules d'un pas trop court. Une pince te prend l'avant-bras avant que tu ne sois hors de portée et serre jusqu'à l'os. Tu t'arraches. Ils s'arrêtent à trois pas de la cuve. Toi aussi, le bras contre le ventre.",
+            "1 naturel. Tu recules droit dans une flaque qui est encore à eux. Ils sont trois à te prendre, aux jambes, au bras. Tu t'en sors en frappant, en laissant du sang sur toutes les carapaces. ♦ −2"
+          ),
         },
       },
     ],
@@ -10182,12 +10262,22 @@ export const SCENES: Scene[] = [
       },
       {
         id: "courir-le-canal",
+        nature: "physique",
         label: "Courir le canal",
         tags: ["fuite"],
         sauteEtape: true,
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "COURAGE",
+          threshold: 11,
+          outcomes: outcomes(
+            "20 naturel. Tu cours, et tu passes entre les carapaces comme si tu savais où elles allaient bondir. Aucune pince ne te touche. Le canal se resserre, ils ne suivent pas. Tu débouches au sud, un bassin plus loin que tu ne l'aurais cru.",
             "Tu cours. Ils bondissent, tu passes entre deux carapaces, une pince te frôle la manche. Le canal se resserre derrière la cuve et ils ne suivent pas : ils gardent leur cuve. Tu débouches au sud, un bassin plus loin que tu ne l'aurais cru. Le grincement, derrière, s'est tu.",
+            "Tu cours. L'un d'eux te prend au passage, une pince dans la cuisse, et tu le traînes trois pas avant qu'il lâche. Le canal se resserre, ils ne suivent pas. Tu débouches au sud, un bassin plus loin — la jambe ouverte.",
+            "1 naturel. Tu tombes à mi-canal, et ils sont sur toi avant que tu te relèves. Tu te relèves quand même et tu cours avec deux pinces encore accrochées aux jambes, jusqu'à ce qu'elles lâchent. Tu débouches au sud, un bassin plus loin. ♦ −2"
+          ),
         },
       },
     ],
@@ -10551,11 +10641,21 @@ export const SCENES: Scene[] = [
       },
       {
         id: "tete-sous-la-margelle",
+        nature: "physique",
         label: "La tête sous la margelle",
         tags: ["fuite"],
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "COURAGE",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu passes par-dessus la margelle d'un seul mouvement et tu te pends à la corde, immobile dans le noir. Ils tournent au-dessus, crient, et remontent au nid sans avoir compris. Tu remontes aussi. Les bras n'ont même pas tremblé.",
             "Tu passes les jambes par-dessus et tu te pends à la corde, la tête sous le niveau de la pierre. Ils tournent au-dessus, crient, ne descendent pas dans le noir. Quand ils remontent au nid, tu remontes aussi. Les bras te tremblent.",
+            "Tu passes les jambes par-dessus, mais le premier est déjà sur toi, en plein front. Tu te laisses glisser le long de la corde, le sang dans les yeux. Ils ne descendent pas dans le noir. Quand ils remontent au nid, tu remontes aussi.",
+            "1 naturel. La corde t'échappe. Tu tombes d'une hauteur d'homme au fond du puits, et tu ne sais pas ce qui s'est cassé. Ils ne descendent pas. Tu remontes quand même, beaucoup plus tard, une main après l'autre. ♦ −2"
+          ),
         },
       },
     ],
@@ -10683,11 +10783,21 @@ export const SCENES: Scene[] = [
       },
       {
         id: "rester-immobile-dortoir",
+        nature: "physique",
         label: "Rester immobile",
         monteEncroute: true,
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "INSTINCT",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu ne bouges pas, et ils passent sur toi comme sur une couchette de plus. Aucun ne s'arrête. Ils filent vers les creux du fond. Le sel n'a pas eu le temps de te prendre.",
             "Tu ne bouges pas. Ils passent sur tes bottes, tes jambes, reniflent le sel des coutures et n'y trouvent rien à manger. Ils continuent vers les creux du fond. Quand tu bouges enfin, le sel a pris tes chevilles pendant que tu attendais.",
+            "Tu frémis quand l'un d'eux remonte sous ta manche. Il mord, et les autres se retournent. Tu restes immobile, les dents serrées, pendant qu'ils goûtent tes mains. Ils finissent par repartir. Tu as les doigts en sang, et les chevilles dans le sel.",
+            "1 naturel. Tu bouges. Ils sont sur toi d'un coup, dans les manches, sous le col. Tu t'en arraches en frappant ta propre peau et tu recules jusqu'au mur, couvert de morsures. ♦ −2"
+          ),
         },
       },
     ],
@@ -11203,11 +11313,21 @@ export const SCENES: Scene[] = [
       },
       {
         id: "se-laisser-mesurer",
+        nature: "physique",
         label: "Rester immobile, se laisser mesurer",
         monteEncroute: true,
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "INSTINCT",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu ne bouges pas, et elle te mesure deux fois, lentement, comme on doute. Puis elle te laisse où tu es : elle cherche autre chose que toi. Le sel ne t'a pris que les chevilles. Tu sors à pas lents.",
             "Tu ne bouges pas. Elle te tourne, te mesure, te pose dans une rangée entre deux Cristallins de ta taille, et racle le sol pour te caler. Puis elle repart chercher la statue suivante. Le sel t'a pris jusqu'aux genoux. Tu sors de la rangée à pas lents, avant qu'il monte plus haut. Ta place reste vide.",
+            "Tu tressailles quand elle te cale dans la rangée. Elle racle plus fort, pour t'apprendre, et la râpe t'ouvre le tibia. Puis elle repart chercher la suivante. Le sel t'a pris jusqu'aux genoux. Tu sors de la rangée en saignant, à pas lents.",
+            "1 naturel. Tu bouges pendant qu'elle mesure. Elle te couche, te redresse, te cale — à sa manière, qui casse ce qui dépasse. Quand elle repart, tu sors de la rangée en rampant, le sel jusqu'à la taille. ♦ −2"
+          ),
         },
       },
     ],
@@ -11276,11 +11396,21 @@ export const SCENES: Scene[] = [
       },
       {
         id: "reculer-hors-de-portee",
+        nature: "physique",
         label: "Reculer hors de portée",
         fermeLaRoute: "ensacheur",
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "RUSE",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu recules le long du mur de sacs, pas à pas, sans jamais passer sous la ficelle. Elle ne te voit pas partir. L'allée est la sienne ; tu prendras l'autre.",
             "Tu recules jusqu'au mur de sacs, puis le long, jusqu'à ne plus voir la ficelle. Elle ne suit pas : elle garde l'allée. C'est la sienne, maintenant. Tu prendras l'autre.",
+            "Tu recules, mais la ficelle te prend au cou au passage et serre avant que tu ne l'arraches à deux mains. Tu gagnes le bout du mur de sacs, la gorge brûlée. Elle garde l'allée. Tu prendras l'autre.",
+            "1 naturel. La toile te prend la moitié du corps. Tu t'en arraches en y laissant de la peau, par bandes. Elle ne suit pas : elle a ce qu'elle voulait. Tu prendras l'autre allée. ♦ −2"
+          ),
         },
       },
     ],
@@ -11304,12 +11434,22 @@ export const SCENES: Scene[] = [
     choices: [
       {
         id: "porter-le-sac",
+        nature: "physique",
         label: "Porter le sac jusqu'aux piles",
         monteEncroute: true,
         grantsSavoir: "savoir_rangement",
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "COURAGE",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu le charges d'un coup de rein, et il te semble moins lourd qu'il ne devrait. Aux piles, tu vois comment on range : par taille, les petits devant, et dans chaque rangée une place laissée vide — pas pour ce qu'on a, pour ce qui vient. La cliquette claque une fois. Compté.",
             "Tu le charges. Il pèse ce que pèse quelqu'un. Tu le portes jusqu'aux piles, et là tu vois comment on range : par taille, les petits devant, et dans chaque rangée une place laissée vide — pas pour ce qu'on a, pour ce qui vient. La cliquette claque une fois derrière toi. Compté. Le sel a pris tes épaules pendant que tu portais.",
+            "Il pèse ce que pèse quelqu'un, et ton dos le sent à mi-chemin : quelque chose y claque. Tu le portes quand même jusqu'aux piles, et tu vois comment on range : par taille, une place laissée vide dans chaque rangée. La cliquette claque. Compté. Tu te redresses mal.",
+            "1 naturel. Le sac te couche au milieu de l'allée. Tu le recharges, tu le traînes jusqu'aux piles à genoux. On range par taille, une place vide par rangée. La cliquette claque deux fois. Ton dos ne se redresse plus tout à fait. ♦ −2"
+          ),
         },
       },
       {
@@ -11400,11 +11540,21 @@ export const SCENES: Scene[] = [
       },
       {
         id: "courir-mouchee",
+        nature: "physique",
         label: "Courir",
         soif: 1,
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "COURAGE",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu cours, et elles ne te suivent même pas une allée. Le blanc reste derrière. Tu t'arrêtes quand tu n'y vois plus. La bouche sèche comme du sel. Il faudra boire.",
             "Tu cours. Elles suivent le temps d'une allée, puis d'une autre, puis le blanc s'éloigne — elles ne suivent pas ce qui va vite. Tu t'arrêtes quand tu n'y vois plus. La bouche sèche comme du sel. Il faudra boire.",
+            "Tu cours, mais elles te suivent deux allées avant de lâcher, et elles ont eu le temps : la nuque, les mains, des piqûres qui brûlent comme du sel dans une plaie. Tu t'arrêtes quand tu n'y vois plus. Il faudra boire.",
+            "1 naturel. Tu tombes, et elles sont sur toi avant que tu te relèves, dans le col, dans la bouche. Tu repars en courant sans savoir où. Quand elles lâchent, tu as la peau ouverte de partout. ♦ −2"
+          ),
         },
       },
     ],
@@ -11460,11 +11610,21 @@ export const SCENES: Scene[] = [
       },
       {
         id: "laisser-le-creux",
+        nature: "physique",
         label: "Lui laisser le creux",
         monteEncroute: true,
-        passive: {
-          consequence:
+        /* FUIR SE JOUE AU DÉ (Patrick, 26/09) : un écran où l'on se bat ne laisse
+           plus d'échappatoire sûre. Réussi, on passe ; raté, on passe quand même,
+           blessé — le coût physique du combat, jamais un blocage. */
+        risky: {
+          stat: "INSTINCT",
+          threshold: 10,
+          outcomes: outcomes(
+            "20 naturel. Tu attends, et il desserre presque aussitôt. Tu glisses hors des bras sans qu'il frémisse. Il reprend la forme du creux, ton creux, sans se réveiller. Le sel n'a presque rien pris.",
             "Tu ne bouges pas. Tu attends qu'il desserre — il desserre — et tu glisses hors des bras comme on glisse hors d'un drap. Il reprend la forme du creux, ton creux, sans se réveiller. Le sel a pris tes épaules pendant que tu attendais. Quelqu'un dormira là à ta forme.",
+            "Il desserre, puis resserre d'un coup, dans son sommeil, au moment où tu glisses. Quelque chose craque dans tes côtes. Tu sors quand même. Il reprend la forme du creux sans se réveiller. Tu respires mal.",
+            "1 naturel. Il se retourne dans son sommeil et t'écrase contre la paroi. Tu t'en arraches beaucoup plus tard, par centimètres, les côtes enfoncées. Il ne s'est pas réveillé une seule fois. ♦ −2"
+          ),
         },
       },
     ],
