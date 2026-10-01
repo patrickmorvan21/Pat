@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0F151E">
+<title>Carte ouverte · test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Chakra+Petch:wght@500;600;700&display=swap">
+<style>
+:root{--bg:#0F151E;--lane:#1A2432;--lane2:#1E2939;--line:#2E3C51;--panel:#151E2B;--panel2:#1D2838;--ink:#EEF3F9;--muted:#8B9AAF;--wall:#56677F;--p0:#4C8DFF;--p1:#FF5D4F;--gold:#FFC53D;--ok:#5BE08F;--bad:#FF4D5E;
+--fd:"Chakra Petch","Arial Narrow",system-ui,sans-serif;--fb:"Atkinson Hyperlegible",system-ui,-apple-system,sans-serif;color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--ink);font:14px var(--fb);-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 10px) 12px calc(env(safe-area-inset-bottom,0px) + 10px);max-width:520px;margin:0 auto}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.who{display:flex;align-items:center;gap:8px;font:700 15px var(--fd)}
+.ring{width:32px;height:32px;border-radius:50%;border:3px solid;display:grid;place-items:center;font:700 12px var(--fd)}
+.pill{display:flex;gap:10px;align-items:center;padding:5px 12px;border-radius:99px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--line);font:700 14px var(--fd)}
+.pill .gold{color:var(--gold)} .pill .mut{color:var(--muted)}
+.phase{display:flex;align-items:center;gap:10px;margin-top:8px}
+.phase b{font:700 12px var(--fd);letter-spacing:.12em;text-transform:uppercase;min-width:104px}
+.bar{flex:1;height:6px;border-radius:3px;background:var(--panel2);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--p0)}
+#phaseS{font:700 13px var(--fd);min-width:34px;text-align:right}
+.paths{display:flex;gap:16px;font-size:12.5px;color:var(--muted);margin-top:6px}
+.paths b{color:var(--ink);font-family:var(--fd)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px;vertical-align:0}
+main{flex:1;min-height:0;display:grid;place-items:center}
+canvas{display:block;touch-action:none}
+.act{min-height:54px;display:flex;align-items:center;gap:10px;padding:8px 10px 8px 12px;border-radius:12px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--line)}
+.act .txt{flex:1;font-size:13px;line-height:1.35;color:var(--muted)}
+.act .txt b{color:var(--ink)} .act .txt .up{color:var(--ok)} .act .txt .dn{color:var(--bad)}
+.btn{border:0;border-radius:10px;padding:10px 14px;font:700 14px var(--fd);letter-spacing:.06em;text-transform:uppercase;background:var(--p0);color:#fff;cursor:pointer;flex:none}
+.btn.sec{background:var(--panel2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.btn:disabled{opacity:.4}
+.dock{display:grid;grid-template-columns:repeat(3,1fr) 82px;gap:6px}
+.send{border:0;border-radius:10px;padding:8px 4px;background:var(--panel);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);font:700 13px var(--fd);display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;position:relative}
+.send small{color:var(--gold);font-size:12px} .send em{font-style:normal;font-size:10.5px;color:var(--muted);font-family:var(--fb);font-weight:400}
+.send .n{position:absolute;top:4px;right:6px;background:var(--p0);color:#fff;border-radius:99px;font-size:11px;padding:0 6px}
+.send:disabled{opacity:.35}
+.ov{position:fixed;inset:0;background:rgba(15,21,30,.84);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);display:flex;padding:calc(env(safe-area-inset-top,0px) + 16px) 16px 16px;z-index:10;overflow:auto}
+.card{margin:auto;max-width:390px;width:100%;background:var(--panel);border-radius:16px;box-shadow:inset 0 0 0 1px var(--line),0 24px 60px -24px #000;padding:22px 20px;display:flex;flex-direction:column;gap:14px}
+.card h1{margin:0;font:700 32px/1 var(--fd)} .card h1 span{color:var(--p0)}
+.kick{font:700 10.5px var(--fb);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.card ul{margin:0;padding-left:18px;color:var(--muted);line-height:1.5;display:flex;flex-direction:column;gap:7px}
+.card ul b{color:var(--ink)}
+.card p{margin:0;color:var(--muted);line-height:1.5}
+#toast{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 118px);transform:translateX(-50%);background:var(--panel2);box-shadow:inset 0 0 0 1px var(--line),0 12px 30px -10px #000;padding:9px 14px;border-radius:10px;font-weight:700;z-index:5;transition:opacity .3s;max-width:92vw;text-align:center;line-height:1.35;pointer-events:none}
+</style>
+</head>
+<body>
+<div id="app">
+  <header>
+    <div class="row">
+      <div class="who"><span class="ring" id="lifeMe" style="border-color:var(--p0)">20</span>Toi</div>
+      <div class="pill"><span class="gold" id="gold">30</span><span class="mut" id="inc">+6</span><span id="tok">Murs 3</span></div>
+      <div class="who">Bot<span class="ring" id="lifeBot" style="border-color:var(--p1)">20</span></div>
+    </div>
+    <div class="phase"><b id="phaseT">Construction</b><div class="bar"><i id="phaseBar"></i></div><span id="phaseS"></span></div>
+    <div class="paths"><span><i class="dot" style="background:var(--p1)"></i>Vers toi <b id="lenIn">–</b></span><span><i class="dot" style="background:var(--p0)"></i>Vers lui <b id="lenOut">–</b></span></div>
+  </header>
+  <main><canvas id="cv"></canvas></main>
+  <div class="act"><div class="txt" id="actTxt"></div><button class="btn" id="actBtn" hidden>Poser</button></div>
+  <div class="dock">
+    <button class="send" data-k="rat">Rat<small>5 or</small><em>+1 revenu</em><span class="n" hidden></span></button>
+    <button class="send" data-k="golem">Golem<small>12 or</small><em>+2 revenu</em><span class="n" hidden></span></button>
+    <button class="send" data-k="ram">Bélier<small>15 or</small><em>casse un mur</em><span class="n" hidden></span></button>
+    <button class="btn sec" id="readyBtn">Prêt</button>
+  </div>
+</div>
+<div id="toast" style="opacity:0"></div>
+
+<div class="ov" id="introOv">
+  <div class="card">
+    <span class="kick">Prototype · carte ouverte</span>
+    <h1><span>Une</span> seule carte</h1>
+    <ul>
+      <li>Tes créatures sortent de <b>ta porte en bas à gauche</b> et filent vers <b>la base du bot en haut à droite</b>. Les siennes descendent vers ta base. Les deux routes se croisent.</li>
+      <li><b>Un mur change les deux chemins.</b> Touche une case pour voir l'effet avant de poser : allonge sa route vers toi, pas la tienne vers lui.</li>
+      <li>Tu construis <b>au contact de ton territoire</b>. Pendant la construction, vous posez vos murs <b>en secret</b>, puis tout est révélé et la vague part.</li>
+      <li>Touche un de tes murs pour en faire une tour. Le <b>Bélier</b> casse le premier mur adverse sur sa route.</li>
+    </ul>
+    <button class="btn" id="playBtn">Jouer</button>
+  </div>
+</div>
+<div class="ov" id="endOv" hidden>
+  <div class="card">
+    <span class="kick" id="endKick">Fin de partie</span>
+    <h1 id="endTitle">Victoire</h1>
+    <p id="endText"></p>
+    <button class="btn" id="againBtn">Rejouer</button>
+  </div>
+</div>
+
+<script>
+(() => {
+'use strict';
+const COLS = 10, ROWS = 14, N = COLS * ROWS;
+const idx = (c, r) => r * COLS + c, cx = i => i % COLS, cy = i => (i / COLS) | 0;
+// player 0 = you (bottom camp), player 1 = bot (top camp). Creatures leave their sender's gate and run to the other base.
+const GATE = [idx(0, ROWS - 1), idx(0, 0)], BASE = [idx(COLS - 1, ROWS - 1), idx(COLS - 1, 0)];
+const SPECIAL = new Set([...GATE, ...BASE]);
+const inCamp = (o, i) => o === 0 ? cy(i) >= ROWS - 3 : cy(i) <= 2;
+const KINDS = {
+  rat:   { n: 'Rat',    hp: 22, spd: 1.75, bounty: 1, dmg: 1, cost: 5,  inc: 1, r: .2 },
+  golem: { n: 'Golem',  hp: 85, spd: .95,  bounty: 4, dmg: 2, cost: 12, inc: 2, r: .33 },
+  ram:   { n: 'Bélier', hp: 55, spd: 1.25, bounty: 3, dmg: 2, cost: 15, inc: 1, r: .29 },
+};
+const TOWER = [null, { dmg: 8, rate: 1.0, range: 2.3, cost: 12 }, { dmg: 15, rate: .85, range: 2.45, cost: 15 }, { dmg: 25, rate: .7, range: 2.65, cost: 22 }];
+const SPEED = +(new URLSearchParams(location.search).get('speed') || 1);
+const C = { bg: '#0F151E', lane: '#1A2432', lane2: '#1E2939', line: '#2E3C51', wall: '#56677F', ink: '#EEF3F9', muted: '#8B9AAF', p: ['#4C8DFF', '#FF5D4F'], gold: '#FFC53D', ok: '#5BE08F', bad: '#FF4D5E' };
+const $ = id => document.getElementById(id);
+const rgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16 & 255},${n >> 8 & 255},${n & 255},${a})`; };
+
+let S = null; // game state
+function newGame() {
+  S = {
+    grid: new Array(N).fill(null), // {o, t:'wall'|'tower', lvl, cd, pend, born}
+    lives: [20, 20], gold: [30, 30], inc: [6, 6], tokens: [3, 3],
+    queue: [{ rat: 0, golem: 0, ram: 0 }, { rat: 0, golem: 0, ram: 0 }],
+    wave: 1, phase: 'build', timer: 25, phaseLen: 25,
+    creeps: [], spawns: [[], []], spawnT: [0, 0], shots: [], fx: [], texts: [],
+    sel: null, ended: false, t: 0, botPlaced: [], fieldsDirty: true, uid: 1,
+  };
+  refreshFields();
+  ui(); act();
+}
+
+/* ---------- path finding ---------- */
+function nbrs(i) { const c = cx(i), r = cy(i), o = []; if (r > 0) o.push(i - COLS); if (c < COLS - 1) o.push(i + 1); if (r < ROWS - 1) o.push(i + COLS); if (c > 0) o.push(i - 1); return o; }
+const free = i => !S.grid[i];
+// BFS distance (in steps) from every cell to `target`, walls block
+function bfs(target, pass = free) {
+  const d = new Int16Array(N).fill(-1); d[target] = 0; const q = [target];
+  for (let h = 0; h < q.length; h++) { const u = q[h]; for (const v of nbrs(u)) if (d[v] < 0 && pass(v)) { d[v] = d[u] + 1; q.push(v); } }
+  return d;
+}
+// Dijkstra for the ram: enemy walls can be crossed (and broken) at a price, its own walls cannot
+function ramField(o) {
+  const cost = i => { const g = S.grid[i]; return !g ? 1 : g.o === o ? Infinity : 5; };
+  const target = BASE[1 - o], d = new Float32Array(N).fill(Infinity), done = new Uint8Array(N); d[target] = 0;
+  for (;;) {
+    let u = -1, b = Infinity; for (let i = 0; i < N; i++) if (!done[i] && d[i] < b) { b = d[i]; u = i; }
+    if (u < 0) break; done[u] = 1;
+    const cu = u === target ? 0 : cost(u);
+    for (const v of nbrs(u)) { if (cost(v) === Infinity) continue; const nd = d[u] + (u === target ? 1 : cu); if (nd < d[v]) d[v] = nd; }
+  }
+  return { d, cost };
+}
+const lens = () => { const a = bfs(BASE[1]), b = bfs(BASE[0]); return { out: a[GATE[0]], in: b[GATE[1]] }; };
+const pathsOk = () => { const l = lens(); return l.out > 0 && l.in > 0; };
+function refreshFields() {
+  S.F = [bfs(BASE[1]), bfs(BASE[0])];
+  S.R = [ramField(0), ramField(1)];
+  S.len = { out: S.F[0][GATE[0]], in: S.F[1][GATE[1]] };
+  S.route = [trace(S.F[0], GATE[0], BASE[1]), trace(S.F[1], GATE[1], BASE[0])];
+}
+const eu = (a, b) => Math.hypot(cx(a) - cx(b), cy(a) - cy(b));
+// the shortest step; among equal ones, the one that stays nearest the straight line, so routes cut across the map
+function bestStep(d, cur, to) {
+  let best = -1, bd = Infinity, be = Infinity;
+  for (const v of nbrs(cur)) { if (d[v] < 0) continue; const e = eu(v, to); if (d[v] < bd || (d[v] === bd && e < be)) { bd = d[v]; be = e; best = v; } }
+  return best >= 0 && bd < d[cur] ? best : -1;
+}
+function trace(d, from, to) {
+  const p = [from]; let cur = from, guard = 0;
+  while (cur !== to && guard++ < N) { const best = bestStep(d, cur, to); if (best < 0) break; p.push(best); cur = best; }
+  return p;
+}
+
+/* ---------- building rules ---------- */
+function buildReason(o, i) {
+  if (SPECIAL.has(i)) return 'special';
+  if (S.grid[i]) return 'taken';
+  if (inCamp(1 - o, i)) return 'enemy';
+  if (inCamp(o, i)) return '';
+  const c = cx(i), r = cy(i);
+  for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+    const cc = c + dc, rr = r + dr; if (cc < 0 || rr < 0 || cc >= COLS || rr >= ROWS) continue;
+    const j = idx(cc, rr), g = S.grid[j]; if ((g && g.o === o) || inCamp(o, j)) return '';
+  }
+  return 'far';
+}
+// what a wall at i would do to both routes (only your own map: you never see the bot's secret plans)
+function preview(i, o = 0) {
+  S.grid[i] = { o, t: 'wall' }; const l = lens(); const ok = l.out > 0 && l.in > 0; const r = { ok, out: l.out, in: l.in };
+  if (ok) { const a = bfs(BASE[1]), b = bfs(BASE[0]); r.route = [trace(a, GATE[0], BASE[1]), trace(b, GATE[1], BASE[0])]; }
+  S.grid[i] = null; return r;
+}
+
+/* ---------- player actions ---------- */
+function tapCell(i) {
+  if (!S || S.ended) return;
+  const same = S.sel && S.sel.i === i;
+  if (same && S.sel.go) { S.sel.go(); return; }
+  select(i);
+}
+function select(i) {
+  const g = S.grid[i], build = S.phase === 'build';
+  const sel = { i, txt: '', btn: '', go: null, prev: null };
+  if (g && g.o === 0 && g.pend) {
+    sel.txt = 'Mur prévu, encore secret. <b>Touche Annuler</b> pour récupérer ton mur.'; sel.btn = 'Annuler';
+    sel.go = () => { S.grid[i] = null; S.tokens[0]++; refreshFields(); deselect(); };
+  } else if (g && g.o === 0 && g.t === 'wall') {
+    const cost = TOWER[1].cost;
+    sel.txt = `Transformer ce mur en <b>tour d'archer</b> · <b style="color:var(--gold)">${cost} or</b>`; sel.btn = 'Tour';
+    sel.go = S.gold[0] >= cost ? () => { S.gold[0] -= cost; Object.assign(g, { t: 'tower', lvl: 1, cd: 0, born: S.t }); deselect(); } : null;
+    if (!sel.go) sel.txt += ' · pas assez d\'or';
+  } else if (g && g.o === 0 && g.t === 'tower') {
+    if (g.lvl >= 3) sel.txt = 'Tour au niveau maximum.';
+    else { const cost = TOWER[g.lvl + 1].cost; sel.txt = `Améliorer la tour <b>niveau ${g.lvl + 1}</b> · <b style="color:var(--gold)">${cost} or</b>`; sel.btn = 'Améliorer'; sel.go = S.gold[0] >= cost ? () => { S.gold[0] -= cost; g.lvl++; g.born = S.t; deselect(); } : null; if (!sel.go) sel.txt += ' · pas assez d\'or'; }
+  } else if (g) {
+    sel.txt = g.t === 'tower' ? 'Tour du bot.' : 'Mur du bot. Un <b>Bélier</b> peut le casser.';
+  } else if (!build) {
+    sel.txt = 'Les murs se posent pendant la <b>construction</b>. Tu peux transformer tes murs en tours à tout moment.';
+  } else {
+    const why = buildReason(0, i);
+    if (why === 'special') sel.txt = 'Porte ou base : on ne construit pas dessus.';
+    else if (why === 'enemy') sel.txt = 'Camp du bot : tu ne peux pas construire ici.';
+    else if (why === 'far') sel.txt = 'Trop loin de ton territoire : <b>construis au contact</b> de tes murs ou de ton camp.';
+    else if (S.tokens[0] <= 0) sel.txt = 'Plus de murs pour cette manche. Touche <b>Prêt</b> pour révéler.';
+    else {
+      const p = preview(i); sel.prev = p;
+      if (!p.ok) sel.txt = '<span class="dn">Impossible</span> : ce mur fermerait le passage.';
+      else {
+        const dIn = p.in - S.len.in, dOut = p.out - S.len.out;
+        const moved = k => p.route[k].join() !== S.route[k].join();
+        const f = (v, good, k) => v === 0 ? (moved(k) ? '<b>dévie</b>' : '<b>=</b>') : `<b class="${(v > 0) === good ? 'up' : 'dn'}">${v > 0 ? '+' : ''}${v}</b>`;
+        sel.txt = `Vers toi <b>${S.len.in} → ${p.in}</b> ${f(dIn, true, 1)} · vers lui <b>${S.len.out} → ${p.out}</b> ${f(dOut, false, 0)}`;
+        sel.btn = 'Poser';
+        sel.go = () => { S.grid[i] = { o: 0, t: 'wall', pend: true, born: S.t }; S.tokens[0]--; refreshFields(); deselect(); buzz(8); };
+      }
+    }
+  }
+  S.sel = sel; act();
+}
+function deselect() { S.sel = null; act(); ui(); }
+function act() {
+  const sel = S && S.sel;
+  if (sel) { $('actTxt').innerHTML = sel.txt; $('actBtn').hidden = !sel.btn; $('actBtn').textContent = sel.btn || ''; $('actBtn').disabled = !sel.go; return; }
+  $('actBtn').hidden = true;
+  if (!S) return;
+  if (S.phase === 'build') $('actTxt').innerHTML = S.tokens[0] > 0 ? `Touche une case <b>au contact de ton territoire</b> pour voir l'effet d'un mur. Il te reste <b>${S.tokens[0]} mur${S.tokens[0] > 1 ? 's' : ''}</b>.` : 'Tes murs sont prévus. Envoie des créatures ou touche <b>Prêt</b>.';
+  else if (S.phase === 'reveal') $('actTxt').innerHTML = '<b>Révélation…</b>';
+  else $('actTxt').innerHTML = `<b>Vague ${S.wave}</b> en cours. Touche un de tes murs pour en faire une tour.`;
+}
+$('actBtn').addEventListener('click', () => { if (S && S.sel && S.sel.go) S.sel.go(); });
+document.querySelectorAll('.send').forEach(b => b.addEventListener('click', () => {
+  if (!S || S.phase !== 'build') return; const k = b.dataset.k, K = KINDS[k];
+  if (S.gold[0] < K.cost) { toast('Pas assez d\'or'); return; }
+  S.gold[0] -= K.cost; S.inc[0] += K.inc; S.queue[0][k]++; buzz(6); ui();
+}));
+$('readyBtn').addEventListener('click', () => { if (S && S.phase === 'build') endBuild(); });
+
+/* ---------- phases ---------- */
+function endBuild() {
+  S.sel = null;
+  botTurn();
+  // reveal: your secret walls become real, then the bot's land one by one (a clash on the same cell cancels both)
+  for (const g of S.grid) if (g && g.pend) delete g.pend;
+  let placed = 0, clashes = 0, refused = 0;
+  for (const i of S.botPlan) {
+    const g = S.grid[i];
+    if (g && g.o === 0 && g.born >= S.buildStart) { S.grid[i] = null; S.tokens[0]++; clashes++; continue; }
+    if (g || buildReason(1, i)) { refused++; continue; }
+    S.grid[i] = { o: 1, t: 'wall', born: S.t, reveal: true };
+    if (!pathsOk()) { S.grid[i] = null; refused++; continue; }
+    placed++;
+  }
+  refreshFields();
+  const q = S.queue[1], sends = Object.entries(q).filter(([, n]) => n).map(([k, n]) => `${n} ${KINDS[k].n.toLowerCase()}${n > 1 ? 's' : ''}`);
+  toast(`Révélation ! Le bot pose ${placed} mur${placed > 1 ? 's' : ''}${clashes ? ` · ${clashes} case${clashes > 1 ? 's' : ''} disputée${clashes > 1 ? 's' : ''} : annulé` : ''}<br>Il t'envoie : ${sends.length ? sends.join(', ') : 'rien de plus'}`, 3200);
+  S.phase = 'reveal'; S.timer = 1.6; S.phaseLen = 1.6; ui(); act();
+}
+function startWave() {
+  S.phase = 'wave'; S.timer = 0; S.phaseLen = 0;
+  for (const o of [0, 1]) {
+    const list = [], auto = 2 + Math.floor(S.wave * 0.8);
+    for (let k = 0; k < auto; k++) list.push('rat');
+    for (const [k, n] of Object.entries(S.queue[o])) for (let j = 0; j < n; j++) list.push(k);
+    S.queue[o] = { rat: 0, golem: 0, ram: 0 };
+    S.spawns[o] = list; S.spawnT[o] = 0.3;
+  }
+  ui(); act();
+}
+function endWave() {
+  for (const o of [0, 1]) { S.gold[o] += S.inc[o]; S.tokens[o] = Math.min(6, S.tokens[o] + 3); }
+  S.wave++; S.phase = 'build'; S.timer = 14; S.phaseLen = 14; S.buildStart = S.t;
+  for (const g of S.grid) if (g) delete g.reveal;
+  toast(`Manche ${S.wave} · +${S.inc[0]} or · 3 murs de plus`);
+  ui(); act();
+}
+
+/* ---------- the bot ---------- */
+function botTurn() {
+  // decide on the board as it was before your secret walls: it cannot see them
+  const mine = []; S.grid.forEach((g, i) => { if (g && g.pend) { mine.push([i, g]); S.grid[i] = null; } });
+  const plan = [];
+  const base = lens();
+  const routeA = new Set(trace(bfs(BASE[1]), GATE[0], BASE[1]));
+  for (let k = 0; k < S.tokens[1]; k++) {
+    let best = -1, bs = -Infinity; const cur = lens();
+    for (let i = 0; i < N; i++) {
+      if (buildReason(1, i)) continue;
+      S.grid[i] = { o: 1, t: 'wall' }; const l = lens(); S.grid[i] = null;
+      if (!(l.out > 0 && l.in > 0)) continue;
+      let sc = (l.out - cur.out) * 1.0 - (l.in - cur.in) * 0.7 + Math.random() * 0.9;
+      if (nbrs(i).some(v => routeA.has(v)) && cy(i) <= 7) sc += 0.6;
+      if (sc > bs) { bs = sc; best = i; }
+    }
+    if (best < 0) break;
+    plan.push(best); S.grid[best] = { o: 1, t: 'wall', pend: true };
+  }
+  S.tokens[1] -= plan.length;
+  plan.forEach(i => { S.grid[i] = null; });
+  for (const [i, g] of mine) S.grid[i] = g;
+  S.botPlan = plan;
+  // towers on the walls that watch your creatures' route, then upgrades, then send creatures with what is left
+  const route = new Set(trace(bfs(BASE[1]), GATE[0], BASE[1]));
+  const cover = (i, rg) => { let n = 0; for (const v of route) if (Math.hypot(cx(v) - cx(i), cy(v) - cy(i)) <= rg) n++; return n; };
+  for (let t = 0; t < 2; t++) {
+    let best = -1, bs = 0;
+    S.grid.forEach((g, i) => { if (g && g.o === 1 && g.t === 'wall' && !g.pend) { const c = cover(i, TOWER[1].range); if (c > bs) { bs = c; best = i; } } });
+    if (best >= 0 && S.gold[1] >= TOWER[1].cost + (S.wave > 2 ? 6 : 0)) { S.gold[1] -= TOWER[1].cost; Object.assign(S.grid[best], { t: 'tower', lvl: 1, cd: 0, born: S.t }); }
+  }
+  S.grid.forEach(g => { if (g && g.o === 1 && g.t === 'tower' && g.lvl < 3 && S.gold[1] >= TOWER[g.lvl + 1].cost + 12) { S.gold[1] -= TOWER[g.lvl + 1].cost; g.lvl++; } });
+  let budget = Math.floor(S.gold[1] * (S.wave < 3 ? 0.4 : 0.6));
+  const myWallsOnRoute = trace(S.R[1].d, GATE[1], BASE[0]).some(i => S.grid[i] && S.grid[i].o === 0);
+  while (budget >= 5) {
+    const k = budget >= 15 && myWallsOnRoute && Math.random() < 0.3 ? 'ram' : budget >= 12 && Math.random() < 0.5 ? 'golem' : 'rat';
+    const K = KINDS[k]; if (budget < K.cost) break;
+    budget -= K.cost; S.gold[1] -= K.cost; S.inc[1] += K.inc; S.queue[1][k]++;
+  }
+}
+
+/* ---------- simulation ---------- */
+function spawn(o, kind) {
+  const K = KINDS[kind], hp = K.hp * Math.pow(1.13, S.wave - 1);
+  const g = GATE[o];
+  S.creeps.push({ id: S.uid++, o, kind, hp, max: hp, x: cx(g) + .5, y: cy(g) + .5, cell: g, next: -1, spd: K.spd, K });
+}
+function nextCell(cr) {
+  if (cr.kind === 'ram') {
+    const { d, cost } = S.R[cr.o]; let best = -1, bs = Infinity;
+    for (const v of nbrs(cr.cell)) { const c = v === BASE[1 - cr.o] ? 0 : cost(v); if (c === Infinity) continue; const s = d[v] + c + eu(v, BASE[1 - cr.o]) * 1e-3; if (s < bs) { bs = s; best = v; } }
+    return best;
+  }
+  return bestStep(S.F[cr.o], cr.cell, BASE[1 - cr.o]);
+}
+function step(dt) {
+  S.t += dt;
+  if (S.phase === 'build') { S.timer -= dt; if (S.timer <= 0) endBuild(); }
+  else if (S.phase === 'reveal') { S.timer -= dt; if (S.timer <= 0) startWave(); }
+  else if (S.phase === 'wave') {
+    S.timer += dt;
+    for (const o of [0, 1]) if (S.spawns[o].length) { S.spawnT[o] -= dt; if (S.spawnT[o] <= 0) { spawn(o, S.spawns[o].shift()); S.spawnT[o] = 0.62; } }
+    // creatures
+    for (const cr of S.creeps) {
+      if (cr.dead) continue;
+      if (cr.next < 0) {
+        if (cr.cell === BASE[1 - cr.o]) { leak(cr); continue; }
+        const n = nextCell(cr); if (n < 0) continue;
+        const g = S.grid[n];
+        if (cr.kind === 'ram' && g && g.o !== cr.o) { S.grid[n] = null; cr.dead = true; burst(cx(n) + .5, cy(n) + .5, C.p[cr.o], 12); refreshFields(); if (cr.o === 1) toast('Un bélier a cassé un de tes murs'); continue; }
+        if (g) continue; // the map changed under its feet: wait for the field
+        cr.next = n;
+      }
+      const tx = cx(cr.next) + .5, ty = cy(cr.next) + .5, dx = tx - cr.x, dy = ty - cr.y, dd = Math.hypot(dx, dy), mv = cr.spd * dt;
+      if (dd <= mv) { cr.x = tx; cr.y = ty; cr.cell = cr.next; cr.next = -1; } else { cr.x += dx / dd * mv; cr.y += dy / dd * mv; }
+    }
+    // towers shoot the other side's creatures, furthest along first
+    S.grid.forEach((g, i) => {
+      if (!g || g.t !== 'tower') return;
+      g.cd -= dt; if (g.cd > 0) return;
+      const T = TOWER[g.lvl], x = cx(i) + .5, y = cy(i) + .5; let best = null, bd = Infinity;
+      for (const cr of S.creeps) {
+        if (cr.dead || cr.o === g.o) continue;
+        if (Math.hypot(cr.x - x, cr.y - y) > T.range) continue;
+        const left = cr.kind === 'ram' ? S.R[cr.o].d[cr.cell] : S.F[cr.o][cr.cell];
+        if (left < bd) { bd = left; best = cr; }
+      }
+      if (!best) return;
+      g.cd = T.rate; best.hp -= T.dmg; S.shots.push({ x1: x, y1: y, x2: best.x, y2: best.y, o: g.o, t: .12 });
+      if (best.hp <= 0) kill(best, g.o);
+    });
+    S.creeps = S.creeps.filter(c => !c.dead);
+    if (!S.spawns[0].length && !S.spawns[1].length && !S.creeps.length && !S.ended) endWave();
+  }
+  for (const s of S.shots) s.t -= dt; S.shots = S.shots.filter(s => s.t > 0);
+  for (const f of S.fx) { f.t -= dt; f.x += f.vx * dt; f.y += f.vy * dt; } S.fx = S.fx.filter(f => f.t > 0);
+  for (const t of S.texts) { t.t -= dt; t.y -= dt * .6; } S.texts = S.texts.filter(t => t.t > 0);
+}
+function kill(cr, by) {
+  cr.dead = true; S.gold[by] += cr.K.bounty;
+  burst(cr.x, cr.y, C.p[cr.o], 6);
+  if (by === 0) S.texts.push({ x: cr.x, y: cr.y, s: '+' + cr.K.bounty, c: C.gold, t: .8 });
+}
+function leak(cr) {
+  cr.dead = true; const v = 1 - cr.o; S.lives[v] = Math.max(0, S.lives[v] - cr.K.dmg);
+  const b = BASE[v]; S.texts.push({ x: cx(b) + .5, y: cy(b) + .2, s: '−' + cr.K.dmg, c: C.bad, t: 1 });
+  burst(cx(b) + .5, cy(b) + .5, C.bad, 10);
+  if (v === 0) { buzz(cr.K.dmg > 1 ? [60, 40, 60] : 50); flash = .35; }
+  if (S.lives[v] <= 0) finish(1 - v);
+}
+function finish(w) {
+  S.ended = true; S.phase = 'end'; buzz(w === 0 ? [30, 60, 30, 60, 120] : 300);
+  $('endKick').textContent = `Manche ${S.wave}`;
+  $('endTitle').textContent = w === 0 ? 'Victoire' : 'Défaite';
+  $('endText').textContent = w === 0 ? 'La base du bot est tombée.' : 'Ta base est tombée. Essaie d\'allonger sa route vers toi au centre, là où elle croise la tienne.';
+  setTimeout(() => { $('endOv').hidden = false; }, 700);
+}
+function burst(x, y, col, n) { for (let k = 0; k < n; k++) { const a = Math.random() * 6.28, s = 1 + Math.random() * 2; S.fx.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, t: .35, col }); } }
+function buzz(p) { try { if (navigator.vibrate) navigator.vibrate(p); } catch (e) {} }
+let toastT = 0;
+function toast(html, ms = 2200) { const el = $('toast'); el.innerHTML = html; el.style.opacity = 1; clearTimeout(toastT); toastT = setTimeout(() => { el.style.opacity = 0; }, ms); }
+
+/* ---------- HUD ---------- */
+function ui() {
+  if (!S) return;
+  $('lifeMe').textContent = S.lives[0]; $('lifeBot').textContent = S.lives[1];
+  $('gold').textContent = S.gold[0]; $('inc').textContent = '+' + S.inc[0]; $('tok').textContent = 'Murs ' + S.tokens[0];
+  const prev = S.sel && S.sel.prev && S.sel.prev.ok ? S.sel.prev : null;
+  $('lenIn').textContent = prev ? `${S.len.in} → ${prev.in}` : S.len.in;
+  $('lenOut').textContent = prev ? `${S.len.out} → ${prev.out}` : S.len.out;
+  const build = S.phase === 'build';
+  $('phaseT').textContent = build ? `Construction` : S.phase === 'reveal' ? 'Révélation' : S.phase === 'wave' ? `Vague ${S.wave}` : 'Fin';
+  $('phaseS').textContent = build ? Math.ceil(S.timer) + ' s' : '';
+  $('phaseBar').style.width = build ? (100 * S.timer / S.phaseLen) + '%' : S.phase === 'wave' ? '100%' : '0%';
+  $('phaseBar').style.background = build ? C.p[0] : C.p[1];
+  document.querySelectorAll('.send').forEach(b => { const k = b.dataset.k, n = S.queue[0][k]; b.disabled = !build || S.gold[0] < KINDS[k].cost; const t = b.querySelector('.n'); t.hidden = !n; t.textContent = n; });
+  $('readyBtn').disabled = !build;
+}
+
+/* ---------- drawing ---------- */
+const cv = $('cv'), x = cv.getContext('2d');
+let cs = 30, W = 300, H = 420, DPR = 1, flash = 0;
+function layout() {
+  const m = cv.parentElement.getBoundingClientRect();
+  cs = Math.floor(Math.min(m.width / COLS, m.height / ROWS));
+  W = cs * COLS; H = cs * ROWS; DPR = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = W * DPR; cv.height = H * DPR; cv.style.width = W + 'px'; cv.style.height = H + 'px';
+}
+function rr(a, b, w, h, r) { x.beginPath(); if (x.roundRect) x.roundRect(a, b, w, h, r); else x.rect(a, b, w, h); }
+function drawRoute(p, col, alpha, dash) {
+  if (!p || p.length < 2) return;
+  x.save(); x.strokeStyle = rgba(col, alpha); x.lineWidth = Math.max(2, cs * .09); x.setLineDash(dash ? [cs * .18, cs * .16] : []); x.lineDashOffset = dash ? -S.t * cs * .8 : 0; x.lineJoin = 'round'; x.lineCap = 'round';
+  x.beginPath(); p.forEach((i, k) => { const px = (cx(i) + .5) * cs, py = (cy(i) + .5) * cs; if (k) x.lineTo(px, py); else x.moveTo(px, py); }); x.stroke(); x.restore();
+}
+function render() {
+  x.setTransform(DPR, 0, 0, DPR, 0, 0);
+  x.fillStyle = C.bg; x.fillRect(0, 0, W, H);
+  const build = S.phase === 'build';
+  for (let i = 0; i < N; i++) {
+    const c = cx(i), r = cy(i);
+    x.fillStyle = (c + r) % 2 ? C.lane : C.lane2; x.fillRect(c * cs, r * cs, cs, cs);
+    if (inCamp(0, i)) { x.fillStyle = rgba(C.p[0], .07); x.fillRect(c * cs, r * cs, cs, cs); }
+    if (inCamp(1, i)) { x.fillStyle = rgba(C.p[1], .07); x.fillRect(c * cs, r * cs, cs, cs); }
+    if (build && S.tokens[0] > 0 && !buildReason(0, i)) { x.fillStyle = rgba(C.p[0], .45); x.beginPath(); x.arc((c + .5) * cs, (r + .5) * cs, cs * .06, 0, 6.29); x.fill(); }
+  }
+  x.strokeStyle = rgba(C.p[0], .35); x.lineWidth = 1; x.setLineDash([4, 4]); x.beginPath(); x.moveTo(0, (ROWS - 3) * cs + .5); x.lineTo(W, (ROWS - 3) * cs + .5); x.stroke();
+  x.strokeStyle = rgba(C.p[1], .35); x.beginPath(); x.moveTo(0, 3 * cs - .5); x.lineTo(W, 3 * cs - .5); x.stroke(); x.setLineDash([]);
+  // routes (with the preview of the selected wall)
+  const prev = S.sel && S.sel.prev && S.sel.prev.ok ? S.sel.prev : null;
+  if (prev) { drawRoute(S.route[1], C.p[1], .18, false); drawRoute(S.route[0], C.p[0], .18, false); drawRoute(prev.route[1], C.p[1], .9, true); drawRoute(prev.route[0], C.p[0], .9, true); }
+  else { drawRoute(S.route[1], C.p[1], .55, true); drawRoute(S.route[0], C.p[0], .55, true); }
+  // gates and bases
+  for (const o of [0, 1]) {
+    const g = GATE[o], b = BASE[o], col = C.p[o];
+    x.strokeStyle = col; x.lineWidth = cs * .09; x.beginPath(); x.arc((cx(g) + .5) * cs, (cy(g) + .5) * cs, cs * .3, 0, 6.29); x.stroke();
+    x.fillStyle = col; x.font = `700 ${cs * .3}px "Chakra Petch", sans-serif`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(o ? '▼' : '▲', (cx(g) + .5) * cs, (cy(g) + .52) * cs);
+    rr(cx(b) * cs + cs * .1, cy(b) * cs + cs * .1, cs * .8, cs * .8, cs * .22); x.fillStyle = rgba(col, .25); x.fill(); x.strokeStyle = col; x.lineWidth = cs * .07; x.stroke();
+    x.fillStyle = C.ink; x.font = `700 ${cs * .34}px "Chakra Petch", sans-serif`; x.fillText(S.lives[o], (cx(b) + .5) * cs, (cy(b) + .54) * cs);
+  }
+  // walls and towers
+  S.grid.forEach((g, i) => {
+    if (!g) return;
+    const c = cx(i), r = cy(i), col = C.p[g.o], age = S.t - (g.born || -9), pop = age < .25 ? .6 + age / .25 * .4 : 1;
+    const m = cs * (1 - .84 * pop) / 2, sz = cs * .84 * pop;
+    if (g.pend) { x.setLineDash([4, 3]); rr(c * cs + m, r * cs + m, sz, sz, cs * .16); x.fillStyle = rgba(col, .16); x.fill(); x.strokeStyle = col; x.lineWidth = 2; x.stroke(); x.setLineDash([]); return; }
+    rr(c * cs + m, r * cs + m, sz, sz, cs * .16);
+    x.fillStyle = g.t === 'tower' ? col : C.wall; x.fill();
+    if (g.t === 'wall') { x.fillStyle = col; rr(c * cs + m, r * cs + m, sz, cs * .14, cs * .07); x.fill(); }
+    if (g.reveal && S.phase !== 'build') { x.strokeStyle = rgba(C.ink, .5 + .5 * Math.sin(S.t * 10)); x.lineWidth = 2; rr(c * cs + m - 2, r * cs + m - 2, sz + 4, sz + 4, cs * .2); x.stroke(); }
+    if (g.t === 'tower') {
+      x.fillStyle = '#fff'; const n = g.lvl, w = cs * .22;
+      for (let k = 0; k < n; k++) { const ox = (c + .5) * cs + (k - (n - 1) / 2) * w * .9, oy = (r + .55) * cs; x.beginPath(); x.moveTo(ox, oy - w * .6); x.lineTo(ox + w * .45, oy + w * .4); x.lineTo(ox - w * .45, oy + w * .4); x.closePath(); x.fill(); }
+    }
+  });
+  // selection
+  if (S.sel) {
+    const c = cx(S.sel.i), r = cy(S.sel.i);
+    if (prev) { x.setLineDash([4, 3]); rr(c * cs + cs * .08, r * cs + cs * .08, cs * .84, cs * .84, cs * .16); x.fillStyle = rgba(C.p[0], .3); x.fill(); x.setLineDash([]); }
+    const g = S.grid[S.sel.i];
+    if (g && g.o === 0 && !g.pend) { const T = TOWER[Math.min(3, (g.t === 'tower' ? g.lvl : 0) + 1)] || TOWER[3]; x.strokeStyle = rgba(C.p[0], .5); x.setLineDash([5, 4]); x.lineWidth = 1.5; x.beginPath(); x.arc((c + .5) * cs, (r + .5) * cs, T.range * cs, 0, 6.29); x.stroke(); x.setLineDash([]); }
+    x.strokeStyle = C.ink; x.lineWidth = 2; rr(c * cs + 1, r * cs + 1, cs - 2, cs - 2, cs * .18); x.stroke();
+  }
+  // creatures
+  for (const cr of S.creeps) {
+    const px = cr.x * cs, py = cr.y * cs, rad = cr.K.r * cs, col = C.p[cr.o];
+    x.fillStyle = col; x.strokeStyle = 'rgba(0,0,0,.45)'; x.lineWidth = 2;
+    if (cr.kind === 'golem') { rr(px - rad, py - rad, rad * 2, rad * 2, rad * .35); x.fill(); x.stroke(); }
+    else if (cr.kind === 'ram') { x.beginPath(); x.moveTo(px, py - rad); x.lineTo(px + rad, py + rad * .8); x.lineTo(px - rad, py + rad * .8); x.closePath(); x.fill(); x.stroke(); }
+    else { x.beginPath(); x.arc(px, py, rad, 0, 6.29); x.fill(); x.stroke(); }
+    if (cr.hp < cr.max) { x.fillStyle = 'rgba(0,0,0,.6)'; x.fillRect(px - cs * .3, py - rad - 6, cs * .6, 3); x.fillStyle = C.ok; x.fillRect(px - cs * .3, py - rad - 6, cs * .6 * Math.max(0, cr.hp / cr.max), 3); }
+  }
+  for (const s of S.shots) { x.strokeStyle = rgba(C.p[s.o], s.t / .12); x.lineWidth = 2; x.beginPath(); x.moveTo(s.x1 * cs, s.y1 * cs); x.lineTo(s.x2 * cs, s.y2 * cs); x.stroke(); }
+  for (const f of S.fx) { x.fillStyle = rgba(f.col, f.t / .35); x.fillRect(f.x * cs - 2, f.y * cs - 2, 4, 4); }
+  x.textAlign = 'center'; x.textBaseline = 'middle';
+  for (const t of S.texts) { x.fillStyle = t.c; x.globalAlpha = Math.min(1, t.t * 2); x.font = `700 ${cs * .38}px "Chakra Petch", sans-serif`; x.fillText(t.s, t.x * cs, t.y * cs); x.globalAlpha = 1; }
+  if (flash > 0) { x.fillStyle = rgba(C.bad, flash * .5); x.fillRect(0, 0, W, H); }
+}
+
+/* ---------- input & loop ---------- */
+cv.addEventListener('pointerdown', e => {
+  if (!S || S.ended) return;
+  const r = cv.getBoundingClientRect(), c = Math.floor((e.clientX - r.left) / cs), rw = Math.floor((e.clientY - r.top) / cs);
+  if (c < 0 || rw < 0 || c >= COLS || rw >= ROWS) return;
+  tapCell(idx(c, rw)); ui();
+});
+let last = performance.now(), uiAcc = 0;
+function frame(now) {
+  const dt = Math.min(.05, (now - last) / 1000) * SPEED; last = now;
+  if (S && started && !S.ended) { let left = dt; while (left > 0) { const d = Math.min(.025, left); step(d); left -= d; } }
+  if (S && S.ended) step(dt * 0);
+  flash = Math.max(0, flash - dt * 1.5);
+  uiAcc += dt; if (uiAcc > .1) { uiAcc = 0; ui(); if (S && S.sel && S.phase !== 'build' && S.sel.prev) { S.sel = null; act(); } }
+  if (S) render();
+  requestAnimationFrame(frame);
+}
+let started = false;
+$('playBtn').addEventListener('click', () => { $('introOv').hidden = true; started = true; S.buildStart = S.t; buzz(10); });
+$('againBtn').addEventListener('click', () => { $('endOv').hidden = true; newGame(); S.buildStart = S.t; });
+window.addEventListener('resize', layout);
+newGame(); S.buildStart = 0; layout(); requestAnimationFrame(frame);
+window.__S = () => S;
+})();
+</script>
+</body>
+</html>
