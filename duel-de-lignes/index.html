@@ -2413,55 +2413,118 @@ soundLabel();
 // the same few calls over MQTT on a public broker: every page publishes its presence object on its own
 // topic and repeats it every 2 s; a page that stays silent too long counts as gone ('timeout'), a page
 // that leaves says goodbye ('bye').
-const BROKERS = ['wss://broker.hivemq.com:8884/mqtt', 'wss://broker.emqx.io:8084/mqtt', 'wss://mqtt.eclipseprojects.io/mqtt'];
+const BROKERS = [
+  { url: 'wss://broker.hivemq.com:8884/mqtt' },
+  { url: 'wss://public.cloud.shiftr.io', opts: { username: 'public', password: 'public' } },
+  { url: 'wss://broker.emqx.io:8084/mqtt' },
+];
 { // local testing only: ?broker=ws://localhost:8888
   const q = new URLSearchParams(location.search).get('broker');
-  if (q && /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) BROKERS.splice(0, BROKERS.length, q);
+  if (q && /^(localhost|127\.0\.0\.1)$/.test(location.hostname)) BROKERS.splice(0, BROKERS.length, { url: q });
 }
 const CODE_A = 'abcdefghjkmnpqrstuvwxyz23456789';
 // the first letter of a game code also tells which broker its host sits on
 const brokerOf = code => Math.max(0, CODE_A.indexOf(String(code)[0])) % BROKERS.length;
 function makeCode(bi) { let c; do { c = ''; for (let i = 0; i < 4; i++) c += CODE_A[(Math.random() * CODE_A.length) | 0]; } while (brokerOf(c) !== bi); return c; }
 const rid = n => { let x = ''; while (x.length < n) x += Math.random().toString(36).slice(2); return x.slice(0, n); };
-const MQ = { peer: rid(10), links: [], rooms: new Set(), hiddenAt: 0, lib: null, downToast: false };
+const MQ = { peer: rid(10), links: [], rooms: new Set(), hiddenAt: 0, w: null, lastTick: 0, downToast: false };
 const TOPIC = 'duel-de-lignes/v1/';
-function loadMqtt() {
-  if (window.mqtt) return Promise.resolve();
-  return MQ.lib || (MQ.lib = new Promise((res, rej) => {
-    const el = document.createElement('script'); el.src = 'mqtt.min.js?v=5.16.0'; el.async = true;
-    el.onload = () => (window.mqtt ? res() : rej(new Error('mqtt')));
-    el.onerror = () => { MQ.lib = null; el.remove(); rej(new Error('mqtt')); };
-    document.head.appendChild(el);
-  }));
+// The MQTT client runs in a worker. A hidden tab throttles the page's own timers to once a second (then
+// once a minute), which would choke the game for everyone; a worker keeps the sockets and a 4 Hz clock
+// alive, and that clock also keeps a hidden host's game running.
+const NET_WORKER = `
+const C = new Map(); let lib = false;
+onmessage = e => {
+  const m = e.data, c = C.get(m.bi);
+  try {
+    if (m.k === 'connect') {
+      if (!lib) { importScripts(m.lib); lib = true; }
+      if (c) c.end(true);
+      const cl = mqtt.connect(m.url, m.opts); C.set(m.bi, cl);
+      cl.on('connect', () => postMessage({ k: 'up', bi: m.bi }));
+      cl.on('close', () => postMessage({ k: 'down', bi: m.bi }));
+      cl.on('error', () => {});
+      cl.on('message', (t, p) => postMessage({ k: 'msg', bi: m.bi, t, p: new TextDecoder().decode(p) }));
+    } else if (!c) return;
+    else if (m.k === 'sub') { if (c.connected) c.subscribe(m.f, { qos: 0 }); }
+    else if (m.k === 'unsub') { if (c.connected) c.unsubscribe(m.f); }
+    else if (m.k === 'pub') { if (c.connected) c.publish(m.t, m.p, { qos: 0 }); }
+    else if (m.k === 'kick') { if (c.connected && c.stream) c.stream.destroy(); }
+    else if (m.k === 'reconnect') c.reconnect();
+    else if (m.k === 'end') { c.end(true); if (!m.keep) C.delete(m.bi); }
+  } catch (err) { postMessage({ k: 'err', bi: m.bi, msg: String((err && err.message) || err) }); }
+};
+setInterval(() => postMessage({ k: 'tick' }), 250);
+`;
+function netWorker() {
+  if (MQ.w) return MQ.w;
+  const w = MQ.w = new Worker(URL.createObjectURL(new Blob([NET_WORKER], { type: 'text/javascript' })));
+  w.onmessage = e => {
+    const m = e.data;
+    if (m.k === 'tick') { workerTick(); return; }
+    const L = MQ.links[m.bi]; if (L && L.client) L.client._event(m);
+  };
+  return w;
+}
+// stands in for the mqtt.js client and drives the real one inside the worker
+function workerClient(bi, url, opts) {
+  const w = netWorker(), ev = {};
+  const cl = {
+    connected: false,
+    on(k, f) { (ev[k] = ev[k] || []).push(f); return cl; },
+    _emit(k, a, b) { (ev[k] || []).forEach(f => { try { f(a, b); } catch (e) { console.error(e); } }); },
+    _event(m) {
+      if (m.k === 'up') { cl.connected = true; cl._emit('connect'); }
+      else if (m.k === 'down') { cl.connected = false; cl._emit('close'); }
+      else if (m.k === 'msg') cl._emit('message', m.t, m.p);
+    },
+    subscribe(f) { w.postMessage({ k: 'sub', bi, f }); },
+    unsubscribe(f) { w.postMessage({ k: 'unsub', bi, f }); },
+    publish(t, p) { w.postMessage({ k: 'pub', bi, t, p }); },
+    kick() { w.postMessage({ k: 'kick', bi }); },
+    reconnect() { w.postMessage({ k: 'reconnect', bi }); },
+    end(keep) { cl.connected = false; w.postMessage({ k: 'end', bi, keep: !!keep }); },
+  };
+  w.postMessage({ k: 'connect', bi, url, opts, lib: new URL('mqtt.min.js?v=5.16.0', location.href).href });
+  return cl;
+}
+function workerTick() {
+  const now = Date.now();
+  if (now - MQ.lastTick >= 1000) {
+    MQ.lastTick = now;
+    MQ.rooms.forEach(r => r._tick(now));
+    if (!MQ.downToast && NET.mode !== 'solo' && MQ.links.some(x => x && x.downAt && now - x.downAt > 2500)) { MQ.downToast = true; toast('Connexion perdue, reconnexion…', 'bad'); }
+  }
+  // a hidden tab gets no animation frames and slow timers: the worker's clock keeps the host's game going
+  if (document.hidden && NET.mode === 'host') advance(performance.now());
 }
 async function mqLink(bi) {
-  await loadMqtt();
   if (MQ.links[bi]) return MQ.links[bi].ready;
   const L = { bi, rooms: new Set(), subs: new Map(), client: null, downAt: 0 };
   MQ.links[bi] = L;
   L.ready = new Promise((resolve, reject) => {
     let settled = false;
-    const c = L.client = window.mqtt.connect(BROKERS[bi], { clientId: 'ddl' + MQ.peer + rid(6), clean: true, keepalive: 20, reconnectPeriod: 1200, connectTimeout: 7000, protocolVersion: 4, resubscribe: false, queueQoSZero: false });
+    const b = BROKERS[bi];
+    const c = L.client = workerClient(bi, b.url, Object.assign({ clientId: 'ddl' + MQ.peer + rid(6), clean: true, keepalive: 20, reconnectPeriod: 1200, connectTimeout: 7000, protocolVersion: 4, resubscribe: false, queueQoSZero: false }, b.opts || {}));
     const fail = setTimeout(() => {
       if (settled) return; settled = true;
-      try { c.end(true); } catch (e) {}
+      c.end();
       if (MQ.links[bi] === L) MQ.links[bi] = null;
       reject(new Error('unreachable'));
     }, 8000);
     c.on('connect', () => {
       if (!settled) { settled = true; clearTimeout(fail); resolve(L); }
       L.downAt = 0;
-      L.subs.forEach((n, f) => c.subscribe(f, { qos: 0 }));
+      L.subs.forEach((n, f) => c.subscribe(f));
       L.rooms.forEach(r => r._online());
       if (MQ.downToast && MQ.links.every(x => !x || x.client.connected)) { MQ.downToast = false; toast('Connexion rétablie', 'gold'); }
     });
     c.on('close', () => { if (!L.downAt) L.downAt = Date.now(); });
     c.on('message', (topic, payload) => { L.rooms.forEach(r => r._msg(topic, payload)); });
-    c.on('error', () => {});
   });
   return L.ready;
 }
-function linkSub(L, f) { const n = L.subs.get(f) || 0; L.subs.set(f, n + 1); if (!n && L.client.connected) L.client.subscribe(f, { qos: 0 }); }
+function linkSub(L, f) { const n = L.subs.get(f) || 0; L.subs.set(f, n + 1); if (!n && L.client.connected) L.client.subscribe(f); }
 function linkUnsub(L, f) {
   const n = (L.subs.get(f) || 0) - 1;
   if (n > 0) { L.subs.set(f, n); return; }
@@ -2477,17 +2540,16 @@ function mqRoom(L, name, ttl) {
   const setSelf = () => { self = mk(MQ.peer, Object.freeze(JSON.parse(JSON.stringify(mine))), Date.now()); list = null; };
   setSelf();
   const peers = () => list || (list = Object.freeze([self].concat([...others.values()].map(o => o.obj))));
-  const fire = () => {
-    if (sched || !open) return;
-    sched = setTimeout(() => {
-      sched = 0; if (!open) return;
-      const ch = { peers: peers(), joined, left, updated }; joined = []; left = []; updated = [];
-      handlers.forEach(h => { try { h(ch); } catch (e) { console.error(e); } });
-    }, 16);
+  const run = () => {
+    sched = 0; if (!open) return;
+    const ch = { peers: peers(), joined, left, updated }; joined = []; left = []; updated = [];
+    handlers.forEach(h => { try { h(ch); } catch (e) { console.error(e); } });
   };
-  const send = o => { if (c.connected) { try { c.publish(mineT, JSON.stringify(o), { qos: 0 }); } catch (e) {} } };
+  // coalesce changes per frame; a hidden tab's timers are slow, so there we deliver right away
+  const fire = () => { if (sched || !open) return; if (document.hidden) { sched = -1; queueMicrotask(run); } else sched = setTimeout(run, 16); };
+  const send = o => { if (c.connected) { try { c.publish(mineT, JSON.stringify(o)); } catch (e) {} } };
   const pubNow = () => { clearTimeout(pubT); pubT = 0; if (!open) return; lastPub = Date.now(); send({ p: mine }); };
-  const pubSoon = () => { if (!pubT) pubT = setTimeout(pubNow, Math.max(0, 40 - (Date.now() - lastPub))); };
+  const pubSoon = () => { if (pubT) return; if (document.hidden) { pubNow(); return; } pubT = setTimeout(pubNow, Math.max(0, 40 - (Date.now() - lastPub))); };
   const drop = (peer, reason) => {
     const o = others.get(peer); if (!o) return;
     others.delete(peer); list = null; left.push(mk(peer, o.obj.presence, o.obj.updatedAt, { reason })); fire();
@@ -2498,7 +2560,7 @@ function mqRoom(L, name, ttl) {
       const peer = topic.slice(base.length);
       if (peer === MQ.peer || peer.length > 24) return;
       let raw, m;
-      try { raw = new TextDecoder().decode(payload); m = JSON.parse(raw); } catch (e) { return; }
+      try { raw = typeof payload === 'string' ? payload : new TextDecoder().decode(payload); m = JSON.parse(raw); } catch (e) { return; }
       if (!m || typeof m !== 'object') return;
       if (m.bye) { drop(peer, 'bye'); return; }
       if (m.q) { if (live) pubSoon(); return; } // a newcomer asks who is here
@@ -2541,7 +2603,7 @@ function mqRoom(L, name, ttl) {
     peers,
     leave() {
       if (!open) return Promise.resolve();
-      room._bye(); open = false; handlers.clear(); clearTimeout(pubT); clearTimeout(sched);
+      room._bye(); open = false; handlers.clear(); clearTimeout(pubT); if (sched > 0) clearTimeout(sched);
       L.rooms.delete(room); MQ.rooms.delete(room); linkUnsub(L, filt);
       return Promise.resolve();
     },
@@ -2581,17 +2643,12 @@ function gamesState(st) {
   else if (st === 'fail') $('games').innerHTML = '<div class="empty">Serveur de jeu injoignable.<button type="button" class="link" id="netRetry">Réessayer</button></div>';
 }
 if (WEB) {
-  setInterval(() => {
-    const now = Date.now();
-    MQ.rooms.forEach(r => r._tick(now));
-    if (!MQ.downToast && NET.mode !== 'solo' && MQ.links.some(x => x && x.downAt && now - x.downAt > 2500)) { MQ.downToast = true; toast('Connexion perdue, reconnexion…', 'bad'); }
-  }, 1000);
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) { MQ.hiddenAt = Date.now(); return; }
     const away = MQ.hiddenAt ? Date.now() - MQ.hiddenAt : 0; MQ.hiddenAt = 0;
     MQ.rooms.forEach(r => r._grace());
     // after a long sleep the socket may be dead without knowing it: reconnect now instead of waiting for the keepalive
-    if (away > 5000) MQ.links.forEach(L => { if (L && L.client.connected) { try { L.client.stream.destroy(); } catch (e) {} } });
+    if (away > 5000) MQ.links.forEach(L => { if (L && L.client.connected) L.client.kick(); });
     else MQ.rooms.forEach(r => r._online());
   });
   window.addEventListener('pagehide', () => MQ.rooms.forEach(r => r._bye()));
