@@ -1,0 +1,30 @@
+{
+  "name": "Duel de Lignes V8",
+  "short_name": "Duel V8",
+  "lang": "fr",
+  "description": "Tower defense en duel, trois terrains, jusqu'à 4 joueurs.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1b2b34",
+  "theme_color": "#1b2b34",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
