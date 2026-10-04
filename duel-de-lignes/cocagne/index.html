@@ -1924,9 +1924,10 @@ function fineGround(b, A) {
   const gx = (AX0 + 4.5 * CS) * 2, L = MOCK.post_l, R = MOCK.post_r, E = MOCK.exit;
   x.drawImage(L, gx - 26 - L.width / 2, FY - L.height + 6); x.drawImage(R, gx + 26 - R.width / 2, FY - R.height + 6);
   x.drawImage(E, gx - E.width / 2, FY + FH - 6);
-  // the yellow frame with its ticks
-  if (!CL) { x.fillStyle = '#e9c24a'; x.fillRect(FX - 4, FY - 4, FW + 8, 3); x.fillRect(FX - 4, FY + FH + 1, FW + 8, 3); x.fillRect(FX - 4, FY - 4, 3, FH + 8); x.fillRect(FX + FW + 1, FY - 4, 3, FH + 8);
-  x.fillStyle = '#fff2c0'; for (const [a, c] of [[FX - 3, FY + FH / 2], [FX + FW + 2, FY + FH / 2], [FX + FW / 2, FY - 3], [FX + FW / 2, FY + FH + 2]]) { x.fillRect(a - 4, c, 9, 1); x.fillRect(a, c - 4, 1, 9); } }
+  // the frame in the player's colour, with its ticks
+  const pk = pcol(b.k), FC = PCOL[pk] || '#e9c24a', FT = tint(FC, .5);
+  if (!CL) { x.fillStyle = FC; x.fillRect(FX - 4, FY - 4, FW + 8, 3); x.fillRect(FX - 4, FY + FH + 1, FW + 8, 3); x.fillRect(FX - 4, FY - 4, 3, FH + 8); x.fillRect(FX + FW + 1, FY - 4, 3, FH + 8);
+  x.fillStyle = FT; for (const [a, c] of [[FX - 3, FY + FH / 2], [FX + FW + 2, FY + FH / 2], [FX + FW / 2, FY - 3], [FX + FW / 2, FY + FH + 2]]) { x.fillRect(a - 4, c, 9, 1); x.fillRect(a, c - 4, 1, 9); } }
   A.fineG = true;
 }
 window.__coc = { frogTop, frogFrame, baseSprite };
@@ -4236,7 +4237,7 @@ function laneArt(b) {
     x.scale(2, 2);
     A = b.art = { ter: TERKEY, cv, x, pen: mkPen(x), gcv, gx, sig: null, structs: [], marks: [], fineG: false };
   }
-  const sig = laneSig(b) + '|' + spawnsOf().map(sp => (b.dist ? b.dist[sp] : -1) + ':' + pathCells(b, sp).length).join(',');
+  const sig = laneSig(b) + '|' + spawnsOf().map(sp => (b.dist ? b.dist[sp] : -1) + ':' + pathCells(b, sp).length).join(',') + (COC ? '|c' + pcol(b.k) : '');
   if (A.sig !== sig) { A.sig = sig; rebuildLane(b, A); if (COC) fineGround(b, A); }
   return A;
 }
