@@ -1944,7 +1944,7 @@ function arrange() {
 }
 function bounds() { let mx = 0, my = 0; for (const b of G.b) { mx = Math.max(mx, b.ox + COLS); my = Math.max(my, b.oy + ROWS); } return [mx, my]; }
 function snapZ(z) { const r = z * DPR / CS, f = Math.floor(r); return f >= 2 && f / r >= 0.85 ? f * CS / DPR : z; }
-function homeCam() { const b = G.b[G.me]; return { x: b.ox + COLS / 2, y: b.oy + ROWS / 2 - 0.15, z: snapZ(Math.min((W - 12) / COLS, (view.h - 6) / (ROWS + 0.5))) }; }
+function homeCam() { const b = G.b[G.me]; if (COC) { const z = snapZ(Math.min((W - 2) / COLS, (view.h + 10) / ROWS)); return { x: b.ox + COLS / 2, y: b.oy + ROWS / 2, z }; } return { x: b.ox + COLS / 2, y: b.oy + ROWS / 2 - 0.15, z: snapZ(Math.min((W - 12) / COLS, (view.h - 6) / (ROWS + 0.5))) }; }
 function laneCam(k) { const h = homeCam(), b = G.b[k]; return { x: b.ox + COLS / 2, y: b.oy + ROWS / 2, z: h.z }; }
 function allCam() { const [mx, my] = bounds(), ml = AMX / CS, mt = AMT / CS, mb = AMB / CS; return { x: mx / 2, y: (my + mb - mt) / 2, z: Math.min((W - 8) / (mx + 2 * ml), (view.h - 8) / (my + mt + mb)) }; }
 function setDock() {
@@ -4577,6 +4577,7 @@ function render() {
 // each player's field is framed in their colour, drawn on the screen at the interface's pixel size so it reads at any zoom;
 // it stays open where the creatures come in and go out. The player with the crown gets a frame that glitters.
 function drawFrames() {
+  if (COC && G.running && isHome()) return;
   const u = uiScale(), z = cam.z * DPR, t = G.t;
   for (const b of G.b) {
     const [ax, ay] = w2s(b.ox, b.oy), [bx, by] = w2s(b.ox + COLS, b.oy + ROWS), m = 2 * u;
