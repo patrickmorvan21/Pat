@@ -1916,8 +1916,8 @@ function fineGround(b, A) {
   x.fillStyle = 'rgba(255,255,255,.07)'; for (let c = 1; c < COLS; c++) x.fillRect(FX + c * CS * 2, FY, 1, FH); for (let r = 1; r < ROWS; r++) x.fillRect(FX, FY + r * CS * 2, FW, 1);
   x.restore();
   // the path: the field texture darkened, along the route
-  if (!A.pathPat || A.pathKey !== TERKEY) { A.pathKey = TERKEY; if (CL) A.pathPat = x.createPattern(MOCK.path2, 'repeat'); else { const [pc, px] = mkCanvas(F.width, F.height); px.drawImage(F, 0, 0); px.globalCompositeOperation = 'multiply'; px.fillStyle = '#d6cdd2'; px.fillRect(0, 0, F.width, F.height); A.pathPat = x.createPattern(pc, 'repeat'); } }
-  x.strokeStyle = A.pathPat; x.lineWidth = 38; x.lineJoin = 'round'; x.lineCap = 'butt';
+  if (!A.pathPat || A.pathKey !== TERKEY) { A.pathKey = TERKEY; if (CL) A.pathPat = x.createPattern(MOCK.path2, 'repeat'); else { const [pc, px] = mkCanvas(F.width, F.height); px.drawImage(F, 0, 0); px.globalCompositeOperation = 'multiply'; px.fillStyle = '#9aa6a6'; px.fillRect(0, 0, F.width, F.height); A.pathPat = x.createPattern(pc, 'repeat'); } }
+  x.strokeStyle = A.pathPat; x.lineWidth = 30; x.lineJoin = 'round'; x.lineCap = 'butt';
   for (const line of routeLines(b)) { if (line.length < 2) continue; x.beginPath(); line.forEach(([px, py], i) => i ? x.lineTo(px * 2, py * 2) : x.moveTo(px * 2, py * 2)); x.stroke(); }
   if (CL) x.drawImage(MOCK.border2, 0, 0); else { x.globalCompositeOperation = 'multiply'; x.globalAlpha = .55; x.drawImage(MOCK.shadows, 0, 0); x.globalAlpha = 1; x.globalCompositeOperation = 'source-over'; x.drawImage(MOCK.border, 0, 0); }
   // the gate posts at the top, the white stone at the exit
