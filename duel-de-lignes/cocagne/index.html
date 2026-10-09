@@ -1894,6 +1894,14 @@ for (const k in MOCK_SRC) { const im = new Image(); im.onload = () => { MOCK_N++
 const mockReady = () => MOCK_N >= Object.keys(MOCK_SRC).length;
 const TOWER_IMG = { arrow: 't_arrow', cannon: 't_cannon', frost: 't_frost', ballista: 't_ballista', tesla: 't_arrow' };
 // a tower image stands in its cell: centred, its foot 2 px below the cell's bottom
+/* towers keep only their turret (cut at their blue band) and stand on the wall union, so a tower and the walls around it
+   share one base: same stone top, same water line, same face. */
+const TCUT = { t_arrow: 48, t_cannon: 35, t_frost: 48, t_ballista: 47 }, TTOP = {};
+function towerTop(name) {
+  if (TTOP[name]) return TTOP[name]; const im = MOCK[name], H = TCUT[name] || im.height, [cv, x] = mkCanvas(im.width, H);
+  x.drawImage(im, 0, 0, im.width, H, 0, 0, im.width, H);
+  return TTOP[name] = { cv, w: im.width / 2, h: H / 2, ox: 12 - im.width / 4, oy: 12 - H / 2 };
+}
 function mockSprite(name) { const im = MOCK[name]; return { cv: im, w: im.width / 2, h: im.height / 2, ox: 12 - im.width / 4, oy: 26 - im.height / 2 }; }
 /* walls as one continuous union (ChatGPT's "nouveau rendu", 8 Oct): top surface, extruded faces, edge line in the
    player's colour, pads, moss and ivy, all sampled from his approved reference image; computed from the whole set of
@@ -2178,7 +2186,7 @@ function rwSprites() {
     (s[k] = s[k] || []).push({ cv: o.c, w, h, m }); }
   return RW_S = s;
 }
-function wuRender5(has, COLS, ROWS, pk) {
+function wuRender5(has, COLS, ROWS, pk, isT) {
   const CELL = 96, WIDTH = 72, lo = 12, hi = 84, FACE = 40, DEPTH = 40, loY = 4, hiY = 52, sp = rwSprites(), FD = sp.face, FL = FD.width, FH = FD.height;
   const w = COLS * CELL + 12, h = ROWS * CELL + DEPTH + 16;
   const cells = []; for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) if (has(c, r)) cells.push([c, r]);
@@ -2234,6 +2242,7 @@ function wuRender5(has, COLS, ROWS, pk) {
     if (flip) { X.save(); X.translate(ox + ww, oy); X.scale(-1, 1); X.drawImage(s.cv, 0, 0, ww, hh); X.restore(); } else X.drawImage(s.cv, ox, oy, ww, hh);
     X.globalAlpha = 1; for (let yy = 0; yy < hh; yy++) for (let xx = 0; xx < ww; xx++) occ[(oy + yy) * w + ox + xx] = 1; };
   for (const [c, r] of cells) {
+    if (isT && isT(c, r)) continue;
     let z = wuHash(c, r, 101); const rnd = () => (z = Math.imul(z ^ (z >>> 15), 2246822519) + 0x9e3779b9 >>> 0) / 4294967296, pick = a => a[rnd() * a.length | 0];
     for (let q = 0; q < 3; q++) { const S = q === 0 ? sp.lily : sp.ghost; if (!S || rnd() > [.85, .4, .2][q]) continue; const s = pick(S), fl = rnd() < .5; let done = false;
       for (const sc of [.78, .64, .52]) { for (let t = 0; t < 40 && !done; t++) { const ox = c * CELL + (rnd() * (CELL + 40) | 0) - 20 - (s.w * sc >> 2), oy = r * CELL + (rnd() * (CELL - 10) | 0) - (s.h * sc >> 2); if (fits(s, sc, ox, oy, 0)) { stamp(s, sc, ox, oy, 1, fl); done = true; } } if (done) break; } }
@@ -2318,7 +2327,7 @@ function drawFrogStruct(x, b, s) {
   const t = s.t;
   if (t.type === 'wall' && WALLREF) { /* drawn with the ground, as one continuous union */ }
   else if (t.type === 'wall') fblit(x, wallTile(hasS(b, s.c - 1, s.r), hasS(b, s.c + 1, s.r), (s.c * 7 + s.r * 3) % 3, pcol(b.k), hasS(b, s.c, s.r - 1), hasS(b, s.c, s.r + 1), hasS(b, s.c - 1, s.r - 1), hasS(b, s.c + 1, s.r - 1), hasS(b, s.c - 1, s.r + 1), hasS(b, s.c + 1, s.r + 1), false), s.x, s.y);
-  else fblit(x, mockSprite(TOWER_IMG[t.type]), s.x, s.y + (G.t - (t.kick ?? -9) < 0.1 ? -1 : 0));
+  else fblit(x, WALLREF && WALLSTYLE >= 3 ? towerTop(TOWER_IMG[t.type]) : mockSprite(TOWER_IMG[t.type]), s.x, s.y + (G.t - (t.kick ?? -9) < 0.1 ? -1 : 0));
   if (b.chant > 0 && Math.sin(G.t * 10 + t.id) > 0) { P.px(s.x + 6, s.y - 14, '#f0c250'); P.px(s.x + 17, s.y - 16, '#f0c250'); }
   if (b.rage > 0 && Math.sin(G.t * 12 + t.id) > -0.2) { P.px(s.x + 6 + (t.id % 3) * 5, s.y - 14 + ((G.t * 9 + t.id) % 3 | 0), K.fire1); }
   if (b.jam > 0 && Math.sin(G.t * 19 + t.id * 2.3) > 0.2) { const a = s.x + 17, c = s.y - 6; P.px(a, c, K.hpR); P.px(a + 1, c + 1, K.hpR); P.px(a, c + 2, K.hpR); }
@@ -2339,7 +2348,7 @@ function fineGround(b, A) {
   if (!A.pathPat || A.pathKey !== TERKEY) { A.pathKey = TERKEY; if (CL) A.pathPat = x.createPattern(MOCK.path2, 'repeat'); else { const [pc, px] = mkCanvas(F.width, F.height); px.drawImage(F, 0, 0); px.globalCompositeOperation = 'multiply'; px.fillStyle = '#9aa6a6'; px.fillRect(0, 0, F.width, F.height); A.pathPat = x.createPattern(pc, 'repeat'); } }
   x.strokeStyle = A.pathPat; x.lineWidth = 30; x.lineJoin = 'round'; x.lineCap = 'butt';
   for (const line of routeLines(b)) { if (line.length < 2) continue; x.beginPath(); line.forEach(([px, py], i) => i ? x.lineTo(px * 2, py * 2) : x.moveTo(px * 2, py * 2)); x.stroke(); }
-  if (CL) x.drawImage(MOCK.border2, 0, 0); else { x.globalCompositeOperation = 'multiply'; x.globalAlpha = .55; x.drawImage(MOCK.shadows, 0, 0); x.globalAlpha = 1; x.globalCompositeOperation = 'source-over'; if (WALLREF && WALLSTYLE >= 3) A.wall = (WALLSTYLE === 5 ? wuRender5 : WALLSTYLE === 4 ? wuRender4 : wuRender3)((c, r) => c >= 0 && r >= 0 && c < COLS && r < ROWS && !!b.grid[idx(c, r)], COLS, ROWS, pcol(b.k)); else if (WALLREF) wallUnion(b, x, FX, FY); x.drawImage(MOCK.border, 0, 0); }
+  if (CL) x.drawImage(MOCK.border2, 0, 0); else { x.globalCompositeOperation = 'multiply'; x.globalAlpha = .55; x.drawImage(MOCK.shadows, 0, 0); x.globalAlpha = 1; x.globalCompositeOperation = 'source-over'; if (WALLREF && WALLSTYLE >= 3) A.wall = (WALLSTYLE === 5 ? wuRender5 : WALLSTYLE === 4 ? wuRender4 : wuRender3)((c, r) => c >= 0 && r >= 0 && c < COLS && r < ROWS && !!b.grid[idx(c, r)], COLS, ROWS, pcol(b.k), (c, r) => { const g = b.grid[idx(c, r)]; return !!g && g.type !== 'wall'; }); else if (WALLREF) wallUnion(b, x, FX, FY); x.drawImage(MOCK.border, 0, 0); }
   // the gate posts at the top, the white stone at the exit
   const gx = (AX0 + 4.5 * CS) * 2, L = MOCK.post_l, R = MOCK.post_r, E = MOCK.exit;
   x.drawImage(L, gx - 26 - L.width / 2, FY - L.height + 6); x.drawImage(R, gx + 26 - R.width / 2, FY - R.height + 6);
@@ -4760,7 +4769,7 @@ function drawLaneArt(b) {
   if (mine && G.hover && G.running && !G.sel && G.mode === 'build' && !b.grid[idx(G.hover.c, G.hover.r)] && !OBST[idx(G.hover.c, G.hover.r)]) {
     const [hx, hy] = acell(G.hover.c, G.hover.r);
     x.globalAlpha = 0.5;
-    if (COC) { if (mockReady()) fblit(x, G.tool === 'wall' ? (WALLREF ? wallGhost(pcol(b.k)) : wallTile(false, false, 0, pcol(b.k), false, false)) : mockSprite(TOWER_IMG[G.tool]), hx, hy); }
+    if (COC) { if (mockReady()) { if (WALLREF && WALLSTYLE >= 3) { fblit(x, wallGhost(pcol(b.k)), hx, hy); if (G.tool !== 'wall') fblit(x, towerTop(TOWER_IMG[G.tool]), hx, hy); } else fblit(x, G.tool === 'wall' ? (WALLREF ? wallGhost(pcol(b.k)) : wallTile(false, false, 0, pcol(b.k), false, false)) : mockSprite(TOWER_IMG[G.tool]), hx, hy); } }
     else { const ws = wallSprite(false, false, false, 0, pcol(b.k)); blit(x, ws, hx, hy);
     if (G.tool !== 'wall') blit(x, towerSprite(G.tool, 1, '', pcol(b.k)), hx, hy); }
     x.globalAlpha = 1;
