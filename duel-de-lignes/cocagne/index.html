@@ -1896,11 +1896,12 @@ const TOWER_IMG = { arrow: 't_arrow', cannon: 't_cannon', frost: 't_frost', ball
 // a tower image stands in its cell: centred, its foot 2 px below the cell's bottom
 /* towers keep only their turret (cut at their blue band) and stand on the wall union, so a tower and the walls around it
    share one base: same stone top, same water line, same face. */
+const WUP = 2; /* walls (and what stands on them) sit 2 px higher in their cell */
 const TCUT = { t_arrow: 48, t_cannon: 35, t_frost: 48, t_ballista: 47 }, TTOP = {};
 function towerTop(name) {
   if (TTOP[name]) return TTOP[name]; const im = MOCK[name], H = TCUT[name] || im.height, [cv, x] = mkCanvas(im.width, H);
   x.drawImage(im, 0, 0, im.width, H, 0, 0, im.width, H);
-  return TTOP[name] = { cv, w: im.width / 2, h: H / 2, ox: 12 - im.width / 4, oy: 12 - H / 2 };
+  return TTOP[name] = { cv, w: im.width / 2, h: H / 2, ox: 12 - im.width / 4, oy: 12 - WUP - H / 2 };
 }
 function mockSprite(name) { const im = MOCK[name]; return { cv: im, w: im.width / 2, h: im.height / 2, ox: 12 - im.width / 4, oy: 26 - im.height / 2 }; }
 /* walls as one continuous union (ChatGPT's "nouveau rendu", 8 Oct): top surface, extruded faces, edge line in the
@@ -2253,7 +2254,7 @@ function wuRender5(has, COLS, ROWS, pk, isT) {
   return out.c;
 }
 const WUG = {};
-function wallGhost(k) { if (!WUG[k]) { const L = WALLSTYLE >= 3 ? 4 : 2, cv = (WALLSTYLE === 5 ? wuRender5 : WALLSTYLE === 4 ? wuRender4 : WALLSTYLE === 3 ? wuRender3 : WALLSTYLE === 2 ? wuRender2 : wuRender)((c, r) => c === 0 && r === 0, 1, 1, k); WUG[k] = { cv, w: cv.width / L, h: cv.height / L, ox: 0, oy: 0 }; } return WUG[k]; }
+function wallGhost(k) { if (!WUG[k]) { const L = WALLSTYLE >= 3 ? 4 : 2, cv = (WALLSTYLE === 5 ? wuRender5 : WALLSTYLE === 4 ? wuRender4 : WALLSTYLE === 3 ? wuRender3 : WALLSTYLE === 2 ? wuRender2 : wuRender)((c, r) => c === 0 && r === 0, 1, 1, k); WUG[k] = { cv, w: cv.width / L, h: cv.height / L, ox: 0, oy: WALLSTYLE >= 3 ? -WUP : 0 }; } return WUG[k]; }
 function wuRender(has, COLS, ROWS, pk) {
   const { CELL, WIDTH, DEPTH, SIDE } = WU, as = wuAssets(), w = COLS * CELL + SIDE + 8, h = ROWS * CELL + DEPTH + 8;
   const code = (c, r) => { const L = has(c - 1, r), R = has(c + 1, r), U = has(c, r - 1), D = has(c, r + 1);
@@ -4751,7 +4752,7 @@ function drawLaneArt(b) {
   P = A.pen;
   x.globalCompositeOperation = 'source-over'; x.globalAlpha = 1;
   if (A.fineG) x.drawImage(A.gcv, 0, 0, AW * 2, AH * 2, 0, 0, AW, AH); else x.drawImage(A.gcv, 0, 0, AW, AH, 0, 0, AW, AH);
-  if (A.wall && A.fineG) x.drawImage(A.wall, AX0, AY0, A.wall.width / LS, A.wall.height / LS);
+  if (A.wall && A.fineG) x.drawImage(A.wall, AX0, AY0 - WUP, A.wall.width / LS, A.wall.height / LS);
   if (!COC) { lifeUpdate(A, b); lifeTrees(x, A); }
   // the route: little marks drift along it toward the exit
   if (!fog && A.marks.length && b.alive) {
