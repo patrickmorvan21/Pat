@@ -2179,16 +2179,17 @@ function rwSprites() {
   return RW_S = s;
 }
 function wuRender5(has, COLS, ROWS, pk) {
-  const CELL = 96, WIDTH = 72, lo = 12, hi = 84, FACE = 64, DEPTH = 64, sp = rwSprites(), FD = sp.face, FL = FD.width;
+  const CELL = 96, WIDTH = 72, lo = 12, hi = 84, FACE = 40, DEPTH = 40, loY = 4, hiY = 52, sp = rwSprites(), FD = sp.face, FL = FD.width, FH = FD.height;
   const w = COLS * CELL + 12, h = ROWS * CELL + DEPTH + 16;
   const cells = []; for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) if (has(c, r)) cells.push([c, r]);
   if (!cells.length) return null;
   const top = new Uint8Array(w * h), rect = (m, x, y, ww, hh) => { for (let yy = Math.max(0, y); yy < Math.min(h, y + hh); yy++) m.fill(1, yy * w + Math.max(0, x), yy * w + Math.min(w, x + ww)); };
   for (const [c, r] of cells) { const x = c * CELL, y = r * CELL, L = has(c - 1, r), R = has(c + 1, r), U = has(c, r - 1), D = has(c, r + 1);
-    rect(top, x + lo, y + lo, WIDTH, WIDTH);
-    if (L) rect(top, x, y + lo, lo, WIDTH); if (R) rect(top, x + hi, y + lo, lo, WIDTH); if (U) rect(top, x + lo, y, WIDTH, lo); if (D) rect(top, x + lo, y + hi, WIDTH, lo);
-    if (L && U && has(c - 1, r - 1)) rect(top, x, y, lo, lo); if (R && U && has(c + 1, r - 1)) rect(top, x + hi, y, lo, lo);
-    if (L && D && has(c - 1, r + 1)) rect(top, x, y + hi, lo, lo); if (R && D && has(c + 1, r + 1)) rect(top, x + hi, y + hi, lo, lo); }
+    const TH = hiY - loY, BH = CELL - hiY;
+    rect(top, x + lo, y + loY, WIDTH, TH);
+    if (L) rect(top, x, y + loY, lo, TH); if (R) rect(top, x + hi, y + loY, lo, TH); if (U) rect(top, x + lo, y, WIDTH, loY); if (D) rect(top, x + lo, y + hiY, WIDTH, BH);
+    if (L && U && has(c - 1, r - 1)) rect(top, x, y, lo, loY); if (R && U && has(c + 1, r - 1)) rect(top, x + hi, y, lo, loY);
+    if (L && D && has(c - 1, r + 1)) rect(top, x, y + hiY, lo, BH); if (R && D && has(c + 1, r + 1)) rect(top, x + hi, y + hiY, lo, BH); }
   const dep = new Uint8Array(w * h);
   for (let x = 0; x < w; x++) { let run = 999; for (let y = 0; y < h; y++) { const i = y * w + x; if (top[i]) run = 0; else { run++; if (run <= DEPTH) dep[i] = run; } } }
   const wall = i => top[i] || dep[i], T = (x, y) => x >= 0 && y >= 0 && x < w && y < h && top[y * w + x];
@@ -2205,7 +2206,7 @@ function wuRender5(has, COLS, ROWS, pk) {
   const set = (i, c, a = 255) => { Dd[i * 4] = c[0]; Dd[i * 4 + 1] = c[1]; Dd[i * 4 + 2] = c[2]; Dd[i * 4 + 3] = a; };
   const hex = PCOL[pk] || '#4f8fd2', LC = hexRgb(hex), LD = LC.map(v => v * .7 | 0), LL = hexRgb(tint(hex, .3));
   for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) { const i = y * w + x; if (wall(i)) continue;
-    const yy = y - 8, xx = x - 3; if (yy >= 0 && xx >= 0 && wall(yy * w + xx)) set(i, [24, 44, 20], 50); }
+    const yy = y - 5, xx = x - 2; if (yy >= 0 && xx >= 0 && wall(yy * w + xx)) set(i, [24, 44, 20], 50); }
   const jx = new Set();
   for (const [c, r] of cells) if (has(c + 1, r) && wuHash(c, r, 9) % 3 === 0 && !has(c, r + 1) && !has(c + 1, r + 1) && !has(c, r - 1) && !has(c + 1, r - 1)) jx.add((c + 1) * CELL + '|' + r);
   const isJ = (x, y) => { const r = Math.floor((y - lo) / CELL); for (const d of [0, 1]) if (jx.has((x + d) + '|' + r) || jx.has((x + d) + '|' + Math.floor(y / CELL))) return true; return false; };
@@ -2216,7 +2217,7 @@ function wuRender5(has, COLS, ROWS, pk) {
       else if (!T(x, y + 1) || !T(x, y + 2)) c = [196, 188, 168];
       if (isJ(x, y)) c = x % 2 ? [214, 207, 189] : [184, 175, 156];
       set(i, c); }
-    else if (dep[i]) { const d = dep[i], row = Math.floor((y - d) / CELL), u = ((x + row * 731) % FL + FL) % FL, k = ((d - 1) * FL + u) * 4;
+    else if (dep[i]) { const d = dep[i], row = Math.floor((y - d) / CELL), u = ((x + row * 731) % FL + FL) % FL, k = (Math.min(FH - 1, (d - 1) * FH / DEPTH | 0) * FL + u) * 4;
       let c = [FD.data[k], FD.data[k + 1], FD.data[k + 2]];
       if (c[2] > c[0] + 40) { const f = (c[0] + c[1] + c[2]) / (96 + 145 + 193); c = LC.map(v => Math.min(255, v * f | 0)); }
       else if (!wall(i - 1) || !wall(i - 2) || !wall(i + 1) || !wall(i + 2)) c = [c[0] - 14, c[1] - 14, c[2] - 13];
@@ -2235,8 +2236,8 @@ function wuRender5(has, COLS, ROWS, pk) {
   for (const [c, r] of cells) {
     let z = wuHash(c, r, 101); const rnd = () => (z = Math.imul(z ^ (z >>> 15), 2246822519) + 0x9e3779b9 >>> 0) / 4294967296, pick = a => a[rnd() * a.length | 0];
     for (let q = 0; q < 3; q++) { const S = q === 0 ? sp.lily : sp.ghost; if (!S || rnd() > [.85, .4, .2][q]) continue; const s = pick(S), fl = rnd() < .5; let done = false;
-      for (const sc of [1, .8, .65, .52]) { for (let t = 0; t < 40 && !done; t++) { const ox = c * CELL + (rnd() * (CELL + 40) | 0) - 20 - (s.w * sc >> 2), oy = r * CELL + (rnd() * (CELL - 10) | 0) - (s.h * sc >> 2); if (fits(s, sc, ox, oy, 0)) { stamp(s, sc, ox, oy, 1, fl); done = true; } } if (done) break; } }
-    if (sp.tuft && !has(c, r + 1) && rnd() < .6) { const s = pick(sp.tuft), x0 = c * CELL + (rnd() * (CELL - s.w) | 0), yb = r * CELL + hi;
+      for (const sc of [.78, .64, .52]) { for (let t = 0; t < 40 && !done; t++) { const ox = c * CELL + (rnd() * (CELL + 40) | 0) - 20 - (s.w * sc >> 2), oy = r * CELL + (rnd() * (CELL - 10) | 0) - (s.h * sc >> 2); if (fits(s, sc, ox, oy, 0)) { stamp(s, sc, ox, oy, 1, fl); done = true; } } if (done) break; } }
+    if (sp.tuft && !has(c, r + 1) && rnd() < .6) { const s = pick(sp.tuft), x0 = c * CELL + (rnd() * (CELL - s.w) | 0), yb = r * CELL + hiY;
       let ok = x0 >= 0 && x0 + s.w < w; for (let xx = x0; ok && xx < x0 + s.w; xx++) if (!top[(yb - 1) * w + xx] || !dep[(yb + 2) * w + xx]) ok = false;
       if (ok) X.drawImage(s.cv, x0, yb - s.h + 3); }
   }
