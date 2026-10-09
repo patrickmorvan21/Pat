@@ -2194,7 +2194,7 @@ function rwSprites() {
   return RW_S = s;
 }
 function wuRender5(has, COLS, ROWS, pk, isT) {
-  const CELL = 96, WIDTH = 72, lo = 12, hi = 84, FACE = 40, DEPTH = 40, loY = 4, hiY = 52, sp = rwSprites(), FD = sp.face, FL = FD.width, FH = FD.height;
+  const CELL = 96, WIDTH = 72, lo = 12, hi = 84, FACE = 30, DEPTH = 30, loY = 12, hiY = 50, sp = rwSprites(), FD = sp.face, FL = FD.width, FH = FD.height;
   const w = COLS * CELL + 12, h = ROWS * CELL + DEPTH + 16;
   const cells = []; for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) if (has(c, r)) cells.push([c, r]);
   if (!cells.length) return null;
@@ -2254,7 +2254,7 @@ function wuRender5(has, COLS, ROWS, pk, isT) {
     // pads, placed for the whole wall rather than per square: a big cluster, a few small ones, a chain of three along the
     // run, or one tucked against an edge, so neighbouring squares read as one organic surface
     const L = sp.lily || [], put = (s, sc, ox, oy, fl) => { ox = Math.round(ox); oy = Math.round(oy); if (!fits(s, sc, ox, oy, 1)) return false; stamp(s, sc, ox, oy, 1, fl); return true; };
-    const try_ = (sc, fx, fy, n = 30) => { const s = pick(L), fl = rnd() < .5, ww = s.w * sc, hh = s.h * sc; for (let t = 0; t < n; t++) if (put(s, sc, fx(ww, t) , fy(hh, t), fl)) return { ww, hh }; return null; };
+    const try_ = (sc, fx, fy, n = 30) => { sc *= .8; const s = pick(L), fl = rnd() < .5, ww = s.w * sc, hh = s.h * sc; for (let t = 0; t < n; t++) if (put(s, sc, fx(ww, t) , fy(hh, t), fl)) return { ww, hh }; return null; };
     const X0 = c * CELL, Y0 = r * CELL, roll = rnd();
     if (L.length && roll < .2 && (has(c + 1, r) || has(c, r + 1))) {             // a chain of three along the wall
       const h = has(c + 1, r), scs = [.62, .48, .36].sort(() => rnd() - .5); let px = X0 + 10 + rnd() * 20, py = Y0 + loY + 6 + rnd() * 8;
