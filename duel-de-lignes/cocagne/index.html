@@ -1898,11 +1898,11 @@ const TOWER_IMG = { arrow: 't_arrow', cannon: 't_cannon', frost: 't_frost', ball
    share one base: same stone top, same water line, same face. */
 const WUP = 2;
 /* Sarbacane (13 Oct): PixelLab head n°44 in his forest style, on a little stone drum, turning toward its target */
-const SARB = { px: 14.0, py: 15.0, size: 20 };
+const SARB = { px: 14.0, py: 15.0, size: 11.64 };
 function sarbDraw(x, cx, cy, ang, rec) {
   const im = MOCK.sarb_head; if (!im) return; const k = SARB.size / im.width;
-  x.fillStyle = 'rgba(30,45,25,.35)'; x.beginPath(); x.ellipse(cx + .8, cy + 4.6, 6.4, 2.2, 0, 0, 7); x.fill();
-  x.fillStyle = '#a99f86'; x.fillRect(cx - 5.5, cy, 11, 4); x.beginPath(); x.ellipse(cx, cy + 4, 5.5, 1.8, 0, 0, 7); x.fill();
+  x.fillStyle = 'rgba(30,45,25,.35)'; x.beginPath(); x.ellipse(cx + .6, cy + 3.4, 4.6, 1.5, 0, 0, 7); x.fill();
+  x.fillStyle = '#a99f86'; x.fillRect(cx - 4, cy, 8, 3); x.beginPath(); x.ellipse(cx, cy + 3, 4, 1.3, 0, 0, 7); x.fill();
   x.save(); x.translate(cx - Math.cos(ang) * rec, cy - Math.sin(ang) * rec); x.rotate(ang); x.scale(k, k); x.drawImage(im, -SARB.px, -SARB.py); x.restore();
 } /* walls (and what stands on them) sit 2 px higher in their cell */
 const TCUT = { t_arrow: 48, t_cannon: 35, t_frost: 48, t_ballista: 47 }, TTOP = {};
@@ -2360,7 +2360,7 @@ function drawFrogStruct(x, b, s) {
   const t = s.t;
   if (t.type === 'wall' && WALLREF) { /* drawn with the ground, as one continuous union */ }
   else if (t.type === 'wall') fblit(x, wallTile(hasS(b, s.c - 1, s.r), hasS(b, s.c + 1, s.r), (s.c * 7 + s.r * 3) % 3, pcol(b.k), hasS(b, s.c, s.r - 1), hasS(b, s.c, s.r + 1), hasS(b, s.c - 1, s.r - 1), hasS(b, s.c + 1, s.r - 1), hasS(b, s.c - 1, s.r + 1), hasS(b, s.c + 1, s.r + 1), false), s.x, s.y);
-  else if (t.type === 'arrow' && WALLREF && WALLSTYLE >= 3) { const kk = G.t - (t.kick ?? -9); sarbDraw(x, s.x + 12, s.y + 4.5, t.ang ?? -Math.PI / 2, kk < .12 ? (.12 - kk) * 12 : 0); }
+  else if (t.type === 'arrow' && WALLREF && WALLSTYLE >= 3) { const kk = G.t - (t.kick ?? -9); sarbDraw(x, s.x + 12, s.y + 5.75, t.ang ?? -Math.PI / 2, kk < .12 ? (.12 - kk) * 12 : 0); }
   else fblit(x, WALLREF && WALLSTYLE >= 3 ? towerTop(TOWER_IMG[t.type]) : mockSprite(TOWER_IMG[t.type]), s.x, s.y + (G.t - (t.kick ?? -9) < 0.1 ? -1 : 0));
   if (b.chant > 0 && Math.sin(G.t * 10 + t.id) > 0) { P.px(s.x + 6, s.y - 14, '#f0c250'); P.px(s.x + 17, s.y - 16, '#f0c250'); }
   if (b.rage > 0 && Math.sin(G.t * 12 + t.id) > -0.2) { P.px(s.x + 6 + (t.id % 3) * 5, s.y - 14 + ((G.t * 9 + t.id) % 3 | 0), K.fire1); }
@@ -4803,7 +4803,7 @@ function drawLaneArt(b) {
   if (mine && G.hover && G.running && !G.sel && G.mode === 'build' && !b.grid[idx(G.hover.c, G.hover.r)] && !OBST[idx(G.hover.c, G.hover.r)]) {
     const [hx, hy] = acell(G.hover.c, G.hover.r);
     x.globalAlpha = 0.5;
-    if (COC) { if (mockReady()) { if (WALLREF && WALLSTYLE >= 3) { fblit(x, wallGhost(pcol(b.k)), hx, hy); if (G.tool === 'arrow') sarbDraw(x, hx + 12, hy + 4.5, -Math.PI / 2, 0); else if (G.tool !== 'wall') fblit(x, towerTop(TOWER_IMG[G.tool]), hx, hy); } else fblit(x, G.tool === 'wall' ? (WALLREF ? wallGhost(pcol(b.k)) : wallTile(false, false, 0, pcol(b.k), false, false)) : mockSprite(TOWER_IMG[G.tool]), hx, hy); } }
+    if (COC) { if (mockReady()) { if (WALLREF && WALLSTYLE >= 3) { fblit(x, wallGhost(pcol(b.k)), hx, hy); if (G.tool === 'arrow') sarbDraw(x, hx + 12, hy + 5.75, -Math.PI / 2, 0); else if (G.tool !== 'wall') fblit(x, towerTop(TOWER_IMG[G.tool]), hx, hy); } else fblit(x, G.tool === 'wall' ? (WALLREF ? wallGhost(pcol(b.k)) : wallTile(false, false, 0, pcol(b.k), false, false)) : mockSprite(TOWER_IMG[G.tool]), hx, hy); } }
     else { const ws = wallSprite(false, false, false, 0, pcol(b.k)); blit(x, ws, hx, hy);
     if (G.tool !== 'wall') blit(x, towerSprite(G.tool, 1, '', pcol(b.k)), hx, hy); }
     x.globalAlpha = 1;
