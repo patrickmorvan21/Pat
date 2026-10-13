@@ -1898,11 +1898,11 @@ const TOWER_IMG = { arrow: 't_arrow', cannon: 't_cannon', frost: 't_frost', ball
    share one base: same stone top, same water line, same face. */
 const WUP = 2;
 /* Sarbacane (13 Oct): PixelLab head n°44 in his forest style, on a little stone drum, turning toward its target */
-const SARB = { px: 14.0, py: 15.0, size: 11.64 };
+const SARB = { px: 14.0, py: 15.0, size: 20 };
 function sarbDraw(x, cx, cy, ang, rec) {
   const im = MOCK.sarb_head; if (!im) return; const k = SARB.size / im.width;
-  x.fillStyle = 'rgba(30,45,25,.35)'; x.beginPath(); x.ellipse(cx + .6, cy + 3.4, 4.6, 1.5, 0, 0, 7); x.fill();
-  x.fillStyle = '#a99f86'; x.fillRect(cx - 4, cy, 8, 3); x.beginPath(); x.ellipse(cx, cy + 3, 4, 1.3, 0, 0, 7); x.fill();
+  x.fillStyle = 'rgba(30,45,25,.35)'; x.beginPath(); x.ellipse(cx + .8, cy + 4.6, 6.4, 2.2, 0, 0, 7); x.fill();
+  x.fillStyle = '#a99f86'; x.fillRect(cx - 5.5, cy, 11, 4); x.beginPath(); x.ellipse(cx, cy + 4, 5.5, 1.8, 0, 0, 7); x.fill();
   x.save(); x.translate(cx - Math.cos(ang) * rec, cy - Math.sin(ang) * rec); x.rotate(ang); x.scale(k, k); x.drawImage(im, -SARB.px, -SARB.py); x.restore();
 } /* walls (and what stands on them) sit 2 px higher in their cell */
 const TCUT = { t_arrow: 48, t_cannon: 35, t_frost: 48, t_ballista: 47 }, TTOP = {};
