@@ -1898,7 +1898,7 @@ const TOWER_IMG = { arrow: 't_arrow', cannon: 't_cannon', frost: 't_frost', ball
    share one base: same stone top, same water line, same face. */
 const WUP = 2;
 /* Sarbacane (13 Oct): PixelLab head n°44 in his forest style, on a little stone drum, turning toward its target */
-const SARB = { px: 12.0, py: 14.5, size: 32 };
+const SARB = { px: 12.0, py: 14.5, size: 24 };
 function sarbDraw(x, cx, cy, ang, rec) {
   const B = MOCK.sarb_base, T = MOCK.sarb_tube; if (!B || !T) return; const k = SARB.size / B.width;
   x.fillStyle = 'rgba(30,45,25,.3)'; x.beginPath(); x.ellipse(cx + 1, cy + 2, 7 * k, 5.5 * k, 0, 0, 7); x.fill();
