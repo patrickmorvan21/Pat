@@ -2360,7 +2360,7 @@ function drawFrogStruct(x, b, s) {
   const t = s.t;
   if (t.type === 'wall' && WALLREF) { /* drawn with the ground, as one continuous union */ }
   else if (t.type === 'wall') fblit(x, wallTile(hasS(b, s.c - 1, s.r), hasS(b, s.c + 1, s.r), (s.c * 7 + s.r * 3) % 3, pcol(b.k), hasS(b, s.c, s.r - 1), hasS(b, s.c, s.r + 1), hasS(b, s.c - 1, s.r - 1), hasS(b, s.c + 1, s.r - 1), hasS(b, s.c - 1, s.r + 1), hasS(b, s.c + 1, s.r + 1), false), s.x, s.y);
-  else if (t.type === 'arrow' && WALLREF && WALLSTYLE >= 3) { const kk = G.t - (t.kick ?? -9); sarbDraw(x, s.x + 12, s.y + 5.75, t.ang ?? -Math.PI / 2, kk < .12 ? (.12 - kk) * 12 : 0, (t.c * 7 + t.r * 3) % 3); }
+  else if (t.type === 'arrow' && WALLREF && WALLSTYLE >= 3) { const kk = G.t - (t.kick ?? -9); sarbDraw(x, s.x + 12, s.y + 5.75, t.ang ?? -Math.PI / 2, kk < .12 ? (.12 - kk) * 12 : 0, 1); }
   else fblit(x, WALLREF && WALLSTYLE >= 3 ? towerTop(TOWER_IMG[t.type]) : mockSprite(TOWER_IMG[t.type]), s.x, s.y + (G.t - (t.kick ?? -9) < 0.1 ? -1 : 0));
   if (b.chant > 0 && Math.sin(G.t * 10 + t.id) > 0) { P.px(s.x + 6, s.y - 14, '#f0c250'); P.px(s.x + 17, s.y - 16, '#f0c250'); }
   if (b.rage > 0 && Math.sin(G.t * 12 + t.id) > -0.2) { P.px(s.x + 6 + (t.id % 3) * 5, s.y - 14 + ((G.t * 9 + t.id) % 3 | 0), K.fire1); }
