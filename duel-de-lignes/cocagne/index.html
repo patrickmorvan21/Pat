@@ -7881,7 +7881,7 @@ function mapCreepTop(x, b, cr, cx, top) {
     const u = (G.t - cr.danceT) / DANCE_T;
     for (let q = 0; q < 2; q++) { const v = (u * 1.4 + q * 0.5) % 1; x.globalAlpha = Math.min(1, (1 - v) * 1.6); P.spr(NOTE, { a: q ? '#f6f0a0' : '#fffbe0' }, cx + (q ? 3 : -6) + Math.round(Math.sin(v * 6) * 1.5), top - 5 - Math.round(v * 9)); x.globalAlpha = 1; }
   }
-  if (!cr.fly && b.ob[cellOf(cr.x, cr.y)] === OB_FIRE) drawFlameJt(cx + (cr.id % 2 ? 2 : -2), top + 7, false, fmod(G.t * 9 + cr.id, 2));
+  if (!cr.fly && b.ob && b.ob[cellOf(cr.x, cr.y)] === OB_FIRE) drawFlameJt(cx + (cr.id % 2 ? 2 : -2), top + 7, false, fmod(G.t * 9 + cr.id, 2));
 }
 
 /* =============== La Grande Joute · flat forests: the night clearing and the forest by the river =============== */
@@ -8301,25 +8301,51 @@ Object.assign(TUTO_ART, {
   },
   carte: () => tutoPlate('carte', 224, 56, [[propSprite('rock', 0), 72, 44], [ruinSlab(), 128, 22], [propSprite('column', 0), 141, 40]]),
 });
+// "Comment jouer" in five pages: the goal, the maze, the emblem, sending, the herald's surprises (the details are learnt in play)
+Object.assign(TUTO_ART, {
+  // the House's statue stands on a cell drawn at random: the maze is built around it, inside its aura
+  embleme: () => tutoStage('embleme', {
+    grid: [...wallRow(5, 0, 3, { 2: ['arrow', 2] }), [4, 6, 'wall'], ...wallRow(7, 5, 8, { 6: ['frost', 1] }), [3, 7, 'cannon', 1]],
+    creeps: b => [{ kind: 'rat', ...routeAt(b, SPAWN, 9.6) }, { kind: 'golem', ...routeAt(b, SPAWN, 11.2), hp: .6 }, { kind: 'rat', ...routeAt(b, SPAWN, 12.6) }],
+    over: x => {
+      const c = 4, r = 6, m = MAISONS.includes(myMaison) ? myMaison : 'cerf', cx = cellX(c) + 12, cy = cellY(r) + 14, R = 1.5 * CS;
+      disc(x, cx, cy, R, AURA_COL[m], 0.12, 0.92); P.dots(cx, cy, R, AURA_COL[m], 2, 6, 0.92, 0);
+      blit(x, embStruct(m, 2, tutoCol()), cellX(c), cellY(r));
+    },
+    crop: [24, 118, 224, 120],
+  }),
+  // the herald calls out from the rampart: a brush fire on one side, the korrigans' ring on the other
+  surprises: () => tutoStage('surprises', {
+    grid: wallRow(3, 2, 8, { 4: ['arrow', 2] }),
+    creeps: b => [{ kind: 'rat', ...routeAt(b, SPAWN, 1.3) }, { kind: 'golem', ...routeAt(b, SPAWN, 3.1) }],
+    over: x => {
+      for (const [c, r] of [[0, 1], [1, 1], [0, 2]]) { const [fx, fy] = acell(c, r); drawFlameJt(fx + 8, fy + 17, true, 0); drawFlameJt(fx + 17, fy + 21, false, 1); }
+      const rx = cellX(7) + 12, ry = cellY(1) + 10;
+      for (let i = 0; i < 8; i++) { const a = i / 8 * Math.PI * 2; drawMushroom(Math.round(rx + Math.cos(a) * 21), Math.round(ry + Math.sin(a) * 14), i % 3 === 0 ? 1 : 0); }
+      const [hx, hy] = herPos(); x.globalCompositeOperation = 'multiply'; P.ell(hx + 7, hy + 13, 5, 1, SHADOW_MUL); x.globalCompositeOperation = 'source-over'; blit(x, herSprite('ann_a'), hx, hy);
+    },
+    crop: [24, 0, 224, 120],
+  }),
+});
 (function jtTuto() {
-  const v = TUTO.find(q => q.k === 'vagues');
-  if (v) Object.assign(v, { t: 'Le héraut',
-    p: "Toutes les 22 secondes, une vague arrive chez tout le monde. Le héraut, sur le rempart, sonne et annonce l'événement de la vague. Touche-le pour déplier le programme des trois prochains temps forts. Un sur trois se vote : touche ta carte, la majorité l'emporte.",
-    x: () => tsec('Au programme', ['rush', 'cohorte', 'gold', 'foire', 'fog', 'eclipse', 'jackpot', 'boss'].map(k => tchip(jtIcon(k), EV[k].n, EV_TAG[k])).join('')) });
-  const at = TUTO.findIndex(q => q.k === 'vagues') + 1;
-  TUTO.splice(at, 0,
-    { k: 'caractere', t: 'Des créatures à caractère',
-      p: "Les bestiaires changent d'ordre à chaque partie, et une nouvelle créature à caractère entre toutes les deux vagues : le héraut la présente. Chacune demande une réponse différente ; aucune ne détruit tes tours.",
-      x: () => tsec('Les neuf', CH_KEYS.map(c => tchip(jtIcon(c), CH[c].n, CH_TAG[c])).join('')) },
-    { k: 'carte', t: 'La carte bouge',
-      p: "Une vague avant, le héraut marque des cases en pointillés dorés. Tes tours et tes murs ne bougent jamais, et le chemin reste toujours ouvert.",
-      x: () => tsec('Événements', MAP_EV.map(k => tchip(jtIcon(k), EV[k].n, EV_TAG[k])).join('')) },
-    { k: 'maison', t: 'Ta Maison',
-      p: "Choisis ta Maison avant la partie. Son emblème vivant garde une case au hasard : il frappe les créatures autour et aide ses voisines. Il monte de niveau avec les créatures qui meurent près de lui : à chaque niveau, un « ! » doré, et tu choisis un pouvoir. Son grand pouvoir attend dans la barre du bas.",
-      x: () => tsec('Les quatre emblèmes', MAISONS.map(m => tchip(blazonImg(m, tutoCol(), 2), EMB[m].n, EMB[m].jeu.toLowerCase())).join('')) },
-    { k: 'entracte', t: "L'Entracte",
-      p: "À la mi-partie, le héraut arrête la joute pour une partie de palet. Chacun lance deux palets vers le maître et peut dégommer ceux des autres. Le plus près choisit une relique, le deuxième gagne un sac d'or, et le vainqueur garde un palet d'or jusqu'à la fin.",
-      x: () => tsec('Pour lancer', `<p class="tut-hint">Pose le doigt, tire vers le bas comme une fronde, vise, lâche. Plus tu tires loin, plus le palet va loin.</p>`) });
+  TUTO.splice(0, TUTO.length,
+    { k: 'but', t: 'Le but',
+      p: "Des créatures entrent en haut de ta clairière et veulent sortir en bas. Chacune qui sort te coûte une vie. La dernière Maison debout gagne la joute.",
+      x: () => tsec("En haut de l'écran", [
+        `<div class="tkey">${ringImg(START_LIVES, tutoCol(), true, false, false)}<span>tes vies</span></div>`,
+        `<div class="tkey"><span class="gold-k">${ICON.coin}<b>40</b></span><span>ton or, qui rentre toutes les 10 s</span></div>`].join(''), 'tut-list') },
+    { k: 'chemin', t: 'Ton labyrinthe',
+      p: "Pose des murs pour allonger leur chemin et des tours pour tirer : plus le détour est long, plus tes tours tirent. Le Givre les ralentit. Le passage ne se ferme jamais.",
+      x: () => tsec('Constructions', ['wall', 'arrow', 'cannon', 'frost'].map(k => tchip(ICON[k], T[k].n, TUTO_TOWER[k], { cost: T[k].cost, cls: 'tall' })).join('')) + `<p class="tut-hint">Touche une tour pour l’améliorer.</p>` },
+    { k: 'embleme', t: 'Ton emblème',
+      p: "La statue de ta Maison est posée au hasard dans ta clairière : construis ton labyrinthe autour d’elle. Elle frappe les créatures qui passent tout près et renforce les tours voisines. Plus il en meurt à côté d’elle, plus elle monte de niveau.",
+      x: () => tsec('Les quatre Maisons', MAISONS.map(m => tchip(blazonImg(m, tutoCol(), 2), EMB[m].n, EMB[m].jeu.toLowerCase())).join('')) },
+    { k: 'envoyer', t: 'Envoyer',
+      p: "Dans l’onglet Envoyer, tes créatures partent chez la Maison voisine. Chaque envoi fait monter ton revenu, et les vies qu’elle perd sont pour toi.",
+      x: () => `<p class="tut-hint">Plus une créature coûte cher, plus elle est forte.</p>` },
+    { k: 'surprises', t: 'Le héraut et ses surprises',
+      p: "Le héraut annonce chaque vague : feu de broussailles, cercle des korrigans, boss… Parfois, on vote. À mi-partie, l’Entracte : une partie de palet pour gagner une relique.",
+      x: () => tsec('Par exemple', ['feu', 'korrigans', 'boss', 'entracte'].map(k => tchip(jtIcon(k), EV[k].n, EV_TAG[k])).join('')) });
 })();
 
 function circlePxOn(p, cx, cy, r, col) { const n = Math.max(16, Math.round(r * 6.3)); for (let i = 0; i < n; i++) { const t = i / n * Math.PI * 2; p.px(Math.round(cx + Math.cos(t) * r), Math.round(cy + Math.sin(t) * r), col); } }
