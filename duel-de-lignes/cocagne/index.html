@@ -486,6 +486,38 @@ b,strong{font-weight:700}
 .rivals.many .who{justify-content:center;padding-right:calc(var(--u)*2)}
 .rivals.many .who .nm{display:none}
 .rivals.many .who .mark{margin-left:0}
+/* the masked jester at the interlude: his little bubble at the far end of the alley, and big over the result */
+.jt-jbub{position:absolute;z-index:2;pointer-events:none;padding:calc(var(--u)*3) calc(var(--u)*5) calc(var(--u)*3.5);background:var(--parch);color:var(--pink);box-shadow:inset 0 0 0 calc(var(--u)*1.34) var(--pink);font-weight:700;font-size:calc(var(--t)*.92);line-height:1.15;white-space:nowrap;animation:jtin .18s steps(3)}
+.jt-jbub::after{content:"";position:absolute;top:calc(var(--u)*4);width:calc(var(--u)*6);height:calc(var(--u)*6);background:var(--parch);transform:rotate(45deg)}
+.jt-jbub.l::after{left:calc(var(--u)*-3.4);border-left:calc(var(--u)*1.34) solid var(--pink);border-bottom:calc(var(--u)*1.34) solid var(--pink)}
+.jt-jbub.r::after{right:calc(var(--u)*-3.4);border-right:calc(var(--u)*1.34) solid var(--pink);border-top:calc(var(--u)*1.34) solid var(--pink)}
+.jt-jres{position:absolute;z-index:3;display:flex;align-items:flex-end;gap:calc(var(--u)*4);pointer-events:none}
+.jt-jres img{width:calc(var(--u)*16*3.5);height:calc(var(--u)*17*3.5);image-rendering:pixelated;flex:none}
+.jt-jres .jt-jbub{position:relative;white-space:normal;max-width:calc(var(--u)*130);margin-bottom:calc(var(--u)*24)}
+/* the end card: pixel art that tilts under a finger, a gleam over it */
+.jt-fin{display:flex;flex-direction:column;align-items:center;gap:calc(var(--u)*3);margin:0 0 calc(var(--u)*2)}
+.jt-fin-wrap{perspective:900px;touch-action:none;cursor:grab;padding:calc(var(--u)*2)}
+.jt-fin-card{position:relative;width:calc(var(--fs)*150);height:calc(var(--fs)*225);transform-style:preserve-3d;will-change:transform}
+.jt-fin-card canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;pointer-events:none}
+.jt-fin-txt{position:absolute;inset:0;pointer-events:none}
+.jt-fin-txt .ft{position:absolute;left:0;right:0;text-align:center;line-height:1;white-space:nowrap}
+.jt-fin-txt .k{font-family:var(--ft);font-size:calc(var(--fs)*5.5);letter-spacing:.08em;color:#8ea2a7}
+.jt-fin-txt .h{font-family:var(--ft);font-size:calc(var(--fs)*17);color:var(--ink)}
+.jt-fin-txt .h.gold{color:#f3d36a}
+.jt-fin-txt .s{font-weight:700;font-size:calc(var(--fs)*6.4);color:#c9d4d6;overflow:hidden;text-overflow:ellipsis;padding:0 calc(var(--fs)*10)}
+.jt-fin-txt .l{right:auto;text-align:left;font-family:var(--ft);font-size:calc(var(--fs)*5);letter-spacing:.06em;color:#8ea2a7}
+.jt-fin-txt .fs{position:absolute;width:calc(var(--fs)*28);height:calc(var(--fs)*24);display:flex;flex-direction:column;align-items:center;justify-content:center}
+.jt-fin-txt .fs img{width:auto !important;height:calc(var(--fs)*8) !important;margin-bottom:calc(var(--fs)*1)}
+.jt-fin-txt .fs b{font-family:var(--fb);font-weight:400;font-size:calc(var(--fs)*7.5);line-height:1;color:var(--ink)}
+.jt-fin-txt .fs i{font-style:normal;font-size:calc(var(--fs)*4.4);color:#8ea2a7;line-height:1.1;white-space:nowrap}
+.jt-fin-txt .fe{position:absolute;left:calc(var(--fs)*14);right:calc(var(--fs)*14);display:flex;align-items:center;gap:calc(var(--fs)*3);white-space:nowrap}
+.jt-fin-txt .fe .lv{font-family:var(--ft);font-size:calc(var(--fs)*7);color:#f3d36a;flex:none}
+.jt-fin-txt .fe .pw{font-size:calc(var(--fs)*5);color:#c9d4d6;min-width:0;overflow:hidden;text-overflow:ellipsis;flex:1 1 auto}
+.jt-fin-txt .fe .rl{display:flex;gap:calc(var(--fs)*1);flex:none}
+.jt-fin-txt .fe .rl img{width:auto !important;height:calc(var(--fs)*7) !important}
+.jt-fin-txt .f{font-size:calc(var(--fs)*5);color:#8ea2a7}
+.jt-fin-hint{margin:0;color:var(--muted);font-size:calc(var(--t)*.85)}
+
 
 </style>
 <style>*,*::before,*::after{box-sizing:border-box}html,body{margin:0}</style>
@@ -524,12 +556,13 @@ b,strong{font-weight:700}
   <div class="jt-entr-in">
     <div class="jt-entr-h"><span class="jt-entr-k">ENTRACTE · LE PALET</span><span class="jt-entr-sub" id="jtPalSub"></span></div>
     <div class="jt-pal-who" id="jtPalWho"></div>
-    <div class="jt-pal-box"><canvas id="jtPalCv" aria-label="L'allée du palet"></canvas></div>
+    <div class="jt-pal-box"><canvas id="jtPalCv" aria-label="L'allée du palet"></canvas><div class="jt-jbub" id="jtJBub" hidden></div></div>
     <div class="jt-pal-foot" id="jtPalFoot">
       <div class="jt-pal-msg parch" id="jtPalMsg" aria-live="polite"></div>
       <div class="jt-pal-ring" id="jtPalRing" hidden><svg viewBox="0 0 44 44" aria-hidden="true"><circle class="bg" cx="22" cy="22" r="18"></circle><circle class="fg" id="jtPalArc" cx="22" cy="22" r="18"></circle></svg><b id="jtPalSec"></b></div>
     </div>
     <div class="jt-pal-res parch" id="jtPalRes" hidden></div>
+    <div class="jt-jres" id="jtJRes" hidden></div>
   </div>
 </div>
 
@@ -661,6 +694,7 @@ b,strong{font-weight:700}
     <p id="endText"></p>
     <ol class="rank" id="rank"></ol>
     <div class="endstats" id="endStats"></div>
+    <div class="jt-fin" id="jtFin" hidden></div>
     <div class="mvp" id="mvp" hidden></div>
     <div class="share" id="shareRow"><button class="sec" id="copyBtn" type="button">Copier le résumé</button><button class="sec" id="saveBtn" type="button">Enregistrer l'image</button></div>
     <div class="copied" id="copied" aria-live="polite"></div>
@@ -1053,7 +1087,7 @@ function sell(k, t) { const b = G.b[k]; b.gold += sellValue(t); b.grid[idx(t.c, 
 function send(k, kind) {
   const from = G.b[k], tk = nextAlive(k), s = S[kind];
   if (tk < 0 || from.gold < s.cost) return false;
-  from.gold -= s.cost; from.income += s.inc;
+  from.gold -= s.cost; from.income += s.inc; if (from.jt) from.jt.sent = (from.jt.sent || 0) + (s.count || 1);
   if (auth()) for (let i = 0; i < (s.count || 1); i++) G.b[tk].queue.push({ kind, from: k });
   if (fxOn(k)) { sfx('send'); bumpEl('goldPill'); }
   return true;
@@ -5982,7 +6016,7 @@ function finish(winner) {
   $('endKick').textContent = won ? 'Tu as gagné' : 'Fin de partie';
   $('endTitle').textContent = resultTitle();
   $('endText').textContent = won ? 'Dernier blason debout : la Couronne des Lices est à toi.' : NET.mode === 'solo' ? 'Ta clairière est tombée. Envoie plus tôt pour faire monter ton revenu, ou allonge ton labyrinthe.' : (wName ? `Le blason de ${wName} est le dernier debout.` : 'Personne ne s\'en sort.');
-  renderSummary(true);
+  renderSummary(true); jtFinShow();
   if (WEB) setTimeout(() => { if (G && G.ended) cardBlob().catch(() => {}); }, 900);
   $('endMain').textContent = NET.mode === 'solo' ? 'Rejouer' : NET.mode === 'host' ? 'Revenir au salon' : 'En attente de l\'hôte…';
   $('endMain').disabled = NET.mode === 'client';
@@ -5994,7 +6028,7 @@ function showSpectate() {
   const ghost = G.b[G.me].ghost;
   $('endKick').textContent = 'Éliminé'; $('endTitle').textContent = 'Ta clairière est tombée';
   $('endText').textContent = ghost ? 'Tu deviens un fantôme : maudis ou bénis les joueurs encore en jeu jusqu\'à la fin.' : 'La partie continue entre les autres joueurs. Tu peux la regarder jusqu\'au bout.';
-  renderSummary(false);
+  renderSummary(false); jtFinHide();
   $('endMain').textContent = ghost ? 'Continuer en fantôme' : 'Regarder la fin'; $('endMain').disabled = false; $('endAlt').textContent = 'Quitter la partie';
   G.watching = true; G.aim = null; closePop(); toggleWheel(false); setDock(); layout();
   setTimeout(() => { if (G.watching && !G.ended) showOv('endOv', true); }, 500);
@@ -6543,8 +6577,8 @@ function relicPool(b) { return RELIC_KEYS.filter(k => !(RELICS[k].perm && b.jt.r
 const MAISONS = ['cerf', 'ours', 'griffon', 'renard'];
 const EMB = {
   cerf:    { n: 'Cerf blanc', m: 'Maison du Cerf blanc', jeu: 'Le contrôle', aura: 'Les créatures ralentissent près de lui', pn: 'Brame', pd: 'Fige les créatures autour pendant 2 s', cd: 24 },
-  ours:    { n: 'Ours', m: "Maison de l'Ours", jeu: 'La force', aura: 'Les tours voisines frappent plus fort les grosses créatures', pn: 'Coup de patte', pd: 'Assomme la plus grosse créature à portée', cd: 20 },
-  griffon: { n: 'Corbeau', m: 'Maison du Corbeau', jeu: 'Le ciel', aura: 'Les tours voisines gagnent de la portée', pn: 'Piqué', pd: "Abat d'un coup une créature volante", cd: 26 },
+  ours:    { n: 'Grand Ours', m: 'Maison du Grand Ours', jeu: 'La force', aura: 'Les tours voisines frappent plus fort les grosses créatures', pn: 'Coup de patte', pd: 'Assomme la plus grosse créature à portée', cd: 20 },
+  griffon: { n: 'Corbeau des brumes', m: 'Maison du Corbeau des brumes', jeu: 'Le ciel', aura: 'Les tours voisines gagnent de la portée', pn: 'Piqué', pd: "Abat d'un coup une créature volante", cd: 26 },
   renard:  { n: 'Renard de braise', m: 'Maison du Renard de braise', jeu: 'La ruse', aura: '+1 or par créature tuée près de lui', pn: 'Ruse', pd: 'Fait faire demi-tour aux créatures autour', cd: 22 },
 };
 // powers offered at levels II, III and IV: two drawn at random, the player keeps one
@@ -6658,6 +6692,7 @@ function startWave() {
 }
 function jtWaveStarted() {
   if (!G.jt) return;
+  for (const b of G.b) (b.jt.hist = b.jt.hist || []).push(Math.max(0, b.lives));
   const J = G.jt, w = G.wave, e = progAt(w);
   // the map changes announced a wave ago
   for (const b of G.b) {
@@ -7213,6 +7248,7 @@ function jtApplySnap(s) {
 // a new wave seen by a guest: the herald says what the host's herald says
 function jtClientWave(w) {
   const J = G.jt; if (!J || !G.running) return;
+  { const me = G.b[G.me]; if (me && me.jt) (me.jt.hist = me.jt.hist || []).push(Math.max(0, me.lives)); }
   const e = progAt(w), stage = jtStage(w), prevStage = w > 1 ? jtStage(w - 1) : null, fresh = J.chars.find((c, i) => charWave(i) === w) || '';
   const newStage = stage && w > 1 && stage !== prevStage ? stage.n : !stage && prevStage ? 'Cauchemar' : '';
   jtHerald({ type: 'wave', w, k: e && e.k && EV[e.k] && (EV[e.k].mod || EV[e.k].map) ? e.k : '', stage: newStage, fresh });
@@ -7238,13 +7274,15 @@ Object.assign(BEASTS, {
   ogre: { down: [["...........................", "...........GgG.G...........", "..........GgrgGg...........", ".........dgggggd...........", ".........xsSSSSs...........", "........xsSSSSSSs.....WWW..", ".......xxXXSSSXXSs...WWOWW.", ".......XxskSSSSkSs..WWWWWO.", "........xssSxSSSs...iiiiiO.", "........xfmmmmmfs....WWWO..", ".........xsssSSs.....WWO...", ".....EeEnEeEEnEeEEn.WWO....", ".....eEEeEEnEeEEeEEEWO.....", "...xssuxssssssssSStTsSs....", "..xsssuxsssssssssSSTsSSs...", "..xsssuxsssssssssSSTxSSs...", "..xsssuxxssssssssSSTxSSs...", "..xsssuuxxssssssSSsTxSSs...", "..xsSsuuuxxssssssssTxSSs...", "..xSSLLLLLLLGLLLLLLLLSSs...", "..uxxuupPPPPPPPPPPptxSsTT..", "..uuuuupPPPpuupPPPpttttTT..", "..uuuuusSSSsuusSSSsttttTT..", "..uuuubBBBBBuubBBBBBtttTT..", "..uuuuvvvvvvuuvvvvvvtttTT.."], ["...........GgG.G...........", "..........GgrgGg...........", ".........dgggggd...........", ".........xsSSSSs...........", "........xsSSSSSSs.....WWW..", ".......xxXXSSSXXSs...WWOWW.", ".......XxskSSSSkSs..WWWWWO.", "........xssSxSSSs...iiiiiO.", "........xfmmmmmfs....WWWO..", ".........xsssSSs.....WWO...", ".....EeEnEeEEnEeEEn.WWO....", ".....eEEeEEnEeEEeEEEWO.....", "...xssuxssssssssSStTsSs....", "..xsssuxsssssssssSSTsSSs...", "..xsssuxsssssssssSSTxSSs...", "..xsssuxxssssssssSSTxSSs...", "..xsssuuxxssssssSSsTxSSs...", "..xsSsuuuxxssssssssTxSSs...", "..xSSLLLLLLLGLLLLLLLLSSs...", "..uxxuupPPPPPPPPPPptxSsTT..", "..uuuuupPPPpuupPPPpttttTT..", "..uuuuupPPPpuupPPPpttttTT..", "..uuuuusSSSsuusSSSsttttTT..", "..uuuuvvvvvvuubBBBBBtttTT..", "..uuuuuuuuuuuuvvvvvvtttTT.."], ["...........................", "...........GgG.G...........", "..........GgrgGg...........", ".........dgggggd...........", ".........xsSSSSs...........", "........xsSSSSSSs.....WWW..", ".......xxXXSSSXXSs...WWOWW.", ".......XxskSSSSkSs..WWWWWO.", "........xssSxSSSs...iiiiiO.", "........xfmmmmmfs....WWWO..", ".........xsssSSs.....WWO...", ".....EeEnEeEEnEeEEn.WWO....", ".....eEEeEEnEeEEeEEEWO.....", "...xssuxssssssssSStTsSs....", "..xsssuxsssssssssSSTsSSs...", "..xsssuxsssssssssSSTxSSs...", "..xsssuxxssssssssSSTxSSs...", "..xsssuuxxssssssSSsTxSSs...", "..xsSsuuuxxssssssssTxSSs...", "..xSSLLLLLLLGLLLLLLLLSSs...", "..uxxuupPPPPPPPPPPptxSsTT..", "..uuuuupPPPpuupPPPpttttTT..", "..uuuuusSSSsuusSSSsttttTT..", "..uuuubBBBBBuubBBBBBtttTT..", "..uuuuvvvvvvuuvvvvvvtttTT.."], ["...........GgG.G...........", "..........GgrgGg...........", ".........dgggggd...........", ".........xsSSSSs...........", "........xsSSSSSSs.....WWW..", ".......xxXXSSSXXSs...WWOWW.", ".......XxskSSSSkSs..WWWWWO.", "........xssSxSSSs...iiiiiO.", "........xfmmmmmfs....WWWO..", ".........xsssSSs.....WWO...", ".....EeEnEeEEnEeEEn.WWO....", ".....eEEeEEnEeEEeEEEWO.....", "...xssuxssssssssSStTsSs....", "..xsssuxsssssssssSSTsSSs...", "..xsssuxsssssssssSSTxSSs...", "..xsssuxxssssssssSSTxSSs...", "..xsssuuxxssssssSSsTxSSs...", "..xsSsuuuxxssssssssTxSSs...", "..xSSLLLLLLLGLLLLLLLLSSs...", "..uxxuupPPPPPPPPPPptxSsTT..", "..uuuuupPPPpuupPPPpttttTT..", "..uuuuupPPPpuupPPPpttttTT..", "..uuuuusSSSsuusSSSsttttTT..", "..uuuubBBBBBuuvvvvvvtttTT..", "..uuuuvvvvvvuuuuuutttttTT.."]], side: [["........................", "...........GgG.G........", "..........GgrgGg........", "..........dgggggd.......", "..........xsSSSSs.......", ".........xsSSSSSS.......", "........xxsSSSXXSs......", "........XxsSSSSkSWWW....", ".........xssSSSSWWOW....", "..........xsSSmWWWWO....", "...........xsssiiiiO....", "........EeEnEeE.WWO.....", ".....uueEEeEEnEWWO......", "....uuuuxsssxssWO.......", "...uuuuuxsssxsssOs......", "...uuuuuxsssxsssSSs.....", "..uuuuuuxxssxsssSSs.....", "..uuuuuuuxxsxsSsSs......", ".uuuuuuuuuxxxSSsss......", ".uuuuuLLLLLLLLLLLL......", ".uuuuuupPPPPPPPPp.......", ".uuuuuupPPp..pPPp.......", ".uuuuuusSSs..sSSs.......", ".uuuuubBBBBB.bBBBBB.....", "..uuuuvvvvvv.vvvvvv....."], ["...........GgG.G........", "..........GgrgGg........", "..........dgggggd.......", "..........xsSSSSs.......", ".........xsSSSSSS.......", "........xxsSSSXXSs......", "........XxsSSSSkSWWW....", ".........xssSSSSWWOW....", "..........xsSSmWWWWO....", "...........xsssiiiiO....", "........EeEnEeE.WWO.....", ".....uueEEeEEnEWWO......", "....uuuuxsssxssWO.......", "...uuuuuxsssxsssOs......", "...uuuuuxsssxsssSSs.....", "..uuuuuuxxssxsssSSs.....", "..uuuuuuuxxsxsSsSs......", ".uuuuuuuuuxxxSSsss......", ".uuuuuLLLLLLLLLLLL......", ".uuuuuuupPPPPPPp........", ".uuuuuuu.pPPPPp.........", ".uuuuuuu.pPPPPp.........", ".uuuuuuu.sSSSSs.........", ".uuuuuu..bBBBBBB........", "..uuuu...vvvvvvv........"], ["........................", "...........GgG.G........", "..........GgrgGg........", "..........dgggggd.......", "..........xsSSSSs.......", ".........xsSSSSSS.......", "........xxsSSSXXSs......", "........XxsSSSSkSWWW....", ".........xssSSSSWWOW....", "..........xsSSmWWWWO....", "...........xsssiiiiO....", "........EeEnEeE.WWO.....", ".....uueEEeEEnEWWO......", "....uuuuxsssxssWO.......", "...uuuuuxsssxsssOs......", "...uuuuuxsssxsssSSs.....", "..uuuuuuxxssxsssSSs.....", "..uuuuuuuxxsxsSsSs......", ".uuuuuuuuuxxxSSsss......", ".uuuuuLLLLLLLLLLLL......", ".uuuuuupPPPPPPPPp.......", ".uuuuuupPPp..pPPp.......", ".uuuuuusSSs..sSSs.......", ".uuuuubBBBBB.bBBBBB.....", "..uuuuvvvvvv.vvvvvv....."], ["...........GgG.G........", "..........GgrgGg........", "..........dgggggd.......", "..........xsSSSSs.......", ".........xsSSSSSS.......", "........xxsSSSXXSs......", "........XxsSSSSkSWWW....", ".........xssSSSSWWOW....", "..........xsSSmWWWWO....", "...........xsssiiiiO....", "........EeEnEeE.WWO.....", ".....uueEEeEEnEWWO......", "....uuuuxsssxssWO.......", "...uuuuuxsssxsssOs......", "...uuuuuxsssxsssSSs.....", "..uuuuuuxxssxsssSSs.....", "..uuuuuuuxxsxsSsSs......", ".uuuuuuuuuxxxSSsss......", ".uuuuuLLLLLLLLLLLL......", ".uuuuuuupPPPPPPp........", ".uuuuuuu.pPPPPp.........", ".uuuuuuu.pPPPPp.........", ".uuuuuuu.sSSSSs.........", ".uuuuuu..bBBBBBB........", "..uuuu...vvvvvvv........"]], up: [["...........................", "...........G.GgG...........", "...........gGgggG..........", "...........dgggggd.........", "...........xsSSSSs.........", "..WWW.....xsSSSSSSs........", ".WWOWW...xxsSSSSSSSs.......", ".OWWWWW..XxsSSSSSSsX.......", ".Oiiiii...xssSSSSSs........", "..OWWW....xxsSSSSss........", "...OWW.....xxsssSs.........", "....OWW.nEEeEEnEeEnEeE.....", ".....OWEEEeEEeEnEEeEEe.....", "....sSsuuutttttttTTT.ssx...", "...sSSsuuuttttttttTTTsssx..", "...sSSxuuuttttttttTTTsssx..", "...sSSxuuutttttttttTTsssx..", "...sSSxuuutttttttttTTsssx..", "...sSSxuuutttttttttTTsSsx..", "...sSSSuuutttuttttutTsSSx..", "....sSxuuutttuttttutTTxx...", "....uuuuuuttutttttutTTT....", "....uuuuuuttuttttuttTTT....", ".......bBBBBB..bBBBBB......", ".......vvvvvv..vvvvvv......"], ["...........G.GgG...........", "...........gGgggG..........", "...........dgggggd.........", "...........xsSSSSs.........", "..WWW.....xsSSSSSSs........", ".WWOWW...xxsSSSSSSSs.......", ".OWWWWW..XxsSSSSSSsX.......", ".Oiiiii...xssSSSSSs........", "..OWWW....xxsSSSSss........", "...OWW.....xxsssSs.........", "....OWW.nEEeEEnEeEnEeE.....", ".....OWEEEeEEeEnEEeEEe.....", "....sSsuuutttttttTTT.ssx...", "...sSSsuuuttttttttTTTsssx..", "...sSSxuuuttttttttTTTsssx..", "...sSSxuuutttttttttTTsssx..", "...sSSxuuutttttttttTTsssx..", "...sSSxuuutttttttttTTsSsx..", "...sSSSuuutttuttttutTsSSx..", "....sSxuuutttuttttutTTxx...", "....uuuuuuttutttttutTTT....", "....uuuuuuttuttttuttTTT....", "....uuuuuuttuttttuttTTT....", ".......vvvvvv..bBBBBB......", "...............vvvvvv......"], ["...........................", "...........G.GgG...........", "...........gGgggG..........", "...........dgggggd.........", "...........xsSSSSs.........", "..WWW.....xsSSSSSSs........", ".WWOWW...xxsSSSSSSSs.......", ".OWWWWW..XxsSSSSSSsX.......", ".Oiiiii...xssSSSSSs........", "..OWWW....xxsSSSSss........", "...OWW.....xxsssSs.........", "....OWW.nEEeEEnEeEnEeE.....", ".....OWEEEeEEeEnEEeEEe.....", "....sSsuuutttttttTTT.ssx...", "...sSSsuuuttttttttTTTsssx..", "...sSSxuuuttttttttTTTsssx..", "...sSSxuuutttttttttTTsssx..", "...sSSxuuutttttttttTTsssx..", "...sSSxuuutttttttttTTsSsx..", "...sSSSuuutttuttttutTsSSx..", "....sSxuuutttuttttutTTxx...", "....uuuuuuttutttttutTTT....", "....uuuuuuttuttttuttTTT....", ".......bBBBBB..bBBBBB......", ".......vvvvvv..vvvvvv......"], ["...........G.GgG...........", "...........gGgggG..........", "...........dgggggd.........", "...........xsSSSSs.........", "..WWW.....xsSSSSSSs........", ".WWOWW...xxsSSSSSSSs.......", ".OWWWWW..XxsSSSSSSsX.......", ".Oiiiii...xssSSSSSs........", "..OWWW....xxsSSSSss........", "...OWW.....xxsssSs.........", "....OWW.nEEeEEnEeEnEeE.....", ".....OWEEEeEEeEnEEeEEe.....", "....sSsuuutttttttTTT.ssx...", "...sSSsuuuttttttttTTTsssx..", "...sSSxuuuttttttttTTTsssx..", "...sSSxuuutttttttttTTsssx..", "...sSSxuuutttttttttTTsssx..", "...sSSxuuutttttttttTTsSsx..", "...sSSSuuutttuttttutTsSSx..", "....sSxuuutttuttttutTTxx...", "....uuuuuuttutttttutTTT....", "....uuuuuuttuttttuttTTT....", "....uuuuuuttuttttuttTTT....", ".......bBBBBB..vvvvvv......", ".......vvvvvv.............."]], pal: k => ({ "S": "#b8c28a", "s": "#939d68", "x": "#6c7449", "X": "#4f5534", "k": "#2a2420", "w": "#f6f1e4", "m": "#4a2a22", "f": "#f3ecd8", "G": "#f6dc7a", "g": "#d9ac46", "d": "#9e7a2c", "r": "#c0453c", "E": "#f4f0e6", "e": "#d2ccbe", "n": "#2e2a30", "W": "#9a7650", "O": "#6e5236", "V": "#4a3826", "i": "#a2a9b2", "P": "#5a4a3e", "p": "#3e3229", "B": "#5a4636", "b": "#3e3026", "v": "#2e241e", "L": "#3a2c24", "T": k.l, "t": k.c, "u": k.C }) },
 });
 const JT_STEP = { chap: 9, perch: 9, etend: 8, basil: 7, follet: 6, geant: 6, mimic: 10, bombe: 9, illus: 7, troll: 7, ogre: 6 };
-const EMB_ST = { cerf: [".b..b.........b..b.", "..b.b.........b.b..", "..bb.b.......b.bb..", "....bb.......bb....", ".....bb.....bb.....", "......bb...bb......", ".....4.b322b.1.....", "....443333222211...", ".....443e32e211....", ".......43322.......", ".......43322.......", ".......4aaa2.......", ".......4anc2.......", "......443322.......", ".....4433332211....", ".....4333333221....", ".....433.33.221....", ".....43..32..21....", ".....43..32..21....", ".....44..33..22....", "..ppppppppppppppp..", "..qqqqqqqqqqqqqqq.."], ours: ["...........4.......", "..........421......", "..........42n221...", "........423332e21..", ".......43333332dcbn", ".......4333333344n.", "......433333341....", ".....43333321......", ".....43333321......", ".....43333321......", "...4233333321......", "..43333333321......", "..43333333321......", ".43333333333321....", ".43333333333321....", "..4333333333321....", "..4333333333321....", "..4333333333321....", "..4333333433321....", "..4334441.43321....", ".ffff.....fffff....", "..ppppppppppppppp..", "..qqqqqqqqqqqqqqq.."], griffon: ["41.................41", "421.......421.....421", ".421.....4e4321..421.", ".4321...433334422321.", "..4321..43321..4321..", "..43321.43321.43321..", "...433323333323321...", "....4333333333321....", ".....44333333341.....", ".......4333321.......", "........43321........", ".......4334321.......", "......4441.4441......", ".........f.f.........", "..ppppppppppppppppp..", "..qqqqqqqqqqqqqqqqq.."], renard: ["....4.........2....", "....44.......21....", "....4c4.....2c1....", "....4cc33332cc1....", "....44333333221....", ".....43e333e21.....", ".....433333321.....", "......4aaaaa2......", ".......aanaa.......", "........aaa........", ".......4bbb2.......", "......43bbb21......", "......43bbb321.....", ".....4433b3321.....", ".....433333321.11..", ".....433.3.321g11..", ".....43..3..211gg..", ".....44..3..2211g..", "..ppppppppppppppp..", "..qqqqqqqqqqqqqqq.."] };
-const EMB_STONE = { cerf: {"1": "#f3f2ec", "2": "#d9d9d3", "3": "#bbbcb7", "4": "#96989a", "5": "#707479", "a": "#e8dcc2", "b": "#cdbf9f", "c": "#ae9f80", "d": "#8a7d63"}, ours: {"1": "#b8a28c", "2": "#9a8470", "3": "#7d6958", "4": "#604f43", "5": "#463a32", "a": "#d2c1aa", "b": "#b4a28b", "c": "#94826d", "d": "#746452"}, griffon: {"1": "#9aa4b6", "2": "#788296", "3": "#5a6377", "4": "#424a5c", "5": "#2c3240", "a": "#c9a24a", "b": "#a8853a", "c": "#86682c", "d": "#634c20"}, renard: {"1": "#e6a47e", "2": "#ca855e", "3": "#aa6a48", "4": "#875036", "5": "#633a28", "a": "#f0e4d2", "b": "#d8c8b2", "c": "#5a3428", "d": "#3e2620"} };
+const EMB_ST = { cerf: [".b..b.........b..b.", "..b.b.........b.b..", "..bb.b.......b.bb..", "....bb.......bb....", ".....bb.....bb.....", "......bb...bb......", ".....4.b322b.1.....", "....443333222211...", ".....443e32e211....", ".......43322.......", ".......43322.......", ".......4aaa2.......", ".......4anc2.......", "......443322.......", ".....4433332211....", ".....4333333221....", ".....433.33.221....", ".....43..32..21....", ".....43..32..21....", ".....44..33..22....", "..ppppppppppppppp..", "..qqqqqqqqqqqqqqq.."], ours: ["....41.......41....", "...4321.421.4321...", "...44n42333232n1...", ".....433333321.....", ".....42e4332e1.....", ".....433333321.....", ".....432bnnb21.....", ".....432dccb21.....", ".....4332db421.....", "....43333333321....", "....43333333321....", "....43333333321....", "....43333333321....", "...4333333333321...", "..433333343333321..", ".43333333443333321.", ".43333333443333321.", "..433333344333321..", "...4443334433341...", ".fff..fff44fff..fff", "..ppppppppppppppp..", "..qqqqqqqqqqqqqqq.."], griffon: ["4.4...............4.4", "4221.............4321", ".4321...........4321.", "..4321.........4321..", "..43321..421..43321..", "...43321.4e421.4321..", "...43321.433341.41...", "....4321.4321........", ".....43323333221.....", "......433333321......", ".......4333321.......", "........43321........", ".......4334321.......", "......4441.4441......", ".........f.f.........", "..ppppppppppppppppp..", "..qqqqqqqqqqqqqqqqq.."], renard: ["....4.........2....", "....44.......21....", "....4c4.....2c1....", "....4cc33332cc1....", "....44333333221....", ".....43e333e21.....", ".....433333321.....", "......4aaaaa2......", ".......aanaa.......", "........aaa........", ".......4bbb2.......", "......43bbb21......", "......43bbb321.....", ".....4433b3321.....", ".....433333321.11..", ".....433.3.321g11..", ".....43..3..211gg..", ".....44..3..2211g..", "..ppppppppppppppp..", "..qqqqqqqqqqqqqqq.."] };
+const EMB_STONE = { cerf: {"1": "#f3f2ec", "2": "#d9d9d3", "3": "#bbbcb7", "4": "#96989a", "5": "#707479", "a": "#e8dcc2", "b": "#cdbf9f", "c": "#ae9f80", "d": "#8a7d63"}, ours: {"1": "#b8a28c", "2": "#9a8470", "3": "#7d6958", "4": "#604f43", "5": "#463a32", "a": "#d2c1aa", "b": "#b4a28b", "c": "#94826d", "d": "#746452"}, griffon: {"1": "#737885", "2": "#50545e", "3": "#373a42", "4": "#26282e", "5": "#18191d", "a": "#c9a24a", "b": "#a8853a", "c": "#86682c", "d": "#634c20"}, renard: {"1": "#e6a47e", "2": "#ca855e", "3": "#aa6a48", "4": "#875036", "5": "#633a28", "a": "#f0e4d2", "b": "#d8c8b2", "c": "#5a3428", "d": "#3e2620"} };
 const EMB_COMMON = {"y": "#d9a441", "e": "#e6c35a", "n": "#2e2a2c", "f": "#ece4d0", "g": "#f2a24a", "w": "#7192b6", "p": "#a9aeb6", "q": "#82888f"};
 const EMB_GILD = { a: '#fff1b0', b: '#f0cf62', c: '#c99a3a', d: '#8f6a26', e: '#fff1b0', y: '#f0cf62' };
 const EMB_GOLD = {"1": "#fff4c0", "2": "#f3d36a", "3": "#d9ae44", "4": "#ad8530", "5": "#7d5e22", "a": "#fff8d8", "b": "#f6dc84", "c": "#d0a23e", "d": "#946c26", "e": "#ffffff", "n": "#5a4218", "f": "#fff8d8", "g": "#ffd36a", "y": "#fff1b0"};
 const HER_ROWS = { idle_a: ["S...........TTT...", ".S..MMMm.....T....", "..SMMMMMMm...T....", ".hMMMMMMMMMm.T....", "..mmmmmmmmm..T....", "GGgGGGGGGgGG.T....", "..GGGYGGYGg..T....", "..gGGGGkGGg..TP...", "...NNNLNNN...TQP..", "..NNNNLNNNGGGT....", "..nNNNLNNNn..TP...", "...BBBKBBB...t....", "...BB...BB........", "..xxxxxxxxxx......"], idle_b: ["S...........TTT...", ".S..MMMm.....T....", "..SMMMMMMm...T....", ".hMMMMMMMMMm.T....", "..mmmmmmmmm..T....", "GGgGGGGGGgGG.T....", "..GGGgGGgGg..T....", "..gGGGGkGGg..TQ...", "...NNNLNNN...TPP..", "..NNNNLNNNGGGT....", "..nNNNLNNNn..T....", "...BBBKBBB...t....", "...BB...BB........", "..xxxxxxxxxx......"], ann_a: ["S.................", ".S.MMMm...........", ".SMMMMMMm.........", "hMMMMMMMMMm.......", ".mmmmmmmmm........", "GGgGGGGGGgGG......", "..GGGYGGYGg.....tT", "..gGGGGGGGTTTTTTTT", "...NNNLNNN.PQPP.tT", "..NNNNLNNG..PPP...", "..nNNNLNNNn.......", "...BBBKBBB........", "...BB...BB........", "..xxxxxxxxxx......"], ann_b: ["S.................", ".S.MMMm...........", ".SMMMMMMm.........", "hMMMMMMMMMm.......", ".mmmmmmmmm.......W", "GGgGGGGGGgGG......", "..GGGYGGYGg.....tT", "..gGGGGGGGTTTTTTTT", "...NNNLNNN.PQPP.tT", "..NNNNLNNG..PPP..W", "..nNNNLNNNn.......", "...BBBKBBB........", "...BB...BB........", "..xxxxxxxxxx......"] };
 const HER_PAL = { "M": "#85325e", "m": "#64233f", "h": "#a24a78", "S": "#e6e1d4", "s": "#b9b2a2", "G": "#6f9465", "g": "#55744f", "Y": "#d6f08a", "k": "#26302a", "N": "#2d285d", "n": "#221f47", "L": "#3e3a7a", "B": "#56312e", "b": "#7a5236", "K": "#c9a85c", "T": "#d1b062", "t": "#9a7e45", "P": "#d8d0c0", "Q": "#85325e", "W": "#e6e1d4", "x": "#1f2e35" };
+const JEST_ROWS = { front: [".b.........b...", ".Rr.......oO...", "..RRr...ooOO...", "...RRRrOOOO.MM.", "...rRRRoOOo.MkM", "....sSSSSs..MMM", "....sSkSkS...W.", "....sSSSSs...W.", ".....sSSs....W.", "...RROOOrRr..W.", "..SrRROOOrRRSW.", "..SrRRoOOOrr.W.", "...OOOoRRRR..W.", "...ooOO.RRr....", "....L....L.....", "....L....L.....", "...ll....ll...."], throw: ["...b.........b...", "...Rr.......oO...", "....RRr...ooOO...", "JJ...RRRrOOOO.MM.", "jj...rRRRoOOo.MkM", "S.....sSSSSs..MMM", ".S....sSkSkS...W.", "..R...sSSSSs...W.", "...r...sSSs....W.", ".....RROOOrRr..W.", ".....rRROOOrRRSW.", ".....rRRoOOOrr.W.", ".....OOOoRRRR..W.", ".....ooOO.RRr....", "......L....L.....", "......L....L.....", ".....ll....ll...."], ann: ["...b..........MM", "...Rr.......oMkM", "....RRr...ooOMMM", ".....RRRrOOOO.W.", ".....rRRRoOOo.W.", ".S....sSSSSs..W.", "..S...sSkSkS..W.", "..R...sSSSSs..W.", "...r...sSSs...W.", ".....RROOOrRr.W.", ".....rRROOOrRSW.", ".....rRRoOOOr.S.", ".....OOOoRRRR...", ".....ooOO.RRr...", "......L....L....", "......L....L....", ".....ll....ll..."] };
+const JEST_PAL = { "R": "#a24a40", "r": "#7a3530", "O": "#c9a04a", "o": "#93722e", "b": "#f0d878", "S": "#c49a7a", "s": "#9a7456", "k": "#2e2a30", "M": "#ece4d0", "m": "#b8ad94", "W": "#8a6a48", "L": "#4a3c40", "l": "#2e2729", "J": "#efe7d4", "j": "#c9bea8" };
 const PROP_ART = {
   rock: { frames: [["......aabbba.......", "....abbbcccbba.....", "...abbcccccccba....", "..abccccccccccba...", "..abcccccccccccda..", ".abccccccccccccdda.", ".abcccccccccccddda.", ".adccccccccccdddda.", "..addddddddddddda..", "...aaddddddddddaa..", ".....aaaaaaaaaa...."]], pal: {"a": "#7a808b", "b": "#e2e4e6", "c": "#bcc0c6", "d": "#9a9fa8"} },
   column: { frames: [[".b.bb.", "bccccb", ".cddc.", ".cddc.", ".cddc.", ".cdd..", ".cddc.", "bccccb", "aaaaaa"]], pal: {"a": "#7a808b", "b": "#e2e4e6", "c": "#bcc0c6", "d": "#9a9fa8"} },
@@ -8453,7 +8491,7 @@ function palFinish() {
   sfx(w && w.k === G.me ? 'win' : 'jackpot');
 }
 function palClose() {
-  G.entr = null; $('jtEntr').hidden = true; cache.palTxt = null; PAL.drag = null; $('jtPalRes').hidden = true;
+  G.entr = null; $('jtEntr').hidden = true; $('jtJRes').hidden = true; cache.palTxt = null; PAL.drag = null; $('jtPalRes').hidden = true;
   // the joust goes on where it stopped: the wave the interlude stood for starts now
   G.nextWave = 0.01;
 }
@@ -8461,7 +8499,7 @@ function palClose() {
 /* ---------------------------------------------------------------- drawing and input */
 const PAL = { cv: null, art: null, ax: null, drag: null };
 function palOpen() {
-  const el = $('jtEntr'); el.hidden = false;
+  const el = $('jtEntr'); el.hidden = false; JEST.n = 0; JEST.until = 0;
   PAL.cv = $('jtPalCv'); if (!PAL.art) PAL.art = mkCanvas(PAL_W + 20, PAL_H + 20);
   palLayout(); palDraw(); palText();
 }
@@ -8488,8 +8526,12 @@ function palDraw() {
   P.rect(ox - 7, oy - 7, PAL_W + 14, 5, '#5a4436'); P.hl(ox - 7, oy - 3, PAL_W + 14, '#6b5238');
   for (let i = 0; i < PAL_W; i += 2) P.px(ox + i, oy + PAL_LINE + 8, '#ece6d6');
   // the jack (the "maître"), soft rings around it
-  const jx = ox + E.jack.x, jy = oy + E.jack.y;
-  for (const rr of [14, 28]) circlePx(jx, jy, rr, '#a3896a', 1);
+  // during the intro the jester throws the jack: it flies from his hand and lands, then its rings show
+  const fly = E.phase === 'intro' ? Math.min(1, (E.t || 0) / 1.1) : 1, [hx, hy] = [ox + JEST_X0 + 1, oy + JEST_Y0 + 4];
+  const arc = u => [Math.round(hx + (ox + E.jack.x - hx) * u), Math.round(hy + (oy + E.jack.y - hy) * u - Math.sin(u * Math.PI) * 18)];
+  const [jx, jy] = fly < 1 ? arc(fly) : [ox + E.jack.x, oy + E.jack.y];
+  if (fly < 1) for (let u = 0.08; u < fly - 0.06; u += 0.08) { const [dx, dy] = arc(u); P.px(dx, dy, '#8a7258'); }
+  else for (const rr of [14, 28]) circlePx(jx, jy, rr, '#a3896a', 1);
   // the palets: lead discs with the player's colour inlaid
   const puck = (cx, cy, k, lifted) => {
     const col = PCOL[pcol(k)] || '#8a8a8a';
@@ -8517,7 +8559,9 @@ function palDraw() {
       P.ring(Math.round(cx + Math.sin(a.ang) * d), Math.round(cy - Math.cos(a.ang) * d), 5, 1, '#8a6a2a', 1);
     }
   }
+  jestDraw(x, ox, oy);
   P = prev;
+  jestUI(E);
   const c2 = PAL.cv.getContext('2d'); c2.imageSmoothingEnabled = false;
   c2.clearRect(0, 0, PAL.cv.width, PAL.cv.height); c2.drawImage(ac, 0, 0, PAL.cv.width, PAL.cv.height);
 }
@@ -8551,15 +8595,15 @@ function palText() {
   who.innerHTML = order.map(k2 => { const n = left(k2), tot = E.order.filter(x => x === k2).length; return `<span class="pw${k2 === k && (E.phase === 'aim' || E.phase === 'roll') ? ' on' : ''}">${palIcon(k2)}<span>${palName(k2)}</span><em class="jt-pal-dots">${'<i></i>'.repeat(n)}${'<i class="off"></i>'.repeat(Math.max(0, tot - n))}</em></span>`; }).join('');
   // what happens now
   let kick = '', msg = '';
-  if (E.phase === 'intro') { kick = 'LE HÉRAUT'; msg = 'Deux palets chacun : le plus près du maître gagne'; }
+  if (E.phase === 'intro') { kick = 'LE BOUFFON'; msg = '« Oyez ! Deux palets chacun. Le plus près du maître gagne une relique ! »'; }
   else if (E.phase === 'aim' && b) { if (mine) { kick = `À TOI · ${nth === 1 ? '1ER' : nth + 'E'} PALET`; msg = 'Tire vers le bas, vise, lâche'; } else { kick = `${nth === 1 ? '1ER' : nth + 'E'} PALET`; msg = `${palName(k)} vise…`; } }
   else if (E.phase === 'roll' && b) { kick = k === G.me ? 'TON PALET' : 'LE PALET DE ' + esc(b.name).toUpperCase(); msg = 'Il glisse vers le maître…'; }
-  else if (E.phase === 'count') { kick = 'LE HÉRAUT'; msg = 'On mesure…'; }
+  else if (E.phase === 'count') { kick = 'LE BOUFFON'; msg = '« On mesure… on mesure… »'; }
   $('jtPalMsg').innerHTML = `<span class="jt-k">${kick}</span><b>${msg}</b>`;
   $('jtPalFoot').hidden = !!end;
   // the result and the prize, in one panel over the end of the alley
   const res = $('jtPalRes'), me = G.b[G.me];
-  if (!end) { res.hidden = true; setTxt('jtPalSub', 'Le plus près du maître choisit une relique'); return; }
+  if (!end) { res.hidden = true; $('jtJRes').hidden = true; setTxt('jtPalSub', E.phase === 'intro' ? 'Le Bouffon lance le maître' : 'Le plus près du maître choisit une relique'); return; }
   const w = E.res[0] && E.res[0].d < Infinity ? E.res[0].k : -1, s2 = E.second;
   setTxt('jtPalSub', w < 0 ? 'Aucun palet n’est resté dans l’allée' : w === G.me ? 'Ton palet est le plus près du maître' : `Le palet de ${G.b[w].name} est le plus près du maître`);
   let body = '';
@@ -8568,8 +8612,14 @@ function palText() {
   else if (w >= 0) body = `<div class="jt-n">${palName(w)} ${E.botRelic ? 'prend : ' + esc(RELICS[E.botRelic].n) : 'choisit une relique'}</div>${E.botRelic ? `<div class="jt-d">${esc(RELICS[E.botRelic].d)}</div>` : ''}`;
   else body = '<div class="jt-n">Pas de relique cette fois</div>';
   const go = NET.mode === 'client' ? '<div class="jt-d">L’hôte reprend la joute dans un instant…</div>' : '<button class="go" id="jtPalGo" type="button">Reprendre la joute</button>';
+  // the jester, big for once, hands the relic over
+  const say = w === G.me ? (me.jt.relicPick ? '«\u00a0Bravo\u00a0! La relique est à toi\u00a0: choisis\u00a0!\u00a0»' : '«\u00a0À toi la relique\u00a0!\u00a0»') : w >= 0 ? `«\u00a0${palName(w)} gagne la relique\u00a0!\u00a0»` : '«\u00a0Personne\u00a0? Hé hé\u00a0!\u00a0»';
   res.innerHTML = `<div class="jt-pres-h"><span class="jt-k">${w >= 0 ? '1ER · ' + palName(w).toUpperCase() : 'PERSONNE'}</span><span>${s2 !== undefined ? `2e ${palName(s2)} · un sac de ${E.sack} or` : ''}</span></div>${body}${go}`;
   res.hidden = false;
+  // over the panel (the parchment clips what sticks out of it, so he stands on his own)
+  const jr = $('jtJRes'); jr.innerHTML = `<img class="px" src="${jestImg()}" alt="Le Bouffon"><div class="jt-jbub l">${say}</div>`;
+  const host = res.parentElement.getBoundingClientRect(), rr = res.getBoundingClientRect();
+  jr.style.bottom = (host.bottom - rr.top - 2) + 'px'; jr.style.left = (rr.left - host.left + 8) + 'px'; jr.hidden = false;
 }
 (function palInput() {
   const cv = $('jtPalCv');
@@ -8589,6 +8639,238 @@ function palText() {
   window.addEventListener('resize', relayout);
   if (window.ResizeObserver) new ResizeObserver(relayout).observe(cv.parentElement);
 })();
+
+/* ---------------------------------------------------------------- the masked jester, master of the interlude */
+// He throws the jack from the far end of the alley, has a word on every palet from there, and hands the relic over at
+// the end. Nothing he does changes the game: every screen (host or guest) draws him from the interlude's own state.
+const JEST = { n: 0, say: '', until: 0, img: '' }, JEST_X0 = 3, JEST_Y0 = 2;
+function jestDraw(x, ox, oy) {
+  const E = G.entr; if (!E) return;
+  const intro = E.phase === 'intro', rows = intro ? JEST_ROWS.throw : JEST_ROWS.front, w = rows[0].length, h = rows.length;
+  const x0 = intro ? ox + JEST_X0 : ox + PAL_W - w - 3, y0 = oy + JEST_Y0;
+  x.globalAlpha = 0.35; P.ell(x0 + (w >> 1) + (intro ? 1 : 0), y0 + h, 6, 2, '#3a3026'); x.globalAlpha = 1;
+  // he looks down the alley; while the jack flies his arm is still up
+  P.spr(intro && (E.t || 0) > 1.1 ? JEST_ROWS.front.map(r => '..' + r) : rows, JEST_PAL, x0, y0, !intro);
+}
+function jestImg() { return JEST.img || (JEST.img = pxURL(JEST_ROWS.ann[0].length, JEST_ROWS.ann.length, p => p.spr(JEST_ROWS.ann, JEST_PAL, 0, 0))); }
+// what he says about the palet that has just stopped
+function jestLine(E, p) {
+  const dj = q => Math.hypot(q.x - E.jack.x, q.y - E.jack.y), live = E.pucks.filter(q => !q.out);
+  const best = live.length ? live.reduce((a, c) => dj(a) <= dj(c) ? a : c) : null, nm = p.k === G.me ? '' : ', ' + palName(p.k);
+  const pick = arr => arr[(E.pucks.length * 7 + p.k) % arr.length];
+  if (p.out) return pick(['Hors de l’allée !', 'Perdu dans les fougères !', 'Envolé !']);
+  if (best === p && dj(p) < 9) return pick(['Dans le mille !', 'Il embrasse le maître !']);
+  if (best === p) return pick([`Joli coup${nm} !`, 'Ça, c’est du palet !']);
+  if (p.y > E.jack.y + 30) return pick([`Trop court${nm} !`, 'Il a peur du maître ?']);
+  if (p.y < E.jack.y - 22) return pick([`Trop long${nm} !`, 'Un peu fort, hé hé !']);
+  return pick(['Pas mal… hé hé !', 'Presque !']);
+}
+// his little bubble at the far end of the alley: "Hop là !" when he throws the jack, then a word on each palet
+function jestUI(E) {
+  const bub = $('jtJBub'); if (!bub || !PAL.cv) return;
+  if (E.pucks.length > JEST.n && E.phase !== 'roll') { JEST.n = E.pucks.length; JEST.say = jestLine(E, E.pucks[E.pucks.length - 1]); JEST.until = performance.now() + 2000; }
+  let txt = '', side = 'r';
+  if (E.phase === 'intro' && (E.t || 0) < 1.7) { txt = 'Hop là\u00a0!'; side = 'l'; }
+  else if ((E.phase === 'aim' || E.phase === 'count') && performance.now() < JEST.until) txt = JEST.say;
+  if (!txt) { if (!bub.hidden) bub.hidden = true; return; }
+  if (bub.dataset.t !== side + txt) { bub.dataset.t = side + txt; bub.textContent = txt; bub.className = 'jt-jbub ' + side; }
+  const box = PAL.cv.parentElement.getBoundingClientRect(), r = PAL.cv.getBoundingClientRect(), sc = r.width / (PAL_W + 20);
+  bub.style.top = (r.top - box.top + (10 + JEST_Y0 + 1) * sc) + 'px';
+  if (side === 'l') { bub.style.left = (r.left - box.left + (10 + JEST_X0 + 20) * sc) + 'px'; bub.style.right = ''; }
+  else { bub.style.right = (box.right - r.left - (10 + PAL_W - 15 - 3 - 3) * sc) + 'px'; bub.style.left = ''; }
+  bub.hidden = false;
+}
+
+
+/* =============== La Grande Joute · the end card =============== */
+// When the joust is over: a card in pixel art that a finger can tilt, a gleam running over it (after Pactum's death card).
+// On it: your House's monument in its clearing (in glory at dawn, or at nightfall), the result, and the game told in
+// pictures: your lives wave after wave, what you killed, sent and stole, the emblem's level and powers, the relics.
+const FIN_W = 150, FIN_H = 225, FIN_R = 9;
+const FIN_BAYER = [[0, 8, 2, 10], [12, 4, 14, 6], [3, 11, 1, 9], [15, 7, 13, 5]];
+const FIN = { art: null, d: null };
+// inside the card's rounded outline, `inset` pixels in
+function finIn(x, y, inset = 0) {
+  const r = Math.max(1, FIN_R - inset), w = FIN_W - 2 * inset, h = FIN_H - 2 * inset, a = x - inset, b = y - inset;
+  if (a < 0 || b < 0 || a >= w || b >= h) return false;
+  let l = 0;
+  if (b < r) { const e = r - b - 0.5; l = r - Math.sqrt(Math.max(0, r * r - e * e)); }
+  else if (b >= h - r) { const e = b - (h - r) + 0.5; l = r - Math.sqrt(Math.max(0, r * r - e * e)); }
+  l = Math.round(l);
+  return a >= l && a < w - l;
+}
+// a pseudo-random series from a word, so the same game always gives the same card
+function finRnd(seed) { let h = 2166136261; for (const ch of String(seed)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return () => { h ^= h << 13; h ^= h >>> 17; h ^= h << 5; return ((h >>> 0) % 100000) / 100000; }; }
+function finData() {
+  const me = G.b[G.me], s = summaryData(), won = G.winner === G.me && !G.spec, jt = me.jt || {};
+  const hist = (jt.hist || []).slice(); if (!hist.length || hist[hist.length - 1] !== Math.max(0, me.lives)) hist.push(Math.max(0, me.lives));
+  return { me, won, rank: s.order.indexOf(G.me) + 1, N: G.N, order: s.order, wave: G.wave, t: G.t, col: pcol(G.me), maison: EMB[jt.maison] ? jt.maison : 'cerf',
+    em: jt.em || null, hist, kills: me.st.kills, sent: jt.sent || 0, stolen: me.st.stolen, chests: me.st.chests,
+    relics: jt.relics ? Object.keys(jt.relics) : [], palet: !!jt.palet, mvp: s.mvp, alive: me.alive };
+}
+// ---- the picture under the words
+function finArt(d) {
+  const [cv, x] = mkCanvas(FIN_W, FIN_H), prev = P; P = mkPen(x);
+  try {
+    const R = finRnd(`fin|${d.maison}|${d.wave}|${Math.round(d.t)}`), c0 = PCOL[d.col] || '#8a8a8a', c1 = PDARK[d.col] || '#5a5a5a';
+    const won = d.won, rim = won ? '#d9ae44' : '#3a4650', rim2 = won ? '#8f6a26' : '#222c35';
+    // the body: a rim (gold when you won), a band in your colour, the dark panel with a little grain
+    for (let y = 0; y < FIN_H; y++) for (let i = 0; i < FIN_W; i++) {
+      if (!finIn(i, y)) continue;
+      let col = '#1d2a33';
+      if (!finIn(i, y, 1)) col = rim2; else if (!finIn(i, y, 2)) col = rim; else if (!finIn(i, y, 4)) col = c0; else if (!finIn(i, y, 5)) col = c1;
+      else if (R() < 0.07) col = '#22313b';
+      P.px(i, y, col);
+    }
+    // ---- the scene: the clearing, the forest, the House's monument
+    const X0 = 8, X1 = 142, Y0 = 8, GY = 80, Y1 = 92;
+    const inScene = (i, y) => i >= X0 && i < X1 && y >= Y0 && y < Y1 && finIn(i, y, 6);
+    const SKY = won ? ['#33506a', '#7d6a6a', '#d79a5a', '#f2c46a'] : ['#0e1620', '#18243a', '#283650', '#3b4a64'];
+    for (let y = Y0; y < GY; y++) {
+      const u = (y - Y0) / (GY - Y0) * (SKY.length - 1), k = Math.min(SKY.length - 2, Math.floor(u)), f = u - k;
+      for (let i = X0; i < X1; i++) if (inScene(i, y)) P.px(i, y, FIN_BAYER[y & 3][i & 3] / 16 < f ? SKY[k + 1] : SKY[k]);
+    }
+    const mx = 75;
+    if (won) {
+      // dawn: rays from behind the monument, a few gold motes
+      for (let y = Y0; y < GY; y++) for (let i = X0; i < X1; i++) {
+        if (!inScene(i, y)) continue;
+        const a = Math.atan2(y - 60, i - mx), dist = Math.hypot(i - mx, y - 60), band = Math.abs(Math.sin(a * 5)) > 0.9;
+        if (band && FIN_BAYER[y & 3][i & 3] / 16 < 0.3 * Math.max(0, 1 - dist / 80)) P.px(i, y, '#f6dc84');
+      }
+    } else {
+      // nightfall: stars, and a moon over the trees
+      for (let s = 0; s < 26; s++) { const i = X0 + Math.floor(R() * (X1 - X0)), y = Y0 + Math.floor(R() * 40); if (inScene(i, y)) P.px(i, y, R() < 0.3 ? '#f2eedd' : '#8a96a8'); }
+      for (let y = -6; y <= 6; y++) for (let i = -6; i <= 6; i++) if (i * i + y * y <= 36 && !((i - 3) * (i - 3) + (y + 1) * (y + 1) <= 26)) P.px(118 + i, 22 + y, '#e8e4d0');
+    }
+    // the forest: two rows of flat pines, the back one paler
+    const pine = (cx, base, h, col) => {
+      // three tiers of a conifer, each wider than the one above, flat like the forests of the lanes
+      const th = Math.ceil(h / 3) + 2;
+      for (let t = 0; t < 3; t++) {
+        const top = base - h + t * (th - 3), maxW = 1 + t * 2 + Math.round(h / 14);
+        for (let j = 0; j < th; j++) { const w = Math.round((j + 1) / th * maxW); for (let i = -w; i <= w; i++) if (inScene(cx + i, top + j)) P.px(cx + i, top + j, col); }
+      }
+    };
+    const back = won ? '#6a5a52' : '#1c2a3a', front = won ? '#3e3836' : '#111b26';
+    for (let i = X0 - 4; i < X1 + 4; i += 7) pine(i + Math.floor(R() * 4), GY + 1, 16 + Math.floor(R() * 9), back);
+    for (let i = X0 - 2; i < X1 + 4; i += 9) if (Math.abs(i - mx) > 16) pine(i + Math.floor(R() * 4), GY + 3, 19 + Math.floor(R() * 10), front);
+    // the ground: the grass of the terrain you played on
+    for (let y = GY; y < Y1; y++) for (let i = X0; i < X1; i++) if (inScene(i, y)) P.px(i, y, y === GY ? K.g2 : phash(i >> 1, y >> 1, 3) > 0.82 ? K.g2 : K.g1);
+    // the monument, as it stood at the end (its banner in your colour); the scene clips it
+    const em = d.em ? Object.assign({}, d.em, { atkT: -9, lvlT: -9 }) : { k: d.maison, c: 4, r: 6, lvl: 1, pw: [], atkT: -9, lvlT: -9 };
+    const [sc, sx] = mkCanvas(FIN_W, FIN_H), pp = P; P = mkPen(sx);
+    sx.save(); sx.translate(mx - 12 - (AX0 + em.c * CS), GY - 21 - (AY0 + em.r * CS));
+    try { drawEmblem(sx, { k: G.me, jt: { em } }); } catch (e) {}
+    sx.restore(); P = pp;
+    const img = sx.getImageData(0, 0, FIN_W, FIN_H).data, out = x.getImageData(0, 0, FIN_W, FIN_H), o = out.data;
+    for (let y = 0; y < FIN_H; y++) for (let i = 0; i < FIN_W; i++) { const q = (y * FIN_W + i) * 4; if (img[q + 3] > 100 && inScene(i, y)) { o[q] = img[q]; o[q + 1] = img[q + 1]; o[q + 2] = img[q + 2]; o[q + 3] = 255; } }
+    x.putImageData(out, 0, 0);
+    // a line of the band's colour under the scene
+    for (let i = X0; i < X1; i++) if (finIn(i, Y1, 6)) P.px(i, Y1, c1);
+    // ---- your lives, wave after wave
+    const CX0 = 14, CX1 = 136, CY1 = 158, CH = 15, n = Math.max(1, d.hist.length), cw = Math.max(1, Math.floor((CX1 - CX0) / n));
+    P.rect(CX0 - 1, CY1 - CH - 1, CX1 - CX0 + 2, CH + 2, '#24323c');
+    d.hist.forEach((v, i) => {
+      const h = Math.max(v > 0 ? 1 : 0, Math.round(Math.min(20, v) / 20 * CH)), x0 = CX0 + i * cw, drop = i > 0 && d.hist[i - 1] - v >= 3;
+      if (h) { P.rect(x0, CY1 - h, Math.max(1, cw - (cw > 2 ? 1 : 0)), h, c0); P.rect(x0, CY1 - h, Math.max(1, cw - (cw > 2 ? 1 : 0)), 1, drop ? K.hpR : tint(c0, .35, '#ffffff')); }
+      else P.rect(x0, CY1 - 1, Math.max(1, cw - 1), 1, K.hpR);
+    });
+    // ---- four plates for the numbers
+    for (let k = 0; k < 4; k++) { const px = 14 + k * 31; P.rect(px, 166, 28, 24, '#24323c'); P.rect(px, 166, 28, 1, '#2f404b'); }
+    // ---- gold corners when you won
+    if (won) for (const [cx, cy, dx, dy] of [[8, 8, 1, 1], [141, 8, -1, 1], [8, 216, 1, -1], [141, 216, -1, -1]]) { for (let s = 0; s < 6; s++) { P.px(cx + dx * s, cy, '#f3d36a'); P.px(cx, cy + dy * s, '#f3d36a'); } }
+  } finally { P = prev; }
+  return cv;
+}
+// ---- the words and the little pictures over it (they tilt with it)
+const finOrd = n => n === 1 ? '1er' : n + 'e';
+function finHTML(d) {
+  const em = d.em, embName = EMB[d.maison] ? EMB[d.maison].m : '', name = esc(d.me.name || nick);
+  const title = d.won ? 'Victoire' : d.rank > 0 && d.rank <= 3 && d.N > 2 ? `${finOrd(d.rank)} sur ${d.N}` : 'Défaite';
+  const tile = (ic, v, l, k) => `<div class="fs" style="left:calc(var(--fs)*${14 + k * 31});top:calc(var(--fs)*166)">${ic}<b data-txt>${v}</b><i data-txt>${l}</i></div>`;
+  const pw = em && em.pw.length ? em.pw.map(p => EPOW[em.k] && EPOW[em.k][p] ? EPOW[em.k][p][0] : '').filter(Boolean).join(' · ') : 'aucun pouvoir';
+  const relics = d.relics.map(r => jtIcon(r, 1)).join('') + (d.palet ? jtPaletMark() : '');
+  return `<div class="ft k" data-txt style="top:calc(var(--fs)*97)">LA GRANDE JOUTE · VAGUE ${ROMAN(Math.max(1, d.wave))}</div>
+<div class="ft h${d.won ? ' gold' : ''}" data-txt style="top:calc(var(--fs)*104)">${title}</div>
+<div class="ft s" data-txt style="top:calc(var(--fs)*123)">${name} · ${esc(embName)}</div>
+<div class="ft l" data-txt style="top:calc(var(--fs)*134);left:calc(var(--fs)*14)">TES VIES, VAGUE APRÈS VAGUE</div>
+${tile(creepIcon('skel', -1), d.kills, 'tuées', 0)}${NET.mode === 'client' ? tile(ICON.coin, '+' + d.me.income, 'revenu', 1) : tile(creepIcon('troll', d.col), d.sent, 'envoyées', 1)}${tile(ICON.heart, d.stolen, 'vies volées', 2)}${tile(ICON.chest, d.chests, 'coffres', 3)}
+<div class="fe" style="top:calc(var(--fs)*195)"><span class="lv" data-txt>${em ? 'Niv. ' + ['I', 'II', 'III', 'IV'][em.lvl - 1] : ''}</span><span class="pw" data-txt>${esc(pw)}</span><span class="rl">${relics}</span></div>
+<div class="ft f" data-txt style="top:calc(var(--fs)*208)">${fmt(d.t)}${d.mvp ? ' · tour MVP : ' + esc(d.mvp.name) : ''}</div>`;
+}
+// ---- the gleam: a dithered band that runs across the card as it tilts, and a few sparks on it
+function finShine(cv, rx, ry, seed) {
+  const x = cv.getContext('2d'); x.clearRect(0, 0, FIN_W, FIN_H);
+  const r = Math.min(1, Math.hypot(rx, ry) / 12); if (r <= 0.02) return;
+  const a = ry / 12 * 0.62 + rx / 12 * 0.18, R = finRnd(seed + '|' + rx + '|' + ry);
+  for (let y = 0; y < FIN_H; y++) for (let i = 0; i < FIN_W; i++) {
+    if (!finIn(i, y)) continue;
+    const t = (i / FIN_W - 0.5) * 0.8139 - (y / FIN_H - 0.5) * 0.581 - a;
+    let l = Math.max(0, 1 - Math.abs(t) / 0.24); l = Math.max(l, 0.55 * Math.max(0, 1 - Math.abs(t + 0.34) / 0.12));
+    if (l <= 0) continue;
+    const o = Math.min(3, Math.floor(4.4 * Math.pow(l, 2) * r)); if (!o) continue;
+    if (FIN_BAYER[y & 3][i & 3] / 16 > o / 9) continue;
+    x.fillStyle = o >= 3 && R() < 0.45 ? '#ffffff' : '#f3d36a'; x.fillRect(i, y, 1, 1);
+  }
+  for (let s = 0; s < 12 * r; s++) { const y = Math.floor(R() * FIN_H), i = Math.floor(((a + (y / FIN_H - 0.5) * 0.581) / 0.8139 + (R() - 0.5) * 0.16 + 0.5) * FIN_W); if (finIn(i, y)) { x.fillStyle = '#ffffff'; x.fillRect(i, y, 1, 1); } }
+}
+// ---- the card on the end screen
+function jtFinShow() {
+  const box = $('jtFin'); if (!box || !G || G.spec) return;
+  const d = FIN.d = finData(); FIN.art = finArt(d);
+  const fs = innerWidth >= 560 && innerHeight >= 900 ? 3 : 2;
+  box.innerHTML = `<div class="jt-fin-wrap" id="jtFinWrap"><div class="jt-fin-card" id="jtFinCard" style="--fs:${fs}px"><canvas class="art" width="${FIN_W}" height="${FIN_H}"></canvas><div class="jt-fin-txt">${finHTML(d)}</div><canvas class="gleam" width="${FIN_W}" height="${FIN_H}"></canvas></div></div><p class="jt-fin-hint">Incline la carte avec ton doigt</p>`;
+  const card = $('jtFinCard'); card.querySelector('.art').getContext('2d').drawImage(FIN.art, 0, 0);
+  finTilt($('jtFinWrap'), card, card.querySelector('.gleam'), `${d.maison}|${d.wave}`);
+  box.hidden = false;
+  for (const id of ['endKick', 'endTitle', 'endText', 'rank', 'endStats', 'mvp', 'copyBtn']) $(id).hidden = true;
+  $('saveBtn').textContent = touchUI() && canShareFiles() ? 'Partager la carte' : 'Enregistrer la carte';
+  cache.card = null;
+}
+function jtFinHide() {
+  const box = $('jtFin'); if (box) { box.hidden = true; box.innerHTML = ''; }
+  for (const id of ['endKick', 'endTitle', 'endText', 'copyBtn']) $(id).hidden = false;
+}
+function finTilt(wrap, card, gleam, seed) {
+  let rx = 0, ry = 0, key = '0_0', down = false, timer = 0;
+  const set = (ax, ay) => {
+    ax = Math.max(-12, Math.min(12, 3 * Math.round(ax / 3))); ay = Math.max(-12, Math.min(12, 3 * Math.round(ay / 3)));
+    const k = ax + '_' + ay; if (k === key) return; key = k; rx = ax; ry = ay;
+    card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`; finShine(gleam, rx, ry, seed);
+  };
+  const move = e => {
+    if (!down && e.pointerType !== 'mouse') return;
+    const r = wrap.getBoundingClientRect(), nx = (e.clientX - (r.left + r.width / 2)) / (r.width / 2), ny = (e.clientY - (r.top + r.height / 2)) / (r.height / 2);
+    clearTimeout(timer); set(-ny * 12, nx * 12);
+  };
+  const back = () => { clearTimeout(timer); const step = () => { if (down) return; set(rx - Math.sign(rx) * 3, ry - Math.sign(ry) * 3); if (rx || ry) timer = setTimeout(step, 50); }; timer = setTimeout(step, 120); };
+  wrap.addEventListener('pointerdown', e => { down = true; try { wrap.setPointerCapture(e.pointerId); } catch (_) {} move(e); });
+  wrap.addEventListener('pointermove', move);
+  wrap.addEventListener('pointerup', () => { down = false; back(); });
+  wrap.addEventListener('pointercancel', () => { down = false; back(); });
+  wrap.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') back(); });
+  FIN.set = set;
+}
+// ---- the card as an image to share: the picture four times bigger, the words drawn at their place
+const drawSummaryCardV10 = drawSummaryCard;
+drawSummaryCard = function () {
+  const card = $('jtFinCard'); if (!card || !FIN.art || $('jtFin').hidden) return drawSummaryCardV10();
+  const S = 4, [cv, x] = mkCanvas(FIN_W * S, FIN_H * S), tf = card.style.transform; card.style.transform = 'none';
+  x.imageSmoothingEnabled = false; x.drawImage(FIN.art, 0, 0, FIN_W * S, FIN_H * S);
+  const cr = card.getBoundingClientRect(), k = FIN_W * S / cr.width;
+  for (const im of card.querySelectorAll('.jt-fin-txt img')) { const r = im.getBoundingClientRect(); try { x.drawImage(im, (r.left - cr.left) * k, (r.top - cr.top) * k, r.width * k, r.height * k); } catch (e) {} }
+  x.textBaseline = 'top';
+  for (const el of card.querySelectorAll('[data-txt]')) {
+    const t = (el.textContent || '').trim(); if (!t) continue;
+    const r = el.getBoundingClientRect(), cs = getComputedStyle(el), fsz = parseFloat(cs.fontSize) * k;
+    x.font = `${cs.fontStyle} ${cs.fontWeight} ${fsz}px ${cs.fontFamily}`; x.fillStyle = cs.color;
+    x.textAlign = cs.textAlign === 'center' ? 'center' : 'left';
+    x.fillText(t, x.textAlign === 'center' ? (r.left + r.width / 2 - cr.left) * k : (r.left - cr.left) * k, (r.top - cr.top) * k + (r.height * k - fsz) / 2);
+  }
+  card.style.transform = tf;
+  return cv;
+};
 
 /* =============== loop =============== */
 let last = performance.now();
