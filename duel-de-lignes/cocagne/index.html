@@ -375,26 +375,13 @@ b,strong{font-weight:700}
 .jt-offer.poor em{color:var(--pmut)}
 .jt-offer:disabled{opacity:.45;cursor:default}
 .jt-offer:active:not(:disabled){transform:translateY(var(--u))}
-/* the emblem's card */
-.jt-card{position:fixed;z-index:4;width:min(310px,calc(100vw - 24px));display:flex;flex-direction:column;gap:calc(var(--u)*2);padding-bottom:calc(var(--u)*4)}
-.jt-head{display:flex;align-items:center;gap:calc(var(--u)*5);padding:calc(var(--u)*5) calc(var(--u)*6) calc(var(--u)*2)}
-.jt-xp{height:calc(var(--u)*2.7);background:#3b342e;margin:calc(var(--u)*2) 0}
-.jt-xp i{display:block;height:100%;background:var(--gold)}
-.jt-line{display:flex;flex-direction:column;gap:var(--u);padding:calc(var(--u)*2) calc(var(--u)*6)}
-.jt-line b{font-weight:700}
-.jt-line span{color:var(--pmut);font-size:calc(var(--t)*.9);line-height:1.25}
-.jt-pws{display:flex;flex-wrap:wrap;gap:calc(var(--u)*2);padding:calc(var(--u)*2) calc(var(--u)*6) 0}
-.jt-chip{padding:calc(var(--u)*2) calc(var(--u)*4);background:#efe2b8;box-shadow:inset 0 0 0 var(--u) #8a6a2a;font-weight:700;font-size:calc(var(--t)*.86)}
-.jt-chip.sil{background:rgba(46,41,36,.12);box-shadow:inset 0 0 0 var(--u) rgba(46,41,36,.3);color:rgba(46,41,36,.45)}
-/* the emblem's power, in the bar at the bottom */
-.jt-pow{position:relative;display:flex;align-items:center;gap:calc(var(--u)*3);padding:calc(var(--u)*1) calc(var(--u)*4) calc(var(--u)*1) calc(var(--u)*2);border:0;background:var(--panel2);color:var(--muted);cursor:pointer;white-space:nowrap;margin-left:auto}
-.jt-pow .ico{width:calc(var(--u)*18);height:calc(var(--u)*15)}
-.jt-pow .lbl{font-weight:700}
-.jt-pow .cd{font-family:var(--fb);color:var(--muted)}
-.jt-pow.ready{color:var(--ink);box-shadow:inset 0 0 0 var(--u) var(--gold);animation:jtglow 1.6s steps(4) infinite}
-@keyframes jtglow{50%{box-shadow:inset 0 0 0 calc(var(--u)*2) var(--gold)}}
-.jt-pow .bang{position:absolute;top:calc(var(--u)*-3);right:calc(var(--u)*-2);width:calc(var(--u)*8);height:calc(var(--u)*9);display:grid;place-items:center;background:var(--gold);color:var(--panel);font-weight:700;line-height:1}
-.jt-pow:active{transform:translateY(var(--u))}
+/* the emblem's card: a tower's panel, dark and to the point */
+.jt-card{width:min(300px,calc(100vw - 24px))}
+.jt-card .jt-xp{height:calc(var(--u)*2);background:var(--panel2);margin:calc(var(--u)*-1) var(--u) 0}
+.jt-card .jt-xp i{display:block;height:100%;background:var(--gold)}
+.jt-ln{padding:0 var(--u);color:var(--muted);line-height:1.3}
+.jt-ln b{color:var(--ink);font-weight:700}
+.jt-card .info{max-width:none}
 .dock-top .cam{margin-left:calc(var(--u)*2)}
 /* the Houses in the solo set-up */
 .maisons{display:grid;grid-template-columns:repeat(4,1fr);gap:calc(var(--u)*3)}
@@ -622,7 +609,7 @@ b,strong{font-weight:700}
 <div class="jt-her" id="jtHer" hidden><div class="jt-tail" id="jtTail"></div><div class="jt-bub parch" id="jtBub"></div></div>
 <div id="anPan" hidden></div>
 <div class="jt-panel parch" id="jtPick" hidden></div>
-<div class="jt-card parch" id="jtCard" hidden></div>
+<div class="jt-card pop" id="jtCard" hidden></div>
 <div class="ov jt-entr" id="jtEntr" hidden>
   <div class="jt-entr-in">
     <div class="jt-entr-h"><span class="jt-entr-k">ENTRACTE · LE PALET</span><span class="jt-entr-sub" id="jtPalSub"></span></div>
@@ -643,10 +630,8 @@ b,strong{font-weight:700}
       <button type="button" role="tab" data-mode="build" aria-selected="true">Construire</button>
       <button type="button" role="tab" data-mode="send" aria-selected="false">Envoyer</button>
       <button type="button" role="tab" data-mode="cards" aria-selected="false">Sorts<i class="dot" id="cardDot" hidden></i></button>
-      <button type="button" role="tab" data-mode="tech" aria-selected="false">Atelier</button>
     </div>
     <span class="ghost-h" id="ghostH" hidden>Fantôme · choisis un pouvoir</span>
-    <button class="jt-pow" id="jtPow" type="button" hidden aria-label="Pouvoir de ton emblème"></button>
     <button class="cam" id="camBtn" type="button"></button>
   </div>
   <div class="items" id="items"></div>
@@ -796,17 +781,11 @@ const TECH = {
   tesla:    { n: 'Foudre',   cost: 150, bit: 1, tag: 'tour', d: "Nouvelle tour : l'éclair frappe trois créatures à la suite et traverse les armures" },
   ballista: { n: 'Baliste',  cost: 130, bit: 2, tag: 'tour', d: 'Nouvelle tour : un gros carreau qui transperce toute une file de créatures, de très loin' },
   bombard:   { n: 'Bombarde', cost: 140, bit: 8, tag: 'tour', d: 'Nouvelle tour : un boulet lent, en cloche, qui écrase les grosses créatures' },
-  m_arc:     { n: 'Maîtrise de l’Arc', cost: 180, bit: 16, tag: 'niv. 4', d: 'Archers et Balistes peuvent passer au niveau 4' },
-  m_arcanes: { n: 'Maîtrise des Arcanes', cost: 180, bit: 32, tag: 'niv. 4', d: 'Givres et Foudres peuvent passer au niveau 4' },
-  m_poudre:  { n: 'Maîtrise de la Poudre', cost: 180, bit: 64, tag: 'niv. 4', d: 'Canons et Bombardes peuvent passer au niveau 4' },
-  pillards:  { n: 'Pillards', cost: 130, bit: 128, tag: 'or', d: '+1 or par créature tuée' },
-  tresorier: { n: 'Trésorier', cost: 180, bit: 256, tag: 'revenu', d: 'Tes envois rapportent 25 % de revenu en plus' },
 };
 const TECH_KEYS = Object.keys(TECH);
 const hasTech = (b, key) => !!(b && TECH[key] && (b.tech & TECH[key].bit));
 const canUse = (b, type) => !T[type] || !T[type].tech || (T[type].tech === 'chef' ? jtChefOpen(b, type) : hasTech(b, T[type].tech));
-const LVL4 = { arrow: 'm_arc', ballista: 'm_arc', frost: 'm_arcanes', tesla: 'm_arcanes', cannon: 'm_poudre', bombard: 'm_poudre' };
-const maxLvl = (b, type) => T[type] && T[type].tech === 'chef' ? 1 : LVL4[type] && hasTech(b, LVL4[type]) ? 4 : 3;
+const maxLvl = (b, type) => T[type] && T[type].tech === 'chef' ? 1 : 4;
 const TOWER_INFO = { tesla: "L'éclair rebondit sur plusieurs créatures et traverse les armures.", ballista: 'Le carreau transperce toute une file de créatures.', bombard: 'Un boulet lent, en cloche : il écrase les grosses créatures (dégâts doublés).' };
 const S = {
   rat:     { n: 'Rat',       cost: 6,    inc: 1,  hp: 24,   speed: 1.9,  lives: 1,  bounty: 2,   size: 0.2,  tag: 'rapide' },
@@ -1059,6 +1038,7 @@ function waveHp() { return 14 * Math.pow(1.2, Math.max(0, G.wave - 1)); }
 const waveStage = w => Math.min(WAVE_STAGES.length, Math.floor(Math.max(0, w - 1) / 4));
 function bountyOf(kind) { if (S[kind]) return S[kind].bounty; if (SUB[kind]) return SUB[kind].bounty; if (WAVE_KINDS[kind]) return WAVE_KINDS[kind].m >= 1.5 ? 2 : 1; if (kind === 'gold') return 20 + 2 * G.wave; if (kind === 'boss') return 30 + 3 * G.wave; return 1; }
 function evoOffer(k, i, type) {
+  if (JT_FORMS[type]) return JT_FORMS[type].slice();
   const keys = Object.keys(EVO[type]), h = hash32(G.seed ^ Math.imul(k + 1, 7919) ^ Math.imul(i + 1, 104729) ^ Math.imul(TYPES.indexOf(type) + 1, 1299709));
   const a = h % keys.length, b = (a + 1 + ((h >>> 8) % (keys.length - 1))) % keys.length;
   return [keys[a], keys[b]];
@@ -1143,8 +1123,9 @@ function convert(k, t, type) {
 }
 function upgrade(k, t, evo) {
   const b = G.b[k], cost = upCost(t);
-  if (t.lvl >= maxLvl(b, t.type)) return t.lvl === 3 && LVL4[t.type] ? `Le niveau 4 se débloque dans l'Atelier (${TECH[LVL4[t.type]].n})` : 'Niveau maximum';
+  if (t.lvl >= maxLvl(b, t.type)) return 'Niveau maximum';
   if (t.lvl === 2 && EVO[t.type] && !evoOffer(k, idx(t.c, t.r), t.type).includes(evo)) return 'x';
+  if (t.lvl === 2 && isFormOf(t.type, evo)) return jtBecome(k, t, evo);
   if (b.gold < cost) return "Pas assez d'or";
   b.gold -= cost; t.lvl++; t.spent += cost; if (!G.quiet) t.born = G.t;
   if (t.lvl === 3 && EVO[t.type]) t.evo = evo;
@@ -1167,7 +1148,7 @@ function sell(k, t) { const b = G.b[k]; b.gold += sellValue(t); b.grid[idx(t.c, 
 function send(k, kind) {
   const from = G.b[k], tk = nextAlive(k), s = S[kind];
   if (tk < 0 || from.gold < s.cost || !jtSendOpen(kind)) return false;
-  from.gold -= s.cost; from.income += s.inc + jtIncBonus(from, s); if (from.jt) from.jt.sent = (from.jt.sent || 0) + (s.count || 1);
+  from.gold -= s.cost; from.income += s.inc; if (from.jt) from.jt.sent = (from.jt.sent || 0) + (s.count || 1);
   if (auth()) for (let i = 0; i < (s.count || 1); i++) G.b[tk].queue.push({ kind, from: k });
   if (fxOn(k)) { sfx('send'); bumpEl('goldPill'); }
   return true;
@@ -1259,7 +1240,6 @@ function aiBuild(k) {
 function aiThink(k) {
   const me = G.b[k], tk = nextAlive(k); if (tk < 0) return;
   if (me.cards.length && Math.random() < 0.35 && botCard(k, tk)) return;
-  if (G.t > 60 && Math.random() < 0.1 && jtBotStep(k)) return;
   if (jtBotChef(k)) return;
   // a tower just unlocked gets put to use right away, even when the defence is already strong enough
   if (['tesla', 'ballista', 'bombard'].some(ty => hasTech(me, ty) && towersOf(me).filter(t => t.type === ty).length < 2) && aiBuild(k)) return;
@@ -2297,10 +2277,10 @@ function renderItems() {
   }
   const free = me ? me.free : 0;
   if (G.mode === 'build') {
-    items.innerHTML = jtChefButtons(me, true) + Object.entries(T).filter(([k]) => !isChef(k)).map(([k, t]) => canUse(me, k) ? `<button class="item" type="button" data-tool="${k}" aria-pressed="${G.tool === k}">${ICON[k]}<span class="nm">${t.n}</span><span class="ct">${free > 0 && k !== 'wall' ? '<span class="free">Offert</span>' : jtCost(me, k)}</span></button>`
+    items.innerHTML = jtChefButtons(me) + Object.entries(T).filter(([k]) => !T[k].tech).map(([k, t]) => canUse(me, k) ? `<button class="item" type="button" data-tool="${k}" aria-pressed="${G.tool === k}">${ICON[k]}<span class="nm">${t.n}</span><span class="ct">${free > 0 && k !== 'wall' ? '<span class="free">Offert</span>' : jtCost(me, k)}</span></button>`
       : `<button class="item locked" type="button" data-lock="${k}">${ICON[k]}<span class="nm">${t.n}</span><span class="lk">${ICON.lock}Atelier</span></button>`).join('');
   } else if (G.mode === 'tech') {
-    items.innerHTML = jtAtelierItems(me);
+    items.innerHTML = '';
   } else if (G.mode === 'send') {
     items.innerHTML = jtSendItems();
   } else {
@@ -2320,11 +2300,9 @@ const itemsKey = () => { const me = G.b[G.me]; return G.mode + '|' + (me ? me.ca
 $('items').addEventListener('click', e => {
   if (!G) return;
   const tb = e.target.closest('[data-tool]');
-  if (tb) { G.tool = tb.dataset.tool; sfx('click'); $('items').querySelectorAll('[data-tool]').forEach(x => x.setAttribute('aria-pressed', x === tb)); return; }
+  if (tb) { G.tool = tb.dataset.tool; sfx('click'); if (isChef(G.tool)) jtChefPicked(G.tool); $('items').querySelectorAll('[data-tool]').forEach(x => x.setAttribute('aria-pressed', x === tb)); return; }
   const cb = e.target.closest('[data-card]'); if (cb) { useCard(+cb.dataset.card); return; }
   const lk = e.target.closest('[data-lock]'); if (lk) { sfx('click'); setMode('tech'); return; }
-  const stp = e.target.closest('[data-step]'); if (stp) { jtStepClick(stp.dataset.step); return; }
-  const chb = e.target.closest('[data-chef]'); if (chb) { jtChefClick(chb.dataset.chef); return; }
   const tb2 = e.target.closest('[data-tech]');
   if (tb2) {
     const key = tb2.dataset.tech, tc = TECH[key];
@@ -2395,16 +2373,14 @@ function openPop(c, r) {
     const kills = auth() && t.kills ? ` · ${t.kills} éliminations` : '', upBtn = label => `<button class="pact" type="button" data-act="u" data-cost="${upCost(t)}">${label}<em>${upCost(t)}</em></button>`;
     if (isChef(t.type)) html = jtChefPop(t, head, kills);
     else if (t.lvl === 2 && EVO[t.type]) {
-      const offer = evoOffer(G.me, idx(c, r), t.type), cost = upCost(t);
-      html = `<div class="ttl"><b>${name} · niv. 2</b><span>${head}</span></div><div class="evo-h">Choisis une évolution</div><div class="evos">` +
-        offer.map(e => `<button class="evo" type="button" data-act="u" data-evo="${e}" data-cost="${cost}"><b>${EVO[t.type][e].n}</b><span>${EVO[t.type][e].d}</span><em>${cost}</em></button>`).join('') + `</div><div class="acts">${sellBtn}</div>`;
+      html = jtEvoPop(t, name, head, sellBtn);
     } else if (t.lvl < 3) {
-      html = `<div class="ttl"><b>${name} · niv. ${t.lvl}</b><span>${head}</span></div><div class="acts">${upBtn('Améliorer')}${sellBtn}</div><div class="info">${EVO[t.type] ? 'Au niveau 3, tu choisis une évolution.' : TOWER_INFO[t.type] || ''}</div>`;
+      html = `<div class="ttl"><b>${name} · niv. ${t.lvl}</b><span>${head}</span></div><div class="acts">${upBtn('Améliorer')}${sellBtn}</div><div class="info">${JT_FORMS[t.type] ? jtFormHint(t.type) : TOWER_INFO[t.type] || ''}</div>`;
     } else if (t.lvl === 3) {
       const m = maxLvl(me, t.type) >= 4;
-      html = `<div class="ttl"><b>${name} · ${ev ? ev.n : 'niv. 3'}</b><span>${head}${kills}</span></div>${ev ? `<div class="info">${ev.d}</div>` : ''}<div class="acts">${m ? upBtn('Niveau 4') : ''}${sellBtn}</div>${m ? '' : `<div class="info">Niveau 4 : ${LVL4[t.type] ? TECH[LVL4[t.type]].n : 'Maîtrise'}, dans l'Atelier.</div>`}`;
+      html = `<div class="ttl"><b>${name} · ${ev ? ev.n : 'niv. 3'}</b><span>${head}${kills}</span></div>${ev ? `<div class="info">${ev.d}</div>` : TOWER_INFO[t.type] ? `<div class="info">${TOWER_INFO[t.type]}</div>` : ''}<div class="acts">${m ? upBtn('Niveau 4') : ''}${sellBtn}</div>${m ? '' : ''}`;
     } else {
-      html = `<div class="ttl"><b>${name} · ${ev ? ev.n : 'niv. 4'}</b><span>${head}${kills}</span></div><div class="evo-h">Maître · niveau 4</div>${ev ? `<div class="info">${ev.d}</div>` : ''}<div class="acts">${sellBtn}</div>`;
+      html = `<div class="ttl"><b>${name} · ${ev ? ev.n : 'niv. 4'}</b><span>${head}${kills}</span></div><div class="evo-h">Maître · niveau 4</div>${ev ? `<div class="info">${ev.d}</div>` : TOWER_INFO[t.type] ? `<div class="info">${TOWER_INFO[t.type]}</div>` : ''}<div class="acts">${sellBtn}</div>`;
     }
   }
   p.innerHTML = html; p.hidden = false; cache.gold = null; placePop();
@@ -6651,8 +6627,8 @@ const EV = {
 };
 for (const c of CH_WALK) EV['v_' + c] = { n: 'Vague ' + (/^[aeiouyéèêâàîô]/i.test(CH[c].pl) ? 'd’' : 'de ') + CH[c].pl, fam: 'caractere', d: CH[c].d, kind: c, mod: true };
 for (const k in EV) if (EV[k].mod && !SPECIALS[k]) SPECIALS[k] = { n: EV[k].n, d: EV[k].d };
-// the Crue is out of the rotation (its code stays); the map's vote draws two of its four events
-const MAP_EV = ['eboul', 'ruines', 'feu', 'korrigans'];
+// the Crue and the Ruines are out of the rotation (their code stays)
+const MAP_EV = ['eboul', 'feu', 'korrigans'];
 const VOTE_PAIRS = { assaut: ['rush', 'cohorte'], bonus: ['gold', 'foire'], carte: ['eboul', 'ruines'], ombre: ['fog', 'eclipse'] };
 const VOTE_SECS = 5;
 
@@ -6670,8 +6646,7 @@ const RELICS = {
   plan:      { n: 'Plan de tour', d: 'Ta prochaine tour est gratuite' },
 };
 const RELIC_KEYS = Object.keys(RELICS);
-// the relics of the four paths are not won at the palet any more: they are each path's first step
-function relicPool(b) { return RELIC_KEYS.filter(k => !VOIE_RELIC.has(k) && !(RELICS[k].perm && b.jt.relics[k]) && !(k === 'parchemin' && b.cards.length >= MAX_CARDS)); }
+function relicPool(b) { return RELIC_KEYS.filter(k => !(RELICS[k].perm && b.jt.relics[k]) && !(k === 'parchemin' && b.cards.length >= MAX_CARDS)); }
 
 /* ---------------------------------------------------------------- Houses and their living emblems */
 const MAISONS = ['cerf', 'ours', 'griffon', 'renard'];
@@ -6681,7 +6656,7 @@ const EMB = {
   griffon: { n: 'Corbeau des brumes', m: 'Maison du Corbeau des brumes', jeu: 'Le ciel', aura: 'Les tours voisines gagnent de la portée', pn: 'Piqué', pd: "Abat d'un coup une créature volante", cd: 26 },
   renard:  { n: 'Renard de braise', m: 'Maison du Renard de braise', jeu: 'La ruse', aura: '+1 or par créature tuée près de lui', pn: 'Ruse', pd: 'Fait faire demi-tour aux créatures autour', cd: 22 },
 };
-// powers offered at levels II, III and IV: two drawn at random, the player keeps one
+// the six powers of each emblem (the network keeps their order)
 const EPOW = {
   cerf: { cristal: ['Bois de cristal', 'Son aura ralentit davantage'], longbrame: ['Long brame', 'Le Brame fige 1,5 s de plus'], vif: ['Pas léger', 'Le Brame revient 30 % plus vite'],
     cornes: ['Andouillers', 'Il frappe deux créatures à la fois'], garde: ['Gardien du bois', 'Son aura s’étend'], givre: ['Givre ancien', 'Les Givres voisins ralentissent plus longtemps'] },
@@ -6692,6 +6667,8 @@ const EPOW = {
   renard: { bourse: ['Bourse pleine', '+2 or par créature au lieu de +1'], longue: ['Longue ruse', 'La Ruse dure 1,5 s de plus'], malin: ['Malin', 'La Ruse revient 30 % plus vite'],
     poche: ['Pickpocket', 'Plus de coffres près de lui'], terrier: ['Terrier', 'Son aura s’étend'], flair: ['Flair', 'Les Mimiques ne te trompent plus'] },
 };
+// no choice: the emblem gains its powers by itself, always in the same order (levels II, III and IV)
+const EM_ORDER = { cerf: ['cristal', 'vif', 'garde'], ours: ['griffes', 'hiber', 'rugir'], griffon: ['oeil', 'plonge', 'double'], renard: ['bourse', 'malin', 'terrier'] };
 const EM_XP = [10, 30, 65];   // experience to reach levels II, III and IV
 let myMaison = 'cerf';
 try { const v = localStorage.getItem('jt-maison'); if (EMB[v]) myMaison = v; } catch (e) {}
@@ -6704,7 +6681,7 @@ const isBig = cr => (cr.size || 0) >= 0.27 || cr.lives >= 2 || cr.kind === 'boss
 /* ---------------------------------------------------------------- setting up a game */
 function jtBoard(b, seat) {
   b.ob = new Uint8Array(COLS * ROWS); b.grid.ob = b.ob;
-  b.jt = { maison: seat && EMB[seat.maison] ? seat.maison : '', em: null, relics: {}, zone: null, swamps: [], fires: [], ash: [], ringW: 0, scroll: false, relicPick: null, palet: false, rays: [], fx: [], voie: '', voieOffer: null, incFrac: 0 };
+  b.jt = { maison: seat && EMB[seat.maison] ? seat.maison : '', em: null, relics: {}, zone: null, swamps: [], fires: [], ash: [], ringW: 0, scroll: false, relicPick: null, palet: false, rays: [], fx: [] };
 }
 function jtNewGame(seats, opts) {
   G.entr = null; G.jt = null;
@@ -6719,8 +6696,6 @@ function jtNewGame(seats, opts) {
     b.ob[i] = OB_EMB;
     b.jt.em = { k: b.jt.maison, i, c, r, lvl: 1, xp: 0, cd: 10, pend: null, pw: [], atkT: -9, lvlT: -9, castT: -9, face: 1 };
   }
-  // the herald offers two paths to each House (its own and another); the bots take theirs at once
-  for (const b of G.b) { b.jt.voieOffer = jtVoieOffer(b); if (b.bot) { const own = b.jt.voieOffer.find(v => VOIES[v].maison === b.jt.maison); jtChooseVoie(b, own && Math.random() < 0.6 ? own : rndOf(b.jt.voieOffer)); } }
   // the tournament: a fresh programme, the bestiaries and the characters in a new order
   G.jt = { prog: [], stages: [0].concat(shuffled([1, 2, 3, 4])), chars: shuffled(CH_KEYS), vote: null, entrDone: false, her: { q: [], cur: null, open: false, seen: -1 }, lastVoteFam: '', news: [] };
   // the Mimic never comes first: it needs chests to hide among
@@ -6736,18 +6711,18 @@ const slotWave = s => 3 + 2 * s;
 function jtGen(s) {
   const w = slotWave(s), J = G.jt, recent = J.prog.slice(-2).map(e => e.k);
   if (w === 11 && G.b.filter(b => b.alive).length >= 2) return { w, k: 'entracte' };
+  // no more votes: where one used to be, the herald draws the event himself from a family it did not draw last time
   if (s % 3 === 2) {
     const fams = ['assaut', 'bonus', 'carte', 'ombre', 'caractere'].filter(f => f !== J.lastVoteFam);
     const fam = rndOf(fams); J.lastVoteFam = fam;
     let pair;
     if (fam === 'caractere') { const cs = shuffled(charsBy(w).filter(c => c !== 'mimic')); pair = cs.length >= 2 ? ['v_' + cs[0], 'v_' + cs[1]] : VOTE_PAIRS.assaut.slice(); }
     else pair = fam === 'carte' ? shuffled(MAP_EV).slice(0, 2) : VOTE_PAIRS[fam].slice();
-    if (Math.random() < 0.5) pair.reverse();
-    return { w, k: '', vote: pair, fam };
+    return { w, k: rndOf(pair.filter(k => !recent.includes(k))) || pair[0] };
   }
   if (w === 9) return { w, k: rndOf(MAP_EV) };
   if (w === 17 || (w >= 25 && s % 4 === 3)) return { w, k: 'boss' };
-  const pool = { rush: 2, cohorte: 2, gold: 2, foire: 1.5, fog: 1.2, eclipse: 1.2, jackpot: 1, eboul: 1.4, ruines: 1.2, feu: 1.3, korrigans: 1.2 };
+  const pool = { rush: 2, cohorte: 2, gold: 2, foire: 1.5, fog: 1.2, eclipse: 1.2, jackpot: 1, eboul: 1.4, feu: 1.3, korrigans: 1.2 };
   for (const c of charsBy(w)) if (c !== 'mimic') pool['v_' + c] = 0.8;
   for (const k of recent) delete pool[k];
   return { w, k: pick(pool) };
@@ -6796,8 +6771,6 @@ function jtWaveStarted() {
   if (!G.jt) return;
   for (const b of G.b) (b.jt.hist = b.jt.hist || []).push(Math.max(0, b.lives));
   const J = G.jt, w = G.wave, e = progAt(w);
-  // a House that has not chosen its path by the second wave gets its own (or the first offered)
-  if (w >= 2) for (const b of G.b) if (b.alive && b.jt.voieOffer && !b.jt.voie) { const own = b.jt.voieOffer.find(v => VOIES[v].maison === b.jt.maison); jtChooseVoie(b, own || b.jt.voieOffer[0]); }
   // the map changes announced a wave ago
   for (const b of G.b) {
     if (!b.alive) continue;
@@ -6959,10 +6932,6 @@ function jtAction(k, a) {
     case 'vote': return jtVote(k, a[2]);
     case 'scroll': if (!b.jt.scroll || !CARDS[a[2]]) return 'x'; b.jt.scroll = false; if (b.cards.length < MAX_CARDS) { b.cards.push(a[2]); if (fxOn(k)) cardFx(a[2]); } return '';
     case 'relic': if (!b.jt.relicPick || !b.jt.relicPick.includes(a[2])) return 'x'; b.jt.relicPick = null; jtGiveRelic(b, a[2]); if (fxOn(k)) sfx('evolve'); return '';
-    case 'pow': return jtCast(k);
-    case 'voie': if (!b.jt.voieOffer || !b.jt.voieOffer.includes(a[2])) return 'x'; return jtChooseVoie(b, a[2]);
-    case 'step': return jtBuyStep(k, a[2]);
-    case 'epick': return jtPickPower(k, a[2]);
     case 'palet': return jtPaletThrow(k, a[2], a[3]);
   }
   return 'x';
@@ -6974,24 +6943,15 @@ function jtXP(b, n) {
   em.xp += n * (b.jt.relics.corne ? 2 : 1);
   while (em.lvl < 4 && em.xp >= EM_XP[em.lvl - 1]) {
     em.lvl++; em.lvlT = G.t;
-    const pool = Object.keys(EPOW[em.k]).filter(p => !em.pw.includes(p) && !(em.pend || []).includes(p));
-    const two = shuffled(pool).slice(0, 2);
-    if (b.bot) { if (two.length) em.pw.push(rndOf(two)); }
-    else if (two.length) em.pend = two;
+    const p = EM_ORDER[em.k][em.lvl - 2]; if (p && !em.pw.includes(p)) em.pw.push(p);
     jtLevelFx(b);
   }
 }
-function jtPickPower(k, p) {
-  const em = G.b[k] && G.b[k].jt.em; if (!em || !em.pend || !em.pend.includes(p)) return 'x';
-  em.pw.push(p); em.pend = null;
-  if (fxOn(k)) sfx('upgrade');
-  return '';
-}
-// the emblem's own blow: the most advanced creature in reach, every 0.9 s
+// the emblem's own blow: the most advanced creature in reach, every 0.9 s; its power goes off by itself when it is worth it
 function jtEmblemStep(b, dt) {
   const em = b.jt.em; if (!em) return;
   em.cd = Math.max(0, em.cd - dt);
-  if (b.bot && em.cd <= 0 && G.t - em.castT > 2) jtBotCast(b);
+  if (em.cd <= 0 && G.t - em.castT > 2) jtAutoCast(b);
   if (G.t - em.atkT < 0.9) return;
   const R = emR(em) + 0.2, ex = em.c + 0.5, ey = em.r + 0.5;
   const list = inRange(b, ex, ey, R);
@@ -7032,10 +6992,10 @@ function jtCast(k) {
   if (fxOn(k)) { sfx(em.k === 'ours' ? 'boom' : em.k === 'cerf' ? 'freeze' : 'cast'); jtCry(em.k); G.shake = Math.max(G.shake, 4); }
   return '';
 }
-function jtBotCast(b) {
+function jtAutoCast(b) {
   const em = b.jt.em, ex = em.c + 0.5, ey = em.r + 0.5, R = emR(em) + 0.8;
   const near = b.creeps.filter(cr => !cr.dead && cr.y >= 0 && Math.hypot(cr.x - ex, cr.y - ey) <= R);
-  const go = em.k === 'griffon' ? b.creeps.some(cr => cr.fly && !cr.dead && cr.y >= 0) : em.k === 'ours' ? near.some(cr => cr.hp > 80) : near.length >= 3;
+  const go = em.k === 'griffon' ? b.creeps.some(cr => cr.fly && !cr.dead && cr.y >= 0) : em.k === 'ours' ? near.some(cr => isBig(cr) || cr.hp > 50) : near.length >= 2;
   if (go) jtCast(b.k);
 }
 
@@ -7064,8 +7024,6 @@ function jtDamage(b, cr, dmg, src, soft) {
 }
 function jtOnKill(b, cr, src, bounty) {
   const em = b.jt.em, near = emNear(em, cr.x, cr.y, 0.3);
-  // La Fortune II: the Pillards take a coin off every creature that falls
-  if (hasTech(b, 'pillards')) b.gold += 1;
   if (near && !cr.illu) jtXP(b, cr.lives >= 2 ? 2 : 1);
   if (near && em.k === 'renard') { const g = emHas(em, 'bourse') ? 2 : 1; b.gold += g; if (fxOn(b.k)) G.floats.push({ k: b.k, x: cr.x + 0.3, y: cr.y - 0.6, txt: '+' + g, color: '#cfd4da', t: 0.8, ttl: 0.8 }); }
   if (near && em.k === 'ours' && emHas(em, 'miel') && (cr.kind === 'boss' || (S[cr.kind] && S[cr.kind].boss))) b.lives += 1;
@@ -7257,6 +7215,9 @@ function jtLevelFx(b) {
   if (fxOn(b.k)) {
     sfx('evolve'); jtCry(em.k); G.shake = Math.max(G.shake, 5); G.flashGold = 0.5;
     try { if (navigator.vibrate) navigator.vibrate([40, 30, 60]); } catch (e) {}
+    // what it has just learnt, once
+    const p = EM_ORDER[em.k][em.lvl - 2];
+    if (p && b.k === G.me && !G.spec) toast(`${EMB[em.k].n} niv. ${['I', 'II', 'III', 'IV'][em.lvl - 1]} · ${EPOW[em.k][p][0]} : ${EPOW[em.k][p][1].charAt(0).toLowerCase() + EPOW[em.k][p][1].slice(1)}`, 'gold');
   }
 }
 function jtDbg() { return { prog: G.jt.prog.slice(0, 8).map(e => e.w + ':' + (e.k || e.vote.join('|'))), vote: G.jt.vote, em: G.b.map(b => b.jt.em) }; }
@@ -7293,8 +7254,7 @@ function jtSnap() {
     const rel = Object.keys(b.jt.relics).map(k => RELIC_KEYS.indexOf(k)).join('');
     const fl = (b.jt.palet ? 1 : 0) + '0' + (b.jt.scroll ? 1 : 0) + (b.jt.relicPick || []).map(k => RELIC_KEYS.indexOf(k)).join('');
     const tw = []; for (const t of b.grid) if (t && (t.stoneT > G.t || t.stunT > G.t)) tw.push(b36(idx(t.c, t.r), 2) + (t.stoneT > G.t ? 's' + b36(Math.min(35, Math.ceil((t.stoneT - G.t) * 10)), 1) : 'z' + b36(Math.min(35, Math.ceil((t.stunT - G.t) * 10)), 1)));
-    const vo = (b.jt.voie ? VOIE_KEYS.indexOf(b.jt.voie) : '-') + (b.jt.voieOffer || []).map(v => VOIE_KEYS.indexOf(v)).join('');
-    return [ob.join(''), e, z, rel, fl, tw.join(''), vo].join(';');
+    return [ob.join(''), e, z, rel, fl, tw.join('')].join(';');
   }).join('/');
   const E = G.entr, en = E ? PHASES[E.phase] + E.turn + E.order.join('') + ':' + b36(Math.min(1295, Math.round(E.t * 10)), 2) + ':' + E.pucks.map(p => p.k + b36(Math.round(p.x * 2), 2) + b36(Math.round((p.y + 20) * 2), 2) + (p.out ? 1 : 0)).join('') + ':' + b36(Math.round(E.jack.x * 2), 2) + b36(Math.round((E.jack.y + 20) * 2), 2)
     + ':' + (E.res ? E.res.map(r => r.k + (r.d === Infinity ? 'x' : '.')).join('') + (E.win ?? '-') + b36(E.sack || 0, 2) + (E.second ?? '-') + (E.botRelic ? RELIC_KEYS.indexOf(E.botRelic) : '-') : '') : '';
@@ -7319,7 +7279,7 @@ function jtApplySnap(s) {
   } else J.vote = null;
   boards.split('/').forEach((str, k) => {
     const b = G.b[k]; if (!b || !b.jt) return;
-    const [ob = '', e = '', z = '', rel = '', fl = '', tw = '', vo = ''] = str.split(';');
+    const [ob = '', e = '', z = '', rel = '', fl = '', tw = ''] = str.split(';');
     // the cells: what changed falls, floods or rises as on the host
     const nob = new Uint8Array(COLS * ROWS); for (let i = 0; i + 3 <= ob.length; i += 3) { const c = parseInt(ob.slice(i, i + 2), 36); if (c >= 0 && c < COLS * ROWS) nob[c] = +ob[i + 2]; }
     let changed = false;
@@ -7337,11 +7297,6 @@ function jtApplySnap(s) {
     b.jt.zone = z ? { k: EV_DEC[z[0]], w: parseInt(z.slice(1, 3), 36), cells: (z.slice(3).match(/../g) || []).map(x => parseInt(x, 36)) } : null;
     b.jt.relics = {}; for (const d of rel) if (RELIC_KEYS[+d]) b.jt.relics[RELIC_KEYS[+d]] = 1;
     b.jt.palet = fl[0] === '1'; b.jt.scroll = fl[2] === '1';
-    // the path: my own choice shows at once, before the host has it
-    const sv = vo && vo[0] !== '-' ? VOIE_KEYS[+vo[0]] || '' : '', own = k === G.me && b.jt.voie && !sv;
-    if (!own) b.jt.voie = sv;
-    b.jt.voieOffer = !own && vo.length >= 3 && VOIE_KEYS[+vo[1]] && VOIE_KEYS[+vo[2]] ? [VOIE_KEYS[+vo[1]], VOIE_KEYS[+vo[2]]] : null;
-    if (own) b.jt.relics[VOIES[b.jt.voie].steps[0]] = 1;
     b.jt.relicPick = fl.length > 3 ? fl.slice(3).split('').map(d => RELIC_KEYS[+d]).filter(Boolean) : null;
     if (b.jt.relicPick && !b.jt.relicPick.length) b.jt.relicPick = null;
     for (const t of b.grid) if (t) { t.stoneT = 0; t.stunT = 0; }
@@ -8384,52 +8339,46 @@ document.addEventListener('click', e => {
 }, true);
 
 /* ---------------------------------------------------------------- choices: a spell from the scroll, a relic from the palet */
-// the herald's offer at the start: two paths, the first step of the one you keep is given
-function voieHTML(me) {
-  const card = v => {
-    const V = VOIES[v], s1 = jtStepInfo(v, 0), own = V.maison === me.jt.maison;
-    return `<button type="button" class="jt-offer voie" data-voie="${v}">${own ? '<span class="jt-tagm">TA MAISON</span>' : ''}${jtVoieIcon(v)}<span class="jt-n">${esc(V.n)}</span><span class="jt-d"><b>Offert :</b> ${esc(s1.n)}</span><span class="jt-d">${esc(s1.d)}</span><span class="jt-d jt-then">Puis ${esc(jtStepInfo(v, 1).n)}, ${esc(jtStepInfo(v, 2).n)}</span></button>`;
-  };
-  return `<div class="jt-ttl"><span>LE HÉRAUT · CHOISIS TA VOIE</span></div><div class="jt-offers two">${me.jt.voieOffer.map(card).join('')}</div><div class="jt-foot">La suite s’achète à l’Atelier.</div>`;
-}
 function renderPick() {
   const me = G.b[G.me], el = $('jtPick');
-  const mode = !me || !G.running || G.ended || G.entr || G.spec || !me.alive ? '' : me.jt.relicPick ? 'relic' : me.jt.scroll ? 'scroll' : me.jt.voieOffer && !me.jt.voie ? 'voie' : '';
+  const mode = !me || !G.running || G.ended || G.entr || G.spec || !me.alive ? '' : me.jt.relicPick ? 'relic' : me.jt.scroll ? 'scroll' : '';
   if (!mode) { if (!el.hidden) el.hidden = true; cache.jtPick = null; return; }
-  const key = mode + '|' + (me.jt.relicPick || me.jt.voieOffer || []).join(',');
+  const key = mode + '|' + (me.jt.relicPick || []).join(',');
   if (cache.jtPick !== key) {
     cache.jtPick = key;
-    el.innerHTML = mode === 'voie' ? voieHTML(me)
-      : mode === 'relic'
+    el.innerHTML = mode === 'relic'
       ? `<div class="jt-ttl">${jtIcon('palet')}<span>LE PALET EST À TOI · CHOISIS UNE RELIQUE</span></div><div class="jt-offers">` + me.jt.relicPick.map(k => `<button type="button" class="jt-offer" data-relic="${k}">${relicIcon(k)}<span class="jt-n">${esc(RELICS[k].n)}</span><span class="jt-d">${esc(RELICS[k].d)}</span></button>`).join('') + '</div>'
       : `<div class="jt-ttl">${jtIcon('parchemin')}<span>LE PARCHEMIN · CHOISIS UN SORT</span></div><div class="jt-offers five">` + CARD_KEYS.map(k => `<button type="button" class="jt-offer" data-scroll="${k}">${ICON[k]}<span class="jt-n">${esc(CARDS[k].n)}</span></button>`).join('') + '</div>';
   }
   el.hidden = false; el.style.bottom = (H - view.bottom + 6) + 'px';
 }
 $('jtPick').addEventListener('click', e => {
-  const r = e.target.closest('[data-relic]'), s = e.target.closest('[data-scroll]'), vb = e.target.closest('[data-voie]');
-  if (vb) { act(['J', 'voie', vb.dataset.voie]); }
-  else if (r) { if (!act(['J', 'relic', r.dataset.relic])) toast(`${RELICS[r.dataset.relic].n} : ${RELICS[r.dataset.relic].d}`, 'gold'); }
+  const r = e.target.closest('[data-relic]'), s = e.target.closest('[data-scroll]');
+  if (r) { if (!act(['J', 'relic', r.dataset.relic])) toast(`${RELICS[r.dataset.relic].n} : ${RELICS[r.dataset.relic].d}`, 'gold'); }
   else if (s) { if (!act(['J', 'scroll', s.dataset.scroll])) toast(`Nouveau sort : ${CARDS[s.dataset.scroll].n}`, 'gold'); }
 });
 
-/* ---------------------------------------------------------------- the emblem: its card, its power in the bar at the bottom */
+/* ---------------------------------------------------------------- the emblem: its card, as small as a tower's panel */
 function emInfo(b) { const em = b.jt.em; return em ? EMB[em.k] : null; }
 function openEmCard() { if (!G || !G.b[G.me].jt.em) return; closePop(); G.jtCard = true; cache.jtCard = null; sfx('click'); renderEmCard(); }
 function closeEmCard() { if (G) G.jtCard = false; $('jtCard').hidden = true; }
 function renderEmCard() {
   const el = $('jtCard'), me = G.b[G.me], em = me && me.jt.em;
   if (!G.jtCard || !em || !G.running || G.ended || G.entr) { if (!el.hidden) el.hidden = true; return; }
-  const E = EMB[em.k], lv = ['I', 'II', 'III', 'IV'][em.lvl - 1];
+  const E = EMB[em.k], lv = ROMAN(em.lvl);
   const need = em.lvl < 4 ? EM_XP[em.lvl - 1] : 0, prev = em.lvl > 1 ? EM_XP[em.lvl - 2] : 0;
   const xpf = em.lvl < 4 ? Math.max(0, Math.min(1, (em.xp - prev) / (need - prev))) : 1;
-  const key = em.lvl + '|' + Math.floor(xpf * 20) + '|' + (em.pend || []).join(',') + '|' + em.pw.join(',') + '|' + (em.cd > 0 ? Math.ceil(em.cd) : 'ok');
+  const key = em.lvl + '|' + Math.floor(xpf * 20) + '|' + em.pw.join(',') + '|' + (em.cd > 0 ? Math.ceil(em.cd) : 'ok');
   if (cache.jtCard !== key) {
     cache.jtCard = key;
-    const pw = em.pw.map(p => `<span class="jt-chip">${esc(EPOW[em.k][p][0])}</span>`).join('') + Array.from({ length: 3 - em.pw.length - (em.pend ? 1 : 0) }, () => '<span class="jt-chip sil">?</span>').join('');
-    el.innerHTML = `<div class="jt-head">${embPortrait(em.k, em.lvl, 2)}<div class="jt-tx"><div class="jt-k">${esc(E.m.toUpperCase())}</div><div class="jt-n">${esc(E.n)} · niveau ${lv}</div><div class="jt-xp"><i style="width:${(xpf * 100).toFixed(0)}%"></i></div><div class="jt-d">${em.lvl < 4 ? `Encore ${Math.max(0, need - em.xp)} créatures dans son rayon` : 'Niveau maximum'}</div></div></div>` +
-      (em.pend ? `<div class="jt-ttl gold">NIVEAU ${lv} · CHOISIS UN POUVOIR</div><div class="jt-cards">${em.pend.map(p => `<button type="button" class="jt-vc" data-epick="${p}"><span class="jt-n">${esc(EPOW[em.k][p][0])}</span><span class="jt-d">${esc(EPOW[em.k][p][1])}</span></button>`).join('')}</div>` : '') +
-      `<div class="jt-line"><b>Aura</b><span>${esc(E.aura)}</span></div><div class="jt-line"><b>${esc(E.pn)}</b><span>${esc(E.pd)} · ${em.cd > 0 ? `prêt dans ${Math.ceil(em.cd)} s` : 'prêt'}</span></div><div class="jt-pws">${pw}</div>`;
+    // the title and its next level, the bar, the aura, the power (it goes off by itself), what it has learnt, what comes next
+    const ord = EM_ORDER[em.k], got = ord.filter(p => em.pw.includes(p)), next = ord.map((p, i) => [p, i + 2]).filter(([p]) => !em.pw.includes(p));
+    el.innerHTML = `<div class="ttl"><b>${esc(E.n)} · niv. ${lv}</b><span>${em.lvl < 4 ? `${Math.max(0, need - em.xp)} créatures avant le niv. ${ROMAN(em.lvl + 1)}` : 'niveau maximum'}</span></div>` +
+      (em.lvl < 4 ? `<div class="jt-xp"><i style="width:${(xpf * 100).toFixed(0)}%"></i></div>` : '') +
+      `<div class="jt-ln"><b>Aura</b> ${esc(E.aura)}</div>` +
+      `<div class="jt-ln"><b>${esc(E.pn)}</b> ${esc(E.pd)}, tout seul · ${em.cd > 0 ? `dans ${Math.ceil(em.cd)} s` : 'prêt'}</div>` +
+      got.map(p => `<div class="jt-ln"><b>${esc(EPOW[em.k][p][0])}</b> ${esc(EPOW[em.k][p][1])}</div>`).join('') +
+      (next.length ? `<div class="info">${next.map(([p, l]) => `Niv. ${ROMAN(l)} : ${esc(EPOW[em.k][p][0])}`).join(' · ')}</div>` : '');
   }
   el.hidden = false;
   const [x, y] = w2s(me.ox + em.c + 0.5, me.oy + em.r), pw = el.offsetWidth, ph = el.offsetHeight;
@@ -8438,30 +8387,7 @@ function renderEmCard() {
   if (top + ph > view.bottom - 4) top = Math.max(view.top + 4, view.bottom - 4 - ph);
   el.style.left = left + 'px'; el.style.top = top + 'px';
 }
-$('jtCard').addEventListener('click', e => {
-  const b = e.target.closest('[data-epick]');
-  if (b) { if (!act(['J', 'epick', b.dataset.epick])) { toast(`Nouveau pouvoir : ${EPOW[G.b[G.me].jt.em.k][b.dataset.epick][0]}`, 'gold'); cache.jtCard = null; } return; }
-  closeEmCard();
-});
-function renderPow() {
-  const btn = $('jtPow'), me = G.b[G.me], em = me && me.jt.em;
-  const show = !!(em && G.running && !G.spec && me.alive);
-  if (btn.hidden === show) btn.hidden = !show;
-  if (!show) return;
-  const ready = em.cd <= 0, key = em.k + em.lvl + '|' + ready + '|' + (ready ? '' : Math.ceil(em.cd)) + '|' + !!em.pend;
-  if (cache.jtPow === key) return; cache.jtPow = key;
-  btn.innerHTML = `${embPortrait(em.k, em.lvl, 1)}<span class="lbl">${esc(EMB[em.k].pn)}</span>${ready ? '' : `<span class="cd">${Math.ceil(em.cd)}</span>`}${em.pend ? '<span class="bang">!</span>' : ''}`;
-  btn.classList.toggle('ready', ready);
-  btn.setAttribute('aria-label', `${EMB[em.k].pn} : ${EMB[em.k].pd}${ready ? '' : ', prêt dans ' + Math.ceil(em.cd) + ' s'}`);
-}
-$('jtPow').addEventListener('click', () => {
-  if (!G || !G.running) return;
-  const em = G.b[G.me].jt.em; if (!em) return;
-  if (em.pend) { openEmCard(); return; }
-  const err = act(['J', 'pow']);
-  if (err) { sfx('error'); if (err !== 'x') toast(err, 'bad'); }
-  else cache.jtPow = null;
-});
+$('jtCard').addEventListener('click', () => closeEmCard());
 
 /* ---------------------------------------------------------------- taps on the board that belong to the tournament */
 function jtTap(sx, sy) {
@@ -8483,9 +8409,9 @@ function jtTap(sx, sy) {
 /* ---------------------------------------------------------------- once per frame */
 function jtUI() {
   if (!G || !G.jt) return;
-  herTick(); renderHerald(); renderPick(); renderPow(); renderEmCard();
+  herTick(); renderHerald(); renderPick(); renderEmCard(); jtChefWatch();
 }
-function jtEnd() { for (const id of ['jtHer', 'anPan', 'jtPick', 'jtCard']) $(id).hidden = true; AN.open = false; if (G) G.jtCard = false; $('jtPow').hidden = true; }
+function jtEnd() { for (const id of ['jtHer', 'anPan', 'jtPick', 'jtCard']) $(id).hidden = true; AN.open = false; if (G) G.jtCard = false; }
 
 /* ---------------------------------------------------------------- the Houses, in the solo set-up */
 function jtRenderMaisons() {
@@ -8570,20 +8496,20 @@ Object.assign(TUTO_ART, {
     { k: 'chemin', t: 'Ton labyrinthe',
       p: "Pose des murs pour allonger leur chemin et des tours pour tirer : plus le détour est long, plus tes tours tirent. Le Givre les ralentit. Le passage ne se ferme jamais.",
       x: () => tsec('Constructions', ['wall', 'arrow', 'cannon', 'frost'].map(k => tchip(ICON[k], T[k].n, TUTO_TOWER[k], { cost: T[k].cost, cls: 'tall' })).join('')) + `<p class="tut-hint">Touche une tour pour l’améliorer.</p>` },
-    { k: 'embleme', t: 'Ta Maison et ta voie',
-      p: "La statue de ta Maison est posée au hasard dans ta clairière : construis autour d’elle, elle frappe les créatures et renforce les tours voisines. Au départ, le héraut te propose deux voies : garde-en une, sa première marche est offerte. Les suivantes s’achètent à l’Atelier. Deux voies complètes ouvrent un chef-d’œuvre : une tour unique, une seule par partie.",
-      x: () => tsec('Les quatre voies', VOIE_KEYS.map(v => `<div class="tvoie">${jtVoieIcon(v)}<div><b>${esc(VOIES[v].n)}</b><span>${[0, 1, 2].map(i => `<i>${STEP_ROMAN[i]}</i> ${esc(jtStepInfo(v, i).n)}`).join(' · ')}</span></div></div>`).join(''), 'tut-voies') },
+    { k: 'embleme', t: 'Ta Maison et tes tours',
+      p: "La statue de ta Maison frappe les créatures et renforce les tours voisines : construis autour d’elle. Touche une tour pour l’améliorer : au niveau 3, elle choisit sa forme. Deux familles au niveau 4 ouvrent un chef-d’œuvre, une tour unique.",
+      x: () => tsec('Au niveau 3', FAM_KEYS.map(f => { const F = FAMS[f]; return `<div class="tvoie">${ICON[F.form]}<div><b>${esc(T[F.base].n)} → ${esc(T[F.form].n)}</b><span>ou ${esc(EVO[F.base][F.evo].n)} : ${esc(EVO[F.base][F.evo].d.charAt(0).toLowerCase() + EVO[F.base][F.evo].d.slice(1))}</span></div></div>`; }).join(''), 'tut-voies') },
     { k: 'envoyer', t: 'Envoyer',
       p: "Dans l’onglet Envoyer, tes créatures partent chez la Maison voisine. Chaque envoi fait monter ton revenu, et les vies qu’elle perd sont pour toi. Au début, quatre créatures ; de nouvelles s’ouvrent toutes les quatre vagues.",
       x: () => `<p class="tut-hint">Plus une créature coûte cher, plus elle est forte.</p>` },
     { k: 'surprises', t: 'Le héraut et ses surprises',
-      p: "Chaque vague s’annonce en haut, à côté de ton nom : touche l’annonce pour savoir ce qu’elle apporte (feu de broussailles, cercle des korrigans, boss…). Parfois, on vote. À mi-partie, l’Entracte : une partie de palet pour gagner une relique.",
+      p: "Chaque vague s’annonce en haut, à côté de ton nom : touche l’annonce pour savoir ce qu’elle apporte (feu de broussailles, cercle des korrigans, boss…). À mi-partie, l’Entracte : une partie de palet pour gagner une relique.",
       x: () => tsec('Par exemple', ['feu', 'korrigans', 'boss', 'entracte'].map(k => tchip(jtIcon(k), EV[k].n, EV_TAG[k])).join('')) });
 })();
 
 function circlePxOn(p, cx, cy, r, col) { const n = Math.max(16, Math.round(r * 6.3)); for (let i = 0; i < n; i++) { const t = i / n * Math.PI * 2; p.px(Math.round(cx + Math.cos(t) * r), Math.round(cy + Math.sin(t) * r), col); } }
 
-/* =============== La Grande Joute · progression: sends that open in tiers, four paths, the Bombarde, the ring's catch-up =============== */
+/* =============== La Grande Joute · progression: sends that open in tiers, towers that take their form at level 3, the Bombarde, the ring's catch-up =============== */
 
 /* ---------------------------------------------------------------- sends open in tiers, one with each new bestiary (every 4 waves) */
 const SEND_TIERS = [['rat', 'skel', 'swarm', 'crow'], ['mole', 'shaman', 'slime'], ['golem', 'knight', 'brood'], ['spectre', 'troll', 'wyvern'], ['ogre', 'lich'], ['dragon', 'colossus']];
@@ -8603,92 +8529,49 @@ function jtSendItems() {
   return html;
 }
 
-/* ---------------------------------------------------------------- the four paths: three steps each; the first is a relic, the others the Atelier's */
-const VOIES = {
-  arc:     { n: 'L’Arc', de: 'de l’Arc', steps: ['carquois', 'ballista', 'm_arc'], maison: 'griffon' },
-  arcanes: { n: 'Les Arcanes', de: 'des Arcanes', steps: ['givre', 'tesla', 'm_arcanes'], maison: 'cerf' },
-  poudre:  { n: 'La Poudre', de: 'de la Poudre', steps: ['poudre', 'bombard', 'm_poudre'], maison: 'ours' },
-  fortune: { n: 'La Fortune', de: 'de la Fortune', steps: ['bourse', 'pillards', 'tresorier'], maison: 'renard' },
+/* ---------------------------------------------------------------- towers take their form at level 3 (no Atelier any more) */
+// Three families. Every tower is built at level 1 and improved where it stands. At level 3 it takes its form: the new
+// tower of its family, or its own evolution. Level 4 comes next, for every tower. Two families at level 4 open the masterpieces.
+const FAMS = {
+  arc:     { n: 'L’Arc', base: 'arrow', form: 'ballista', evo: 'double' },
+  arcanes: { n: 'Les Arcanes', base: 'frost', form: 'tesla', evo: 'blizzard' },
+  poudre:  { n: 'La Poudre', base: 'cannon', form: 'bombard', evo: 'mortar' },
 };
-const VOIE_KEYS = Object.keys(VOIES);
-const VOIE_RELIC = new Set(VOIE_KEYS.map(v => VOIES[v].steps[0]));
-const VOIE_I_COST = 90;   // the first step of a path you did not pick
-const STEP_ROMAN = ['I', 'II', 'III'];
-const jtStepKey = (v, i) => VOIES[v].steps[i];
-const jtStepOwned = (b, v, i) => i === 0 ? !!(b.jt && b.jt.relics[VOIES[v].steps[0]]) : hasTech(b, VOIES[v].steps[i]);
-function jtNextStep(b, v) { for (let i = 0; i < 3; i++) if (!jtStepOwned(b, v, i)) return i; return -1; }
-const jtStepsOwned = (b, v) => [0, 1, 2].filter(i => jtStepOwned(b, v, i)).length;
-const jtStepCost = (b, v, i = jtNextStep(b, v)) => i < 0 ? 0 : i === 0 ? VOIE_I_COST : TECH[jtStepKey(v, i)].cost;
-function jtStepInfo(v, i) {
-  const key = jtStepKey(v, i);
-  return i === 0 ? { n: RELICS[key].n, d: RELICS[key].d } : { n: TECH[key].n, d: TECH[key].d };
-}
-function jtStepIcon(v, i) {
-  const key = jtStepKey(v, i);
-  if (i === 0) return jtIcon(key);
-  if (i === 2 && v !== 'fortune') return ICON.tech_mastery;
-  return key === 'pillards' ? jtIconCoins() : key === 'tresorier' ? ICON.chest : key === 'bombard' ? jtIconBall() : ICON['tech_' + key] || '';
-}
-const jtVoieIcon = (v, sc = 2) => jtIcon(VOIES[v].steps[0], sc);
-// the herald's offer at the start: your House's path and another one
-function jtVoieOffer(b) {
-  const mine = VOIE_KEYS.find(v => VOIES[v].maison === b.jt.maison) || rndOf(VOIE_KEYS), other = rndOf(VOIE_KEYS.filter(v => v !== mine));
-  return Math.random() < 0.5 ? [mine, other] : [other, mine];
-}
-function jtChooseVoie(b, v) {
-  if (!VOIES[v] || b.jt.voie) return 'x';
-  b.jt.voie = v; b.jt.voieOffer = null;
-  b.jt.relics[VOIES[v].steps[0]] = 1;
-  if (!b.bot && fxOn(b.k) && G.running) { sfx('evolve'); toast(`${VOIES[v].n} : ${RELICS[VOIES[v].steps[0]].n} t’est offert`, 'gold'); }
-  return '';
-}
-// buying the next step of a path in the Atelier
-function jtBuyStep(k, v) {
-  const b = G.b[k]; if (!VOIES[v] || !b.jt) return 'x';
-  const i = jtNextStep(b, v); if (i < 0) return 'x';
-  const cost = jtStepCost(b, v, i);
+const FAM_KEYS = Object.keys(FAMS);
+const FAM_OF = { arrow: 'arc', ballista: 'arc', frost: 'arcanes', tesla: 'arcanes', cannon: 'poudre', bombard: 'poudre' };
+const JT_FORMS = {}; for (const f of FAM_KEYS) JT_FORMS[FAMS[f].base] = [FAMS[f].form, FAMS[f].evo];
+const FORM_D = {
+  ballista: 'Un gros carreau qui transperce toute la file, de très loin',
+  tesla: 'L’éclair frappe trois créatures à la suite et traverse les armures',
+  bombard: 'Un boulet lent, en cloche, qui écrase les grosses créatures',
+};
+const isFormOf = (type, f) => !!(JT_FORMS[type] && JT_FORMS[type][0] === f);
+// becoming the new tower costs what that tower would have cost up to its level 3
+const formCost = type => spentFor(JT_FORMS[type][0], 3) - spentFor(type, 2);
+// the highest level among a House's towers of a family
+const famTop = (b, f) => b && b.grid ? b.grid.reduce((m, t) => t && FAM_OF[t.type] === f ? Math.max(m, t.lvl) : m, 0) : 0;
+// level 2 to 3: the tower turns into the new tower of its family, on the spot (it keeps its place and its kills)
+function jtBecome(k, t, to) {
+  const b = G.b[k], cost = formCost(t.type);
   if (b.gold < cost) return "Pas assez d'or";
-  b.gold -= cost;
-  if (i === 0) b.jt.relics[jtStepKey(v, 0)] = 1; else b.tech |= TECH[jtStepKey(v, i)].bit;
-  if (fxOn(k)) { sfx('evolve'); bumpEl('goldPill'); }
+  b.gold -= cost; t.spent += cost; t.type = to; t.lvl = 3; t.evo = ''; t.cd = 0.2; if (!G.quiet) t.born = G.t;
+  if (fxOn(k)) {
+    sfx('evolve');
+    b.rings.push({ x: t.c + 0.5, y: t.r + 0.5, r0: 0.3, r1: 1.5, t: 0.5, ttl: 0.5, color: C.gold, fill: true });
+    for (let i = 0; i < 18; i++) { const a = Math.random() * Math.PI * 2, v = 2 + Math.random() * 1.6; b.parts.push({ x: t.c + 0.5, y: t.r + 0.5, vx: Math.cos(a) * v, vy: Math.sin(a) * v, t: 0.55, ttl: 0.55, color: i % 3 ? C.gold : '#FFFFFF', size: 0.06 }); }
+  }
   return '';
 }
-// the bots dig their path, and sometimes start a second one
-function jtBotStep(k) {
-  const b = G.b[k]; if (!b.jt) return false;
-  // their path first; once it is complete, a second path to the end (the two of them open their masterpiece)
-  let v = b.jt.voie && jtNextStep(b, b.jt.voie) >= 0 ? b.jt.voie : '';
-  if (!v && !b.jt.voie2 && Math.random() < 0.4) b.jt.voie2 = rndOf(VOIE_KEYS.filter(x => x !== b.jt.voie));
-  if (!v && b.jt.voie2 && jtNextStep(b, b.jt.voie2) >= 0) v = b.jt.voie2;
-  if (!v || b.gold < jtStepCost(b, v) + 40) return false;
-  return jtBuyStep(k, v) === '';
+// the tower's panel at level 2: its two forms, side by side, each with its picture and its price
+function jtEvoPop(t, name, head, sellBtn) {
+  const [to, ev] = JT_FORMS[t.type], fc = formCost(t.type), ec = upCost(t);
+  const btn = (key, ico, n, d, cost) => `<button class="evo jt-form" type="button" data-act="u" data-evo="${key}" data-cost="${cost}">${ico}<b>${n}</b><span>${d}</span><em>${cost}</em></button>`;
+  return `<div class="ttl"><b>${name} · niv. 2</b><span>${head}</span></div><div class="evo-h">Niveau 3 : choisis sa forme</div><div class="evos">` +
+    btn(to, ICON[to], 'Devient ' + T[to].n, FORM_D[to], fc) + btn(ev, ICON[t.type], EVO[t.type][ev].n, EVO[t.type][ev].d, ec) + `</div><div class="acts">${sellBtn}</div>`;
 }
-// La Fortune III: sends bring a quarter more income (kept in fractions so the cheap ones count too)
-function jtIncBonus(b, s) {
-  if (!b.jt || !hasTech(b, 'tresorier')) return 0;
-  b.jt.incFrac = (b.jt.incFrac || 0) + s.inc * 0.25;
-  const n = Math.floor(b.jt.incFrac); b.jt.incFrac -= n; return n;
-}
-
-/* ---------------------------------------------------------------- the Atelier: the next step of each path, four buttons */
-function jtAtelierItems(me) {
-  return jtChefButtons(me, false) + VOIE_KEYS.map(v => {
-    const i = jtNextStep(me, v), done = i < 0, mine = me.jt && me.jt.voie === v, pick = G.techPick === 'v:' + v;
-    const s = done ? null : jtStepInfo(v, i), ic = done ? jtStepIcon(v, 2) : jtStepIcon(v, i);
-    const tag = `${VOIES[v].n} · ${done ? 'complète' : STEP_ROMAN[i]}`;
-    return `<button class="item snd tech${done ? ' own' : ''}${mine ? ' mine' : ''}" type="button" data-step="${v}" aria-pressed="${pick}"${done ? ' disabled' : ''}><span class="tag">${tag}</span>${ic}<span class="nm">${done ? 'Voie complète' : esc(s.n)}</span><span class="ct">${done ? '✓' : jtStepCost(me, v, i)}</span></button>`;
-  }).join('');
-}
-const jtItemsKey = me => me && me.jt ? Object.keys(me.jt.relics).join('') + (me.jt.voie || '') + jtTier() + jtChefAvail(me).join('') : '' + jtTier();
-// a big spend: the first tap says what it does, the second one buys
-function jtStepClick(v) {
-  const me = G.b[G.me], i = jtNextStep(me, v); if (i < 0) return;
-  const s = jtStepInfo(v, i), cost = jtStepCost(me, v, i);
-  if (G.techPick !== 'v:' + v) { G.techPick = 'v:' + v; G.techPickT = G.t; sfx('click'); toast(`${VOIES[v].n} ${STEP_ROMAN[i]} · ${s.n} : ${s.d}. Touche encore pour l’acheter (${cost} or)`, 'gold'); renderItems(); return; }
-  G.techPick = ''; const err = act(['J', 'step', v]);
-  if (err) { sfx('error'); if (err !== 'x') toast(err, 'bad'); }
-  renderItems();
-}
+const jtFormHint = type => JT_FORMS[type] ? `Au niveau 3, il devient ${T[JT_FORMS[type][0]].n} ou passe en ${EVO[type][JT_FORMS[type][1]].n}.` : '';
+// the bar of towers: only what can be built (the new towers come from the old ones); the masterpieces first
+const jtItemsKey = me => me && me.jt ? jtTier() + jtChefAvail(me).join('') : '' + jtTier();
 
 /* ---------------------------------------------------------------- the ring closes: the catch-up purse */
 // When a House falls, the one it attacked gets a new, often richer, attacker: once, it gets the gap between their
@@ -8770,41 +8653,30 @@ function jtDrawBombardShot(x, b, p, px, py) {
   P.spr(['..ddd..', '.dbbbd.', 'dbbbbbd', 'dbbbbbd', 'dbbbbbd', '.dbbbd.', '..ddd..'], { d: K.dk2, b: K.i0 }, bx - 3, by - 3);
   P.px(bx - 1, by - 2, K.i2); P.px(bx - 2, by - 1, K.i1); P.px(bx, by - 2, K.i1);
 }
-// small pictures for the Atelier: the Pillards' pile of coins, the Bombarde's stone ball
-function jtIconCoins() {
-  return JT_IMG.anCoins || (JT_IMG.anCoins = pxImg(pxURL(12, 11, p => {
-    for (const [cx, cy] of [[3, 7], [8, 7], [5, 3]]) { p.ell(cx, cy + 1, 3, 2, '#7a5a1a'); p.ell(cx, cy, 3, 2, '#e3c86a'); p.hl(cx - 1, cy - 1, 2, '#fff1b0'); p.hl(cx - 2, cy + 2, 5, '#a8812e'); }
-  }, 2), 24, 22, 'ico'));
-}
-function jtIconBall() {
-  return JT_IMG.anBall || (JT_IMG.anBall = pxImg(pxURL(12, 11, p => {
-    p.rect(1, 8, 10, 2, '#5e4630'); p.hl(1, 8, 10, '#8a6a48');
-    p.ell(6, 5, 4, 4, '#26282e'); p.ell(6, 5, 3, 3, '#6b707a'); p.ell(5, 4, 1, 1, '#a7adb8'); p.px(4, 3, '#e2e4e6');
-  }, 2), 24, 22, 'ico'));
-}
 
 /* =============== La Grande Joute · the masterpieces (chefs-d'œuvre) =============== */
-// Two complete paths open the masterpiece of their pair: a unique tower, one per House and per game. It goes on a wall
-// (or a free cell) like any tower and comes complete: no levels, no evolution, it cannot be sold. The herald tells everyone.
+// Two families with a tower at level 4 open their two masterpieces (one to fight, one for gold): a unique tower, one per
+// House and per game. It goes on a wall or a free cell like any tower and comes complete: no levels, it cannot be sold.
+// The herald tells everyone.
 // Drawn without any dark outline: shapes come from their own light and dark tones.
 const CHF_KEYS = ['orage', 'couleuvrine', 'fleche', 'gregeois', 'pierre', 'canon'];
 const CHF = {
-  orage: { n: 'Arbalète d’orage', full: 'L’Arbalète d’orage', voies: ['arc', 'arcanes'], col: '#4f8fd6', stats: { range: 4, dmg: 70, rate: 1.6 },
+  orage: { n: 'Arbalète d’orage', full: 'L’Arbalète d’orage', fams: ['arc', 'arcanes'], col: '#4f8fd6', stats: { range: 4, dmg: 70, rate: 1.6 },
     d: 'Son carreau de foudre transperce toute la file, la foudre saute sur une voisine. Il traverse les armures.',
     foe: 'Ses carreaux de foudre transpercent la file de tes créatures.' },
-  couleuvrine: { n: 'Couleuvrine', full: 'La Couleuvrine', voies: ['arc', 'poudre'], col: '#b8402a', stats: { range: 5, dmg: 130, rate: 3, splash: 0.7 },
+  couleuvrine: { n: 'Couleuvrine', full: 'La Couleuvrine', fams: ['arc', 'poudre'], col: '#b8402a', stats: { range: 5, dmg: 130, rate: 3, splash: 0.7 },
     d: 'Elle tire de très loin, toujours sur la créature la plus avancée : un gros boulet, une petite explosion.',
     foe: 'Elle frappe de très loin ta créature la plus avancée.' },
-  fleche: { n: 'Flèche d’or', full: 'La Flèche d’or', voies: ['arc', 'fortune'], col: '#3f5fa8', stats: { range: 3.4, dmg: 26, rate: 0.8 },
+  fleche: { n: 'Flèche d’or', full: 'La Flèche d’or', fams: ['arc', 'poudre'], col: '#3f5fa8', stats: { range: 3.4, dmg: 26, rate: 0.8 },
     d: 'Trois flèches d’or à chaque tir. Chaque créature qu’elle achève rapporte 3 or de plus.',
     foe: 'Trois flèches d’or par tir, et tes créatures lui rapportent plus.' },
-  gregeois: { n: 'Feu grégeois', full: 'Le Feu grégeois', voies: ['arcanes', 'poudre'], col: '#3f8a3a', stats: { range: 3, dmg: 25, rate: 2.5, splash: 0.9 },
+  gregeois: { n: 'Feu grégeois', full: 'Le Feu grégeois', fams: ['arcanes', 'poudre'], col: '#3f8a3a', stats: { range: 3, dmg: 25, rate: 2.5, splash: 0.9 },
     d: 'Ses fioles laissent 4 s de feu vert sur le chemin : il brûle et ralentit tout ce qui passe.',
     foe: 'Son feu vert brûle et ralentit tes créatures.' },
-  pierre: { n: 'Pierre philosophale', full: 'La Pierre philosophale', voies: ['arcanes', 'fortune'], col: '#a8243a', stats: { range: 3.2, dmg: 40, rate: 2 },
+  pierre: { n: 'Pierre philosophale', full: 'La Pierre philosophale', fams: ['arc', 'arcanes'], col: '#a8243a', stats: { range: 3.2, dmg: 40, rate: 2 },
     d: 'Son rayon change une créature en or pendant 3 s : elle avance moitié moins vite, et rapporte trois fois son prix si elle meurt dorée.',
     foe: 'Les créatures que tu lui envoies peuvent devenir or : elles lui rapportent le triple.' },
-  canon: { n: 'Canon d’or', full: 'Le Canon d’or', voies: ['poudre', 'fortune'], col: '#8a2a2a', stats: { range: 3, dmg: 60, rate: 2, splash: 1.2 },
+  canon: { n: 'Canon d’or', full: 'Le Canon d’or', fams: ['arcanes', 'poudre'], col: '#8a2a2a', stats: { range: 3, dmg: 60, rate: 2, splash: 1.2 },
     d: 'Une grosse explosion : chaque créature touchée lui rapporte 1 or, même si elle survit (5 au plus par tir).',
     foe: 'Chaque créature touchée lui rapporte de l’or.' },
 };
@@ -8820,13 +8692,14 @@ for (const k of CHF_KEYS) {
 
 /* ---------------------------------------------------------------- when it opens */
 const jtChefBuiltType = b => { const t = b && b.grid ? b.grid.find(t => t && isChef(t.type)) : null; return t ? t.type : ''; };
-// the pairs whose two paths are complete, as long as the House has not built its masterpiece
+// the masterpieces of the families that have a tower at level 4, as long as the House has not built its own
 function jtChefAvail(b) {
   if (!b || !b.jt || !b.grid || jtChefBuiltType(b)) return [];
-  return CHF_TYPES.filter(type => CHF[chfKey(type)].voies.every(v => jtStepsOwned(b, v) >= 3));
+  const top = {}; for (const f of FAM_KEYS) top[f] = famTop(b, f);
+  return CHF_TYPES.filter(type => CHF[chfKey(type)].fams.every(f => top[f] >= 4));
 }
 const jtChefOpen = (b, type) => jtChefAvail(b).includes(type);
-const jtChefNo = (b, type) => isChef(type) && jtChefBuiltType(b) ? 'Un seul chef-d’œuvre par partie' : "Débloque-la d'abord dans l'Atelier";
+const jtChefNo = (b, type) => !isChef(type) ? 'Elle naît d’une tour de niveau 3' : jtChefBuiltType(b) ? 'Un seul chef-d’œuvre par partie' : 'Il faut deux familles au niveau 4';
 // a creature turned to gold pays three times its bounty; the golden arrow's kills pay 3 more
 function jtChefBounty(cr, src, base) { return (base + (src && src.type === 'ch_fleche' ? 3 : 0)) * (cr.chfGold > G.t ? 3 : 1); }
 // the golden state travels in the status character (one base-36 digit): 32 + poison + stun when golden (golden implies slowed)
@@ -8856,23 +8729,24 @@ function jtChefAnnounce(b, type) {
 // the herald's panel while the news is fresh
 function jtChefAnnBody() {
   const a = AN.chef, b = G.b[a.k], c = CHF[chfKey(a.type)], mine = a.k === G.me;
-  const ic = jtChefIcon(a.type), pair = c.voies.map(v => VOIES[v].n).join(' et ');
-  return `<div class="r">${ic}<div class="x"><span class="k">${mine ? 'TON CHEF-D’ŒUVRE' : 'CHEF-D’ŒUVRE · ' + esc(String(b.name || '').toUpperCase())}</span><span class="n">${esc(c.full)}</span><span class="d">${esc(pair)} réunies</span><span class="tip">${esc(mine ? c.d : c.foe)}</span></div></div>`;
+  const ic = jtChefIcon(a.type), pair = c.fams.map(f => FAMS[f].n).join(' et ');
+  return `<div class="r">${ic}<div class="x"><span class="k">${mine ? 'TON CHEF-D’ŒUVRE' : 'CHEF-D’ŒUVRE · ' + esc(String(b.name || '').toUpperCase())}</span><span class="n">${esc(c.full)}</span><span class="d">${esc(pair)} au niveau 4</span><span class="tip">${esc(mine ? c.d : c.foe)}</span></div></div>`;
 }
 
-/* ---------------------------------------------------------------- the Atelier, the build bar, the wall's panel, the tower's panel */
-function jtChefButtons(me, asTool) {
+/* ---------------------------------------------------------------- the build bar, the wall's panel, the tower's panel */
+// at the head of the build bar, a double golden button for each masterpiece that is open
+function jtChefButtons(me) {
   return jtChefAvail(me).map(type => {
-    const c = CHF[chfKey(type)], data = asTool ? `data-tool="${type}" aria-pressed="${G.tool === type}"` : `data-chef="${type}" aria-pressed="${G.techPick === type}"`;
-    return `<button class="item snd tech chef" type="button" ${data}><span class="tag">Chef-d’œuvre</span>${ICON[type] || jtChefIcon(type)}<span class="cw"><span class="nm">${esc(c.full)}</span><span class="ct">${CHF_COST}</span></span></button>`;
+    const c = CHF[chfKey(type)];
+    return `<button class="item snd tech chef" type="button" data-tool="${type}" aria-pressed="${G.tool === type}"><span class="tag">Chef-d’œuvre</span>${ICON[type] || jtChefIcon(type)}<span class="cw"><span class="nm">${esc(c.full)}</span><span class="ct">${CHF_COST}</span></span></button>`;
   }).join('');
 }
-// a big spend: the first tap says what it does, the second one picks it to be built
-function jtChefClick(type) {
-  const c = CHF[chfKey(type)];
-  if (G.techPick !== type) { G.techPick = type; G.techPickT = G.t; sfx('click'); toast(`${c.full} · ${c.d} Touche encore pour le choisir (${CHF_COST} or).`, 'gold'); renderItems(); return; }
-  G.techPick = ''; if (!isChef(G.tool)) G.chefPrev = G.tool; G.tool = type; sfx('click');
-  setMode('build'); toast(`Touche un mur ou une case libre pour bâtir ${c.full}`, 'gold');
+// picked in the bar: what it does, and where it goes
+function jtChefPicked(type) { const c = CHF[chfKey(type)]; toast(`${c.full} · ${c.d} Touche un mur ou une case libre pour bâtir ce chef-d’œuvre (${CHF_COST} or).`, 'gold'); }
+// the first time two families reach level 4, the herald's note says where the masterpieces wait
+function jtChefWatch() {
+  const me = G.b[G.me]; if (!me || !me.jt || G.spec || !me.alive || me.jt.chefSeen) return;
+  if (jtChefAvail(me).length) { me.jt.chefSeen = 1; sfx('evolve'); toast('Deux familles au niveau 4 : un chef-d’œuvre t’attend dans Construire', 'gold'); }
 }
 function jtChefPop(t, head, kills) {
   const c = CHF[chfKey(t.type)];
@@ -9626,8 +9500,8 @@ function finData() {
   const hist = (jt.hist || []).slice(); if (!hist.length || hist[hist.length - 1] !== Math.max(0, me.lives)) hist.push(Math.max(0, me.lives));
   return { me, won, rank: s.order.indexOf(G.me) + 1, N: G.N, order: s.order, wave: G.wave, t: G.t, col: pcol(G.me), maison: EMB[jt.maison] ? jt.maison : 'cerf',
     em: jt.em || null, hist, kills: me.st.kills, sent: jt.sent || 0, stolen: me.st.stolen, chests: me.st.chests,
-    relics: jt.relics ? Object.keys(jt.relics).filter(r => !VOIE_RELIC.has(r)) : [], palet: !!jt.palet, mvp: s.mvp, alive: me.alive,
-    voie: VOIES[jt.voie] ? jt.voie : '', steps: VOIES[jt.voie] ? jtStepsOwned(me, jt.voie) : 0 };
+    relics: jt.relics ? Object.keys(jt.relics) : [], palet: !!jt.palet, mvp: s.mvp, alive: me.alive,
+    chef: jtChefBuiltType(me) ? CHF[chfKey(jtChefBuiltType(me))].full : '' };
 }
 // ---- the picture under the words
 function finArt(d) {
@@ -9718,7 +9592,7 @@ function finHTML(d) {
 <div class="ft l" data-txt style="top:calc(var(--fs)*134);left:calc(var(--fs)*14)">TES VIES, VAGUE APRÈS VAGUE</div>
 ${tile(creepIcon('skel', -1), d.kills, 'tuées', 0)}${NET.mode === 'client' ? tile(ICON.coin, '+' + d.me.income, 'revenu', 1) : tile(creepIcon('troll', d.col), d.sent, 'envoyées', 1)}${tile(ICON.heart, d.stolen, 'vies volées', 2)}${tile(ICON.chest, d.chests, 'coffres', 3)}
 <div class="fe" style="top:calc(var(--fs)*195)"><span class="lv" data-txt>${em ? 'Niv. ' + ['I', 'II', 'III', 'IV'][em.lvl - 1] : ''}</span><span class="pw" data-txt>${esc(pw)}</span><span class="rl">${relics}</span></div>
-<div class="ft f" data-txt style="top:calc(var(--fs)*208)">${fmt(d.t)}${d.voie ? ' · ' + esc(VOIES[d.voie].n) + ' ' + STEP_ROMAN[Math.max(0, d.steps - 1)] : ''}${d.mvp ? ' · MVP : ' + esc(d.mvp.name) : ''}</div>`;
+<div class="ft f" data-txt style="top:calc(var(--fs)*208)">${fmt(d.t)}${d.chef ? ' · ' + esc(d.chef) : ''}${d.mvp ? ' · MVP : ' + esc(d.mvp.name) : ''}</div>`;
 }
 // ---- the gleam: a dithered band that runs across the card as it tilts, and a few sparks on it
 function finShine(cv, rx, ry, seed) {
