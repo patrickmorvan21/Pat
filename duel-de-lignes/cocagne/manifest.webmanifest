@@ -1,8 +1,8 @@
 {
-  "name": "Duel de Lignes",
-  "short_name": "Duel de Lignes",
+  "name": "La Grande Joute",
+  "short_name": "La Joute",
   "lang": "fr",
-  "description": "Tower defense en duel, trois terrains, jusqu'à 4 joueurs.",
+  "description": "Tower wars entre amis : défends ta clairière, lâche tes créatures chez les autres Maisons. Jusqu'à 6 joueurs.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
