@@ -7378,9 +7378,13 @@ function drawHerald(x) {
 const AURA_COL = { cerf: '#dfe8ec', ours: '#d8a46c', griffon: '#c3cbd8', renard: '#e8a07a' };
 const EMB_LIFT = [0, 0, 3, 4];
 const EMB_GLYPH = {
-  cerf: ['a...a', 'aa.aa', '.aaa.', '..a..'], ours: ['.a.a.a', '.a.a.a', 'a.a.a.', 'a.a.a.'],
-  griffon: ['...aa', '..aaa', '.aaa.', 'aa...'], renard: ['a...a', 'aaaaa', '.aaa.', '..a..'],
+  cerf: ['a...a', 'aa.aa', '.aaa.', '..a..'], ours: ['.a...a.', 'aaaaaaa', 'aa.a.aa', 'aaaaaaa', '.aa.aa.', '..aaa..'],   // the bear's round head (B, 16/10)
+  renard: ['a...a', 'aaaaa', '.aaa.', '..a..'],
+  // the Raven as Patrick drew it (16/10, second drawing): 7 x 5, it fits the cloth
+  griffon: ['..aaa..', '.aa.aa.', '.aaaaaa', '.aaaa..', 'aaaaaa.'],
 };
+// a House's own ink for its sign, in place of the pale (and the gold of III)
+const EMB_INK = {};
 function embPal(k, lvl) {
   const p = Object.assign({}, EMB_COMMON, EMB_STONE[k] || EMB_STONE.cerf);
   if (lvl >= 3) Object.assign(p, EMB_GILD);
@@ -7431,16 +7435,22 @@ function embTier(x, y, lift, lvl) {
   P.hl(x0, top + 1, x1 - x0, lvl >= 4 ? '#f3d36a' : '#c99a3a');
 }
 // the House's banner hangs on the face of the wall, from level I: its colour, a pale sign of the animal, gold edges at IV
+// the cloth is 8 x 9 (a sign up to 7 x 6); a bigger sign gets a wider, longer cloth, one pixel of cloth to its right
 function embBanner(x, y, k, lvl, own) {
-  const c0 = own ? own[0] : '#8a8a8a', c1 = own ? own[1] : '#5a5a5a', bx = x + 8, by = y + 14;
-  P.hl(bx - 1, by, 10, '#6b5038'); P.px(bx - 2, by, '#d5bf7b'); P.px(bx + 9, by, '#d5bf7b');
-  for (let j = 1; j <= 9; j++) for (let i = 0; i < 8; i++) {
-    if (j >= 8 && (i === 3 || i === 4)) continue;
-    if (j === 9 && (i === 2 || i === 5)) continue;
-    const edge = lvl >= 4 && (i === 0 || i === 7 || j === 1);
+  const g = EMB_GLYPH[k] || EMB_GLYPH.cerf, gw = g[0].length, gh = g.length, gold = lvl >= 3;
+  const W = gw > 7 ? gw + 2 : 8, H = gh > 6 ? gh + 3 : 9, mid = (W - 1) / 2;
+  const c0 = own ? own[0] : '#8a8a8a', c1 = own ? own[1] : '#5a5a5a', bx = x + 12 - (W >> 1), by = y + 14;
+  P.hl(bx - 1, by, W + 2, '#6b5038'); P.px(bx - 2, by, '#d5bf7b'); P.px(bx + W + 1, by, '#d5bf7b');
+  for (let j = 1; j <= H; j++) for (let i = 0; i < W; i++) {
+    // the swallowtail: the last two rows are cut in the middle
+    const d = Math.abs(i - mid);
+    if ((j === H - 1 && d < W / 8) || (j === H && d < W / 4)) continue;
+    const edge = lvl >= 4 && (i === 0 || i === W - 1 || j === 1);
     P.px(bx + i, by + j, edge ? '#e6c35a' : i === 0 ? c1 : j === 1 ? tint(c0, .25, '#ffffff') : c0);
   }
-  P.spr(EMB_GLYPH[k] || EMB_GLYPH.cerf, { a: lvl >= 3 ? '#f6dc84' : '#ece6d6' }, bx + 2, by + 3, false);
+  // the sign, centred in the cloth: a pale, in gold from III; b its shade; c a gold accent (a crown); d the cloth's dark (an eye)
+  const ink = Object.assign({ a: gold ? '#f6dc84' : '#ece6d6', b: gold ? '#94702e' : '#b2ab9c', c: gold ? '#fff6d0' : '#f6dc84', d: c1 }, EMB_INK[k]);
+  P.spr(g, ink, bx + 1 + ((W - 1 - gw) >> 1), by + 2 + ((H - 3 - gh) >> 1), false);
 }
 // the pennant on a standard, in the wind
 function embPennant(x, px, top, col) {
